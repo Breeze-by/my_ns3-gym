@@ -50,6 +50,14 @@ build_lib_example(
 )
 
 build_lib_example(
+  NAME wireless-rl
+  SOURCE_FILES wireless-rl/sim.cc
+  LIBRARIES_TO_LINK
+    ${libcore}
+    ${libopengym}
+)
+
+build_lib_example(
   NAME rl-tcp
   SOURCE_FILES rl-tcp/sim.cc
                rl-tcp/tcp-rl-env.cc
