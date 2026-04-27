@@ -1,0 +1,10 @@
+# Ignore everything by default, contrib sources are coming from other places
+*
+
+# Include specific files that should be tracked by Git
+!.gitignore
+
+# This workspace vendors ns3-gym as contrib/opengym so local RL experiments can
+# be versioned together with ns-3.
+!opengym/
+!opengym/**

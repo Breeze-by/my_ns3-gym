@@ -1,0 +1,62 @@
+# Archives / downloaded release bundles
+*.tar
+*.tar.gz
+*.tar.bz2
+*.tgz
+*.zip
+
+# Build outputs and CMake cache trees
+**/build/
+**/cmake-cache/
+**/CMakeFiles/
+**/CMakeCache.txt
+**/cmake_install.cmake
+**/compile_commands.json
+**/.ninja_deps
+**/.ninja_log
+**/build.ninja
+
+# ns-3 generated outputs
+ns-allinone-3.40/ns-3.40/testpy-output/
+ns-allinone-3.40/ns-3.40/*.pcap
+ns-allinone-3.40/ns-3.40/*.pcapng
+ns-allinone-3.40/ns-3.40/*.tr
+ns-allinone-3.40/ns-3.40/*.routes
+ns-allinone-3.40/ns-3.40/*.flowmon
+ns-allinone-3.40/ns-3.40/*.mob
+ns-allinone-3.40/ns-3.40/*.anim
+ns-allinone-3.40/ns-3.40/*.dat
+ns-allinone-3.40/ns-3.40/*.plt
+
+# Python cache and local environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+env/
+
+# Editor and OS metadata
+.vscode/
+.idea/
+*~
+*.swp
+*.swo
+.DS_Store
+
+# NetAnim local build artifacts
+ns-allinone-3.40/netanim-3.109/NetAnim
+ns-allinone-3.40/netanim-3.109/Makefile
+ns-allinone-3.40/netanim-3.109/*.o
+ns-allinone-3.40/netanim-3.109/moc_*
+ns-allinone-3.40/netanim-3.109/qrc_*
+ns-allinone-3.40/netanim-3.109/ui_*
+ns-allinone-3.40/netanim-3.109/.qmake.stash
+
+# Local logs and temporary files
+*.log
+*.tmp
+*.bak
