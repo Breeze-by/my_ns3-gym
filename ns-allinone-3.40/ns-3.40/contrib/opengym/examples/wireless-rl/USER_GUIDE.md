@@ -157,7 +157,7 @@ runtime/plots/baseline_comparison_all_seeds_*.svg
 python train_dqn.py --episodes 5 --simTime 2 --stepTime 0.5 --device cuda:0 --runName smoke_test
 ```
 
-推荐的一版 delay-aware warm start：
+当前推荐的 DQN 训练命令：
 
 ```bash
 python train_dqn.py \
@@ -167,19 +167,30 @@ python train_dqn.py \
   --stepTime 0.5 \
   --device cuda:0 \
   --quiet \
-  --hiddenSize 128 \
-  --epsilonDecay 0.99 \
-  --pretrainSteps 3000 \
+  --hiddenSize 256 \
+  --learningRate 5e-4 \
+  --epsilonStart 0.2 \
+  --epsilonEnd 0.01 \
+  --epsilonDecay 0.995 \
+  --pretrainSteps 5000 \
   --pretrainHeuristic delay_aware \
-  --runName dqn_delayaware_p3k_h128
+  --evalInterval 25 \
+  --evalSeeds 1001,1002,1003 \
+  --runName dqn_exp06_evalselect_p5k_h256
 ```
 
 输出：
 
 ```text
 models/{runName}.pt
+models/{runName}_best.pt          # 开启 --evalInterval 时保存
 runtime/{runName}_train.csv
 ```
+
+推荐优先评估 `{runName}_best.pt`。它是在训练过程中每隔 `--evalInterval`
+个 episode 用独立 validation seeds 做 greedy-Q 评估后，按 validation
+mean cumulative reward 选出的 checkpoint；这样通常比只使用最后一个
+checkpoint 稳定。
 
 `train_dqn.py` 参数：
 
@@ -205,6 +216,8 @@ runtime/{runName}_train.csv
 | `--learningStarts` | `64` | buffer 至少多少条经验后开始更新 |
 | `--pretrainSteps` | `0` | 启发式监督预训练步数 |
 | `--pretrainHeuristic` | `max_service` | 预训练模仿策略 |
+| `--evalInterval` | `0` | 每 N 个 episode 做 validation 并保存 `{runName}_best.pt`；`0` 表示关闭 |
+| `--evalSeeds` | `1001,1002,1003` | validation seed 列表；建议避开训练 seed 和最终测试 seed |
 | `--runName` | `dqn_seed{seed}` | 输出模型和日志名称 |
 | `--device` | `auto` | `auto`、`cpu`、`cuda:0`、`cuda:1` 等 |
 | `--outputDir` | `runtime` | 训练日志输出目录 |
@@ -253,8 +266,8 @@ runtime/plots/dqn_delayaware_p3k_h128_average_deadline_misses.svg
 
 ```bash
 python evaluate_dqn.py \
-  --model models/dqn_delayaware_p3k_h128.pt \
-  --agentName dqn_delayaware_p3k_h128 \
+  --model models/dqn_exp06_evalselect_p5k_h256_best.pt \
+  --agentName dqn_exp06_evalselect_p5k_h256_best \
   --seeds 1,2,3,4,5,6,7,8,9,10 \
   --simTime 20 \
   --stepTime 0.5 \
@@ -295,15 +308,15 @@ runtime/comparisons/{agentName}_eval_all_seeds.csv
 ```bash
 python compare_dqn_with_baselines.py \
   --baselineCsv runtime/comparisons/baseline_comparison_all_seeds.csv \
-  --dqnCsv runtime/comparisons/dqn_delayaware_p3k_h128_eval_all_seeds.csv \
-  --tag dqn_delayaware_p3k_h128
+  --dqnCsv runtime/comparisons/dqn_exp06_evalselect_p5k_h256_best_eval_all_seeds.csv \
+  --tag dqn_exp06_evalselect_p5k_h256_best
 ```
 
 输出：
 
 ```text
-runtime/comparisons/dqn_vs_baselines_dqn_delayaware_p3k_h128.csv
-runtime/plots/dqn_vs_baselines_dqn_delayaware_p3k_h128_*.svg
+runtime/comparisons/dqn_vs_baselines_dqn_exp06_evalselect_p5k_h256_best.csv
+runtime/plots/dqn_vs_baselines_dqn_exp06_evalselect_p5k_h256_best_*.svg
 ```
 
 `compare_dqn_with_baselines.py` 参数：
@@ -328,7 +341,34 @@ runtime/plots/dqn_vs_baselines_dqn_delayaware_p3k_h128_*.svg
 
 当前 reward 权重会明显惩罚 deadline miss。如果 DQN reward 更高但 throughput 较低，通常表示它牺牲了一部分吞吐来换低时延；这在低时延调度目标下可以接受，但需要在报告里说明 trade-off。
 
-## 10. 常见微调方向
+## 10. 当前推荐结果
+
+2026-04-29 的 10-seed 对比中，当前推荐模型是：
+
+```text
+models/dqn_exp06_evalselect_p5k_h256_best.pt
+```
+
+对应评估文件：
+
+```text
+runtime/comparisons/dqn_exp06_evalselect_p5k_h256_best_eval_all_seeds.csv
+runtime/comparisons/dqn_vs_baselines_dqn_exp06_evalselect_p5k_h256_best.csv
+```
+
+关键 10-seed mean 指标：
+
+| Agent | Cumulative reward | Throughput | Reward queue | Total delay | Deadline misses | Fairness |
+|---|---:|---:|---:|---:|---:|---:|
+| `greedy` | -278.111 | 9.6525 | 70.4775 | 45.5050 | 2.2700 | 0.9531 |
+| `delay_aware` | -361.319 | 9.2350 | 80.7225 | 48.7325 | 2.5175 | 0.9567 |
+| `max_delay` | -550.375 | 6.7925 | 127.6375 | 53.5050 | 2.7850 | 0.7978 |
+| `dqn_exp06_evalselect_p5k_h256_best` | -105.792 | 9.3250 | 73.8050 | 34.4425 | 1.5575 | 0.8974 |
+
+结论：当前 DQN 的 reward、delay、deadline miss 都明显优于 strongest
+baseline `greedy`；吞吐比 `greedy` 低约 3.4%，fairness 也低一些，但没有出现不合理的大幅吞吐下降。
+
+## 11. 常见微调方向
 
 如果 `deadlineMisses` 长期接近 0：
 

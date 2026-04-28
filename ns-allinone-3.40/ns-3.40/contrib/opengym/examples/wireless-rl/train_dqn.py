@@ -19,6 +19,7 @@ from dqn_common import (
     make_synthetic_training_batch,
     normalize_observation,
     select_dqn_action,
+    summarize_rows,
 )
 
 
@@ -26,8 +27,13 @@ def write_csv(path, rows):
     path.parent.mkdir(parents=True, exist_ok=True)
     if not rows:
         return
+    fieldnames = []
+    for row in rows:
+        for key in row.keys():
+            if key not in fieldnames:
+                fieldnames.append(key)
     with path.open("w", newline="") as csv_file:
-        writer = csv.DictWriter(csv_file, fieldnames=list(rows[0].keys()))
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(rows)
 
@@ -36,6 +42,39 @@ def resolve_device(device_arg):
     if device_arg == "auto":
         return torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     return torch.device(device_arg)
+
+
+def parse_seeds(value):
+    seeds = []
+    for item in str(value).split(","):
+        item = item.strip()
+        if item:
+            seeds.append(int(item))
+    if not seeds:
+        raise argparse.ArgumentTypeError("At least one eval seed is required")
+    return seeds
+
+
+def build_checkpoint(args, policy_net, extra=None):
+    checkpoint = {
+        "model_state_dict": policy_net.state_dict(),
+        "hidden_size": args.hiddenSize,
+        "network_type": args.networkType,
+        "seed": args.seed,
+        "episodes": args.episodes,
+        "simTime": args.simTime,
+        "stepTime": args.stepTime,
+        "gamma": args.gamma,
+        "rewardScale": args.rewardScale,
+        "doubleDqn": args.doubleDqn,
+        "pretrainSteps": args.pretrainSteps,
+        "pretrainHeuristic": args.pretrainHeuristic,
+        "state_dim": policy_net.feature[0].in_features,
+        "action_dim": ACTION_DIM,
+    }
+    if extra:
+        checkpoint.update(extra)
+    return checkpoint
 
 
 def update_dqn(policy_net,
@@ -162,6 +201,91 @@ def run_episode(args, episode, policy_net, target_net, optimizer, replay_buffer,
     return rows, losses
 
 
+def select_eval_action(model, obs, device):
+    state = normalize_observation(obs)
+    with torch.no_grad():
+        state_tensor = torch.as_tensor(state, dtype=torch.float32, device=device).unsqueeze(0)
+        q_values = model(state_tensor)
+        return int(torch.argmax(q_values, dim=1).item())
+
+
+def run_eval_episode(args, policy_net, eval_seed, episode, device):
+    env = ns3env.Ns3Env(
+        port=0,
+        stepTime=args.stepTime,
+        startSim=True,
+        simSeed=eval_seed,
+        simArgs={
+            "--simTime": args.simTime,
+            "--envStepTime": args.stepTime,
+        },
+        debug=False,
+    )
+
+    rows = []
+    total_reward = 0.0
+
+    try:
+        obs = env.reset()
+        step = 0
+
+        while True:
+            action = select_eval_action(policy_net, obs, device)
+            next_obs, reward, done, info = env.step(action)
+            total_reward += float(reward)
+
+            rows.append(build_step_row("dqn_validation",
+                                       eval_seed,
+                                       episode,
+                                       step,
+                                       obs,
+                                       action,
+                                       reward,
+                                       total_reward,
+                                       done,
+                                       info))
+            obs = next_obs
+            step += 1
+
+            if done:
+                break
+    finally:
+        env.close()
+
+    return rows
+
+
+def evaluate_policy(args, policy_net, episode, device):
+    if args.evalInterval <= 0:
+        return {}
+
+    was_training = policy_net.training
+    policy_net.eval()
+    summaries = []
+    try:
+        for eval_seed in args.evalSeeds:
+            rows = run_eval_episode(args, policy_net, eval_seed, episode, device)
+            summaries.append(summarize_rows(rows))
+    finally:
+        if was_training:
+            policy_net.train()
+
+    metric_keys = [
+        "cumulative_reward",
+        "average_reward",
+        "average_throughput",
+        "average_reward_queue",
+        "average_total_delay",
+        "average_deadline_misses",
+        "service_amount_fairness",
+    ]
+    metrics = {}
+    for key in metric_keys:
+        values = np.asarray([float(summary[key]) for summary in summaries], dtype=np.float64)
+        metrics[f"eval_mean_{key}"] = float(np.mean(values))
+    return metrics
+
+
 def main():
     parser = argparse.ArgumentParser(description="Train a DQN scheduler for the wireless-rl ns3-gym environment")
     parser.add_argument("--episodes", type=int, default=300)
@@ -186,6 +310,14 @@ def main():
     parser.add_argument("--pretrainHeuristic",
                         choices=["max_service", "greedy", "delay_aware", "max_delay", "max_queue", "max_cqi"],
                         default="max_service")
+    parser.add_argument("--evalInterval",
+                        type=int,
+                        default=0,
+                        help="Evaluate and save a best checkpoint every N episodes; 0 disables validation")
+    parser.add_argument("--evalSeeds",
+                        type=parse_seeds,
+                        default=[1001, 1002, 1003],
+                        help="Comma-separated validation seeds used when evalInterval > 0")
     parser.add_argument("--runName", default=None)
     parser.add_argument("--device", default="auto", help="auto, cpu, cuda, cuda:0, cuda:1, ...")
     parser.add_argument("--outputDir", default="runtime")
@@ -221,6 +353,9 @@ def main():
 
     train_rows = []
     epsilon = args.epsilonStart
+    best_eval_reward = None
+    best_eval_episode = None
+    best_model_state = None
 
     print("DQN training")
     print("Device:", device)
@@ -254,8 +389,20 @@ def main():
         final_total_delay = float(rows[-1]["totalDelay"]) if rows else 0.0
         final_deadline_misses = float(rows[-1]["deadlineMisses"]) if rows else 0.0
         average_loss = float(np.mean(losses)) if losses else 0.0
+        eval_metrics = {}
+        should_eval = args.evalInterval > 0 and ((episode + 1) % args.evalInterval == 0 or episode == args.episodes - 1)
+        if should_eval:
+            eval_metrics = evaluate_policy(args, policy_net, episode, device)
+            eval_reward = eval_metrics.get("eval_mean_cumulative_reward")
+            if eval_reward is not None and (best_eval_reward is None or eval_reward > best_eval_reward):
+                best_eval_reward = eval_reward
+                best_eval_episode = episode
+                best_model_state = {
+                    key: value.detach().cpu().clone()
+                    for key, value in policy_net.state_dict().items()
+                }
 
-        train_rows.append({
+        train_row = {
             "episode": episode,
             "simSeed": args.seed + episode,
             "steps": len(rows),
@@ -270,7 +417,9 @@ def main():
             "final_deadline_misses": final_deadline_misses,
             "average_loss": average_loss,
             "buffer_size": len(replay_buffer),
-        })
+        }
+        train_row.update(eval_metrics)
+        train_rows.append(train_row)
 
         if (episode + 1) % args.targetUpdateInterval == 0:
             target_net.load_state_dict(policy_net.state_dict())
@@ -289,6 +438,13 @@ def main():
                 f"misses={average_deadline_misses:.3f}",
                 f"loss={average_loss:.5f}",
             )
+            if eval_metrics:
+                print(
+                    f"validation_episode={episode:04d}",
+                    f"eval_reward={eval_metrics['eval_mean_cumulative_reward']:.3f}",
+                    f"eval_delay={eval_metrics['eval_mean_average_total_delay']:.3f}",
+                    f"eval_misses={eval_metrics['eval_mean_average_deadline_misses']:.3f}",
+                )
 
     output_dir = Path(args.outputDir)
     model_dir = Path(args.modelDir)
@@ -298,26 +454,25 @@ def main():
     run_name = args.runName or f"dqn_seed{args.seed}"
     train_csv = output_dir / f"{run_name}_train.csv"
     model_path = model_dir / f"{run_name}.pt"
+    best_model_path = model_dir / f"{run_name}_best.pt"
     write_csv(train_csv, train_rows)
 
-    torch.save({
-        "model_state_dict": policy_net.state_dict(),
-        "hidden_size": args.hiddenSize,
-        "network_type": args.networkType,
-        "seed": args.seed,
-        "episodes": args.episodes,
-        "simTime": args.simTime,
-        "stepTime": args.stepTime,
-        "gamma": args.gamma,
-        "rewardScale": args.rewardScale,
-        "doubleDqn": args.doubleDqn,
-        "pretrainSteps": args.pretrainSteps,
-        "pretrainHeuristic": args.pretrainHeuristic,
-        "state_dim": policy_net.feature[0].in_features,
-        "action_dim": ACTION_DIM,
-    }, model_path)
+    torch.save(build_checkpoint(args, policy_net), model_path)
+
+    if best_model_state is not None:
+        torch.save(build_checkpoint(args, policy_net, {
+            "model_state_dict": best_model_state,
+            "bestEvalEpisode": best_eval_episode,
+            "bestEvalMeanCumulativeReward": best_eval_reward,
+            "evalSeeds": args.evalSeeds,
+            "evalInterval": args.evalInterval,
+        }), best_model_path)
 
     print("\nSaved model:", model_path)
+    if best_model_state is not None:
+        print("Saved best validation model:", best_model_path)
+        print("Best validation episode:", best_eval_episode)
+        print("Best validation mean cumulative reward:", f"{best_eval_reward:.6f}")
     print("Saved training log:", train_csv)
 
 

@@ -124,3 +124,54 @@ Best evaluation summary:
 ```text
 runtime/comparisons/dqn_delayaware_p3k_h128_eval_all_seeds.csv
 ```
+
+## 2026-04-29 DQN Optimization Summary
+
+Baseline command:
+
+```bash
+python run_multi_seed.py --seeds 1,2,3,4,5,6,7,8,9,10 --quiet
+```
+
+Best DQN command:
+
+```bash
+python train_dqn.py \
+  --episodes 300 \
+  --seed 1 \
+  --simTime 20 \
+  --stepTime 0.5 \
+  --device cuda:0 \
+  --quiet \
+  --hiddenSize 256 \
+  --learningRate 5e-4 \
+  --epsilonStart 0.2 \
+  --epsilonEnd 0.01 \
+  --epsilonDecay 0.995 \
+  --pretrainSteps 5000 \
+  --pretrainHeuristic delay_aware \
+  --evalInterval 25 \
+  --evalSeeds 1001,1002,1003 \
+  --runName dqn_exp06_evalselect_p5k_h256
+```
+
+Best checkpoint:
+
+```text
+models/dqn_exp06_evalselect_p5k_h256_best.pt
+```
+
+10-seed evaluation summary:
+
+| Agent | Mean cumulative reward | Mean throughput | Mean reward queue | Mean total delay | Mean deadline misses | Fairness |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `greedy` | -278.111 | 9.6525 | 70.4775 | 45.5050 | 2.2700 | 0.9531 |
+| `delay_aware` | -361.319 | 9.2350 | 80.7225 | 48.7325 | 2.5175 | 0.9567 |
+| `max_delay` | -550.375 | 6.7925 | 127.6375 | 53.5050 | 2.7850 | 0.7978 |
+| `dqn_exp06_evalselect_p5k_h256_best` | -105.792 | 9.3250 | 73.8050 | 34.4425 | 1.5575 | 0.8974 |
+
+Notes:
+
+- The useful code change was DQN-only validation checkpoint selection in `train_dqn.py`.
+- A 500-episode validation-selected run did not improve over the 300-episode run.
+- The best model improves reward, delay, and deadline misses over `greedy`, while giving up some fairness and a small amount of throughput.
