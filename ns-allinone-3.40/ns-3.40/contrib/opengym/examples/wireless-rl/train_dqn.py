@@ -184,7 +184,7 @@ def main():
     parser.add_argument("--learningStarts", type=int, default=64)
     parser.add_argument("--pretrainSteps", type=int, default=0)
     parser.add_argument("--pretrainHeuristic",
-                        choices=["max_service", "greedy", "max_queue", "max_cqi"],
+                        choices=["max_service", "greedy", "delay_aware", "max_delay", "max_queue", "max_cqi"],
                         default="max_service")
     parser.add_argument("--runName", default=None)
     parser.add_argument("--device", default="auto", help="auto, cpu, cuda, cuda:0, cuda:1, ...")
@@ -227,7 +227,7 @@ def main():
     print("Episodes:", args.episodes)
     print("Network:", args.networkType)
     print("Double DQN:", args.doubleDqn)
-    print("State dim:", 10)
+    print("State dim:", policy_net.feature[0].in_features)
     print("Action dim:", ACTION_DIM)
     if pretrain_losses:
         print("Pretrain steps:", args.pretrainSteps)
@@ -249,6 +249,10 @@ def main():
         average_reward = total_reward / len(rows) if rows else 0.0
         average_throughput = float(np.mean([float(row["lastThroughput"]) for row in rows])) if rows else 0.0
         average_queue = float(np.mean([float(row["rewardQueue"]) for row in rows])) if rows else 0.0
+        average_total_delay = float(np.mean([float(row["totalDelay"]) for row in rows])) if rows else 0.0
+        average_deadline_misses = float(np.mean([float(row["deadlineMisses"]) for row in rows])) if rows else 0.0
+        final_total_delay = float(rows[-1]["totalDelay"]) if rows else 0.0
+        final_deadline_misses = float(rows[-1]["deadlineMisses"]) if rows else 0.0
         average_loss = float(np.mean(losses)) if losses else 0.0
 
         train_rows.append({
@@ -260,6 +264,10 @@ def main():
             "epsilon": epsilon,
             "average_throughput": average_throughput,
             "average_queue": average_queue,
+            "average_total_delay": average_total_delay,
+            "average_deadline_misses": average_deadline_misses,
+            "final_total_delay": final_total_delay,
+            "final_deadline_misses": final_deadline_misses,
             "average_loss": average_loss,
             "buffer_size": len(replay_buffer),
         })
@@ -277,6 +285,8 @@ def main():
                 f"epsilon={epsilon:.3f}",
                 f"throughput={average_throughput:.3f}",
                 f"queue={average_queue:.3f}",
+                f"delay={average_total_delay:.3f}",
+                f"misses={average_deadline_misses:.3f}",
                 f"loss={average_loss:.5f}",
             )
 
@@ -303,7 +313,7 @@ def main():
         "doubleDqn": args.doubleDqn,
         "pretrainSteps": args.pretrainSteps,
         "pretrainHeuristic": args.pretrainHeuristic,
-        "state_dim": 10,
+        "state_dim": policy_net.feature[0].in_features,
         "action_dim": ACTION_DIM,
     }, model_path)
 

@@ -24,8 +24,12 @@ AGGREGATE_METRICS = [
     ("average_throughput", "Average Throughput", "throughput", False),
     ("average_current_queue", "Average Current Queue", "queue", True),
     ("average_reward_queue", "Average Reward Queue", "queue", True),
+    ("average_total_delay", "Average Total Delay", "delay", True),
+    ("average_deadline_misses", "Average Deadline Misses", "misses", True),
     ("final_current_queue", "Final Current Queue", "queue", True),
     ("final_reward_queue", "Final Reward Queue", "queue", True),
+    ("final_total_delay", "Final Total Delay", "delay", True),
+    ("final_deadline_misses", "Final Deadline Misses", "misses", True),
     ("service_amount_fairness", "Jain Fairness of Served Amount", "fairness", False),
 ]
 

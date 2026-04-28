@@ -100,8 +100,12 @@ def aggregate_summaries(summaries):
         "average_throughput",
         "average_current_queue",
         "average_reward_queue",
+        "average_total_delay",
+        "average_deadline_misses",
         "final_current_queue",
         "final_reward_queue",
+        "final_total_delay",
+        "final_deadline_misses",
         "service_amount_fairness",
     ]
 
@@ -161,6 +165,8 @@ def main():
             f"reward={float(summary['cumulative_reward']):.3f}",
             f"throughput={float(summary['average_throughput']):.3f}",
             f"reward_queue={float(summary['average_reward_queue']):.3f}",
+            f"delay={float(summary['average_total_delay']):.3f}",
+            f"misses={float(summary['average_deadline_misses']):.3f}",
             f"fairness={float(summary['service_amount_fairness']):.3f}",
         )
 

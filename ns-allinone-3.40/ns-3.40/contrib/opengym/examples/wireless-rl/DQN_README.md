@@ -1,5 +1,8 @@
 # DQN 调度器 Demo 说明
 
+完整手动实验流程和所有脚本参数见 [USER_GUIDE.md](USER_GUIDE.md)。本文件主要保留 DQN
+思路、环境含义和推荐配置。
+
 这个目录里已经接入了一个最小可运行的 DQN 例子，用来学习 `wireless-rl`
 这个抽象无线资源分配环境。
 
@@ -13,10 +16,14 @@ DQN 每一步决定服务哪个用户
 
 ## 状态和动作
 
-ns-3 每一步给 Python 的状态是 10 维：
+ns-3 每一步给 Python 的状态现在是 15 维：
 
 ```text
-[cqi0, queue0, cqi1, queue1, cqi2, queue2, cqi3, queue3, cqi4, queue4]
+[cqi0, queue0, delay0,
+ cqi1, queue1, delay1,
+ cqi2, queue2, delay2,
+ cqi3, queue3, delay3,
+ cqi4, queue4, delay4]
 ```
 
 含义是：
@@ -24,6 +31,7 @@ ns-3 每一步给 Python 的状态是 10 维：
 ```text
 cqi_i   用户 i 当前信道质量，范围约 1 到 10
 queue_i 用户 i 当前队列长度，范围约 0 到 100
+delay_i 用户 i 当前队列已经等待了多久，范围约 0 到 20
 ```
 
 DQN 训练前会做归一化：
@@ -31,9 +39,34 @@ DQN 训练前会做归一化：
 ```text
 CQI   / 10.0
 Queue / 100.0
+Delay / 20.0
 ```
 
 这样做是为了避免队列数值比 CQI 大太多，导致神经网络过度偏向队列。
+
+## 当前环境升级
+
+环境已经从最初的短视 toy 版本升级成更适合 RL 的版本：
+
+```text
+状态从 10 维变成 15 维，加入 delay_i
+reward 加入 totalDelay 惩罚
+reward 加入 deadline miss 惩罚
+CQI 从每步独立随机，改成 Markov 相关变化
+```
+
+新的 reward 近似为：
+
+```text
+reward = served
+         - 0.01 * rewardQueue
+         - 0.1 * totalDelay
+         - 5.0 * deadlineMisses
+```
+
+这样 agent 不能只看当前吞吐量，还要考虑哪些用户已经等了很久、哪些用户快要超时。
+
+注意：环境升级后，旧的 10 维模型不能继续作为正式结果使用，需要重新训练。
 
 DQN 网络输出 5 个 Q 值：
 
@@ -70,7 +103,7 @@ action = argmax(Q)
 
 `compare_dqn_with_baselines.py`
 
-负责把 DQN 的多 seed 评估结果和五个 baseline 汇总到一张表里，并生成对比 SVG 图。
+负责把 DQN 的多 seed 评估结果和 baseline 汇总到一张表里，并生成对比 SVG 图。
 
 `plot_dqn_training.py`
 
@@ -166,6 +199,46 @@ python3 evaluate_dqn.py --model models/dqn_seed1.pt --seeds 1,2,3,4,5 --device c
 python3 train_dqn.py --episodes 300 --seed 1 --device cuda:1
 ```
 
+## 当前推荐配置
+
+目前这个目录里效果最好的 checkpoint 是一版带有 `delay_aware` 预热的
+`dueling + double DQN`。推荐你优先复现这一版：
+
+```bash
+python3 train_dqn.py \
+  --episodes 300 \
+  --seed 1 \
+  --simTime 20 \
+  --stepTime 0.5 \
+  --device cuda:0 \
+  --quiet \
+  --hiddenSize 128 \
+  --epsilonDecay 0.99 \
+  --pretrainSteps 3000 \
+  --pretrainHeuristic delay_aware \
+  --runName dqn_delayaware_p3k_h128
+
+python3 evaluate_dqn.py \
+  --model models/dqn_delayaware_p3k_h128.pt \
+  --agentName dqn_delayaware_p3k_h128 \
+  --seeds 1,2,3,4,5 \
+  --simTime 20 \
+  --stepTime 0.5 \
+  --device cuda:0
+```
+
+当前最佳模型文件：
+
+```text
+models/dqn_delayaware_p3k_h128.pt
+```
+
+当前最佳 5-seed 汇总结果：
+
+```text
+runtime/comparisons/dqn_delayaware_p3k_h128_eval_all_seeds.csv
+```
+
 ## 怎么看训练结果
 
 训练日志在：
@@ -199,6 +272,12 @@ runtime/dqn_train_seed1.csv
 `average_loss`
 
 DQN 的训练损失。它不一定单调下降，只要没有爆炸成很大的异常值，一开始不用太紧张。
+
+## 旧模型兼容性
+
+如果你在 `models/` 里看到更早的 `dqn_v1_*` 到 `dqn_v4_*` 模型，不要直接拿来
+评估当前环境。它们对应的是更早的 10 维状态版本，现在环境已经升级到 15 维，
+旧模型无法直接加载。
 
 ## 常用参数
 
@@ -284,11 +363,13 @@ Replay Buffer 至少积累多少条经验后才开始更新 DQN。
 ```text
 max_service
 greedy
+delay_aware
+max_delay
 max_queue
 max_cqi
 ```
 
-其中 `greedy` 对应 `CQI * Queue`，也就是当前最强 baseline。
+其中 `delay_aware` 会同时看 `CQI * Queue` 和 delay，更适合升级后的环境。
 
 `--device`
 
@@ -350,9 +431,11 @@ DQN 尽量接近 max_queue / max_cqi / greedy
 
 如果 DQN 能稳定接近 greedy，说明 DQN 和 ns3-gym 的训练链路已经成功。
 
-## 当前最佳结果
+## 旧环境最佳结果
 
-当前最佳模型是：
+下面结果来自旧的 10 维环境，只用于历史参考。
+
+旧环境最佳模型是：
 
 ```text
 models/dqn_v4_greedywarm_only.pt
@@ -384,7 +467,15 @@ greedy mean_cumulative_reward = 440.468
 DQN    mean_cumulative_reward = 438.240
 ```
 
-DQN 已经非常接近 greedy，差距大约 0.5%。这说明当前 DQN 策略链路是成功的。
+DQN 非常接近 greedy，差距大约 0.5%。这说明 DQN 策略链路是成功的。
+
+但升级到 15 维 delay/deadline 环境后，需要重新跑 baseline 和 DQN：
+
+```bash
+python3 run_multi_seed.py --seeds 1,2,3,4,5,6,7,8,9,10
+python3 train_dqn.py --episodes 300 --pretrainHeuristic delay_aware --seed 1 --device cuda:0
+python3 evaluate_dqn.py --model models/dqn_seed1.pt --seeds 1,2,3,4,5 --device cuda:0
+```
 
 更详细的过程记录在：
 

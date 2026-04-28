@@ -84,10 +84,17 @@ def main():
         ("epsilon", "Epsilon", "epsilon"),
         ("average_throughput", "Average Throughput", "throughput"),
         ("average_queue", "Average Reward Queue", "queue"),
+        ("average_total_delay", "Average Total Delay", "delay"),
+        ("average_deadline_misses", "Average Deadline Misses", "misses"),
+        ("final_total_delay", "Final Total Delay", "delay"),
+        ("final_deadline_misses", "Final Deadline Misses", "misses"),
         ("average_loss", "Average Loss", "loss"),
     ]
 
     for key, title, ylabel in specs:
+        if not rows or key not in rows[0]:
+            print(f"Skip missing training column: {key}")
+            continue
         points = [(int(row["episode"]), float(row[key])) for row in rows]
         save_line_svg(output_dir / f"{tag}_{key}.svg", title, ylabel, points)
 

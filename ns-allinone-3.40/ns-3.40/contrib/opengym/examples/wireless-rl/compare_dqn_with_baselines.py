@@ -12,7 +12,11 @@ METRICS = [
     ("average_reward", "Average Reward", "reward", False),
     ("average_throughput", "Average Throughput", "throughput", False),
     ("average_reward_queue", "Average Reward Queue", "queue", True),
+    ("average_total_delay", "Average Total Delay", "delay", True),
+    ("average_deadline_misses", "Average Deadline Misses", "misses", True),
     ("final_reward_queue", "Final Reward Queue", "queue", True),
+    ("final_total_delay", "Final Total Delay", "delay", True),
+    ("final_deadline_misses", "Final Deadline Misses", "misses", True),
     ("service_amount_fairness", "Jain Fairness of Served Amount", "fairness", False),
 ]
 
@@ -25,7 +29,7 @@ def load_single_row(path):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Compare a DQN run against the five baseline schedulers")
+    parser = argparse.ArgumentParser(description="Compare a DQN run against baseline schedulers")
     parser.add_argument("--baselineCsv",
                         default="runtime/comparisons/baseline_comparison_all_seeds.csv")
     parser.add_argument("--dqnCsv",

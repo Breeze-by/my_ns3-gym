@@ -12,22 +12,25 @@ from ns3gym import ns3env
 
 
 USER_NUM = 5
+FEATURES_PER_USER = 3
 DEFAULT_OUTPUT_DIR = "runtime"
 
 
 def split_observation(obs):
     """
     Observation format:
-        [cqi0, queue0, cqi1, queue1, ..., cqi4, queue4]
+        [cqi0, queue0, delay0, cqi1, queue1, delay1, ...]
 
     Return:
         cqi   = [cqi0, cqi1, ..., cqi4]
         queue = [queue0, queue1, ..., queue4]
+        delay = [delay0, delay1, ..., delay4]
     """
     obs = np.asarray(obs, dtype=np.float32)
-    cqi = obs[0::2]
-    queue = obs[1::2]
-    return cqi, queue
+    cqi = obs[0::FEATURES_PER_USER]
+    queue = obs[1::FEATURES_PER_USER]
+    delay = obs[2::FEATURES_PER_USER]
+    return cqi, queue, delay
 
 
 def select_action(obs, agent, step_idx):
@@ -36,7 +39,7 @@ def select_action(obs, agent, step_idx):
 
     action i means serving user i in this time slot.
     """
-    cqi, queue = split_observation(obs)
+    cqi, queue, delay = split_observation(obs)
 
     if agent == "random":
         return None
@@ -56,6 +59,19 @@ def select_action(obs, agent, step_idx):
 
     if agent == "max_queue":
         return int(np.argmax(queue))
+
+    if agent == "max_delay":
+        if np.max(delay) <= 0:
+            if np.max(queue) > 0:
+                return int(np.argmax(queue))
+            return int(np.argmax(cqi))
+        return int(np.argmax(delay))
+
+    if agent == "delay_aware":
+        score = cqi * queue + 20.0 * delay
+        if np.max(score) <= 0:
+            score = cqi
+        return int(np.argmax(score))
 
     raise ValueError(f"Unknown agent type: {agent}")
 
@@ -139,6 +155,8 @@ def summarize_episode(rows):
     throughputs = [float(row["lastThroughput"]) for row in rows]
     current_queues = [float(row["currentQueue"]) for row in rows]
     reward_queues = [float(row["rewardQueue"]) for row in rows]
+    total_delays = [float(row["totalDelay"]) for row in rows]
+    deadline_misses = [float(row["deadlineMisses"]) for row in rows]
 
     service_counts = [0 for _ in range(USER_NUM)]
     service_amounts = [0.0 for _ in range(USER_NUM)]
@@ -158,8 +176,12 @@ def summarize_episode(rows):
         "average_throughput": np.mean(throughputs) if throughputs else 0.0,
         "average_current_queue": np.mean(current_queues) if current_queues else 0.0,
         "average_reward_queue": np.mean(reward_queues) if reward_queues else 0.0,
+        "average_total_delay": np.mean(total_delays) if total_delays else 0.0,
+        "average_deadline_misses": np.mean(deadline_misses) if deadline_misses else 0.0,
         "final_current_queue": current_queues[-1] if current_queues else 0.0,
         "final_reward_queue": reward_queues[-1] if reward_queues else 0.0,
+        "final_total_delay": total_delays[-1] if total_delays else 0.0,
+        "final_deadline_misses": deadline_misses[-1] if deadline_misses else 0.0,
         "service_amount_fairness": jain_fairness(service_amounts),
     }
 
@@ -320,6 +342,24 @@ def save_plots(plot_prefix, rows, summary):
             "lastThroughput": list(zip(steps, [float(row["lastThroughput"]) for row in rows])),
         },
     )
+    save_line_svg(
+        plot_prefix.with_name(plot_prefix.name + "_delay.svg"),
+        "Delay per Step",
+        "delay",
+        {
+            "totalDelay": list(zip(steps, [float(row["totalDelay"]) for row in rows])),
+            "currentDelay": list(zip(steps, [float(row["currentDelay"]) for row in rows])),
+        },
+    )
+    save_line_svg(
+        plot_prefix.with_name(plot_prefix.name + "_deadline_misses.svg"),
+        "Deadline Misses per Step",
+        "misses",
+        {
+            "deadlineMisses": list(zip(steps, [float(row["deadlineMisses"]) for row in rows])),
+            "currentDeadlineMisses": list(zip(steps, [float(row["currentDeadlineMisses"]) for row in rows])),
+        },
+    )
 
     labels = [f"user{i}" for i in range(USER_NUM)]
     save_bar_svg(
@@ -338,7 +378,7 @@ def save_plots(plot_prefix, rows, summary):
     )
 
 
-def build_row(episode, step_idx, args, cqi, queue, action, reward, total_reward, done, info):
+def build_row(episode, step_idx, args, cqi, queue, delay, action, reward, total_reward, done, info):
     parsed_info = parse_info(info)
     row = {
         "episode": episode,
@@ -352,15 +392,21 @@ def build_row(episode, step_idx, args, cqi, queue, action, reward, total_reward,
         "lastThroughput": float(parsed_info.get("lastThroughput", 0.0)),
         "rewardQueue": float(parsed_info.get("rewardQueue", np.sum(queue))),
         "currentQueue": float(parsed_info.get("currentQueue", np.sum(queue))),
+        "totalDelay": float(parsed_info.get("totalDelay", np.sum(delay))),
+        "currentDelay": float(parsed_info.get("currentDelay", np.sum(delay))),
+        "deadlineMisses": int(parsed_info.get("deadlineMisses", 0)),
+        "currentDeadlineMisses": int(parsed_info.get("currentDeadlineMisses", 0)),
         "done": bool(done),
         "info": str(info),
         "cqi": " ".join(str(int(v)) for v in cqi),
         "queue": " ".join(str(int(v)) for v in queue),
+        "delay": " ".join(str(int(v)) for v in delay),
     }
 
     for user in range(USER_NUM):
         row[f"cqi{user}"] = int(cqi[user])
         row[f"queue{user}"] = int(queue[user])
+        row[f"delay{user}"] = int(delay[user])
 
     return row
 
@@ -376,7 +422,15 @@ parser.add_argument("--iterations",
                     default=1,
                     help="Number of episodes, Default: 1")
 parser.add_argument("--agent",
-                    choices=["random", "round_robin", "greedy", "max_cqi", "max_queue"],
+                    choices=[
+                        "random",
+                        "round_robin",
+                        "max_cqi",
+                        "max_queue",
+                        "max_delay",
+                        "greedy",
+                        "delay_aware",
+                    ],
                     default="greedy",
                     help="Scheduling policy, Default: greedy")
 parser.add_argument("--port",
@@ -465,7 +519,7 @@ try:
         rows = []
 
         while True:
-            cqi, queue = split_observation(obs)
+            cqi, queue, delay = split_observation(obs)
             action = select_action(obs, args.agent, stepIdx)
 
             if action is None:
@@ -475,6 +529,7 @@ try:
                 "Step:", stepIdx,
                 "cqi:", cqi.astype(int).tolist(),
                 "queue:", queue.astype(int).tolist(),
+                "delay:", delay.astype(int).tolist(),
                 "action:", int(action)
             )
 
@@ -486,6 +541,7 @@ try:
                             args,
                             cqi,
                             queue,
+                            delay,
                             action,
                             reward,
                             totalReward,
@@ -498,6 +554,8 @@ try:
                 "totalReward:", round(float(totalReward), 3),
                 "throughput:", row["lastThroughput"],
                 "currentQueue:", row["currentQueue"],
+                "totalDelay:", row["totalDelay"],
+                "deadlineMisses:", row["deadlineMisses"],
                 "done:", done,
                 "info:", info
             )
@@ -511,7 +569,10 @@ try:
                 print("Average reward:", round(float(summary["average_reward"]), 3))
                 print("Average throughput:", round(float(summary["average_throughput"]), 3))
                 print("Average current queue:", round(float(summary["average_current_queue"]), 3))
+                print("Average total delay:", round(float(summary["average_total_delay"]), 3))
+                print("Average deadline misses:", round(float(summary["average_deadline_misses"]), 3))
                 print("Final current queue:", round(float(summary["final_current_queue"]), 3))
+                print("Final total delay:", round(float(summary["final_total_delay"]), 3))
                 print("Service counts:",
                       [summary[f"user{i}_served_count"] for i in range(USER_NUM)])
                 print("Service amounts:",

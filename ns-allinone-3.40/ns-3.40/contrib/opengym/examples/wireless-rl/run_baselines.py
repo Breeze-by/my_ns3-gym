@@ -9,7 +9,15 @@ import sys
 from pathlib import Path
 
 
-BASELINES = ["random", "round_robin", "max_cqi", "max_queue", "greedy"]
+BASELINES = [
+    "random",
+    "round_robin",
+    "max_cqi",
+    "max_queue",
+    "max_delay",
+    "greedy",
+    "delay_aware",
+]
 USER_NUM = 5
 DEFAULT_OUTPUT_DIR = "runtime"
 
@@ -100,7 +108,7 @@ def save_metric_bar_svg(path, title, ylabel, labels, values, lower_is_better=Fal
     if max_value <= 0:
         max_value = 1.0
 
-    colors = ["#64748b", "#0f766e", "#dc2626", "#9333ea", "#2563eb"]
+    colors = ["#64748b", "#0f766e", "#dc2626", "#9333ea", "#ea580c", "#2563eb", "#0891b2"]
     bar_gap = 18
     bar_w = (plot_w - bar_gap * (len(values) + 1)) / max(len(values), 1)
 
@@ -159,7 +167,9 @@ def save_line_svg(path, title, ylabel, series_by_name):
         "round_robin": "#0f766e",
         "max_cqi": "#dc2626",
         "max_queue": "#9333ea",
+        "max_delay": "#ea580c",
         "greedy": "#2563eb",
+        "delay_aware": "#0891b2",
     }
 
     all_points = [point for points in series_by_name.values() for point in points]
@@ -227,7 +237,7 @@ def save_grouped_user_svg(path, title, ylabel, summaries, value_suffix):
     bottom = 80
     plot_w = width - left - right
     plot_h = height - top - bottom
-    colors = ["#64748b", "#0f766e", "#dc2626", "#9333ea", "#2563eb"]
+    colors = ["#64748b", "#0f766e", "#dc2626", "#9333ea", "#ea580c", "#2563eb", "#0891b2"]
     labels = [row["agent"] for row in summaries]
 
     values = []
@@ -300,8 +310,12 @@ def generate_comparison_outputs(output_dir, agents, seed):
         ("average_throughput", "Average Throughput", "throughput", False),
         ("average_current_queue", "Average Current Queue", "queue", True),
         ("average_reward_queue", "Average Reward Queue", "queue", True),
+        ("average_total_delay", "Average Total Delay", "delay", True),
+        ("average_deadline_misses", "Average Deadline Misses", "misses", True),
         ("final_current_queue", "Final Current Queue", "queue", True),
         ("final_reward_queue", "Final Reward Queue", "queue", True),
+        ("final_total_delay", "Final Total Delay", "delay", True),
+        ("final_deadline_misses", "Final Deadline Misses", "misses", True),
         ("service_amount_fairness", "Jain Fairness of Served Amount", "fairness", False),
     ]
     for key, title, ylabel, lower_is_better in metrics:
@@ -318,6 +332,10 @@ def generate_comparison_outputs(output_dir, agents, seed):
         ("totalReward", "Cumulative Reward over Time", "total reward"),
         ("currentQueue", "Current Queue over Time", "queue"),
         ("rewardQueue", "Reward Queue over Time", "queue"),
+        ("totalDelay", "Total Delay over Time", "delay"),
+        ("currentDelay", "Current Delay over Time", "delay"),
+        ("deadlineMisses", "Deadline Misses over Time", "misses"),
+        ("currentDeadlineMisses", "Current Deadline Misses over Time", "misses"),
         ("lastThroughput", "Throughput over Time", "throughput"),
     ]
     for key, title, ylabel in line_specs:
