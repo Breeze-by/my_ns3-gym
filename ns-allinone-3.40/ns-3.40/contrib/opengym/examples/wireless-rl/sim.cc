@@ -31,6 +31,7 @@ static float g_lastRewardQueue = 0.0;
 
 static uint32_t g_step = 0;
 static Ptr<UniformRandomVariable> g_rng;
+static bool g_verbose = false;
 
 
 /*
@@ -66,7 +67,10 @@ MyGetObservationSpace(void)
   Ptr<OpenGymBoxSpace> space =
       CreateObject<OpenGymBoxSpace> (low, high, shape, dtype);
 
-  NS_LOG_UNCOND ("MyGetObservationSpace: " << space);
+  if (g_verbose)
+    {
+      NS_LOG_UNCOND ("MyGetObservationSpace: " << space);
+    }
 
   return space;
 }
@@ -82,7 +86,10 @@ MyGetActionSpace(void)
   Ptr<OpenGymDiscreteSpace> space =
       CreateObject<OpenGymDiscreteSpace> (userNum);
 
-  NS_LOG_UNCOND ("MyGetActionSpace: " << space);
+  if (g_verbose)
+    {
+      NS_LOG_UNCOND ("MyGetActionSpace: " << space);
+    }
 
   return space;
 }
@@ -98,7 +105,10 @@ MyGetGameOver(void)
 {
   bool isGameOver = (g_step >= maxSteps);
 
-  NS_LOG_UNCOND ("MyGetGameOver: " << isGameOver);
+  if (g_verbose)
+    {
+      NS_LOG_UNCOND ("MyGetGameOver: " << isGameOver);
+    }
 
   return isGameOver;
 }
@@ -124,7 +134,10 @@ MyGetObservation(void)
       box->AddValue(g_queue[i]);
     }
 
-  NS_LOG_UNCOND ("MyGetObservation: " << box);
+  if (g_verbose)
+    {
+      NS_LOG_UNCOND ("MyGetObservation: " << box);
+    }
 
   return box;
 }
@@ -143,9 +156,12 @@ MyGetObservation(void)
 float
 MyGetReward(void)
 {
-  NS_LOG_UNCOND ("MyGetReward: " << g_lastReward
-                 << " throughput=" << g_lastThroughput
-                 << " rewardQueue=" << g_lastRewardQueue);
+  if (g_verbose)
+    {
+      NS_LOG_UNCOND ("MyGetReward: " << g_lastReward
+                     << " throughput=" << g_lastThroughput
+                     << " rewardQueue=" << g_lastRewardQueue);
+    }
 
   return g_lastReward;
 }
@@ -174,7 +190,10 @@ MyGetExtraInfo(void)
        << "|currentQueue=" << currentQueue
        << "|lastReward=" << g_lastReward;
 
-  NS_LOG_UNCOND ("MyGetExtraInfo: " << info.str());
+  if (g_verbose)
+    {
+      NS_LOG_UNCOND ("MyGetExtraInfo: " << info.str());
+    }
 
   return info.str();
 }
@@ -237,13 +256,16 @@ MyExecuteActions(Ptr<OpenGymDataContainer> action)
 
   g_step++;
 
-  NS_LOG_UNCOND ("Selected user: " << selectedUser
-                 << " cqi=" << g_cqi[selectedUser]
-                 << " served=" << served
-                 << " remainingQueue=" << g_queue[selectedUser]
-                 << " rewardQueue=" << g_lastRewardQueue
-                 << " reward=" << g_lastReward
-                 << " step=" << g_step);
+  if (g_verbose)
+    {
+      NS_LOG_UNCOND ("Selected user: " << selectedUser
+                     << " cqi=" << g_cqi[selectedUser]
+                     << " served=" << served
+                     << " remainingQueue=" << g_queue[selectedUser]
+                     << " rewardQueue=" << g_lastRewardQueue
+                     << " reward=" << g_lastReward
+                     << " step=" << g_step);
+    }
 
   return true;
 }
@@ -328,14 +350,21 @@ main (int argc, char *argv[])
                 "Environment step interval in seconds. Default: 0.5s",
                 envStepTime);
 
+  cmd.AddValue ("verbose",
+                "Print detailed C++ environment logs. Default: false",
+                g_verbose);
+
   cmd.Parse (argc, argv);
 
-  NS_LOG_UNCOND ("Ns3Env parameters:");
-  NS_LOG_UNCOND ("--simulationTime: " << simulationTime);
-  NS_LOG_UNCOND ("--openGymPort: " << openGymPort);
-  NS_LOG_UNCOND ("--envStepTime: " << envStepTime);
-  NS_LOG_UNCOND ("--seed: " << simSeed);
-  NS_LOG_UNCOND ("--userNum: " << userNum);
+  if (g_verbose)
+    {
+      NS_LOG_UNCOND ("Ns3Env parameters:");
+      NS_LOG_UNCOND ("--simulationTime: " << simulationTime);
+      NS_LOG_UNCOND ("--openGymPort: " << openGymPort);
+      NS_LOG_UNCOND ("--envStepTime: " << envStepTime);
+      NS_LOG_UNCOND ("--seed: " << simSeed);
+      NS_LOG_UNCOND ("--userNum: " << userNum);
+    }
 
   RngSeedManager::SetSeed (1);
   RngSeedManager::SetRun (simSeed);
@@ -361,12 +390,18 @@ main (int argc, char *argv[])
                        envStepTime,
                        openGym);
 
-  NS_LOG_UNCOND ("Simulation start");
+  if (g_verbose)
+    {
+      NS_LOG_UNCOND ("Simulation start");
+    }
 
   Simulator::Stop (Seconds (simulationTime));
   Simulator::Run ();
 
-  NS_LOG_UNCOND ("Simulation stop");
+  if (g_verbose)
+    {
+      NS_LOG_UNCOND ("Simulation stop");
+    }
 
   openGym->NotifySimulationEnd();
 
