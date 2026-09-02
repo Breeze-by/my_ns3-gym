@@ -1,0 +1,45 @@
+# ROS 2 / colcon build artifacts
+build/
+install/
+log/
+
+# Python cache and test artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ROS runtime data
+*.bag
+*.db3
+*.mcap
+*.active
+*.log
+rosbag2_*/
+
+# Runtime-generated maps and quick debug snapshots
+src/saved_map/
+node_list.txt
+topic_list.txt
+*.bak
+
+# Large demo media is not needed for the maintained source snapshot
+demo_videos/
+
+# Gazebo runtime files
+*.state
+*.world.bak
+*.sdf.bak
+
+# IDE / editor settings
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS metadata
+.DS_Store
+Thumbs.db
