@@ -1,174 +1,190 @@
 # wireless-rl Codex Memory
 
-This directory is the real project area for the ns3-gym + DQN wireless resource
-allocation experiment. Prefer this file as the first external memory when a new
-Codex chat/session starts.
+Last verified against source and a local smoke test: 2026-09-02.
 
-## What To Read First
+This directory is the active project inside the larger ns-3 workspace. It is a
+toy ns3-gym scheduling MDP, not a full Wi-Fi/5G network simulation.
 
-Read these files before making project decisions:
+The intended successor task reuses the ROS 2 project at
+`/home/zhuyulab/ros2_ws/ros2-multi-robot-automap` for 2–3 robot collaborative
+mapping, object search, charging, and rendezvous. Do not rebuild the robot stack
+from scratch or assume that planned integration is already implemented. Read
+`RESEARCH_PLAN.md` before proposing architecture or experiments.
 
-1. `USER_GUIDE.md`  
-   Main operating guide. It records environment setup, baseline commands, DQN
-   training/evaluation commands, important script parameters, and the current
-   recommended model.
+## Source Of Truth And Reading Order
 
-2. `report/20260429.md`  
-   Progress report for advisor-facing context. It explains the project goal,
-   ns-3/ns3-gym/RL roles, current toy wireless scenario, state/action/reward,
-   baseline design, DQN results, conclusions, and next steps.
+Use current code as the source of truth. Read in this order:
 
-3. `log.md`  
-   Lightweight experiment record. Use it for historical context, but prefer
-   `USER_GUIDE.md` and the latest report for the clean current summary.
+1. `RESEARCH_PLAN.md` for the final research goal, scope, architecture,
+   evaluation contract, risks, and one-year roadmap. It is a plan, not a
+   statement of what the current code already implements.
+2. `USER_GUIDE.md` for the current mental model, commands, metrics, historical
+   best result, and known limitations.
+3. `sim.cc` for the actual environment state transition and reward timing.
+4. `test.py` and `run_baselines.py` for baseline semantics and CSV fields.
+5. `dqn_common.py`, `train_dqn.py`, and `evaluate_dqn.py` for DQN behavior.
+6. `report/20260902.md` for the current held-out result.
+7. `report/20260429.md` and `log.md` for historical experiment context.
 
-4. Key source files, only after reading the guide/report:
-   - `sim.cc`
-   - `test.py`
-   - `run_baselines.py`
-   - `run_multi_seed.py`
-   - `dqn_common.py`
-   - `train_dqn.py`
-   - `evaluate_dqn.py`
-   - `compare_dqn_with_baselines.py`
+Do not treat the dated report as current configuration. Do not overwrite it
+when current code changes; write a new dated report for a new research stage.
 
-## Environment
+## Environment And First Check
 
-Python commands for this project should run in the conda environment:
+**Mandatory:** run every project Python command from the conda environment
+`ns3gym` at `/home/zhuyulab/miniconda3/envs/ns3gym`. This includes
+`test.py`, all baseline runners, DQN training/evaluation, and plotting scripts.
+Do not use the base conda environment or the system Python. The Python process
+in this environment imports `ns3gym` and launches the local ns-3
+`wireless-rl` executable.
 
 ```bash
 source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh
 conda activate ns3gym
+cd /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
+python test.py --agent greedy --seed 1 --simTime 1 --stepTime 0.5 --no-save --no-plot
 ```
 
-Typical working directory:
+The 2026-09-02 environment has Python 3.10.20, NumPy 2.2.6, CUDA PyTorch
+2.11.0+cu128, and two NVIDIA GeForce RTX 4090 GPUs. Prefer `--device auto`,
+which selects `cuda:0`. The old Gym maintenance warning is present, but the
+smoke test succeeds.
+
+The user-site package `~/.local/lib/python3.10/site-packages/torch
+2.12.0+cpu` can shadow the correct conda CUDA build. The conda environment is
+configured with `PYTHONNOUSERSITE=1`; preserve this setting. If CUDA
+unexpectedly becomes unavailable, reactivate the environment and check
+`torch.__file__` before reinstalling anything.
+
+Restore the setting if the conda environment metadata is lost:
 
 ```bash
-cd /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
+conda env config vars set PYTHONNOUSERSITE=1 -n ns3gym
+conda deactivate
+conda activate ns3gym
 ```
 
-If `sim.cc` changes, rebuild from the ns-3 root:
+Before diagnosing import, Gym, PyTorch, or ns3-gym failures, verify:
+
+```bash
+which python
+python -c "import ns3gym; print(ns3gym.__file__)"
+python -c "import torch; print(torch.__file__, torch.__version__, torch.cuda.is_available())"
+```
+
+`which python` must resolve under
+`/home/zhuyulab/miniconda3/envs/ns3gym/bin/`.
+
+Run the automated regression check after source or environment changes:
+
+```bash
+python check_project.py
+```
+
+It requires CUDA and checks the conda environment, a DQN GPU
+forward/backward step, the ns-3 build, a short simulation, and fixed-seed
+reproducibility.
+
+If `sim.cc` changes:
 
 ```bash
 cd /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40
-./ns3 build
+./ns3 build wireless-rl
 ```
 
-## Current Project Summary
+ns3-gym uses local ZMQ ports. Tool sandboxes may require permission for a smoke
+test even though the project itself does not use external network access.
 
-The project is a toy wireless resource allocation environment built with
-ns-3 + ns3-gym. It is not a full 5G/Wi-Fi protocol simulation yet.
+## Current Environment Contract
 
-Current environment:
+- 5 users; observation dimension 15.
+- Observation: `[cqi0, queue0, delay0, ..., cqi4, queue4, delay4]`.
+- Action `i` serves user `i`.
+- CQI is bounded 1–10 and changes by a random integer in -2..2 per step.
+- Arrival is a random integer 0–5 per user per step; queue is capped at 100.
+- Service is `min(queue_i, 2 * cqi_i)`.
+- Delay is capped per-user backlog age, not packet delay.
+- A miss is a currently backlogged user with `delay > 8`, not a packet drop.
+- Episode length is `ceil(simTime / stepTime)`.
 
-- `userNum = 5`
-- Observation dimension: 15
-- Per-user features: `CQI`, `Queue`, `Delay`
-- Observation format:
-
-```text
-[cqi0, queue0, delay0, ..., cqi4, queue4, delay4]
-```
-
-- Action space: `Discrete(5)`, where `action=i` serves user `i`.
-- Service model: `serviceRate = CQI_i * 2`, then serve `min(queue_i, serviceRate)`.
-- Delay is user-level backlog age, not packet-level delay.
-- Deadline miss currently means the number of users still backlogged with delay
-  greater than the deadline at the current step.
-- CQI evolves with a Markov-style random delta, not independent random sampling.
-
-Reward:
+Reward is captured after service and before the next arrival:
 
 ```text
 served - 0.01 * rewardQueue - 0.1 * totalDelay - 5.0 * deadlineMisses
 ```
 
-## Baselines
+Do not conflate reward snapshot fields (`rewardQueue`, `totalDelay`,
+`deadlineMisses`) with current-state fields (`currentQueue`, `currentDelay`,
+`currentDeadlineMisses`). Formal summaries use the reward snapshot delay and
+miss fields.
 
-Keep baseline support aligned across `test.py`, `run_baselines.py`, and
-`run_multi_seed.py`.
+## Experiment Contract
 
-Current baseline agents:
+Baseline agents must stay aligned between `test.py` and the `BASELINES` list in
+`run_baselines.py`:
 
 ```text
-random
-round_robin
-max_cqi
-max_queue
-max_delay
-greedy
-delay_aware
+random round_robin max_cqi max_queue max_delay greedy delay_aware
 ```
 
-The strongest current hand-written baseline is usually `greedy`. The
-delay-aware baselines are important for fair comparison because DQN also sees
-delay in the state.
+Use a new ns-3 process per seed. Do not use `test.py --iterations > 1` for
+formal results because the C++ environment uses globals and reset completeness
+has not been established.
 
-## Current DQN Result To Remember
+Training seeds are `seed + episode`. Validation seeds select `_best.pt`; final
+evaluation seeds must be separate from training and validation. Baseline and
+DQN comparisons require identical evaluation seeds, `simTime`, and `stepTime`;
+`compare_dqn_with_baselines.py` does not validate this for the caller.
 
-Current recommended model:
+## Historical Result To Preserve
+
+The best retained 2026-04-29 checkpoint is:
 
 ```text
 models/dqn_exp06_evalselect_p5k_h256_best.pt
 ```
 
-Recommended training approach:
+It is a 15-input, 5-action, hidden-256 dueling Double DQN with a 5000-step
+`delay_aware` synthetic warm start. It was selected at zero-based episode 249
+using validation seeds 1001–1003. On evaluation seeds 1–10 it beat `greedy` on
+reward, backlog-age delay, and deadline misses, while losing some throughput
+and fairness. Exact numbers are in `USER_GUIDE.md` and `report/20260429.md`.
 
-- Dueling DQN
-- Double DQN
-- hidden size 256
-- learning rate `5e-4`
-- conservative epsilon schedule
-- `delay_aware` synthetic warm start
-- validation checkpoint selection with `--evalInterval 25`
+Important: training used simulation seeds 1–300, so the historical evaluation
+seeds 1–10 overlap training. The result is not a held-out generalization test.
+This issue has now been addressed by rerunning the checkpoint and all baselines
+on fresh seeds 2001–2010. DQN beat `greedy` on cumulative reward, backlog-age
+delay, and deadline misses on all 10 seeds. Aggregate DQN versus `greedy`:
 
-Key 10-seed comparison from `report/20260429.md`:
+| Metric | DQN | Greedy |
+|---|---:|---:|
+| reward | -128.586 | -284.997 |
+| throughput | 9.8200 | 10.1275 |
+| reward queue | 69.9400 | 64.6425 |
+| total delay | 35.9775 | 46.8100 |
+| misses | 1.7475 | 2.3850 |
+| fairness | 0.9460 | 0.9791 |
 
-| Agent | Reward | Throughput | Queue | Delay | Misses | Fairness |
-|---|---:|---:|---:|---:|---:|---:|
-| `greedy` | -278.111 | 9.6525 | 70.4775 | 45.5050 | 2.2700 | 0.9531 |
-| `delay_aware` | -361.319 | 9.2350 | 80.7225 | 48.7325 | 2.5175 | 0.9567 |
-| `max_delay` | -550.375 | 6.7925 | 127.6375 | 53.5050 | 2.7850 | 0.7978 |
-| `dqn_exp06_evalselect_p5k_h256_best` | -105.792 | 9.3250 | 73.8050 | 34.4425 | 1.5575 | 0.8974 |
+See `report/20260902.md`. This remains evidence for the current toy MDP only.
+The main research limitation is the environment model, not the lack of more RL
+algorithms.
 
-Interpretation: DQN improves cumulative reward, delay, and deadline misses over
-the strongest baseline, while giving up some fairness and a small amount of
-throughput.
+## Change Discipline
 
-## Git And Output Hygiene
-
-Do not commit generated runtime outputs or model checkpoints unless the user
-explicitly asks.
-
-Generated outputs live under:
-
-```text
-runtime/
-models/*.pt
-__pycache__/
-```
-
-`runtime/.gitignore` is intended to keep all runtime outputs ignored except the
-runtime documentation files. `models/README.md` documents the model directory,
-while `.pt` checkpoints are ignored.
-
-The `report/` directory is intended to be committed. It contains advisor-facing
-reports and selected copied assets/CSV summaries needed for GitHub rendering.
-
-Before committing, run:
-
-```bash
-git add -n .
-```
-
-Check that only source/docs/report files are staged, not large runtime outputs.
-
-## Working Style For Future Codex Sessions
-
-- Start with this `AGENTS.md`, then `USER_GUIDE.md`, then the latest report.
-- Avoid global scans of the whole ns-3 tree.
-- Do not modify environment logic or baseline logic unless the user asks.
-- For DQN work, focus on `dqn_common.py`, `train_dqn.py`, `evaluate_dqn.py`,
-  and comparison/reporting scripts.
-- For formal experiments, use multi-seed evaluation rather than
-  `test.py --iterations > 1`.
+- Keep changes small and code-driven; do not add architecture for hypothetical
+  future protocols.
+- Do not change environment or reward semantics during DQN-only work.
+- If state shape or normalization changes, update `sim.cc`, `test.py`, and
+  `dqn_common.py` together and treat existing checkpoints as incompatible.
+- If reward timing or metric meaning changes, update `USER_GUIDE.md` and write a
+  new dated report; preserve historical reports.
+- Run the shortest relevant smoke test after code changes. Use multi-seed runs
+  for research claims.
+- Append every training, evaluation, baseline sweep, ablation, and formal
+  smoke/regression run to `log.md` in the same work session. Include failed or
+  interrupted runs, exact commands, seeds, parameters, outputs, and conclusions.
+  Updating the log is part of completing the experiment, not optional cleanup.
+- Generated files under `runtime/`, `models/*.pt`, and `__pycache__/` are ignored
+  and should not be committed unless explicitly requested.
+- Before any commit, use `git add -n .` and confirm only intended source/docs or
+  selected report assets are included.

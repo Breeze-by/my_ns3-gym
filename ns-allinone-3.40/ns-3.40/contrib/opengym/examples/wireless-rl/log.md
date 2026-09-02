@@ -1,5 +1,138 @@
 # DQN Iteration Log
 
+## Logging rule
+
+Append an entry for every training run, evaluation, baseline sweep, ablation,
+or formal smoke/regression run. Record it in the same work session, including
+failed or interrupted experiments. Each entry must contain:
+
+- date and purpose;
+- code commit or a note that the worktree is dirty;
+- exact command;
+- model/checkpoint;
+- training, validation, and evaluation seeds where applicable;
+- important parameters;
+- output paths;
+- result and conclusion.
+
+Never rewrite an older experiment to match newer code; append a correction or a
+new dated entry instead.
+
+## 2026-09-02 Project recovery check
+
+No new training experiment was run. The current source, local environment,
+retained checkpoint metadata, and historical aggregate CSVs were audited after
+the project had been idle for several months.
+
+Verified:
+
+- the conda environment `ns3gym` still exists;
+- a two-step `greedy` smoke test completes with the current 15-dimensional
+  observation and 5-action environment;
+- the conda environment contains CUDA PyTorch 2.11.0+cu128 and can use both RTX
+  4090 GPUs; a user-site CPU PyTorch had shadowed it, so the environment was
+  configured with `PYTHONNOUSERSITE=1`;
+- `models/dqn_exp06_evalselect_p5k_h256_best.pt` and its evaluation CSV remain
+  present;
+- the checkpoint metadata matches the recorded 2026-04-29 configuration and
+  identifies zero-based episode 249 as the best validation checkpoint;
+- the historical evaluation seeds 1–10 overlap the training seeds 1–300, so
+  that table is not a held-out generalization result;
+- the source-level environment and metric semantics are now documented in
+  `USER_GUIDE.md`; the dated 2026-04-29 report remains an unchanged historical
+  snapshot.
+
+The main conclusion is unchanged: the current result is promising for the toy
+MDP, while packet-level traffic and realistic wireless behavior remain the
+largest missing research step.
+
+### GPU environment repair and regression validation
+
+Commands:
+
+```bash
+conda env config vars set PYTHONNOUSERSITE=1 -n ns3gym
+conda deactivate
+conda activate ns3gym
+python check_project.py
+
+python train_dqn.py \
+  --episodes 1 \
+  --simTime 2 \
+  --stepTime 0.5 \
+  --batchSize 2 \
+  --learningStarts 2 \
+  --bufferSize 16 \
+  --device auto \
+  --runName gpu_smoke \
+  --outputDir /tmp/wireless-rl-gpu-smoke/runtime \
+  --modelDir /tmp/wireless-rl-gpu-smoke/models
+```
+
+Results:
+
+- `check_project.py` passed the CUDA forward/backward, ns-3 build, two-step
+  smoke, and fixed-seed reproducibility checks;
+- `train_dqn.py` reported `Device: cuda:0`, completed four environment
+  steps and gradient updates, and saved its temporary checkpoint and CSV under
+  `/tmp/wireless-rl-gpu-smoke/`;
+- this was an infrastructure smoke run, not a research training result.
+
+### Held-out retest
+
+Worktree note: documentation and `check_project.py` changes were uncommitted;
+environment, reward, baseline, DQN, and checkpoint code were unchanged.
+
+The retained best checkpoint and all seven baselines were rerun on fresh seeds
+2001–2010 with identical `simTime=20` and `stepTime=0.5`.
+
+Commands:
+
+```bash
+python run_multi_seed.py \
+  --seeds 2001,2002,2003,2004,2005,2006,2007,2008,2009,2010 \
+  --simTime 20 \
+  --stepTime 0.5 \
+  --outputDir runtime/heldout_2001_2010 \
+  --quiet \
+  --no-plot
+
+python evaluate_dqn.py \
+  --model models/dqn_exp06_evalselect_p5k_h256_best.pt \
+  --agentName dqn_exp06_evalselect_p5k_h256_best_heldout \
+  --seeds 2001,2002,2003,2004,2005,2006,2007,2008,2009,2010 \
+  --simTime 20 \
+  --stepTime 0.5 \
+  --device auto \
+  --outputDir runtime/heldout_2001_2010
+
+python compare_dqn_with_baselines.py \
+  --baselineCsv runtime/heldout_2001_2010/comparisons/baseline_comparison_all_seeds.csv \
+  --dqnCsv runtime/heldout_2001_2010/comparisons/dqn_exp06_evalselect_p5k_h256_best_heldout_eval_all_seeds.csv \
+  --outputDir runtime/heldout_2001_2010 \
+  --tag dqn_exp06_evalselect_p5k_h256_best_heldout
+```
+
+Output paths:
+
+```text
+runtime/heldout_2001_2010/comparisons/baseline_comparison_all_seeds.csv
+runtime/heldout_2001_2010/comparisons/dqn_exp06_evalselect_p5k_h256_best_heldout_eval_all_seeds.csv
+runtime/heldout_2001_2010/comparisons/dqn_vs_baselines_dqn_exp06_evalselect_p5k_h256_best_heldout.csv
+report/20260902.md
+```
+
+- DQN mean cumulative reward: -128.586
+- greedy mean cumulative reward: -284.997
+- paired DQN-minus-greedy reward difference: +156.411
+- DQN reward wins: 10/10 seeds
+- DQN total-delay wins: 10/10 seeds
+- DQN deadline-miss wins: 10/10 seeds
+
+DQN retains its low-delay reward advantage, while giving up about 3% throughput,
+higher reward queue, and some fairness. Full results are in
+`report/20260902.md`.
+
 ## 2026-04-28
 
 ### Step 1: Baseline refresh

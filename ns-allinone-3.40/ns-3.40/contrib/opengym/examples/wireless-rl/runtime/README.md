@@ -1,16 +1,37 @@
 # Runtime 输出目录
 
-`runtime/` 用来保存实验运行过程中生成的结果文件、汇总文件、图表和命令日志。
+`runtime/` 保存可重新生成的实验产物，不是源码事实来源：
 
-常见来源包括：
+```text
+results/       单个 episode 的 step-level CSV
+summaries/     单 agent、单 seed summary CSV
+comparisons/   单 seed 或多 seed 的聚合比较 CSV
+plots/         SVG 图
+command_logs/  手工保留的命令输出
+*_train.csv    DQN 每 episode 训练日志
+```
 
-- `test.py` 生成的单个 baseline step 级结果、summary 和 SVG 图。
-- `run_baselines.py` 生成的单 seed baseline 对比结果。
-- `run_multi_seed.py` 生成的多 seed baseline 聚合结果。
-- `train_dqn.py` 生成的 DQN 训练日志 CSV。
-- `evaluate_dqn.py` 生成的 DQN 多 seed 评估结果。
-- `compare_dqn_with_baselines.py` 生成的 DQN 与 baseline 对比 CSV 和图。
+这些产物默认被 Git 忽略。复现实验时应同时记录：代码 commit、完整命令、模型文件名、
+training/validation/evaluation seeds、`simTime` 和 `stepTime`。
 
-这些文件通常体积较大、数量较多，并且可以通过重新运行实验生成，所以默认不会提交到 Git 仓库。
+当前目录保留了 2026-04-29 的历史实验产物，包括：
 
-如果需要复现实验结果，请优先保留或记录对应命令、随机种子、模型文件名和关键汇总 CSV 路径；具体运行产物建议留在本地。
+```text
+comparisons/baseline_comparison_all_seeds.csv
+comparisons/dqn_exp06_evalselect_p5k_h256_best_eval_all_seeds.csv
+comparisons/dqn_vs_baselines_dqn_exp06_evalselect_p5k_h256_best.csv
+```
+
+这些 CSV 是历史证据，不会随源码自动更新。若环境或 reward 发生变化，必须重新运行
+baseline 和 DQN 评估，不能把旧 CSV 与新代码产生的结果直接混用。当前命令和字段解释见
+`../USER_GUIDE.md`。
+
+2026-09-02 的 held-out seeds 2001–2010 复测保存在：
+
+```text
+heldout_2001_2010/comparisons/baseline_comparison_all_seeds.csv
+heldout_2001_2010/comparisons/dqn_exp06_evalselect_p5k_h256_best_heldout_eval_all_seeds.csv
+heldout_2001_2010/comparisons/dqn_vs_baselines_dqn_exp06_evalselect_p5k_h256_best_heldout.csv
+```
+
+对应的可提交结果摘要见 `../report/20260902.md`。
