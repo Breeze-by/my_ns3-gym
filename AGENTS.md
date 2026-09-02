@@ -1,17 +1,88 @@
-# Codex Workspace Memory
+# Codex Monorepo Memory
 
-This repository contains an ns-3 workspace. The main active research project is
-not the whole workspace; it is:
-
-```text
-ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
-```
-
-For wireless-rl work, first read:
+This is the single Git repository for the multi-robot task-oriented Wi-Fi RL
+research project. Its Git root and canonical local checkout are:
 
 ```text
-ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/AGENTS.md
+/home/zhuyulab/ns3-workspace
 ```
 
-That project-level memory file points to the current guide, report, experiment
-summary, environment notes, and Git hygiene rules.
+The repository contains both active components in the same working tree:
+
+```text
+ns-allinone-3.40/ns-3.40/
+    ns-3, ns3-gym, and wireless-rl code
+
+ros2_ws/ros2-multi-robot-automap/
+    ROS 2 Humble, Gazebo, TurtleBot3, SLAM, Nav2, and multi-robot exploration
+```
+
+The ROS 2 tree was imported from `Breeze-by/ros_mutirobot_nav` with
+`git subtree` on 2026-09-02. It is not a submodule or nested Git repository.
+The monorepo `origin` (`Breeze-by/my_ns3-gym`) is now the source of truth for
+both components. Do not develop against the former standalone checkout at
+`/home/zhuyulab/ros2_ws/ros2-multi-robot-automap`. That path is now only a
+compatibility symlink to the monorepo. The recoverable pre-migration checkout
+is `/home/zhuyulab/ros2_ws/ros2-multi-robot-automap.standalone-backup-20260902`.
+
+## Read First
+
+Before making research or architecture decisions, read:
+
+1. `ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md`
+   for the final thesis goal, system boundary, metrics, risks, and roadmap.
+2. `ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/AGENTS.md`
+   for the current ns-3 experiment state, environment, results, and rules.
+3. `ros2_ws/ros2-multi-robot-automap/user_guide.md` for the current ROS 2 task
+   stack, launch commands, topics, and troubleshooting.
+
+Planning documents describe intended work, not functionality that is already
+implemented. Use current code as the source of truth and dated reports/logs as
+the source of experimental claims.
+
+## Environments
+
+All wireless-rl Python/ns3-gym commands must run in conda environment
+`ns3gym`. Preserve `PYTHONNOUSERSITE=1`; detailed commands are in the nested
+wireless-rl `AGENTS.md`.
+
+ROS 2 commands use ROS 2 Humble and the in-repository workspace:
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+colcon build --symlink-install
+source install/setup.bash
+```
+
+Do not copy old ROS `build/`, `install/`, or `log/` directories into this tree;
+colcon caches absolute source paths. They are ignored and must be regenerated
+at the canonical path.
+
+## Git And Push Discipline
+
+The user requires every completed modification to be committed and pushed to
+`origin` in the same work session. Do not leave verified source or documentation
+changes only in the local checkout unless the user explicitly asks for that.
+
+Before every commit:
+
+1. Run the shortest relevant build/test/smoke check.
+2. Run `git diff --check` from the repository root.
+3. Run `git add -n .` and confirm that build artifacts, runtime outputs,
+   checkpoints, maps, bags, and logs are not being staged accidentally.
+4. Commit focused changes, then push the current branch to `origin`.
+
+Do not force-push or rewrite shared history unless the user explicitly requests
+it. Feature branches contain both ns-3 and ROS 2; do not place the two components
+on mutually exclusive branches.
+
+Every training, evaluation, baseline, ablation, formal smoke, simulator run, or
+hardware experiment must also be appended in the same work session to:
+
+```text
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/log.md
+```
+
+Record failures and interruptions as well as successes, with exact command,
+code state, seeds, parameters, outputs, and conclusion.

@@ -1,6 +1,15 @@
 # Multi-Robot Autonomous Mapping (ROS 2)
 
-This repository contains a complete ROS 2 workspace for **multi-robot autonomous mapping and navigation** using TurtleBot3, Nav2, and SLAM Toolbox. It supports multi-robot exploration, map merging, and autonomous navigation in Gazebo.
+This directory is the ROS 2 component of the `Breeze-by/my_ns3-gym`
+monorepo. It contains a complete workspace for **multi-robot autonomous mapping
+and navigation** using TurtleBot3, Nav2, and SLAM Toolbox. It supports
+multi-robot exploration, map merging, and autonomous navigation in Gazebo.
+
+Canonical local path:
+
+```text
+/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+```
 
 ## 📁 Repository Structure
 
@@ -113,9 +122,8 @@ source /opt/ros/humble/setup.bash
 Then:
 
 ```bash
-git clone https://git.e-consystems.net/tsm02/ros2_humble.git
-
-cd ros2_humble/multi_robot_autonomous
+git clone git@github.com:Breeze-by/my_ns3-gym.git
+cd my_ns3-gym/ros2_ws/ros2-multi-robot-automap
 rosdep update
 rosdep install --from-paths src --ignore-src -r -y
 ```
@@ -138,7 +146,7 @@ Reference repositories:
 Clone and build:
 
 ```bash
-cd ros2_humble/multi_robot_autonomous
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
 colcon build --cmake-clean-cache --symlink-install --packages-select nav2_bringup slam_toolbox
 ```
 
@@ -156,7 +164,7 @@ Required packages:
 Build them:
 
 ```bash
-cd ros2_humble/multi_robot_autonomous
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
 colcon build --cmake-clean-cache --symlink-install --packages-select \
   multi_robot_exploration \
   merge_map \
@@ -258,4 +266,3 @@ source install/setup.bash
 * It is recommended to add these to your ~/.bashrc for convenience.
 
 If you use this project for research or demos, please cite or reference appropriately.
-

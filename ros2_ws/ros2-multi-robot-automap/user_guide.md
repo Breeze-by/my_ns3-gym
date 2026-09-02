@@ -2,12 +2,17 @@
 
 本文档面向当前项目状态：ROS2 Humble + Gazebo Classic + TurtleBot3 Waffle，多机器人通过各自 SLAM 建图，`merge_map` 合并全局地图，`multi_robot_exploration` 统一分配探索目标。
 
+自 2026-09-02 起，本目录已通过 `git subtree` 合入 `Breeze-by/my_ns3-gym`
+monorepo，与 ns-3/ns3-gym 共用一个 Git 根。旧路径
+`/home/zhuyulab/ros2_ws/ros2-multi-robot-automap` 只是指向本目录的兼容符号链接；
+提交和查看状态必须从 `/home/zhuyulab/ns3-workspace` 进行。
+
 ## 1. 项目结构
 
 项目根目录：
 
 ```bash
-~/ros2_ws/ros2-multi-robot-automap
+/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
 ```
 
 关键包：
@@ -284,7 +289,7 @@ goal accepted/rejected
 推荐每次修改后执行：
 
 ```bash
-cd ~/ros2_ws/ros2-multi-robot-automap
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
 colcon build --symlink-install --packages-select multi_robot merge_map multi_robot_exploration
 source install/setup.bash
 ```
@@ -293,7 +298,7 @@ source install/setup.bash
 
 ```bash
 source /opt/ros/humble/setup.bash
-source ~/ros2_ws/ros2-multi-robot-automap/install/setup.bash
+source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash
 source /usr/share/gazebo/setup.sh
 export TURTLEBOT3_MODEL=waffle
 ```
@@ -313,7 +318,7 @@ pkill -f rviz2
 
 ```bash
 source /opt/ros/humble/setup.bash
-source ~/ros2_ws/ros2-multi-robot-automap/install/setup.bash
+source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash
 source /usr/share/gazebo/setup.sh
 export TURTLEBOT3_MODEL=waffle
 
@@ -458,7 +463,7 @@ map_saver_cli 与系统高负载竞争
 ```bash
 ros2 run nav2_map_server map_saver_cli \
   -t /merge_map \
-  -f ~/ros2_ws/ros2-multi-robot-automap/src/saved_map/manual_merged_map \
+  -f /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/saved_map/manual_merged_map \
   --ros-args \
   -p map_subscribe_transient_local:=true
 ```

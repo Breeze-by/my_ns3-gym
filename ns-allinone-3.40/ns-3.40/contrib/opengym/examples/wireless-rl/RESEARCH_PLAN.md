@@ -59,7 +59,7 @@ checkpoint、GPU 和多 seed 评估链路，但没有真实 Wi-Fi 节点、数�
 已有任务项目位于：
 
 ```text
-/home/zhuyulab/ros2_ws/ros2-multi-robot-automap
+/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
 ```
 
 源码已经包含 Gazebo 中 1–4 台 TurtleBot3、每台机器人的激光雷达、SLAM Toolbox、Nav2、
@@ -487,5 +487,6 @@ OpenWiFi、学习式地图/图像压缩、未知初始位姿地图配准、机�
 6. 每次训练、评估、baseline、消融、仿真 smoke 和实物试验，都在同一会话追加 `log.md`，
    包括失败和中断；
 7. 新实验使用新日期报告，不覆盖历史报告；
-8. 修改 ROS 2 工作区前先检查其 Git 状态并保留用户改动；
+8. ns-3 和 ROS 2 已位于同一 monorepo；从 `/home/zhuyulab/ns3-workspace`
+   检查整体 Git 状态并保留用户改动；
 9. 设计与本文冲突时，以用户最新要求、实验证据和代码为准，并同步更新本文。

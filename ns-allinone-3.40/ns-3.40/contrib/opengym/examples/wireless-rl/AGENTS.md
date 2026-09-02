@@ -5,8 +5,8 @@ Last verified against source and a local smoke test: 2026-09-02.
 This directory is the active project inside the larger ns-3 workspace. It is a
 toy ns3-gym scheduling MDP, not a full Wi-Fi/5G network simulation.
 
-The intended successor task reuses the ROS 2 project at
-`/home/zhuyulab/ros2_ws/ros2-multi-robot-automap` for 2–3 robot collaborative
+The intended successor task reuses the ROS 2 project in this monorepo at
+`/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap` for 2–3 robot collaborative
 mapping, object search, charging, and rendezvous. Do not rebuild the robot stack
 from scratch or assume that planned integration is already implemented. Read
 `RESEARCH_PLAN.md` before proposing architecture or experiments.
@@ -188,3 +188,7 @@ algorithms.
   and should not be committed unless explicitly requested.
 - Before any commit, use `git add -n .` and confirm only intended source/docs or
   selected report assets are included.
+- The repository root is `/home/zhuyulab/ns3-workspace`; ns-3 and ROS 2 are in
+  the same monorepo. After a verified modification, commit it and push the
+  current branch to `origin` in the same work session unless the user explicitly
+  says not to.

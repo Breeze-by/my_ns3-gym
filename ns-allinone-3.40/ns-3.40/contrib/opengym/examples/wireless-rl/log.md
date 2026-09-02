@@ -258,6 +258,126 @@ Best evaluation summary:
 runtime/comparisons/dqn_delayaware_p3k_h128_eval_all_seeds.csv
 ```
 
+## 2026-09-02 Monorepo Migration Validation
+
+Code state before validation:
+
+```text
+58ffbcc  validated wireless-rl baseline, regression check, and research plan
+c531eae  ROS 2 project imported under ros2_ws/ with git subtree --squash
+branch: integration/ros2-monorepo
+```
+
+The former standalone ROS repository was clean at commit `9f3702b` before the
+import. Its source is now tracked inside the same Git repository as ns-3 at:
+
+```text
+/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+```
+
+### ns-3/GPU regression
+
+Exact command:
+
+```bash
+source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh
+conda activate ns3gym
+cd /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
+python check_project.py
+```
+
+Result: passed. PyTorch `2.11.0+cu128` loaded from the `ns3gym` environment,
+the NVIDIA GeForce RTX 4090 DQN forward/backward check passed, `wireless-rl`
+built successfully, and the two seed-4242 smoke runs produced byte-identical
+CSV and summary files. Temporary outputs were written under `/tmp` and removed
+by the check.
+
+### Clean ROS 2 build from the monorepo path
+
+Exact command:
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+colcon list
+colcon build --symlink-install --packages-select \
+  nav2_bringup slam_toolbox multi_robot merge_map multi_robot_exploration
+```
+
+Result: all five selected packages finished successfully in 2 minutes 45
+seconds. Colcon warned that the local modified `nav2_bringup` overrides the
+Humble underlay package; this is expected for the imported project. The new
+`build/`, `install/`, and `log/` directories are ignored and were not staged.
+
+### ROS 2 one-robot headless smoke, attempt 1
+
+Exact command:
+
+```bash
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle
+timeout --signal=INT --kill-after=15s 70s ros2 launch multi_robot \
+  gazebo_multirobot_mapping_with_nav2.launch.py \
+  robot_count:=1 enable_gzclient:=false enable_rviz:=false \
+  enable_merge_rviz:=false
+```
+
+Additional live checks:
+
+```bash
+ros2 topic list
+ros2 lifecycle get /tb1/controller_server
+ros2 lifecycle get /tb1/planner_server
+timeout 8s ros2 topic hz /tb1/scan --window 3
+```
+
+Result: partial failure. The entity appeared and `/tb1/scan`, `/tb1/map`,
+`/tb1/odom`, `/tb1/cmd_vel`, `/tb1/imu`, and `/merge_map` were present.
+Controller and planner were `active`; scan rate was about 5 Hz. However,
+`spawn_entity.py` timed out just as the initially cold Gazebo process finished
+creating `tb1`, returned exit code 1, and the first navigation goal was rejected.
+There was no explicit simulator seed, so this is a startup smoke rather than a
+formal reproducibility experiment.
+
+### ROS 2 one-robot headless smoke, warm retry
+
+Exact command:
+
+```bash
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle
+timeout --signal=INT --kill-after=15s 50s ros2 launch multi_robot \
+  gazebo_multirobot_mapping_with_nav2.launch.py \
+  robot_count:=1 enable_gzclient:=false enable_rviz:=false \
+  enable_merge_rviz:=false
+```
+
+Result: functional startup passed. `tb1` spawned cleanly, SLAM registered the
+lidar, headquarters assigned frontiers, and the robot reached its first goal
+before receiving a second. The intentional timeout then exposed existing
+shutdown problems: `map_saver_cli` ran after `/merge_map` was stopping,
+`rclpy.shutdown()` was called twice, and Gazebo required termination escalation.
+These teardown errors and the cold-start spawn timeout are recorded follow-up
+issues; neither indicates a path or colcon-cache failure caused by the monorepo
+migration.
+
+### Migration conclusion
+
+- ns-3 kept its canonical path and passed its full automated regression.
+- ROS 2 rebuilt from a clean cache at its new canonical path and ran the core
+  Gazebo/SLAM/Nav2/exploration chain.
+- The old standalone checkout was renamed, not deleted, to
+  `/home/zhuyulab/ros2_ws/ros2-multi-robot-automap.standalone-backup-20260902`.
+- `/home/zhuyulab/ros2_ws/ros2-multi-robot-automap` is now a compatibility
+  symlink to the monorepo, preventing old local commands from using a second
+  source tree.
+- Follow-up work should fix clean shutdown and cold-start spawn timing before
+  treating the ROS launch as an automated pass/fail regression.
+
 ## 2026-04-29 DQN Optimization Summary
 
 Baseline command:
