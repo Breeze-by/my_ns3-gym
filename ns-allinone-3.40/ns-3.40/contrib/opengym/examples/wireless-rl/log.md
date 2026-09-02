@@ -378,6 +378,22 @@ migration.
 - Follow-up work should fix clean shutdown and cold-start spawn timing before
   treating the ROS launch as an automated pass/fail regression.
 
+### Standalone checkout cleanup
+
+After the monorepo migration and validation, the user requested removal of the
+old local ROS checkout. On 2026-09-02:
+
+- The compatibility symlink
+  `/home/zhuyulab/ros2_ws/ros2-multi-robot-automap` was removed with `unlink`.
+- The pre-migration standalone checkout
+  `/home/zhuyulab/ros2_ws/ros2-multi-robot-automap.standalone-backup-20260902`
+  was moved to the system trash with `gio trash`. It remains recoverable until
+  the trash is emptied.
+- The canonical, Git-tracked ROS source remains
+  `/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap`.
+- Removal of the former `Breeze-by/ros_mutirobot_nav` GitHub repository is
+  user-managed and was not performed by the agent.
+
 ## 2026-04-29 DQN Optimization Summary
 
 Baseline command:

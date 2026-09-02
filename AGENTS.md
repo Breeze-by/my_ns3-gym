@@ -20,10 +20,9 @@ ros2_ws/ros2-multi-robot-automap/
 The ROS 2 tree was imported from `Breeze-by/ros_mutirobot_nav` with
 `git subtree` on 2026-09-02. It is not a submodule or nested Git repository.
 The monorepo `origin` (`Breeze-by/my_ns3-gym`) is now the source of truth for
-both components. Do not develop against the former standalone checkout at
-`/home/zhuyulab/ros2_ws/ros2-multi-robot-automap`. That path is now only a
-compatibility symlink to the monorepo. The recoverable pre-migration checkout
-is `/home/zhuyulab/ros2_ws/ros2-multi-robot-automap.standalone-backup-20260902`.
+both components. The former standalone checkout and compatibility symlink
+under `/home/zhuyulab/ros2_ws/` were removed on 2026-09-02. Use only the
+canonical monorepo path above.
 
 ## Read First
 

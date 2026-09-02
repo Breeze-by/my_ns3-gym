@@ -3,9 +3,10 @@
 本文档面向当前项目状态：ROS2 Humble + Gazebo Classic + TurtleBot3 Waffle，多机器人通过各自 SLAM 建图，`merge_map` 合并全局地图，`multi_robot_exploration` 统一分配探索目标。
 
 自 2026-09-02 起，本目录已通过 `git subtree` 合入 `Breeze-by/my_ns3-gym`
-monorepo，与 ns-3/ns3-gym 共用一个 Git 根。旧路径
-`/home/zhuyulab/ros2_ws/ros2-multi-robot-automap` 只是指向本目录的兼容符号链接；
-提交和查看状态必须从 `/home/zhuyulab/ns3-workspace` 进行。
+monorepo，与 ns-3/ns3-gym 共用一个 Git 根。旧的独立检出目录及兼容符号链接
+已删除；唯一工作目录是
+`/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap`，提交和查看状态
+必须从 `/home/zhuyulab/ns3-workspace` 进行。
 
 ## 1. 项目结构
 
