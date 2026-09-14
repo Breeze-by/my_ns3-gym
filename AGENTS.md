@@ -30,9 +30,11 @@ Before making research or architecture decisions, read:
 
 1. `ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md`
    for the final thesis goal, system boundary, metrics, risks, and roadmap.
-2. `ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/AGENTS.md`
+2. `ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/IMPLEMENTATION_PLAN.md`
+   for engineering checkpoints, exit criteria, and current progress.
+3. `ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/AGENTS.md`
    for the current ns-3 experiment state, environment, results, and rules.
-3. `ros2_ws/ros2-multi-robot-automap/user_guide.md` for the current ROS 2 task
+4. `ros2_ws/ros2-multi-robot-automap/user_guide.md` for the current ROS 2 task
    stack, launch commands, topics, and troubleshooting.
 
 Planning documents describe intended work, not functionality that is already

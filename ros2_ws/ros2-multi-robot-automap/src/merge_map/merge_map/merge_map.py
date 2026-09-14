@@ -1,5 +1,6 @@
 import rclpy
 from rclpy.node import Node
+from rclpy.executors import ExternalShutdownException
 from rclpy.qos import QoSProfile, DurabilityPolicy, ReliabilityPolicy
 from nav_msgs.msg import OccupancyGrid
 import numpy as np
@@ -73,9 +74,14 @@ class MergeMapNode(Node):
 def main(args=None):
     rclpy.init(args=args)
     merge_map_node = MergeMapNode()
-    rclpy.spin(merge_map_node)
-    merge_map_node.destroy_node()
-    rclpy.shutdown()
+    try:
+        rclpy.spin(merge_map_node)
+    except (KeyboardInterrupt, ExternalShutdownException):
+        pass
+    finally:
+        merge_map_node.destroy_node()
+        if rclpy.ok():
+            rclpy.shutdown()
 
 if __name__ == '__main__':
     main()

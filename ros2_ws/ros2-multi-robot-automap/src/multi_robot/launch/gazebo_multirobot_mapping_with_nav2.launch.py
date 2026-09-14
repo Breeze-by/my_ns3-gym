@@ -29,6 +29,9 @@ def launch_setup(context, *args, **kwargs):
     enable_rviz = LaunchConfiguration("enable_rviz")
     enable_merge_rviz = LaunchConfiguration("enable_merge_rviz")
     enable_gzclient = LaunchConfiguration("enable_gzclient")
+    gazebo_seed = LaunchConfiguration("gazebo_seed")
+    spawn_timeout = LaunchConfiguration("spawn_timeout")
+    auto_save_map = LaunchConfiguration("auto_save_map")
 
     try:
         robot_count = int(robot_count_cfg.perform(context))
@@ -114,15 +117,15 @@ def launch_setup(context, *args, **kwargs):
     )
     actions.append(merge_map_launch)
 
-    control_node = ExecuteProcess(
-        cmd=[
-            "ros2",
-            "run",
-            "multi_robot_exploration",
-            "control",
-            "--ros-args",
-            "-p",
-            ["robot_count:=", robot_count_cfg],
+    control_node = Node(
+        package="multi_robot_exploration",
+        executable="control",
+        name="headquarters_control",
+        parameters=[
+            {
+                "robot_count": robot_count_cfg,
+                "auto_save_map": auto_save_map,
+            }
         ],
         output="screen",
     )
@@ -137,7 +140,7 @@ def launch_setup(context, *args, **kwargs):
                 "gzserver.launch.py",
             )
         ),
-        launch_arguments={"world": world}.items(),
+        launch_arguments={"world": world, "seed": gazebo_seed}.items(),
     )
     actions.append(gzserver_cmd)
 
@@ -202,6 +205,8 @@ def launch_setup(context, *args, **kwargs):
                 robot_name,
                 "-robot_namespace",
                 namespace,
+                "-timeout",
+                spawn_timeout,
                 "-x",
                 robot["x_pose"],
                 "-y",
@@ -397,6 +402,30 @@ def generate_launch_description():
             "enable_gzclient",
             default_value="true",
             description="Enable Gazebo GUI client.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "gazebo_seed",
+            default_value="1",
+            description="Gazebo random seed used for repeatable runs.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "spawn_timeout",
+            default_value="90.0",
+            description="Seconds each robot may wait for Gazebo spawn services.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "auto_save_map",
+            default_value="true",
+            description="Allow headquarters to save merged maps.",
         )
     )
 

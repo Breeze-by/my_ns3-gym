@@ -103,6 +103,9 @@ multi_robot_exploration/control
 | `enable_gzclient` | `true` | 是否启动 Gazebo GUI |
 | `enable_rviz` | `false` | 是否启动每台机器人单独 RViz |
 | `enable_merge_rviz` | `true` | 是否启动一个全局 `/merge_map` RViz |
+| `gazebo_seed` | `1` | Gazebo 随机种子；正式运行必须显式记录 |
+| `spawn_timeout` | `90.0` | 每台机器人等待 Gazebo spawn 服务的秒数 |
+| `auto_save_map` | `true` | headquarters 是否自动保存合并地图；smoke 时关闭 |
 
 也就是说，常用命令里 `enable_rviz:=false` 不会关闭全局地图 RViz，只会关闭每机器人 RViz。
 
@@ -340,6 +343,25 @@ RViz 中显示 /merge_map
 ```
 
 ## 9. 验证
+
+修改或重新构建后，优先使用有界 headless smoke 工具：
+
+```bash
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle
+
+python3 scripts/ros_smoke_test.py --robot-count 1 --gazebo-seed 1
+python3 scripts/ros_smoke_test.py --robot-count 2 --gazebo-seed 1
+python3 scripts/ros_smoke_test.py --robot-count 3 --gazebo-seed 1
+```
+
+工具检查每台机器人的核心 topic、Nav2 controller/planner lifecycle，以及至少一条
+lidar 和合并地图消息。它只终止自己启动的进程组；原始 launch 输出写入被 Git 忽略的
+`log/smoke/`。每次正式 smoke 的命令和结论仍必须追加到 wireless-rl 的 `log.md`。
+
+以下命令适合运行中的人工诊断：
 
 检查每台机器人是否有控制话题：
 

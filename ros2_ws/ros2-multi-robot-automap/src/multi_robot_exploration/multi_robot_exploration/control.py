@@ -4,6 +4,7 @@ from nav_msgs.msg import OccupancyGrid, Odometry
 from geometry_msgs.msg import PoseStamped, Twist
 from nav2_msgs.action import NavigateToPose
 from rclpy.action import ActionClient
+from rclpy.executors import ExternalShutdownException
 from geometry_msgs.msg import Pose
 from std_msgs.msg import Float32MultiArray
 
@@ -225,10 +226,11 @@ def response(choice):
     print(f"[BILGI] {time_string}: {choice+1}. ROAD REQUEST ANSWER SENT TO THE ROBOT")
 
 class HeadquartersControl(Node):
-    def __init__(self, num_robots):
+    def __init__(self):
         super().__init__("headquarters_control")
         self.shutdown_initiated = False
         self.robots = {}  # Dictionary to hold robot data
+        self.num_robots = self.declare_parameter("robot_count", 2).value
 
         # Subscribers for multiple robots dynamically
         self.map_sub = self.create_subscription(
@@ -238,8 +240,12 @@ class HeadquartersControl(Node):
         self.robot_nav_clients = {}
         self.robot_positions = {}
         self.subscription_cmd_vel = {}
-        self.robot_states = {f"tb{i+1}": "idle" for i in range(num_robots)}
-        self.goal_failures = {f"tb{i+1}": 0 for i in range(num_robots)}
+        self.robot_states = {
+            f"tb{i+1}": "idle" for i in range(self.num_robots)
+        }
+        self.goal_failures = {
+            f"tb{i+1}": 0 for i in range(self.num_robots)
+        }
         self.last_save_time = time.monotonic()
         self.save_in_progress = False
         self.auto_save_map = self.declare_parameter("auto_save_map", True).value
@@ -248,7 +254,6 @@ class HeadquartersControl(Node):
         ).value
 
         # Action clients and odometry subscribers for dynamic robots
-        self.num_robots = num_robots  # Change this to the number of robots dynamically
         for i in range(self.num_robots):
             robot_name = f"tb{i + 1}"
             self.robot_odom_subs[robot_name] = self.create_subscription(
@@ -416,33 +421,34 @@ class HeadquartersControl(Node):
             self.save_in_progress = False
 
     def shutdown_node(self):
-        if self.map_data is not None and not self.save_in_progress:
+        if (
+            self.auto_save_map
+            and self.map_data is not None
+            and not self.save_in_progress
+        ):
             self.save_in_progress = True
             self.save_map()
 
                 
 def main(args=None):
     rclpy.init(args=args)
-
-    node = Node("control_node")
-    node.declare_parameter('robot_count', 2)  # Default value if not passed
-
-    # Get the 'num_robots' parameter value correctly
-    robot_count = node.get_parameter('robot_count').get_parameter_value().integer_value
-    print(f"Number of robots: {robot_count}")  
-    control = HeadquartersControl(robot_count)  
+    control = HeadquartersControl()
+    print(f"Number of robots: {control.num_robots}")
 
     try:
         rclpy.spin(control)
     except KeyboardInterrupt:
         control.exploration_active = False
         control.get_logger().info("Shutting down exploration.")
-        control.shutdown_node()
+    except ExternalShutdownException:
+        pass
     finally:
-        control.get_logger().info("Node shutdown successfully.")
+        if rclpy.ok():
+            control.shutdown_node()
+            control.get_logger().info("Node shutdown successfully.")
         control.destroy_node()
-        node.destroy_node()
-        rclpy.shutdown()
+        if rclpy.ok():
+            rclpy.shutdown()
 
 
 if __name__ == "__main__":

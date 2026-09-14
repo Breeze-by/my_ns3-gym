@@ -1,6 +1,6 @@
 # wireless-rl Codex Memory
 
-Last verified against source and a local smoke test: 2026-09-02.
+Last verified against source and local 1/2/3-robot headless smoke tests: 2026-09-14.
 
 This directory is the active project inside the larger ns-3 workspace. It is a
 toy ns3-gym scheduling MDP, not a full Wi-Fi/5G network simulation.
@@ -18,13 +18,21 @@ Use current code as the source of truth. Read in this order:
 1. `RESEARCH_PLAN.md` for the final research goal, scope, architecture,
    evaluation contract, risks, and one-year roadmap. It is a plan, not a
    statement of what the current code already implements.
-2. `USER_GUIDE.md` for the current mental model, commands, metrics, historical
+2. `IMPLEMENTATION_PLAN.md` for engineering checkpoints, exit criteria, and
+   the current user-review boundary.
+3. `USER_GUIDE.md` for the current mental model, commands, metrics, historical
    best result, and known limitations.
-3. `sim.cc` for the actual environment state transition and reward timing.
-4. `test.py` and `run_baselines.py` for baseline semantics and CSV fields.
-5. `dqn_common.py`, `train_dqn.py`, and `evaluate_dqn.py` for DQN behavior.
-6. `report/20260902.md` for the current held-out result.
-7. `report/20260429.md` and `log.md` for historical experiment context.
+4. `sim.cc` for the actual environment state transition and reward timing.
+5. `test.py` and `run_baselines.py` for baseline semantics and CSV fields.
+6. `dqn_common.py`, `train_dqn.py`, and `evaluate_dqn.py` for DQN behavior.
+7. `report/20260914.md` for the first ROS engineering checkpoint.
+8. `report/20260902.md`, `report/20260429.md`, and `log.md` for historical
+   experiment context.
+
+The P1A ROS foundation now has explicit Gazebo seeds, configurable spawn
+timeouts, bounded automatic headless smoke checks, and verified 1/2/3-robot
+startup. This proves startup and message flow only; task completion,
+cross-seed reproducibility, and task metrics remain for P1B/P1C.
 
 Do not treat the dated report as current configuration. Do not overwrite it
 when current code changes; write a new dated report for a new research stage.

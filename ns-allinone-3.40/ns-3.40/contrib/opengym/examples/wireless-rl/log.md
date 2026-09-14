@@ -444,3 +444,75 @@ Notes:
 - The useful code change was DQN-only validation checkpoint selection in `train_dqn.py`.
 - A 500-episode validation-selected run did not improve over the 300-episode run.
 - The best model improves reward, delay, and deadline misses over `greedy`, while giving up some fairness and a small amount of throughput.
+
+## 2026-09-14 ROS 2 P1A headless smoke
+
+Purpose: turn the existing ROS 2 Gazebo/SLAM/Nav2/map-merge/exploration startup
+into a seeded, bounded, automatic smoke gate before implementing task metrics.
+
+Code state: base commit `d45d88b` plus the uncommitted P0/P1A source and
+documentation changes that are committed together with this entry. No model or
+checkpoint applies. Gazebo seed was 1 for every run.
+
+Build command:
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+colcon build --symlink-install --packages-select multi_robot merge_map multi_robot_exploration
+```
+
+Result: all three selected packages built successfully.
+
+The first one-robot run used:
+
+```bash
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle
+python3 scripts/ros_smoke_test.py --robot-count 1 --gazebo-seed 1 \
+  --startup-timeout 180 --shutdown-timeout 45
+```
+
+Result: failed. The topics appeared, but one five-second lifecycle query timed
+out and the initial checker treated that single query as a terminal failure.
+The launched process group was cleaned up. Output:
+`log/smoke/robots1_seed1_20260914-172800.log`.
+
+The checker was changed to keep polling after an individual lifecycle timeout.
+The one-robot run then passed; output:
+`log/smoke/robots1_seed1_20260914-172903.log`. Headquarters was subsequently
+changed from a nested `ros2 run` process to a native launch `Node`, and the same
+command passed again with clean headquarters exit. Final output:
+`log/smoke/robots1_seed1_20260914-173031.log`.
+
+Two-robot command:
+
+```bash
+python3 scripts/ros_smoke_test.py --robot-count 2 --gazebo-seed 1 \
+  --startup-timeout 240 --shutdown-timeout 60
+```
+
+Result: passed. Output:
+`log/smoke/robots2_seed1_20260914-173107.log`.
+
+Three-robot command:
+
+```bash
+python3 scripts/ros_smoke_test.py --robot-count 3 --gazebo-seed 1 \
+  --startup-timeout 300 --shutdown-timeout 75
+```
+
+Result: passed. Output:
+`log/smoke/robots3_seed1_20260914-173259.log`.
+
+Every final pass found `/merge_map` plus each robot's `/cmd_vel`, `/map`,
+`/odom`, and `/scan`; observed active Nav2 controller/planner lifecycle nodes;
+received lidar and merged-map messages; survived the dwell interval; and exited
+within the configured shutdown timeout without leaked Gazebo/ROS processes.
+
+Conclusion: P1A startup and bounded shutdown are ready for user review. This is
+not a task-completion, cross-seed reproducibility, or network-coupling result.
+Those claims require the P1B evaluator, P1C ideal-communication experiments,
+and later explicit communication checkpoints.
