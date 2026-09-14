@@ -29,6 +29,20 @@
         </geometry>
       </collision>
 
+      <sensor name="base_contact" type="contact">
+        <always_on>true</always_on>
+        <update_rate>20</update_rate>
+        <contact>
+          <collision>base_collision</collision>
+        </contact>
+        <plugin name="base_contact" filename="libgazebo_ros_bumper.so">
+          <ros>
+            <remapping>bumper_states:=collision</remapping>
+          </ros>
+          <frame_name>base_link</frame_name>
+        </plugin>
+      </sensor>
+
       <visual name="base_visual">
         <pose>-0.064 0 0 0 0 0</pose>
         <geometry>

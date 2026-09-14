@@ -32,6 +32,10 @@ def launch_setup(context, *args, **kwargs):
     gazebo_seed = LaunchConfiguration("gazebo_seed")
     spawn_timeout = LaunchConfiguration("spawn_timeout")
     auto_save_map = LaunchConfiguration("auto_save_map")
+    enable_task_evaluator = LaunchConfiguration("enable_task_evaluator")
+    evaluation_episode_id = LaunchConfiguration("evaluation_episode_id")
+    evaluation_output_dir = LaunchConfiguration("evaluation_output_dir")
+    evaluation_duration = LaunchConfiguration("evaluation_duration_sec")
 
     try:
         robot_count = int(robot_count_cfg.perform(context))
@@ -130,6 +134,26 @@ def launch_setup(context, *args, **kwargs):
         output="screen",
     )
     actions.append(control_node)
+
+    task_evaluator = Node(
+        package="multi_robot_exploration",
+        executable="task_evaluator",
+        name="task_evaluator",
+        parameters=[
+            {
+                "use_sim_time": use_sim_time,
+                "robot_count": robot_count_cfg,
+                "episode_id": evaluation_episode_id,
+                "world_file": world,
+                "gazebo_seed": gazebo_seed,
+                "output_dir": evaluation_output_dir,
+                "max_duration_sec": evaluation_duration,
+            }
+        ],
+        output="screen",
+        condition=IfCondition(enable_task_evaluator),
+    )
+    actions.append(task_evaluator)
 
     # ========= Gazebo =========
     gzserver_cmd = IncludeLaunchDescription(
@@ -426,6 +450,38 @@ def generate_launch_description():
             "auto_save_map",
             default_value="true",
             description="Allow headquarters to save merged maps.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "enable_task_evaluator",
+            default_value="false",
+            description="Record task and ground-truth metrics.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "evaluation_episode_id",
+            default_value="episode",
+            description="Identifier used for evaluator CSV and JSON files.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "evaluation_output_dir",
+            default_value="/tmp/multi_robot_evaluation",
+            description="Directory for evaluator CSV and JSON files.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "evaluation_duration_sec",
+            default_value="0.0",
+            description="Simulation seconds before a timeout result; 0 waits for shutdown.",
         )
     )
 

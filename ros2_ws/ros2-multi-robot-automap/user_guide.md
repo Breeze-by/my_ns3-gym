@@ -106,6 +106,10 @@ multi_robot_exploration/control
 | `gazebo_seed` | `1` | Gazebo 随机种子；正式运行必须显式记录 |
 | `spawn_timeout` | `90.0` | 每台机器人等待 Gazebo spawn 服务的秒数 |
 | `auto_save_map` | `true` | headquarters 是否自动保存合并地图；smoke 时关闭 |
+| `enable_task_evaluator` | `false` | 是否启动只读任务评估器 |
+| `evaluation_episode_id` | `episode` | CSV/JSON 文件名和 episode 标识 |
+| `evaluation_output_dir` | `/tmp/multi_robot_evaluation` | 评估结果目录 |
+| `evaluation_duration_sec` | `0.0` | 仿真超时；0 表示只在 shutdown 时保存 |
 
 也就是说，常用命令里 `enable_rviz:=false` 不会关闭全局地图 RViz，只会关闭每机器人 RViz。
 
@@ -360,6 +364,33 @@ python3 scripts/ros_smoke_test.py --robot-count 3 --gazebo-seed 1
 工具检查每台机器人的核心 topic、Nav2 controller/planner lifecycle，以及至少一条
 lidar 和合并地图消息。它只终止自己启动的进程组；原始 launch 输出写入被 Git 忽略的
 `log/smoke/`。每次正式 smoke 的命令和结论仍必须追加到 wireless-rl 的 `log.md`。
+
+带 P1B 评估器的短 episode：
+
+```bash
+python3 scripts/ros_smoke_test.py \
+  --robot-count 2 \
+  --gazebo-seed 13 \
+  --evaluation-duration 10 \
+  --evaluation-wait-timeout 240 \
+  --startup-timeout 240 \
+  --shutdown-timeout 60
+```
+
+评估器只订阅数据，不发布控制命令。它使用 `/gazebo/model_states` 计算真值路径和固定
+0.1 m 访问 mask，使用 `/tbN/collision` 统计带冷却和持续时间的接触事件，使用 Nav2
+action status 统计成功、取消和失败目标。
+
+地图真值直接从当前 SDF world 生成：应用 `<state>` 中的模型位置，在机器人 lidar
+高度对静态 box collision 做 0.05 m 栅格化，再把 `/merge_map` 重采样到同一世界坐标。
+输出同时包含正确自由空间覆盖率、已知覆盖率、观测区域准确率和 occupied IoU。当前
+`my_world.world` 有一个位于实验室外部的 SUV mesh collision 未栅格化，输出字段
+`truth_unsupported_collision_count=1` 会保留这个限制；如果以后把 mesh 障碍物放进可达
+任务区域，必须先增加 mesh 真值处理。
+
+CSV/JSON 默认写入 `log/evaluation/`（由 smoke 工具指定并被 Git 忽略）。P1B 尚未定义
+探索完成条件，因此定时 episode 会诚实记录 `success=false` 和
+`termination_reason=timeout`；P1C 才会增加理想通信探索的完成/失败判定。
 
 以下命令适合运行中的人工诊断：
 

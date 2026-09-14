@@ -2,6 +2,7 @@
 """Run a bounded headless smoke test of the multi-robot ROS 2 stack."""
 
 import argparse
+import json
 import os
 from pathlib import Path
 import shutil
@@ -25,7 +26,7 @@ def run_ros(arguments, timeout=10, discard_output=False):
     )
 
 
-def wait_until_ready(process, robot_count, timeout):
+def wait_until_ready(process, robot_count, timeout, evaluation_enabled=False):
     expected_topics = {"/merge_map"}
     for index in range(1, robot_count + 1):
         expected_topics.update(
@@ -35,6 +36,11 @@ def wait_until_ready(process, robot_count, timeout):
                 f"/tb{index}/odom",
                 f"/tb{index}/scan",
             }
+        )
+    if evaluation_enabled:
+        expected_topics.add("/gazebo/model_states")
+        expected_topics.update(
+            f"/tb{index}/collision" for index in range(1, robot_count + 1)
         )
 
     deadline = time.monotonic() + timeout
@@ -98,6 +104,58 @@ def require_message(topic, timeout, qos_arguments=()):
         )
 
 
+def wait_for_evaluation(process, result_path, timeout):
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        if result_path.exists():
+            with result_path.open() as result_file:
+                result = json.load(result_file)
+            required = {
+                "correct_free_coverage_ratio",
+                "elapsed_sim_time_sec",
+                "end_sim_time_sec",
+                "map_message_count",
+                "merged_map_origin_x",
+                "model_state_message_count",
+                "robots",
+                "search_overlap_ratio",
+                "start_sim_time_sec",
+                "termination_reason",
+                "total_path_length_m",
+                "truth_rectangle_count",
+            }
+            missing = required - result.keys()
+            if missing:
+                raise RuntimeError(
+                    "evaluation result is missing: "
+                    + ", ".join(sorted(missing))
+                )
+            if result["map_message_count"] < 1:
+                raise RuntimeError(
+                    "evaluation result has no merged-map messages"
+                )
+            if result["model_state_message_count"] < 1:
+                raise RuntimeError(
+                    "evaluation result has no Gazebo model states"
+                )
+            if result["truth_rectangle_count"] < 1:
+                raise RuntimeError("evaluation truth grid is empty")
+            return result
+        if process.poll() is not None:
+            raise RuntimeError(
+                "launch exited before evaluation result with "
+                f"{process.returncode}"
+            )
+        node_result = run_ros(["node", "list", "--no-daemon"])
+        if (
+            node_result.returncode == 0
+            and "/task_evaluator" not in node_result.stdout.splitlines()
+        ):
+            raise RuntimeError("task_evaluator exited before writing a result")
+        time.sleep(1)
+    raise TimeoutError(f"evaluation result was not written: {result_path}")
+
+
 def stop_launch(process, timeout):
     if process.poll() is not None:
         return True
@@ -126,6 +184,13 @@ def parse_args():
     parser.add_argument("--message-timeout", type=float, default=30.0)
     parser.add_argument("--dwell-seconds", type=float, default=5.0)
     parser.add_argument("--shutdown-timeout", type=float, default=30.0)
+    parser.add_argument("--evaluation-duration", type=float, default=0.0)
+    parser.add_argument("--evaluation-wait-timeout", type=float, default=180.0)
+    parser.add_argument(
+        "--evaluation-output-dir",
+        type=Path,
+        default=PROJECT_ROOT / "log" / "evaluation",
+    )
     parser.add_argument(
         "--log-dir",
         type=Path,
@@ -150,6 +215,9 @@ def main():
 
     args.log_dir.mkdir(parents=True, exist_ok=True)
     stamp = time.strftime("%Y%m%d-%H%M%S")
+    episode_id = (
+        f"smoke_robots{args.robot_count}_seed{args.gazebo_seed}_{stamp}"
+    )
     log_name = (
         f"robots{args.robot_count}_seed{args.gazebo_seed}_{stamp}.log"
     )
@@ -166,6 +234,10 @@ def main():
         "auto_save_map:=false",
         f"gazebo_seed:={args.gazebo_seed}",
         f"spawn_timeout:={args.spawn_timeout}",
+        f"enable_task_evaluator:={str(args.evaluation_duration > 0).lower()}",
+        f"evaluation_episode_id:={episode_id}",
+        f"evaluation_output_dir:={args.evaluation_output_dir}",
+        f"evaluation_duration_sec:={args.evaluation_duration}",
     ]
 
     print("Command:", " ".join(command), flush=True)
@@ -182,7 +254,12 @@ def main():
             text=True,
         )
         try:
-            wait_until_ready(process, args.robot_count, args.startup_timeout)
+            wait_until_ready(
+                process,
+                args.robot_count,
+                args.startup_timeout,
+                evaluation_enabled=args.evaluation_duration > 0,
+            )
             print("ROS graph and Nav2 lifecycle nodes are ready.", flush=True)
             require_message(
                 "/tb1/scan",
@@ -200,6 +277,18 @@ def main():
                 ),
             )
             print("Received lidar and merged-map messages.", flush=True)
+            if args.evaluation_duration > 0:
+                result_path = args.evaluation_output_dir / f"{episode_id}.json"
+                result = wait_for_evaluation(
+                    process, result_path, args.evaluation_wait_timeout
+                )
+                print(
+                    "Evaluation result:",
+                    result_path,
+                    f"coverage={result['correct_free_coverage_ratio']:.3f}",
+                    f"path={result['total_path_length_m']:.3f}m",
+                    flush=True,
+                )
             time.sleep(args.dwell_seconds)
             if process.poll() is not None:
                 raise RuntimeError(

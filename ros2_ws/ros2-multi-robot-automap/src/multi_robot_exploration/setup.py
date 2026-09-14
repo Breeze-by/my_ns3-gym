@@ -21,6 +21,7 @@ setup(
     entry_points={
         'console_scripts': [
             'control = multi_robot_exploration.control:main',
+            'task_evaluator = multi_robot_exploration.task_evaluator:main',
         ],
     },
 )

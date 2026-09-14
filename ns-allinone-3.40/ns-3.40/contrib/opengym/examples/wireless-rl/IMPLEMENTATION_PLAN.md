@@ -24,7 +24,8 @@
 - ROS 2 项目已有 Gazebo、1–4 台 TurtleBot3、SLAM Toolbox、Nav2、地图合并和
   headquarters frontier 分配；
 - 当前 ROS 2 中央节点仍直接订阅 `/merge_map` 和 `/tbN/odom`，尚无通信因果闭环；
-- 尚无正式任务状态机、真值评估器、目标检测、电池、充电、显式消息或 Wi-Fi 场景；
+- P1B 已加入只读真值评估器；正式任务状态机、目标检测、电池、充电、显式消息和
+  Wi-Fi 场景仍未实现；
 - 2026-09-02 只完成过一次单机器人 headless 启动检查，暴露过冷启动 spawn 超时和
   退出阶段重复 shutdown/map 保存问题。
 
@@ -34,9 +35,9 @@
 
 | 编号 | 工程检查点 | 主要产物 | 最短退出条件 | 状态 |
 |---|---|---|---|---|
-| P0 | 项目审计与路线固化 | 本文、文档入口、基线说明 | 规划与源码现状一致，后续步骤有明确依赖 | 待用户验收 |
-| P1A | 可重复 ROS headless smoke | 固定 Gazebo seed、spawn 超时、自动 smoke 工具、干净退出 | 1/2/3 机器人均检查 topic、Nav2、lidar、合并地图并 PASS | 待用户验收 |
-| P1B | 独立真值任务评估器 | episode CSV/JSON、阶段/失败原因、覆盖率、路径、碰撞接口 | 固定短 episode 输出字段完整，评估器不参与控制 | 待开始 |
+| P0 | 项目审计与路线固化 | 本文、文档入口、基线说明 | 规划与源码现状一致，后续步骤有明确依赖 | 已验收 |
+| P1A | 可重复 ROS headless smoke | 固定 Gazebo seed、spawn 超时、自动 smoke 工具、干净退出 | 1/2/3 机器人均检查 topic、Nav2、lidar、合并地图并 PASS | 已验收 |
+| P1B | 独立真值任务评估器 | episode CSV/JSON、阶段/失败原因、覆盖率、路径、碰撞接口 | 固定短 episode 输出字段完整，评估器不参与控制 | 待用户验收 |
 | P1C | 理想通信探索基线 | 固定世界/出生点/seed/超时的批量入口和日期报告 | 2 机器人多个独立 seed 可重复探索，成功和失败均记录 | 待开始 |
 | P2A | 目标检测与确认 MVP | Gazebo 真值评估、视场/距离/遮挡、连续帧确认 | 目标不可见时不触发，可见并满足规则时进入 `FOUND` | 待开始 |
 | P2B | 集合状态机 | `EXPLORE→FOUND→RALLY→COMPLETE`、独立 staging poses | 目标消息送达后所有机器人在不同安全位置稳定 5 秒 | 待开始 |

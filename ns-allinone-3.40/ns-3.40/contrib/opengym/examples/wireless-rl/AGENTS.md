@@ -1,6 +1,7 @@
 # wireless-rl Codex Memory
 
-Last verified against source and local 1/2/3-robot headless smoke tests: 2026-09-14.
+Last verified against source, local 1/2/3-robot headless smoke tests, and P1B
+evaluator smoke tests: 2026-09-14.
 
 This directory is the active project inside the larger ns-3 workspace. It is a
 toy ns3-gym scheduling MDP, not a full Wi-Fi/5G network simulation.
@@ -25,14 +26,23 @@ Use current code as the source of truth. Read in this order:
 4. `sim.cc` for the actual environment state transition and reward timing.
 5. `test.py` and `run_baselines.py` for baseline semantics and CSV fields.
 6. `dqn_common.py`, `train_dqn.py`, and `evaluate_dqn.py` for DQN behavior.
-7. `report/20260914.md` for the first ROS engineering checkpoint.
+7. `report/20260914.md` and `report/20260914_p1b.md` for the first ROS
+   engineering checkpoints.
 8. `report/20260902.md`, `report/20260429.md`, and `log.md` for historical
    experiment context.
 
 The P1A ROS foundation now has explicit Gazebo seeds, configurable spawn
 timeouts, bounded automatic headless smoke checks, and verified 1/2/3-robot
 startup. This proves startup and message flow only; task completion,
-cross-seed reproducibility, and task metrics remain for P1B/P1C.
+cross-seed reproducibility, and formal completion metrics remain for P1C.
+
+P1B now provides an evaluator-only Gazebo truth channel, a truth occupancy
+grid rasterized from static SDF box collisions, per-robot truth path and visit
+masks, search overlap, Nav2 outcomes, base-contact collision events, and one-row
+episode CSV/JSON. Its 2026-09-14 one- and two-robot short timeout runs passed.
+The current world has one unsupported mesh collision (an SUV outside the lab
+walls), and task success remains false until the exploration completion rule is
+implemented in P1C.
 
 Do not treat the dated report as current configuration. Do not overwrite it
 when current code changes; write a new dated report for a new research stage.

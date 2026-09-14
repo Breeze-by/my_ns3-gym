@@ -516,3 +516,95 @@ Conclusion: P1A startup and bounded shutdown are ready for user review. This is
 not a task-completion, cross-seed reproducibility, or network-coupling result.
 Those claims require the P1B evaluator, P1C ideal-communication experiments,
 and later explicit communication checkpoints.
+
+## 2026-09-14 ROS 2 P1B evaluator
+
+Purpose: add an evaluator-only Gazebo truth path and write bounded episode
+metrics without changing frontier or Nav2 control.
+
+Code state: base commit `bbfade1` plus the P1B worktree changes committed with
+this entry. No RL model applies. Generated files are under ignored ROS `log/`
+directories.
+
+Targeted test command:
+
+```bash
+source /opt/ros/humble/setup.bash
+PYTHONPATH=src/multi_robot_exploration:$PYTHONPATH \
+  python3 -m pytest -q \
+  src/multi_robot_exploration/test/test_task_evaluator.py
+```
+
+Result: 3 passed in 0.45 seconds. The tests cover SDF state-pose/height-slice
+rasterization, occupancy metrics with unknown cells, and the research-plan
+overlap formula.
+
+Build command:
+
+```bash
+source /opt/ros/humble/setup.bash
+colcon build --symlink-install --packages-select multi_robot multi_robot_exploration
+```
+
+Result: both packages built successfully.
+
+First evaluator smoke command:
+
+```bash
+python3 scripts/ros_smoke_test.py --robot-count 1 --gazebo-seed 11 \
+  --startup-timeout 180 --shutdown-timeout 45 \
+  --evaluation-duration 10 --evaluation-wait-timeout 180
+```
+
+Result: failed. `task_evaluator` attempted to assign rclpy's read-only
+`subscriptions` property and exited with `AttributeError`; the outer check
+reported the missing result and cleaned the launch. Output:
+`log/smoke/robots1_seed11_20260914-195452.log`.
+
+After renaming the member to `input_subscriptions` and adding early evaluator
+exit detection, the following one-robot command passed:
+
+```bash
+python3 scripts/ros_smoke_test.py --robot-count 1 --gazebo-seed 12 \
+  --startup-timeout 180 --shutdown-timeout 45 \
+  --evaluation-duration 10 --evaluation-wait-timeout 180
+```
+
+Result: 10.0 simulated seconds, 3 merged maps, 122 model states, 236 contact
+messages, 0.668 m truth path, no teleport jump, one successful Nav2 goal, no
+collision, and 0.1092 correct-free coverage. Outputs:
+`log/smoke/robots1_seed12_20260914-195943.log` and
+`log/evaluation/smoke_robots1_seed12_20260914-195943.{json,csv}`.
+
+Two-robot command:
+
+```bash
+python3 scripts/ros_smoke_test.py --robot-count 2 --gazebo-seed 13 \
+  --startup-timeout 240 --shutdown-timeout 60 \
+  --evaluation-duration 10 --evaluation-wait-timeout 240
+```
+
+Result: 10.3 simulated seconds, 5 merged maps, 172 model states, 340/275
+contact messages, 1.089 m total truth path, no teleport jump, no collision,
+0.1644 correct-free coverage, and zero search overlap in this short window.
+Both issued Nav2 goals were still active at timeout. Outputs:
+`log/smoke/robots2_seed13_20260914-200108.log` and
+`log/evaluation/smoke_robots2_seed13_20260914-200108.{json,csv}`.
+
+After adding truth/map metadata and start/end simulation timestamps to the
+schema, a final one-robot regression used:
+
+```bash
+python3 scripts/ros_smoke_test.py --robot-count 1 --gazebo-seed 14 \
+  --startup-timeout 180 --shutdown-timeout 45 \
+  --evaluation-duration 5 --evaluation-wait-timeout 180
+```
+
+Result: passed; output:
+`log/evaluation/smoke_robots1_seed14_20260914-200531.{json,csv}`.
+
+Conclusion: P1B is ready for user review. The SDF truth grid includes 25 static
+box collisions at lidar height. One SUV mesh collision outside the laboratory
+walls is not rasterized and is explicitly reported as unsupported. Task
+completion remains undefined, so timeout smoke results correctly keep
+`success=false`; P1C must define the ideal-communication completion contract.
