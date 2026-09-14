@@ -22,7 +22,7 @@ monorepo，与 ns-3/ns3-gym 共用一个 Git 根。旧的独立检出目录及�
 | --- | --- |
 | `src/multi_robot` | 主仿真包。负责 Gazebo 世界、机器人 SDF/URDF、主 launch、Nav2 参数、RViz 配置。 |
 | `src/merge_map` | 地图合并包。订阅 `/tbN/map`，发布 `/merge_map`，并启动一个全局地图 RViz。 |
-| `src/multi_robot_exploration` | 总控探索节点。订阅 `/merge_map` 和各机器人 `/tbN/odom`，向 `/tbN/navigate_to_pose` 发送 Nav2 目标。 |
+| `src/multi_robot_exploration` | 总控探索节点。用 `/tbN/map` 为对应机器人选前沿，用 `/merge_map` 保存/评估全局地图，并向 `/tbN/navigate_to_pose` 发送 Nav2 目标。 |
 | `src/multi_robot/params/nav2_params_tb*_0.yaml` | 每台机器人单独的 Nav2 参数。当前主 launch 使用 `tb1` 到 `tb4`。 |
 | `src/multi_robot/models/turtlebot3_waffle/model.sdf` | Gazebo 实体模型。当前保留 lidar、imu、diff_drive、joint_state，禁用了深度相机传感器。 |
 | `src/saved_map` | `map_saver_cli` 保存合并地图的位置。 |
@@ -110,6 +110,8 @@ multi_robot_exploration/control
 | `evaluation_episode_id` | `episode` | CSV/JSON 文件名和 episode 标识 |
 | `evaluation_output_dir` | `/tmp/multi_robot_evaluation` | 评估结果目录 |
 | `evaluation_duration_sec` | `0.0` | 仿真超时；0 表示只在 shutdown 时保存 |
+| `evaluation_coverage_threshold` | `0.0` | 正确自由空间覆盖率成功阈值；0 表示仅按超时结束，P1C runner 显式传 0.9 |
+| `exploration_goal_timeout_sec` | `60.0` | 单个 Nav2 目标的最大仿真秒数 |
 
 也就是说，常用命令里 `enable_rviz:=false` 不会关闭全局地图 RViz，只会关闭每机器人 RViz。
 
@@ -154,6 +156,7 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
 
 ```text
 /merge_map
+/tbN/map
 /tbN/odom
 /tbN/cmd_vel
 ```
@@ -290,7 +293,16 @@ goal accepted/rejected
 最终 result succeeded/failed
 ```
 
-规划失败或执行失败后，机器人会重新进入 idle，下一轮换 frontier；同一机器人连续失败多次后，会把该目标加入 visited，减少重复尝试。
+每台机器人从自己的 `/tbN/map` 选择目标，避免把融合地图中另一台机器人发现、但本机
+global costmap 尚不可达的区域直接交给 Nav2。跨机器人仍共享目标预留/访问记录，以减少
+重复搜索。
+
+目标被接受后最多执行 60 仿真秒。成功目标保留在访问历史，避免 A→B→A 往返；失败目标
+释放预留并加入坏目标集合；启动期或瞬态拒绝只释放，不永久拉黑候选。一个前沿组的首选
+栅格无效时，会继续尝试同组其他安全栅格，而不是丢弃整个组。
+
+主 launch 对 Nav2 采用 45 秒错峰启动，并在最后一套 Nav2 启动 60 秒后才启动控制器和
+评估器，降低生命周期转换期间的负载和启动期目标拒绝。
 
 ## 7. 编译
 
@@ -361,7 +373,7 @@ python3 scripts/ros_smoke_test.py --robot-count 2 --gazebo-seed 1
 python3 scripts/ros_smoke_test.py --robot-count 3 --gazebo-seed 1
 ```
 
-工具检查每台机器人的核心 topic、Nav2 controller/planner lifecycle，以及至少一条
+工具检查每台机器人的核心 topic、Nav2 controller/planner/bt_navigator lifecycle，以及至少一条
 lidar 和合并地图消息。它只终止自己启动的进程组；原始 launch 输出写入被 Git 忽略的
 `log/smoke/`。每次正式 smoke 的命令和结论仍必须追加到 wireless-rl 的 `log.md`。
 
@@ -388,9 +400,30 @@ action status 统计成功、取消和失败目标。
 `truth_unsupported_collision_count=1` 会保留这个限制；如果以后把 mesh 障碍物放进可达
 任务区域，必须先增加 mesh 真值处理。
 
-CSV/JSON 默认写入 `log/evaluation/`（由 smoke 工具指定并被 Git 忽略）。P1B 尚未定义
-探索完成条件，因此定时 episode 会诚实记录 `success=false` 和
-`termination_reason=timeout`；P1C 才会增加理想通信探索的完成/失败判定。
+CSV/JSON 默认写入 `log/evaluation/`（由 smoke 工具指定并被 Git 忽略）。P1C 已定义：
+`correct_free_coverage_ratio >= 0.9` 时记录 `success=true` 和
+`termination_reason=coverage_reached`；600 仿真秒未达到则记录 timeout。输出 schema v2
+还包含 80%/90%/95% 首次达到时间、每台机器人起终点、目标结果、路径、碰撞和搜索重叠。
+
+P1C 理想通信批量入口（每个 seed 启动独立 ROS/Gazebo 进程）：
+
+```bash
+python3 scripts/run_ideal_baseline.py \
+  --seeds 101 102 103 \
+  --robot-count 2 \
+  --duration 600 \
+  --coverage-threshold 0.9 \
+  --goal-timeout 60 \
+  --run-id <unique-run-id>
+```
+
+结果写入 `log/ideal_baseline/<run-id>/`：每个 episode 的 CSV/JSON 位于 `episodes/`，
+原始 launch 日志位于 `launch_logs/`，批次根目录含增量更新的 `summary.csv/json`。目录已被
+Git 忽略，但正式运行的命令、commit、seed、参数和结论必须追加到 wireless-rl `log.md`。
+
+截至 2026-09-15，P1C 仍在进行中：完整 `retry4` 三种子为 0/3 达标，最新候选版本在
+seed 101、600 秒得到 78.7% 覆盖。它不能作为成功 baseline；下一轮需要解决本地图前沿
+耗尽后的安全全局任务接管，详见 `report/20260915_p1c.md`。
 
 以下命令适合运行中的人工诊断：
 

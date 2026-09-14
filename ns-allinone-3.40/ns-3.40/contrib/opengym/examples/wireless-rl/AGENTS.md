@@ -1,7 +1,7 @@
 # wireless-rl Codex Memory
 
-Last verified against source, local 1/2/3-robot headless smoke tests, and P1B
-evaluator smoke tests: 2026-09-14.
+Last verified against source, local 1/2/3-robot headless smoke tests, P1B
+evaluator tests, and the in-progress P1C ideal baseline: 2026-09-15.
 
 This directory is the active project inside the larger ns-3 workspace. It is a
 toy ns3-gym scheduling MDP, not a full Wi-Fi/5G network simulation.
@@ -26,23 +26,34 @@ Use current code as the source of truth. Read in this order:
 4. `sim.cc` for the actual environment state transition and reward timing.
 5. `test.py` and `run_baselines.py` for baseline semantics and CSV fields.
 6. `dqn_common.py`, `train_dqn.py`, and `evaluate_dqn.py` for DQN behavior.
-7. `report/20260914.md` and `report/20260914_p1b.md` for the first ROS
-   engineering checkpoints.
+7. `report/20260914.md`, `report/20260914_p1b.md`, and
+   `report/20260915_p1c.md` for the ROS engineering checkpoints.
 8. `report/20260902.md`, `report/20260429.md`, and `log.md` for historical
    experiment context.
 
-The P1A ROS foundation now has explicit Gazebo seeds, configurable spawn
+The accepted P1A ROS foundation now has explicit Gazebo seeds, configurable spawn
 timeouts, bounded automatic headless smoke checks, and verified 1/2/3-robot
 startup. This proves startup and message flow only; task completion,
 cross-seed reproducibility, and formal completion metrics remain for P1C.
 
-P1B now provides an evaluator-only Gazebo truth channel, a truth occupancy
+The accepted P1B now provides an evaluator-only Gazebo truth channel, a truth occupancy
 grid rasterized from static SDF box collisions, per-robot truth path and visit
 masks, search overlap, Nav2 outcomes, base-contact collision events, and one-row
 episode CSV/JSON. Its 2026-09-14 one- and two-robot short timeout runs passed.
 The current world has one unsupported mesh collision (an SUV outside the lab
-walls), and task success remains false until the exploration completion rule is
-implemented in P1C.
+walls).
+
+P1C is in progress. The accepted contract is two robots starting inside the
+same radius-1 m start/charging region in `my_world.world`, success at 90%
+correct-free coverage, and timeout at 600 simulated seconds. The evaluator now
+implements that rule, the south outer doorway is closed, the serial multi-seed
+runner uses seeds 101–103, and the smoke gate checks controller, planner, and
+BT navigator lifecycle state. The 2026-09-14 `retry4` run passed infrastructure
+for all three seeds but reached only 75.7%–78.6% coverage. A later seed-101 run
+with per-robot local frontiers and successful-goal history reached 78.7% in
+600 seconds with 100.6 m path and 25/31 successful goals. Do not claim P1C is
+complete or proceed to P2 until the user reviews the documented blocker and a
+follow-up exploration design reaches the exit condition.
 
 Do not treat the dated report as current configuration. Do not overwrite it
 when current code changes; write a new dated report for a new research stage.

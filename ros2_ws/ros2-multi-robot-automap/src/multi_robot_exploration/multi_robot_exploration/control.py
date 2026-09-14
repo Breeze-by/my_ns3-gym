@@ -151,20 +151,32 @@ def findClosestGroup(raw_grid, groups, current, resolution, originX, originY, la
         if not safe_cells:
             continue
 
-        row, column = min(
-            safe_cells,
-            key=lambda p: math.sqrt((centroid[0] - p[0])**2 + (centroid[1] - p[1])**2)
+        candidates = []
+        for row, column in safe_cells:
+            target_world = grid_to_world(
+                row, column, resolution, originX, originY
+            )
+            distance_m = math.sqrt(
+                ((current[0] - row) * resolution) ** 2
+                + ((current[1] - column) * resolution) ** 2
+            )
+            if distance_m > max_target_distance_m:
+                continue
+            if last_target and math.dist(target_world, last_target) < min_target_separation:
+                continue
+            if visitedControl(target_world):
+                continue
+            candidates.append((row, column, target_world, distance_m))
+
+        if not candidates:
+            continue
+
+        row, column, target_world, distance_m = min(
+            candidates,
+            key=lambda candidate: math.dist(
+                centroid, (candidate[0], candidate[1])
+            ),
         )
-        target_world = grid_to_world(row, column, resolution, originX, originY)
-        distance_m = math.sqrt(
-            ((current[0] - row) * resolution)**2 + ((current[1] - column) * resolution)**2
-        )
-        if distance_m > max_target_distance_m:
-            continue
-        if last_target and math.sqrt((target_world[0] - last_target[0]) ** 2 + (target_world[1] - last_target[1]) ** 2) < min_target_separation:
-            continue
-        if visitedControl(target_world):
-            continue
 
         group_size = len(group_cells)
         score = group_size / (distance_m + 1.0)
@@ -180,6 +192,10 @@ def mark_bad_target(target):
         if d < min_target_separation:
             return
     BAD_TARGETS.append(target)
+
+def release_target(target):
+    global VISITED
+    VISITED = [reserved for reserved in VISITED if reserved != target]
 
 def exploration(data, width, height, resolution, column, row, originX, originY, choice, last_target=None):
     global VISITED
@@ -231,20 +247,34 @@ class HeadquartersControl(Node):
         self.shutdown_initiated = False
         self.robots = {}  # Dictionary to hold robot data
         self.num_robots = self.declare_parameter("robot_count", 2).value
+        self.goal_timeout_sec = self.declare_parameter(
+            "goal_timeout_sec", 60.0
+        ).value
 
         # Subscribers for multiple robots dynamically
         self.map_sub = self.create_subscription(
             OccupancyGrid, "merge_map", self.map_callback, 10
         )
         self.robot_odom_subs = {}
+        self.robot_map_subs = {}
         self.robot_nav_clients = {}
         self.robot_positions = {}
+        self.robot_maps = {}
         self.subscription_cmd_vel = {}
         self.robot_states = {
             f"tb{i+1}": "idle" for i in range(self.num_robots)
         }
         self.goal_failures = {
             f"tb{i+1}": 0 for i in range(self.num_robots)
+        }
+        self.goal_handles = {
+            f"tb{i+1}": None for i in range(self.num_robots)
+        }
+        self.goal_started_at = {
+            f"tb{i+1}": None for i in range(self.num_robots)
+        }
+        self.goal_targets = {
+            f"tb{i+1}": None for i in range(self.num_robots)
         }
         self.last_save_time = time.monotonic()
         self.save_in_progress = False
@@ -258,6 +288,12 @@ class HeadquartersControl(Node):
             robot_name = f"tb{i + 1}"
             self.robot_odom_subs[robot_name] = self.create_subscription(
                 Odometry, f"{robot_name}/odom", lambda msg, r=robot_name: self.robot_odom_callback(msg, r), 10
+            )
+            self.robot_map_subs[robot_name] = self.create_subscription(
+                OccupancyGrid,
+                f"{robot_name}/map",
+                lambda msg, r=robot_name: self.robot_map_callback(msg, r),
+                10,
             )
             self.robot_nav_clients[robot_name] = ActionClient(self, NavigateToPose, f"{robot_name}/navigate_to_pose")
             self.subscription_cmd_vel[robot_name] = self.create_subscription(
@@ -277,6 +313,10 @@ class HeadquartersControl(Node):
         for i in range(self.num_robots):
             threading.Thread(target=self.start_exploration, args=(i + 1,), daemon=True).start()
 
+        self.goal_timeout_timer = self.create_timer(
+            1.0, self.cancel_stalled_goals
+        )
+
         self.get_logger().info("Navigation to map center initialized.")
 
     def map_callback(self, msg):
@@ -291,6 +331,16 @@ class HeadquartersControl(Node):
         """Callback to update robot position dynamically."""
         self.robot_positions[robot_name] = (msg.pose.pose.position.x, msg.pose.pose.position.y)
 
+    def robot_map_callback(self, msg, robot_name):
+        """Keep the map used by this robot's Nav2 global costmap."""
+        self.robot_maps[robot_name] = {
+            "data": np.array(msg.data).reshape(msg.info.height, msg.info.width),
+            "resolution": msg.info.resolution,
+            "origin": (msg.info.origin.position.x, msg.info.origin.position.y),
+            "width": msg.info.width,
+            "height": msg.info.height,
+        }
+
     def robot_status_control(self, msg, robot_name):
         """Command velocity control for individual robots."""
         pass
@@ -300,19 +350,22 @@ class HeadquartersControl(Node):
         robot_name = f"tb{robot_number}"
         last_target = None  # To prevent sending the same goal repeatedly
         while rclpy.ok():
-            if self.map_data is not None:
+            robot_map = self.robot_maps.get(robot_name)
+            if robot_map is not None:
                 robot_position = self.robot_positions[robot_name]
+                resolution = robot_map["resolution"]
+                origin_x, origin_y = robot_map["origin"]
                 # Check if the robot is idle before assigning a new goal
                 if self.robot_states[robot_name] == "idle":
                     target = exploration(
-                        self.map_data,
-                        self.map_width,
-                        self.map_height,
-                        self.resolution,
-                        int((robot_position[0] - self.origin[0]) / self.resolution),
-                        int((robot_position[1] - self.origin[1]) / self.resolution),
-                        self.origin[0],
-                        self.origin[1],
+                        robot_map["data"],
+                        robot_map["width"],
+                        robot_map["height"],
+                        resolution,
+                        int((robot_position[0] - origin_x) / resolution),
+                        int((robot_position[1] - origin_y) / resolution),
+                        origin_x,
+                        origin_y,
                         robot_name,
                         last_target=last_target
                     )
@@ -342,6 +395,7 @@ class HeadquartersControl(Node):
             future.add_done_callback(lambda f: self.goal_response_callback(robot_name, target, f))
         else:
             self.get_logger().warn(f"Navigation action server for {robot_name} is not available.")
+            release_target(target)
             self.robot_states[robot_name] = "idle"
 
     def feedback_callback(self, feedback_msg):
@@ -354,21 +408,30 @@ class HeadquartersControl(Node):
         goal_handle = future.result()
         if goal_handle is None or not goal_handle.accepted:
             self.get_logger().warn(f"{robot_name} rejected goal {target}; choosing another frontier.")
-            mark_bad_target(target)
+            release_target(target)
             self.goal_failures[robot_name] += 1
             self.robot_states[robot_name] = "idle"
             return
 
+        self.goal_handles[robot_name] = goal_handle
+        self.goal_started_at[robot_name] = (
+            self.get_clock().now().nanoseconds / 1e9
+        )
+        self.goal_targets[robot_name] = target
         result_future = goal_handle.get_result_async()
         result_future.add_done_callback(lambda f: self.goal_result_callback(robot_name, target, f.result()))
 
     def goal_result_callback(self, robot_name, target, result):
         """Handle the result of the goal."""
+        self.goal_handles[robot_name] = None
+        self.goal_started_at[robot_name] = None
+        self.goal_targets[robot_name] = None
         if result.status == GoalStatus.STATUS_SUCCEEDED:
             self.get_logger().info(f"{robot_name} reached its goal!")
             self.goal_failures[robot_name] = 0
             self.robot_states[robot_name] = "idle"  # Mark as idle after completion
         else:
+            release_target(target)
             self.goal_failures[robot_name] += 1
             self.get_logger().warn(
                 f"{robot_name} failed goal {target} with status {result.status}; "
@@ -376,12 +439,30 @@ class HeadquartersControl(Node):
             )
             mark_bad_target(target)
             if self.goal_failures[robot_name] >= max_goal_failures:
-                VISITED.append(target)
                 self.goal_failures[robot_name] = 0
             self.robot_states[robot_name] = "idle"  # Allow retries or new goals
 
         # Check if all robots are idle and trigger map saving
         self.check_exploration_completion()
+
+    def cancel_stalled_goals(self):
+        """Cancel goals that block frontier reassignment for too long."""
+        now = self.get_clock().now().nanoseconds / 1e9
+        for robot_name, started_at in self.goal_started_at.items():
+            goal_handle = self.goal_handles[robot_name]
+            if goal_handle is None or started_at is None:
+                continue
+            if now - started_at < self.goal_timeout_sec:
+                continue
+            target = self.goal_targets[robot_name]
+            self.get_logger().warn(
+                f"Canceling stalled goal {target} for {robot_name} after "
+                f"{self.goal_timeout_sec:.1f} simulated seconds."
+            )
+            if target is not None:
+                mark_bad_target(target)
+            self.goal_started_at[robot_name] = now
+            goal_handle.cancel_goal_async()
 
     def check_exploration_completion(self):
         """Check if all robots are idle and exploration is complete."""

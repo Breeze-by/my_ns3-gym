@@ -608,3 +608,118 @@ box collisions at lidar height. One SUV mesh collision outside the laboratory
 walls is not rasterized and is explicitly reported as unsupported. Task
 completion remains undefined, so timeout smoke results correctly keep
 `success=false`; P1C must define the ideal-communication completion contract.
+
+## 2026-09-14–15 ROS 2 P1C ideal-communication engineering round
+
+Purpose: implement the user-approved P1C contract (`my_world.world`, two
+robots in the common start/charging region, 90% correct-free coverage success,
+600 simulated-second timeout), run multiple seeds, and repair the existing
+frontier baseline until either the exit condition passed or a concrete design
+decision required user review.
+
+Code state: base commit `38f14bb` plus the P1C worktree changes documented in
+`report/20260915_p1c.md`. No RL checkpoint applies. All generated ROS outputs
+below are ignored by Git. Gazebo seed does not make ROS scheduling, SLAM, or
+Nav2 completely deterministic.
+
+The repeated directed command form was:
+
+```bash
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+PYTHONNOUSERSITE=1 python3 scripts/ros_smoke_test.py \
+  --robot-count 2 --gazebo-seed SEED --goal-timeout 60 \
+  --startup-timeout STARTUP --shutdown-timeout 60 \
+  --evaluation-duration DURATION --coverage-threshold 0.9 \
+  --evaluation-wait-timeout WAIT --episode-id EPISODE
+```
+
+Unless a row says otherwise, `SEED=101`, `STARTUP=240`, and the launch log is
+under `ros2_ws/ros2-multi-robot-automap/log/smoke/`. `shutdown` results mean
+the evaluator preserved a partial result during an intentionally interrupted
+or infrastructure-failed launch; they are not valid strategy samples.
+
+| Episode/run id | Duration / wait | Result and conclusion |
+|---|---:|---|
+| `p1c_short_seed21` | 30 / 240, seed 21 | PASS infrastructure; timeout, coverage 0.5490, path 10.634 m, zero collision. Fixed starts were correct. |
+| `p1c_release_target_seed101` | 180 / 480 | FAIL startup: tb2 planner did not become active. Partial shutdown output was not used. |
+| `p1c_spawn_order_seed101` | 180 / 480 | FAIL startup: first attempt to couple each spawn with its own Nav2 left tb1 planner inactive; reverted. |
+| `p1c_navigation_only_seed101` | 180 / 480 | FAIL startup: direct navigation include lacked effective namespaced parameters (`No critics defined`); reverted. |
+| `p1c_namespaced_nav_seed101` | 120 / 420 | FAIL startup/lifecycle after namespacing direct navigation. Partial coverage 0.0409, no valid goals. |
+| `p1c_delayed_control_seed101` / `p1c_staggered_nav_seed101` | 180 / 480 | FAIL startup/lifecycle in direct-navigation variants; partial coverage about 0.0405/0.0402, no goals. |
+| `p1c_proven_bringup_seed101` | 180 / 480 | Proven bringup restored, but evaluator started at clock 0 then timed out after the clock jump; invalid elapsed 2061.282 s, coverage 0.0404. Added clock gate. |
+| `p1c_clock_gate_seed101` | 180 / 480 | PASS infrastructure; elapsed 180.3 s, coverage 0.7651, path 44.404 m, 2/6 goals succeeded, 3 canceled. |
+| `p1c_goal_timeout_seed101` | 180 / 480 | PASS; coverage 0.7836, path 43.578 m, 5/9 goals succeeded, 2 canceled; cancellation occurred at 60 simulated seconds as designed. |
+| `p1c_local_map_seed101` | 180 / 480 | PASS; coverage 0.8393, path 54.696 m, 2/7 succeeded, 3 canceled; no `off the global costmap` message after per-robot map selection. |
+| `p1c_frontier_fallback_seed101` | 180 / 480 | PASS; coverage 0.7382, path 39.935 m, 5/10 succeeded. Group fallback increased goal supply but short-run coverage was stochastic. |
+| `p1c_frontier_fallback_seed101_600` | 600 / 1200 | Interrupted after lifecycle/action-server diagnosis; partial shutdown at 166.1 s, coverage 0.6456. Not a strategy result. |
+| `p1c_frontier_fallback_seed101_600_retry1` | 600 / 1200 | FAIL startup/inactive Nav2; partial shutdown at 170.0 s, coverage 0.6677. Not a strategy result. |
+| `p1c_ready_gate_seed101` | 180 / 600, startup 300 | PASS after adding bt_navigator gate; coverage 0.7258, path 36.376 m, 15/17 succeeded, 1 canceled. High goal success exposed repeated successful-target oscillation. |
+| `p1c_visited_history_seed101` | 180 / 600, startup 300 | FAIL startup because tb2 bt_navigator never became active; partial evaluator result was not used. |
+| `p1c_no_amcl_seed101` | 180 / 480 | FAIL: experimental navigation-only bringup left both planners inactive and all goals rejected. The AMCL-suppression change was reverted. |
+| `p1c_delayed_ready_visited_seed101` | 180 / 600, startup 300 | PASS; coverage 0.7377, path 45.557 m, 13/16 succeeded, 1 canceled. Successful target history removed A↔B revisits and targets continued outward. |
+| `p1c_visited_history_seed101_600` | 600 / 1200, startup 300 | PASS infrastructure but task timeout: coverage 0.7873, path 100.571 m, 25/31 goals succeeded, 5 canceled, 0 collisions. This is the latest valid candidate result. |
+
+The serial batch command form was:
+
+```bash
+PYTHONNOUSERSITE=1 python3 scripts/run_ideal_baseline.py \
+  --seeds 101 102 103 --robot-count 2 \
+  --duration 600 --coverage-threshold 0.9 \
+  --goal-timeout 60 --run-id RUN_ID
+```
+
+Early batches before the goal-timeout option used the same command without
+`--goal-timeout 60`. Every batch summary contains the complete child command
+for every seed under its `command` field.
+
+| Run id | Result |
+|---|---|
+| `p1c_ideal_20260914` | 0/3 valid episodes: all three child launches produced evaluator files but the first smoke implementation used transient node discovery and returned infrastructure failures. Failure preserved; checker changed to inspect evaluator death in the launch log. |
+| `p1c_ideal_20260914_retry1` | seed 101/103 timed out at 0.8654/0.8863; seed 102 infrastructure failed. Robot end poses showed escape through the south outer doorway. |
+| `p1c_ideal_20260914_retry2` | After closing the door, 3/3 infrastructure PASS and 0/3 success. Coverage 0.7864/0.8682/0.7801; paths 137.696/95.995/51.970 m; no escape. |
+| `p1c_ideal_20260914_retry3` | After 60 s goal cancellation, 3/3 infrastructure PASS and 0/3 success. Coverage 0.8311/0.7759/0.7406; paths 57.330/69.058/63.218 m. Failed goals still leaked reservations. |
+| `p1c_ideal_20260914_retry4` | After reservation release and clock/startup fixes, 3/3 infrastructure PASS and 0/3 success. Coverage 0.7856/0.7575/0.7647; paths 63.674/60.919/32.745 m; success goals 2/11, 3/8, 2/6. This is the complete formal three-seed comparison. |
+| `p1c_ideal_20260915_local_map` | Intentionally interrupted during seed 102 after seed 101 proved local-only frontier exhaustion. Seed 101 infrastructure PASS but timed out at coverage 0.7418, path 37.610 m, 3/6 goals succeeded. Summary was preserved incrementally. |
+
+Other checks and failures:
+
+```bash
+source /opt/ros/humble/setup.bash
+PYTHONNOUSERSITE=1 colcon build --symlink-install \
+  --packages-select multi_robot multi_robot_exploration
+source install/setup.bash
+PYTHONNOUSERSITE=1 python3 -m pytest \
+  src/multi_robot_exploration/test/test_control.py \
+  src/multi_robot_exploration/test/test_task_evaluator.py -q
+```
+
+Final relevant result: build passed and 4 tests passed. The first pytest call
+failed collection with `ModuleNotFoundError` because `install/setup.bash` had
+not been sourced; the exact corrected command above then passed.
+
+`ros2 action list --no-daemon` was tried as a stricter gate and failed because
+Humble does not support that option. Plain `ros2 action list` returned stale
+daemon graph data after process cleanup, so the experimental action-list gate
+was removed. The lifecycle gate remains the source of truth.
+
+`jq` was attempted for read-only JSON aggregation and failed because it is not
+installed. Python's standard `json` module was then used read-only; no runtime
+file was changed.
+
+Truth/parser and final code checks during the round:
+
+- the closed world rasterizes 26 box collisions and reports one unsupported
+  mesh outside the task area;
+- selected Python syntax checks passed;
+- task evaluator tests passed (3/3), and after the frontier regression test was
+  added the combined focused suite passed (4/4);
+- repeated `multi_robot`/`multi_robot_exploration` symlink builds passed;
+- valid final runs reported zero collisions and no teleport jumps.
+
+Conclusion: the P1C infrastructure and measurement contract are reproducible,
+but the 90%/600 s exit condition is not met. The current blocker is safe global
+task handoff after one robot's local frontier supply is exhausted. Recommended
+next round: local frontier first; on exhaustion, propose a merged-map frontier
+and require that robot's Nav2 `ComputePathToPose` to return a path before sending
+`NavigateToPose`. Do not lower 90% or lengthen 600 s without user approval.

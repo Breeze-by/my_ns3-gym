@@ -228,6 +228,9 @@ class TaskEvaluator(Node):
         self.max_duration = self.declare_parameter(
             "max_duration_sec", 0.0
         ).value
+        self.coverage_threshold = self.declare_parameter(
+            "coverage_threshold", 0.0
+        ).value
         self.truth_resolution = self.declare_parameter(
             "truth_resolution", 0.05
         ).value
@@ -245,11 +248,14 @@ class TaskEvaluator(Node):
             raise ValueError("robot_count must be positive")
         if not self.world_file:
             raise ValueError("world_file is required")
+        if not 0.0 <= self.coverage_threshold <= 1.0:
+            raise ValueError("coverage_threshold must be between 0 and 1")
         self.truth = load_truth_grid(self.world_file, self.truth_resolution)
         self.robot_names = [
             f"tb{index}" for index in range(1, self.robot_count + 1)
         ]
         self.positions = {}
+        self.start_positions = {}
         self.previous_positions = {}
         self.path_lengths = {name: 0.0 for name in self.robot_names}
         self.visited = {name: set() for name in self.robot_names}
@@ -271,6 +277,7 @@ class TaskEvaluator(Node):
         self.map_message_count = 0
         self.model_state_message_count = 0
         self.start_sim_time = None
+        self.coverage_times = {0.8: None, 0.9: None, 0.95: None}
         self.finalized = False
 
         map_qos = QoSProfile(depth=1)
@@ -321,6 +328,7 @@ class TaskEvaluator(Node):
         self.latest_map = message
         self.map_message_count += 1
         self._maybe_start(self._now())
+        self._update_coverage_times()
 
     def _model_states_callback(self, message):
         self.model_state_message_count += 1
@@ -355,11 +363,13 @@ class TaskEvaluator(Node):
     def _maybe_start(self, now):
         if (
             self.start_sim_time is not None
+            or now <= 0.0
             or self.latest_map is None
             or any(name not in self.positions for name in self.robot_names)
         ):
             return
         self.start_sim_time = now
+        self.start_positions = self.positions.copy()
         self.previous_positions = self.positions.copy()
         for name, position in self.positions.items():
             self.visited[name].add(
@@ -405,11 +415,29 @@ class TaskEvaluator(Node):
         self.collision_last_time[robot] = now
 
     def _timer_callback(self):
-        if self.start_sim_time is None or self.max_duration <= 0:
+        if self.start_sim_time is None:
             return
-        if self._now() - self.start_sim_time >= self.max_duration:
+        coverage = self._map_metrics().get("correct_free_coverage_ratio", 0.0)
+        if self.coverage_threshold > 0 and coverage >= self.coverage_threshold:
+            self.finalize("coverage_reached")
+            rclpy.shutdown()
+            return
+        if (
+            self.max_duration > 0
+            and self._now() - self.start_sim_time >= self.max_duration
+        ):
             self.finalize("timeout")
             rclpy.shutdown()
+
+    def _update_coverage_times(self):
+        if self.start_sim_time is None:
+            return
+        coverage = self._map_metrics().get("correct_free_coverage_ratio", 0.0)
+        elapsed = max(0.0, self._now() - self.start_sim_time)
+        for threshold in self.coverage_times:
+            first_crossing = self.coverage_times[threshold] is None
+            if first_crossing and coverage >= threshold:
+                self.coverage_times[threshold] = elapsed
 
     def _map_metrics(self):
         if self.latest_map is None:
@@ -451,7 +479,13 @@ class TaskEvaluator(Node):
 
         robots = {}
         for name in self.robot_names:
+            start = self.start_positions.get(name, (None, None))
+            end = self.positions.get(name, (None, None))
             robots[name] = {
+                "start_x": start[0],
+                "start_y": start[1],
+                "end_x": end[0],
+                "end_y": end[1],
                 "path_length_m": self.path_lengths[name],
                 "visited_cell_count": len(self.visited[name]),
                 "teleport_jump_count": self.teleport_jumps[name],
@@ -464,16 +498,21 @@ class TaskEvaluator(Node):
                 "collision_message_count": self.collision_messages[name],
             }
 
+        success = termination_reason == "coverage_reached"
         result = {
-            "schema_version": 1,
+            "schema_version": 2,
             "episode_id": self.episode_id,
             "world_file": self.world_file,
             "gazebo_seed": self.gazebo_seed,
             "robot_count": self.robot_count,
-            "task_phase": "EXPLORE",
-            "success": False,
+            "task_phase": "COMPLETE" if success else "EXPLORE",
+            "success": success,
             "termination_reason": termination_reason,
-            "failure_reason": termination_reason,
+            "failure_reason": "" if success else termination_reason,
+            "coverage_threshold": self.coverage_threshold,
+            "time_to_80_coverage_sec": self.coverage_times[0.8],
+            "time_to_90_coverage_sec": self.coverage_times[0.9],
+            "time_to_95_coverage_sec": self.coverage_times[0.95],
             "start_sim_time_sec": self.start_sim_time,
             "end_sim_time_sec": end_time,
             "elapsed_sim_time_sec": elapsed,

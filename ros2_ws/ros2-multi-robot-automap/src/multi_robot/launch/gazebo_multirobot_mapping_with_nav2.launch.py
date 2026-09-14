@@ -10,6 +10,7 @@ from launch.actions import (
     IncludeLaunchDescription,
     ExecuteProcess,
     OpaqueFunction,
+    TimerAction,
 )
 from launch.conditions import IfCondition
 from launch.event_handlers import OnProcessExit
@@ -32,10 +33,12 @@ def launch_setup(context, *args, **kwargs):
     gazebo_seed = LaunchConfiguration("gazebo_seed")
     spawn_timeout = LaunchConfiguration("spawn_timeout")
     auto_save_map = LaunchConfiguration("auto_save_map")
+    goal_timeout = LaunchConfiguration("exploration_goal_timeout_sec")
     enable_task_evaluator = LaunchConfiguration("enable_task_evaluator")
     evaluation_episode_id = LaunchConfiguration("evaluation_episode_id")
     evaluation_output_dir = LaunchConfiguration("evaluation_output_dir")
     evaluation_duration = LaunchConfiguration("evaluation_duration_sec")
+    evaluation_coverage = LaunchConfiguration("evaluation_coverage_threshold")
 
     try:
         robot_count = int(robot_count_cfg.perform(context))
@@ -47,8 +50,8 @@ def launch_setup(context, *args, **kwargs):
     all_robots = [
         {
             "name": "tb1",
-            "x_pose": "5.0",
-            "y_pose": "4.0",
+            "x_pose": "0.0",
+            "y_pose": "-0.45",
             "z_pose": "0.01",
             "roll": "0.00",
             "pitch": "0.00",
@@ -56,8 +59,8 @@ def launch_setup(context, *args, **kwargs):
         },
         {
             "name": "tb2",
-            "x_pose": "-4.5",
-            "y_pose": "4.0",
+            "x_pose": "0.0",
+            "y_pose": "0.45",
             "z_pose": "0.01",
             "roll": "0.00",
             "pitch": "0.00",
@@ -129,11 +132,12 @@ def launch_setup(context, *args, **kwargs):
             {
                 "robot_count": robot_count_cfg,
                 "auto_save_map": auto_save_map,
+                "use_sim_time": use_sim_time,
+                "goal_timeout_sec": goal_timeout,
             }
         ],
         output="screen",
     )
-    actions.append(control_node)
 
     task_evaluator = Node(
         package="multi_robot_exploration",
@@ -148,12 +152,12 @@ def launch_setup(context, *args, **kwargs):
                 "gazebo_seed": gazebo_seed,
                 "output_dir": evaluation_output_dir,
                 "max_duration_sec": evaluation_duration,
+                "coverage_threshold": evaluation_coverage,
             }
         ],
         output="screen",
         condition=IfCondition(enable_task_evaluator),
     )
-    actions.append(task_evaluator)
 
     # ========= Gazebo =========
     gzserver_cmd = IncludeLaunchDescription(
@@ -182,6 +186,7 @@ def launch_setup(context, *args, **kwargs):
 
     # ========= Spawn robots sequentially =========
     last_spawn_action = None
+    nav_bringups = []
 
     for robot in robots:
         robot_name = robot["name"]
@@ -249,12 +254,7 @@ def launch_setup(context, *args, **kwargs):
 
         bringup_cmd = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
-                os.path.join(
-                    multi_robot_share,
-                    "launch",
-                    "nav2_bringup",
-                    "bringup_launch.py",
-                )
+                os.path.join(nav_launch_dir, "bringup_launch.py")
             ),
             launch_arguments={
                 "slam": "False",
@@ -308,7 +308,6 @@ def launch_setup(context, *args, **kwargs):
         robot_actions = [
             robot_state_publisher,
             spawn_robot,
-            bringup_cmd,
             joint_state_publisher_node,
             node_tf_map_to_odom,
             slam_toolbox_node,
@@ -326,12 +325,39 @@ def launch_setup(context, *args, **kwargs):
             )
             actions.append(spawn_robot_event)
 
+        nav_bringups.append(bringup_cmd)
+
         last_spawn_action = spawn_robot
 
     # ========= RViz and optional drive nodes =========
     # Start RViz only after the last robot has been spawned.
     # By default enable_rviz is false to reduce CPU/GPU load.
     if last_spawn_action is not None:
+        staggered_nav = [
+            TimerAction(
+                period=2.0 + 45.0 * index,
+                actions=[bringup],
+            )
+            for index, bringup in enumerate(nav_bringups)
+        ]
+        # Give the final Nav2 stack time to finish lifecycle activation before
+        # control and evaluation add load or submit goals.
+        control_delay = 62.0 + 45.0 * (len(nav_bringups) - 1)
+        staggered_nav.append(
+            TimerAction(
+                period=control_delay,
+                actions=[control_node, task_evaluator],
+            )
+        )
+        actions.append(
+            RegisterEventHandler(
+                event_handler=OnProcessExit(
+                    target_action=last_spawn_action,
+                    on_exit=staggered_nav,
+                )
+            )
+        )
+
         for robot in robots:
             robot_name = robot["name"]
             namespace = "/" + robot_name
@@ -455,6 +481,14 @@ def generate_launch_description():
 
     ld.add_action(
         DeclareLaunchArgument(
+            "exploration_goal_timeout_sec",
+            default_value="60.0",
+            description="Simulated seconds before canceling a stalled Nav2 goal.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
             "enable_task_evaluator",
             default_value="false",
             description="Record task and ground-truth metrics.",
@@ -482,6 +516,14 @@ def generate_launch_description():
             "evaluation_duration_sec",
             default_value="0.0",
             description="Simulation seconds before a timeout result; 0 waits for shutdown.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "evaluation_coverage_threshold",
+            default_value="0.0",
+            description="Correct-free coverage ratio that completes exploration.",
         )
     )
 

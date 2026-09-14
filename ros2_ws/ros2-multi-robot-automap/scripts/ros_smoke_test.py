@@ -46,6 +46,7 @@ def wait_until_ready(process, robot_count, timeout, evaluation_enabled=False):
     deadline = time.monotonic() + timeout
     missing_topics = expected_topics
     inactive_nodes = []
+    active_nodes = set()
     while time.monotonic() < deadline:
         if process.poll() is not None:
             raise RuntimeError(
@@ -63,8 +64,14 @@ def wait_until_ready(process, robot_count, timeout, evaluation_enabled=False):
         inactive_nodes = []
         if not missing_topics:
             for index in range(1, robot_count + 1):
-                for server in ("controller_server", "planner_server"):
+                for server in (
+                    "controller_server",
+                    "planner_server",
+                    "bt_navigator",
+                ):
                     node = f"/tb{index}/{server}"
+                    if node in active_nodes:
+                        continue
                     try:
                         result = run_ros(
                             ["lifecycle", "get", node], timeout=10
@@ -77,6 +84,8 @@ def wait_until_ready(process, robot_count, timeout, evaluation_enabled=False):
                         or "active" not in result.stdout.lower()
                     ):
                         inactive_nodes.append(node)
+                    else:
+                        active_nodes.add(node)
             if not inactive_nodes:
                 return
 
@@ -104,14 +113,18 @@ def require_message(topic, timeout, qos_arguments=()):
         )
 
 
-def wait_for_evaluation(process, result_path, timeout):
+def wait_for_evaluation(
+    process, result_path, launch_log_path, timeout, coverage_threshold=0.0
+):
     deadline = time.monotonic() + timeout
+    log_offset = 0
     while time.monotonic() < deadline:
         if result_path.exists():
             with result_path.open() as result_file:
                 result = json.load(result_file)
             required = {
                 "correct_free_coverage_ratio",
+                "coverage_threshold",
                 "elapsed_sim_time_sec",
                 "end_sim_time_sec",
                 "map_message_count",
@@ -123,6 +136,7 @@ def wait_for_evaluation(process, result_path, timeout):
                 "termination_reason",
                 "total_path_length_m",
                 "truth_rectangle_count",
+                "success",
             }
             missing = required - result.keys()
             if missing:
@@ -140,18 +154,38 @@ def wait_for_evaluation(process, result_path, timeout):
                 )
             if result["truth_rectangle_count"] < 1:
                 raise RuntimeError("evaluation truth grid is empty")
+            if abs(result["coverage_threshold"] - coverage_threshold) > 1e-9:
+                raise RuntimeError(
+                    "evaluation coverage threshold is incorrect"
+                )
+            if result["success"] != (
+                result["termination_reason"] == "coverage_reached"
+            ):
+                raise RuntimeError("evaluation success state is inconsistent")
+            if (
+                result["success"]
+                and result["correct_free_coverage_ratio"]
+                < coverage_threshold
+            ):
+                raise RuntimeError("evaluation completed below its threshold")
             return result
         if process.poll() is not None:
             raise RuntimeError(
                 "launch exited before evaluation result with "
                 f"{process.returncode}"
             )
-        node_result = run_ros(["node", "list", "--no-daemon"])
-        if (
-            node_result.returncode == 0
-            and "/task_evaluator" not in node_result.stdout.splitlines()
-        ):
-            raise RuntimeError("task_evaluator exited before writing a result")
+        with launch_log_path.open(errors="replace") as launch_log:
+            launch_log.seek(log_offset)
+            new_log = launch_log.read()
+            log_offset = launch_log.tell()
+        evaluator_died = any(
+            "task_evaluator-" in line and "process has died" in line
+            for line in new_log.splitlines()
+        )
+        if evaluator_died:
+            raise RuntimeError(
+                "task_evaluator process died before writing a result"
+            )
         time.sleep(1)
     raise TimeoutError(f"evaluation result was not written: {result_path}")
 
@@ -179,13 +213,16 @@ def parse_args():
         "--robot-count", type=int, choices=range(1, 5), default=1
     )
     parser.add_argument("--gazebo-seed", type=int, default=1)
+    parser.add_argument("--goal-timeout", type=float, default=60.0)
     parser.add_argument("--spawn-timeout", type=float, default=90.0)
     parser.add_argument("--startup-timeout", type=float, default=180.0)
     parser.add_argument("--message-timeout", type=float, default=30.0)
     parser.add_argument("--dwell-seconds", type=float, default=5.0)
     parser.add_argument("--shutdown-timeout", type=float, default=30.0)
     parser.add_argument("--evaluation-duration", type=float, default=0.0)
+    parser.add_argument("--coverage-threshold", type=float, default=0.0)
     parser.add_argument("--evaluation-wait-timeout", type=float, default=180.0)
+    parser.add_argument("--episode-id")
     parser.add_argument(
         "--evaluation-output-dir",
         type=Path,
@@ -215,7 +252,7 @@ def main():
 
     args.log_dir.mkdir(parents=True, exist_ok=True)
     stamp = time.strftime("%Y%m%d-%H%M%S")
-    episode_id = (
+    episode_id = args.episode_id or (
         f"smoke_robots{args.robot_count}_seed{args.gazebo_seed}_{stamp}"
     )
     log_name = (
@@ -234,10 +271,12 @@ def main():
         "auto_save_map:=false",
         f"gazebo_seed:={args.gazebo_seed}",
         f"spawn_timeout:={args.spawn_timeout}",
+        f"exploration_goal_timeout_sec:={args.goal_timeout}",
         f"enable_task_evaluator:={str(args.evaluation_duration > 0).lower()}",
         f"evaluation_episode_id:={episode_id}",
         f"evaluation_output_dir:={args.evaluation_output_dir}",
         f"evaluation_duration_sec:={args.evaluation_duration}",
+        f"evaluation_coverage_threshold:={args.coverage_threshold}",
     ]
 
     print("Command:", " ".join(command), flush=True)
@@ -280,13 +319,18 @@ def main():
             if args.evaluation_duration > 0:
                 result_path = args.evaluation_output_dir / f"{episode_id}.json"
                 result = wait_for_evaluation(
-                    process, result_path, args.evaluation_wait_timeout
+                    process,
+                    result_path,
+                    log_path,
+                    args.evaluation_wait_timeout,
+                    args.coverage_threshold,
                 )
                 print(
                     "Evaluation result:",
                     result_path,
                     f"coverage={result['correct_free_coverage_ratio']:.3f}",
                     f"path={result['total_path_length_m']:.3f}m",
+                    f"termination={result['termination_reason']}",
                     flush=True,
                 )
             time.sleep(args.dwell_seconds)
