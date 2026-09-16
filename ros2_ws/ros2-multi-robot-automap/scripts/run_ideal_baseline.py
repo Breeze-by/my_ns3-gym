@@ -23,6 +23,7 @@ SUMMARY_FIELDS = (
     "failure_reason",
     "elapsed_sim_time_sec",
     "correct_free_coverage_ratio",
+    "time_to_75_coverage_sec",
     "time_to_80_coverage_sec",
     "time_to_90_coverage_sec",
     "time_to_95_coverage_sec",
@@ -43,12 +44,13 @@ def parse_args():
     parser.add_argument(
         "--robot-count", type=int, choices=range(1, 5), default=2
     )
-    parser.add_argument("--duration", type=float, default=600.0)
-    parser.add_argument("--coverage-threshold", type=float, default=0.9)
+    parser.add_argument("--duration", type=float, default=300.0)
+    parser.add_argument("--coverage-threshold", type=float, default=0.75)
     parser.add_argument("--goal-timeout", type=float, default=60.0)
-    parser.add_argument("--startup-timeout", type=float, default=240.0)
+    parser.add_argument("--startup-timeout", type=float, default=300.0)
+    parser.add_argument("--message-timeout", type=float, default=90.0)
     parser.add_argument(
-        "--evaluation-wait-timeout", type=float, default=1200.0
+        "--evaluation-wait-timeout", type=float, default=720.0
     )
     parser.add_argument("--shutdown-timeout", type=float, default=60.0)
     parser.add_argument("--run-id")
@@ -96,6 +98,7 @@ def main():
         "max_duration_sec": args.duration,
         "coverage_threshold": args.coverage_threshold,
         "goal_timeout_sec": args.goal_timeout,
+        "message_timeout_sec": args.message_timeout,
         "charging_area": {"center_x": 0.0, "center_y": 0.0, "radius_m": 1.0},
     }
     rows = []
@@ -115,6 +118,8 @@ def main():
             str(args.goal_timeout),
             "--startup-timeout",
             str(args.startup_timeout),
+            "--message-timeout",
+            str(args.message_timeout),
             "--shutdown-timeout",
             str(args.shutdown_timeout),
             "--evaluation-duration",

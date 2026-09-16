@@ -723,3 +723,121 @@ task handoff after one robot's local frontier supply is exhausted. Recommended
 next round: local frontier first; on exhaustion, propose a merged-map frontier
 and require that robot's Nav2 `ComputePathToPose` to return a path before sending
 `NavigateToPose`. Do not lower 90% or lengthen 600 s without user approval.
+
+## 2026-09-16 ROS 2 P1C optimization and threshold revision
+
+Purpose: continue P1C without changing the world, truth metric, robot count,
+frontier definition, or task logic; test algorithmic ways to exceed the prior
+baseline, replace the overly long 600 s episode with an evidence-based bound,
+and record failed approaches as well as the final result.
+
+Code state: base commit `23fb48e` plus the worktree changes committed with this
+entry. The pre-existing deletion of `report/20260914.md` and untracked
+`report/20260914_p1a.md` were not touched or included. No RL checkpoint applies.
+
+Focused validation used:
+
+```bash
+source /opt/ros/humble/setup.bash
+PYTHONNOUSERSITE=1 colcon build --symlink-install \
+  --packages-select multi_robot merge_map multi_robot_exploration
+source install/setup.bash
+PYTHONNOUSERSITE=1 python3 -m pytest \
+  src/multi_robot_exploration/test/test_control.py \
+  src/multi_robot_exploration/test/test_task_evaluator.py -q
+```
+
+Builds passed throughout. The final focused suite passed 5 tests; the added
+regression proves `fGroups` does not discard valid groups after the eighth.
+
+### Directed attempts
+
+The common directed command form was:
+
+```bash
+PYTHONNOUSERSITE=1 python3 scripts/ros_smoke_test.py \
+  --robot-count 2 --gazebo-seed 101 --goal-timeout GOAL_TIMEOUT \
+  --startup-timeout 300 --shutdown-timeout 60 \
+  --evaluation-duration DURATION --coverage-threshold 0.9 \
+  --evaluation-wait-timeout WAIT --episode-id EPISODE
+```
+
+| Episode | Changed method | Result |
+|---|---|---|
+| `p1c_shared_map_seed101_180` | merged map for control/Nav2, goal timeout 45, 180 s | Infrastructure FAIL before evaluation: `/merge_map` wait timed out at 30 s. |
+| `p1c_shared_map_seed101_180_retry1` | same, message timeout 60 | Infrastructure FAIL: frame id was also used as output topic, so the map was published as `/map`; no strategy result. |
+| `p1c_shared_map_seed101_180_retry2` | decoupled frame/topic experimentally, message timeout 45 | PASS infrastructure, timeout at 72.70%, 46.67 m, 2/9 goals succeeded, 6 canceled. Dynamic merged-map navigation was worse and was reverted. |
+| `p1c_reachable_frontier_seed101_180` | local known-free Dijkstra connectivity, goal timeout 45 | PASS, timeout at 71.42%, 15.41 m, 1/2 goals succeeded. Odom/map mismatch starved targets; reverted. |
+| `p1c_path_precheck_seed101_180` | Nav2 `ComputePathToPose` before navigation, goal timeout 45 | PASS, timeout at 73.61%, 37.51 m, 13/17 goals succeeded. Precheck rejected no candidate and did not improve coverage; reverted. |
+| `p1c_all_frontiers_seed101_180` | remove top-8 group cap, goal timeout restored to 60 | PASS, timeout at 78.35%, 44.06 m, 13/17 goals succeeded, zero collision. |
+| `p1c_all_frontiers_seed101_300` | same, 300 s | PASS, timeout against 90% at 80.25%, 63.36 m; 80% first reached at 210.6 s, zero collision. |
+
+The 180-to-300 s extension added only 1.90 coverage points despite another
+120 simulated seconds and 19.3 m path. Together with the prior 600 s failures,
+this supports 300 s as the P1C episode bound instead of waiting 600 s.
+
+### Multi-seed threshold experiments
+
+The first 80%/300 s batch
+`p1c_ideal_20260916_all_frontiers_80pct_300s` was intentionally interrupted
+after seed 101 had an infrastructure-only `/merge_map` message timeout. The
+runner did not expose `ros_smoke_test.py --message-timeout`; the partial batch
+was preserved and the runner was changed to pass that option.
+
+The complete 80% command was:
+
+```bash
+PYTHONNOUSERSITE=1 python3 scripts/run_ideal_baseline.py \
+  --seeds 101 102 103 --robot-count 2 \
+  --duration 300 --coverage-threshold 0.8 --goal-timeout 60 \
+  --startup-timeout 300 --message-timeout 90 \
+  --evaluation-wait-timeout 720 --shutdown-timeout 60 \
+  --run-id p1c_ideal_20260916_all_frontiers_80pct_300s_retry1
+```
+
+Result: 0/3 success and 0 infrastructure failures. Coverage was
+0.7568/0.7580/0.7965; paths were 76.09/56.22/71.53 m; goal success was
+13/19, 18/23, and 18/22; all seeds had zero collisions. This independently
+rejects 80% as a stable 300 s hard threshold.
+
+The final formal command was:
+
+```bash
+PYTHONNOUSERSITE=1 python3 scripts/run_ideal_baseline.py \
+  --seeds 101 102 103 --robot-count 2 \
+  --duration 300 --coverage-threshold 0.75 --goal-timeout 60 \
+  --startup-timeout 300 --message-timeout 90 \
+  --evaluation-wait-timeout 720 --shutdown-timeout 60 \
+  --run-id p1c_ideal_20260916_all_frontiers_75pct_300s
+```
+
+Result: 3/3 success, 0 infrastructure failures, and zero collisions. Seeds
+101/102/103 reached the threshold in 76.8/70.7/91.2 simulated seconds; their
+termination coverage was 0.7736/0.7500/0.7556, path was 23.59/22.56/24.16 m,
+and goal success was 2/4, 2/4, and 3/5. Output:
+`ros2_ws/ros2-multi-robot-automap/log/ideal_baseline/p1c_ideal_20260916_all_frontiers_75pct_300s/`.
+
+Conclusion: 90%/600 s and 80%/300 s are unsupported by repeated evidence.
+The highest round threshold shared by the complete 300 s three-seed batch was
+75%, and an independent threshold-triggered batch reproduced it on all three
+seeds. P1C now meets the revised engineering exit condition and awaits user
+review. This is a 75% ideal-communication exploration baseline, not a claim of
+complete mapping or readiness of the unimplemented target/network stages.
+
+After adding the 75% milestone field to the evaluator schema, final validation
+used the build/test command above (5 tests passed) and this non-performance
+smoke:
+
+```bash
+PYTHONNOUSERSITE=1 python3 scripts/ros_smoke_test.py \
+  --robot-count 1 --gazebo-seed 104 \
+  --startup-timeout 240 --message-timeout 90 --shutdown-timeout 60 \
+  --evaluation-duration 5 --coverage-threshold 0.75 \
+  --evaluation-wait-timeout 300 \
+  --episode-id p1c_schema75_smoke_seed104
+```
+
+Result: PASS infrastructure and expected timeout after 5 simulated seconds at
+0.027 coverage and 0.000 m path. The result included
+`time_to_75_coverage_sec=null`, confirming the final evaluator/smoke schema.
+Output: `ros2_ws/ros2-multi-robot-automap/log/evaluation/p1c_schema75_smoke_seed104.json`.

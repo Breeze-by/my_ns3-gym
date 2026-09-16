@@ -137,6 +137,7 @@ def wait_for_evaluation(
                 "total_path_length_m",
                 "truth_rectangle_count",
                 "success",
+                "time_to_75_coverage_sec",
             }
             missing = required - result.keys()
             if missing:

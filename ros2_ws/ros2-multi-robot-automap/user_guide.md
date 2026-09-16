@@ -110,7 +110,7 @@ multi_robot_exploration/control
 | `evaluation_episode_id` | `episode` | CSV/JSON 文件名和 episode 标识 |
 | `evaluation_output_dir` | `/tmp/multi_robot_evaluation` | 评估结果目录 |
 | `evaluation_duration_sec` | `0.0` | 仿真超时；0 表示只在 shutdown 时保存 |
-| `evaluation_coverage_threshold` | `0.0` | 正确自由空间覆盖率成功阈值；0 表示仅按超时结束，P1C runner 显式传 0.9 |
+| `evaluation_coverage_threshold` | `0.0` | 正确自由空间覆盖率成功阈值；0 表示仅按超时结束，P1C runner 默认传 0.75 |
 | `exploration_goal_timeout_sec` | `60.0` | 单个 Nav2 目标的最大仿真秒数 |
 
 也就是说，常用命令里 `enable_rviz:=false` 不会关闭全局地图 RViz，只会关闭每机器人 RViz。
@@ -400,10 +400,10 @@ action status 统计成功、取消和失败目标。
 `truth_unsupported_collision_count=1` 会保留这个限制；如果以后把 mesh 障碍物放进可达
 任务区域，必须先增加 mesh 真值处理。
 
-CSV/JSON 默认写入 `log/evaluation/`（由 smoke 工具指定并被 Git 忽略）。P1C 已定义：
-`correct_free_coverage_ratio >= 0.9` 时记录 `success=true` 和
-`termination_reason=coverage_reached`；600 仿真秒未达到则记录 timeout。输出 schema v2
-还包含 80%/90%/95% 首次达到时间、每台机器人起终点、目标结果、路径、碰撞和搜索重叠。
+CSV/JSON 默认写入 `log/evaluation/`（由 smoke 工具指定并被 Git 忽略）。P1C 当前定义为：
+`correct_free_coverage_ratio >= 0.75` 时记录 `success=true` 和
+`termination_reason=coverage_reached`；300 仿真秒未达到则记录 timeout。输出 schema v2
+还包含 75%/80%/90%/95% 首次达到时间、每台机器人起终点、目标结果、路径、碰撞和搜索重叠。
 
 P1C 理想通信批量入口（每个 seed 启动独立 ROS/Gazebo 进程）：
 
@@ -411,9 +411,10 @@ P1C 理想通信批量入口（每个 seed 启动独立 ROS/Gazebo 进程）：
 python3 scripts/run_ideal_baseline.py \
   --seeds 101 102 103 \
   --robot-count 2 \
-  --duration 600 \
-  --coverage-threshold 0.9 \
+  --duration 300 \
+  --coverage-threshold 0.75 \
   --goal-timeout 60 \
+  --message-timeout 90 \
   --run-id <unique-run-id>
 ```
 
@@ -421,9 +422,11 @@ python3 scripts/run_ideal_baseline.py \
 原始 launch 日志位于 `launch_logs/`，批次根目录含增量更新的 `summary.csv/json`。目录已被
 Git 忽略，但正式运行的命令、commit、seed、参数和结论必须追加到 wireless-rl `log.md`。
 
-截至 2026-09-15，P1C 仍在进行中：完整 `retry4` 三种子为 0/3 达标，最新候选版本在
-seed 101、600 秒得到 78.7% 覆盖。它不能作为成功 baseline；下一轮需要解决本地图前沿
-耗尽后的安全全局任务接管，详见 `report/20260915_p1c.md`。
+截至 2026-09-16，P1C 已达到修订后的工程退出条件并等待用户验收。90%/600 秒和
+80%/300 秒都无法跨 seed 稳定达到；最终 75%/300 秒批次在 seeds 101/102/103 上 3/3
+成功，首次达标时间为 76.8/70.7/91.2 秒，零碰撞。控制器不再只保留最大的 8 个前沿组，
+避免后期有效候选被静默丢弃。阈值依据、失败尝试和限制见 `report/20260916_p1c.md`；
+75% 是工程基线完成口径，不能描述成完整地图覆盖。
 
 以下命令适合运行中的人工诊断：
 

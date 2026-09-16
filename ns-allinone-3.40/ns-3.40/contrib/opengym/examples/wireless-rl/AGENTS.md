@@ -1,7 +1,7 @@
 # wireless-rl Codex Memory
 
 Last verified against source, local 1/2/3-robot headless smoke tests, P1B
-evaluator tests, and the in-progress P1C ideal baseline: 2026-09-15.
+evaluator tests, and the P1C ideal baseline awaiting user review: 2026-09-16.
 
 This directory is the active project inside the larger ns-3 workspace. It is a
 toy ns3-gym scheduling MDP, not a full Wi-Fi/5G network simulation.
@@ -26,8 +26,9 @@ Use current code as the source of truth. Read in this order:
 4. `sim.cc` for the actual environment state transition and reward timing.
 5. `test.py` and `run_baselines.py` for baseline semantics and CSV fields.
 6. `dqn_common.py`, `train_dqn.py`, and `evaluate_dqn.py` for DQN behavior.
-7. `report/20260914.md`, `report/20260914_p1b.md`, and
-   `report/20260915_p1c.md` for the ROS engineering checkpoints.
+7. `report/20260914.md`, `report/20260914_p1b.md`,
+   `report/20260915_p1c.md`, and `report/20260916_p1c.md` for the ROS
+   engineering checkpoints.
 8. `report/20260902.md`, `report/20260429.md`, and `log.md` for historical
    experiment context.
 
@@ -43,17 +44,17 @@ episode CSV/JSON. Its 2026-09-14 one- and two-robot short timeout runs passed.
 The current world has one unsupported mesh collision (an SUV outside the lab
 walls).
 
-P1C is in progress. The accepted contract is two robots starting inside the
-same radius-1 m start/charging region in `my_world.world`, success at 90%
-correct-free coverage, and timeout at 600 simulated seconds. The evaluator now
-implements that rule, the south outer doorway is closed, the serial multi-seed
-runner uses seeds 101–103, and the smoke gate checks controller, planner, and
-BT navigator lifecycle state. The 2026-09-14 `retry4` run passed infrastructure
-for all three seeds but reached only 75.7%–78.6% coverage. A later seed-101 run
-with per-robot local frontiers and successful-goal history reached 78.7% in
-600 seconds with 100.6 m path and 25/31 successful goals. Do not claim P1C is
-complete or proceed to P2 until the user reviews the documented blocker and a
-follow-up exploration design reaches the exit condition.
+P1C meets its evidence-based revised exit condition and is waiting for user
+review. Two robots start inside the same radius-1 m start/charging region in
+`my_world.world`; success is 75% correct-free coverage within 300 simulated
+seconds. The earlier 90%/600 s contract failed repeatedly, and a 2026-09-16
+80%/300 s three-seed batch also failed at 75.7%/75.8%/79.7%. The controller
+now evaluates every frontier group meeting the minimum size instead of
+silently discarding all but the largest eight. The final seeds 101–103 batch
+reached 75% in 70.7–91.2 simulated seconds with 3/3 success, no infrastructure
+failures, and zero collisions. Do not proceed to P2 until the user accepts the
+revised threshold and P1C result; 80%/90%/95% remain higher milestones, not
+claims made by this baseline.
 
 Do not treat the dated report as current configuration. Do not overwrite it
 when current code changes; write a new dated report for a new research stage.

@@ -22,3 +22,14 @@ def test_frontier_group_uses_an_alternative_to_last_target():
 
     assert target is not None
     assert np.linalg.norm(np.subtract(target, last_target)) >= 0.8
+
+
+def test_frontier_group_filter_does_not_drop_later_valid_groups():
+    groups = {
+        index: [(0, column) for column in range(size)]
+        for index, size in enumerate(range(20, 10, -1), start=1)
+    }
+
+    filtered = control.fGroups(groups)
+
+    assert len(filtered) == len(groups)

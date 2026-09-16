@@ -277,7 +277,7 @@ class TaskEvaluator(Node):
         self.map_message_count = 0
         self.model_state_message_count = 0
         self.start_sim_time = None
-        self.coverage_times = {0.8: None, 0.9: None, 0.95: None}
+        self.coverage_times = {0.75: None, 0.8: None, 0.9: None, 0.95: None}
         self.finalized = False
 
         map_qos = QoSProfile(depth=1)
@@ -510,6 +510,7 @@ class TaskEvaluator(Node):
             "termination_reason": termination_reason,
             "failure_reason": "" if success else termination_reason,
             "coverage_threshold": self.coverage_threshold,
+            "time_to_75_coverage_sec": self.coverage_times[0.75],
             "time_to_80_coverage_sec": self.coverage_times[0.8],
             "time_to_90_coverage_sec": self.coverage_times[0.9],
             "time_to_95_coverage_sec": self.coverage_times[0.95],

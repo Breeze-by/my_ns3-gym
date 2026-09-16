@@ -78,8 +78,11 @@ def dfs(matrix, i, j, group, groups):
 
 def fGroups(groups):
     sorted_groups = sorted(groups.items(), key=lambda x: len(x[1]), reverse=True)
-    top_five_groups = [g for g in sorted_groups[:8] if len(g[1]) >= min_frontier_group_size]
-    return top_five_groups
+    return [
+        group
+        for group in sorted_groups
+        if len(group[1]) >= min_frontier_group_size
+    ]
 
 def calculate_centroid(x_coords, y_coords):
     n = len(x_coords)
@@ -380,7 +383,7 @@ class HeadquartersControl(Node):
             time.sleep(8)
         # Check for exploration completion after all goals are completed
         self.check_exploration_completion()
-            
+
     def send_goal(self, robot_name, target):
         """Send a navigation goal to the robot."""
         if robot_name in self.robot_nav_clients and self.robot_nav_clients[robot_name].wait_for_server(timeout_sec=2.0):
