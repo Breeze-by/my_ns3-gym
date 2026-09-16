@@ -43,13 +43,14 @@ the source of experimental claims.
 
 ## Current Handoff
 
-As of 2026-09-16, `main` includes readiness-gate implementation commit
-`00c0de2`. P1C is the active checkpoint and is waiting for user acceptance:
-the unchanged two-robot task reached 90% correct-free coverage within 180
-simulated seconds on seeds 101/202/303. The startup gate replaces the fixed
-post-Nav2 delay with all-robot `/tbN/navigate_to_pose` readiness; it does not
-change the exploration, navigation, fusion, world, or evaluation rules. Do not
-begin P2 unless the user accepts P1C.
+As of 2026-09-17, P1C implementation and formal 2/3-robot validation are
+complete and waiting for user acceptance. With the world, truth map, coverage
+definition, sensor model, speed, and safety constraints unchanged, two robots
+reach 90% on seeds 101/202/303 in 98.9/79.6/104.4 simulated seconds and three
+robots in 78.3/69.8/69.5 seconds. All six final episodes have zero collisions;
+maximum search overlap is 0.44%. Keep the 180-second hard episode bound, with
+120 seconds (two robots) and 90 seconds (three robots) as evidence-based
+worst-seed acceptance thresholds. Do not begin P2 until the user accepts P1C.
 
 The detailed metrics, validation commands, known limitations, and intentionally
 uncommitted user report files are recorded in the nested `wireless-rl/AGENTS.md`.

@@ -1,8 +1,8 @@
 # wireless-rl Codex Memory
 
 Last verified against source, local 1/2/3-robot headless smoke tests, P1B
-evaluator tests, the P1C ideal baseline awaiting user review, and the Nav2
-readiness-gated startup at commit `00c0de2`: 2026-09-16.
+evaluator tests, and final P1C 2/3-robot three-seed batches: 2026-09-17. P1C is
+implemented and waiting for user acceptance; do not begin P2 before acceptance.
 
 This directory is the active project inside the larger ns-3 workspace. It is a
 toy ns3-gym scheduling MDP, not a full Wi-Fi/5G network simulation.
@@ -46,7 +46,7 @@ The current world has one unsupported mesh collision (an SUV outside the lab
 walls).
 
 P1C now meets the original 90% coverage intent with a shorter evidence-based
-time bound and is waiting for user review. Two robots start inside the same
+time bound and is waiting for user review. All robots start inside the same
 radius-1 m start/charging region in `my_world.world`; success is 90%
 correct-free coverage within 180 simulated seconds. Earlier 75%/300 s results
 were symptoms of foundational defects, not an exploration ceiling: the custom
@@ -54,28 +54,28 @@ SLAM callback never enabled `map->odom`, AMCL competed with SLAM during mapping,
 the coordinator treated odometry as map coordinates, and frontier selection
 blocked on a quadratic nearest-frontier loop. After fixing those causes and
 using diverse, reachable 0.45 m-clearance observation points, seeds 101/202/303
-reached 90% in 141.3/161.4/134.9 seconds and finished at
-93.87%/93.90%/93.88%, with zero collisions and zero search overlap. Do not
-proceed to P2 until the user accepts P1C; 95% remains a higher milestone.
+reached 90% in 141.3/161.4/134.9 seconds, establishing the pre-optimization
+baseline. The final shared-map/Smac/staged-navigation controller reaches 90%
+with two robots in 98.9/79.6/104.4 seconds (mean 94.3) and with three robots in
+78.3/69.8/69.5 seconds (mean 72.5) on seeds 101/202/303. All six final episodes
+have zero collisions; maximum search overlap is 0.44%. Do not proceed to P2
+until P1C is accepted; 95% remains optional.
 
 ## Current Handoff Snapshot
 
-- Current implementation anchor: `00c0de2 Gate exploration on Nav2 readiness`
-  on `main`; later documentation-only commits do not invalidate this anchor.
-- Active boundary: P1C is `待用户验收`; do not start P2A without explicit user
-  acceptance and target-detection requirements.
-- Formal P1C evidence was produced at `fd5f6ff`: seeds 101/202/303 reached
-  93.87%/93.90%/93.88% by 180 simulated seconds, first reaching 90% at
-  141.3/161.4/134.9 seconds, with zero collisions and zero search overlap.
-- Commit `00c0de2` changes startup only. It starts the coordinator immediately
-  after every `/tbN/navigate_to_pose` action server is ready and refuses to
-  start on gate timeout. A two-robot seed-101 smoke passed: both servers were
-  ready 56.7 wall seconds after the gate began, and both robots received
-  distinct goals 7.0 seconds later. The formal three-seed P1C batch was not
-  rerun because task logic and evaluation semantics did not change.
-- Latest validation: the `multi_robot` and `multi_robot_exploration` build
-  passed; launch arguments parsed; the two-robot headless smoke passed; the
-  aggregate colcon result was 18 tests, 0 failures, 2 copyright skips.
+- Active boundary: P1C is `待用户验收`; do not start P2A.
+- Final P1C evidence uses seeds 101/202/303, 90% correct-free coverage, and an
+  unchanged 180-second hard limit. Two-robot time-to-90 is
+  98.9/79.6/104.4 seconds; three-robot time-to-90 is 78.3/69.8/69.5 seconds.
+- The controller extracts frontiers and paths from `/merge_map`, assigns
+  spatially distinct goals, excludes teammate positions, and stages paths over
+  5 m. Nav2 consumes the same merged map with Smac 2D and a complete non-rolling
+  global costmap. Local lidar/DWB still performs dynamic obstacle avoidance.
+- The readiness gate requires both action discovery and
+  `/tbN/bt_navigator=active`; action discovery alone previously admitted a
+  stack that rejected every goal.
+- Final validation and commit/push details are recorded in `log.md` and
+  `report/20260917_p1c_optimization.md`.
 - No ROS/Gazebo experiment process was running when this handoff was written.
 - The worktree intentionally still contains user-owned report changes:
   deleted `report/20260914.md` and untracked `report/20260914_p1a.md`. Do not
@@ -85,7 +85,7 @@ For a manual two-robot Gazebo demonstration, use `enable_merge_rviz:=false` to
 avoid running both heavy visual frontends. Successful startup prints:
 
 ```text
-All 2 Nav2 action servers are ready.
+All 2 Nav2 stacks are active.
 Nav2 ready; starting cooperative exploration.
 ```
 

@@ -1022,3 +1022,116 @@ Validation also covered the gate's ready/missing helper logic, timeout exit,
 launch argument parsing, package lint, and build. `multi_robot_exploration`
 reported 12 passed and 1 copyright skip; the aggregate colcon result contained
 18 tests, 0 errors, 0 failures, and 2 skips.
+
+## 2026-09-17 ROS 2 P1C time-to-90 optimization
+
+Purpose: complete P1C for two and three robots by reducing time-to-90 through
+better frontier computation, shared-map coordination, map-aware navigation and
+reliable long-route execution. The world, truth raster, coverage definition,
+90% threshold, robot speed, lidar and collision semantics were unchanged.
+
+Code state started from `8b10b29` plus the iterative worktree described below.
+The user-owned deleted `report/20260914.md` and untracked
+`report/20260914_p1a.md` were not touched. Runtime outputs are ignored under
+the ROS workspace `log/` tree.
+
+Unless stated otherwise, two-robot attempts used:
+
+```bash
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+python3 scripts/ros_smoke_test.py \
+  --robot-count 2 --gazebo-seed SEED \
+  --evaluation-duration 180 --coverage-threshold 0.90 \
+  --evaluation-wait-timeout 270 --startup-timeout 180 \
+  --message-timeout 90 --shutdown-timeout 60 \
+  --episode-id EPISODE
+```
+
+Three-robot attempts used the same command with `--robot-count 3`,
+`--evaluation-wait-timeout 300`, and `--startup-timeout 210`.
+
+### Iterative experiments, including rejected attempts
+
+| Episode | Result | Conclusion |
+|---|---|---|
+| `p1c_fast_v1_2r_seed101` | timeout, coverage 0.88947, time80 82.5 s, path 58.412 m, 3 collisions | Vectorized controller made early exploration fast but linear distance utility selected long redundant routes; rejected. Raw log `robots2_seed101_20260916-235420.log`. |
+| `p1c_fast_v2_2r_seed101` | time90 138.1 s, coverage 0.92583, path 40.227 m, 0 collisions | Path exponent and stale-frontier cancellation recovered 90%, but Navfn spent about 36 s retrying invalid far goals. Raw log `robots2_seed101_20260917-001206.log`. |
+| `p1c_fast_v3_2r_seed101` | time90 131.0 s, coverage 0.90330, path 48.056 m, 0 collisions | Ten-second no-progress stop saved another 7.1 s, but 9 cancellations showed that stop rules alone were insufficient. Raw log `robots2_seed101_20260917-001736.log`. |
+| `p1c_shared_nav_v4_2r_seed101` | time90 137.4 s, 16 cancels, 12 planner-error log lines | Feeding `/merge_map` to Navfn did not repair the planner; reverted as a standalone solution. Raw log `robots2_seed101_20260917-002306.log`. |
+| `p1c_smac_v5_2r_seed101` | timeout at 0.86098, path 46.725 m, 20 cancels | Smac removed Navfn errors but private per-robot maps still prevented cross-map execution. Raw log `robots2_seed101_20260917-002752.log`. |
+| `p1c_shared_smac_v6_2r_seed101/202/303` | time90 83.7/144.8/143.8 s; mean 124.1 s; all zero collision | Shared global map and Smac must be used together. Seed101 improved sharply, while 10–12 m goals still produced long tails on 202/303. Raw logs `robots2_seed101_20260917-003248.log`, `robots2_seed202_20260917-003552.log`, and `robots2_seed303_20260917-003956.log`. |
+| `p1c_full_global_v7_2r_seed303/202/101` | time90 138.3/98.9/148.4 s; zero collision | Non-rolling full global costmap removed most out-of-window failures; seed101 still thrashed on stale far frontiers. Raw logs `robots2_seed303_20260917-004437.log`, `robots2_seed202_20260917-004830.log`, and `robots2_seed101_20260917-005146.log`. |
+| `p1c_transit_v8_2r_seed101` | timeout at 0.84907, path 44.080 m | Treating every far goal as a transport goal without segmentation caused repeated no-progress cancellation; rejected. Raw log `robots2_seed101_20260917-005703.log`. |
+| `p1c_staged_v9_2r_seed101/202` | time90 78.7/122.8 s; zero collision | Five-metre Dijkstra legs worked, but staging on private maps could choose a waypoint invalid in Nav2's merged map. Raw logs `robots2_seed101_20260917-010503.log` and `robots2_seed202_20260917-010758.log`. |
+| `p1c_end_to_end_v10_2r_seed101/202/303` | time90 139.7/91.2/103.0 s; mean 111.3 s; zero collision | Frontier extraction, staging and Nav2 were unified on `/merge_map`; all seeds passed, but same-frontier reactions still caused seed101 churn. Raw logs `robots2_seed101_20260917-011547.log`, `robots2_seed202_20260917-011230.log`, and `robots2_seed303_20260917-011943.log`. |
+| `p1c_end_to_end_v10_3r_seed101` | time90 62.8 s, path 35.113 m, zero collision/overlap | First valid three-robot speed result; all robots had about 12 m paths and 5 successful goals. Raw log `robots3_seed101_20260917-012302.log`. |
+| `p1c_end_to_end_v10_3r_seed202` | time90 145.0 s, 8 collisions, overlap 0.0761 | tb2/tb3 crossed in shared corridors; proved endpoint separation alone was insufficient. Raw log `robots3_seed202_20260917-012630.log`. |
+| `p1c_end_to_end_v10_3r_seed303` | infrastructure FAIL, `/tb2/navigate_to_pose` unavailable and no `/merge_map` | Nav2 lifecycle activation timed out; no evaluator episode started. Raw log `robots3_seed303_20260917-013132.log`. |
+| `p1c_safe_v11_3r_seed202` | nominal time90 129.0 s, 9 collisions, tb1 path 0.021 m | Invalid comparison: action discovery gate admitted tb1 although every goal was rejected after lifecycle failure. This triggered the lifecycle-aware gate repair. Raw log `robots3_seed202_20260917-013748.log`. |
+| `p1c_ready_safe_v12_3r_seed202` | infrastructure FAIL, evaluator result absent | First lifecycle gate queried nine services during activation; two requests hung and prevented gate completion. No exploration episode started. Raw log `robots3_seed202_20260917-014442.log`. |
+
+Controller computation was profiled on a representative 256x214 grid. The
+pre-optimization candidate pass took about 1.165 s per robot. SciPy connected
+components, binary dilation, distance transforms and sparse Dijkstra reduced it
+to about 0.103 s, approximately 11x faster. Focused control tests passed after
+each accepted change; intermediate suites progressed from 7 to 8 tests.
+
+### Final code-state evidence
+
+The final controller uses the merged map for frontier extraction, global
+information gain, shortest paths and staged waypoints; Nav2 uses the same map
+with Smac 2D and a non-rolling complete global costmap. Routes over 5 m are
+staged. Candidate goals exclude current teammate positions. The gate first
+waits for each action server, then requires `/tbN/bt_navigator=active`; stalled
+state queries are retried after 2 wall seconds.
+
+Final two-robot episodes:
+
+| Seed | Episode | Coverage | time90 | Path | Success/cancel/abort | Collision | Overlap |
+|---:|---|---:|---:|---:|---:|---:|---:|
+| 101 | `p1c_final_v13_2r_seed101` | 0.91572 | 98.9 s | 34.931 m | 17/2/0 | 0 | 0 |
+| 202 | `p1c_final_v13_2r_seed202` | 0.91389 | 79.6 s | 29.877 m | 13/1/0 | 0 | 0 |
+| 303 | `p1c_final_v13_2r_seed303` | 0.91217 | 104.4 s | 34.057 m | 15/3/0 | 0 | 0 |
+
+Mean time90 was 94.3 s, mean path 32.955 m, and mean observed accuracy
+97.25%. Relative to the unchanged pre-optimization mean 145.9 s, time90 fell
+by 51.6 s (35.4%). Raw logs are `robots2_seed101_20260917-020427.log`,
+`robots2_seed202_20260917-020734.log`, and
+`robots2_seed303_20260917-021024.log`.
+
+Final three-robot episodes:
+
+| Seed | Episode | Coverage | time90 | Path | Success/cancel/abort | Collision | Overlap |
+|---:|---|---:|---:|---:|---:|---:|---:|
+| 101 | `p1c_ready_safe_v13_3r_seed101` | 0.92023 | 78.3 s | 40.687 m | 12/6/0 | 0 | 0 |
+| 202 | `p1c_ready_safe_v13_3r_seed202` | 0.90066 | 69.8 s | 37.431 m | 19/5/0 | 0 | 0 |
+| 303 | `p1c_ready_safe_v13_3r_seed303` | 0.91765 | 69.5 s | 38.519 m | 13/5/0 | 0 | 0.00444 |
+
+Mean time90 was 72.5 s, mean path 38.879 m, and mean observed accuracy
+97.59%. Each robot had a substantive path in every final episode. Raw logs are
+`robots3_seed101_20260917-020031.log`,
+`robots3_seed202_20260917-015248.log`, and
+`robots3_seed303_20260917-015645.log`.
+
+Conclusion: all six final episodes reached 90% under the unchanged contract and
+had zero collisions. Keep the 180 simulated-second hard bound, and use 120 s
+for two robots and 90 s for three robots as conservative worst-seed acceptance
+thresholds for this fixed three-seed set. P1C moves to `待用户验收`; P2 remains
+out of scope until acceptance. Full analysis is in
+`report/20260917_p1c_optimization.md`.
+
+Final validation at the completed worktree state:
+
+```bash
+source /opt/ros/humble/setup.bash
+colcon build --symlink-install \
+  --packages-select multi_robot multi_robot_exploration
+colcon test --packages-select merge_map multi_robot_exploration multi_robot \
+  --event-handlers console_direct+
+colcon test-result --verbose
+```
+
+Build passed. The focused controller/readiness suite passed 11/11. The package
+suite reported 22 tests, 0 errors, 0 failures, and 2 copyright skips.
+`git diff --check` and Python byte-compilation also passed.

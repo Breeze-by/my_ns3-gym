@@ -107,7 +107,7 @@ multi_robot_exploration/control
 | `enable_merge_rviz` | `true` | 是否启动一个全局 `/merge_map` RViz |
 | `gazebo_seed` | `1` | Gazebo 随机种子；正式运行必须显式记录 |
 | `spawn_timeout` | `90.0` | 每台机器人等待 Gazebo spawn 服务的秒数 |
-| `nav2_ready_timeout_sec` | `180.0` | 等待全部 Nav2 action server 的最长墙钟秒数；超时不启动探索 |
+| `nav2_ready_timeout_sec` | `180.0` | 等待全部 Nav2 action 可发现且 `bt_navigator=active` 的最长墙钟秒数；超时不启动探索 |
 | `auto_save_map` | `true` | headquarters 是否自动保存合并地图；smoke 时关闭 |
 | `enable_task_evaluator` | `false` | 是否启动只读任务评估器 |
 | `evaluation_episode_id` | `episode` | CSV/JSON 文件名和 episode 标识 |
@@ -449,11 +449,13 @@ python3 scripts/run_ideal_baseline.py \
 原始 launch 日志位于 `launch_logs/`，批次根目录含增量更新的 `summary.csv/json`。目录已被
 Git 忽略，但正式运行的命令、commit、seed、参数和结论必须追加到 wireless-rl `log.md`。
 
-截至 2026-09-16，P1C 已达到 90%/180 秒工程退出条件并等待用户验收。seeds 101/202/303
-在不修改 world、真值和评价规则的情况下，180 秒覆盖率为 93.87%/93.90%/93.88%，
-90% 首达时间为 141.3/161.4/134.9 秒；三轮均零碰撞、零搜索重叠。早期 75%/300 秒结论
-保留为缺陷修复前的历史结果，不再是当前基线。根因、失败尝试和完整结果见
-`report/20260916_p1c_foundation.md`；95% 仍是更高覆盖目标。
+截至 2026-09-17，P1C 已完成实现并等待用户验收。world、真值、评价规则、速度和传感器
+保持不变时，最终代码在 seeds 101/202/303 上的 90% 首达时间为：2 机器人
+98.9/79.6/104.4 秒（均值 94.3 秒），3 机器人 78.3/69.8/69.5 秒（均值 72.5 秒）。
+六轮全部零碰撞；两机器人零搜索重叠，三机器人最大重叠 0.44%。因此 180 秒作为硬上限，
+当前验收线为 2 机器人最慢不高于 120 秒、3 机器人最慢不高于 90 秒；600 秒不再使用。
+早期结果保留为缺陷修复历史。完整优化与失败尝试见
+`report/20260917_p1c_optimization.md`；95% 仍是可选更高覆盖目标。
 
 以下命令适合运行中的人工诊断：
 

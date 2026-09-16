@@ -98,3 +98,25 @@ def test_large_frontier_provides_spatially_diverse_candidates():
         for index, first in enumerate(targets)
         for second in targets[index + 1:]
     )
+
+
+def test_exploration_utility_penalizes_trivial_motion():
+    short_hop = control.exploration_utility(1000, 100, 0.2)
+    useful_hop = control.exploration_utility(1000, 100, 0.75)
+
+    assert useful_hop > short_hop
+
+
+def test_goal_replans_after_information_is_observed():
+    assert not control.goal_is_stale(1000, 100, 2.9)
+    assert not control.goal_is_stale(1000, 300, 10.0)
+    assert control.goal_is_stale(1000, 200, 10.0)
+
+
+def test_path_waypoint_limits_navigation_leg():
+    traversable = np.ones((1, 11), dtype=bool)
+
+    assert control.path_waypoint(traversable, (0, 0), (0, 10), 4.0) == (
+        0,
+        4,
+    )

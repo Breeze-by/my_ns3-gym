@@ -69,8 +69,8 @@ def launch_setup(context, *args, **kwargs):
         },
         {
             "name": "tb3",
-            "x_pose": "6.0",
-            "y_pose": "-1.5",
+            "x_pose": "0.45",
+            "y_pose": "0.0",
             "z_pose": "0.01",
             "roll": "0.00",
             "pitch": "0.00",

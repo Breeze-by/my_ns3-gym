@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-import heapq
 import math
 import os
 import subprocess
@@ -16,6 +15,9 @@ import rclpy
 from rclpy.action import ActionClient
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
+from scipy import ndimage
+from scipy.sparse import coo_matrix
+from scipy.sparse.csgraph import dijkstra
 from tf2_msgs.msg import TFMessage
 
 
@@ -27,9 +29,15 @@ VIEWPOINT_SEARCH_RADIUS_M = 0.8
 INFORMATION_RADIUS_M = 2.0
 MIN_TARGET_SEPARATION_M = 1.2
 MAX_TARGET_PATH_M = 12.0
+MAX_NAVIGATION_LEG_M = 5.0
 TARGET_HISTORY_SEC = 10.0
 BAD_TARGET_SEC = 30.0
-NO_PROGRESS_SEC = 30.0
+NO_PROGRESS_SEC = 10.0
+USEFUL_TRAVEL_M = 0.75
+PATH_COST_EXPONENT = 1.5
+GOAL_REPLAN_SEC = 3.0
+MIN_REMAINING_GAIN = 200
+MIN_REMAINING_GAIN_FRACTION = 0.2
 
 
 @dataclass(frozen=True)
@@ -50,6 +58,8 @@ class Assignment:
     y: float
     path_distance_m: float
     utility: float
+    navigation_x: float
+    navigation_y: float
 
 
 def grid_to_world(row, column, resolution, origin_x, origin_y):
@@ -91,60 +101,25 @@ def frontier_groups(raw_grid, minimum_size=MIN_FRONTIER_GROUP_SIZE):
     adjacent_unknown[:, :-1] |= unknown[:, 1:]
     frontier = free & adjacent_unknown
 
-    groups = []
-    seen = np.zeros_like(frontier)
-    height, width = frontier.shape
-    for start_row, start_column in zip(*np.nonzero(frontier)):
-        if seen[start_row, start_column]:
-            continue
-        stack = [(start_row, start_column)]
-        seen[start_row, start_column] = True
-        group = []
-        while stack:
-            row, column = stack.pop()
-            group.append((row, column))
-            for dr in (-1, 0, 1):
-                for dc in (-1, 0, 1):
-                    if dr == 0 and dc == 0:
-                        continue
-                    next_row = row + dr
-                    next_column = column + dc
-                    if not (
-                        0 <= next_row < height
-                        and 0 <= next_column < width
-                    ):
-                        continue
-                    if (
-                        frontier[next_row, next_column]
-                        and not seen[next_row, next_column]
-                    ):
-                        seen[next_row, next_column] = True
-                        stack.append((next_row, next_column))
-        if len(group) >= minimum_size:
-            groups.append(group)
-    return sorted(groups, key=len, reverse=True)
+    labels, count = ndimage.label(
+        frontier, structure=np.ones((3, 3), dtype=np.uint8)
+    )
+    sizes = np.bincount(labels.ravel())
+    qualifying = [
+        label
+        for label in range(1, count + 1)
+        if sizes[label] >= minimum_size
+    ]
+    qualifying.sort(key=lambda label: sizes[label], reverse=True)
+    return [np.argwhere(labels == label) for label in qualifying]
 
 
 def inflated_obstacle_mask(raw_grid, clearance_cells):
     occupied = raw_grid >= OCCUPIED_THRESHOLD
-    inflated = occupied.copy()
-    height, width = occupied.shape
-    for dr in range(-clearance_cells, clearance_cells + 1):
-        for dc in range(-clearance_cells, clearance_cells + 1):
-            if dr * dr + dc * dc > clearance_cells * clearance_cells:
-                continue
-            source_r0 = max(0, -dr)
-            source_r1 = min(height, height - dr)
-            source_c0 = max(0, -dc)
-            source_c1 = min(width, width - dc)
-            target_r0 = source_r0 + dr
-            target_r1 = source_r1 + dr
-            target_c0 = source_c0 + dc
-            target_c1 = source_c1 + dc
-            inflated[target_r0:target_r1, target_c0:target_c1] |= occupied[
-                source_r0:source_r1, source_c0:source_c1
-            ]
-    return inflated
+    offsets = np.arange(-clearance_cells, clearance_cells + 1)
+    rows, columns = np.meshgrid(offsets, offsets, indexing="ij")
+    footprint = rows * rows + columns * columns <= clearance_cells**2
+    return ndimage.binary_dilation(occupied, structure=footprint)
 
 
 def traversable_grid(raw_grid, resolution, clearance_m=ROBOT_CLEARANCE_M):
@@ -211,83 +186,98 @@ def frontier_viewpoints(raw_grid, groups, traversable, resolution, limit=12):
     )
     unknown_integral = _integral_image(raw_grid < 0)
     viewpoints = {}
+    if not groups:
+        return viewpoints
+
+    frontier_labels = np.zeros(raw_grid.shape, dtype=np.int32)
+    for group_id, group in enumerate(groups, start=1):
+        frontier_labels[group[:, 0], group[:, 1]] = group_id
+    distances, nearest = ndimage.distance_transform_edt(
+        frontier_labels == 0, return_indices=True
+    )
+    nearest_groups = frontier_labels[nearest[0], nearest[1]]
+    eligible = (
+        traversable
+        & (nearest_groups > 0)
+        & (distances <= search_cells)
+    )
+    rows, columns = np.nonzero(eligible)
+    if not rows.size:
+        return viewpoints
+
+    row0 = np.maximum(0, rows - information_cells)
+    row1 = np.minimum(height, rows + information_cells + 1)
+    column0 = np.maximum(0, columns - information_cells)
+    column1 = np.minimum(width, columns + information_cells + 1)
+    gains = (
+        unknown_integral[row1, column1]
+        - unknown_integral[row0, column1]
+        - unknown_integral[row1, column0]
+        + unknown_integral[row0, column0]
+    )
+    scores = gains - distances[rows, columns]
+    candidate_groups = nearest_groups[rows, columns]
 
     for group_id, group in enumerate(groups):
-        nearby = {}
-        for frontier_row, frontier_column in group:
-            for row in range(
-                max(0, frontier_row - search_cells),
-                min(height, frontier_row + search_cells + 1),
-            ):
-                for column in range(
-                    max(0, frontier_column - search_cells),
-                    min(width, frontier_column + search_cells + 1),
-                ):
-                    if not traversable[row, column]:
-                        continue
-                    distance_squared = (
-                        (frontier_row - row) ** 2
-                        + (frontier_column - column) ** 2
-                    )
-                    if distance_squared > search_cells * search_cells:
-                        continue
-                    previous = nearby.get((row, column))
-                    if previous is None or distance_squared < previous[0]:
-                        nearby[(row, column)] = (
-                            distance_squared,
-                            frontier_row,
-                            frontier_column,
-                        )
-        ranked = []
-        for (row, column), nearest in nearby.items():
-            distance_squared, frontier_row, frontier_column = nearest
-            frontier_cell = (frontier_row, frontier_column)
+        candidate_indices = np.flatnonzero(candidate_groups == group_id + 1)
+        ranked_indices = candidate_indices[
+            np.argsort(scores[candidate_indices])[::-1]
+        ]
+        selected = []
+        remaining = ranked_indices
+        while remaining.size and len(selected) < limit:
+            index = remaining[0]
+            row = int(rows[index])
+            column = int(columns[index])
+            frontier_row = int(nearest[0, row, column])
+            frontier_column = int(nearest[1, row, column])
             if not has_known_line_of_sight(
-                raw_grid, (row, column), frontier_cell
+                raw_grid,
+                (row, column),
+                (frontier_row, frontier_column),
             ):
+                remaining = remaining[1:]
                 continue
-            gain = _box_count(
-                unknown_integral,
+            viewpoint = Viewpoint(
+                group_id,
                 row,
                 column,
-                information_cells,
-                height,
-                width,
+                frontier_row,
+                frontier_column,
+                int(gains[index]),
+                len(group),
             )
-            distance_cells = math.sqrt(distance_squared)
-            score = gain - distance_cells
-            ranked.append(
-                (
-                    score,
-                    Viewpoint(
-                        group_id,
-                        row,
-                        column,
-                        frontier_row,
-                        frontier_column,
-                        gain,
-                        len(group),
-                    ),
-                )
-            )
-        ranked.sort(key=lambda item: item[0], reverse=True)
-        selected = []
-        for _, viewpoint in ranked:
-            if any(
-                math.dist(
-                    (viewpoint.row, viewpoint.column),
-                    (other.row, other.column),
-                )
-                < separation_cells
-                for other in selected
-            ):
-                continue
             selected.append(viewpoint)
-            if len(selected) == limit:
-                break
+            distance_squared = (
+                (rows[remaining] - row) ** 2
+                + (columns[remaining] - column) ** 2
+            )
+            remaining = remaining[
+                distance_squared >= separation_cells * separation_cells
+            ]
         if selected:
             viewpoints[group_id] = selected
     return viewpoints
+
+
+def exploration_utility(information_gain, group_size, path_distance_m):
+    """Prefer useful travel over goals already covered by the current scan."""
+    departure = min(1.0, path_distance_m / USEFUL_TRAVEL_M)
+    return (
+        (information_gain + group_size)
+        * departure
+        / (1.0 + path_distance_m) ** PATH_COST_EXPONENT
+    )
+
+
+def goal_is_stale(initial_gain, remaining_gain, age_sec):
+    if age_sec < GOAL_REPLAN_SEC or initial_gain <= 0:
+        return False
+    threshold = max(
+        MIN_REMAINING_GAIN,
+        initial_gain * MIN_REMAINING_GAIN_FRACTION,
+    )
+    return remaining_gain <= threshold
 
 
 def nearest_traversable(traversable, start, max_radius_cells):
@@ -315,36 +305,129 @@ def nearest_traversable(traversable, start, max_radius_cells):
     return best
 
 
-def path_distance_grid(traversable, start):
+def path_distance_grid(traversable, start, return_predecessors=False):
     """Return an 8-connected Dijkstra distance field in grid cells."""
-    distances = np.full(traversable.shape, np.inf)
-    if start is None:
-        return distances
-    distances[start] = 0.0
-    queue = [(0.0, start[0], start[1])]
     height, width = traversable.shape
-    while queue:
-        distance, row, column = heapq.heappop(queue)
-        if distance != distances[row, column]:
-            continue
-        for dr in (-1, 0, 1):
-            for dc in (-1, 0, 1):
-                if dr == 0 and dc == 0:
-                    continue
-                next_row = row + dr
-                next_column = column + dc
-                if not (0 <= next_row < height and 0 <= next_column < width):
-                    continue
-                if not traversable[next_row, next_column]:
-                    continue
-                step = math.sqrt(2.0) if dr and dc else 1.0
-                next_distance = distance + step
-                if next_distance < distances[next_row, next_column]:
-                    distances[next_row, next_column] = next_distance
-                    heapq.heappush(
-                        queue, (next_distance, next_row, next_column)
-                    )
-    return distances
+    if start is None:
+        return np.full(traversable.shape, np.inf)
+
+    cell_ids = np.arange(height * width).reshape(height, width)
+    sources = []
+    targets = []
+    weights = []
+    for dr, dc, weight in (
+        (0, 1, 1.0),
+        (1, 0, 1.0),
+        (1, 1, math.sqrt(2.0)),
+        (1, -1, math.sqrt(2.0)),
+    ):
+        source_r0 = max(0, -dr)
+        source_r1 = min(height, height - dr)
+        source_c0 = max(0, -dc)
+        source_c1 = min(width, width - dc)
+        target_r0 = source_r0 + dr
+        target_r1 = source_r1 + dr
+        target_c0 = source_c0 + dc
+        target_c1 = source_c1 + dc
+        connected = (
+            traversable[source_r0:source_r1, source_c0:source_c1]
+            & traversable[target_r0:target_r1, target_c0:target_c1]
+        )
+        sources.append(
+            cell_ids[source_r0:source_r1, source_c0:source_c1][connected]
+        )
+        targets.append(
+            cell_ids[target_r0:target_r1, target_c0:target_c1][connected]
+        )
+        weights.append(np.full(np.count_nonzero(connected), weight))
+
+    graph = coo_matrix(
+        (
+            np.concatenate(weights),
+            (np.concatenate(sources), np.concatenate(targets)),
+        ),
+        shape=(height * width, height * width),
+    ).tocsr()
+    start_id = int(cell_ids[start])
+    result = dijkstra(
+        graph,
+        directed=False,
+        indices=start_id,
+        return_predecessors=return_predecessors,
+    )
+    if return_predecessors:
+        distances, predecessors = result
+        return (
+            distances.reshape(height, width),
+            predecessors.reshape(height, width),
+        )
+    return result.reshape(height, width)
+
+
+def path_waypoint(traversable, start, target, max_distance_cells):
+    """Return the farthest path cell within one reliable navigation leg."""
+    distances, predecessors = path_distance_grid(
+        traversable, start, return_predecessors=True
+    )
+    if not np.isfinite(distances[target]):
+        return None
+    width = traversable.shape[1]
+    current = target[0] * width + target[1]
+    while distances.flat[current] > max_distance_cells:
+        predecessor = int(predecessors.flat[current])
+        if predecessor < 0 or predecessor == current:
+            return None
+        current = predecessor
+    return divmod(current, width)
+
+
+def stage_navigation_leg(
+    assignment, raw_grid, resolution, origin, robot_position
+):
+    if assignment.path_distance_m <= MAX_NAVIGATION_LEG_M:
+        return assignment
+    traversable = traversable_grid(
+        raw_grid, resolution, clearance_m=PATH_CLEARANCE_M
+    )
+    start = world_to_grid(
+        robot_position[0],
+        robot_position[1],
+        resolution,
+        origin[0],
+        origin[1],
+    )
+    start = nearest_traversable(
+        traversable, start, max(1, math.ceil(1.0 / resolution))
+    )
+    target = world_to_grid(
+        assignment.x,
+        assignment.y,
+        resolution,
+        origin[0],
+        origin[1],
+    )
+    if start is None:
+        return assignment
+    waypoint = path_waypoint(
+        traversable,
+        start,
+        target,
+        MAX_NAVIGATION_LEG_M / resolution,
+    )
+    if waypoint is None:
+        return assignment
+    navigation_x, navigation_y = grid_to_world(
+        waypoint[0], waypoint[1], resolution, origin[0], origin[1]
+    )
+    return Assignment(
+        assignment.viewpoint,
+        assignment.x,
+        assignment.y,
+        assignment.path_distance_m,
+        assignment.utility,
+        navigation_x,
+        navigation_y,
+    )
 
 
 def robot_candidate_assignments(
@@ -398,11 +481,13 @@ def robot_candidate_assignments(
             path_distance_m = float(distance_cells * resolution)
             if path_distance_m > MAX_TARGET_PATH_M:
                 continue
-            utility = (
-                viewpoint.information_gain + viewpoint.group_size
-            ) / (1.0 + path_distance_m)
+            utility = exploration_utility(
+                viewpoint.information_gain,
+                viewpoint.group_size,
+                path_distance_m,
+            )
             assignment = Assignment(
-                viewpoint, x, y, path_distance_m, utility
+                viewpoint, x, y, path_distance_m, utility, x, y
             )
             candidates.append(
                 (assignment.utility, robot_name, group_id, assignment)
@@ -522,6 +607,7 @@ class HeadquartersControl(Node):
         self.goal_best_distance = {}
         self.goal_last_position = {}
         self.goal_known_count = {}
+        self.goal_initial_gain = {}
         self.goal_targets = {}
         self.cancel_requested = {}
         self.robot_subscriptions = []
@@ -538,6 +624,7 @@ class HeadquartersControl(Node):
             self.goal_best_distance[robot_name] = None
             self.goal_last_position[robot_name] = None
             self.goal_known_count[robot_name] = 0
+            self.goal_initial_gain[robot_name] = 0
             self.goal_targets[robot_name] = None
             self.cancel_requested[robot_name] = False
             self.robot_nav_clients[robot_name] = ActionClient(
@@ -574,7 +661,7 @@ class HeadquartersControl(Node):
                 )
             )
 
-        self.assignment_timer = self.create_timer(2.0, self.assign_idle_robots)
+        self.assignment_timer = self.create_timer(1.0, self.assign_idle_robots)
         self.goal_timeout_timer = self.create_timer(
             1.0, self.cancel_stalled_goals
         )
@@ -651,6 +738,31 @@ class HeadquartersControl(Node):
         )
         return exclusions
 
+    def target_information_gain(self, x, y):
+        if self.map_data is None:
+            return 0
+        row, column = world_to_grid(
+            x,
+            y,
+            self.resolution,
+            self.origin[0],
+            self.origin[1],
+        )
+        if not (
+            0 <= row < self.map_height
+            and 0 <= column < self.map_width
+        ):
+            return 0
+        radius = max(1, math.ceil(INFORMATION_RADIUS_M / self.resolution))
+        return _box_count(
+            _integral_image(self.map_data < 0),
+            row,
+            column,
+            radius,
+            self.map_height,
+            self.map_width,
+        )
+
     def assign_idle_robots(self):
         if self.map_data is None:
             return
@@ -677,14 +789,19 @@ class HeadquartersControl(Node):
             1, math.ceil(INFORMATION_RADIUS_M / self.resolution)
         )
         for robot_name, position in idle_positions.items():
-            robot_map = self.robot_maps[robot_name]
+            robot_exclusions = list(exclusions)
+            robot_exclusions.extend(
+                other_position
+                for other_name, other_position in self.robot_positions.items()
+                if other_name != robot_name and other_position is not None
+            )
             robot_candidates, robot_diagnostics = robot_candidate_assignments(
-                robot_map["data"],
-                robot_map["resolution"],
-                robot_map["origin"],
+                self.map_data,
+                self.resolution,
+                self.origin,
                 robot_name,
                 position,
-                exclusions,
+                robot_exclusions,
             )
             diagnostics["frontier_groups"] += robot_diagnostics[
                 "frontier_groups"
@@ -713,15 +830,19 @@ class HeadquartersControl(Node):
                     self.map_height,
                     self.map_width,
                 )
-                utility = (
-                    global_gain + assignment.viewpoint.group_size
-                ) / (1.0 + assignment.path_distance_m)
+                utility = exploration_utility(
+                    global_gain,
+                    assignment.viewpoint.group_size,
+                    assignment.path_distance_m,
+                )
                 coordinated = Assignment(
                     assignment.viewpoint,
                     assignment.x,
                     assignment.y,
                     assignment.path_distance_m,
                     utility,
+                    assignment.navigation_x,
+                    assignment.navigation_y,
                 )
                 candidates.append(
                     (utility, robot_name, group_id, coordinated)
@@ -738,12 +859,24 @@ class HeadquartersControl(Node):
                 self.last_no_assignment_log = now
             return
         for robot_name, assignment in assignments.items():
+            assignment = stage_navigation_leg(
+                assignment,
+                self.map_data,
+                self.resolution,
+                self.origin,
+                self.robot_positions[robot_name],
+            )
             self.robot_states[robot_name] = "active"
             self.goal_targets[robot_name] = assignment
+            self.goal_initial_gain[robot_name] = self.target_information_gain(
+                assignment.navigation_x, assignment.navigation_y
+            )
             self.get_logger().info(
                 f"Assigned {robot_name} to group "
                 f"{assignment.viewpoint.group_id} at "
                 f"({assignment.x:.2f}, {assignment.y:.2f}); "
+                f"navigation=({assignment.navigation_x:.2f}, "
+                f"{assignment.navigation_y:.2f}), "
                 f"path={assignment.path_distance_m:.2f} m, "
                 f"gain={assignment.viewpoint.information_gain}, "
                 f"utility={assignment.utility:.1f}"
@@ -752,7 +885,7 @@ class HeadquartersControl(Node):
 
     def send_goal(self, robot_name, assignment):
         client = self.robot_nav_clients[robot_name]
-        if not client.wait_for_server(timeout_sec=2.0):
+        if not client.server_is_ready():
             self.get_logger().warn(
                 f"Navigation action server for {robot_name} is unavailable."
             )
@@ -764,8 +897,8 @@ class HeadquartersControl(Node):
         goal.pose = PoseStamped()
         goal.pose.header.frame_id = "map"
         goal.pose.header.stamp = self.get_clock().now().to_msg()
-        goal.pose.pose.position.x = assignment.x
-        goal.pose.pose.position.y = assignment.y
+        goal.pose.pose.position.x = assignment.navigation_x
+        goal.pose.pose.position.y = assignment.navigation_y
         goal.pose.pose.orientation.w = 1.0
         future = client.send_goal_async(
             goal,
@@ -845,7 +978,11 @@ class HeadquartersControl(Node):
             expiry = self.now() + (
                 TARGET_HISTORY_SEC if success else BAD_TARGET_SEC
             )
-            entry = (assignment.x, assignment.y, expiry)
+            entry = (
+                assignment.navigation_x if success else assignment.x,
+                assignment.navigation_y if success else assignment.y,
+                expiry,
+            )
             if success:
                 self.target_history.append(entry)
             elif blacklist:
@@ -856,6 +993,7 @@ class HeadquartersControl(Node):
         self.goal_best_distance[robot_name] = None
         self.goal_last_position[robot_name] = None
         self.goal_known_count[robot_name] = 0
+        self.goal_initial_gain[robot_name] = 0
         self.goal_targets[robot_name] = None
         self.cancel_requested[robot_name] = False
         self.robot_states[robot_name] = "idle"
@@ -869,14 +1007,35 @@ class HeadquartersControl(Node):
             if goal_handle is None or started_at is None:
                 continue
             timed_out = now - started_at >= self.goal_timeout_sec
+            assignment = self.goal_targets[robot_name]
+            remaining_gain = (
+                self.target_information_gain(
+                    assignment.navigation_x, assignment.navigation_y
+                )
+                if assignment is not None
+                else 0
+            )
+            stale = goal_is_stale(
+                self.goal_initial_gain[robot_name],
+                remaining_gain,
+                now - started_at,
+            )
             stalled = (
                 last_progress is not None
                 and now - started_at >= 10.0
                 and now - last_progress >= NO_PROGRESS_SEC
             )
-            if not (timed_out or stalled) or self.cancel_requested[robot_name]:
+            if (
+                not (timed_out or stalled or stale)
+                or self.cancel_requested[robot_name]
+            ):
                 continue
-            reason = "timeout" if timed_out else "no progress"
+            if timed_out:
+                reason = "timeout"
+            elif stalled:
+                reason = "no progress"
+            else:
+                reason = "frontier already observed"
             self.get_logger().warn(
                 f"Canceling {robot_name} goal after {reason}."
             )
