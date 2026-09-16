@@ -1,535 +1,940 @@
-import rclpy
-from rclpy.node import Node
-from nav_msgs.msg import OccupancyGrid, Odometry
-from geometry_msgs.msg import PoseStamped, Twist
+from dataclasses import dataclass
+import heapq
+import math
+import os
+import subprocess
+import threading
+import time
+
+from action_msgs.msg import GoalStatus
+from ament_index_python.packages import get_package_share_directory
+from geometry_msgs.msg import PoseStamped
 from nav2_msgs.action import NavigateToPose
+from nav_msgs.msg import OccupancyGrid, Odometry
+import numpy as np
+import rclpy
 from rclpy.action import ActionClient
 from rclpy.executors import ExternalShutdownException
-from geometry_msgs.msg import Pose
-from std_msgs.msg import Float32MultiArray
-
-import numpy as np
-import subprocess
-import heapq, math, time, threading
-import scipy.interpolate as si
-import datetime
-from action_msgs.msg import GoalStatus
-import os
-from ament_index_python.packages import get_package_share_directory
-
-lookahead_distance = 0.5  # forward looking distance
-speed = 0.4  # maximum speed
-expansion_size = 7  # wall expansion coefficient
-target_error = 0.15  # margin of error to target
-max_target_distance_m = 7.5
-min_frontier_group_size = 6
-min_target_separation = 0.8
-map_edge_margin_m = 0.5
-obstacle_clearance_m = 0.45
-max_goal_failures = 3
-occupied_threshold = 50
-
-VISITED = []
-BAD_TARGETS = []
+from rclpy.node import Node
+from tf2_msgs.msg import TFMessage
 
 
-def frontierB(matrix):
-    for i in range(len(matrix)):
-        for j in range(len(matrix[i])):
-            if matrix[i][j] == 0.0:
-                if i > 0 and matrix[i-1][j] < 0:
-                    matrix[i][j] = 2
-                elif i < len(matrix)-1 and matrix[i+1][j] < 0:
-                    matrix[i][j] = 2
-                elif j > 0 and matrix[i][j-1] < 0:
-                    matrix[i][j] = 2
-                elif j < len(matrix[i])-1 and matrix[i][j+1] < 0:
-                    matrix[i][j] = 2
-    return matrix
+OCCUPIED_THRESHOLD = 50
+MIN_FRONTIER_GROUP_SIZE = 6
+ROBOT_CLEARANCE_M = 0.45
+PATH_CLEARANCE_M = 0.23
+VIEWPOINT_SEARCH_RADIUS_M = 0.8
+INFORMATION_RADIUS_M = 2.0
+MIN_TARGET_SEPARATION_M = 1.2
+MAX_TARGET_PATH_M = 12.0
+TARGET_HISTORY_SEC = 10.0
+BAD_TARGET_SEC = 30.0
+NO_PROGRESS_SEC = 30.0
 
-def assign_groups(matrix):
-    group = 1
-    groups = {}
-    for i in range(len(matrix)):
-        for j in range(len(matrix[0])):
-            if matrix[i][j] == 2:
-                group = dfs(matrix, i, j, group, groups)
-    return matrix, groups
 
-def dfs(matrix, i, j, group, groups):
-    if i < 0 or i >= len(matrix) or j < 0 or j >= len(matrix[0]):
-        return group
-    if matrix[i][j] != 2:
-        return group
-    if group in groups:
-        groups[group].append((i, j))
-    else:
-        groups[group] = [(i, j)]
-    matrix[i][j] = 0
-    dfs(matrix, i + 1, j, group, groups)
-    dfs(matrix, i - 1, j, group, groups)
-    dfs(matrix, i, j + 1, group, groups)
-    dfs(matrix, i, j - 1, group, groups)
-    dfs(matrix, i + 1, j + 1, group, groups)  # lower right diagonal
-    dfs(matrix, i - 1, j - 1, group, groups)  # upper left cross
-    dfs(matrix, i - 1, j + 1, group, groups)  # upper right cross
-    dfs(matrix, i + 1, j - 1, group, groups)  # lower left diagonal
-    return group + 1
+@dataclass(frozen=True)
+class Viewpoint:
+    group_id: int
+    row: int
+    column: int
+    frontier_row: int
+    frontier_column: int
+    information_gain: int
+    group_size: int
 
-def fGroups(groups):
-    sorted_groups = sorted(groups.items(), key=lambda x: len(x[1]), reverse=True)
-    return [
-        group
-        for group in sorted_groups
-        if len(group[1]) >= min_frontier_group_size
-    ]
 
-def calculate_centroid(x_coords, y_coords):
-    n = len(x_coords)
-    sum_x = sum(x_coords)
-    sum_y = sum(y_coords)
-    mean_x = sum_x / n
-    mean_y = sum_y / n
-    centroid = (mean_x, mean_y)
-    return centroid
+@dataclass(frozen=True)
+class Assignment:
+    viewpoint: Viewpoint
+    x: float
+    y: float
+    path_distance_m: float
+    utility: float
 
-def visitedControl(targetP):
-    global VISITED
-    for k in VISITED + BAD_TARGETS:
-        d = math.sqrt((k[0] - targetP[0])**2 + (k[1] - targetP[1])**2)
-        if d < min_target_separation:
-            return True
-    return False
 
-def inflate_obstacles(data, width, height, clearance_cells):
-    data = np.array(data).reshape(height, width)
-    wall = np.where(data >= occupied_threshold)
-    for i in range(-clearance_cells, clearance_cells + 1):
-        for j in range(-clearance_cells, clearance_cells + 1):
-            if i == 0 and j == 0:
-                continue
-            x = wall[0] + i
-            y = wall[1] + j
-            x = np.clip(x, 0, height - 1)
-            y = np.clip(y, 0, width - 1)
-            data[x, y] = 100
-    return data
-
-def meters_to_cells(distance, resolution):
-    return max(1, int(math.ceil(distance / resolution)))
-
-def grid_to_world(row, column, resolution, originX, originY):
+def grid_to_world(row, column, resolution, origin_x, origin_y):
     return (
-        (column + 0.5) * resolution + originX,
-        (row + 0.5) * resolution + originY,
+        (column + 0.5) * resolution + origin_x,
+        (row + 0.5) * resolution + origin_y,
     )
 
-def is_cell_safe(raw_grid, row, column, resolution):
-    """A navigation target must be known free, away from walls, and inside map bounds."""
+
+def world_to_grid(x, y, resolution, origin_x, origin_y):
+    return (
+        int(math.floor((y - origin_y) / resolution)),
+        int(math.floor((x - origin_x) / resolution)),
+    )
+
+
+def transform_point_2d(x, y, transform):
+    """Apply a TransformStamped's planar transform to a point."""
+    translation = transform.translation
+    rotation = transform.rotation
+    yaw = math.atan2(
+        2.0 * (rotation.w * rotation.z + rotation.x * rotation.y),
+        1.0 - 2.0 * (rotation.y * rotation.y + rotation.z * rotation.z),
+    )
+    return (
+        translation.x + math.cos(yaw) * x - math.sin(yaw) * y,
+        translation.y + math.sin(yaw) * x + math.cos(yaw) * y,
+    )
+
+
+def frontier_groups(raw_grid, minimum_size=MIN_FRONTIER_GROUP_SIZE):
+    """Return 8-connected free-cell frontiers adjacent to unknown space."""
+    free = raw_grid == 0
+    unknown = raw_grid < 0
+    adjacent_unknown = np.zeros_like(unknown)
+    adjacent_unknown[1:] |= unknown[:-1]
+    adjacent_unknown[:-1] |= unknown[1:]
+    adjacent_unknown[:, 1:] |= unknown[:, :-1]
+    adjacent_unknown[:, :-1] |= unknown[:, 1:]
+    frontier = free & adjacent_unknown
+
+    groups = []
+    seen = np.zeros_like(frontier)
+    height, width = frontier.shape
+    for start_row, start_column in zip(*np.nonzero(frontier)):
+        if seen[start_row, start_column]:
+            continue
+        stack = [(start_row, start_column)]
+        seen[start_row, start_column] = True
+        group = []
+        while stack:
+            row, column = stack.pop()
+            group.append((row, column))
+            for dr in (-1, 0, 1):
+                for dc in (-1, 0, 1):
+                    if dr == 0 and dc == 0:
+                        continue
+                    next_row = row + dr
+                    next_column = column + dc
+                    if not (
+                        0 <= next_row < height
+                        and 0 <= next_column < width
+                    ):
+                        continue
+                    if (
+                        frontier[next_row, next_column]
+                        and not seen[next_row, next_column]
+                    ):
+                        seen[next_row, next_column] = True
+                        stack.append((next_row, next_column))
+        if len(group) >= minimum_size:
+            groups.append(group)
+    return sorted(groups, key=len, reverse=True)
+
+
+def inflated_obstacle_mask(raw_grid, clearance_cells):
+    occupied = raw_grid >= OCCUPIED_THRESHOLD
+    inflated = occupied.copy()
+    height, width = occupied.shape
+    for dr in range(-clearance_cells, clearance_cells + 1):
+        for dc in range(-clearance_cells, clearance_cells + 1):
+            if dr * dr + dc * dc > clearance_cells * clearance_cells:
+                continue
+            source_r0 = max(0, -dr)
+            source_r1 = min(height, height - dr)
+            source_c0 = max(0, -dc)
+            source_c1 = min(width, width - dc)
+            target_r0 = source_r0 + dr
+            target_r1 = source_r1 + dr
+            target_c0 = source_c0 + dc
+            target_c1 = source_c1 + dc
+            inflated[target_r0:target_r1, target_c0:target_c1] |= occupied[
+                source_r0:source_r1, source_c0:source_c1
+            ]
+    return inflated
+
+
+def traversable_grid(raw_grid, resolution, clearance_m=ROBOT_CLEARANCE_M):
+    clearance_cells = max(1, math.ceil(clearance_m / resolution))
+    return (raw_grid == 0) & ~inflated_obstacle_mask(
+        raw_grid, clearance_cells
+    )
+
+
+def _line_cells(start, end):
+    """Yield integer grid cells on a Bresenham line."""
+    row0, column0 = start
+    row1, column1 = end
+    delta_column = abs(column1 - column0)
+    delta_row = -abs(row1 - row0)
+    step_column = 1 if column0 < column1 else -1
+    step_row = 1 if row0 < row1 else -1
+    error = delta_column + delta_row
+    while True:
+        yield row0, column0
+        if row0 == row1 and column0 == column1:
+            break
+        doubled_error = 2 * error
+        if doubled_error >= delta_row:
+            error += delta_row
+            column0 += step_column
+        if doubled_error <= delta_column:
+            error += delta_column
+            row0 += step_row
+
+
+def has_known_line_of_sight(raw_grid, start, end):
+    return all(
+        raw_grid[row, column] >= 0
+        and raw_grid[row, column] < OCCUPIED_THRESHOLD
+        for row, column in _line_cells(start, end)
+    )
+
+
+def _integral_image(mask):
+    return np.pad(mask.astype(np.int32), ((1, 0), (1, 0))).cumsum(0).cumsum(1)
+
+
+def _box_count(integral, row, column, radius, height, width):
+    row0 = max(0, row - radius)
+    row1 = min(height, row + radius + 1)
+    column0 = max(0, column - radius)
+    column1 = min(width, column + radius + 1)
+    return int(
+        integral[row1, column1]
+        - integral[row0, column1]
+        - integral[row1, column0]
+        + integral[row0, column0]
+    )
+
+
+def frontier_viewpoints(raw_grid, groups, traversable, resolution, limit=12):
+    """Generate safe known-free observation poses for every frontier group."""
     height, width = raw_grid.shape
-    edge_margin = meters_to_cells(map_edge_margin_m, resolution)
-    obstacle_clearance = meters_to_cells(obstacle_clearance_m, resolution)
+    search_cells = max(1, math.ceil(VIEWPOINT_SEARCH_RADIUS_M / resolution))
+    information_cells = max(1, math.ceil(INFORMATION_RADIUS_M / resolution))
+    separation_cells = max(
+        3, math.ceil(MIN_TARGET_SEPARATION_M / resolution)
+    )
+    unknown_integral = _integral_image(raw_grid < 0)
+    viewpoints = {}
 
-    if row < edge_margin or row >= height - edge_margin:
-        return False
-    if column < edge_margin or column >= width - edge_margin:
-        return False
-    if raw_grid[row, column] != 0:
-        return False
-
-    r0 = max(0, row - obstacle_clearance)
-    r1 = min(height, row + obstacle_clearance + 1)
-    c0 = max(0, column - obstacle_clearance)
-    c1 = min(width, column + obstacle_clearance + 1)
-    window = raw_grid[r0:r1, c0:c1]
-    return not np.any(window >= occupied_threshold)
-
-def findClosestGroup(raw_grid, groups, current, resolution, originX, originY, last_target=None):
-    best_target = None
-    best_score = float('-inf')  # A large negative number to ensure proper comparison
-    for i in range(len(groups)):
-        group_cells = groups[i][1]
-        centroid = calculate_centroid([p[0] for p in group_cells], [p[1] for p in group_cells])
-        safe_cells = [p for p in group_cells if is_cell_safe(raw_grid, p[0], p[1], resolution)]
-        if not safe_cells:
-            continue
-
-        candidates = []
-        for row, column in safe_cells:
-            target_world = grid_to_world(
-                row, column, resolution, originX, originY
+    for group_id, group in enumerate(groups):
+        nearby = {}
+        for frontier_row, frontier_column in group:
+            for row in range(
+                max(0, frontier_row - search_cells),
+                min(height, frontier_row + search_cells + 1),
+            ):
+                for column in range(
+                    max(0, frontier_column - search_cells),
+                    min(width, frontier_column + search_cells + 1),
+                ):
+                    if not traversable[row, column]:
+                        continue
+                    distance_squared = (
+                        (frontier_row - row) ** 2
+                        + (frontier_column - column) ** 2
+                    )
+                    if distance_squared > search_cells * search_cells:
+                        continue
+                    previous = nearby.get((row, column))
+                    if previous is None or distance_squared < previous[0]:
+                        nearby[(row, column)] = (
+                            distance_squared,
+                            frontier_row,
+                            frontier_column,
+                        )
+        ranked = []
+        for (row, column), nearest in nearby.items():
+            distance_squared, frontier_row, frontier_column = nearest
+            frontier_cell = (frontier_row, frontier_column)
+            if not has_known_line_of_sight(
+                raw_grid, (row, column), frontier_cell
+            ):
+                continue
+            gain = _box_count(
+                unknown_integral,
+                row,
+                column,
+                information_cells,
+                height,
+                width,
             )
-            distance_m = math.sqrt(
-                ((current[0] - row) * resolution) ** 2
-                + ((current[1] - column) * resolution) ** 2
+            distance_cells = math.sqrt(distance_squared)
+            score = gain - distance_cells
+            ranked.append(
+                (
+                    score,
+                    Viewpoint(
+                        group_id,
+                        row,
+                        column,
+                        frontier_row,
+                        frontier_column,
+                        gain,
+                        len(group),
+                    ),
+                )
             )
-            if distance_m > max_target_distance_m:
+        ranked.sort(key=lambda item: item[0], reverse=True)
+        selected = []
+        for _, viewpoint in ranked:
+            if any(
+                math.dist(
+                    (viewpoint.row, viewpoint.column),
+                    (other.row, other.column),
+                )
+                < separation_cells
+                for other in selected
+            ):
                 continue
-            if last_target and math.dist(target_world, last_target) < min_target_separation:
-                continue
-            if visitedControl(target_world):
-                continue
-            candidates.append((row, column, target_world, distance_m))
+            selected.append(viewpoint)
+            if len(selected) == limit:
+                break
+        if selected:
+            viewpoints[group_id] = selected
+    return viewpoints
 
-        if not candidates:
+
+def nearest_traversable(traversable, start, max_radius_cells):
+    row, column = start
+    height, width = traversable.shape
+    if 0 <= row < height and 0 <= column < width and traversable[row, column]:
+        return start
+    best = None
+    best_distance = float("inf")
+    for candidate_row in range(
+        max(0, row - max_radius_cells), min(height, row + max_radius_cells + 1)
+    ):
+        for candidate_column in range(
+            max(0, column - max_radius_cells),
+            min(width, column + max_radius_cells + 1),
+        ):
+            if not traversable[candidate_row, candidate_column]:
+                continue
+            distance = math.dist(
+                (row, column), (candidate_row, candidate_column)
+            )
+            if distance < best_distance:
+                best_distance = distance
+                best = (candidate_row, candidate_column)
+    return best
+
+
+def path_distance_grid(traversable, start):
+    """Return an 8-connected Dijkstra distance field in grid cells."""
+    distances = np.full(traversable.shape, np.inf)
+    if start is None:
+        return distances
+    distances[start] = 0.0
+    queue = [(0.0, start[0], start[1])]
+    height, width = traversable.shape
+    while queue:
+        distance, row, column = heapq.heappop(queue)
+        if distance != distances[row, column]:
             continue
+        for dr in (-1, 0, 1):
+            for dc in (-1, 0, 1):
+                if dr == 0 and dc == 0:
+                    continue
+                next_row = row + dr
+                next_column = column + dc
+                if not (0 <= next_row < height and 0 <= next_column < width):
+                    continue
+                if not traversable[next_row, next_column]:
+                    continue
+                step = math.sqrt(2.0) if dr and dc else 1.0
+                next_distance = distance + step
+                if next_distance < distances[next_row, next_column]:
+                    distances[next_row, next_column] = next_distance
+                    heapq.heappush(
+                        queue, (next_distance, next_row, next_column)
+                    )
+    return distances
 
-        row, column, target_world, distance_m = min(
-            candidates,
-            key=lambda candidate: math.dist(
-                centroid, (candidate[0], candidate[1])
-            ),
-        )
 
-        group_size = len(group_cells)
-        score = group_size / (distance_m + 1.0)
-        if score > best_score:
-            best_score = score
-            best_target = target_world
-    return best_target
+def robot_candidate_assignments(
+    raw_grid,
+    resolution,
+    origin,
+    robot_name,
+    robot_position,
+    excluded_targets=(),
+):
+    """Return diverse locally reachable viewpoints for every frontier group."""
+    groups = frontier_groups(raw_grid)
+    traversable = traversable_grid(
+        raw_grid, resolution, clearance_m=PATH_CLEARANCE_M
+    )
+    safe_viewpoints = traversable_grid(
+        raw_grid, resolution, clearance_m=ROBOT_CLEARANCE_M
+    )
+    viewpoints = frontier_viewpoints(
+        raw_grid, groups, safe_viewpoints, resolution
+    )
+    candidates = []
+    start = world_to_grid(
+        robot_position[0],
+        robot_position[1],
+        resolution,
+        origin[0],
+        origin[1],
+    )
+    start = nearest_traversable(
+        traversable, start, max(1, math.ceil(1.0 / resolution))
+    )
+    distances = path_distance_grid(traversable, start)
+    for group_id, group_viewpoints in viewpoints.items():
+        for viewpoint in group_viewpoints:
+            distance_cells = distances[viewpoint.row, viewpoint.column]
+            if not np.isfinite(distance_cells):
+                continue
+            x, y = grid_to_world(
+                viewpoint.row,
+                viewpoint.column,
+                resolution,
+                origin[0],
+                origin[1],
+            )
+            if any(
+                math.dist((x, y), target) < MIN_TARGET_SEPARATION_M
+                for target in excluded_targets
+            ):
+                continue
+            path_distance_m = float(distance_cells * resolution)
+            if path_distance_m > MAX_TARGET_PATH_M:
+                continue
+            utility = (
+                viewpoint.information_gain + viewpoint.group_size
+            ) / (1.0 + path_distance_m)
+            assignment = Assignment(
+                viewpoint, x, y, path_distance_m, utility
+            )
+            candidates.append(
+                (assignment.utility, robot_name, group_id, assignment)
+            )
+    return candidates, {
+        "frontier_groups": len(groups),
+        "groups_with_viewpoints": len(viewpoints),
+        "candidate_assignments": len(candidates),
+    }
 
-def mark_bad_target(target):
-    global BAD_TARGETS
-    for k in BAD_TARGETS:
-        d = math.sqrt((k[0] - target[0])**2 + (k[1] - target[1])**2)
-        if d < min_target_separation:
-            return
-    BAD_TARGETS.append(target)
 
-def release_target(target):
-    global VISITED
-    VISITED = [reserved for reserved in VISITED if reserved != target]
+def select_distinct_assignments(candidates):
+    """Greedily select one spatially distinct target per robot."""
+    assignments = {}
+    used_targets = []
+    for _, robot_name, _, assignment in sorted(
+        candidates, reverse=True, key=lambda item: item[0]
+    ):
+        if robot_name in assignments:
+            continue
+        if any(
+            math.dist((assignment.x, assignment.y), target)
+            < MIN_TARGET_SEPARATION_M
+            for target in used_targets
+        ):
+            continue
+        assignments[robot_name] = assignment
+        used_targets.append((assignment.x, assignment.y))
+    return assignments
 
-def exploration(data, width, height, resolution, column, row, originX, originY, choice, last_target=None):
-    global VISITED
-    f = 1
-    if row < 0 or row >= height or column < 0 or column >= width:
-        return None
-    raw_grid = np.array(data).reshape(height, width)
-    obstacle_clearance = meters_to_cells(obstacle_clearance_m, resolution)
-    frontier_grid = inflate_obstacles(raw_grid, width, height, obstacle_clearance)
-    frontier_grid[row][column] = 0  # Robot Current Location
-    frontier_grid = frontierB(frontier_grid)
-    frontier_grid, groups = assign_groups(frontier_grid)
-    groups = fGroups(groups)
 
-    if len(groups) == 0:
-        f = -1
-    else:
-        coordinate = findClosestGroup(
+def coordinate_assignments(
+    raw_grid,
+    resolution,
+    origin,
+    robot_positions,
+    excluded_targets=(),
+):
+    """Assign distinct reachable frontier groups on a shared test grid."""
+    candidates = []
+    diagnostics = None
+    for robot_name, position in robot_positions.items():
+        robot_candidates, robot_diagnostics = robot_candidate_assignments(
             raw_grid,
-            groups,
-            (row, column),
             resolution,
-            originX,
-            originY,
-            last_target=last_target,
+            origin,
+            robot_name,
+            position,
+            excluded_targets,
         )
-        if coordinate is None:
-            f = -1
-        else:
-            VISITED.append(coordinate)
-    if f == -1:
-        return None
-    else:
-        return coordinate
+        candidates.extend(robot_candidates)
+        diagnostics = robot_diagnostics
 
-def get(choice):
-    now = datetime.datetime.now()
-    time_string = now.strftime("%H:%M:%S")
-    print(f"[BILGI] {time_string}: {choice+1}. ROAD REQUEST RECEIVED BY THE ROBOT")
+    assignments = {}
+    used_groups = set()
+    used_targets = []
+    for _, robot_name, group_id, assignment in sorted(
+        candidates, reverse=True, key=lambda item: item[0]
+    ):
+        if robot_name in assignments or group_id in used_groups:
+            continue
+        if any(
+            math.dist((assignment.x, assignment.y), target)
+            < MIN_TARGET_SEPARATION_M
+            for target in used_targets
+        ):
+            continue
+        assignments[robot_name] = assignment
+        used_groups.add(group_id)
+        used_targets.append((assignment.x, assignment.y))
+    diagnostics = diagnostics or {
+        "frontier_groups": 0,
+        "groups_with_viewpoints": 0,
+        "candidate_assignments": 0,
+    }
+    diagnostics["candidate_assignments"] = len(candidates)
+    return assignments, diagnostics
 
-def response(choice):
-    now = datetime.datetime.now()
-    time_string = now.strftime("%H:%M:%S")
-    print(f"[BILGI] {time_string}: {choice+1}. ROAD REQUEST ANSWER SENT TO THE ROBOT")
 
 class HeadquartersControl(Node):
     def __init__(self):
         super().__init__("headquarters_control")
-        self.shutdown_initiated = False
-        self.robots = {}  # Dictionary to hold robot data
         self.num_robots = self.declare_parameter("robot_count", 2).value
         self.goal_timeout_sec = self.declare_parameter(
             "goal_timeout_sec", 60.0
         ).value
-
-        # Subscribers for multiple robots dynamically
-        self.map_sub = self.create_subscription(
-            OccupancyGrid, "merge_map", self.map_callback, 10
-        )
-        self.robot_odom_subs = {}
-        self.robot_map_subs = {}
-        self.robot_nav_clients = {}
-        self.robot_positions = {}
-        self.robot_maps = {}
-        self.subscription_cmd_vel = {}
-        self.robot_states = {
-            f"tb{i+1}": "idle" for i in range(self.num_robots)
-        }
-        self.goal_failures = {
-            f"tb{i+1}": 0 for i in range(self.num_robots)
-        }
-        self.goal_handles = {
-            f"tb{i+1}": None for i in range(self.num_robots)
-        }
-        self.goal_started_at = {
-            f"tb{i+1}": None for i in range(self.num_robots)
-        }
-        self.goal_targets = {
-            f"tb{i+1}": None for i in range(self.num_robots)
-        }
-        self.last_save_time = time.monotonic()
-        self.save_in_progress = False
-        self.auto_save_map = self.declare_parameter("auto_save_map", True).value
+        self.auto_save_map = self.declare_parameter(
+            "auto_save_map", True
+        ).value
         self.save_map_interval_sec = self.declare_parameter(
             "save_map_interval_sec", 60.0
         ).value
 
-        # Action clients and odometry subscribers for dynamic robots
-        for i in range(self.num_robots):
-            robot_name = f"tb{i + 1}"
-            self.robot_odom_subs[robot_name] = self.create_subscription(
-                Odometry, f"{robot_name}/odom", lambda msg, r=robot_name: self.robot_odom_callback(msg, r), 10
-            )
-            self.robot_map_subs[robot_name] = self.create_subscription(
-                OccupancyGrid,
-                f"{robot_name}/map",
-                lambda msg, r=robot_name: self.robot_map_callback(msg, r),
-                10,
-            )
-            self.robot_nav_clients[robot_name] = ActionClient(self, NavigateToPose, f"{robot_name}/navigate_to_pose")
-            self.subscription_cmd_vel[robot_name] = self.create_subscription(
-                Twist, f"{robot_name}/cmd_vel", lambda msg, r=robot_name: self.robot_status_control(msg, r), 4
-            )
-            self.robot_positions[robot_name] = (0.0, 0.0)
-
-        # State variables
         self.map_data = None
         self.resolution = None
         self.origin = None
         self.map_width = None
         self.map_height = None
-        self.map_saved = False  # Flag to track if map is saved
+        self.map_known_count = 0
+        self.last_no_assignment_log = -float("inf")
+        self.last_save_time = time.monotonic()
+        self.save_in_progress = False
+        self.target_history = []
+        self.bad_targets = []
 
-        # Threads for goal navigation
-        for i in range(self.num_robots):
-            threading.Thread(target=self.start_exploration, args=(i + 1,), daemon=True).start()
+        self.map_sub = self.create_subscription(
+            OccupancyGrid, "/merge_map", self.map_callback, 10
+        )
+        self.robot_positions = {}
+        self.map_to_odom = {}
+        self.robot_maps = {}
+        self.robot_states = {}
+        self.robot_nav_clients = {}
+        self.goal_handles = {}
+        self.goal_started_at = {}
+        self.goal_last_progress_at = {}
+        self.goal_best_distance = {}
+        self.goal_last_position = {}
+        self.goal_known_count = {}
+        self.goal_targets = {}
+        self.cancel_requested = {}
+        self.robot_subscriptions = []
 
+        for index in range(self.num_robots):
+            robot_name = f"tb{index + 1}"
+            self.robot_positions[robot_name] = None
+            self.map_to_odom[robot_name] = None
+            self.robot_maps[robot_name] = None
+            self.robot_states[robot_name] = "idle"
+            self.goal_handles[robot_name] = None
+            self.goal_started_at[robot_name] = None
+            self.goal_last_progress_at[robot_name] = None
+            self.goal_best_distance[robot_name] = None
+            self.goal_last_position[robot_name] = None
+            self.goal_known_count[robot_name] = 0
+            self.goal_targets[robot_name] = None
+            self.cancel_requested[robot_name] = False
+            self.robot_nav_clients[robot_name] = ActionClient(
+                self, NavigateToPose, f"/{robot_name}/navigate_to_pose"
+            )
+            self.robot_subscriptions.append(
+                self.create_subscription(
+                    Odometry,
+                    f"/{robot_name}/odom",
+                    lambda msg, name=robot_name: self.robot_odom_callback(
+                        msg, name
+                    ),
+                    10,
+                )
+            )
+            self.robot_subscriptions.append(
+                self.create_subscription(
+                    TFMessage,
+                    f"/{robot_name}/tf",
+                    lambda msg, name=robot_name: self.robot_tf_callback(
+                        msg, name
+                    ),
+                    20,
+                )
+            )
+            self.robot_subscriptions.append(
+                self.create_subscription(
+                    OccupancyGrid,
+                    f"/{robot_name}/map",
+                    lambda msg, name=robot_name: self.robot_map_callback(
+                        msg, name
+                    ),
+                    10,
+                )
+            )
+
+        self.assignment_timer = self.create_timer(2.0, self.assign_idle_robots)
         self.goal_timeout_timer = self.create_timer(
             1.0, self.cancel_stalled_goals
         )
+        self.get_logger().info(
+            "Central cooperative frontier coordinator initialized."
+        )
 
-        self.get_logger().info("Navigation to map center initialized.")
+    def now(self):
+        return self.get_clock().now().nanoseconds / 1e9
 
     def map_callback(self, msg):
-        """Callback to handle the map data."""
-        self.map_data = np.array(msg.data).reshape(msg.info.height, msg.info.width)
+        self.map_data = np.asarray(msg.data, dtype=np.int16).reshape(
+            msg.info.height, msg.info.width
+        )
         self.resolution = msg.info.resolution
-        self.origin = (msg.info.origin.position.x, msg.info.origin.position.y)
+        self.origin = (
+            msg.info.origin.position.x,
+            msg.info.origin.position.y,
+        )
         self.map_width = msg.info.width
         self.map_height = msg.info.height
+        self.map_known_count = int(np.count_nonzero(self.map_data >= 0))
 
     def robot_odom_callback(self, msg, robot_name):
-        """Callback to update robot position dynamically."""
-        self.robot_positions[robot_name] = (msg.pose.pose.position.x, msg.pose.pose.position.y)
+        transform = self.map_to_odom[robot_name]
+        if transform is None:
+            return
+        odom_position = (
+            msg.pose.pose.position.x,
+            msg.pose.pose.position.y,
+        )
+        position = transform_point_2d(*odom_position, transform)
+        self.robot_positions[robot_name] = position
+        last_position = self.goal_last_position[robot_name]
+        if (
+            self.robot_states[robot_name] == "active"
+            and last_position is not None
+            and math.dist(position, last_position) >= 0.1
+        ):
+            self.goal_last_position[robot_name] = position
+            self.goal_last_progress_at[robot_name] = self.now()
+
+    def robot_tf_callback(self, msg, robot_name):
+        for stamped_transform in msg.transforms:
+            parent = stamped_transform.header.frame_id.lstrip("/")
+            child = stamped_transform.child_frame_id.lstrip("/")
+            if parent.endswith("map") and child.endswith("odom"):
+                self.map_to_odom[robot_name] = stamped_transform.transform
 
     def robot_map_callback(self, msg, robot_name):
-        """Keep the map used by this robot's Nav2 global costmap."""
         self.robot_maps[robot_name] = {
-            "data": np.array(msg.data).reshape(msg.info.height, msg.info.width),
+            "data": np.asarray(msg.data, dtype=np.int16).reshape(
+                msg.info.height, msg.info.width
+            ),
             "resolution": msg.info.resolution,
-            "origin": (msg.info.origin.position.x, msg.info.origin.position.y),
-            "width": msg.info.width,
-            "height": msg.info.height,
+            "origin": (
+                msg.info.origin.position.x,
+                msg.info.origin.position.y,
+            ),
         }
 
-    def robot_status_control(self, msg, robot_name):
-        """Command velocity control for individual robots."""
-        pass
+    def active_exclusions(self):
+        now = self.now()
+        self.target_history = [
+            item for item in self.target_history if item[2] > now
+        ]
+        self.bad_targets = [item for item in self.bad_targets if item[2] > now]
+        exclusions = [(item[0], item[1]) for item in self.target_history]
+        exclusions.extend((item[0], item[1]) for item in self.bad_targets)
+        exclusions.extend(
+            (target.x, target.y)
+            for target in self.goal_targets.values()
+            if target is not None
+        )
+        return exclusions
 
-    def start_exploration(self, robot_number):
-        """Logic to explore with the specified robot."""
-        robot_name = f"tb{robot_number}"
-        last_target = None  # To prevent sending the same goal repeatedly
-        while rclpy.ok():
-            robot_map = self.robot_maps.get(robot_name)
-            if robot_map is not None:
-                robot_position = self.robot_positions[robot_name]
-                resolution = robot_map["resolution"]
-                origin_x, origin_y = robot_map["origin"]
-                # Check if the robot is idle before assigning a new goal
-                if self.robot_states[robot_name] == "idle":
-                    target = exploration(
-                        robot_map["data"],
-                        robot_map["width"],
-                        robot_map["height"],
-                        resolution,
-                        int((robot_position[0] - origin_x) / resolution),
-                        int((robot_position[1] - origin_y) / resolution),
-                        origin_x,
-                        origin_y,
-                        robot_name,
-                        last_target=last_target
-                    )
+    def assign_idle_robots(self):
+        if self.map_data is None:
+            return
+        idle_positions = {
+            name: self.robot_positions[name]
+            for name, state in self.robot_states.items()
+            if (
+                state == "idle"
+                and self.robot_positions[name] is not None
+                and self.robot_maps[name] is not None
+            )
+        }
+        if not idle_positions:
+            return
+        exclusions = self.active_exclusions()
+        candidates = []
+        diagnostics = {
+            "frontier_groups": 0,
+            "groups_with_viewpoints": 0,
+            "candidate_assignments": 0,
+        }
+        global_unknown = _integral_image(self.map_data < 0)
+        global_radius = max(
+            1, math.ceil(INFORMATION_RADIUS_M / self.resolution)
+        )
+        for robot_name, position in idle_positions.items():
+            robot_map = self.robot_maps[robot_name]
+            robot_candidates, robot_diagnostics = robot_candidate_assignments(
+                robot_map["data"],
+                robot_map["resolution"],
+                robot_map["origin"],
+                robot_name,
+                position,
+                exclusions,
+            )
+            diagnostics["frontier_groups"] += robot_diagnostics[
+                "frontier_groups"
+            ]
+            diagnostics["groups_with_viewpoints"] += robot_diagnostics[
+                "groups_with_viewpoints"
+            ]
+            for _, _, group_id, assignment in robot_candidates:
+                row, column = world_to_grid(
+                    assignment.x,
+                    assignment.y,
+                    self.resolution,
+                    self.origin[0],
+                    self.origin[1],
+                )
+                if not (
+                    0 <= row < self.map_height
+                    and 0 <= column < self.map_width
+                ):
+                    continue
+                global_gain = _box_count(
+                    global_unknown,
+                    row,
+                    column,
+                    global_radius,
+                    self.map_height,
+                    self.map_width,
+                )
+                utility = (
+                    global_gain + assignment.viewpoint.group_size
+                ) / (1.0 + assignment.path_distance_m)
+                coordinated = Assignment(
+                    assignment.viewpoint,
+                    assignment.x,
+                    assignment.y,
+                    assignment.path_distance_m,
+                    utility,
+                )
+                candidates.append(
+                    (utility, robot_name, group_id, coordinated)
+                )
+        diagnostics["candidate_assignments"] = len(candidates)
+        assignments = select_distinct_assignments(candidates)
+        if not assignments:
+            now = self.now()
+            if now - self.last_no_assignment_log >= 10.0:
+                self.get_logger().warn(
+                    "No cooperative frontier assignment: "
+                    f"{diagnostics}"
+                )
+                self.last_no_assignment_log = now
+            return
+        for robot_name, assignment in assignments.items():
+            self.robot_states[robot_name] = "active"
+            self.goal_targets[robot_name] = assignment
+            self.get_logger().info(
+                f"Assigned {robot_name} to group "
+                f"{assignment.viewpoint.group_id} at "
+                f"({assignment.x:.2f}, {assignment.y:.2f}); "
+                f"path={assignment.path_distance_m:.2f} m, "
+                f"gain={assignment.viewpoint.information_gain}, "
+                f"utility={assignment.utility:.1f}"
+            )
+            self.send_goal(robot_name, assignment)
 
-                    if target:
-                        last_target = target
-                        self.get_logger().info(f"Target for {robot_name} is {target}")
-                        self.robot_states[robot_name] = "active"  # Mark robot as active
-                        self.send_goal(robot_name, target)
-                else:
-                    self.get_logger().debug(f"{robot_name} is currently busy.")
-            time.sleep(8)
-        # Check for exploration completion after all goals are completed
-        self.check_exploration_completion()
-
-    def send_goal(self, robot_name, target):
-        """Send a navigation goal to the robot."""
-        if robot_name in self.robot_nav_clients and self.robot_nav_clients[robot_name].wait_for_server(timeout_sec=2.0):
-            goal = NavigateToPose.Goal()
-            goal.pose.pose.position.x = target[0]
-            goal.pose.pose.position.y = target[1]
-            goal.pose.header.frame_id = "map"
-            goal.pose.header.stamp = self.get_clock().now().to_msg()
-
-            # Send goal and set up callbacks
-            future = self.robot_nav_clients[robot_name].send_goal_async(goal, feedback_callback=self.feedback_callback)
-            future.add_done_callback(lambda f: self.goal_response_callback(robot_name, target, f))
-        else:
-            self.get_logger().warn(f"Navigation action server for {robot_name} is not available.")
-            release_target(target)
+    def send_goal(self, robot_name, assignment):
+        client = self.robot_nav_clients[robot_name]
+        if not client.wait_for_server(timeout_sec=2.0):
+            self.get_logger().warn(
+                f"Navigation action server for {robot_name} is unavailable."
+            )
             self.robot_states[robot_name] = "idle"
-
-    def feedback_callback(self, feedback_msg):
-        """Handle feedback from the action server."""
-        # Optionally process feedback, e.g., log progress
-        pass
-
-    def goal_response_callback(self, robot_name, target, future):
-        """Handle action server acceptance, then wait for the final result."""
-        goal_handle = future.result()
-        if goal_handle is None or not goal_handle.accepted:
-            self.get_logger().warn(f"{robot_name} rejected goal {target}; choosing another frontier.")
-            release_target(target)
-            self.goal_failures[robot_name] += 1
-            self.robot_states[robot_name] = "idle"
+            self.goal_targets[robot_name] = None
             return
 
-        self.goal_handles[robot_name] = goal_handle
-        self.goal_started_at[robot_name] = (
-            self.get_clock().now().nanoseconds / 1e9
+        goal = NavigateToPose.Goal()
+        goal.pose = PoseStamped()
+        goal.pose.header.frame_id = "map"
+        goal.pose.header.stamp = self.get_clock().now().to_msg()
+        goal.pose.pose.position.x = assignment.x
+        goal.pose.pose.position.y = assignment.y
+        goal.pose.pose.orientation.w = 1.0
+        future = client.send_goal_async(
+            goal,
+            feedback_callback=lambda feedback, name=robot_name: (
+                self.feedback_callback(name, feedback)
+            ),
         )
-        self.goal_targets[robot_name] = target
-        result_future = goal_handle.get_result_async()
-        result_future.add_done_callback(lambda f: self.goal_result_callback(robot_name, target, f.result()))
+        future.add_done_callback(
+            lambda result, name=robot_name: self.goal_response_callback(
+                name, result
+            )
+        )
 
-    def goal_result_callback(self, robot_name, target, result):
-        """Handle the result of the goal."""
+    def goal_response_callback(self, robot_name, future):
+        assignment = self.goal_targets[robot_name]
+        try:
+            goal_handle = future.result()
+        except Exception as error:
+            self.get_logger().error(
+                f"{robot_name} goal request failed: {error}"
+            )
+            self.finish_goal(robot_name, success=False)
+            return
+        if goal_handle is None or not goal_handle.accepted:
+            self.get_logger().warn(f"{robot_name} rejected its frontier goal.")
+            self.finish_goal(robot_name, success=False, blacklist=False)
+            return
+
+        now = self.now()
+        self.goal_handles[robot_name] = goal_handle
+        self.goal_started_at[robot_name] = now
+        self.goal_last_progress_at[robot_name] = now
+        self.goal_best_distance[robot_name] = None
+        self.goal_last_position[robot_name] = self.robot_positions[robot_name]
+        self.goal_known_count[robot_name] = self.map_known_count
+        self.cancel_requested[robot_name] = False
+        result_future = goal_handle.get_result_async()
+        result_future.add_done_callback(
+            lambda result, name=robot_name, target=assignment: (
+                self.goal_result_callback(name, target, result)
+            )
+        )
+
+    def feedback_callback(self, robot_name, feedback_msg):
+        distance = float(feedback_msg.feedback.distance_remaining)
+        best = self.goal_best_distance[robot_name]
+        if best is None or distance < best - 0.1:
+            self.goal_best_distance[robot_name] = distance
+            self.goal_last_progress_at[robot_name] = self.now()
+
+    def goal_result_callback(self, robot_name, assignment, future):
+        try:
+            result = future.result()
+            success = result.status == GoalStatus.STATUS_SUCCEEDED
+            status = result.status
+        except Exception as error:
+            success = False
+            status = f"exception: {error}"
+        coverage_gain = (
+            self.map_known_count - self.goal_known_count[robot_name]
+        )
+        if success:
+            self.get_logger().info(
+                f"{robot_name} reached cooperative frontier goal; "
+                f"known-cell delta={coverage_gain}."
+            )
+        else:
+            self.get_logger().warn(
+                f"{robot_name} failed cooperative frontier goal with "
+                f"status {status}."
+            )
+        self.finish_goal(robot_name, success=success)
+
+    def finish_goal(self, robot_name, success, blacklist=True):
+        assignment = self.goal_targets[robot_name]
+        if assignment is not None:
+            expiry = self.now() + (
+                TARGET_HISTORY_SEC if success else BAD_TARGET_SEC
+            )
+            entry = (assignment.x, assignment.y, expiry)
+            if success:
+                self.target_history.append(entry)
+            elif blacklist:
+                self.bad_targets.append(entry)
         self.goal_handles[robot_name] = None
         self.goal_started_at[robot_name] = None
+        self.goal_last_progress_at[robot_name] = None
+        self.goal_best_distance[robot_name] = None
+        self.goal_last_position[robot_name] = None
+        self.goal_known_count[robot_name] = 0
         self.goal_targets[robot_name] = None
-        if result.status == GoalStatus.STATUS_SUCCEEDED:
-            self.get_logger().info(f"{robot_name} reached its goal!")
-            self.goal_failures[robot_name] = 0
-            self.robot_states[robot_name] = "idle"  # Mark as idle after completion
-        else:
-            release_target(target)
-            self.goal_failures[robot_name] += 1
-            self.get_logger().warn(
-                f"{robot_name} failed goal {target} with status {result.status}; "
-                f"failure count={self.goal_failures[robot_name]}"
-            )
-            mark_bad_target(target)
-            if self.goal_failures[robot_name] >= max_goal_failures:
-                self.goal_failures[robot_name] = 0
-            self.robot_states[robot_name] = "idle"  # Allow retries or new goals
-
-        # Check if all robots are idle and trigger map saving
+        self.cancel_requested[robot_name] = False
+        self.robot_states[robot_name] = "idle"
         self.check_exploration_completion()
 
     def cancel_stalled_goals(self):
-        """Cancel goals that block frontier reassignment for too long."""
-        now = self.get_clock().now().nanoseconds / 1e9
-        for robot_name, started_at in self.goal_started_at.items():
-            goal_handle = self.goal_handles[robot_name]
+        now = self.now()
+        for robot_name, goal_handle in self.goal_handles.items():
+            started_at = self.goal_started_at[robot_name]
+            last_progress = self.goal_last_progress_at[robot_name]
             if goal_handle is None or started_at is None:
                 continue
-            if now - started_at < self.goal_timeout_sec:
-                continue
-            target = self.goal_targets[robot_name]
-            self.get_logger().warn(
-                f"Canceling stalled goal {target} for {robot_name} after "
-                f"{self.goal_timeout_sec:.1f} simulated seconds."
+            timed_out = now - started_at >= self.goal_timeout_sec
+            stalled = (
+                last_progress is not None
+                and now - started_at >= 10.0
+                and now - last_progress >= NO_PROGRESS_SEC
             )
-            if target is not None:
-                mark_bad_target(target)
-            self.goal_started_at[robot_name] = now
+            if not (timed_out or stalled) or self.cancel_requested[robot_name]:
+                continue
+            reason = "timeout" if timed_out else "no progress"
+            self.get_logger().warn(
+                f"Canceling {robot_name} goal after {reason}."
+            )
+            self.cancel_requested[robot_name] = True
             goal_handle.cancel_goal_async()
 
     def check_exploration_completion(self):
-        """Check if all robots are idle and exploration is complete."""
         now = time.monotonic()
-        enough_time_elapsed = now - self.last_save_time >= self.save_map_interval_sec
         if (
             self.auto_save_map
             and self.map_data is not None
             and all(state == "idle" for state in self.robot_states.values())
-            and enough_time_elapsed
+            and now - self.last_save_time >= self.save_map_interval_sec
             and not self.save_in_progress
         ):
-            self.get_logger().info("All robots are idle. Saving the merged map.")
             self.save_in_progress = True
             self.last_save_time = now
-            threading.Thread(target=self.save_map).start()
-    
-    
+            threading.Thread(target=self.save_map, daemon=True).start()
+
     def save_map(self):
+        map_name = (
+            "multi_robot_autonomous_mapping_of_"
+            f"{self.num_robots}_robots"
+        )
         try:
-            print("[BILGI] Saving the merged map...")
-            subprocess.run([
-                'ros2', 'run', 'nav2_map_server', 'map_saver_cli',
-                '-t', '/merge_map',
-                '-f', os.path.join(
-                        get_package_share_directory('multi_robot'),
-                        '../../../../src/saved_map/multi_robot_autonomous_mapping_of_'+str(self.num_robots)+'_robots'),
-                '--ros-args',
-                '-p', 'map_subscribe_transient_local:=true'
-            ], check=True)
-            print("[BILGI] Map saved successfully!")
-        except subprocess.CalledProcessError as e:
-            print(f"[HATA] Failed to save the map: {e}")
-        except Exception as e:
-            print(f"[HATA] Unexpected error during map saving: {e}")
+            subprocess.run(
+                [
+                    "ros2",
+                    "run",
+                    "nav2_map_server",
+                    "map_saver_cli",
+                    "-t",
+                    "/merge_map",
+                    "-f",
+                    os.path.join(
+                        get_package_share_directory("multi_robot"),
+                        "../../../../src/saved_map/" + map_name,
+                    ),
+                    "--ros-args",
+                    "-p",
+                    "map_subscribe_transient_local:=true",
+                ],
+                check=True,
+            )
+        except (subprocess.CalledProcessError, OSError) as error:
+            self.get_logger().error(f"Failed to save merged map: {error}")
         finally:
             self.save_in_progress = False
 
-    def shutdown_node(self):
-        if (
-            self.auto_save_map
-            and self.map_data is not None
-            and not self.save_in_progress
-        ):
-            self.save_in_progress = True
-            self.save_map()
 
-                
 def main(args=None):
     rclpy.init(args=args)
     control = HeadquartersControl()
-    print(f"Number of robots: {control.num_robots}")
-
     try:
         rclpy.spin(control)
-    except KeyboardInterrupt:
-        control.exploration_active = False
-        control.get_logger().info("Shutting down exploration.")
-    except ExternalShutdownException:
+    except (KeyboardInterrupt, ExternalShutdownException):
         pass
     finally:
-        if rclpy.ok():
-            control.shutdown_node()
-            control.get_logger().info("Node shutdown successfully.")
         control.destroy_node()
         if rclpy.ok():
             rclpy.shutdown()

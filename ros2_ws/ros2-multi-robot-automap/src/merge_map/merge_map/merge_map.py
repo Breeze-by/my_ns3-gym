@@ -1,87 +1,139 @@
-import rclpy
-from rclpy.node import Node
-from rclpy.executors import ExternalShutdownException
-from rclpy.qos import QoSProfile, DurabilityPolicy, ReliabilityPolicy
-from nav_msgs.msg import OccupancyGrid
+import math
+
 import numpy as np
 
-def merge_maps(maps, frame_id):
+import rclpy
+from nav_msgs.msg import OccupancyGrid
+from rclpy.executors import ExternalShutdownException
+from rclpy.node import Node
+from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
+
+
+def merge_maps(maps, frame_id="map"):
+    """Merge aligned occupancy grids and clear stale occupied evidence."""
+    if not maps:
+        raise ValueError("At least one occupancy grid is required")
+
+    resolution = maps[0].info.resolution
+    if resolution <= 0:
+        raise ValueError("Map resolution must be positive")
+    if any(
+        not math.isclose(grid.info.resolution, resolution) for grid in maps
+    ):
+        raise ValueError("All occupancy grids must use the same resolution")
+
+    min_x = min(grid.info.origin.position.x for grid in maps)
+    min_y = min(grid.info.origin.position.y for grid in maps)
+    offsets = [
+        (
+            round((grid.info.origin.position.x - min_x) / resolution),
+            round((grid.info.origin.position.y - min_y) / resolution),
+        )
+        for grid in maps
+    ]
+    width = max(
+        offset_x + grid.info.width
+        for grid, (offset_x, _) in zip(maps, offsets)
+    )
+    height = max(
+        offset_y + grid.info.height
+        for grid, (_, offset_y) in zip(maps, offsets)
+    )
+    merged = np.full((height, width), -1, dtype=np.int16)
+
+    for grid, (offset_x, offset_y) in zip(maps, offsets):
+        incoming = np.asarray(grid.data, dtype=np.int16)
+        expected_size = grid.info.width * grid.info.height
+        if incoming.size != expected_size:
+            raise ValueError(
+                "Occupancy grid data size does not match its dimensions"
+            )
+        incoming = incoming.reshape(grid.info.height, grid.info.width)
+        region = merged[
+            offset_y:offset_y + grid.info.height,
+            offset_x:offset_x + grid.info.width,
+        ]
+        incoming_known = incoming >= 0
+        only_incoming_known = incoming_known & (region < 0)
+        both_known = incoming_known & (region >= 0)
+        region[only_incoming_known] = incoming[only_incoming_known]
+        # A free ray observation clears stale occupied evidence such as another
+        # robot's former position. Static walls remain occupied when the other
+        # maps are unknown or also observe them as occupied.
+        region[both_known] = np.minimum(
+            region[both_known], incoming[both_known]
+        )
+
     merged_map = OccupancyGrid()
-    merged_map.header = maps[0].header
+    merged_map.header.stamp = maps[-1].header.stamp
     merged_map.header.frame_id = frame_id
-
-    # Calculate merged map boundaries
-    min_x = min([map_.info.origin.position.x for map_ in maps])
-    min_y = min([map_.info.origin.position.y for map_ in maps])
-    max_x = max([map_.info.origin.position.x + map_.info.width * map_.info.resolution for map_ in maps])
-    max_y = max([map_.info.origin.position.y + map_.info.height * map_.info.resolution for map_ in maps])
-
-    # Set merged map info
+    merged_map.info.map_load_time = maps[-1].info.map_load_time
+    merged_map.info.resolution = resolution
+    merged_map.info.width = width
+    merged_map.info.height = height
+    source_origin = maps[0].info.origin
     merged_map.info.origin.position.x = min_x
     merged_map.info.origin.position.y = min_y
-    merged_map.info.resolution = min([map_.info.resolution for map_ in maps])
-    merged_map.info.width = int(np.ceil((max_x - min_x) / merged_map.info.resolution))
-    merged_map.info.height = int(np.ceil((max_y - min_y) / merged_map.info.resolution))
-    merged_map.data = [-1] * (merged_map.info.width * merged_map.info.height)
-
-    # Copy data from each map to the merged map
-    for map_ in maps:
-        for y in range(map_.info.height):
-            for x in range(map_.info.width):
-                i = x + y * map_.info.width
-                merged_x = int(np.floor((map_.info.origin.position.x + x * map_.info.resolution - min_x) / merged_map.info.resolution))
-                merged_y = int(np.floor((map_.info.origin.position.y + y * map_.info.resolution - min_y) / merged_map.info.resolution))
-                merged_i = merged_x + merged_y * merged_map.info.width
-                if merged_map.data[merged_i] == -1:
-                    merged_map.data[merged_i] = map_.data[i]
-
+    merged_map.info.origin.position.z = source_origin.position.z
+    merged_map.info.origin.orientation.x = source_origin.orientation.x
+    merged_map.info.origin.orientation.y = source_origin.orientation.y
+    merged_map.info.origin.orientation.z = source_origin.orientation.z
+    merged_map.info.origin.orientation.w = source_origin.orientation.w
+    if merged_map.info.origin.orientation.w == 0.0:
+        merged_map.info.origin.orientation.w = 1.0
+    merged_map.data = merged.ravel().tolist()
     return merged_map
+
 
 class MergeMapNode(Node):
     def __init__(self):
-        super().__init__('merge_map_node')
-        self.frame_id = self.declare_parameter('frame_id', 'merge_map').get_parameter_value().string_value
-        self.robot_count = self.declare_parameter('robot_count', 3).get_parameter_value().integer_value  # Default to 3 robots
+        super().__init__("merge_map_node")
+        self.frame_id = self.declare_parameter("frame_id", "map").value
+        self.output_topic = self.declare_parameter(
+            "output_topic", "/merge_map"
+        ).value
+        self.robot_count = self.declare_parameter("robot_count", 3).value
 
-        # Use a transient_local QoS to ensure the merged map is latched
         qos = QoSProfile(depth=10)
         qos.durability = DurabilityPolicy.TRANSIENT_LOCAL
         qos.reliability = ReliabilityPolicy.RELIABLE
-
-        # Publisher for the merged map
-        self.publisher = self.create_publisher(OccupancyGrid, '/' + self.frame_id, qos)
-
-        # Store maps dynamically
+        self.publisher = self.create_publisher(
+            OccupancyGrid, self.output_topic, qos
+        )
         self.maps = [None] * self.robot_count
-
-        # Create subscriptions dynamically
-        for i in range(self.robot_count):
-            topic = f'/tb{i + 1}/map'
-            self.create_subscription(
-                OccupancyGrid, topic, lambda msg, idx=i: self.map_callback(msg, idx), qos
+        self.map_subscriptions = []
+        for index in range(self.robot_count):
+            topic = f"/tb{index + 1}/map"
+            self.map_subscriptions.append(
+                self.create_subscription(
+                    OccupancyGrid,
+                    topic,
+                    lambda msg, idx=index: self.map_callback(msg, idx),
+                    qos,
+                )
             )
 
     def map_callback(self, msg, index):
         self.maps[index] = msg
-        self.try_merge_and_publish()
+        if all(self.maps):
+            try:
+                self.publisher.publish(merge_maps(self.maps, self.frame_id))
+            except ValueError as error:
+                self.get_logger().error(str(error))
 
-    def try_merge_and_publish(self):
-        if all(self.maps):  # Ensure all maps are available
-            merged_map = merge_maps(self.maps, self.frame_id)
-            self.publisher.publish(merged_map)
-            # self.get_logger().info('Merged map published!')
 
 def main(args=None):
     rclpy.init(args=args)
-    merge_map_node = MergeMapNode()
+    node = MergeMapNode()
     try:
-        rclpy.spin(merge_map_node)
+        rclpy.spin(node)
     except (KeyboardInterrupt, ExternalShutdownException):
         pass
     finally:
-        merge_map_node.destroy_node()
+        node.destroy_node()
         if rclpy.ok():
             rclpy.shutdown()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

@@ -8,7 +8,6 @@ from launch.actions import (
     DeclareLaunchArgument,
     RegisterEventHandler,
     IncludeLaunchDescription,
-    ExecuteProcess,
     OpaqueFunction,
     TimerAction,
 )
@@ -94,6 +93,7 @@ def launch_setup(context, *args, **kwargs):
 
     # ========= Package paths =========
     multi_robot_share = get_package_share_directory("multi_robot")
+    merge_map_share = get_package_share_directory("merge_map")
     nav_launch_dir = os.path.join(multi_robot_share, "launch", "nav2_bringup")
 
     my_robot = "turtlebot3_waffle"
@@ -111,18 +111,35 @@ def launch_setup(context, *args, **kwargs):
     remappings = [("/tf", "tf"), ("/tf_static", "tf_static")]
 
     # ========= Start merge_map and headquarters control =========
-    merge_map_launch = ExecuteProcess(
-        cmd=[
-            "ros2",
-            "launch",
-            "merge_map",
-            "merge_map_launch.py",
-            ["robot_count:=", robot_count_cfg],
-            ["enable_rviz:=", enable_merge_rviz],
+    merge_map_node = Node(
+        package="merge_map",
+        executable="merge_map",
+        name="merge_map",
+        parameters=[
+            {
+                "frame_id": "map",
+                "output_topic": "/merge_map",
+                "robot_count": robot_count_cfg,
+                "use_sim_time": use_sim_time,
+            }
         ],
         output="screen",
     )
-    actions.append(merge_map_launch)
+    actions.append(merge_map_node)
+
+    merge_rviz = Node(
+        package="rviz2",
+        executable="rviz2",
+        name="merge_map_rviz",
+        output="screen",
+        arguments=[
+            "-d",
+            os.path.join(merge_map_share, "config", "map_merge_tb1_tb2.rviz"),
+        ],
+        parameters=[{"use_sim_time": use_sim_time}],
+        condition=IfCondition(enable_merge_rviz),
+    )
+    actions.append(merge_rviz)
 
     control_node = Node(
         package="multi_robot_exploration",
@@ -257,7 +274,10 @@ def launch_setup(context, *args, **kwargs):
                 os.path.join(nav_launch_dir, "bringup_launch.py")
             ),
             launch_arguments={
-                "slam": "False",
+                # SLAM is started below with the project's multi-robot launch.
+                # Keep this true so Nav2 does not also start AMCL and publish a
+                # competing map->odom transform while the map is being built.
+                "slam": "True",
                 "namespace": namespace,
                 "use_namespace": "True",
                 "map": map_file_path,
@@ -288,28 +308,10 @@ def launch_setup(context, *args, **kwargs):
             }.items(),
         )
 
-        node_tf_map_to_odom = Node(
-            package="tf2_ros",
-            executable="static_transform_publisher",
-            arguments=[
-                "0",
-                "0",
-                "0",
-                "0",
-                "0",
-                "0",
-                f"{robot_name}/map",
-                f"{robot_name}/odom",
-            ],
-            parameters=[{"use_sim_time": use_sim_time}],
-            output="screen",
-        )
-
         robot_actions = [
             robot_state_publisher,
             spawn_robot,
             joint_state_publisher_node,
-            node_tf_map_to_odom,
             slam_toolbox_node,
         ]
 
@@ -335,14 +337,14 @@ def launch_setup(context, *args, **kwargs):
     if last_spawn_action is not None:
         staggered_nav = [
             TimerAction(
-                period=2.0 + 45.0 * index,
+                period=10.0 + 45.0 * index,
                 actions=[bringup],
             )
             for index, bringup in enumerate(nav_bringups)
         ]
         # Give the final Nav2 stack time to finish lifecycle activation before
         # control and evaluation add load or submit goals.
-        control_delay = 62.0 + 45.0 * (len(nav_bringups) - 1)
+        control_delay = 70.0 + 45.0 * (len(nav_bringups) - 1)
         staggered_nav.append(
             TimerAction(
                 period=control_delay,

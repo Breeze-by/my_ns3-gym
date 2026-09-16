@@ -26,9 +26,9 @@ Use current code as the source of truth. Read in this order:
 4. `sim.cc` for the actual environment state transition and reward timing.
 5. `test.py` and `run_baselines.py` for baseline semantics and CSV fields.
 6. `dqn_common.py`, `train_dqn.py`, and `evaluate_dqn.py` for DQN behavior.
-7. `report/20260914.md`, `report/20260914_p1b.md`,
-   `report/20260915_p1c.md`, and `report/20260916_p1c.md` for the ROS
-   engineering checkpoints.
+7. `report/20260914_p1b.md`, `report/20260915_p1c.md`,
+   `report/20260916_p1c.md`, and `report/20260916_p1c_foundation.md` for the
+   ROS engineering checkpoints.
 8. `report/20260902.md`, `report/20260429.md`, and `log.md` for historical
    experiment context.
 
@@ -44,17 +44,18 @@ episode CSV/JSON. Its 2026-09-14 one- and two-robot short timeout runs passed.
 The current world has one unsupported mesh collision (an SUV outside the lab
 walls).
 
-P1C meets its evidence-based revised exit condition and is waiting for user
-review. Two robots start inside the same radius-1 m start/charging region in
-`my_world.world`; success is 75% correct-free coverage within 300 simulated
-seconds. The earlier 90%/600 s contract failed repeatedly, and a 2026-09-16
-80%/300 s three-seed batch also failed at 75.7%/75.8%/79.7%. The controller
-now evaluates every frontier group meeting the minimum size instead of
-silently discarding all but the largest eight. The final seeds 101–103 batch
-reached 75% in 70.7–91.2 simulated seconds with 3/3 success, no infrastructure
-failures, and zero collisions. Do not proceed to P2 until the user accepts the
-revised threshold and P1C result; 80%/90%/95% remain higher milestones, not
-claims made by this baseline.
+P1C now meets the original 90% coverage intent with a shorter evidence-based
+time bound and is waiting for user review. Two robots start inside the same
+radius-1 m start/charging region in `my_world.world`; success is 90%
+correct-free coverage within 180 simulated seconds. Earlier 75%/300 s results
+were symptoms of foundational defects, not an exploration ceiling: the custom
+SLAM callback never enabled `map->odom`, AMCL competed with SLAM during mapping,
+the coordinator treated odometry as map coordinates, and frontier selection
+blocked on a quadratic nearest-frontier loop. After fixing those causes and
+using diverse, reachable 0.45 m-clearance observation points, seeds 101/202/303
+reached 90% in 141.3/161.4/134.9 seconds and finished at
+93.87%/93.90%/93.88%, with zero collisions and zero search overlap. Do not
+proceed to P2 until the user accepts P1C; 95% remains a higher milestone.
 
 Do not treat the dated report as current configuration. Do not overwrite it
 when current code changes; write a new dated report for a new research stage.

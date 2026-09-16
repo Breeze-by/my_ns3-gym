@@ -24,7 +24,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-        	'merge_map = merge_map.merge_map:main',
+            'merge_map = merge_map.merge_map:main',
             'offline_merge_map = merge_map.offline_merge_map:main'
         ],
     },

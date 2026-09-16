@@ -13,7 +13,7 @@ import time
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_SEEDS = (101, 102, 103)
+DEFAULT_SEEDS = (101, 202, 303)
 SUMMARY_FIELDS = (
     "episode_id",
     "gazebo_seed",
@@ -44,13 +44,13 @@ def parse_args():
     parser.add_argument(
         "--robot-count", type=int, choices=range(1, 5), default=2
     )
-    parser.add_argument("--duration", type=float, default=300.0)
-    parser.add_argument("--coverage-threshold", type=float, default=0.75)
+    parser.add_argument("--duration", type=float, default=180.0)
+    parser.add_argument("--coverage-threshold", type=float, default=0.90)
     parser.add_argument("--goal-timeout", type=float, default=60.0)
-    parser.add_argument("--startup-timeout", type=float, default=300.0)
+    parser.add_argument("--startup-timeout", type=float, default=180.0)
     parser.add_argument("--message-timeout", type=float, default=90.0)
     parser.add_argument(
-        "--evaluation-wait-timeout", type=float, default=720.0
+        "--evaluation-wait-timeout", type=float, default=270.0
     )
     parser.add_argument("--shutdown-timeout", type=float, default=60.0)
     parser.add_argument("--run-id")

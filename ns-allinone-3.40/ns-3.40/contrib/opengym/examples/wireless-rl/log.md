@@ -841,3 +841,151 @@ Result: PASS infrastructure and expected timeout after 5 simulated seconds at
 0.027 coverage and 0.000 m path. The result included
 `time_to_75_coverage_sec=null`, confirming the final evaluator/smoke schema.
 Output: `ros2_ws/ros2-multi-robot-automap/log/evaluation/p1c_schema75_smoke_seed104.json`.
+
+## 2026-09-16 ROS 2 P1C collaborative-foundation repair
+
+Purpose: answer why P1C could not exceed 90%, then repair the robot/SLAM/Nav2,
+map fusion, and multi-robot coordination foundations without changing the
+world, truth raster, coverage metric, robot count, or success semantics.
+
+Code state: base commit `99cd516` plus the iterative worktree changes described
+below. The pre-existing deletion of `report/20260914.md` and untracked
+`report/20260914_p1a.md` were not touched or staged. Runtime outputs remain in
+the ignored ROS `log/` tree.
+
+Unless a row states otherwise, directed episodes used this exact command form
+after sourcing `/opt/ros/humble/setup.bash` and `install/setup.bash`:
+
+```bash
+PYTHONNOUSERSITE=1 python3 scripts/ros_smoke_test.py \
+  --robot-count 2 --gazebo-seed SEED \
+  --evaluation-duration DURATION --episode-id EPISODE
+```
+
+### Initial cooperative-controller attempts
+
+| Episode | Duration | Change/result | Launch log |
+|---|---:|---|---|
+| `p1c_coop_v1_seed101_120` | 120 s | Infrastructure FAIL: `/merge_map` timed out because `merge_map.py` assigned to rclpy's read-only `Node.subscriptions` property and crashed. | `robots2_seed101_20260916-195354.log` |
+| `p1c_coop_v1_seed101_120_retry1` | 120 s | PASS infrastructure, 4.1% coverage, 0.007 m. A mistaken non-rolling local costmap on `/merge_map` left both robots out of bounds; reverted. | `robots2_seed101_20260916-195732.log` |
+| `p1c_coop_v1_seed101_60_retry2` | 60 s | 40.3% coverage, 0.766 m; repeated Navfn failures remained. | `robots2_seed101_20260916-200334.log` |
+| `p1c_coop_v1_costmap_diag` | 45 s | 41.2% coverage, 0.540 m. `/merge_map` had three publishers: nested merge launches survived prior smoke cleanup. | `robots2_seed101_20260916-200803.log` |
+| `p1c_coop_v1_seed101_60_clean` | 60 s | After direct ownership/cleanup of merge node: 70.65% coverage, 9.756 m, 0 collisions. This isolated stale publishers as a real infrastructure cause. | `robots2_seed101_20260916-201207.log` |
+| `p1c_coop_v2_seed101_90` | 90 s | Shared merged map for Nav2, free-wins fusion: 79.34%, 23.984 m, 0/4 goals completed before cutoff. | `robots2_seed101_20260916-201705.log` |
+| `p1c_coop_v3_seed101_120` | 120 s | Same with `allow_unknown=true`: 78.76%, 32.337 m, 1/6 goals succeeded; raw changing merged map remained a poor per-robot planning frame. | `robots2_seed101_20260916-202213.log` |
+| `p1c_coop_v4_seed101_120` | 120 s | Central utility plus local maps for path/Nav2: 75.03%, 13.63 m, 1/4 goals succeeded. | `robots2_seed101_20260916-203001.log` |
+| `p1c_coop_v5_seed101_180` | 180 s | Territory penalty, 0.35 m clearance, relaxed yaw: 73.59%, 20.16 m, 1/5 goals succeeded; late frontiers existed but no candidates survived. | `robots2_seed101_20260916-203555.log` |
+| `p1c_coop_v6_seed101_120` | 120 s | Separate path/target clearances and hard closest-robot ownership: 71.78%, 26.736 m, 1/5 goals succeeded. | `robots2_seed101_20260916-204241.log` |
+
+All valid rows above had zero collision. They showed that scoring/clearance
+tuning alone could not repair the planner mismatch.
+
+### TF and lifecycle root-cause diagnosis
+
+`p1c_tf_diag_seed101` used the common command with 45 s. It finished at 60.5%
+coverage and 9.117 m. During the run:
+
+```bash
+ros2 run tf2_ros tf2_echo map base_footprint --ros-args \
+  -r /tf:=/tb1/tf -r /tf_static:=/tb1/tf_static
+ros2 topic echo --once /tb1/odom
+```
+
+The same robot was approximately `(-0.15,-2.79)` in odom but `(4.7,3.7)` in
+the map TF chain. `/tb1/tf` also had both AMCL and SLAM publishers. Source
+inspection then found the custom multi-robot SLAM laser callback omitted
+`scan_header = scan->header`; the common TF loop therefore never published
+SLAM `map->odom`, while unconditional AMCL accidentally supplied a conflicting
+transform.
+
+The following bounded attempts were recorded during that repair:
+
+| Episode/diagnostic | Exact deviation | Result |
+|---|---|---|
+| `p1c_coop_v7_tf_fixed_seed101` | 120 s, `--startup-timeout 75` | Infrastructure FAIL: both planners inactive; the manually shortened startup limit was below the launch's delayed control start. |
+| `p1c_coop_v7_tf_fixed_seed101_retry1` | 90 s, `--startup-timeout 130` | Infrastructure FAIL: tb2 planner inactive. |
+| `p1c_coop_v7_tf_fixed_seed101_retry2` | 90 s, default 180 s startup | Infrastructure FAIL: tb2 planner inactive. INFO diagnostic showed Nav2 waiting forever for frame `map`. |
+| direct 2-robot launch | `ros2 launch ... robot_count:=2 ... enable_task_evaluator:=false` | Confirmed the custom SLAM process was alive and maps updated, but no `map->odom` existed. Manually interrupted after diagnosis. |
+| direct 1-robot launch after C++ fix | same launch with `robot_count:=1` | Nav2 lifecycle fully activated; `tf2_echo` resolved `map->base_footprint` near `(0.001,-0.450)`. Manually interrupted after verification. |
+
+The fix restored the scan header, suppressed localization/AMCL in mapping
+mode, removed the irrelevant prefixed static transform, and transformed odom
+poses into map coordinates inside the coordinator. Focused tests added a 2-D
+transform regression.
+
+### Cooperative algorithm progression
+
+| Episode | Duration | Coverage | Path | Nav result | Conclusion |
+|---|---:|---:|---:|---|---|
+| `p1c_coop_v8_slam_tf_seed101` | 120 s | 62.15% | 10.664 m | 5/5 success | Navigation was now correct; single best viewpoint serialized exploration. |
+| `p1c_coop_v9_diverse_seed101` | 120 s | 69.83% | 8.621 m | 7/7 success | Diverse same-frontier viewpoints worked; hard ownership still idled robots. |
+| `p1c_coop_v10_work_conserving_seed101` | 120 s | 71.58% | 16.701 m | 8 success, 1 active | Removing hard ownership doubled useful travel. |
+| `p1c_coop_v11_history10_seed101` | 120 s | 61.46% | 11.619 m | 6 success, 1 active | Shortening success history did not remove the 30 s stalls; rejected as causal explanation. |
+| `p1c_coop_v12_fast_frontier_seed101` | 120 s | — | — | — | Infrastructure FAIL: DDS health check temporarily missed `/tb2/collision`; tb1 Nav2 action also unavailable. |
+| `p1c_coop_v12_fast_frontier_seed101_retry1` | 120 s | 73.42% | 18.503 m | 11/11 success | Bounded-neighborhood frontier search removed the quadratic controller stall. |
+| `p1c_coop_v13_range12_seed101` | 180 s | — | — | — | Infrastructure FAIL: unused `smoother_server` lifecycle response timed out, so tb1 planner/BT never activated. |
+| `p1c_coop_v13_range12_seed101_retry1` | 180 s | 75.51% | 23.679 m | 14 success, 3 canceled, 1 active | 12 m cross-region tasks prevented candidate exhaustion, but 0.35 m edge targets caused Navfn/DWB failures. |
+
+The frontier implementation was changed from a full bounding-box scan with an
+O(group-size) nearest-point search per cell to enumeration of only the 0.8 m
+neighborhood around frontier cells. A synthetic focused suite dropped from
+about 2.4 s to 1.17 s while preserving geometric checks. The final target
+clearance was increased to 0.45 m and target separation to 1.2 m. Nav2 startup
+was delayed from 2 s to 10 s after spawn, and the unused path
+`smoother_server` was removed; `velocity_smoother` remains.
+
+### Final three-seed evidence
+
+The three exact final commands differed only by `SEED` and `EPISODE`:
+
+```bash
+PYTHONNOUSERSITE=1 python3 scripts/ros_smoke_test.py \
+  --robot-count 2 --gazebo-seed SEED \
+  --evaluation-duration 180 --evaluation-wait-timeout 270 \
+  --episode-id p1c_coop_v14_safe_targets_seedSEED
+```
+
+| Seed | Final coverage | Time to 90% | Path | Goals success/cancel/abort | Collision | Overlap |
+|---:|---:|---:|---:|---:|---:|---:|
+| 101 | 0.93869 | 141.3 s | 36.465 m | 17/0/0 | 0 | 0 |
+| 202 | 0.93905 | 161.4 s | 43.081 m | 17/1/0 | 0 | 0 |
+| 303 | 0.93876 | 134.9 s | 42.871 m | 16/0/0 | 0 | 0 |
+
+Mean coverage was 0.93883, mean time to 90% was 145.9 s, and mean path was
+40.81 m. Across 56 submitted goals, 50 succeeded, 1 was canceled, 0 aborted,
+and 5 were active at the fixed cutoff: 98.0% success among completed goals.
+Mean observed-map accuracy was 97.12%. All three smoke runs passed.
+
+Conclusion: the earlier 75% threshold described a defective foundation, not a
+reasonable algorithmic ceiling. With the evaluation contract unchanged, P1C
+supports a 90% correct-free coverage target and a 180 simulated-second bound;
+600 s is unnecessary. 95% remains unsupported. Full analysis is in
+`report/20260916_p1c_foundation.md`.
+
+The serial baseline runner defaults were updated to the validated contract:
+seeds 101/202/303, 180 s duration, 0.90 threshold, 180 s startup bound, and
+270 s outer evaluation wait. Explicit CLI arguments can still override all of
+them.
+
+Final validation:
+
+```bash
+source /opt/ros/humble/setup.bash
+colcon build --symlink-install \
+  --packages-select slam_toolbox merge_map multi_robot_exploration multi_robot \
+  --allow-overriding slam_toolbox
+source install/setup.bash
+colcon test --packages-select merge_map multi_robot_exploration multi_robot \
+  --event-handlers console_direct+
+colcon test-result --verbose
+colcon test --packages-select slam_toolbox --event-handlers console_direct+
+```
+
+The four-package build passed. Python package tests finished with 16 tests,
+0 failures and 2 copyright skips; `slam_toolbox` declares no tests and its
+build passed. The first package-level test invocation had 2 flake8 failures:
+one new slice-spacing issue and 42 legacy `merge_map` style errors. The slice
+was corrected, the touched launch files were formatted, and the duplicate
+offline merger was replaced by the tested shared implementation; the repeated
+package suite then passed. Focused functional coverage is 2 map-merger tests,
+5 coordinator tests, and 3 evaluator tests.

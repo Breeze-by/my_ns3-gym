@@ -21,8 +21,8 @@ monorepo，与 ns-3/ns3-gym 共用一个 Git 根。旧的独立检出目录及�
 | 路径 | 作用 |
 | --- | --- |
 | `src/multi_robot` | 主仿真包。负责 Gazebo 世界、机器人 SDF/URDF、主 launch、Nav2 参数、RViz 配置。 |
-| `src/merge_map` | 地图合并包。订阅 `/tbN/map`，发布 `/merge_map`，并启动一个全局地图 RViz。 |
-| `src/multi_robot_exploration` | 总控探索节点。用 `/tbN/map` 为对应机器人选前沿，用 `/merge_map` 保存/评估全局地图，并向 `/tbN/navigate_to_pose` 发送 Nav2 目标。 |
+| `src/merge_map` | 地图合并包。按栅格原点对齐 `/tbN/map`，合并已知区域并发布 `/merge_map`。 |
+| `src/multi_robot_exploration` | 中央协同探索节点。用本地地图验证每台机器人的可达性，用合并地图统一评价信息增益，并分配互不冲突的 Nav2 目标。 |
 | `src/multi_robot/params/nav2_params_tb*_0.yaml` | 每台机器人单独的 Nav2 参数。当前主 launch 使用 `tb1` 到 `tb4`。 |
 | `src/multi_robot/models/turtlebot3_waffle/model.sdf` | Gazebo 实体模型。当前保留 lidar、imu、diff_drive、joint_state，禁用了深度相机传感器。 |
 | `src/saved_map` | `map_saver_cli` 保存合并地图的位置。 |
@@ -55,7 +55,7 @@ src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py
 | joint_state_publisher | 每个机器人一个 |
 | Nav2 | include `src/multi_robot/launch/nav2_bringup/bringup_launch.py` |
 | slam_toolbox | include `slam_toolbox/launch/online_async_multirobot_launch.py` |
-| merge_map | `ros2 launch merge_map merge_map_launch.py` |
+| merge_map | 主 launch 直接启动 `merge_map` 节点，确保退出时不会遗留子 launch 进程 |
 | headquarters_control | `ros2 run multi_robot_exploration control` |
 | 每机器人 RViz | 由 `enable_rviz` 控制，默认关闭 |
 | 全局地图 RViz | 由 `enable_merge_rviz` 控制，默认开启 |
@@ -84,7 +84,7 @@ merge_map
 multi_robot_exploration/control
 ```
 
-因此 `/tbN/map` 订阅数量、探索线程数量和 Gazebo 中的机器人数量保持一致。
+因此 `/tbN/map`、`/tbN/tf` 订阅数量、Nav2 action client 数量和 Gazebo 中的机器人数量保持一致。
 
 ## 4. RViz 策略
 
@@ -110,7 +110,7 @@ multi_robot_exploration/control
 | `evaluation_episode_id` | `episode` | CSV/JSON 文件名和 episode 标识 |
 | `evaluation_output_dir` | `/tmp/multi_robot_evaluation` | 评估结果目录 |
 | `evaluation_duration_sec` | `0.0` | 仿真超时；0 表示只在 shutdown 时保存 |
-| `evaluation_coverage_threshold` | `0.0` | 正确自由空间覆盖率成功阈值；0 表示仅按超时结束，P1C runner 默认传 0.75 |
+| `evaluation_coverage_threshold` | `0.0` | 正确自由空间覆盖率成功阈值；0 表示仅按超时结束，当前 P1C 正式口径传 0.90 |
 | `exploration_goal_timeout_sec` | `60.0` | 单个 Nav2 目标的最大仿真秒数 |
 
 也就是说，常用命令里 `enable_rviz:=false` 不会关闭全局地图 RViz，只会关闭每机器人 RViz。
@@ -158,7 +158,7 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
 /merge_map
 /tbN/map
 /tbN/odom
-/tbN/cmd_vel
+/tbN/tf
 ```
 
 并向每台机器人发送 Nav2 action：
@@ -266,7 +266,7 @@ ros2 run multi_robot_exploration control --ros-args \
   -p auto_save_map:=false
 ```
 
-### 6.5 探索目标筛选与失败重试
+### 6.5 协同探索、目标筛选与失败重试
 
 修改文件：
 
@@ -293,16 +293,35 @@ goal accepted/rejected
 最终 result succeeded/failed
 ```
 
-每台机器人从自己的 `/tbN/map` 选择目标，避免把融合地图中另一台机器人发现、但本机
-global costmap 尚不可达的区域直接交给 Nav2。跨机器人仍共享目标预留/访问记录，以减少
-重复搜索。
+中央协调器为每台机器人在自己的 `/tbN/map` 上计算已知自由空间连通域和多组安全观察点，
+再用 `/merge_map` 中仍未知的栅格数统一评分。一次分配会为所有 idle 机器人选择相距至少
+1.2 m 的不同目标；同一个大前沿可以提供多个空间分散的观察点，因此机器人不会各自抢同一点，
+也不会因为“每个前沿只保留一个目标”而串行等待。
 
-目标被接受后最多执行 60 仿真秒。成功目标保留在访问历史，避免 A→B→A 往返；失败目标
+控制器订阅每台机器人的 `/tbN/tf`，用实时 `map→odom` 把里程计位置转换到 SLAM 地图坐标后
+再做 Dijkstra 可达性判断。禁止把 odom 坐标直接当 map 坐标。候选计算从前沿向外枚举有限
+邻域，避免旧实现的“地图候选数 × 前沿长度”二次循环阻塞 ROS 执行器。
+
+目标被接受后最多执行 60 仿真秒。成功目标短期保留在访问历史，避免 A→B→A 往返；失败目标
 释放预留并加入坏目标集合；启动期或瞬态拒绝只释放，不永久拉黑候选。一个前沿组的首选
 栅格无效时，会继续尝试同组其他安全栅格，而不是丢弃整个组。
 
-主 launch 对 Nav2 采用 45 秒错峰启动，并在最后一套 Nav2 启动 60 秒后才启动控制器和
-评估器，降低生命周期转换期间的负载和启动期目标拒绝。
+建图模式只启动 SLAM Toolbox，不再同时启动 AMCL，确保每台机器人只有一个
+`map→odom` 发布源。自定义 multi-robot SLAM 回调会保存最新 scan header，使 SLAM 的 TF
+发布线程真正工作。Nav2 使用各自本地 SLAM 地图，A* 允许穿过待探索 unknown，但最终目标
+必须是具有 0.45 m 障碍净空的已知自由栅格。
+
+主 launch 在机器人生成 10 秒后启动第一套 Nav2，后续机器人按 45 秒错峰；最后一套 Nav2
+启动 60 秒后再启动控制器和评估器。探索行为树不使用的 `smoother_server` 不再启动，减少
+lifecycle 转换超时；速度平滑器 `velocity_smoother` 仍保留。
+
+### 6.6 地图融合
+
+`merge_map` 验证输入分辨率和数据尺寸，按每张 OccupancyGrid 的世界原点计算整数栅格偏移，
+用 NumPy 合并所有机器人已知区域。unknown 只在没有机器人观测时保留；已知冲突采用 free
+优先，清理由其他机器人动态占据造成的机器人残影。输出固定为 `frame_id=map`、
+`topic=/merge_map`，frame 和 topic 不再混用。主 launch 直接拥有 merge 节点，实验结束后不会
+遗留多个 `/merge_map` publisher 污染下一轮。
 
 ## 7. 编译
 
@@ -401,18 +420,18 @@ action status 统计成功、取消和失败目标。
 任务区域，必须先增加 mesh 真值处理。
 
 CSV/JSON 默认写入 `log/evaluation/`（由 smoke 工具指定并被 Git 忽略）。P1C 当前定义为：
-`correct_free_coverage_ratio >= 0.75` 时记录 `success=true` 和
-`termination_reason=coverage_reached`；300 仿真秒未达到则记录 timeout。输出 schema v2
+`correct_free_coverage_ratio >= 0.90` 时记录 `success=true` 和
+`termination_reason=coverage_reached`；180 仿真秒未达到则记录 timeout。输出 schema v2
 还包含 75%/80%/90%/95% 首次达到时间、每台机器人起终点、目标结果、路径、碰撞和搜索重叠。
 
 P1C 理想通信批量入口（每个 seed 启动独立 ROS/Gazebo 进程）：
 
 ```bash
 python3 scripts/run_ideal_baseline.py \
-  --seeds 101 102 103 \
+  --seeds 101 202 303 \
   --robot-count 2 \
-  --duration 300 \
-  --coverage-threshold 0.75 \
+  --duration 180 \
+  --coverage-threshold 0.90 \
   --goal-timeout 60 \
   --message-timeout 90 \
   --run-id <unique-run-id>
@@ -422,11 +441,11 @@ python3 scripts/run_ideal_baseline.py \
 原始 launch 日志位于 `launch_logs/`，批次根目录含增量更新的 `summary.csv/json`。目录已被
 Git 忽略，但正式运行的命令、commit、seed、参数和结论必须追加到 wireless-rl `log.md`。
 
-截至 2026-09-16，P1C 已达到修订后的工程退出条件并等待用户验收。90%/600 秒和
-80%/300 秒都无法跨 seed 稳定达到；最终 75%/300 秒批次在 seeds 101/102/103 上 3/3
-成功，首次达标时间为 76.8/70.7/91.2 秒，零碰撞。控制器不再只保留最大的 8 个前沿组，
-避免后期有效候选被静默丢弃。阈值依据、失败尝试和限制见 `report/20260916_p1c.md`；
-75% 是工程基线完成口径，不能描述成完整地图覆盖。
+截至 2026-09-16，P1C 已达到 90%/180 秒工程退出条件并等待用户验收。seeds 101/202/303
+在不修改 world、真值和评价规则的情况下，180 秒覆盖率为 93.87%/93.90%/93.88%，
+90% 首达时间为 141.3/161.4/134.9 秒；三轮均零碰撞、零搜索重叠。早期 75%/300 秒结论
+保留为缺陷修复前的历史结果，不再是当前基线。根因、失败尝试和完整结果见
+`report/20260916_p1c_foundation.md`；95% 仍是更高覆盖目标。
 
 以下命令适合运行中的人工诊断：
 

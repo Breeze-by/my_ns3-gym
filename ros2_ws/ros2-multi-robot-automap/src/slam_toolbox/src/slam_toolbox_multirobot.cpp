@@ -18,6 +18,11 @@ void MultiRobotSlamToolbox::laserCallback(
   sensor_msgs::msg::LaserScan::ConstSharedPtr scan)
 /*****************************************************************************/
 {
+    // The common transform publisher only emits map->odom after a scan header
+    // has been recorded.  Without this, maps update but Nav2 never receives a
+    // map frame and remains stuck during lifecycle activation.
+    scan_header = scan->header;
+
     // Process raw laser scans
     Pose2 pose;
     if (!pose_helper_->getOdomPose(pose, scan->header.stamp)) {
