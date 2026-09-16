@@ -1,7 +1,8 @@
 # wireless-rl Codex Memory
 
 Last verified against source, local 1/2/3-robot headless smoke tests, P1B
-evaluator tests, and the P1C ideal baseline awaiting user review: 2026-09-16.
+evaluator tests, the P1C ideal baseline awaiting user review, and the Nav2
+readiness-gated startup at commit `00c0de2`: 2026-09-16.
 
 This directory is the active project inside the larger ns-3 workspace. It is a
 toy ns3-gym scheduling MDP, not a full Wi-Fi/5G network simulation.
@@ -34,8 +35,8 @@ Use current code as the source of truth. Read in this order:
 
 The accepted P1A ROS foundation now has explicit Gazebo seeds, configurable spawn
 timeouts, bounded automatic headless smoke checks, and verified 1/2/3-robot
-startup. This proves startup and message flow only; task completion,
-cross-seed reproducibility, and formal completion metrics remain for P1C.
+startup. P1A itself proves startup and message flow only; P1B/P1C subsequently
+added formal metrics and multi-seed task evidence.
 
 The accepted P1B now provides an evaluator-only Gazebo truth channel, a truth occupancy
 grid rasterized from static SDF box collisions, per-robot truth path and visit
@@ -56,6 +57,40 @@ using diverse, reachable 0.45 m-clearance observation points, seeds 101/202/303
 reached 90% in 141.3/161.4/134.9 seconds and finished at
 93.87%/93.90%/93.88%, with zero collisions and zero search overlap. Do not
 proceed to P2 until the user accepts P1C; 95% remains a higher milestone.
+
+## Current Handoff Snapshot
+
+- Current implementation anchor: `00c0de2 Gate exploration on Nav2 readiness`
+  on `main`; later documentation-only commits do not invalidate this anchor.
+- Active boundary: P1C is `待用户验收`; do not start P2A without explicit user
+  acceptance and target-detection requirements.
+- Formal P1C evidence was produced at `fd5f6ff`: seeds 101/202/303 reached
+  93.87%/93.90%/93.88% by 180 simulated seconds, first reaching 90% at
+  141.3/161.4/134.9 seconds, with zero collisions and zero search overlap.
+- Commit `00c0de2` changes startup only. It starts the coordinator immediately
+  after every `/tbN/navigate_to_pose` action server is ready and refuses to
+  start on gate timeout. A two-robot seed-101 smoke passed: both servers were
+  ready 56.7 wall seconds after the gate began, and both robots received
+  distinct goals 7.0 seconds later. The formal three-seed P1C batch was not
+  rerun because task logic and evaluation semantics did not change.
+- Latest validation: the `multi_robot` and `multi_robot_exploration` build
+  passed; launch arguments parsed; the two-robot headless smoke passed; the
+  aggregate colcon result was 18 tests, 0 failures, 2 copyright skips.
+- No ROS/Gazebo experiment process was running when this handoff was written.
+- The worktree intentionally still contains user-owned report changes:
+  deleted `report/20260914.md` and untracked `report/20260914_p1a.md`. Do not
+  restore, stage, rename, or commit them unless the user asks.
+
+For a manual two-robot Gazebo demonstration, use `enable_merge_rviz:=false` to
+avoid running both heavy visual frontends. Successful startup prints:
+
+```text
+All 2 Nav2 action servers are ready.
+Nav2 ready; starting cooperative exploration.
+```
+
+If the gate times out, diagnose the named robot's lifecycle and TF chain; do
+not restore a long fixed delay or silently run with only one robot.
 
 Do not treat the dated report as current configuration. Do not overwrite it
 when current code changes; write a new dated report for a new research stage.

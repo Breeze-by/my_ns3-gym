@@ -89,13 +89,14 @@ multi_robot_exploration/control
 
 ## 4. RViz 策略
 
-当前推荐策略：
+当前推荐策略按观察目的二选一，避免同时运行两个高负载前端：
 
 ```text
-保留 Gazebo GUI
-保留 1 个全局地图 RViz
-关闭每机器人 RViz
+观察机器人运动：Gazebo GUI 开，全局/每机器人 RViz 关
+观察合并地图：Gazebo GUI 关，全局 RViz 开，每机器人 RViz 关
 ```
+
+机器资源充足时可以同时打开 Gazebo GUI 和全局 RViz，但这不是手动演示的默认建议。
 
 参数含义：
 
@@ -357,7 +358,7 @@ pkill -f gazebo
 pkill -f rviz2
 ```
 
-推荐 3 机器人运行：
+推荐的两机器人 Gazebo 演示：
 
 ```bash
 source /opt/ros/humble/setup.bash
@@ -366,20 +367,23 @@ source /usr/share/gazebo/setup.sh
 export TURTLEBOT3_MODEL=waffle
 
 ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
-  robot_count:=3 \
+  robot_count:=2 \
   enable_gzclient:=true \
-  enable_rviz:=false
+  enable_rviz:=false \
+  enable_merge_rviz:=false \
+  auto_save_map:=false \
+  gazebo_seed:=101
 ```
 
-预期：
+协同探索不再固定等待两分钟。全部 Nav2 action server 实际就绪后，终端会依次出现：
 
 ```text
-Gazebo GUI 打开
-只打开 1 个 RViz2
-Gazebo 中有 tb1、tb2、tb3
-RViz 中显示 /merge_map
-没有每机器人单独 RViz
+All 2 Nav2 action servers are ready.
+Nav2 ready; starting cooperative exploration.
 ```
+
+2026-09-16 的两机器人 headless smoke 中，门控开始后 56.7 墙钟秒全部就绪，7.0 秒后
+两台机器人收到不同目标；这是实测参考，不是新的固定等待值。
 
 ## 9. 验证
 
@@ -580,6 +584,28 @@ ros2 run nav2_map_server map_saver_cli \
   --ros-args \
   -p map_subscribe_transient_local:=true
 ```
+
+### 10.6 Nav2 readiness timed out
+
+门控会列出尚未提供 `/tbN/navigate_to_pose` 的机器人，并且不会启动
+`headquarters_control`。先检查对应机器人的生命周期和 TF：
+
+```bash
+ros2 lifecycle get /tb1/controller_server
+ros2 lifecycle get /tb1/planner_server
+ros2 lifecycle get /tb1/bt_navigator
+ros2 run tf2_ros tf2_echo map base_footprint --ros-args \
+  -r /tf:=/tb1/tf -r /tf_static:=/tb1/tf_static
+```
+
+所有 lifecycle 节点应为 `active`，TF 应持续更新。GUI 场景优先关闭全局 RViz以降低负载：
+
+```text
+enable_merge_rviz:=false
+```
+
+不要通过恢复固定长延时或忽略未就绪机器人来绕过门控。需要更多诊断时间时，仅调整
+`nav2_ready_timeout_sec`；该参数是失败上限，不是正常启动延时。
 
 ## 11. 后续接入 ns-3 的建议切入点
 

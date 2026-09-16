@@ -41,6 +41,19 @@ Planning documents describe intended work, not functionality that is already
 implemented. Use current code as the source of truth and dated reports/logs as
 the source of experimental claims.
 
+## Current Handoff
+
+As of 2026-09-16, `main` includes readiness-gate implementation commit
+`00c0de2`. P1C is the active checkpoint and is waiting for user acceptance:
+the unchanged two-robot task reached 90% correct-free coverage within 180
+simulated seconds on seeds 101/202/303. The startup gate replaces the fixed
+post-Nav2 delay with all-robot `/tbN/navigate_to_pose` readiness; it does not
+change the exploration, navigation, fusion, world, or evaluation rules. Do not
+begin P2 unless the user accepts P1C.
+
+The detailed metrics, validation commands, known limitations, and intentionally
+uncommitted user report files are recorded in the nested `wireless-rl/AGENTS.md`.
+
 ## Environments
 
 All wireless-rl Python/ns3-gym commands must run in conda environment
