@@ -989,3 +989,36 @@ was corrected, the touched launch files were formatted, and the duplicate
 offline merger was replaced by the tested shared implementation; the repeated
 package suite then passed. Focused functional coverage is 2 map-merger tests,
 5 coordinator tests, and 3 evaluator tests.
+
+## 2026-09-16: Nav2 readiness-gated cooperative startup
+
+Purpose: replace the fixed two-robot control delay with observed readiness,
+without changing SLAM, navigation, frontier assignment, world, or evaluation
+logic. Code state was `fd5f6ff` plus the readiness-gate working tree change.
+
+Exact smoke command:
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle
+python3 scripts/ros_smoke_test.py \
+  --robot-count 2 --gazebo-seed 101 \
+  --startup-timeout 150 --message-timeout 30 --shutdown-timeout 30
+```
+
+Result: PASS. Both Nav2 lifecycle stacks, lidar, and merged-map checks passed.
+The gate initially reported both action servers unavailable, reported only tb2
+after tb1 became ready, and exited successfully when both were ready 56.7 wall
+seconds after the gate started. The launch started `headquarters_control`
+immediately after the gate exit; it initialized 1.6 seconds later and assigned
+distinct goals to tb1 and tb2 7.0 seconds after readiness. This removes the old
+fixed 60-second post-Nav2 wait while retaining the 45-second Nav2 startup
+stagger that protects lifecycle initialization from resource contention.
+
+Validation also covered the gate's ready/missing helper logic, timeout exit,
+launch argument parsing, package lint, and build. `multi_robot_exploration`
+reported 12 passed and 1 copyright skip; the aggregate colcon result contained
+18 tests, 0 errors, 0 failures, and 2 skips.

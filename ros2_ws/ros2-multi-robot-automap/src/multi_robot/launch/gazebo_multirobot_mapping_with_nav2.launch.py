@@ -8,6 +8,7 @@ from launch.actions import (
     DeclareLaunchArgument,
     RegisterEventHandler,
     IncludeLaunchDescription,
+    LogInfo,
     OpaqueFunction,
     TimerAction,
 )
@@ -33,6 +34,7 @@ def launch_setup(context, *args, **kwargs):
     spawn_timeout = LaunchConfiguration("spawn_timeout")
     auto_save_map = LaunchConfiguration("auto_save_map")
     goal_timeout = LaunchConfiguration("exploration_goal_timeout_sec")
+    nav2_ready_timeout = LaunchConfiguration("nav2_ready_timeout_sec")
     enable_task_evaluator = LaunchConfiguration("enable_task_evaluator")
     evaluation_episode_id = LaunchConfiguration("evaluation_episode_id")
     evaluation_output_dir = LaunchConfiguration("evaluation_output_dir")
@@ -151,6 +153,19 @@ def launch_setup(context, *args, **kwargs):
                 "auto_save_map": auto_save_map,
                 "use_sim_time": use_sim_time,
                 "goal_timeout_sec": goal_timeout,
+            }
+        ],
+        output="screen",
+    )
+
+    nav2_ready_gate = Node(
+        package="multi_robot_exploration",
+        executable="nav2_ready_gate",
+        name="nav2_ready_gate",
+        parameters=[
+            {
+                "robot_count": robot_count_cfg,
+                "timeout_sec": nav2_ready_timeout,
             }
         ],
         output="screen",
@@ -342,20 +357,37 @@ def launch_setup(context, *args, **kwargs):
             )
             for index, bringup in enumerate(nav_bringups)
         ]
-        # Give the final Nav2 stack time to finish lifecycle activation before
-        # control and evaluation add load or submit goals.
-        control_delay = 70.0 + 45.0 * (len(nav_bringups) - 1)
-        staggered_nav.append(
-            TimerAction(
-                period=control_delay,
-                actions=[control_node, task_evaluator],
-            )
-        )
+        staggered_nav.append(nav2_ready_gate)
         actions.append(
             RegisterEventHandler(
                 event_handler=OnProcessExit(
                     target_action=last_spawn_action,
                     on_exit=staggered_nav,
+                )
+            )
+        )
+
+        def start_control_when_ready(event, context):
+            if event.returncode == 0:
+                return [
+                    LogInfo(msg="Nav2 ready; starting cooperative exploration."),
+                    control_node,
+                    task_evaluator,
+                ]
+            return [
+                LogInfo(
+                    msg=(
+                        "ERROR: Nav2 readiness failed; cooperative exploration "
+                        "was not started."
+                    )
+                )
+            ]
+
+        actions.append(
+            RegisterEventHandler(
+                event_handler=OnProcessExit(
+                    target_action=nav2_ready_gate,
+                    on_exit=start_control_when_ready,
                 )
             )
         )
@@ -486,6 +518,14 @@ def generate_launch_description():
             "exploration_goal_timeout_sec",
             default_value="60.0",
             description="Simulated seconds before canceling a stalled Nav2 goal.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "nav2_ready_timeout_sec",
+            default_value="180.0",
+            description="Wall seconds to wait for every Nav2 action server.",
         )
     )
 

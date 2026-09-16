@@ -23,6 +23,8 @@
   和 held-out seeds 链路已验证；它只作为 RL 工具链资产保留；
 - ROS 2 项目已有 Gazebo、1–4 台 TurtleBot3、SLAM Toolbox、Nav2、地图合并和
   headquarters frontier 分配；
+- 主 launch 已用全部 Nav2 action server 的实际就绪状态门控协同控制器，移除固定的
+  60 秒额外等待；任一导航栈未就绪时不会带病开始探索；
 - 当前 ROS 2 中央协调器直接订阅 `/merge_map`、`/tbN/map`、`/tbN/odom` 和
   `/tbN/tf`，尚无通信因果闭环；
 - P1B 已加入只读真值评估器；P1C 修复定位、导航、融合和协同探索基础后，

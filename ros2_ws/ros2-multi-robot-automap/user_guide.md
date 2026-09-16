@@ -56,6 +56,7 @@ src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py
 | Nav2 | include `src/multi_robot/launch/nav2_bringup/bringup_launch.py` |
 | slam_toolbox | include `slam_toolbox/launch/online_async_multirobot_launch.py` |
 | merge_map | 主 launch 直接启动 `merge_map` 节点，确保退出时不会遗留子 launch 进程 |
+| Nav2 就绪门控 | 等待所有 `/tbN/navigate_to_pose` action server 可用 |
 | headquarters_control | `ros2 run multi_robot_exploration control` |
 | 每机器人 RViz | 由 `enable_rviz` 控制，默认关闭 |
 | 全局地图 RViz | 由 `enable_merge_rviz` 控制，默认开启 |
@@ -105,6 +106,7 @@ multi_robot_exploration/control
 | `enable_merge_rviz` | `true` | 是否启动一个全局 `/merge_map` RViz |
 | `gazebo_seed` | `1` | Gazebo 随机种子；正式运行必须显式记录 |
 | `spawn_timeout` | `90.0` | 每台机器人等待 Gazebo spawn 服务的秒数 |
+| `nav2_ready_timeout_sec` | `180.0` | 等待全部 Nav2 action server 的最长墙钟秒数；超时不启动探索 |
 | `auto_save_map` | `true` | headquarters 是否自动保存合并地图；smoke 时关闭 |
 | `enable_task_evaluator` | `false` | 是否启动只读任务评估器 |
 | `evaluation_episode_id` | `episode` | CSV/JSON 文件名和 episode 标识 |
@@ -311,9 +313,11 @@ goal accepted/rejected
 发布线程真正工作。Nav2 使用各自本地 SLAM 地图，A* 允许穿过待探索 unknown，但最终目标
 必须是具有 0.45 m 障碍净空的已知自由栅格。
 
-主 launch 在机器人生成 10 秒后启动第一套 Nav2，后续机器人按 45 秒错峰；最后一套 Nav2
-启动 60 秒后再启动控制器和评估器。探索行为树不使用的 `smoother_server` 不再启动，减少
-lifecycle 转换超时；速度平滑器 `velocity_smoother` 仍保留。
+主 launch 在机器人生成 10 秒后启动第一套 Nav2，后续机器人按 45 秒错峰，避免多个导航栈
+同时初始化造成资源竞争。`nav2_ready_gate` 同时检查所有 `/tbN/navigate_to_pose` action
+server；全部可用后立即启动控制器和评估器，不再固定等待最后一套 Nav2 启动后的额外 60 秒。
+门控超时会列出未就绪的 action 并阻止探索带病启动。探索行为树不使用的
+`smoother_server` 不再启动；速度平滑器 `velocity_smoother` 仍保留。
 
 ### 6.6 地图融合
 
