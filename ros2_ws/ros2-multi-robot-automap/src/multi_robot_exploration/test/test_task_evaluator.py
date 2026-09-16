@@ -1,4 +1,8 @@
+from pathlib import Path
+
 import numpy as np
+import pytest
+from scipy import ndimage
 
 from multi_robot_exploration.task_evaluator import (
     TruthGrid,
@@ -55,3 +59,21 @@ def test_occupancy_metrics_penalize_unknown_cells():
 def test_overlap_ratio_matches_research_definition():
     visited = {"tb1": {(0, 0), (1, 0)}, "tb2": {(1, 0), (2, 0)}}
     assert visited_overlap_ratio(visited) == 1 / 3
+
+
+@pytest.mark.parametrize(
+    "world_name",
+    ("p1c_open.world", "p1c_rooms.world", "p1c_corridors.world"),
+)
+def test_generalization_world_is_supported_connected_and_spawn_safe(world_name):
+    worlds = Path(__file__).resolve().parents[2] / "multi_robot" / "worlds"
+    truth = load_truth_grid(worlds / world_name)
+
+    assert truth.unsupported_collision_count == 0
+    assert ndimage.label(~truth.occupied)[1] == 1
+
+    clearance = ndimage.distance_transform_edt(~truth.occupied)
+    for x, y in ((0.0, -0.45), (0.0, 0.45), (0.45, 0.0)):
+        column = int((x - truth.origin_x) / truth.resolution)
+        row = int((y - truth.origin_y) / truth.resolution)
+        assert clearance[row, column] * truth.resolution >= 0.45

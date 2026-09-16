@@ -213,6 +213,7 @@ def parse_args():
     parser.add_argument(
         "--robot-count", type=int, choices=range(1, 5), default=1
     )
+    parser.add_argument("--world", default="my_world.world")
     parser.add_argument("--gazebo-seed", type=int, default=1)
     parser.add_argument("--goal-timeout", type=float, default=60.0)
     parser.add_argument("--spawn-timeout", type=float, default=90.0)
@@ -265,6 +266,7 @@ def main():
         "launch",
         "multi_robot",
         "gazebo_multirobot_mapping_with_nav2.launch.py",
+        f"world:={args.world}",
         f"robot_count:={args.robot_count}",
         "enable_gzclient:=false",
         "enable_rviz:=false",
@@ -272,6 +274,7 @@ def main():
         "auto_save_map:=false",
         f"gazebo_seed:={args.gazebo_seed}",
         f"spawn_timeout:={args.spawn_timeout}",
+        f"nav2_ready_timeout_sec:={args.startup_timeout}",
         f"exploration_goal_timeout_sec:={args.goal_timeout}",
         f"enable_task_evaluator:={str(args.evaluation_duration > 0).lower()}",
         f"evaluation_episode_id:={episode_id}",
@@ -282,6 +285,10 @@ def main():
 
     print("Command:", " ".join(command), flush=True)
     print("Launch log:", log_path, flush=True)
+    launch_environment = os.environ.copy()
+    launch_environment["PATH"] = os.pathsep.join(
+        ("/usr/bin", "/bin", launch_environment["PATH"])
+    )
     passed = False
     clean_shutdown = False
     with log_path.open("w") as log_file:
@@ -292,6 +299,7 @@ def main():
             stderr=subprocess.STDOUT,
             start_new_session=True,
             text=True,
+            env=launch_environment,
         )
         try:
             wait_until_ready(

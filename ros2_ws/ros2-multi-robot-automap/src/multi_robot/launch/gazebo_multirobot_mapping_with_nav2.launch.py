@@ -31,6 +31,7 @@ def launch_setup(context, *args, **kwargs):
     enable_merge_rviz = LaunchConfiguration("enable_merge_rviz")
     enable_gzclient = LaunchConfiguration("enable_gzclient")
     gazebo_seed = LaunchConfiguration("gazebo_seed")
+    world_name = LaunchConfiguration("world")
     spawn_timeout = LaunchConfiguration("spawn_timeout")
     auto_save_map = LaunchConfiguration("auto_save_map")
     goal_timeout = LaunchConfiguration("exploration_goal_timeout_sec")
@@ -102,7 +103,12 @@ def launch_setup(context, *args, **kwargs):
 
     urdf = os.path.join(multi_robot_share, "urdf", my_robot + ".urdf")
     model = os.path.join(multi_robot_share, "models", my_robot, "model.sdf")
-    world = os.path.join(multi_robot_share, "worlds", "my_world.world")
+    world_filename = world_name.perform(context)
+    if os.path.basename(world_filename) != world_filename:
+        raise ValueError("world must be a filename from multi_robot/worlds")
+    world = os.path.join(multi_robot_share, "worlds", world_filename)
+    if not os.path.isfile(world):
+        raise ValueError(f"world does not exist: {world_filename}")
 
     # Keep the original map path style used by this project.
     map_file_path = os.path.join(
@@ -440,6 +446,14 @@ def launch_setup(context, *args, **kwargs):
 
 def generate_launch_description():
     ld = LaunchDescription()
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "world",
+            default_value="my_world.world",
+            description="World filename installed by the multi_robot package.",
+        )
+    )
 
     ld.add_action(
         DeclareLaunchArgument(

@@ -102,6 +102,7 @@ multi_robot_exploration/control
 
 | 参数 | 默认值 | 作用 |
 | --- | --- | --- |
+| `world` | `my_world.world` | `multi_robot/worlds` 中的 world 文件名；拒绝目录路径和不存在的文件 |
 | `enable_gzclient` | `true` | 是否启动 Gazebo GUI |
 | `enable_rviz` | `false` | 是否启动每台机器人单独 RViz |
 | `enable_merge_rviz` | `true` | 是否启动一个全局 `/merge_map` RViz |
@@ -126,6 +127,22 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
   enable_gzclient:=true \
   enable_rviz:=false \
   enable_merge_rviz:=false
+```
+
+P1C 跨地图验收提供三张额外静态 world：
+
+| World | 主要结构 |
+| --- | --- |
+| `p1c_open.world` | 开放空间、离散和斜置障碍 |
+| `p1c_rooms.world` | 多房间、门洞和遮挡 |
+| `p1c_corridors.world` | 长绕行、交替出口和支路走廊 |
+
+例如启动房间地图：
+
+```bash
+ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
+  world:=p1c_rooms.world robot_count:=3 \
+  enable_gzclient:=true enable_merge_rviz:=false
 ```
 
 ## 5. 当前数据流
@@ -436,6 +453,7 @@ P1C 理想通信批量入口（每个 seed 启动独立 ROS/Gazebo 进程）：
 
 ```bash
 python3 scripts/run_ideal_baseline.py \
+  --world p1c_corridors.world \
   --seeds 101 202 303 \
   --robot-count 2 \
   --duration 180 \
@@ -456,6 +474,13 @@ Git 忽略，但正式运行的命令、commit、seed、参数和结论必须追
 当前验收线为 2 机器人最慢不高于 120 秒、3 机器人最慢不高于 90 秒；600 秒不再使用。
 早期结果保留为缺陷修复历史。完整优化与失败尝试见
 `report/20260917_p1c_optimization.md`；95% 仍是可选更高覆盖目标。
+
+同日跨地图验收保持控制器、Nav2、真值、传感器、速度、安全距离和评分不变，在
+`p1c_open.world`、`p1c_rooms.world`、`p1c_corridors.world` 上分别运行 3 机器人
+seeds 101/202/303。九轮全部达到 90%，最坏用时 75.5 秒，全部零碰撞；最低观测准确率
+97.47%，最大搜索重叠 1.91%。最难走廊地图 seed 202 的两机器人交叉验证用时 85.5 秒、
+零碰撞。完整逐轮结果、无效基础设施轮次和适用边界见
+`report/20260917_p1c_generalization.md`。
 
 以下命令适合运行中的人工诊断：
 

@@ -1,0 +1,54 @@
+<sdf version='1.7'>
+  <world name='p1c_rooms'>
+    <plugin name='gazebo_ros_state' filename='libgazebo_ros_state.so'>
+      <ros><namespace>/gazebo</namespace></ros>
+      <update_rate>10.0</update_rate>
+    </plugin>
+    <include><uri>model://sun</uri></include>
+    <include><uri>model://ground_plane</uri></include>
+    <gravity>0 0 -9.8</gravity>
+    <physics type='ode'>
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+    <model name='room_walls'>
+      <static>true</static>
+      <link name='walls'>
+        <collision name='north'><pose>0 5 1 0 0 0</pose><geometry><box><size>14.2 0.2 2</size></box></geometry></collision>
+        <visual name='north_visual'><pose>0 5 1 0 0 0</pose><geometry><box><size>14.2 0.2 2</size></box></geometry></visual>
+        <collision name='south'><pose>0 -5 1 0 0 0</pose><geometry><box><size>14.2 0.2 2</size></box></geometry></collision>
+        <visual name='south_visual'><pose>0 -5 1 0 0 0</pose><geometry><box><size>14.2 0.2 2</size></box></geometry></visual>
+        <collision name='east'><pose>7 0 1 0 0 0</pose><geometry><box><size>0.2 10.2 2</size></box></geometry></collision>
+        <visual name='east_visual'><pose>7 0 1 0 0 0</pose><geometry><box><size>0.2 10.2 2</size></box></geometry></visual>
+        <collision name='west'><pose>-7 0 1 0 0 0</pose><geometry><box><size>0.2 10.2 2</size></box></geometry></collision>
+        <visual name='west_visual'><pose>-7 0 1 0 0 0</pose><geometry><box><size>0.2 10.2 2</size></box></geometry></visual>
+        <collision name='left_upper'><pose>-3 3 1 0 0 0</pose><geometry><box><size>0.2 4 2</size></box></geometry></collision>
+        <visual name='left_upper_visual'><pose>-3 3 1 0 0 0</pose><geometry><box><size>0.2 4 2</size></box></geometry></visual>
+        <collision name='left_lower'><pose>-3 -3 1 0 0 0</pose><geometry><box><size>0.2 4 2</size></box></geometry></collision>
+        <visual name='left_lower_visual'><pose>-3 -3 1 0 0 0</pose><geometry><box><size>0.2 4 2</size></box></geometry></visual>
+        <collision name='right_upper'><pose>3 3 1 0 0 0</pose><geometry><box><size>0.2 4 2</size></box></geometry></collision>
+        <visual name='right_upper_visual'><pose>3 3 1 0 0 0</pose><geometry><box><size>0.2 4 2</size></box></geometry></visual>
+        <collision name='right_lower'><pose>3 -3 1 0 0 0</pose><geometry><box><size>0.2 4 2</size></box></geometry></collision>
+        <visual name='right_lower_visual'><pose>3 -3 1 0 0 0</pose><geometry><box><size>0.2 4 2</size></box></geometry></visual>
+        <collision name='left_mid_west'><pose>-6.5 0 1 0 0 0</pose><geometry><box><size>1 0.2 2</size></box></geometry></collision>
+        <visual name='left_mid_west_visual'><pose>-6.5 0 1 0 0 0</pose><geometry><box><size>1 0.2 2</size></box></geometry></visual>
+        <collision name='left_mid_east'><pose>-3.5 0 1 0 0 0</pose><geometry><box><size>1 0.2 2</size></box></geometry></collision>
+        <visual name='left_mid_east_visual'><pose>-3.5 0 1 0 0 0</pose><geometry><box><size>1 0.2 2</size></box></geometry></visual>
+        <collision name='right_mid_west'><pose>3.5 0 1 0 0 0</pose><geometry><box><size>1 0.2 2</size></box></geometry></collision>
+        <visual name='right_mid_west_visual'><pose>3.5 0 1 0 0 0</pose><geometry><box><size>1 0.2 2</size></box></geometry></visual>
+        <collision name='right_mid_east'><pose>6.5 0 1 0 0 0</pose><geometry><box><size>1 0.2 2</size></box></geometry></collision>
+        <visual name='right_mid_east_visual'><pose>6.5 0 1 0 0 0</pose><geometry><box><size>1 0.2 2</size></box></geometry></visual>
+      </link>
+    </model>
+    <model name='room_furniture'>
+      <static>true</static>
+      <link name='furniture'>
+        <collision name='cabinet_north'><pose>0 3.4 0.6 0 0 0</pose><geometry><box><size>1.4 0.7 1.2</size></box></geometry></collision>
+        <visual name='cabinet_north_visual'><pose>0 3.4 0.6 0 0 0</pose><geometry><box><size>1.4 0.7 1.2</size></box></geometry></visual>
+        <collision name='cabinet_south'><pose>0 -3.4 0.6 0 0 0</pose><geometry><box><size>1.4 0.7 1.2</size></box></geometry></collision>
+        <visual name='cabinet_south_visual'><pose>0 -3.4 0.6 0 0 0</pose><geometry><box><size>1.4 0.7 1.2</size></box></geometry></visual>
+      </link>
+    </model>
+  </world>
+</sdf>

@@ -1139,3 +1139,184 @@ suite reported 22 tests, 0 errors, 0 failures, and 2 copyright skips.
 Implementation, tests, experiment evidence, and handoff documentation were
 committed as `416b718` (`p1c: accelerate collaborative exploration`) and pushed
 to `origin/main` in this session.
+
+## 2026-09-17 P1C cross-map generalization acceptance
+
+Purpose: test whether the accepted P1C controller generalizes beyond
+`my_world.world`. Three held-out static worlds were added: open obstacles,
+rooms/doors, and long alternating corridors. Their correct-free areas are
+109.94/129.40/121.40 m² versus 130.84 m² in the original world. The controller,
+Nav2 parameters, lidar, robot speed, truth raster, coverage definition, safety
+clearance, collision metric, 90% threshold, and 180 s hard bound were unchanged.
+
+All commands below ran from
+`ros2_ws/ros2-multi-robot-automap` after this exact environment setup:
+
+```bash
+source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh
+conda activate ns3gym
+source /opt/ros/humble/setup.bash
+source /usr/share/gazebo/setup.sh
+source install/setup.bash
+export TURTLEBOT3_MODEL=waffle
+```
+
+### Infrastructure failures retained
+
+```bash
+PYTHONNOUSERSITE=1 python scripts/run_ideal_baseline.py \
+  --world p1c_open.world --seeds 101 --robot-count 3 \
+  --duration 180 --coverage-threshold 0.90 --goal-timeout 60 \
+  --startup-timeout 210 --message-timeout 90 \
+  --evaluation-wait-timeout 300 --shutdown-timeout 60 \
+  --run-id p1c_generalization_baseline_open_20260917
+```
+
+Result: infrastructure FAIL and manually interrupted after the failure was
+identified. Because the runner was correctly launched from `ns3gym`, the ROS
+`spawn_entity.py` scripts inherited conda's `python3`, which lacks the ROS
+system `lxml`; all robot spawn processes exited before evaluator startup. Raw
+log:
+`log/ideal_baseline/p1c_generalization_baseline_open_20260917/launch_logs/robots3_seed101_20260917-024320.log`.
+The smoke runner was repaired to keep itself in conda while placing system
+Python first for ROS child processes. No task episode existed and none was
+counted.
+
+```bash
+PYTHONNOUSERSITE=1 python scripts/run_ideal_baseline.py \
+  --world p1c_rooms.world --seeds 101 --robot-count 3 \
+  --duration 180 --coverage-threshold 0.90 --goal-timeout 60 \
+  --startup-timeout 210 --message-timeout 90 \
+  --evaluation-wait-timeout 300 --shutdown-timeout 60 \
+  --run-id p1c_generalization_baseline_rooms_20260917
+```
+
+Result: infrastructure FAIL and manually interrupted after the launch gate
+reported tb2 `bt_navigator` inactive at its internal 180 s timeout. The gate
+correctly prevented the controller/evaluator from starting. Raw log:
+`log/ideal_baseline/p1c_generalization_baseline_rooms_20260917/launch_logs/robots3_seed101_20260917-024930.log`.
+The existing outer `--startup-timeout` is now passed to the internal readiness
+gate; the active-state requirement was not relaxed. No task episode existed
+and none was counted.
+
+### Valid three-robot batches
+
+```bash
+PYTHONNOUSERSITE=1 python scripts/run_ideal_baseline.py \
+  --world p1c_open.world --seeds 101 --robot-count 3 \
+  --duration 180 --coverage-threshold 0.90 --goal-timeout 60 \
+  --startup-timeout 210 --message-timeout 90 \
+  --evaluation-wait-timeout 300 --shutdown-timeout 60 \
+  --run-id p1c_generalization_baseline_open_20260917_retry1
+
+PYTHONNOUSERSITE=1 python scripts/run_ideal_baseline.py \
+  --world p1c_rooms.world --seeds 101 --robot-count 3 \
+  --duration 180 --coverage-threshold 0.90 --goal-timeout 60 \
+  --startup-timeout 240 --message-timeout 90 \
+  --evaluation-wait-timeout 330 --shutdown-timeout 60 \
+  --run-id p1c_generalization_baseline_rooms_20260917_retry1
+
+PYTHONNOUSERSITE=1 python scripts/run_ideal_baseline.py \
+  --world p1c_corridors.world --seeds 101 --robot-count 3 \
+  --duration 180 --coverage-threshold 0.90 --goal-timeout 60 \
+  --startup-timeout 240 --message-timeout 90 \
+  --evaluation-wait-timeout 330 --shutdown-timeout 60 \
+  --run-id p1c_generalization_baseline_corridors_20260917
+
+PYTHONNOUSERSITE=1 python scripts/run_ideal_baseline.py \
+  --world p1c_open.world --seeds 202 303 --robot-count 3 \
+  --duration 180 --coverage-threshold 0.90 --goal-timeout 60 \
+  --startup-timeout 240 --message-timeout 90 \
+  --evaluation-wait-timeout 330 --shutdown-timeout 60 \
+  --run-id p1c_generalization_final_open_20260917
+
+PYTHONNOUSERSITE=1 python scripts/run_ideal_baseline.py \
+  --world p1c_rooms.world --seeds 202 303 --robot-count 3 \
+  --duration 180 --coverage-threshold 0.90 --goal-timeout 60 \
+  --startup-timeout 240 --message-timeout 90 \
+  --evaluation-wait-timeout 330 --shutdown-timeout 60 \
+  --run-id p1c_generalization_final_rooms_20260917
+
+PYTHONNOUSERSITE=1 python scripts/run_ideal_baseline.py \
+  --world p1c_corridors.world --seeds 202 303 --robot-count 3 \
+  --duration 180 --coverage-threshold 0.90 --goal-timeout 60 \
+  --startup-timeout 240 --message-timeout 90 \
+  --evaluation-wait-timeout 330 --shutdown-timeout 60 \
+  --run-id p1c_generalization_final_corridors_20260917
+```
+
+| World | Seed | time90 | Coverage | Accuracy | Path | Collision | Overlap |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| open | 101 | 40.8 s | 0.90010 | 0.98502 | 21.060 m | 0 | 0 |
+| open | 202 | 31.3 s | 0.91909 | 0.98100 | 16.539 m | 0 | 0 |
+| open | 303 | 32.2 s | 0.90868 | 0.98387 | 17.194 m | 0 | 0 |
+| rooms | 101 | 60.0 s | 0.95247 | 0.97478 | 29.836 m | 0 | 0 |
+| rooms | 202 | 74.4 s | 0.90128 | 0.98016 | 31.102 m | 0 | 0.00575 |
+| rooms | 303 | 45.1 s | 0.90993 | 0.97889 | 23.784 m | 0 | 0 |
+| corridors | 101 | 70.4 s | 0.93974 | 0.97874 | 37.930 m | 0 | 0.00709 |
+| corridors | 202 | 75.5 s | 0.92148 | 0.97591 | 43.569 m | 0 | 0.00601 |
+| corridors | 303 | 71.5 s | 0.92556 | 0.97685 | 42.116 m | 0 | 0.01911 |
+
+Result: 9/9 valid episodes reached 90%; worst time was 75.5 s, all had zero
+collisions, minimum accuracy was 97.47%, and maximum search overlap was 1.91%.
+All three robots had substantive paths in every episode. In the hardest
+corridors/seed 202 case, robot paths were 14.455/14.640/14.474 m.
+
+### Two-robot hardest-case check
+
+```bash
+PYTHONNOUSERSITE=1 python scripts/run_ideal_baseline.py \
+  --world p1c_corridors.world --seeds 202 --robot-count 2 \
+  --duration 180 --coverage-threshold 0.90 --goal-timeout 60 \
+  --startup-timeout 180 --message-timeout 90 \
+  --evaluation-wait-timeout 270 --shutdown-timeout 60 \
+  --run-id p1c_generalization_2r_corridors_seed202_20260917
+```
+
+Result: PASS, `time_to_90=85.5 s`, coverage 0.90233, accuracy 0.97739,
+path 30.941 m, zero collisions and zero overlap. Robot paths were
+16.391/14.550 m, satisfying the two-robot 120 s line.
+
+### Original-world regression
+
+```bash
+PYTHONNOUSERSITE=1 python scripts/run_ideal_baseline.py \
+  --world my_world.world --seeds 101 --robot-count 3 \
+  --duration 180 --coverage-threshold 0.90 --goal-timeout 60 \
+  --startup-timeout 240 --message-timeout 90 \
+  --evaluation-wait-timeout 330 --shutdown-timeout 60 \
+  --run-id p1c_generalization_original_regression_20260917
+```
+
+Result: PASS, `time_to_90=79.2 s`, coverage 0.91073, accuracy 0.96711,
+path 37.267 m, zero collisions and zero overlap. The default world remained
+under the three-robot 90 s line after world parameterization.
+
+Conclusion: P1C is not supported by a single-map result. The unchanged
+controller passes the original map and three representative held-out indoor
+topologies. No algorithm change was warranted by the evidence. This does not
+claim a mathematical guarantee for arbitrary size, disconnected, dynamically
+changing, or sub-clearance maps; broader randomized/out-of-distribution work
+remains P7. Detailed evidence is in
+`report/20260917_p1c_generalization.md`.
+
+Final validation at this worktree state:
+
+```bash
+source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh
+conda activate ns3gym
+source /opt/ros/humble/setup.bash
+cd ros2_ws/ros2-multi-robot-automap
+PYTHONNOUSERSITE=1 colcon build --symlink-install \
+  --packages-select multi_robot multi_robot_exploration
+source install/setup.bash
+PYTHONNOUSERSITE=1 colcon test \
+  --packages-select merge_map multi_robot_exploration multi_robot \
+  --event-handlers console_direct+
+PYTHONNOUSERSITE=1 colcon test-result --verbose
+```
+
+Build passed. Test result: 25 tests, 0 errors, 0 failures, 2 copyright
+skips. Python byte-compilation and `git diff --check` passed. The runner also
+rejected `--world ../bad.world` before creating a run, confirming the world
+filename boundary.

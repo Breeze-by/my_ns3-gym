@@ -1,0 +1,37 @@
+<sdf version='1.7'>
+  <world name='p1c_corridors'>
+    <plugin name='gazebo_ros_state' filename='libgazebo_ros_state.so'>
+      <ros><namespace>/gazebo</namespace></ros>
+      <update_rate>10.0</update_rate>
+    </plugin>
+    <include><uri>model://sun</uri></include>
+    <include><uri>model://ground_plane</uri></include>
+    <gravity>0 0 -9.8</gravity>
+    <physics type='ode'>
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+    <model name='corridor_walls'>
+      <static>true</static>
+      <link name='walls'>
+        <collision name='north'><pose>0 5 1 0 0 0</pose><geometry><box><size>13.2 0.2 2</size></box></geometry></collision>
+        <visual name='north_visual'><pose>0 5 1 0 0 0</pose><geometry><box><size>13.2 0.2 2</size></box></geometry></visual>
+        <collision name='south'><pose>0 -5 1 0 0 0</pose><geometry><box><size>13.2 0.2 2</size></box></geometry></collision>
+        <visual name='south_visual'><pose>0 -5 1 0 0 0</pose><geometry><box><size>13.2 0.2 2</size></box></geometry></visual>
+        <collision name='east'><pose>6.5 0 1 0 0 0</pose><geometry><box><size>0.2 10.2 2</size></box></geometry></collision>
+        <visual name='east_visual'><pose>6.5 0 1 0 0 0</pose><geometry><box><size>0.2 10.2 2</size></box></geometry></visual>
+        <collision name='west'><pose>-6.5 0 1 0 0 0</pose><geometry><box><size>0.2 10.2 2</size></box></geometry></collision>
+        <visual name='west_visual'><pose>-6.5 0 1 0 0 0</pose><geometry><box><size>0.2 10.2 2</size></box></geometry></visual>
+        <collision name='left_spine'><pose>-2 -1.05 1 0 0 0</pose><geometry><box><size>0.2 7.9 2</size></box></geometry></collision>
+        <visual name='left_spine_visual'><pose>-2 -1.05 1 0 0 0</pose><geometry><box><size>0.2 7.9 2</size></box></geometry></visual>
+        <collision name='right_spine'><pose>2 1.05 1 0 0 0</pose><geometry><box><size>0.2 7.9 2</size></box></geometry></collision>
+        <visual name='right_spine_visual'><pose>2 1.05 1 0 0 0</pose><geometry><box><size>0.2 7.9 2</size></box></geometry></visual>
+        <collision name='left_branch'><pose>-4.25 -1.6 1 0 0 0</pose><geometry><box><size>2.3 0.2 2</size></box></geometry></collision>
+        <visual name='left_branch_visual'><pose>-4.25 -1.6 1 0 0 0</pose><geometry><box><size>2.3 0.2 2</size></box></geometry></visual>
+        <collision name='right_branch'><pose>4.25 1.6 1 0 0 0</pose><geometry><box><size>2.3 0.2 2</size></box></geometry></collision>
+        <visual name='right_branch_visual'><pose>4.25 1.6 1 0 0 0</pose><geometry><box><size>2.3 0.2 2</size></box></geometry></visual>
+      </link>
+    </model>
+  </world>
+</sdf>

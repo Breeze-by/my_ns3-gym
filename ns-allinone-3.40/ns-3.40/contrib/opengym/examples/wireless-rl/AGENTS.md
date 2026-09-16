@@ -1,8 +1,9 @@
 # wireless-rl Codex Memory
 
 Last verified against source, local 1/2/3-robot headless smoke tests, P1B
-evaluator tests, and final P1C 2/3-robot three-seed batches: 2026-09-17. P1C is
-implemented and waiting for user acceptance; do not begin P2 before acceptance.
+evaluator tests, final P1C 2/3-robot batches, and three-world P1C generalization
+batches: 2026-09-17. P1C is implemented and waiting for user acceptance; do
+not begin P2 before acceptance.
 
 This directory is the active project inside the larger ns-3 workspace. It is a
 toy ns3-gym scheduling MDP, not a full Wi-Fi/5G network simulation.
@@ -30,7 +31,9 @@ Use current code as the source of truth. Read in this order:
 7. `report/20260914_p1b.md`, `report/20260915_p1c.md`,
    `report/20260916_p1c.md`, and `report/20260916_p1c_foundation.md` for the
    ROS engineering checkpoints.
-8. `report/20260902.md`, `report/20260429.md`, and `log.md` for historical
+8. `report/20260917_p1c_optimization.md` and
+   `report/20260917_p1c_generalization.md` for the final P1C evidence.
+9. `report/20260902.md`, `report/20260429.md`, and `log.md` for historical
    experiment context.
 
 The accepted P1A ROS foundation now has explicit Gazebo seeds, configurable spawn
@@ -76,6 +79,15 @@ until P1C is accepted; 95% remains optional.
   stack that rejected every goal.
 - Final validation and commit/push details are recorded in `log.md` and
   `report/20260917_p1c_optimization.md`.
+- Cross-map validation adds `p1c_open.world`, `p1c_rooms.world`, and
+  `p1c_corridors.world`. Three robots reached 90% on seeds 101/202/303 in all
+  nine episodes; the worst time was 75.5 seconds, all had zero collisions,
+  minimum accuracy was 97.47%, and maximum overlap was 1.91%. A two-robot
+  hardest-case check took 85.5 seconds with zero collisions. Details are in
+  `report/20260917_p1c_generalization.md`.
+- The launch, smoke tool, and baseline runner accept a world filename. The
+  default remains `my_world.world`; no exploration, Nav2, truth, sensor, speed,
+  safety, or scoring rule changed for generalization validation.
 - No ROS/Gazebo experiment process was running when this handoff was written.
 - The worktree intentionally still contains user-owned report changes:
   deleted `report/20260914.md` and untracked `report/20260914_p1a.md`. Do not

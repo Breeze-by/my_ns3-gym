@@ -44,6 +44,7 @@ def parse_args():
     parser.add_argument(
         "--robot-count", type=int, choices=range(1, 5), default=2
     )
+    parser.add_argument("--world", default="my_world.world")
     parser.add_argument("--duration", type=float, default=180.0)
     parser.add_argument("--coverage-threshold", type=float, default=0.90)
     parser.add_argument("--goal-timeout", type=float, default=60.0)
@@ -75,6 +76,11 @@ def main():
     args = parse_args()
     if not 0.0 < args.coverage_threshold <= 1.0:
         raise SystemExit("--coverage-threshold must be in (0, 1]")
+    world_path = (
+        PROJECT_ROOT / "src" / "multi_robot" / "worlds" / args.world
+    )
+    if Path(args.world).name != args.world or not world_path.is_file():
+        raise SystemExit(f"unknown world filename: {args.world}")
     run_id = args.run_id or time.strftime("ideal_%Y%m%d-%H%M%S")
     if re.fullmatch(r"[A-Za-z0-9_.-]+", run_id) is None:
         raise SystemExit(
@@ -92,7 +98,7 @@ def main():
     metadata = {
         "run_id": run_id,
         "baseline": "ideal_unlimited_communication",
-        "world": "my_world.world",
+        "world": args.world,
         "robot_count": args.robot_count,
         "seeds": args.seeds,
         "max_duration_sec": args.duration,
@@ -112,6 +118,8 @@ def main():
             str(smoke),
             "--robot-count",
             str(args.robot_count),
+            "--world",
+            args.world,
             "--gazebo-seed",
             str(seed),
             "--goal-timeout",
