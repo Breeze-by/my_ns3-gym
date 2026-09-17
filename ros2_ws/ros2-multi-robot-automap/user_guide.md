@@ -60,6 +60,8 @@ src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py
 | merge_map | 主 launch 直接启动 `merge_map` 节点，确保退出时不会遗留子 launch 进程 |
 | Nav2 就绪门控 | 等待所有 `/tbN/navigate_to_pose` action server 可用 |
 | headquarters_control | `ros2 run multi_robot_exploration control` |
+| Gazebo 任务区域 | `task_visualizer` 生成无碰撞的重点区域标记，默认开启 |
+| 机器人状态栏 | `robot_status_panel` 显示任务、电池、位姿和速度，默认开启 |
 | 每机器人 RViz | 由 `enable_rviz` 控制，默认关闭 |
 | 全局地图 RViz | 由 `enable_merge_rviz` 控制，默认开启 |
 
@@ -106,6 +108,8 @@ multi_robot_exploration/control
 | --- | --- | --- |
 | `world` | `my_world.world` | `multi_robot/worlds` 中的 world 文件名；拒绝目录路径和不存在的文件 |
 | `enable_gzclient` | `true` | 是否启动 Gazebo GUI |
+| `enable_task_regions` | `true` | 是否在 Gazebo 标出起始/充电、检测和集合区域 |
+| `enable_status_panel` | `true` | 是否打开每机器人实时状态栏 |
 | `enable_rviz` | `false` | 是否启动每台机器人单独 RViz |
 | `enable_merge_rviz` | `true` | 是否启动一个全局 `/merge_map` RViz |
 | `gazebo_seed` | `1` | Gazebo 随机种子；正式运行必须显式记录 |
@@ -139,6 +143,25 @@ multi_robot_exploration/control
 | `battery_charge_duration_sec` | `10.0` | 在充电位静止后恢复满电所需仿真秒数 |
 | `battery_return_timeout_sec` | `120.0` | 单次安全返航总超时 |
 | `battery_charge_timeout_sec` | `60.0` | 进入充电模式后的总超时 |
+
+### 4.1 Gazebo 重点区域和实时状态栏
+
+手动运行主 launch 时两项默认开启，无需额外命令。Gazebo 中的颜色含义为：
+
+- 蓝色半透明圆盘：半径 1 m 的共同起始/充电区；
+- 绿色圆盘：每台机器人半径 0.25 m 的独立充电位；
+- 红色半透明圆盘：启用目标检测时的最大检测距离；
+- 橙色圆盘：`/rally_assignments` 发布后各机器人的最终集合位姿。
+
+这些实体只有 visual、没有 collision，不参与 lidar、碰撞、规划或任务评分。独立 Qt 状态栏
+实时显示全局任务阶段，以及每台机器人的当前动作、Nav2 状态、电池模式和电量、odom 位姿、
+线速度和角速度。无桌面的 headless 运行应显式关闭界面；区域标记也可单独关闭：
+
+```bash
+ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
+  enable_status_panel:=false \
+  enable_task_regions:=false
+```
 
 也就是说，常用命令里 `enable_rviz:=false` 不会关闭全局地图 RViz，只会关闭每机器人 RViz。
 
@@ -627,7 +650,8 @@ python3 scripts/ros_smoke_test.py \
 分别为 6.81/6.66；之后继续探索，在 118.2 秒确认目标、126.2 秒进入 `RALLY`、190.1 秒
 进入 `COMPLETE`。最终覆盖率 92.15%、总路径 49.733 m、搜索重叠和碰撞均为 0。逐机器人
 最终集合误差为 0.216/0.128 m，最终电池模式均为 `ACTIVE`。耗尽、返航不可达和充电超时由
-构造测试验证为明确失败原因。P2C 现等待用户验收；P2D 尚未开始。
+构造测试验证为明确失败原因。P2C 已于 2026-09-18 通过用户验收；P2D 尚未开始。验收后新增的
+Gazebo 重点区域和实时状态栏只读现有任务数据，不改变 P2C 控制与评分口径。
 
 以下命令适合运行中的人工诊断：
 

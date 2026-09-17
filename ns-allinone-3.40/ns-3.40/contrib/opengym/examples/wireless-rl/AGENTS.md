@@ -4,8 +4,9 @@ Last verified against source, local 1/2/3-robot headless smoke tests, P1B
 evaluator tests, final P1C batches, three-world P1C generalization, P2A
 target-detection episodes, the roadmap audit, P2B rally episodes, and the P2B
 coverage/time audit:
-2026-09-17. The user accepted P1C, P2A, and P2B. P2C is implemented and
-awaiting user acceptance; do not start P2D before that decision.
+2026-09-18. The user accepted P1C, P2A, P2B, and P2C. The P2C follow-up adds
+Gazebo task-region overlays and a live operator status panel. P2D has not
+started.
 
 This directory is the active project inside the larger ns-3 workspace. It is a
 toy ns3-gym scheduling MDP, not a full Wi-Fi/5G network simulation.
@@ -41,7 +42,9 @@ Use current code as the source of truth. Read in this order:
 11. `report/20260917_roadmap_audit.md` for the revised gates and metric rules.
 12. `report/20260917_p2b.md` for the P2B state-machine contract and evidence.
 13. `report/20260917_p2c.md` for the P2C energy/charging contract and evidence.
-14. `report/20260902.md`, `report/20260429.md`, and `log.md` for historical
+14. `report/20260918_p2c_visualization.md` for the post-acceptance Gazebo
+    regions and live status-panel follow-up.
+15. `report/20260902.md`, `report/20260429.md`, and `log.md` for historical
    experiment context.
 
 The accepted P1A ROS foundation now has explicit Gazebo seeds, configurable spawn
@@ -73,7 +76,8 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
 
 ## Current Handoff Snapshot
 
-- Active boundary: P2B is accepted; P2C is `待用户验收`. P2D has not started.
+- Active boundary: P2C is accepted. Its visualization/status-panel follow-up
+  is implemented and verified; P2D has not started.
 - From P2B onward, only `COMPLETE` is mission success. The fixed first rally
   contract is per-robot position error <=0.35 m, linear speed <=0.05 m/s,
   angular speed <=0.10 rad/s, all robots continuously stable for 5 simulated
@@ -132,6 +136,11 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
   reached `COMPLETE=190.1 s` with zero collisions and zero search overlap.
   Evaluator schema v6 records per-robot energy and charging metrics. See
   `report/20260917_p2c.md` and `log.md`.
+- Manual launch now defaults to visual-only Gazebo overlays for the common
+  start/charge region, per-robot charger discs, target detection radius, and
+  eventual rally poses. A separate Qt panel displays task/activity, Nav2,
+  battery, pose, and speed per robot. Headless smoke explicitly disables both
+  unless `--task-regions` is requested.
 - Final P1C evidence uses seeds 101/202/303, 90% correct-free coverage, and an
   unchanged 180-second hard limit. Two-robot time-to-90 is
   98.9/79.6/104.4 seconds; three-robot time-to-90 is 78.3/69.8/69.5 seconds.

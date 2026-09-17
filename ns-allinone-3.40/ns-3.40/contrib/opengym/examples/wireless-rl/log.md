@@ -2003,3 +2003,82 @@ required. Coverage was 0.285 and path length 0.774 m. Launch log:
 `p2c_final_battery_gate_1r_seed303.json` in the ignored evaluation directory.
 This short run validates the final gating change and does not replace the
 forced-charge full mission.
+
+## 2026-09-18 P2C post-acceptance visualization follow-up
+
+Purpose: after the user accepted P2C, add visual-only Gazebo task regions and
+a default-on live per-robot status panel without changing control or scoring.
+Work started from pushed commit `4119679`.
+
+Pre-simulation checks:
+
+```bash
+colcon build --symlink-install \
+  --packages-select multi_robot multi_robot_exploration
+cd src/multi_robot_exploration
+PYTHONNOUSERSITE=1 /usr/bin/python3 -m pytest -q test
+QT_QPA_PLATFORM=offscreen timeout --signal=INT --kill-after=3 3 \
+  ros2 run multi_robot_exploration robot_status_panel \
+  --ros-args -p robot_count:=2
+```
+
+Build passed. The package suite passed 47 tests with one copyright skip. The
+offscreen Qt process created the two-robot table and exited on SIGINT; the only
+output was the expected offscreen-platform `propagateSizeHints` warning. An
+initial status-panel launch failed because the implementation assigned to
+rclpy's read-only `Node.subscriptions` property; it was renamed to
+`input_subscriptions` before simulation validation.
+
+Both Gazebo attempts used:
+
+```bash
+PYTHONNOUSERSITE=1 /usr/bin/python3 scripts/ros_smoke_test.py \
+  --world my_world.world --robot-count 1 --gazebo-seed 404 \
+  --startup-timeout 240 --message-timeout 60 --shutdown-timeout 45 \
+  --evaluation-duration 10 --evaluation-wait-timeout 120 \
+  --target-detection --expect-target-not-found \
+  --target-x=-4 --target-y=4 --task-regions --episode-id <episode>
+```
+
+Attempts:
+
+- `p2c_visual_regions_smoke`, launch log
+  `robots1_seed404_20260918-003454.log`: validation-harness FAIL. Gazebo logs
+  show successful requests for the target, start, and tb1 charger regions, but
+  the newly added synchronous `/get_entity_state` CLI check timed out. The
+  episode result was retained; no pass was claimed.
+- `p2c_visual_regions_smoke_retry`, launch log
+  `robots1_seed404_20260918-003643.log`: PASS after replacing the blocking
+  service query with one `/gazebo/model_states` sample. The sample contained
+  `task_region_target_detection`, `task_region_start_charge`, and
+  `task_region_charger_tb1`. The negative-detection episode timed out as
+  expected at 10.2 simulated seconds with no false target detection. Coverage
+  was 0.0273 and path length 0.001 m; these task metrics are not acceptance
+  evidence for this visualization-only smoke.
+
+The task-region models contain visual geometry and no collision geometry. The
+manual launch defaults `enable_task_regions` and `enable_status_panel` to true;
+the automated smoke path keeps the panel off and only enables regions with
+`--task-regions`. Full details are in
+`report/20260918_p2c_visualization.md`.
+
+Final retained-worktree validation after documentation and per-detector status
+wording:
+
+```bash
+git diff --check
+ament_flake8 src/multi_robot_exploration/multi_robot_exploration \
+  src/multi_robot_exploration/test scripts/ros_smoke_test.py
+python3 -m py_compile scripts/ros_smoke_test.py \
+  src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py \
+  src/multi_robot_exploration/multi_robot_exploration/status_panel.py \
+  src/multi_robot_exploration/multi_robot_exploration/task_visualizer.py
+colcon build --symlink-install \
+  --packages-select multi_robot multi_robot_exploration
+colcon test --packages-select multi_robot multi_robot_exploration \
+  --event-handlers console_direct+
+colcon test-result --verbose
+```
+
+Result: diff, lint, byte-compilation, and build passed. Aggregate test result
+was 53 tests, 0 errors, 0 failures, and 2 copyright skips.

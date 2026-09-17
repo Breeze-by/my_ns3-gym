@@ -43,11 +43,12 @@ the source of experimental claims.
 
 ## Current Handoff
 
-As of 2026-09-17, the user has accepted P1C, P2A, and P2B. P2C is implemented
-and awaiting user acceptance: each robot has a local distance/time energy
-model, safety-reserve return, a distinct charging pose, and charge/resume
-behavior. A forced-charge two-robot episode completed with two charges, no
-exhaustion, and zero collisions. The revised plan adds the previously missing
+As of 2026-09-18, the user has accepted P1C, P2A, P2B, and P2C. Each robot has
+a local distance/time energy model, safety-reserve return, a distinct charging
+pose, and charge/resume behavior. A forced-charge two-robot episode completed
+with two charges, no exhaustion, and zero collisions. The P2C follow-up adds
+visual-only Gazebo task regions and a default-on per-robot status panel for
+manual runs. P2D has not started. The revised plan adds the previously missing
 P2D full ideal-task integration gate, splits ns-3 time/packet coupling from
 Wi-Fi calibration, and fixes formal run/statistical rules. From P2B onward only
 `COMPLETE` is mission success; `FOUND` and 90% coverage are process metrics.

@@ -8,7 +8,8 @@ multi_robot/gazebo_multirobot_mapping_with_nav2.launch.py
 ```
 
 它同时启动 Gazebo、1–4 台 TurtleBot3、在线 SLAM、Nav2、地图融合和中央协同探索；可选
-目标检测、P2B 集结任务及 P2C 本地电池/充电管理。
+目标检测、P2B 集结任务及 P2C 本地电池/充电管理。手动运行默认同时打开 Gazebo 重点区域
+标记和每机器人实时状态栏。
 
 ## 1. 每个新终端先执行
 
@@ -40,6 +41,8 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
   world:=my_world.world \
   robot_count:=3 \
   enable_gzclient:=true \
+  enable_task_regions:=true \
+  enable_status_panel:=true \
   enable_rviz:=false \
   enable_merge_rviz:=false \
   auto_save_map:=false \
@@ -191,6 +194,8 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
 | `robot_count` | `2` | 机器人数量，范围 1–4 |
 | `gazebo_seed` | `1` | Gazebo 随机种子 |
 | `enable_gzclient` | `true` | Gazebo 图形界面 |
+| `enable_task_regions` | `true` | 在 Gazebo 中绘制起始/充电、检测和集合区域 |
+| `enable_status_panel` | `true` | 打开实时机器人状态栏 |
 | `enable_rviz` | `false` | 每台机器人各开一个 RViz，通常不要开启 |
 | `enable_merge_rviz` | `true` | 单个全局合并地图 RViz |
 | `enable_drive` | `false` | 启动旧的手动 drive 辅助节点 |
@@ -319,7 +324,18 @@ python scripts/run_ideal_baseline.py \
 
 ## 7. 运行时查看状态
 
-在另一个已执行第 1 节环境初始化的终端运行：
+主 launch 默认打开“多机器人任务状态”窗口，直接显示全局任务阶段，以及每台机器人的
+当前动作、Nav2 状态、电池、电量、位置、线速度和角速度。Gazebo 中默认显示蓝色共同
+起始/充电区和绿色独立充电位；启用目标检测后显示红色检测范围，生成集合分配后显示橙色
+集合位姿。这些标记没有 collision，不影响传感器和导航。
+
+服务器或自动化运行可传入：
+
+```text
+enable_status_panel:=false enable_task_regions:=false
+```
+
+命令行话题仍可用于核对原始数据。在另一个已执行第 1 节环境初始化的终端运行：
 
 ```bash
 ros2 topic echo --qos-durability transient_local \

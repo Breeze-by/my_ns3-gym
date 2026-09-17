@@ -127,6 +127,22 @@ def require_message(topic, timeout, qos_arguments=()):
         )
 
 
+def require_entities(names, timeout):
+    result = run_ros(
+        ["topic", "echo", "--once", "/gazebo/model_states", "--field", "name"],
+        timeout=timeout,
+    )
+    if result.returncode != 0:
+        raise RuntimeError(
+            "could not read Gazebo entities: " + result.stderr.strip()
+        )
+    missing = [name for name in names if name not in result.stdout]
+    if missing:
+        raise RuntimeError(
+            "Gazebo entities were not spawned: " + ", ".join(missing)
+        )
+
+
 def wait_for_evaluation(
     process,
     result_path,
@@ -349,6 +365,7 @@ def parse_args():
     parser.add_argument("--battery-charge-duration", type=float, default=10.0)
     parser.add_argument("--battery-return-timeout", type=float, default=120.0)
     parser.add_argument("--battery-charge-timeout", type=float, default=60.0)
+    parser.add_argument("--task-regions", action="store_true")
     parser.add_argument("--evaluation-wait-timeout", type=float, default=180.0)
     parser.add_argument("--episode-id")
     parser.add_argument(
@@ -409,6 +426,8 @@ def main():
         "enable_gzclient:=false",
         "enable_rviz:=false",
         "enable_merge_rviz:=false",
+        f"enable_task_regions:={str(args.task_regions).lower()}",
+        "enable_status_panel:=false",
         "auto_save_map:=false",
         f"gazebo_seed:={args.gazebo_seed}",
         f"spawn_timeout:={args.spawn_timeout}",
@@ -500,6 +519,17 @@ def main():
                             "transient_local",
                         ),
                     )
+            if args.task_regions:
+                regions = [
+                    "task_region_start_charge",
+                    *(
+                        f"task_region_charger_tb{index}"
+                        for index in range(1, args.robot_count + 1)
+                    ),
+                ]
+                if args.target_detection:
+                    regions.append("task_region_target_detection")
+                require_entities(regions, args.message_timeout)
             print("Received lidar and merged-map messages.", flush=True)
             if args.evaluation_duration > 0:
                 result_path = args.evaluation_output_dir / f"{episode_id}.json"

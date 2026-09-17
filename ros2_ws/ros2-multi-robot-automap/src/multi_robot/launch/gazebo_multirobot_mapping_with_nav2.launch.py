@@ -30,6 +30,8 @@ def launch_setup(context, *args, **kwargs):
     enable_rviz = LaunchConfiguration("enable_rviz")
     enable_merge_rviz = LaunchConfiguration("enable_merge_rviz")
     enable_gzclient = LaunchConfiguration("enable_gzclient")
+    enable_task_regions = LaunchConfiguration("enable_task_regions")
+    enable_status_panel = LaunchConfiguration("enable_status_panel")
     gazebo_seed = LaunchConfiguration("gazebo_seed")
     world_name = LaunchConfiguration("world")
     spawn_timeout = LaunchConfiguration("spawn_timeout")
@@ -283,6 +285,48 @@ def launch_setup(context, *args, **kwargs):
         launch_arguments={"world": world, "seed": gazebo_seed}.items(),
     )
     actions.append(gzserver_cmd)
+
+    actions.append(
+        Node(
+            package="multi_robot_exploration",
+            executable="task_visualizer",
+            name="task_visualizer",
+            parameters=[
+                {
+                    "use_sim_time": use_sim_time,
+                    "robot_count": robot_count_cfg,
+                    "charge_xs": [
+                        float(robot["x_pose"]) for robot in robots
+                    ],
+                    "charge_ys": [
+                        float(robot["y_pose"]) for robot in robots
+                    ],
+                    "target_x": target_x,
+                    "target_y": target_y,
+                    "target_radius_m": target_max_distance,
+                    "show_target_region": enable_target_detection,
+                }
+            ],
+            output="screen",
+            condition=IfCondition(enable_task_regions),
+        )
+    )
+
+    actions.append(
+        Node(
+            package="multi_robot_exploration",
+            executable="robot_status_panel",
+            name="robot_status_panel",
+            parameters=[
+                {
+                    "use_sim_time": use_sim_time,
+                    "robot_count": robot_count_cfg,
+                }
+            ],
+            output="screen",
+            condition=IfCondition(enable_status_panel),
+        )
+    )
 
     actions.append(
         Node(
@@ -626,6 +670,22 @@ def generate_launch_description():
             "enable_gzclient",
             default_value="true",
             description="Enable Gazebo GUI client.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "enable_task_regions",
+            default_value="true",
+            description="Draw start, charging, detection, and rally regions.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "enable_status_panel",
+            default_value="true",
+            description="Open the live per-robot operator status panel.",
         )
     )
 
