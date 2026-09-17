@@ -55,8 +55,8 @@ RALLY_ROUTE_SEPARATION_M = 1.2
 RALLY_MAX_CONCURRENT = 2
 
 TASK_TRANSITIONS = {
-    "EXPLORE": {"FOUND_UNCONFIRMED", "FOUND"},
-    "FOUND_UNCONFIRMED": {"EXPLORE", "FOUND"},
+    "EXPLORE": {"FOUND_UNCONFIRMED", "FOUND", "FAILED"},
+    "FOUND_UNCONFIRMED": {"EXPLORE", "FOUND", "FAILED"},
     "FOUND": {"RALLY", "FAILED"},
     "RALLY": {"COMPLETE", "FAILED"},
     "COMPLETE": set(),
@@ -95,6 +95,14 @@ class RallyPose:
 
 def valid_task_transition(current, new):
     return new == current or new in TASK_TRANSITIONS[current]
+
+
+def unavailable_battery_states(received_at, now, timeout):
+    return [
+        name
+        for name, timestamp in received_at.items()
+        if timestamp is None or now - timestamp >= timeout
+    ]
 
 
 def grid_to_world(row, column, resolution, origin_x, origin_y):
@@ -981,6 +989,9 @@ class HeadquartersControl(Node):
         self.enable_rally = self.declare_parameter(
             "enable_rally", False
         ).value
+        self.enable_battery = self.declare_parameter(
+            "enable_battery", False
+        ).value
         self.rally_position_tolerance = self.declare_parameter(
             "rally_position_tolerance_m", RALLY_POSITION_TOLERANCE_M
         ).value
@@ -1043,6 +1054,12 @@ class HeadquartersControl(Node):
                 self.target_detection_callback,
                 state_qos,
             ),
+            self.create_subscription(
+                String,
+                "/battery_failure",
+                self.battery_failure_callback,
+                state_qos,
+            ),
         ]
         self.task_state = "EXPLORE"
         self.target = None
@@ -1053,6 +1070,7 @@ class HeadquartersControl(Node):
         self.rally_goal_started_at = {}
         self.rally_leg_routes = {}
         self.rally_yield_requested = {}
+        self.rally_battery_preempted = {}
         self.rally_attempts = {}
         self.rally_arrived = {}
         self.rally_dispatch_order = []
@@ -1066,6 +1084,7 @@ class HeadquartersControl(Node):
         self.survey_goal_started_at = None
         self.survey_attempts = 0
         self.survey_complete = False
+        self.survey_battery_preempted = False
 
         self.map_sub = self.create_subscription(
             OccupancyGrid, "/merge_map", self.map_callback, 10
@@ -1075,6 +1094,11 @@ class HeadquartersControl(Node):
         self.robot_maps = {}
         self.robot_velocities = {}
         self.robot_states = {}
+        self.battery_modes = {}
+        self.battery_states = {}
+        self.battery_state_received_at = {}
+        self.battery_preempted = {}
+        self.battery_monitor_started_at = None
         self.robot_nav_clients = {}
         self.goal_handles = {}
         self.goal_started_at = {}
@@ -1094,6 +1118,12 @@ class HeadquartersControl(Node):
             self.robot_maps[robot_name] = None
             self.robot_velocities[robot_name] = None
             self.robot_states[robot_name] = "idle"
+            self.battery_modes[robot_name] = (
+                "UNKNOWN" if self.enable_battery else "ACTIVE"
+            )
+            self.battery_states[robot_name] = {}
+            self.battery_state_received_at[robot_name] = None
+            self.battery_preempted[robot_name] = False
             self.goal_handles[robot_name] = None
             self.goal_started_at[robot_name] = None
             self.goal_last_progress_at[robot_name] = None
@@ -1108,6 +1138,7 @@ class HeadquartersControl(Node):
             self.rally_goal_started_at[robot_name] = None
             self.rally_leg_routes[robot_name] = ()
             self.rally_yield_requested[robot_name] = False
+            self.rally_battery_preempted[robot_name] = False
             self.rally_attempts[robot_name] = 0
             self.rally_arrived[robot_name] = False
             self.robot_nav_clients[robot_name] = ActionClient(
@@ -1141,6 +1172,16 @@ class HeadquartersControl(Node):
                         msg, name
                     ),
                     10,
+                )
+            )
+            self.robot_subscriptions.append(
+                self.create_subscription(
+                    String,
+                    f"/{robot_name}/battery_state",
+                    lambda msg, name=robot_name: self.battery_state_callback(
+                        msg, name
+                    ),
+                    state_qos,
                 )
             )
 
@@ -1193,6 +1234,50 @@ class HeadquartersControl(Node):
             f"Preparing rally around target {self.target}."
         )
 
+    def battery_failure_callback(self, message):
+        self.fail_task(message.data)
+
+    def battery_state_callback(self, message, robot_name):
+        try:
+            event = json.loads(message.data)
+            mode = str(event["mode"])
+        except (KeyError, TypeError, json.JSONDecodeError) as error:
+            self.get_logger().error(
+                f"Invalid battery state for {robot_name}: {error}"
+            )
+            return
+        if mode not in ("ACTIVE", "RETURNING", "CHARGING", "FAILED"):
+            self.get_logger().error(
+                f"Invalid battery mode for {robot_name}: {mode}"
+            )
+            return
+        previous = self.battery_modes[robot_name]
+        self.battery_modes[robot_name] = mode
+        self.battery_states[robot_name] = event
+        self.battery_state_received_at[robot_name] = self.now()
+        if mode not in ("RETURNING", "CHARGING"):
+            if mode == "ACTIVE" and previous != "ACTIVE":
+                self.get_logger().info(
+                    f"{robot_name} resumed after charging."
+                )
+            return
+
+        goal_handle = self.goal_handles[robot_name]
+        if goal_handle is not None and not self.cancel_requested[robot_name]:
+            self.battery_preempted[robot_name] = True
+            self.cancel_requested[robot_name] = True
+            goal_handle.cancel_goal_async()
+        rally_handle = self.rally_goal_handles[robot_name]
+        if rally_handle is not None:
+            self.rally_battery_preempted[robot_name] = True
+            rally_handle.cancel_goal_async()
+        if (
+            robot_name == self.detecting_robot
+            and self.survey_goal_handle is not None
+        ):
+            self.survey_battery_preempted = True
+            self.survey_goal_handle.cancel_goal_async()
+
     def publish_rally_assignments(self):
         message = String()
         message.data = json.dumps(
@@ -1222,6 +1307,19 @@ class HeadquartersControl(Node):
         self.get_logger().error(f"Mission failed: {reason}")
 
     def update_mission(self):
+        if self.enable_battery and self.task_state not in ("COMPLETE", "FAILED"):
+            now = self.now()
+            if self.battery_monitor_started_at is None:
+                self.battery_monitor_started_at = now
+            if now - self.battery_monitor_started_at >= 20.0:
+                unavailable = unavailable_battery_states(
+                    self.battery_state_received_at, now, 20.0
+                )
+                if unavailable:
+                    self.fail_task(
+                        "battery_state_unavailable:" + ",".join(unavailable)
+                    )
+                    return
         if self.task_state == "FOUND" and self.enable_rally:
             for name, handle in self.goal_handles.items():
                 if handle is not None and not self.cancel_requested[name]:
@@ -1229,6 +1327,10 @@ class HeadquartersControl(Node):
                     handle.cancel_goal_async()
             if not all(
                 state == "idle" for state in self.robot_states.values()
+            ):
+                return
+            if not all(
+                mode == "ACTIVE" for mode in self.battery_modes.values()
             ):
                 return
             now = self.now()
@@ -1318,6 +1420,7 @@ class HeadquartersControl(Node):
             for name in self.rally_dispatch_order
             if self.rally_goal_handles[name] is not None
             and not self.rally_yield_requested[name]
+            and self.battery_modes[name] == "ACTIVE"
         ]
         for name in robots_that_must_yield(
             self.robot_positions,
@@ -1361,6 +1464,7 @@ class HeadquartersControl(Node):
                     or self.rally_goal_handles[name] is not None
                     or self.rally_goal_pending[name]
                     or self.robot_positions[name] is None
+                    or self.battery_modes[name] != "ACTIVE"
                 ):
                     continue
                 plans[name] = plan_rally_leg(
@@ -1399,6 +1503,9 @@ class HeadquartersControl(Node):
             self.rally_position_tolerance,
             self.rally_linear_tolerance,
             self.rally_angular_tolerance,
+        )
+        stable = stable and all(
+            mode == "ACTIVE" for mode in self.battery_modes.values()
         )
         if not stable:
             self.rally_hold_started_at = None
@@ -1445,6 +1552,9 @@ class HeadquartersControl(Node):
             return
         self.survey_goal_handle = goal_handle
         self.survey_goal_started_at = self.now()
+        if self.battery_modes[self.detecting_robot] != "ACTIVE":
+            self.survey_battery_preempted = True
+            goal_handle.cancel_goal_async()
         result_future = goal_handle.get_result_async()
         result_future.add_done_callback(
             lambda result, handle=goal_handle: self.survey_goal_result(
@@ -1462,17 +1572,25 @@ class HeadquartersControl(Node):
         except Exception as error:
             status = f"exception: {error}"
         if status == GoalStatus.STATUS_SUCCEEDED:
+            self.survey_battery_preempted = False
             self.rally_prepare_started_at = self.now()
             self.get_logger().info(
                 f"{self.detecting_robot} completed a target-area survey leg."
             )
+        elif self.survey_battery_preempted:
+            self.survey_battery_preempted = False
+            self.survey_attempts -= 1
+            self.get_logger().info("Target-area survey paused for charging.")
         else:
             self.get_logger().warn(
                 f"Target-area survey failed with status {status}."
             )
 
     def send_rally_goal(self, robot_name, plan=None):
-        if self.task_state != "RALLY":
+        if (
+            self.task_state != "RALLY"
+            or self.battery_modes[robot_name] != "ACTIVE"
+        ):
             return
         allowed_attempts = 1 + self.rally_max_retries
         if self.rally_attempts[robot_name] >= allowed_attempts:
@@ -1531,6 +1649,9 @@ class HeadquartersControl(Node):
             return
         self.rally_goal_handles[robot_name] = goal_handle
         self.rally_goal_started_at[robot_name] = self.now()
+        if self.battery_modes[robot_name] != "ACTIVE":
+            self.rally_battery_preempted[robot_name] = True
+            goal_handle.cancel_goal_async()
         result_future = goal_handle.get_result_async()
         result_future.add_done_callback(
             lambda result, name=robot_name, handle=goal_handle: (
@@ -1546,6 +1667,8 @@ class HeadquartersControl(Node):
         self.rally_leg_routes[robot_name] = ()
         yielded = self.rally_yield_requested[robot_name]
         self.rally_yield_requested[robot_name] = False
+        battery_preempted = self.rally_battery_preempted[robot_name]
+        self.rally_battery_preempted[robot_name] = False
         try:
             status = future.result().status
         except Exception as error:
@@ -1568,6 +1691,10 @@ class HeadquartersControl(Node):
         elif yielded:
             self.get_logger().info(
                 f"{robot_name} stopped to yield; replanning next leg."
+            )
+        elif battery_preempted:
+            self.get_logger().info(
+                f"{robot_name} rally leg stopped for a safety charge."
             )
         else:
             self.rally_attempts[robot_name] += 1
@@ -1686,6 +1813,7 @@ class HeadquartersControl(Node):
                 state == "idle"
                 and self.robot_positions[name] is not None
                 and self.robot_maps[name] is not None
+                and self.battery_modes[name] == "ACTIVE"
             )
         }
         if not idle_positions:
@@ -1797,6 +1925,10 @@ class HeadquartersControl(Node):
             self.send_goal(robot_name, assignment)
 
     def send_goal(self, robot_name, assignment):
+        if self.battery_modes[robot_name] != "ACTIVE":
+            self.robot_states[robot_name] = "idle"
+            self.goal_targets[robot_name] = None
+            return
         client = self.robot_nav_clients[robot_name]
         if not client.server_is_ready():
             self.get_logger().warn(
@@ -1848,6 +1980,10 @@ class HeadquartersControl(Node):
         self.goal_last_position[robot_name] = self.robot_positions[robot_name]
         self.goal_known_count[robot_name] = self.map_known_count
         self.cancel_requested[robot_name] = False
+        if self.battery_modes[robot_name] != "ACTIVE":
+            self.battery_preempted[robot_name] = True
+            self.cancel_requested[robot_name] = True
+            goal_handle.cancel_goal_async()
         result_future = goal_handle.get_result_async()
         result_future.add_done_callback(
             lambda result, name=robot_name, target=assignment: (
@@ -1883,7 +2019,12 @@ class HeadquartersControl(Node):
                 f"{robot_name} failed cooperative frontier goal with "
                 f"status {status}."
             )
-        self.finish_goal(robot_name, success=success)
+        battery_preempted = self.battery_preempted[robot_name]
+        self.finish_goal(
+            robot_name,
+            success=success,
+            blacklist=not battery_preempted,
+        )
 
     def finish_goal(self, robot_name, success, blacklist=True):
         assignment = self.goal_targets[robot_name]
@@ -1909,6 +2050,7 @@ class HeadquartersControl(Node):
         self.goal_initial_gain[robot_name] = 0
         self.goal_targets[robot_name] = None
         self.cancel_requested[robot_name] = False
+        self.battery_preempted[robot_name] = False
         self.robot_states[robot_name] = "idle"
         self.check_exploration_completion()
 

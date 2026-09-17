@@ -1889,3 +1889,117 @@ python -m py_compile scripts/ros_smoke_test.py \
 Build and byte-compilation passed. Test result: 42 tests, 0 errors, 0
 failures, 2 copyright skips. The intentionally unstaged user deletion of
 `report/20260914.md` and untracked `report/20260914_p1a.md` remain untouched.
+
+## 2026-09-17 P2C battery, return, and charging
+
+Purpose: implement P2C after the user accepted P2B. Work started from commit
+`8868da6`. The retained energy profile is capacity 100, initial energy 18,
+movement cost 1 energy/m, elapsed-time cost 0.02 energy/s, return safety margin
+5, 10 simulated seconds stationary charging, 120-second return timeout, and
+60-second charge timeout. `c_tx=0` because P3 has not produced a byte ledger.
+
+Common forced-charge command (episode id and `ROS_DOMAIN_ID` changed per
+attempt):
+
+```bash
+python3 scripts/ros_smoke_test.py \
+  --world my_world.world --robot-count 2 --gazebo-seed 303 \
+  --startup-timeout 300 --message-timeout 90 --shutdown-timeout 60 \
+  --evaluation-duration 300 --coverage-threshold 0 \
+  --evaluation-wait-timeout 600 --target-detection --rally \
+  --battery --require-charge --battery-initial-energy 18 \
+  --battery-capacity 100 --battery-move-cost 1 \
+  --battery-idle-cost 0.02 --battery-safety-margin 5 \
+  --battery-charge-duration 10 --battery-return-timeout 120 \
+  --battery-charge-timeout 60 \
+  --target-x -4 --target-y 4 --target-max-distance 3 \
+  --target-field-of-view 90 --target-confirmation-frames 3 \
+  --episode-id <episode>
+```
+
+Attempts:
+
+- `p2c_forced_charge_2r_seed303_pilot1`, default ROS domain, launch log
+  `robots2_seed303_20260917-215928.log`: implementation/infrastructure FAIL
+  after task startup. Both battery processes raised `AttributeError` because
+  the node used rclpy's read-only `subscriptions` property as an internal
+  container. The run was interrupted and retained; no result was claimed.
+- `p2c_forced_charge_2r_seed303_pilot2`, domain 80, launch log
+  `robots2_seed303_20260917-220234.log`: implementation FAIL. Both nodes
+  immediately reported exhaustion because their late startup clock jump was
+  charged as historical idle time. It also exposed that the P2B transition
+  table rejected `EXPLORE -> FAILED`. The run was interrupted and retained.
+- `p2c_forced_charge_2r_seed303_pilot3`, domain 81, launch log
+  `robots2_seed303_20260917-220810.log`: PASS. Energy integration uses odom
+  message timestamps and ignores a non-physical odom step above 1 m; battery
+  failure is now legal during exploration.
+
+The retained run completed at 190.1 simulated seconds. Detection and RALLY
+occurred at 118.2 and 126.2 seconds. tb1/tb2 each returned and charged once;
+their minimum energies were 6.810/6.661 and final energies 77.289/88.469.
+Both ended in `ACTIVE`. Final correct-free coverage was 0.9215, total path
+49.733 m, search overlap 0, collision events/duration 0/0, and final rally
+errors 0.216/0.128 m. Structured result:
+`p2c_forced_charge_2r_seed303_pilot3.json` in the ignored evaluation directory.
+
+Pre-simulation validation and regression commands used during implementation:
+
+```bash
+python3 -m pytest -q \
+  src/multi_robot_exploration/test/test_battery_manager.py \
+  src/multi_robot_exploration/test/test_control.py \
+  src/multi_robot_exploration/test/test_task_evaluator.py
+ament_flake8 src/multi_robot_exploration/multi_robot_exploration \
+  src/multi_robot_exploration/test scripts/ros_smoke_test.py
+colcon build --symlink-install \
+  --packages-select multi_robot_exploration multi_robot
+colcon test --packages-select multi_robot_exploration \
+  --event-handlers console_direct+
+colcon test-result --verbose
+```
+
+The initial targeted suite passed 32 tests; the first direct invocation before
+setting the source `PYTHONPATH` failed during collection and made no code
+assertions. After correction, package testing passed 39 tests with one
+copyright skip (aggregate test-result: 45 tests, 0 errors, 0 failures, two
+skips). Final post-documentation validation is recorded below before commit.
+
+Final retained-worktree validation:
+
+```bash
+colcon build --symlink-install \
+  --packages-select multi_robot merge_map multi_robot_exploration
+colcon test --packages-select multi_robot merge_map multi_robot_exploration \
+  --event-handlers console_direct+
+colcon test-result --verbose
+python3 -m py_compile scripts/ros_smoke_test.py \
+  src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py \
+  src/multi_robot_exploration/multi_robot_exploration/battery_manager.py \
+  src/multi_robot_exploration/multi_robot_exploration/control.py \
+  src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py
+```
+
+Result: build and byte-compilation PASS; aggregate final test result 48 tests,
+0 errors, 0 failures, 2 copyright skips. The intentionally unstaged user
+deletion of `report/20260914.md` and untracked `report/20260914_p1a.md` remain
+untouched and excluded from P2C.
+
+After adding the required battery-state startup/staleness gate, final-code
+smoke regression used `ROS_DOMAIN_ID=82`:
+
+```bash
+python3 scripts/ros_smoke_test.py \
+  --world my_world.world --robot-count 1 --gazebo-seed 303 \
+  --startup-timeout 240 --message-timeout 90 --shutdown-timeout 60 \
+  --evaluation-duration 10 --coverage-threshold 0 \
+  --evaluation-wait-timeout 360 --battery \
+  --episode-id p2c_final_battery_gate_1r_seed303
+```
+
+Result: PASS. The battery state was received, remained `ACTIVE`, and did not
+exhaust; the evaluator ended at the expected 10-second timeout with no charge
+required. Coverage was 0.285 and path length 0.774 m. Launch log:
+`robots1_seed303_20260917-222307.log`; structured result:
+`p2c_final_battery_gate_1r_seed303.json` in the ignored evaluation directory.
+This short run validates the final gating change and does not replace the
+forced-charge full mission.

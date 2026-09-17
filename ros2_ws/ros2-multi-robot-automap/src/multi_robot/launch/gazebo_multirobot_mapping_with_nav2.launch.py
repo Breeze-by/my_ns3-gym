@@ -67,6 +67,23 @@ def launch_setup(context, *args, **kwargs):
     )
     rally_hold_sec = LaunchConfiguration("rally_hold_sec")
     rally_max_retries = LaunchConfiguration("rally_max_retries")
+    enable_battery = LaunchConfiguration("enable_battery")
+    battery_capacity = LaunchConfiguration("battery_capacity")
+    battery_initial_energy = LaunchConfiguration("battery_initial_energy")
+    battery_move_cost = LaunchConfiguration("battery_move_cost_per_m")
+    battery_idle_cost = LaunchConfiguration("battery_idle_cost_per_sec")
+    battery_safety_margin = LaunchConfiguration(
+        "battery_return_safety_margin"
+    )
+    battery_charge_duration = LaunchConfiguration(
+        "battery_charge_duration_sec"
+    )
+    battery_return_timeout = LaunchConfiguration(
+        "battery_return_timeout_sec"
+    )
+    battery_charge_timeout = LaunchConfiguration(
+        "battery_charge_timeout_sec"
+    )
 
     try:
         robot_count = int(robot_count_cfg.perform(context))
@@ -189,6 +206,7 @@ def launch_setup(context, *args, **kwargs):
                 "use_sim_time": use_sim_time,
                 "goal_timeout_sec": goal_timeout,
                 "enable_rally": enable_rally,
+                "enable_battery": enable_battery,
                 "rally_position_tolerance_m": rally_position_tolerance,
                 "rally_linear_tolerance_mps": rally_linear_tolerance,
                 "rally_angular_tolerance_radps": rally_angular_tolerance,
@@ -304,6 +322,7 @@ def launch_setup(context, *args, **kwargs):
     # ========= Spawn robots sequentially =========
     last_spawn_action = None
     nav_bringups = []
+    battery_nodes = []
 
     for robot in robots:
         robot_name = robot["name"]
@@ -414,6 +433,32 @@ def launch_setup(context, *args, **kwargs):
             joint_state_publisher_node,
             slam_toolbox_node,
         ]
+        battery_nodes.append(
+            Node(
+                package="multi_robot_exploration",
+                executable="battery_manager",
+                namespace=namespace,
+                name="battery_manager",
+                parameters=[
+                    {
+                        "use_sim_time": use_sim_time,
+                        "robot_name": robot_name,
+                        "charge_x": float(robot["x_pose"]),
+                        "charge_y": float(robot["y_pose"]),
+                        "capacity": battery_capacity,
+                        "initial_energy": battery_initial_energy,
+                        "move_cost_per_m": battery_move_cost,
+                        "idle_cost_per_sec": battery_idle_cost,
+                        "return_safety_margin": battery_safety_margin,
+                        "charge_duration_sec": battery_charge_duration,
+                        "return_timeout_sec": battery_return_timeout,
+                        "charge_timeout_sec": battery_charge_timeout,
+                    }
+                ],
+                output="screen",
+                condition=IfCondition(enable_battery),
+            )
+        )
 
         if last_spawn_action is None:
             for action in robot_actions:
@@ -457,6 +502,7 @@ def launch_setup(context, *args, **kwargs):
                 return [
                     LogInfo(msg="Nav2 ready; starting cooperative exploration."),
                     control_node,
+                    *battery_nodes,
                     target_detector,
                     task_evaluator,
                 ]
@@ -768,6 +814,78 @@ def generate_launch_description():
             "rally_max_retries",
             default_value="2",
             description="Retries after an initial failed rally goal.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "enable_battery",
+            default_value="false",
+            description="Enable per-robot P2C energy and charging managers.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "battery_capacity",
+            default_value="100.0",
+            description="Full battery energy units.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "battery_initial_energy",
+            default_value="100.0",
+            description="Initial energy units for every active robot.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "battery_move_cost_per_m",
+            default_value="1.0",
+            description="Energy consumed per traveled metre.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "battery_idle_cost_per_sec",
+            default_value="0.02",
+            description="Energy consumed per elapsed simulation second.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "battery_return_safety_margin",
+            default_value="5.0",
+            description="Energy reserve retained beyond estimated return cost.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "battery_charge_duration_sec",
+            default_value="10.0",
+            description="Stable simulated seconds required to recharge.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "battery_return_timeout_sec",
+            default_value="120.0",
+            description="Maximum simulated seconds allowed for a return.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "battery_charge_timeout_sec",
+            default_value="60.0",
+            description="Maximum simulated seconds allowed at a charger.",
         )
     )
 

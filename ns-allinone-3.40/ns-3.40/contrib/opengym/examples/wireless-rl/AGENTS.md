@@ -4,8 +4,8 @@ Last verified against source, local 1/2/3-robot headless smoke tests, P1B
 evaluator tests, final P1C batches, three-world P1C generalization, P2A
 target-detection episodes, the roadmap audit, P2B rally episodes, and the P2B
 coverage/time audit:
-2026-09-17. The user accepted P1C and P2A. P2B is implemented and awaiting
-user acceptance; do not start P2C before that decision.
+2026-09-17. The user accepted P1C, P2A, and P2B. P2C is implemented and
+awaiting user acceptance; do not start P2D before that decision.
 
 This directory is the active project inside the larger ns-3 workspace. It is a
 toy ns3-gym scheduling MDP, not a full Wi-Fi/5G network simulation.
@@ -40,7 +40,8 @@ Use current code as the source of truth. Read in this order:
 10. `report/20260917_p2a.md` for the P2A detector contract and evidence.
 11. `report/20260917_roadmap_audit.md` for the revised gates and metric rules.
 12. `report/20260917_p2b.md` for the P2B state-machine contract and evidence.
-13. `report/20260902.md`, `report/20260429.md`, and `log.md` for historical
+13. `report/20260917_p2c.md` for the P2C energy/charging contract and evidence.
+14. `report/20260902.md`, `report/20260429.md`, and `log.md` for historical
    experiment context.
 
 The accepted P1A ROS foundation now has explicit Gazebo seeds, configurable spawn
@@ -72,7 +73,7 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
 
 ## Current Handoff Snapshot
 
-- Active boundary: P2A is accepted; P2B is `待用户验收`. P2C has not started.
+- Active boundary: P2B is accepted; P2C is `待用户验收`. P2D has not started.
 - From P2B onward, only `COMPLETE` is mission success. The fixed first rally
   contract is per-robot position error <=0.35 m, linear speed <=0.05 m/s,
   angular speed <=0.10 rad/s, all robots continuously stable for 5 simulated
@@ -119,6 +120,18 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
   Mean `RALLY`-to-`COMPLETE` time fell from the formal serial baseline's 77.6
   seconds to 61.7 seconds. The unrestricted three-way prototype was rejected
   after 18 collision events on seed 101.
+- P2C runs one local `battery_manager` per robot. Energy is reduced by odom
+  distance and simulated elapsed time; `c_tx=0` until P3 supplies a byte
+  ledger. The manager triggers a non-overridable safety-reserve return to the
+  robot's distinct spawn/charging pose, requires stationary charging, then
+  restores full energy without resetting SLAM or task state. Exhaustion,
+  unreachable return, and charge timeout have explicit failure reasons.
+- The forced-charge two-robot seed-303 episode used capacity 100, initial
+  energy 18, movement cost 1/m, idle cost 0.02/s, margin 5, and 10-second
+  charging. Both robots charged once, minimum energy was 6.66, and the mission
+  reached `COMPLETE=190.1 s` with zero collisions and zero search overlap.
+  Evaluator schema v6 records per-robot energy and charging metrics. See
+  `report/20260917_p2c.md` and `log.md`.
 - Final P1C evidence uses seeds 101/202/303, 90% correct-free coverage, and an
   unchanged 180-second hard limit. Two-robot time-to-90 is
   98.9/79.6/104.4 seconds; three-robot time-to-90 is 78.3/69.8/69.5 seconds.

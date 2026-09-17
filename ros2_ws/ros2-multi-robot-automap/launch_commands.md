@@ -8,7 +8,7 @@ multi_robot/gazebo_multirobot_mapping_with_nav2.launch.py
 ```
 
 它同时启动 Gazebo、1–4 台 TurtleBot3、在线 SLAM、Nav2、地图融合和中央协同探索；可选
-目标检测及 P2B 集结任务。
+目标检测、P2B 集结任务及 P2C 本地电池/充电管理。
 
 ## 1. 每个新终端先执行
 
@@ -47,6 +47,7 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
   nav2_ready_timeout_sec:=360.0 \
   enable_target_detection:=true \
   enable_rally:=true \
+  enable_battery:=true \
   target_x:=-4.0 \
   target_y:=4.0
 ```
@@ -110,6 +111,22 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
   enable_rally:=false \
   target_x:=-4.0 \
   target_y:=4.0
+```
+
+### 3.4 强制发生一次充电的完整任务
+
+以下配置把所有机器人初始能量降到 18；smoke 的 `--require-charge` 会在没有实际完成充电时
+判失败。常规演示不需要人为降低初始能量。
+
+```bash
+python3 scripts/ros_smoke_test.py \
+  --world my_world.world --robot-count 2 --gazebo-seed 303 \
+  --startup-timeout 300 --message-timeout 90 --shutdown-timeout 60 \
+  --evaluation-duration 300 --coverage-threshold 0 \
+  --evaluation-wait-timeout 600 --target-detection --rally \
+  --battery --require-charge --battery-initial-energy 18 \
+  --target-x -4 --target-y 4 \
+  --episode-id manual_p2c_forced_charge
 ```
 
 ## 4. 切换 Gazebo world
@@ -202,6 +219,23 @@ Gazebo GUI 和全局 RViz 建议二选一。三机器人冷启动时可把
 | `rally_angular_tolerance_radps` | `0.10` | 最终角速度上限 |
 | `rally_hold_sec` | `5.0` | 全体满足条件后的连续保持时间 |
 | `rally_max_retries` | `2` | 初次集合 action 失败后的重试次数 |
+
+### 电池、返航和充电
+
+| 参数 | 默认值 | 说明 |
+| --- | --- | --- |
+| `enable_battery` | `false` | 启动每机器人一个本地电池管理器 |
+| `battery_capacity` | `100.0` | 满电容量 |
+| `battery_initial_energy` | `100.0` | episode 初始能量 |
+| `battery_move_cost_per_m` | `1.0` | 每行驶 1 m 的能量成本 |
+| `battery_idle_cost_per_sec` | `0.02` | 每仿真秒基础能量成本 |
+| `battery_return_safety_margin` | `5.0` | 预计返航成本外的安全余量 |
+| `battery_charge_duration_sec` | `10.0` | 在充电位静止充满所需仿真秒数 |
+| `battery_return_timeout_sec` | `120.0` | 返航超时 |
+| `battery_charge_timeout_sec` | `60.0` | 充电超时 |
+
+当前 `c_tx=0`；P3 有真实消息字节账本后才校准通信能耗。每台机器人使用自己的出生点作为
+非重叠充电位，低电量返航是本地硬安全行为，不由中央或后续 RL 覆盖。
 
 `enable_rally:=true` 必须与 `enable_target_detection:=true` 一起使用。Gazebo 会显示红色圆柱
 目标，但不会显示中央分配的集合点标记；集合点可通过 `/rally_assignments` 查看。
@@ -308,6 +342,13 @@ ros2 topic echo --qos-durability transient_local --once \
   /rally_assignments std_msgs/msg/String
 ```
 
+查看某台机器人的当前能量、模式和累计充电次数：
+
+```bash
+ros2 topic echo --qos-durability transient_local --once \
+  /tb1/battery_state std_msgs/msg/String
+```
+
 查看地图、机器人速度和 Nav2 状态：
 
 ```bash
@@ -335,4 +376,3 @@ Nav2 ready; starting cooperative exploration.
 - `enable_rviz:=false` 只关闭每机器人 RViz，不会关闭全局 RViz；完全关闭还必须设置
   `enable_merge_rviz:=false`。
 - 目标只是 Gazebo 可视标记，没有 collision，不会改变 lidar 地图或成为障碍物。
-

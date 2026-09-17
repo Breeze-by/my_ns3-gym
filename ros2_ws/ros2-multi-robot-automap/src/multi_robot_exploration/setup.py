@@ -20,6 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'battery_manager = multi_robot_exploration.battery_manager:main',
             'control = multi_robot_exploration.control:main',
             'nav2_ready_gate = multi_robot_exploration.nav2_ready_gate:main',
             'target_detector = multi_robot_exploration.target_detector:main',

@@ -131,6 +131,14 @@ multi_robot_exploration/control
 | `rally_hold_sec` | `5.0` | 全体同时满足误差和速度门槛的连续保持时间 |
 | `rally_max_retries` | `2` | 每台集合导航失败后的最大重试次数 |
 | `exploration_goal_timeout_sec` | `60.0` | 单个 Nav2 目标的最大仿真秒数 |
+| `enable_battery` | `false` | 是否启动每机器人一个 P2C 本地能量/充电管理器 |
+| `battery_capacity`, `battery_initial_energy` | `100.0`, `100.0` | 满电容量和 episode 初始能量 |
+| `battery_move_cost_per_m` | `1.0` | 每行驶 1 m 的能量成本 |
+| `battery_idle_cost_per_sec` | `0.02` | 每仿真秒的基础能量成本 |
+| `battery_return_safety_margin` | `5.0` | 预计返航成本之外保留的安全余量 |
+| `battery_charge_duration_sec` | `10.0` | 在充电位静止后恢复满电所需仿真秒数 |
+| `battery_return_timeout_sec` | `120.0` | 单次安全返航总超时 |
+| `battery_charge_timeout_sec` | `60.0` | 进入充电模式后的总超时 |
 
 也就是说，常用命令里 `enable_rviz:=false` 不会关闭全局地图 RViz，只会关闭每机器人 RViz。
 
@@ -207,6 +215,11 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
 `FOUND_UNCONFIRMED`、`FOUND`；`/target_detection` 只在确认后发布一次，包含发现机器人、
 目标 world 坐标和本次检测参数。`headquarters_control` 是 `/task_state` 的唯一发布者；启用
 P2B 后还发布 `/rally_assignments` 和 `/task_failure`。
+
+启用 P2C 后，每台机器人各运行一个本地 `battery_manager`。它只读取本机 `/tbN/odom`、
+`/tbN/tf` 和全局任务终态，发布 transient `/tbN/battery_state`，并在安全余量触发后直接
+调用本机 Nav2 返回该机器人的独立出生/充电位。总部根据电池模式暂停或恢复任务分配，但不能
+否决返航；明确失败经 `/battery_failure` 汇入权威 `/task_failure`。第一版 `c_tx=0`。
 
 并向每台机器人发送 Nav2 action：
 
@@ -473,10 +486,11 @@ action status 统计成功、取消和失败目标。
 
 CSV/JSON 默认写入 `log/evaluation/`（由 smoke 工具指定并被 Git 忽略）。P1C 当前定义为：
 `correct_free_coverage_ratio >= 0.90` 时记录 `success=true` 和
-`termination_reason=coverage_reached`；180 仿真秒未达到则记录 timeout。输出 schema v5
+`termination_reason=coverage_reached`；180 仿真秒未达到则记录 timeout。输出 schema v6
 还包含 75%/80%/90%/95% 首次达到时间、每台机器人起终点、导航目标结果、路径、碰撞、
 搜索重叠，以及目标是否发现、发现机器人、发现时间、发现时覆盖率、目标位置和检测规则。
-从 schema v5 起，episode 内任一接触都会使权威 `success=false`，即使状态机随后到达
+schema v6 另含逐机器人初始/最低/最终能量、返航和充电次数、充电时长与充电位。从 schema
+v5 起，episode 内任一接触都会使权威 `success=false`，即使状态机随后到达
 `COMPLETE`；`termination_reason` 仍保留实际终止事件，`failure_reason=collision`。
 
 P1C 理想通信批量入口（每个 seed 启动独立 ROS/Gazebo 进程）：
@@ -567,7 +581,7 @@ python3 scripts/ros_smoke_test.py \
 最终 3 机器人 seeds 101/202/303 分别在 134.5/171.9/177.3 仿真秒进入 `COMPLETE`，
 三轮均零碰撞，集合点最小间距为 1.210/1.221/1.414 m，最大最终位置误差 0.237 m。
 2 机器人 seed 303 交叉验证在 96.5 秒完成，零碰撞。完整逐机器人速度、失败演进和原始
-episode 标识见 `report/20260917_p2b.md`。P2B 当前等待用户验收；P2C 尚未开始。
+episode 标识见 `report/20260917_p2b.md`。P2B 已于 2026-09-17 通过用户验收。
 
 随后对覆盖率和耗时的专项审查增加了 `coverage_at_detection`。两机器人复核在 75.57%
 覆盖时确认目标，停止探索后以 81.62% 最终覆盖完成，观测准确率为 97.40%、搜索重叠为 0；
@@ -583,6 +597,37 @@ Nav2 内部恢复，未保留。当前冲突感知并发在 seeds 101/202/303 �
 发现机器人优先修复后的两机器人 seed 303 复核中，tb1 在 65.1 秒确认目标后首先收到集合
 goal，并在约 5.2 秒后到达自己的目标附近集合位；117.9 秒进入 `COMPLETE`，两机器人最终
 误差为 0.215/0.206 m，碰撞为 0。该轮是冲突感知并发前的回归证据。
+
+### 9.3 P2C 电池、返航和充电验证
+
+`--battery` 会启动机器人本地能量模型。能量按 odom 行驶距离和仿真经过时间扣除；返航阈值
+为保守预计返航能耗加固定安全余量。触发后本地管理器抢占探索/集合 action，返回本机器人的
+出生充电位，只有在半径 0.25 m 内且速度低于集合静止门槛时才开始充电。充电不会重启 SLAM、
+清空地图或重置任务状态。`--require-charge` 使 smoke 在没有真实发生充电时判失败。
+
+两机器人强制充电验收命令：
+
+```bash
+python3 scripts/ros_smoke_test.py \
+  --world my_world.world --robot-count 2 --gazebo-seed 303 \
+  --startup-timeout 300 --message-timeout 90 --shutdown-timeout 60 \
+  --evaluation-duration 300 --coverage-threshold 0 \
+  --evaluation-wait-timeout 600 --target-detection --rally \
+  --battery --require-charge --battery-initial-energy 18 \
+  --battery-capacity 100 --battery-move-cost 1 \
+  --battery-idle-cost 0.02 --battery-safety-margin 5 \
+  --battery-charge-duration 10 --battery-return-timeout 120 \
+  --battery-charge-timeout 60 \
+  --target-x -4 --target-y 4 --target-max-distance 3 \
+  --target-field-of-view 90 --target-confirmation-frames 3 \
+  --episode-id p2c_forced_charge_2r_seed303
+```
+
+保留运行 `p2c_forced_charge_2r_seed303_pilot3` 中，tb1/tb2 各返航并充电一次，最低能量
+分别为 6.81/6.66；之后继续探索，在 118.2 秒确认目标、126.2 秒进入 `RALLY`、190.1 秒
+进入 `COMPLETE`。最终覆盖率 92.15%、总路径 49.733 m、搜索重叠和碰撞均为 0。逐机器人
+最终集合误差为 0.216/0.128 m，最终电池模式均为 `ACTIVE`。耗尽、返航不可达和充电超时由
+构造测试验证为明确失败原因。P2C 现等待用户验收；P2D 尚未开始。
 
 以下命令适合运行中的人工诊断：
 
@@ -762,7 +807,6 @@ gateway，只把交付设为零丢包和零附加时延，不能恢复旧直连�
 在 P3 之前继续按 `IMPLEMENTATION_PLAN.md` 完成：
 
 ```text
-P2C 电池/返航/充电
 P2D 跨 world/目标/能量场景的完整理想通信任务基线
 ```
 

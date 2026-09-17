@@ -313,6 +313,10 @@ class TaskEvaluator(Node):
         self.rally_hold_sec = None
         self.task_failure_reason = ""
         self.failure_pending_since = None
+        self.battery_states = {name: {} for name in self.robot_names}
+        self.battery_message_counts = {
+            name: 0 for name in self.robot_names
+        }
         self.finalized = False
 
         map_qos = QoSProfile(depth=1)
@@ -369,6 +373,16 @@ class TaskEvaluator(Node):
                         message, robot
                     ),
                     10,
+                )
+            )
+            self.input_subscriptions.append(
+                self.create_subscription(
+                    String,
+                    f"/{name}/battery_state",
+                    lambda message, robot=name: self._battery_callback(
+                        message, robot
+                    ),
+                    map_qos,
                 )
             )
         self.timer = self.create_timer(0.5, self._timer_callback)
@@ -486,6 +500,20 @@ class TaskEvaluator(Node):
         if self.task_phase == "FAILED" and self.stop_on_task_complete:
             self.finalize("mission_failed")
             rclpy.shutdown()
+
+    def _battery_callback(self, message, robot):
+        try:
+            state = json.loads(message.data)
+        except (TypeError, json.JSONDecodeError) as error:
+            self.get_logger().error(
+                f"Invalid battery state for {robot}: {error}"
+            )
+            return
+        if state.get("robot") != robot or "mode" not in state:
+            self.get_logger().error(f"Invalid battery state for {robot}")
+            return
+        self.battery_states[robot] = state
+        self.battery_message_counts[robot] += 1
 
     def _target_detection_callback(self, message):
         if self.target_found:
@@ -605,6 +633,7 @@ class TaskEvaluator(Node):
             end = self.positions.get(name, (None, None))
             velocity = self.velocities.get(name, (None, None))
             rally_target = self.rally_assignments.get(name, {})
+            battery = self.battery_states[name]
             rally_error = None
             if end[0] is not None and "x" in rally_target:
                 rally_error = math.dist(
@@ -631,6 +660,19 @@ class TaskEvaluator(Node):
                 "rally_target_y": rally_target.get("y"),
                 "rally_target_yaw": rally_target.get("yaw"),
                 "rally_final_error_m": rally_error,
+                "battery_mode": battery.get("mode"),
+                "battery_capacity": battery.get("capacity"),
+                "battery_initial_energy": battery.get("initial_energy"),
+                "battery_final_energy": battery.get("energy"),
+                "battery_minimum_energy": battery.get("minimum_energy"),
+                "battery_return_count": battery.get("return_count", 0),
+                "battery_charge_count": battery.get("charge_count", 0),
+                "battery_charging_time_sec": battery.get(
+                    "charging_time_sec", 0.0
+                ),
+                "battery_charge_x": battery.get("charge_x"),
+                "battery_charge_y": battery.get("charge_y"),
+                "battery_message_count": self.battery_message_counts[name],
             }
 
         collision_events = sum(self.collision_events.values())
@@ -645,7 +687,7 @@ class TaskEvaluator(Node):
             for second in rally_poses[index + 1:]
         ]
         result = {
-            "schema_version": 5,
+            "schema_version": 6,
             "episode_id": self.episode_id,
             "world_file": self.world_file,
             "gazebo_seed": self.gazebo_seed,
@@ -719,6 +761,27 @@ class TaskEvaluator(Node):
             "nav_succeeded": sum(self.nav_succeeded.values()),
             "nav_canceled": sum(self.nav_canceled.values()),
             "nav_aborted": sum(self.nav_aborted.values()),
+            "battery_enabled": any(self.battery_states.values()),
+            "battery_total_returns": sum(
+                state.get("return_count", 0)
+                for state in self.battery_states.values()
+            ),
+            "battery_total_charges": sum(
+                state.get("charge_count", 0)
+                for state in self.battery_states.values()
+            ),
+            "battery_minimum_energy": min(
+                (
+                    state["minimum_energy"]
+                    for state in self.battery_states.values()
+                    if "minimum_energy" in state
+                ),
+                default=None,
+            ),
+            "battery_total_charging_time_sec": sum(
+                state.get("charging_time_sec", 0.0)
+                for state in self.battery_states.values()
+            ),
             **self._map_metrics(),
             "robots": robots,
         }

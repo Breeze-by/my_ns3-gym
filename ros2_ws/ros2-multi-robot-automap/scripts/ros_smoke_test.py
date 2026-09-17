@@ -32,6 +32,7 @@ def wait_until_ready(
     timeout,
     evaluation_enabled=False,
     target_detection_enabled=False,
+    battery_enabled=False,
 ):
     expected_topics = {"/merge_map"}
     for index in range(1, robot_count + 1):
@@ -50,6 +51,11 @@ def wait_until_ready(
         )
     if target_detection_enabled:
         expected_topics.add("/task_state")
+    if battery_enabled:
+        expected_topics.update(
+            f"/tb{index}/battery_state"
+            for index in range(1, robot_count + 1)
+        )
 
     deadline = time.monotonic() + timeout
     missing_topics = expected_topics
@@ -130,6 +136,8 @@ def wait_for_evaluation(
     target_detection=False,
     expect_target_found=True,
     rally=False,
+    battery=False,
+    require_charge=False,
 ):
     deadline = time.monotonic() + timeout
     log_offset = 0
@@ -166,6 +174,11 @@ def wait_for_evaluation(
                 "rally_hold_sec",
                 "rally_min_separation_m",
                 "time_to_75_coverage_sec",
+                "battery_enabled",
+                "battery_total_returns",
+                "battery_total_charges",
+                "battery_minimum_energy",
+                "battery_total_charging_time_sec",
             }
             missing = required - result.keys()
             if missing:
@@ -244,6 +257,21 @@ def wait_for_evaluation(
                         raise RuntimeError(
                             "robot did not satisfy final rally tolerances"
                         )
+            if battery:
+                if not result["battery_enabled"]:
+                    raise RuntimeError("battery managers did not report state")
+                if result["battery_minimum_energy"] <= 0:
+                    raise RuntimeError("a robot exhausted its battery")
+                for robot in result["robots"].values():
+                    if (
+                        robot["battery_message_count"] < 1
+                        or robot["battery_mode"] != "ACTIVE"
+                    ):
+                        raise RuntimeError(
+                            "battery manager did not finish in ACTIVE mode"
+                        )
+                if require_charge and result["battery_total_charges"] < 1:
+                    raise RuntimeError("episode did not force a charge")
             return result
         if process.poll() is not None:
             raise RuntimeError(
@@ -311,6 +339,16 @@ def parse_args():
     parser.add_argument("--rally-angular-tolerance", type=float, default=0.10)
     parser.add_argument("--rally-hold", type=float, default=5.0)
     parser.add_argument("--rally-max-retries", type=int, default=2)
+    parser.add_argument("--battery", action="store_true")
+    parser.add_argument("--require-charge", action="store_true")
+    parser.add_argument("--battery-capacity", type=float, default=100.0)
+    parser.add_argument("--battery-initial-energy", type=float, default=100.0)
+    parser.add_argument("--battery-move-cost", type=float, default=1.0)
+    parser.add_argument("--battery-idle-cost", type=float, default=0.02)
+    parser.add_argument("--battery-safety-margin", type=float, default=5.0)
+    parser.add_argument("--battery-charge-duration", type=float, default=10.0)
+    parser.add_argument("--battery-return-timeout", type=float, default=120.0)
+    parser.add_argument("--battery-charge-timeout", type=float, default=60.0)
     parser.add_argument("--evaluation-wait-timeout", type=float, default=180.0)
     parser.add_argument("--episode-id")
     parser.add_argument(
@@ -340,6 +378,10 @@ def main():
         raise SystemExit("--rally requires --target-detection")
     if args.rally and args.expect_target_not_found:
         raise SystemExit("--rally cannot expect an invisible target")
+    if args.battery and args.evaluation_duration <= 0:
+        raise SystemExit("--battery requires --evaluation-duration")
+    if args.require_charge and not args.battery:
+        raise SystemExit("--require-charge requires --battery")
 
     package = run_ros(["pkg", "prefix", "multi_robot"], timeout=10)
     if package.returncode != 0:
@@ -392,6 +434,15 @@ def main():
         f"rally_angular_tolerance_radps:={args.rally_angular_tolerance}",
         f"rally_hold_sec:={args.rally_hold}",
         f"rally_max_retries:={args.rally_max_retries}",
+        f"enable_battery:={str(args.battery).lower()}",
+        f"battery_capacity:={args.battery_capacity}",
+        f"battery_initial_energy:={args.battery_initial_energy}",
+        f"battery_move_cost_per_m:={args.battery_move_cost}",
+        f"battery_idle_cost_per_sec:={args.battery_idle_cost}",
+        f"battery_return_safety_margin:={args.battery_safety_margin}",
+        f"battery_charge_duration_sec:={args.battery_charge_duration}",
+        f"battery_return_timeout_sec:={args.battery_return_timeout}",
+        f"battery_charge_timeout_sec:={args.battery_charge_timeout}",
     ]
 
     print("Command:", " ".join(command), flush=True)
@@ -419,6 +470,7 @@ def main():
                 args.startup_timeout,
                 evaluation_enabled=args.evaluation_duration > 0,
                 target_detection_enabled=args.target_detection,
+                battery_enabled=args.battery,
             )
             print("ROS graph and Nav2 lifecycle nodes are ready.", flush=True)
             require_message(
@@ -436,6 +488,18 @@ def main():
                     "transient_local",
                 ),
             )
+            if args.battery:
+                for index in range(1, args.robot_count + 1):
+                    require_message(
+                        f"/tb{index}/battery_state",
+                        args.message_timeout,
+                        (
+                            "--qos-reliability",
+                            "reliable",
+                            "--qos-durability",
+                            "transient_local",
+                        ),
+                    )
             print("Received lidar and merged-map messages.", flush=True)
             if args.evaluation_duration > 0:
                 result_path = args.evaluation_output_dir / f"{episode_id}.json"
@@ -448,6 +512,8 @@ def main():
                     args.target_detection,
                     not args.expect_target_not_found,
                     args.rally,
+                    args.battery,
+                    args.require_charge,
                 )
                 print(
                     "Evaluation result:",
@@ -458,6 +524,7 @@ def main():
                     f"detection={result['time_to_detect_sec']}",
                     f"rally={result['time_to_rally_sec']}",
                     f"completion={result['completion_time_sec']}",
+                    f"charges={result['battery_total_charges']}",
                     flush=True,
                 )
             time.sleep(args.dwell_seconds)

@@ -43,10 +43,11 @@ the source of experimental claims.
 
 ## Current Handoff
 
-As of 2026-09-17, the user has accepted P1C and P2A. P2B is implemented and
-awaiting user acceptance; its rally uses conflict-aware short-path reservations
-for up to two concurrent robots and has passed seeds 101/202/303 with zero
-collisions. P2C has not started. The revised plan adds the previously missing
+As of 2026-09-17, the user has accepted P1C, P2A, and P2B. P2C is implemented
+and awaiting user acceptance: each robot has a local distance/time energy
+model, safety-reserve return, a distinct charging pose, and charge/resume
+behavior. A forced-charge two-robot episode completed with two charges, no
+exhaustion, and zero collisions. The revised plan adds the previously missing
 P2D full ideal-task integration gate, splits ns-3 time/packet coupling from
 Wi-Fi calibration, and fixes formal run/statistical rules. From P2B onward only
 `COMPLETE` is mission success; `FOUND` and 90% coverage are process metrics.
