@@ -25,20 +25,22 @@ Use current code as the source of truth. Read in this order:
    statement of what the current code already implements.
 2. `IMPLEMENTATION_PLAN.md` for engineering checkpoints, exit criteria, and
    the current user-review boundary.
-3. `USER_GUIDE.md` for the current mental model, commands, metrics, historical
-   best result, and known limitations.
-4. `sim.cc` for the actual environment state transition and reward timing.
-5. `test.py` and `run_baselines.py` for baseline semantics and CSV fields.
-6. `dqn_common.py`, `train_dqn.py`, and `evaluate_dqn.py` for DQN behavior.
-7. `report/20260914_p1b.md`, `report/20260915_p1c.md`,
+3. The ROS workspace's `launch_commands.md` for current copy-paste launch
+   commands, world selection, and parameter names.
+4. The ROS workspace's `user_guide.md` for the current task stack, metrics,
+   and known limitations.
+5. `sim.cc` for the actual environment state transition and reward timing.
+6. `test.py` and `run_baselines.py` for baseline semantics and CSV fields.
+7. `dqn_common.py`, `train_dqn.py`, and `evaluate_dqn.py` for DQN behavior.
+8. `report/20260914_p1b.md`, `report/20260915_p1c.md`,
    `report/20260916_p1c.md`, and `report/20260916_p1c_foundation.md` for the
    ROS engineering checkpoints.
-8. `report/20260917_p1c_optimization.md` and
+9. `report/20260917_p1c_optimization.md` and
    `report/20260917_p1c_generalization.md` for the final P1C evidence.
-9. `report/20260917_p2a.md` for the P2A detector contract and evidence.
-10. `report/20260917_roadmap_audit.md` for the revised gates and metric rules.
-11. `report/20260917_p2b.md` for the P2B state-machine contract and evidence.
-12. `report/20260902.md`, `report/20260429.md`, and `log.md` for historical
+10. `report/20260917_p2a.md` for the P2A detector contract and evidence.
+11. `report/20260917_roadmap_audit.md` for the revised gates and metric rules.
+12. `report/20260917_p2b.md` for the P2B state-machine contract and evidence.
+13. `report/20260902.md`, `report/20260429.md`, and `log.md` for historical
    experiment context.
 
 The accepted P1A ROS foundation now has explicit Gazebo seeds, configurable spawn

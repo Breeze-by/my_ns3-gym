@@ -11,6 +11,10 @@ Canonical local path:
 /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
 ```
 
+Current copy-paste launch commands, world selection, task modes, and parameter
+reference: [launch_commands.md](launch_commands.md). The longer implementation
+guide is [user_guide.md](user_guide.md).
+
 ## 📁 Repository Structure
 
 ```

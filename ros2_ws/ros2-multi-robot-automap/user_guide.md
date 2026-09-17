@@ -1,5 +1,7 @@
 # ROS2 多机器人自主建图项目使用指南
 
+常用启动命令、不同 world 和参数速查见 [`launch_commands.md`](launch_commands.md)。
+
 本文档面向当前项目状态：ROS2 Humble + Gazebo Classic + TurtleBot3 Waffle，多机器人通过各自 SLAM 建图，`merge_map` 合并全局地图，`multi_robot_exploration` 统一分配探索目标。
 
 自 2026-09-02 起，本目录已通过 `git subtree` 合入 `Breeze-by/my_ns3-gym`
