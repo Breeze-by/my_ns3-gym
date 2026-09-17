@@ -45,6 +45,7 @@ RALLY_CLEARANCE_M = 0.45
 RALLY_PATH_CLEARANCE_M = 0.35
 RALLY_MIN_SEPARATION_M = 0.8
 RALLY_PREFERRED_SEPARATION_M = 1.2
+RALLY_DYNAMIC_CLEARANCE_M = 0.6
 RALLY_POSITION_TOLERANCE_M = 0.35
 RALLY_LINEAR_TOLERANCE_MPS = 0.05
 RALLY_ANGULAR_TOLERANCE_RADPS = 0.10
@@ -170,6 +171,26 @@ def traversable_grid(raw_grid, resolution, clearance_m=ROBOT_CLEARANCE_M):
     return (raw_grid == 0) & ~inflated_obstacle_mask(
         raw_grid, clearance_cells
     )
+
+
+def block_dynamic_positions(traversable, resolution, origin, positions):
+    """Return a grid with parked robots represented as safety obstacles."""
+    result = traversable.copy()
+    radius = max(1, math.ceil(RALLY_DYNAMIC_CLEARANCE_M / resolution))
+    for x, y in positions:
+        row, column = world_to_grid(
+            x, y, resolution, origin[0], origin[1]
+        )
+        row_start = max(0, row - radius)
+        row_stop = min(result.shape[0], row + radius + 1)
+        column_start = max(0, column - radius)
+        column_stop = min(result.shape[1], column + radius + 1)
+        rows, columns = np.ogrid[
+            row_start:row_stop, column_start:column_stop
+        ]
+        window = result[row_start:row_stop, column_start:column_stop]
+        window[(rows - row) ** 2 + (columns - column) ** 2 <= radius**2] = False
+    return result
 
 
 def _line_cells(start, end):
@@ -805,6 +826,13 @@ def rally_survey_pose(raw_grid, resolution, origin, robot_position, target):
     return RallyPose(x, y, math.atan2(target[1] - y, target[0] - x))
 
 
+def survey_robot_order(robot_positions, detecting_robot):
+    return sorted(
+        robot_positions,
+        key=lambda name: (name != detecting_robot, name),
+    )
+
+
 def rally_dispatch_order(
     targets, robot_positions, target, priority_robot=None
 ):
@@ -863,10 +891,15 @@ def plan_rally_leg(
     origin,
     robot_position,
     max_distance_m=RALLY_MAX_NAVIGATION_LEG_M,
+    blocked_positions=(),
+    clearance_m=RALLY_PATH_CLEARANCE_M,
 ):
     """Return a staged rally pose and the map path reserved for it."""
     traversable = traversable_grid(
-        raw_grid, resolution, clearance_m=RALLY_PATH_CLEARANCE_M
+        raw_grid, resolution, clearance_m=clearance_m
+    )
+    traversable = block_dynamic_positions(
+        traversable, resolution, origin, blocked_positions
     )
     start = nearest_traversable(
         traversable,
@@ -1083,7 +1116,7 @@ class HeadquartersControl(Node):
         self.survey_goal_pending = False
         self.survey_goal_started_at = None
         self.survey_attempts = 0
-        self.survey_complete = False
+        self.survey_robot = None
         self.survey_battery_preempted = False
 
         self.map_sub = self.create_subscription(
@@ -1108,6 +1141,7 @@ class HeadquartersControl(Node):
         self.goal_known_count = {}
         self.goal_initial_gain = {}
         self.goal_targets = {}
+        self.goal_routes = {}
         self.cancel_requested = {}
         self.robot_subscriptions = []
 
@@ -1132,6 +1166,7 @@ class HeadquartersControl(Node):
             self.goal_known_count[robot_name] = 0
             self.goal_initial_gain[robot_name] = 0
             self.goal_targets[robot_name] = None
+            self.goal_routes[robot_name] = ()
             self.cancel_requested[robot_name] = False
             self.rally_goal_handles[robot_name] = None
             self.rally_goal_pending[robot_name] = False
@@ -1271,10 +1306,7 @@ class HeadquartersControl(Node):
         if rally_handle is not None:
             self.rally_battery_preempted[robot_name] = True
             rally_handle.cancel_goal_async()
-        if (
-            robot_name == self.detecting_robot
-            and self.survey_goal_handle is not None
-        ):
+        if robot_name == self.survey_robot and self.survey_goal_handle is not None:
             self.survey_battery_preempted = True
             self.survey_goal_handle.cancel_goal_async()
 
@@ -1383,16 +1415,20 @@ class HeadquartersControl(Node):
                             f"currently {candidate_count} safe candidates."
                         )
                         self.last_rally_candidate_log = now
-                    if not self.survey_complete:
+                    for survey_robot in survey_robot_order(
+                        self.robot_positions, self.detecting_robot
+                    ):
+                        if self.battery_modes[survey_robot] != "ACTIVE":
+                            continue
                         survey_pose = rally_survey_pose(
                             self.map_data,
                             self.resolution,
                             self.origin,
-                            self.robot_positions[self.detecting_robot],
+                            self.robot_positions[survey_robot],
                             self.target,
                         )
                         if survey_pose is not None:
-                            self.send_survey_goal(survey_pose)
+                            self.send_survey_goal(survey_robot, survey_pose)
                             return
                     if (
                         self.rally_prepare_started_at is not None
@@ -1458,6 +1494,12 @@ class HeadquartersControl(Node):
         if now - self.last_rally_dispatch_at >= 1.0:
             self.last_rally_dispatch_at = now
             plans = {}
+            arrived_positions = [
+                self.robot_positions[name]
+                for name in self.rally_dispatch_order
+                if self.rally_arrived[name]
+                and self.robot_positions[name] is not None
+            ]
             for name in self.rally_dispatch_order:
                 if (
                     self.rally_arrived[name]
@@ -1475,6 +1517,7 @@ class HeadquartersControl(Node):
                     self.robot_positions[name],
                     RALLY_MAX_NAVIGATION_LEG_M
                     / (self.rally_attempts[name] + 1),
+                    arrived_positions,
                 )
             routes = {name: plan[1] for name, plan in plans.items()}
             reserved_routes = [
@@ -1516,14 +1559,14 @@ class HeadquartersControl(Node):
         if now - self.rally_hold_started_at >= self.rally_hold_sec:
             self.publish_task_state("COMPLETE")
 
-    def send_survey_goal(self, pose):
-        allowed_attempts = 1 + self.rally_max_retries
+    def send_survey_goal(self, robot_name, pose):
+        allowed_attempts = self.num_robots * (1 + self.rally_max_retries)
         if self.survey_attempts >= allowed_attempts:
             self.fail_task(
-                f"rally_survey_failed:{self.detecting_robot}"
+                f"rally_survey_failed:{robot_name}"
             )
             return
-        client = self.robot_nav_clients[self.detecting_robot]
+        client = self.robot_nav_clients[robot_name]
         if not client.server_is_ready():
             self.survey_attempts += 1
             return
@@ -1536,6 +1579,7 @@ class HeadquartersControl(Node):
         goal.pose.pose.orientation.z = math.sin(pose.yaw / 2.0)
         goal.pose.pose.orientation.w = math.cos(pose.yaw / 2.0)
         self.survey_attempts += 1
+        self.survey_robot = robot_name
         self.survey_goal_pending = True
         future = client.send_goal_async(goal)
         future.add_done_callback(self.survey_goal_response)
@@ -1552,7 +1596,7 @@ class HeadquartersControl(Node):
             return
         self.survey_goal_handle = goal_handle
         self.survey_goal_started_at = self.now()
-        if self.battery_modes[self.detecting_robot] != "ACTIVE":
+        if self.battery_modes[self.survey_robot] != "ACTIVE":
             self.survey_battery_preempted = True
             goal_handle.cancel_goal_async()
         result_future = goal_handle.get_result_async()
@@ -1567,6 +1611,7 @@ class HeadquartersControl(Node):
             return
         self.survey_goal_handle = None
         self.survey_goal_started_at = None
+        survey_robot = self.survey_robot
         try:
             status = future.result().status
         except Exception as error:
@@ -1575,7 +1620,7 @@ class HeadquartersControl(Node):
             self.survey_battery_preempted = False
             self.rally_prepare_started_at = self.now()
             self.get_logger().info(
-                f"{self.detecting_robot} completed a target-area survey leg."
+                f"{survey_robot} completed a target-area survey leg."
             )
         elif self.survey_battery_preempted:
             self.survey_battery_preempted = False
@@ -1602,6 +1647,13 @@ class HeadquartersControl(Node):
             return
 
         if plan is None:
+            arrived_positions = [
+                self.robot_positions[name]
+                for name in self.rally_dispatch_order
+                if self.rally_arrived[name]
+                and name != robot_name
+                and self.robot_positions[name] is not None
+            ]
             plan = plan_rally_leg(
                 self.rally_targets[robot_name],
                 self.map_data,
@@ -1610,6 +1662,7 @@ class HeadquartersControl(Node):
                 self.robot_positions[robot_name],
                 RALLY_MAX_NAVIGATION_LEG_M
                 / (self.rally_attempts[robot_name] + 1),
+                arrived_positions,
             )
         target, route = plan
         self.get_logger().info(
@@ -1899,16 +1952,45 @@ class HeadquartersControl(Node):
                 )
                 self.last_no_assignment_log = now
             return
+        plans = {}
+        routes = {}
         for robot_name, assignment in assignments.items():
-            assignment = stage_navigation_leg(
+            staged = stage_navigation_leg(
                 assignment,
                 self.map_data,
                 self.resolution,
                 self.origin,
                 self.robot_positions[robot_name],
             )
+            plans[robot_name] = staged
+            _, routes[robot_name] = plan_rally_leg(
+                RallyPose(
+                    staged.navigation_x,
+                    staged.navigation_y,
+                    0.0,
+                ),
+                self.map_data,
+                self.resolution,
+                self.origin,
+                self.robot_positions[robot_name],
+                max_distance_m=float("inf"),
+                clearance_m=PATH_CLEARANCE_M,
+            )
+        reserved_routes = [
+            route
+            for name, route in self.goal_routes.items()
+            if self.robot_states[name] == "active" and route
+        ]
+        selected = select_nonconflicting_routes(
+            routes,
+            list(plans),
+            reserved_routes,
+        )
+        for robot_name in selected:
+            assignment = plans[robot_name]
             self.robot_states[robot_name] = "active"
             self.goal_targets[robot_name] = assignment
+            self.goal_routes[robot_name] = routes[robot_name]
             self.goal_initial_gain[robot_name] = self.target_information_gain(
                 assignment.navigation_x, assignment.navigation_y
             )
@@ -1928,6 +2010,7 @@ class HeadquartersControl(Node):
         if self.battery_modes[robot_name] != "ACTIVE":
             self.robot_states[robot_name] = "idle"
             self.goal_targets[robot_name] = None
+            self.goal_routes[robot_name] = ()
             return
         client = self.robot_nav_clients[robot_name]
         if not client.server_is_ready():
@@ -1936,6 +2019,7 @@ class HeadquartersControl(Node):
             )
             self.robot_states[robot_name] = "idle"
             self.goal_targets[robot_name] = None
+            self.goal_routes[robot_name] = ()
             return
 
         goal = NavigateToPose.Goal()
@@ -2049,6 +2133,7 @@ class HeadquartersControl(Node):
         self.goal_known_count[robot_name] = 0
         self.goal_initial_gain[robot_name] = 0
         self.goal_targets[robot_name] = None
+        self.goal_routes[robot_name] = ()
         self.cancel_requested[robot_name] = False
         self.battery_preempted[robot_name] = False
         self.robot_states[robot_name] = "idle"

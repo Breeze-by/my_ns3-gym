@@ -48,7 +48,10 @@ a local distance/time energy model, safety-reserve return, a distinct charging
 pose, and charge/resume behavior. A forced-charge two-robot episode completed
 with two charges, no exhaustion, and zero collisions. The P2C follow-up adds
 visual-only Gazebo task regions and a default-on per-robot status panel for
-manual runs; battery managers are also enabled by default. P2D has not started.
+manual runs; battery managers are also enabled by default. P2D is implemented
+and awaiting user acceptance: the final fixed matrix has ten `COMPLETE`,
+zero-collision episodes across three worlds (lab/rooms energy 40, corridors
+energy 45), including a two-robot corridors cross-check.
 The revised plan adds the previously missing
 P2D full ideal-task integration gate, splits ns-3 time/packet coupling from
 Wi-Fi calibration, and fixes formal run/statistical rules. From P2B onward only

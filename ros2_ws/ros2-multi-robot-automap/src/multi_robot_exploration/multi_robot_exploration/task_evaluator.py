@@ -207,6 +207,14 @@ def visited_overlap_ratio(visited_by_robot):
     return (total - len(union)) / max(1, len(union))
 
 
+def phase_bucket(task_phase):
+    if task_phase == "FOUND":
+        return "FOUND"
+    if task_phase in ("RALLY", "COMPLETE"):
+        return "RALLY"
+    return "EXPLORE"
+
+
 def episode_succeeded(termination_reason, collision_events):
     return (
         termination_reason
@@ -275,6 +283,14 @@ class TaskEvaluator(Node):
         self.previous_positions = {}
         self.path_lengths = {name: 0.0 for name in self.robot_names}
         self.visited = {name: set() for name in self.robot_names}
+        self.phase_path_lengths = {
+            phase: {name: 0.0 for name in self.robot_names}
+            for phase in ("EXPLORE", "FOUND", "RALLY")
+        }
+        self.phase_visited = {
+            phase: {name: set() for name in self.robot_names}
+            for phase in ("EXPLORE", "FOUND", "RALLY")
+        }
         self.teleport_jumps = {name: 0 for name in self.robot_names}
         self.goal_ids = {name: set() for name in self.robot_names}
         self.terminal_goal_ids = {name: set() for name in self.robot_names}
@@ -424,17 +440,19 @@ class TaskEvaluator(Node):
             if current is None or previous is None:
                 continue
             distance = math.dist(previous, current)
+            phase = phase_bucket(self.task_phase)
             if distance <= self.max_position_step:
                 self.path_lengths[name] += distance
+                self.phase_path_lengths[phase][name] += distance
             else:
                 self.teleport_jumps[name] += 1
             self.previous_positions[name] = current
-            self.visited[name].add(
-                (
-                    math.floor(current[0] / self.visit_resolution),
-                    math.floor(current[1] / self.visit_resolution),
-                )
+            cell = (
+                math.floor(current[0] / self.visit_resolution),
+                math.floor(current[1] / self.visit_resolution),
             )
+            self.visited[name].add(cell)
+            self.phase_visited[phase][name].add(cell)
 
     def _maybe_start(self, now):
         if (
@@ -448,12 +466,12 @@ class TaskEvaluator(Node):
         self.start_positions = self.positions.copy()
         self.previous_positions = self.positions.copy()
         for name, position in self.positions.items():
-            self.visited[name].add(
-                (
-                    math.floor(position[0] / self.visit_resolution),
-                    math.floor(position[1] / self.visit_resolution),
-                )
+            cell = (
+                math.floor(position[0] / self.visit_resolution),
+                math.floor(position[1] / self.visit_resolution),
             )
+            self.visited[name].add(cell)
+            self.phase_visited["EXPLORE"][name].add(cell)
         self.get_logger().info(f"Episode {self.episode_id} evaluation started")
 
     def _status_callback(self, message, robot):
@@ -645,6 +663,10 @@ class TaskEvaluator(Node):
                 "end_x": end[0],
                 "end_y": end[1],
                 "path_length_m": self.path_lengths[name],
+                "phase_path_lengths_m": {
+                    phase: lengths[name]
+                    for phase, lengths in self.phase_path_lengths.items()
+                },
                 "visited_cell_count": len(self.visited[name]),
                 "teleport_jump_count": self.teleport_jumps[name],
                 "nav_goal_count": len(self.goal_ids[name]),
@@ -686,8 +708,12 @@ class TaskEvaluator(Node):
             for index, first in enumerate(rally_poses)
             for second in rally_poses[index + 1:]
         ]
+        phase_overlap_ratios = {
+            phase: visited_overlap_ratio(visited)
+            for phase, visited in self.phase_visited.items()
+        }
         result = {
-            "schema_version": 6,
+            "schema_version": 7,
             "episode_id": self.episode_id,
             "world_file": self.world_file,
             "gazebo_seed": self.gazebo_seed,
@@ -751,7 +777,17 @@ class TaskEvaluator(Node):
             "union_visited_cell_count": len(
                 set().union(*self.visited.values())
             ),
-            "search_overlap_ratio": visited_overlap_ratio(self.visited),
+            "search_overlap_ratio": phase_overlap_ratios["EXPLORE"],
+            "total_overlap_ratio": visited_overlap_ratio(self.visited),
+            "phase_overlap_ratios": phase_overlap_ratios,
+            "phase_union_visited_cell_counts": {
+                phase: len(set().union(*visited.values()))
+                for phase, visited in self.phase_visited.items()
+            },
+            "phase_path_lengths_m": {
+                phase: sum(lengths.values())
+                for phase, lengths in self.phase_path_lengths.items()
+            },
             "collision_events": collision_events,
             "collision_duration_sec": sum(self.collision_duration.values()),
             "collision_monitoring_active": all(

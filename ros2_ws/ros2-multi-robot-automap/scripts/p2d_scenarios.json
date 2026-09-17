@@ -1,0 +1,33 @@
+{
+  "scenarios": [
+    {
+      "id": "lab_far_northwest",
+      "world": "my_world.world",
+      "target_x": -4.0,
+      "target_y": 4.0,
+      "battery_initial_energy": 40.0,
+      "require_charge": false
+    },
+    {
+      "id": "rooms_far_northeast",
+      "world": "p1c_rooms.world",
+      "target_x": 5.0,
+      "target_y": 3.0,
+      "battery_initial_energy": 40.0,
+      "require_charge": false
+    },
+    {
+      "id": "corridors_far_west",
+      "world": "p1c_corridors.world",
+      "target_x": -4.5,
+      "target_y": -0.5,
+      "battery_initial_energy": 45.0,
+      "require_charge": false
+    }
+  ],
+  "cross_check": {
+    "scenario_id": "corridors_far_west",
+    "seed": 202,
+    "robot_count": 2
+  }
+}

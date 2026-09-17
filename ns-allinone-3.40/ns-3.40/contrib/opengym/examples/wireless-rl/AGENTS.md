@@ -5,8 +5,9 @@ evaluator tests, final P1C batches, three-world P1C generalization, P2A
 target-detection episodes, the roadmap audit, P2B rally episodes, and the P2B
 coverage/time audit:
 2026-09-18. The user accepted P1C, P2A, P2B, and P2C. The P2C follow-up adds
-Gazebo task-region overlays and a live operator status panel. P2D has not
-started.
+Gazebo task-region overlays and a live operator status panel. P2D is implemented
+and awaiting user acceptance; its final evidence contains ten `COMPLETE`,
+zero-collision episodes across three fixed world/target/energy scenarios.
 
 This directory is the active project inside the larger ns-3 workspace. It is a
 toy ns3-gym scheduling MDP, not a full Wi-Fi/5G network simulation.
@@ -44,7 +45,9 @@ Use current code as the source of truth. Read in this order:
 13. `report/20260917_p2c.md` for the P2C energy/charging contract and evidence.
 14. `report/20260918_p2c_visualization.md` for the post-acceptance Gazebo
     regions and live status-panel follow-up.
-15. `report/20260902.md`, `report/20260429.md`, and `log.md` for historical
+15. `report/20260918_p2d.md` for the P2D runner, schema-v7 metrics, energy
+    calibration, failures, and final matrix.
+16. `report/20260902.md`, `report/20260429.md`, and `log.md` for historical
    experiment context.
 
 The accepted P1A ROS foundation now has explicit Gazebo seeds, configurable spawn
@@ -76,8 +79,8 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
 
 ## Current Handoff Snapshot
 
-- Active boundary: P2C is accepted. Its visualization/status-panel follow-up
-  is implemented and verified; P2D has not started.
+- Active boundary: P2D is implemented and awaiting user acceptance. P3 has not
+  started.
 - From P2B onward, only `COMPLETE` is mission success. The fixed first rally
   contract is per-robot position error <=0.35 m, linear speed <=0.05 m/s,
   angular speed <=0.10 rad/s, all robots continuously stable for 5 simulated
@@ -85,6 +88,13 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
 - P2D is now a required integration gate after battery work: at least three
   prevalidated world/target/energy scenarios on seeds 101/202/303 establish the
   full ideal task baseline before any communication impairment.
+- The frozen P2D scenarios are lab `(-4,4,40)`, rooms `(5,3,40)`, and corridors
+  `(-4.5,-0.5,45)`. Final evidence combines the six lab/rooms episodes in
+  `p2d_formal_ideal_energy40_v5` with all four corridors episodes in
+  `p2d_formal_corridors_energy45_v6`; all ten are `COMPLETE` with zero
+  collisions. Lab seed 202 completed one safety charge. The 40-energy
+  two-robot corridors calibration timed out while returning, so the whole
+  corridors scenario was frozen at 45 before its final batch.
 - P3A must remove the current central direct subscriptions to robot maps,
   odom/TF and raw detection plus direct Nav2 action calls. Even the ideal
   baseline must traverse the same gateway/received-state/local-adapter path.

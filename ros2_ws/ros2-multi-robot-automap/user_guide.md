@@ -40,6 +40,7 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
   enable_task_regions:=true \
   enable_status_panel:=true \
   enable_battery:=true \
+  battery_initial_energy:=40.0 \
   enable_rviz:=false
 ```
 
@@ -139,7 +140,7 @@ multi_robot_exploration/control
 | `rally_max_retries` | `2` | 每台集合导航失败后的最大重试次数 |
 | `exploration_goal_timeout_sec` | `60.0` | 单个 Nav2 目标的最大仿真秒数 |
 | `enable_battery` | `true` | 是否启动每机器人一个 P2C 本地能量/充电管理器 |
-| `battery_capacity`, `battery_initial_energy` | `100.0`, `100.0` | 满电容量和 episode 初始能量 |
+| `battery_capacity`, `battery_initial_energy` | `100.0`, `40.0` | 满电容量和 episode 初始能量；较低初始值保留三机器人充电区安全余量 |
 | `battery_move_cost_per_m` | `1.0` | 每行驶 1 m 的能量成本 |
 | `battery_idle_cost_per_sec` | `0.02` | 每仿真秒的基础能量成本 |
 | `battery_return_safety_margin` | `5.0` | 预计返航成本之外保留的安全余量 |
@@ -653,8 +654,25 @@ python3 scripts/ros_smoke_test.py \
 分别为 6.81/6.66；之后继续探索，在 118.2 秒确认目标、126.2 秒进入 `RALLY`、190.1 秒
 进入 `COMPLETE`。最终覆盖率 92.15%、总路径 49.733 m、搜索重叠和碰撞均为 0。逐机器人
 最终集合误差为 0.216/0.128 m，最终电池模式均为 `ACTIVE`。耗尽、返航不可达和充电超时由
-构造测试验证为明确失败原因。P2C 已于 2026-09-18 通过用户验收；P2D 尚未开始。验收后新增的
+构造测试验证为明确失败原因。P2C 已于 2026-09-18 通过用户验收；P2D 已完成实现和正式矩阵，
+当前待用户验收。验收后新增的
 Gazebo 重点区域和实时状态栏只读现有任务数据，不改变 P2C 控制与评分口径。
+
+### 9.4 P2D 完整理想通信任务基线
+
+`scripts/run_p2d_baseline.py` 串行执行 `scripts/p2d_scenarios.json` 中冻结的完整任务场景，自动
+使用独立 `ROS_DOMAIN_ID`，并汇总 JSON/CSV。lab/rooms 初始能量为 40，走廊困难场景为 45，
+均显著低于 100 满电容量；电池始终启用，但不会用“每轮必须充电”把本来成功的短任务人为判失败。25
+能在单轮中触发并完成充电，但三机器人可能同时返航、拥堵相邻充电位，因此未作为正式默认值。
+
+评估结果 schema 7 除完整探索、检测、集合和完成时间外，还分别记录 `EXPLORE`、`FOUND`、
+`RALLY` 的路径长度、访问栅格并集和重叠率。`search_overlap_ratio` 现在严格只表示探索阶段，
+`total_overlap_ratio` 才表示整个 episode。正式运行命令和固定矩阵见
+[`launch_commands.md`](launch_commands.md#35-p2d-完整理想通信基线)。
+
+2026-09-18 最终 10 项门禁全部以 `COMPLETE`、零碰撞结束：lab/rooms 的三个 seeds 使用 40
+能量，走廊三个 seeds 与双机器人交叉检查使用 45。至少一项 lab 任务在 40 能量下完成一次
+安全返充并继续到 `COMPLETE`，说明低电量闭环确实参与任务。P2D 当前为待用户验收；P3 尚未开始。
 
 以下命令适合运行中的人工诊断：
 

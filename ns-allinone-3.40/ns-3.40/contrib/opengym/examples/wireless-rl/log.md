@@ -2134,3 +2134,168 @@ colcon test-result --verbose
 
 Result: diff, lint, compilation, and build passed. Aggregate result was 54
 tests, 0 errors, 0 failures, and 2 copyright skips.
+
+## 2026-09-18 P2D complete ideal-task baseline and battery calibration
+
+Purpose: after the user accepted P2C, lower the default battery energy and
+implement the required P2D full-task ideal-communication integration gate.
+Work started from pushed commit `620e869`. The user-owned deletion of
+`report/20260914.md` and untracked `report/20260914_p1a.md` were left untouched.
+
+All ROS episodes used the canonical workspace, ROS 2 Humble, the repository
+`install/setup.bash`, battery enabled, a 300 simulated-second task limit unless
+noted, and `COMPLETE` as the only success state. The P2D runner invocation form
+was:
+
+```bash
+python3 scripts/run_p2d_baseline.py \
+  [--scenarios <ids>] [--seeds <seeds>] [--robot-count <2|3>] \
+  [--skip-cross-check] --run-id <run-id> --ros-domain-base <id>
+```
+
+The runner expands each episode to `scripts/ros_smoke_test.py` with
+`--startup-timeout 600 --evaluation-duration 300 --coverage-threshold 0
+--evaluation-wait-timeout 600 --target-detection --rally --battery`, the fixed
+world/target/energy tuple, and an episode-specific output directory. It retries
+at most twice only when no evaluator JSON exists; any task result, including a
+failure, is final.
+
+### Battery and target pilots
+
+- `p2d_energy25_pilot_myworld_3r_seed303`, direct smoke, `my_world.world`, 3
+  robots, seed 303, target `(-4,4)`, initial energy 25, charge required: PASS;
+  `COMPLETE` 211.5 s, detection 70.5 s, RALLY 103.1 s, coverage 0.922, path
+  65.073 m, three returns/three charges, minimum energy 5.653, zero collision.
+- `p2d_pilot_rooms_energy25`, rooms, 3 robots, seed 404, target `(5,3)`, energy
+  25: PASS; `COMPLETE` 216.7 s, detection 38.1 s, RALLY 38.7 s, coverage 0.908,
+  path 48.511 m, two returns/two charges, minimum 5.541, zero collision.
+- `p2d_pilot_corridors_energy25`, original corridor target `(-4.5,3.5)`, 3
+  robots, seed 404, energy 25: task failure at 196 s,
+  `battery_return_unreachable:tb1`; two returns, no completed charge, zero
+  collision, minimum 5.817.
+- `p2d_pilot_corridors_energy40`: pre-start infrastructure failure because tb3
+  Nav2 did not activate; no evaluator result. The identical retained retry
+  `p2d_pilot_corridors_energy40_retry1` reached `COMPLETE` at 163.4 s but failed
+  safety with 29 collision events, minimum energy 17.629.
+- `p2d_pilot_corridors_west_energy40`, revised truth-free target `(-4.5,-0.5)`,
+  3 robots, seed 404: PASS; `COMPLETE` 147.2 s, detection 42.5 s, RALLY 43.0 s,
+  coverage 0.826, path 48.351 m, zero charge and collision.
+
+The interrupted calibration batches `p2d_formal_ideal_3scenes`,
+`p2d_formal_ideal_3scenes_energy40`, `p2d_formal_ideal_energy40_v2`, and
+`p2d_formal_ideal_energy40_v3` were retained as failures/interruptions. They
+exposed a 25-energy simultaneous-return charge timeout and several Gazebo
+master conflicts caused by orphan processes after interruption. Three
+task-owned process groups were stopped with SIGINT and port 11345 was verified
+free before later runs.
+
+### Diagnostic matrix and targeted regressions
+
+`python3 scripts/run_p2d_baseline.py --run-id
+p2d_formal_ideal_energy40_v4 --ros-domain-base 40` completed 10 entries with
+6 successes, 3 task failures, and 1 infrastructure failure:
+
+- lab seeds 101/202 passed; seed 303 failed `insufficient_rally_poses`;
+- rooms seeds 101/202 passed; seed 303 reached `COMPLETE` but had 41 collisions
+  while a later robot attempted to pass a parked robot;
+- corridors seed 101 reached `COMPLETE` but had six exploration collisions;
+  seed 202 passed; seed 303 had three retained pre-start Nav2 failures;
+- the two-robot corridors seed-202 cross-check passed.
+
+The fixes added multi-robot target-area survey fallback, parked-robot dynamic
+obstacles, exploration route reservations, and direct per-node Nav2 lifecycle
+recovery. Targeted runner commands and results were:
+
+```bash
+python3 scripts/run_p2d_baseline.py --scenarios lab_far_northwest \
+  --seeds 303 --skip-cross-check --run-id p2d_fix_lab303_v3 \
+  --ros-domain-base 61
+python3 scripts/run_p2d_baseline.py --scenarios rooms_far_northeast \
+  --seeds 303 --skip-cross-check --run-id p2d_fix_rooms303_v2 \
+  --ros-domain-base 62
+python3 scripts/run_p2d_baseline.py --scenarios corridors_far_west \
+  --seeds 101 --skip-cross-check --run-id p2d_fix_corridors101_v2 \
+  --ros-domain-base 63
+```
+
+Results: lab `COMPLETE` 162.9 s, coverage 0.845, path 33.915 m; rooms
+`COMPLETE` 95.6 s, coverage 0.819, path 30.811 m; corridors `COMPLETE` 219.4 s,
+coverage 0.816, path 39.836 m. All three had zero collisions. Earlier retained
+attempts include `p2d_fix_lab303` (three immediate failures because the shell
+had not sourced `install/setup.bash`), `p2d_fix_lab303_v2` (pre-start Nav2
+failure), `p2d_fix_rooms303` (Gazebo GLX failure), and
+`p2d_fix_corridors101` (zero collision but RALLY timeout because the first
+dynamic-obstacle radius of 1.2 m blocked a legal neighboring rally pose). The
+final dynamic clearance is 0.6 m; the independent route-conflict threshold
+remains 1.2 m.
+
+### Formal batches
+
+The first complete formal command was:
+
+```bash
+python3 scripts/run_p2d_baseline.py \
+  --run-id p2d_formal_ideal_energy40_v5 --ros-domain-base 70
+```
+
+It completed 10 episodes: all nine three-robot episodes passed with
+`COMPLETE` and zero collisions. Lab seed 202 performed one return/charge and
+still completed at 229.6 s. The two-robot corridors cross-check at energy 40
+timed out at 300 s in RALLY with tb1 still `RETURNING`; minimum energy was
+9.093, one return began, no charge completed, and collision count was zero.
+One corridors seed-303 pre-start `BadDrawable (GLX)` failure was retained; its
+identical retry passed. Summary:
+`log/p2d_baseline/p2d_formal_ideal_energy40_v5/summary.json`.
+
+Energy 45 was first checked with:
+
+```bash
+python3 scripts/run_p2d_baseline.py --scenarios corridors_far_west \
+  --seeds 202 --robot-count 2 --skip-cross-check \
+  --run-id p2d_energy45_corridors_2r_seed202 --ros-domain-base 81
+```
+
+Result: PASS, `COMPLETE` 161.6 s, detection 65.8 s, RALLY 75.5 s, coverage
+0.813, path 39.310 m, no return/charge, zero collision. The entire corridors
+scenario was then frozen at energy 45 and rerun, rather than changing one seed:
+
+```bash
+python3 scripts/run_p2d_baseline.py --scenarios corridors_far_west \
+  --run-id p2d_formal_corridors_energy45_v6 --ros-domain-base 82
+```
+
+All four entries passed with `COMPLETE`, zero collisions, and no infrastructure
+failure: three-robot seeds 101/202/303 completed in 223.3/123.5/130.7 s with
+coverage 0.822/0.759/0.823 and path 46.909/35.675/37.755 m; the two-robot
+seed-202 cross-check completed in 147.6 s with coverage 0.827 and path 32.453 m.
+Summary: `log/p2d_baseline/p2d_formal_corridors_energy45_v6/summary.json`.
+
+The final P2D gate therefore combines the six lab/rooms energy-40 results from
+v5 with the four corridors energy-45 results from v6: 10/10 `COMPLETE`, 0
+collisions. Full design, per-episode metrics, and retained failures are in
+`report/20260918_p2d.md`. P2D moves to `待用户验收`; P3 was not started.
+
+Final retained-worktree validation:
+
+```bash
+cd src/multi_robot_exploration
+python3 -m pytest -q
+ament_flake8 multi_robot_exploration test \
+  ../../scripts/ros_smoke_test.py ../../scripts/run_p2d_baseline.py
+cd ../..
+python3 -m py_compile scripts/ros_smoke_test.py \
+  scripts/run_p2d_baseline.py \
+  src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py \
+  src/multi_robot_exploration/multi_robot_exploration/{control,nav2_ready_gate,task_evaluator}.py
+colcon build --symlink-install \
+  --packages-select multi_robot merge_map multi_robot_exploration
+colcon test --packages-select multi_robot merge_map multi_robot_exploration \
+  --event-handlers console_direct+
+colcon test-result --verbose
+git diff --check
+```
+
+Result: package pytest passed 55 tests with one copyright skip; all 20 selected
+Python files passed `ament_flake8`; byte-compilation and all three package
+builds passed. Aggregate colcon result was 61 tests, 0 errors, 0 failures, and
+2 copyright skips. `git diff --check` passed.

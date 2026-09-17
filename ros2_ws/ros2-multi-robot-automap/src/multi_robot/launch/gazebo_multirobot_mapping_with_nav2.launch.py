@@ -896,7 +896,7 @@ def generate_launch_description():
     ld.add_action(
         DeclareLaunchArgument(
             "battery_initial_energy",
-            default_value="100.0",
+            default_value="40.0",
             description="Initial energy units for every active robot.",
         )
     )

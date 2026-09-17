@@ -198,6 +198,16 @@ def test_rally_survey_moves_detector_toward_target_on_known_space():
     assert math.dist((pose.x, pose.y), target) < math.dist(robot, target) - 0.4
 
 
+def test_rally_survey_tries_detector_then_remaining_robots():
+    positions = {"tb1": (0.0, 0.0), "tb2": (1.0, 0.0), "tb3": (2.0, 0.0)}
+
+    assert control.survey_robot_order(positions, "tb2") == [
+        "tb2",
+        "tb1",
+        "tb3",
+    ]
+
+
 def test_rally_dispatches_far_side_first_to_avoid_blocking_arrivals():
     targets = {
         "tb1": control.RallyPose(0.0, 2.6, 0.0),
@@ -272,6 +282,25 @@ def test_rally_navigation_stages_long_paths():
         max_distance_m=0.75,
     )
     assert 0.6 <= math.dist((1.0, 1.0), (retry_leg.x, retry_leg.y)) <= 0.8
+
+
+def test_rally_route_avoids_robot_already_parked_at_its_pose():
+    grid = np.zeros((60, 60), dtype=int)
+    pose = control.RallyPose(5.0, 3.0, 0.0)
+    blocker = (3.0, 3.0)
+
+    _, route = control.plan_rally_leg(
+        pose,
+        grid,
+        0.1,
+        (0.0, 0.0),
+        (1.0, 3.0),
+        max_distance_m=float("inf"),
+        blocked_positions=[blocker],
+    )
+
+    assert route[-1] == pytest.approx((pose.x, pose.y), abs=0.1)
+    assert min(math.dist(point, blocker) for point in route) >= 0.55
 
 
 def test_rally_selects_disjoint_routes_in_parallel():

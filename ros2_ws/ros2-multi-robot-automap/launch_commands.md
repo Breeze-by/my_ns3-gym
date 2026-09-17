@@ -54,6 +54,7 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
   enable_target_detection:=true \
   enable_rally:=true \
   enable_battery:=true \
+  battery_initial_energy:=40.0 \
   target_x:=-4.0 \
   target_y:=4.0
 ```
@@ -126,8 +127,9 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
 
 ### 3.4 强制发生一次充电的完整任务
 
-以下配置把所有机器人初始能量降到 18；smoke 的 `--require-charge` 会在没有实际完成充电时
-判失败。常规演示不需要人为降低初始能量。
+以下配置把所有机器人初始能量进一步降到 18；smoke 的 `--require-charge` 会在没有实际完成
+充电时判失败。主 launch 的常规默认值已经由 100 降为 40；25 在三机器人同时返航时会造成
+充电区拥堵，因此只保留为边界失败证据，不作为默认值。
 
 ```bash
 python3 scripts/ros_smoke_test.py \
@@ -139,6 +141,38 @@ python3 scripts/ros_smoke_test.py \
   --target-x -4 --target-y 4 \
   --episode-id manual_p2c_forced_charge
 ```
+
+### 3.5 P2D 完整理想通信基线
+
+场景、目标和初始电量统一保存在 `scripts/p2d_scenarios.json`。默认 runner 串行运行三个场景的
+seeds 101/202/303，并追加一次走廊场景双机器人交叉检查；每轮上限均为 300 仿真秒：
+
+```bash
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+python3 scripts/run_p2d_baseline.py \
+  --seeds 101 202 303 \
+  --run-id p2d_formal_ideal_3scenes \
+  --ros-domain-base 130
+```
+
+当前冻结矩阵为：
+
+| 场景 | 目标 `(x, y)` | 初始能量 |
+| --- | --- | --- |
+| `my_world.world` | `(-4.0, 4.0)` | `40.0` |
+| `p1c_rooms.world` | `(5.0, 3.0)` | `40.0` |
+| `p1c_corridors.world` | `(-4.5, -0.5)` | `45.0` |
+
+`--validate-only` 只检查配置和 world 文件；目标真值空闲、三集合位可达和最小间距由
+`test_p2d_scenario_targets_are_free_and_rallyable` 自动验证。正式结果写入
+`log/p2d_baseline/<run-id>/summary.json` 和 `summary.csv`。runner 的启动门限默认为 600 墙钟秒，
+以包含三套 Nav2 的固定错峰启动；这不改变每轮 300 仿真秒任务上限。
+
+2026-09-18 的最终基线由 `p2d_formal_ideal_energy40_v5` 中 lab/rooms 六项，以及
+`p2d_formal_corridors_energy45_v6` 中走廊三 seeds 和双机器人交叉检查四项组成；10 项均为
+`COMPLETE`、零碰撞。走廊 40 能量的双机器人检查会在任务后段返充并于 300 秒超时，因此在
+正式批次前把该场景统一校准为 45；主 launch 的通用默认值仍为 40。
 
 ## 4. 切换 Gazebo world
 
@@ -240,7 +274,7 @@ Gazebo GUI 和全局 RViz 建议二选一。三机器人冷启动时可把
 | --- | --- | --- |
 | `enable_battery` | `true` | 启动每机器人一个本地电池管理器 |
 | `battery_capacity` | `100.0` | 满电容量 |
-| `battery_initial_energy` | `100.0` | episode 初始能量 |
+| `battery_initial_energy` | `40.0` | episode 初始能量；低于满电容量并保留三机器人充电区安全余量 |
 | `battery_move_cost_per_m` | `1.0` | 每行驶 1 m 的能量成本 |
 | `battery_idle_cost_per_sec` | `0.02` | 每仿真秒基础能量成本 |
 | `battery_return_safety_margin` | `5.0` | 预计返航成本外的安全余量 |
