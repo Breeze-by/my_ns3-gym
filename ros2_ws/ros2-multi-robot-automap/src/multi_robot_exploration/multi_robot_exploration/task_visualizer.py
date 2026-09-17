@@ -1,4 +1,5 @@
 import json
+import math
 
 from gazebo_msgs.srv import SpawnEntity
 from geometry_msgs.msg import Pose
@@ -9,7 +10,7 @@ from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
 from std_msgs.msg import String
 
 
-def disc_sdf(radius, rgba):
+def disc_sdf(radius, rgba, height=0.012):
     color = " ".join(str(value) for value in rgba)
     return f"""<?xml version="1.0"?>
 <sdf version="1.6">
@@ -19,7 +20,7 @@ def disc_sdf(radius, rgba):
       <visual name="disc">
         <cast_shadows>false</cast_shadows>
         <geometry>
-          <cylinder><radius>{radius}</radius><length>0.01</length></cylinder>
+          <cylinder><radius>{radius}</radius><length>{height}</length></cylinder>
         </geometry>
         <material>
           <ambient>{color}</ambient>
@@ -29,6 +30,38 @@ def disc_sdf(radius, rgba):
     </link>
   </model>
 </sdf>"""
+
+
+def ring_sdf(radius, rgba, width=0.08, height=0.02, segments=48):
+    color = " ".join(str(value) for value in rgba)
+    length = 2.0 * math.pi * radius / segments * 1.12
+    visuals = []
+    for index in range(segments):
+        angle = 2.0 * math.pi * index / segments
+        x = radius * math.cos(angle)
+        y = radius * math.sin(angle)
+        yaw = angle + math.pi / 2.0
+        visuals.append(
+            f"""      <visual name="segment_{index}">
+        <pose>{x:.6f} {y:.6f} 0 0 0 {yaw:.6f}</pose>
+        <cast_shadows>false</cast_shadows>
+        <geometry>
+          <box><size>{length:.6f} {width} {height}</size></box>
+        </geometry>
+        <material>
+          <ambient>{color}</ambient><diffuse>{color}</diffuse>
+        </material>
+      </visual>"""
+        )
+    return """<?xml version="1.0"?>
+<sdf version="1.6">
+  <model name="task_region">
+    <static>true</static>
+    <link name="region">
+{visuals}
+    </link>
+  </model>
+</sdf>""".format(visuals="\n".join(visuals))
 
 
 def rally_markers(payload):
@@ -73,26 +106,28 @@ class TaskVisualizer(Node):
                 "task_region_target_detection",
                 target_x,
                 target_y,
-                0.006,
-                target_radius,
-                (0.85, 0.10, 0.10, 0.10),
+                0.007,
+                ring_sdf(
+                    target_radius,
+                    (0.95, 0.10, 0.10, 0.90),
+                    width=0.06,
+                    height=0.012,
+                ),
             )
         self.enqueue(
             "task_region_start_charge",
             0.0,
             0.0,
-            0.012,
-            start_radius,
-            (0.10, 0.35, 0.95, 0.16),
+            0.011,
+            ring_sdf(start_radius, (0.05, 0.30, 1.00, 1.00)),
         )
         for index in range(robot_count):
             self.enqueue(
                 f"task_region_charger_tb{index + 1}",
                 float(charge_xs[index]),
                 float(charge_ys[index]),
-                0.020,
-                0.25,
-                (0.10, 0.85, 0.25, 0.48),
+                0.007,
+                disc_sdf(0.25, (0.10, 0.90, 0.25, 0.80)),
             )
 
         qos = QoSProfile(depth=1)
@@ -106,13 +141,13 @@ class TaskVisualizer(Node):
         )
         self.timer = self.create_timer(0.2, self.spawn_next)
 
-    def enqueue(self, name, x, y, z, radius, rgba):
+    def enqueue(self, name, x, y, z, sdf):
         if name in self.names:
             return
         self.names.add(name)
         request = SpawnEntity.Request()
         request.name = name
-        request.xml = disc_sdf(radius, rgba)
+        request.xml = sdf
         request.initial_pose = Pose()
         request.initial_pose.position.x = x
         request.initial_pose.position.y = y
@@ -132,9 +167,8 @@ class TaskVisualizer(Node):
                 name,
                 x,
                 y,
-                0.028,
-                0.18,
-                (1.00, 0.55, 0.05, 0.65),
+                0.007,
+                disc_sdf(0.18, (1.00, 0.55, 0.05, 0.90)),
             )
 
     def spawn_next(self):

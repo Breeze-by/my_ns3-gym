@@ -7,9 +7,12 @@
 multi_robot/gazebo_multirobot_mapping_with_nav2.launch.py
 ```
 
-它同时启动 Gazebo、1–4 台 TurtleBot3、在线 SLAM、Nav2、地图融合和中央协同探索；可选
-目标检测、P2B 集结任务及 P2C 本地电池/充电管理。手动运行默认同时打开 Gazebo 重点区域
-标记和每机器人实时状态栏。
+它同时启动 Gazebo、1–4 台 TurtleBot3、在线 SLAM、Nav2、地图融合、中央协同探索和
+P2C 本地电池/充电管理；可选目标检测与 P2B 集结任务。手动运行默认同时打开贴地的 Gazebo
+重点区域标记和每机器人实时状态栏。
+
+维护要求：以后新增或修改 launch 参数、默认组件或推荐运行方式时，必须在同一个提交中同步
+更新本文的默认命令和参数表。
 
 ## 1. 每个新终端先执行
 
@@ -31,7 +34,7 @@ colcon build --symlink-install \
 source install/setup.bash
 ```
 
-## 2. 推荐：三机器人完整搜索与集结任务
+## 2. 默认手动启动：三机器人完整搜索与集结任务
 
 该命令打开 Gazebo，显示红色圆柱目标。机器人自主探索；确认目标后，最多两台机器人执行
 互不冲突的并发短航段，最终全部聚集在目标附近的不同安全位置。
@@ -80,7 +83,8 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
   auto_save_map:=false \
   gazebo_seed:=101 \
   enable_target_detection:=false \
-  enable_rally:=false
+  enable_rally:=false \
+  enable_battery:=true
 ```
 
 ### 3.2 只看合并地图
@@ -93,10 +97,13 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
   world:=my_world.world \
   robot_count:=3 \
   enable_gzclient:=false \
+  enable_task_regions:=false \
+  enable_status_panel:=false \
   enable_rviz:=false \
   enable_merge_rviz:=true \
   auto_save_map:=false \
-  gazebo_seed:=101
+  gazebo_seed:=101 \
+  enable_battery:=true
 ```
 
 ### 3.3 只验证目标检测，不执行集结
@@ -112,6 +119,7 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
   gazebo_seed:=101 \
   enable_target_detection:=true \
   enable_rally:=false \
+  enable_battery:=true \
   target_x:=-4.0 \
   target_y:=4.0
 ```
@@ -153,7 +161,8 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
   enable_rviz:=false \
   enable_merge_rviz:=false \
   auto_save_map:=false \
-  gazebo_seed:=202
+  gazebo_seed:=202 \
+  enable_battery:=true
 ```
 
 `world` 只接受 `src/multi_robot/worlds/` 中的文件名，不接受绝对路径。新增自定义 world 后
@@ -229,7 +238,7 @@ Gazebo GUI 和全局 RViz 建议二选一。三机器人冷启动时可把
 
 | 参数 | 默认值 | 说明 |
 | --- | --- | --- |
-| `enable_battery` | `false` | 启动每机器人一个本地电池管理器 |
+| `enable_battery` | `true` | 启动每机器人一个本地电池管理器 |
 | `battery_capacity` | `100.0` | 满电容量 |
 | `battery_initial_energy` | `100.0` | episode 初始能量 |
 | `battery_move_cost_per_m` | `1.0` | 每行驶 1 m 的能量成本 |
@@ -243,7 +252,7 @@ Gazebo GUI 和全局 RViz 建议二选一。三机器人冷启动时可把
 非重叠充电位，低电量返航是本地硬安全行为，不由中央或后续 RL 覆盖。
 
 `enable_rally:=true` 必须与 `enable_target_detection:=true` 一起使用。Gazebo 会显示红色圆柱
-目标，但不会显示中央分配的集合点标记；集合点可通过 `/rally_assignments` 查看。
+目标和红色贴地检测边界；中央发布 `/rally_assignments` 后还会显示橙色集合点。
 
 ### 评估器
 

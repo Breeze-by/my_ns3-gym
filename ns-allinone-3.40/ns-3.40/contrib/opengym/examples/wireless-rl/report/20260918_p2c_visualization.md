@@ -10,9 +10,9 @@ visual-only 实体，不改变控制、传感器、碰撞和评分逻辑。
 
 新增 `task_visualizer`，通过 Gazebo `/spawn_entity` 生成无 collision 的薄圆盘：
 
-- 蓝色：半径 1 m 的共同起始/充电区；
+- 蓝色贴地高亮边界环：半径 1 m 的共同起始/充电区；
 - 绿色：每台机器人半径 0.25 m 的独立充电位；
-- 红色：启用目标检测时以目标为圆心的最大检测距离；
+- 红色贴地边界环：启用目标检测时以目标为圆心的最大检测距离；
 - 橙色：收到 `/rally_assignments` 后的逐机器人最终集合位姿。
 
 标记 SDF 没有 `<collision>`，因此不参与 lidar ray、碰撞事件或 Nav2 代价地图。启动参数
@@ -71,3 +71,9 @@ enable_task_regions:=true enable_status_panel:=true
 
 完整启动命令、颜色图例和关闭方法见 ROS 工作区的 `launch_commands.md` 与
 `user_guide.md`。
+
+2026-09-18 后续修正：最初的起始区使用透明度 0.16、厚度 1 cm 的圆盘，低视角近距离
+辨识度不足。现改为底面距地约 1 mm、宽 8 cm、高 2 cm 的不透明蓝色分段环；检测范围也
+改为贴地红色边界环。Gazebo GUI 的俯视和跟随近景均确认蓝环与绿色充电位贴地清晰可见。
+主 launch 的 `enable_battery` 默认值同时由 `false` 改为 `true`，实际默认启动确认
+`battery_manager` 自动运行且初始电量为 100/100。

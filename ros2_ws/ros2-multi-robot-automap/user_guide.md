@@ -37,6 +37,9 @@ monorepo，与 ns-3/ns3-gym 共用一个 Git 根。旧的独立检出目录及�
 ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
   robot_count:=3 \
   enable_gzclient:=true \
+  enable_task_regions:=true \
+  enable_status_panel:=true \
+  enable_battery:=true \
   enable_rviz:=false
 ```
 
@@ -135,7 +138,7 @@ multi_robot_exploration/control
 | `rally_hold_sec` | `5.0` | 全体同时满足误差和速度门槛的连续保持时间 |
 | `rally_max_retries` | `2` | 每台集合导航失败后的最大重试次数 |
 | `exploration_goal_timeout_sec` | `60.0` | 单个 Nav2 目标的最大仿真秒数 |
-| `enable_battery` | `false` | 是否启动每机器人一个 P2C 本地能量/充电管理器 |
+| `enable_battery` | `true` | 是否启动每机器人一个 P2C 本地能量/充电管理器 |
 | `battery_capacity`, `battery_initial_energy` | `100.0`, `100.0` | 满电容量和 episode 初始能量 |
 | `battery_move_cost_per_m` | `1.0` | 每行驶 1 m 的能量成本 |
 | `battery_idle_cost_per_sec` | `0.02` | 每仿真秒的基础能量成本 |
@@ -148,9 +151,9 @@ multi_robot_exploration/control
 
 手动运行主 launch 时两项默认开启，无需额外命令。Gazebo 中的颜色含义为：
 
-- 蓝色半透明圆盘：半径 1 m 的共同起始/充电区；
+- 蓝色高亮贴地边界环：半径 1 m 的共同起始/充电区；
 - 绿色圆盘：每台机器人半径 0.25 m 的独立充电位；
-- 红色半透明圆盘：启用目标检测时的最大检测距离；
+- 红色贴地边界环：启用目标检测时的最大检测距离；
 - 橙色圆盘：`/rally_assignments` 发布后各机器人的最终集合位姿。
 
 这些实体只有 visual、没有 collision，不参与 lidar、碰撞、规划或任务评分。独立 Qt 状态栏

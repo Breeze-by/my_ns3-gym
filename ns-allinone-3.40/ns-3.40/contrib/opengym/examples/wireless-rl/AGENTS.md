@@ -139,8 +139,9 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
 - Manual launch now defaults to visual-only Gazebo overlays for the common
   start/charge region, per-robot charger discs, target detection radius, and
   eventual rally poses. A separate Qt panel displays task/activity, Nav2,
-  battery, pose, and speed per robot. Headless smoke explicitly disables both
-  unless `--task-regions` is requested.
+  battery, pose, and speed per robot. Battery managers now default on for the
+  main manual launch. Headless smoke explicitly sets its requested battery and
+  region modes and always disables the panel.
 - Final P1C evidence uses seeds 101/202/303, 90% correct-free coverage, and an
   unchanged 180-second hard limit. Two-robot time-to-90 is
   98.9/79.6/104.4 seconds; three-robot time-to-90 is 78.3/69.8/69.5 seconds.

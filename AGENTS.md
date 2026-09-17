@@ -48,7 +48,8 @@ a local distance/time energy model, safety-reserve return, a distinct charging
 pose, and charge/resume behavior. A forced-charge two-robot episode completed
 with two charges, no exhaustion, and zero collisions. The P2C follow-up adds
 visual-only Gazebo task regions and a default-on per-robot status panel for
-manual runs. P2D has not started. The revised plan adds the previously missing
+manual runs; battery managers are also enabled by default. P2D has not started.
+The revised plan adds the previously missing
 P2D full ideal-task integration gate, splits ns-3 time/packet coupling from
 Wi-Fi calibration, and fixes formal run/statistical rules. From P2B onward only
 `COMPLETE` is mission success; `FOUND` and 90% coverage are process metrics.
@@ -93,6 +94,10 @@ Before every commit:
 3. Run `git add -n .` and confirm that build artifacts, runtime outputs,
    checkpoints, maps, bags, and logs are not being staged accidentally.
 4. Commit focused changes, then push the current branch to `origin`.
+
+Whenever a launch argument, default-enabled component, recommended run mode,
+or copy-paste launch command changes, update
+`ros2_ws/ros2-multi-robot-automap/launch_commands.md` in the same commit.
 
 Do not force-push or rewrite shared history unless the user explicitly requests
 it. Feature branches contain both ns-3 and ROS 2; do not place the two components

@@ -880,7 +880,7 @@ def generate_launch_description():
     ld.add_action(
         DeclareLaunchArgument(
             "enable_battery",
-            default_value="false",
+            default_value="true",
             description="Enable per-robot P2C energy and charging managers.",
         )
     )

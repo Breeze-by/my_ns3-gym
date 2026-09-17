@@ -2082,3 +2082,55 @@ colcon test-result --verbose
 
 Result: diff, lint, byte-compilation, and build passed. Aggregate test result
 was 53 tests, 0 errors, 0 failures, and 2 copyright skips.
+
+### 2026-09-18 ground-marker and default-battery correction
+
+Purpose: respond to the user's visual check that the translucent start disc
+was hard to see at close range, make the marker visibly ground-mounted, make
+battery management a launch default, and bring the canonical launch command
+document up to date.
+
+GUI verification used `ROS_DOMAIN_ID=84` and this command:
+
+```bash
+ros2 launch multi_robot \
+  gazebo_multirobot_mapping_with_nav2.launch.py \
+  world:=my_world.world robot_count:=1 \
+  enable_gzclient:=true enable_status_panel:=false \
+  enable_rviz:=false enable_merge_rviz:=false \
+  auto_save_map:=false gazebo_seed:=405 \
+  nav2_ready_timeout_sec:=240.0
+```
+
+This was a manual visualization run, not an evaluation episode. Gazebo spawned
+`task_region_start_charge` and `task_region_charger_tb1`. Overhead and followed
+close views confirmed that the new opaque blue 8-cm-wide, 2-cm-high segmented
+ring is visibly attached to the floor and the green charging disc remains
+clear inside it. The launch was intentionally interrupted after inspection.
+The omitted `enable_battery` argument resolved to the new default `true`; after
+Nav2 readiness, `/tb1/battery_manager` started automatically and reported
+energy 100/100 at charger `(0.00, -0.45)`.
+
+The original start marker was a 1-cm-thick disc with alpha 0.16. The retained
+implementation uses a visual-only 48-segment ring whose bottom is about 1 mm
+above the `z=0` ground plane. The target-distance marker uses the same ground
+boundary treatment. No collision geometry was added.
+
+Final regression:
+
+```bash
+git diff --check
+ament_flake8 src/multi_robot_exploration/multi_robot_exploration \
+  src/multi_robot_exploration/test scripts/ros_smoke_test.py
+python3 -m py_compile \
+  src/multi_robot_exploration/multi_robot_exploration/task_visualizer.py \
+  src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py
+colcon build --symlink-install \
+  --packages-select multi_robot multi_robot_exploration
+colcon test --packages-select multi_robot multi_robot_exploration \
+  --event-handlers console_direct+
+colcon test-result --verbose
+```
+
+Result: diff, lint, compilation, and build passed. Aggregate result was 54
+tests, 0 errors, 0 failures, and 2 copyright skips.
