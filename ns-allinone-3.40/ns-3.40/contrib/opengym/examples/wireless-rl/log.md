@@ -1474,3 +1474,195 @@ Implementation, tests, simulator evidence, and P2A handoff documentation were
 committed as `7563681` (`p2a: add target detection confirmation`) and pushed to
 `origin/main` in this session. The intentionally unstaged user report changes
 remained untouched.
+
+## 2026-09-17 P2B authoritative rally state machine
+
+Purpose: implement the revised P2B contract only: the coordinator becomes the
+sole `/task_state` owner, confirmed detection cancels exploration, every
+required robot receives a distinct known-free target-facing staging pose, and
+`COMPLETE` requires all position and velocity thresholds continuously for five
+simulated seconds. This remains ideal same-host ROS communication; no gateway,
+network, battery, or P2C work was added.
+
+All runs used the evolving uncommitted P2B worktree based on `7563681`, the
+`ns3gym` conda environment with `PYTHONNOUSERSITE=1`, ROS 2 Humble, Gazebo's
+setup, the repository `install/setup.bash`, and `TURTLEBOT3_MODEL=waffle`.
+After stale ROS-domain state was found during early debugging, later runs used
+a fresh `ROS_DOMAIN_ID` per attempt. The common three-robot command was:
+
+```bash
+PYTHONNOUSERSITE=1 python scripts/ros_smoke_test.py \
+  --world my_world.world --robot-count 3 --gazebo-seed <seed> \
+  --startup-timeout <240|300|360> --message-timeout 90 \
+  --shutdown-timeout 60 --evaluation-duration <180|300> \
+  --coverage-threshold 0 --evaluation-wait-timeout <330|390|480> \
+  --target-detection --target-x -4 --target-y 4 \
+  --target-max-distance 3 --target-field-of-view 90 \
+  --target-confirmation-frames 3 --rally --episode-id <episode>
+```
+
+The final fixed formal command used `startup-timeout=360`,
+`evaluation-duration=300`, and `evaluation-wait-timeout=480`. The 300-second
+bound is for the complete search/detect/sequential-rally task; no rally
+position, speed, hold, separation, or collision threshold was relaxed.
+
+### Development runs retained
+
+The following raw smoke logs are retained under the ignored ROS `log/smoke/`
+directory. Unless stated otherwise these were seed 101, three robots, a
+180-second episode and the common target/rally parameters above.
+
+- `robots3_seed101_20260917-134453.log`, episode
+  `p2b_rally_3r_seed101_v1`: post-start FAIL,
+  `insufficient_rally_poses`; the initial candidate subset was incomplete.
+- `...-135106.log`, `p2b_rally_3r_seed101_v2`: entered `RALLY`; tb1/tb2
+  arrived, tb3 remained blocked; timeout, zero collisions.
+- `...-135912.log`: pre-start infrastructure FAIL while activating tb3; no
+  authoritative task result. A stale September-14 controller on the default
+  ROS domain was then found and stopped.
+- `...-140500.log`, `p2b_rally_3r_seed101_v4`: post-start FAIL with zero
+  reachable candidates after an over-strict route check.
+- `...-141025.log`, `p2b_rally_3r_seed101_v5`: candidates increased from zero
+  to two while waiting for map data but remained insufficient; post-start
+  FAIL.
+- `...-141546.log`, `p2b_rally_3r_seed101_v6`: expanded candidate radii and
+  sequential dispatch let tb1/tb3 arrive; tb2 remained blocked; timeout,
+  minimum assigned separation 0.806 m, zero collisions.
+- `...-142214.log`, `p2b_rally_3r_seed101_v7`: target spawn client timed out
+  although the model later appeared; no sufficient rally candidates; FAIL.
+- `...-142937.log`, `p2b_rally_3r_seed101_v8`: preferred 1.2 m separation was
+  achieved (1.208 m), but tb2 navigation failed; timeout.
+- `...-143553.log`, `p2b_rally_3r_seed101_v9`: exposed a race where the
+  coordinator entered `RALLY` before its survey action completed; timeout.
+- `...-144141.log`: pre-start infrastructure FAIL at tb3 lifecycle readiness;
+  no task result.
+- `...-144706.log`, `p2b_rally_3r_seed101_v11`: post-start timeout after a
+  long direct tb2 rally goal failed.
+- `...-145245.log`, `p2b_rally_3r_seed101_final`: same direct-goal failure;
+  timeout.
+- `...-145806.log`, `p2b_rally_3r_seed101_final2`: survey completed but the
+  radial-layer approach still left tb2 blocked; timeout.
+- `...-150329.log` and `...-150758.log`: pre-start tb3 readiness failures;
+  manually interrupted/failed before a task episode.
+- `...-151407.log`, `p2b_rally_3r_seed101_final5`: an over-strict survey LOS
+  rule left zero candidates; `insufficient_rally_poses`.
+- `...-151857.log`, `p2b_rally_3r_seed101_final6`: survey and assignment
+  succeeded, but a 5 m tb2 waypoint failed; timeout.
+- `...-152508.log`, `p2b_rally_3r_seed101_final7`: survey produced 18 safe
+  candidates, but a radial-layer hard constraint made the joint assignment
+  impossible; `insufficient_rally_poses`.
+- `...-153012.log`, `p2b_rally_3r_seed101_final8`: 3 m path legs still left
+  tb2 blocked; timeout.
+- `...-153645.log`: pre-start tb2 readiness failure; interrupted without a
+  task result.
+- `...-154306.log`, `p2b_rally_3r_seed101_final10`, isolated domain 41:
+  PASS, `COMPLETE` 141.8 s, detection 70.4 s, rally 82.4 s, coverage 0.883,
+  path 46.301 m, zero collisions. This validated 1.5 m staged navigation but
+  preceded the final collision-order fix, so it is not a final formal row.
+- `robots3_seed202_20260917-154846.log`: pre-start infrastructure FAIL. The
+  `...-155414.log` attempt with a speculative 90-second launch stagger also
+  failed before tb3 readiness and was interrupted; the stagger was restored
+  to 60 seconds. `...-155940.log`, episode `p2b_rally_3r_seed202_final3`,
+  then PASSed at `COMPLETE` 140.8 s with detection 61.8 s, rally 69.2 s,
+  coverage 0.941, path 50.859 m and zero collisions.
+- `robots3_seed303_20260917-160502.log`, episode
+  `p2b_rally_3r_seed303_final`: post-start 180-second timeout after detection
+  at 89.9 s demonstrated that P1C's coverage-only bound was too short for a
+  late detection plus safe sequential arrival.
+- `...-161100.log`: pre-start tb3 readiness failure during the first
+  300-second attempt; interrupted without a task result.
+- `...-161441.log`, `p2b_rally_3r_seed303_300s_final2`: reached `COMPLETE`
+  at 169.1 s, but correctly FAILed smoke because tb1/tb3 accumulated six
+  contact events over 3.7 s. This result was not accepted.
+- `...-162325.log`, `p2b_rally_3r_seed303_300s_safety`: after adding 0.35 m
+  rally-route clearance, PASS, `COMPLETE` 139.9 s, coverage 0.942, path
+  50.490 m, minimum separation 1.414 m, zero collisions.
+- `robots3_seed101_20260917-162904.log`, episode
+  `p2b_rally_3r_seed101_300s_final`: all completion thresholds passed at
+  159.8 s, but smoke correctly FAILed due to nine contacts (tb2 five, tb3
+  four). The symmetry and route showed a staged robot obstructing the next
+  arrival.
+- `...-163546.log`, `p2b_rally_3r_seed101_300s_clearance45`: testing 0.45 m
+  route clearance produced zero collisions but closed a narrow known passage;
+  post-start `insufficient_rally_poses` at 80.9 s. This alternative was
+  rejected rather than weakening reachability.
+- `...-164154.log`: pre-start infrastructure FAIL with missing Gazebo/task and
+  several robot topics; no task result. It was retried with identical task
+  parameters.
+
+These failures led to the final minimal algorithm: final staging cells retain
+0.45 m obstacle clearance, traversed routes use 0.35 m clearance and 1.5 m
+legs, and the coordinator fills poses on the far side of the target first so a
+parked robot does not block a later approach. Collision logging now records the
+task phase without changing the verdict.
+
+### Final formal episodes
+
+```text
+3r seed101  p2b_rally_3r_seed101_300s_final_ordered_retry1
+  log robots3_seed101_20260917-164825.log
+  PASS COMPLETE=134.5, detect=58.0, rally=58.5, coverage=0.923515,
+  path=46.434 m, min separation=1.210 m, collisions=0
+  final errors tb1/tb2/tb3=0.216/0.237/0.220 m
+
+3r seed202  p2b_rally_3r_seed202_300s_final_ordered
+  log robots3_seed202_20260917-165350.log
+  PASS COMPLETE=171.9, detect=66.5, rally=80.3, coverage=0.946577,
+  path=55.515 m, min separation=1.221 m, collisions=0
+  final errors tb1/tb2/tb3=0.176/0.198/0.200 m
+
+3r seed303  p2b_rally_3r_seed303_300s_final_ordered
+  log robots3_seed303_20260917-165949.log
+  PASS COMPLETE=177.3, detect=111.7, rally=112.1, coverage=0.937864,
+  path=63.551 m, min separation=1.414 m, collisions=0
+  final errors tb1/tb2/tb3=0.221/0.202/0.181 m
+```
+
+All nine final linear speeds were at most 0.00010 m/s. Final angular speeds
+were at most 0.02945 rad/s, below the 0.10 rad/s threshold. Every run held the
+complete condition for five simulated seconds. Thus the final three-seed
+result is 3/3 `COMPLETE` with zero collision events; `FOUND` and coverage were
+not used as success substitutes.
+
+The two-robot cross-check used the same command with `robot-count=2`, seed 303,
+`startup-timeout=300`, and `evaluation-wait-timeout=420`:
+
+```text
+episode p2b_rally_2r_seed303_300s_crosscheck
+log robots2_seed303_20260917-170558.log
+PASS COMPLETE=96.5, detect=38.0, rally=46.0, coverage=0.782104,
+path=21.644 m, min separation=2.025 m, collisions=0,
+final errors tb1/tb2=0.215/0.214 m
+```
+
+The structured JSON/CSV files are in the ignored `log/evaluation/` directory.
+Implementation and evidence details are also summarized in
+`report/20260917_p2b.md`. Final build/test and commit/push evidence follows
+after validation below.
+
+Final validation at the completed P2B worktree state:
+
+```bash
+source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh
+conda activate ns3gym
+export PYTHONNOUSERSITE=1
+source /opt/ros/humble/setup.bash
+cd ros2_ws/ros2-multi-robot-automap
+colcon build --symlink-install \
+  --packages-select multi_robot multi_robot_exploration
+source install/setup.bash
+colcon test --packages-select merge_map multi_robot_exploration multi_robot \
+  --event-handlers console_direct+
+colcon test-result --verbose
+python -m py_compile scripts/ros_smoke_test.py \
+  src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py \
+  src/multi_robot_exploration/multi_robot_exploration/control.py \
+  src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py \
+  src/multi_robot_exploration/multi_robot_exploration/target_detector.py
+```
+
+Build passed. Test result: 36 tests, 0 errors, 0 failures, 2 copyright
+skips; Python byte-compilation and `git diff --check` passed. P2B moves to
+`待用户验收`; P2C was not started. The intentionally unstaged user deletion
+of `report/20260914.md` and untracked `report/20260914_p1a.md` remained
+untouched and are excluded from the P2B commit.

@@ -44,7 +44,11 @@ def launch_setup(context, *args, **kwargs):
     evaluation_stop_on_target = LaunchConfiguration(
         "evaluation_stop_on_target_found"
     )
+    evaluation_stop_on_complete = LaunchConfiguration(
+        "evaluation_stop_on_task_complete"
+    )
     enable_target_detection = LaunchConfiguration("enable_target_detection")
+    enable_rally = LaunchConfiguration("enable_rally")
     target_x = LaunchConfiguration("target_x")
     target_y = LaunchConfiguration("target_y")
     target_max_distance = LaunchConfiguration("target_max_distance_m")
@@ -52,6 +56,17 @@ def launch_setup(context, *args, **kwargs):
     target_confirmation_frames = LaunchConfiguration(
         "target_confirmation_frames"
     )
+    rally_position_tolerance = LaunchConfiguration(
+        "rally_position_tolerance_m"
+    )
+    rally_linear_tolerance = LaunchConfiguration(
+        "rally_linear_tolerance_mps"
+    )
+    rally_angular_tolerance = LaunchConfiguration(
+        "rally_angular_tolerance_radps"
+    )
+    rally_hold_sec = LaunchConfiguration("rally_hold_sec")
+    rally_max_retries = LaunchConfiguration("rally_max_retries")
 
     try:
         robot_count = int(robot_count_cfg.perform(context))
@@ -173,6 +188,12 @@ def launch_setup(context, *args, **kwargs):
                 "auto_save_map": auto_save_map,
                 "use_sim_time": use_sim_time,
                 "goal_timeout_sec": goal_timeout,
+                "enable_rally": enable_rally,
+                "rally_position_tolerance_m": rally_position_tolerance,
+                "rally_linear_tolerance_mps": rally_linear_tolerance,
+                "rally_angular_tolerance_radps": rally_angular_tolerance,
+                "rally_hold_sec": rally_hold_sec,
+                "rally_max_retries": rally_max_retries,
             }
         ],
         output="screen",
@@ -206,6 +227,7 @@ def launch_setup(context, *args, **kwargs):
                 "max_duration_sec": evaluation_duration,
                 "coverage_threshold": evaluation_coverage,
                 "stop_on_target_found": evaluation_stop_on_target,
+                "stop_on_task_complete": evaluation_stop_on_complete,
             }
         ],
         output="screen",
@@ -415,7 +437,7 @@ def launch_setup(context, *args, **kwargs):
     if last_spawn_action is not None:
         staggered_nav = [
             TimerAction(
-                period=10.0 + 45.0 * index,
+                period=10.0 + 60.0 * index,
                 actions=[bringup],
             )
             for index, bringup in enumerate(nav_bringups)
@@ -651,9 +673,25 @@ def generate_launch_description():
 
     ld.add_action(
         DeclareLaunchArgument(
+            "evaluation_stop_on_task_complete",
+            default_value="false",
+            description="End evaluator successfully only after COMPLETE.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
             "enable_target_detection",
             default_value="false",
             description="Spawn and detect the P2 simulation target.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "enable_rally",
+            default_value="false",
+            description="Enable P2B rally after target confirmation.",
         )
     )
 
@@ -690,6 +728,46 @@ def generate_launch_description():
             "target_confirmation_frames",
             default_value="3",
             description="Consecutive visible frames required for FOUND.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "rally_position_tolerance_m",
+            default_value="0.35",
+            description="Maximum final rally position error.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "rally_linear_tolerance_mps",
+            default_value="0.05",
+            description="Maximum final rally linear speed.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "rally_angular_tolerance_radps",
+            default_value="0.10",
+            description="Maximum final rally angular speed.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "rally_hold_sec",
+            default_value="5.0",
+            description="Simulated seconds all robots must remain stable.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "rally_max_retries",
+            default_value="2",
+            description="Retries after an initial failed rally goal.",
         )
     )
 

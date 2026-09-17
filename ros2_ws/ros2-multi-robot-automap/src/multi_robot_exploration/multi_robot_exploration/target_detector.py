@@ -92,14 +92,14 @@ class TargetDetector(Node):
             f"tb{index}" for index in range(1, robot_count + 1)
         ]
         self.streaks = {name: 0 for name in self.robot_names}
-        self.task_state = "EXPLORE"
+        self.observation_state = "EXPLORE"
         self.confirmed = False
 
         state_qos = QoSProfile(depth=1)
         state_qos.durability = DurabilityPolicy.TRANSIENT_LOCAL
         state_qos.reliability = ReliabilityPolicy.RELIABLE
-        self.state_publisher = self.create_publisher(
-            String, "/task_state", state_qos
+        self.observation_publisher = self.create_publisher(
+            String, "/target_observation", state_qos
         )
         self.detection_publisher = self.create_publisher(
             String, "/target_detection", state_qos
@@ -110,15 +110,15 @@ class TargetDetector(Node):
             self._model_states_callback,
             10,
         )
-        self._publish_state("EXPLORE")
+        self._publish_observation("EXPLORE")
 
-    def _publish_state(self, state):
-        if state == self.task_state and state != "EXPLORE":
+    def _publish_observation(self, state):
+        if state == self.observation_state and state != "EXPLORE":
             return
-        self.task_state = state
+        self.observation_state = state
         message = String()
         message.data = state
-        self.state_publisher.publish(message)
+        self.observation_publisher.publish(message)
 
     def _model_states_callback(self, message):
         if self.confirmed or self.target_model not in message.name:
@@ -146,7 +146,7 @@ class TargetDetector(Node):
         )
         if confirmed_robot is not None:
             self.confirmed = True
-            self._publish_state("FOUND")
+            self._publish_observation("FOUND")
             event = String()
             event.data = json.dumps(
                 {
@@ -166,9 +166,9 @@ class TargetDetector(Node):
                 f"Target confirmed by {confirmed_robot} at {target}"
             )
         elif visible:
-            self._publish_state("FOUND_UNCONFIRMED")
-        elif self.task_state == "FOUND_UNCONFIRMED":
-            self._publish_state("EXPLORE")
+            self._publish_observation("FOUND_UNCONFIRMED")
+        elif self.observation_state == "FOUND_UNCONFIRMED":
+            self._publish_observation("EXPLORE")
 
 
 def main(args=None):

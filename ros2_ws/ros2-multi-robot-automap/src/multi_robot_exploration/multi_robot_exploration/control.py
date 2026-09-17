@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import json
 import math
 import os
 import subprocess
@@ -15,9 +16,11 @@ import rclpy
 from rclpy.action import ActionClient
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
+from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
 from scipy import ndimage
 from scipy.sparse import coo_matrix
 from scipy.sparse.csgraph import dijkstra
+from std_msgs.msg import String
 from tf2_msgs.msg import TFMessage
 
 
@@ -38,6 +41,25 @@ PATH_COST_EXPONENT = 1.5
 GOAL_REPLAN_SEC = 3.0
 MIN_REMAINING_GAIN = 200
 MIN_REMAINING_GAIN_FRACTION = 0.2
+RALLY_CLEARANCE_M = 0.45
+RALLY_PATH_CLEARANCE_M = 0.35
+RALLY_MIN_SEPARATION_M = 0.8
+RALLY_PREFERRED_SEPARATION_M = 1.2
+RALLY_POSITION_TOLERANCE_M = 0.35
+RALLY_LINEAR_TOLERANCE_MPS = 0.05
+RALLY_ANGULAR_TOLERANCE_RADPS = 0.10
+RALLY_HOLD_SEC = 5.0
+RALLY_ASSIGNMENT_WAIT_SEC = 10.0
+RALLY_MAX_NAVIGATION_LEG_M = 1.5
+
+TASK_TRANSITIONS = {
+    "EXPLORE": {"FOUND_UNCONFIRMED", "FOUND"},
+    "FOUND_UNCONFIRMED": {"EXPLORE", "FOUND"},
+    "FOUND": {"RALLY", "FAILED"},
+    "RALLY": {"COMPLETE", "FAILED"},
+    "COMPLETE": set(),
+    "FAILED": set(),
+}
 
 
 @dataclass(frozen=True)
@@ -60,6 +82,17 @@ class Assignment:
     utility: float
     navigation_x: float
     navigation_y: float
+
+
+@dataclass(frozen=True)
+class RallyPose:
+    x: float
+    y: float
+    yaw: float
+
+
+def valid_task_transition(current, new):
+    return new == current or new in TASK_TRANSITIONS[current]
 
 
 def grid_to_world(row, column, resolution, origin_x, origin_y):
@@ -567,6 +600,267 @@ def coordinate_assignments(
     return assignments, diagnostics
 
 
+def rally_pose_candidates(raw_grid, resolution, origin, target):
+    """Return known-free, target-facing poses around the target."""
+    safe = traversable_grid(
+        raw_grid, resolution, clearance_m=RALLY_CLEARANCE_M
+    )
+    target_cell = world_to_grid(
+        target[0], target[1], resolution, origin[0], origin[1]
+    )
+    height, width = raw_grid.shape
+    if not (
+        0 <= target_cell[0] < height and 0 <= target_cell[1] < width
+    ):
+        return []
+
+    candidates = []
+    seen_cells = set()
+    for index in range(24):
+        for radius in (1.0, 1.8, 2.6):
+            angle = 2.0 * math.pi * index / 24
+            x = target[0] + radius * math.cos(angle)
+            y = target[1] + radius * math.sin(angle)
+            cell = world_to_grid(
+                x, y, resolution, origin[0], origin[1]
+            )
+            if cell in seen_cells:
+                continue
+            seen_cells.add(cell)
+            row, column = cell
+            if not (
+                0 <= row < height
+                and 0 <= column < width
+                and safe[row, column]
+                and has_known_line_of_sight(raw_grid, cell, target_cell)
+            ):
+                continue
+            pose_x, pose_y = grid_to_world(
+                row, column, resolution, origin[0], origin[1]
+            )
+            candidates.append(
+                RallyPose(
+                    pose_x,
+                    pose_y,
+                    math.atan2(target[1] - pose_y, target[0] - pose_x),
+                )
+            )
+    return candidates
+
+
+def assign_rally_poses(raw_grid, resolution, origin, robot_positions, target):
+    """Minimize total reachable path length with distinct rally poses."""
+    names = sorted(robot_positions)
+    candidates = rally_pose_candidates(
+        raw_grid, resolution, origin, target
+    )
+    if len(candidates) < len(names):
+        return {}
+
+    traversable = traversable_grid(
+        raw_grid, resolution, clearance_m=RALLY_PATH_CLEARANCE_M
+    )
+    options = {}
+    for name in names:
+        position = robot_positions[name]
+        start = world_to_grid(
+            position[0], position[1], resolution, origin[0], origin[1]
+        )
+        start = nearest_traversable(
+            traversable, start, max(1, math.ceil(1.0 / resolution))
+        )
+        distances = path_distance_grid(traversable, start)
+        reachable = []
+        for index, pose in enumerate(candidates):
+            row, column = world_to_grid(
+                pose.x, pose.y, resolution, origin[0], origin[1]
+            )
+            distance = distances[row, column]
+            if np.isfinite(distance):
+                reachable.append((float(distance), index))
+        reachable.sort()
+        if not reachable:
+            return {}
+        options[name] = reachable
+
+    search_order = sorted(names, key=lambda name: len(options[name]))
+    best = {}
+    best_score = (float("inf"), float("inf"))
+
+    def search(assignments, used_indices, separation_penalty, cost):
+        nonlocal best, best_score
+        if (separation_penalty, cost) >= best_score:
+            return
+        if len(assignments) == len(search_order):
+            best = assignments.copy()
+            best_score = (separation_penalty, cost)
+            return
+        name = search_order[len(assignments)]
+        for distance, candidate_index in options[name]:
+            if candidate_index in used_indices:
+                continue
+            pose = candidates[candidate_index]
+            if any(
+                math.dist((pose.x, pose.y), (other.x, other.y))
+                < RALLY_MIN_SEPARATION_M
+                for other in assignments.values()
+            ):
+                continue
+            assignments[name] = pose
+            used_indices.add(candidate_index)
+            added_penalty = sum(
+                max(
+                    0.0,
+                    RALLY_PREFERRED_SEPARATION_M
+                    - math.dist((pose.x, pose.y), (other.x, other.y)),
+                )
+                for other_name, other in assignments.items()
+                if other_name != name
+            )
+            search(
+                assignments,
+                used_indices,
+                separation_penalty + added_penalty,
+                cost + distance,
+            )
+            used_indices.remove(candidate_index)
+            del assignments[name]
+
+    search({}, set(), 0.0, 0.0)
+    if not best:
+        return {}
+    return {name: best[name] for name in names}
+
+
+def rally_survey_pose(raw_grid, resolution, origin, robot_position, target):
+    """Choose a known, reachable pose that moves the detector toward target."""
+    traversable = traversable_grid(
+        raw_grid, resolution, clearance_m=RALLY_PATH_CLEARANCE_M
+    )
+    start = world_to_grid(
+        robot_position[0],
+        robot_position[1],
+        resolution,
+        origin[0],
+        origin[1],
+    )
+    start = nearest_traversable(
+        traversable, start, max(1, math.ceil(1.0 / resolution))
+    )
+    if start is None:
+        return None
+    distances = path_distance_grid(traversable, start)
+    target_cell = world_to_grid(
+        target[0], target[1], resolution, origin[0], origin[1]
+    )
+    height, width = raw_grid.shape
+    if not (
+        0 <= target_cell[0] < height and 0 <= target_cell[1] < width
+    ):
+        return None
+
+    current_distance = math.dist(robot_position, target)
+    candidates = []
+    for row, column in np.argwhere(traversable & np.isfinite(distances)):
+        x, y = grid_to_world(
+            row, column, resolution, origin[0], origin[1]
+        )
+        target_distance = math.dist((x, y), target)
+        if (
+            target_distance < 0.7
+            or target_distance > current_distance - 0.4
+        ):
+            continue
+        candidates.append((target_distance, distances[row, column], x, y))
+    if not candidates:
+        return None
+    _, _, x, y = min(candidates)
+    return RallyPose(x, y, math.atan2(target[1] - y, target[0] - x))
+
+
+def rally_dispatch_order(targets, robot_positions, target):
+    """Fill far-side poses first so parked robots do not block arrivals."""
+    center_x = sum(position[0] for position in robot_positions.values()) / len(
+        robot_positions
+    )
+    center_y = sum(position[1] for position in robot_positions.values()) / len(
+        robot_positions
+    )
+    approach_x = target[0] - center_x
+    approach_y = target[1] - center_y
+    norm = math.hypot(approach_x, approach_y) or 1.0
+    approach_x /= norm
+    approach_y /= norm
+    return sorted(
+        targets,
+        key=lambda name: (
+            -(
+                (targets[name].x - target[0]) * approach_x
+                + (targets[name].y - target[1]) * approach_y
+            ),
+            -math.dist(
+                robot_positions[name],
+                (targets[name].x, targets[name].y),
+            ),
+            name,
+        ),
+    )
+
+
+def stage_rally_leg(pose, raw_grid, resolution, origin, robot_position):
+    """Limit a rally action to one reliable map-path leg."""
+    traversable = traversable_grid(
+        raw_grid, resolution, clearance_m=RALLY_PATH_CLEARANCE_M
+    )
+    start = nearest_traversable(
+        traversable,
+        world_to_grid(
+            robot_position[0],
+            robot_position[1],
+            resolution,
+            origin[0],
+            origin[1],
+        ),
+        max(1, math.ceil(1.0 / resolution)),
+    )
+    target = world_to_grid(
+        pose.x, pose.y, resolution, origin[0], origin[1]
+    )
+    if start is None:
+        return pose
+    waypoint = path_waypoint(
+        traversable,
+        start,
+        target,
+        RALLY_MAX_NAVIGATION_LEG_M / resolution,
+    )
+    if waypoint is None:
+        return pose
+    x, y = grid_to_world(
+        waypoint[0], waypoint[1], resolution, origin[0], origin[1]
+    )
+    return RallyPose(x, y, math.atan2(pose.y - y, pose.x - x))
+
+
+def robots_stable(
+    positions,
+    velocities,
+    targets,
+    position_tolerance=RALLY_POSITION_TOLERANCE_M,
+    linear_tolerance=RALLY_LINEAR_TOLERANCE_MPS,
+    angular_tolerance=RALLY_ANGULAR_TOLERANCE_RADPS,
+):
+    return bool(targets) and all(
+        name in positions
+        and name in velocities
+        and math.dist(positions[name], (target.x, target.y))
+        <= position_tolerance
+        and velocities[name][0] <= linear_tolerance
+        and velocities[name][1] <= angular_tolerance
+        for name, target in targets.items()
+    )
+
+
 class HeadquartersControl(Node):
     def __init__(self):
         super().__init__("headquarters_control")
@@ -580,6 +874,33 @@ class HeadquartersControl(Node):
         self.save_map_interval_sec = self.declare_parameter(
             "save_map_interval_sec", 60.0
         ).value
+        self.enable_rally = self.declare_parameter(
+            "enable_rally", False
+        ).value
+        self.rally_position_tolerance = self.declare_parameter(
+            "rally_position_tolerance_m", RALLY_POSITION_TOLERANCE_M
+        ).value
+        self.rally_linear_tolerance = self.declare_parameter(
+            "rally_linear_tolerance_mps", RALLY_LINEAR_TOLERANCE_MPS
+        ).value
+        self.rally_angular_tolerance = self.declare_parameter(
+            "rally_angular_tolerance_radps", RALLY_ANGULAR_TOLERANCE_RADPS
+        ).value
+        self.rally_hold_sec = self.declare_parameter(
+            "rally_hold_sec", RALLY_HOLD_SEC
+        ).value
+        self.rally_max_retries = self.declare_parameter(
+            "rally_max_retries", 2
+        ).value
+        if (
+            self.num_robots < 1
+            or self.rally_position_tolerance <= 0
+            or self.rally_linear_tolerance < 0
+            or self.rally_angular_tolerance < 0
+            or self.rally_hold_sec <= 0
+            or self.rally_max_retries < 0
+        ):
+            raise ValueError("invalid robot or rally parameters")
 
         self.map_data = None
         self.resolution = None
@@ -593,12 +914,59 @@ class HeadquartersControl(Node):
         self.target_history = []
         self.bad_targets = []
 
+        state_qos = QoSProfile(depth=1)
+        state_qos.durability = DurabilityPolicy.TRANSIENT_LOCAL
+        state_qos.reliability = ReliabilityPolicy.RELIABLE
+        self.task_state_publisher = self.create_publisher(
+            String, "/task_state", state_qos
+        )
+        self.rally_assignment_publisher = self.create_publisher(
+            String, "/rally_assignments", state_qos
+        )
+        self.task_failure_publisher = self.create_publisher(
+            String, "/task_failure", state_qos
+        )
+        self.task_subscriptions = [
+            self.create_subscription(
+                String,
+                "/target_observation",
+                self.target_observation_callback,
+                state_qos,
+            ),
+            self.create_subscription(
+                String,
+                "/target_detection",
+                self.target_detection_callback,
+                state_qos,
+            ),
+        ]
+        self.task_state = "EXPLORE"
+        self.target = None
+        self.detecting_robot = None
+        self.rally_targets = {}
+        self.rally_goal_handles = {}
+        self.rally_goal_pending = {}
+        self.rally_goal_started_at = {}
+        self.rally_attempts = {}
+        self.rally_arrived = {}
+        self.rally_dispatch_order = []
+        self.rally_hold_started_at = None
+        self.rally_prepare_started_at = None
+        self.last_rally_candidate_log = -float("inf")
+        self.last_rally_assignment_attempt = -float("inf")
+        self.survey_goal_handle = None
+        self.survey_goal_pending = False
+        self.survey_goal_started_at = None
+        self.survey_attempts = 0
+        self.survey_complete = False
+
         self.map_sub = self.create_subscription(
             OccupancyGrid, "/merge_map", self.map_callback, 10
         )
         self.robot_positions = {}
         self.map_to_odom = {}
         self.robot_maps = {}
+        self.robot_velocities = {}
         self.robot_states = {}
         self.robot_nav_clients = {}
         self.goal_handles = {}
@@ -617,6 +985,7 @@ class HeadquartersControl(Node):
             self.robot_positions[robot_name] = None
             self.map_to_odom[robot_name] = None
             self.robot_maps[robot_name] = None
+            self.robot_velocities[robot_name] = None
             self.robot_states[robot_name] = "idle"
             self.goal_handles[robot_name] = None
             self.goal_started_at[robot_name] = None
@@ -627,6 +996,11 @@ class HeadquartersControl(Node):
             self.goal_initial_gain[robot_name] = 0
             self.goal_targets[robot_name] = None
             self.cancel_requested[robot_name] = False
+            self.rally_goal_handles[robot_name] = None
+            self.rally_goal_pending[robot_name] = False
+            self.rally_goal_started_at[robot_name] = None
+            self.rally_attempts[robot_name] = 0
+            self.rally_arrived[robot_name] = False
             self.robot_nav_clients[robot_name] = ActionClient(
                 self, NavigateToPose, f"/{robot_name}/navigate_to_pose"
             )
@@ -665,9 +1039,393 @@ class HeadquartersControl(Node):
         self.goal_timeout_timer = self.create_timer(
             1.0, self.cancel_stalled_goals
         )
+        self.mission_timer = self.create_timer(0.2, self.update_mission)
+        self.publish_task_state("EXPLORE", force=True)
         self.get_logger().info(
             "Central cooperative frontier coordinator initialized."
         )
+
+    def publish_task_state(self, state, force=False):
+        if not valid_task_transition(self.task_state, state):
+            self.get_logger().error(
+                f"Invalid task transition {self.task_state} -> {state}"
+            )
+            return False
+        if state == self.task_state and not force:
+            return True
+        self.task_state = state
+        message = String()
+        message.data = state
+        self.task_state_publisher.publish(message)
+        self.get_logger().info(f"Task state: {state}")
+        return True
+
+    def target_observation_callback(self, message):
+        if self.task_state not in ("EXPLORE", "FOUND_UNCONFIRMED"):
+            return
+        if message.data in ("EXPLORE", "FOUND_UNCONFIRMED"):
+            self.publish_task_state(message.data)
+
+    def target_detection_callback(self, message):
+        if self.task_state not in ("EXPLORE", "FOUND_UNCONFIRMED"):
+            return
+        try:
+            event = json.loads(message.data)
+            self.target = (float(event["target_x"]), float(event["target_y"]))
+            self.detecting_robot = str(event["robot"])
+        except (KeyError, TypeError, ValueError, json.JSONDecodeError) as error:
+            self.get_logger().error(f"Invalid target detection: {error}")
+            return
+        self.publish_task_state("FOUND")
+        if not self.enable_rally:
+            return
+        self.rally_prepare_started_at = self.now()
+        self.get_logger().info(
+            f"Preparing rally around target {self.target}."
+        )
+
+    def publish_rally_assignments(self):
+        message = String()
+        message.data = json.dumps(
+            {
+                "target_x": self.target[0],
+                "target_y": self.target[1],
+                "position_tolerance_m": self.rally_position_tolerance,
+                "linear_tolerance_mps": self.rally_linear_tolerance,
+                "angular_tolerance_radps": self.rally_angular_tolerance,
+                "hold_sec": self.rally_hold_sec,
+                "poses": {
+                    name: {"x": pose.x, "y": pose.y, "yaw": pose.yaw}
+                    for name, pose in self.rally_targets.items()
+                },
+            },
+            sort_keys=True,
+        )
+        self.rally_assignment_publisher.publish(message)
+
+    def fail_task(self, reason):
+        if self.task_state in ("COMPLETE", "FAILED"):
+            return
+        message = String()
+        message.data = reason
+        self.task_failure_publisher.publish(message)
+        self.publish_task_state("FAILED")
+        self.get_logger().error(f"Mission failed: {reason}")
+
+    def update_mission(self):
+        if self.task_state == "FOUND" and self.enable_rally:
+            for name, handle in self.goal_handles.items():
+                if handle is not None and not self.cancel_requested[name]:
+                    self.cancel_requested[name] = True
+                    handle.cancel_goal_async()
+            if not all(
+                state == "idle" for state in self.robot_states.values()
+            ):
+                return
+            now = self.now()
+            if (
+                self.survey_goal_handle is not None
+                and self.survey_goal_started_at is not None
+                and now - self.survey_goal_started_at
+                >= self.goal_timeout_sec
+            ):
+                self.survey_goal_started_at = None
+                self.survey_goal_handle.cancel_goal_async()
+            if (
+                self.survey_goal_handle is not None
+                or self.survey_goal_pending
+            ):
+                return
+
+            if not self.rally_targets:
+                if (
+                    self.map_data is None
+                    or self.target is None
+                    or any(
+                        position is None
+                        for position in self.robot_positions.values()
+                    )
+                ):
+                    return
+                if now - self.last_rally_assignment_attempt < 1.0:
+                    return
+                self.last_rally_assignment_attempt = now
+                self.rally_targets = assign_rally_poses(
+                    self.map_data,
+                    self.resolution,
+                    self.origin,
+                    self.robot_positions,
+                    self.target,
+                )
+                if len(self.rally_targets) != self.num_robots:
+                    candidate_count = len(
+                        rally_pose_candidates(
+                            self.map_data,
+                            self.resolution,
+                            self.origin,
+                            self.target,
+                        )
+                    )
+                    if now - self.last_rally_candidate_log >= 2.0:
+                        self.get_logger().warn(
+                            "Waiting for a complete target-area map; "
+                            f"currently {candidate_count} safe candidates."
+                        )
+                        self.last_rally_candidate_log = now
+                    if not self.survey_complete:
+                        survey_pose = rally_survey_pose(
+                            self.map_data,
+                            self.resolution,
+                            self.origin,
+                            self.robot_positions[self.detecting_robot],
+                            self.target,
+                        )
+                        if survey_pose is not None:
+                            self.send_survey_goal(survey_pose)
+                            return
+                    if (
+                        self.rally_prepare_started_at is not None
+                        and now - self.rally_prepare_started_at
+                        < RALLY_ASSIGNMENT_WAIT_SEC
+                    ):
+                        return
+                    self.fail_task("insufficient_rally_poses")
+                    return
+                self.rally_dispatch_order = rally_dispatch_order(
+                    self.rally_targets,
+                    self.robot_positions,
+                    self.target,
+                )
+                self.publish_rally_assignments()
+            self.publish_task_state("RALLY")
+            return
+
+        if self.task_state != "RALLY":
+            return
+        now = self.now()
+        active_name = next(
+            (
+                name
+                for name in self.rally_dispatch_order
+                if not self.rally_arrived[name]
+            ),
+            None,
+        )
+        if active_name is not None:
+            handle = self.rally_goal_handles[active_name]
+            started_at = self.rally_goal_started_at[active_name]
+            if (
+                handle is not None
+                and started_at is not None
+                and now - started_at >= self.goal_timeout_sec
+            ):
+                self.rally_goal_started_at[active_name] = None
+                handle.cancel_goal_async()
+            target = self.rally_targets[active_name]
+            position = self.robot_positions.get(active_name)
+            if (
+                self.rally_arrived[active_name]
+                and position is not None
+                and math.dist(position, (target.x, target.y))
+                > self.rally_position_tolerance
+            ):
+                self.rally_arrived[active_name] = False
+            if (
+                not self.rally_arrived[active_name]
+                and handle is None
+                and not self.rally_goal_pending[active_name]
+            ):
+                self.send_rally_goal(active_name)
+
+        for name, handle in self.rally_goal_handles.items():
+            if name == active_name:
+                continue
+            started_at = self.rally_goal_started_at[name]
+            if (
+                handle is not None
+                and started_at is not None
+                and now - started_at >= self.goal_timeout_sec
+            ):
+                self.rally_goal_started_at[name] = None
+                handle.cancel_goal_async()
+            target = self.rally_targets[name]
+            position = self.robot_positions.get(name)
+            if (
+                self.rally_arrived[name]
+                and position is not None
+                and math.dist(position, (target.x, target.y))
+                > self.rally_position_tolerance
+            ):
+                self.rally_arrived[name] = False
+
+        stable = robots_stable(
+            self.robot_positions,
+            self.robot_velocities,
+            self.rally_targets,
+            self.rally_position_tolerance,
+            self.rally_linear_tolerance,
+            self.rally_angular_tolerance,
+        )
+        if not stable:
+            self.rally_hold_started_at = None
+            return
+        if self.rally_hold_started_at is None:
+            self.rally_hold_started_at = now
+            return
+        if now - self.rally_hold_started_at >= self.rally_hold_sec:
+            self.publish_task_state("COMPLETE")
+
+    def send_survey_goal(self, pose):
+        allowed_attempts = 1 + self.rally_max_retries
+        if self.survey_attempts >= allowed_attempts:
+            self.fail_task(
+                f"rally_survey_failed:{self.detecting_robot}"
+            )
+            return
+        client = self.robot_nav_clients[self.detecting_robot]
+        if not client.server_is_ready():
+            self.survey_attempts += 1
+            return
+        goal = NavigateToPose.Goal()
+        goal.pose = PoseStamped()
+        goal.pose.header.frame_id = "map"
+        goal.pose.header.stamp = self.get_clock().now().to_msg()
+        goal.pose.pose.position.x = pose.x
+        goal.pose.pose.position.y = pose.y
+        goal.pose.pose.orientation.z = math.sin(pose.yaw / 2.0)
+        goal.pose.pose.orientation.w = math.cos(pose.yaw / 2.0)
+        self.survey_attempts += 1
+        self.survey_goal_pending = True
+        future = client.send_goal_async(goal)
+        future.add_done_callback(self.survey_goal_response)
+
+    def survey_goal_response(self, future):
+        self.survey_goal_pending = False
+        try:
+            goal_handle = future.result()
+        except Exception as error:
+            self.get_logger().error(f"Rally survey request failed: {error}")
+            return
+        if goal_handle is None or not goal_handle.accepted:
+            self.get_logger().warn("Rally survey goal was rejected.")
+            return
+        self.survey_goal_handle = goal_handle
+        self.survey_goal_started_at = self.now()
+        result_future = goal_handle.get_result_async()
+        result_future.add_done_callback(
+            lambda result, handle=goal_handle: self.survey_goal_result(
+                handle, result
+            )
+        )
+
+    def survey_goal_result(self, goal_handle, future):
+        if self.survey_goal_handle is not goal_handle:
+            return
+        self.survey_goal_handle = None
+        self.survey_goal_started_at = None
+        try:
+            status = future.result().status
+        except Exception as error:
+            status = f"exception: {error}"
+        if status == GoalStatus.STATUS_SUCCEEDED:
+            self.rally_prepare_started_at = self.now()
+            self.get_logger().info(
+                f"{self.detecting_robot} completed a target-area survey leg."
+            )
+        else:
+            self.get_logger().warn(
+                f"Target-area survey failed with status {status}."
+            )
+
+    def send_rally_goal(self, robot_name):
+        if self.task_state != "RALLY":
+            return
+        allowed_attempts = 1 + self.rally_max_retries
+        if self.rally_attempts[robot_name] >= allowed_attempts:
+            self.fail_task(f"rally_navigation_failed:{robot_name}")
+            return
+        client = self.robot_nav_clients[robot_name]
+        if not client.server_is_ready():
+            self.rally_attempts[robot_name] += 1
+            return
+
+        target = stage_rally_leg(
+            self.rally_targets[robot_name],
+            self.map_data,
+            self.resolution,
+            self.origin,
+            self.robot_positions[robot_name],
+        )
+        self.get_logger().info(
+            f"Sending {robot_name} rally leg to "
+            f"({target.x:.2f}, {target.y:.2f}); final="
+            f"({self.rally_targets[robot_name].x:.2f}, "
+            f"{self.rally_targets[robot_name].y:.2f})."
+        )
+        goal = NavigateToPose.Goal()
+        goal.pose = PoseStamped()
+        goal.pose.header.frame_id = "map"
+        goal.pose.header.stamp = self.get_clock().now().to_msg()
+        goal.pose.pose.position.x = target.x
+        goal.pose.pose.position.y = target.y
+        goal.pose.pose.orientation.z = math.sin(target.yaw / 2.0)
+        goal.pose.pose.orientation.w = math.cos(target.yaw / 2.0)
+        self.rally_goal_pending[robot_name] = True
+        future = client.send_goal_async(goal)
+        future.add_done_callback(
+            lambda result, name=robot_name: self.rally_goal_response(name, result)
+        )
+
+    def rally_goal_response(self, robot_name, future):
+        self.rally_goal_pending[robot_name] = False
+        try:
+            goal_handle = future.result()
+        except Exception as error:
+            self.get_logger().error(
+                f"{robot_name} rally request failed: {error}"
+            )
+            return
+        if goal_handle is None or not goal_handle.accepted:
+            self.get_logger().warn(f"{robot_name} rejected its rally goal.")
+            return
+        self.rally_goal_handles[robot_name] = goal_handle
+        self.rally_goal_started_at[robot_name] = self.now()
+        result_future = goal_handle.get_result_async()
+        result_future.add_done_callback(
+            lambda result, name=robot_name, handle=goal_handle: (
+                self.rally_goal_result(name, handle, result)
+            )
+        )
+
+    def rally_goal_result(self, robot_name, goal_handle, future):
+        if self.rally_goal_handles[robot_name] is not goal_handle:
+            return
+        self.rally_goal_handles[robot_name] = None
+        self.rally_goal_started_at[robot_name] = None
+        try:
+            status = future.result().status
+        except Exception as error:
+            status = f"exception: {error}"
+        success = status == GoalStatus.STATUS_SUCCEEDED
+        target = self.rally_targets[robot_name]
+        position = self.robot_positions.get(robot_name)
+        self.rally_arrived[robot_name] = (
+            success
+            and position is not None
+            and math.dist(position, (target.x, target.y))
+            <= self.rally_position_tolerance
+        )
+        if self.rally_arrived[robot_name]:
+            self.get_logger().info(f"{robot_name} reached its rally pose.")
+        elif success:
+            self.get_logger().info(
+                f"{robot_name} reached an intermediate rally waypoint."
+            )
+        else:
+            self.rally_attempts[robot_name] += 1
+            self.get_logger().warn(
+                f"{robot_name} rally goal failed with status {status}."
+            )
 
     def now(self):
         return self.get_clock().now().nanoseconds / 1e9
@@ -686,6 +1444,11 @@ class HeadquartersControl(Node):
         self.map_known_count = int(np.count_nonzero(self.map_data >= 0))
 
     def robot_odom_callback(self, msg, robot_name):
+        twist = msg.twist.twist
+        self.robot_velocities[robot_name] = (
+            math.hypot(twist.linear.x, twist.linear.y),
+            abs(twist.angular.z),
+        )
         transform = self.map_to_odom[robot_name]
         if transform is None:
             return
@@ -764,6 +1527,8 @@ class HeadquartersControl(Node):
         )
 
     def assign_idle_robots(self):
+        if self.task_state not in ("EXPLORE", "FOUND_UNCONFIRMED"):
+            return
         if self.map_data is None:
             return
         idle_positions = {
@@ -1000,6 +1765,8 @@ class HeadquartersControl(Node):
         self.check_exploration_completion()
 
     def cancel_stalled_goals(self):
+        if self.task_state not in ("EXPLORE", "FOUND_UNCONFIRMED"):
+            return
         now = self.now()
         for robot_name, goal_handle in self.goal_handles.items():
             started_at = self.goal_started_at[robot_name]

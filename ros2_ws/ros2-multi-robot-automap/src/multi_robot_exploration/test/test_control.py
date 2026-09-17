@@ -120,3 +120,152 @@ def test_path_waypoint_limits_navigation_leg():
         0,
         4,
     )
+
+
+def test_rally_assigns_distinct_safe_target_facing_poses():
+    grid = np.zeros((70, 70), dtype=int)
+    grid[[0, -1], :] = 100
+    grid[:, [0, -1]] = 100
+    target = (3.5, 3.5)
+    positions = {
+        "tb1": (1.0, 1.0),
+        "tb2": (6.0, 1.0),
+        "tb3": (3.5, 6.0),
+    }
+
+    assignments = control.assign_rally_poses(
+        grid, 0.1, (0.0, 0.0), positions, target
+    )
+
+    assert set(assignments) == set(positions)
+    poses = list(assignments.values())
+    assert all(
+        math.dist((first.x, first.y), (second.x, second.y))
+        >= control.RALLY_MIN_SEPARATION_M
+        for index, first in enumerate(poses)
+        for second in poses[index + 1:]
+    )
+    for pose in poses:
+        expected_yaw = math.atan2(target[1] - pose.y, target[0] - pose.x)
+        assert pose.yaw == pytest.approx(expected_yaw)
+
+
+def test_rally_rejects_blocked_target_area():
+    grid = np.full((30, 30), 100, dtype=int)
+    grid[15, 15] = 0
+
+    assert not control.assign_rally_poses(
+        grid,
+        0.1,
+        (0.0, 0.0),
+        {"tb1": (1.55, 1.55)},
+        (1.55, 1.55),
+    )
+
+
+def test_rally_supports_a_narrow_known_approach_fan():
+    grid = np.full((80, 80), -1, dtype=int)
+    grid[10:52, 34:47] = 0
+    target = (4.0, 5.0)
+    positions = {
+        "tb1": (3.7, 1.5),
+        "tb2": (4.0, 2.0),
+        "tb3": (4.3, 2.5),
+    }
+
+    assignments = control.assign_rally_poses(
+        grid, 0.1, (0.0, 0.0), positions, target
+    )
+
+    assert set(assignments) == set(positions)
+    assert max(
+        math.dist((pose.x, pose.y), target)
+        for pose in assignments.values()
+    ) > 2.0
+
+
+def test_rally_survey_moves_detector_toward_target_on_known_space():
+    grid = np.full((80, 80), -1, dtype=int)
+    grid[10:55, 34:47] = 0
+    target = (4.0, 5.0)
+    robot = (4.0, 1.5)
+
+    pose = control.rally_survey_pose(
+        grid, 0.1, (0.0, 0.0), robot, target
+    )
+
+    assert pose is not None
+    assert math.dist((pose.x, pose.y), target) < math.dist(robot, target) - 0.4
+
+
+def test_rally_dispatches_far_side_first_to_avoid_blocking_arrivals():
+    targets = {
+        "tb1": control.RallyPose(0.0, 2.6, 0.0),
+        "tb2": control.RallyPose(0.0, 1.0, 0.0),
+        "tb3": control.RallyPose(1.0, 0.0, 0.0),
+    }
+    positions = {
+        "tb1": (0.0, 0.0),
+        "tb2": (5.0, 5.0),
+        "tb3": (1.1, 0.0),
+    }
+
+    order = control.rally_dispatch_order(targets, positions, (0.0, 0.0))
+
+    assert order == ["tb2", "tb3", "tb1"]
+
+
+def test_rally_dispatches_deep_pose_before_near_side_pose():
+    targets = {
+        "tb1": control.RallyPose(-4.0, 1.4, 0.0),
+        "tb2": control.RallyPose(-4.0, 3.0, 0.0),
+        "tb3": control.RallyPose(-5.0, 3.75, 0.0),
+    }
+    positions = {
+        "tb1": (-3.5, 3.0),
+        "tb2": (3.0, 3.5),
+        "tb3": (-2.0, 1.7),
+    }
+
+    order = control.rally_dispatch_order(targets, positions, (-4.0, 4.0))
+
+    assert order.index("tb3") < order.index("tb2")
+
+
+def test_rally_navigation_stages_long_paths():
+    grid = np.zeros((20, 130), dtype=int)
+    pose = control.RallyPose(11.0, 1.0, 0.0)
+
+    leg = control.stage_rally_leg(
+        pose, grid, 0.1, (0.0, 0.0), (1.0, 1.0)
+    )
+
+    assert 1.3 <= math.dist((1.0, 1.0), (leg.x, leg.y)) <= 1.6
+    assert math.dist((leg.x, leg.y), (pose.x, pose.y)) > 8.3
+
+
+def test_rally_stability_checks_pose_and_both_speeds():
+    targets = {"tb1": control.RallyPose(1.0, 2.0, 0.0)}
+    positions = {"tb1": (1.2, 2.0)}
+
+    assert control.robots_stable(
+        positions, {"tb1": (0.04, 0.09)}, targets
+    )
+    assert not control.robots_stable(
+        positions, {"tb1": (0.06, 0.09)}, targets
+    )
+    assert not control.robots_stable(
+        positions, {"tb1": (0.04, 0.11)}, targets
+    )
+    assert not control.robots_stable(
+        {"tb1": (1.4, 2.0)}, {"tb1": (0.0, 0.0)}, targets
+    )
+
+
+def test_task_state_transitions_do_not_skip_or_reopen_terminal_states():
+    assert control.valid_task_transition("EXPLORE", "FOUND_UNCONFIRMED")
+    assert control.valid_task_transition("FOUND_UNCONFIRMED", "FOUND")
+    assert control.valid_task_transition("FOUND", "RALLY")
+    assert control.valid_task_transition("RALLY", "COMPLETE")
+    assert not control.valid_task_transition("EXPLORE", "RALLY")
+    assert not control.valid_task_transition("COMPLETE", "EXPLORE")

@@ -129,6 +129,7 @@ def wait_for_evaluation(
     coverage_threshold=0.0,
     target_detection=False,
     expect_target_found=True,
+    rally=False,
 ):
     deadline = time.monotonic() + timeout
     log_offset = 0
@@ -156,6 +157,14 @@ def wait_for_evaluation(
                 "target_field_of_view_deg",
                 "target_max_distance_m",
                 "time_to_detect_sec",
+                "time_to_rally_sec",
+                "completion_time_sec",
+                "rally_assignments",
+                "rally_position_tolerance_m",
+                "rally_linear_tolerance_mps",
+                "rally_angular_tolerance_radps",
+                "rally_hold_sec",
+                "rally_min_separation_m",
                 "time_to_75_coverage_sec",
             }
             missing = required - result.keys()
@@ -181,6 +190,7 @@ def wait_for_evaluation(
             successful_reason = result["termination_reason"] in (
                 "coverage_reached",
                 "target_found",
+                "task_complete",
             )
             if result["success"] != successful_reason:
                 raise RuntimeError("evaluation success state is inconsistent")
@@ -191,10 +201,8 @@ def wait_for_evaluation(
             ):
                 raise RuntimeError("evaluation completed below its threshold")
             if target_detection:
-                target_found = (
-                    result["termination_reason"] == "target_found"
-                    and result["target_found"]
-                    and result["time_to_detect_sec"] is not None
+                target_found = result["target_found"] and (
+                    result["time_to_detect_sec"] is not None
                     and result["target_confirmation_frames"] >= 1
                 )
                 if target_found != expect_target_found:
@@ -206,6 +214,36 @@ def wait_for_evaluation(
                     or result["success"]
                 ):
                     raise RuntimeError("negative detection episode did not timeout")
+            if rally:
+                if (
+                    result["termination_reason"] != "task_complete"
+                    or result["task_phase"] != "COMPLETE"
+                    or result["time_to_rally_sec"] is None
+                    or result["completion_time_sec"] is None
+                    or len(result["rally_assignments"])
+                    != len(result["robots"])
+                    or (
+                        len(result["robots"]) > 1
+                        and (
+                            result["rally_min_separation_m"] is None
+                            or result["rally_min_separation_m"] < 0.8
+                        )
+                    )
+                    or result["collision_events"] != 0
+                ):
+                    raise RuntimeError("rally task did not complete safely")
+                for robot in result["robots"].values():
+                    if (
+                        robot["rally_final_error_m"]
+                        > result["rally_position_tolerance_m"]
+                        or robot["final_linear_speed_mps"]
+                        > result["rally_linear_tolerance_mps"]
+                        or robot["final_angular_speed_radps"]
+                        > result["rally_angular_tolerance_radps"]
+                    ):
+                        raise RuntimeError(
+                            "robot did not satisfy final rally tolerances"
+                        )
             return result
         if process.poll() is not None:
             raise RuntimeError(
@@ -267,6 +305,12 @@ def parse_args():
     parser.add_argument("--target-max-distance", type=float, default=3.0)
     parser.add_argument("--target-field-of-view", type=float, default=90.0)
     parser.add_argument("--target-confirmation-frames", type=int, default=3)
+    parser.add_argument("--rally", action="store_true")
+    parser.add_argument("--rally-position-tolerance", type=float, default=0.35)
+    parser.add_argument("--rally-linear-tolerance", type=float, default=0.05)
+    parser.add_argument("--rally-angular-tolerance", type=float, default=0.10)
+    parser.add_argument("--rally-hold", type=float, default=5.0)
+    parser.add_argument("--rally-max-retries", type=int, default=2)
     parser.add_argument("--evaluation-wait-timeout", type=float, default=180.0)
     parser.add_argument("--episode-id")
     parser.add_argument(
@@ -292,6 +336,10 @@ def main():
         raise SystemExit("--target-detection requires --evaluation-duration")
     if args.expect_target_not_found and not args.target_detection:
         raise SystemExit("--expect-target-not-found requires --target-detection")
+    if args.rally and not args.target_detection:
+        raise SystemExit("--rally requires --target-detection")
+    if args.rally and args.expect_target_not_found:
+        raise SystemExit("--rally cannot expect an invisible target")
 
     package = run_ros(["pkg", "prefix", "multi_robot"], timeout=10)
     if package.returncode != 0:
@@ -330,12 +378,20 @@ def main():
         f"evaluation_duration_sec:={args.evaluation_duration}",
         f"evaluation_coverage_threshold:={args.coverage_threshold}",
         f"enable_target_detection:={str(args.target_detection).lower()}",
-        f"evaluation_stop_on_target_found:={str(args.target_detection).lower()}",
+        f"enable_rally:={str(args.rally).lower()}",
+        "evaluation_stop_on_target_found:="
+        f"{str(args.target_detection and not args.rally).lower()}",
+        f"evaluation_stop_on_task_complete:={str(args.rally).lower()}",
         f"target_x:={args.target_x}",
         f"target_y:={args.target_y}",
         f"target_max_distance_m:={args.target_max_distance}",
         f"target_field_of_view_deg:={args.target_field_of_view}",
         f"target_confirmation_frames:={args.target_confirmation_frames}",
+        f"rally_position_tolerance_m:={args.rally_position_tolerance}",
+        f"rally_linear_tolerance_mps:={args.rally_linear_tolerance}",
+        f"rally_angular_tolerance_radps:={args.rally_angular_tolerance}",
+        f"rally_hold_sec:={args.rally_hold}",
+        f"rally_max_retries:={args.rally_max_retries}",
     ]
 
     print("Command:", " ".join(command), flush=True)
@@ -391,6 +447,7 @@ def main():
                     args.coverage_threshold,
                     args.target_detection,
                     not args.expect_target_not_found,
+                    args.rally,
                 )
                 print(
                     "Evaluation result:",
@@ -399,6 +456,8 @@ def main():
                     f"path={result['total_path_length_m']:.3f}m",
                     f"termination={result['termination_reason']}",
                     f"detection={result['time_to_detect_sec']}",
+                    f"rally={result['time_to_rally_sec']}",
+                    f"completion={result['completion_time_sec']}",
                     flush=True,
                 )
             time.sleep(args.dwell_seconds)

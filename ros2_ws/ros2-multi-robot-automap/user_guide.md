@@ -116,11 +116,18 @@ multi_robot_exploration/control
 | `evaluation_duration_sec` | `0.0` | 仿真超时；0 表示只在 shutdown 时保存 |
 | `evaluation_coverage_threshold` | `0.0` | 正确自由空间覆盖率成功阈值；0 表示仅按超时结束，当前 P1C 正式口径传 0.90 |
 | `evaluation_stop_on_target_found` | `false` | P2A 验证时是否在目标确认后立即结束评估 |
+| `evaluation_stop_on_task_complete` | `false` | P2B 验证时是否在 `COMPLETE`/`FAILED` 后结束评估 |
 | `enable_target_detection` | `false` | 是否生成搜索目标并启动 P2A 真值检测节点 |
+| `enable_rally` | `false` | 是否由协调器在确认目标后停止探索并执行 P2B 集合 |
 | `target_x`, `target_y` | `-4.0`, `4.0` | 搜索目标在 world 坐标系中的位置 |
 | `target_max_distance_m` | `3.0` | 检测最大距离 |
 | `target_field_of_view_deg` | `90.0` | 水平检测视场角 |
 | `target_confirmation_frames` | `3` | 确认目标所需的连续可见帧数 |
+| `rally_position_tolerance_m` | `0.35` | `COMPLETE` 的单机器人平面误差上限 |
+| `rally_linear_tolerance_mps` | `0.05` | `COMPLETE` 的线速度上限 |
+| `rally_angular_tolerance_radps` | `0.10` | `COMPLETE` 的角速度上限 |
+| `rally_hold_sec` | `5.0` | 全体同时满足误差和速度门槛的连续保持时间 |
+| `rally_max_retries` | `2` | 每台集合导航失败后的最大重试次数 |
 | `exploration_goal_timeout_sec` | `60.0` | 单个 Nav2 目标的最大仿真秒数 |
 
 也就是说，常用命令里 `enable_rviz:=false` 不会关闭全局地图 RViz，只会关闭每机器人 RViz。
@@ -190,13 +197,14 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
 启用 P2A 后，独立的 `target_detector` 还订阅 `/gazebo/model_states`，发布：
 
 ```text
-/task_state
+/target_observation
 /target_detection
 ```
 
-它不发布导航目标，也不修改 `headquarters_control`。`/task_state` 依次可能为
-`EXPLORE`、`FOUND_UNCONFIRMED`、`FOUND`；`/target_detection` 只在确认后发布一次，包含
-发现机器人、目标 world 坐标和本次检测参数。
+它不发布导航目标。`/target_observation` 依次可能为 `EXPLORE`、
+`FOUND_UNCONFIRMED`、`FOUND`；`/target_detection` 只在确认后发布一次，包含发现机器人、
+目标 world 坐标和本次检测参数。`headquarters_control` 是 `/task_state` 的唯一发布者；启用
+P2B 后还发布 `/rally_assignments` 和 `/task_failure`。
 
 并向每台机器人发送 Nav2 action：
 
@@ -526,9 +534,34 @@ python3 scripts/ros_smoke_test.py \
 
 seeds 101/202/303 的目标确认时间为 60.7/72.9/61.5 仿真秒，均由 `tb1` 发现，碰撞和
 搜索重叠均为 0。目标置于 `(100, 100)` 的 10 秒负例没有发布确认，结果保持
-`target_found=false`、`task_phase=EXPLORE`。P2A 只完成检测与确认；收到目标后停止探索、
-分配不同集合位姿并稳定 5 秒属于 P2B，当前尚未实现。完整证据见
-`report/20260917_p2a.md`。P2A 已通过用户验收。
+`target_found=false`、`task_phase=EXPLORE`。完整证据见 `report/20260917_p2a.md`。P2A 已通过
+用户验收；检测器在 P2B 中降为观测/事件生产者，权威任务状态由协调器发布。
+
+### 9.2 P2B 集合状态机验证
+
+启用 `--rally` 后，确认目标会使协调器取消全部活动探索目标，从当前已知自由地图生成不同、
+可达并朝向目标的集合位姿。最终位姿要求至少 0.45 m 障碍净空和 0.8 m 相互间距；集合导航
+使用 0.35 m 路径净空、最长 1.5 m 分段目标，并先填充目标背侧位置，防止已停机器人挡住
+后来者。只有所有机器人位置误差不超过 0.35 m、线速度不超过 0.05 m/s、角速度不超过
+0.10 rad/s 并连续保持 5 个仿真秒，协调器才发布 `COMPLETE`。
+
+正式命令模板：
+
+```bash
+python3 scripts/ros_smoke_test.py \
+  --world my_world.world --robot-count 3 --gazebo-seed 101 \
+  --startup-timeout 360 --message-timeout 90 --shutdown-timeout 60 \
+  --evaluation-duration 300 --coverage-threshold 0 \
+  --evaluation-wait-timeout 480 --target-detection --rally \
+  --target-x -4 --target-y 4 --target-max-distance 3 \
+  --target-field-of-view 90 --target-confirmation-frames 3 \
+  --episode-id p2b_rally_3r_seed101
+```
+
+最终 3 机器人 seeds 101/202/303 分别在 134.5/171.9/177.3 仿真秒进入 `COMPLETE`，
+三轮均零碰撞，集合点最小间距为 1.210/1.221/1.414 m，最大最终位置误差 0.237 m。
+2 机器人 seed 303 交叉验证在 96.5 秒完成，零碰撞。完整逐机器人速度、失败演进和原始
+episode 标识见 `report/20260917_p2b.md`。P2B 当前等待用户验收；P2C 尚未开始。
 
 以下命令适合运行中的人工诊断：
 
@@ -705,10 +738,9 @@ server 下行：/tbN/navigate_to_pose 或 /tbN/cmd_vel
 评估器可以继续读取 Gazebo 真值，但不得向控制链发布。`ideal/unlimited` baseline 同样经过
 gateway，只把交付设为零丢包和零附加时延，不能恢复旧直连。
 
-在 P3 之前先按 `IMPLEMENTATION_PLAN.md` 完成：
+在 P3 之前继续按 `IMPLEMENTATION_PLAN.md` 完成：
 
 ```text
-P2B 集合状态机
 P2C 电池/返航/充电
 P2D 跨 world/目标/能量场景的完整理想通信任务基线
 ```

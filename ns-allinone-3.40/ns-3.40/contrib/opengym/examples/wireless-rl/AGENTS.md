@@ -1,10 +1,10 @@
 # wireless-rl Codex Memory
 
 Last verified against source, local 1/2/3-robot headless smoke tests, P1B
-evaluator tests, final P1C batches, three-world P1C generalization, and P2A
-target-detection episodes and the pre-P2B roadmap audit: 2026-09-17. The user
-accepted P1C and P2A. P2B has not started; use the revised staged contract in
-`IMPLEMENTATION_PLAN.md` before implementation.
+evaluator tests, final P1C batches, three-world P1C generalization, P2A
+target-detection episodes, the roadmap audit, and P2B rally episodes:
+2026-09-17. The user accepted P1C and P2A. P2B is implemented and awaiting
+user acceptance; do not start P2C before that decision.
 
 This directory is the active project inside the larger ns-3 workspace. It is a
 toy ns3-gym scheduling MDP, not a full Wi-Fi/5G network simulation.
@@ -36,7 +36,8 @@ Use current code as the source of truth. Read in this order:
    `report/20260917_p1c_generalization.md` for the final P1C evidence.
 9. `report/20260917_p2a.md` for the P2A detector contract and evidence.
 10. `report/20260917_roadmap_audit.md` for the revised gates and metric rules.
-11. `report/20260902.md`, `report/20260429.md`, and `log.md` for historical
+11. `report/20260917_p2b.md` for the P2B state-machine contract and evidence.
+12. `report/20260902.md`, `report/20260429.md`, and `log.md` for historical
    experiment context.
 
 The accepted P1A ROS foundation now has explicit Gazebo seeds, configurable spawn
@@ -68,8 +69,7 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
 
 ## Current Handoff Snapshot
 
-- Active boundary: P2A is accepted; P2B is `待开始`. The roadmap audit is
-  complete, but P2B implementation was deliberately not started in that audit.
+- Active boundary: P2A is accepted; P2B is `待用户验收`. P2C has not started.
 - From P2B onward, only `COMPLETE` is mission success. The fixed first rally
   contract is per-robot position error <=0.35 m, linear speed <=0.05 m/s,
   angular speed <=0.10 rad/s, all robots continuously stable for 5 simulated
@@ -89,12 +89,17 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
   The default contract is 3.0 m range, 90-degree horizontal field of view,
   static truth-grid line of sight, and three consecutive visible frames.
   Invisible frames reset the per-robot confirmation streak.
-- The detector publishes transient `/task_state` and `/target_detection`.
-  It does not change exploration or initiate rally; those transitions remain
-  P2B work. Three-robot seeds 101/202/303 detected the target at (-4, 4) in
-  60.7/72.9/61.5 seconds with zero collisions. A target at (100, 100) did not
-  trigger in the 10-second negative episode. Details are in
-  `report/20260917_p2a.md`.
+- The detector now publishes transient `/target_observation` and
+  `/target_detection`; the coordinator is the sole `/task_state` publisher.
+  On confirmed detection it cancels exploration, assigns distinct known-free
+  target-facing poses, stages approaches, and requires the fixed 5-second
+  stability window before `COMPLETE`.
+- Final P2B three-robot seeds 101/202/303 completed in
+  134.5/171.9/177.3 simulated seconds with zero collisions and minimum assigned
+  separation 1.210/1.221/1.414 m. Maximum final pose error was 0.237 m. The
+  two-robot seed-303 cross-check completed in 96.5 seconds with zero collisions.
+  Full-task timeout is 300 simulated seconds; details and retained failures are
+  in `report/20260917_p2b.md` and `log.md`.
 - Final P1C evidence uses seeds 101/202/303, 90% correct-free coverage, and an
   unchanged 180-second hard limit. Two-robot time-to-90 is
   98.9/79.6/104.4 seconds; three-robot time-to-90 is 78.3/69.8/69.5 seconds.

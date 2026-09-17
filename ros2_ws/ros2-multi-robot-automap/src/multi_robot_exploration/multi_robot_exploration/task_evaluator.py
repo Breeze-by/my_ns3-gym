@@ -247,6 +247,9 @@ class TaskEvaluator(Node):
         self.stop_on_target_found = self.declare_parameter(
             "stop_on_target_found", False
         ).value
+        self.stop_on_task_complete = self.declare_parameter(
+            "stop_on_task_complete", False
+        ).value
 
         if self.robot_count < 1:
             raise ValueError("robot_count must be positive")
@@ -259,6 +262,7 @@ class TaskEvaluator(Node):
             f"tb{index}" for index in range(1, self.robot_count + 1)
         ]
         self.positions = {}
+        self.velocities = {}
         self.start_positions = {}
         self.previous_positions = {}
         self.path_lengths = {name: 0.0 for name in self.robot_names}
@@ -291,6 +295,15 @@ class TaskEvaluator(Node):
         self.target_confirmation_frames = None
         self.target_max_distance = None
         self.target_field_of_view = None
+        self.time_to_rally = None
+        self.completion_time = None
+        self.rally_assignments = {}
+        self.rally_position_tolerance = None
+        self.rally_linear_tolerance = None
+        self.rally_angular_tolerance = None
+        self.rally_hold_sec = None
+        self.task_failure_reason = ""
+        self.failure_pending_since = None
         self.finalized = False
 
         map_qos = QoSProfile(depth=1)
@@ -313,6 +326,18 @@ class TaskEvaluator(Node):
                 String,
                 "/target_detection",
                 self._target_detection_callback,
+                map_qos,
+            ),
+            self.create_subscription(
+                String,
+                "/rally_assignments",
+                self._rally_assignments_callback,
+                map_qos,
+            ),
+            self.create_subscription(
+                String,
+                "/task_failure",
+                self._task_failure_callback,
                 map_qos,
             ),
         ]
@@ -356,8 +381,14 @@ class TaskEvaluator(Node):
         self.model_state_message_count += 1
         for name in self.robot_names:
             if name in message.name:
-                pose = message.pose[message.name.index(name)]
+                index = message.name.index(name)
+                pose = message.pose[index]
                 self.positions[name] = (pose.position.x, pose.position.y)
+                twist = message.twist[index]
+                self.velocities[name] = (
+                    math.hypot(twist.linear.x, twist.linear.y),
+                    abs(twist.angular.z),
+                )
 
         now = self._now()
         if self.start_sim_time is None:
@@ -420,6 +451,32 @@ class TaskEvaluator(Node):
 
     def _task_state_callback(self, message):
         self.task_phase = message.data
+        if self.start_sim_time is None:
+            return
+        elapsed = max(0.0, self._now() - self.start_sim_time)
+        if message.data == "RALLY" and self.time_to_rally is None:
+            self.time_to_rally = elapsed
+        elif message.data == "COMPLETE" and self.completion_time is None:
+            self.completion_time = elapsed
+            if self.stop_on_task_complete:
+                self.finalize("task_complete")
+                rclpy.shutdown()
+        elif message.data == "FAILED" and self.stop_on_task_complete:
+            self.failure_pending_since = self._now()
+
+    def _rally_assignments_callback(self, message):
+        event = json.loads(message.data)
+        self.rally_assignments = event["poses"]
+        self.rally_position_tolerance = event["position_tolerance_m"]
+        self.rally_linear_tolerance = event["linear_tolerance_mps"]
+        self.rally_angular_tolerance = event["angular_tolerance_radps"]
+        self.rally_hold_sec = event["hold_sec"]
+
+    def _task_failure_callback(self, message):
+        self.task_failure_reason = message.data
+        if self.task_phase == "FAILED" and self.stop_on_task_complete:
+            self.finalize("mission_failed")
+            rclpy.shutdown()
 
     def _target_detection_callback(self, message):
         if self.target_found:
@@ -454,11 +511,21 @@ class TaskEvaluator(Node):
         ):
             self.collision_events[robot] += 1
             self.collision_last_event[robot] = now
+            self.get_logger().warning(
+                f"Collision event for {robot} during {self.task_phase}."
+            )
         self.collision_active[robot] = active
         self.collision_last_time[robot] = now
 
     def _timer_callback(self):
         if self.start_sim_time is None:
+            return
+        if (
+            self.failure_pending_since is not None
+            and self._now() - self.failure_pending_since >= 0.5
+        ):
+            self.finalize("mission_failed")
+            rclpy.shutdown()
             return
         coverage = self._map_metrics().get("correct_free_coverage_ratio", 0.0)
         if self.coverage_threshold > 0 and coverage >= self.coverage_threshold:
@@ -524,6 +591,13 @@ class TaskEvaluator(Node):
         for name in self.robot_names:
             start = self.start_positions.get(name, (None, None))
             end = self.positions.get(name, (None, None))
+            velocity = self.velocities.get(name, (None, None))
+            rally_target = self.rally_assignments.get(name, {})
+            rally_error = None
+            if end[0] is not None and "x" in rally_target:
+                rally_error = math.dist(
+                    end, (rally_target["x"], rally_target["y"])
+                )
             robots[name] = {
                 "start_x": start[0],
                 "start_y": start[1],
@@ -539,11 +613,30 @@ class TaskEvaluator(Node):
                 "collision_events": self.collision_events[name],
                 "collision_duration_sec": self.collision_duration[name],
                 "collision_message_count": self.collision_messages[name],
+                "final_linear_speed_mps": velocity[0],
+                "final_angular_speed_radps": velocity[1],
+                "rally_target_x": rally_target.get("x"),
+                "rally_target_y": rally_target.get("y"),
+                "rally_target_yaw": rally_target.get("yaw"),
+                "rally_final_error_m": rally_error,
             }
 
-        success = termination_reason in ("coverage_reached", "target_found")
+        success = termination_reason in (
+            "coverage_reached",
+            "target_found",
+            "task_complete",
+        )
+        rally_poses = list(self.rally_assignments.values())
+        rally_separations = [
+            math.dist(
+                (first["x"], first["y"]),
+                (second["x"], second["y"]),
+            )
+            for index, first in enumerate(rally_poses)
+            for second in rally_poses[index + 1:]
+        ]
         result = {
-            "schema_version": 3,
+            "schema_version": 4,
             "episode_id": self.episode_id,
             "world_file": self.world_file,
             "gazebo_seed": self.gazebo_seed,
@@ -555,7 +648,11 @@ class TaskEvaluator(Node):
             ),
             "success": success,
             "termination_reason": termination_reason,
-            "failure_reason": "" if success else termination_reason,
+            "failure_reason": (
+                ""
+                if success
+                else self.task_failure_reason or termination_reason
+            ),
             "coverage_threshold": self.coverage_threshold,
             "target_found": self.target_found,
             "time_to_detect_sec": self.time_to_detect,
@@ -565,6 +662,16 @@ class TaskEvaluator(Node):
             "target_confirmation_frames": self.target_confirmation_frames,
             "target_max_distance_m": self.target_max_distance,
             "target_field_of_view_deg": self.target_field_of_view,
+            "time_to_rally_sec": self.time_to_rally,
+            "completion_time_sec": self.completion_time,
+            "rally_assignments": self.rally_assignments,
+            "rally_position_tolerance_m": self.rally_position_tolerance,
+            "rally_linear_tolerance_mps": self.rally_linear_tolerance,
+            "rally_angular_tolerance_radps": self.rally_angular_tolerance,
+            "rally_hold_sec": self.rally_hold_sec,
+            "rally_min_separation_m": (
+                min(rally_separations) if rally_separations else None
+            ),
             "time_to_75_coverage_sec": self.coverage_times[0.75],
             "time_to_80_coverage_sec": self.coverage_times[0.8],
             "time_to_90_coverage_sec": self.coverage_times[0.9],
