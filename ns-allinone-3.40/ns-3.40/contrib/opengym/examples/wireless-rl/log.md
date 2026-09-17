@@ -1484,7 +1484,7 @@ required robot receives a distinct known-free target-facing staging pose, and
 simulated seconds. This remains ideal same-host ROS communication; no gateway,
 network, battery, or P2C work was added.
 
-All runs used the evolving uncommitted P2B worktree based on `7563681`, the
+All runs used the evolving uncommitted P2B worktree based on `828ec62`, the
 `ns3gym` conda environment with `PYTHONNOUSERSITE=1`, ROS 2 Humble, Gazebo's
 setup, the repository `install/setup.bash`, and `TURTLEBOT3_MODEL=waffle`.
 After stale ROS-domain state was found during early debugging, later runs used
