@@ -43,14 +43,17 @@ the source of experimental claims.
 
 ## Current Handoff
 
-As of 2026-09-17, the user has accepted P1C. P2A target detection and
-confirmation is implemented and waiting for user acceptance. The simulation
-MVP requires range, horizontal field of view, static-world line of sight, and
-three consecutive visible frames before publishing `FOUND`; it does not alter
-exploration or start rally behavior. Three-robot seeds 101/202/303 detected the
-target in 60.7/72.9/61.5 simulated seconds with zero collisions, while an
-out-of-range negative episode did not trigger. Do not begin P2B until the user
-accepts P2A.
+As of 2026-09-17, the user has accepted P1C and P2A. A roadmap/acceptance audit
+was completed before P2B; P2B implementation has not started. The revised plan
+adds the previously missing P2D full ideal-task integration gate, splits ns-3
+time/packet coupling from Wi-Fi calibration, and fixes formal run/statistical
+rules. From P2B onward only `COMPLETE` is mission success; `FOUND` and 90%
+coverage are process metrics. Before P3 exits, all central map/pose/detection
+and Nav2 direct paths, plus robot Nav2's direct `/merge_map` subscription, must
+be replaced by the same gateway path used by every baseline, including ideal.
+Follow the revised checkpoint table in
+`IMPLEMENTATION_PLAN.md` and do not skip directly from component tests to
+network/RL work.
 
 The detailed metrics, validation commands, known limitations, and intentionally
 uncommitted user report files are recorded in the nested `wireless-rl/AGENTS.md`.

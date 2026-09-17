@@ -2,8 +2,9 @@
 
 Last verified against source, local 1/2/3-robot headless smoke tests, P1B
 evaluator tests, final P1C batches, three-world P1C generalization, and P2A
-target-detection episodes: 2026-09-17. The user accepted P1C. P2A is
-implemented and waiting for user acceptance; do not begin P2B before that.
+target-detection episodes and the pre-P2B roadmap audit: 2026-09-17. The user
+accepted P1C and P2A. P2B has not started; use the revised staged contract in
+`IMPLEMENTATION_PLAN.md` before implementation.
 
 This directory is the active project inside the larger ns-3 workspace. It is a
 toy ns3-gym scheduling MDP, not a full Wi-Fi/5G network simulation.
@@ -34,7 +35,8 @@ Use current code as the source of truth. Read in this order:
 8. `report/20260917_p1c_optimization.md` and
    `report/20260917_p1c_generalization.md` for the final P1C evidence.
 9. `report/20260917_p2a.md` for the P2A detector contract and evidence.
-10. `report/20260902.md`, `report/20260429.md`, and `log.md` for historical
+10. `report/20260917_roadmap_audit.md` for the revised gates and metric rules.
+11. `report/20260902.md`, `report/20260429.md`, and `log.md` for historical
    experiment context.
 
 The accepted P1A ROS foundation now has explicit Gazebo seeds, configurable spawn
@@ -66,7 +68,23 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
 
 ## Current Handoff Snapshot
 
-- Active boundary: P2A is `待用户验收`; do not start P2B.
+- Active boundary: P2A is accepted; P2B is `待开始`. The roadmap audit is
+  complete, but P2B implementation was deliberately not started in that audit.
+- From P2B onward, only `COMPLETE` is mission success. The fixed first rally
+  contract is per-robot position error <=0.35 m, linear speed <=0.05 m/s,
+  angular speed <=0.10 rad/s, all robots continuously stable for 5 simulated
+  seconds. `FOUND` and P1C's 90% coverage are process metrics.
+- P2D is now a required integration gate after battery work: at least three
+  prevalidated world/target/energy scenarios on seeds 101/202/303 establish the
+  full ideal task baseline before any communication impairment.
+- P3A must remove the current central direct subscriptions to robot maps,
+  odom/TF and raw detection plus direct Nav2 action calls. Even the ideal
+  baseline must traverse the same gateway/received-state/local-adapter path.
+  Robot Nav2 global costmaps also currently consume `/merge_map` directly;
+  that fused-map downlink must traverse the gateway or be removed.
+- Formal runs distinguish retained pre-start infrastructure failures from
+  post-start task failures; post-start failures cannot be replaced by reruns.
+  P7 requires at least 20 paired held-out episodes for primary comparisons.
 - P2A adds a visual-only `search_target` marker and an independent detector.
   The default contract is 3.0 m range, 90-degree horizontal field of view,
   static truth-grid line of sight, and three consecutive visible frames.
