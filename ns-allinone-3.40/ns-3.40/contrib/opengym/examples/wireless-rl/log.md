@@ -1749,3 +1749,68 @@ python -m py_compile scripts/ros_smoke_test.py \
 Build and byte-compilation passed. Test result: 37 tests, 0 errors, 0
 failures, 2 copyright skips. `git diff --check`, staging preview, commit, and
 push are recorded by the repository history for this session.
+
+## 2026-09-17 P2B detecting-robot-first rally fix
+
+Purpose: fix the user-observed behavior where the robot that confirmed the
+target could remain stationary while other robots rallied. Code state started
+from commit `5c7ab7f` plus the focused dispatch-order change; P2C was not
+started.
+
+The retained change keeps the collision-safe sequential rally but puts the
+detecting robot first. The focused unit test and package build commands were:
+
+```bash
+source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh
+conda activate ns3gym
+export PYTHONNOUSERSITE=1
+source /opt/ros/humble/setup.bash
+cd ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+pytest -q src/multi_robot_exploration/test/test_control.py
+colcon build --symlink-install --packages-select multi_robot_exploration
+```
+
+Both passed. The headless Gazebo verification used `ROS_DOMAIN_ID=73`:
+
+```bash
+python scripts/ros_smoke_test.py \
+  --world my_world.world --robot-count 2 --gazebo-seed 303 \
+  --startup-timeout 300 --message-timeout 90 --shutdown-timeout 60 \
+  --evaluation-duration 300 --coverage-threshold 0 \
+  --evaluation-wait-timeout 420 --target-detection --rally \
+  --target-x -4 --target-y 4 --target-max-distance 3 \
+  --target-field-of-view 90 --target-confirmation-frames 3 \
+  --episode-id p2b_detector_first_2r_seed303
+```
+
+Result: PASS. tb1 confirmed the target at 65.1 simulated seconds, immediately
+received the first rally goal, and reached its assigned pose about 5.2 seconds
+later; only then was tb2 dispatched. The episode reached `COMPLETE=117.9 s`,
+with final correct-free coverage 0.8413, total path 34.523 m, assigned
+separation 1.600 m, final errors tb1/tb2 0.215/0.206 m, and zero collision
+events or duration. Launch log:
+`ros2_ws/ros2-multi-robot-automap/log/smoke/robots2_seed303_20260917-195237.log`.
+Structured result: `p2b_detector_first_2r_seed303.json` (ignored evaluation
+output). Conclusion: the root cause was rally dispatch ordering, not target
+detection, map fusion, or Nav2; detector-first serial dispatch fixes the
+visible behavior without reintroducing the collisions seen under parallel
+rally.
+
+Final validation at the retained worktree state:
+
+```bash
+colcon test --packages-select merge_map multi_robot_exploration multi_robot \
+  --event-handlers console_direct+
+colcon test-result --verbose
+python -m py_compile scripts/ros_smoke_test.py \
+  src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py \
+  src/multi_robot_exploration/multi_robot_exploration/control.py \
+  src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py \
+  src/multi_robot_exploration/multi_robot_exploration/target_detector.py
+```
+
+Result: 38 tests, 0 errors, 0 failures, 2 copyright skips; byte-compilation
+and `git diff --check` passed. The pre-existing user deletion of
+`report/20260914.md` and untracked `report/20260914_p1a.md` remain excluded
+from this change.

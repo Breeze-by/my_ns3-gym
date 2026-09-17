@@ -232,6 +232,20 @@ def test_rally_dispatches_deep_pose_before_near_side_pose():
     assert order.index("tb3") < order.index("tb2")
 
 
+def test_rally_dispatches_detecting_robot_first():
+    targets = {
+        "tb1": control.RallyPose(-4.0, 3.0, 0.0),
+        "tb2": control.RallyPose(-5.0, 3.75, 0.0),
+    }
+    positions = {"tb1": (-3.5, 3.0), "tb2": (3.0, 3.5)}
+
+    order = control.rally_dispatch_order(
+        targets, positions, (-4.0, 4.0), priority_robot="tb1"
+    )
+
+    assert order[0] == "tb1"
+
+
 def test_rally_navigation_stages_long_paths():
     grid = np.zeros((20, 130), dtype=int)
     pose = control.RallyPose(11.0, 1.0, 0.0)

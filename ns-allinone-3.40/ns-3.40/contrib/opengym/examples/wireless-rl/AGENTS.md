@@ -93,8 +93,9 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
 - The detector now publishes transient `/target_observation` and
   `/target_detection`; the coordinator is the sole `/task_state` publisher.
   On confirmed detection it cancels exploration, assigns distinct known-free
-  target-facing poses, stages approaches, and requires the fixed 5-second
-  stability window before `COMPLETE`.
+  target-facing poses, dispatches the detecting robot first, stages the
+  remaining approaches, and requires the fixed 5-second stability window
+  before `COMPLETE`.
 - Final P2B three-robot seeds 101/202/303 completed in
   134.5/171.9/177.3 simulated seconds with zero collisions and minimum assigned
   separation 1.210/1.221/1.414 m. Maximum final pose error was 0.237 m. The
@@ -108,6 +109,10 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
   intended stop-on-found behavior. Failed rally actions now retry shorter legs;
   unsafe parallel rally and an over-eager progress watchdog were tested and
   reverted. See `report/20260917_p2b_audit.md`.
+- A user-observed rally ordering defect was fixed without enabling unsafe
+  parallel motion: the detecting robot now receives the first rally action.
+  A two-robot seed-303 check completed at 117.9 seconds with zero collisions;
+  tb1 detected at 65.1 seconds and reached its rally pose before tb2 was sent.
 - Final P1C evidence uses seeds 101/202/303, 90% correct-free coverage, and an
   unchanged 180-second hard limit. Two-robot time-to-90 is
   98.9/79.6/104.4 seconds; three-robot time-to-90 is 78.3/69.8/69.5 seconds.

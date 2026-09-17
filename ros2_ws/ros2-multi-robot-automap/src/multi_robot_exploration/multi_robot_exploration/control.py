@@ -778,8 +778,10 @@ def rally_survey_pose(raw_grid, resolution, origin, robot_position, target):
     return RallyPose(x, y, math.atan2(target[1] - y, target[0] - x))
 
 
-def rally_dispatch_order(targets, robot_positions, target):
-    """Fill far-side poses first so parked robots do not block arrivals."""
+def rally_dispatch_order(
+    targets, robot_positions, target, priority_robot=None
+):
+    """Move the detector first, then fill far-side poses safely."""
     center_x = sum(position[0] for position in robot_positions.values()) / len(
         robot_positions
     )
@@ -794,6 +796,7 @@ def rally_dispatch_order(targets, robot_positions, target):
     return sorted(
         targets,
         key=lambda name: (
+            name != priority_robot,
             -(
                 (targets[name].x - target[0]) * approach_x
                 + (targets[name].y - target[1]) * approach_y
@@ -1202,6 +1205,7 @@ class HeadquartersControl(Node):
                     self.rally_targets,
                     self.robot_positions,
                     self.target,
+                    self.detecting_robot,
                 )
                 self.publish_rally_assignments()
             self.publish_task_state("RALLY")
