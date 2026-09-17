@@ -44,7 +44,7 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
   enable_merge_rviz:=false \
   auto_save_map:=false \
   gazebo_seed:=101 \
-  nav2_ready_timeout_sec:=360 \
+  nav2_ready_timeout_sec:=360.0 \
   enable_target_detection:=true \
   enable_rally:=true \
   target_x:=-4.0 \
@@ -184,7 +184,8 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
 | `exploration_goal_timeout_sec` | `60.0` | 单个探索/集合 action 的仿真秒上限 |
 
 Gazebo GUI 和全局 RViz 建议二选一。三机器人冷启动时可把
-`nav2_ready_timeout_sec` 设置为 `360`，它只是失败上限，不是固定等待时间。
+`nav2_ready_timeout_sec` 设置为 `360.0`，它只是失败上限，不是固定等待时间。该 launch
+参数必须写成浮点数；例如 `360` 会被 ROS 解析为整数并导致 Nav2 就绪门控启动失败。
 
 ### 目标检测与集结
 
