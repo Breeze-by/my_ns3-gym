@@ -1814,3 +1814,78 @@ Result: 38 tests, 0 errors, 0 failures, 2 copyright skips; byte-compilation
 and `git diff --check` passed. The pre-existing user deletion of
 `report/20260914.md` and untracked `report/20260914_p1a.md` remain excluded
 from this change.
+
+## 2026-09-17 P2B conflict-aware concurrent rally
+
+Purpose: replace the user-rejected whole-mission serial rally with coordination
+that uses the merged map and live robot positions. Work started from commit
+`46e8124`; P2C was not started. All runs used the `ns3gym` environment,
+`PYTHONNOUSERSITE=1`, ROS 2 Humble, repository install, Gazebo setup, and a
+fresh `ROS_DOMAIN_ID`.
+
+The common three-robot command was:
+
+```bash
+python scripts/ros_smoke_test.py \
+  --world my_world.world --robot-count 3 --gazebo-seed <101|202|303> \
+  --startup-timeout 360 --message-timeout 90 --shutdown-timeout 60 \
+  --evaluation-duration 300 --coverage-threshold 0 \
+  --evaluation-wait-timeout 480 --target-detection --rally \
+  --target-x -4 --target-y 4 --target-max-distance 3 \
+  --target-field-of-view 90 --target-confirmation-frames 3 \
+  --episode-id <episode>
+```
+
+Attempts, including rejected versions and infrastructure failure:
+
+- `p2b_conflict_aware_3r_seed303_v1`, domain 74, launch log
+  `robots3_seed303_20260917-201149.log`: pre-start infrastructure FAIL after
+  Nav2 readiness timeout; `/task_state`, multiple collision topics, and robot
+  telemetry topics were missing. No task episode was evaluated.
+- `p2b_conflict_aware_3r_seed303_v1_retry1`, domain 75, launch log
+  `robots3_seed303_20260917-201819.log`: the initial 0.8 m reservation version
+  allowed three concurrent legs and passed at `COMPLETE=132.7 s`,
+  `RALLY=46.9 s`, with zero collisions.
+- `p2b_conflict_aware_3r_seed101_v1`, domain 76, launch log
+  `robots3_seed101_20260917-202358.log`: authoritative FAIL despite reaching
+  `COMPLETE=223.9 s`; tb2/tb3 accumulated 18 collision events over 16.7
+  simulated seconds. The unrestricted three-way version was rejected.
+- Final v2 raises route separation to 1.2 m, permits at most two concurrent
+  Nav2 actions, and cancels the lower-priority short leg if live positions
+  converge. Coordinator-requested yielding does not consume failure retries.
+
+Final retained-algorithm results:
+
+| Episode | Domain / log | Detection / RALLY / COMPLETE | Rally phase | Coverage | Path | Max error | Separation | Collisions |
+|---|---|---|---:|---:|---:|---:|---:|---:|
+| `p2b_conflict_aware_3r_seed101_v2` | 77 / `robots3_seed101_20260917-203228.log` | 63.6 / 73.4 / 131.0 s | 57.6 s | 0.9320 | 51.413 m | 0.271 m | 1.208 m | 0 |
+| `p2b_conflict_aware_3r_seed202_v2` | 78 / `robots3_seed202_20260917-203753.log` | 80.7 / 81.2 / 139.2 s | 58.0 s | 0.9403 | 52.183 m | 0.227 m | 1.250 m | 0 |
+| `p2b_conflict_aware_3r_seed303_v2` | 79 / `robots3_seed303_20260917-204335.log` | 61.5 / 76.8 / 146.2 s | 69.4 s | 0.9462 | 56.797 m | 0.302 m | 1.259 m | 0 |
+
+All three entered `COMPLETE`, met the unchanged pose/speed/hold criteria, and
+had zero collision events and duration. The formal serial runs' rally phases
+were 76.0/91.6/65.2 seconds (mean 77.6); retained conflict-aware concurrency
+used 57.6/58.0/69.4 seconds (mean 61.7), a 20.5% mean reduction. Seed 303 was
+4.2 seconds slower than its formal serial counterpart, so the evidence supports
+an average improvement rather than universal per-run speedup. Logs show two
+robots receiving legs in the same scheduling window and only conflicting legs
+waiting; this is no longer whole-mission serial dispatch.
+
+Final retained-code validation:
+
+```bash
+colcon build --symlink-install \
+  --packages-select multi_robot merge_map multi_robot_exploration
+colcon test --packages-select merge_map multi_robot_exploration multi_robot \
+  --event-handlers console_direct+
+colcon test-result --verbose
+python -m py_compile scripts/ros_smoke_test.py \
+  src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py \
+  src/multi_robot_exploration/multi_robot_exploration/control.py \
+  src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py \
+  src/multi_robot_exploration/multi_robot_exploration/target_detector.py
+```
+
+Build and byte-compilation passed. Test result: 42 tests, 0 errors, 0
+failures, 2 copyright skips. The intentionally unstaged user deletion of
+`report/20260914.md` and untracked `report/20260914_p1a.md` remain untouched.

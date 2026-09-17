@@ -257,6 +257,12 @@ def test_rally_navigation_stages_long_paths():
     assert 1.3 <= math.dist((1.0, 1.0), (leg.x, leg.y)) <= 1.6
     assert math.dist((leg.x, leg.y), (pose.x, pose.y)) > 8.3
 
+    planned_leg, route = control.plan_rally_leg(
+        pose, grid, 0.1, (0.0, 0.0), (1.0, 1.0)
+    )
+    assert planned_leg == leg
+    assert route[-1] == pytest.approx((leg.x, leg.y))
+
     retry_leg = control.stage_rally_leg(
         pose,
         grid,
@@ -266,6 +272,49 @@ def test_rally_navigation_stages_long_paths():
         max_distance_m=0.75,
     )
     assert 0.6 <= math.dist((1.0, 1.0), (retry_leg.x, retry_leg.y)) <= 0.8
+
+
+def test_rally_selects_disjoint_routes_in_parallel():
+    routes = {
+        "tb1": ((0.0, 0.0), (1.0, 0.0)),
+        "tb2": ((0.0, 2.0), (1.0, 2.0)),
+    }
+
+    assert control.select_nonconflicting_routes(
+        routes, ["tb1", "tb2"]
+    ) == ["tb1", "tb2"]
+
+
+def test_rally_limits_parallel_navigation_capacity():
+    routes = {
+        "tb1": ((0.0, 0.0), (1.0, 0.0)),
+        "tb2": ((0.0, 2.0), (1.0, 2.0)),
+        "tb3": ((0.0, 4.0), (1.0, 4.0)),
+    }
+
+    assert control.select_nonconflicting_routes(
+        routes, ["tb1", "tb2", "tb3"], max_count=2
+    ) == ["tb1", "tb2"]
+
+
+def test_rally_yields_only_the_conflicting_route():
+    routes = {
+        "tb1": ((0.0, 0.0), (1.0, 0.0)),
+        "tb2": ((0.5, -1.0), (0.5, 1.0)),
+        "tb3": ((0.0, 2.0), (1.0, 2.0)),
+    }
+
+    assert control.select_nonconflicting_routes(
+        routes, ["tb1", "tb2", "tb3"]
+    ) == ["tb1", "tb3"]
+
+
+def test_rally_yields_lower_priority_robot_if_positions_converge():
+    positions = {"tb1": (0.0, 0.0), "tb2": (0.9, 0.0)}
+
+    assert control.robots_that_must_yield(
+        positions, ["tb1", "tb2"], ["tb1", "tb2"]
+    ) == {"tb2"}
 
 
 def test_rally_stability_checks_pose_and_both_speeds():

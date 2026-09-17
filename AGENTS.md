@@ -43,17 +43,18 @@ the source of experimental claims.
 
 ## Current Handoff
 
-As of 2026-09-17, the user has accepted P1C and P2A. A roadmap/acceptance audit
-was completed before P2B; P2B implementation has not started. The revised plan
-adds the previously missing P2D full ideal-task integration gate, splits ns-3
-time/packet coupling from Wi-Fi calibration, and fixes formal run/statistical
-rules. From P2B onward only `COMPLETE` is mission success; `FOUND` and 90%
-coverage are process metrics. Before P3 exits, all central map/pose/detection
-and Nav2 direct paths, plus robot Nav2's direct `/merge_map` subscription, must
-be replaced by the same gateway path used by every baseline, including ideal.
-Follow the revised checkpoint table in
-`IMPLEMENTATION_PLAN.md` and do not skip directly from component tests to
-network/RL work.
+As of 2026-09-17, the user has accepted P1C and P2A. P2B is implemented and
+awaiting user acceptance; its rally uses conflict-aware short-path reservations
+for up to two concurrent robots and has passed seeds 101/202/303 with zero
+collisions. P2C has not started. The revised plan adds the previously missing
+P2D full ideal-task integration gate, splits ns-3 time/packet coupling from
+Wi-Fi calibration, and fixes formal run/statistical rules. From P2B onward only
+`COMPLETE` is mission success; `FOUND` and 90% coverage are process metrics.
+Before P3 exits, all central map/pose/detection and Nav2 direct paths, plus robot
+Nav2's direct `/merge_map` subscription, must be replaced by the same gateway
+path used by every baseline, including ideal. Follow the revised checkpoint
+table in `IMPLEMENTATION_PLAN.md` and do not skip directly from component tests
+to network/RL work.
 
 The detailed metrics, validation commands, known limitations, and intentionally
 uncommitted user report files are recorded in the nested `wireless-rl/AGENTS.md`.

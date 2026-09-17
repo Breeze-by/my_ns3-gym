@@ -51,6 +51,8 @@ RALLY_ANGULAR_TOLERANCE_RADPS = 0.10
 RALLY_HOLD_SEC = 5.0
 RALLY_ASSIGNMENT_WAIT_SEC = 10.0
 RALLY_MAX_NAVIGATION_LEG_M = 1.5
+RALLY_ROUTE_SEPARATION_M = 1.2
+RALLY_MAX_CONCURRENT = 2
 
 TASK_TRANSITIONS = {
     "EXPLORE": {"FOUND_UNCONFIRMED", "FOUND"},
@@ -397,21 +399,38 @@ def path_distance_grid(traversable, start, return_predecessors=False):
     return result.reshape(height, width)
 
 
-def path_waypoint(traversable, start, target, max_distance_cells):
-    """Return the farthest path cell within one reliable navigation leg."""
+def path_waypoint_route(traversable, start, target, max_distance_cells):
+    """Return a limited waypoint and its shortest grid path from start."""
     distances, predecessors = path_distance_grid(
         traversable, start, return_predecessors=True
     )
     if not np.isfinite(distances[target]):
-        return None
+        return None, ()
     width = traversable.shape[1]
     current = target[0] * width + target[1]
     while distances.flat[current] > max_distance_cells:
         predecessor = int(predecessors.flat[current])
         if predecessor < 0 or predecessor == current:
-            return None
+            return None, ()
         current = predecessor
-    return divmod(current, width)
+    waypoint = divmod(current, width)
+    route = []
+    start_id = start[0] * width + start[1]
+    while current != start_id:
+        route.append(divmod(current, width))
+        current = int(predecessors.flat[current])
+        if current < 0:
+            return None, ()
+    route.append(start)
+    route.reverse()
+    return waypoint, tuple(route)
+
+
+def path_waypoint(traversable, start, target, max_distance_cells):
+    """Return the farthest path cell within one reliable navigation leg."""
+    return path_waypoint_route(
+        traversable, start, target, max_distance_cells
+    )[0]
 
 
 def stage_navigation_leg(
@@ -819,6 +838,25 @@ def stage_rally_leg(
     max_distance_m=RALLY_MAX_NAVIGATION_LEG_M,
 ):
     """Limit a rally action to one reliable map-path leg."""
+    return plan_rally_leg(
+        pose,
+        raw_grid,
+        resolution,
+        origin,
+        robot_position,
+        max_distance_m,
+    )[0]
+
+
+def plan_rally_leg(
+    pose,
+    raw_grid,
+    resolution,
+    origin,
+    robot_position,
+    max_distance_m=RALLY_MAX_NAVIGATION_LEG_M,
+):
+    """Return a staged rally pose and the map path reserved for it."""
     traversable = traversable_grid(
         raw_grid, resolution, clearance_m=RALLY_PATH_CLEARANCE_M
     )
@@ -837,19 +875,75 @@ def stage_rally_leg(
         pose.x, pose.y, resolution, origin[0], origin[1]
     )
     if start is None:
-        return pose
-    waypoint = path_waypoint(
+        return pose, (robot_position, (pose.x, pose.y))
+    waypoint, route = path_waypoint_route(
         traversable,
         start,
         target,
         max_distance_m / resolution,
     )
     if waypoint is None:
-        return pose
+        return pose, (robot_position, (pose.x, pose.y))
     x, y = grid_to_world(
         waypoint[0], waypoint[1], resolution, origin[0], origin[1]
     )
-    return RallyPose(x, y, math.atan2(pose.y - y, pose.x - x))
+    world_route = tuple(
+        grid_to_world(row, column, resolution, origin[0], origin[1])
+        for row, column in route
+    )
+    return (
+        RallyPose(x, y, math.atan2(pose.y - y, pose.x - x)),
+        world_route,
+    )
+
+
+def routes_conflict(
+    first, second, min_separation=RALLY_ROUTE_SEPARATION_M
+):
+    return any(
+        math.dist(first_point, second_point) < min_separation
+        for first_point in first
+        for second_point in second
+    )
+
+
+def select_nonconflicting_routes(
+    routes, order, reserved_routes=(), max_count=None
+):
+    """Greedily reserve every route that is safe to run concurrently."""
+    selected = []
+    reservations = list(reserved_routes)
+    for name in order:
+        if max_count is not None and len(selected) >= max_count:
+            break
+        route = routes.get(name)
+        if route is None or any(
+            routes_conflict(route, reserved) for reserved in reservations
+        ):
+            continue
+        selected.append(name)
+        reservations.append(route)
+    return selected
+
+
+def robots_that_must_yield(
+    positions,
+    active_names,
+    priority_order,
+    min_separation=RALLY_ROUTE_SEPARATION_M,
+):
+    """Return lower-priority moving robots that became too close."""
+    priority = {name: index for index, name in enumerate(priority_order)}
+    yielding = set()
+    names = [name for name in active_names if positions.get(name) is not None]
+    for index, first in enumerate(names):
+        for second in names[index + 1:]:
+            if math.dist(positions[first], positions[second]) >= min_separation:
+                continue
+            yielding.add(
+                first if priority[first] > priority[second] else second
+            )
+    return yielding
 
 
 def robots_stable(
@@ -957,11 +1051,14 @@ class HeadquartersControl(Node):
         self.rally_goal_handles = {}
         self.rally_goal_pending = {}
         self.rally_goal_started_at = {}
+        self.rally_leg_routes = {}
+        self.rally_yield_requested = {}
         self.rally_attempts = {}
         self.rally_arrived = {}
         self.rally_dispatch_order = []
         self.rally_hold_started_at = None
         self.rally_prepare_started_at = None
+        self.last_rally_dispatch_at = -float("inf")
         self.last_rally_candidate_log = -float("inf")
         self.last_rally_assignment_attempt = -float("inf")
         self.survey_goal_handle = None
@@ -1009,6 +1106,8 @@ class HeadquartersControl(Node):
             self.rally_goal_handles[robot_name] = None
             self.rally_goal_pending[robot_name] = False
             self.rally_goal_started_at[robot_name] = None
+            self.rally_leg_routes[robot_name] = ()
+            self.rally_yield_requested[robot_name] = False
             self.rally_attempts[robot_name] = 0
             self.rally_arrived[robot_name] = False
             self.robot_nav_clients[robot_name] = ActionClient(
@@ -1214,52 +1313,33 @@ class HeadquartersControl(Node):
         if self.task_state != "RALLY":
             return
         now = self.now()
-        active_name = next(
-            (
-                name
-                for name in self.rally_dispatch_order
-                if not self.rally_arrived[name]
-            ),
-            None,
-        )
-        if active_name is not None:
-            handle = self.rally_goal_handles[active_name]
-            started_at = self.rally_goal_started_at[active_name]
-            if (
-                handle is not None
-                and started_at is not None
-                and now - started_at >= self.goal_timeout_sec
-            ):
-                self.get_logger().warn(
-                    f"Canceling {active_name} rally leg after timeout."
-                )
-                self.rally_goal_started_at[active_name] = None
-                handle.cancel_goal_async()
-            target = self.rally_targets[active_name]
-            position = self.robot_positions.get(active_name)
-            if (
-                self.rally_arrived[active_name]
-                and position is not None
-                and math.dist(position, (target.x, target.y))
-                > self.rally_position_tolerance
-            ):
-                self.rally_arrived[active_name] = False
-            if (
-                not self.rally_arrived[active_name]
-                and handle is None
-                and not self.rally_goal_pending[active_name]
-            ):
-                self.send_rally_goal(active_name)
+        active_names = [
+            name
+            for name in self.rally_dispatch_order
+            if self.rally_goal_handles[name] is not None
+            and not self.rally_yield_requested[name]
+        ]
+        for name in robots_that_must_yield(
+            self.robot_positions,
+            active_names,
+            self.rally_dispatch_order,
+        ):
+            self.rally_yield_requested[name] = True
+            self.get_logger().info(
+                f"Yielding {name} to a higher-priority nearby robot."
+            )
+            self.rally_goal_handles[name].cancel_goal_async()
 
         for name, handle in self.rally_goal_handles.items():
-            if name == active_name:
-                continue
             started_at = self.rally_goal_started_at[name]
             if (
                 handle is not None
                 and started_at is not None
                 and now - started_at >= self.goal_timeout_sec
             ):
+                self.get_logger().warn(
+                    f"Canceling {name} rally leg after timeout."
+                )
                 self.rally_goal_started_at[name] = None
                 handle.cancel_goal_async()
             target = self.rally_targets[name]
@@ -1271,6 +1351,46 @@ class HeadquartersControl(Node):
                 > self.rally_position_tolerance
             ):
                 self.rally_arrived[name] = False
+
+        if now - self.last_rally_dispatch_at >= 1.0:
+            self.last_rally_dispatch_at = now
+            plans = {}
+            for name in self.rally_dispatch_order:
+                if (
+                    self.rally_arrived[name]
+                    or self.rally_goal_handles[name] is not None
+                    or self.rally_goal_pending[name]
+                    or self.robot_positions[name] is None
+                ):
+                    continue
+                plans[name] = plan_rally_leg(
+                    self.rally_targets[name],
+                    self.map_data,
+                    self.resolution,
+                    self.origin,
+                    self.robot_positions[name],
+                    RALLY_MAX_NAVIGATION_LEG_M
+                    / (self.rally_attempts[name] + 1),
+                )
+            routes = {name: plan[1] for name, plan in plans.items()}
+            reserved_routes = [
+                self.rally_leg_routes[name]
+                for name in self.rally_dispatch_order
+                if (
+                    self.rally_goal_handles[name] is not None
+                    or self.rally_goal_pending[name]
+                )
+                and self.rally_leg_routes[name]
+            ]
+            for name in select_nonconflicting_routes(
+                routes,
+                self.rally_dispatch_order,
+                reserved_routes,
+                max_count=max(
+                    0, RALLY_MAX_CONCURRENT - len(reserved_routes)
+                ),
+            ):
+                self.send_rally_goal(name, plans[name])
 
         stable = robots_stable(
             self.robot_positions,
@@ -1351,7 +1471,7 @@ class HeadquartersControl(Node):
                 f"Target-area survey failed with status {status}."
             )
 
-    def send_rally_goal(self, robot_name):
+    def send_rally_goal(self, robot_name, plan=None):
         if self.task_state != "RALLY":
             return
         allowed_attempts = 1 + self.rally_max_retries
@@ -1363,15 +1483,17 @@ class HeadquartersControl(Node):
             self.rally_attempts[robot_name] += 1
             return
 
-        target = stage_rally_leg(
-            self.rally_targets[robot_name],
-            self.map_data,
-            self.resolution,
-            self.origin,
-            self.robot_positions[robot_name],
-            RALLY_MAX_NAVIGATION_LEG_M
-            / (self.rally_attempts[robot_name] + 1),
-        )
+        if plan is None:
+            plan = plan_rally_leg(
+                self.rally_targets[robot_name],
+                self.map_data,
+                self.resolution,
+                self.origin,
+                self.robot_positions[robot_name],
+                RALLY_MAX_NAVIGATION_LEG_M
+                / (self.rally_attempts[robot_name] + 1),
+            )
+        target, route = plan
         self.get_logger().info(
             f"Sending {robot_name} rally leg to "
             f"({target.x:.2f}, {target.y:.2f}); final="
@@ -1386,6 +1508,7 @@ class HeadquartersControl(Node):
         goal.pose.pose.position.y = target.y
         goal.pose.pose.orientation.z = math.sin(target.yaw / 2.0)
         goal.pose.pose.orientation.w = math.cos(target.yaw / 2.0)
+        self.rally_leg_routes[robot_name] = route
         self.rally_goal_pending[robot_name] = True
         future = client.send_goal_async(goal)
         future.add_done_callback(
@@ -1397,11 +1520,13 @@ class HeadquartersControl(Node):
         try:
             goal_handle = future.result()
         except Exception as error:
+            self.rally_leg_routes[robot_name] = ()
             self.get_logger().error(
                 f"{robot_name} rally request failed: {error}"
             )
             return
         if goal_handle is None or not goal_handle.accepted:
+            self.rally_leg_routes[robot_name] = ()
             self.get_logger().warn(f"{robot_name} rejected its rally goal.")
             return
         self.rally_goal_handles[robot_name] = goal_handle
@@ -1418,6 +1543,9 @@ class HeadquartersControl(Node):
             return
         self.rally_goal_handles[robot_name] = None
         self.rally_goal_started_at[robot_name] = None
+        self.rally_leg_routes[robot_name] = ()
+        yielded = self.rally_yield_requested[robot_name]
+        self.rally_yield_requested[robot_name] = False
         try:
             status = future.result().status
         except Exception as error:
@@ -1436,6 +1564,10 @@ class HeadquartersControl(Node):
         elif success:
             self.get_logger().info(
                 f"{robot_name} reached an intermediate rally waypoint."
+            )
+        elif yielded:
+            self.get_logger().info(
+                f"{robot_name} stopped to yield; replanning next leg."
             )
         else:
             self.rally_attempts[robot_name] += 1
