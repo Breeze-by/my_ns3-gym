@@ -1325,3 +1325,147 @@ Implementation, maps, tests, experiment evidence, and handoff documentation
 were committed as `7e4ad68` (`p1c: validate exploration across maps`) and
 pushed to `origin/main` in this session. The intentionally unstaged user report
 changes remained untouched.
+
+## 2026-09-17 P2A target detection and confirmation
+
+Purpose: after the user accepted P1C, implement only P2A's deterministic
+simulation target detector. The contract was fixed before the formal runs:
+visual-only target at `(-4, 4)`, 3.0 m maximum range, 90-degree horizontal
+field of view, static truth-grid line of sight, and three consecutive visible
+frames. Target detection does not alter exploration or initiate P2B rally.
+
+All simulator commands ran from `ros2_ws/ros2-multi-robot-automap` at the
+worktree based on `99cf3a6`, with the uncommitted P2A implementation, after:
+
+```bash
+source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh
+conda activate ns3gym
+source /opt/ros/humble/setup.bash
+source /usr/share/gazebo/setup.sh
+source install/setup.bash
+export TURTLEBOT3_MODEL=waffle
+```
+
+### Positive three-robot episodes
+
+```bash
+PYTHONNOUSERSITE=1 python scripts/ros_smoke_test.py \
+  --world my_world.world --robot-count 3 --gazebo-seed 101 \
+  --startup-timeout 240 --message-timeout 90 --shutdown-timeout 60 \
+  --evaluation-duration 180 --coverage-threshold 0 \
+  --evaluation-wait-timeout 330 --target-detection \
+  --target-x -4.0 --target-y 4.0 --target-max-distance 3.0 \
+  --target-field-of-view 90 --target-confirmation-frames 3 \
+  --episode-id p2a_target_detection_3r_seed101
+```
+
+Result: PASS. `tb1` confirmed the target at 55.4 simulated seconds; final
+coverage 0.87122, path 30.352 m, zero collisions and zero overlap. JSON:
+`log/evaluation/p2a_target_detection_3r_seed101.json`. This valid preliminary
+run preceded adding the selected detector parameters to the event metadata, so
+those three schema fields are null; it is not used as the final seed-101 row.
+
+```bash
+PYTHONNOUSERSITE=1 python scripts/ros_smoke_test.py \
+  --world my_world.world --robot-count 3 --gazebo-seed 202 \
+  --startup-timeout 240 --message-timeout 90 --shutdown-timeout 60 \
+  --evaluation-duration 180 --coverage-threshold 0 \
+  --evaluation-wait-timeout 330 --target-detection \
+  --target-x -4.0 --target-y 4.0 --target-max-distance 3.0 \
+  --target-field-of-view 90 --target-confirmation-frames 3 \
+  --episode-id p2a_target_detection_3r_seed202
+
+PYTHONNOUSERSITE=1 python scripts/ros_smoke_test.py \
+  --world my_world.world --robot-count 3 --gazebo-seed 303 \
+  --startup-timeout 240 --message-timeout 90 --shutdown-timeout 60 \
+  --evaluation-duration 180 --coverage-threshold 0 \
+  --evaluation-wait-timeout 330 --target-detection \
+  --target-x -4.0 --target-y 4.0 --target-max-distance 3.0 \
+  --target-field-of-view 90 --target-confirmation-frames 3 \
+  --episode-id p2a_target_detection_3r_seed303
+```
+
+Both passed. Seed 202: 72.9 s, `tb1`, coverage 0.86891, path 34.415 m,
+accuracy 0.96788, zero collisions/overlap. Seed 303: 61.5 s, `tb1`, coverage
+0.86942, path 30.361 m, accuracy 0.97257, zero collisions/overlap. Both record
+confirmation=3, range=3.0 m, and FOV=90 degrees.
+
+After event metadata was complete, the first final seed-101 attempt used the
+same command with episode `p2a_target_detection_final_3r_seed101`. Result:
+infrastructure FAIL before evaluator/detector startup because Nav2 lifecycle
+change-state calls timed out; smoke reported missing `/task_state`. No task
+result was produced or counted. Raw log:
+`log/smoke/robots3_seed101_20260917-120250.log`.
+
+The exact retry was:
+
+```bash
+PYTHONNOUSERSITE=1 python scripts/ros_smoke_test.py \
+  --world my_world.world --robot-count 3 --gazebo-seed 101 \
+  --startup-timeout 300 --message-timeout 90 --shutdown-timeout 60 \
+  --evaluation-duration 180 --coverage-threshold 0 \
+  --evaluation-wait-timeout 390 --target-detection \
+  --target-x -4.0 --target-y 4.0 --target-max-distance 3.0 \
+  --target-field-of-view 90 --target-confirmation-frames 3 \
+  --episode-id p2a_target_detection_final_3r_seed101_retry1
+```
+
+Result: PASS at 60.7 s, `tb1`, coverage 0.87030, path 34.624 m, accuracy
+0.97619, zero collisions/overlap, confirmation=3/range=3.0/FOV=90. This retry
+is the final seed-101 evidence; the active lifecycle requirement was unchanged.
+
+Final formal three-seed result: all 3/3 episodes terminated with
+`target_found`, state `FOUND`, and correct target `(-4, 4)`. Detection times
+were 60.7/72.9/61.5 s, with zero collisions and zero overlap in every run.
+
+### Invisible-target negative episode
+
+```bash
+PYTHONNOUSERSITE=1 python scripts/ros_smoke_test.py \
+  --world my_world.world --robot-count 1 --gazebo-seed 404 \
+  --startup-timeout 180 --message-timeout 60 --shutdown-timeout 60 \
+  --evaluation-duration 10 --coverage-threshold 0 \
+  --evaluation-wait-timeout 240 --target-detection \
+  --expect-target-not-found --target-x 100.0 --target-y 100.0 \
+  --target-max-distance 3.0 --target-field-of-view 90 \
+  --target-confirmation-frames 3 \
+  --episode-id p2a_target_not_visible_1r_seed404
+```
+
+Result: PASS for the expected negative condition. The evaluator timed out at
+10.1 s with `target_found=false`, `time_to_detect_sec=null`, and
+`task_phase=EXPLORE`; coverage was 0.02727, path 0.0008 m, and collisions and
+overlap were zero. JSON:
+`log/evaluation/p2a_target_not_visible_1r_seed404.json`. The evaluator's
+`success=false` is correct for a timeout; the smoke PASS means no false
+detection occurred.
+
+Unit tests use a synthetic truth grid and separately verify range, FOV,
+wall occlusion, consecutive-frame confirmation, and reset after an invisible
+frame. Full final build/test details and the implementation commit are recorded
+below after final validation. P2A moves to `待用户验收`; P2B remains unstarted.
+
+Final validation at the completed P2A worktree state:
+
+```bash
+source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh
+conda activate ns3gym
+source /opt/ros/humble/setup.bash
+cd ros2_ws/ros2-multi-robot-automap
+PYTHONNOUSERSITE=1 colcon build --symlink-install \
+  --packages-select multi_robot multi_robot_exploration
+source install/setup.bash
+PYTHONNOUSERSITE=1 colcon test \
+  --packages-select merge_map multi_robot_exploration multi_robot \
+  --event-handlers console_direct+
+PYTHONNOUSERSITE=1 colcon test-result --verbose
+PYTHONNOUSERSITE=1 python -m py_compile \
+  scripts/ros_smoke_test.py \
+  src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py \
+  src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py \
+  src/multi_robot_exploration/multi_robot_exploration/target_detector.py
+```
+
+Build passed. Test result: 27 tests, 0 errors, 0 failures, 2 copyright
+skips; the new target-detector tests passed 2/2. Python byte-compilation and
+`git diff --check` passed.

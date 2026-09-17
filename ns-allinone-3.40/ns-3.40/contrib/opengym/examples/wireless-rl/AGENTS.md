@@ -1,9 +1,9 @@
 # wireless-rl Codex Memory
 
 Last verified against source, local 1/2/3-robot headless smoke tests, P1B
-evaluator tests, final P1C 2/3-robot batches, and three-world P1C generalization
-batches: 2026-09-17. P1C is implemented and waiting for user acceptance; do
-not begin P2 before acceptance.
+evaluator tests, final P1C batches, three-world P1C generalization, and P2A
+target-detection episodes: 2026-09-17. The user accepted P1C. P2A is
+implemented and waiting for user acceptance; do not begin P2B before that.
 
 This directory is the active project inside the larger ns-3 workspace. It is a
 toy ns3-gym scheduling MDP, not a full Wi-Fi/5G network simulation.
@@ -33,7 +33,8 @@ Use current code as the source of truth. Read in this order:
    ROS engineering checkpoints.
 8. `report/20260917_p1c_optimization.md` and
    `report/20260917_p1c_generalization.md` for the final P1C evidence.
-9. `report/20260902.md`, `report/20260429.md`, and `log.md` for historical
+9. `report/20260917_p2a.md` for the P2A detector contract and evidence.
+10. `report/20260902.md`, `report/20260429.md`, and `log.md` for historical
    experiment context.
 
 The accepted P1A ROS foundation now has explicit Gazebo seeds, configurable spawn
@@ -49,7 +50,7 @@ The current world has one unsupported mesh collision (an SUV outside the lab
 walls).
 
 P1C now meets the original 90% coverage intent with a shorter evidence-based
-time bound and is waiting for user review. All robots start inside the same
+time bound and was accepted by the user on 2026-09-17. All robots start inside the same
 radius-1 m start/charging region in `my_world.world`; success is 90%
 correct-free coverage within 180 simulated seconds. Earlier 75%/300 s results
 were symptoms of foundational defects, not an exploration ceiling: the custom
@@ -61,12 +62,21 @@ reached 90% in 141.3/161.4/134.9 seconds, establishing the pre-optimization
 baseline. The final shared-map/Smac/staged-navigation controller reaches 90%
 with two robots in 98.9/79.6/104.4 seconds (mean 94.3) and with three robots in
 78.3/69.8/69.5 seconds (mean 72.5) on seeds 101/202/303. All six final episodes
-have zero collisions; maximum search overlap is 0.44%. Do not proceed to P2
-until P1C is accepted; 95% remains optional.
+have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
 
 ## Current Handoff Snapshot
 
-- Active boundary: P1C is `待用户验收`; do not start P2A.
+- Active boundary: P2A is `待用户验收`; do not start P2B.
+- P2A adds a visual-only `search_target` marker and an independent detector.
+  The default contract is 3.0 m range, 90-degree horizontal field of view,
+  static truth-grid line of sight, and three consecutive visible frames.
+  Invisible frames reset the per-robot confirmation streak.
+- The detector publishes transient `/task_state` and `/target_detection`.
+  It does not change exploration or initiate rally; those transitions remain
+  P2B work. Three-robot seeds 101/202/303 detected the target at (-4, 4) in
+  60.7/72.9/61.5 seconds with zero collisions. A target at (100, 100) did not
+  trigger in the 10-second negative episode. Details are in
+  `report/20260917_p2a.md`.
 - Final P1C evidence uses seeds 101/202/303, 90% correct-free coverage, and an
   unchanged 180-second hard limit. Two-robot time-to-90 is
   98.9/79.6/104.4 seconds; three-robot time-to-90 is 78.3/69.8/69.5 seconds.

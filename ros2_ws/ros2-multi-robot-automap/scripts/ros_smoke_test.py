@@ -26,7 +26,13 @@ def run_ros(arguments, timeout=10, discard_output=False):
     )
 
 
-def wait_until_ready(process, robot_count, timeout, evaluation_enabled=False):
+def wait_until_ready(
+    process,
+    robot_count,
+    timeout,
+    evaluation_enabled=False,
+    target_detection_enabled=False,
+):
     expected_topics = {"/merge_map"}
     for index in range(1, robot_count + 1):
         expected_topics.update(
@@ -42,6 +48,8 @@ def wait_until_ready(process, robot_count, timeout, evaluation_enabled=False):
         expected_topics.update(
             f"/tb{index}/collision" for index in range(1, robot_count + 1)
         )
+    if target_detection_enabled:
+        expected_topics.add("/task_state")
 
     deadline = time.monotonic() + timeout
     missing_topics = expected_topics
@@ -114,7 +122,13 @@ def require_message(topic, timeout, qos_arguments=()):
 
 
 def wait_for_evaluation(
-    process, result_path, launch_log_path, timeout, coverage_threshold=0.0
+    process,
+    result_path,
+    launch_log_path,
+    timeout,
+    coverage_threshold=0.0,
+    target_detection=False,
+    expect_target_found=True,
 ):
     deadline = time.monotonic() + timeout
     log_offset = 0
@@ -137,6 +151,11 @@ def wait_for_evaluation(
                 "total_path_length_m",
                 "truth_rectangle_count",
                 "success",
+                "target_found",
+                "target_confirmation_frames",
+                "target_field_of_view_deg",
+                "target_max_distance_m",
+                "time_to_detect_sec",
                 "time_to_75_coverage_sec",
             }
             missing = required - result.keys()
@@ -159,9 +178,11 @@ def wait_for_evaluation(
                 raise RuntimeError(
                     "evaluation coverage threshold is incorrect"
                 )
-            if result["success"] != (
-                result["termination_reason"] == "coverage_reached"
-            ):
+            successful_reason = result["termination_reason"] in (
+                "coverage_reached",
+                "target_found",
+            )
+            if result["success"] != successful_reason:
                 raise RuntimeError("evaluation success state is inconsistent")
             if (
                 result["success"]
@@ -169,6 +190,22 @@ def wait_for_evaluation(
                 < coverage_threshold
             ):
                 raise RuntimeError("evaluation completed below its threshold")
+            if target_detection:
+                target_found = (
+                    result["termination_reason"] == "target_found"
+                    and result["target_found"]
+                    and result["time_to_detect_sec"] is not None
+                    and result["target_confirmation_frames"] >= 1
+                )
+                if target_found != expect_target_found:
+                    raise RuntimeError(
+                        "target detection result did not match expectation"
+                    )
+                if not expect_target_found and (
+                    result["termination_reason"] != "timeout"
+                    or result["success"]
+                ):
+                    raise RuntimeError("negative detection episode did not timeout")
             return result
         if process.poll() is not None:
             raise RuntimeError(
@@ -223,6 +260,13 @@ def parse_args():
     parser.add_argument("--shutdown-timeout", type=float, default=30.0)
     parser.add_argument("--evaluation-duration", type=float, default=0.0)
     parser.add_argument("--coverage-threshold", type=float, default=0.0)
+    parser.add_argument("--target-detection", action="store_true")
+    parser.add_argument("--expect-target-not-found", action="store_true")
+    parser.add_argument("--target-x", type=float, default=-4.0)
+    parser.add_argument("--target-y", type=float, default=4.0)
+    parser.add_argument("--target-max-distance", type=float, default=3.0)
+    parser.add_argument("--target-field-of-view", type=float, default=90.0)
+    parser.add_argument("--target-confirmation-frames", type=int, default=3)
     parser.add_argument("--evaluation-wait-timeout", type=float, default=180.0)
     parser.add_argument("--episode-id")
     parser.add_argument(
@@ -244,6 +288,10 @@ def main():
         raise SystemExit(
             "source /opt/ros/humble/setup.bash and install/setup.bash first"
         )
+    if args.target_detection and args.evaluation_duration <= 0:
+        raise SystemExit("--target-detection requires --evaluation-duration")
+    if args.expect_target_not_found and not args.target_detection:
+        raise SystemExit("--expect-target-not-found requires --target-detection")
 
     package = run_ros(["pkg", "prefix", "multi_robot"], timeout=10)
     if package.returncode != 0:
@@ -281,6 +329,13 @@ def main():
         f"evaluation_output_dir:={args.evaluation_output_dir}",
         f"evaluation_duration_sec:={args.evaluation_duration}",
         f"evaluation_coverage_threshold:={args.coverage_threshold}",
+        f"enable_target_detection:={str(args.target_detection).lower()}",
+        f"evaluation_stop_on_target_found:={str(args.target_detection).lower()}",
+        f"target_x:={args.target_x}",
+        f"target_y:={args.target_y}",
+        f"target_max_distance_m:={args.target_max_distance}",
+        f"target_field_of_view_deg:={args.target_field_of_view}",
+        f"target_confirmation_frames:={args.target_confirmation_frames}",
     ]
 
     print("Command:", " ".join(command), flush=True)
@@ -307,6 +362,7 @@ def main():
                 args.robot_count,
                 args.startup_timeout,
                 evaluation_enabled=args.evaluation_duration > 0,
+                target_detection_enabled=args.target_detection,
             )
             print("ROS graph and Nav2 lifecycle nodes are ready.", flush=True)
             require_message(
@@ -333,6 +389,8 @@ def main():
                     log_path,
                     args.evaluation_wait_timeout,
                     args.coverage_threshold,
+                    args.target_detection,
+                    not args.expect_target_not_found,
                 )
                 print(
                     "Evaluation result:",
@@ -340,6 +398,7 @@ def main():
                     f"coverage={result['correct_free_coverage_ratio']:.3f}",
                     f"path={result['total_path_length_m']:.3f}m",
                     f"termination={result['termination_reason']}",
+                    f"detection={result['time_to_detect_sec']}",
                     flush=True,
                 )
             time.sleep(args.dwell_seconds)

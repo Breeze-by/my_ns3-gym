@@ -115,6 +115,12 @@ multi_robot_exploration/control
 | `evaluation_output_dir` | `/tmp/multi_robot_evaluation` | 评估结果目录 |
 | `evaluation_duration_sec` | `0.0` | 仿真超时；0 表示只在 shutdown 时保存 |
 | `evaluation_coverage_threshold` | `0.0` | 正确自由空间覆盖率成功阈值；0 表示仅按超时结束，当前 P1C 正式口径传 0.90 |
+| `evaluation_stop_on_target_found` | `false` | P2A 验证时是否在目标确认后立即结束评估 |
+| `enable_target_detection` | `false` | 是否生成搜索目标并启动 P2A 真值检测节点 |
+| `target_x`, `target_y` | `-4.0`, `4.0` | 搜索目标在 world 坐标系中的位置 |
+| `target_max_distance_m` | `3.0` | 检测最大距离 |
+| `target_field_of_view_deg` | `90.0` | 水平检测视场角 |
+| `target_confirmation_frames` | `3` | 确认目标所需的连续可见帧数 |
 | `exploration_goal_timeout_sec` | `60.0` | 单个 Nav2 目标的最大仿真秒数 |
 
 也就是说，常用命令里 `enable_rviz:=false` 不会关闭全局地图 RViz，只会关闭每机器人 RViz。
@@ -180,6 +186,17 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
 /tbN/odom
 /tbN/tf
 ```
+
+启用 P2A 后，独立的 `target_detector` 还订阅 `/gazebo/model_states`，发布：
+
+```text
+/task_state
+/target_detection
+```
+
+它不发布导航目标，也不修改 `headquarters_control`。`/task_state` 依次可能为
+`EXPLORE`、`FOUND_UNCONFIRMED`、`FOUND`；`/target_detection` 只在确认后发布一次，包含
+发现机器人、目标 world 坐标和本次检测参数。
 
 并向每台机器人发送 Nav2 action：
 
@@ -446,8 +463,9 @@ action status 统计成功、取消和失败目标。
 
 CSV/JSON 默认写入 `log/evaluation/`（由 smoke 工具指定并被 Git 忽略）。P1C 当前定义为：
 `correct_free_coverage_ratio >= 0.90` 时记录 `success=true` 和
-`termination_reason=coverage_reached`；180 仿真秒未达到则记录 timeout。输出 schema v2
-还包含 75%/80%/90%/95% 首次达到时间、每台机器人起终点、目标结果、路径、碰撞和搜索重叠。
+`termination_reason=coverage_reached`；180 仿真秒未达到则记录 timeout。输出 schema v3
+还包含 75%/80%/90%/95% 首次达到时间、每台机器人起终点、导航目标结果、路径、碰撞、
+搜索重叠，以及目标是否发现、发现机器人、发现时间、目标位置和检测规则。
 
 P1C 理想通信批量入口（每个 seed 启动独立 ROS/Gazebo 进程）：
 
@@ -481,6 +499,36 @@ seeds 101/202/303。九轮全部达到 90%，最坏用时 75.5 秒，全部零�
 97.47%，最大搜索重叠 1.91%。最难走廊地图 seed 202 的两机器人交叉验证用时 85.5 秒、
 零碰撞。完整逐轮结果、无效基础设施轮次和适用边界见
 `report/20260917_p1c_generalization.md`。
+
+### 9.1 P2A 目标检测验证
+
+P2A 使用无 collision 的红色静态圆柱作为 Gazebo 搜索目标，因此它不会改变 lidar、地图真值
+或可通行区域。检测节点读取 Gazebo 真值位姿，但只有同时满足以下条件才认为当前帧可见：
+
+- 机器人到目标不超过 `target_max_distance_m`；
+- 目标在机器人朝向两侧各半个水平视场角内；
+- 机器人和目标之间的线段不穿过当前 world 的静态占据真值；
+- 同一机器人连续满足以上条件达到 `target_confirmation_frames` 帧。
+
+任一不可见帧会清零该机器人的连续计数。默认关闭该功能，因而原有 P1C 启动行为不变。
+正式 3 机器人验证命令示例：
+
+```bash
+python3 scripts/ros_smoke_test.py \
+  --world my_world.world --robot-count 3 --gazebo-seed 101 \
+  --startup-timeout 300 --message-timeout 90 --shutdown-timeout 60 \
+  --evaluation-duration 180 --coverage-threshold 0 \
+  --evaluation-wait-timeout 390 --target-detection \
+  --target-x -4 --target-y 4 --target-max-distance 3 \
+  --target-field-of-view 90 --target-confirmation-frames 3 \
+  --episode-id p2a_target_detection_3r_seed101
+```
+
+seeds 101/202/303 的目标确认时间为 60.7/72.9/61.5 仿真秒，均由 `tb1` 发现，碰撞和
+搜索重叠均为 0。目标置于 `(100, 100)` 的 10 秒负例没有发布确认，结果保持
+`target_found=false`、`task_phase=EXPLORE`。P2A 只完成检测与确认；收到目标后停止探索、
+分配不同集合位姿并稳定 5 秒属于 P2B，当前尚未实现。完整证据见
+`report/20260917_p2a.md`。
 
 以下命令适合运行中的人工诊断：
 

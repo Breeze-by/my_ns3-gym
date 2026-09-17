@@ -22,6 +22,7 @@ setup(
         'console_scripts': [
             'control = multi_robot_exploration.control:main',
             'nav2_ready_gate = multi_robot_exploration.nav2_ready_gate:main',
+            'target_detector = multi_robot_exploration.target_detector:main',
             'task_evaluator = multi_robot_exploration.task_evaluator:main',
         ],
     },

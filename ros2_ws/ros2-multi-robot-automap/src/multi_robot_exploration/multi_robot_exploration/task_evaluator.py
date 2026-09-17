@@ -14,6 +14,7 @@ import rclpy
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
+from std_msgs.msg import String
 
 
 @dataclass
@@ -243,6 +244,9 @@ class TaskEvaluator(Node):
         self.max_position_step = self.declare_parameter(
             "max_position_step_m", 1.0
         ).value
+        self.stop_on_target_found = self.declare_parameter(
+            "stop_on_target_found", False
+        ).value
 
         if self.robot_count < 1:
             raise ValueError("robot_count must be positive")
@@ -278,6 +282,15 @@ class TaskEvaluator(Node):
         self.model_state_message_count = 0
         self.start_sim_time = None
         self.coverage_times = {0.75: None, 0.8: None, 0.9: None, 0.95: None}
+        self.task_phase = "EXPLORE"
+        self.target_found = False
+        self.time_to_detect = None
+        self.detecting_robot = ""
+        self.target_x = None
+        self.target_y = None
+        self.target_confirmation_frames = None
+        self.target_max_distance = None
+        self.target_field_of_view = None
         self.finalized = False
 
         map_qos = QoSProfile(depth=1)
@@ -292,6 +305,15 @@ class TaskEvaluator(Node):
                 "/gazebo/model_states",
                 self._model_states_callback,
                 10,
+            ),
+            self.create_subscription(
+                String, "/task_state", self._task_state_callback, map_qos
+            ),
+            self.create_subscription(
+                String,
+                "/target_detection",
+                self._target_detection_callback,
+                map_qos,
             ),
         ]
         for name in self.robot_names:
@@ -396,6 +418,27 @@ class TaskEvaluator(Node):
                 continue
             self.terminal_goal_ids[robot].add(goal_id)
 
+    def _task_state_callback(self, message):
+        self.task_phase = message.data
+
+    def _target_detection_callback(self, message):
+        if self.target_found:
+            return
+        event = json.loads(message.data)
+        self.target_found = True
+        self.task_phase = "FOUND"
+        self.detecting_robot = event["robot"]
+        self.target_x = event["target_x"]
+        self.target_y = event["target_y"]
+        self.target_confirmation_frames = event["confirmation_frames"]
+        self.target_max_distance = event["max_distance_m"]
+        self.target_field_of_view = event["field_of_view_deg"]
+        if self.start_sim_time is not None:
+            self.time_to_detect = max(0.0, self._now() - self.start_sim_time)
+        if self.stop_on_target_found:
+            self.finalize("target_found")
+            rclpy.shutdown()
+
     def _collision_callback(self, message, robot):
         now = self._now()
         self.collision_messages[robot] += 1
@@ -498,18 +541,30 @@ class TaskEvaluator(Node):
                 "collision_message_count": self.collision_messages[name],
             }
 
-        success = termination_reason == "coverage_reached"
+        success = termination_reason in ("coverage_reached", "target_found")
         result = {
-            "schema_version": 2,
+            "schema_version": 3,
             "episode_id": self.episode_id,
             "world_file": self.world_file,
             "gazebo_seed": self.gazebo_seed,
             "robot_count": self.robot_count,
-            "task_phase": "COMPLETE" if success else "EXPLORE",
+            "task_phase": (
+                "COMPLETE"
+                if termination_reason == "coverage_reached"
+                else self.task_phase
+            ),
             "success": success,
             "termination_reason": termination_reason,
             "failure_reason": "" if success else termination_reason,
             "coverage_threshold": self.coverage_threshold,
+            "target_found": self.target_found,
+            "time_to_detect_sec": self.time_to_detect,
+            "detecting_robot": self.detecting_robot,
+            "target_x": self.target_x,
+            "target_y": self.target_y,
+            "target_confirmation_frames": self.target_confirmation_frames,
+            "target_max_distance_m": self.target_max_distance,
+            "target_field_of_view_deg": self.target_field_of_view,
             "time_to_75_coverage_sec": self.coverage_times[0.75],
             "time_to_80_coverage_sec": self.coverage_times[0.8],
             "time_to_90_coverage_sec": self.coverage_times[0.9],

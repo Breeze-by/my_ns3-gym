@@ -41,6 +41,17 @@ def launch_setup(context, *args, **kwargs):
     evaluation_output_dir = LaunchConfiguration("evaluation_output_dir")
     evaluation_duration = LaunchConfiguration("evaluation_duration_sec")
     evaluation_coverage = LaunchConfiguration("evaluation_coverage_threshold")
+    evaluation_stop_on_target = LaunchConfiguration(
+        "evaluation_stop_on_target_found"
+    )
+    enable_target_detection = LaunchConfiguration("enable_target_detection")
+    target_x = LaunchConfiguration("target_x")
+    target_y = LaunchConfiguration("target_y")
+    target_max_distance = LaunchConfiguration("target_max_distance_m")
+    target_fov = LaunchConfiguration("target_field_of_view_deg")
+    target_confirmation_frames = LaunchConfiguration(
+        "target_confirmation_frames"
+    )
 
     try:
         robot_count = int(robot_count_cfg.perform(context))
@@ -103,6 +114,9 @@ def launch_setup(context, *args, **kwargs):
 
     urdf = os.path.join(multi_robot_share, "urdf", my_robot + ".urdf")
     model = os.path.join(multi_robot_share, "models", my_robot, "model.sdf")
+    target_model = os.path.join(
+        multi_robot_share, "models", "search_target", "model.sdf"
+    )
     world_filename = world_name.perform(context)
     if os.path.basename(world_filename) != world_filename:
         raise ValueError("world must be a filename from multi_robot/worlds")
@@ -191,10 +205,30 @@ def launch_setup(context, *args, **kwargs):
                 "output_dir": evaluation_output_dir,
                 "max_duration_sec": evaluation_duration,
                 "coverage_threshold": evaluation_coverage,
+                "stop_on_target_found": evaluation_stop_on_target,
             }
         ],
         output="screen",
         condition=IfCondition(enable_task_evaluator),
+    )
+
+    target_detector = Node(
+        package="multi_robot_exploration",
+        executable="target_detector",
+        name="target_detector",
+        parameters=[
+            {
+                "use_sim_time": use_sim_time,
+                "robot_count": robot_count_cfg,
+                "world_file": world,
+                "target_model": "search_target",
+                "max_distance_m": target_max_distance,
+                "field_of_view_deg": target_fov,
+                "confirmation_frames": target_confirmation_frames,
+            }
+        ],
+        output="screen",
+        condition=IfCondition(enable_target_detection),
     )
 
     # ========= Gazebo =========
@@ -209,6 +243,29 @@ def launch_setup(context, *args, **kwargs):
         launch_arguments={"world": world, "seed": gazebo_seed}.items(),
     )
     actions.append(gzserver_cmd)
+
+    actions.append(
+        Node(
+            package="gazebo_ros",
+            executable="spawn_entity.py",
+            arguments=[
+                "-file",
+                target_model,
+                "-entity",
+                "search_target",
+                "-timeout",
+                spawn_timeout,
+                "-x",
+                target_x,
+                "-y",
+                target_y,
+                "-z",
+                "0.5",
+            ],
+            output="screen",
+            condition=IfCondition(enable_target_detection),
+        )
+    )
 
     gzclient_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -378,6 +435,7 @@ def launch_setup(context, *args, **kwargs):
                 return [
                     LogInfo(msg="Nav2 ready; starting cooperative exploration."),
                     control_node,
+                    target_detector,
                     task_evaluator,
                 ]
             return [
@@ -580,6 +638,58 @@ def generate_launch_description():
             "evaluation_coverage_threshold",
             default_value="0.0",
             description="Correct-free coverage ratio that completes exploration.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "evaluation_stop_on_target_found",
+            default_value="false",
+            description="End evaluator successfully when a target is confirmed.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "enable_target_detection",
+            default_value="false",
+            description="Spawn and detect the P2 simulation target.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "target_x", default_value="-4.0", description="Target world x."
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "target_y", default_value="4.0", description="Target world y."
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "target_max_distance_m",
+            default_value="3.0",
+            description="Maximum simulation detection distance.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "target_field_of_view_deg",
+            default_value="90.0",
+            description="Horizontal simulation camera field of view.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "target_confirmation_frames",
+            default_value="3",
+            description="Consecutive visible frames required for FOUND.",
         )
     )
 
