@@ -1469,3 +1469,8 @@ PYTHONNOUSERSITE=1 python -m py_compile \
 Build passed. Test result: 27 tests, 0 errors, 0 failures, 2 copyright
 skips; the new target-detector tests passed 2/2. Python byte-compilation and
 `git diff --check` passed.
+
+Implementation, tests, simulator evidence, and P2A handoff documentation were
+committed as `7563681` (`p2a: add target detection confirmation`) and pushed to
+`origin/main` in this session. The intentionally unstaged user report changes
+remained untouched.
