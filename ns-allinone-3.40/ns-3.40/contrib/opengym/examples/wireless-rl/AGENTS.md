@@ -2,7 +2,8 @@
 
 Last verified against source, local 1/2/3-robot headless smoke tests, P1B
 evaluator tests, final P1C batches, three-world P1C generalization, P2A
-target-detection episodes, the roadmap audit, and P2B rally episodes:
+target-detection episodes, the roadmap audit, P2B rally episodes, and the P2B
+coverage/time audit:
 2026-09-17. The user accepted P1C and P2A. P2B is implemented and awaiting
 user acceptance; do not start P2C before that decision.
 
@@ -100,6 +101,13 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
   two-robot seed-303 cross-check completed in 96.5 seconds with zero collisions.
   Full-task timeout is 300 simulated seconds; details and retained failures are
   in `report/20260917_p2b.md` and `log.md`.
+- The follow-up P2B audit added schema-v5 `coverage_at_detection` and made any
+  post-start collision authoritative `success=false`. A two-robot check found
+  the target at 75.57% coverage and completed at 81.62% with 97.40% observed
+  accuracy and zero overlap/collisions, confirming that low coverage is the
+  intended stop-on-found behavior. Failed rally actions now retry shorter legs;
+  unsafe parallel rally and an over-eager progress watchdog were tested and
+  reverted. See `report/20260917_p2b_audit.md`.
 - Final P1C evidence uses seeds 101/202/303, 90% correct-free coverage, and an
   unchanged 180-second hard limit. Two-robot time-to-90 is
   98.9/79.6/104.4 seconds; three-robot time-to-90 is 78.3/69.8/69.5 seconds.

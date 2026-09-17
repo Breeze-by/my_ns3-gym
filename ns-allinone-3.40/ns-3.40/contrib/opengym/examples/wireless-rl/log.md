@@ -1666,3 +1666,86 @@ skips; Python byte-compilation and `git diff --check` passed. P2B moves to
 `待用户验收`; P2C was not started. The intentionally unstaged user deletion
 of `report/20260914.md` and untracked `report/20260914_p1a.md` remained
 untouched and are excluded from the P2B commit.
+
+## 2026-09-17 P2B coverage/time audit and robustness follow-up
+
+Purpose: determine whether P2B's longer completion time and lower coverage are
+caused by the stop-on-found contract or by navigation/map defects, and fix only
+demonstrated defects without starting P2C. All project Python commands used the
+`ns3gym` conda environment with `PYTHONNOUSERSITE=1`; ROS runs sourced Humble,
+the repository install, Gazebo setup, and used a fresh `ROS_DOMAIN_ID`.
+
+The common audit command was:
+
+```bash
+PYTHONNOUSERSITE=1 ROS_DOMAIN_ID=<isolated> python scripts/ros_smoke_test.py \
+  --world my_world.world --robot-count <2|3> --gazebo-seed <101|202|303> \
+  --startup-timeout <300|360> --message-timeout 90 --shutdown-timeout 60 \
+  --evaluation-duration 300 --coverage-threshold 0 \
+  --evaluation-wait-timeout <420|480> --target-detection --rally \
+  --target-x -4 --target-y 4 --target-max-distance 3 \
+  --target-field-of-view 90 --target-confirmation-frames 3 \
+  --episode-id <episode>
+```
+
+Attempts and conclusions, including rejected changes:
+
+- `p2b_audit_pipeline_3r_seed101`, log
+  `robots3_seed101_20260917-175642.log`: experimental parallel intermediate
+  rally legs reached `COMPLETE=177.5 s` but produced 43 collision events over
+  65.2 simulated seconds. Outer smoke FAIL; the algorithm was reverted.
+- `p2b_audit_sequential_2r_seed303`, log
+  `robots2_seed303_20260917-185039.log`: post-start timeout at 300.3 s. Target
+  detection was late at 176.2 s with `coverage_at_detection=0.8759`; tb2's
+  first rally action exhausted 60 s and then resent the same waypoint. Zero
+  collisions. This failure was retained and motivated shorter retry legs.
+- `robots2_seed303_20260917-185908.log`: pre-start infrastructure FAIL with
+  missing `/tb2/cmd_vel` and `/task_state`; no task episode. Identical task
+  parameters were retried only with a new ROS domain.
+- `p2b_audit_watchdog_2r_seed303_retry1`, log
+  `robots2_seed303_20260917-190440.log`: PASS, `detect=57.4`,
+  `coverage_at_detection=0.7557`, `RALLY=57.8`, `COMPLETE=117.5`, final
+  coverage `0.8162`, observed accuracy `0.9740`, path `31.643 m`, zero search
+  overlap and collisions. This directly demonstrates expected low coverage
+  after early detection.
+- `p2b_audit_watchdog_3r_seed101`, log
+  `robots3_seed101_20260917-190846.log`: PASS, `detect=58.9`, detection/final
+  coverage `0.8717/0.9422`, `COMPLETE=169.4`, path `49.211 m`, zero collisions.
+- `p2b_audit_watchdog_3r_seed202`, log
+  `robots3_seed202_20260917-191444.log`: PASS, `detect=57.2`, detection/final
+  coverage `0.8742/0.9427`, `COMPLETE=177.6`, path `53.955 m`, zero collisions.
+- `p2b_audit_watchdog_3r_seed303`, log
+  `robots3_seed303_20260917-192045.log`: a 10-second experimental rally
+  no-progress watchdog canceled Nav2 recovery three times; post-start FAIL at
+  106.2 s with `rally_navigation_failed:tb3`, zero collisions. Rejected.
+- `p2b_audit_watchdog30_3r_seed303`, log
+  `robots3_seed303_20260917-192647.log`: PASS, `detect=60.5`, detection/final
+  coverage `0.8695/0.9391`, `RALLY=68.8`, `COMPLETE=158.2`, path `48.772 m`,
+  zero collisions. The 30-second watchdog was not triggered, so it did not
+  establish benefit and was also removed.
+
+The retained implementation is deliberately smaller: schema v5 records
+`coverage_at_detection`; any collision makes evaluator `success=false`; and
+only a fully failed rally action changes the next maximum leg from 1.5 m to
+0.75 m, then 0.5 m. Nav2's internal recovery is not interrupted. Unit coverage
+was added for collision verdicts and shorter retry legs. Full final validation
+and commit/push evidence follows. P2C was not started.
+
+Final retained-code validation:
+
+```bash
+colcon build --symlink-install \
+  --packages-select multi_robot merge_map multi_robot_exploration
+colcon test --packages-select merge_map multi_robot_exploration multi_robot \
+  --event-handlers console_direct+
+colcon test-result --verbose
+python -m py_compile scripts/ros_smoke_test.py \
+  src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py \
+  src/multi_robot_exploration/multi_robot_exploration/control.py \
+  src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py \
+  src/multi_robot_exploration/multi_robot_exploration/target_detector.py
+```
+
+Build and byte-compilation passed. Test result: 37 tests, 0 errors, 0
+failures, 2 copyright skips. `git diff --check`, staging preview, commit, and
+push are recorded by the repository history for this session.

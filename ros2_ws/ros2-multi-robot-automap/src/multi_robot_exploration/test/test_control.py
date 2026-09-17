@@ -243,6 +243,16 @@ def test_rally_navigation_stages_long_paths():
     assert 1.3 <= math.dist((1.0, 1.0), (leg.x, leg.y)) <= 1.6
     assert math.dist((leg.x, leg.y), (pose.x, pose.y)) > 8.3
 
+    retry_leg = control.stage_rally_leg(
+        pose,
+        grid,
+        0.1,
+        (0.0, 0.0),
+        (1.0, 1.0),
+        max_distance_m=0.75,
+    )
+    assert 0.6 <= math.dist((1.0, 1.0), (retry_leg.x, retry_leg.y)) <= 0.8
+
 
 def test_rally_stability_checks_pose_and_both_speeds():
     targets = {"tb1": control.RallyPose(1.0, 2.0, 0.0)}

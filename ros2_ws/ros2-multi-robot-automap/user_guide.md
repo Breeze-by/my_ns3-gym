@@ -471,9 +471,11 @@ action status 统计成功、取消和失败目标。
 
 CSV/JSON 默认写入 `log/evaluation/`（由 smoke 工具指定并被 Git 忽略）。P1C 当前定义为：
 `correct_free_coverage_ratio >= 0.90` 时记录 `success=true` 和
-`termination_reason=coverage_reached`；180 仿真秒未达到则记录 timeout。输出 schema v3
+`termination_reason=coverage_reached`；180 仿真秒未达到则记录 timeout。输出 schema v5
 还包含 75%/80%/90%/95% 首次达到时间、每台机器人起终点、导航目标结果、路径、碰撞、
-搜索重叠，以及目标是否发现、发现机器人、发现时间、目标位置和检测规则。
+搜索重叠，以及目标是否发现、发现机器人、发现时间、发现时覆盖率、目标位置和检测规则。
+从 schema v5 起，episode 内任一接触都会使权威 `success=false`，即使状态机随后到达
+`COMPLETE`；`termination_reason` 仍保留实际终止事件，`failure_reason=collision`。
 
 P1C 理想通信批量入口（每个 seed 启动独立 ROS/Gazebo 进程）：
 
@@ -562,6 +564,16 @@ python3 scripts/ros_smoke_test.py \
 三轮均零碰撞，集合点最小间距为 1.210/1.221/1.414 m，最大最终位置误差 0.237 m。
 2 机器人 seed 303 交叉验证在 96.5 秒完成，零碰撞。完整逐机器人速度、失败演进和原始
 episode 标识见 `report/20260917_p2b.md`。P2B 当前等待用户验收；P2C 尚未开始。
+
+随后对覆盖率和耗时的专项审查增加了 `coverage_at_detection`。两机器人复核在 75.57%
+覆盖时确认目标，停止探索后以 81.62% 最终覆盖完成，观测准确率为 97.40%、搜索重叠为 0；
+因此该低覆盖来自 P2B 的“发现后停止 frontier 探索”规则，而不是融合失败。三机器人审查轮的
+发现时覆盖为 86.95%–87.42%，最终覆盖为 93.91%–94.27%，同样未见地图质量退化。
+
+集合保持安全串行进场。并行中间航段曾在共同入口造成 43 次接触，已撤回；10 秒无进展取消
+也会过早打断 Nav2 内部恢复，未保留。当前只在一个集合 action 完整失败后缩短下一次航段
+（1.5 m → 0.75 m → 0.5 m），避免原样重发同一航点。详情见
+`report/20260917_p2b_audit.md`。
 
 以下命令适合运行中的人工诊断：
 

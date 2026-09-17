@@ -207,6 +207,14 @@ def visited_overlap_ratio(visited_by_robot):
     return (total - len(union)) / max(1, len(union))
 
 
+def episode_succeeded(termination_reason, collision_events):
+    return (
+        termination_reason
+        in ("coverage_reached", "target_found", "task_complete")
+        and collision_events == 0
+    )
+
+
 def _yaw_from_quaternion(quaternion):
     return math.atan2(
         2 * (quaternion.w * quaternion.z + quaternion.x * quaternion.y),
@@ -289,6 +297,7 @@ class TaskEvaluator(Node):
         self.task_phase = "EXPLORE"
         self.target_found = False
         self.time_to_detect = None
+        self.coverage_at_detection = None
         self.detecting_robot = ""
         self.target_x = None
         self.target_y = None
@@ -492,6 +501,9 @@ class TaskEvaluator(Node):
         self.target_field_of_view = event["field_of_view_deg"]
         if self.start_sim_time is not None:
             self.time_to_detect = max(0.0, self._now() - self.start_sim_time)
+            self.coverage_at_detection = self._map_metrics().get(
+                "correct_free_coverage_ratio"
+            )
         if self.stop_on_target_found:
             self.finalize("target_found")
             rclpy.shutdown()
@@ -621,11 +633,8 @@ class TaskEvaluator(Node):
                 "rally_final_error_m": rally_error,
             }
 
-        success = termination_reason in (
-            "coverage_reached",
-            "target_found",
-            "task_complete",
-        )
+        collision_events = sum(self.collision_events.values())
+        success = episode_succeeded(termination_reason, collision_events)
         rally_poses = list(self.rally_assignments.values())
         rally_separations = [
             math.dist(
@@ -636,7 +645,7 @@ class TaskEvaluator(Node):
             for second in rally_poses[index + 1:]
         ]
         result = {
-            "schema_version": 4,
+            "schema_version": 5,
             "episode_id": self.episode_id,
             "world_file": self.world_file,
             "gazebo_seed": self.gazebo_seed,
@@ -651,11 +660,16 @@ class TaskEvaluator(Node):
             "failure_reason": (
                 ""
                 if success
-                else self.task_failure_reason or termination_reason
+                else (
+                    "collision"
+                    if collision_events
+                    else self.task_failure_reason or termination_reason
+                )
             ),
             "coverage_threshold": self.coverage_threshold,
             "target_found": self.target_found,
             "time_to_detect_sec": self.time_to_detect,
+            "coverage_at_detection": self.coverage_at_detection,
             "detecting_robot": self.detecting_robot,
             "target_x": self.target_x,
             "target_y": self.target_y,
@@ -696,7 +710,7 @@ class TaskEvaluator(Node):
                 set().union(*self.visited.values())
             ),
             "search_overlap_ratio": visited_overlap_ratio(self.visited),
-            "collision_events": sum(self.collision_events.values()),
+            "collision_events": collision_events,
             "collision_duration_sec": sum(self.collision_duration.values()),
             "collision_monitoring_active": all(
                 count > 0 for count in self.collision_messages.values()

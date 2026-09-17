@@ -7,6 +7,7 @@ from scipy import ndimage
 from multi_robot_exploration.task_evaluator import (
     TruthGrid,
     compare_occupancy_grid,
+    episode_succeeded,
     load_truth_grid,
     visited_overlap_ratio,
 )
@@ -59,6 +60,11 @@ def test_occupancy_metrics_penalize_unknown_cells():
 def test_overlap_ratio_matches_research_definition():
     visited = {"tb1": {(0, 0), (1, 0)}, "tb2": {(1, 0), (2, 0)}}
     assert visited_overlap_ratio(visited) == 1 / 3
+
+
+def test_collision_prevents_episode_success():
+    assert episode_succeeded("task_complete", 0)
+    assert not episode_succeeded("task_complete", 1)
 
 
 @pytest.mark.parametrize(

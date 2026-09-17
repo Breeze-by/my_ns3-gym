@@ -807,7 +807,14 @@ def rally_dispatch_order(targets, robot_positions, target):
     )
 
 
-def stage_rally_leg(pose, raw_grid, resolution, origin, robot_position):
+def stage_rally_leg(
+    pose,
+    raw_grid,
+    resolution,
+    origin,
+    robot_position,
+    max_distance_m=RALLY_MAX_NAVIGATION_LEG_M,
+):
     """Limit a rally action to one reliable map-path leg."""
     traversable = traversable_grid(
         raw_grid, resolution, clearance_m=RALLY_PATH_CLEARANCE_M
@@ -832,7 +839,7 @@ def stage_rally_leg(pose, raw_grid, resolution, origin, robot_position):
         traversable,
         start,
         target,
-        RALLY_MAX_NAVIGATION_LEG_M / resolution,
+        max_distance_m / resolution,
     )
     if waypoint is None:
         return pose
@@ -1219,6 +1226,9 @@ class HeadquartersControl(Node):
                 and started_at is not None
                 and now - started_at >= self.goal_timeout_sec
             ):
+                self.get_logger().warn(
+                    f"Canceling {active_name} rally leg after timeout."
+                )
                 self.rally_goal_started_at[active_name] = None
                 handle.cancel_goal_async()
             target = self.rally_targets[active_name]
@@ -1355,6 +1365,8 @@ class HeadquartersControl(Node):
             self.resolution,
             self.origin,
             self.robot_positions[robot_name],
+            RALLY_MAX_NAVIGATION_LEG_M
+            / (self.rally_attempts[robot_name] + 1),
         )
         self.get_logger().info(
             f"Sending {robot_name} rally leg to "
