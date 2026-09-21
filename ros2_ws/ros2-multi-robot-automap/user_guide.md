@@ -40,7 +40,7 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
   enable_task_regions:=true \
   enable_status_panel:=true \
   enable_battery:=true \
-  battery_initial_energy:=40.0 \
+  battery_initial_energy:=24.0 \
   enable_rviz:=false
 ```
 
@@ -140,11 +140,13 @@ multi_robot_exploration/control
 | `rally_max_retries` | `2` | 每台集合导航失败后的最大重试次数 |
 | `exploration_goal_timeout_sec` | `60.0` | 单个 Nav2 目标的最大仿真秒数 |
 | `enable_battery` | `true` | 是否启动每机器人一个 P2C 本地能量/充电管理器 |
-| `battery_capacity`, `battery_initial_energy` | `100.0`, `40.0` | 满电容量和 episode 初始能量；较低初始值保留三机器人充电区安全余量 |
+| `battery_capacity`, `battery_initial_energy` | `60.0`, `24.0` | 满电容量和 episode 初始能量；默认让探索较早触发返航 |
 | `battery_move_cost_per_m` | `1.0` | 每行驶 1 m 的能量成本 |
 | `battery_idle_cost_per_sec` | `0.02` | 每仿真秒的基础能量成本 |
 | `battery_return_safety_margin` | `5.0` | 预计返航成本之外保留的安全余量 |
-| `battery_charge_duration_sec` | `10.0` | 在充电位静止后恢复满电所需仿真秒数 |
+| `battery_charge_duration_sec` | `10.0` | 在充电位静止后恢复到目标电量所需仿真秒数 |
+| `battery_charge_radius_m` | `0.5` | 充电位判定半径；允许 Nav2 到达误差仍进入充电 |
+| `battery_charge_target_fraction` | `0.8` | 充到容量的 80% 后恢复探索，不必等到满电 |
 | `battery_return_timeout_sec` | `120.0` | 单次安全返航总超时 |
 | `battery_charge_timeout_sec` | `60.0` | 进入充电模式后的总超时 |
 
@@ -629,8 +631,9 @@ goal，并在约 5.2 秒后到达自己的目标附近集合位；117.9 秒进�
 
 `--battery` 会启动机器人本地能量模型。能量按 odom 行驶距离和仿真经过时间扣除；返航阈值
 为保守预计返航能耗加固定安全余量。触发后本地管理器抢占探索/集合 action，返回本机器人的
-出生充电位，只有在半径 0.25 m 内且速度低于集合静止门槛时才开始充电。充电不会重启 SLAM、
-清空地图或重置任务状态。`--require-charge` 使 smoke 在没有真实发生充电时判失败。
+出生充电位，只有在半径 0.5 m 内且速度低于集合静止门槛时才开始充电。定时器会独立检查
+到位和静止状态，因此不会依赖某一条 odom 回调；默认充到容量的 80% 就恢复探索。充电不会
+重启 SLAM、清空地图或重置任务状态。`--require-charge` 使 smoke 在没有真实发生充电时判失败。
 
 两机器人强制充电验收命令：
 

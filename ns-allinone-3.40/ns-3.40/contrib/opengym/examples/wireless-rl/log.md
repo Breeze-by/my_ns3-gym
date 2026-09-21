@@ -2363,3 +2363,39 @@ Result: `task_complete`, coverage 0.932, completion 265.3 s, two returns,
 two completed charges, minimum energy 6.22, and zero collisions. P3A remains a
 same-host zero-loss ideal gateway; fixed delay/loss and ns-3 packet accounting
 are intentionally deferred to P3B/P4.
+
+## 2026-09-22 导航取消与充电闭环修复回归
+
+修改范围：ROS 2 `multi_robot_exploration` 控制器、电池管理器、主 launch、smoke
+入口和使用文档。探索 action 不再仅因地图信息增益在 3 秒后变化就取消；目标被观察到
+只有同时持续无反馈进展才允许触发重规划，普通无进展阈值从 10 秒放宽到 20 秒。电池默认
+容量/初始能量改为 60/24；充电判定半径为 0.5 m，定时器独立检查到位和静止，充到容量
+80% 后恢复探索。
+
+最短验证：
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+colcon build --symlink-install --packages-select \
+  multi_robot multi_robot_exploration merge_map
+PYTHONPATH=src/multi_robot_exploration:/opt/ros/humble/local/lib/python3.10/dist-packages:/opt/ros/humble/lib/python3.10/site-packages \
+  /usr/bin/python3 -m pytest -q \
+  src/multi_robot_exploration/test/test_control.py \
+  src/multi_robot_exploration/test/test_battery_manager.py
+python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 1 \
+  --gazebo-seed 101 --startup-timeout 240 --message-timeout 60 \
+  --shutdown-timeout 45 --evaluation-duration 180 \
+  --evaluation-wait-timeout 300 --target-detection --rally --battery \
+  --require-charge --battery-capacity 30 --battery-initial-energy 8 \
+  --battery-charge-duration 5 --battery-charge-radius 0.5 \
+  --battery-charge-target-fraction 0.8 --target-x -4 --target-y 4 \
+  --episode-id fix_20260922_charge_nav
+```
+
+结果：构建通过；pytest 33/33 通过。headless episode 在仿真时刻约 2086 s 触发返航，
+日志确认 `started charging`、5 s 后 `charged and resumed`，随后继续探索、发现目标并
+完成集合。评估 JSON `ros2_ws/ros2-multi-robot-automap/log/evaluation/fix_20260922_charge_nav.json`
+记录 `success=true`、1 次返航、1 次完成充电、0 碰撞、最终电量 17.02/30；3 个取消状态
+均来自低电量安全抢占或发现目标后的正常任务切换，不是充电失败。该回归未修改 ns-3
+代码；网络实验仍按 P3B/P4 计划未开始。

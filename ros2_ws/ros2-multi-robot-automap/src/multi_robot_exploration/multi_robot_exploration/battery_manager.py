@@ -67,6 +67,10 @@ def return_attempt_failure_reason(attempts, maximum_attempts):
     return "battery_return_unreachable" if attempts >= maximum_attempts else ""
 
 
+def charge_target_energy(capacity, target_fraction):
+    return capacity * target_fraction
+
+
 class BatteryManager(Node):
     def __init__(self):
         super().__init__("battery_manager")
@@ -78,10 +82,10 @@ class BatteryManager(Node):
             self.declare_parameter("charge_y", 0.0).value
         )
         self.capacity = float(
-            self.declare_parameter("capacity", 100.0).value
+            self.declare_parameter("capacity", 60.0).value
         )
         self.initial_energy = float(
-            self.declare_parameter("initial_energy", 100.0).value
+            self.declare_parameter("initial_energy", 24.0).value
         )
         self.move_cost = float(
             self.declare_parameter("move_cost_per_m", 1.0).value
@@ -99,7 +103,10 @@ class BatteryManager(Node):
             self.declare_parameter("nominal_speed_mps", 0.18).value
         )
         self.charge_radius = float(
-            self.declare_parameter("charge_radius_m", 0.25).value
+            self.declare_parameter("charge_radius_m", 0.5).value
+        )
+        self.charge_target_fraction = float(
+            self.declare_parameter("charge_target_fraction", 0.8).value
         )
         self.charge_duration = float(
             self.declare_parameter("charge_duration_sec", 10.0).value
@@ -132,6 +139,7 @@ class BatteryManager(Node):
             or self.return_path_factor < 1
             or self.nominal_speed <= 0
             or self.charge_radius <= 0
+            or not 0 < self.charge_target_fraction <= 1
             or self.charge_duration <= 0
             or self.return_timeout <= 0
             or self.charge_timeout <= 0
@@ -197,6 +205,12 @@ class BatteryManager(Node):
             f"Battery manager ready for {self.robot_name}; "
             f"energy={self.energy:.2f}/{self.capacity:.2f}, "
             f"charger=({self.charge_x:.2f}, {self.charge_y:.2f})."
+        )
+
+    @property
+    def charge_target(self):
+        return charge_target_energy(
+            self.capacity, self.charge_target_fraction
         )
 
     def now(self):
@@ -334,7 +348,7 @@ class BatteryManager(Node):
         if now - self.charge_stable_started_at < self.charge_duration:
             return
         self.total_charging_time += now - self.mode_started_at
-        self.energy = self.capacity
+        self.energy = self.charge_target
         self.charge_count += 1
         self.mode = ACTIVE
         self.mode_started_at = now
@@ -361,6 +375,10 @@ class BatteryManager(Node):
         if reason:
             self.fail(reason)
             return
+        if self.mode == RETURNING and self.at_charger_and_stopped():
+            self.begin_charging()
+        elif self.mode == CHARGING:
+            self.update_charging(now)
         if (
             self.mode == RETURNING
             and self.return_goal_handle is None
@@ -449,6 +467,7 @@ class BatteryManager(Node):
                 "mode": self.mode,
                 "energy": max(0.0, self.energy),
                 "capacity": self.capacity,
+                "charge_target_fraction": self.charge_target_fraction,
                 "initial_energy": self.initial_energy,
                 "minimum_energy": max(0.0, self.minimum_energy),
                 "return_count": self.return_count,

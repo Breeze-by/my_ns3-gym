@@ -5,6 +5,7 @@ from multi_robot_exploration.battery_manager import (
     CHARGING,
     RETURNING,
     battery_failure_reason,
+    charge_target_energy,
     consume_energy,
     estimated_return_energy,
     odometry_distance,
@@ -22,6 +23,10 @@ def test_return_reserve_includes_path_time_and_margin():
     reserve = estimated_return_energy(2.0, 1.0, 0.1, 1.5, 0.5, 4.0)
 
     assert reserve == pytest.approx(7.6)
+
+
+def test_charge_target_is_a_fraction_of_capacity():
+    assert charge_target_energy(60.0, 0.8) == pytest.approx(48.0)
 
 
 def test_failure_reasons_cover_exhaustion_unreachable_and_charge_timeout():

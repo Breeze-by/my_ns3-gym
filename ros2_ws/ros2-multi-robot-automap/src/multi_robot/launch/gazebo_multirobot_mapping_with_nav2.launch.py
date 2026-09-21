@@ -80,6 +80,10 @@ def launch_setup(context, *args, **kwargs):
     battery_charge_duration = LaunchConfiguration(
         "battery_charge_duration_sec"
     )
+    battery_charge_radius = LaunchConfiguration("battery_charge_radius_m")
+    battery_charge_target = LaunchConfiguration(
+        "battery_charge_target_fraction"
+    )
     battery_return_timeout = LaunchConfiguration(
         "battery_return_timeout_sec"
     )
@@ -527,6 +531,8 @@ def launch_setup(context, *args, **kwargs):
                         "idle_cost_per_sec": battery_idle_cost,
                         "return_safety_margin": battery_safety_margin,
                         "charge_duration_sec": battery_charge_duration,
+                        "charge_radius_m": battery_charge_radius,
+                        "charge_target_fraction": battery_charge_target,
                         "return_timeout_sec": battery_return_timeout,
                         "charge_timeout_sec": battery_charge_timeout,
                     }
@@ -920,7 +926,7 @@ def generate_launch_description():
     ld.add_action(
         DeclareLaunchArgument(
             "battery_capacity",
-            default_value="100.0",
+            default_value="60.0",
             description="Full battery energy units.",
         )
     )
@@ -928,7 +934,7 @@ def generate_launch_description():
     ld.add_action(
         DeclareLaunchArgument(
             "battery_initial_energy",
-            default_value="40.0",
+            default_value="24.0",
             description="Initial energy units for every active robot.",
         )
     )
@@ -962,6 +968,22 @@ def generate_launch_description():
             "battery_charge_duration_sec",
             default_value="10.0",
             description="Stable simulated seconds required to recharge.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "battery_charge_radius_m",
+            default_value="0.5",
+            description="Maximum distance from the charger pose to charge.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "battery_charge_target_fraction",
+            default_value="0.8",
+            description="Fraction of capacity restored before resuming.",
         )
     )
 

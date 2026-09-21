@@ -237,6 +237,10 @@ def main():
             "--target-detection",
             "--rally",
             "--battery",
+            # Keep the frozen P2D matrix reproducible after lowering the
+            # interactive launch default battery capacity.
+            "--battery-capacity",
+            "100.0",
             "--battery-initial-energy",
             str(scenario["battery_initial_energy"]),
             "--target-x",

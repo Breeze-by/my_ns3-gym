@@ -392,12 +392,16 @@ def parse_args():
     parser.add_argument("--rally-max-retries", type=int, default=2)
     parser.add_argument("--battery", action="store_true")
     parser.add_argument("--require-charge", action="store_true")
-    parser.add_argument("--battery-capacity", type=float, default=100.0)
-    parser.add_argument("--battery-initial-energy", type=float, default=100.0)
+    parser.add_argument("--battery-capacity", type=float, default=60.0)
+    parser.add_argument("--battery-initial-energy", type=float, default=24.0)
     parser.add_argument("--battery-move-cost", type=float, default=1.0)
     parser.add_argument("--battery-idle-cost", type=float, default=0.02)
     parser.add_argument("--battery-safety-margin", type=float, default=5.0)
     parser.add_argument("--battery-charge-duration", type=float, default=10.0)
+    parser.add_argument("--battery-charge-radius", type=float, default=0.5)
+    parser.add_argument(
+        "--battery-charge-target-fraction", type=float, default=0.8
+    )
     parser.add_argument("--battery-return-timeout", type=float, default=120.0)
     parser.add_argument("--battery-charge-timeout", type=float, default=60.0)
     parser.add_argument("--task-regions", action="store_true")
@@ -495,6 +499,9 @@ def main():
         f"battery_idle_cost_per_sec:={args.battery_idle_cost}",
         f"battery_return_safety_margin:={args.battery_safety_margin}",
         f"battery_charge_duration_sec:={args.battery_charge_duration}",
+        f"battery_charge_radius_m:={args.battery_charge_radius}",
+        "battery_charge_target_fraction:="
+        f"{args.battery_charge_target_fraction}",
         f"battery_return_timeout_sec:={args.battery_return_timeout}",
         f"battery_charge_timeout_sec:={args.battery_charge_timeout}",
     ]

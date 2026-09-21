@@ -35,7 +35,7 @@ MAX_TARGET_PATH_M = 12.0
 MAX_NAVIGATION_LEG_M = 5.0
 TARGET_HISTORY_SEC = 10.0
 BAD_TARGET_SEC = 30.0
-NO_PROGRESS_SEC = 10.0
+NO_PROGRESS_SEC = 20.0
 USEFUL_TRAVEL_M = 0.75
 PATH_COST_EXPONENT = 1.5
 GOAL_REPLAN_SEC = 3.0
@@ -2183,6 +2183,9 @@ class HeadquartersControl(Node):
                 self.goal_initial_gain[robot_name],
                 remaining_gain,
                 now - started_at,
+            ) and (
+                last_progress is not None
+                and now - last_progress >= NO_PROGRESS_SEC
             )
             stalled = (
                 last_progress is not None
