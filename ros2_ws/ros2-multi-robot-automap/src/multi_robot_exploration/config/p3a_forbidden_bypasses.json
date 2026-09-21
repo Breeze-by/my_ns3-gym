@@ -1,0 +1,52 @@
+{
+  "source_rules": [
+    {
+      "file": "multi_robot_exploration/control.py",
+      "forbidden_literals": [
+        "f\"/{robot_name}/map\"",
+        "f\"/{robot_name}/odom\"",
+        "f\"/{robot_name}/tf\"",
+        "f\"/{robot_name}/battery_state\"",
+        "f\"/{robot_name}/navigate_to_pose\"",
+        "\"/target_observation\"",
+        "\"/target_detection\"",
+        "\"/battery_failure\""
+      ]
+    },
+    {
+      "file": "../merge_map/merge_map/merge_map.py",
+      "forbidden_literals": ["f\"/tb{index + 1}/map\""]
+    },
+    {
+      "file": "multi_robot_exploration/battery_manager.py",
+      "forbidden_literals": ["String, \"/task_state\""]
+    },
+    {
+      "file": "../multi_robot/params/nav2_params_tb1_0.yaml",
+      "forbidden_literals": ["map_topic: /merge_map"]
+    },
+    {
+      "file": "../multi_robot/params/nav2_params_tb2_0.yaml",
+      "forbidden_literals": ["map_topic: /merge_map"]
+    },
+    {
+      "file": "../multi_robot/params/nav2_params_tb3_0.yaml",
+      "forbidden_literals": ["map_topic: /merge_map"]
+    },
+    {
+      "file": "../multi_robot/params/nav2_params_tb4_0.yaml",
+      "forbidden_literals": ["map_topic: /merge_map"]
+    }
+  ],
+  "runtime_rules": {
+    "central_nodes": ["/headquarters_control", "/merge_map"],
+    "forbidden_topic_templates": [
+      "/tb{index}/map",
+      "/tb{index}/odom",
+      "/tb{index}/tf",
+      "/tb{index}/navigate_to_pose/_action/feedback",
+      "/tb{index}/navigate_to_pose/_action/status"
+    ],
+    "robot_forbidden_topic": "/merge_map"
+  }
+}

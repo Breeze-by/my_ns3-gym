@@ -1,4 +1,5 @@
 from setuptools import setup
+from glob import glob
 
 package_name = 'multi_robot_exploration'
 
@@ -10,6 +11,7 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        ('share/' + package_name + '/config', glob('config/*.json')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -21,7 +23,10 @@ setup(
     entry_points={
         'console_scripts': [
             'battery_manager = multi_robot_exploration.battery_manager:main',
+            'bypass_audit = multi_robot_exploration.bypass_audit:main',
             'control = multi_robot_exploration.control:main',
+            'ideal_gateway = multi_robot_exploration.ideal_gateway:main',
+            'navigation_gateway = multi_robot_exploration.navigation_gateway:main',
             'nav2_ready_gate = multi_robot_exploration.nav2_ready_gate:main',
             'robot_status_panel = multi_robot_exploration.status_panel:main',
             'target_detector = multi_robot_exploration.target_detector:main',

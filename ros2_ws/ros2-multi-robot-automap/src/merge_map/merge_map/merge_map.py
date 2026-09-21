@@ -93,6 +93,9 @@ class MergeMapNode(Node):
             "output_topic", "/merge_map"
         ).value
         self.robot_count = self.declare_parameter("robot_count", 3).value
+        self.input_topic_template = self.declare_parameter(
+            "input_topic_template", "/tb{index}/map"
+        ).value
 
         qos = QoSProfile(depth=10)
         qos.durability = DurabilityPolicy.TRANSIENT_LOCAL
@@ -103,7 +106,7 @@ class MergeMapNode(Node):
         self.maps = [None] * self.robot_count
         self.map_subscriptions = []
         for index in range(self.robot_count):
-            topic = f"/tb{index + 1}/map"
+            topic = self.input_topic_template.format(index=index + 1)
             self.map_subscriptions.append(
                 self.create_subscription(
                     OccupancyGrid,

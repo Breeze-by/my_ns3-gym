@@ -166,7 +166,38 @@ def launch_setup(context, *args, **kwargs):
 
     remappings = [("/tf", "tf"), ("/tf_static", "tf_static")]
 
-    # ========= Start merge_map and headquarters control =========
+    # ========= Start the explicit ideal gateway and central nodes =========
+    actions.append(
+        Node(
+            package="multi_robot_exploration",
+            executable="ideal_gateway",
+            name="ideal_gateway",
+            parameters=[
+                {
+                    "robot_count": robot_count_cfg,
+                    "use_sim_time": use_sim_time,
+                }
+            ],
+            output="screen",
+        )
+    )
+    for robot in robots:
+        actions.append(
+            Node(
+                package="multi_robot_exploration",
+                executable="navigation_gateway",
+                namespace=robot["name"],
+                name="navigation_gateway",
+                parameters=[
+                    {
+                        "robot_name": robot["name"],
+                        "use_sim_time": use_sim_time,
+                    }
+                ],
+                output="screen",
+            )
+        )
+
     merge_map_node = Node(
         package="merge_map",
         executable="merge_map",
@@ -175,6 +206,7 @@ def launch_setup(context, *args, **kwargs):
             {
                 "frame_id": "map",
                 "output_topic": "/merge_map",
+                "input_topic_template": "/gateway/received/tb{index}/map",
                 "robot_count": robot_count_cfg,
                 "use_sim_time": use_sim_time,
             }

@@ -1,0 +1,12 @@
+string message_type
+string sender
+string recipient
+uint64 sequence
+uint64 correlation_id
+builtin_interfaces/Time generation_time
+string task_phase
+uint32 payload_length
+string encoding
+float32 ttl_sec
+uint64 ack_sequence
+uint8[] payload

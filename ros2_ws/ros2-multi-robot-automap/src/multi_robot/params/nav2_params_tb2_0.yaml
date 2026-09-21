@@ -255,7 +255,7 @@ global_costmap:
       robot_radius: 0.22
       resolution: 0.05
       track_unknown_space: true
-      map_topic: /merge_map
+      map_topic: /tb2/gateway/merge_map
       plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
@@ -269,7 +269,7 @@ global_costmap:
           data_type: "LaserScan"
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
-        map_topic: /merge_map
+        map_topic: /tb2/gateway/merge_map
         map_subscribe_transient_local: True
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"

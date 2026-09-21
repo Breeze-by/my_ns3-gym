@@ -174,6 +174,26 @@ python3 scripts/run_p2d_baseline.py \
 `COMPLETE`、零碰撞。走廊 40 能量的双机器人检查会在任务后段返充并于 300 秒超时，因此在
 正式批次前把该场景统一校准为 45；主 launch 的通用默认值仍为 40。
 
+### 3.6 P3A 显式零损 gateway
+
+主 launch 现在默认启动一个 `ideal_gateway`、每台机器人一个 `navigation_gateway`，所有
+中央地图/位姿/TF/电量/检测输入和 Nav2 目标都经过 `GatewayEnvelope`。地图合并消费
+`/gateway/received/tbN/map`，机器人全局代价图消费 `/tbN/gateway/merge_map`，中央只使用
+`/gateway/received/...` 接收状态；P3A 不改变理想链路的零丢包、零附加时延语义。
+
+源码和运行时旁路审计可单独执行：
+
+```bash
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+ros2 run multi_robot_exploration bypass_audit --robot-count 3 --wait-sec 10
+```
+
+正式矩阵使用 `scripts/run_p2d_baseline.py` 的同一场景配置，运行 ID 为
+`p3a_formal_gateway_3scenes_v2`；结果写入 `log/p2d_baseline/<run-id>/`。该批次 10/10
+`COMPLETE`、零碰撞，另有 `p3a_gateway_forced_charge_2r_seed303` 以初始能量 18 完成两次
+充电并 `COMPLETE`。
+
 ## 4. 切换 Gazebo world
 
 当前已验证的场景：

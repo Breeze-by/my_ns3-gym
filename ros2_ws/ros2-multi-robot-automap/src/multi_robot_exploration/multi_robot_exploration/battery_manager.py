@@ -163,7 +163,10 @@ class BatteryManager(Node):
                 20,
             ),
             self.create_subscription(
-                String, "/task_state", self.task_state_callback, state_qos
+                String,
+                f"/{self.robot_name}/gateway/task_state",
+                self.task_state_callback,
+                state_qos,
             ),
         ]
         self.navigation = ActionClient(

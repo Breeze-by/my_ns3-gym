@@ -34,7 +34,15 @@ def wait_until_ready(
     target_detection_enabled=False,
     battery_enabled=False,
 ):
-    expected_topics = {"/merge_map"}
+    expected_topics = {
+        "/gateway/acks",
+        "/gateway/downlink/candidates",
+        "/gateway/downlink/delivered",
+        "/gateway/uplink/candidates",
+        "/gateway/uplink/delivered",
+        "/merge_map",
+        "/task_state",
+    }
     for index in range(1, robot_count + 1):
         expected_topics.update(
             {
@@ -42,6 +50,10 @@ def wait_until_ready(
                 f"/tb{index}/map",
                 f"/tb{index}/odom",
                 f"/tb{index}/scan",
+                f"/tb{index}/gateway/merge_map",
+                f"/gateway/received/tb{index}/map",
+                f"/gateway/received/tb{index}/odom",
+                f"/gateway/received/tb{index}/tf",
             }
         )
     if evaluation_enabled:
@@ -50,7 +62,7 @@ def wait_until_ready(
             f"/tb{index}/collision" for index in range(1, robot_count + 1)
         )
     if target_detection_enabled:
-        expected_topics.add("/task_state")
+        expected_topics.add("/gateway/received/target_detection")
     if battery_enabled:
         expected_topics.update(
             f"/tb{index}/battery_state"
@@ -140,6 +152,26 @@ def require_entities(names, timeout):
     if missing:
         raise RuntimeError(
             "Gazebo entities were not spawned: " + ", ".join(missing)
+        )
+
+
+def require_bypass_audit(robot_count, timeout):
+    result = run_ros(
+        [
+            "run",
+            "multi_robot_exploration",
+            "bypass_audit",
+            "--robot-count",
+            str(robot_count),
+            "--wait-sec",
+            "10",
+        ],
+        timeout=timeout,
+    )
+    if result.returncode != 0:
+        raise RuntimeError(
+            "P3A forbidden-bypass audit failed: "
+            + (result.stdout + result.stderr).strip()
         )
 
 
@@ -495,6 +527,8 @@ def main():
                 battery_enabled=args.battery,
             )
             print("ROS graph and Nav2 lifecycle nodes are ready.", flush=True)
+            require_bypass_audit(args.robot_count, args.message_timeout)
+            print("P3A forbidden-bypass audit passed.", flush=True)
             require_message(
                 "/tb1/scan",
                 args.message_timeout,

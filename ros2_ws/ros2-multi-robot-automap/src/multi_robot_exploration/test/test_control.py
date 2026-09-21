@@ -113,6 +113,22 @@ def test_goal_replans_after_information_is_observed():
     assert control.goal_is_stale(1000, 200, 10.0)
 
 
+def test_coordinator_waits_for_every_robot_input_before_assignment():
+    positions = {"tb1": (0.0, 0.0), "tb2": None}
+    maps = {"tb1": object(), "tb2": object()}
+
+    assert not control.all_robot_inputs_ready(positions, maps)
+    positions["tb2"] = (1.0, 0.0)
+    assert control.all_robot_inputs_ready(positions, maps)
+
+
+def test_central_navigation_pauses_for_any_local_safety_return():
+    assert control.all_batteries_active({"tb1": "ACTIVE", "tb2": "ACTIVE"})
+    assert not control.all_batteries_active(
+        {"tb1": "ACTIVE", "tb2": "RETURNING"}
+    )
+
+
 def test_path_waypoint_limits_navigation_leg():
     traversable = np.ones((1, 11), dtype=bool)
 

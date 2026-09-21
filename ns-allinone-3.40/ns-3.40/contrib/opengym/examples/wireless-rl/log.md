@@ -2299,3 +2299,67 @@ Result: package pytest passed 55 tests with one copyright skip; all 20 selected
 Python files passed `ament_flake8`; byte-compilation and all three package
 builds passed. Aggregate colcon result was 61 tests, 0 errors, 0 failures, and
 2 copyright skips. `git diff --check` passed.
+
+## 2026-09-22 P3A explicit gateway
+
+P3A source/build validation after the P2D acceptance:
+
+```bash
+source /opt/ros/humble/setup.bash
+cd ros2_ws/ros2-multi-robot-automap
+colcon build --symlink-install --packages-select \
+  multi_robot_interfaces multi_robot_exploration merge_map multi_robot \
+  --cmake-args -DPython3_EXECUTABLE=/usr/bin/python3 \
+  -DPYTHON_EXECUTABLE=/usr/bin/python3
+colcon test --packages-select multi_robot_exploration merge_map
+colcon test-result --verbose
+```
+
+The build passed. The test result was 66 tests, 0 errors, 0 failures, and 2
+skips. The source/runtime `bypass_audit` passed for three robots. The conda
+`ns3gym` environment was also tried but lacks `em` and pytest; that environment
+failure is retained and the ROS validation used the system ROS Python.
+
+The first P3A pilot (`p3a_gateway_pilot_lab_seed101`, three robots, energy 40)
+timed out under the unbounded gateway rate and showed high CPU. After adding
+per-message rate limits and zlib map compression, pilot2 completed at 121.8 s
+with zero collisions. Pilot3 exposed a real coordination race: one robot
+returned for charge while the central controller continued dispatching rally
+goals, producing 19 collision events. Pilot4 stopped before task start because
+the two-second runtime audit transiently missed `/headquarters_control`; the
+audit wait was raised to 10 s. Pilot5 and pilot6 then completed at 110.7 s and
+132.2 s with zero collisions. These failures and fixes are retained in the P3A
+report and were not substituted for formal episodes.
+
+Formal gateway matrix command:
+
+```bash
+python scripts/run_p2d_baseline.py --seeds 101 202 303 \
+  --run-id p3a_formal_gateway_3scenes_v2 --ros-domain-base 180 \
+  --startup-timeout 600 --evaluation-wait-timeout 600
+```
+
+The 10 episodes (lab/rooms/corridors, three seeds each, plus corridors two-
+robot seed 202 cross-check) all passed `task_complete`, `COMPLETE`, and zero
+collisions with no infrastructure failures. The summary is
+`ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a_formal_gateway_3scenes_v2/summary.json`.
+
+Forced-charge regression command:
+
+```bash
+ROS_DOMAIN_ID=196 python scripts/ros_smoke_test.py --world my_world.world \
+  --robot-count 2 --gazebo-seed 303 --startup-timeout 300 \
+  --message-timeout 90 --shutdown-timeout 60 --evaluation-duration 300 \
+  --coverage-threshold 0 --evaluation-wait-timeout 600 --target-detection \
+  --rally --battery --require-charge --battery-initial-energy 18 \
+  --battery-capacity 100 --battery-move-cost 1 --battery-idle-cost 0.02 \
+  --battery-safety-margin 5 --battery-charge-duration 10 \
+  --battery-return-timeout 120 --battery-charge-timeout 60 --target-x -4 \
+  --target-y 4 --target-max-distance 3 --target-field-of-view 90 \
+  --target-confirmation-frames 3 --episode-id p3a_gateway_forced_charge_2r_seed303
+```
+
+Result: `task_complete`, coverage 0.932, completion 265.3 s, two returns,
+two completed charges, minimum energy 6.22, and zero collisions. P3A remains a
+same-host zero-loss ideal gateway; fixed delay/loss and ns-3 packet accounting
+are intentionally deferred to P3B/P4.

@@ -654,8 +654,7 @@ python3 scripts/ros_smoke_test.py \
 分别为 6.81/6.66；之后继续探索，在 118.2 秒确认目标、126.2 秒进入 `RALLY`、190.1 秒
 进入 `COMPLETE`。最终覆盖率 92.15%、总路径 49.733 m、搜索重叠和碰撞均为 0。逐机器人
 最终集合误差为 0.216/0.128 m，最终电池模式均为 `ACTIVE`。耗尽、返航不可达和充电超时由
-构造测试验证为明确失败原因。P2C 已于 2026-09-18 通过用户验收；P2D 已完成实现和正式矩阵，
-当前待用户验收。验收后新增的
+构造测试验证为明确失败原因。P2C 已于 2026-09-18 通过用户验收；P2D 已完成实现和正式矩阵并通过用户验收；P3A 已完成实现和正式 gateway 矩阵，当前待用户验收。验收后新增的
 Gazebo 重点区域和实时状态栏只读现有任务数据，不改变 P2C 控制与评分口径。
 
 ### 9.4 P2D 完整理想通信任务基线
@@ -672,7 +671,20 @@ Gazebo 重点区域和实时状态栏只读现有任务数据，不改变 P2C �
 
 2026-09-18 最终 10 项门禁全部以 `COMPLETE`、零碰撞结束：lab/rooms 的三个 seeds 使用 40
 能量，走廊三个 seeds 与双机器人交叉检查使用 45。至少一项 lab 任务在 40 能量下完成一次
-安全返充并继续到 `COMPLETE`，说明低电量闭环确实参与任务。P2D 当前为待用户验收；P3 尚未开始。
+安全返充并继续到 `COMPLETE`，说明低电量闭环确实参与任务。P2D 已验收；P3A gateway 矩阵另外完成
+10/10 `COMPLETE`、零碰撞，强制充电回归完成两次充电；P3A 当前待用户验收。
+
+### 9.5 P3A 显式零损 gateway
+
+P3A 使用 `multi_robot_interfaces/GatewayEnvelope` 将地图、位姿、TF、电量、检测和任务命令包装为带发送者、序号、生成时间、TTL、ACK 和载荷长度的消息。`ideal_gateway` 使用本地队列和接收状态存储实现零损交付，`navigation_gateway` 将中央导航命令转换为机器人本地 Nav2 action；源码清单和 ROS graph 均检查中央没有机器人原始 topic/action 直连，也没有机器人 Nav2 对中央 `/merge_map` 的直订阅。运行时审计命令为：
+
+```bash
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+ros2 run multi_robot_exploration bypass_audit --robot-count 3 --wait-sec 10
+```
+
+正式结果位于 `log/p2d_baseline/p3a_formal_gateway_3scenes_v2/`；P3B 才会在同一协议上加入固定 delay/loss，当前 P3A 不代表 Wi-Fi 性能结果。
 
 以下命令适合运行中的人工诊断：
 
@@ -828,32 +840,29 @@ enable_merge_rviz:=false
 
 ## 11. 后续接入 ns-3 的建议切入点
 
-当前闭环为：
+P3A 后当前闭环为：
 
 ```text
-robot 上行：/tbN/odom、/tbN/scan、/tbN/map
-server 决策：headquarters_control 基于 /merge_map 分配目标
-server 下行：/tbN/navigate_to_pose 或 /tbN/cmd_vel
+robot 上行：本地 `/tbN/odom`、`/tbN/map`、TF、电量、检测 -> gateway -> `/gateway/received/...`
+server 决策：`headquarters_control` 基于 gateway 接收地图分配目标
+server 下行：gateway -> `/gateway/{robot}/navigate_to_pose` -> 本地 `/{robot}/navigate_to_pose`
 ```
 
-这些都是当前理想通信直连，不是未来网络实验可保留的路径。P3A 必须统一替换以下边界：
+底层机器人 topic 仍由本地 SLAM/Nav2 使用，但跨机器人/AP 信息不再绕过 gateway。P3A 的边界为：
 
 ```text
 上行：本地地图版本/增量、位姿、电量、任务状态、目标检测 -> gateway -> 中央接收信息存储
 下行：融合地图版本/相关区域、探索/返航/集合命令 -> gateway -> 机器人本地适配器
 ```
 
-中央协调器和 `merge_map` 届时不能继续直订 `/tbN/map`、`/tbN/odom`、`/tbN/tf` 或原始
-目标检测，中央也不能直接调用 `/tbN/navigate_to_pose`。当前 1–3 号机器人的 Nav2 全局
-代价图还直订 `/merge_map`，它也必须改为 gateway 成功交付的融合地图，或明确退回本地地图。
+中央协调器和 `merge_map` 不直订 `/tbN/map`、`/tbN/odom`、`/tbN/tf` 或原始目标检测，中央
+不直接调用 `/{robot}/navigate_to_pose`；1–3 号机器人的 Nav2 全局代价图消费
+`/tbN/gateway/merge_map`。源码/运行时 forbidden-bypass 审计是 P3A 的退出条件。
 评估器可以继续读取 Gazebo 真值，但不得向控制链发布。`ideal/unlimited` baseline 同样经过
 gateway，只把交付设为零丢包和零附加时延，不能恢复旧直连。
 
-在 P3 之前继续按 `IMPLEMENTATION_PLAN.md` 完成：
-
-```text
-P2D 跨 world/目标/能量场景的完整理想通信任务基线
-```
+P3B 将在此 gateway 上继续加入固定 delay/loss 和逐消息账本；在此之前不要把 P3A 的零损结果
+解读为 Wi-Fi 性能结论。
 
 P2B 起只有全体机器人在不同安全集合位姿连续稳定 5 秒后的 `COMPLETE` 才是任务成功；
 `FOUND` 和 P1C 的 90% 覆盖率只是过程指标。当前 TurtleBot3 模型为降低仿真负载关闭了相机；

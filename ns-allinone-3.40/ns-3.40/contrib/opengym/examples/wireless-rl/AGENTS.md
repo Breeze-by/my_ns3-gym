@@ -4,10 +4,11 @@ Last verified against source, local 1/2/3-robot headless smoke tests, P1B
 evaluator tests, final P1C batches, three-world P1C generalization, P2A
 target-detection episodes, the roadmap audit, P2B rally episodes, and the P2B
 coverage/time audit:
-2026-09-18. The user accepted P1C, P2A, P2B, and P2C. The P2C follow-up adds
-Gazebo task-region overlays and a live operator status panel. P2D is implemented
-and awaiting user acceptance; its final evidence contains ten `COMPLETE`,
-zero-collision episodes across three fixed world/target/energy scenarios.
+2026-09-22. The user accepted P1C, P2A, P2B, P2C, and P2D. The P2C follow-up adds
+Gazebo task-region overlays and a live operator status panel. P3A is implemented
+and awaiting user acceptance; its final evidence contains ten gateway-routed
+`COMPLETE`, zero-collision episodes across three fixed world/target/energy scenarios,
+plus a two-robot forced-charge regression with two completed charges.
 
 This directory is the active project inside the larger ns-3 workspace. It is a
 toy ns3-gym scheduling MDP, not a full Wi-Fi/5G network simulation.
@@ -79,7 +80,7 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
 
 ## Current Handoff Snapshot
 
-- Active boundary: P2D is implemented and awaiting user acceptance. P3 has not
+- Active boundary: P3A is implemented and awaiting user acceptance. P3B has not
   started.
 - From P2B onward, only `COMPLETE` is mission success. The fixed first rally
   contract is per-robot position error <=0.35 m, linear speed <=0.05 m/s,
@@ -100,6 +101,11 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
   baseline must traverse the same gateway/received-state/local-adapter path.
   Robot Nav2 global costmaps also currently consume `/merge_map` directly;
   that fused-map downlink must traverse the gateway or be removed.
+- P3A implementation uses `multi_robot_interfaces/GatewayEnvelope`, explicit
+  per-route sequence/timestamp/ACK/TTL fields, zero-loss queues, gateway-delivered
+  received-state topics, and a source/runtime `p3a_forbidden_bypasses.json` audit.
+  Formal run `p3a_formal_gateway_3scenes_v2` passed all 10 episodes; the retained
+  forced-charge check `p3a_gateway_forced_charge_2r_seed303` completed two charges.
 - Formal runs distinguish retained pre-start infrastructure failures from
   post-start task failures; post-start failures cannot be replaced by reruns.
   P7 requires at least 20 paired held-out episodes for primary comparisons.
