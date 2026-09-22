@@ -9,8 +9,12 @@ and awaiting user acceptance; its final evidence contains ten gateway-routed
 plus a two-robot forced-charge regression with two completed charges. Those P3A
 results are frozen historical evidence: later HEAD commits changed coordinator,
 battery, and clearance behavior, so P3A remains awaiting current-HEAD revalidation
-and user acceptance. The roadmap review is recorded in
-`report/20260923_project_review.md`.
+and user acceptance. Current-HEAD P3A.5 revalidation at `41f63fb` passed the
+graph/bypass subgate and forced-charge regression, but the formal matrix was
+9/10 `COMPLETE`: lab seed 202 failed after episode start during rally. The
+failed episode is retained; P3A.5 remains in progress and P3B has not started.
+The roadmap review is recorded in `report/20260923_project_review.md`, and the
+current run is recorded in `report/20260923_p3a5.md`.
 
 This directory is the active project inside the larger ns-3 workspace. It is a
 toy ns3-gym scheduling MDP, not a full Wi-Fi/5G network simulation.
@@ -82,8 +86,9 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
 
 ## Current Handoff Snapshot
 
-- Active boundary: P3A is implemented and awaiting current-HEAD revalidation and
-  user acceptance. P3B has not started.
+- Active boundary: P3A.5 is in progress. The current-HEAD graph/bypass subgate
+  passed, but the formal matrix has one retained post-start rally failure, so
+  P3A is not accepted and P3B has not started.
 - From P2B onward, only `COMPLETE` is mission success. The fixed first rally
   contract is per-robot position error <=0.35 m, linear speed <=0.05 m/s,
   angular speed <=0.10 rad/s, all robots continuously stable for 5 simulated
@@ -103,6 +108,10 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
   Nav2 action calls. Even the ideal baseline must traverse the same
   gateway/received-state/local-adapter path. Robot Nav2 global costmaps must
   consume only gateway-delivered fused maps; any regression rejects the batch.
+- The current P3A.5 candidate is commit `41f63fb`: 9/10 formal episodes reached
+  `COMPLETE`, zero collisions and zero infrastructure failures; lab seed 202
+  timed out in `RALLY` after one safety charge. The evidence and next repair
+  rule are in `report/20260923_p3a5.md`.
 - P3A implementation uses `multi_robot_interfaces/GatewayEnvelope`, explicit
   per-route sequence/timestamp/ACK/TTL fields, zero-loss queues, gateway-delivered
   received-state topics, and a source/runtime `p3a_forbidden_bypasses.json` audit.

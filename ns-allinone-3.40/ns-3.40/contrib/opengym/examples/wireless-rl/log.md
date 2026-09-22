@@ -2485,3 +2485,71 @@ rally 模式单元测试为 10/10；三个相关 ROS 包构建通过。完整 `m
 为 62 passed、1 skipped、1 failed：唯一失败是仓库既有的 flake8 汇总（扫描历史源码及生成的
 build/install 文件，共 397 个 style errors），不是本轮修改的断言或运行时错误；该问题保留，
 未做无关格式化清理。
+
+## 2026-09-23 P3A.5 当前 HEAD 重验证（提交 41f63fb）
+
+本轮把此前 gateway formal v2 之后发生的电池、协调器和净空修改纳入当前 task-stack 重验证。
+代码状态为干净的 `41f63fb16d64e21a3ae1f296d509303b96b74528`；构建了
+`multi_robot_interfaces`、`multi_robot_exploration`、`merge_map`，gateway/evaluator 定向
+测试 13/13 通过，源码旁路审计通过。正式命令为：
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle
+PYTHONNOUSERSITE=1 /usr/bin/python3 scripts/run_p2d_baseline.py \
+  --seeds 101 202 303 \
+  --run-id p3a5_current_head_41f63fb \
+  --ros-domain-base 220 \
+  --startup-timeout 600 \
+  --evaluation-wait-timeout 600
+```
+
+runner 的固定矩阵为 lab `(-4,4,40)`、rooms `(5,3,40)`、corridors `(-4.5,-0.5,45)` 的
+三机器人 101/202/303，另加 corridors 双机器人 seed 202；每个 episode 时长 300 s、消息
+等待 90 s。结果目录为：
+
+```text
+ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a5_current_head_41f63fb/
+```
+
+结果为 9/10 `COMPLETE`、0/10 基础设施失败、10/10 零碰撞。唯一失败是 lab 三机器人 seed
+202：episode 已启动，发现目标后进入 `RALLY`，`tb3` 发生一次安全返航充电，恢复后出现
+`Starting point in lethal space`、`No valid trajectories` 和 `Failed to make progress`，
+最终在 300.4 s 超时；该失败保留，不能按基础设施故障重试或用成功样本替换。它的评估 JSON
+为 `episodes/p3a5_current_head_41f63fb_lab_far_northwest_3r_seed202.json`。
+
+每个正式 episode 的 smoke 都报告 `P3A forbidden-bypass audit passed`。对 10 个正式图快照
+和强制充电图快照的独立复核确认：中央协调器只订阅 `/gateway/received/...`，Nav2 目标只经
+`/gateway/tbN/navigate_to_pose`，地图合并只订阅 gateway 接收地图，各机器人全局代价图只
+订阅 `/tbN/gateway/merge_map`。`ideal_gateway` 的原始机器人输入和 evaluator/truth 节点的
+只读真值订阅属于清单允许例外。图快照保存于 `graphs/*.json` 和 `forced_charge_graph.json`。
+
+随后运行了强制充电回归：
+
+```bash
+ROS_DOMAIN_ID=230 PYTHONNOUSERSITE=1 /usr/bin/python3 scripts/ros_smoke_test.py \
+  --world my_world.world --robot-count 2 --gazebo-seed 303 \
+  --startup-timeout 600 --message-timeout 90 --shutdown-timeout 60 \
+  --evaluation-duration 300 --coverage-threshold 0 --evaluation-wait-timeout 600 \
+  --target-detection --rally --battery --require-charge \
+  --battery-capacity 100 --battery-initial-energy 18 \
+  --battery-move-cost 1 --battery-idle-cost 0.02 --battery-safety-margin 5 \
+  --battery-charge-duration 10 --battery-return-timeout 120 --battery-charge-timeout 60 \
+  --target-x -4 --target-y 4 --target-max-distance 3 --target-field-of-view 90 \
+  --target-confirmation-frames 3 \
+  --episode-id p3a5_current_head_41f63fb_forced_charge_2r_seed303 \
+  --evaluation-output-dir log/p2d_baseline/p3a5_current_head_41f63fb/forced_charge \
+  --log-dir log/p2d_baseline/p3a5_current_head_41f63fb/forced_charge_logs \
+  --bypass-audit-output log/p2d_baseline/p3a5_current_head_41f63fb/forced_charge_graph.json
+```
+
+强制回归 `COMPLETE`，两台机器人各完成 1 次充电（总计 2 次），最低电量 6.49，零碰撞；
+结果为 `forced_charge/p3a5_current_head_41f63fb_forced_charge_2r_seed303.json`。
+
+结论：P3A.5 的图/旁路和充电子门通过，但完整任务门未通过，`task_stack_frozen_commit`
+不能冻结，P3B 不得开始。下一步先分析 lab/seed202 返航后的地图版本、全局代价图和 rally
+目标，再在修复提交上按同一 10 格矩阵整批重跑。完整评审见
+`report/20260923_p3a5.md`。

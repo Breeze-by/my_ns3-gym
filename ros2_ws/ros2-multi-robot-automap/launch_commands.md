@@ -197,6 +197,22 @@ ros2 run multi_robot_exploration bypass_audit --robot-count 3 --wait-sec 10
 充电并 `COMPLETE`。由于之后 HEAD 修改了协调器、电池和净空逻辑，当前 P3A.5 必须在冻结
 commit 上重跑并写入 manifest，不能把此历史目录直接当成当前验收证据。
 
+### 3.7 P3A.5 当前 task-stack 重验证
+
+P3A.5 runner 会为每个 episode 保存尝试记录、启动日志和 ROS graph 快照，并在 summary 中写入
+`task_stack_frozen_commit`、源码/配置哈希和环境版本。旁路审计还支持将快照写入指定文件：
+
+```bash
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+ros2 run multi_robot_exploration bypass_audit --robot-count 3 \
+  --wait-sec 10 --graph-output /tmp/p3a_graph.json
+```
+
+正式批量入口是 `scripts/run_p2d_baseline.py`。只有完整矩阵全部 `COMPLETE`、零碰撞、零基础
+设施失败且 graph audit 通过时，才将 manifest 中的提交冻结为后续 P3B/P4 基线。当前候选结果
+和失败保留规则见 `wireless-rl/report/20260923_p3a5.md`。
+
 ## 4. 切换 Gazebo world
 
 当前已验证的场景：

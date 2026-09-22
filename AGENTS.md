@@ -63,9 +63,11 @@ matrix has ten `COMPLETE`, zero-collision episodes across three worlds
 (lab/rooms energy 40, corridors energy 45), including a two-robot corridors
 cross-check. P3A is implemented and awaiting user acceptance; its formal
 gateway matrix is historical because later HEAD commits changed the
-coordinator, battery, and clearance logic. Re-run P2D/P3A on a frozen current
-task-stack commit with commit/config/environment manifests before accepting P3A
-or starting P3B.
+coordinator, battery, and clearance logic. The current-HEAD P3A.5 run at
+`41f63fb` passed the graph/bypass subgate and forced-charge regression, but
+only 9/10 formal episodes completed: lab seed 202 failed after episode start
+in `RALLY`. The failed episode is retained; P3A.5 remains in progress and
+P3B has not started.
 The revised plan adds the previously missing
 P2D full ideal-task integration gate, splits ns-3 time/packet coupling from
 Wi-Fi calibration, and fixes formal run/statistical rules. From P2B onward only
