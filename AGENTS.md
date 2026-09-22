@@ -43,19 +43,26 @@ the source of experimental claims.
 
 ## Current Handoff
 
-As of 2026-09-18, the user has accepted P1C, P2A, P2B, and P2C. Each robot has
+As of 2026-09-23, the user has accepted P1C, P2A, P2B, P2C, and P2D. Each robot has
 a local distance/time energy model, safety-reserve return, a distinct charging
 pose, and charge/resume behavior. A forced-charge two-robot episode completed
 with two charges, no exhaustion, and zero collisions. The P2C follow-up adds
 visual-only Gazebo task regions and a default-on per-robot status panel for
-manual runs; battery managers are also enabled by default. P2D is implemented
-and awaiting user acceptance: the final fixed matrix has ten `COMPLETE`,
-zero-collision episodes across three worlds (lab/rooms energy 40, corridors
-energy 45), including a two-robot corridors cross-check.
+manual runs; battery managers are also enabled by default. P2D's final fixed
+matrix has ten `COMPLETE`, zero-collision episodes across three worlds
+(lab/rooms energy 40, corridors energy 45), including a two-robot corridors
+cross-check. P3A is implemented and awaiting user acceptance; its formal
+gateway matrix is historical because later HEAD commits changed the
+coordinator, battery, and clearance logic. Re-run P2D/P3A on a frozen current
+task-stack commit with commit/config/environment manifests before accepting P3A
+or starting P3B.
 The revised plan adds the previously missing
 P2D full ideal-task integration gate, splits ns-3 time/packet coupling from
 Wi-Fi calibration, and fixes formal run/statistical rules. From P2B onward only
 `COMPLETE` is mission success; `FOUND` and 90% coverage are process metrics.
+The roadmap review requires deterministic stale-message fault tests before
+ns-3, and treats `101/202/303` as development/integration seeds rather than
+final held-out test seeds.
 Before P3 exits, all central map/pose/detection and Nav2 direct paths, plus robot
 Nav2's direct `/merge_map` subscription, must be replaced by the same gateway
 path used by every baseline, including ideal. Follow the revised checkpoint

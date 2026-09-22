@@ -2469,3 +2469,19 @@ python3 ros2_ws/ros2-multi-robot-automap/scripts/run_ideal_baseline.py \
 补充失败尝试：`final_jointmatch_clearance035_seed303` 将每轮候选改为小规模联合最大效用
 匹配，结果覆盖仅 0.855、180 s 超时，路径 28.70 m；说明在动态地图下静态联合最优会
 选择不稳定目标，已撤回，未进入最终代码。
+
+## 2026-09-23 项目路线审查与成功语义修复（无仿真）
+
+本轮没有启动 Gazebo、ROS 2 或 ns-3 episode；依据当前源码、P1/P2/P3A 报告和本日志审查路线，
+结论与修改记录在 `report/20260923_project_review.md`。审查确认 P3A 的 10 项 gateway 矩阵
+是在后续电池/协调器/净空改动之前的历史代码状态，当前 HEAD 在重新生成带 commit/config/
+environment manifest 的 P2D/P3A 门禁前，不接受 P3A、也不进入 P3B。
+
+修复了一个会把过程事件误记为任务成功的代码缺陷：任务评估器和 `ros_smoke_test.py` 现在在
+rally 模式只接受 `task_complete`，覆盖率和 `target_found` 仍可作为 P1/P2A 的独立过程门；
+rally 模式也不会被覆盖率定时器提前终止。新增了对应单元测试。后续 P3B/P4A 必须补齐 stale
+状态降级、独立稳定保持证明、碰撞监测心跳、固定时间采样和逐消息时间账本。
+rally 模式单元测试为 10/10；三个相关 ROS 包构建通过。完整 `multi_robot_exploration` pytest
+为 62 passed、1 skipped、1 failed：唯一失败是仓库既有的 flake8 汇总（扫描历史源码及生成的
+build/install 文件，共 397 个 style errors），不是本轮修改的断言或运行时错误；该问题保留，
+未做无关格式化清理。

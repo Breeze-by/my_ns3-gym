@@ -1,14 +1,16 @@
 # wireless-rl Codex Memory
 
-Last verified against source, local 1/2/3-robot headless smoke tests, P1B
-evaluator tests, final P1C batches, three-world P1C generalization, P2A
-target-detection episodes, the roadmap audit, P2B rally episodes, and the P2B
-coverage/time audit:
-2026-09-22. The user accepted P1C, P2A, P2B, P2C, and P2D. The P2C follow-up adds
+Last source/documentation review: 2026-09-23. Behavioral evidence is frozen in
+the dated reports and is not automatically evidence for the current HEAD. The
+user accepted P1C, P2A, P2B, P2C, and P2D. The P2C follow-up adds
 Gazebo task-region overlays and a live operator status panel. P3A is implemented
 and awaiting user acceptance; its final evidence contains ten gateway-routed
 `COMPLETE`, zero-collision episodes across three fixed world/target/energy scenarios,
-plus a two-robot forced-charge regression with two completed charges.
+plus a two-robot forced-charge regression with two completed charges. Those P3A
+results are frozen historical evidence: later HEAD commits changed coordinator,
+battery, and clearance behavior, so P3A remains awaiting current-HEAD revalidation
+and user acceptance. The roadmap review is recorded in
+`report/20260923_project_review.md`.
 
 This directory is the active project inside the larger ns-3 workspace. It is a
 toy ns3-gym scheduling MDP, not a full Wi-Fi/5G network simulation.
@@ -80,8 +82,8 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
 
 ## Current Handoff Snapshot
 
-- Active boundary: P3A is implemented and awaiting user acceptance. P3B has not
-  started.
+- Active boundary: P3A is implemented and awaiting current-HEAD revalidation and
+  user acceptance. P3B has not started.
 - From P2B onward, only `COMPLETE` is mission success. The fixed first rally
   contract is per-robot position error <=0.35 m, linear speed <=0.05 m/s,
   angular speed <=0.10 rad/s, all robots continuously stable for 5 simulated
@@ -96,11 +98,11 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
   collisions. Lab seed 202 completed one safety charge. The 40-energy
   two-robot corridors calibration timed out while returning, so the whole
   corridors scenario was frozen at 45 before its final batch.
-- P3A must remove the current central direct subscriptions to robot maps,
-  odom/TF and raw detection plus direct Nav2 action calls. Even the ideal
-  baseline must traverse the same gateway/received-state/local-adapter path.
-  Robot Nav2 global costmaps also currently consume `/merge_map` directly;
-  that fused-map downlink must traverse the gateway or be removed.
+- P3A.5 must re-audit the current HEAD to ensure the central execution chain has
+  no direct subscriptions to robot maps, odom/TF or raw detection and no direct
+  Nav2 action calls. Even the ideal baseline must traverse the same
+  gateway/received-state/local-adapter path. Robot Nav2 global costmaps must
+  consume only gateway-delivered fused maps; any regression rejects the batch.
 - P3A implementation uses `multi_robot_interfaces/GatewayEnvelope`, explicit
   per-route sequence/timestamp/ACK/TTL fields, zero-loss queues, gateway-delivered
   received-state topics, and a source/runtime `p3a_forbidden_bypasses.json` audit.

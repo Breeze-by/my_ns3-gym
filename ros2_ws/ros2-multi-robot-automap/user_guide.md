@@ -218,31 +218,36 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
 /tb4/map
 ```
 
-`merge_map` 订阅所有 active robot 的 `/tbN/map`，发布：
+P3A 后 `ideal_gateway` 先把机器人地图包装并交付到 `/gateway/received/tbN/map`；`merge_map` 只订阅
+这些 gateway 交付的地图，再发布：
 
 ```text
 /merge_map
 ```
 
-`headquarters_control` 订阅：
+`headquarters_control` 只消费 gateway 交付的机器人状态/地图/TF、电池和检测，并订阅融合地图：
 
 ```text
 /merge_map
-/tbN/map
-/tbN/odom
-/tbN/tf
+/gateway/received/tbN/map
+/gateway/received/tbN/odom
+/gateway/received/tbN/tf
+/gateway/received/tbN/battery_state
+/gateway/received/target_detection
 ```
 
-启用 P2A 后，独立的 `target_detector` 还订阅 `/gazebo/model_states`，发布：
+启用 P2A 后，独立的 `target_detector` 作为 Gazebo truth sensor provider 订阅
+`/gazebo/model_states`，发布候选；P3A 的 gateway 才把它交付给总部：
 
 ```text
-/target_observation
-/target_detection
+/gateway/received/target_observation
+/gateway/received/target_detection
 ```
 
 它不发布导航目标。`/target_observation` 依次可能为 `EXPLORE`、
 `FOUND_UNCONFIRMED`、`FOUND`；`/target_detection` 只在确认后发布一次，包含发现机器人、
-目标 world 坐标和本次检测参数。`headquarters_control` 是 `/task_state` 的唯一发布者；启用
+目标 world 坐标和本次检测参数。评估器可以只读 Gazebo truth 计算指标，但不向控制链发布真值。
+`headquarters_control` 是 `/task_state` 的唯一发布者；启用
 P2B 后还发布 `/rally_assignments` 和 `/task_failure`。
 
 启用 P2C 后，每台机器人各运行一个本地 `battery_manager`。它只读取本机 `/tbN/odom`、
@@ -382,12 +387,12 @@ goal accepted/rejected
 最终 result succeeded/failed
 ```
 
-中央协调器为每台机器人在自己的 `/tbN/map` 上计算已知自由空间连通域和多组安全观察点，
+中央协调器为每台机器人在 gateway 交付的 `/gateway/received/tbN/map` 上计算已知自由空间连通域和多组安全观察点，
 再用 `/merge_map` 中仍未知的栅格数统一评分。一次分配会为所有 idle 机器人选择相距至少
 1.2 m 的不同目标；同一个大前沿可以提供多个空间分散的观察点，因此机器人不会各自抢同一点，
 也不会因为“每个前沿只保留一个目标”而串行等待。
 
-控制器订阅每台机器人的 `/tbN/tf`，用实时 `map→odom` 把里程计位置转换到 SLAM 地图坐标后
+控制器订阅 gateway 交付的每台机器人 `/gateway/received/tbN/tf`，用实时 `map→odom` 把里程计位置转换到 SLAM 地图坐标后
 再做 Dijkstra 可达性判断。禁止把 odom 坐标直接当 map 坐标。候选计算从前沿向外枚举有限
 邻域，避免旧实现的“地图候选数 × 前沿长度”二次循环阻塞 ROS 执行器。
 
@@ -675,7 +680,8 @@ Gazebo 重点区域和实时状态栏只读现有任务数据，不改变 P2C �
 2026-09-18 最终 10 项门禁全部以 `COMPLETE`、零碰撞结束：lab/rooms 的三个 seeds 使用 40
 能量，走廊三个 seeds 与双机器人交叉检查使用 45。至少一项 lab 任务在 40 能量下完成一次
 安全返充并继续到 `COMPLETE`，说明低电量闭环确实参与任务。P2D 已验收；P3A gateway 矩阵另外完成
-10/10 `COMPLETE`、零碰撞，强制充电回归完成两次充电；P3A 当前待用户验收。
+10/10 `COMPLETE`、零碰撞，强制充电回归完成两次充电；这些结果属于 gateway 提交时的历史代码状态，
+后续 HEAD 修改后需重新生成 manifest 并重跑，P3A 仍待用户验收。
 
 ### 9.5 P3A 显式零损 gateway
 
@@ -687,7 +693,8 @@ source install/setup.bash
 ros2 run multi_robot_exploration bypass_audit --robot-count 3 --wait-sec 10
 ```
 
-正式结果位于 `log/p2d_baseline/p3a_formal_gateway_3scenes_v2/`；P3B 才会在同一协议上加入固定 delay/loss，当前 P3A 不代表 Wi-Fi 性能结果。
+正式历史结果位于 `log/p2d_baseline/p3a_formal_gateway_3scenes_v2/`；当前 HEAD 的 P3A.5 需重新生成
+带 commit/config/environment manifest 的矩阵。P3B 才会在同一协议上加入固定 delay/loss，当前 P3A 不代表 Wi-Fi 性能结果。
 
 以下命令适合运行中的人工诊断：
 
@@ -861,8 +868,9 @@ server 下行：gateway -> `/gateway/{robot}/navigate_to_pose` -> 本地 `/{robo
 中央协调器和 `merge_map` 不直订 `/tbN/map`、`/tbN/odom`、`/tbN/tf` 或原始目标检测，中央
 不直接调用 `/{robot}/navigate_to_pose`；1–3 号机器人的 Nav2 全局代价图消费
 `/tbN/gateway/merge_map`。源码/运行时 forbidden-bypass 审计是 P3A 的退出条件。
-评估器可以继续读取 Gazebo 真值，但不得向控制链发布。`ideal/unlimited` baseline 同样经过
-gateway，只把交付设为零丢包和零附加时延，不能恢复旧直连。
+评估器可以继续读取 Gazebo 真值，但不得向控制链发布。`zero-loss finite-rate` baseline 同样经过
+gateway，只把交付设为零丢包和零附加时延，同时保留真实候选生成频率；`oracle unlimited` 只作理论
+上界，不能恢复旧直连。
 
 P3B 将在此 gateway 上继续加入固定 delay/loss 和逐消息账本；在此之前不要把 P3A 的零损结果
 解读为 Wi-Fi 性能结论。

@@ -251,15 +251,21 @@ def wait_for_evaluation(
                 raise RuntimeError(
                     "evaluation coverage threshold is incorrect"
                 )
-            successful_reason = result["termination_reason"] in (
-                "coverage_reached",
-                "target_found",
-                "task_complete",
+            successful_reasons = (
+                ("task_complete",)
+                if rally
+                else (
+                    ("target_found",)
+                    if target_detection
+                    else ("coverage_reached",)
+                )
             )
+            successful_reason = result["termination_reason"] in successful_reasons
             if result["success"] != successful_reason:
                 raise RuntimeError("evaluation success state is inconsistent")
             if (
                 result["success"]
+                and not rally
                 and result["correct_free_coverage_ratio"]
                 < coverage_threshold
             ):
@@ -432,6 +438,11 @@ def main():
         raise SystemExit("--expect-target-not-found requires --target-detection")
     if args.rally and not args.target_detection:
         raise SystemExit("--rally requires --target-detection")
+    if args.target_detection and args.coverage_threshold > 0:
+        raise SystemExit(
+            "--target-detection and --rally modes require "
+            "--coverage-threshold 0"
+        )
     if args.rally and args.expect_target_not_found:
         raise SystemExit("--rally cannot expect an invisible target")
     if args.battery and args.evaluation_duration <= 0:

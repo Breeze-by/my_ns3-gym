@@ -97,7 +97,7 @@ def main():
 
     metadata = {
         "run_id": run_id,
-        "baseline": "ideal_unlimited_communication",
+        "baseline": "zero_loss_finite_rate",
         "world": args.world,
         "robot_count": args.robot_count,
         "seeds": args.seeds,

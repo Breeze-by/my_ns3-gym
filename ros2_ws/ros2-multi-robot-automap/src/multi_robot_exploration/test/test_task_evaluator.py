@@ -79,6 +79,16 @@ def test_collision_prevents_episode_success():
     assert not episode_succeeded("task_complete", 1)
 
 
+def test_rally_mode_rejects_process_only_termination():
+    assert episode_succeeded("target_found", 0)
+    assert episode_succeeded("coverage_reached", 0)
+    assert not episode_succeeded("target_found", 0, require_task_complete=True)
+    assert not episode_succeeded(
+        "coverage_reached", 0, require_task_complete=True
+    )
+    assert episode_succeeded("task_complete", 0, require_task_complete=True)
+
+
 @pytest.mark.parametrize(
     "world_name",
     ("p1c_open.world", "p1c_rooms.world", "p1c_corridors.world"),

@@ -215,12 +215,15 @@ def phase_bucket(task_phase):
     return "EXPLORE"
 
 
-def episode_succeeded(termination_reason, collision_events):
-    return (
-        termination_reason
-        in ("coverage_reached", "target_found", "task_complete")
-        and collision_events == 0
+def episode_succeeded(
+    termination_reason, collision_events, require_task_complete=False
+):
+    successful_reasons = (
+        ("task_complete",)
+        if require_task_complete
+        else ("coverage_reached", "target_found", "task_complete")
     )
+    return termination_reason in successful_reasons and collision_events == 0
 
 
 def _yaw_from_quaternion(quaternion):
@@ -550,7 +553,7 @@ class TaskEvaluator(Node):
             self.coverage_at_detection = self._map_metrics().get(
                 "correct_free_coverage_ratio"
             )
-        if self.stop_on_target_found:
+        if self.stop_on_target_found and not self.stop_on_task_complete:
             self.finalize("target_found")
             rclpy.shutdown()
 
@@ -586,7 +589,12 @@ class TaskEvaluator(Node):
             rclpy.shutdown()
             return
         coverage = self._map_metrics().get("correct_free_coverage_ratio", 0.0)
-        if self.coverage_threshold > 0 and coverage >= self.coverage_threshold:
+        if (
+            self.coverage_threshold > 0
+            and not self.stop_on_task_complete
+            and not self.stop_on_target_found
+            and coverage >= self.coverage_threshold
+        ):
             self.finalize("coverage_reached")
             rclpy.shutdown()
             return
@@ -698,7 +706,11 @@ class TaskEvaluator(Node):
             }
 
         collision_events = sum(self.collision_events.values())
-        success = episode_succeeded(termination_reason, collision_events)
+        success = episode_succeeded(
+            termination_reason,
+            collision_events,
+            require_task_complete=self.stop_on_task_complete,
+        )
         rally_poses = list(self.rally_assignments.values())
         rally_separations = [
             math.dist(
@@ -721,6 +733,7 @@ class TaskEvaluator(Node):
             "task_phase": (
                 "COMPLETE"
                 if termination_reason == "coverage_reached"
+                and not self.stop_on_task_complete
                 else self.task_phase
             ),
             "success": success,

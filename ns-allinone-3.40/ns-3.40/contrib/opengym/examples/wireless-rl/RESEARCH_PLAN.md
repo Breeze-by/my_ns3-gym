@@ -1,9 +1,10 @@
 # 多机器人任务导向 Wi-Fi 通信研究总纲
 
-最后更新：2026-09-17。
+最后更新：2026-09-23。
 
 本文档记录本项目的长期研究目标、当前决策、实施路线、评测口径和已知风险。它是后续研究
-和 agent 协作的方向性依据，不是当前代码功能清单。已经实现的行为以 `USER_GUIDE.md` 和
+和 agent 协作的方向性依据，不是当前代码功能清单。已经实现的行为以
+`ros2_ws/ros2-multi-robot-automap/user_guide.md` 和
 源码为准，实验事实以日期报告和 `log.md` 为准。
 
 逐步落地顺序、工程产物、退出条件和当前进度见 `IMPLEMENTATION_PLAN.md`。
@@ -47,6 +48,16 @@
 如果 ROS 2 节点仍能绕过 ns-3 读取最新地图、位置或目标真值，实验不成立。仅在旁边运行一个
 独立 ns-3 仿真并记录网络指标，也不能证明网络影响了机器人任务。
 
+本项目的研究主张分四层，不能跨层替代：
+
+1. **任务工程层**：P1/P2 证明探索、检测、返航、充电和集合在理想网络下正确；
+2. **协议因果层**：P3 证明所有跨端信息经过同一消息语义，并且丢失、延迟、过期会产生可解释的任务后果；
+3. **无线策略层**：P4–P7 证明 ns-3 Wi-Fi 指标与任务变化闭合，并比较启发式和 RL；
+4. **实物层**：P8 证明真实感知、真实 UDP/Wi-Fi 和安全行为可以复用同一协议。
+
+只有完成对应层的退出条件，论文才能使用该层的结论。历史 toy MDP、理想 gateway 和 Gazebo
+真值检测分别只能支持工具链、协议和任务工程层结论，不能单独支持“Wi-Fi RL 提升任务”的主张。
+
 ## 3. 现有资产和复用决策
 
 ### 3.1 当前 ns-3 项目
@@ -72,13 +83,16 @@ checkpoint、GPU 和多 seed 评估链路，但没有真实 Wi-Fi 节点、数�
 模型、SLAM、Nav2、世界和 frontier 方法，只在必要边界新增任务评估、能量、目标检测、显式
 通信和实验控制。
 
-截至 2026-09-22，P1 已建立固定 seed、批量运行、真值覆盖率、路径、碰撞和搜索重叠评估，
+截至 2026-09-23（证据批次截至 2026-09-22），P1 已建立固定 seed、批量运行、真值覆盖率、路径、碰撞和搜索重叠评估，
 P2A 已建立可重复的目标确认 MVP，P2B 已完成并通过理想直达事件下的停止探索、安全集合和
 稳定完成闭环，P2C 已通过本地能量、安全返航和充电恢复验收；P2D 已完成跨三个场景的
 10 项完整理想任务门禁并通过用户验收；P3A 已完成零损 gateway 和旁路审计，等待用户验收。仍有以下限制：
 
 - 同机 ROS 2/DDS 仍是理想网络，没有 Wi-Fi 排队、丢包和干扰；
 - P3A 当前仍是同机零损 ideal gateway，没有 Wi-Fi 排队、丢包和干扰；这些将在 P3B/P4 引入；
+- P3A 正式矩阵记录于 gateway 实现提交及其前后配置，随后 HEAD 还发生了电池、协调器和净空修改；
+  在当前 HEAD 重新生成带 commit/config manifest 的矩阵前，旧矩阵只能作为历史证据，不能当作当前代码的
+  可重放结果；
 - 评估器仍可读取 Gazebo 真值；控制链中的地图、odom、TF、检测和 Nav2 命令已经过 gateway，
   机器人全局代价图也只消费 gateway 交付的融合地图；
 - 电池/返航/充电和 P2D 跨场景完整基线已形成理想通信闭环，但通信量和 AoI 仍未进入闭环；
@@ -200,6 +214,10 @@ remaining_energy <= estimated_energy_to_home + safety_margin
 这是硬安全约束，不由 RL 覆盖。MVP 中充电区是起点附近区域，机器人进入并静止固定时间后
 恢复满电，不必先实现机械对接。
 
+当前按欧氏距离乘固定 path factor 估算返航能耗，只能作为可行性启发式，不能宣称一般安全保证。
+在 P3B/P4 前应改为本地已知地图上的保守路径代价；无可行路径时立即进入明确失败或安全降级，并
+把返航估计误差和通信延迟余量单独记录。
+
 必须定义：充电后保留地图和任务状态；掉线时仍按本地信息返航；低电量与 `RALLY` 冲突时
 先保证安全；充电位是否支持并行；无法返航、耗尽电量和路径失败如何计为任务失败。
 
@@ -221,8 +239,10 @@ remaining_energy <= estimated_energy_to_home + safety_margin
 | 检测缩略图或特征 | 中 | 高 | 策略可选 |
 | 探索目标、返航/集合命令 | 小 | 极高 | 序号、ACK、重传 |
 
-每个消息至少包含类型、发送者、序号、生成时间、任务阶段、payload 长度和 payload。过期地图
-更新应在发送前或队列中丢弃，避免继续占用信道。
+每个消息至少包含类型、发送者、序号、生成时间、任务阶段、payload 长度和 payload。正式账本还要
+区分 `source_time`、`enqueue_time`、`admit_time`、`tx_time`、`delivery_time`、`drop_time`、
+`message_id` 和尝试次数，不能用 gateway 回调时刻代替传感器生成时刻。过期地图更新应在发送前或队列中
+丢弃，避免继续占用信道；检测事件要同时记录本地确认、gateway 交付和中央消费三个时刻。
 
 仿真和实物尽量复用同一消息语义：仿真由 ns-3 决定交付，实物使用真实 UDP/Wi-Fi；接收端
 ROS 节点只消费成功交付的消息。
@@ -245,10 +265,14 @@ MVP 配置：
 
 耦合顺序：
 
-1. 用固定 delay/loss 的最小消息队列验证禁用直连后任务确实随网络退化；
-2. 把消息交付替换为 ns-3 Wi-Fi 数据包；
-3. 正式仿真优先使用显式消息桥和固定决策间隔；
-4. TapBridge、network namespace 和 DDS-over-ns-3 仅作为后期扩展。
+1. P3B 先用确定性的固定 delay/loss 队列验证序号、TTL、重复、乱序、ACK、重传和安全降级；
+2. P4A-0 用 canonical JSONL trace 对账应用生成、准入、ns-3 发送、交付和过期字节，先排除 ROS/Gazebo
+   时间因素；
+3. P4A-1 选择并冻结一种桥接实现（首选带 message/clock ACK、退出和背压协议的 ZMQ 或 UDP），再用
+   固定决策窗或 lock-step 把 Gazebo 位姿和任务推进接入 ns-3；相同 seed 必须重复得到同一事件账本；
+4. P4B 最后加入 802.11n AP/STA、传播、墙损耗和背景干扰；ideal、无干扰和受干扰只作为网络条件，
+   不能为了制造 RL 优势任意加流量；
+5. TapBridge、network namespace 和 DDS-over-ns-3 仅作为后期扩展。
 
 必须解决 Gazebo、ROS 2、ns-3 和训练循环的时间同步。优先采用固定时间窗或 lock-step：收集
 候选消息、推进网络、交付结果，再推进任务。wall-clock 实时联调可以演示，但不能默认具有
@@ -302,7 +326,8 @@ per robot: downlink fused-map update / task command
 ```
 
 能量安全作为硬约束。奖励只用于训练，论文必须报告真实任务和网络指标，不能用 reward 代替
-结论。
+结论。历史 5 用户 toy MDP 的 checkpoint 不迁移到任务网络，也不作为新环境的 warm start；新策略
+从消息队列和网络账本重新定义观测、动作与奖励。
 
 最小顺序是：先实现 AP 侧中央离散通信策略；检查它是否依赖不可部署全局信息；如需机器人
 本地决策，再使用共享 actor、本地观测和 centralized training。MAPPO、复杂多智能体通信和
@@ -313,7 +338,7 @@ per robot: downlink fused-map update / task command
 至少包括：
 
 - no communication；
-- ideal/unlimited communication，作为任务上界；
+- historical direct-ideal（仅 P1C 历史探索上界）；`zero-loss finite-rate`（公平 gateway 基线）；
 - always send；
 - fixed-period send；
 - random；
@@ -326,8 +351,10 @@ per robot: downlink fused-map update / task command
 validation 和 held-out test 场景/seeds 必须独立。每个策略使用相同地图、目标、出生点、电池、
 干扰和 seed，并用新进程或已证明完整的 reset 运行。
 
-`ideal/unlimited` 也必须经过与其他策略相同的消息序列化、gateway、接收信息存储和本地命令
-适配器，只把网络传输设为零丢包、零附加时延和无限准入；不得恢复旧 ROS 直连作为“ideal”。
+`zero-loss finite-rate` 和 `oracle unlimited` 必须分开命名。前者经过与其他策略相同的消息生成、
+序列化、gateway、接收信息存储和本地命令适配器，只把网络传输设为零丢包、零附加时延，但保留真实
+候选生成频率和限频；后者只作上界，不用于与通信策略的公平比较。不得把有限生成率误写成网络限制，
+也不得恢复旧 ROS 直连作为任一种 ideal。
 `no communication` 表示跨端消息全部不交付，但机器人本地避障、低电量返航和已知任务继续
 工作。这样 baseline 的差异只来自通信，而不是两套任务实现。
 
@@ -335,6 +362,17 @@ validation 和 held-out test 场景/seeds 必须独立。每个策略使用相�
 上限。Gazebo、场景、网络和策略随机数使用分开的显式 seed；策略之间使用相同测试元组做
 配对比较。若 Wi-Fi 测量表明现实负载下网络不是瓶颈，不得通过不现实流量制造 RL 优势：先
 报告该结果，再只使用可由地图增量、检测证据或实测背景流解释的负载。
+
+P2D 的三个场景是完整任务集成门，不是跨场景性能排名；走廊使用 45 初始能量是可行性配置，
+不能和 lab/rooms 的 40 直接比较完成时间。正式通信比较必须把能量档案作为场景因素固定，并保留
+energy-40 的失败 stress 结果。目标发现者必须进入结果字段；现有 P2A 三轮都由 `tb1` 发现，只能
+证明当前固定目标/出生排列。P5 起至少加入能让 `tb2` 或 `tb3` 发现目标的目标/出生排列，或按
+`detecting_robot` 分层报告，否则无法评估多发送者竞争。
+
+P5 还必须预注册一条主假设和一个主终点，避免同时为成功率、时间、字节、AoI 和重复探索调参。
+建议主终点为“在 success rate、碰撞和电量安全不劣的约束下，降低应用 payload bytes/airtime”；
+success rate、RMST、AoI、时延和重复探索作为次级终点。若 network-not-bottleneck 门显示任务对
+合理 Wi-Fi 负载不敏感，应保留该负结果，不扩展动作空间制造显著性。
 
 ## 12. 正式指标
 
@@ -376,7 +414,8 @@ overlap_ratio = (sum_i |visited_i| - |union_i visited_i|)
 - payload bytes 与 MAC/PHY airtime 分开；
 - PDR、吞吐、重传、排队时延和端到端时延；
 - 每类信息 mean/p95/max AoI；
-- `AoI(t) = t - generation_time(latest_delivered_information)`；
+- `AoI(t) = t - source_time(latest_delivered_information)`；同时报告 `delivery_time-source_time`
+  和 `delivery_time-admit_time`，不能用 gateway 回调时刻重置 AoI；
 - 地图、位姿、检测和命令使用各自过期阈值。
 
 ### 12.5 实验完整性与统计
@@ -386,9 +425,14 @@ overlap_ratio = (sum_i |visited_i| - |union_i visited_i|)
 - `episode_start` 后的 timeout、掉线、规划失败、电量耗尽、碰撞或进程异常都是任务失败，
   不得用补跑成功样本替换；
 - 正式批次固定 Git commit、配置哈希、场景清单和 seed 清单，中途改代码后必须开新批次；
-- 主比较至少使用 20 个互相独立、策略间配对的 held-out episode；先报告 success rate 的
+- 主比较至少使用 20 个互相独立、策略间配对的 held-out episode，三个主要 world 各至少 6 个；
+  推荐 24 个（每个 world 8 个）。先报告 success rate 的
   95% Wilson 区间，再报告配对 bootstrap 的 RMST/通信指标差值区间。若区间不足以支持结论，
-  增加样本或明确报告不确定，而不是挑 seed；
+  先按预期差异和配对相关性做 power/precision 计算；若区间仍不足则增加样本或明确报告不确定，
+  而不是把 20/24 当成充分或挑 seed；
+- 工程 seed `101/202/303` 只用于 P1/P2/P3 验收，视为开发/集成门，不是最终论文测试集。P5 前必须
+  生成不可改的 train/validation/held-out manifest，按 world、目标、能量和干扰分层，并记录 Git
+  commit、工作树 dirty 状态、world/参数/协议哈希和 ROS/Gazebo/ns-3 版本。
 - DQN 工程验收是训练、validation 选模和 held-out 测试链路正确，不把“必须胜过所有
   heuristic”写成可通过调参强行满足的工程条件。只有预注册主指标相对最强非学习 baseline
   的 95% 区间支持改善且安全指标不退化，才声称学习策略有优势；否则保留负结果。
@@ -411,9 +455,9 @@ OpenWiFi 可作为 Wi-Fi 4 AP 或一个受控 STA，但 MVP 不要求所有节�
 实物需要机器人和 AP 时钟同步，并保留序号校验乱序和丢包。先用 chrony/NTP，只有精度不足
 时才增加 PTP。
 
-在真实实验室采集多个位置的 RSSI、MCS、PER、吞吐、时延、重传和干扰，再校准 ns-3 的
-距离损耗、穿墙、衰落和背景流。仿真不必复制每个物理细节，但关键分布和任务退化趋势应与
-实测一致。
+在真实实验室采集多个位置的 RSSI、MCS、PER、吞吐、时延、重传和干扰，再用部分位置校准 ns-3 的
+距离损耗、穿墙、衰落和背景流，并用未参与拟合的位置验证。若没有实测校准，只能称为合成网络
+敏感性实验，不能写成 sim-to-real 无线结论；即使有校准，也要分别报告网络分布误差和任务差异。
 
 ## 14. 主要风险
 
@@ -437,9 +481,20 @@ RL 可能通过停止发送、停止探索、牺牲某台机器人或拖延来�
 
 ### 全栈训练速度
 
-GPU 只加速神经网络，Gazebo、Nav2、SLAM 和大部分 ns-3 仍受 CPU 限制。先测量 headless
-episode 速度；只有采样速度被证明不足时，才新增简化网格环境或 trace-based 预训练。高保真
-ROS 2 + ns-3 始终用于最终验证。
+GPU 只加速神经网络，Gazebo、Nav2、SLAM 和大部分 ns-3 仍受 CPU 限制。P3B/P4A runner 必须
+记录 wall time、sim time、RTF、消息吞吐和资源峰值；先用这些数据决定训练预算。只有采样速度
+被证明不足时，才新增简化网格或 trace-based 预训练，并在高保真 ROS 2 + ns-3 上做最终验证。
+
+### 接收信息过期
+
+P3B/P4 必须把 generation time、delivery time、TTL 和消息版本带入接收状态存储。位置/TF 过期时
+暂停新的中央分配并进入本地安全模式，地图过期时禁止基于旧图重规划，检测和返航/集合命令按 TTL、
+ACK 和明确失败处理；只记录丢包而继续消费旧状态不能证明网络因果。
+
+目标检测的 raw `/target_detection` 订阅只能用于 truth/debug 和独立的过程模式，不能用于网络
+`time_to_inform`、AoI 或交付率。正式网络指标必须从 gateway ledger 的
+`local_confirm -> delivered -> consumed` 事件计算；DetectionProvider 输出的每个候选还必须带
+`robot_id` 和 `source_time`，以区分本地观测、gateway 交付和中央消费。
 
 ### 拥堵与混杂变量
 
@@ -535,7 +590,7 @@ OpenWiFi、学习式地图/图像压缩、未知初始位姿地图配准、机�
 
 ## 17. 后续 agent 工作规则
 
-1. 实现前先读本文，再读 `USER_GUIDE.md`、源码和最新日期报告；
+1. 实现前先读本文，再读 `ros2_ws/ros2-multi-robot-automap/user_guide.md`、源码和最新日期报告；
 2. 不把规划描述成已经实现，不用 toy MDP 结果支撑机器人 Wi-Fi 结论；
 3. 每次只推进一个可验证阶段，先建立无 RL 的正确闭环；
 4. 没有测量前不增加多智能体框架、复杂 wrapper、manager 或新通信中间件；

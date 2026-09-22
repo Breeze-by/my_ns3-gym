@@ -191,10 +191,11 @@ source install/setup.bash
 ros2 run multi_robot_exploration bypass_audit --robot-count 3 --wait-sec 10
 ```
 
-正式矩阵使用 `scripts/run_p2d_baseline.py` 的同一场景配置，运行 ID 为
+历史 gateway 矩阵使用 `scripts/run_p2d_baseline.py` 的同一场景配置，运行 ID 为
 `p3a_formal_gateway_3scenes_v2`；结果写入 `log/p2d_baseline/<run-id>/`。该批次 10/10
 `COMPLETE`、零碰撞，另有 `p3a_gateway_forced_charge_2r_seed303` 以初始能量 18 完成两次
-充电并 `COMPLETE`。
+充电并 `COMPLETE`。由于之后 HEAD 修改了协调器、电池和净空逻辑，当前 P3A.5 必须在冻结
+commit 上重跑并写入 manifest，不能把此历史目录直接当成当前验收证据。
 
 ## 4. 切换 Gazebo world
 
@@ -373,7 +374,7 @@ log/evaluation/*.json     结构化结果
 log/evaluation/*.csv      单行表格结果
 ```
 
-P1C 跨 seed、跨 world 探索评估：
+P1C 跨 seed、跨 world 探索评估（`zero_loss_finite_rate`，不是 oracle unlimited）：
 
 ```bash
 python scripts/run_ideal_baseline.py \
