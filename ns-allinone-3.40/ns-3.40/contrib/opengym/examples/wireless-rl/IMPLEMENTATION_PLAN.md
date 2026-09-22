@@ -45,7 +45,9 @@
   forbidden-bypass 清单；其 10 项 gateway 矩阵和两机器人强制充电回归是在 gateway 提交及其
   配置下完成的历史证据，随后 HEAD 又修改了电池、协调器和净空逻辑。当前 P3A.5 候选
   `41f63fb` 已完成重验证：图/旁路子门和强制充电回归通过，但正式矩阵为 9/10 `COMPLETE`，
-  lab seed 202 在启动后 `RALLY` 超时，故仍待修复并重跑；详见 `report/20260923_p3a5.md`；
+  lab seed 202 在启动后 `RALLY` 超时。路径守卫提交 `c369c7d` 已按同一 10 格矩阵重跑，
+  结果为 8/10 `COMPLETE`，lab seed 202 与 rooms seed 303 在 `EXPLORE` 超时，因此仍待诊断
+  和整批重跑；详见 `report/20260923_p3a5.md`；
 - P2B 前路线审计补充了 P2D 完整任务集成门、P4A 时间/包级对账门和正式统计规则，详见
   `report/20260917_roadmap_audit.md`；P2D 已验收，当前检查点为 P3A.5 修复；
 - 2026-09-02 只完成过一次单机器人 headless 启动检查，暴露过冷启动 spawn 超时和

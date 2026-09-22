@@ -2596,3 +2596,45 @@ P3A.5 仍保持未通过，`task_stack_frozen_commit` 仍不可冻结，P3B 仍�
 更新时间和 planner 起点状态的诊断字段，先确认充电恢复后的地图与 Nav2 costmap 是否出现
 时序或坐标不一致，再决定是否需要等待新地图、清理 costmap 或调整 rally 起点选择；确认
 根因前不应再次用单个成功重跑替换失败格。
+
+## 2026-09-23 P3A.5 路径守卫提交整批重跑（提交 c369c7d，未通过）
+
+在提交 `c369c7d37fdbad5be5e13ad13f7626007212d407` 的干净工作树上，按与
+`p3a5_current_head_41f63fb` 相同的 10 格矩阵重新运行：lab/rooms/corridors 三机器人
+seeds 101/202/303，以及 corridors 双机器人 seed 202 交叉检查。runner 输出目录为：
+
+```text
+ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a5_route_guard_c369c7d/
+```
+
+结果为 8/10 `COMPLETE`、0/10 基础设施失败、10/10 零碰撞：
+
+| 场景 | 机器人 | seed | 结果 | 完成时间(s) | 发现(s) | rally(s) | 充电 | 碰撞 |
+|---|---:|---:|---|---:|---:|---:|---:|---:|
+| lab | 3 | 101 | `COMPLETE` | 236.3 | 70.5 | 78.5 | 1 | 0 |
+| lab | 3 | 202 | **timeout/EXPLORE** | — | — | — | 0 | 0 |
+| lab | 3 | 303 | `COMPLETE` | 294.2 | 68.8 | 241.2 | 1 | 0 |
+| rooms | 3 | 101 | `COMPLETE` | 139.4 | 96.2 | 97.0 | 0 | 0 |
+| rooms | 3 | 202 | `COMPLETE` | 140.6 | 77.1 | 78.0 | 0 | 0 |
+| rooms | 3 | 303 | **timeout/EXPLORE** | — | — | — | 1 | 0 |
+| corridors | 3 | 101 | `COMPLETE` | 217.5 | 54.8 | 68.1 | 0 | 0 |
+| corridors | 3 | 202 | `COMPLETE` | 146.1 | 42.5 | 57.6 | 0 | 0 |
+| corridors | 3 | 303 | `COMPLETE` | 151.1 | 55.3 | 56.0 | 0 | 0 |
+| corridors cross-check | 2 | 202 | `COMPLETE` | 145.9 | 49.6 | 62.2 | 0 | 0 |
+
+两次失败均已启动并保存评估结果，因此是任务失败而非基础设施失败，不能由成功重跑替换。
+lab/seed202 的日志持续出现 `Starting point in lethal space` 和 tb2 `Failed to make progress`；
+rooms/seed303 在 `EXPLORE` 阶段超时，期间 tb1 充电恢复但未确认目标。路径守卫没有引入
+碰撞或旁路问题，但也没有关闭这两个失败模式。该批次仍不能冻结 `task_stack_frozen_commit`，
+P3B 仍未开始。
+
+同时核对了当前运行时 graph：三个机器人 global costmap 均订阅
+`/tbN/gateway/merge_map`，控制器仍只通过 gateway action；因此下一步应区分中央融合地图
+路径与 Nav2 自己的 costmap 起点判定。源码中 `nearest_traversable()` 允许在约 1 m 内把中央
+规划起点吸附到邻近自由格，而 Nav2 会按实际机器人起点和动态激光层判定 lethal；这解释了
+为什么“中央有路”不能推出“Nav2 起点可用”，但目前仍是待验证假设。
+
+下一步只增加只读诊断，不先改变成功规则：记录每次 map/gateway merge 的序号、时间、origin、
+resolution，机器人 map/odom 位姿，global/local costmap 更新时间和起点栅格代价，并把 planner
+失败时的最近一次快照写入 episode。先用 lab/202 和 rooms/303 各复现一次，确认是 map/costmap
+时序、TF 坐标或动态 obstacle layer，再决定等待新 map、清理 costmap 或收紧中央起点吸附半径。
