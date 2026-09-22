@@ -2465,3 +2465,7 @@ python3 ros2_ws/ros2-multi-robot-automap/scripts/run_ideal_baseline.py \
 `final_clearance035_seed202` 为 103.4 s，连同前述 seed303 的 108.4 s，三 seed 均达到
 90%，均为 0 action abort、0 碰撞、0 搜索重叠；三 seed 平均 `time_to_90=109.1 s`。
 三轮仍各有 1/1/2 条 planner warning，但均未演变成导航取消。
+
+补充失败尝试：`final_jointmatch_clearance035_seed303` 将每轮候选改为小规模联合最大效用
+匹配，结果覆盖仅 0.855、180 s 超时，路径 28.70 m；说明在动态地图下静态联合最优会
+选择不稳定目标，已撤回，未进入最终代码。
