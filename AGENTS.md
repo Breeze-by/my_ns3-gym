@@ -41,6 +41,16 @@ Planning documents describe intended work, not functionality that is already
 implemented. Use current code as the source of truth and dated reports/logs as
 the source of experimental claims.
 
+## Coding Guidance Note
+
+Ponytail and `karpathy-guidelines` are advisory lenses for simplicity, scope
+control, and careful reasoning. They are not absolute rules or token-saving
+targets. User intent, correctness, required validation, safety, research
+validity, and a complete solution take priority. Use independent engineering
+judgment: prefer simple solutions when they satisfy the requirements, but add
+necessary instrumentation, tests, abstractions, or experiments when they make
+the result correct and reviewable.
+
 ## Current Handoff
 
 As of 2026-09-23, the user has accepted P1C, P2A, P2B, P2C, and P2D. Each robot has
