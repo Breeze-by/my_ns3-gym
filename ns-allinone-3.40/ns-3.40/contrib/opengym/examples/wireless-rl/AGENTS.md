@@ -14,7 +14,10 @@ graph/bypass subgate and forced-charge regression, but the formal matrix was
 9/10 `COMPLETE`: lab seed 202 failed after episode start during rally. The
 failed episode is retained; P3A.5 remains in progress and P3B has not started.
 The roadmap review is recorded in `report/20260923_project_review.md`, and the
-current run is recorded in `report/20260923_p3a5.md`.
+current run and follow-up route diagnosis are recorded in
+`report/20260923_p3a5.md` and `log.md`. The follow-up now rejects unsafe rally
+path fallbacks explicitly, but it does not change the 9/10 formal result or
+make P3A.5 pass.
 
 This directory is the active project inside the larger ns-3 workspace. It is a
 toy ns3-gym scheduling MDP, not a full Wi-Fi/5G network simulation.

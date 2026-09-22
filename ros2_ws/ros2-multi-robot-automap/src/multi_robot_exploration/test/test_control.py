@@ -340,6 +340,33 @@ def test_rally_route_avoids_robot_already_parked_at_its_pose():
     assert min(math.dist(point, blocker) for point in route) >= 0.55
 
 
+def test_rally_does_not_bypass_disconnected_route():
+    grid = np.zeros((14, 100), dtype=int)
+    grid[[0, -1], :] = 100
+    grid[:, 50] = 100
+    leg, route = control.plan_rally_leg(
+        control.RallyPose(8.0, 0.7, 0.0),
+        grid,
+        0.1,
+        (0.0, 0.0),
+        (1.0, 0.7),
+    )
+    assert leg is None
+    assert not route
+
+
+def test_rally_target_outside_updated_map_is_not_dispatched():
+    leg, route = control.plan_rally_leg(
+        control.RallyPose(20.0, 0.7, 0.0),
+        np.zeros((14, 100), dtype=int),
+        0.1,
+        (0.0, 0.0),
+        (1.0, 0.7),
+    )
+    assert leg is None
+    assert not route
+
+
 def test_rally_selects_disjoint_routes_in_parallel():
     routes = {
         "tb1": ((0.0, 0.0), (1.0, 0.0)),

@@ -439,6 +439,13 @@ def path_distance_grid(traversable, start, return_predecessors=False):
 
 def path_waypoint_route(traversable, start, target, max_distance_cells):
     """Return a limited waypoint and its shortest grid path from start."""
+    height, width = traversable.shape
+    if (
+        start is None
+        or not (0 <= target[0] < height and 0 <= target[1] < width)
+        or not traversable[target]
+    ):
+        return None, ()
     distances, predecessors = path_distance_grid(
         traversable, start, return_predecessors=True
     )
@@ -934,7 +941,7 @@ def plan_rally_leg(
         pose.x, pose.y, resolution, origin[0], origin[1]
     )
     if start is None:
-        return pose, (robot_position, (pose.x, pose.y))
+        return None, ()
     waypoint, route = path_waypoint_route(
         traversable,
         start,
@@ -942,7 +949,7 @@ def plan_rally_leg(
         max_distance_m / resolution,
     )
     if waypoint is None:
-        return pose, (robot_position, (pose.x, pose.y))
+        return None, ()
     x, y = grid_to_world(
         waypoint[0], waypoint[1], resolution, origin[0], origin[1]
     )
@@ -1133,6 +1140,7 @@ class HeadquartersControl(Node):
         self.rally_goal_pending = {}
         self.rally_goal_started_at = {}
         self.rally_leg_routes = {}
+        self.rally_route_unavailable_since = {}
         self.rally_yield_requested = {}
         self.rally_battery_preempted = {}
         self.rally_attempts = {}
@@ -1203,6 +1211,7 @@ class HeadquartersControl(Node):
             self.rally_goal_pending[robot_name] = False
             self.rally_goal_started_at[robot_name] = None
             self.rally_leg_routes[robot_name] = ()
+            self.rally_route_unavailable_since[robot_name] = None
             self.rally_yield_requested[robot_name] = False
             self.rally_battery_preempted[robot_name] = False
             self.rally_attempts[robot_name] = 0
@@ -1548,7 +1557,7 @@ class HeadquartersControl(Node):
                     or self.battery_modes[name] != "ACTIVE"
                 ):
                     continue
-                plans[name] = plan_rally_leg(
+                plan = plan_rally_leg(
                     self.rally_targets[name],
                     self.map_data,
                     self.resolution,
@@ -1558,6 +1567,21 @@ class HeadquartersControl(Node):
                     / (self.rally_attempts[name] + 1),
                     arrived_positions,
                 )
+                if plan[0] is None:
+                    since = self.rally_route_unavailable_since[name]
+                    if since is None:
+                        self.rally_route_unavailable_since[name] = now
+                        self.get_logger().warn(
+                            f"No safe rally route for {name}; "
+                            f"position={self.robot_positions[name]}, "
+                            f"target={self.rally_targets[name]}."
+                        )
+                    elif now - since >= RALLY_ASSIGNMENT_WAIT_SEC:
+                        self.fail_task(f"rally_route_unavailable:{name}")
+                        return
+                    continue
+                self.rally_route_unavailable_since[name] = None
+                plans[name] = plan
             routes = {name: plan[1] for name, plan in plans.items()}
             reserved_routes = [
                 self.rally_leg_routes[name]
@@ -1706,6 +1730,8 @@ class HeadquartersControl(Node):
                 arrived_positions,
             )
         target, route = plan
+        if target is None:
+            return
         self.get_logger().info(
             f"Sending {robot_name} rally leg to "
             f"({target.x:.2f}, {target.y:.2f}); final="

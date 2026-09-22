@@ -2553,3 +2553,46 @@ ROS_DOMAIN_ID=230 PYTHONNOUSERSITE=1 /usr/bin/python3 scripts/ros_smoke_test.py 
 不能冻结，P3B 不得开始。下一步先分析 lab/seed202 返航后的地图版本、全局代价图和 rally
 目标，再在修复提交上按同一 10 格矩阵整批重跑。完整评审见
 `report/20260923_p3a5.md`。
+
+## 2026-09-23 P3A.5 失败路径诊断与保守修复（未重新验收）
+
+本轮针对 `p3a5_current_head_41f63fb` 的 lab/seed202 失败格继续做只读诊断。正式日志显示
+充电恢复后 rally 仍会收到 `Starting point in lethal space`、`No valid trajectories` 和
+`Failed to make progress`；失败没有碰撞，也不是基础设施启动失败。代码审查发现
+`plan_rally_leg()` 在起点未知、目标越界或地图上没有可达路径时原本会退回
+`(robot_position, target_pose)`，从而绕过中央地图路径校验，可能把未验证的最终 pose 直接交给
+Nav2；`path_waypoint_route()` 也没有先拒绝越界或不可通行的目标格。
+
+当前修复保持最小范围：
+
+1. `path_waypoint_route()` 先检查起点、目标边界和目标可通行性；不满足时返回空路径；
+2. `plan_rally_leg()` 在没有安全路径时返回空计划，不再直接回退到最终 pose；
+3. rally 调度器对持续无安全路径的机器人记录位置和目标，超过现有分配等待窗口后以
+   `rally_route_unavailable:<robot>` 明确结束任务，避免把路径缺失伪装成 Nav2 运行时失败；
+4. 增加断开地图和越界目标的单元测试。
+
+验证命令与结果：
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+colcon build --symlink-install --packages-select multi_robot_exploration
+source install/setup.bash
+/usr/bin/python3 -m pytest -q \
+  src/multi_robot_exploration/test/test_control.py \
+  src/multi_robot_exploration/test/test_gateway.py \
+  src/multi_robot_exploration/test/test_task_evaluator.py
+ros2 run multi_robot_exploration bypass_audit --robot-count 3 --source-only
+```
+
+结果为构建通过、`43 passed`、源码旁路审计 `pass=true`。同一 seed 的修复诊断使用
+`ROS_DOMAIN_ID=203` 运行，输出位于
+`ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a5_diag_route_fix_41f63fb/`；它以
+`mission_failed` 和 `rally_route_unavailable:tb2` 结束，零碰撞、零基础设施失败。该结果证明
+修复会显式暴露没有安全路线的状态，但没有证明 P3A.5 通过，也不能替代原始 10 格矩阵。
+
+P3A.5 仍保持未通过，`task_stack_frozen_commit` 仍不可冻结，P3B 仍未开始。下一步应在同一
+失败 seed 上增加地图快照序号、合并地图 origin/resolution、机器人位姿、局部/全局代价图
+更新时间和 planner 起点状态的诊断字段，先确认充电恢复后的地图与 Nav2 costmap 是否出现
+时序或坐标不一致，再决定是否需要等待新地图、清理 costmap 或调整 rally 起点选择；确认
+根因前不应再次用单个成功重跑替换失败格。
