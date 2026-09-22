@@ -2436,3 +2436,27 @@ python3 ros2_ws/ros2-multi-robot-automap/scripts/run_ideal_baseline.py \
 
 最终代码验证：三个相关包构建通过；`colcon test` 共 68 项，62 通过、1 跳过（另一个包
 4 通过、1 跳过），无错误或失败；控制器与电池定向 pytest 34/34 通过。
+
+## 2026-09-22 用户要求的 1–4 项复测与安全半径校准
+
+用户要求由助手直接完成仿真复测。本轮固定 `my_world.world`、2 robots、180 s、90% 阈值，
+通过 `scripts/run_ideal_baseline.py` headless 运行。当前提交 `7629ecb` 的三 seed 复测为：
+
+| seed | time_to_90 | 路径 | 导航成功/取消 | 碰撞 |
+|---:|---:|---:|---:|---:|
+| 101 | 93.8 s | 33.26 m | 16/0 | 0 |
+| 202 | 105.8 s | 32.90 m | 16/0 | 0 |
+| 303 | 125.2 s | 34.94 m | 18/0 | 0 |
+
+日志显示 seed303 的主要失败根因是 Nav2 报 `Starting point in lethal space`，随后出现
+`No valid trajectories`，协调器的无进展取消只是后果。将协调器 `PATH_CLEARANCE_M` 从
+0.23 m 对齐到多机器人 Nav2 的 0.35 m 后复测 `user_retest_clearance035_seed303`：
+`time_to_90=108.4 s`、覆盖 0.908、路径 37.18 m、导航成功 19、取消 0、碰撞 0；仍有
+两次 planner warning，但没有 action abort。继续增大到 0.45 m 的
+`user_retest_clearance045_seed303` 只达到覆盖 0.806 并超时，已回退到 0.35 m。
+
+同时复测了两种协调器策略：软 frontier 组去重 `user_retest_softgroup_seed303` 为
+139.1 s 并出现两次目标失败；按实际 5 m 航段计算效用的
+`user_retest_legutility_seed303` 为 178.0 s，明显退化。两者均未保留。最终保留的是
+单机器人电量抢占、地图派生数据缓存、校准后的覆盖/导航耗时效用，以及与 Nav2 对齐的
+0.35 m 路径安全膨胀。
