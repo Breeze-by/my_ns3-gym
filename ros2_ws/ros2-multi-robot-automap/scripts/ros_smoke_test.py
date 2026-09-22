@@ -155,17 +155,21 @@ def require_entities(names, timeout):
         )
 
 
-def require_bypass_audit(robot_count, timeout):
+def require_bypass_audit(robot_count, timeout, graph_output=None):
+    wait_sec = max(10.0, min(float(timeout), 60.0))
+    arguments = [
+        "run",
+        "multi_robot_exploration",
+        "bypass_audit",
+        "--robot-count",
+        str(robot_count),
+        "--wait-sec",
+        str(wait_sec),
+    ]
+    if graph_output is not None:
+        arguments.extend(["--graph-output", str(graph_output)])
     result = run_ros(
-        [
-            "run",
-            "multi_robot_exploration",
-            "bypass_audit",
-            "--robot-count",
-            str(robot_count),
-            "--wait-sec",
-            "10",
-        ],
+        arguments,
         timeout=timeout,
     )
     if result.returncode != 0:
@@ -423,6 +427,7 @@ def parse_args():
         type=Path,
         default=PROJECT_ROOT / "log" / "smoke",
     )
+    parser.add_argument("--bypass-audit-output", type=Path)
     return parser.parse_args()
 
 
@@ -545,7 +550,11 @@ def main():
                 battery_enabled=args.battery,
             )
             print("ROS graph and Nav2 lifecycle nodes are ready.", flush=True)
-            require_bypass_audit(args.robot_count, args.message_timeout)
+            require_bypass_audit(
+                args.robot_count,
+                args.message_timeout,
+                args.bypass_audit_output,
+            )
             print("P3A forbidden-bypass audit passed.", flush=True)
             require_message(
                 "/tb1/scan",

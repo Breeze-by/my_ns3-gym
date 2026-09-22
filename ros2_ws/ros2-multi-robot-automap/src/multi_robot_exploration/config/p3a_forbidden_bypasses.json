@@ -47,6 +47,14 @@
       "/tb{index}/navigate_to_pose/_action/feedback",
       "/tb{index}/navigate_to_pose/_action/status"
     ],
+    "forbidden_subscriber_topic_templates": [
+      "/tb{index}/map",
+      "/tb{index}/odom",
+      "/tb{index}/tf",
+      "/tb{index}/navigate_to_pose/_action/feedback",
+      "/tb{index}/navigate_to_pose/_action/status"
+    ],
+    "forbidden_publisher_topic_templates": [],
     "robot_forbidden_topic": "/merge_map"
   }
 }

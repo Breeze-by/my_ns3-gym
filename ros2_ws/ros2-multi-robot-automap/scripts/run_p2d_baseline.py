@@ -3,9 +3,12 @@
 
 import argparse
 import csv
+from datetime import datetime, timezone
+import hashlib
 import json
 import os
 from pathlib import Path
+import platform
 import re
 import shlex
 import subprocess
@@ -55,6 +58,8 @@ SUMMARY_FIELDS = (
     "robots",
     "result_path",
     "command",
+    "attempts",
+    "graph_path",
 )
 
 
@@ -129,6 +134,122 @@ def write_summary(run_dir, metadata, rows):
         writer.writerows(rows)
 
 
+def file_digest(path):
+    digest = hashlib.sha256()
+    path = Path(path)
+    if path.is_file():
+        digest.update(path.name.encode())
+        digest.update(path.read_bytes())
+    elif path.is_dir():
+        for child in sorted(
+            p
+            for p in path.rglob("*")
+            if p.is_file()
+            and "__pycache__" not in p.parts
+            and p.suffix != ".pyc"
+        ):
+            digest.update(str(child.relative_to(path)).encode())
+            digest.update(child.read_bytes())
+    else:
+        return None
+    return digest.hexdigest()
+
+
+def command_output(command):
+    try:
+        completed = subprocess.run(
+            command,
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    return (completed.stdout or completed.stderr).strip()
+
+
+def command_version(command):
+    output = command_output(command)
+    return output.splitlines()[0] if output else None
+
+
+def build_manifest(config_path, args):
+    commit = command_version(["git", "rev-parse", "HEAD"])
+    status = command_output(
+        ["git", "status", "--short", "--untracked-files=all"]
+    ) or ""
+    tracked_paths = {
+        "scenario_config": config_path,
+        "bypass_manifest": PROJECT_ROOT
+        / "src/multi_robot_exploration/config/p3a_forbidden_bypasses.json",
+        "gateway_message": PROJECT_ROOT
+        / "src/multi_robot_interfaces/msg/GatewayEnvelope.msg",
+        "launch": PROJECT_ROOT
+        / "src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py",
+        "exploration_source": PROJECT_ROOT
+        / "src/multi_robot_exploration/multi_robot_exploration",
+        "merge_map_source": PROJECT_ROOT / "src/merge_map/merge_map",
+        "robot_params": PROJECT_ROOT / "src/multi_robot/params",
+    }
+    return {
+        "manifest_schema_version": 1,
+        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "task_stack_frozen_commit": commit if not status else None,
+        "git_commit": commit,
+        "worktree_dirty": bool(status),
+        "worktree_status": status.splitlines(),
+        "source_digests": {
+            name: file_digest(path) for name, path in tracked_paths.items()
+        },
+        "environment": {
+            "python": sys.version,
+            "python_executable": sys.executable,
+            "platform": platform.platform(),
+            "ros_distro": os.environ.get("ROS_DISTRO"),
+            "ros_version": os.environ.get("ROS_VERSION"),
+            "gazebo": command_version(["gazebo", "--version"]),
+            "colcon": command_version(["colcon", "--version"]),
+            "ros2_prefix": command_version(
+                ["ros2", "pkg", "prefix", "multi_robot"]
+            ),
+        },
+        "runner": {
+            "robot_count": args.robot_count,
+            "duration_sec": args.duration,
+            "goal_timeout_sec": args.goal_timeout,
+            "startup_timeout_sec": args.startup_timeout,
+            "message_timeout_sec": args.message_timeout,
+            "evaluation_wait_timeout_sec": args.evaluation_wait_timeout,
+            "shutdown_timeout_sec": args.shutdown_timeout,
+            "ros_domain_base": args.ros_domain_base,
+            "seeds": args.seeds,
+            "cross_check": True,
+        },
+    }
+
+
+def latest_launch_log(log_dir, known):
+    candidates = [
+        path
+        for path in log_dir.glob("*.log")
+        if path not in known and path.is_file()
+    ]
+    return (
+        max(candidates, key=lambda path: path.stat().st_mtime)
+        if candidates
+        else None
+    )
+
+
+def episode_started(log_path, episode_id):
+    if log_path is None or not log_path.exists():
+        return False
+    return f"Episode {episode_id} evaluation started" in log_path.read_text(
+        encoding="utf-8", errors="replace"
+    )
+
+
 def build_episode(scenario, seed, robot_count, cross_check=False):
     suffix = f"{robot_count}r_seed{seed}"
     if cross_check:
@@ -170,8 +291,10 @@ def main():
         raise SystemExit(f"output already exists: {run_dir}")
     episode_dir = run_dir / "episodes"
     launch_log_dir = run_dir / "launch_logs"
+    graph_dir = run_dir / "graphs"
     episode_dir.mkdir(parents=True)
     launch_log_dir.mkdir()
+    graph_dir.mkdir()
 
     episodes = [
         build_episode(scenario, seed, args.robot_count)
@@ -194,7 +317,7 @@ def main():
 
     metadata = {
         "run_id": run_id,
-        "baseline": "p2d_ideal_complete_task",
+        "baseline": "zero_loss_finite_rate_gateway_complete_task",
         "scenario_config": str(args.config),
         "seeds": args.seeds,
         "max_duration_sec": args.duration,
@@ -202,6 +325,7 @@ def main():
         "infrastructure_retries": args.infrastructure_retries,
         "retry_rule": "missing evaluation result only",
         "prevalidation": prevalidation,
+        "manifest": build_manifest(args.config, args),
     }
     rows = []
     smoke = PROJECT_ROOT / "scripts" / "ros_smoke_test.py"
@@ -211,6 +335,7 @@ def main():
         scenario = episode["scenario"]
         episode_id = f"{run_id}_{scenario['id']}_{episode['suffix']}"
         result_path = episode_dir / f"{episode_id}.json"
+        graph_path = graph_dir / f"{episode_id}.json"
         command = [
             sys.executable,
             str(smoke),
@@ -253,6 +378,8 @@ def main():
             str(launch_log_dir),
             "--episode-id",
             episode_id,
+            "--bypass-audit-output",
+            str(graph_path),
         ]
         if scenario.get("require_charge", False):
             command.append("--require-charge")
@@ -260,14 +387,33 @@ def main():
         environment = os.environ.copy()
         environment["ROS_DOMAIN_ID"] = str(domain_id)
         attempt_count = 0
+        attempts = []
         while True:
             attempt_count += 1
+            known_logs = set(launch_log_dir.glob("*.log"))
             print(
                 f"Running attempt {attempt_count}: {shlex.join(command)}",
                 flush=True,
             )
             completed = subprocess.run(command, check=False, env=environment)
-            if result_path.exists() or attempt_count > args.infrastructure_retries:
+            launch_log_path = latest_launch_log(launch_log_dir, known_logs)
+            started = episode_started(launch_log_path, episode_id)
+            attempts.append(
+                {
+                    "attempt": attempt_count,
+                    "returncode": completed.returncode,
+                    "launch_log": (
+                        str(launch_log_path) if launch_log_path else None
+                    ),
+                    "episode_started": started,
+                    "result_exists": result_path.exists(),
+                }
+            )
+            if (
+                result_path.exists()
+                or attempt_count > args.infrastructure_retries
+                or started
+            ):
                 break
             print(
                 "Retrying identical episode after pre-start infrastructure "
@@ -282,12 +428,14 @@ def main():
         infrastructure_failure = not result or result.get(
             "termination_reason"
         ) == "no_data"
+        if not result and any(item["episode_started"] for item in attempts):
+            infrastructure_failure = False
         success = completed.returncode == 0 and bool(result.get("success"))
         failure_reason = result.get("failure_reason", "")
         if not success and not failure_reason:
-            failure_reason = (
-                "missing evaluation result"
-                if infrastructure_failure
+            failure_reason = "missing evaluation result" if infrastructure_failure else (
+                "post_start_no_result"
+                if not result
                 else "runner validation failed"
             )
         row = {
@@ -323,6 +471,8 @@ def main():
                 ),
                 "result_path": str(result_path),
                 "command": shlex.join(command),
+                "attempts": json.dumps(attempts, sort_keys=True),
+                "graph_path": str(graph_path) if graph_path.exists() else "",
             }
         )
         rows.append(row)
