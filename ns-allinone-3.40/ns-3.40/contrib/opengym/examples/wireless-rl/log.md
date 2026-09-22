@@ -2399,3 +2399,40 @@ python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 1 \
 记录 `success=true`、1 次返航、1 次完成充电、0 碰撞、最终电量 17.02/30；3 个取消状态
 均来自低电量安全抢占或发现目标后的正常任务切换，不是充电失败。该回归未修改 ns-3
 代码；网络实验仍按 P3B/P4 计划未开始。
+
+## 2026-09-22 探索协调器四项优化对照
+
+本轮针对用户要求的前四项进行同口径 ideal baseline 检查：电量返航只抢占对应机器人；
+frontier/未知区积分图在同一地图快照内缓存；目标效用改为“预期新增覆盖 / 预计导航耗时”；
+并测试运行时 frontier 组去重。命令模板如下（仅 `--run-id` 和 seed 变化）：
+
+```bash
+source /opt/ros/humble/setup.bash
+source ros2_ws/ros2-multi-robot-automap/install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle
+python3 ros2_ws/ros2-multi-robot-automap/scripts/run_ideal_baseline.py \
+  --seeds SEED --robot-count 2 --duration 180 --coverage-threshold 0.90 \
+  --startup-timeout 300 --message-timeout 90 \
+  --evaluation-wait-timeout 420 --shutdown-timeout 60 --run-id RUN_ID
+```
+
+结果（`time_to_90`，秒）：
+
+| run-id | seed | 结果 |
+|---|---:|---|
+| `coord_v1_seed303` | 303 | 严格组去重；180 s 超时，覆盖 0.8993，未达到 90% |
+| `coord_v2_seed303` | 303 | 组去重 + 无可用组时回退复用；103.9 s，覆盖 0.9091，0 碰撞 |
+| `coord_v2_seed101` | 101 | 同上；109.2 s，覆盖 0.9168，较原基线 98.9 s 变慢 |
+| `coord_v3_nogroup_seed101` | 101 | 取消严格组去重；103.1 s，路径 31.10 m，0 取消、0 碰撞 |
+| `coord_v3_nogroup_seed202` | 202 | 直接按物理速度 0.18 m/s 估时；139.2 s，明显劣化 |
+| `coord_v4_calibrated_seed202` | 202 | 将有效速度校准为 0.50 m/s；154.4 s，仍明显劣化 |
+
+后两次说明仅用线性物理速度会把远 frontier 过度降权。最终代码保留“覆盖增益 /
+预计导航耗时”的接口，但采用已有 Nav2 目标延迟拟合的超线性时间模型（指数 1.5），
+与原有有效排序等价且不会牺牲 seed202 的尾段探索。严格 frontier 组唯一策略也未保留：
+大 frontier 在组数不足或组本身跨区域时会让机器人空闲，反而降低吞吐；当前安全策略仍是
+空间目标去重，并允许同组的空间上分离 viewpoint。
+
+最终代码验证：三个相关包构建通过；`colcon test` 共 68 项，62 通过、1 跳过（另一个包
+4 通过、1 跳过），无错误或失败；控制器与电池定向 pytest 34/34 通过。

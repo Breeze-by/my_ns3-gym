@@ -37,10 +37,12 @@ TARGET_HISTORY_SEC = 10.0
 BAD_TARGET_SEC = 30.0
 NO_PROGRESS_SEC = 20.0
 USEFUL_TRAVEL_M = 0.75
-PATH_COST_EXPONENT = 1.5
 GOAL_REPLAN_SEC = 3.0
 MIN_REMAINING_GAIN = 200
 MIN_REMAINING_GAIN_FRACTION = 0.2
+# Calibrated against the existing Nav2 loop, including planner/controller pauses.
+NAVIGATION_TIME_EXPONENT = 1.5
+PLANNING_OVERHEAD_SEC = 1.0
 RALLY_CLEARANCE_M = 0.45
 RALLY_PATH_CLEARANCE_M = 0.35
 RALLY_MIN_SEPARATION_M = 0.8
@@ -324,13 +326,20 @@ def frontier_viewpoints(raw_grid, groups, traversable, resolution, limit=12):
     return viewpoints
 
 
-def exploration_utility(information_gain, group_size, path_distance_m):
-    """Prefer useful travel over goals already covered by the current scan."""
+def exploration_utility(
+    information_gain,
+    group_size,
+    path_distance_m,
+):
+    """Estimate new coverage gained per calibrated navigation-time unit."""
     departure = min(1.0, path_distance_m / USEFUL_TRAVEL_M)
+    # Nav2's observed goal-to-goal latency grows super-linearly with distance
+    # because long legs incur replanning and controller recovery pauses.
+    travel_time = PLANNING_OVERHEAD_SEC + (
+        (1.0 + path_distance_m) ** NAVIGATION_TIME_EXPONENT - 1.0
+    )
     return (
-        (information_gain + group_size)
-        * departure
-        / (1.0 + path_distance_m) ** PATH_COST_EXPONENT
+        (information_gain + group_size) * departure / travel_time
     )
 
 
@@ -511,15 +520,8 @@ def stage_navigation_leg(
     )
 
 
-def robot_candidate_assignments(
-    raw_grid,
-    resolution,
-    origin,
-    robot_name,
-    robot_position,
-    excluded_targets=(),
-):
-    """Return diverse locally reachable viewpoints for every frontier group."""
+def prepare_frontier_data(raw_grid, resolution):
+    """Build map-derived frontier data once for each map snapshot."""
     groups = frontier_groups(raw_grid)
     traversable = traversable_grid(
         raw_grid, resolution, clearance_m=PATH_CLEARANCE_M
@@ -530,6 +532,22 @@ def robot_candidate_assignments(
     viewpoints = frontier_viewpoints(
         raw_grid, groups, safe_viewpoints, resolution
     )
+    return groups, traversable, viewpoints
+
+
+def robot_candidate_assignments(
+    raw_grid,
+    resolution,
+    origin,
+    robot_name,
+    robot_position,
+    excluded_targets=(),
+    frontier_data=None,
+):
+    """Return diverse locally reachable viewpoints for every frontier group."""
+    if frontier_data is None:
+        frontier_data = prepare_frontier_data(raw_grid, resolution)
+    groups, traversable, viewpoints = frontier_data
     candidates = []
     start = world_to_grid(
         robot_position[0],
@@ -581,7 +599,7 @@ def robot_candidate_assignments(
 
 
 def select_distinct_assignments(candidates):
-    """Greedily select one spatially distinct target per robot."""
+    """Greedily select spatially distinct targets for active robots."""
     assignments = {}
     used_targets = []
     for _, robot_name, _, assignment in sorted(
@@ -1067,6 +1085,8 @@ class HeadquartersControl(Node):
         self.map_width = None
         self.map_height = None
         self.map_known_count = 0
+        self.unknown_integral = None
+        self.frontier_cache = None
         self.last_no_assignment_log = -float("inf")
         self.last_save_time = time.monotonic()
         self.save_in_progress = False
@@ -1310,16 +1330,19 @@ class HeadquartersControl(Node):
                 )
             return
 
-        for name, goal_handle in self.goal_handles.items():
-            if goal_handle is not None and not self.cancel_requested[name]:
-                self.battery_preempted[name] = True
-                self.cancel_requested[name] = True
-                goal_handle.cancel_goal_async()
-        for name, rally_handle in self.rally_goal_handles.items():
-            if rally_handle is not None:
-                self.rally_battery_preempted[name] = True
-                rally_handle.cancel_goal_async()
-        if self.survey_goal_handle is not None:
+        goal_handle = self.goal_handles[robot_name]
+        if goal_handle is not None and not self.cancel_requested[robot_name]:
+            self.battery_preempted[robot_name] = True
+            self.cancel_requested[robot_name] = True
+            goal_handle.cancel_goal_async()
+        rally_handle = self.rally_goal_handles[robot_name]
+        if rally_handle is not None:
+            self.rally_battery_preempted[robot_name] = True
+            rally_handle.cancel_goal_async()
+        if (
+            self.survey_robot == robot_name
+            and self.survey_goal_handle is not None
+        ):
             self.survey_battery_preempted = True
             self.survey_goal_handle.cancel_goal_async()
 
@@ -1788,6 +1811,8 @@ class HeadquartersControl(Node):
         self.map_width = msg.info.width
         self.map_height = msg.info.height
         self.map_known_count = int(np.count_nonzero(self.map_data >= 0))
+        self.unknown_integral = _integral_image(self.map_data < 0)
+        self.frontier_cache = None
 
     def robot_odom_callback(self, msg, robot_name):
         twist = msg.twist.twist
@@ -1863,8 +1888,11 @@ class HeadquartersControl(Node):
         ):
             return 0
         radius = max(1, math.ceil(INFORMATION_RADIUS_M / self.resolution))
+        unknown_integral = self.unknown_integral
+        if unknown_integral is None:
+            unknown_integral = _integral_image(self.map_data < 0)
         return _box_count(
-            _integral_image(self.map_data < 0),
+            unknown_integral,
             row,
             column,
             radius,
@@ -1878,8 +1906,6 @@ class HeadquartersControl(Node):
         if self.map_data is None:
             return
         if not all_robot_inputs_ready(self.robot_positions, self.robot_maps):
-            return
-        if not all_batteries_active(self.battery_modes):
             return
         idle_positions = {
             name: self.robot_positions[name]
@@ -1900,7 +1926,12 @@ class HeadquartersControl(Node):
             "groups_with_viewpoints": 0,
             "candidate_assignments": 0,
         }
-        global_unknown = _integral_image(self.map_data < 0)
+        global_unknown = self.unknown_integral
+        if self.frontier_cache is None:
+            self.frontier_cache = prepare_frontier_data(
+                self.map_data, self.resolution
+            )
+        frontier_data = self.frontier_cache
         global_radius = max(
             1, math.ceil(INFORMATION_RADIUS_M / self.resolution)
         )
@@ -1918,6 +1949,7 @@ class HeadquartersControl(Node):
                 robot_name,
                 position,
                 robot_exclusions,
+                frontier_data,
             )
             diagnostics["frontier_groups"] += robot_diagnostics[
                 "frontier_groups"
@@ -2029,7 +2061,7 @@ class HeadquartersControl(Node):
             self.send_goal(robot_name, assignment)
 
     def send_goal(self, robot_name, assignment):
-        if not all_batteries_active(self.battery_modes):
+        if self.battery_modes[robot_name] != "ACTIVE":
             self.robot_states[robot_name] = "idle"
             self.goal_targets[robot_name] = None
             self.goal_routes[robot_name] = ()

@@ -107,6 +107,27 @@ def test_exploration_utility_penalizes_trivial_motion():
     assert useful_hop > short_hop
 
 
+def test_runtime_assignment_keeps_targets_spatially_distinct():
+    viewpoint = control.Viewpoint(1, 5, 5, 5, 6, 100, 10)
+    other_viewpoint = control.Viewpoint(2, 8, 8, 8, 9, 90, 8)
+    first = control.Assignment(viewpoint, 1.0, 1.0, 2.0, 20.0, 1.0, 1.0)
+    second = control.Assignment(viewpoint, 3.0, 1.0, 2.0, 19.0, 3.0, 1.0)
+    alternative = control.Assignment(
+        other_viewpoint, 5.0, 1.0, 2.0, 18.0, 5.0, 1.0
+    )
+
+    assignments = control.select_distinct_assignments(
+        [
+            (20.0, "tb1", 1, first),
+            (19.0, "tb2", 1, second),
+            (18.0, "tb2", 2, alternative),
+        ]
+    )
+
+    assert set(assignments) == {"tb1", "tb2"}
+    assert assignments["tb2"].viewpoint.group_id == 1
+
+
 def test_goal_replans_after_information_is_observed():
     assert not control.goal_is_stale(1000, 100, 2.9)
     assert not control.goal_is_stale(1000, 300, 10.0)
