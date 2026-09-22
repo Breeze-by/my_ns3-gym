@@ -2460,3 +2460,8 @@ python3 ros2_ws/ros2-multi-robot-automap/scripts/run_ideal_baseline.py \
 `user_retest_legutility_seed303` 为 178.0 s，明显退化。两者均未保留。最终保留的是
 单机器人电量抢占、地图派生数据缓存、校准后的覆盖/导航耗时效用，以及与 Nav2 对齐的
 0.35 m 路径安全膨胀。
+
+最终 0.35 m 版本补跑固定三 seed：`final_clearance035_seed101` 为 115.6 s、
+`final_clearance035_seed202` 为 103.4 s，连同前述 seed303 的 108.4 s，三 seed 均达到
+90%，均为 0 action abort、0 碰撞、0 搜索重叠；三 seed 平均 `time_to_90=109.1 s`。
+三轮仍各有 1/1/2 条 planner warning，但均未演变成导航取消。
