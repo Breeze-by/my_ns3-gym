@@ -159,6 +159,38 @@ def test_path_waypoint_limits_navigation_leg():
     )
 
 
+def test_stage_navigation_rejects_an_unsafe_actual_start():
+    raw_grid = np.zeros((40, 40), dtype=int)
+    raw_grid[18:23, 18:23] = 100
+    viewpoint = control.Viewpoint(1, 35, 35, 35, 36, 100, 10)
+    assignment = control.Assignment(
+        viewpoint, 3.55, 3.55, 8.0, 10.0, 3.55, 3.55
+    )
+
+    assert control.stage_navigation_leg(
+        assignment, raw_grid, 0.1, (0.0, 0.0), (2.0, 2.0)
+    ) is None
+
+
+def test_reassign_rally_pose_avoids_reserved_pose():
+    raw_grid = np.zeros((80, 80), dtype=int)
+    target = (4.0, 4.0)
+    replacement = control.reassign_rally_pose(
+        raw_grid,
+        0.1,
+        (0.0, 0.0),
+        "tb1",
+        (1.0, 1.0),
+        target,
+        reserved_poses=[(4.0, 3.0)],
+    )
+
+    assert replacement is not None
+    assert math.dist((replacement.x, replacement.y), (4.0, 3.0)) >= (
+        control.RALLY_MIN_SEPARATION_M
+    )
+
+
 def test_rally_assigns_distinct_safe_target_facing_poses():
     grid = np.zeros((70, 70), dtype=int)
     grid[[0, -1], :] = 100

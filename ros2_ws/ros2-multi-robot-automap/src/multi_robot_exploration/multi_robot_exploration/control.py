@@ -52,7 +52,10 @@ RALLY_POSITION_TOLERANCE_M = 0.35
 RALLY_LINEAR_TOLERANCE_MPS = 0.05
 RALLY_ANGULAR_TOLERANCE_RADPS = 0.10
 RALLY_HOLD_SEC = 5.0
-RALLY_ASSIGNMENT_WAIT_SEC = 10.0
+# A merged map can lag the local SLAM/costmap by several seconds after a
+# target is found.  Keep the route failure diagnostic, but allow map delivery
+# and a fresh rally-pose assignment to recover before failing the mission.
+RALLY_ASSIGNMENT_WAIT_SEC = 30.0
 RALLY_MAX_NAVIGATION_LEG_M = 1.5
 RALLY_ROUTE_SEPARATION_M = 1.2
 RALLY_MAX_CONCURRENT = 2
@@ -378,6 +381,16 @@ def nearest_traversable(traversable, start, max_radius_cells):
     return best
 
 
+def exact_traversable_start(traversable, start):
+    """Return a robot start cell only when the received map marks it safe."""
+    if start is None:
+        return None
+    row, column = start
+    if not (0 <= row < traversable.shape[0] and 0 <= column < traversable.shape[1]):
+        return None
+    return start if traversable[start] else None
+
+
 def path_distance_grid(traversable, start, return_predecessors=False):
     """Return an 8-connected Dijkstra distance field in grid cells."""
     height, width = traversable.shape
@@ -493,9 +506,11 @@ def stage_navigation_leg(
         origin[0],
         origin[1],
     )
-    start = nearest_traversable(
-        traversable, start, max(1, math.ceil(1.0 / resolution))
-    )
+    # Snapping an actually occupied robot pose to a nearby free cell makes the
+    # central route look valid while Nav2 rejects the real start as lethal.
+    start = exact_traversable_start(traversable, start)
+    if start is None:
+        return None
     target = world_to_grid(
         assignment.x,
         assignment.y,
@@ -503,8 +518,6 @@ def stage_navigation_leg(
         origin[0],
         origin[1],
     )
-    if start is None:
-        return assignment
     waypoint = path_waypoint(
         traversable,
         start,
@@ -563,9 +576,13 @@ def robot_candidate_assignments(
         origin[0],
         origin[1],
     )
-    start = nearest_traversable(
-        traversable, start, max(1, math.ceil(1.0 / resolution))
-    )
+    start = exact_traversable_start(traversable, start)
+    if start is None:
+        return [], {
+            "frontier_groups": len(groups),
+            "groups_with_viewpoints": len(viewpoints),
+            "candidate_assignments": 0,
+        }
     distances = path_distance_grid(traversable, start)
     for group_id, group_viewpoints in viewpoints.items():
         for viewpoint in group_viewpoints:
@@ -803,6 +820,61 @@ def assign_rally_poses(raw_grid, resolution, origin, robot_positions, target):
     if not best:
         return {}
     return {name: best[name] for name in names}
+
+
+def reassign_rally_pose(
+    raw_grid,
+    resolution,
+    origin,
+    robot_name,
+    robot_position,
+    target,
+    reserved_poses=(),
+    blocked_positions=(),
+):
+    """Choose a fresh reachable pose when a delivered map invalidates one."""
+    candidates = rally_pose_candidates(raw_grid, resolution, origin, target)
+    traversable = traversable_grid(
+        raw_grid, resolution, clearance_m=RALLY_PATH_CLEARANCE_M
+    )
+    best = None
+    for pose in candidates:
+        if any(
+            math.dist((pose.x, pose.y), other) < RALLY_MIN_SEPARATION_M
+            for other in reserved_poses
+        ):
+            continue
+        plan = plan_rally_leg(
+            pose,
+            raw_grid,
+            resolution,
+            origin,
+            robot_position,
+            max_distance_m=float("inf"),
+            blocked_positions=blocked_positions,
+        )
+        if plan[0] is None:
+            continue
+        start = world_to_grid(
+            robot_position[0], robot_position[1], resolution,
+            origin[0], origin[1],
+        )
+        start = nearest_traversable(
+            traversable, start, max(1, math.ceil(1.0 / resolution))
+        )
+        if start is None:
+            continue
+        distances = path_distance_grid(traversable, start)
+        cell = world_to_grid(pose.x, pose.y, resolution, origin[0], origin[1])
+        distance = distances[cell] if (
+            0 <= cell[0] < traversable.shape[0]
+            and 0 <= cell[1] < traversable.shape[1]
+        ) else np.inf
+        if not np.isfinite(distance):
+            continue
+        if best is None or distance < best[0]:
+            best = (float(distance), pose)
+    return None if best is None else best[1]
 
 
 def rally_survey_pose(raw_grid, resolution, origin, robot_position, target):
@@ -1576,7 +1648,34 @@ class HeadquartersControl(Node):
                             f"position={self.robot_positions[name]}, "
                             f"target={self.rally_targets[name]}."
                         )
-                    elif now - since >= RALLY_ASSIGNMENT_WAIT_SEC:
+                    elif now - since >= 2.0:
+                        reserved_poses = [
+                            (pose.x, pose.y)
+                            for other_name, pose in self.rally_targets.items()
+                            if other_name != name
+                            and not self.rally_yield_requested[other_name]
+                        ]
+                        replacement = reassign_rally_pose(
+                            self.map_data,
+                            self.resolution,
+                            self.origin,
+                            name,
+                            self.robot_positions[name],
+                            self.target,
+                            reserved_poses,
+                            arrived_positions,
+                        )
+                        if replacement is not None:
+                            self.rally_targets[name] = replacement
+                            self.rally_route_unavailable_since[name] = None
+                            self.publish_rally_assignments()
+                            self.get_logger().warn(
+                                f"Reassigned {name} to a fresh reachable "
+                                f"rally pose ({replacement.x:.2f}, "
+                                f"{replacement.y:.2f}) after map update."
+                            )
+                            continue
+                    if now - self.rally_route_unavailable_since[name] >= RALLY_ASSIGNMENT_WAIT_SEC:
                         self.fail_task(f"rally_route_unavailable:{name}")
                         return
                     continue
@@ -2042,6 +2141,8 @@ class HeadquartersControl(Node):
                 self.origin,
                 self.robot_positions[robot_name],
             )
+            if staged is None:
+                continue
             plans[robot_name] = staged
             _, routes[robot_name] = plan_rally_leg(
                 RallyPose(

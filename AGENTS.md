@@ -51,6 +51,12 @@ judgment: prefer simple solutions when they satisfy the requirements, but add
 necessary instrumentation, tests, abstractions, or experiments when they make
 the result correct and reviewable.
 
+User clarification (2026-09-23): learn the useful workflows and engineering
+habits in these two skills (tools, testing, iteration, identifying pitfalls),
+but never let their brevity or minimalism prescriptions limit creativity or
+problem-solving. Try alternative methods when evidence warrants it. Saving
+tokens is not a reason to leave a problem unresolved or inadequately tested.
+
 ## Current Handoff
 
 As of 2026-09-23, the user has accepted P1C, P2A, P2B, P2C, and P2D. Each robot has

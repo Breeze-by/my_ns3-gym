@@ -2638,3 +2638,41 @@ P3B 仍未开始。
 resolution，机器人 map/odom 位姿，global/local costmap 更新时间和起点栅格代价，并把 planner
 失败时的最近一次快照写入 episode。先用 lab/202 和 rooms/303 各复现一次，确认是 map/costmap
 时序、TF 坐标或动态 obstacle layer，再决定等待新 map、清理 costmap 或收紧中央起点吸附半径。
+
+# 2026-09-23 P3A.5 rally reassignment and start-safety diagnostic
+
+On current worktree after `c369c7d`, a targeted lab `my_world.world`, 3-robot,
+Gazebo seed 202 episode tested the P3A.5 failure path. The command was:
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 ROS_DOMAIN_ID=211
+/usr/bin/python3 scripts/ros_smoke_test.py --world my_world.world \
+  --robot-count 3 --gazebo-seed 202 --goal-timeout 60 \
+  --startup-timeout 600 --message-timeout 90 --shutdown-timeout 60 \
+  --evaluation-duration 300 --coverage-threshold 0 \
+  --evaluation-wait-timeout 600 --target-detection --rally --battery \
+  --battery-capacity 100 --battery-initial-energy 40 --target-x -4 --target-y 4 \
+  --evaluation-output-dir log/p2d_baseline/p3a5_reassign_lab202/episodes \
+  --log-dir log/p2d_baseline/p3a5_reassign_lab202/logs \
+  --episode-id p3a5_reassign_lab202 \
+  --bypass-audit-output log/p2d_baseline/p3a5_reassign_lab202/graph.json
+```
+
+Before the fix, the same seed reached `RALLY` and failed with
+`rally_route_unavailable:tb3` after a fixed 10-second wait. The fix keeps the
+route guard, waits up to 30 seconds for delivered map updates, and, after two
+seconds without a route, chooses a fresh currently reachable rally pose while
+preserving separation from assigned/arrived robots. Exploration assignment now
+rejects a robot start that is not free in the received map instead of snapping
+the route to a nearby free cell that Nav2 may reject as lethal.
+
+The targeted rerun completed `COMPLETE` at 162.9 simulated seconds, with zero
+collisions, zero navigation aborts, 39/42 navigation goals succeeded, and no
+charge required. The final rally poses remained distinct (minimum separation
+1.57 m). This is a diagnostic/targeted result only; it does not replace the
+required 10-cell P3A.5 matrix. The 47 focused pytest checks passed and the
+`multi_robot_exploration`/`merge_map` colcon build completed.
