@@ -1862,7 +1862,7 @@ class HeadquartersControl(Node):
                             if current_replacement is not None:
                                 self.rally_targets[name] = current_replacement
                                 self.rally_final_targets[name] = current_replacement
-                                self.rally_route_unavailable_since[name] = None
+                                self.rally_route_unavailable_since[name] = now
                                 self.rally_recovery_requested[name] = True
                                 self.publish_rally_assignments()
                                 self.get_logger().warn(

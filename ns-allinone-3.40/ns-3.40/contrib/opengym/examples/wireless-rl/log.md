@@ -2800,3 +2800,9 @@ rooms/seed303 定向运行 `p3a5_iter3_rooms303`：`COMPLETE`，124.5 s，0 碰�
 - `p3a5_iter5_corridors303`：`COMPLETE`，170.9 s，0 碰撞、0 nav abort、0 充电，旁路审计通过；日志确认触发 probe、临时让位、临时位屏障和最终 rally pose 恢复。
 
 此前 `p3a5_barrier_e551a22` 正式矩阵的 corridors/seed202 FOUND 超时和 corridors/seed303 RALLY 超时均已得到针对性改善，但仍需在包含 10 格的正式矩阵中验证，不能用定向结果替换正式门禁。
+
+## 2026-09-24 P3A.5 正式矩阵中断与控制流修复
+
+在 `75907b7` 上启动正式矩阵 `p3a5_formal_75907b7`（同一 `run_p2d_baseline.py` 命令、seeds 101/202/303、domain base 210）。第一格 lab/seed101 已启动并保存，但因 `insufficient_rally_poses` 失败；第二格 lab/seed202 暴露了控制器异常：受阻机器人重分配后同一 timer 仍对刚清空的 `rally_route_unavailable_since` 做差值计算，`headquarters_control` 以 `TypeError: unsupported operand type(s) for -: 'float' and 'NoneType'` 退出。该批次在第二格启动后中断，未作为正式结果接受；输出保留在 `log/p2d_baseline/p3a5_formal_75907b7/`。
+
+修复将当前机器人重分配后的不可用时间戳设为当前时间，保留恢复状态但避免同一轮的 `None` 差值。修复后重新构建、50 项 ROS 测试全部通过。
