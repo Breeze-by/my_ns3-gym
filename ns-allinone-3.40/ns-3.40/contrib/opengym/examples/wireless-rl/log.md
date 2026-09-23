@@ -2787,3 +2787,16 @@ export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1
 为防止临时让路机器人立即回到旧最终位，新增 rally 屏障：让路动作未完成时暂停其它 rally 派发；让路机器人到达临时位后保持，待其它机器人到位再恢复最终位。随后为仍无中央安全路线的受阻机器人选择新的可达最终集合位。构建和 49 项测试通过。
 
 rooms/seed303 定向运行 `p3a5_iter3_rooms303`：`COMPLETE`，124.5 s，0 碰撞、0 nav abort。corridors/seed303 首次屏障迭代 `p3a5_iter3_corridors303`：0 碰撞但 RALLY 超时，tb2 已保持临时位而 tb1 无法继续，说明屏障安全但需要受阻机器人重分配。加入重分配后第二次 `p3a5_iter4_corridors303`：`COMPLETE`，128.2 s，0 碰撞、0 nav abort。输出目录分别为 `log/p2d_baseline/p3a5_iter3_rooms303/`、`p3a5_iter3_corridors303/` 和 `p3a5_iter4_corridors303/`；均通过旁路审计，均为定向证据，不能替代正式矩阵。
+
+## 2026-09-24 P3A.5 survey 轮转与 probe 超时定向回归
+
+在 `e551a22` 的 rally 屏障/受阻机器人重分配基础上，修复两个状态机缺口：FOUND 阶段按轮转顺序选择 survey robot，避免一个失败的机器人反复占用 survey action；RALLY 阶段对卡住的 probe action 做 `goal_timeout_sec` 清理，释放机器人并重新进入恢复路径。新增 `rotate_robot_order` 单元测试；ROS 构建和四个测试包共 50 项通过。
+
+定向命令均为 `ros_smoke_test.py`，世界 `p1c_corridors.world`、3 机器人、目标 `(-4.5,-0.5)`、电池初始能量 45、评估时长 300 s，分别使用 Gazebo seed 202/303，输出目录为 `log/p2d_baseline/p3a5_iter5_corridors202/` 和 `log/p2d_baseline/p3a5_iter5_corridors303/`。
+
+结果：
+
+- `p3a5_iter5_corridors202`：`COMPLETE`，167.4 s，0 碰撞、0 nav abort、0 充电，旁路审计通过；FOUND 后顺利进入 RALLY。
+- `p3a5_iter5_corridors303`：`COMPLETE`，170.9 s，0 碰撞、0 nav abort、0 充电，旁路审计通过；日志确认触发 probe、临时让位、临时位屏障和最终 rally pose 恢复。
+
+此前 `p3a5_barrier_e551a22` 正式矩阵的 corridors/seed202 FOUND 超时和 corridors/seed303 RALLY 超时均已得到针对性改善，但仍需在包含 10 格的正式矩阵中验证，不能用定向结果替换正式门禁。

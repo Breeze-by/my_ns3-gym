@@ -150,6 +150,14 @@ def test_central_navigation_pauses_for_any_local_safety_return():
     )
 
 
+def test_rotate_robot_order_prevents_a_failed_robot_from_starving_others():
+    order = ["tb2", "tb1", "tb3"]
+
+    assert control.rotate_robot_order(order, 0) == order
+    assert control.rotate_robot_order(order, 1) == ["tb1", "tb3", "tb2"]
+    assert control.rotate_robot_order(order, 4) == ["tb1", "tb3", "tb2"]
+
+
 def test_path_waypoint_limits_navigation_leg():
     traversable = np.ones((1, 11), dtype=bool)
 

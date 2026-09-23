@@ -972,6 +972,14 @@ def survey_robot_order(robot_positions, detecting_robot):
     )
 
 
+def rotate_robot_order(order, cursor):
+    """Rotate a deterministic robot order so one failed robot cannot starve others."""
+    if not order:
+        return []
+    offset = cursor % len(order)
+    return list(order[offset:]) + list(order[:offset])
+
+
 def rally_dispatch_order(
     targets, robot_positions, target, priority_robot=None
 ):
@@ -1273,6 +1281,7 @@ class HeadquartersControl(Node):
         self.survey_goal_pending = False
         self.survey_goal_started_at = None
         self.survey_attempts = 0
+        self.survey_dispatch_cursor = 0
         self.survey_robot = None
         self.survey_battery_preempted = False
 
@@ -1580,9 +1589,13 @@ class HeadquartersControl(Node):
                             f"currently {candidate_count} safe candidates."
                         )
                         self.last_rally_candidate_log = now
-                    for survey_robot in survey_robot_order(
-                        self.robot_positions, self.detecting_robot
-                    ):
+                    survey_order = rotate_robot_order(
+                        survey_robot_order(
+                            self.robot_positions, self.detecting_robot
+                        ),
+                        self.survey_dispatch_cursor,
+                    )
+                    for survey_robot in survey_order:
                         if self.battery_modes[survey_robot] != "ACTIVE":
                             continue
                         survey_pose = rally_survey_pose(
@@ -1593,6 +1606,9 @@ class HeadquartersControl(Node):
                             self.target,
                         )
                         if survey_pose is not None:
+                            self.survey_dispatch_cursor = (
+                                self.survey_dispatch_cursor + 1
+                            )
                             self.send_survey_goal(survey_robot, survey_pose)
                             return
                     if (
@@ -1619,6 +1635,25 @@ class HeadquartersControl(Node):
             self.rally_hold_started_at = None
             return
         now = self.now()
+        if (
+            self.survey_goal_handle is not None
+            and self.survey_goal_started_at is not None
+            and now - self.survey_goal_started_at >= self.goal_timeout_sec
+        ):
+            survey_robot = self.survey_robot
+            self.get_logger().warn(
+                f"Canceling {survey_robot} rally survey after timeout."
+            )
+            self.survey_goal_started_at = None
+            self.survey_goal_handle.cancel_goal_async()
+            self.survey_goal_handle = None
+            if survey_robot in self.rally_probe_targets:
+                self.rally_probe_targets.discard(survey_robot)
+                if self.rally_probe_robot == survey_robot:
+                    self.rally_probe_robot = None
+                self.rally_route_unavailable_since[survey_robot] = now - 2.0
+                self.rally_recovery_requested[survey_robot] = True
+            self.survey_robot = None
         yielded_names = [
             name for name in self.rally_yield_targets
             if self.rally_arrived[name]
