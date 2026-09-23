@@ -1619,6 +1619,35 @@ class HeadquartersControl(Node):
             self.rally_hold_started_at = None
             return
         now = self.now()
+        yielded_names = [
+            name for name in self.rally_yield_targets
+            if self.rally_arrived[name]
+        ]
+        if yielded_names:
+            active_rally = any(
+                self.rally_goal_handles[name] is not None
+                or self.rally_goal_pending[name]
+                for name in self.rally_dispatch_order
+            )
+            non_yield_names = [
+                name for name in self.rally_dispatch_order
+                if name not in self.rally_yield_targets
+            ]
+            if (
+                not active_rally
+                and all(self.rally_arrived[name] for name in non_yield_names)
+            ):
+                for name in yielded_names:
+                    self.rally_targets[name] = self.rally_final_targets[name]
+                    self.rally_yield_targets.discard(name)
+                    self.rally_arrived[name] = False
+                    self.rally_route_unavailable_since[name] = None
+                self.publish_rally_assignments()
+                return
+        yield_recovery_active = any(
+            name in self.rally_yield_targets and not self.rally_arrived[name]
+            for name in self.rally_dispatch_order
+        )
         active_names = [
             name
             for name in self.rally_dispatch_order
@@ -1673,6 +1702,10 @@ class HeadquartersControl(Node):
                     self.rally_arrived[name]
                     or self.rally_goal_handles[name] is not None
                     or self.rally_goal_pending[name]
+                    or (
+                        yield_recovery_active
+                        and name not in self.rally_yield_targets
+                    )
                     or (
                         self.survey_robot == name
                         and (self.survey_goal_pending or self.survey_goal_handle)
@@ -1771,6 +1804,38 @@ class HeadquartersControl(Node):
                                 f"{blocker_replacement.y:.2f}) so {name} "
                                 "can reach its rally pose."
                             )
+                            current_reserved = [
+                                (pose.x, pose.y)
+                                for other_name, pose in self.rally_targets.items()
+                                if other_name != name
+                                and not self.rally_yield_requested[other_name]
+                            ]
+                            current_replacement = reassign_rally_pose(
+                                self.map_data,
+                                self.resolution,
+                                self.origin,
+                                name,
+                                self.robot_positions[name],
+                                self.target,
+                                current_reserved,
+                                [
+                                    self.robot_positions[other_name]
+                                    for other_name in arrived_names
+                                    if other_name != blocker
+                                ],
+                            )
+                            if current_replacement is not None:
+                                self.rally_targets[name] = current_replacement
+                                self.rally_final_targets[name] = current_replacement
+                                self.rally_route_unavailable_since[name] = None
+                                self.rally_recovery_requested[name] = True
+                                self.publish_rally_assignments()
+                                self.get_logger().warn(
+                                    f"Reassigned {name} to a reachable rally "
+                                    f"pose ({current_replacement.x:.2f}, "
+                                    f"{current_replacement.y:.2f}) after parked "
+                                    "robot yield."
+                                )
                             break
                         else:
                             reserved_poses = [
@@ -2064,10 +2129,7 @@ class HeadquartersControl(Node):
             and math.dist(position, (target.x, target.y))
             <= self.rally_position_tolerance
         )
-        if self.rally_arrived[robot_name] and (
-            robot_name in self.rally_yield_targets
-            or robot_name in self.rally_probe_targets
-        ):
+        if self.rally_arrived[robot_name] and robot_name in self.rally_probe_targets:
             self.rally_yield_targets.discard(robot_name)
             self.rally_probe_targets.discard(robot_name)
             self.rally_targets[robot_name] = self.rally_final_targets[robot_name]
@@ -2076,6 +2138,12 @@ class HeadquartersControl(Node):
             self.get_logger().info(
                 f"{robot_name} completed a yield move; restoring its final "
                 "rally pose."
+            )
+            return
+        if self.rally_arrived[robot_name] and robot_name in self.rally_yield_targets:
+            self.get_logger().info(
+                f"{robot_name} reached its temporary yield pose; holding "
+                "until the remaining rally legs finish."
             )
             return
         if self.rally_arrived[robot_name]:

@@ -2769,3 +2769,21 @@ export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1
 在上述正式矩阵后，新增两项状态保护：连续两次 rally action 失败后强制进入一次既有 parked-yield/probe 恢复路径；临时让路机器人如果获得新的有效集合位则永久更新最终目标，避免无意义地返回旧位；probe action 期间禁止同一机器人并行派发普通 rally goal。构建和 49 项 ROS 单元测试通过。
 
 一次使用非法 `ROS_DOMAIN_ID=240` 的 lab/seed202 启动在 Nav2 初始化阶段失败（Fast DDS 报 domain over 232），没有 episode 结果，作为基础设施启动误用记录；改用合法 `ROS_DOMAIN_ID=230` 后 lab/seed202 `COMPLETE`，169.5 s，0 碰撞、0 nav abort、0 充电，旁路审计通过。corridors/seed101 首次迭代在 300.4 s 超时但 0 碰撞，tb3 在评估器保存结果后才抵达最终位；触发恢复状态后第二次定向运行（`ROS_DOMAIN_ID=228`）`COMPLETE`，159.5 s，0 碰撞、0 nav abort、0 充电，旁路审计通过。输出分别为 `log/p2d_baseline/p3a5_iter1_lab202/`、`p3a5_iter1_corridors101/` 和 `p3a5_iter2_corridors101/`。这些仅是定向证据，仍需新提交上的完整 10 格正式矩阵。
+
+`11e0138` 完整矩阵命令：
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source install/setup.bash; source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1
+/usr/bin/python3 scripts/run_p2d_baseline.py --seeds 101 202 303 --run-id p3a5_recovery_11e0138 --ros-domain-base 210 --startup-timeout 600 --evaluation-wait-timeout 600
+```
+
+结果为 5/10 成功、0 基础设施失败。成功格：lab/303、rooms/101、rooms/202、corridors/101、corridors 双机器人交叉格；失败格：lab/101 在 `FOUND` 超时，lab/202 在 `RALLY` 超时，rooms/303 在 `RALLY` 发生 13 次碰撞并超时，corridors/202 三机器人在 `RALLY` 超时，corridors/303 在 `RALLY` 发生 14 次碰撞并超时。所有 10 个 graph 快照均通过 P3A forbidden-bypass 审计。完整结果保存在 `log/p2d_baseline/p3a5_recovery_11e0138/summary.json`；该提交不能冻结 P3A.5。
+
+## 2026-09-23 P3A.5 rally 屏障定向迭代
+
+为防止临时让路机器人立即回到旧最终位，新增 rally 屏障：让路动作未完成时暂停其它 rally 派发；让路机器人到达临时位后保持，待其它机器人到位再恢复最终位。随后为仍无中央安全路线的受阻机器人选择新的可达最终集合位。构建和 49 项测试通过。
+
+rooms/seed303 定向运行 `p3a5_iter3_rooms303`：`COMPLETE`，124.5 s，0 碰撞、0 nav abort。corridors/seed303 首次屏障迭代 `p3a5_iter3_corridors303`：0 碰撞但 RALLY 超时，tb2 已保持临时位而 tb1 无法继续，说明屏障安全但需要受阻机器人重分配。加入重分配后第二次 `p3a5_iter4_corridors303`：`COMPLETE`，128.2 s，0 碰撞、0 nav abort。输出目录分别为 `log/p2d_baseline/p3a5_iter3_rooms303/`、`p3a5_iter3_corridors303/` 和 `p3a5_iter4_corridors303/`；均通过旁路审计，均为定向证据，不能替代正式矩阵。
