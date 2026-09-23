@@ -922,6 +922,49 @@ def rally_survey_pose(raw_grid, resolution, origin, robot_position, target):
     return RallyPose(x, y, math.atan2(target[1] - y, target[0] - x))
 
 
+def rally_yield_pose(
+    raw_grid,
+    resolution,
+    origin,
+    robot_position,
+    target,
+    reserved_poses=(),
+    blocked_positions=(),
+):
+    """Choose a nearby safe pose that moves a parked robot out of a corridor."""
+    traversable = traversable_grid(
+        raw_grid, resolution, clearance_m=RALLY_PATH_CLEARANCE_M
+    )
+    start = exact_traversable_start(
+        traversable,
+        world_to_grid(
+            robot_position[0], robot_position[1], resolution,
+            origin[0], origin[1],
+        ),
+    )
+    if start is None:
+        return None
+    distances = path_distance_grid(traversable, start)
+    candidates = []
+    for row, column in np.argwhere(np.isfinite(distances)):
+        path_distance = float(distances[row, column] * resolution)
+        if path_distance < 0.5 or path_distance > 3.0:
+            continue
+        x, y = grid_to_world(row, column, resolution, origin[0], origin[1])
+        if math.dist((x, y), target) < 0.7:
+            continue
+        if any(
+            math.dist((x, y), pose) < RALLY_MIN_SEPARATION_M
+            for pose in (*reserved_poses, *blocked_positions)
+        ):
+            continue
+        candidates.append((math.dist((x, y), target), path_distance, x, y))
+    if not candidates:
+        return None
+    _, _, x, y = max(candidates, key=lambda item: (item[0], -item[1]))
+    return RallyPose(x, y, math.atan2(target[1] - y, target[0] - x))
+
+
 def survey_robot_order(robot_positions, detecting_robot):
     return sorted(
         robot_positions,
@@ -1206,6 +1249,8 @@ class HeadquartersControl(Node):
         self.target = None
         self.detecting_robot = None
         self.rally_targets = {}
+        self.rally_final_targets = {}
+        self.rally_yield_targets = set()
         self.rally_goal_handles = {}
         self.rally_goal_pending = {}
         self.rally_goal_started_at = {}
@@ -1515,6 +1560,7 @@ class HeadquartersControl(Node):
                     self.robot_positions,
                     self.target,
                 )
+                self.rally_final_targets = dict(self.rally_targets)
                 if len(self.rally_targets) != self.num_robots:
                     candidate_count = len(
                         rally_pose_candidates(
@@ -1686,7 +1732,18 @@ class HeadquartersControl(Node):
                                 )
                                 < self.rally_position_tolerance
                             ):
+                                blocker_replacement = rally_yield_pose(
+                                    self.map_data,
+                                    self.resolution,
+                                    self.origin,
+                                    self.robot_positions[blocker],
+                                    self.target,
+                                    blocker_reserved,
+                                    blocker_positions,
+                                )
+                            if blocker_replacement is None:
                                 continue
+                            self.rally_yield_targets.add(blocker)
                             self.rally_targets[blocker] = blocker_replacement
                             self.rally_arrived[blocker] = False
                             self.rally_route_unavailable_since[name] = now
@@ -1717,6 +1774,7 @@ class HeadquartersControl(Node):
                             )
                             if replacement is not None:
                                 self.rally_targets[name] = replacement
+                                self.rally_final_targets[name] = replacement
                                 self.rally_route_unavailable_since[name] = None
                                 self.publish_rally_assignments()
                                 self.get_logger().warn(
@@ -1951,6 +2009,16 @@ class HeadquartersControl(Node):
             and math.dist(position, (target.x, target.y))
             <= self.rally_position_tolerance
         )
+        if self.rally_arrived[robot_name] and robot_name in self.rally_yield_targets:
+            self.rally_yield_targets.remove(robot_name)
+            self.rally_targets[robot_name] = self.rally_final_targets[robot_name]
+            self.rally_arrived[robot_name] = False
+            self.publish_rally_assignments()
+            self.get_logger().info(
+                f"{robot_name} completed a yield move; restoring its final "
+                "rally pose."
+            )
+            return
         if self.rally_arrived[robot_name]:
             self.get_logger().info(f"{robot_name} reached its rally pose.")
         elif success:

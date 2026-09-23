@@ -281,6 +281,22 @@ def test_rally_survey_moves_detector_toward_target_on_known_space():
     assert math.dist((pose.x, pose.y), target) < math.dist(robot, target) - 0.4
 
 
+def test_rally_yield_pose_moves_parked_robot_away_from_target():
+    grid = np.zeros((100, 100), dtype=int)
+    robot = (2.0, 2.0)
+    target = (7.0, 7.0)
+
+    pose = control.rally_yield_pose(
+        grid, 0.1, (0.0, 0.0), robot, target, reserved_poses=[(7.0, 6.0)]
+    )
+
+    assert pose is not None
+    assert math.dist((pose.x, pose.y), robot) >= 0.5
+    assert math.dist((pose.x, pose.y), (7.0, 6.0)) >= (
+        control.RALLY_MIN_SEPARATION_M
+    )
+
+
 def test_rally_survey_tries_detector_then_remaining_robots():
     positions = {"tb1": (0.0, 0.0), "tb2": (1.0, 0.0), "tb3": (2.0, 0.0)}
 

@@ -2723,3 +2723,10 @@ export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 ROS_DOMAIN_ID=229
 ```
 
 结果为 `COMPLETE`，140.7 s，0 碰撞、0 导航 abort、0 充电，旁路审计通过。该样本未触发 parked-yield 分支，但验证了近侧优先不会破坏 lab/seed202；需要正式矩阵确认跨世界稳定性。
+
+
+## 2026-09-23 P3A.5 可逆 parked-yield 实验
+
+在 `0541ce7` 的近侧优先版本上，lab/seed202 仍因 tb2 的最终集合位切断 tb3 路线而失败，且没有触发原有重新分配；因此增加可逆 parked-yield：选择附近安全栅格、保持 `RALLY_MIN_SEPARATION_M`，临时移动阻塞机器人，抵达后恢复原最终集合位。新增 `rally_yield_pose` 单元测试，控制器测试 34 项通过。
+
+随后使用 ROS_DOMAIN_ID=229 的同 seed 定向启动时遇到 Nav2 lifecycle 反复激活（旧实验资源残留），按 Ctrl-C 中断，未计入成功/失败矩阵；该次只作为启动故障记录。
