@@ -2730,3 +2730,21 @@ export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 ROS_DOMAIN_ID=229
 在 `0541ce7` 的近侧优先版本上，lab/seed202 仍因 tb2 的最终集合位切断 tb3 路线而失败，且没有触发原有重新分配；因此增加可逆 parked-yield：选择附近安全栅格、保持 `RALLY_MIN_SEPARATION_M`，临时移动阻塞机器人，抵达后恢复原最终集合位。新增 `rally_yield_pose` 单元测试，控制器测试 34 项通过。
 
 随后使用 ROS_DOMAIN_ID=229 的同 seed 定向启动时遇到 Nav2 lifecycle 反复激活（旧实验资源残留），按 Ctrl-C 中断，未计入成功/失败矩阵；该次只作为启动故障记录。
+
+
+## 2026-09-23 P3A.5 `0541ce7` 正式矩阵与 probe-action 定向结果
+
+`p3a5_yield_0541ce7` 使用命令：
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1
+/usr/bin/python3 scripts/run_p2d_baseline.py --seeds 101 202 303 --run-id p3a5_yield_0541ce7 --ros-domain-base 210 --startup-timeout 600 --evaluation-wait-timeout 600
+```
+
+正式结果为 6/10 `COMPLETE`、0 基础设施失败。失败格为 lab/seed202 `rally_route_unavailable:tb3`，rooms/seed202 14 碰撞后 `COMPLETE` 状态不一致，corridors/seed202 三机器人和双机器人分别 `rally_route_unavailable:tb3/tb1`；该提交不能冻结。
+
+当前未冻结工作树加入 probe-action 后，分别定向验证 rooms/seed202：`COMPLETE`、144.4 s、0 碰撞、0 nav abort；corridors/seed202 双机器人：`COMPLETE`、119.8 s、0 碰撞、0 nav abort；corridors/seed202 三机器人：`COMPLETE`、157.3 s、0 碰撞、1 nav abort。三机器人日志确认触发 `Yielding parked tb2`、`Probing a reachable rally survey pose for tb3`，随后两次恢复最终集合位并完成任务。

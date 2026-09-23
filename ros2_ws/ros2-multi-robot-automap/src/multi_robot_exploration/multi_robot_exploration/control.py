@@ -1251,6 +1251,8 @@ class HeadquartersControl(Node):
         self.rally_targets = {}
         self.rally_final_targets = {}
         self.rally_yield_targets = set()
+        self.rally_probe_targets = set()
+        self.rally_probe_robot = None
         self.rally_goal_handles = {}
         self.rally_goal_pending = {}
         self.rally_goal_started_at = {}
@@ -1783,6 +1785,31 @@ class HeadquartersControl(Node):
                                     f"{replacement.y:.2f}) after map update."
                                 )
                                 continue
+                        probe = rally_survey_pose(
+                            self.map_data,
+                            self.resolution,
+                            self.origin,
+                            self.robot_positions[name],
+                            self.target,
+                        )
+                        if (
+                            name not in self.rally_probe_targets
+                            and
+                            probe is not None
+                            and math.dist(
+                                self.robot_positions[name], (probe.x, probe.y)
+                            ) > self.rally_position_tolerance
+                        ):
+                            self.rally_probe_targets.add(name)
+                            self.rally_probe_robot = name
+                            self.rally_route_unavailable_since[name] = now
+                            self.get_logger().warn(
+                                f"Probing a reachable rally survey pose for "
+                                f"{name} ({probe.x:.2f}, {probe.y:.2f}) "
+                                "before retrying its final pose."
+                            )
+                            self.send_survey_goal(name, probe)
+                            continue
                     if now - self.rally_route_unavailable_since[name] >= RALLY_ASSIGNMENT_WAIT_SEC:
                         self.fail_task(f"rally_route_unavailable:{name}")
                         return
@@ -1890,10 +1917,23 @@ class HeadquartersControl(Node):
             status = f"exception: {error}"
         if status == GoalStatus.STATUS_SUCCEEDED:
             self.survey_battery_preempted = False
-            self.rally_prepare_started_at = self.now()
-            self.get_logger().info(
-                f"{survey_robot} completed a target-area survey leg."
-            )
+            if survey_robot == self.rally_probe_robot:
+                self.rally_probe_robot = None
+                self.rally_probe_targets.discard(survey_robot)
+                self.rally_targets[survey_robot] = self.rally_final_targets[
+                    survey_robot
+                ]
+                self.rally_route_unavailable_since[survey_robot] = self.now()
+                self.publish_rally_assignments()
+                self.get_logger().info(
+                    f"{survey_robot} completed a rally probe; restoring its "
+                    "final rally pose."
+                )
+            else:
+                self.rally_prepare_started_at = self.now()
+                self.get_logger().info(
+                    f"{survey_robot} completed a target-area survey leg."
+                )
         elif self.survey_battery_preempted:
             self.survey_battery_preempted = False
             self.survey_attempts -= 1
@@ -2009,8 +2049,12 @@ class HeadquartersControl(Node):
             and math.dist(position, (target.x, target.y))
             <= self.rally_position_tolerance
         )
-        if self.rally_arrived[robot_name] and robot_name in self.rally_yield_targets:
-            self.rally_yield_targets.remove(robot_name)
+        if self.rally_arrived[robot_name] and (
+            robot_name in self.rally_yield_targets
+            or robot_name in self.rally_probe_targets
+        ):
+            self.rally_yield_targets.discard(robot_name)
+            self.rally_probe_targets.discard(robot_name)
             self.rally_targets[robot_name] = self.rally_final_targets[robot_name]
             self.rally_arrived[robot_name] = False
             self.publish_rally_assignments()
