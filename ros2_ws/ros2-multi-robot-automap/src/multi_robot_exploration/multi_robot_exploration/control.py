@@ -58,7 +58,9 @@ RALLY_HOLD_SEC = 5.0
 RALLY_ASSIGNMENT_WAIT_SEC = 30.0
 RALLY_MAX_NAVIGATION_LEG_M = 1.5
 RALLY_ROUTE_SEPARATION_M = 1.2
-RALLY_MAX_CONCURRENT = 2
+# A completed robot is a physical obstacle for later legs.  Serial dispatch
+# avoids deadlocking a long route behind an already parked rally robot.
+RALLY_MAX_CONCURRENT = 1
 
 TASK_TRANSITIONS = {
     "EXPLORE": {"FOUND_UNCONFIRMED", "FOUND", "FAILED"},
@@ -756,9 +758,10 @@ def assign_rally_poses(raw_grid, resolution, origin, robot_positions, target):
         start = world_to_grid(
             position[0], position[1], resolution, origin[0], origin[1]
         )
-        start = nearest_traversable(
-            traversable, start, max(1, math.ceil(1.0 / resolution))
-        )
+        # Assignment must be grounded at the robot's actual map cell.  Snapping
+        # an unknown/occupied pose to a nearby free cell can make a disconnected
+        # robot look reachable and fail as soon as Nav2 receives the real goal.
+        start = exact_traversable_start(traversable, start)
         distances = path_distance_grid(traversable, start)
         reachable = []
         for index, pose in enumerate(candidates):
@@ -859,9 +862,7 @@ def reassign_rally_pose(
             robot_position[0], robot_position[1], resolution,
             origin[0], origin[1],
         )
-        start = nearest_traversable(
-            traversable, start, max(1, math.ceil(1.0 / resolution))
-        )
+        start = exact_traversable_start(traversable, start)
         if start is None:
             continue
         distances = path_distance_grid(traversable, start)
@@ -998,7 +999,7 @@ def plan_rally_leg(
     traversable = block_dynamic_positions(
         traversable, resolution, origin, blocked_positions
     )
-    start = nearest_traversable(
+    start = exact_traversable_start(
         traversable,
         world_to_grid(
             robot_position[0],
@@ -1007,7 +1008,6 @@ def plan_rally_leg(
             origin[0],
             origin[1],
         ),
-        max(1, math.ceil(1.0 / resolution)),
     )
     target = world_to_grid(
         pose.x, pose.y, resolution, origin[0], origin[1]

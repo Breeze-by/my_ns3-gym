@@ -232,6 +232,20 @@ def test_rally_rejects_blocked_target_area():
     )
 
 
+def test_rally_rejects_an_unsafe_actual_start_instead_of_snapping():
+    grid = np.zeros((70, 70), dtype=int)
+    grid[10:13, 10:13] = 100
+    assignments = control.assign_rally_poses(
+        grid,
+        0.1,
+        (0.0, 0.0),
+        {"tb1": (1.05, 1.05)},
+        (3.5, 3.5),
+    )
+
+    assert not assignments
+
+
 def test_rally_supports_a_narrow_known_approach_fan():
     grid = np.full((80, 80), -1, dtype=int)
     grid[10:52, 34:47] = 0

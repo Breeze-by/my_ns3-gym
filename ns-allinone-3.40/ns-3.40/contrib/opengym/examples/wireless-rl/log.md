@@ -2676,3 +2676,32 @@ charge required. The final rally poses remained distinct (minimum separation
 1.57 m). This is a diagnostic/targeted result only; it does not replace the
 required 10-cell P3A.5 matrix. The 47 focused pytest checks passed and the
 `multi_robot_exploration`/`merge_map` colcon build completed.
+
+
+## 2026-09-23 P3A.5 exact-start 与串行 rally 定向验证
+
+在工作树当前修改（尚未冻结提交）上，先运行 lab/seed202 的 exact-start 版本：
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 ROS_DOMAIN_ID=231
+/usr/bin/python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 3 --gazebo-seed 202 --goal-timeout 60 --startup-timeout 600 --message-timeout 90 --shutdown-timeout 60 --evaluation-duration 300 --coverage-threshold 0 --evaluation-wait-timeout 600 --target-detection --rally --battery --battery-capacity 100 --battery-initial-energy 40 --target-x -4 --target-y 4 --evaluation-output-dir log/p2d_baseline/p3a5_exactstart_lab202/episodes --log-dir log/p2d_baseline/p3a5_exactstart_lab202/logs --episode-id p3a5_exactstart_lab202 --bypass-audit-output log/p2d_baseline/p3a5_exactstart_lab202/graph.json
+```
+
+结果为 `FAILED`、`rally_route_unavailable:tb3`，但 tb3 已完成多段集合路径后才失败；0 碰撞、0 导航 abort、1 次充电、0 基础设施失败。这排除了“初始起点吸附”是唯一根因，定位到已到位机器人作为动态障碍造成的 rally 调度死锁。
+
+随后将 `RALLY_MAX_CONCURRENT` 限为 1，运行串行 rally 定向验证：
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 ROS_DOMAIN_ID=232
+/usr/bin/python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 3 --gazebo-seed 202 --goal-timeout 60 --startup-timeout 600 --message-timeout 90 --shutdown-timeout 60 --evaluation-duration 300 --coverage-threshold 0 --evaluation-wait-timeout 600 --target-detection --rally --battery --battery-capacity 100 --battery-initial-energy 40 --target-x -4 --target-y 4 --evaluation-output-dir log/p2d_baseline/p3a5_serial_lab202/episodes --log-dir log/p2d_baseline/p3a5_serial_lab202/logs --episode-id p3a5_serial_lab202 --bypass-audit-output log/p2d_baseline/p3a5_serial_lab202/graph.json
+```
+
+结果为 `COMPLETE`，186.7 s，0 碰撞、0 导航 abort、0 充电，P3A forbidden-bypass audit passed。该结果仍是单格验证，不能替换正式 10 格矩阵。
