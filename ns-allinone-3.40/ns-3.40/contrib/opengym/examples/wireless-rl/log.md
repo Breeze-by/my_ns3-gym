@@ -2806,3 +2806,9 @@ rooms/seed303 定向运行 `p3a5_iter3_rooms303`：`COMPLETE`，124.5 s，0 碰�
 在 `75907b7` 上启动正式矩阵 `p3a5_formal_75907b7`（同一 `run_p2d_baseline.py` 命令、seeds 101/202/303、domain base 210）。第一格 lab/seed101 已启动并保存，但因 `insufficient_rally_poses` 失败；第二格 lab/seed202 暴露了控制器异常：受阻机器人重分配后同一 timer 仍对刚清空的 `rally_route_unavailable_since` 做差值计算，`headquarters_control` 以 `TypeError: unsupported operand type(s) for -: 'float' and 'NoneType'` 退出。该批次在第二格启动后中断，未作为正式结果接受；输出保留在 `log/p2d_baseline/p3a5_formal_75907b7/`。
 
 修复将当前机器人重分配后的不可用时间戳设为当前时间，保留恢复状态但避免同一轮的 `None` 差值。修复后重新构建、50 项 ROS 测试全部通过。
+
+## P3A.5 电池全局屏障与串行 rally 诊断（2026-09-24）
+
+`p3a5_iter6_lab101` 在 survey 退路修复后进入 RALLY，但 tb2 触发返航时其它 rally legs 仍运行，结果 24 次碰撞并超时；`p3a5_iter7_lab101` 将任一 RETURNING/CHARGING 状态改为取消所有 rally legs，结果 0 碰撞但 survey 充电后直到仿真 285.4 s 才进入 RALLY，300.4 s 超时。进一步确认每次 survey 成功都轮换 robot 会拖慢目标区准备，因此调整为仅 survey 失败时轮转。
+
+`p3a5_iter8_lab101` 在该调整下快速进入 RALLY，但当前允许两条并发 rally 路线，tb2/tb3 动态交汇产生 24 次碰撞并超时；因此恢复 `RALLY_MAX_CONCURRENT=1`，并完成 51 项 ROS 测试。随后 `p3a5_iter9_lab101` 启动时 Gazebo 以 exit 255 退出，未产生 episode 结果，按基础设施启动中断保留，不计入任务成败。上述迭代均为定向诊断，尚不能替代正式 10 格门禁。

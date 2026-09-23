@@ -150,6 +150,12 @@ def test_central_navigation_pauses_for_any_local_safety_return():
     )
 
 
+def test_rally_battery_preemption_is_global():
+    assert not control.all_batteries_active(
+        {"tb1": "ACTIVE", "tb2": "CHARGING", "tb3": "ACTIVE"}
+    )
+
+
 def test_rotate_robot_order_prevents_a_failed_robot_from_starving_others():
     order = ["tb2", "tb1", "tb3"]
 

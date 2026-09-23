@@ -58,7 +58,7 @@ RALLY_HOLD_SEC = 5.0
 RALLY_ASSIGNMENT_WAIT_SEC = 30.0
 RALLY_MAX_NAVIGATION_LEG_M = 1.5
 RALLY_ROUTE_SEPARATION_M = 1.2
-RALLY_MAX_CONCURRENT = 2
+RALLY_MAX_CONCURRENT = 1
 
 TASK_TRANSITIONS = {
     "EXPLORE": {"FOUND_UNCONFIRMED", "FOUND", "FAILED"},
@@ -1476,6 +1476,17 @@ class HeadquartersControl(Node):
         if rally_handle is not None:
             self.rally_battery_preempted[robot_name] = True
             rally_handle.cancel_goal_async()
+        if self.task_state == "RALLY":
+            for other_name, other_handle in self.rally_goal_handles.items():
+                if other_handle is None or other_name == robot_name:
+                    continue
+                if self.rally_battery_preempted[other_name]:
+                    continue
+                self.rally_battery_preempted[other_name] = True
+                other_handle.cancel_goal_async()
+            self.get_logger().warn(
+                f"Pausing all rally legs while {robot_name} returns to charge."
+            )
         if (
             self.survey_robot == robot_name
             and self.survey_goal_handle is not None
@@ -1606,9 +1617,6 @@ class HeadquartersControl(Node):
                             self.target,
                         )
                         if survey_pose is not None:
-                            self.survey_dispatch_cursor = (
-                                self.survey_dispatch_cursor + 1
-                            )
                             self.send_survey_goal(survey_robot, survey_pose)
                             return
                     if (
@@ -2054,6 +2062,7 @@ class HeadquartersControl(Node):
             self.survey_attempts -= 1
             self.get_logger().info("Target-area survey paused for charging.")
         else:
+            self.survey_dispatch_cursor += 1
             self.get_logger().warn(
                 f"Target-area survey failed with status {status}."
             )
