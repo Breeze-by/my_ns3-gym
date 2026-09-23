@@ -2816,3 +2816,31 @@ rooms/seed303 定向运行 `p3a5_iter3_rooms303`：`COMPLETE`，124.5 s，0 碰�
 ## P3A.5 串行 rally 与电池屏障定向通过（2026-09-24）
 
 在 `f7a9b11` 上干净重跑 lab/seed101：`p3a5_iter10_lab101` `COMPLETE`，162.6 s，0 碰撞、0 nav abort、0 充电，目标检测 72.6 s、RALLY 80.6 s，旁路审计通过。该结果支持“survey 失败才轮转 + RALLY 单路串行 + 电池全局暂停”组合，但仍需完整 10 格正式矩阵确认。
+
+## 2026-09-24 P3A.5 正式矩阵 `e6267d9` 失败与动态避障定向检查
+
+在已推送提交 `e6267d9` 上运行：
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1
+/usr/bin/python3 scripts/run_p2d_baseline.py --seeds 101 202 303 --run-id p3a5_formal_e6267d9 --ros-domain-base 210 --startup-timeout 600 --evaluation-wait-timeout 600
+```
+
+输出 `log/p2d_baseline/p3a5_formal_e6267d9/summary.json`：5/10 成功，0 基础设施失败，10 份 ROS graph 快照保存并通过各 episode 的 P3A forbidden-bypass 启动审计。rooms/101、202、303，corridors/101 和 corridors 双机器人 seed202 均 `COMPLETE` 且 0 碰撞；lab/101 虽 `COMPLETE` 却有 2 次碰撞；lab/202 虽 `COMPLETE`、0 碰撞，却因 tb3 最终角速度 0.202 rad/s 大于 0.1 rad/s 容差而被 smoke 拒绝；lab/303 在 `RALLY` 超时、0 碰撞；corridors/202 在 `RALLY` 超时、0 碰撞；corridors/303 在 `RALLY` 超时且 23 次碰撞。所有失败格保留，不能冻结 P3A.5。
+
+随后在 `e6267d9` 加未提交的动态位置阻挡/全局 survey 屏障改动上完成 ROS 构建和 51 项测试。两次定向运行使用下列命令模板，替换世界、种子、初始能量、目标和 run id；每次均保留 episode JSON、launch log、graph：
+
+```bash
+/usr/bin/python3 scripts/ros_smoke_test.py --world <world> --robot-count 3 --gazebo-seed <seed> --goal-timeout 60.0 --startup-timeout 600.0 --message-timeout 90.0 --shutdown-timeout 60.0 --evaluation-duration 300.0 --coverage-threshold 0 --evaluation-wait-timeout 600.0 --target-detection --rally --battery --battery-capacity 100.0 --battery-initial-energy <energy> --target-x <x> --target-y <y> --evaluation-output-dir log/p2d_baseline/<run>/episodes --log-dir log/p2d_baseline/<run>/logs --episode-id <run> --bypass-audit-output log/p2d_baseline/<run>/graph.json
+```
+
+- `p3a5_iter11_corridors303`：`p1c_corridors.world`、seed 303、energy 45、target `(-4.5,-0.5)`；`COMPLETE` 170.0 s、0 碰撞、0 nav abort、0 充电，P3A 审计通过。
+- `p3a5_iter12_lab101`：`my_world.world`、seed 101、energy 40、target `(-4,4)`；`RALLY` 在 300 s 超时、0 碰撞、0 nav abort、0 充电，P3A 审计通过。tb3 的 probe 路线被 Nav2 判为起点 lethal；probe 与 tb2 rally leg 重叠，重复超时、重分配，tb2 最终仍离集合位 5.59 m。此定向失败证明动态阻挡修复了该次走廊碰撞，却未恢复 lab 的集合活性，不能作为正式门禁成功。
+
+## 2026-09-24 P3A.5 动态阻挡回退定向验证
+
+在前一轮 lab/101 定向失败后，保留动态当前位置阻挡、串行 rally 和 survey 屏障，并加入“动态阻挡无路时退回已到位机器人阻挡”的活性回退。构建与 51 项测试通过。`p3a5_iter14_lab101`（`my_world.world`、3 robots、seed101、energy40、target `(-4,4)`）仍在 `RALLY` 超时，0 碰撞、0 nav abort、0 充电，旁路审计通过；最终未完成集合。该回退未解决 lab/101 的全部路由活性问题，因此尚未重跑正式矩阵。

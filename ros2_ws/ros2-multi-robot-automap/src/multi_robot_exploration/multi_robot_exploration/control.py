@@ -1734,12 +1734,6 @@ class HeadquartersControl(Node):
         if now - self.last_rally_dispatch_at >= 1.0:
             self.last_rally_dispatch_at = now
             plans = {}
-            arrived_positions = [
-                self.robot_positions[name]
-                for name in self.rally_dispatch_order
-                if self.rally_arrived[name]
-                and self.robot_positions[name] is not None
-            ]
             for name in self.rally_dispatch_order:
                 if (
                     self.rally_arrived[name]
@@ -1753,6 +1747,8 @@ class HeadquartersControl(Node):
                         self.survey_robot == name
                         and (self.survey_goal_pending or self.survey_goal_handle)
                     )
+                    or self.survey_goal_pending
+                    or self.survey_goal_handle is not None
                     or self.robot_positions[name] is None
                     or self.battery_modes[name] != "ACTIVE"
                 ):
@@ -1769,8 +1765,30 @@ class HeadquartersControl(Node):
                         self.robot_positions[name],
                         RALLY_MAX_NAVIGATION_LEG_M
                         / (self.rally_attempts[name] + 1),
-                        arrived_positions,
+                        [
+                            position
+                            for other_name, position in self.robot_positions.items()
+                            if other_name != name and position is not None
+                        ],
                     )
+                    if plan[0] is None:
+                        arrived_positions = [
+                            self.robot_positions[other_name]
+                            for other_name in self.rally_dispatch_order
+                            if other_name != name
+                            and self.rally_arrived[other_name]
+                            and self.robot_positions[other_name] is not None
+                        ]
+                        plan = plan_rally_leg(
+                            self.rally_targets[name],
+                            self.map_data,
+                            self.resolution,
+                            self.origin,
+                            self.robot_positions[name],
+                            RALLY_MAX_NAVIGATION_LEG_M
+                            / (self.rally_attempts[name] + 1),
+                            arrived_positions,
+                        )
                 if plan[0] is None:
                     since = self.rally_route_unavailable_since[name]
                     if since is None:
@@ -1781,6 +1799,12 @@ class HeadquartersControl(Node):
                             f"target={self.rally_targets[name]}."
                         )
                     elif now - since >= 2.0:
+                        if any(
+                            self.rally_goal_handles[other_name] is not None
+                            or self.rally_goal_pending[other_name]
+                            for other_name in self.rally_dispatch_order
+                        ):
+                            continue
                         # A parked robot can seal a narrow corridor for a
                         # remaining leg.  Move that blocker to another safe
                         # separated rally pose before giving up on the leg.
@@ -1895,7 +1919,10 @@ class HeadquartersControl(Node):
                                 self.robot_positions[name],
                                 self.target,
                                 reserved_poses,
-                                arrived_positions,
+                                [
+                                    self.robot_positions[other_name]
+                                    for other_name in arrived_names
+                                ],
                             )
                             if replacement is not None:
                                 self.rally_targets[name] = replacement
@@ -1939,6 +1966,8 @@ class HeadquartersControl(Node):
                     continue
                 self.rally_route_unavailable_since[name] = None
                 plans[name] = plan
+            if self.survey_goal_pending or self.survey_goal_handle is not None:
+                return
             routes = {name: plan[1] for name, plan in plans.items()}
             reserved_routes = [
                 self.rally_leg_routes[name]
@@ -2083,11 +2112,10 @@ class HeadquartersControl(Node):
             return
 
         if plan is None:
-            arrived_positions = [
+            blocked_positions = [
                 self.robot_positions[name]
                 for name in self.rally_dispatch_order
-                if self.rally_arrived[name]
-                and name != robot_name
+                if name != robot_name
                 and self.robot_positions[name] is not None
             ]
             plan = plan_rally_leg(
@@ -2098,7 +2126,7 @@ class HeadquartersControl(Node):
                 self.robot_positions[robot_name],
                 RALLY_MAX_NAVIGATION_LEG_M
                 / (self.rally_attempts[robot_name] + 1),
-                arrived_positions,
+                blocked_positions,
             )
         target, route = plan
         if target is None:
