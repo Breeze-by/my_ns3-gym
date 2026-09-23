@@ -291,7 +291,7 @@ def test_rally_survey_tries_detector_then_remaining_robots():
     ]
 
 
-def test_rally_dispatches_far_side_first_to_avoid_blocking_arrivals():
+def test_rally_dispatches_near_side_first_to_avoid_blocking_arrivals():
     targets = {
         "tb1": control.RallyPose(0.0, 2.6, 0.0),
         "tb2": control.RallyPose(0.0, 1.0, 0.0),
@@ -305,10 +305,10 @@ def test_rally_dispatches_far_side_first_to_avoid_blocking_arrivals():
 
     order = control.rally_dispatch_order(targets, positions, (0.0, 0.0))
 
-    assert order == ["tb2", "tb3", "tb1"]
+    assert order == ["tb1", "tb3", "tb2"]
 
 
-def test_rally_dispatches_deep_pose_before_near_side_pose():
+def test_rally_dispatches_near_side_pose_before_deep_pose():
     targets = {
         "tb1": control.RallyPose(-4.0, 1.4, 0.0),
         "tb2": control.RallyPose(-4.0, 3.0, 0.0),
@@ -322,7 +322,7 @@ def test_rally_dispatches_deep_pose_before_near_side_pose():
 
     order = control.rally_dispatch_order(targets, positions, (-4.0, 4.0))
 
-    assert order.index("tb3") < order.index("tb2")
+    assert order.index("tb2") < order.index("tb3")
 
 
 def test_rally_dispatches_detecting_robot_first():

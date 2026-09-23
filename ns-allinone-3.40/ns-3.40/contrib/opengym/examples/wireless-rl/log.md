@@ -2705,3 +2705,21 @@ export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 ROS_DOMAIN_ID=232
 ```
 
 结果为 `COMPLETE`，186.7 s，0 碰撞、0 导航 abort、0 充电，P3A forbidden-bypass audit passed。该结果仍是单格验证，不能替换正式 10 格矩阵。
+
+
+## 2026-09-23 P3A.5 集合调度让路定向验证
+
+在已推送 `d3c4dc5` 的起点安全修复基础上，先完成串行正式矩阵（命令见下方报告，结果 5/10），随后尝试“近侧优先 + 到位机器人安全让路”策略。该策略保留 `RALLY_DYNAMIC_CLEARANCE_M` 和活动路线冲突检查；无路由时仅为已到位机器人选择保持集合间距的替代位姿，并通过正常 rally leg 移动。
+
+定向命令：
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 ROS_DOMAIN_ID=229
+/usr/bin/python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 3 --gazebo-seed 202 --goal-timeout 60 --startup-timeout 600 --message-timeout 90 --shutdown-timeout 60 --evaluation-duration 300 --coverage-threshold 0 --evaluation-wait-timeout 600 --target-detection --rally --battery --battery-capacity 100 --battery-initial-energy 40 --target-x -4 --target-y 4 --evaluation-output-dir log/p2d_baseline/p3a5_yield_lab202/episodes --log-dir log/p2d_baseline/p3a5_yield_lab202/logs --episode-id p3a5_yield_lab202 --bypass-audit-output log/p2d_baseline/p3a5_yield_lab202/graph.json
+```
+
+结果为 `COMPLETE`，140.7 s，0 碰撞、0 导航 abort、0 充电，旁路审计通过。该样本未触发 parked-yield 分支，但验证了近侧优先不会破坏 lab/seed202；需要正式矩阵确认跨世界稳定性。

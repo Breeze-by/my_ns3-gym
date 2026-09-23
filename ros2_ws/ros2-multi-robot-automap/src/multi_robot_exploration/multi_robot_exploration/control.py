@@ -58,9 +58,7 @@ RALLY_HOLD_SEC = 5.0
 RALLY_ASSIGNMENT_WAIT_SEC = 30.0
 RALLY_MAX_NAVIGATION_LEG_M = 1.5
 RALLY_ROUTE_SEPARATION_M = 1.2
-# A completed robot is a physical obstacle for later legs.  Serial dispatch
-# avoids deadlocking a long route behind an already parked rally robot.
-RALLY_MAX_CONCURRENT = 1
+RALLY_MAX_CONCURRENT = 2
 
 TASK_TRANSITIONS = {
     "EXPLORE": {"FOUND_UNCONFIRMED", "FOUND", "FAILED"},
@@ -950,7 +948,7 @@ def rally_dispatch_order(
         targets,
         key=lambda name: (
             name != priority_robot,
-            -(
+            (
                 (targets[name].x - target[0]) * approach_x
                 + (targets[name].y - target[1]) * approach_y
             ),
@@ -1649,32 +1647,84 @@ class HeadquartersControl(Node):
                             f"target={self.rally_targets[name]}."
                         )
                     elif now - since >= 2.0:
-                        reserved_poses = [
-                            (pose.x, pose.y)
-                            for other_name, pose in self.rally_targets.items()
-                            if other_name != name
-                            and not self.rally_yield_requested[other_name]
+                        # A parked robot can seal a narrow corridor for a
+                        # remaining leg.  Move that blocker to another safe
+                        # separated rally pose before giving up on the leg.
+                        arrived_names = [
+                            other_name
+                            for other_name in self.rally_dispatch_order
+                            if self.rally_arrived[other_name]
+                            and self.robot_positions[other_name] is not None
                         ]
-                        replacement = reassign_rally_pose(
-                            self.map_data,
-                            self.resolution,
-                            self.origin,
-                            name,
-                            self.robot_positions[name],
-                            self.target,
-                            reserved_poses,
-                            arrived_positions,
-                        )
-                        if replacement is not None:
-                            self.rally_targets[name] = replacement
-                            self.rally_route_unavailable_since[name] = None
+                        for blocker in arrived_names:
+                            blocker_reserved = [
+                                (pose.x, pose.y)
+                                for other_name, pose in self.rally_targets.items()
+                                if other_name != blocker
+                                and not self.rally_yield_requested[other_name]
+                            ]
+                            blocker_positions = [
+                                self.robot_positions[other_name]
+                                for other_name in arrived_names
+                                if other_name != blocker
+                            ]
+                            blocker_replacement = reassign_rally_pose(
+                                self.map_data,
+                                self.resolution,
+                                self.origin,
+                                blocker,
+                                self.robot_positions[blocker],
+                                self.target,
+                                blocker_reserved,
+                                blocker_positions,
+                            )
+                            if (
+                                blocker_replacement is None
+                                or math.dist(
+                                    self.robot_positions[blocker],
+                                    (blocker_replacement.x, blocker_replacement.y),
+                                )
+                                < self.rally_position_tolerance
+                            ):
+                                continue
+                            self.rally_targets[blocker] = blocker_replacement
+                            self.rally_arrived[blocker] = False
+                            self.rally_route_unavailable_since[name] = now
                             self.publish_rally_assignments()
                             self.get_logger().warn(
-                                f"Reassigned {name} to a fresh reachable "
-                                f"rally pose ({replacement.x:.2f}, "
-                                f"{replacement.y:.2f}) after map update."
+                                f"Yielding parked {blocker} to "
+                                f"({blocker_replacement.x:.2f}, "
+                                f"{blocker_replacement.y:.2f}) so {name} "
+                                "can reach its rally pose."
                             )
-                            continue
+                            break
+                        else:
+                            reserved_poses = [
+                                (pose.x, pose.y)
+                                for other_name, pose in self.rally_targets.items()
+                                if other_name != name
+                                and not self.rally_yield_requested[other_name]
+                            ]
+                            replacement = reassign_rally_pose(
+                                self.map_data,
+                                self.resolution,
+                                self.origin,
+                                name,
+                                self.robot_positions[name],
+                                self.target,
+                                reserved_poses,
+                                arrived_positions,
+                            )
+                            if replacement is not None:
+                                self.rally_targets[name] = replacement
+                                self.rally_route_unavailable_since[name] = None
+                                self.publish_rally_assignments()
+                                self.get_logger().warn(
+                                    f"Reassigned {name} to a fresh reachable "
+                                    f"rally pose ({replacement.x:.2f}, "
+                                    f"{replacement.y:.2f}) after map update."
+                                )
+                                continue
                     if now - self.rally_route_unavailable_since[name] >= RALLY_ASSIGNMENT_WAIT_SEC:
                         self.fail_task(f"rally_route_unavailable:{name}")
                         return
