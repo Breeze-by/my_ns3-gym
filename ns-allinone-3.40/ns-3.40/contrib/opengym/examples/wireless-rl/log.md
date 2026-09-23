@@ -2812,3 +2812,7 @@ rooms/seed303 定向运行 `p3a5_iter3_rooms303`：`COMPLETE`，124.5 s，0 碰�
 `p3a5_iter6_lab101` 在 survey 退路修复后进入 RALLY，但 tb2 触发返航时其它 rally legs 仍运行，结果 24 次碰撞并超时；`p3a5_iter7_lab101` 将任一 RETURNING/CHARGING 状态改为取消所有 rally legs，结果 0 碰撞但 survey 充电后直到仿真 285.4 s 才进入 RALLY，300.4 s 超时。进一步确认每次 survey 成功都轮换 robot 会拖慢目标区准备，因此调整为仅 survey 失败时轮转。
 
 `p3a5_iter8_lab101` 在该调整下快速进入 RALLY，但当前允许两条并发 rally 路线，tb2/tb3 动态交汇产生 24 次碰撞并超时；因此恢复 `RALLY_MAX_CONCURRENT=1`，并完成 51 项 ROS 测试。随后 `p3a5_iter9_lab101` 启动时 Gazebo 以 exit 255 退出，未产生 episode 结果，按基础设施启动中断保留，不计入任务成败。上述迭代均为定向诊断，尚不能替代正式 10 格门禁。
+
+## P3A.5 串行 rally 与电池屏障定向通过（2026-09-24）
+
+在 `f7a9b11` 上干净重跑 lab/seed101：`p3a5_iter10_lab101` `COMPLETE`，162.6 s，0 碰撞、0 nav abort、0 充电，目标检测 72.6 s、RALLY 80.6 s，旁路审计通过。该结果支持“survey 失败才轮转 + RALLY 单路串行 + 电池全局暂停”组合，但仍需完整 10 格正式矩阵确认。
