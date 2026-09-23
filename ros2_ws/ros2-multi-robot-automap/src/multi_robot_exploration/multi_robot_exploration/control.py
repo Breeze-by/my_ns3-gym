@@ -1258,6 +1258,7 @@ class HeadquartersControl(Node):
         self.rally_goal_started_at = {}
         self.rally_leg_routes = {}
         self.rally_route_unavailable_since = {}
+        self.rally_recovery_requested = {}
         self.rally_yield_requested = {}
         self.rally_battery_preempted = {}
         self.rally_attempts = {}
@@ -1329,6 +1330,7 @@ class HeadquartersControl(Node):
             self.rally_goal_started_at[robot_name] = None
             self.rally_leg_routes[robot_name] = ()
             self.rally_route_unavailable_since[robot_name] = None
+            self.rally_recovery_requested[robot_name] = False
             self.rally_yield_requested[robot_name] = False
             self.rally_battery_preempted[robot_name] = False
             self.rally_attempts[robot_name] = 0
@@ -1671,20 +1673,28 @@ class HeadquartersControl(Node):
                     self.rally_arrived[name]
                     or self.rally_goal_handles[name] is not None
                     or self.rally_goal_pending[name]
+                    or (
+                        self.survey_robot == name
+                        and (self.survey_goal_pending or self.survey_goal_handle)
+                    )
                     or self.robot_positions[name] is None
                     or self.battery_modes[name] != "ACTIVE"
                 ):
                     continue
-                plan = plan_rally_leg(
-                    self.rally_targets[name],
-                    self.map_data,
-                    self.resolution,
-                    self.origin,
-                    self.robot_positions[name],
-                    RALLY_MAX_NAVIGATION_LEG_M
-                    / (self.rally_attempts[name] + 1),
-                    arrived_positions,
-                )
+                if self.rally_recovery_requested[name]:
+                    plan = (None, ())
+                    self.rally_recovery_requested[name] = False
+                else:
+                    plan = plan_rally_leg(
+                        self.rally_targets[name],
+                        self.map_data,
+                        self.resolution,
+                        self.origin,
+                        self.robot_positions[name],
+                        RALLY_MAX_NAVIGATION_LEG_M
+                        / (self.rally_attempts[name] + 1),
+                        arrived_positions,
+                    )
                 if plan[0] is None:
                     since = self.rally_route_unavailable_since[name]
                     if since is None:
@@ -1716,6 +1726,7 @@ class HeadquartersControl(Node):
                                 for other_name in arrived_names
                                 if other_name != blocker
                             ]
+                            blocker_positions.append(self.robot_positions[name])
                             blocker_replacement = reassign_rally_pose(
                                 self.map_data,
                                 self.resolution,
@@ -1726,14 +1737,14 @@ class HeadquartersControl(Node):
                                 blocker_reserved,
                                 blocker_positions,
                             )
-                            if (
-                                blocker_replacement is None
-                                or math.dist(
+                            permanent_reassignment = (
+                                blocker_replacement is not None
+                                and math.dist(
                                     self.robot_positions[blocker],
                                     (blocker_replacement.x, blocker_replacement.y),
-                                )
-                                < self.rally_position_tolerance
-                            ):
+                                ) >= self.rally_position_tolerance
+                            )
+                            if not permanent_reassignment:
                                 blocker_replacement = rally_yield_pose(
                                     self.map_data,
                                     self.resolution,
@@ -1745,13 +1756,17 @@ class HeadquartersControl(Node):
                                 )
                             if blocker_replacement is None:
                                 continue
-                            self.rally_yield_targets.add(blocker)
+                            if permanent_reassignment:
+                                self.rally_final_targets[blocker] = blocker_replacement
+                            else:
+                                self.rally_yield_targets.add(blocker)
                             self.rally_targets[blocker] = blocker_replacement
                             self.rally_arrived[blocker] = False
                             self.rally_route_unavailable_since[name] = now
                             self.publish_rally_assignments()
                             self.get_logger().warn(
-                                f"Yielding parked {blocker} to "
+                                f"{'Reassigning' if permanent_reassignment else 'Yielding'} "
+                                f"parked {blocker} to "
                                 f"({blocker_replacement.x:.2f}, "
                                 f"{blocker_replacement.y:.2f}) so {name} "
                                 "can reach its rally pose."
@@ -2079,6 +2094,9 @@ class HeadquartersControl(Node):
             )
         else:
             self.rally_attempts[robot_name] += 1
+            if self.rally_attempts[robot_name] >= 2:
+                self.rally_route_unavailable_since[robot_name] = self.now() - 2.0
+                self.rally_recovery_requested[robot_name] = True
             self.get_logger().warn(
                 f"{robot_name} rally goal failed with status {status}."
             )

@@ -2748,3 +2748,24 @@ export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1
 正式结果为 6/10 `COMPLETE`、0 基础设施失败。失败格为 lab/seed202 `rally_route_unavailable:tb3`，rooms/seed202 14 碰撞后 `COMPLETE` 状态不一致，corridors/seed202 三机器人和双机器人分别 `rally_route_unavailable:tb3/tb1`；该提交不能冻结。
 
 当前未冻结工作树加入 probe-action 后，分别定向验证 rooms/seed202：`COMPLETE`、144.4 s、0 碰撞、0 nav abort；corridors/seed202 双机器人：`COMPLETE`、119.8 s、0 碰撞、0 nav abort；corridors/seed202 三机器人：`COMPLETE`、157.3 s、0 碰撞、1 nav abort。三机器人日志确认触发 `Yielding parked tb2`、`Probing a reachable rally survey pose for tb3`，随后两次恢复最终集合位并完成任务。
+
+## 2026-09-23 P3A.5 `04e684d` probe-action 正式矩阵
+
+代码状态：干净工作树，冻结候选提交 `04e684db840601c6caadd848dbf00ae3faae37cf`。命令：
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1
+/usr/bin/python3 scripts/run_p2d_baseline.py --seeds 101 202 303 --run-id p3a5_probe_04e684d --ros-domain-base 210 --startup-timeout 600 --evaluation-wait-timeout 600
+```
+
+结果：10 个 episode 中 8 个 `success=true` 且 `COMPLETE`；0 基础设施失败，10 个 ROS graph 均通过 P3A forbidden-bypass 审计。lab/seed202 在 `RALLY` 300.2 s 超时、0 碰撞：tb2 probe 成功后即将到达最终位时触发安全返航，tb1 随后也返航，剩余时间不足。corridors/seed101 达到 `COMPLETE`，但 tb1 有 3 次碰撞、1.7 s 接触时长，按零碰撞协议记为失败。其余 8 格均 0 碰撞；corridors/seed202 三机器人和双机器人均通过。失败格保留、不补跑替换。输出：`ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a5_probe_04e684d/summary.json`。该提交不能冻结为 P3A.5 基线。
+
+## 2026-09-23 P3A.5 迭代恢复定向验证
+
+在上述正式矩阵后，新增两项状态保护：连续两次 rally action 失败后强制进入一次既有 parked-yield/probe 恢复路径；临时让路机器人如果获得新的有效集合位则永久更新最终目标，避免无意义地返回旧位；probe action 期间禁止同一机器人并行派发普通 rally goal。构建和 49 项 ROS 单元测试通过。
+
+一次使用非法 `ROS_DOMAIN_ID=240` 的 lab/seed202 启动在 Nav2 初始化阶段失败（Fast DDS 报 domain over 232），没有 episode 结果，作为基础设施启动误用记录；改用合法 `ROS_DOMAIN_ID=230` 后 lab/seed202 `COMPLETE`，169.5 s，0 碰撞、0 nav abort、0 充电，旁路审计通过。corridors/seed101 首次迭代在 300.4 s 超时但 0 碰撞，tb3 在评估器保存结果后才抵达最终位；触发恢复状态后第二次定向运行（`ROS_DOMAIN_ID=228`）`COMPLETE`，159.5 s，0 碰撞、0 nav abort、0 充电，旁路审计通过。输出分别为 `log/p2d_baseline/p3a5_iter1_lab202/`、`p3a5_iter1_corridors101/` 和 `p3a5_iter2_corridors101/`。这些仅是定向证据，仍需新提交上的完整 10 格正式矩阵。
