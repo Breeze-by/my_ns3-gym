@@ -5,6 +5,7 @@ import os
 import subprocess
 import threading
 import time
+from collections import deque
 from itertools import permutations
 
 from action_msgs.msg import GoalStatus
@@ -414,7 +415,47 @@ def navigation_start_cell(raw_grid, traversable, start, max_radius_cells):
         return None
     if traversable[start]:
         return start
-    return nearest_traversable(traversable, start, max_radius_cells)
+
+    # Clearance inflation can remove the raw start cell while the robot is
+    # still in known free space. A nearest-cell snap is unsafe unless there is
+    # an actual known-free escape path to that cell. Unknown and occupied cells
+    # cannot be crossed, and the search cannot jump across a wall.
+    queue = deque([(start, 0)])
+    visited = {start}
+    while queue:
+        (row, column), distance = queue.popleft()
+        if traversable[row, column]:
+            return row, column
+        if distance >= max_radius_cells:
+            continue
+        for delta_row, delta_column in (
+            (-1, 0),
+            (1, 0),
+            (0, -1),
+            (0, 1),
+            (-1, -1),
+            (-1, 1),
+            (1, -1),
+            (1, 1),
+        ):
+            next_row = row + delta_row
+            next_column = column + delta_column
+            next_cell = (next_row, next_column)
+            if next_cell in visited or not (
+                0 <= next_row < raw_grid.shape[0]
+                and 0 <= next_column < raw_grid.shape[1]
+            ):
+                continue
+            if raw_grid[next_cell] != 0:
+                continue
+            if delta_row and delta_column and (
+                raw_grid[row, next_column] != 0
+                or raw_grid[next_row, column] != 0
+            ):
+                continue
+            visited.add(next_cell)
+            queue.append((next_cell, distance + 1))
+    return None
 
 
 def path_distance_grid(traversable, start, return_predecessors=False):
@@ -774,8 +815,17 @@ def rally_pose_candidates(raw_grid, resolution, origin, target):
     return candidates
 
 
-def assign_rally_poses(raw_grid, resolution, origin, robot_positions, target):
+def assign_rally_poses(
+    raw_grid,
+    resolution,
+    origin,
+    robot_positions,
+    target,
+    objective="minimax",
+):
     """Balance the longest reachable path with distinct rally poses."""
+    if objective not in ("minimax", "total_path"):
+        raise ValueError(f"unknown rally assignment objective: {objective}")
     names = sorted(robot_positions)
     candidates = rally_pose_candidates(
         raw_grid, resolution, origin, target
@@ -826,11 +876,16 @@ def assign_rally_poses(raw_grid, resolution, origin, robot_positions, target):
         longest_path,
     ):
         nonlocal best, best_score
-        if (longest_path, separation_penalty, cost) >= best_score:
+        score = (
+            (longest_path, separation_penalty, cost)
+            if objective == "minimax"
+            else (separation_penalty, cost, longest_path)
+        )
+        if score >= best_score:
             return
         if len(assignments) == len(search_order):
             best = assignments.copy()
-            best_score = (longest_path, separation_penalty, cost)
+            best_score = score
             return
         name = search_order[len(assignments)]
         for distance, candidate_index in options[name]:
@@ -1343,6 +1398,18 @@ class HeadquartersControl(Node):
         self.rally_max_retries = self.declare_parameter(
             "rally_max_retries", 2
         ).value
+        self.rally_assignment_objective = self.declare_parameter(
+            "rally_assignment_objective", "minimax"
+        ).value
+        self.use_map_safe_rally_order = self.declare_parameter(
+            "use_map_safe_rally_order", True
+        ).value
+        self.global_battery_rally_pause = self.declare_parameter(
+            "global_battery_rally_pause", True
+        ).value
+        self.rally_max_concurrent = self.declare_parameter(
+            "rally_max_concurrent", RALLY_MAX_CONCURRENT
+        ).value
         if (
             self.num_robots < 1
             or self.rally_position_tolerance <= 0
@@ -1350,6 +1417,8 @@ class HeadquartersControl(Node):
             or self.rally_angular_tolerance < 0
             or self.rally_hold_sec <= 0
             or self.rally_max_retries < 0
+            or self.rally_assignment_objective not in ("minimax", "total_path")
+            or self.rally_max_concurrent < 1
         ):
             raise ValueError("invalid robot or rally parameters")
 
@@ -1623,7 +1692,7 @@ class HeadquartersControl(Node):
         if rally_handle is not None:
             self.rally_battery_preempted[robot_name] = True
             rally_handle.cancel_goal_async()
-        if self.task_state == "RALLY":
+        if self.task_state == "RALLY" and self.global_battery_rally_pause:
             for other_name, other_handle in self.rally_goal_handles.items():
                 if other_handle is None or other_name == robot_name:
                     continue
@@ -1732,6 +1801,7 @@ class HeadquartersControl(Node):
                     self.origin,
                     self.robot_positions,
                     self.target,
+                    objective=self.rally_assignment_objective,
                 )
                 self.rally_final_targets = dict(self.rally_targets)
                 if len(self.rally_targets) != self.num_robots:
@@ -1776,15 +1846,23 @@ class HeadquartersControl(Node):
                         return
                     self.fail_task("insufficient_rally_poses")
                     return
-                self.rally_dispatch_order = map_safe_rally_dispatch_order(
-                    self.map_data,
-                    self.resolution,
-                    self.origin,
-                    self.rally_targets,
-                    self.robot_positions,
-                    self.target,
-                    self.detecting_robot,
-                )
+                if self.use_map_safe_rally_order:
+                    self.rally_dispatch_order = map_safe_rally_dispatch_order(
+                        self.map_data,
+                        self.resolution,
+                        self.origin,
+                        self.rally_targets,
+                        self.robot_positions,
+                        self.target,
+                        self.detecting_robot,
+                    )
+                else:
+                    self.rally_dispatch_order = rally_dispatch_order(
+                        self.rally_targets,
+                        self.robot_positions,
+                        self.target,
+                        self.detecting_robot,
+                    )
                 self.get_logger().info(
                     "Selected serial rally order: "
                     + ", ".join(self.rally_dispatch_order)
@@ -2160,7 +2238,7 @@ class HeadquartersControl(Node):
                 self.rally_dispatch_order,
                 reserved_routes,
                 max_count=max(
-                    0, RALLY_MAX_CONCURRENT - len(reserved_routes)
+                    0, self.rally_max_concurrent - len(reserved_routes)
                 ),
             ):
                 self.send_rally_goal(name, plans[name])

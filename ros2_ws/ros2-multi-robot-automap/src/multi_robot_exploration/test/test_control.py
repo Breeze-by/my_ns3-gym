@@ -231,6 +231,17 @@ def test_navigation_start_rejects_unknown_or_occupied_pose():
     ) is None
 
 
+def test_navigation_start_does_not_jump_across_an_occupied_wall():
+    raw_grid = np.zeros((30, 30), dtype=int)
+    raw_grid[:, 15] = 100
+    traversable = np.zeros_like(raw_grid, dtype=bool)
+    traversable[10, 20] = True
+
+    assert control.navigation_start_cell(
+        raw_grid, traversable, (10, 14), max_radius_cells=20
+    ) is None
+
+
 def test_reassign_rally_pose_avoids_reserved_pose():
     raw_grid = np.zeros((80, 80), dtype=int)
     target = (4.0, 4.0)
@@ -276,6 +287,35 @@ def test_rally_assigns_distinct_safe_target_facing_poses():
     for pose in poses:
         expected_yaw = math.atan2(target[1] - pose.y, target[0] - pose.x)
         assert pose.yaw == pytest.approx(expected_yaw)
+
+
+def test_rally_assignment_supports_explicit_total_path_ablation():
+    grid = np.zeros((70, 70), dtype=int)
+    positions = {
+        "tb1": (1.0, 1.0),
+        "tb2": (6.0, 1.0),
+        "tb3": (3.5, 6.0),
+    }
+
+    assignments = control.assign_rally_poses(
+        grid,
+        0.1,
+        (0.0, 0.0),
+        positions,
+        (3.5, 3.5),
+        objective="total_path",
+    )
+
+    assert set(assignments) == set(positions)
+    with pytest.raises(ValueError):
+        control.assign_rally_poses(
+            grid,
+            0.1,
+            (0.0, 0.0),
+            positions,
+            (3.5, 3.5),
+            objective="unknown",
+        )
 
 
 def test_rally_rejects_blocked_target_area():

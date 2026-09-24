@@ -400,6 +400,18 @@ def parse_args():
     parser.add_argument("--rally-angular-tolerance", type=float, default=0.10)
     parser.add_argument("--rally-hold", type=float, default=5.0)
     parser.add_argument("--rally-max-retries", type=int, default=2)
+    parser.add_argument(
+        "--rally-assignment-objective",
+        choices=("minimax", "total_path"),
+        default="minimax",
+    )
+    parser.add_argument(
+        "--disable-map-safe-rally-order", action="store_true"
+    )
+    parser.add_argument(
+        "--disable-global-battery-rally-pause", action="store_true"
+    )
+    parser.add_argument("--rally-max-concurrent", type=int, default=1)
     parser.add_argument("--battery", action="store_true")
     parser.add_argument("--require-charge", action="store_true")
     parser.add_argument("--battery-capacity", type=float, default=60.0)
@@ -450,6 +462,8 @@ def main():
         )
     if args.rally and args.expect_target_not_found:
         raise SystemExit("--rally cannot expect an invisible target")
+    if args.rally_max_concurrent < 1:
+        raise SystemExit("--rally-max-concurrent must be positive")
     if args.battery and args.evaluation_duration <= 0:
         raise SystemExit("--battery requires --evaluation-duration")
     if args.require_charge and not args.battery:
@@ -508,6 +522,12 @@ def main():
         f"rally_angular_tolerance_radps:={args.rally_angular_tolerance}",
         f"rally_hold_sec:={args.rally_hold}",
         f"rally_max_retries:={args.rally_max_retries}",
+        f"rally_assignment_objective:={args.rally_assignment_objective}",
+        "use_map_safe_rally_order:="
+        f"{str(not args.disable_map_safe_rally_order).lower()}",
+        "global_battery_rally_pause:="
+        f"{str(not args.disable_global_battery_rally_pause).lower()}",
+        f"rally_max_concurrent:={args.rally_max_concurrent}",
         f"enable_battery:={str(args.battery).lower()}",
         f"battery_capacity:={args.battery_capacity}",
         f"battery_initial_energy:={args.battery_initial_energy}",

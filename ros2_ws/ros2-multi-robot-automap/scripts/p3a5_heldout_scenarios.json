@@ -1,0 +1,72 @@
+{
+  "purpose": "P3A.5 algorithm holdout and ablation; never use these cells for tuning",
+  "development_seeds": [101, 202, 303],
+  "heldout_seeds": [404, 505],
+  "acceptance": {
+    "mission_success": "task_phase=COMPLETE and termination_reason=task_complete",
+    "safety": "collision_events=0",
+    "pose_gate": "all final rally pose and linear/angular speed tolerances pass",
+    "energy": "battery_minimum_energy>0 and all robots finish ACTIVE",
+    "infrastructure": "infrastructure_failure=false and prestart_failure_count=0",
+    "primary_metrics": [
+      "paired success rate",
+      "completion_time_sec",
+      "time_to_rally_sec",
+      "collision_events",
+      "battery_total_charges"
+    ],
+    "same_rule_for_all_variants": true
+  },
+  "variants": {
+    "full": {
+      "rally_assignment_objective": "minimax",
+      "map_safe_rally_order": true,
+      "global_battery_rally_pause": true,
+      "rally_max_concurrent": 1
+    },
+    "no_minimax": {
+      "rally_assignment_objective": "total_path",
+      "map_safe_rally_order": true,
+      "global_battery_rally_pause": true,
+      "rally_max_concurrent": 1
+    },
+    "no_order_search": {
+      "rally_assignment_objective": "minimax",
+      "map_safe_rally_order": false,
+      "global_battery_rally_pause": true,
+      "rally_max_concurrent": 1
+    },
+    "no_conservative_policy": {
+      "rally_assignment_objective": "minimax",
+      "map_safe_rally_order": true,
+      "global_battery_rally_pause": false,
+      "rally_max_concurrent": 2
+    }
+  },
+  "scenarios": [
+    {
+      "id": "heldout_open_southeast",
+      "world": "p1c_open.world",
+      "target_x": 4.2,
+      "target_y": -3.5,
+      "battery_initial_energy": 45.0,
+      "require_charge": false
+    },
+    {
+      "id": "heldout_rooms_northwest",
+      "world": "p1c_rooms.world",
+      "target_x": -5.0,
+      "target_y": 3.7,
+      "battery_initial_energy": 45.0,
+      "require_charge": false
+    },
+    {
+      "id": "heldout_corridors_southeast",
+      "world": "p1c_corridors.world",
+      "target_x": 4.7,
+      "target_y": -3.6,
+      "battery_initial_energy": 45.0,
+      "require_charge": false
+    }
+  ]
+}

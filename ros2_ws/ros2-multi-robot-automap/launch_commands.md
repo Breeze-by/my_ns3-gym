@@ -213,6 +213,23 @@ ros2 run multi_robot_exploration bypass_audit --robot-count 3 \
 设施失败且 graph audit 通过时，才将 manifest 中的提交冻结为后续 P3B/P4 基线。当前候选结果
 和失败保留规则见 `wireless-rl/report/20260923_p3a5.md`。
 
+### 3.8 P3A.5 held-out 算法消融
+
+`scripts/run_p3a5_ablation.py` 使用 `scripts/p3a5_heldout_scenarios.json` 中冻结的未调试
+种子、目标和场景，四个变体只切换 rally 算法开关；评估器的 `COMPLETE`、零碰撞、姿态/速度、
+电量和 300 秒规则保持一致：
+
+```bash
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1
+python3 scripts/run_p3a5_ablation.py --run-id p3a5_heldout_20260925
+```
+
+变体是完整算法、去掉最长路径目标、去掉地图安全顺序搜索、去掉全局电池暂停并允许两条并发
+rally 路线。脚本会为每个变体保存独立 manifest、episode JSON、graph audit 和汇总文件；
+不得在看到结果后修改清单或成功规则。
+
 ## 4. 切换 Gazebo world
 
 当前已验证的场景：

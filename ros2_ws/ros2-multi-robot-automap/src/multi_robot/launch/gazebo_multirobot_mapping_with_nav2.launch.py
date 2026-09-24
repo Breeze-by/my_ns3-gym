@@ -69,6 +69,16 @@ def launch_setup(context, *args, **kwargs):
     )
     rally_hold_sec = LaunchConfiguration("rally_hold_sec")
     rally_max_retries = LaunchConfiguration("rally_max_retries")
+    rally_assignment_objective = LaunchConfiguration(
+        "rally_assignment_objective"
+    )
+    use_map_safe_rally_order = LaunchConfiguration(
+        "use_map_safe_rally_order"
+    )
+    global_battery_rally_pause = LaunchConfiguration(
+        "global_battery_rally_pause"
+    )
+    rally_max_concurrent = LaunchConfiguration("rally_max_concurrent")
     enable_battery = LaunchConfiguration("enable_battery")
     battery_capacity = LaunchConfiguration("battery_capacity")
     battery_initial_energy = LaunchConfiguration("battery_initial_energy")
@@ -250,6 +260,10 @@ def launch_setup(context, *args, **kwargs):
                 "rally_angular_tolerance_radps": rally_angular_tolerance,
                 "rally_hold_sec": rally_hold_sec,
                 "rally_max_retries": rally_max_retries,
+                "rally_assignment_objective": rally_assignment_objective,
+                "use_map_safe_rally_order": use_map_safe_rally_order,
+                "global_battery_rally_pause": global_battery_rally_pause,
+                "rally_max_concurrent": rally_max_concurrent,
             }
         ],
         output="screen",
@@ -912,6 +926,38 @@ def generate_launch_description():
             "rally_max_retries",
             default_value="2",
             description="Retries after an initial failed rally goal.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "rally_assignment_objective",
+            default_value="minimax",
+            description="Rally assignment objective: minimax or total_path.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "use_map_safe_rally_order",
+            default_value="true",
+            description="Check successive rally routes with dynamic blockers.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "global_battery_rally_pause",
+            default_value="true",
+            description="Pause other rally legs during a safety return.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "rally_max_concurrent",
+            default_value="1",
+            description="Maximum conflict-free rally legs dispatched at once.",
         )
     )
 

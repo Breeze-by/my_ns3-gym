@@ -78,6 +78,18 @@ def parse_args():
     parser.add_argument("--ros-domain-base", type=int, default=100)
     parser.add_argument("--inter-episode-delay", type=float, default=5.0)
     parser.add_argument("--infrastructure-retries", type=int, default=2)
+    parser.add_argument(
+        "--rally-assignment-objective",
+        choices=("minimax", "total_path"),
+        default="minimax",
+    )
+    parser.add_argument(
+        "--disable-map-safe-rally-order", action="store_true"
+    )
+    parser.add_argument(
+        "--disable-global-battery-rally-pause", action="store_true"
+    )
+    parser.add_argument("--rally-max-concurrent", type=int, default=1)
     parser.add_argument("--skip-cross-check", action="store_true")
     parser.add_argument("--validate-only", action="store_true")
     parser.add_argument("--run-id")
@@ -225,6 +237,10 @@ def build_manifest(config_path, args):
             "ros_domain_base": args.ros_domain_base,
             "seeds": args.seeds,
             "cross_check": True,
+            "rally_assignment_objective": args.rally_assignment_objective,
+            "map_safe_rally_order": not args.disable_map_safe_rally_order,
+            "global_battery_rally_pause": not args.disable_global_battery_rally_pause,
+            "rally_max_concurrent": args.rally_max_concurrent,
         },
     }
 
@@ -272,6 +288,8 @@ def main():
         raise SystemExit("--inter-episode-delay must be non-negative")
     if args.infrastructure_retries < 0:
         raise SystemExit("--infrastructure-retries must be non-negative")
+    if args.rally_max_concurrent < 1:
+        raise SystemExit("--rally-max-concurrent must be positive")
     try:
         config, scenarios, prevalidation = load_config(
             args.config, args.scenarios
@@ -361,6 +379,10 @@ def main():
             str(args.evaluation_wait_timeout),
             "--target-detection",
             "--rally",
+            "--rally-assignment-objective",
+            args.rally_assignment_objective,
+            "--rally-max-concurrent",
+            str(args.rally_max_concurrent),
             "--battery",
             # Keep the frozen P2D matrix reproducible after lowering the
             # interactive launch default battery capacity.
@@ -381,6 +403,10 @@ def main():
             "--bypass-audit-output",
             str(graph_path),
         ]
+        if args.disable_map_safe_rally_order:
+            command.append("--disable-map-safe-rally-order")
+        if args.disable_global_battery_rally_pause:
+            command.append("--disable-global-battery-rally-pause")
         if scenario.get("require_charge", False):
             command.append("--require-charge")
         domain_id = (args.ros_domain_base + index) % 232
