@@ -775,7 +775,7 @@ def rally_pose_candidates(raw_grid, resolution, origin, target):
 
 
 def assign_rally_poses(raw_grid, resolution, origin, robot_positions, target):
-    """Minimize total reachable path length with distinct rally poses."""
+    """Balance the longest reachable path with distinct rally poses."""
     names = sorted(robot_positions)
     candidates = rally_pose_candidates(
         raw_grid, resolution, origin, target
@@ -816,15 +816,21 @@ def assign_rally_poses(raw_grid, resolution, origin, robot_positions, target):
 
     search_order = sorted(names, key=lambda name: len(options[name]))
     best = {}
-    best_score = (float("inf"), float("inf"))
+    best_score = (float("inf"), float("inf"), float("inf"))
 
-    def search(assignments, used_indices, separation_penalty, cost):
+    def search(
+        assignments,
+        used_indices,
+        separation_penalty,
+        cost,
+        longest_path,
+    ):
         nonlocal best, best_score
-        if (separation_penalty, cost) >= best_score:
+        if (longest_path, separation_penalty, cost) >= best_score:
             return
         if len(assignments) == len(search_order):
             best = assignments.copy()
-            best_score = (separation_penalty, cost)
+            best_score = (longest_path, separation_penalty, cost)
             return
         name = search_order[len(assignments)]
         for distance, candidate_index in options[name]:
@@ -853,11 +859,12 @@ def assign_rally_poses(raw_grid, resolution, origin, robot_positions, target):
                 used_indices,
                 separation_penalty + added_penalty,
                 cost + distance,
+                max(longest_path, distance),
             )
             used_indices.remove(candidate_index)
             del assignments[name]
 
-    search({}, set(), 0.0, 0.0)
+    search({}, set(), 0.0, 0.0, 0.0)
     if not best:
         return {}
     return {name: best[name] for name in names}

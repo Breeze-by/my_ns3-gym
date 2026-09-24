@@ -2872,3 +2872,28 @@ source /opt/ros/humble/setup.bash; source install/setup.bash; source /usr/share/
 ## 2026-09-24 P3A.5 动态阻挡回退定向验证
 
 在前一轮 lab/101 定向失败后，保留动态当前位置阻挡、串行 rally 和 survey 屏障，并加入“动态阻挡无路时退回已到位机器人阻挡”的活性回退。构建与 51 项测试通过。`p3a5_iter14_lab101`（`my_world.world`、3 robots、seed101、energy40、target `(-4,4)`）仍在 `RALLY` 超时，0 碰撞、0 nav abort、0 充电，旁路审计通过；最终未完成集合。该回退未解决 lab/101 的全部路由活性问题，因此尚未重跑正式矩阵。
+
+## 2026-09-24 P3A.5 `561de99` 正式矩阵结果与最长路径均衡修复
+
+在已推送提交 `561de99`（工作树干净）上运行冻结的 P3A.5 10 格门禁：
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1
+/usr/bin/python3 scripts/run_p2d_baseline.py --seeds 101 202 303 --run-id p3a5_final_561de99 --ros-domain-base 216 --startup-timeout 600 --evaluation-wait-timeout 600
+```
+
+输出 `log/p2d_baseline/p3a5_final_561de99/summary.json`，0 基础设施失败，10 个 ROS graph 快照均通过 P3A forbidden-bypass 审计；结果为 7/10 `COMPLETE`。保留的启动后任务失败如下：lab/202 在 `RALLY` 300.2 s 超时（0 碰撞、1 次充电，tb3 rally 路径 22.52 m）；rooms/101 虽到达 `COMPLETE`，但有 6 次碰撞（1 次充电，按固定零碰撞规则失败）；corridors/303 在 `RALLY` 300.2 s 超时（0 碰撞、0 充电）。其余 7 格均 `COMPLETE`、零碰撞；lab/303 有 1 次正常充电，corridors 双机器人交叉格通过。该批次失败格保留，不能冻结。
+
+诊断显示 `assign_rally_poses` 先最小化总路径代价，可能把一条过长路线分给单个机器人，导致回充、动态阻挡或评估窗口耗尽。工作树随后将小规模分配搜索的排序目标改为 `(最长单机路径, 间距惩罚, 总路径)`，保留所有可达性和安全约束；不改变成功条件或评估器规则。控制器定向单元测试 40 项通过，`multi_robot_exploration` 构建通过。
+
+在该未冻结修复上串行重跑三个正式失败格，均使用 `run_p2d_baseline.py`，固定 `--robot-count 3 --goal-timeout 60 --startup-timeout 600 --message-timeout 90 --shutdown-timeout 60 --evaluation-duration 300 --coverage-threshold 0 --evaluation-wait-timeout 600 --target-detection --rally --battery --battery-capacity 100`，并保留 JSON、launch log、graph snapshot：
+
+- `p3a5_minmax_lab202`：`my_world.world`、seed 202、初始能量 40、目标 `(-4,4)`、ROS domain 226；`COMPLETE`，188.4 s，0 碰撞、0 充电，审计通过。
+- `p3a5_minmax_rooms101`：`p1c_rooms.world`、seed 101、初始能量 40、目标 `(5,3)`、ROS domain 227；`COMPLETE`，201.5 s，0 碰撞、0 充电，审计通过。
+- `p3a5_minmax_corridors303`：`p1c_corridors.world`、seed 303、初始能量 45、目标 `(-4.5,-0.5)`、ROS domain 228；`COMPLETE`，176.4 s，0 碰撞、0 充电，审计通过。
+
+这些三格是修复有效性的定向证据；由于当时工作树含未提交修改，不能替代后续干净提交上的完整 10 格正式矩阵。
