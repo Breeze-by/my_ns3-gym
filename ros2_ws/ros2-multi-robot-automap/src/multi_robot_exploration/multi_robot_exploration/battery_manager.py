@@ -178,7 +178,9 @@ class BatteryManager(Node):
             ),
         ]
         self.navigation = ActionClient(
-            self, NavigateToPose, f"/{self.robot_name}/navigate_to_pose"
+            self,
+            NavigateToPose,
+            f"/gateway/{self.robot_name}/navigate_to_pose",
         )
         self.mode = ACTIVE
         self.energy = self.initial_energy

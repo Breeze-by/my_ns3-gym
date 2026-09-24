@@ -19,7 +19,10 @@
     },
     {
       "file": "multi_robot_exploration/battery_manager.py",
-      "forbidden_literals": ["String, \"/task_state\""]
+      "forbidden_literals": [
+        "String, \"/task_state\"",
+        "f\"/{self.robot_name}/navigate_to_pose\""
+      ]
     },
     {
       "file": "../multi_robot/params/nav2_params_tb1_0.yaml",

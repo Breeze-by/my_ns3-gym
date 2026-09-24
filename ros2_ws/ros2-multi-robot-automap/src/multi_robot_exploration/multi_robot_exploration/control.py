@@ -5,6 +5,7 @@ import os
 import subprocess
 import threading
 import time
+from itertools import permutations
 
 from action_msgs.msg import GoalStatus
 from ament_index_python.packages import get_package_share_directory
@@ -391,6 +392,31 @@ def exact_traversable_start(traversable, start):
     return start if traversable[start] else None
 
 
+def navigation_start_cell(raw_grid, traversable, start, max_radius_cells):
+    """
+    Choose a map path start without hiding a genuinely occupied pose.
+
+    SLAM maps can mark the cell under a robot as free while the clearance mask
+    removes it because a nearby occupied cell was inflated.  In that case a
+    short escape to the nearest known-free cell is a valid navigation leg.  A
+    pose whose raw cell is occupied or unknown is still rejected; snapping it
+    would make the central planner disagree with Nav2 about the real start.
+    """
+    if start is None:
+        return None
+    row, column = start
+    if not (
+        0 <= row < raw_grid.shape[0]
+        and 0 <= column < raw_grid.shape[1]
+    ):
+        return None
+    if raw_grid[start] != 0:
+        return None
+    if traversable[start]:
+        return start
+    return nearest_traversable(traversable, start, max_radius_cells)
+
+
 def path_distance_grid(traversable, start, return_predecessors=False):
     """Return an 8-connected Dijkstra distance field in grid cells."""
     height, width = traversable.shape
@@ -506,9 +532,14 @@ def stage_navigation_leg(
         origin[0],
         origin[1],
     )
-    # Snapping an actually occupied robot pose to a nearby free cell makes the
-    # central route look valid while Nav2 rejects the real start as lethal.
-    start = exact_traversable_start(traversable, start)
+    # A known-free pose can be inside the clearance inflation of a nearby
+    # obstacle; navigation_start_cell provides a short escape in that case.
+    start = navigation_start_cell(
+        raw_grid,
+        traversable,
+        start,
+        max(1, math.ceil(0.6 / resolution)),
+    )
     if start is None:
         return None
     target = world_to_grid(
@@ -576,7 +607,12 @@ def robot_candidate_assignments(
         origin[0],
         origin[1],
     )
-    start = exact_traversable_start(traversable, start)
+    start = navigation_start_cell(
+        raw_grid,
+        traversable,
+        start,
+        max(1, math.ceil(0.6 / resolution)),
+    )
     if start is None:
         return [], {
             "frontier_groups": len(groups),
@@ -756,10 +792,14 @@ def assign_rally_poses(raw_grid, resolution, origin, robot_positions, target):
         start = world_to_grid(
             position[0], position[1], resolution, origin[0], origin[1]
         )
-        # Assignment must be grounded at the robot's actual map cell.  Snapping
-        # an unknown/occupied pose to a nearby free cell can make a disconnected
-        # robot look reachable and fail as soon as Nav2 receives the real goal.
-        start = exact_traversable_start(traversable, start)
+        # Unknown and occupied starts remain rejected; only a known-free pose
+        # may use the bounded clearance escape above.
+        start = navigation_start_cell(
+            raw_grid,
+            traversable,
+            start,
+            max(1, math.ceil(0.6 / resolution)),
+        )
         distances = path_distance_grid(traversable, start)
         reachable = []
         for index, pose in enumerate(candidates):
@@ -860,7 +900,12 @@ def reassign_rally_pose(
             robot_position[0], robot_position[1], resolution,
             origin[0], origin[1],
         )
-        start = exact_traversable_start(traversable, start)
+        start = navigation_start_cell(
+            raw_grid,
+            traversable,
+            start,
+            max(1, math.ceil(0.6 / resolution)),
+        )
         if start is None:
             continue
         distances = path_distance_grid(traversable, start)
@@ -935,12 +980,15 @@ def rally_yield_pose(
     traversable = traversable_grid(
         raw_grid, resolution, clearance_m=RALLY_PATH_CLEARANCE_M
     )
-    start = exact_traversable_start(
+    start = world_to_grid(
+        robot_position[0], robot_position[1], resolution,
+        origin[0], origin[1],
+    )
+    start = navigation_start_cell(
+        raw_grid,
         traversable,
-        world_to_grid(
-            robot_position[0], robot_position[1], resolution,
-            origin[0], origin[1],
-        ),
+        start,
+        max(1, math.ceil(0.6 / resolution)),
     )
     if start is None:
         return None
@@ -980,6 +1028,20 @@ def rotate_robot_order(order, cursor):
     return list(order[offset:]) + list(order[:offset])
 
 
+def rally_reserved_poses(rally_targets, rally_final_targets, exclude=()):
+    """Keep active and pending final poses reserved during recovery."""
+    excluded = set(exclude)
+    reserved = []
+    for name, pose in rally_targets.items():
+        if name in excluded:
+            continue
+        reserved.append((pose.x, pose.y))
+        final_pose = rally_final_targets.get(name)
+        if final_pose is not None:
+            reserved.append((final_pose.x, final_pose.y))
+    return reserved
+
+
 def rally_dispatch_order(
     targets, robot_positions, target, priority_robot=None
 ):
@@ -1009,6 +1071,80 @@ def rally_dispatch_order(
             ),
             name,
         ),
+    )
+
+
+def map_safe_rally_dispatch_order(
+    raw_grid,
+    resolution,
+    origin,
+    targets,
+    robot_positions,
+    target,
+    priority_robot=None,
+):
+    """
+    Select a serial rally order whose successive routes stay reachable.
+
+    A pose that is safe in isolation can still seal the only approach to a
+    later pose.  Evaluate the small permutation space once at RALLY entry and
+    keep already placed robots as dynamic obstacles while checking the next
+    route.  If no complete order is visible in the current map, retain the
+    deterministic geometric order and let the recovery state machine handle
+    the newly observed blockage.
+    """
+    names = list(targets)
+    if len(names) < 2:
+        return names
+    best = None
+    for order in permutations(names):
+        occupied = dict(robot_positions)
+        total_distance = 0.0
+        feasible = True
+        for name in order:
+            position = robot_positions.get(name)
+            if position is None:
+                feasible = False
+                break
+            blocked = [
+                other_position
+                for other_name, other_position in occupied.items()
+                if other_name != name and other_position is not None
+            ]
+            plan = plan_rally_leg(
+                targets[name],
+                raw_grid,
+                resolution,
+                origin,
+                position,
+                max_distance_m=float("inf"),
+                blocked_positions=blocked,
+            )
+            if plan[0] is None:
+                feasible = False
+                break
+            route = plan[1]
+            total_distance += sum(
+                math.dist(first, second)
+                for first, second in zip(route, route[1:])
+            )
+            occupied[name] = (targets[name].x, targets[name].y)
+        if not feasible:
+            continue
+        # Preserve the original priority as a tie breaker, while allowing a
+        # route-feasible order to move another robot first when necessary.
+        priority_penalty = (
+            0.0
+            if priority_robot is None or order[0] == priority_robot
+            else 0.25
+        )
+        score = (total_distance + priority_penalty, order)
+        if best is None or score < best[0]:
+            best = (score, order)
+    if best is not None:
+        return list(best[1])
+    return rally_dispatch_order(
+        targets, robot_positions, target, priority_robot
     )
 
 
@@ -1048,15 +1184,18 @@ def plan_rally_leg(
     traversable = block_dynamic_positions(
         traversable, resolution, origin, blocked_positions
     )
-    start = exact_traversable_start(
+    start = world_to_grid(
+        robot_position[0],
+        robot_position[1],
+        resolution,
+        origin[0],
+        origin[1],
+    )
+    start = navigation_start_cell(
+        raw_grid,
         traversable,
-        world_to_grid(
-            robot_position[0],
-            robot_position[1],
-            resolution,
-            origin[0],
-            origin[1],
-        ),
+        start,
+        max(1, math.ceil(0.6 / resolution)),
     )
     target = world_to_grid(
         pose.x, pose.y, resolution, origin[0], origin[1]
@@ -1284,6 +1423,7 @@ class HeadquartersControl(Node):
         self.survey_dispatch_cursor = 0
         self.survey_robot = None
         self.survey_battery_preempted = False
+        self.survey_cancel_requested = False
 
         self.map_sub = self.create_subscription(
             OccupancyGrid, "/merge_map", self.map_callback, 10
@@ -1492,6 +1632,7 @@ class HeadquartersControl(Node):
             and self.survey_goal_handle is not None
         ):
             self.survey_battery_preempted = True
+            self.survey_cancel_requested = True
             self.survey_goal_handle.cancel_goal_async()
 
     def publish_rally_assignments(self):
@@ -1557,6 +1698,7 @@ class HeadquartersControl(Node):
                 >= self.goal_timeout_sec
             ):
                 self.survey_goal_started_at = None
+                self.survey_cancel_requested = True
                 self.survey_goal_handle.cancel_goal_async()
             if (
                 self.survey_goal_handle is not None
@@ -1627,11 +1769,18 @@ class HeadquartersControl(Node):
                         return
                     self.fail_task("insufficient_rally_poses")
                     return
-                self.rally_dispatch_order = rally_dispatch_order(
+                self.rally_dispatch_order = map_safe_rally_dispatch_order(
+                    self.map_data,
+                    self.resolution,
+                    self.origin,
                     self.rally_targets,
                     self.robot_positions,
                     self.target,
                     self.detecting_robot,
+                )
+                self.get_logger().info(
+                    "Selected serial rally order: "
+                    + ", ".join(self.rally_dispatch_order)
                 )
                 self.publish_rally_assignments()
             self.publish_task_state("RALLY")
@@ -1653,15 +1802,8 @@ class HeadquartersControl(Node):
                 f"Canceling {survey_robot} rally survey after timeout."
             )
             self.survey_goal_started_at = None
+            self.survey_cancel_requested = True
             self.survey_goal_handle.cancel_goal_async()
-            self.survey_goal_handle = None
-            if survey_robot in self.rally_probe_targets:
-                self.rally_probe_targets.discard(survey_robot)
-                if self.rally_probe_robot == survey_robot:
-                    self.rally_probe_robot = None
-                self.rally_route_unavailable_since[survey_robot] = now - 2.0
-                self.rally_recovery_requested[survey_robot] = True
-            self.survey_robot = None
         yielded_names = [
             name for name in self.rally_yield_targets
             if self.rally_arrived[name]
@@ -1814,13 +1956,39 @@ class HeadquartersControl(Node):
                             if self.rally_arrived[other_name]
                             and self.robot_positions[other_name] is not None
                         ]
-                        for blocker in arrived_names:
-                            blocker_reserved = [
-                                (pose.x, pose.y)
-                                for other_name, pose in self.rally_targets.items()
-                                if other_name != blocker
-                                and not self.rally_yield_requested[other_name]
+                        possible_blockers = [
+                            other_name
+                            for other_name in arrived_names
+                            if other_name not in self.rally_yield_targets
+                            and plan_rally_leg(
+                                self.rally_targets[name],
+                                self.map_data,
+                                self.resolution,
+                                self.origin,
+                                self.robot_positions[name],
+                                RALLY_MAX_NAVIGATION_LEG_M
+                                / (self.rally_attempts[name] + 1),
+                                [
+                                    position
+                                    for candidate_name, position in self.robot_positions.items()
+                                    if candidate_name not in (name, other_name)
+                                    and position is not None
+                                ],
+                            )[0]
+                            is not None
+                        ]
+                        if not possible_blockers:
+                            possible_blockers = [
+                                other_name
+                                for other_name in arrived_names
+                                if other_name not in self.rally_yield_targets
                             ]
+                        for blocker in possible_blockers:
+                            blocker_reserved = rally_reserved_poses(
+                                self.rally_targets,
+                                self.rally_final_targets,
+                                exclude=(blocker,),
+                            )
                             blocker_positions = [
                                 self.robot_positions[other_name]
                                 for other_name in arrived_names
@@ -1871,12 +2039,11 @@ class HeadquartersControl(Node):
                                 f"{blocker_replacement.y:.2f}) so {name} "
                                 "can reach its rally pose."
                             )
-                            current_reserved = [
-                                (pose.x, pose.y)
-                                for other_name, pose in self.rally_targets.items()
-                                if other_name != name
-                                and not self.rally_yield_requested[other_name]
-                            ]
+                            current_reserved = rally_reserved_poses(
+                                self.rally_targets,
+                                self.rally_final_targets,
+                                exclude=(name,),
+                            )
                             current_replacement = reassign_rally_pose(
                                 self.map_data,
                                 self.resolution,
@@ -1903,14 +2070,17 @@ class HeadquartersControl(Node):
                                     f"{current_replacement.y:.2f}) after parked "
                                     "robot yield."
                                 )
-                            break
+                            # Apply the parked-robot change on the next timer
+                            # tick.  Starting a probe in this same callback
+                            # would race the yield action and reuse a stale
+                            # dynamic-obstacle snapshot.
+                            return
                         else:
-                            reserved_poses = [
-                                (pose.x, pose.y)
-                                for other_name, pose in self.rally_targets.items()
-                                if other_name != name
-                                and not self.rally_yield_requested[other_name]
-                            ]
+                            reserved_poses = rally_reserved_poses(
+                                self.rally_targets,
+                                self.rally_final_targets,
+                                exclude=(name,),
+                            )
                             replacement = reassign_rally_pose(
                                 self.map_data,
                                 self.resolution,
@@ -1988,7 +2158,22 @@ class HeadquartersControl(Node):
             ):
                 self.send_rally_goal(name, plans[name])
 
-        stable = robots_stable(
+        navigation_quiescent = (
+            not any(
+                self.rally_goal_handles[name] is not None
+                or self.rally_goal_pending[name]
+                for name in self.rally_dispatch_order
+            )
+            and self.survey_goal_handle is None
+            and not self.survey_goal_pending
+            and not self.rally_yield_targets
+            and not self.rally_probe_targets
+            and all(
+                self.rally_arrived[name]
+                for name in self.rally_dispatch_order
+            )
+        )
+        stable = navigation_quiescent and robots_stable(
             self.robot_positions,
             self.robot_velocities,
             self.rally_targets,
@@ -2031,6 +2216,7 @@ class HeadquartersControl(Node):
         goal.pose.pose.orientation.w = math.cos(pose.yaw / 2.0)
         self.survey_attempts += 1
         self.survey_robot = robot_name
+        self.survey_cancel_requested = False
         self.survey_goal_pending = True
         future = client.send_goal_async(goal)
         future.add_done_callback(self.survey_goal_response)
@@ -2041,9 +2227,29 @@ class HeadquartersControl(Node):
             goal_handle = future.result()
         except Exception as error:
             self.get_logger().error(f"Rally survey request failed: {error}")
+            survey_robot = self.survey_robot
+            self.survey_robot = None
+            if survey_robot in self.rally_probe_targets:
+                self.rally_probe_targets.discard(survey_robot)
+                if self.rally_probe_robot == survey_robot:
+                    self.rally_probe_robot = None
+                self.rally_route_unavailable_since[survey_robot] = self.now() - 2.0
+                self.rally_recovery_requested[survey_robot] = True
+            else:
+                self.survey_dispatch_cursor += 1
             return
         if goal_handle is None or not goal_handle.accepted:
             self.get_logger().warn("Rally survey goal was rejected.")
+            survey_robot = self.survey_robot
+            self.survey_robot = None
+            if survey_robot in self.rally_probe_targets:
+                self.rally_probe_targets.discard(survey_robot)
+                if self.rally_probe_robot == survey_robot:
+                    self.rally_probe_robot = None
+                self.rally_route_unavailable_since[survey_robot] = self.now() - 2.0
+                self.rally_recovery_requested[survey_robot] = True
+            else:
+                self.survey_dispatch_cursor += 1
             return
         self.survey_goal_handle = goal_handle
         self.survey_goal_started_at = self.now()
@@ -2063,6 +2269,9 @@ class HeadquartersControl(Node):
         self.survey_goal_handle = None
         self.survey_goal_started_at = None
         survey_robot = self.survey_robot
+        canceled = self.survey_cancel_requested
+        self.survey_cancel_requested = False
+        self.survey_robot = None
         try:
             status = future.result().status
         except Exception as error:
@@ -2090,6 +2299,16 @@ class HeadquartersControl(Node):
             self.survey_battery_preempted = False
             self.survey_attempts -= 1
             self.get_logger().info("Target-area survey paused for charging.")
+        elif canceled and survey_robot in self.rally_probe_targets:
+            self.rally_probe_targets.discard(survey_robot)
+            if self.rally_probe_robot == survey_robot:
+                self.rally_probe_robot = None
+            self.rally_route_unavailable_since[survey_robot] = self.now() - 2.0
+            self.rally_recovery_requested[survey_robot] = True
+            self.get_logger().warn(
+                f"Rally probe for {survey_robot} was canceled; retrying "
+                "through the recovery path."
+            )
         else:
             self.survey_dispatch_cursor += 1
             self.get_logger().warn(
@@ -2158,12 +2377,18 @@ class HeadquartersControl(Node):
             goal_handle = future.result()
         except Exception as error:
             self.rally_leg_routes[robot_name] = ()
+            self.rally_attempts[robot_name] += 1
+            self.rally_route_unavailable_since[robot_name] = self.now() - 2.0
+            self.rally_recovery_requested[robot_name] = True
             self.get_logger().error(
                 f"{robot_name} rally request failed: {error}"
             )
             return
         if goal_handle is None or not goal_handle.accepted:
             self.rally_leg_routes[robot_name] = ()
+            self.rally_attempts[robot_name] += 1
+            self.rally_route_unavailable_since[robot_name] = self.now() - 2.0
+            self.rally_recovery_requested[robot_name] = True
             self.get_logger().warn(f"{robot_name} rejected its rally goal.")
             return
         self.rally_goal_handles[robot_name] = goal_handle
@@ -2193,6 +2418,10 @@ class HeadquartersControl(Node):
         except Exception as error:
             status = f"exception: {error}"
         success = status == GoalStatus.STATUS_SUCCEEDED
+        if success:
+            # An intermediate waypoint proves that the route is alive.  Do
+            # not let earlier transient failures consume all later retries.
+            self.rally_attempts[robot_name] = 0
         target = self.rally_targets[robot_name]
         position = self.robot_positions.get(robot_name)
         self.rally_arrived[robot_name] = (

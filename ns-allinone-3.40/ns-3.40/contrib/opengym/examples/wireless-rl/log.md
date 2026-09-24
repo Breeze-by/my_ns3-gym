@@ -2841,6 +2841,34 @@ export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1
 - `p3a5_iter11_corridors303`：`p1c_corridors.world`、seed 303、energy 45、target `(-4.5,-0.5)`；`COMPLETE` 170.0 s、0 碰撞、0 nav abort、0 充电，P3A 审计通过。
 - `p3a5_iter12_lab101`：`my_world.world`、seed 101、energy 40、target `(-4,4)`；`RALLY` 在 300 s 超时、0 碰撞、0 nav abort、0 充电，P3A 审计通过。tb3 的 probe 路线被 Nav2 判为起点 lethal；probe 与 tb2 rally leg 重叠，重复超时、重分配，tb2 最终仍离集合位 5.59 m。此定向失败证明动态阻挡修复了该次走廊碰撞，却未恢复 lab 的集合活性，不能作为正式门禁成功。
 
+## 2026-09-24 P3A/P3A.5 当前 HEAD 修复与定向回归
+
+本轮代码基线为 `78b64be`，测试期间工作树包含未提交的 P3A.5 修复。修复内容包括：已知自由但落在 clearance inflation 中的导航起点使用有界逃逸格；rally recovery 同时保留临时位和最终位；根据当前地图和动态占位评估串行 rally 顺序；parked blocker 只在确实阻断目标路线时让路；survey/rally action 的取消、拒绝、异常和 stale handle 清理；成功的中间 rally leg 重置重试计数；完成判定等待所有导航和 probe/yield action 清空；电池返航 NavigateToPose 改走 `/gateway/<robot>/navigate_to_pose`，避免与协调器直控同一 Nav2 action。旁路清单新增电池管理器直连 Nav2 action 检查。
+
+失败和中断记录：`p3a5_fix_lab101`（`my_world.world`、3 robots、seed 101、energy 40、target `(-4,4)`）在严格 clearance 起点逻辑下 `EXPLORE` 300 s 超时，未发现目标，0 碰撞；`p3a5_fix_lab202` 在 RALLY 300.4 s 超时，tb2 最终误差 4.424 m，tb3 充电 1 次，0 碰撞；`p3a5_order_lab202` 第一次启动误写 `TURTLEBOT3_MODEL=waffLE`，Nav2 ready 前手动中断，退出 130，无 episode JSON；`p3a5_fix_lab303` 目标检测后 tb3 返航时 Nav2 反复报告 `Starting point in lethal space`，最终 `battery_return_unreachable:tb3`，0 碰撞。对应输出目录均保留在 `log/p2d_baseline/`。
+
+上述运行均使用 `ros_smoke_test.py` 的固定参数：`--goal-timeout 60 --startup-timeout 600 --message-timeout 90 --shutdown-timeout 60 --evaluation-duration 300 --coverage-threshold 0 --evaluation-wait-timeout 600 --target-detection --rally --battery --battery-capacity 100 --battery-initial-energy 40 --target-x -4 --target-y 4`，并分别使用 `ROS_DOMAIN_ID=210/211/212/213`；具体 episode JSON 和 launch log 位于各输出目录。误写模型名的命令及日志为 `log/p2d_baseline/p3a5_order_lab202/logs/robots3_seed202_20260924-182757.log`。
+
+修复后的完整命令与结果：
+
+```bash
+source /opt/ros/humble/setup.bash; source install/setup.bash; source /usr/share/gazebo/setup.sh; export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 ROS_DOMAIN_ID=212; /usr/bin/python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 3 --gazebo-seed 202 --goal-timeout 60 --startup-timeout 600 --message-timeout 90 --shutdown-timeout 60 --evaluation-duration 300 --coverage-threshold 0 --evaluation-wait-timeout 600 --target-detection --rally --battery --battery-capacity 100 --battery-initial-energy 40 --target-x -4 --target-y 4 --evaluation-output-dir log/p2d_baseline/p3a5_order_lab202/episodes --log-dir log/p2d_baseline/p3a5_order_lab202/logs --episode-id p3a5_order_lab202 --bypass-audit-output log/p2d_baseline/p3a5_order_lab202/graph.json
+```
+
+`p3a5_order_lab202`：`COMPLETE`，168.8 s，0 碰撞、0 充电，旁路审计通过。
+
+```bash
+source /opt/ros/humble/setup.bash; source install/setup.bash; source /usr/share/gazebo/setup.sh; export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 ROS_DOMAIN_ID=214; /usr/bin/python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 3 --gazebo-seed 303 --goal-timeout 60 --startup-timeout 600 --message-timeout 90 --shutdown-timeout 60 --evaluation-duration 300 --coverage-threshold 0 --evaluation-wait-timeout 600 --target-detection --rally --battery --battery-capacity 100 --battery-initial-energy 40 --target-x -4 --target-y 4 --evaluation-output-dir log/p2d_baseline/p3a5_gatewayreturn_lab303/episodes --log-dir log/p2d_baseline/p3a5_gatewayreturn_lab303/logs --episode-id p3a5_gatewayreturn_lab303 --bypass-audit-output log/p2d_baseline/p3a5_gatewayreturn_lab303/graph.json
+```
+
+`p3a5_gatewayreturn_lab303`：`COMPLETE`，146.6 s，0 碰撞、0 充电，旁路审计通过；验证 gateway action 修复消除了返航竞态。
+
+```bash
+source /opt/ros/humble/setup.bash; source install/setup.bash; source /usr/share/gazebo/setup.sh; export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 ROS_DOMAIN_ID=215; /usr/bin/python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 2 --gazebo-seed 303 --goal-timeout 60 --startup-timeout 600 --message-timeout 90 --shutdown-timeout 60 --evaluation-duration 300 --coverage-threshold 0 --evaluation-wait-timeout 600 --target-detection --rally --battery --require-charge --battery-capacity 100 --battery-initial-energy 18 --target-x -4 --target-y 4 --evaluation-output-dir log/p2d_baseline/p3a5_gatewayreturn_forced2r/episodes --log-dir log/p2d_baseline/p3a5_gatewayreturn_forced2r/logs --episode-id p3a5_gatewayreturn_forced2r --bypass-audit-output log/p2d_baseline/p3a5_gatewayreturn_forced2r/graph.json
+```
+
+`p3a5_gatewayreturn_forced2r`：`COMPLETE`，289.4 s，2 次充电、0 碰撞，旁路审计通过；两台机器人均完成返航、充电和任务恢复。控制器/电池/gateway 相关测试为 `75 passed in 4.41s`，P3A pep257/gateway 为 `4 passed in 5.00s`，`multi_robot_exploration` 构建成功。上述结果仍是正式 10 格矩阵前的定向证据。
+
 ## 2026-09-24 P3A.5 动态阻挡回退定向验证
 
 在前一轮 lab/101 定向失败后，保留动态当前位置阻挡、串行 rally 和 survey 屏障，并加入“动态阻挡无路时退回已到位机器人阻挡”的活性回退。构建与 51 项测试通过。`p3a5_iter14_lab101`（`my_world.world`、3 robots、seed101、energy40、target `(-4,4)`）仍在 `RALLY` 超时，0 碰撞、0 nav abort、0 充电，旁路审计通过；最终未完成集合。该回退未解决 lab/101 的全部路由活性问题，因此尚未重跑正式矩阵。

@@ -164,6 +164,23 @@ def test_rotate_robot_order_prevents_a_failed_robot_from_starving_others():
     assert control.rotate_robot_order(order, 4) == ["tb1", "tb3", "tb2"]
 
 
+def test_rally_recovery_reserves_temporary_and_final_poses():
+    targets = {
+        "tb1": control.RallyPose(1.0, 1.0, 0.0),
+        "tb2": control.RallyPose(2.0, 2.0, 0.0),
+    }
+    finals = {
+        "tb1": control.RallyPose(3.0, 3.0, 0.0),
+        "tb2": targets["tb2"],
+    }
+
+    reserved = control.rally_reserved_poses(targets, finals, exclude=("tb2",))
+
+    assert (1.0, 1.0) in reserved
+    assert (3.0, 3.0) in reserved
+    assert (2.0, 2.0) not in reserved
+
+
 def test_path_waypoint_limits_navigation_leg():
     traversable = np.ones((1, 11), dtype=bool)
 
@@ -183,6 +200,34 @@ def test_stage_navigation_rejects_an_unsafe_actual_start():
 
     assert control.stage_navigation_leg(
         assignment, raw_grid, 0.1, (0.0, 0.0), (2.0, 2.0)
+    ) is None
+
+
+def test_navigation_start_allows_short_escape_from_clearance_inflation():
+    raw_grid = np.zeros((40, 40), dtype=int)
+    raw_grid[20, 23] = 100
+    traversable = control.traversable_grid(raw_grid, 0.1, 0.35)
+
+    start = control.navigation_start_cell(
+        raw_grid, traversable, (20, 20), max_radius_cells=6
+    )
+
+    assert start is not None
+    assert traversable[start]
+    assert math.dist(start, (20, 20)) <= 6
+
+
+def test_navigation_start_rejects_unknown_or_occupied_pose():
+    raw_grid = np.zeros((20, 20), dtype=int)
+    raw_grid[8, 8] = 100
+    raw_grid[12, 12] = -1
+    traversable = control.traversable_grid(raw_grid, 0.1, 0.35)
+
+    assert control.navigation_start_cell(
+        raw_grid, traversable, (8, 8), max_radius_cells=6
+    ) is None
+    assert control.navigation_start_cell(
+        raw_grid, traversable, (12, 12), max_radius_cells=6
     ) is None
 
 
@@ -367,6 +412,27 @@ def test_rally_dispatches_detecting_robot_first():
     )
 
     assert order[0] == "tb1"
+
+
+def test_map_safe_rally_order_keeps_all_robots_in_the_serial_plan():
+    grid = np.zeros((100, 100), dtype=int)
+    targets = {
+        "tb1": control.RallyPose(2.0, 8.0, 0.0),
+        "tb2": control.RallyPose(4.0, 8.0, 0.0),
+        "tb3": control.RallyPose(6.0, 8.0, 0.0),
+    }
+    positions = {
+        "tb1": (1.0, 1.0),
+        "tb2": (4.0, 1.0),
+        "tb3": (7.0, 1.0),
+    }
+
+    order = control.map_safe_rally_dispatch_order(
+        grid, 0.1, (0.0, 0.0), targets, positions, (4.0, 8.0), "tb1"
+    )
+
+    assert set(order) == set(targets)
+    assert len(order) == len(targets)
 
 
 def test_rally_navigation_stages_long_paths():
