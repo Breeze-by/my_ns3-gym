@@ -2897,3 +2897,91 @@ export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1
 - `p3a5_minmax_corridors303`：`p1c_corridors.world`、seed 303、初始能量 45、目标 `(-4.5,-0.5)`、ROS domain 228；`COMPLETE`，176.4 s，0 碰撞、0 充电，审计通过。
 
 这些三格是修复有效性的定向证据；由于当时工作树含未提交修改，不能替代后续干净提交上的完整 10 格正式矩阵。
+
+## 2026-09-24 P3A.5 `2933c24` 当前 HEAD 正式门禁、环境失败与冻结候选
+
+最长 rally 路径均衡修复已提交为 `2933c24e51eb3f47f17b7968482d3e645314faf8`。随后所有正式 episode 均从该干净 commit 启动，runner manifest 报告 `worktree_dirty=false`；没有把未提交定向运行混入正式结果。
+
+### 第一批正式 runner：lab/rooms 六格
+
+命令：
+
+```bash
+source /opt/ros/humble/setup.bash
+source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+/usr/bin/python3 scripts/run_p2d_baseline.py --seeds 101 202 303 --run-id p3a5_final_2933c24 --ros-domain-base 216 --startup-timeout 600 --evaluation-wait-timeout 600
+```
+
+`log/p2d_baseline/p3a5_final_2933c24/summary.json` 保存了 lab/rooms 六格，均 `COMPLETE`、0 碰撞、0 基础设施失败：lab/101 214.7 s（0 充电）、lab/202 290.2 s（1 充电）、lab/303 197.0 s（0 充电）；rooms/101 240.6 s、rooms/202 229.6 s、rooms/303 104.9 s（后面三格均 0 充电）。runner shell 在六格完成后中断；当时已启动的 corridors/101 进程后来保存了独立 `COMPLETE` episode JSON，但不计入该 summary。残留 ros2/gazebo 进程已清理，保留的 JSON 和 launch log 不删除。
+
+### corridors 预备尝试中的基础设施失败
+
+第一次 corridors-only 尝试使用：
+
+```bash
+source /opt/ros/humble/setup.bash
+source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+/usr/bin/python3 scripts/run_p2d_baseline.py --scenarios corridors_far_west --seeds 101 202 303 --run-id p3a5_final_2933c24_corridors --ros-domain-base 100 --startup-timeout 600 --evaluation-wait-timeout 600
+```
+
+该批次 4 格均在 episode 启动前失败：ROS 2 launch 尝试写默认 `/home/zhuyulab/.ros/log` 时收到 `OSError: [Errno 30] Read-only file system`。`summary.json` 明确记录 0 成功、4 基础设施失败，未计入门禁。
+
+第二次改为设置可写 ROS 日志目录：
+
+```bash
+export ROS_LOG_DIR=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/ros_launch
+mkdir -p "$ROS_LOG_DIR"
+/usr/bin/python3 scripts/run_p2d_baseline.py --scenarios corridors_far_west --seeds 101 202 303 --run-id p3a5_final_2933c24_corridors_roslog --ros-domain-base 100 --startup-timeout 600 --evaluation-wait-timeout 600
+```
+
+该尝试越过只读目录错误，但受限运行环境不允许 Fast DDS 创建 UDP socket（`getifaddrs: Operation not permitted`、`TRANSPORT_UDP Error creating socket`），spawn service 不可用，未产生有效 episode；在首格重试后手动中断并保留 launch 输出。它同样不计入门禁。
+
+### 第二批正式 runner：corridors 四格
+
+在获得可用本地网络权限后，用同一 commit、同一场景参数和可写日志目录重新运行：
+
+```bash
+source /opt/ros/humble/setup.bash
+source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 ROS_LOG_DIR=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/ros_launch
+mkdir -p "$ROS_LOG_DIR"
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+/usr/bin/python3 scripts/run_p2d_baseline.py --scenarios corridors_far_west --seeds 101 202 303 --run-id p3a5_final_2933c24_corridors_net --ros-domain-base 100 --startup-timeout 600 --evaluation-wait-timeout 600
+```
+
+`log/p2d_baseline/p3a5_final_2933c24_corridors_net/summary.json` 的四格均 `COMPLETE`、0 碰撞，且每格 graph/bypass 审计通过：corridors/101 三机器人 179.2 s（0 充电）、corridors/202 三机器人 265.5 s（0 充电）、corridors/303 三机器人 224.4 s（0 充电）、corridors/202 双机器人交叉检查 274.1 s（1 充电）。该 summary manifest 与第一批完全相同地指向 `2933c24` 且工作树干净。
+
+### 强制充电回归
+
+同一 commit 上执行：
+
+```bash
+source /opt/ros/humble/setup.bash
+source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 ROS_LOG_DIR=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/ros_launch
+mkdir -p "$ROS_LOG_DIR"
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+/usr/bin/python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 2 --gazebo-seed 303 --goal-timeout 60 --startup-timeout 600 --message-timeout 90 --shutdown-timeout 60 --evaluation-duration 300 --coverage-threshold 0 --evaluation-wait-timeout 600 --target-detection --rally --battery --require-charge --battery-capacity 100 --battery-initial-energy 18 --target-x -4 --target-y 4 --evaluation-output-dir log/p2d_baseline/p3a5_final_2933c24_forced2r/episodes --log-dir log/p2d_baseline/p3a5_final_2933c24_forced2r/launch_logs --episode-id p3a5_final_2933c24_forced2r --bypass-audit-output log/p2d_baseline/p3a5_final_2933c24_forced2r/graphs/p3a5_final_2933c24_forced2r.json
+```
+
+`p3a5_final_2933c24_forced2r.json` 为 `COMPLETE`，235.8 s、2 次充电、0 碰撞；两台机器人均完成返航、充电和恢复，bypass audit 通过。
+
+### 门禁结论与当前审计
+
+两个连续的干净 runner summary 合计固定 10 格：10/10 `COMPLETE`、0 碰撞；强制充电回归再完成 2 次充电。源码旁路审计命令为：
+
+```bash
+source /opt/ros/humble/setup.bash
+source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash
+PYTHONNOUSERSITE=1 /usr/bin/python3 src/multi_robot_exploration/multi_robot_exploration/bypass_audit.py --source-only
+```
+
+结果为 `pass=true`、`violations=[]`。因此 `task_stack_frozen_commit=2933c24` 是 P3A.5 冻结候选；P3A/P3A.5 进入待用户验收边界，P3B 尚未开始。上述只读日志目录、Fast DDS socket、runner shell 中断等失败和中断均保留，不用成功重跑覆盖。

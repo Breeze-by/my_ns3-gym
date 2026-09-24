@@ -1,22 +1,16 @@
 # wireless-rl Codex Memory
 
-Last source/documentation review: 2026-09-23. Behavioral evidence is frozen in
-the dated reports and is not automatically evidence for the current HEAD. The
-user accepted P1C, P2A, P2B, P2C, and P2D. The P2C follow-up adds
-Gazebo task-region overlays and a live operator status panel. P3A is implemented
-and awaiting user acceptance; its final evidence contains ten gateway-routed
-`COMPLETE`, zero-collision episodes across three fixed world/target/energy scenarios,
-plus a two-robot forced-charge regression with two completed charges. Those P3A
-results are frozen historical evidence: later HEAD commits changed coordinator,
-battery, and clearance behavior, so P3A remains awaiting current-HEAD revalidation
-and user acceptance. Current-HEAD P3A.5 revalidation at `41f63fb` passed the
-graph/bypass subgate and forced-charge regression, but the formal matrix was
-9/10 `COMPLETE`: lab seed 202 failed after episode start during rally. The
-failed episode is retained; P3A.5 remains in progress and P3B has not started.
-The roadmap review is recorded in `report/20260923_project_review.md`, and the
-current run, route diagnosis, and the follow-up full rerun are recorded in
-`report/20260923_p3a5.md` and `log.md`. The path-guard commit `c369c7d` was
-rerun on the full matrix and reached 8/10 `COMPLETE`; P3A.5 remains in progress.
+Last source/documentation review: 2026-09-24. Behavioral evidence is frozen in
+the dated reports and is not automatically evidence for a different HEAD. The
+user accepted P1C, P2A, P2B, P2C, and P2D. The P2C follow-up adds Gazebo
+task-region overlays and a live operator status panel. P3A remains implemented
+and awaiting user acceptance. Current HEAD `2933c24` was revalidated with two
+clean runner batches covering the fixed 10-cell matrix: all 10 episodes are
+`COMPLETE` with zero collision events, both manifests report
+`worktree_dirty=false`, the graph/source bypass audits pass, and the forced
+two-robot regression completes two charges. P3A.5 is ready for user acceptance;
+P3B has not started. Earlier `41f63fb`, `c369c7d`, and `561de99` failures remain
+historical retained evidence and are not silently replaced.
 
 This directory is the active project inside the larger ns-3 workspace. It is a
 toy ns3-gym scheduling MDP, not a full Wi-Fi/5G network simulation.
@@ -88,9 +82,17 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
 
 ## Current Handoff Snapshot
 
-- Active boundary: P3A.5 is in progress. The current-HEAD graph/bypass subgate
-  passed, but the formal matrix has one retained post-start rally failure, so
-  P3A is not accepted and P3B has not started.
+- Active boundary: P3A and P3A.5 are implemented and awaiting user acceptance.
+  The current freeze candidate is `task_stack_frozen_commit=2933c24`; its clean
+  6+4 runner batches cover all ten fixed cells with `COMPLETE` and zero
+  collisions, and the forced-charge regression completes two charges. P3B has
+  not started.
+- Current evidence is retained at `log/p2d_baseline/p3a5_final_2933c24/`
+  (lab/rooms six cells),
+  `log/p2d_baseline/p3a5_final_2933c24_corridors_net/` (corridors four cells),
+  and `log/p2d_baseline/p3a5_final_2933c24_forced2r/` (forced charge). The
+  split is documented because the first runner shell stopped after six cells;
+  it does not represent a source or configuration change.
 - From P2B onward, only `COMPLETE` is mission success. The fixed first rally
   contract is per-robot position error <=0.35 m, linear speed <=0.05 m/s,
   angular speed <=0.10 rad/s, all robots continuously stable for 5 simulated
