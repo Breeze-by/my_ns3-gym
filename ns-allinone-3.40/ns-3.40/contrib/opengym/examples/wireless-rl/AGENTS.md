@@ -4,7 +4,7 @@ Last source/documentation review: 2026-09-25. Behavioral evidence is frozen in
 the dated reports and is not automatically evidence for a different HEAD. The
 user accepted P1C, P2A, P2B, P2C, and P2D. The P2C follow-up adds Gazebo
 task-region overlays and a live operator status panel. P3A remains implemented
-and awaiting user acceptance. Current HEAD `2933c24` was revalidated with two
+and awaiting user acceptance. Historical integration commit `2933c24` was revalidated with two
 clean runner batches covering the fixed 10-cell matrix: all 10 episodes are
 `COMPLETE` with zero collision events, both manifests report
 `worktree_dirty=false`, the graph/source bypass audits pass, and the forced
@@ -85,7 +85,8 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
 ## Current Handoff Snapshot
 
 - Active boundary: P3A and P3A.5 are implemented and awaiting user acceptance.
-  The current freeze candidate is `task_stack_frozen_commit=2933c24`; its clean
+  The historical integration freeze candidate is `task_stack_frozen_commit=2933c24`;
+  current algorithm work is at `43060f0`, with clean
   6+4 runner batches cover all ten fixed cells with `COMPLETE` and zero
   collisions, and the forced-charge regression completes two charges. P3B has
   not started.
