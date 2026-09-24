@@ -2985,3 +2985,22 @@ PYTHONNOUSERSITE=1 /usr/bin/python3 src/multi_robot_exploration/multi_robot_expl
 ```
 
 结果为 `pass=true`、`violations=[]`。因此 `task_stack_frozen_commit=2933c24` 是 P3A.5 冻结候选；P3A/P3A.5 进入待用户验收边界，P3B 尚未开始。上述只读日志目录、Fast DDS socket、runner shell 中断等失败和中断均保留，不用成功重跑覆盖。
+
+### P3A.5 路径可达性修复与新地图消融（2026-09-25）
+
+本次修复将 clearance 膨胀区内已知自由起点的有界 BFS 逃逸路径纳入 rally route、路径代价、分配排序和动态冲突检查；删除无安全路线时忽略未到达机器人的回退。未知或占用起点仍拒绝，battery safety gates 不变。新增 `multi_robot/worlds/p3a5_holdout.world`，目标 `(4.4, 3.4)`，配置标记 `unseen_map=true`；种子 404、505 未用于调试。
+
+构建与测试：`colcon build --symlink-install --packages-select multi_robot_exploration multi_robot`；`colcon test --packages-select multi_robot_exploration`；结果 `83 tests, 0 errors, 0 failures, 2 skipped`。
+
+固定门禁保持：`COMPLETE/task_complete`、零碰撞、pose gate、battery 正余量且 ACTIVE、无基础设施或 prestart 失败。新地图 full 变体两种子均 `COMPLETE`，零碰撞、零充电：seed404 completion 122.9 s/path 24.916 m，seed505 116.8 s/path 24.266 m。
+
+同图同种子消融（各 2/2 `COMPLETE`，零碰撞、零充电）：
+
+| 变体 | seed404 completion/path | seed505 completion/path |
+|---|---:|---:|
+| full minimax + safe order + conservative | 122.9 s / 24.916 m | 116.8 s / 24.266 m |
+| remove longest-path (total path) | 95.0 s / 16.945 m | 127.4 s / 14.199 m |
+| remove map-safe order search | 83.5 s / 16.018 m | 83.4 s / 18.498 m |
+| remove conservative policy (concurrency 2, no global battery pause) | 61.0 s / 14.246 m | 82.2 s / 19.583 m |
+
+这些数据只说明该新地图和两枚保留种子上的行为差异，不能据此宣称 full 在所有时间或路径指标上最优；固定门禁结果与解释性指标分开记录。

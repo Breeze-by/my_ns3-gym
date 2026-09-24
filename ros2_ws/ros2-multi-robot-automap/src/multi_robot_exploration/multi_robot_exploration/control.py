@@ -403,59 +403,56 @@ def navigation_start_cell(raw_grid, traversable, start, max_radius_cells):
     pose whose raw cell is occupied or unknown is still rejected; snapping it
     would make the central planner disagree with Nav2 about the real start.
     """
-    if start is None:
-        return None
-    row, column = start
-    if not (
-        0 <= row < raw_grid.shape[0]
-        and 0 <= column < raw_grid.shape[1]
-    ):
-        return None
-    if raw_grid[start] != 0:
-        return None
-    if traversable[start]:
-        return start
+    return navigation_start_route(
+        raw_grid, traversable, start, max_radius_cells
+    )[0]
 
-    # Clearance inflation can remove the raw start cell while the robot is
-    # still in known free space. A nearest-cell snap is unsafe unless there is
-    # an actual known-free escape path to that cell. Unknown and occupied cells
-    # cannot be crossed, and the search cannot jump across a wall.
-    queue = deque([(start, 0)])
-    visited = {start}
+
+def navigation_start_route(raw_grid, traversable, start, max_radius_cells):
+    """Return a known-free escape route and its clearance-safe endpoint."""
+    if start is None:
+        return None, ()
+    row, column = start
+    if not (0 <= row < raw_grid.shape[0] and 0 <= column < raw_grid.shape[1]):
+        return None, ()
+    if raw_grid[start] != 0:
+        return None, ()
+    queue = deque([start])
+    predecessors = {start: None}
+    distances = {start: 0}
     while queue:
-        (row, column), distance = queue.popleft()
-        if traversable[row, column]:
-            return row, column
-        if distance >= max_radius_cells:
+        current = queue.popleft()
+        if traversable[current]:
+            route = []
+            while current is not None:
+                route.append(current)
+                current = predecessors[current]
+            route.reverse()
+            return route[-1], tuple(route)
+        if distances[current] >= max_radius_cells:
             continue
+        row, column = current
         for delta_row, delta_column in (
-            (-1, 0),
-            (1, 0),
-            (0, -1),
-            (0, 1),
-            (-1, -1),
-            (-1, 1),
-            (1, -1),
-            (1, 1),
+            (-1, 0), (1, 0), (0, -1), (0, 1),
+            (-1, -1), (-1, 1), (1, -1), (1, 1),
         ):
-            next_row = row + delta_row
-            next_column = column + delta_column
-            next_cell = (next_row, next_column)
-            if next_cell in visited or not (
-                0 <= next_row < raw_grid.shape[0]
-                and 0 <= next_column < raw_grid.shape[1]
+            next_cell = (row + delta_row, column + delta_column)
+            if next_cell in predecessors or not (
+                0 <= next_cell[0] < raw_grid.shape[0]
+                and 0 <= next_cell[1] < raw_grid.shape[1]
             ):
                 continue
             if raw_grid[next_cell] != 0:
                 continue
             if delta_row and delta_column and (
-                raw_grid[row, next_column] != 0
-                or raw_grid[next_row, column] != 0
+                raw_grid[row, next_cell[1]] != 0
+                or raw_grid[next_cell[0], column] != 0
             ):
                 continue
-            visited.add(next_cell)
-            queue.append((next_cell, distance + 1))
-    return None
+            predecessors[next_cell] = current
+            distances[next_cell] = distances[current] + 1
+            queue.append(next_cell)
+    return None, ()
 
 
 def path_distance_grid(traversable, start, return_predecessors=False):
@@ -575,7 +572,7 @@ def stage_navigation_leg(
     )
     # A known-free pose can be inside the clearance inflation of a nearby
     # obstacle; navigation_start_cell provides a short escape in that case.
-    start = navigation_start_cell(
+    start, _ = navigation_start_route(
         raw_grid,
         traversable,
         start,
@@ -844,13 +841,16 @@ def assign_rally_poses(
         )
         # Unknown and occupied starts remain rejected; only a known-free pose
         # may use the bounded clearance escape above.
-        start = navigation_start_cell(
+        start, escape_route = navigation_start_route(
             raw_grid,
             traversable,
             start,
             max(1, math.ceil(0.6 / resolution)),
         )
         distances = path_distance_grid(traversable, start)
+        escape_distance = 0.0
+        for first, second in zip(escape_route, escape_route[1:]):
+            escape_distance += math.dist(first, second)
         reachable = []
         for index, pose in enumerate(candidates):
             row, column = world_to_grid(
@@ -858,7 +858,7 @@ def assign_rally_poses(
             )
             distance = distances[row, column]
             if np.isfinite(distance):
-                reachable.append((float(distance), index))
+                reachable.append((float(distance + escape_distance), index))
         reachable.sort()
         if not reachable:
             return {}
@@ -995,8 +995,11 @@ def rally_survey_pose(raw_grid, resolution, origin, robot_position, target):
         origin[0],
         origin[1],
     )
-    start = nearest_traversable(
-        traversable, start, max(1, math.ceil(1.0 / resolution))
+    start, _ = navigation_start_route(
+        raw_grid,
+        traversable,
+        start,
+        max(1, math.ceil(0.6 / resolution)),
     )
     if start is None:
         return None
@@ -1253,7 +1256,7 @@ def plan_rally_leg(
         origin[0],
         origin[1],
     )
-    start = navigation_start_cell(
+    start, escape_route = navigation_start_route(
         raw_grid,
         traversable,
         start,
@@ -1277,8 +1280,17 @@ def plan_rally_leg(
     )
     world_route = tuple(
         grid_to_world(row, column, resolution, origin[0], origin[1])
-        for row, column in route
+        for row, column in (*escape_route[:-1], *route)
     )
+    # The escape segment may traverse cells removed by static clearance
+    # inflation. It must still keep clear of moving robot footprints; the
+    # current pose is exempt because that is where the escape starts.
+    if any(
+        math.dist(point, blocked) < clearance_m
+        for point in world_route[1:]
+        for blocked in blocked_positions
+    ):
+        return None, ()
     return (
         RallyPose(x, y, math.atan2(pose.y - y, pose.x - x)),
         world_route,
@@ -1998,24 +2010,6 @@ class HeadquartersControl(Node):
                             if other_name != name and position is not None
                         ],
                     )
-                    if plan[0] is None:
-                        arrived_positions = [
-                            self.robot_positions[other_name]
-                            for other_name in self.rally_dispatch_order
-                            if other_name != name
-                            and self.rally_arrived[other_name]
-                            and self.robot_positions[other_name] is not None
-                        ]
-                        plan = plan_rally_leg(
-                            self.rally_targets[name],
-                            self.map_data,
-                            self.resolution,
-                            self.origin,
-                            self.robot_positions[name],
-                            RALLY_MAX_NAVIGATION_LEG_M
-                            / (self.rally_attempts[name] + 1),
-                            arrived_positions,
-                        )
                 if plan[0] is None:
                     since = self.rally_route_unavailable_since[name]
                     if since is None:

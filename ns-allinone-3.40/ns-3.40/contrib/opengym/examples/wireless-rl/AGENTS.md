@@ -1,6 +1,6 @@
 # wireless-rl Codex Memory
 
-Last source/documentation review: 2026-09-24. Behavioral evidence is frozen in
+Last source/documentation review: 2026-09-25. Behavioral evidence is frozen in
 the dated reports and is not automatically evidence for a different HEAD. The
 user accepted P1C, P2A, P2B, P2C, and P2D. The P2C follow-up adds Gazebo
 task-region overlays and a live operator status panel. P3A remains implemented
@@ -8,8 +8,10 @@ and awaiting user acceptance. Current HEAD `2933c24` was revalidated with two
 clean runner batches covering the fixed 10-cell matrix: all 10 episodes are
 `COMPLETE` with zero collision events, both manifests report
 `worktree_dirty=false`, the graph/source bypass audits pass, and the forced
-two-robot regression completes two charges. P3A.5 is ready for user acceptance;
-P3B has not started. Earlier `41f63fb`, `c369c7d`, and `561de99` failures remain
+two-robot regression completes two charges. P3A.5 remains bounded by the fixed
+acceptance rules; the 2026-09-25 path-reachability repair and unseen-map
+ablation are recorded in `log.md`. P3B has not started. Earlier `41f63fb`,
+`c369c7d`, and `561de99` failures remain
 historical retained evidence and are not silently replaced.
 
 This directory is the active project inside the larger ns-3 workspace. It is a

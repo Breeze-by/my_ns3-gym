@@ -1,0 +1,42 @@
+<sdf version='1.7'>
+  <world name='p3a5_holdout'>
+    <plugin name='gazebo_ros_state' filename='libgazebo_ros_state.so'>
+      <ros><namespace>/gazebo</namespace></ros>
+      <update_rate>10.0</update_rate>
+    </plugin>
+    <include><uri>model://sun</uri></include>
+    <include><uri>model://ground_plane</uri></include>
+    <gravity>0 0 -9.8</gravity>
+    <physics type='ode'>
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+    <model name='holdout_walls'>
+      <static>true</static>
+      <link name='walls'>
+        <collision name='north'><pose>0 5 1 0 0 0</pose><geometry><box><size>12.2 0.2 2</size></box></geometry></collision>
+        <visual name='north_visual'><pose>0 5 1 0 0 0</pose><geometry><box><size>12.2 0.2 2</size></box></geometry></visual>
+        <collision name='south'><pose>0 -5 1 0 0 0</pose><geometry><box><size>12.2 0.2 2</size></box></geometry></collision>
+        <visual name='south_visual'><pose>0 -5 1 0 0 0</pose><geometry><box><size>12.2 0.2 2</size></box></geometry></visual>
+        <collision name='east'><pose>6 0 1 0 0 0</pose><geometry><box><size>0.2 10.2 2</size></box></geometry></collision>
+        <visual name='east_visual'><pose>6 0 1 0 0 0</pose><geometry><box><size>0.2 10.2 2</size></box></geometry></visual>
+        <collision name='west'><pose>-6 0 1 0 0 0</pose><geometry><box><size>0.2 10.2 2</size></box></geometry></collision>
+        <visual name='west_visual'><pose>-6 0 1 0 0 0</pose><geometry><box><size>0.2 10.2 2</size></box></geometry></visual>
+      </link>
+    </model>
+    <model name='holdout_obstacles'>
+      <static>true</static>
+      <link name='obstacles'>
+        <collision name='bar_north'><pose>0.7 2.0 0.75 0 0 0.22</pose><geometry><box><size>0.55 3.0 1.5</size></box></geometry></collision>
+        <visual name='bar_north_visual'><pose>0.7 2.0 0.75 0 0 0.22</pose><geometry><box><size>0.55 3.0 1.5</size></box></geometry></visual>
+        <collision name='bar_south'><pose>-0.9 -2.1 0.75 0 0 -0.48</pose><geometry><box><size>0.55 2.8 1.5</size></box></geometry></collision>
+        <visual name='bar_south_visual'><pose>-0.9 -2.1 0.75 0 0 -0.48</pose><geometry><box><size>0.55 2.8 1.5</size></box></geometry></visual>
+        <collision name='box_west'><pose>-3.5 0.4 0.75 0 0 0</pose><geometry><box><size>1.5 1.0 1.5</size></box></geometry></collision>
+        <visual name='box_west_visual'><pose>-3.5 0.4 0.75 0 0 0</pose><geometry><box><size>1.5 1.0 1.5</size></box></geometry></visual>
+        <collision name='box_east'><pose>3.3 -0.2 0.75 0 0 0</pose><geometry><box><size>1.0 1.5 1.5</size></box></geometry></collision>
+        <visual name='box_east_visual'><pose>3.3 -0.2 0.75 0 0 0</pose><geometry><box><size>1.0 1.5 1.5</size></box></geometry></visual>
+      </link>
+    </model>
+  </world>
+</sdf>

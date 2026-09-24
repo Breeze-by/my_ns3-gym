@@ -216,6 +216,13 @@ def test_navigation_start_allows_short_escape_from_clearance_inflation():
     assert traversable[start]
     assert math.dist(start, (20, 20)) <= 6
 
+    endpoint, route = control.navigation_start_route(
+        raw_grid, traversable, (20, 20), max_radius_cells=6
+    )
+    assert endpoint == route[-1]
+    assert route[0] == (20, 20)
+    assert len(route) > 1
+
 
 def test_navigation_start_rejects_unknown_or_occupied_pose():
     raw_grid = np.zeros((20, 20), dtype=int)
