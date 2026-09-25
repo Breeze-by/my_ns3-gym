@@ -15,6 +15,10 @@ Current copy-paste launch commands, world selection, task modes, and parameter
 reference: [launch_commands.md](launch_commands.md). The longer implementation
 guide is [user_guide.md](user_guide.md).
 
+For the undergraduate ROS, Gazebo, task-algorithm, and real-robot track, start
+with [UNDERGRAD_ROBOTICS_GUIDE.md](UNDERGRAD_ROBOTICS_GUIDE.md). It explains
+the ideal-gateway boundary and the simulation-to-deployment workflow.
+
 ## 📁 Repository Structure
 
 ```
