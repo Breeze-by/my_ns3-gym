@@ -120,7 +120,9 @@ class MergeMapNode(Node):
         self.maps[index] = msg
         if all(self.maps):
             try:
-                self.publisher.publish(merge_maps(self.maps, self.frame_id))
+                merged = merge_maps(self.maps, self.frame_id)
+                merged.header.stamp = self.get_clock().now().to_msg()
+                self.publisher.publish(merged)
             except ValueError as error:
                 self.get_logger().error(str(error))
 

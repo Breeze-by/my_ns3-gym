@@ -3004,3 +3004,44 @@ PYTHONNOUSERSITE=1 /usr/bin/python3 src/multi_robot_exploration/multi_robot_expl
 | remove conservative policy (concurrency 2, no global battery pause) | 61.0 s / 14.246 m | 82.2 s / 19.583 m |
 
 这些数据只说明该新地图和两枚保留种子上的行为差异，不能据此宣称 full 在所有时间或路径指标上最优；固定门禁结果与解释性指标分开记录。
+
+### P3B 固定 delay/loss gateway 协议门禁（2026-09-25）
+
+用户尚未验收 P3A/P3A.5，但要求继续推进 P3B。本次先完成不依赖 Gazebo、ROS 2 或 ns-3 的确定性
+应用层故障替身：同一个 `ideal_gateway` 在 `gateway_mode:=fault` 下使用独立上/下行固定 seed 队列，
+支持 0/10%/100% 丢包、0/0.5/2 秒延迟、TTL 过期、序号去重/旧版本拒绝、重复、窗口乱序和有限
+ACK 重传，并可用 `gateway_queue_capacity` 注入队列溢出；地图/位姿/TF 过期时中央协调器暂停新的分配，导航 gateway 对未送达命令执行 deadline
+abort。每次 attempt 通过 `/gateway/message_events` 写出 `source_time`、`enqueue_time`、`admit_time`、
+`tx_time`、`delivery_time/drop_time`、`message_id`、序号、尝试次数和原因，可选 JSONL 账本由
+`gateway_ledger_path` 指定。默认 `gateway_mode:=ideal` 的 P3A 零损行为保留。
+
+验证命令：
+
+```bash
+export PYTHONPATH=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration
+/usr/bin/python3 -m pytest -q ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_fault_model.py
+/usr/bin/python3 ros2_ws/ros2-multi-robot-automap/scripts/run_p3b_fault_matrix.py \
+  --output ros2_ws/ros2-multi-robot-automap/log/p3b_fault_matrix_20260925.json
+```
+
+结果：`4 passed`；三个固定 seed 上、下行各 3 个丢包率 × 3 个延迟格均生成可复现 JSON，100% 丢包可靠
+消息在初始发送加两次重试后明确耗尽，TTL 延迟消息记为 `expired`，乱序窗口输出 `[2, 1]`，整体
+`status=PASS`。本次未启动 Gazebo 任务 episode，因此不能把它当成 P3B 完整任务成功率或 Wi-Fi
+性能结果；下一步需在用户验收边界内运行 fault-mode ROS smoke，再进入 P4A ns-3 trace 对账。
+
+### P3B fault-mode ROS smoke：100% 上行丢包（2026-09-25，失败样本保留）
+
+为验证安全降级，运行了两机器人 `my_world.world` seed 101、`mission_mode=rally` 的 fault-mode
+smoke：`uplink_loss_rate=1.0`、`downlink_loss_rate=0.0`、`gateway_max_retries=2`、90 秒评估上限。
+Nav2 readiness 和 P3A bypass audit 均通过；启动后上行地图/位姿/TF 全部按固定 seed 丢弃，中央没有
+收到 `/merge_map`，目标也没有进入 `RALLY`。smoke 在检查合并地图消息时超时并停止，评估器保留
+`failure_reason=no_data`、`map_message_count=0`、`nav_goal_count=0` 的 post-start 失败结果；这不是
+基础设施失败，也没有用补跑覆盖。逐消息 JSONL 账本保存在
+`ros2_ws/ros2-multi-robot-automap/log/p3b_fault_100up_seed101.jsonl`，episode 和 launch log 在同名
+目录。该结果符合“检测未交付不得 RALLY”的安全预期，但还不能作为成功率结论。
+
+随后对当前 HEAD 做了 P3B 语义收紧：ACK 只在 TTL/序号检查通过或明确判定为重复时发送；源消息时间
+来自传感器 header（融合地图由 merge 节点在生成时重新盖章），机器人本地 gateway 在电池非 ACTIVE、
+命令 deadline 或本地重复命令时取消 Nav2；中央 stale gate 使用交付数据的源时间。该硬化发生在上述
+ROS smoke 之后，因此该 smoke 保留为历史失败样本，不能直接作为硬化后完整 episode 证据；硬化后的
+`colcon test`、fault matrix 和 fault gateway 进程 smoke 均通过。

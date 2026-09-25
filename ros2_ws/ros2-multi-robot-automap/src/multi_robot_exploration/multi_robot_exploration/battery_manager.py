@@ -466,6 +466,7 @@ class BatteryManager(Node):
         message.data = json.dumps(
             {
                 "robot": self.robot_name,
+                "stamp_sec": self.now(),
                 "mode": self.mode,
                 "energy": max(0.0, self.energy),
                 "capacity": self.capacity,

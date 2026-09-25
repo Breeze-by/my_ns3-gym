@@ -696,6 +696,28 @@ ros2 run multi_robot_exploration bypass_audit --robot-count 3 --wait-sec 10
 正式历史结果位于 `log/p2d_baseline/p3a_formal_gateway_3scenes_v2/`；当前 HEAD 的 P3A.5 需重新生成
 带 commit/config/environment manifest 的矩阵。P3B 才会在同一协议上加入固定 delay/loss，当前 P3A 不代表 Wi-Fi 性能结果。
 
+### 9.6 P3B 固定故障 gateway
+
+`ideal_gateway` 现在也支持 P3B 的确定性故障模式，默认参数仍是 `gateway_mode:=ideal`。设置
+`gateway_mode:=fault` 后，上行和下行分别经过固定延迟/丢包队列；`fault_seed` 保证同一输入得到
+同一事件顺序，`gateway_duplicate_rate` 和 `gateway_reorder_window` 用于重复和乱序测试。地图、
+位姿和 TF 继续按序号、TTL 接收，旧版本不会覆盖新版本；中央协调器在这些输入超过
+`message_freshness_timeout_sec` 后暂停新的分配。目标检测、导航命令和电池失败消息使用有限重试，
+导航命令超过 `navigation_command_deadline_sec` 会中止。
+
+先运行协议门禁：
+
+```bash
+export PYTHONPATH="$PWD/src/multi_robot_exploration:$PYTHONPATH"
+python3 scripts/run_p3b_fault_matrix.py
+```
+
+运行任务 smoke 时可传入 `--gateway-mode fault`、`--uplink-loss-rate`、`--downlink-loss-rate`、
+`--uplink-delay-sec`、`--downlink-delay-sec`、`--gateway-seed`、`--gateway-queue-capacity` 和
+`--gateway-ledger-path`。账本和
+`/gateway/message_events` 都保留每次尝试的消息 ID、序号、生成/入队/准入/发送/交付或丢弃时间、
+TTL、重复标记和重试次数。P3B 只验证应用层故障语义，尚未接入 ns-3 Wi-Fi。
+
 以下命令适合运行中的人工诊断：
 
 检查每台机器人是否有控制话题：

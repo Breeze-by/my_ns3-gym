@@ -230,6 +230,41 @@ python3 scripts/run_p3a5_ablation.py --run-id p3a5_heldout_20260925
 rally 路线。脚本会为每个变体保存独立 manifest、episode JSON、graph audit 和汇总文件；
 不得在看到结果后修改清单或成功规则。
 
+### 3.9 P3B 固定故障 gateway
+
+P3B 仍使用 `GatewayEnvelope`，但 `ideal_gateway` 可以切换到确定性的应用层故障模型。上、下行
+分别设置固定延迟和丢包率；目标检测、导航命令和电池失败消息使用有限 ACK 重传，所有尝试写入
+`gateway_message_events`，可选 JSONL 账本包含 `source_time`、`enqueue_time`、`admit_time`、
+`tx_time`、`delivery_time/drop_time`、消息 ID、序号和尝试次数。默认 `gateway_mode:=ideal` 保持
+P3A 零损行为。
+
+先运行不依赖 Gazebo 的固定矩阵门禁：
+
+```bash
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+export PYTHONPATH="$PWD/src/multi_robot_exploration:$PYTHONPATH"
+python3 scripts/run_p3b_fault_matrix.py
+```
+
+故障任务 smoke 可在现有命令上增加参数，例如 10% 上行丢包、0.5 秒下行延迟、固定 seed 和
+JSONL 账本：
+
+```bash
+python3 scripts/ros_smoke_test.py \
+  --robot-count 2 --world my_world.world --gazebo-seed 101 \
+  --evaluation-duration 300 --target-detection --rally \
+  --gateway-mode fault --mission-mode rally --gateway-seed 20260925 \
+  --uplink-loss-rate 0.10 --downlink-delay-sec 0.5 \
+  --gateway-max-retries 2 \
+  --gateway-ledger-path log/p3b_fault_seed101.jsonl
+```
+
+`mission_mode` 固定为 `coverage`、`target` 或 `rally`，并与评估器终止条件保持一致。100% 丢包
+时目标检测不会进入 `RALLY`；导航命令在 deadline 后中止，不能无限等待。P3B 只验证确定性故障和
+消息语义，不宣称已经接入 ns-3 Wi-Fi。需要测试队列溢出时设置
+`gateway_queue_capacity:=N`（默认 0 表示不限制队列）。
+
 ## 4. 切换 Gazebo world
 
 当前已验证的场景：

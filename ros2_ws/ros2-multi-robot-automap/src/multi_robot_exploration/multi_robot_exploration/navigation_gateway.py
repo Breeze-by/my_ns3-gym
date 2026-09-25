@@ -41,6 +41,11 @@ class NavigationGateway(Node):
         if not self.robot_name:
             raise ValueError("robot_name is required")
         self.task_phase = "EXPLORE"
+        self.command_deadline_sec = float(
+            self.declare_parameter("command_deadline_sec", 90.0).value
+        )
+        if self.command_deadline_sec <= 0:
+            raise ValueError("command_deadline_sec must be positive")
         self.downlink_sequence = 0
         self.uplink_sequence = 0
         self.latest_downlink = {}
@@ -48,6 +53,11 @@ class NavigationGateway(Node):
         self.last_feedback_at = -float("inf")
         self.contexts = {}
         self.local_goal_handles = {}
+        self.local_deadlines = {}
+        self.local_canceled = set()
+        self.local_seen = set()
+        self.local_battery_mode = "ACTIVE"
+        self.state_lock = threading.RLock()
         self.callback_group = ReentrantCallbackGroup()
 
         qos = QoSProfile(depth=100)
@@ -88,6 +98,12 @@ class NavigationGateway(Node):
             f"/{self.robot_name}/navigate_to_pose",
             callback_group=self.callback_group,
         )
+        # Local safety authority never needs an AP round trip.
+        self.create_subscription(
+            String, f"/{self.robot_name}/battery_state", self.local_battery_callback,
+            state_qos, callback_group=self.callback_group,
+        )
+        self.create_timer(0.1, self.expire_local_commands, callback_group=self.callback_group)
         self.server = ActionServer(
             self,
             NavigateToPose,
@@ -143,13 +159,23 @@ class NavigationGateway(Node):
             self.downlink_sequence,
             command_id,
             payload,
+            ttl_sec=self.command_deadline_sec,
         )
         self.downlink_publisher.publish(envelope)
 
+        deadline = self.now_sec() + self.command_deadline_sec + 5.0
         while rclpy.ok() and not context.result_event.wait(0.1):
             if server_goal_handle.is_cancel_requested and not context.cancel_sent:
                 self.publish_cancel(command_id)
                 context.cancel_sent = True
+            if self.now_sec() >= deadline:
+                self.publish_cancel(command_id)
+                context.status = GoalStatus.STATUS_ABORTED
+                self.get_logger().error(
+                    f"Navigation command {command_id} timed out after "
+                    f"{self.command_deadline_sec:.1f}s."
+                )
+                break
 
         status = context.status
         if status == GoalStatus.STATUS_SUCCEEDED:
@@ -159,11 +185,10 @@ class NavigationGateway(Node):
         else:
             server_goal_handle.abort()
         self.contexts.pop(command_id, None)
-        self.local_goal_handles.pop(command_id, None)
         return NavigateToPose.Result()
 
     def cancel_callback(self, server_goal_handle):
-        for command_id, context in self.contexts.items():
+        for command_id, context in list(self.contexts.items()):
             if context.server_goal_handle is server_goal_handle:
                 if not context.cancel_sent:
                     self.publish_cancel(command_id)
@@ -190,17 +215,30 @@ class NavigationGateway(Node):
             not in ("navigation_goal", "navigation_cancel")
         ):
             return
-        key = envelope.message_type
+        key = (envelope.message_type, envelope.correlation_id)
         latest = self.latest_downlink.get(key, 0)
         valid, _ = envelope_is_valid(envelope, self.now_sec(), latest)
         if not valid:
             return
         self.latest_downlink[key] = envelope.sequence
         if envelope.message_type == "navigation_cancel":
+            self.local_canceled.add(envelope.correlation_id)
             handle = self.local_goal_handles.get(envelope.correlation_id)
             if handle is not None:
                 handle.cancel_goal_async()
             return
+        command_id = envelope.correlation_id
+        with self.state_lock:
+            if command_id in self.local_seen:
+                return
+            self.local_seen.add(command_id)
+            if command_id in self.local_canceled or self.local_battery_mode != "ACTIVE":
+                self.publish_result(command_id, GoalStatus.STATUS_ABORTED)
+                return
+            self.local_deadlines[command_id] = (
+                envelope.generation_time.sec + envelope.generation_time.nanosec / 1e9
+                + envelope.ttl_sec
+            )
         try:
             pose = deserialize_message(bytes(envelope.payload), PoseStamped)
         except Exception as error:
@@ -240,8 +278,10 @@ class NavigationGateway(Node):
             self.publish_result(command_id, GoalStatus.STATUS_ABORTED)
             return
         self.local_goal_handles[command_id] = goal_handle
-        context = self.contexts.get(command_id)
-        if context is not None and context.cancel_sent:
+        # Never read central GoalContext here: it is not delivered information.
+        if (command_id in self.local_canceled
+                or self.now_sec() >= self.local_deadlines.get(command_id, 0.0)
+                or self.local_battery_mode != "ACTIVE"):
             goal_handle.cancel_goal_async()
         result_future = goal_handle.get_result_async()
         result_future.add_done_callback(
@@ -273,7 +313,28 @@ class NavigationGateway(Node):
         except Exception as error:
             self.get_logger().error(f"Local navigation result failed: {error}")
             status = GoalStatus.STATUS_ABORTED
+        self.local_goal_handles.pop(command_id, None)
+        self.local_deadlines.pop(command_id, None)
         self.publish_result(command_id, status)
+
+    def local_battery_callback(self, message):
+        try:
+            self.local_battery_mode = json.loads(message.data)["mode"]
+        except (KeyError, TypeError, json.JSONDecodeError):
+            return
+        if self.local_battery_mode != "ACTIVE":
+            for command_id, handle in list(self.local_goal_handles.items()):
+                self.local_canceled.add(command_id)
+                handle.cancel_goal_async()
+
+    def expire_local_commands(self):
+        for command_id, deadline in list(self.local_deadlines.items()):
+            if self.now_sec() >= deadline and command_id not in self.local_canceled:
+                self.local_canceled.add(command_id)
+                handle = self.local_goal_handles.get(command_id)
+                if handle is not None:
+                    handle.cancel_goal_async()
+                self.publish_result(command_id, GoalStatus.STATUS_ABORTED)
 
     def publish_result(self, command_id, status):
         result = String()
@@ -298,7 +359,7 @@ class NavigationGateway(Node):
             not in ("navigation_feedback", "navigation_result")
         ):
             return
-        key = envelope.message_type
+        key = (envelope.message_type, envelope.correlation_id)
         latest = self.latest_uplink.get(key, 0)
         valid, _ = envelope_is_valid(envelope, self.now_sec(), latest)
         if not valid:

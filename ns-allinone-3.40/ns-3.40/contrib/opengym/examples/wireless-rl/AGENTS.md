@@ -10,7 +10,9 @@ clean runner batches covering the fixed 10-cell matrix: all 10 episodes are
 `worktree_dirty=false`, the graph/source bypass audits pass, and the forced
 two-robot regression completes two charges. P3A.5 remains bounded by the fixed
 acceptance rules; the 2026-09-25 path-reachability repair and unseen-map
-ablation are recorded in `log.md`. P3B has not started. Earlier `41f63fb`,
+ablation are recorded in `log.md`. P3B's deterministic application-layer
+fault transport is implemented and its protocol matrix gate passes; Gazebo
+fault-mode episodes and ns-3 coupling remain future work. Earlier `41f63fb`,
 `c369c7d`, and `561de99` failures remain
 historical retained evidence and are not silently replaced.
 
@@ -88,8 +90,8 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
   The historical integration freeze candidate is `task_stack_frozen_commit=2933c24`;
   current algorithm work is at `43060f0`, with clean
   6+4 runner batches cover all ten fixed cells with `COMPLETE` and zero
-  collisions, and the forced-charge regression completes two charges. P3B has
-  not started.
+  collisions, and the forced-charge regression completes two charges. P3B's
+  fixed delay/loss gateway is implemented; its ROS task matrix is still pending.
 - Current evidence is retained at `log/p2d_baseline/p3a5_final_2933c24/`
   (lab/rooms six cells),
   `log/p2d_baseline/p3a5_final_2933c24_corridors_net/` (corridors four cells),

@@ -440,6 +440,21 @@ def parse_args():
         default=PROJECT_ROOT / "log" / "smoke",
     )
     parser.add_argument("--bypass-audit-output", type=Path)
+    parser.add_argument("--gateway-mode", choices=("ideal", "fault"), default="ideal")
+    parser.add_argument("--mission-mode", choices=("coverage", "target", "rally"), default="coverage")
+    parser.add_argument("--gateway-seed", type=int, default=1)
+    parser.add_argument("--uplink-loss-rate", type=float, default=0.0)
+    parser.add_argument("--downlink-loss-rate", type=float, default=0.0)
+    parser.add_argument("--uplink-delay-sec", type=float, default=0.0)
+    parser.add_argument("--downlink-delay-sec", type=float, default=0.0)
+    parser.add_argument("--gateway-duplicate-rate", type=float, default=0.0)
+    parser.add_argument("--gateway-reorder-window", type=int, default=0)
+    parser.add_argument("--gateway-ack-timeout-sec", type=float, default=1.0)
+    parser.add_argument("--gateway-max-retries", type=int, default=2)
+    parser.add_argument("--gateway-queue-capacity", type=int, default=0)
+    parser.add_argument("--gateway-ledger-path", type=Path)
+    parser.add_argument("--message-freshness-timeout-sec", type=float, default=5.0)
+    parser.add_argument("--navigation-command-deadline-sec", type=float, default=90.0)
     return parser.parse_args()
 
 
@@ -468,6 +483,25 @@ def main():
         raise SystemExit("--battery requires --evaluation-duration")
     if args.require_charge and not args.battery:
         raise SystemExit("--require-charge requires --battery")
+    for name in ("uplink_loss_rate", "downlink_loss_rate", "gateway_duplicate_rate"):
+        if not 0.0 <= getattr(args, name) <= 1.0:
+            raise SystemExit(f"--{name.replace('_', '-')} must be in [0, 1]")
+    if args.uplink_delay_sec < 0 or args.downlink_delay_sec < 0:
+        raise SystemExit("gateway delays must be non-negative")
+    if args.gateway_reorder_window < 0 or args.gateway_max_retries < 0:
+        raise SystemExit("gateway reorder window and retries must be non-negative")
+    if args.gateway_queue_capacity < 0:
+        raise SystemExit("gateway queue capacity must be non-negative")
+    mission_mode = args.mission_mode
+    inferred_mode = "rally" if args.rally else (
+        "target" if args.target_detection else "coverage"
+    )
+    if mission_mode == "coverage" and inferred_mode != "coverage":
+        mission_mode = inferred_mode
+    elif mission_mode != inferred_mode and inferred_mode != "coverage":
+        raise SystemExit(
+            "mission mode must match target/rally smoke termination semantics"
+        )
 
     package = run_ros(["pkg", "prefix", "multi_robot"], timeout=10)
     if package.returncode != 0:
@@ -540,7 +574,23 @@ def main():
         f"{args.battery_charge_target_fraction}",
         f"battery_return_timeout_sec:={args.battery_return_timeout}",
         f"battery_charge_timeout_sec:={args.battery_charge_timeout}",
+        f"gateway_mode:={args.gateway_mode}",
+        f"mission_mode:={mission_mode}",
+        f"gateway_seed:={args.gateway_seed}",
+        f"uplink_loss_rate:={args.uplink_loss_rate}",
+        f"downlink_loss_rate:={args.downlink_loss_rate}",
+        f"uplink_delay_sec:={args.uplink_delay_sec}",
+        f"downlink_delay_sec:={args.downlink_delay_sec}",
+        f"gateway_duplicate_rate:={args.gateway_duplicate_rate}",
+        f"gateway_reorder_window:={args.gateway_reorder_window}",
+        f"gateway_ack_timeout_sec:={args.gateway_ack_timeout_sec}",
+        f"gateway_max_retries:={args.gateway_max_retries}",
+        f"gateway_queue_capacity:={args.gateway_queue_capacity}",
+        f"message_freshness_timeout_sec:={args.message_freshness_timeout_sec}",
+        f"navigation_command_deadline_sec:={args.navigation_command_deadline_sec}",
     ]
+    if args.gateway_ledger_path is not None:
+        command.append(f"gateway_ledger_path:={args.gateway_ledger_path}")
 
     print("Command:", " ".join(command), flush=True)
     print("Launch log:", log_path, flush=True)

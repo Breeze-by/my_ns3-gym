@@ -100,11 +100,38 @@ def launch_setup(context, *args, **kwargs):
     battery_charge_timeout = LaunchConfiguration(
         "battery_charge_timeout_sec"
     )
+    gateway_mode = LaunchConfiguration("gateway_mode")
+    gateway_seed = LaunchConfiguration("gateway_seed")
+    gateway_mission_mode = LaunchConfiguration("mission_mode")
+    uplink_loss_rate = LaunchConfiguration("uplink_loss_rate")
+    downlink_loss_rate = LaunchConfiguration("downlink_loss_rate")
+    uplink_delay_sec = LaunchConfiguration("uplink_delay_sec")
+    downlink_delay_sec = LaunchConfiguration("downlink_delay_sec")
+    gateway_duplicate_rate = LaunchConfiguration("gateway_duplicate_rate")
+    gateway_reorder_window = LaunchConfiguration("gateway_reorder_window")
+    gateway_ack_timeout = LaunchConfiguration("gateway_ack_timeout_sec")
+    gateway_max_retries = LaunchConfiguration("gateway_max_retries")
+    gateway_queue_capacity = LaunchConfiguration("gateway_queue_capacity")
+    gateway_ledger_path = LaunchConfiguration("gateway_ledger_path")
+    navigation_command_deadline = LaunchConfiguration(
+        "navigation_command_deadline_sec"
+    )
+    message_freshness_timeout = LaunchConfiguration(
+        "message_freshness_timeout_sec"
+    )
 
     try:
         robot_count = int(robot_count_cfg.perform(context))
     except ValueError:
         robot_count = 2
+    mission_mode_value = gateway_mission_mode.perform(context).lower()
+    if mission_mode_value == "auto":
+        if enable_rally.perform(context).lower() == "true":
+            mission_mode_value = "rally"
+        elif enable_target_detection.perform(context).lower() == "true":
+            mission_mode_value = "target"
+        else:
+            mission_mode_value = "coverage"
 
     # ========= Available robots =========
     # Add more robots here if needed. robot_count will select the first N robots.
@@ -190,6 +217,19 @@ def launch_setup(context, *args, **kwargs):
                 {
                     "robot_count": robot_count_cfg,
                     "use_sim_time": use_sim_time,
+                    "network_mode": gateway_mode,
+                    "fault_seed": gateway_seed,
+                    "mission_mode": mission_mode_value,
+                    "uplink_loss_rate": uplink_loss_rate,
+                    "downlink_loss_rate": downlink_loss_rate,
+                    "uplink_delay_sec": uplink_delay_sec,
+                    "downlink_delay_sec": downlink_delay_sec,
+                    "duplicate_rate": gateway_duplicate_rate,
+                    "reorder_window": gateway_reorder_window,
+                    "ack_timeout_sec": gateway_ack_timeout,
+                        "max_retries": gateway_max_retries,
+                        "queue_capacity": gateway_queue_capacity,
+                    "ledger_path": gateway_ledger_path,
                 }
             ],
             output="screen",
@@ -206,6 +246,7 @@ def launch_setup(context, *args, **kwargs):
                     {
                         "robot_name": robot["name"],
                         "use_sim_time": use_sim_time,
+                        "command_deadline_sec": navigation_command_deadline,
                     }
                 ],
                 output="screen",
@@ -264,6 +305,7 @@ def launch_setup(context, *args, **kwargs):
                 "use_map_safe_rally_order": use_map_safe_rally_order,
                 "global_battery_rally_pause": global_battery_rally_pause,
                 "rally_max_concurrent": rally_max_concurrent,
+                "message_freshness_timeout_sec": message_freshness_timeout,
             }
         ],
         output="screen",
@@ -298,6 +340,7 @@ def launch_setup(context, *args, **kwargs):
                 "coverage_threshold": evaluation_coverage,
                 "stop_on_target_found": evaluation_stop_on_target,
                 "stop_on_task_complete": evaluation_stop_on_complete,
+                "mission_mode": mission_mode_value,
             }
         ],
         output="screen",
@@ -966,6 +1009,92 @@ def generate_launch_description():
             "enable_battery",
             default_value="true",
             description="Enable per-robot P2C energy and charging managers.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "gateway_mode",
+            default_value="ideal",
+            description="Gateway transport: ideal or fault.",
+        )
+    )
+    ld.add_action(
+        DeclareLaunchArgument(
+            "mission_mode",
+            default_value="auto",
+            description="P3B ledger contract: auto, coverage, target, or rally.",
+        )
+    )
+    ld.add_action(
+        DeclareLaunchArgument(
+            "gateway_seed", default_value="1", description="Fixed P3B fault seed."
+        )
+    )
+    ld.add_action(
+        DeclareLaunchArgument(
+            "uplink_loss_rate", default_value="0.0", description="Uplink loss probability."
+        )
+    )
+    ld.add_action(
+        DeclareLaunchArgument(
+            "downlink_loss_rate", default_value="0.0", description="Downlink loss probability."
+        )
+    )
+    ld.add_action(
+        DeclareLaunchArgument(
+            "uplink_delay_sec", default_value="0.0", description="Fixed uplink delay in simulation seconds."
+        )
+    )
+    ld.add_action(
+        DeclareLaunchArgument(
+            "downlink_delay_sec", default_value="0.0", description="Fixed downlink delay in simulation seconds."
+        )
+    )
+    ld.add_action(
+        DeclareLaunchArgument(
+            "gateway_duplicate_rate", default_value="0.0", description="Deterministic duplicate probability."
+        )
+    )
+    ld.add_action(
+        DeclareLaunchArgument(
+            "gateway_reorder_window", default_value="0", description="Reverse ready-message windows of this size."
+        )
+    )
+    ld.add_action(
+        DeclareLaunchArgument(
+            "gateway_ack_timeout_sec", default_value="1.0", description="P3B ACK retry timeout."
+        )
+    )
+    ld.add_action(
+        DeclareLaunchArgument(
+            "gateway_max_retries", default_value="2", description="Maximum retries for reliable messages."
+        )
+    )
+    ld.add_action(
+        DeclareLaunchArgument(
+            "gateway_queue_capacity",
+            default_value="0",
+            description="Per-direction fault queue capacity; 0 means unlimited.",
+        )
+    )
+    ld.add_action(
+        DeclareLaunchArgument(
+            "gateway_ledger_path", default_value="", description="Optional JSONL message ledger path."
+        )
+    )
+    ld.add_action(
+        DeclareLaunchArgument(
+            "message_freshness_timeout_sec",
+            default_value="5.0",
+            description="Pause new central allocation after pose/TF/map data expires.",
+        )
+    )
+    ld.add_action(
+        DeclareLaunchArgument(
+            "navigation_command_deadline_sec",
+            default_value="90.0",
+            description="Abort a gateway navigation command after this deadline.",
         )
     )
 

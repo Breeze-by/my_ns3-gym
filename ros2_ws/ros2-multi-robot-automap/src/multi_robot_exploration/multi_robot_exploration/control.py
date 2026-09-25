@@ -1395,6 +1395,9 @@ class HeadquartersControl(Node):
         self.enable_battery = self.declare_parameter(
             "enable_battery", False
         ).value
+        self.message_freshness_timeout_sec = self.declare_parameter(
+            "message_freshness_timeout_sec", 5.0
+        ).value
         self.rally_position_tolerance = self.declare_parameter(
             "rally_position_tolerance_m", RALLY_POSITION_TOLERANCE_M
         ).value
@@ -1442,6 +1445,7 @@ class HeadquartersControl(Node):
         self.map_known_count = 0
         self.unknown_integral = None
         self.frontier_cache = None
+        self.map_received_at = None
         self.last_no_assignment_log = -float("inf")
         self.last_save_time = time.monotonic()
         self.save_in_progress = False
@@ -1451,6 +1455,9 @@ class HeadquartersControl(Node):
         state_qos = QoSProfile(depth=1)
         state_qos.durability = DurabilityPolicy.TRANSIENT_LOCAL
         state_qos.reliability = ReliabilityPolicy.RELIABLE
+        self.consumed_publisher = self.create_publisher(
+            String, "/gateway/consumed", 100
+        )
         self.task_state_publisher = self.create_publisher(
             String, "/task_state", state_qos
         )
@@ -1519,6 +1526,9 @@ class HeadquartersControl(Node):
         self.robot_positions = {}
         self.map_to_odom = {}
         self.robot_maps = {}
+        self.robot_odom_received_at = {}
+        self.robot_tf_received_at = {}
+        self.robot_map_received_at = {}
         self.robot_velocities = {}
         self.robot_states = {}
         self.battery_modes = {}
@@ -1544,6 +1554,9 @@ class HeadquartersControl(Node):
             self.robot_positions[robot_name] = None
             self.map_to_odom[robot_name] = None
             self.robot_maps[robot_name] = None
+            self.robot_odom_received_at[robot_name] = None
+            self.robot_tf_received_at[robot_name] = None
+            self.robot_map_received_at[robot_name] = None
             self.robot_velocities[robot_name] = None
             self.robot_states[robot_name] = "idle"
             self.battery_modes[robot_name] = (
@@ -1659,6 +1672,11 @@ class HeadquartersControl(Node):
         except (KeyError, TypeError, ValueError, json.JSONDecodeError) as error:
             self.get_logger().error(f"Invalid target detection: {error}")
             return
+        gateway = event.get("_gateway", {})
+        self.consumed_publisher.publish(String(data=json.dumps({
+            **gateway, "event": "consumed", "message_type": "target_detection",
+            "consumed_time": self.now(), "local_confirm_time": event.get("stamp_sec"),
+        }, sort_keys=True)))
         self.publish_task_state("FOUND")
         if not self.enable_rally:
             return
@@ -1687,7 +1705,7 @@ class HeadquartersControl(Node):
         previous = self.battery_modes[robot_name]
         self.battery_modes[robot_name] = mode
         self.battery_states[robot_name] = event
-        self.battery_state_received_at[robot_name] = self.now()
+        self.battery_state_received_at[robot_name] = event.get("stamp_sec", self.now())
         if mode not in ("RETURNING", "CHARGING"):
             if mode == "ACTIVE" and previous != "ACTIVE":
                 self.get_logger().info(
@@ -1765,6 +1783,9 @@ class HeadquartersControl(Node):
                         "battery_state_unavailable:" + ",".join(unavailable)
                     )
                     return
+        if self.task_state in ("FOUND", "RALLY") and not self.fresh_robot_inputs():
+            self.rally_hold_started_at = None
+            return
         if self.task_state == "FOUND" and self.enable_rally:
             for name, handle in self.goal_handles.items():
                 if handle is not None and not self.cancel_requested[name]:
@@ -2395,6 +2416,8 @@ class HeadquartersControl(Node):
             )
 
     def send_rally_goal(self, robot_name, plan=None):
+        if not self.fresh_robot_inputs():
+            return
         if (
             self.task_state != "RALLY"
             or not all_batteries_active(self.battery_modes)
@@ -2552,6 +2575,22 @@ class HeadquartersControl(Node):
     def now(self):
         return self.get_clock().now().nanoseconds / 1e9
 
+    def fresh_robot_inputs(self):
+        """Only allocate from pose/TF/map data delivered within the TTL window."""
+        now = self.now()
+        timeout = self.message_freshness_timeout_sec
+        if self.map_received_at is None or now - self.map_received_at > timeout:
+            return False
+        for name in self.robot_positions:
+            timestamps = (
+                self.robot_odom_received_at[name],
+                self.robot_tf_received_at[name],
+                self.robot_map_received_at[name],
+            )
+            if any(timestamp is None or now - timestamp > timeout for timestamp in timestamps):
+                return False
+        return True
+
     def map_callback(self, msg):
         self.map_data = np.asarray(msg.data, dtype=np.int16).reshape(
             msg.info.height, msg.info.width
@@ -2566,8 +2605,14 @@ class HeadquartersControl(Node):
         self.map_known_count = int(np.count_nonzero(self.map_data >= 0))
         self.unknown_integral = _integral_image(self.map_data < 0)
         self.frontier_cache = None
+        self.map_received_at = (
+            msg.header.stamp.sec + msg.header.stamp.nanosec / 1e9
+        )
 
     def robot_odom_callback(self, msg, robot_name):
+        self.robot_odom_received_at[robot_name] = (
+            msg.header.stamp.sec + msg.header.stamp.nanosec / 1e9
+        )
         twist = msg.twist.twist
         self.robot_velocities[robot_name] = (
             math.hypot(twist.linear.x, twist.linear.y),
@@ -2597,8 +2642,13 @@ class HeadquartersControl(Node):
             child = stamped_transform.child_frame_id.lstrip("/")
             if parent.endswith("map") and child.endswith("odom"):
                 self.map_to_odom[robot_name] = stamped_transform.transform
+                stamp = stamped_transform.header.stamp
+                self.robot_tf_received_at[robot_name] = stamp.sec + stamp.nanosec / 1e9
 
     def robot_map_callback(self, msg, robot_name):
+        self.robot_map_received_at[robot_name] = (
+            msg.header.stamp.sec + msg.header.stamp.nanosec / 1e9
+        )
         self.robot_maps[robot_name] = {
             "data": np.asarray(msg.data, dtype=np.int16).reshape(
                 msg.info.height, msg.info.width
@@ -2659,6 +2709,8 @@ class HeadquartersControl(Node):
         if self.map_data is None:
             return
         if not all_robot_inputs_ready(self.robot_positions, self.robot_maps):
+            return
+        if not self.fresh_robot_inputs():
             return
         idle_positions = {
             name: self.robot_positions[name]

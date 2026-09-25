@@ -269,6 +269,16 @@ class TaskEvaluator(Node):
         self.stop_on_task_complete = self.declare_parameter(
             "stop_on_task_complete", False
         ).value
+        self.mission_mode = str(
+            self.declare_parameter("mission_mode", "").value
+        ).lower()
+        if self.mission_mode:
+            if self.mission_mode not in ("coverage", "target", "rally"):
+                raise ValueError(
+                    "mission_mode must be coverage, target, or rally"
+                )
+            self.stop_on_target_found = self.mission_mode == "target"
+            self.stop_on_task_complete = self.mission_mode == "rally"
 
         if self.robot_count < 1:
             raise ValueError("robot_count must be positive")

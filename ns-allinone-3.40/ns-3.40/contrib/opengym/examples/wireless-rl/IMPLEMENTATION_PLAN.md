@@ -51,7 +51,8 @@
 - 2026-09-24 在当前冻结候选 `2933c24` 上完成 P3A.5 重验证：两个连续的干净 runner 批次
   覆盖固定 10 格（lab/rooms 六格、corridors 四格），同一 commit/configuration manifest
   均为 `worktree_dirty=false`，10/10 为 `COMPLETE` 且零碰撞；源码/graph forbidden-bypass
-  审计通过，强制充电回归完成 2 次充电。P3A 与 P3A.5 进入待用户验收，P3B 仍待开始；
+  审计通过，强制充电回归完成 2 次充电。P3A 与 P3A.5 进入待用户验收；用户要求在未验收期间继续推进，
+  P3B 已完成固定故障替身、协议矩阵和 ROS smoke 验证；此授权不表示 P3A/P3A.5 已验收；
 - P2B 前路线审计补充了 P2D 完整任务集成门、P4A 时间/包级对账门和正式统计规则，详见
   `report/20260917_roadmap_audit.md`；P2D 已验收，当前检查点为 P3A.5 修复；
 - 2026-09-02 只完成过一次单机器人 headless 启动检查，暴露过冷启动 spawn 超时和
@@ -73,7 +74,7 @@
 | P2D | 完整理想通信任务基线 | 统一 runner、完整状态/阶段指标、跨目标场景矩阵 | 至少 3 个预先验证的 world/目标/能量场景各跑 seeds 101/202/303，完成探索→发现→必要充电→集合；另做 2 机器人交叉检查 | 已验收 |
 | P3A | 显式消息协议和零损 gateway | 本地候选队列、序号/时间戳/ACK/过期、接收信息存储、命令适配器、旁路清单 | 零损 finite-rate 只证明消息语义/旁路/安全等价，不把完成时间当作 P2D 等价；自动旁路审计通过 | 待用户验收 |
 | P3A.5 | 当前 task-stack 重验证与冻结 | 当前 HEAD 的 P2D/P3A 完整矩阵、强制充电回归、commit/config/environment manifest、ROS graph edge 白名单 | 当前 commit 在 P2D/P3A 场景上完成同口径门禁；审计覆盖 publisher/subscriber 方向、launch remap、动态 topic 和明确的 evaluator/truth 例外；输出 `task_stack_frozen_commit`，之后网络/RL baseline 不得混入未重跑的探索改动 | 待用户验收 |
-| P3B | 固定 delay/loss 网络替身 | 独立上下行、固定 seed 队列、TTL/版本、重复/乱序、重传、逐消息账本和 stale-state 降级 | fault matrix 明确按消息 attempt 注入（上/下行独立 seed、队列容量/overflow、burst 或独立丢包、TTL/deadline/重试组合，每格固定最少 seed）；覆盖 0/10%/100% 丢包与 0/0.5/2 s 延迟；检测未交付不得 `RALLY`，命令在 deadline 内重试或明确失败；过期位置暂停中央分配；零损结果只比较语义和安全；冻结单一 `mission_mode={coverage,target,rally}`，由 launch、评估器和 smoke 共同读取，禁止用多个布尔参数各自推导成功条件 | 待开始 |
+| P3B | 固定 delay/loss 网络替身 | 独立上下行、固定 seed 队列、TTL/版本、重复/乱序、重传、逐消息账本和 stale-state 降级 | fault matrix 明确按消息 attempt 注入（上/下行独立 seed、队列容量/overflow、burst 或独立丢包、TTL/deadline/重试组合，每格固定最少 seed）；覆盖 0/10%/100% 丢包与 0/0.5/2 s 延迟；检测未交付不得 `RALLY`，命令在 deadline 内重试或明确失败；过期位置暂停中央分配；零损结果只比较语义和安全；冻结单一 `mission_mode={coverage,target,rally}`，由 launch、评估器和 smoke 共同读取，禁止用多个布尔参数各自推导成功条件 | 待用户验收 |
 | P4A | ns-3 数据包与时间同步 | P4A-0 trace ledger、P4A-1 固定窗/lock-step、Gazebo mobility、真实消息大小、资源/RTF 记录 | trace 生成/准入/发送/交付/丢弃字节闭合；相同 seed 事件账本一致；P4A-1 无墙钟竞态，记录 wall time、sim time、RTF 和资源峰值 | 待开始 |
 | P4B | Wi-Fi 4 场景与校准 | AP+2/3 STA、传播、墙损耗、背景干扰、网络指标、实测校准集/验证集 | 参数有来源；ideal/无干扰/受干扰形成可解释梯度；无实测时标为 synthetic sensitivity，不宣称 sim-to-real；任务退化按批次报告 | 待开始 |
 | P5 | 实验协议和非学习 baselines | 冻结场景/seed/主指标/最小动作集及 no/ideal/always/periodic/random/event/task/network-aware | 同一 gateway 和配对 seed 一键运行，CSV 含所有任务失败和基础设施失败；确认现实负载下存在通信决策空间 | 待开始 |
