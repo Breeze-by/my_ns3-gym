@@ -6,6 +6,7 @@ from multi_robot_exploration.battery_manager import (
     CHARGING,
     RETURNING,
     battery_failure_reason,
+    charging_zone_contains,
     charge_target_energy,
     consume_energy,
     estimated_return_energy,
@@ -29,6 +30,11 @@ def test_return_reserve_includes_path_time_and_margin():
 
 def test_charge_target_is_a_fraction_of_capacity():
     assert charge_target_energy(60.0, 0.8) == pytest.approx(48.0)
+
+
+def test_charging_zone_accepts_a_nearby_pose_without_exact_alignment():
+    assert charging_zone_contains((0.6, 0.0), (0.0, 0.0), 0.8)
+    assert not charging_zone_contains((0.81, 0.0), (0.0, 0.0), 0.8)
 
 
 def test_failure_reasons_cover_exhaustion_unreachable_and_charge_timeout():

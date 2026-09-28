@@ -3180,3 +3180,13 @@ colcon build --symlink-install --packages-select multi_robot_exploration multi_r
 /usr/bin/python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 2 --gazebo-seed 303 --startup-timeout 300 --message-timeout 90 --shutdown-timeout 60 --evaluation-duration 180 --coverage-threshold 0 --evaluation-wait-timeout 600 --target-detection --expect-target-not-found --battery --require-charge --battery-initial-energy 18 --target-x -4 --target-y 4 --episode-id diagnosis_forced_charge_seed303_v9 --evaluation-output-dir log/diagnosis --log-dir log/diagnosis
 /usr/bin/python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 2 --gazebo-seed 303 --startup-timeout 300 --message-timeout 90 --shutdown-timeout 60 --evaluation-duration 120 --coverage-threshold 0 --evaluation-wait-timeout 600 --target-detection --expect-target-not-found --battery --require-charge --battery-initial-energy 12 --target-x -4 --target-y 4 --episode-id diagnosis_forced_charge_seed303_v10 --evaluation-output-dir log/diagnosis --log-dir log/diagnosis
 ```
+
+## 2026-09-29 当前三机器人充电状态诊断
+
+用户现场启动命令：
+
+```bash
+ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py world:=my_world.world robot_count:=3 enable_gzclient:=true enable_task_regions:=true enable_status_panel:=true enable_rviz:=false enable_merge_rviz:=false auto_save_map:=false gazebo_seed:=101 nav2_ready_timeout_sec:=360.0 enable_target_detection:=true enable_rally:=true enable_battery:=true battery_initial_energy:=40.0 target_x:=-4.0 target_y:=4.0
+```
+
+实时状态采样：`/task_state=RALLY`；tb1=`FAILED`, `battery_return_unreachable`, energy `17.08`, charge count `0`；tb2=`ACTIVE`, energy `12.89`；tb3=`ACTIVE`, charge count `1`, energy `36.04`。tb1 的 battery log 在同一 escape 目标 `(−4.14, 2.70)` 附近连续发送返航目标，约 180 s 后超时；tb3 已正常进入充电并恢复。该进程在本次充电阈值修改前启动，因此不作为新默认参数的回归结果；修改后需要重新启动 launch。

@@ -1165,7 +1165,7 @@ def generate_launch_description():
     ld.add_action(
         DeclareLaunchArgument(
             "battery_charge_duration_sec",
-            default_value="10.0",
+            default_value="6.0",
             description="Stable simulated seconds required to recharge.",
         )
     )
@@ -1173,8 +1173,8 @@ def generate_launch_description():
     ld.add_action(
         DeclareLaunchArgument(
             "battery_charge_radius_m",
-            default_value="0.5",
-            description="Maximum distance from the charger pose to charge.",
+            default_value="0.8",
+            description="Charging-zone radius around the charger pose.",
         )
     )
 

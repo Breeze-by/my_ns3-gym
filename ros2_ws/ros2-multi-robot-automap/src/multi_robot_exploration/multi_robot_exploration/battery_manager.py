@@ -82,6 +82,14 @@ def charge_target_energy(capacity, target_fraction):
     return capacity * target_fraction
 
 
+def charging_zone_contains(position, charger, radius):
+    """Return whether a pose is inside the charger contact zone."""
+    return (
+        position is not None
+        and math.dist(position, charger) <= radius
+    )
+
+
 def return_escape_pose(
     raw_grid, resolution, origin, position, max_escape_m=0.8,
     clearance_m=0.55,
@@ -140,13 +148,13 @@ class BatteryManager(Node):
             self.declare_parameter("nominal_speed_mps", 0.18).value
         )
         self.charge_radius = float(
-            self.declare_parameter("charge_radius_m", 0.5).value
+            self.declare_parameter("charge_radius_m", 0.8).value
         )
         self.charge_target_fraction = float(
             self.declare_parameter("charge_target_fraction", 0.8).value
         )
         self.charge_duration = float(
-            self.declare_parameter("charge_duration_sec", 10.0).value
+            self.declare_parameter("charge_duration_sec", 6.0).value
         )
         self.return_timeout = float(
             self.declare_parameter("return_timeout_sec", 180.0).value
@@ -158,7 +166,7 @@ class BatteryManager(Node):
             self.declare_parameter("max_return_attempts", 3).value
         )
         self.stationary_linear = float(
-            self.declare_parameter("stationary_linear_mps", 0.05).value
+            self.declare_parameter("stationary_linear_mps", 0.15).value
         )
         self.stationary_angular = float(
             self.declare_parameter("stationary_angular_radps", 0.10).value
@@ -182,6 +190,8 @@ class BatteryManager(Node):
             or self.charge_timeout <= 0
             or self.max_return_attempts < 1
             or self.max_odometry_step <= 0
+            or self.stationary_linear < 0
+            or self.stationary_angular < 0
         ):
             raise ValueError("invalid battery parameters")
 
@@ -361,20 +371,23 @@ class BatteryManager(Node):
             )
             if self.energy <= reserve:
                 self.begin_return(reserve)
-        elif self.mode == RETURNING and self.at_charger_and_stopped():
+        elif self.mode == RETURNING and self.in_charging_zone():
             self.begin_charging()
         elif self.mode == CHARGING:
             self.update_charging(now)
 
     def at_charger_and_stopped(self):
         return (
-            self.map_position is not None
-            and math.dist(
-                self.map_position, (self.charge_x, self.charge_y)
-            )
-            <= self.charge_radius
+            self.in_charging_zone()
             and self.linear_speed <= self.stationary_linear
             and self.angular_speed <= self.stationary_angular
+        )
+
+    def in_charging_zone(self, margin=0.0):
+        return charging_zone_contains(
+            self.map_position,
+            (self.charge_x, self.charge_y),
+            self.charge_radius + margin,
         )
 
     def begin_return(self, reserve):
@@ -412,12 +425,23 @@ class BatteryManager(Node):
             handle.cancel_goal_async()
         self.mode = CHARGING
         self.mode_started_at = now
-        self.charge_stable_started_at = now
+        # Entering the zone is enough to stop navigation. The robot may
+        # still be settling, so start the stable timer only after its speed
+        # drops below the relaxed charging threshold.
+        self.charge_stable_started_at = None
         self.publish_state()
         self.get_logger().info(f"{self.robot_name} started charging.")
 
     def update_charging(self, now):
-        if not self.at_charger_and_stopped():
+        # Keep a small hysteresis band so map/odom jitter does not repeatedly
+        # eject a robot that is already beside the charger.
+        if not self.in_charging_zone(margin=0.2):
+            self.mode = RETURNING
+            self.mode_started_at = now
+            self.charge_stable_started_at = None
+            self.return_goal_due_at = now + 1.0
+            return
+        if self.linear_speed > self.stationary_linear or self.angular_speed > self.stationary_angular:
             self.charge_stable_started_at = None
             return
         if self.charge_stable_started_at is None:
@@ -453,7 +477,7 @@ class BatteryManager(Node):
         if reason:
             self.fail(reason)
             return
-        if self.mode == RETURNING and self.at_charger_and_stopped():
+        if self.mode == RETURNING and self.in_charging_zone():
             self.begin_charging()
         elif self.mode == CHARGING:
             self.update_charging(now)

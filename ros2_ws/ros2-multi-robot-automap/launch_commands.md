@@ -147,7 +147,7 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
 ### 3.4 强制发生一次充电的完整任务
 
 以下配置把所有机器人初始能量进一步降到 18；smoke 的 `--require-charge` 会在没有实际完成
-充电时判失败。主 launch 的常规默认值现在为容量 60、初始能量 24；25 在三机器人同时返航时会造成
+充电时判失败。主 launch 的常规默认值现在为容量 60、初始能量 40；25 在三机器人同时返航时会造成
 充电区拥堵，因此只保留为边界失败证据，不作为默认值。
 
 ```bash
@@ -423,8 +423,8 @@ Gazebo GUI 和全局 RViz 建议二选一。三机器人冷启动时可把
 | `battery_move_cost_per_m` | `1.0` | 每行驶 1 m 的能量成本 |
 | `battery_idle_cost_per_sec` | `0.02` | 每仿真秒基础能量成本 |
 | `battery_return_safety_margin` | `8.0` | 预计返航成本外的安全余量 |
-| `battery_charge_duration_sec` | `10.0` | 在充电位静止后恢复到目标电量所需仿真秒数 |
-| `battery_charge_radius_m` | `0.5` | 充电位判定半径；允许 Nav2 到达误差仍进入充电 |
+| `battery_charge_duration_sec` | `6.0` | 在充电区域内稳定后恢复到目标电量所需仿真秒数 |
+| `battery_charge_radius_m` | `0.8` | 充电区域半径；机器人进入该区域即可停止返航并开始稳定充电 |
 | `battery_charge_target_fraction` | `0.8` | 充到容量的 80% 后恢复探索 |
 | `battery_return_timeout_sec` | `180.0` | 返航超时 |
 | `battery_return_path_factor` | `2.0` | 返航路径相对直线距离的保守倍数 |
@@ -433,6 +433,10 @@ Gazebo GUI 和全局 RViz 建议二选一。三机器人冷启动时可把
 
 当前 `c_tx=0`；P3 有真实消息字节账本后才校准通信能耗。每台机器人使用自己的出生点作为
 非重叠充电位，低电量返航是本地硬安全行为，不由中央或后续 RL 覆盖。
+
+充电判断允许机器人停在充电位周围 `0.8 m` 的区域内，不要求精确压到出生点；进入区域后会取消
+返航目标，速度低于约 `0.15 m/s` 即开始计时，地图/里程计抖动允许额外 `0.2 m` 的保持带。
+默认稳定充电时间为 `6 s`，避免机器人在充电区附近来回调整导致电量继续下降。
 
 `enable_rally:=true` 必须与 `enable_target_detection:=true` 一起使用。Gazebo 会显示红色圆柱
 目标和红色贴地检测边界；中央发布 `/rally_assignments` 后还会显示橙色集合点。
