@@ -3085,7 +3085,7 @@ P3B fault-mode 运行。
 
 针对上面的低电量返航失败，修改当前 ROS task stack：总部按机器人隔离电池故障、维护动态 `participating_robots`，通过 `/robot_failure` 通知评估器；探索分配增加任务路径和保守返航预算检查；默认初始电量/安全余量/返航路径系数/返航超时改为 `40.0/8.0/2.0/180 s`；`global_battery_rally_pause` 默认关闭；状态面板改为逐机器人电池故障显示。
 
-组件验证命令（当前工作树，尚未提交时执行）：
+组件验证命令（代码状态 `327d998`）：
 
 ```bash
 source /opt/ros/humble/setup.bash
