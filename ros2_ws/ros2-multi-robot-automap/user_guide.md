@@ -40,7 +40,7 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
   enable_task_regions:=true \
   enable_status_panel:=true \
   enable_battery:=true \
-  battery_initial_energy:=24.0 \
+  battery_initial_energy:=40.0 \
   enable_rviz:=false
 ```
 
@@ -140,7 +140,7 @@ multi_robot_exploration/control
 | `rally_max_retries` | `2` | 每台集合导航失败后的最大重试次数 |
 | `exploration_goal_timeout_sec` | `60.0` | 单个 Nav2 目标的最大仿真秒数 |
 | `enable_battery` | `true` | 是否启动每机器人一个 P2C 本地能量/充电管理器 |
-| `battery_capacity`, `battery_initial_energy` | `60.0`, `24.0` | 满电容量和 episode 初始能量；默认让探索较早触发返航 |
+| `battery_capacity`, `battery_initial_energy` | `60.0`, `24.0` | 满电容量和代码默认初始能量；三机器人完整手动任务建议显式使用 `40.0`，`24.0` 用于低电量压力测试 |
 | `battery_move_cost_per_m` | `1.0` | 每行驶 1 m 的能量成本 |
 | `battery_idle_cost_per_sec` | `0.02` | 每仿真秒的基础能量成本 |
 | `battery_return_safety_margin` | `5.0` | 预计返航成本之外保留的安全余量 |

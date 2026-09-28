@@ -801,7 +801,7 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
   enable_target_detection:=true \
   enable_rally:=true \
   enable_battery:=true \
-  battery_initial_energy:=24.0 \
+  battery_initial_energy:=40.0 \
   target_x:=-4.0 \
   target_y:=4.0
 ```

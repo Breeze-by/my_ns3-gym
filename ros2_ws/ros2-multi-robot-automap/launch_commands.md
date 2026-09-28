@@ -54,7 +54,7 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
   enable_target_detection:=true \
   enable_rally:=true \
   enable_battery:=true \
-  battery_initial_energy:=24.0 \
+  battery_initial_energy:=40.0 \
   target_x:=-4.0 \
   target_y:=4.0
 ```
@@ -64,6 +64,23 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
 ```text
 robot_count:=2
 ```
+
+这里显式使用 `40.0` 是为了让三机器人手动演示有足够的返航余量。代码默认值 `24.0` 保留给
+低电量/充电压力测试；在 `my_world.world` 的三机器人搜索和集结任务中，它可能让某台机器人
+先进入返航，随后因返航拥堵或 Nav2 返航超时触发 `battery_return_unreachable`。看到状态栏三行
+都显示“故障”时，先检查权威原因：
+
+```bash
+ros2 topic echo /task_state --once
+ros2 topic echo /task_failure --once
+ros2 topic echo /tb1/battery_state --once --full-length --field data
+ros2 topic echo /tb2/battery_state --once --full-length --field data
+ros2 topic echo /tb3/battery_state --once --full-length --field data
+```
+
+状态栏按全局 `/task_state=FAILED` 给每一行显示“故障”，不表示每台机器人电池都失败；逐机器人
+是否失败要看各自的 `battery_state.mode`。`battery_initial_energy:=18.0` 只用于两机器人强制
+充电 smoke，不建议直接套用到三机器人完整任务。
 
 `gazebo_seed` 影响 Gazebo 随机过程，不会随机目标位置。目标位置始终由 `target_x`、
 `target_y` 指定。当前正式验证位置是 `my_world.world` 中的 `(-4, 4)`。
@@ -394,7 +411,7 @@ Gazebo GUI 和全局 RViz 建议二选一。三机器人冷启动时可把
 | --- | --- | --- |
 | `enable_battery` | `true` | 启动每机器人一个本地电池管理器 |
 | `battery_capacity` | `60.0` | 满电容量 |
-| `battery_initial_energy` | `24.0` | episode 初始能量；默认让探索较早触发返航 |
+| `battery_initial_energy` | `24.0` | 代码默认初始能量；适合低电量压力测试，三机器人完整手动任务建议显式设为 `40.0` |
 | `battery_move_cost_per_m` | `1.0` | 每行驶 1 m 的能量成本 |
 | `battery_idle_cost_per_sec` | `0.02` | 每仿真秒基础能量成本 |
 | `battery_return_safety_margin` | `5.0` | 预计返航成本外的安全余量 |

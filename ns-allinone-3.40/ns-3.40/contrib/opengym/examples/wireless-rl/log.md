@@ -3062,3 +3062,21 @@ export PYTHONPATH=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/
 结果为 `4 passed` 和 `status=PASS`；当前脚本生成 54 格（3 seeds、上下行、3 丢包率、3 延迟）。
 该复核没有启动 Gazebo 或 ns-3，也没有改变 P3B 的验收边界；详情见新增报告。运行时 JSONL 和 episode
 文件仍是被忽略的实验产物，不纳入 Git 源码提交。
+
+### 手动三机器人任务：低电量返航失败诊断（2026-09-28）
+
+运行命令为 `ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py world:=my_world.world
+robot_count:=3 enable_gzclient:=true enable_task_regions:=true enable_status_panel:=true enable_rviz:=false
+ enable_merge_rviz:=false auto_save_map:=false gazebo_seed:=101 nav2_ready_timeout_sec:=360.0
+ enable_target_detection:=true enable_rally:=true enable_battery:=true battery_initial_energy:=24.0
+ target_x:=-4.0 target_y:=4.0`（换行空格仅为日志排版），代码状态为当前 HEAD `53df672`。
+启动栈和 Nav2 均已起来，当前 gateway 参数为 `network_mode=ideal`、上下行丢包率为 0；这不是
+P3B fault-mode 运行。
+
+运行观察：`/task_state=FAILED`，`/task_failure=battery_return_unreachable:tb2`。逐机器人状态为
+`tb1=ACTIVE`、`tb2=FAILED`、`tb3=ACTIVE`；tb2 初始能量 24.0、返航次数 1、充电次数 0、失败时
+仍有约 14.50 能量。状态栏的 `activity_text()` 会在全局 task state 为 `FAILED` 时把每一行都显示
+为“故障”，因此视觉上像三台同时失败；权威失败机器人只有 tb2。该结果说明 24.0 在三机器人
+`my_world.world` 完整搜索/集结任务中属于低电量压力配置，返航阶段可能超过 120 仿真秒或遭遇返航
+拥堵；既有 P2D 校准也记录过 25.0 的同类返航失败。后续手动完整任务推荐显式使用
+`battery_initial_energy:=40.0`，18.0 仅用于两机器人强制充电 smoke。
