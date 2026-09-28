@@ -1075,7 +1075,10 @@ def generate_launch_description():
         DeclareLaunchArgument(
             "gateway_queue_capacity",
             default_value="0",
-            description="Per-direction fault queue capacity; 0 means unlimited.",
+            description=(
+                "Per-direction fault queue capacity; 0 uses the gateway default "
+                "of 4096 in-flight messages."
+            ),
         )
     )
     ld.add_action(

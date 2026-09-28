@@ -29,8 +29,8 @@ export TURTLEBOT3_MODEL=waffle
 ```bash
 source /opt/ros/humble/setup.bash
 cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
-colcon build --symlink-install \
-  --packages-select multi_robot merge_map multi_robot_exploration
+colcon build --symlink-install --packages-select \
+  multi_robot_interfaces multi_robot merge_map multi_robot_exploration
 source install/setup.bash
 ```
 
@@ -132,7 +132,7 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
 充电区拥堵，因此只保留为边界失败证据，不作为默认值。
 
 ```bash
-python3 scripts/ros_smoke_test.py \
+/usr/bin/python3 scripts/ros_smoke_test.py \
   --world my_world.world --robot-count 2 --gazebo-seed 303 \
   --startup-timeout 300 --message-timeout 90 --shutdown-timeout 60 \
   --evaluation-duration 300 --coverage-threshold 0 \
@@ -150,7 +150,7 @@ seeds 101/202/303，并追加一次走廊场景双机器人交叉检查；每轮
 ```bash
 source /opt/ros/humble/setup.bash
 source install/setup.bash
-python3 scripts/run_p2d_baseline.py \
+/usr/bin/python3 scripts/run_p2d_baseline.py \
   --seeds 101 202 303 \
   --run-id p2d_formal_ideal_3scenes \
   --ros-domain-base 130
@@ -223,7 +223,7 @@ ros2 run multi_robot_exploration bypass_audit --robot-count 3 \
 source /opt/ros/humble/setup.bash
 source install/setup.bash
 export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1
-python3 scripts/run_p3a5_ablation.py --run-id p3a5_heldout_20260925
+/usr/bin/python3 scripts/run_p3a5_ablation.py --run-id p3a5_heldout_20260925
 ```
 
 变体是完整算法、去掉最长路径目标、去掉地图安全顺序搜索、去掉全局电池暂停并允许两条并发
@@ -244,14 +244,14 @@ P3A 零损行为。
 source /opt/ros/humble/setup.bash
 source install/setup.bash
 export PYTHONPATH="$PWD/src/multi_robot_exploration:$PYTHONPATH"
-python3 scripts/run_p3b_fault_matrix.py
+/usr/bin/python3 scripts/run_p3b_fault_matrix.py
 ```
 
 故障任务 smoke 可在现有命令上增加参数，例如 10% 上行丢包、0.5 秒下行延迟、固定 seed 和
 JSONL 账本：
 
 ```bash
-python3 scripts/ros_smoke_test.py \
+/usr/bin/python3 scripts/ros_smoke_test.py \
   --robot-count 2 --world my_world.world --gazebo-seed 101 \
   --evaluation-duration 300 --target-detection --rally \
   --gateway-mode fault --mission-mode rally --gateway-seed 20260925 \
@@ -263,7 +263,27 @@ python3 scripts/ros_smoke_test.py \
 `mission_mode` 固定为 `coverage`、`target` 或 `rally`，并与评估器终止条件保持一致。100% 丢包
 时目标检测不会进入 `RALLY`；导航命令在 deadline 后中止，不能无限等待。P3B 只验证确定性故障和
 消息语义，不宣称已经接入 ns-3 Wi-Fi。需要测试队列溢出时设置
-`gateway_queue_capacity:=N`（默认 0 表示不限制队列）。
+`gateway_queue_capacity:=N`；当前实现把默认 0 转成每方向 4096 条在途消息，正数用于显式限制容量。
+
+P3B launch 参数完整表：
+
+| 参数 | 默认值 | 说明 |
+| --- | --- | --- |
+| `gateway_mode` | `ideal` | `ideal` 或 `fault` |
+| `mission_mode` | `auto` | `coverage`、`target`、`rally`；`auto` 从启用的任务功能推导 |
+| `gateway_seed` | `1` | 固定故障 seed |
+| `uplink_loss_rate` | `0.0` | 上行丢包概率，范围 `[0,1]` |
+| `downlink_loss_rate` | `0.0` | 下行丢包概率，范围 `[0,1]` |
+| `uplink_delay_sec` | `0.0` | 上行固定仿真延迟 |
+| `downlink_delay_sec` | `0.0` | 下行固定仿真延迟 |
+| `gateway_duplicate_rate` | `0.0` | 重复概率，范围 `[0,1]` |
+| `gateway_reorder_window` | `0` | 乱序窗口；`0` 或 `1` 表示关闭 |
+| `gateway_ack_timeout_sec` | `1.0` | 可靠消息 ACK 等待时间 |
+| `gateway_max_retries` | `2` | 可靠消息最大重试次数 |
+| `gateway_queue_capacity` | `0` | 每方向队列参数；当前 gateway 的 0 使用 4096 默认容量，正数表示显式容量 |
+| `gateway_ledger_path` | 空 | 可选 JSONL 账本路径 |
+| `message_freshness_timeout_sec` | `5.0` | 地图/位姿/TF 超时后暂停中央新分配 |
+| `navigation_command_deadline_sec` | `90.0` | 导航命令超过 deadline 后 abort |
 
 ## 4. 切换 Gazebo world
 
@@ -275,6 +295,7 @@ python3 scripts/ros_smoke_test.py \
 | `p1c_open.world` | 开放区域和离散障碍 |
 | `p1c_rooms.world` | 多房间、门洞和遮挡 |
 | `p1c_corridors.world` | 长走廊、绕行和支路 |
+| `p3a5_holdout.world` | P3A.5 未调试 holdout；目标 `(4.4, 3.4)`，种子 404/505；不属于 P2D 正式矩阵 |
 
 例如，在房间地图上运行三机器人协同探索：
 
@@ -297,6 +318,9 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
 colcon build --symlink-install --packages-select multi_robot
 source install/setup.bash
 ```
+
+仓库还保留 `maze.sdf`、`multi_empty_world.world`、`turtlebot3_world.world` 和 `world_01.world`；
+它们没有当前任务的冻结目标、集合位或正式验证记录，启动前不要把它们当成 P2D/P3A.5 场景。
 
 在其他 world 上启用目标和集结时，需要自行选择位于真值地图范围内、无遮挡、可到达且周围
 有足够集合空间的 `target_x/target_y`。不能直接假定 `(-4, 4)` 对所有地图都有效。
@@ -349,7 +373,8 @@ Gazebo GUI 和全局 RViz 建议二选一。三机器人冷启动时可把
 | --- | --- | --- |
 | `enable_target_detection` | `false` | 生成红色目标并启动仿真检测器 |
 | `enable_rally` | `false` | 确认目标后停止探索并执行集结 |
-| `target_x`, `target_y` | `-4.0`, `4.0` | 目标 world 坐标；不会随机生成 |
+| `target_x` | `-4.0` | 目标 world x 坐标；不会随机生成 |
+| `target_y` | `4.0` | 目标 world y 坐标；不会随机生成 |
 | `target_max_distance_m` | `3.0` | 最大检测距离 |
 | `target_field_of_view_deg` | `90.0` | 水平检测视场角 |
 | `target_confirmation_frames` | `3` | 连续可见多少帧后确认目标 |
@@ -358,6 +383,10 @@ Gazebo GUI 和全局 RViz 建议二选一。三机器人冷启动时可把
 | `rally_angular_tolerance_radps` | `0.10` | 最终角速度上限 |
 | `rally_hold_sec` | `5.0` | 全体满足条件后的连续保持时间 |
 | `rally_max_retries` | `2` | 初次集合 action 失败后的重试次数 |
+| `rally_assignment_objective` | `minimax` | 集合分配目标：`minimax` 或 `total_path` |
+| `use_map_safe_rally_order` | `true` | 按当前地图和动态占位检查集合顺序 |
+| `global_battery_rally_pause` | `true` | 机器人安全返航时暂停其他集合航段 |
+| `rally_max_concurrent` | `1` | 同时派发的无冲突集合航段上限 |
 
 ### 电池、返航和充电
 
@@ -398,23 +427,24 @@ Gazebo GUI 和全局 RViz 建议二选一。三机器人冷启动时可把
 
 ## 6. Headless 自动验证
 
-项目 Python 命令必须在 `ns3gym` conda 环境中运行：
+ROS 2 launch、smoke 和 baseline 脚本使用系统 ROS Python；先加载 ROS 2 和工作区环境：
 
 ```bash
-source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh
-conda activate ns3gym
-export PYTHONNOUSERSITE=1
 source /opt/ros/humble/setup.bash
 cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
 source install/setup.bash
 source /usr/share/gazebo/setup.sh
 export TURTLEBOT3_MODEL=waffle
+export PYTHONNOUSERSITE=1
 ```
+
+这里的 ROS 脚本命令显式使用 `/usr/bin/python3`。`ns3gym` conda 环境只用于
+`wireless-rl` 下的 ns-3/Python 实验，不要用它替代 ROS 2 的系统解释器。
 
 三机器人完整 P2B 验证：
 
 ```bash
-python scripts/ros_smoke_test.py \
+/usr/bin/python3 scripts/ros_smoke_test.py \
   --world my_world.world \
   --robot-count 3 \
   --gazebo-seed 101 \
@@ -445,7 +475,7 @@ log/evaluation/*.csv      单行表格结果
 P1C 跨 seed、跨 world 探索评估（`zero_loss_finite_rate`，不是 oracle unlimited）：
 
 ```bash
-python scripts/run_ideal_baseline.py \
+/usr/bin/python3 scripts/run_ideal_baseline.py \
   --world p1c_corridors.world \
   --seeds 101 202 303 \
   --robot-count 3 \
