@@ -85,7 +85,7 @@ class BatteryManager(Node):
             self.declare_parameter("capacity", 60.0).value
         )
         self.initial_energy = float(
-            self.declare_parameter("initial_energy", 24.0).value
+            self.declare_parameter("initial_energy", 40.0).value
         )
         self.move_cost = float(
             self.declare_parameter("move_cost_per_m", 1.0).value
@@ -94,10 +94,10 @@ class BatteryManager(Node):
             self.declare_parameter("idle_cost_per_sec", 0.02).value
         )
         self.safety_margin = float(
-            self.declare_parameter("return_safety_margin", 5.0).value
+            self.declare_parameter("return_safety_margin", 8.0).value
         )
         self.return_path_factor = float(
-            self.declare_parameter("return_path_factor", 1.5).value
+            self.declare_parameter("return_path_factor", 2.0).value
         )
         self.nominal_speed = float(
             self.declare_parameter("nominal_speed_mps", 0.18).value
@@ -112,7 +112,7 @@ class BatteryManager(Node):
             self.declare_parameter("charge_duration_sec", 10.0).value
         )
         self.return_timeout = float(
-            self.declare_parameter("return_timeout_sec", 120.0).value
+            self.declare_parameter("return_timeout_sec", 180.0).value
         )
         self.charge_timeout = float(
             self.declare_parameter("charge_timeout_sec", 60.0).value
@@ -201,6 +201,7 @@ class BatteryManager(Node):
         self.charge_count = 0
         self.total_charging_time = 0.0
         self.mission_terminal = False
+        self.failure_reason = ""
         self.timer = self.create_timer(0.5, self.timer_callback)
         self.publish_state()
         self.get_logger().info(
@@ -451,6 +452,7 @@ class BatteryManager(Node):
     def fail(self, reason):
         if self.mode == FAILED:
             return
+        self.failure_reason = reason
         self.mode = FAILED
         self.publish_state()
         message = String()
@@ -468,6 +470,7 @@ class BatteryManager(Node):
                 "robot": self.robot_name,
                 "stamp_sec": self.now(),
                 "mode": self.mode,
+                "failure_reason": self.failure_reason,
                 "energy": max(0.0, self.energy),
                 "capacity": self.capacity,
                 "charge_target_fraction": self.charge_target_fraction,
@@ -481,6 +484,10 @@ class BatteryManager(Node):
                 "move_cost_per_m": self.move_cost,
                 "idle_cost_per_sec": self.idle_cost,
                 "tx_cost_per_byte": 0.0,
+                "return_path_factor": self.return_path_factor,
+                "nominal_speed_mps": self.nominal_speed,
+                "return_safety_margin": self.safety_margin,
+                "return_timeout_sec": self.return_timeout,
             },
             sort_keys=True,
         )

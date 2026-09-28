@@ -97,6 +97,12 @@ def launch_setup(context, *args, **kwargs):
     battery_return_timeout = LaunchConfiguration(
         "battery_return_timeout_sec"
     )
+    battery_return_path_factor = LaunchConfiguration(
+        "battery_return_path_factor"
+    )
+    battery_nominal_speed = LaunchConfiguration(
+        "battery_nominal_speed_mps"
+    )
     battery_charge_timeout = LaunchConfiguration(
         "battery_charge_timeout_sec"
     )
@@ -591,6 +597,8 @@ def launch_setup(context, *args, **kwargs):
                         "charge_radius_m": battery_charge_radius,
                         "charge_target_fraction": battery_charge_target,
                         "return_timeout_sec": battery_return_timeout,
+                        "return_path_factor": battery_return_path_factor,
+                        "nominal_speed_mps": battery_nominal_speed,
                         "charge_timeout_sec": battery_charge_timeout,
                     }
                 ],
@@ -991,8 +999,8 @@ def generate_launch_description():
     ld.add_action(
         DeclareLaunchArgument(
             "global_battery_rally_pause",
-            default_value="true",
-            description="Pause other rally legs during a safety return.",
+            default_value="false",
+            description="Pause other rally legs during a safety return (legacy opt-in).",
         )
     )
 
@@ -1112,7 +1120,7 @@ def generate_launch_description():
     ld.add_action(
         DeclareLaunchArgument(
             "battery_initial_energy",
-            default_value="24.0",
+            default_value="40.0",
             description="Initial energy units for every active robot.",
         )
     )
@@ -1136,7 +1144,7 @@ def generate_launch_description():
     ld.add_action(
         DeclareLaunchArgument(
             "battery_return_safety_margin",
-            default_value="5.0",
+            default_value="8.0",
             description="Energy reserve retained beyond estimated return cost.",
         )
     )
@@ -1168,8 +1176,24 @@ def generate_launch_description():
     ld.add_action(
         DeclareLaunchArgument(
             "battery_return_timeout_sec",
-            default_value="120.0",
+            default_value="180.0",
             description="Maximum simulated seconds allowed for a return.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "battery_return_path_factor",
+            default_value="2.0",
+            description="Conservative path multiplier used for return energy.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
+            "battery_nominal_speed_mps",
+            default_value="0.18",
+            description="Nominal speed used for return time energy.",
         )
     )
 

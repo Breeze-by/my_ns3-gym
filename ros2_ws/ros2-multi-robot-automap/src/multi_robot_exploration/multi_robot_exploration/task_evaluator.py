@@ -336,6 +336,8 @@ class TaskEvaluator(Node):
         self.time_to_rally = None
         self.completion_time = None
         self.rally_assignments = {}
+        self.required_robot_names = set(self.robot_names)
+        self.failed_robots = set()
         self.rally_position_tolerance = None
         self.rally_linear_tolerance = None
         self.rally_angular_tolerance = None
@@ -380,6 +382,12 @@ class TaskEvaluator(Node):
                 String,
                 "/task_failure",
                 self._task_failure_callback,
+                map_qos,
+            ),
+            self.create_subscription(
+                String,
+                "/robot_failure",
+                self._robot_failure_callback,
                 map_qos,
             ),
         ]
@@ -521,10 +529,21 @@ class TaskEvaluator(Node):
     def _rally_assignments_callback(self, message):
         event = json.loads(message.data)
         self.rally_assignments = event["poses"]
+        self.required_robot_names = set(self.rally_assignments)
         self.rally_position_tolerance = event["position_tolerance_m"]
         self.rally_linear_tolerance = event["linear_tolerance_mps"]
         self.rally_angular_tolerance = event["angular_tolerance_radps"]
         self.rally_hold_sec = event["hold_sec"]
+
+    def _robot_failure_callback(self, message):
+        try:
+            event = json.loads(message.data)
+            robot = str(event["robot"])
+        except (KeyError, TypeError, json.JSONDecodeError):
+            self.get_logger().error("Invalid robot failure event")
+            return
+        self.failed_robots.add(robot)
+        self.required_robot_names.discard(robot)
 
     def _task_failure_callback(self, message):
         self.task_failure_reason = message.data
@@ -740,6 +759,9 @@ class TaskEvaluator(Node):
             "world_file": self.world_file,
             "gazebo_seed": self.gazebo_seed,
             "robot_count": self.robot_count,
+            "required_robot_count": len(self.required_robot_names),
+            "required_robot_names": sorted(self.required_robot_names),
+            "failed_robots": sorted(self.failed_robots),
             "task_phase": (
                 "COMPLETE"
                 if termination_reason == "coverage_reached"

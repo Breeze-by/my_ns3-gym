@@ -29,8 +29,10 @@ ACTIVE_NAV_STATUSES = {
 
 
 def activity_text(task_state, battery_mode, nav_active, is_detector=False):
-    if battery_mode == "FAILED" or task_state == "FAILED":
+    if battery_mode == "FAILED":
         return "故障"
+    if task_state == "FAILED":
+        return "任务已停止"
     if task_state == "COMPLETE":
         return "任务完成"
     if battery_mode == "RETURNING":

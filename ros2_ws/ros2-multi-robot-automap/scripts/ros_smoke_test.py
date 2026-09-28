@@ -409,22 +409,29 @@ def parse_args():
         "--disable-map-safe-rally-order", action="store_true"
     )
     parser.add_argument(
-        "--disable-global-battery-rally-pause", action="store_true"
+        "--disable-global-battery-rally-pause", action="store_true",
+        help="Deprecated compatibility flag; global rally pause is off by default.",
+    )
+    parser.add_argument(
+        "--enable-global-battery-rally-pause", action="store_true",
+        help="Pause healthy rally legs while another robot charges.",
     )
     parser.add_argument("--rally-max-concurrent", type=int, default=1)
     parser.add_argument("--battery", action="store_true")
     parser.add_argument("--require-charge", action="store_true")
     parser.add_argument("--battery-capacity", type=float, default=60.0)
-    parser.add_argument("--battery-initial-energy", type=float, default=24.0)
+    parser.add_argument("--battery-initial-energy", type=float, default=40.0)
     parser.add_argument("--battery-move-cost", type=float, default=1.0)
     parser.add_argument("--battery-idle-cost", type=float, default=0.02)
-    parser.add_argument("--battery-safety-margin", type=float, default=5.0)
+    parser.add_argument("--battery-safety-margin", type=float, default=8.0)
     parser.add_argument("--battery-charge-duration", type=float, default=10.0)
     parser.add_argument("--battery-charge-radius", type=float, default=0.5)
     parser.add_argument(
         "--battery-charge-target-fraction", type=float, default=0.8
     )
-    parser.add_argument("--battery-return-timeout", type=float, default=120.0)
+    parser.add_argument("--battery-return-timeout", type=float, default=180.0)
+    parser.add_argument("--battery-return-path-factor", type=float, default=2.0)
+    parser.add_argument("--battery-nominal-speed", type=float, default=0.18)
     parser.add_argument("--battery-charge-timeout", type=float, default=60.0)
     parser.add_argument("--task-regions", action="store_true")
     parser.add_argument("--evaluation-wait-timeout", type=float, default=180.0)
@@ -560,7 +567,7 @@ def main():
         "use_map_safe_rally_order:="
         f"{str(not args.disable_map_safe_rally_order).lower()}",
         "global_battery_rally_pause:="
-        f"{str(not args.disable_global_battery_rally_pause).lower()}",
+        f"{str(args.enable_global_battery_rally_pause and not args.disable_global_battery_rally_pause).lower()}",
         f"rally_max_concurrent:={args.rally_max_concurrent}",
         f"enable_battery:={str(args.battery).lower()}",
         f"battery_capacity:={args.battery_capacity}",
@@ -568,6 +575,8 @@ def main():
         f"battery_move_cost_per_m:={args.battery_move_cost}",
         f"battery_idle_cost_per_sec:={args.battery_idle_cost}",
         f"battery_return_safety_margin:={args.battery_safety_margin}",
+        f"battery_return_path_factor:={args.battery_return_path_factor}",
+        f"battery_nominal_speed_mps:={args.battery_nominal_speed}",
         f"battery_charge_duration_sec:={args.battery_charge_duration}",
         f"battery_charge_radius_m:={args.battery_charge_radius}",
         "battery_charge_target_fraction:="

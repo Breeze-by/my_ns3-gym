@@ -89,6 +89,9 @@ def parse_args():
     parser.add_argument(
         "--disable-global-battery-rally-pause", action="store_true"
     )
+    parser.add_argument(
+        "--enable-global-battery-rally-pause", action="store_true"
+    )
     parser.add_argument("--rally-max-concurrent", type=int, default=1)
     parser.add_argument("--skip-cross-check", action="store_true")
     parser.add_argument("--validate-only", action="store_true")
@@ -239,7 +242,10 @@ def build_manifest(config_path, args):
             "cross_check": True,
             "rally_assignment_objective": args.rally_assignment_objective,
             "map_safe_rally_order": not args.disable_map_safe_rally_order,
-            "global_battery_rally_pause": not args.disable_global_battery_rally_pause,
+            "global_battery_rally_pause": (
+                args.enable_global_battery_rally_pause
+                and not args.disable_global_battery_rally_pause
+            ),
             "rally_max_concurrent": args.rally_max_concurrent,
         },
     }
@@ -407,6 +413,8 @@ def main():
             command.append("--disable-map-safe-rally-order")
         if args.disable_global_battery_rally_pause:
             command.append("--disable-global-battery-rally-pause")
+        if args.enable_global_battery_rally_pause:
+            command.append("--enable-global-battery-rally-pause")
         if scenario.get("require_charge", False):
             command.append("--require-charge")
         domain_id = (args.ros_domain_base + index) % 232

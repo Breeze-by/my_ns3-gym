@@ -39,6 +39,8 @@ def variant_args(name, variant):
         args.append("--disable-map-safe-rally-order")
     if not variant["global_battery_rally_pause"]:
         args.append("--disable-global-battery-rally-pause")
+    else:
+        args.append("--enable-global-battery-rally-pause")
     return args
 
 

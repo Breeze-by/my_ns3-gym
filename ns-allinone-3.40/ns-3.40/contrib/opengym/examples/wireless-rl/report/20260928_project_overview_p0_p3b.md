@@ -408,6 +408,35 @@ P3 之前还没有真实消息字节账本，因此 `c_tx=0`，没有假装通�
 
 P2C 已验收。共享单充电器排队、真实机械对接和通信能耗仍未实现。
 
+#### P2C 后续审查：返航故障不能拖停全队
+
+前一版实现暴露了一个设计问题：任意一台电池管理器发布
+`battery_return_unreachable` 后，总部直接把全局任务置为 `FAILED`，并且状态面板把全局
+失败阶段显示成每台机器人都“故障”。这会把“单机安全故障”和“任务已经没有可用机器人”
+混成一件事，也会让健康机器人停止工作。这个行为已经按任务层重新设计。
+
+现在总部维护两个集合：`participating_robots` 是尚未被隔离、仍属于任务的机器人，
+`input_robot_names` 是当前可以提供新地图/位姿/TF 输入并接受新任务的 ACTIVE/UNKNOWN 机器人。
+单台机器人进入 `FAILED` 时，总部会取消它自己的 exploration、survey 和 rally goal，
+从 rally assignment、路由阻塞和后续任务分配中移除它，发布 transient `/robot_failure`，并
+在 `/rally_assignments` 中更新 `required_robot_count` 和 `failed_robots`。剩余机器人继续
+运行；只有 `participating_robots` 为空时才发布全局 `/task_failure=all_robots_failed`。
+评估器同步记录 `required_robot_names` 和 `failed_robots`，因此机器人数量变化有可审计结果。
+
+“尽量不故障”则由两层共同保证。电池管理器默认初始电量从 24 调到 40，返航路径系数为
+2.0，安全余量为 8，返航超时为 180 秒，并把这些参数随 `/tbN/battery_state` 发布给总部。
+总部给探索任务分配路径前，按“任务路径的 1.25 倍运动成本 + 从当前位置到充电位的保守返航
+成本 + 安全余量”检查预算；不满足预算的候选路径不会被分配，机器人会保持空闲并由本地
+安全逻辑提前返航。集结过程中默认只暂停正在返航的机器人，`global_battery_rally_pause:=true`
+保留为旧行为的显式兼容选项。状态面板现在按逐机器人电池模式显示，健康机器人在全局任务
+终止时显示“任务已停止”，不会再伪装成电池故障。
+
+这组修复已经通过 62 项 ROS 组件/逻辑测试、Python 编译、重新构建和 launch 参数审查；一次
+三机器人真实启动回归还发现并修复了 survey goal 回调中的变量初始化错误。完整三机器人
+Gazebo 回归的第一次重试受当前机器上并行旧 ROS 栈造成的 Nav2 启动资源不足影响，结果保留在
+`ros2_ws/ros2-multi-robot-automap/log/smoke/`，不能算作成功证据，后续需在干净 ROS domain
+和资源空闲时重跑。
+
 ### 7.4 P2D：完整理想通信任务基线
 
 #### 为什么必须增加 P2D

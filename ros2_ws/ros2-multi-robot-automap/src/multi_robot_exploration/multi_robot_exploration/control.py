@@ -1376,6 +1376,34 @@ def all_batteries_active(battery_modes):
     return all(mode == "ACTIVE" for mode in battery_modes.values())
 
 
+def motion_energy(distance_m, move_cost, idle_cost, path_factor, nominal_speed):
+    """Conservative energy for moving a path and paying its travel time."""
+    distance_m = max(0.0, float(distance_m)) * max(1.0, float(path_factor))
+    return distance_m * float(move_cost) + (
+        distance_m / float(nominal_speed) * float(idle_cost)
+    )
+
+
+def battery_assignment_is_safe(
+    energy,
+    assignment_distance_m,
+    home_distance_m,
+    move_cost,
+    idle_cost,
+    path_factor,
+    nominal_speed,
+    safety_margin,
+):
+    """Keep enough energy for the proposed leg and a conservative return."""
+    task_cost = motion_energy(
+        assignment_distance_m, move_cost, idle_cost, 1.25, nominal_speed
+    )
+    return_cost = motion_energy(
+        home_distance_m, move_cost, idle_cost, path_factor, nominal_speed
+    ) + float(safety_margin)
+    return float(energy) > task_cost + return_cost
+
+
 class HeadquartersControl(Node):
     def __init__(self):
         super().__init__("headquarters_control")
@@ -1420,7 +1448,7 @@ class HeadquartersControl(Node):
             "use_map_safe_rally_order", True
         ).value
         self.global_battery_rally_pause = self.declare_parameter(
-            "global_battery_rally_pause", True
+            "global_battery_rally_pause", False
         ).value
         self.rally_max_concurrent = self.declare_parameter(
             "rally_max_concurrent", RALLY_MAX_CONCURRENT
@@ -1463,6 +1491,9 @@ class HeadquartersControl(Node):
         )
         self.rally_assignment_publisher = self.create_publisher(
             String, "/rally_assignments", state_qos
+        )
+        self.robot_failure_publisher = self.create_publisher(
+            String, "/robot_failure", state_qos
         )
         self.task_failure_publisher = self.create_publisher(
             String, "/task_failure", state_qos
@@ -1656,6 +1687,60 @@ class HeadquartersControl(Node):
         self.get_logger().info(f"Task state: {state}")
         return True
 
+    def participating_robots(self):
+        """Robots that still belong to the current mission."""
+        return [
+            name for name in self.robot_positions
+            if self.battery_modes[name] != "FAILED"
+        ]
+
+    def input_robot_names(self):
+        return [
+            name for name in self.robot_positions
+            if self.battery_modes[name] in ("ACTIVE", "UNKNOWN")
+        ]
+
+    def active_batteries_ready(self):
+        names = self.participating_robots()
+        return bool(names) and all(
+            self.battery_modes[name] == "ACTIVE" for name in names
+        )
+
+    def active_inputs_ready(self):
+        names = self.input_robot_names()
+        return all(
+            self.robot_positions[name] is not None
+            and self.robot_maps[name] is not None
+            for name in names
+        )
+
+    def battery_assignment_safe(self, robot_name, distance_m):
+        if not self.enable_battery:
+            return True
+        if self.battery_modes[robot_name] != "ACTIVE":
+            return False
+        state = self.battery_states[robot_name]
+        position = self.robot_positions.get(robot_name)
+        if position is None or "energy" not in state:
+            return False
+        try:
+            home = math.dist(
+                position,
+                (float(state["charge_x"]), float(state["charge_y"])),
+            )
+            return battery_assignment_is_safe(
+                state["energy"],
+                distance_m,
+                home,
+                state.get("move_cost_per_m", 1.0),
+                state.get("idle_cost_per_sec", 0.02),
+                state.get("return_path_factor", 2.0),
+                state.get("nominal_speed_mps", 0.18),
+                state.get("return_safety_margin", 8.0),
+            )
+        except (KeyError, TypeError, ValueError, ZeroDivisionError):
+            return False
+
     def target_observation_callback(self, message):
         if self.task_state not in ("EXPLORE", "FOUND_UNCONFIRMED"):
             return
@@ -1686,7 +1771,11 @@ class HeadquartersControl(Node):
         )
 
     def battery_failure_callback(self, message):
-        self.fail_task(message.data)
+        reason, separator, robot_name = message.data.partition(":")
+        if separator and robot_name in self.battery_modes:
+            self.mark_robot_failed(robot_name, reason)
+        else:
+            self.fail_task(message.data)
 
     def battery_state_callback(self, message, robot_name):
         try:
@@ -1703,9 +1792,16 @@ class HeadquartersControl(Node):
             )
             return
         previous = self.battery_modes[robot_name]
-        self.battery_modes[robot_name] = mode
         self.battery_states[robot_name] = event
         self.battery_state_received_at[robot_name] = event.get("stamp_sec", self.now())
+        if mode == "FAILED":
+            self.battery_modes[robot_name] = previous
+            self.mark_robot_failed(
+                robot_name,
+                event.get("failure_reason", "battery_failure"),
+            )
+            return
+        self.battery_modes[robot_name] = mode
         if mode not in ("RETURNING", "CHARGING"):
             if mode == "ACTIVE" and previous != "ACTIVE":
                 self.get_logger().info(
@@ -1723,6 +1819,9 @@ class HeadquartersControl(Node):
             self.rally_battery_preempted[robot_name] = True
             rally_handle.cancel_goal_async()
         if self.task_state == "RALLY" and self.global_battery_rally_pause:
+            self.get_logger().warn(
+                f"Pausing other rally legs while {robot_name} returns to charge."
+            )
             for other_name, other_handle in self.rally_goal_handles.items():
                 if other_handle is None or other_name == robot_name:
                     continue
@@ -1730,9 +1829,6 @@ class HeadquartersControl(Node):
                     continue
                 self.rally_battery_preempted[other_name] = True
                 other_handle.cancel_goal_async()
-            self.get_logger().warn(
-                f"Pausing all rally legs while {robot_name} returns to charge."
-            )
         if (
             self.survey_robot == robot_name
             and self.survey_goal_handle is not None
@@ -1740,6 +1836,55 @@ class HeadquartersControl(Node):
             self.survey_battery_preempted = True
             self.survey_cancel_requested = True
             self.survey_goal_handle.cancel_goal_async()
+
+    def mark_robot_failed(self, robot_name, reason):
+        if robot_name not in self.battery_modes:
+            self.fail_task(f"unknown_robot_failure:{robot_name}")
+            return
+        already_failed = self.battery_modes[robot_name] == "FAILED"
+        self.battery_modes[robot_name] = "FAILED"
+        self.robot_states[robot_name] = "failed"
+        self.battery_preempted[robot_name] = True
+        goal_handle = self.goal_handles[robot_name]
+        if goal_handle is not None:
+            self.cancel_requested[robot_name] = True
+            goal_handle.cancel_goal_async()
+        rally_handle = self.rally_goal_handles[robot_name]
+        if rally_handle is not None:
+            self.rally_battery_preempted[robot_name] = True
+            rally_handle.cancel_goal_async()
+        if self.survey_robot == robot_name and self.survey_goal_handle is not None:
+            self.survey_battery_preempted = True
+            self.survey_cancel_requested = True
+            self.survey_goal_handle.cancel_goal_async()
+
+        self.rally_targets.pop(robot_name, None)
+        self.rally_final_targets.pop(robot_name, None)
+        self.rally_arrived.pop(robot_name, None)
+        self.rally_dispatch_order = [
+            name for name in self.rally_dispatch_order if name != robot_name
+        ]
+        self.rally_yield_targets.discard(robot_name)
+        self.rally_probe_targets.discard(robot_name)
+        if self.rally_probe_robot == robot_name:
+            self.rally_probe_robot = None
+        if not already_failed:
+            event = String()
+            event.data = json.dumps({
+                "robot": robot_name,
+                "reason": reason,
+                "remaining_robots": self.participating_robots(),
+                "task_state": self.task_state,
+            }, sort_keys=True)
+            self.robot_failure_publisher.publish(event)
+            self.get_logger().error(
+                f"Isolating failed robot {robot_name}: {reason}; "
+                f"remaining={self.participating_robots()}"
+            )
+        if not self.participating_robots():
+            self.fail_task("all_robots_failed")
+        elif self.task_state == "RALLY":
+            self.publish_rally_assignments()
 
     def publish_rally_assignments(self):
         message = String()
@@ -1751,6 +1896,11 @@ class HeadquartersControl(Node):
                 "linear_tolerance_mps": self.rally_linear_tolerance,
                 "angular_tolerance_radps": self.rally_angular_tolerance,
                 "hold_sec": self.rally_hold_sec,
+                "required_robot_count": len(self.rally_targets),
+                "failed_robots": [
+                    name for name, mode in self.battery_modes.items()
+                    if mode == "FAILED"
+                ],
                 "poses": {
                     name: {"x": pose.x, "y": pose.y, "yaw": pose.yaw}
                     for name, pose in self.rally_targets.items()
@@ -1776,13 +1926,19 @@ class HeadquartersControl(Node):
                 self.battery_monitor_started_at = now
             if now - self.battery_monitor_started_at >= 20.0:
                 unavailable = unavailable_battery_states(
-                    self.battery_state_received_at, now, 20.0
+                    {
+                        name: timestamp
+                        for name, timestamp in self.battery_state_received_at.items()
+                        if self.battery_modes[name] != "FAILED"
+                    },
+                    now,
+                    20.0,
                 )
                 if unavailable:
-                    self.fail_task(
-                        "battery_state_unavailable:" + ",".join(unavailable)
-                    )
-                    return
+                    for name in unavailable:
+                        self.mark_robot_failed(name, "battery_state_unavailable")
+                    if self.task_state == "FAILED":
+                        return
         if self.task_state in ("FOUND", "RALLY") and not self.fresh_robot_inputs():
             self.rally_hold_started_at = None
             return
@@ -1792,12 +1948,12 @@ class HeadquartersControl(Node):
                     self.cancel_requested[name] = True
                     handle.cancel_goal_async()
             if not all(
-                state == "idle" for state in self.robot_states.values()
+                state in ("idle", "failed")
+                for name, state in self.robot_states.items()
+                if name in self.participating_robots() or state == "failed"
             ):
                 return
-            if not all(
-                mode == "ACTIVE" for mode in self.battery_modes.values()
-            ):
+            if not self.active_batteries_ready():
                 return
             now = self.now()
             if (
@@ -1821,23 +1977,28 @@ class HeadquartersControl(Node):
                     or self.target is None
                     or any(
                         position is None
-                        for position in self.robot_positions.values()
+                        for name, position in self.robot_positions.items()
+                        if name in self.participating_robots()
                     )
                 ):
                     return
                 if now - self.last_rally_assignment_attempt < 1.0:
                     return
                 self.last_rally_assignment_attempt = now
+                active_names = self.participating_robots()
+                active_positions = {
+                    name: self.robot_positions[name] for name in active_names
+                }
                 self.rally_targets = assign_rally_poses(
                     self.map_data,
                     self.resolution,
                     self.origin,
-                    self.robot_positions,
+                    active_positions,
                     self.target,
                     objective=self.rally_assignment_objective,
                 )
                 self.rally_final_targets = dict(self.rally_targets)
-                if len(self.rally_targets) != self.num_robots:
+                if len(self.rally_targets) != len(active_names):
                     candidate_count = len(
                         rally_pose_candidates(
                             self.map_data,
@@ -1854,7 +2015,7 @@ class HeadquartersControl(Node):
                         self.last_rally_candidate_log = now
                     survey_order = rotate_robot_order(
                         survey_robot_order(
-                            self.robot_positions, self.detecting_robot
+                            active_positions, self.detecting_robot
                         ),
                         self.survey_dispatch_cursor,
                     )
@@ -1885,14 +2046,20 @@ class HeadquartersControl(Node):
                         self.resolution,
                         self.origin,
                         self.rally_targets,
-                        self.robot_positions,
+                        {
+                            name: self.robot_positions[name]
+                            for name in self.rally_targets
+                        },
                         self.target,
                         self.detecting_robot,
                     )
                 else:
                     self.rally_dispatch_order = rally_dispatch_order(
                         self.rally_targets,
-                        self.robot_positions,
+                        {
+                            name: self.robot_positions[name]
+                            for name in self.rally_targets
+                        },
                         self.target,
                         self.detecting_robot,
                     )
@@ -1906,7 +2073,13 @@ class HeadquartersControl(Node):
 
         if self.task_state != "RALLY":
             return
-        if not all_batteries_active(self.battery_modes):
+        if not self.participating_robots():
+            self.fail_task("all_robots_failed")
+            return
+        if not any(
+            self.battery_modes[name] == "ACTIVE"
+            for name in self.rally_dispatch_order
+        ):
             self.rally_hold_started_at = None
             return
         now = self.now()
@@ -1970,6 +2143,8 @@ class HeadquartersControl(Node):
             self.rally_goal_handles[name].cancel_goal_async()
 
         for name, handle in self.rally_goal_handles.items():
+            if name not in self.rally_targets:
+                continue
             started_at = self.rally_goal_started_at[name]
             if (
                 handle is not None
@@ -2281,9 +2456,7 @@ class HeadquartersControl(Node):
             self.rally_linear_tolerance,
             self.rally_angular_tolerance,
         )
-        stable = stable and all(
-            mode == "ACTIVE" for mode in self.battery_modes.values()
-        )
+        stable = stable and self.active_batteries_ready()
         if not stable:
             self.rally_hold_started_at = None
             return
@@ -2300,7 +2473,7 @@ class HeadquartersControl(Node):
                 f"rally_survey_failed:{robot_name}"
             )
             return
-        if not all_batteries_active(self.battery_modes):
+        if self.battery_modes[robot_name] != "ACTIVE":
             return
         client = self.robot_nav_clients[robot_name]
         if not client.server_is_ready():
@@ -2353,7 +2526,11 @@ class HeadquartersControl(Node):
             return
         self.survey_goal_handle = goal_handle
         self.survey_goal_started_at = self.now()
-        if not all_batteries_active(self.battery_modes):
+        survey_robot = self.survey_robot
+        if (
+            survey_robot not in self.battery_modes
+            or self.battery_modes[survey_robot] != "ACTIVE"
+        ):
             self.survey_battery_preempted = True
             goal_handle.cancel_goal_async()
         result_future = goal_handle.get_result_async()
@@ -2376,6 +2553,12 @@ class HeadquartersControl(Node):
             status = future.result().status
         except Exception as error:
             status = f"exception: {error}"
+        if (
+            survey_robot is None
+            or survey_robot not in self.rally_final_targets
+            or self.battery_modes[survey_robot] == "FAILED"
+        ):
+            return
         if status == GoalStatus.STATUS_SUCCEEDED:
             self.survey_battery_preempted = False
             if survey_robot == self.rally_probe_robot:
@@ -2420,7 +2603,7 @@ class HeadquartersControl(Node):
             return
         if (
             self.task_state != "RALLY"
-            or not all_batteries_active(self.battery_modes)
+            or self.battery_modes[robot_name] != "ACTIVE"
         ):
             return
         allowed_attempts = 1 + self.rally_max_retries
@@ -2495,7 +2678,7 @@ class HeadquartersControl(Node):
             return
         self.rally_goal_handles[robot_name] = goal_handle
         self.rally_goal_started_at[robot_name] = self.now()
-        if not all_batteries_active(self.battery_modes):
+        if self.battery_modes[robot_name] != "ACTIVE":
             self.rally_battery_preempted[robot_name] = True
             goal_handle.cancel_goal_async()
         result_future = goal_handle.get_result_async()
@@ -2515,6 +2698,12 @@ class HeadquartersControl(Node):
         self.rally_yield_requested[robot_name] = False
         battery_preempted = self.rally_battery_preempted[robot_name]
         self.rally_battery_preempted[robot_name] = False
+        if (
+            robot_name not in self.rally_targets
+            or self.battery_modes[robot_name] == "FAILED"
+        ):
+            self.rally_arrived[robot_name] = False
+            return
         try:
             status = future.result().status
         except Exception as error:
@@ -2581,7 +2770,7 @@ class HeadquartersControl(Node):
         timeout = self.message_freshness_timeout_sec
         if self.map_received_at is None or now - self.map_received_at > timeout:
             return False
-        for name in self.robot_positions:
+        for name in self.input_robot_names():
             timestamps = (
                 self.robot_odom_received_at[name],
                 self.robot_tf_received_at[name],
@@ -2708,7 +2897,11 @@ class HeadquartersControl(Node):
             return
         if self.map_data is None:
             return
-        if not all_robot_inputs_ready(self.robot_positions, self.robot_maps):
+        active_names = self.input_robot_names()
+        if not all_robot_inputs_ready(
+            {name: self.robot_positions[name] for name in active_names},
+            {name: self.robot_maps[name] for name in active_names},
+        ):
             return
         if not self.fresh_robot_inputs():
             return
@@ -2745,7 +2938,11 @@ class HeadquartersControl(Node):
             robot_exclusions.extend(
                 other_position
                 for other_name, other_position in self.robot_positions.items()
-                if other_name != robot_name and other_position is not None
+                if (
+                    other_name != robot_name
+                    and other_name in self.participating_robots()
+                    and other_position is not None
+                )
             )
             robot_candidates, robot_diagnostics = robot_candidate_assignments(
                 self.map_data,
@@ -2763,6 +2960,10 @@ class HeadquartersControl(Node):
                 "groups_with_viewpoints"
             ]
             for _, _, group_id, assignment in robot_candidates:
+                if not self.battery_assignment_safe(
+                    robot_name, assignment.path_distance_m
+                ):
+                    continue
                 row, column = world_to_grid(
                     assignment.x,
                     assignment.y,
@@ -2925,7 +3126,7 @@ class HeadquartersControl(Node):
         self.goal_last_position[robot_name] = self.robot_positions[robot_name]
         self.goal_known_count[robot_name] = self.map_known_count
         self.cancel_requested[robot_name] = False
-        if not all_batteries_active(self.battery_modes):
+        if self.battery_modes[robot_name] != "ACTIVE":
             self.battery_preempted[robot_name] = True
             self.cancel_requested[robot_name] = True
             goal_handle.cancel_goal_async()
@@ -2997,7 +3198,11 @@ class HeadquartersControl(Node):
         self.goal_routes[robot_name] = ()
         self.cancel_requested[robot_name] = False
         self.battery_preempted[robot_name] = False
-        self.robot_states[robot_name] = "idle"
+        self.robot_states[robot_name] = (
+            "failed"
+            if self.battery_modes[robot_name] == "FAILED"
+            else "idle"
+        )
         self.check_exploration_completion()
 
     def cancel_stalled_goals(self):
@@ -3053,7 +3258,10 @@ class HeadquartersControl(Node):
         if (
             self.auto_save_map
             and self.map_data is not None
-            and all(state == "idle" for state in self.robot_states.values())
+            and all(
+                state in ("idle", "failed")
+                for state in self.robot_states.values()
+            )
             and now - self.last_save_time >= self.save_map_interval_sec
             and not self.save_in_progress
         ):

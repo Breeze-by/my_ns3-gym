@@ -65,21 +65,23 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
 robot_count:=2
 ```
 
-这里显式使用 `40.0` 是为了让三机器人手动演示有足够的返航余量。代码默认值 `24.0` 保留给
-低电量/充电压力测试；在 `my_world.world` 的三机器人搜索和集结任务中，它可能让某台机器人
-先进入返航，随后因返航拥堵或 Nav2 返航超时触发 `battery_return_unreachable`。看到状态栏三行
-都显示“故障”时，先检查权威原因：
+这里显式使用 `40.0` 是为了让三机器人手动演示有足够的返航余量。当前代码默认值也已经是
+`40.0`；低于这个值只用于低电量/充电压力测试。电池管理器会按“当前任务路径 + 保守返航路径
++ 安全余量”做分配前预算，单台返航或故障时总部只暂停/移除该机器人，健康机器人继续执行。
+看到状态栏三行都显示“故障”时，先检查权威原因：
 
 ```bash
 ros2 topic echo /task_state --once
 ros2 topic echo /task_failure --once
+ros2 topic echo /robot_failure --once
 ros2 topic echo /tb1/battery_state --once --full-length --field data
 ros2 topic echo /tb2/battery_state --once --full-length --field data
 ros2 topic echo /tb3/battery_state --once --full-length --field data
 ```
 
-状态栏按全局 `/task_state=FAILED` 给每一行显示“故障”，不表示每台机器人电池都失败；逐机器人
-是否失败要看各自的 `battery_state.mode`。`battery_initial_energy:=18.0` 只用于两机器人强制
+状态栏按逐机器人 `battery_state.mode` 显示活动/返航/充电/故障；全局 `/task_state=FAILED` 只表示
+任务本身终止，不再把全局失败误画成所有机器人故障。`/robot_failure` 会记录被隔离的机器人、
+原因和剩余参与机器人数量。`battery_initial_energy:=18.0` 只用于两机器人强制
 充电 smoke，不建议直接套用到三机器人完整任务。
 
 `gazebo_seed` 影响 Gazebo 随机过程，不会随机目标位置。目标位置始终由 `target_x`、
@@ -402,7 +404,7 @@ Gazebo GUI 和全局 RViz 建议二选一。三机器人冷启动时可把
 | `rally_max_retries` | `2` | 初次集合 action 失败后的重试次数 |
 | `rally_assignment_objective` | `minimax` | 集合分配目标：`minimax` 或 `total_path` |
 | `use_map_safe_rally_order` | `true` | 按当前地图和动态占位检查集合顺序 |
-| `global_battery_rally_pause` | `true` | 机器人安全返航时暂停其他集合航段 |
+| `global_battery_rally_pause` | `false` | 是否在安全返航时暂停其他集合航段；默认只暂停返航机器人 |
 | `rally_max_concurrent` | `1` | 同时派发的无冲突集合航段上限 |
 
 ### 电池、返航和充电
@@ -411,14 +413,16 @@ Gazebo GUI 和全局 RViz 建议二选一。三机器人冷启动时可把
 | --- | --- | --- |
 | `enable_battery` | `true` | 启动每机器人一个本地电池管理器 |
 | `battery_capacity` | `60.0` | 满电容量 |
-| `battery_initial_energy` | `24.0` | 代码默认初始能量；适合低电量压力测试，三机器人完整手动任务建议显式设为 `40.0` |
+| `battery_initial_energy` | `40.0` | 每台机器人初始能量；18/24 可显式用于低电量压力测试 |
 | `battery_move_cost_per_m` | `1.0` | 每行驶 1 m 的能量成本 |
 | `battery_idle_cost_per_sec` | `0.02` | 每仿真秒基础能量成本 |
-| `battery_return_safety_margin` | `5.0` | 预计返航成本外的安全余量 |
+| `battery_return_safety_margin` | `8.0` | 预计返航成本外的安全余量 |
 | `battery_charge_duration_sec` | `10.0` | 在充电位静止后恢复到目标电量所需仿真秒数 |
 | `battery_charge_radius_m` | `0.5` | 充电位判定半径；允许 Nav2 到达误差仍进入充电 |
 | `battery_charge_target_fraction` | `0.8` | 充到容量的 80% 后恢复探索 |
-| `battery_return_timeout_sec` | `120.0` | 返航超时 |
+| `battery_return_timeout_sec` | `180.0` | 返航超时 |
+| `battery_return_path_factor` | `2.0` | 返航路径相对直线距离的保守倍数 |
+| `battery_nominal_speed_mps` | `0.18` | 返航时间预算使用的标称速度 |
 | `battery_charge_timeout_sec` | `60.0` | 充电超时 |
 
 当前 `c_tx=0`；P3 有真实消息字节账本后才校准通信能耗。每台机器人使用自己的出生点作为

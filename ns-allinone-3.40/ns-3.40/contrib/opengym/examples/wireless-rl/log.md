@@ -3080,3 +3080,28 @@ P3B fault-mode 运行。
 `my_world.world` 完整搜索/集结任务中属于低电量压力配置，返航阶段可能超过 120 仿真秒或遭遇返航
 拥堵；既有 P2D 校准也记录过 25.0 的同类返航失败。后续手动完整任务推荐显式使用
 `battery_initial_energy:=40.0`，18.0 仅用于两机器人强制充电 smoke。
+
+### 2026-09-28 P2C battery isolation and budget fix validation
+
+针对上面的低电量返航失败，修改当前 ROS task stack：总部按机器人隔离电池故障、维护动态 `participating_robots`，通过 `/robot_failure` 通知评估器；探索分配增加任务路径和保守返航预算检查；默认初始电量/安全余量/返航路径系数/返航超时改为 `40.0/8.0/2.0/180 s`；`global_battery_rally_pause` 默认关闭；状态面板改为逐机器人电池故障显示。
+
+组件验证命令（当前工作树，尚未提交时执行）：
+
+```bash
+source /opt/ros/humble/setup.bash
+source ros2_ws/ros2-multi-robot-automap/install/setup.bash
+export PYTHONPATH=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration:$PYTHONPATH
+/usr/bin/python3 -m pytest -q \
+  ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_control.py \
+  ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_battery_manager.py \
+  ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_task_evaluator.py \
+  ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_status_panel.py
+```
+
+结果：`62 passed`；Python 编译通过；`colcon build --symlink-install --packages-select multi_robot_exploration` 通过；`ros2 launch ... --show-args` 核对上述默认参数通过。
+
+真实 Gazebo 回归样本一：命令为 `ROS_DOMAIN_ID=180 GAZEBO_MASTER_URI=http://127.0.0.1:11355 /usr/bin/python3 ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py --robot-count 3 --world my_world.world --gazebo-seed 303 --target-detection --rally --battery --battery-initial-energy 40 --battery-capacity 60 --battery-safety-margin 8 --battery-return-path-factor 2 --battery-nominal-speed 0.18 --battery-return-timeout 180 --evaluation-duration 180 --episode-id p3b_isolation_fix_20260928`。Nav2/graph/map 门禁通过，任务进入 `FOUND`，随后总部因 survey goal 回调未初始化局部 `survey_robot` 退出；这是本次修复引入的回归，已修正，失败 launch log 保留在 `ros2_ws/ros2-multi-robot-automap/log/smoke/robots3_seed303_20260928-201945.log`。
+
+真实 Gazebo 回归样本二：同样三机器人、seed 303、理想 gateway，`ROS_DOMAIN_ID=181`、Gazebo 端口 11356、初始电量 40、评估 120 s，episode `p3b_isolation_fix_20260928_r2`。当前机器上另有旧三机器人 ROS/Nav2 栈长期运行，导致本次新栈 Nav2 readiness 超时，检查阶段报 `missing topics: /merge_map, /task_state, /tb3/battery_state, /tb3/cmd_vel`；未形成有效 episode，不作为算法成功/失败样本。launch log 保留在 `ros2_ws/ros2-multi-robot-automap/log/smoke/robots3_seed303_20260928-202506.log`。
+
+结论：组件级隔离和电量预算逻辑通过；两次真实回归分别暴露并修复了一个回调回归、以及受到并行旧 ROS 栈影响的启动资源问题。干净环境下仍需重跑完整三机器人任务，才可宣称 Gazebo 层面的动态故障继续执行已经通过。

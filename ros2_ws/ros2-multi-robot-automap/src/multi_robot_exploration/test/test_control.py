@@ -156,6 +156,15 @@ def test_rally_battery_preemption_is_global():
     )
 
 
+def test_battery_assignment_reserves_a_conservative_return_budget():
+    assert control.battery_assignment_is_safe(
+        40.0, 3.0, 2.0, 1.0, 0.02, 2.0, 0.18, 8.0
+    )
+    assert not control.battery_assignment_is_safe(
+        24.0, 8.0, 5.0, 1.0, 0.02, 2.0, 0.18, 8.0
+    )
+
+
 def test_rotate_robot_order_prevents_a_failed_robot_from_starving_others():
     order = ["tb2", "tb1", "tb3"]
 
