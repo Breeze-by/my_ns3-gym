@@ -126,7 +126,7 @@ multi_robot_exploration/control
 | `evaluation_duration_sec` | `0.0` | 仿真超时；0 表示只在 shutdown 时保存 |
 | `evaluation_coverage_threshold` | `0.0` | 正确自由空间覆盖率成功阈值；0 表示仅按超时结束，当前 P1C 正式口径传 0.90 |
 | `evaluation_stop_on_target_found` | `false` | P2A 验证时是否在目标确认后立即结束评估 |
-| `evaluation_stop_on_task_complete` | `false` | P2B 验证时是否在 `COMPLETE`/`FAILED` 后结束评估 |
+| `evaluation_stop_on_task_complete` | `false` | P2B 验证时是否在 `COMPLETE`/`PARTIAL_COMPLETE`/`FAILED` 后结束评估 |
 | `enable_target_detection` | `false` | 是否生成搜索目标并启动 P2A 真值检测节点 |
 | `enable_rally` | `false` | 是否由协调器在确认目标后停止探索并执行 P2B 集合 |
 | `target_x`, `target_y` | `-4.0`, `4.0` | 搜索目标在 world 坐标系中的位置 |
@@ -905,7 +905,9 @@ gateway，只把交付设为零丢包和零附加时延，同时保留真实候�
 P3B 将在此 gateway 上继续加入固定 delay/loss 和逐消息账本；在此之前不要把 P3A 的零损结果
 解读为 Wi-Fi 性能结论。
 
-P2B 起只有全体机器人在不同安全集合位姿连续稳定 5 秒后的 `COMPLETE` 才是任务成功；
-`FOUND` 和 P1C 的 90% 覆盖率只是过程指标。当前 TurtleBot3 模型为降低仿真负载关闭了相机；
+P2B 起只有全体仍参与任务的机器人在不同安全集合位姿连续稳定 5 秒后的 `COMPLETE` 才是完整任务成功；
+如果已有机器人故障，剩余机器人集合稳定后发布 `PARTIAL_COMPLETE`，表示任务完成了可用机器人的
+部分。评估器将其记录为部分完成而不是完整成功。`FOUND` 和 P1C 的 90% 覆盖率只是过程指标。
+当前 TurtleBot3 模型为降低仿真负载关闭了相机；
 P2A 真值检测只用于仿真 MVP，P8A 实物前必须恢复真实相机检测适配器，不能把 Gazebo 真值
 结果当作实物感知成果。

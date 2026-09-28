@@ -220,7 +220,9 @@ class BatteryManager(Node):
         return self.get_clock().now().nanoseconds / 1e9
 
     def task_state_callback(self, message):
-        self.mission_terminal = message.data in ("COMPLETE", "FAILED")
+        self.mission_terminal = message.data in (
+            "COMPLETE", "PARTIAL_COMPLETE", "FAILED"
+        )
 
     def tf_callback(self, message):
         for stamped_transform in message.transforms:

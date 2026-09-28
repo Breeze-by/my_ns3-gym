@@ -35,6 +35,8 @@ def activity_text(task_state, battery_mode, nav_active, is_detector=False):
         return "任务已停止"
     if task_state == "COMPLETE":
         return "任务完成"
+    if task_state == "PARTIAL_COMPLETE":
+        return "部分完成"
     if battery_mode == "RETURNING":
         return "返回充电位"
     if battery_mode == "CHARGING":

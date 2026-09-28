@@ -66,8 +66,9 @@ TASK_TRANSITIONS = {
     "EXPLORE": {"FOUND_UNCONFIRMED", "FOUND", "FAILED"},
     "FOUND_UNCONFIRMED": {"EXPLORE", "FOUND", "FAILED"},
     "FOUND": {"RALLY", "FAILED"},
-    "RALLY": {"COMPLETE", "FAILED"},
+    "RALLY": {"COMPLETE", "PARTIAL_COMPLETE", "FAILED"},
     "COMPLETE": set(),
+    "PARTIAL_COMPLETE": set(),
     "FAILED": set(),
 }
 
@@ -1911,7 +1912,7 @@ class HeadquartersControl(Node):
         self.rally_assignment_publisher.publish(message)
 
     def fail_task(self, reason):
-        if self.task_state in ("COMPLETE", "FAILED"):
+        if self.task_state in ("COMPLETE", "PARTIAL_COMPLETE", "FAILED"):
             return
         message = String()
         message.data = reason
@@ -1920,7 +1921,9 @@ class HeadquartersControl(Node):
         self.get_logger().error(f"Mission failed: {reason}")
 
     def update_mission(self):
-        if self.enable_battery and self.task_state not in ("COMPLETE", "FAILED"):
+        if self.enable_battery and self.task_state not in (
+            "COMPLETE", "PARTIAL_COMPLETE", "FAILED"
+        ):
             now = self.now()
             if self.battery_monitor_started_at is None:
                 self.battery_monitor_started_at = now
@@ -2464,7 +2467,12 @@ class HeadquartersControl(Node):
             self.rally_hold_started_at = now
             return
         if now - self.rally_hold_started_at >= self.rally_hold_sec:
-            self.publish_task_state("COMPLETE")
+            completion_state = (
+                "PARTIAL_COMPLETE"
+                if any(mode == "FAILED" for mode in self.battery_modes.values())
+                else "COMPLETE"
+            )
+            self.publish_task_state(completion_state)
 
     def send_survey_goal(self, robot_name, pose):
         allowed_attempts = self.num_robots * (1 + self.rally_max_retries)

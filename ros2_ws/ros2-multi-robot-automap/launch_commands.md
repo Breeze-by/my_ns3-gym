@@ -441,7 +441,7 @@ Gazebo GUI 和全局 RViz 建议二选一。三机器人冷启动时可把
 | `evaluation_duration_sec` | `0.0` | 仿真超时；0 表示等到外部退出 |
 | `evaluation_coverage_threshold` | `0.0` | 正确自由空间覆盖率终止阈值 |
 | `evaluation_stop_on_target_found` | `false` | 在 `FOUND` 后结束评估 |
-| `evaluation_stop_on_task_complete` | `false` | 在 `COMPLETE`/`FAILED` 后结束评估 |
+| `evaluation_stop_on_task_complete` | `false` | 在 `COMPLETE`/`PARTIAL_COMPLETE`/`FAILED` 后结束评估 |
 
 手工演示通常不需要评估器。正式、有界运行优先使用下一节的 smoke 工具，它会管理结果文件和
 进程退出。
@@ -533,6 +533,7 @@ ros2 topic echo --qos-durability transient_local \
 
 ```text
 EXPLORE -> FOUND_UNCONFIRMED -> FOUND -> RALLY -> COMPLETE
+                                               \-> PARTIAL_COMPLETE（有机器人故障）
 ```
 
 查看目标确认事件和最终集合点：

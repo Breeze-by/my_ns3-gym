@@ -210,7 +210,7 @@ def visited_overlap_ratio(visited_by_robot):
 def phase_bucket(task_phase):
     if task_phase == "FOUND":
         return "FOUND"
-    if task_phase in ("RALLY", "COMPLETE"):
+    if task_phase in ("RALLY", "COMPLETE", "PARTIAL_COMPLETE"):
         return "RALLY"
     return "EXPLORE"
 
@@ -518,10 +518,18 @@ class TaskEvaluator(Node):
         elapsed = max(0.0, self._now() - self.start_sim_time)
         if message.data == "RALLY" and self.time_to_rally is None:
             self.time_to_rally = elapsed
-        elif message.data == "COMPLETE" and self.completion_time is None:
+        elif (
+            message.data in ("COMPLETE", "PARTIAL_COMPLETE")
+            and self.completion_time is None
+        ):
             self.completion_time = elapsed
             if self.stop_on_task_complete:
-                self.finalize("task_complete")
+                termination_reason = (
+                    "partial_task_complete"
+                    if message.data == "PARTIAL_COMPLETE"
+                    else "task_complete"
+                )
+                self.finalize(termination_reason)
                 rclpy.shutdown()
         elif message.data == "FAILED" and self.stop_on_task_complete:
             self.failure_pending_since = self._now()
@@ -754,7 +762,7 @@ class TaskEvaluator(Node):
             for phase, visited in self.phase_visited.items()
         }
         result = {
-            "schema_version": 7,
+            "schema_version": 8,
             "episode_id": self.episode_id,
             "world_file": self.world_file,
             "gazebo_seed": self.gazebo_seed,
@@ -770,9 +778,13 @@ class TaskEvaluator(Node):
             ),
             "success": success,
             "termination_reason": termination_reason,
+            "completion_status": self.task_phase,
+            "partial_completion": termination_reason == "partial_task_complete",
             "failure_reason": (
                 ""
                 if success
+                else "partial_completion"
+                if termination_reason == "partial_task_complete"
                 else (
                     "collision"
                     if collision_events

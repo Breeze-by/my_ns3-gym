@@ -136,8 +136,10 @@ flowchart TD
     J -- 否 --> K[本地安全返航并充电]
     K --> C
     J -- 是 --> L[停止探索，生成不同 rally 位姿]
-    L --> M[所有机器人稳定 5 秒]
-    M --> N[COMPLETE]
+    L --> M[剩余参与机器人稳定 5 秒]
+    M --> N{是否有机器人故障?}
+    N -- 否 --> O[COMPLETE]
+    N -- 是 --> P[PARTIAL_COMPLETE]
 ```
 
 从 P2B 开始，几个状态必须分开理解：
@@ -149,11 +151,13 @@ flowchart TD
 | `FOUND` | 目标已被本地检测规则确认 | 否 |
 | `RALLY` | 中央收到有效目标信息并开始集合 | 否 |
 | `COMPLETE` | 所有 required robots 到达各自位姿并稳定 | 是 |
+| `PARTIAL_COMPLETE` | 已有机器人故障后，剩余 required robots 到达各自位姿并稳定 | 部分完成，不算完整成功 |
 | 90% coverage | P1C 探索能力指标 | P1C 的基准成功条件，P2B 以后不是任务成功替代品 |
 | collision=0 | 安全指标 | P2 以后是硬门禁，但单独不代表完成 |
 
-最终任务成功只能由 `COMPLETE/task_complete` 产生。找到目标但目标信息没有交付，不能进入
-`RALLY`；一台机器人悄悄退出 required set，也不能把剩下机器人完成当成成功。
+完整任务成功只能由 `COMPLETE/task_complete` 产生。找到目标但目标信息没有交付，不能进入
+`RALLY`；发生机器人故障后，剩余机器人集合完成会产生明确的 `PARTIAL_COMPLETE`，评估器记录
+`termination_reason=partial_task_complete`、`partial_completion=true`，不会把它计入完整成功率。
 
 ## 4. 项目为什么要分 P0、P1、P2、P3
 
@@ -334,8 +338,9 @@ P8A 通过替换 `DetectionProvider` 完成。
 EXPLORE
   -> FOUND_UNCONFIRMED
   -> FOUND
-  -> RALLY
-  -> COMPLETE
+    -> RALLY
+    -> COMPLETE
+    -> PARTIAL_COMPLETE（已有机器人故障时）
 ```
 
 其中 `/task_state` 只有协调器能发布；检测器只发布观察和检测事件。

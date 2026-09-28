@@ -631,10 +631,12 @@ def test_task_state_transitions_do_not_skip_or_reopen_terminal_states():
     assert control.valid_task_transition("FOUND_UNCONFIRMED", "FOUND")
     assert control.valid_task_transition("FOUND", "RALLY")
     assert control.valid_task_transition("RALLY", "COMPLETE")
+    assert control.valid_task_transition("RALLY", "PARTIAL_COMPLETE")
     assert control.valid_task_transition("EXPLORE", "FAILED")
     assert control.valid_task_transition("FOUND_UNCONFIRMED", "FAILED")
     assert not control.valid_task_transition("EXPLORE", "RALLY")
     assert not control.valid_task_transition("COMPLETE", "EXPLORE")
+    assert not control.valid_task_transition("PARTIAL_COMPLETE", "RALLY")
 
 
 def test_missing_or_stale_battery_state_is_unavailable():

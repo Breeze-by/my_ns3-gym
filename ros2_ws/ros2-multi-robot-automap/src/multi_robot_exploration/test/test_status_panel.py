@@ -10,6 +10,7 @@ def test_activity_prioritizes_terminal_and_battery_modes():
     assert activity_text("FAILED", "ACTIVE", True) == "任务已停止"
     assert activity_text("EXPLORE", "FAILED", False) == "故障"
     assert activity_text("COMPLETE", "ACTIVE", False) == "任务完成"
+    assert activity_text("PARTIAL_COMPLETE", "ACTIVE", False) == "部分完成"
     assert activity_text("EXPLORE", "RETURNING", True) == "返回充电位"
     assert activity_text("RALLY", "CHARGING", False) == "充电中"
 

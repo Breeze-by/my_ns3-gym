@@ -72,6 +72,7 @@ def test_task_states_map_to_stable_metric_phases():
     assert phase_bucket("FOUND") == "FOUND"
     assert phase_bucket("RALLY") == "RALLY"
     assert phase_bucket("COMPLETE") == "RALLY"
+    assert phase_bucket("PARTIAL_COMPLETE") == "RALLY"
 
 
 def test_collision_prevents_episode_success():
@@ -87,6 +88,9 @@ def test_rally_mode_rejects_process_only_termination():
         "coverage_reached", 0, require_task_complete=True
     )
     assert episode_succeeded("task_complete", 0, require_task_complete=True)
+    assert not episode_succeeded(
+        "partial_task_complete", 0, require_task_complete=True
+    )
 
 
 @pytest.mark.parametrize(
