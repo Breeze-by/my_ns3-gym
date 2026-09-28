@@ -24,6 +24,11 @@ from .ideal_gateway import (
 )
 
 
+def battery_mode_allows_navigation(mode):
+    """Allow normal commands and the command that returns to the charger."""
+    return mode in ("ACTIVE", "RETURNING")
+
+
 @dataclass
 class GoalContext:
     server_goal_handle: object
@@ -178,12 +183,19 @@ class NavigationGateway(Node):
                 break
 
         status = context.status
-        if status == GoalStatus.STATUS_SUCCEEDED:
-            server_goal_handle.succeed()
-        elif status == GoalStatus.STATUS_CANCELED:
-            server_goal_handle.canceled()
-        else:
-            server_goal_handle.abort()
+        # A central cancel and the local Nav2 result can arrive in either
+        # order. Only transition an active server handle; otherwise the
+        # action server has already completed the request.
+        if server_goal_handle.is_active:
+            if status == GoalStatus.STATUS_SUCCEEDED:
+                server_goal_handle.succeed()
+            elif (
+                status == GoalStatus.STATUS_CANCELED
+                and server_goal_handle.is_cancel_requested
+            ):
+                server_goal_handle.canceled()
+            else:
+                server_goal_handle.abort()
         self.contexts.pop(command_id, None)
         return NavigateToPose.Result()
 
@@ -232,7 +244,9 @@ class NavigationGateway(Node):
             if command_id in self.local_seen:
                 return
             self.local_seen.add(command_id)
-            if command_id in self.local_canceled or self.local_battery_mode != "ACTIVE":
+            if command_id in self.local_canceled or not battery_mode_allows_navigation(
+                self.local_battery_mode
+            ):
                 self.publish_result(command_id, GoalStatus.STATUS_ABORTED)
                 return
             self.local_deadlines[command_id] = (
@@ -281,7 +295,7 @@ class NavigationGateway(Node):
         # Never read central GoalContext here: it is not delivered information.
         if (command_id in self.local_canceled
                 or self.now_sec() >= self.local_deadlines.get(command_id, 0.0)
-                or self.local_battery_mode != "ACTIVE"):
+                or not battery_mode_allows_navigation(self.local_battery_mode)):
             goal_handle.cancel_goal_async()
         result_future = goal_handle.get_result_async()
         result_future.add_done_callback(
@@ -319,10 +333,18 @@ class NavigationGateway(Node):
 
     def local_battery_callback(self, message):
         try:
-            self.local_battery_mode = json.loads(message.data)["mode"]
+            mode = json.loads(message.data)["mode"]
         except (KeyError, TypeError, json.JSONDecodeError):
             return
-        if self.local_battery_mode != "ACTIVE":
+        previous_mode = self.local_battery_mode
+        self.local_battery_mode = mode
+        # Battery state is published periodically. Cancel the old
+        # exploration command only on the transition into a safety mode; do
+        # not cancel the new return-to-charger command on every heartbeat.
+        if (
+            mode != "ACTIVE"
+            and mode != previous_mode
+        ):
             for command_id, handle in list(self.local_goal_handles.items()):
                 self.local_canceled.add(command_id)
                 handle.cancel_goal_async()

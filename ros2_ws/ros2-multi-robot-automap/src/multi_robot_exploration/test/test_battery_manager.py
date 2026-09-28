@@ -1,4 +1,5 @@
 import pytest
+import numpy as np
 
 from multi_robot_exploration.battery_manager import (
     ACTIVE,
@@ -9,6 +10,7 @@ from multi_robot_exploration.battery_manager import (
     consume_energy,
     estimated_return_energy,
     odometry_distance,
+    return_escape_pose,
     return_attempt_failure_reason,
 )
 
@@ -53,3 +55,11 @@ def test_exhausted_return_retries_report_unreachable():
     assert return_attempt_failure_reason(3, 3) == (
         "battery_return_unreachable"
     )
+
+
+def test_return_escape_pose_moves_out_of_inflated_start_cell():
+    grid = np.zeros((11, 11), dtype=np.int16)
+    grid[4:7, 6:7] = 100
+    assert return_escape_pose(
+        grid, 0.1, (-0.5, -0.5), (0.0, 0.0), clearance_m=0.15
+    ) is not None

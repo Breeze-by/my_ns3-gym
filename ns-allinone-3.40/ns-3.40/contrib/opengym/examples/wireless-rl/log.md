@@ -3141,3 +3141,42 @@ python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 2 \
 结论：当前默认策略已从强制串行改为冲突感知并行；首轮不再每 1.5 m 停止，路线冲突才让低优先级机器人等待/让路。v4 证明理想通信下任务闭环可完成且无碰撞；仍需在 3 robots、corridors 和 fault-mode 条件下继续验证并发策略的退化边界。
 
 追加 3 机器人回归：`my_world.world`、Gazebo seed 101、理想 gateway、`rally_max_concurrent=2`，episode `p2b_rally_concurrent_3r_seed101`。结果为 `COMPLETE`，总完成时间 152.1 s，RALLY 到完成 61.0 s，零碰撞，集合最小间距 1.414 m；tb2/tb1 首轮并行，tb3 因 Nav2 action 卡住在 30 s 被取消后按 1.5 m 短航段恢复，最终无碰撞完成。该样本说明并发上限 2、路径预约和超时恢复可共同工作，但也保留了单机器人 Nav2 卡住后的 30 s 恢复代价，后续 fault-mode 矩阵需继续统计这一类退化。
+
+## 2026-09-28 当前故障诊断与电池返航回归
+
+本轮首先复现用户正在运行的三机器人 `seed=101` 任务。旧进程仍残留在 ROS domain 0，图中同时存在 2026-09-24 的旧 gateway、Nav2、control 和 battery manager；清理后读取到的当前失败日志为 `/home/zhuyulab/.ros/log/python3_2005331...`。三台机器人在 RALLY 前后分别进入 `RETURNING`，gateway 因把非 `ACTIVE` 电池状态当作“禁止所有导航”而取消了返航目标，最终出现 `battery_return_unreachable` 和 `FAILED/all_robots_failed`。该失败是代码状态机错误叠加残留 ROS 进程污染，并非理想 gateway 的随机丢包。
+
+本轮修改了 `navigation_gateway.py` 的电池状态转换：只在进入安全状态的瞬间取消旧探索目标，允许 `RETURNING` 的返航目标通过，并避免 action server 在并发 cancel/result 到达时重复终态转换。`battery_manager.py` 增加地图起点脱困、返航短腿、短暂 Nav2 abort 重试和返航方向性校验；`control.py` 不再把 idle 机器人位置当作永久排他点，路线冲突时至少序列化一条可达路线；Nav2 全局 costmap 使用静态合并图，动态障碍保留在 local costmap。
+
+组件验证命令：
+
+```bash
+source /opt/ros/humble/setup.bash
+cd ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+python3 -m pytest -q src/multi_robot_exploration/test/test_gateway.py \
+  src/multi_robot_exploration/test/test_battery_manager.py \
+  src/multi_robot_exploration/test/test_control.py
+colcon build --symlink-install --packages-select multi_robot_exploration multi_robot
+```
+
+结果：`56 passed`，`py_compile`、`git diff --check` 和 colcon build 均通过。
+
+真实 Gazebo 结果如下，失败和中间结果全部保留在 `ros2_ws/ros2-multi-robot-automap/log/diagnosis/`：
+
+* `diagnosis_clean_seed101`：三机器人、理想 gateway、初始电量 40，`COMPLETE`，零碰撞、零 Nav2 abort，完成时间 154.5 s，最低电量 24.52；证明清理残留进程后正常探索闭环可完成。
+* `diagnosis_forced_charge_seed303_v7`：两机器人、初始电量 18、`--require-charge`。tb2 充电 1 次并恢复，tb1 因旧返航目标在地图起点边界反复重试，最终返航超时；`nav_aborted=0`，但任务超时。
+* `diagnosis_forced_charge_seed303_v8`：加入地图未知起点的 1 m 几何兜底后，两台返航目标均无 abort，但规划短腿未严格朝充电点收敛，任务超时；该结果促成方向性校验。
+* `diagnosis_forced_charge_seed303_v9`：方向性校验后的两机器人、初始电量 18，两个机器人都进入返航但 180 s 内仍未充电，说明需要观察实际返航目标坐标，未将该样本宣称为通过。
+* `diagnosis_forced_charge_seed303_v10`：两机器人、初始电量 12、`--target-detection --expect-target-not-found --require-charge`。tb2 从 `(0.084, 1.587)` 返航到 `(0.015, 0.649)`，进入充电并完成 1 次充电（总充电 1、最低电量 9.17、零碰撞）；随后随机目标提前被检测，评估器 `target_found` 正常结束，smoke 的“期望不可见目标”门禁因此报错，但电池返航/充电指标通过。最终代码保留返航阶段日志，方便现场继续诊断。
+
+结论：当前默认三机器人启动使用初始电量 40；18/12 只作为压力测试。健康机器人不会因单个机器人进入 `RETURNING` 或 `FAILED` 而被 gateway 全局停住，总部会隔离故障机器人并继续给剩余 `ACTIVE` 机器人分配任务。若现场再次看到“所有机器人不动”，先确认没有旧 launch 残留，再查看 `/task_state`、`/robot_failure` 和每台 `/tbN/battery_state` 的权威状态。
+
+四次压力测试均使用同一启动前缀（工作目录为 `ros2_ws/ros2-multi-robot-automap`，已 source Humble 和 `install/setup.bash`）：
+
+```bash
+/usr/bin/python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 2 --gazebo-seed 303 --startup-timeout 300 --message-timeout 90 --shutdown-timeout 60 --evaluation-duration 300 --coverage-threshold 0 --evaluation-wait-timeout 600 --target-detection --rally --battery --require-charge --battery-initial-energy 18 --target-x -4 --target-y 4 --episode-id diagnosis_forced_charge_seed303_v7 --evaluation-output-dir log/diagnosis --log-dir log/diagnosis
+/usr/bin/python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 2 --gazebo-seed 303 --startup-timeout 300 --message-timeout 90 --shutdown-timeout 60 --evaluation-duration 240 --coverage-threshold 0 --evaluation-wait-timeout 600 --target-detection --rally --battery --require-charge --battery-initial-energy 18 --target-x -4 --target-y 4 --episode-id diagnosis_forced_charge_seed303_v8 --evaluation-output-dir log/diagnosis --log-dir log/diagnosis
+/usr/bin/python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 2 --gazebo-seed 303 --startup-timeout 300 --message-timeout 90 --shutdown-timeout 60 --evaluation-duration 180 --coverage-threshold 0 --evaluation-wait-timeout 600 --target-detection --expect-target-not-found --battery --require-charge --battery-initial-energy 18 --target-x -4 --target-y 4 --episode-id diagnosis_forced_charge_seed303_v9 --evaluation-output-dir log/diagnosis --log-dir log/diagnosis
+/usr/bin/python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 2 --gazebo-seed 303 --startup-timeout 300 --message-timeout 90 --shutdown-timeout 60 --evaluation-duration 120 --coverage-threshold 0 --evaluation-wait-timeout 600 --target-detection --expect-target-not-found --battery --require-charge --battery-initial-energy 12 --target-x -4 --target-y 4 --episode-id diagnosis_forced_charge_seed303_v10 --evaluation-output-dir log/diagnosis --log-dir log/diagnosis
+```

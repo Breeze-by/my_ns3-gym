@@ -4,6 +4,7 @@ from types import SimpleNamespace
 
 from multi_robot_exploration.bypass_audit import source_violations
 from multi_robot_exploration.ideal_gateway import envelope_is_valid
+from multi_robot_exploration.navigation_gateway import battery_mode_allows_navigation
 from multi_robot_interfaces.msg import GatewayEnvelope
 
 
@@ -51,3 +52,10 @@ def test_gateway_envelope_exposes_protocol_metadata():
         "ack_sequence",
         "payload",
     } <= fields.keys()
+
+
+def test_returning_battery_mode_allows_only_the_return_navigation_command():
+    assert battery_mode_allows_navigation("ACTIVE")
+    assert battery_mode_allows_navigation("RETURNING")
+    assert not battery_mode_allows_navigation("CHARGING")
+    assert not battery_mode_allows_navigation("FAILED")

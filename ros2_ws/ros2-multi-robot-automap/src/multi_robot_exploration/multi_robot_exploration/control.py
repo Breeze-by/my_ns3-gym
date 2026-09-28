@@ -3024,6 +3024,7 @@ class HeadquartersControl(Node):
                 if (
                     other_name != robot_name
                     and other_name in self.participating_robots()
+                    and self.robot_states[other_name] == "active"
                     and other_position is not None
                 )
             )
@@ -3131,6 +3132,28 @@ class HeadquartersControl(Node):
             list(plans),
             reserved_routes,
         )
+        if not selected:
+            # A route conflict must serialize the conflicting robots, not
+            # freeze the whole exploration loop. Let the highest-utility
+            # reachable plan move first; the next assignment is recomputed
+            # after it clears the shared corridor.
+            selected = next(
+                (
+                    [name]
+                    for name in plans
+                    if routes.get(name)
+                    and not any(
+                        routes_conflict(routes[name], reserved)
+                        for reserved in reserved_routes
+                    )
+                ),
+                [],
+            )
+            if selected:
+                self.get_logger().info(
+                    f"Serializing one exploration route for {selected[0]} "
+                    "to release a shared corridor."
+                )
         for robot_name in selected:
             assignment = plans[robot_name]
             self.robot_states[robot_name] = "active"
