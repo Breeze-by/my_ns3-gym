@@ -380,6 +380,7 @@ def parse_args():
     parser.add_argument("--world", default="my_world.world")
     parser.add_argument("--gazebo-seed", type=int, default=1)
     parser.add_argument("--goal-timeout", type=float, default=60.0)
+    parser.add_argument("--rally-goal-timeout", type=float, default=30.0)
     parser.add_argument("--spawn-timeout", type=float, default=90.0)
     parser.add_argument("--startup-timeout", type=float, default=180.0)
     parser.add_argument("--message-timeout", type=float, default=30.0)
@@ -416,7 +417,7 @@ def parse_args():
         "--enable-global-battery-rally-pause", action="store_true",
         help="Pause healthy rally legs while another robot charges.",
     )
-    parser.add_argument("--rally-max-concurrent", type=int, default=1)
+    parser.add_argument("--rally-max-concurrent", type=int, default=2)
     parser.add_argument("--battery", action="store_true")
     parser.add_argument("--require-charge", action="store_true")
     parser.add_argument("--battery-capacity", type=float, default=60.0)
@@ -543,6 +544,7 @@ def main():
         f"spawn_timeout:={args.spawn_timeout}",
         f"nav2_ready_timeout_sec:={args.startup_timeout}",
         f"exploration_goal_timeout_sec:={args.goal_timeout}",
+        f"rally_goal_timeout_sec:={args.rally_goal_timeout}",
         f"enable_task_evaluator:={str(args.evaluation_duration > 0).lower()}",
         f"evaluation_episode_id:={episode_id}",
         f"evaluation_output_dir:={args.evaluation_output_dir}",

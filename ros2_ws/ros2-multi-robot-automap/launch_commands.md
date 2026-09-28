@@ -402,10 +402,16 @@ Gazebo GUI 和全局 RViz 建议二选一。三机器人冷启动时可把
 | `rally_angular_tolerance_radps` | `0.10` | 最终角速度上限 |
 | `rally_hold_sec` | `5.0` | 全体满足条件后的连续保持时间 |
 | `rally_max_retries` | `2` | 初次集合 action 失败后的重试次数 |
+| `rally_goal_timeout_sec` | `30.0` | 单个集合 action 卡住多久后取消并重新规划 |
 | `rally_assignment_objective` | `minimax` | 集合分配目标：`minimax` 或 `total_path` |
 | `use_map_safe_rally_order` | `true` | 按当前地图和动态占位检查集合顺序 |
 | `global_battery_rally_pause` | `false` | 是否在安全返航时暂停其他集合航段；默认只暂停返航机器人 |
-| `rally_max_concurrent` | `1` | 同时派发的无冲突集合航段上限 |
+| `rally_max_concurrent` | `2` | 同时派发的无冲突集合航段上限；路径冲突时自动让低优先级机器人等待或让路 |
+
+当前默认集合策略会给每台机器人直接发送可安全预约的最终集合点，避免每走 1.5 m 就停下重分配。
+只有 Nav2 action 失败、实时位置发生冲突或机器人需要让路时，才退回 1.5 m 短航段并重新规划；
+单个集合 action 卡住 30 秒会被取消并触发恢复。需要最保守串行调试时可显式设置
+`rally_max_concurrent:=1`。
 
 ### 电池、返航和充电
 

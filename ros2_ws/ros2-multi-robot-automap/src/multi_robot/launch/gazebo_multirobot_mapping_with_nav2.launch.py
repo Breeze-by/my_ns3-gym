@@ -37,6 +37,7 @@ def launch_setup(context, *args, **kwargs):
     spawn_timeout = LaunchConfiguration("spawn_timeout")
     auto_save_map = LaunchConfiguration("auto_save_map")
     goal_timeout = LaunchConfiguration("exploration_goal_timeout_sec")
+    rally_goal_timeout = LaunchConfiguration("rally_goal_timeout_sec")
     nav2_ready_timeout = LaunchConfiguration("nav2_ready_timeout_sec")
     enable_task_evaluator = LaunchConfiguration("enable_task_evaluator")
     evaluation_episode_id = LaunchConfiguration("evaluation_episode_id")
@@ -300,6 +301,7 @@ def launch_setup(context, *args, **kwargs):
                 "auto_save_map": auto_save_map,
                 "use_sim_time": use_sim_time,
                 "goal_timeout_sec": goal_timeout,
+                "rally_goal_timeout_sec": rally_goal_timeout,
                 "enable_rally": enable_rally,
                 "enable_battery": enable_battery,
                 "rally_position_tolerance_m": rally_position_tolerance,
@@ -826,6 +828,14 @@ def generate_launch_description():
 
     ld.add_action(
         DeclareLaunchArgument(
+            "rally_goal_timeout_sec",
+            default_value="30.0",
+            description="Maximum simulated seconds for one rally action before recovery.",
+        )
+    )
+
+    ld.add_action(
+        DeclareLaunchArgument(
             "nav2_ready_timeout_sec",
             default_value="180.0",
             description="Wall seconds to wait for every Nav2 action server.",
@@ -1007,8 +1017,11 @@ def generate_launch_description():
     ld.add_action(
         DeclareLaunchArgument(
             "rally_max_concurrent",
-            default_value="1",
-            description="Maximum conflict-free rally legs dispatched at once.",
+            default_value="2",
+            description=(
+                "Maximum conflict-free rally legs dispatched at once; "
+                "route reservations and yielding protect narrow passages."
+            ),
         )
     )
 

@@ -3105,3 +3105,39 @@ export PYTHONPATH=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/
 真实 Gazebo 回归样本二：同样三机器人、seed 303、理想 gateway，`ROS_DOMAIN_ID=181`、Gazebo 端口 11356、初始电量 40、评估 120 s，episode `p3b_isolation_fix_20260928_r2`。当前机器上另有旧三机器人 ROS/Nav2 栈长期运行，导致本次新栈 Nav2 readiness 超时，检查阶段报 `missing topics: /merge_map, /task_state, /tb3/battery_state, /tb3/cmd_vel`；未形成有效 episode，不作为算法成功/失败样本。launch log 保留在 `ros2_ws/ros2-multi-robot-automap/log/smoke/robots3_seed303_20260928-202506.log`。
 
 结论：组件级隔离和电量预算逻辑通过；两次真实回归分别暴露并修复了一个回调回归、以及受到并行旧 ROS 栈影响的启动资源问题。干净环境下仍需重跑完整三机器人任务，才可宣称 Gazebo 层面的动态故障继续执行已经通过。
+
+## 2026-09-28 RALLY 并行长航段回归（当前未提交工作树）
+
+为修复用户观察到的集合导航串行和频繁停顿，修改 ROS task stack：默认 `rally_max_concurrent` 从 1 改为 2；首次集合航段直接预约最终集合点，只有 action 失败或让路恢复时退回 1.5 m 短航段；活动路线释放已走过的前缀，并在路线冲突前截断候选路线；低优先级机器人继续使用位置接近让步；RALLY 卡住超时收紧为 30 s；集合阶段 freshness 只要求位姿/TF，重新规划才要求地图新鲜。默认 launch、smoke、P2D runner 和 `launch_commands.md` 已同步。
+
+组件检查：
+
+```bash
+source /opt/ros/humble/setup.bash
+PYTHONPATH=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration:$PYTHONPATH \
+python3 -m pytest -q ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_control.py
+```
+
+结果：`45 passed`；`py_compile` 通过；`colcon build --symlink-install --packages-select multi_robot_exploration multi_robot` 通过；`ros2 launch ... --show-args` 确认 `rally_max_concurrent` 默认值为 2。全包 pytest 仍有仓库既有 flake8/pep257 失败（2463 项），未归因于本改动。
+
+真实 headless 回归命令（理想 gateway、`my_world.world`、2 robots、Gazebo seed 303）：
+
+```bash
+source /opt/ros/humble/setup.bash
+source ros2_ws/ros2-multi-robot-automap/install/setup.bash
+cd ros2_ws/ros2-multi-robot-automap
+PYTHONPATH=$PWD/src/multi_robot_exploration:$PYTHONPATH \
+python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 2 \
+  --gazebo-seed 303 --startup-timeout 360 --message-timeout 90 \
+  --shutdown-timeout 60 --evaluation-duration 240 --coverage-threshold 0 \
+  --evaluation-wait-timeout 480 --target-detection --rally --target-x -4 --target-y 4 \
+  --rally-max-concurrent 2 --episode-id p2b_rally_concurrent_2r_seed303_v4 \
+  --log-dir log/p2b_rally_concurrent_2r_seed303_v4 \
+  --evaluation-output-dir log/p2b_rally_concurrent_2r_seed303_v4
+```
+
+保留样本：v1 两台机器人均到达集合点且零碰撞，但旧 RALLY freshness 门导致评估器停在 `RALLY` 超时；v2 修复该门后 `COMPLETE`，133.0 s，零碰撞；v3 的临时 0.45 m 路径净空导致 `insufficient_rally_poses`，该实验参数已撤回；v4 使用 0.35 m 路径净空和 30 s RALLY action timeout，`COMPLETE`，完成时间 198.1 s，RALLY 到完成 36.8 s，2 robots 并行发出首轮集合 goal，零碰撞。日志和 JSON 分别保留在 `ros2_ws/ros2-multi-robot-automap/log/p2b_rally_concurrent_2r_seed303_v{1,2,3,4}/`。
+
+结论：当前默认策略已从强制串行改为冲突感知并行；首轮不再每 1.5 m 停止，路线冲突才让低优先级机器人等待/让路。v4 证明理想通信下任务闭环可完成且无碰撞；仍需在 3 robots、corridors 和 fault-mode 条件下继续验证并发策略的退化边界。
+
+追加 3 机器人回归：`my_world.world`、Gazebo seed 101、理想 gateway、`rally_max_concurrent=2`，episode `p2b_rally_concurrent_3r_seed101`。结果为 `COMPLETE`，总完成时间 152.1 s，RALLY 到完成 61.0 s，零碰撞，集合最小间距 1.414 m；tb2/tb1 首轮并行，tb3 因 Nav2 action 卡住在 30 s 被取消后按 1.5 m 短航段恢复，最终无碰撞完成。该样本说明并发上限 2、路径预约和超时恢复可共同工作，但也保留了单机器人 Nav2 卡住后的 30 s 恢复代价，后续 fault-mode 矩阵需继续统计这一类退化。

@@ -54,13 +54,18 @@ RALLY_POSITION_TOLERANCE_M = 0.35
 RALLY_LINEAR_TOLERANCE_MPS = 0.05
 RALLY_ANGULAR_TOLERANCE_RADPS = 0.10
 RALLY_HOLD_SEC = 5.0
+RALLY_GOAL_TIMEOUT_SEC = 30.0
 # A merged map can lag the local SLAM/costmap by several seconds after a
 # target is found.  Keep the route failure diagnostic, but allow map delivery
 # and a fresh rally-pose assignment to recover before failing the mission.
 RALLY_ASSIGNMENT_WAIT_SEC = 30.0
-RALLY_MAX_NAVIGATION_LEG_M = 1.5
+# Conflict-free navigation targets the final pose. Short legs are only used
+# after a failed action; traffic reservations may insert a holding point.
+RALLY_MAX_NAVIGATION_LEG_M = float("inf")
 RALLY_ROUTE_SEPARATION_M = 1.2
-RALLY_MAX_CONCURRENT = 1
+# Two-way concurrency is the safe default.  Route reservations and live
+# proximity yielding still prevent robots from entering a conflicting corridor.
+RALLY_MAX_CONCURRENT = 2
 
 TASK_TRANSITIONS = {
     "EXPLORE": {"FOUND_UNCONFIRMED", "FOUND", "FAILED"},
@@ -1293,7 +1298,11 @@ def plan_rally_leg(
     ):
         return None, ()
     return (
-        RallyPose(x, y, math.atan2(pose.y - y, pose.x - x)),
+        RallyPose(
+            x,
+            y,
+            pose.yaw if waypoint == target else math.atan2(pose.y - y, pose.x - x),
+        ),
         world_route,
     )
 
@@ -1306,6 +1315,49 @@ def routes_conflict(
         for first_point in first
         for second_point in second
     )
+
+
+def remaining_rally_route(route, position):
+    """Release travelled cells, retaining the live pose and remaining path.
+
+    A deviation from the reserved path retains the old reservation, so a
+    neighbouring robot cannot be admitted on a spurious nearest-point jump.
+    """
+    if not route or position is None:
+        return route
+    nearest = min(
+        range(len(route)), key=lambda i: math.dist(position, route[i])
+    )
+    if math.dist(position, route[nearest]) > RALLY_PATH_CLEARANCE_M:
+        return (position, *route)
+    return (position, *route[nearest:])
+
+
+def reserve_rally_prefix(plan, reservations, min_travel=0.75):
+    """Allow approach to a conflict, stopping before the reserved corridor.
+
+    Reservations include stationary endpoints. Thus a follower cannot plan
+    through a stopped leader, and a crossing is released only after passage.
+    """
+    pose, route = plan
+    if pose is None or not route:
+        return None
+    for index, point in enumerate(route):
+        if not any(
+            routes_conflict((point,), reserved) for reserved in reservations
+        ):
+            continue
+        prefix = route[:index]
+        if len(prefix) < 2 or math.dist(prefix[0], prefix[-1]) < min_travel:
+            return None
+        x, y = prefix[-1]
+        next_x, next_y = route[index]
+        return RallyPose(x, y, math.atan2(next_y - y, next_x - x)), prefix
+    return plan
+
+
+def rally_leg_limit(attempts):
+    return float("inf") if attempts == 0 else 1.5 / attempts
 
 
 def select_nonconflicting_routes(
@@ -1412,6 +1464,9 @@ class HeadquartersControl(Node):
         self.goal_timeout_sec = self.declare_parameter(
             "goal_timeout_sec", 60.0
         ).value
+        self.rally_goal_timeout_sec = self.declare_parameter(
+            "rally_goal_timeout_sec", RALLY_GOAL_TIMEOUT_SEC
+        ).value
         self.auto_save_map = self.declare_parameter(
             "auto_save_map", True
         ).value
@@ -1460,6 +1515,7 @@ class HeadquartersControl(Node):
             or self.rally_linear_tolerance < 0
             or self.rally_angular_tolerance < 0
             or self.rally_hold_sec <= 0
+            or self.rally_goal_timeout_sec <= 0
             or self.rally_max_retries < 0
             or self.rally_assignment_objective not in ("minimax", "total_path")
             or self.rally_max_concurrent < 1
@@ -1942,7 +1998,13 @@ class HeadquartersControl(Node):
                         self.mark_robot_failed(name, "battery_state_unavailable")
                     if self.task_state == "FAILED":
                         return
-        if self.task_state in ("FOUND", "RALLY") and not self.fresh_robot_inputs():
+        # A stationary SLAM map need not be regenerated to prove that robots
+        # have stopped at their assigned poses. New routes still require all
+        # fresh inputs below; completion and live yielding require fresh poses.
+        if (
+            self.task_state == "FOUND" and not self.fresh_robot_inputs()
+            or self.task_state == "RALLY" and not self.fresh_robot_poses()
+        ):
             self.rally_hold_started_at = None
             return
         if self.task_state == "FOUND" and self.enable_rally:
@@ -2067,7 +2129,7 @@ class HeadquartersControl(Node):
                         self.detecting_robot,
                     )
                 self.get_logger().info(
-                    "Selected serial rally order: "
+                    "Selected conflict-aware rally order: "
                     + ", ".join(self.rally_dispatch_order)
                 )
                 self.publish_rally_assignments()
@@ -2152,7 +2214,9 @@ class HeadquartersControl(Node):
             if (
                 handle is not None
                 and started_at is not None
-                and now - started_at >= self.goal_timeout_sec
+                and now - started_at >= min(
+                    self.goal_timeout_sec, self.rally_goal_timeout_sec
+                )
             ):
                 self.get_logger().warn(
                     f"Canceling {name} rally leg after timeout."
@@ -2169,7 +2233,7 @@ class HeadquartersControl(Node):
             ):
                 self.rally_arrived[name] = False
 
-        if now - self.last_rally_dispatch_at >= 1.0:
+        if now - self.last_rally_dispatch_at >= 1.0 and self.fresh_robot_inputs():
             self.last_rally_dispatch_at = now
             plans = {}
             for name in self.rally_dispatch_order:
@@ -2201,8 +2265,7 @@ class HeadquartersControl(Node):
                         self.resolution,
                         self.origin,
                         self.robot_positions[name],
-                        RALLY_MAX_NAVIGATION_LEG_M
-                        / (self.rally_attempts[name] + 1),
+                        rally_leg_limit(self.rally_attempts[name]),
                         [
                             position
                             for other_name, position in self.robot_positions.items()
@@ -2244,8 +2307,7 @@ class HeadquartersControl(Node):
                                 self.resolution,
                                 self.origin,
                                 self.robot_positions[name],
-                                RALLY_MAX_NAVIGATION_LEG_M
-                                / (self.rally_attempts[name] + 1),
+                                rally_leg_limit(self.rally_attempts[name]),
                                 [
                                     position
                                     for candidate_name, position in self.robot_positions.items()
@@ -2418,7 +2480,9 @@ class HeadquartersControl(Node):
                 return
             routes = {name: plan[1] for name, plan in plans.items()}
             reserved_routes = [
-                self.rally_leg_routes[name]
+                remaining_rally_route(
+                    self.rally_leg_routes[name], self.robot_positions[name]
+                )
                 for name in self.rally_dispatch_order
                 if (
                     self.rally_goal_handles[name] is not None
@@ -2426,15 +2490,18 @@ class HeadquartersControl(Node):
                 )
                 and self.rally_leg_routes[name]
             ]
-            for name in select_nonconflicting_routes(
-                routes,
-                self.rally_dispatch_order,
-                reserved_routes,
-                max_count=max(
-                    0, self.rally_max_concurrent - len(reserved_routes)
-                ),
-            ):
-                self.send_rally_goal(name, plans[name])
+            slots = max(0, self.rally_max_concurrent - len(reserved_routes))
+            for name in self.rally_dispatch_order:
+                if slots == 0:
+                    break
+                if name not in plans:
+                    continue
+                admitted = reserve_rally_prefix(plans[name], reserved_routes)
+                if admitted is None:
+                    continue
+                self.send_rally_goal(name, admitted)
+                reserved_routes.append(admitted[1])
+                slots -= 1
 
         navigation_quiescent = (
             not any(
@@ -2636,8 +2703,7 @@ class HeadquartersControl(Node):
                 self.resolution,
                 self.origin,
                 self.robot_positions[robot_name],
-                RALLY_MAX_NAVIGATION_LEG_M
-                / (self.rally_attempts[robot_name] + 1),
+                rally_leg_limit(self.rally_attempts[robot_name]),
                 blocked_positions,
             )
         target, route = plan
@@ -2778,11 +2844,20 @@ class HeadquartersControl(Node):
         timeout = self.message_freshness_timeout_sec
         if self.map_received_at is None or now - self.map_received_at > timeout:
             return False
+        return self.fresh_robot_poses() and all(
+            self.robot_map_received_at[name] is not None
+            and now - self.robot_map_received_at[name] <= timeout
+            for name in self.input_robot_names()
+        )
+
+    def fresh_robot_poses(self):
+        """Require live pose/TF for traffic safety and the final hold gate."""
+        now = self.now()
+        timeout = self.message_freshness_timeout_sec
         for name in self.input_robot_names():
             timestamps = (
                 self.robot_odom_received_at[name],
                 self.robot_tf_received_at[name],
-                self.robot_map_received_at[name],
             )
             if any(timestamp is None or now - timestamp > timeout for timestamp in timestamps):
                 return False

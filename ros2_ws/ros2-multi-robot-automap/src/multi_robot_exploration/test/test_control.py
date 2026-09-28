@@ -496,14 +496,14 @@ def test_rally_navigation_stages_long_paths():
     pose = control.RallyPose(11.0, 1.0, 0.0)
 
     leg = control.stage_rally_leg(
-        pose, grid, 0.1, (0.0, 0.0), (1.0, 1.0)
+        pose, grid, 0.1, (0.0, 0.0), (1.0, 1.0), max_distance_m=1.5
     )
 
     assert 1.3 <= math.dist((1.0, 1.0), (leg.x, leg.y)) <= 1.6
     assert math.dist((leg.x, leg.y), (pose.x, pose.y)) > 8.3
 
     planned_leg, route = control.plan_rally_leg(
-        pose, grid, 0.1, (0.0, 0.0), (1.0, 1.0)
+        pose, grid, 0.1, (0.0, 0.0), (1.0, 1.0), max_distance_m=1.5
     )
     assert planned_leg == leg
     assert route[-1] == pytest.approx((leg.x, leg.y))
@@ -586,6 +586,24 @@ def test_rally_limits_parallel_navigation_capacity():
     assert control.select_nonconflicting_routes(
         routes, ["tb1", "tb2", "tb3"], max_count=2
     ) == ["tb1", "tb2"]
+
+
+def test_rally_first_leg_uses_final_goal_and_retry_is_short():
+    assert math.isinf(control.rally_leg_limit(0))
+    assert control.rally_leg_limit(1) == pytest.approx(1.5)
+
+
+def test_rally_route_reservation_stops_before_conflict():
+    plan = (
+        control.RallyPose(3.0, 0.0, 0.0),
+        ((0.0, 0.0), (1.0, 0.0), (2.0, 0.0), (3.0, 0.0)),
+    )
+    admitted = control.reserve_rally_prefix(
+        plan, [((2.8, -0.2), (2.8, 0.2))]
+    )
+
+    assert admitted is not None
+    assert admitted[1][-1] == pytest.approx((1.0, 0.0))
 
 
 def test_rally_yields_only_the_conflicting_route():

@@ -92,7 +92,7 @@ def parse_args():
     parser.add_argument(
         "--enable-global-battery-rally-pause", action="store_true"
     )
-    parser.add_argument("--rally-max-concurrent", type=int, default=1)
+    parser.add_argument("--rally-max-concurrent", type=int, default=2)
     parser.add_argument("--skip-cross-check", action="store_true")
     parser.add_argument("--validate-only", action="store_true")
     parser.add_argument("--run-id")
