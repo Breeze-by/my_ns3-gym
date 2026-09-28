@@ -256,6 +256,7 @@ class BatteryManager(Node):
         self.return_count = 0
         self.return_stage = "charger"
         self.return_escape_target = None
+        self.return_escape_failed = False
         self.return_waypoint_target = None
         self.charge_count = 0
         self.total_charging_time = 0.0
@@ -398,6 +399,7 @@ class BatteryManager(Node):
         self.return_attempts = 0
         self.return_count += 1
         self.return_stage = "charger"
+        self.return_escape_failed = False
         self.return_escape_target = (
             return_escape_pose(
                 self.return_map,
@@ -511,6 +513,7 @@ class BatteryManager(Node):
         if (
             self.return_stage == "charger"
             and self.return_escape_target is None
+            and not self.return_escape_failed
             and self.return_map_origin is not None
         ):
             self.return_escape_target = return_escape_pose(
@@ -638,6 +641,14 @@ class BatteryManager(Node):
         elif return_attempt_failure_reason(
             self.return_attempts, self.max_return_attempts
         ):
+            if self.return_stage == "escape":
+                # A stale local escape cell can remain unreachable after
+                # SLAM updates. Do not retry that exact pose forever; fall
+                # back to the charger-directed short-leg planner.
+                self.return_escape_failed = True
+                self.return_escape_target = None
+                self.return_stage = "charger"
+                self.return_waypoint_target = None
             self.return_attempts = 0
             self.return_goal_due_at = self.now() + 5.0
             self.get_logger().warning(
