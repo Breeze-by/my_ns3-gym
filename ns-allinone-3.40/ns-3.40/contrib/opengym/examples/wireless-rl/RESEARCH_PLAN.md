@@ -1,6 +1,6 @@
 # 多机器人任务导向 Wi-Fi 通信研究总纲
 
-最后更新：2026-09-23。
+最后更新：2026-09-28。
 
 本文档记录本项目的长期研究目标、当前决策、实施路线、评测口径和已知风险。它是后续研究
 和 agent 协作的方向性依据，不是当前代码功能清单。已经实现的行为以
@@ -18,7 +18,8 @@
 2. 依靠摄像头寻找指定物体；
 3. 通过 Wi-Fi 4 与其他机器人和 AP 侧中央大脑通信；
 4. 任意机器人确认目标后，把目标信息可靠传播给中央端和其他机器人；
-5. 所有机器人最终到达目标周围各自的安全集合位置，任务才算完成；
+5. 所有仍参与任务的机器人最终到达目标周围各自的安全集合位置；无故障时任务为完整完成，
+   已有机器人故障时明确标记为部分完成；
 6. 单次充电不足以探索整个区域，机器人必须在电量不足前返回起点充电，再继续任务。
 
 最终工作同时包含 ns-3 + ROS 2/Gazebo 可重复仿真、至少 2 台真实机器人实验、强化学习通信
@@ -83,23 +84,21 @@ checkpoint、GPU 和多 seed 评估链路，但没有真实 Wi-Fi 节点、数�
 模型、SLAM、Nav2、世界和 frontier 方法，只在必要边界新增任务评估、能量、目标检测、显式
 通信和实验控制。
 
-截至 2026-09-23（证据批次截至 2026-09-22），P1 已建立固定 seed、批量运行、真值覆盖率、路径、碰撞和搜索重叠评估，
-P2A 已建立可重复的目标确认 MVP，P2B 已完成并通过理想直达事件下的停止探索、安全集合和
-稳定完成闭环，P2C 已通过本地能量、安全返航和充电恢复验收；P2D 已完成跨三个场景的
-10 项完整理想任务门禁并通过用户验收；P3A 已完成零损 gateway 和旁路审计。当前 HEAD 的
-P3A.5 重验证通过图/旁路子门和强制充电回归，但正式矩阵为 9/10 `COMPLETE`，lab seed 202
-在启动后 `RALLY` 超时。路径守卫提交 `c369c7d` 的同口径整批重跑为 8/10 `COMPLETE`，lab
-seed 202 与 rooms seed 303 在 `EXPLORE` 超时，因此 P3A 仍未验收、P3B 尚未开始。详见
-`report/20260923_p3a5.md`。
+截至 2026-09-28，P1/P2 已完成并验收；P3A 和 P3A.5 的 gateway、旁路审计、当前 task-stack
+固定矩阵和强制充电回归已由用户验收。P3B 中的固定应用层 fault transport、协议矩阵、消息
+账本和 stale-state 安全语义已由用户验收；Gazebo fault-mode 完整任务矩阵和 ns-3 coupling
+没有混入 P3B 的完成声明，重新标记为 P3B.5。P3C 将专门负责 gateway 通信指标和默认可视化，
+之后才进入 P4A 的 ns-3 数据包/时间桥接。详见 `report/20260928_p3b.md`、
+`report/20260928_p3b5_plan.md` 和 `report/20260928_p3c_plan.md`。
 仍有以下限制：
 
 - 同机 ROS 2/DDS 仍是理想网络，没有 Wi-Fi 排队、丢包和干扰；
-- P3A 当前仍是同机零损 ideal gateway，没有 Wi-Fi 排队、丢包和干扰；这些将在 P3B/P4 引入；
-- P3A 历史正式矩阵记录于 gateway 实现提交及其前后配置；当前 HEAD 的新矩阵已生成 commit/config/
-  environment manifest，但 lab seed 202 的启动后 rally 失败仍需修复和整批重跑，不能冻结该提交；
+- P3A/P3A.5 已冻结为网络实验基线；它们仍是同机零损 ideal gateway，不包含 Wi-Fi 排队、丢包和干扰；
+- P3B 已完成的 fault substitute 仍是应用层模型，不是 Wi-Fi 物理层或 MAC 仿真；P3B.5 要验证
+  故障如何改变完整任务，P3C 要把变化实时显示并固化成指标；
 - 评估器仍可读取 Gazebo 真值；控制链中的地图、odom、TF、检测和 Nav2 命令已经过 gateway，
   机器人全局代价图也只消费 gateway 交付的融合地图；
-- 电池/返航/充电和 P2D 跨场景完整基线已形成理想通信闭环，但通信量和 AoI 仍未进入闭环；
+- 电池/返航/充电和 P2D 跨场景完整基线已形成理想通信闭环，但通信量、AoI 和曲线可视化仍未进入闭环；
 - 在线地图合并依赖已对齐的地图 origin，不处理一般未知初始位姿配准；
 - 多 Nav2 栈冷启动仍可能发生基础设施超时，必须与任务失败分开记录；
 - 工程包含 fork 的 Nav2/SLAM 和较多历史配置，不应先做无关的大规模清理。
@@ -146,6 +145,7 @@ AP / headquarters
 
 ```text
 EXPLORE -> FOUND_UNCONFIRMED -> FOUND -> RALLY -> COMPLETE
+                                             \-> PARTIAL_COMPLETE（已有机器人故障）
 ```
 
 - `EXPLORE`：建图、分工探索并按需充电；
@@ -153,6 +153,8 @@ EXPLORE -> FOUND_UNCONFIRMED -> FOUND -> RALLY -> COMPLETE
 - `FOUND`：连续多帧、高置信度或其他规则确认目标；
 - `RALLY`：目标位置已可靠送达，中央端给每台机器人分配独立集合位姿；
 - `COMPLETE`：所有要求参与的机器人到达对应集合区域并稳定停留；
+- `PARTIAL_COMPLETE`：至少一台机器人已被明确隔离，剩余要求参与的机器人到达对应集合区域并稳定停留；
+  它是终态和任务结果类别，但 `success=true` 仍只保留给完整 `COMPLETE`；
 - 达到 episode 最大时长仍未完成记为失败，不能忽略该样本。
 
 初始完成条件可设为：所有机器人进入目标周围不同的无碰撞集合位置，位置误差小于约定阈值、
@@ -161,8 +163,10 @@ EXPLORE -> FOUND_UNCONFIRMED -> FOUND -> RALLY -> COMPLETE
 
 从 P2B 起固定第一版判定：每台要求参与的机器人与其独立集合位姿的平面误差不超过
 0.35 m、线速度不超过 0.05 m/s、角速度不超过 0.10 rad/s，并且全体条件连续保持 5 个仿真
-秒。任何机器人离开容差区或重新运动都会重置全体保持计时。要求参与的机器人集合在 episode
-开始时固定，不能通过静默丢弃故障机器人获得成功。
+秒。任何机器人离开容差区或重新运动都会重置全体保持计时。无故障时要求参与的机器人集合在
+episode 开始时固定；故障必须通过显式 `/robot_failure` 事件进入评估器。故障后集合可以缩小，
+但不能通过静默丢弃机器人获得完整成功；评估器必须同时输出 `required_robot_names`、
+`failed_robots`、`completion_status` 和 `partial_completion`。
 
 `episode_start` 定义为所有 Nav2 栈就绪且任务控制开始的仿真时刻；`FOUND` 是目标本地确认
 时刻；`RALLY` 是中央端收到有效目标信息并成功生成全部集合任务的时刻；`COMPLETE` 是上述
@@ -269,14 +273,18 @@ MVP 配置：
 
 耦合顺序：
 
-1. P3B 先用确定性的固定 delay/loss 队列验证序号、TTL、重复、乱序、ACK、重传和安全降级；
-2. P4A-0 用 canonical JSONL trace 对账应用生成、准入、ns-3 发送、交付和过期字节，先排除 ROS/Gazebo
+1. P3B 用确定性的固定 delay/loss 队列验证序号、TTL、重复、乱序、ACK、重传和基础安全降级；
+2. P3B.5 在同一替身上运行完整 Gazebo fault-mode 任务矩阵，验证 freshness、保持/等待、单机故障
+   隔离、`PARTIAL_COMPLETE` 和故障下任务指标；
+3. P3C 从 gateway ledger 建立默认可视化和实时通信曲线，先证明指标守恒、时间对齐和
+   ideal/fault 可比较，再进入 ns-3；
+4. P4A-0 用 canonical JSONL trace 对账应用生成、准入、ns-3 发送、交付和过期字节，先排除 ROS/Gazebo
    时间因素；
-3. P4A-1 选择并冻结一种桥接实现（首选带 message/clock ACK、退出和背压协议的 ZMQ 或 UDP），再用
+5. P4A-1 选择并冻结一种桥接实现（首选带 message/clock ACK、退出和背压协议的 ZMQ 或 UDP），再用
    固定决策窗或 lock-step 把 Gazebo 位姿和任务推进接入 ns-3；相同 seed 必须重复得到同一事件账本；
-4. P4B 最后加入 802.11n AP/STA、传播、墙损耗和背景干扰；ideal、无干扰和受干扰只作为网络条件，
+6. P4B 最后加入 802.11n AP/STA、传播、墙损耗和背景干扰；ideal、无干扰和受干扰只作为网络条件，
    不能为了制造 RL 优势任意加流量；
-5. TapBridge、network namespace 和 DDS-over-ns-3 仅作为后期扩展。
+7. TapBridge、network namespace 和 DDS-over-ns-3 仅作为后期扩展。
 
 必须解决 Gazebo、ROS 2、ns-3 和训练循环的时间同步。优先采用固定时间窗或 lock-step：收集
 候选消息、推进网络、交付结果，再推进任务。wall-clock 实时联调可以演示，但不能默认具有
@@ -407,6 +415,32 @@ overlap_ratio = (sum_i |visited_i| - |union_i visited_i|)
 搜索、返航、充电和集合阶段分别统计。按固定距离或仿真时间采样，避免指标随 ROS 发布频率
 变化。
 
+### 12.2A P3C gateway 可视化指标
+
+P3C 的通信监控必须直接来自 gateway ledger/metrics，而不是来自 GUI 刷新次数或 ROS topic
+回调次数。按固定 1 秒仿真时间窗，同时保存 episode 累计值，至少输出：
+
+| 指标组 | 指标 |
+|---|---|
+| 负载与交付 | generated/admitted/attempted/delivered messages 和 bytes、goodput、offered throughput |
+| 故障 | loss/PDR、TTL expired、queue overflow、duplicate、reorder、retry exhausted |
+| 时延 | queue wait、admit→tx、tx→delivery、source→delivery 的 mean/p50/p95/p99/max |
+| 新鲜度 | 每类消息 AoI mean/p95/max、fresh-state ratio、stale-state duration |
+| 任务耦合 | detection confirm→delivered→consumed、命令 deadline success/abort、任务阶段和故障事件、ideal/fault 的 `task_degradation_index (TDI)` |
+
+每个点必须带 `sim_time`、direction、message_type、sender、recipient、seed、mission_mode 和
+fault configuration。面板默认打开但只读；关闭 GUI 后仍生成相同 CSV/JSON。P3C 的曲线至少
+包括上下行吞吐/PDR/丢包、p95 时延、AoI/队列深度和任务阶段时间轴，并支持同 seed 的 ideal
+与 fault 叠加。
+
+`TDI` 只纳入 ideal 配对为 `COMPLETE` 的 episode：fault 为 `COMPLETE` 时为 0，
+`PARTIAL_COMPLETE` 时为 `1 - healthy_required_robot_count / required_robot_count`，失败/超时/安全终止时为 1。
+同时报告完成时间、覆盖率、电量、碰撞、AoI 和时延的增量；TDI 是任务退化摘要，不能替代 packet PDR。
+
+P3C 的可视化验收条件是：生成→准入→发送→交付/丢弃的消息数和字节逐类守恒；曲线使用仿真
+时间；GUI 与 headless 结果一致；可从曲线定位“哪类消息先退化、何时超过 TTL、任务何时从
+COMPLETE 变为 PARTIAL_COMPLETE/FAILED”。可视化节点不得发布任务控制、导航或电池命令。
+
 ### 12.3 碰撞
 
 使用 Gazebo contact sensor 或机器人/障碍物最小距离。连续接触在冷却窗口内只算一个事件，
@@ -491,9 +525,11 @@ GPU 只加速神经网络，Gazebo、Nav2、SLAM 和大部分 ns-3 仍受 CPU �
 
 ### 接收信息过期
 
-P3B/P4 必须把 generation time、delivery time、TTL 和消息版本带入接收状态存储。位置/TF 过期时
+P3B.5/P4 必须把 generation time、delivery time、TTL 和消息版本带入接收状态存储。位置/TF 过期时
 暂停新的中央分配并进入本地安全模式，地图过期时禁止基于旧图重规划，检测和返航/集合命令按 TTL、
-ACK 和明确失败处理；只记录丢包而继续消费旧状态不能证明网络因果。
+ACK 和明确失败处理；机器人可以完成当前仍安全的本地目标，之后保持/停止并等待新鲜状态，不能
+无限执行旧命令；只记录丢包而继续消费旧状态不能证明网络因果。P3C 要把这些 freshness 事件与
+吞吐、延迟、AoI 和任务阶段画在同一仿真时间轴上。
 
 目标检测的 raw `/target_detection` 订阅只能用于 truth/debug 和独立的过程模式，不能用于网络
 `time_to_inform`、AoI 或交付率。正式网络指标必须从 gateway ledger 的
@@ -522,20 +558,24 @@ staging poses。先固定检测器、SLAM 和 Nav2，再比较通信；新增视
 - P2D 冻结至少三个不同 world/目标/能量场景，建立完整理想通信任务基线；
 - 退出：无网络退化时完成探索、发现、充电和全体集合，任务成功严格对应 `COMPLETE`。
 
-### 月 4：显式通信边界
+### 月 4：显式通信边界、P3B 和 P3B.5
 
 - 定义最小消息和 gateway，切断中央端对地图、位置、检测和 Nav2 action 的全部直连，并
   切断机器人 Nav2 对中央 `/merge_map` 的免费订阅；
 - 将仿真检测事件放入发现机器人的本地候选队列，中央只消费成功交付事件；
-- 用固定 delay/loss 验证因果关系；
-- 退出：零损链路复现 P2D，丢弃检测/地图/命令产生符合逻辑的任务后果，自动旁路审计通过。
+- P3B 固定 delay/loss、TTL、版本、重复/乱序、ACK/重传和 ledger 语义；
+- P3B.5 用多 world/seed、三种 mission mode 和配对 ideal 跑 Gazebo fault-mode 任务矩阵；
+- 验证 stale-state 保持/等待、deadline、单机故障隔离、剩余机器人集合和 `PARTIAL_COMPLETE`；
+- 退出：协议门禁与完整任务故障结果分开可审计，故障不伪造成功，安全降级动作可复现。
 
-### 月 5：ns-3 Wi-Fi 4
+### 月 5：P3C 通信可视化与 ns-3 Wi-Fi 4 准备
 
+- P3C 默认打开 gateway 监控面板，输出吞吐、PDR、丢包、延迟、队列、重试、AoI、freshness
+  和任务阶段同步曲线；GUI/headless 使用同一 metrics ledger；
 - 先用确定性时间窗接入 ns-3 数据包、移动和真实消息大小，证明重复运行及逐包账本一致；
 - 再建立 AP + 2/3 STA、传播、墙损耗和同信道干扰，并用实测或公开依据固定参数；
-- 退出：相同 seed 可复现，包生成/准入/交付账本闭合，理想、无干扰和受干扰的网络指标
-  形成解释得通的梯度；任务指标按批次统计，不要求每个 seed 人为单调。
+- 退出：P3C 指标守恒且可视化通过；P4A 相同 seed 可复现，包生成/准入/交付账本闭合，理想、
+  无干扰和受干扰的网络指标形成解释得通的梯度；任务指标按批次统计，不要求每个 seed 人为单调。
 
 ### 月 6：非学习 baselines
 

@@ -2,19 +2,18 @@
 
 Last source/documentation review: 2026-09-28. Behavioral evidence is frozen in
 the dated reports and is not automatically evidence for a different HEAD. The
-user accepted P1C, P2A, P2B, P2C, and P2D. The P2C follow-up adds Gazebo
-task-region overlays and a live operator status panel. P3A remains implemented
-and awaiting user acceptance. Historical integration commit `2933c24` was revalidated with two
-clean runner batches covering the fixed 10-cell matrix: all 10 episodes are
-`COMPLETE` with zero collision events, both manifests report
-`worktree_dirty=false`, the graph/source bypass audits pass, and the forced
-two-robot regression completes two charges. P3A.5 remains bounded by the fixed
-acceptance rules; the 2026-09-25 path-reachability repair and unseen-map
-ablation are recorded in `log.md`. P3B's deterministic application-layer
-fault transport is implemented and its protocol matrix gate passes; Gazebo
-fault-mode episodes and ns-3 coupling remain future work. Earlier `41f63fb`,
-`c369c7d`, and `561de99` failures remain
-historical retained evidence and are not silently replaced.
+user accepted P1C, P2A, P2B, P2C, P2D, P3A, and P3A.5. The P2C follow-up adds
+Gazebo task-region overlays and a live operator status panel. Historical
+integration commit `2933c24` was revalidated with two clean runner batches
+covering the fixed 10-cell matrix: all 10 episodes are `COMPLETE` with zero
+collision events, both manifests report `worktree_dirty=false`, the graph/source
+bypass audits pass, and the forced two-robot regression completes two charges.
+P3B is accepted only for its deterministic application-layer fault transport,
+protocol matrix, ledger, and stale-state semantics. The remaining full-task
+fault work is now P3B.5; gateway metrics and default visualization are P3C;
+ns-3 packet/clock coupling remains P4A. Earlier `41f63fb`, `c369c7d`, and
+`561de99` failures remain historical retained evidence and are not silently
+replaced.
 
 This directory is the active project inside the larger ns-3 workspace. It is a
 toy ns3-gym scheduling MDP, not a full Wi-Fi/5G network simulation.
@@ -55,11 +54,15 @@ Use current code as the source of truth. Read in this order:
 15. `report/20260918_p2d.md` for the P2D runner, schema-v7 metrics, energy
    calibration, failures, and final matrix.
 16. `report/20260928_project_overview_p0_p3b.md` for the beginner-oriented
-   end-to-end project background, P0–P3B implementation status, evidence,
-   boundaries, and future roadmap.
+   end-to-end project background, P0–P3B implementation status, P3B.5/P3C
+   planning, evidence, boundaries, and future roadmap.
 17. `report/20260928_p3b.md` for the P3B deterministic fault gateway,
-   protocol matrix, retained ROS failure, and acceptance boundary.
-18. `report/20260902.md`, `report/20260429.md`, and `log.md` for historical
+   protocol matrix, retained ROS failure, and accepted-scope boundary.
+18. `report/20260928_p3b5_plan.md` for the remaining fault-mode task matrix,
+   robot freshness safety contract, partial completion, and exit conditions.
+19. `report/20260928_p3c_plan.md` for gateway communication metrics,
+   real-time curves, default visualization, and data-conservation gates.
+20. `report/20260902.md`, `report/20260429.md`, and `log.md` for historical
    experiment context.
 
 The accepted P1A ROS foundation now has explicit Gazebo seeds, configurable spawn
@@ -91,19 +94,24 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
 
 ## Current Handoff Snapshot
 
-- Active boundary: P3A and P3A.5 are implemented and awaiting user acceptance.
-  The historical integration freeze candidate is `task_stack_frozen_commit=2933c24`;
-  current algorithm work is at `43060f0`, with clean
-  6+4 runner batches cover all ten fixed cells with `COMPLETE` and zero
-  collisions, and the forced-charge regression completes two charges. P3B's
-  fixed delay/loss gateway is implemented; its ROS task matrix is still pending.
+- Active boundary: P3A and P3A.5 are user-accepted and frozen as the network
+  task-stack baseline. The historical integration freeze candidate is
+  `task_stack_frozen_commit=2933c24`; clean 6+4 runner batches cover all ten
+  fixed cells with `COMPLETE` and zero collisions, and the forced-charge
+  regression completes two charges. P3B's deterministic application-layer
+  fault gateway and protocol matrix are user-accepted. The active work is now
+  P3B.5 (fault-mode Gazebo task matrix and safety degradation), followed by P3C
+  (gateway metrics and default visualization); P4A remains the later ns-3 bridge.
 - Current evidence is retained at `log/p2d_baseline/p3a5_final_2933c24/`
   (lab/rooms six cells),
   `log/p2d_baseline/p3a5_final_2933c24_corridors_net/` (corridors four cells),
   and `log/p2d_baseline/p3a5_final_2933c24_forced2r/` (forced charge). The
   split is documented because the first runner shell stopped after six cells;
   it does not represent a source or configuration change.
-- From P2B onward, only `COMPLETE` is mission success. The fixed first rally
+- From P2B onward, only `COMPLETE` is full mission success. If a robot is
+  explicitly isolated as failed, the remaining healthy robots may finish with
+  `PARTIAL_COMPLETE`; this is a recorded partial result, not a full-success
+  episode. The fixed first rally
   contract is per-robot position error <=0.35 m, linear speed <=0.05 m/s,
   angular speed <=0.10 rad/s, all robots continuously stable for 5 simulated
   seconds. `FOUND` and P1C's 90% coverage are process metrics.
@@ -117,11 +125,11 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
   collisions. Lab seed 202 completed one safety charge. The 40-energy
   two-robot corridors calibration timed out while returning, so the whole
   corridors scenario was frozen at 45 before its final batch.
-- P3A.5 must re-audit the current HEAD to ensure the central execution chain has
-  no direct subscriptions to robot maps, odom/TF or raw detection and no direct
-  Nav2 action calls. Even the ideal baseline must traverse the same
-  gateway/received-state/local-adapter path. Robot Nav2 global costmaps must
-  consume only gateway-delivered fused maps; any regression rejects the batch.
+- The accepted P3A.5 evidence audited the central execution chain for direct
+  subscriptions to robot maps, odom/TF or raw detection and direct Nav2 action
+  calls. Even the ideal baseline traverses the same
+  gateway/received-state/local-adapter path, and robot Nav2 global costmaps
+  consume gateway-delivered fused maps. Any future regression rejects a batch.
 - The prior P3A.5 candidate `41f63fb` reached 9/10; the path-guard commit
   `c369c7d` was rerun on the same 10-cell matrix and reached 8/10, with lab
   seed 202 and rooms seed 303 timing out during `EXPLORE`. Both failures are

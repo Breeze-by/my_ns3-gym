@@ -1,6 +1,6 @@
 # 多机器人任务导向 Wi-Fi RL 工程实施计划
 
-最后更新：2026-09-24。
+最后更新：2026-09-28。
 
 本文把 `RESEARCH_PLAN.md` 的研究路线拆成可逐步实现、验证和验收的工程检查点。
 研究边界、论文问题和最终指标仍以 `RESEARCH_PLAN.md` 为准；当前功能以源码和
@@ -13,7 +13,8 @@
 - 每个检查点必须同时交付代码、最短验证、日志和必要文档；
 - 所有跨机器人/AP 信息最终必须经过显式通信边界，不能保留 ROS 直连旁路；
 - 固定世界、参数和 seed 后再做策略比较，失败和超时也进入结果；
-- 最终任务成功只对应 `COMPLETE`，覆盖率和 `FOUND` 是过程指标，不能替代任务完成；
+- 完整任务成功只对应 `COMPLETE`；发生机器人故障后剩余机器人集合产生
+  `PARTIAL_COMPLETE`，这是可审计的部分完成，不计入完整成功率；覆盖率和 `FOUND` 是过程指标；
 - 正式批次区分启动前基础设施失败和启动后任务失败，并保留全部尝试；
 - 不提前实现 PPO/MAPPO、复杂地图压缩、未知初始位姿配准或 DDS-over-ns-3。
 
@@ -41,20 +42,16 @@
 - P2D 已加入统一串行 runner、三个预验证 world/目标/能量场景和 schema v7 分阶段指标；
   lab/rooms 在 40 初始能量、走廊在 45 初始能量下完成 9 个三机器人固定 seed 和 1 个双机器人
   交叉检查，10 项均 `COMPLETE`、零碰撞，已通过用户验收；
-- P3A 已完成 `GatewayEnvelope` 协议、零损队列、接收状态存储、导航本地适配器和机器可检查的
-  forbidden-bypass 清单；其 10 项 gateway 矩阵和两机器人强制充电回归是在 gateway 提交及其
-  配置下完成的历史证据，随后 HEAD 又修改了电池、协调器和净空逻辑。当前 P3A.5 候选
-  `41f63fb` 已完成重验证：图/旁路子门和强制充电回归通过，但正式矩阵为 9/10 `COMPLETE`，
-  lab seed 202 在启动后 `RALLY` 超时。路径守卫提交 `c369c7d` 已按同一 10 格矩阵重跑，
-  结果为 8/10 `COMPLETE`，lab seed 202 与 rooms seed 303 在 `EXPLORE` 超时，因此仍待诊断
-  和整批重跑；详见 `report/20260923_p3a5.md`；
-- 2026-09-24 在当前冻结候选 `2933c24` 上完成 P3A.5 重验证：两个连续的干净 runner 批次
-  覆盖固定 10 格（lab/rooms 六格、corridors 四格），同一 commit/configuration manifest
-  均为 `worktree_dirty=false`，10/10 为 `COMPLETE` 且零碰撞；源码/graph forbidden-bypass
-  审计通过，强制充电回归完成 2 次充电。P3A 与 P3A.5 进入待用户验收；用户要求在未验收期间继续推进，
-  P3B 已完成固定故障替身、协议矩阵和 ROS smoke 验证；此授权不表示 P3A/P3A.5 已验收；
+- P3A 的 `GatewayEnvelope`、零损队列、接收状态存储、导航本地适配器和 forbidden-bypass
+  审计已由用户验收；P3A.5 的当前 task-stack 重验证、固定 10 格矩阵、强制充电回归和
+  manifest 也已由用户验收，冻结候选为 `2933c24`；
+- P3B 的已完成范围已由用户验收：固定 seed 的应用层 delay/loss fault transport、TTL/版本、
+  重复/乱序、ACK/有限重传、逐 attempt ledger、stale-state 安全语义，以及 54 格协议矩阵。
+  P3B 原计划中尚未完成的 Gazebo fault-mode 任务矩阵、故障下任务指标和 ns-3 bridge 已重新
+  标记为 P3B.5，不再把它们混写成 P3B 已完成；
+- 当前工作边界是 P3B.5 文档化的任务层故障闭环与安全降级，随后进入 P3C 通信指标和实时可视化；
 - P2B 前路线审计补充了 P2D 完整任务集成门、P4A 时间/包级对账门和正式统计规则，详见
-  `report/20260917_roadmap_audit.md`；P2D 已验收，当前检查点为 P3A.5 修复；
+  `report/20260917_roadmap_audit.md`；P2D、P3A、P3A.5 和 P3B 已按各自边界验收，当前检查点为 P3B.5；
 - 2026-09-02 只完成过一次单机器人 headless 启动检查，暴露过冷启动 spawn 超时和
   退出阶段重复 shutdown/map 保存问题。
 
@@ -72,9 +69,11 @@
 | P2B | 集合状态机 | 权威任务状态机、停止探索、独立 staging poses、保持判定 | 3 机器人收到理想直达目标事件后取消探索，在不同安全位姿以位置误差≤0.35 m、线/角速度≤0.05 m/s、0.10 rad/s 连续稳定 5 秒并只在此时进入 `COMPLETE` | 已验收 |
 | P2C | 电池、返航和充电 | 可校准能量、本地安全返航、非重叠充电位、失败原因 | 至少一次被迫充电的 episode 中无耗尽，保留地图/任务并在充电后继续；不可返航和耗尽正确失败 | 已验收 |
 | P2D | 完整理想通信任务基线 | 统一 runner、完整状态/阶段指标、跨目标场景矩阵 | 至少 3 个预先验证的 world/目标/能量场景各跑 seeds 101/202/303，完成探索→发现→必要充电→集合；另做 2 机器人交叉检查 | 已验收 |
-| P3A | 显式消息协议和零损 gateway | 本地候选队列、序号/时间戳/ACK/过期、接收信息存储、命令适配器、旁路清单 | 零损 finite-rate 只证明消息语义/旁路/安全等价，不把完成时间当作 P2D 等价；自动旁路审计通过 | 待用户验收 |
-| P3A.5 | 当前 task-stack 重验证与冻结 | 当前 HEAD 的 P2D/P3A 完整矩阵、强制充电回归、commit/config/environment manifest、ROS graph edge 白名单 | 当前 commit 在 P2D/P3A 场景上完成同口径门禁；审计覆盖 publisher/subscriber 方向、launch remap、动态 topic 和明确的 evaluator/truth 例外；输出 `task_stack_frozen_commit`，之后网络/RL baseline 不得混入未重跑的探索改动 | 待用户验收 |
-| P3B | 固定 delay/loss 网络替身 | 独立上下行、固定 seed 队列、TTL/版本、重复/乱序、重传、逐消息账本和 stale-state 降级 | fault matrix 明确按消息 attempt 注入（上/下行独立 seed、队列容量/overflow、burst 或独立丢包、TTL/deadline/重试组合，每格固定最少 seed）；覆盖 0/10%/100% 丢包与 0/0.5/2 s 延迟；检测未交付不得 `RALLY`，命令在 deadline 内重试或明确失败；过期位置暂停中央分配；零损结果只比较语义和安全；冻结单一 `mission_mode={coverage,target,rally}`，由 launch、评估器和 smoke 共同读取，禁止用多个布尔参数各自推导成功条件 | 待用户验收 |
+| P3A | 显式消息协议和零损 gateway | 本地候选队列、序号/时间戳/ACK/过期、接收信息存储、命令适配器、旁路清单 | 零损 finite-rate 语义、旁路审计和安全等价通过；不把完成时间当作 P2D 等价 | 已验收 |
+| P3A.5 | 当前 task-stack 重验证与冻结 | 当前 HEAD 的 P2D/P3A 完整矩阵、强制充电回归、commit/config/environment manifest、ROS graph edge 白名单 | 当前冻结候选在固定 10 格上 10/10 `COMPLETE`、零碰撞；输出 `task_stack_frozen_commit`，后续网络/RL baseline 不混入未重跑探索改动 | 已验收 |
+| P3B | 固定 delay/loss 网络替身（已完成范围） | 独立上下行、固定 seed 队列、TTL/版本、重复/乱序、重传、逐消息账本和 stale-state 降级 | 4 项协议单测、54 格固定协议 matrix `PASS`；故障语义和安全降级可复现 | 已验收 |
+| P3B.5 | 故障条件下的完整任务闭环 | Gazebo fault-mode 任务矩阵、理想配对基线、任务/电池/碰撞/安全降级指标、机器人本地 freshness 保障、队列语义收敛 | 覆盖 `coverage/target/rally`、多 world/seed、丢包/延迟/TTL/deadline/retry/overflow；每格保留 ledger 和任务结果；健康机器人继续，未交付信息不触发错误任务；输出故障退化报告 | 进行中 |
+| P3C | gateway 通信指标与实时可视化 | 默认打开的 gateway 监控面板、实时曲线、CSV/JSON 指标快照、ideal/fault 对比报告 | 生成/准入/发送/交付/丢弃字节闭合；实时显示吞吐、PDR、丢包、时延、队列、重试、AoI 和任务阶段；面板不参与控制，headless 也可保存同一数据 | 待开始 |
 | P4A | ns-3 数据包与时间同步 | P4A-0 trace ledger、P4A-1 固定窗/lock-step、Gazebo mobility、真实消息大小、资源/RTF 记录 | trace 生成/准入/发送/交付/丢弃字节闭合；相同 seed 事件账本一致；P4A-1 无墙钟竞态，记录 wall time、sim time、RTF 和资源峰值 | 待开始 |
 | P4B | Wi-Fi 4 场景与校准 | AP+2/3 STA、传播、墙损耗、背景干扰、网络指标、实测校准集/验证集 | 参数有来源；ideal/无干扰/受干扰形成可解释梯度；无实测时标为 synthetic sensitivity，不宣称 sim-to-real；任务退化按批次报告 | 待开始 |
 | P5 | 实验协议和非学习 baselines | 冻结场景/seed/主指标/最小动作集及 no/ideal/always/periodic/random/event/task/network-aware | 同一 gateway 和配对 seed 一键运行，CSV 含所有任务失败和基础设施失败；确认现实负载下存在通信决策空间 | 待开始 |
@@ -298,6 +297,84 @@ P3B 先不接真实 Wi-Fi，而是用固定 seed fault matrix 覆盖 0/10%/100% 
 100% 丢弃检测必须阻止 `RALLY`，命令在 deadline 内重传或明确失败，过期位置/TF 暂停新的中央分配，
 过期地图不触发重规划，旧地图/状态不得覆盖新版本。导航命令必须有 deadline、幂等 command id、
 最大重试次数和超时 abort，不能无限等待结果。
+
+### P3B.5：故障任务闭环与保障性降级
+
+P3B.5 接收 P3B 的固定故障替身，但把验证对象从“协议消息是否按规则丢弃”推进到“消息故障
+如何改变完整机器人任务”。这一阶段仍不接真实 ns-3 Wi-Fi；它只回答任务层和机器人安全层
+是否正确面对已经定义好的延迟、丢包、过期和重试结果。
+
+必须先冻结一份 `p3b5_fault_manifest`，每个 case 同时保存：task-stack commit、world、目标、
+robot count、battery config、mission mode、fault seed、上下行 fault 参数、TTL、deadline、
+retry、queue capacity、episode horizon 和环境版本。每个故障 case 都要有同 seed/同配置的
+`gateway_mode=ideal` 配对对照。
+
+任务矩阵至少覆盖：
+
+1. `coverage`、`target`、`rally` 三种任务模式；
+2. `my_world`、rooms、corridors 和至少一个未用于调参的 holdout world；
+3. 2/3 机器人、开发 seed 与冻结的 fault seed 分层；
+4. 上行/下行独立的 0%、10%、100% 丢包，0/0.5/2 秒延迟，固定 burst/独立丢包、TTL 过期、
+   deadline、重试耗尽、重复、乱序和 queue overflow；
+5. 目标检测、地图/位姿/TF、探索分配、集合导航、电池状态和返航命令各自的故障后果。
+
+P3B.5 必须把机器人本地保障性行为写成可验收的消息契约：
+
+- 地图、位姿、TF 超过 freshness TTL 时，中央不得分配新任务或据此重规划；机器人继续执行
+  已接受且仍安全的本地目标，目标完成、超时或安全条件失效后进入安全停止/等待；
+- 检测消息没有按时交付时不得进入 `RALLY`；已经进入 `RALLY` 后目标信息过期不得生成新的
+  集合决策；
+- 导航命令没有新鲜确认或超过 deadline 时，机器人取消/停止该命令并进入可恢复等待，不能
+  无期限保持旧命令；
+- 电池返航、低电量保护、碰撞急停和本地避障始终优先于网络策略；网络断开不能阻止安全返航；
+- 重新收到新鲜地图/位姿/命令后，系统只能按版本和任务阶段恢复，不能用旧消息回滚状态；
+- 单机器人故障隔离后，健康机器人继续探索或集合；剩余集合完成发布 `PARTIAL_COMPLETE`，
+  不把部分完成计入 `COMPLETE` 成功率。
+
+P3B.5 的每个 episode 必须同时输出任务结果和通信账本摘要：`COMPLETE`、
+`PARTIAL_COMPLETE`、`FAILED`、`timeout`、`no_data`、`stale_state`、`navigation_deadline`、
+`collision`、`battery_failure`、充电次数、最低电量、集合误差，以及按消息类型/方向的生成、
+交付、丢弃、过期、重试和队列统计。高丢包条件不要求人为完成；验收要求是失败原因和降级动作
+可解释、可复现、不会伪造成功。
+
+为了把“通信变差了多少”压缩成一个可比较的主指标，正式报告冻结
+`task_degradation_index (TDI)`：仅纳入 ideal 配对为 `COMPLETE` 的 episode；故障运行完整完成时
+`TDI=0`，故障后为 `PARTIAL_COMPLETE` 时取
+`1 - healthy_required_robot_count / required_robot_count`，故障、超时或安全终止时取 `TDI=1`。
+跨 episode 报告 TDI 均值和 95% 置信区间，同时保留完成时间增量、覆盖率、最低电量、碰撞和
+AoI/时延增量等原始指标。TDI 只表示任务结果退化，不能替代通信 PDR，也不能掩盖理想配对本身失败。
+
+### P3C：gateway 通信指标和可视化
+
+P3C 在 P3B.5 任务矩阵之上建立通信可观测性层，让 gateway 不再是黑盒。它不改变消息调度、
+机器人控制或故障参数，不把可视化节点放进控制闭环。默认 GUI 运行时打开监控面板；headless
+运行默认写出同一套 CSV/JSON/PNG（或等价无界面产物），保证手动运行和批量实验指标一致。
+
+每个固定仿真时间窗（建议 1 秒，同时保留 episode 累计值）按 `direction`、`message_type`、
+`sender`、`recipient` 统计：
+
+- 生成消息数/字节、准入消息数/字节、发送 attempt 数/字节、成功交付数/字节；
+- 丢包、TTL 过期、队列溢出、重复、乱序、重试耗尽的消息数/字节；
+- goodput、offered throughput、delivery/PDR、loss rate、retry rate；
+- queue depth、queue wait、admit-to-tx、tx-to-delivery、端到端 `source_time -> delivery_time`
+  延迟，以及 p50/p95/p99/max；
+- 每类消息 AoI 的 mean/p95/max、fresh-state ratio、stale-state duration；
+- 导航命令 deadline success/abort、检测 `local_confirm -> delivered -> consumed` 时间、
+  电池/返航状态消息新鲜度和任务状态传播时间。
+
+面板至少包含四组同步曲线：
+
+1. 上下行吞吐、PDR、丢包/过期率和重试率；
+2. 排队/传输/端到端时延及 p95；
+3. AoI/freshness、队列深度和消息类型占用；
+4. 任务阶段（EXPLORE/FOUND/RALLY/COMPLETE/PARTIAL_COMPLETE/FAILED）、机器人运动、
+   充电/故障事件与通信曲线的时间对齐。
+
+P3C 的验收必须证明指标不是“看起来有图”：账本生成/准入/发送/交付/丢弃消息数和字节逐类
+守恒；曲线使用仿真时间而非 GUI 刷新时间；ideal/fault 同 seed 可以叠加比较；GUI 关闭时仍
+能保存相同数据；可视化节点只读 gateway ledger/metrics，不发布任务控制消息。P3C 输出的
+故障退化图应回答：哪类消息先受影响、延迟还是丢包主导、AoI 何时超过安全 TTL、任务何时从
+COMPLETE 退化为 PARTIAL_COMPLETE/FAILED，以及健康机器人是否保持了保障性动作。
 
 ### P4–P7：网络、策略和统计
 

@@ -1,9 +1,9 @@
-# 多机器人任务导向 Wi-Fi RL 项目总览：从 P0 到 P3B
+# 多机器人任务导向 Wi-Fi RL 项目总览：从 P0 到 P3C 规划
 
 日期：2026-09-28
 
 本文面向第一次接触本项目、对 ROS 2、Gazebo、Nav2、SLAM、通信协议和强化学习基础不深的读者。
-它把项目为什么存在、现在的系统怎样工作、P0 到 P3B 每一步做了什么、哪些结果已经被证明、哪些
+它把项目为什么存在、现在的系统怎样工作、P0 到 P3B 每一步做了什么、P3B.5/P3C 如何继续、哪些结果已经被证明、哪些
 事情还没有证明，以及后续 P4 到 P8 的计划放在一处。本文是项目总览，不替代每个阶段的原始实验
 报告；具体实验数字仍以日期报告、源码和 `log.md` 为准。
 
@@ -16,18 +16,21 @@
 截至本报告：
 
 - P0 到 P2D 已完成对应工程门禁，其中 P1C、P2A、P2B、P2C、P2D 已得到用户验收；
-- P3A 的显式消息 gateway 和 P3A.5 的当前 task-stack 重验证已经实现，固定 10 格任务矩阵为
-  `10/10 COMPLETE`、零碰撞，强制充电回归也通过，但 P3A/P3A.5 仍处于“待用户验收”；
-- P3B 的确定性应用层 delay/loss 故障替身和协议 matrix 已通过：4 个传输单测通过，54 格协议
-  matrix 为 `PASS`；但 P3B 的 Gazebo 故障任务矩阵还没有完成，也还没有接入 ns-3 Wi-Fi；
+- P3A 和 P3A.5 已由用户验收：显式 gateway、旁路审计、当前 task-stack 固定 10 格矩阵为
+  `10/10 COMPLETE`、零碰撞，强制充电回归也通过；
+- P3B 的已完成范围已由用户验收：确定性应用层 delay/loss 故障替身、4 个传输单测、54 格协议
+  matrix `PASS`、TTL/版本/重试/ledger/stale-state 语义；原 P3B 尚未完成的完整 Gazebo 故障任务
+  矩阵和故障下任务评估已重新标记为 **P3B.5**；
+- 新增 **P3C** 规划：默认打开 gateway 通信监控，实时展示吞吐、丢包、延迟、队列、重试、AoI、
+  freshness 和任务阶段曲线，并保存 headless 可复现的 CSV/JSON 指标；
 - ns-3 目录里的旧 `wireless-rl` 是一个 5 用户抽象队列调度 MDP。它验证了 ns3-gym、DQN、
   checkpoint 和 GPU 工具链，但它目前不是这个多机器人 Wi-Fi 任务的完整网络模拟器；不能把旧
   toy MDP 的结果写成“机器人 Wi-Fi RL 已经有效”；
-- 当前最重要的未完成闭环是：把 P3B 的应用层消息继续接到真实 ns-3 Wi-Fi，让“通信策略→网络
-  交付→机器人获得的信息→任务行为→任务指标”真正连起来。
+- 当前未完成闭环分两步：先在 P3B.5 把故障 gateway 对完整任务的影响和机器人保障性降级跑清楚，
+  再在 P3C 把通信效果可视化并固化指标，之后才把消息接到真实 ns-3 Wi-Fi。
 
-一句话概括工程状态：**任务层已经形成可靠的理想通信闭环，协议层已经开始处理可解释的故障，
-无线层和强化学习层还没有完成。**
+一句话概括工程状态：**P3A/P3A.5 和 P3B 的已完成协议子集已经验收，当前正在进入 P3B.5
+故障任务闭环，P3C 负责把 gateway 通信变成可见、可比较的指标，真实无线层和强化学习仍未开始。**
 
 ## 1. 项目背景：为什么需要这个系统
 
@@ -559,7 +562,7 @@ lab seed 202 和 rooms seed 303 在 `EXPLORE` 超时。这些失败都保留。
 - 源码和 ROS graph bypass audit 通过；
 - 强制充电回归完成 2 次充电并 `COMPLETE`。
 
-这使 P3A/P3A.5 达到“待用户验收”边界，但按照项目规则，仍不能把“待用户验收”写成“已验收”。
+这组证据先达到“待用户验收”边界；用户已在 2026-09-28 接受 P3A 和 P3A.5，因此当前状态按“已验收”记录。
 
 ## 9. P3B：确定性 delay/loss 故障替身
 
@@ -631,9 +634,10 @@ attempt、duplicate、reason
 源时间和本地 deadline 语义收紧之前，因此不能替代硬化后的完整任务矩阵，也不能被当成故障
 网络成功率。
 
-### 9.5 P3B 当前没有完成什么
+### 9.5 P3B 已验收边界与 P3B.5/P3C 未完成内容
 
-P3B 整体仍为“待用户验收”，原因是：
+用户已验收 P3B 的固定应用层故障替身和协议门禁。下面这些原先写在 P3B 下、但尚未完成的内容
+统一转入 P3B.5 或 P3C：
 
 1. 还没有在硬化后的当前代码上跑完 `coverage/target/rally`、多 world、多 seed、多延迟/丢包
    组合的 Gazebo 任务矩阵；
@@ -642,8 +646,9 @@ P3B 整体仍为“待用户验收”，原因是：
 4. 当前文档已明确记录 gateway 默认队列容量的实现语义，后续仍需在正式验收中把容量/overflow、
    TTL/deadline/retry 组合纳入固定 seed 的完整矩阵。
 
-因此，“P3B 已完成”只能理解为“P3B 应用层故障替身和协议门禁实现完成”，不能理解为“无线网络
-实验已经完成”。
+因此，当前应写成：**P3B 已按固定应用层故障语义和协议门禁范围验收；P3B.5 负责故障条件下的
+完整 Gazebo 任务矩阵和机器人保障性降级；P3C 负责 gateway 通信指标与实时可视化；三者都不
+等同于真实 Wi-Fi 实验。**
 
 ## 10. 当前阶段总表
 
@@ -657,9 +662,11 @@ P3B 整体仍为“待用户验收”，原因是：
 | P2B | 发现后能否安全集合并定义完成 | 已验收 | `COMPLETE`、不同位姿、5s 稳定、零碰撞 |
 | P2C | 电量不足能否安全返航、充电、恢复 | 已验收 | 强制充电 2 次后 `COMPLETE` |
 | P2D | 探索→发现→充电→集合能否完整闭环 | 已验收 | 10/10 ideal episodes `COMPLETE`、零碰撞 |
-| P3A | 所有跨端信息是否走同一 gateway | 待用户验收 | envelope、接收状态、导航适配器、bypass audit |
-| P3A.5 | 当前 task-stack 是否可冻结为网络基线 | 待用户验收 | 2933c24 上 10/10、零碰撞、强制充电通过 |
-| P3B | delay/loss/TTL/重传是否产生可解释后果 | 待用户验收 | 4 tests、54 格 protocol PASS；Gazebo matrix 未完成 |
+| P3A | 所有跨端信息是否走同一 gateway | 已验收 | envelope、接收状态、导航适配器、bypass audit |
+| P3A.5 | 当前 task-stack 是否可冻结为网络基线 | 已验收 | 2933c24 上 10/10、零碰撞、强制充电通过 |
+| P3B | 固定应用层故障语义是否可复现 | 已验收 | 4 tests、54 格 protocol PASS、ledger/stale-state 语义 |
+| P3B.5 | 故障 gateway 是否改变完整任务且能安全降级 | 进行中 | 需要 Gazebo fault matrix、配对 ideal、任务退化和本地 freshness 行为 |
+| P3C | gateway 通信是否可见、可量化、可对比 | 待开始 | 默认面板、实时曲线、CSV/JSON 指标守恒 |
 | P4A | 应用消息能否和 ns-3 数据包/时间对账 | 待开始 | 需要 trace ledger 和 lock-step/bridge |
 | P4B | Wi-Fi 4 参数是否有来源且会改变任务 | 待开始 | 需要 AP/STA、墙损耗、干扰和校准 |
 | P5 | 非学习 baseline 和实验协议是否冻结 | 待开始 | 需要 paired seeds 和统一 gateway |
@@ -690,11 +697,12 @@ P3B 整体仍为“待用户验收”，原因是：
 - 不能说当前电池模型是一般性的安全保证；它是可校准的仿真可行性模型；
 - 不能从独立充电位结果推断共享充电器排队已经解决；
 - 不能把理想 gateway 的完成时间直接当成 Wi-Fi 下界或 sim-to-real 预测；
-- 不能把 P3A/P3A.5 的“待用户验收”写成“已验收”。
+- 不能把 P3B.5 的任务矩阵或 P3C 的可视化规划写成已经完成；P3B 已验收只覆盖固定应用层
+  故障替身和协议门禁，不能写成完整故障任务成功率或真实 Wi-Fi 结果。
 
 ## 12. 下一步路线：P3B 之后怎样进入真正的 Wi-Fi 和 RL
 
-### 12.1 先完成 P3B 的剩余门禁
+### 12.1 先完成 P3B.5 的故障任务闭环
 
 下一步不是立刻训练 DQN，而是完成硬化后 fault-mode ROS 任务矩阵：
 
@@ -710,7 +718,15 @@ P3B 整体仍为“待用户验收”，原因是：
 这一阶段的成功不是“所有高丢包都要完成”，而是：系统在故障下有可解释的降级行为，关键消息
 不会无限等待，未交付检测不会伪造 `RALLY`，旧状态不会覆盖新状态。
 
-### 12.2 P4A-0：先做离线 trace ledger
+### 12.2 再完成 P3C 的通信指标和可视化
+
+P3B.5 证明故障会怎样影响任务后，P3C 把同一份 gateway ledger 变成默认可见的监控面板和可复现
+数据文件。面板至少展示上下行吞吐/goodput、PDR/丢包、队列和重试、端到端延迟分位数、AoI/
+freshness，以及任务阶段、充电、等待、故障和 `COMPLETE`/`PARTIAL_COMPLETE`/`FAILED` 的时间轴。
+GUI 只读，不参与控制；headless 必须输出相同的 CSV/JSON。每个时间窗都要满足生成、准入、发送、
+交付/丢弃的消息数和字节守恒，并能把首个通信退化点与任务结果对应起来。
+
+### 12.3 P4A-0：先做离线 trace ledger
 
 在真正接入 ns-3 前，先把应用层事件写成 canonical JSONL：
 
@@ -726,7 +742,7 @@ P3B 整体仍为“待用户验收”，原因是：
 每条消息要能按 `message_id` 和 attempt 对齐，至少闭合 payload bytes、时间戳、方向、发送者、
 接收者和原因。相同 seed 重跑必须产生可复核的事件顺序。
 
-### 12.3 P4A-1：固定时间窗或 lock-step 桥接
+### 12.4 P4A-1：固定时间窗或 lock-step 桥接
 
 ROS 2/rclpy 使用 system Python，ns3gym 使用 `ns3gym` conda Python，不能强行导入同一个进程。
 两边通过明确的 UDP、ZMQ、文件或 clock-handshake 桥连接。
@@ -741,7 +757,7 @@ ROS 2/rclpy 使用 system Python，ns3gym 使用 `ns3gym` conda Python，不能�
 
 P4A 的退出证据必须包含 wall time、sim time、RTF、CPU/RAM 峰值和重复运行一致性。
 
-### 12.4 P4B：Wi-Fi 4 场景和校准
+### 12.5 P4B：Wi-Fi 4 场景和校准
 
 初始无线模型计划为 1 个 802.11n AP、2 台 STA，稳定后增加第 3 台，20 MHz 固定 MCS 起步，
 加入墙体损耗、传播、背景干扰和真实消息大小。
@@ -755,7 +771,7 @@ P4A 的退出证据必须包含 wall time、sim time、RTF、CPU/RAM 峰值和�
 如果实测校准表明 Wi-Fi 对任务几乎没有影响，应该报告 network-not-bottleneck，而不是人为
 制造拥塞来让 RL 看起来有优势。
 
-### 12.5 P5：先冻结非学习 baseline
+### 12.6 P5：先冻结非学习 baseline
 
 在训练前冻结：
 
@@ -768,7 +784,7 @@ P4A 的退出证据必须包含 wall time、sim time、RTF、CPU/RAM 峰值和�
 至少保留 no-communication、ideal、always-send、periodic、random、event-triggered、
 task-aware 和 network-aware 等 baseline。先确认真实消息负载下确实存在通信决策空间，再训练 RL。
 
-### 12.6 P6：中央 DQN 工程链
+### 12.7 P6：中央 DQN 工程链
 
 DQN 的输入必须来自执行时可获得的信息，例如：
 
@@ -784,7 +800,7 @@ DQN 的输入必须来自执行时可获得的信息，例如：
 validation 只能用于选 checkpoint；held-out 测试不能反复调参。旧 toy MDP checkpoint 不直接
 迁移到新的机器人通信环境。
 
-### 12.7 P7：泛化、消融和统计
+### 12.8 P7：泛化、消融和统计
 
 主要比较使用至少 20 个配对 held-out episode，每个主要 world 至少 6 个，推荐 24 个。先报告：
 
@@ -797,7 +813,7 @@ validation 只能用于选 checkpoint；held-out 测试不能反复调参。旧 
 主终点预注册为安全不劣条件下的 payload/airtime 或任务完成代价。若 RL 没有优势，也要报告
 负结果和失败原因，而不是只保留最好的 seed。
 
-### 12.8 P8A/P8B：真实机器人
+### 12.9 P8A/P8B：真实机器人
 
 P8A 先做单机器人：
 
@@ -875,6 +891,8 @@ export PYTHONPATH=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/
 - P1/P2 日期报告：`report/20260914_*` 到 `report/20260918_p2d.md`；
 - P3A/P3A.5：`report/20260922_p3a.md`、`report/20260923_p3a5.md`、`report/20260924_p3a5.md`；
 - P3B：`report/20260928_p3b.md`；
+- P3B.5 计划：`report/20260928_p3b5_plan.md`；
+- P3C 计划：`report/20260928_p3c_plan.md`；
 - 全部运行时间线和失败：`log.md`；
 - ROS 运行 JSON、CSV、launch log、graph snapshot：`ros2_ws/ros2-multi-robot-automap/log/`，
   其中大部分是 Git 忽略的运行产物；
