@@ -1,6 +1,6 @@
 # wireless-rl Codex Memory
 
-Last source/documentation review: 2026-09-25. Behavioral evidence is frozen in
+Last source/documentation review: 2026-09-28. Behavioral evidence is frozen in
 the dated reports and is not automatically evidence for a different HEAD. The
 user accepted P1C, P2A, P2B, P2C, and P2D. The P2C follow-up adds Gazebo
 task-region overlays and a live operator status panel. P3A remains implemented
@@ -53,8 +53,10 @@ Use current code as the source of truth. Read in this order:
 14. `report/20260918_p2c_visualization.md` for the post-acceptance Gazebo
     regions and live status-panel follow-up.
 15. `report/20260918_p2d.md` for the P2D runner, schema-v7 metrics, energy
-    calibration, failures, and final matrix.
-16. `report/20260902.md`, `report/20260429.md`, and `log.md` for historical
+   calibration, failures, and final matrix.
+16. `report/20260928_p3b.md` for the P3B deterministic fault gateway,
+   protocol matrix, retained ROS failure, and acceptance boundary.
+17. `report/20260902.md`, `report/20260429.md`, and `log.md` for historical
    experiment context.
 
 The accepted P1A ROS foundation now has explicit Gazebo seeds, configurable spawn

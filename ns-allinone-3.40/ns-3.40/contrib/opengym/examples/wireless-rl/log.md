@@ -3045,3 +3045,20 @@ Nav2 readiness 和 P3A bypass audit 均通过；启动后上行地图/位姿/TF 
 命令 deadline 或本地重复命令时取消 Nav2；中央 stale gate 使用交付数据的源时间。该硬化发生在上述
 ROS smoke 之后，因此该 smoke 保留为历史失败样本，不能直接作为硬化后完整 episode 证据；硬化后的
 `colcon test`、fault matrix 和 fault gateway 进程 smoke 均通过。
+
+## 2026-09-28 P3B 报告补充与协议门禁复核
+
+为补齐独立阶段文档，新增 `report/20260928_p3b.md`，并按当前 HEAD
+`39c788b6d8d3caf1c9a3c7e4e885b6339d5e28e3`（复核开始前工作树干净）重新执行协议级复核：
+
+```bash
+export PYTHONPATH=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration
+/usr/bin/python3 -m pytest -q \
+  ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_fault_model.py
+/usr/bin/python3 ros2_ws/ros2-multi-robot-automap/scripts/run_p3b_fault_matrix.py \
+  --output /tmp/p3b_fault_matrix_current.json
+```
+
+结果为 `4 passed` 和 `status=PASS`；当前脚本生成 54 格（3 seeds、上下行、3 丢包率、3 延迟）。
+该复核没有启动 Gazebo 或 ns-3，也没有改变 P3B 的验收边界；详情见新增报告。运行时 JSONL 和 episode
+文件仍是被忽略的实验产物，不纳入 Git 源码提交。

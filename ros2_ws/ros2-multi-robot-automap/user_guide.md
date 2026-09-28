@@ -718,6 +718,10 @@ python3 scripts/run_p3b_fault_matrix.py
 `/gateway/message_events` 都保留每次尝试的消息 ID、序号、生成/入队/准入/发送/交付或丢弃时间、
 TTL、重复标记和重试次数。P3B 只验证应用层故障语义，尚未接入 ns-3 Wi-Fi。
 
+阶段报告见
+`ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20260928_p3b.md`；其中区分了
+已完成的协议门禁、保留的 ROS fault-mode 失败样本和仍未完成的 Gazebo/ns-3 验收工作。
+
 以下命令适合运行中的人工诊断：
 
 检查每台机器人是否有控制话题：
