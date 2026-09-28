@@ -54,9 +54,12 @@ Use current code as the source of truth. Read in this order:
     regions and live status-panel follow-up.
 15. `report/20260918_p2d.md` for the P2D runner, schema-v7 metrics, energy
    calibration, failures, and final matrix.
-16. `report/20260928_p3b.md` for the P3B deterministic fault gateway,
+16. `report/20260928_project_overview_p0_p3b.md` for the beginner-oriented
+   end-to-end project background, P0–P3B implementation status, evidence,
+   boundaries, and future roadmap.
+17. `report/20260928_p3b.md` for the P3B deterministic fault gateway,
    protocol matrix, retained ROS failure, and acceptance boundary.
-17. `report/20260902.md`, `report/20260429.md`, and `log.md` for historical
+18. `report/20260902.md`, `report/20260429.md`, and `log.md` for historical
    experiment context.
 
 The accepted P1A ROS foundation now has explicit Gazebo seeds, configurable spawn
