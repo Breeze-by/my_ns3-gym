@@ -3064,6 +3064,12 @@ class HeadquartersControl(Node):
                 and self.battery_modes[name] == "ACTIVE"
             )
         }
+        if any(
+            state == "active"
+            for name, state in self.robot_states.items()
+            if name in self.participating_robots()
+        ):
+            return
         if not idle_positions:
             return
         exclusions = self.active_exclusions()
