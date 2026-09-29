@@ -3224,3 +3224,20 @@ python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 1 \
 ```
 
 结果：任务在评估上限时结束（单机器人探索未完成），但电池闭环通过：`battery_total_returns=1`、`battery_total_charges=1`、最低能量 `10.66`、最终模式 `ACTIVE`、`nav_aborted=0`、零碰撞、覆盖率 `0.789`。日志明确出现“return leg (charger)”、`started charging` 和 `charged and resumed`，证明返航、充电和恢复探索均发生。先前同配置的 v1 在返航时没有可行地图路径而停在 `RETURNING`，保留在 `log/optimize_20260929/smoke180/`，未替换为成功样本。
+## 2026-09-29 双机器人联合探索回归（优化后）
+
+在 commit `9c52404` 后使用 ROS domain 51、`my_world.world`、Gazebo seed 101、2 robots、120 秒 headless smoke（无目标、无电池）验证联合分配：命令为
+
+```bash
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+export ROS_DOMAIN_ID=51 GAZEBO_MASTER_URI=http://127.0.0.1:11351
+python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 2 \
+  --gazebo-seed 101 --startup-timeout 360 --message-timeout 90 \
+  --shutdown-timeout 30 --evaluation-duration 120 --coverage-threshold 0 \
+  --evaluation-wait-timeout 360 --episode-id optimize_explore_2r_120 \
+  --evaluation-output-dir log/optimize_20260929/explore2r \
+  --log-dir log/optimize_20260929/explore2r
+```
+
+结果：`nav_goal_count=24`、`nav_succeeded=22`、`nav_aborted=0`、`nav_canceled=0`，正确自由空间覆盖率 `0.9101`，搜索重叠 `0`，碰撞事件 `0`，总路径 `36.08 m`；评估按 120 秒上限结束，任务状态仍为 `EXPLORE`。日志显示两台机器人同时获得不同可达前沿，之后持续重新分配，没有出现等待全部机器人或单车独占目标的停滞。
