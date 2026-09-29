@@ -3241,3 +3241,15 @@ python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 2 \
 ```
 
 结果：`nav_goal_count=24`、`nav_succeeded=22`、`nav_aborted=0`、`nav_canceled=0`，正确自由空间覆盖率 `0.9101`，搜索重叠 `0`，碰撞事件 `0`，总路径 `36.08 m`；评估按 120 秒上限结束，任务状态仍为 `EXPLORE`。日志显示两台机器人同时获得不同可达前沿，之后持续重新分配，没有出现等待全部机器人或单车独占目标的停滞。
+
+## 2026-09-29 RALLY 动态占位死锁诊断
+
+现场三机器人命令：
+
+```bash
+ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py world:=my_world.world robot_count:=3 enable_gzclient:=true enable_task_regions:=true enable_status_panel:=true enable_rviz:=false enable_merge_rviz:=false auto_save_map:=false gazebo_seed:=101 nav2_ready_timeout_sec:=360.0 enable_target_detection:=true enable_rally:=true enable_battery:=true battery_initial_energy:=40.0 target_x:=-4.0 target_y:=4.0
+```
+
+RALLY 日志显示 tb1 先到达集合位，tb2 进入中间点后因充电暂停，tb3 的长路线超时；随后 tb1 被让到 `(-4.21, 0.56)`，但 tb2 和 tb3 反复对同一集合目标报告 `No safe rally route`，协调器重复重规划而没有放行一个机器人。现场同时发现一套遗留的两机器人 seed 303 launch（父进程 `2503667`，运行约 6 小时），已停止该遗留栈，仅保留当前三机器人 launch。
+
+代码修复：当所有候选路线都被机器人动态占位挡住且没有正在执行的集合 action 时，按 `rally_dispatch_order` 选出第一个可行动机器人作为临时 leader，在静态合并地图上规划路线，把其他机器人位置降为软障碍；Nav2 local costmap 仍负责近距离避障，leader 离开后 followers 重新规划。组件结果：`64 passed`，`py_compile` 和 colcon build 通过。该现场进程在修复前启动，需重新 launch 才能验证新策略。
