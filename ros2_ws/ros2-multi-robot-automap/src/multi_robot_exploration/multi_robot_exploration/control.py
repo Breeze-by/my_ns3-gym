@@ -3174,6 +3174,12 @@ class HeadquartersControl(Node):
         ]
         selected = []
         for name, assignment in plans.items():
+            # Keep exploration single-file until moving-robot footprints are
+            # represented in the shared map; static route reservations alone
+            # do not prevent two local planners entering one corridor between
+            # map updates.
+            if selected:
+                break
             admitted = reserve_rally_prefix(
                 (RallyPose(assignment.navigation_x, assignment.navigation_y, 0.0),
                  routes[name]), reserved_routes,
