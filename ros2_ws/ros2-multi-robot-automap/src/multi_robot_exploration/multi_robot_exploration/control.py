@@ -3064,11 +3064,12 @@ class HeadquartersControl(Node):
                 and self.battery_modes[name] == "ACTIVE"
             )
         }
-        if any(
+        active_explorers = sum(
             state == "active"
             for name, state in self.robot_states.items()
             if name in self.participating_robots()
-        ):
+        )
+        if active_explorers >= 2:
             return
         if not idle_positions:
             return
@@ -3180,10 +3181,10 @@ class HeadquartersControl(Node):
         ]
         selected = []
         for name, assignment in plans.items():
-            # Keep exploration single-file until moving-robot footprints are
-            # represented in the shared map; static route reservations alone
-            # do not prevent two local planners entering one corridor between
-            # map updates.
+            # Admit one new route per control cycle and cap the active fleet
+            # at two until moving footprints reach the shared map; static
+            # reservations alone do not prevent local planners entering one
+            # corridor between map updates.
             if selected:
                 break
             admitted = reserve_rally_prefix(
