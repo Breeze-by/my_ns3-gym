@@ -3197,11 +3197,12 @@ class HeadquartersControl(Node):
             if selected:
                 break
             reservations = list(reserved_routes)
-            reservations.extend(
-                (position,)
-                for other_name, position in parked_positions.items()
-                if other_name != name
-            )
+            if reservations:
+                reservations.extend(
+                    (position,)
+                    for other_name, position in parked_positions.items()
+                    if other_name != name
+                )
             admitted = reserve_rally_prefix(
                 (RallyPose(assignment.navigation_x, assignment.navigation_y, 0.0),
                  routes[name]), reservations,
