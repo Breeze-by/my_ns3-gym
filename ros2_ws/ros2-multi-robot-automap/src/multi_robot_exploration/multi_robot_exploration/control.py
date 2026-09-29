@@ -3180,6 +3180,15 @@ class HeadquartersControl(Node):
             for name, route in self.goal_routes.items()
             if self.robot_states[name] == "active" and route
         ]
+        parked_positions = {
+            name: position
+            for name, position in self.robot_positions.items()
+            if (
+                name in self.participating_robots()
+                and self.robot_states[name] == "idle"
+                and position is not None
+            )
+        }
         selected = []
         for name, assignment in plans.items():
             # Admit one new route per control cycle and cap the active fleet
@@ -3188,9 +3197,16 @@ class HeadquartersControl(Node):
             # corridor between map updates.
             if selected:
                 break
+            reservations = list(reserved_routes)
+            if reservations:
+                reservations.extend(
+                    (position,)
+                    for other_name, position in parked_positions.items()
+                    if other_name != name
+                )
             admitted = reserve_rally_prefix(
                 (RallyPose(assignment.navigation_x, assignment.navigation_y, 0.0),
-                 routes[name]), reserved_routes,
+                 routes[name]), reservations,
             )
             if admitted is None:
                 continue
