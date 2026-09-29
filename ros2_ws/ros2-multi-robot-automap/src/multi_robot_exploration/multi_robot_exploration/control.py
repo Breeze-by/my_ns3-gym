@@ -62,7 +62,7 @@ RALLY_ASSIGNMENT_WAIT_SEC = 30.0
 # Conflict-free navigation targets the final pose. Short legs are only used
 # after a failed action; traffic reservations may insert a holding point.
 RALLY_MAX_NAVIGATION_LEG_M = float("inf")
-RALLY_ROUTE_SEPARATION_M = 1.2
+RALLY_ROUTE_SEPARATION_M = 1.8
 # Two-way concurrency is the safe default.  Route reservations and live
 # proximity yielding still prevent robots from entering a conflicting corridor.
 RALLY_MAX_CONCURRENT = 2
@@ -3179,15 +3179,6 @@ class HeadquartersControl(Node):
             for name, route in self.goal_routes.items()
             if self.robot_states[name] == "active" and route
         ]
-        parked_positions = {
-            name: position
-            for name, position in self.robot_positions.items()
-            if (
-                name in self.participating_robots()
-                and self.robot_states[name] == "idle"
-                and position is not None
-            )
-        }
         selected = []
         for name, assignment in plans.items():
             # Admit one new route per control cycle and cap the active fleet
@@ -3196,16 +3187,9 @@ class HeadquartersControl(Node):
             # corridor between map updates.
             if selected:
                 break
-            reservations = list(reserved_routes)
-            if reservations:
-                reservations.extend(
-                    (position,)
-                    for other_name, position in parked_positions.items()
-                    if other_name != name
-                )
             admitted = reserve_rally_prefix(
                 (RallyPose(assignment.navigation_x, assignment.navigation_y, 0.0),
-                 routes[name]), reservations,
+                 routes[name]), reserved_routes,
             )
             if admitted is None:
                 continue
