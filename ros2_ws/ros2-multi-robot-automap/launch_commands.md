@@ -384,7 +384,7 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
 
 Gazebo GUI 和全局 RViz 建议二选一。三机器人冷启动时可把
 `nav2_ready_timeout_sec` 设置为 `360.0`，它只是失败上限，不是固定等待时间。该 launch
-参数必须写成浮点数；例如 `360` 会被 ROS 解析为整数并导致 Nav2 就绪门控启动失败。
+参数接受整数或浮点数；文档示例使用 `360.0` 只是为了和其他秒参数保持一致。
 
 ### 目标检测与集结
 
