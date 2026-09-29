@@ -3253,3 +3253,46 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py world:=my_
 RALLY 日志显示 tb1 先到达集合位，tb2 进入中间点后因充电暂停，tb3 的长路线超时；随后 tb1 被让到 `(-4.21, 0.56)`，但 tb2 和 tb3 反复对同一集合目标报告 `No safe rally route`，协调器重复重规划而没有放行一个机器人。现场同时发现一套遗留的两机器人 seed 303 launch（父进程 `2503667`，运行约 6 小时），已停止该遗留栈，仅保留当前三机器人 launch。
 
 代码修复：当所有候选路线都被机器人动态占位挡住且没有正在执行的集合 action 时，按 `rally_dispatch_order` 选出第一个可行动机器人作为临时 leader，在静态合并地图上规划路线，把其他机器人位置降为软障碍；Nav2 local costmap 仍负责近距离避障，leader 离开后 followers 重新规划。组件结果：`64 passed`，`py_compile` 和 colcon build 通过。该现场进程在修复前启动，需重新 launch 才能验证新策略。
+
+## 2026-09-30 P3A.6 当前 task-stack 重新冻结（未通过，保留全部结果）
+
+本轮在当前 monorepo HEAD 上执行 P3A.6，不把历史 `2933c24` 的 P3A.5 结果当作当前基线。所有运行目录保留在 `ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/`，用户的未跟踪 `260929_report/` 文件未加入提交。
+
+源码/构建门禁：`test_control.py`、`test_gateway.py`、`test_battery_manager.py`、`test_task_evaluator.py`、`test_fault_model.py` 共 `78 passed`；`multi_robot_interfaces multi_robot_exploration merge_map multi_robot` colcon build 通过；三机器人 source-only forbidden-bypass 审计通过。当前连续推送的 task-stack 提交为 `4cd83f2`、`f4474f0`、`d0a5db0`、`2776b8d`、`4d292d9`、`ba7276a`、`fbf4aa0`、`388b586`、`8136dce`、`5a61b16`、`6ad8788`。
+
+正式矩阵命令（固定场景 `scripts/p2d_scenarios.json`，seed 101/202/303、corridors 双机器人交叉格，RALLY 单并发和全局电池暂停）为：
+
+```bash
+source /opt/ros/humble/setup.bash
+cd ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1
+/usr/bin/python3 scripts/run_p2d_baseline.py --seeds 101 202 303 \
+  --run-id p3a6_current_head_388b586_final --ros-domain-base 210 \
+  --startup-timeout 600 --evaluation-wait-timeout 600 --inter-episode-delay 5 \
+  --rally-max-concurrent 1 --enable-global-battery-rally-pause
+```
+
+该批次第一格 `lab/seed101` 达到目标但探索阶段出现碰撞，因此 runner 被中止并保留；不能用后续定向结果替代固定矩阵。此前同一 P3A.6 调查还保留 `p3a6_current_head_7b0725c`（默认参数下碰撞/超时）、`p3a6_current_head_7b0725c_safe`（无碰撞但超时）、`p3a6_current_head_4cd83f2`（部分格碰撞/中断）、`p3a6_current_head_f4474f0`、`p3a6_current_head_d0a5db0`，以及一次因遗留 Gazebo 进程导致的启动基础设施中断。每次失败均保留原始 launch log 和已有 episode JSON。
+
+定向诊断：`p3a6_diag_parked_single_lab101`（`8136dce`）为 RALLY 超时、0 碰撞、一次充电；`p3a6_diag_parked_after_first_lab101`（`5a61b16`）为 RALLY 超时、0 碰撞、目标发现 191.2 s、一次充电，`tb2` 最终距集合位 4.0 m；`p3a6_diag_yield5_lab101`（`6ad8788`）在目标区地图补全和重规划阶段被中止。结论：停驻位置保留消除了探索碰撞，但当前 RALLY 动态让路/目标区地图时序仍未满足 300 s 严格 `COMPLETE` 门禁。
+
+强制充电回归命令：
+
+```bash
+/usr/bin/python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 2 --gazebo-seed 303 \
+  --startup-timeout 600 --message-timeout 90 --shutdown-timeout 60 \
+  --evaluation-duration 300 --coverage-threshold 0 --evaluation-wait-timeout 600 \
+  --target-detection --rally --battery --require-charge \
+  --battery-capacity 100 --battery-initial-energy 18 --battery-move-cost 1 \
+  --battery-idle-cost 0.02 --battery-safety-margin 5 --battery-charge-duration 10 \
+  --battery-return-timeout 120 --battery-charge-timeout 60 --target-x -4 --target-y 4 \
+  --target-max-distance 3 --target-field-of-view 90 --target-confirmation-frames 3 \
+  --rally-max-concurrent 1 --enable-global-battery-rally-pause \
+  --episode-id p3a6_forced_charge_6ad8788_seed303
+```
+
+输出目录为 `log/p2d_baseline/p3a6_forced_charge_6ad8788/`。机器人 tb1 确实出现返航、开始充电并恢复探索；但 300 s 内未满足目标检测/严格任务完成期望，不能计作两次充电 `COMPLETE` 回归。
+
+结论：P3A.6 当前仍为进行中，未设置 `task_stack_frozen_commit`，不得进入网络/RL。详见 `report/20260930_p3a6.md`。

@@ -94,6 +94,13 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
 
 ## Current Handoff Snapshot
 
+2026-09-30 P3A.6 remains in progress. The current task-stack candidate is
+`6ad8788`; source/build/bypass checks pass, but the fixed P2D/P3A matrix and
+strict forced-charge regression do not yet pass. Do not set
+`task_stack_frozen_commit` or start network/RL work. Retained runs and failure
+analysis are in `report/20260930_p3a6.md` and the dated `log.md` section; all
+outputs remain under `ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/`.
+
 - Active boundary: P3A and P3A.5 are user-accepted and frozen as the network
   task-stack baseline. The historical integration freeze candidate is
   `task_stack_frozen_commit=2933c24`; clean 6+4 runner batches cover all ten
