@@ -1093,7 +1093,7 @@ def rally_yield_pose(
     candidates = []
     for row, column in np.argwhere(np.isfinite(distances)):
         path_distance = float(distances[row, column] * resolution)
-        if path_distance < 0.5 or path_distance > 3.0:
+        if path_distance < 0.5 or path_distance > 5.0:
             continue
         x, y = grid_to_world(row, column, resolution, origin[0], origin[1])
         if math.dist((x, y), target) < 0.7:
