@@ -69,3 +69,49 @@ def test_return_escape_pose_moves_out_of_inflated_start_cell():
     assert return_escape_pose(
         grid, 0.1, (-0.5, -0.5), (0.0, 0.0), clearance_m=0.15
     ) is not None
+
+
+def test_late_return_acceptance_is_canceled_after_entering_charge_zone():
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+    from multi_robot_exploration.battery_manager import BatteryManager
+    handle = Mock(accepted=True)
+    manager = SimpleNamespace(
+        mode=CHARGING, mission_terminal=False, return_goal_pending=True,
+        return_goal_handle=None, return_goal_result=Mock())
+    BatteryManager.return_goal_response(manager, Mock(result=lambda: handle))
+    handle.cancel_goal_async.assert_called_once()
+    assert manager.return_goal_handle is handle
+    assert not manager.return_goal_pending
+
+
+def test_charging_waits_for_navigation_result_before_starting_timer():
+    from types import SimpleNamespace
+    from multi_robot_exploration.battery_manager import BatteryManager
+    manager = SimpleNamespace(
+        in_charging_zone=lambda **kwargs: True,
+        return_goal_pending=False, return_goal_handle=object(),
+        linear_speed=0.0, angular_speed=0.0,
+        stationary_linear=0.15, stationary_angular=0.1,
+        charge_stable_started_at=1.0)
+    BatteryManager.update_charging(manager, 20.0)
+    assert manager.charge_stable_started_at is None
+
+
+def test_missing_map_route_does_not_send_a_straight_line_return():
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+    from multi_robot_exploration.battery_manager import BatteryManager
+    grid = np.full((40, 40), 100, dtype=int)
+    grid[20, 10] = 0
+    navigation = Mock()
+    manager = SimpleNamespace(
+        return_attempts=0, max_return_attempts=3, navigation=navigation,
+        return_map=grid, return_map_resolution=0.1,
+        return_map_origin=(0.0, 0.0), map_position=(1.0, 2.0),
+        charge_x=3.0, charge_y=2.0, return_escape_failed=False,
+        return_escape_target=None, return_waypoint_target=None,
+        return_stage="charger", now=lambda: 10.0)
+    BatteryManager.send_return_goal(manager)
+    navigation.send_goal_async.assert_not_called()
+    assert manager.return_goal_due_at == 11.0

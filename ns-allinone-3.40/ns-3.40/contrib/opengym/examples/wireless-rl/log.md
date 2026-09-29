@@ -3190,3 +3190,37 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py world:=my_
 ```
 
 实时状态采样：`/task_state=RALLY`；tb1=`FAILED`, `battery_return_unreachable`, energy `17.08`, charge count `0`；tb2=`ACTIVE`, energy `12.89`；tb3=`ACTIVE`, charge count `1`, energy `36.04`。tb1 的 battery log 在同一 escape 目标 `(−4.14, 2.70)` 附近连续发送返航目标，约 180 s 后超时；tb3 已正常进入充电并恢复。该进程在本次充电阈值修改前启动，因此不作为新默认参数的回归结果；修改后需要重新启动 launch。
+## 2026-09-29 ROS exploration/charging controller optimization (current worktree)
+
+针对现场“历史目标硬排除后机器人停住、返航直线临时航点把机器人带偏、进入充电区后仍可能被迟到的导航结果拉走”的问题，修改了 ROS 2 task stack：历史和活动目标改为连续复用惩罚而不是硬过滤；探索目标用线性分配同时满足多机器人公平性和空间分离；栅格对角边禁止穿过两个障碍角；返航只使用地图可验证路径或短脱困路径，不再合成穿障直线；进入充电区后等待返航 action 完成/取消再开始稳定计时，并取消迟到接受的旧返航目标；同步 smoke 默认充电半径/时长为 0.8 m/6 s。
+
+组件验证：
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+python3 -m pytest -q src/multi_robot_exploration/test/test_control.py \
+  src/multi_robot_exploration/test/test_battery_manager.py \
+  src/multi_robot_exploration/test/test_gateway.py
+colcon build --symlink-install --packages-select multi_robot_exploration multi_robot
+```
+
+结果：`64 passed`；两个 ROS 包构建通过。
+
+真实 Gazebo 回归（ROS domain 50、`my_world.world`、seed 101、1 robot、初始能量 18、无目标/集合、180 秒上限）：
+
+```bash
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+export ROS_DOMAIN_ID=50 GAZEBO_MASTER_URI=http://127.0.0.1:11350
+python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 1 \
+  --gazebo-seed 101 --startup-timeout 360 --message-timeout 90 \
+  --shutdown-timeout 30 --evaluation-duration 180 --coverage-threshold 0 \
+  --evaluation-wait-timeout 360 --battery --require-charge \
+  --battery-initial-energy 18 --episode-id optimize_smoke_1r_180_v2 \
+  --evaluation-output-dir log/optimize_20260929/smoke180_v2 \
+  --log-dir log/optimize_20260929/smoke180_v2
+```
+
+结果：任务在评估上限时结束（单机器人探索未完成），但电池闭环通过：`battery_total_returns=1`、`battery_total_charges=1`、最低能量 `10.66`、最终模式 `ACTIVE`、`nav_aborted=0`、零碰撞、覆盖率 `0.789`。日志明确出现“return leg (charger)”、`started charging` 和 `charged and resumed`，证明返航、充电和恢复探索均发生。先前同配置的 v1 在返航时没有可行地图路径而停在 `RETURNING`，保留在 `log/optimize_20260929/smoke180/`，未替换为成功样本。

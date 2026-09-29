@@ -400,18 +400,7 @@ class BatteryManager(Node):
         self.return_count += 1
         self.return_stage = "charger"
         self.return_escape_failed = False
-        self.return_escape_target = (
-            return_escape_pose(
-                self.return_map,
-                self.return_map_resolution,
-                self.return_map_origin,
-                self.map_position,
-            )
-            if self.return_map_origin is not None
-            else None
-        )
-        if self.return_escape_target is not None:
-            self.return_stage = "escape"
+        self.return_escape_target = None
         self.return_waypoint_target = None
         self.publish_state()
         self.get_logger().warning(
@@ -422,7 +411,6 @@ class BatteryManager(Node):
     def begin_charging(self):
         now = self.now()
         handle = self.return_goal_handle
-        self.return_goal_handle = None
         if handle is not None:
             handle.cancel_goal_async()
         self.mode = CHARGING
@@ -443,7 +431,9 @@ class BatteryManager(Node):
             self.charge_stable_started_at = None
             self.return_goal_due_at = now + 1.0
             return
-        if self.linear_speed > self.stationary_linear or self.angular_speed > self.stationary_angular:
+        if (self.return_goal_pending or self.return_goal_handle is not None
+                or self.linear_speed > self.stationary_linear
+                or self.angular_speed > self.stationary_angular):
             self.charge_stable_started_at = None
             return
         if self.charge_stable_started_at is None:
@@ -510,78 +500,44 @@ class BatteryManager(Node):
             return
         if not self.navigation.server_is_ready():
             return
-        if (
-            self.return_stage == "charger"
-            and self.return_escape_target is None
-            and not self.return_escape_failed
-            and self.return_map_origin is not None
-        ):
+        # Replan toward home through known free space. A valid detour may
+        # initially move away from home; Euclidean convergence is not a path
+        # feasibility test. Never replace a missing route with a straight line.
+        if self.return_map_origin is None or self.map_position is None:
+            return
+        staged, _ = plan_rally_leg(
+            RallyPose(self.charge_x, self.charge_y, 0.0),
+            self.return_map, self.return_map_resolution, self.return_map_origin,
+            self.map_position, max_distance_m=float("inf"),
+            clearance_m=RALLY_PATH_CLEARANCE_M,
+        )
+        if staged is not None:
+            target = (staged.x, staged.y)
+            self.return_stage = "charger"
+            self.return_escape_target = None
+            self.return_waypoint_target = None
+        elif not self.return_escape_failed:
+            # The map can mark the current footprint inside inflated
+            # clearance. Use a short, map-validated escape leg, then rerun
+            # the charger planner. Never synthesize a geometric straight line.
             self.return_escape_target = return_escape_pose(
-                self.return_map,
-                self.return_map_resolution,
-                self.return_map_origin,
-                self.map_position,
+                self.return_map, self.return_map_resolution,
+                self.return_map_origin, self.map_position,
+                max_escape_m=1.5, clearance_m=RALLY_PATH_CLEARANCE_M,
             )
-            if self.return_escape_target is not None:
-                self.return_stage = "escape"
-        if (
-            self.return_stage == "charger"
-            and self.return_waypoint_target is None
-            and self.return_map_origin is not None
-            and self.map_position is not None
-        ):
-            staged, _ = plan_rally_leg(
-                RallyPose(self.charge_x, self.charge_y, 0.0),
-                self.return_map,
-                self.return_map_resolution,
-                self.return_map_origin,
-                self.map_position,
-                max_distance_m=1.5,
-                clearance_m=RALLY_PATH_CLEARANCE_M,
-            )
-            distance_home = math.dist(
-                self.map_position, (self.charge_x, self.charge_y)
-            )
-            staged_distance = (
-                math.dist((staged.x, staged.y), (self.charge_x, self.charge_y))
-                if staged is not None
-                else float("inf")
-            )
-            if (
-                staged is not None
-                and staged_distance > 0.25
-                and staged_distance < distance_home - 0.05
-            ):
-                self.return_waypoint_target = (staged.x, staged.y)
-                self.return_stage = "waypoint"
-            elif distance_home > 0.25:
-                # The merged map can briefly have an unknown or stale cell
-                # under the robot.  Keep returning in short, local-safe
-                # legs instead of sending a long charger goal that Nav2
-                # cannot start from.  The local costmap still performs the
-                # obstacle check for this conservative fallback.
-                leg = min(1.0, distance_home - 0.2)
-                ratio = leg / distance_home
-                self.return_waypoint_target = (
-                    self.map_position[0]
-                    + ratio * (self.charge_x - self.map_position[0]),
-                    self.map_position[1]
-                    + ratio * (self.charge_y - self.map_position[1]),
-                )
-                self.return_stage = "waypoint"
+            if self.return_escape_target is None:
+                self.return_goal_due_at = self.now() + 1.0
+                return
+            target = self.return_escape_target
+            self.return_stage = "escape"
+            self.return_waypoint_target = None
+        else:
+            self.return_goal_due_at = self.now() + 1.0
+            return
         goal = NavigateToPose.Goal()
         goal.pose = PoseStamped()
         goal.pose.header.frame_id = "map"
         goal.pose.header.stamp = self.get_clock().now().to_msg()
-        target = (
-            self.return_escape_target
-            if self.return_stage == "escape"
-            else (
-                self.return_waypoint_target
-                if self.return_stage == "waypoint"
-                else (self.charge_x, self.charge_y)
-            )
-        )
         goal.pose.pose.position.x = target[0]
         goal.pose.pose.position.y = target[1]
         goal.pose.pose.orientation.w = 1.0
@@ -606,6 +562,10 @@ class BatteryManager(Node):
             self.return_goal_due_at = self.now() + 1.0
             return
         self.return_goal_handle = handle
+        # The pose can enter the charge zone while the action request is in
+        # flight. Cancel a late acceptance before it can drive out again.
+        if self.mode != RETURNING or self.mission_terminal:
+            handle.cancel_goal_async()
         result = handle.get_result_async()
         result.add_done_callback(
             lambda completed, goal_handle=handle: self.return_goal_result(
@@ -637,7 +597,10 @@ class BatteryManager(Node):
                 # goal solely because the duplicated battery pose check is
                 # just outside charge_radius. update_charging() still
                 # requires the robot to be stationary for charge_duration.
-                self.begin_charging()
+                if self.in_charging_zone():
+                    self.begin_charging()
+                else:
+                    self.return_goal_due_at = self.now() + 1.0
         elif return_attempt_failure_reason(
             self.return_attempts, self.max_return_attempts
         ):

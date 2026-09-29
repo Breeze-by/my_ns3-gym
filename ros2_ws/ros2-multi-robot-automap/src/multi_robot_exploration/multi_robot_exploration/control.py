@@ -20,6 +20,7 @@ from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
 from scipy import ndimage
+from scipy.optimize import linear_sum_assignment
 from scipy.sparse import coo_matrix
 from scipy.sparse.csgraph import dijkstra
 from std_msgs.msg import String
@@ -33,7 +34,6 @@ PATH_CLEARANCE_M = 0.35
 VIEWPOINT_SEARCH_RADIUS_M = 0.8
 INFORMATION_RADIUS_M = 2.0
 MIN_TARGET_SEPARATION_M = 1.2
-MAX_TARGET_PATH_M = 12.0
 MAX_NAVIGATION_LEG_M = 5.0
 TARGET_HISTORY_SEC = 10.0
 BAD_TARGET_SEC = 30.0
@@ -354,6 +354,17 @@ def exploration_utility(
     )
 
 
+def target_reuse_penalty(target, excluded_targets):
+    """Prefer fresh space while retaining a safe fallback in narrow maps."""
+    if not excluded_targets:
+        return 1.0
+    nearest = min(math.dist(target, other) for other in excluded_targets)
+    if nearest >= MIN_TARGET_SEPARATION_M:
+        return 1.0
+    ratio = max(0.0, nearest / MIN_TARGET_SEPARATION_M)
+    return 0.35 + 0.65 * ratio
+
+
 def goal_is_stale(initial_gain, remaining_gain, age_sec):
     if age_sec < GOAL_REPLAN_SEC or initial_gain <= 0:
         return False
@@ -489,6 +500,11 @@ def path_distance_grid(traversable, start, return_predecessors=False):
             traversable[source_r0:source_r1, source_c0:source_c1]
             & traversable[target_r0:target_r1, target_c0:target_c1]
         )
+        if dr and dc:
+            connected &= (
+                traversable[source_r0:source_r1, target_c0:target_c1]
+                & traversable[target_r0:target_r1, source_c0:source_c1]
+            )
         sources.append(
             cell_ids[source_r0:source_r1, source_c0:source_c1][connected]
         )
@@ -676,19 +692,13 @@ def robot_candidate_assignments(
                 origin[0],
                 origin[1],
             )
-            if any(
-                math.dist((x, y), target) < MIN_TARGET_SEPARATION_M
-                for target in excluded_targets
-            ):
-                continue
             path_distance_m = float(distance_cells * resolution)
-            if path_distance_m > MAX_TARGET_PATH_M:
-                continue
             utility = exploration_utility(
                 viewpoint.information_gain,
                 viewpoint.group_size,
                 path_distance_m,
             )
+            utility *= target_reuse_penalty((x, y), excluded_targets)
             assignment = Assignment(
                 viewpoint, x, y, path_distance_m, utility, x, y
             )
@@ -703,23 +713,38 @@ def robot_candidate_assignments(
 
 
 def select_distinct_assignments(candidates):
-    """Greedily select spatially distinct targets for active robots."""
-    assignments = {}
-    used_targets = []
-    for _, robot_name, _, assignment in sorted(
-        candidates, reverse=True, key=lambda item: item[0]
-    ):
-        if robot_name in assignments:
+    """Maximize fleet utility over spatially separated observation targets.
+
+    All robots bid on the same target set. Optimal bipartite matching avoids
+    a greedy robot taking the only reachable target of another robot.
+    """
+    if not candidates:
+        return {}
+    targets = []
+    for _, _, _, assignment in sorted(candidates, key=lambda item: -item[0]):
+        target = (assignment.x, assignment.y)
+        if all(math.dist(target, other) >= MIN_TARGET_SEPARATION_M
+               for other in targets):
+            targets.append(target)
+    names = sorted({item[1] for item in candidates})
+    target_indices = {target: index for index, target in enumerate(targets)}
+    name_indices = {name: index for index, name in enumerate(names)}
+    utilities = np.zeros((len(names), len(targets) + len(names)))
+    options = {}
+    for utility, name, _, assignment in candidates:
+        column = target_indices.get((assignment.x, assignment.y))
+        if column is None:
             continue
-        if any(
-            math.dist((assignment.x, assignment.y), target)
-            < MIN_TARGET_SEPARATION_M
-            for target in used_targets
-        ):
-            continue
-        assignments[robot_name] = assignment
-        used_targets.append((assignment.x, assignment.y))
-    return assignments
+        row = name_indices[name]
+        if utility > utilities[row, column]:
+            utilities[row, column] = utility
+            options[row, column] = assignment
+    rows, columns = linear_sum_assignment(utilities, maximize=True)
+    return {
+        names[row]: options[row, column]
+        for row, column in zip(rows, columns)
+        if (row, column) in options
+    }
 
 
 def coordinate_assignments(
@@ -3007,15 +3032,11 @@ class HeadquartersControl(Node):
             "groups_with_viewpoints": 0,
             "candidate_assignments": 0,
         }
-        global_unknown = self.unknown_integral
         if self.frontier_cache is None:
             self.frontier_cache = prepare_frontier_data(
                 self.map_data, self.resolution
             )
         frontier_data = self.frontier_cache
-        global_radius = max(
-            1, math.ceil(INFORMATION_RADIUS_M / self.resolution)
-        )
         for robot_name, position in idle_positions.items():
             robot_exclusions = list(exclusions)
             robot_exclusions.extend(
@@ -3044,35 +3065,18 @@ class HeadquartersControl(Node):
                 "groups_with_viewpoints"
             ]
             for _, _, group_id, assignment in robot_candidates:
-                if not self.battery_assignment_safe(
-                    robot_name, assignment.path_distance_m
-                ):
-                    continue
-                row, column = world_to_grid(
-                    assignment.x,
-                    assignment.y,
-                    self.resolution,
-                    self.origin[0],
-                    self.origin[1],
+                # Battery reserve is a preference signal. A hard filter can
+                # leave every robot idle when the only useful frontier is
+                # beyond the conservative estimate; the local manager still
+                # owns the non-negotiable return trigger.
+                battery_factor = (
+                    1.0
+                    if self.battery_assignment_safe(
+                        robot_name, assignment.path_distance_m
+                    )
+                    else 0.25
                 )
-                if not (
-                    0 <= row < self.map_height
-                    and 0 <= column < self.map_width
-                ):
-                    continue
-                global_gain = _box_count(
-                    global_unknown,
-                    row,
-                    column,
-                    global_radius,
-                    self.map_height,
-                    self.map_width,
-                )
-                utility = exploration_utility(
-                    global_gain,
-                    assignment.viewpoint.group_size,
-                    assignment.path_distance_m,
-                )
+                utility = assignment.utility * battery_factor
                 coordinated = Assignment(
                     assignment.viewpoint,
                     assignment.x,
@@ -3123,37 +3127,26 @@ class HeadquartersControl(Node):
                 clearance_m=PATH_CLEARANCE_M,
             )
         reserved_routes = [
-            route
+            remaining_rally_route(route, self.robot_positions[name])
             for name, route in self.goal_routes.items()
             if self.robot_states[name] == "active" and route
         ]
-        selected = select_nonconflicting_routes(
-            routes,
-            list(plans),
-            reserved_routes,
-        )
-        if not selected:
-            # A route conflict must serialize the conflicting robots, not
-            # freeze the whole exploration loop. Let the highest-utility
-            # reachable plan move first; the next assignment is recomputed
-            # after it clears the shared corridor.
-            selected = next(
-                (
-                    [name]
-                    for name in plans
-                    if routes.get(name)
-                    and not any(
-                        routes_conflict(routes[name], reserved)
-                        for reserved in reserved_routes
-                    )
-                ),
-                [],
+        selected = []
+        for name, assignment in plans.items():
+            admitted = reserve_rally_prefix(
+                (RallyPose(assignment.navigation_x, assignment.navigation_y, 0.0),
+                 routes[name]), reserved_routes,
             )
-            if selected:
-                self.get_logger().info(
-                    f"Serializing one exploration route for {selected[0]} "
-                    "to release a shared corridor."
-                )
+            if admitted is None:
+                continue
+            pose, route = admitted
+            plans[name] = Assignment(
+                assignment.viewpoint, assignment.x, assignment.y,
+                assignment.path_distance_m, assignment.utility, pose.x, pose.y,
+            )
+            routes[name] = route
+            reserved_routes.append(route)
+            selected.append(name)
         for robot_name in selected:
             assignment = plans[robot_name]
             self.robot_states[robot_name] = "active"
@@ -3196,7 +3189,14 @@ class HeadquartersControl(Node):
         goal.pose.header.stamp = self.get_clock().now().to_msg()
         goal.pose.pose.position.x = assignment.navigation_x
         goal.pose.pose.position.y = assignment.navigation_y
-        goal.pose.pose.orientation.w = 1.0
+        frontier = grid_to_world(
+            assignment.viewpoint.frontier_row, assignment.viewpoint.frontier_column,
+            self.resolution, *self.origin,
+        )
+        yaw = math.atan2(frontier[1] - assignment.navigation_y,
+                         frontier[0] - assignment.navigation_x)
+        goal.pose.pose.orientation.z = math.sin(yaw / 2.0)
+        goal.pose.pose.orientation.w = math.cos(yaw / 2.0)
         future = client.send_goal_async(
             goal,
             feedback_callback=lambda feedback, name=robot_name: (

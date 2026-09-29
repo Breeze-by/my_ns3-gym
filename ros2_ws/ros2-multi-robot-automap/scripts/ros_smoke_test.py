@@ -425,8 +425,8 @@ def parse_args():
     parser.add_argument("--battery-move-cost", type=float, default=1.0)
     parser.add_argument("--battery-idle-cost", type=float, default=0.02)
     parser.add_argument("--battery-safety-margin", type=float, default=8.0)
-    parser.add_argument("--battery-charge-duration", type=float, default=10.0)
-    parser.add_argument("--battery-charge-radius", type=float, default=0.5)
+    parser.add_argument("--battery-charge-duration", type=float, default=6.0)
+    parser.add_argument("--battery-charge-radius", type=float, default=0.8)
     parser.add_argument(
         "--battery-charge-target-fraction", type=float, default=0.8
     )

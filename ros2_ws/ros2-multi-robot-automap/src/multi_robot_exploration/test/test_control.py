@@ -663,3 +663,42 @@ def test_missing_or_stale_battery_state_is_unavailable():
     assert control.unavailable_battery_states(
         received_at, now=100.0, timeout=20.0
     ) == ["tb2", "tb3"]
+
+
+def test_history_discourages_but_does_not_remove_reachable_frontiers():
+    grid = np.full((40, 40), -1, dtype=int)
+    grid[5:35, 5:30] = 0
+    args = (grid, 0.1, (0.0, 0.0), "tb1", (2.0, 2.0))
+    original, _ = control.robot_candidate_assignments(*args)
+    history = [(item[3].x, item[3].y) for item in original]
+    repeated, _ = control.robot_candidate_assignments(*args, excluded_targets=history)
+    assert len(repeated) == len(original) > 0
+    assert all(0 < new[0] < old[0] for new, old in zip(repeated, original))
+
+
+def test_joint_assignment_does_not_take_another_robots_only_target():
+    viewpoint = control.Viewpoint(1, 5, 5, 5, 6, 100, 10)
+    def candidate(name, x, utility):
+        return (utility, name, 1,
+                control.Assignment(viewpoint, x, 0.0, 2.0, utility, x, 0.0))
+    selected = control.select_distinct_assignments([
+        candidate("tb1", 1.0, 10.0), candidate("tb1", 4.0, 9.0),
+        candidate("tb2", 1.0, 8.0),
+    ])
+    assert selected["tb1"].x == 4.0
+    assert selected["tb2"].x == 1.0
+
+
+def test_path_cannot_cut_diagonally_through_blocked_corners():
+    safe = np.array([[True, False], [False, True]])
+    distances = control.path_distance_grid(safe, (0, 0))
+    assert not np.isfinite(distances[1, 1])
+
+
+def test_distant_frontier_can_require_long_detour_through_known_space():
+    grid = np.zeros((30, 230), dtype=int)
+    grid[:, 220:] = -1
+    candidates, _ = control.robot_candidate_assignments(
+        grid, 0.1, (0.0, 0.0), "tb1", (1.0, 1.5))
+    assert candidates
+    assert min(item[3].path_distance_m for item in candidates) > 12.0
