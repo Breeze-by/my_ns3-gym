@@ -63,8 +63,9 @@ RALLY_ASSIGNMENT_WAIT_SEC = 30.0
 # after a failed action; traffic reservations may insert a holding point.
 RALLY_MAX_NAVIGATION_LEG_M = float("inf")
 RALLY_ROUTE_SEPARATION_M = 1.8
-# Two-way concurrency is the safe default.  Route reservations and live
-# proximity yielding still prevent robots from entering a conflicting corridor.
+# RALLY may use two-way concurrency when explicitly requested. Exploration
+# admits one moving robot at a time so frontier routes cannot cross before the
+# next map update supplies fresh reservations.
 RALLY_MAX_CONCURRENT = 2
 
 TASK_TRANSITIONS = {
@@ -3069,7 +3070,7 @@ class HeadquartersControl(Node):
             for name, state in self.robot_states.items()
             if name in self.participating_robots()
         )
-        if active_explorers >= 2:
+        if active_explorers >= 1:
             return
         if not idle_positions:
             return
