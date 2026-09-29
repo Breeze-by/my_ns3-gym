@@ -1,6 +1,6 @@
-# 多机器人任务导向 Wi-Fi 通信研究总纲
+# 面向多机器人任务的无线通信调度研究总纲
 
-最后更新：2026-09-28。
+最后更新：2026-09-29。
 
 本文档记录本项目的长期研究目标、当前决策、实施路线、评测口径和已知风险。它是后续研究
 和 agent 协作的方向性依据，不是当前代码功能清单。已经实现的行为以
@@ -8,6 +8,27 @@
 源码为准，实验事实以日期报告和 `log.md` 为准。
 
 逐步落地顺序、工程产物、退出条件和当前进度见 `IMPLEMENTATION_PLAN.md`。
+
+## 0. 本轮路线决策（2026-09-29）
+
+以下决策已根据教师评审意见和用户确认纳入主计划；它们是研究边界，不能被后续
+实现自行扩大：
+
+| 决策 | 当前约定 | 状态 |
+|---|---|---|
+| 学习范式 | 默认采用集中式、部分可观测的单智能体通信调度器（POMDP 视角）；多机器人不自动等于 MARL | 已确认；实现待完成 |
+| 第一版学习变量 | 固定消息语义、消息生成方式和机器人任务栈，只学习应用层消息准入；不直接学习 SLAM、Nav2、任务分配或 MAC | 已确认；实现待完成 |
+| 协议可见性 | candidate/request/grant/heartbeat/critical-event 是必要机制；中枢只能使用已交付的摘要、请求和状态，不能免费读取机器人当前队列或消息价值 | 已确认；实现待完成 |
+| 网络边界 | 调度器控制应用消息是否进入发送通道；Wi-Fi DCF/EDCA、排队、竞争、重传和交付仍由网络模型负责 | 已确认；实现待完成 |
+| 实验顺序 | 先做应用负载/控制开销审计，再做 Wi-Fi 瓶颈测量；只有存在可测通信决策空间时才训练 RL | 已确认；审计待完成 |
+| 强基线 | task-value greedy、freshness/deadline、link-aware、SchedNet-inspired（公平适配）必须纳入同一消息接口比较 | 已确认；实现待完成 |
+| 任务栈门禁 | 当前 task-stack 优化后先新增 P3A.6 重新冻结，再进入网络/RL；P3A.5 仅保留为历史证据 | 已确认；P3A.6 待完成 |
+| 研究主线 | 重点是无线通信问题；机器人任务作为固定工作负载和端到端验证，论文方向由最终证据决定，不预先锁定为机器人或 MARL 论文 | 已确认 |
+| RL 结论 | RL 没有超过强非学习基线也可以是有效结果，不为制造优势而改变规则或人为拥塞 | 已确认 |
+
+教师评审记录见 [`report/20260929_teacher_research_route_review.md`](report/20260929_teacher_research_route_review.md)。
+评审中的相关工作重叠判断用于收窄主张：不能把真实 Wi-Fi、异构机器人、选择性通信或实物
+部署单独当作创新；最接近方法的逐项比较和负载证据仍为待完成工作。
 
 ## 1. 最终目标
 
@@ -22,18 +43,25 @@
    已有机器人故障时明确标记为部分完成；
 6. 单次充电不足以探索整个区域，机器人必须在电量不足前返回起点充电，再继续任务。
 
-最终工作同时包含 ns-3 + ROS 2/Gazebo 可重复仿真、至少 2 台真实机器人实验、强化学习通信
-策略与充分 baseline 对比，以及任务、网络和 sim-to-real 指标分析。
+最终工作包含 ns-3 + ROS 2/Gazebo 可重复仿真、至少 2 台真实机器人实验、固定消息语义下的
+无线通信调度比较，以及任务、网络和 sim-to-real 指标分析。RL 只有在负载和瓶颈审计证明存在
+长期通信决策空间时才进入实验；若强非学习方法已足够，保留该结果，不强行训练或宣称 RL 优势。
 
 ## 2. 核心研究问题和边界
 
 建议将论文问题固定为：
 
-> 在受干扰、带宽和时效受限的 Wi-Fi 4 网络中，如何根据任务进展、信息新鲜度、机器人状态
-> 和信道状态，学习选择发送者、发送时机和消息类型，从而提高多机器人搜索任务的成功率并
-> 缩短完成时间，同时减少通信量、过期信息和无效重复探索？
+> 在中央端只能看到带时延的候选摘要、请求、心跳和已交付状态，且 Wi-Fi 存在排队、竞争、
+> 丢包和时效约束的条件下，如何调度固定语义的应用消息准入，使多机器人任务获得真正有用
+> 的新信息，并在相同任务算法和网络资源下改善任务—通信权衡？
 
-创新重点是任务导向通信，不是重新发明机器人、SLAM、视觉检测器或 802.11 MAC。
+第一版把它建模为集中式、部分可观测的单智能体通信调度问题。动作是“准入哪个端点的哪类
+候选消息”，也包括不准入普通消息；机器人数量不决定学习范式。消息内容、消息编码和机器人
+SLAM/Nav2/探索/检测/电池算法保持固定。调度器不替代 Wi-Fi MAC，也不直接控制 MCS、功率、
+信道或导航。
+
+创新主张必须来自无线约束下的可检验困难和证据，不能把真实 Wi-Fi、任务收益、异构机器人、
+选择性通信或实物部署中的任一项单独当作新颖性。
 
 正式实验必须形成以下因果闭环：
 
@@ -84,8 +112,9 @@ checkpoint、GPU 和多 seed 评估链路，但没有真实 Wi-Fi 节点、数�
 模型、SLAM、Nav2、世界和 frontier 方法，只在必要边界新增任务评估、能量、目标检测、显式
 通信和实验控制。
 
-截至 2026-09-28，P1/P2 已完成并验收；P3A 和 P3A.5 的 gateway、旁路审计、当前 task-stack
-固定矩阵和强制充电回归已由用户验收。P3B 中的固定应用层 fault transport、协议矩阵、消息
+截至 2026-09-29，P1/P2 已完成并验收；P3A 和 P3A.5 的 gateway、旁路审计、固定矩阵和强制
+充电回归仅作为历史证据保留。当前 HEAD 尚未通过新增的 P3A.6 重新冻结门禁；在该门禁完成前，
+不能把 task-stack 称为网络/RL 基线。P3B 中的固定应用层 fault transport、协议矩阵、消息
 账本和 stale-state 安全语义已由用户验收；Gazebo fault-mode 完整任务矩阵和 ns-3 coupling
 没有混入 P3B 的完成声明，重新标记为 P3B.5。P3C 将专门负责 gateway 通信指标和默认可视化，
 之后才进入 P4A 的 ns-3 数据包/时间桥接。详见 `report/20260928_p3b.md`、
@@ -93,7 +122,8 @@ checkpoint、GPU 和多 seed 评估链路，但没有真实 Wi-Fi 节点、数�
 仍有以下限制：
 
 - 同机 ROS 2/DDS 仍是理想网络，没有 Wi-Fi 排队、丢包和干扰；
-- P3A/P3A.5 已冻结为网络实验基线；它们仍是同机零损 ideal gateway，不包含 Wi-Fi 排队、丢包和干扰；
+- P3A/P3A.5 的冻结结果是历史批次，不等于当前 HEAD 已冻结为网络实验基线；P3A.6 需在当前
+  task-stack 上重跑 P2D/P3A 门禁后才可建立新的基线；
 - P3B 已完成的 fault substitute 仍是应用层模型，不是 Wi-Fi 物理层或 MAC 仿真；P3B.5 要验证
   故障如何改变完整任务，P3C 要把变化实时显示并固化成指标；
 - 评估器仍可读取 Gazebo 真值；控制链中的地图、odom、TF、检测和 Nav2 命令已经过 gateway，
@@ -136,10 +166,20 @@ AP / headquarters
 ```
 
 机器人本地必须保留传感器、SLAM、局部地图、避障、Nav2、当前任务、低电量自主返航和通信
-中断后的降级行为。安全控制不交给 RL；无线断开或策略异常时仍要避免碰撞和电池耗尽。
+中断后的降级行为。安全控制不交给调度器；无线断开或策略异常时仍要避免碰撞和电池耗尽。
 
-中央端只能使用已经成功送达的信息，例如最后接收的机器人位置、电量、地图版本和检测结果。
-训练时 centralized critic 可以读取完整仿真状态，但执行策略不得读取不可部署的 Gazebo 真值。
+协议必须显式区分：
+
+1. `candidate`：机器人在本地生成的低开销候选摘要；
+2. `request`：机器人请求某类候选获得发送机会，或报告关键事件；
+3. `grant`：中央为端点/消息类型授予短期准入机会或预算；
+4. `heartbeat`：最低限度的状态和可达性通告；
+5. `critical-event`：目标确认、返航、急停等受保护事件，具有最大等待和有限重试规则。
+
+这些控制消息本身的字节、排队、时延、丢失和重试必须进入通信账本。中央端只能使用已经
+成功送达的摘要、请求、心跳和消息，例如最后接收的机器人位置、电量、地图版本和检测结果；
+不能读取机器人当前隐藏队列或消息价值。训练时可以采用带完整状态的 centralized critic 作为
+明确标注的训练特权，但执行策略只能使用可部署的历史观测，且这不改变单智能体范式。
 
 ## 5. 任务状态机和完成条件
 
@@ -299,7 +339,7 @@ MVP 配置：
 以及中央下行融合地图和任务命令。两台机器人可从以下概念集合开始：
 
 ```text
-0: 本周期不发送
+0: 不准入普通消息（受保护 heartbeat/critical-event 仍遵守协议上限）
 per robot: uplink status / map update / detection evidence
 per robot: downlink fused-map update / task command
 ```
@@ -312,9 +352,13 @@ per robot: downlink fused-map update / task command
 
 ### 10.2 观测
 
+观测必须严格按中央真实可得的信息构造，不能把机器人当前队列和消息价值作为免费输入。
+
 - AP 已知的机器人最后位置、电量和任务状态；
 - 每类信息 AoI；
-- 上下行待发送消息类型、endpoint、大小、生成时间和队列长度；
+- 最近收到的 candidate/request/heartbeat 摘要及其年龄、请求状态和 grant 状态；
+- AP 已知的上行/下行待发送消息类型、endpoint、大小、生成时间和队列摘要；机器人未交付的
+  隐藏队列必须表示为未知或仅以最近摘要表示；
 - 最近覆盖率增量、地图版本和 frontier 数量；
 - 机器人是否探索、返航、充电或集合；
 - 最近投递率、时延、重传、信道忙比例和链路质量；
@@ -347,7 +391,7 @@ per robot: downlink fused-map update / task command
 
 ## 11. Baselines 和实验公平性
 
-至少包括：
+至少包括以下同接口、同消息内容、同任务栈和同控制开销的策略：
 
 - no communication；
 - historical direct-ideal（仅 P1C 历史探索上界）；`zero-loss finite-rate`（公平 gateway 基线）；
@@ -355,9 +399,12 @@ per robot: downlink fused-map update / task command
 - fixed-period send；
 - random；
 - event-triggered：变化超过阈值才发；
-- task-priority：目标/低电量优先于状态和地图；
-- network-aware heuristic：信道好时发送大消息；
-- DQN，动作空间确有需要时再增加 PPO。
+- **task-value greedy**：按预计对任务决策的边际价值与资源代价排序；
+- **freshness/deadline**：按 AoI、TTL 和截止时间优先级排序；
+- **link-aware**：把交付概率/预计 airtime 与任务价值联合排序；
+- **SchedNet-inspired**：借鉴发送者优先级/共享预算思想，但适配本项目固定消息语义和真实
+  candidate/request/grant 接口；不能声称复现原论文，也不能使用本项目不可得的信息；
+- 只有在前述审计证明存在长期时序收益后，才加入集中式 DQN 或其他 RL。
 
 所有策略共享机器人、探索、Nav2、检测、电池、地图和 Wi-Fi 参数，只改变通信决策。训练、
 validation 和 held-out test 场景/seeds 必须独立。每个策略使用相同地图、目标、出生点、电池、
@@ -382,6 +429,8 @@ energy-40 的失败 stress 结果。目标发现者必须进入结果字段；�
 `detecting_robot` 分层报告，否则无法评估多发送者竞争。
 
 P5 还必须预注册一条主假设和一个主终点，避免同时为成功率、时间、字节、AoI 和重复探索调参。
+在此之前必须完成应用负载与协议控制开销审计，以及合理负载下的 Wi-Fi 瓶颈测量；不允许用
+不现实流量制造 RL 优势。
 建议主终点为“在 success rate、碰撞和电量安全不劣的约束下，降低应用 payload bytes/airtime”；
 success rate、RMST、AoI、时延和重复探索作为次级终点。若 network-not-bottleneck 门显示任务对
 合理 Wi-Fi 负载不敏感，应保留该负结果，不扩展动作空间制造显著性。
@@ -568,26 +617,33 @@ staging poses。先固定检测器、SLAM 和 Nav2，再比较通信；新增视
 - 验证 stale-state 保持/等待、deadline、单机故障隔离、剩余机器人集合和 `PARTIAL_COMPLETE`；
 - 退出：协议门禁与完整任务故障结果分开可审计，故障不伪造成功，安全降级动作可复现。
 
-### 月 5：P3C 通信可视化与 ns-3 Wi-Fi 4 准备
+### 月 5：P3C/P3C.5 可视化、协议审计与 ns-3 Wi-Fi 4 准备
 
 - P3C 默认打开 gateway 监控面板，输出吞吐、PDR、丢包、延迟、队列、重试、AoI、freshness
   和任务阶段同步曲线；GUI/headless 使用同一 metrics ledger；
 - 先用确定性时间窗接入 ns-3 数据包、移动和真实消息大小，证明重复运行及逐包账本一致；
-- 再建立 AP + 2/3 STA、传播、墙损耗和同信道干扰，并用实测或公开依据固定参数；
+- 完成 P3C.5：测量 candidate/request/grant/heartbeat/critical-event 的应用负载、控制字节、
+  队列和时效分布；
+- 再建立 AP + 2/3 STA、传播、墙损耗和同信道干扰，并用实测或公开依据固定参数，确认现实
+  负载是否真的形成排队/过期/交付瓶颈；
 - 退出：P3C 指标守恒且可视化通过；P4A 相同 seed 可复现，包生成/准入/交付账本闭合，理想、
   无干扰和受干扰的网络指标形成解释得通的梯度；任务指标按批次统计，不要求每个 seed 人为单调。
 
-### 月 6：非学习 baselines
+### 月 6：强非学习 baselines 与 RL go/no-go
 
 - 先冻结场景、四类 seed、主指标、episode horizon 和最小双向动作集合；
-- 完成全部 baseline 和 held-out seeds 配套运行，检查现实负载下是否确有通信决策空间；
-- 退出：同一 gateway 下脚本、CSV、基础设施/任务失败记录和统计可一键复现。
+- 完成 task-value greedy、freshness/deadline、link-aware、SchedNet-inspired 以及既有 baseline；
+- 结合 P3C.5/P4B 结果判断是否存在通信决策空间；
+- 退出：同一 gateway 下脚本、CSV、基础设施/任务失败记录和统计可一键复现，并记录“训练 RL”
+  或“保留非学习方法”的决定及理由。
 
-### 月 7–8：DQN，必要时 PPO
+### 月 7–8：条件式学习调度（如审计允许）
 
-- 中央离散动作 DQN，检查可部署观测和奖励漏洞；
-- 仅在动作结构需要时做 PPO；
-- 退出：validation-only 选模和 held-out 链路正确；是否胜过 heuristic 作为结果如实报告。
+- 仅在 P3C.5/P4B 证明存在可测时序通信决策空间后，训练集中式、部分可观测 DQN；
+- 检查 candidate/request/grant 协议、可部署观测和奖励漏洞；
+- 仅在动作结构需要时做 PPO，不默认引入 MARL；
+- 退出：validation-only 选模和 held-out 链路正确；是否胜过最强 heuristic 作为结果如实报告，
+  RL 没有优势时保留负结果。
 
 ### 月 9：泛化和消融
 
@@ -620,13 +676,15 @@ staging poses。先固定检测器、SLAM 和 Nav2，再比较通信；新增视
 2 robots
 + one charging area
 + one static target
-+ Wi-Fi 4 AP/STA with realistic interference
-+ explicit task messages
-+ central DQN
-+ strong rule-based baselines
++ Wi-Fi 4 AP/STA with measured or justified load conditions
++ explicit candidate/request/grant/heartbeat/critical-event protocol
++ strong task/network-aware non-learning baselines
 + repeatable simulation
 + two-robot hardware validation
 ```
+
+集中式 RL 是条件式扩展，不是最低成果的预设交付物；是否加入最终论文由 P3C.5/P4B 负载审计
+和 P5 baseline 结果决定。
 
 以下是扩展，不应成为前期阻塞项：第 3 台实物机器人、PPO/MAPPO、直接 D2D、所有节点使用
 OpenWiFi、学习式地图/图像压缩、未知初始位姿地图配准、机械自动对接充电、动态目标/障碍、

@@ -1,6 +1,6 @@
-# 多机器人任务导向 Wi-Fi RL 工程实施计划
+# 多机器人任务导向无线通信调度工程实施计划
 
-最后更新：2026-09-28。
+最后更新：2026-09-29。
 
 本文把 `RESEARCH_PLAN.md` 的研究路线拆成可逐步实现、验证和验收的工程检查点。
 研究边界、论文问题和最终指标仍以 `RESEARCH_PLAN.md` 为准；当前功能以源码和
@@ -9,18 +9,20 @@
 ## 1. 实施原则
 
 - 一次只完成一个可运行、可判定的检查点，完成后由用户检查再进入下一步；
-- 先建立无 RL 的正确任务闭环，再接网络，再训练策略；
+- 先建立无 RL 的正确任务闭环，再完成协议可见性、应用负载和 Wi-Fi 瓶颈审计，随后比较强非学习
+  基线；只有审计证明存在长期通信决策空间时才训练策略；
 - 每个检查点必须同时交付代码、最短验证、日志和必要文档；
 - 所有跨机器人/AP 信息最终必须经过显式通信边界，不能保留 ROS 直连旁路；
 - 固定世界、参数和 seed 后再做策略比较，失败和超时也进入结果；
 - 完整任务成功只对应 `COMPLETE`；发生机器人故障后剩余机器人集合产生
   `PARTIAL_COMPLETE`，这是可审计的部分完成，不计入完整成功率；覆盖率和 `FOUND` 是过程指标；
 - 正式批次区分启动前基础设施失败和启动后任务失败，并保留全部尝试；
-- 不提前实现 PPO/MAPPO、复杂地图压缩、未知初始位姿配准或 DDS-over-ns-3。
+- 第一版固定消息内容/生成方式和机器人任务算法，只控制应用层消息准入；不提前实现 MARL、
+  PPO/MAPPO、复杂地图压缩、未知初始位姿配准或 DDS-over-ns-3。
 
 ## 2. 当前基线
 
-截至 2026-09-24：
+截至 2026-09-29（历史证据与当前 HEAD 分开）：
 
 - ns-3 `wireless-rl` 是 5 用户抽象队列调度 MDP，训练、checkpoint、GPU、baseline
   和 held-out seeds 链路已验证；它只作为 RL 工具链资产保留；
@@ -49,15 +51,18 @@
   重复/乱序、ACK/有限重传、逐 attempt ledger、stale-state 安全语义，以及 54 格协议矩阵。
   P3B 原计划中尚未完成的 Gazebo fault-mode 任务矩阵、故障下任务指标和 ns-3 bridge 已重新
   标记为 P3B.5，不再把它们混写成 P3B 已完成；
-- 当前工作边界是 P3B.5 文档化的任务层故障闭环与安全降级，随后进入 P3C 通信指标和实时可视化；
-- P2B 前路线审计补充了 P2D 完整任务集成门、P4A 时间/包级对账门和正式统计规则，详见
-  `report/20260917_roadmap_audit.md`；P2D、P3A、P3A.5 和 P3B 已按各自边界验收，当前检查点为 P3B.5；
+- 当前工作边界是先完成 P3A.6 task-stack 重新冻结，再进入 P3B.5/P3C.5、Wi-Fi 瓶颈审计和强基线；
+  P3A.5 的冻结结果只作为历史证据，不能直接作为当前网络/RL 基线；
+- P2B 前路线审计补充了 P2D 完整任务集成门、P4A 时间/包级对账门和正式统计规则；教师评审
+  后新增 P3A.6、P3C.5、强非学习调度基线和 RL go/no-go 门，详见
+  `report/20260917_roadmap_audit.md`；P2D、P3A、P3A.5 和 P3B 已按各自边界验收；当前顺序先完成 P3A.6，再推进 P3B.5；
 - 2026-09-02 只完成过一次单机器人 headless 启动检查，暴露过冷启动 spawn 超时和
   退出阶段重复 shutdown/map 保存问题。
 
 ## 3. 检查点和退出条件
 
-状态只使用 `待开始`、`进行中`、`待用户验收`、`已验收`、`阻塞`。
+状态使用 `待完成`、`进行中`、`待用户验收`、`已验收`、`阻塞`；`待完成` 统一表示尚未完成，
+不暗示已经实现。
 
 | 编号 | 工程检查点 | 主要产物 | 最短退出条件 | 状态 |
 |---|---|---|---|---|
@@ -70,17 +75,19 @@
 | P2C | 电池、返航和充电 | 可校准能量、本地安全返航、非重叠充电位、失败原因 | 至少一次被迫充电的 episode 中无耗尽，保留地图/任务并在充电后继续；不可返航和耗尽正确失败 | 已验收 |
 | P2D | 完整理想通信任务基线 | 统一 runner、完整状态/阶段指标、跨目标场景矩阵 | 至少 3 个预先验证的 world/目标/能量场景各跑 seeds 101/202/303，完成探索→发现→必要充电→集合；另做 2 机器人交叉检查 | 已验收 |
 | P3A | 显式消息协议和零损 gateway | 本地候选队列、序号/时间戳/ACK/过期、接收信息存储、命令适配器、旁路清单 | 零损 finite-rate 语义、旁路审计和安全等价通过；不把完成时间当作 P2D 等价 | 已验收 |
-| P3A.5 | 当前 task-stack 重验证与冻结 | 当前 HEAD 的 P2D/P3A 完整矩阵、强制充电回归、commit/config/environment manifest、ROS graph edge 白名单 | 当前冻结候选在固定 10 格上 10/10 `COMPLETE`、零碰撞；输出 `task_stack_frozen_commit`，后续网络/RL baseline 不混入未重跑探索改动 | 已验收 |
+| P3A.5 | 历史 task-stack 重验证（冻结候选） | 历史 commit 的 P2D/P3A 完整矩阵、强制充电回归、manifest、ROS graph edge 白名单 | 仅作为历史证据；不能替代当前 HEAD 的重新冻结 | 已验收 |
+| P3A.6 | 当前 task-stack 重新冻结 | 当前 HEAD 的 P2D/P3A 完整矩阵、强制充电回归、commit/config/environment manifest、ROS graph edge 白名单 | 在网络/RL 前重新跑固定门禁并输出 `task_stack_frozen_commit`；后续任务栈改动必须另开批次 | 待完成 |
 | P3B | 固定 delay/loss 网络替身（已完成范围） | 独立上下行、固定 seed 队列、TTL/版本、重复/乱序、重传、逐消息账本和 stale-state 降级 | 4 项协议单测、54 格固定协议 matrix `PASS`；故障语义和安全降级可复现 | 已验收 |
-| P3B.5 | 故障条件下的完整任务闭环 | Gazebo fault-mode 任务矩阵、理想配对基线、任务/电池/碰撞/安全降级指标、机器人本地 freshness 保障、队列语义收敛 | 覆盖 `coverage/target/rally`、多 world/seed、丢包/延迟/TTL/deadline/retry/overflow；每格保留 ledger 和任务结果；健康机器人继续，未交付信息不触发错误任务；输出故障退化报告 | 进行中 |
-| P3C | gateway 通信指标与实时可视化 | 默认打开的 gateway 监控面板、实时曲线、CSV/JSON 指标快照、ideal/fault 对比报告 | 生成/准入/发送/交付/丢弃字节闭合；实时显示吞吐、PDR、丢包、时延、队列、重试、AoI 和任务阶段；面板不参与控制，headless 也可保存同一数据 | 待开始 |
-| P4A | ns-3 数据包与时间同步 | P4A-0 trace ledger、P4A-1 固定窗/lock-step、Gazebo mobility、真实消息大小、资源/RTF 记录 | trace 生成/准入/发送/交付/丢弃字节闭合；相同 seed 事件账本一致；P4A-1 无墙钟竞态，记录 wall time、sim time、RTF 和资源峰值 | 待开始 |
-| P4B | Wi-Fi 4 场景与校准 | AP+2/3 STA、传播、墙损耗、背景干扰、网络指标、实测校准集/验证集 | 参数有来源；ideal/无干扰/受干扰形成可解释梯度；无实测时标为 synthetic sensitivity，不宣称 sim-to-real；任务退化按批次报告 | 待开始 |
-| P5 | 实验协议和非学习 baselines | 冻结场景/seed/主指标/最小动作集及 no/ideal/always/periodic/random/event/task/network-aware | 同一 gateway 和配对 seed 一键运行，CSV 含所有任务失败和基础设施失败；确认现实负载下存在通信决策空间 | 待开始 |
-| P6 | 中央 DQN | 可部署观测、离散准入动作、硬安全覆盖、checkpoint | 仅用 validation 选模并完成 held-out 比较；工程通过不以强行胜过 baseline 为条件 | 待开始 |
-| P7 | 泛化、消融和统计 | 场景拆分、至少 20 个配对 held-out episode（每个主要 world≥6，推荐 24）、power/precision、置信区间、观测消融 | 先报告成功率及 95% CI，再报告 RMST/通信指标配对区间；主终点预注册为安全不劣下的 payload/airtime；若精度不足增加样本；明确优势、负结果及失效原因 | 待开始 |
-| P8A | 单机实物链路与真实感知 | 相机检测适配器、UDP gateway、时钟同步、无线测量和安全返航 | 单机器人不使用 Gazebo 真值完成检测、消息交付、返航充电流程，并校准仿真关键分布 | 待开始 |
-| P8B | 双机实物与 sim-to-real | 两机器人端到端任务、主要 baseline/RL 对比、失败样本 | 两机器人完成搜索、通知、必要充电和集合；保留全部尝试并报告仿真—实物差异 | 待开始 |
+| P3B.5 | 故障条件下的完整任务闭环 | Gazebo fault-mode 任务矩阵、理想配对基线、任务/电池/碰撞/安全降级指标、机器人本地 freshness 保障、队列语义收敛 | 覆盖 `coverage/target/rally`、多 world/seed、丢包/延迟/TTL/deadline/retry/overflow；每格保留 ledger 和任务结果；健康机器人继续，未交付信息不触发错误任务；输出故障退化报告 | 待完成 |
+| P3C | gateway 通信指标与实时可视化 | 默认打开的 gateway 监控面板、实时曲线、CSV/JSON 指标快照、ideal/fault 对比报告 | 生成/准入/发送/交付/丢弃字节闭合；实时显示吞吐、PDR、丢包、时延、队列、重试、AoI 和任务阶段；面板不参与控制，headless 也可保存同一数据 | 待完成 |
+| P3C.5 | 应用负载与协议控制开销审计 | candidate/request/grant/heartbeat/critical-event 的频率、字节、队列、AoI、deadline、控制开销与可观测性报告 | 在真实候选生成规则下测量负载，明确中央未知信息和审计边界；不得把仿真器隐藏队列作为输入 | 待完成 |
+| P4A | ns-3 数据包与时间同步 | P4A-0 trace ledger、P4A-1 固定窗/lock-step、Gazebo mobility、真实消息大小、资源/RTF 记录 | trace 生成/准入/发送/交付/丢弃字节闭合；相同 seed 事件账本一致；P4A-1 无墙钟竞态，记录 wall time、sim time、RTF 和资源峰值 | 待完成 |
+| P4B | Wi-Fi 4 场景、负载与瓶颈审计 | AP+2/3 STA、传播、墙损耗、背景干扰、网络指标、实测校准集/验证集 | 在 P3C.5 负载和协议开销下测量排队、过期、竞争和交付瓶颈；参数有来源；无实测时标为 synthetic sensitivity，不宣称 sim-to-real | 待完成 |
+| P5 | 强非学习通信调度基线与 RL go/no-go | 冻结场景/seed/主指标/最小动作集及 no/ideal/always/periodic/random/event、task-value greedy、freshness/deadline、link-aware、SchedNet-inspired | 同一 gateway 和配对 seed 一键运行，CSV 含所有任务失败和基础设施失败；完成负载/瓶颈审计后记录是否进入 RL | 待完成 |
+| P6 | 条件式集中式 POMDP 学习调度（RL） | 可部署观测、candidate/request/grant 准入动作、硬安全覆盖、checkpoint | 仅在 P5 go 条件满足后训练；validation 选模并完成 held-out 比较；不以胜过 baseline 为工程条件 | 待完成 |
+| P7 | 泛化、消融和统计 | 场景拆分、至少 20 个配对 held-out episode（每个主要 world≥6，推荐 24）、power/precision、置信区间、观测消融 | 先报告成功率及 95% CI，再报告 RMST/通信指标配对区间；主终点预注册为安全不劣下的 payload/airtime；若精度不足增加样本；明确优势、负结果及失效原因 | 待完成 |
+| P8A | 单机实物链路与真实感知 | 相机检测适配器、UDP gateway、时钟同步、无线测量和安全返航 | 单机器人不使用 Gazebo 真值完成检测、消息交付、返航充电流程，并校准仿真关键分布 | 待完成 |
+| P8B | 双机实物与 sim-to-real | 两机器人端到端任务、主要 baseline/（如有）RL 对比、失败样本 | 两机器人完成搜索、通知、必要充电和集合；保留全部尝试并报告仿真—实物差异 | 待完成 |
 
 P8 前必须先冻结 `DetectionProvider` 消息契约：P2A/P3B 可使用集中式 Gazebo truth provider 或
 离线 replay 验证消息路径，P8A 只替换为每机器人 camera provider；不能让真实视觉和网络首次集成
@@ -281,8 +288,8 @@ P3A 先实现同语义的零损 gateway，不接 ns-3。跨边界上行至少包
 
 P3A 必须维护机器可检查的 forbidden-bypass 清单，并用 ROS graph/源码测试验证中央执行节点
 没有直订 `/tbN/map`、`/tbN/odom`、`/tbN/tf` 或直建 `/tbN/navigate_to_pose` action client，
-机器人执行节点也没有绕过 gateway 直订中央 `/merge_map`；P3A.5 还要覆盖 launch remap、动态
-topic 和 evaluator/truth 例外。
+机器人执行节点也没有绕过 gateway 直订中央 `/merge_map`；历史 P3A.5 已覆盖 launch remap、动态 topic 和 evaluator/truth 例外；当前 P3A.6 必须在
+当前 HEAD 上重新执行同一审计。
 零损 gateway 应复现 P2D 的消息语义，而不是保留两套实现；当前 P3A formal v2 因后续 HEAD
 修改而只能作为 frozen historical evidence，必须在当前 task-stack commit 上重跑并写入 commit、
 工作树状态、配置/协议哈希和环境版本 manifest 后才可验收。P3A 的 ideal 定义为
@@ -298,7 +305,17 @@ P3B 先不接真实 Wi-Fi，而是用固定 seed fault matrix 覆盖 0/10%/100% 
 过期地图不触发重规划，旧地图/状态不得覆盖新版本。导航命令必须有 deadline、幂等 command id、
 最大重试次数和超时 abort，不能无限等待结果。
 
-### P3B.5：故障任务闭环与保障性降级
+### P3A.6：当前 task-stack 重新冻结（待完成）
+
+P3A.5 的 10 格结果是历史冻结候选，不能直接支撑当前网络/RL 比较。P3A.6 必须在当前
+HEAD 上重新运行 P2D 完整理想任务和 P3A gateway 门禁，固定 commit、工作树状态、场景/目标/
+电量、环境版本、协议哈希和 ROS graph/source bypass 白名单。所有机器人任务算法、消息生成
+语义和安全规则在此门之后冻结；后续改动必须新开实验批次并重新验证。
+
+退出条件：固定矩阵全部保留真实结果（包括失败），任务成功严格为 `COMPLETE`，零碰撞和
+充电回归满足既有门禁；产出 `task_stack_frozen_commit`，并由报告明确区分历史证据与当前基线。
+
+### P3B.5：故障任务闭环与保障性降级（待完成）
 
 P3B.5 接收 P3B 的固定故障替身，但把验证对象从“协议消息是否按规则丢弃”推进到“消息故障
 如何改变完整机器人任务”。这一阶段仍不接真实 ns-3 Wi-Fi；它只回答任务层和机器人安全层
@@ -376,7 +393,17 @@ P3C 的验收必须证明指标不是“看起来有图”：账本生成/准入
 故障退化图应回答：哪类消息先受影响、延迟还是丢包主导、AoI 何时超过安全 TTL、任务何时从
 COMPLETE 退化为 PARTIAL_COMPLETE/FAILED，以及健康机器人是否保持了保障性动作。
 
-### P4–P7：网络、策略和统计
+### P3C.5：应用负载与协议控制开销审计（待完成）
+
+在训练前，用冻结的任务栈和真实候选生成规则测量每类消息的生成频率、payload 字节、
+candidate/request/grant/heartbeat/critical-event 控制字节、队列深度、AoI、TTL/deadline、
+重试和等待时间。审计必须覆盖上行和下行，并把控制消息本身计入 payload、airtime 和能耗
+账本。中央只能使用已经交付的摘要、请求、心跳和历史反馈；机器人隐藏队列不能作为免费观测。
+
+退出条件：给出按任务阶段、消息类型、方向和机器人分层的负载分布，明确实际应用负载是否可能
+造成排队/过期/竞争；若负载不足，记录“通信不是瓶颈”，不得先改规则或人为增加拥塞。
+
+### P4–P7：网络、策略和统计（待完成）
 
 P4 拆为两个退出点：P4A-0 先用 canonical JSONL 候选消息 trace 对账应用生成/准入与 ns-3 逐包发送、交付、
 丢弃字节；P4A-1 选择并冻结一种桥接实现（首选带 message/clock ACK、退出和背压协议的 ZMQ 或 UDP），
@@ -387,9 +414,10 @@ P4 拆为两个退出点：P4A-0 先用 canonical JSONL 候选消息 trace 对�
 ns-3 逐包记录必须可对账，并记录 wall time、sim time、RTF、消息吞吐和 CPU/RAM 峰值。
 
 P5 在任何训练前冻结场景、训练/validation/test 划分、四类独立 seed、episode horizon、
-主指标和基于真实候选队列的最小动作集。动作同时考虑机器人上行与必要的中央下行；2/3
-机器人按同一生成规则使用各自固定维度 checkpoint，不提前实现可变规模策略。所有 baseline
-包括 ideal 都使用相同 gateway；正式启动前失败单独记为
+主指标和基于真实候选队列的最小动作集。先运行 task-value greedy、freshness/deadline、
+link-aware 和 SchedNet-inspired 强基线；所有方法固定消息内容、机器人任务栈和协议控制开销。
+动作同时考虑机器人上行与必要的中央下行；2/3 机器人按同一生成规则使用各自固定维度 checkpoint，
+不提前实现可变规模策略。所有 baseline 包括 ideal 都使用相同 gateway；正式启动前失败单独记为
 `infrastructure_failure` 并保留，`episode_start` 后的任何故障都算任务失败，不得挑选补跑。
 若合理消息负载和干扰下任务几乎不受网络影响，应记录“通信不是瓶颈”的负结果，不能用虚构
 拥塞强行创造 RL 空间。
@@ -400,8 +428,10 @@ P1/P2/P3 的 101/202/303 只作开发和集成 seed；正式 train/validation/he
 world、目标、能量和干扰分层，且不得与这些 seed 重叠。正式 runner 必须保留 pre-start
 `infrastructure_failure`、post-start task failure，并写入 commit/config/environment manifest。
 
-P6 的工程退出条件是可部署观测、validation-only 选模、held-out 评估和硬安全覆盖正确。
-是否优于最强 heuristic 是研究结果而不是可调到通过的工程门槛。P7 的主比较至少使用 20 个
+P6 只有在 P3C.5/P4B 证明存在可测的长期通信决策空间后才启动，默认采用集中式、部分可观测
+单智能体准入调度；不因机器人数量而改成 MARL。工程退出条件是可部署观测、validation-only
+选模、held-out 评估和硬安全覆盖正确。是否优于最强 heuristic 是研究结果而不是工程门槛；
+RL 没有优势时保留负结果。P7 的主比较至少使用 20 个
 独立且策略间配对的 held-out episode：先报告 success rate 和 95% Wilson 区间，再用固定
 horizon 的 RMST 与配对 bootstrap 比较时间/通信指标；只有区间支持改善且安全不退化时才
 声称 RL 有优势。
