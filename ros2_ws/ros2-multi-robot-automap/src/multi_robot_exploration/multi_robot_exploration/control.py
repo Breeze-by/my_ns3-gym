@@ -3198,7 +3198,7 @@ class HeadquartersControl(Node):
             if selected:
                 break
             reservations = list(reserved_routes)
-            if reservations:
+            if reservations or any(self.goal_initial_gain.values()):
                 reservations.extend(
                     (position,)
                     for other_name, position in parked_positions.items()
