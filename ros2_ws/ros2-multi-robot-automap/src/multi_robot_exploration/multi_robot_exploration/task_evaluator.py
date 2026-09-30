@@ -311,6 +311,7 @@ class TaskEvaluator(Node):
         self.nav_canceled = {name: 0 for name in self.robot_names}
         self.nav_aborted = {name: 0 for name in self.robot_names}
         self.collision_events = {name: 0 for name in self.robot_names}
+        self.collision_history = []
         self.collision_active = {name: False for name in self.robot_names}
         self.collision_last_time = {name: None for name in self.robot_names}
         self.collision_last_event = {
@@ -609,8 +610,16 @@ class TaskEvaluator(Node):
         ):
             self.collision_events[robot] += 1
             self.collision_last_event[robot] = now
+            contacts = sorted({
+                (state.collision1_name, state.collision2_name)
+                for state in message.states
+            })
+            self.collision_history.append({
+                "robot": robot, "sim_time_sec": now,
+                "phase": self.task_phase, "contacts": contacts,
+            })
             self.get_logger().warning(
-                f"Collision event for {robot} during {self.task_phase}."
+                f"Collision event for {robot} during {self.task_phase}: {contacts}."
             )
         self.collision_active[robot] = active
         self.collision_last_time[robot] = now
@@ -846,6 +855,7 @@ class TaskEvaluator(Node):
                 for phase, lengths in self.phase_path_lengths.items()
             },
             "collision_events": collision_events,
+            "collision_history": self.collision_history,
             "collision_duration_sec": sum(self.collision_duration.values()),
             "collision_monitoring_active": all(
                 count > 0 for count in self.collision_messages.values()

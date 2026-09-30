@@ -604,3 +604,8 @@ Nav2 ready; starting cooperative exploration.
 - `enable_rviz:=false` 只关闭每机器人 RViz，不会关闭全局 RViz；完全关闭还必须设置
   `enable_merge_rviz:=false`。
 - 目标只是 Gazebo 可视标记，没有 collision，不会改变 lidar 地图或成为障碍物。
+
+2026-10-01 安全候选移除了集合中忽略机器人位置的软障碍兜底：无安全路线时触发
+停驻机器人让路/目标恢复，不能直接放行无动态障碍约束的长路线。停在中间航点的
+健康机器人也可参与通道恢复。碰撞日志及 episode JSON 的 `collision_history` 保存
+接触对象、仿真时间和阶段；成功条件和计数不变。该候选尚未通过 P3A.6 固定门禁。

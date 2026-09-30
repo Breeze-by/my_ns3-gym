@@ -2429,47 +2429,6 @@ class HeadquartersControl(Node):
                         ],
                         visible_only=True,
                     )
-                    # Robot footprints are soft obstacles for the leader of
-                    # a stalled group.  If every robot is waiting for the
-                    # same blocked corridor, let the first eligible robot
-                    # plan on the static map and rely on Nav2's local
-                    # obstacle layer for the final separation.  Once it
-                    # moves, the remaining robots get a fresh route around
-                    # the released corridor.
-                    if plan[0] is None:
-                        active_rally = any(
-                            self.rally_goal_handles[other_name] is not None
-                            or self.rally_goal_pending[other_name]
-                            for other_name in self.rally_dispatch_order
-                        )
-                        leader = next(
-                            (
-                                candidate
-                                for candidate in self.rally_dispatch_order
-                                if not self.rally_arrived[candidate]
-                                and self.battery_modes[candidate] == "ACTIVE"
-                                and self.robot_positions[candidate] is not None
-                            ),
-                            None,
-                        )
-                        if not active_rally and name == leader:
-                            soft_plan = plan_rally_leg(
-                                self.rally_targets[name],
-                                self.map_data,
-                                self.resolution,
-                                self.origin,
-                                self.robot_positions[name],
-                                rally_leg_limit(self.rally_attempts[name]),
-                                (),
-                            )
-                            if soft_plan[0] is not None:
-                                plan = soft_plan
-                                self.get_logger().warn(
-                                    f"Admitting {name} as the rally leader "
-                                    "with robot positions treated as soft "
-                                    "obstacles; followers will replan after "
-                                    "it clears the corridor."
-                                )
                 if plan[0] is None:
                     since = self.rally_route_unavailable_since[name]
                     if since is None:
@@ -2489,15 +2448,16 @@ class HeadquartersControl(Node):
                         # A parked robot can seal a narrow corridor for a
                         # remaining leg.  Move that blocker to another safe
                         # separated rally pose before giving up on the leg.
-                        arrived_names = [
+                        parked_names = [
                             other_name
                             for other_name in self.rally_dispatch_order
-                            if self.rally_arrived[other_name]
+                            if other_name != name
+                            and self.battery_modes[other_name] == "ACTIVE"
                             and self.robot_positions[other_name] is not None
                         ]
                         possible_blockers = [
                             other_name
-                            for other_name in arrived_names
+                            for other_name in parked_names
                             if other_name not in self.rally_yield_targets
                             and plan_rally_leg(
                                 self.rally_targets[name],
@@ -2518,7 +2478,7 @@ class HeadquartersControl(Node):
                         if not possible_blockers:
                             possible_blockers = [
                                 other_name
-                                for other_name in arrived_names
+                                for other_name in parked_names
                                 if other_name not in self.rally_yield_targets
                             ]
                         for blocker in possible_blockers:
@@ -2529,7 +2489,7 @@ class HeadquartersControl(Node):
                             )
                             blocker_positions = [
                                 self.robot_positions[other_name]
-                                for other_name in arrived_names
+                                for other_name in parked_names
                                 if other_name != blocker
                             ]
                             blocker_positions.append(self.robot_positions[name])
@@ -2592,7 +2552,7 @@ class HeadquartersControl(Node):
                                 current_reserved,
                                 [
                                     self.robot_positions[other_name]
-                                    for other_name in arrived_names
+                                    for other_name in parked_names
                                     if other_name != blocker
                                 ],
                             )
@@ -2629,7 +2589,7 @@ class HeadquartersControl(Node):
                                 reserved_poses,
                                 [
                                     self.robot_positions[other_name]
-                                    for other_name in arrived_names
+                                    for other_name in parked_names
                                 ],
                             )
                             if replacement is not None:
@@ -3007,7 +2967,7 @@ class HeadquartersControl(Node):
         if self.rally_arrived[robot_name] and robot_name in self.rally_yield_targets:
             self.get_logger().info(
                 f"{robot_name} reached its temporary yield pose; holding "
-                "until the remaining rally legs finish."
+                "until the reserved traffic clears."
             )
             return
         if self.rally_arrived[robot_name]:

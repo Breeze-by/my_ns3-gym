@@ -1026,3 +1026,14 @@ def test_return_yield_restores_final_goal_after_charger_reached():
     assert not node.rally_arrived["tb2"]
     assert not node.rally_yield_targets and not node.return_yield_targets
     assert updates == [1]
+
+
+def test_parked_robot_seals_corridor_until_it_yields():
+    grid = np.full((50, 100), 100, dtype=int)
+    grid[19:31, 1:99] = 0
+    target = control.RallyPose(8.0, 2.5, 0.0)
+    args = (target, grid, 0.1, (0.0, 0.0), (1.0, 2.5), 5.0)
+    blocked = control.plan_rally_leg(*args, blocked_positions=[(4.0, 2.5)], visible_only=True)
+    released = control.plan_rally_leg(*args, visible_only=True)
+    assert blocked == (None, ())
+    assert released[0] is not None

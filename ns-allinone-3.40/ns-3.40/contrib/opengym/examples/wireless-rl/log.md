@@ -3595,3 +3595,40 @@ episode/output/log/graph 路径改为 `p3a6_rpp_lab101_v3`。源码和文档 can
 不能据此宣称 return-yield 在实际充电中的生命周期已通过；该行为目前由组件测试覆盖，
 仍需同一 clean commit 强制充电回归。与前两轮的差异体现异步仿真的运行波动，
 不得把完成时间改善全归因于一条恢复规则。所有失败保留，固定十格尚未完成。
+
+## 2026-10-01 P3A.6 RPP clean 候选固定批次（未通过）
+
+候选 `6187eb737a184d90519b6bb4ba0b5114a4528a88` 已推送；manifest
+`worktree_dirty=false`、candidate=该提交、frozen=null。运行期间未修改源码。
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 GAZEBO_MASTER_URI=http://127.0.0.1:11392
+/usr/bin/python3 scripts/run_p2d_baseline.py --seeds 101 202 303 \
+  --run-id p3a6_rpp_6187eb7_matrix --ros-domain-base 210 \
+  --startup-timeout 600 --evaluation-wait-timeout 600 --inter-episode-delay 5 \
+  --rally-max-concurrent 2 --disable-global-battery-rally-pause
+```
+
+lab/3r/101：300 s 超时，零碰撞、一次充电，139.6 s 发现。lab/3r/202：
+207.4 s COMPLETE，零碰撞、无充电，102.8 s 发现。lab/3r/303：300 s 超时，
+一次碰撞、一次充电，111.4 s 发现。三轮 runtime 图审计通过，完整 JSON/summary/日志
+保留于 `log/p2d_baseline/p3a6_rpp_6187eb7_matrix/`。第三轮实际验证返航者进入充电
+后，临时让路者恢复了原最终目标；不能据此把整轮计为通过。
+rooms/101 在启动期间 SIGINT 中断，没有 episode_start 或 JSON；其 launch group
+另发 SIGINT 清理，后续六格未运行。runner exit130，三轮任务失败未重跑覆盖。
+
+第三轮碰撞前有两次 `Admitting tb1 ... robot positions ... soft obstacles`，
+该兜底不仅忽略其他机器人位置，还绕过可视短航段，存在明确导航契约漏洞；旧日志没有
+接触对象名称，不能断言碰撞对象。下一候选移除此兜底，允许尚未到达最终位的闲置
+健康机器人参与原有阻塞让路；评估器增加接触对象/时间/阶段记录，碰撞计数和门限不变。
+
+离线诊断（没有运行模拟器）：`log/p2d_baseline/p3a6_gain_diagnostic.py` 在保存的
+`p3a6_visible_forced303_v2/snapshot.npz` 上计算墙体遮挡后的未知格收益；69 候选耗时
+0.116 s，一些 box gain 明显下降，完全封闭的房间墙后未知格收益为零。
+这只是算法假设和性能样本，不作为任务成功证据；仍未将 raycasting 改进写入正式算法。
+
+该安全候选验证：92 项相关测试通过，四个 ROS 包构建通过，三机器人源码旁路审计通过。

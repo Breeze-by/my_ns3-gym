@@ -139,3 +139,28 @@ def test_p2d_scenario_targets_are_free_and_rallyable():
             for index, a in enumerate(poses)
             for b in poses[index + 1:]
         ) >= 0.8
+
+
+def test_collision_history_keeps_contact_names_without_changing_event_cooldown():
+    from types import SimpleNamespace
+    from multi_robot_exploration.task_evaluator import TaskEvaluator
+
+    warnings = []
+    node = SimpleNamespace(
+        _now=lambda: 10.0, collision_messages={"tb1": 0},
+        collision_last_time={"tb1": None}, collision_active={"tb1": False},
+        collision_duration={"tb1": 0.0}, collision_last_event={"tb1": -math.inf},
+        collision_events={"tb1": 0}, collision_cooldown=1.0,
+        collision_history=[], task_phase="RALLY",
+        get_logger=lambda: SimpleNamespace(warning=warnings.append),
+    )
+    contact = SimpleNamespace(collision1_name="tb1::base", collision2_name="wall::box")
+    message = SimpleNamespace(states=[contact, contact])
+    TaskEvaluator._collision_callback(node, message, "tb1")
+    TaskEvaluator._collision_callback(node, message, "tb1")
+    assert node.collision_events["tb1"] == 1
+    assert node.collision_history == [{
+        "robot": "tb1", "sim_time_sec": 10.0, "phase": "RALLY",
+        "contacts": [("tb1::base", "wall::box")],
+    }]
+    assert "wall::box" in warnings[0]
