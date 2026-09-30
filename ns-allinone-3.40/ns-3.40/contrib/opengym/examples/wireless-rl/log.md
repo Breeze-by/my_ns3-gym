@@ -3399,3 +3399,104 @@ export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 ROS_DOMAIN_ID=214 GAZEBO_MASTE
 ```
 
 结果文件：`ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a6_short_return_forced303/episodes/p3a6_short_return_forced303.json`。两台机器人各充电 1 次，共 2 次；`collision_events=0`；最低能量 `8.214`；目标在 `256.3 s` 确认，`267.6 s` 进入 RALLY。`300.1 s` 时仍为 `RALLY`，`success=false`。这次失败不再是 `battery_return_unreachable`：tb2 已成功短段返航并充电，剩余问题是目标发现过晚、集合起点曾被 Nav2 判为 lethal，集合时间不足。原始日志和 JSON 均保留。
+
+## 2026-09-30 P3A.6 滚动预约与可视航点诊断
+
+代码状态：`9b86c1b` 加本轮候选 working-tree diff；v3 的源码哈希和候选 patch 已保存到
+`ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a6_visible_forced303_v3/`。
+算法恢复最多两台探索并发，但仍检查停驻位置、活动路线和每条新路线的预约；冲突时尝试其他
+候选。探索航点在遮挡转角前截断，最长 5 m；v3 收紧 Nav2 到达容差为 0.10 m，缓存单轮
+Dijkstra 距离场，返航时排空其他探索动作（包括尚未确认的 action）。COMPLETE、300 s
+上限、世界/目标/能量、检测和 gateway 边界均按原门禁。
+
+组件命令（ROS workspace）：
+
+```bash
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+export PYTHONNOUSERSITE=1
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_control.py \
+  src/multi_robot_exploration/test/test_gateway.py \
+  src/multi_robot_exploration/test/test_battery_manager.py \
+  src/multi_robot_exploration/test/test_task_evaluator.py \
+  src/multi_robot_exploration/test/test_fault_model.py
+colcon build --symlink-install --packages-select multi_robot_interfaces multi_robot_exploration merge_map multi_robot
+ros2 run multi_robot_exploration bypass_audit --robot-count 3 --source-only
+```
+
+最终 `86 passed`；4 个包构建通过，source-only 三机器人旁路审计通过。四份 Nav2 YAML
+解析检查确认 goal checker 和 DWB 的 xy 容差均为 0.10 m。
+
+三个诊断的精确命令如下（每次运行前重新 source，相继串行运行）：
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 ROS_DOMAIN_ID=215 GAZEBO_MASTER_URI=http://127.0.0.1:11385
+/usr/bin/python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 2 --gazebo-seed 303 \
+  --startup-timeout 600 --message-timeout 90 --shutdown-timeout 60 \
+  --evaluation-duration 300 --coverage-threshold 0 --evaluation-wait-timeout 600 \
+  --target-detection --rally --battery --require-charge --battery-capacity 100 \
+  --battery-initial-energy 18 --battery-move-cost 1 --battery-idle-cost 0.02 \
+  --battery-safety-margin 5 --battery-charge-duration 10 --battery-return-timeout 120 \
+  --battery-charge-timeout 60 --target-x -4 --target-y 4 --target-max-distance 3 \
+  --target-field-of-view 90 --target-confirmation-frames 3 --rally-max-concurrent 1 \
+  --enable-global-battery-rally-pause \
+  --episode-id p3a6_visible_forced303_v1 \
+  --evaluation-output-dir log/p2d_baseline/p3a6_visible_forced303_v1/episodes \
+  --log-dir log/p2d_baseline/p3a6_visible_forced303_v1/logs
+```
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 ROS_DOMAIN_ID=216 GAZEBO_MASTER_URI=http://127.0.0.1:11386
+/usr/bin/python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 2 --gazebo-seed 303 \
+  --startup-timeout 600 --message-timeout 90 --shutdown-timeout 60 \
+  --evaluation-duration 300 --coverage-threshold 0 --evaluation-wait-timeout 600 \
+  --target-detection --rally --battery --require-charge --battery-capacity 100 \
+  --battery-initial-energy 18 --battery-move-cost 1 --battery-idle-cost 0.02 \
+  --battery-safety-margin 5 --battery-charge-duration 10 --battery-return-timeout 120 \
+  --battery-charge-timeout 60 --target-x -4 --target-y 4 --target-max-distance 3 \
+  --target-field-of-view 90 --target-confirmation-frames 3 --rally-max-concurrent 1 \
+  --enable-global-battery-rally-pause \
+  --episode-id p3a6_visible_forced303_v2 \
+  --evaluation-output-dir log/p2d_baseline/p3a6_visible_forced303_v2/episodes \
+  --log-dir log/p2d_baseline/p3a6_visible_forced303_v2/logs
+```
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 ROS_DOMAIN_ID=217 GAZEBO_MASTER_URI=http://127.0.0.1:11387
+/usr/bin/python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 2 --gazebo-seed 303 \
+  --startup-timeout 600 --message-timeout 90 --shutdown-timeout 60 \
+  --evaluation-duration 300 --coverage-threshold 0 --evaluation-wait-timeout 600 \
+  --target-detection --rally --battery --require-charge --battery-capacity 100 \
+  --battery-initial-energy 18 --battery-move-cost 1 --battery-idle-cost 0.02 \
+  --battery-safety-margin 5 --battery-charge-duration 10 --battery-return-timeout 120 \
+  --battery-charge-timeout 60 --target-x -4 --target-y 4 --target-max-distance 3 \
+  --target-field-of-view 90 --target-confirmation-frames 3 --rally-max-concurrent 1 \
+  --enable-global-battery-rally-pause \
+  --episode-id p3a6_visible_forced303_v3 \
+  --evaluation-output-dir log/p2d_baseline/p3a6_visible_forced303_v3/episodes \
+  --log-dir log/p2d_baseline/p3a6_visible_forced303_v3/logs
+```
+
+- v1：新加的 0.3 m 最短位移过滤拒绝了出生区仅有的约 0.29 m 观察点。启动后
+  中断（SIGINT/exit 130），保留 launch log，没有 episode JSON；不是基础设施失败或成功样本。
+- v2：去掉该过滤后机器人开始探索，但 0.25 m Nav2 容差让约 0.214 m 中间航点
+  在原地重复报告成功。启动后中断（SIGINT/exit 130）；收到地图/位姿快照保存为
+  `p3a6_visible_forced303_v2/snapshot.npz`，原始 launch log 保留，无最终 JSON。
+- v3：运行到正式终态，`success=true`、`COMPLETE`、176.3 s 完成，110.5 s 检测，
+  124.1 s 进入 RALLY，零碰撞，2 次返航、2 次充电（每台 1 次），最低能量 9.318，
+  最终两台均 ACTIVE，最大集合误差 0.1102 m；smoke exit 0。运行时旁路审计通过。
+
+结论：v3 通过强制充电定向回归，但为 dirty-tree 诊断，不替代 clean-commit 正式
+十格矩阵或最终强制充电回归。仍未设置 `task_stack_frozen_commit`。

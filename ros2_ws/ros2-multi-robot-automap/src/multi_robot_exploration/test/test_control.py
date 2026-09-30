@@ -757,3 +757,164 @@ def test_single_explorer_checks_parked_robots_after_previous_goal_finishes(monke
     node.robot_states["tb1"] = "idle"
     control.HeadquartersControl.assign_idle_robots(node)
     assert len(sent) <= 2
+
+
+def test_visible_leg_stops_before_parked_robot_detour():
+    grid = np.zeros((60, 100), dtype=int)
+    start = (1.0, 3.0)
+    blocked = [(3.0, 3.0)]
+    pose, route = control.plan_rally_leg(
+        control.RallyPose(8.0, 3.0, 0.0), grid, 0.1, (0.0, 0.0), start,
+        max_distance_m=5.0, blocked_positions=blocked,
+        clearance_m=control.PATH_CLEARANCE_M, visible_only=True,
+    )
+    assert pose is not None
+    assert pose.x < 8.0
+    mask = control.block_dynamic_positions(
+        control.traversable_grid(grid, 0.1, control.PATH_CLEARANCE_M),
+        0.1, (0.0, 0.0), blocked,
+    )
+    cells = control._line_cells(
+        control.world_to_grid(*start, 0.1, 0.0, 0.0),
+        control.world_to_grid(pose.x, pose.y, 0.1, 0.0, 0.0),
+    )
+    assert all(mask[cell] for cell in cells)
+    assert route[-1] == (pose.x, pose.y)
+
+
+def test_parallel_explorers_try_independent_alternative_after_conflict(monkeypatch):
+    from types import SimpleNamespace
+
+    grid = np.zeros((120, 100), dtype=int)
+    viewpoint = control.Viewpoint(0, 30, 80, 30, 81, 1000, 10)
+    def candidates(*args):
+        name = args[3]
+        positions = [(8.0, 3.0, 100.0)] if name == "tb1" else [
+            (8.0, 3.0, 90.0), (8.0, 9.0, 80.0),
+        ]
+        return [
+            (utility, name, 0, control.Assignment(
+                viewpoint, x, y, 7.0, utility, x, y,
+            )) for x, y, utility in positions
+        ], {"frontier_groups": 1, "groups_with_viewpoints": 1}
+    monkeypatch.setattr(control, "robot_candidate_assignments", candidates)
+    sent = []
+    node = SimpleNamespace(
+        task_state="EXPLORE", map_data=grid, resolution=0.1, origin=(0.0, 0.0),
+        robot_positions={"tb1": (1.0, 3.0), "tb2": (1.0, 9.0)},
+        robot_maps={"tb1": {}, "tb2": {}},
+        robot_states={"tb1": "idle", "tb2": "idle"},
+        battery_modes={"tb1": "ACTIVE", "tb2": "ACTIVE"},
+        frontier_cache=control.prepare_frontier_data(grid, 0.1),
+        input_robot_names=lambda: ["tb1", "tb2"],
+        participating_robots=lambda: ["tb1", "tb2"],
+        fresh_robot_inputs=lambda: True, active_exclusions=lambda: [],
+        battery_assignment_safe=lambda *args: True,
+        goal_targets={}, goal_routes={}, goal_initial_gain={},
+        target_information_gain=lambda *args: 1000,
+        get_logger=lambda: SimpleNamespace(info=lambda *args: None),
+        send_goal=lambda name, goal: sent.append((name, goal)),
+    )
+    control.HeadquartersControl.assign_idle_robots(node)
+    assert [name for name, _ in sent] == ["tb1", "tb2"]
+    assert node.goal_targets["tb2"].y == 9.0
+    assert not control.routes_conflict(node.goal_routes["tb1"], node.goal_routes["tb2"])
+    # The next cycle must count both pending actions against capacity.
+    control.HeadquartersControl.assign_idle_robots(node)
+    assert len(sent) == 2
+
+
+def test_exploration_allows_short_initial_viewpoint(monkeypatch):
+    from types import SimpleNamespace
+
+    grid = np.zeros((40, 40), dtype=int)
+    viewpoint = control.Viewpoint(0, 20, 20, 20, 21, 1000, 10)
+    assignment = control.Assignment(viewpoint, 2.25, 2.05, 0.2, 10.0, 2.25, 2.05)
+    monkeypatch.setattr(control, "robot_candidate_assignments", lambda *args: (
+        [(10.0, "tb1", 0, assignment)],
+        {"frontier_groups": 1, "groups_with_viewpoints": 1},
+    ))
+    sent = []
+    node = SimpleNamespace(
+        task_state="EXPLORE", map_data=grid, resolution=0.1, origin=(0.0, 0.0),
+        robot_positions={"tb1": (2.05, 2.05)}, robot_maps={"tb1": {}},
+        robot_states={"tb1": "idle"}, battery_modes={"tb1": "ACTIVE"},
+        frontier_cache=control.prepare_frontier_data(grid, 0.1),
+        input_robot_names=lambda: ["tb1"], participating_robots=lambda: ["tb1"],
+        fresh_robot_inputs=lambda: True, active_exclusions=lambda: [],
+        battery_assignment_safe=lambda *args: True,
+        goal_targets={}, goal_routes={}, goal_initial_gain={},
+        target_information_gain=lambda *args: 1000,
+        get_logger=lambda: SimpleNamespace(info=lambda *args: None),
+        send_goal=lambda name, goal: sent.append((name, goal)),
+    )
+    control.HeadquartersControl.assign_idle_robots(node)
+    assert len(sent) == 1
+    assert sent[0][1].navigation_x == pytest.approx(2.25)
+
+
+def test_leg_candidates_reuse_one_snapshot_distance_field(monkeypatch):
+    original = control.path_distance_grid
+    calls = []
+    def counted(*args, **kwargs):
+        calls.append(1)
+        return original(*args, **kwargs)
+    monkeypatch.setattr(control, "path_distance_grid", counted)
+    grid = np.zeros((60, 100), dtype=int)
+    cache = {}
+    for target in [(8.0, 3.0), (8.0, 4.0), (8.0, 5.0)]:
+        plan = control.plan_rally_leg(
+            control.RallyPose(*target, 0), grid, 0.1, (0, 0), (1.0, 3.0),
+            5.0, visible_only=True, route_cache=cache,
+        )
+        reference = control.plan_rally_leg(
+            control.RallyPose(*target, 0), grid, 0.1, (0, 0), (1.0, 3.0),
+            5.0, visible_only=True,
+        )
+        assert plan == reference
+    assert len(calls) == 4  # one shared field plus three uncached references
+
+
+def test_returning_robot_drains_other_active_exploration():
+    import json
+    from types import SimpleNamespace
+
+    canceled = []
+    handle = SimpleNamespace(cancel_goal_async=lambda: canceled.append("tb2"))
+    node = SimpleNamespace(
+        battery_modes={"tb1": "ACTIVE", "tb2": "ACTIVE"},
+        battery_states={}, battery_state_received_at={},
+        goal_handles={"tb1": None, "tb2": handle},
+        cancel_requested={"tb1": False, "tb2": False},
+        battery_preempted={"tb1": False, "tb2": False},
+        rally_goal_handles={"tb1": None, "tb2": None},
+        task_state="EXPLORE", survey_robot=None, now=lambda: 1.0,
+    )
+    message = SimpleNamespace(data=json.dumps({"mode": "RETURNING"}))
+    control.HeadquartersControl.battery_state_callback(node, message, "tb1")
+    control.HeadquartersControl.battery_state_callback(node, message, "tb1")
+    assert canceled == ["tb2"]
+    assert node.battery_preempted["tb2"]
+
+
+def test_pending_explorer_is_canceled_when_another_robot_starts_returning():
+    from types import SimpleNamespace
+
+    canceled = []
+    result = SimpleNamespace(add_done_callback=lambda callback: None)
+    handle = SimpleNamespace(
+        accepted=True, cancel_goal_async=lambda: canceled.append("tb2"),
+        get_result_async=lambda: result,
+    )
+    node = SimpleNamespace(
+        goal_targets={"tb2": None}, goal_handles={}, goal_started_at={},
+        goal_last_progress_at={}, goal_best_distance={}, goal_last_position={},
+        goal_known_count={}, map_known_count=1, cancel_requested={},
+        robot_positions={"tb2": (1.0, 1.0)}, battery_preempted={},
+        battery_modes={"tb1": "RETURNING", "tb2": "ACTIVE"}, now=lambda: 2.0,
+    )
+    control.HeadquartersControl.goal_response_callback(
+        node, "tb2", SimpleNamespace(result=lambda: handle),
+    )
+    assert canceled == ["tb2"]
+    assert node.battery_preempted["tb2"]

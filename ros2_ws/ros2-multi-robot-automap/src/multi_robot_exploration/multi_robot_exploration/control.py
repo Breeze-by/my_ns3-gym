@@ -63,13 +63,10 @@ RALLY_ASSIGNMENT_WAIT_SEC = 30.0
 # after a failed action; traffic reservations may insert a holding point.
 RALLY_MAX_NAVIGATION_LEG_M = float("inf")
 RALLY_ROUTE_SEPARATION_M = 1.8
-# RALLY may use two-way concurrency when explicitly requested. Exploration
-# admits one moving robot at a time so frontier routes cannot cross before the
-# next map update supplies fresh reservations.
+# Independent corridors may run concurrently; shared corridors remain reserved
+# until the delivered live pose confirms passage.
 RALLY_MAX_CONCURRENT = 2
-# Map updates arrive asynchronously.  Keep one frontier route in flight so a
-# parked robot cannot become a moving obstacle between planning cycles.
-EXPLORATION_MAX_CONCURRENT = 1
+EXPLORATION_MAX_CONCURRENT = 2
 
 TASK_TRANSITIONS = {
     "EXPLORE": {"FOUND_UNCONFIRMED", "FOUND", "FAILED"},
@@ -540,7 +537,7 @@ def path_distance_grid(traversable, start, return_predecessors=False):
     return result.reshape(height, width)
 
 
-def path_waypoint_route(traversable, start, target, max_distance_cells):
+def path_waypoint_route(traversable, start, target, max_distance_cells, distance_data=None):
     """Return a limited waypoint and its shortest grid path from start."""
     height, width = traversable.shape
     if (
@@ -549,8 +546,10 @@ def path_waypoint_route(traversable, start, target, max_distance_cells):
         or not traversable[target]
     ):
         return None, ()
-    distances, predecessors = path_distance_grid(
-        traversable, start, return_predecessors=True
+    distances, predecessors = (
+        distance_data if distance_data is not None else path_distance_grid(
+            traversable, start, return_predecessors=True
+        )
     )
     if not np.isfinite(distances[target]):
         return None, ()
@@ -1276,27 +1275,38 @@ def plan_rally_leg(
     max_distance_m=RALLY_MAX_NAVIGATION_LEG_M,
     blocked_positions=(),
     clearance_m=RALLY_PATH_CLEARANCE_M,
+    visible_only=False,
+    route_cache=None,
 ):
-    """Return a staged rally pose and the map path reserved for it."""
-    traversable = traversable_grid(
-        raw_grid, resolution, clearance_m=clearance_m
-    )
-    traversable = block_dynamic_positions(
-        traversable, resolution, origin, blocked_positions
-    )
-    start = world_to_grid(
-        robot_position[0],
-        robot_position[1],
-        resolution,
-        origin[0],
-        origin[1],
-    )
-    start, escape_route = navigation_start_route(
-        raw_grid,
-        traversable,
-        start,
-        max(1, math.ceil(0.6 / resolution)),
-    )
+    """Plan a leg; a cache may be shared within one immutable planning snapshot."""
+    if route_cache is None:
+        route_cache = {}
+    if not route_cache:
+        traversable = traversable_grid(
+            raw_grid, resolution, clearance_m=clearance_m
+        )
+        traversable = block_dynamic_positions(
+            traversable, resolution, origin, blocked_positions
+        )
+        start = world_to_grid(
+            robot_position[0],
+            robot_position[1],
+            resolution,
+            origin[0],
+            origin[1],
+        )
+        start, escape_route = navigation_start_route(
+            raw_grid,
+            traversable,
+            start,
+            max(1, math.ceil(0.6 / resolution)),
+        )
+        distance_data = (
+            path_distance_grid(traversable, start, return_predecessors=True)
+            if start is not None else None
+        )
+        route_cache["field"] = traversable, start, escape_route, distance_data
+    traversable, start, escape_route, distance_data = route_cache["field"]
     target = world_to_grid(
         pose.x, pose.y, resolution, origin[0], origin[1]
     )
@@ -1307,9 +1317,19 @@ def plan_rally_leg(
         start,
         target,
         max_distance_m / resolution,
+        distance_data=distance_data,
     )
     if waypoint is None:
         return None, ()
+    if visible_only:
+        # NavigateToPose receives a waypoint, not our grid route. Stop before
+        # an occluded bend so its shortest path cannot shortcut a reservation
+        # or the parked-robot detour. Replan from the delivered pose next tick.
+        for index in range(1, len(route)):
+            if not all(traversable[cell] for cell in _line_cells(start, route[index])):
+                route = route[:index]
+                break
+        waypoint = route[-1]
     x, y = grid_to_world(
         waypoint[0], waypoint[1], resolution, origin[0], origin[1]
     )
@@ -1900,6 +1920,17 @@ class HeadquartersControl(Node):
             self.battery_preempted[robot_name] = True
             self.cancel_requested[robot_name] = True
             goal_handle.cancel_goal_async()
+        if mode == "RETURNING":
+            # Return routes are owned locally and have no central frontier
+            # reservation. Drain other exploration actions before admitting
+            # more traffic; a pending response is canceled on acceptance too.
+            for other_name, other_handle in self.goal_handles.items():
+                if other_name == robot_name or other_handle is None:
+                    continue
+                if not self.cancel_requested[other_name]:
+                    self.battery_preempted[other_name] = True
+                    self.cancel_requested[other_name] = True
+                    other_handle.cancel_goal_async()
         rally_handle = self.rally_goal_handles[robot_name]
         if rally_handle is not None:
             self.rally_battery_preempted[robot_name] = True
@@ -3151,57 +3182,48 @@ class HeadquartersControl(Node):
                     (utility, robot_name, group_id, coordinated)
                 )
         diagnostics["candidate_assignments"] = len(candidates)
-        # Admit a route only after checking every other robot's current pose.
-        # This keeps parked robots as dynamic obstacles until the next map
-        # update, when their positions can be planned again.
+        # Reserve immediately after admission. A rejected high-utility route
+        # must not hide the same robot's independent, lower-utility frontier.
         plans = {}
         routes = {}
+        selected = []
+        route_caches = {name: {} for name in idle_positions}
+        reservations = [
+            remaining_rally_route(route, self.robot_positions[name])
+            for name, route in self.goal_routes.items()
+            if self.robot_states[name] == "active" and route
+        ]
         for _, name, _, assignment in sorted(candidates, key=lambda item: -item[0]):
             if name in plans:
+                continue
+            if any(
+                math.dist((assignment.x, assignment.y), (other.x, other.y))
+                < MIN_TARGET_SEPARATION_M for other in plans.values()
+            ):
                 continue
             blocked = [
                 position for other_name, position in self.robot_positions.items()
                 if other_name != name and position is not None
             ]
-            pose, route = plan_rally_leg(
+            plan = plan_rally_leg(
                 RallyPose(assignment.x, assignment.y, 0.0),
                 self.map_data, self.resolution, self.origin,
                 self.robot_positions[name], MAX_NAVIGATION_LEG_M,
                 blocked_positions=blocked, clearance_m=PATH_CLEARANCE_M,
+                visible_only=True, route_cache=route_caches[name],
             )
-            if pose is None:
+            admitted = reserve_rally_prefix(plan, reservations)
+            if admitted is None:
                 continue
+            pose, route = admitted
             plans[name] = Assignment(
                 assignment.viewpoint, assignment.x, assignment.y,
                 assignment.path_distance_m, assignment.utility, pose.x, pose.y,
             )
             routes[name] = route
-            if len(plans) >= EXPLORATION_MAX_CONCURRENT:
-                break
-        reserved_routes = [
-            remaining_rally_route(route, self.robot_positions[name])
-            for name, route in self.goal_routes.items()
-            if self.robot_states[name] == "active" and route
-        ]
-        selected = []
-        reservations = list(reserved_routes)
-        for name in plans:
-            admitted = reserve_rally_prefix(
-                (RallyPose(plans[name].navigation_x, plans[name].navigation_y, 0.0),
-                 routes[name]),
-                reservations,
-            )
-            if admitted is None:
-                continue
-            pose, route = admitted
-            plans[name] = Assignment(
-                plans[name].viewpoint, plans[name].x, plans[name].y,
-                plans[name].path_distance_m, plans[name].utility, pose.x, pose.y,
-            )
-            routes[name] = route
             selected.append(name)
             reservations.append(route)
-            if len(selected) >= EXPLORATION_MAX_CONCURRENT:
+            if len(selected) + active_explorers >= EXPLORATION_MAX_CONCURRENT:
                 break
         if not selected:
             now = self.now()
@@ -3296,7 +3318,9 @@ class HeadquartersControl(Node):
         self.goal_last_position[robot_name] = self.robot_positions[robot_name]
         self.goal_known_count[robot_name] = self.map_known_count
         self.cancel_requested[robot_name] = False
-        if self.battery_modes[robot_name] != "ACTIVE":
+        if self.battery_modes[robot_name] != "ACTIVE" or any(
+            mode == "RETURNING" for mode in self.battery_modes.values()
+        ):
             self.battery_preempted[robot_name] = True
             self.cancel_requested[robot_name] = True
             goal_handle.cancel_goal_async()
