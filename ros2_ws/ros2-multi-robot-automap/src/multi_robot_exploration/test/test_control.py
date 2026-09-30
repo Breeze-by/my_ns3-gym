@@ -1072,3 +1072,38 @@ def test_viewpoint_gain_uses_obstacle_visibility():
     for group in viewpoints.values():
         for point in group:
             assert point.information_gain == control.visible_unknown_gain(grid, (point.row, point.column), 20)
+
+
+def test_idle_blocker_recovery_dispatches_motion_before_returning(monkeypatch):
+    from types import SimpleNamespace
+
+    names = ["tb1", "tb2"]
+    grid = np.full((50, 100), 100, dtype=int)
+    grid[19:31, 1:99] = 0
+    grid[8:26, 35:46] = 0  # a dead-end refuge, not a bypass around the blocker
+    targets = {"tb1": control.RallyPose(8.0, 2.5, 0.0), "tb2": control.RallyPose(8.0, 2.0, 0.0)}
+    replacements = {"tb1": targets["tb1"], "tb2": control.RallyPose(4.0, 1.5, 0.0)}
+    monkeypatch.setattr(control, "reassign_rally_pose", lambda *args: replacements[args[3]])
+    requests = []
+    node = SimpleNamespace(
+        enable_battery=False, task_state="RALLY", fresh_robot_poses=lambda: True,
+        participating_robots=lambda: names, battery_modes=dict.fromkeys(names, "ACTIVE"),
+        now=lambda: 10.0, survey_robot=None, survey_goal_handle=None, survey_goal_pending=False,
+        release_return_yields=lambda: None, rally_yield_targets=set(),
+        return_yield_targets={}, rally_arrived=dict.fromkeys(names, False),
+        rally_goal_handles=dict.fromkeys(names), rally_goal_pending=dict.fromkeys(names, False),
+        rally_dispatch_order=names, rally_yield_requested=dict.fromkeys(names, False),
+        rally_goal_started_at=dict.fromkeys(names), rally_targets=targets.copy(),
+        rally_final_targets=targets.copy(), robot_positions={"tb1": (1.0, 2.5), "tb2": (4.0, 2.5)},
+        yield_to_returning_robot=lambda: None, last_rally_dispatch_at=0,
+        fresh_robot_inputs=lambda: True, global_battery_rally_pause=False,
+        rally_recovery_requested=dict.fromkeys(names, False), rally_attempts=dict.fromkeys(names, 0),
+        map_data=grid, resolution=0.1, origin=(0.0, 0.0), target=(8.0, 2.5),
+        rally_route_unavailable_since={"tb1": 0.0, "tb2": None},
+        rally_position_tolerance=0.35, publish_rally_assignments=lambda: None,
+        get_logger=lambda: SimpleNamespace(warn=lambda *args: None),
+        send_rally_goal=lambda name, *args: requests.append(name),
+    )
+    control.HeadquartersControl.update_mission(node)
+    assert node.rally_targets["tb2"] == replacements["tb2"]
+    assert requests == ["tb2"]  # the action cannot be starved by the next timer

@@ -3674,3 +3674,36 @@ https://arxiv.org/abs/2002.04440 的 frontier/稀疏射线信息收益思想，�
 与 COMPLETE 门限，完整门禁仍须新提交重跑。
 
 前沿候选组件验证：97 项相关测试通过，四包构建与三机器人源码旁路审计通过。
+
+## 2026-10-01 d4f9cba 固定批次与阻塞动作饥饿修复
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 GAZEBO_MASTER_URI=http://127.0.0.1:11394
+/usr/bin/python3 scripts/run_p2d_baseline.py --seeds 101 202 303 \
+  --run-id p3a6_visible_gain_d4f9cba_matrix --ros-domain-base 200 \
+  --startup-timeout 600 --evaluation-wait-timeout 600 --inter-episode-delay 5 \
+  --rally-max-concurrent 2 --disable-global-battery-rally-pause
+```
+
+clean candidate `d4f9cba1479529b06ea9e3659645a583ed699b1c`，manifest
+worktree_dirty=false、frozen=null。lab/3r/101：300.1 s RALLY 超时，零碰撞，
+80.5 s 发现；runtime 图审计通过。第二格 lab/202 在启动期间 SIGINT 中断，没有
+episode_start 或 JSON，后续八格未运行；runner exit130。JSON、summary、日志及
+额外 interruption_manifest 均保留在 `log/p2d_baseline/p3a6_visible_gain_d4f9cba_matrix/`。
+初次清理诊断脚本在处理 ps 表头时抛 ValueError，未发出中断；第二次已正确 SIGINT
+runner/smoke/自有 launch group。第一格在此期间自然超时，保留真实 timeout JSON。
+
+发现控制器重复 Reassigning parked tb1，却始终没有其新导航动作。此前扩大闲置
+阻塞者范围后，旧代码的 return 让排在前面的等待机器人每个 timer 再次给阻塞者
+分配相同目标，阻塞者永远到不了正常派发循环。新增实际 update_mission 回归测试
+先在旧代码观察到请求列表为空的断言失败（补齐 fake survey_robot 后复现）；
+修复先验证动态避障/可视短段，再立即派发阻塞动作，不能只更新目标后返回。
+不放宽安全门限，不重开软障碍兜底。
+
+修复最终验证：98 项相关测试通过，四包构建和三机器人源码旁路审计通过。
+回归测试的避让支路需宽于离散净空膨胀直径；修正初版过窄 fixture 后使用真实路径规划
+验证动作派发，未修改算法净空来让测试通过。

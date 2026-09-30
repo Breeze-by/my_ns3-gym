@@ -2536,6 +2536,16 @@ class HeadquartersControl(Node):
                                 )
                             if blocker_replacement is None:
                                 continue
+                            blocker_plan = plan_rally_leg(
+                                blocker_replacement, self.map_data, self.resolution,
+                                self.origin, self.robot_positions[blocker],
+                                min(MAX_NAVIGATION_LEG_M, rally_leg_limit(self.rally_attempts[blocker])),
+                                [position for other, position in self.robot_positions.items()
+                                 if other != blocker and position is not None],
+                                visible_only=True,
+                            )
+                            if blocker_plan[0] is None:
+                                continue
                             if permanent_reassignment:
                                 self.rally_final_targets[blocker] = blocker_replacement
                             else:
@@ -2582,10 +2592,10 @@ class HeadquartersControl(Node):
                                     f"{current_replacement.y:.2f}) after parked "
                                     "robot yield."
                                 )
-                            # Apply the parked-robot change on the next timer
-                            # tick.  Starting a probe in this same callback
-                            # would race the yield action and reuse a stale
-                            # dynamic-obstacle snapshot.
+                            # Dispatch the blocker now: returning first would let
+                            # the earlier waiting robot reassign it every tick.
+                            # No other rally/probe action is active at this point.
+                            self.send_rally_goal(blocker, blocker_plan)
                             return
                         else:
                             reserved_poses = rally_reserved_poses(
