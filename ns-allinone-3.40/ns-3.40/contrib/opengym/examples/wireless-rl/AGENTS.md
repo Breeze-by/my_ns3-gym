@@ -1,6 +1,6 @@
 # wireless-rl Codex Memory
 
-Last source/documentation review: 2026-09-28. Behavioral evidence is frozen in
+Last source/documentation review: 2026-09-30. Behavioral evidence is frozen in
 the dated reports and is not automatically evidence for a different HEAD. The
 user accepted P1C, P2A, P2B, P2C, P2D, P3A, and P3A.5. The P2C follow-up adds
 Gazebo task-region overlays and a live operator status panel. Historical
@@ -94,12 +94,7 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
 
 ## Current Handoff Snapshot
 
-2026-09-30 P3A.6 remains in progress. The current task-stack candidate is
-`6ad8788`; source/build/bypass checks pass, but the fixed P2D/P3A matrix and
-strict forced-charge regression do not yet pass. Do not set
-`task_stack_frozen_commit` or start network/RL work. Retained runs and failure
-analysis are in `report/20260930_p3a6.md` and the dated `log.md` section; all
-outputs remain under `ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/`.
+2026-09-30 P3A.5 后续优化已提交于 `d340ba3`。当前控制器把停驻机器人位置纳入实际探索路径规划，并在充电返航期间暂停新的探索/集合派发；组件测试和构建通过。定向三机器人 lab/seed101 回归达到 `COMPLETE`、零碰撞，但强制充电 seed303 在 300 s 内仍未发现目标，并行探索试验在评估窗口内中断。不要设置 `task_stack_frozen_commit` 或开始网络/RL 工作。中文报告为 `report/20260930_p3a5_algorithm_optimization.md`，新增结果和失败均已写入 `log.md`；输出仍在 `ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/`。
 
 - Active boundary: P3A and P3A.5 are user-accepted and frozen as the network
   task-stack baseline. The historical integration freeze candidate is

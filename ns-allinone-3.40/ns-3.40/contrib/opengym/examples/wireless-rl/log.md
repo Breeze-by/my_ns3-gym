@@ -3296,3 +3296,78 @@ export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1
 输出目录为 `log/p2d_baseline/p3a6_forced_charge_6ad8788/`。机器人 tb1 确实出现返航、开始充电并恢复探索；但 300 s 内未满足目标检测/严格任务完成期望，不能计作两次充电 `COMPLETE` 回归。
 
 结论：P3A.6 当前仍为进行中，未设置 `task_stack_frozen_commit`，不得进入网络/RL。详见 `report/20260930_p3a6.md`。
+
+## 2026-09-30 P3A.5 后续探索路线优化（`d340ba3`）
+
+本轮继续 P3A.5，不重新设置 `task_stack_frozen_commit`。源码把其他机器人当前位置纳入实际 `plan_rally_leg()` 路径避障；探索路线保持单路线派发；任一机器人返航充电时暂停新的探索派发，并在启用全局电池暂停时阻止新的集合派发。新增窄通道停驻占位和目标完成后停驻避让测试。用户要求本轮报告使用中文，详见 `report/20260930_p3a5_algorithm_optimization.md`。
+
+组件验证命令：
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+/usr/bin/python3 -m pytest -q \
+  src/multi_robot_exploration/test/test_control.py \
+  src/multi_robot_exploration/test/test_gateway.py \
+  src/multi_robot_exploration/test/test_battery_manager.py \
+  src/multi_robot_exploration/test/test_task_evaluator.py \
+  src/multi_robot_exploration/test/test_fault_model.py
+colcon build --symlink-install --packages-select multi_robot_interfaces multi_robot_exploration merge_map multi_robot
+python3 -m py_compile src/multi_robot_exploration/multi_robot_exploration/control.py
+git diff --check
+```
+
+结果：`80 passed`，4 个 ROS 包构建通过，语法检查和 diff 检查通过。
+
+### 定向三机器人回归：通过
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 ROS_DOMAIN_ID=211 GAZEBO_MASTER_URI=http://127.0.0.1:11381
+/usr/bin/python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 3 --gazebo-seed 101 \
+  --startup-timeout 600 --message-timeout 90 --shutdown-timeout 60 \
+  --evaluation-duration 300 --coverage-threshold 0 --evaluation-wait-timeout 600 \
+  --target-detection --rally --battery --battery-capacity 100 --battery-initial-energy 40 \
+  --battery-move-cost 1 --battery-idle-cost 0.02 --battery-safety-margin 8 \
+  --battery-charge-duration 6 --target-x -4 --target-y 4 \
+  --rally-max-concurrent 1 --enable-global-battery-rally-pause \
+  --episode-id p3a6_safe_candidates_lab101 \
+  --evaluation-output-dir log/p2d_baseline/p3a6_safe_candidates_lab101/episodes \
+  --log-dir log/p2d_baseline/p3a6_safe_candidates_lab101/logs
+```
+
+结果文件：`ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a6_safe_candidates_lab101/episodes/p3a6_safe_candidates_lab101.json`。结果为 `success=true`、`COMPLETE`、198.7 s 完成、89.9 s 发现目标、98.5 s 集合、`collision_events=0`、最低能量 20.51、充电 0 次。
+
+### 强制充电回归：失败但充电闭环通过
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 ROS_DOMAIN_ID=211 GAZEBO_MASTER_URI=http://127.0.0.1:11381
+/usr/bin/python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 2 --gazebo-seed 303 \
+  --startup-timeout 600 --message-timeout 90 --shutdown-timeout 60 \
+  --evaluation-duration 300 --coverage-threshold 0 --evaluation-wait-timeout 600 \
+  --target-detection --rally --battery --require-charge --battery-capacity 100 \
+  --battery-initial-energy 18 --battery-move-cost 1 --battery-idle-cost 0.02 \
+  --battery-safety-margin 5 --battery-charge-duration 10 --battery-return-timeout 120 \
+  --battery-charge-timeout 60 --target-x -4 --target-y 4 --target-max-distance 3 \
+  --target-field-of-view 90 --target-confirmation-frames 3 \
+  --rally-max-concurrent 1 --enable-global-battery-rally-pause \
+  --episode-id p3a6_forced_charge_parked_fix_seed303 \
+  --evaluation-output-dir log/p2d_baseline/p3a6_forced_charge_parked_fix_seed303/episodes \
+  --log-dir log/p2d_baseline/p3a6_forced_charge_parked_fix_seed303/logs
+```
+
+结果文件：`ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a6_forced_charge_parked_fix_seed303/episodes/p3a6_forced_charge_parked_fix_seed303.json`。300.2 s 超时，任务仍为 `EXPLORE`，目标未发现，`success=false`；两台机器人各返航并充电 1 次，共 2 次充电，`collision_events=0`，最低能量 9.288，最终均为 `ACTIVE`。该结果不能计作严格强制充电 `COMPLETE`。
+
+### 并行探索试验：中断并保留
+
+临时把探索并发上限设为 2 后运行三机器人 seed 101，命令使用相同的 `ros_smoke_test.py` 参数，`ROS_DOMAIN_ID=212`、`GAZEBO_MASTER_URI=http://127.0.0.1:11382`、episode `p3a6_parallel_lab101`，输出目录为 `log/p2d_baseline/p3a6_parallel_lab101/`。日志显示 tb2 返航、充电并恢复，tb3 随后长时间等待安全路线；评估窗口结束前进程被中断，没有 episode JSON。该试验未作为成功或失败的正式矩阵格，原始日志保留以供后续诊断；最终提交恢复单路线策略。
+
+本轮代码提交为 `d340ba3`，已推送到 `origin/main`。中文报告和本节日志随后单独提交并推送。用户未跟踪的 `260929_report/` 文件未加入提交。
