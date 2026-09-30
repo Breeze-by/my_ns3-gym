@@ -510,7 +510,7 @@ class BatteryManager(Node):
             RallyPose(self.charge_x, self.charge_y, 0.0),
             self.return_map, self.return_map_resolution, self.return_map_origin,
             self.map_position, max_distance_m=MAX_NAVIGATION_LEG_M,
-            clearance_m=RALLY_PATH_CLEARANCE_M,
+            clearance_m=RALLY_PATH_CLEARANCE_M, visible_only=True,
         )
         if staged is not None:
             target = (staged.x, staged.y)

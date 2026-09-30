@@ -918,3 +918,111 @@ def test_pending_explorer_is_canceled_when_another_robot_starts_returning():
     )
     assert canceled == ["tb2"]
     assert node.battery_preempted["tb2"]
+
+
+def test_return_corridor_yield_uses_nearby_off_route_refuge():
+    from types import SimpleNamespace
+
+    grid = np.zeros((60, 100), dtype=int)
+    sent = []
+    original = control.RallyPose(4.0, 5.0, 0.0)
+    node = SimpleNamespace(
+        global_battery_rally_pause=True, fresh_robot_inputs=lambda: True,
+        rally_goal_handles={"tb1": None, "tb2": None},
+        rally_goal_pending={"tb1": False, "tb2": False},
+        survey_goal_handle=None, survey_goal_pending=False,
+        rally_dispatch_order=["tb1", "tb2"],
+        battery_modes={"tb1": "RETURNING", "tb2": "ACTIVE"},
+        battery_states={"tb1": {"charge_x": 1.0, "charge_y": 3.0}},
+        map_data=grid, resolution=0.1, origin=(0, 0),
+        robot_positions={"tb1": (8.0, 3.0), "tb2": (5.0, 3.0)},
+        rally_yield_targets=set(), return_yield_targets={}, rally_targets={"tb2": original},
+        rally_final_targets={"tb2": original}, rally_arrived={"tb2": True},
+        rally_attempts={"tb2": 2}, publish_rally_assignments=lambda: None,
+        get_logger=lambda: SimpleNamespace(info=lambda *args: None),
+        send_rally_goal=lambda name, plan: sent.append((name, plan)),
+    )
+    control.HeadquartersControl.yield_to_returning_robot(node)
+    assert sent and sent[0][0] == "tb2"
+    refuge = node.rally_targets["tb2"]
+    _, route = control.plan_rally_leg(
+        control.RallyPose(1.0, 3.0, 0), grid, 0.1, (0, 0), (8.0, 3.0),
+    )
+    assert min(math.dist((refuge.x, refuge.y), point) for point in route) >= 0.8
+    assert math.dist((5.0, 3.0), (refuge.x, refuge.y)) < 1.2
+    assert node.rally_final_targets["tb2"] is original
+    assert not node.rally_arrived["tb2"]
+    assert node.rally_yield_targets == {"tb2"}
+
+
+def test_return_heartbeat_does_not_cancel_an_active_yield():
+    import json
+    from types import SimpleNamespace
+
+    canceled = []
+    handle = SimpleNamespace(cancel_goal_async=lambda: canceled.append("tb2"))
+    node = SimpleNamespace(
+        battery_modes={"tb1": "RETURNING", "tb2": "ACTIVE"},
+        battery_states={}, battery_state_received_at={},
+        goal_handles={"tb1": None, "tb2": None},
+        cancel_requested={"tb1": False, "tb2": False},
+        battery_preempted={"tb1": False, "tb2": False},
+        rally_goal_handles={"tb1": None, "tb2": handle},
+        global_battery_rally_pause=True, task_state="RALLY",
+        survey_robot=None, now=lambda: 1.0,
+    )
+    for mode in ["RETURNING", "RETURNING", "CHARGING"]:
+        control.HeadquartersControl.battery_state_callback(
+            node, SimpleNamespace(data=json.dumps({"mode": mode})), "tb1",
+        )
+    assert not canceled
+
+
+def test_navigation_footprint_covers_gazebo_body_and_rpp_cost_scale():
+    from pathlib import Path
+    import xml.etree.ElementTree as ET
+    import yaml
+
+    src = Path(__file__).resolve().parents[2]
+    model = ET.parse(src / "multi_robot/models/turtlebot3_waffle/model.sdf")
+    body = model.find(".//collision[@name='base_collision']")
+    offset = [float(v) for v in body.findtext("pose").split()[:2]]
+    size = [float(v) for v in body.findtext("geometry/box/size").split()[:2]]
+    required_radius = max(
+        math.hypot(offset[0] + sx * size[0] / 2, offset[1] + sy * size[1] / 2)
+        for sx in [-1, 1] for sy in [-1, 1]
+    )
+    for index in range(1, 5):
+        config = yaml.safe_load((src / f"multi_robot/params/nav2_params_tb{index}_0.yaml").read_text())
+        local = config["local_costmap"]["local_costmap"]["ros__parameters"]
+        global_map = config["global_costmap"]["global_costmap"]["ros__parameters"]
+        assert local["robot_radius"] >= required_radius
+        assert global_map["robot_radius"] >= required_radius
+        controller = config["controller_server"]["ros__parameters"]["FollowPath"]
+        assert controller["use_collision_detection"]
+        assert controller["inflation_cost_scaling_factor"] == local["inflation_layer"]["cost_scaling_factor"]
+        assert controller["cost_scaling_dist"] <= local["inflation_layer"]["inflation_radius"]
+
+
+def test_return_yield_restores_final_goal_after_charger_reached():
+    from types import SimpleNamespace
+
+    final = control.RallyPose(4.0, 3.0, 0.0)
+    updates = []
+    node = SimpleNamespace(
+        return_yield_targets={"tb2": "tb1"},
+        battery_modes={"tb1": "RETURNING", "tb2": "ACTIVE"},
+        rally_arrived={"tb2": True}, rally_goal_handles={"tb2": None},
+        rally_goal_pending={"tb2": False}, rally_yield_targets={"tb2"},
+        rally_targets={"tb2": control.RallyPose(1.0, 1.0, 0.0)},
+        rally_final_targets={"tb2": final}, rally_route_unavailable_since={},
+        publish_rally_assignments=lambda: updates.append(1),
+    )
+    control.HeadquartersControl.release_return_yields(node)
+    assert not updates
+    node.battery_modes["tb1"] = "CHARGING"
+    control.HeadquartersControl.release_return_yields(node)
+    assert node.rally_targets["tb2"] is final
+    assert not node.rally_arrived["tb2"]
+    assert not node.rally_yield_targets and not node.return_yield_targets
+    assert updates == [1]

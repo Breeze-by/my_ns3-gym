@@ -56,3 +56,25 @@ working-tree 修改的定向诊断；源码哈希、候选 patch 和精确命令
 两机器人 seed202，共十格；另运行 clean-commit 两机器人 forced-charge seed303。
 所有结果和中断保留，只有十格 COMPLETE/零碰撞及充电回归全部通过才能写入新的
 `task_stack_frozen_commit`。
+
+## 后续 RPP 候选与任务回归
+
+首个 clean 候选 `28f8f64` 的 lab/3r/101 在 RALLY 超时并出现四次碰撞；
+第二格在启动前中断，后续八格未运行。日志和正式失败 JSON 原样保留。
+后续改用已安装的 [Regulated Pure Pursuit](https://arxiv.org/abs/2305.20026)，
+遵循 [Humble 参数文档](https://api.nav2.org/nav2-humble/html/md_nav2_regulated_pure_pursuit_controller_README.html)：
+开启曲率/近障碍限速与预测碰撞检测，最大线速度仍为 0.26 m/s；
+偏心 base collision 的后角半径约 0.237 m，因此四台 costmap 半径修正为 0.25 m。
+可视分段扩展到集合和本地返航，周期 RETURNING 心跳不再反复取消让路动作。
+阻塞返航路线时选择路线外的最近可达避让位，保留原最终目标；返航者进入充电且
+让路者到达避让位后恢复任务。上述方法不提供连续异步场景的理论无死锁保证。
+
+| RPP 定向诊断 | 完成 | 碰撞 | 充电 | 说明 |
+|---|---|---:|---:|---|
+| v1，串行/全局暂停 | 300 s 超时 | 0 | 1 | 剩余机器人未集合 |
+| v2，两路/非全局暂停 | 300 s 超时 | 0 | 2 | 让路者被旧恢复规则长期保留在临时位 |
+| v3，独立 return-yield 生命周期 | COMPLETE 235.2 s | 0 | 0 | 未触发返航，不能视为实际充电验证 |
+
+v3 最大最终误差 0.09836 m，最低能量 20.6487；组件测试 90 项通过，
+四包构建、源码及运行时旁路审计通过。三轮均是基于 `28f8f64` 的 dirty-tree
+诊断，精确命令和 patch 在日志记录；不能替代新提交上的十格正式矩阵和强制充电门禁。

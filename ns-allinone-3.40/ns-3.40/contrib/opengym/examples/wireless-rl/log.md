@@ -3505,3 +3505,93 @@ export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 ROS_DOMAIN_ID=217 GAZEBO_MASTE
 `task_stack_candidate_commit`，`task_stack_frozen_commit` 初始为空。不能在尚未运行固定矩阵
 时就由 HEAD 自动宣称冻结；正式退出门通过后由完整证据报告输出冻结提交。
 验证：runner `--validate-only`（只检查固定场景，不启动仿真）、`py_compile`、diff 检查通过。
+
+## 2026-09-30 P3A.6 正式滚动预约候选失败与 RPP 诊断
+
+正式候选 `28f8f64`（已推送），source/runtime 图审计通过；`worktree_dirty=false`，
+manifest 的 candidate commit 为该提交，frozen commit 为空。用户文件 `260929_report/`
+只被临时列入 `.git/info/exclude`，没有移动、删除或提交；原排除内容备份于忽略的 runtime
+目录，最终需恢复。
+
+固定矩阵精确命令：
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 GAZEBO_MASTER_URI=http://127.0.0.1:11388
+/usr/bin/python3 scripts/run_p2d_baseline.py --seeds 101 202 303 \
+  --run-id p3a6_rolling_28f8f64_matrix --ros-domain-base 218 \
+  --startup-timeout 600 --evaluation-wait-timeout 600 --inter-episode-delay 5 \
+  --rally-max-concurrent 1 --enable-global-battery-rally-pause
+```
+
+首次命令 run-id 为 `p3a6_rolling_28f8f64`，因该目录已被用于保存本地 exclude 备份，
+runner 在启动任何模拟器前拒绝复用目录（exit 1）。改用新的 `_matrix` 目录后开始固定批次。
+`lab/3r/101`：300.4 s 超时，RALLY，135.2 s 发现目标，136.9 s 进入 RALLY，
+4 次碰撞，1 次充电，失败原因 collision。四个碰撞事件均发生在 RALLY（原日志
+1790780767–1790780770）；不得被后来结果替换。输出保留在
+`log/p2d_baseline/p3a6_rolling_28f8f64_matrix/`，summary 有这一格完整失败数据。
+第二格 lab/202 启动期间中断，Nav2 尚未全部就绪，没有 episode_start 或 JSON，按
+启动前基础设施中断保留 launch log。runner/第二格 smoke 均 SIGINT；后续八格未运行。
+
+诊断发现：全局电池暂停可能让机器人停在返航通道；每个 RETURNING/CHARGING 心跳
+反复取消其他 RALLY action，让通道恢复动作无法保持。Nav2 原 0.22 m 圆半径也小于
+Gazebo 偏心 base collision 角点约 0.237 m，转弯时可能漏检后角。
+
+新候选沿用滚动预约并切换至已安装的 Humble Regulated Pure Pursuit：最大线速度 0.26，
+曲率/近障碍限速、预测碰撞检测开启，局部/全局圆半径 0.25 m；5 m 可视分段扩展到集合和
+本地返航。返航暂停只在进入 RETURNING 时取消一次，通道阻塞时让健康机器人临时获得
+通行优先级，移到返回路线之外的最近可达避让点；保留其最终集合位。
+参考官方 Humble 文档 https://api.nav2.org/nav2-humble/html/md_nav2_regulated_pure_pursuit_controller_README.html
+与论文 https://arxiv.org/abs/2305.20026；不宣称理论无死锁保证。
+
+诊断一（dirty working tree 基于 `28f8f64`，RPP 和通道让路候选；两条 RALLY/return
+执行路径均启用可视分段）：
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 ROS_DOMAIN_ID=219 GAZEBO_MASTER_URI=http://127.0.0.1:11389
+/usr/bin/python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 3 --gazebo-seed 101 \
+  --startup-timeout 600 --message-timeout 90 --shutdown-timeout 60 \
+  --evaluation-duration 300 --coverage-threshold 0 --evaluation-wait-timeout 600 \
+  --target-detection --rally --battery --battery-capacity 100 --battery-initial-energy 40 \
+  --battery-move-cost 1 --battery-idle-cost 0.02 --battery-safety-margin 8 --battery-charge-duration 6 \
+  --target-x -4 --target-y 4 --rally-max-concurrent 1 --enable-global-battery-rally-pause \
+  --episode-id p3a6_rpp_lab101_v1 \
+  --evaluation-output-dir log/p2d_baseline/p3a6_rpp_lab101_v1/episodes \
+  --log-dir log/p2d_baseline/p3a6_rpp_lab101_v1/logs \
+  --bypass-audit-output log/p2d_baseline/p3a6_rpp_lab101_v1/graph.json
+```
+
+结果：300 s 内 RALLY 未完成，timeout，零碰撞，1 次充电；目标发现 115.4 s，RALLY
+117.2 s，tb1 已回充再到达最终集合点，tb2/tb3 仍距目标 4.8/11.0 m。完整失败 JSON
+与图审计保留。结论：安全性改善但串行/全局暂停配置仍未满足时限。
+
+诊断二使用同一 RPP/通道让路候选，将让路支持扩展到非全局暂停模式，source patch 保存于
+`log/p2d_baseline/p3a6_rpp_lab101_v2/candidate.patch`。精确命令同诊断一，替换如下
+（其余命令参数逐项相同）：ROS_DOMAIN_ID=220、GAZEBO_MASTER_URI=http://127.0.0.1:11390，
+`--rally-max-concurrent 2 --disable-global-battery-rally-pause`，episode/output/log/graph
+路径中的 `p3a6_rpp_lab101_v1` 全部改为 `p3a6_rpp_lab101_v2`。
+结果：300 s 内 RALLY 超时，102.3 s 发现，106.3 s 进入 RALLY，零碰撞，2 次充电；
+日志证实 tb2 临时让开 tb3 返航路线、随后 tb3 又让开 tb1 返航路线。JSON 中 tb2/tb3 的
+小误差指向当时公布的临时避让位，不能当作原最终集合位到达；控制器仍拒绝 COMPLETE。
+旧恢复规则等待其他所有机器人集合后才恢复让路者，导致额外等待。失败与完整日志保留。
+
+诊断三验证独立的 return-yield 生命周期：返航机器人进入 CHARGING 后，已停稳的
+让路者即可恢复原最终集合位，不再等待返航机器人再次走到目标区；普通集合避让保留原
+恢复规则，故障隔离会清理相关 bookkeeping。新生命周期有可运行回归测试。
+命令同诊断二，ROS_DOMAIN_ID=221、GAZEBO_MASTER_URI=http://127.0.0.1:11391，所有
+episode/output/log/graph 路径改为 `p3a6_rpp_lab101_v3`。源码和文档 candidate.patch
+保留在该目录。最终组件验证为 `90 passed`，四个包构建与三机器人源码旁路审计通过。
+
+诊断三结果：exit 0，235.2 s COMPLETE，零碰撞、零返航/充电、无失败机器人；
+64.4 s 发现、73.8 s 进入 RALLY，最低能量 20.6487，最大最终误差 0.09836 m。
+三机器人运行时旁路审计通过。该轮未触发返航，因而仅能证明组合候选的任务回归通过，
+不能据此宣称 return-yield 在实际充电中的生命周期已通过；该行为目前由组件测试覆盖，
+仍需同一 clean commit 强制充电回归。与前两轮的差异体现异步仿真的运行波动，
+不得把完成时间改善全归因于一条恢复规则。所有失败保留，固定十格尚未完成。

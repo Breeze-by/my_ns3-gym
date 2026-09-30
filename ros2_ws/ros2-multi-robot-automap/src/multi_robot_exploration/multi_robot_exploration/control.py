@@ -20,6 +20,7 @@ from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
 from scipy import ndimage
+from scipy.spatial import cKDTree
 from scipy.optimize import linear_sum_assignment
 from scipy.sparse import coo_matrix
 from scipy.sparse.csgraph import dijkstra
@@ -1074,10 +1075,14 @@ def rally_yield_pose(
     target,
     reserved_poses=(),
     blocked_positions=(),
+    reserved_routes=(),
 ):
-    """Choose a nearby safe pose that moves a parked robot out of a corridor."""
+    """Choose a reachable refuge outside parked poses and reserved corridors."""
     traversable = traversable_grid(
         raw_grid, resolution, clearance_m=RALLY_PATH_CLEARANCE_M
+    )
+    traversable = block_dynamic_positions(
+        traversable, resolution, origin, blocked_positions
     )
     start = world_to_grid(
         robot_position[0], robot_position[1], resolution,
@@ -1092,6 +1097,8 @@ def rally_yield_pose(
     if start is None:
         return None
     distances = path_distance_grid(traversable, start)
+    route_points = [point for route in reserved_routes for point in route]
+    route_tree = cKDTree(route_points) if route_points else None
     candidates = []
     for row, column in np.argwhere(np.isfinite(distances)):
         path_distance = float(distances[row, column] * resolution)
@@ -1105,10 +1112,15 @@ def rally_yield_pose(
             for pose in (*reserved_poses, *blocked_positions)
         ):
             continue
+        if route_tree is not None and route_tree.query((x, y))[0] < RALLY_MIN_SEPARATION_M:
+            continue
         candidates.append((math.dist((x, y), target), path_distance, x, y))
     if not candidates:
         return None
-    _, _, x, y = max(candidates, key=lambda item: (item[0], -item[1]))
+    if reserved_routes:
+        _, _, x, y = min(candidates, key=lambda item: item[1])
+    else:
+        _, _, x, y = max(candidates, key=lambda item: (item[0], -item[1]))
     return RallyPose(x, y, math.atan2(target[1] - y, target[0] - x))
 
 
@@ -1630,6 +1642,7 @@ class HeadquartersControl(Node):
         self.rally_targets = {}
         self.rally_final_targets = {}
         self.rally_yield_targets = set()
+        self.return_yield_targets = {}
         self.rally_probe_targets = set()
         self.rally_probe_robot = None
         self.rally_goal_handles = {}
@@ -1935,7 +1948,8 @@ class HeadquartersControl(Node):
         if rally_handle is not None:
             self.rally_battery_preempted[robot_name] = True
             rally_handle.cancel_goal_async()
-        if self.task_state == "RALLY" and self.global_battery_rally_pause:
+        if (self.task_state == "RALLY" and self.global_battery_rally_pause
+                and mode == "RETURNING" and previous != mode):
             self.get_logger().warn(
                 f"Pausing other rally legs while {robot_name} returns to charge."
             )
@@ -1982,6 +1996,7 @@ class HeadquartersControl(Node):
             name for name in self.rally_dispatch_order if name != robot_name
         ]
         self.rally_yield_targets.discard(robot_name)
+        self.return_yield_targets.pop(robot_name, None)
         self.rally_probe_targets.discard(robot_name)
         if self.rally_probe_robot == robot_name:
             self.rally_probe_robot = None
@@ -2035,6 +2050,77 @@ class HeadquartersControl(Node):
         self.task_failure_publisher.publish(message)
         self.publish_task_state("FAILED")
         self.get_logger().error(f"Mission failed: {reason}")
+
+    def release_return_yields(self):
+        """Resume a displaced mission as soon as its returner clears traffic."""
+        released = False
+        for name, returning in list(self.return_yield_targets.items()):
+            if self.battery_modes[returning] == "RETURNING":
+                continue
+            if (not self.rally_arrived[name] or self.rally_goal_handles[name] is not None
+                    or self.rally_goal_pending[name]):
+                continue
+            self.rally_targets[name] = self.rally_final_targets[name]
+            self.rally_yield_targets.discard(name)
+            del self.return_yield_targets[name]
+            self.rally_arrived[name] = False
+            self.rally_route_unavailable_since[name] = None
+            released = True
+        if released:
+            self.publish_rally_assignments()
+
+    def yield_to_returning_robot(self):
+        """Move an idle rally blocker to a refuge before resuming global pause."""
+        if not self.fresh_robot_inputs():
+            return
+        if any(self.rally_goal_handles.values()) or any(self.rally_goal_pending.values()):
+            return
+        if self.survey_goal_handle is not None or self.survey_goal_pending:
+            return
+        for returning in self.rally_dispatch_order:
+            if self.battery_modes[returning] != "RETURNING":
+                continue
+            state = self.battery_states[returning]
+            if "charge_x" not in state or "charge_y" not in state:
+                continue
+            home = RallyPose(float(state["charge_x"]), float(state["charge_y"]), 0.0)
+            _, route = plan_rally_leg(
+                home, self.map_data, self.resolution, self.origin,
+                self.robot_positions[returning],
+            )
+            if not route:
+                continue
+            for name in self.rally_dispatch_order:
+                position = self.robot_positions[name]
+                if (name == returning or self.battery_modes[name] != "ACTIVE"
+                        or position is None or name in self.rally_yield_targets):
+                    continue
+                if not routes_conflict((position,), route, RALLY_DYNAMIC_CLEARANCE_M):
+                    continue
+                blocked = [p for other, p in self.robot_positions.items()
+                           if other != name and p is not None]
+                refuge = rally_yield_pose(
+                    self.map_data, self.resolution, self.origin, position,
+                    (home.x, home.y), blocked_positions=blocked,
+                    reserved_routes=(route,),
+                )
+                if refuge is None:
+                    continue
+                plan = plan_rally_leg(
+                    refuge, self.map_data, self.resolution, self.origin,
+                    position, MAX_NAVIGATION_LEG_M, blocked, visible_only=True,
+                )
+                if plan[0] is None:
+                    continue
+                self.rally_targets[name] = refuge
+                self.rally_yield_targets.add(name)
+                self.return_yield_targets[name] = returning
+                self.rally_arrived[name] = False
+                self.rally_attempts[name] = 0
+                self.publish_rally_assignments()
+                self.get_logger().info(f"Yielding {name} out of {returning}'s return corridor.")
+                self.send_rally_goal(name, plan)
+                return
 
     def update_mission(self):
         if self.enable_battery and self.task_state not in (
@@ -2220,9 +2306,10 @@ class HeadquartersControl(Node):
             self.survey_goal_started_at = None
             self.survey_cancel_requested = True
             self.survey_goal_handle.cancel_goal_async()
+        self.release_return_yields()
         yielded_names = [
             name for name in self.rally_yield_targets
-            if self.rally_arrived[name]
+            if self.rally_arrived[name] and name not in self.return_yield_targets
         ]
         if yielded_names:
             active_rally = any(
@@ -2293,12 +2380,14 @@ class HeadquartersControl(Node):
             ):
                 self.rally_arrived[name] = False
 
+        self.yield_to_returning_robot()
         if (
             now - self.last_rally_dispatch_at >= 1.0
             and self.fresh_robot_inputs()
             and (
                 not self.global_battery_rally_pause
                 or self.active_batteries_ready()
+                or yield_recovery_active
             )
         ):
             self.last_rally_dispatch_at = now
@@ -2332,12 +2421,13 @@ class HeadquartersControl(Node):
                         self.resolution,
                         self.origin,
                         self.robot_positions[name],
-                        rally_leg_limit(self.rally_attempts[name]),
+                        min(MAX_NAVIGATION_LEG_M, rally_leg_limit(self.rally_attempts[name])),
                         [
                             position
                             for other_name, position in self.robot_positions.items()
                             if other_name != name and position is not None
                         ],
+                        visible_only=True,
                     )
                     # Robot footprints are soft obstacles for the leader of
                     # a stalled group.  If every robot is waiting for the
@@ -2811,8 +2901,8 @@ class HeadquartersControl(Node):
                 self.resolution,
                 self.origin,
                 self.robot_positions[robot_name],
-                rally_leg_limit(self.rally_attempts[robot_name]),
-                blocked_positions,
+                min(MAX_NAVIGATION_LEG_M, rally_leg_limit(self.rally_attempts[robot_name])),
+                blocked_positions, visible_only=True,
             )
         target, route = plan
         if target is None:
