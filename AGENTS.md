@@ -74,6 +74,15 @@ coordinator, battery, and clearance logic. The current-HEAD P3A.5 run at
 only 9/10 formal episodes completed: lab seed 202 failed after episode start
 in `RALLY`. The failed episode is retained; P3A.5 remains in progress and
 P3B has not started.
+Update 2026-10-01: current work is P3A.6 re-freezing. Clean candidate
+`bd2f0f2` completed the fixed ten cells with 6 COMPLETE and zero collisions in
+all ten; four timeouts remain failures. The latest source candidate adds RPP,
+ray-based information gain, hierarchical viewpoint sampling, safe straight
+waypoints, precise Nav2 arrival, and dispatched blocker recovery. Its component
+checks pass, but its integration gate remains pending. Historical task-stack
+acceptance cannot replace current evidence; P3B.5 and network/RL work await
+this gate. See the nested AGENTS.md and dated report for current details.
+
 The revised plan adds the previously missing
 P2D full ideal-task integration gate, splits ns-3 time/packet coupling from
 Wi-Fi calibration, and fixes formal run/statistical rules. From P2B onward only

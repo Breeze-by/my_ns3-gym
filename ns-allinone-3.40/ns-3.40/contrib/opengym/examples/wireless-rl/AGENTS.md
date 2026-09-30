@@ -94,15 +94,15 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
 
 ## Current Handoff Snapshot
 
-2026-09-30 P3A.5 后续优化已提交于 `d340ba3`，返航短段修复提交于 `9025b38`。当前控制器把停驻机器人位置纳入实际探索路径规划，在充电返航期间暂停新的探索/集合派发，并把电池返航拆成短导航段；组件测试和构建通过。定向三机器人 lab/seed101 回归达到 `COMPLETE`、零碰撞；强制充电 seed303 已完成两次充电、零碰撞并发现目标，但 300 s 内仍未完成 RALLY；并行探索试验在评估窗口内中断。不要设置 `task_stack_frozen_commit` 或开始网络/RL 工作。中文报告为 `report/20260930_p3a5_algorithm_optimization.md`，新增结果和失败均已写入 `log.md`；输出仍在 `ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/`。
+2026-10-01 P3A.6 当前重验证仍进行中。`bd2f0f2` 的 clean 固定十格完整运行6/10 COMPLETE、全部零碰撞、零基础设施失败；lab303、rooms101、corridors101/202 超时，失败 JSON/graph/log 全保留。`db21e92` 的 clean 双机器人 forced303 在271.6 s COMPLETE、零碰撞、每台一次充电，但此结果不能转移给后续改动。最新源码候选采用 RPP、三台受路线预约约束的探索、射线收益、分层观察点、最远安全直线牵引、0.02 m Nav2 航点容差和实际派发的阻塞恢复；104项测试、构建和源码旁路审计通过，尚需新提交门禁。任务 COMPLETE 的0.35 m/速度/全体5 s以及300 s保持不变。不要设置 task_stack_frozen_commit 或开始网络/RL。详见 `report/20260930_p3a6_rolling_reservations.md` 与 log.md。
 
-- Active boundary: P3A and P3A.5 are user-accepted and frozen as the network
-  task-stack baseline. The historical integration freeze candidate is
+- Active boundary: complete P3A.6 before P3B.5 or network/RL work. P3A and
+  P3A.5 acceptance applies to their historical task-stack evidence. The historical integration freeze candidate is
   `task_stack_frozen_commit=2933c24`; clean 6+4 runner batches cover all ten
   fixed cells with `COMPLETE` and zero collisions, and the forced-charge
   regression completes two charges. P3B's deterministic application-layer
-  fault gateway and protocol matrix are user-accepted. The active work is now
-  P3B.5 (fault-mode Gazebo task matrix and safety degradation), followed by P3C
+  fault gateway and protocol matrix are user-accepted. After P3A.6 passes, proceed
+  to P3B.5 (fault-mode Gazebo task matrix and safety degradation), followed by P3C
   (gateway metrics and default visualization); P4A remains the later ns-3 bridge.
 - Current evidence is retained at `log/p2d_baseline/p3a5_final_2933c24/`
   (lab/rooms six cells),

@@ -95,3 +95,27 @@ COMPLETE/零碰撞，303 超时/一次碰撞/一次充电。rooms/101 在启动�
 只消费已交付地图；粗候选生成保持原有前沿方法。探索容量增至三，但动态避障和路线
 预约继续约束每次准入，集合容量不变。收益是对未知空间的估计，并非真实可见性证明。
 后续所有正式批次必须另开目录、记录新提交和失败，不能继承上一提交的充电验证。
+
+## 完整候选 bd2f0f2 与下一步
+
+固定十格完整结果为6/10 COMPLETE、全部零碰撞、零基础设施失败。源码固定且
+工作树 clean，manifest frozen=null；四个 timeout 完整保留。
+
+| 场景 | robots | seed | 终态 | 完成/超时 s | 碰撞 | 充电 |
+|---|---:|---:|---|---:|---:|---:|
+| lab_far_northwest | 3 | 101 | COMPLETE | 249.4 | 0 | 1 |
+| lab_far_northwest | 3 | 202 | COMPLETE | 191.8 | 0 | 0 |
+| lab_far_northwest | 3 | 303 | RALLY timeout | 300.3 | 0 | 3 |
+| rooms_far_northeast | 3 | 101 | EXPLORE timeout | 300.2 | 0 | 0 |
+| rooms_far_northeast | 3 | 202 | COMPLETE | 207.5 | 0 | 0 |
+| rooms_far_northeast | 3 | 303 | COMPLETE | 134.5 | 0 | 0 |
+| corridors_far_west | 3 | 101 | RALLY timeout | 300.2 | 0 | 0 |
+| corridors_far_west | 3 | 202 | RALLY timeout | 300.3 | 0 | 1 |
+| corridors_far_west | 3 | 303 | COMPLETE | 284.9 | 0 | 0 |
+| corridors_far_west | 2 | 202 | COMPLETE | 200.6 | 0 | 0 |
+
+rooms101 在出生区反复派发零距离目标；另外三项在 RALLY 超时，涉及密集短段和
+返航时间。最新候选补充小前沿的0.2 m 细粒度观察点，保留0.45 m 净空、1.2 m 目标
+隔离和1.8 m 路线隔离；拒绝无效目标准入，采用最远安全视线牵引并同步预约直线。
+Nav2 航点 XY 容差进一步收紧至0.02 m，COMPLETE 仍是0.35 m/速度/全体5 s。
+104项测试、构建及源码审计通过；尚无该候选正式任务结果，不设置冻结提交。

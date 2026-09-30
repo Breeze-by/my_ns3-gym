@@ -36,6 +36,7 @@ VIEWPOINT_SEARCH_RADIUS_M = 0.8
 INFORMATION_RADIUS_M = 2.0
 MIN_TARGET_SEPARATION_M = 1.2
 MAX_NAVIGATION_LEG_M = 5.0
+NAVIGATION_POSITION_TOLERANCE_M = 0.02
 TARGET_HISTORY_SEC = 10.0
 BAD_TARGET_SEC = 30.0
 NO_PROGRESS_SEC = 20.0
@@ -60,8 +61,8 @@ RALLY_GOAL_TIMEOUT_SEC = 30.0
 # target is found.  Keep the route failure diagnostic, but allow map delivery
 # and a fresh rally-pose assignment to recover before failing the mission.
 RALLY_ASSIGNMENT_WAIT_SEC = 30.0
-# Conflict-free navigation targets the final pose. Short legs are only used
-# after a failed action; traffic reservations may insert a holding point.
+# Whole-route feasibility searches are unbounded; dispatched navigation legs
+# are capped and smoothed separately, including traffic holding points.
 RALLY_MAX_NAVIGATION_LEG_M = float("inf")
 RALLY_ROUTE_SEPARATION_M = 1.8
 # Independent corridors may run concurrently; shared corridors remain reserved
@@ -314,39 +315,48 @@ def frontier_viewpoints(raw_grid, groups, traversable, resolution, limit=12):
             np.argsort(scores[candidate_indices])[::-1]
         ]
         selected = []
-        remaining = ranked_indices
-        while remaining.size and len(selected) < limit:
-            index = remaining[0]
-            row = int(rows[index])
-            column = int(columns[index])
-            frontier_row = int(nearest[0, row, column])
-            frontier_column = int(nearest[1, row, column])
-            if not has_known_line_of_sight(
-                raw_grid,
-                (row, column),
-                (frontier_row, frontier_column),
-            ):
-                remaining = remaining[1:]
-                continue
-            viewpoint = Viewpoint(
-                group_id,
-                row,
-                column,
-                frontier_row,
-                frontier_column,
-                visible_unknown_gain(
-                    raw_grid, (row, column), INFORMATION_RADIUS_M / resolution
-                ),
-                len(group),
-            )
-            selected.append(viewpoint)
-            distance_squared = (
-                (rows[remaining] - row) ** 2
-                + (columns[remaining] - column) ** 2
-            )
-            remaining = remaining[
-                distance_squared >= separation_cells * separation_cells
-            ]
+        # Keep broad coverage first; fill small groups with fine alternatives.
+        # Fleet target separation remains independent of viewpoint sampling.
+        for spacing_cells in (separation_cells, max(1, math.ceil(0.2 / resolution))):
+            remaining = ranked_indices
+            for point in selected:
+                squared = (
+                    (rows[remaining] - point.row) ** 2
+                    + (columns[remaining] - point.column) ** 2
+                )
+                remaining = remaining[squared >= spacing_cells * spacing_cells]
+            while remaining.size and len(selected) < limit:
+                index = remaining[0]
+                row = int(rows[index])
+                column = int(columns[index])
+                frontier_row = int(nearest[0, row, column])
+                frontier_column = int(nearest[1, row, column])
+                if not has_known_line_of_sight(
+                    raw_grid,
+                    (row, column),
+                    (frontier_row, frontier_column),
+                ):
+                    remaining = remaining[1:]
+                    continue
+                viewpoint = Viewpoint(
+                    group_id,
+                    row,
+                    column,
+                    frontier_row,
+                    frontier_column,
+                    visible_unknown_gain(
+                        raw_grid, (row, column), INFORMATION_RADIUS_M / resolution
+                    ),
+                    len(group),
+                )
+                selected.append(viewpoint)
+                distance_squared = (
+                    (rows[remaining] - row) ** 2
+                    + (columns[remaining] - column) ** 2
+                )
+                remaining = remaining[
+                    distance_squared >= spacing_cells * spacing_cells
+                ]
         if selected:
             viewpoints[group_id] = selected
     return viewpoints
@@ -717,6 +727,8 @@ def robot_candidate_assignments(
                 viewpoint.group_size,
                 path_distance_m,
             )
+            if utility <= 0:
+                continue
             utility *= target_reuse_penalty((x, y), excluded_targets)
             assignment = Assignment(
                 viewpoint, x, y, path_distance_m, utility, x, y
@@ -1349,14 +1361,13 @@ def plan_rally_leg(
     if waypoint is None:
         return None, ()
     if visible_only:
-        # NavigateToPose receives a waypoint, not our grid route. Stop before
-        # an occluded bend so its shortest path cannot shortcut a reservation
-        # or the parked-robot detour. Replan from the delivered pose next tick.
-        for index in range(1, len(route)):
-            if not all(traversable[cell] for cell in _line_cells(start, route[index])):
-                route = route[:index]
+        # Pull the path to its farthest clear waypoint; a grid-path bend can
+        # temporarily occlude a nearer point even when a later point is clear.
+        for candidate in reversed(route):
+            direct = tuple(_line_cells(start, candidate))
+            if all(traversable[cell] for cell in direct):
+                waypoint, route = candidate, direct
                 break
-        waypoint = route[-1]
     x, y = grid_to_world(
         waypoint[0], waypoint[1], resolution, origin[0], origin[1]
     )
@@ -3280,6 +3291,11 @@ class HeadquartersControl(Node):
             if admitted is None:
                 continue
             pose, route = admitted
+            if (
+                math.dist(self.robot_positions[name], (pose.x, pose.y))
+                <= NAVIGATION_POSITION_TOLERANCE_M
+            ):
+                continue
             plans[name] = Assignment(
                 assignment.viewpoint, assignment.x, assignment.y,
                 assignment.path_distance_m, assignment.utility, pose.x, pose.y,

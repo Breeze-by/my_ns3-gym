@@ -148,7 +148,7 @@ controller_server:
     goal_checker:
       plugin: "nav2_controller::SimpleGoalChecker"
       # Reach short cooperative waypoints instead of accepting them in place.
-      xy_goal_tolerance: 0.10
+      xy_goal_tolerance: 0.02
       yaw_goal_tolerance: 3.14
       stateful: True
     # Regulated Pure Pursuit: follow the Smac path with curvature regulation

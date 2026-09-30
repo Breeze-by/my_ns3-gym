@@ -3707,3 +3707,70 @@ runner/smoke/自有 launch group。第一格在此期间自然超时，保留真
 修复最终验证：98 项相关测试通过，四包构建和三机器人源码旁路审计通过。
 回归测试的避让支路需宽于离散净空膨胀直径；修正初版过窄 fixture 后使用真实路径规划
 验证动作派发，未修改算法净空来让测试通过。
+
+## 2026-10-01 bd2f0f2 完整固定十格（6/10，全部零碰撞）
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 GAZEBO_MASTER_URI=http://127.0.0.1:11395
+/usr/bin/python3 scripts/run_p2d_baseline.py --seeds 101 202 303 \
+  --run-id p3a6_recovery_bd2f0f2_matrix --ros-domain-base 190 \
+  --startup-timeout 600 --evaluation-wait-timeout 600 --inter-episode-delay 5 \
+  --rally-max-concurrent 2 --disable-global-battery-rally-pause
+```
+
+候选 `bd2f0f2` 已推送，整批期间源码和参数固定，manifest dirty=false，frozen=null；
+runner exit1，十格全保留，无基础设施失败或重试；碰撞监测十格都 active，碰撞全为零。
+源码和 runtime 旁路检查通过，十份 ROS graph 与 episode JSON 保留。最低能量9.8680，
+seeds仍是开发/集成种子，不能当成 held-out 泛化/显著性结果。
+
+| 场景 | robots | seed | 终态 | 完成/超时 s | 碰撞 | 充电 |
+|---|---:|---:|---|---:|---:|---:|
+| lab_far_northwest | 3 | 101 | COMPLETE | 249.4 | 0 | 1 |
+| lab_far_northwest | 3 | 202 | COMPLETE | 191.8 | 0 | 0 |
+| lab_far_northwest | 3 | 303 | RALLY timeout | 300.3 | 0 | 3 |
+| rooms_far_northeast | 3 | 101 | EXPLORE timeout | 300.2 | 0 | 0 |
+| rooms_far_northeast | 3 | 202 | COMPLETE | 207.5 | 0 | 0 |
+| rooms_far_northeast | 3 | 303 | COMPLETE | 134.5 | 0 | 0 |
+| corridors_far_west | 3 | 101 | RALLY timeout | 300.2 | 0 | 0 |
+| corridors_far_west | 3 | 202 | RALLY timeout | 300.3 | 0 | 1 |
+| corridors_far_west | 3 | 303 | COMPLETE | 284.9 | 0 | 0 |
+| corridors_far_west | 2 | 202 | COMPLETE | 200.6 | 0 | 0 |
+
+输出 `log/p2d_baseline/p3a6_recovery_bd2f0f2_matrix/`。rooms101 在出生区反复派发
+零距离/零utility 目标，地图没有增量；lab303 在 RALLY 发生三次充电后超时。
+corridors101/202 在 RALLY 超时，第一轮 tb1 已进入 CHARGING 但未完成一次充电，
+所以 charge_count=0 并不代表没有返航；另外两台已到集合位。长绕行里的密集可视
+短段不断停下/重新请求动作，增加了时间与空闲能耗。不得将 6/10 当成通过。
+
+只读快照诊断（没有新增模拟器或控制指令）：
+`source /opt/ros/humble/setup.bash; source install/setup.bash; export PYTHONNOUSERSITE=1 ROS_DOMAIN_ID=195; /usr/bin/python3 /tmp/capture_p3a6_snapshot.py log/p2d_baseline/p3a6_recovery_bd2f0f2_matrix/rooms303_start_snapshot.npz`。
+诊断节点仅消费 gateway received odom/TF、中央合并地图与 task_state，保存了
+三机器人出生位附近的地图（197×277）与位姿。成功的 rooms303 出生图有三组/十观察点，
+每台有三项可达候选；这不能替代失败 rooms101 的地图重放证据。
+
+在 `/tmp/p3a6-next/` 独立副本（不改变正式源码/进程）准备候选并运行101项组件测试。
+pytest 因混合 /tmp 路径产生两个 cache 写入警告，测试全部通过。低优先级离线
+几何搜索（NumPy seed17、最多80张矩形障碍图）在第18张找到可复现的非单调可视路径：
+旧航点(3.35,1.95)，较远安全航点(5.05,2.75)。它证明旧“首个遮挡即截断”可能过早停下，
+不是实际任务性能或安全性的证明。该几何 case 已固定成可运行测试。
+
+下一候选保留1.2 m 宽间距采样，再以0.2 m 补足小前沿组的局部替代观察点（每组仍最多12）；
+原0.45 m 观察点净空不变，机器人目标1.2 m、路线1.8 m 隔离不变。零utility 和已落入
+Nav2 航点容差的目标拒绝准入。可视路段改为最远安全视线牵引，预约的路径同步改成
+实际安全直线网格，不再保留不会执行的栅格弯折。
+四台 Nav2 XY 容差由0.10收紧至0.02 m，小于5 cm 栅格半格，避免单格航点在原地完成；
+源/配置一致性有测试，COMPLETE/电量/物理速度/障碍与碰撞门限保持原样。
+104项正式源码组件测试、四包构建、三机器人源码旁路审计通过。新增短航点测试最初
+把0.05步长放在0.1 m 网格边界而落回同格；修正为实际0.05 m 网格的中心点 fixture
+后通过，未改算法来满足错误期望。新候选仍须新 clean-commit 固定门禁与强制充电，
+不得继承 db21e92 的强制充电结果。
+
+提交前复核：代码仅换行整理后按上述 ROS/install 环境重跑相同五文件，104 passed。
+首次复核误用了不存在的 test_navigation_gateway.py，随后遗漏 install/setup 导致
+collection ModuleNotFoundError；纠正命令/环境后通过，两次均没有启动模拟器。
+十份 bd2f0f2 graph.json 用原 runtime_violations 与只读 snapshot adapter 重放，
+10份/0违规，结果保存在同批 replayed_runtime_audit.json。

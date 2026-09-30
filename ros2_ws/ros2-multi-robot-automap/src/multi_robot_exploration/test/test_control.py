@@ -827,33 +827,36 @@ def test_parallel_explorers_try_independent_alternative_after_conflict(monkeypat
     assert len(sent) == min(robot_count, 3)
 
 
-def test_exploration_allows_short_initial_viewpoint(monkeypatch):
+@pytest.mark.parametrize("step, expected", ((0.0, 0), (0.005, 0), (0.05, 1), (0.2, 1)))
+def test_exploration_allows_short_initial_viewpoint(monkeypatch, step, expected):
     from types import SimpleNamespace
 
-    grid = np.zeros((40, 40), dtype=int)
-    viewpoint = control.Viewpoint(0, 20, 20, 20, 21, 1000, 10)
-    assignment = control.Assignment(viewpoint, 2.25, 2.05, 0.2, 10.0, 2.25, 2.05)
+    grid = np.zeros((80, 80), dtype=int)
+    viewpoint = control.Viewpoint(0, 40, 40, 40, 41, 1000, 10)
+    assignment = control.Assignment(viewpoint, 2.025 + step, 2.025, step, 10.0, 2.025 + step, 2.025)
     monkeypatch.setattr(control, "robot_candidate_assignments", lambda *args: (
         [(10.0, "tb1", 0, assignment)],
         {"frontier_groups": 1, "groups_with_viewpoints": 1},
     ))
     sent = []
     node = SimpleNamespace(
-        task_state="EXPLORE", map_data=grid, resolution=0.1, origin=(0.0, 0.0),
-        robot_positions={"tb1": (2.05, 2.05)}, robot_maps={"tb1": {}},
+        task_state="EXPLORE", map_data=grid, resolution=0.05, origin=(0.0, 0.0),
+        robot_positions={"tb1": (2.025, 2.025)}, robot_maps={"tb1": {}},
         robot_states={"tb1": "idle"}, battery_modes={"tb1": "ACTIVE"},
-        frontier_cache=control.prepare_frontier_data(grid, 0.1),
+        frontier_cache=control.prepare_frontier_data(grid, 0.05),
         input_robot_names=lambda: ["tb1"], participating_robots=lambda: ["tb1"],
         fresh_robot_inputs=lambda: True, active_exclusions=lambda: [],
         battery_assignment_safe=lambda *args: True,
         goal_targets={}, goal_routes={}, goal_initial_gain={},
         target_information_gain=lambda *args: 1000,
-        get_logger=lambda: SimpleNamespace(info=lambda *args: None),
+        now=lambda: 0.0, last_no_assignment_log=-math.inf,
+        get_logger=lambda: SimpleNamespace(info=lambda *args: None, warn=lambda *args: None),
         send_goal=lambda name, goal: sent.append((name, goal)),
     )
     control.HeadquartersControl.assign_idle_robots(node)
-    assert len(sent) == 1
-    assert sent[0][1].navigation_x == pytest.approx(2.25)
+    assert len(sent) == expected
+    if sent:
+        assert math.dist(node.robot_positions["tb1"], (sent[0][1].navigation_x, sent[0][1].navigation_y)) > control.NAVIGATION_POSITION_TOLERANCE_M
 
 
 def test_leg_candidates_reuse_one_snapshot_distance_field(monkeypatch):
@@ -1002,6 +1005,9 @@ def test_navigation_footprint_covers_gazebo_body_and_rpp_cost_scale():
         assert local["robot_radius"] >= required_radius
         assert global_map["robot_radius"] >= required_radius
         controller = config["controller_server"]["ros__parameters"]["FollowPath"]
+        tolerance = config["controller_server"]["ros__parameters"]["goal_checker"]["xy_goal_tolerance"]
+        assert tolerance == control.NAVIGATION_POSITION_TOLERANCE_M
+        assert tolerance < local["resolution"] / 2
         assert controller["use_collision_detection"]
         assert controller["inflation_cost_scaling_factor"] == local["inflation_layer"]["cost_scaling_factor"]
         assert controller["cost_scaling_dist"] <= local["inflation_layer"]["inflation_radius"]
@@ -1107,3 +1113,50 @@ def test_idle_blocker_recovery_dispatches_motion_before_returning(monkeypatch):
     control.HeadquartersControl.update_mission(node)
     assert node.rally_targets["tb2"] == replacements["tb2"]
     assert requests == ["tb2"]  # the action cannot be starved by the next timer
+
+
+def test_small_frontier_pocket_keeps_nonzero_local_alternatives():
+    grid = np.full((30, 30), -1)
+    grid[5:25, 5:25] = 0
+    data = control.prepare_frontier_data(grid, 0.1)
+    points = next(iter(data[2].values()))
+    assert 1 < len(points) <= 12
+    position = control.grid_to_world(points[0].row, points[0].column, 0.1, 0, 0)
+    candidates, _ = control.robot_candidate_assignments(
+        grid, 0.1, (0, 0), "tb1", position, [], data
+    )
+    assert candidates and all(a.path_distance_m > 0 for _, _, _, a in candidates)
+    assert any(0 < a.path_distance_m < 0.75 for _, _, _, a in candidates)
+    assert all(data[1][point.row, point.column] for point in points)
+
+
+def test_farthest_clear_waypoint_survives_an_earlier_occluded_grid_bend():
+    grid = np.zeros((60, 100), dtype=int)
+    grid[[0, -1], :] = 100
+    grid[:, [0, -1]] = 100
+    for row, column, height, width in (
+        (30, 32, 2, 7), (38, 27, 7, 4), (19, 49, 4, 2),
+        (31, 38, 5, 3), (12, 32, 3, 3), (28, 39, 3, 2),
+    ):
+        grid[row:row + height, column:column + width] = 100
+    pose, route = control.plan_rally_leg(
+        control.RallyPose(8.05, 4.05, 0), grid, 0.1, (0, 0), (1.05, 1.05),
+        5, visible_only=True,
+    )
+    assert pose is not None and pose.x >= 5
+    assert math.dist((1.05, 1.05), (pose.x, pose.y)) <= 5
+    mask = control.traversable_grid(grid, 0.1, control.PATH_CLEARANCE_M)
+    assert all(mask[control.world_to_grid(x, y, 0.1, 0, 0)] for x, y in route)
+    assert len(route) > 2
+
+
+def test_observation_candidates_have_no_zero_utility():
+    grid = np.full((30, 30), -1)
+    grid[5:25, 5:25] = 0
+    data = control.prepare_frontier_data(grid, 0.1)
+    point = next(iter(data[2].values()))[0]
+    position = control.grid_to_world(point.row, point.column, 0.1, 0, 0)
+    candidates, _ = control.robot_candidate_assignments(
+        grid, 0.1, (0, 0), "tb1", position, [], data
+    )
+    assert all(utility > 0 for utility, *_ in candidates)
