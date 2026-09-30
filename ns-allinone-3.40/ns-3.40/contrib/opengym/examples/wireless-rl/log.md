@@ -3632,3 +3632,45 @@ rooms/101 在启动期间 SIGINT 中断，没有 episode_start 或 JSON；其 la
 这只是算法假设和性能样本，不作为任务成功证据；仍未将 raycasting 改进写入正式算法。
 
 该安全候选验证：92 项相关测试通过，四个 ROS 包构建通过，三机器人源码旁路审计通过。
+
+## 2026-10-01 db21e92 强制充电与下一前沿候选
+
+以下回归运行在 clean commit `db21e929024412bf749a0c52f193e50555539367`，
+manifest/源码哈希保存于输出目录。源码保持固定，runtime 旁路审计通过。
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 ROS_DOMAIN_ID=222 GAZEBO_MASTER_URI=http://127.0.0.1:11393
+/usr/bin/python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 2 --gazebo-seed 303 \
+  --startup-timeout 600 --message-timeout 90 --shutdown-timeout 60 \
+  --evaluation-duration 300 --coverage-threshold 0 --evaluation-wait-timeout 600 \
+  --target-detection --rally --battery --require-charge --battery-capacity 100 \
+  --battery-initial-energy 18 --battery-move-cost 1 --battery-idle-cost 0.02 \
+  --battery-safety-margin 5 --battery-charge-duration 10 --battery-return-timeout 120 \
+  --battery-charge-timeout 60 --target-x -4 --target-y 4 --target-max-distance 3 \
+  --target-field-of-view 90 --target-confirmation-frames 3 \
+  --rally-max-concurrent 2 --disable-global-battery-rally-pause \
+  --episode-id p3a6_rpp_db21e92_forced303 \
+  --evaluation-output-dir log/p2d_baseline/p3a6_rpp_db21e92_forced303/episodes \
+  --log-dir log/p2d_baseline/p3a6_rpp_db21e92_forced303/logs \
+  --bypass-audit-output log/p2d_baseline/p3a6_rpp_db21e92_forced303/graph.json
+```
+
+结果 exit0：271.6 s COMPLETE，零碰撞，每台机器人恰好充电一次（合计2），
+最低能量9.0386，无失败机器人；173.4 s 发现，192.4 s 进入 RALLY，最大最终误差
+0.09242 m。短航点重复曾消耗时间，但后续恢复并完成，不据此宣称其问题已彻底解决。
+该轮只验证 db21e92，不可转移到之后改动的 task-stack commit。
+
+下一候选在已有粗粒度前沿候选生成后，用稀疏射线估计可观察未知格：射线只使用已交付
+地图，遇到已知障碍/地图边界停止，未知空间仍是期望估计，不能当成真实可见区域。
+收益格去重，当前目标剩余收益使用同一度量。方法参考
+https://arxiv.org/abs/2002.04440 的 frontier/稀疏射线信息收益思想，不引入其 MAV
+规划器或理论保证。探索容量由2改为3，但每条路线仍通过动态停驻避障、可视分段和
+1.8 m 预约检查；共享通道仍串行，集合最大并发仍由原参数（本候选2）决定。
+这是针对当前任务盲搜索效率的候选，不使用真值或提前已知目标，不改变能量/时限/检测
+与 COMPLETE 门限，完整门禁仍须新提交重跑。
+
+前沿候选组件验证：97 项相关测试通过，四包构建与三机器人源码旁路审计通过。

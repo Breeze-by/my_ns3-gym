@@ -782,16 +782,19 @@ def test_visible_leg_stops_before_parked_robot_detour():
     assert route[-1] == (pose.x, pose.y)
 
 
-def test_parallel_explorers_try_independent_alternative_after_conflict(monkeypatch):
+@pytest.mark.parametrize("robot_count", (2, 3, 4))
+def test_parallel_explorers_try_independent_alternative_after_conflict(monkeypatch, robot_count):
     from types import SimpleNamespace
 
-    grid = np.zeros((120, 100), dtype=int)
+    grid = np.zeros((260, 100), dtype=int)
+    names = [f"tb{i + 1}" for i in range(robot_count)]
     viewpoint = control.Viewpoint(0, 30, 80, 30, 81, 1000, 10)
     def candidates(*args):
         name = args[3]
-        positions = [(8.0, 3.0, 100.0)] if name == "tb1" else [
-            (8.0, 3.0, 90.0), (8.0, 9.0, 80.0),
-        ]
+        index = names.index(name)
+        positions = [(8.0, 3.0, 100.0 - index)]
+        if index:
+            positions.append((8.0, 3.0 + 6 * index, 80.0 - index))
         return [
             (utility, name, 0, control.Assignment(
                 viewpoint, x, y, 7.0, utility, x, y,
@@ -801,13 +804,11 @@ def test_parallel_explorers_try_independent_alternative_after_conflict(monkeypat
     sent = []
     node = SimpleNamespace(
         task_state="EXPLORE", map_data=grid, resolution=0.1, origin=(0.0, 0.0),
-        robot_positions={"tb1": (1.0, 3.0), "tb2": (1.0, 9.0)},
-        robot_maps={"tb1": {}, "tb2": {}},
-        robot_states={"tb1": "idle", "tb2": "idle"},
-        battery_modes={"tb1": "ACTIVE", "tb2": "ACTIVE"},
+        robot_positions={name: (1.0, 3.0 + 6 * index) for index, name in enumerate(names)},
+        robot_maps=dict.fromkeys(names, {}), robot_states=dict.fromkeys(names, "idle"),
+        battery_modes=dict.fromkeys(names, "ACTIVE"),
         frontier_cache=control.prepare_frontier_data(grid, 0.1),
-        input_robot_names=lambda: ["tb1", "tb2"],
-        participating_robots=lambda: ["tb1", "tb2"],
+        input_robot_names=lambda: names, participating_robots=lambda: names,
         fresh_robot_inputs=lambda: True, active_exclusions=lambda: [],
         battery_assignment_safe=lambda *args: True,
         goal_targets={}, goal_routes={}, goal_initial_gain={},
@@ -816,12 +817,14 @@ def test_parallel_explorers_try_independent_alternative_after_conflict(monkeypat
         send_goal=lambda name, goal: sent.append((name, goal)),
     )
     control.HeadquartersControl.assign_idle_robots(node)
-    assert [name for name, _ in sent] == ["tb1", "tb2"]
+    assert [name for name, _ in sent] == names[:min(robot_count, 3)]
     assert node.goal_targets["tb2"].y == 9.0
-    assert not control.routes_conflict(node.goal_routes["tb1"], node.goal_routes["tb2"])
-    # The next cycle must count both pending actions against capacity.
+    for i, name in enumerate(node.goal_routes):
+        for other in list(node.goal_routes)[i + 1:]:
+            assert not control.routes_conflict(node.goal_routes[name], node.goal_routes[other])
+    # Pending actions consume capacity even before an accepted action response.
     control.HeadquartersControl.assign_idle_robots(node)
-    assert len(sent) == 2
+    assert len(sent) == min(robot_count, 3)
 
 
 def test_exploration_allows_short_initial_viewpoint(monkeypatch):
@@ -1037,3 +1040,35 @@ def test_parked_robot_seals_corridor_until_it_yields():
     released = control.plan_rally_leg(*args, visible_only=True)
     assert blocked == (None, ())
     assert released[0] is not None
+
+
+def test_unknown_gain_stops_at_known_walls_and_recovers_through_door():
+    grid = np.full((100, 100), -1, dtype=int)
+    grid[40:60, 40:60] = 0
+    grid[39:61, 39] = grid[39:61, 60] = 100
+    grid[39, 39:61] = grid[60, 39:61] = 100
+    assert control.visible_unknown_gain(grid, (50, 50), 40) == 0
+    grid[39, 46:55] = 0
+    assert control.visible_unknown_gain(grid, (50, 50), 40) > 0
+
+
+def test_unknown_gain_counts_unique_cells_without_wrapping_map_boundaries():
+    grid = np.full((30, 30), -1, dtype=int)
+    grid[:5, :5] = 0
+    gain = control.visible_unknown_gain(grid, (2, 2), 10)
+    assert 0 < gain <= np.count_nonzero(grid[:13, :13] < 0)
+    assert control.visible_unknown_gain(grid, (-1, 2), 10) == 0
+    assert control.visible_unknown_gain(grid, (20, 20), 10) == 0
+    assert control.visible_unknown_gain(np.zeros((30, 30)), (2, 2), 10) == 0
+
+
+def test_viewpoint_gain_uses_obstacle_visibility():
+    grid = np.full((60, 60), -1, dtype=int)
+    grid[10:50, 10:40] = 0
+    grid[10:50, 10] = 100
+    groups = control.frontier_groups(grid)
+    viewpoints = control.frontier_viewpoints(grid, groups, control.traversable_grid(grid, 0.1), 0.1)
+    assert viewpoints
+    for group in viewpoints.values():
+        for point in group:
+            assert point.information_gain == control.visible_unknown_gain(grid, (point.row, point.column), 20)

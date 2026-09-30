@@ -67,7 +67,7 @@ RALLY_ROUTE_SEPARATION_M = 1.8
 # Independent corridors may run concurrently; shared corridors remain reserved
 # until the delivered live pose confirms passage.
 RALLY_MAX_CONCURRENT = 2
-EXPLORATION_MAX_CONCURRENT = 2
+EXPLORATION_MAX_CONCURRENT = 3
 
 TASK_TRANSITIONS = {
     "EXPLORE": {"FOUND_UNCONFIRMED", "FOUND", "FAILED"},
@@ -242,17 +242,28 @@ def _integral_image(mask):
     return np.pad(mask.astype(np.int32), ((1, 0), (1, 0))).cumsum(0).cumsum(1)
 
 
-def _box_count(integral, row, column, radius, height, width):
-    row0 = max(0, row - radius)
-    row1 = min(height, row + radius + 1)
-    column0 = max(0, column - radius)
-    column1 = min(width, column + radius + 1)
-    return int(
-        integral[row1, column1]
-        - integral[row0, column1]
-        - integral[row1, column0]
-        + integral[row0, column0]
+def visible_unknown_gain(raw_grid, start, radius_cells):
+    """Estimate lidar-visible unknown cells, stopping rays at known obstacles."""
+    row, column = start
+    height, width = raw_grid.shape
+    if not (0 <= row < height and 0 <= column < width) or raw_grid[start] != 0:
+        return 0
+    radius = max(1, math.ceil(radius_cells))
+    angles = np.linspace(
+        0, 2 * math.pi, max(32, math.ceil(2 * math.pi * radius)), endpoint=False
     )
+    steps = np.arange(0.5, radius_cells + 0.25, 0.5)
+    rows = np.rint(row + np.sin(angles)[:, None] * steps).astype(int)
+    columns = np.rint(column + np.cos(angles)[:, None] * steps).astype(int)
+    inside = (rows >= 0) & (rows < height) & (columns >= 0) & (columns < width)
+    rows = np.clip(rows, 0, height - 1)
+    columns = np.clip(columns, 0, width - 1)
+    values = raw_grid[rows, columns]
+    visible = np.logical_and.accumulate(
+        inside & (values < OCCUPIED_THRESHOLD), axis=1
+    )
+    unknown_cells = (rows * width + columns)[visible & (values < 0)]
+    return int(np.unique(unknown_cells).size)
 
 
 def frontier_viewpoints(raw_grid, groups, traversable, resolution, limit=12):
@@ -323,7 +334,9 @@ def frontier_viewpoints(raw_grid, groups, traversable, resolution, limit=12):
                 column,
                 frontier_row,
                 frontier_column,
-                int(gains[index]),
+                visible_unknown_gain(
+                    raw_grid, (row, column), INFORMATION_RADIUS_M / resolution
+                ),
                 len(group),
             )
             selected.append(viewpoint)
@@ -686,6 +699,8 @@ def robot_candidate_assignments(
     distances = path_distance_grid(traversable, start)
     for group_id, group_viewpoints in viewpoints.items():
         for viewpoint in group_viewpoints:
+            if viewpoint.information_gain <= 0:
+                continue
             distance_cells = distances[viewpoint.row, viewpoint.column]
             if not np.isfinite(distance_cells):
                 continue
@@ -1589,7 +1604,6 @@ class HeadquartersControl(Node):
         self.map_width = None
         self.map_height = None
         self.map_known_count = 0
-        self.unknown_integral = None
         self.frontier_cache = None
         self.map_received_at = None
         self.last_no_assignment_log = -float("inf")
@@ -3033,7 +3047,6 @@ class HeadquartersControl(Node):
         self.map_width = msg.info.width
         self.map_height = msg.info.height
         self.map_known_count = int(np.count_nonzero(self.map_data >= 0))
-        self.unknown_integral = _integral_image(self.map_data < 0)
         self.frontier_cache = None
         self.map_received_at = (
             msg.header.stamp.sec + msg.header.stamp.nanosec / 1e9
@@ -3120,17 +3133,8 @@ class HeadquartersControl(Node):
             and 0 <= column < self.map_width
         ):
             return 0
-        radius = max(1, math.ceil(INFORMATION_RADIUS_M / self.resolution))
-        unknown_integral = self.unknown_integral
-        if unknown_integral is None:
-            unknown_integral = _integral_image(self.map_data < 0)
-        return _box_count(
-            unknown_integral,
-            row,
-            column,
-            radius,
-            self.map_height,
-            self.map_width,
+        return visible_unknown_gain(
+            self.map_data, (row, column), INFORMATION_RADIUS_M / self.resolution
         )
 
     def assign_idle_robots(self):
