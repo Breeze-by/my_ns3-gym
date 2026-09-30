@@ -16,6 +16,7 @@ from std_msgs.msg import String
 from tf2_msgs.msg import TFMessage
 
 from .control import (
+    MAX_NAVIGATION_LEG_M,
     RALLY_PATH_CLEARANCE_M,
     RallyPose,
     grid_to_world,
@@ -508,7 +509,7 @@ class BatteryManager(Node):
         staged, _ = plan_rally_leg(
             RallyPose(self.charge_x, self.charge_y, 0.0),
             self.return_map, self.return_map_resolution, self.return_map_origin,
-            self.map_position, max_distance_m=float("inf"),
+            self.map_position, max_distance_m=MAX_NAVIGATION_LEG_M,
             clearance_m=RALLY_PATH_CLEARANCE_M,
         )
         if staged is not None:
