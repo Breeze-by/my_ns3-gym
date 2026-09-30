@@ -3500,3 +3500,8 @@ export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 ROS_DOMAIN_ID=217 GAZEBO_MASTE
 
 结论：v3 通过强制充电定向回归，但为 dirty-tree 诊断，不替代 clean-commit 正式
 十格矩阵或最终强制充电回归。仍未设置 `task_stack_frozen_commit`。
+
+正式批次启动前修正 runner manifest：clean worktree 只写入
+`task_stack_candidate_commit`，`task_stack_frozen_commit` 初始为空。不能在尚未运行固定矩阵
+时就由 HEAD 自动宣称冻结；正式退出门通过后由完整证据报告输出冻结提交。
+验证：runner `--validate-only`（只检查固定场景，不启动仿真）、`py_compile`、diff 检查通过。

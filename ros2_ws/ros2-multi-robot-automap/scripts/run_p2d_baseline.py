@@ -210,7 +210,9 @@ def build_manifest(config_path, args):
     return {
         "manifest_schema_version": 1,
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-        "task_stack_frozen_commit": commit if not status else None,
+        # A clean checkout identifies a candidate, not a passed integration gate.
+        "task_stack_candidate_commit": commit if not status else None,
+        "task_stack_frozen_commit": None,
         "git_commit": commit,
         "worktree_dirty": bool(status),
         "worktree_status": status.splitlines(),
