@@ -702,3 +702,58 @@ def test_distant_frontier_can_require_long_detour_through_known_space():
         grid, 0.1, (0.0, 0.0), "tb1", (1.0, 1.5))
     assert candidates
     assert min(item[3].path_distance_m for item in candidates) > 12.0
+
+
+def test_exploration_route_excludes_a_parked_robot_sealing_a_corridor():
+    grid = np.full((14, 100), 100, dtype=int)
+    grid[1:-1, 1:90] = 0
+    grid[1:-1, 90:] = -1
+    pose = control.RallyPose(9.0, 0.7, 0.0)
+    leg, route = control.plan_rally_leg(
+        pose, grid, 0.1, (0.0, 0.0), (1.0, 0.7),
+        max_distance_m=float("inf"), blocked_positions=[(5.0, 0.7)],
+        clearance_m=control.PATH_CLEARANCE_M,
+    )
+    assert leg is None
+    assert not route
+
+
+def test_single_explorer_checks_parked_robots_after_previous_goal_finishes(monkeypatch):
+    from types import SimpleNamespace
+
+    grid = np.zeros((60, 100), dtype=int)
+    viewpoint = control.Viewpoint(0, 30, 80, 30, 81, 1000, 10)
+    assignment = control.Assignment(viewpoint, 8.0, 3.0, 7.0, 10.0, 8.0, 3.0)
+    calls = []
+    def candidates(*args, **kwargs):
+        calls.append(args[4])
+        return [(10.0, args[3], 0, assignment)], {
+            "frontier_groups": 1, "groups_with_viewpoints": 1,
+            "candidate_assignments": 1,
+        }
+    monkeypatch.setattr(control, "robot_candidate_assignments", candidates)
+    sent = []
+    node = SimpleNamespace(
+        task_state="EXPLORE", map_data=grid, resolution=0.1, origin=(0.0, 0.0),
+        robot_positions={"tb1": (1.0, 3.0), "tb2": (3.0, 3.0)},
+        robot_maps={"tb1": {}, "tb2": {}},
+        robot_states={"tb1": "idle", "tb2": "idle"},
+        battery_modes={"tb1": "ACTIVE", "tb2": "ACTIVE"},
+        frontier_cache=control.prepare_frontier_data(grid, 0.1),
+        input_robot_names=lambda: ["tb1", "tb2"],
+        participating_robots=lambda: ["tb1", "tb2"],
+        fresh_robot_inputs=lambda: True, active_exclusions=lambda: [],
+        battery_assignment_safe=lambda *args: True,
+        goal_targets={}, goal_routes={}, goal_initial_gain={"tb1": 0, "tb2": 0},
+        target_information_gain=lambda *args: 1000,
+        get_logger=lambda: SimpleNamespace(info=lambda *args: None, warn=lambda *args: None),
+        send_goal=lambda name, goal: sent.append((name, goal)),
+    )
+    control.HeadquartersControl.assign_idle_robots(node)
+    assert sent and {name for name, _ in sent} <= {"tb1", "tb2"}
+    assert calls == [(1.0, 3.0), (3.0, 3.0)]
+    assert min(math.dist(point, (3.0, 3.0)) for point in node.goal_routes["tb1"]) >= 0.55
+    node.battery_modes["tb2"] = "RETURNING"
+    node.robot_states["tb1"] = "idle"
+    control.HeadquartersControl.assign_idle_robots(node)
+    assert len(sent) <= 2

@@ -67,6 +67,9 @@ RALLY_ROUTE_SEPARATION_M = 1.8
 # admits one moving robot at a time so frontier routes cannot cross before the
 # next map update supplies fresh reservations.
 RALLY_MAX_CONCURRENT = 2
+# Map updates arrive asynchronously.  Keep one frontier route in flight so a
+# parked robot cannot become a moving obstacle between planning cycles.
+EXPLORATION_MAX_CONCURRENT = 1
 
 TASK_TRANSITIONS = {
     "EXPLORE": {"FOUND_UNCONFIRMED", "FOUND", "FAILED"},
@@ -2259,7 +2262,14 @@ class HeadquartersControl(Node):
             ):
                 self.rally_arrived[name] = False
 
-        if now - self.last_rally_dispatch_at >= 1.0 and self.fresh_robot_inputs():
+        if (
+            now - self.last_rally_dispatch_at >= 1.0
+            and self.fresh_robot_inputs()
+            and (
+                not self.global_battery_rally_pause
+                or self.active_batteries_ready()
+            )
+        ):
             self.last_rally_dispatch_at = now
             plans = {}
             for name in self.rally_dispatch_order:
@@ -3070,7 +3080,9 @@ class HeadquartersControl(Node):
             for name, state in self.robot_states.items()
             if name in self.participating_robots()
         )
-        if active_explorers >= 1:
+        if active_explorers >= EXPLORATION_MAX_CONCURRENT or any(
+            mode == "RETURNING" for mode in self.battery_modes.values()
+        ):
             return
         if not idle_positions:
             return
@@ -3139,85 +3151,66 @@ class HeadquartersControl(Node):
                     (utility, robot_name, group_id, coordinated)
                 )
         diagnostics["candidate_assignments"] = len(candidates)
-        assignments = select_distinct_assignments(candidates)
-        if not assignments:
-            now = self.now()
-            if now - self.last_no_assignment_log >= 10.0:
-                self.get_logger().warn(
-                    "No cooperative frontier assignment: "
-                    f"{diagnostics}"
-                )
-                self.last_no_assignment_log = now
-            return
+        # Admit a route only after checking every other robot's current pose.
+        # This keeps parked robots as dynamic obstacles until the next map
+        # update, when their positions can be planned again.
         plans = {}
         routes = {}
-        for robot_name, assignment in assignments.items():
-            staged = stage_navigation_leg(
-                assignment,
-                self.map_data,
-                self.resolution,
-                self.origin,
-                self.robot_positions[robot_name],
-            )
-            if staged is None:
+        for _, name, _, assignment in sorted(candidates, key=lambda item: -item[0]):
+            if name in plans:
                 continue
-            plans[robot_name] = staged
-            _, routes[robot_name] = plan_rally_leg(
-                RallyPose(
-                    staged.navigation_x,
-                    staged.navigation_y,
-                    0.0,
-                ),
-                self.map_data,
-                self.resolution,
-                self.origin,
-                self.robot_positions[robot_name],
-                max_distance_m=float("inf"),
-                clearance_m=PATH_CLEARANCE_M,
+            blocked = [
+                position for other_name, position in self.robot_positions.items()
+                if other_name != name and position is not None
+            ]
+            pose, route = plan_rally_leg(
+                RallyPose(assignment.x, assignment.y, 0.0),
+                self.map_data, self.resolution, self.origin,
+                self.robot_positions[name], MAX_NAVIGATION_LEG_M,
+                blocked_positions=blocked, clearance_m=PATH_CLEARANCE_M,
             )
-        reserved_routes = [
-            remaining_rally_route(route, self.robot_positions[name])
-            for name, route in self.goal_routes.items()
-            if self.robot_states[name] == "active" and route
-        ]
-        parked_positions = {
-            name: position
-            for name, position in self.robot_positions.items()
-            if (
-                name in self.participating_robots()
-                and self.robot_states[name] == "idle"
-                and position is not None
-            )
-        }
-        selected = []
-        for name, assignment in plans.items():
-            # Admit one new route per control cycle and cap the active fleet
-            # at two until moving footprints reach the shared map; static
-            # reservations alone do not prevent local planners entering one
-            # corridor between map updates.
-            if selected:
-                break
-            reservations = list(reserved_routes)
-            if reservations or any(self.goal_initial_gain.values()):
-                reservations.extend(
-                    (position,)
-                    for other_name, position in parked_positions.items()
-                    if other_name != name
-                )
-            admitted = reserve_rally_prefix(
-                (RallyPose(assignment.navigation_x, assignment.navigation_y, 0.0),
-                 routes[name]), reservations,
-            )
-            if admitted is None:
+            if pose is None:
                 continue
-            pose, route = admitted
             plans[name] = Assignment(
                 assignment.viewpoint, assignment.x, assignment.y,
                 assignment.path_distance_m, assignment.utility, pose.x, pose.y,
             )
             routes[name] = route
-            reserved_routes.append(route)
+            if len(plans) >= EXPLORATION_MAX_CONCURRENT:
+                break
+        reserved_routes = [
+            remaining_rally_route(route, self.robot_positions[name])
+            for name, route in self.goal_routes.items()
+            if self.robot_states[name] == "active" and route
+        ]
+        selected = []
+        reservations = list(reserved_routes)
+        for name in plans:
+            admitted = reserve_rally_prefix(
+                (RallyPose(plans[name].navigation_x, plans[name].navigation_y, 0.0),
+                 routes[name]),
+                reservations,
+            )
+            if admitted is None:
+                continue
+            pose, route = admitted
+            plans[name] = Assignment(
+                plans[name].viewpoint, plans[name].x, plans[name].y,
+                plans[name].path_distance_m, plans[name].utility, pose.x, pose.y,
+            )
+            routes[name] = route
             selected.append(name)
+            reservations.append(route)
+            if len(selected) >= EXPLORATION_MAX_CONCURRENT:
+                break
+        if not selected:
+            now = self.now()
+            if now - self.last_no_assignment_log >= 10.0:
+                self.get_logger().warn(
+                    f"No safe cooperative frontier assignment: {diagnostics}"
+                )
+                self.last_no_assignment_log = now
+            return
         for robot_name in selected:
             assignment = plans[robot_name]
             self.robot_states[robot_name] = "active"
