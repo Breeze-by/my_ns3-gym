@@ -3371,3 +3371,31 @@ export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 ROS_DOMAIN_ID=211 GAZEBO_MASTE
 临时把探索并发上限设为 2 后运行三机器人 seed 101，命令使用相同的 `ros_smoke_test.py` 参数，`ROS_DOMAIN_ID=212`、`GAZEBO_MASTER_URI=http://127.0.0.1:11382`、episode `p3a6_parallel_lab101`，输出目录为 `log/p2d_baseline/p3a6_parallel_lab101/`。日志显示 tb2 返航、充电并恢复，tb3 随后长时间等待安全路线；评估窗口结束前进程被中断，没有 episode JSON。该试验未作为成功或失败的正式矩阵格，原始日志保留以供后续诊断；最终提交恢复单路线策略。
 
 本轮代码提交为 `d340ba3`，已推送到 `origin/main`。中文报告和本节日志随后单独提交并推送。用户未跟踪的 `260929_report/` 文件未加入提交。
+
+### 返航短段修复回归（`9025b38`）：充电和目标发现通过，RALLY 超时
+
+诊断发现电池管理器的返航规划实际使用 `max_distance_m=float("inf")`，与“短腿重规划”的设计意图不一致。`9025b38` 改为使用 `MAX_NAVIGATION_LEG_M`，每个短返航段成功后再按最新地图规划下一段。组件仍为 `80 passed`，4 个 ROS 包构建通过。
+
+命令：
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 ROS_DOMAIN_ID=214 GAZEBO_MASTER_URI=http://127.0.0.1:11384
+/usr/bin/python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 2 --gazebo-seed 303 \
+  --startup-timeout 600 --message-timeout 90 --shutdown-timeout 60 \
+  --evaluation-duration 300 --coverage-threshold 0 --evaluation-wait-timeout 600 \
+  --target-detection --rally --battery --require-charge --battery-capacity 100 \
+  --battery-initial-energy 18 --battery-move-cost 1 --battery-idle-cost 0.02 \
+  --battery-safety-margin 5 --battery-charge-duration 10 --battery-return-timeout 120 \
+  --battery-charge-timeout 60 --target-x -4 --target-y 4 --target-max-distance 3 \
+  --target-field-of-view 90 --target-confirmation-frames 3 \
+  --rally-max-concurrent 1 --enable-global-battery-rally-pause \
+  --episode-id p3a6_short_return_forced303 \
+  --evaluation-output-dir log/p2d_baseline/p3a6_short_return_forced303/episodes \
+  --log-dir log/p2d_baseline/p3a6_short_return_forced303/logs
+```
+
+结果文件：`ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a6_short_return_forced303/episodes/p3a6_short_return_forced303.json`。两台机器人各充电 1 次，共 2 次；`collision_events=0`；最低能量 `8.214`；目标在 `256.3 s` 确认，`267.6 s` 进入 RALLY。`300.1 s` 时仍为 `RALLY`，`success=false`。这次失败不再是 `battery_return_unreachable`：tb2 已成功短段返航并充电，剩余问题是目标发现过晚、集合起点曾被 Nav2 判为 lethal，集合时间不足。原始日志和 JSON 均保留。

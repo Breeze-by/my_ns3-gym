@@ -94,7 +94,7 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
 
 ## Current Handoff Snapshot
 
-2026-09-30 P3A.5 后续优化已提交于 `d340ba3`。当前控制器把停驻机器人位置纳入实际探索路径规划，并在充电返航期间暂停新的探索/集合派发；组件测试和构建通过。定向三机器人 lab/seed101 回归达到 `COMPLETE`、零碰撞，但强制充电 seed303 在 300 s 内仍未发现目标，并行探索试验在评估窗口内中断。不要设置 `task_stack_frozen_commit` 或开始网络/RL 工作。中文报告为 `report/20260930_p3a5_algorithm_optimization.md`，新增结果和失败均已写入 `log.md`；输出仍在 `ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/`。
+2026-09-30 P3A.5 后续优化已提交于 `d340ba3`，返航短段修复提交于 `9025b38`。当前控制器把停驻机器人位置纳入实际探索路径规划，在充电返航期间暂停新的探索/集合派发，并把电池返航拆成短导航段；组件测试和构建通过。定向三机器人 lab/seed101 回归达到 `COMPLETE`、零碰撞；强制充电 seed303 已完成两次充电、零碰撞并发现目标，但 300 s 内仍未完成 RALLY；并行探索试验在评估窗口内中断。不要设置 `task_stack_frozen_commit` 或开始网络/RL 工作。中文报告为 `report/20260930_p3a5_algorithm_optimization.md`，新增结果和失败均已写入 `log.md`；输出仍在 `ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/`。
 
 - Active boundary: P3A and P3A.5 are user-accepted and frozen as the network
   task-stack baseline. The historical integration freeze candidate is
