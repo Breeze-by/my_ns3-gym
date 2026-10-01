@@ -1,4 +1,5 @@
 from types import SimpleNamespace
+import pytest
 
 from multi_robot_exploration.fault_model import (
     DeterministicFaultTransport,
@@ -61,3 +62,21 @@ def test_queue_capacity_reports_overflow():
     assert transport.enqueue("first", envelope(), "uplink", 0.0)
     assert not transport.enqueue("second", envelope(2), "uplink", 0.0)
     assert events[-1]["reason"] == "queue_overflow"
+
+
+def test_blackout_uses_scheduled_delivery_time_and_recovers_with_same_poll_batch():
+    events = []
+    transport = DeterministicFaultTransport(
+        FaultConfig(delay_sec=.5, blackout_intervals=((1., 2.),)), events.append,
+    )
+    transport.enqueue("before", envelope(), "uplink", 0.)
+    transport.enqueue("during", envelope(2), "uplink", .5)
+    transport.enqueue("after", envelope(3), "uplink", 1.5)
+    assert [item.message_id for item in transport.poll(10.)] == ["before", "after"]
+    assert any(event.get("reason") == "blackout" and event["time"] == 1. for event in events)
+
+
+def test_invalid_blackout_window_is_rejected():
+    for interval in ((2., 1.), (-1., 2.), (0., float("inf"))):
+        with pytest.raises(ValueError):
+            FaultConfig(blackout_intervals=(interval,))

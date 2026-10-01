@@ -15,6 +15,7 @@ from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
 from rclpy.serialization import deserialize_message, serialize_message
 from std_msgs.msg import String
 
+from .fault_model import message_id, source_time
 from .ideal_gateway import (
     DOWNLINK_CANDIDATES,
     DOWNLINK_DELIVERED,
@@ -25,8 +26,8 @@ from .ideal_gateway import (
 
 
 def battery_mode_allows_navigation(mode):
-    """Allow normal commands and the command that returns to the charger."""
-    return mode in ("ACTIVE", "RETURNING")
+    """Network commands cannot preempt robot-local safety navigation."""
+    return mode == "ACTIVE"
 
 
 @dataclass
@@ -103,6 +104,7 @@ class NavigationGateway(Node):
             f"/{self.robot_name}/navigate_to_pose",
             callback_group=self.callback_group,
         )
+        self.event_publisher = self.create_publisher(String, "/gateway/consumed", 100)
         # Local safety authority never needs an AP round trip.
         self.create_subscription(
             String, f"/{self.robot_name}/battery_state", self.local_battery_callback,
@@ -123,6 +125,13 @@ class NavigationGateway(Node):
 
     def now_sec(self):
         return self.get_clock().now().nanoseconds / 1e9
+
+    def record_local_event(self, event, command_id, **extra):
+        self.event_publisher.publish(String(data=json.dumps({
+            "event": event, "message_type": "navigation_goal",
+            "sender": "headquarters", "recipient": self.robot_name,
+            "correlation_id": command_id, "event_time": self.now_sec(), **extra,
+        }, sort_keys=True)))
 
     def task_state_callback(self, message):
         self.task_phase = message.data
@@ -231,8 +240,14 @@ class NavigationGateway(Node):
         latest = self.latest_downlink.get(key, 0)
         valid, _ = envelope_is_valid(envelope, self.now_sec(), latest)
         if not valid:
+            self.record_local_event("command_rejected", envelope.correlation_id,
+                                    reason="stale_command")
             return
         self.latest_downlink[key] = envelope.sequence
+        self.record_local_event("accepted", envelope.correlation_id,
+                                message_type=envelope.message_type, direction="downlink",
+                                message_id=message_id(envelope), source_time=source_time(envelope),
+                                sequence=envelope.sequence)
         if envelope.message_type == "navigation_cancel":
             self.local_canceled.add(envelope.correlation_id)
             handle = self.local_goal_handles.get(envelope.correlation_id)
@@ -253,6 +268,8 @@ class NavigationGateway(Node):
                 envelope.generation_time.sec + envelope.generation_time.nanosec / 1e9
                 + envelope.ttl_sec
             )
+        self.record_local_event("command_accepted", command_id,
+                                deadline=self.local_deadlines[command_id])
         try:
             pose = deserialize_message(bytes(envelope.payload), PoseStamped)
         except Exception as error:
@@ -347,12 +364,14 @@ class NavigationGateway(Node):
         ):
             for command_id, handle in list(self.local_goal_handles.items()):
                 self.local_canceled.add(command_id)
+                self.record_local_event("local_safety_cancel", command_id, mode=mode)
                 handle.cancel_goal_async()
 
     def expire_local_commands(self):
         for command_id, deadline in list(self.local_deadlines.items()):
             if self.now_sec() >= deadline and command_id not in self.local_canceled:
                 self.local_canceled.add(command_id)
+                self.record_local_event("navigation_deadline", command_id, deadline=deadline)
                 handle = self.local_goal_handles.get(command_id)
                 if handle is not None:
                     handle.cancel_goal_async()
@@ -387,6 +406,11 @@ class NavigationGateway(Node):
         if not valid:
             return
         self.latest_uplink[key] = envelope.sequence
+        self.record_local_event("accepted", envelope.correlation_id,
+                                message_type=envelope.message_type, sender=self.robot_name,
+                                recipient="headquarters", direction="uplink",
+                                message_id=message_id(envelope), source_time=source_time(envelope),
+                                sequence=envelope.sequence)
         context = self.contexts.get(envelope.correlation_id)
         if context is None:
             return

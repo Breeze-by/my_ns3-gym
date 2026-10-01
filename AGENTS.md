@@ -74,7 +74,7 @@ coordinator, battery, and clearance logic. The current-HEAD P3A.5 run at
 only 9/10 formal episodes completed: lab seed 202 failed after episode start
 in `RALLY`. The failed episode is retained as a historical failed candidate; the
 current P3A.6 evidence below supersedes it.
-Update 2026-10-01: P3A.6 integration gate passed, awaiting user acceptance.
+Update 2026-10-01: P3A.6 integration gate passed and accepted by the user on 2026-10-01.
 The clean frozen task-stack commit is `22c95a770a8812452c43fc177e4a00b5c032e6ef`.
 Three same-commit batches cover all ten fixed cells (1+7+2), all COMPLETE
 with zero collisions, exhaustion, failed robots, infrastructure failures or

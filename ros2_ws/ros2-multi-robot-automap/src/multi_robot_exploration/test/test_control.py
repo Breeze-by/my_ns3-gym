@@ -1101,7 +1101,9 @@ def test_idle_blocker_recovery_dispatches_motion_before_returning(
     requests = []
     node = SimpleNamespace(
         enable_battery=preflight_blocked, task_state="RALLY", fresh_robot_poses=lambda: True,
-        battery_monitor_started_at=0., battery_state_received_at={},
+        last_input_availability=True,
+        battery_monitor_started_at=0., battery_state_received_at=dict.fromkeys(names, 10.),
+        message_freshness_timeout_sec=5.,
         rally_charge_requested={}, prepare_rally_charges=lambda: {"tb2"},
         rally_max_concurrent=2, rally_probe_targets=set(),
         rally_leg_routes=dict.fromkeys(names, ()), rally_hold_started_at=None,
@@ -1304,3 +1306,19 @@ def test_existing_local_safety_return_defers_new_early_charge(mode):
     node.battery_modes["tb2"] = mode
     assert control.HeadquartersControl.prepare_rally_charges(node) == {"tb1"}
     assert not messages and not failures
+
+
+def test_contact_loss_waits_without_isolating_a_healthy_robot():
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+    node = SimpleNamespace(
+        enable_battery=True, task_state="RALLY", fresh_robot_inputs=lambda: False,
+        last_input_availability=False, now=lambda: 100.,
+        battery_monitor_started_at=0., battery_state_received_at={"tb1": 0.},
+        battery_modes={"tb1": "ACTIVE"}, mark_robot_failed=Mock(),
+        rally_hold_started_at=95.,
+    )
+    control.HeadquartersControl.update_mission(node)
+    node.mark_robot_failed.assert_not_called()
+    assert node.battery_modes == {"tb1": "ACTIVE"}
+    assert node.rally_hold_started_at is None

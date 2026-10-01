@@ -18,6 +18,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 
 from launch_ros.actions import Node
+from launch_ros.parameter_descriptions import ParameterValue
 
 
 def launch_setup(context, *args, **kwargs):
@@ -237,6 +238,10 @@ def launch_setup(context, *args, **kwargs):
                         "max_retries": gateway_max_retries,
                         "queue_capacity": gateway_queue_capacity,
                     "ledger_path": gateway_ledger_path,
+                    "drop_message_types": LaunchConfiguration("gateway_drop_message_types"),
+                    "blackout_intervals": ParameterValue(
+                        LaunchConfiguration("gateway_blackout_intervals"), value_type=str
+                    ),
                 }
             ],
             output="screen",
@@ -592,6 +597,11 @@ def launch_setup(context, *args, **kwargs):
                         "charge_y": float(robot["y_pose"]),
                         "capacity": battery_capacity,
                         "initial_energy": battery_initial_energy,
+                        "inject_failure_after_sec": (
+                            float(LaunchConfiguration("inject_failure_after_sec").perform(context))
+                            if robot_name == LaunchConfiguration("inject_failure_robot").perform(context)
+                            else -1.0
+                        ),
                         "move_cost_per_m": battery_move_cost,
                         "idle_cost_per_sec": battery_idle_cost,
                         "return_safety_margin": battery_safety_margin,
@@ -1107,6 +1117,13 @@ def generate_launch_description():
             "gateway_ledger_path", default_value="", description="Optional JSONL message ledger path."
         )
     )
+    for name, default, description in (
+        ("gateway_drop_message_types", "", "Comma-separated message classes to drop in fault mode."),
+        ("gateway_blackout_intervals", "[]", "JSON pairs of absolute simulation seconds with total outage."),
+        ("inject_failure_robot", "", "Simulation-only robot to fail; empty disables injection."),
+        ("inject_failure_after_sec", "-1.0", "Seconds after that robot's first odom; negative disables."),
+    ):
+        ld.add_action(DeclareLaunchArgument(name, default_value=default, description=description))
     ld.add_action(
         DeclareLaunchArgument(
             "message_freshness_timeout_sec",

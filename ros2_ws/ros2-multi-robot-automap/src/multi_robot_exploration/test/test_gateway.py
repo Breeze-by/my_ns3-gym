@@ -61,7 +61,7 @@ def test_gateway_envelope_exposes_protocol_metadata():
 
 def test_returning_battery_mode_allows_only_the_return_navigation_command():
     assert battery_mode_allows_navigation("ACTIVE")
-    assert battery_mode_allows_navigation("RETURNING")
+    assert not battery_mode_allows_navigation("RETURNING")
     assert not battery_mode_allows_navigation("CHARGING")
     assert not battery_mode_allows_navigation("FAILED")
 

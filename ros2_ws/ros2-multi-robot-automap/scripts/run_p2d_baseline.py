@@ -194,6 +194,8 @@ def build_manifest(config_path, args):
     status = command_output(
         ["git", "status", "--short", "--untracked-files=all"]
     ) or ""
+    task_status = [line for line in status.splitlines()
+                   if not (line.startswith("?? 260929_report/") or line.startswith('?? "260929_report/'))]
     tracked_paths = {
         "scenario_config": config_path,
         "baseline_runner": Path(__file__),
@@ -213,10 +215,12 @@ def build_manifest(config_path, args):
         "manifest_schema_version": 1,
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         # A clean checkout identifies a candidate, not a passed integration gate.
-        "task_stack_candidate_commit": commit if not status else None,
+        "task_stack_candidate_commit": commit if not task_status else None,
         "task_stack_frozen_commit": None,
         "git_commit": commit,
         "worktree_dirty": bool(status),
+        "task_stack_clean": not task_status,
+        "permitted_untracked_user_materials": "260929_report/ (recorded, untouched, excluded from task stack)",
         "worktree_status": status.splitlines(),
         "source_digests": {
             name: file_digest(path) for name, path in tracked_paths.items()

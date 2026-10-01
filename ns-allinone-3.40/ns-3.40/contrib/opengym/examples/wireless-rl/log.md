@@ -3983,3 +3983,22 @@ tf_freshness_check.json保存汇总，不使用Gazebo真值控制。
 排除规则。持久checker复核PASS，runtime source/config/protocol hashes及软件环境
 仍与22c95a7一致；后续提交只补报告、handoff与只读复核工具。git add -n .所列
 用户未跟踪报告均不纳入显式暂存，原始sim/build产物仍被忽略。
+
+
+## 2026-10-01 P3A.6 验收与 P3B.5 组件开发
+
+用户本轮明确验收 P3A.6（冻结任务栈22c95a7，报告f415f87）并要求继续P3B.5、优化算法。
+开发状态：f415f87+本次源码修改。修复本地返航经网络阻塞、静默误判硬件失败、
+无融合地图不开始评估、target只本地发现即终止；新增固定连续故障和本地deadline/等待账本。
+用户260929_report/材料未修改/暂存；manifest完整记录这些无关未跟踪文件，不隐瞒工作树状态。
+检查：ROS Humble/PYTHONNOUSERSITE=1，/usr/bin/python3 -m pytest -q
+scripts/test_p3b5_tasks.py src/multi_robot_exploration/test/{test_control,test_gateway,test_fault_model,test_task_evaluator,test_battery_manager}.py。
+首轮130通过/1失败：旧控制测试fake缺少新增freshness字段，KeyError；补足fake后重跑。
+构建命令：colcon build --symlink-install --packages-select multi_robot_interfaces multi_robot_exploration merge_map multi_robot。
+固定manifest见ROS scripts/p3b5_fault_manifest.json，holdout707不用于调参。
+正式任务/理想重验证尚未运行；不能宣称P3B.5完成或新的冻结算法已通过集成门禁。
+
+组件终检：135 passed（5.79 s）；四包build成功（5.55 s）。
+协议检查精确命令：PYTHONNOUSERSITE=1 /usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_development.json，54格PASS；
+ros2 run multi_robot_exploration bypass_audit --source-only，零违规。
+新manifest --validate-only返回26case/40episode（14种配置的ideal复用），尚无仿真结果。

@@ -94,7 +94,7 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
 
 ## Current Handoff Snapshot
 
-2026-10-01 P3A.6集成门禁通过、待用户验收。当前冻结任务栈
+2026-10-01 P3A.6集成门禁通过，用户于2026-10-01验收通过。当前冻结任务栈
 `task_stack_frozen_commit=22c95a770a8812452c43fc177e4a00b5c032e6ef`，clean三批次1+7+2覆盖固定十格，
 全部COMPLETE、零碰撞/失效/耗尽、零基础设施失败或整格重试。同提交forced303为
 190.4 s COMPLETE、tb1/tb2各一次充电、零碰撞/耗尽。127项组件测试、四包构建、

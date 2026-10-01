@@ -190,6 +190,7 @@ def wait_for_evaluation(
     rally=False,
     battery=False,
     require_charge=False,
+    collect_fault_result=False,
 ):
     deadline = time.monotonic() + timeout
     log_offset = 0
@@ -236,6 +237,15 @@ def wait_for_evaluation(
                 "battery_total_charging_time_sec",
             }
             missing = required - result.keys()
+            if collect_fault_result:
+                # A protocol-induced lack of map is a task result, not a
+                # readiness failure. Structural and physical evidence remains required.
+                essential = {"episode_id", "termination_reason", "task_phase", "success",
+                             "elapsed_sim_time_sec", "model_state_message_count", "robots",
+                             "collision_events", "battery_minimum_energy", "start_sim_time_sec"}
+                if essential - result.keys() or result["model_state_message_count"] < 1:
+                    raise RuntimeError("fault episode lacks bounded task/physical evidence")
+                return result
             if missing:
                 raise RuntimeError(
                     "evaluation result is missing: "
@@ -461,6 +471,11 @@ def parse_args():
     parser.add_argument("--gateway-max-retries", type=int, default=2)
     parser.add_argument("--gateway-queue-capacity", type=int, default=0)
     parser.add_argument("--gateway-ledger-path", type=Path)
+    parser.add_argument("--gateway-drop-message-types", default="")
+    parser.add_argument("--gateway-blackout-intervals", default="[]")
+    parser.add_argument("--inject-failure-robot", default="")
+    parser.add_argument("--inject-failure-after-sec", type=float, default=-1.0)
+    parser.add_argument("--collect-fault-result", action="store_true")
     parser.add_argument("--message-freshness-timeout-sec", type=float, default=5.0)
     parser.add_argument("--navigation-command-deadline-sec", type=float, default=90.0)
     return parser.parse_args()
@@ -597,6 +612,10 @@ def main():
         f"gateway_ack_timeout_sec:={args.gateway_ack_timeout_sec}",
         f"gateway_max_retries:={args.gateway_max_retries}",
         f"gateway_queue_capacity:={args.gateway_queue_capacity}",
+        f"gateway_drop_message_types:={args.gateway_drop_message_types}",
+        f"gateway_blackout_intervals:={args.gateway_blackout_intervals}",
+        f"inject_failure_robot:={args.inject_failure_robot}",
+        f"inject_failure_after_sec:={args.inject_failure_after_sec}",
         f"message_freshness_timeout_sec:={args.message_freshness_timeout_sec}",
         f"navigation_command_deadline_sec:={args.navigation_command_deadline_sec}",
     ]
@@ -642,16 +661,11 @@ def main():
                 args.message_timeout,
                 ("--qos-reliability", "best_effort"),
             )
-            require_message(
-                "/merge_map",
-                args.message_timeout,
-                (
-                    "--qos-reliability",
-                    "reliable",
-                    "--qos-durability",
-                    "transient_local",
-                ),
-            )
+            if not args.collect_fault_result:
+                require_message(
+                    "/merge_map", args.message_timeout,
+                    ("--qos-reliability", "reliable", "--qos-durability", "transient_local"),
+                )
             if args.battery:
                 for index in range(1, args.robot_count + 1):
                     require_message(
@@ -689,6 +703,7 @@ def main():
                     args.rally,
                     args.battery,
                     args.require_charge,
+                    args.collect_fault_result,
                 )
                 print(
                     "Evaluation result:",

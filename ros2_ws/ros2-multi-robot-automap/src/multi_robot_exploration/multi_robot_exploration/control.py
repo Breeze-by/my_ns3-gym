@@ -1671,6 +1671,7 @@ class HeadquartersControl(Node):
             ),
         ]
         self.task_state = "EXPLORE"
+        self.last_input_availability = None
         self.target = None
         self.detecting_robot = None
         self.rally_targets = {}
@@ -2164,6 +2165,15 @@ class HeadquartersControl(Node):
                 return
 
     def update_mission(self):
+        ready = self.fresh_robot_inputs()
+        if ready != self.last_input_availability:
+            self.last_input_availability = ready
+            self.consumed_publisher.publish(String(data=json.dumps({
+                "event": "coordinator_recovered" if ready else "coordinator_wait",
+                "event_time": self.now(), "task_phase": self.task_state,
+                "reason": "fresh_inputs" if ready else "stale_state",
+                "required_robots": self.input_robot_names(),
+            }, sort_keys=True)))
         if self.enable_battery and self.task_state not in (
             "COMPLETE", "PARTIAL_COMPLETE", "FAILED"
         ):
@@ -2181,16 +2191,21 @@ class HeadquartersControl(Node):
                     20.0,
                 )
                 if unavailable:
-                    for name in unavailable:
-                        self.mark_robot_failed(name, "battery_state_unavailable")
-                    if self.task_state == "FAILED":
-                        return
+                    # Silence proves loss of contact, not a physical failure.
+                    # Keep the robot in the required set and its occupied space;
+                    # only delivered explicit failure may isolate it.
+                    self.rally_hold_started_at = None
+                    return
         # A stationary SLAM map need not be regenerated to prove that robots
         # have stopped at their assigned poses. New routes still require all
         # fresh inputs below; completion and live yielding require fresh poses.
         if (
             self.task_state == "FOUND" and not self.fresh_robot_inputs()
             or self.task_state == "RALLY" and not self.fresh_robot_poses()
+            or self.enable_battery and unavailable_battery_states(
+                {name: self.battery_state_received_at[name] for name in self.participating_robots()},
+                self.now(), self.message_freshness_timeout_sec,
+            )
         ):
             self.rally_hold_started_at = None
             return
@@ -3157,6 +3172,11 @@ class HeadquartersControl(Node):
         timeout = self.message_freshness_timeout_sec
         if self.map_received_at is None or now - self.map_received_at > timeout:
             return False
+        if self.enable_battery and unavailable_battery_states(
+            {name: self.battery_state_received_at[name] for name in self.participating_robots()},
+            now, timeout,
+        ):
+            return False
         return self.fresh_robot_poses() and all(
             self.robot_map_received_at[name] is not None
             and now - self.robot_map_received_at[name] <= timeout
@@ -3614,10 +3634,10 @@ class HeadquartersControl(Node):
                 self.target_information_gain(
                     assignment.navigation_x, assignment.navigation_y
                 )
-                if assignment is not None
+                if assignment is not None and self.fresh_robot_inputs()
                 else 0
             )
-            stale = goal_is_stale(
+            stale = self.fresh_robot_inputs() and goal_is_stale(
                 self.goal_initial_gain[robot_name],
                 remaining_gain,
                 now - started_at,

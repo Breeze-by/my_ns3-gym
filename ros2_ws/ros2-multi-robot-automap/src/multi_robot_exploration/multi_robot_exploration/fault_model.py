@@ -39,6 +39,7 @@ class FaultConfig:
     max_retries: int = 2
     queue_capacity: int = 4096
     drop_types: tuple = ()
+    blackout_intervals: tuple = ()
 
     def __post_init__(self):
         for value in (self.loss_rate, self.duplicate_rate):
@@ -50,6 +51,9 @@ class FaultConfig:
             raise ValueError("ACK timeout must be finite and positive")
         if min(self.reorder_window, self.max_retries) < 0 or self.queue_capacity < 0:
             raise ValueError("invalid retry, reorder, or capacity setting")
+        for start, end in self.blackout_intervals:
+            if not (math.isfinite(start) and math.isfinite(end) and 0 <= start < end):
+                raise ValueError("blackout intervals require finite 0 <= start < end")
 
 
 @dataclass
@@ -185,8 +189,11 @@ class DeterministicFaultTransport:
             elif kind != "duplicate" and (
                 attempt.envelope.message_type in self.config.drop_types
                 or self._sample(attempt, "loss") < self.config.loss_rate
+                or any(start <= when < end for start, end in self.config.blackout_intervals)
             ):
-                self._emit("drop", attempt, when, drop_time=when, reason="loss")
+                blackout = any(start <= when < end for start, end in self.config.blackout_intervals)
+                self._emit("drop", attempt, when, drop_time=when,
+                           reason="blackout" if blackout else "loss")
             else:
                 self._emit("delivered", attempt, when, delivery_time=when)
                 deliveries.append(attempt)

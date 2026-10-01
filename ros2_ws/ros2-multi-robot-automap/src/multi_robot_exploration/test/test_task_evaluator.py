@@ -164,3 +164,27 @@ def test_collision_history_keeps_contact_names_without_changing_event_cooldown()
         "contacts": [("tb1::base", "wall::box")],
     }]
     assert "wall::box" in warnings[0]
+
+
+def test_target_mode_terminates_only_after_central_consumption(monkeypatch):
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+    from std_msgs.msg import String
+    from multi_robot_exploration import task_evaluator
+    node=SimpleNamespace(task_phase="EXPLORE", start_sim_time=1., _now=lambda: 5.,
+                         stop_on_target_found=True, finalize=Mock())
+    monkeypatch.setattr(task_evaluator.rclpy, "shutdown", Mock())
+    task_evaluator.TaskEvaluator._task_state_callback(node, String(data="FOUND"))
+    node.finalize.assert_called_once_with("target_found")
+
+
+def test_evaluation_starts_without_any_delivered_map():
+    from collections import defaultdict
+    from types import SimpleNamespace
+    from multi_robot_exploration.task_evaluator import TaskEvaluator
+    node=SimpleNamespace(start_sim_time=None, positions={"tb1": (0.,0.)}, robot_names=["tb1"],
+                         latest_map=None, visit_resolution=.2, visited=defaultdict(set),
+                         phase_visited={"EXPLORE": defaultdict(set)}, episode_id="loss100",
+                         get_logger=lambda: SimpleNamespace(info=lambda *args: None))
+    TaskEvaluator._maybe_start(node, 5.)
+    assert node.start_sim_time == 5.

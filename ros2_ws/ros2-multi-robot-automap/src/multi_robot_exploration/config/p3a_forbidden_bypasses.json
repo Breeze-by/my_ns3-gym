@@ -22,7 +22,6 @@
       "file": "multi_robot_exploration/battery_manager.py",
       "forbidden_literals": [
         "String, \"/task_state\"",
-        "f\"/{self.robot_name}/navigate_to_pose\"",
         "f\"/gateway/request/{self.robot_name}/charge\""
       ]
     },
@@ -43,6 +42,7 @@
       "forbidden_literals": ["map_topic: /merge_map"]
     }
   ],
+  "local_safety_exception": "battery_manager uses only its own local map/odom/TF and Nav2 for autonomous safety return; central commands, charge requests and all cross-endpoint data still pass through gateway",
   "runtime_rules": {
     "central_nodes": ["/headquarters_control", "/merge_map"],
     "forbidden_topic_templates": [

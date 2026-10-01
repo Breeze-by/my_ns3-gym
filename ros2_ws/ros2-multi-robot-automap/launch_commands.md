@@ -651,3 +651,32 @@ COMPLETE/零碰撞，同提交forced303为190.4 s COMPLETE、两台各充电一�
 关闭及300秒/.35 m/.05 m/s/.10 rad/s/5秒门限。之前各段“候选待验证”是历史开发记录，
 当前结果见wireless-rl/report/20261001_p3a6_freeze.md与.json。以后改变任务算法或配置
 必须重新跑门禁；开发seed结果不替代holdout测试。
+
+
+## P3B.5 固定故障任务配对矩阵（2026-10-01）
+
+P3A.6 已验收。故障替身仍是应用层模型，不是 Wi-Fi/ns-3。
+本地 battery_manager 用自己的 Nav2 action 执行安全返航；网络命令不能抢占 RETURNING，
+融合地图断流后使用本机器人地图。中央导航、任务和提前充电请求仍经过 gateway。
+`gateway_drop_message_types` 可按消息类别丢弃；`gateway_blackout_intervals` 是绝对仿真秒
+JSON 区间（半开），例如 `gateway_blackout_intervals:='[[80,100]]'`。
+`inject_failure_robot:=tb3 inject_failure_after_sec:=45.0` 仅用于仿真，从该机器人第一条
+odom 起计时触发真实本地 FAILED；默认空机器人/-1 禁用。
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1
+export GAZEBO_MASTER_URI=http://127.0.0.1:11420
+/usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_formal --ros-domain-base 170
+```
+
+manifest 固定26个case；同配置ideal共享一次对照，任务终态/通信账本/旁路图全部保留。
+`--validate-only` 检查计划，`--cases CASE...` 只用于独立开发批次。
+`--resume` 只执行同commit/config尚未运行的格；不覆盖失败或重复整轮挑成功。
+`ros_smoke_test.py --collect-fault-result` 收集有界故障结果，不把预期通信失败当作启动失败；
+默认 smoke 的成功门禁不变。target 模式在中央消费交付事件后结束，本地确认时间另记。
+全丢包时评估器也从就绪任务节点与真值位姿开始计时，不依赖融合地图是否送达。
+通信静默只阻止新分配/完成确认，不从required集合移除机器人；只有显式失败才能隔离。

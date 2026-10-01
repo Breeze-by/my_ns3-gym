@@ -174,3 +174,17 @@ def test_charge_request_after_mission_terminal_never_starts_return():
     node.mission_terminal = True
     BatteryManager.charge_request_callback(node, charge_message())
     assert not returns
+
+
+def test_safety_return_falls_back_to_own_map_after_ap_loss():
+    from types import SimpleNamespace
+    from nav_msgs.msg import OccupancyGrid
+    from multi_robot_exploration.battery_manager import BatteryManager
+    applied=[]
+    manager=SimpleNamespace(now=lambda: 10., fused_map_received_at=8., map_callback=applied.append)
+    grid=OccupancyGrid()
+    BatteryManager.local_map_callback(manager, grid)
+    assert not applied
+    manager.fused_map_received_at=4.
+    BatteryManager.local_map_callback(manager, grid)
+    assert applied == [grid]

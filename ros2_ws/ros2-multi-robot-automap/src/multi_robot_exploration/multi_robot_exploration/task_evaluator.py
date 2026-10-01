@@ -480,7 +480,6 @@ class TaskEvaluator(Node):
         if (
             self.start_sim_time is not None
             or now <= 0.0
-            or self.latest_map is None
             or any(name not in self.positions for name in self.robot_names)
         ):
             return
@@ -517,7 +516,10 @@ class TaskEvaluator(Node):
         if self.start_sim_time is None:
             return
         elapsed = max(0.0, self._now() - self.start_sim_time)
-        if message.data == "RALLY" and self.time_to_rally is None:
+        if message.data == "FOUND" and self.stop_on_target_found:
+            self.finalize("target_found")
+            rclpy.shutdown()
+        elif message.data == "RALLY" and self.time_to_rally is None:
             self.time_to_rally = elapsed
         elif (
             message.data in ("COMPLETE", "PARTIAL_COMPLETE")
@@ -532,7 +534,7 @@ class TaskEvaluator(Node):
                 )
                 self.finalize(termination_reason)
                 rclpy.shutdown()
-        elif message.data == "FAILED" and self.stop_on_task_complete:
+        elif message.data == "FAILED":
             self.failure_pending_since = self._now()
 
     def _rally_assignments_callback(self, message):
@@ -591,9 +593,8 @@ class TaskEvaluator(Node):
             self.coverage_at_detection = self._map_metrics().get(
                 "correct_free_coverage_ratio"
             )
-        if self.stop_on_target_found and not self.stop_on_task_complete:
-            self.finalize("target_found")
-            rclpy.shutdown()
+        # Local confirmation is a process metric. Target-mode termination must
+        # await the coordinator consuming the delivered event.
 
     def _collision_callback(self, message, robot):
         now = self._now()
@@ -698,6 +699,8 @@ class TaskEvaluator(Node):
             elapsed = 0.0
         else:
             elapsed = max(0.0, end_time - self.start_sim_time)
+        if termination_reason == "timeout" and self.latest_map is None:
+            termination_reason = "no_data"
 
         robots = {}
         for name in self.robot_names:
@@ -772,6 +775,7 @@ class TaskEvaluator(Node):
         }
         result = {
             "schema_version": 8,
+            "mission_mode": self.mission_mode,
             "episode_id": self.episode_id,
             "world_file": self.world_file,
             "gazebo_seed": self.gazebo_seed,
@@ -828,6 +832,7 @@ class TaskEvaluator(Node):
             "end_sim_time_sec": end_time,
             "elapsed_sim_time_sec": elapsed,
             "map_message_count": self.map_message_count,
+            "correct_free_coverage_ratio": 0.0,
             "model_state_message_count": self.model_state_message_count,
             "truth_resolution": self.truth.resolution,
             "truth_origin_x": self.truth.origin_x,

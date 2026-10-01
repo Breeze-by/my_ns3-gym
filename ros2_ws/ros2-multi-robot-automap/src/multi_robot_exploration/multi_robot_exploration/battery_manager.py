@@ -135,6 +135,13 @@ class BatteryManager(Node):
         self.initial_energy = float(
             self.declare_parameter("initial_energy", 40.0).value
         )
+        self.inject_failure_after_sec = float(
+            self.declare_parameter("inject_failure_after_sec", -1.0).value
+        )
+        if self.inject_failure_after_sec >= 0 and not self.get_parameter("use_sim_time").value:
+            raise ValueError("failure injection is simulation-only")
+        self.first_odom_time = None
+        self.fused_map_received_at = None
         self.move_cost = float(
             self.declare_parameter("move_cost_per_m", 1.0).value
         )
@@ -232,8 +239,11 @@ class BatteryManager(Node):
             self.create_subscription(
                 OccupancyGrid,
                 f"/{self.robot_name}/gateway/merge_map",
-                self.map_callback,
+                self.fused_map_callback,
                 10,
+            ),
+            self.create_subscription(
+                OccupancyGrid, f"/{self.robot_name}/map", self.local_map_callback, state_qos,
             ),
             self.create_subscription(
                 String, f"/{self.robot_name}/gateway/charge_request",
@@ -243,7 +253,7 @@ class BatteryManager(Node):
         self.navigation = ActionClient(
             self,
             NavigateToPose,
-            f"/gateway/{self.robot_name}/navigate_to_pose",
+            f"/{self.robot_name}/navigate_to_pose",
         )
         self.mode = ACTIVE
         self.energy = self.initial_energy
@@ -346,8 +356,20 @@ class BatteryManager(Node):
             message.info.origin.position.y,
         )
 
+    def fused_map_callback(self, message):
+        self.fused_map_received_at = self.now()
+        self.map_callback(message)
+
+    def local_map_callback(self, message):
+        # Preserve the received fused map while live, but loss of AP contact
+        # cannot remove the robot's own known path home.
+        if self.fused_map_received_at is None or self.now() - self.fused_map_received_at > 5.0:
+            self.map_callback(message)
+
     def odom_callback(self, message):
         now = self.now()
+        if self.first_odom_time is None:
+            self.first_odom_time = now
         odom_time = (
             message.header.stamp.sec
             + message.header.stamp.nanosec / 1e9
@@ -500,6 +522,10 @@ class BatteryManager(Node):
     def timer_callback(self):
         now = self.now()
         if self.mode == FAILED:
+            return
+        if (self.inject_failure_after_sec >= 0 and self.first_odom_time is not None
+                and now - self.first_odom_time >= self.inject_failure_after_sec):
+            self.fail("injected_robot_failure")
             return
         self.publish_state()
         if self.mission_terminal:

@@ -76,7 +76,7 @@
 | P2D | 完整理想通信任务基线 | 统一 runner、完整状态/阶段指标、跨目标场景矩阵 | 至少 3 个预先验证的 world/目标/能量场景各跑 seeds 101/202/303，完成探索→发现→必要充电→集合；另做 2 机器人交叉检查 | 已验收 |
 | P3A | 显式消息协议和零损 gateway | 本地候选队列、序号/时间戳/ACK/过期、接收信息存储、命令适配器、旁路清单 | 零损 finite-rate 语义、旁路审计和安全等价通过；不把完成时间当作 P2D 等价 | 已验收 |
 | P3A.5 | 历史 task-stack 重验证（冻结候选） | 历史 commit 的 P2D/P3A 完整矩阵、强制充电回归、manifest、ROS graph edge 白名单 | 仅作为历史证据；不能替代当前 HEAD 的重新冻结 | 已验收 |
-| P3A.6 | 当前 task-stack 重新冻结 | 当前 HEAD 的 P2D/P3A 完整矩阵、强制充电回归、commit/config/environment manifest、ROS graph edge 白名单 | 在网络/RL 前重新跑固定门禁并输出 `task_stack_frozen_commit`；后续任务栈改动必须另开批次 | 门禁通过，待验收 |
+| P3A.6 | 当前 task-stack 重新冻结 | 当前 HEAD 的 P2D/P3A 完整矩阵、强制充电回归、commit/config/environment manifest、ROS graph edge 白名单 | 在网络/RL 前重新跑固定门禁并输出 `task_stack_frozen_commit`；后续任务栈改动必须另开批次 | 已验收（2026-10-01） |
 | P3B | 固定 delay/loss 网络替身（已完成范围） | 独立上下行、固定 seed 队列、TTL/版本、重复/乱序、重传、逐消息账本和 stale-state 降级 | 4 项协议单测、54 格固定协议 matrix `PASS`；故障语义和安全降级可复现 | 已验收 |
 | P3B.5 | 故障条件下的完整任务闭环 | Gazebo fault-mode 任务矩阵、理想配对基线、任务/电池/碰撞/安全降级指标、机器人本地 freshness 保障、队列语义收敛 | 覆盖 `coverage/target/rally`、多 world/seed、丢包/延迟/TTL/deadline/retry/overflow；每格保留 ledger 和任务结果；健康机器人继续，未交付信息不触发错误任务；输出故障退化报告 | 待完成 |
 | P3C | gateway 通信指标与实时可视化 | 默认打开的 gateway 监控面板、实时曲线、CSV/JSON 指标快照、ideal/fault 对比报告 | 生成/准入/发送/交付/丢弃字节闭合；实时显示吞吐、PDR、丢包、时延、队列、重试、AoI 和任务阶段；面板不参与控制，headless 也可保存同一数据 | 待完成 |
@@ -305,7 +305,7 @@ P3B 先不接真实 Wi-Fi，而是用固定 seed fault matrix 覆盖 0/10%/100% 
 过期地图不触发重规划，旧地图/状态不得覆盖新版本。导航命令必须有 deadline、幂等 command id、
 最大重试次数和超时 abort，不能无限等待结果。
 
-### P3A.6：当前 task-stack 重新冻结（门禁通过，待验收）
+### P3A.6：当前 task-stack 重新冻结（2026-10-01已验收）
 
 P3A.5 的 10 格结果是历史冻结候选，不能直接支撑当前网络/RL 比较。P3A.6 必须在当前
 HEAD 上重新运行 P2D 完整理想任务和 P3A gateway 门禁，固定 commit、工作树状态、场景/目标/
@@ -324,7 +324,7 @@ COMPLETE/稳定门限未放宽。RPP/射线/分层/可视预约/最近refuge/相
 所有历史失败保留；其中baec4e8 rooms101是16.9 s post-start shutdown中断，
 c08ca65 lab303有16碰撞事件，均不作为新基线。开发seed不替代最终holdout验证。
 完整结果/命令/哈希/复核工具见report/20261001_p3a6_freeze.md/.json与log.md。
-P3A.6门禁通过、待用户验收；P3B.5尚未推进，后续任务栈变更须新批次重验证。
+P3A.6门禁已于2026-10-01验收；P3B.5正在推进，后续任务栈变更须新批次重验证。
 
 ### P3B.5：故障任务闭环与保障性降级（待完成）
 

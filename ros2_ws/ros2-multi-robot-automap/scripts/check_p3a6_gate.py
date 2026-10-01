@@ -56,7 +56,7 @@ def episode_ok(data):
 
 
 def same_candidate(candidate, reference):
-    assert not candidate["worktree_dirty"]
+    assert candidate.get("task_stack_clean", not candidate["worktree_dirty"])
     assert candidate["task_stack_candidate_commit"] == candidate["git_commit"]
     for field in ("git_commit", "source_digests", "environment"):
         assert candidate[field] == reference[field], field
