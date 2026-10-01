@@ -4414,3 +4414,20 @@ GAZEBO_MASTER_URI=http://127.0.0.1:12650 taskset -c 0-19 /usr/bin/python3 /tmp/p
 修正后完整15文件229PASS7.84s；3robot source audit PASS0违规。四包源/launch未变，沿用021b804本轮已验证5.09s构建；scripts不需colcon重装。git diff --check后focused commit/push才启动下一候选。
 
 新增留出命令反例检查后相关脚本22PASS；总组件数230。证据分析器核对holdout独立seed及预声明时间，并从每个精确命令最后一个--gateway-seed核实effective值，避免双参数默认覆盖误记。
+
+## 2026-10-02 P3B.5 db4bb1a 夹具未知远点/本地回调积压失败
+
+冻结db4bb1a7cefc1ce121430c22c5bcd57ff4d577df、clean/push后运行，230项组件脚本检查（229全套+独立seed命令新增检查）、四包源未变沿用验证构建。协议54PASS。2started/2raw：fixedlab101 COMPLETE114.0/零接触；受控physicalideal timeout300/零接触，但50s准备未通过，staging operational_failure和runner1、两个readonlyobserver0；fault对照/四池/707均未启动，无重跑、中断、回填。上次runner错误0已纠正，这次正确返回1，driver严格停止。完整原结果/命令/旧fixture源、observer源和配置/hash、等待事件及两个原npz的base64+SHA归档 report/20261002_p3b5_staging_map_failed_candidate.json。
+
+```bash
+GAZEBO_MASTER_URI=http://127.0.0.1:12752 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_return_probe.py --run-id p3b5_v17_returnproof --ros-domain-base 180 --config scripts/p3b5_staged_return_probe_manifest.json > /tmp/p3b5_v17_returnproof.log 2>&1
+PYTHONNOUSERSITE=1 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_db4bb1a.json > /tmp/p3b5_protocol_db4bb1a.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:12750 taskset -c 0-19 /usr/bin/python3 /tmp/p3b5_v17_first_lab101.py > /tmp/p3b5_v17_first_lab101.log 2>&1
+/usr/bin/python3 /tmp/p3b5_v17_after_subgates.py > /tmp/p3b5_v17_after_subgates.log 2>&1
+```
+
+新增具体等待证据：两台初始SLAM map的远点raw_end=-1；当前位置raw_start=0、clear_start=True。source地图tb1为2076.407、tb2为2075.186。读取保存npz、复用traversable_grid/has_known_line_of_sight/world_to_grid，对.5/.75/1/1.25/1.5/1.75/2米逐点检查：两台.5/.75米前缀均明确known/clear/LOS；tb1≥1.25m和tb2≥1.5m未知，tb2 1.25m端点known但中途line不安全。原始fixture localpose age多次2.08–2.70s，而其他源较新；APaccepted源时间在窗口正常，证据支持fixture自己的depth10/重复inflation计算积压，不把它归为网关丢包。只读诊断source Humble/install/PYTHONNOUSERSITE=1 /usr/bin/python3，用np.load原snapshot和上述既有函数，输出保留在归档map证据。真值净空.8m并不意味着接收SLAM已知；绝不放宽unknown/sourceTTL。
+
+受控夹具准备改为沿原固定远点方向选择≤.75m、至少.5m（最后短腿除外）的当前map已知可见自由前缀，实际完成一段后才选下一段；source-age/ACTIVE/deadline每次重验。不会直接给未知远点、不会越过未知空洞，不作为任务策略/训练动作。fixture订阅改latest-only depth1、每个新map只计算一次clearance，减少自身回调积压；原姿态TTL2/地图电池5、终点/净空、50s准备、E40/idle.15、60..250断网和全部强物理门槛完全不变。新增已知前缀/未知洞/越界反例，证据检查器逐次核对四类sourcelease及≤.75m腿。直接相关23PASS1.28s，最终15文件231 checks随后补记。
+
+最终15文件231PASS7.83s/source audit PASS零违规；四包task源/launch未改，不重复构建。git diff --check/explicit staging/commit/push后才开展下一独立同源码候选。

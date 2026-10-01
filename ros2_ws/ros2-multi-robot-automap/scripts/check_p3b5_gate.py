@@ -391,6 +391,14 @@ def main():
             assert all(0<=x['observer_time']-epoch<=physical['config']['return_staging']['stage_deadline_sec'] for x in prepared.values())
             assert any(x['event']=='both_charged' for x in stages)
             assert not any(x['event'] in ('fixture_failed','interrupted') for x in stages)
+            for x in stages:
+                if x['event']!='staging_requested': continue
+                assert set(x['inputs'])=={'map_snapshot','pose_state','frame_state','battery_state'}
+                for lease in x['inputs'].values():
+                    age=x['observer_time']-lease['source_time']
+                    assert 0<=age<lease['ttl_sec'] and abs(age-lease['age_sec'])<1e-6
+                import math
+                assert math.dist(x['waypoint'],x['current_position'])<=physical['config']['return_staging']['navigation_leg_limit_m']+1e-8
             detail['controlled_staging']={'source_sha256':row['staging_source_sha256'],
                 'events_sha256':row['staging_events_sha256'],'prepared':prepared,
                 'scope':'Supplemental safety fixture; suspended central exploration; excluded from mission/TDI.'}

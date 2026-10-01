@@ -2,7 +2,7 @@ import pytest
 import json
 from pathlib import Path
 
-from stage_p3b5_return_probe import owned_coordinator
+from stage_p3b5_return_probe import owned_coordinator, known_staging_prefix
 
 
 def process(root, pid, parent, domain, coordinator=False):
@@ -44,3 +44,18 @@ def test_declared_staging_paths_have_full_navigation_clearance():
     # Centerline-only visibility had accepted the original unsafe test points.
     assert not has_known_line_of_sight(grid, cell(homes['tb1']), cell((-2., -.45)))
     assert not has_known_line_of_sight(grid, cell(homes['tb2']), cell((2., .45)))
+
+
+def test_staging_uses_known_visible_prefix_without_waiting_for_unknown_final_point():
+    import math
+    import numpy as np
+    grid=np.zeros((30,50),dtype=int)
+    grid[:,17:]=100
+    waypoint=known_staging_prefix(grid,.1,(0.,0.),(1.,1.),(3.,1.))
+    assert waypoint is not None and .5<=math.dist((1.,1.),waypoint)<=.75
+    assert waypoint[0]<1.7 and waypoint[1]==1.
+    # A known far endpoint does not allow crossing an unknown/occupied gap.
+    grid[:,12]=100
+    grid[:,17:]=0
+    assert known_staging_prefix(grid,.1,(0.,0.),(1.,1.),(3.,1.)) is None
+    assert known_staging_prefix(grid,.1,(0.,0.),(-1.,1.),(3.,1.)) is None

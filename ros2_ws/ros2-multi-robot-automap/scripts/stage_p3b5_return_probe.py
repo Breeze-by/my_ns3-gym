@@ -46,6 +46,27 @@ def owned_coordinator(owner, domain, proc_root=Path('/proc')):
     return found[0]
 
 
+def known_staging_prefix(clear, resolution, origin, position, target, limit=.75):
+    """Bounded visible leg toward a declared fixture point; never cross unknown."""
+    from multi_robot_exploration.control import has_known_line_of_sight, world_to_grid
+    distance = math.dist(position, target)
+    if distance == 0:
+        return None
+    start = world_to_grid(*position, resolution, *origin)
+    if not (0 <= start[0] < clear.shape[0] and 0 <= start[1] < clear.shape[1]):
+        return None
+    length = min(limit, distance)
+    minimum = min(.5, distance)
+    while length >= minimum - 1e-8:
+        point = tuple(p + (t - p) * length / distance for p, t in zip(position, target))
+        end = world_to_grid(*point, resolution, *origin)
+        if (0 <= end[0] < clear.shape[0] and 0 <= end[1] < clear.shape[1]
+                and has_known_line_of_sight(clear, start, end)):
+            return point
+        length -= resolution
+    return None
+
+
 def main():
     import numpy as np
     import rclpy
@@ -59,7 +80,7 @@ def main():
     from std_msgs.msg import String
     from tf2_msgs.msg import TFMessage
     from multi_robot_exploration.control import (
-        has_known_line_of_sight, transform_point_2d, traversable_grid, world_to_grid,
+        transform_point_2d, traversable_grid, world_to_grid,
     )
     from multi_robot_exploration.fault_model import STATE_TTL_SEC
 
@@ -71,9 +92,9 @@ def main():
     fixture = json.loads(args.config.read_text())['return_staging']
     rclpy.init()
     node = Node('p3b5_remote_return_fixture', parameter_overrides=[Parameter('use_sim_time', value=True)])
-    latched = QoSProfile(depth=10, reliability=ReliabilityPolicy.RELIABLE,
+    latched = QoSProfile(depth=1, reliability=ReliabilityPolicy.RELIABLE,
                          durability=DurabilityPolicy.TRANSIENT_LOCAL)
-    volatile = QoSProfile(depth=10, reliability=ReliabilityPolicy.RELIABLE)
+    volatile = QoSProfile(depth=1, reliability=ReliabilityPolicy.RELIABLE)
     stream = args.output.open('w', buffering=1)
     epoch = None
     coordinator = None
@@ -85,6 +106,7 @@ def main():
     staged = set()
     last_wait = {}
     saved_grids = set()
+    clearance_cache = {}
     wall_start = time.monotonic()
     code = 1
 
@@ -178,7 +200,11 @@ def main():
                         if name not in staged:
                             staged.add(name)
                             record('staged', robot=name, position=current, target=target, inputs=leases)
-                    continue
+                        continue
+                    # A completed intermediate leg is not a completed exposure.
+                    del results[name]
+                    handles.pop(name, None)
+                    sent.remove(name)
                 if name in sent:
                     continue
                 if not clients[name].server_is_ready():
@@ -188,14 +214,16 @@ def main():
                 if abs(grid.info.origin.orientation.z) > 1e-6:
                     raise RuntimeError('Rotated grid unsupported by fixture')
                 raw = np.asarray(grid.data).reshape(grid.info.height, grid.info.width)
-                clear = traversable_grid(raw, grid.info.resolution)
+                map_stamp = data['map_snapshot'][0]
+                if name not in clearance_cache or clearance_cache[name][0] != map_stamp:
+                    clearance_cache[name] = (map_stamp, np.where(traversable_grid(raw, grid.info.resolution), 0, 100))
+                clear = clearance_cache[name][1]
                 origin = (grid.info.origin.position.x, grid.info.origin.position.y)
                 start = world_to_grid(*current, grid.info.resolution, *origin)
+                waypoint = known_staging_prefix(clear, grid.info.resolution, origin, current, target[:2],
+                                                 fixture['navigation_leg_limit_m'])
                 end = world_to_grid(*target[:2], grid.info.resolution, *origin)
-                if any(not (0 <= r < raw.shape[0] and 0 <= c < raw.shape[1]) for r, c in (start, end)):
-                    waiting(name, 'outside_received_map', current_position=current, target=target, inputs=leases)
-                    continue
-                if not has_known_line_of_sight(np.where(clear, 0, 100), start, end):
+                if waypoint is None:
                     if name not in saved_grids:
                         import hashlib
                         snapshot = args.output.with_name(f'{name}_staging_map.npz')
@@ -204,18 +232,22 @@ def main():
                         record('staging_geometry_snapshot', robot=name, path=str(snapshot),
                                content_sha256=hashlib.sha256(snapshot.read_bytes()).hexdigest())
                         saved_grids.add(name)
-                    waiting(name, 'no_clear_known_line', current_position=current, target=target, inputs=leases,
-                            start_cell=start, end_cell=end, raw_start=int(raw[start]), raw_end=int(raw[end]),
-                            clear_start=bool(clear[start]), clear_end=bool(clear[end]))
+                    waiting(name, 'no_clear_known_prefix', current_position=current, target=target, inputs=leases,
+                            start_cell=start, end_cell=end)
+                    continue
+                leases = {kind: {'source_time': stamp, 'age_sec': now() - stamp,
+                                  'ttl_sec': STATE_TTL_SEC[kind]} for kind, (stamp, _) in data.items()}
+                if any(not 0 <= x['age_sec'] < x['ttl_sec'] for x in leases.values()):
                     continue
                 goal = NavigateToPose.Goal()
                 goal.pose.header.frame_id = 'map'
                 goal.pose.header.stamp = node.get_clock().now().to_msg()
-                goal.pose.pose.position.x, goal.pose.pose.position.y = target[:2]
+                goal.pose.pose.position.x, goal.pose.pose.position.y = waypoint
                 goal.pose.pose.orientation.z = math.sin(target[2] / 2)
                 goal.pose.pose.orientation.w = math.cos(target[2] / 2)
                 sent.add(name)
-                record('staging_requested', robot=name, target=target, current_position=current, inputs=leases)
+                record('staging_requested', robot=name, target=target, waypoint=waypoint,
+                       current_position=current, inputs=leases, map_source_time=map_stamp)
                 clients[name].send_goal_async(goal).add_done_callback(lambda f, n=name: accepted(n, f))
             if len(staged) == len(latest) and all(batteries.get(n, {}).get('charge_count', 0) >= 1 for n in latest):
                 record('both_charged', staged=sorted(staged), batteries=batteries)
