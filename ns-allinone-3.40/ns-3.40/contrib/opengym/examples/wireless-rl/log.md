@@ -4250,3 +4250,22 @@ ROS_DOMAIN_ID=181 GAZEBO_MASTER_URI=http://127.0.0.1:11521 PYTHONNOUSERSITE=1 ta
 第二轮三机器人rooms启动smoke返回0：graph/实体/lifecycle/实际lidar与融合地图消息全部PASS；45sim timeout（规定短horizon，非任务COMPLETE证据），coverage.707、path10.925m、零碰撞/无FAILED，数据log/p3b5_native_readiness_dev2/。新增validator反例及readiness合计17 passed（.75s）。随后最终组件检查并冻结候选；仍不开始holdout直到十固定ideal格全部通过。launch_commands.md同步原生检查说明和额外物理pair命令，修正原辅助探针只能证明模式/充电的表述。
 
 候选终检13文件188 passed（6.05s），四包build和source audit已通过；smoke与物理脚本py_compile通过。补充manifest validate-only首轮遗漏必需run-id，argparse退出2无episode，补参数后校验1case/2episode。提交前diff --check、root git add -n .检查，明确排除260929_report和全部ignored runtime数据。
+
+### 2026-10-01 P3B.5 bed8c7f 冻结启动失败及Gazebo确认时钟边界
+
+新提交bed8c7f（已push）四池计划中实际仅启动以下三批，全部结果保留于report/20261001_p3b5_factory_clock_failed_candidate.json；没有整episode重试。canonical ROS root/source Humble+install/PYTHONNOUSERSITE=1：
+
+```bash
+GAZEBO_MASTER_URI=http://127.0.0.1:11530 taskset -c 0-19 /usr/bin/python3 scripts/run_p2d_baseline.py --run-id p3b5_ideal_gate_bed8c7f --ros-domain-base 140 --startup-timeout 600 --evaluation-wait-timeout 900 --infrastructure-retries 0 --rally-max-concurrent 2 --disable-global-battery-rally-pause > /tmp/p3b5_ideal_gate_bed8c7f.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:11532 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v10_forced --cases forced_charge_outage --ros-domain-base 160 > /tmp/p3b5_v10_forced.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:11531 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v10_lab --cases zero_rally_lab up100_lab down100_lab ttl_lab map_loss_lab battery_loss_lab state_loss_lab target_up10_lab battery_exhaust_lab --ros-domain-base 40 > /tmp/p3b5_v10_lab.log 2>&1
+/usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_bed8c7f.json
+```
+
+协议54格PASS。forced/lab首tb1生成服务报告已入队但确认超时，退出1、infra/operational failure、pre-start无结果，后续格未执行。其服务返回false后185ms出现真实机器人plugin。固定ideal首格已启动评估，在发现问题并修改启动helper后由管理员停止；其余固定格未运行。parent STOP/owned launch INT/parent TERM+CONT清单/tmp/p3b5_bed_stop.json纳入归档；raw shutdown单独保留。无rooms/corridors/safety/physics/holdout运行，原conditional queue均未执行。
+
+上游primary源码 https://github.com/ros-simulation/gazebo_ros_pkgs/blob/ros2/gazebo_ros/src/gazebo_ros_factory.cpp 显示先InsertModelString，再用ROS clock等待确认。my_world保存的sim_time1996.381；native清单允许更早发现world，可能在factory启动clock追上前调用spawn，10sim秒期限随第一次clock跳变提前到期。日志支持此时钟边界解释，不假定网络丢包。修复仅对与本次实体名完全匹配的“已排入生成队列但确认超时”状态继续物理确认；不会重发spawn、不延长原90wall budget，parse失败/实体已存在/其他名字/未知拒绝仍失败。新增三个反例（已队列但实体出现、永不出现、不同名字）通过，相关16checks PASS .51s。
+
+实际native库存测试（dirty开发，不计任务格）命令：source /usr/share/gazebo/setup.sh；ROS_DOMAIN_ID=184 GAZEBO_MASTER_URI=http://127.0.0.1:11524 PYTHONNOUSERSITE=1 taskset -c 40-59 /usr/bin/python3 /tmp/test_p3b5_native_clock.py > /tmp/p3b5_native_clock_dev.log 2>&1。使用原my_world和原TurtleBot3 SDF，禁用ModelStates订阅，四个独立namespace实体一次生成均确认，第五次拒绝重名，codes[0,0,0,0,1]、5.64wall秒PASS。script完整原文/hash和结果纳入归档；此轮实际服务均success=True，不声称真实触发queued-timeout分支，分支由保留故障日志+反例验证。
+
+确认时钟修复终检：13文件191 passed（6.30s）、四包build5.85s、三机器人source-only审计零违规。git diff --check/root add -n检查通过，显式排除用户资料/运行产物，提交并push新的冻结候选后才再开始正式任务。

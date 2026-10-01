@@ -50,14 +50,26 @@ class ModelInventory:
 
 def finish_spawn(node, future, deadline, *, clock=time.monotonic,
                  spin=rclpy.spin_once, okay=rclpy.ok, inventory=None):
+    response_checked = False
     while okay() and clock() < deadline:
         if inventory is not None:
             inventory.poll(clock())
-        if future.done():
+        if future.done() and not response_checked:
+            response_checked = True
             response = future.result()
             if response is None or not response.success:
-                node.get_logger().error("Spawn rejected: " + str(response))
-                return False
+                queued_timeout = (
+                    'Entity pushed to spawn queue, but spawn service timed out'
+                    'waiting for entity to appear in simulation under the name '
+                    f'[{node.entity}]'
+                )
+                if response is None or getattr(response, 'status_message', '') != queued_timeout:
+                    node.get_logger().error("Spawn rejected: " + str(response))
+                    return False
+                # Factory already queued insertion; its ROS-clock timeout may
+                # jump on the first clock of a saved world. Confirm physically
+                # within our original monotonic budget, without another spawn.
+                node.get_logger().warn('Factory confirmation timed out after queueing; checking actual entity')
         if node.entity in (node.model_names or set()):
             node.get_logger().info(
                 f"Confirmed Gazebo entity {node.entity}; reply_received={future.done()}"

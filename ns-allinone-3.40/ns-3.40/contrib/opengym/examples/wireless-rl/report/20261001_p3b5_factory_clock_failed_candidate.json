@@ -1,0 +1,2256 @@
+{
+  "status": "HISTORICAL_NOT_FINAL_GATE",
+  "reason": "bed8c7f forced/lab pre-start queued factory confirmation timeout; logs show physical tb1 plugins published after false response. Fixed current episode administratively interrupted after evaluator start, all other future cohorts including rooms/safety/physics/corridors/holdout unstarted. No whole-episode retry or selected pass.",
+  "source_reference": "https://github.com/ros-simulation/gazebo_ros_pkgs/blob/ros2/gazebo_ros/src/gazebo_ros_factory.cpp",
+  "diagnosis": "Factory invokes InsertModelString before waiting on ROS-clock timeout. Saved my_world state sim_time1996.381; early inventory allows request before startup clock converges. Logs show timeout within55ms and native model plugins185ms later. This supports startup clock jump as cause; do not relax malformed SDF/existing-name rejection. Only exact queued-timeout for requested name proceeds to monotonic physical confirmation.",
+  "batches": [
+    {
+      "run_id": "p3b5_ideal_gate_bed8c7f",
+      "summary_path": "ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3b5_ideal_gate_bed8c7f/summary.json",
+      "summary_content_sha256": null,
+      "summary": null,
+      "manifest": null,
+      "raw_results": [
+        {
+          "path": "ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3b5_ideal_gate_bed8c7f/episodes/p3b5_ideal_gate_bed8c7f_lab_far_northwest_3r_seed101.json",
+          "content_sha256": "ca86601cb52f532c511280123adf6bec526a5caab469628c1001265eb5f5bd5c",
+          "result": {
+            "battery_enabled": true,
+            "battery_minimum_energy": 30.66338134283367,
+            "battery_total_charges": 0,
+            "battery_total_charging_time_sec": 0.0,
+            "battery_total_returns": 0,
+            "collision_duration_sec": 0.0,
+            "collision_events": 0,
+            "collision_history": [],
+            "collision_monitoring_active": true,
+            "completion_status": "FOUND",
+            "completion_time_sec": null,
+            "correct_coverage_ratio": 0.7455270835530247,
+            "correct_free_coverage_ratio": 0.791275770487418,
+            "correct_truth_cell_count": 42419,
+            "coverage_at_detection": 0.6810287177331524,
+            "coverage_threshold": 0.0,
+            "detecting_robot": "tb3",
+            "elapsed_sim_time_sec": 72.0,
+            "end_sim_time_sec": 2201.682,
+            "episode_id": "p3b5_ideal_gate_bed8c7f_lab_far_northwest_3r_seed101",
+            "failed_robots": [],
+            "failure_reason": "shutdown",
+            "gazebo_seed": 101,
+            "known_coverage_ratio": 0.7623993813490808,
+            "known_truth_cell_count": 43379,
+            "map_message_count": 50,
+            "merged_map_frame": "map",
+            "merged_map_height": 213,
+            "merged_map_origin_x": -5.651435493066759,
+            "merged_map_origin_y": -5.482914786696424,
+            "merged_map_origin_yaw": 0.0,
+            "merged_map_resolution": 0.05000000074505806,
+            "merged_map_width": 255,
+            "mission_mode": "rally",
+            "model_state_message_count": 721,
+            "nav_aborted": 0,
+            "nav_canceled": 3,
+            "nav_goal_count": 14,
+            "nav_succeeded": 11,
+            "observed_accuracy": 0.9778694760137394,
+            "occupied_iou": 0.18264342774146697,
+            "partial_completion": false,
+            "phase_overlap_ratios": {
+              "EXPLORE": 0.0,
+              "FOUND": 0.0,
+              "RALLY": 0.0
+            },
+            "phase_path_lengths_m": {
+              "EXPLORE": 17.478316063172766,
+              "FOUND": 1.5361801969131732,
+              "RALLY": 0.0
+            },
+            "phase_union_visited_cell_counts": {
+              "EXPLORE": 173,
+              "FOUND": 21,
+              "RALLY": 0
+            },
+            "rally_angular_tolerance_radps": null,
+            "rally_assignments": {},
+            "rally_hold_sec": null,
+            "rally_linear_tolerance_mps": null,
+            "rally_min_separation_m": null,
+            "rally_position_tolerance_m": null,
+            "required_robot_count": 3,
+            "required_robot_names": [
+              "tb1",
+              "tb2",
+              "tb3"
+            ],
+            "robot_count": 3,
+            "robots": {
+              "tb1": {
+                "battery_capacity": 100.0,
+                "battery_charge_count": 0,
+                "battery_charge_x": 0.0,
+                "battery_charge_y": -0.45,
+                "battery_charging_time_sec": 0.0,
+                "battery_final_energy": 34.61840996861428,
+                "battery_initial_energy": 40.0,
+                "battery_message_count": 145,
+                "battery_minimum_energy": 34.61840996861428,
+                "battery_mode": "ACTIVE",
+                "battery_return_count": 0,
+                "collision_duration_sec": 0.0,
+                "collision_events": 0,
+                "collision_message_count": 1443,
+                "end_x": -1.280107590109758,
+                "end_y": -3.904200307107599,
+                "final_angular_speed_radps": 0.002051440514568061,
+                "final_linear_speed_mps": 5.0001382858175865e-05,
+                "nav_aborted": 0,
+                "nav_canceled": 1,
+                "nav_goal_count": 3,
+                "nav_succeeded": 2,
+                "path_length_m": 3.9479210514762264,
+                "phase_path_lengths_m": {
+                  "EXPLORE": 3.9113695791160263,
+                  "FOUND": 0.036551472360201134,
+                  "RALLY": 0.0
+                },
+                "rally_final_error_m": null,
+                "rally_target_x": null,
+                "rally_target_y": null,
+                "rally_target_yaw": null,
+                "start_x": 0.003983909803235709,
+                "start_y": -0.44998546525864674,
+                "teleport_jump_count": 0,
+                "visited_cell_count": 42
+              },
+              "tb2": {
+                "battery_capacity": 100.0,
+                "battery_charge_count": 0,
+                "battery_charge_x": 0.0,
+                "battery_charge_y": 0.45,
+                "battery_charging_time_sec": 0.0,
+                "battery_final_energy": 30.66338134283367,
+                "battery_initial_energy": 40.0,
+                "battery_message_count": 146,
+                "battery_minimum_energy": 30.66338134283367,
+                "battery_mode": "ACTIVE",
+                "battery_return_count": 0,
+                "collision_duration_sec": 0.0,
+                "collision_events": 0,
+                "collision_message_count": 1443,
+                "end_x": 1.8330976641414087,
+                "end_y": 2.83864147175771,
+                "final_angular_speed_radps": 0.004814162623659229,
+                "final_linear_speed_mps": 0.01138110693831773,
+                "nav_aborted": 0,
+                "nav_canceled": 1,
+                "nav_goal_count": 6,
+                "nav_succeeded": 5,
+                "path_length_m": 7.898425260478347,
+                "phase_path_lengths_m": {
+                  "EXPLORE": 7.816400030590518,
+                  "FOUND": 0.08202522988783101,
+                  "RALLY": 0.0
+                },
+                "rally_final_error_m": null,
+                "rally_target_x": null,
+                "rally_target_y": null,
+                "rally_target_yaw": null,
+                "start_x": 0.003921099994420046,
+                "start_y": 0.4500140240093491,
+                "teleport_jump_count": 0,
+                "visited_cell_count": 67
+              },
+              "tb3": {
+                "battery_capacity": 100.0,
+                "battery_charge_count": 0,
+                "battery_charge_x": 0.45,
+                "battery_charge_y": 0.0,
+                "battery_charging_time_sec": 0.0,
+                "battery_final_energy": 31.402789145633218,
+                "battery_initial_energy": 40.0,
+                "battery_message_count": 145,
+                "battery_minimum_energy": 31.402789145633218,
+                "battery_mode": "ACTIVE",
+                "battery_return_count": 0,
+                "collision_duration_sec": 0.0,
+                "collision_events": 0,
+                "collision_message_count": 1442,
+                "end_x": -4.520592350384876,
+                "end_y": 3.036830081946551,
+                "final_angular_speed_radps": 0.015952506700881452,
+                "final_linear_speed_mps": 4.84189630135614e-05,
+                "nav_aborted": 0,
+                "nav_canceled": 1,
+                "nav_goal_count": 5,
+                "nav_succeeded": 4,
+                "path_length_m": 7.168149948131361,
+                "phase_path_lengths_m": {
+                  "EXPLORE": 5.75054645346622,
+                  "FOUND": 1.417603494665141,
+                  "RALLY": 0.0
+                },
+                "rally_final_error_m": null,
+                "rally_target_x": null,
+                "rally_target_y": null,
+                "rally_target_yaw": null,
+                "start_x": 0.4538603976311787,
+                "start_y": 1.3536012515948568e-05,
+                "teleport_jump_count": 0,
+                "visited_cell_count": 83
+              }
+            },
+            "schema_version": 8,
+            "search_overlap_ratio": 0.0,
+            "start_sim_time_sec": 2129.682,
+            "success": false,
+            "target_confirmation_frames": 3,
+            "target_field_of_view_deg": 90.0,
+            "target_found": true,
+            "target_max_distance_m": 3.0,
+            "target_x": -4.0,
+            "target_y": 4.0,
+            "task_phase": "FOUND",
+            "termination_reason": "shutdown",
+            "time_to_75_coverage_sec": 69.90000000000009,
+            "time_to_80_coverage_sec": null,
+            "time_to_90_coverage_sec": null,
+            "time_to_95_coverage_sec": null,
+            "time_to_detect_sec": 62.5,
+            "time_to_rally_sec": null,
+            "total_overlap_ratio": 0.0,
+            "total_path_length_m": 19.014496260085934,
+            "truth_cell_count": 56898,
+            "truth_free_cell_count": 52337,
+            "truth_height": 218,
+            "truth_occupied_cell_count": 4561,
+            "truth_origin_x": -5.800000000000001,
+            "truth_origin_y": -5.6000000000000005,
+            "truth_rectangle_count": 26,
+            "truth_resolution": 0.05,
+            "truth_unsupported_collision_count": 1,
+            "truth_width": 261,
+            "union_visited_cell_count": 192,
+            "visit_resolution": 0.1,
+            "world_file": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/worlds/my_world.world"
+          }
+        }
+      ]
+    },
+    {
+      "run_id": "p3b5_v10_forced",
+      "summary_path": "ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_v10_forced/summary.json",
+      "summary_content_sha256": "988cd83832b4951fcaceabc5f041d80cce3f49441c6d4cf0b0ba529bc5b98b31",
+      "summary": {
+        "schema_version": 1,
+        "config": {
+          "schema_version": 1,
+          "purpose": "Frozen paired application-fault task matrix; not Wi-Fi. Never tune on holdout rows.",
+          "development_seeds": [
+            101,
+            202,
+            303
+          ],
+          "holdout_seeds": [
+            707
+          ],
+          "fault_seed": 17011,
+          "duration_sec": 300,
+          "coverage_threshold": 0.8,
+          "task_stack_parent": "22c95a770a8812452c43fc177e4a00b5c032e6ef",
+          "scenarios": {
+            "lab2": {
+              "world": "my_world.world",
+              "target_x": -4,
+              "target_y": 4,
+              "robot_count": 2,
+              "seed": 303,
+              "energy": 40
+            },
+            "rooms3": {
+              "world": "p1c_rooms.world",
+              "target_x": 5,
+              "target_y": 3,
+              "robot_count": 3,
+              "seed": 101,
+              "energy": 40
+            },
+            "corridors2": {
+              "world": "p1c_corridors.world",
+              "target_x": -4.5,
+              "target_y": -0.5,
+              "robot_count": 2,
+              "seed": 202,
+              "energy": 45
+            },
+            "holdout3": {
+              "world": "p3a5_holdout.world",
+              "target_x": 4.4,
+              "target_y": 3.4,
+              "robot_count": 3,
+              "seed": 707,
+              "energy": 45,
+              "holdout": true
+            },
+            "forced2": {
+              "world": "my_world.world",
+              "target_x": -4,
+              "target_y": 4,
+              "robot_count": 2,
+              "seed": 303,
+              "energy": 18,
+              "charge_duration": 10,
+              "safety_margin": 5,
+              "return_timeout": 120
+            }
+          },
+          "profiles": {
+            "zero": {},
+            "up10": {
+              "uplink_loss_rate": 0.1
+            },
+            "down10": {
+              "downlink_loss_rate": 0.1
+            },
+            "up100": {
+              "uplink_loss_rate": 1
+            },
+            "down100": {
+              "downlink_loss_rate": 1
+            },
+            "delay05": {
+              "uplink_delay_sec": 0.5,
+              "downlink_delay_sec": 0.5
+            },
+            "delay2": {
+              "uplink_delay_sec": 2,
+              "downlink_delay_sec": 2
+            },
+            "ttl": {
+              "uplink_delay_sec": 61,
+              "downlink_delay_sec": 61
+            },
+            "duplicate_reorder": {
+              "gateway_duplicate_rate": 1,
+              "gateway_reorder_window": 8,
+              "gateway_reorder_step_sec": 0.3
+            },
+            "overflow": {
+              "uplink_delay_sec": 0.5,
+              "downlink_delay_sec": 0.5,
+              "gateway_queue_capacity": 1
+            },
+            "burst": {
+              "gateway_blackout_intervals": [
+                [
+                  80,
+                  100
+                ],
+                [
+                  140,
+                  160
+                ]
+              ]
+            },
+            "deadline": {
+              "navigation_command_deadline_sec": 0.3,
+              "downlink_delay_sec": 0.5
+            },
+            "detection_loss": {
+              "gateway_drop_message_types": "target_detection"
+            },
+            "map_loss": {
+              "gateway_drop_message_types": "map_snapshot,fused_map_snapshot"
+            },
+            "pose_loss": {
+              "gateway_drop_message_types": "pose_state,frame_state"
+            },
+            "battery_loss": {
+              "gateway_drop_message_types": "battery_state"
+            },
+            "state_loss": {
+              "gateway_drop_message_types": "task_state"
+            },
+            "nav_loss": {
+              "gateway_drop_message_types": "navigation_goal,navigation_cancel"
+            },
+            "robot_failure": {
+              "inject_failure_robot": "tb3",
+              "inject_failure_after_sec": 45
+            },
+            "charge_outage": {
+              "gateway_blackout_intervals": [
+                [
+                  20,
+                  130
+                ]
+              ]
+            },
+            "battery_exhaust": {
+              "battery_initial_energy": 0
+            }
+          },
+          "cases": [
+            {
+              "id": "zero_rally_lab",
+              "scenario": "lab2",
+              "mode": "rally",
+              "profile": "zero"
+            },
+            {
+              "id": "up10_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "up10"
+            },
+            {
+              "id": "down10_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "down10"
+            },
+            {
+              "id": "delay05_corridors",
+              "scenario": "corridors2",
+              "mode": "rally",
+              "profile": "delay05"
+            },
+            {
+              "id": "delay2_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "delay2"
+            },
+            {
+              "id": "up100_lab",
+              "scenario": "lab2",
+              "mode": "rally",
+              "profile": "up100"
+            },
+            {
+              "id": "down100_lab",
+              "scenario": "lab2",
+              "mode": "rally",
+              "profile": "down100"
+            },
+            {
+              "id": "ttl_lab",
+              "scenario": "lab2",
+              "mode": "rally",
+              "profile": "ttl"
+            },
+            {
+              "id": "duplicates_corridors",
+              "scenario": "corridors2",
+              "mode": "rally",
+              "profile": "duplicate_reorder"
+            },
+            {
+              "id": "overflow_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "overflow"
+            },
+            {
+              "id": "burst_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "burst"
+            },
+            {
+              "id": "deadline_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "deadline"
+            },
+            {
+              "id": "detection_loss_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "detection_loss"
+            },
+            {
+              "id": "map_loss_lab",
+              "scenario": "lab2",
+              "mode": "coverage",
+              "profile": "map_loss"
+            },
+            {
+              "id": "pose_loss_rooms",
+              "scenario": "rooms3",
+              "mode": "coverage",
+              "profile": "pose_loss"
+            },
+            {
+              "id": "battery_loss_lab",
+              "scenario": "lab2",
+              "mode": "rally",
+              "profile": "battery_loss"
+            },
+            {
+              "id": "state_loss_lab",
+              "scenario": "lab2",
+              "mode": "rally",
+              "profile": "state_loss"
+            },
+            {
+              "id": "nav_loss_corridors",
+              "scenario": "corridors2",
+              "mode": "rally",
+              "profile": "nav_loss"
+            },
+            {
+              "id": "single_failure_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "robot_failure"
+            },
+            {
+              "id": "forced_charge_outage",
+              "scenario": "forced2",
+              "mode": "rally",
+              "profile": "charge_outage"
+            },
+            {
+              "id": "target_up10_lab",
+              "scenario": "lab2",
+              "mode": "target",
+              "profile": "up10"
+            },
+            {
+              "id": "target_loss_rooms",
+              "scenario": "rooms3",
+              "mode": "target",
+              "profile": "detection_loss"
+            },
+            {
+              "id": "coverage_delay_corridors",
+              "scenario": "corridors2",
+              "mode": "coverage",
+              "profile": "delay05"
+            },
+            {
+              "id": "holdout_rally",
+              "scenario": "holdout3",
+              "mode": "rally",
+              "profile": "up10"
+            },
+            {
+              "id": "holdout_target",
+              "scenario": "holdout3",
+              "mode": "target",
+              "profile": "down10"
+            },
+            {
+              "id": "holdout_coverage",
+              "scenario": "holdout3",
+              "mode": "coverage",
+              "profile": "burst"
+            },
+            {
+              "id": "battery_exhaust_lab",
+              "scenario": "lab2",
+              "mode": "rally",
+              "profile": "battery_exhaust"
+            }
+          ],
+          "temporal_contract": "source<=enqueue<=admit/tx<=delivery; TF source is scan stamp, native validity offset derived from actual SLAM config; fault blackout relative first EXPLORE",
+          "ideal_transport": "no fault intervention, zero stochastic loss/delay/reorder/duplicate/blackout/drop; normal bounded4096 queue; task load/deadline/retry unchanged"
+        },
+        "manifest": {
+          "manifest_schema_version": 1,
+          "generated_at_utc": "2026-10-01T15:47:46.232695+00:00",
+          "task_stack_candidate_commit": "bed8c7fb4739fa3743be62b20354af1d80baec19",
+          "task_stack_frozen_commit": null,
+          "git_commit": "bed8c7fb4739fa3743be62b20354af1d80baec19",
+          "worktree_dirty": true,
+          "task_stack_clean": true,
+          "permitted_untracked_user_materials": "260929_report/ (recorded, untouched, excluded from task stack)",
+          "worktree_status": [
+            "?? 260929_report/1.pdf",
+            "?? 260929_report/2007.08564v1.pdf",
+            "?? 260929_report/2106.00574v1.pdf",
+            "?? 260929_report/2503.07278v3.pdf",
+            "?? \"260929_report/A Critical Review of Communications in Multi-robot Systems.pdf\"",
+            "?? \"260929_report/Adaptive resource allocation in dynamic wireless environments a systematic review.pdf\"",
+            "?? 260929_report/Applications_of_Deep_Reinforcement_Learning_in_Communications_and_Networking_A_Survey.pdf",
+            "?? \"260929_report/Towards reasoning-empowered task-oriented communication for agent networks.pdf\"",
+            "?? 260929_report/Towards_Autonomous_Multi-UAV_Wireless_Network_A_Su.pdf",
+            "?? 260929_report/c61bd00b-f250-4cfe-b5a5-f941e8c9b22b.png",
+            "?? 260929_report/sensors-23-03625.pdf",
+            "?? 260929_report/ssrn-7067272.pdf",
+            "?? \"260929_report/\\347\\273\\204\\344\\274\\232\\346\\226\\207\\347\\214\\256\\346\\261\\207\\346\\212\\245-\\346\\250\\241\\346\\235\\277.pptx\"",
+            "?? \"260929_report/\\347\\273\\274\\350\\277\\260\\350\\256\\272\\346\\226\\207\\350\\260\\203\\347\\240\\224.docx\""
+          ],
+          "source_digests": {
+            "scenario_config": "6ba4f584a376cfe85423c6b14ed7339d69eb48d92bcac4258fcb95236a03e9de",
+            "baseline_runner": "486729f0f948ce22f6cba95a3de7bc5092a55376e61fa5fdbd8df4927ed457e6",
+            "smoke_runner": "63f777d9dd43293c6863cb93c4549a8d8dece3ed61128cf5ed3919421b58fbec",
+            "bypass_manifest": "cb4e698470331344f86c484ca7c3afae95145f69c2690c63cd34cb44a97d6091",
+            "gateway_message": "e0648e61473dfd2931038c79cda8a6fe4bf09c1d00f8d4acdfa0f4879e72925c",
+            "launch": "534b205d8e29cf07f024f0330640f989e940a34898be4dad38b7f1b1ecfc5d23",
+            "exploration_source": "af6c727b4a241cc3c891ffb29170d23efc9e806e45be681945c96084663bd5e7",
+            "merge_map_source": "841fdb3a9a3f4e9dc8aefaf87850e2963d09fe3873d1945ea609a1c124d5bc93",
+            "robot_params": "0f7a934e966d29e777fe397d6838ace59ed17207b0939ec39fd8e5cb12d551e0",
+            "slam_source": "61abada48d42602e5bb8950cdf81cd4804c0c45b787490681711e3cc228eb1c0",
+            "slam_config": "7a042d7a513eea7408705e568276b21101a2d308229caeb760833d0faa74cc23"
+          },
+          "environment": {
+            "python": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+            "python_executable": "/usr/bin/python3",
+            "platform": "Linux-6.8.0-124-generic-x86_64-with-glibc2.35",
+            "cpu_affinity": [
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59
+            ],
+            "ros_distro": "humble",
+            "ros_version": "2",
+            "gazebo": "Gazebo multi-robot simulator, version 11.10.2",
+            "colcon": "0.20.1",
+            "ros2_prefix": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot"
+          },
+          "runner": {
+            "robot_count": 3,
+            "duration_sec": 300,
+            "goal_timeout_sec": 60,
+            "startup_timeout_sec": 600,
+            "message_timeout_sec": 90,
+            "evaluation_wait_timeout_sec": 900,
+            "shutdown_timeout_sec": 60,
+            "ros_domain_base": 160,
+            "seeds": [
+              101,
+              202,
+              303,
+              707
+            ],
+            "scenarios": [
+              "lab2",
+              "rooms3",
+              "corridors2",
+              "holdout3",
+              "forced2"
+            ],
+            "cross_check": false,
+            "rally_assignment_objective": "minimax",
+            "map_safe_rally_order": true,
+            "global_battery_rally_pause": false,
+            "rally_max_concurrent": 2
+          },
+          "p3b5_runner_sha256": "35a32731e58afdf0ba0f18d840588752008fd2bb16e3082752b6fafa5cd6f197",
+          "observer_sha256": "8669f1e43263ce4903ff428e8e61d14cd51aabeb2fc59c050d8b0a7977afa11f",
+          "world_sha256": {
+            "lab2": "c015980dab17ec3ada255fecc67ce6aec7d414baf43b8aeb3646e5bb17f66810",
+            "rooms3": "a10fb52ad227f4bf662deeef174e16d06773108ed3b15a451ea43de8d79c094b",
+            "corridors2": "eae4e501b2294c64c9f920fe1d02aa6bfe21dada172dc309b4ea46e0e2b17430",
+            "holdout3": "bb93aaee5c62d6e013cf0d4047e5060221dd4e79064cd80d22a28b1e6df0260b",
+            "forced2": "c015980dab17ec3ada255fecc67ce6aec7d414baf43b8aeb3646e5bb17f66810"
+          }
+        },
+        "pairs": {
+          "forced_charge_outage": {
+            "ideal": "p3b5_v10_forced_ideal_forced2_rally_86fbb43bc6",
+            "fault": "p3b5_v10_forced_forced_charge_outage_fault"
+          }
+        },
+        "episodes": {
+          "p3b5_v10_forced_ideal_forced2_rally_86fbb43bc6": {
+            "case": {
+              "id": "forced_charge_outage",
+              "scenario": "forced2",
+              "mode": "rally",
+              "profile": "charge_outage"
+            },
+            "scenario": {
+              "world": "my_world.world",
+              "target_x": -4,
+              "target_y": 4,
+              "robot_count": 2,
+              "seed": 303,
+              "energy": 18,
+              "charge_duration": 10,
+              "safety_margin": 5,
+              "return_timeout": 120
+            },
+            "profile": {
+              "gateway_blackout_intervals": [
+                [
+                  20,
+                  130
+                ]
+              ]
+            },
+            "mode": "ideal",
+            "settings": {
+              "scenario": {
+                "world": "my_world.world",
+                "target_x": -4,
+                "target_y": 4,
+                "robot_count": 2,
+                "seed": 303,
+                "energy": 18,
+                "charge_duration": 10,
+                "safety_margin": 5,
+                "return_timeout": 120
+              },
+              "mission_mode": "rally",
+              "effective_initial_energy": 18,
+              "deadline": 90
+            },
+            "command": "/usr/bin/python3 /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py --world my_world.world --robot-count 2 --gazebo-seed 303 --startup-timeout 600 --message-timeout 90 --shutdown-timeout 60 --evaluation-duration 300 --evaluation-wait-timeout 900 --coverage-threshold 0 --mission-mode rally --gateway-mode ideal --gateway-seed 17011 --battery --battery-capacity 100 --battery-initial-energy 18 --target-x -4 --target-y 4 --rally-max-concurrent 2 --disable-global-battery-rally-pause --episode-id p3b5_v10_forced_ideal_forced2_rally_86fbb43bc6 --collect-fault-result --dwell-seconds 0 --evaluation-output-dir /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_v10_forced/p3b5_v10_forced_ideal_forced2_rally_86fbb43bc6 --log-dir /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_v10_forced/p3b5_v10_forced_ideal_forced2_rally_86fbb43bc6/launch --gateway-ledger-path /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_v10_forced/p3b5_v10_forced_ideal_forced2_rally_86fbb43bc6/ledger.jsonl --bypass-audit-output /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_v10_forced/p3b5_v10_forced_ideal_forced2_rally_86fbb43bc6/graph.json --target-detection --rally --battery-charge-duration 10 --battery-safety-margin 5 --battery-return-timeout 120 --gateway-blackout-intervals '[[20, 130]]'",
+            "ros_domain_id": "160",
+            "gazebo_master_uri": "http://127.0.0.1:11532",
+            "result_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_v10_forced/p3b5_v10_forced_ideal_forced2_rally_86fbb43bc6/p3b5_v10_forced_ideal_forced2_rally_86fbb43bc6.json",
+            "observer_command": "/usr/bin/python3 /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/observe_p3b5.py --output /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_v10_forced/p3b5_v10_forced_ideal_forced2_rally_86fbb43bc6/safety_events.jsonl --robot-count 2",
+            "observer_returncode": 0,
+            "safety_events_sha256": null,
+            "runner_returncode": 1,
+            "episode_started": false,
+            "infrastructure_failure": true,
+            "operational_failure": true
+          }
+        },
+        "created_at_utc": "2026-10-01T15:47:47.831588+00:00",
+        "statistics": {
+          "pairs": [
+            {
+              "case_id": "forced_charge_outage",
+              "infrastructure_failure": true,
+              "ideal": "p3b5_v10_forced_ideal_forced2_rally_86fbb43bc6",
+              "fault": "p3b5_v10_forced_forced_charge_outage_fault"
+            }
+          ],
+          "tdi": {
+            "n": 0,
+            "mean": null,
+            "ci95": null
+          }
+        },
+        "finished_at_utc": "2026-10-01T15:48:03.698329+00:00"
+      },
+      "manifest": {
+        "schema_version": 1,
+        "config": {
+          "schema_version": 1,
+          "purpose": "Frozen paired application-fault task matrix; not Wi-Fi. Never tune on holdout rows.",
+          "development_seeds": [
+            101,
+            202,
+            303
+          ],
+          "holdout_seeds": [
+            707
+          ],
+          "fault_seed": 17011,
+          "duration_sec": 300,
+          "coverage_threshold": 0.8,
+          "task_stack_parent": "22c95a770a8812452c43fc177e4a00b5c032e6ef",
+          "scenarios": {
+            "lab2": {
+              "world": "my_world.world",
+              "target_x": -4,
+              "target_y": 4,
+              "robot_count": 2,
+              "seed": 303,
+              "energy": 40
+            },
+            "rooms3": {
+              "world": "p1c_rooms.world",
+              "target_x": 5,
+              "target_y": 3,
+              "robot_count": 3,
+              "seed": 101,
+              "energy": 40
+            },
+            "corridors2": {
+              "world": "p1c_corridors.world",
+              "target_x": -4.5,
+              "target_y": -0.5,
+              "robot_count": 2,
+              "seed": 202,
+              "energy": 45
+            },
+            "holdout3": {
+              "world": "p3a5_holdout.world",
+              "target_x": 4.4,
+              "target_y": 3.4,
+              "robot_count": 3,
+              "seed": 707,
+              "energy": 45,
+              "holdout": true
+            },
+            "forced2": {
+              "world": "my_world.world",
+              "target_x": -4,
+              "target_y": 4,
+              "robot_count": 2,
+              "seed": 303,
+              "energy": 18,
+              "charge_duration": 10,
+              "safety_margin": 5,
+              "return_timeout": 120
+            }
+          },
+          "profiles": {
+            "zero": {},
+            "up10": {
+              "uplink_loss_rate": 0.1
+            },
+            "down10": {
+              "downlink_loss_rate": 0.1
+            },
+            "up100": {
+              "uplink_loss_rate": 1
+            },
+            "down100": {
+              "downlink_loss_rate": 1
+            },
+            "delay05": {
+              "uplink_delay_sec": 0.5,
+              "downlink_delay_sec": 0.5
+            },
+            "delay2": {
+              "uplink_delay_sec": 2,
+              "downlink_delay_sec": 2
+            },
+            "ttl": {
+              "uplink_delay_sec": 61,
+              "downlink_delay_sec": 61
+            },
+            "duplicate_reorder": {
+              "gateway_duplicate_rate": 1,
+              "gateway_reorder_window": 8,
+              "gateway_reorder_step_sec": 0.3
+            },
+            "overflow": {
+              "uplink_delay_sec": 0.5,
+              "downlink_delay_sec": 0.5,
+              "gateway_queue_capacity": 1
+            },
+            "burst": {
+              "gateway_blackout_intervals": [
+                [
+                  80,
+                  100
+                ],
+                [
+                  140,
+                  160
+                ]
+              ]
+            },
+            "deadline": {
+              "navigation_command_deadline_sec": 0.3,
+              "downlink_delay_sec": 0.5
+            },
+            "detection_loss": {
+              "gateway_drop_message_types": "target_detection"
+            },
+            "map_loss": {
+              "gateway_drop_message_types": "map_snapshot,fused_map_snapshot"
+            },
+            "pose_loss": {
+              "gateway_drop_message_types": "pose_state,frame_state"
+            },
+            "battery_loss": {
+              "gateway_drop_message_types": "battery_state"
+            },
+            "state_loss": {
+              "gateway_drop_message_types": "task_state"
+            },
+            "nav_loss": {
+              "gateway_drop_message_types": "navigation_goal,navigation_cancel"
+            },
+            "robot_failure": {
+              "inject_failure_robot": "tb3",
+              "inject_failure_after_sec": 45
+            },
+            "charge_outage": {
+              "gateway_blackout_intervals": [
+                [
+                  20,
+                  130
+                ]
+              ]
+            },
+            "battery_exhaust": {
+              "battery_initial_energy": 0
+            }
+          },
+          "cases": [
+            {
+              "id": "zero_rally_lab",
+              "scenario": "lab2",
+              "mode": "rally",
+              "profile": "zero"
+            },
+            {
+              "id": "up10_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "up10"
+            },
+            {
+              "id": "down10_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "down10"
+            },
+            {
+              "id": "delay05_corridors",
+              "scenario": "corridors2",
+              "mode": "rally",
+              "profile": "delay05"
+            },
+            {
+              "id": "delay2_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "delay2"
+            },
+            {
+              "id": "up100_lab",
+              "scenario": "lab2",
+              "mode": "rally",
+              "profile": "up100"
+            },
+            {
+              "id": "down100_lab",
+              "scenario": "lab2",
+              "mode": "rally",
+              "profile": "down100"
+            },
+            {
+              "id": "ttl_lab",
+              "scenario": "lab2",
+              "mode": "rally",
+              "profile": "ttl"
+            },
+            {
+              "id": "duplicates_corridors",
+              "scenario": "corridors2",
+              "mode": "rally",
+              "profile": "duplicate_reorder"
+            },
+            {
+              "id": "overflow_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "overflow"
+            },
+            {
+              "id": "burst_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "burst"
+            },
+            {
+              "id": "deadline_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "deadline"
+            },
+            {
+              "id": "detection_loss_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "detection_loss"
+            },
+            {
+              "id": "map_loss_lab",
+              "scenario": "lab2",
+              "mode": "coverage",
+              "profile": "map_loss"
+            },
+            {
+              "id": "pose_loss_rooms",
+              "scenario": "rooms3",
+              "mode": "coverage",
+              "profile": "pose_loss"
+            },
+            {
+              "id": "battery_loss_lab",
+              "scenario": "lab2",
+              "mode": "rally",
+              "profile": "battery_loss"
+            },
+            {
+              "id": "state_loss_lab",
+              "scenario": "lab2",
+              "mode": "rally",
+              "profile": "state_loss"
+            },
+            {
+              "id": "nav_loss_corridors",
+              "scenario": "corridors2",
+              "mode": "rally",
+              "profile": "nav_loss"
+            },
+            {
+              "id": "single_failure_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "robot_failure"
+            },
+            {
+              "id": "forced_charge_outage",
+              "scenario": "forced2",
+              "mode": "rally",
+              "profile": "charge_outage"
+            },
+            {
+              "id": "target_up10_lab",
+              "scenario": "lab2",
+              "mode": "target",
+              "profile": "up10"
+            },
+            {
+              "id": "target_loss_rooms",
+              "scenario": "rooms3",
+              "mode": "target",
+              "profile": "detection_loss"
+            },
+            {
+              "id": "coverage_delay_corridors",
+              "scenario": "corridors2",
+              "mode": "coverage",
+              "profile": "delay05"
+            },
+            {
+              "id": "holdout_rally",
+              "scenario": "holdout3",
+              "mode": "rally",
+              "profile": "up10"
+            },
+            {
+              "id": "holdout_target",
+              "scenario": "holdout3",
+              "mode": "target",
+              "profile": "down10"
+            },
+            {
+              "id": "holdout_coverage",
+              "scenario": "holdout3",
+              "mode": "coverage",
+              "profile": "burst"
+            },
+            {
+              "id": "battery_exhaust_lab",
+              "scenario": "lab2",
+              "mode": "rally",
+              "profile": "battery_exhaust"
+            }
+          ],
+          "temporal_contract": "source<=enqueue<=admit/tx<=delivery; TF source is scan stamp, native validity offset derived from actual SLAM config; fault blackout relative first EXPLORE",
+          "ideal_transport": "no fault intervention, zero stochastic loss/delay/reorder/duplicate/blackout/drop; normal bounded4096 queue; task load/deadline/retry unchanged"
+        },
+        "manifest": {
+          "manifest_schema_version": 1,
+          "generated_at_utc": "2026-10-01T15:47:46.232695+00:00",
+          "task_stack_candidate_commit": "bed8c7fb4739fa3743be62b20354af1d80baec19",
+          "task_stack_frozen_commit": null,
+          "git_commit": "bed8c7fb4739fa3743be62b20354af1d80baec19",
+          "worktree_dirty": true,
+          "task_stack_clean": true,
+          "permitted_untracked_user_materials": "260929_report/ (recorded, untouched, excluded from task stack)",
+          "worktree_status": [
+            "?? 260929_report/1.pdf",
+            "?? 260929_report/2007.08564v1.pdf",
+            "?? 260929_report/2106.00574v1.pdf",
+            "?? 260929_report/2503.07278v3.pdf",
+            "?? \"260929_report/A Critical Review of Communications in Multi-robot Systems.pdf\"",
+            "?? \"260929_report/Adaptive resource allocation in dynamic wireless environments a systematic review.pdf\"",
+            "?? 260929_report/Applications_of_Deep_Reinforcement_Learning_in_Communications_and_Networking_A_Survey.pdf",
+            "?? \"260929_report/Towards reasoning-empowered task-oriented communication for agent networks.pdf\"",
+            "?? 260929_report/Towards_Autonomous_Multi-UAV_Wireless_Network_A_Su.pdf",
+            "?? 260929_report/c61bd00b-f250-4cfe-b5a5-f941e8c9b22b.png",
+            "?? 260929_report/sensors-23-03625.pdf",
+            "?? 260929_report/ssrn-7067272.pdf",
+            "?? \"260929_report/\\347\\273\\204\\344\\274\\232\\346\\226\\207\\347\\214\\256\\346\\261\\207\\346\\212\\245-\\346\\250\\241\\346\\235\\277.pptx\"",
+            "?? \"260929_report/\\347\\273\\274\\350\\277\\260\\350\\256\\272\\346\\226\\207\\350\\260\\203\\347\\240\\224.docx\""
+          ],
+          "source_digests": {
+            "scenario_config": "6ba4f584a376cfe85423c6b14ed7339d69eb48d92bcac4258fcb95236a03e9de",
+            "baseline_runner": "486729f0f948ce22f6cba95a3de7bc5092a55376e61fa5fdbd8df4927ed457e6",
+            "smoke_runner": "63f777d9dd43293c6863cb93c4549a8d8dece3ed61128cf5ed3919421b58fbec",
+            "bypass_manifest": "cb4e698470331344f86c484ca7c3afae95145f69c2690c63cd34cb44a97d6091",
+            "gateway_message": "e0648e61473dfd2931038c79cda8a6fe4bf09c1d00f8d4acdfa0f4879e72925c",
+            "launch": "534b205d8e29cf07f024f0330640f989e940a34898be4dad38b7f1b1ecfc5d23",
+            "exploration_source": "af6c727b4a241cc3c891ffb29170d23efc9e806e45be681945c96084663bd5e7",
+            "merge_map_source": "841fdb3a9a3f4e9dc8aefaf87850e2963d09fe3873d1945ea609a1c124d5bc93",
+            "robot_params": "0f7a934e966d29e777fe397d6838ace59ed17207b0939ec39fd8e5cb12d551e0",
+            "slam_source": "61abada48d42602e5bb8950cdf81cd4804c0c45b787490681711e3cc228eb1c0",
+            "slam_config": "7a042d7a513eea7408705e568276b21101a2d308229caeb760833d0faa74cc23"
+          },
+          "environment": {
+            "python": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+            "python_executable": "/usr/bin/python3",
+            "platform": "Linux-6.8.0-124-generic-x86_64-with-glibc2.35",
+            "cpu_affinity": [
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59
+            ],
+            "ros_distro": "humble",
+            "ros_version": "2",
+            "gazebo": "Gazebo multi-robot simulator, version 11.10.2",
+            "colcon": "0.20.1",
+            "ros2_prefix": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot"
+          },
+          "runner": {
+            "robot_count": 3,
+            "duration_sec": 300,
+            "goal_timeout_sec": 60,
+            "startup_timeout_sec": 600,
+            "message_timeout_sec": 90,
+            "evaluation_wait_timeout_sec": 900,
+            "shutdown_timeout_sec": 60,
+            "ros_domain_base": 160,
+            "seeds": [
+              101,
+              202,
+              303,
+              707
+            ],
+            "scenarios": [
+              "lab2",
+              "rooms3",
+              "corridors2",
+              "holdout3",
+              "forced2"
+            ],
+            "cross_check": false,
+            "rally_assignment_objective": "minimax",
+            "map_safe_rally_order": true,
+            "global_battery_rally_pause": false,
+            "rally_max_concurrent": 2
+          },
+          "p3b5_runner_sha256": "35a32731e58afdf0ba0f18d840588752008fd2bb16e3082752b6fafa5cd6f197",
+          "observer_sha256": "8669f1e43263ce4903ff428e8e61d14cd51aabeb2fc59c050d8b0a7977afa11f",
+          "world_sha256": {
+            "lab2": "c015980dab17ec3ada255fecc67ce6aec7d414baf43b8aeb3646e5bb17f66810",
+            "rooms3": "a10fb52ad227f4bf662deeef174e16d06773108ed3b15a451ea43de8d79c094b",
+            "corridors2": "eae4e501b2294c64c9f920fe1d02aa6bfe21dada172dc309b4ea46e0e2b17430",
+            "holdout3": "bb93aaee5c62d6e013cf0d4047e5060221dd4e79064cd80d22a28b1e6df0260b",
+            "forced2": "c015980dab17ec3ada255fecc67ce6aec7d414baf43b8aeb3646e5bb17f66810"
+          }
+        },
+        "pairs": {
+          "forced_charge_outage": {
+            "ideal": "p3b5_v10_forced_ideal_forced2_rally_86fbb43bc6",
+            "fault": "p3b5_v10_forced_forced_charge_outage_fault"
+          }
+        },
+        "episodes": {},
+        "created_at_utc": "2026-10-01T15:47:47.831588+00:00"
+      },
+      "raw_results": []
+    },
+    {
+      "run_id": "p3b5_v10_lab",
+      "summary_path": "ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_v10_lab/summary.json",
+      "summary_content_sha256": "a51958a9e5e98bb9ef09cc456982570a9c7aa1dd85fcc2765b5da3c9c57bf8f7",
+      "summary": {
+        "schema_version": 1,
+        "config": {
+          "schema_version": 1,
+          "purpose": "Frozen paired application-fault task matrix; not Wi-Fi. Never tune on holdout rows.",
+          "development_seeds": [
+            101,
+            202,
+            303
+          ],
+          "holdout_seeds": [
+            707
+          ],
+          "fault_seed": 17011,
+          "duration_sec": 300,
+          "coverage_threshold": 0.8,
+          "task_stack_parent": "22c95a770a8812452c43fc177e4a00b5c032e6ef",
+          "scenarios": {
+            "lab2": {
+              "world": "my_world.world",
+              "target_x": -4,
+              "target_y": 4,
+              "robot_count": 2,
+              "seed": 303,
+              "energy": 40
+            },
+            "rooms3": {
+              "world": "p1c_rooms.world",
+              "target_x": 5,
+              "target_y": 3,
+              "robot_count": 3,
+              "seed": 101,
+              "energy": 40
+            },
+            "corridors2": {
+              "world": "p1c_corridors.world",
+              "target_x": -4.5,
+              "target_y": -0.5,
+              "robot_count": 2,
+              "seed": 202,
+              "energy": 45
+            },
+            "holdout3": {
+              "world": "p3a5_holdout.world",
+              "target_x": 4.4,
+              "target_y": 3.4,
+              "robot_count": 3,
+              "seed": 707,
+              "energy": 45,
+              "holdout": true
+            },
+            "forced2": {
+              "world": "my_world.world",
+              "target_x": -4,
+              "target_y": 4,
+              "robot_count": 2,
+              "seed": 303,
+              "energy": 18,
+              "charge_duration": 10,
+              "safety_margin": 5,
+              "return_timeout": 120
+            }
+          },
+          "profiles": {
+            "zero": {},
+            "up10": {
+              "uplink_loss_rate": 0.1
+            },
+            "down10": {
+              "downlink_loss_rate": 0.1
+            },
+            "up100": {
+              "uplink_loss_rate": 1
+            },
+            "down100": {
+              "downlink_loss_rate": 1
+            },
+            "delay05": {
+              "uplink_delay_sec": 0.5,
+              "downlink_delay_sec": 0.5
+            },
+            "delay2": {
+              "uplink_delay_sec": 2,
+              "downlink_delay_sec": 2
+            },
+            "ttl": {
+              "uplink_delay_sec": 61,
+              "downlink_delay_sec": 61
+            },
+            "duplicate_reorder": {
+              "gateway_duplicate_rate": 1,
+              "gateway_reorder_window": 8,
+              "gateway_reorder_step_sec": 0.3
+            },
+            "overflow": {
+              "uplink_delay_sec": 0.5,
+              "downlink_delay_sec": 0.5,
+              "gateway_queue_capacity": 1
+            },
+            "burst": {
+              "gateway_blackout_intervals": [
+                [
+                  80,
+                  100
+                ],
+                [
+                  140,
+                  160
+                ]
+              ]
+            },
+            "deadline": {
+              "navigation_command_deadline_sec": 0.3,
+              "downlink_delay_sec": 0.5
+            },
+            "detection_loss": {
+              "gateway_drop_message_types": "target_detection"
+            },
+            "map_loss": {
+              "gateway_drop_message_types": "map_snapshot,fused_map_snapshot"
+            },
+            "pose_loss": {
+              "gateway_drop_message_types": "pose_state,frame_state"
+            },
+            "battery_loss": {
+              "gateway_drop_message_types": "battery_state"
+            },
+            "state_loss": {
+              "gateway_drop_message_types": "task_state"
+            },
+            "nav_loss": {
+              "gateway_drop_message_types": "navigation_goal,navigation_cancel"
+            },
+            "robot_failure": {
+              "inject_failure_robot": "tb3",
+              "inject_failure_after_sec": 45
+            },
+            "charge_outage": {
+              "gateway_blackout_intervals": [
+                [
+                  20,
+                  130
+                ]
+              ]
+            },
+            "battery_exhaust": {
+              "battery_initial_energy": 0
+            }
+          },
+          "cases": [
+            {
+              "id": "zero_rally_lab",
+              "scenario": "lab2",
+              "mode": "rally",
+              "profile": "zero"
+            },
+            {
+              "id": "up10_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "up10"
+            },
+            {
+              "id": "down10_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "down10"
+            },
+            {
+              "id": "delay05_corridors",
+              "scenario": "corridors2",
+              "mode": "rally",
+              "profile": "delay05"
+            },
+            {
+              "id": "delay2_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "delay2"
+            },
+            {
+              "id": "up100_lab",
+              "scenario": "lab2",
+              "mode": "rally",
+              "profile": "up100"
+            },
+            {
+              "id": "down100_lab",
+              "scenario": "lab2",
+              "mode": "rally",
+              "profile": "down100"
+            },
+            {
+              "id": "ttl_lab",
+              "scenario": "lab2",
+              "mode": "rally",
+              "profile": "ttl"
+            },
+            {
+              "id": "duplicates_corridors",
+              "scenario": "corridors2",
+              "mode": "rally",
+              "profile": "duplicate_reorder"
+            },
+            {
+              "id": "overflow_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "overflow"
+            },
+            {
+              "id": "burst_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "burst"
+            },
+            {
+              "id": "deadline_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "deadline"
+            },
+            {
+              "id": "detection_loss_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "detection_loss"
+            },
+            {
+              "id": "map_loss_lab",
+              "scenario": "lab2",
+              "mode": "coverage",
+              "profile": "map_loss"
+            },
+            {
+              "id": "pose_loss_rooms",
+              "scenario": "rooms3",
+              "mode": "coverage",
+              "profile": "pose_loss"
+            },
+            {
+              "id": "battery_loss_lab",
+              "scenario": "lab2",
+              "mode": "rally",
+              "profile": "battery_loss"
+            },
+            {
+              "id": "state_loss_lab",
+              "scenario": "lab2",
+              "mode": "rally",
+              "profile": "state_loss"
+            },
+            {
+              "id": "nav_loss_corridors",
+              "scenario": "corridors2",
+              "mode": "rally",
+              "profile": "nav_loss"
+            },
+            {
+              "id": "single_failure_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "robot_failure"
+            },
+            {
+              "id": "forced_charge_outage",
+              "scenario": "forced2",
+              "mode": "rally",
+              "profile": "charge_outage"
+            },
+            {
+              "id": "target_up10_lab",
+              "scenario": "lab2",
+              "mode": "target",
+              "profile": "up10"
+            },
+            {
+              "id": "target_loss_rooms",
+              "scenario": "rooms3",
+              "mode": "target",
+              "profile": "detection_loss"
+            },
+            {
+              "id": "coverage_delay_corridors",
+              "scenario": "corridors2",
+              "mode": "coverage",
+              "profile": "delay05"
+            },
+            {
+              "id": "holdout_rally",
+              "scenario": "holdout3",
+              "mode": "rally",
+              "profile": "up10"
+            },
+            {
+              "id": "holdout_target",
+              "scenario": "holdout3",
+              "mode": "target",
+              "profile": "down10"
+            },
+            {
+              "id": "holdout_coverage",
+              "scenario": "holdout3",
+              "mode": "coverage",
+              "profile": "burst"
+            },
+            {
+              "id": "battery_exhaust_lab",
+              "scenario": "lab2",
+              "mode": "rally",
+              "profile": "battery_exhaust"
+            }
+          ],
+          "temporal_contract": "source<=enqueue<=admit/tx<=delivery; TF source is scan stamp, native validity offset derived from actual SLAM config; fault blackout relative first EXPLORE",
+          "ideal_transport": "no fault intervention, zero stochastic loss/delay/reorder/duplicate/blackout/drop; normal bounded4096 queue; task load/deadline/retry unchanged"
+        },
+        "manifest": {
+          "manifest_schema_version": 1,
+          "generated_at_utc": "2026-10-01T15:48:22.067537+00:00",
+          "task_stack_candidate_commit": "bed8c7fb4739fa3743be62b20354af1d80baec19",
+          "task_stack_frozen_commit": null,
+          "git_commit": "bed8c7fb4739fa3743be62b20354af1d80baec19",
+          "worktree_dirty": true,
+          "task_stack_clean": true,
+          "permitted_untracked_user_materials": "260929_report/ (recorded, untouched, excluded from task stack)",
+          "worktree_status": [
+            "?? 260929_report/1.pdf",
+            "?? 260929_report/2007.08564v1.pdf",
+            "?? 260929_report/2106.00574v1.pdf",
+            "?? 260929_report/2503.07278v3.pdf",
+            "?? \"260929_report/A Critical Review of Communications in Multi-robot Systems.pdf\"",
+            "?? \"260929_report/Adaptive resource allocation in dynamic wireless environments a systematic review.pdf\"",
+            "?? 260929_report/Applications_of_Deep_Reinforcement_Learning_in_Communications_and_Networking_A_Survey.pdf",
+            "?? \"260929_report/Towards reasoning-empowered task-oriented communication for agent networks.pdf\"",
+            "?? 260929_report/Towards_Autonomous_Multi-UAV_Wireless_Network_A_Su.pdf",
+            "?? 260929_report/c61bd00b-f250-4cfe-b5a5-f941e8c9b22b.png",
+            "?? 260929_report/sensors-23-03625.pdf",
+            "?? 260929_report/ssrn-7067272.pdf",
+            "?? \"260929_report/\\347\\273\\204\\344\\274\\232\\346\\226\\207\\347\\214\\256\\346\\261\\207\\346\\212\\245-\\346\\250\\241\\346\\235\\277.pptx\"",
+            "?? \"260929_report/\\347\\273\\274\\350\\277\\260\\350\\256\\272\\346\\226\\207\\350\\260\\203\\347\\240\\224.docx\""
+          ],
+          "source_digests": {
+            "scenario_config": "6ba4f584a376cfe85423c6b14ed7339d69eb48d92bcac4258fcb95236a03e9de",
+            "baseline_runner": "486729f0f948ce22f6cba95a3de7bc5092a55376e61fa5fdbd8df4927ed457e6",
+            "smoke_runner": "63f777d9dd43293c6863cb93c4549a8d8dece3ed61128cf5ed3919421b58fbec",
+            "bypass_manifest": "cb4e698470331344f86c484ca7c3afae95145f69c2690c63cd34cb44a97d6091",
+            "gateway_message": "e0648e61473dfd2931038c79cda8a6fe4bf09c1d00f8d4acdfa0f4879e72925c",
+            "launch": "534b205d8e29cf07f024f0330640f989e940a34898be4dad38b7f1b1ecfc5d23",
+            "exploration_source": "af6c727b4a241cc3c891ffb29170d23efc9e806e45be681945c96084663bd5e7",
+            "merge_map_source": "841fdb3a9a3f4e9dc8aefaf87850e2963d09fe3873d1945ea609a1c124d5bc93",
+            "robot_params": "0f7a934e966d29e777fe397d6838ace59ed17207b0939ec39fd8e5cb12d551e0",
+            "slam_source": "61abada48d42602e5bb8950cdf81cd4804c0c45b787490681711e3cc228eb1c0",
+            "slam_config": "7a042d7a513eea7408705e568276b21101a2d308229caeb760833d0faa74cc23"
+          },
+          "environment": {
+            "python": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+            "python_executable": "/usr/bin/python3",
+            "platform": "Linux-6.8.0-124-generic-x86_64-with-glibc2.35",
+            "cpu_affinity": [
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39
+            ],
+            "ros_distro": "humble",
+            "ros_version": "2",
+            "gazebo": "Gazebo multi-robot simulator, version 11.10.2",
+            "colcon": "0.20.1",
+            "ros2_prefix": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot"
+          },
+          "runner": {
+            "robot_count": 3,
+            "duration_sec": 300,
+            "goal_timeout_sec": 60,
+            "startup_timeout_sec": 600,
+            "message_timeout_sec": 90,
+            "evaluation_wait_timeout_sec": 900,
+            "shutdown_timeout_sec": 60,
+            "ros_domain_base": 40,
+            "seeds": [
+              101,
+              202,
+              303,
+              707
+            ],
+            "scenarios": [
+              "lab2",
+              "rooms3",
+              "corridors2",
+              "holdout3",
+              "forced2"
+            ],
+            "cross_check": false,
+            "rally_assignment_objective": "minimax",
+            "map_safe_rally_order": true,
+            "global_battery_rally_pause": false,
+            "rally_max_concurrent": 2
+          },
+          "p3b5_runner_sha256": "35a32731e58afdf0ba0f18d840588752008fd2bb16e3082752b6fafa5cd6f197",
+          "observer_sha256": "8669f1e43263ce4903ff428e8e61d14cd51aabeb2fc59c050d8b0a7977afa11f",
+          "world_sha256": {
+            "lab2": "c015980dab17ec3ada255fecc67ce6aec7d414baf43b8aeb3646e5bb17f66810",
+            "rooms3": "a10fb52ad227f4bf662deeef174e16d06773108ed3b15a451ea43de8d79c094b",
+            "corridors2": "eae4e501b2294c64c9f920fe1d02aa6bfe21dada172dc309b4ea46e0e2b17430",
+            "holdout3": "bb93aaee5c62d6e013cf0d4047e5060221dd4e79064cd80d22a28b1e6df0260b",
+            "forced2": "c015980dab17ec3ada255fecc67ce6aec7d414baf43b8aeb3646e5bb17f66810"
+          }
+        },
+        "pairs": {
+          "zero_rally_lab": {
+            "ideal": "p3b5_v10_lab_ideal_lab2_rally_8d4d5c469d",
+            "fault": "p3b5_v10_lab_zero_rally_lab_fault"
+          },
+          "up100_lab": {
+            "ideal": "p3b5_v10_lab_ideal_lab2_rally_8d4d5c469d",
+            "fault": "p3b5_v10_lab_up100_lab_fault"
+          },
+          "down100_lab": {
+            "ideal": "p3b5_v10_lab_ideal_lab2_rally_8d4d5c469d",
+            "fault": "p3b5_v10_lab_down100_lab_fault"
+          },
+          "ttl_lab": {
+            "ideal": "p3b5_v10_lab_ideal_lab2_rally_8d4d5c469d",
+            "fault": "p3b5_v10_lab_ttl_lab_fault"
+          },
+          "map_loss_lab": {
+            "ideal": "p3b5_v10_lab_ideal_lab2_coverage_da95bad2c7",
+            "fault": "p3b5_v10_lab_map_loss_lab_fault"
+          },
+          "battery_loss_lab": {
+            "ideal": "p3b5_v10_lab_ideal_lab2_rally_8d4d5c469d",
+            "fault": "p3b5_v10_lab_battery_loss_lab_fault"
+          },
+          "state_loss_lab": {
+            "ideal": "p3b5_v10_lab_ideal_lab2_rally_8d4d5c469d",
+            "fault": "p3b5_v10_lab_state_loss_lab_fault"
+          },
+          "target_up10_lab": {
+            "ideal": "p3b5_v10_lab_ideal_lab2_target_21212e763a",
+            "fault": "p3b5_v10_lab_target_up10_lab_fault"
+          },
+          "battery_exhaust_lab": {
+            "ideal": "p3b5_v10_lab_ideal_lab2_rally_0678e85373",
+            "fault": "p3b5_v10_lab_battery_exhaust_lab_fault"
+          }
+        },
+        "episodes": {
+          "p3b5_v10_lab_ideal_lab2_rally_8d4d5c469d": {
+            "case": {
+              "id": "zero_rally_lab",
+              "scenario": "lab2",
+              "mode": "rally",
+              "profile": "zero"
+            },
+            "scenario": {
+              "world": "my_world.world",
+              "target_x": -4,
+              "target_y": 4,
+              "robot_count": 2,
+              "seed": 303,
+              "energy": 40
+            },
+            "profile": {},
+            "mode": "ideal",
+            "settings": {
+              "scenario": {
+                "world": "my_world.world",
+                "target_x": -4,
+                "target_y": 4,
+                "robot_count": 2,
+                "seed": 303,
+                "energy": 40
+              },
+              "mission_mode": "rally",
+              "effective_initial_energy": 40,
+              "deadline": 90
+            },
+            "command": "/usr/bin/python3 /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py --world my_world.world --robot-count 2 --gazebo-seed 303 --startup-timeout 600 --message-timeout 90 --shutdown-timeout 60 --evaluation-duration 300 --evaluation-wait-timeout 900 --coverage-threshold 0 --mission-mode rally --gateway-mode ideal --gateway-seed 17011 --battery --battery-capacity 100 --battery-initial-energy 40 --target-x -4 --target-y 4 --rally-max-concurrent 2 --disable-global-battery-rally-pause --episode-id p3b5_v10_lab_ideal_lab2_rally_8d4d5c469d --collect-fault-result --dwell-seconds 0 --evaluation-output-dir /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_v10_lab/p3b5_v10_lab_ideal_lab2_rally_8d4d5c469d --log-dir /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_v10_lab/p3b5_v10_lab_ideal_lab2_rally_8d4d5c469d/launch --gateway-ledger-path /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_v10_lab/p3b5_v10_lab_ideal_lab2_rally_8d4d5c469d/ledger.jsonl --bypass-audit-output /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_v10_lab/p3b5_v10_lab_ideal_lab2_rally_8d4d5c469d/graph.json --target-detection --rally",
+            "ros_domain_id": "40",
+            "gazebo_master_uri": "http://127.0.0.1:11531",
+            "result_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_v10_lab/p3b5_v10_lab_ideal_lab2_rally_8d4d5c469d/p3b5_v10_lab_ideal_lab2_rally_8d4d5c469d.json",
+            "observer_command": "/usr/bin/python3 /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/observe_p3b5.py --output /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_v10_lab/p3b5_v10_lab_ideal_lab2_rally_8d4d5c469d/safety_events.jsonl --robot-count 2",
+            "observer_returncode": 0,
+            "safety_events_sha256": null,
+            "runner_returncode": 1,
+            "episode_started": false,
+            "infrastructure_failure": true,
+            "operational_failure": true
+          }
+        },
+        "created_at_utc": "2026-10-01T15:48:23.269403+00:00",
+        "statistics": {
+          "pairs": [
+            {
+              "case_id": "zero_rally_lab",
+              "infrastructure_failure": true,
+              "ideal": "p3b5_v10_lab_ideal_lab2_rally_8d4d5c469d",
+              "fault": "p3b5_v10_lab_zero_rally_lab_fault"
+            },
+            {
+              "case_id": "up100_lab",
+              "infrastructure_failure": true,
+              "ideal": "p3b5_v10_lab_ideal_lab2_rally_8d4d5c469d",
+              "fault": "p3b5_v10_lab_up100_lab_fault"
+            },
+            {
+              "case_id": "down100_lab",
+              "infrastructure_failure": true,
+              "ideal": "p3b5_v10_lab_ideal_lab2_rally_8d4d5c469d",
+              "fault": "p3b5_v10_lab_down100_lab_fault"
+            },
+            {
+              "case_id": "ttl_lab",
+              "infrastructure_failure": true,
+              "ideal": "p3b5_v10_lab_ideal_lab2_rally_8d4d5c469d",
+              "fault": "p3b5_v10_lab_ttl_lab_fault"
+            },
+            {
+              "case_id": "map_loss_lab",
+              "infrastructure_failure": true,
+              "ideal": "p3b5_v10_lab_ideal_lab2_coverage_da95bad2c7",
+              "fault": "p3b5_v10_lab_map_loss_lab_fault"
+            },
+            {
+              "case_id": "battery_loss_lab",
+              "infrastructure_failure": true,
+              "ideal": "p3b5_v10_lab_ideal_lab2_rally_8d4d5c469d",
+              "fault": "p3b5_v10_lab_battery_loss_lab_fault"
+            },
+            {
+              "case_id": "state_loss_lab",
+              "infrastructure_failure": true,
+              "ideal": "p3b5_v10_lab_ideal_lab2_rally_8d4d5c469d",
+              "fault": "p3b5_v10_lab_state_loss_lab_fault"
+            },
+            {
+              "case_id": "target_up10_lab",
+              "infrastructure_failure": true,
+              "ideal": "p3b5_v10_lab_ideal_lab2_target_21212e763a",
+              "fault": "p3b5_v10_lab_target_up10_lab_fault"
+            },
+            {
+              "case_id": "battery_exhaust_lab",
+              "infrastructure_failure": true,
+              "ideal": "p3b5_v10_lab_ideal_lab2_rally_0678e85373",
+              "fault": "p3b5_v10_lab_battery_exhaust_lab_fault"
+            }
+          ],
+          "tdi": {
+            "n": 0,
+            "mean": null,
+            "ci95": null
+          }
+        },
+        "finished_at_utc": "2026-10-01T15:48:38.170009+00:00"
+      },
+      "manifest": {
+        "schema_version": 1,
+        "config": {
+          "schema_version": 1,
+          "purpose": "Frozen paired application-fault task matrix; not Wi-Fi. Never tune on holdout rows.",
+          "development_seeds": [
+            101,
+            202,
+            303
+          ],
+          "holdout_seeds": [
+            707
+          ],
+          "fault_seed": 17011,
+          "duration_sec": 300,
+          "coverage_threshold": 0.8,
+          "task_stack_parent": "22c95a770a8812452c43fc177e4a00b5c032e6ef",
+          "scenarios": {
+            "lab2": {
+              "world": "my_world.world",
+              "target_x": -4,
+              "target_y": 4,
+              "robot_count": 2,
+              "seed": 303,
+              "energy": 40
+            },
+            "rooms3": {
+              "world": "p1c_rooms.world",
+              "target_x": 5,
+              "target_y": 3,
+              "robot_count": 3,
+              "seed": 101,
+              "energy": 40
+            },
+            "corridors2": {
+              "world": "p1c_corridors.world",
+              "target_x": -4.5,
+              "target_y": -0.5,
+              "robot_count": 2,
+              "seed": 202,
+              "energy": 45
+            },
+            "holdout3": {
+              "world": "p3a5_holdout.world",
+              "target_x": 4.4,
+              "target_y": 3.4,
+              "robot_count": 3,
+              "seed": 707,
+              "energy": 45,
+              "holdout": true
+            },
+            "forced2": {
+              "world": "my_world.world",
+              "target_x": -4,
+              "target_y": 4,
+              "robot_count": 2,
+              "seed": 303,
+              "energy": 18,
+              "charge_duration": 10,
+              "safety_margin": 5,
+              "return_timeout": 120
+            }
+          },
+          "profiles": {
+            "zero": {},
+            "up10": {
+              "uplink_loss_rate": 0.1
+            },
+            "down10": {
+              "downlink_loss_rate": 0.1
+            },
+            "up100": {
+              "uplink_loss_rate": 1
+            },
+            "down100": {
+              "downlink_loss_rate": 1
+            },
+            "delay05": {
+              "uplink_delay_sec": 0.5,
+              "downlink_delay_sec": 0.5
+            },
+            "delay2": {
+              "uplink_delay_sec": 2,
+              "downlink_delay_sec": 2
+            },
+            "ttl": {
+              "uplink_delay_sec": 61,
+              "downlink_delay_sec": 61
+            },
+            "duplicate_reorder": {
+              "gateway_duplicate_rate": 1,
+              "gateway_reorder_window": 8,
+              "gateway_reorder_step_sec": 0.3
+            },
+            "overflow": {
+              "uplink_delay_sec": 0.5,
+              "downlink_delay_sec": 0.5,
+              "gateway_queue_capacity": 1
+            },
+            "burst": {
+              "gateway_blackout_intervals": [
+                [
+                  80,
+                  100
+                ],
+                [
+                  140,
+                  160
+                ]
+              ]
+            },
+            "deadline": {
+              "navigation_command_deadline_sec": 0.3,
+              "downlink_delay_sec": 0.5
+            },
+            "detection_loss": {
+              "gateway_drop_message_types": "target_detection"
+            },
+            "map_loss": {
+              "gateway_drop_message_types": "map_snapshot,fused_map_snapshot"
+            },
+            "pose_loss": {
+              "gateway_drop_message_types": "pose_state,frame_state"
+            },
+            "battery_loss": {
+              "gateway_drop_message_types": "battery_state"
+            },
+            "state_loss": {
+              "gateway_drop_message_types": "task_state"
+            },
+            "nav_loss": {
+              "gateway_drop_message_types": "navigation_goal,navigation_cancel"
+            },
+            "robot_failure": {
+              "inject_failure_robot": "tb3",
+              "inject_failure_after_sec": 45
+            },
+            "charge_outage": {
+              "gateway_blackout_intervals": [
+                [
+                  20,
+                  130
+                ]
+              ]
+            },
+            "battery_exhaust": {
+              "battery_initial_energy": 0
+            }
+          },
+          "cases": [
+            {
+              "id": "zero_rally_lab",
+              "scenario": "lab2",
+              "mode": "rally",
+              "profile": "zero"
+            },
+            {
+              "id": "up10_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "up10"
+            },
+            {
+              "id": "down10_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "down10"
+            },
+            {
+              "id": "delay05_corridors",
+              "scenario": "corridors2",
+              "mode": "rally",
+              "profile": "delay05"
+            },
+            {
+              "id": "delay2_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "delay2"
+            },
+            {
+              "id": "up100_lab",
+              "scenario": "lab2",
+              "mode": "rally",
+              "profile": "up100"
+            },
+            {
+              "id": "down100_lab",
+              "scenario": "lab2",
+              "mode": "rally",
+              "profile": "down100"
+            },
+            {
+              "id": "ttl_lab",
+              "scenario": "lab2",
+              "mode": "rally",
+              "profile": "ttl"
+            },
+            {
+              "id": "duplicates_corridors",
+              "scenario": "corridors2",
+              "mode": "rally",
+              "profile": "duplicate_reorder"
+            },
+            {
+              "id": "overflow_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "overflow"
+            },
+            {
+              "id": "burst_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "burst"
+            },
+            {
+              "id": "deadline_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "deadline"
+            },
+            {
+              "id": "detection_loss_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "detection_loss"
+            },
+            {
+              "id": "map_loss_lab",
+              "scenario": "lab2",
+              "mode": "coverage",
+              "profile": "map_loss"
+            },
+            {
+              "id": "pose_loss_rooms",
+              "scenario": "rooms3",
+              "mode": "coverage",
+              "profile": "pose_loss"
+            },
+            {
+              "id": "battery_loss_lab",
+              "scenario": "lab2",
+              "mode": "rally",
+              "profile": "battery_loss"
+            },
+            {
+              "id": "state_loss_lab",
+              "scenario": "lab2",
+              "mode": "rally",
+              "profile": "state_loss"
+            },
+            {
+              "id": "nav_loss_corridors",
+              "scenario": "corridors2",
+              "mode": "rally",
+              "profile": "nav_loss"
+            },
+            {
+              "id": "single_failure_rooms",
+              "scenario": "rooms3",
+              "mode": "rally",
+              "profile": "robot_failure"
+            },
+            {
+              "id": "forced_charge_outage",
+              "scenario": "forced2",
+              "mode": "rally",
+              "profile": "charge_outage"
+            },
+            {
+              "id": "target_up10_lab",
+              "scenario": "lab2",
+              "mode": "target",
+              "profile": "up10"
+            },
+            {
+              "id": "target_loss_rooms",
+              "scenario": "rooms3",
+              "mode": "target",
+              "profile": "detection_loss"
+            },
+            {
+              "id": "coverage_delay_corridors",
+              "scenario": "corridors2",
+              "mode": "coverage",
+              "profile": "delay05"
+            },
+            {
+              "id": "holdout_rally",
+              "scenario": "holdout3",
+              "mode": "rally",
+              "profile": "up10"
+            },
+            {
+              "id": "holdout_target",
+              "scenario": "holdout3",
+              "mode": "target",
+              "profile": "down10"
+            },
+            {
+              "id": "holdout_coverage",
+              "scenario": "holdout3",
+              "mode": "coverage",
+              "profile": "burst"
+            },
+            {
+              "id": "battery_exhaust_lab",
+              "scenario": "lab2",
+              "mode": "rally",
+              "profile": "battery_exhaust"
+            }
+          ],
+          "temporal_contract": "source<=enqueue<=admit/tx<=delivery; TF source is scan stamp, native validity offset derived from actual SLAM config; fault blackout relative first EXPLORE",
+          "ideal_transport": "no fault intervention, zero stochastic loss/delay/reorder/duplicate/blackout/drop; normal bounded4096 queue; task load/deadline/retry unchanged"
+        },
+        "manifest": {
+          "manifest_schema_version": 1,
+          "generated_at_utc": "2026-10-01T15:48:22.067537+00:00",
+          "task_stack_candidate_commit": "bed8c7fb4739fa3743be62b20354af1d80baec19",
+          "task_stack_frozen_commit": null,
+          "git_commit": "bed8c7fb4739fa3743be62b20354af1d80baec19",
+          "worktree_dirty": true,
+          "task_stack_clean": true,
+          "permitted_untracked_user_materials": "260929_report/ (recorded, untouched, excluded from task stack)",
+          "worktree_status": [
+            "?? 260929_report/1.pdf",
+            "?? 260929_report/2007.08564v1.pdf",
+            "?? 260929_report/2106.00574v1.pdf",
+            "?? 260929_report/2503.07278v3.pdf",
+            "?? \"260929_report/A Critical Review of Communications in Multi-robot Systems.pdf\"",
+            "?? \"260929_report/Adaptive resource allocation in dynamic wireless environments a systematic review.pdf\"",
+            "?? 260929_report/Applications_of_Deep_Reinforcement_Learning_in_Communications_and_Networking_A_Survey.pdf",
+            "?? \"260929_report/Towards reasoning-empowered task-oriented communication for agent networks.pdf\"",
+            "?? 260929_report/Towards_Autonomous_Multi-UAV_Wireless_Network_A_Su.pdf",
+            "?? 260929_report/c61bd00b-f250-4cfe-b5a5-f941e8c9b22b.png",
+            "?? 260929_report/sensors-23-03625.pdf",
+            "?? 260929_report/ssrn-7067272.pdf",
+            "?? \"260929_report/\\347\\273\\204\\344\\274\\232\\346\\226\\207\\347\\214\\256\\346\\261\\207\\346\\212\\245-\\346\\250\\241\\346\\235\\277.pptx\"",
+            "?? \"260929_report/\\347\\273\\274\\350\\277\\260\\350\\256\\272\\346\\226\\207\\350\\260\\203\\347\\240\\224.docx\""
+          ],
+          "source_digests": {
+            "scenario_config": "6ba4f584a376cfe85423c6b14ed7339d69eb48d92bcac4258fcb95236a03e9de",
+            "baseline_runner": "486729f0f948ce22f6cba95a3de7bc5092a55376e61fa5fdbd8df4927ed457e6",
+            "smoke_runner": "63f777d9dd43293c6863cb93c4549a8d8dece3ed61128cf5ed3919421b58fbec",
+            "bypass_manifest": "cb4e698470331344f86c484ca7c3afae95145f69c2690c63cd34cb44a97d6091",
+            "gateway_message": "e0648e61473dfd2931038c79cda8a6fe4bf09c1d00f8d4acdfa0f4879e72925c",
+            "launch": "534b205d8e29cf07f024f0330640f989e940a34898be4dad38b7f1b1ecfc5d23",
+            "exploration_source": "af6c727b4a241cc3c891ffb29170d23efc9e806e45be681945c96084663bd5e7",
+            "merge_map_source": "841fdb3a9a3f4e9dc8aefaf87850e2963d09fe3873d1945ea609a1c124d5bc93",
+            "robot_params": "0f7a934e966d29e777fe397d6838ace59ed17207b0939ec39fd8e5cb12d551e0",
+            "slam_source": "61abada48d42602e5bb8950cdf81cd4804c0c45b787490681711e3cc228eb1c0",
+            "slam_config": "7a042d7a513eea7408705e568276b21101a2d308229caeb760833d0faa74cc23"
+          },
+          "environment": {
+            "python": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+            "python_executable": "/usr/bin/python3",
+            "platform": "Linux-6.8.0-124-generic-x86_64-with-glibc2.35",
+            "cpu_affinity": [
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39
+            ],
+            "ros_distro": "humble",
+            "ros_version": "2",
+            "gazebo": "Gazebo multi-robot simulator, version 11.10.2",
+            "colcon": "0.20.1",
+            "ros2_prefix": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot"
+          },
+          "runner": {
+            "robot_count": 3,
+            "duration_sec": 300,
+            "goal_timeout_sec": 60,
+            "startup_timeout_sec": 600,
+            "message_timeout_sec": 90,
+            "evaluation_wait_timeout_sec": 900,
+            "shutdown_timeout_sec": 60,
+            "ros_domain_base": 40,
+            "seeds": [
+              101,
+              202,
+              303,
+              707
+            ],
+            "scenarios": [
+              "lab2",
+              "rooms3",
+              "corridors2",
+              "holdout3",
+              "forced2"
+            ],
+            "cross_check": false,
+            "rally_assignment_objective": "minimax",
+            "map_safe_rally_order": true,
+            "global_battery_rally_pause": false,
+            "rally_max_concurrent": 2
+          },
+          "p3b5_runner_sha256": "35a32731e58afdf0ba0f18d840588752008fd2bb16e3082752b6fafa5cd6f197",
+          "observer_sha256": "8669f1e43263ce4903ff428e8e61d14cd51aabeb2fc59c050d8b0a7977afa11f",
+          "world_sha256": {
+            "lab2": "c015980dab17ec3ada255fecc67ce6aec7d414baf43b8aeb3646e5bb17f66810",
+            "rooms3": "a10fb52ad227f4bf662deeef174e16d06773108ed3b15a451ea43de8d79c094b",
+            "corridors2": "eae4e501b2294c64c9f920fe1d02aa6bfe21dada172dc309b4ea46e0e2b17430",
+            "holdout3": "bb93aaee5c62d6e013cf0d4047e5060221dd4e79064cd80d22a28b1e6df0260b",
+            "forced2": "c015980dab17ec3ada255fecc67ce6aec7d414baf43b8aeb3646e5bb17f66810"
+          }
+        },
+        "pairs": {
+          "zero_rally_lab": {
+            "ideal": "p3b5_v10_lab_ideal_lab2_rally_8d4d5c469d",
+            "fault": "p3b5_v10_lab_zero_rally_lab_fault"
+          },
+          "up100_lab": {
+            "ideal": "p3b5_v10_lab_ideal_lab2_rally_8d4d5c469d",
+            "fault": "p3b5_v10_lab_up100_lab_fault"
+          },
+          "down100_lab": {
+            "ideal": "p3b5_v10_lab_ideal_lab2_rally_8d4d5c469d",
+            "fault": "p3b5_v10_lab_down100_lab_fault"
+          },
+          "ttl_lab": {
+            "ideal": "p3b5_v10_lab_ideal_lab2_rally_8d4d5c469d",
+            "fault": "p3b5_v10_lab_ttl_lab_fault"
+          },
+          "map_loss_lab": {
+            "ideal": "p3b5_v10_lab_ideal_lab2_coverage_da95bad2c7",
+            "fault": "p3b5_v10_lab_map_loss_lab_fault"
+          },
+          "battery_loss_lab": {
+            "ideal": "p3b5_v10_lab_ideal_lab2_rally_8d4d5c469d",
+            "fault": "p3b5_v10_lab_battery_loss_lab_fault"
+          },
+          "state_loss_lab": {
+            "ideal": "p3b5_v10_lab_ideal_lab2_rally_8d4d5c469d",
+            "fault": "p3b5_v10_lab_state_loss_lab_fault"
+          },
+          "target_up10_lab": {
+            "ideal": "p3b5_v10_lab_ideal_lab2_target_21212e763a",
+            "fault": "p3b5_v10_lab_target_up10_lab_fault"
+          },
+          "battery_exhaust_lab": {
+            "ideal": "p3b5_v10_lab_ideal_lab2_rally_0678e85373",
+            "fault": "p3b5_v10_lab_battery_exhaust_lab_fault"
+          }
+        },
+        "episodes": {},
+        "created_at_utc": "2026-10-01T15:48:23.269403+00:00"
+      },
+      "raw_results": []
+    }
+  ],
+  "stop": {
+    "reason": "Fixed cohort administratively stopped after proven first-spawn queued-timeout infrastructure failures in forced/lab; avoid mixed source after helper correction. Holdout unstarted.",
+    "parent": 2998039,
+    "launch_pgid": 2998134,
+    "signals": [
+      "parent STOP",
+      "owned launch INT",
+      "parent TERM/CONT"
+    ]
+  },
+  "startup_debug": {
+    "script_source": "import json,os,signal,subprocess,time\nfrom pathlib import Path\nfrom datetime import datetime,timezone\nfrom multi_robot_exploration import spawn_entity_checked as spawn\nbase=Path('log/p3b5_native_clock_dev');base.mkdir(exist_ok=True,parents=True)\nxml=Path('install/multi_robot/share/multi_robot/models/turtlebot3_waffle/model.sdf')\nlog=(base/'gazebo.log').open('w')\nprocess=subprocess.Popen(['gzserver','--verbose','install/multi_robot/share/multi_robot/worlds/my_world.world','-s','libgazebo_ros_init.so','-s','libgazebo_ros_factory.so'],stdout=log,stderr=subprocess.STDOUT,start_new_session=True)\n# Intentionally remove the optional ModelStates path. Inventory must work\n# through the native read service, with one physical insertion only.\nspawn.Node.create_subscription=lambda *a,**k: None\nstart=time.monotonic();results=[]\ntry:\n for attempt in range(5):\n  results.append(spawn.main(['probe','-file',str(xml),'-entity',f'clock_tb{min(attempt,3)}','-robot_namespace',f'/clock_tb{min(attempt,3)}','-y',str(min(attempt,3)*1.5),'-timeout','30']))\n result={'created_at_utc':datetime.now(timezone.utc).isoformat(),'model_states_subscription_disabled':True,'spawn_returncodes':results,'wall_time_sec':time.monotonic()-start,'pass':results==[0,0,0,0,1]}\n (base/'result.json').write_text(json.dumps(result,indent=2)+'\\n');print(json.dumps(result))\n assert result['pass']\nfinally:\n os.killpg(process.pid,signal.SIGINT)\n try:process.wait(timeout=10)\n except subprocess.TimeoutExpired:os.killpg(process.pid,signal.SIGKILL);process.wait()\n log.close()\n",
+    "script_content_sha256": "53267d296157a0dd26f5191b4fa47d9a71e4ca70d6f6a2035d6a6bb87fde2353",
+    "result": {
+      "created_at_utc": "2026-10-01T15:51:45.548223+00:00",
+      "model_states_subscription_disabled": true,
+      "spawn_returncodes": [
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "wall_time_sec": 5.637999066151679,
+      "pass": true
+    }
+  }
+}

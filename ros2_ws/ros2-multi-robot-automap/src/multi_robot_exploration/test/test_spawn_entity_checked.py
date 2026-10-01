@@ -40,3 +40,29 @@ def test_rejected_spawn_is_not_hidden_by_existing_entity():
                            get_logger=lambda: SimpleNamespace(error=lambda x: None))
     future = SimpleNamespace(done=lambda: True, result=lambda: SimpleNamespace(success=False))
     assert not finish_spawn(node, future, 1., clock=lambda: 0., okay=lambda: True)
+
+
+@pytest.mark.parametrize('inserted', [True, False])
+def test_queued_factory_timeout_requires_actual_insertion_within_wall_budget(inserted):
+    clock=[0.]
+    node=SimpleNamespace(entity='tb3',model_names=set(),
+        get_logger=lambda: SimpleNamespace(info=lambda x: None, error=lambda x: None,warn=lambda x: None))
+    response=SimpleNamespace(success=False,status_message=(
+        'Entity pushed to spawn queue, but spawn service timed out'
+        'waiting for entity to appear in simulation under the name [tb3]'))
+    future=SimpleNamespace(done=lambda:True,result=lambda:response)
+    def spin(node,timeout_sec):
+        clock[0]+=timeout_sec
+        if inserted and clock[0]>=.2:node.model_names={'tb3'}
+    assert finish_spawn(node,future,.3,clock=lambda:clock[0],spin=spin,okay=lambda:True)==inserted
+    assert clock[0]==pytest.approx(.2 if inserted else .3)
+
+
+def test_other_entity_queued_timeout_cannot_confirm_our_spawn():
+    node=SimpleNamespace(entity='tb3',model_names={'tb3'},
+        get_logger=lambda: SimpleNamespace(error=lambda x:None))
+    response=SimpleNamespace(success=False,status_message=(
+        'Entity pushed to spawn queue, but spawn service timed out'
+        'waiting for entity to appear in simulation under the name [tb2]'))
+    future=SimpleNamespace(done=lambda:True,result=lambda:response)
+    assert not finish_spawn(node,future,1.,clock=lambda:0.,okay=lambda:True)
