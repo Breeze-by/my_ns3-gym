@@ -4053,3 +4053,24 @@ GAZEBO_MASTER_URI=http://127.0.0.1:11427 taskset -c 0-19 /usr/bin/python3 script
 P2D保留已写入summary的8格；当前source候选需全新同提交十格+forced重验证，不合并旧source batch。
 
 时间修复候选组件终检：PYTHONNOUSERSITE=1 /usr/bin/python3 -m pytest -q scripts/test_p3b5_tasks.py src/multi_robot_exploration/test/{test_control,test_gateway,test_fault_model,test_task_evaluator,test_battery_manager,test_navigation_faults}.py，141 passed（6.07s）。四包colcon build（multi_robot_interfaces multi_robot_exploration merge_map multi_robot）通过5.36s；首次误选不存在的collision_monitor仅构建3包，随后按正确四包重跑。source-only三机器人旁路审计零违规；run_p3b_fault_matrix.py --output log/p3b5_protocol_temporal_v2.json返回54格PASS；ros2 launch ... --show-args通过；manifest validate-only返回27case/41episode。新仿真尚未启动；静态目标确认生命周期假设写入P3B.5计划。
+
+## 2026-10-01 P3B.5 c3819c3 候选保留、本地返航FAILED取消修复
+
+冻结源码c3819c3三个主批次精确命令（Humble/install、PYTHONNOUSERSITE=1，四CPU池隔离，每runner串行）：
+GAZEBO_MASTER_URI=http://127.0.0.1:11428 taskset -c 0-19 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v2_lab --cases zero_rally_lab up100_lab down100_lab ttl_lab map_loss_lab battery_loss_lab state_loss_lab target_up10_lab battery_exhaust_lab --ros-domain-base 170 > /tmp/p3b5_v2_lab.log 2>&1；
+GAZEBO_MASTER_URI=http://127.0.0.1:11429 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v2_rooms --cases up10_rooms down10_rooms delay2_rooms overflow_rooms burst_rooms deadline_rooms detection_loss_rooms pose_loss_rooms single_failure_rooms target_loss_rooms --ros-domain-base 190 > /tmp/p3b5_v2_rooms.log 2>&1；
+GAZEBO_MASTER_URI=http://127.0.0.1:11430 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v2_corridors_forced --cases delay05_corridors duplicates_corridors nav_loss_corridors coverage_delay_corridors forced_charge_outage --ros-domain-base 210 > /tmp/p3b5_v2_corridors_forced.log 2>&1；
+GAZEBO_MASTER_URI=http://127.0.0.1:11431 taskset -c 60-79 /usr/bin/python3 scripts/run_p2d_baseline.py --run-id p3b5_ideal_gate_c3819c3 --ros-domain-base 140 --startup-timeout 600 --evaluation-wait-timeout 900 --infrastructure-retries 0 --rally-max-concurrent 2 --disable-global-battery-rally-pause > /tmp/p3b5_ideal_gate_c3819c3.log 2>&1。
+
+corridors主批次8格完整运行，精确摘要：[{"case": "delay05_corridors", "mode": "ideal", "status": "task_complete", "elapsed": 177.6, "charges": 0, "collision": 0}, {"case": "delay05_corridors", "mode": "fault", "status": "timeout", "elapsed": 300.4, "charges": 0, "collision": 0}, {"case": "duplicates_corridors", "mode": "fault", "status": "task_complete", "elapsed": 211.6, "charges": 0, "collision": 0}, {"case": "nav_loss_corridors", "mode": "fault", "status": "timeout", "elapsed": 300.2, "charges": 0, "collision": 0}, {"case": "forced_charge_outage", "mode": "ideal", "status": "task_complete", "elapsed": 220.89999999999964, "charges": 2, "collision": 0}, {"case": "forced_charge_outage", "mode": "fault", "status": "timeout", "elapsed": 300.4000000000001, "charges": 2, "collision": 0}, {"case": "coverage_delay_corridors", "mode": "ideal", "status": "coverage_reached", "elapsed": 88.7, "charges": 0, "collision": 0}, {"case": "coverage_delay_corridors", "mode": "fault", "status": "coverage_reached", "elapsed": 94.6, "charges": 0, "collision": 0}]。duplicate/reorder实际2455次pose乱序、4381次旧版本拒绝。其余主批次完成/中断完整保存在report/20261001_p3b5_local_safety_failed_candidate.json。
+理想回归lab303在episode_start后，旁路审计命令90s超时并伴随tb1 Nav2心跳故障、tb2电池观测缺失；62.1s shutdown必须记为post-start task failure，不记启动前基础设施失败、不自动重试。已完成7个summary格含该失败；当前corridors202主动中断的原始result另保留，未伪装为成功。
+
+诊断修正：delay05的地图源仍更新，首先失效的是frame_state：tb2最终入队时源年龄约1.94-2.14s，加0.5s注入后超过2s TTL。不能归因于地图不发布或单独归因于注入链路。只读探针精确命令 ROS_DOMAIN_ID=194 PYTHONNOUSERSITE=1 /usr/bin/python3 /tmp/p3b5_tf_age_probe.py，原始TF仅6样本/25wall-s，不足以确定原因；脚本/输出全部归档。
+
+为区分恢复后充电与断网中本地返航，10:25:08 UTC预先冻结两个开发探针（原始标准SHA256 b949785ae91181e6926f82012bda1d64690dde6420238b7d050e85bd655a8111）：outage20-250s且ideal/fault同idle_cost=.15、energy18；以及deadline2s（ideal相同deadline，fault down-delay=.5）真实本地取消。
+在corridors batch退出后，CPU40-59/master11430运行 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v2_safety_probes --config /tmp/p3b5_local_return_probe.json --ros-domain-base 210 > /tmp/p3b5_v2_safety_probes.log 2>&1。ideal199.4s COMPLETE/两次充电；fault已在24.7/28.8s自主返航、34.8/38.7s充电（断网窗口内），本次主动中断后为73.1s shutdown，不能算完整通过。
+
+停止理由：新本地ActionClient不经AP网关，本地return_goal_handle在FAILED时仍未取消；新增反例pytest -k physical_failure明确失败（cancel_called=0）。修复FAILED转换只取消自有返航handle；晚到接受已有mode校验，并扩展FAILED参数回归；幂等不重复取消。为重新冻结，停止属于本次实验的launch进程组(SIGINT)，runner停止收集后退出；P2D runner SIGTERM防止自动继续。所有shutdown保留。已排队的同提交batch2/holdout调度器取消，未运行；holdout707仍从未运行/调参。
+同候选所有源码/配置/命令/结果/账本摘要/环境/hash/停止进程/诊断脚本保存在上述JSON，raw保留原log目录。新冻结候选将全新重跑完整主矩阵和十格理想门禁，不拼接候选通过结果。
+
+FAILED取消候选终检：上述八文件pytest147 passed（6.43s）；四包colcon build通过5.44s；/usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_local_safety_v3.json返回54格PASS；三机器人source-only旁路审计零违规。新增check_p3b5_gate.py与四项指标/时序反例检查、固定开发探针manifest；全新仿真尚未启动。

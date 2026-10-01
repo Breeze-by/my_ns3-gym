@@ -687,3 +687,12 @@ P3B.5启动修复：search_target在最后一台机器人spawn后生成，再错
 
 P3B.5时间校准：Gateway从实际SLAM YAML的transform_timeout恢复TF的scan源时间（源码原生TF header=scan+timeout）；只修改AP副本，本地TF不变。缓存clock未追上sensor stamp时延后虚拟enqueue/tx到源时间，不允许负的排队时间。ledger含callback_time与clock_deferred。
 `gateway_reorder_step_sec:=0.3 gateway_reorder_window:=8` 可让5Hz pose实际乱序；默认step仍0.05。ideal忽略故障queue capacity，使用4096正常有限队列；fault的queue capacity=1是显式拥塞注入，不改任务负载。
+
+P3B.5 固定批量验证（先提交任务栈；每次使用新 run-id，原目录不覆盖）：
+
+```bash
+PYTHONNOUSERSITE=1 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_tasks_new
+PYTHONNOUSERSITE=1 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_safety_new --config scripts/p3b5_safety_probe_manifest.json
+```
+
+第一条使用27案例/41episode的完整配对矩阵；第二条是开发种子303的两项安全探针（4episode），分别验证长断网期间真实本地返航充电、已接受导航动作的本地deadline取消。高idle_cost只用于该配对安全探针，正常任务默认能耗不变。FAILED现在显式取消电池管理器持有的返航动作，晚到的接受响应仍按模式校验取消。

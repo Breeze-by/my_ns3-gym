@@ -4,6 +4,7 @@ import numpy as np
 from multi_robot_exploration.battery_manager import (
     ACTIVE,
     CHARGING,
+    FAILED,
     RETURNING,
     battery_failure_reason,
     charging_zone_contains,
@@ -71,13 +72,14 @@ def test_return_escape_pose_moves_out_of_inflated_start_cell():
     ) is not None
 
 
-def test_late_return_acceptance_is_canceled_after_entering_charge_zone():
+@pytest.mark.parametrize("mode", [CHARGING, FAILED])
+def test_late_return_acceptance_is_canceled_after_charge_or_failure(mode):
     from types import SimpleNamespace
     from unittest.mock import Mock
     from multi_robot_exploration.battery_manager import BatteryManager
     handle = Mock(accepted=True)
     manager = SimpleNamespace(
-        mode=CHARGING, mission_terminal=False, return_goal_pending=True,
+        mode=mode, mission_terminal=False, return_goal_pending=True,
         return_goal_handle=None, return_goal_result=Mock())
     BatteryManager.return_goal_response(manager, Mock(result=lambda: handle))
     handle.cancel_goal_async.assert_called_once()
@@ -188,3 +190,18 @@ def test_safety_return_falls_back_to_own_map_after_ap_loss():
     manager.fused_map_received_at=4.
     BatteryManager.local_map_callback(manager, grid)
     assert applied == [grid]
+
+
+def test_physical_failure_cancels_owned_safety_return_once():
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+    from multi_robot_exploration.battery_manager import BatteryManager, FAILED
+    handle=Mock()
+    manager=SimpleNamespace(mode=RETURNING,return_goal_handle=handle,robot_name="tb1",
+                            publish_state=Mock(),failure_publisher=Mock(),get_logger=Mock())
+    BatteryManager.fail(manager,"battery_exhausted")
+    BatteryManager.fail(manager,"battery_return_unreachable")
+    assert manager.mode==FAILED and manager.failure_reason=="battery_exhausted"
+    handle.cancel_goal_async.assert_called_once()
+    manager.publish_state.assert_called_once()
+    assert manager.failure_publisher.publish.call_args.args[0].data=="battery_exhausted:tb1"

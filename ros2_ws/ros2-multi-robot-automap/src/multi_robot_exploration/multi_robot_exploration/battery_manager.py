@@ -697,6 +697,8 @@ class BatteryManager(Node):
             return
         self.failure_reason = reason
         self.mode = FAILED
+        if self.return_goal_handle is not None:
+            self.return_goal_handle.cancel_goal_async()
         self.publish_state()
         message = String()
         message.data = f"{reason}:{self.robot_name}"
