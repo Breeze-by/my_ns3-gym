@@ -8,8 +8,9 @@ from dataclasses import dataclass, field
 
 RELIABLE_TYPES = frozenset((
     "target_detection", "navigation_goal", "navigation_cancel",
-    "navigation_result", "battery_failure", "task_state",
+    "navigation_result", "battery_failure", "task_state", "charge_request",
 ))
+CHARGE_REQUEST_TTL_SEC = 10.0
 STATE_TYPES = frozenset((
     "map_snapshot", "fused_map_snapshot", "pose_state", "frame_state",
     "battery_state", "task_state", "target_observation",

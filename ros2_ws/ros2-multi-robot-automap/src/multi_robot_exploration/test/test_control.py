@@ -1080,9 +1080,11 @@ def test_viewpoint_gain_uses_obstacle_visibility():
             assert point.information_gain == control.visible_unknown_gain(grid, (point.row, point.column), 20)
 
 
-@pytest.mark.parametrize("permanent_reassignment", [True, False])
+@pytest.mark.parametrize("permanent_reassignment, preflight_blocked", [
+    (True, False), (False, False), (True, True),
+])
 def test_idle_blocker_recovery_dispatches_motion_before_returning(
-    monkeypatch, permanent_reassignment
+    monkeypatch, permanent_reassignment, preflight_blocked
 ):
     from types import SimpleNamespace
 
@@ -1098,7 +1100,12 @@ def test_idle_blocker_recovery_dispatches_motion_before_returning(
     )
     requests = []
     node = SimpleNamespace(
-        enable_battery=False, task_state="RALLY", fresh_robot_poses=lambda: True,
+        enable_battery=preflight_blocked, task_state="RALLY", fresh_robot_poses=lambda: True,
+        battery_monitor_started_at=0., battery_state_received_at={},
+        rally_charge_requested={}, prepare_rally_charges=lambda: {"tb2"},
+        rally_max_concurrent=2, rally_probe_targets=set(),
+        rally_leg_routes=dict.fromkeys(names, ()), rally_hold_started_at=None,
+        active_batteries_ready=lambda: True,
         participating_robots=lambda: names, battery_modes=dict.fromkeys(names, "ACTIVE"),
         now=lambda: 10.0, survey_robot=None, survey_goal_handle=None, survey_goal_pending=False,
         release_return_yields=lambda: None, rally_yield_targets=set(),
@@ -1117,6 +1124,10 @@ def test_idle_blocker_recovery_dispatches_motion_before_returning(
         send_rally_goal=lambda name, *args: requests.append(name),
     )
     control.HeadquartersControl.update_mission(node)
+    if preflight_blocked:
+        assert not requests and node.rally_targets == targets
+        assert node.rally_hold_started_at is None
+        return
     if permanent_reassignment:
         assert node.rally_targets["tb2"] == replacements["tb2"]
     else:
@@ -1175,3 +1186,77 @@ def test_observation_candidates_have_no_zero_utility():
         grid, 0.1, (0, 0), "tb1", position, [], data
     )
     assert all(utility > 0 for utility, *_ in candidates)
+
+
+def rally_budget_node(energy=25.0):
+    from types import SimpleNamespace
+
+    messages, failures = [], []
+    state = {"energy": energy, "capacity": 100.0, "charge_target_fraction": .8,
+             "charge_x": 1.05, "charge_y": 1.05, "move_cost_per_m": 1.0,
+             "idle_cost_per_sec": .02, "return_path_factor": 2.0,
+             "nominal_speed_mps": .18, "return_safety_margin": 8.0}
+    node = SimpleNamespace(
+        rally_dispatch_order=["tb1"], rally_charge_requested={}, now=lambda: 11.0,
+        battery_modes={"tb1": "ACTIVE"}, battery_states={"tb1": state},
+        battery_state_received_at={}, robot_positions={"tb1": (1.05, 1.05)},
+        rally_goal_handles={"tb1": None}, rally_goal_pending={"tb1": False},
+        rally_final_targets={"tb1": control.RallyPose(8.05, 1.05, 0)},
+        map_data=np.zeros((30, 100), dtype=int), resolution=.1, origin=(0., 0.),
+        rally_hold_sec=5.0, fail_task=failures.append,
+        charge_request_publishers={"tb1": SimpleNamespace(publish=messages.append)},
+        get_logger=lambda: SimpleNamespace(warn=lambda *args: None, info=lambda *args: None),
+    )
+    return node, messages, failures
+
+
+def test_rally_preflight_reserves_return_from_final_pose_and_holds_until_resume():
+    import json
+    from types import SimpleNamespace
+
+    node, messages, failures = rally_budget_node()
+    # The old current-home budget admits this trip; its final-home budget does not.
+    assert control.battery_assignment_is_safe(25, 7, 0, 1, .02, 2, .18, 8)
+    assert control.HeadquartersControl.prepare_rally_charges(node) == {"tb1"}
+    event = json.loads(messages[0].data)
+    assert event["required_energy"] == pytest.approx(33.3777777778)
+    assert event["available_energy"] == 25 and not failures
+    assert control.HeadquartersControl.prepare_rally_charges(node) == {"tb1"}
+    assert len(messages) == 1  # retries cannot flood the command route
+    node.battery_modes["tb1"] = "CHARGING"
+    control.HeadquartersControl.battery_state_callback(node, SimpleNamespace(data=json.dumps({
+        **node.battery_states["tb1"], "mode": "ACTIVE", "energy": 80.0, "stamp_sec": 12.0,
+    })), "tb1")
+    assert not node.rally_charge_requested
+    assert control.HeadquartersControl.prepare_rally_charges(node) == set()
+    assert len(messages) == 1
+
+
+def test_rally_preflight_does_not_request_charge_with_sufficient_energy():
+    node, messages, failures = rally_budget_node(energy=40.0)
+    assert control.HeadquartersControl.prepare_rally_charges(node) == set()
+    assert not messages and not failures
+
+
+def test_rally_preflight_blocks_invalid_battery_state_without_making_a_command():
+    node, messages, failures = rally_budget_node()
+    del node.battery_states["tb1"]["energy"]
+    assert control.HeadquartersControl.prepare_rally_charges(node) == {"tb1"}
+    assert not messages and not failures
+
+
+def test_rally_preflight_reports_a_trip_that_even_full_charge_cannot_support():
+    node, messages, failures = rally_budget_node()
+    node.battery_states["tb1"]["move_cost_per_m"] = 10.0
+    assert control.HeadquartersControl.prepare_rally_charges(node) == {"tb1"}
+    assert failures == ["rally_energy_capacity_insufficient:tb1"] and not messages
+
+
+def test_rally_preflight_leaves_an_active_leg_and_unknown_route_to_existing_safety():
+    node, messages, failures = rally_budget_node()
+    node.rally_goal_handles["tb1"] = object()
+    assert control.HeadquartersControl.prepare_rally_charges(node) == set()
+    node.rally_goal_handles["tb1"] = None
+    node.map_data[:, 50:55] = 100
+    assert control.HeadquartersControl.prepare_rally_charges(node) == set()
+    assert not messages and not failures

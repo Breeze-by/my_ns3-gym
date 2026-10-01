@@ -15,6 +15,8 @@ from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
 from std_msgs.msg import String
 from tf2_msgs.msg import TFMessage
 
+from .fault_model import CHARGE_REQUEST_TTL_SEC
+
 from .control import (
     MAX_NAVIGATION_LEG_M,
     RALLY_PATH_CLEARANCE_M,
@@ -205,6 +207,9 @@ class BatteryManager(Node):
         self.failure_publisher = self.create_publisher(
             String, "/battery_failure", state_qos
         )
+        self.consumed_publisher = self.create_publisher(
+            String, "/gateway/consumed", 100
+        )
         self.input_subscriptions = [
             self.create_subscription(
                 Odometry,
@@ -229,6 +234,10 @@ class BatteryManager(Node):
                 f"/{self.robot_name}/gateway/merge_map",
                 self.map_callback,
                 10,
+            ),
+            self.create_subscription(
+                String, f"/{self.robot_name}/gateway/charge_request",
+                self.charge_request_callback, 10,
             ),
         ]
         self.navigation = ActionClient(
@@ -262,6 +271,7 @@ class BatteryManager(Node):
         self.charge_count = 0
         self.total_charging_time = 0.0
         self.mission_terminal = False
+        self.last_charge_request_stamp = -float("inf")
         self.failure_reason = ""
         self.timer = self.create_timer(0.5, self.timer_callback)
         self.publish_state()
@@ -284,6 +294,40 @@ class BatteryManager(Node):
         self.mission_terminal = message.data in (
             "COMPLETE", "PARTIAL_COMPLETE", "FAILED"
         )
+
+    def charge_request_callback(self, message):
+        """A delivered mission budget may request early local safety return."""
+        try:
+            event = json.loads(message.data)
+            stamp = float(event["stamp_sec"])
+            required = float(event["required_energy"])
+            if (event["robot"] != self.robot_name
+                    or event["task_phase"] != "RALLY"
+                    or not math.isfinite(stamp) or not math.isfinite(required)
+                    or not 0 < required <= self.charge_target
+                    or self.now() - stamp >= CHARGE_REQUEST_TTL_SEC
+                    or stamp <= self.last_charge_request_stamp):
+                return
+        except (KeyError, TypeError, ValueError, json.JSONDecodeError):
+            return
+        self.last_charge_request_stamp = stamp
+        self.consumed_publisher.publish(String(data=json.dumps({
+            **event.get("_gateway", {}), "event": "consumed",
+            "message_type": "charge_request", "consumed_time": self.now(),
+        }, sort_keys=True)))
+        if (self.mission_terminal or self.mode != ACTIVE
+                or self.energy > required or self.map_position is None):
+            return
+        reserve = estimated_return_energy(
+            math.dist(self.map_position, (self.charge_x, self.charge_y)),
+            self.move_cost, self.idle_cost, self.return_path_factor,
+            self.nominal_speed, self.safety_margin,
+        )
+        self.get_logger().info(
+            f"Early rally charge requested: energy={self.energy:.2f}, "
+            f"mission_budget={required:.2f}."
+        )
+        self.begin_return(reserve)
 
     def tf_callback(self, message):
         for stamped_transform in message.transforms:

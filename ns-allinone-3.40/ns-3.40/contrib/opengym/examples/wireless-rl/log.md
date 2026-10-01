@@ -3831,3 +3831,47 @@ lab303还有一次从集合区到(-4.18,-0.90)的临时避让，增加返航/充
 runner manifest另修正skip-cross-check及记录选定scenarios，增加runner/smoke源码哈希；
 colcon版本从不支持的--version输出改为实际colcon-core0.20.1，validate-only及两个
 flag分支、版本和两个哈希断言通过。新候选必须重新运行全矩阵与forced303，尚未冻结。
+
+## 2026-10-01 baec4e8 部分固定门禁及集结能量预检查
+
+```bash
+source /opt/ros/humble/setup.bash; cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap; source install/setup.bash; source /usr/share/gazebo/setup.sh; export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 GAZEBO_MASTER_URI=http://127.0.0.1:11398; /usr/bin/python3 scripts/run_p2d_baseline.py --seeds 101 202 303 --run-id p3a6_fresh_baec4e8_matrix --ros-domain-base 160 --startup-timeout 600 --evaluation-wait-timeout 600 --inter-episode-delay 5 --rally-max-concurrent 2 --disable-global-battery-rally-pause > log/p2d_baseline/p3a6_fresh_baec4e8_runner_stdout.log 2>&1
+```
+
+clean候选baec4e88e89b40bf38224420f4b28a4b207a275a，dirty=false、frozen=null。
+lab101 224.1 s COMPLETE/0碰撞/1充电；lab202 150.4 s COMPLETE/0碰撞/0充电；
+lab303 300.3 s RALLY timeout/0碰撞/2充电、3返航、最低能量12.08454。
+lab303 detect97.5 s，RALLY191.4 s；三个机器人在接近集合区后先后返航，
+第三台未完成充电。保留该失败，不重复此post-start单元来替换结果。
+
+为了先修复集结预算，在下一rooms101中断自有runner/smoke和launch process group
+（SIGINT，runner exit130）。初始笔记误以为episode未开始；复核实际log后纠正：
+evaluation started在1790834048.228901506，shutdown JSON为16.9 s/EXPLORE、success=false、
+0碰撞。这是post-start中断，不是可重试的prestart基础设施失败。
+interruption_notes.json已更正；两次COMPLETE、一次timeout、一次shutdown全部保留；
+剩余六格未运行。没有执行该失败候选forced303，也不能冻结或启动网络/RL。
+输出与runner_stdout均位于log/p2d_baseline/p3a6_fresh_baec4e8*。
+
+只读 `ROS_DOMAIN_ID=160 /usr/bin/python3 /tmp/p3a6_monitor.py` 保存lab101完整任务记录
+lab101_delivered_state.jsonl及lab101_tf_freshness_check.json：每台113个任务期样本，
+tb1/tb2/tb3最大源TF年龄.303/.115/.531 s，无超过5 s的样本，结束于COMPLETE。
+这是有效消息限频修复的实测证据，不把其他格没记录的TF情况推断成测量结果。
+
+新候选复用既有导航成本1.25系数、局部返航path_factor/速度/余量，计算完整已知
+集合路线 + 从最终位姿返航保留量 + 5秒稳定等待耗能。预算不足才提前请求充电，
+不改变初始40/45/18、容量100/目标.8、速度/净空、300秒或COMPLETE门限。
+新增可靠charge_request：总部候选/gateway/request/tbN/charge → 同一envelope传输 →
+/tbN/gateway/charge_request。TTL10 s，源时间不续命，ACK/去重/重传复用既有
+transport。本地管理器校验机器人、阶段、预算、期限、重复；若已充足/终止/正返航，
+不重复启动。自动局部安全返航仍存在。请求等待者不能通过通道恢复支路绕过预算
+去派发动作；充电恢复清理pending，失败隔离也清理pending。容量目标都不够时
+明确失败rally_energy_capacity_insufficient，不能无限充电兜底。
+
+组件证明：仅按当前home估算会接受E25、7 m任务，但目标home保留量后需33.37778；
+无关TF/预算均不通过真值旁路。预算阻塞的恢复支路测试在baec4e8独立旧副本失败，
+其他两例恢复通过；新代码全部通过。新增覆盖充足/不足/未知路线/无效能量/容量上限、
+恢复后放行、本地重复/过期/终态/充电后迟到、实际CDR解码/可靠ACK/过期不ACK及
+错误JSON不崩溃；124项五文件测试、四包colcon构建、扩展源码旁路审计通过。
+命令沿用上述ROS/install五文件pytest与四包build/source-only审计；旧副本复现使用
+`PYTHONPATH=/tmp/p3a6-preflight-old:$PYTHONPATH /usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_control.py -k idle_blocker`。
+新候选仍须clean提交上的固定十格和forced303；先运行lab303，再同提交补齐其余九格。

@@ -127,3 +127,56 @@ def test_eligible_updates_still_obey_rate_limit_and_preserve_source_time():
     assert emitted[-1].generation_time.sec == 10
     assert emitted[-1].generation_time.nanosec == 0
     assert emitted[-1].ttl_sec == 2.0
+
+
+def test_charge_request_route_is_reliable_expiring_and_robot_specific():
+    from multi_robot_exploration.fault_model import CHARGE_REQUEST_TTL_SEC, RELIABLE_TYPES
+
+    routes = [r for r in IdealGateway._routes(SimpleNamespace(robot_count=2))
+              if r.message_type == "charge_request"]
+    assert len(routes) == 2 and "charge_request" in RELIABLE_TYPES
+    for i, route in enumerate(routes, 1):
+        assert route.sender == "headquarters" and route.recipient == f"tb{i}"
+        assert route.source_topic == f"/gateway/request/tb{i}/charge"
+        assert route.destination_topic == f"/tb{i}/gateway/charge_request"
+        assert route.ttl_sec == CHARGE_REQUEST_TTL_SEC and not route.transient
+
+
+def test_charge_request_decode_deduplicates_and_does_not_ack_expired_command():
+    from rclpy.serialization import serialize_message
+    from std_msgs.msg import String
+
+    route = next(r for r in IdealGateway._routes(SimpleNamespace(robot_count=1))
+                 if r.message_type == "charge_request")
+    messages, acks, events = [], [], []
+    key = (route.message_type, route.sender, route.recipient)
+    node = SimpleNamespace(
+        clock=11.0, latest_sequences={}, route_by_key={key: route},
+        get_logger=lambda: SimpleNamespace(error=lambda *args: None),
+        destination_publishers={key: SimpleNamespace(publish=messages.append)},
+        publish_ack=lambda *args: acks.append(args), publish_event=lambda *args: events.append(args),
+    )
+    node.now_sec = lambda: node.clock
+    envelope = GatewayEnvelope()
+    envelope.message_type, envelope.sender, envelope.recipient = key
+    envelope.sequence, envelope.generation_time.sec, envelope.ttl_sec = 1, 10, 10.0
+    envelope.encoding = "cdr"
+    envelope.payload = list(serialize_message(String(data=json.dumps({
+        "robot": "tb1", "stamp_sec": 10.0, "required_energy": 40.0, "task_phase": "RALLY",
+    }))))
+    envelope.payload_length = len(envelope.payload)
+    IdealGateway.receive_envelope(node, envelope)
+    IdealGateway.receive_envelope(node, envelope)
+    assert len(messages) == 1 and len(acks) == 2
+    event = json.loads(messages[0].data)
+    assert event["stamp_sec"] == 10 and event["_gateway"]["source_time"] == 10
+    assert event["_gateway"]["message_id"]
+    node.clock, envelope.sequence = 20., 2
+    IdealGateway.receive_envelope(node, envelope)
+    assert len(messages) == 1 and len(acks) == 2
+    assert events[-1][0] == "expired"
+    node.clock, envelope.generation_time.sec, envelope.sequence = 21., 20, 3
+    envelope.payload = list(serialize_message(String(data="malformed JSON")))
+    envelope.payload_length = len(envelope.payload)
+    IdealGateway.receive_envelope(node, envelope)
+    assert len(messages) == 1 and events[-1][0] == "decode_error"

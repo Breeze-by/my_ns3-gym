@@ -115,3 +115,62 @@ def test_missing_map_route_does_not_send_a_straight_line_return():
     BatteryManager.send_return_goal(manager)
     navigation.send_goal_async.assert_not_called()
     assert manager.return_goal_due_at == 11.0
+
+
+def charge_request_node():
+    from types import SimpleNamespace
+
+    returns, consumed = [], []
+    node = SimpleNamespace(
+        robot_name="tb1", now=lambda: 11.0, last_charge_request_stamp=-float("inf"),
+        mission_terminal=False, mode=ACTIVE, energy=20.0, charge_target=80.0,
+        map_position=(0., 3.), charge_x=0., charge_y=0., move_cost=1., idle_cost=.02,
+        return_path_factor=2., nominal_speed=.18, safety_margin=8.,
+        begin_return=returns.append, consumed_publisher=SimpleNamespace(publish=consumed.append),
+        get_logger=lambda: SimpleNamespace(info=lambda *args: None),
+    )
+    return node, returns, consumed
+
+
+def charge_message(**changes):
+    import json
+    from std_msgs.msg import String
+
+    return String(data=json.dumps({"robot": "tb1", "stamp_sec": 10.0,
+                                  "required_energy": 40., "task_phase": "RALLY", **changes}))
+
+
+def test_delivered_charge_request_is_idempotent_and_late_retry_cannot_recharge():
+    from multi_robot_exploration.battery_manager import BatteryManager
+
+    node, returns, consumed = charge_request_node()
+    BatteryManager.charge_request_callback(node, charge_message())
+    BatteryManager.charge_request_callback(node, charge_message())
+    assert returns == [pytest.approx(14.6666666667)] and len(consumed) == 1
+    node.mode = RETURNING
+    BatteryManager.charge_request_callback(node, charge_message(stamp_sec=10.2))
+    assert len(returns) == 1
+    node.mode, node.energy = ACTIVE, 80.0
+    BatteryManager.charge_request_callback(node, charge_message(stamp_sec=10.3))
+    assert len(returns) == 1
+
+
+@pytest.mark.parametrize("changes", [
+    {"stamp_sec": 1.0}, {"robot": "tb2"}, {"required_energy": float("nan")},
+    {"required_energy": 1000}, {"task_phase": "COMPLETE"}, {"stamp_sec": "bad"},
+])
+def test_charge_request_rejects_expired_wrong_robot_and_invalid_budget(changes):
+    from multi_robot_exploration.battery_manager import BatteryManager
+
+    node, returns, consumed = charge_request_node()
+    BatteryManager.charge_request_callback(node, charge_message(**changes))
+    assert not returns and not consumed
+
+
+def test_charge_request_after_mission_terminal_never_starts_return():
+    from multi_robot_exploration.battery_manager import BatteryManager
+
+    node, returns, _ = charge_request_node()
+    node.mission_terminal = True
+    BatteryManager.charge_request_callback(node, charge_message())
+    assert not returns

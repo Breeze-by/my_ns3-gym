@@ -14,7 +14,8 @@ from std_msgs.msg import String
 from tf2_msgs.msg import TFMessage
 
 from .fault_model import (
-    DeterministicFaultTransport, FaultConfig, RELIABLE_TYPES, STATE_TYPES,
+    CHARGE_REQUEST_TTL_SEC, DeterministicFaultTransport, FaultConfig,
+    RELIABLE_TYPES, STATE_TYPES,
     message_id, source_time,
 )
 
@@ -322,6 +323,12 @@ class IdealGateway(Node):
                         10.0,
                         True,
                     ),
+                    Route(
+                        "charge_request", "headquarters", robot,
+                        f"/gateway/request/{robot}/charge",
+                        f"/{robot}/gateway/charge_request",
+                        String, CHARGE_REQUEST_TTL_SEC,
+                    ),
                 ]
             )
         routes.extend(
@@ -495,6 +502,15 @@ class IdealGateway(Node):
                         f"unsupported encoding {envelope.encoding}"
                     )
                 message = deserialize_message(payload, route.message_class)
+                if envelope.message_type in ("target_detection", "charge_request"):
+                    event = json.loads(message.data)
+                    event["_gateway"] = {
+                        "message_id": message_id(envelope),
+                        "source_time": source_time(envelope),
+                        "delivery_time": self.now_sec(),
+                        "sequence": envelope.sequence,
+                    }
+                    message.data = json.dumps(event, sort_keys=True)
             except Exception as error:
                 self.get_logger().error(
                     f"Failed to decode {envelope.message_type}: {error}"
@@ -507,15 +523,6 @@ class IdealGateway(Node):
                 route.recipient,
             )
             self.latest_sequences[key] = envelope.sequence
-            if envelope.message_type == "target_detection":
-                event = json.loads(message.data)
-                event["_gateway"] = {
-                    "message_id": message_id(envelope),
-                    "source_time": source_time(envelope),
-                    "delivery_time": self.now_sec(),
-                    "sequence": envelope.sequence,
-                }
-                message.data = json.dumps(event, sort_keys=True)
             self.destination_publishers[route_key].publish(message)
             self.publish_event("accepted", direction, envelope)
 

@@ -10,7 +10,8 @@
         "f\"/{robot_name}/navigate_to_pose\"",
         "\"/target_observation\"",
         "\"/target_detection\"",
-        "\"/battery_failure\""
+        "\"/battery_failure\"",
+        "f\"/{robot_name}/gateway/charge_request\""
       ]
     },
     {
@@ -21,7 +22,8 @@
       "file": "multi_robot_exploration/battery_manager.py",
       "forbidden_literals": [
         "String, \"/task_state\"",
-        "f\"/{self.robot_name}/navigate_to_pose\""
+        "f\"/{self.robot_name}/navigate_to_pose\"",
+        "f\"/gateway/request/{self.robot_name}/charge\""
       ]
     },
     {
@@ -57,7 +59,9 @@
       "/tb{index}/navigate_to_pose/_action/feedback",
       "/tb{index}/navigate_to_pose/_action/status"
     ],
-    "forbidden_publisher_topic_templates": [],
+    "forbidden_publisher_topic_templates": [
+      "/tb{index}/gateway/charge_request"
+    ],
     "robot_forbidden_topic": "/merge_map"
   }
 }

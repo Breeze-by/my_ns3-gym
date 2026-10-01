@@ -74,15 +74,16 @@ coordinator, battery, and clearance logic. The current-HEAD P3A.5 run at
 only 9/10 formal episodes completed: lab seed 202 failed after episode start
 in `RALLY`. The failed episode is retained; P3A.5 remains in progress and
 P3B has not started.
-Update 2026-10-01: current work is P3A.6 re-freezing. Clean candidate
-`7c53717` covered the fixed ten cells in clean 7+3 batches: 6 COMPLETE,
-zero collisions in all ten, four retained post-start timeouts. The latest
-candidate fixes starvation of map/odom by unrelated/duplicate TF and chooses
-nearby off-route blocker refuges. It retains RPP, ray-based gain, hierarchical
-viewpoints, precise safe waypoints, and all task/safety gates. Its 108 component
-checks, build, source audit and manifest checks pass; integration remains
-pending. P3B.5 and network/RL work await this gate. See the nested AGENTS.md
-and dated report for current details.
+Update 2026-10-01: current work is P3A.6 re-freezing. The latest tested
+candidate baec4e8 completed lab101/202 but timed out in lab303 with three
+returns; rooms101 was interrupted after episode start at 16.9 s. All four
+results are retained, with zero collisions; six cells remain unrun. Its TF
+starvation fix is confirmed by live source-age measurements. The next
+candidate adds complete rally energy preflight and reliable gateway early
+charge requests, preserving the existing local safety policy and all gates.
+124 component checks, build and extended source audit pass; clean full-matrix
+and forced-charge integration remain pending. No task_stack_frozen_commit.
+P3B.5 and network/RL await this gate. See the nested memory and dated report.
 
 The revised plan adds the previously missing
 P2D full ideal-task integration gate, splits ns-3 time/packet coupling from

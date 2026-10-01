@@ -286,6 +286,7 @@ remaining_energy <= estimated_energy_to_home + safety_margin
 | 目标检测结果 | 小 | 极高 | 序号、ACK、重传 |
 | 检测缩略图或特征 | 中 | 高 | 策略可选 |
 | 探索目标、返航/集合命令 | 小 | 极高 | 序号、ACK、重传 |
+| 任务能量预算充电请求 | 小 | 10 s TTL | 序号、ACK、重传、局部去重/能量确认 |
 
 每个消息至少包含类型、发送者、序号、生成时间、任务阶段、payload 长度和 payload。正式账本还要
 区分 `source_time`、`enqueue_time`、`admit_time`、`tx_time`、`delivery_time`、`drop_time`、

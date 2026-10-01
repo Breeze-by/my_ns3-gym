@@ -1524,8 +1524,7 @@ def motion_energy(distance_m, move_cost, idle_cost, path_factor, nominal_speed):
     )
 
 
-def battery_assignment_is_safe(
-    energy,
+def battery_assignment_required_energy(
     assignment_distance_m,
     home_distance_m,
     move_cost,
@@ -1534,14 +1533,24 @@ def battery_assignment_is_safe(
     nominal_speed,
     safety_margin,
 ):
-    """Keep enough energy for the proposed leg and a conservative return."""
+    """Budget navigation and the same conservative local return reserve."""
     task_cost = motion_energy(
         assignment_distance_m, move_cost, idle_cost, 1.25, nominal_speed
     )
     return_cost = motion_energy(
         home_distance_m, move_cost, idle_cost, path_factor, nominal_speed
     ) + float(safety_margin)
-    return float(energy) > task_cost + return_cost
+    return task_cost + return_cost
+
+
+def battery_assignment_is_safe(
+    energy, assignment_distance_m, home_distance_m, move_cost, idle_cost,
+    path_factor, nominal_speed, safety_margin,
+):
+    return float(energy) > battery_assignment_required_energy(
+        assignment_distance_m, home_distance_m, move_cost, idle_cost,
+        path_factor, nominal_speed, safety_margin,
+    )
 
 
 class HeadquartersControl(Node):
@@ -1678,6 +1687,8 @@ class HeadquartersControl(Node):
         self.rally_recovery_requested = {}
         self.rally_yield_requested = {}
         self.rally_battery_preempted = {}
+        self.rally_charge_requested = {}
+        self.charge_request_publishers = {}
         self.rally_attempts = {}
         self.rally_arrived = {}
         self.rally_dispatch_order = []
@@ -1726,6 +1737,9 @@ class HeadquartersControl(Node):
 
         for index in range(self.num_robots):
             robot_name = f"tb{index + 1}"
+            self.charge_request_publishers[robot_name] = self.create_publisher(
+                String, f"/gateway/request/{robot_name}/charge", 10
+            )
             self.robot_positions[robot_name] = None
             self.map_to_odom[robot_name] = None
             self.robot_maps[robot_name] = None
@@ -1948,6 +1962,7 @@ class HeadquartersControl(Node):
         self.battery_modes[robot_name] = mode
         if mode not in ("RETURNING", "CHARGING"):
             if mode == "ACTIVE" and previous != "ACTIVE":
+                self.rally_charge_requested.pop(robot_name, None)
                 self.get_logger().info(
                     f"{robot_name} resumed after charging."
                 )
@@ -2015,6 +2030,7 @@ class HeadquartersControl(Node):
             self.survey_goal_handle.cancel_goal_async()
 
         self.rally_targets.pop(robot_name, None)
+        self.rally_charge_requested.pop(robot_name, None)
         self.rally_final_targets.pop(robot_name, None)
         self.rally_arrived.pop(robot_name, None)
         self.rally_dispatch_order = [
@@ -2319,6 +2335,9 @@ class HeadquartersControl(Node):
             self.rally_hold_started_at = None
             return
         now = self.now()
+        energy_unready = (
+            set(self.rally_charge_requested) if self.enable_battery else set()
+        )
         if (
             self.survey_goal_handle is not None
             and self.survey_goal_started_at is not None
@@ -2416,6 +2435,10 @@ class HeadquartersControl(Node):
             )
         ):
             self.last_rally_dispatch_at = now
+            if self.enable_battery:
+                energy_unready |= self.prepare_rally_charges()
+                if self.task_state != "RALLY":
+                    return
             plans = {}
             for name in self.rally_dispatch_order:
                 if (
@@ -2434,6 +2457,7 @@ class HeadquartersControl(Node):
                     or self.survey_goal_handle is not None
                     or self.robot_positions[name] is None
                     or self.battery_modes[name] != "ACTIVE"
+                    or name in energy_unready
                 ):
                     continue
                 if self.rally_recovery_requested[name]:
@@ -2478,6 +2502,7 @@ class HeadquartersControl(Node):
                             for other_name in self.rally_dispatch_order
                             if other_name != name
                             and self.battery_modes[other_name] == "ACTIVE"
+                            and other_name not in energy_unready
                             and self.robot_positions[other_name] is not None
                         ]
                         possible_blockers = [
@@ -2736,7 +2761,7 @@ class HeadquartersControl(Node):
             self.rally_linear_tolerance,
             self.rally_angular_tolerance,
         )
-        stable = stable and self.active_batteries_ready()
+        stable = stable and self.active_batteries_ready() and not energy_unready
         if not stable:
             self.rally_hold_started_at = None
             return
@@ -2750,6 +2775,69 @@ class HeadquartersControl(Node):
                 else "COMPLETE"
             )
             self.publish_task_state(completion_state)
+
+    def prepare_rally_charges(self):
+        """Check the whole final route before admitting another navigation leg."""
+        blocked = set(self.rally_charge_requested)
+        now = self.now()
+        for name in self.rally_dispatch_order:
+            if (self.battery_modes[name] != "ACTIVE"
+                    or self.rally_goal_handles[name] is not None
+                    or self.rally_goal_pending[name]
+                    or self.robot_positions[name] is None):
+                continue
+            target = self.rally_final_targets[name]
+            _, route = plan_rally_leg(
+                target, self.map_data, self.resolution, self.origin,
+                self.robot_positions[name],
+            )
+            if not route:
+                continue  # The existing route/map recovery still owns this case.
+            distance = sum(math.dist(a, b) for a, b in zip(route, route[1:]))
+            state = self.battery_states[name]
+            try:
+                energy = float(state["energy"])
+                idle_cost = float(state.get("idle_cost_per_sec", 0.02))
+                charge_target = (
+                    float(state["capacity"]) * float(state["charge_target_fraction"])
+                )
+                home = (float(state["charge_x"]), float(state["charge_y"]))
+                required = battery_assignment_required_energy(
+                    distance, math.dist((target.x, target.y), home),
+                    float(state.get("move_cost_per_m", 1.0)), idle_cost,
+                    float(state.get("return_path_factor", 2.0)),
+                    float(state.get("nominal_speed_mps", 0.18)),
+                    float(state.get("return_safety_margin", 8.0)),
+                ) + idle_cost * self.rally_hold_sec
+                if (not all(math.isfinite(value)
+                            for value in (required, energy, charge_target))
+                        or charge_target <= 0):
+                    raise ValueError("nonfinite energy budget")
+            except (KeyError, TypeError, ValueError, ZeroDivisionError) as error:
+                blocked.add(name)
+                self.get_logger().warn(
+                    f"Invalid rally battery budget for {name}: {error}"
+                )
+                continue
+            if energy > required:
+                continue
+            blocked.add(name)
+            if required > charge_target:
+                self.fail_task(f"rally_energy_capacity_insufficient:{name}")
+                return blocked
+            if now - self.rally_charge_requested.get(name, -float("inf")) < 2.0:
+                continue
+            self.rally_charge_requested[name] = now
+            self.charge_request_publishers[name].publish(String(data=json.dumps({
+                "robot": name, "stamp_sec": now, "task_phase": "RALLY",
+                "reason": "rally_energy_budget", "required_energy": required,
+                "available_energy": energy,
+            }, sort_keys=True)))
+            self.get_logger().warn(
+                f"Requesting early charge for {name}: energy={energy:.2f}, "
+                f"whole_rally_budget={required:.2f}."
+            )
+        return blocked
 
     def send_survey_goal(self, robot_name, pose):
         allowed_attempts = self.num_robots * (1 + self.rally_max_retries)

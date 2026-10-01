@@ -315,11 +315,11 @@ HEAD 上重新运行 P2D 完整理想任务和 P3A gateway 门禁，固定 commi
 退出条件：固定矩阵全部保留真实结果（包括失败），任务成功严格为 `COMPLETE`，零碰撞和
 充电回归满足既有门禁；产出 `task_stack_frozen_commit`，并由报告明确区分历史证据与当前基线。
 
-2026-10-01 最新clean候选7c53717的7+3批次完整覆盖十格，6/10 COMPLETE、全部零碰撞；
-rooms101、corridors101/303、lab303四个超时保留。新候选修复TF/重复状态限频饥饿，
-按阻塞路线选择最近的安全refuge；保留RPP、射线收益、分层采样、最远安全直线和.02 m航点。
-108项组件测试、构建、源码审计、manifest复核通过，但仍须新clean十格和forced303。
-没有task_stack_frozen_commit；db21e92的forced303仅为历史证据。
+2026-10-01 baec4e8候选完成lab101/202，但lab303在三返航后超时；rooms101有post-start
+16.9 s shutdown中断，六格未运行。所有四格零碰撞，失败/中断保留，不能冻结。
+新候选增加完整集结能量预算和gateway可靠TTL10 s提前充电请求；物理/电量/300 s/
+COMPLETE门限保持不变，源/运行时白名单扩展，124项组件检查、构建、源码审计通过。
+必须在新clean提交上完成十格与forced303；db21e92仅为历史回归证据。
 完整命令/失败见report/20260930_p3a6_rolling_reservations.md与log.md，原输出保留。
 
 ### P3B.5：故障任务闭环与保障性降级（待完成）
