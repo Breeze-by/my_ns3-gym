@@ -4022,3 +4022,12 @@ dev_v3 retained: log/p3b5/p3b5_dev_v3/p3b5_dev_v3_ideal_lab2_rally_57e53c1e19/p3
 修正后136项组件检查通过（5.95s），四包build通过（5.48s）；带blackout参数的ros2 launch --show-args通过（参数应放在--show-args之前，第一次位置错误被CLI拒绝，未启动仿真）。
 为缩短80核主机上的验证时间，不同独立开发场景可以同时运行，各自固定CPU集合、Gazebo master和ROS域；每个runner内部仍串行，ideal/fault使用相同CPU集合。manifest新增cpu_affinity。
 正式holdout尚未运行；后续精确环境/参数/故障和中断仍全部按原始证据记录。
+
+6e50b68 独立开发批次与理想回归已启动（所有任务核心源码相同，以下为ROS/Humble/install/Gazebo环境，PYTHONNOUSERSITE=1）：
+GAZEBO_MASTER_URI=http://127.0.0.1:11421 taskset -c 0-19 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_dev4_lab --cases zero_rally_lab up100_lab --ros-domain-base 170 > /tmp/p3b5_dev4_lab.log 2>&1；
+GAZEBO_MASTER_URI=http://127.0.0.1:11422 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_dev4_rooms --cases single_failure_rooms --ros-domain-base 190 > /tmp/p3b5_dev4_rooms.log 2>&1；
+GAZEBO_MASTER_URI=http://127.0.0.1:11423 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_dev4_forced --cases forced_charge_outage --ros-domain-base 210 > /tmp/p3b5_dev4_forced.log 2>&1；
+GAZEBO_MASTER_URI=http://127.0.0.1:11424 taskset -c 60-79 /usr/bin/python3 scripts/run_p2d_baseline.py --run-id p3b5_ideal_gate_6e50b68 --ros-domain-base 140 --startup-timeout 600 --evaluation-wait-timeout 900 --infrastructure-retries 0 --rally-max-concurrent 2 --disable-global-battery-rally-pause > /tmp/p3b5_ideal_gate_6e50b68.log 2>&1。
+当前已完成三种开发ideal对照：lab2 297.1s COMPLETE/2charges；rooms3 147.6s COMPLETE/0charges；forced2 229.7s COMPLETE/2charges，全部零碰撞，最低能量13.809/21.573/8.471。对应fault和十格理想回归尚在进行。
+为了测量精确隔离/本地返充转态而不改任务核心源码，新增只读observe_p3b5.py（只订阅，无publisher），正式runner从启动前记录safety_events；新增零电量理想/故障配对验证真实FAILED，不计入TDI。正式矩阵27格/42episode，尚未启动holdout。
+这些是实验框架/指标更改；不改变6e50b68任务核心、消息生成和控制算法。原始26格开发配置与失败/中断仍原样保留。

@@ -673,7 +673,7 @@ export GAZEBO_MASTER_URI=http://127.0.0.1:11420
 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_formal --ros-domain-base 170
 ```
 
-manifest 固定26个case；同配置ideal共享一次对照，任务终态/通信账本/旁路图全部保留。
+manifest 正式冻结27个case；同配置ideal共享一次对照，任务终态/通信账本/旁路图全部保留。
 `--validate-only` 检查计划，`--cases CASE...` 只用于独立开发批次。
 `--resume` 只执行同commit/config尚未运行的格；不覆盖失败或重复整轮挑成功。
 `ros_smoke_test.py --collect-fault-result` 收集有界故障结果，不把预期通信失败当作启动失败；
@@ -682,3 +682,5 @@ manifest 固定26个case；同配置ideal共享一次对照，任务终态/通�
 通信静默只阻止新分配/完成确认，不从required集合移除机器人；只有显式失败才能隔离。
 
 P3B.5启动修复：search_target在最后一台机器人spawn后生成，再错峰启动Nav2；smoke必须实际检查目标实体存在。连续丢包相对中央EXPLORE计时（ledger记录fault_epoch），不消耗在冷启动阶段。
+
+正式runner默认同时记录只读safety_events.jsonl，观察local battery转态和中央robot_failure发布时刻，用于返充/隔离时间；该观察节点从不向控制链发布。新增零电量理想/故障配对仅检查真实battery_exhaustion/FAILED，理想已失败的格不计TDI。

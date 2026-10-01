@@ -9,6 +9,7 @@ import json
 import os
 from pathlib import Path
 import random
+import signal
 import shlex
 import subprocess
 import sys
@@ -215,6 +216,7 @@ def main():
             # Reuse one exact same physical/protocol ideal control where the
             # sole difference between cases is the network intervention.
             settings = {"scenario": scenario, "mission_mode": case["mode"],
+                        "effective_initial_energy": profile.get("battery_initial_energy", scenario["energy"]),
                         "deadline": profile.get("navigation_command_deadline_sec", 90),
                         "capacity": profile.get("gateway_queue_capacity", 0)}
             digest = hashlib.sha256(json.dumps(settings, sort_keys=True).encode()).hexdigest()[:10]
@@ -243,6 +245,7 @@ def main():
                                        for line in manifest["worktree_status"])
     manifest["permitted_untracked_user_materials"] = "260929_report/ (recorded, untouched, excluded from task stack)"
     manifest["p3b5_runner_sha256"] = file_digest(Path(__file__))
+    manifest["observer_sha256"] = file_digest(Path(__file__).with_name("observe_p3b5.py"))
     manifest["world_sha256"] = {name: file_digest(PROJECT_ROOT / "src/multi_robot/worlds" / scenario["world"])
                                   for name, scenario in config["scenarios"].items()}
     if not manifest["task_stack_clean"]:
@@ -272,8 +275,26 @@ def main():
         row = {**item, "command": shlex.join(command), "ros_domain_id": env["ROS_DOMAIN_ID"],
                "gazebo_master_uri": env.get("GAZEBO_MASTER_URI"), "result_path": str(directory / (identity + ".json"))}
         print(f"RUN {index + 1}/{len(planned)} {identity}", flush=True)
-        with (directory / "runner.log").open("w") as log:
-            process = subprocess.run(command, env=env, cwd=PROJECT_ROOT, stdout=log, stderr=subprocess.STDOUT, check=False)
+        observer_command = [sys.executable, str(Path(__file__).with_name("observe_p3b5.py")),
+                            "--output", str(directory / "safety_events.jsonl"),
+                            "--robot-count", str(item["scenario"]["robot_count"])]
+        row["observer_command"] = shlex.join(observer_command)
+        with (directory / "observer.log").open("w") as observer_log:
+            observer = subprocess.Popen(observer_command, env=env, cwd=PROJECT_ROOT,
+                                        stdout=observer_log, stderr=subprocess.STDOUT)
+            try:
+                with (directory / "runner.log").open("w") as log:
+                    process = subprocess.run(command, env=env, cwd=PROJECT_ROOT, stdout=log, stderr=subprocess.STDOUT, check=False)
+            finally:
+                if observer.poll() is None:
+                    observer.send_signal(signal.SIGINT)
+                try:
+                    observer.wait(timeout=10)
+                except subprocess.TimeoutExpired:
+                    observer.kill()
+                    observer.wait()
+        row["observer_returncode"] = observer.returncode
+        row["safety_events_sha256"] = file_digest(directory / "safety_events.jsonl") if (directory / "safety_events.jsonl").exists() else None
         row["runner_returncode"] = process.returncode
         result_path = directory / (identity + ".json")
         logs = list((directory / "launch").glob("*.log"))
