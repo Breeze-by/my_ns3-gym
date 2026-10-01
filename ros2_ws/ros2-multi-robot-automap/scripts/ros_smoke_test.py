@@ -612,13 +612,15 @@ def main():
         f"gateway_ack_timeout_sec:={args.gateway_ack_timeout_sec}",
         f"gateway_max_retries:={args.gateway_max_retries}",
         f"gateway_queue_capacity:={args.gateway_queue_capacity}",
-        f"gateway_drop_message_types:={args.gateway_drop_message_types}",
         f"gateway_blackout_intervals:={args.gateway_blackout_intervals}",
-        f"inject_failure_robot:={args.inject_failure_robot}",
         f"inject_failure_after_sec:={args.inject_failure_after_sec}",
         f"message_freshness_timeout_sec:={args.message_freshness_timeout_sec}",
         f"navigation_command_deadline_sec:={args.navigation_command_deadline_sec}",
     ]
+    if args.gateway_drop_message_types:
+        command.append(f"gateway_drop_message_types:={args.gateway_drop_message_types}")
+    if args.inject_failure_robot:
+        command.append(f"inject_failure_robot:={args.inject_failure_robot}")
     if args.gateway_ledger_path is not None:
         command.append(f"gateway_ledger_path:={args.gateway_ledger_path}")
 

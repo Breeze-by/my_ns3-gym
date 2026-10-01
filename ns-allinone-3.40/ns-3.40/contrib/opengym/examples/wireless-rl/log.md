@@ -4007,3 +4007,7 @@ ros2 run multi_robot_exploration bypass_audit --source-only，零违规。
 GAZEBO_MASTER_URI=http://127.0.0.1:11420 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_dev_v1 --cases zero_rally_lab up100_lab single_failure_rooms forced_charge_outage --ros-domain-base 170 > /tmp/p3b5_dev_v1.log 2>&1。
 预检拒绝、未启动仿真：从ROS子目录读git status时用户素材路径变为../../260929_report，白名单无法匹配。
 修复manifest从Git根获取完整状态；失败目录保留，使用新run-id，不改用户材料。
+
+b1f3828 开发批次p3b5_dev_v2：与dev_v1相同命令，仅run-id换为p3b5_dev_v2。7个计划episode全部启动前失败，无episode数据；原始manifest/命令/launch日志保存在ROS log/p3b5/p3b5_dev_v2。
+根因：ROS launch CLI不接受gateway_drop_message_types:=或inject_failure_robot:=空值。修复smoke仅在非空时传CLI，空值使用launch默认；runner遇首个基础设施失败后停止，未跑格保持pending。
+这些失败不计入任务成功率，未覆盖，也未声称仿真故障退化结果。

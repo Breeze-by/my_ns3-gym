@@ -288,6 +288,9 @@ def main():
         summary["statistics"] = pair_statistics(config, pairs, episodes)
         summary_path.write_text(json.dumps(summary, indent=2) + "\n")
         print(f"RESULT {identity} infra={row['infrastructure_failure']} status={row.get('result', {}).get('termination_reason')}", flush=True)
+        if row["infrastructure_failure"]:
+            print("STOP: infrastructure failure retained; unrun cells remain pending", flush=True)
+            break
     summary["finished_at_utc"] = datetime.now(timezone.utc).isoformat()
     summary["statistics"] = pair_statistics(config, pairs, episodes)
     summary_path.write_text(json.dumps(summary, indent=2) + "\n")
