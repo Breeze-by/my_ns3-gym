@@ -4313,3 +4313,38 @@ GAZEBO_MASTER_URI=http://127.0.0.1:11543 taskset -c 60-79 /usr/bin/python3 scrip
 下一候选改动：修复只读UUID JSON并传播observer非零状态；本地return拒绝分支有界throttle诊断（server/map/无安全route）；另以合成反例证实充电中心blocked但接触区存在clearance-safe reachable点时原planner拒绝全部返航，改为复用同一次Dijkstra距离场选择中心附近可达contact点，留0.2m目标误差余量。home可达时路线保持，未知/断连contact区仍拒绝，不放宽半径/clearance/电量/300s。此补洞并不证明旧耗尽的唯一原因；下一轮先跑原物理stress probe，失败则保留并诊断，不启动heldout。
 
 新contact候选203组件检查PASS（13文件、7.83s）、四包symlink build PASS（5.30s）、source-only三机器人审计PASS。最初子集38PASS/1FAIL是测试SimpleNamespace缺少robot_name日志字段，补齐夹具后通过；中间误写test_gateway_protocol.py和audit_gateway_bypasses.py，均路径不存在而未执行测试/审计，随后按实际文件/模块完成。独立UUID原生GoalStatusArray反例JSON roundtrip通过。下一冻结先跑同预声明原physical probe；不得把旧35episodes/诊断成功混入新基线。
+
+## 2026-10-02 P3B.5 a1f17c9 前沿分配失败候选与 TTL 契约修复
+
+冻结a1f17c9a2be92b35ec6660a779e786c07386a77c；先完成原预声明physical return ideal/fault两格，实际断网窗口内两机器人均远离home启动Nav2返航，移动/接近home均超过.5m、各充一次、正能量、零接触/失败。物理子门通过后才启动四池主矩阵。完整命令/wrapper/PID/启动声明/原始结果/诊断日志/hash见report/20261002_p3b5_frontier_wait_failed_candidate.json。逻辑CPU掩码不同但共享SMT物理资源，不声称物理核隔离。
+
+```bash
+GAZEBO_MASTER_URI=http://127.0.0.1:12520 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_return_probe.py --run-id p3b5_v13_returnproof --ros-domain-base 180 > /tmp/p3b5_v13_returnproof.log 2>&1
+PYTHONNOUSERSITE=1 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_a1f17c9.json > /tmp/p3b5_protocol_a1f17c9.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:12510 taskset -c 0-19 /usr/bin/python3 /tmp/p3b5_v13_fixed_then_holdout.py > /tmp/p3b5_v13_fixed_holdout_pool.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:12521 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v13_lab --cases zero_rally_lab up100_lab down100_lab ttl_lab map_loss_lab battery_loss_lab state_loss_lab target_up10_lab battery_exhaust_lab --ros-domain-base 40 > /tmp/p3b5_v13_lab.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:12522 taskset -c 60-79 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v13_rooms --cases up10_rooms down10_rooms delay2_rooms overflow_rooms burst_rooms deadline_rooms detection_loss_rooms pose_loss_rooms single_failure_rooms target_loss_rooms --ros-domain-base 60 > /tmp/p3b5_v13_rooms.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:12520 taskset -c 40-59 /usr/bin/python3 /tmp/p3b5_v13_forced_safety_corridors.py > /tmp/p3b5_v13_forced_safety_corridors_pool.log 2>&1
+```
+
+本候选32started/32 raw终态，分布{'task_complete': 15, 'shutdown': 3, 'timeout': 8, 'no_data': 3, 'coverage_reached': 1, 'mission_failed': 2}。固定ideal rooms3/202 timeout300、零导航goal/零充电/零碰撞、总路径约.026m；原日志反复No safe cooperative frontier assignment，每次3groups/3candidates。这推翻最初"没有输入"猜测；旧固定runner没ledger/候选坐标，无法复原全部拒绝的确切几何原因，不声称队列问题唯一解释。rooms主ideal也timeout且三充，不能作为TDI有效对照。32条包括停止后捕获的孤立终态；原fixed runner继续下一格的结果仍保留，不能回填失败。UTC18:37:52仅停止有PID所有权证据的四池及152后代，stop清单保留。原物理子门PASS不能替代完整集成失败；未启动707，未用失败后重复结果替换正式样本。协议54PASS。
+
+弱辅助20–250秒blackout中tb2 RETURNING18.9秒、tb1 50.3秒，tb2提前1.1秒开始；全部时刻/原结果保留，只说明充电安全，不能证明两机器人断网内实际返航。分析器删除该重复且过度解释的起点断言，仍严格要求独立、预声明的physical probe：两台起点距home≥1.1m，42–248秒guard内移动/接近/liveNav2执行各≥.5m、各充电且无碰撞/失败。解释修正的原/新validator SHA和UTC18:21:50声明归档，不改变原probe配置/门限，不丢弃弱探针失败时序。
+
+开发诊断（均非正式成功替换，dirty a1+TTL/诊断，source Humble+install/PYTHONNOUSERSITE=1）：
+
+```bash
+ROS_DOMAIN_ID=218 GAZEBO_MASTER_URI=http://127.0.0.1:12530 taskset -c0-19 /usr/bin/python3 scripts/ros_smoke_test.py --world p1c_rooms.world --robot-count 3 --gazebo-seed 202 --startup-timeout 600 --evaluation-duration 60 --evaluation-wait-timeout 900 --coverage-threshold 0 --mission-mode rally --collect-fault-result --battery --battery-capacity 100 --battery-initial-energy 40 --target-x 5 --target-y 3 --target-detection --rally --rally-max-concurrent 2 --disable-global-battery-rally-pause --dwell-seconds 0 --episode-id p3b5_freshness_diag_a1f_dev --evaluation-output-dir log/p3b5_freshness_diag_a1f_dev/results --log-dir log/p3b5_freshness_diag_a1f_dev/launch --gateway-ledger-path log/p3b5_freshness_diag_a1f_dev/ledger.jsonl --bypass-audit-output log/p3b5_freshness_diag_a1f_dev/graph.json > /tmp/p3b5_freshness_diag_a1f_dev.log 2>&1
+/usr/bin/python3 /tmp/p3b5_freshness_load_dev.py > /tmp/p3b5_freshness_load_dev.log 2>&1
+ROS_DOMAIN_ID=218 taskset -c0-19 /usr/bin/python3 /tmp/p3b5_frontier_snapshot_dev.py > /tmp/p3b5_frontier_snapshot_dev.log 2>&1
+```
+
+单池60s timeout、路径13.684m、发现39.6s/RALLY53.4s；并发四格90s（rooms202/rooms101/lab303/forced303）均native readiness/source graph/真实lidar-map检查通过且有运动，room101路径25.640、lab19.703、forced12.197且两充；全是短horizon timeout过程结果。各格精确命令/环境/代码diff/hash/结果在归档development manifest；rooms202只读8个收到地图/位姿快照保留，未重现全停驻，source队列depth10未改。此批不能证明原失效唯一原因或新算法正式成功。
+
+源码修复：pose/TF消费源age严格≤协议TTL2s，map/battery≤5s且一般配置不能延长；未来时间戳等clock追上，不改源戳。固定ideal每格默认保存gateway账本，stale等待每5sim秒记录缺失源戳/age/TTL。粗前沿候选全部无法安全准入且无活动探索时，再从本机器人动态障碍后可达净空区域采样，仍走原候选评分、可见leg和完整预约；不放宽物理净距，不把短暂占用判成永久失败。合成反例原coarse位姿被parked占住，新pipeline真实派发独立安全观察点；不声称这就是旧rooms202确切几何。
+
+补齐计划中的目标过期契约：确认TTL60s保持不变；truth detector只在当下仍可见且连续三帧确认时最多1Hz发新源戳，通过相同gateway可靠路径。中央同一静态目标的新交付确认才续期；旧版/重传/NaN/未来/过期/换坐标均不能续期，已FOUND/RALLY不回滚。过期不生成新的集合/调查决策或完成保持；只允许独立本地返航及必要off-route refuge避让。每次中央实际派发记录输入源lease，validator拒绝过期/未来决策（局部return refuge仅豁免目标，不豁免map/pose/TF）。评估首次发现时间保持，不把重复确认当新首次发现；动态目标重新定位仍需新任务契约。
+
+验证：初次refinement子集105PASS/2FAIL为旧mock不接受blocked_positions关键字；补齐测试接口后通过。随后lease初测107PASS/2FAIL为旧夹具缺fresh_target/task_state；新增反例第一次111PASS/1FAIL缺局部json导入；修正夹具和导入后113PASS。最终14文件218PASS8.61s，四包build/source audit结果下一条补记。一个中间shell三引号解析失败未执行任何修改；后改用结构化patch。所有最终源改动必须新候选重新完整集成；不沿用a1的成功格。
+
+freshness/前沿候选终检：14文件218 passed8.61s；PYTHONNOUSERSITE=1 colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot 四包5.48s PASS；/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count3 零违规。源码仍待新的冻结任务矩阵，不宣称P3B.5已通过。

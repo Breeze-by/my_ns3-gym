@@ -423,6 +423,8 @@ def main():
             episode_id,
             "--bypass-audit-output",
             str(graph_path),
+            "--gateway-ledger-path",
+            str(episode_dir / f"{episode_id}_ledger.jsonl"),
         ]
         if args.disable_map_safe_rally_order:
             command.append("--disable-map-safe-rally-order")

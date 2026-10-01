@@ -834,7 +834,7 @@ def test_exploration_allows_short_initial_viewpoint(monkeypatch, step, expected)
     grid = np.zeros((80, 80), dtype=int)
     viewpoint = control.Viewpoint(0, 40, 40, 40, 41, 1000, 10)
     assignment = control.Assignment(viewpoint, 2.025 + step, 2.025, step, 10.0, 2.025 + step, 2.025)
-    monkeypatch.setattr(control, "robot_candidate_assignments", lambda *args: (
+    monkeypatch.setattr(control, "robot_candidate_assignments", lambda *args, **kwargs: (
         [(10.0, "tb1", 0, assignment)],
         {"frontier_groups": 1, "groups_with_viewpoints": 1},
     ))
@@ -1100,7 +1100,7 @@ def test_idle_blocker_recovery_dispatches_motion_before_returning(
     )
     requests = []
     node = SimpleNamespace(
-        enable_battery=preflight_blocked, task_state="RALLY", fresh_robot_poses=lambda: True,
+        enable_battery=preflight_blocked, task_state="RALLY", fresh_robot_poses=lambda: True, fresh_target=lambda: True,
         last_input_availability=True,
         battery_monitor_started_at=0., battery_state_received_at=dict.fromkeys(names, 10.),
         message_freshness_timeout_sec=5.,
@@ -1319,8 +1319,9 @@ def test_contact_loss_waits_without_isolating_a_healthy_robot():
     from types import SimpleNamespace
     from unittest.mock import Mock
     node = SimpleNamespace(
-        enable_battery=True, task_state="RALLY", fresh_robot_inputs=lambda: False,
+        enable_battery=True, task_state="RALLY", fresh_target=lambda: True, fresh_robot_inputs=lambda: False,
         last_input_availability=False, now=lambda: 100.,
+        last_input_diagnostic_at=100.,
         battery_monitor_started_at=0., battery_state_received_at={"tb1": 0.},
         battery_modes={"tb1": "ACTIVE"}, mark_robot_failed=Mock(),
         rally_hold_started_at=95.,
@@ -1473,7 +1474,7 @@ def test_waiting_precharge_moves_only_along_a_safe_home_prefix(conflicting):
     sent = []
     node = SimpleNamespace(
         enable_battery=True, task_state='RALLY', fresh_robot_inputs=lambda: True,
-        fresh_robot_poses=lambda: True, message_freshness_timeout_sec=5.,
+        fresh_robot_poses=lambda: True, fresh_target=lambda: True, message_freshness_timeout_sec=5.,
         battery_state_received_at=dict.fromkeys(names, 10.),
         last_input_availability=True, now=lambda: 10., battery_monitor_started_at=0.,
         battery_modes={'returner': 'RETURNING', 'waiter': 'ACTIVE'},
@@ -1552,7 +1553,7 @@ def test_local_return_wait_does_not_enter_unreserved_rally_recovery(monkeypatch)
     monkeypatch.setattr(control,'plan_rally_leg',lambda *args,**kwargs:(None,()))
     node=SimpleNamespace(
         enable_battery=True,task_state='RALLY',fresh_robot_inputs=lambda:True,
-        fresh_robot_poses=lambda:True,message_freshness_timeout_sec=5.,
+        fresh_robot_poses=lambda:True,fresh_target=lambda:True,message_freshness_timeout_sec=5.,
         battery_state_received_at=dict.fromkeys(names,10.),last_input_availability=True,
         now=lambda:10.,battery_monitor_started_at=0.,participating_robots=lambda:names,
         battery_modes={'returner':'RETURNING','waiter':'ACTIVE'},battery_states={},
@@ -1579,3 +1580,135 @@ def test_local_return_wait_does_not_enter_unreserved_rally_recovery(monkeypatch)
     control.HeadquartersControl.update_mission(node)
     assert node.rally_route_unavailable_since['waiter'] is None
     assert node.rally_targets==targets and node.rally_final_targets==targets
+@pytest.mark.parametrize("kind", ["pose_state", "frame_state"])
+def test_received_pose_and_tf_keep_their_two_second_source_lease(kind):
+    from types import SimpleNamespace
+    node = SimpleNamespace(
+        now=lambda: 100., message_freshness_timeout_sec=5.,
+        input_robot_names=lambda: ["tb1"],
+        robot_odom_received_at={"tb1": 100.}, robot_tf_received_at={"tb1": 100.},
+    )
+    timestamps = node.robot_odom_received_at if kind == "pose_state" else node.robot_tf_received_at
+    timestamps["tb1"] = 98.
+    assert control.HeadquartersControl.fresh_robot_poses(node)
+    timestamps["tb1"] = 97.999
+    assert not control.HeadquartersControl.fresh_robot_poses(node)
+    timestamps["tb1"] = 100.001
+    assert not control.HeadquartersControl.fresh_robot_poses(node)
+    node.message_freshness_timeout_sec = 1.
+    timestamps["tb1"] = 98.9
+    assert not control.HeadquartersControl.fresh_robot_poses(node)
+
+
+@pytest.mark.parametrize("field", ["map_received_at", "robot_map_received_at", "battery_state_received_at"])
+def test_general_freshness_setting_cannot_extend_map_or_battery_ttl(field):
+    from types import SimpleNamespace
+    node = SimpleNamespace(
+        now=lambda: 100., message_freshness_timeout_sec=10., enable_battery=True,
+        map_received_at=100., robot_map_received_at={"tb1": 100.},
+        battery_state_received_at={"tb1": 100.},
+        participating_robots=lambda: ["tb1"], input_robot_names=lambda: ["tb1"],
+        fresh_robot_poses=lambda: True, fresh_target=lambda: True,
+    )
+    if field == "map_received_at": node.map_received_at = 94.999
+    else: getattr(node, field)["tb1"] = 94.999
+    assert not control.HeadquartersControl.fresh_robot_inputs(node)
+
+
+def test_freshness_diagnostics_preserve_missing_and_expired_source_stamps():
+    from types import SimpleNamespace
+    node = SimpleNamespace(
+        now=lambda: 100., message_freshness_timeout_sec=5., enable_battery=True, task_state="EXPLORE",
+        map_received_at=99., robot_map_received_at={"tb1": 99.},
+        robot_odom_received_at={"tb1": 99.}, robot_tf_received_at={"tb1": None},
+        battery_state_received_at={"tb1": 90.},
+        participating_robots=lambda: ["tb1"], input_robot_names=lambda: ["tb1"],
+    )
+    details = control.HeadquartersControl.input_freshness_details(node)
+    assert details["tb1/frame_state"] == {"source_time": None, "age_sec": None, "ttl_sec": 2.}
+    assert details["tb1/battery_state"] == {"source_time": 90., "age_sec": 10., "ttl_sec": 5.}
+
+
+def test_blocked_coarse_viewpoint_is_refined_in_the_safe_reachable_component():
+    from types import SimpleNamespace
+    grid = np.full((100, 100), -1, dtype=int)
+    grid[20:80, 20:80] = 0
+    groups, mask, _ = control.prepare_frontier_data(grid, .1)
+    point = control.Viewpoint(0, 50, 78, 50, 79, 1000, len(groups[0]))
+    coarse = (groups, mask, {0: [point]})
+    positions = {"tb1": (3.05, 5.05), "parked": (7.85, 5.05)}
+    candidates, _ = control.robot_candidate_assignments(
+        grid, .1, (0., 0.), "tb1", positions["tb1"], frontier_data=coarse)
+    assert candidates
+    for _, _, _, candidate in candidates:
+        assert control.plan_rally_leg(
+            control.RallyPose(candidate.x, candidate.y, 0.), grid, .1, (0., 0.),
+            positions["tb1"], blocked_positions=[positions["parked"]])[0] is None
+    sent = []
+    node = SimpleNamespace(
+        task_state="EXPLORE", map_data=grid, resolution=.1, origin=(0., 0.),
+        robot_positions=positions, robot_maps=dict.fromkeys(positions, {}),
+        robot_states=dict.fromkeys(positions, "idle"),
+        battery_modes={"tb1": "ACTIVE", "parked": "CHARGING"},
+        frontier_cache=coarse, input_robot_names=lambda: ["tb1"],
+        participating_robots=lambda: list(positions), fresh_robot_inputs=lambda: True,
+        active_exclusions=lambda: [], battery_assignment_safe=lambda *a: True,
+        goal_routes={}, goal_targets={}, goal_initial_gain={},
+        target_information_gain=lambda *a: 1000,
+        now=lambda: 100., last_no_assignment_log=-math.inf,
+        get_logger=lambda: SimpleNamespace(info=lambda *a: None, warn=lambda *a: None),
+        send_goal=lambda name, goal: sent.append((name, goal)))
+    control.HeadquartersControl.assign_idle_robots(node)
+    assert len(sent) == 1 and sent[0][0] == "tb1"
+    route = node.goal_routes["tb1"]
+    assert math.dist(route[0], route[-1]) > control.NAVIGATION_POSITION_TOLERANCE_M
+    assert all(math.dist(p, positions["parked"]) >= .6 for p in route)
+    assert sent[0][1].viewpoint.information_gain > 0
+
+
+def test_target_lease_requires_new_delivered_confirmation_and_keeps_task_phase():
+    import json
+    from types import SimpleNamespace
+    from std_msgs.msg import String
+    emitted, phases = [], []
+    node = SimpleNamespace(
+        task_state="EXPLORE", target=None, target_received_source_time=None,
+        now=lambda: 100., enable_rally=True,
+        consumed_publisher=SimpleNamespace(publish=emitted.append),
+        get_logger=lambda: SimpleNamespace(error=lambda *a: None, info=lambda *a: None))
+    def phase(value):
+        phases.append(value)
+        node.task_state = value
+    node.publish_task_state = phase
+    def deliver(stamp, target=(1., 2.)):
+        event = {"robot": "tb1", "target_x": target[0], "target_y": target[1],
+                 "stamp_sec": stamp, "_gateway": {"source_time": stamp, "delivery_time": 100.}}
+        control.HeadquartersControl.target_detection_callback(node, String(data=json.dumps(event)))
+    deliver(39.9)
+    assert node.target is None and not phases
+    deliver(40.)
+    assert phases == ["FOUND"] and node.target == (1., 2.)
+    assert control.HeadquartersControl.fresh_target(node)
+    node.task_state = "RALLY"
+    node.now = lambda: 100.001
+    assert not control.HeadquartersControl.fresh_target(node)
+    deliver(40.)  # Receipt of an old version does not renew the lease.
+    assert node.target_received_source_time == 40.
+    deliver(90., (3., 4.))
+    assert node.target_received_source_time == 40. and node.target == (1., 2.)
+    deliver(90.)
+    assert node.task_state == "RALLY" and phases == ["FOUND"]
+    assert control.HeadquartersControl.fresh_target(node)
+    assert [json.loads(m.data)["event"] for m in emitted] == ["consumed", "target_reconfirmed"]
+
+
+def test_expired_target_blocks_rally_decisions_without_blocking_local_return_yield():
+    from types import SimpleNamespace
+    yields = []
+    node = SimpleNamespace(
+        task_state="RALLY", enable_battery=False, fresh_robot_inputs=lambda: True,
+        fresh_robot_poses=lambda: True, fresh_target=lambda: False,
+        last_input_availability=False, last_input_diagnostic_at=100., now=lambda: 100.,
+        rally_hold_started_at=95., yield_to_returning_robot=lambda: yields.append(True))
+    control.HeadquartersControl.update_mission(node)
+    assert node.rally_hold_started_at is None and yields == [True]

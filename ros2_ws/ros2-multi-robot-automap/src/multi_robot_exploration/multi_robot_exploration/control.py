@@ -27,6 +27,7 @@ from scipy.sparse.csgraph import dijkstra
 from std_msgs.msg import String
 from tf2_msgs.msg import TFMessage
 
+from .fault_model import STATE_TTL_SEC, TARGET_DETECTION_TTL_SEC
 
 OCCUPIED_THRESHOLD = 50
 MIN_FRONTIER_GROUP_SIZE = 6
@@ -118,7 +119,7 @@ def unavailable_battery_states(received_at, now, timeout):
     return [
         name
         for name, timestamp in received_at.items()
-        if timestamp is None or now - timestamp >= timeout
+        if timestamp is None or not 0 <= now - timestamp < timeout
     ]
 
 
@@ -681,12 +682,17 @@ def robot_candidate_assignments(
     robot_position,
     excluded_targets=(),
     frontier_data=None,
+    blocked_positions=None,
 ):
     """Return diverse locally reachable viewpoints for every frontier group."""
     if frontier_data is None:
         frontier_data = prepare_frontier_data(raw_grid, resolution)
     groups, traversable, viewpoints = frontier_data
     candidates = []
+    if blocked_positions is not None:
+        traversable = block_dynamic_positions(
+            traversable, resolution, origin, blocked_positions
+        )
     start = world_to_grid(
         robot_position[0],
         robot_position[1],
@@ -707,6 +713,12 @@ def robot_candidate_assignments(
             "candidate_assignments": 0,
         }
     distances = path_distance_grid(traversable, start)
+    if blocked_positions is not None:
+        # Global top-K viewpoints can all lie in blocked/disconnected areas.
+        # Refine within this robot’s safe reachable component only on demand.
+        safe = traversable_grid(raw_grid, resolution, ROBOT_CLEARANCE_M)
+        safe &= traversable & np.isfinite(distances)
+        viewpoints = frontier_viewpoints(raw_grid, groups, safe, resolution)
     for group_id, group_viewpoints in viewpoints.items():
         for viewpoint in group_viewpoints:
             if viewpoint.information_gain <= 0:
@@ -1772,7 +1784,9 @@ class HeadquartersControl(Node):
         ]
         self.task_state = "EXPLORE"
         self.last_input_availability = None
+        self.last_input_diagnostic_at = -float("inf")
         self.target = None
+        self.target_received_source_time = None
         self.detecting_robot = None
         self.rally_targets = {}
         self.rally_final_targets = {}
@@ -2009,22 +2023,45 @@ class HeadquartersControl(Node):
         if message.data in ("EXPLORE", "FOUND_UNCONFIRMED"):
             self.publish_task_state(message.data)
 
+    def fresh_target(self):
+        stamp = self.target_received_source_time
+        return stamp is not None and 0 <= self.now() - stamp <= TARGET_DETECTION_TTL_SEC
+
     def target_detection_callback(self, message):
-        if self.task_state not in ("EXPLORE", "FOUND_UNCONFIRMED"):
+        if self.task_state not in ("EXPLORE", "FOUND_UNCONFIRMED", "FOUND", "RALLY"):
             return
         try:
             event = json.loads(message.data)
-            self.target = (float(event["target_x"]), float(event["target_y"]))
-            self.detecting_robot = str(event["robot"])
+            target = (float(event["target_x"]), float(event["target_y"]))
+            gateway = event["_gateway"]
+            stamp = float(gateway["source_time"])
+            if (not all(math.isfinite(value) for value in (*target, stamp))
+                    or not 0 <= self.now() - stamp <= TARGET_DETECTION_TTL_SEC):
+                return
+            if self.target_received_source_time is not None and stamp <= self.target_received_source_time:
+                return
+            # This task uses a stationary target. Renew its source lease only
+            # from a newly delivered observation of the same physical target.
+            if self.target is not None and target != self.target:
+                self.get_logger().error("Changed target requires a new task episode.")
+                return
+            robot = str(event["robot"])
         except (KeyError, TypeError, ValueError, json.JSONDecodeError) as error:
             self.get_logger().error(f"Invalid target detection: {error}")
             return
-        gateway = event.get("_gateway", {})
+        initial = self.task_state in ("EXPLORE", "FOUND_UNCONFIRMED")
+        self.target = target
+        self.target_received_source_time = stamp
+        if initial:
+            self.detecting_robot = robot
         self.consumed_publisher.publish(String(data=json.dumps({
-            **gateway, "event": "consumed", "message_type": "target_detection",
+            **gateway, "event": "consumed" if initial else "target_reconfirmed",
+            "message_type": "target_detection",
             "consumed_time": max(self.now(), gateway.get("delivery_time", self.now())),
             "local_confirm_time": event.get("stamp_sec"),
         }, sort_keys=True)))
+        if not initial:
+            return
         self.publish_task_state("FOUND")
         if not self.enable_rally:
             return
@@ -2290,7 +2327,9 @@ class HeadquartersControl(Node):
                 return
 
     def update_mission(self):
-        ready = self.fresh_robot_inputs()
+        state_ready = self.fresh_robot_inputs()
+        target_ready = self.task_state not in ("FOUND", "RALLY") or self.fresh_target()
+        ready = state_ready and target_ready
         if ready != self.last_input_availability:
             self.last_input_availability = ready
             self.consumed_publisher.publish(String(data=json.dumps({
@@ -2299,6 +2338,16 @@ class HeadquartersControl(Node):
                 "reason": "fresh_inputs" if ready else "stale_state",
                 "required_robots": self.input_robot_names(),
             }, sort_keys=True)))
+        if not ready and self.now() - self.last_input_diagnostic_at >= 5.0:
+            self.last_input_diagnostic_at = self.now()
+            details = self.input_freshness_details()
+            self.consumed_publisher.publish(String(data=json.dumps({
+                "event": "coordinator_stale_inputs", "event_time": self.now(),
+                "task_phase": self.task_state, "inputs": details,
+            }, sort_keys=True)))
+            self.get_logger().warning(
+                "Waiting for fresh gateway inputs: " + json.dumps(details, sort_keys=True)
+            )
         if self.enable_battery and self.task_state not in (
             "COMPLETE", "PARTIAL_COMPLETE", "FAILED"
         ):
@@ -2329,10 +2378,17 @@ class HeadquartersControl(Node):
             or self.task_state == "RALLY" and not self.fresh_robot_poses()
             or self.enable_battery and unavailable_battery_states(
                 {name: self.battery_state_received_at[name] for name in self.participating_robots()},
-                self.now(), self.message_freshness_timeout_sec,
+                self.now(), min(self.message_freshness_timeout_sec, STATE_TTL_SEC["battery_state"]),
             )
         ):
             self.rally_hold_started_at = None
+            return
+        if not target_ready:
+            self.rally_hold_started_at = None
+            # A stale target blocks mission decisions, never local battery
+            # safety or an off-route refuge for a robot already returning.
+            if state_ready and self.task_state == "RALLY":
+                self.yield_to_returning_robot()
             return
         if self.task_state == "FOUND" and self.enable_rally:
             for name, handle in self.goal_handles.items():
@@ -3132,6 +3188,8 @@ class HeadquartersControl(Node):
         return blocked
 
     def send_survey_goal(self, robot_name, pose):
+        if not self.fresh_robot_inputs() or not self.fresh_target():
+            return
         allowed_attempts = self.num_robots * (1 + self.rally_max_retries)
         if self.survey_attempts >= allowed_attempts:
             self.fail_task(
@@ -3156,6 +3214,7 @@ class HeadquartersControl(Node):
         self.survey_robot = robot_name
         self.survey_cancel_requested = False
         self.survey_goal_pending = True
+        self.record_navigation_decision(robot_name, "target_survey")
         future = client.send_goal_async(goal)
         future.add_done_callback(self.survey_goal_response)
 
@@ -3266,6 +3325,9 @@ class HeadquartersControl(Node):
     def send_rally_goal(self, robot_name, plan=None):
         if not self.fresh_robot_inputs():
             return
+        local_return_yield = robot_name in self.return_yield_targets
+        if not local_return_yield and not self.fresh_target():
+            return
         if (
             self.task_state != "RALLY"
             or self.battery_modes[robot_name] != "ACTIVE"
@@ -3299,6 +3361,8 @@ class HeadquartersControl(Node):
         target, route = plan
         if target is None:
             return
+        if not self.fresh_robot_inputs() or (not local_return_yield and not self.fresh_target()):
+            return
         self.get_logger().info(
             f"Sending {robot_name} rally leg to "
             f"({target.x:.2f}, {target.y:.2f}); final="
@@ -3315,6 +3379,7 @@ class HeadquartersControl(Node):
         goal.pose.pose.orientation.w = math.cos(target.yaw / 2.0)
         self.rally_leg_routes[robot_name] = route
         self.rally_goal_pending[robot_name] = True
+        self.record_navigation_decision(robot_name, "local_return_yield" if local_return_yield else "rally")
         future = client.send_goal_async(goal)
         future.add_done_callback(
             lambda result, name=robot_name: self.rally_goal_response(name, result)
@@ -3432,31 +3497,53 @@ class HeadquartersControl(Node):
         """Only allocate from pose/TF/map data delivered within the TTL window."""
         now = self.now()
         timeout = self.message_freshness_timeout_sec
-        if self.map_received_at is None or now - self.map_received_at > timeout:
+        if (self.map_received_at is None or not 0 <= now - self.map_received_at
+                <= min(timeout, STATE_TTL_SEC["fused_map_snapshot"])):
             return False
         if self.enable_battery and unavailable_battery_states(
             {name: self.battery_state_received_at[name] for name in self.participating_robots()},
-            now, timeout,
+            now, min(timeout, STATE_TTL_SEC["battery_state"]),
         ):
             return False
         return self.fresh_robot_poses() and all(
             self.robot_map_received_at[name] is not None
-            and now - self.robot_map_received_at[name] <= timeout
+            and 0 <= now - self.robot_map_received_at[name] <= min(timeout, STATE_TTL_SEC["map_snapshot"])
             for name in self.input_robot_names()
         )
 
     def fresh_robot_poses(self):
         """Require live pose/TF for traffic safety and the final hold gate."""
         now = self.now()
-        timeout = self.message_freshness_timeout_sec
+        # A delivered sample does not acquire a new lease on reception.
+        # Apply the same source-age TTL used by the transport, even if the
+        # configured general freshness bound is more permissive.
         for name in self.input_robot_names():
             timestamps = (
-                self.robot_odom_received_at[name],
-                self.robot_tf_received_at[name],
+                (self.robot_odom_received_at[name], STATE_TTL_SEC["pose_state"]),
+                (self.robot_tf_received_at[name], STATE_TTL_SEC["frame_state"]),
             )
-            if any(timestamp is None or now - timestamp > timeout for timestamp in timestamps):
+            if any(stamp is None or not 0 <= now - stamp <= min(self.message_freshness_timeout_sec, ttl)
+                   for stamp, ttl in timestamps):
                 return False
         return True
+
+    def input_freshness_details(self):
+        """Expose missing/stale delivered inputs without renewing their stamps."""
+        now = self.now()
+        inputs = {"headquarters/fused_map_snapshot": (self.map_received_at, "fused_map_snapshot")}
+        for name in self.input_robot_names():
+            for kind, times in (("pose_state", self.robot_odom_received_at),
+                                ("frame_state", self.robot_tf_received_at),
+                                ("map_snapshot", self.robot_map_received_at)):
+                inputs[f"{name}/{kind}"] = (times[name], kind)
+        if self.enable_battery:
+            for name in self.participating_robots():
+                inputs[f"{name}/battery_state"] = (self.battery_state_received_at[name], "battery_state")
+        if self.task_state in ("FOUND", "RALLY"):
+            inputs["headquarters/target_detection"] = (self.target_received_source_time, "target_detection")
+        return {key: {"source_time": stamp, "age_sec": None if stamp is None else now - stamp,
+                      "ttl_sec": TARGET_DETECTION_TTL_SEC if kind == "target_detection" else min(self.message_freshness_timeout_sec, STATE_TTL_SEC[kind])}
+                for key, (stamp, kind) in inputs.items()}
 
     def map_callback(self, msg):
         self.map_data = np.asarray(msg.data, dtype=np.int16).reshape(
@@ -3606,112 +3693,129 @@ class HeadquartersControl(Node):
                 self.map_data, self.resolution
             )
         frontier_data = self.frontier_cache
-        for robot_name, position in idle_positions.items():
-            robot_exclusions = list(exclusions)
-            robot_exclusions.extend(
-                other_position
-                for other_name, other_position in self.robot_positions.items()
-                if (
-                    other_name != robot_name
-                    and other_name in self.participating_robots()
-                    and self.robot_states[other_name] == "active"
-                    and other_position is not None
-                )
-            )
-            robot_candidates, robot_diagnostics = robot_candidate_assignments(
-                self.map_data,
-                self.resolution,
-                self.origin,
-                robot_name,
-                position,
-                robot_exclusions,
-                frontier_data,
-            )
-            diagnostics["frontier_groups"] += robot_diagnostics[
-                "frontier_groups"
-            ]
-            diagnostics["groups_with_viewpoints"] += robot_diagnostics[
-                "groups_with_viewpoints"
-            ]
-            for _, _, group_id, assignment in robot_candidates:
-                # Battery reserve is a preference signal. A hard filter can
-                # leave every robot idle when the only useful frontier is
-                # beyond the conservative estimate; the local manager still
-                # owns the non-negotiable return trigger.
-                battery_factor = (
-                    1.0
-                    if self.battery_assignment_safe(
-                        robot_name, assignment.path_distance_m
+        for refine in (False, True):
+            candidates = []
+            diagnostics["frontier_groups"] = 0
+            diagnostics["groups_with_viewpoints"] = 0
+            for robot_name, position in idle_positions.items():
+                robot_exclusions = list(exclusions)
+                robot_exclusions.extend(
+                    other_position
+                    for other_name, other_position in self.robot_positions.items()
+                    if (
+                        other_name != robot_name
+                        and other_name in self.participating_robots()
+                        and self.robot_states[other_name] == "active"
+                        and other_position is not None
                     )
-                    else 0.25
                 )
-                utility = assignment.utility * battery_factor
-                coordinated = Assignment(
-                    assignment.viewpoint,
-                    assignment.x,
-                    assignment.y,
-                    assignment.path_distance_m,
-                    utility,
-                    assignment.navigation_x,
-                    assignment.navigation_y,
+                robot_candidates, robot_diagnostics = robot_candidate_assignments(
+                    self.map_data,
+                    self.resolution,
+                    self.origin,
+                    robot_name,
+                    position,
+                    robot_exclusions,
+                    frontier_data,
+                    **({"blocked_positions": [
+                        other for name, other in self.robot_positions.items()
+                        if name != robot_name and other is not None
+                    ]} if refine else {}),
                 )
-                candidates.append(
-                    (utility, robot_name, group_id, coordinated)
-                )
-        diagnostics["candidate_assignments"] = len(candidates)
-        # Reserve immediately after admission. A rejected high-utility route
-        # must not hide the same robot's independent, lower-utility frontier.
-        plans = {}
-        routes = {}
-        selected = []
-        route_caches = {name: {} for name in idle_positions}
-        reservations = [
-            remaining_rally_route(route, self.robot_positions[name])
-            for name, route in self.goal_routes.items()
-            if self.robot_states[name] == "active" and route
-        ]
-        for _, name, _, assignment in sorted(candidates, key=lambda item: -item[0]):
-            if name in plans:
-                continue
-            if any(
-                math.dist((assignment.x, assignment.y), (other.x, other.y))
-                < MIN_TARGET_SEPARATION_M for other in plans.values()
-            ):
-                continue
-            blocked = [
-                position for other_name, position in self.robot_positions.items()
-                if other_name != name and position is not None
+                diagnostics["frontier_groups"] += robot_diagnostics[
+                    "frontier_groups"
+                ]
+                diagnostics["groups_with_viewpoints"] += robot_diagnostics[
+                    "groups_with_viewpoints"
+                ]
+                for _, _, group_id, assignment in robot_candidates:
+                    # Battery reserve is a preference signal. A hard filter can
+                    # leave every robot idle when the only useful frontier is
+                    # beyond the conservative estimate; the local manager still
+                    # owns the non-negotiable return trigger.
+                    battery_factor = (
+                        1.0
+                        if self.battery_assignment_safe(
+                            robot_name, assignment.path_distance_m
+                        )
+                        else 0.25
+                    )
+                    utility = assignment.utility * battery_factor
+                    coordinated = Assignment(
+                        assignment.viewpoint,
+                        assignment.x,
+                        assignment.y,
+                        assignment.path_distance_m,
+                        utility,
+                        assignment.navigation_x,
+                        assignment.navigation_y,
+                    )
+                    candidates.append(
+                        (utility, robot_name, group_id, coordinated)
+                    )
+            diagnostics["candidate_assignments"] = len(candidates)
+            diagnostics["reachable_refinement"] = refine
+            diagnostics["rejected_routes"] = 0
+            diagnostics["stationary_candidates"] = 0
+            # Reserve immediately after admission. A rejected high-utility route
+            # must not hide the same robot's independent, lower-utility frontier.
+            plans = {}
+            routes = {}
+            selected = []
+            route_caches = {name: {} for name in idle_positions}
+            reservations = [
+                remaining_rally_route(route, self.robot_positions[name])
+                for name, route in self.goal_routes.items()
+                if self.robot_states[name] == "active" and route
             ]
-            plan = plan_rally_leg(
-                RallyPose(assignment.x, assignment.y, 0.0),
-                self.map_data, self.resolution, self.origin,
-                self.robot_positions[name], MAX_NAVIGATION_LEG_M,
-                blocked_positions=blocked, clearance_m=PATH_CLEARANCE_M,
-                visible_only=True, route_cache=route_caches[name],
-            )
-            admitted = reserve_rally_prefix(plan, reservations)
-            if admitted is None:
-                continue
-            pose, route = admitted
-            if (
-                math.dist(self.robot_positions[name], (pose.x, pose.y))
-                <= NAVIGATION_POSITION_TOLERANCE_M
-            ):
-                continue
-            plans[name] = Assignment(
-                assignment.viewpoint, assignment.x, assignment.y,
-                assignment.path_distance_m, assignment.utility, pose.x, pose.y,
-            )
-            routes[name] = route
-            selected.append(name)
-            reservations.append(route)
-            if len(selected) + active_explorers >= EXPLORATION_MAX_CONCURRENT:
+            for _, name, _, assignment in sorted(candidates, key=lambda item: -item[0]):
+                if name in plans:
+                    continue
+                if any(
+                    math.dist((assignment.x, assignment.y), (other.x, other.y))
+                    < MIN_TARGET_SEPARATION_M for other in plans.values()
+                ):
+                    continue
+                blocked = [
+                    position for other_name, position in self.robot_positions.items()
+                    if other_name != name and position is not None
+                ]
+                plan = plan_rally_leg(
+                    RallyPose(assignment.x, assignment.y, 0.0),
+                    self.map_data, self.resolution, self.origin,
+                    self.robot_positions[name], MAX_NAVIGATION_LEG_M,
+                    blocked_positions=blocked, clearance_m=PATH_CLEARANCE_M,
+                    visible_only=True, route_cache=route_caches[name],
+                )
+                admitted = reserve_rally_prefix(plan, reservations)
+                if admitted is None:
+                    diagnostics["rejected_routes"] += 1
+                    continue
+                pose, route = admitted
+                if (
+                    math.dist(self.robot_positions[name], (pose.x, pose.y))
+                    <= NAVIGATION_POSITION_TOLERANCE_M
+                ):
+                    diagnostics["stationary_candidates"] += 1
+                    continue
+                plans[name] = Assignment(
+                    assignment.viewpoint, assignment.x, assignment.y,
+                    assignment.path_distance_m, assignment.utility, pose.x, pose.y,
+                )
+                routes[name] = route
+                selected.append(name)
+                reservations.append(route)
+                if len(selected) + active_explorers >= EXPLORATION_MAX_CONCURRENT:
+                    break
+            if selected or active_explorers:
                 break
         if not selected:
             now = self.now()
             if now - self.last_no_assignment_log >= 10.0:
                 self.get_logger().warn(
-                    f"No safe cooperative frontier assignment: {diagnostics}"
+                    f"No safe cooperative frontier assignment: {diagnostics}; "
+                    f"positions={self.robot_positions}; "
+                    f"candidates={[(name, round(a.x, 3), round(a.y, 3)) for _, name, _, a in candidates[:12]]}"
                 )
                 self.last_no_assignment_log = now
             return
@@ -3735,7 +3839,19 @@ class HeadquartersControl(Node):
             )
             self.send_goal(robot_name, assignment)
 
+    def record_navigation_decision(self, robot_name, kind):
+        self.consumed_publisher.publish(String(data=json.dumps({
+            "event": "coordinator_navigation_decision", "event_time": self.now(),
+            "robot": robot_name, "kind": kind, "task_phase": self.task_state,
+            "inputs": self.input_freshness_details(),
+        }, sort_keys=True)))
+
     def send_goal(self, robot_name, assignment):
+        if not self.fresh_robot_inputs():
+            self.robot_states[robot_name] = "idle"
+            self.goal_targets[robot_name] = None
+            self.goal_routes[robot_name] = ()
+            return
         if self.battery_modes[robot_name] != "ACTIVE":
             self.robot_states[robot_name] = "idle"
             self.goal_targets[robot_name] = None
@@ -3765,6 +3881,7 @@ class HeadquartersControl(Node):
                          frontier[0] - assignment.navigation_x)
         goal.pose.pose.orientation.z = math.sin(yaw / 2.0)
         goal.pose.pose.orientation.w = math.cos(yaw / 2.0)
+        self.record_navigation_decision(robot_name, "exploration")
         future = client.send_goal_async(
             goal,
             feedback_callback=lambda feedback, name=robot_name: (

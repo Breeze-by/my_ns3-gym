@@ -17,7 +17,7 @@ from tf2_msgs.msg import TFMessage
 
 from .fault_model import (
     CHARGE_REQUEST_TTL_SEC, DeterministicFaultTransport, FaultConfig,
-    RELIABLE_TYPES, STATE_TYPES,
+    RELIABLE_TYPES, STATE_TYPES, STATE_TTL_SEC, TARGET_DETECTION_TTL_SEC,
     message_id, source_time,
 )
 
@@ -285,7 +285,7 @@ class IdealGateway(Node):
                         f"/{robot}/map",
                         f"/gateway/received/{robot}/map",
                         OccupancyGrid,
-                        5.0,
+                        STATE_TTL_SEC["map_snapshot"],
                         True,
                         1.0,
                         True,
@@ -297,7 +297,7 @@ class IdealGateway(Node):
                         f"/{robot}/odom",
                         f"/gateway/received/{robot}/odom",
                         Odometry,
-                        2.0,
+                        STATE_TTL_SEC["pose_state"],
                         min_interval_sec=0.2,
                     ),
                     Route(
@@ -307,7 +307,7 @@ class IdealGateway(Node):
                         f"/{robot}/gateway/source_tf",
                         f"/gateway/received/{robot}/tf",
                         TFMessage,
-                        2.0,
+                        STATE_TTL_SEC["frame_state"],
                         min_interval_sec=0.5,
                     ),
                     Route(
@@ -317,7 +317,7 @@ class IdealGateway(Node):
                         f"/{robot}/battery_state",
                         f"/gateway/received/{robot}/battery_state",
                         String,
-                        5.0,
+                        STATE_TTL_SEC["battery_state"],
                         True,
                         0.5,
                     ),
@@ -328,7 +328,7 @@ class IdealGateway(Node):
                         "/merge_map",
                         f"/{robot}/gateway/merge_map",
                         OccupancyGrid,
-                        5.0,
+                        STATE_TTL_SEC["fused_map_snapshot"],
                         True,
                         1.0,
                         True,
@@ -370,7 +370,7 @@ class IdealGateway(Node):
                     "/target_detection",
                     "/gateway/received/target_detection",
                     String,
-                    60.0,
+                    TARGET_DETECTION_TTL_SEC,
                     True,
                 ),
                 Route(

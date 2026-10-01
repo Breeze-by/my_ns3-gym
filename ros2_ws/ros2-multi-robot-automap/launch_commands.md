@@ -725,3 +725,5 @@ Gazebo factory 明确表示本次实体已经入队、确认阶段超时时，he
 返航让路候选收紧：保护实际charge_radius_m对应的接触区，refuge须直接可见且位于整个返航通道guard之外，不把停在转弯前的短航段当作安全让路完成；busy返航期间暂停不经过预约的恢复/probe分支。yield搜索按最近路径逐个验证候选，1Hz重试；充电半径/能耗/速度/完成门限不变。固定ideal可按1+2+3+4同提交分批，check_p3b5_gate.py --ideal-fixed SUMMARY... 拒绝重复格/不同源码或环境；不能挑选成功覆盖失败。
 
 2026-10-02 本地返航修复候选：充电中心不可达时，在原接触半径内选择已知自由、净空安全且可达的contact点（额外留0.2m目标误差），复用home规划的距离场。local Nav2不可用、map/pose缺失、contact/escape不可达会有5秒限频诊断。电池/半径/clearance不变；旧baec9ea物理探针耗尽已保留，该候选须新冻结验证。只读physics observer的原生UUID转int后输出JSON；wrapper会传播observer失败，任务runner成功不能掩盖测量失败。
+
+2026-10-02 P3B.5 freshness/前沿候选：固定ideal runner默认每episode保存gateway ledger。中央pose/TF从源时间执行2s TTL，map/battery5s；一般freshness参数只能收紧。默认target detector在目标当前可见且连续确认后最多1Hz重确认，经同一gateway交付；60s目标lease过期暂停新集合/调查与完成保持，真实新确认恢复，旧重传不续期。独立本地返航和安全refuge不被目标过期阻止。粗前沿全部安全拒绝时在可达净空区域重新采样，原路线预约/净距不变。原命令/300s/能量配置保持。

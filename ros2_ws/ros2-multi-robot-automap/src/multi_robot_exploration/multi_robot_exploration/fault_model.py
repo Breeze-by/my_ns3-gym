@@ -11,6 +11,11 @@ RELIABLE_TYPES = frozenset((
     "navigation_result", "battery_failure", "task_state", "charge_request",
 ))
 CHARGE_REQUEST_TTL_SEC = 10.0
+TARGET_DETECTION_TTL_SEC = 60.0
+STATE_TTL_SEC = {
+    "map_snapshot": 5.0, "fused_map_snapshot": 5.0,
+    "pose_state": 2.0, "frame_state": 2.0, "battery_state": 5.0,
+}
 STATE_TYPES = frozenset((
     "map_snapshot", "fused_map_snapshot", "pose_state", "frame_state",
     "battery_state", "task_state", "target_observation",

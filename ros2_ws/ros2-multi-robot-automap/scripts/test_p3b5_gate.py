@@ -32,6 +32,23 @@ def test_accept_deferral_and_physical_cluster_accounting(tmp_path):
     assert result["ci95"]==[.5,1.]
 
 
+@pytest.mark.parametrize("age", [-.001, 2.001])
+def test_reject_new_navigation_decision_using_a_future_or_expired_sample(tmp_path, age):
+    event={"event":"coordinator_navigation_decision","event_time":100.,
+           "kind":"rally","inputs":{"tb1/pose_state":{
+               "source_time":100.-age,"age_sec":age,"ttl_sec":2.}}}
+    with pytest.raises(AssertionError):ledger_audit(write_events(tmp_path,[event]))
+
+
+def test_expired_target_can_only_be_used_for_local_return_refuge_audit(tmp_path):
+    event={"event":"coordinator_navigation_decision","event_time":100.,
+           "kind":"local_return_yield","inputs":{
+               "tb1/pose_state":{"source_time":99.,"age_sec":1.,"ttl_sec":2.},
+               "headquarters/target_detection":{"source_time":0.,"age_sec":100.,"ttl_sec":60.}}}
+    assert ledger_audit(write_events(tmp_path,[event]))["coordinator_decision_source_leases"]=="PASS"
+    with pytest.raises(AssertionError):ledger_audit(write_events(tmp_path,[{**event,"kind":"rally"}]))
+
+
 def test_wait_excludes_live_goals_and_autonomous_charge(tmp_path):
     from check_p3b5_gate import local_wait_audit
     events=[{"event":"coordinator_wait","time":0},

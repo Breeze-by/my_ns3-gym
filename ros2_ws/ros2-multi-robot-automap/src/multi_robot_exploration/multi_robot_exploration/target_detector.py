@@ -94,6 +94,7 @@ class TargetDetector(Node):
         self.streaks = {name: 0 for name in self.robot_names}
         self.observation_state = "EXPLORE"
         self.confirmed = False
+        self.last_confirmation_at = -float("inf")
 
         state_qos = QoSProfile(depth=1)
         state_qos.durability = DurabilityPolicy.TRANSIENT_LOCAL
@@ -121,7 +122,7 @@ class TargetDetector(Node):
         self.observation_publisher.publish(message)
 
     def _model_states_callback(self, message):
-        if self.confirmed or self.target_model not in message.name:
+        if self.target_model not in message.name:
             return
         poses = dict(zip(message.name, message.pose))
         target_pose = poses[self.target_model]
@@ -144,8 +145,13 @@ class TargetDetector(Node):
         confirmed_robot = update_confirmation(
             self.streaks, visible, self.required_frames
         )
+        now = self.get_clock().now().nanoseconds / 1e9
         if confirmed_robot is not None:
+            if now - self.last_confirmation_at < 1.0:
+                return
+            initial = not self.confirmed
             self.confirmed = True
+            self.last_confirmation_at = now
             self._publish_observation("FOUND")
             event = String()
             event.data = json.dumps(
@@ -157,14 +163,17 @@ class TargetDetector(Node):
                     "confirmation_frames": self.required_frames,
                     "max_distance_m": self.max_distance,
                     "field_of_view_deg": self.field_of_view_degrees,
-                    "stamp_sec": self.get_clock().now().nanoseconds / 1e9,
+                    "stamp_sec": now,
                 },
                 sort_keys=True,
             )
             self.detection_publisher.publish(event)
-            self.get_logger().info(
-                f"Target confirmed by {confirmed_robot} at {target}"
-            )
+            if initial:
+                self.get_logger().info(
+                    f"Target confirmed by {confirmed_robot} at {target}"
+                )
+        elif self.confirmed:
+            return
         elif visible:
             self._publish_observation("FOUND_UNCONFIRMED")
         elif self.observation_state == "FOUND_UNCONFIRMED":

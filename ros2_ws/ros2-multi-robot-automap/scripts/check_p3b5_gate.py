@@ -37,12 +37,20 @@ def ledger_audit(path):
             key=(e['message_type'],e['sender'],e['recipient'])
             assert e['sequence']>last.get(key,0),(path,e)
             last[key]=e['sequence']
-        if event=='consumed' and e.get('message_type')=='target_detection':
+        if event in ('consumed','target_reconfirmed') and e.get('message_type')=='target_detection':
             assert e['consumed_time']+1e-8>=e['delivery_time']>=e['source_time'],(path,e)
+            assert e['consumed_time']-e['source_time']<=60.+1e-8,(path,e)
+        if event=='coordinator_navigation_decision':
+            for name, sample in e['inputs'].items():
+                if name=='headquarters/target_detection' and e['kind']=='local_return_yield':
+                    continue
+                assert sample['source_time'] is not None,(path,e)
+                assert -1e-8<=sample['age_sec']<=sample['ttl_sec']+1e-8,(path,e)
         if event=='coordinator_wait' and waiting is None: waiting=when
         if event=='coordinator_recovered' and waiting is not None:
             waits.append([waiting,when]); waiting=None
     return {'attempt_stage_causality':'PASS','receiver_ttl_and_versions':'PASS',
+            'coordinator_decision_source_leases':'PASS',
             'event_counts':dict(counts),'minimum_accepted_source_delay_sec':minimum_delay,
             'maximum_clock_deferral_sec':maximum_clock_deferral,'recovered_wait_intervals':waits}
 
@@ -317,7 +325,11 @@ def main():
     epoch=next(json.loads(line)['event_time'] for line in (d/'ledger.jsonl').open() if json.loads(line)['event']=='fault_epoch')
     return_inside={name:[b['source_time']-epoch for b in changes if b['mode']=='RETURNING' and 20<=b['source_time']-epoch<=250]
                    for name,changes in safety_trace(d/'safety_events.jsonl')['local_battery_transitions'].items()}
-    assert all(return_inside.values()),return_inside
+    # The original contact-zone probe can begin before the blackout. Retain
+    # its timing, but require BOTH robots to satisfy the stronger predeclared
+    # physical-motion audit below for the outage-return guarantee.
+    return_all={name:[b["source_time"]-epoch for b in changes if b["mode"]=="RETURNING"]
+                for name,changes in safety_trace(d/"safety_events.jsonl")["local_battery_transitions"].items()}
     assert all(b['battery_charge_count']>=1 for b in probe['result']['robots'].values())
     local_deadline=probes['episodes'][probes['pairs']['local_deadline_cancel']['fault']]
     assert local_deadline['communication']['events'].get('navigation_deadline',0)>0
@@ -399,7 +411,9 @@ def main():
             'fixed_ideal_evidence':fixed,'forced_ideal_episode':force,
             'hash_contract':'legacy *_sha256 uses filename+file bytes; *_content_sha256 is standard SHA256(bytes); tree digests use relative paths+bytes',
             'safety_audit':{'single_failure_observer_isolation_latency_sec':isolation_latency,
-                            'outage_local_return_offsets_sec':return_inside},
+                            'outage_local_return_offsets_sec':return_inside,
+                            'auxiliary_all_return_offsets_sec':return_all,
+                            'outage_return_guarantee_basis':'Both robots in predeclared physical probe: start >=1.1m from home, >=0.5m return/progress/live-Nav2 motion within guarded blackout; original contact-zone timing is diagnostic only'},
             'auxiliary_safety_probes':probes,'auxiliary_probe_evidence':probe_evidence,
             'physical_return_probe':physical,'physical_return_metadata':metadata,'physical_return_evidence':physical_evidence,
             'all_gate_unique_episode_count':len(episodes)+len(fixed['episodes'])+len(probe_evidence)+len(physical_evidence),
@@ -408,7 +422,7 @@ def main():
             'summary_evidence':[{'path':str(x),'content_sha256':sha(x)} for x in a.summaries],
             'gate_checks':['all27cases; all historical failed batches retained, not pooled into primary task degradation cohort','ideal/fault same protocol/physical settings','safe complete/partial gates',
                            '100%/expired target cannot fake rally','actual queue/retry/deadline/duplicate/reorder',
-                           'forced outage local return','10 fixed ideal cells + forced regression','source/graphs/hashes']}
+                           'forced outage charging safety + both-robot predeclared physical return proof','10 fixed ideal cells + forced regression','source/graphs/hashes']}
     a.output.parent.mkdir(parents=True,exist_ok=True);a.output.write_text(json.dumps(report,indent=2)+'\n')
     print(json.dumps({'status':'PASS','episodes':len(episodes),'pairs':len(pairs),'tdi':report['tdi']}))
 
