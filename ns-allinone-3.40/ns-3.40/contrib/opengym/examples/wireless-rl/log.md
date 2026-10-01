@@ -4431,3 +4431,20 @@ GAZEBO_MASTER_URI=http://127.0.0.1:12750 taskset -c 0-19 /usr/bin/python3 /tmp/p
 受控夹具准备改为沿原固定远点方向选择≤.75m、至少.5m（最后短腿除外）的当前map已知可见自由前缀，实际完成一段后才选下一段；source-age/ACTIVE/deadline每次重验。不会直接给未知远点、不会越过未知空洞，不作为任务策略/训练动作。fixture订阅改latest-only depth1、每个新map只计算一次clearance，减少自身回调积压；原姿态TTL2/地图电池5、终点/净空、50s准备、E40/idle.15、60..250断网和全部强物理门槛完全不变。新增已知前缀/未知洞/越界反例，证据检查器逐次核对四类sourcelease及≤.75m腿。直接相关23PASS1.28s，最终15文件231 checks随后补记。
 
 最终15文件231PASS7.83s/source audit PASS零违规；四包task源/launch未改，不重复构建。git diff --check/explicit staging/commit/push后才开展下一独立同源码候选。
+
+## 2026-10-02 P3B.5 aec30f7 一次性准备重派发失败候选
+
+冻结aec30f7119fbaa390b20e6c56884c04d20bb46eb（15文件231PASS7.83/source审计后clean/push）。3started/3raw全部自然结束：fixedlab101 COMPLETE140.5s/零接触/min27.829；补充physicalideal/fault均timeout300.4s、2充/零接触/正能量/min9.62834/9.65651，所有runner/readonlyobserver0。两台都成功在50s前经.75m known prefixes到远点。原生断网返航物理证据确实通过：tb1起点2.01755m/offset171.1、路径1.20025m/进展1.19016m/liveNav路径1.20022m；tb2起点1.96597m/offset172.1、路径1.15299m/进展1.14434m/live1.15297m；均在62..248guard。它们仍不能覆盖原声明一致性的失败：ideal中tb1 staged19.7s，本地真实返充后192.2s又发第7个staging goal，从(-.01555,-1.17424)至(-.00641,-1.92418)，coordinator于200.2恢复。已完成staged标志没有在循环顶层跳过，产生额外准备动作；fault因为AP源过期未触发此动作，不据此掩盖ideal缺陷。
+
+UTC21:15:18.492196只SIGINT尚未有pool_pids的owned行政supervisor PID3487555，3个正在运行episode未被signal，完整自然结果保留；四池/707从未启动，无episode重跑、补格或成功替换。完整原summary/results及script/config/observer/hash、精确命令、七个目标事件、stop记录、原始强物理门数据在report/20261002_p3b5_restage_failed_candidate.json；补充对照永远不作为主任务/TDI样本。
+
+```bash
+GAZEBO_MASTER_URI=http://127.0.0.1:12852 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_return_probe.py --run-id p3b5_v18_returnproof --ros-domain-base 180 --config scripts/p3b5_staged_return_probe_manifest.json > /tmp/p3b5_v18_returnproof.log 2>&1
+PYTHONNOUSERSITE=1 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_aec30f7.json > /tmp/p3b5_protocol_aec30f7.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:12850 taskset -c 0-19 /usr/bin/python3 /tmp/p3b5_v18_first_lab101.py > /tmp/p3b5_v18_first_lab101.log 2>&1
+/usr/bin/python3 /tmp/p3b5_v18_after_subgates.py > /tmp/p3b5_v18_after_subgates.log 2>&1
+```
+
+修复仅为for-loop最前跳过已staged机器人，使prepare完成标志一次性锁存；等待两台原生充电时保持空闲。强证据审计新增逐事件顺序检查：准备完成后或50s后任何新准备request都拒绝，stage目标位置满足声明.25m误差，source leases/腿长门槛不变，必须真实both_charged后才coordinator_resumed。反例同时覆盖仍在50s内重派发21s和实际原192.2s情况，新分析器对原ideal FAIL、原fault PASS；不得把原一致性失败改写为PASS。直接相关26PASS1.33s，完整15文件234checks随后补记；目标/阈值/能量/断网/horizon/episode retry完全不变。
+
+最终15文件234PASS7.69s/source audit PASS零违规；四包任务源与launch仍未变，fixture/scripts检查充分，无重复colcon构建。focused diff检查及commit/push后才启动新候选。

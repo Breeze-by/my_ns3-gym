@@ -184,6 +184,8 @@ def main():
                 record('stage_deadline', staged=sorted(staged), received_types={n: sorted(x) for n, x in latest.items()})
                 raise TimeoutError(f'Staging deadline exceeded; staged={sorted(staged)}')
             for name, target in fixture['poses'].items():
+                if name in staged:
+                    continue
                 data = latest[name]
                 leases = {kind: {'source_time': stamp, 'age_sec': now() - stamp,
                                   'ttl_sec': STATE_TTL_SEC[kind]} for kind, (stamp, _) in data.items()}

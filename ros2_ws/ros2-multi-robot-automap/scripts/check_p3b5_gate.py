@@ -210,6 +210,37 @@ def physical_return_audit(events, epoch, homes, window=(42., 248.)):
     return evidence
 
 
+def staging_audit(events, epoch, fixture):
+    """Preparation is one-shot and all commanded legs use current source leases."""
+    import math
+    prepared={};requested=set();charged=False;resumed=False
+    for event in events:
+        kind=event['event'];name=event.get('robot')
+        assert kind not in ('fixture_failed','interrupted')
+        if kind=='staging_requested':
+            assert name not in prepared and name in fixture['poses']
+            assert 0<=event['observer_time']-epoch<=fixture['stage_deadline_sec']
+            assert set(event['inputs'])=={'map_snapshot','pose_state','frame_state','battery_state'}
+            for lease in event['inputs'].values():
+                age=event['observer_time']-lease['source_time']
+                assert 0<=age<lease['ttl_sec'] and abs(age-lease['age_sec'])<1e-6
+            assert math.dist(event['waypoint'],event['current_position'])<=fixture['navigation_leg_limit_m']+1e-8
+            requested.add(name)
+        elif kind=='staged':
+            assert name in requested and name not in prepared
+            assert 0<=event['observer_time']-epoch<=fixture['stage_deadline_sec']
+            assert math.dist(event['position'],fixture['poses'][name][:2])<=fixture['position_tolerance_m']+1e-8
+            prepared[name]=event
+        elif kind=='both_charged':
+            assert set(prepared)==set(fixture['poses'])
+            charged=True
+        elif kind=='coordinator_resumed':
+            assert charged
+            resumed=True
+    assert charged and resumed and set(prepared)==set(fixture['poses'])
+    return prepared
+
+
 def main():
     p=argparse.ArgumentParser()
     p.add_argument('summaries',nargs='+',type=Path)
@@ -385,20 +416,9 @@ def main():
             assert row['staging_returncode']==0 and row['staging_events_sha256']==file_digest(d/'staging.jsonl')
             assert hashlib.sha256(row['staging_source'].encode()).hexdigest()==row['staging_source_sha256']
             stages=[json.loads(line) for line in (d/'staging.jsonl').open()]
-            prepared={x['robot']:x for x in stages if x['event']=='staged'}
             epoch=next(json.loads(line)['event_time'] for line in (d/'ledger.jsonl').open() if json.loads(line)['event']=='fault_epoch')
+            prepared=staging_audit(stages,epoch,physical['config']['return_staging'])
             assert set(prepared)==set(r['robots'])
-            assert all(0<=x['observer_time']-epoch<=physical['config']['return_staging']['stage_deadline_sec'] for x in prepared.values())
-            assert any(x['event']=='both_charged' for x in stages)
-            assert not any(x['event'] in ('fixture_failed','interrupted') for x in stages)
-            for x in stages:
-                if x['event']!='staging_requested': continue
-                assert set(x['inputs'])=={'map_snapshot','pose_state','frame_state','battery_state'}
-                for lease in x['inputs'].values():
-                    age=x['observer_time']-lease['source_time']
-                    assert 0<=age<lease['ttl_sec'] and abs(age-lease['age_sec'])<1e-6
-                import math
-                assert math.dist(x['waypoint'],x['current_position'])<=physical['config']['return_staging']['navigation_leg_limit_m']+1e-8
             detail['controlled_staging']={'source_sha256':row['staging_source_sha256'],
                 'events_sha256':row['staging_events_sha256'],'prepared':prepared,
                 'scope':'Supplemental safety fixture; suspended central exploration; excluded from mission/TDI.'}

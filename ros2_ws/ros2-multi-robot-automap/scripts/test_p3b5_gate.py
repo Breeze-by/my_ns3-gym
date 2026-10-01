@@ -3,6 +3,25 @@ import pytest
 from check_p3b5_gate import ledger_audit, bootstrap
 
 
+@pytest.mark.parametrize('extra_time', [None, 21., 192.2])
+def test_prepared_robot_cannot_be_staged_again_after_actual_return(extra_time):
+    from check_p3b5_gate import staging_audit
+    fixture={'poses':{'tb1':[.75,0.,0.]},'stage_deadline_sec':50.,
+             'position_tolerance_m':.25,'navigation_leg_limit_m':.75}
+    def request(t):
+        return {'event':'staging_requested','robot':'tb1','observer_time':t,
+                'waypoint':[.75,0.],'current_position':[0.,0.],
+                'inputs':{k:{'source_time':t-.1,'age_sec':.1,'ttl_sec':2.}
+                          for k in ('map_snapshot','pose_state','frame_state','battery_state')}}
+    events=[request(1.),{'event':'staged','robot':'tb1','observer_time':20.,'position':[.75,0.]}]
+    if extra_time is not None:events.append(request(extra_time))
+    events.extend([{'event':'both_charged','observer_time':200.},
+                   {'event':'coordinator_resumed','observer_time':200.}])
+    if extra_time is None:assert set(staging_audit(events,0.,fixture))=={'tb1'}
+    else:
+        with pytest.raises(AssertionError):staging_audit(events,0.,fixture)
+
+
 def write_events(tmp_path, events):
     path=tmp_path / "ledger.jsonl"
     path.write_text("".join(json.dumps(e)+"\n" for e in events))
