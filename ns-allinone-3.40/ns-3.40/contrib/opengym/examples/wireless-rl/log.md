@@ -4192,3 +4192,21 @@ lab3 seed202 113.4s检测、168.6s RALLY、300.2s真实timeout，三台各充电
 新算法候选：除现有实际body/当前短航段和安全返航预约外，为每个未完成高优先级机器人预留到最终集结位置的完整剩余接近路线。低优先级只能沿不冲突前缀移动，不能提前停在高优先级下一航段必经路径上；未知leader几何等待，完成/FAILED才释放意图预约，temporary yield不算完成。对充电/返航中的leader使用充电位起点的未来路线，实际返航路径/占位仍独立保护。复用同一dispatch snapshot的能量规划已有完整路线，不新增电池启用情况下的重复BFS；无电池模式按相同策略规划。意图预约不授权穿过停驻物理实体，既有静态占位和实时短航段检查仍执行。不改变300秒、能耗、清障距离、速度或COMPLETE判据。
 
 新增三项反例：当前短leg无冲突但最终停车堵住leader未来leg；未知/未完成leader不得释放、完成/FAILED可释放；能量预算复用路线确实到最终目标。首轮161 passed/2 failed为测试夹具未模拟prepare填充新缓存、原route separation要求比夹具预计更远；修正夹具，未放宽安全阈值。十文件163 passed（6.64s），四包colcon build通过5.44s，source-only三机器人审计零违规。该候选尚待新冻结开发与全矩阵验证。
+
+## 2026-10-01 P3B.5 c738c4e 开发失败保留、串行返充前的安全接近调度
+
+冻结源码c738c4e（Humble/install、PYTHONNOUSERSITE=1），精确命令：
+
+GAZEBO_MASTER_URI=http://127.0.0.1:11501 taskset -c 0-19 /usr/bin/python3 scripts/run_p2d_baseline.py --run-id p3b5_priority_dev_c738c4e --scenarios lab_far_northwest --robot-count 3 --seeds 202 --skip-cross-check --ros-domain-base 130 --startup-timeout 600 --evaluation-wait-timeout 900 --infrastructure-retries 0 --rally-max-concurrent 2 --disable-global-battery-rally-pause > /tmp/p3b5_priority_dev_c738c4e.log 2>&1；
+
+GAZEBO_MASTER_URI=http://127.0.0.1:11502 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v8_forced --cases forced_charge_outage --ros-domain-base 160 > /tmp/p3b5_v8_forced.log 2>&1；退出0后同CPU/master /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v8_safety --config scripts/p3b5_safety_probe_manifest.json --ros-domain-base 162 > /tmp/p3b5_v8_safety.log 2>&1。
+
+/usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_c738c4e.json：54格PASS。
+
+lab3 seed202 99.1s检测、111.7s进入RALLY、300.0s timeout，三台各充电一次、零碰撞/耗尽/failed robot。tb2先到最终位，tb1剩1.377m、tb3剩4.428m，完整路线优先级预约仍不足以满足时限；本轨迹三台长距离串行返充后才开始主要集结。forced ideal213.3s COMPLETE、fault277.3s COMPLETE，各两次充电、零碰撞。安全探针第一ideal在EXPLORE后主动停止；runner保存operational_failure/NO_RESULT，其他三格未运行，不宣称探针成功；没有holdout。原始结果、派发轨迹与中断证据在report/20261001_p3b5_staging_failed_candidate.json。
+
+另对冻结1ba31be主forced两份ledger离线核查：阶段因果、接收TTL/版本全部PASS；逻辑TF入队源年龄max分别.275/.300秒，完整任务未复现之前约2秒积压。逻辑enqueue以max(clock,source)定义，median0不等于精确物理零排队；没有把不同轨迹的时长差作单因素收益。
+
+新候选在仍串行的提前充电前增加接近调度：需要充电而等待的ACTIVE队友通过正常gateway导航沿安全返航前缀靠近home，所有当前/未来返航、停驻实体与实时rally路径预约照常执行；冲突/未知几何等待，不跳过local safety。实际提前返航请求仍一次一个；本地低电量始终可自主抢占。不改变充电半径/时间、能耗/保留量、速度/清障距离、300秒或COMPLETE判据。stage保留其已验证预算至真实充电完成/FAILED，即使当前剩余目标路线或消息暂时不可用，不能把stage waypoint当最终集结位。
+
+四项新增检查覆盖无冲突接近、交叉返航禁止接近、活动stage保留充电需求及真实充电完成清理、目标路线不可用时保持预算。首轮新增夹具漏fresh pose/state属性，另一次补丁误插入无关测试导致NameError，均修正测试夹具；没有改变安全阈值。十文件167 passed（6.62s）、四包build5.27s、源码旁路审计零违规。尚需新冻结版本任务回归与完整门禁。

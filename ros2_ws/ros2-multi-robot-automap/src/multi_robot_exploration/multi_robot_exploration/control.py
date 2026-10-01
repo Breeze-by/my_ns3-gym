@@ -1770,6 +1770,7 @@ class HeadquartersControl(Node):
         self.rally_yield_requested = {}
         self.rally_battery_preempted = {}
         self.rally_charge_requested = {}
+        self.rally_precharge_staging = {}
         self.rally_preflight_complete = False
         self.rally_precharge_active = False
         self.charge_request_publishers = {}
@@ -2048,6 +2049,7 @@ class HeadquartersControl(Node):
         if mode not in ("RETURNING", "CHARGING"):
             if mode == "ACTIVE" and previous != "ACTIVE":
                 self.rally_charge_requested.pop(robot_name, None)
+                self.rally_precharge_staging.pop(robot_name, None)
                 self.get_logger().info(
                     f"{robot_name} resumed after charging."
                 )
@@ -2116,6 +2118,7 @@ class HeadquartersControl(Node):
 
         self.rally_targets.pop(robot_name, None)
         self.rally_charge_requested.pop(robot_name, None)
+        self.rally_precharge_staging.pop(robot_name, None)
         self.rally_final_targets.pop(robot_name, None)
         self.rally_arrived.pop(robot_name, None)
         self.rally_dispatch_order = [
@@ -2585,6 +2588,8 @@ class HeadquartersControl(Node):
                                    or self.rally_goal_pending[name])
                               and self.rally_leg_routes[name]}
             plans = {}
+            planning_targets = {}
+            stage_names = set()
             for name in self.rally_dispatch_order:
                 if (
                     self.rally_arrived[name]
@@ -2602,9 +2607,37 @@ class HeadquartersControl(Node):
                     or self.survey_goal_handle is not None
                     or self.robot_positions[name] is None
                     or self.battery_modes[name] != "ACTIVE"
-                    or (name in energy_unready and name not in self.rally_yield_targets)
                     or return_reservations is None
                 ):
+                    continue
+                staging = name in energy_unready and name not in self.rally_yield_targets
+                if staging:
+                    # Waiting for a serial charge need not mean waiting far
+                    # away. The same route/body reservations protect a normal
+                    # gateway navigation prefix toward home; local safety may
+                    # preempt it, and only one early return is still requested.
+                    if name in self.rally_charge_requested or not (
+                        self.rally_charge_requested
+                        or any(mode in ('RETURNING', 'CHARGING')
+                               for mode in self.battery_modes.values())
+                    ):
+                        continue
+                    state = self.battery_states[name]
+                    home = RallyPose(float(state['charge_x']), float(state['charge_y']), 0.)
+                    if math.dist(self.robot_positions[name], (home.x, home.y)) <= 1.25:
+                        continue
+                    plan = plan_rally_leg(
+                        home, self.map_data, self.resolution, self.origin,
+                        self.robot_positions[name], MAX_NAVIGATION_LEG_M,
+                        rally_stationary_positions(
+                            self.robot_positions, name,
+                            reserved_names | set(return_reservations),
+                        ), visible_only=True,
+                    )
+                    if plan[0] is not None:
+                        plans[name] = plan
+                        planning_targets[name] = home
+                        stage_names.add(name)
                     continue
                 if self.rally_recovery_requested[name]:
                     plan = (None, ())
@@ -2853,6 +2886,7 @@ class HeadquartersControl(Node):
                     continue
                 self.rally_route_unavailable_since[name] = None
                 plans[name] = plan
+                planning_targets[name] = self.rally_targets[name]
             if self.survey_goal_pending or self.survey_goal_handle is not None:
                 return
             routes = {name: plan[1] for name, plan in plans.items()}
@@ -2874,7 +2908,7 @@ class HeadquartersControl(Node):
                     break
                 if name not in plans:
                     continue
-                priority_routes = rally_priority_reservations(
+                priority_routes = [] if name in stage_names else rally_priority_reservations(
                     self.rally_dispatch_order, name, approach_routes,
                     completed_approaches,
                 )
@@ -2885,10 +2919,13 @@ class HeadquartersControl(Node):
                     # A newly reserved leader can clear this corridor. Prefer
                     # a safe prefix of the short route over a static detour.
                     plan = plan_rally_leg(
-                        self.rally_targets[name], self.map_data, self.resolution,
+                        planning_targets[name], self.map_data, self.resolution,
                         self.origin, self.robot_positions[name],
                         min(MAX_NAVIGATION_LEG_M, rally_leg_limit(self.rally_attempts[name])),
-                        rally_stationary_positions(self.robot_positions, name, admitted_names),
+                        rally_stationary_positions(
+                            self.robot_positions, name, admitted_names
+                            | (set(return_reservations) if name in stage_names else set()),
+                        ),
                         visible_only=True,
                     )
                 reservations = [*reserved_routes, *priority_routes, *(route for other, route in
@@ -2897,6 +2934,9 @@ class HeadquartersControl(Node):
                 if admitted is None:
                     continue
                 self.send_rally_goal(name, admitted)
+                if name in stage_names and self.rally_goal_pending[name]:
+                    self.rally_precharge_staging.setdefault(name, self.rally_charge_budgets[name])
+                    self.get_logger().info(f"Staging {name} along its reserved home approach before serial charging.")
                 reserved_routes.append(admitted[1])
                 admitted_names.add(name)
                 slots -= 1
@@ -2942,7 +2982,7 @@ class HeadquartersControl(Node):
 
     def prepare_rally_charges(self):
         """Check the whole final route before admitting another navigation leg."""
-        blocked = set(self.rally_charge_requested)
+        blocked = set(self.rally_charge_requested) | set(self.rally_precharge_staging)
         candidates = []
         budgets, travel_times, charge_times = {}, {}, {}
         self.rally_approach_routes = {}
@@ -2977,7 +3017,8 @@ class HeadquartersControl(Node):
             distance = sum(math.dist(a, b) for a, b in zip(route, route[1:]))
             travel_times[name] = distance / speed
             if (self.battery_modes[name] != "ACTIVE"
-                    or self.rally_goal_handles[name] is not None or self.rally_goal_pending[name]):
+                    or ((self.rally_goal_handles[name] is not None or self.rally_goal_pending[name])
+                        and name not in self.rally_precharge_staging)):
                 continue
             try:
                 energy = float(state["energy"])
@@ -3007,8 +3048,10 @@ class HeadquartersControl(Node):
             {name: budget[1] for name, budget in budgets.items()},
             self.battery_states, self.battery_modes, travel_times, charge_times,
         )
+        self.rally_charge_budgets = {**self.rally_precharge_staging, **requirements}
         for name, (energy, _, charge_target, idle_cost, home) in budgets.items():
-            required = requirements[name]
+            required = max(requirements[name], self.rally_precharge_staging.get(name, 0.))
+            self.rally_charge_budgets[name] = required
             if energy > required:
                 continue
             blocked.add(name)

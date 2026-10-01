@@ -1105,6 +1105,7 @@ def test_idle_blocker_recovery_dispatches_motion_before_returning(
         battery_monitor_started_at=0., battery_state_received_at=dict.fromkeys(names, 10.),
         message_freshness_timeout_sec=5.,
         rally_charge_requested={}, prepare_rally_charges=lambda: {"tb2"},
+        rally_precharge_staging={},
         rally_approach_routes={},
         rally_preflight_complete=True, rally_precharge_active=False,
         battery_states={name: {'charge_x': 1., 'charge_y': 2.5} for name in names},
@@ -1203,6 +1204,7 @@ def rally_budget_node(energy=25.0):
              "nominal_speed_mps": .18, "return_safety_margin": 8.0}
     node = SimpleNamespace(
         rally_dispatch_order=["tb1"], rally_charge_requested={}, now=lambda: 11.0,
+        rally_precharge_staging={},
         battery_modes={"tb1": "ACTIVE"}, battery_states={"tb1": state},
         battery_state_received_at={}, robot_positions={"tb1": (1.05, 1.05)},
         rally_goal_handles={"tb1": None}, rally_goal_pending={"tb1": False},
@@ -1229,10 +1231,12 @@ def test_rally_preflight_reserves_return_from_final_pose_and_holds_until_resume(
     assert control.HeadquartersControl.prepare_rally_charges(node) == {"tb1"}
     assert len(messages) == 1  # retries cannot flood the command route
     node.battery_modes["tb1"] = "CHARGING"
+    node.rally_precharge_staging['tb1'] = event['required_energy']
     control.HeadquartersControl.battery_state_callback(node, SimpleNamespace(data=json.dumps({
         **node.battery_states["tb1"], "mode": "ACTIVE", "energy": 80.0, "stamp_sec": 12.0,
     })), "tb1")
     assert not node.rally_charge_requested
+    assert not node.rally_precharge_staging
     assert control.HeadquartersControl.prepare_rally_charges(node) == set()
     assert len(messages) == 1
 
@@ -1430,3 +1434,76 @@ def test_energy_planning_reuses_complete_approaches_for_dispatch():
         assert route[0] == node.robot_positions[name]
         target = node.rally_final_targets[name]
         assert math.dist(route[-1], (target.x, target.y)) < node.resolution
+
+
+def test_staged_motion_keeps_its_proven_charge_budget_and_serial_request():
+    node, messages, failures = two_robot_rally_budget_node()
+    node.rally_precharge_staging['tb1'] = 40.
+    node.rally_goal_handles['tb1'] = object()
+    node.battery_modes['tb2'] = 'CHARGING'
+    assert control.HeadquartersControl.prepare_rally_charges(node) == {'tb1'}
+    assert node.rally_charge_budgets['tb1'] == 40.
+    assert not messages and not failures
+    node.battery_modes['tb2'] = 'ACTIVE'
+    node.battery_states['tb2']['energy'] = 80.
+    node.rally_charge_requested.clear()
+    control.HeadquartersControl.prepare_rally_charges(node)
+    import json
+    assert json.loads(messages[-1].data)['robot'] == 'tb1'
+    assert json.loads(messages[-1].data)['required_energy'] == 40.
+
+
+def test_staged_charge_intent_survives_an_unavailable_final_rally_route():
+    node, messages, failures = rally_budget_node()
+    node.rally_precharge_staging['tb1'] = 40.
+    node.map_data[:, 50:55] = 100
+    assert control.HeadquartersControl.prepare_rally_charges(node) == {'tb1'}
+    assert node.rally_charge_budgets['tb1'] == 40.
+    assert not messages and not failures
+
+
+@pytest.mark.parametrize('conflicting', [False, True])
+def test_waiting_precharge_moves_only_along_a_safe_home_prefix(conflicting):
+    from types import SimpleNamespace
+    names = ['returner', 'waiter']
+    grid = np.zeros((80, 120), dtype=int)
+    positions = {'returner': (2.05, 1.05 if conflicting else 5.05),
+                 'waiter': (8.05, 1.05)}
+    targets = dict.fromkeys(names, control.RallyPose(10.05, 1.05, 0.))
+    sent = []
+    node = SimpleNamespace(
+        enable_battery=True, task_state='RALLY', fresh_robot_inputs=lambda: True,
+        fresh_robot_poses=lambda: True, message_freshness_timeout_sec=5.,
+        battery_state_received_at=dict.fromkeys(names, 10.),
+        last_input_availability=True, now=lambda: 10., battery_monitor_started_at=0.,
+        battery_modes={'returner': 'RETURNING', 'waiter': 'ACTIVE'},
+        participating_robots=lambda: names,
+        rally_dispatch_order=names, rally_charge_requested={}, rally_precharge_staging={},
+        prepare_rally_charges=lambda: {'waiter'}, rally_charge_budgets={'waiter': 40.},
+        rally_approach_routes={}, rally_preflight_complete=False, rally_precharge_active=False,
+        battery_states={'returner': {'charge_x': 9.05, 'charge_y': positions['returner'][1]},
+                        'waiter': {'charge_x': 1.05, 'charge_y': 1.05}},
+        rally_max_concurrent=2, rally_leg_routes=dict.fromkeys(names, ()),
+        rally_goal_handles=dict.fromkeys(names), rally_goal_pending=dict.fromkeys(names, False),
+        rally_goal_started_at=dict.fromkeys(names), rally_arrived=dict.fromkeys(names, False),
+        rally_hold_started_at=None, rally_yield_targets=set(), return_yield_targets={},
+        rally_yield_requested=dict.fromkeys(names, False), rally_probe_targets=set(),
+        rally_targets=targets.copy(), rally_final_targets=targets.copy(),
+        survey_robot=None, survey_goal_handle=None, survey_goal_pending=False,
+        release_return_yields=lambda: None, yield_to_returning_robot=lambda: None,
+        last_rally_dispatch_at=0., global_battery_rally_pause=False,
+        rally_attempts=dict.fromkeys(names, 0), robot_positions=positions,
+        map_data=grid, resolution=.1, origin=(0., 0.),
+        get_logger=lambda: SimpleNamespace(info=lambda *a: None, warn=lambda *a: None),
+    )
+    def send(name, plan):
+        sent.append((name, plan))
+        node.rally_goal_pending[name] = True
+    node.send_rally_goal = send
+    control.HeadquartersControl.update_mission(node)
+    if conflicting:
+        assert not sent and not node.rally_precharge_staging
+    else:
+        assert sent[0][0] == 'waiter' and sent[0][1][0].x < positions['waiter'][0]
+        assert node.rally_precharge_staging == {'waiter': 40.}
+    assert node.rally_final_targets == targets and not node.rally_preflight_complete
