@@ -1919,7 +1919,8 @@ class HeadquartersControl(Node):
         gateway = event.get("_gateway", {})
         self.consumed_publisher.publish(String(data=json.dumps({
             **gateway, "event": "consumed", "message_type": "target_detection",
-            "consumed_time": self.now(), "local_confirm_time": event.get("stamp_sec"),
+            "consumed_time": max(self.now(), gateway.get("delivery_time", self.now())),
+            "local_confirm_time": event.get("stamp_sec"),
         }, sort_keys=True)))
         self.publish_task_state("FOUND")
         if not self.enable_rally:

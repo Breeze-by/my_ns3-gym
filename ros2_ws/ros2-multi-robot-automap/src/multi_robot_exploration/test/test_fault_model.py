@@ -80,3 +80,21 @@ def test_invalid_blackout_window_is_rejected():
     for interval in ((2., 1.), (-1., 2.), (0., float("inf"))):
         with pytest.raises(ValueError):
             FaultConfig(blackout_intervals=(interval,))
+
+
+def test_sensor_clock_ahead_never_creates_tx_before_source_or_bypasses_ttl():
+    events=[]
+    transport=DeterministicFaultTransport(FaultConfig(delay_sec=2.),events.append)
+    transport.enqueue("ahead",envelope(),"uplink",9.9,source_time=10.,ttl_sec=2.)
+    assert transport.poll(11.99)==[]
+    assert transport.poll(12.)==[]
+    tx=next(e for e in events if e['event']=='tx')
+    assert tx['source_time']==tx['enqueue_time']==tx['tx_time']==10.
+    assert events[-1]['reason']=='expired_in_flight'
+
+
+def test_reorder_step_inverts_real_5hz_state_sequence():
+    transport=DeterministicFaultTransport(FaultConfig(reorder_window=2,reorder_step_sec=.3))
+    transport.enqueue('first',envelope(1),'uplink',0.)
+    transport.enqueue('second',envelope(2),'uplink',.2)
+    assert [a.envelope.sequence for a in transport.poll(.3)]==[2,1]

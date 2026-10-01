@@ -210,6 +210,8 @@ def build_manifest(config_path, args):
         / "src/multi_robot_exploration/multi_robot_exploration",
         "merge_map_source": PROJECT_ROOT / "src/merge_map/merge_map",
         "robot_params": PROJECT_ROOT / "src/multi_robot/params",
+        "slam_source": PROJECT_ROOT / "src/slam_toolbox/src",
+        "slam_config": PROJECT_ROOT / "src/slam_toolbox/config/mapper_params_online_multi_async.yaml",
     }
     return {
         "manifest_schema_version": 1,

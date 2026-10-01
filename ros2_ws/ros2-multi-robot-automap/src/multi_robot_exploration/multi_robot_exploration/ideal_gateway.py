@@ -1,4 +1,6 @@
 import json
+from copy import deepcopy
+import math
 import os
 import zlib
 from dataclasses import dataclass, replace
@@ -72,6 +74,11 @@ class IdealGateway(Node):
         self.task_phase = "EXPLORE"
         self.ack_counter = 0
         self.source_stamps = {}
+        self.frame_stamp_offset_sec = float(
+            self.declare_parameter("frame_stamp_offset_sec", 0.0).value
+        )
+        if not math.isfinite(self.frame_stamp_offset_sec) or self.frame_stamp_offset_sec < 0:
+            raise ValueError("frame stamp offset must be finite and non-negative")
         self.network_mode = str(
             self.declare_parameter("network_mode", "ideal").value
         ).lower()
@@ -101,6 +108,7 @@ class IdealGateway(Node):
         reorder_window = int(
             self.declare_parameter("reorder_window", 0).value
         )
+        reorder_step = float(self.declare_parameter("reorder_step_sec", 0.05).value)
         ack_timeout = float(
             self.declare_parameter("ack_timeout_sec", 5.0).value
         )
@@ -117,6 +125,7 @@ class IdealGateway(Node):
             drop_types = ()
             blackout_intervals = ()
             self.fault_blackout_intervals = ()
+            queue_capacity = 4096  # Queue overflow is a fault intervention.
         self.ledger_path = str(
             self.declare_parameter("ledger_path", "").value
         )
@@ -130,6 +139,7 @@ class IdealGateway(Node):
                     delay_sec=delay_up,
                     duplicate_rate=duplicate_rate,
                     reorder_window=reorder_window,
+                    reorder_step_sec=reorder_step,
                     seed=seed ^ 0x13579BDF,
                     ack_timeout_sec=ack_timeout,
                     max_retries=max_retries,
@@ -147,6 +157,7 @@ class IdealGateway(Node):
                     delay_sec=delay_down,
                     duplicate_rate=duplicate_rate,
                     reorder_window=reorder_window,
+                    reorder_step_sec=reorder_step,
                     seed=seed ^ 0x2468ACE0,
                     ack_timeout_sec=ack_timeout,
                     max_retries=max_retries,
@@ -401,11 +412,22 @@ class IdealGateway(Node):
         # Preserve sensor source stamps; receiving an old sample never renews TTL.
         generated = now
         if isinstance(message, TFMessage):
+            message = deepcopy(message)
             relevant = [item for item in message.transforms
                         if item.header.frame_id.lstrip("/").endswith("map")
                         and item.child_frame_id.lstrip("/").endswith("odom")]
             if not relevant:
                 return
+            # SLAM Toolbox stamps map->odom as scan_time + transform_timeout;
+            # that future validity stamp is not the generation time. Only the
+            # AP copy is normalized; robot-local Nav2 retains its native TF.
+            offset_ns = round(self.frame_stamp_offset_sec * 1e9)
+            for item in relevant:
+                original = item.header.stamp.sec * 10**9 + item.header.stamp.nanosec
+                if original < offset_ns:
+                    return
+                corrected = original - offset_ns
+                item.header.stamp.sec, item.header.stamp.nanosec = divmod(corrected, 10**9)
             stamp = relevant[-1].header.stamp
             generated = stamp.sec + stamp.nanosec / 1e9
         elif hasattr(message, "header"):
@@ -445,8 +467,9 @@ class IdealGateway(Node):
                 pass
         envelope.recipient = route.recipient
         envelope.sequence = self.next_sequence(route)
-        envelope.generation_time.sec = int(generated)
-        envelope.generation_time.nanosec = int((generated - int(generated)) * 1e9)
+        envelope.generation_time.sec, envelope.generation_time.nanosec = divmod(
+            round(generated * 1e9), 10**9
+        )
         envelope.task_phase = (
             message.data
             if route.message_type == "task_state"

@@ -87,7 +87,8 @@
     },
     "duplicate_reorder": {
       "gateway_duplicate_rate": 1,
-      "gateway_reorder_window": 8
+      "gateway_reorder_window": 8,
+      "gateway_reorder_step_sec": 0.3
     },
     "overflow": {
       "uplink_delay_sec": 0.5,
@@ -307,5 +308,7 @@
       "mode": "rally",
       "profile": "battery_exhaust"
     }
-  ]
+  ],
+  "temporal_contract": "source<=enqueue<=admit/tx<=delivery; TF source is scan stamp, native validity offset derived from actual SLAM config; fault blackout relative first EXPLORE",
+  "ideal_transport": "no fault intervention, zero stochastic loss/delay/reorder/duplicate/blackout/drop; normal bounded4096 queue; task load/deadline/retry unchanged"
 }

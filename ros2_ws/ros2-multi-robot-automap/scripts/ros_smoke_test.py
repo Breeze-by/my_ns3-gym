@@ -467,6 +467,7 @@ def parse_args():
     parser.add_argument("--downlink-delay-sec", type=float, default=0.0)
     parser.add_argument("--gateway-duplicate-rate", type=float, default=0.0)
     parser.add_argument("--gateway-reorder-window", type=int, default=0)
+    parser.add_argument("--gateway-reorder-step-sec", type=float, default=0.05)
     parser.add_argument("--gateway-ack-timeout-sec", type=float, default=1.0)
     parser.add_argument("--gateway-max-retries", type=int, default=2)
     parser.add_argument("--gateway-queue-capacity", type=int, default=0)
@@ -609,6 +610,7 @@ def main():
         f"downlink_delay_sec:={args.downlink_delay_sec}",
         f"gateway_duplicate_rate:={args.gateway_duplicate_rate}",
         f"gateway_reorder_window:={args.gateway_reorder_window}",
+        f"gateway_reorder_step_sec:={args.gateway_reorder_step_sec}",
         f"gateway_ack_timeout_sec:={args.gateway_ack_timeout_sec}",
         f"gateway_max_retries:={args.gateway_max_retries}",
         f"gateway_queue_capacity:={args.gateway_queue_capacity}",

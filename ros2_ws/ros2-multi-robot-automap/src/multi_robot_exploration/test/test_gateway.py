@@ -59,7 +59,7 @@ def test_gateway_envelope_exposes_protocol_metadata():
     } <= fields.keys()
 
 
-def test_returning_battery_mode_allows_only_the_return_navigation_command():
+def test_network_commands_cannot_preempt_robot_local_safety_return():
     assert battery_mode_allows_navigation("ACTIVE")
     assert not battery_mode_allows_navigation("RETURNING")
     assert not battery_mode_allows_navigation("CHARGING")
@@ -78,7 +78,7 @@ def make_tf(parent, child, stamp):
 def sender():
     emitted = []
     fake = SimpleNamespace(
-        clock=10.0, last_generated_at={}, source_stamps={}, task_phase="RALLY",
+        clock=10.0, frame_stamp_offset_sec=0.0, last_generated_at={}, source_stamps={}, task_phase="RALLY",
         candidate_publishers={"uplink": SimpleNamespace(publish=emitted.append)},
         next_sequence=lambda route: len(emitted) + 1,
         publish_event=lambda *args: None,
@@ -142,6 +142,21 @@ def test_blackout_epoch_excludes_cold_start_and_is_not_reset_by_phase_updates():
     IdealGateway.task_state_callback(gateway, SimpleNamespace(data="EXPLORE"))
     assert transport.config.blackout_intervals == ((170., 180.),)
     assert len(events) == 1
+
+
+def test_slam_tf_validity_offset_does_not_renew_scan_age_or_mutate_local_tf():
+    from rclpy.serialization import deserialize_message
+    fake,route,emitted=sender()
+    fake.frame_stamp_offset_sec=.2
+    tf=make_tf('map','odom',10)
+    IdealGateway.publish_candidate(fake,route,'uplink',tf)
+    packet=emitted[0]
+    assert packet.generation_time.sec==9 and packet.generation_time.nanosec==800000000
+    received=deserialize_message(bytes(packet.payload),TFMessage)
+    assert received.transforms[0].header.stamp.sec==9
+    assert received.transforms[0].header.stamp.nanosec==800000000
+    assert tf.transforms[0].header.stamp.sec==10
+    assert tf.transforms[0].header.stamp.nanosec==0
 
 
 def test_charge_request_route_is_reliable_expiring_and_robot_specific():

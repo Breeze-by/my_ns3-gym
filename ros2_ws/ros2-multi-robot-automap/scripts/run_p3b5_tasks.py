@@ -35,6 +35,7 @@ def ledger_metrics(path, start, end):
     waits, waiting = [], None
     last_sequence = {}
     reorder_count = 0
+    reorders_by_type = Counter()
     local_events = Counter()
     failures = Counter()
     with path.open() as source:
@@ -67,6 +68,8 @@ def ledger_metrics(path, start, end):
                 if kind == "delivered" and "sequence" in event:
                     previous = last_sequence.get(key, 0)
                     reorder_count += event["sequence"] < previous
+                    if event["sequence"] < previous:
+                        reorders_by_type[event["message_type"]] += 1
                     last_sequence[key] = max(previous, event["sequence"])
             if kind == "accepted" and "source_time" in event and when <= end:
                 state["accepted"].setdefault(identity, (when, event["source_time"]))
@@ -107,6 +110,7 @@ def ledger_metrics(path, start, end):
                        "unavailable_sec": unavailable})
     return {"streams": result, "events": dict(local_events), "reasons": dict(failures),
             "reordered_delivery_attempts": reorder_count,
+            "reorders_by_type": dict(reorders_by_type),
             "stale_wait_sec": sum(max(0., min(end, b) - max(start, a)) for a, b in waits),
             "wait_intervals": waits, "ledger_sha256": file_digest(path)}
 
@@ -218,7 +222,7 @@ def main():
             settings = {"scenario": scenario, "mission_mode": case["mode"],
                         "effective_initial_energy": profile.get("battery_initial_energy", scenario["energy"]),
                         "deadline": profile.get("navigation_command_deadline_sec", 90),
-                        "capacity": profile.get("gateway_queue_capacity", 0)}
+                        }
             digest = hashlib.sha256(json.dumps(settings, sort_keys=True).encode()).hexdigest()[:10]
             identity = f"{args.run_id}_ideal_{case['scenario']}_{case['mode']}_{digest}" if mode == "ideal" else f"{args.run_id}_{case['id']}_fault"
             pair[mode] = identity

@@ -684,3 +684,6 @@ manifest 正式冻结27个case；同配置ideal共享一次对照，任务终态
 P3B.5启动修复：search_target在最后一台机器人spawn后生成，再错峰启动Nav2；smoke必须实际检查目标实体存在。连续丢包相对中央EXPLORE计时（ledger记录fault_epoch），不消耗在冷启动阶段。
 
 正式runner默认同时记录只读safety_events.jsonl，观察local battery转态和中央robot_failure发布时刻，用于返充/隔离时间；该观察节点从不向控制链发布。新增零电量理想/故障配对仅检查真实battery_exhaustion/FAILED，理想已失败的格不计TDI。
+
+P3B.5时间校准：Gateway从实际SLAM YAML的transform_timeout恢复TF的scan源时间（源码原生TF header=scan+timeout）；只修改AP副本，本地TF不变。缓存clock未追上sensor stamp时延后虚拟enqueue/tx到源时间，不允许负的排队时间。ledger含callback_time与clock_deferred。
+`gateway_reorder_step_sec:=0.3 gateway_reorder_window:=8` 可让5Hz pose实际乱序；默认step仍0.05。ideal忽略故障queue capacity，使用4096正常有限队列；fault的queue capacity=1是显式拥塞注入，不改任务负载。

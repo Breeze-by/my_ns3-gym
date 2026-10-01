@@ -34,6 +34,7 @@ class FaultConfig:
     delay_sec: float = 0.0
     duplicate_rate: float = 0.0
     reorder_window: int = 0
+    reorder_step_sec: float = 0.05
     seed: int = 1
     ack_timeout_sec: float = 5.0
     max_retries: int = 2
@@ -49,6 +50,8 @@ class FaultConfig:
             raise ValueError("delay must be finite and non-negative")
         if not math.isfinite(self.ack_timeout_sec) or self.ack_timeout_sec <= 0:
             raise ValueError("ACK timeout must be finite and positive")
+        if not math.isfinite(self.reorder_step_sec) or self.reorder_step_sec <= 0:
+            raise ValueError("reorder step must be finite and positive")
         if min(self.reorder_window, self.max_retries) < 0 or self.queue_capacity < 0:
             raise ValueError("invalid retry, reorder, or capacity setting")
         for start, end in self.blackout_intervals:
@@ -103,7 +106,12 @@ class DeterministicFaultTransport:
         if identity in self._pending:
             return False
         generated = now if source_time is None else source_time
+        callback_time = now
+        # ROS nodes can receive sensor samples before their cached /clock
+        # catches up. Transmission cannot precede that sample's source time.
+        now = max(now, generated)
         metadata = {
+            "callback_time": callback_time,
             "source_time": generated, "ttl_sec": ttl_sec,
             "message_type": envelope.message_type,
             "sender": getattr(envelope, "sender", ""),
@@ -114,6 +122,8 @@ class DeterministicFaultTransport:
         }
         attempt = DeliveryAttempt(identity, envelope, direction, 1, now, now, now,
                                   metadata=metadata)
+        if now > callback_time:
+            self._emit("clock_deferred", attempt, now, clock_deferral_sec=now-callback_time)
         self._emit("enqueue", attempt, now)
         self._pending[identity] = (attempt, reliable)
         return self._transmit(attempt, now)
@@ -139,7 +149,7 @@ class DeterministicFaultTransport:
         extra = 0.0
         if self.config.reorder_window > 1:
             slot = (attempt.envelope.sequence - 1) % self.config.reorder_window
-            extra = (self.config.reorder_window - 1 - slot) * 0.05
+            extra = (self.config.reorder_window - 1 - slot) * self.config.reorder_step_sec
         attempt.due_time = now + self.config.delay_sec + extra
         self._inflight += 1
         self._push(attempt.due_time, "delivery", attempt)

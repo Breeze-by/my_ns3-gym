@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import yaml
 
 from ament_index_python.packages import get_package_share_directory
 
@@ -23,6 +24,11 @@ from launch_ros.parameter_descriptions import ParameterValue
 
 def launch_setup(context, *args, **kwargs):
     actions = []
+    slam_config_path = os.path.join(get_package_share_directory("slam_toolbox"),
+                                   "config", "mapper_params_online_multi_async.yaml")
+    with open(slam_config_path, encoding="utf-8") as source:
+        slam_config = yaml.safe_load(source)
+    frame_stamp_offset = float(next(iter(slam_config.values()))["ros__parameters"].get("transform_timeout", 0.5))
 
     # ========= Runtime launch arguments =========
     robot_count_cfg = LaunchConfiguration("robot_count")
@@ -234,6 +240,8 @@ def launch_setup(context, *args, **kwargs):
                     "downlink_delay_sec": downlink_delay_sec,
                     "duplicate_rate": gateway_duplicate_rate,
                     "reorder_window": gateway_reorder_window,
+                    "reorder_step_sec": LaunchConfiguration("gateway_reorder_step_sec"),
+                    "frame_stamp_offset_sec": frame_stamp_offset,
                     "ack_timeout_sec": gateway_ack_timeout,
                         "max_retries": gateway_max_retries,
                         "queue_capacity": gateway_queue_capacity,
@@ -1117,6 +1125,7 @@ def generate_launch_description():
     )
     for name, default, description in (
         ("gateway_drop_message_types", "", "Comma-separated message classes to drop in fault mode."),
+        ("gateway_reorder_step_sec", "0.05", "Per-slot reorder delay; use 0.3 to reorder 5Hz pose updates."),
         ("gateway_blackout_intervals", "[]", "JSON outage seconds relative to first central EXPLORE."),
         ("inject_failure_robot", "", "Simulation-only robot to fail; empty disables injection."),
         ("inject_failure_after_sec", "-1.0", "Seconds after that robot's first odom; negative disables."),
