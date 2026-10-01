@@ -4124,3 +4124,32 @@ lab202在episode_start前：Gazebo已插入tb3，服务端记录failed to send r
 五项新增反例检查（丢回包/成功回包但没有实体/拒绝服务），九文件pytest154 passed（6.06s）；四包build6.21s通过。source audit/show-args待输出核对；短启动smoke精确命令：GAZEBO_MASTER_URI=http://127.0.0.1:11460 taskset -c 40-59 /usr/bin/python3 scripts/ros_smoke_test.py --robot-count 2 --gazebo-seed 303 --startup-timeout 600 --evaluation-duration 20 --evaluation-wait-timeout 900 --coverage-threshold 0 --mission-mode coverage --collect-fault-result --battery --dwell-seconds 0 --episode-id p3b5_spawn_startup_dev --evaluation-output-dir log/p3b5_spawn_startup_dev/results --log-dir log/p3b5_spawn_startup_dev/launch --bypass-audit-output log/p3b5_spawn_startup_dev/graph.json > /tmp/p3b5_spawn_startup_dev.log 2>&1。此smoke为dirty开发验证，不算冻结门禁。
 
 启动候选短smoke返回0；两台实体确认、任务20秒评估（timeout为预设horizon而非COMPLETE）、运行图审计通过。结果与launch logs位于ROS log/p3b5_spawn_startup_dev/，不计入冻结任务门禁。source-only三机器人审计零违规，show-args返回0。
+
+## 2026-10-01 P3B.5 5fa4310 候选保留、路径预留替代全局预充电屏障
+
+
+冻结源码5fa4310，Humble/install、PYTHONNOUSERSITE=1，四CPU池隔离、错峰约2min。精确启动命令：
+
+GAZEBO_MASTER_URI=http://127.0.0.1:11461 taskset -c 0-19 /usr/bin/python3 scripts/run_p2d_baseline.py --run-id p3b5_ideal_gate_5fa4310 --ros-domain-base 130 --startup-timeout 600 --evaluation-wait-timeout 900 --infrastructure-retries 0 --rally-max-concurrent 2 --disable-global-battery-rally-pause > /tmp/p3b5_ideal_gate_5fa4310.log 2>&1；仅退出0才排队master11465/domain200运行p3b5_v5_holdout（holdout_rally holdout_target holdout_coverage），实际未运行。
+
+GAZEBO_MASTER_URI=http://127.0.0.1:11462 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v5_lab --cases zero_rally_lab up100_lab down100_lab ttl_lab map_loss_lab battery_loss_lab state_loss_lab target_up10_lab battery_exhaust_lab --ros-domain-base 40 > /tmp/p3b5_v5_lab.log 2>&1；
+
+GAZEBO_MASTER_URI=http://127.0.0.1:11464 taskset -c 60-79 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v5_rooms --cases up10_rooms down10_rooms delay2_rooms overflow_rooms burst_rooms deadline_rooms detection_loss_rooms pose_loss_rooms single_failure_rooms target_loss_rooms --ros-domain-base 60 > /tmp/p3b5_v5_rooms.log 2>&1；
+
+GAZEBO_MASTER_URI=http://127.0.0.1:11463 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v5_corridors --cases delay05_corridors duplicates_corridors nav_loss_corridors coverage_delay_corridors --ros-domain-base 160 > /tmp/p3b5_v5_corridors.log 2>&1；仅退出0才同master/CPU运行p3b5_v5_forced（--cases forced_charge_outage --ros-domain-base166）及p3b5_v5_safety（--config scripts/p3b5_safety_probe_manifest.json --ros-domain-base168），实际两批均未运行。
+
+ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3b5_ideal_gate_5fa4310/summary.json：[{"case": "lab_far_northwest", "mode": "ideal", "status": "task_complete", "elapsed": 237.9000000000001, "charges": 2, "collision": 0}, {"case": "lab_far_northwest", "mode": "ideal", "status": "timeout", "elapsed": 300.0, "charges": 3, "collision": 0}]
+
+ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_v5_lab/summary.json：[{"case": "zero_rally_lab", "mode": "ideal", "status": "task_complete", "elapsed": 128.0999999999999, "charges": 0, "collision": 0}, {"case": "zero_rally_lab", "mode": "fault", "status": "task_complete", "elapsed": 162.20000000000027, "charges": 1, "collision": 0}, {"case": "up100_lab", "mode": "fault", "status": "no_data", "elapsed": 300.1999999999998, "charges": 0, "collision": 0}, {"case": "down100_lab", "mode": "fault", "status": "shutdown", "elapsed": 248.0, "charges": 0, "collision": 0}]
+
+ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_v5_rooms/summary.json：[{"case": "up10_rooms", "mode": "ideal", "status": "task_complete", "elapsed": 141.20000000000002, "charges": 0, "collision": 0}, {"case": "up10_rooms", "mode": "fault", "status": "task_complete", "elapsed": 240.20000000000002, "charges": 1, "collision": 0}, {"case": "down10_rooms", "mode": "fault", "status": "task_complete", "elapsed": 117.60000000000002, "charges": 0, "collision": 0}, {"case": "delay2_rooms", "mode": "fault", "status": "shutdown", "elapsed": 70.0, "charges": 0, "collision": 0}]
+
+ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_v5_corridors/summary.json：[{"case": "delay05_corridors", "mode": "ideal", "status": "task_complete", "elapsed": 214.70000000000002, "charges": 1, "collision": 0}, {"case": "delay05_corridors", "mode": "fault", "status": "task_complete", "elapsed": 179.70000000000002, "charges": 0, "collision": 0}, {"case": "duplicates_corridors", "mode": "fault", "status": "task_complete", "elapsed": 202.2, "charges": 0, "collision": 0}, {"case": "nav_loss_corridors", "mode": "fault", "status": "shutdown", "elapsed": 122.0, "charges": 0, "collision": 0}]
+
+lab101237.9s COMPLETE/两次充电；lab202真实post-start超时300s，124.7s检测、133.8s RALLY、三台各一次充电、零碰撞。终止时tb1误差0.840m、tb2误差0.023m、tb3误差1.920m；最后两台仍在移动，不能算COMPLETE。lab303当前主动中断的raw result另保留，不伪装成通过。
+
+启动有界helper实际记录reply_received=False但实体已出现，继续成功启动，证明不是靠重试请求恢复。主配对未完整冻结，所有部分完成/主动shutdown都按历史候选保留，准确源摘要见report/20261001_p3b5_preflight_failed_candidate.json。其字段与原始日志优先于概括，未运行holdout707。
+
+诊断：全局预充电屏障禁止已充满机器人沿不冲突路径前进；正在移动的队友又被当作静态占位，tb3早期走到底部较长绕路。新候选仍串行提前充电、保留等待耗电闭包；按已知AP地图计算当前/待执行返航路线预留，允许energy-ready机器人在安全前缀前进，充电机器人保留实际占位；未知返航几何则等待。活跃/已派发队友仅在有实际路线预留保护时移出静态mask，使用包含当前位置的剩余预留路径防碰撞，新接纳leader后重新规划后续短路前缀。停靠/FAILED/独立返航机器人仍作为物理障碍。
+
+新增三项反例：动静态走廊绕路差异与安全跟随前缀、充电期间安全前进与禁止穿过当前/未来返航路线、未知返航路线/实际充电占位。第一次测试走廊仅0.5m宽，被0.35m静态clearance膨胀封闭，修正夹具为1.2m走廊；实现不因夹具失败放宽clearance。九文件pytest157 passed（6.78s）、四包build5.63s、source-only审计零违规。5fa4310协议54格PASS，已完成的六个ledger源时间无回退、阶段因果/TTL/version检查通过（离线读取，不另计episode）。尚未开始新候选仿真。

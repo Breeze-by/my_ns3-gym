@@ -702,3 +702,6 @@ PYTHONNOUSERSITE=1 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_safe
 
 
 2026-10-01 启动确认候选：默认robot/target使用spawn_entity_checked，spawn_timeout现在覆盖服务发现、单次创建请求与实际实体确认的总wall-clock预算；回包丢失但实体已出现可以继续，实体未出现/已有同名实体则失败并终止启动。该helper只读取启动实体清单，不将Gazebo truth交给任务控制。原launch命令不变。
+
+
+2026-10-01 路线预留候选：替代上述全局预充电屏障。提前充电仍串行，但已充满机器人可沿不冲突路径前进；当前及待执行返航路线保留，充电机器人保留实际占位，未知返航几何则等待。活跃队友只有在其包含当前位置的剩余路线已预留时移出静态绕路mask；跟随者停在预留冲突前，不穿过停靠/故障机器人。等待能量预算、本地安全保留量、速度/clearance/300秒完成标准不变。

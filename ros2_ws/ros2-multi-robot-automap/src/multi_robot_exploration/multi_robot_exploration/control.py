@@ -1578,6 +1578,43 @@ def rally_wait_requirements(base, states, modes, travel_times, charge_times):
     return requirements, waits
 
 
+def rally_stationary_positions(positions, robot_name, reserved_names):
+    """Moving peers are protected by their live route, not a static detour mask."""
+    return [position for name, position in positions.items()
+            if name != robot_name and name not in reserved_names and position is not None]
+
+
+def rally_return_reservations(grid, resolution, origin, positions, states, modes, pending):
+    """Protect current and future serial safety returns before allowing rally progress.
+
+    Unknown return geometry means wait. Charging robots retain their physical
+    position; local safety still owns execution and can preempt network goals.
+    """
+    routes = {}
+    names = set(pending) | {name for name, mode in modes.items()
+                            if mode in ('RETURNING', 'CHARGING')}
+    for name in names:
+        if modes[name] == 'FAILED':
+            continue
+        position = positions.get(name)
+        if position is None:
+            return None
+        if modes[name] == 'CHARGING':
+            routes[name] = (position,)
+            continue
+        try:
+            home = (float(states[name]['charge_x']), float(states[name]['charge_y']))
+            if not all(math.isfinite(v) for v in home):
+                return None
+        except (KeyError, TypeError, ValueError):
+            return None
+        _, route = plan_rally_leg(RallyPose(*home, 0.), grid, resolution, origin, position)
+        if not route:
+            return None
+        routes[name] = route
+    return routes
+
+
 class HeadquartersControl(Node):
     def __init__(self):
         super().__init__("headquarters_control")
@@ -2503,6 +2540,15 @@ class HeadquartersControl(Node):
                             self.get_logger().info("Rally order after precharging: "
                                                    + ", ".join(self.rally_dispatch_order))
                         self.rally_preflight_complete = True
+            return_reservations = (rally_return_reservations(
+                self.map_data, self.resolution, self.origin, self.robot_positions,
+                self.battery_states, self.battery_modes, energy_unready,
+            ) if self.enable_battery else {})
+            reserved_names = {name for name in self.rally_dispatch_order
+                              if self.battery_modes[name] == 'ACTIVE'
+                              and (self.rally_goal_handles[name] is not None
+                                   or self.rally_goal_pending[name])
+                              and self.rally_leg_routes[name]}
             plans = {}
             for name in self.rally_dispatch_order:
                 if (
@@ -2522,8 +2568,7 @@ class HeadquartersControl(Node):
                     or self.robot_positions[name] is None
                     or self.battery_modes[name] != "ACTIVE"
                     or (name in energy_unready and name not in self.rally_yield_targets)
-                    or (self.enable_battery and not self.rally_preflight_complete
-                        and name not in self.rally_yield_targets)
+                    or return_reservations is None
                 ):
                     continue
                 if self.rally_recovery_requested[name]:
@@ -2537,11 +2582,7 @@ class HeadquartersControl(Node):
                         self.origin,
                         self.robot_positions[name],
                         min(MAX_NAVIGATION_LEG_M, rally_leg_limit(self.rally_attempts[name])),
-                        [
-                            position
-                            for other_name, position in self.robot_positions.items()
-                            if other_name != name and position is not None
-                        ],
+                        rally_stationary_positions(self.robot_positions, name, reserved_names),
                         visible_only=True,
                     )
                 if plan[0] is None:
@@ -2792,16 +2833,31 @@ class HeadquartersControl(Node):
                 and self.rally_leg_routes[name]
             ]
             slots = max(0, self.rally_max_concurrent - len(reserved_routes))
+            admitted_names = set(reserved_names)
             for name in self.rally_dispatch_order:
                 if slots == 0:
                     break
                 if name not in plans:
                     continue
-                admitted = reserve_rally_prefix(plans[name], reserved_routes)
+                plan = plans[name]
+                if admitted_names != reserved_names:
+                    # A newly reserved leader can clear this corridor. Prefer
+                    # a safe prefix of the short route over a static detour.
+                    plan = plan_rally_leg(
+                        self.rally_targets[name], self.map_data, self.resolution,
+                        self.origin, self.robot_positions[name],
+                        min(MAX_NAVIGATION_LEG_M, rally_leg_limit(self.rally_attempts[name])),
+                        rally_stationary_positions(self.robot_positions, name, admitted_names),
+                        visible_only=True,
+                    )
+                reservations = [*reserved_routes, *(route for other, route in
+                                (return_reservations or {}).items() if other != name)]
+                admitted = reserve_rally_prefix(plan, reservations)
                 if admitted is None:
                     continue
                 self.send_rally_goal(name, admitted)
                 reserved_routes.append(admitted[1])
+                admitted_names.add(name)
                 slots -= 1
 
         navigation_quiescent = (

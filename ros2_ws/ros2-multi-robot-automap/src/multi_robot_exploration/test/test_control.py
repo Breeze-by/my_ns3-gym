@@ -1106,6 +1106,7 @@ def test_idle_blocker_recovery_dispatches_motion_before_returning(
         message_freshness_timeout_sec=5.,
         rally_charge_requested={}, prepare_rally_charges=lambda: {"tb2"},
         rally_preflight_complete=True, rally_precharge_active=False,
+        battery_states={name: {'charge_x': 1., 'charge_y': 2.5} for name in names},
         rally_max_concurrent=2, rally_probe_targets=set(),
         rally_leg_routes=dict.fromkeys(names, ()), rally_hold_started_at=None,
         active_batteries_ready=lambda: True,
@@ -1343,3 +1344,50 @@ def test_rally_wait_budget_does_not_charge_own_route_twice_or_include_failed_rob
         {"tb1":30.},{"tb1":{"energy":40.,"idle_cost_per_sec":.02}},
         {"tb1":"ACTIVE","tb2":"FAILED"},{"tb1":40.},{"tb1":60.,"tb2":100.})
     assert requirements=={"tb1":30.} and waits=={"tb1":0.}
+
+
+def test_moving_leader_uses_short_corridor_prefix_instead_of_static_detour():
+    grid = np.full((50, 100), 100, dtype=int)
+    grid[19:31, 1:99] = 0
+    grid[0:12, 17:89] = 0
+    grid[0:31, 17:29] = grid[0:31, 77:89] = 0
+    positions = {'follower': (1., 2.5), 'leader': (4., 2.5)}
+    target = control.RallyPose(9., 2.5, 0.)
+    static = control.plan_rally_leg(target, grid, .1, (0., 0.), positions['follower'],
+        blocked_positions=control.rally_stationary_positions(positions, 'follower', set()))
+    moving = control.plan_rally_leg(target, grid, .1, (0., 0.), positions['follower'],
+        blocked_positions=control.rally_stationary_positions(positions, 'follower', {'leader'}))
+    length = lambda route: sum(math.dist(a, b) for a, b in zip(route, route[1:]))
+    assert length(static[1]) > length(moving[1]) + 2.
+    reservation = ((4., 2.5), (5., 2.5), (6., 2.5), (7., 2.5), (8., 2.5))
+    admitted = control.reserve_rally_prefix(moving, [reservation])
+    assert admitted is not None and admitted[0].x < 3.3
+    assert not control.routes_conflict(admitted[1], reservation)
+
+
+def test_precharging_allows_safe_progress_but_protects_return_corridor():
+    grid = np.zeros((80, 100), dtype=int)
+    positions = {'ready': (1., 1.), 'returning': (5., 4.)}
+    states = {'returning': {'charge_x': 5., 'charge_y': 1.}}
+    routes = control.rally_return_reservations(grid, .1, (0., 0.), positions, states,
+        {'ready': 'ACTIVE', 'returning': 'RETURNING'}, set())
+    safe = control.plan_rally_leg(control.RallyPose(3., 1., 0.), grid, .1, (0., 0.), positions['ready'])
+    crossing = control.plan_rally_leg(control.RallyPose(8., 1., 0.), grid, .1, (0., 0.), positions['ready'])
+    assert control.reserve_rally_prefix(safe, list(routes.values())) == safe
+    prefix = control.reserve_rally_prefix(crossing, list(routes.values()))
+    assert prefix is not None and prefix[0].x < 4.3
+    assert not control.routes_conflict(prefix[1], routes['returning'])
+    # A not-yet-started early return gets the same protection.
+    future = control.rally_return_reservations(grid, .1, (0., 0.), positions, states,
+        dict.fromkeys(positions, 'ACTIVE'), {'returning'})
+    assert future == routes
+
+
+def test_unknown_return_route_waits_and_charging_keeps_physical_footprint():
+    grid = np.full((40, 40), 100, dtype=int)
+    grid[8:13, 8:13] = 0
+    positions = {'tb1': (1., 1.)};states = {'tb1': {'charge_x': 3., 'charge_y': 3.}}
+    assert control.rally_return_reservations(grid, .1, (0., 0.), positions, states,
+        {'tb1': 'RETURNING'}, set()) is None
+    assert control.rally_return_reservations(grid, .1, (0., 0.), positions, states,
+        {'tb1': 'CHARGING'}, set()) == {'tb1': ((1., 1.),)}
