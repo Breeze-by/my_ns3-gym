@@ -131,12 +131,63 @@ def bootstrap(rows):
             'method':'physical-cell cluster percentile bootstrap, 10000 resamples seed17011; fixed matrix descriptive, not held-out population inference'}
 
 
+def physical_return_audit(events, epoch, homes, window=(42., 248.)):
+    """Require motion toward home under local RETURNING and live native Nav2."""
+    import math
+    paths=defaultdict(list)
+    for event in events:
+        if event['event'] != 'physics': continue
+        for name, robot in event['robots'].items():
+            paths[name].append((event['observer_time'], robot))
+    evidence={}
+    for name, home in homes.items():
+        starts={}; motion=defaultdict(float); progress={}; executing=defaultdict(float)
+        previous=None
+        for when, robot in paths[name]:
+            battery=robot.get('battery') or {}
+            if battery.get('mode') != 'RETURNING':
+                previous=None
+                continue
+            count=battery['return_count']
+            distance=math.hypot(robot['x']-home[0], robot['y']-home[1])
+            if count not in starts:
+                starts[count]={'time_offset_sec':when-epoch,'home_distance_m':distance}
+                progress[count]=0.
+            if window[0] <= when-epoch <= window[1]:
+                progress[count]=max(progress[count], starts[count]['home_distance_m']-distance)
+                if previous is not None:
+                    t, old, old_count=previous
+                    dt=when-t
+                    if old_count==count and window[0]<=t-epoch<=window[1] and 0.<dt<=1.:
+                        segment=math.hypot(robot['x']-old['x'], robot['y']-old['y'])
+                        # Exclude discontinuities, and count only consecutive
+                        # physical observations within the blackout guard.
+                        assert segment<=.5*dt+.1, (name,dt,segment)
+                        motion[count]+=segment
+                        if any(s['status']==2 for s in robot.get('nav2_status',[])):
+                            executing[count]+=segment
+            previous=(when,robot,count)
+        valid=[count for count,start in starts.items()
+               if window[0]<=start['time_offset_sec']<=window[1]
+               and start['home_distance_m']>=1.1 and motion[count]>=.5
+               and progress[count]>=.5 and executing[count]>=.5]
+        assert valid, (name,starts,dict(motion),progress,dict(executing))
+        count=valid[0]
+        evidence[name]={**starts[count],'return_count':count,
+                        'return_path_inside_blackout_m':motion[count],
+                        'progress_toward_home_m':progress[count],
+                        'nav2_executing_motion_m':executing[count]}
+    return evidence
+
+
 def main():
     p=argparse.ArgumentParser()
     p.add_argument('summaries',nargs='+',type=Path)
     p.add_argument('--ideal-fixed',required=True,type=Path)
     p.add_argument('--forced',required=True,type=Path)
     p.add_argument('--safety-probes',required=True,type=Path)
+    p.add_argument('--return-proof',required=True,type=Path)
+    p.add_argument('--return-physics',required=True,type=Path)
     p.add_argument('--historical-ideal',required=True,type=Path)
     p.add_argument('--protocol',required=True,type=Path)
     p.add_argument('--output',required=True,type=Path)
@@ -252,6 +303,40 @@ def main():
     assert all(b['battery_charge_count']>=1 for b in probe['result']['robots'].values())
     local_deadline=probes['episodes'][probes['pairs']['local_deadline_cancel']['fault']]
     assert local_deadline['communication']['events'].get('navigation_deadline',0)>0
+    physical=load(a.return_proof);metadata=load(a.return_physics)
+    assert set(physical['pairs'])=={'physical_return_under_blackout'}
+    assert len(physical['episodes'])==2 and physical.get('finished_at_utc')
+    assert physical['manifest']['git_commit']==reference['git_commit'] and physical['manifest']['task_stack_clean']
+    for k in CORE_KEYS: assert physical['manifest']['source_digests'][k]==reference['source_digests'][k]
+    assert metadata['runner_returncode']==0
+    assert metadata['config']==physical['config']
+    assert hashlib.sha256(metadata['config_source'].encode()).hexdigest()==metadata['config_content_sha256']
+    assert json.loads(metadata['config_source'])==physical['config']
+    assert hashlib.sha256(metadata['observer_source'].encode()).hexdigest()==metadata['observer_content_sha256']
+    assert metadata['config']['predeclared_at_utc']<physical['manifest']['generated_at_utc']
+    physical_evidence=[]
+    for identity,row in physical['episodes'].items():
+        assert row['runner_returncode']==0 and row['observer_returncode']==0
+        assert not row['infrastructure_failure'] and not row['operational_failure']
+        r=row['result'];assert r['collision_monitoring_active'] and r['collision_events']==0
+        assert r['battery_minimum_energy']>0 and not r['failed_robots']
+        assert all(b['battery_charge_count']>=1 for b in r['robots'].values())
+        d=Path(row['result_path']).parent
+        for key,file in [('result_sha256',identity+'.json'),('graph_sha256','graph.json'),('safety_events_sha256','safety_events.jsonl')]:
+            assert row[key]==file_digest(d/file)
+        assert row['communication']['ledger_sha256']==file_digest(d/'ledger.jsonl')
+        assert not runtime_violations(Snapshot(load(d/'graph.json')['nodes']),audit,r['robot_count'])
+        observer=next(x for x in metadata['observers'] if x['mode']==row['mode'])
+        assert observer['ros_domain_id']==row['ros_domain_id'] and observer['returncode']==0
+        assert observer['output_content_sha256']==sha(Path(observer['output']))
+        detail={'episode_id':identity,'temporal_audit':ledger_audit(d/'ledger.jsonl'),
+                'physics_content_sha256':observer['output_content_sha256']}
+        if row['mode']=='fault':
+            epoch=next(json.loads(line)['event_time'] for line in (d/'ledger.jsonl').open() if json.loads(line)['event']=='fault_epoch')
+            homes={n:(b['battery_charge_x'],b['battery_charge_y']) for n,b in r['robots'].items()}
+            detail['physical_local_return']=physical_return_audit(
+                [json.loads(line) for line in Path(observer['output']).open()],epoch,homes)
+        physical_evidence.append(detail)
     pair_rows=[];values=[];by_mode=defaultdict(Counter)
     for key,pair in pairs.items():
         c=cases[key];i,f=(episodes[pair[m]] for m in ('ideal','fault'));ir,fr=i['result'],f['result']
@@ -298,6 +383,8 @@ def main():
             'safety_audit':{'single_failure_observer_isolation_latency_sec':isolation_latency,
                             'outage_local_return_offsets_sec':return_inside},
             'auxiliary_safety_probes':probes,'auxiliary_probe_evidence':probe_evidence,
+            'physical_return_probe':physical,'physical_return_metadata':metadata,'physical_return_evidence':physical_evidence,
+            'all_gate_unique_episode_count':len(episodes)+len(fixed['episodes'])+len(probe_evidence)+len(physical_evidence),
             'validator':{'path':str(Path(__file__).resolve()),'content_sha256':sha(Path(__file__))},
             'protocol_evidence':{'path':str(a.protocol),'content_sha256':sha(a.protocol),'data':protocol},
             'summary_evidence':[{'path':str(x),'content_sha256':sha(x)} for x in a.summaries],

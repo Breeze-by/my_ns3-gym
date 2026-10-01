@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "purpose": "Prospective supplemental development pair: actual local Nav2 return motion during blackout, not merely a RETURNING transition at the contact zone; not primary TDI or heldout.",
+  "development_seeds": [
+    101,
+    202,
+    303
+  ],
+  "holdout_seeds": [
+    707
+  ],
+  "fault_seed": 17011,
+  "duration_sec": 300,
+  "coverage_threshold": 0.8,
+  "task_stack_parent": "22c95a770a8812452c43fc177e4a00b5c032e6ef",
+  "scenarios": {
+    "forced2": {
+      "world": "my_world.world",
+      "target_x": -4,
+      "target_y": 4,
+      "robot_count": 2,
+      "seed": 303,
+      "energy": 40,
+      "charge_duration": 10,
+      "safety_margin": 5,
+      "return_timeout": 120
+    }
+  },
+  "profiles": {
+    "physical_outage": {
+      "gateway_blackout_intervals": [
+        [
+          40,
+          250
+        ]
+      ],
+      "battery_idle_cost": 0.15
+    }
+  },
+  "cases": [
+    {
+      "id": "physical_return_under_blackout",
+      "scenario": "forced2",
+      "mode": "rally",
+      "profile": "physical_outage"
+    }
+  ],
+  "temporal_contract": "source<=enqueue<=admit/tx<=delivery; TF source is scan stamp, native validity offset derived from actual SLAM config; fault blackout relative first EXPLORE",
+  "ideal_transport": "no fault intervention, zero stochastic loss/delay/reorder/duplicate/blackout/drop; normal bounded4096 queue; task load/deadline/retry unchanged",
+  "predeclared_at_utc": "2026-10-01T15:11:03.430058+00:00",
+  "physical_verification": {
+    "both_robots": true,
+    "return_start_home_distance_m_min": 1.1,
+    "measured_return_motion_inside_blackout_m_min": 0.5,
+    "nav2_executing_during_return": true,
+    "charges_each_min": 1,
+    "collision_events": 0,
+    "robot_failures": 0,
+    "truth_observer": "read-only /gazebo/model_states + local battery + Nav2 status; never writes control; world charger coordinates match configured map-origin poses within margin; blackout boundaries use 2s guard",
+    "return_motion_window_sec": [
+      42,
+      248
+    ]
+  },
+  "design_reason": "Blackout starts after40s initial exploration, before the first expected low-energy return under40 initial energy/.15 idle. Design changed from unexecuted60s onset before any supplemental run; no heldout tuning or observed supplemental outcomes."
+}

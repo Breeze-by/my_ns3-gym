@@ -69,90 +69,99 @@ def wait_until_ready(
             for index in range(1, robot_count + 1)
         )
 
+    # A single persistent DDS participant avoids repeated CLI discovery and
+    # distinguishes exact ACTIVE from INACTIVE. Queries never change lifecycle.
+    import rclpy
+    from rclpy.node import Node
+    from multi_robot_exploration.readiness import LifecycleQueries
+
+    rclpy.init()
+    node = Node("smoke_readiness_observer")
+    names = [f"/tb{index}/{server}"
+             for index in range(1, robot_count + 1)
+             for server in ("controller_server", "planner_server", "bt_navigator")]
+    queries = LifecycleQueries(node, names)
     deadline = time.monotonic() + timeout
     missing_topics = expected_topics
-    inactive_nodes = []
-    active_nodes = set()
-    while time.monotonic() < deadline:
-        if process.poll() is not None:
-            raise RuntimeError(
-                f"launch exited early with status {process.returncode}"
-            )
-
-        topic_result = run_ros(["topic", "list", "--no-daemon"])
-        topics = (
-            set(topic_result.stdout.splitlines())
-            if topic_result.returncode == 0
-            else set()
-        )
-        missing_topics = expected_topics - topics
-
-        inactive_nodes = []
-        if not missing_topics:
-            for index in range(1, robot_count + 1):
-                for server in (
-                    "controller_server",
-                    "planner_server",
-                    "bt_navigator",
-                ):
-                    node = f"/tb{index}/{server}"
-                    if node in active_nodes:
-                        continue
-                    try:
-                        result = run_ros(
-                            ["lifecycle", "get", node], timeout=10
-                        )
-                    except subprocess.TimeoutExpired:
-                        result = None
-                    if (
-                        result is None
-                        or result.returncode != 0
-                        or "active" not in result.stdout.lower()
-                    ):
-                        inactive_nodes.append(node)
-                    else:
-                        active_nodes.add(node)
-            if not inactive_nodes:
+    try:
+        while rclpy.ok() and time.monotonic() < deadline:
+            if process.poll() is not None:
+                raise RuntimeError(f"launch exited early with status {process.returncode}")
+            rclpy.spin_once(node, timeout_sec=.1)
+            queries.poll(time.monotonic())
+            topics = {name for name, _ in node.get_topic_names_and_types()}
+            missing_topics = expected_topics - topics
+            if not missing_topics and not queries.missing():
                 return
-
-        time.sleep(2)
-
-    details = []
-    if missing_topics:
-        details.append("missing topics: " + ", ".join(sorted(missing_topics)))
-    if inactive_nodes:
-        details.append(
-            "inactive lifecycle nodes: " + ", ".join(inactive_nodes)
-        )
-    raise TimeoutError("; ".join(details) or "ROS graph did not become ready")
+        details = []
+        if missing_topics:
+            details.append("missing topics: " + ", ".join(sorted(missing_topics)))
+        if queries.missing():
+            details.append("inactive lifecycle nodes: " + ", ".join(queries.missing()))
+        raise TimeoutError("; ".join(details) or "ROS graph did not become ready")
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
 
 
 def require_message(topic, timeout, qos_arguments=()):
-    result = run_ros(
-        ["topic", "echo", "--once", *qos_arguments, topic],
-        timeout=timeout,
-        discard_output=True,
-    )
-    if result.returncode != 0:
-        raise RuntimeError(
-            f"no message received from {topic}: {result.stderr.strip()}"
-        )
+    import rclpy
+    from rclpy.node import Node
+    from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy
+    from rosidl_runtime_py.utilities import get_message
+
+    options = dict(zip(qos_arguments[::2], qos_arguments[1::2]))
+    qos = QoSProfile(depth=1,
+        reliability=(ReliabilityPolicy.RELIABLE
+                     if options.get("--qos-reliability") == "reliable"
+                     else ReliabilityPolicy.BEST_EFFORT),
+        durability=(DurabilityPolicy.TRANSIENT_LOCAL
+                    if options.get("--qos-durability") == "transient_local"
+                    else DurabilityPolicy.VOLATILE))
+    rclpy.init()
+    node = Node("smoke_message_observer")
+    received = []
+    subscription = None
+    deadline = time.monotonic() + timeout
+    try:
+        while rclpy.ok() and time.monotonic() < deadline:
+            if subscription is None:
+                types = dict(node.get_topic_names_and_types()).get(topic, [])
+                if len(types) > 1:
+                    raise RuntimeError(f"ambiguous message types on {topic}: {types}")
+                if types:
+                    subscription = node.create_subscription(
+                        get_message(types[0]), topic, received.append, qos)
+            rclpy.spin_once(node, timeout_sec=.1)
+            if received:
+                return
+        raise RuntimeError(f"no message received from {topic} within {timeout}s")
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
 
 
 def require_entities(names, timeout):
-    result = run_ros(
-        ["topic", "echo", "--once", "/gazebo/model_states", "--field", "name"],
-        timeout=timeout,
-    )
-    if result.returncode != 0:
-        raise RuntimeError(
-            "could not read Gazebo entities: " + result.stderr.strip()
-        )
-    missing = [name for name in names if name not in result.stdout]
-    if missing:
-        raise RuntimeError(
-            "Gazebo entities were not spawned: " + ", ".join(missing)
-        )
+    import rclpy
+    from rclpy.node import Node
+    from multi_robot_exploration.spawn_entity_checked import ModelInventory
+
+    rclpy.init()
+    node = Node("smoke_model_inventory_observer")
+    node.model_names = None
+    inventory = ModelInventory(node)
+    deadline = time.monotonic() + timeout
+    try:
+        while rclpy.ok() and time.monotonic() < deadline:
+            inventory.poll(time.monotonic())
+            rclpy.spin_once(node, timeout_sec=.1)
+            if node.model_names is not None and set(names) <= node.model_names:
+                return
+        missing = set(names) - (node.model_names or set())
+        raise RuntimeError("Gazebo entities not confirmed: " + ", ".join(sorted(missing)))
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
 
 
 def require_bypass_audit(robot_count, timeout, graph_output=None):

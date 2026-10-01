@@ -43,3 +43,25 @@ def test_wait_excludes_live_goals_and_autonomous_charge(tmp_path):
                                                {"mode":"ACTIVE","source_time":8}]}}
     result=local_wait_audit(write_events(tmp_path,events),trace,0,10)
     assert result["tb1"]["stale_controller_wait_sec"]==5
+
+
+@pytest.mark.parametrize('start,moving,status,time,passes', [
+    (2.,True,2,60.,True), (.8,True,2,60.,False),
+    (2.,False,2,60.,False), (2.,True,4,60.,False),
+    (2.,True,2,260.,False)])
+def test_physical_return_requires_real_home_progress_and_live_nav2(start,moving,status,time,passes):
+    from check_p3b5_gate import physical_return_audit
+    events=[]
+    for k in range(8):
+        events.append({'event':'physics','observer_time':time+k*.5,
+            'robots':{name:{'x':start-(k*.1 if moving else 0.),'y':0.,
+                'battery':{'mode':'RETURNING','return_count':1},
+                'nav2_status':[{'status':status}]}
+                for name in ('tb1','tb2')}})
+    homes={'tb1':(0.,0.),'tb2':(0.,0.)}
+    if passes:
+        result=physical_return_audit(events,0.,homes)
+        assert set(result)==set(homes)
+        assert result['tb1']['nav2_executing_motion_m']==pytest.approx(.7)
+    else:
+        with pytest.raises(AssertionError):physical_return_audit(events,0.,homes)

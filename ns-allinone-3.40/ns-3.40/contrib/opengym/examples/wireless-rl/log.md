@@ -4210,3 +4210,43 @@ lab3 seed202 99.1s检测、111.7s进入RALLY、300.0s timeout，三台各充电�
 新候选在仍串行的提前充电前增加接近调度：需要充电而等待的ACTIVE队友通过正常gateway导航沿安全返航前缀靠近home，所有当前/未来返航、停驻实体与实时rally路径预约照常执行；冲突/未知几何等待，不跳过local safety。实际提前返航请求仍一次一个；本地低电量始终可自主抢占。不改变充电半径/时间、能耗/保留量、速度/清障距离、300秒或COMPLETE判据。stage保留其已验证预算至真实充电完成/FAILED，即使当前剩余目标路线或消息暂时不可用，不能把stage waypoint当最终集结位。
 
 四项新增检查覆盖无冲突接近、交叉返航禁止接近、活动stage保留充电需求及真实充电完成清理、目标路线不可用时保持预算。首轮新增夹具漏fresh pose/state属性，另一次补丁误插入无关测试导致NameError，均修正测试夹具；没有改变安全阈值。十文件167 passed（6.62s）、四包build5.27s、源码旁路审计零违规。尚需新冻结版本任务回归与完整门禁。
+
+### 2026-10-01 P3B.5 e9bcc5c 冻结候选与启动检查修复（未通过整批门禁）
+
+代码 e9bcc5c63bfe9b7ab04f832ada3f44c920fa8561。以下均在 canonical ROS root、source Humble/install、PYTHONNOUSERSITE=1；无整episode重试。归档 report/20261001_p3b5_startup_failed_candidate.json 含六批 manifest、逐episode结果/命令/原始文件hash、管理员停止清单及未收集rooms303原始结果。用户260929_report材料未修改。实际命令：
+
+```bash
+GAZEBO_MASTER_URI=http://127.0.0.1:11511 taskset -c 0-19 /usr/bin/python3 scripts/run_p2d_baseline.py --run-id p3b5_staging_dev_e9bcc5c --scenarios lab_far_northwest --robot-count 3 --seeds 202 --skip-cross-check --ros-domain-base 130 --startup-timeout 600 --evaluation-wait-timeout 900 --infrastructure-retries 0 --rally-max-concurrent 2 --disable-global-battery-rally-pause > /tmp/p3b5_staging_dev_e9bcc5c.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:11512 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v9_forced --cases forced_charge_outage --ros-domain-base 160 > /tmp/p3b5_v9_forced.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:11512 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v9_safety --config scripts/p3b5_safety_probe_manifest.json --ros-domain-base 162 > /tmp/p3b5_v9_safety.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:11513 taskset -c 0-19 /usr/bin/python3 scripts/run_p2d_baseline.py --run-id p3b5_ideal_gate_e9bcc5c --ros-domain-base 140 --startup-timeout 600 --evaluation-wait-timeout 900 --infrastructure-retries 0 --rally-max-concurrent 2 --disable-global-battery-rally-pause > /tmp/p3b5_ideal_gate_e9bcc5c.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:11514 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v9_lab --cases zero_rally_lab up100_lab down100_lab ttl_lab map_loss_lab battery_loss_lab state_loss_lab target_up10_lab battery_exhaust_lab --ros-domain-base 40 > /tmp/p3b5_v9_lab.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:11515 taskset -c 60-79 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v9_rooms --cases up10_rooms down10_rooms delay2_rooms overflow_rooms burst_rooms deadline_rooms detection_loss_rooms pose_loss_rooms single_failure_rooms target_loss_rooms --ros-domain-base 60 > /tmp/p3b5_v9_rooms.log 2>&1
+```
+
+开发lab3/202 COMPLETE252.0s/三次充电。正式理想lab3三seed分别250.1/199.0/174.6s COMPLETE，rooms202 COMPLETE188.0；全部零碰撞且能量正。rooms101开始前缺少ModelStates库存，90wall秒安全拒绝生成；无结果，不重试，整批不通过。rooms303被管理员停止于35.9sim，结果未被父批次收集，归档单独保留；其余固定格未运行。forced ideal COMPLETE273.9s、两机器人各充一次；fault timeout300s、两次充电、零碰撞、最低7.77。lab部分ideal/zero故障COMPLETE131.8/281.5；up100/TTL no_data，down100 timeout；coverage ideal在启动阶段主动停止，NO_RESULT不冒充任务失败。rooms ideal/up10/down10 COMPLETE151.3/142.6/100.4；delay2 timeout，overflow timeout且runner operational_failure（CLI生命周期查询超时）。ready_gate此前确认active，日志无bond错误/停用，不能据此声称真实Nav2失活。两批中断及固定批SIGINT清单在归档。
+
+辅助四episode全部自然结束：长断网ideal COMPLETE190.4/两充，fault timeout300.3/两充/零碰撞/能量正；两机器人RETURNING时已经处于接触区，此数据只证明本地充电，不证明物理返航导航。deadline ideal/fault均mission_failed162.7/187.4、无机器人失败/碰撞；等待离线deadline事件审核。54格协议矩阵PASS（log/p3b5_protocol_e9bcc5c.json）。无corridors、holdout或补充物理探针运行。首次lab工具调用工作路径误写不存在目录，CreateProcess失败，无episode，随即改正canonical路径。
+
+诊断命令：ROS_DOMAIN_ID=144 PYTHONNOUSERSITE=1 timeout 15 ros2 service call /get_model_list gazebo_msgs/srv/GetModelList "{}"，success=True，清单包含三tb及target（sim300.755）。随后停止当前仍在运行的开发批次，保留全部失败。新修复：只读GetModelList bounded重查询辅助ModelStates，实体插入仍只发一次；smoke持久原生GetState/graph查询代替反复CLI发现，严格state ID3且label=active（原substring可能误把inactive当active）；不进行生命周期写操作、不改任务安全参数。
+
+新反例覆盖native库存空世界/失败响应/丢读回包重查询、无topic且spawn回包丢失仍确认实体、exact lifecycle ID/label及丢查询回复恢复。13文件pytest183 passed（6.56s）；最初子集164 passed（5.57s），补上Nav2/evaluator后183。build先误选gateway_msgs、communication_gateway_msgs各构建三包，随后按multi_robot_interfaces merge_map multi_robot_exploration multi_robot四包重跑通过5.19s。source-only三机器人旁路审计PASS、零违规。
+
+真实启动检查命令（dirty开发证据，非冻结mission格）：
+
+```bash
+ROS_DOMAIN_ID=180 GAZEBO_MASTER_URI=http://127.0.0.1:11520 PYTHONNOUSERSITE=1 taskset -c 40-59 /usr/bin/python3 /tmp/test_p3b5_native_inventory.py > /tmp/p3b5_native_inventory_dev.log 2>&1
+ROS_DOMAIN_ID=181 GAZEBO_MASTER_URI=http://127.0.0.1:11521 PYTHONNOUSERSITE=1 taskset -c 0-19 /usr/bin/python3 scripts/ros_smoke_test.py --world p1c_rooms.world --robot-count 3 --gazebo-seed 101 --startup-timeout 600 --evaluation-duration 45 --evaluation-wait-timeout 900 --coverage-threshold 0 --mission-mode rally --collect-fault-result --battery --target-detection --rally --disable-global-battery-rally-pause --dwell-seconds 0 --episode-id p3b5_native_readiness_dev --evaluation-output-dir log/p3b5_native_readiness_dev/results --log-dir log/p3b5_native_readiness_dev/launch --bypass-audit-output log/p3b5_native_readiness_dev/graph.json > /tmp/p3b5_native_readiness_dev.log 2>&1
+```
+
+第一项启动empty world，禁用ModelStates订阅，生成静态inventory_probe一次成功，第二次安全拒绝已有实体，returncodes[0,1]，2.86wall秒，PASS；输出log/p3b5_native_inventory_dev/。第二项为45s启动/图smoke，目标使用smoke默认(-4,4)，不用于rooms目标任务性能。结果随后追加。
+
+新增补充物理返航pair在执行前冻结：/tmp/p3b5_return_navigation_manifest.json，预声明2026-10-01T15:11:03.430058+00:00，SHA cab3540442ba0cd02cbec6786592855675abba2c9b2d6f64b1fafa82c543b6cf；2r303初始40、idle.15、blackout40..250。两机器人各需离home≥1.1m开始return，守护窗口42..248内RETURNING实际位移≥.5m、有Nav2 EXECUTING、各充一次、零碰撞/FAILED。/tmp/observe_p3b5_return_physics.py只读模型真值/battery/action状态，SHA d4382cd87c1823adda75a8924a62b4cc32cbf86e9d1424a7a861523e2e07deb2。原四辅助episode不删除，最终预计57unique（41primary+10fixed+6aux），forced ideal复用不再多计。此时未执行物理pair，holdout707亦从未执行/调参。
+
+启动smoke第一轮 lifecycle/graph PASS，但CLI `topic echo /tb1/scan`无法及时发现类型，退出1；evaluator被关闭于2.6sim，shutdown/零碰撞/无失败，不能计45s任务结果。进一步将消息到达检查改为原生动态类型发现+subscription，仍验证真正收到扫描/latched task/battery数据、保持90s总检查期限。第二轮使用正确rooms目标(5,3)，run-id p3b5_native_readiness_dev2，其余命令同上，增加 --target-x 5 --target-y 3，output/log/graph改为log/p3b5_native_readiness_dev2。
+
+为补充证据可复现，将未执行的config/observer原字节复制到scripts/p3b5_return_probe_manifest.json、scripts/observe_p3b5_return_physics.py；runner落地scripts/run_p3b5_return_probe.py提供run-id/domain/config参数。validator强制实际home进度≥.5m且有Nav2 EXECUTING运动≥.5m，排除接触区、静止、仅mode变化、断网窗口外和action已结束等假阳性（五个测试）。加入config/observer原文hash及同冻结commit/core审核，原四辅助探针不删除。一次测试工具workdir漏ros2_ws无进程创建，立即改正；不是episode。
+
+第二轮三机器人rooms启动smoke返回0：graph/实体/lifecycle/实际lidar与融合地图消息全部PASS；45sim timeout（规定短horizon，非任务COMPLETE证据），coverage.707、path10.925m、零碰撞/无FAILED，数据log/p3b5_native_readiness_dev2/。新增validator反例及readiness合计17 passed（.75s）。随后最终组件检查并冻结候选；仍不开始holdout直到十固定ideal格全部通过。launch_commands.md同步原生检查说明和额外物理pair命令，修正原辅助探针只能证明模式/充电的表述。
+
+候选终检13文件188 passed（6.05s），四包build和source audit已通过；smoke与物理脚本py_compile通过。补充manifest validate-only首轮遗漏必需run-id，argparse退出2无episode，补参数后校验1case/2episode。提交前diff --check、root git add -n .检查，明确排除260929_report和全部ignored runtime数据。

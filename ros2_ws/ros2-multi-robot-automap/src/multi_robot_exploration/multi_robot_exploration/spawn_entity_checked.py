@@ -12,16 +12,47 @@ import time
 import xml.etree.ElementTree as ET
 
 from gazebo_msgs.msg import ModelStates
-from gazebo_msgs.srv import SpawnEntity
+from gazebo_msgs.srv import GetModelList, SpawnEntity
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data
 from rclpy.utilities import remove_ros_args
 
 
+class ModelInventory:
+    """Retry only read requests; a spawn request is never repeated."""
+
+    def __init__(self, node):
+        self.node = node
+        self.client = node.create_client(GetModelList, '/get_model_list')
+        self.pending = None
+        self.next_query = 0.
+
+    def poll(self, now):
+        if self.pending is not None:
+            future, started = self.pending
+            if future.done():
+                try:
+                    response = future.result()
+                    if response is not None and response.success:
+                        self.node.model_names = set(response.model_names)
+                except Exception as error:
+                    self.node.get_logger().warn(f'Model inventory query failed: {error}')
+                self.pending = None
+                self.next_query = now + .5
+            elif now - started >= 2.:
+                self.client.remove_pending_request(future)
+                future.cancel()
+                self.pending = None
+        if self.pending is None and now >= self.next_query and self.client.service_is_ready():
+            self.pending = self.client.call_async(GetModelList.Request()), now
+
+
 def finish_spawn(node, future, deadline, *, clock=time.monotonic,
-                 spin=rclpy.spin_once, okay=rclpy.ok):
+                 spin=rclpy.spin_once, okay=rclpy.ok, inventory=None):
     while okay() and clock() < deadline:
+        if inventory is not None:
+            inventory.poll(clock())
         if future.done():
             response = future.result()
             if response is None or not response.success:
@@ -60,10 +91,12 @@ def main(args=None):
         node.model_names = set(message.name)
 
     node.create_subscription(ModelStates, '/gazebo/model_states', observe, qos_profile_sensor_data)
+    inventory = ModelInventory(node)
     deadline = time.monotonic() + options.timeout
     success = False
     try:
         while rclpy.ok() and node.model_names is None and time.monotonic() < deadline:
+            inventory.poll(time.monotonic())
             rclpy.spin_once(node, timeout_sec=.1)
         if node.model_names is None or options.entity in node.model_names:
             node.get_logger().error('No fresh model inventory, or entity already exists; refusing spawn')
@@ -80,7 +113,7 @@ def main(args=None):
                 sy, cy = math.sin(options.Y/2), math.cos(options.Y/2)
                 p.orientation.x, p.orientation.y = sr*cp*cy-cr*sp*sy, cr*sp*cy+sr*cp*sy
                 p.orientation.z, p.orientation.w = cr*cp*sy-sr*sp*cy, cr*cp*cy+sr*sp*sy
-                success = finish_spawn(node, client.call_async(request), deadline)
+                success = finish_spawn(node, client.call_async(request), deadline, inventory=inventory)
             else:
                 node.get_logger().error('Spawn service unavailable within wall timeout')
     finally:
