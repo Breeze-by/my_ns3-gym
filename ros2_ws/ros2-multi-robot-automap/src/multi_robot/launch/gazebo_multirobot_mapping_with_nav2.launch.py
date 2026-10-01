@@ -602,6 +602,12 @@ def launch_setup(context, *args, **kwargs):
             spawn_robot,
             joint_state_publisher_node,
             slam_toolbox_node,
+            Node(
+                package="multi_robot_exploration", executable="tf_ingress_sampler",
+                namespace=namespace, name="gateway_tf_ingress",
+                parameters=[{"use_sim_time": use_sim_time, "robot_name": robot_name}],
+                output="screen",
+            ),
         ]
         battery_nodes.append(
             Node(

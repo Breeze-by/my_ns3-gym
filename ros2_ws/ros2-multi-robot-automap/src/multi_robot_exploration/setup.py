@@ -31,6 +31,7 @@ setup(
             'robot_status_panel = multi_robot_exploration.status_panel:main',
             'spawn_entity_checked = multi_robot_exploration.spawn_entity_checked:main',
             'target_detector = multi_robot_exploration.target_detector:main',
+            'tf_ingress_sampler = multi_robot_exploration.tf_ingress_sampler:main',
             'task_visualizer = multi_robot_exploration.task_visualizer:main',
             'task_evaluator = multi_robot_exploration.task_evaluator:main',
         ],

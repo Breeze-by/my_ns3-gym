@@ -159,6 +159,18 @@ def test_slam_tf_validity_offset_does_not_renew_scan_age_or_mutate_local_tf():
     assert tf.transforms[0].header.stamp.nanosec==0
 
 
+def test_discarded_native_tf_does_not_pay_for_a_deep_copy(monkeypatch):
+    from multi_robot_exploration import ideal_gateway
+    fake,route,emitted=sender()
+    IdealGateway.publish_candidate(fake,route,'uplink',make_tf('map','odom',10))
+    monkeypatch.setattr(ideal_gateway,'deepcopy',lambda _: (_ for _ in ()).throw(AssertionError('discarded copy')))
+    IdealGateway.publish_candidate(fake,route,'uplink',make_tf('odom','base_link',11))
+    IdealGateway.publish_candidate(fake,route,'uplink',make_tf('map','odom',10))
+    fake.clock=10.1
+    IdealGateway.publish_candidate(fake,route,'uplink',make_tf('map','odom',11))
+    assert len(emitted)==1
+
+
 def test_charge_request_route_is_reliable_expiring_and_robot_specific():
     from multi_robot_exploration.fault_model import CHARGE_REQUEST_TTL_SEC, RELIABLE_TYPES
 

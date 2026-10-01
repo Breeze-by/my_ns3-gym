@@ -304,7 +304,7 @@ class IdealGateway(Node):
                         "frame_state",
                         robot,
                         "headquarters",
-                        f"/{robot}/tf",
+                        f"/{robot}/gateway/source_tf",
                         f"/gateway/received/{robot}/tf",
                         TFMessage,
                         2.0,
@@ -412,7 +412,6 @@ class IdealGateway(Node):
         # Preserve sensor source stamps; receiving an old sample never renews TTL.
         generated = now
         if isinstance(message, TFMessage):
-            message = deepcopy(message)
             relevant = [item for item in message.transforms
                         if item.header.frame_id.lstrip("/").endswith("map")
                         and item.child_frame_id.lstrip("/").endswith("odom")]
@@ -422,14 +421,11 @@ class IdealGateway(Node):
             # that future validity stamp is not the generation time. Only the
             # AP copy is normalized; robot-local Nav2 retains its native TF.
             offset_ns = round(self.frame_stamp_offset_sec * 1e9)
-            for item in relevant:
-                original = item.header.stamp.sec * 10**9 + item.header.stamp.nanosec
-                if original < offset_ns:
-                    return
-                corrected = original - offset_ns
-                item.header.stamp.sec, item.header.stamp.nanosec = divmod(corrected, 10**9)
             stamp = relevant[-1].header.stamp
-            generated = stamp.sec + stamp.nanosec / 1e9
+            original = stamp.sec * 10**9 + stamp.nanosec
+            if original < offset_ns:
+                return
+            generated = (original - offset_ns) / 1e9
         elif hasattr(message, "header"):
             stamp = message.header.stamp
             generated = stamp.sec + stamp.nanosec / 1e9
@@ -449,6 +445,16 @@ class IdealGateway(Node):
             < route.min_interval_sec
         ):
             return
+        if isinstance(message, TFMessage):
+            # Copy only eligible observations, never every native TF callback.
+            message = deepcopy(message)
+            for item in message.transforms:
+                if (item.header.frame_id.lstrip('/').endswith('map')
+                        and item.child_frame_id.lstrip('/').endswith('odom')):
+                    original = item.header.stamp.sec*10**9+item.header.stamp.nanosec
+                    if original < offset_ns:
+                        return
+                    item.header.stamp.sec, item.header.stamp.nanosec = divmod(original-offset_ns, 10**9)
         self.last_generated_at[key] = now
         if route.message_type in STATE_TYPES:
             self.source_stamps[key] = generated

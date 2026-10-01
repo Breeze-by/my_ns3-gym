@@ -4153,3 +4153,26 @@ lab101237.9s COMPLETE/两次充电；lab202真实post-start超时300s，124.7s�
 诊断：全局预充电屏障禁止已充满机器人沿不冲突路径前进；正在移动的队友又被当作静态占位，tb3早期走到底部较长绕路。新候选仍串行提前充电、保留等待耗电闭包；按已知AP地图计算当前/待执行返航路线预留，允许energy-ready机器人在安全前缀前进，充电机器人保留实际占位；未知返航几何则等待。活跃/已派发队友仅在有实际路线预留保护时移出静态mask，使用包含当前位置的剩余预留路径防碰撞，新接纳leader后重新规划后续短路前缀。停靠/FAILED/独立返航机器人仍作为物理障碍。
 
 新增三项反例：动静态走廊绕路差异与安全跟随前缀、充电期间安全前进与禁止穿过当前/未来返航路线、未知返航路线/实际充电占位。第一次测试走廊仅0.5m宽，被0.35m静态clearance膨胀封闭，修正夹具为1.2m走廊；实现不因夹具失败放宽clearance。九文件pytest157 passed（6.78s）、四包build5.63s、source-only审计零违规。5fa4310协议54格PASS，已完成的六个ledger源时间无回退、阶段因果/TTL/version检查通过（离线读取，不另计episode）。尚未开始新候选仿真。
+
+## 2026-10-01 P3B.5 5b4f8a0 开发候选保留、TF接入采样优化
+
+
+冻结源码5b4f8a0（Humble/install、PYTHONNOUSERSITE=1）：
+
+GAZEBO_MASTER_URI=http://127.0.0.1:11471 taskset -c 0-19 /usr/bin/python3 scripts/run_p2d_baseline.py --run-id p3b5_route_dev_5b4f8a0 --scenarios lab_far_northwest --robot-count 3 --seeds 202 --skip-cross-check --ros-domain-base 130 --startup-timeout 600 --evaluation-wait-timeout 900 --infrastructure-retries 0 --rally-max-concurrent 2 --disable-global-battery-rally-pause > /tmp/p3b5_route_dev_5b4f8a0.log 2>&1；
+
+GAZEBO_MASTER_URI=http://127.0.0.1:11472 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v6_forced --cases forced_charge_outage --ros-domain-base 160 > /tmp/p3b5_v6_forced.log 2>&1；退出0后同CPU/master /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v6_safety --config scripts/p3b5_safety_probe_manifest.json --ros-domain-base 162 > /tmp/p3b5_v6_safety.log 2>&1。
+
+lab202112.7s RALLY，300.4s timeout/三次充电/零碰撞；forced ideal300.4s timeout/一次充电、fault300.1s timeout/两次充电/零碰撞；安全探针第一ideal主动中断shutdown，其他格未运行。没有holdout实验。report/20261001_p3b5_ingress_failed_candidate.json保留全部结果、哈希、诊断脚本及停止进程。
+
+关键同episode证据：只读probe使用ROS_DOMAIN_ID=161（/usr/bin/python3 /tmp/p3b5_ingress_probe.py，20wall秒）；模拟窗口2162.482–2180.982，tb2原始TF源年龄median0.093s/p95 .193，gateway入队median1.993s/p95 2.093；tb1入口 .181s。probe有966个relevant TF样本/robot，三种QoS均新鲜。不是把不同episode数据混成因果证明。第一次对已结束ideal域160探测返回0样本，保留错误域输出、不用于结论。
+
+只读真实TF探针比之前少样本诊断更充分，问题集中在多端点网关接入处理。额外cProfile启动：将launch副本/tmp/p3b5_profile.launch.py的ideal_gateway加prefix=/usr/bin/python3 -m cProfile -o /tmp/p3b5_gateway_5b.prof；精确命令 ROS_DOMAIN_ID=180 PYTHONNOUSERSITE=1 GAZEBO_MASTER_URI=http://127.0.0.1:11480 taskset -c 20-39 ros2 launch /tmp/p3b5_profile.launch.py robot_count:=2 enable_gzclient:=false enable_rviz:=false enable_merge_rviz:=false enable_task_regions:=false enable_status_panel:=false auto_save_map:=false gazebo_seed:=303 enable_task_evaluator:=true evaluation_episode_id:=p3b5_gateway_profile_5b evaluation_output_dir:=/tmp/p3b5_gateway_profile_5b evaluation_duration_sec:=90 evaluation_coverage_threshold:=0 enable_target_detection:=true enable_rally:=true enable_battery:=true battery_capacity:=100 battery_initial_energy:=18 battery_return_safety_margin:=5 battery_charge_duration_sec:=10 battery_return_timeout_sec:=120 global_battery_rally_pause:=false rally_max_concurrent:=2 gateway_ledger_path:=/tmp/p3b5_gateway_profile_5b/ledger.jsonl > /tmp/p3b5_gateway_profile_5b.log 2>&1。
+
+该debug手动参数错误使用整数，评估/电池节点拒绝应为DOUBLE的参数，无有效episode result，按启动组件失败保留；网关继续运行留下301.841s的剖析。138714次_wait_for_ready_callbacks累计219.494s（含等待、剖析开销），69951次publish_candidate累计28.526s、deepcopy19.182s。不能声称这些百分比等于生产纯CPU占比或算法加速；支持减少高频无关/重复TF导致的大waitset调度。SIGINT结束自有master11480进程组。
+
+修复候选：各机器人新增gateway_tf_ingress，只转发新map→odom native样本，base TF/重复/旧scan不占用多端点网关队列；header原样保留，网关仍使用原min_interval0.5、TF TTL2s与SLAM配置offset，仅拷贝符合限频/源版本的TF。原生Nav2 TF、可靠命令/重试/QoS不变。robot→sampler→同一个gateway→中央，ideal/fault使用相同路径。候选实际频率受源样本/限频共同影响，不声称固定精确2Hz；每配对使用同源生成算法。
+
+十文件pytest160 passed（5.93s）、四包build7.62s、source-only审计零违规、show-args返回0。真实dirty短smoke精确命令：ROS_DOMAIN_ID=180 GAZEBO_MASTER_URI=http://127.0.0.1:11481 taskset -c 20-39 /usr/bin/python3 scripts/ros_smoke_test.py --robot-count 2 --gazebo-seed 303 --startup-timeout 600 --evaluation-duration 45 --evaluation-wait-timeout 900 --coverage-threshold 0 --mission-mode rally --collect-fault-result --battery --battery-capacity 100 --battery-initial-energy 18 --battery-safety-margin 5 --battery-charge-duration 10 --battery-return-timeout 120 --target-detection --rally --disable-global-battery-rally-pause --dwell-seconds 0 --episode-id p3b5_tf_ingress_dev --evaluation-output-dir log/p3b5_tf_ingress_dev/results --log-dir log/p3b5_tf_ingress_dev/launch --gateway-ledger-path log/p3b5_tf_ingress_dev/ledger.jsonl --bypass-audit-output log/p3b5_tf_ingress_dev/graph.json > /tmp/p3b5_tf_ingress_dev.log 2>&1。
+
+短smoke返回0、graph通过、45.4s horizon timeout/零碰撞/minEnergy12.167；TF入口年龄：{"tb2": {"n": 78, "median_source_age_sec": 0.021500000000060027, "p95_source_age_sec": 0.02400000000034197, "max_source_age_sec": 0.027000000000043656}, "tb1": {"n": 74, "median_source_age_sec": -0.014000000000123691, "p95_source_age_sec": -0.010999999999967258, "max_source_age_sec": -0.009999999999763531}}。tb1 callback clock比scan源略落后（约-14ms），不是负排队；逻辑enqueue=max(clock,source)保持阶段因果。两次对比是不同episode/阶段，不把源年龄差值当纯算法因果加速。原数据在ROS log/p3b5_tf_ingress_dev/；随后新冻结候选仍需完整门禁。

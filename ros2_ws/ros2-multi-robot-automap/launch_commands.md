@@ -705,3 +705,6 @@ PYTHONNOUSERSITE=1 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_safe
 
 
 2026-10-01 路线预留候选：替代上述全局预充电屏障。提前充电仍串行，但已充满机器人可沿不冲突路径前进；当前及待执行返航路线保留，充电机器人保留实际占位，未知返航几何则等待。活跃队友只有在其包含当前位置的剩余路线已预留时移出静态绕路mask；跟随者停在预留冲突前，不穿过停靠/故障机器人。等待能量预算、本地安全保留量、速度/clearance/300秒完成标准不变。
+
+
+2026-10-01 TF接入候选：每机器人默认启动gateway_tf_ingress，原生map→odom的新样本经/tbN/gateway/source_tf进入统一gateway；重复TF/odom-base不会排在多端点网关前。源header不改，min_interval0.5s/TTL2s不放宽；本地Nav2仍接原生TF。不同mission mode和ideal/fault均使用相同接入路径。
