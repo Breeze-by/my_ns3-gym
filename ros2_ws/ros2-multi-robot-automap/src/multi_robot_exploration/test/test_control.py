@@ -1105,6 +1105,7 @@ def test_idle_blocker_recovery_dispatches_motion_before_returning(
         battery_monitor_started_at=0., battery_state_received_at=dict.fromkeys(names, 10.),
         message_freshness_timeout_sec=5.,
         rally_charge_requested={}, prepare_rally_charges=lambda: {"tb2"},
+        rally_approach_routes={},
         rally_preflight_complete=True, rally_precharge_active=False,
         battery_states={name: {'charge_x': 1., 'charge_y': 2.5} for name in names},
         rally_max_concurrent=2, rally_probe_targets=set(),
@@ -1391,3 +1392,41 @@ def test_unknown_return_route_waits_and_charging_keeps_physical_footprint():
         {'tb1': 'RETURNING'}, set()) is None
     assert control.rally_return_reservations(grid, .1, (0., 0.), positions, states,
         {'tb1': 'CHARGING'}, set()) == {'tb1': ((1., 1.),)}
+
+
+def test_follower_cannot_park_across_a_leaders_later_leg():
+    # The leader's first 1m leg is clear, but its next leg needs the follower's
+    # final parking cell. Reserving only the current leg caused priority inversion.
+    full = tuple((float(x), 0.) for x in range(5))
+    follower = (control.RallyPose(3., 0., 0.),
+                ((3., 3.), (3., 2.), (3., 1.), (3., 0.)))
+    assert control.reserve_rally_prefix(follower, [full[:2]]) == follower
+    intents = control.rally_priority_reservations(
+        ['leader', 'follower'], 'follower', {'leader': full}, set())
+    admitted = control.reserve_rally_prefix(follower, intents)
+    assert admitted is not None and admitted[0].y == 2.
+    assert not control.routes_conflict(admitted[1], full)
+    disjoint = (control.RallyPose(4., 3., 0.), ((3., 3.), (4., 3.)))
+    assert control.reserve_rally_prefix(disjoint, intents) == disjoint
+
+
+def test_priority_approach_releases_only_completed_or_failed_leaders():
+    order = ['leader', 'follower']
+    assert control.rally_priority_reservations(order, 'leader', {}, set()) == []
+    assert control.rally_priority_reservations(order, 'follower', {}, set()) is None
+    assert control.rally_priority_reservations(order, 'follower', {}, {'leader'}) == []
+    # An unfinished returning/charging leader reserves its future post-charge
+    # approach too; a parked temporary yield is not a completed final approach.
+    future = ((0., 0.), (1., 0.))
+    assert control.rally_priority_reservations(
+        order, 'follower', {'leader': future}, set()) == [future]
+
+
+def test_energy_planning_reuses_complete_approaches_for_dispatch():
+    node, _, _ = two_robot_rally_budget_node()
+    control.HeadquartersControl.prepare_rally_charges(node)
+    assert set(node.rally_approach_routes) == {'tb1', 'tb2'}
+    for name, route in node.rally_approach_routes.items():
+        assert route[0] == node.robot_positions[name]
+        target = node.rally_final_targets[name]
+        assert math.dist(route[-1], (target.x, target.y)) < node.resolution

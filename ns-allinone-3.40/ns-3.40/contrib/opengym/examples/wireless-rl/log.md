@@ -4176,3 +4176,19 @@ lab202112.7s RALLY，300.4s timeout/三次充电/零碰撞；forced ideal300.4s 
 十文件pytest160 passed（5.93s）、四包build7.62s、source-only审计零违规、show-args返回0。真实dirty短smoke精确命令：ROS_DOMAIN_ID=180 GAZEBO_MASTER_URI=http://127.0.0.1:11481 taskset -c 20-39 /usr/bin/python3 scripts/ros_smoke_test.py --robot-count 2 --gazebo-seed 303 --startup-timeout 600 --evaluation-duration 45 --evaluation-wait-timeout 900 --coverage-threshold 0 --mission-mode rally --collect-fault-result --battery --battery-capacity 100 --battery-initial-energy 18 --battery-safety-margin 5 --battery-charge-duration 10 --battery-return-timeout 120 --target-detection --rally --disable-global-battery-rally-pause --dwell-seconds 0 --episode-id p3b5_tf_ingress_dev --evaluation-output-dir log/p3b5_tf_ingress_dev/results --log-dir log/p3b5_tf_ingress_dev/launch --gateway-ledger-path log/p3b5_tf_ingress_dev/ledger.jsonl --bypass-audit-output log/p3b5_tf_ingress_dev/graph.json > /tmp/p3b5_tf_ingress_dev.log 2>&1。
 
 短smoke返回0、graph通过、45.4s horizon timeout/零碰撞/minEnergy12.167；TF入口年龄：{"tb2": {"n": 78, "median_source_age_sec": 0.021500000000060027, "p95_source_age_sec": 0.02400000000034197, "max_source_age_sec": 0.027000000000043656}, "tb1": {"n": 74, "median_source_age_sec": -0.014000000000123691, "p95_source_age_sec": -0.010999999999967258, "max_source_age_sec": -0.009999999999763531}}。tb1 callback clock比scan源略落后（约-14ms），不是负排队；逻辑enqueue=max(clock,source)保持阶段因果。两次对比是不同episode/阶段，不把源年龄差值当纯算法因果加速。原数据在ROS log/p3b5_tf_ingress_dev/；随后新冻结候选仍需完整门禁。
+
+## 2026-10-01 P3B.5 1ba31be 开发失败保留、完整接近路线优先级预约
+
+冻结源码1ba31be（Humble/install、PYTHONNOUSERSITE=1），精确命令：
+
+GAZEBO_MASTER_URI=http://127.0.0.1:11491 taskset -c 0-19 /usr/bin/python3 scripts/run_p2d_baseline.py --run-id p3b5_ingress_dev_1ba31be --scenarios lab_far_northwest --robot-count 3 --seeds 202 --skip-cross-check --ros-domain-base 130 --startup-timeout 600 --evaluation-wait-timeout 900 --infrastructure-retries 0 --rally-max-concurrent 2 --disable-global-battery-rally-pause > /tmp/p3b5_ingress_dev_1ba31be.log 2>&1；
+
+GAZEBO_MASTER_URI=http://127.0.0.1:11492 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v7_forced --cases forced_charge_outage --ros-domain-base 160 > /tmp/p3b5_v7_forced.log 2>&1；原条件后续 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v7_safety --config scripts/p3b5_safety_probe_manifest.json --ros-domain-base 162 > /tmp/p3b5_v7_safety.log 2>&1 在启动前取消，当前fault runner保留至自然结束。
+
+/usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_1ba31be.json：54格PASS。
+
+lab3 seed202 113.4s检测、168.6s RALLY、300.2s真实timeout，三台各充电一次，最低能量12.476、零碰撞/耗尽/failed robot。tb1最终误差.040m、tb3 .013m，tb2仍在通道入口，误差5.119m。日志保留tb3先停靠(y1.40)、tb2由入口绕到地图底部再回入口的派发轨迹。任务终态后SIGINT中两台navigation_gateway exit -11，不能声称清理全部正常。forced ideal210.8s COMPLETE、fault281.5s COMPLETE，两侧两台各充电一次、零碰撞/耗尽。开发失败不能由这对成功抵消；未启动完整门禁或holdout。report/20261001_p3b5_priority_failed_candidate.json保存summary、真实派发轨迹、协议结果、取消条件调度进程与内容哈希。
+
+新算法候选：除现有实际body/当前短航段和安全返航预约外，为每个未完成高优先级机器人预留到最终集结位置的完整剩余接近路线。低优先级只能沿不冲突前缀移动，不能提前停在高优先级下一航段必经路径上；未知leader几何等待，完成/FAILED才释放意图预约，temporary yield不算完成。对充电/返航中的leader使用充电位起点的未来路线，实际返航路径/占位仍独立保护。复用同一dispatch snapshot的能量规划已有完整路线，不新增电池启用情况下的重复BFS；无电池模式按相同策略规划。意图预约不授权穿过停驻物理实体，既有静态占位和实时短航段检查仍执行。不改变300秒、能耗、清障距离、速度或COMPLETE判据。
+
+新增三项反例：当前短leg无冲突但最终停车堵住leader未来leg；未知/未完成leader不得释放、完成/FAILED可释放；能量预算复用路线确实到最终目标。首轮161 passed/2 failed为测试夹具未模拟prepare填充新缓存、原route separation要求比夹具预计更远；修正夹具，未放宽安全阈值。十文件163 passed（6.64s），四包colcon build通过5.44s，source-only三机器人审计零违规。该候选尚待新冻结开发与全矩阵验证。

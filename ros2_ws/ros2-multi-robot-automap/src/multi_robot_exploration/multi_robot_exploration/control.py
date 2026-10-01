@@ -1584,6 +1584,25 @@ def rally_stationary_positions(positions, robot_name, reserved_names):
             if name != robot_name and name not in reserved_names and position is not None]
 
 
+def rally_priority_reservations(order, robot_name, routes, completed):
+    """Keep followers from parking on an unfinished leader's later approach.
+
+    These intent routes supplement live short-leg/body reservations; they never
+    authorize motion through a stationary robot. Unknown leader geometry waits.
+    """
+    reservations = []
+    for leader in order:
+        if leader == robot_name:
+            return reservations
+        if leader in completed:
+            continue
+        route = routes.get(leader)
+        if not route:
+            return None
+        reservations.append(route)
+    return reservations
+
+
 def rally_return_reservations(grid, resolution, origin, positions, states, modes, pending):
     """Protect current and future serial safety returns before allowing rally progress.
 
@@ -2544,6 +2563,22 @@ class HeadquartersControl(Node):
                 self.map_data, self.resolution, self.origin, self.robot_positions,
                 self.battery_states, self.battery_modes, energy_unready,
             ) if self.enable_battery else {})
+            if self.enable_battery:
+                approach_routes = self.rally_approach_routes
+            else:
+                approach_routes = {
+                    name: plan_rally_leg(
+                        self.rally_final_targets[name], self.map_data,
+                        self.resolution, self.origin, self.robot_positions[name],
+                    )[1]
+                    for name in self.rally_dispatch_order
+                    if self.robot_positions[name] is not None
+                }
+            completed_approaches = {
+                name for name in self.rally_dispatch_order
+                if self.battery_modes[name] == 'FAILED'
+                or (self.rally_arrived[name] and name not in self.rally_yield_targets)
+            }
             reserved_names = {name for name in self.rally_dispatch_order
                               if self.battery_modes[name] == 'ACTIVE'
                               and (self.rally_goal_handles[name] is not None
@@ -2839,6 +2874,12 @@ class HeadquartersControl(Node):
                     break
                 if name not in plans:
                     continue
+                priority_routes = rally_priority_reservations(
+                    self.rally_dispatch_order, name, approach_routes,
+                    completed_approaches,
+                )
+                if priority_routes is None:
+                    continue
                 plan = plans[name]
                 if admitted_names != reserved_names:
                     # A newly reserved leader can clear this corridor. Prefer
@@ -2850,7 +2891,7 @@ class HeadquartersControl(Node):
                         rally_stationary_positions(self.robot_positions, name, admitted_names),
                         visible_only=True,
                     )
-                reservations = [*reserved_routes, *(route for other, route in
+                reservations = [*reserved_routes, *priority_routes, *(route for other, route in
                                 (return_reservations or {}).items() if other != name)]
                 admitted = reserve_rally_prefix(plan, reservations)
                 if admitted is None:
@@ -2904,6 +2945,7 @@ class HeadquartersControl(Node):
         blocked = set(self.rally_charge_requested)
         candidates = []
         budgets, travel_times, charge_times = {}, {}, {}
+        self.rally_approach_routes = {}
         now = self.now()
         for name in self.rally_dispatch_order:
             if self.battery_modes[name] == "FAILED" or self.robot_positions[name] is None:
@@ -2931,6 +2973,7 @@ class HeadquartersControl(Node):
             )
             if not route:
                 continue  # The existing route/map recovery still owns this case.
+            self.rally_approach_routes[name] = (position, *route)
             distance = sum(math.dist(a, b) for a, b in zip(route, route[1:]))
             travel_times[name] = distance / speed
             if (self.battery_modes[name] != "ACTIVE"
