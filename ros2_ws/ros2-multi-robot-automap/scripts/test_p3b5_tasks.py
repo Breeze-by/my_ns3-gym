@@ -6,6 +6,22 @@ import pytest
 from run_p3b5_tasks import ledger_metrics, tdi
 
 
+def test_holdout_commands_use_declared_independent_fault_seed(tmp_path):
+    import argparse
+    from pathlib import Path
+    from run_p3b5_tasks import episode_command
+    config=json.loads(Path(__file__).with_name('p3b5_fault_manifest.json').read_text())
+    assert config['holdout_fault_seed']!=config['fault_seed']
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--gateway-seed',type=int)
+    for case in config['cases']:
+        for mode in ('ideal','fault'):
+            command=episode_command(case,config['scenarios'][case['scenario']],
+                config['profiles'][case['profile']],mode,tmp_path/'episode',config)
+            arguments,_=parser.parse_known_args(command[2:])
+            assert arguments.gateway_seed==(config['holdout_fault_seed'] if case['scenario']=='holdout3' else config['fault_seed'])
+
+
 def test_tdi_excludes_process_modes_and_failed_ideal():
     ideal = {"success": True, "task_phase": "COMPLETE", "mission_mode": "rally", "robot_count": 3}
     assert tdi(ideal, {"success": True, "task_phase": "COMPLETE"}) == 0

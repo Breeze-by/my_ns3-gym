@@ -341,13 +341,13 @@ def main():
         summary_path.write_text(json.dumps(summary, indent=2) + "\n")
         print(f"RESULT {identity} infra={row['infrastructure_failure']} status={row.get('result', {}).get('termination_reason')}", flush=True)
         if row["infrastructure_failure"] or row["operational_failure"] or row.get("result", {}).get("termination_reason") == "shutdown":
-            print("STOP: infrastructure failure retained; unrun cells remain pending", flush=True)
+            print("STOP: infrastructure/operational failure retained; unrun cells remain pending", flush=True)
             break
     summary["finished_at_utc"] = datetime.now(timezone.utc).isoformat()
     summary["statistics"] = pair_statistics(config, pairs, episodes)
     summary_path.write_text(json.dumps(summary, indent=2) + "\n")
     print(json.dumps({"summary": str(summary_path), "tdi": summary["statistics"]["tdi"]}), flush=True)
-    return int(any(row["infrastructure_failure"] for row in episodes.values()))
+    return int(any(row["infrastructure_failure"] or row["operational_failure"] for row in episodes.values()))
 
 
 if __name__ == "__main__":

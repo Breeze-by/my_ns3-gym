@@ -143,6 +143,27 @@
     },
     "battery_exhaust": {
       "battery_initial_energy": 0
+    },
+    "up10_holdout27077": {
+      "uplink_loss_rate": 0.1,
+      "gateway_seed": 27077
+    },
+    "down10_holdout27077": {
+      "downlink_loss_rate": 0.1,
+      "gateway_seed": 27077
+    },
+    "burst_holdout27077": {
+      "gateway_blackout_intervals": [
+        [
+          80,
+          100
+        ],
+        [
+          140,
+          160
+        ]
+      ],
+      "gateway_seed": 27077
     }
   },
   "cases": [
@@ -288,19 +309,19 @@
       "id": "holdout_rally",
       "scenario": "holdout3",
       "mode": "rally",
-      "profile": "up10"
+      "profile": "up10_holdout27077"
     },
     {
       "id": "holdout_target",
       "scenario": "holdout3",
       "mode": "target",
-      "profile": "down10"
+      "profile": "down10_holdout27077"
     },
     {
       "id": "holdout_coverage",
       "scenario": "holdout3",
       "mode": "coverage",
-      "profile": "burst"
+      "profile": "burst_holdout27077"
     },
     {
       "id": "battery_exhaust_lab",
@@ -310,5 +331,11 @@
     }
   ],
   "temporal_contract": "source<=enqueue<=admit/tx<=delivery; TF source is scan stamp, native validity offset derived from actual SLAM config; fault blackout relative first EXPLORE",
-  "ideal_transport": "no fault intervention, zero stochastic loss/delay/reorder/duplicate/blackout/drop; normal bounded4096 queue; task load/deadline/retry unchanged"
+  "ideal_transport": "no fault intervention, zero stochastic loss/delay/reorder/duplicate/blackout/drop; normal bounded4096 queue; task load/deadline/retry unchanged",
+  "holdout_fault_seed": 27077,
+  "holdout_fault_seed_declaration": {
+    "predeclared_at_utc": "2026-10-01T20:40:27.833419+00:00",
+    "reason": "20260928P3B.5 minimum requires un-tuned fault seed in holdout combination. Seed707 and world never executed; seed27077 not previously exercised or tuned. Development fault17011/cells/energy/horizons unchanged. Original planned holdout17011 cells never executed; original declaration retained. Configuration archive provided before any primary matrix or707.",
+    "supersedes_unexecuted_holdout_seed": 17011
+  }
 }

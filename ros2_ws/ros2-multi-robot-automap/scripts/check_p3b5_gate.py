@@ -6,6 +6,7 @@ import hashlib
 import json
 from pathlib import Path
 import random
+import shlex
 import sys
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -233,6 +234,11 @@ def main():
         assert not (pairs.keys() & s['pairs'].keys())
         pairs.update(s['pairs']);episodes.update(s['episodes'])
     assert set(pairs)==set(cases), (set(cases)-pairs.keys())
+    assert config['holdout_fault_seed']!=config['fault_seed']
+    assert config['holdout_fault_seed_declaration']['predeclared_at_utc']<reference['generated_at_utc']
+    for case in cases.values():
+        if case['scenario']=='holdout3':
+            assert config['profiles'][case['profile']]['gateway_seed']==config['holdout_fault_seed']
     raw_evidence=[]
     for key,row in episodes.items():
         assert not row['infrastructure_failure'] and not row['operational_failure']
@@ -248,6 +254,9 @@ def main():
         if row['profile'].get('battery_initial_energy')!=0:
             assert r['battery_minimum_energy']>0, key
         assert r['mission_mode']==row['case']['mode']
+        command=shlex.split(row['command'])
+        seed_values=[int(command[i+1]) for i, arg in enumerate(command) if arg=='--gateway-seed']
+        assert seed_values and seed_values[-1]==row['profile'].get('gateway_seed',config['fault_seed'])
         if r['success'] and r['mission_mode']=='rally': episode_ok(r)
         if r['partial_completion']:
             assert r['success'] is False and r['task_phase']=='PARTIAL_COMPLETE'

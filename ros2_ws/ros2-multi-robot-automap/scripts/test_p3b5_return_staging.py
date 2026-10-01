@@ -1,4 +1,6 @@
 import pytest
+import json
+from pathlib import Path
 
 from stage_p3b5_return_probe import owned_coordinator
 
@@ -23,3 +25,22 @@ def test_fixture_signals_only_the_same_domain_owned_descendant(tmp_path):
     process(tmp_path, 60, 20, 180, True)
     with pytest.raises(RuntimeError):
         owned_coordinator(10, '180', tmp_path)
+
+
+def test_declared_staging_paths_have_full_navigation_clearance():
+    import math
+    import numpy as np
+    from multi_robot_exploration.control import traversable_grid, has_known_line_of_sight, world_to_grid
+    from multi_robot_exploration.task_evaluator import load_truth_grid
+    root = Path(__file__).resolve().parents[1]
+    config = json.loads((root / 'scripts/p3b5_staged_return_probe_manifest.json').read_text())
+    truth = load_truth_grid(root / 'src/multi_robot/worlds/my_world.world')
+    grid = np.where(traversable_grid(np.where(truth.occupied, 100, 0), truth.resolution), 0, 100)
+    homes = {'tb1': (0., -.45), 'tb2': (0., .45)}
+    cell = lambda p: world_to_grid(*p, truth.resolution, truth.origin_x, truth.origin_y)
+    for name, pose in config['return_staging']['poses'].items():
+        assert math.dist(homes[name], pose[:2]) >= 1.8
+        assert has_known_line_of_sight(grid, cell(homes[name]), cell(pose[:2]))
+    # Centerline-only visibility had accepted the original unsafe test points.
+    assert not has_known_line_of_sight(grid, cell(homes['tb1']), cell((-2., -.45)))
+    assert not has_known_line_of_sight(grid, cell(homes['tb2']), cell((2., .45)))

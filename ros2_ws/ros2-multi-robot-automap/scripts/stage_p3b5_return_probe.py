@@ -83,6 +83,8 @@ def main():
     results = {}
     sent = set()
     staged = set()
+    last_wait = {}
+    saved_grids = set()
     wall_start = time.monotonic()
     code = 1
 
@@ -91,6 +93,11 @@ def main():
 
     def record(event, **data):
         stream.write(json.dumps({'event': event, 'observer_time': now(), **data}) + '\n')
+
+    def waiting(name, reason, **details):
+        if now() - last_wait.get(name, -float('inf')) >= 5:
+            record('staging_wait', robot=name, reason=reason, **details)
+            last_wait[name] = now()
 
     def phase(message):
         nonlocal epoch, coordinator
@@ -152,6 +159,7 @@ def main():
                 continue
             offset = now() - epoch
             if offset > fixture['stage_deadline_sec'] and len(staged) != len(latest):
+                record('stage_deadline', staged=sorted(staged), received_types={n: sorted(x) for n, x in latest.items()})
                 raise TimeoutError(f'Staging deadline exceeded; staged={sorted(staged)}')
             for name, target in fixture['poses'].items():
                 data = latest[name]
@@ -159,6 +167,8 @@ def main():
                                   'ttl_sec': STATE_TTL_SEC[kind]} for kind, (stamp, _) in data.items()}
                 if (len(leases) != 4 or any(not 0 <= x['age_sec'] < x['ttl_sec'] for x in leases.values())
                         or data['battery_state'][1]['mode'] != 'ACTIVE'):
+                    waiting(name, 'input_lease_or_battery_mode', inputs=leases,
+                            battery_mode=data.get('battery_state', (None, {}))[1].get('mode'))
                     continue
                 current = position(name)
                 if name in results:
@@ -169,7 +179,10 @@ def main():
                             staged.add(name)
                             record('staged', robot=name, position=current, target=target, inputs=leases)
                     continue
-                if name in sent or not clients[name].server_is_ready():
+                if name in sent:
+                    continue
+                if not clients[name].server_is_ready():
+                    waiting(name, 'gateway_action_not_ready')
                     continue
                 grid = data['map_snapshot'][1]
                 if abs(grid.info.origin.orientation.z) > 1e-6:
@@ -180,8 +193,20 @@ def main():
                 start = world_to_grid(*current, grid.info.resolution, *origin)
                 end = world_to_grid(*target[:2], grid.info.resolution, *origin)
                 if any(not (0 <= r < raw.shape[0] and 0 <= c < raw.shape[1]) for r, c in (start, end)):
+                    waiting(name, 'outside_received_map', current_position=current, target=target, inputs=leases)
                     continue
                 if not has_known_line_of_sight(np.where(clear, 0, 100), start, end):
+                    if name not in saved_grids:
+                        import hashlib
+                        snapshot = args.output.with_name(f'{name}_staging_map.npz')
+                        np.savez_compressed(snapshot, raw=raw, resolution=grid.info.resolution, origin=origin,
+                                            position=current, target=target, source_time=data['map_snapshot'][0])
+                        record('staging_geometry_snapshot', robot=name, path=str(snapshot),
+                               content_sha256=hashlib.sha256(snapshot.read_bytes()).hexdigest())
+                        saved_grids.add(name)
+                    waiting(name, 'no_clear_known_line', current_position=current, target=target, inputs=leases,
+                            start_cell=start, end_cell=end, raw_start=int(raw[start]), raw_end=int(raw[end]),
+                            clear_start=bool(clear[start]), clear_end=bool(clear[end]))
                     continue
                 goal = NavigateToPose.Goal()
                 goal.pose.header.frame_id = 'map'

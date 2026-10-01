@@ -4393,3 +4393,24 @@ GAZEBO_MASTER_URI=http://127.0.0.1:12550 taskset -c 0-19 /usr/bin/python3 /tmp/p
 新前瞻受控暴露 scripts/p3b5_staged_return_probe_manifest.json（原脚本/config不覆盖）：暂停且只暂停同runner后代同ROS domain的coordinator；两台在当前gateway map/pose/TF/battery均新鲜时，经原/gateway/{robot}/navigate_to_pose到(-2,-.45,pi)/(2,.45,0)两条不相交已知自由路径；50s内抵达，60..250s固定断网，guard62..248。原E40/idle.15/本地安全返航模型不改，不注入虚假能量、确认或source时间。只有原生实际充电完成，夹具才释放coordinator；只读native battery用于测试调度结束，不能选导航目标。未按时准备保留失败且停止下游，绝不改参数重试筛选成功。它是补充安全组件刺激，不是完整自主任务成功或TDI样本。原暴露3episode单列历史，后继同源码十格/27配对仍全部独立新跑。
 
 新增进程归属反例（同domain非后代、后代异domain、无唯一目标一律不发signal）；最终15文件228PASS7.75s，四包build5.09s，3robot source audit无违规。第一次pytest工具未保存session返回状态，第二次完整捕获上述228PASS，非实验episode重跑。
+
+## 2026-10-02 P3B.5 021b804 夹具路径净空失败候选
+
+冻结021b80497c424b5c05a770185fd487f0b351b9b1（228PASS/四包build/source审计后clean并push）。2started/2raw：fixed lab3seed101 COMPLETE253.3s、path56.047m、2充、零碰撞；受控返航ideal timeout300、零碰撞，但staging operational_failure=True。50s准备期限内未派发任何staging目标，原coordinator暂停后由finally恢复；fault对照未启动，四池/707都未启动，无episode重跑或主动中断。Runner因原逻辑只看infrastructure返回0，driver严格检查operational_failure后仍正确停止；此轮修正runner同时对operational_failure返回1并修正STOP输出标签，保留原返回状态。完整结果/metadata及原stager源/独立observer/hash/日志/命令与后述诊断见report/20261002_p3b5_staging_fixture_failed_candidate.json。
+
+```bash
+GAZEBO_MASTER_URI=http://127.0.0.1:12652 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_return_probe.py --run-id p3b5_v16_returnproof --ros-domain-base 180 --config scripts/p3b5_staged_return_probe_manifest.json > /tmp/p3b5_v16_returnproof.log 2>&1
+PYTHONNOUSERSITE=1 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_021b804.json > /tmp/p3b5_protocol_021b804.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:12650 taskset -c 0-19 /usr/bin/python3 /tmp/p3b5_v16_first_lab101.py > /tmp/p3b5_v16_first_lab101.log 2>&1
+/usr/bin/python3 /tmp/p3b5_v16_after_subgates.py > /tmp/p3b5_v16_after_subgates.log 2>&1
+```
+
+纯静态几何只读诊断：source Humble/install、PYTHONNOUSERSITE=1、/usr/bin/python3，load_truth_grid(my_world.world)+scipy.ndimage.distance_transform_edt(~occupied)*resolution，对四候选线各81点采样world_to_grid。左右两声明路径中心线净空仅.30/.10m，小于.45m要求；上下至(0,-2.45)/(0,2.45)净空均.80m。AP各类acceptance在原50s窗口持续存在；原fixture无逐项等待原因/初始SLAM快照，故不能宣称唯一测得全部SLAM门控原因。选点先只检查点LOS而漏掉完整路径净空属于测试设计错误。改用上下两条分离路径、目标yaw∓pi/2，保持相同2m远点距离、50s准备、60..250断网、62..248guard、E40/idle.15和全部强验证阈值；不降低任何安全要求、不筛选重跑。原数据和旧预声明源保留。新增fixture轨迹净空回归同时拒绝原左右点，并为等待添加输入lease/actionready/地图范围/clearance原因和首个拒绝栅格npz+SHA，以防继续凭猜测修改。
+
+验收要求还包含未调参fault seed。707未暴露且主矩阵均未启动，UTC20:40:27.833419前瞻声明heldout fault27077（仅3个heldout profile增加gateway_seed，开发17011、所有world/目标/能量/horizon/case不变）；原17011未执行heldout声明保留在initial_declaration_preserved。仅行政supervisor owned PID3467942在尚无pool_pids时SIGINT并重新启动，同一时段fixed/fixture两个episode未受中断；完整原/新supervisor源和命令已归档。新最终manifest现在正式记录这一声明，绝不能把开发17011当作未调参留出故障种子。
+
+直接相关21脚本检查PASS1.29s；随后全套229检查/source audit补记。下一候选必须独立全十格/同源码27配对；本2episode只留历史，不回填成功格，不进入当前TDI。
+
+修正后完整15文件229PASS7.84s；3robot source audit PASS0违规。四包源/launch未变，沿用021b804本轮已验证5.09s构建；scripts不需colcon重装。git diff --check后focused commit/push才启动下一候选。
+
+新增留出命令反例检查后相关脚本22PASS；总组件数230。证据分析器核对holdout独立seed及预声明时间，并从每个精确命令最后一个--gateway-seed核实effective值，避免双参数默认覆盖误记。
