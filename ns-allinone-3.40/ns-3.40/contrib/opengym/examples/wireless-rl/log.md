@@ -3774,3 +3774,60 @@ Nav2 航点容差的目标拒绝准入。可视路段改为最远安全视线牵
 collection ModuleNotFoundError；纠正命令/环境后通过，两次均没有启动模拟器。
 十份 bd2f0f2 graph.json 用原 runtime_violations 与只读 snapshot adapter 重放，
 10份/0违规，结果保存在同批 replayed_runtime_audit.json。
+
+## 2026-10-01 7c53717 固定十格与有效消息限频修复
+
+候选 `7c5371704aff2731a351ffa923ccd3808da53827` 固定十格按7+3批次运行；
+两份 manifest dirty=false，source_digests完全相同，均frozen=null。
+rooms/corridors runner exit1、lab runner exit1；无基础设施失败或重试；全部零碰撞，
+6/10 COMPLETE，所有四格 post-start 超时保留，未执行该失败候选的强制充电回归。
+
+```bash
+source /opt/ros/humble/setup.bash; cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap; source install/setup.bash; source /usr/share/gazebo/setup.sh; export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 GAZEBO_MASTER_URI=http://127.0.0.1:11396; /usr/bin/python3 scripts/run_p2d_baseline.py --scenarios rooms_far_northeast corridors_far_west --seeds 101 202 303 --run-id p3a6_precise_7c53717_rooms_corridors --ros-domain-base 180 --startup-timeout 600 --evaluation-wait-timeout 600 --inter-episode-delay 5 --rally-max-concurrent 2 --disable-global-battery-rally-pause
+source /opt/ros/humble/setup.bash; cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap; source install/setup.bash; source /usr/share/gazebo/setup.sh; export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 GAZEBO_MASTER_URI=http://127.0.0.1:11397; /usr/bin/python3 scripts/run_p2d_baseline.py --scenarios lab_far_northwest --skip-cross-check --seeds 101 202 303 --run-id p3a6_precise_7c53717_lab --ros-domain-base 170 --startup-timeout 600 --evaluation-wait-timeout 600 --inter-episode-delay 5 --rally-max-concurrent 2 --disable-global-battery-rally-pause
+```
+
+| 场景 | robots | seed | 终态 | 完成/超时 s | 碰撞 | 充电 |
+|---|---:|---:|---|---:|---:|---:|
+| lab_far_northwest | 3 | 101 | COMPLETE | 179.5 | 0 | 0 |
+| lab_far_northwest | 3 | 202 | COMPLETE | 176.6 | 0 | 0 |
+| lab_far_northwest | 3 | 303 | RALLY timeout | 300.1 | 0 | 2 |
+| rooms_far_northeast | 3 | 101 | RALLY timeout | 300.3 | 0 | 0 |
+| rooms_far_northeast | 3 | 202 | COMPLETE | 188.7 | 0 | 0 |
+| rooms_far_northeast | 3 | 303 | COMPLETE | 192.2 | 0 | 0 |
+| corridors_far_west | 3 | 101 | RALLY timeout | 300.3 | 0 | 0 |
+| corridors_far_west | 3 | 202 | COMPLETE | 198.1 | 0 | 0 |
+| corridors_far_west | 3 | 303 | RALLY timeout | 300.1 | 0 | 0 |
+| corridors_far_west | 2 | 202 | COMPLETE | 209.6 | 0 | 0 |
+
+输出位于 `log/p2d_baseline/p3a6_precise_7c53717_rooms_corridors/` 与
+`log/p2d_baseline/p3a6_precise_7c53717_lab/`。首批rooms101已离开出生区，
+但在所有机器人到位后超时；corridors303也在全体到位后超时。corridors101仍在
+最后导航动作中；lab303在第三次RETURNING时超时，前两次充电完成，最低能量11.9710。
+rooms101/corridors303没有当时的连续中央TF记录，不能直接把全部失败归因于TF。
+
+只读监测命令（ROS/install环境，均不发布控制或读取Gazebo真值）：
+`ROS_DOMAIN_ID=170 /usr/bin/python3 /tmp/p3a6_monitor.py log/p2d_baseline/p3a6_precise_7c53717_lab/lab101_delivered_state.jsonl`；
+后期 `ROS_DOMAIN_ID=172` 同脚本输出lab303_delivered_state.jsonl。前者在COMPLETE退出，
+后者在episode结束后SIGINT清理。rooms101出生图快照也保留在首批rooms101_start_snapshot.npz，
+由同样只读的 `/tmp/capture_p3a6_snapshot.py`、ROS_DOMAIN_ID=180捕获。
+lab101有90个任务期样本，tb1 TF最大源年龄15.393 s、22个样本超过5 s；tb3最大6.831 s，
+里程计和电池持续新鲜。跨tf topic的odom/base无关消息在检查map/odom前占用.5 s
+窗口，重复源时间也占窗口，因而可能长期饿死真正frame_state。
+
+组件复现：ROS/install环境 `/usr/bin/python3 -m pytest -q -p no:cacheprovider /tmp/p3a6_gateway_regression.py`，
+旧源码两项失败（5次有效map/odom只发0次；重复后新状态只发1而应2）。独立
+`PYTHONPATH=/tmp/p3a6-next:$PYTHONPATH`修复副本三个回归通过；五个原有测试文件与该
+回归共107项通过，运行期间未修改正式源码。新源码在筛选相关TF/新源时间后再限频，
+真正新消息仍遵守原.5 s，源时间和TTL不重写，不能用接收时间续命。
+
+lab303还有一次从集合区到(-4.18,-0.90)的临时避让，增加返航/充电负担。
+新增真实窄通道测试在旧逻辑得到(1.85,2.65)、2.155 m的避让，仍位于等待者通道里；
+永久替代位测试通过，临时分支在“最近安全refuge”断言失败。新逻辑仅在移除
+该阻塞者后存在可行等待路线时，选离该路线至少.8 m的最近可达停靠点；沿用
+既有.35静态/.6动态净空、.8位姿和1.8路线隔离。不能把“远离任务目标”当成让出通道。
+
+集成后五文件108 passed、四包构建、三机器人源码旁路审计通过。
+runner manifest另修正skip-cross-check及记录选定scenarios，增加runner/smoke源码哈希；
+colcon版本从不支持的--version输出改为实际colcon-core0.20.1，validate-only及两个
+flag分支、版本和两个哈希断言通过。新候选必须重新运行全矩阵与forced303，尚未冻结。

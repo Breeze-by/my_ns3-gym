@@ -119,3 +119,27 @@ rooms101 在出生区反复派发零距离目标；另外三项在 RALLY 超时�
 隔离和1.8 m 路线隔离；拒绝无效目标准入，采用最远安全视线牵引并同步预约直线。
 Nav2 航点 XY 容差进一步收紧至0.02 m，COMPLETE 仍是0.35 m/速度/全体5 s。
 104项测试、构建及源码审计通过；尚无该候选正式任务结果，不设置冻结提交。
+
+## 2026-10-01 精确航点候选与消息饥饿修复
+
+7c53717的clean7+3批次完整覆盖固定十格：6/10 COMPLETE，全部零碰撞，无基础设施失败。
+四个失败均保留，不能冻结，也不继承db21e92强制充电证据。
+
+| 场景 | robots | seed | 终态 | 完成/超时 s | 碰撞 | 充电 |
+|---|---:|---:|---|---:|---:|---:|
+| lab_far_northwest | 3 | 101 | COMPLETE | 179.5 | 0 | 0 |
+| lab_far_northwest | 3 | 202 | COMPLETE | 176.6 | 0 | 0 |
+| lab_far_northwest | 3 | 303 | RALLY timeout | 300.1 | 0 | 2 |
+| rooms_far_northeast | 3 | 101 | RALLY timeout | 300.3 | 0 | 0 |
+| rooms_far_northeast | 3 | 202 | COMPLETE | 188.7 | 0 | 0 |
+| rooms_far_northeast | 3 | 303 | COMPLETE | 192.2 | 0 | 0 |
+| corridors_far_west | 3 | 101 | RALLY timeout | 300.3 | 0 | 0 |
+| corridors_far_west | 3 | 202 | COMPLETE | 198.1 | 0 | 0 |
+| corridors_far_west | 3 | 303 | RALLY timeout | 300.1 | 0 | 0 |
+| corridors_far_west | 2 | 202 | COMPLETE | 209.6 | 0 | 0 |
+
+只读lab101记录暴露TF最大源年龄15.393 s；无关TF/重复状态占用发送窗口的两个
+回归在旧源码失败。新候选把限频移到相关性/源时间检查之后，保留原限频/TTL，
+并为临时阻塞恢复选择等待路线之外的最近安全refuge，以减少无效绕行和充电。
+108项组件检查、构建、源码审计和manifest复核通过，正式门禁仍待新clean提交。
+完整命令、失败和诊断证据见log.md，两批输出位于同名log/p2d_baseline目录。

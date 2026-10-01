@@ -196,6 +196,8 @@ def build_manifest(config_path, args):
     ) or ""
     tracked_paths = {
         "scenario_config": config_path,
+        "baseline_runner": Path(__file__),
+        "smoke_runner": PROJECT_ROOT / "scripts/ros_smoke_test.py",
         "bypass_manifest": PROJECT_ROOT
         / "src/multi_robot_exploration/config/p3a_forbidden_bypasses.json",
         "gateway_message": PROJECT_ROOT
@@ -226,7 +228,10 @@ def build_manifest(config_path, args):
             "ros_distro": os.environ.get("ROS_DISTRO"),
             "ros_version": os.environ.get("ROS_VERSION"),
             "gazebo": command_version(["gazebo", "--version"]),
-            "colcon": command_version(["colcon", "--version"]),
+            "colcon": command_version([
+                sys.executable, "-c",
+                "from importlib.metadata import version; print(version('colcon-core'))",
+            ]),
             "ros2_prefix": command_version(
                 ["ros2", "pkg", "prefix", "multi_robot"]
             ),
@@ -241,7 +246,8 @@ def build_manifest(config_path, args):
             "shutdown_timeout_sec": args.shutdown_timeout,
             "ros_domain_base": args.ros_domain_base,
             "seeds": args.seeds,
-            "cross_check": True,
+            "scenarios": args.scenarios,
+            "cross_check": not args.skip_cross_check,
             "rally_assignment_objective": args.rally_assignment_objective,
             "map_safe_rally_order": not args.disable_map_safe_rally_order,
             "global_battery_rally_pause": (

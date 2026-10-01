@@ -374,13 +374,6 @@ class IdealGateway(Node):
     def publish_candidate(self, route, direction, message):
         key = (route.message_type, route.sender, route.recipient)
         now = self.now_sec()
-        if (
-            route.min_interval_sec > 0
-            and now - self.last_generated_at.get(key, -float("inf"))
-            < route.min_interval_sec
-        ):
-            return
-        self.last_generated_at[key] = now
         # Preserve sensor source stamps; receiving an old sample never renews TTL.
         generated = now
         if isinstance(message, TFMessage):
@@ -402,6 +395,16 @@ class IdealGateway(Node):
         if route.message_type in STATE_TYPES:
             if generated <= self.source_stamps.get(key, -float("inf")):
                 return
+        # Only eligible new source samples consume the rate-limit window.
+        # Interleaved odom/base TF and repeated scans must not starve map/odom.
+        if (
+            route.min_interval_sec > 0
+            and now - self.last_generated_at.get(key, -float("inf"))
+            < route.min_interval_sec
+        ):
+            return
+        self.last_generated_at[key] = now
+        if route.message_type in STATE_TYPES:
             self.source_stamps[key] = generated
         payload = serialize_message(message)
         encoding = "cdr"

@@ -315,13 +315,12 @@ HEAD 上重新运行 P2D 完整理想任务和 P3A gateway 门禁，固定 commi
 退出条件：固定矩阵全部保留真实结果（包括失败），任务成功严格为 `COMPLETE`，零碰撞和
 充电回归满足既有门禁；产出 `task_stack_frozen_commit`，并由报告明确区分历史证据与当前基线。
 
-2026-10-01 的 clean 候选 `bd2f0f2` 固定十格完成6/10 COMPLETE、全部零碰撞、零基础设施失败；
-lab303、rooms101、corridors101/202 的超时均保留，门禁未通过。`db21e92` 的强制充电回归
-271.6 s COMPLETE、零碰撞、每台一次充电，仅属于该提交。最新源码候选采用RPP、射线收益、
-分层观察点及最远安全直线牵引，Nav2航点容差0.02 m；104项组件测试、构建和源码审计通过，
-仍须在新clean提交上运行十格和强制充电，因此没有 task_stack_frozen_commit。
-当前证据见 `report/20260930_p3a6_rolling_reservations.md` 与 `log.md`，所有失败/中断保留于
-`ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/`。
+2026-10-01 最新clean候选7c53717的7+3批次完整覆盖十格，6/10 COMPLETE、全部零碰撞；
+rooms101、corridors101/303、lab303四个超时保留。新候选修复TF/重复状态限频饥饿，
+按阻塞路线选择最近的安全refuge；保留RPP、射线收益、分层采样、最远安全直线和.02 m航点。
+108项组件测试、构建、源码审计、manifest复核通过，但仍须新clean十格和forced303。
+没有task_stack_frozen_commit；db21e92的forced303仅为历史证据。
+完整命令/失败见report/20260930_p3a6_rolling_reservations.md与log.md，原输出保留。
 
 ### P3B.5：故障任务闭环与保障性降级（待完成）
 

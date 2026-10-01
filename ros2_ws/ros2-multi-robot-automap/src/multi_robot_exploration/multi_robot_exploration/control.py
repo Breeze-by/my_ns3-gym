@@ -2536,6 +2536,22 @@ class HeadquartersControl(Node):
                                 ) >= self.rally_position_tolerance
                             )
                             if not permanent_reassignment:
+                                # Move just off the waiting robot's feasible
+                                # corridor, rather than sending a blocker far
+                                # away while it still occupies that corridor.
+                                waiting_plan = plan_rally_leg(
+                                    self.rally_targets[name], self.map_data,
+                                    self.resolution, self.origin,
+                                    self.robot_positions[name],
+                                    blocked_positions=[
+                                        position for other, position
+                                        in self.robot_positions.items()
+                                        if other not in (name, blocker)
+                                        and position is not None
+                                    ],
+                                )
+                                if waiting_plan[0] is None:
+                                    continue
                                 blocker_replacement = rally_yield_pose(
                                     self.map_data,
                                     self.resolution,
@@ -2544,6 +2560,7 @@ class HeadquartersControl(Node):
                                     self.target,
                                     blocker_reserved,
                                     blocker_positions,
+                                    reserved_routes=(waiting_plan[1],),
                                 )
                             if blocker_replacement is None:
                                 continue

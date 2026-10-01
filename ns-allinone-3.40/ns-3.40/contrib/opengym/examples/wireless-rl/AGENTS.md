@@ -1,6 +1,6 @@
 # wireless-rl Codex Memory
 
-Last source/documentation review: 2026-09-30. Behavioral evidence is frozen in
+Last source/documentation review: 2026-10-01. Behavioral evidence is frozen in
 the dated reports and is not automatically evidence for a different HEAD. The
 user accepted P1C, P2A, P2B, P2C, P2D, P3A, and P3A.5. The P2C follow-up adds
 Gazebo task-region overlays and a live operator status panel. Historical
@@ -94,7 +94,7 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
 
 ## Current Handoff Snapshot
 
-2026-10-01 P3A.6 当前重验证仍进行中。`bd2f0f2` 的 clean 固定十格完整运行6/10 COMPLETE、全部零碰撞、零基础设施失败；lab303、rooms101、corridors101/202 超时，失败 JSON/graph/log 全保留。`db21e92` 的 clean 双机器人 forced303 在271.6 s COMPLETE、零碰撞、每台一次充电，但此结果不能转移给后续改动。最新源码候选采用 RPP、三台受路线预约约束的探索、射线收益、分层观察点、最远安全直线牵引、0.02 m Nav2 航点容差和实际派发的阻塞恢复；104项测试、构建和源码旁路审计通过，尚需新提交门禁。任务 COMPLETE 的0.35 m/速度/全体5 s以及300 s保持不变。不要设置 task_stack_frozen_commit 或开始网络/RL。详见 `report/20260930_p3a6_rolling_reservations.md` 与 log.md。
+2026-10-01 P3A.6 当前重验证仍进行中。最新clean候选7c53717按7+3批次覆盖十格，6/10 COMPLETE、全部零碰撞、零基础设施失败；rooms101、corridors101/303、lab303超时保留。上一bd2f0f2也是6/10；db21e92的forced303（271.6 s、每台一次充电、零碰撞）只属于该提交。新源码加入有效TF/新状态才占用发送限频窗口，以及最近的路线外临时refuge；保留RPP、三探索预约、射线收益、分层采样、最远安全直线和.02 m Nav2容差。108项测试、四包构建、源码旁路审计和manifest复核通过，尚需新提交全矩阵与forced303。任务COMPLETE的.35 m/速度/全体5 s以及300 s不变；没有task_stack_frozen_commit，网络/RL仍等待。详见report/20260930_p3a6_rolling_reservations.md与log.md。
 
 - Active boundary: complete P3A.6 before P3B.5 or network/RL work. P3A and
   P3A.5 acceptance applies to their historical task-stack evidence. The historical integration freeze candidate is

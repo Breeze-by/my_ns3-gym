@@ -1080,7 +1080,10 @@ def test_viewpoint_gain_uses_obstacle_visibility():
             assert point.information_gain == control.visible_unknown_gain(grid, (point.row, point.column), 20)
 
 
-def test_idle_blocker_recovery_dispatches_motion_before_returning(monkeypatch):
+@pytest.mark.parametrize("permanent_reassignment", [True, False])
+def test_idle_blocker_recovery_dispatches_motion_before_returning(
+    monkeypatch, permanent_reassignment
+):
     from types import SimpleNamespace
 
     names = ["tb1", "tb2"]
@@ -1089,7 +1092,10 @@ def test_idle_blocker_recovery_dispatches_motion_before_returning(monkeypatch):
     grid[8:26, 35:46] = 0  # a dead-end refuge, not a bypass around the blocker
     targets = {"tb1": control.RallyPose(8.0, 2.5, 0.0), "tb2": control.RallyPose(8.0, 2.0, 0.0)}
     replacements = {"tb1": targets["tb1"], "tb2": control.RallyPose(4.0, 1.5, 0.0)}
-    monkeypatch.setattr(control, "reassign_rally_pose", lambda *args: replacements[args[3]])
+    monkeypatch.setattr(
+        control, "reassign_rally_pose",
+        lambda *args: replacements[args[3]] if permanent_reassignment else None,
+    )
     requests = []
     node = SimpleNamespace(
         enable_battery=False, task_state="RALLY", fresh_robot_poses=lambda: True,
@@ -1111,7 +1117,16 @@ def test_idle_blocker_recovery_dispatches_motion_before_returning(monkeypatch):
         send_rally_goal=lambda name, *args: requests.append(name),
     )
     control.HeadquartersControl.update_mission(node)
-    assert node.rally_targets["tb2"] == replacements["tb2"]
+    if permanent_reassignment:
+        assert node.rally_targets["tb2"] == replacements["tb2"]
+    else:
+        refuge = node.rally_targets["tb2"]
+        assert "tb2" in node.rally_yield_targets
+        assert math.dist((refuge.x, refuge.y), (4.0, 2.5)) <= 1.1
+        route = control.plan_rally_leg(
+            targets["tb1"], grid, 0.1, (0.0, 0.0), (1.0, 2.5)
+        )[1]
+        assert min(math.dist((refuge.x, refuge.y), point) for point in route) >= 0.8
     assert requests == ["tb2"]  # the action cannot be starved by the next timer
 
 
