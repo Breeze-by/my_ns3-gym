@@ -729,3 +729,5 @@ Gazebo factory 明确表示本次实体已经入队、确认阶段超时时，he
 2026-10-02 P3B.5 freshness/前沿候选：固定ideal runner默认每episode保存gateway ledger。中央pose/TF从源时间执行2s TTL，map/battery5s；一般freshness参数只能收紧。默认target detector在目标当前可见且连续确认后最多1Hz重确认，经同一gateway交付；60s目标lease过期暂停新集合/调查与完成保持，真实新确认恢复，旧重传不续期。独立本地返航和安全refuge不被目标过期阻止。粗前沿全部安全拒绝时在可达净空区域重新采样，原路线预约/净距不变。原命令/300s/能量配置保持。
 
 2026-10-02 P3B.5 目标重观测：目标60s source lease过期时，默认在新鲜已知自由位姿、无活动导航/本地返航的条件下经同gateway原地尝试四个绝对朝向，四次后30s冷却；不使用过期目标坐标。实际新视觉确认交付后取消并排空扫描，再恢复集合。推荐固定ideal集成命令在原参数后加 `--fail-fast`，第一格失败即保存并停止；故障配对矩阵仍保留全部预设失败case。
+
+2026-10-02 P3B.5 补充返航安全夹具（开发测试，非主任务/TDI）：source Humble/install并设置 `PYTHONNOUSERSITE=1` 后，在独占domain/master执行 ` /usr/bin/python3 scripts/run_p3b5_return_probe.py --run-id <unique_id> --ros-domain-base 180 --config scripts/p3b5_staged_return_probe_manifest.json`。它会暂时SIGSTOP当前runner唯一owned coordinator，经同gateway将tb1/tb2沿不相交已知自由路线移至声明远点；50s准备截止、60..250断网；本地真实充电后SIGCONT。绝不能用于主矩阵/heldout，准备失败仍保存。原自然探索40..250配置和失败证据保留。

@@ -286,10 +286,33 @@ def main():
         with (directory / "observer.log").open("w") as observer_log:
             observer = subprocess.Popen(observer_command, env=env, cwd=PROJECT_ROOT,
                                         stdout=observer_log, stderr=subprocess.STDOUT)
+            staging = None
+            staging_log = None
+            if "return_staging" in config:
+                fixture = Path(__file__).with_name("stage_p3b5_return_probe.py")
+                row["staging_command"] = shlex.join([sys.executable, str(fixture),
+                    "--owner-pid", str(os.getpid()), "--config", str(args.config.resolve()),
+                    "--output", str(directory / "staging.jsonl")])
+                row["staging_source"] = fixture.read_text()
+                row["staging_source_sha256"] = file_digest(fixture)
+                staging_log = (directory / "staging.log").open("w")
+                staging = subprocess.Popen(shlex.split(row["staging_command"]), env=env,
+                    cwd=PROJECT_ROOT, stdout=staging_log, stderr=subprocess.STDOUT)
             try:
                 with (directory / "runner.log").open("w") as log:
                     process = subprocess.run(command, env=env, cwd=PROJECT_ROOT, stdout=log, stderr=subprocess.STDOUT, check=False)
             finally:
+                if staging is not None:
+                    if staging.poll() is None:
+                        staging.send_signal(signal.SIGINT)
+                    try:
+                        staging.wait(timeout=10)
+                    except subprocess.TimeoutExpired:
+                        staging.kill()
+                        staging.wait()
+                    row["staging_returncode"] = staging.returncode
+                    row["staging_events_sha256"] = file_digest(directory / "staging.jsonl") if (directory / "staging.jsonl").exists() else None
+                    staging_log.close()
                 if observer.poll() is None:
                     observer.send_signal(signal.SIGINT)
                 try:
@@ -305,7 +328,7 @@ def main():
         started = any(f"Episode {identity} evaluation started" in path.read_text(errors="replace") for path in logs)
         row["episode_started"] = started
         row["infrastructure_failure"] = not result_path.exists() and not started
-        row["operational_failure"] = process.returncode != 0
+        row["operational_failure"] = process.returncode != 0 or row.get("staging_returncode", 0) != 0
         if result_path.exists():
             row["result"] = json.loads(result_path.read_text())
             row["result_sha256"] = file_digest(result_path)

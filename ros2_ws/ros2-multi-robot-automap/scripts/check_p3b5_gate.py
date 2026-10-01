@@ -347,6 +347,8 @@ def main():
     assert json.loads(metadata['config_source'])==physical['config']
     assert hashlib.sha256(metadata['observer_source'].encode()).hexdigest()==metadata['observer_content_sha256']
     assert metadata['config']['predeclared_at_utc']<physical['manifest']['generated_at_utc']
+    interval=physical['config']['profiles']['physical_outage']['gateway_blackout_intervals'][0]
+    assert physical['config']['physical_verification']['return_motion_window_sec']==[interval[0]+2,interval[1]-2]
     physical_evidence=[]
     for identity,row in physical['episodes'].items():
         assert row['runner_returncode']==0 and row['observer_returncode']==0
@@ -368,7 +370,21 @@ def main():
             epoch=next(json.loads(line)['event_time'] for line in (d/'ledger.jsonl').open() if json.loads(line)['event']=='fault_epoch')
             homes={n:(b['battery_charge_x'],b['battery_charge_y']) for n,b in r['robots'].items()}
             detail['physical_local_return']=physical_return_audit(
-                [json.loads(line) for line in Path(observer['output']).open()],epoch,homes)
+                [json.loads(line) for line in Path(observer['output']).open()],epoch,homes,
+                window=physical['config']['physical_verification']['return_motion_window_sec'])
+        if 'return_staging' in physical['config']:
+            assert row['staging_returncode']==0 and row['staging_events_sha256']==file_digest(d/'staging.jsonl')
+            assert hashlib.sha256(row['staging_source'].encode()).hexdigest()==row['staging_source_sha256']
+            stages=[json.loads(line) for line in (d/'staging.jsonl').open()]
+            prepared={x['robot']:x for x in stages if x['event']=='staged'}
+            epoch=next(json.loads(line)['event_time'] for line in (d/'ledger.jsonl').open() if json.loads(line)['event']=='fault_epoch')
+            assert set(prepared)==set(r['robots'])
+            assert all(0<=x['observer_time']-epoch<=physical['config']['return_staging']['stage_deadline_sec'] for x in prepared.values())
+            assert any(x['event']=='both_charged' for x in stages)
+            assert not any(x['event'] in ('fixture_failed','interrupted') for x in stages)
+            detail['controlled_staging']={'source_sha256':row['staging_source_sha256'],
+                'events_sha256':row['staging_events_sha256'],'prepared':prepared,
+                'scope':'Supplemental safety fixture; suspended central exploration; excluded from mission/TDI.'}
         physical_evidence.append(detail)
     pair_rows=[];values=[];by_mode=defaultdict(Counter)
     for key,pair in pairs.items():

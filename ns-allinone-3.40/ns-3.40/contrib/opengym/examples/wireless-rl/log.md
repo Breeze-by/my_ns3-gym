@@ -4373,3 +4373,23 @@ UTC停止时刻及120个owned进程、四池/父supervisor所有权清单/tmp/p3
 固定ideal runner新增--fail-fast，保存首个失败结果后立即返回，不继续下一格；此项用于新的集成批次，不丢弃失败，主fault矩阵不使用该选项。反例覆盖四个朝向和冷却、六类安全等待、晚接受幂等取消，以及分析器拒绝以扫描名义发平移目标。初次旧有子集126PASS6.70s，新反例子集135PASS6.76s；最终全套14文件227PASS、四包build/source audit随后补记，所有任务栈改动要求新源码重新固定十格/物理/27配对，旧11episode不混用。
 
 盲扫候选终检：14文件227 passed8.19s；四包symlink build5.38s PASS；三机器人source-only旁路审计零违规。root diff --check/add -n核对后显式排除用户260929_report和runtime，提交/push新冻结候选；先跑原lab3/101硬失败格及同预声明物理probe，两者通过才开其余矩阵。300s/energy/目标/TTL/物理门限不变。
+
+## 2026-10-02 P3B.5 e1310bf 远处返航暴露失败与受控夹具
+
+冻结 e1310bff2f92d09daa4aa0c426d7e70d77b3a9cc（227 checks/四包build/source audit通过、clean并push后运行）。3 started/3 raw：fixed lab3seed101原格 COMPLETE173.5s、零碰撞；原40..250物理对照 ideal COMPLETE、fault timeout300，两台均充电一次、零碰撞/失败/耗尽、最低能量正。原协议54PASS。lab101原始ledger没有target_reacquisition_scan，因此不宣称此次成功因盲扫恢复。完整原summary/results/控制器及电池日志/config及observer源/hash/命令存 report/20261002_p3b5_return_exposure_failed_candidate.json。
+
+原物理门失败在暴露条件：tb2 RETURNING约76.6s、距home4.874m，有远处实际返航；tb1 RETURNING约198.2s、距home0.774m，已在0.8m充电区内，约0.1s即CHARGING，不能证明其在断网中完成≥0.5m实际返航。原判定AssertionError保留，不降低1.1m起点/.5m移动/.5m进展/liveNav2门槛。这是刺激准备不足，不是安全耗尽。子门driver停止，全四池和holdout707均未启动，无行政中断/重跑/回填成功。
+
+精确命令（source Humble+install，PYTHONNOUSERSITE=1，canonical ROS cwd）：
+```bash
+GAZEBO_MASTER_URI=http://127.0.0.1:12552 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_return_probe.py --run-id p3b5_v15_returnproof --ros-domain-base 180 > /tmp/p3b5_v15_returnproof.log 2>&1
+PYTHONNOUSERSITE=1 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_e1310bf.json > /tmp/p3b5_protocol_e1310bf.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:12550 taskset -c 0-19 /usr/bin/python3 /tmp/p3b5_v15_first_lab101.py > /tmp/p3b5_v15_first_lab101.log 2>&1
+/usr/bin/python3 /tmp/p3b5_v15_after_subgates.py > /tmp/p3b5_v15_after_subgates.log 2>&1
+```
+
+记录校正：上一0150dab日志复制的v14声明中协议输出文件沿用p3b5_protocol_a1f17c9.json；实际执行文件为log/p3b5_protocol_0150dab.json，stdout /tmp/p3b5_protocol_0150dab.log，54PASS，已在原0150归档内。此处保留旧声明并明确更正，不改变任何原实验结果。
+
+新前瞻受控暴露 scripts/p3b5_staged_return_probe_manifest.json（原脚本/config不覆盖）：暂停且只暂停同runner后代同ROS domain的coordinator；两台在当前gateway map/pose/TF/battery均新鲜时，经原/gateway/{robot}/navigate_to_pose到(-2,-.45,pi)/(2,.45,0)两条不相交已知自由路径；50s内抵达，60..250s固定断网，guard62..248。原E40/idle.15/本地安全返航模型不改，不注入虚假能量、确认或source时间。只有原生实际充电完成，夹具才释放coordinator；只读native battery用于测试调度结束，不能选导航目标。未按时准备保留失败且停止下游，绝不改参数重试筛选成功。它是补充安全组件刺激，不是完整自主任务成功或TDI样本。原暴露3episode单列历史，后继同源码十格/27配对仍全部独立新跑。
+
+新增进程归属反例（同domain非后代、后代异domain、无唯一目标一律不发signal）；最终15文件228PASS7.75s，四包build5.09s，3robot source audit无违规。第一次pytest工具未保存session返回状态，第二次完整捕获上述228PASS，非实验episode重跑。

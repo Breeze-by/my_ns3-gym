@@ -1,0 +1,220 @@
+"""Simulation-only exposure fixture; staging commands use the AP gateway.
+
+Temporarily suspend this runner's coordinator, stage two robots on disjoint
+known-free legs, then leave native battery/Nav2 untouched during the outage.
+Native battery observations only release the suspended coordinator after both
+have charged. They are never used to choose or dispatch a navigation command.
+"""
+import argparse
+import json
+import math
+import os
+from pathlib import Path
+import signal
+import time
+
+
+def owned_coordinator(owner, domain, proc_root=Path('/proc')):
+    """Identify exactly one descendant, never signal another ROS session."""
+    parents = {}
+    candidates = []
+    for directory in proc_root.iterdir():
+        if not directory.name.isdigit():
+            continue
+        try:
+            pid = int(directory.name)
+            parents[pid] = int((directory / 'stat').read_text().rsplit(')', 1)[1].split()[1])
+            command = (directory / 'cmdline').read_bytes().split(b'\0')
+            environment = (directory / 'environ').read_bytes().split(b'\0')
+        except (OSError, ValueError):
+            continue
+        if (b'__node:=headquarters_control' in command
+                and f'ROS_DOMAIN_ID={domain}'.encode() in environment):
+            candidates.append(pid)
+    found = []
+    for pid in candidates:
+        ancestor = pid
+        seen = set()
+        while ancestor in parents and ancestor not in seen:
+            seen.add(ancestor)
+            ancestor = parents[ancestor]
+            if ancestor == owner:
+                found.append(pid)
+                break
+    if len(found) != 1:
+        raise RuntimeError(f'Expected one owned coordinator, found {found}')
+    return found[0]
+
+
+def main():
+    import numpy as np
+    import rclpy
+    from rclpy.action import ActionClient
+    from rclpy.executors import ExternalShutdownException
+    from rclpy.node import Node
+    from rclpy.parameter import Parameter
+    from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
+    from nav2_msgs.action import NavigateToPose
+    from nav_msgs.msg import OccupancyGrid, Odometry
+    from std_msgs.msg import String
+    from tf2_msgs.msg import TFMessage
+    from multi_robot_exploration.control import (
+        has_known_line_of_sight, transform_point_2d, traversable_grid, world_to_grid,
+    )
+    from multi_robot_exploration.fault_model import STATE_TTL_SEC
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--owner-pid', type=int, required=True)
+    parser.add_argument('--config', type=Path, required=True)
+    parser.add_argument('--output', type=Path, required=True)
+    args = parser.parse_args()
+    fixture = json.loads(args.config.read_text())['return_staging']
+    rclpy.init()
+    node = Node('p3b5_remote_return_fixture', parameter_overrides=[Parameter('use_sim_time', value=True)])
+    latched = QoSProfile(depth=10, reliability=ReliabilityPolicy.RELIABLE,
+                         durability=DurabilityPolicy.TRANSIENT_LOCAL)
+    volatile = QoSProfile(depth=10, reliability=ReliabilityPolicy.RELIABLE)
+    stream = args.output.open('w', buffering=1)
+    epoch = None
+    coordinator = None
+    latest = {name: {} for name in fixture['poses']}
+    batteries = {}
+    handles = {}
+    results = {}
+    sent = set()
+    staged = set()
+    wall_start = time.monotonic()
+    code = 1
+
+    def now():
+        return node.get_clock().now().nanoseconds / 1e9
+
+    def record(event, **data):
+        stream.write(json.dumps({'event': event, 'observer_time': now(), **data}) + '\n')
+
+    def phase(message):
+        nonlocal epoch, coordinator
+        if message.data == 'EXPLORE' and epoch is None:
+            epoch = now()
+            coordinator = owned_coordinator(args.owner_pid, os.environ['ROS_DOMAIN_ID'])
+            os.kill(coordinator, signal.SIGSTOP)
+            record('coordinator_suspended', pid=coordinator, epoch=epoch)
+
+    def received(name, kind, message):
+        if kind == 'battery_state':
+            message = json.loads(message.data)
+            stamp = message['stamp_sec']
+        elif kind == 'frame_state':
+            transforms = [t for t in message.transforms
+                          if t.header.frame_id.lstrip('/').endswith('map')
+                          and t.child_frame_id.lstrip('/').endswith('odom')]
+            if not transforms:
+                return
+            message = transforms[-1]
+            stamp = message.header.stamp.sec + message.header.stamp.nanosec / 1e9
+        else:
+            stamp = message.header.stamp.sec + message.header.stamp.nanosec / 1e9
+        latest[name][kind] = (stamp, message)
+
+    def position(name):
+        odom = latest[name]['pose_state'][1].pose.pose.position
+        transform = latest[name]['frame_state'][1].transform
+        return transform_point_2d(odom.x, odom.y, transform)
+
+    def accepted(name, future):
+        handle = future.result()
+        if not handle.accepted:
+            raise RuntimeError(f'{name}: staging goal rejected')
+        handles[name] = handle
+        handle.get_result_async().add_done_callback(lambda f, n=name: results.update({n: f.result().status}))
+        record('staging_accepted', robot=name)
+
+    clients = {name: ActionClient(node, NavigateToPose, f'/gateway/{name}/navigate_to_pose')
+               for name in latest}
+    node.create_subscription(String, '/task_state', phase, latched)
+    for name in latest:
+        for kind, suffix, message_type, qos in (
+            ('map_snapshot', 'map', OccupancyGrid, latched),
+            ('pose_state', 'odom', Odometry, volatile),
+            ('frame_state', 'tf', TFMessage, volatile),
+            ('battery_state', 'battery_state', String, latched),
+        ):
+            node.create_subscription(message_type, f'/gateway/received/{name}/{suffix}',
+                                     lambda m, n=name, k=kind: received(n, k, m), qos)
+        node.create_subscription(String, f'/{name}/battery_state',
+                                 lambda m, n=name: batteries.update({n: json.loads(m.data)}), latched)
+    try:
+        while rclpy.ok():
+            rclpy.spin_once(node, timeout_sec=.05)
+            if time.monotonic() - wall_start > fixture['wall_timeout_sec']:
+                raise TimeoutError('Fixture wall deadline exceeded')
+            if epoch is None:
+                continue
+            offset = now() - epoch
+            if offset > fixture['stage_deadline_sec'] and len(staged) != len(latest):
+                raise TimeoutError(f'Staging deadline exceeded; staged={sorted(staged)}')
+            for name, target in fixture['poses'].items():
+                data = latest[name]
+                leases = {kind: {'source_time': stamp, 'age_sec': now() - stamp,
+                                  'ttl_sec': STATE_TTL_SEC[kind]} for kind, (stamp, _) in data.items()}
+                if (len(leases) != 4 or any(not 0 <= x['age_sec'] < x['ttl_sec'] for x in leases.values())
+                        or data['battery_state'][1]['mode'] != 'ACTIVE'):
+                    continue
+                current = position(name)
+                if name in results:
+                    if results[name] != 4:
+                        raise RuntimeError(f'{name}: staging result {results[name]}')
+                    if math.dist(current, target[:2]) <= fixture['position_tolerance_m']:
+                        if name not in staged:
+                            staged.add(name)
+                            record('staged', robot=name, position=current, target=target, inputs=leases)
+                    continue
+                if name in sent or not clients[name].server_is_ready():
+                    continue
+                grid = data['map_snapshot'][1]
+                if abs(grid.info.origin.orientation.z) > 1e-6:
+                    raise RuntimeError('Rotated grid unsupported by fixture')
+                raw = np.asarray(grid.data).reshape(grid.info.height, grid.info.width)
+                clear = traversable_grid(raw, grid.info.resolution)
+                origin = (grid.info.origin.position.x, grid.info.origin.position.y)
+                start = world_to_grid(*current, grid.info.resolution, *origin)
+                end = world_to_grid(*target[:2], grid.info.resolution, *origin)
+                if any(not (0 <= r < raw.shape[0] and 0 <= c < raw.shape[1]) for r, c in (start, end)):
+                    continue
+                if not has_known_line_of_sight(np.where(clear, 0, 100), start, end):
+                    continue
+                goal = NavigateToPose.Goal()
+                goal.pose.header.frame_id = 'map'
+                goal.pose.header.stamp = node.get_clock().now().to_msg()
+                goal.pose.pose.position.x, goal.pose.pose.position.y = target[:2]
+                goal.pose.pose.orientation.z = math.sin(target[2] / 2)
+                goal.pose.pose.orientation.w = math.cos(target[2] / 2)
+                sent.add(name)
+                record('staging_requested', robot=name, target=target, current_position=current, inputs=leases)
+                clients[name].send_goal_async(goal).add_done_callback(lambda f, n=name: accepted(n, f))
+            if len(staged) == len(latest) and all(batteries.get(n, {}).get('charge_count', 0) >= 1 for n in latest):
+                record('both_charged', staged=sorted(staged), batteries=batteries)
+                code = 0
+                break
+    except (KeyboardInterrupt, ExternalShutdownException):
+        record('interrupted')
+    except Exception as error:
+        record('fixture_failed', reason=repr(error))
+    finally:
+        if coordinator is not None:
+            # The coordinator belongs to the still-running parent experiment.
+            try:
+                if owned_coordinator(args.owner_pid, os.environ['ROS_DOMAIN_ID']) == coordinator:
+                    os.kill(coordinator, signal.SIGCONT)
+                    record('coordinator_resumed', pid=coordinator)
+            except (OSError, RuntimeError):
+                pass
+        stream.close()
+        node.destroy_node()
+        if rclpy.ok():
+            rclpy.shutdown()
+    return code
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

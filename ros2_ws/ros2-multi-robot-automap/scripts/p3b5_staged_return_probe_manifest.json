@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "purpose": "Prospective controlled remote-staging safety pair, not full autonomous mission or TDI. Earlier free-exploration exposure remains failed evidence, not replaced.",
+  "development_seeds": [
+    101,
+    202,
+    303
+  ],
+  "holdout_seeds": [
+    707
+  ],
+  "fault_seed": 17011,
+  "duration_sec": 300,
+  "coverage_threshold": 0.8,
+  "task_stack_parent": "22c95a770a8812452c43fc177e4a00b5c032e6ef",
+  "scenarios": {
+    "forced2": {
+      "world": "my_world.world",
+      "target_x": -4,
+      "target_y": 4,
+      "robot_count": 2,
+      "seed": 303,
+      "energy": 40,
+      "charge_duration": 10,
+      "safety_margin": 5,
+      "return_timeout": 120
+    }
+  },
+  "profiles": {
+    "physical_outage": {
+      "gateway_blackout_intervals": [
+        [
+          60,
+          250
+        ]
+      ],
+      "battery_idle_cost": 0.15
+    }
+  },
+  "cases": [
+    {
+      "id": "physical_return_under_blackout",
+      "scenario": "forced2",
+      "mode": "rally",
+      "profile": "physical_outage"
+    }
+  ],
+  "temporal_contract": "source<=enqueue<=admit/tx<=delivery; TF source is scan stamp, native validity offset derived from actual SLAM config; fault blackout relative first EXPLORE",
+  "ideal_transport": "no fault intervention, zero stochastic loss/delay/reorder/duplicate/blackout/drop; normal bounded4096 queue; task load/deadline/retry unchanged",
+  "predeclared_at_utc": "2026-10-01T20:33:20.888305+00:00",
+  "physical_verification": {
+    "both_robots": true,
+    "return_start_home_distance_m_min": 1.1,
+    "measured_return_motion_inside_blackout_m_min": 0.5,
+    "nav2_executing_during_return": true,
+    "charges_each_min": 1,
+    "collision_events": 0,
+    "robot_failures": 0,
+    "truth_observer": "read-only /gazebo/model_states + local battery + Nav2 status; never writes control; world charger coordinates match configured map-origin poses within margin; blackout boundaries use 2s guard",
+    "return_motion_window_sec": [
+      62,
+      248
+    ]
+  },
+  "design_reason": "Original natural-exploration fixture could leave tb1 already inside charger at return. Controlled AP staging guarantees prospective remote exposure; native truth remains read-only verification. New design declared before its first run and before holdout707; original40..250 outcomes retained separately.",
+  "return_staging": {
+    "poses": {
+      "tb1": [
+        -2.0,
+        -0.45,
+        3.141592653589793
+      ],
+      "tb2": [
+        2.0,
+        0.45,
+        0.0
+      ]
+    },
+    "stage_deadline_sec": 50,
+    "position_tolerance_m": 0.25,
+    "wall_timeout_sec": 1000,
+    "scope": "Suspend only this runner descendant coordinator at initial EXPLORE. Command disjoint known-free current-map legs via same gateway before50s, blackout60..250. Native battery safety untouched; idlecost .15 triggers independent return. Resume after both actualcharges; no fullmission success claim. Fail exposure if stages not reached by50s; no episode retry."
+  }
+}
