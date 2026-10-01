@@ -434,8 +434,7 @@ def launch_setup(context, *args, **kwargs):
         )
     )
 
-    actions.append(
-        Node(
+    target_spawn = Node(
             package="gazebo_ros",
             executable="spawn_entity.py",
             arguments=[
@@ -454,7 +453,6 @@ def launch_setup(context, *args, **kwargs):
             ],
             output="screen",
             condition=IfCondition(enable_target_detection),
-        )
     )
 
     gzclient_cmd = IncludeLaunchDescription(
@@ -651,7 +649,7 @@ def launch_setup(context, *args, **kwargs):
             RegisterEventHandler(
                 event_handler=OnProcessExit(
                     target_action=last_spawn_action,
-                    on_exit=staggered_nav,
+                    on_exit=[target_spawn, *staggered_nav],
                 )
             )
         )
@@ -1119,7 +1117,7 @@ def generate_launch_description():
     )
     for name, default, description in (
         ("gateway_drop_message_types", "", "Comma-separated message classes to drop in fault mode."),
-        ("gateway_blackout_intervals", "[]", "JSON pairs of absolute simulation seconds with total outage."),
+        ("gateway_blackout_intervals", "[]", "JSON outage seconds relative to first central EXPLORE."),
         ("inject_failure_robot", "", "Simulation-only robot to fail; empty disables injection."),
         ("inject_failure_after_sec", "-1.0", "Seconds after that robot's first odom; negative disables."),
     ):

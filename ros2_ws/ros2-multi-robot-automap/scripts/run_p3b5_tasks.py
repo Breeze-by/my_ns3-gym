@@ -276,7 +276,11 @@ def main():
             process = subprocess.run(command, env=env, cwd=PROJECT_ROOT, stdout=log, stderr=subprocess.STDOUT, check=False)
         row["runner_returncode"] = process.returncode
         result_path = directory / (identity + ".json")
-        row["infrastructure_failure"] = not result_path.exists() or process.returncode != 0
+        logs = list((directory / "launch").glob("*.log"))
+        started = any(f"Episode {identity} evaluation started" in path.read_text(errors="replace") for path in logs)
+        row["episode_started"] = started
+        row["infrastructure_failure"] = not result_path.exists() and not started
+        row["operational_failure"] = process.returncode != 0
         if result_path.exists():
             row["result"] = json.loads(result_path.read_text())
             row["result_sha256"] = file_digest(result_path)
@@ -288,7 +292,7 @@ def main():
         summary["statistics"] = pair_statistics(config, pairs, episodes)
         summary_path.write_text(json.dumps(summary, indent=2) + "\n")
         print(f"RESULT {identity} infra={row['infrastructure_failure']} status={row.get('result', {}).get('termination_reason')}", flush=True)
-        if row["infrastructure_failure"]:
+        if row["infrastructure_failure"] or row["operational_failure"] or row.get("result", {}).get("termination_reason") == "shutdown":
             print("STOP: infrastructure failure retained; unrun cells remain pending", flush=True)
             break
     summary["finished_at_utc"] = datetime.now(timezone.utc).isoformat()

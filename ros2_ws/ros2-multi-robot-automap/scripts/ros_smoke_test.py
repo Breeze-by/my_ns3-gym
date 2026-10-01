@@ -658,6 +658,8 @@ def main():
                 args.bypass_audit_output,
             )
             print("P3A forbidden-bypass audit passed.", flush=True)
+            if args.target_detection:
+                require_entities(["search_target"], args.message_timeout)
             require_message(
                 "/tb1/scan",
                 args.message_timeout,

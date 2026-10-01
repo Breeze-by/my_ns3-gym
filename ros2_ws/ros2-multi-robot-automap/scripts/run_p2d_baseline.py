@@ -229,6 +229,7 @@ def build_manifest(config_path, args):
             "python": sys.version,
             "python_executable": sys.executable,
             "platform": platform.platform(),
+            "cpu_affinity": sorted(os.sched_getaffinity(0)),
             "ros_distro": os.environ.get("ROS_DISTRO"),
             "ros_version": os.environ.get("ROS_VERSION"),
             "gazebo": command_version(["gazebo", "--version"]),

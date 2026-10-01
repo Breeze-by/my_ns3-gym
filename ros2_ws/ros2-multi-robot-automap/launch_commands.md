@@ -658,7 +658,7 @@ COMPLETE/零碰撞，同提交forced303为190.4 s COMPLETE、两台各充电一�
 P3A.6 已验收。故障替身仍是应用层模型，不是 Wi-Fi/ns-3。
 本地 battery_manager 用自己的 Nav2 action 执行安全返航；网络命令不能抢占 RETURNING，
 融合地图断流后使用本机器人地图。中央导航、任务和提前充电请求仍经过 gateway。
-`gateway_drop_message_types` 可按消息类别丢弃；`gateway_blackout_intervals` 是绝对仿真秒
+`gateway_drop_message_types` 可按消息类别丢弃；`gateway_blackout_intervals` 从中央首次EXPLORE开始计仿真秒
 JSON 区间（半开），例如 `gateway_blackout_intervals:='[[80,100]]'`。
 `inject_failure_robot:=tb3 inject_failure_after_sec:=45.0` 仅用于仿真，从该机器人第一条
 odom 起计时触发真实本地 FAILED；默认空机器人/-1 禁用。
@@ -680,3 +680,5 @@ manifest 固定26个case；同配置ideal共享一次对照，任务终态/通�
 默认 smoke 的成功门禁不变。target 模式在中央消费交付事件后结束，本地确认时间另记。
 全丢包时评估器也从就绪任务节点与真值位姿开始计时，不依赖融合地图是否送达。
 通信静默只阻止新分配/完成确认，不从required集合移除机器人；只有显式失败才能隔离。
+
+P3B.5启动修复：search_target在最后一台机器人spawn后生成，再错峰启动Nav2；smoke必须实际检查目标实体存在。连续丢包相对中央EXPLORE计时（ledger记录fault_epoch），不消耗在冷启动阶段。

@@ -4011,3 +4011,14 @@ GAZEBO_MASTER_URI=http://127.0.0.1:11420 /usr/bin/python3 scripts/run_p3b5_tasks
 b1f3828 开发批次p3b5_dev_v2：与dev_v1相同命令，仅run-id换为p3b5_dev_v2。7个计划episode全部启动前失败，无episode数据；原始manifest/命令/launch日志保存在ROS log/p3b5/p3b5_dev_v2。
 根因：ROS launch CLI不接受gateway_drop_message_types:=或inject_failure_robot:=空值。修复smoke仅在非空时传CLI，空值使用launch默认；runner遇首个基础设施失败后停止，未跑格保持pending。
 这些失败不计入任务成功率，未覆盖，也未声称仿真故障退化结果。
+
+16a1e4b dev_v3：同dev_v2命令，run-id=p3b5_dev_v3。首个ideal实际启动；为修复连续故障时间基准，主动SIGINT本次launch进程组，保留shutdown（post-start中断，不是基础设施重试），无目标发现。结果/账本/graph保存ROS log/p3b5/p3b5_dev_v3/。
+第二个zero-fault启动后launch退出、无episode；终止本次runner，其余5格未跑，全部保留、不混入正式矩阵。
+发现固定blackout绝对仿真时间会消耗在Nav2冷启动期间，改为从中央第一次EXPLORE锚定，相对窗口固定并写fault_epoch。
+发现初期目标spawn报超时，改为最后机器人spawn后再生成，并在smoke实际检查search_target实体。
+精确原命令保存在manifest/runner.log；首次shutdown结果哈希与时长在下文补充。
+dev_v3 retained: log/p3b5/p3b5_dev_v3/p3b5_dev_v3_ideal_lab2_rally_57e53c1e19/p3b5_dev_v3_ideal_lab2_rally_57e53c1e19.json; termination=shutdown, elapsed=72.70000000000027, collision=0, success=False。
+
+修正后136项组件检查通过（5.95s），四包build通过（5.48s）；带blackout参数的ros2 launch --show-args通过（参数应放在--show-args之前，第一次位置错误被CLI拒绝，未启动仿真）。
+为缩短80核主机上的验证时间，不同独立开发场景可以同时运行，各自固定CPU集合、Gazebo master和ROS域；每个runner内部仍串行，ideal/fault使用相同CPU集合。manifest新增cpu_affinity。
+正式holdout尚未运行；后续精确环境/参数/故障和中断仍全部按原始证据记录。

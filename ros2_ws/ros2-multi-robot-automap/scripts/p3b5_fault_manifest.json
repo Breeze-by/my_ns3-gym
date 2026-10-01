@@ -34,7 +34,7 @@
     "state_loss": {"gateway_drop_message_types": "task_state"},
     "nav_loss": {"gateway_drop_message_types": "navigation_goal,navigation_cancel"},
     "robot_failure": {"inject_failure_robot": "tb3", "inject_failure_after_sec": 45},
-    "charge_outage": {"gateway_blackout_intervals": [[70, 180]]}
+    "charge_outage": {"gateway_blackout_intervals": [[20, 130]]}
   },
   "cases": [
     {"id": "zero_rally_lab", "scenario": "lab2", "mode": "rally", "profile": "zero"},

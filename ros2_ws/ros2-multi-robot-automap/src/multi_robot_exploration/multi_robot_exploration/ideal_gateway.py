@@ -1,7 +1,7 @@
 import json
 import os
 import zlib
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from multi_robot_interfaces.msg import GatewayEnvelope
 from nav_msgs.msg import OccupancyGrid, Odometry
@@ -88,6 +88,8 @@ class IdealGateway(Node):
         blackout_intervals = tuple(tuple(pair) for pair in json.loads(str(
             self.declare_parameter("blackout_intervals", "[]").value
         )))
+        self.fault_epoch = None
+        self.fault_blackout_intervals = blackout_intervals
         seed = int(self.declare_parameter("fault_seed", 1).value)
         loss_up = float(self.declare_parameter("uplink_loss_rate", 0.0).value)
         loss_down = float(self.declare_parameter("downlink_loss_rate", 0.0).value)
@@ -114,6 +116,7 @@ class IdealGateway(Node):
             reorder_window = 0
             drop_types = ()
             blackout_intervals = ()
+            self.fault_blackout_intervals = ()
         self.ledger_path = str(
             self.declare_parameter("ledger_path", "").value
         )
@@ -132,7 +135,7 @@ class IdealGateway(Node):
                     max_retries=max_retries,
                     queue_capacity=queue_capacity,
                     drop_types=drop_types,
-                    blackout_intervals=blackout_intervals,
+                    blackout_intervals=(),
                 ),
                 event_callback=lambda event, direction="uplink": self.publish_transport_event(
                     direction, event
@@ -149,7 +152,7 @@ class IdealGateway(Node):
                     max_retries=max_retries,
                     queue_capacity=queue_capacity,
                     drop_types=drop_types,
-                    blackout_intervals=blackout_intervals,
+                    blackout_intervals=(),
                 ),
                 event_callback=lambda event, direction="downlink": self.publish_transport_event(
                     direction, event
@@ -378,6 +381,14 @@ class IdealGateway(Node):
 
     def task_state_callback(self, message):
         self.task_phase = message.data
+        if self.fault_epoch is None and message.data == "EXPLORE":
+            self.fault_epoch = self.now_sec()
+            intervals = tuple((self.fault_epoch + start, self.fault_epoch + end)
+                              for start, end in self.fault_blackout_intervals)
+            for transport in self.transport_by_direction.values():
+                transport.config = replace(transport.config, blackout_intervals=intervals)
+            self._record({"event": "fault_epoch", "event_time": self.fault_epoch,
+                          "blackout_intervals": intervals, "reference": "first central EXPLORE"})
 
     def next_sequence(self, route):
         key = (route.message_type, route.sender, route.recipient)
