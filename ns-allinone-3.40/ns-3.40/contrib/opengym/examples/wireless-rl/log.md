@@ -4074,3 +4074,32 @@ corridors主批次8格完整运行，精确摘要：[{"case": "delay05_corridors
 同候选所有源码/配置/命令/结果/账本摘要/环境/hash/停止进程/诊断脚本保存在上述JSON，raw保留原log目录。新冻结候选将全新重跑完整主矩阵和十格理想门禁，不拼接候选通过结果。
 
 FAILED取消候选终检：上述八文件pytest147 passed（6.43s）；四包colcon build通过5.44s；/usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_local_safety_v3.json返回54格PASS；三机器人source-only旁路审计零违规。新增check_p3b5_gate.py与四项指标/时序反例检查、固定开发探针manifest；全新仿真尚未启动。
+
+## 2026-10-01 P3B.5 2779bbd 候选保留、集结等待预算优化
+
+
+冻结源码2779bbd5f111c8ddeb58fb7d206f213067581da7。Humble/install、PYTHONNOUSERSITE=1；独立CPU池且错峰约两分钟启动，ideal/fault同池。精确批次命令：
+
+GAZEBO_MASTER_URI=http://127.0.0.1:11440 taskset -c 60-79 /usr/bin/python3 scripts/run_p2d_baseline.py --run-id p3b5_ideal_gate_2779bbd --ros-domain-base 150 --startup-timeout 600 --evaluation-wait-timeout 900 --infrastructure-retries 0 --rally-max-concurrent 2 --disable-global-battery-rally-pause > /tmp/p3b5_ideal_gate_2779bbd.log 2>&1；
+
+GAZEBO_MASTER_URI=http://127.0.0.1:11441 taskset -c 0-19 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v3_lab --cases zero_rally_lab up100_lab down100_lab ttl_lab map_loss_lab battery_loss_lab state_loss_lab target_up10_lab battery_exhaust_lab --ros-domain-base 50 > /tmp/p3b5_v3_lab.log 2>&1；
+
+GAZEBO_MASTER_URI=http://127.0.0.1:11442 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v3_rooms --cases up10_rooms down10_rooms delay2_rooms overflow_rooms burst_rooms deadline_rooms detection_loss_rooms pose_loss_rooms single_failure_rooms target_loss_rooms --ros-domain-base 70 > /tmp/p3b5_v3_rooms.log 2>&1；
+
+GAZEBO_MASTER_URI=http://127.0.0.1:11443 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v3_corridors_forced --cases delay05_corridors duplicates_corridors nav_loss_corridors coverage_delay_corridors forced_charge_outage --ros-domain-base 90 > /tmp/p3b5_v3_corridors_forced.log 2>&1。
+
+条件调度holdout（master11444/domain222，完整理想门禁通过才启动）及aux（master11445/domain110，corridors批次退出0才启动）均取消，未运行。
+
+ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_v3_lab/summary.json：[{"case": "zero_rally_lab", "mode": "ideal", "status": "task_complete", "elapsed": 144.29999999999973, "success": true, "collision": 0}, {"case": "zero_rally_lab", "mode": "fault", "status": "task_complete", "elapsed": 110.29999999999973, "success": true, "collision": 0}, {"case": "up100_lab", "mode": "fault", "status": "no_data", "elapsed": 300.1999999999998, "success": false, "collision": 0}, {"case": "down100_lab", "mode": "fault", "status": "shutdown", "elapsed": 67.59999999999991, "success": false, "collision": 0}]
+
+ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_v3_rooms/summary.json：[{"case": "up10_rooms", "mode": "ideal", "status": "task_complete", "elapsed": 162.89999999999998, "success": true, "collision": 0}, {"case": "up10_rooms", "mode": "fault", "status": "task_complete", "elapsed": 180.6, "success": true, "collision": 0}, {"case": "down10_rooms", "mode": "fault", "status": "task_complete", "elapsed": 186.9, "success": true, "collision": 0}, {"case": "delay2_rooms", "mode": "fault", "status": null, "elapsed": null, "success": null, "collision": null}]
+
+ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_v3_corridors_forced/summary.json：[{"case": "delay05_corridors", "mode": "ideal", "status": "task_complete", "elapsed": 169.29999999999998, "success": true, "collision": 0}, {"case": "delay05_corridors", "mode": "fault", "status": "task_complete", "elapsed": 219.0, "success": true, "collision": 0}, {"case": "duplicates_corridors", "mode": "fault", "status": "shutdown", "elapsed": 293.29999999999995, "success": false, "collision": 0}]
+
+ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3b5_ideal_gate_2779bbd/summary.json：[{"case": "lab_far_northwest", "mode": "ideal", "status": "timeout", "elapsed": 300.0, "success": false, "collision": 0}, {"case": "lab_far_northwest", "mode": "ideal", "status": "task_complete", "elapsed": 254.5, "success": true, "collision": 0}, {"case": "lab_far_northwest", "mode": "ideal", "status": "task_complete", "elapsed": 246.0999999999999, "success": true, "collision": 0}]
+
+lab101为episode_start后真实RALLY超时300s，129.2s进入RALLY、三次充电、零碰撞；提前停靠与队友返充/让路导致等待后再次返航。lab202/303随后完成，不能择取成功替代同候选失败。rooms delay2在启动期中断无result；当前corridors duplicate、lab down100及理想下个启动均主动停止，结果/无结果与停止进程保存在report/20261001_p3b5_rally_wait_failed_candidate.json。
+
+算法候选：完整路线预算增加其他机器人的剩余行程及串行返航/充电期间idle耗电，单调闭包计算连锁充电需求；第一轮预充电结束前暂缓最终集结派发，仍允许安全让路，完成后按实际位置重算地图安全顺序。本地安全保留量、能耗默认、速度、300秒及COMPLETE门限不变。电池状态发布实际charge_duration_sec。此为规划估计，不声称运行时间上界。
+
+两项新增反例验证等待耗电与连锁充电、单机不重复计入自身路线/排除FAILED。八文件pytest149 passed（6.09s）；四包colcon build通过5.33s。54格协议矩阵PASS、source-only旁路审计见随后输出。此候选尚未仿真验证，将先运行lab101/202/303开发回归及安全探针，不在holdout调参。

@@ -1105,6 +1105,7 @@ def test_idle_blocker_recovery_dispatches_motion_before_returning(
         battery_monitor_started_at=0., battery_state_received_at=dict.fromkeys(names, 10.),
         message_freshness_timeout_sec=5.,
         rally_charge_requested={}, prepare_rally_charges=lambda: {"tb2"},
+        rally_preflight_complete=True, rally_precharge_active=False,
         rally_max_concurrent=2, rally_probe_targets=set(),
         rally_leg_routes=dict.fromkeys(names, ()), rally_hold_started_at=None,
         active_batteries_ready=lambda: True,
@@ -1322,3 +1323,23 @@ def test_contact_loss_waits_without_isolating_a_healthy_robot():
     node.mark_robot_failed.assert_not_called()
     assert node.battery_modes == {"tb1": "ACTIVE"}
     assert node.rally_hold_started_at is None
+
+
+def test_rally_wait_budget_prevents_a_parked_robot_returning_during_peer_charge():
+    # tb2 can fund its own route and home reserve, but not tb1's 40s route
+    # plus 60s return/charge. Previously it parked and later had to leave.
+    states={"tb1":{"energy":25.,"idle_cost_per_sec":.02},
+            "tb2":{"energy":21.,"idle_cost_per_sec":.02}}
+    requirements, waits=control.rally_wait_requirements(
+        {"tb1":30.,"tb2":20.},states,dict.fromkeys(states,"ACTIVE"),
+        {"tb1":40.,"tb2":0.},{"tb1":60.,"tb2":60.})
+    assert waits=={"tb1":60.,"tb2":100.}
+    assert requirements==pytest.approx({"tb1":31.2,"tb2":22.})
+    assert states["tb2"]["energy"]>20. and states["tb2"]["energy"]<requirements["tb2"]
+
+
+def test_rally_wait_budget_does_not_charge_own_route_twice_or_include_failed_robot():
+    requirements, waits=control.rally_wait_requirements(
+        {"tb1":30.},{"tb1":{"energy":40.,"idle_cost_per_sec":.02}},
+        {"tb1":"ACTIVE","tb2":"FAILED"},{"tb1":40.},{"tb1":60.,"tb2":100.})
+    assert requirements=={"tb1":30.} and waits=={"tb1":0.}

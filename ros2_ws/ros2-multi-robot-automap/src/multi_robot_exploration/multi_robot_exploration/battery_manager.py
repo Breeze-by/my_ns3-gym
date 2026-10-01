@@ -733,6 +733,7 @@ class BatteryManager(Node):
                 "nominal_speed_mps": self.nominal_speed,
                 "return_safety_margin": self.safety_margin,
                 "return_timeout_sec": self.return_timeout,
+                "charge_duration_sec": self.charge_duration,
             },
             sort_keys=True,
         )

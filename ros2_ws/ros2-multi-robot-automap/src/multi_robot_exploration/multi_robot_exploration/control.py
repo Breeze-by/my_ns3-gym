@@ -1553,6 +1553,31 @@ def battery_assignment_is_safe(
     )
 
 
+def rally_wait_requirements(base, states, modes, travel_times, charge_times):
+    """Reserve idle energy for other routes and serial returns/charges.
+
+    A newly required charge increases the other robots' wait. Iterate this
+    monotone set at most once per robot; the robot's own route/return is already
+    included in its base budget. These are nominal planning estimates; the local
+    battery reserve remains the safety authority.
+    """
+    charging = {name for name, mode in modes.items()
+                if mode in ("RETURNING", "CHARGING")}
+    requirements, waits = dict(base), {}
+    for _ in range(len(base) + 1):
+        for name, required in base.items():
+            wait = sum(value for other, value in travel_times.items() if other != name)
+            wait += sum(charge_times.get(other, 0.0) for other in charging if other != name)
+            waits[name] = wait
+            requirements[name] = required + float(states[name].get("idle_cost_per_sec", .02)) * wait
+        needed = charging | {name for name in base
+                             if float(states[name]["energy"]) <= requirements[name]}
+        if needed == charging:
+            break
+        charging = needed
+    return requirements, waits
+
+
 class HeadquartersControl(Node):
     def __init__(self):
         super().__init__("headquarters_control")
@@ -1689,6 +1714,8 @@ class HeadquartersControl(Node):
         self.rally_yield_requested = {}
         self.rally_battery_preempted = {}
         self.rally_charge_requested = {}
+        self.rally_preflight_complete = False
+        self.rally_precharge_active = False
         self.charge_request_publishers = {}
         self.rally_attempts = {}
         self.rally_arrived = {}
@@ -2455,6 +2482,27 @@ class HeadquartersControl(Node):
                 energy_unready |= self.prepare_rally_charges()
                 if self.task_state != "RALLY":
                     return
+                charging = any(mode in ("RETURNING", "CHARGING")
+                               for mode in self.battery_modes.values())
+                if not self.rally_preflight_complete:
+                    self.rally_precharge_active |= bool(energy_unready or charging)
+                    if (not energy_unready and not charging
+                            and not any(self.rally_goal_handles.values())
+                            and not any(self.rally_goal_pending.values())):
+                        if self.rally_precharge_active:
+                            positions = {name: self.robot_positions[name] for name in self.rally_final_targets}
+                            if self.use_map_safe_rally_order:
+                                self.rally_dispatch_order = map_safe_rally_dispatch_order(
+                                    self.map_data, self.resolution, self.origin,
+                                    self.rally_final_targets, positions, self.target, self.detecting_robot,
+                                )
+                            else:
+                                self.rally_dispatch_order = rally_dispatch_order(
+                                    self.rally_final_targets, positions, self.target, self.detecting_robot,
+                                )
+                            self.get_logger().info("Rally order after precharging: "
+                                                   + ", ".join(self.rally_dispatch_order))
+                        self.rally_preflight_complete = True
             plans = {}
             for name in self.rally_dispatch_order:
                 if (
@@ -2473,7 +2521,9 @@ class HeadquartersControl(Node):
                     or self.survey_goal_handle is not None
                     or self.robot_positions[name] is None
                     or self.battery_modes[name] != "ACTIVE"
-                    or name in energy_unready
+                    or (name in energy_unready and name not in self.rally_yield_targets)
+                    or (self.enable_battery and not self.rally_preflight_complete
+                        and name not in self.rally_yield_targets)
                 ):
                     continue
                 if self.rally_recovery_requested[name]:
@@ -2777,7 +2827,8 @@ class HeadquartersControl(Node):
             self.rally_linear_tolerance,
             self.rally_angular_tolerance,
         )
-        stable = stable and self.active_batteries_ready() and not energy_unready
+        stable = (stable and self.active_batteries_ready() and not energy_unready
+                  and (not self.enable_battery or self.rally_preflight_complete))
         if not stable:
             self.rally_hold_started_at = None
             return
@@ -2796,29 +2847,45 @@ class HeadquartersControl(Node):
         """Check the whole final route before admitting another navigation leg."""
         blocked = set(self.rally_charge_requested)
         candidates = []
+        budgets, travel_times, charge_times = {}, {}, {}
         now = self.now()
         for name in self.rally_dispatch_order:
-            if (self.battery_modes[name] != "ACTIVE"
-                    or self.rally_goal_handles[name] is not None
-                    or self.rally_goal_pending[name]
-                    or self.robot_positions[name] is None):
+            if self.battery_modes[name] == "FAILED" or self.robot_positions[name] is None:
                 continue
             target = self.rally_final_targets[name]
+            state = self.battery_states[name]
+            try:
+                speed = float(state.get("nominal_speed_mps", .18))
+                factor = float(state.get("return_path_factor", 2.0))
+                home = (float(state["charge_x"]), float(state["charge_y"]))
+                charge_time = float(state.get("charge_duration_sec", 6.0))
+                if not all(math.isfinite(v) for v in (*home, speed, factor, charge_time)) or speed <= 0 or min(factor, charge_time) < 0:
+                    raise ValueError("invalid charge time estimate")
+                charge_times[name] = charge_time
+                if self.battery_modes[name] != "CHARGING":
+                    charge_times[name] += math.dist(self.robot_positions[name], home) * factor / speed
+            except (KeyError, TypeError, ValueError) as error:
+                blocked.add(name)
+                self.get_logger().warn(f"Invalid rally charge-time budget for {name}: {error}")
+                continue
+            position = self.robot_positions[name] if self.battery_modes[name] == "ACTIVE" else home
             _, route = plan_rally_leg(
                 target, self.map_data, self.resolution, self.origin,
-                self.robot_positions[name],
+                position,
             )
             if not route:
                 continue  # The existing route/map recovery still owns this case.
             distance = sum(math.dist(a, b) for a, b in zip(route, route[1:]))
-            state = self.battery_states[name]
+            travel_times[name] = distance / speed
+            if (self.battery_modes[name] != "ACTIVE"
+                    or self.rally_goal_handles[name] is not None or self.rally_goal_pending[name]):
+                continue
             try:
                 energy = float(state["energy"])
                 idle_cost = float(state.get("idle_cost_per_sec", 0.02))
                 charge_target = (
                     float(state["capacity"]) * float(state["charge_target_fraction"])
                 )
-                home = (float(state["charge_x"]), float(state["charge_y"]))
                 required = battery_assignment_required_energy(
                     distance, math.dist((target.x, target.y), home),
                     float(state.get("move_cost_per_m", 1.0)), idle_cost,
@@ -2836,6 +2903,13 @@ class HeadquartersControl(Node):
                     f"Invalid rally battery budget for {name}: {error}"
                 )
                 continue
+            budgets[name] = (energy, required, charge_target, idle_cost, home)
+        requirements, waits = rally_wait_requirements(
+            {name: budget[1] for name, budget in budgets.items()},
+            self.battery_states, self.battery_modes, travel_times, charge_times,
+        )
+        for name, (energy, _, charge_target, idle_cost, home) in budgets.items():
+            required = requirements[name]
             if energy > required:
                 continue
             blocked.add(name)
@@ -2863,6 +2937,7 @@ class HeadquartersControl(Node):
             "robot": name, "stamp_sec": now, "task_phase": "RALLY",
             "reason": "rally_energy_budget", "required_energy": required,
             "available_energy": energy,
+            "waiting_time_budget_sec": waits[name],
         }, sort_keys=True)))
         self.get_logger().warn(
             f"Requesting early charge for {name}: energy={energy:.2f}, "
