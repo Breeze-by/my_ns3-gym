@@ -87,3 +87,24 @@ def test_fixed_partition_preserves_version_and_unique_cells(tmp_path,mismatch):
         assert len(combined['episodes'])==2 and len(combined['batches'])==2
     else:
         with pytest.raises(AssertionError):fixed_ideal_batches(paths)
+
+
+def test_native_nav2_uuid_can_be_serialized_by_physics_observer():
+    import ast
+    import json
+    from pathlib import Path
+    import numpy as np
+    from action_msgs.msg import GoalStatusArray, GoalStatus
+    source = Path(__file__).with_name("observe_p3b5_return_physics.py").read_text()
+    action = next(node for node in ast.parse(source).body
+                  if isinstance(node, ast.FunctionDef) and node.name == "action")
+    namespace = {"status": {}}
+    exec(compile(ast.Module(body=[action], type_ignores=[]), "observer_action", "exec"), namespace)
+    message = GoalStatusArray()
+    state = GoalStatus()
+    state.goal_info.goal_id.uuid = np.arange(16, dtype=np.uint8)
+    state.status = 2
+    message.status_list = [state]
+    namespace["action"]("tb1", message)
+    assert json.loads(json.dumps(namespace["status"])) == {
+        "tb1": [{"uuid": list(range(16)), "status": 2}]}

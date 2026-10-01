@@ -119,6 +119,41 @@ def return_escape_pose(
     )
 
 
+def plan_charging_leg(raw_grid, resolution, origin, position, charger, radius):
+    """Reach the charger contact region when its exact centre is blocked.
+
+    Prefer the existing home route. Reuse its distance field for a reachable,
+    clearance-safe contact point, leaving 0.2 m for goal-position error.
+    Unknown/occupied cells and disconnected contact regions remain forbidden.
+    """
+    cache = {}
+    options = dict(max_distance_m=MAX_NAVIGATION_LEG_M,
+                   clearance_m=RALLY_PATH_CLEARANCE_M, visible_only=True,
+                   route_cache=cache)
+    leg, route = plan_rally_leg(
+        RallyPose(*charger, 0.0), raw_grid, resolution, origin, position,
+        **options,
+    )
+    if leg is not None:
+        return leg, route
+    traversable, start, _, distance_data = cache["field"]
+    if start is None or distance_data is None or radius <= 0.2:
+        return None, ()
+    distances = distance_data[0]
+    rows, columns = np.nonzero(traversable & np.isfinite(distances))
+    xs = origin[0] + (columns + 0.5) * resolution
+    ys = origin[1] + (rows + 0.5) * resolution
+    squared = (xs - charger[0]) ** 2 + (ys - charger[1]) ** 2
+    candidates = np.flatnonzero(squared <= (radius - 0.2) ** 2)
+    if not len(candidates):
+        return None, ()
+    chosen = min(candidates, key=lambda i: (squared[i], distances[rows[i], columns[i]]))
+    return plan_rally_leg(
+        RallyPose(float(xs[chosen]), float(ys[chosen]), 0.0), raw_grid,
+        resolution, origin, position, **options,
+    )
+
+
 class BatteryManager(Node):
     def __init__(self):
         super().__init__("battery_manager")
@@ -570,17 +605,23 @@ class BatteryManager(Node):
             )
             return
         if not self.navigation.server_is_ready():
+            self.get_logger().warning(
+                f"{self.robot_name} local return waiting for native Nav2 server.",
+                throttle_duration_sec=5.0,
+            )
             return
         # Replan toward home through known free space. A valid detour may
         # initially move away from home; Euclidean convergence is not a path
         # feasibility test. Never replace a missing route with a straight line.
         if self.return_map_origin is None or self.map_position is None:
+            self.get_logger().warning(
+                f"{self.robot_name} local return waiting for map/pose.",
+                throttle_duration_sec=5.0,
+            )
             return
-        staged, _ = plan_rally_leg(
-            RallyPose(self.charge_x, self.charge_y, 0.0),
+        staged, _ = plan_charging_leg(
             self.return_map, self.return_map_resolution, self.return_map_origin,
-            self.map_position, max_distance_m=MAX_NAVIGATION_LEG_M,
-            clearance_m=RALLY_PATH_CLEARANCE_M, visible_only=True,
+            self.map_position, (self.charge_x, self.charge_y), self.charge_radius,
         )
         if staged is not None:
             target = (staged.x, staged.y)
@@ -597,6 +638,12 @@ class BatteryManager(Node):
                 max_escape_m=1.5, clearance_m=RALLY_PATH_CLEARANCE_M,
             )
             if self.return_escape_target is None:
+                self.get_logger().warning(
+                    f"{self.robot_name} local return has no safe contact/escape route: "
+                    f"position={self.map_position}, home={(self.charge_x, self.charge_y)}, "
+                    f"map_shape={self.return_map.shape}, origin={self.return_map_origin}, "
+                    f"energy={self.energy:.2f}.", throttle_duration_sec=5.0,
+                )
                 self.return_goal_due_at = self.now() + 1.0
                 return
             target = self.return_escape_target

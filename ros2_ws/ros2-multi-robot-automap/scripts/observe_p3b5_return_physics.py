@@ -21,7 +21,7 @@ def state(name,msg):
     data=json.loads(msg.data);battery[name]=data
     stream.write(json.dumps({'event':'battery','observer_time':stamp(),'robot':name,'data':data})+'\n')
 def action(name,msg):
-    status[name]=[{'uuid':list(x.goal_info.goal_id.uuid),'status':x.status} for x in msg.status_list]
+    status[name]=[{'uuid':[int(value) for value in x.goal_info.goal_id.uuid],'status':x.status} for x in msg.status_list]
 def positions(msg):
     global last
     now=stamp()

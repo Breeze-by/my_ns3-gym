@@ -4294,3 +4294,22 @@ GAZEBO_MASTER_URI=http://127.0.0.1:11543 taskset -c 60-79 /usr/bin/python3 scrip
 后续固定十格在下一新冻结源码上前瞻分为1+2+3+4，不重复已完成格：先lab3/101子门禁；通过后lab3/202303、rooms3/101202303、corridors3/101202303+2r202；全部300horizon/energy40,40,45/原目标/零整episode重试。复用check_p3a6_gate.same_candidate严格检查同commit/source/environment；新P3B检查器支持 --ideal-fixed 多summary，拒绝重复physical cell和跨版本，不删除失败。只有同提交十格全部COMPLETE/零碰撞才开始707留出及接受整批P3B.5。
 
 返航refuge候选最终13文件198 passed（7.38s），四包build/source audit已通过。diff --check/root add -n检查后，显式排除用户260929_report和runtime，提交并push再开始1+2+3+4前瞻分批固定集成。
+
+
+## 2026-10-02 P3B.5 baec9ea 冻结候选：本地返航失败保留与后续修复
+
+代码状态：clean冻结 `baec9ea8cce61da8d0f1f0bcf45efb74f8eea97a`；P3A.6已验收。四隔离池CPU0–19/20–39/40–59/60–79，Gazebo master11550/12521/12520/12522。命令完整原文、临时串行wrapper及预声明分批计划收录 `report/20261002_p3b5_local_return_failed_candidate.json.commands_and_stop_records.p3b5_v12_commands.json`；所有ROS命令source Humble+canonical install且PYTHONNOUSERSITE=1，/usr/bin/python3。固定ideal前瞻1+2+3+4批次；主矩阵lab/rooms；forced、四原安全探针、两物理探针顺序执行。raw结果/ledger/图/launch日志仍保留在ROS ignored log/。
+
+本候选实际开始35个独立episode，保存35份原始终态（含中断与未被已停止批量runner回写summary的孤立结果），终止分布{'task_complete': 19, 'no_data': 3, 'shutdown': 2, 'timeout': 8, 'coverage_reached': 1, 'mission_failed': 2}。未运行主corridors或holdout707。不能用孤立成功回填中断的固定summary来宣称十格完成。主批次lab/rooms在物理返航失败后按所有权进程清单SIGINT停止，post-start中断保留；固定/辅助的队列wrapper停止阻止后续holdout/corridors。wrapper的subprocess.run在SIGINT后kill子runner，部分已开始的smoke结果后来正常完成，已单独保留；补充观察器手工有界清理，清单见归档。
+
+当前冻结版本另有1次PRESTART基础设施失败：p3b5_v12_forced使用11552被旧ROS2 daemon(domain41)占用；Gazebo原始server日志证实bind Address already in use，没有episode start/result。依RESEARCH_PLAN12.5保留后修复master为12520，以p3b5_v12_forced_portfix同配置重跑。归档含原summary/完整Gz日志/hash及规则；manual prestart retry1，自动重试0。不是覆盖post-start任务失败，基础设施分母必须包含该失败。/tmp/check_prestart_p3b5.py验证PASS。
+
+物理返航probe原配置前瞻时间2026-10-01T15:11:03.430058+00:00，SHA cab3540442ba0cd02cbec6786592855675abba2c9b2d6f64b1fafa82c543b6cf；energy40、idle.15、blackout40–250、margin5、return120、300s。ideal COMPLETE237.5s/两充电/零碰撞；fault timeout300.3s，tb1一充电、tb2进入RETURNING未发布任何return-leg，随后耗尽FAILED。该候选保障性门失败。旧probe没有记录内部地图/ActionClient availability分支，因此不能断言是某个地图cell造成。原只读物理观察器在native Nav2 UUID numpy.uint8 JSON序列化处退出1，属于独立测量失败。
+
+只改/tmp只读observer将UUID逐字节转int，原配置诊断重复：run_p3b5_return_probe_fixed.py --run-id p3b5_v12_returnproof_observerfix --ros-domain-base168，同12520/CPU40–59；ideal COMPLETE223.3s，fault timeout300.0s/两充电/零碰撞、正能量。父队列wrapper行政停止后，observer metadata未正常结束，手工SIGINT清理并保留hash，诊断结果不能替代前轮耗尽或当作正式probe。另启动ROS_DOMAIN_ID169 taskset40–59 /usr/bin/python3 /tmp/p3b5_return_map_diagnostic.py（只读本地map/fused/TF/odom/battery，2s记录）；16张RETURNING快照全部可规划home（tb1 11/tb2 5），未复现旧失效分支。脚本/采集路径/hash及清理记录归档，原始map诊断移到ROS log/p3b5/p3b5_v12_returnproof_observerfix_physics/local_map_diagnostic.jsonl。
+
+纯组件算法benchmark（不计episode、不宣称mission加速）：PYTHONNOUSERSITE=1 taskset -c20-39 /usr/bin/python3 /tmp/benchmark_p3b5_refuge.py > /tmp/p3b5_refuge_benchmark_baec9ea.log 2>&1。同120x120/.1m输入、1.8m返航guard、相同返回pose，五次墙钟中位数exhaustive visibility1.018082057s、nearest-first.343993034s，2.96x。完整输入/两版本函数原文/SHA/五个样本/affinity见report/20261002_p3b5_refuge_benchmark_baec9ea.json。此比较只改变候选可见性检查顺序，不比较不同Gazebo历史轨迹。
+
+下一候选改动：修复只读UUID JSON并传播observer非零状态；本地return拒绝分支有界throttle诊断（server/map/无安全route）；另以合成反例证实充电中心blocked但接触区存在clearance-safe reachable点时原planner拒绝全部返航，改为复用同一次Dijkstra距离场选择中心附近可达contact点，留0.2m目标误差余量。home可达时路线保持，未知/断连contact区仍拒绝，不放宽半径/clearance/电量/300s。此补洞并不证明旧耗尽的唯一原因；下一轮先跑原物理stress probe，失败则保留并诊断，不启动heldout。
+
+新contact候选203组件检查PASS（13文件、7.83s）、四包symlink build PASS（5.30s）、source-only三机器人审计PASS。最初子集38PASS/1FAIL是测试SimpleNamespace缺少robot_name日志字段，补齐夹具后通过；中间误写test_gateway_protocol.py和audit_gateway_bypasses.py，均路径不存在而未执行测试/审计，随后按实际文件/模块完成。独立UUID原生GoalStatusArray反例JSON roundtrip通过。下一冻结先跑同预声明原physical probe；不得把旧35episodes/诊断成功混入新基线。

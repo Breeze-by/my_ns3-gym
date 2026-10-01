@@ -32,4 +32,4 @@ finally:
  for f in files:f.close()
  meta['runner_returncode']=code;meta['finished_at_utc']=datetime.now(timezone.utc).isoformat()
  (base/'metadata.json').write_text(json.dumps(meta,indent=2)+'\n')
-sys.exit(code)
+sys.exit(code or next((row['returncode'] for row in meta['observers'] if row['returncode']), 0))

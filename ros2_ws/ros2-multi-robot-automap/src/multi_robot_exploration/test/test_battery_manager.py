@@ -12,6 +12,7 @@ from multi_robot_exploration.battery_manager import (
     consume_energy,
     estimated_return_energy,
     odometry_distance,
+    plan_charging_leg,
     return_escape_pose,
     return_attempt_failure_reason,
 )
@@ -72,6 +73,43 @@ def test_return_escape_pose_moves_out_of_inflated_start_cell():
     ) is not None
 
 
+def test_charge_contact_planning_preserves_a_reachable_home_route():
+    from multi_robot_exploration.control import plan_rally_leg, RallyPose
+    grid = np.zeros((100, 100), dtype=np.int16)
+    expected = plan_rally_leg(
+        RallyPose(0., 0., 0.), grid, .1, (-5., -5.), (3., 0.),
+        visible_only=True,
+    )
+    assert plan_charging_leg(grid, .1, (-5., -5.), (3., 0.), (0., 0.), .8) == expected
+
+
+def test_blocked_charger_centre_uses_a_safe_reachable_contact_pose():
+    import math
+    from unittest.mock import patch
+    from multi_robot_exploration import control
+    grid = np.zeros((100, 100), dtype=np.int16)
+    grid[50, 50] = 100
+    with patch.object(control, "path_distance_grid", wraps=control.path_distance_grid) as search:
+        leg, route = plan_charging_leg(grid, .1, (-5., -5.), (3., 0.), (0., 0.), .8)
+    assert search.call_count == 1
+    assert leg is not None and route
+    assert math.hypot(leg.x, leg.y) <= .6
+    traversable = control.traversable_grid(grid, .1, control.RALLY_PATH_CLEARANCE_M)
+    assert all(traversable[control.world_to_grid(x, y, .1, -5., -5.)] for x, y in route)
+
+
+def test_disconnected_charge_contact_region_never_generates_a_return_leg():
+    grid = np.zeros((100, 100), dtype=np.int16)
+    grid[:, 60] = 100
+    assert plan_charging_leg(grid, .1, (-5., -5.), (3., 0.), (0., 0.), .8) == (None, ())
+
+
+def test_unknown_charge_contact_region_never_generates_a_return_leg():
+    grid = np.zeros((100, 100), dtype=np.int16)
+    grid[40:60, 40:60] = -1
+    assert plan_charging_leg(grid, .1, (-5., -5.), (3., 0.), (0., 0.), .8) == (None, ())
+
+
 @pytest.mark.parametrize("mode", [CHARGING, FAILED])
 def test_late_return_acceptance_is_canceled_after_charge_or_failure(mode):
     from types import SimpleNamespace
@@ -108,12 +146,15 @@ def test_missing_map_route_does_not_send_a_straight_line_return():
     grid[20, 10] = 0
     navigation = Mock()
     manager = SimpleNamespace(
-        return_attempts=0, max_return_attempts=3, navigation=navigation,
+        robot_name="tb1", return_attempts=0, max_return_attempts=3, navigation=navigation,
         return_map=grid, return_map_resolution=0.1,
         return_map_origin=(0.0, 0.0), map_position=(1.0, 2.0),
         charge_x=3.0, charge_y=2.0, return_escape_failed=False,
         return_escape_target=None, return_waypoint_target=None,
         return_stage="charger", now=lambda: 10.0)
+    manager.charge_radius = 0.8
+    manager.energy = 20.0
+    manager.get_logger = Mock()
     BatteryManager.send_return_goal(manager)
     navigation.send_goal_async.assert_not_called()
     assert manager.return_goal_due_at == 11.0

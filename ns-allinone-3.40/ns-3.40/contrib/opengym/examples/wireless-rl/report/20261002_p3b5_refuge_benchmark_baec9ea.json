@@ -1,0 +1,63 @@
+{
+  "purpose": "Pure component algorithm comparison, identical input/clearances/result; not simulator or mission speed claim",
+  "grid_shape": [
+    120,
+    120
+  ],
+  "resolution": 0.1,
+  "origin": [
+    -6,
+    -6
+  ],
+  "robot_position": [
+    -0.6,
+    -0.4
+  ],
+  "return_start": [
+    -3,
+    -2.7
+  ],
+  "home": [
+    0,
+    0.45
+  ],
+  "guard": 1.8,
+  "versions": {
+    "exhaustive_visibility": {
+      "samples_wall_sec": [
+        1.001297558657825,
+        1.110518194269389,
+        1.00393353914842,
+        1.078464816790074,
+        1.0180820571258664
+      ],
+      "median_wall_sec": 1.0180820571258664,
+      "pose": [
+        0.5500000000000007,
+        -1.6499999999999995,
+        1.8269477093605004
+      ]
+    },
+    "nearest_first_visibility": {
+      "samples_wall_sec": [
+        0.39056156016886234,
+        0.34163051191717386,
+        0.34399303374812007,
+        0.3457900322973728,
+        0.34175687469542027
+      ],
+      "median_wall_sec": 0.34399303374812007,
+      "pose": [
+        0.5500000000000007,
+        -1.6499999999999995,
+        1.8269477093605004
+      ]
+    }
+  },
+  "exhaustive_source_content_sha256": "23af1165b22ad2649b91ae6beb7d78c3cb791962400a26563738e3cfc1fb7af1",
+  "nearest_first_source_content_sha256": "7153937770e574095730dbb5b28abbb99e502ed8abbf01575e984eddc9ebf190",
+  "exhaustive_source": "def rally_yield_pose(\n    raw_grid,\n    resolution,\n    origin,\n    robot_position,\n    target,\n    reserved_poses=(),\n    blocked_positions=(),\n    reserved_routes=(),\n    route_separation_m=RALLY_MIN_SEPARATION_M,\n    visible_only=False,\n):\n    \"\"\"Choose a reachable refuge outside parked poses and reserved corridors.\"\"\"\n    traversable = traversable_grid(\n        raw_grid, resolution, clearance_m=RALLY_PATH_CLEARANCE_M\n    )\n    traversable = block_dynamic_positions(\n        traversable, resolution, origin, blocked_positions\n    )\n    start = world_to_grid(\n        robot_position[0], robot_position[1], resolution,\n        origin[0], origin[1],\n    )\n    start = navigation_start_cell(\n        raw_grid,\n        traversable,\n        start,\n        max(1, math.ceil(0.6 / resolution)),\n    )\n    if start is None:\n        return None\n    distances = path_distance_grid(traversable, start)\n    route_points = [point for route in reserved_routes for point in route]\n    route_tree = cKDTree(route_points) if route_points else None\n    candidates = []\n    for row, column in np.argwhere(np.isfinite(distances)):\n        path_distance = float(distances[row, column] * resolution)\n        if path_distance < 0.5 or path_distance > 5.0:\n            continue\n        x, y = grid_to_world(row, column, resolution, origin[0], origin[1])\n        if math.dist((x, y), target) < 0.7:\n            continue\n        if any(\n            math.dist((x, y), pose) < RALLY_MIN_SEPARATION_M\n            for pose in (*reserved_poses, *blocked_positions)\n        ):\n            continue\n        if route_tree is not None and route_tree.query((x, y))[0] < route_separation_m:\n            continue\n        if visible_only:\n            line = tuple(_line_cells(start, (row, column)))\n            if not all(traversable[point] for point in line):\n                continue\n            if route_tree is not None:\n                points = [grid_to_world(r, c, resolution, origin[0], origin[1]) for r, c in line]\n                separation = route_tree.query(points)[0]\n                # Escape on this side, without crossing the occupied corridor\n                # or stopping at an intermediate bend still inside it.\n                if any(b + resolution < min(a, route_separation_m)\n                       for a, b in zip(separation, separation[1:])):\n                    continue\n        candidates.append((math.dist((x, y), target), path_distance, x, y))\n    if not candidates:\n        return None\n    if reserved_routes:\n        _, _, x, y = min(candidates, key=lambda item: item[1])\n    else:\n        _, _, x, y = max(candidates, key=lambda item: (item[0], -item[1]))\n    return RallyPose(x,y,control.math.atan2(target[1]-y,target[0]-x))\n",
+  "nearest_first_source": "def rally_yield_pose(\n    raw_grid,\n    resolution,\n    origin,\n    robot_position,\n    target,\n    reserved_poses=(),\n    blocked_positions=(),\n    reserved_routes=(),\n    route_separation_m=RALLY_MIN_SEPARATION_M,\n    visible_only=False,\n):\n    \"\"\"Choose a reachable refuge outside parked poses and reserved corridors.\"\"\"\n    traversable = traversable_grid(\n        raw_grid, resolution, clearance_m=RALLY_PATH_CLEARANCE_M\n    )\n    traversable = block_dynamic_positions(\n        traversable, resolution, origin, blocked_positions\n    )\n    start = world_to_grid(\n        robot_position[0], robot_position[1], resolution,\n        origin[0], origin[1],\n    )\n    start = navigation_start_cell(\n        raw_grid,\n        traversable,\n        start,\n        max(1, math.ceil(0.6 / resolution)),\n    )\n    if start is None:\n        return None\n    distances = path_distance_grid(traversable, start)\n    route_points = [point for route in reserved_routes for point in route]\n    route_tree = cKDTree(route_points) if route_points else None\n    candidates = []\n    for row, column in np.argwhere(np.isfinite(distances)):\n        path_distance = float(distances[row, column] * resolution)\n        if path_distance < 0.5 or path_distance > 5.0:\n            continue\n        x, y = grid_to_world(row, column, resolution, origin[0], origin[1])\n        if math.dist((x, y), target) < 0.7:\n            continue\n        if any(\n            math.dist((x, y), pose) < RALLY_MIN_SEPARATION_M\n            for pose in (*reserved_poses, *blocked_positions)\n        ):\n            continue\n        if route_tree is not None and route_tree.query((x, y))[0] < route_separation_m:\n            continue\n        candidates.append((math.dist((x, y), target), path_distance, x, y))\n    if not candidates:\n        return None\n    if reserved_routes:\n        candidates.sort(key=lambda item: item[1])\n    else:\n        candidates.sort(key=lambda item: (item[0], -item[1]), reverse=True)\n    # Verify nearest refuges in order, stopping at the first feasible one.\n    # Testing line geometry for every free cell stalls the gateway executor.\n    for _, _, x, y in candidates:\n        if visible_only:\n            cell = world_to_grid(x, y, resolution, origin[0], origin[1])\n            line = tuple(_line_cells(start, cell))\n            if not all(traversable[point] for point in line):\n                continue\n            if route_tree is not None:\n                points = [grid_to_world(r, c, resolution, origin[0], origin[1]) for r, c in line]\n                separation = route_tree.query(points)[0]\n                # Escape on this side, without crossing the occupied corridor\n                # or stopping at an intermediate bend still inside it.\n                if any(b + resolution < min(a, route_separation_m)\n                       for a, b in zip(separation, separation[1:])):\n                    continue\n        return RallyPose(x, y, math.atan2(target[1] - y, target[0] - x))\n    return None",
+  "source_commit": "baec9ea",
+  "cpu_affinity": "{20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39}"
+}

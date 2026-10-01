@@ -723,3 +723,5 @@ PYTHONNOUSERSITE=1 /usr/bin/python3 scripts/run_p3b5_return_probe.py --run-id p3
 Gazebo factory 明确表示本次实体已经入队、确认阶段超时时，helper继续在原wall budget内核对实际插入。保存world的非零仿真clock可能让上游ROS-clock确认提前超时；该分支不重发创建。其他拒绝状态仍立即终止启动。
 
 返航让路候选收紧：保护实际charge_radius_m对应的接触区，refuge须直接可见且位于整个返航通道guard之外，不把停在转弯前的短航段当作安全让路完成；busy返航期间暂停不经过预约的恢复/probe分支。yield搜索按最近路径逐个验证候选，1Hz重试；充电半径/能耗/速度/完成门限不变。固定ideal可按1+2+3+4同提交分批，check_p3b5_gate.py --ideal-fixed SUMMARY... 拒绝重复格/不同源码或环境；不能挑选成功覆盖失败。
+
+2026-10-02 本地返航修复候选：充电中心不可达时，在原接触半径内选择已知自由、净空安全且可达的contact点（额外留0.2m目标误差），复用home规划的距离场。local Nav2不可用、map/pose缺失、contact/escape不可达会有5秒限频诊断。电池/半径/clearance不变；旧baec9ea物理探针耗尽已保留，该候选须新冻结验证。只读physics observer的原生UUID转int后输出JSON；wrapper会传播observer失败，任务runner成功不能掩盖测量失败。
