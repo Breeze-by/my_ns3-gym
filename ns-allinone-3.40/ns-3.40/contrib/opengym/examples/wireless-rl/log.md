@@ -3907,3 +3907,79 @@ charger近的机器人。等待者仍不能绕过预算派发正常集合或通�
 三机器人source-only旁路审计通过。一次初始pytest命令误写不存在的test_bypass_audit.py，
 exit4/no tests ran；已改为原五文件（control/battery_manager/gateway/fault_model/task_evaluator）
 完整通过。正式新候选仍先lab303，再同提交补齐九格和forced303。
+
+
+## 2026-10-01 P3A.6 22c95a7：固定十格和forced303全部通过
+
+冻结候选`22c95a770a8812452c43fc177e4a00b5c032e6ef`，三批次1+7+2及forced全部runner exit0，
+每份起跑manifest clean，同commit/source digests/environment。精确命令：
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1
+
+export GAZEBO_MASTER_URI=http://127.0.0.1:11400
+/usr/bin/python3 scripts/run_p2d_baseline.py --scenarios lab_far_northwest --skip-cross-check --seeds 303 --run-id p3a6_serial_22c95a7_lab303 --ros-domain-base 145 --startup-timeout 600 --evaluation-wait-timeout 600 --inter-episode-delay 5 --rally-max-concurrent 2 --disable-global-battery-rally-pause > log/p2d_baseline/p3a6_serial_22c95a7_lab303_stdout.log 2>&1
+
+export GAZEBO_MASTER_URI=http://127.0.0.1:11401
+/usr/bin/python3 scripts/run_p2d_baseline.py --scenarios rooms_far_northeast corridors_far_west --seeds 101 202 303 --run-id p3a6_serial_22c95a7_rooms_corridors --ros-domain-base 180 --startup-timeout 600 --evaluation-wait-timeout 600 --inter-episode-delay 5 --rally-max-concurrent 2 --disable-global-battery-rally-pause > log/p2d_baseline/p3a6_serial_22c95a7_rooms_corridors_stdout.log 2>&1
+
+export GAZEBO_MASTER_URI=http://127.0.0.1:11402
+/usr/bin/python3 scripts/run_p2d_baseline.py --scenarios lab_far_northwest --skip-cross-check --seeds 101 202 --run-id p3a6_serial_22c95a7_lab101202 --ros-domain-base 170 --startup-timeout 600 --evaluation-wait-timeout 600 --inter-episode-delay 5 --rally-max-concurrent 2 --disable-global-battery-rally-pause > log/p2d_baseline/p3a6_serial_22c95a7_lab101202_stdout.log 2>&1
+
+export GAZEBO_MASTER_URI=http://127.0.0.1:11403
+/usr/bin/python3 /tmp/run_p3a6_forced.py p3a6_serial_22c95a7_forced303 175
+```
+
+forced编排副本`log/p2d_baseline/p3a6_serial_22c95a7_forced303/orchestrator.py`，
+SHA256在manifest.json中；其实际smoke命令：
+
+```bash
+ROS_DOMAIN_ID=175 /usr/bin/python3 scripts/ros_smoke_test.py --world my_world.world --robot-count 2 --gazebo-seed 303 --startup-timeout 600 --message-timeout 90 --shutdown-timeout 60 --evaluation-duration 300 --coverage-threshold 0 --evaluation-wait-timeout 600 --target-detection --rally --battery --require-charge --battery-capacity 100 --battery-initial-energy 18 --battery-move-cost 1 --battery-idle-cost .02 --battery-safety-margin 5 --battery-charge-duration 10 --battery-return-timeout 120 --battery-charge-timeout 60 --target-x -4 --target-y 4 --target-max-distance 3 --target-field-of-view 90 --target-confirmation-frames 3 --rally-max-concurrent 2 --disable-global-battery-rally-pause --episode-id p3a6_serial_22c95a7_forced303 --evaluation-output-dir /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a6_serial_22c95a7_forced303/episodes --log-dir /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a6_serial_22c95a7_forced303/logs --bypass-audit-output /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a6_serial_22c95a7_forced303/graph.json
+```
+
+| 固定单元 | COMPLETE / s | 碰撞 | 充电次数 | 最大最终误差 / m |
+|---|---:|---:|---:|---:|
+| lab_far_northwest_3r_seed303 | 285.5 | 0 | 3 | 0.0319 |
+| rooms_far_northeast_3r_seed101 | 117.6 | 0 | 0 | 0.0148 |
+| rooms_far_northeast_3r_seed202 | 150.7 | 0 | 1 | 0.0259 |
+| rooms_far_northeast_3r_seed303 | 106.8 | 0 | 0 | 0.0299 |
+| corridors_far_west_3r_seed101 | 165.5 | 0 | 0 | 0.0380 |
+| corridors_far_west_3r_seed202 | 155.4 | 0 | 0 | 0.0258 |
+| corridors_far_west_3r_seed303 | 167.7 | 0 | 0 | 0.0299 |
+| corridors_far_west_2r_seed202_crosscheck | 173.3 | 0 | 0 | 0.0325 |
+| lab_far_northwest_3r_seed101 | 293.4 | 0 | 1 | 0.1619 |
+| lab_far_northwest_3r_seed202 | 270.1 | 0 | 3 | 0.0322 |
+
+固定十格零碰撞、失效、耗尽、基础设施失败或整格重试；只保留各固定单元首次
+正式结果，没有同源码挑选重跑。部分Nav2就绪门内lifecycle恢复在launch logs保留，
+不绕过就绪门，也未形成runner prestart failure。最大最终误差.16194 m，
+最低15.89092，最长293.4 s；全部最终速度和5 s稳定门限通过。
+forced303为190.4 s COMPLETE、各一次充电、零碰撞/失效/耗尽，最低8.63739。
+源审计与十一图回放均无违规，冻结记录为report/20261001_p3a6_freeze.json。
+
+复核命令（ROS/install，PYTHONNOUSERSITE=1）：
+
+```bash
+/usr/bin/python3 scripts/check_p3a6_gate.py \
+  log/p2d_baseline/p3a6_serial_22c95a7_lab303/summary.json \
+  log/p2d_baseline/p3a6_serial_22c95a7_rooms_corridors/summary.json \
+  log/p2d_baseline/p3a6_serial_22c95a7_lab101202/summary.json \
+  --forced log/p2d_baseline/p3a6_serial_22c95a7_forced303 \
+  --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261001_p3a6_freeze.json
+```
+
+lab303只读监控命令`ROS_DOMAIN_ID=145 /usr/bin/python3 /tmp/p3a6_monitor.py log/p2d_baseline/p3a6_serial_22c95a7_lab303/delivered_state.jsonl`，
+正常COMPLETE自动退出exit0，每台129个样本，TF最大年龄.492/.493/.513 s，均无>5 s；
+tf_freshness_check.json保存汇总，不使用Gazebo真值控制。
+127项组件测试及四包构建在22c95a7提交前通过；持久校验工具只读复核全部原始结果
+后生成JSON，不变动运行任务栈。P3A.6门禁通过、待验收；开发seed不能替代holdout
+统计评估。所有历史失败保留；本次未推进网络/RL。
+
+收尾已移除本次专用.git/info/exclude块（260929_report/），没有改动用户材料或其他
+排除规则。持久checker复核PASS，runtime source/config/protocol hashes及软件环境
+仍与22c95a7一致；后续提交只补报告、handoff与只读复核工具。git add -n .所列
+用户未跟踪报告均不纳入显式暂存，原始sim/build产物仍被忽略。

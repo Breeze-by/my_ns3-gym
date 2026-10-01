@@ -94,9 +94,19 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
 
 ## Current Handoff Snapshot
 
-2026-10-01 P3A.6 当前重验证仍进行中。baec4e8 clean批次lab101/202 COMPLETE（224.1/150.4 s），lab303超时（三返航、两充电），rooms101是16.9 s post-start shutdown中断（初始prestart猜测已更正）；全四格零碰撞，六格未运行，失败/中断保留。TF饥饿修复已在lab101每台113个样本验证，最大源年龄.531 s。新源码加入完整集结路线+最终home保留量+稳定等待的能量预检查，并通过可靠TTL10 s charge_request提前请求本地充电；保留RPP/射线/分层/可视航点/最近refuge及原物理和评估门限，扩展白名单防直连新命令。随后c08ca65 clean lab303三台同时提前返航，300 s RALLY超时、16碰撞事件，三台各充电一次、无耗尽；失败保留，其余九格未运行。最新候选串行提前返航，就近先行，请求在途/RETURNING/CHARGING期间不启动下一台。127项测试、四包构建、源码审计通过；须新clean提交的十格及forced303，先lab303再其余九格。没有task_stack_frozen_commit，网络/RL等待。db21e92 forced303仍仅为历史证据。详见report/20260930_p3a6_rolling_reservations.md与log.md。
+2026-10-01 P3A.6集成门禁通过、待用户验收。当前冻结任务栈
+`task_stack_frozen_commit=22c95a770a8812452c43fc177e4a00b5c032e6ef`，clean三批次1+7+2覆盖固定十格，
+全部COMPLETE、零碰撞/失效/耗尽、零基础设施失败或整格重试。同提交forced303为
+190.4 s COMPLETE、tb1/tb2各一次充电、零碰撞/耗尽。127项组件测试、四包构建、
+源码审计及十一份通信图回放通过。最大固定最终误差.16194 m、最低电量15.89092；
+forced最低8.63739。lab101最长293.4 s，开发种子不是holdout统计证据。
+冻结算法包含RPP、射线收益、分层观察点、可视预约航点、最近离通道避让、相关TF限频、
+完整集结能量预算及同gateway可靠TTL10 s串行提前充电请求。baec4e8/c08ca65等
+所有超时/碰撞/post-start中断保留，不混入当前矩阵。精确命令、manifest和SHA256见
+report/20261001_p3a6_freeze.md/.json及log.md。P3B.5是下一检查点，网络/RL未启动；
+以后改任务栈必须另开批次重验证。用户报告未修改；临时Git排除已在收尾移除。
 
-- Active boundary: complete P3A.6 before P3B.5 or network/RL work. P3A and
+- Active boundary: P3A.6 passed; P3B.5 is next, before network/RL work. P3A and
   P3A.5 acceptance applies to their historical task-stack evidence. The historical integration freeze candidate is
   `task_stack_frozen_commit=2933c24`; clean 6+4 runner batches cover all ten
   fixed cells with `COMPLETE` and zero collisions, and the forced-charge
@@ -104,7 +114,7 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
   fault gateway and protocol matrix are user-accepted. After P3A.6 passes, proceed
   to P3B.5 (fault-mode Gazebo task matrix and safety degradation), followed by P3C
   (gateway metrics and default visualization); P4A remains the later ns-3 bridge.
-- Current evidence is retained at `log/p2d_baseline/p3a5_final_2933c24/`
+- Historical P3A.5 evidence is retained at `log/p2d_baseline/p3a5_final_2933c24/`
   (lab/rooms six cells),
   `log/p2d_baseline/p3a5_final_2933c24_corridors_net/` (corridors four cells),
   and `log/p2d_baseline/p3a5_final_2933c24_forced2r/` (forced charge). The

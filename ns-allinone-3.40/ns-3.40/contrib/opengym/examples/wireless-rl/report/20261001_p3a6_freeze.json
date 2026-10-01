@@ -1,0 +1,392 @@
+{
+  "task_stack_frozen_commit": "22c95a770a8812452c43fc177e4a00b5c032e6ef",
+  "candidate_manifest": {
+    "manifest_schema_version": 1,
+    "generated_at_utc": "2026-10-01T06:58:14.687993+00:00",
+    "task_stack_candidate_commit": "22c95a770a8812452c43fc177e4a00b5c032e6ef",
+    "task_stack_frozen_commit": null,
+    "git_commit": "22c95a770a8812452c43fc177e4a00b5c032e6ef",
+    "worktree_dirty": false,
+    "worktree_status": [],
+    "source_digests": {
+      "scenario_config": "90447f60ce9018996d67ee4d57b524ee10d893b313028bdab0244041ed1b18c6",
+      "baseline_runner": "4235f67797f328711b533919969505b39bddfa3a5a015a895b2f21a6c75ba8da",
+      "smoke_runner": "84c0d98f9109e6bbdc26b16a8cdd4e811c2d2eb2c0a78c167374c245b0483fc2",
+      "bypass_manifest": "6bdda5b170ba53650fa97c13703d3e420f8db67eba26f462873ff7bc47d96c74",
+      "gateway_message": "e0648e61473dfd2931038c79cda8a6fe4bf09c1d00f8d4acdfa0f4879e72925c",
+      "launch": "9f4e1c4ac235512ae5afff617f7d4f37a2455f3106c42b7cb005e65c54be4dad",
+      "exploration_source": "3bdb635900e56d5ff90476cd2d03c46456251024e02067febfb33f8bd243e060",
+      "merge_map_source": "841fdb3a9a3f4e9dc8aefaf87850e2963d09fe3873d1945ea609a1c124d5bc93",
+      "robot_params": "0f7a934e966d29e777fe397d6838ace59ed17207b0939ec39fd8e5cb12d551e0"
+    },
+    "environment": {
+      "python": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+      "python_executable": "/usr/bin/python3",
+      "platform": "Linux-6.8.0-124-generic-x86_64-with-glibc2.35",
+      "ros_distro": "humble",
+      "ros_version": "2",
+      "gazebo": "Gazebo multi-robot simulator, version 11.10.2",
+      "colcon": "0.20.1",
+      "ros2_prefix": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot"
+    },
+    "runner": {
+      "robot_count": 3,
+      "duration_sec": 300.0,
+      "goal_timeout_sec": 60.0,
+      "startup_timeout_sec": 600.0,
+      "message_timeout_sec": 90.0,
+      "evaluation_wait_timeout_sec": 600.0,
+      "shutdown_timeout_sec": 60.0,
+      "ros_domain_base": 145,
+      "seeds": [
+        303
+      ],
+      "scenarios": [
+        "lab_far_northwest"
+      ],
+      "cross_check": false,
+      "rally_assignment_objective": "minimax",
+      "map_safe_rally_order": true,
+      "global_battery_rally_pause": false,
+      "rally_max_concurrent": 2
+    }
+  },
+  "fixed_matrix_complete_count": 10,
+  "fixed_matrix_episode_count": 10,
+  "fixed_matrix_collision_events": 0,
+  "runtime_audit_count": 11,
+  "source_audit_violations": [],
+  "development_seeds": [
+    101,
+    202,
+    303
+  ],
+  "held_out_statistical_claim": false,
+  "episodes": [
+    {
+      "episode_id": "p3a6_serial_22c95a7_lab303_lab_far_northwest_3r_seed303",
+      "scenario_id": "lab_far_northwest",
+      "robot_count": 3,
+      "gazebo_seed": 303,
+      "world": "my_world.world",
+      "target": [
+        -4.0,
+        4.0
+      ],
+      "initial_energy": 40.0,
+      "completion_time_sec": 285.5,
+      "collision_events": 0,
+      "battery_total_charges": 3,
+      "minimum_energy": 18.215592286430923,
+      "maximum_rally_error_m": 0.03188532715947661,
+      "result_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a6_serial_22c95a7_lab303/episodes/p3a6_serial_22c95a7_lab303_lab_far_northwest_3r_seed303.json",
+      "result_sha256": "6b3dc0e7c56663b3bf63052f5dd5857395fd5a570855bdf2a6c10848dd9fc85b",
+      "world_sha256": "bb510dd4166e6dd742fd1df9b9a9018bd70152dffcf80484a39991d4f07ba9e6",
+      "graph_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a6_serial_22c95a7_lab303/graphs/p3a6_serial_22c95a7_lab303_lab_far_northwest_3r_seed303.json",
+      "graph_sha256": "bbdf23774c7b2449b1ddb09c144b0e7bcdb2c3ea6be0ec5f5584bc3dfeed56ae"
+    },
+    {
+      "episode_id": "p3a6_serial_22c95a7_rooms_corridors_rooms_far_northeast_3r_seed101",
+      "scenario_id": "rooms_far_northeast",
+      "robot_count": 3,
+      "gazebo_seed": 101,
+      "world": "p1c_rooms.world",
+      "target": [
+        5.0,
+        3.0
+      ],
+      "initial_energy": 40.0,
+      "completion_time_sec": 117.60000000000002,
+      "collision_events": 0,
+      "battery_total_charges": 0,
+      "minimum_energy": 26.871793840324802,
+      "maximum_rally_error_m": 0.014790992020841852,
+      "result_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a6_serial_22c95a7_rooms_corridors/episodes/p3a6_serial_22c95a7_rooms_corridors_rooms_far_northeast_3r_seed101.json",
+      "result_sha256": "5b4ecaad3bd751ccdfeb94dcd157db3d57f9ef6e6edc301009c444481c399925",
+      "world_sha256": "cf676ab183b16abb6a563ae4c2bc2d8ba45b9a18ed35ad3f46eeb4c8d7f40916",
+      "graph_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a6_serial_22c95a7_rooms_corridors/graphs/p3a6_serial_22c95a7_rooms_corridors_rooms_far_northeast_3r_seed101.json",
+      "graph_sha256": "be2edee14b562b6ac57b71c45623d95d41f602ed4bb2db37f059460652f6729d"
+    },
+    {
+      "episode_id": "p3a6_serial_22c95a7_rooms_corridors_rooms_far_northeast_3r_seed202",
+      "scenario_id": "rooms_far_northeast",
+      "robot_count": 3,
+      "gazebo_seed": 202,
+      "world": "p1c_rooms.world",
+      "target": [
+        5.0,
+        3.0
+      ],
+      "initial_energy": 40.0,
+      "completion_time_sec": 150.7,
+      "collision_events": 0,
+      "battery_total_charges": 1,
+      "minimum_energy": 23.027093932929233,
+      "maximum_rally_error_m": 0.025935631068600428,
+      "result_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a6_serial_22c95a7_rooms_corridors/episodes/p3a6_serial_22c95a7_rooms_corridors_rooms_far_northeast_3r_seed202.json",
+      "result_sha256": "d9bbc2be3aa1f56dbf7c0810cffc374d5265400b32c6e74d955d4f0871daf6d4",
+      "world_sha256": "cf676ab183b16abb6a563ae4c2bc2d8ba45b9a18ed35ad3f46eeb4c8d7f40916",
+      "graph_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a6_serial_22c95a7_rooms_corridors/graphs/p3a6_serial_22c95a7_rooms_corridors_rooms_far_northeast_3r_seed202.json",
+      "graph_sha256": "537a335fbd242ad5dbf6efe2fefee948e710b1a38dbd665a72ba4be10d179772"
+    },
+    {
+      "episode_id": "p3a6_serial_22c95a7_rooms_corridors_rooms_far_northeast_3r_seed303",
+      "scenario_id": "rooms_far_northeast",
+      "robot_count": 3,
+      "gazebo_seed": 303,
+      "world": "p1c_rooms.world",
+      "target": [
+        5.0,
+        3.0
+      ],
+      "initial_energy": 40.0,
+      "completion_time_sec": 106.80000000000001,
+      "collision_events": 0,
+      "battery_total_charges": 0,
+      "minimum_energy": 27.5639587609474,
+      "maximum_rally_error_m": 0.02992196846931879,
+      "result_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a6_serial_22c95a7_rooms_corridors/episodes/p3a6_serial_22c95a7_rooms_corridors_rooms_far_northeast_3r_seed303.json",
+      "result_sha256": "32d2f730df8cad20298a78ee01803d02a5fb6a4485db6499c90ddfd92b3de3cf",
+      "world_sha256": "cf676ab183b16abb6a563ae4c2bc2d8ba45b9a18ed35ad3f46eeb4c8d7f40916",
+      "graph_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a6_serial_22c95a7_rooms_corridors/graphs/p3a6_serial_22c95a7_rooms_corridors_rooms_far_northeast_3r_seed303.json",
+      "graph_sha256": "d83c6ae61dd37c215cb19ca43c7f87cbcc6b109f32c2f7687efd9da016d6242b"
+    },
+    {
+      "episode_id": "p3a6_serial_22c95a7_rooms_corridors_corridors_far_west_3r_seed101",
+      "scenario_id": "corridors_far_west",
+      "robot_count": 3,
+      "gazebo_seed": 101,
+      "world": "p1c_corridors.world",
+      "target": [
+        -4.5,
+        -0.5
+      ],
+      "initial_energy": 45.0,
+      "completion_time_sec": 165.5,
+      "collision_events": 0,
+      "battery_total_charges": 0,
+      "minimum_energy": 23.19163565654216,
+      "maximum_rally_error_m": 0.0379773357896897,
+      "result_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a6_serial_22c95a7_rooms_corridors/episodes/p3a6_serial_22c95a7_rooms_corridors_corridors_far_west_3r_seed101.json",
+      "result_sha256": "c91ab92cf3191ea63bb9a223c2be1d141abef8bf2193db43e9c747519f41644d",
+      "world_sha256": "d6fede92a09c00d9c50a72d5a744b3771dcc2506e2f28238ed786d2d914d4db9",
+      "graph_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a6_serial_22c95a7_rooms_corridors/graphs/p3a6_serial_22c95a7_rooms_corridors_corridors_far_west_3r_seed101.json",
+      "graph_sha256": "0d5e99933379c81c77adfc2540ab4330b9fd18b28c86362332caec7aa71fe421"
+    },
+    {
+      "episode_id": "p3a6_serial_22c95a7_rooms_corridors_corridors_far_west_3r_seed202",
+      "scenario_id": "corridors_far_west",
+      "robot_count": 3,
+      "gazebo_seed": 202,
+      "world": "p1c_corridors.world",
+      "target": [
+        -4.5,
+        -0.5
+      ],
+      "initial_energy": 45.0,
+      "completion_time_sec": 155.4,
+      "collision_events": 0,
+      "battery_total_charges": 0,
+      "minimum_energy": 26.301703374669515,
+      "maximum_rally_error_m": 0.025829642033370015,
+      "result_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a6_serial_22c95a7_rooms_corridors/episodes/p3a6_serial_22c95a7_rooms_corridors_corridors_far_west_3r_seed202.json",
+      "result_sha256": "ad6504886e2347ffe3a2ab700b1e9d3fd805090ed87ba81a59989bc6a60b1665",
+      "world_sha256": "d6fede92a09c00d9c50a72d5a744b3771dcc2506e2f28238ed786d2d914d4db9",
+      "graph_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a6_serial_22c95a7_rooms_corridors/graphs/p3a6_serial_22c95a7_rooms_corridors_corridors_far_west_3r_seed202.json",
+      "graph_sha256": "fa94a946a5c8fba32ac8b9c32e2975a0364534b498e1019b3cc4ae9678f90032"
+    },
+    {
+      "episode_id": "p3a6_serial_22c95a7_rooms_corridors_corridors_far_west_3r_seed303",
+      "scenario_id": "corridors_far_west",
+      "robot_count": 3,
+      "gazebo_seed": 303,
+      "world": "p1c_corridors.world",
+      "target": [
+        -4.5,
+        -0.5
+      ],
+      "initial_energy": 45.0,
+      "completion_time_sec": 167.7,
+      "collision_events": 0,
+      "battery_total_charges": 0,
+      "minimum_energy": 26.31312937594602,
+      "maximum_rally_error_m": 0.02994135455054914,
+      "result_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a6_serial_22c95a7_rooms_corridors/episodes/p3a6_serial_22c95a7_rooms_corridors_corridors_far_west_3r_seed303.json",
+      "result_sha256": "45406c4c29f8887a11523cfd35a8a502a098678c35457ff57f55a24e3454589a",
+      "world_sha256": "d6fede92a09c00d9c50a72d5a744b3771dcc2506e2f28238ed786d2d914d4db9",
+      "graph_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a6_serial_22c95a7_rooms_corridors/graphs/p3a6_serial_22c95a7_rooms_corridors_corridors_far_west_3r_seed303.json",
+      "graph_sha256": "6fac269e17b0a322a6ada57c87e896fbff083d2bbc1220d6d987100b2695937b"
+    },
+    {
+      "episode_id": "p3a6_serial_22c95a7_rooms_corridors_corridors_far_west_2r_seed202_crosscheck",
+      "scenario_id": "corridors_far_west",
+      "robot_count": 2,
+      "gazebo_seed": 202,
+      "world": "p1c_corridors.world",
+      "target": [
+        -4.5,
+        -0.5
+      ],
+      "initial_energy": 45.0,
+      "completion_time_sec": 173.3,
+      "collision_events": 0,
+      "battery_total_charges": 0,
+      "minimum_energy": 22.6427709572448,
+      "maximum_rally_error_m": 0.032500783857905814,
+      "result_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a6_serial_22c95a7_rooms_corridors/episodes/p3a6_serial_22c95a7_rooms_corridors_corridors_far_west_2r_seed202_crosscheck.json",
+      "result_sha256": "7ac8763f8f01c2f7d30f93ea9c7951b72465b3ba6e82a2d4ccad3fc50680216a",
+      "world_sha256": "d6fede92a09c00d9c50a72d5a744b3771dcc2506e2f28238ed786d2d914d4db9",
+      "graph_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a6_serial_22c95a7_rooms_corridors/graphs/p3a6_serial_22c95a7_rooms_corridors_corridors_far_west_2r_seed202_crosscheck.json",
+      "graph_sha256": "bed7a765a2e0f83e4bb5cac2b6eb853a177aaafd0778ae925796f61e953141bd"
+    },
+    {
+      "episode_id": "p3a6_serial_22c95a7_lab101202_lab_far_northwest_3r_seed101",
+      "scenario_id": "lab_far_northwest",
+      "robot_count": 3,
+      "gazebo_seed": 101,
+      "world": "my_world.world",
+      "target": [
+        -4.0,
+        4.0
+      ],
+      "initial_energy": 40.0,
+      "completion_time_sec": 293.39999999999964,
+      "collision_events": 0,
+      "battery_total_charges": 1,
+      "minimum_energy": 15.890917368042132,
+      "maximum_rally_error_m": 0.16193657870051553,
+      "result_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a6_serial_22c95a7_lab101202/episodes/p3a6_serial_22c95a7_lab101202_lab_far_northwest_3r_seed101.json",
+      "result_sha256": "23f0dd55f87650e5c9c4d6fcc5eecf66814cda12656eda20cf02f16016d61c46",
+      "world_sha256": "bb510dd4166e6dd742fd1df9b9a9018bd70152dffcf80484a39991d4f07ba9e6",
+      "graph_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a6_serial_22c95a7_lab101202/graphs/p3a6_serial_22c95a7_lab101202_lab_far_northwest_3r_seed101.json",
+      "graph_sha256": "9d8d99c549cec692b8e0cf1738594b087f34974d61bf1fb39e007d305dbce9c6"
+    },
+    {
+      "episode_id": "p3a6_serial_22c95a7_lab101202_lab_far_northwest_3r_seed202",
+      "scenario_id": "lab_far_northwest",
+      "robot_count": 3,
+      "gazebo_seed": 202,
+      "world": "my_world.world",
+      "target": [
+        -4.0,
+        4.0
+      ],
+      "initial_energy": 40.0,
+      "completion_time_sec": 270.0999999999999,
+      "collision_events": 0,
+      "battery_total_charges": 3,
+      "minimum_energy": 18.432924154315764,
+      "maximum_rally_error_m": 0.032200791654159316,
+      "result_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a6_serial_22c95a7_lab101202/episodes/p3a6_serial_22c95a7_lab101202_lab_far_northwest_3r_seed202.json",
+      "result_sha256": "dc0d1f653ee80193dd742c36f1dd78c78cf3cd1d2291388d9804edc6f185bf99",
+      "world_sha256": "bb510dd4166e6dd742fd1df9b9a9018bd70152dffcf80484a39991d4f07ba9e6",
+      "graph_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3a6_serial_22c95a7_lab101202/graphs/p3a6_serial_22c95a7_lab101202_lab_far_northwest_3r_seed202.json",
+      "graph_sha256": "7abad3b1efade4461cc5602c36bf21c95ed250c53409b49177aad09d270fe9c6"
+    }
+  ],
+  "batches": [
+    {
+      "summary_path": "log/p2d_baseline/p3a6_serial_22c95a7_lab303/summary.json",
+      "summary_sha256": "f2bd384170528544e83abec5783f39d1b17a5b87088b7c8d9fe61d35b7309502",
+      "git_commit": "22c95a770a8812452c43fc177e4a00b5c032e6ef",
+      "worktree_dirty": false,
+      "runner": {
+        "robot_count": 3,
+        "duration_sec": 300.0,
+        "goal_timeout_sec": 60.0,
+        "startup_timeout_sec": 600.0,
+        "message_timeout_sec": 90.0,
+        "evaluation_wait_timeout_sec": 600.0,
+        "shutdown_timeout_sec": 60.0,
+        "ros_domain_base": 145,
+        "seeds": [
+          303
+        ],
+        "scenarios": [
+          "lab_far_northwest"
+        ],
+        "cross_check": false,
+        "rally_assignment_objective": "minimax",
+        "map_safe_rally_order": true,
+        "global_battery_rally_pause": false,
+        "rally_max_concurrent": 2
+      }
+    },
+    {
+      "summary_path": "log/p2d_baseline/p3a6_serial_22c95a7_rooms_corridors/summary.json",
+      "summary_sha256": "6886a592c871b370c74779ba9f0347c1edfbb583d597508f21be8a8066c44772",
+      "git_commit": "22c95a770a8812452c43fc177e4a00b5c032e6ef",
+      "worktree_dirty": false,
+      "runner": {
+        "robot_count": 3,
+        "duration_sec": 300.0,
+        "goal_timeout_sec": 60.0,
+        "startup_timeout_sec": 600.0,
+        "message_timeout_sec": 90.0,
+        "evaluation_wait_timeout_sec": 600.0,
+        "shutdown_timeout_sec": 60.0,
+        "ros_domain_base": 180,
+        "seeds": [
+          101,
+          202,
+          303
+        ],
+        "scenarios": [
+          "rooms_far_northeast",
+          "corridors_far_west"
+        ],
+        "cross_check": true,
+        "rally_assignment_objective": "minimax",
+        "map_safe_rally_order": true,
+        "global_battery_rally_pause": false,
+        "rally_max_concurrent": 2
+      }
+    },
+    {
+      "summary_path": "log/p2d_baseline/p3a6_serial_22c95a7_lab101202/summary.json",
+      "summary_sha256": "21aa18ae3df384b64fe7bbc9fe1feddfda4ef77c410d4f2ebb77e2719af683d1",
+      "git_commit": "22c95a770a8812452c43fc177e4a00b5c032e6ef",
+      "worktree_dirty": false,
+      "runner": {
+        "robot_count": 3,
+        "duration_sec": 300.0,
+        "goal_timeout_sec": 60.0,
+        "startup_timeout_sec": 600.0,
+        "message_timeout_sec": 90.0,
+        "evaluation_wait_timeout_sec": 600.0,
+        "shutdown_timeout_sec": 60.0,
+        "ros_domain_base": 170,
+        "seeds": [
+          101,
+          202
+        ],
+        "scenarios": [
+          "lab_far_northwest"
+        ],
+        "cross_check": false,
+        "rally_assignment_objective": "minimax",
+        "map_safe_rally_order": true,
+        "global_battery_rally_pause": false,
+        "rally_max_concurrent": 2
+      }
+    }
+  ],
+  "forced_charge": {
+    "episode_id": "p3a6_serial_22c95a7_forced303",
+    "completion_time_sec": 190.4000000000001,
+    "collision_events": 0,
+    "charge_counts": {
+      "tb1": 1,
+      "tb2": 1
+    },
+    "minimum_energy": 8.637388272175189,
+    "result_path": "log/p2d_baseline/p3a6_serial_22c95a7_forced303/episodes/p3a6_serial_22c95a7_forced303.json",
+    "result_sha256": "8d0166e601315314160a93d17225e8250e03cc31987161275df518d39f0ebc3e",
+    "graph_sha256": "6819164b866dbec816d721e18a6267660241e2798d804db1aaf5d1a646e54a67",
+    "manifest_sha256": "dbc3e4f64864a7727a59207ffff369ea510b1ddcce06a65aa199ea581bcfbb4f"
+  },
+  "validator": {
+    "path": "scripts/check_p3a6_gate.py",
+    "sha256": "93f4b267f378bc8659a71cee6bfc0901b7e7de92d5eb08122eaeadc6eb9ec44f"
+  }
+}

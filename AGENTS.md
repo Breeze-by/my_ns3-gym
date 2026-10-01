@@ -72,21 +72,22 @@ gateway matrix is historical because later HEAD commits changed the
 coordinator, battery, and clearance logic. The current-HEAD P3A.5 run at
 `41f63fb` passed the graph/bypass subgate and forced-charge regression, but
 only 9/10 formal episodes completed: lab seed 202 failed after episode start
-in `RALLY`. The failed episode is retained; P3A.5 remains in progress and
-P3B has not started.
-Update 2026-10-01: current work is P3A.6 re-freezing. The latest tested
-candidate baec4e8 completed lab101/202 but timed out in lab303 with three
-returns; rooms101 was interrupted after episode start at 16.9 s. All four
-results are retained, with zero collisions; six cells remain unrun. Its TF
-starvation fix is confirmed by live source-age measurements. The next
-candidate adds complete rally energy preflight and reliable gateway early
-charge requests, preserving the existing local safety policy and all gates.
-c08ca65 then failed clean lab303 with 16 collision events after simultaneous
-early returns. The latest candidate serializes early returns, including pending
-requests and charging, nearest charger first. 127 component checks, build and
-extended source audit pass; clean full-matrix
-and forced-charge integration remain pending. No task_stack_frozen_commit.
-P3B.5 and network/RL await this gate. See the nested memory and dated report.
+in `RALLY`. The failed episode is retained as a historical failed candidate; the
+current P3A.6 evidence below supersedes it.
+Update 2026-10-01: P3A.6 integration gate passed, awaiting user acceptance.
+The clean frozen task-stack commit is `22c95a770a8812452c43fc177e4a00b5c032e6ef`.
+Three same-commit batches cover all ten fixed cells (1+7+2), all COMPLETE
+with zero collisions, exhaustion, failed robots, infrastructure failures or
+whole-episode retries. The same-commit forced303 regression completed in
+190.4 s with each robot charging once and zero collisions. 127 component
+checks, four-package build, source audit and eleven graph audits pass.
+RPP, ray information gain, hierarchical viewpoints, visible waypoints,
+nearest off-route refuge, relevant-TF throttling and serial gateway-mediated
+early charging are now part of the frozen baseline. Historical failures remain
+retained. The final report and source/environment/protocol hashes are in
+report/20261001_p3a6_freeze.md and .json under wireless-rl. P3B.5 is the next
+checkpoint; no network/RL work was started. Task-stack changes require a new
+integration batch. Development seeds 101/202/303 are not held-out tests.
 
 The revised plan adds the previously missing
 P2D full ideal-task integration gate, splits ns-3 time/packet coupling from
