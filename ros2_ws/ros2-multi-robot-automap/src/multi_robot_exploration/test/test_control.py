@@ -1260,3 +1260,47 @@ def test_rally_preflight_leaves_an_active_leg_and_unknown_route_to_existing_safe
     node.map_data[:, 50:55] = 100
     assert control.HeadquartersControl.prepare_rally_charges(node) == set()
     assert not messages and not failures
+
+
+def two_robot_rally_budget_node():
+    node, messages, failures = rally_budget_node()
+    node.rally_dispatch_order.append("tb2")
+    for field in ("battery_states", "robot_positions", "rally_goal_handles",
+                  "rally_goal_pending", "rally_final_targets", "charge_request_publishers",
+                  "battery_modes"):
+        values = getattr(node, field)
+        values["tb2"] = dict(values["tb1"]) if field == "battery_states" else values["tb1"]
+    node.robot_positions["tb1"] = (3.05, 1.05)
+    return node, messages, failures
+
+
+def test_early_rally_charges_are_serialized_and_nearest_charger_goes_first():
+    import json
+    node, messages, failures = two_robot_rally_budget_node()
+    assert control.HeadquartersControl.prepare_rally_charges(node) == {"tb1", "tb2"}
+    assert [json.loads(m.data)["robot"] for m in messages] == ["tb2"]
+    # While delivery is pending only its owner can retry, even if priorities change.
+    node.now = lambda: 14.0
+    node.robot_positions["tb1"] = (1.05, 1.05)
+    assert control.HeadquartersControl.prepare_rally_charges(node) == {"tb1", "tb2"}
+    assert [json.loads(m.data)["robot"] for m in messages] == ["tb2", "tb2"]
+    node.battery_modes["tb2"] = "RETURNING"
+    assert control.HeadquartersControl.prepare_rally_charges(node) == {"tb1", "tb2"}
+    assert len(messages) == 2
+    node.battery_modes["tb2"] = "CHARGING"
+    assert control.HeadquartersControl.prepare_rally_charges(node) == {"tb1", "tb2"}
+    assert len(messages) == 2
+    node.battery_modes["tb2"] = "ACTIVE"
+    node.battery_states["tb2"]["energy"] = 80.0
+    node.rally_charge_requested.clear()  # delivered ACTIVE transition clears it
+    assert control.HeadquartersControl.prepare_rally_charges(node) == {"tb1"}
+    assert json.loads(messages[-1].data)["robot"] == "tb1"
+    assert not failures
+
+
+@pytest.mark.parametrize("mode", ["RETURNING", "CHARGING"])
+def test_existing_local_safety_return_defers_new_early_charge(mode):
+    node, messages, failures = two_robot_rally_budget_node()
+    node.battery_modes["tb2"] = mode
+    assert control.HeadquartersControl.prepare_rally_charges(node) == {"tb1"}
+    assert not messages and not failures

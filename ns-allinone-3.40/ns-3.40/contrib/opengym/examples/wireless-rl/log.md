@@ -3875,3 +3875,35 @@ transport。本地管理器校验机器人、阶段、预算、期限、重复�
 命令沿用上述ROS/install五文件pytest与四包build/source-only审计；旧副本复现使用
 `PYTHONPATH=/tmp/p3a6-preflight-old:$PYTHONPATH /usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_control.py -k idle_blocker`。
 新候选仍须clean提交上的固定十格和forced303；先运行lab303，再同提交补齐其余九格。
+
+
+## 2026-10-01 P3A.6 c08ca65 lab303：并发提前返航冲突与串行候选
+
+clean候选`c08ca65da1d2b6b6df73970a62d05bc9e02353e2`只运行固定lab/303格，
+其余九格与forced未运行。准确命令（workspace，ROS/install/Gazebo setup已source）：
+
+```bash
+export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 GAZEBO_MASTER_URI=http://127.0.0.1:11399
+/usr/bin/python3 scripts/run_p2d_baseline.py --scenarios lab_far_northwest --skip-cross-check --seeds 303 --run-id p3a6_precharge_c08ca65_lab303 --ros-domain-base 150 --startup-timeout 600 --evaluation-wait-timeout 600 --inter-episode-delay 5 --rally-max-concurrent 2 --disable-global-battery-rally-pause > log/p2d_baseline/p3a6_precharge_c08ca65_lab303_stdout.log 2>&1
+```
+
+runner exit1；manifest clean且源码hash齐全，源码与运行时旁路审计通过。
+lab303检测114.2 s、RALLY115.9 s，300.0 s timeout，16 collision events，
+三返航/三充电、各一次、无failed robots/耗尽，minimum18.76655。
+原始episode、collision_history、launch_log、graph与summary全部保留在
+`log/p2d_baseline/p3a6_precharge_c08ca65_lab303/`，不替换失败。
+日志显示在同轮向tb3/tb2/tb1全部请求提前充电；tb2/tb3本地返航没有互相共享
+路线预约，直接接触并耽误了集合。仿真最终各机器人目标误差均<.025 m，但
+300 s时未取得COMPLETE，因此即使无碰撞也不能宣布门禁通过。
+只读监控命令`ROS_DOMAIN_ID=150 /usr/bin/python3 /tmp/p3a6_monitor.py log/p2d_baseline/p3a6_precharge_c08ca65_lab303/delivered_state.jsonl`，不输入Gazebo真值；仿真退出后SIGINT停止监控，exit130。
+
+新候选仍逐台检查完整集合能量，但只允许一个提前返航请求owner；有任意本地
+RETURNING/CHARGING时不启动下一台。请求尚在途时也只重试owner，先处理距离
+charger近的机器人。等待者仍不能绕过预算派发正常集合或通道恢复动作。
+复用既有返航通道让行，不修改本地自动安全返航、充电区/时间、速度或COMPLETE门限。
+这解决本轮同发请求原因，仍需clean实测验证，不能声称涵盖所有自动返航冲突。
+新增测试覆盖就近顺序、请求在途、RETURNING、CHARGING、ACTIVE恢复后下一台放行，
+以及已有局部安全返航阻止新请求；五文件pytest为`127 passed`，四包colcon build与
+三机器人source-only旁路审计通过。一次初始pytest命令误写不存在的test_bypass_audit.py，
+exit4/no tests ran；已改为原五文件（control/battery_manager/gateway/fault_model/task_evaluator）
+完整通过。正式新候选仍先lab303，再同提交补齐九格和forced303。

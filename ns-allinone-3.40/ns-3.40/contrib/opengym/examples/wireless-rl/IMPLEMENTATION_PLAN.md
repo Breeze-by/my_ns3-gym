@@ -318,7 +318,10 @@ HEAD 上重新运行 P2D 完整理想任务和 P3A gateway 门禁，固定 commi
 2026-10-01 baec4e8候选完成lab101/202，但lab303在三返航后超时；rooms101有post-start
 16.9 s shutdown中断，六格未运行。所有四格零碰撞，失败/中断保留，不能冻结。
 新候选增加完整集结能量预算和gateway可靠TTL10 s提前充电请求；物理/电量/300 s/
-COMPLETE门限保持不变，源/运行时白名单扩展，124项组件检查、构建、源码审计通过。
+COMPLETE门限保持不变，源/运行时白名单扩展。c08ca65 clean lab303三台同时提前返航后
+300 s RALLY超时、16碰撞事件，失败保留，其余九格未运行。最新候选按就近顺序串行
+提前返航，请求在途/RETURNING/CHARGING阶段不放行下一台；127项组件检查、构建、
+源码审计通过，仍需新clean固定十格与forced303。
 必须在新clean提交上完成十格与forced303；db21e92仅为历史回归证据。
 完整命令/失败见report/20260930_p3a6_rolling_reservations.md与log.md，原输出保留。
 

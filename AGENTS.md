@@ -81,7 +81,10 @@ results are retained, with zero collisions; six cells remain unrun. Its TF
 starvation fix is confirmed by live source-age measurements. The next
 candidate adds complete rally energy preflight and reliable gateway early
 charge requests, preserving the existing local safety policy and all gates.
-124 component checks, build and extended source audit pass; clean full-matrix
+c08ca65 then failed clean lab303 with 16 collision events after simultaneous
+early returns. The latest candidate serializes early returns, including pending
+requests and charging, nearest charger first. 127 component checks, build and
+extended source audit pass; clean full-matrix
 and forced-charge integration remain pending. No task_stack_frozen_commit.
 P3B.5 and network/RL await this gate. See the nested memory and dated report.
 

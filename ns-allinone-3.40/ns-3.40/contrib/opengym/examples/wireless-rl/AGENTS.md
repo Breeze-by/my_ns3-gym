@@ -94,7 +94,7 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
 
 ## Current Handoff Snapshot
 
-2026-10-01 P3A.6 当前重验证仍进行中。baec4e8 clean批次lab101/202 COMPLETE（224.1/150.4 s），lab303超时（三返航、两充电），rooms101是16.9 s post-start shutdown中断（初始prestart猜测已更正）；全四格零碰撞，六格未运行，失败/中断保留。TF饥饿修复已在lab101每台113个样本验证，最大源年龄.531 s。新源码加入完整集结路线+最终home保留量+稳定等待的能量预检查，并通过可靠TTL10 s charge_request提前请求本地充电；保留RPP/射线/分层/可视航点/最近refuge及原物理和评估门限，扩展白名单防直连新命令。124项测试、四包构建、源码审计通过；须新clean提交的十格及forced303，先lab303再其余九格。没有task_stack_frozen_commit，网络/RL等待。db21e92 forced303仍仅为历史证据。详见report/20260930_p3a6_rolling_reservations.md与log.md。
+2026-10-01 P3A.6 当前重验证仍进行中。baec4e8 clean批次lab101/202 COMPLETE（224.1/150.4 s），lab303超时（三返航、两充电），rooms101是16.9 s post-start shutdown中断（初始prestart猜测已更正）；全四格零碰撞，六格未运行，失败/中断保留。TF饥饿修复已在lab101每台113个样本验证，最大源年龄.531 s。新源码加入完整集结路线+最终home保留量+稳定等待的能量预检查，并通过可靠TTL10 s charge_request提前请求本地充电；保留RPP/射线/分层/可视航点/最近refuge及原物理和评估门限，扩展白名单防直连新命令。随后c08ca65 clean lab303三台同时提前返航，300 s RALLY超时、16碰撞事件，三台各充电一次、无耗尽；失败保留，其余九格未运行。最新候选串行提前返航，就近先行，请求在途/RETURNING/CHARGING期间不启动下一台。127项测试、四包构建、源码审计通过；须新clean提交的十格及forced303，先lab303再其余九格。没有task_stack_frozen_commit，网络/RL等待。db21e92 forced303仍仅为历史证据。详见report/20260930_p3a6_rolling_reservations.md与log.md。
 
 - Active boundary: complete P3A.6 before P3B.5 or network/RL work. P3A and
   P3A.5 acceptance applies to their historical task-stack evidence. The historical integration freeze candidate is

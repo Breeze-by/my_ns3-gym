@@ -2779,6 +2779,7 @@ class HeadquartersControl(Node):
     def prepare_rally_charges(self):
         """Check the whole final route before admitting another navigation leg."""
         blocked = set(self.rally_charge_requested)
+        candidates = []
         now = self.now()
         for name in self.rally_dispatch_order:
             if (self.battery_modes[name] != "ACTIVE"
@@ -2825,18 +2826,32 @@ class HeadquartersControl(Node):
             if required > charge_target:
                 self.fail_task(f"rally_energy_capacity_insufficient:{name}")
                 return blocked
-            if now - self.rally_charge_requested.get(name, -float("inf")) < 2.0:
-                continue
-            self.rally_charge_requested[name] = now
-            self.charge_request_publishers[name].publish(String(data=json.dumps({
-                "robot": name, "stamp_sec": now, "task_phase": "RALLY",
-                "reason": "rally_energy_budget", "required_energy": required,
-                "available_energy": energy,
-            }, sort_keys=True)))
-            self.get_logger().warn(
-                f"Requesting early charge for {name}: energy={energy:.2f}, "
-                f"whole_rally_budget={required:.2f}."
-            )
+            candidates.append((math.dist(self.robot_positions[name], home),
+                               name, energy, required))
+        # Independent local returns do not share route reservations. Admit one
+        # early return at a time, including its charging/settling interval. The
+        # existing return-corridor yields can then clear parked robots safely.
+        if any(mode in ("RETURNING", "CHARGING")
+               for mode in self.battery_modes.values()):
+            return blocked
+        if self.rally_charge_requested:
+            candidates = [candidate for candidate in candidates
+                          if candidate[1] in self.rally_charge_requested]
+        if not candidates:
+            return blocked
+        _, name, energy, required = min(candidates)
+        if now - self.rally_charge_requested.get(name, -float("inf")) < 2.0:
+            return blocked
+        self.rally_charge_requested[name] = now
+        self.charge_request_publishers[name].publish(String(data=json.dumps({
+            "robot": name, "stamp_sec": now, "task_phase": "RALLY",
+            "reason": "rally_energy_budget", "required_energy": required,
+            "available_energy": energy,
+        }, sort_keys=True)))
+        self.get_logger().warn(
+            f"Requesting early charge for {name}: energy={energy:.2f}, "
+            f"whole_rally_budget={required:.2f}."
+        )
         return blocked
 
     def send_survey_goal(self, robot_name, pose):
