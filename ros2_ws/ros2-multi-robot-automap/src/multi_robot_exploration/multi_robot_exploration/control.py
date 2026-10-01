@@ -1103,6 +1103,8 @@ def rally_yield_pose(
     reserved_poses=(),
     blocked_positions=(),
     reserved_routes=(),
+    route_separation_m=RALLY_MIN_SEPARATION_M,
+    visible_only=False,
 ):
     """Choose a reachable refuge outside parked poses and reserved corridors."""
     traversable = traversable_grid(
@@ -1139,16 +1141,33 @@ def rally_yield_pose(
             for pose in (*reserved_poses, *blocked_positions)
         ):
             continue
-        if route_tree is not None and route_tree.query((x, y))[0] < RALLY_MIN_SEPARATION_M:
+        if route_tree is not None and route_tree.query((x, y))[0] < route_separation_m:
             continue
         candidates.append((math.dist((x, y), target), path_distance, x, y))
     if not candidates:
         return None
     if reserved_routes:
-        _, _, x, y = min(candidates, key=lambda item: item[1])
+        candidates.sort(key=lambda item: item[1])
     else:
-        _, _, x, y = max(candidates, key=lambda item: (item[0], -item[1]))
-    return RallyPose(x, y, math.atan2(target[1] - y, target[0] - x))
+        candidates.sort(key=lambda item: (item[0], -item[1]), reverse=True)
+    # Verify nearest refuges in order, stopping at the first feasible one.
+    # Testing line geometry for every free cell stalls the gateway executor.
+    for _, _, x, y in candidates:
+        if visible_only:
+            cell = world_to_grid(x, y, resolution, origin[0], origin[1])
+            line = tuple(_line_cells(start, cell))
+            if not all(traversable[point] for point in line):
+                continue
+            if route_tree is not None:
+                points = [grid_to_world(r, c, resolution, origin[0], origin[1]) for r, c in line]
+                separation = route_tree.query(points)[0]
+                # Escape on this side, without crossing the occupied corridor
+                # or stopping at an intermediate bend still inside it.
+                if any(b + resolution < min(a, route_separation_m)
+                       for a, b in zip(separation, separation[1:])):
+                    continue
+        return RallyPose(x, y, math.atan2(target[1] - y, target[0] - x))
+    return None
 
 
 def survey_robot_order(robot_positions, detecting_robot):
@@ -2206,6 +2225,22 @@ class HeadquartersControl(Node):
             return
         if self.survey_goal_handle is not None or self.survey_goal_pending:
             return
+        if not any(mode == 'RETURNING' for mode in self.battery_modes.values()):
+            return
+        now = self.now()
+        if now - getattr(self, 'last_return_yield_attempt_at', -float('inf')) < 1.:
+            return
+        self.last_return_yield_attempt_at = now
+        protected = rally_return_reservations(
+            self.map_data, self.resolution, self.origin, self.robot_positions,
+            self.battery_states, self.battery_modes,
+            set(self.rally_charge_requested) | set(self.rally_precharge_staging),
+        )
+        if protected is None:
+            return
+        return_clearance = max(RALLY_ROUTE_SEPARATION_M,
+            max((float(self.battery_states.get(name, {}).get('charge_radius_m', .8))
+                 for name in protected), default=.8) + RALLY_DYNAMIC_CLEARANCE_M)
         for returning in self.rally_dispatch_order:
             if self.battery_modes[returning] != "RETURNING":
                 continue
@@ -2213,10 +2248,7 @@ class HeadquartersControl(Node):
             if "charge_x" not in state or "charge_y" not in state:
                 continue
             home = RallyPose(float(state["charge_x"]), float(state["charge_y"]), 0.0)
-            _, route = plan_rally_leg(
-                home, self.map_data, self.resolution, self.origin,
-                self.robot_positions[returning],
-            )
+            route = protected.get(returning)
             if not route:
                 continue
             for name in self.rally_dispatch_order:
@@ -2224,14 +2256,16 @@ class HeadquartersControl(Node):
                 if (name == returning or self.battery_modes[name] != "ACTIVE"
                         or position is None or name in self.rally_yield_targets):
                     continue
-                if not routes_conflict((position,), route, RALLY_DYNAMIC_CLEARANCE_M):
+                if not routes_conflict((position,), route, RALLY_ROUTE_SEPARATION_M):
                     continue
                 blocked = [p for other, p in self.robot_positions.items()
                            if other != name and p is not None]
                 refuge = rally_yield_pose(
                     self.map_data, self.resolution, self.origin, position,
                     (home.x, home.y), blocked_positions=blocked,
-                    reserved_routes=(route,),
+                    reserved_routes=tuple(path for other, path in protected.items() if other != name),
+                    route_separation_m=return_clearance,
+                    visible_only=True,
                 )
                 if refuge is None:
                     continue
@@ -2240,6 +2274,10 @@ class HeadquartersControl(Node):
                     position, MAX_NAVIGATION_LEG_M, blocked, visible_only=True,
                 )
                 if plan[0] is None:
+                    continue
+                if any(routes_conflict(((plan[0].x, plan[0].y),), other_route,
+                        return_clearance)
+                       for other, other_route in protected.items() if other != name):
                     continue
                 self.rally_targets[name] = refuge
                 self.rally_yield_targets.add(name)
@@ -2654,6 +2692,12 @@ class HeadquartersControl(Node):
                         visible_only=True,
                     )
                 if plan[0] is None:
+                    if return_reservations:
+                        # Local safety traffic may temporarily seal this route.
+                        # Yielding has its own verified escape path above;
+                        # reassignment/probe shortcuts must not bypass returns.
+                        self.rally_route_unavailable_since[name] = None
+                        continue
                     since = self.rally_route_unavailable_since[name]
                     if since is None:
                         self.rally_route_unavailable_since[name] = now

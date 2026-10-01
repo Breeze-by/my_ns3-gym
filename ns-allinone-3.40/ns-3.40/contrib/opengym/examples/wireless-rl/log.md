@@ -4269,3 +4269,28 @@ GAZEBO_MASTER_URI=http://127.0.0.1:11531 taskset -c 20-39 /usr/bin/python3 scrip
 实际native库存测试（dirty开发，不计任务格）命令：source /usr/share/gazebo/setup.sh；ROS_DOMAIN_ID=184 GAZEBO_MASTER_URI=http://127.0.0.1:11524 PYTHONNOUSERSITE=1 taskset -c 40-59 /usr/bin/python3 /tmp/test_p3b5_native_clock.py > /tmp/p3b5_native_clock_dev.log 2>&1。使用原my_world和原TurtleBot3 SDF，禁用ModelStates订阅，四个独立namespace实体一次生成均确认，第五次拒绝重名，codes[0,0,0,0,1]、5.64wall秒PASS。script完整原文/hash和结果纳入归档；此轮实际服务均success=True，不声称真实触发queued-timeout分支，分支由保留故障日志+反例验证。
 
 确认时钟修复终检：13文件191 passed（6.30s）、四包build5.85s、三机器人source-only审计零违规。git diff --check/root add -n检查通过，显式排除用户资料/运行产物，提交并push新的冻结候选后才再开始正式任务。
+
+### 2026-10-02 P3B.5 5c58bc7 接触区让路失败候选与修复
+
+冻结源码5c58bc784a195f94003f97ff361ef5827587b9e7，各manifest task_stack_clean=True。全新v11四池命令如下（canonical ROS root/source Humble+install/PYTHONNOUSERSITE=1）：
+
+```bash
+GAZEBO_MASTER_URI=http://127.0.0.1:11540 taskset -c 0-19 /usr/bin/python3 scripts/run_p2d_baseline.py --run-id p3b5_ideal_gate_5c58bc7 --ros-domain-base 140 --startup-timeout 600 --evaluation-wait-timeout 900 --infrastructure-retries 0 --rally-max-concurrent 2 --disable-global-battery-rally-pause > /tmp/p3b5_ideal_gate_5c58bc7.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:11542 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v11_forced --cases forced_charge_outage --ros-domain-base 160 > /tmp/p3b5_v11_forced.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:11542 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v11_safety --config scripts/p3b5_safety_probe_manifest.json --ros-domain-base 162 > /tmp/p3b5_v11_safety.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:11541 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v11_lab --cases zero_rally_lab up100_lab down100_lab ttl_lab map_loss_lab battery_loss_lab state_loss_lab target_up10_lab battery_exhaust_lab --ros-domain-base 40 > /tmp/p3b5_v11_lab.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:11543 taskset -c 60-79 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v11_rooms --cases up10_rooms down10_rooms delay2_rooms overflow_rooms burst_rooms deadline_rooms detection_loss_rooms pose_loss_rooms single_failure_rooms target_loss_rooms --ros-domain-base 60 > /tmp/p3b5_v11_rooms.log 2>&1
+/usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_5c58bc7.json
+```
+
+54协议PASS。首fixed lab3/101 timeout300、三充、13报告contact事件（tb1/tb2双方传感器计数，并非13独立碰撞）、zero-collision门禁失败。首接触发生于episode190.5s；返航tb2与为其让路的tb1接触，累计各6.7秒。tb1临时refuge(-.066,-.834)，实际短leg到(-.47,-.38)，tb2可以在home(0,.45)半径.8内停止充电，物理空间重叠。旧yield绕过普通1.8m路线预约，只保证final refuge离AP路线.8m，既没保护充电接触区，也没保证实际中间停点在区外。原final rally assignment保留、RALLY未伪造COMPLETE。
+
+同候选forced ideal COMPLETE199.9/两充，fault timeout300.3/两充，零碰撞/正能量；lab2 ideal COMPLETE294.4/两充；rooms3 ideal COMPLETE144.1/一充、up10 COMPLETE155/零充、全部零碰撞/正能量。fixed lab202、lab zero-fault、rooms down10、aux第一ideal为管理员中断，raw结果和未收集结果全部单列在report/20261002_p3b5_return_refuge_failed_candidate.json及stop清单/tmp/p3b5_5c_stop.json。只中止master11540..11543的owned runners/launch组。其余固定格与故障格、补充physics/corridors/holdout未执行。no whole-episode retries；旧failed cohort不进入新TDI。
+
+修复：local battery发布实际charge_radius_m；返航避让保护所有当前/待执行返航路线与实际充电占位，终点净距≥max(1.8,charge_radius+.6)。更早（1.8m范围）识别idle blocker；选直接可见、向本侧离开通道的refuge，直到跨出guard之前距离不得明显下降；实际派发waypoint仍复核guard，原全局/本地安全参数不放宽。临时RETURNING/CHARGING阻塞时暂停绕过预约的fallback重分配/probe，并清除暂时route-failure计时；普通safe prefix/staging继续。yield尝试1Hz；按最近路径排序，逐个验证候选线段至首个可行点，避免为每个free cell做线几何检查拖慢网关线程。
+
+几何反例：原近home位置、.8/2.0实际charge radius、不可见转弯中间停点、局部返航不允许unreserved恢复/probe；原finalassignment保持。初轮4项6.04s，改为lazy几何后5项3.06s（不同测试集合，仅说明检查成本，不能当纯算法benchmark）。包含前三项的全套194 passed7.51s、四包build7.01s/source audit PASS；最终含recovery与同提交分批证据反例的全套检查随后追加。
+
+后续固定十格在下一新冻结源码上前瞻分为1+2+3+4，不重复已完成格：先lab3/101子门禁；通过后lab3/202303、rooms3/101202303、corridors3/101202303+2r202；全部300horizon/energy40,40,45/原目标/零整episode重试。复用check_p3a6_gate.same_candidate严格检查同commit/source/environment；新P3B检查器支持 --ideal-fixed 多summary，拒绝重复physical cell和跨版本，不删除失败。只有同提交十格全部COMPLETE/零碰撞才开始707留出及接受整批P3B.5。
+
+返航refuge候选最终13文件198 passed（7.38s），四包build/source audit已通过。diff --check/root add -n检查后，显式排除用户260929_report和runtime，提交并push再开始1+2+3+4前瞻分批固定集成。

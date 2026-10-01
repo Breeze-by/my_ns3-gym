@@ -734,6 +734,7 @@ class BatteryManager(Node):
                 "return_safety_margin": self.safety_margin,
                 "return_timeout_sec": self.return_timeout,
                 "charge_duration_sec": self.charge_duration,
+                "charge_radius_m": self.charge_radius,
             },
             sort_keys=True,
         )

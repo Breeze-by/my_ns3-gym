@@ -721,3 +721,5 @@ PYTHONNOUSERSITE=1 /usr/bin/python3 scripts/run_p3b5_return_probe.py --run-id p3
 参数冻结在 `scripts/p3b5_return_probe_manifest.json`。只读physics观察器记录 Gazebo 模型位置、本地电池和 Nav2 action 状态，写到 `log/p3b5/<run-id>_physics/`；控制节点不接收这些真值。断网守护窗口内，两机器人均须从距离home至少1.1m开始RETURNING、实际向home进展至少0.5m、至少0.5m路径具有原生Nav2 EXECUTING状态，且各充电一次，无碰撞或FAILED。在充电接触区进入RETURNING只证明状态/充电，不能代替物理导航证据。全部正式门禁预计57个独立episode：41primary、10固定ideal、6辅助；forced ideal复用primary对照。代码候选尚待全矩阵验证。
 
 Gazebo factory 明确表示本次实体已经入队、确认阶段超时时，helper继续在原wall budget内核对实际插入。保存world的非零仿真clock可能让上游ROS-clock确认提前超时；该分支不重发创建。其他拒绝状态仍立即终止启动。
+
+返航让路候选收紧：保护实际charge_radius_m对应的接触区，refuge须直接可见且位于整个返航通道guard之外，不把停在转弯前的短航段当作安全让路完成；busy返航期间暂停不经过预约的恢复/probe分支。yield搜索按最近路径逐个验证候选，1Hz重试；充电半径/能耗/速度/完成门限不变。固定ideal可按1+2+3+4同提交分批，check_p3b5_gate.py --ideal-fixed SUMMARY... 拒绝重复格/不同源码或环境；不能挑选成功覆盖失败。

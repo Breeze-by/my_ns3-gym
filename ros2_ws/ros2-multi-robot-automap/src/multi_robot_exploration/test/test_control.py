@@ -933,7 +933,7 @@ def test_return_corridor_yield_uses_nearby_off_route_refuge():
     sent = []
     original = control.RallyPose(4.0, 5.0, 0.0)
     node = SimpleNamespace(
-        global_battery_rally_pause=True, fresh_robot_inputs=lambda: True,
+        global_battery_rally_pause=True, now=lambda:1., rally_charge_requested=set(), rally_precharge_staging={}, fresh_robot_inputs=lambda: True,
         rally_goal_handles={"tb1": None, "tb2": None},
         rally_goal_pending={"tb1": False, "tb2": False},
         survey_goal_handle=None, survey_goal_pending=False,
@@ -954,8 +954,8 @@ def test_return_corridor_yield_uses_nearby_off_route_refuge():
     _, route = control.plan_rally_leg(
         control.RallyPose(1.0, 3.0, 0), grid, 0.1, (0, 0), (8.0, 3.0),
     )
-    assert min(math.dist((refuge.x, refuge.y), point) for point in route) >= 0.8
-    assert math.dist((5.0, 3.0), (refuge.x, refuge.y)) < 1.2
+    assert min(math.dist((refuge.x, refuge.y), point) for point in route) >= control.RALLY_ROUTE_SEPARATION_M
+    assert math.dist((5.0, 3.0), (refuge.x, refuge.y)) < 2.2
     assert node.rally_final_targets["tb2"] is original
     assert not node.rally_arrived["tb2"]
     assert node.rally_yield_targets == {"tb2"}
@@ -1507,3 +1507,75 @@ def test_waiting_precharge_moves_only_along_a_safe_home_prefix(conflicting):
         assert sent[0][0] == 'waiter' and sent[0][1][0].x < positions['waiter'][0]
         assert node.rally_precharge_staging == {'waiter': 40.}
     assert node.rally_final_targets == targets and not node.rally_preflight_complete
+
+
+@pytest.mark.parametrize('radius', [.8, 2.])
+def test_return_refuge_protects_entire_charge_zone_and_visible_escape(radius):
+    grid=np.zeros((120,120),dtype=int)
+    origin=(-6.,-6.);resolution=.1
+    position=(-.6,-.4);home=(0.,.45)
+    _, route=control.plan_rally_leg(control.RallyPose(*home,0.),grid,resolution,origin,(-3.,-2.7))
+    separation=max(control.RALLY_ROUTE_SEPARATION_M,radius+control.RALLY_DYNAMIC_CLEARANCE_M)
+    refuge=control.rally_yield_pose(grid,resolution,origin,position,home,
+        blocked_positions=[(-3.,-2.7)],reserved_routes=(route,),
+        route_separation_m=separation,visible_only=True)
+    assert refuge is not None
+    pose,path=control.plan_rally_leg(refuge,grid,resolution,origin,position,
+        control.MAX_NAVIGATION_LEG_M,[(-3.,-2.7)],visible_only=True)
+    assert pose is not None
+    assert math.dist((pose.x,pose.y),(refuge.x,refuge.y))<.05
+    assert min(math.dist((pose.x,pose.y),point) for point in route)>=separation
+    assert math.dist((pose.x,pose.y),home)>=radius+control.RALLY_DYNAMIC_CLEARANCE_M
+    distances=[min(math.dist(point,p) for p in route) for point in path]
+    assert all(b+resolution>=min(a,separation) for a,b in zip(distances,distances[1:]))
+
+
+def test_return_refuge_does_not_choose_an_occluded_intermediate_stop():
+    grid=np.zeros((80,100),dtype=int)
+    grid[10:70,48:52]=100
+    position=(4.,4.);route=((4.,3.),(4.,4.),(4.,5.))
+    refuge=control.rally_yield_pose(grid,.1,(0.,0.),position,(4.,5.),
+        reserved_routes=(route,),route_separation_m=1.8,visible_only=True)
+    assert refuge is not None
+    pose,path=control.plan_rally_leg(refuge,grid,.1,(0.,0.),position,visible_only=True)
+    assert pose is not None and math.dist((pose.x,pose.y),(refuge.x,refuge.y))<.05
+    assert min(math.dist((pose.x,pose.y),p) for p in route)>=1.8
+
+
+
+
+
+def test_local_return_wait_does_not_enter_unreserved_rally_recovery(monkeypatch):
+    from types import SimpleNamespace
+    names=['returner','waiter'];targets=dict.fromkeys(names,control.RallyPose(10.,1.,0.))
+    monkeypatch.setattr(control,'rally_return_reservations',lambda *args:{'returner':((2.,1.),(9.,1.))})
+    monkeypatch.setattr(control,'plan_rally_leg',lambda *args,**kwargs:(None,()))
+    node=SimpleNamespace(
+        enable_battery=True,task_state='RALLY',fresh_robot_inputs=lambda:True,
+        fresh_robot_poses=lambda:True,message_freshness_timeout_sec=5.,
+        battery_state_received_at=dict.fromkeys(names,10.),last_input_availability=True,
+        now=lambda:10.,battery_monitor_started_at=0.,participating_robots=lambda:names,
+        battery_modes={'returner':'RETURNING','waiter':'ACTIVE'},battery_states={},
+        rally_dispatch_order=names,rally_charge_requested={},rally_precharge_staging={},
+        prepare_rally_charges=lambda:set(),rally_approach_routes={},
+        rally_preflight_complete=False,rally_precharge_active=False,
+        rally_max_concurrent=2,rally_leg_routes=dict.fromkeys(names,()),
+        rally_goal_handles=dict.fromkeys(names),rally_goal_pending=dict.fromkeys(names,False),
+        rally_goal_started_at=dict.fromkeys(names),rally_arrived=dict.fromkeys(names,False),
+        rally_hold_started_at=None,rally_yield_targets=set(),return_yield_targets={},
+        rally_yield_requested=dict.fromkeys(names,False),rally_probe_targets=set(),
+        rally_targets=targets.copy(),rally_final_targets=targets.copy(),
+        rally_route_unavailable_since=dict.fromkeys(names,0.),
+        rally_recovery_requested=dict.fromkeys(names,False),rally_attempts=dict.fromkeys(names,0),
+        survey_robot=None,survey_goal_handle=None,survey_goal_pending=False,
+        release_return_yields=lambda:None,yield_to_returning_robot=lambda:None,
+        last_rally_dispatch_at=0.,global_battery_rally_pause=False,
+        robot_positions={'returner':(2.,1.),'waiter':(8.,1.)},
+        map_data=np.zeros((20,120),dtype=int),resolution=.1,origin=(0.,0.),
+        get_logger=lambda:SimpleNamespace(info=lambda *a:None,warn=lambda *a:None),
+        send_rally_goal=lambda *args:pytest.fail('unsafe recovery dispatch'),
+        send_survey_goal=lambda *args:pytest.fail('unsafe probe dispatch'),
+        fail_task=lambda *args:pytest.fail('temporary return obstruction is not route failure'))
+    control.HeadquartersControl.update_mission(node)
+    assert node.rally_route_unavailable_since['waiter'] is None
+    assert node.rally_targets==targets and node.rally_final_targets==targets

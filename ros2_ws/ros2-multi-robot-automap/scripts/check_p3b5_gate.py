@@ -10,7 +10,7 @@ import sys
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'scripts'))
-from check_p3a6_gate import Snapshot, episode_ok
+from check_p3a6_gate import Snapshot, episode_ok, same_candidate
 from run_p2d_baseline import file_digest
 from run_p3b5_tasks import tdi
 from multi_robot_exploration.bypass_audit import runtime_violations, source_violations
@@ -131,6 +131,24 @@ def bootstrap(rows):
             'method':'physical-cell cluster percentile bootstrap, 10000 resamples seed17011; fixed matrix descriptive, not held-out population inference'}
 
 
+
+def fixed_ideal_batches(paths):
+    """Same-commit partition, with no duplicate physical cells or replacement."""
+    batches=[load(path) for path in paths]
+    reference=batches[0]['manifest'];episodes=[];cells=set()
+    evidence=[]
+    for path,batch in zip(paths,batches):
+        same_candidate(batch['manifest'],reference)
+        assert batch['max_duration_sec']==300 and batch['infrastructure_retries']==0
+        for row in batch['episodes']:
+            cell=(row['scenario_id'],row['robot_count'],row['gazebo_seed'])
+            assert cell not in cells, ('duplicate fixed cell',cell)
+            cells.add(cell);episodes.append(row)
+        evidence.append({'summary_path':str(path),'content_sha256':sha(path),
+                         'manifest':batch['manifest']})
+    return {'manifest':reference,'episodes':episodes,'batches':evidence}
+
+
 def physical_return_audit(events, epoch, homes, window=(42., 248.)):
     """Require motion toward home under local RETURNING and live native Nav2."""
     import math
@@ -183,7 +201,7 @@ def physical_return_audit(events, epoch, homes, window=(42., 248.)):
 def main():
     p=argparse.ArgumentParser()
     p.add_argument('summaries',nargs='+',type=Path)
-    p.add_argument('--ideal-fixed',required=True,type=Path)
+    p.add_argument('--ideal-fixed',required=True,type=Path,nargs='+')
     p.add_argument('--forced',required=True,type=Path)
     p.add_argument('--safety-probes',required=True,type=Path)
     p.add_argument('--return-proof',required=True,type=Path)
@@ -258,7 +276,7 @@ def main():
     assert duplicate['events'].get('stale_sequence',0)>0
     assert duplicate['reordered_delivery_attempts']>0, 'actual reorder required, not a profile label'
     assert duplicate['reorders_by_type'].get('pose_state',0)>0, 'real application-state reorder required'
-    fixed=load(a.ideal_fixed);assert len(fixed['episodes'])==10
+    fixed=fixed_ideal_batches(a.ideal_fixed);assert len(fixed['episodes'])==10
     cells=set()
     for row in fixed['episodes']:
         assert not row['infrastructure_failure'] and row['prestart_failure_count']==0 and row['runner_returncode']==0

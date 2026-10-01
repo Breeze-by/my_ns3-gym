@@ -65,3 +65,25 @@ def test_physical_return_requires_real_home_progress_and_live_nav2(start,moving,
         assert result['tb1']['nav2_executing_motion_m']==pytest.approx(.7)
     else:
         with pytest.raises(AssertionError):physical_return_audit(events,0.,homes)
+
+
+@pytest.mark.parametrize('mismatch', ['none','commit','duplicate'])
+def test_fixed_partition_preserves_version_and_unique_cells(tmp_path,mismatch):
+    from check_p3b5_gate import fixed_ideal_batches
+    manifest={'task_stack_clean':True,'worktree_dirty':True,
+        'task_stack_candidate_commit':'one','git_commit':'one',
+        'source_digests':{'core':'hash'},'environment':{'ros':'humble'}}
+    row={'scenario_id':'lab','robot_count':3,'gazebo_seed':101}
+    paths=[]
+    for index in range(2):
+        entry={**row,'gazebo_seed':101+index}
+        m=manifest.copy()
+        if index and mismatch=='commit':m.update(task_stack_candidate_commit='two',git_commit='two')
+        if index and mismatch=='duplicate':entry=row
+        path=tmp_path/f'{index}.json';path.write_text(json.dumps({'manifest':m,
+            'max_duration_sec':300,'infrastructure_retries':0,'episodes':[entry]}));paths.append(path)
+    if mismatch=='none':
+        combined=fixed_ideal_batches(paths)
+        assert len(combined['episodes'])==2 and len(combined['batches'])==2
+    else:
+        with pytest.raises(AssertionError):fixed_ideal_batches(paths)
