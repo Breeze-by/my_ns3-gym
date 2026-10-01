@@ -96,6 +96,8 @@ def parse_args():
     parser.add_argument("--skip-cross-check", action="store_true")
     parser.add_argument("--validate-only", action="store_true")
     parser.add_argument("--run-id")
+    parser.add_argument("--fail-fast", action="store_true",
+                        help="Retain the first failed cell and stop the fixed integration batch.")
     parser.add_argument(
         "--output-root",
         type=Path,
@@ -528,6 +530,9 @@ def main():
         )
         rows.append(row)
         write_summary(run_dir, metadata, rows)
+        if args.fail_fast and not success:
+            print(f"Stopping fixed integration batch after failed cell {episode_id}.", flush=True)
+            return 1
 
     successes = sum(bool(row["success"]) for row in rows)
     infrastructure_failures = sum(

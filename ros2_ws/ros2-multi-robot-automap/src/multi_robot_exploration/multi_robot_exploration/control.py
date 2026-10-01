@@ -1817,6 +1817,11 @@ class HeadquartersControl(Node):
         self.last_rally_assignment_attempt = -float("inf")
         self.survey_goal_handle = None
         self.survey_goal_pending = False
+        self.target_scan_robot = None
+        self.target_scan_handle = None
+        self.target_scan_cancel_requested = False
+        self.target_scan_steps = {}
+        self.target_scan_finished_at = {}
         self.survey_goal_started_at = None
         self.survey_attempts = 0
         self.survey_dispatch_cursor = 0
@@ -2026,6 +2031,99 @@ class HeadquartersControl(Node):
     def fresh_target(self):
         stamp = self.target_received_source_time
         return stamp is not None and 0 <= self.now() - stamp <= TARGET_DETECTION_TTL_SEC
+
+    def stop_target_scan(self):
+        """Drain a blind scan before resuming a freshly confirmed mission."""
+        if self.target_scan_robot is None:
+            return False
+        if not self.target_scan_cancel_requested:
+            self.target_scan_cancel_requested = True
+            if self.target_scan_handle is not None:
+                self.target_scan_handle.cancel_goal_async()
+        return True  # A late action response must also be drained.
+
+    def reacquire_target_by_scanning(self):
+        """Look around current safe poses; never aim using the expired target."""
+        if self.target_scan_robot is not None:
+            if self.battery_modes[self.target_scan_robot] != "ACTIVE":
+                self.stop_target_scan()
+            return
+        if (not self.fresh_robot_inputs() or any(
+                mode == "RETURNING" for mode in self.battery_modes.values())
+                or any(self.goal_handles.values())
+                or any(state == "active" for state in self.robot_states.values())
+                or any(self.rally_goal_handles.values())
+                or any(self.rally_goal_pending.values())
+                or self.survey_goal_handle is not None or self.survey_goal_pending):
+            return
+        now = self.now()
+        for name in self.participating_robots():
+            if self.battery_modes[name] != "ACTIVE":
+                continue
+            if self.target_scan_steps.get(name, 0) >= 4:
+                if now - self.target_scan_finished_at[name] < 30.0:
+                    continue
+                self.target_scan_steps[name] = 0
+            position = self.robot_positions.get(name)
+            if position is None:
+                continue
+            cell = world_to_grid(*position, self.resolution, *self.origin)
+            if not (0 <= cell[0] < self.map_data.shape[0]
+                    and 0 <= cell[1] < self.map_data.shape[1]) or self.map_data[cell] != 0:
+                continue
+            client = self.robot_nav_clients[name]
+            if not client.server_is_ready():
+                continue
+            # Four absolute headings cover a full turn independently of the
+            # old target position, last detector or target-directed routes.
+            yaw = self.target_scan_steps.get(name, 0) * math.pi / 2
+            goal = NavigateToPose.Goal()
+            goal.pose.header.frame_id = "map"
+            goal.pose.header.stamp = self.get_clock().now().to_msg()
+            goal.pose.pose.position.x, goal.pose.pose.position.y = position
+            goal.pose.pose.orientation.z = math.sin(yaw / 2)
+            goal.pose.pose.orientation.w = math.cos(yaw / 2)
+            self.target_scan_robot = name
+            self.target_scan_cancel_requested = False
+            self.record_navigation_decision(name, "target_reacquisition_scan", goal.pose)
+            client.send_goal_async(goal).add_done_callback(self.target_scan_response)
+            self.get_logger().info(f"Scanning {name}'s current pose for a fresh target confirmation.")
+            return
+
+    def target_scan_response(self, future):
+        try:
+            handle = future.result()
+        except Exception as error:
+            self.get_logger().warning(f"Target scan request failed: {error}")
+            self.finish_target_scan()
+            return
+        if handle is None or not handle.accepted:
+            self.finish_target_scan()
+            return
+        self.target_scan_handle = handle
+        if (self.target_scan_cancel_requested or self.fresh_target()
+                or self.task_state not in ("FOUND", "RALLY")
+                or self.battery_modes[self.target_scan_robot] != "ACTIVE"):
+            self.target_scan_cancel_requested = True
+            handle.cancel_goal_async()
+        handle.get_result_async().add_done_callback(self.target_scan_result)
+
+    def target_scan_result(self, future):
+        try:
+            future.result()
+        except Exception as error:
+            self.get_logger().warning(f"Target scan result failed: {error}")
+        self.finish_target_scan()
+
+    def finish_target_scan(self):
+        name = self.target_scan_robot
+        if name is not None:
+            self.target_scan_steps[name] = self.target_scan_steps.get(name, 0) + 1
+            if self.target_scan_steps[name] >= 4:
+                self.target_scan_finished_at[name] = self.now()
+        self.target_scan_robot = None
+        self.target_scan_handle = None
+        self.target_scan_cancel_requested = False
 
     def target_detection_callback(self, message):
         if self.task_state not in ("EXPLORE", "FOUND_UNCONFIRMED", "FOUND", "RALLY"):
@@ -2389,6 +2487,11 @@ class HeadquartersControl(Node):
             # safety or an off-route refuge for a robot already returning.
             if state_ready and self.task_state == "RALLY":
                 self.yield_to_returning_robot()
+            if state_ready:
+                self.reacquire_target_by_scanning()
+            return
+        if self.task_state in ("FOUND", "RALLY") and self.stop_target_scan():
+            self.rally_hold_started_at = None
             return
         if self.task_state == "FOUND" and self.enable_rally:
             for name, handle in self.goal_handles.items():
@@ -3839,12 +3942,16 @@ class HeadquartersControl(Node):
             )
             self.send_goal(robot_name, assignment)
 
-    def record_navigation_decision(self, robot_name, kind):
-        self.consumed_publisher.publish(String(data=json.dumps({
+    def record_navigation_decision(self, robot_name, kind, goal_pose=None):
+        event = {
             "event": "coordinator_navigation_decision", "event_time": self.now(),
             "robot": robot_name, "kind": kind, "task_phase": self.task_state,
             "inputs": self.input_freshness_details(),
-        }, sort_keys=True)))
+        }
+        if goal_pose is not None:
+            event["requested_position"] = [goal_pose.pose.position.x, goal_pose.pose.position.y]
+            event["current_position"] = list(self.robot_positions[robot_name])
+        self.consumed_publisher.publish(String(data=json.dumps(event, sort_keys=True)))
 
     def send_goal(self, robot_name, assignment):
         if not self.fresh_robot_inputs():

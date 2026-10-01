@@ -4348,3 +4348,28 @@ ROS_DOMAIN_ID=218 taskset -c0-19 /usr/bin/python3 /tmp/p3b5_frontier_snapshot_de
 验证：初次refinement子集105PASS/2FAIL为旧mock不接受blocked_positions关键字；补齐测试接口后通过。随后lease初测107PASS/2FAIL为旧夹具缺fresh_target/task_state；新增反例第一次111PASS/1FAIL缺局部json导入；修正夹具和导入后113PASS。最终14文件218PASS8.61s，四包build/source audit结果下一条补记。一个中间shell三引号解析失败未执行任何修改；后改用结构化patch。所有最终源改动必须新候选重新完整集成；不沿用a1的成功格。
 
 freshness/前沿候选终检：14文件218 passed8.61s；PYTHONNOUSERSITE=1 colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot 四包5.48s PASS；/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count3 零违规。源码仍待新的冻结任务矩阵，不宣称P3B.5已通过。
+
+## 2026-10-02 P3B.5 0150dab 目标lease恢复失败候选与盲扫修复
+
+冻结0150dab6ed6d5f197344950017dbd24c3a461211，同源码/clean状态，218 checks、四包build/source审计通过后commit并push再开始。原物理probe配置完全不改：ideal COMPLETE210.5/两充，fault timeout300.4/两充/零接触/正能量，tb1起点距home1.512m、断网guard内路径1.533m/进展.719m/live Nav2路径1.522m；tb2起点3.127m、路径2.356m/进展2.303m/live2.356m。原room202固定格 COMPLETE141.0/零充/零碰撞。两个子门通过后自动启动四池全矩阵。协议54PASS。精确命令、runner/wrapper源/hash、子门日志和完整原结果见report/20261002_p3b5_target_lease_failed_candidate.json。
+
+```bash
+GAZEBO_MASTER_URI=http://127.0.0.1:12542 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_return_probe.py --run-id p3b5_v14_returnproof --ros-domain-base 180 > /tmp/p3b5_v14_returnproof.log 2>&1
+PYTHONNOUSERSITE=1 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_a1f17c9.json > /tmp/p3b5_protocol_a1f17c9.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:12540 taskset -c 0-19 /usr/bin/python3 /tmp/p3b5_v14_first_rooms202.py > /tmp/p3b5_v14_first_rooms202.log 2>&1
+/usr/bin/python3 /tmp/p3b5_v14_after_subgates.py > /tmp/p3b5_v14_after_subgates.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:12540 taskset -c 0-19 /usr/bin/python3 /tmp/p3b5_v14_fixed_then_holdout.py > /tmp/p3b5_v14_fixed_holdout_pool.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:12541 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v14_lab --cases zero_rally_lab up100_lab down100_lab ttl_lab map_loss_lab battery_loss_lab state_loss_lab target_up10_lab battery_exhaust_lab --ros-domain-base 40 > /tmp/p3b5_v14_lab.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:12543 taskset -c 60-79 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v14_rooms --cases up10_rooms down10_rooms delay2_rooms overflow_rooms burst_rooms deadline_rooms detection_loss_rooms pose_loss_rooms single_failure_rooms target_loss_rooms --ros-domain-base 60 > /tmp/p3b5_v14_rooms.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:12542 taskset -c 40-59 /usr/bin/python3 /tmp/p3b5_v14_forced_safety_corridors.py > /tmp/p3b5_v14_forced_safety_corridors_pool.log 2>&1
+```
+
+同一候选主ideal lab2 COMPLETE146.0/一充、rooms3 COMPLETE168.0/两充、forced2 COMPLETE211.8/两充，均零接触；这些成功不能替代fixed lab3seed101的硬失败。该固定格timeout300/FOUND、发现63.9s、无RALLY、只有tb1充一次。中央后三段数据源年龄新鲜，但target源戳始终2193.382并超过60s；所有新的任务派发sourcelease检查均正常。tb2为检测机器人，最终(-3.83394,3.33461)，距目标(-4,4)0.69m；最终yaw没记录。只读几何诊断（source Humble/install/PYTHONNOUSERSITE=1，/usr/bin/python3调用load_truth_grid(my_world.world)+line_of_sight_clear）证实最终位置至目标LOS=True；当前证据支持朝向失去可见性，但不宣称测得唯一yaw因果。修正先前"检测机器人返航"猜测：实际返航充电的是tb1，检测者tb2未充电。
+
+UTC停止时刻及120个owned进程、四池/父supervisor所有权清单/tmp/p3b5_0150_stop.json归档；停止后确认owned alive=[]。本候选11 started/11 raw，终态{'timeout': 3, 'shutdown': 1, 'task_complete': 7}，包含后停runner未回填summary的孤立结果与shutdown。fixed runner失败后启动的lab202为prestart行政中断，单独保留；未启动holdout707。原物理/room202/其他成功不回填失败格，不进后继TDI。
+
+新恢复算法：源TTL60s保持；当目标lease失效、当前map/pose/TF/battery新鲜且不存在活动导航/返航时，逐机器人在当前已知自由位置通过同gateway发四个绝对朝向原地扫描，完全不读取旧目标坐标来选pose/yaw。每轮四次尝试后30s冷却；RETURNING优先、未来/过期/未知位姿等待。真实可见、连续三帧确认仍由原detector完成；新交付确认后取消扫描，晚到的action接受也必须取消并排空，之后才恢复FOUND/RALLY决策，不回滚阶段/不伪造新确认。账本记录requested/current位置，分析器仅对完全相同原地pose扫描豁免目标lease，map/pose/TF/battery仍全部严格核对；过期target不能隐藏新的平移集合目标。
+
+固定ideal runner新增--fail-fast，保存首个失败结果后立即返回，不继续下一格；此项用于新的集成批次，不丢弃失败，主fault矩阵不使用该选项。反例覆盖四个朝向和冷却、六类安全等待、晚接受幂等取消，以及分析器拒绝以扫描名义发平移目标。初次旧有子集126PASS6.70s，新反例子集135PASS6.76s；最终全套14文件227PASS、四包build/source audit随后补记，所有任务栈改动要求新源码重新固定十格/物理/27配对，旧11episode不混用。
+
+盲扫候选终检：14文件227 passed8.19s；四包symlink build5.38s PASS；三机器人source-only旁路审计零违规。root diff --check/add -n核对后显式排除用户260929_report和runtime，提交/push新冻结候选；先跑原lab3/101硬失败格及同预声明物理probe，两者通过才开其余矩阵。300s/energy/目标/TTL/物理门限不变。

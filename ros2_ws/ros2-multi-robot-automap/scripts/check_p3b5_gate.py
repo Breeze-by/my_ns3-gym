@@ -41,8 +41,11 @@ def ledger_audit(path):
             assert e['consumed_time']+1e-8>=e['delivery_time']>=e['source_time'],(path,e)
             assert e['consumed_time']-e['source_time']<=60.+1e-8,(path,e)
         if event=='coordinator_navigation_decision':
+            if e['kind']=='target_reacquisition_scan':
+                assert len(e['requested_position'])==len(e['current_position'])==2,(path,e)
+                assert all(abs(a-b)<1e-8 for a,b in zip(e['requested_position'],e['current_position'])),(path,e)
             for name, sample in e['inputs'].items():
-                if name=='headquarters/target_detection' and e['kind']=='local_return_yield':
+                if name=='headquarters/target_detection' and e['kind'] in ('local_return_yield','target_reacquisition_scan'):
                     continue
                 assert sample['source_time'] is not None,(path,e)
                 assert -1e-8<=sample['age_sec']<=sample['ttl_sec']+1e-8,(path,e)

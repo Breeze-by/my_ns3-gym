@@ -1100,7 +1100,7 @@ def test_idle_blocker_recovery_dispatches_motion_before_returning(
     )
     requests = []
     node = SimpleNamespace(
-        enable_battery=preflight_blocked, task_state="RALLY", fresh_robot_poses=lambda: True, fresh_target=lambda: True,
+        enable_battery=preflight_blocked, task_state="RALLY", fresh_robot_poses=lambda: True, fresh_target=lambda: True, stop_target_scan=lambda: False,
         last_input_availability=True,
         battery_monitor_started_at=0., battery_state_received_at=dict.fromkeys(names, 10.),
         message_freshness_timeout_sec=5.,
@@ -1319,7 +1319,7 @@ def test_contact_loss_waits_without_isolating_a_healthy_robot():
     from types import SimpleNamespace
     from unittest.mock import Mock
     node = SimpleNamespace(
-        enable_battery=True, task_state="RALLY", fresh_target=lambda: True, fresh_robot_inputs=lambda: False,
+        enable_battery=True, task_state="RALLY", fresh_target=lambda: True, stop_target_scan=lambda: False, fresh_robot_inputs=lambda: False,
         last_input_availability=False, now=lambda: 100.,
         last_input_diagnostic_at=100.,
         battery_monitor_started_at=0., battery_state_received_at={"tb1": 0.},
@@ -1474,7 +1474,7 @@ def test_waiting_precharge_moves_only_along_a_safe_home_prefix(conflicting):
     sent = []
     node = SimpleNamespace(
         enable_battery=True, task_state='RALLY', fresh_robot_inputs=lambda: True,
-        fresh_robot_poses=lambda: True, fresh_target=lambda: True, message_freshness_timeout_sec=5.,
+        fresh_robot_poses=lambda: True, fresh_target=lambda: True, stop_target_scan=lambda: False, message_freshness_timeout_sec=5.,
         battery_state_received_at=dict.fromkeys(names, 10.),
         last_input_availability=True, now=lambda: 10., battery_monitor_started_at=0.,
         battery_modes={'returner': 'RETURNING', 'waiter': 'ACTIVE'},
@@ -1553,7 +1553,7 @@ def test_local_return_wait_does_not_enter_unreserved_rally_recovery(monkeypatch)
     monkeypatch.setattr(control,'plan_rally_leg',lambda *args,**kwargs:(None,()))
     node=SimpleNamespace(
         enable_battery=True,task_state='RALLY',fresh_robot_inputs=lambda:True,
-        fresh_robot_poses=lambda:True,fresh_target=lambda:True,message_freshness_timeout_sec=5.,
+        fresh_robot_poses=lambda:True,fresh_target=lambda:True,stop_target_scan=lambda:False,message_freshness_timeout_sec=5.,
         battery_state_received_at=dict.fromkeys(names,10.),last_input_availability=True,
         now=lambda:10.,battery_monitor_started_at=0.,participating_robots=lambda:names,
         battery_modes={'returner':'RETURNING','waiter':'ACTIVE'},battery_states={},
@@ -1608,7 +1608,7 @@ def test_general_freshness_setting_cannot_extend_map_or_battery_ttl(field):
         map_received_at=100., robot_map_received_at={"tb1": 100.},
         battery_state_received_at={"tb1": 100.},
         participating_robots=lambda: ["tb1"], input_robot_names=lambda: ["tb1"],
-        fresh_robot_poses=lambda: True, fresh_target=lambda: True,
+        fresh_robot_poses=lambda: True, fresh_target=lambda: True, stop_target_scan=lambda: False,
     )
     if field == "map_received_at": node.map_received_at = 94.999
     else: getattr(node, field)["tb1"] = 94.999
@@ -1707,8 +1707,87 @@ def test_expired_target_blocks_rally_decisions_without_blocking_local_return_yie
     yields = []
     node = SimpleNamespace(
         task_state="RALLY", enable_battery=False, fresh_robot_inputs=lambda: True,
-        fresh_robot_poses=lambda: True, fresh_target=lambda: False,
+        fresh_robot_poses=lambda: True, fresh_target=lambda: False, reacquire_target_by_scanning=lambda: None,
         last_input_availability=False, last_input_diagnostic_at=100., now=lambda: 100.,
         rally_hold_started_at=95., yield_to_returning_robot=lambda: yields.append(True))
     control.HeadquartersControl.update_mission(node)
     assert node.rally_hold_started_at is None and yields == [True]
+
+
+def target_scan_node():
+    from types import SimpleNamespace
+    from builtin_interfaces.msg import Time
+    goals, decisions = [], []
+    request = SimpleNamespace(add_done_callback=lambda callback: None)
+    client = SimpleNamespace(server_is_ready=lambda: True,
+                             send_goal_async=lambda goal: (goals.append(goal) or request))
+    node = SimpleNamespace(
+        task_state="FOUND", target=(1000., -1000.), fresh_target=lambda: False,
+        fresh_robot_inputs=lambda: True, clock=100., resolution=.1, origin=(0., 0.),
+        map_data=np.zeros((50, 50), dtype=int),
+        battery_modes={"tb1": "ACTIVE", "tb2": "ACTIVE"},
+        participating_robots=lambda: ["tb1", "tb2"],
+        robot_positions={"tb1": (1., 1.), "tb2": (3., 3.)},
+        robot_states={"tb1": "idle", "tb2": "idle"},
+        goal_handles={}, rally_goal_handles={}, rally_goal_pending={},
+        survey_goal_handle=None, survey_goal_pending=False,
+        robot_nav_clients=dict.fromkeys(("tb1", "tb2"), client),
+        target_scan_robot=None, target_scan_handle=None, target_scan_cancel_requested=False,
+        target_scan_steps={}, target_scan_finished_at={},
+        get_clock=lambda: SimpleNamespace(now=lambda: SimpleNamespace(to_msg=lambda: Time(sec=100))),
+        get_logger=lambda: SimpleNamespace(info=lambda *a: None, warning=lambda *a: None),
+        record_navigation_decision=lambda *args: decisions.append(args))
+    node.now = lambda: node.clock
+    node.target_scan_response = lambda f: control.HeadquartersControl.target_scan_response(node, f)
+    node.target_scan_result = lambda f: control.HeadquartersControl.target_scan_result(node, f)
+    node.finish_target_scan = lambda: control.HeadquartersControl.finish_target_scan(node)
+    node.stop_target_scan = lambda: control.HeadquartersControl.stop_target_scan(node)
+    return node, goals, decisions
+
+
+def test_blind_scan_holds_live_position_and_covers_four_headings_without_old_target_geometry():
+    node, goals, decisions = target_scan_node()
+    for index in range(8):
+        control.HeadquartersControl.reacquire_target_by_scanning(node)
+        name = "tb1" if index < 4 else "tb2"
+        pose = goals[-1].pose.pose
+        assert (pose.position.x, pose.position.y) == node.robot_positions[name]
+        yaw = (index % 4)*math.pi/2
+        assert pose.orientation.z == pytest.approx(math.sin(yaw/2))
+        assert pose.orientation.w == pytest.approx(math.cos(yaw/2))
+        assert decisions[-1][:2] == (name, "target_reacquisition_scan")
+        assert node.target == (1000., -1000.)
+        node.finish_target_scan()
+    control.HeadquartersControl.reacquire_target_by_scanning(node)
+    assert len(goals) == 8  # finite full turns, then cooldown, not a busy loop
+    node.clock = 130.001
+    control.HeadquartersControl.reacquire_target_by_scanning(node)
+    assert len(goals) == 9 and node.target_scan_robot == "tb1"
+
+
+@pytest.mark.parametrize("block", ["stale", "return", "explore", "rally", "survey", "unknown_cell"])
+def test_scan_waits_for_fresh_safe_idle_inputs_and_never_preempts_local_return(block):
+    node, goals, _ = target_scan_node()
+    if block == "stale": node.fresh_robot_inputs = lambda: False
+    elif block == "return": node.battery_modes["tb2"] = "RETURNING"
+    elif block == "explore": node.robot_states["tb2"] = "active"
+    elif block == "rally": node.rally_goal_pending["tb2"] = True
+    elif block == "survey": node.survey_goal_pending = True
+    else: node.map_data[:] = -1
+    control.HeadquartersControl.reacquire_target_by_scanning(node)
+    assert not goals and node.target_scan_robot is None
+
+
+def test_scan_cancel_persists_across_a_late_goal_acceptance_and_drains_before_resume():
+    from types import SimpleNamespace
+    node, goals, _ = target_scan_node()
+    control.HeadquartersControl.reacquire_target_by_scanning(node)
+    assert node.stop_target_scan() and node.target_scan_cancel_requested
+    cancellations, completions = [], []
+    handle = SimpleNamespace(accepted=True, cancel_goal_async=lambda: cancellations.append(True),
+        get_result_async=lambda: SimpleNamespace(add_done_callback=completions.append))
+    node.target_scan_response(SimpleNamespace(result=lambda: handle))
+    assert cancellations == [True] and node.stop_target_scan()
+    assert cancellations == [True]  # idempotent cancellation
+    completions[0](SimpleNamespace(result=lambda: None))
+    assert node.target_scan_robot is None and not node.stop_target_scan()

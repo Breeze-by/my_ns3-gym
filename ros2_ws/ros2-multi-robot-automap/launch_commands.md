@@ -727,3 +727,5 @@ Gazebo factory 明确表示本次实体已经入队、确认阶段超时时，he
 2026-10-02 本地返航修复候选：充电中心不可达时，在原接触半径内选择已知自由、净空安全且可达的contact点（额外留0.2m目标误差），复用home规划的距离场。local Nav2不可用、map/pose缺失、contact/escape不可达会有5秒限频诊断。电池/半径/clearance不变；旧baec9ea物理探针耗尽已保留，该候选须新冻结验证。只读physics observer的原生UUID转int后输出JSON；wrapper会传播observer失败，任务runner成功不能掩盖测量失败。
 
 2026-10-02 P3B.5 freshness/前沿候选：固定ideal runner默认每episode保存gateway ledger。中央pose/TF从源时间执行2s TTL，map/battery5s；一般freshness参数只能收紧。默认target detector在目标当前可见且连续确认后最多1Hz重确认，经同一gateway交付；60s目标lease过期暂停新集合/调查与完成保持，真实新确认恢复，旧重传不续期。独立本地返航和安全refuge不被目标过期阻止。粗前沿全部安全拒绝时在可达净空区域重新采样，原路线预约/净距不变。原命令/300s/能量配置保持。
+
+2026-10-02 P3B.5 目标重观测：目标60s source lease过期时，默认在新鲜已知自由位姿、无活动导航/本地返航的条件下经同gateway原地尝试四个绝对朝向，四次后30s冷却；不使用过期目标坐标。实际新视觉确认交付后取消并排空扫描，再恢复集合。推荐固定ideal集成命令在原参数后加 `--fail-fast`，第一格失败即保存并停止；故障配对矩阵仍保留全部预设失败case。

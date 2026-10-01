@@ -49,6 +49,15 @@ def test_expired_target_can_only_be_used_for_local_return_refuge_audit(tmp_path)
     with pytest.raises(AssertionError):ledger_audit(write_events(tmp_path,[{**event,"kind":"rally"}]))
 
 
+def test_blind_scan_cannot_hide_a_new_translation_based_on_an_expired_target(tmp_path):
+    event={"event":"coordinator_navigation_decision","event_time":100.,
+           "kind":"target_reacquisition_scan","requested_position":[1.,2.],"current_position":[1.,2.],
+           "inputs":{"tb1/pose_state":{"source_time":99.,"age_sec":1.,"ttl_sec":2.},
+               "headquarters/target_detection":{"source_time":0.,"age_sec":100.,"ttl_sec":60.}}}
+    assert ledger_audit(write_events(tmp_path,[event]))["coordinator_decision_source_leases"]=="PASS"
+    with pytest.raises(AssertionError):ledger_audit(write_events(tmp_path,[{**event,"requested_position":[1.1,2.]}]))
+
+
 def test_wait_excludes_live_goals_and_autonomous_charge(tmp_path):
     from check_p3b5_gate import local_wait_audit
     events=[{"event":"coordinator_wait","time":0},
