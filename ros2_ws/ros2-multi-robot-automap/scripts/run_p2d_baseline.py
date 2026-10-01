@@ -192,7 +192,7 @@ def command_version(command):
 def build_manifest(config_path, args):
     commit = command_version(["git", "rev-parse", "HEAD"])
     status = command_output(
-        ["git", "status", "--short", "--untracked-files=all"]
+        ["git", "-C", str(PROJECT_ROOT.parents[1]), "status", "--short", "--untracked-files=all"]
     ) or ""
     task_status = [line for line in status.splitlines()
                    if not (line.startswith("?? 260929_report/") or line.startswith('?? "260929_report/'))]

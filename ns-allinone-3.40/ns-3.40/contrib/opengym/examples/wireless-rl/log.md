@@ -4002,3 +4002,8 @@ scripts/test_p3b5_tasks.py src/multi_robot_exploration/test/{test_control,test_g
 协议检查精确命令：PYTHONNOUSERSITE=1 /usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_development.json，54格PASS；
 ros2 run multi_robot_exploration bypass_audit --source-only，零违规。
 新manifest --validate-only返回26case/40episode（14种配置的ideal复用），尚无仿真结果。
+
+3b752f2 开发预检命令（ROS工作区/Humble/install/Gazebo环境，PYTHONNOUSERSITE=1）：
+GAZEBO_MASTER_URI=http://127.0.0.1:11420 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_dev_v1 --cases zero_rally_lab up100_lab single_failure_rooms forced_charge_outage --ros-domain-base 170 > /tmp/p3b5_dev_v1.log 2>&1。
+预检拒绝、未启动仿真：从ROS子目录读git status时用户素材路径变为../../260929_report，白名单无法匹配。
+修复manifest从Git根获取完整状态；失败目录保留，使用新run-id，不改用户材料。
