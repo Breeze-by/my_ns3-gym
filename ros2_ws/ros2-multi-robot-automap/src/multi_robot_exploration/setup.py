@@ -29,6 +29,7 @@ setup(
             'navigation_gateway = multi_robot_exploration.navigation_gateway:main',
             'nav2_ready_gate = multi_robot_exploration.nav2_ready_gate:main',
             'robot_status_panel = multi_robot_exploration.status_panel:main',
+            'spawn_entity_checked = multi_robot_exploration.spawn_entity_checked:main',
             'target_detector = multi_robot_exploration.target_detector:main',
             'task_visualizer = multi_robot_exploration.task_visualizer:main',
             'task_evaluator = multi_robot_exploration.task_evaluator:main',

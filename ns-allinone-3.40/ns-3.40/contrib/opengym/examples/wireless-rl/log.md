@@ -4103,3 +4103,24 @@ lab101为episode_start后真实RALLY超时300s，129.2s进入RALLY、三次充�
 算法候选：完整路线预算增加其他机器人的剩余行程及串行返航/充电期间idle耗电，单调闭包计算连锁充电需求；第一轮预充电结束前暂缓最终集结派发，仍允许安全让路，完成后按实际位置重算地图安全顺序。本地安全保留量、能耗默认、速度、300秒及COMPLETE门限不变。电池状态发布实际charge_duration_sec。此为规划估计，不声称运行时间上界。
 
 两项新增反例验证等待耗电与连锁充电、单机不重复计入自身路线/排除FAILED。八文件pytest149 passed（6.09s）；四包colcon build通过5.33s。54格协议矩阵PASS、source-only旁路审计见随后输出。此候选尚未仿真验证，将先运行lab101/202/303开发回归及安全探针，不在holdout调参。
+
+## 2026-10-01 P3B.5 6624a8b 启动故障保留、有界实体确认
+
+
+冻结源码6624a8b：Humble/install、PYTHONNOUSERSITE=1，精确命令：
+
+GAZEBO_MASTER_URI=http://127.0.0.1:11450 taskset -c 0-19 /usr/bin/python3 scripts/run_p2d_baseline.py --run-id p3b5_wait_budget_dev_6624a8b --scenarios lab_far_northwest --robot-count 3 --seeds 101 202 303 --skip-cross-check --ros-domain-base 130 --startup-timeout 600 --evaluation-wait-timeout 900 --infrastructure-retries 0 --rally-max-concurrent 2 --disable-global-battery-rally-pause > /tmp/p3b5_wait_budget_dev_6624a8b.log 2>&1；
+
+GAZEBO_MASTER_URI=http://127.0.0.1:11451 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_wait_safety_dev_6624a8b --config scripts/p3b5_safety_probe_manifest.json --ros-domain-base 160 > /tmp/p3b5_wait_safety_dev_6624a8b.log 2>&1；
+
+GAZEBO_MASTER_URI=http://127.0.0.1:11452 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v4_lab --cases zero_rally_lab up100_lab down100_lab ttl_lab map_loss_lab battery_loss_lab state_loss_lab target_up10_lab battery_exhaust_lab --ros-domain-base 40 > /tmp/p3b5_v4_lab.log 2>&1。
+
+lab101开发回归143.7s COMPLETE、零充电/碰撞；高idle安全探针ideal221.0s COMPLETE/两次充电，fault300.2s timeout/两次充电/零碰撞，两台在blackout中真实自主返充。时长因轨迹不同不能直接作为优化因果收益。探针终态后SIGINT发生rclpy take_message RuntimeError和merge_map退出-11，属终态后的清理错误，不能声称所有子进程干净退出。
+
+lab202在episode_start前：Gazebo已插入tb3，服务端记录failed to send response to /spawn_entity (timeout)，Humble原spawn_entity.py仅给服务发现设置timeout，等待future的循环无超时。等待数分钟仍未退出，目标/Nav2/任务未启动。本次停止为prestart基础设施失败；lab202无任务result，lab303未运行。lab主矩阵当前ideal在RALLY触发early-charge后主动中断，保留shutdown；安全探针下个ideal在启动期中断无结果。rooms/corridors/完整十格/holdout尚未启动。完整原始summary/哈希/停止进程见report/20261001_p3b5_spawn_failed_candidate.json。
+
+启动修复：spawn_entity_checked只发一次SpawnEntity请求，先核对新鲜实体清单防止接受已有实体，再由/gazebo/model_states确认实际插入；服务回包丢失不重复创建，也不无限等待；发现、创建与确认共享wall-clock预算。robot/target创建失败则Shutdown启动链。只用于任务开始前基础设施，实体truth不进入协调器或通信任务。
+
+五项新增反例检查（丢回包/成功回包但没有实体/拒绝服务），九文件pytest154 passed（6.06s）；四包build6.21s通过。source audit/show-args待输出核对；短启动smoke精确命令：GAZEBO_MASTER_URI=http://127.0.0.1:11460 taskset -c 40-59 /usr/bin/python3 scripts/ros_smoke_test.py --robot-count 2 --gazebo-seed 303 --startup-timeout 600 --evaluation-duration 20 --evaluation-wait-timeout 900 --coverage-threshold 0 --mission-mode coverage --collect-fault-result --battery --dwell-seconds 0 --episode-id p3b5_spawn_startup_dev --evaluation-output-dir log/p3b5_spawn_startup_dev/results --log-dir log/p3b5_spawn_startup_dev/launch --bypass-audit-output log/p3b5_spawn_startup_dev/graph.json > /tmp/p3b5_spawn_startup_dev.log 2>&1。此smoke为dirty开发验证，不算冻结门禁。
+
+启动候选短smoke返回0；两台实体确认、任务20秒评估（timeout为预设horizon而非COMPLETE）、运行图审计通过。结果与launch logs位于ROS log/p3b5_spawn_startup_dev/，不计入冻结任务门禁。source-only三机器人审计零违规，show-args返回0。

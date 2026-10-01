@@ -7,6 +7,7 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
+    EmitEvent,
     RegisterEventHandler,
     IncludeLaunchDescription,
     LogInfo,
@@ -15,11 +16,20 @@ from launch.actions import (
 )
 from launch.conditions import IfCondition
 from launch.event_handlers import OnProcessExit
+from launch.events import Shutdown
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
+
+
+def after_checked_spawn(actions):
+    def on_exit(event, context):
+        if event.returncode == 0:
+            return actions
+        return [EmitEvent(event=Shutdown(reason="Gazebo entity confirmation failed"))]
+    return on_exit
 
 
 def launch_setup(context, *args, **kwargs):
@@ -443,8 +453,8 @@ def launch_setup(context, *args, **kwargs):
     )
 
     target_spawn = Node(
-            package="gazebo_ros",
-            executable="spawn_entity.py",
+            package="multi_robot_exploration",
+            executable="spawn_entity_checked",
             arguments=[
                 "-file",
                 target_model,
@@ -462,6 +472,10 @@ def launch_setup(context, *args, **kwargs):
             output="screen",
             condition=IfCondition(enable_target_detection),
     )
+
+    actions.append(RegisterEventHandler(OnProcessExit(
+        target_action=target_spawn, on_exit=after_checked_spawn([]),
+    )))
 
     gzclient_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -517,8 +531,8 @@ def launch_setup(context, *args, **kwargs):
         )
 
         spawn_robot = Node(
-            package="gazebo_ros",
-            executable="spawn_entity.py",
+            package="multi_robot_exploration",
+            executable="spawn_entity_checked",
             arguments=[
                 "-file",
                 model,
@@ -632,7 +646,7 @@ def launch_setup(context, *args, **kwargs):
             spawn_robot_event = RegisterEventHandler(
                 event_handler=OnProcessExit(
                     target_action=last_spawn_action,
-                    on_exit=robot_actions,
+                    on_exit=after_checked_spawn(robot_actions),
                 )
             )
             actions.append(spawn_robot_event)
@@ -657,7 +671,7 @@ def launch_setup(context, *args, **kwargs):
             RegisterEventHandler(
                 event_handler=OnProcessExit(
                     target_action=last_spawn_action,
-                    on_exit=[target_spawn, *staggered_nav],
+                    on_exit=after_checked_spawn([target_spawn, *staggered_nav]),
                 )
             )
         )

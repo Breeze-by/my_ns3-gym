@@ -699,3 +699,6 @@ PYTHONNOUSERSITE=1 /usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_safe
 
 
 2026-10-01 集结等待预算候选：默认电池启用时，首次最终集结派发等待串行预充电完成（安全让路仍可执行）；预算加入其他机器人的剩余路线及返航/实际充电时间的idle耗能，计算连锁充电需求。充电后按实际位置重排地图安全顺序。本地安全返航、能耗参数与完成标准不变；尚待同提交完整门禁验证。
+
+
+2026-10-01 启动确认候选：默认robot/target使用spawn_entity_checked，spawn_timeout现在覆盖服务发现、单次创建请求与实际实体确认的总wall-clock预算；回包丢失但实体已出现可以继续，实体未出现/已有同名实体则失败并终止启动。该helper只读取启动实体清单，不将Gazebo truth交给任务控制。原launch命令不变。
