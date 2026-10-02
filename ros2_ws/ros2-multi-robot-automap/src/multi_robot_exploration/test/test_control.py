@@ -1781,9 +1781,9 @@ def target_scan_node():
 
 def test_blind_scan_holds_live_position_and_covers_four_headings_without_old_target_geometry():
     node, goals, decisions = target_scan_node()
-    for index in range(8):
+    for index in range(4):
         control.HeadquartersControl.reacquire_target_by_scanning(node)
-        name = "tb1" if index < 4 else "tb2"
+        name = "tb1"
         pose = goals[-1].pose.pose
         assert (pose.position.x, pose.position.y) == node.robot_positions[name]
         yaw = (index % 4)*math.pi/2
@@ -1793,10 +1793,73 @@ def test_blind_scan_holds_live_position_and_covers_four_headings_without_old_tar
         assert node.target == (1000., -1000.)
         node.finish_target_scan()
     control.HeadquartersControl.reacquire_target_by_scanning(node)
-    assert len(goals) == 8  # finite full turns, then cooldown, not a busy loop
+    assert len(goals) == 4 and node.target_search_active
     node.clock = 130.001
     control.HeadquartersControl.reacquire_target_by_scanning(node)
-    assert len(goals) == 9 and node.target_scan_robot == "tb1"
+    assert len(goals) == 4  # move to fresh frontiers instead of scanning forever
+
+
+def test_target_reacquisition_frontiers_do_not_depend_on_old_target_and_keep_return_priority():
+    from types import SimpleNamespace
+
+    def search(old_target, fresh=True, returning=False):
+        grid = np.full((80, 120), -1, dtype=int)
+        grid[5:75, 5:100] = 0
+        sent = []
+        node = SimpleNamespace(
+            task_state="RALLY", target=old_target, target_search_active=True,
+            fresh_target=lambda: False, target_scan_robot=None,
+            rally_goal_handles={}, rally_goal_pending={}, survey_goal_handle=None,
+            survey_goal_pending=False, map_data=grid, resolution=.1, origin=(0., 0.),
+            robot_positions={"tb1": (2., 3.), "tb2": (5., 3.)},
+            robot_maps={"tb1": {}, "tb2": {}},
+            robot_states=dict.fromkeys(("tb1", "tb2"), "idle"),
+            battery_modes={"tb1": "ACTIVE", "tb2": "RETURNING" if returning else "ACTIVE"},
+            frontier_cache=None, input_robot_names=lambda: ["tb1", "tb2"],
+            participating_robots=lambda: ["tb1", "tb2"],
+            fresh_robot_inputs=lambda: fresh, active_exclusions=lambda: [],
+            battery_assignment_safe=lambda *args: True, goal_targets={}, goal_routes={},
+            goal_initial_gain={}, target_information_gain=lambda *args: 100,
+            get_logger=lambda: SimpleNamespace(info=lambda *a: None, warn=lambda *a: None),
+            send_goal=lambda name, goal: sent.append((name, goal)),
+        )
+        control.HeadquartersControl.assign_idle_robots(node)
+        return sent, node
+
+    one, node = search((10000., -10000.))
+    other, _ = search((-10000., 10000.))
+    assert len(one) == 1 and one == other
+    assert node.task_state == "RALLY"
+    assert math.dist(node.robot_positions[one[0][0]],
+                     (one[0][1].navigation_x, one[0][1].navigation_y)) <= control.MAX_NAVIGATION_LEG_M + .1
+    assert search((0., 0.), fresh=False)[0] == []
+    assert search((0., 0.), returning=True)[0] == []
+
+
+def test_fresh_confirmation_drains_pending_and_accepted_frontier_search_once():
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+
+    handle = Mock(accepted=True)
+    node = SimpleNamespace(
+        target_search_active=True, fresh_target=lambda: True,
+        robot_states={"tb1": "active"}, goal_handles={"tb1": None},
+        cancel_requested={"tb1": False}, target_scan_steps={"tb1": 4},
+        target_scan_finished_at={"tb1": 100.}, goal_targets={"tb1": None},
+        goal_started_at={}, goal_last_progress_at={}, goal_best_distance={},
+        goal_last_position={}, goal_known_count={}, map_known_count=1,
+        robot_positions={"tb1": (1., 1.)}, battery_preempted={},
+        battery_modes={"tb1": "ACTIVE"}, now=lambda: 101.,
+    )
+    assert control.HeadquartersControl.stop_target_search(node)
+    control.HeadquartersControl.goal_response_callback(node, "tb1", SimpleNamespace(result=lambda: handle))
+    handle.cancel_goal_async.assert_called_once()
+    assert control.HeadquartersControl.stop_target_search(node)
+    handle.cancel_goal_async.assert_called_once()
+    node.robot_states["tb1"] = "idle"
+    node.goal_handles["tb1"] = None
+    assert not control.HeadquartersControl.stop_target_search(node)
+    assert not node.target_search_active and node.target_scan_steps == {}
 
 
 @pytest.mark.parametrize("block", ["stale", "return", "explore", "rally", "survey", "unknown_cell"])

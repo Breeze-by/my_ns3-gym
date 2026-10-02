@@ -45,8 +45,14 @@ def ledger_audit(path):
             if e['kind']=='target_reacquisition_scan':
                 assert len(e['requested_position'])==len(e['current_position'])==2,(path,e)
                 assert all(abs(a-b)<1e-8 for a,b in zip(e['requested_position'],e['current_position'])),(path,e)
+            if e['kind']=='target_reacquisition_exploration':
+                import math
+                assert e['search_basis']=='current_map_frontiers',(path,e)
+                route=e['search_route']
+                assert route and all(len(point)==2 and all(math.isfinite(x) for x in point) for point in route),(path,e)
+                assert math.dist(route[-1],e['requested_position'])<=e['map_resolution_m']+1e-8,(path,e)
             for name, sample in e['inputs'].items():
-                if name=='headquarters/target_detection' and e['kind'] in ('local_return_yield','target_reacquisition_scan'):
+                if name=='headquarters/target_detection' and e['kind'] in ('local_return_yield','target_reacquisition_scan','target_reacquisition_exploration'):
                     continue
                 assert sample['source_time'] is not None,(path,e)
                 assert -1e-8<=sample['age_sec']<=sample['ttl_sec']+1e-8,(path,e)

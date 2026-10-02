@@ -1842,7 +1842,7 @@ class HeadquartersControl(Node):
         self.target_scan_handle = None
         self.target_scan_cancel_requested = False
         self.target_scan_steps = {}
-        self.target_scan_finished_at = {}
+        self.target_search_active = False
         self.survey_goal_started_at = None
         self.survey_attempts = 0
         self.survey_dispatch_cursor = 0
@@ -2070,6 +2070,8 @@ class HeadquartersControl(Node):
 
     def reacquire_target_by_scanning(self):
         """Look around current safe poses; never aim using the expired target."""
+        if getattr(self, "target_search_active", False):
+            return
         if self.target_scan_robot is not None:
             if self.battery_modes[self.target_scan_robot] != "ACTIVE":
                 self.stop_target_scan()
@@ -2082,14 +2084,11 @@ class HeadquartersControl(Node):
                 or any(self.rally_goal_pending.values())
                 or self.survey_goal_handle is not None or self.survey_goal_pending):
             return
-        now = self.now()
         for name in self.participating_robots():
             if self.battery_modes[name] != "ACTIVE":
                 continue
             if self.target_scan_steps.get(name, 0) >= 4:
-                if now - self.target_scan_finished_at[name] < 30.0:
-                    continue
-                self.target_scan_steps[name] = 0
+                continue
             position = self.robot_positions.get(name)
             if position is None:
                 continue
@@ -2146,10 +2145,29 @@ class HeadquartersControl(Node):
         if name is not None:
             self.target_scan_steps[name] = self.target_scan_steps.get(name, 0) + 1
             if self.target_scan_steps[name] >= 4:
-                self.target_scan_finished_at[name] = self.now()
+                # Looking around cannot rediscover a target outside sensor
+                # range. Continue the ordinary fresh-map frontier search,
+                # without rolling back mission phase or using old target data.
+                self.target_search_active = True
         self.target_scan_robot = None
         self.target_scan_handle = None
         self.target_scan_cancel_requested = False
+
+    def stop_target_search(self):
+        """Drain accepted and pending frontier actions before resuming rally."""
+        active = False
+        for name, state in self.robot_states.items():
+            if state != "active":
+                continue
+            active = True
+            handle = self.goal_handles[name]
+            if handle is not None and not self.cancel_requested[name]:
+                self.cancel_requested[name] = True
+                handle.cancel_goal_async()
+        if not active:
+            self.target_search_active = False
+            self.target_scan_steps.clear()
+        return active
 
     def target_detection_callback(self, message):
         if self.task_state not in ("EXPLORE", "FOUND_UNCONFIRMED", "FOUND", "RALLY"):
@@ -2525,6 +2543,9 @@ class HeadquartersControl(Node):
                 self.reacquire_target_by_scanning()
             return
         if self.task_state in ("FOUND", "RALLY") and self.stop_target_scan():
+            self.rally_hold_started_at = None
+            return
+        if getattr(self, "target_search_active", False) and self.stop_target_search():
             self.rally_hold_started_at = None
             return
         if self.task_state == "FOUND" and self.enable_rally:
@@ -3806,7 +3827,19 @@ class HeadquartersControl(Node):
     def assign_idle_robots(self):
         if getattr(self, "return_probe_paused", False):
             return
-        if self.task_state not in ("EXPLORE", "FOUND_UNCONFIRMED"):
+        search = (
+            getattr(self, "target_search_active", False)
+            and self.task_state in ("FOUND", "RALLY")
+            and not self.fresh_target()
+        )
+        if self.task_state not in ("EXPLORE", "FOUND_UNCONFIRMED") and not search:
+            return
+        if search and (
+            self.target_scan_robot is not None
+            or any(self.rally_goal_handles.values())
+            or any(self.rally_goal_pending.values())
+            or self.survey_goal_handle is not None or self.survey_goal_pending
+        ):
             return
         if self.map_data is None:
             return
@@ -3833,7 +3866,8 @@ class HeadquartersControl(Node):
             for name, state in self.robot_states.items()
             if name in self.participating_robots()
         )
-        if active_explorers >= EXPLORATION_MAX_CONCURRENT or any(
+        max_concurrent = 1 if search else EXPLORATION_MAX_CONCURRENT
+        if active_explorers >= max_concurrent or any(
             mode == "RETURNING" for mode in self.battery_modes.values()
         ):
             return
@@ -3963,7 +3997,7 @@ class HeadquartersControl(Node):
                 routes[name] = route
                 selected.append(name)
                 reservations.append(route)
-                if len(selected) + active_explorers >= EXPLORATION_MAX_CONCURRENT:
+                if len(selected) + active_explorers >= max_concurrent:
                     break
             if selected or active_explorers:
                 break
@@ -4011,6 +4045,10 @@ class HeadquartersControl(Node):
                 2 * (q.w * q.z + q.x * q.y),
                 1 - 2 * (q.y * q.y + q.z * q.z),
             )
+        if kind == "target_reacquisition_exploration":
+            event["search_basis"] = "current_map_frontiers"
+            event["search_route"] = self.goal_routes[robot_name]
+            event["map_resolution_m"] = self.resolution
         self.consumed_publisher.publish(String(data=json.dumps(event, sort_keys=True)))
 
     def send_goal(self, robot_name, assignment):
@@ -4048,7 +4086,12 @@ class HeadquartersControl(Node):
                          frontier[0] - assignment.navigation_x)
         goal.pose.pose.orientation.z = math.sin(yaw / 2.0)
         goal.pose.pose.orientation.w = math.cos(yaw / 2.0)
-        self.record_navigation_decision(robot_name, "exploration")
+        self.record_navigation_decision(
+            robot_name,
+            "target_reacquisition_exploration"
+            if getattr(self, "target_search_active", False) else "exploration",
+            goal.pose,
+        )
         future = client.send_goal_async(
             goal,
             feedback_callback=lambda feedback, name=robot_name: (
@@ -4086,7 +4129,7 @@ class HeadquartersControl(Node):
         self.cancel_requested[robot_name] = False
         if self.battery_modes[robot_name] != "ACTIVE" or any(
             mode == "RETURNING" for mode in self.battery_modes.values()
-        ):
+        ) or (getattr(self, "target_search_active", False) and self.fresh_target()):
             self.battery_preempted[robot_name] = True
             self.cancel_requested[robot_name] = True
             goal_handle.cancel_goal_async()
@@ -4166,7 +4209,8 @@ class HeadquartersControl(Node):
         self.check_exploration_completion()
 
     def cancel_stalled_goals(self):
-        if self.task_state not in ("EXPLORE", "FOUND_UNCONFIRMED"):
+        if (self.task_state not in ("EXPLORE", "FOUND_UNCONFIRMED")
+                and not getattr(self, "target_search_active", False)):
             return
         now = self.now()
         for robot_name, goal_handle in self.goal_handles.items():

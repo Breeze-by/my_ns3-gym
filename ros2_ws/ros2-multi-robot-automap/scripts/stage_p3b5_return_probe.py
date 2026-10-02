@@ -14,6 +14,17 @@ import signal
 import time
 
 
+def gateway_fault_epoch(data, current_time):
+    """Use the transport's blackout clock, not another node's phase receipt."""
+    event = json.loads(data)
+    if event.get('event') != 'fault_epoch':
+        return None
+    epoch = float(event['event_time'])
+    if not math.isfinite(epoch) or not 0 <= epoch <= current_time:
+        raise ValueError('Invalid gateway fault epoch')
+    return epoch
+
+
 def owned_coordinator(owner, domain, proc_root=Path('/proc')):
     """Identify exactly one descendant, never signal another ROS session."""
     parents = {}
@@ -127,11 +138,18 @@ def main():
             last_wait[name] = now()
 
     def phase(message):
-        nonlocal epoch, coordinator
-        if message.data == 'EXPLORE' and epoch is None:
-            epoch = now()
+        nonlocal coordinator
+        if message.data == 'EXPLORE' and coordinator is None:
             coordinator = owned_coordinator(args.owner_pid, os.environ['ROS_DOMAIN_ID'])
-            record('coordinator_identified', pid=coordinator, epoch=epoch)
+            record('coordinator_identified', pid=coordinator)
+
+    def gateway_event(message):
+        nonlocal epoch
+        if epoch is None:
+            value = gateway_fault_epoch(message.data, now())
+            if value is not None:
+                epoch = value
+                record('gateway_epoch_observed', epoch=epoch)
 
     def received(name, kind, message):
         if kind == 'battery_state':
@@ -165,6 +183,7 @@ def main():
     clients = {name: ActionClient(node, NavigateToPose, f'/gateway/{name}/navigate_to_pose')
                for name in latest}
     node.create_subscription(String, '/task_state', phase, latched)
+    node.create_subscription(String, '/gateway/message_events', gateway_event, 100)
     for name in latest:
         for kind, suffix, message_type, qos in (
             ('map_snapshot', 'map', OccupancyGrid, latched),
@@ -181,7 +200,7 @@ def main():
             rclpy.spin_once(node, timeout_sec=.05)
             if time.monotonic() - wall_start > fixture['wall_timeout_sec']:
                 raise TimeoutError('Fixture wall deadline exceeded')
-            if epoch is None:
+            if epoch is None or coordinator is None:
                 continue
             offset = now() - epoch
             if offset > fixture['stage_deadline_sec'] and len(staged) != len(latest):

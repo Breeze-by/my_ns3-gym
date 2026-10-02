@@ -2,7 +2,15 @@ import pytest
 import json
 from pathlib import Path
 
-from stage_p3b5_return_probe import owned_coordinator, known_staging_prefix
+from stage_p3b5_return_probe import owned_coordinator, known_staging_prefix, gateway_fault_epoch
+
+
+def test_preparation_uses_gateway_epoch_even_when_phase_arrives_earlier():
+    assert gateway_fault_epoch('{"event":"EXPLORE","event_time":99.0}', 99.) is None
+    assert gateway_fault_epoch('{"event":"fault_epoch","event_time":100.0}', 100.7) == 100.
+    for value in (-1., 101., float('nan')):
+        with pytest.raises(ValueError):
+            gateway_fault_epoch(json.dumps({'event':'fault_epoch','event_time':value}), 100.)
 
 
 def process(root, pid, parent, domain, coordinator=False):

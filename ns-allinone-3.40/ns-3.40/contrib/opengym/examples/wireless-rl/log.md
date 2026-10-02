@@ -4521,3 +4521,29 @@ GAZEBO_MASTER_URI=http://127.0.0.1:13251 taskset -c 20-39 /usr/bin/python3 /tmp/
 2started/2raw，ideal/fault均mission_failed、FAILED、1.7s、零接触；两台本地电池均FAILED/E0，零Nav2目标。中央只读observer分别捕获两台隔离事件，ideal评估failed集合两台，而fault仅[tb2]。/robot_failure采用depth1 transient-local，启动/晚订阅可能仅保留最后事件；原始门禁拒绝通过，不能从native电池补造中央失败集合。bootstrap自然退出1、supervisor断言失败；fixed、physical、protocol、全部pool/707均未启动，没有整格重试或替换。完整summary、两raw、两套中央事件和源码/命令/hash已归档。
 
 新候选每条中央事件携带完整不可逆failed_robots快照；pub/sub可靠transient-local历史深度N保留逐台reason历史，评估按已知roster验证后单调并集，乱序/重复不回退、非法集合不部分更新。兼容旧单robot事件；native状态不替代中央隔离。组件第一轮新增测试误写不存在的类名，1FAIL/143PASS8.24s（无仿真），改为实际HeadquartersControl后全15文件249PASS8.82s；四包build5.23s、三机器人source audit PASS零违规。普通命令/任务时间/能量/安全/成功/源TTL门限不变。新冻结必须重新执行原始零能量格及后续完整门禁，历史成功不回填。
+
+
+## 2026-10-02 P3B.5 v23零能量修复通过，但恢复搜索与夹具epoch门禁失败
+
+clean冻结8d0b703ea89e91bc565e6bb3c9adff5d571ef2d1。report/20261002_p3b5_reacquisition_failed_candidate.json保留完整命令、wrapper来源、UTC、5raw/summary/ledger决策及source/config/env/hash；不混入后继矩阵。source Humble/install/Gazebo、PYTHONNOUSERSITE=1、TURTLEBOT3_MODEL=waffle、工作区ROS_LOG_DIR，经rtk bash -lc：
+
+```bash
+/usr/bin/python3 /tmp/p3b5_v23_bootstrap.py > /tmp/p3b5_v23_bootstrap.log 2>&1
+/usr/bin/python3 /tmp/p3b5_v23_after_subgates.py > /tmp/p3b5_v23_after_subgates.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:13351 taskset -c 20-39 /usr/bin/python3 /tmp/p3b5_v23_zero_first.py > /tmp/p3b5_v23_zero_first.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:13350 taskset -c 0-19 /usr/bin/python3 /tmp/p3b5_v23_first_lab101.py > /tmp/p3b5_v23_first_lab101.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:13352 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_return_probe.py --run-id p3b5_v23_returnproof --ros-domain-base 180 --config scripts/p3b5_staged_return_probe_manifest.json > /tmp/p3b5_v23_returnproof.log 2>&1
+PYTHONNOUSERSITE=1 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_8d0b703.json > /tmp/p3b5_protocol_8d0b703.log 2>&1
+```
+
+5started/5raw：zero正式ideal/fault均mission_failed/两台中央FAILED、原生E0/零目标/零碰撞，1.7/2.4s，graph/ledger因果/TTL/version/decisions PASS。固定lab3/101 300.1s timeout/RALLY、三次充电、最低电量正、零碰撞/失败。检测tb1，home staging/串行让路先后使三台离开目标视野；latest source2207.882到期后反复真实原地扫描不能克服3m sensor range，未伪造新确认。原300s/40能量/目标/成功门槛保留。
+
+补充ideal/fault均timeout300.1s、各机器人一次本地真实充电，最低9.707012/9.570693、零碰撞/失败、runner/stager/observer皆0。fault原生物理ONLY核查满足原guard62..248：tb1 start170.6s/距home1.9631m/path1.1507m/progress1.1418m/EXEC1.1507m；tb2 start169.8/距home2.0241/path1.2088/progress1.1998/EXEC1.2087。livegraph/source审计通过，DDS暂停问题已消失。但是staging_audit拒绝最早准备命令：sidecar用中央首次EXPLORE接收时刻作epoch，比gateway实际fault_epoch早0.7/1.2s；首个命令在真实epoch前。完整夹具仍FAIL，不能用物理ONLY通过替代。协议矩阵54PASS。bootstrap自然[1,0,0]；supervisor因firstfixed断言自然退出，fullpool/707未启动，无活跃episode行政中断/替换/重试。
+
+只读追加审计先因导入scripts.check_p3b5_gate未找到模块退出（无仿真），改为sys.path.insert scripts后执行；严格staging_audit揭示epoch错位，物理ONLY独立结果保留。下一夹具仅从/gateway/message_events读取权威fault_epoch后准备，中央phase仅确定owned coordinator，保持全部准备/物理窗口。
+
+下一算法候选：一次四向原地扫描失败后，以新鲜地图的原前沿信息收益/预约可见短航段重新搜索（单机器人），无过期目标几何、无阶段回滚；真实新确认后取消并排空搜索，再恢复集合。pending晚接收亦取消，原超时/停滞/local return保护保留。ledger明确记录独立frontier依据/路线，targetlease豁免仅适用于这种独立恢复搜索，所有map/pose/TF/battery源lease仍严格。真实地图反例改变过期target到相反极端，选择完全一致；state stale/RETURNING均零新目标，验证晚接受与幂等取消。相关149PASS7.13s，四包build5.28s；全组件检查结果随后补记。不能据这些组件检查宣布P3B.5完成。
+
+候选全15文件253PASS8.05s、四包build5.28s、3r source audit PASS0违规；删除已被前沿恢复替代的旧重复扫描冷却状态后，再跑最短相关检查及diff，clean提交/push后才能开新冻结。
+
+删除旧扫描冷却后的最短相关150PASS6.82s；原17份用户材料SHA256均未变化（目录完整相等检查因另有新增文件失败，逐原始文件核查通过，不修改/暂存用户新增文件）。

@@ -34,6 +34,19 @@ def test_reject_original_future_source_before_transmission(tmp_path):
     with pytest.raises(AssertionError):ledger_audit(path)
 
 
+def test_reacquisition_frontier_search_requires_fresh_states_and_recorded_route(tmp_path):
+    event={"event":"coordinator_navigation_decision","event_time":100.,
+           "kind":"target_reacquisition_exploration","search_basis":"current_map_frontiers",
+           "search_route":[[1.,2.],[2.,2.]],"requested_position":[2.,2.],"map_resolution_m":.05,
+           "inputs":{"tb1/pose_state":{"source_time":99.,"age_sec":1.,"ttl_sec":2.},
+               "headquarters/target_detection":{"source_time":0.,"age_sec":100.,"ttl_sec":60.}}}
+    assert ledger_audit(write_events(tmp_path,[event]))["coordinator_decision_source_leases"]=="PASS"
+    for bad in ({**event,"search_basis":"expired_target"}, {**event,"search_route":[]},
+                {**event,"requested_position":[3.,2.]},
+                {**event,"inputs":{"tb1/pose_state":{"source_time":97.,"age_sec":3.,"ttl_sec":2.}}}):
+        with pytest.raises(AssertionError):ledger_audit(write_events(tmp_path,[bad]))
+
+
 def test_reject_expired_or_rollback_receipts(tmp_path):
     event={"event":"accepted","event_time":2.1,"source_time":0.,"ttl_sec":2.,
            "message_type":"pose_state","sender":"tb1","recipient":"headquarters","sequence":2}
