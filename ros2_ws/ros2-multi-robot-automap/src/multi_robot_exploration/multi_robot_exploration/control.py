@@ -1016,6 +1016,14 @@ def reassign_rally_pose(
     traversable = traversable_grid(
         raw_grid, resolution, clearance_m=RALLY_PATH_CLEARANCE_M
     )
+    start = world_to_grid(robot_position[0], robot_position[1], resolution,
+                          origin[0], origin[1])
+    start = navigation_start_cell(raw_grid, traversable, start,
+                                  max(1, math.ceil(0.6 / resolution)))
+    if start is None:
+        return None
+    distances = path_distance_grid(traversable, start)
+    route_cache = {}
     best = None
     for pose in candidates:
         if any(
@@ -1031,22 +1039,10 @@ def reassign_rally_pose(
             robot_position,
             max_distance_m=float("inf"),
             blocked_positions=blocked_positions,
+            route_cache=route_cache,
         )
         if plan[0] is None:
             continue
-        start = world_to_grid(
-            robot_position[0], robot_position[1], resolution,
-            origin[0], origin[1],
-        )
-        start = navigation_start_cell(
-            raw_grid,
-            traversable,
-            start,
-            max(1, math.ceil(0.6 / resolution)),
-        )
-        if start is None:
-            continue
-        distances = path_distance_grid(traversable, start)
         cell = world_to_grid(pose.x, pose.y, resolution, origin[0], origin[1])
         distance = distances[cell] if (
             0 <= cell[0] < traversable.shape[0]
@@ -1839,6 +1835,8 @@ class HeadquartersControl(Node):
         self.rally_battery_preempted = {}
         self.rally_charge_requested = {}
         self.rally_precharge_staging = {}
+        self.rally_detour_budgets = {}
+        self.rally_wait_budgets = {}
         self.rally_preflight_complete = False
         self.rally_precharge_active = False
         self.charge_request_publishers = {}
@@ -2264,6 +2262,7 @@ class HeadquartersControl(Node):
             if mode == "ACTIVE" and previous != "ACTIVE":
                 self.rally_charge_requested.pop(robot_name, None)
                 self.rally_precharge_staging.pop(robot_name, None)
+                getattr(self, "rally_detour_budgets", {}).pop(robot_name, None)
                 self.get_logger().info(
                     f"{robot_name} resumed after charging."
                 )
@@ -3220,7 +3219,7 @@ class HeadquartersControl(Node):
                 admitted = reserve_rally_prefix(plan, reservations)
                 if admitted is None:
                     continue
-                self.send_rally_goal(name, admitted)
+                self.send_rally_goal(name, admitted, name in stage_names)
                 if name in stage_names and self.rally_goal_pending[name]:
                     self.rally_precharge_staging.setdefault(name, self.rally_charge_budgets[name])
                     self.get_logger().info(f"Staging {name} along its reserved home approach before serial charging.")
@@ -3328,14 +3327,6 @@ class HeadquartersControl(Node):
                     float(state.get("nominal_speed_mps", 0.18)),
                     float(state.get("return_safety_margin", 8.0)),
                 ) + idle_cost * self.rally_hold_sec
-                if len(self.rally_final_targets) > 1:
-                    # Budget one extra bounded waypoint out and back when a
-                    # peer blocks an approach. Local return reserve remains
-                    # independent; this is a planning contingency, not an
-                    # upper bound on arbitrarily many recoveries.
-                    required += 2 * MAX_NAVIGATION_LEG_M * (
-                        float(state.get("move_cost_per_m", 1.0)) + idle_cost / speed
-                    )
                 if (not all(math.isfinite(value)
                             for value in (required, energy, charge_target))
                         or charge_target <= 0):
@@ -3351,9 +3342,11 @@ class HeadquartersControl(Node):
             {name: budget[1] for name, budget in budgets.items()},
             self.battery_states, self.battery_modes, travel_times, charge_times,
         )
+        self.rally_wait_budgets = waits
         self.rally_charge_budgets = {**self.rally_precharge_staging, **requirements}
         for name, (energy, _, charge_target, idle_cost, home) in budgets.items():
-            required = max(requirements[name], self.rally_precharge_staging.get(name, 0.))
+            required = max(requirements[name], self.rally_precharge_staging.get(name, 0.),
+                           getattr(self, "rally_detour_budgets", {}).get(name, 0.))
             self.rally_charge_budgets[name] = required
             if energy > required:
                 continue
@@ -3399,6 +3392,50 @@ class HeadquartersControl(Node):
             f"whole_rally_budget={required:.2f}."
         )
         return blocked
+
+    def rally_plan_has_energy(self, robot_name, plan):
+        """Fund the actual proposed detour, the final approach and its reserve.
+
+        The nominal trip/wait budget is checked before planning. A longer route
+        around a peer must additionally fund its actual extra distance before
+        admission, instead of making every robot precharge for a phantom loop.
+        """
+        wait = self.rally_wait_budgets.get(robot_name)
+        if wait is None:
+            return False
+        pose, route = plan
+        _, remaining = plan_rally_leg(
+            self.rally_final_targets[robot_name], self.map_data, self.resolution,
+            self.origin, (pose.x, pose.y),
+        )
+        if not remaining:
+            return False
+        distance = lambda points: sum(math.dist(a, b) for a, b in zip(points, points[1:]))
+        actual = distance((self.robot_positions[robot_name], *route)) + distance(remaining)
+        state = self.battery_states[robot_name]
+        try:
+            move = float(state.get("move_cost_per_m", 1.))
+            idle = float(state.get("idle_cost_per_sec", .02))
+            speed = float(state.get("nominal_speed_mps", .18))
+            if not all(math.isfinite(v) for v in (move, idle, speed)) or min(move, idle) < 0 or speed <= 0:
+                return False
+            final = self.rally_final_targets[robot_name]
+            home = (float(state["charge_x"]), float(state["charge_y"]))
+            required = battery_assignment_required_energy(
+                actual, math.dist((final.x, final.y), home), move, idle,
+                float(state.get("return_path_factor", 2.)), speed,
+                float(state.get("return_safety_margin", 8.)),
+            ) + idle * (self.rally_hold_sec + wait)
+            energy = float(state["energy"])
+            if not all(math.isfinite(v) for v in (required, energy)):
+                return False
+        except (KeyError, TypeError, ValueError, ZeroDivisionError):
+            return False
+        if energy <= required:
+            self.rally_detour_budgets[robot_name] = required
+            return False  # Next preflight owns serial charging/capacity checks.
+        self.rally_detour_budgets.pop(robot_name, None)
+        return True
 
     def send_survey_goal(self, robot_name, pose):
         if not self.fresh_robot_inputs() or not self.fresh_target():
@@ -3535,7 +3572,7 @@ class HeadquartersControl(Node):
                 f"Target-area survey failed with status {status}."
             )
 
-    def send_rally_goal(self, robot_name, plan=None):
+    def send_rally_goal(self, robot_name, plan=None, charge_staging=False):
         if not self.fresh_robot_inputs():
             return
         local_return_yield = robot_name in self.return_yield_targets
@@ -3573,6 +3610,9 @@ class HeadquartersControl(Node):
             )
         target, route = plan
         if target is None:
+            return
+        if (self.enable_battery and not local_return_yield and not charge_staging
+                and not self.rally_plan_has_energy(robot_name, plan)):
             return
         if not self.fresh_robot_inputs() or (not local_return_yield and not self.fresh_target()):
             return

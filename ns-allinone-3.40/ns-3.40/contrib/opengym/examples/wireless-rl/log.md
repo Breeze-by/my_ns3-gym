@@ -4618,3 +4618,26 @@ zero ideal/fault mission_failed0.8/1.9s、完整FAILED双机/E0/无目标/无碰
 下一候选补上最终朝向完成与确认公平轮转（全局仍每秒最多一条）：保存实际rally航段pose，成功回调只有最终yaw一致且位置达标才能arrived；中途near-final位置不能跳过最终旋转。目标observer只由真实当前可见且连续三帧确认的轮转事件更新，遮挡/重新出现需重新积累。相关143组件PASS7.52s；四包/full组件/source audit结果随后补记。P3B.5仍未通过，不能复用历史成功填新冻结矩阵。
 
 全15文件272PASS8.36s，四包build7.42s，3r source audit PASS0违规。diff check和显式staging通过后提交/push新冻结；后继原矩阵尚未开始。
+
+## 2026-10-02 P3B.5 v27接力正确但第三次返充超过任务时限
+
+clean冻结77ff56b5423ff52043faf9223776c5aa76385ce3，report/20261002_p3b5_contingency_budget_failed_candidate.json保留5started/5raw及完整命令/source/env/config/hash。source Humble/install/Gazebo，PYTHONNOUSERSITE=1、TURTLEBOT3_MODEL=waffle、canonical ROS/log/ros_launch；rtk bash -lc：
+
+```bash
+/usr/bin/python3 /tmp/p3b5_v27_bootstrap.py > /tmp/p3b5_v27_bootstrap.log 2>&1
+/usr/bin/python3 /tmp/p3b5_v27_after_subgates.py > /tmp/p3b5_v27_after_subgates.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:13751 taskset -c 20-39 /usr/bin/python3 /tmp/p3b5_v27_zero_first.py > /tmp/p3b5_v27_zero_first.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:13750 taskset -c 0-19 /usr/bin/python3 /tmp/p3b5_v27_first_lab101.py > /tmp/p3b5_v27_first_lab101.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:13752 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_return_probe.py --run-id p3b5_v27_returnproof --ros-domain-base 180 --config scripts/p3b5_staged_return_probe_manifest.json > /tmp/p3b5_v27_returnproof.log 2>&1
+PYTHONNOUSERSITE=1 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_77ff56b.json > /tmp/p3b5_protocol_77ff56b.log 2>&1
+```
+
+零能量ideal/fault0.7/1.1s mission_failed，完整FAILED双机/E0/0目标/0碰撞/graph及ledgerPASS。首格lab3/101 timeout300.1s/RALLY，2次充电/3次返航、最低17.516、零碰撞/失败/耗尽，tb1/tb2距最终集合点.0240/.0191m，tb3仍RETURNING距最终5.6776m。真实target_reconfirmed出现tb2/tb3交替，接力后tb3获准返充，末航向修复得到执行；不能把修复机制正确写成任务COMPLETE。全ledger PASS：10181生成、10909accepted、28导航决策、184新确认、26handoff wait、最小source delay.004、最大clock deferral.096s。
+
+补充ideal/fault自然timeout300.3/300.4s，FOUND/EXPLORE仅过程，两台各一次充电、正最低能量、零碰撞/失效，全部runner/stager/nativeobserver0。两侧严格staging/TTL/one-shot PASS，fault原62..248窗口tb1 start171.1s/home2.0195m/path1.2005/progress1.1892/EXEC1.2005；tb2 start171.9/home1.9753/path1.1540/progress1.1481/EXEC1.1540。protocol54PASS。bootstrap自然[1,0,0]，supervisorfirstfixed断言自然退出；fullpool/707未启动，0基础设施失败/0整格重试/0活跃行政中断。所有活跃运行结束后才改源。原17用户材料SHA256未变化。
+
+预算诊断纠正之前“额外6米”的文字：当前及对应旧源码MAX_NAVIGATION_LEG_M实际为5m，所以固定往返附加量10m，而非6m。guard tb3在event_time2373.882能量28.047、required34.391；纯代数去掉未发生的10m费用后约23.280（不是替代轨迹实测）。下一候选并非简单删安全门槛：普通rally航段派发前实际路线+其末端到最终点路线+新最终点返航reserve+保持+原队友等待预算都重新检查，未知/非法/不足不派发，具体需求纳入下一串行返充/容量检查。重分配更远最终点也重新算home储备，不能沿用旧点预算；local safety/必要返航refuge与真实charge staging保留原优先规则。
+
+reassign_rally_pose在同一不可变map/blocked snapshot内复用静态距离场与动态route cache，替代每个候选的重复Dijkstra，原候选/排名/clearance保持。离线组件基准命令：source Humble+canonical install，PYTHONNOUSERSITE=1、ROS_LOG_DIR=canonical ROS/log/component_checks，`/usr/bin/python3 /tmp/benchmark_p3b5_reassign_cache.py`；7次交错比较77ff函数与dirty新源（hash记录），同一80x80墙/开口/停车反例，每次结果点完全一致。中位.540885→.023951s，22.583倍，仅组件计算加速，不是任务消融或任务完成时间改善。完整源码/trials/hash见report/20261002_p3b5_reassign_cache_benchmark.json。
+
+第一轮相关检查2FAIL/144PASS7.00s：staging fake仍只接收两个参数，及旧“无条件附加恢复费用”测试与明确变更语义不一致；修正fake并保留explicit staging断言，将旧测试改为保留真实队友wait并新增实际detour不足/充电恢复/未知路径/无效速度/重新分配home reserve反例。相关146PASS6.35s；进一步用完整实际费用重算替代delta后，全15文件276PASS8.60s，四包build5.51s，3r source audit PASS0违规。下一原矩阵须clean提交/push后开启，历史成功不回填。

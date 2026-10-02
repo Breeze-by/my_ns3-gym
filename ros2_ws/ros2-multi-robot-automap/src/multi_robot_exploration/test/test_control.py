@@ -1167,6 +1167,7 @@ def test_idle_blocker_recovery_dispatches_motion_before_returning(
         message_freshness_timeout_sec=5.,
         rally_charge_requested={}, prepare_rally_charges=lambda: {"tb2"},
         rally_precharge_staging={},
+        rally_detour_budgets={},
         rally_approach_routes={},
         rally_preflight_complete=True, rally_precharge_active=False,
         battery_states={name: {'charge_x': 1., 'charge_y': 2.5} for name in names},
@@ -1306,6 +1307,66 @@ def test_rally_preflight_does_not_request_charge_with_sufficient_energy():
     node, messages, failures = rally_budget_node(energy=40.0)
     assert control.HeadquartersControl.prepare_rally_charges(node) == set()
     assert not messages and not failures
+
+
+def test_near_final_robot_does_not_precharge_for_an_unplanned_ten_meter_loop():
+    node, messages, failures = two_robot_rally_budget_node()
+    node.robot_positions["tb1"] = (7.55, 1.05)
+    node.battery_states["tb1"]["energy"] = 26.
+    node.battery_states["tb2"]["energy"] = 80.
+    blocked = control.HeadquartersControl.prepare_rally_charges(node)
+    assert "tb1" not in blocked and not messages and not failures
+    assert node.rally_charge_budgets["tb1"] < 26.
+
+
+def test_actual_detour_is_funded_before_admission_and_charge_restores_it():
+    node, messages, failures = two_robot_rally_budget_node()
+    node.rally_detour_budgets = {}
+    node.robot_positions["tb1"] = (7.55, 1.05)
+    node.battery_states["tb1"]["energy"] = 26.
+    node.battery_states["tb2"]["energy"] = 80.
+    control.HeadquartersControl.prepare_rally_charges(node)
+    direct = control.plan_rally_leg(node.rally_final_targets["tb1"], node.map_data,
+                                   node.resolution, node.origin, node.robot_positions["tb1"])
+    assert control.HeadquartersControl.rally_plan_has_energy(node, "tb1", direct)
+    detour = control.plan_rally_leg(control.RallyPose(4.05, 2.05, 0.), node.map_data,
+                                   node.resolution, node.origin, node.robot_positions["tb1"])
+    assert not control.HeadquartersControl.rally_plan_has_energy(node, "tb1", detour)
+    assert node.rally_detour_budgets["tb1"] > 26.
+    assert "tb1" in control.HeadquartersControl.prepare_rally_charges(node)
+    assert messages and not failures
+    # Fresh preflight after a genuine charge; no repeated detour double counting.
+    node.battery_states["tb1"]["energy"] = 80.
+    control.HeadquartersControl.prepare_rally_charges(node)
+    assert control.HeadquartersControl.rally_plan_has_energy(node, "tb1", detour)
+    assert not node.rally_detour_budgets
+
+
+def test_detour_cannot_use_disconnected_final_path_or_invalid_motion_model():
+    node, _, _ = two_robot_rally_budget_node()
+    node.rally_detour_budgets = {}
+    node.battery_states["tb1"]["energy"] = 80.
+    control.HeadquartersControl.prepare_rally_charges(node)
+    plan = (control.RallyPose(3.05, 1.05, 0.), ((3.05, 1.05),))
+    node.map_data[:, 50:55] = 100
+    assert not control.HeadquartersControl.rally_plan_has_energy(node, "tb1", plan)
+    node.map_data[:] = 0
+    node.battery_states["tb1"]["nominal_speed_mps"] = 0.
+    assert not control.HeadquartersControl.rally_plan_has_energy(node, "tb1", plan)
+
+
+def test_reassignment_rechecks_return_reserve_from_the_new_final_pose():
+    node, _, _ = two_robot_rally_budget_node()
+    node.rally_detour_budgets = {}
+    node.robot_positions["tb1"] = (7.55, 1.05)
+    node.battery_states["tb1"]["energy"] = 26.
+    node.battery_states["tb2"]["energy"] = 80.
+    control.HeadquartersControl.prepare_rally_charges(node)
+    plan = control.plan_rally_leg(node.rally_final_targets["tb1"], node.map_data,
+                                  node.resolution, node.origin, node.robot_positions["tb1"])
+    assert control.HeadquartersControl.rally_plan_has_energy(node, "tb1", plan)
+    node.rally_final_targets["tb1"] = control.RallyPose(9.05, 1.05, 0.)
+    assert not control.HeadquartersControl.rally_plan_has_energy(node, "tb1", plan)
 
 
 def test_rally_preflight_blocks_invalid_battery_state_without_making_a_command():
@@ -1609,7 +1670,8 @@ def test_waiting_precharge_moves_only_along_a_safe_home_prefix(conflicting, obse
         map_data=grid, resolution=.1, origin=(0., 0.),
         get_logger=lambda: SimpleNamespace(info=lambda *a: None, warn=lambda *a: None),
     )
-    def send(name, plan):
+    def send(name, plan, charge_staging=False):
+        assert charge_staging
         sent.append((name, plan))
         node.rally_goal_pending[name] = True
     node.send_rally_goal = send
@@ -2009,16 +2071,16 @@ def test_return_fixture_pauses_only_dispatch_and_resumes_without_stopping_dds():
     assert node.return_probe_paused is False
 
 
-def test_multi_robot_preflight_budgets_one_extra_recovery_leg_out_and_back():
+def test_multi_robot_preflight_keeps_peer_wait_without_a_phantom_recovery():
     node, messages, failures = two_robot_rally_budget_node()
     for state in node.battery_states.values():
         state["energy"] = 40.0
     blocked = control.HeadquartersControl.prepare_rally_charges(node)
-    assert blocked and messages and not failures
-    # Before contingency, tb2 could fund the nominal trip plus the peer wait.
+    assert not blocked and not messages and not failures
+    # Nominal trip plus the actual peer travel wait stays reserved.
     distance = 7.0
     state = node.battery_states["tb2"]
     nominal = control.battery_assignment_required_energy(distance, distance, 1., .02, 2., .18, 8.) + .02 * 5
     assert nominal < 40.
-    allowance = 2 * control.MAX_NAVIGATION_LEG_M * (1. + .02 / .18)
-    assert node.rally_charge_budgets["tb2"] >= nominal + allowance
+    assert node.rally_charge_budgets["tb2"] > nominal
+    assert node.rally_charge_budgets["tb2"] < 40.
