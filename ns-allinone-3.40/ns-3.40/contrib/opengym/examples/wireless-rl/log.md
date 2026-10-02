@@ -4691,3 +4691,28 @@ PYTHONNOUSERSITE=1 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b_fault_matri
 失败日志可见tb3六次重分配到远处集合点，却在等待者tb2的瓶颈内逐段移动；tb1持续保留视线，最终也返充，剩余时间不足。下一候选优先完整等待路线外的最近可达可视refuge，再退回永久重分配；不会为了远处新final点重复占据等待通道。临时避让保留原final，继续使用真实派发能量、源leases、净空、路线预约和本地安全检查。无可行refuge时原永久重分配仍可恢复。不能把此假设或离线反例写成任务时延实测改善。
 
 相关control144PASS6.25s；全16文件281PASS7.93s，四包build5.68s，3r source audit PASS0违规。检查命令source Humble/install并设PYTHONNOUSERSITE=1、ROS_LOG_DIR=canonical ROS/log/component_checks：`/usr/bin/python3 -m pytest -q --tb=short`加src/multi_robot_exploration/test的test_control.py、test_battery_manager.py、test_gateway.py、test_fault_model.py、test_navigation_faults.py、test_task_evaluator.py、test_nav2_ready_gate.py、test_readiness.py、test_spawn_entity_checked.py、test_tf_ingress_sampler.py、test_target_detector.py及src/merge_map/test/test_merge_map.py、scripts/test_p3b5_tasks.py、scripts/test_p3b5_gate.py、scripts/test_p3b5_return_staging.py、scripts/test_ros_smoke_native_probe.py。构建`colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot`；审计`/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3`。反例实际验证侧向避让后原等待路线恢复可达，即使永久新目标也存在；没有refuge的fallback与能量未就绪阻挡者禁止派发也覆盖。下一原矩阵须新clean提交/push后执行；P3B.5仍待完成，未进入ns-3/RL。
+
+## 2026-10-02 P3B.5 v30避让中丢失视觉及原生BT确认超时
+
+冻结04d23e8e1e63e4341b183b5e1c3dab3703a0d717。report/20261002_p3b5_view_refuge_failed_candidate.json保留4started/4raw及完整命令/source/env/hash/准备阶段/原生Nav2诊断。source Humble/canonical install/Gazebo，PYTHONNOUSERSITE=1，TURTLEBOT3_MODEL=waffle，ROS_LOG_DIR=canonical ROS/log/ros_launch，rtk bash -lc：
+
+```bash
+/usr/bin/python3 /tmp/p3b5_v30_bootstrap.py > /tmp/p3b5_v30_bootstrap.log 2>&1
+/usr/bin/python3 /tmp/p3b5_v30_after_subgates.py > /tmp/p3b5_v30_after_subgates.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:14051 taskset -c 20-39 /usr/bin/python3 /tmp/p3b5_v30_zero_first.py > /tmp/p3b5_v30_zero_first.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:14050 taskset -c 0-19 /usr/bin/python3 /tmp/p3b5_v30_first_lab101.py > /tmp/p3b5_v30_first_lab101.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:14052 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_return_probe.py --run-id p3b5_v30_returnproof --ros-domain-base 180 --config scripts/p3b5_staged_return_probe_manifest.json > /tmp/p3b5_v30_returnproof.log 2>&1
+PYTHONNOUSERSITE=1 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_04d23e8.json > /tmp/p3b5_protocol_04d23e8.log 2>&1
+```
+
+zero pair1.8/2.4s mission_failed双机FAILED/E0/无目标/0碰撞通过。固定lab3/101自然timeout300.1/RALLY、最低22.0804、2次充电、零碰撞/失效，runner/task均正常结束，不能计成功。guardtb1被临时移往(-3.15,.53)，距目标(-4,4)超过3m，目标lease到期；四向扫描后依据新鲜前沿重新发现目标，但剩余时间不足。永久重分配优先问题已经走到真实侧向动作，然而缺少视线约束破坏观测连续性。不能把safe refuge等同于可观测refuge。
+
+受控ideal rawCOMPLETE244.3、零碰撞，但stager1=operational_failure，fixture失败阻止fault启动。原epoch2075.482、tb1第二.75m腿请求2084.882、2086.082收到Nav2ABORTED6，发生于准备截止50s之前，不能误记为截止超时。原生日志显示compute_path_to_pose ACK、clear costmap、cancel follow_path等20ms确认/服务请求超时。只读核对本地Nav2Humble源码：/opt/ros/humble/include/nav2_behavior_tree/bt_action_server_impl.hpp:119–120把default_server_timeout转为milliseconds；bt_action_node.hpp:213–228按该期限等待goal handle，超时返回FAILURE，未放宽任务完成或网关deadline。下一候选改四台实际params配置为500ms，只扩大有界原生内部ACK等待，不延长任务/navigation deadline或整格重试。本轮protocol54PASS，bootstrap原[1,1,0]、future supervisor因firstfixed FAIL自然结束；fullpool/707未启动，所有进程自然结束，无行政任务中断/替换/整格重试/基础设施失败；另明确操作失败1。
+
+下一候选从真实新交付target_detection读取max_distance_m（缺省仍3，非法/非有限值拒绝且不更新observer/source lease）。最新age≤5s ACTIVE观测者的通道refuge筛选范围扣除原rally位置容差，并须当前交付地图已知LOS；实际派发的短航点也检查，朝向仍面向目标。没有可行近侧可见refuge则保留原安全回退/等待，不使用Gazebo真值推断视线，不允许过期目标控制。候选先做廉价范围/净空/路线分离筛选，再按最近路径逐点验证LOS，避免遍历每个自由格的射线检查拖慢中央回调。
+
+几何反例验证旧最近refuge超出3m，新候选既在range余量内、路线外.8m并面对目标，墙和unknown遮挡拒绝；回调验证新交付自定义检测范围及invalidrange不偷换observer或续lease。control145PASS6.64s；新全16文件282PASS9.01s。新增状态机guard联动后1FAIL/282PASS9.07s：测试refuge几何范围4.05扣除.35位置余量后无近侧可见点，实际选了4.85m远点，违背该fixture原近侧≤1.1m断言；把测试传感范围修正为4.25使该fixture确实有近侧可见点，生产余量/约束不变。最终全量结果随后补记。四包build5.56s，3r source audit PASS0违规。命令与v29同16文件pytest/full四包build/source audit，canonical ROS/log/component_checks、PYTHONNOUSERSITE=1。任务栈改动须新clean提交/push再执行原矩阵，历史244.3COMPLETE不能弥补操作失败，本轮也不进ns-3/RL。
+
+第二次全量仍1FAIL/282PASS9.47s；仅扩大测试range为4.25不能建立LOS，避让空间与目标之间仍有实墙。因此保留生产视线限制，给guard测试夹具增加一个仅1cell宽的观察缝（净空不足以通行，不产生导航绕过通道），自定义检测范围4.6；五个状态机恢复场景5PASS/141deselected1.48s，完整路径仍先被停车机器人阻挡，侧向观察点让出后才可通行。两次失败均记录，不把不同副作用混淆为任务成功。
+
+最终全16文件283PASS8.34s（包含新guard状态机联动）、四包build5.56s、3r source audit PASS0违规。v30固定原始ledger只读重放check_p3b5_gate.ledger_audit通过因果/TTL/版本/决策输入source leases，详见失败归档records，不启动新episode。新候选commit/push之前diff check与显式staging排除用户260929_report及所有运行/build产物。

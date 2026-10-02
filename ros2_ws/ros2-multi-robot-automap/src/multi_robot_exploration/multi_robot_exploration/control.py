@@ -1104,6 +1104,14 @@ def rally_survey_pose(raw_grid, resolution, origin, robot_position, target):
     return RallyPose(x, y, math.atan2(target[1] - y, target[0] - x))
 
 
+def rally_target_view(raw_grid, resolution, origin, position, target, max_distance):
+    """Predict visibility only from the delivered map and detector range."""
+    return (math.dist(position, target) <= max_distance
+            and has_known_line_of_sight(
+                raw_grid, world_to_grid(*position, resolution, *origin),
+                world_to_grid(*target, resolution, *origin)))
+
+
 def rally_yield_pose(
     raw_grid,
     resolution,
@@ -1115,6 +1123,7 @@ def rally_yield_pose(
     reserved_routes=(),
     route_separation_m=RALLY_MIN_SEPARATION_M,
     visible_only=False,
+    target_view_distance=None,
 ):
     """Choose a reachable refuge outside parked poses and reserved corridors."""
     traversable = traversable_grid(
@@ -1144,7 +1153,10 @@ def rally_yield_pose(
         if path_distance < 0.5 or path_distance > 5.0:
             continue
         x, y = grid_to_world(row, column, resolution, origin[0], origin[1])
-        if math.dist((x, y), target) < 0.7:
+        target_distance = math.dist((x, y), target)
+        if target_distance < 0.7:
+            continue
+        if target_view_distance is not None and target_distance > target_view_distance:
             continue
         if any(
             math.dist((x, y), pose) < RALLY_MIN_SEPARATION_M
@@ -1153,7 +1165,7 @@ def rally_yield_pose(
             continue
         if route_tree is not None and route_tree.query((x, y))[0] < route_separation_m:
             continue
-        candidates.append((math.dist((x, y), target), path_distance, x, y))
+        candidates.append((target_distance, path_distance, x, y))
     if not candidates:
         return None
     if reserved_routes:
@@ -1163,6 +1175,9 @@ def rally_yield_pose(
     # Verify nearest refuges in order, stopping at the first feasible one.
     # Testing line geometry for every free cell stalls the gateway executor.
     for _, _, x, y in candidates:
+        if target_view_distance is not None and not rally_target_view(
+                raw_grid, resolution, origin, (x, y), target, target_view_distance):
+            continue
         if visible_only:
             cell = world_to_grid(x, y, resolution, origin[0], origin[1])
             line = tuple(_line_cells(start, cell))
@@ -1816,6 +1831,7 @@ class HeadquartersControl(Node):
         self.target = None
         self.target_received_source_time = None
         self.target_observing_robot = None
+        self.target_view_distance = 3.0
         self.rally_observer_guard = None
         self.detecting_robot = None
         self.rally_targets = {}
@@ -2200,6 +2216,9 @@ class HeadquartersControl(Node):
                 self.get_logger().error("Changed target requires a new task episode.")
                 return
             robot = str(event["robot"])
+            view_distance = float(event.get("max_distance_m", 3.0))
+            if not math.isfinite(view_distance) or view_distance <= 0:
+                raise ValueError("invalid detector range")
         except (KeyError, TypeError, ValueError, json.JSONDecodeError) as error:
             self.get_logger().error(f"Invalid target detection: {error}")
             return
@@ -2207,6 +2226,7 @@ class HeadquartersControl(Node):
         self.target = target
         self.target_received_source_time = stamp
         self.target_observing_robot = robot
+        self.target_view_distance = view_distance
         if initial:
             self.detecting_robot = robot
         self.consumed_publisher.publish(String(data=json.dumps({
@@ -3004,6 +3024,10 @@ class HeadquartersControl(Node):
                                 if other_name != blocker
                             ]
                             blocker_positions.append(self.robot_positions[name])
+                            view_distance = (
+                                getattr(self, "target_view_distance", 3.0) - self.rally_position_tolerance
+                                if blocker == getattr(self, "rally_observer_guard", None) else None
+                            )
                             # Clear the waiting approach first. A distant new
                             # final pose can keep the blocker on that approach
                             # for several legs, starving the waiting robot.
@@ -3026,6 +3050,7 @@ class HeadquartersControl(Node):
                                     self.robot_positions[blocker], self.target,
                                     blocker_reserved, blocker_positions,
                                     reserved_routes=(waiting_plan[1],), visible_only=True,
+                                    target_view_distance=view_distance,
                                 )
                             permanent_reassignment = blocker_replacement is None
                             if permanent_reassignment:
@@ -3048,6 +3073,11 @@ class HeadquartersControl(Node):
                                 visible_only=True,
                             )
                             if blocker_plan[0] is None:
+                                continue
+                            if view_distance is not None and not rally_target_view(
+                                    self.map_data, self.resolution, self.origin,
+                                    (blocker_plan[0].x, blocker_plan[0].y), self.target,
+                                    view_distance):
                                 continue
                             if permanent_reassignment:
                                 self.rally_final_targets[blocker] = blocker_replacement

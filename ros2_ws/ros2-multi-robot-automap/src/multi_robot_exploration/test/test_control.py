@@ -1109,6 +1109,31 @@ def test_parked_robot_seals_corridor_until_it_yields():
     assert released[0] is not None
 
 
+def test_observer_refuge_preserves_range_and_known_target_sight():
+    grid = np.zeros((60, 100), dtype=int)
+    start, target = (3., 3.), (6., 3.)
+    # Use a dense path, as produced by the actual distance-field planner.
+    route = tuple((x, 3.) for x in np.arange(1., 8.01, .1))
+    args = (grid, .1, (0., 0.), start, target)
+    nearest = control.rally_yield_pose(*args, reserved_routes=(route,), visible_only=True)
+    assert math.dist((nearest.x, nearest.y), target) > 3.
+    visible = control.rally_yield_pose(
+        *args, reserved_routes=(route,), visible_only=True, target_view_distance=2.65,
+    )
+    assert visible is not None
+    assert math.dist((visible.x, visible.y), target) <= 2.65
+    assert min(math.dist((visible.x, visible.y), p) for p in route) >= .8
+    assert visible.yaw == pytest.approx(math.atan2(target[1]-visible.y, target[0]-visible.x))
+    position = (visible.x, visible.y)
+    assert control.rally_target_view(grid, .1, (0., 0.), position, target, 2.65)
+    cell = control.world_to_grid(*position, .1, 0., 0.)
+    target_cell = control.world_to_grid(*target, .1, 0., 0.)
+    middle = list(control._line_cells(cell, target_cell))[2]
+    for unavailable in (100, -1):
+        grid[middle] = unavailable
+        assert not control.rally_target_view(grid, .1, (0., 0.), position, target, 2.65)
+
+
 def test_unknown_gain_stops_at_known_walls_and_recovers_through_door():
     grid = np.full((100, 100), -1, dtype=int)
     grid[40:60, 40:60] = 0
@@ -1141,11 +1166,12 @@ def test_viewpoint_gain_uses_obstacle_visibility():
             assert point.information_gain == control.visible_unknown_gain(grid, (point.row, point.column), 20)
 
 
-@pytest.mark.parametrize("permanent_reassignment, refuge_available, preflight_blocked", [
-    (True, True, False), (False, True, False), (True, False, False), (True, True, True),
+@pytest.mark.parametrize("permanent_reassignment, refuge_available, preflight_blocked, guard", [
+    (True, True, False, False), (False, True, False, False),
+    (True, False, False, False), (True, True, True, False), (True, True, False, True),
 ])
 def test_idle_blocker_recovery_dispatches_motion_before_returning(
-    monkeypatch, permanent_reassignment, refuge_available, preflight_blocked
+    monkeypatch, permanent_reassignment, refuge_available, preflight_blocked, guard
 ):
     from types import SimpleNamespace
 
@@ -1153,6 +1179,11 @@ def test_idle_blocker_recovery_dispatches_motion_before_returning(
     grid = np.full((50, 100), 100, dtype=int)
     grid[19:31, 1:99] = 0
     grid[8:26, 35:46] = 0  # a dead-end refuge, not a bypass around the blocker
+    if guard:
+        # A narrow viewing slit exposes the target from the refuge but is
+        # too narrow for a robot to bypass the blocked corridor.
+        for cell in control._line_cells((16, 40), (25, 80)):
+            grid[cell] = 0
     targets = {"tb1": control.RallyPose(8.0, 2.5, 0.0), "tb2": control.RallyPose(8.0, 2.0, 0.0)}
     replacements = {"tb1": targets["tb1"], "tb2": control.RallyPose(4.0, 1.5, 0.0)}
     monkeypatch.setattr(
@@ -1170,6 +1201,7 @@ def test_idle_blocker_recovery_dispatches_motion_before_returning(
         rally_charge_requested={}, prepare_rally_charges=lambda: {"tb2"},
         rally_precharge_staging={},
         rally_detour_budgets={},
+        rally_observer_guard="tb2" if guard else None, target_view_distance=4.6,
         rally_approach_routes={},
         rally_preflight_complete=True, rally_precharge_active=False,
         battery_states={name: {'charge_x': 1., 'charge_y': 2.5} for name in names},
@@ -1209,6 +1241,11 @@ def test_idle_blocker_recovery_dispatches_motion_before_returning(
             targets["tb1"], grid, 0.1, (0.0, 0.0), (1.0, 2.5)
         )[1]
         assert min(math.dist((refuge.x, refuge.y), point) for point in route) >= 0.8
+        if guard:
+            assert control.rally_target_view(
+                grid, .1, (0., 0.), (refuge.x, refuge.y), node.target,
+                node.target_view_distance-node.rally_position_tolerance,
+            )
         # The chosen endpoint actually releases the original waiting route,
         # even when a distant permanent replacement was also available.
         released = control.plan_rally_leg(
@@ -1864,8 +1901,9 @@ def test_target_lease_requires_new_delivered_confirmation_and_keeps_task_phase()
         phases.append(value)
         node.task_state = value
     node.publish_task_state = phase
-    def deliver(stamp, target=(1., 2.), robot="tb1"):
+    def deliver(stamp, target=(1., 2.), robot="tb1", distance=3.):
         event = {"robot": robot, "target_x": target[0], "target_y": target[1],
+                 "max_distance_m": distance,
                  "stamp_sec": stamp, "_gateway": {"source_time": stamp, "delivery_time": 100.}}
         control.HeadquartersControl.target_detection_callback(node, String(data=json.dumps(event)))
     deliver(39.9)
@@ -1888,6 +1926,12 @@ def test_target_lease_requires_new_delivered_confirmation_and_keeps_task_phase()
     deliver(90., robot="tb1")
     assert node.target_observing_robot == "tb2"  # old repeats cannot steal handoff
     assert [json.loads(m.data)["event"] for m in emitted] == ["consumed", "target_reconfirmed", "target_reconfirmed"]
+    deliver(99.5, robot="tb2", distance=1.5)
+    assert node.target_view_distance == 1.5 and node.target_received_source_time == 99.5
+    for distance in (float("inf"), float("nan"), 0., -1.):
+        deliver(99.9, robot="tb1", distance=distance)
+        assert node.target_received_source_time == 99.5
+        assert node.target_view_distance == 1.5 and node.target_observing_robot == "tb2"
 
 
 def test_expired_target_blocks_rally_decisions_without_blocking_local_return_yield():

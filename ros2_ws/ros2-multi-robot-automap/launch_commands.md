@@ -757,3 +757,5 @@ Gazebo factory 明确表示本次实体已经入队、确认阶段超时时，he
 2026-10-02 实际绕行预算候选：纠正此前“6米”说明，原代码MAX_NAVIGATION_LEG_M=5m，无条件附加往返实际上为10m。新普通集合航段在发送前重新核对实际拟走路线、从末端到当前最终集合点的已知路线、该最终点返航储备、5秒保持和队友等待耗电，替代未发生的固定绕行；路径未知/参数非法/能量不足均不得派发，不足需求交给下一预检串行返充或容量失败。真实charge staging保留原预算直到充电；必要本地返航让路保持原安全优先级，由本地reserve独立保护。集合点重选仅在同一不可变地图/停车mask快照内复用两个距离场，排名/候选/安全门槛不变。命令与300s门槛不变，须新冻结验证。
 
 2026-10-02 原生启动检查隔离候选：headless smoke的ready、model inventory和message检查在独立单次只读worker中执行，父进程以原startup/message墙钟deadline监督初始化、发现及等待，ready仍要求实际ACTIVE，实体/消息仍要求实际收到。worker验证完成后直接结束进程，由内核释放其DDS资源，避免任务runner反复创建/关闭ROS context；超时仅杀自己的检查worker并明确失败，ready期间launch早退仍立即失败。不跳过任何任务/graph/source门禁，不把已有COMPLETE raw盖过runner失败。manifest环境记录native_probe_isolation，所有ideal/fault/固定格共用。普通命令不变，包内算法与上次冻结相同；需新完整批次。
+
+2026-10-02 P3B.5候选的原生命令确认：四台Nav2参数文件中`bt_navigator.default_server_timeout`为500毫秒，仅用于内部动作/服务确认；网关导航期限、300秒任务门禁及所有完成/能量/安全标准保持。现有启动命令无需新增参数；候选仍待同提交完整集成门禁。
