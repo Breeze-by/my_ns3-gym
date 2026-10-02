@@ -34,6 +34,14 @@ def test_reject_original_future_source_before_transmission(tmp_path):
     with pytest.raises(AssertionError):ledger_audit(path)
 
 
+@pytest.mark.parametrize('age', [0., 5., 5.001, -.001])
+def test_observer_handoff_wait_cannot_claim_stale_or_future_visual_contact(tmp_path, age):
+    event={'event':'coordinator_observer_handoff_wait','event_time':100.,'observer_source_time':100.-age}
+    if 0<=age<=5:assert ledger_audit(write_events(tmp_path,[event]))['coordinator_decision_source_leases']=='PASS'
+    else:
+        with pytest.raises(AssertionError):ledger_audit(write_events(tmp_path,[event]))
+
+
 def test_reacquisition_frontier_search_requires_fresh_states_and_recorded_route(tmp_path):
     event={"event":"coordinator_navigation_decision","event_time":100.,
            "kind":"target_reacquisition_exploration","search_basis":"current_map_frontiers",

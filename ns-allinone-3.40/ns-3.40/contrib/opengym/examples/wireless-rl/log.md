@@ -4547,3 +4547,27 @@ PYTHONNOUSERSITE=1 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b_fault_matri
 候选全15文件253PASS8.05s、四包build5.28s、3r source audit PASS0违规；删除已被前沿恢复替代的旧重复扫描冷却状态后，再跑最短相关检查及diff，clean提交/push后才能开新冻结。
 
 删除旧扫描冷却后的最短相关150PASS6.82s；原17份用户材料SHA256均未变化（目录完整相等检查因另有新增文件失败，逐原始文件核查通过，不修改/暂存用户新增文件）。
+
+
+## 2026-10-02 P3B.5 v24受控返航通过，目标恢复仍不足
+
+clean冻结d7954e38e839bf367dc7ae98247f1e07cc34a494。完整5raw/summary/命令/UTC/source/env/hash、staging双侧PASS/真实物理证据/首次理想ledger核查在report/20261002_p3b5_observer_handoff_failed_candidate.json，全部历史保留，不回填后继。source Humble/install/Gazebo，PYTHONNOUSERSITE=1、TURTLEBOT3_MODEL=waffle、工作区ROS_LOG_DIR，rtk bash -lc：
+
+```bash
+/usr/bin/python3 /tmp/p3b5_v24_bootstrap.py > /tmp/p3b5_v24_bootstrap.log 2>&1
+/usr/bin/python3 /tmp/p3b5_v24_after_subgates.py > /tmp/p3b5_v24_after_subgates.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:13451 taskset -c 20-39 /usr/bin/python3 /tmp/p3b5_v24_zero_first.py > /tmp/p3b5_v24_zero_first.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:13450 taskset -c 0-19 /usr/bin/python3 /tmp/p3b5_v24_first_lab101.py > /tmp/p3b5_v24_first_lab101.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:13452 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_return_probe.py --run-id p3b5_v24_returnproof --ros-domain-base 180 --config scripts/p3b5_staged_return_probe_manifest.json > /tmp/p3b5_v24_returnproof.log 2>&1
+PYTHONNOUSERSITE=1 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_d7954e3.json > /tmp/p3b5_protocol_d7954e3.log 2>&1
+```
+
+5started/5raw：zero双侧mission_failed，全部中央FAILED/E0/0目标/0碰撞，1.8/2.1s；首格lab3/101 timeout300.1/RALLY、3次充电、零碰撞/失效/耗尽。last target source2232.782，四blind scans在epoch+180.5..188.9；五次前沿恢复请求在192.7/207.7/215.7/230.7/243.7秒，信息收益多指向东侧，没有真实新确认。完整ledger因果/TTL/版本/source leases及恢复路线PASS：10055生成、10844accepted、38导航决策、15真实reconfirmed、最小source_delay.007、最大clock deferral.089。新恢复动作得到实际执行，但不能把机制正确写为300s任务完成。
+
+补充ideal/fault均自然到300.0/300.1s timeout，ideal末段FOUND只作过程（不是任务成功），两台各一次充电、最低能量正、零碰撞/失效；全部runner/stager/nativeobserver0。权威gateway epoch之后暂停确认/首批准备，19.4/20.8s已远处staged；双侧严格staging_audit PASS。fault真实guard62..248：tb1 start171.7s/home1.9856m/path1.1810/progress1.1721/EXEC1.1809；tb2 start171.2/home2.0062/path1.2024/progress1.1965/EXEC1.2024；两台均真实充电、livegraph/TTL/一次性准备检查PASS。协议54PASS。bootstrap自然[1,0,0]，supervisor因firstfixed自然FAIL；fullpool/707没启动，无活跃行政中断/整格重试。独立追加物理审计仅在原运行自然结束后执行，不增加episode或替换失败。
+
+下一候选采用观测接力：跟踪最近真正交付的确认robot/source，新确认源age≤min(freshness,5s)、ACTIVE且有健康伙伴时，暂缓这台的主动返充/home staging，伙伴按原规则靠近；真正伙伴新确认后释放上一观察者。旧重传不偷换observer，源future/过5s无guard，单台健康/伙伴UNKNOWN无guard；已admit返航继续，local安全reserve可随时自行preempt，容量不足仍失败。guardian仍energy_unready，不豁免其全程能量预算或违规集合。handoff wait记录源5秒门禁。
+
+组件先134PASS7.57s；新增handoff callback有效新事件后原测试预期仍2条事件，相关1FAIL/159PASS7.58s（无仿真），修正为实际新增第三条target_reconfirmed，仍严格检查旧重复不续lease/不抢回接力。一次工具工作目录误漏ros2_ws而未能创建进程，立即按canonical path重跑，无仿真。四包build5.23s；最终全组件/source审计结果随后补记。该算法只能新冻结原参数完整门禁证明，不能据组件或旧supplemental成功宣布P3B.5完成。
+
+全15文件第一轮同一fixture预期残留1FAIL/266PASS8.60s，source audit PASS0违规；修正后267PASS8.69s，四包5.23s。diff check/显式staging后提交/push新冻结，原5raw不回填。

@@ -1341,6 +1341,56 @@ def test_early_rally_charges_are_serialized_and_nearest_charger_goes_first():
     assert not failures
 
 
+def test_visual_handoff_charges_peer_first_then_releases_previous_observer():
+    import json
+    from types import SimpleNamespace
+
+    node, messages, failures = two_robot_rally_budget_node()
+    node.target_observing_robot = "tb2"  # nearest charger is also the last observer
+    node.target_received_source_time = 10.5
+    events = []
+    node.consumed_publisher = SimpleNamespace(publish=events.append)
+    assert control.HeadquartersControl.prepare_rally_charges(node) == {"tb1", "tb2"}
+    assert node.rally_observer_guard == "tb2"
+    assert json.loads(messages[-1].data)["robot"] == "tb1"
+    assert json.loads(events[-1].data)["event"] == "coordinator_observer_handoff_wait"
+    node.rally_charge_requested.clear()
+    node.battery_states["tb1"]["energy"] = 80.
+    node.target_observing_robot = "tb1"  # new real confirmation performs handoff
+    node.target_received_source_time = 10.8
+    assert control.HeadquartersControl.prepare_rally_charges(node) == {"tb2"}
+    assert json.loads(messages[-1].data)["robot"] == "tb2"
+    assert not failures
+
+
+@pytest.mark.parametrize("stamp,mode,peer,expected", [
+    (95., "ACTIVE", "ACTIVE", "tb1"),
+    (94.99, "ACTIVE", "ACTIVE", None),
+    (100.01, "ACTIVE", "ACTIVE", None),
+    (float("nan"), "ACTIVE", "ACTIVE", None),
+    (99., "RETURNING", "ACTIVE", None),
+    (99., "ACTIVE", "FAILED", None),
+    (99., "ACTIVE", "UNKNOWN", None),
+])
+def test_observation_guard_needs_live_recent_confirmation_and_healthy_peer(stamp, mode, peer, expected):
+    assert control.rally_observation_guard("tb1", stamp, 100., {"tb1": mode, "tb2": peer}) == expected
+
+
+def test_observation_guard_does_not_cancel_admitted_return_or_relax_capacity():
+    from types import SimpleNamespace
+    node, messages, failures = two_robot_rally_budget_node()
+    node.target_observing_robot = "tb2"
+    node.target_received_source_time = 10.5
+    node.consumed_publisher = SimpleNamespace(publish=lambda m: None)
+    node.rally_charge_requested["tb2"] = 8.
+    control.HeadquartersControl.prepare_rally_charges(node)
+    assert node.rally_observer_guard is None and messages
+    node.rally_charge_requested.clear()
+    node.battery_states["tb2"]["capacity"] = 1.
+    control.HeadquartersControl.prepare_rally_charges(node)
+    assert failures == ["rally_energy_capacity_insufficient:tb2"]
+
+
 @pytest.mark.parametrize("mode", ["RETURNING", "CHARGING"])
 def test_existing_local_safety_return_defers_new_early_charge(mode):
     node, messages, failures = two_robot_rally_budget_node()
@@ -1497,8 +1547,8 @@ def test_staged_charge_intent_survives_an_unavailable_final_rally_route():
     assert not messages and not failures
 
 
-@pytest.mark.parametrize('conflicting', [False, True])
-def test_waiting_precharge_moves_only_along_a_safe_home_prefix(conflicting):
+@pytest.mark.parametrize('conflicting, observer', [(False, False), (True, False), (False, True)])
+def test_waiting_precharge_moves_only_along_a_safe_home_prefix(conflicting, observer):
     from types import SimpleNamespace
     names = ['returner', 'waiter']
     grid = np.zeros((80, 120), dtype=int)
@@ -1514,6 +1564,7 @@ def test_waiting_precharge_moves_only_along_a_safe_home_prefix(conflicting):
         battery_modes={'returner': 'RETURNING', 'waiter': 'ACTIVE'},
         participating_robots=lambda: names,
         rally_dispatch_order=names, rally_charge_requested={}, rally_precharge_staging={},
+        rally_observer_guard='waiter' if observer else None,
         prepare_rally_charges=lambda: {'waiter'}, rally_charge_budgets={'waiter': 40.},
         rally_approach_routes={}, rally_preflight_complete=False, rally_precharge_active=False,
         battery_states={'returner': {'charge_x': 9.05, 'charge_y': positions['returner'][1]},
@@ -1536,7 +1587,7 @@ def test_waiting_precharge_moves_only_along_a_safe_home_prefix(conflicting):
         node.rally_goal_pending[name] = True
     node.send_rally_goal = send
     control.HeadquartersControl.update_mission(node)
-    if conflicting:
+    if conflicting or observer:
         assert not sent and not node.rally_precharge_staging
     else:
         assert sent[0][0] == 'waiter' and sent[0][1][0].x < positions['waiter'][0]
@@ -1714,8 +1765,8 @@ def test_target_lease_requires_new_delivered_confirmation_and_keeps_task_phase()
         phases.append(value)
         node.task_state = value
     node.publish_task_state = phase
-    def deliver(stamp, target=(1., 2.)):
-        event = {"robot": "tb1", "target_x": target[0], "target_y": target[1],
+    def deliver(stamp, target=(1., 2.), robot="tb1"):
+        event = {"robot": robot, "target_x": target[0], "target_y": target[1],
                  "stamp_sec": stamp, "_gateway": {"source_time": stamp, "delivery_time": 100.}}
         control.HeadquartersControl.target_detection_callback(node, String(data=json.dumps(event)))
     deliver(39.9)
@@ -1733,7 +1784,11 @@ def test_target_lease_requires_new_delivered_confirmation_and_keeps_task_phase()
     deliver(90.)
     assert node.task_state == "RALLY" and phases == ["FOUND"]
     assert control.HeadquartersControl.fresh_target(node)
-    assert [json.loads(m.data)["event"] for m in emitted] == ["consumed", "target_reconfirmed"]
+    deliver(99., robot="tb2")
+    assert node.detecting_robot == "tb1" and node.target_observing_robot == "tb2"
+    deliver(90., robot="tb1")
+    assert node.target_observing_robot == "tb2"  # old repeats cannot steal handoff
+    assert [json.loads(m.data)["event"] for m in emitted] == ["consumed", "target_reconfirmed", "target_reconfirmed"]
 
 
 def test_expired_target_blocks_rally_decisions_without_blocking_local_return_yield():

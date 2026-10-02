@@ -1636,6 +1636,17 @@ def rally_priority_reservations(order, robot_name, routes, completed):
     return reservations
 
 
+def rally_observation_guard(observer, source_time, now, modes, freshness_sec=5.0):
+    """Keep the last live visual observer until a peer confirms a handoff."""
+    if (observer not in modes or modes[observer] != "ACTIVE"
+            or source_time is None or not math.isfinite(source_time)
+            or not 0 <= now - source_time <= min(freshness_sec, 5.0)
+            or not any(name != observer and mode in ("ACTIVE", "RETURNING", "CHARGING")
+                       for name, mode in modes.items())):
+        return None
+    return observer
+
+
 def rally_energy_ready_order(order, energy_unready, modes):
     """Ready robots lead approaches; every safety return keeps its reservation."""
     return sorted(order, key=lambda name: (
@@ -1808,6 +1819,8 @@ class HeadquartersControl(Node):
         self.last_input_diagnostic_at = -float("inf")
         self.target = None
         self.target_received_source_time = None
+        self.target_observing_robot = None
+        self.rally_observer_guard = None
         self.detecting_robot = None
         self.rally_targets = {}
         self.rally_final_targets = {}
@@ -2194,11 +2207,13 @@ class HeadquartersControl(Node):
         initial = self.task_state in ("EXPLORE", "FOUND_UNCONFIRMED")
         self.target = target
         self.target_received_source_time = stamp
+        self.target_observing_robot = robot
         if initial:
             self.detecting_robot = robot
         self.consumed_publisher.publish(String(data=json.dumps({
             **gateway, "event": "consumed" if initial else "target_reconfirmed",
             "message_type": "target_detection",
+            "robot": robot,
             "consumed_time": max(self.now(), gateway.get("delivery_time", self.now())),
             "local_confirm_time": event.get("stamp_sec"),
         }, sort_keys=True)))
@@ -2875,6 +2890,8 @@ class HeadquartersControl(Node):
                     continue
                 staging = name in energy_unready and name not in self.rally_yield_targets
                 if staging:
+                    if name == getattr(self, "rally_observer_guard", None):
+                        continue  # Preserve real visual contact during peer charging.
                     # Waiting for a serial charge need not mean waiting far
                     # away. The same route/body reservations protect a normal
                     # gateway navigation prefix toward home; local safety may
@@ -3256,6 +3273,14 @@ class HeadquartersControl(Node):
         budgets, travel_times, charge_times = {}, {}, {}
         self.rally_approach_routes = {}
         now = self.now()
+        self.rally_observer_guard = rally_observation_guard(
+            getattr(self, "target_observing_robot", None),
+            getattr(self, "target_received_source_time", None),
+            now, self.battery_modes,
+            getattr(self, "message_freshness_timeout_sec", 5.0),
+        )
+        if self.rally_observer_guard in self.rally_charge_requested:
+            self.rally_observer_guard = None  # Never revoke an admitted safety return.
         for name in self.rally_dispatch_order:
             if self.battery_modes[name] == "FAILED" or self.robot_positions[name] is None:
                 continue
@@ -3335,6 +3360,16 @@ class HeadquartersControl(Node):
             if required > charge_target:
                 self.fail_task(f"rally_energy_capacity_insufficient:{name}")
                 return blocked
+            if name == self.rally_observer_guard:
+                if now - getattr(self, "last_observer_handoff_wait_at", -float("inf")) >= 5.0:
+                    self.last_observer_handoff_wait_at = now
+                    self.consumed_publisher.publish(String(data=json.dumps({
+                        "event": "coordinator_observer_handoff_wait", "event_time": now,
+                        "robot": name, "observer_source_time": self.target_received_source_time,
+                        "available_energy": energy, "required_energy": required,
+                    }, sort_keys=True)))
+                    self.get_logger().info(f"Preserving {name}'s fresh visual contact while a peer approaches.")
+                continue  # The local reserve may still preempt without permission.
             candidates.append((math.dist(self.robot_positions[name], home),
                                name, energy, required))
         # Independent local returns do not share route reservations. Admit one

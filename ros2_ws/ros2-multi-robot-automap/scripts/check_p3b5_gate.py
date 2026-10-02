@@ -41,6 +41,8 @@ def ledger_audit(path):
         if event in ('consumed','target_reconfirmed') and e.get('message_type')=='target_detection':
             assert e['consumed_time']+1e-8>=e['delivery_time']>=e['source_time'],(path,e)
             assert e['consumed_time']-e['source_time']<=60.+1e-8,(path,e)
+        if event=='coordinator_observer_handoff_wait':
+            assert 0<=e['event_time']-e['observer_source_time']<=5.+1e-8,(path,e)
         if event=='coordinator_navigation_decision':
             if e['kind']=='target_reacquisition_scan':
                 assert len(e['requested_position'])==len(e['current_position'])==2,(path,e)
