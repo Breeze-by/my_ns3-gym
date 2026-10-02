@@ -484,6 +484,8 @@ class TaskEvaluator(Node):
         ):
             return
         self.start_sim_time = now
+        if self.task_phase == "FAILED":
+            self.failure_pending_since = now
         self.start_positions = self.positions.copy()
         self.previous_positions = self.positions.copy()
         for name, position in self.positions.items():
@@ -558,9 +560,8 @@ class TaskEvaluator(Node):
 
     def _task_failure_callback(self, message):
         self.task_failure_reason = message.data
-        if self.task_phase == "FAILED" and self.stop_on_task_complete:
-            self.finalize("mission_failed")
-            rclpy.shutdown()
+        # The FAILED state starts the bounded drain in the timer. A reason
+        # arriving first must not finalize before native poses or failure events.
 
     def _battery_callback(self, message, robot):
         try:

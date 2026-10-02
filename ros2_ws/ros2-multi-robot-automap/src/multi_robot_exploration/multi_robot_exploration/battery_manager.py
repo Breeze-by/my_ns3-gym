@@ -222,7 +222,8 @@ class BatteryManager(Node):
         if (
             not self.robot_name
             or self.capacity <= 0
-            or not 0 < self.initial_energy <= self.capacity
+            or not 0 <= self.initial_energy <= self.capacity
+            or (self.initial_energy == 0 and not self.get_parameter('use_sim_time').value)
             or self.move_cost < 0
             or self.idle_cost < 0
             or self.safety_margin < 0
@@ -319,7 +320,10 @@ class BatteryManager(Node):
         self.last_charge_request_stamp = -float("inf")
         self.failure_reason = ""
         self.timer = self.create_timer(0.5, self.timer_callback)
-        self.publish_state()
+        if self.energy == 0:
+            self.fail('battery_exhausted')
+        else:
+            self.publish_state()
         self.get_logger().info(
             f"Battery manager ready for {self.robot_name}; "
             f"energy={self.energy:.2f}/{self.capacity:.2f}, "
@@ -557,6 +561,7 @@ class BatteryManager(Node):
     def timer_callback(self):
         now = self.now()
         if self.mode == FAILED:
+            self.publish_state()
             return
         if (self.inject_failure_after_sec >= 0 and self.first_odom_time is not None
                 and now - self.first_odom_time >= self.inject_failure_after_sec):

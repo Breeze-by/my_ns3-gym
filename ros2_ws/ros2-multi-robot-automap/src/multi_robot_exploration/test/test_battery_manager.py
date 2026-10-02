@@ -52,6 +52,46 @@ def test_failure_reasons_cover_exhaustion_unreachable_and_charge_timeout():
     assert not battery_failure_reason(ACTIVE, 1.0, 100.0, 10.0, 20.0)
 
 
+def test_simulation_empty_battery_constructs_failed_without_a_navigation_goal():
+    import json
+    import time
+    import rclpy
+    from rosgraph_msgs.msg import Clock
+    from std_msgs.msg import String
+    from rclpy.qos import QoSProfile, DurabilityPolicy
+    from multi_robot_exploration.battery_manager import BatteryManager
+    rclpy.init(args=['--ros-args','-p','use_sim_time:=true','-p','initial_energy:=0.0'], domain_id=206)
+    node = None
+    try:
+        node = BatteryManager()
+        assert node.mode == FAILED and node.failure_reason == 'battery_exhausted'
+        assert node.energy == 0 and node.minimum_energy == 0
+        assert node.return_goal_handle is None and not node.return_goal_pending
+        assert node.return_count == 0 and node.charge_count == 0
+        # Constructor runs before the executor receives /clock. FAILED must
+        # keep publishing current state after that initial zero clock stamp.
+        received=[]
+        qos=QoSProfile(depth=10,durability=DurabilityPolicy.TRANSIENT_LOCAL)
+        subscription=node.create_subscription(String,'/tb1/battery_state',
+            lambda message:received.append(json.loads(message.data)),qos)
+        clock=node.create_publisher(Clock,'/clock',10)
+        message=Clock();message.clock.sec=10
+        deadline=time.monotonic()+3
+        while node.now()<10 and time.monotonic()<deadline:
+            clock.publish(message)
+            rclpy.spin_once(node,timeout_sec=.02)
+        assert node.now()==10
+        node.timer_callback()
+        while not any(x['stamp_sec']==10 for x in received) and time.monotonic()<deadline:
+            rclpy.spin_once(node,timeout_sec=.02)
+        assert any(x['mode']==FAILED and x['stamp_sec']==10 for x in received)
+        assert node.mode == FAILED and node.return_count == 0
+    finally:
+        if node is not None:
+            node.destroy_node()
+        rclpy.shutdown()
+
+
 def test_odometry_discontinuity_does_not_consume_travel_energy():
     assert odometry_distance(None, (10.0, 10.0), 1.0) == 0.0
     assert odometry_distance((0.0, 0.0), (0.3, 0.4), 1.0) == 0.5

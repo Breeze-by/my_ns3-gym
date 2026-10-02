@@ -4448,3 +4448,9 @@ GAZEBO_MASTER_URI=http://127.0.0.1:12850 taskset -c 0-19 /usr/bin/python3 /tmp/p
 修复仅为for-loop最前跳过已staged机器人，使prepare完成标志一次性锁存；等待两台原生充电时保持空闲。强证据审计新增逐事件顺序检查：准备完成后或50s后任何新准备request都拒绝，stage目标位置满足声明.25m误差，source leases/腿长门槛不变，必须真实both_charged后才coordinator_resumed。反例同时覆盖仍在50s内重派发21s和实际原192.2s情况，新分析器对原ideal FAIL、原fault PASS；不得把原一致性失败改写为PASS。直接相关26PASS1.33s，完整15文件234checks随后补记；目标/阈值/能量/断网/horizon/episode retry完全不变。
 
 最终15文件234PASS7.69s/source audit PASS零违规；四包任务源与launch仍未变，fixture/scripts检查充分，无重复colcon构建。focused diff检查及commit/push后才启动新候选。
+
+## 2026-10-02 P3B.5 零能量反例启动与失败记录修复（无仿真实验）
+
+cdde226之后、下一候选开始前发现预设battery_exhaust_lab初始能量0会被构造器拒绝；原27案例尚未执行该格，也没有新候选启动。修复只允许use_sim_time的0能量启动即FAILED，无短暂ACTIVE/导航；FAILED持续发布当前源时间心跳，防止构造时clock0的状态在网关永久过期。非仿真仍拒绝0。评估器reason消息不再提前finalize，沿用FAILED之后0.5s drain，并在启动前FAILED已到达时于原生位姿建立epoch后安排drain。新增真实ROS clock10/状态接收/无动作反例及失败状态、reason两种交付顺序组件检查。此处是预检发现，不能假称已验证正式零能量物理格；新冻结后原格ideal/fault先执行一次，后续lab列表排除该格，不产生重试/回填。
+
+验证：source /opt/ros/humble/setup.bash、source install/setup.bash、PYTHONNOUSERSITE=1、ROS_LOG_DIR=log/component_checks，/usr/bin/python3 -m pytest -q，以下完整15文件237PASS7.99s：test_control/test_battery_manager/test_gateway/test_fault_model/test_navigation_faults/test_task_evaluator/test_nav2_ready_gate/test_readiness/test_spawn_entity_checked/test_tf_ingress_sampler/test_target_detector（src/multi_robot_exploration/test下），src/merge_map/test/test_merge_map.py，scripts/test_p3b5_tasks.py、test_p3b5_gate.py、test_p3b5_return_staging.py。单独battery27PASS1.37s。四包命令colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot，PASS5.42s。/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 PASS0违规。以上均组件/构建/静态预检，无新Gazebo episode、无707或network/RL工作。所有历史失败留存，下一任务栈候选必须独立同提交10固定格和27配对。

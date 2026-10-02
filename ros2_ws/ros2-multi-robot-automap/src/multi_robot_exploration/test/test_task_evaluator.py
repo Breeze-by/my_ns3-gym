@@ -183,8 +183,49 @@ def test_evaluation_starts_without_any_delivered_map():
     from types import SimpleNamespace
     from multi_robot_exploration.task_evaluator import TaskEvaluator
     node=SimpleNamespace(start_sim_time=None, positions={"tb1": (0.,0.)}, robot_names=["tb1"],
+                         task_phase="EXPLORE",
                          latest_map=None, visit_resolution=.2, visited=defaultdict(set),
                          phase_visited={"EXPLORE": defaultdict(set)}, episode_id="loss100",
                          get_logger=lambda: SimpleNamespace(info=lambda *args: None))
     TaskEvaluator._maybe_start(node, 5.)
     assert node.start_sim_time == 5.
+
+
+@pytest.mark.parametrize("reason_first", [False, True])
+def test_startup_failure_waits_for_native_start_and_drains_events(monkeypatch, reason_first):
+    from collections import defaultdict
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+    from std_msgs.msg import String
+    from multi_robot_exploration import task_evaluator
+
+    clock = [5.0]
+    node = SimpleNamespace(
+        start_sim_time=None, positions={"tb1": (0., 0.)}, robot_names=["tb1"],
+        task_phase="EXPLORE", failure_pending_since=None, task_failure_reason=None,
+        visit_resolution=.2, visited=defaultdict(set),
+        phase_visited={"EXPLORE": defaultdict(set)}, episode_id="empty_battery",
+        get_logger=lambda: SimpleNamespace(info=lambda *args: None),
+        _now=lambda: clock[0], stop_on_task_complete=True, finalize=Mock(),
+        failed_robots=set(), required_robot_names={"tb1"},
+        _map_metrics=lambda: {}, coverage_threshold=0, max_duration=300,
+    )
+    shutdown = Mock()
+    monkeypatch.setattr(task_evaluator.rclpy, "shutdown", shutdown)
+    state = lambda: task_evaluator.TaskEvaluator._task_state_callback(node, String(data="FAILED"))
+    reason = lambda: task_evaluator.TaskEvaluator._task_failure_callback(node, String(data="all_robots_failed"))
+    for callback in ([reason, state] if reason_first else [state, reason]):
+        callback()
+    task_evaluator.TaskEvaluator._timer_callback(node)
+    node.finalize.assert_not_called()
+    task_evaluator.TaskEvaluator._maybe_start(node, clock[0])
+    task_evaluator.TaskEvaluator._robot_failure_callback(node, String(data='{"robot":"tb1"}'))
+    clock[0] = 5.4
+    task_evaluator.TaskEvaluator._timer_callback(node)
+    node.finalize.assert_not_called()
+    clock[0] = 5.5
+    task_evaluator.TaskEvaluator._timer_callback(node)
+    assert node.failed_robots == {"tb1"}
+    assert node.task_failure_reason == "all_robots_failed"
+    node.finalize.assert_called_once_with("mission_failed")
+    shutdown.assert_called_once()
