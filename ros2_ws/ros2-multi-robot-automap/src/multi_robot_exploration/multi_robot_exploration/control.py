@@ -1772,8 +1772,13 @@ class HeadquartersControl(Node):
         self.rally_assignment_publisher = self.create_publisher(
             String, "/rally_assignments", state_qos
         )
+        failure_qos = QoSProfile(
+            depth=self.num_robots,
+            durability=DurabilityPolicy.TRANSIENT_LOCAL,
+            reliability=ReliabilityPolicy.RELIABLE,
+        )
         self.robot_failure_publisher = self.create_publisher(
-            String, "/robot_failure", state_qos
+            String, "/robot_failure", failure_qos
         )
         self.task_failure_publisher = self.create_publisher(
             String, "/task_failure", state_qos
@@ -2309,6 +2314,12 @@ class HeadquartersControl(Node):
             event.data = json.dumps({
                 "robot": robot_name,
                 "reason": reason,
+                # Every event carries the irreversible isolation snapshot so
+                # a late subscriber can recover even from only the last event.
+                "failed_robots": sorted(
+                    name for name, mode in self.battery_modes.items()
+                    if mode == "FAILED"
+                ),
                 "remaining_robots": self.participating_robots(),
                 "task_state": self.task_state,
             }, sort_keys=True)

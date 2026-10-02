@@ -8,6 +8,36 @@ from geometry_msgs.msg import Transform
 from multi_robot_exploration import control
 
 
+def test_failure_events_carry_complete_isolation_snapshot_once_per_robot():
+    import json
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+
+    names = ["tb1", "tb2"]
+    node = SimpleNamespace(
+        battery_modes=dict.fromkeys(names, "ACTIVE"), robot_states={},
+        battery_preempted={}, goal_handles=dict.fromkeys(names),
+        rally_goal_handles=dict.fromkeys(names), survey_robot=None,
+        rally_targets={}, rally_charge_requested={}, rally_precharge_staging={},
+        rally_final_targets={}, rally_arrived={}, rally_dispatch_order=names[:],
+        rally_yield_targets=set(), return_yield_targets={},
+        rally_probe_targets=set(), rally_probe_robot=None,
+        task_state="EXPLORE", robot_failure_publisher=Mock(),
+        get_logger=lambda: Mock(), fail_task=Mock(),
+    )
+    node.participating_robots = lambda: [
+        name for name in names if node.battery_modes[name] != "FAILED"
+    ]
+    for name in names:
+        control.HeadquartersControl.mark_robot_failed(node, name, "battery_exhausted")
+    events = [json.loads(call.args[0].data) for call in node.robot_failure_publisher.publish.call_args_list]
+    assert events[0]["failed_robots"] == ["tb1"]
+    assert events[1]["failed_robots"] == names
+    assert events[1]["remaining_robots"] == []
+    control.HeadquartersControl.mark_robot_failed(node, "tb1", "battery_exhausted")
+    assert node.robot_failure_publisher.publish.call_count == 2
+
+
 def test_transform_point_2d_applies_map_to_odom_transform():
     transform = Transform()
     transform.translation.x = 4.0

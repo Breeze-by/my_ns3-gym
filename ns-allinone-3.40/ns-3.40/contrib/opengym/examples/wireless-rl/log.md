@@ -4504,3 +4504,20 @@ PYTHONNOUSERSITE=1 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b_fault_matri
 组件迭代：第一轮旧staging-budget反例以40作为已证明budget，但加入recovery后新需要42.6089，1FAIL/145PASS；加新两反例后旧fixture仍1FAIL/147PASS。将其人工已证明budget设50（仍<charge_target80）并保持全部精确保留断言，以验证预算下界不回退，148PASS5.96s。新增main27双方无pause、仅补充两个命令启用pause的检查；第一次缺test模块CONFIG导入（组件错误、无仿真），已补import。全套242 checks及四包/source审计随后补记。没有改正式能量/horizon/完成/TTL/物理阈值或重试筛选。
 
 候选最终15文件242PASS8.05s，四包build5.29s，3r source audit PASS0违规，stager/smoke/runner py_compile通过。下一候选源与配置须clean/focused commit/push后冻结并全新运行；本4raw全部历史，不回填。
+
+
+## 2026-10-02 P3B.5 v22启动失败集合漏记（失败候选，断线后续修）
+
+冻结712f8e1d765bac501bec6cdef522cbaf9e44cf00、clean，前瞻bootstrap/after_subgates完整wrapper源码和UTC声明见report/20261002_p3b5_failure_snapshot_failed_candidate.json。精确入口：source Humble/install/Gazebo，PYTHONNOUSERSITE=1、TURTLEBOT3_MODEL=waffle、ROS_LOG_DIR为工作区log/ros_launch，rtk bash -lc沙箱外执行：
+
+```bash
+/usr/bin/python3 /tmp/p3b5_v22_bootstrap.py > /tmp/p3b5_v22_bootstrap.log 2>&1
+/usr/bin/python3 /tmp/p3b5_v22_after_subgates.py > /tmp/p3b5_v22_after_subgates.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:13251 taskset -c 20-39 /usr/bin/python3 /tmp/p3b5_v22_zero_first.py > /tmp/p3b5_v22_zero_first.log 2>&1
+# 原始正式zero格（不重复于后续lab）
+/usr/bin/python3 scripts/run_p3b5_tasks.py --config scripts/p3b5_fault_manifest.json --run-id p3b5_v22_zero --cases battery_exhaust_lab --ros-domain-base 100
+```
+
+2started/2raw，ideal/fault均mission_failed、FAILED、1.7s、零接触；两台本地电池均FAILED/E0，零Nav2目标。中央只读observer分别捕获两台隔离事件，ideal评估failed集合两台，而fault仅[tb2]。/robot_failure采用depth1 transient-local，启动/晚订阅可能仅保留最后事件；原始门禁拒绝通过，不能从native电池补造中央失败集合。bootstrap自然退出1、supervisor断言失败；fixed、physical、protocol、全部pool/707均未启动，没有整格重试或替换。完整summary、两raw、两套中央事件和源码/命令/hash已归档。
+
+新候选每条中央事件携带完整不可逆failed_robots快照；pub/sub可靠transient-local历史深度N保留逐台reason历史，评估按已知roster验证后单调并集，乱序/重复不回退、非法集合不部分更新。兼容旧单robot事件；native状态不替代中央隔离。组件第一轮新增测试误写不存在的类名，1FAIL/143PASS8.24s（无仿真），改为实际HeadquartersControl后全15文件249PASS8.82s；四包build5.23s、三机器人source audit PASS零违规。普通命令/任务时间/能量/安全/成功/源TTL门限不变。新冻结必须重新执行原始零能量格及后续完整门禁，历史成功不回填。

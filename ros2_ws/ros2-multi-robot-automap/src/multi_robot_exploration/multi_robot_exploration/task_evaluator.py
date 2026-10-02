@@ -354,6 +354,11 @@ class TaskEvaluator(Node):
         map_qos = QoSProfile(depth=1)
         map_qos.durability = DurabilityPolicy.TRANSIENT_LOCAL
         map_qos.reliability = ReliabilityPolicy.RELIABLE
+        failure_qos = QoSProfile(
+            depth=len(self.robot_names),
+            durability=DurabilityPolicy.TRANSIENT_LOCAL,
+            reliability=ReliabilityPolicy.RELIABLE,
+        )
         self.input_subscriptions = [
             self.create_subscription(
                 OccupancyGrid, "/merge_map", self._map_callback, map_qos
@@ -389,7 +394,7 @@ class TaskEvaluator(Node):
                 String,
                 "/robot_failure",
                 self._robot_failure_callback,
-                map_qos,
+                failure_qos,
             ),
         ]
         for name in self.robot_names:
@@ -551,12 +556,23 @@ class TaskEvaluator(Node):
     def _robot_failure_callback(self, message):
         try:
             event = json.loads(message.data)
-            robot = str(event["robot"])
-        except (KeyError, TypeError, json.JSONDecodeError):
+            robot = event["robot"]
+            failed = event.get("failed_robots", [robot])
+            if (
+                not isinstance(robot, str)
+                or not isinstance(failed, list)
+                or any(not isinstance(name, str) for name in failed)
+                or robot not in failed
+                or not set(failed).issubset(self.robot_names)
+            ):
+                raise ValueError("invalid isolation snapshot")
+        except (KeyError, TypeError, ValueError):
             self.get_logger().error("Invalid robot failure event")
             return
-        self.failed_robots.add(robot)
-        self.required_robot_names.discard(robot)
+        # Older retained events may follow the latest snapshot; isolation is
+        # irreversible, so an older event must never restore a failed robot.
+        self.failed_robots.update(failed)
+        self.required_robot_names.difference_update(failed)
 
     def _task_failure_callback(self, message):
         self.task_failure_reason = message.data

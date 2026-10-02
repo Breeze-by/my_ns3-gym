@@ -229,3 +229,51 @@ def test_startup_failure_waits_for_native_start_and_drains_events(monkeypatch, r
     assert node.task_failure_reason == "all_robots_failed"
     node.finalize.assert_called_once_with("mission_failed")
     shutdown.assert_called_once()
+
+
+def test_late_failure_snapshot_is_complete_and_irreversible():
+    import json
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+    from std_msgs.msg import String
+    from multi_robot_exploration.task_evaluator import TaskEvaluator
+
+    logger = Mock()
+    node = SimpleNamespace(
+        robot_names=["tb1", "tb2"], failed_robots=set(),
+        required_robot_names={"tb1", "tb2"}, get_logger=lambda: logger,
+    )
+    latest = String(data=json.dumps({"robot": "tb2", "failed_robots": ["tb1", "tb2"]}))
+    TaskEvaluator._robot_failure_callback(node, latest)
+    assert node.failed_robots == {"tb1", "tb2"}
+    assert node.required_robot_names == set()
+    for message in (String(data='{"robot":"tb1","failed_robots":["tb1"]}'), latest):
+        TaskEvaluator._robot_failure_callback(node, message)
+        assert node.failed_robots == {"tb1", "tb2"}
+        assert node.required_robot_names == set()
+    logger.error.assert_not_called()
+
+
+@pytest.mark.parametrize("event", [
+    {"robot": "tb1", "failed_robots": "tb1"},
+    {"robot": "tb1", "failed_robots": ["tb2"]},
+    {"robot": "tb1", "failed_robots": ["tb1", "foreign"]},
+    {"robot": "tb1", "failed_robots": ["tb1", {}]},
+    {"robot": "foreign"},
+])
+def test_invalid_failure_snapshot_does_not_partially_isolate(event):
+    import json
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+    from std_msgs.msg import String
+    from multi_robot_exploration.task_evaluator import TaskEvaluator
+
+    logger = Mock()
+    node = SimpleNamespace(
+        robot_names=["tb1", "tb2"], failed_robots=set(),
+        required_robot_names={"tb1", "tb2"}, get_logger=lambda: logger,
+    )
+    TaskEvaluator._robot_failure_callback(node, String(data=json.dumps(event)))
+    assert node.failed_robots == set()
+    assert node.required_robot_names == {"tb1", "tb2"}
+    logger.error.assert_called_once()

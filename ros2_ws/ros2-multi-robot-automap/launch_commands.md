@@ -743,3 +743,5 @@ Gazebo factory 明确表示本次实体已经入队、确认阶段超时时，he
 2026-10-02 P3B.5 航向与充电派发修复候选：tb1..tb4的实际Nav2参数goal_checker.yaw_goal_tolerance从3.14收紧为0.25rad，使viewpoint/原地扫描朝向确实达到后才成功。位置.02m、速度/足迹/碰撞检测/任务完成门限不变。串行预充电中，只在rally导航完全空闲时把ACTIVE且能量已就绪的机器人排在待充电机器人前；当前/未来本地返航路线及停车占位仍保护，不在活动腿中切换优先级。原命令不变，需新同提交十格及故障矩阵。只读physics helper支持--robot-count 3并保存yaw/angular_speed；默认2仍用于原返航配对。
 
 2026-10-02 补充返航fixture更新（supersedes上面历史SIGSTOP命令语义）：`run_p3b5_return_probe.py --config scripts/p3b5_staged_return_probe_manifest.json`自动给smoke加`--enable-return-probe-pause`，对应launch `enable_return_probe_pause:=true`。此default-off/simulation-only开关从启动暂停探索/集合派发，DDS/全部输入callback继续工作，原强制livegraph/source审计不跳过。sidecar先读取owned coordinator实际enable参数为true，确认归属后才准备；两台真实充电后仅以owned SIGUSR2解除guard。不再SIGSTOP整个节点。只能用于该非自主安全夹具，禁止用于primary/fixed/heldout；所有普通命令显式false。50s准备/60..250断网/物理门槛不变。多机任务预算增加一次额外短航段往返的move/idle耗电；将候选能源不足与已commit返充动作区分，仅实际return/request/staging路线成为返充预约；未派发待充者仍保留真实停车占位和approach优先规则。需新冻结整批验证。
+
+2026-10-02 启动失败记录修复候选：/robot_failure每条消息携带中央已隔离的完整failed_robots集合，双方transient-local reliable历史深度为机器人数量；晚加入的评估器按已知roster验证并单调合并，旧快照/重复事件不能恢复失败机器人。原始单robot事件兼容，native电池不替代中央隔离证据。普通命令和任务阈值不变，原零能量漏记失败保留，新冻结重新验证。
