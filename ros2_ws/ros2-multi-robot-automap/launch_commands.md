@@ -749,3 +749,5 @@ Gazebo factory 明确表示本次实体已经入队、确认阶段超时时，he
 2026-10-02 目标恢复搜索候选：默认在目标60s源lease失效后完成一次四向原地扫描；仍无真实新确认时，复用新鲜map/pose/TF/battery的前沿收益和预约短航段，以单机器人继续搜索，保持FOUND/RALLY阶段且不引用过期目标坐标。不与集合/调查/扫描动作并发，不抢占本地返航；新视觉确认后取消并排空所有搜索动作再恢复集合，pending晚接收也取消。恢复探索有原60s超时/停滞检查，日志记录current_map_frontiers依据和实际路线。普通命令/任务成功/TTL/能耗阈值不变，须新冻结全门禁。补充return fixture准备期改用/gateway/message_events的fault_epoch，禁止用中央EXPLORE接收时刻代替断网起点；0..50s准备和62..248s物理窗口保持。
 
 2026-10-02 观测接力候选：目标60s整体lease不变；最近真实新确认机器人在source age≤min(freshness,5s)、ACTIVE且还有健康伙伴时，保留视觉接触，暂缓其主动返充与home staging。健康已充电伙伴仍按原预约/能量规则接近目标，新交付伙伴确认更新observer，释放上一观察者；旧重传不能抢回接力。已admit返航不撤销，本地低电量保护/返航和容量不足失败始终优先，保护不等于豁免能量预算或允许未就绪集合。记录5秒限频handoff wait和实际确认robot，普通命令/时间/能耗/安全阈值不变，须新冻结全门禁。
+
+2026-10-02 headless启动修复候选：所有ros_smoke_test.py及fixed/fault runner的无GUI子进程自动移除DISPLAY，避免继承桌面GLX drawable。原机器人仅CPU ray/IMU/contact传感器；实际模型/物理/seed/Nav2/任务阈值不变。manifest新增headless_launch_display=null、parent_display及GLX/software选项，保持ideal/fault同环境；直接GUI ros2 launch命令仍按原方式运行。prestart_failure_count改为全部未开始episode的attempt数量，包含最后首试失败，不再只统计重试次数；历史记录不改写。新同冻结门禁需要重新执行，不能复用旧探针PASS。

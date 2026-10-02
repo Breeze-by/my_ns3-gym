@@ -640,6 +640,9 @@ def main():
     print("Command:", " ".join(command), flush=True)
     print("Launch log:", log_path, flush=True)
     launch_environment = os.environ.copy()
+    # This runner is headless and its sensors use CPU ray/IMU/contact data.
+    # Do not inherit a desktop GLX drawable into Gazebo's server process.
+    launch_environment.pop("DISPLAY", None)
     launch_environment["PATH"] = os.pathsep.join(
         ("/usr/bin", "/bin", launch_environment["PATH"])
     )

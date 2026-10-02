@@ -4571,3 +4571,27 @@ PYTHONNOUSERSITE=1 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b_fault_matri
 组件先134PASS7.57s；新增handoff callback有效新事件后原测试预期仍2条事件，相关1FAIL/159PASS7.58s（无仿真），修正为实际新增第三条target_reconfirmed，仍严格检查旧重复不续lease/不抢回接力。一次工具工作目录误漏ros2_ws而未能创建进程，立即按canonical path重跑，无仿真。四包build5.23s；最终全组件/source审计结果随后补记。该算法只能新冻结原参数完整门禁证明，不能据组件或旧supplemental成功宣布P3B.5完成。
 
 全15文件第一轮同一fixture预期残留1FAIL/266PASS8.60s，source audit PASS0违规；修正后267PASS8.69s，四包5.23s。diff check/显式staging后提交/push新冻结，原5raw不回填。
+
+
+## 2026-10-02 P3B.5 v25首格GLX启动前失败（观测接力尚未集成验证）
+
+clean冻结1a4f3a6103abac4e1ac2437c7c1e2d6973bb051c。report/20261002_p3b5_headless_glx_failed_candidate.json保留完整source/env/config/命令/UTC/hash及原失败日志，4started/4raw另加1次pre-start infrastructure failure；不回填下一矩阵。source Humble/install/Gazebo，PYTHONNOUSERSITE=1、TURTLEBOT3_MODEL=waffle、工作区ROS_LOG_DIR，rtk bash -lc：
+
+```bash
+/usr/bin/python3 /tmp/p3b5_v25_bootstrap.py > /tmp/p3b5_v25_bootstrap.log 2>&1
+/usr/bin/python3 /tmp/p3b5_v25_after_subgates.py > /tmp/p3b5_v25_after_subgates.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:13551 taskset -c 20-39 /usr/bin/python3 /tmp/p3b5_v25_zero_first.py > /tmp/p3b5_v25_zero_first.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:13550 taskset -c 0-19 /usr/bin/python3 /tmp/p3b5_v25_first_lab101.py > /tmp/p3b5_v25_first_lab101.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:13552 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_return_probe.py --run-id p3b5_v25_returnproof --ros-domain-base 180 --config scripts/p3b5_staged_return_probe_manifest.json > /tmp/p3b5_v25_returnproof.log 2>&1
+PYTHONNOUSERSITE=1 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_1a4f3a6.json > /tmp/p3b5_protocol_1a4f3a6.log 2>&1
+```
+
+zero双侧mission_failed0.6/1.7s、两台中央FAILED/E0/零目标/零碰撞、source/graph/TTL检查PASS。固定lab3/101 gzserver出现X BadDrawable，GLX major152/minor29，随后spawn checker无fresh model inventory拒绝创建，launch早退；没有evaluation_started，没有task raw，runner1/infrastructure_failure=true。观测接力尚未在此完整ideal执行，不能据本失败判断算法效果。原summary prestart_failure_count=0因为旧实现attempt_count-1只计重试次数；实际attempts保留一次episode_started=false失败，此原值不改写，归档另列真实基础设施失败数1。
+
+补充ideal/fault自然timeout300.0/300.3s EXPLORE、两台各一次充电、最低能量正、零碰撞/失效，runner/stager/observer0；全部准备源lease/起点/一次性/50s门槛PASS，fault62..248物理证明：tb1 start169.7s/home1.9508m/path1.1676/progress1.1541/EXEC1.1676；tb2 start168.9/home2.0140/path1.1979/progress1.1884/EXEC1.1979。协议54PASS。bootstrap自然[1,0,0]，supervisor因首格自然FAIL，fullpool/707未启动，未行政中断活跃任务或重试/替换原格。追加物理审计为运行结束后的只读重放，没有新episode。
+
+源码核查模型仅contact/imu/ray，camera为frame/link，没有相机或GPU ray sensor。headless smoke虽然GUI全false，仍继承DISPLAY=:0；下一候选仅对子launch移除DISPLAY，manifest记录effective/parent display及GLX/software选项，不改变模型/物理/数据源或观测接力算法。prestart_failure_count修为所有未开始episode的attempt数量，含final failure；无需改历史raw或提高重试次数。
+
+诊断gzserver --help在沙箱内因默认~/.gazebo日志不可写，按权限规定经rtk bash -lc沙箱外重读成功获得完整CLI（help本身exit255，未启动world/experiment）；原CLI没有headless-rendering选项。磁盘1.6T空闲，未见磁盘容量不足。新smoke/baseline py_compile和相关脚本组件检查结果随后补记；包内算法源未变，267组件/四包5.23s检查来自同源1a4f。不能复用本轮受控探针成功替代新冻结证据。
+
+新smoke/baseline py_compile PASS，相关三个脚本33PASS1.32s，diff check通过；原GLX日志/一次未started基础设施失败保留，显式staging后提交/push新冻结。

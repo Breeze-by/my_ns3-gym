@@ -237,6 +237,10 @@ def build_manifest(config_path, args):
             "ros_distro": os.environ.get("ROS_DISTRO"),
             "ros_version": os.environ.get("ROS_VERSION"),
             "gazebo": command_version(["gazebo", "--version"]),
+            "headless_launch_display": None,
+            "parent_display": os.environ.get("DISPLAY"),
+            "libgl_always_software": os.environ.get("LIBGL_ALWAYS_SOFTWARE"),
+            "glx_vendor_library": os.environ.get("__GLX_VENDOR_LIBRARY_NAME"),
             "colcon": command_version([
                 sys.executable, "-c",
                 "from importlib.metadata import version; print(version('colcon-core'))",
@@ -510,7 +514,10 @@ def main():
                 "ros_domain_id": domain_id,
                 "runner_returncode": completed.returncode,
                 "infrastructure_failure": infrastructure_failure,
-                "prestart_failure_count": attempt_count - 1,
+                # Include a final failed first attempt, not just retries.
+                "prestart_failure_count": sum(
+                    not attempt["episode_started"] for attempt in attempts
+                ),
                 "success": success,
                 "failure_reason": failure_reason,
                 "phase_path_lengths_m": json.dumps(
