@@ -4812,3 +4812,46 @@ zero ideal/fault1.2/1.9s mission_failed双机完整FAILED/E0/无导航/0碰撞�
 下一候选把受益关系扩展为恢复期间的临时优先权：请求停车阻挡者移开的机器人在它完成恢复前暂时让出自己的未来intent；临时refuge已实际到位后，再向原受益者开放通过。永久新目标也保存此恢复关系，终点成功、恢复释放、失败或独立返航让路接管时清理；真实停车机体、所有live/return路线、完整能量、freshness、并发名额仍检查。三个实际窄通道反例覆盖合法借权、未借权拒绝、真实机体占位不可绕过。相关13PASS2.61s；完整16文件297PASS8.60s，四包build5.97s；命令同v33完整pytest/四包build。源审计结果随后记录，下一原矩阵须clean commit/push。本批失败保持，P3B.5仍待完成，未进入ns-3/RL。
 
 3r source-only审计PASS0违规，原17用户材料SHA256未变；diff check、add-n及显式staging排除所有用户材料/运行产物，新源和失败归档commit/push后才启动下一冻结。
+
+## 2026-10-02 P3B.5 v35独立返航与已接收航段冲突；2026-10-03新候选修复
+
+冻结3cc5529e7c84b702dc877ab3c50bf2652064dadb，report/20261002_p3b5_return_race_failed_candidate.json保留4started/4raw、全部summary/source/config/env/命令、原始物理/账本文件SHA及大小、实际导航决策、碰撞历史、准备记录、所用三条AP原地图快照。此前声明以原路径/SHA和已提交失败报告引用，避免递归复制历代声明；原声明完整保留于/tmp，不篡改。source Humble/canonical install/Gazebo，PYTHONNOUSERSITE=1，TURTLEBOT3_MODEL=waffle，ROS_LOG_DIR=canonical ROS/log/ros_launch，以下经rtk bash -lc执行：
+
+```bash
+/usr/bin/python3 /tmp/p3b5_v35_after_subgates.py > /tmp/p3b5_v35_after_subgates.log 2>&1
+/usr/bin/python3 /tmp/p3b5_v35_bootstrap.py > /tmp/p3b5_v35_bootstrap.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:14551 taskset -c 20-39 /usr/bin/python3 /tmp/p3b5_v35_zero_first.py > /tmp/p3b5_v35_zero_first.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:14550 taskset -c 0-19 /usr/bin/python3 /tmp/p3b5_v35_first_lab101.py > /tmp/p3b5_v35_first_lab101.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:14552 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_return_probe.py --run-id p3b5_v35_returnproof --ros-domain-base 180 --config scripts/p3b5_staged_return_probe_manifest.json > /tmp/p3b5_v35_returnproof.log 2>&1
+PYTHONNOUSERSITE=1 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_3cc5529.json > /tmp/p3b5_protocol_3cc5529.log 2>&1
+ROS_DOMAIN_ID=130 taskset -c 0-19 /usr/bin/python3 /tmp/observe_p3b5_v35_ap_snapshots_qos_fixed.py > /tmp/p3b5_v35_ap_snapshots_qos_fixed.log 2>&1
+```
+
+zero ideal/fault1.4/3.2s mission_failed，双机完整FAILED/E0/无导航/0碰撞，runner0、账本PASS。固定lab3/101原300.0s自然timeout/RALLY，三台各充一次、最低12.4439542，0耗尽/失效，16次tb1/tb2机体接触，总接触持续27.8s；这是真实安全失败，不能记为PASS。普通tb1 rally下发2293.282，tb2独立RETURNING2293.382；2325.282起接触。tb1后在2344.882才让开；阻挡恢复优先关系更晚出现，不将碰撞归因于该借权过程。正常原生验收通过，任务终止后launch清理中自有tb1 lifecycle_manager经SIGINT/TERM最终SIGKILL，保留收尾问题。
+
+受控物理ideal在93.3s shutdown，runner/stager1、原生truth observer0；准备两机虽在50s前到位，但message worker681461超过原90s wall deadline，runner错误分支SIGINT清理自有launch，stager收到中断。Faulthandler显示executor wait，旧日志未打印请求topic，不能断言具体topic/QoS或唯一DDS根因。未进入fault episode、没有完整回充证据；fault observer0且输出空只代表未启动任务。Protocol54PASS；bootstrap自然[1,1,0]，future首格FAIL退出；fullpool/707未执行。没有整格重试或手动中断活跃任务；自动错误清理明确计为operational failure。全部源实验及future结束后才改源码。
+
+只读AP观察器源与metadata/hash保留，10条2235.682..2415.682，正常0退出，没有publisher/action/真值控制。离线原始物理诊断`/usr/bin/python3 /tmp/diagnose_p3b5_v35_contacts.py`；此前inline拼接SyntaxError在执行前失败。源Humble/install、PYTHONNOUSERSITE=1下`/usr/bin/python3 /tmp/replay_p3b5_v35_return_race.py`成功：两条交付快照2295.682/2315.682、地图SHA91f222dc3bb235772ea8a58779520ab20934a34aabd0110b7e9e40b0a738bb4a，tb1已派目标的重建可行路径与tb2返航预约冲突。明确是同交付数据的几何反例，原始live reservation未完整记录，不声称精确恢复每个原预约格或唯一端到端原因。归档命令`/usr/bin/python3 /tmp/archive_p3b5_3cc5529.py`，所有四条ledger审计PASS。恢复时/proc进程读取遇到瞬时退出FileNotFoundError，改为逐PID捕获消失，仅检查自有v35前三argv，确认无旧实验进程；首次summary读取误用dict对固定episodes list的.items导致AttributeError，改为独立raw读取，无新任务。
+
+新候选在每次新鲜返航检查时重审已执行/待接受的普通rally航段，取消交叉路径并保留pending取消意图；迟到接受后实际取消，预占所致拒绝/异常不消耗任务重试。缺返航几何排空普通航段；不取消独立本地安全返航。已认证的逃离航段可继续清理自己对应的返航通道，但仍检查其他返航。让路不再等待全部无关航段结束：只等待自身cancel drain、真实并发名额，并检查全部其他live路线、真实停车机体和返航预约，仍是新鲜交付地图/pose驱动的可视短段。保留原最终集合点、energy/freshness/净空/任务300s/retries0/0碰撞门槛。
+
+原生消息验收将scan/条件merge_map/全部battery一次订阅到一个只读DDS context，用原90s共同wall上限（不延长），保持原QoS并要求每个topic真实callback，新增topic/type/QoS/receipt/pending诊断；仍由父进程原deadline约束，超时只kill自有观察worker，再由原runner错误清理任务。
+
+新增真实DDS组件实验（无Gazebo/任务），父提交3cc5529、dirty successor源码SHA和完整producer/source/命令/输出保存在report/20261003_p3b5_native_message_group_component.json。rtk bash -lc，Humble/install/PYTHONNOUSERSITE=1/ROS_LOG_DIR=canonical ROS/log/component_checks：
+
+```bash
+ROS_DOMAIN_ID=188 taskset -c 20-39 /usr/bin/python3 /tmp/verify_p3b5_native_message_group.py > /tmp/p3b5_grouped_native_real_checks.log 2>&1
+```
+
+LaserScan BEST_EFFORT/volatile、OccupancyGrid与String RELIABLE/transient_local提前单次publish，三种实际消息均收到，共0.666326s；广告但从未publish的第四topic在原2s共同deadline被拒，2.010386s，只回收自有worker，producer在finally正常0退出。不能把组件证明写为任务成功或DDS唯一根因已经确定。
+
+相关控制+native172PASS8.10s；新增未知返航几何反例后，全16文件307PASS9.93s，四包build5.27s，3r source-only审计PASS0违规。确切命令（source Humble/canonical install，PYTHONNOUSERSITE=1，component日志目录）：
+
+```bash
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_control.py scripts/test_ros_smoke_native_probe.py
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_control.py src/multi_robot_exploration/test/test_battery_manager.py src/multi_robot_exploration/test/test_gateway.py src/multi_robot_exploration/test/test_fault_model.py src/multi_robot_exploration/test/test_navigation_faults.py src/multi_robot_exploration/test/test_task_evaluator.py src/multi_robot_exploration/test/test_nav2_ready_gate.py src/multi_robot_exploration/test/test_readiness.py src/multi_robot_exploration/test/test_spawn_entity_checked.py src/multi_robot_exploration/test/test_tf_ingress_sampler.py src/multi_robot_exploration/test/test_target_detector.py src/merge_map/test/test_merge_map.py scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py scripts/test_ros_smoke_native_probe.py > /tmp/p3b5_v36_component_checks.log 2>&1
+colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot > /tmp/p3b5_v36_build.log 2>&1
+/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v36_source_audit.log 2>&1
+```
+
+下一v36使用新的干净commit/push后重新原57唯一episode矩阵，先zero、原lab101固定与受控物理/协议子门槛，再其余固定/故障/aux；十个固定全部通过才首次707（预声明fault27077）。不混入历史成功。P3B.5尚未通过，无ns-3/RL工作。

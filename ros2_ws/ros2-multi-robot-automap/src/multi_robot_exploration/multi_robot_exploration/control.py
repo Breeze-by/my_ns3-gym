@@ -2440,27 +2440,59 @@ class HeadquartersControl(Node):
         if released:
             self.publish_rally_assignments()
 
+    def preempt_rally_return_conflicts(self, protected):
+        """Revalidate admitted legs when independent local returns appear.
+
+        A pending gateway request retains this flag until its late acceptance.
+        An escape already certified for its returner may continue clearing that
+        corridor, but must still respect every other return reservation.
+        """
+        for name, handle in self.rally_goal_handles.items():
+            if (self.battery_modes[name] != "ACTIVE"
+                    or not (handle is not None or self.rally_goal_pending[name])
+                    or self.rally_yield_requested[name]):
+                continue
+            route = remaining_rally_route(
+                self.rally_leg_routes[name], self.robot_positions[name])
+            escape_for = self.return_yield_targets.get(name)
+            if protected is not None and route and not any(
+                routes_conflict(route, reserved)
+                for returning, reserved in protected.items()
+                if returning not in (name, escape_for)
+            ):
+                continue
+            self.rally_yield_requested[name] = True
+            self.get_logger().warn(
+                f"Canceling {name} rally leg for a fresh safety-return corridor.")
+            if handle is not None:
+                handle.cancel_goal_async()
+
     def yield_to_returning_robot(self):
-        """Move an idle rally blocker to a refuge before resuming global pause."""
+        """Drain conflicting legs and move idle blockers off local returns."""
         if not self.fresh_robot_inputs():
-            return
-        if any(self.rally_goal_handles.values()) or any(self.rally_goal_pending.values()):
-            return
-        if self.survey_goal_handle is not None or self.survey_goal_pending:
             return
         if not any(mode == 'RETURNING' for mode in self.battery_modes.values()):
             return
-        now = self.now()
-        if now - getattr(self, 'last_return_yield_attempt_at', -float('inf')) < 1.:
-            return
-        self.last_return_yield_attempt_at = now
         protected = rally_return_reservations(
             self.map_data, self.resolution, self.origin, self.robot_positions,
             self.battery_states, self.battery_modes,
             set(self.rally_charge_requested) | set(self.rally_precharge_staging),
         )
+        HeadquartersControl.preempt_rally_return_conflicts(self, protected)
         if protected is None:
             return
+        if self.survey_goal_handle is not None or self.survey_goal_pending:
+            return
+        active_routes = [remaining_rally_route(self.rally_leg_routes[name],
+                                               self.robot_positions[name])
+                         for name, handle in self.rally_goal_handles.items()
+                         if handle is not None or self.rally_goal_pending[name]]
+        if len(active_routes) >= self.rally_max_concurrent:
+            return
+        now = self.now()
+        if now - getattr(self, 'last_return_yield_attempt_at', -float('inf')) < 1.:
+            return
+        self.last_return_yield_attempt_at = now
         return_clearance = max(RALLY_ROUTE_SEPARATION_M,
             max((float(self.battery_states.get(name, {}).get('charge_radius_m', .8))
                  for name in protected), default=.8) + RALLY_DYNAMIC_CLEARANCE_M)
@@ -2477,7 +2509,9 @@ class HeadquartersControl(Node):
             for name in self.rally_dispatch_order:
                 position = self.robot_positions[name]
                 if (name == returning or self.battery_modes[name] != "ACTIVE"
-                        or position is None or name in self.rally_yield_targets):
+                        or position is None or name in self.rally_yield_targets
+                        or self.rally_goal_handles[name] is not None
+                        or self.rally_goal_pending[name]):
                     continue
                 if not routes_conflict((position,), route, RALLY_ROUTE_SEPARATION_M):
                     continue
@@ -2486,7 +2520,7 @@ class HeadquartersControl(Node):
                 refuge = rally_yield_pose(
                     self.map_data, self.resolution, self.origin, position,
                     (home.x, home.y), blocked_positions=blocked,
-                    reserved_routes=tuple(path for other, path in protected.items() if other != name),
+                    reserved_routes=(*active_routes, *(path for other, path in protected.items() if other != name)),
                     route_separation_m=return_clearance,
                     visible_only=True,
                 )
@@ -2497,6 +2531,8 @@ class HeadquartersControl(Node):
                     position, MAX_NAVIGATION_LEG_M, blocked, visible_only=True,
                 )
                 if plan[0] is None:
+                    continue
+                if any(routes_conflict(plan[1], live) for live in active_routes):
                     continue
                 if any(routes_conflict(((plan[0].x, plan[0].y),), other_route,
                         return_clearance)
@@ -3688,28 +3724,38 @@ class HeadquartersControl(Node):
 
     def rally_goal_response(self, robot_name, future):
         self.rally_goal_pending[robot_name] = False
+        preempted = (self.rally_yield_requested[robot_name]
+                     or self.rally_battery_preempted[robot_name]
+                     or self.battery_modes[robot_name] != "ACTIVE")
         try:
             goal_handle = future.result()
         except Exception as error:
             self.rally_leg_routes[robot_name] = ()
-            self.rally_attempts[robot_name] += 1
-            self.rally_route_unavailable_since[robot_name] = self.now() - 2.0
-            self.rally_recovery_requested[robot_name] = True
+            self.rally_yield_requested[robot_name] = False
+            self.rally_battery_preempted[robot_name] = False
+            if not preempted:
+                self.rally_attempts[robot_name] += 1
+                self.rally_route_unavailable_since[robot_name] = self.now() - 2.0
+                self.rally_recovery_requested[robot_name] = True
             self.get_logger().error(
                 f"{robot_name} rally request failed: {error}"
             )
             return
         if goal_handle is None or not goal_handle.accepted:
             self.rally_leg_routes[robot_name] = ()
-            self.rally_attempts[robot_name] += 1
-            self.rally_route_unavailable_since[robot_name] = self.now() - 2.0
-            self.rally_recovery_requested[robot_name] = True
+            self.rally_yield_requested[robot_name] = False
+            self.rally_battery_preempted[robot_name] = False
+            if not preempted:
+                self.rally_attempts[robot_name] += 1
+                self.rally_route_unavailable_since[robot_name] = self.now() - 2.0
+                self.rally_recovery_requested[robot_name] = True
             self.get_logger().warn(f"{robot_name} rejected its rally goal.")
             return
         self.rally_goal_handles[robot_name] = goal_handle
         self.rally_goal_started_at[robot_name] = self.now()
         if self.battery_modes[robot_name] != "ACTIVE":
             self.rally_battery_preempted[robot_name] = True
+        if preempted:
             goal_handle.cancel_goal_async()
         result_future = goal_handle.get_result_async()
         result_future.add_done_callback(

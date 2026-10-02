@@ -47,3 +47,19 @@ def test_ready_worker_must_exit_successfully_before_returning(monkeypatch):
     children = child_factory(monkeypatch, "pass")
     smoke.bounded_native_probe("ready", {}, 5.)
     assert children[0].returncode == 0
+
+
+def test_required_streams_share_one_bounded_worker(monkeypatch):
+    calls = []
+    monkeypatch.setattr(smoke, "bounded_native_probe", lambda *args: calls.append(args))
+    requests = [dict(topic="/scan", qos_arguments=("--qos-reliability", "best_effort")),
+                dict(topic="/map", qos_arguments=("--qos-reliability", "reliable", "--qos-durability", "transient_local")),
+                dict(topic="/battery", qos_arguments=("--qos-reliability", "reliable", "--qos-durability", "transient_local"))]
+    smoke.require_messages(requests, 90.)
+    assert calls == [("messages", dict(requests=requests, timeout=90.), 90.)]
+
+
+@pytest.mark.parametrize("requests", [[], [dict(topic="/map"), dict(topic="/map")]])
+def test_invalid_stream_sets_cannot_vacuously_pass(requests):
+    with pytest.raises(ValueError, match="nonempty and unique"):
+        smoke.require_messages(requests, 90.)

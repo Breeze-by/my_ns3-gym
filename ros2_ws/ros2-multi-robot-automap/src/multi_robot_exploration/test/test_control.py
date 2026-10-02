@@ -1030,6 +1030,9 @@ def test_return_corridor_yield_uses_nearby_off_route_refuge():
         global_battery_rally_pause=True, now=lambda:1., rally_charge_requested=set(), rally_precharge_staging={}, fresh_robot_inputs=lambda: True,
         rally_goal_handles={"tb1": None, "tb2": None},
         rally_goal_pending={"tb1": False, "tb2": False},
+        rally_leg_routes=dict.fromkeys(("tb1", "tb2"), ()),
+        rally_yield_requested=dict.fromkeys(("tb1", "tb2"), False),
+        rally_max_concurrent=2,
         survey_goal_handle=None, survey_goal_pending=False,
         rally_dispatch_order=["tb1", "tb2"],
         battery_modes={"tb1": "RETURNING", "tb2": "ACTIVE"},
@@ -1054,6 +1057,131 @@ def test_return_corridor_yield_uses_nearby_off_route_refuge():
     assert node.rally_final_targets["tb2"] is original
     assert not node.rally_arrived["tb2"]
     assert node.rally_yield_targets == {"tb2"}
+
+
+@pytest.mark.parametrize("pending", [False, True])
+def test_new_local_return_preempts_only_conflicting_admitted_rally_legs(pending):
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+
+    names = ["crossing", "disjoint", "escape", "returner"]
+    handles = {name: Mock() for name in names}
+    handles["returner"] = None
+    if pending:
+        handles["crossing"] = None
+    node = SimpleNamespace(
+        battery_modes=dict.fromkeys(names, "ACTIVE"),
+        rally_goal_handles=handles,
+        rally_goal_pending={name: pending and name == "crossing" for name in names},
+        rally_yield_requested=dict.fromkeys(names, False),
+        rally_leg_routes={"crossing": ((3., 4.), (3., 2.)),
+                          "disjoint": ((8., 8.), (9., 8.)),
+                          "escape": ((5., 2.), (5., 4.)), "returner": ()},
+        robot_positions={"crossing": (3., 4.), "disjoint": (8., 8.),
+                         "escape": (5., 2.), "returner": (8., 2.)},
+        return_yield_targets={"escape": "returner"}, get_logger=lambda: Mock(),
+    )
+    node.battery_modes["returner"] = "RETURNING"
+    protected = {"returner": tuple((x * .1, 2.) for x in range(10, 81))}
+    control.HeadquartersControl.preempt_rally_return_conflicts(node, protected)
+    assert node.rally_yield_requested == dict(crossing=True, disjoint=False, escape=False, returner=False)
+    for name in ("disjoint", "escape"):
+        handles[name].cancel_goal_async.assert_not_called()
+    if not pending:
+        handles["crossing"].cancel_goal_async.assert_called_once()
+        control.HeadquartersControl.preempt_rally_return_conflicts(node, protected)
+        handles["crossing"].cancel_goal_async.assert_called_once()
+    # An existing escape cannot bypass a second newly appearing return.
+    protected["second"] = ((5., 4.),)
+    control.HeadquartersControl.preempt_rally_return_conflicts(node, protected)
+    handles["escape"].cancel_goal_async.assert_called_once()
+
+
+@pytest.mark.parametrize("response", ["accepted", "rejected", "error"])
+def test_return_preemption_survives_late_gateway_acceptance_without_consuming_retries(response):
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+
+    name = "crossing"
+    handle = Mock(accepted=response == "accepted")
+    future = Mock()
+    if response == "error":
+        future.result.side_effect = RuntimeError("gateway request expired")
+    else:
+        future.result.return_value = handle
+    node = SimpleNamespace(
+        rally_goal_pending={name: True}, rally_yield_requested={name: True},
+        rally_battery_preempted={name: False}, battery_modes={name: "ACTIVE"},
+        rally_goal_handles={name: None}, rally_goal_started_at={name: None},
+        rally_leg_routes={name: ((3., 4.), (3., 2.))}, rally_attempts={name: 0},
+        rally_route_unavailable_since={name: None}, rally_recovery_requested={name: False},
+        now=lambda: 10., get_logger=lambda: Mock(),
+    )
+    control.HeadquartersControl.rally_goal_response(node, name, future)
+    assert not node.rally_goal_pending[name] and node.rally_attempts[name] == 0
+    assert not node.rally_recovery_requested[name]
+    if response == "accepted":
+        handle.cancel_goal_async.assert_called_once()
+        assert node.rally_yield_requested[name]
+    else:
+        assert not node.rally_yield_requested[name] and not node.rally_leg_routes[name]
+
+
+def test_idle_return_blocker_yields_while_an_unrelated_leg_is_still_executing():
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+
+    names = ["returner", "blocker", "disjoint"]
+    original = control.RallyPose(4., 5., 0.)
+    sent = []
+    live = Mock()
+    node = SimpleNamespace(
+        now=lambda: 10., fresh_robot_inputs=lambda: True,
+        rally_charge_requested={}, rally_precharge_staging={},
+        rally_goal_handles={"returner": None, "blocker": None, "disjoint": live},
+        rally_goal_pending=dict.fromkeys(names, False),
+        rally_yield_requested=dict.fromkeys(names, False),
+        rally_leg_routes={"returner": (), "blocker": (), "disjoint": ((8., 8.), (9., 8.))},
+        rally_max_concurrent=2, survey_goal_handle=None, survey_goal_pending=False,
+        rally_dispatch_order=names, battery_modes={"returner": "RETURNING", "blocker": "ACTIVE", "disjoint": "ACTIVE"},
+        battery_states={"returner": {"charge_x": 1., "charge_y": 3.}},
+        map_data=np.zeros((100, 100), dtype=int), resolution=.1, origin=(0., 0.),
+        robot_positions={"returner": (8., 3.), "blocker": (5., 3.), "disjoint": (8., 8.)},
+        rally_yield_targets=set(), return_yield_targets={}, rally_recovery_beneficiaries={},
+        rally_targets={"blocker": original}, rally_arrived={"blocker": True},
+        rally_attempts={"blocker": 0}, publish_rally_assignments=lambda: None,
+        get_logger=lambda: Mock(), send_rally_goal=lambda name, plan: sent.append((name, plan)),
+    )
+    control.HeadquartersControl.yield_to_returning_robot(node)
+    assert len(sent) == 1 and sent[0][0] == "blocker"
+    assert not control.routes_conflict(sent[0][1][1], node.rally_leg_routes["disjoint"])
+    live.cancel_goal_async.assert_not_called()
+    node.rally_max_concurrent = 1
+    node.rally_yield_targets.clear()
+    node.return_yield_targets.clear()
+    node.last_return_yield_attempt_at = 0.
+    sent.clear()
+    control.HeadquartersControl.yield_to_returning_robot(node)
+    assert not sent
+
+
+def test_unknown_return_geometry_drains_ordinary_motion_without_canceling_the_local_return():
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+
+    ordinary, returning = Mock(), Mock()
+    node = SimpleNamespace(
+        battery_modes={"ordinary": "ACTIVE", "returner": "RETURNING"},
+        rally_goal_handles={"ordinary": ordinary, "returner": returning},
+        rally_goal_pending=dict.fromkeys(("ordinary", "returner"), False),
+        rally_yield_requested=dict.fromkeys(("ordinary", "returner"), False),
+        rally_leg_routes={"ordinary": ((1., 1.), (2., 2.)), "returner": ()},
+        robot_positions={"ordinary": (1., 1.), "returner": None},
+        return_yield_targets={}, get_logger=lambda: Mock(),
+    )
+    control.HeadquartersControl.preempt_rally_return_conflicts(node, None)
+    ordinary.cancel_goal_async.assert_called_once()
+    returning.cancel_goal_async.assert_not_called()
 
 
 def test_return_heartbeat_does_not_cancel_an_active_yield():

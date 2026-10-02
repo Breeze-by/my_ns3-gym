@@ -37,6 +37,8 @@ def bounded_native_probe(kind, arguments, timeout, launch=None):
                 continue
         if child.returncode != 0:
             raise RuntimeError(f"native {kind} check failed (worker={child.pid}, status={child.returncode}): {output.strip()}")
+        if kind == "messages" and output.strip():
+            print(output.strip(), flush=True)
     finally:
         if child.poll() is None:
             # This worker only observes messages and read-only lifecycle/model
@@ -61,6 +63,8 @@ def native_probe_worker(request):
             wait_until_ready(SimpleNamespace(poll=lambda: None), **arguments)
         elif kind == "message":
             require_message(**arguments)
+        elif kind == "messages":
+            require_messages(**arguments)
         elif kind == "entities":
             require_entities(**arguments)
         else:
@@ -173,40 +177,61 @@ def wait_until_ready(
 
 
 def require_message(topic, timeout, qos_arguments=()):
+    return require_messages([dict(topic=topic, qos_arguments=qos_arguments)], timeout)
+
+
+def require_messages(requests, timeout):
+    """Require every actual stream in one DDS context and one wall deadline."""
+    topics = [request["topic"] for request in requests]
+    if not topics or len(set(topics)) != len(topics):
+        raise ValueError("native message requests must be nonempty and unique")
     if not _NATIVE_PROBE_WORKER:
-        return bounded_native_probe("message", dict(
-            topic=topic, timeout=timeout, qos_arguments=qos_arguments), timeout)
+        return bounded_native_probe("messages", dict(
+            requests=requests, timeout=timeout), timeout)
     import rclpy
     from rclpy.node import Node
     from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy
     from rosidl_runtime_py.utilities import get_message
 
-    options = dict(zip(qos_arguments[::2], qos_arguments[1::2]))
-    qos = QoSProfile(depth=1,
-        reliability=(ReliabilityPolicy.RELIABLE
-                     if options.get("--qos-reliability") == "reliable"
-                     else ReliabilityPolicy.BEST_EFFORT),
-        durability=(DurabilityPolicy.TRANSIENT_LOCAL
-                    if options.get("--qos-durability") == "transient_local"
-                    else DurabilityPolicy.VOLATILE))
+    print(f"Native messages waiting: domain={os.environ.get('ROS_DOMAIN_ID', '0')} "
+          f"topics={topics}; common_wall_deadline={timeout}s", flush=True)
     rclpy.init()
     node = Node("smoke_message_observer")
-    received = []
-    subscription = None
+    received = set()
+    subscriptions = {}
+    def receive(topic, message):
+        if topic not in received:
+            received.add(topic)
+            print(f"Native message received: {topic}; pending={sorted(set(topics) - received)}", flush=True)
     deadline = time.monotonic() + timeout
     try:
         while rclpy.ok() and time.monotonic() < deadline:
-            if subscription is None:
-                types = dict(node.get_topic_names_and_types()).get(topic, [])
+            discovered = dict(node.get_topic_names_and_types())
+            for request in requests:
+                topic = request["topic"]
+                if topic in subscriptions:
+                    continue
+                types = discovered.get(topic, [])
                 if len(types) > 1:
                     raise RuntimeError(f"ambiguous message types on {topic}: {types}")
                 if types:
-                    subscription = node.create_subscription(
-                        get_message(types[0]), topic, received.append, qos)
+                    arguments = request.get("qos_arguments", ())
+                    options = dict(zip(arguments[::2], arguments[1::2]))
+                    qos = QoSProfile(depth=1,
+                        reliability=(ReliabilityPolicy.RELIABLE
+                                     if options.get("--qos-reliability") == "reliable"
+                                     else ReliabilityPolicy.BEST_EFFORT),
+                        durability=(DurabilityPolicy.TRANSIENT_LOCAL
+                                    if options.get("--qos-durability") == "transient_local"
+                                    else DurabilityPolicy.VOLATILE))
+                    subscriptions[topic] = node.create_subscription(
+                        get_message(types[0]), topic,
+                        lambda message, name=topic: receive(name, message), qos)
+                    print(f"Native message subscribed: {topic}; type={types[0]}; qos={options}", flush=True)
             rclpy.spin_once(node, timeout_sec=.1)
-            if received:
+            if len(received) == len(topics):
                 return
-        raise RuntimeError(f"no message received from {topic} within {timeout}s")
+        raise RuntimeError(f"no messages received from {sorted(set(topics) - received)} within {timeout}s common deadline")
     finally:
         if not _NATIVE_PROBE_WORKER:
             node.destroy_node()
@@ -751,28 +776,16 @@ def main():
             print("P3A forbidden-bypass audit passed.", flush=True)
             if args.target_detection:
                 require_entities(["search_target"], args.message_timeout)
-            require_message(
-                "/tb1/scan",
-                args.message_timeout,
-                ("--qos-reliability", "best_effort"),
-            )
+            required_messages = [dict(topic="/tb1/scan", qos_arguments=(
+                "--qos-reliability", "best_effort"))]
             if not args.collect_fault_result:
-                require_message(
-                    "/merge_map", args.message_timeout,
-                    ("--qos-reliability", "reliable", "--qos-durability", "transient_local"),
-                )
+                required_messages.append(dict(topic="/merge_map", qos_arguments=(
+                    "--qos-reliability", "reliable", "--qos-durability", "transient_local")))
             if args.battery:
                 for index in range(1, args.robot_count + 1):
-                    require_message(
-                        f"/tb{index}/battery_state",
-                        args.message_timeout,
-                        (
-                            "--qos-reliability",
-                            "reliable",
-                            "--qos-durability",
-                            "transient_local",
-                        ),
-                    )
+                    required_messages.append(dict(topic=f"/tb{index}/battery_state", qos_arguments=(
+                        "--qos-reliability", "reliable", "--qos-durability", "transient_local")))
+            require_messages(required_messages, args.message_timeout)
             if args.task_regions:
                 regions = [
                     "task_region_start_charge",
