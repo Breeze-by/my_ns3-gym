@@ -65,6 +65,43 @@ def test_failure_events_carry_complete_isolation_snapshot_once_per_robot():
     assert node.robot_failure_publisher.publish.call_count == 2
 
 
+@pytest.mark.parametrize("mode,home,enters_rally", [
+    ("RETURNING", (1., 1.), True), ("CHARGING", (1., 1.), True),
+    ("RETURNING", (float("nan"), 1.), False), ("RETURNING", (100., 100.), False),
+])
+def test_found_plans_returning_robot_from_home_without_dispatching_it(mode, home, enters_rally):
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+
+    names = ["tb1", "tb2"]
+    positions = {"tb1": (100., 100.), "tb2": (3., 3.)}
+    phases = []
+    node = SimpleNamespace(
+        task_state="FOUND", enable_rally=True, enable_battery=True,
+        fresh_robot_inputs=lambda: True, fresh_robot_poses=lambda: True, fresh_target=lambda: True,
+        last_input_availability=True, now=lambda: 10., battery_monitor_started_at=0.,
+        battery_state_received_at=dict.fromkeys(names, 10.), message_freshness_timeout_sec=5.,
+        participating_robots=lambda: names, stop_target_scan=lambda: False,
+        goal_handles=dict.fromkeys(names), cancel_requested=dict.fromkeys(names, False),
+        robot_states=dict.fromkeys(names, "idle"), active_batteries_ready=lambda: False,
+        survey_goal_handle=None, survey_goal_started_at=None, survey_goal_pending=False,
+        map_data=np.zeros((60, 100), dtype=int), resolution=.1, origin=(0., 0.), target=(6., 3.),
+        rally_targets={}, rally_final_targets={}, robot_positions=positions.copy(),
+        battery_modes={"tb1": mode, "tb2": "ACTIVE"},
+        battery_states={"tb1": {"charge_x": home[0], "charge_y": home[1]}},
+        last_rally_assignment_attempt=0., rally_assignment_objective="minimax",
+        use_map_safe_rally_order=False, detecting_robot="tb2",
+        publish_rally_assignments=lambda: None, publish_task_state=phases.append,
+        send_survey_goal=lambda *args: pytest.fail("Survey must not bypass a local return"),
+        get_logger=lambda: Mock(),
+    )
+    control.HeadquartersControl.update_mission(node)
+    assert phases == (["RALLY"] if enters_rally else [])
+    assert node.robot_positions == positions  # Planning never forges a pose update.
+    assert bool(node.rally_targets) is enters_rally
+    assert node.goal_handles == dict.fromkeys(names)  # No returning robot action.
+
+
 def test_transform_point_2d_applies_map_to_odom_transform():
     transform = Transform()
     transform.translation.x = 4.0

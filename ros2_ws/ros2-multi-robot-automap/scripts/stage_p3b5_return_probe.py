@@ -57,7 +57,7 @@ def owned_coordinator(owner, domain, proc_root=Path('/proc')):
     return found[0]
 
 
-def known_staging_prefix(clear, resolution, origin, position, target, limit=.75):
+def known_staging_prefix(clear, resolution, origin, position, target, limit=.75, raw_grid=None):
     """Bounded visible leg toward a declared fixture point; never cross unknown."""
     from multi_robot_exploration.control import has_known_line_of_sight, world_to_grid
     distance = math.dist(position, target)
@@ -68,6 +68,20 @@ def known_staging_prefix(clear, resolution, origin, position, target, limit=.75)
         return None
     length = min(limit, distance)
     minimum = min(.5, distance)
+    # Use the task stack's bounded known-free clearance escape when an
+    # occupied cell near the current body inflates an otherwise free start.
+    # Unknown/occupied starts still fail; never clear or edit the source map.
+    if raw_grid is not None and clear[start] != 0:
+        from multi_robot_exploration.control import plan_rally_leg, RallyPose
+        point = tuple(p + (t-p) * length / distance for p, t in zip(position, target))
+        pose, _ = plan_rally_leg(
+            RallyPose(*point, 0.), raw_grid, resolution, origin, position,
+            limit, visible_only=True,
+        )
+        if (pose is not None and math.dist(position, (pose.x, pose.y)) <= limit
+                and math.dist((pose.x, pose.y), target) < distance):
+            return pose.x, pose.y
+        return None
     while length >= minimum - 1e-8:
         point = tuple(p + (t - p) * length / distance for p, t in zip(position, target))
         end = world_to_grid(*point, resolution, *origin)
@@ -260,7 +274,7 @@ def main():
                 origin = (grid.info.origin.position.x, grid.info.origin.position.y)
                 start = world_to_grid(*current, grid.info.resolution, *origin)
                 waypoint = known_staging_prefix(clear, grid.info.resolution, origin, current, target[:2],
-                                                 fixture['navigation_leg_limit_m'])
+                                                 fixture['navigation_leg_limit_m'], raw_grid=raw)
                 end = world_to_grid(*target[:2], grid.info.resolution, *origin)
                 if waypoint is None:
                     if name not in saved_grids:

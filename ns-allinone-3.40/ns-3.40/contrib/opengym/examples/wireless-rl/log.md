@@ -4716,3 +4716,26 @@ zero pair1.8/2.4s mission_failed双机FAILED/E0/无目标/0碰撞通过。固定
 第二次全量仍1FAIL/282PASS9.47s；仅扩大测试range为4.25不能建立LOS，避让空间与目标之间仍有实墙。因此保留生产视线限制，给guard测试夹具增加一个仅1cell宽的观察缝（净空不足以通行，不产生导航绕过通道），自定义检测范围4.6；五个状态机恢复场景5PASS/141deselected1.48s，完整路径仍先被停车机器人阻挡，侧向观察点让出后才可通行。两次失败均记录，不把不同副作用混淆为任务成功。
 
 最终全16文件283PASS8.34s（包含新guard状态机联动）、四包build5.56s、3r source audit PASS0违规。v30固定原始ledger只读重放check_p3b5_gate.ledger_audit通过因果/TTL/版本/决策输入source leases，详见失败归档records，不启动新episode。新候选commit/push之前diff check与显式staging排除用户260929_report及所有运行/build产物。
+
+## 2026-10-02 P3B.5 v31全员恢复屏障与受控准备净空失败
+
+冻结384270d486c8943c41deb258c34ccde85e77fbb3；report/20261002_p3b5_found_barrier_failed_candidate.json保留4started/4raw、完整wrapper源码/参数/环境/hash、原始结果、准备轨迹与捕获地图。全部进程自然结束后才改源。source Humble/canonical install/Gazebo，PYTHONNOUSERSITE=1，TURTLEBOT3_MODEL=waffle，ROS_LOG_DIR=canonical ROS/log/ros_launch，rtk bash -lc：
+
+```bash
+/usr/bin/python3 /tmp/p3b5_v31_bootstrap.py > /tmp/p3b5_v31_bootstrap.log 2>&1
+/usr/bin/python3 /tmp/p3b5_v31_after_subgates.py > /tmp/p3b5_v31_after_subgates.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:14151 taskset -c 20-39 /usr/bin/python3 /tmp/p3b5_v31_zero_first.py > /tmp/p3b5_v31_zero_first.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:14150 taskset -c 0-19 /usr/bin/python3 /tmp/p3b5_v31_first_lab101.py > /tmp/p3b5_v31_first_lab101.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:14152 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_return_probe.py --run-id p3b5_v31_returnproof --ros-domain-base 180 --config scripts/p3b5_staged_return_probe_manifest.json > /tmp/p3b5_v31_returnproof.log 2>&1
+PYTHONNOUSERSITE=1 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_384270d.json > /tmp/p3b5_protocol_384270d.log 2>&1
+```
+
+zero ideal/fault1.4/2.5s mission_failed，完整FAILED双机/E0/无目标/0碰撞，graph/source/ledger PASS。首格lab3/101自然timeout300.1/RALLY，最低13.3833655、2次充电、0碰撞/失败/耗尽、所有native检查正常结束；发现69.7s而RALLY214.8s，全员电池恢复屏障耗费约145s。最后各机位置误差.018905/.015981/.022748m，仍因末航向及原5s保持不足不能计COMPLETE。原始ledger只读审计PASS：10199生成、10813 accepted、21导航决策、226真实确认，最小source delay.007/最大clock deferral.093s。
+
+受控ideal rawCOMPLETE261.8、0碰撞，但stager1=operational failure，原50s准备期限到期，仅tb2完成准备；fault没有启动，不能用rawCOMPLETE覆盖子门禁失败。epoch2076.682，tb1两个.75m有界航段成功，随后实际起点(70,113)原始已知自由而膨胀mask不可通行；邻近单一占用格(72,111)使直线前缀失败。captured tb1_staging_map.npz SHA256 bee861b829a3163b79b9d14b1120400e5cc53c5d844d431f8f947f3c40411c1b及原数组纳入归档。原生日志后续别处存在起点lethal警告，不据此唯一归因为该像素，也未修改native footprint策略。protocol54PASS，bootstrap[1,1,0]，future因首格FAIL自然结束；fullpool/707未运行，无基础设施失败、整格重试或活跃行政中断。
+
+下一候选移除完整集合分配前的全员ACTIVE屏障：RETURNING/CHARGING机器人使用新鲜电池消息中的有限充电位作为未来分配起点，实际robot_positions不改写；返航/机体预约、ACTIVE派发、完整能量和source leases仍保持。无法分配完整集合点时，额外探查仍受原全员就绪条件保护。新增四个状态机反例覆盖两种模式、非法位置及地图外充电位；不能把规划意图当作接收位姿。
+
+受控准备复用现有plan_rally_leg/navigation_start_route的已知自由起点有界脱困，限制航段.75m并须接近原声明目标；原始unknown/occupied起点拒绝，源地图不变，期限50s不变。只读离线组件命令source Humble/install，PYTHONNOUSERSITE=1，ROS_LOG_DIR=canonical ROS/log/component_checks，`/usr/bin/python3 /tmp/replay_p3b5_v31_staging.py`。首次临时脚本ImportError（函数名误写traversable_mask），未启动episode；改用生产traversable_grid后PASS，原失败地图得到(.005678,-2.458022)航点，欧氏航段.539262m、目标距离.531269→.009828m，raw数组未变化。此为组件反例，非任务替代证据；完整重放数据与源hash保留在失败归档records。
+
+相关control/stager155PASS7.48s；完整16文件288PASS9.95s，四包build5.30s，3r source audit PASS0违规。测试与v29同完整16文件命令，构建`colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot`，审计`/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3`。下一原矩阵须新clean提交/push，保持原目标/能量/300s/零重试与先十格后707条件；P3B.5尚未通过，未进入ns-3/RL。

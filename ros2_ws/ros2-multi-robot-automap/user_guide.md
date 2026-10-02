@@ -740,6 +740,13 @@ python3 scripts/run_p3b_fault_matrix.py
 `/gateway/message_events` 都保留每次尝试的消息 ID、序号、生成/入队/准入/发送/交付或丢弃时间、
 TTL、重复标记和重试次数。P3B 只验证应用层故障语义，尚未接入 ns-3 Wi-Fi。
 
+P3B.5 当前候选在 FOUND 阶段允许为 RETURNING/CHARGING 机器人从新鲜电池消息中的
+充电位规划后续集合点，避免全员恢复 ACTIVE 后才开始分配。该位置只是未来路线起点，
+不会覆盖收到的实际位姿；RALLY 派发仍检查实际机体、返航路线预约、ACTIVE 模式和完整
+能量预算。集合点不足时，额外地图探查仍须等待电池就绪。受控返航准备在原始起点已知
+自由但膨胀净空不足时复用有界脱困规划；未知/占用起点仍拒绝，不清除地图，原 .75m
+航段和 50s 准备期限保持。这些候选通过组件检查，完整固定任务与故障验收仍待重跑。
+
 阶段报告见
 `ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20260928_p3b.md`；其中区分了
 已完成的协议门禁、保留的 ROS fault-mode 失败样本和仍未完成的 Gazebo/ns-3 验收工作。

@@ -67,3 +67,25 @@ def test_staging_uses_known_visible_prefix_without_waiting_for_unknown_final_poi
     grid[:,17:]=0
     assert known_staging_prefix(grid,.1,(0.,0.),(1.,1.),(3.,1.)) is None
     assert known_staging_prefix(grid,.1,(0.,0.),(-1.,1.),(3.,1.)) is None
+
+
+def test_staging_reuses_bounded_free_start_escape_without_clearing_source_map():
+    import math
+    import numpy as np
+    from multi_robot_exploration.control import traversable_grid, world_to_grid
+
+    raw = np.zeros((30, 50), dtype=int)
+    raw[12, 10] = 100  # Occupied cell behind an otherwise known-free robot.
+    position, target = (1.15, 1.05), (1.15, .5)
+    start = world_to_grid(*position, .1, 0., 0.)
+    clear = np.where(traversable_grid(raw, .1), 0, 100)
+    assert raw[start] == 0 and clear[start] == 100
+    assert known_staging_prefix(clear, .1, (0., 0.), position, target) is None
+    original = raw.copy()
+    point = known_staging_prefix(clear, .1, (0., 0.), position, target, raw_grid=raw)
+    assert point is not None and math.dist(position, point) <= .75
+    assert math.dist(point, target) < math.dist(position, target)
+    np.testing.assert_array_equal(raw, original)
+    for unsafe in (-1, 100):
+        raw[start] = unsafe
+        assert known_staging_prefix(clear, .1, (0., 0.), position, target, raw_grid=raw) is None

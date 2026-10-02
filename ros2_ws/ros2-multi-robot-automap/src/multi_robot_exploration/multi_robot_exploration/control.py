@@ -2594,8 +2594,6 @@ class HeadquartersControl(Node):
                 if name in self.participating_robots() or state == "failed"
             ):
                 return
-            if not self.active_batteries_ready():
-                return
             now = self.now()
             if (
                 self.survey_goal_handle is not None
@@ -2630,6 +2628,20 @@ class HeadquartersControl(Node):
                 active_positions = {
                     name: self.robot_positions[name] for name in active_names
                 }
+                # Assign returning robots from their known charging pose.
+                # This is future route intent, never a received current pose.
+                # RALLY still reserves their actual body/return corridor and
+                # dispatches only ACTIVE robots after the energy preflight.
+                for name in active_names:
+                    if self.battery_modes[name] in ("RETURNING", "CHARGING"):
+                        try:
+                            state = self.battery_states[name]
+                            home = (float(state["charge_x"]), float(state["charge_y"]))
+                            if not all(math.isfinite(v) for v in home):
+                                return
+                        except (KeyError, TypeError, ValueError):
+                            return
+                        active_positions[name] = home
                 self.rally_targets = assign_rally_poses(
                     self.map_data,
                     self.resolution,
@@ -2640,6 +2652,8 @@ class HeadquartersControl(Node):
                 )
                 self.rally_final_targets = dict(self.rally_targets)
                 if len(self.rally_targets) != len(active_names):
+                    if not self.active_batteries_ready():
+                        return  # Surveys do not reserve independent returns.
                     candidate_count = len(
                         rally_pose_candidates(
                             self.map_data,
