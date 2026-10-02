@@ -1837,7 +1837,7 @@ class HeadquartersControl(Node):
         self.rally_targets = {}
         self.rally_final_targets = {}
         self.rally_yield_targets = set()
-        self.rally_yield_beneficiaries = {}
+        self.rally_recovery_beneficiaries = {}
         self.return_yield_targets = {}
         self.rally_probe_targets = set()
         self.rally_probe_robot = None
@@ -2359,7 +2359,7 @@ class HeadquartersControl(Node):
             name for name in self.rally_dispatch_order if name != robot_name
         ]
         self.rally_yield_targets.discard(robot_name)
-        getattr(self, "rally_yield_beneficiaries", {}).pop(robot_name, None)
+        getattr(self, "rally_recovery_beneficiaries", {}).pop(robot_name, None)
         self.return_yield_targets.pop(robot_name, None)
         self.rally_probe_targets.discard(robot_name)
         if self.rally_probe_robot == robot_name:
@@ -2432,7 +2432,7 @@ class HeadquartersControl(Node):
                 continue
             self.rally_targets[name] = self.rally_final_targets[name]
             self.rally_yield_targets.discard(name)
-            getattr(self, "rally_yield_beneficiaries", {}).pop(name, None)
+            getattr(self, "rally_recovery_beneficiaries", {}).pop(name, None)
             del self.return_yield_targets[name]
             self.rally_arrived[name] = False
             self.rally_route_unavailable_since[name] = None
@@ -2505,6 +2505,7 @@ class HeadquartersControl(Node):
                 self.rally_targets[name] = refuge
                 self.rally_yield_targets.add(name)
                 self.return_yield_targets[name] = returning
+                self.rally_recovery_beneficiaries.pop(name, None)
                 self.rally_arrived[name] = False
                 self.rally_attempts[name] = 0
                 self.publish_rally_assignments()
@@ -2778,7 +2779,7 @@ class HeadquartersControl(Node):
                 for name in yielded_names:
                     self.rally_targets[name] = self.rally_final_targets[name]
                     self.rally_yield_targets.discard(name)
-                    getattr(self, "rally_yield_beneficiaries", {}).pop(name, None)
+                    getattr(self, "rally_recovery_beneficiaries", {}).pop(name, None)
                     self.rally_arrived[name] = False
                     self.rally_route_unavailable_since[name] = None
                 self.publish_rally_assignments()
@@ -3097,7 +3098,7 @@ class HeadquartersControl(Node):
                                 self.rally_final_targets[blocker] = blocker_replacement
                             else:
                                 self.rally_yield_targets.add(blocker)
-                                self.rally_yield_beneficiaries[blocker] = name
+                            self.rally_recovery_beneficiaries[blocker] = name
                             self.rally_targets[blocker] = blocker_replacement
                             self.rally_arrived[blocker] = False
                             self.rally_route_unavailable_since[name] = now
@@ -3228,14 +3229,18 @@ class HeadquartersControl(Node):
                     break
                 if name not in plans:
                     continue
-                # A parked temporary yield grants its beneficiary right of
-                # way. Keep its future approach reserved for other followers;
-                # the real parked body and all live legs remain protected.
+                # The requesting waiter lends its future priority until the
+                # blocker clears it. A parked temporary refuge then grants
+                # its beneficiary passage; real bodies/live legs stay protected.
                 priority_routes = [] if name in stage_names else rally_priority_reservations(
                     self.rally_dispatch_order, name, approach_routes,
                     completed_approaches | {
+                        beneficiary for yielding, beneficiary in
+                        getattr(self, "rally_recovery_beneficiaries", {}).items()
+                        if yielding == name and not self.rally_arrived[yielding]
+                    } | {
                         yielding for yielding, beneficiary in
-                        getattr(self, "rally_yield_beneficiaries", {}).items()
+                        getattr(self, "rally_recovery_beneficiaries", {}).items()
                         if beneficiary == name and yielding in self.rally_yield_targets
                         and self.rally_arrived[yielding]
                     },
@@ -3752,7 +3757,7 @@ class HeadquartersControl(Node):
         )
         if self.rally_arrived[robot_name] and robot_name in self.rally_probe_targets:
             self.rally_yield_targets.discard(robot_name)
-            getattr(self, "rally_yield_beneficiaries", {}).pop(robot_name, None)
+            getattr(self, "rally_recovery_beneficiaries", {}).pop(robot_name, None)
             self.rally_probe_targets.discard(robot_name)
             self.rally_targets[robot_name] = self.rally_final_targets[robot_name]
             self.rally_arrived[robot_name] = False
@@ -3769,6 +3774,7 @@ class HeadquartersControl(Node):
             )
             return
         if self.rally_arrived[robot_name]:
+            getattr(self, "rally_recovery_beneficiaries", {}).pop(robot_name, None)
             self.get_logger().info(f"{robot_name} reached its rally pose.")
         elif success:
             self.get_logger().info(

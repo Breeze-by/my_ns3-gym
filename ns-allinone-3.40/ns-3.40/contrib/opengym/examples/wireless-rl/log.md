@@ -4786,3 +4786,29 @@ zero ideal/fault1.5/2.0s mission_failed，双机完整FAILED/E0/无导航/0碰�
 只读整批审计命令`/usr/bin/python3 /tmp/audit_p3b5_v33_return.py > /tmp/p3b5_v33_return_audit.log`及`/usr/bin/python3 /tmp/audit_p3b5_v33_fixed.py > /tmp/p3b5_v33_fixed_audit.log`，相同Humble/install/component环境，无新episode。下一候选记录临时让路受益关系；让路者实际成功停到refuge后，只向该受益者暂时释放未来接近预约，真实机体和活动/返航航段仍受保护，其他跟随者和尚未完成的让路不获得优先权。原最终集合点保留；恢复/失败清理关系，其他能量/lease/净空/并发门槛不变。
 
 首次相关检查3FAIL/9PASS3.30s：两项SimpleNamespace缺生产容差字段，第三项几何夹具允许原预约前的合法安全前缀，与测试“零派发”断言不一致。补齐.35容差，并把待行机器人放到预约1.8m范围内但实际机体.6m范围外，构成真正阻断反例，生产门槛不变。相关12PASS2.12s；完整16文件294PASS8.98s，四包build35.8s（multi_robot30.7s，无错误），3r source-only审计PASS0违规；命令同v32全量pytest/四包build/source audit。下一原矩阵在clean commit/push后运行；P3B.5仍待完成，无ns-3/RL工作。
+
+## 2026-10-02 P3B.5 v34多航段恢复中的预约优先倒置
+
+冻结8c5e8b02030c341baab68da1826d88a1a79a18e4，report/20261002_p3b5_recovery_donation_failed_candidate.json保留5started/5raw、完整wrapper/命令/config/source/env/hash、原始物理与账本审计及AP地图快照。source Humble/canonical install/Gazebo，PYTHONNOUSERSITE=1，TURTLEBOT3_MODEL=waffle，ROS_LOG_DIR=canonical ROS/log/ros_launch，rtk bash -lc：
+
+```bash
+/usr/bin/python3 /tmp/p3b5_v34_bootstrap.py > /tmp/p3b5_v34_bootstrap.log 2>&1
+/usr/bin/python3 /tmp/p3b5_v34_after_subgates.py > /tmp/p3b5_v34_after_subgates.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:14451 taskset -c 20-39 /usr/bin/python3 /tmp/p3b5_v34_zero_first.py > /tmp/p3b5_v34_zero_first.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:14450 taskset -c 0-19 /usr/bin/python3 /tmp/p3b5_v34_first_lab101.py > /tmp/p3b5_v34_first_lab101.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:14452 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_return_probe.py --run-id p3b5_v34_returnproof --ros-domain-base 180 --config scripts/p3b5_staged_return_probe_manifest.json > /tmp/p3b5_v34_returnproof.log 2>&1
+PYTHONNOUSERSITE=1 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_8c5e8b0.json > /tmp/p3b5_protocol_8c5e8b0.log 2>&1
+ROS_DOMAIN_ID=130 taskset -c 0-19 /usr/bin/python3 /tmp/observe_p3b5_v34_ap_snapshots_qos_fixed.py > /tmp/p3b5_v34_ap_snapshots_qos_fixed.log 2>&1
+```
+
+zero ideal/fault1.2/1.9s mission_failed双机完整FAILED/E0/无导航/0碰撞，graph/source/ledger PASS。固定lab3/101自然timeout300.4/RALLY，三台各一次充电、最低20.190646、0碰撞/失败/耗尽；所有native检查与收尾正常。最新观察者tb1维持实际确认，伙伴接近后早充，但最终误差tb1/tb2/tb3=2.04675/2.98627/3.64562m，未完成。日志连续三次永久重分配tb2至同一(-3.99,3.02)点以释放tb3通道，每次直接恢复派发一条可行腿；普通后续腿受未来优先接近预约影响，必须再次走恢复分支。暂时让路到位后的单向受益豁免不覆盖这段永久恢复过程；不能把此前修复机制存在写成完整任务成功。
+
+受控ideal/fault自然timeout300.2/300.2 EXPLORE，仅过程；两台各一次充电、最低能量正、0碰撞/失败，runner/stager/nativeobserver0。严格准备/TTL/one-shot/原epoch PASS；fault原62..248区间tb1 start170.8/home2.011704/path1.203602/progress1.196302/原生Nav2 EXEC1.203561m；tb2 start171.4/home1.984749/path1.178618/progress1.170182/EXEC1.178578m。protocol54PASS。bootstrap自然[1,0,0]，future首格FAIL自然退出；fullpool/707未派发，无基础设施失败/整格重试/活跃行政中断，全部进程自然结束后改源。
+
+只读AP观察器提前启动，只有有效clock/map后才保存FOUND/RALLY快照，11条2224.682..2424.682，source/hash与原数据保留，任务subgate出现后正常0退出，不发任务消息或动作。离线命令source Humble/install、PYTHONNOUSERSITE=1、ROS_LOG_DIR=canonical ROS/log/component_checks，`/usr/bin/python3 /tmp/replay_p3b5_v34_recovery.py`；三条原始快照2324.682/2344.682/2364.682，完整交付assignment无需恢复四舍五入格，普通tb2 plan存在，tb3未来intent拒绝，借用请求者优先权后同静态/动态机体检查下接受。快照SHA b37996025a6ff6cd5e77c0a8d6312afa77a8f91207e94c139abf9cc8e6b32d40。所用tb3,tb2,tb1顺序与能量就绪稳定排序一致，但未在快照直接记录，明确为条件组件反例，不声称唯一实测根因、替代任务或纯策略时延改善。首次临时拼接重放脚本ValueError substring not found，随后未生成文件的执行exit2；改为完整显式脚本后重放成功，未启动额外episode。
+
+只读正式审计`/usr/bin/python3 /tmp/audit_p3b5_v34_return.py > /tmp/p3b5_v34_return_audit.log`、`/usr/bin/python3 /tmp/audit_p3b5_v34_fixed.py > /tmp/p3b5_v34_fixed_audit.log`，上述component环境，因果/TTL/版本/决策source leases及强物理回充均PASS。
+
+下一候选把受益关系扩展为恢复期间的临时优先权：请求停车阻挡者移开的机器人在它完成恢复前暂时让出自己的未来intent；临时refuge已实际到位后，再向原受益者开放通过。永久新目标也保存此恢复关系，终点成功、恢复释放、失败或独立返航让路接管时清理；真实停车机体、所有live/return路线、完整能量、freshness、并发名额仍检查。三个实际窄通道反例覆盖合法借权、未借权拒绝、真实机体占位不可绕过。相关13PASS2.61s；完整16文件297PASS8.60s，四包build5.97s；命令同v33完整pytest/四包build。源审计结果随后记录，下一原矩阵须clean commit/push。本批失败保持，P3B.5仍待完成，未进入ns-3/RL。
+
+3r source-only审计PASS0违规，原17用户材料SHA256未变；diff check、add-n及显式staging排除所有用户材料/运行产物，新源和失败归档commit/push后才启动下一冻结。

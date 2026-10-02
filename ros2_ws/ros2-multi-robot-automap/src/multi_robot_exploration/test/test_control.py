@@ -1037,6 +1037,7 @@ def test_return_corridor_yield_uses_nearby_off_route_refuge():
         map_data=grid, resolution=0.1, origin=(0, 0),
         robot_positions={"tb1": (8.0, 3.0), "tb2": (5.0, 3.0)},
         rally_yield_targets=set(), return_yield_targets={}, rally_targets={"tb2": original},
+        rally_recovery_beneficiaries={},
         rally_final_targets={"tb2": original}, rally_arrived={"tb2": True},
         rally_attempts={"tb2": 2}, publish_rally_assignments=lambda: None,
         get_logger=lambda: SimpleNamespace(info=lambda *args: None),
@@ -1248,7 +1249,7 @@ def test_idle_blocker_recovery_dispatches_motion_before_returning(
         participating_robots=lambda: names, battery_modes=dict.fromkeys(names, "ACTIVE"),
         now=lambda: 10.0, survey_robot=None, survey_goal_handle=None, survey_goal_pending=False,
         release_return_yields=lambda: None, rally_yield_targets=set(),
-        rally_yield_beneficiaries={},
+        rally_recovery_beneficiaries={},
         return_yield_targets={}, rally_arrived=dict.fromkeys(names, False),
         rally_goal_handles=dict.fromkeys(names), rally_goal_pending=dict.fromkeys(names, False),
         rally_dispatch_order=names, rally_yield_requested=dict.fromkeys(names, False),
@@ -1273,7 +1274,7 @@ def test_idle_blocker_recovery_dispatches_motion_before_returning(
     else:
         refuge = node.rally_targets["tb2"]
         assert "tb2" in node.rally_yield_targets
-        assert node.rally_yield_beneficiaries == {"tb2": "tb1"}
+        assert node.rally_recovery_beneficiaries == {"tb2": "tb1"}
         assert node.rally_final_targets["tb2"] == targets["tb2"]
         assert math.dist((refuge.x, refuge.y), (4.0, 2.5)) <= 1.1
         route = control.plan_rally_leg(
@@ -1361,7 +1362,7 @@ def test_yielded_approach_releases_only_its_beneficiary_after_parking(beneficiar
         rally_arrived={"yielding": parked, "rallying": False}, rally_hold_started_at=None,
         rally_position_tolerance=.35,
         rally_yield_targets={"yielding"}, return_yield_targets={},
-        rally_yield_beneficiaries={"yielding": beneficiary},
+        rally_recovery_beneficiaries={"yielding": beneficiary},
         rally_yield_requested=dict.fromkeys(names, False), rally_probe_targets=set(),
         rally_targets={"yielding": refuge, "rallying": final["rallying"]},
         rally_final_targets=final, rally_dispatch_order=names,
@@ -1384,6 +1385,47 @@ def test_yielded_approach_releases_only_its_beneficiary_after_parking(beneficiar
     control.HeadquartersControl.update_mission(node)
     assert sent == (["rallying"] if admitted else [])
     assert node.rally_targets["yielding"] == refuge and node.rally_final_targets == final
+
+
+@pytest.mark.parametrize("donated,physical_block,admitted", [(True, False, True),
+    (False, False, False), (True, True, False)])
+def test_recovery_blocker_borrows_waiter_priority_without_bypassing_its_body(donated, physical_block, admitted):
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+
+    names = ["waiter", "blocker"]
+    grid = np.full((50, 100), 100, dtype=int)
+    grid[19:31, 1:99] = 0
+    grid[8:26, 35:46] = 0
+    targets = {"waiter": control.RallyPose(8., 2.5, 0.), "blocker": control.RallyPose(4., 1.5, 0.)}
+    sent=[]
+    node=SimpleNamespace(
+        enable_battery=False, task_state="RALLY", fresh_robot_inputs=lambda: True,
+        fresh_robot_poses=lambda: True, fresh_target=lambda: True, stop_target_scan=lambda: False,
+        last_input_availability=True, now=lambda: 10., rally_charge_requested={}, rally_precharge_staging={},
+        rally_max_concurrent=2, rally_leg_routes=dict.fromkeys(names, ()),
+        rally_goal_handles=dict.fromkeys(names), rally_goal_pending=dict.fromkeys(names, False),
+        rally_goal_started_at=dict.fromkeys(names), rally_arrived=dict.fromkeys(names, False),
+        rally_hold_started_at=None, rally_yield_targets=set(), return_yield_targets={},
+        rally_recovery_beneficiaries={"blocker": "waiter"} if donated else {},
+        rally_yield_requested=dict.fromkeys(names, False), rally_probe_targets=set(),
+        rally_targets=targets.copy(), rally_final_targets=targets.copy(), rally_dispatch_order=names,
+        battery_modes=dict.fromkeys(names, "ACTIVE"), participating_robots=lambda: names,
+        survey_robot=None, survey_goal_handle=None, survey_goal_pending=False,
+        release_return_yields=lambda: None, yield_to_returning_robot=lambda: None,
+        last_rally_dispatch_at=0., global_battery_rally_pause=False,
+        rally_attempts=dict.fromkeys(names, 0), rally_recovery_requested=dict.fromkeys(names, False),
+        rally_route_unavailable_since=dict.fromkeys(names),
+        robot_positions={"waiter": (4., 1.5) if physical_block else (1., 2.5), "blocker": (4., 2.5)},
+        map_data=grid, resolution=.1, origin=(0., 0.), target=(8., 2.5), get_logger=lambda: Mock(),
+    )
+    def send(name, plan, charge_staging=False):
+        sent.append(name)
+        node.rally_goal_pending[name]=True
+    node.send_rally_goal=send
+    control.HeadquartersControl.update_mission(node)
+    assert ("blocker" in sent) is admitted
+    assert node.rally_targets==targets and node.rally_final_targets==targets
 
 
 def test_small_frontier_pocket_keeps_nonzero_local_alternatives():
