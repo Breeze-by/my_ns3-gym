@@ -1007,6 +1007,10 @@ def test_navigation_footprint_covers_gazebo_body_and_rpp_cost_scale():
         controller = config["controller_server"]["ros__parameters"]["FollowPath"]
         tolerance = config["controller_server"]["ros__parameters"]["goal_checker"]["xy_goal_tolerance"]
         assert tolerance == control.NAVIGATION_POSITION_TOLERANCE_M
+        yaw_tolerance = config["controller_server"]["ros__parameters"]["goal_checker"]["yaw_goal_tolerance"]
+        assert yaw_tolerance == control.NAVIGATION_YAW_TOLERANCE_RAD
+        # A quarter-turn visual scan must not succeed while facing away.
+        assert yaw_tolerance < math.pi / 4
         assert tolerance < local["resolution"] / 2
         assert controller["use_collision_detection"]
         assert controller["inflation_cost_scaling_factor"] == local["inflation_layer"]["cost_scaling_factor"]
@@ -1791,3 +1795,30 @@ def test_scan_cancel_persists_across_a_late_goal_acceptance_and_drains_before_re
     assert cancellations == [True]  # idempotent cancellation
     completions[0](SimpleNamespace(result=lambda: None))
     assert node.target_scan_robot is None and not node.stop_target_scan()
+
+
+def test_charged_observer_is_not_blocked_by_waiting_outbound_intent():
+    order = ["waiting", "charged"]
+    modes = {"waiting": "ACTIVE", "charged": "ACTIVE"}
+    routes = {"charged": ((0., 0.), (4., 0.))}
+    # An unplanned future route for the old leader stopped all ready progress.
+    assert control.rally_priority_reservations(order, "charged", routes, set()) is None
+    ready = control.rally_energy_ready_order(order, {"waiting"}, modes)
+    assert ready == ["charged", "waiting"]
+    reservations = control.rally_priority_reservations(ready, "charged", routes, set())
+    plan = (control.RallyPose(4., 0., 0.), ((0., 0.), (1., 0.), (2., 0.), (3., 0.), (4., 0.)))
+    assert control.reserve_rally_prefix(plan, reservations) == plan
+    # Ready priority cannot bypass a real safety-return corridor.
+    protected_return = ((2., -1.), (2., 1.))
+    limited = control.reserve_rally_prefix(plan, [protected_return])
+    assert limited is None or limited[0].x < 2.
+
+
+def test_ready_approach_partition_preserves_order_and_defers_inactive_robots():
+    order = ["returner", "charged", "charging", "waiting", "also_ready"]
+    modes = dict.fromkeys(order, "ACTIVE")
+    modes.update(returner="RETURNING", charging="CHARGING")
+    assert control.rally_energy_ready_order(order, {"waiting"}, modes) == [
+        "charged", "also_ready", "returner", "charging", "waiting",
+    ]
+    assert order == ["returner", "charged", "charging", "waiting", "also_ready"]

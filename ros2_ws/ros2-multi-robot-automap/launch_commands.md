@@ -739,3 +739,5 @@ Gazebo factory 明确表示本次实体已经入队、确认阶段超时时，he
 2026-10-02 补充返航夹具的prepare完成标志为一次性锁存：机器人达到声明远点后不再收到准备目标，等两台原生实际充电完成后才释放coordinator。命令与全部阈值不变；证据分析拒绝完成后/50s后新准备目标，旧ideal重派发失败保留。
 
 2026-10-02 零能量仿真反例：`--battery-initial-energy 0` 仅在use_sim_time启用时允许；本地电池启动即FAILED/battery_exhausted，不发布短暂ACTIVE或导航动作，持续以当前仿真clock发布FAILED状态。评估器保留启动前失败并在原生位姿建立episode后按既有0.5s窗口收齐失败事件，不由reason消息抢先记no_data。正常初始能量/任务参数不变；真实非仿真模式仍拒绝零初始能量。正式预设battery_exhaust_lab理想/故障配对将先行，保留为原矩阵独立格，不在后续lab批次重复。
+
+2026-10-02 P3B.5 航向与充电派发修复候选：tb1..tb4的实际Nav2参数goal_checker.yaw_goal_tolerance从3.14收紧为0.25rad，使viewpoint/原地扫描朝向确实达到后才成功。位置.02m、速度/足迹/碰撞检测/任务完成门限不变。串行预充电中，只在rally导航完全空闲时把ACTIVE且能量已就绪的机器人排在待充电机器人前；当前/未来本地返航路线及停车占位仍保护，不在活动腿中切换优先级。原命令不变，需新同提交十格及故障矩阵。只读physics helper支持--robot-count 3并保存yaw/angular_speed；默认2仍用于原返航配对。

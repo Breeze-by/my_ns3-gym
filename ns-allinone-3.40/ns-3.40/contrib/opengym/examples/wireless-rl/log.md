@@ -4454,3 +4454,30 @@ GAZEBO_MASTER_URI=http://127.0.0.1:12850 taskset -c 0-19 /usr/bin/python3 /tmp/p
 cdde226之后、下一候选开始前发现预设battery_exhaust_lab初始能量0会被构造器拒绝；原27案例尚未执行该格，也没有新候选启动。修复只允许use_sim_time的0能量启动即FAILED，无短暂ACTIVE/导航；FAILED持续发布当前源时间心跳，防止构造时clock0的状态在网关永久过期。非仿真仍拒绝0。评估器reason消息不再提前finalize，沿用FAILED之后0.5s drain，并在启动前FAILED已到达时于原生位姿建立epoch后安排drain。新增真实ROS clock10/状态接收/无动作反例及失败状态、reason两种交付顺序组件检查。此处是预检发现，不能假称已验证正式零能量物理格；新冻结后原格ideal/fault先执行一次，后续lab列表排除该格，不产生重试/回填。
 
 验证：source /opt/ros/humble/setup.bash、source install/setup.bash、PYTHONNOUSERSITE=1、ROS_LOG_DIR=log/component_checks，/usr/bin/python3 -m pytest -q，以下完整15文件237PASS7.99s：test_control/test_battery_manager/test_gateway/test_fault_model/test_navigation_faults/test_task_evaluator/test_nav2_ready_gate/test_readiness/test_spawn_entity_checked/test_tf_ingress_sampler/test_target_detector（src/multi_robot_exploration/test下），src/merge_map/test/test_merge_map.py，scripts/test_p3b5_tasks.py、test_p3b5_gate.py、test_p3b5_return_staging.py。单独battery27PASS1.37s。四包命令colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot，PASS5.42s。/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 PASS0违规。以上均组件/构建/静态预检，无新Gazebo episode、无707或network/RL工作。所有历史失败留存，下一任务栈候选必须独立同提交10固定格和27配对。
+
+## 2026-10-02 P3B.5 3dec23c 零能量通过、目标视野/航向恢复失败候选
+
+冻结3dec23c20230efab08942b3a392582b3bad50f71（237PASS7.99s/四包5.42s/source审计/clean/push）。先v19在受限沙箱启动：ROS UDP/getifaddrs EPERM、Gazebo ~/.gazebo/server-12951只读，0started/0raw；保留完整summary/commands/stdout/launch/source/hash。执行write_stdin Ctrl-C仅终止owned unified-exec sessions85421/11225的沙箱命名空间，退出130，没有运行中episode。require_escalated完成沙箱外UDP绑定预检PASS，随后v20新目录同源码/同参数运行；不是丢弃poststart失败重试。旧失败与后续全部记录同归档report/20261002_p3b5_heading_priority_failed_candidate.json。
+
+v20 5started/5raw自然结束：原primary battery_exhaust_lab ideal/fault均mission_failed/FAILED，两台明确battery_exhausted、无导航goal、碰撞监测有效/零接触，零能量原格subgate PASS。后续lab批次已前瞻排除该格，未重复。受控物理ideal/fault均timeout、两台真实充电、正能量/零接触/FAILED；一次prepare锁存审计通过，皆6条准备goal，无完成后重派发。故障两台原生物理返航确实通过：tb1 offset172.0/home1.98017/path1.14461/progress1.13954/liveNav1.14458；tb2 offset170.7/home2.00454/path1.22730/progress1.21838/liveNav1.22726，均62..248守护窗口。协议54PASS。但固定lab3/101 timeout300.2/RALLY，118.2s由tb2发现，3充/零接触/零failed，最新source2247.482、epoch2126.382；48个blind scan请求各机器人16，但无新目标确认。终止原生位置到目标距离3.44176/5.22956/7.12334m，全超过detector3m。旧observer未记录yaw，不能假称测得原实际转角；冻结源码实际yaw_goal_tolerance=3.14足以让四朝向请求不强制转向。充电等待机器人的未来outbound优先路线也会挡住已充满observer推进，只有回到全部预充结束才重排。机制反例支持此优先级缺口；没有完整历史路线栅格可唯一归因旧任务时长。
+
+```bash
+# v19沙箱原失败命令，保留未启动记录
+GAZEBO_MASTER_URI=http://127.0.0.1:12951 taskset -c 20-39 /usr/bin/python3 /tmp/p3b5_v19_zero_first.py > /tmp/p3b5_v19_zero_first.log 2>&1
+/usr/bin/python3 /tmp/p3b5_v19_bootstrap.py > /tmp/p3b5_v19_bootstrap.log 2>&1
+/usr/bin/python3 /tmp/p3b5_v19_after_subgates.py > /tmp/p3b5_v19_after_subgates.log 2>&1
+# v20在source Humble/install/Gazebo、PYTHONNOUSERSITE=1和工作区ROS_LOG_DIR下，rtk bash -lc沙箱外执行
+/usr/bin/python3 /tmp/p3b5_v20_bootstrap.py > /tmp/p3b5_v20_bootstrap.log 2>&1
+/usr/bin/python3 /tmp/p3b5_v20_after_subgates.py > /tmp/p3b5_v20_after_subgates.log 2>&1
+# bootstrap原predeclared命令（完整wrapper源/环境/实际PID在归档）
+GAZEBO_MASTER_URI=http://127.0.0.1:13051 taskset -c 20-39 /usr/bin/python3 /tmp/p3b5_v20_zero_first.py > /tmp/p3b5_v20_zero_first.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:13050 taskset -c 0-19 /usr/bin/python3 /tmp/p3b5_v20_first_lab101.py > /tmp/p3b5_v20_first_lab101.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:13052 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_return_probe.py --run-id p3b5_v20_returnproof --ros-domain-base 180 --config scripts/p3b5_staged_return_probe_manifest.json > /tmp/p3b5_v20_returnproof.log 2>&1
+PYTHONNOUSERSITE=1 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_3dec23c.json > /tmp/p3b5_protocol_3dec23c.log 2>&1
+```
+
+fixed subgate自然FAIL停止supervisor（exit1），bootstrap等全部原episode自然结束，codes[1,0,0]；没有fullpool_pids，没有seed707或其他primary启动，没有poststart中断、自动重跑或回填。零能量和物理成功格也只留此历史候选，不能填入下一候选分母。
+
+修复候选：所有实际tb1..tb4 Nav2 yaw tolerance收紧.25rad，让目标角度/viewpoint朝向可被执行；位置/线速度/足迹/避障/完成保持/300s/E40/E45不变。预充阶段在无活动或pending rally腿时稳定地优先ACTIVE且能量就绪机器人，不再让待充电机器人的future approach阻止其前进；实际安全返航/charger及停车body预约仍独立保留，不在活动导航中改排序。新增反例证明旧未知高优先路线可阻止charged观察者、新序允许推进但仍被真实return corridor约束。导航决策账本新增requested_yaw；只读physics observer记录原生yaw/angular_speed，允许3r只读观测用于新firstfixed，无额外mission。相关143PASS7.01s，全239 checks及四包/source审计随后补记。原失败全部完整保留，不宣称两项修复是旧时长唯一原因；下一候选仍需独立全矩阵。
+
+候选最终15文件239PASS8.14s，四包build5.98s，3r source audit PASS0违规；physics脚本py_compile通过。git diff --check及explicit staging后focused commit/push，再开展新冻结候选。

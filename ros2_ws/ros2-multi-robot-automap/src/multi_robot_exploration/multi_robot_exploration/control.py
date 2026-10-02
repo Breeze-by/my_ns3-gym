@@ -38,6 +38,7 @@ INFORMATION_RADIUS_M = 2.0
 MIN_TARGET_SEPARATION_M = 1.2
 MAX_NAVIGATION_LEG_M = 5.0
 NAVIGATION_POSITION_TOLERANCE_M = 0.02
+NAVIGATION_YAW_TOLERANCE_RAD = 0.25
 TARGET_HISTORY_SEC = 10.0
 BAD_TARGET_SEC = 30.0
 NO_PROGRESS_SEC = 20.0
@@ -1634,6 +1635,13 @@ def rally_priority_reservations(order, robot_name, routes, completed):
     return reservations
 
 
+def rally_energy_ready_order(order, energy_unready, modes):
+    """Ready robots lead approaches; every safety return keeps its reservation."""
+    return sorted(order, key=lambda name: (
+        name in energy_unready or modes[name] != "ACTIVE"
+    ))
+
+
 def rally_return_reservations(grid, resolution, origin, positions, states, modes, pending):
     """Protect current and future serial safety returns before allowing rally progress.
 
@@ -2742,6 +2750,16 @@ class HeadquartersControl(Node):
                                for mode in self.battery_modes.values())
                 if not self.rally_preflight_complete:
                     self.rally_precharge_active |= bool(energy_unready or charging)
+                    if (not any(self.rally_goal_handles.values())
+                            and not any(self.rally_goal_pending.values())):
+                        # A waiting leader's future outbound route must not
+                        # strand a charged observer behind it. Change approach
+                        # priorities only between legs; separate return/body
+                        # reservations below still protect charging traffic.
+                        self.rally_dispatch_order = rally_energy_ready_order(
+                            self.rally_dispatch_order, energy_unready,
+                            self.battery_modes,
+                        )
                     if (not energy_unready and not charging
                             and not any(self.rally_goal_handles.values())
                             and not any(self.rally_goal_pending.values())):
@@ -3951,6 +3969,11 @@ class HeadquartersControl(Node):
         if goal_pose is not None:
             event["requested_position"] = [goal_pose.pose.position.x, goal_pose.pose.position.y]
             event["current_position"] = list(self.robot_positions[robot_name])
+            q = goal_pose.pose.orientation
+            event["requested_yaw"] = math.atan2(
+                2 * (q.w * q.z + q.x * q.y),
+                1 - 2 * (q.y * q.y + q.z * q.z),
+            )
         self.consumed_publisher.publish(String(data=json.dumps(event, sort_keys=True)))
 
     def send_goal(self, robot_name, assignment):
