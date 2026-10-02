@@ -487,6 +487,7 @@ def parse_args():
     parser.add_argument("--inject-failure-after-sec", type=float, default=-1.0)
     parser.add_argument("--collect-fault-result", action="store_true")
     parser.add_argument("--message-freshness-timeout-sec", type=float, default=5.0)
+    parser.add_argument("--enable-return-probe-pause", action="store_true")
     parser.add_argument("--navigation-command-deadline-sec", type=float, default=90.0)
     return parser.parse_args()
 
@@ -595,6 +596,7 @@ def main():
         f"{str(not args.disable_map_safe_rally_order).lower()}",
         "global_battery_rally_pause:="
         f"{str(args.enable_global_battery_rally_pause and not args.disable_global_battery_rally_pause).lower()}",
+        f"enable_return_probe_pause:={str(args.enable_return_probe_pause).lower()}",
         f"rally_max_concurrent:={args.rally_max_concurrent}",
         f"enable_battery:={str(args.battery).lower()}",
         f"battery_capacity:={args.battery_capacity}",

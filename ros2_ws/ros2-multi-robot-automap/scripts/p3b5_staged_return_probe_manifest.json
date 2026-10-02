@@ -47,7 +47,7 @@
   ],
   "temporal_contract": "source<=enqueue<=admit/tx<=delivery; TF source is scan stamp, native validity offset derived from actual SLAM config; fault blackout relative first EXPLORE",
   "ideal_transport": "no fault intervention, zero stochastic loss/delay/reorder/duplicate/blackout/drop; normal bounded4096 queue; task load/deadline/retry unchanged",
-  "predeclared_at_utc": "2026-10-01T21:21:53.954793+00:00",
+  "predeclared_at_utc": "2026-10-02T05:41:49.133556+00:00",
   "physical_verification": {
     "both_robots": true,
     "return_start_home_distance_m_min": 1.1,
@@ -62,7 +62,7 @@
       248
     ]
   },
-  "design_reason": "Original natural-exploration fixture could leave tb1 already inside charger at return. Controlled AP staging guarantees prospective remote exposure; native truth remains read-only verification. New design declared before its first run and before holdout707; original40..250 outcomes retained separately. Originalcontrolledleft/right fixturefailedstage because declaredlegs lackfullclearance (.3/.1m); retained report20261002_p3b5_staging_fixture_failed_candidate.json. Up/down correction has.8m truthclearance and a regression; no thresholds/horizon/energy/retry change. Capturedv17 initialmap finalpointunknown andlocalfixtureposebacklog, retained20261002_p3b5_staging_map_failed_candidate.json. Incrementalvisibleprefix fixes stimulusdeadlock withoutchanging finalpoint/time/energy/outage or acceptance thresholds. v18ideal mistakenly restaged tb1 aftercharging192.2 despitealreadyremote at19.7; retained20261002_p3b5_restage_failed_candidate.json. Newone-shotcompletionguard/audit changesno stimuli or acceptance thresholds.",
+  "design_reason": "Original natural-exploration fixture could leave tb1 already inside charger at return. Controlled AP staging guarantees prospective remote exposure; native truth remains read-only verification. New design declared before its first run and before holdout707; original40..250 outcomes retained separately. Originalcontrolledleft/right fixturefailedstage because declaredlegs lackfullclearance (.3/.1m); retained report20261002_p3b5_staging_fixture_failed_candidate.json. Up/down correction has.8m truthclearance and a regression; no thresholds/horizon/energy/retry change. Capturedv17 initialmap finalpointunknown andlocalfixtureposebacklog, retained20261002_p3b5_staging_map_failed_candidate.json. Incrementalvisibleprefix fixes stimulusdeadlock withoutchanging finalpoint/time/energy/outage or acceptance thresholds. v18ideal mistakenly restaged tb1 aftercharging192.2 despitealreadyremote at19.7; retained20261002_p3b5_restage_failed_candidate.json. Newone-shotcompletionguard/audit changesno stimuli or acceptance thresholds. v21SIGSTOP caused mandatory livegraph discovery to lose headquarters andshutdown; preservedfailed candidate. New default-off simulation-only dispatcher guard keeps participant live; all mandatory graph/TTL/safety thresholds unchanged.",
   "return_staging": {
     "poses": {
       "tb1": [
@@ -79,8 +79,9 @@
     "stage_deadline_sec": 50,
     "position_tolerance_m": 0.25,
     "wall_timeout_sec": 1000,
-    "scope": "Suspend only this runner descendant coordinator at initial EXPLORE. Command disjoint up/down .8m truth-clearance legs, with current received-map .45m navigation-clearance required known-free current-map legs via same gateway before50s, blackout60..250. Native battery safety untouched; idlecost .15 triggers independent return. Resume after both actualcharges; no fullmission success claim. Fail exposure if stages not reached by50s; no episode retry. Use <=.75m current known-free visible prefixes toward same finalpoint; recompute only on new map. Latest-only input queues retain sourceTTL. No forced unknowngoal or episode retries.",
+    "scope": "Simulation-only mission dispatch guard is enabled before coordinator startup, keeping DDS/all input callbacks alive; owner-verified fixture reads the explicit enabled parameter before AP staging. Command disjoint up/down .8m truth-clearance legs, with current received-map .45m navigation-clearance required known-free current-map legs via same gateway before50s, blackout60..250. Native battery safety untouched; idlecost .15 triggers independent return. Resume owned coordinator via SIGUSR2 after both actualcharges; no fullmission success claim. Fail exposure if stages not reached by50s; no episode retry. Use <=.75m current known-free visible prefixes toward same finalpoint; recompute only on new map. Latest-only input queues retain sourceTTL. No forced unknowngoal or episode retries.",
     "navigation_leg_limit_m": 0.75,
-    "one_shot_staging": true
+    "one_shot_staging": true,
+    "pause_method": "simulation-only mission timer guard; DDS/input callbacks alive; owned SIGUSR2 resumes after both charges"
   }
 }

@@ -2,6 +2,7 @@ from dataclasses import dataclass
 import json
 import math
 import os
+import signal
 import subprocess
 import threading
 import time
@@ -1677,6 +1678,13 @@ class HeadquartersControl(Node):
     def __init__(self):
         super().__init__("headquarters_control")
         self.num_robots = self.declare_parameter("robot_count", 2).value
+        self.return_probe_paused = self.declare_parameter(
+            "enable_return_probe_pause", False
+        ).value
+        if self.return_probe_paused:
+            if not self.get_parameter("use_sim_time").value:
+                raise ValueError("Return probe pause is simulation-only")
+            signal.signal(signal.SIGUSR2, self.resume_return_probe)
         self.goal_timeout_sec = self.declare_parameter(
             "goal_timeout_sec", 60.0
         ).value
@@ -1960,6 +1968,11 @@ class HeadquartersControl(Node):
         self.get_logger().info(
             "Central cooperative frontier coordinator initialized."
         )
+
+    def resume_return_probe(self, _signal=None, _frame=None):
+        # Only enabled for the owned supplemental fixture. Keep DDS and all
+        # received-state callbacks alive while mission dispatch is paused.
+        self.return_probe_paused = False
 
     def publish_task_state(self, state, force=False):
         if not valid_task_transition(self.task_state, state):
@@ -2433,6 +2446,8 @@ class HeadquartersControl(Node):
                 return
 
     def update_mission(self):
+        if getattr(self, "return_probe_paused", False):
+            return
         state_ready = self.fresh_robot_inputs()
         target_ready = self.task_state not in ("FOUND", "RALLY") or self.fresh_target()
         ready = state_ready and target_ready
@@ -2779,7 +2794,8 @@ class HeadquartersControl(Node):
                         self.rally_preflight_complete = True
             return_reservations = (rally_return_reservations(
                 self.map_data, self.resolution, self.origin, self.robot_positions,
-                self.battery_states, self.battery_modes, energy_unready,
+                self.battery_states, self.battery_modes,
+                set(self.rally_charge_requested) | set(self.rally_precharge_staging),
             ) if self.enable_battery else {})
             if self.enable_battery:
                 approach_routes = self.rally_approach_routes
@@ -3254,6 +3270,14 @@ class HeadquartersControl(Node):
                     float(state.get("nominal_speed_mps", 0.18)),
                     float(state.get("return_safety_margin", 8.0)),
                 ) + idle_cost * self.rally_hold_sec
+                if len(self.rally_final_targets) > 1:
+                    # Budget one extra bounded waypoint out and back when a
+                    # peer blocks an approach. Local return reserve remains
+                    # independent; this is a planning contingency, not an
+                    # upper bound on arbitrarily many recoveries.
+                    required += 2 * MAX_NAVIGATION_LEG_M * (
+                        float(state.get("move_cost_per_m", 1.0)) + idle_cost / speed
+                    )
                 if (not all(math.isfinite(value)
                             for value in (required, energy, charge_target))
                         or charge_target <= 0):
@@ -3769,6 +3793,8 @@ class HeadquartersControl(Node):
         )
 
     def assign_idle_robots(self):
+        if getattr(self, "return_probe_paused", False):
+            return
         if self.task_state not in ("EXPLORE", "FOUND_UNCONFIRMED"):
             return
         if self.map_data is None:

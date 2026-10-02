@@ -327,6 +327,7 @@ def launch_setup(context, *args, **kwargs):
                 "rally_goal_timeout_sec": rally_goal_timeout,
                 "enable_rally": enable_rally,
                 "enable_battery": enable_battery,
+                "enable_return_probe_pause": LaunchConfiguration("enable_return_probe_pause"),
                 "rally_position_tolerance_m": rally_position_tolerance,
                 "rally_linear_tolerance_mps": rally_linear_tolerance,
                 "rally_angular_tolerance_radps": rally_angular_tolerance,
@@ -1158,6 +1159,10 @@ def generate_launch_description():
             description="Pause new central allocation after pose/TF/map data expires.",
         )
     )
+    ld.add_action(DeclareLaunchArgument(
+        "enable_return_probe_pause", default_value="false",
+        description="Simulation-only supplemental return fixture; mission timers pause, DDS remains alive.",
+    ))
     ld.add_action(
         DeclareLaunchArgument(
             "navigation_command_deadline_sec",

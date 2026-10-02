@@ -180,6 +180,8 @@ def episode_command(case, scenario, profile, mode, directory, config):
         command.append("--target-detection")
     if case["mode"] == "rally":
         command.append("--rally")
+    if "return_staging" in config:
+        command.append("--enable-return-probe-pause")
     for key, option in (("charge_duration", "battery-charge-duration"),
                         ("safety_margin", "battery-safety-margin"), ("return_timeout", "battery-return-timeout")):
         if key in scenario:

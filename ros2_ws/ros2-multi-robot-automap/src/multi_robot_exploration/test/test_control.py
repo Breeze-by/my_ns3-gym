@@ -1443,11 +1443,11 @@ def test_energy_planning_reuses_complete_approaches_for_dispatch():
 
 def test_staged_motion_keeps_its_proven_charge_budget_and_serial_request():
     node, messages, failures = two_robot_rally_budget_node()
-    node.rally_precharge_staging['tb1'] = 40.
+    node.rally_precharge_staging['tb1'] = 50.
     node.rally_goal_handles['tb1'] = object()
     node.battery_modes['tb2'] = 'CHARGING'
     assert control.HeadquartersControl.prepare_rally_charges(node) == {'tb1'}
-    assert node.rally_charge_budgets['tb1'] == 40.
+    assert node.rally_charge_budgets['tb1'] == 50.
     assert not messages and not failures
     node.battery_modes['tb2'] = 'ACTIVE'
     node.battery_states['tb2']['energy'] = 80.
@@ -1455,7 +1455,7 @@ def test_staged_motion_keeps_its_proven_charge_budget_and_serial_request():
     control.HeadquartersControl.prepare_rally_charges(node)
     import json
     assert json.loads(messages[-1].data)['robot'] == 'tb1'
-    assert json.loads(messages[-1].data)['required_energy'] == 40.
+    assert json.loads(messages[-1].data)['required_energy'] == 50.
 
 
 def test_staged_charge_intent_survives_an_unavailable_final_rally_route():
@@ -1822,3 +1822,28 @@ def test_ready_approach_partition_preserves_order_and_defers_inactive_robots():
         "charged", "also_ready", "returner", "charging", "waiting",
     ]
     assert order == ["returner", "charged", "charging", "waiting", "also_ready"]
+
+
+def test_return_fixture_pauses_only_dispatch_and_resumes_without_stopping_dds():
+    from types import SimpleNamespace
+    node = SimpleNamespace(return_probe_paused=True)
+    # No input accesses or goal dispatch while preparing the supplemental probe.
+    control.HeadquartersControl.assign_idle_robots(node)
+    control.HeadquartersControl.update_mission(node)
+    control.HeadquartersControl.resume_return_probe(node)
+    assert node.return_probe_paused is False
+
+
+def test_multi_robot_preflight_budgets_one_extra_recovery_leg_out_and_back():
+    node, messages, failures = two_robot_rally_budget_node()
+    for state in node.battery_states.values():
+        state["energy"] = 40.0
+    blocked = control.HeadquartersControl.prepare_rally_charges(node)
+    assert blocked and messages and not failures
+    # Before contingency, tb2 could fund the nominal trip plus the peer wait.
+    distance = 7.0
+    state = node.battery_states["tb2"]
+    nominal = control.battery_assignment_required_energy(distance, distance, 1., .02, 2., .18, 8.) + .02 * 5
+    assert nominal < 40.
+    allowance = 2 * control.MAX_NAVIGATION_LEG_M * (1. + .02 / .18)
+    assert node.rally_charge_budgets["tb2"] >= nominal + allowance

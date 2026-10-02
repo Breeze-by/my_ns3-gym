@@ -1,8 +1,8 @@
 """Simulation-only exposure fixture; staging commands use the AP gateway.
 
-Temporarily suspend this runner's coordinator, stage two robots on disjoint
+Pause this runner's mission dispatch with DDS alive; stage two robots on disjoint
 known-free legs, then leave native battery/Nav2 untouched during the outage.
-Native battery observations only release the suspended coordinator after both
+Native battery observations only release the dispatcher guard after both
 have charged. They are never used to choose or dispatch a navigation command.
 """
 import argparse
@@ -77,6 +77,8 @@ def main():
     from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
     from nav2_msgs.action import NavigateToPose
     from nav_msgs.msg import OccupancyGrid, Odometry
+    from rcl_interfaces.msg import ParameterType
+    from rcl_interfaces.srv import GetParameters
     from std_msgs.msg import String
     from tf2_msgs.msg import TFMessage
     from multi_robot_exploration.control import (
@@ -98,6 +100,9 @@ def main():
     stream = args.output.open('w', buffering=1)
     epoch = None
     coordinator = None
+    pause_confirmed = False
+    pause_query = None
+    pause_client = node.create_client(GetParameters, '/headquarters_control/get_parameters')
     latest = {name: {} for name in fixture['poses']}
     batteries = {}
     handles = {}
@@ -126,8 +131,7 @@ def main():
         if message.data == 'EXPLORE' and epoch is None:
             epoch = now()
             coordinator = owned_coordinator(args.owner_pid, os.environ['ROS_DOMAIN_ID'])
-            os.kill(coordinator, signal.SIGSTOP)
-            record('coordinator_suspended', pid=coordinator, epoch=epoch)
+            record('coordinator_identified', pid=coordinator, epoch=epoch)
 
     def received(name, kind, message):
         if kind == 'battery_state':
@@ -183,6 +187,20 @@ def main():
             if offset > fixture['stage_deadline_sec'] and len(staged) != len(latest):
                 record('stage_deadline', staged=sorted(staged), received_types={n: sorted(x) for n, x in latest.items()})
                 raise TimeoutError(f'Staging deadline exceeded; staged={sorted(staged)}')
+            if not pause_confirmed:
+                if pause_query is None and pause_client.service_is_ready():
+                    request = GetParameters.Request()
+                    request.names = ['enable_return_probe_pause']
+                    pause_query = pause_client.call_async(request)
+                if pause_query is None or not pause_query.done():
+                    continue
+                values = pause_query.result().values
+                if (len(values) != 1 or values[0].type != ParameterType.PARAMETER_BOOL
+                        or not values[0].bool_value):
+                    raise RuntimeError('Owned coordinator did not enable simulation fixture pause')
+                pause_confirmed = True
+                record('coordinator_suspended', pid=coordinator, epoch=epoch,
+                       method='simulation_only_dispatch_guard; DDS remains live')
             for name, target in fixture['poses'].items():
                 if name in staged:
                     continue
@@ -260,12 +278,12 @@ def main():
     except Exception as error:
         record('fixture_failed', reason=repr(error))
     finally:
-        if coordinator is not None:
+        if coordinator is not None and pause_confirmed:
             # The coordinator belongs to the still-running parent experiment.
             try:
                 if owned_coordinator(args.owner_pid, os.environ['ROS_DOMAIN_ID']) == coordinator:
-                    os.kill(coordinator, signal.SIGCONT)
-                    record('coordinator_resumed', pid=coordinator)
+                    os.kill(coordinator, signal.SIGUSR2)
+                    record('coordinator_resumed', pid=coordinator, method='owned_SIGUSR2')
             except (OSError, RuntimeError):
                 pass
         stream.close()

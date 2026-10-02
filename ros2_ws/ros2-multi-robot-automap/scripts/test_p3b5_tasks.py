@@ -3,7 +3,7 @@ import json
 
 import pytest
 
-from run_p3b5_tasks import ledger_metrics, tdi
+from run_p3b5_tasks import CONFIG, episode_command, ledger_metrics, tdi
 
 
 def test_holdout_commands_use_declared_independent_fault_seed(tmp_path):
@@ -53,3 +53,18 @@ def test_ledger_distinguishes_receipt_attempts_and_no_information(tmp_path):
     assert unavailable["mean_aoi_observed_sec"] is None
     assert unavailable["unavailable_sec"] == 4.
     assert metrics["stale_wait_sec"] == 2.
+
+
+def test_only_supplemental_return_fixture_enables_dispatch_pause(tmp_path):
+    config = json.loads(CONFIG.read_text())
+    for case in config["cases"]:
+        for mode in ("ideal", "fault"):
+            command = episode_command(case, config["scenarios"][case["scenario"]],
+                config["profiles"][case["profile"]], mode, tmp_path / "normal", config)
+            assert "--enable-return-probe-pause" not in command
+    fixture = json.loads(CONFIG.with_name("p3b5_staged_return_probe_manifest.json").read_text())
+    case = fixture["cases"][0]
+    for mode in ("ideal", "fault"):
+        command = episode_command(case, fixture["scenarios"][case["scenario"]],
+            fixture["profiles"][case["profile"]], mode, tmp_path / "supplemental", fixture)
+        assert command.count("--enable-return-probe-pause") == 1
