@@ -4668,3 +4668,26 @@ zero ideal/fault mission_failed1.3/1.8s，完整FAILED双机/E0/无导航/0碰�
 下一候选仅改smoke native检查隔离与manifest环境记录，算法/包源完全同26bbc。ready、entities、message各用一个实际只读ROS context worker，父进程执行原墙钟超时/launch存活监督；成功必须实际满足原条件，worker一次验证后结束进程让内核释放DDS资源，失败/超时不能伪造PASS。不确定原阻塞行，修复目标是覆盖所有native初始化/等待/清理阻塞，而非宣称已测得某个DDS根因。
 
 新四项进程检查及原三个脚本共37PASS2.23s；真实DDS组件（无Gazebo/任务）命令source Humble/install、PYTHONNOUSERSITE=1、ROS_DOMAIN_ID187、canonical ROS/log/component_checks，`/usr/bin/python3 /tmp/verify_p3b5_native_probes.py > /tmp/p3b5_native_probe_real_checks.log 2>&1`：实际String流0.7854s收到；确定缺失流0.7598s拒绝（deadline.75s），子worker被回收，PASS，见report/20261002_p3b5_native_probe_component.json。py_compile smoke/baseline PASS，新全16文件280PASS7.80s、source audit PASS0。四包build5.51s为同包源26bbc，脚本变化不需重建包。diff/显式staging/commit/push后才能开启下一完整新冻结。
+
+## 2026-10-02 P3B.5 v29原生检查恢复，固定集合通道停滞
+
+clean冻结70b6c61689f6ae167fedd9ff9418585cbfc57ca6；report/20261002_p3b5_blocker_detour_failed_candidate.json保留5started/5raw、完整配置/命令/wrapper源码/环境/hash/原结果与失败。全部自然结束后才改源。source Humble+canonical install+Gazebo，PYTHONNOUSERSITE=1，TURTLEBOT3_MODEL=waffle，ROS_LOG_DIR=canonical ROS/log/ros_launch；rtk bash -lc执行：
+
+```bash
+/usr/bin/python3 /tmp/p3b5_v29_bootstrap.py > /tmp/p3b5_v29_bootstrap.log 2>&1
+/usr/bin/python3 /tmp/p3b5_v29_after_subgates.py > /tmp/p3b5_v29_after_subgates.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:13951 taskset -c 20-39 /usr/bin/python3 /tmp/p3b5_v29_zero_first.py > /tmp/p3b5_v29_zero_first.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:13950 taskset -c 0-19 /usr/bin/python3 /tmp/p3b5_v29_first_lab101.py > /tmp/p3b5_v29_first_lab101.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:13952 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_return_probe.py --run-id p3b5_v29_returnproof --ros-domain-base 180 --config scripts/p3b5_staged_return_probe_manifest.json > /tmp/p3b5_v29_returnproof.log 2>&1
+PYTHONNOUSERSITE=1 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_70b6c61.json > /tmp/p3b5_protocol_70b6c61.log 2>&1
+```
+
+零电量ideal/fault2.7/1.0s mission_failed，双机FAILED/E0/无导航/0接触，graph/source/ledger PASS。首格lab3/101自然timeout300.3s/RALLY、三台各充电一次、最低能量20.0067、0碰撞/失效/耗尽；所有原生ready/实体/消息检查通过（Received lidar and merged-map messages），runner正常收尾1为任务未成功，不是挂起/基础设施失败。首次检查进程隔离得到实测执行，但本批任务不COMPLETE，不能标完整门禁PASS。
+
+补充ideal/fault自然timeout300.2/300.2s，RALLY/EXPLORE只作过程。两台各一次充电，正最低能量、0碰撞/失效；两侧runner/stager/observer0，严格freshness/原epoch/one-shot staging PASS。fault原62..248断联窗口：tb1 start172.4/home1.999470/path1.195914/progress1.186368/原生Nav2 EXEC1.195878m；tb2 start171.2/home2.001282/path1.208450/progress1.199684/EXEC1.208423m。protocol54PASS。bootstrap原[1,0,0]，future supervisor因首格FAIL自然停止，未派发fullpool/707；无重试、基础设施失败、行政中断、历史回填。
+
+只读重放命令source Humble/install、PYTHONNOUSERSITE=1，`/usr/bin/python3 /tmp/audit_p3b5_v29_return.py`：完整返航补充子门禁PASS，未启动新episode。固定ledger重放（源码入口check_p3b5_gate.ledger_audit）：10131生成/11109accepted/41导航决策/125真实确认/23handoff wait，最小源延迟.007s、最大clock deferral.093s，因果/TTL/版本/决策输入leases全部PASS。
+
+失败日志可见tb3六次重分配到远处集合点，却在等待者tb2的瓶颈内逐段移动；tb1持续保留视线，最终也返充，剩余时间不足。下一候选优先完整等待路线外的最近可达可视refuge，再退回永久重分配；不会为了远处新final点重复占据等待通道。临时避让保留原final，继续使用真实派发能量、源leases、净空、路线预约和本地安全检查。无可行refuge时原永久重分配仍可恢复。不能把此假设或离线反例写成任务时延实测改善。
+
+相关control144PASS6.25s；全16文件281PASS7.93s，四包build5.68s，3r source audit PASS0违规。检查命令source Humble/install并设PYTHONNOUSERSITE=1、ROS_LOG_DIR=canonical ROS/log/component_checks：`/usr/bin/python3 -m pytest -q --tb=short`加src/multi_robot_exploration/test的test_control.py、test_battery_manager.py、test_gateway.py、test_fault_model.py、test_navigation_faults.py、test_task_evaluator.py、test_nav2_ready_gate.py、test_readiness.py、test_spawn_entity_checked.py、test_tf_ingress_sampler.py、test_target_detector.py及src/merge_map/test/test_merge_map.py、scripts/test_p3b5_tasks.py、scripts/test_p3b5_gate.py、scripts/test_p3b5_return_staging.py、scripts/test_ros_smoke_native_probe.py。构建`colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot`；审计`/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3`。反例实际验证侧向避让后原等待路线恢复可达，即使永久新目标也存在；没有refuge的fallback与能量未就绪阻挡者禁止派发也覆盖。下一原矩阵须新clean提交/push后执行；P3B.5仍待完成，未进入ns-3/RL。

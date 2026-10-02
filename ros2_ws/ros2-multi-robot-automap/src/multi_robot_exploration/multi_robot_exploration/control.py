@@ -3004,51 +3004,40 @@ class HeadquartersControl(Node):
                                 if other_name != blocker
                             ]
                             blocker_positions.append(self.robot_positions[name])
-                            blocker_replacement = reassign_rally_pose(
-                                self.map_data,
-                                self.resolution,
-                                self.origin,
-                                blocker,
-                                self.robot_positions[blocker],
-                                self.target,
-                                blocker_reserved,
-                                blocker_positions,
+                            # Clear the waiting approach first. A distant new
+                            # final pose can keep the blocker on that approach
+                            # for several legs, starving the waiting robot.
+                            waiting_plan = plan_rally_leg(
+                                self.rally_targets[name], self.map_data,
+                                self.resolution, self.origin,
+                                self.robot_positions[name],
+                                max_distance_m=float("inf"),
+                                blocked_positions=[
+                                    position for other, position
+                                    in self.robot_positions.items()
+                                    if other not in (name, blocker)
+                                    and position is not None
+                                ],
                             )
-                            permanent_reassignment = (
-                                blocker_replacement is not None
-                                and math.dist(
-                                    self.robot_positions[blocker],
-                                    (blocker_replacement.x, blocker_replacement.y),
-                                ) >= self.rally_position_tolerance
-                            )
-                            if not permanent_reassignment:
-                                # Move just off the waiting robot's feasible
-                                # corridor, rather than sending a blocker far
-                                # away while it still occupies that corridor.
-                                waiting_plan = plan_rally_leg(
-                                    self.rally_targets[name], self.map_data,
-                                    self.resolution, self.origin,
-                                    self.robot_positions[name],
-                                    blocked_positions=[
-                                        position for other, position
-                                        in self.robot_positions.items()
-                                        if other not in (name, blocker)
-                                        and position is not None
-                                    ],
-                                )
-                                if waiting_plan[0] is None:
-                                    continue
+                            blocker_replacement = None
+                            if waiting_plan[0] is not None:
                                 blocker_replacement = rally_yield_pose(
-                                    self.map_data,
-                                    self.resolution,
-                                    self.origin,
-                                    self.robot_positions[blocker],
-                                    self.target,
-                                    blocker_reserved,
-                                    blocker_positions,
-                                    reserved_routes=(waiting_plan[1],),
+                                    self.map_data, self.resolution, self.origin,
+                                    self.robot_positions[blocker], self.target,
+                                    blocker_reserved, blocker_positions,
+                                    reserved_routes=(waiting_plan[1],), visible_only=True,
+                                )
+                            permanent_reassignment = blocker_replacement is None
+                            if permanent_reassignment:
+                                blocker_replacement = reassign_rally_pose(
+                                    self.map_data, self.resolution, self.origin,
+                                    blocker, self.robot_positions[blocker],
+                                    self.target, blocker_reserved, blocker_positions,
                                 )
                             if blocker_replacement is None:
+                                continue
+                            if math.dist(self.robot_positions[blocker],
+                                         (blocker_replacement.x, blocker_replacement.y)) < self.rally_position_tolerance:
                                 continue
                             blocker_plan = plan_rally_leg(
                                 blocker_replacement, self.map_data, self.resolution,

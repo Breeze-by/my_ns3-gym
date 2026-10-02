@@ -1141,11 +1141,11 @@ def test_viewpoint_gain_uses_obstacle_visibility():
             assert point.information_gain == control.visible_unknown_gain(grid, (point.row, point.column), 20)
 
 
-@pytest.mark.parametrize("permanent_reassignment, preflight_blocked", [
-    (True, False), (False, False), (True, True),
+@pytest.mark.parametrize("permanent_reassignment, refuge_available, preflight_blocked", [
+    (True, True, False), (False, True, False), (True, False, False), (True, True, True),
 ])
 def test_idle_blocker_recovery_dispatches_motion_before_returning(
-    monkeypatch, permanent_reassignment, preflight_blocked
+    monkeypatch, permanent_reassignment, refuge_available, preflight_blocked
 ):
     from types import SimpleNamespace
 
@@ -1159,6 +1159,8 @@ def test_idle_blocker_recovery_dispatches_motion_before_returning(
         control, "reassign_rally_pose",
         lambda *args: replacements[args[3]] if permanent_reassignment else None,
     )
+    if not refuge_available:
+        monkeypatch.setattr(control, "rally_yield_pose", lambda *args, **kwargs: None)
     requests = []
     node = SimpleNamespace(
         enable_battery=preflight_blocked, task_state="RALLY", fresh_robot_poses=lambda: True, fresh_target=lambda: True, stop_target_scan=lambda: False,
@@ -1196,16 +1198,24 @@ def test_idle_blocker_recovery_dispatches_motion_before_returning(
         assert not requests and node.rally_targets == targets
         assert node.rally_hold_started_at is None
         return
-    if permanent_reassignment:
+    if not refuge_available:
         assert node.rally_targets["tb2"] == replacements["tb2"]
     else:
         refuge = node.rally_targets["tb2"]
         assert "tb2" in node.rally_yield_targets
+        assert node.rally_final_targets["tb2"] == targets["tb2"]
         assert math.dist((refuge.x, refuge.y), (4.0, 2.5)) <= 1.1
         route = control.plan_rally_leg(
             targets["tb1"], grid, 0.1, (0.0, 0.0), (1.0, 2.5)
         )[1]
         assert min(math.dist((refuge.x, refuge.y), point) for point in route) >= 0.8
+        # The chosen endpoint actually releases the original waiting route,
+        # even when a distant permanent replacement was also available.
+        released = control.plan_rally_leg(
+            targets["tb1"], grid, .1, (0., 0.), (1., 2.5),
+            max_distance_m=float("inf"), blocked_positions=[(refuge.x, refuge.y)],
+        )
+        assert released[0] is not None
     assert requests == ["tb2"]  # the action cannot be starved by the next timer
 
 
