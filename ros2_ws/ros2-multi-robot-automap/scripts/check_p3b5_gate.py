@@ -49,7 +49,7 @@ def ledger_audit(path):
                 assert all(abs(a-b)<1e-8 for a,b in zip(e['requested_position'],e['current_position'])),(path,e)
             if e['kind']=='target_reacquisition_exploration':
                 import math
-                assert e['search_basis']=='current_map_frontiers',(path,e)
+                assert e['search_basis'] in ('current_map_frontiers','current_map_known_free_sweep'),(path,e)
                 route=e['search_route']
                 assert route and all(len(point)==2 and all(math.isfinite(x) for x in point) for point in route),(path,e)
                 assert math.dist(route[-1],e['requested_position'])<=e['map_resolution_m']+1e-8,(path,e)

@@ -1127,7 +1127,8 @@ def test_return_preemption_survives_late_gateway_acceptance_without_consuming_re
         assert not node.rally_yield_requested[name] and not node.rally_leg_routes[name]
 
 
-def test_idle_return_blocker_yields_while_an_unrelated_leg_is_still_executing():
+@pytest.mark.parametrize("temporary_blocker", [False, True])
+def test_idle_return_blocker_yields_while_an_unrelated_leg_is_still_executing(temporary_blocker):
     from types import SimpleNamespace
     from unittest.mock import Mock
 
@@ -1147,7 +1148,8 @@ def test_idle_return_blocker_yields_while_an_unrelated_leg_is_still_executing():
         battery_states={"returner": {"charge_x": 1., "charge_y": 3.}},
         map_data=np.zeros((100, 100), dtype=int), resolution=.1, origin=(0., 0.),
         robot_positions={"returner": (8., 3.), "blocker": (5., 3.), "disjoint": (8., 8.)},
-        rally_yield_targets=set(), return_yield_targets={}, rally_recovery_beneficiaries={},
+        rally_yield_targets={"blocker"} if temporary_blocker else set(),
+        return_yield_targets={}, rally_recovery_beneficiaries={},
         rally_targets={"blocker": original}, rally_arrived={"blocker": True},
         rally_attempts={"blocker": 0}, publish_rally_assignments=lambda: None,
         get_logger=lambda: Mock(), send_rally_goal=lambda name, plan: sent.append((name, plan)),
@@ -1163,6 +1165,36 @@ def test_idle_return_blocker_yields_while_an_unrelated_leg_is_still_executing():
     sent.clear()
     control.HeadquartersControl.yield_to_returning_robot(node)
     assert not sent
+
+
+@pytest.mark.parametrize("unknown_future", [False, True])
+def test_prospective_charge_intent_cannot_preempt_an_admitted_return_escape(monkeypatch, unknown_future):
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+
+    names = ["returner", "escape", "stager"]
+    actual = {"returner": ((1., 2.), (8., 2.))}
+    full = {**actual, "stager": ((5., 3.), (5., 5.))}
+    monkeypatch.setattr(control, "rally_return_reservations",
+                        lambda *args: actual if not args[-1] else None if unknown_future else full)
+    handle = Mock()
+    node = SimpleNamespace(
+        fresh_robot_inputs=lambda: True, now=lambda: 10.,
+        battery_modes={"returner": "RETURNING", "escape": "ACTIVE", "stager": "ACTIVE"},
+        rally_goal_handles={"returner": None, "escape": handle, "stager": None},
+        rally_goal_pending=dict.fromkeys(names, False),
+        rally_yield_requested=dict.fromkeys(names, False),
+        rally_leg_routes={"returner": (), "escape": ((5., 2.), (5., 4.)), "stager": ()},
+        robot_positions={"returner": (8., 2.), "escape": (5., 2.), "stager": (9., 8.)},
+        return_yield_targets={"escape": "returner"}, rally_charge_requested={},
+        rally_precharge_staging={"stager": 1.}, battery_states={},
+        map_data=np.zeros((100, 100)), resolution=.1, origin=(0., 0.),
+        survey_goal_handle=None, survey_goal_pending=False, rally_max_concurrent=1,
+        get_logger=lambda: Mock(),
+    )
+    control.HeadquartersControl.yield_to_returning_robot(node)
+    handle.cancel_goal_async.assert_not_called()
+    assert not node.rally_yield_requested["escape"]
 
 
 def test_unknown_return_geometry_drains_ordinary_motion_without_canceling_the_local_return():
@@ -2297,15 +2329,32 @@ def test_blind_scan_holds_live_position_and_covers_four_headings_without_old_tar
     assert len(goals) == 4  # move to fresh frontiers instead of scanning forever
 
 
-def test_target_reacquisition_frontiers_do_not_depend_on_old_target_and_keep_return_priority():
+def test_recovery_scan_prioritizes_the_robot_that_just_travelled():
+    node, goals, decisions = target_scan_node()
+    node.target_scan_next_robot = "tb2"
+    for _ in range(4):
+        control.HeadquartersControl.reacquire_target_by_scanning(node)
+        assert decisions[-1][:2] == ("tb2", "target_reacquisition_scan")
+        assert (goals[-1].pose.pose.position.x, goals[-1].pose.pose.position.y) == (3., 3.)
+        node.finish_target_scan()
+    assert node.target_search_active and node.target_scan_next_robot is None
+
+
+@pytest.mark.parametrize("fully_known", [False, True])
+def test_target_reacquisition_frontiers_do_not_depend_on_old_target_and_keep_return_priority(fully_known):
     from types import SimpleNamespace
 
     def search(old_target, fresh=True, returning=False):
         grid = np.full((80, 120), -1, dtype=int)
         grid[5:75, 5:100] = 0
+        if fully_known:
+            grid.fill(0)
+            grid[[0, -1], :] = 100
+            grid[:, [0, -1]] = 100
         sent = []
         node = SimpleNamespace(
             task_state="RALLY", target=old_target, target_search_active=True,
+            target_search_visits=[],
             fresh_target=lambda: False, target_scan_robot=None,
             rally_goal_handles={}, rally_goal_pending={}, survey_goal_handle=None,
             survey_goal_pending=False, map_data=grid, resolution=.1, origin=(0., 0.),
@@ -2328,6 +2377,7 @@ def test_target_reacquisition_frontiers_do_not_depend_on_old_target_and_keep_ret
     other, _ = search((-10000., 10000.))
     assert len(one) == 1 and one == other
     assert node.task_state == "RALLY"
+    assert node.target_search_basis == ("current_map_known_free_sweep" if fully_known else "current_map_frontiers")
     assert math.dist(node.robot_positions[one[0][0]],
                      (one[0][1].navigation_x, one[0][1].navigation_y)) <= control.MAX_NAVIGATION_LEG_M + .1
     assert search((0., 0.), fresh=False)[0] == []
@@ -2341,6 +2391,7 @@ def test_fresh_confirmation_drains_pending_and_accepted_frontier_search_once():
     handle = Mock(accepted=True)
     node = SimpleNamespace(
         target_search_active=True, fresh_target=lambda: True,
+        target_search_visits=[(1., 1.)],
         robot_states={"tb1": "active"}, goal_handles={"tb1": None},
         cancel_requested={"tb1": False}, target_scan_steps={"tb1": 4},
         target_scan_finished_at={"tb1": 100.}, goal_targets={"tb1": None},
@@ -2358,6 +2409,79 @@ def test_fresh_confirmation_drains_pending_and_accepted_frontier_search_once():
     node.goal_handles["tb1"] = None
     assert not control.HeadquartersControl.stop_target_search(node)
     assert not node.target_search_active and node.target_scan_steps == {}
+    assert not node.target_search_visits
+
+
+def test_known_space_search_uses_only_reachable_known_cells_and_releases_visited_neighborhoods():
+    grid = np.zeros((80, 120), dtype=int)
+    grid[[0, -1], :] = 100
+    grid[:, [0, -1]] = 100
+    grid[:, 60] = 100  # The entire right component is unreachable.
+    grid[20:30, 20:30] = -1
+    unchanged = grid.copy()
+    visited = [(1., 4.)]
+    candidates = control.known_space_search_candidates(grid, .1, (0., 0.), "tb1", (1., 4.), visited)
+    assert candidates
+    for _, _, _, assignment in candidates:
+        cell = control.world_to_grid(assignment.x, assignment.y, .1, 0., 0.)
+        assert grid[cell] == 0 and assignment.x < 6.
+        assert math.isfinite(assignment.path_distance_m)
+    best = max(candidates)[-1]
+    visited.append((best.x, best.y))
+    after = control.known_space_search_candidates(grid, .1, (0., 0.), "tb1", (1., 4.), visited)
+    before_gains = {candidate[2]: candidate[3].viewpoint.information_gain for candidate in candidates}
+    assert all(candidate[3].viewpoint.information_gain <= before_gains[candidate[2]] for candidate in after)
+    assert all(math.dist((best.x, best.y), (x, y)) > .6 for _, _, _, a in
+               control.known_space_search_candidates(grid, .1, (0., 0.), "tb1", (1., 4.), [(1.,4.)], blocked=[(best.x,best.y)])
+               for x,y in [(a.x,a.y)])
+    np.testing.assert_array_equal(grid, unchanged)
+
+
+def test_known_space_search_information_rays_cannot_see_through_unknown_cells():
+    grid = np.full((9, 15), 100, dtype=int)
+    grid[3:6, 1:14] = 0
+    grid[:, 7] = -1
+    interest = np.zeros(grid.shape, dtype=bool)
+    interest[3:6, 8:14] = True
+    assert control.visible_unknown_gain(grid, (4, 3), 12., interest) == 0
+    grid[3:6, 7] = 0
+    assert control.visible_unknown_gain(grid, (4, 3), 12., interest) > 0
+
+
+def test_search_ray_cache_preserves_candidates_under_distinct_robot_dynamic_masks():
+    grid = np.zeros((80, 100), dtype=int)
+    grid[[0, -1], :] = 100
+    grid[:, [0, -1]] = 100
+    positions = {"tb1": (1., 3.), "tb2": (4., 3.)}
+    visited = list(positions.values())
+    cache = {}
+    for name, position in positions.items():
+        arguments = (grid, .1, (0., 0.), name, position, visited)
+        blocked = [p for other,p in positions.items() if other != name]
+        plain = control.known_space_search_candidates(*arguments, blocked=blocked)
+        shared = control.known_space_search_candidates(*arguments, blocked=blocked, gain_cache=cache)
+        assert plain == shared and plain
+    assert cache
+
+
+def test_successful_recovery_waypoint_requires_a_new_real_heading_scan():
+    from types import SimpleNamespace
+    name = "tb1"
+    dictionaries = {field: {name: None} for field in (
+        "goal_handles", "goal_started_at", "goal_last_progress_at", "goal_best_distance",
+        "goal_last_position", "goal_known_count", "goal_initial_gain", "goal_routes",
+        "cancel_requested", "battery_preempted", "robot_states")}
+    assignment = control.Assignment(control.Viewpoint(1, 20, 20, 20, 20, 10, 1), 2., 2., 3., 10., 2., 2.)
+    node = SimpleNamespace(**dictionaries, goal_targets={name: assignment},
+        target_search_active=True, target_search_visits=[], target_scan_steps={name: 4},
+        fresh_target=lambda: False, fresh_robot_poses=lambda: True,
+        robot_positions={name: (2., 2.)}, battery_modes={name: "ACTIVE"},
+        now=lambda: 10., target_history=[], check_exploration_completion=lambda: None)
+    control.HeadquartersControl.finish_goal(node, name, success=True)
+    assert node.target_search_visits == [(2., 2.)]
+    assert node.target_scan_steps[name] == 0 and not node.target_search_active
+    assert node.target_scan_next_robot == name
+    assert node.robot_states[name] == "idle"
 
 
 @pytest.mark.parametrize("block", ["stale", "return", "explore", "rally", "survey", "unknown_cell"])

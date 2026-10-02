@@ -4855,3 +4855,51 @@ colcon build --symlink-install --packages-select multi_robot_interfaces merge_ma
 ```
 
 下一v36使用新的干净commit/push后重新原57唯一episode矩阵，先zero、原lab101固定与受控物理/协议子门槛，再其余固定/故障/aux；十个固定全部通过才首次707（预声明fault27077）。不混入历史成功。P3B.5尚未通过，无ns-3/RL工作。
+
+## 2026-10-03 P3B.5 v36目标恢复搜索在完整地图中停滞
+
+冻结56479c0685384e67a45315ddcd260de3b2b78bf9，report/20261003_p3b5_known_space_failed_candidate.json保留5started/5raw、全部原summary/manifest/源/命令/hash、原ledger/nativephysics/AP快照和受控准备/强物理审计。初始化/tmp/prepare_p3b5_v36.py在沙箱socket EPERM、未生成wrapper或启动任务；依授权rtk bash -lc外部重做预检成功，端口14650..14653未占用、tracked clean及17原用户文件SHA不变，随后冻结运行。source Humble/canonical install/Gazebo，PYTHONNOUSERSITE=1/TURTLEBOT3_MODEL=waffle/ROS_LOG_DIR=canonical ROS/log/ros_launch；实际命令经rtk bash -lc：
+
+```bash
+/usr/bin/python3 /tmp/p3b5_v36_after_subgates.py > /tmp/p3b5_v36_after_subgates.log 2>&1
+/usr/bin/python3 /tmp/p3b5_v36_bootstrap.py > /tmp/p3b5_v36_bootstrap.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:14651 taskset -c 20-39 /usr/bin/python3 /tmp/p3b5_v36_zero_first.py > /tmp/p3b5_v36_zero_first.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:14650 taskset -c 0-19 /usr/bin/python3 /tmp/p3b5_v36_first_lab101.py > /tmp/p3b5_v36_first_lab101.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:14652 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_return_probe.py --run-id p3b5_v36_returnproof --ros-domain-base 180 --config scripts/p3b5_staged_return_probe_manifest.json > /tmp/p3b5_v36_returnproof.log 2>&1
+PYTHONNOUSERSITE=1 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_56479c0.json > /tmp/p3b5_protocol_56479c0.log 2>&1
+ROS_DOMAIN_ID=130 taskset -c 0-19 /usr/bin/python3 /tmp/observe_p3b5_v36_ap_snapshots_qos_fixed.py > /tmp/p3b5_v36_ap_snapshots_qos_fixed.log 2>&1
+```
+
+zero ideal/fault1.1/2.8s mission_failed双机完整FAILED/E0/无导航/0碰撞，原graph/ledger/runner PASS。原固定lab3/101自然timeout300.3/RALLY，2charges（tb1/tb3各1、tb2未充），最低14.59877179，0碰撞/失效/耗尽；grouped native消息及正常收尾通过，原完整任务未通过。独立返航与冲突排空存在实测日志，不能从跨候选0碰撞推断单因素收益。tb2为tb1避让后约0.5wall秒即因新future staging预约被取消；源机制将prospective充电intent等同已启动安全返航，会阻断认证escape，保留此实测日志与条件反例，不声称完整原reserved cells皆已直接记录。
+
+观测者安全返航后，目标源lease2253.682在2313.682后过期；四向真实扫描完成后，当前地图无frontier groups/candidates，所有机器人停在已知区域，直到原horizon。最终tb1/tb2/tb3大致(-1.99,.05)/(.52,-1.12)/(1.16,-.10)，没有凭旧目标继续集合。只读AP快照2320.982/2340.982/2360.982精确证实mapping前沿0；纯当前known-map反例仍有可达搜索动作。恢复消息不能靠地图覆盖或坐标记忆替代真实检测。
+
+受控ideal/fault自然timeout300.2/300.4 EXPLORE，仅补充过程证据；两机每侧各一次充电、正最低能量、0碰撞/失效/耗尽，runner/stager/observer0、原50秒准备/TTL/one-shot/epoch PASS。fault原62..248窗口：tb1 start171.0/home1.995550/path1.359073/progress1.200203/原生Nav2 EXEC1.358987m；tb2 start172.5/home1.967907/path1.171058/progress1.160183/EXEC1.171032m。protocol54PASS。bootstrap自然[1,0,0]；future仅因原固定FAIL结束，不进入fullpool/707，无整格重试、基础设施失败或活跃行政中断。AP observer正常0；所有任务/future自然结束后才修改源。
+
+只读审计（Humble/install、PYTHONNOUSERSITE=1、ROS_LOG_DIR=canonical ROS/log/component_checks）：`/usr/bin/python3 /tmp/audit_p3b5_v36_return.py > /tmp/p3b5_v36_return_audit.log`严格PASS；`/usr/bin/python3 /tmp/archive_p3b5_56479c0.py`校验5started/5raw和全部ledger PASS。活跃状态一次`tail -6`多文件读取被本机tail拒绝，改`tail -n 6`，不影响任何任务。
+
+下一候选在无可行mapping前沿时，用当前known-free/动态净空/距离场生成1m采样并snap到真实可达格，射线按当前未知/占据遮挡评估未访问邻域收益，再通过原实际停车body/可视短段/路线预约/并发/能量机制派发。visited邻域只是搜索偏好，不宣称目标已看过或实际camera coverage；目标检测仍是唯一确认来源。成功实际搜索航点后重新四向扫描，并优先刚移动的机器人；新确认后排空已接受/待接受搜索。过期目标坐标不传入候选API，仍保持FOUND/RALLY阶段和原任务300s/lease60s/0碰撞门槛。审计新增合法basis current_map_known_free_sweep，仍要求相同fresh输入/有效实际route/正确endpoint，expired_target等非法basis继续拒绝。已知自由ray不得穿unknown；不修改原grid或伪造源时间。
+
+只读原地图组件重放（非Gazebo/新episode）：
+
+```bash
+/usr/bin/python3 /tmp/replay_p3b5_v36_known_space.py > /tmp/p3b5_v36_known_space_replay.log 2>&1
+/usr/bin/python3 /tmp/replay_p3b5_v36_known_space_cached.py > /tmp/p3b5_v36_known_space_cached_replay.log 2>&1
+```
+
+三份原AP地图均frontier0，三台均有原条件下可admit的可视短段；原地图完全未变。每个同map/visit batch共享ray gain，不复用动态route；全部选中候选/route完全相同。未共享all3评估1.537841/1.505564/1.506899s；共享0.847149/0.886443/0.908795s。这是先后profiling，非交错因果benchmark，不声称完整任务加速。完整source/函数/SHA/样本见report/20261003_p3b5_known_space_component.json。
+
+真实local RETURNING/CHARGING才可预占已admit普通腿，未来stage intent只约束新admission；未知future几何不妨碍用已知真实return做安全escape。原temporary refuge处idle机器人也能由实际返航避让接管，保留原final。缺真实返航几何仍排空普通动作，本地battery safety不取消。测试覆盖已知/未知future、真实新return抢占、temporary blocker接管、未admit/lateaccept、动态真实body和slot限制。
+
+首轮相关190PASS/1FAIL8.47s仅SimpleNamespace缺新visits字段，补齐生产fixture后196PASS8.19s；补充priority/temporary案例199PASS8.56s。第一全量316PASS11.32s/build5.35s；再补实际移动机器人scan优先回归，最终317PASS11.23s、四包build5.21s；source audit随后核对。每次命令source Humble/install、PYTHONNOUSERSITE=1/ROS_LOG_DIR=canonical ROS/log/component_checks：
+
+```bash
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_control.py scripts/test_p3b5_gate.py > /tmp/p3b5_v37_first_checks.log 2>&1
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_control.py scripts/test_p3b5_gate.py > /tmp/p3b5_v37_search_checks.log 2>&1
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_control.py scripts/test_p3b5_gate.py > /tmp/p3b5_v37_search_checks_final.log 2>&1
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_control.py src/multi_robot_exploration/test/test_battery_manager.py src/multi_robot_exploration/test/test_gateway.py src/multi_robot_exploration/test/test_fault_model.py src/multi_robot_exploration/test/test_navigation_faults.py src/multi_robot_exploration/test/test_task_evaluator.py src/multi_robot_exploration/test/test_nav2_ready_gate.py src/multi_robot_exploration/test/test_readiness.py src/multi_robot_exploration/test/test_spawn_entity_checked.py src/multi_robot_exploration/test/test_tf_ingress_sampler.py src/multi_robot_exploration/test/test_target_detector.py src/merge_map/test/test_merge_map.py scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py scripts/test_ros_smoke_native_probe.py > /tmp/p3b5_v37_component_checks_final.log 2>&1
+colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot > /tmp/p3b5_v37_build_final.log 2>&1
+/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v37_source_audit.log 2>&1
+```
+
+早一轮完整命令完全相同，仅输出文件为/tmp/p3b5_v37_component_checks.log与/tmp/p3b5_v37_build.log。live计划修正“静态确认保留至任务结束”的过时描述，明确真实60秒lease与target-independent map搜索。新原57矩阵须clean commit/push后运行；v36失败不回填，P3B.5未通过；无ns-3/RL工作。

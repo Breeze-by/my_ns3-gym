@@ -246,8 +246,8 @@ def _integral_image(mask):
     return np.pad(mask.astype(np.int32), ((1, 0), (1, 0))).cumsum(0).cumsum(1)
 
 
-def visible_unknown_gain(raw_grid, start, radius_cells):
-    """Estimate lidar-visible unknown cells, stopping rays at known obstacles."""
+def visible_unknown_gain(raw_grid, start, radius_cells, interest=None):
+    """Count informative ray cells; a search mask requires known-free sight."""
     row, column = start
     height, width = raw_grid.shape
     if not (0 <= row < height and 0 <= column < width) or raw_grid[start] != 0:
@@ -264,10 +264,62 @@ def visible_unknown_gain(raw_grid, start, radius_cells):
     columns = np.clip(columns, 0, width - 1)
     values = raw_grid[rows, columns]
     visible = np.logical_and.accumulate(
-        inside & (values < OCCUPIED_THRESHOLD), axis=1
+        inside & ((values < OCCUPIED_THRESHOLD) if interest is None else (values == 0)), axis=1
     )
-    unknown_cells = (rows * width + columns)[visible & (values < 0)]
+    informative = values < 0 if interest is None else interest[rows, columns]
+    unknown_cells = (rows * width + columns)[visible & informative]
     return int(np.unique(unknown_cells).size)
+
+
+def known_space_search_candidates(raw_grid, resolution, origin, robot_name,
+                                  position, visited, exclusions=(), blocked=(), gain_cache=None):
+    """Revisit current known space when mapping frontiers cannot aid detection.
+
+    Visited neighborhoods are a search preference, not proof of visual coverage.
+    Neither expired detections nor old rally goals are inputs. The same actual
+    map, dynamic clearance, distance field and short-leg admission still apply.
+    A shared gain cache belongs to one immutable map/visit batch only.
+    """
+    traversable = block_dynamic_positions(
+        traversable_grid(raw_grid, resolution, PATH_CLEARANCE_M), resolution, origin, blocked)
+    start = navigation_start_cell(raw_grid, traversable,
+        world_to_grid(*position, resolution, *origin), max(1, math.ceil(.6 / resolution)))
+    if start is None:
+        return []
+    distances = path_distance_grid(traversable, start)
+    rows, columns = np.indices(raw_grid.shape)
+    interest = raw_grid == 0
+    for x, y in visited:
+        interest &= ((columns + .5) * resolution + origin[0] - x) ** 2 + (
+            (rows + .5) * resolution + origin[1] - y) ** 2 > INFORMATION_RADIUS_M ** 2
+    if not interest.any():
+        return []
+    # One sample per metre, snapped to actual reachable cells, includes narrow
+    # corridors that a fixed lattice alone can miss.
+    reachable = traversable & np.isfinite(distances)
+    nearest = ndimage.distance_transform_edt(~reachable, return_distances=False, return_indices=True)
+    stride = max(1, math.ceil(1. / resolution))
+    cells = sorted(set(zip(nearest[0, ::stride, ::stride].ravel(), nearest[1, ::stride, ::stride].ravel())))
+    candidates = []
+    if gain_cache is None:
+        gain_cache = {}
+    for row, column in cells:
+        distance = float(distances[row, column] * resolution)
+        x, y = grid_to_world(row, column, resolution, *origin)
+        if not math.isfinite(distance) or distance < USEFUL_TRAVEL_M or any(
+                math.dist((x, y), point) < MIN_TARGET_SEPARATION_M for point in exclusions):
+            continue
+        cell = (row, column)
+        if cell not in gain_cache:
+            gain_cache[cell] = visible_unknown_gain(raw_grid, cell, INFORMATION_RADIUS_M / resolution, interest)
+        gain = gain_cache[cell]
+        if gain == 0:
+            continue
+        viewpoint = Viewpoint(row * raw_grid.shape[1] + column, row, column, row, column, gain, 1)
+        utility = gain / (distance + 1.)
+        candidates.append((utility, robot_name, viewpoint.group_id,
+                           Assignment(viewpoint, x, y, distance, utility, x, y)))
+    return candidates
 
 
 def frontier_viewpoints(raw_grid, groups, traversable, resolution, limit=12):
@@ -1871,7 +1923,10 @@ class HeadquartersControl(Node):
         self.target_scan_handle = None
         self.target_scan_cancel_requested = False
         self.target_scan_steps = {}
+        self.target_scan_next_robot = None
         self.target_search_active = False
+        self.target_search_visits = []
+        self.target_search_basis = "current_map_frontiers"
         self.survey_goal_started_at = None
         self.survey_attempts = 0
         self.survey_dispatch_cursor = 0
@@ -2113,7 +2168,8 @@ class HeadquartersControl(Node):
                 or any(self.rally_goal_pending.values())
                 or self.survey_goal_handle is not None or self.survey_goal_pending):
             return
-        for name in self.participating_robots():
+        for name in sorted(self.participating_robots(), key=lambda candidate:
+                           candidate != getattr(self, "target_scan_next_robot", None)):
             if self.battery_modes[name] != "ACTIVE":
                 continue
             if self.target_scan_steps.get(name, 0) >= 4:
@@ -2178,6 +2234,7 @@ class HeadquartersControl(Node):
                 # range. Continue the ordinary fresh-map frontier search,
                 # without rolling back mission phase or using old target data.
                 self.target_search_active = True
+                self.target_scan_next_robot = None
         self.target_scan_robot = None
         self.target_scan_handle = None
         self.target_scan_cancel_requested = False
@@ -2196,6 +2253,8 @@ class HeadquartersControl(Node):
         if not active:
             self.target_search_active = False
             self.target_scan_steps.clear()
+            self.target_scan_next_robot = None
+            self.target_search_visits.clear()
         return active
 
     def target_detection_callback(self, message):
@@ -2478,9 +2537,20 @@ class HeadquartersControl(Node):
             self.battery_states, self.battery_modes,
             set(self.rally_charge_requested) | set(self.rally_precharge_staging),
         )
-        HeadquartersControl.preempt_rally_return_conflicts(self, protected)
+        # Prospective staging intents constrain new admission, but cannot
+        # revoke an existing safe escape. Only actual local returns/charging
+        # acquire priority over an already admitted ordinary leg.
+        actual_returns = {
+            name: route for name, route in protected.items()
+            if self.battery_modes[name] in ("RETURNING", "CHARGING")
+        } if protected is not None else rally_return_reservations(
+            self.map_data, self.resolution, self.origin, self.robot_positions,
+            self.battery_states, self.battery_modes, set())
+        HeadquartersControl.preempt_rally_return_conflicts(self, actual_returns)
         if protected is None:
-            return
+            protected = actual_returns
+            if protected is None:
+                return
         if self.survey_goal_handle is not None or self.survey_goal_pending:
             return
         active_routes = [remaining_rally_route(self.rally_leg_routes[name],
@@ -2509,7 +2579,7 @@ class HeadquartersControl(Node):
             for name in self.rally_dispatch_order:
                 position = self.robot_positions[name]
                 if (name == returning or self.battery_modes[name] != "ACTIVE"
-                        or position is None or name in self.rally_yield_targets
+                        or position is None or name in self.return_yield_targets
                         or self.rally_goal_handles[name] is not None
                         or self.rally_goal_pending[name]):
                     continue
@@ -4061,7 +4131,8 @@ class HeadquartersControl(Node):
                 self.map_data, self.resolution
             )
         frontier_data = self.frontier_cache
-        for refine in (False, True):
+        search_gain_cache = {}  # One immutable map/visit mask per admission batch.
+        for refine in ((False, True, "known_space") if search else (False, True)):
             candidates = []
             diagnostics["frontier_groups"] = 0
             diagnostics["groups_with_viewpoints"] = 0
@@ -4077,19 +4148,27 @@ class HeadquartersControl(Node):
                         and other_position is not None
                     )
                 )
-                robot_candidates, robot_diagnostics = robot_candidate_assignments(
-                    self.map_data,
-                    self.resolution,
-                    self.origin,
-                    robot_name,
-                    position,
-                    robot_exclusions,
-                    frontier_data,
-                    **({"blocked_positions": [
-                        other for name, other in self.robot_positions.items()
-                        if name != robot_name and other is not None
-                    ]} if refine else {}),
-                )
+                if refine == "known_space":
+                    robot_candidates = known_space_search_candidates(
+                        self.map_data, self.resolution, self.origin, robot_name, position,
+                        [*self.target_search_visits, *[p for p in self.robot_positions.values() if p is not None]],
+                        robot_exclusions, [p for name,p in self.robot_positions.items() if name != robot_name and p is not None],
+                        gain_cache=search_gain_cache)
+                    robot_diagnostics = dict(frontier_groups=0, groups_with_viewpoints=0)
+                else:
+                    robot_candidates, robot_diagnostics = robot_candidate_assignments(
+                        self.map_data,
+                        self.resolution,
+                        self.origin,
+                        robot_name,
+                        position,
+                        robot_exclusions,
+                        frontier_data,
+                        **({"blocked_positions": [
+                            other for name, other in self.robot_positions.items()
+                            if name != robot_name and other is not None
+                        ]} if refine else {}),
+                    )
                 diagnostics["frontier_groups"] += robot_diagnostics[
                     "frontier_groups"
                 ]
@@ -4176,6 +4255,9 @@ class HeadquartersControl(Node):
                 if len(selected) + active_explorers >= max_concurrent:
                     break
             if selected or active_explorers:
+                if search:
+                    self.target_search_basis = ("current_map_known_free_sweep" if refine == "known_space"
+                                                else "current_map_frontiers")
                 break
         if not selected:
             now = self.now()
@@ -4222,7 +4304,7 @@ class HeadquartersControl(Node):
                 1 - 2 * (q.y * q.y + q.z * q.z),
             )
         if kind == "target_reacquisition_exploration":
-            event["search_basis"] = "current_map_frontiers"
+            event["search_basis"] = getattr(self, "target_search_basis", "current_map_frontiers")
             event["search_route"] = self.goal_routes[robot_name]
             event["map_resolution_m"] = self.resolution
         self.consumed_publisher.publish(String(data=json.dumps(event, sort_keys=True)))
@@ -4353,6 +4435,14 @@ class HeadquartersControl(Node):
 
     def finish_goal(self, robot_name, success, blacklist=True):
         assignment = self.goal_targets[robot_name]
+        if (success and getattr(self, "target_search_active", False)
+                and not self.fresh_target() and self.fresh_robot_poses()):
+            # A travelled search waypoint deserves a real full-heading scan;
+            # map coverage or a visited neighborhood cannot replace detection.
+            self.target_search_visits.append(self.robot_positions[robot_name])
+            self.target_scan_steps[robot_name] = 0
+            self.target_scan_next_robot = robot_name
+            self.target_search_active = False
         if assignment is not None:
             expiry = self.now() + (
                 TARGET_HISTORY_SEC if success else BAD_TARGET_SEC

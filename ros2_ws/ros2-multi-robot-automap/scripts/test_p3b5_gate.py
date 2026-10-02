@@ -42,9 +42,10 @@ def test_observer_handoff_wait_cannot_claim_stale_or_future_visual_contact(tmp_p
         with pytest.raises(AssertionError):ledger_audit(write_events(tmp_path,[event]))
 
 
-def test_reacquisition_frontier_search_requires_fresh_states_and_recorded_route(tmp_path):
+@pytest.mark.parametrize("basis", ["current_map_frontiers", "current_map_known_free_sweep"])
+def test_reacquisition_frontier_search_requires_fresh_states_and_recorded_route(tmp_path, basis):
     event={"event":"coordinator_navigation_decision","event_time":100.,
-           "kind":"target_reacquisition_exploration","search_basis":"current_map_frontiers",
+           "kind":"target_reacquisition_exploration","search_basis":basis,
            "search_route":[[1.,2.],[2.,2.]],"requested_position":[2.,2.],"map_resolution_m":.05,
            "inputs":{"tb1/pose_state":{"source_time":99.,"age_sec":1.,"ttl_sec":2.},
                "headquarters/target_detection":{"source_time":0.,"age_sec":100.,"ttl_sec":60.}}}
