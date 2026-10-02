@@ -8,6 +8,33 @@ from geometry_msgs.msg import Transform
 from multi_robot_exploration import control
 
 
+@pytest.mark.parametrize("leg_yaw,success,arrived", [(0., True, False),
+    (math.pi / 2, True, True), (math.pi / 2, False, False),
+    (math.pi / 2 + 2 * math.pi, True, True)])
+def test_near_final_waypoint_cannot_skip_final_requested_orientation(leg_yaw, success, arrived):
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+    from action_msgs.msg import GoalStatus
+
+    handle = object()
+    node = SimpleNamespace(
+        rally_goal_handles={"tb1": handle}, rally_goal_started_at={"tb1": 1.},
+        rally_leg_routes={"tb1": ((1., 1.), (2., 2.))},
+        rally_leg_poses={"tb1": control.RallyPose(1.99, 2., leg_yaw)},
+        rally_yield_requested={"tb1": False}, rally_battery_preempted={"tb1": False},
+        rally_targets={"tb1": control.RallyPose(2., 2., math.pi / 2)},
+        battery_modes={"tb1": "ACTIVE"}, rally_attempts={"tb1": 0},
+        robot_positions={"tb1": (1.99, 2.)}, rally_position_tolerance=.35,
+        rally_arrived={"tb1": False}, rally_probe_targets=set(), rally_yield_targets=set(),
+        get_logger=lambda: Mock(),
+    )
+    future = SimpleNamespace(result=lambda: SimpleNamespace(status=(
+        GoalStatus.STATUS_SUCCEEDED if success else GoalStatus.STATUS_ABORTED)))
+    control.HeadquartersControl.rally_goal_result(node, "tb1", handle, future)
+    assert node.rally_arrived["tb1"] is arrived
+    assert node.rally_goal_handles["tb1"] is None and not node.rally_leg_poses
+
+
 def test_failure_events_carry_complete_isolation_snapshot_once_per_robot():
     import json
     from types import SimpleNamespace

@@ -1832,6 +1832,7 @@ class HeadquartersControl(Node):
         self.rally_goal_pending = {}
         self.rally_goal_started_at = {}
         self.rally_leg_routes = {}
+        self.rally_leg_poses = {}
         self.rally_route_unavailable_since = {}
         self.rally_recovery_requested = {}
         self.rally_yield_requested = {}
@@ -3590,8 +3591,9 @@ class HeadquartersControl(Node):
         goal.pose.pose.orientation.z = math.sin(target.yaw / 2.0)
         goal.pose.pose.orientation.w = math.cos(target.yaw / 2.0)
         self.rally_leg_routes[robot_name] = route
+        self.rally_leg_poses[robot_name] = target
         self.rally_goal_pending[robot_name] = True
-        self.record_navigation_decision(robot_name, "local_return_yield" if local_return_yield else "rally")
+        self.record_navigation_decision(robot_name, "local_return_yield" if local_return_yield else "rally", goal.pose)
         future = client.send_goal_async(goal)
         future.add_done_callback(
             lambda result, name=robot_name: self.rally_goal_response(name, result)
@@ -3635,6 +3637,7 @@ class HeadquartersControl(Node):
         self.rally_goal_handles[robot_name] = None
         self.rally_goal_started_at[robot_name] = None
         self.rally_leg_routes[robot_name] = ()
+        leg_pose = self.rally_leg_poses.pop(robot_name, None)
         yielded = self.rally_yield_requested[robot_name]
         self.rally_yield_requested[robot_name] = False
         battery_preempted = self.rally_battery_preempted[robot_name]
@@ -3658,6 +3661,9 @@ class HeadquartersControl(Node):
         position = self.robot_positions.get(robot_name)
         self.rally_arrived[robot_name] = (
             success
+            and leg_pose is not None
+            and abs(math.atan2(math.sin(leg_pose.yaw - target.yaw),
+                               math.cos(leg_pose.yaw - target.yaw))) < 1e-6
             and position is not None
             and math.dist(position, (target.x, target.y))
             <= self.rally_position_tolerance

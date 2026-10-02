@@ -49,6 +49,17 @@ def test_confirmation_requires_consecutive_frames_and_resets():
     assert update_confirmation(streaks, {"tb1"}, 3) == "tb1"
 
 
+def test_confirmation_fairly_reports_only_current_confirmed_viewers():
+    streaks = {"tb1": 3, "tb2": 3, "tb3": 0}
+    assert update_confirmation(streaks, set(streaks), 3, "tb1") == "tb2"
+    assert update_confirmation(streaks, set(streaks), 3, "tb2") == "tb1"
+    # Losing sight clears the old streak; a returning viewer must reconfirm.
+    assert update_confirmation(streaks, {"tb1"}, 3, "tb1") == "tb1"
+    assert update_confirmation(streaks, {"tb1", "tb2"}, 3, "tb1") == "tb1"
+    assert update_confirmation(streaks, {"tb1", "tb2"}, 3, "tb1") == "tb1"
+    assert update_confirmation(streaks, {"tb1", "tb2"}, 3, "tb1") == "tb2"
+
+
 def test_reconfirmation_requires_current_visibility_and_preserves_original_first_event():
     import json
     from types import SimpleNamespace

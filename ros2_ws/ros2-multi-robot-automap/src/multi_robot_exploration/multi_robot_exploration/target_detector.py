@@ -44,17 +44,17 @@ def target_visible(robot_pose, target, truth, max_distance, field_of_view):
     return line_of_sight_clear(truth, (x, y), target)
 
 
-def update_confirmation(streaks, visible_robots, required_frames):
+def update_confirmation(streaks, visible_robots, required_frames, previous_robot=None):
     for robot in streaks:
         streaks[robot] = streaks[robot] + 1 if robot in visible_robots else 0
-    return next(
-        (
-            robot
-            for robot in sorted(visible_robots)
-            if streaks[robot] >= required_frames
-        ),
-        None,
-    )
+    confirmed = sorted(robot for robot in visible_robots
+                       if streaks[robot] >= required_frames)
+    if not confirmed:
+        return None
+    # One real confirmation per second, fairly shared between current viewers.
+    # A permanently visible low-numbered robot must not hide a peer's handoff.
+    return next((robot for robot in confirmed
+                 if previous_robot is not None and robot > previous_robot), confirmed[0])
 
 
 def _yaw(pose):
@@ -95,6 +95,7 @@ class TargetDetector(Node):
         self.observation_state = "EXPLORE"
         self.confirmed = False
         self.last_confirmation_at = -float("inf")
+        self.last_confirmation_robot = None
 
         state_qos = QoSProfile(depth=1)
         state_qos.durability = DurabilityPolicy.TRANSIENT_LOCAL
@@ -143,7 +144,8 @@ class TargetDetector(Node):
                 visible.add(robot)
 
         confirmed_robot = update_confirmation(
-            self.streaks, visible, self.required_frames
+            self.streaks, visible, self.required_frames,
+            getattr(self, "last_confirmation_robot", None),
         )
         now = self.get_clock().now().nanoseconds / 1e9
         if confirmed_robot is not None:
@@ -152,6 +154,7 @@ class TargetDetector(Node):
             initial = not self.confirmed
             self.confirmed = True
             self.last_confirmation_at = now
+            self.last_confirmation_robot = confirmed_robot
             self._publish_observation("FOUND")
             event = String()
             event.data = json.dumps(

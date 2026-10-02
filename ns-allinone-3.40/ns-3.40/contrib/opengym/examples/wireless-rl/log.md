@@ -4595,3 +4595,26 @@ zero双侧mission_failed0.6/1.7s、两台中央FAILED/E0/零目标/零碰撞、s
 诊断gzserver --help在沙箱内因默认~/.gazebo日志不可写，按权限规定经rtk bash -lc沙箱外重读成功获得完整CLI（help本身exit255，未启动world/experiment）；原CLI没有headless-rendering选项。磁盘1.6T空闲，未见磁盘容量不足。新smoke/baseline py_compile和相关脚本组件检查结果随后补记；包内算法源未变，267组件/四包5.23s检查来自同源1a4f。不能复用本轮受控探针成功替代新冻结证据。
 
 新smoke/baseline py_compile PASS，相关三个脚本33PASS1.32s，diff check通过；原GLX日志/一次未started基础设施失败保留，显式staging后提交/push新冻结。
+
+## 2026-10-02 P3B.5 v26真实观测接力停滞（未通过）
+
+clean冻结b83fb4acb09b50fcc4efae4f3f53f1085a06031b。5started/5raw保留在report/20261002_p3b5_observer_orientation_failed_candidate.json，未回填后继。source Humble/install/Gazebo，PYTHONNOUSERSITE=1、TURTLEBOT3_MODEL=waffle、ROS_LOG_DIR=canonical ROS/log/ros_launch；rtk bash -lc执行以下原命令：
+
+```bash
+/usr/bin/python3 /tmp/p3b5_v26_bootstrap.py > /tmp/p3b5_v26_bootstrap.log 2>&1
+/usr/bin/python3 /tmp/p3b5_v26_after_subgates.py > /tmp/p3b5_v26_after_subgates_corrected.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:13651 taskset -c 20-39 /usr/bin/python3 /tmp/p3b5_v26_zero_first.py > /tmp/p3b5_v26_zero_first.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:13650 taskset -c 0-19 /usr/bin/python3 /tmp/p3b5_v26_first_lab101.py > /tmp/p3b5_v26_first_lab101.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:13652 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_return_probe.py --run-id p3b5_v26_returnproof --ros-domain-base 180 --config scripts/p3b5_staged_return_probe_manifest.json > /tmp/p3b5_v26_returnproof.log 2>&1
+PYTHONNOUSERSITE=1 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_b83fb4a.json > /tmp/p3b5_protocol_b83fb4a.log 2>&1
+```
+
+zero ideal/fault mission_failed0.8/1.9s、完整FAILED双机/E0/无目标/无碰撞，source/ledger/livegraph PASS。首格lab3/101自然timeout300.2s/RALLY，2次充电、最低能量18.823、零碰撞/失效/耗尽，基础设施失败/整格重试0。tb1保持真实观测但全程不能主动充电；tb2位置距最终点.0254m，原生yaw.6895rad而最终请求朝向1.5953rad；这两个yaw处于不同记录坐标系，不能仅凭相减声称实际误差。源码与独立反例确认中间航段成功且位置近时会被误标arrived，未保证最终请求朝向。tb3在(约0,2.23)反复重新分配同一不可达点，tb1仍占据附近通道。检测器永远选择当前合格可见者中最小编号，伙伴即使合格也不会被报告；下一修复以当前可见/三帧证据公平轮转，不凭本轮日志声称伙伴已经可见。
+
+补充ideal/fault均自然timeout300.0/300.4s EXPLORE、两台各一次充电、最低能量正、零碰撞/失效。两侧严格staging/lease/one-shot准备PASS；fault原62..248窗口真实物理证明PASS：tb1 start172.0s/home1.9811m/path1.1768/progress1.1719/EXEC1.1768；tb2 start171.2/home2.0007/path1.2006/progress1.1928/EXEC1.2006。protocol54PASS。bootstrap自然[1,0,0]、supervisor因firstfixed FAIL退出，fullpool/707未启动；没有活跃任务行政中断或替换失败行。
+
+一次未来fullpool supervisor启动时误设ROS_LOG_DIR=workspace根，在pool_pids尚不存在、未派发任何格前仅向owned PID4158977发SIGINT，保留原声明和环境纠正记录，再以正确ROS_LOG_DIR启动session67720；不是活跃episode重试。只读/proc环境检查在沙箱内因无法读取外部进程而断言失败，经审批RTK bash沙箱外确认两台gzserver确实DISPLAY absent；无新episode。归档含这两份诊断。运行结束后的物理重放第一次未source ROS而import失败，无仿真；source后严格审计通过。另一次只读native抽样遗漏非physics记录过滤导致KeyError，补过滤后成功，原记录不改写。
+
+下一候选补上最终朝向完成与确认公平轮转（全局仍每秒最多一条）：保存实际rally航段pose，成功回调只有最终yaw一致且位置达标才能arrived；中途near-final位置不能跳过最终旋转。目标observer只由真实当前可见且连续三帧确认的轮转事件更新，遮挡/重新出现需重新积累。相关143组件PASS7.52s；四包/full组件/source audit结果随后补记。P3B.5仍未通过，不能复用历史成功填新冻结矩阵。
+
+全15文件272PASS8.36s，四包build7.42s，3r source audit PASS0违规。diff check和显式staging通过后提交/push新冻结；后继原矩阵尚未开始。
