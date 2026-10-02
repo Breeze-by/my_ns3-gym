@@ -4739,3 +4739,26 @@ zero ideal/fault1.4/2.5s mission_failed，完整FAILED双机/E0/无目标/0碰�
 受控准备复用现有plan_rally_leg/navigation_start_route的已知自由起点有界脱困，限制航段.75m并须接近原声明目标；原始unknown/occupied起点拒绝，源地图不变，期限50s不变。只读离线组件命令source Humble/install，PYTHONNOUSERSITE=1，ROS_LOG_DIR=canonical ROS/log/component_checks，`/usr/bin/python3 /tmp/replay_p3b5_v31_staging.py`。首次临时脚本ImportError（函数名误写traversable_mask），未启动episode；改用生产traversable_grid后PASS，原失败地图得到(.005678,-2.458022)航点，欧氏航段.539262m、目标距离.531269→.009828m，raw数组未变化。此为组件反例，非任务替代证据；完整重放数据与源hash保留在失败归档records。
 
 相关control/stager155PASS7.48s；完整16文件288PASS9.95s，四包build5.30s，3r source audit PASS0违规。测试与v29同完整16文件命令，构建`colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot`，审计`/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3`。下一原矩阵须新clean提交/push，保持原目标/能量/300s/零重试与先十格后707条件；P3B.5尚未通过，未进入ns-3/RL。
+
+## 2026-10-02 P3B.5 v32受控回充通过，固定任务让路串行及确认中断
+
+冻结4e7828ba8fcf439f500487adae106d6779537b31，report/20261002_p3b5_yield_serialization_failed_candidate.json保留5started/5raw、完整wrapper/命令/参数/source/env/hash及全部子门禁证据。source Humble/canonical install/Gazebo，PYTHONNOUSERSITE=1，TURTLEBOT3_MODEL=waffle，ROS_LOG_DIR=canonical ROS/log/ros_launch，rtk bash -lc：
+
+```bash
+/usr/bin/python3 /tmp/p3b5_v32_bootstrap.py > /tmp/p3b5_v32_bootstrap.log 2>&1
+/usr/bin/python3 /tmp/p3b5_v32_after_subgates.py > /tmp/p3b5_v32_after_subgates.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:14251 taskset -c 20-39 /usr/bin/python3 /tmp/p3b5_v32_zero_first.py > /tmp/p3b5_v32_zero_first.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:14250 taskset -c 0-19 /usr/bin/python3 /tmp/p3b5_v32_first_lab101.py > /tmp/p3b5_v32_first_lab101.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:14252 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_return_probe.py --run-id p3b5_v32_returnproof --ros-domain-base 180 --config scripts/p3b5_staged_return_probe_manifest.json > /tmp/p3b5_v32_returnproof.log 2>&1
+PYTHONNOUSERSITE=1 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_4e7828b.json > /tmp/p3b5_protocol_4e7828b.log 2>&1
+```
+
+zero ideal/fault.7/.9s mission_failed，双机完整FAILED/E0/0导航/0碰撞，graph/source/ledger PASS。固定lab3/101自然timeout300.3/RALLY，3次充电、最低13.3058082、0碰撞/失败/耗尽；原生ready/实体/消息及收尾正常。发现offset146.6，集合分配与首次本地让路154.5；tb1此时已独立安全返航，不能因其之前检测过目标就撤销返航或伪造ACTIVE。最后tb1/tb3集合位置误差.0130/.1682m，tb2仍1.5937m、运动中，不能计成功。真实确认源gap149.9..242.2（92.3s），中央stale等待offset210..242.4；四次扫描后新鲜地图搜索恢复真实确认。固定ledger审计因果/TTL/版本/source leases PASS，10079生成、11199 accepted、51导航决策，最小source delay.006/最大clock deferral.093s。
+
+补充ideal/fault自然timeout300.2/RALLY、300.4/EXPLORE，仅过程；两台各充电一次、最低9.677307/9.602793、0碰撞/失败，runner/stager/nativeobserver均0。两侧严格准备/TTL/原epoch/one-shot PASS；故障侧原62..248断联区间：tb1启动170.6s、距home2.017484m、实际path1.211901/progress1.205277/原生Nav2 EXEC1.211875m；tb2启动172.1s、距home1.971786m、path1.177478/progress1.169470/EXEC1.177452m。protocol54PASS。bootstrap自然[1,0,0]，future首格FAIL退出，fullpool/707未启动；0基础设施失败/整格重试/活跃行政中断。全部进程结束后改源，未重跑本批格。
+
+只读原始重放命令source Humble/install、PYTHONNOUSERSITE=1、ROS_LOG_DIR=canonical ROS/log/component_checks：`/usr/bin/python3 /tmp/audit_p3b5_v32_return.py`及`/usr/bin/python3 /tmp/audit_p3b5_v32_fixed.py`，无需新episode。两侧物理子门禁PASS纳入归档，不作为固定任务COMPLETE或新批次证据。
+
+下一候选只移除“任一让路腿尚未到达就禁止所有普通集合计划”的全局排除项。普通动作仍通过原freshness、ACTIVE、完整能量、活动腿剩余路线、优先接近路线、返航预约、动态机体与并发名额检查；没有放宽路线冲突净空或启动重试。全局排除能导致不相关路线串行等待，但其具体任务收益须新冻结原矩阵验证，不能把92.3s缺口全部归因于该四行条件。三个实际几何状态机反例验证disjoint+slot可派发、冲突路线/名额满拒绝，既有让路handle不取消。相关11PASS2.49s，完整16文件291PASS8.52s，四包build6.02s；命令与v31完整pytest/build同，源审计结果随后记录。P3B.5仍待完成，尚未进入ns-3/RL。
+
+3r source-only绕过审计PASS0违规；原17用户材料SHA256保持。diff check及add-n检查后显式staging只选修改源码/测试/说明/log和本次失败归档，不包含用户报告或运行输出；commit/push后才启动下一冻结原矩阵。

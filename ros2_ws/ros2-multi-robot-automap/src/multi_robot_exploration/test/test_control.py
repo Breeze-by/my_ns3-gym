@@ -1293,6 +1293,51 @@ def test_idle_blocker_recovery_dispatches_motion_before_returning(
     assert requests == ["tb2"]  # the action cannot be starved by the next timer
 
 
+@pytest.mark.parametrize("conflict,slots,admitted", [(False, 2, True), (True, 2, False), (False, 1, False)])
+def test_active_yield_allows_only_disjoint_rally_with_an_available_slot(conflict, slots, admitted):
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+
+    names = ["yielding", "rallying"]
+    y = 1.05 if conflict else 5.05
+    targets = {"yielding": control.RallyPose(4.05, y, 0.),
+               "rallying": control.RallyPose(3.05, 1.05, 0.)}
+    sent = []
+    node = SimpleNamespace(
+        enable_battery=False, task_state="RALLY", fresh_robot_inputs=lambda: True,
+        fresh_robot_poses=lambda: True, fresh_target=lambda: True, stop_target_scan=lambda: False,
+        last_input_availability=True, now=lambda: 10.,
+        rally_charge_requested={}, rally_precharge_staging={},
+        rally_max_concurrent=slots, rally_leg_routes={"yielding": ((1.05, y), (4.05, y)), "rallying": ()},
+        rally_goal_handles={"yielding": Mock(), "rallying": None},
+        rally_goal_pending=dict.fromkeys(names, False),
+        rally_goal_started_at={"yielding": 9., "rallying": None},
+        goal_timeout_sec=60., rally_goal_timeout_sec=30.,
+        rally_arrived=dict.fromkeys(names, False), rally_hold_started_at=None,
+        rally_yield_targets={"yielding"}, return_yield_targets={"yielding": "returner"},
+        rally_yield_requested=dict.fromkeys(names, False), rally_probe_targets=set(),
+        rally_targets=targets.copy(), rally_final_targets=targets.copy(), rally_dispatch_order=names,
+        battery_modes=dict.fromkeys(names, "ACTIVE"), participating_robots=lambda: names,
+        survey_robot=None, survey_goal_handle=None, survey_goal_pending=False,
+        release_return_yields=lambda: None, yield_to_returning_robot=lambda: None,
+        last_rally_dispatch_at=0., global_battery_rally_pause=False,
+        rally_attempts=dict.fromkeys(names, 0), rally_recovery_requested=dict.fromkeys(names, False),
+        rally_route_unavailable_since=dict.fromkeys(names),
+        robot_positions={"yielding": (1.05, y), "rallying": (1.05, 1.05)},
+        map_data=np.zeros((80, 80), dtype=int), resolution=.1, origin=(0., 0.),
+        target=(6.05, 1.05), get_logger=lambda: Mock(),
+    )
+    def send(name, plan, charge_staging=False):
+        assert not charge_staging
+        assert not control.routes_conflict(plan[1], node.rally_leg_routes["yielding"], control.RALLY_ROUTE_SEPARATION_M)
+        sent.append(name)
+        node.rally_goal_pending[name] = True
+    node.send_rally_goal = send
+    control.HeadquartersControl.update_mission(node)
+    assert sent == (["rallying"] if admitted else [])
+    node.rally_goal_handles["yielding"].cancel_goal_async.assert_not_called()
+
+
 def test_small_frontier_pocket_keeps_nonzero_local_alternatives():
     grid = np.full((30, 30), -1)
     grid[5:25, 5:25] = 0

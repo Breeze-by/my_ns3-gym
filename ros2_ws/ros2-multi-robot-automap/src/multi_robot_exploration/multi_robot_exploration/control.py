@@ -2908,10 +2908,6 @@ class HeadquartersControl(Node):
                     or self.rally_goal_handles[name] is not None
                     or self.rally_goal_pending[name]
                     or (
-                        yield_recovery_active
-                        and name not in self.rally_yield_targets
-                    )
-                    or (
                         self.survey_robot == name
                         and (self.survey_goal_pending or self.survey_goal_handle)
                     )
