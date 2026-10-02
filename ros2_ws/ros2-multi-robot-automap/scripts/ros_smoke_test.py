@@ -13,6 +13,67 @@ import time
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+_NATIVE_PROBE_WORKER = False
+
+
+def bounded_native_probe(kind, arguments, timeout, launch=None):
+    """Keep observational DDS initialization/cleanup outside the task runner."""
+    command = [sys.executable, str(Path(__file__).resolve()), "--_native-probe",
+               json.dumps({"kind": kind, "arguments": arguments, "timeout": timeout})]
+    child = subprocess.Popen(command, text=True, stdout=subprocess.PIPE,
+                             stderr=subprocess.STDOUT)
+    deadline = time.monotonic() + timeout
+    try:
+        while True:
+            if launch is not None and launch.poll() is not None:
+                raise RuntimeError(f"launch exited during native {kind} check with status {launch.returncode}")
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise TimeoutError(f"native {kind} worker {child.pid} exceeded {timeout}s wall deadline")
+            try:
+                output, _ = child.communicate(timeout=min(.2, remaining))
+                break
+            except subprocess.TimeoutExpired:
+                continue
+        if child.returncode != 0:
+            raise RuntimeError(f"native {kind} check failed (worker={child.pid}, status={child.returncode}): {output.strip()}")
+    finally:
+        if child.poll() is None:
+            # This worker only observes messages and read-only lifecycle/model
+            # services. Kill its own process on timeout, never the task graph.
+            child.kill()
+            output, _ = child.communicate()
+            if output.strip():
+                print(f"Native {kind} timeout diagnostics: {output.strip()}", file=sys.stderr, flush=True)
+
+
+def native_probe_worker(request):
+    import faulthandler
+    import traceback
+    from types import SimpleNamespace
+
+    global _NATIVE_PROBE_WORKER
+    _NATIVE_PROBE_WORKER = True
+    faulthandler.dump_traceback_later(max(1., min(30., request["timeout"] * .75)))
+    try:
+        kind, arguments = request["kind"], request["arguments"]
+        if kind == "ready":
+            wait_until_ready(SimpleNamespace(poll=lambda: None), **arguments)
+        elif kind == "message":
+            require_message(**arguments)
+        elif kind == "entities":
+            require_entities(**arguments)
+        else:
+            raise ValueError(f"unknown native probe kind: {kind}")
+        code = 0
+    except Exception:
+        traceback.print_exc()
+        code = 1
+    sys.stdout.flush()
+    sys.stderr.flush()
+    # A single-context one-shot observer has no state to commit. Let the kernel
+    # release its DDS resources instead of cycling native contexts in the parent.
+    os._exit(code)
 
 
 def run_ros(arguments, timeout=10, discard_output=False):
@@ -34,6 +95,12 @@ def wait_until_ready(
     target_detection_enabled=False,
     battery_enabled=False,
 ):
+    if not _NATIVE_PROBE_WORKER:
+        return bounded_native_probe("ready", dict(
+            robot_count=robot_count, timeout=timeout,
+            evaluation_enabled=evaluation_enabled,
+            target_detection_enabled=target_detection_enabled,
+            battery_enabled=battery_enabled), timeout, process)
     expected_topics = {
         "/gateway/acks",
         "/gateway/downlink/candidates",
@@ -100,11 +167,15 @@ def wait_until_ready(
             details.append("inactive lifecycle nodes: " + ", ".join(queries.missing()))
         raise TimeoutError("; ".join(details) or "ROS graph did not become ready")
     finally:
-        node.destroy_node()
-        rclpy.shutdown()
+        if not _NATIVE_PROBE_WORKER:
+            node.destroy_node()
+            rclpy.shutdown()
 
 
 def require_message(topic, timeout, qos_arguments=()):
+    if not _NATIVE_PROBE_WORKER:
+        return bounded_native_probe("message", dict(
+            topic=topic, timeout=timeout, qos_arguments=qos_arguments), timeout)
     import rclpy
     from rclpy.node import Node
     from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy
@@ -137,11 +208,14 @@ def require_message(topic, timeout, qos_arguments=()):
                 return
         raise RuntimeError(f"no message received from {topic} within {timeout}s")
     finally:
-        node.destroy_node()
-        rclpy.shutdown()
+        if not _NATIVE_PROBE_WORKER:
+            node.destroy_node()
+            rclpy.shutdown()
 
 
 def require_entities(names, timeout):
+    if not _NATIVE_PROBE_WORKER:
+        return bounded_native_probe("entities", dict(names=names, timeout=timeout), timeout)
     import rclpy
     from rclpy.node import Node
     from multi_robot_exploration.spawn_entity_checked import ModelInventory
@@ -160,8 +234,9 @@ def require_entities(names, timeout):
         missing = set(names) - (node.model_names or set())
         raise RuntimeError("Gazebo entities not confirmed: " + ", ".join(sorted(missing)))
     finally:
-        node.destroy_node()
-        rclpy.shutdown()
+        if not _NATIVE_PROBE_WORKER:
+            node.destroy_node()
+            rclpy.shutdown()
 
 
 def require_bypass_audit(robot_count, timeout, graph_output=None):
@@ -768,4 +843,7 @@ def main():
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    if len(sys.argv) == 3 and sys.argv[1] == "--_native-probe":
+        native_probe_worker(json.loads(sys.argv[2]))
+    else:
+        raise SystemExit(main())

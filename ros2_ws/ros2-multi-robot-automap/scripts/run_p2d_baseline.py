@@ -238,6 +238,7 @@ def build_manifest(config_path, args):
             "ros_version": os.environ.get("ROS_VERSION"),
             "gazebo": command_version(["gazebo", "--version"]),
             "headless_launch_display": None,
+            "native_probe_isolation": "single_context_process_with_wall_deadline",
             "parent_display": os.environ.get("DISPLAY"),
             "libgl_always_software": os.environ.get("LIBGL_ALWAYS_SOFTWARE"),
             "glx_vendor_library": os.environ.get("__GLX_VENDOR_LIBRARY_NAME"),

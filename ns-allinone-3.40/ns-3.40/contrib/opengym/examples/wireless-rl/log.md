@@ -4641,3 +4641,30 @@ PYTHONNOUSERSITE=1 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b_fault_matri
 reassign_rally_pose在同一不可变map/blocked snapshot内复用静态距离场与动态route cache，替代每个候选的重复Dijkstra，原候选/排名/clearance保持。离线组件基准命令：source Humble+canonical install，PYTHONNOUSERSITE=1、ROS_LOG_DIR=canonical ROS/log/component_checks，`/usr/bin/python3 /tmp/benchmark_p3b5_reassign_cache.py`；7次交错比较77ff函数与dirty新源（hash记录），同一80x80墙/开口/停车反例，每次结果点完全一致。中位.540885→.023951s，22.583倍，仅组件计算加速，不是任务消融或任务完成时间改善。完整源码/trials/hash见report/20261002_p3b5_reassign_cache_benchmark.json。
 
 第一轮相关检查2FAIL/144PASS7.00s：staging fake仍只接收两个参数，及旧“无条件附加恢复费用”测试与明确变更语义不一致；修正fake并保留explicit staging断言，将旧测试改为保留真实队友wait并新增实际detour不足/充电恢复/未知路径/无效速度/重新分配home reserve反例。相关146PASS6.35s；进一步用完整实际费用重算替代delta后，全15文件276PASS8.60s，四包build5.51s，3r source audit PASS0违规。下一原矩阵须clean提交/push后开启，历史成功不回填。
+
+## 2026-10-02 P3B.5 v28任务完成但原生检查收尾阻塞
+
+clean冻结26bbc1ce6f0ae17fd162cd63d40814000edb404a。report/20261002_p3b5_native_cleanup_failed_candidate.json保留完整5started/5raw、原任务173.5s COMPLETE、runner-9失败、清理/QoS修正记录、AP地图快照/source/环境/命令/hash。source Humble/install/Gazebo，PYTHONNOUSERSITE=1、TURTLEBOT3_MODEL=waffle、canonical ROS/log/ros_launch；rtk bash -lc：
+
+```bash
+/usr/bin/python3 /tmp/p3b5_v28_bootstrap.py > /tmp/p3b5_v28_bootstrap.log 2>&1
+/usr/bin/python3 /tmp/p3b5_v28_after_subgates.py > /tmp/p3b5_v28_after_subgates.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:13851 taskset -c 20-39 /usr/bin/python3 /tmp/p3b5_v28_zero_first.py > /tmp/p3b5_v28_zero_first.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:13850 taskset -c 0-19 /usr/bin/python3 /tmp/p3b5_v28_first_lab101.py > /tmp/p3b5_v28_first_lab101.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:13852 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_return_probe.py --run-id p3b5_v28_returnproof --ros-domain-base 180 --config scripts/p3b5_staged_return_probe_manifest.json > /tmp/p3b5_v28_returnproof.log 2>&1
+PYTHONNOUSERSITE=1 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_26bbc1c.json > /tmp/p3b5_protocol_26bbc1c.log 2>&1
+```
+
+zero ideal/fault mission_failed1.3/1.8s，完整FAILED双机/E0/无导航/0碰撞，source/ledger/graph PASS。首次lab3/101原始任务COMPLETE173.5s，原评估区间最低22.638能量、0充电/碰撞/失效/耗尽，实际全员误差/速度/5秒保持达标；该raw未改写。runner在“P3A forbidden-bypass audit passed”后原生检查不返回，任务结束后仍等待超过20min，没有进入Received消息检查完成输出。只读DDS图未见活跃smoke observer；不能据此确定卡在具体init/destroy/shutdown行。任务结束后的长尾telemetry与自行返充不属于173.5s任务窗口，不能当同一次任务完成时延或充电计数。
+
+补充ideal/fault自然timeout300.2/300.4s RALLY/EXPLORE，仅过程，两台各一次充电、正最低能量、零碰撞/失效，runner/stager/nativeobserver0。双侧严格staging/TTL/one-shot PASS；fault原62..248物理证明tb1 start172.0s/home1.9801m/path1.1847/progress1.1756/EXEC1.1846，tb2 start171.3/home2.0106/path1.2043/progress1.1971/EXEC1.2043。protocol54PASS。此补充成功不能覆盖固定格runner失败。
+
+额外只读AP取证，不参与控制/门禁：ROS_DOMAIN_ID130、CPU0–19，`/usr/bin/python3 /tmp/observe_p3b5_v28_ap_snapshots.py > /tmp/p3b5_v28_ap_snapshots.log 2>&1`。原volatility匹配错误造成odom/TF DURABILITY不兼容，在FOUND/RALLY前未记录任何快照；保留empty output/source/错误日志。仅向owned observer PID104171发SIGINT（return1，未完成metadata），改为volatile reliable接收网关动态数据，task metadata保持transient-local；独立新observer命令`/usr/bin/python3 /tmp/observe_p3b5_v28_ap_snapshots_qos_fixed.py > /tmp/p3b5_v28_ap_snapshots_qos_fixed.log 2>&1`，最终0、每20sim秒记录gateway map/odom/TF/battery及task metadata，未发送消息或动作。原必需native物理观察器不受影响。
+
+诊断只读进程树/wchan和ROS图，无任务动作。一次pgrep -af误匹配工具包装进程，输出噪声被截断；后续仅从owned wrapper子树读取前3 argv，不读取进程完整环境。GDB尝试仅读取owned已完成任务smoke PID102966调用栈，常规和显式沙箱外审批均被系统ptrace拒绝（未附加、无debug暂停）：`gdb -q -batch -p 102966 -ex "thread apply all bt 8" -ex "py-bt" -ex detach`，第二次省略py-bt。归档保留拒绝日志。`ROS_DOMAIN_ID=130 timeout --kill-after=5s 40s /usr/bin/python3 -u /tmp/probe_p3b5_v28_smoke_contexts.py`两轮真实实体/scan/merge只读检查都通过，无新episode，未复现原阻塞，具体根因仍未确认。
+
+任务已COMPLETE且physical/zero/protocol均自然结束后，向owned launch102997发SIGINT，全部ROS/Gazebo子进程clean结束；原smoke102966仍Sl且SIGINT/SIGTERM均不退出，最终仅SIGKILL此postcomplete死锁runner。精确命令与原raw在cleanup记录中；first必需nativeobserver随后0，bootstrap[1,0,0]，supervisor自然因firstfixed FAIL退出，fullpool/707未派发。原summary infrastructure_failure=false/prestart_count0保留，因为episode已开始；额外明确postcomplete operational failure1，runner-9严格阻止完整验收。不是重试/替换任务，不声称本轮无行政清理。
+
+下一候选仅改smoke native检查隔离与manifest环境记录，算法/包源完全同26bbc。ready、entities、message各用一个实际只读ROS context worker，父进程执行原墙钟超时/launch存活监督；成功必须实际满足原条件，worker一次验证后结束进程让内核释放DDS资源，失败/超时不能伪造PASS。不确定原阻塞行，修复目标是覆盖所有native初始化/等待/清理阻塞，而非宣称已测得某个DDS根因。
+
+新四项进程检查及原三个脚本共37PASS2.23s；真实DDS组件（无Gazebo/任务）命令source Humble/install、PYTHONNOUSERSITE=1、ROS_DOMAIN_ID187、canonical ROS/log/component_checks，`/usr/bin/python3 /tmp/verify_p3b5_native_probes.py > /tmp/p3b5_native_probe_real_checks.log 2>&1`：实际String流0.7854s收到；确定缺失流0.7598s拒绝（deadline.75s），子worker被回收，PASS，见report/20261002_p3b5_native_probe_component.json。py_compile smoke/baseline PASS，新全16文件280PASS7.80s、source audit PASS0。四包build5.51s为同包源26bbc，脚本变化不需重建包。diff/显式staging/commit/push后才能开启下一完整新冻结。
