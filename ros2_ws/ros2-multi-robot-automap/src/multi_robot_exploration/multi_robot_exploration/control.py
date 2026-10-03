@@ -2490,10 +2490,16 @@ class HeadquartersControl(Node):
         self.get_logger().error(f"Mission failed: {reason}")
 
     def release_return_yields(self):
-        """Resume a displaced mission as soon as its returner clears traffic."""
+        """Keep the refuge until its charged returner can depart on a reserved leg."""
         released = False
         for name, returning in list(self.return_yield_targets.items()):
-            if self.battery_modes[returning] == "RETURNING":
+            mode = self.battery_modes[returning]
+            if mode not in ("ACTIVE", "FAILED"):
+                continue
+            if (mode == "ACTIVE" and not (
+                    self.rally_goal_handles.get(returning) is not None
+                    or self.rally_goal_pending.get(returning, False)
+                    or self.rally_arrived.get(returning, False))):
                 continue
             if (not self.rally_arrived[name] or self.rally_goal_handles[name] is not None
                     or self.rally_goal_pending[name]):
@@ -2544,9 +2550,9 @@ class HeadquartersControl(Node):
         protected = rally_return_reservations(
             self.map_data, self.resolution, self.origin, self.robot_positions,
             self.battery_states, self.battery_modes,
-            set(self.rally_charge_requested) | set(self.rally_precharge_staging),
+            set(self.rally_charge_requested),
         )
-        # Prospective staging intents constrain new admission, but cannot
+        # Pending return requests constrain new admission, but cannot
         # revoke an existing safe escape. Only actual local returns/charging
         # acquire priority over an already admitted ordinary leg.
         actual_returns = {
@@ -2996,7 +3002,7 @@ class HeadquartersControl(Node):
             return_reservations = (rally_return_reservations(
                 self.map_data, self.resolution, self.origin, self.robot_positions,
                 self.battery_states, self.battery_modes,
-                set(self.rally_charge_requested) | set(self.rally_precharge_staging),
+                set(self.rally_charge_requested),
             ) if self.enable_battery else {})
             if self.enable_battery:
                 approach_routes = self.rally_approach_routes
@@ -3012,8 +3018,11 @@ class HeadquartersControl(Node):
             completed_approaches = {
                 name for name in self.rally_dispatch_order
                 if self.battery_modes[name] == 'FAILED'
-                or (self.rally_arrived[name] and name not in self.rally_yield_targets)
+                or self.rally_arrived[name]
             }
+            # A parked temporary refuge waits for traffic to clear before
+            # restoring its final goal. Its deferred approach must not seal
+            # unrelated traffic; its actual body remains in every plan mask.
             reserved_names = {name for name in self.rally_dispatch_order
                               if self.battery_modes[name] == 'ACTIVE'
                               and (self.rally_goal_handles[name] is not None
@@ -3040,8 +3049,12 @@ class HeadquartersControl(Node):
                     continue
                 staging = name in energy_unready and name not in self.rally_yield_targets
                 if staging:
-                    if name == getattr(self, "rally_observer_guard", None):
-                        continue  # Preserve real visual contact during peer charging.
+                    if name in (getattr(self, "rally_observer_guard", None),
+                                getattr(self, "target_observing_robot", None)):
+                        # A brief camera gap must not stage the last observer
+                        # away while a charged peer is approaching. The target
+                        # lease is still fresh here; local reserve may preempt.
+                        continue
                     # Waiting for a serial charge need not mean waiting far
                     # away. The same route/body reservations protect a normal
                     # gateway navigation prefix toward home; local safety may
@@ -3119,7 +3132,8 @@ class HeadquartersControl(Node):
                         possible_blockers = [
                             other_name
                             for other_name in parked_names
-                            if other_name not in self.rally_yield_targets
+                            if (other_name not in self.rally_yield_targets
+                                or self.return_yield_targets.get(other_name) == name)
                             and plan_rally_leg(
                                 self.rally_targets[name],
                                 self.map_data,
@@ -3140,7 +3154,8 @@ class HeadquartersControl(Node):
                             possible_blockers = [
                                 other_name
                                 for other_name in parked_names
-                                if other_name not in self.rally_yield_targets
+                                if (other_name not in self.rally_yield_targets
+                                    or self.return_yield_targets.get(other_name) == name)
                             ]
                         for blocker in possible_blockers:
                             blocker_reserved = rally_reserved_poses(
@@ -3213,6 +3228,11 @@ class HeadquartersControl(Node):
                                 self.rally_final_targets[blocker] = blocker_replacement
                             else:
                                 self.rally_yield_targets.add(blocker)
+                            # Its inbound refuge may block the charged owner's
+                            # outbound approach. This new move is ordinary rally
+                            # recovery, with fresh-target and energy checks;
+                            # do not retain the local-return safety exception.
+                            self.return_yield_targets.pop(blocker, None)
                             self.rally_recovery_beneficiaries[blocker] = name
                             self.rally_targets[blocker] = blocker_replacement
                             self.rally_arrived[blocker] = False
@@ -3350,19 +3370,14 @@ class HeadquartersControl(Node):
                 if name not in plans:
                     continue
                 # The requesting waiter lends its future priority until the
-                # blocker clears it. A parked temporary refuge then grants
-                # its beneficiary passage; real bodies/live legs stay protected.
+                # blocker clears it. Parked refuges defer their approaches;
+                # real bodies/live legs and safety returns stay protected.
                 priority_routes = [] if name in stage_names else rally_priority_reservations(
                     self.rally_dispatch_order, name, approach_routes,
                     completed_approaches | {
                         beneficiary for yielding, beneficiary in
                         getattr(self, "rally_recovery_beneficiaries", {}).items()
                         if yielding == name and not self.rally_arrived[yielding]
-                    } | {
-                        yielding for yielding, beneficiary in
-                        getattr(self, "rally_recovery_beneficiaries", {}).items()
-                        if beneficiary == name and yielding in self.rally_yield_targets
-                        and self.rally_arrived[yielding]
                     },
                 )
                 if priority_routes is None:
@@ -3785,8 +3800,8 @@ class HeadquartersControl(Node):
             return
         final = self.rally_targets[robot_name]
         if (not local_return_yield and not charge_staging
-                and math.dist((target.x, target.y), (final.x, final.y))
-                > NAVIGATION_POSITION_TOLERANCE_M):
+                and world_to_grid(target.x, target.y, self.resolution, *self.origin)
+                != world_to_grid(final.x, final.y, self.resolution, *self.origin)):
             target = rally_observation_heading(
                 target, getattr(self, "target", None), self.map_data,
                 self.resolution, self.origin, getattr(self, "target_view_distance", 3.0))

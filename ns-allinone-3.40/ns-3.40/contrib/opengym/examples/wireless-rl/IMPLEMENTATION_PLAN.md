@@ -467,3 +467,5 @@ horizon 的 RMST 与配对 bootstrap 比较时间/通信指标；只有区间支
 - P4B 前确认计划使用的 Wi-Fi 4 频段、信道、MCS 和实验室墙体参数来源；
 - P5 正式比较前确认主指标、训练/validation/test 划分和样本预算；
 - P8A 前确认真实机器人、相机目标类别、网卡/AP/OpenWiFi 数量和可用实验场地。
+
+2026-10-04 P3B.5派发恢复候选已通过376组件检查、四包构建和source-only旁路审计。cab0568原43episode及所有开发失败完整归档；新候选修复final格航向、短暂观测间断、充电后的refuge退出和闲置future approach等待环。独立开发结果不能作为正式固定格或主故障/TDI证据。下一轮必须先新clean commit/push，再以同environment/CPU0-19完成全部十fixed，之后才运行原完整fault矩阵及首次707/fault27077；仍为待完成，原P3A.6冻结不改。

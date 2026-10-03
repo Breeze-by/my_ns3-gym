@@ -1251,7 +1251,7 @@ def test_prospective_charge_intent_cannot_preempt_an_admitted_return_escape(monk
         rally_yield_requested=dict.fromkeys(names, False),
         rally_leg_routes={"returner": (), "escape": ((5., 2.), (5., 4.)), "stager": ()},
         robot_positions={"returner": (8., 2.), "escape": (5., 2.), "stager": (9., 8.)},
-        return_yield_targets={"escape": "returner"}, rally_charge_requested={},
+        return_yield_targets={"escape": "returner"}, rally_charge_requested={"stager":8.},
         rally_precharge_staging={"stager": 1.}, battery_states={},
         map_data=np.zeros((100, 100)), resolution=.1, origin=(0., 0.),
         survey_goal_handle=None, survey_goal_pending=False, rally_max_concurrent=1,
@@ -1355,6 +1355,12 @@ def test_return_yield_restores_final_goal_after_charger_reached():
     assert not updates
     node.battery_modes["tb1"] = "CHARGING"
     control.HeadquartersControl.release_return_yields(node)
+    assert not updates
+    node.battery_modes["tb1"] = "ACTIVE"
+    control.HeadquartersControl.release_return_yields(node)
+    assert not updates
+    node.rally_goal_pending["tb1"] = True
+    control.HeadquartersControl.release_return_yields(node)
     assert node.rally_targets["tb2"] is final
     assert not node.rally_arrived["tb2"]
     assert not node.rally_yield_targets and not node.return_yield_targets
@@ -1429,12 +1435,14 @@ def test_viewpoint_gain_uses_obstacle_visibility():
             assert point.information_gain == control.visible_unknown_gain(grid, (point.row, point.column), 20)
 
 
-@pytest.mark.parametrize("permanent_reassignment, refuge_available, preflight_blocked, guard", [
-    (True, True, False, False), (False, True, False, False),
-    (True, False, False, False), (True, True, True, False), (True, True, False, True),
+@pytest.mark.parametrize("permanent_reassignment, refuge_available, preflight_blocked, guard, refuge_owner", [
+    (True, True, False, False, None), (False, True, False, False, None),
+    (True, False, False, False, None), (True, True, True, False, None), (True, True, False, True, None),
+    (False, True, False, False, "tb1"), (True, False, False, False, "tb1"),
+    (False, True, False, True, "tb1"), (False, True, False, False, "other"),
 ])
 def test_idle_blocker_recovery_dispatches_motion_before_returning(
-    monkeypatch, permanent_reassignment, refuge_available, preflight_blocked, guard
+    monkeypatch, permanent_reassignment, refuge_available, preflight_blocked, guard, refuge_owner
 ):
     from types import SimpleNamespace
 
@@ -1495,7 +1503,20 @@ def test_idle_blocker_recovery_dispatches_motion_before_returning(
         get_logger=lambda: SimpleNamespace(warn=lambda *args: None),
         send_rally_goal=lambda name, *args: requests.append(name),
     )
+    if refuge_owner:
+        node.rally_yield_targets.add("tb2")
+        node.return_yield_targets["tb2"] = refuge_owner
+        node.rally_arrived["tb2"] = True
+        monkeypatch.setattr(control, "rally_survey_pose", lambda *args, **kwargs: None)
     control.HeadquartersControl.update_mission(node)
+    if refuge_owner == "other":
+        assert not requests
+        assert node.return_yield_targets == {"tb2": "other"}
+        assert node.rally_targets["tb2"] == targets["tb2"]
+        assert not node.rally_recovery_beneficiaries
+        return
+    if refuge_owner:
+        assert not node.return_yield_targets  # The new move uses ordinary freshness/energy checks.
     if preflight_blocked:
         assert not requests and node.rally_targets == targets
         assert node.rally_hold_started_at is None
@@ -1574,14 +1595,19 @@ def test_active_yield_allows_only_disjoint_rally_with_an_available_slot(conflict
     node.rally_goal_handles["yielding"].cancel_goal_async.assert_not_called()
 
 
-@pytest.mark.parametrize("beneficiary,parked,admitted", [("rallying", True, True),
-    ("unrelated", True, False), ("rallying", False, False)])
-def test_yielded_approach_releases_only_its_beneficiary_after_parking(beneficiary, parked, admitted):
+@pytest.mark.parametrize("beneficiary,parked,body_blocks,admitted", [
+    ("rallying", True, False, True), ("unrelated", True, False, True),
+    ("rallying", False, False, False), ("unrelated", False, False, False),
+    ("rallying", True, True, False), ("unrelated", True, True, False)])
+@pytest.mark.parametrize("local_return_refuge", [False, True])
+def test_parked_refuge_defers_future_approach_but_protects_body_and_live_leg(
+    beneficiary, parked, body_blocks, admitted, local_return_refuge
+):
     from types import SimpleNamespace
     from unittest.mock import Mock
 
     names = ["yielding", "rallying"]
-    refuge = control.RallyPose(4.05, 1.05, 0.)
+    refuge = control.RallyPose(4.05, 2.05 if body_blocks else 1.05, 0.)
     final = {"yielding": control.RallyPose(8.05, 2.05, 0.),
              "rallying": control.RallyPose(6.05, 2.05, 0.)}
     sent = []
@@ -1594,8 +1620,8 @@ def test_yielded_approach_releases_only_its_beneficiary_after_parking(beneficiar
         rally_goal_started_at=dict.fromkeys(names),
         rally_arrived={"yielding": parked, "rallying": False}, rally_hold_started_at=None,
         rally_position_tolerance=.35,
-        rally_yield_targets={"yielding"}, return_yield_targets={},
-        rally_recovery_beneficiaries={"yielding": beneficiary},
+        rally_yield_targets={"yielding"}, return_yield_targets={"yielding": beneficiary} if local_return_refuge else {},
+        rally_recovery_beneficiaries={} if local_return_refuge else {"yielding": beneficiary},
         rally_yield_requested=dict.fromkeys(names, False), rally_probe_targets=set(),
         rally_targets={"yielding": refuge, "rallying": final["rallying"]},
         rally_final_targets=final, rally_dispatch_order=names,
@@ -1615,6 +1641,9 @@ def test_yielded_approach_releases_only_its_beneficiary_after_parking(beneficiar
         sent.append(name)
         node.rally_goal_pending[name] = True
     node.send_rally_goal = send
+    if body_blocks:
+        node.map_data[:] = 100
+        node.map_data[14:27, 1:99] = 0  # Occupied body closes the only safe corridor.
     control.HeadquartersControl.update_mission(node)
     assert sent == (["rallying"] if admitted else [])
     assert node.rally_targets["yielding"] == refuge and node.rally_final_targets == final
@@ -2087,7 +2116,7 @@ def test_staged_charge_intent_survives_an_unavailable_final_rally_route():
     assert not messages and not failures
 
 
-@pytest.mark.parametrize('conflicting, observer', [(False, False), (True, False), (False, True)])
+@pytest.mark.parametrize('conflicting, observer', [(False, False), (True, False), (False, True), (False, 'camera_gap')])
 def test_waiting_precharge_moves_only_along_a_safe_home_prefix(conflicting, observer):
     from types import SimpleNamespace
     names = ['returner', 'waiter']
@@ -2104,7 +2133,8 @@ def test_waiting_precharge_moves_only_along_a_safe_home_prefix(conflicting, obse
         battery_modes={'returner': 'RETURNING', 'waiter': 'ACTIVE'},
         participating_robots=lambda: names,
         rally_dispatch_order=names, rally_charge_requested={}, rally_precharge_staging={},
-        rally_observer_guard='waiter' if observer else None,
+        rally_observer_guard='waiter' if observer is True else None,
+        target_observing_robot='waiter' if observer else None,
         prepare_rally_charges=lambda: {'waiter'}, rally_charge_budgets={'waiter': 40.},
         rally_approach_routes={}, rally_preflight_complete=False, rally_precharge_active=False,
         battery_states={'returner': {'charge_x': 9.05, 'charge_y': positions['returner'][1]},
@@ -2653,14 +2683,15 @@ def test_intermediate_heading_centers_only_a_current_map_visible_target(obstruct
     else:assert heading is pose
 
 
-@pytest.mark.parametrize('kind', ['ordinary','final','charge_staging','local_return_yield','stale_target'])
+@pytest.mark.parametrize('kind', ['ordinary','final','quantized_final','charge_staging','local_return_yield','stale_target'])
 def test_observation_heading_preserves_final_safety_and_freshness_branches(kind):
     from types import SimpleNamespace
     from unittest.mock import Mock
     from builtin_interfaces.msg import Time
     final=control.RallyPose(1.05,1.35,.3)
     intermediate=control.RallyPose(1.05,1.05,0.)
-    pose=final if kind=='final' else intermediate
+    pose=final if kind=='final' else control.RallyPose(1.05, 1.35, .3) if kind=='quantized_final' else intermediate
+    if kind=='quantized_final':final=control.RallyPose(1.026, 1.328, .3)
     client=Mock()
     client.server_is_ready.return_value=True
     node=SimpleNamespace(
@@ -2687,3 +2718,73 @@ def test_observation_heading_preserves_final_safety_and_freshness_branches(kind)
     assert (sent.position.x,sent.position.y)==(pose.x,pose.y)
     assert node.rally_leg_routes['tb1'] is route
     assert node.rally_targets['tb1'] is final
+
+
+@pytest.mark.parametrize('reservation', ['staging', 'pending', 'RETURNING', 'CHARGING'])
+def test_home_staging_does_not_seal_a_charged_peers_disjoint_live_leg(reservation):
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+    names=['stager','charged']
+    targets={'stager':control.RallyPose(4.05,5.05,0.),
+             'charged':control.RallyPose(3.05,1.05,0.)}
+    positions={'stager':(1.05,5.05),'charged':(1.05,1.05)}
+    sent=[]
+    node=SimpleNamespace(
+        enable_battery=True,task_state='RALLY',fresh_robot_inputs=lambda:True,
+        fresh_robot_poses=lambda:True,fresh_target=lambda:True,stop_target_scan=lambda:False,
+        last_input_availability=True,now=lambda:10.,message_freshness_timeout_sec=5.,
+        battery_monitor_started_at=0.,battery_state_received_at=dict.fromkeys(names,10.),
+        battery_modes={'stager':reservation if reservation in ('RETURNING','CHARGING') else 'ACTIVE','charged':'ACTIVE'},
+        battery_states={'stager':{'charge_x':1.05,'charge_y':1.05},
+                        'charged':{'charge_x':7.05,'charge_y':7.05}},
+        participating_robots=lambda:names,
+        rally_charge_requested={'stager':8.} if reservation=='pending' else {},
+        rally_precharge_staging={'stager':40.},prepare_rally_charges=lambda:{'stager'},
+        rally_approach_routes={'stager':((1.05,5.05),(4.05,5.05))},
+        rally_preflight_complete=True,rally_precharge_active=True,
+        rally_max_concurrent=2,rally_leg_routes={'stager':((1.05,5.05),(4.05,5.05)),'charged':()},
+        rally_goal_handles={'stager':Mock(),'charged':None},rally_goal_pending=dict.fromkeys(names,False),
+        rally_goal_started_at={'stager':9.,'charged':None},goal_timeout_sec=60.,rally_goal_timeout_sec=30.,
+        rally_arrived=dict.fromkeys(names,False),rally_hold_started_at=None,
+        rally_yield_targets=set(),return_yield_targets={},rally_yield_requested=dict.fromkeys(names,False),
+        rally_probe_targets=set(),rally_targets=targets.copy(),rally_final_targets=targets.copy(),
+        rally_dispatch_order=names,survey_robot=None,survey_goal_handle=None,survey_goal_pending=False,
+        release_return_yields=lambda:None,yield_to_returning_robot=lambda:None,last_rally_dispatch_at=0.,
+        global_battery_rally_pause=False,rally_attempts=dict.fromkeys(names,0),
+        rally_recovery_requested=dict.fromkeys(names,False),rally_route_unavailable_since=dict.fromkeys(names),
+        robot_positions=positions,map_data=np.zeros((80,80),dtype=int),resolution=.1,origin=(0.,0.),
+        target=(6.05,1.05),get_logger=lambda:Mock(),active_batteries_ready=lambda:False)
+    def send(name,plan,charge_staging=False):
+        assert not charge_staging
+        assert not control.routes_conflict(plan[1],node.rally_leg_routes['stager'])
+        sent.append(name);node.rally_goal_pending[name]=True
+    node.send_rally_goal=send
+    control.HeadquartersControl.update_mission(node)
+    # CHARGING reserves the actual body, not an outbound route that is not executing.
+    assert sent==(['charged'] if reservation in ('staging','CHARGING') else [])
+    assert node.rally_targets==targets and node.rally_final_targets==targets
+
+
+@pytest.mark.parametrize('owner_mode,owner_departure,refuge_arrived,release', [
+    ('ACTIVE','pending',True,True),('ACTIVE','accepted',True,True),
+    ('ACTIVE','arrived',True,True),('ACTIVE','idle',True,False),
+    ('CHARGING','pending',True,False),('RETURNING','accepted',True,False),
+    ('UNKNOWN','idle',True,False),('FAILED','idle',True,True),
+    ('ACTIVE','pending',False,False)])
+def test_return_refuge_waits_for_real_charged_owner_departure(owner_mode,owner_departure,refuge_arrived,release):
+    from types import SimpleNamespace
+    final=control.RallyPose(4.,3.,0.)
+    refuge=control.RallyPose(1.,1.,0.)
+    updates=[]
+    node=SimpleNamespace(return_yield_targets={'yielding':'owner'},
+        battery_modes={'owner':owner_mode,'yielding':'ACTIVE'},
+        rally_arrived={'yielding':refuge_arrived,'owner':owner_departure=='arrived'},
+        rally_goal_handles={'yielding':None,'owner':object() if owner_departure=='accepted' else None},
+        rally_goal_pending={'yielding':False,'owner':owner_departure=='pending'},
+        rally_yield_targets={'yielding'},rally_targets={'yielding':refuge},
+        rally_final_targets={'yielding':final},rally_route_unavailable_since={},
+        publish_rally_assignments=lambda:updates.append(True))
+    control.HeadquartersControl.release_return_yields(node)
+    assert bool(updates) is release
+    assert node.rally_targets['yielding'] is (final if release else refuge)
+    assert bool(node.return_yield_targets) is (not release)

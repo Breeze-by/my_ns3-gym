@@ -4987,3 +4987,70 @@ colcon build --symlink-install --packages-select multi_robot_interfaces merge_ma
 工具取证一轮physics jsonl未筛event直接读robots触发KeyError，过滤physics后只读原v37得2333.8之后最佳10Hz观察窗口4.4s（2335.182..2339.582），2334.982/2339.882分别0.168284/0.100448中断；保留/tmp/p3b5_v37_native_hold_forensics.json，此10Hz分析不能代替完整原生速率核验。一次tail误指固定launch目录读失败，随后rg --files --no-ignore找到实际zero子episode launch路径；一次AP battery误读/battery键打印None，随即用真实/battery_state重读，未用于算法或结果判定。上述均不重复/中断原episode。
 
 下一v39原57唯一episode使用新clean commit/push后运行，十fixed全部通过后才首次707/fault27077；不回填旧CMP，原schema9 nativehold仍必须实测，P3B.5未通过，无ns-3/RL。
+
+## 2026-10-04 P3B.5 v39原矩阵失败归档与派发恢复候选
+
+原冻结cab0568221f87cbf735e06d36204a5b1655aca78，43started/43raw，阶段计数FAILED4/EXPLORE14/COMPLETE13/RALLY6/FOUND5/PARTIAL_COMPLETE1，接触总数0。原lab3/101 COMPLETE150.4并独立native保持5.4s；固定lab3/202 timeout300.2/RALLY、三次charge、最低18.0199356878导致门禁FAIL。fixed fail-fast停止剩余303/rooms/corridors固定格和707，已按原声明启动的lab11、rooms14、forced2、safety4、corridors6全自然收尾，无行政活跃中断/整格重试。单失效rooms健康两机PARTIAL_COMPLETE198.3；不得把这些历史完成格混入下一候选。原2zero/2controlledreturn/2fixed/37其余共43，仅原57计划的失败候选。完整原source/environment/config/commands/summary/ledger/audit/nativephysics/AP/hash和失败解释见report/20261004_p3b5_precharge_final_cell_failed_candidate.json。
+
+所有ROS命令在canonical ROS cwd，source /opt/ros/humble/setup.bash、canonical install/setup.bash、仿真时source /usr/share/gazebo/setup.sh；PYTHONNOUSERSITE=1/TURTLEBOT3_MODEL=waffle/ROS_LOG_DIR=canonical ROS/log/ros_launch。实际通过rtk bash -lc运行：
+
+```bash
+/usr/bin/python3 /tmp/p3b5_v39_after_subgates.py > /tmp/p3b5_v39_after_subgates.log 2>&1
+/usr/bin/python3 /tmp/p3b5_v39_bootstrap.py > /tmp/p3b5_v39_bootstrap.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:14951 taskset -c 20-39 /usr/bin/python3 /tmp/p3b5_v39_zero_first.py > /tmp/p3b5_v39_zero_first.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:14950 taskset -c 0-19 /usr/bin/python3 /tmp/p3b5_v39_first_lab101.py > /tmp/p3b5_v39_first_lab101.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:14952 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_return_probe.py --run-id p3b5_v39_returnproof --ros-domain-base 180 --config scripts/p3b5_staged_return_probe_manifest.json > /tmp/p3b5_v39_returnproof.log 2>&1
+PYTHONNOUSERSITE=1 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_cab0568.json > /tmp/p3b5_protocol_cab0568.log 2>&1
+ROS_DOMAIN_ID=130 taskset -c 0-19 /usr/bin/python3 /tmp/observe_p3b5_v39_ap_snapshots_qos_fixed.py > /tmp/p3b5_v39_ap_snapshots_qos_fixed.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:14950 taskset -c 0-19 /usr/bin/python3 /tmp/p3b5_v39_fixed_then_holdout.py > /tmp/p3b5_v39_fixed_holdout_pool.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:14951 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b5_tasks.py --config scripts/p3b5_fault_manifest.json --run-id p3b5_v39_lab --cases zero_rally_lab up100_lab down100_lab ttl_lab map_loss_lab battery_loss_lab state_loss_lab target_up10_lab --ros-domain-base 40 > /tmp/p3b5_v39_lab.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:14953 taskset -c 60-79 /usr/bin/python3 scripts/run_p3b5_tasks.py --config scripts/p3b5_fault_manifest.json --run-id p3b5_v39_rooms --cases up10_rooms down10_rooms delay2_rooms overflow_rooms burst_rooms deadline_rooms detection_loss_rooms pose_loss_rooms single_failure_rooms target_loss_rooms --ros-domain-base 60 > /tmp/p3b5_v39_rooms.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:14952 taskset -c 40-59 /usr/bin/python3 /tmp/p3b5_v39_forced_safety_corridors.py > /tmp/p3b5_v39_forced_safety_corridors_pool.log 2>&1
+taskset -c 60-79 /usr/bin/python3 /tmp/watch_p3b5_v39_rooms_reactive.py > /tmp/p3b5_v39_rooms_reactive_watch.log 2>&1
+```
+
+bootstrap自然[0,0,0]；后续原pools自然[1,0,0,0]。完整wrapper实际子命令/ROS domains/端口/CPU/27case原参数和原始结果均在归档source/commands/manifest，不改horizon、返回reserve、目标位置或fault seed。原受控两侧EXPLORE300.1/300.4仅安全过程证据，各机器人各1charge/正电量/0接触；强原62..248运动门禁PASS：fault tb1 offset170.9/home1.986740/path1.198758/progress1.188938/实际Nav2 EXEC1.198735m，tb2 offset171.3/home1.978704/path1.169417/progress1.159218/EXEC1.169372m。协议54PASS。
+
+rooms原ideal的final grid-center距continuous final0.02355571431m，旧0.02 cutoff把final当中间腿，64次重复请求yaw1.082574863而assigned1.070103868，不能满足exact requested-final-yaw bookkeeping。固定202最后视觉source2232.282后2237.882 stage同observer，age5.6s仍在60s lease但越过5s live guard；随后视觉中断/重搜索。两者是源语义/时序证据，不声称唯一根因或单因素任务加速。reactive rooms AP只读测量在固定FAIL后追加，实际时点/额外负载/source/12 owned child commands及空快照全部保留；所有原observer/runner/future自然退出后才改tracked source。native truth不进入控制。
+
+在原v39仍收尾时只创建/tmp源码包副本，canonical ROS依赖/cwd，CPU0-19，独立master/domain，原lab202或rooms101参数。实际import路径/control SHA/完整override source/package文件哈希在prospective declaration，Git元数据仍报parent cab不能当clean源码冻结。全部独立开发5episode、failed validation和counterexample见report/20261004_p3b5_dispatch_recovery_component.json：
+
+```bash
+taskset -c 0-19 /usr/bin/python3 /tmp/run_p3b5_v40_isolated_development.py > /tmp/p3b5_v40_isolated_development.log 2>&1
+ROS_DOMAIN_ID=123 taskset -c 0-19 /usr/bin/python3 /tmp/observe_p3b5_v40_development_ap.py p3b5_v40_isolated_development_lab202 log/p3b5_development/p3b5_v40_isolated_development_lab202/p3b5_v40_isolated_development_lab202.json > /tmp/p3b5_v40_development_lab202_ap.log 2>&1
+taskset -c 0-19 /usr/bin/python3 /tmp/run_p3b5_v41_isolated_development.py > /tmp/p3b5_v41_isolated_development.log 2>&1
+taskset -c 0-19 /usr/bin/python3 /tmp/run_p3b5_v42_isolated_development.py > /tmp/p3b5_v42_isolated_development.log 2>&1
+taskset -c 0-19 /usr/bin/python3 /tmp/run_p3b5_v43_isolated_development.py > /tmp/p3b5_v43_isolated_development.log 2>&1
+```
+
+v40 master15490/domains123/124：lab202 RALLY300.0/runner1/三charge/0接触；rooms101 COMPLETE129.3/runner0/零charge/0接触。v41 master15491/domain125 lab202 RALLY300.2/runner1/两charge/0接触，入站refuge挡住charged owner出站形成互等。v42 master15492/domain126 lab202 RALLY300.4/runner1/两charge/0接触；仍fresh视觉、全部原nav无abort，最后72simseconds没有新请求，parked temporary future approach预约导致三机器人等待环。v43 master15493/domain127 lab202 COMPLETE230.9/runner0/两charge/最低22.3149248459/0接触，coor224.0、独立native5.0s/51samples/最大gap0.1/最大角速0.0914782786/最大位置误差0.0330065合格。v40 lab AP为launch后reactive；v41/42/43 AP在runner前预声明启动且正常0。开发trajectory不同，不能把时长差写成单因果benchmark，也不能回填正式fixed/TDI。707保持未曝光。
+
+最终候选复用原恢复/预约逻辑：final按地图格保持yaw；prospective stage future-home不代替actual return；最后真实observer在短camera gap中不stage远离；return refuge到owner有真实departure/到位才恢复，owner需要出站避让时转换为普通freshness/energy恢复；所有parked refuge的future approach延期，但真实body/live legs/actual safety return仍保护。无新依赖、改param/原物理门槛或使用过期目标/真值。
+
+纯组件命令（同Humble/install、PYTHONNOUSERSITE=1；ROS_LOG_DIR=canonical ROS/log/component_checks；实际rtk bash -lc）：
+
+```bash
+taskset -c 0-19 /usr/bin/python3 -m pytest -q --tb=short /tmp/p3b5_v40_offline_draft/test_control.py > /tmp/p3b5_v40_offline_draft_checks.log 2>&1
+taskset -c 0-19 /usr/bin/python3 -m pytest -q --tb=short /tmp/p3b5_v40_offline_draft/test_control.py > /tmp/p3b5_v40_offline_draft_checks2.log 2>&1
+P3B5_REPLAY_IMPLEMENTATION=original taskset -c 0-19 /usr/bin/python3 -m pytest -q --tb=short /tmp/p3b5_v40_offline_draft/test_control.py -k 'quantized_final or camera_gap or home_staging' > /tmp/p3b5_v39_original_counterexamples.log 2>&1
+taskset -c 0-19 /usr/bin/python3 -m pytest -q --tb=short /tmp/p3b5_v41_offline_draft/test_control.py > /tmp/p3b5_v41_offline_draft_checks3.log 2>&1
+taskset -c 0-19 /usr/bin/python3 -m pytest -q --tb=short /tmp/p3b5_v42_offline_draft/test_control.py > /tmp/p3b5_v42_offline_draft_checks.log 2>&1
+taskset -c 0-19 /usr/bin/python3 -m pytest -q --tb=short /tmp/p3b5_v42_against_v41_counterexample/test_control.py -k 'idle_blocker and tb1' > /tmp/p3b5_v42_v41_counterexamples.log 2>&1
+taskset -c 0-19 /usr/bin/python3 -m pytest -q --tb=short /tmp/p3b5_v43_offline_draft/test_control.py > /tmp/p3b5_v43_offline_draft_checks.log 2>&1
+taskset -c 0-19 /usr/bin/python3 -m pytest -q --tb=short /tmp/p3b5_v43_against_v42_counterexample/test_control.py -k parked_refuge > /tmp/p3b5_v43_v42_counterexamples.log 2>&1
+taskset -c 20-39 /usr/bin/python3 /tmp/replay_p3b5_v42_parked_approach.py > /tmp/p3b5_v43_parked_approach_component.log 2>&1
+```
+
+初始v40临时拷贝fixture的SDF相对路径错误194PASS/1FAIL9.63，修正/tmp测试路径后195PASS10.19。对原CAB的三个新语义反例3FAIL/3PASS（预期拒绝）。v41最初两次taskset80-95在pytest开始前affinity setup失败，日志checks/checks2保留；改实际允许0-19后207PASS6.92。v42 211PASS7.56，对旧v41 owner recovery三反例3FAIL/208deselected1.66。v43 217PASS5.89，对旧v42 parked两反例2FAIL/10PASS/205deselected1.57。五张实际收到的v42末尾AP地图在同geometry/body、显式假设的quiescent priority状态上原tb3终段皆被拒，新策略皆可admit，当前机体最小净距2.094..2.095m；非原精确内部buffer、非任务完成。v43全部16组件离线376PASS8.14，跨/tmp与repo导致pytest root为/、产生两个cache写入warning，无测试失败；actual tracked376PASS12.14。原readonly快照分析一次未过滤缺rally_assignments的首行KeyError，按实际已有assignment过滤后完成；无重复实验或控制输入。
+
+所有开发/观察进程结束后执行guarded apply，它校验原pool返回/observer finish/owned PID退出/14950..53及15490..93端口释放、17用户材料哈希、v43真实import/hash/native success，然后先归档原43+开发5、再拷贝control同源码与恢复repo-relative SDF fixture。`/usr/bin/python3 /tmp/apply_p3b5_v43_verified_candidate.py > /tmp/p3b5_v40_apply_candidate.log 2>&1`成功。
+
+当前源码验证（Humble/install、PYTHONNOUSERSITE=1/component ROS_LOG_DIR；实际rtk bash -lc）：
+
+```bash
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_control.py src/multi_robot_exploration/test/test_battery_manager.py src/multi_robot_exploration/test/test_gateway.py src/multi_robot_exploration/test/test_fault_model.py src/multi_robot_exploration/test/test_navigation_faults.py src/multi_robot_exploration/test/test_task_evaluator.py src/multi_robot_exploration/test/test_nav2_ready_gate.py src/multi_robot_exploration/test/test_readiness.py src/multi_robot_exploration/test/test_spawn_entity_checked.py src/multi_robot_exploration/test/test_tf_ingress_sampler.py src/multi_robot_exploration/test/test_target_detector.py src/merge_map/test/test_merge_map.py scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py scripts/test_ros_smoke_native_probe.py > /tmp/p3b5_v40_component_checks.log 2>&1
+colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot > /tmp/p3b5_v40_build.log 2>&1
+/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v40_source_audit.log 2>&1
+```
+
+首次diff--check只报测试EOF多一空行，已去掉。新正式v40仅在同session clean commit/push之后运行：原十fixed同CPU0-19/environment/300s/零whole-episode retry先全通过，再启动原fault pools/首次707及fault27077；57唯一格不变。此前所有失败/开发CMP不回填；本次仍不是P3B.5门禁通过，未启动ns-3/RL。
