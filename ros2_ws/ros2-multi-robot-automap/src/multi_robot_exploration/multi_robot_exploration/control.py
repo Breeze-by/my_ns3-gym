@@ -947,8 +947,18 @@ def assign_rally_poses(
     robot_positions,
     target,
     objective="minimax",
+    battery_states=None,
+    observer_robot=None,
+    current_positions=None,
+    hold_sec=RALLY_HOLD_SEC,
 ):
-    """Balance the longest reachable path with distinct rally poses."""
+    """Assign separated visible poses, accounting for serial charge waits.
+
+    With delivered batteries, preserve an ACTIVE observer when feasible, then
+    maximize its remaining budget headroom, then minimize predicted charges
+    and serial travel/charge time before the chosen
+    path objective. These estimates never authorize a navigation or return.
+    """
     if objective not in ("minimax", "total_path"):
         raise ValueError(f"unknown rally assignment objective: {objective}")
     names = sorted(robot_positions)
@@ -992,9 +1002,75 @@ def assign_rally_poses(
             return {}
         options[name] = reachable
 
-    search_order = sorted(names, key=lambda name: len(options[name]))
+    energy_options, modes, charge_times, charge_targets = {}, {}, {}, {}
+    if battery_states is not None:
+        current_positions = current_positions or robot_positions
+        try:
+            if not math.isfinite(hold_sec) or hold_sec < 0:
+                return {}
+            for name in names:
+                state = battery_states[name]
+                mode = state["mode"]
+                energy = float(state["energy"])
+                home = (float(state["charge_x"]), float(state["charge_y"]))
+                speed = float(state.get("nominal_speed_mps", .18))
+                idle = float(state.get("idle_cost_per_sec", .02))
+                move = float(state.get("move_cost_per_m", 1.))
+                factor = float(state.get("return_path_factor", 2.))
+                margin = float(state.get("return_safety_margin", 8.))
+                duration = float(state.get("charge_duration_sec", 6.))
+                capacity = float(state["capacity"])
+                fraction = float(state["charge_target_fraction"])
+                values = (*home, energy, speed, idle, move, factor, margin,
+                          duration, capacity, fraction, *current_positions[name])
+                if (not all(math.isfinite(v) for v in values)
+                        or mode not in ("ACTIVE", "RETURNING", "CHARGING")
+                        or min(energy, idle, move, margin, duration) < 0
+                        or speed <= 0 or capacity <= 0 or factor < 1
+                        or not 0 < fraction <= 1):
+                    return {}
+                home_start, escape = navigation_start_route(
+                    raw_grid, traversable, world_to_grid(*home, resolution, *origin),
+                    max(1, math.ceil(.6 / resolution)))
+                home_distances = path_distance_grid(traversable, home_start)
+                home_escape = sum(math.dist(a, b) for a, b in zip(escape, escape[1:]))
+                modes[name] = mode
+                charge_times[name] = duration
+                if mode != "CHARGING":
+                    charge_times[name] += math.dist(current_positions[name], home) * factor / speed
+                charge_targets[name] = capacity * fraction
+                energy_options[name] = {}
+                for distance, index in options[name]:
+                    pose = candidates[index]
+                    cell = world_to_grid(pose.x, pose.y, resolution, *origin)
+                    home_distance = (home_distances[cell] + home_escape) * resolution
+                    if not math.isfinite(home_distance):
+                        continue
+                    required = battery_assignment_required_energy(
+                        distance * resolution, math.dist((pose.x, pose.y), home),
+                        move, idle, factor, speed, margin) + idle * hold_sec
+                    travel = distance * resolution / speed
+                    after_charge = home_distance / speed
+                    energy_options[name][index] = (required, travel, after_charge)
+                options[name] = [(distance, index) for distance, index in options[name]
+                                 if index in energy_options[name]]
+                if not options[name]:
+                    return {}
+        except (KeyError, TypeError, ValueError, ZeroDivisionError):
+            return {}
+
+    # Resolve the leading observer budget first so its monotone bound
+    # prunes peer combinations before expensive complete energy closures.
+    search_order = sorted(names, key=lambda name: (
+        battery_states is not None and observer_robot in names and name != observer_robot,
+        len(options[name])))
     best = {}
-    best_score = (float("inf"), float("inf"), float("inf"))
+    best_score = (float("inf"),) * (7 if battery_states is not None else 3)
+    selected_indices = {}
+    minimum_energy_options = {
+        name: tuple(min(values[column] for values in choices.values()) for column in range(3))
+        for name, choices in energy_options.items()
+    }
 
     def search(
         assignments,
@@ -1009,6 +1085,31 @@ def assign_rally_poses(
             if objective == "minimax"
             else (separation_penalty, cost, longest_path)
         )
+        if battery_states is not None:
+            # Independent per-column minima may refer to different candidates;
+            # that only makes this an optimistic, admissible partial bound.
+            # At a complete leaf every entry is the actual selected option.
+            estimates = {name: energy_options[name][selected_indices[name]]
+                         if name in selected_indices else minimum_energy_options[name]
+                         for name in names}
+            requirements, _ = rally_wait_requirements(
+                {name: values[0] for name, values in estimates.items()},
+                battery_states, modes,
+                {name: values[1] for name, values in estimates.items()}, charge_times)
+            needed = {name for name in names if modes[name] != "ACTIVE"
+                      or float(battery_states[name]["energy"]) <= requirements[name]}
+            if any(requirements[name] > charge_targets[name] for name in needed):
+                return
+            observer_headroom = (max(0., float(battery_states[observer_robot]["energy"])
+                                     - requirements[observer_robot])
+                                 if modes.get(observer_robot) == "ACTIVE" else 0.)
+            complete = len(assignments) == len(search_order)
+            time_bound = sum(charge_times[name] + values[2] if name in needed
+                             else values[1] if complete
+                             else min(values[1], charge_times[name] + values[2])
+                             for name, values in estimates.items())
+            observer_charge = int(observer_robot in needed and modes.get(observer_robot) == "ACTIVE")
+            score = (observer_charge, -observer_headroom, len(needed), time_bound, *score)
         if score >= best_score:
             return
         if len(assignments) == len(search_order):
@@ -1028,6 +1129,7 @@ def assign_rally_poses(
                 continue
             assignments[name] = pose
             used_indices.add(candidate_index)
+            selected_indices[name] = candidate_index
             added_penalty = sum(
                 max(
                     0.0,
@@ -1046,6 +1148,7 @@ def assign_rally_poses(
             )
             used_indices.remove(candidate_index)
             del assignments[name]
+            del selected_indices[name]
 
     search({}, set(), 0.0, 0.0, 0.0)
     if not best:
@@ -1332,9 +1435,9 @@ def map_safe_rally_dispatch_order(
     A pose that is safe in isolation can still seal the only approach to a
     later pose.  Evaluate the small permutation space once at RALLY entry and
     keep already placed robots as dynamic obstacles while checking the next
-    route.  If no complete order is visible in the current map, retain the
-    deterministic geometric order and let the recovery state machine handle
-    the newly observed blockage.
+    route. If current parked bodies prevent every complete order, minimize
+    final-pose obstructions on later intent routes. Actual blockage still
+    belongs to the existing body/route checks and safe recovery state machine.
     """
     names = list(targets)
     if len(names) < 2:
@@ -1386,6 +1489,27 @@ def map_safe_rally_dispatch_order(
             best = (score, order)
     if best is not None:
         return list(best[1])
+    # When current parked bodies prevent every complete serial plan, compare
+    # future final-pose obstructions instead of filling the entrance first.
+    # This chooses recovery priority only: live body/route admission is still
+    # mandatory, including any safe refuge needed by the first mover.
+    routes = {}
+    for name in names:
+        if robot_positions.get(name) is None:
+            break
+        _, route = plan_rally_leg(targets[name], raw_grid, resolution, origin,
+                                 robot_positions[name], max_distance_m=float("inf"))
+        if not route:
+            break
+        routes[name] = route
+    if len(routes) == len(names):
+        def recovery_score(order):
+            obstructions = sum(
+                routes_conflict(routes[follower], ((targets[leader].x, targets[leader].y),),
+                                min_separation=RALLY_DYNAMIC_CLEARANCE_M)
+                for index, leader in enumerate(order) for follower in order[index + 1:])
+            return (obstructions, priority_robot is not None and order[0] != priority_robot, order)
+        return list(min(permutations(names), key=recovery_score))
     return rally_dispatch_order(
         targets, robot_positions, target, priority_robot
     )
@@ -2114,32 +2238,42 @@ class HeadquartersControl(Node):
             for name in names
         )
 
-    def battery_assignment_safe(self, robot_name, distance_m):
+    def exploration_battery_factor(self, robot_name, distance_m, destination):
+        """Prefer a complete frontier trip with reserve at its future endpoint.
+
+        Unsafe estimates remain a lower-priority fallback; only malformed
+        delivered context is rejected. Local reserve still owns actual motion.
+        """
         if not self.enable_battery:
-            return True
+            return 1.0
         if self.battery_modes[robot_name] != "ACTIVE":
-            return False
+            return 0.0
         state = self.battery_states[robot_name]
         position = self.robot_positions.get(robot_name)
         if position is None or "energy" not in state:
-            return False
+            return 0.0
         try:
-            home = math.dist(
-                position,
-                (float(state["charge_x"]), float(state["charge_y"])),
+            home = (float(state["charge_x"]), float(state["charge_y"]))
+            energy = float(state["energy"])
+            move = float(state.get("move_cost_per_m", 1.0))
+            idle = float(state.get("idle_cost_per_sec", .02))
+            factor = float(state.get("return_path_factor", 2.0))
+            speed = float(state.get("nominal_speed_mps", .18))
+            margin = float(state.get("return_safety_margin", 8.0))
+            if (not all(math.isfinite(v) for v in (*home, *position, *destination,
+                    energy, distance_m, move, idle, factor, speed, margin))
+                    or min(energy, distance_m, move, idle, margin) < 0
+                    or speed <= 0 or factor < 1):
+                return 0.0
+            required = battery_assignment_required_energy(
+                distance_m, max(math.dist(position, home), math.dist(destination, home)),
+                move, idle, factor, speed, margin,
             )
-            return battery_assignment_is_safe(
-                state["energy"],
-                distance_m,
-                home,
-                state.get("move_cost_per_m", 1.0),
-                state.get("idle_cost_per_sec", 0.02),
-                state.get("return_path_factor", 2.0),
-                state.get("nominal_speed_mps", 0.18),
-                state.get("return_safety_margin", 8.0),
-            )
+            if not math.isfinite(required):
+                return 0.0
+            return 1.0 if energy > required else .25 * energy / required if required > 0 else 0.0
         except (KeyError, TypeError, ValueError, ZeroDivisionError):
-            return False
+            return 0.0
 
     def target_observation_callback(self, message):
         if self.task_state not in ("EXPLORE", "FOUND_UNCONFIRMED"):
@@ -2774,6 +2908,10 @@ class HeadquartersControl(Node):
                     active_positions,
                     self.target,
                     objective=self.rally_assignment_objective,
+                    battery_states=self.battery_states if self.enable_battery else None,
+                    observer_robot=getattr(self, "target_observing_robot", None),
+                    current_positions=self.robot_positions,
+                    hold_sec=self.rally_hold_sec,
                 )
                 self.rally_final_targets = dict(self.rally_targets)
                 if len(self.rally_targets) != len(active_names):
@@ -4228,13 +4366,12 @@ class HeadquartersControl(Node):
                     # leave every robot idle when the only useful frontier is
                     # beyond the conservative estimate; the local manager still
                     # owns the non-negotiable return trigger.
-                    battery_factor = (
-                        1.0
-                        if self.battery_assignment_safe(
-                            robot_name, assignment.path_distance_m
-                        )
-                        else 0.25
+                    battery_factor = self.exploration_battery_factor(
+                        robot_name, assignment.path_distance_m,
+                        (assignment.x, assignment.y),
                     )
+                    if battery_factor <= 0:
+                        continue
                     utility = assignment.utility * battery_factor
                     coordinated = Assignment(
                         assignment.viewpoint,

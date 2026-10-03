@@ -403,7 +403,7 @@ Gazebo GUI 和全局 RViz 建议二选一。三机器人冷启动时可把
 | `rally_hold_sec` | `5.0` | 全体满足条件后的连续保持时间 |
 | `rally_max_retries` | `2` | 初次集合 action 失败后的重试次数 |
 | `rally_goal_timeout_sec` | `30.0` | 单个集合 action 卡住多久后取消并重新规划 |
-| `rally_assignment_objective` | `minimax` | 集合分配目标：`minimax` 或 `total_path` |
+| `rally_assignment_objective` | `minimax` | 路径决胜指标：`minimax` 或 `total_path`；启用电池时先比较观测者预算余量、充电数和串行时间 |
 | `use_map_safe_rally_order` | `true` | 按当前地图和动态占位检查集合顺序 |
 | `global_battery_rally_pause` | `false` | 是否在安全返航时暂停其他集合航段；默认只暂停返航机器人 |
 | `rally_max_concurrent` | `2` | 同时派发的无冲突集合航段上限；路径冲突时自动让低优先级机器人等待或让路 |
@@ -767,3 +767,9 @@ Gazebo factory 明确表示本次实体已经入队、确认阶段超时时，he
 2026-10-04 P3B.5派发恢复候选：按最终地图格识别final腿，保留原集合yaw，避免连续集合位与grid-center的量化偏差触发重复请求。充电staging只预约实际在途腿/机体；未执行的future-home路线不当作本地返航，真实RETURNING/CHARGING和已发charge请求仍受保护。目标60s lease内的短暂camera间断不把最后真实观测者调回home staging，本地电量reserve仍可抢占。返航refuge保持到充电后的owner实际派发/到位；若它挡住owner出站，复用普通安全恢复重新避让，并移除local-return例外，使新腿重新执行目标时效/完整能量检查。已停在temporary refuge的未来集合路线延期预约，实际body、pending/accepted航段与真实返航仍保护，避免三机器人等待环。
 
 376组件检查、四包build、source-only旁路审计通过。cab0568原43started/43raw/0碰撞完整保留，其中固定lab3/202 timeout300.2导致失败，707未启动；不能据其13 COMPLETE或1 PARTIAL_COMPLETE宣布P3B.5通过。独立/tmp源码开发lab202从三次失败迭代到COMPLETE230.9/0碰撞/两次charge，原生5.0s保持合格；rooms101开发COMPLETE129.3也只属开发证据，不回填正式格。新正式v40必须新clean commit/push，先同environment/CPU0-19完成全部十fixed原300s/零重试，再启动原27故障case/第一次707及fault27077，最终以同提交完整门禁为准。原参数和启动命令保持，P3B.5仍待完成。
+
+2026-10-04 P3B.5能量与观测者分配候选：在已交付电池启用时，集合点组合先避免让ACTIVE真实观测者返充，再最大化其扣除完整名义预算后的剩余电量；随后比较预计充电台数、串行路线/返航/充电时间，最后按原minimax或total_path路径指标决胜。预算包含去程、独立返航reserve、五秒保持、同伴路线和串行充电等待；无电池上下文时保留原路径分配。RETURNING/CHARGING不享有视觉观测者余量优先权，home仅为未来规划起点，不替代收到的真实位姿。分配只是预测，实际TTL、地图/LOS/净空、机体/在途腿/返航预约、完整绕行能量与本地安全仍逐次检查，不放宽300秒或完成标准。
+
+组合搜索复用距离场、每机器人候选能量和最小预算；先解析观测者，再通过单列候选下界与单调等待闭包剪枝，完整组合使用实际选定值。大自由地图三个组件样例与旧原型分配一致，最慢从6.554秒降为约0.181秒；单次组件测量不代表任务因果加速或最坏时间保证。18个实际收到的AP快照/显式合成电池边界比较通过，非原协调器内部buffer重演。
+
+397组件检查、四包build和source-only旁路审计通过。原834a0fd六started/六raw/0碰撞完整保留：lab101 COMPLETE265.4、lab202 timeout300.4/RALLY导致固定门禁FAIL；所有其余fixed/fullfault/707均未执行。v44开发timeout300.1/一次完成charge/0接触，随后晚返航；v45开发COMPLETE195.8/一次charge/0接触仅为开发证据；v47开发timeout300.0/RALLY仍未合格，保留。无完整current-body串行order时，v48改按未来最终位对后续接近路线的阻挡次数选择恢复顺序，实际机体与安全派发不放宽；v48本身仍timeout300.1/三charge，保留。v49探索偏好纳入前沿终点的返航距离及连续预算缺口，保持有用前沿退路与本地硬reserve。优化后的v49独立开发COMPLETE185.4/charge0/最低22.56212/0接触，原生5.5秒保持合格。全部失败、对照失败及开发source/import/hash/命令单列，均不回填正式固定格/TDI。新v41必须clean commit/push后以相同CPU0–19完成全部十fixed，再启动原27故障case和首次707/fault27077；P3B.5仍待完成。

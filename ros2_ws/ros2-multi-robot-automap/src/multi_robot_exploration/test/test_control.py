@@ -88,7 +88,10 @@ def test_found_plans_returning_robot_from_home_without_dispatching_it(mode, home
         map_data=np.zeros((60, 100), dtype=int), resolution=.1, origin=(0., 0.), target=(6., 3.),
         rally_targets={}, rally_final_targets={}, robot_positions=positions.copy(),
         battery_modes={"tb1": mode, "tb2": "ACTIVE"},
-        battery_states={"tb1": {"charge_x": home[0], "charge_y": home[1]}},
+        battery_states={name: {"charge_x": home[0] if name == "tb1" else 3.,
+            "charge_y": home[1] if name == "tb1" else 3., "mode": mode if name == "tb1" else "ACTIVE",
+            "energy": 1000., "capacity": 1000., "charge_target_fraction": .8} for name in names},
+        rally_hold_sec=5., target_observing_robot="tb2",
         last_rally_assignment_attempt=0., rally_assignment_objective="minimax",
         use_map_safe_rally_order=False, detecting_robot="tb2",
         publish_rally_assignments=lambda: None, publish_task_state=phases.append,
@@ -428,6 +431,134 @@ def test_rally_assignment_supports_explicit_total_path_ablation():
         )
 
 
+def rally_assignment_batteries(positions, **overrides):
+    states = {name: {"mode": "ACTIVE", "energy": 80., "capacity": 100.,
+        "charge_target_fraction": .8, "charge_x": .5, "charge_y": 1.5,
+        "nominal_speed_mps": 1., "move_cost_per_m": 1., "idle_cost_per_sec": 0.,
+        "return_path_factor": 2., "return_safety_margin": 0., "charge_duration_sec": 6.}
+        for name in positions}
+    for name, changes in overrides.items():
+        states[name].update(changes)
+    return states
+
+
+def exploration_energy_node(**changes):
+    from types import SimpleNamespace
+    state={"energy":15., "charge_x":.5, "charge_y":1.5, "move_cost_per_m":1.,
+           "idle_cost_per_sec":.02,"return_path_factor":2.,"nominal_speed_mps":.18,
+           "return_safety_margin":8., **changes}
+    return SimpleNamespace(enable_battery=True,battery_modes={"tb1":"ACTIVE"},
+        battery_states={"tb1":state},robot_positions={"tb1":(.5,1.5)})
+
+
+def test_exploration_preference_reserves_return_from_frontier_endpoint():
+    node=exploration_energy_node()
+    assert control.battery_assignment_is_safe(15.,4.,0.,1.,.02,2.,.18,8.)
+    required=control.battery_assignment_required_energy(4.,4.,1.,.02,2.,.18,8.)
+    factor=control.HeadquartersControl.exploration_battery_factor(node,"tb1",4.,(4.5,1.5))
+    assert factor == pytest.approx(.25*15./required)
+    assert 0 < factor < .25  # Useful frontiers remain fallback candidates.
+    farther=control.HeadquartersControl.exploration_battery_factor(node,"tb1",7.,(7.5,1.5))
+    assert 0 < farther < factor
+
+
+def test_exploration_energy_preference_preserves_safe_and_disabled_candidates():
+    node=exploration_energy_node(energy=80.)
+    assert control.HeadquartersControl.exploration_battery_factor(node,"tb1",4.,(4.5,1.5)) == 1.
+    node.enable_battery=False
+    assert control.HeadquartersControl.exploration_battery_factor(node,"tb1",100.,(100.,1.5)) == 1.
+
+
+@pytest.mark.parametrize("changes", [{"energy":float("nan")},{"nominal_speed_mps":0.},
+    {"idle_cost_per_sec":-1.},{"charge_x":float("inf")}])
+def test_exploration_energy_preference_rejects_invalid_context(changes):
+    node=exploration_energy_node(**changes)
+    assert control.HeadquartersControl.exploration_battery_factor(node,"tb1",4.,(4.5,1.5)) == 0.
+
+
+@pytest.mark.parametrize("objective", ["minimax", "total_path"])
+def test_rally_assignment_keeps_low_energy_observer_without_a_return(monkeypatch, objective):
+    grid = np.zeros((80, 80), dtype=int)
+    positions = {"tb1": (1.55, 1.55), "tb2": (5.55, 1.55), "tb3": (3.55, 1.55)}
+    candidates = [control.RallyPose(x, 1.55, .25) for x in (1.55, 3.55, 5.55)]
+    monkeypatch.setattr(control, "rally_pose_candidates", lambda *args: candidates)
+    original = control.assign_rally_poses(grid, .1, (0., 0.), positions, (4., 4.), objective)
+    states = rally_assignment_batteries(positions, tb2={"energy": 8.5})
+    assignments = control.assign_rally_poses(grid, .1, (0., 0.), positions, (4., 4.),
+        objective, battery_states=states, observer_robot="tb2")
+    assert original["tb2"].x == 5.55  # Zero travel ignores its independent return reserve.
+    assert assignments["tb2"].x == 1.55
+    assert len(set(assignments.values())) == 3
+    assert all(p.yaw == .25 for p in assignments.values())
+    assert positions["tb2"] == (5.55, 1.55) and states["tb2"]["energy"] == 8.5
+
+
+def test_rally_assignment_preserves_observer_headroom_over_one_fewer_peer_charge(monkeypatch):
+    grid = np.zeros((80, 80), dtype=int)
+    positions = {"tb1": (1.55, 1.55), "tb2": (5.55, 1.55), "tb3": (3.55, 1.55)}
+    candidates = [control.RallyPose(x, 1.55, .25) for x in (1.55, 3.55, 5.55)]
+    monkeypatch.setattr(control, "rally_pose_candidates", lambda *args: candidates)
+    states = rally_assignment_batteries(positions,
+        tb1={"energy": 9.5}, tb2={"energy": 16.}, tb3={"energy": 9.5})
+    assignments = control.assign_rally_poses(grid, .1, (0., 0.), positions, (4., 4.),
+        battery_states=states, observer_robot="tb2")
+    # Zero-travel poses need no initial charge but give the observer less
+    # remaining energy. A reachable peer charge can preserve more visual time.
+    assert assignments["tb2"].x == 1.55
+    peer = next(name for name, pose in assignments.items() if pose.x == 5.55)
+    assert peer != "tb2" and states[peer]["energy"] < 10.
+
+
+@pytest.mark.parametrize("mode", ["RETURNING", "CHARGING"])
+def test_rally_assignment_inactive_observer_has_no_visual_headroom_priority(monkeypatch, mode):
+    grid = np.zeros((80, 80), dtype=int)
+    actual = {"tb1": (1.55, 1.55), "tb2": (5.55, 1.55), "tb3": (3.55, 1.55)}
+    candidates = [control.RallyPose(x, 1.55, .25) for x in (1.55, 3.55, 5.55)]
+    monkeypatch.setattr(control, "rally_pose_candidates", lambda *args: candidates)
+    states = rally_assignment_batteries(actual, tb2={"mode": mode})
+    planning = {**actual, "tb2": (.5, 1.5)}
+    plain = control.assign_rally_poses(grid, .1, (0., 0.), planning, (4., 4.),
+        battery_states=states, current_positions=actual)
+    inactive = control.assign_rally_poses(grid, .1, (0., 0.), planning, (4., 4.),
+        battery_states=states, current_positions=actual, observer_robot="tb2")
+    assert inactive == plain
+    assert actual["tb2"] == (5.55, 1.55)  # The home proxy never changes received poses.
+
+
+@pytest.mark.parametrize("changes", [{"energy": float("nan")}, {"nominal_speed_mps": 0.},
+    {"idle_cost_per_sec": -1.}, {"mode": "UNKNOWN"}, {"charge_target_fraction": 1.1},
+    {"capacity": 0.}, {"charge_x": 100.}])
+def test_rally_assignment_rejects_unusable_delivered_battery_context(changes):
+    grid = np.zeros((70, 70), dtype=int)
+    positions = {"tb1": (1.55, 1.55)}
+    states = rally_assignment_batteries(positions, tb1=changes)
+    assert not control.assign_rally_poses(grid, .1, (0., 0.), positions, (3.5, 3.5),
+                                          battery_states=states)
+
+
+def test_rally_assignment_rejects_charge_capacity_insufficient_for_safe_final_pose():
+    grid = np.zeros((70, 70), dtype=int)
+    positions = {"tb1": (1.55, 1.55)}
+    states = rally_assignment_batteries(positions, tb1={"energy": 0., "capacity": .1})
+    assert not control.assign_rally_poses(grid, .1, (0., 0.), positions, (3.5, 3.5),
+                                          battery_states=states)
+
+
+def test_rally_assignment_counts_peer_charge_wait_before_capacity_admission(monkeypatch):
+    grid = np.zeros((70, 70), dtype=int)
+    positions = {"tb1": (1.55, 1.55), "tb2": (3.55, 1.55)}
+    candidates = [control.RallyPose(x, 1.55, 0.) for x in (1.55, 3.55)]
+    monkeypatch.setattr(control, "rally_pose_candidates", lambda *args: candidates)
+    states = rally_assignment_batteries(positions)
+    for name, state in states.items():
+        state.update(energy=0., capacity=10., move_cost_per_m=0., idle_cost_per_sec=.1,
+                     charge_duration_sec=100., charge_x=positions[name][0], charge_y=1.55)
+    # Either isolated trip fits an8-unit charge, but100s of the peer's charge
+    # adds10 idle units. No complete assignment can satisfy the same preflight.
+    assert not control.assign_rally_poses(grid, .1, (0., 0.), positions, (4., 4.),
+                                          battery_states=states)
+
+
 def test_rally_rejects_blocked_target_area():
     grid = np.full((30, 30), 100, dtype=int)
     grid[15, 15] = 0
@@ -583,6 +714,21 @@ def test_map_safe_rally_order_keeps_all_robots_in_the_serial_plan():
 
     assert set(order) == set(targets)
     assert len(order) == len(targets)
+
+
+def test_blocked_rally_fallback_fills_deep_goals_before_parking_on_their_approach():
+    grid = np.full((40, 100), 100, dtype=int)
+    grid[10:21, 10:90] = 0
+    positions = {"near": (3.55, 1.55), "middle": (1.55, 1.55), "deep": (2.55, 1.55)}
+    targets = {name: control.RallyPose(x, 1.55, 0.)
+               for name, x in (("near", 3.55), ("middle", 5.55), ("deep", 7.55))}
+    order = control.map_safe_rally_dispatch_order(grid, .1, (0., 0.), targets,
+                                                 positions, (8.55, 1.55), "near")
+    assert order == ["deep", "middle", "near"]
+    # A recovery priority is not permission to traverse the actual parked body.
+    plan = control.plan_rally_leg(targets["deep"], grid, .1, (0., 0.), positions["deep"],
+                                  blocked_positions=[positions["near"], positions["middle"]])
+    assert plan[0] is None
 
 
 def test_rally_navigation_stages_long_paths():
@@ -837,7 +983,7 @@ def test_single_explorer_checks_parked_robots_after_previous_goal_finishes(monke
         input_robot_names=lambda: ["tb1", "tb2"],
         participating_robots=lambda: ["tb1", "tb2"],
         fresh_robot_inputs=lambda: True, active_exclusions=lambda: [],
-        battery_assignment_safe=lambda *args: True,
+        exploration_battery_factor=lambda *args: True,
         goal_targets={}, goal_routes={}, goal_initial_gain={"tb1": 0, "tb2": 0},
         target_information_gain=lambda *args: 1000,
         get_logger=lambda: SimpleNamespace(info=lambda *args: None, warn=lambda *args: None),
@@ -904,7 +1050,7 @@ def test_parallel_explorers_try_independent_alternative_after_conflict(monkeypat
         frontier_cache=control.prepare_frontier_data(grid, 0.1),
         input_robot_names=lambda: names, participating_robots=lambda: names,
         fresh_robot_inputs=lambda: True, active_exclusions=lambda: [],
-        battery_assignment_safe=lambda *args: True,
+        exploration_battery_factor=lambda *args: True,
         goal_targets={}, goal_routes={}, goal_initial_gain={},
         target_information_gain=lambda *args: 1000,
         get_logger=lambda: SimpleNamespace(info=lambda *args: None),
@@ -940,7 +1086,7 @@ def test_exploration_allows_short_initial_viewpoint(monkeypatch, step, expected)
         frontier_cache=control.prepare_frontier_data(grid, 0.05),
         input_robot_names=lambda: ["tb1"], participating_robots=lambda: ["tb1"],
         fresh_robot_inputs=lambda: True, active_exclusions=lambda: [],
-        battery_assignment_safe=lambda *args: True,
+        exploration_battery_factor=lambda *args: True,
         goal_targets={}, goal_routes={}, goal_initial_gain={},
         target_information_gain=lambda *args: 1000,
         now=lambda: 0.0, last_no_assignment_log=-math.inf,
@@ -2308,7 +2454,7 @@ def test_blocked_coarse_viewpoint_is_refined_in_the_safe_reachable_component():
         battery_modes={"tb1": "ACTIVE", "parked": "CHARGING"},
         frontier_cache=coarse, input_robot_names=lambda: ["tb1"],
         participating_robots=lambda: list(positions), fresh_robot_inputs=lambda: True,
-        active_exclusions=lambda: [], battery_assignment_safe=lambda *a: True,
+        active_exclusions=lambda: [], exploration_battery_factor=lambda *a: True,
         goal_routes={}, goal_targets={}, goal_initial_gain={},
         target_information_gain=lambda *a: 1000,
         now=lambda: 100., last_no_assignment_log=-math.inf,
@@ -2468,7 +2614,7 @@ def test_target_reacquisition_frontiers_do_not_depend_on_old_target_and_keep_ret
             frontier_cache=None, input_robot_names=lambda: ["tb1", "tb2"],
             participating_robots=lambda: ["tb1", "tb2"],
             fresh_robot_inputs=lambda: fresh, active_exclusions=lambda: [],
-            battery_assignment_safe=lambda *args: True, goal_targets={}, goal_routes={},
+            exploration_battery_factor=lambda *args: True, goal_targets={}, goal_routes={},
             goal_initial_gain={}, target_information_gain=lambda *args: 100,
             get_logger=lambda: SimpleNamespace(info=lambda *a: None, warn=lambda *a: None),
             send_goal=lambda name, goal: sent.append((name, goal)),
