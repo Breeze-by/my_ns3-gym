@@ -2579,7 +2579,7 @@ class HeadquartersControl(Node):
             for name in self.rally_dispatch_order:
                 position = self.robot_positions[name]
                 if (name == returning or self.battery_modes[name] != "ACTIVE"
-                        or position is None or name in self.return_yield_targets
+                        or position is None
                         or self.rally_goal_handles[name] is not None
                         or self.rally_goal_pending[name]):
                     continue
@@ -3994,6 +3994,12 @@ class HeadquartersControl(Node):
             math.hypot(twist.linear.x, twist.linear.y),
             abs(twist.angular.z),
         )
+        if (self.task_state == "RALLY" and self.rally_hold_started_at is not None
+                and robot_name in self.rally_targets
+                and not all(math.isfinite(value) and value <= limit
+                            for value, limit in zip(self.robot_velocities[robot_name],
+                                (self.rally_linear_tolerance, self.rally_angular_tolerance)))):
+            self.rally_hold_started_at = None
         transform = self.map_to_odom[robot_name]
         if transform is None:
             return
@@ -4003,6 +4009,12 @@ class HeadquartersControl(Node):
         )
         position = transform_point_2d(*odom_position, transform)
         self.robot_positions[robot_name] = position
+        if (self.task_state == "RALLY" and self.rally_hold_started_at is not None
+                and robot_name in self.rally_targets):
+            target = self.rally_targets[robot_name]
+            distance = math.dist(position, (target.x, target.y))
+            if not math.isfinite(distance) or distance > self.rally_position_tolerance:
+                self.rally_hold_started_at = None
         last_position = self.goal_last_position[robot_name]
         if (
             self.robot_states[robot_name] == "active"

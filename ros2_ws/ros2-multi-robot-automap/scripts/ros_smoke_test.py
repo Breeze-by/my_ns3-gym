@@ -413,6 +413,9 @@ def wait_for_evaluation(
                     or result["task_phase"] != "COMPLETE"
                     or result["time_to_rally_sec"] is None
                     or result["completion_time_sec"] is None
+                    or not result.get("native_rally_hold_proof")
+                    or result["native_rally_hold_proof"]["observed_duration_sec"]
+                    < result["rally_hold_sec"]
                     or len(result["rally_assignments"])
                     != len(result["robots"])
                     or (

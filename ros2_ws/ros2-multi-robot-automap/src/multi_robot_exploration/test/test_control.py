@@ -1059,6 +1059,71 @@ def test_return_corridor_yield_uses_nearby_off_route_refuge():
     assert node.rally_yield_targets == {"tb2"}
 
 
+def test_canceled_return_escape_can_replan_for_two_actual_returners():
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+    names = ["first", "second", "escape"]
+    final = control.RallyPose(4., 5., 0.)
+    sent = []
+    node = SimpleNamespace(
+        now=lambda: 10., fresh_robot_inputs=lambda: True,
+        rally_charge_requested={}, rally_precharge_staging={},
+        rally_goal_handles=dict.fromkeys(names), rally_goal_pending=dict.fromkeys(names, False),
+        rally_leg_routes=dict.fromkeys(names, ()), rally_yield_requested=dict.fromkeys(names, False),
+        rally_max_concurrent=2, survey_goal_handle=None, survey_goal_pending=False,
+        rally_dispatch_order=names,
+        battery_modes={"first": "RETURNING", "second": "RETURNING", "escape": "ACTIVE"},
+        battery_states={"first": {"charge_x": 1., "charge_y": 3.},
+                        "second": {"charge_x": 5., "charge_y": 1.}},
+        map_data=np.zeros((100, 100), dtype=int), resolution=.1, origin=(0., 0.),
+        robot_positions={"first": (8., 3.), "second": (5., 8.), "escape": (5., 3.)},
+        rally_yield_targets={"escape"}, return_yield_targets={"escape": "first"},
+        rally_recovery_beneficiaries={}, rally_targets={"escape": control.RallyPose(5., 5., 0.)},
+        rally_final_targets={"escape": final}, rally_arrived={"escape": False},
+        rally_attempts={"escape": 0}, publish_rally_assignments=lambda: None,
+        get_logger=lambda: Mock(), send_rally_goal=lambda name, plan: sent.append((name, plan)),
+    )
+    control.HeadquartersControl.yield_to_returning_robot(node)
+    assert len(sent) == 1 and sent[0][0] == "escape"
+    assert node.rally_final_targets["escape"] is final
+    refuge = node.rally_targets["escape"]
+    protected = control.rally_return_reservations(node.map_data, .1, (0., 0.),
+        node.robot_positions, node.battery_states, node.battery_modes, set())
+    assert all(not control.routes_conflict(((refuge.x, refuge.y),), route,
+               control.RALLY_ROUTE_SEPARATION_M) for route in protected.values())
+    node.rally_goal_handles["escape"] = Mock()
+    node.last_return_yield_attempt_at = 0.
+    control.HeadquartersControl.yield_to_returning_robot(node)
+    assert len(sent) == 1  # A live replacement must drain before another admission.
+
+
+@pytest.mark.parametrize("angular,linear,position", [(.19315, 0., 0.), (0., .051, 0.), (0., 0., .36)])
+def test_delivered_odom_violation_resets_hold_before_the_next_timer(angular, linear, position):
+    from types import SimpleNamespace
+    from geometry_msgs.msg import Transform
+    from nav_msgs.msg import Odometry
+    transform = Transform()
+    transform.rotation.w = 1.
+    node = SimpleNamespace(
+        task_state="RALLY", rally_hold_started_at=95.,
+        rally_targets={"tb1": control.RallyPose(0., 0., 0.)},
+        rally_linear_tolerance=.05, rally_angular_tolerance=.1, rally_position_tolerance=.35,
+        robot_odom_received_at={}, robot_velocities={}, map_to_odom={"tb1": transform},
+        robot_positions={}, goal_last_position={"tb1": None}, robot_states={"tb1": "idle"},
+    )
+    message = Odometry()
+    message.header.stamp.sec = 100
+    message.twist.twist.angular.z = angular
+    message.twist.twist.linear.x = linear
+    message.pose.pose.position.x = position
+    control.HeadquartersControl.robot_odom_callback(node, message, "tb1")
+    assert node.rally_hold_started_at is None
+    message.twist.twist.angular.z = message.twist.twist.linear.x = 0.
+    message.pose.pose.position.x = 0.
+    control.HeadquartersControl.robot_odom_callback(node, message, "tb1")
+    assert node.rally_hold_started_at is None
+
+
 @pytest.mark.parametrize("pending", [False, True])
 def test_new_local_return_preempts_only_conflicting_admitted_rally_legs(pending):
     from types import SimpleNamespace

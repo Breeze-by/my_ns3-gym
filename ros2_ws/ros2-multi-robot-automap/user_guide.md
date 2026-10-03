@@ -997,3 +997,5 @@ COMPLETE/零碰撞，同提交forced303为190.4 s COMPLETE、两台各充电一�
 2026-10-03 P3B.5后续候选重审已执行及等待gateway接受的rally路线，独立返航出现后取消冲突航段，迟到接受仍取消；安全让路只等待自身排空和实际并发名额，并检查其他在途路线，保留原集合目标。消息验收在一个只读DDS context内同时检查scan/merge_map/电池实际callback，保持原QoS和90s共同wall上限并打印待收topic。307组件检查、四包构建、source audit及实际多类型DDS接收/缺数据拒绝通过；3cc5529原固定16碰撞与补充消息超时失败均保留，新完整矩阵尚未运行，P3B.5未通过。
 
 2026-10-03 P3B.5恢复搜索候选：源60秒目标lease过期后保持任务阶段，原地四向扫描后按当前地图前沿搜索；无可行前沿时按已知自由可达格和未访问邻域收益继续安全短段搜索，实际到位后由刚移动机器人重新扫描。visited只表示搜索偏好，不能替代camera检测；过期目标坐标不进入候选计算。同snapshot/visit batch共享ray gain，动态route继续独立检查。真实RETURNING/CHARGING才可抢占已admit普通腿，prospective home staging intent只约束新派发。317检查/构建通过，56479c0固定timeout/0碰撞与强回充PASS保留，尚非完整P3B.5通过。
+
+2026-10-04 P3B.5完成判定候选：协调器每个交付odom超限样本都重置集合保持窗口，避免定时检查漏掉瞬时运动。只读评估器schema9分别记录`coordinator_completion_time_sec`（中央声明）与`completion_time_sec`（原生连续观测合格），在当前集合位与健康参与名单上独立核验原0.35m/0.05mps/0.10radps/5s，并在新原生样本合格后终止；原300s horizon不延长。原生ModelStates无header，proof明确使用observer仿真时间，采样间断超过原pose TTL2s或任一超限样本会重置，不宣称完整物理连续采样。Gazebo真值不进入控制链。中央声明后未合格仍可timeout，不能据声明计入成功。被第二个实际返航取消的idle避让机器人可重选安全refuge，仍检查所有返航/在途路线/真实机体并保留final目标。a63ac0b原固定中央COMPLETE213.7s但原生tb2角速度0.19315radps超限，原5episode失败候选完整保留；338组件检查与四包build通过，新冻结全矩阵待运行，P3B.5未通过。

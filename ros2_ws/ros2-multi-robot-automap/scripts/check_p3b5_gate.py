@@ -4,6 +4,7 @@ import argparse
 from collections import Counter, defaultdict
 import hashlib
 import json
+import math
 from pathlib import Path
 import random
 import shlex
@@ -11,7 +12,7 @@ import sys
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'scripts'))
-from check_p3a6_gate import Snapshot, episode_ok, same_candidate
+from check_p3a6_gate import Snapshot, episode_ok as p3a_episode_ok, same_candidate
 from run_p2d_baseline import file_digest
 from run_p3b5_tasks import tdi
 from multi_robot_exploration.bypass_audit import runtime_violations, source_violations
@@ -20,6 +21,28 @@ CORE_KEYS=('gateway_message','launch','exploration_source','merge_map_source','r
 
 def load(p): return json.loads(Path(p).read_text())
 def sha(p): return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+
+def native_completion_ok(result):
+    """Require the new cohort's independent native hold, never backfill P3A."""
+    assert result['schema_version'] >= 9
+    proof = result['native_rally_hold_proof']
+    assert proof and proof['clock_basis'] == 'headerless_model_states_observer_sim_time'
+    assert proof['required_robot_names'] == sorted(result['required_robot_names'])
+    assert proof['sample_count'] >= 2
+    start, end = (proof[k] for k in ('start_observer_sim_time_sec', 'end_observer_sim_time_sec'))
+    duration = proof['observed_duration_sec']
+    assert math.isfinite(start) and math.isfinite(end) and math.isfinite(duration)
+    assert abs(end - start - duration) <= 1e-6 and duration >= result['rally_hold_sec'] == 5
+    assert 0 <= proof['maximum_observation_gap_sec'] <= proof['maximum_allowed_observation_gap_sec'] == 2
+    assert abs(end - result['start_sim_time_sec'] - result['completion_time_sec']) <= 1e-6
+    assert 0 <= result['coordinator_completion_time_sec'] <= result['completion_time_sec'] <= 300
+    for field, limit in (('maximum_position_error_m', .35), ('maximum_linear_speed_mps', .05),
+                         ('maximum_angular_speed_radps', .1)):
+        assert math.isfinite(proof[field]) and 0 <= proof[field] <= limit
+
+def episode_ok(result):
+    p3a_episode_ok(result)
+    native_completion_ok(result)
 
 def ledger_audit(path):
     """Verify attempt causality and receiver TTL/version semantics from raw events."""
@@ -298,6 +321,7 @@ def main():
         assert seed_values and seed_values[-1]==row['profile'].get('gateway_seed',config['fault_seed'])
         if r['success'] and r['mission_mode']=='rally': episode_ok(r)
         if r['partial_completion']:
+            native_completion_ok(r)
             assert r['success'] is False and r['task_phase']=='PARTIAL_COMPLETE'
             assert r['failed_robots']==['tb3'] and set(r['required_robot_names'])=={'tb1','tb2'}
             for name in r['required_robot_names']:

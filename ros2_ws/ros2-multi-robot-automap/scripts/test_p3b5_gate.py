@@ -3,6 +3,31 @@ import pytest
 from check_p3b5_gate import ledger_audit, bootstrap
 
 
+@pytest.mark.parametrize("corruption", [None, "angular", "duration", "gap", "roster", "clock", "declaration", "legacy"])
+def test_completion_requires_native_hold_without_weakening_the_frozen_gate(corruption):
+    from check_p3b5_gate import native_completion_ok
+    proof = {"start_observer_sim_time_sec": 100., "end_observer_sim_time_sec": 105.,
+             "observed_duration_sec": 5., "sample_count": 51,
+             "maximum_observation_gap_sec": .1, "maximum_allowed_observation_gap_sec": 2.,
+             "required_robot_names": ["tb1"], "maximum_position_error_m": .02,
+             "maximum_linear_speed_mps": .01, "maximum_angular_speed_radps": .03,
+             "clock_basis": "headerless_model_states_observer_sim_time"}
+    result = {"schema_version": 9, "native_rally_hold_proof": proof,
+              "required_robot_names": ["tb1"], "rally_hold_sec": 5.,
+              "start_sim_time_sec": 90., "completion_time_sec": 15.,
+              "coordinator_completion_time_sec": 14.}
+    if corruption == "angular": proof["maximum_angular_speed_radps"] = .19315
+    if corruption == "duration": proof["observed_duration_sec"] = 4.99
+    if corruption == "gap": proof["maximum_observation_gap_sec"] = 2.01
+    if corruption == "roster": proof["required_robot_names"] = ["tb2"]
+    if corruption == "clock": proof["clock_basis"] = "generation_time"
+    if corruption == "declaration": result["coordinator_completion_time_sec"] = 16.
+    if corruption == "legacy": result["schema_version"] = 8
+    if corruption is None: native_completion_ok(result)
+    else:
+        with pytest.raises(AssertionError): native_completion_ok(result)
+
+
 @pytest.mark.parametrize('extra_time', [None, 21., 192.2])
 def test_prepared_robot_cannot_be_staged_again_after_actual_return(extra_time):
     from check_p3b5_gate import staging_audit

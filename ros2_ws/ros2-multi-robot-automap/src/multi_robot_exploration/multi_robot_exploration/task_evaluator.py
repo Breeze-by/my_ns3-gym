@@ -16,6 +16,8 @@ from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
 from std_msgs.msg import String
 
+from .fault_model import STATE_TTL_SEC
+
 
 @dataclass
 class TruthGrid:
@@ -336,6 +338,10 @@ class TaskEvaluator(Node):
         self.target_field_of_view = None
         self.time_to_rally = None
         self.completion_time = None
+        self.coordinator_completion_time = None
+        self.native_model_state_received_at = None
+        self.native_rally_hold = None
+        self.native_rally_qualified_hold = None
         self.rally_assignments = {}
         self.required_robot_names = set(self.robot_names)
         self.failed_robots = set()
@@ -480,6 +486,86 @@ class TaskEvaluator(Node):
             )
             self.visited[name].add(cell)
             self.phase_visited[phase][name].add(cell)
+        self._update_native_rally_hold(now, set(message.name))
+
+    def _update_native_rally_hold(self, now, observed_names):
+        """Qualify completion from consecutive native observations only.
+
+        ModelStates has no generation stamp. These are observer simulation
+        times, not a claim of uninterrupted physical sampling or control input.
+        """
+        previous = self.native_model_state_received_at
+        self.native_model_state_received_at = now
+        names = self.required_robot_names
+        limits = (self.rally_position_tolerance, self.rally_linear_tolerance,
+                  self.rally_angular_tolerance, self.rally_hold_sec)
+        valid = (
+            self.task_phase in ("RALLY", "COMPLETE", "PARTIAL_COMPLETE")
+            and bool(names) and names <= observed_names
+            and names <= self.rally_assignments.keys()
+            and all(value is not None and math.isfinite(value) and value >= 0
+                    for value in limits)
+            and limits[0] > 0 and limits[3] > 0
+        )
+        measurements = {}
+        if valid:
+            for name in names:
+                target = self.rally_assignments[name]
+                measurements[name] = (
+                    math.dist(self.positions[name], (target["x"], target["y"])),
+                    *self.velocities[name],
+                )
+                battery = self.battery_states[name]
+                valid &= (
+                    all(math.isfinite(value) and value <= limit
+                        for value, limit in zip(measurements[name], limits[:3]))
+                    and battery.get("mode") == "ACTIVE"
+                    and battery.get("energy", 0) > 0
+                )
+        gap = None if previous is None else now - previous
+        if not valid:
+            self.native_rally_hold = None
+            return
+        if gap is None or not 0 <= gap <= STATE_TTL_SEC["pose_state"]:
+            self.native_rally_hold = None
+        if self.native_rally_hold is None:
+            self.native_rally_hold = {
+                "start_observer_sim_time_sec": now,
+                "end_observer_sim_time_sec": now,
+                "observed_duration_sec": 0.0,
+                "sample_count": 0,
+                "maximum_observation_gap_sec": 0.0,
+                "maximum_allowed_observation_gap_sec": STATE_TTL_SEC["pose_state"],
+                "required_robot_names": sorted(names),
+                "maximum_position_error_m": 0.0,
+                "maximum_linear_speed_mps": 0.0,
+                "maximum_angular_speed_radps": 0.0,
+                "clock_basis": "headerless_model_states_observer_sim_time",
+            }
+        hold = self.native_rally_hold
+        if hold["sample_count"]:
+            hold["maximum_observation_gap_sec"] = max(
+                hold["maximum_observation_gap_sec"], gap)
+        hold["sample_count"] += 1
+        hold["end_observer_sim_time_sec"] = now
+        hold["observed_duration_sec"] = now - hold["start_observer_sim_time_sec"]
+        for index, field in enumerate(("maximum_position_error_m",
+                                       "maximum_linear_speed_mps",
+                                       "maximum_angular_speed_radps")):
+            hold[field] = max(hold[field], *(values[index] for values in measurements.values()))
+        elapsed = max(0.0, now - self.start_sim_time)
+        if (self.task_phase not in ("COMPLETE", "PARTIAL_COMPLETE")
+                or self.coordinator_completion_time is None
+                or self.completion_time is not None
+                or hold["observed_duration_sec"] < self.rally_hold_sec
+                or (self.max_duration > 0 and elapsed > self.max_duration)):
+            return
+        self.completion_time = elapsed
+        self.native_rally_qualified_hold = hold.copy()
+        if self.stop_on_task_complete:
+            self.finalize("partial_task_complete" if self.task_phase == "PARTIAL_COMPLETE"
+                          else "task_complete")
+            rclpy.shutdown()
 
     def _maybe_start(self, now):
         if (
@@ -530,24 +616,22 @@ class TaskEvaluator(Node):
             self.time_to_rally = elapsed
         elif (
             message.data in ("COMPLETE", "PARTIAL_COMPLETE")
-            and self.completion_time is None
+            and self.coordinator_completion_time is None
         ):
-            self.completion_time = elapsed
-            if self.stop_on_task_complete:
-                termination_reason = (
-                    "partial_task_complete"
-                    if message.data == "PARTIAL_COMPLETE"
-                    else "task_complete"
-                )
-                self.finalize(termination_reason)
-                rclpy.shutdown()
+            self.coordinator_completion_time = elapsed
         elif message.data == "FAILED":
             self.failure_pending_since = self._now()
 
     def _rally_assignments_callback(self, message):
         event = json.loads(message.data)
+        if (self.rally_assignments != event["poses"]
+                or (self.rally_position_tolerance, self.rally_linear_tolerance,
+                    self.rally_angular_tolerance, self.rally_hold_sec)
+                != (event["position_tolerance_m"], event["linear_tolerance_mps"],
+                    event["angular_tolerance_radps"], event["hold_sec"])):
+            self.native_rally_hold = None
         self.rally_assignments = event["poses"]
-        self.required_robot_names = set(self.rally_assignments)
+        self.required_robot_names = set(self.rally_assignments) - self.failed_robots
         self.rally_position_tolerance = event["position_tolerance_m"]
         self.rally_linear_tolerance = event["linear_tolerance_mps"]
         self.rally_angular_tolerance = event["angular_tolerance_radps"]
@@ -571,6 +655,8 @@ class TaskEvaluator(Node):
             return
         # Older retained events may follow the latest snapshot; isolation is
         # irreversible, so an older event must never restore a failed robot.
+        if not set(failed) <= self.failed_robots:
+            self.native_rally_hold = None
         self.failed_robots.update(failed)
         self.required_robot_names.difference_update(failed)
 
@@ -592,6 +678,9 @@ class TaskEvaluator(Node):
             return
         self.battery_states[robot] = state
         self.battery_message_counts[robot] += 1
+        if (robot in self.required_robot_names
+                and (state["mode"] != "ACTIVE" or not state.get("energy", 0) > 0)):
+            self.native_rally_hold = None
 
     def _target_detection_callback(self, message):
         if self.target_found:
@@ -791,7 +880,7 @@ class TaskEvaluator(Node):
             for phase, visited in self.phase_visited.items()
         }
         result = {
-            "schema_version": 8,
+            "schema_version": 9,
             "mission_mode": self.mission_mode,
             "episode_id": self.episode_id,
             "world_file": self.world_file,
@@ -833,6 +922,8 @@ class TaskEvaluator(Node):
             "target_field_of_view_deg": self.target_field_of_view,
             "time_to_rally_sec": self.time_to_rally,
             "completion_time_sec": self.completion_time,
+            "coordinator_completion_time_sec": self.coordinator_completion_time,
+            "native_rally_hold_proof": self.native_rally_qualified_hold,
             "rally_assignments": self.rally_assignments,
             "rally_position_tolerance_m": self.rally_position_tolerance,
             "rally_linear_tolerance_mps": self.rally_linear_tolerance,

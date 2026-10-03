@@ -277,3 +277,114 @@ def test_invalid_failure_snapshot_does_not_partially_isolate(event):
     assert node.failed_robots == set()
     assert node.required_robot_names == {"tb1", "tb2"}
     logger.error.assert_called_once()
+
+
+def native_hold_node():
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+    return SimpleNamespace(
+        start_sim_time=90., _now=lambda: 105., task_phase="RALLY",
+        robot_names=["tb1"], required_robot_names={"tb1"}, failed_robots=set(),
+        positions={"tb1": (0., 0.)}, velocities={"tb1": (0., 0.)},
+        rally_assignments={"tb1": {"x": 0., "y": 0.}},
+        rally_position_tolerance=.35, rally_linear_tolerance=.05,
+        rally_angular_tolerance=.1, rally_hold_sec=5.,
+        battery_states={"tb1": {"mode": "ACTIVE", "energy": 40.}},
+        battery_message_counts={"tb1": 0},
+        native_model_state_received_at=None, native_rally_hold=None,
+        native_rally_qualified_hold=None, coordinator_completion_time=None,
+        completion_time=None, max_duration=300., stop_on_task_complete=True,
+        stop_on_target_found=False, finalize=Mock(),
+    )
+
+
+@pytest.mark.parametrize("violation", ["angular", "linear", "position", "nonfinite", "missing_body"])
+def test_native_completion_rejects_a_transient_between_timer_ticks(monkeypatch, violation):
+    from unittest.mock import Mock
+    from std_msgs.msg import String
+    from multi_robot_exploration import task_evaluator as module
+    node = native_hold_node()
+    monkeypatch.setattr(module.rclpy, "shutdown", Mock())
+    update = lambda t, names={"tb1"}: module.TaskEvaluator._update_native_rally_hold(node, t, names)
+    for t in (100., 101., 102., 103., 104., 104.9):
+        update(t)
+    if violation == "angular": node.velocities["tb1"] = (0., .1931509963150803)
+    if violation == "linear": node.velocities["tb1"] = (.051, 0.)
+    if violation == "position": node.positions["tb1"] = (.36, 0.)
+    if violation == "nonfinite": node.velocities["tb1"] = (0., math.nan)
+    update(104.95, set() if violation == "missing_body" else {"tb1"})
+    node.positions["tb1"] = (0., 0.)
+    node.velocities["tb1"] = (0., 0.)
+    module.TaskEvaluator._task_state_callback(node, String(data="COMPLETE"))
+    assert node.coordinator_completion_time == 15. and node.completion_time is None
+    node.finalize.assert_not_called()
+    for t in (105., 106., 107., 108., 109., 109.99): update(t)
+    node.finalize.assert_not_called()
+    update(110.)
+    assert node.completion_time == 20.
+    assert node.native_rally_qualified_hold["observed_duration_sec"] == 5.
+    assert node.native_rally_qualified_hold["start_observer_sim_time_sec"] == 105.
+    node.finalize.assert_called_once_with("task_complete")
+
+
+def test_native_observation_gap_cannot_extend_the_hold(monkeypatch):
+    from unittest.mock import Mock
+    from multi_robot_exploration import task_evaluator as module
+    monkeypatch.setattr(module.rclpy, "shutdown", Mock())
+    node = native_hold_node()
+    node.task_phase = "COMPLETE"
+    node.coordinator_completion_time = 10.
+    update = lambda t: module.TaskEvaluator._update_native_rally_hold(node, t, {"tb1"})
+    for t in (100., 101., 102., 103., 104.): update(t)
+    update(106.01)
+    assert node.native_rally_hold["start_observer_sim_time_sec"] == 106.01
+    node.finalize.assert_not_called()
+
+
+def test_native_hold_uses_current_assignment_and_battery_state():
+    from std_msgs.msg import String
+    from multi_robot_exploration.task_evaluator import TaskEvaluator
+    node = native_hold_node()
+    TaskEvaluator._update_native_rally_hold(node, 100., {"tb1"})
+    event = {"poses": node.rally_assignments, "position_tolerance_m": .35,
+             "linear_tolerance_mps": .05, "angular_tolerance_radps": .1, "hold_sec": 5.}
+    TaskEvaluator._rally_assignments_callback(node, String(data=json.dumps(event)))
+    assert node.native_rally_hold is not None  # Identical publication preserves the window.
+    event["poses"] = {"tb1": {"x": 1., "y": 0.}}
+    TaskEvaluator._rally_assignments_callback(node, String(data=json.dumps(event)))
+    assert node.native_rally_hold is None
+    node.positions["tb1"] = (1., 0.)
+    TaskEvaluator._update_native_rally_hold(node, 101., {"tb1"})
+    TaskEvaluator._battery_callback(node, String(data='{"robot":"tb1","mode":"RETURNING","energy":30}'), "tb1")
+    assert node.native_rally_hold is None
+    node.failed_robots = {"tb1"}
+    TaskEvaluator._rally_assignments_callback(node, String(data=json.dumps(event)))
+    assert node.required_robot_names == set()
+
+
+def test_native_completion_never_extends_the_original_horizon(monkeypatch):
+    from unittest.mock import Mock
+    from multi_robot_exploration import task_evaluator as module
+    monkeypatch.setattr(module.rclpy, "shutdown", Mock())
+    node = native_hold_node()
+    node.task_phase = "COMPLETE"
+    node.coordinator_completion_time = 299.
+    for t in (386., 387., 388., 389., 390., 391.):
+        module.TaskEvaluator._update_native_rally_hold(node, t, {"tb1"})
+    node.finalize.assert_not_called()
+    assert node.completion_time is None
+
+
+def test_partial_completion_qualifies_only_the_healthy_roster(monkeypatch):
+    from unittest.mock import Mock
+    from multi_robot_exploration import task_evaluator as module
+    monkeypatch.setattr(module.rclpy, "shutdown", Mock())
+    node = native_hold_node()
+    node.robot_names.append("tb2")
+    node.failed_robots = {"tb2"}
+    node.task_phase = "PARTIAL_COMPLETE"
+    node.coordinator_completion_time = 10.
+    for t in range(100, 106):
+        module.TaskEvaluator._update_native_rally_hold(node, float(t), {"tb1"})
+    node.finalize.assert_called_once_with("partial_task_complete")
+    assert node.native_rally_qualified_hold["required_robot_names"] == ["tb1"]

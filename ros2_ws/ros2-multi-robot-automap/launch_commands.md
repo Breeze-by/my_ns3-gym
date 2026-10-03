@@ -467,6 +467,8 @@ P3A.6 候选控制器采用滚动路线预约：探索最多三台机器人并�
 | `evaluation_stop_on_target_found` | `false` | 在 `FOUND` 后结束评估 |
 | `evaluation_stop_on_task_complete` | `false` | 在 `COMPLETE`/`PARTIAL_COMPLETE`/`FAILED` 后结束评估 |
 
+P3B.5完成判定候选使用schema9：收到`COMPLETE`/`PARTIAL_COMPLETE`先记录中央声明，只有新原生ModelStates样本在当前集合位/参与名单上满足原位置与速度限制、连续观测5s后才记录合格完成并结束；`FAILED`保持原有界事件排空。`coordinator_completion_time_sec`与`completion_time_sec`分别保存声明/合格时间，300s时限不延长。无header原生样本的proof只表示observer仿真时间上的采样保持，超过pose TTL2s的间断重置。真值仍只读，不反馈任务控制。
+
 手工演示通常不需要评估器。正式、有界运行优先使用下一节的 smoke 工具，它会管理结果文件和
 进程退出。
 

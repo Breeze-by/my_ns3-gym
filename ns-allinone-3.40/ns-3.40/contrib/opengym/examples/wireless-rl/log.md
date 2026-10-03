@@ -4903,3 +4903,40 @@ colcon build --symlink-install --packages-select multi_robot_interfaces merge_ma
 ```
 
 早一轮完整命令完全相同，仅输出文件为/tmp/p3b5_v37_component_checks.log与/tmp/p3b5_v37_build.log。live计划修正“静态确认保留至任务结束”的过时描述，明确真实60秒lease与target-independent map搜索。新原57矩阵须clean commit/push后运行；v36失败不回填，P3B.5未通过；无ns-3/RL工作。
+
+## 2026-10-04 P3B.5 v37原生终止速度超限，独立完成保持候选
+
+冻结a63ac0b9d38be944fa26a395632e11cb5bf43945；原5started/5raw及全部summary/manifest/命令/ledger/hash/nativephysics/AP记录保存在report/20261004_p3b5_final_tolerance_failed_candidate.json。无重试/活跃行政中断/全矩阵或707。source Humble/canonical install/Gazebo，PYTHONNOUSERSITE=1/TURTLEBOT3_MODEL=waffle/ROS_LOG_DIR=canonical ROS/log/ros_launch，实际rtk bash -lc：
+
+```bash
+/usr/bin/python3 /tmp/p3b5_v37_after_subgates.py > /tmp/p3b5_v37_after_subgates.log 2>&1
+/usr/bin/python3 /tmp/p3b5_v37_bootstrap.py > /tmp/p3b5_v37_bootstrap.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:14751 taskset -c 20-39 /usr/bin/python3 /tmp/p3b5_v37_zero_first.py > /tmp/p3b5_v37_zero_first.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:14750 taskset -c 0-19 /usr/bin/python3 /tmp/p3b5_v37_first_lab101.py > /tmp/p3b5_v37_first_lab101.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:14752 taskset -c 40-59 /usr/bin/python3 scripts/run_p3b5_return_probe.py --run-id p3b5_v37_returnproof --ros-domain-base 180 --config scripts/p3b5_staged_return_probe_manifest.json > /tmp/p3b5_v37_returnproof.log 2>&1
+PYTHONNOUSERSITE=1 taskset -c 20-39 /usr/bin/python3 scripts/run_p3b_fault_matrix.py --output log/p3b5_protocol_a63ac0b.json > /tmp/p3b5_protocol_a63ac0b.log 2>&1
+ROS_DOMAIN_ID=130 taskset -c 0-19 /usr/bin/python3 /tmp/observe_p3b5_v37_ap_snapshots_qos_fixed.py > /tmp/p3b5_v37_ap_snapshots_qos_fixed.log 2>&1
+```
+
+原zero双边FAILED/E0/无导航/0碰撞。原固定lab3/101中央COMPLETE213.7s（检测64.8/RALLY77.8），runner1因tb2原生角速度0.1931509963150803radps超出原0.1拒绝；任务级固定FAIL，不能把原始终态或评估器success当已通过。全员位置误差0.029931/0.024882/0.022665m，0碰撞/耗尽/失效，tb1/tb2各1charge、最低25.5815179569、总路径44.193738m。grouped native/graph审计正常，原收尾正常。bootstrap自然[1,0,0]，future自然fail-fast，不进入其他池。
+
+10Hz独立nativephysics在2334.982录得tb2角速度0.1683，2339.882为0.1004；未采到原result在2339.482的0.19315，不说明raw值伪造。最后AP2330.682的交付odom源2330.389角速度0.043294，距终止仍有间隔。证据确定中央保持/原生终止核验存在差异，不能唯一断言DDS丢样或本体角速度噪声根因。真值/AP只作取证，无控制输入。
+
+受控ideal/fault自然timeout300.0/300.0 EXPLORE，仅补充安全证据；两机各1charge/正能量/0碰撞/失效/耗尽，runner/stager/observer0。原准备50s/TTL/one-shot/epoch和62..248强物理检查PASS：fault tb1起点offset172.5/home1.975803/path1.142682/progress1.133983/实际Nav2EXEC1.142661m；tb2offset170.8/home2.003584/path1.197626/progress1.188408/EXEC1.197600m。协议54PASS。AP observer正常0；所有任务/future结束后才修改source。
+
+只读审计source Humble/install、PYTHONNOUSERSITE=1/ROS_LOG_DIR=canonical ROS/log/component_checks：`/usr/bin/python3 /tmp/audit_p3b5_v37_return.py`严格PASS，`/usr/bin/python3 /tmp/archive_p3b5_a63ac0b.py`校验5started/5raw、原ledger/source/完整原命令后归档。归档源码保留/tmp，不重复运行原mission。
+
+后续候选：交付odom每个位置/速度超限样本立即重置中央保持窗口，避免超限又恢复发生在两个timer之间。独立只读评估器schema9在当前rally assignment/健康名单上检查原0.35m/0.05mps/0.1radps/5s；任何原生样本超限、缺参与机器人、非ACTIVE/非正能量或超过原poseTTL2s的观测间断重置。assignment变化/故障名单变化也重置，同一assignment重复发布不重置。中央声明仅记录coordinator_completion_time_sec；新的原生样本满足完整窗口后才给completion_time_sec和native_rally_hold_proof。仍原300s horizon，未合格timeout，不延长/放宽或仅挑某个有利瞬时值。无header ModelStates仅observer simulation clock的连续合格观测，非完整物理持续采样声明，Gazebo真值不反馈控制链。P3B checker强制新schema/proof含roster/原native峰值/时间/最大gap；冻结P3A checker及22c历史证据不改、不回填。
+
+另补实际双return下取消escape后的idle重规划：不因已有return_yield_targets而永久跳过，仍须实际当前body阻挡真实return、自身handle/pending已排空、原slot/visible/route/body/energy/fresh检查；新refuge终点需避开全部返航，保留原final。源反例覆盖两台真实return和替代腿已live时禁止重复admit。
+
+相关243PASS10.77s；全16文件338PASS11.92s，四包build5.82s，3r source-only旁路审计PASS0违规。确切命令（source Humble/canonical install；PYTHONNOUSERSITE=1，组件ROS_LOG_DIR=canonical ROS/log/component_checks；实际rtk bash -lc）：
+
+```bash
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_control.py src/multi_robot_exploration/test/test_task_evaluator.py scripts/test_p3b5_gate.py
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_control.py src/multi_robot_exploration/test/test_battery_manager.py src/multi_robot_exploration/test/test_gateway.py src/multi_robot_exploration/test/test_fault_model.py src/multi_robot_exploration/test/test_navigation_faults.py src/multi_robot_exploration/test/test_task_evaluator.py src/multi_robot_exploration/test/test_nav2_ready_gate.py src/multi_robot_exploration/test/test_readiness.py src/multi_robot_exploration/test/test_spawn_entity_checked.py src/multi_robot_exploration/test/test_tf_ingress_sampler.py src/multi_robot_exploration/test/test_target_detector.py src/merge_map/test/test_merge_map.py scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py scripts/test_ros_smoke_native_probe.py > /tmp/p3b5_v38_component_checks.log 2>&1
+colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot > /tmp/p3b5_v38_build.log 2>&1
+/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v38_source_audit.log 2>&1
+```
+
+read-only工具一次rg针对不存在ros_smoke_runner.py与字面gateway*.py返回2，改查实际ros_smoke_test.py/fault_model.py，不影响测试/运行。下一v38原57唯一episode矩阵先新clean commit/push再运行；原十fixed通过后才首次707（fault27077原先前瞻声明），不得混历史CMP。P3B.5未通过，无ns-3/RL工作。
