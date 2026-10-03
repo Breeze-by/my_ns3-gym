@@ -761,3 +761,5 @@ Gazebo factory 明确表示本次实体已经入队、确认阶段超时时，he
 2026-10-02 原生启动检查隔离候选：headless smoke的ready、model inventory和message检查在独立单次只读worker中执行，父进程以原startup/message墙钟deadline监督初始化、发现及等待，ready仍要求实际ACTIVE，实体/消息仍要求实际收到。worker验证完成后直接结束进程，由内核释放其DDS资源，避免任务runner反复创建/关闭ROS context；超时仅杀自己的检查worker并明确失败，ready期间launch早退仍立即失败。不跳过任何任务/graph/source门禁，不把已有COMPLETE raw盖过runner失败。manifest环境记录native_probe_isolation，所有ideal/fault/固定格共用。普通命令不变，包内算法与上次冻结相同；需新完整批次。
 
 2026-10-02 P3B.5候选的原生命令确认：四台Nav2参数文件中`bt_navigator.default_server_timeout`为500毫秒，仅用于内部动作/服务确认；网关导航期限、300秒任务门禁及所有完成/能量/安全标准保持。现有启动命令无需新增参数；候选仍待同提交完整集成门禁。
+
+2026-10-04 P3B.5路线一致性候选：临时refuge已经按受益者原waiting route核验后，保留受益者原集合目标，避免再选新目标使避让证书失去对应路线；永久重分配仍走原恢复分支。普通中间rally航点在新鲜交付检测和当前地图预测LOS/距离合格时朝目标中心，保留导航位置/route/完整能量检查；最终集合yaw、充电staging和本地返航避让不改。预测可见不能代替真实camera确认，不使用过期坐标。348组件检查、四包构建、旁路审计及原AP几何反例通过；2786b14原固定timeout300.4/3charges/0碰撞与5原episode全部保留，本候选须新冻结全矩阵，P3B.5未通过。

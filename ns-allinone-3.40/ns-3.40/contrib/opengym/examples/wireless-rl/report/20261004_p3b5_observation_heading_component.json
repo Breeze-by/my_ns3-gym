@@ -1,0 +1,107 @@
+{
+  "scope": "Dirty successor component only on original received AP snapshot; never substitute mission/detection/native hold or exact original admission buffers",
+  "parent_commit": "2786b14745591a7dc8adce6f8e52e82cdac0e8ad",
+  "replay_source": "import hashlib,inspect,json,math,subprocess\nfrom pathlib import Path\nimport numpy as np\nfrom multi_robot_exploration import control\nr=Path.cwd();w=r.parents[1]/'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl'\np=Path('/tmp/p3b5_v38_observation_heading_replay.json');d=json.loads(p.read_text())\nrows={z['observer_time']:z for z in map(json.loads,(r/'log/p3b5/p3b5_v38_fixed_lab101_ap_snapshots_qos_fixed/snapshots.jsonl').open())}\nout={'scope':'Dirty successor component only on original received AP snapshot; never substitute mission/detection/native hold or exact original admission buffers','parent_commit':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'replay_source':Path(__file__).read_text(),'heading_source':inspect.getsource(control.rally_observation_heading),'control_source_sha256':hashlib.sha256(Path(control.__file__).read_bytes()).hexdigest(),'original_replay':d,'checks':[]}\nfor case in d['cases']:\n if case['old_heading_guarantees_fov_with_nav_yaw_tolerance']:continue\n m=rows[case['snapshot_time']]['messages'];info=m['map']['info'];target=json.loads(m['target_detection']['data'])\n grid=np.asarray(m['map']['data'],dtype=np.int16).reshape(info['height'],info['width']);before=grid.copy()\n pose=control.RallyPose(*case['position'],case['requested_yaw'])\n new=control.rally_observation_heading(pose,(target['target_x'],target['target_y']),grid,info['resolution'],(info['origin']['position']['x'],info['origin']['position']['y']),target['max_distance_m'])\n error=abs(math.atan2(math.sin(new.yaw-case['bearing_to_delivered_target']),math.cos(new.yaw-case['bearing_to_delivered_target'])))\n np.testing.assert_array_equal(grid,before)\n assert (new.x,new.y)==(pose.x,pose.y) and error+case['nav_yaw_tolerance']<=case['camera_half_fov']\n out['checks'].append({**case,'new_yaw':new.yaw,'new_nominal_angle_error':error,'geometry_map_unchanged':True,'actual_confirmation_required':True})\nassert out['checks'];out['status']='PASS'\np=w/'report/20261004_p3b5_observation_heading_component.json';p.write_text(json.dumps(out,indent=2)+'\\n')\nprint(p,len(out['checks']),'current AP geometric heading margin PASS; no mission/causal benefit claim')\n",
+  "heading_source": "def rally_observation_heading(pose, target, grid, resolution, origin, max_distance):\n    \"\"\"Center a delivered target in the camera at a visible intermediate pose.\"\"\"\n    if target is None or not rally_target_view(\n            grid, resolution, origin, (pose.x, pose.y), target,\n            max_distance - NAVIGATION_POSITION_TOLERANCE_M):\n        return pose\n    return RallyPose(pose.x, pose.y, math.atan2(target[1] - pose.y, target[0] - pose.x))\n",
+  "control_source_sha256": "b68dbd563052feb5eeb2f97360262a46158eacff43ba464ed500ca9b4f7287e0",
+  "original_replay": {
+    "scope": "Conditional component replay on preceding saved received-map/target snapshots; not exact original coordinator buffers, actual detection or mission proof",
+    "frozen_commit": "2786b14745591a7dc8adce6f8e52e82cdac0e8ad",
+    "source": "\"\"\"Conditional current-AP visibility replay; never feeds native truth to control.\"\"\"\nimport hashlib,json,math\nfrom pathlib import Path\nimport numpy as np\nfrom multi_robot_exploration import control\nros=Path.cwd();snapshots=ros/'log/p3b5/p3b5_v38_fixed_lab101_ap_snapshots_qos_fixed/snapshots.jsonl'\nledger=ros/'log/p2d_baseline/p3b5_v38_fixed_lab101/episodes/p3b5_v38_fixed_lab101_lab_far_northwest_3r_seed101_ledger.jsonl'\nrows=[json.loads(x) for x in snapshots.open()]\nresult={'scope':'Conditional component replay on preceding saved received-map/target snapshots; not exact original coordinator buffers, actual detection or mission proof','frozen_commit':'2786b14745591a7dc8adce6f8e52e82cdac0e8ad','source':Path(__file__).read_text(),'snapshot_sha256':hashlib.sha256(snapshots.read_bytes()).hexdigest(),'ledger_sha256':hashlib.sha256(ledger.read_bytes()).hexdigest(),'cases':[]}\nfor event in map(json.loads,ledger.open()):\n if event['event']!='coordinator_navigation_decision' or event.get('kind')!='rally':continue\n prior=[x for x in rows if x['observer_time']<=event['event_time'] and 'target_detection' in x['messages']]\n if not prior:continue\n row=prior[-1];m=row['messages'];d=json.loads(m['target_detection']['data']);info=m['map']['info']\n grid=np.asarray(m['map']['data'],dtype=np.int16).reshape(info['height'],info['width'])\n origin=(info['origin']['position']['x'],info['origin']['position']['y']);point=event['requested_position'];target=(d['target_x'],d['target_y'])\n visible=control.rally_target_view(grid,info['resolution'],origin,point,target,d['max_distance_m']-control.NAVIGATION_POSITION_TOLERANCE_M)\n if not visible:continue\n bearing=math.atan2(target[1]-point[1],target[0]-point[0]);error=abs(math.atan2(math.sin(bearing-event['requested_yaw']),math.cos(bearing-event['requested_yaw'])))\n item={'robot':event['robot'],'goal_time':event['event_time'],'snapshot_time':row['observer_time'],'position':point,'requested_yaw':event['requested_yaw'],'bearing_to_delivered_target':bearing,'nominal_camera_angle_error':error,'camera_half_fov':math.radians(d['field_of_view_deg'])/2,'nav_yaw_tolerance':control.NAVIGATION_YAW_TOLERANCE_RAD,'current_map_visibility':True,'actual_confirmation_required':True}\n item['old_heading_guarantees_fov_with_nav_yaw_tolerance']=error+control.NAVIGATION_YAW_TOLERANCE_RAD<=item['camera_half_fov']\n result['cases'].append(item)\nassert result['cases']\nPath('/tmp/p3b5_v38_observation_heading_replay.json').write_text(json.dumps(result,indent=2)+'\\n')\nprint(json.dumps(result['cases'],indent=2))\n",
+    "snapshot_sha256": "17cc1e36f0d80c4fec21282392df939e90e6dbc15e43eb453b45fed3f5370c48",
+    "ledger_sha256": "84b01e886de61c7dd5901b4abcb0e7171cdb11bf2c502642ee88885c264dfdd7",
+    "cases": [
+      {
+        "robot": "tb1",
+        "goal_time": 2251.182,
+        "snapshot_time": 2249.782,
+        "position": [
+          -4.051989006792766,
+          2.2007582903386655
+        ],
+        "requested_yaw": 1.4964664348024252,
+        "bearing_to_delivered_target": 1.541909410213054,
+        "nominal_camera_angle_error": 0.045442975410628694,
+        "camera_half_fov": 0.7853981633974483,
+        "nav_yaw_tolerance": 0.25,
+        "current_map_visibility": true,
+        "actual_confirmation_required": true,
+        "old_heading_guarantees_fov_with_nav_yaw_tolerance": true
+      },
+      {
+        "robot": "tb1",
+        "goal_time": 2259.282,
+        "snapshot_time": 2249.782,
+        "position": [
+          -4.001989006047708,
+          3.0007583022595945
+        ],
+        "requested_yaw": 1.5783865984830698,
+        "bearing_to_delivered_target": 1.5688058139637193,
+        "nominal_camera_angle_error": 0.009580784519350514,
+        "camera_half_fov": 0.7853981633974483,
+        "nav_yaw_tolerance": 0.25,
+        "current_map_visibility": true,
+        "actual_confirmation_required": true,
+        "old_heading_guarantees_fov_with_nav_yaw_tolerance": true
+      },
+      {
+        "robot": "tb1",
+        "goal_time": 2303.082,
+        "snapshot_time": 2289.782,
+        "position": [
+          -3.5019889985971275,
+          3.450758308965117
+        ],
+        "requested_yaw": 2.30731432766842,
+        "bearing_to_delivered_target": 2.30731432766842,
+        "nominal_camera_angle_error": 0.0,
+        "camera_half_fov": 0.7853981633974483,
+        "nav_yaw_tolerance": 0.25,
+        "current_map_visibility": true,
+        "actual_confirmation_required": true,
+        "old_heading_guarantees_fov_with_nav_yaw_tolerance": true
+      },
+      {
+        "robot": "tb3",
+        "goal_time": 2317.282,
+        "snapshot_time": 2309.782,
+        "position": [
+          -3.60562447936322,
+          1.2007582754375044
+        ],
+        "requested_yaw": 2.356194490192345,
+        "bearing_to_delivered_target": 1.7107616738845384,
+        "nominal_camera_angle_error": 0.6454328163078065,
+        "camera_half_fov": 0.7853981633974483,
+        "nav_yaw_tolerance": 0.25,
+        "current_map_visibility": true,
+        "actual_confirmation_required": true,
+        "old_heading_guarantees_fov_with_nav_yaw_tolerance": false
+      }
+    ]
+  },
+  "checks": [
+    {
+      "robot": "tb3",
+      "goal_time": 2317.282,
+      "snapshot_time": 2309.782,
+      "position": [
+        -3.60562447936322,
+        1.2007582754375044
+      ],
+      "requested_yaw": 2.356194490192345,
+      "bearing_to_delivered_target": 1.7107616738845384,
+      "nominal_camera_angle_error": 0.6454328163078065,
+      "camera_half_fov": 0.7853981633974483,
+      "nav_yaw_tolerance": 0.25,
+      "current_map_visibility": true,
+      "actual_confirmation_required": true,
+      "old_heading_guarantees_fov_with_nav_yaw_tolerance": false,
+      "new_yaw": 1.7107616738845384,
+      "new_nominal_angle_error": 0.0,
+      "geometry_map_unchanged": true
+    }
+  ],
+  "status": "PASS"
+}

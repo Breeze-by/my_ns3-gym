@@ -1449,9 +1449,15 @@ def test_idle_blocker_recovery_dispatches_motion_before_returning(
             grid[cell] = 0
     targets = {"tb1": control.RallyPose(8.0, 2.5, 0.0), "tb2": control.RallyPose(8.0, 2.0, 0.0)}
     replacements = {"tb1": targets["tb1"], "tb2": control.RallyPose(4.0, 1.5, 0.0)}
+    replacement_calls = []
+    def replacement(*args):
+        replacement_calls.append(args[3])
+        if not permanent_reassignment:
+            return None
+        return (control.RallyPose(6.0, 2.5, 0.0)
+                if args[3] == "tb1" and not preflight_blocked else replacements[args[3]])
     monkeypatch.setattr(
-        control, "reassign_rally_pose",
-        lambda *args: replacements[args[3]] if permanent_reassignment else None,
+        control, "reassign_rally_pose", replacement,
     )
     if not refuge_available:
         monkeypatch.setattr(control, "rally_yield_pose", lambda *args, **kwargs: None)
@@ -1518,6 +1524,8 @@ def test_idle_blocker_recovery_dispatches_motion_before_returning(
             max_distance_m=float("inf"), blocked_positions=[(refuge.x, refuge.y)],
         )
         assert released[0] is not None
+        assert node.rally_targets["tb1"] == node.rally_final_targets["tb1"] == targets["tb1"]
+        assert not replacement_calls  # Do not invalidate the certified route.
     assert requests == ["tb2"]  # the action cannot be starved by the next timer
 
 
@@ -2627,3 +2635,55 @@ def test_multi_robot_preflight_keeps_peer_wait_without_a_phantom_recovery():
     assert nominal < 40.
     assert node.rally_charge_budgets["tb2"] > nominal
     assert node.rally_charge_budgets["tb2"] < 40.
+
+
+@pytest.mark.parametrize('obstruction', [None, 'occupied', 'unknown', 'range', 'no_target'])
+def test_intermediate_heading_centers_only_a_current_map_visible_target(obstruction):
+    grid=np.zeros((80,80),dtype=int)
+    pose=control.RallyPose(1.05,1.05,0.)
+    target=(1.05,3.05)
+    if obstruction in ('occupied','unknown'):grid[20,10]=100 if obstruction=='occupied' else -1
+    if obstruction=='range':target=(1.05,4.05)
+    if obstruction=='no_target':target=None
+    original=grid.copy()
+    heading=control.rally_observation_heading(pose,target,grid,.1,(0.,0.),3.)
+    np.testing.assert_array_equal(grid,original)
+    assert (heading.x,heading.y)==(pose.x,pose.y)
+    if obstruction is None:assert heading.yaw==pytest.approx(math.pi/2)
+    else:assert heading is pose
+
+
+@pytest.mark.parametrize('kind', ['ordinary','final','charge_staging','local_return_yield','stale_target'])
+def test_observation_heading_preserves_final_safety_and_freshness_branches(kind):
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+    from builtin_interfaces.msg import Time
+    final=control.RallyPose(1.05,1.35,.3)
+    intermediate=control.RallyPose(1.05,1.05,0.)
+    pose=final if kind=='final' else intermediate
+    client=Mock()
+    client.server_is_ready.return_value=True
+    node=SimpleNamespace(
+        task_state='RALLY',fresh_robot_inputs=lambda:True,
+        fresh_target=lambda:kind!='stale_target',
+        return_yield_targets={'tb1':'tb2'} if kind=='local_return_yield' else {},
+        battery_modes={'tb1':'ACTIVE'},rally_max_retries=2,rally_attempts={'tb1':0},
+        robot_nav_clients={'tb1':client},enable_battery=False,
+        rally_targets={'tb1':final},map_data=np.zeros((80,80),dtype=int),resolution=.1,
+        origin=(0.,0.),target=(1.05,3.05),target_view_distance=3.,
+        get_logger=lambda:Mock(),
+        get_clock=lambda:SimpleNamespace(now=lambda:SimpleNamespace(to_msg=lambda:Time(sec=10))),
+        rally_leg_routes={},rally_leg_poses={},rally_goal_pending={},
+        record_navigation_decision=Mock(),
+    )
+    route=((pose.x,pose.y),)
+    control.HeadquartersControl.send_rally_goal(node,'tb1',(pose,route),charge_staging=kind=='charge_staging')
+    if kind=='stale_target':
+        client.send_goal_async.assert_not_called()
+        return
+    sent=client.send_goal_async.call_args.args[0].pose.pose
+    yaw=2*math.atan2(sent.orientation.z,sent.orientation.w)
+    assert yaw==pytest.approx(math.pi/2 if kind=='ordinary' else pose.yaw)
+    assert (sent.position.x,sent.position.y)==(pose.x,pose.y)
+    assert node.rally_leg_routes['tb1'] is route
+    assert node.rally_targets['tb1'] is final

@@ -1247,6 +1247,15 @@ def rally_yield_pose(
     return None
 
 
+def rally_observation_heading(pose, target, grid, resolution, origin, max_distance):
+    """Center a delivered target in the camera at a visible intermediate pose."""
+    if target is None or not rally_target_view(
+            grid, resolution, origin, (pose.x, pose.y), target,
+            max_distance - NAVIGATION_POSITION_TOLERANCE_M):
+        return pose
+    return RallyPose(pose.x, pose.y, math.atan2(target[1] - pose.y, target[0] - pose.x))
+
+
 def survey_robot_order(robot_positions, detecting_robot):
     return sorted(
         robot_positions,
@@ -3216,37 +3225,42 @@ class HeadquartersControl(Node):
                                 f"{blocker_replacement.y:.2f}) so {name} "
                                 "can reach its rally pose."
                             )
-                            current_reserved = rally_reserved_poses(
-                                self.rally_targets,
-                                self.rally_final_targets,
-                                exclude=(name,),
-                            )
-                            current_replacement = reassign_rally_pose(
-                                self.map_data,
-                                self.resolution,
-                                self.origin,
-                                name,
-                                self.robot_positions[name],
-                                self.target,
-                                current_reserved,
-                                [
-                                    self.robot_positions[other_name]
-                                    for other_name in parked_names
-                                    if other_name != blocker
-                                ],
-                            )
-                            if current_replacement is not None:
-                                self.rally_targets[name] = current_replacement
-                                self.rally_final_targets[name] = current_replacement
-                                self.rally_route_unavailable_since[name] = now
-                                self.rally_recovery_requested[name] = True
-                                self.publish_rally_assignments()
-                                self.get_logger().warn(
-                                    f"Reassigned {name} to a reachable rally "
-                                    f"pose ({current_replacement.x:.2f}, "
-                                    f"{current_replacement.y:.2f}) after parked "
-                                    "robot yield."
+                            # A temporary refuge was certified against this
+                            # beneficiary's original route. Keep that goal;
+                            # choosing a new one can cross the very refuge we
+                            # just selected and invalidate its certificate.
+                            if permanent_reassignment:
+                                current_reserved = rally_reserved_poses(
+                                    self.rally_targets,
+                                    self.rally_final_targets,
+                                    exclude=(name,),
                                 )
+                                current_replacement = reassign_rally_pose(
+                                    self.map_data,
+                                    self.resolution,
+                                    self.origin,
+                                    name,
+                                    self.robot_positions[name],
+                                    self.target,
+                                    current_reserved,
+                                    [
+                                        self.robot_positions[other_name]
+                                        for other_name in parked_names
+                                        if other_name != blocker
+                                    ],
+                                )
+                                if current_replacement is not None:
+                                    self.rally_targets[name] = current_replacement
+                                    self.rally_final_targets[name] = current_replacement
+                                    self.rally_route_unavailable_since[name] = now
+                                    self.rally_recovery_requested[name] = True
+                                    self.publish_rally_assignments()
+                                    self.get_logger().warn(
+                                        f"Reassigned {name} to a reachable rally "
+                                        f"pose ({current_replacement.x:.2f}, "
+                                        f"{current_replacement.y:.2f}) after parked "
+                                        "robot yield."
+                                    )
                             # Dispatch the blocker now: returning first would let
                             # the earlier waiting robot reassign it every tick.
                             # No other rally/probe action is active at this point.
@@ -3769,6 +3783,13 @@ class HeadquartersControl(Node):
             return
         if not self.fresh_robot_inputs() or (not local_return_yield and not self.fresh_target()):
             return
+        final = self.rally_targets[robot_name]
+        if (not local_return_yield and not charge_staging
+                and math.dist((target.x, target.y), (final.x, final.y))
+                > NAVIGATION_POSITION_TOLERANCE_M):
+            target = rally_observation_heading(
+                target, getattr(self, "target", None), self.map_data,
+                self.resolution, self.origin, getattr(self, "target_view_distance", 3.0))
         self.get_logger().info(
             f"Sending {robot_name} rally leg to "
             f"({target.x:.2f}, {target.y:.2f}); final="
