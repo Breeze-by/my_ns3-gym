@@ -208,6 +208,7 @@ def test_startup_failure_waits_for_native_start_and_drains_events(monkeypatch, r
         get_logger=lambda: SimpleNamespace(info=lambda *args: None),
         _now=lambda: clock[0], stop_on_task_complete=True, finalize=Mock(),
         failed_robots=set(), required_robot_names={"tb1"},
+        battery_states={"tb1": {"robot": "tb1", "mode": "FAILED", "energy": 0.}},
         _map_metrics=lambda: {}, coverage_threshold=0, max_duration=300,
     )
     shutdown = Mock()
@@ -229,6 +230,38 @@ def test_startup_failure_waits_for_native_start_and_drains_events(monkeypatch, r
     assert node.task_failure_reason == "all_robots_failed"
     node.finalize.assert_called_once_with("mission_failed")
     shutdown.assert_called_once()
+
+
+@pytest.mark.parametrize("late_state,horizon", [(None, 300.), (None, 2.), ({}, 300.),
+    ({"robot": "tb1", "mode": "ACTIVE", "energy": 0.}, 300.)])
+def test_failure_drains_late_native_battery_without_inference_or_unbounded_wait(monkeypatch, late_state, horizon):
+    import json
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+    from std_msgs.msg import String
+    from multi_robot_exploration import task_evaluator as module
+    clock = [5.]
+    node = SimpleNamespace(start_sim_time=5., failure_pending_since=5., task_phase="FAILED",
+        robot_names=["tb1", "tb2"], failed_robots={"tb1", "tb2"}, required_robot_names=set(),
+        battery_states={"tb1": late_state or {}, "tb2": {"robot": "tb2", "mode": "FAILED", "energy": 0.}},
+        battery_message_counts={"tb1": int(bool(late_state)), "tb2": 1}, max_duration=horizon,
+        _now=lambda: clock[0], finalize=Mock())
+    shutdown = Mock(); monkeypatch.setattr(module.rclpy, "shutdown", shutdown)
+    clock[0] = 5.6
+    module.TaskEvaluator._timer_callback(node)
+    node.finalize.assert_not_called()
+    module.TaskEvaluator._task_state_callback(node, String(data="FAILED"))
+    assert node.failure_pending_since == 5.
+    if late_state is not None:
+        message = String(data=json.dumps({"robot": "tb1", "mode": "FAILED", "energy": 0.}))
+        module.TaskEvaluator._battery_callback(node, message, "tb1")
+        assert node.battery_message_counts["tb1"] == int(bool(late_state)) + 1
+    else:
+        clock[0] = 5. + min(horizon, module.STATE_TTL_SEC["battery_state"])
+    module.TaskEvaluator._timer_callback(node)
+    node.finalize.assert_called_once_with("mission_failed")
+    shutdown.assert_called_once()
+    assert node.battery_states["tb1"] == ({} if late_state is None else json.loads(message.data))
 
 
 def test_late_failure_snapshot_is_complete_and_irreversible():

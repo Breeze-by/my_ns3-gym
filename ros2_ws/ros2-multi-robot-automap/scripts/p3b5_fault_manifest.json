@@ -353,7 +353,7 @@
     }
   },
   "holdout_world_declaration": {
-    "predeclared_at_utc": "2026-10-04T21:40:45.633755+00:00",
+    "predeclared_at_utc": "2026-10-04T22:04:56.184142+00:00",
     "world": "p3b5_holdout809.world",
     "world_content_sha256": "2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd",
     "gazebo_seed": 809,
@@ -411,7 +411,7 @@
       "original_point_label_correction": "The retained tb1_start_charge/tb3_start_charge labels were generic sample points, not actual launch poses. Original values are historical; use supplemental actual_launch_start_geometry_check below. No world/control/mission run was used to validate or tune809 geometry."
     },
     "controller_content_sha256": "aa6cd7c03016e38ae7f5eec808b226b5fdb67f206a1038f7e61d27c4a06cb9d2",
-    "first_task_exposure": "Pending:809/world/seed/fault never executed. New clean pushed controller freeze after independent six-original development PASS. Initial forced true-native ideal/E0/controlled physical return and all ten fixed originals must PASS before first809. After any809 exposure a controller change requires a genuinely new world/seed/fault combination.",
+    "first_task_exposure": "Pending:809/world/seed/fault never executed. Controller/battery/apparatus unchanged after v69 six-original development PASS; bounded FAILED evidence drain changes read-only evaluator only. New clean pushed full57 needs initial forced-native/E0/physical-return plus all ten fixed original PASS before first809. Any controller change after exposure requires genuinely new world/seed/fault.",
     "controller_freeze_history": [
       {
         "predeclared_at_utc": "2026-10-04T14:45:09.824843+00:00",
@@ -496,6 +496,19 @@
         "started_count": 8,
         "unrun_episode_count": 49,
         "evidence": "20261005_p3b5_rally_corridor_lab202_failed_candidate.json"
+      },
+      {
+        "predeclared_at_utc": "2026-10-04T21:40:45.633755+00:00",
+        "controller_content_sha256": "aa6cd7c03016e38ae7f5eec808b226b5fdb67f206a1038f7e61d27c4a06cb9d2",
+        "battery_manager_content_sha256": "6eb5c3fb074175ec4b1be33b36970e8ebd4d4aae8f6b2d18619f2576d5e36d42",
+        "staging_apparatus_sha256": "47ce7998e212a9463ab657bbc0b121d4903ed886016bbf0fd3a2399c986da05d",
+        "task_evaluator_content_sha256": "fad34dc25162716602f6b0c0223bcfc252d311d192824cf61dcd82e56c02a865",
+        "frozen_commit": "4653c13e6de18b8ad8ade2bc4c734ab76005c9b2",
+        "status": "FAIL: original E0 ideal missing native battery snapshot",
+        "new_holdout_exposed": false,
+        "started_count": 6,
+        "unrun_episode_count": 51,
+        "evidence": "20261005_p3b5_failure_battery_snapshot_failed_candidate.json"
       }
     ],
     "actual_launch_start_geometry_check": {
@@ -535,6 +548,7 @@
     "battery_manager_content_sha256": "6eb5c3fb074175ec4b1be33b36970e8ebd4d4aae8f6b2d18619f2576d5e36d42",
     "staging_apparatus_content_sha256": "47ce7998e212a9463ab657bbc0b121d4903ed886016bbf0fd3a2399c986da05d",
     "controller_source_commit": "9ac2fb7dc10193c93092efdcf17f198fcb7554a8",
-    "independent_development_evidence": "20261005_p3b5_postcharge_order_development.json"
+    "independent_development_evidence": "20261005_p3b5_postcharge_order_development.json",
+    "task_evaluator_content_sha256": "bac6822d1c803ba1fdd9784d774d37b05f8701b4da7a8ea477dde69189d57630"
   }
 }

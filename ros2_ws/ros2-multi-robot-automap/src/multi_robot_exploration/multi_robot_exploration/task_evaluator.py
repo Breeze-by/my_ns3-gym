@@ -619,7 +619,7 @@ class TaskEvaluator(Node):
             and self.coordinator_completion_time is None
         ):
             self.coordinator_completion_time = elapsed
-        elif message.data == "FAILED":
+        elif message.data == "FAILED" and self.failure_pending_since is None:
             self.failure_pending_since = self._now()
 
     def _rally_assignments_callback(self, message):
@@ -734,12 +734,26 @@ class TaskEvaluator(Node):
     def _timer_callback(self):
         if self.start_sim_time is None:
             return
-        if (
-            self.failure_pending_since is not None
-            and self._now() - self.failure_pending_since >= 0.5
-        ):
-            self.finalize("mission_failed")
-            rclpy.shutdown()
+        if self.failure_pending_since is not None:
+            now = self._now()
+            waited = now - self.failure_pending_since
+            battery_ready = all(
+                self.battery_states[name]
+                and (name not in self.failed_robots
+                     or self.battery_states[name].get("mode") == "FAILED")
+                for name in self.robot_names
+            )
+            # A retained FAILED snapshot can arrive before another native
+            # battery callback. Keep the original minimum event drain, but
+            # collect every robot's evidence within one battery TTL. Missing
+            # evidence stays missing at the bound; never infer it from AP state.
+            # Repeated FAILED messages cannot extend this bounded drain.
+            if ((waited >= 0.5 and battery_ready)
+                    or waited >= STATE_TTL_SEC["battery_state"]
+                    or (self.max_duration > 0
+                        and now - self.start_sim_time >= self.max_duration)):
+                self.finalize("mission_failed")
+                rclpy.shutdown()
             return
         coverage = self._map_metrics().get("correct_free_coverage_ratio", 0.0)
         if (
