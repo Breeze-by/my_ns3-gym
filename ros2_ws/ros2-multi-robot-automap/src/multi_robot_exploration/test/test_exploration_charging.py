@@ -152,3 +152,42 @@ def test_pending_exploration_charge_can_expire_after_target_detection():
     control.HeadquartersControl.battery_state_callback(node,String(data=json.dumps({
         **node.battery_states['tb1'],'mode':'ACTIVE','stamp_sec':21.})), 'tb1')
     assert not node.rally_charge_requested and not node.exploration_charge_budgets
+
+
+@pytest.mark.parametrize('live_peer',[False,True])
+def test_funded_peer_cannot_starve_needed_idle_charge_admission(monkeypatch,live_peer):
+    node,requests,_,sent=charge_node()
+    node.battery_states['tb2']['energy']=80.
+    node.robot_states['tb2']='active' if live_peer else 'idle'
+    install_candidates(monkeypatch,{'tb1':[assignment()],
+                                   'tb2':[assignment(8.,4.,distance=1.,utility=1000.)]})
+    control.HeadquartersControl.assign_idle_robots(node)
+    assert not sent
+    assert len(requests)==(0 if live_peer else 1)
+    if live_peer:
+        node.robot_states['tb2']='idle'  # The original accepted action drains.
+        control.HeadquartersControl.assign_idle_robots(node)
+        assert len(requests)==1 and not sent
+    assert requests[0][0]=='tb1'
+
+
+def test_unfundable_peer_cannot_block_an_independent_funded_admission(monkeypatch):
+    node,requests,_,sent=charge_node()
+    node.battery_states['tb1']['capacity']=12.
+    node.battery_states['tb2']['energy']=80.
+    install_candidates(monkeypatch,{'tb1':[assignment()],
+                                   'tb2':[assignment(8.,4.,distance=1.,utility=1000.)]})
+    control.HeadquartersControl.assign_idle_robots(node)
+    assert not requests and len(sent)==1 and sent[0][0]=='tb2'
+
+
+def test_lower_unfunded_candidates_do_not_repeat_full_route_planning(monkeypatch):
+    from unittest.mock import patch
+    node,requests,_,sent=charge_node()
+    goals=[assignment(6.+i*.05,3.,utility=100.-i) for i in range(20)]
+    install_candidates(monkeypatch,{'tb1':goals})
+    with patch.object(control,'plan_rally_leg',wraps=control.plan_rally_leg) as planning:
+        control.HeadquartersControl.assign_idle_robots(node)
+    assert len(requests)==1 and not sent
+    assert node.exploration_resume_intents['tb1'][0]==6.
+    assert planning.call_count<=2

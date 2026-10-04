@@ -1120,37 +1120,41 @@ def assign_rally_poses(
         name: tuple(min(values[column] for values in choices.values()) for column in range(3))
         for name, choices in energy_options.items()
     }
-    observer_route_caches = {}
-    observer_detour_costs = {}
+    parked_route_caches = {}
+    parked_detour_costs = {}
 
-    def parked_observer_delay(needed):
-        # A funded observer stays near the target while peers return/charge.
-        # Its final body can add a detour that the static distance sums miss.
-        # This is a nominal cost preference, never a navigation authorization.
-        if modes.get(observer_robot) != "ACTIVE" or observer_robot in needed:
-            return 0.0
-        observer_index = selected_indices[observer_robot]
-        observer = candidates[observer_index]
+    def parked_peer_delay(needed):
+        # Any funded peer may park before a charged robot comes back from home.
+        # Sum single-body detour costs, reusing fields by body pose/home source.
+        # Combined-body interactions are still checked at actual dispatch;
+        # this nominal additive preference never authorizes a navigation leg.
         delay = 0.0
-        for name in needed - {observer_robot}:
-            index = selected_indices[name]
-            key = (observer_index, name, index)
-            if key not in observer_detour_costs:
-                state = battery_states[name]
-                _, route = plan_rally_leg(
-                    candidates[index], raw_grid, resolution, origin,
-                    (float(state["charge_x"]), float(state["charge_y"])),
-                    blocked_positions=[(observer.x, observer.y)],
-                    route_cache=observer_route_caches.setdefault((observer_index, name), {}),
-                )
-                speed = float(state.get("nominal_speed_mps", .18))
-                cost = (sum(math.dist(a, b) for a, b in zip(route, route[1:])) / speed
-                        - energy_options[name][index][2]) if route else RALLY_GOAL_TIMEOUT_SEC
-                # A missing masked route keeps the existing recovery fallback;
-                # it adds a finite heuristic penalty rather than a false proof
-                # of infeasibility. Partial search bounds remain optimistic.
-                observer_detour_costs[key] = max(0.0, cost)
-            delay += observer_detour_costs[key]
+        for parked in names:
+            if parked in needed or modes[parked] != 'ACTIVE':
+                continue
+            parked_index = selected_indices[parked]
+            body = candidates[parked_index]
+            for name in names:
+                if name not in needed:
+                    continue
+                index = selected_indices[name]
+                key = (parked_index, name, index)
+                if key not in parked_detour_costs:
+                    state = battery_states[name]
+                    _, route = plan_rally_leg(
+                        candidates[index], raw_grid, resolution, origin,
+                        (float(state["charge_x"]), float(state["charge_y"])),
+                        blocked_positions=[(body.x, body.y)],
+                        route_cache=parked_route_caches.setdefault((parked_index, name), {}),
+                    )
+                    speed = float(state.get("nominal_speed_mps", .18))
+                    cost = (sum(math.dist(a, b) for a, b in zip(route, route[1:])) / speed
+                            - energy_options[name][index][2]) if route else RALLY_GOAL_TIMEOUT_SEC
+                    # Missing masked paths keep the finite recovery preference,
+                    # not a false infeasibility proof. Partial bounds omit this
+                    # nonnegative term and remain optimistic.
+                    parked_detour_costs[key] = max(0.0, cost)
+                delay += parked_detour_costs[key]
         return delay
 
     def search(
@@ -1195,7 +1199,7 @@ def assign_rally_poses(
             return
         if len(assignments) == len(search_order):
             if battery_states is not None:
-                score = (score[0], score[1], score[2] + parked_observer_delay(needed), *score[3:])
+                score = (score[0], score[1], score[2] + parked_peer_delay(needed), *score[3:])
                 if score >= best_score:
                     return
             best = assignments.copy()
@@ -2372,10 +2376,32 @@ class HeadquartersControl(Node):
         except (KeyError, TypeError, ValueError, ZeroDivisionError):
             return None
 
+    def exploration_charge_budget(self, name, assignment):
+        """Return a valid frontier budget that charging can actually fund."""
+        required = HeadquartersControl.exploration_required_energy(
+            self, name, assignment.path_distance_m, (assignment.x, assignment.y))
+        if required is None:
+            return None
+        state = self.battery_states[name]
+        try:
+            energy = float(state['energy'])
+            capacity = float(state['capacity'])
+            fraction = float(state['charge_target_fraction'])
+            charge_target = capacity * fraction
+            home = (float(state['charge_x']), float(state['charge_y']))
+            if (not all(math.isfinite(v) for v in (energy, capacity, fraction, charge_target, *home))
+                    or not 0 < fraction <= 1 or capacity <= 0
+                    or not energy <= required < charge_target):
+                return None
+            return energy, required, home
+        except (KeyError, TypeError, ValueError):
+            return None
+
     def request_exploration_charge(self, candidates):
         """Charge one idle robot for an otherwise admissible current frontier.
 
-        Call only after all funded admissions fail and live exploration drains.
+        Call after a needed idle peer has no funded admission and live actions
+        drain. New funded work must not starve a peer's charging window.
         Reuse the rally return owner so a phase change cannot admit traffic for
         a robot whose gateway charge request is still pending.
         """
@@ -2388,23 +2414,10 @@ class HeadquartersControl(Node):
         for name, assignment in candidates:
             if self.rally_charge_requested and name not in self.rally_charge_requested:
                 continue
-            required = HeadquartersControl.exploration_required_energy(
-                self, name, assignment.path_distance_m, (assignment.x, assignment.y))
-            if required is None:
+            budget = HeadquartersControl.exploration_charge_budget(self, name, assignment)
+            if budget is None:
                 continue
-            state = self.battery_states[name]
-            try:
-                energy = float(state['energy'])
-                capacity = float(state['capacity'])
-                fraction = float(state['charge_target_fraction'])
-                charge_target = capacity * fraction
-                home = (float(state['charge_x']), float(state['charge_y']))
-                if (not all(math.isfinite(v) for v in (energy, capacity, fraction, charge_target, *home))
-                        or not 0 < fraction <= 1 or capacity <= 0
-                        or not energy <= required < charge_target):
-                    continue
-            except (KeyError, TypeError, ValueError):
-                continue
+            energy, required, home = budget
             choices.append((math.dist(self.robot_positions[name], home),
                             -assignment.utility, name, assignment, energy, required))
         if not choices:
@@ -4680,6 +4693,11 @@ class HeadquartersControl(Node):
             )):
                 if name in plans:
                     continue
+                unfunded = (name, assignment) in unfunded_candidates
+                previous_charge = charge_candidates.get(name)
+                if (unfunded and previous_charge is not None
+                        and assignment.utility <= previous_charge.utility):
+                    continue  # One best feasible charge intent per idle peer.
                 if any(
                     math.dist((assignment.x, assignment.y), (other.x, other.y))
                     < MIN_TARGET_SEPARATION_M for other in plans.values()
@@ -4707,9 +4725,8 @@ class HeadquartersControl(Node):
                 ):
                     diagnostics["stationary_candidates"] += 1
                     continue
-                if (name, assignment) in unfunded_candidates:
-                    previous = charge_candidates.get(name)
-                    if previous is None or assignment.utility > previous.utility:
+                if unfunded:
+                    if HeadquartersControl.exploration_charge_budget(self, name, assignment) is not None:
                         charge_candidates[name] = assignment
                     continue
                 if name in getattr(self, 'rally_charge_requested', {}):
@@ -4730,11 +4747,17 @@ class HeadquartersControl(Node):
                     self.target_search_basis = ("current_map_known_free_sweep" if refine == "known_space"
                                                 else "current_map_frontiers")
                 break
-        if not selected:
-            if (not active_explorers and charge_candidates
-                    and HeadquartersControl.request_exploration_charge(
-                        self, list(charge_candidates.items()))):
+        # A robot with its own funded alternative still explores normally.
+        # Otherwise stop new admissions until accepted peer actions drain,
+        # including when those peers have enough energy for further work.
+        charge_candidates = {name: assignment for name, assignment in charge_candidates.items()
+                             if name not in plans}
+        if charge_candidates:
+            if active_explorers or any(mode == 'CHARGING' for mode in self.battery_modes.values()):
                 return
+            if HeadquartersControl.request_exploration_charge(self, list(charge_candidates.items())):
+                return
+        if not selected:
             now = self.now()
             if now - self.last_no_assignment_log >= 10.0:
                 self.get_logger().warn(
