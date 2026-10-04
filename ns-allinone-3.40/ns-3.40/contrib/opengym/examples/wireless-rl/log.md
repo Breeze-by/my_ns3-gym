@@ -5403,3 +5403,22 @@ ROS canonical cwd/source Humble、install、Gazebo；PYTHONNOUSERSITE=1、TURTLE
 425组件、四包build、source-only旁路与54协议矩阵通过。所有十固定格合格，不代替forced回归。主zero_rally_lab仍RALLY timeout，按原样保留为零网络注入下的稳定性限制，不归因于丢包/延迟。单机失败PARTIAL_COMPLETE、返充/期限探针、全部非COMPLETE/过程结果保留；未生成最终PASS图表/文档。
 
 当前原57自然结束后才写tracked档案。707原011786e已经暴露，584同策略基础设施复验；接下来若改控制算法，新正式协议必须用真正新留出组合。未启动P3C/ns-3/RL；任务继续。
+
+## 2026-10-04 P3B.5 v55充电/时间优先分配组件
+
+v43原57完整失败已在ae4ad02提交推送；不回填。候选只重排集合组合比较优先级，ACTIVE真实观测者免返充保留，先充电数/名义串行时间，再额外余量，最后原路径指标；完整名义/实际绕行能量、真实body/route/return保护、TTL/lease和300s/5s真实保持门槛保持。
+
+ROS canonical cwd，source Humble/install、PYTHONNOUSERSITE=1、ROS_LOG_DIR=canonical ROS/log/component_checks，通过rtk bash -lc执行：
+
+```bash
+/usr/bin/python3 -m pytest src/multi_robot_exploration/test/test_control.py -k rally_assignment -q > /tmp/p3b5_v55_assignment_targeted.log 2>&1
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_control.py src/multi_robot_exploration/test/test_battery_manager.py src/multi_robot_exploration/test/test_gateway.py src/multi_robot_exploration/test/test_fault_model.py src/multi_robot_exploration/test/test_navigation_faults.py src/multi_robot_exploration/test/test_task_evaluator.py src/multi_robot_exploration/test/test_nav2_ready_gate.py src/multi_robot_exploration/test/test_readiness.py src/multi_robot_exploration/test/test_spawn_entity_checked.py src/multi_robot_exploration/test/test_tf_ingress_sampler.py src/multi_robot_exploration/test/test_target_detector.py src/merge_map/test/test_merge_map.py scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py scripts/test_ros_smoke_native_probe.py scripts/test_observer_lifetime.py > /tmp/p3b5_v55_component_checks.log 2>&1
+colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot > /tmp/p3b5_v55_build.log 2>&1
+/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v55_source_audit.log 2>&1
+/usr/bin/python3 /tmp/probe_p3b5_v55_assignment.py > /tmp/p3b5_v55_assignment_comparison.log 2>&1
+/usr/bin/python3 /tmp/probe_p3b5_v55_assignment_attempt2.py > /tmp/p3b5_v55_assignment_comparison_attempt2.log 2>&1
+```
+
+相关17PASS2.54s，完整427PASS13.41s，四包build5.24s、source-only3r audit0违规。旧源动态比较工具初次相对导入ImportError退出1，未运行比较/ROS发布/Gazebo；原源/log保留。第二次使用真实包命名空间，六个自由图分配夹具PASS：80电量场景旧额外位移8m→候选0m，余量引发的一台同伴充电1→0；8.5低电量观测者仍选择无需返充的分配。人工候选与点位移不代表原控制buffer、实际运动或仿真因果性能。
+
+组件原始源、命令、环境、stdout、纯bytes SHA及全部比较值见report/20261004_p3b5_charge_time_assignment_component.json。尚无新仿真，也未观察任何新留出输入；接下来commit/push后独立dev303强制充电与zero fault任务，再冻结新正式协议。707已暴露，新控制算法必须有新未暴露留出world/seed/fault组合；不把组件PASS称完整P3B.5 PASS，不进入P3C/ns-3/RL。

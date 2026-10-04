@@ -987,9 +987,10 @@ def assign_rally_poses(
     """Assign separated visible poses, accounting for serial charge waits.
 
     With delivered batteries, preserve an ACTIVE observer when feasible, then
-    maximize its remaining budget headroom, then minimize predicted charges
-    and serial travel/charge time before the chosen
-    path objective. These estimates never authorize a navigation or return.
+    minimize predicted charges and serial travel/charge time, then compare
+    its remaining budget headroom before the chosen path objective. Extra
+    observer surplus must not force a funded peer to charge or take a detour.
+    These estimates never authorize a navigation or return.
     """
     if objective not in ("minimax", "total_path"):
         raise ValueError(f"unknown rally assignment objective: {objective}")
@@ -1141,7 +1142,7 @@ def assign_rally_poses(
                              else min(values[1], charge_times[name] + values[2])
                              for name, values in estimates.items())
             observer_charge = int(observer_robot in needed and modes.get(observer_robot) == "ACTIVE")
-            score = (observer_charge, -observer_headroom, len(needed), time_bound, *score)
+            score = (observer_charge, len(needed), time_bound, -observer_headroom, *score)
         if score >= best_score:
             return
         if len(assignments) == len(search_order):

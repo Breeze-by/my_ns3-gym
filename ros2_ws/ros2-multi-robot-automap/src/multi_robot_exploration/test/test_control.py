@@ -613,7 +613,7 @@ def test_rally_assignment_keeps_low_energy_observer_without_a_return(monkeypatch
     assert positions["tb2"] == (5.55, 1.55) and states["tb2"]["energy"] == 8.5
 
 
-def test_rally_assignment_preserves_observer_headroom_over_one_fewer_peer_charge(monkeypatch):
+def test_rally_assignment_avoids_peer_charge_for_optional_observer_surplus(monkeypatch):
     grid = np.zeros((80, 80), dtype=int)
     positions = {"tb1": (1.55, 1.55), "tb2": (5.55, 1.55), "tb3": (3.55, 1.55)}
     candidates = [control.RallyPose(x, 1.55, .25) for x in (1.55, 3.55, 5.55)]
@@ -622,11 +622,24 @@ def test_rally_assignment_preserves_observer_headroom_over_one_fewer_peer_charge
         tb1={"energy": 9.5}, tb2={"energy": 16.}, tb3={"energy": 9.5})
     assignments = control.assign_rally_poses(grid, .1, (0., 0.), positions, (4., 4.),
         battery_states=states, observer_robot="tb2")
-    # Zero-travel poses need no initial charge but give the observer less
-    # remaining energy. A reachable peer charge can preserve more visual time.
-    assert assignments["tb2"].x == 1.55
-    peer = next(name for name, pose in assignments.items() if pose.x == 5.55)
-    assert peer != "tb2" and states[peer]["energy"] < 10.
+    # Every stationary assignment funds its complete budget. Increasing the
+    # observer's surplus by swapping would force a peer to charge needlessly.
+    assert {name: (pose.x, pose.y) for name, pose in assignments.items()} == positions
+
+
+@pytest.mark.parametrize("objective", ["minimax", "total_path"])
+def test_rally_assignment_charged_peers_avoid_detours_for_observer_surplus(monkeypatch, objective):
+    grid = np.zeros((80, 80), dtype=int)
+    positions = {"tb1": (1.55, 1.55), "tb2": (5.55, 1.55), "tb3": (3.55, 1.55)}
+    candidates = [control.RallyPose(x, 1.55, .25) for x in (1.55, 3.55, 5.55)]
+    monkeypatch.setattr(control, "rally_pose_candidates", lambda *args: candidates)
+    states = rally_assignment_batteries(positions)
+    assignments = control.assign_rally_poses(grid, .1, (0., 0.), positions, (3.5, 3.5),
+        objective, battery_states=states, observer_robot="tb2")
+    # All have80 energy. Returning the observer toward home improves its
+    # unused surplus, but makes two already-funded robots cross the map.
+    assert {name: (pose.x, pose.y) for name, pose in assignments.items()} == positions
+    assert all(pose.yaw == .25 for pose in assignments.values())
 
 
 @pytest.mark.parametrize("mode", ["RETURNING", "CHARGING"])
