@@ -5632,3 +5632,18 @@ ROS_DOMAIN_ID=21 GAZEBO_MASTER_URI=http://127.0.0.1:15752 /usr/bin/python3 /home
 ```
 
 监控脚本首次StringIO被exec共享globals覆盖造成AttributeError；改为隔离globals后仅只读监控恢复，任务未受影响，两个源码均保留。初次寻找launch log采用不存在的路径，后从原summary定位真实路径；这两处均为只读诊断错误，非试验基础设施失败。完整归档含全部6raw、命令/环境/冻结源码/协议、原生字段、图/账本审计、AP/physics文件hash、前沿分配日志、6结果及51unrun。
+
+## 2026-10-05 P3B.5 v59充电中断前沿接续组件
+
+2026-10-05 P3B.5 v59开发组件：充电/同伴返航取消探索动作后保存搜索意图；恢复只优先最新地图中距原前沿≤1.2m、gain>max(200,原20%)且完整往返预算factor≥1的当前候选，继续经过源TTL/动态身体/已接受路线/可见短腿/gateway。旧意图不是旧指令重放；已观测/阻塞/预算不足回退、成功前缀继续意图、抵达或明确FAILED清除。针对20项1.14s PASS后补明确失败清理检查，完整472项13.60s、四包build5.34s、source3r0旁路。原native_completion_ok/episode_ok与300s/.35/.05/.1/5未改。证据report/20261005_p3b5_interrupted_frontier_component.json；原v58六格FAIL已a6830cc归档，809/28091仍未运行。接续为待集成验证启发式，无因果/最坏时间保证；将先冻结独立lab101/forced303/zero303开发，全部自然关闭后才能修改或归档，再重新冻结正式57格。P3B.5尚未完成，无ns-3/RL。
+
+ROS canonical cwd，source Humble/install、PYTHONNOUSERSITE=1、ROS_LOG_DIR=log/component_checks，rtk bash -lc执行，未运行Gazebo：
+
+```bash
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_exploration_resume.py > /tmp/p3b5_v59_resume_targeted.log 2>&1
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_control.py src/multi_robot_exploration/test/test_exploration_resume.py src/multi_robot_exploration/test/test_battery_manager.py src/multi_robot_exploration/test/test_gateway.py src/multi_robot_exploration/test/test_fault_model.py src/multi_robot_exploration/test/test_navigation_faults.py src/multi_robot_exploration/test/test_task_evaluator.py src/multi_robot_exploration/test/test_nav2_ready_gate.py src/multi_robot_exploration/test/test_readiness.py src/multi_robot_exploration/test/test_spawn_entity_checked.py src/multi_robot_exploration/test/test_tf_ingress_sampler.py src/multi_robot_exploration/test/test_target_detector.py src/merge_map/test/test_merge_map.py scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py scripts/test_ros_smoke_native_probe.py scripts/test_observer_lifetime.py > /tmp/p3b5_v59_component_checks.log 2>&1
+colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot > /tmp/p3b5_v59_build.log 2>&1
+/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v59_source_audit.log 2>&1
+```
+
+17用户材料hash保持不变；实现复用既有IG/完整往返预算/路径准入，未新增依赖。独立开发还未启动，组件PASS不得替代fixed/forced/协议/物理返航和新809完整原始门禁。

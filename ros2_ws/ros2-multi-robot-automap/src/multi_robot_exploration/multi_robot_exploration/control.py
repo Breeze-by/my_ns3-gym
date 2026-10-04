@@ -491,6 +491,18 @@ def goal_is_stale(initial_gain, remaining_gain, age_sec):
     return remaining_gain <= threshold
 
 
+def interrupted_frontier_is_useful(assignment, intent, battery_factor):
+    """Prioritize current frontier candidates near a preempted search intent."""
+    return (
+        intent is not None
+        and battery_factor >= 1.0
+        and math.dist((assignment.x, assignment.y), intent[:2]) <= MIN_TARGET_SEPARATION_M
+        and assignment.viewpoint.information_gain > max(
+            MIN_REMAINING_GAIN, intent[2] * MIN_REMAINING_GAIN_FRACTION
+        )
+    )
+
+
 def nearest_traversable(traversable, start, max_radius_cells):
     row, column = start
     height, width = traversable.shape
@@ -2134,6 +2146,7 @@ class HeadquartersControl(Node):
         self.goal_initial_gain = {}
         self.goal_targets = {}
         self.goal_routes = {}
+        self.exploration_resume_intents = {}
         self.cancel_requested = {}
         self.robot_subscriptions = []
 
@@ -4452,8 +4465,10 @@ class HeadquartersControl(Node):
             )
         frontier_data = self.frontier_cache
         search_gain_cache = {}  # One immutable map/visit mask per admission batch.
+        resume_intents = getattr(self, "exploration_resume_intents", {})
         for refine in ((False, True, "known_space") if search else (False, True)):
             candidates = []
+            resume_candidates = set()
             diagnostics["frontier_groups"] = 0
             diagnostics["groups_with_viewpoints"] = 0
             for robot_name, position in idle_positions.items():
@@ -4516,6 +4531,10 @@ class HeadquartersControl(Node):
                         assignment.navigation_x,
                         assignment.navigation_y,
                     )
+                    if not search and interrupted_frontier_is_useful(
+                        coordinated, resume_intents.get(robot_name), battery_factor
+                    ):
+                        resume_candidates.add((robot_name, coordinated))
                     candidates.append(
                         (utility, robot_name, group_id, coordinated)
                     )
@@ -4528,13 +4547,16 @@ class HeadquartersControl(Node):
             plans = {}
             routes = {}
             selected = []
+            resuming_names = set()
             route_caches = {name: {} for name in idle_positions}
             reservations = [
                 remaining_rally_route(route, self.robot_positions[name])
                 for name, route in self.goal_routes.items()
                 if self.robot_states[name] == "active" and route
             ]
-            for _, name, _, assignment in sorted(candidates, key=lambda item: -item[0]):
+            for _, name, _, assignment in sorted(candidates, key=lambda item: (
+                (item[1], item[3]) not in resume_candidates, -item[0]
+            )):
                 if name in plans:
                     continue
                 if any(
@@ -4570,6 +4592,8 @@ class HeadquartersControl(Node):
                 )
                 routes[name] = route
                 selected.append(name)
+                if (name, assignment) in resume_candidates:
+                    resuming_names.add(name)
                 reservations.append(route)
                 if len(selected) + active_explorers >= max_concurrent:
                     break
@@ -4590,6 +4614,12 @@ class HeadquartersControl(Node):
             return
         for robot_name in selected:
             assignment = plans[robot_name]
+            if robot_name not in resuming_names:
+                resume_intents.pop(robot_name, None)
+            else:
+                self.get_logger().info(
+                    f"Resuming {robot_name}'s interrupted search with a current, funded frontier."
+                )
             self.robot_states[robot_name] = "active"
             self.goal_targets[robot_name] = assignment
             self.goal_routes[robot_name] = routes[robot_name]
@@ -4758,6 +4788,22 @@ class HeadquartersControl(Node):
 
     def finish_goal(self, robot_name, success, blacklist=True):
         assignment = self.goal_targets[robot_name]
+        resume_intents = getattr(self, "exploration_resume_intents", {})
+        if self.battery_modes[robot_name] == "FAILED":
+            resume_intents.pop(robot_name, None)
+        elif (assignment is not None and not success
+                and self.battery_preempted[robot_name]
+                and getattr(self, "task_state", None) in ("EXPLORE", "FOUND_UNCONFIRMED")):
+            # This is a future search preference, never an old navigation goal
+            # to replay. Admission reselects current map candidates and checks
+            # fresh inputs, complete energy budgets and live route reservations.
+            resume_intents[robot_name] = (
+                assignment.x, assignment.y, assignment.viewpoint.information_gain
+            )
+        elif (success and robot_name in resume_intents and assignment is not None
+              and math.dist((assignment.navigation_x, assignment.navigation_y),
+                            resume_intents[robot_name][:2]) <= MIN_TARGET_SEPARATION_M):
+            resume_intents.pop(robot_name)
         if (success and getattr(self, "target_search_active", False)
                 and not self.fresh_target() and self.fresh_robot_poses()):
             # A travelled search waypoint deserves a real full-heading scan;
