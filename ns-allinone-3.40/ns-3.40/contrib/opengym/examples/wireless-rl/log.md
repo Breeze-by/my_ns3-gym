@@ -5505,3 +5505,25 @@ ROS_DOMAIN_ID=30 GAZEBO_MASTER_URI=http://127.0.0.1:15550 /usr/bin/python3 /home
 ```
 
 首次诊断time_to_target_sec键不存在导致KeyError，未启动ROS/Gazebo；移除无关键后的第二次成功，第三次压缩UUID噪声并加native可见性，原源码/stdout和原观测均保留。实际起点补查仅静态连通，发生于首次809暴露之前；不能把错误初标签视为真实起点证明，也不能把静态PASS当成任务成功。完整归档含hash、源/环境/协议/commands、七result、原生proof、graph/ledger证据、AP/physics文件manifest、dispatcher FAIL和50unrun清单。
+
+## 2026-10-04 P3B.5 v57交付朝向保持组件
+
+2026-10-04 P3B.5 v57朝向保持候选：v56原lab101已归档7cc413c，不回填。网关交付odom朝向与map→odom旋转相加并归一化；当前观测者/guard停在集合位附近后，偏离请求yaw超过交付相机FOV的四分之一时重新开放原final导航腿。要求新鲜target/地图/位姿，ACTIVE、无pending/live与local-return refuge，原网关/能量/机体/在途路线/真实返航/并发保护保持。待执行未来路线优先级不阻止近位朝向校正，实际预约仍保护。448组件PASS14.00s、四包build5.10s、source-only3r audit0违规；证据见report/20261004_p3b5_observer_heading_component.json。v56交付yaw与native相符，物理朝向漂移原因未凭cmd_vel确认；候选修复中央未监测到位后朝向的问题，不能把预测或组件PASS当真实检测/任务通过。需要独立lab101/force303开发与新完整冻结，809尚未暴露，P3B.5未完成。
+
+ROS canonical cwd，source Humble/install、PYTHONNOUSERSITE=1、ROS_LOG_DIR=log/component_checks，通过rtk bash -lc；以下均离线组件/只读原记录诊断，未启动新任务或Gazebo：
+
+```bash
+/usr/bin/python3 -m pytest src/multi_robot_exploration/test/test_control.py -k "delivered_heading or parked_observer or delivered_odom_violation or target_lease" -q --tb=short > /tmp/p3b5_v57_heading_targeted.log 2>&1
+/usr/bin/python3 -m pytest src/multi_robot_exploration/test/test_control.py -k "delivered_heading or parked_observer or delivered_odom_violation or target_lease" -q --tb=short > /tmp/p3b5_v57_heading_targeted_attempt2.log 2>&1
+/usr/bin/python3 -m pytest src/multi_robot_exploration/test/test_control.py -k "delivered_heading or parked_observer or delivered_odom_violation or target_lease" -q --tb=short > /tmp/p3b5_v57_heading_targeted_attempt3.log 2>&1
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_control.py src/multi_robot_exploration/test/test_battery_manager.py src/multi_robot_exploration/test/test_gateway.py src/multi_robot_exploration/test/test_fault_model.py src/multi_robot_exploration/test/test_navigation_faults.py src/multi_robot_exploration/test/test_task_evaluator.py src/multi_robot_exploration/test/test_nav2_ready_gate.py src/multi_robot_exploration/test/test_readiness.py src/multi_robot_exploration/test/test_spawn_entity_checked.py src/multi_robot_exploration/test/test_tf_ingress_sampler.py src/multi_robot_exploration/test/test_target_detector.py src/merge_map/test/test_merge_map.py scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py scripts/test_ros_smoke_native_probe.py scripts/test_observer_lifetime.py > /tmp/p3b5_v57_component_checks.log 2>&1
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_control.py src/multi_robot_exploration/test/test_battery_manager.py src/multi_robot_exploration/test/test_gateway.py src/multi_robot_exploration/test/test_fault_model.py src/multi_robot_exploration/test/test_navigation_faults.py src/multi_robot_exploration/test/test_task_evaluator.py src/multi_robot_exploration/test/test_nav2_ready_gate.py src/multi_robot_exploration/test/test_readiness.py src/multi_robot_exploration/test/test_spawn_entity_checked.py src/multi_robot_exploration/test/test_tf_ingress_sampler.py src/multi_robot_exploration/test/test_target_detector.py src/merge_map/test/test_merge_map.py scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py scripts/test_ros_smoke_native_probe.py scripts/test_observer_lifetime.py > /tmp/p3b5_v57_component_checks_attempt2.log 2>&1
+colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot > /tmp/p3b5_v57_build.log 2>&1
+colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot > /tmp/p3b5_v57_build_attempt2.log 2>&1
+/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v57_source_audit.log 2>&1
+/usr/bin/python3 /tmp/compare_p3b5_v56_observer_frames.py > /tmp/p3b5_v57_v56_observer_frames.log
+```
+
+Targeted1:9fail/7pass (initialization inserted in sibling loop plus incomplete stale fixtures); targeted2:2fail/14pass (fixture input_robot_names absent); targeted3:16pass. Full1:15fail/426pass (untracked-yaw branch accessed position tolerance before skipping narrow fixtures); reorder to require actual yaw first. Full2:448pass. All logs retained; no mission during edits.
+
+Quarter-FOV trigger is a proactive heuristic, not visibility proof or worst-case timing guarantee. Geometric Gazebo target proxy remains. No heldout809 mission observed, no thresholds relaxed, no ns3/RL.

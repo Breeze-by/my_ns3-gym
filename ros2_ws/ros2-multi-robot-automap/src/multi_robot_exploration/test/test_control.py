@@ -1388,7 +1388,7 @@ def test_delivered_odom_violation_resets_hold_before_the_next_timer(angular, lin
         rally_targets={"tb1": control.RallyPose(0., 0., 0.)},
         rally_linear_tolerance=.05, rally_angular_tolerance=.1, rally_position_tolerance=.35,
         robot_odom_received_at={}, robot_velocities={}, map_to_odom={"tb1": transform},
-        robot_positions={}, goal_last_position={"tb1": None}, robot_states={"tb1": "idle"},
+        robot_positions={}, robot_yaws={}, goal_last_position={"tb1": None}, robot_states={"tb1": "idle"},
     )
     message = Odometry()
     message.header.stamp.sec = 100
@@ -1401,6 +1401,86 @@ def test_delivered_odom_violation_resets_hold_before_the_next_timer(angular, lin
     message.pose.pose.position.x = 0.
     control.HeadquartersControl.robot_odom_callback(node, message, "tb1")
     assert node.rally_hold_started_at is None
+
+
+@pytest.mark.parametrize('odom_yaw,tf_yaw', [(2.454, -.007), (3., .4), (-3., -.4)])
+def test_delivered_heading_uses_the_same_map_frame_as_rally_goals(odom_yaw, tf_yaw):
+    from types import SimpleNamespace
+    from nav_msgs.msg import Odometry
+    transform = Transform()
+    transform.rotation.z, transform.rotation.w = math.sin(tf_yaw/2), math.cos(tf_yaw/2)
+    node = SimpleNamespace(task_state='EXPLORE', robot_odom_received_at={}, robot_velocities={},
+        map_to_odom={'tb2': transform}, robot_positions={}, robot_yaws={},
+        goal_last_position={'tb2': None}, robot_states={'tb2': 'idle'})
+    message = Odometry()
+    message.pose.pose.orientation.z = math.sin(odom_yaw/2)
+    message.pose.pose.orientation.w = math.cos(odom_yaw/2)
+    control.HeadquartersControl.robot_odom_callback(node, message, 'tb2')
+    expected = math.atan2(math.sin(odom_yaw+tf_yaw), math.cos(odom_yaw+tf_yaw))
+    assert node.robot_yaws['tb2'] == pytest.approx(expected)
+
+
+@pytest.mark.parametrize('condition', ['drift', 'wrapped', 'centered', 'busy', 'pending',
+                                     'local_return', 'stale_inputs', 'stale_pose', 'stale_target',
+                                     'returning', 'no_slot', 'route_conflict', 'non_observer',
+                                     'no_yaw', 'nan_yaw', 'narrow_fov'])
+def test_parked_observer_corrects_heading_through_reserved_navigation(condition):
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+    names = ['peer', 'observer']
+    desired = -math.pi+.1 if condition == 'wrapped' else 1.5657124565684668
+    measured = math.pi-.1 if condition == 'wrapped' else 2.447
+    if condition == 'centered': measured = desired+.2
+    if condition == 'narrow_fov': measured = desired+.3
+    if condition == 'no_yaw': measured = None
+    if condition == 'nan_yaw': measured = float('nan')
+    positions = {'peer': (6.05, 5.05), 'observer': (2.05, 2.05)}
+    targets = {'peer': control.RallyPose(8.05, 5.05, 0.),
+               'observer': control.RallyPose(2.05, 2.05, desired)}
+    handles = {'peer': Mock(), 'observer': Mock() if condition == 'busy' else None}
+    sent = []
+    node = SimpleNamespace(
+        enable_battery=False, task_state='RALLY', fresh_robot_inputs=lambda: condition != 'stale_inputs',
+        fresh_robot_poses=lambda: condition != 'stale_pose', fresh_target=lambda: condition != 'stale_target',
+        stop_target_scan=lambda: False, last_input_availability=True, last_input_diagnostic_at=10.,
+        consumed_publisher=Mock(), input_freshness_details=lambda: {},
+        input_robot_names=lambda: names,
+        now=lambda: 10., participating_robots=lambda: names,
+        rally_charge_requested={}, rally_precharge_staging={}, rally_max_concurrent=1 if condition == 'no_slot' else 2,
+        rally_leg_routes={'peer': ((6.05, 5.05), positions['observer'] if condition == 'route_conflict' else (8.05, 5.05)), 'observer': ()},
+        rally_goal_handles=handles, rally_goal_pending={'peer': False, 'observer': condition == 'pending'},
+        rally_goal_started_at={'peer': 9., 'observer': 9. if handles['observer'] else None},
+        goal_timeout_sec=60., rally_goal_timeout_sec=30.,
+        rally_arrived={'peer': False, 'observer': True}, rally_hold_started_at=None,
+        rally_yield_targets=set(), return_yield_targets={'observer': 'returner'} if condition == 'local_return' else {},
+        rally_yield_requested=dict.fromkeys(names, False), rally_probe_targets=set(),
+        rally_targets=targets.copy(), rally_final_targets=targets.copy(), rally_dispatch_order=names,
+        battery_modes={'peer': 'ACTIVE', 'observer': 'RETURNING' if condition == 'returning' else 'ACTIVE'},
+        survey_robot=None, survey_goal_handle=None, survey_goal_pending=False,
+        release_return_yields=lambda: None, yield_to_returning_robot=lambda: None,
+        reacquire_target_by_scanning=lambda: None, last_rally_dispatch_at=0., global_battery_rally_pause=False,
+        rally_attempts=dict.fromkeys(names, 0), rally_recovery_requested=dict.fromkeys(names, False),
+        rally_route_unavailable_since=dict.fromkeys(names), robot_positions=positions,
+        robot_yaws={'observer': measured}, target_observing_robot='unknown' if condition == 'non_observer' else 'observer',
+        target_view_fov_rad=math.pi/3 if condition == 'narrow_fov' else math.pi/2,
+        map_data=np.zeros((100, 100), dtype=int), resolution=.1, origin=(0., 0.),
+        rally_position_tolerance=.35, target=(2.05, 4.05), get_logger=lambda: Mock(),
+    )
+    def send(name, plan, charge_staging=False):
+        assert not charge_staging and name == 'observer'
+        assert not control.routes_conflict(plan[1], node.rally_leg_routes['peer'], control.RALLY_ROUTE_SEPARATION_M)
+        sent.append(plan)
+        node.rally_goal_pending[name] = True
+    node.send_rally_goal = send
+    control.HeadquartersControl.update_mission(node)
+    assert bool(sent) == (condition in ('drift', 'narrow_fov'))
+    if sent:
+        assert sent[0][0].yaw == pytest.approx(desired)
+        assert math.dist((sent[0][0].x, sent[0][0].y), positions['observer']) < .01
+        assert not node.rally_arrived['observer']
+        control.HeadquartersControl.update_mission(node)
+        assert len(sent) == 1
+    assert node.rally_final_targets == targets
 
 
 @pytest.mark.parametrize("pending", [False, True])
@@ -2615,9 +2695,9 @@ def test_target_lease_requires_new_delivered_confirmation_and_keeps_task_phase()
         phases.append(value)
         node.task_state = value
     node.publish_task_state = phase
-    def deliver(stamp, target=(1., 2.), robot="tb1", distance=3.):
+    def deliver(stamp, target=(1., 2.), robot="tb1", distance=3., fov=90.):
         event = {"robot": robot, "target_x": target[0], "target_y": target[1],
-                 "max_distance_m": distance,
+                 "max_distance_m": distance, "field_of_view_deg": fov,
                  "stamp_sec": stamp, "_gateway": {"source_time": stamp, "delivery_time": 100.}}
         control.HeadquartersControl.target_detection_callback(node, String(data=json.dumps(event)))
     deliver(39.9)
@@ -2646,6 +2726,11 @@ def test_target_lease_requires_new_delivered_confirmation_and_keeps_task_phase()
         deliver(99.9, robot="tb1", distance=distance)
         assert node.target_received_source_time == 99.5
         assert node.target_view_distance == 1.5 and node.target_observing_robot == "tb2"
+    for fov in (float('inf'), float('nan'), 0., -1., 360.1):
+        deliver(99.9, robot='tb1', fov=fov)
+        assert node.target_received_source_time == 99.5 and node.target_view_fov_rad == pytest.approx(math.pi/2)
+    deliver(99.9, robot='tb2', distance=1.5, fov=60.)
+    assert node.target_view_fov_rad == pytest.approx(math.pi/3)
 
 
 def test_expired_target_blocks_rally_decisions_without_blocking_local_return_yield():

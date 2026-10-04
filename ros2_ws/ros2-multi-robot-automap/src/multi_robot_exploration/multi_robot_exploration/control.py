@@ -139,14 +139,17 @@ def world_to_grid(x, y, resolution, origin_x, origin_y):
     )
 
 
-def transform_point_2d(x, y, transform):
-    """Apply a TransformStamped's planar transform to a point."""
-    translation = transform.translation
-    rotation = transform.rotation
-    yaw = math.atan2(
+def quaternion_yaw(rotation):
+    return math.atan2(
         2.0 * (rotation.w * rotation.z + rotation.x * rotation.y),
         1.0 - 2.0 * (rotation.y * rotation.y + rotation.z * rotation.z),
     )
+
+
+def transform_point_2d(x, y, transform):
+    """Apply a TransformStamped's planar transform to a point."""
+    translation = transform.translation
+    yaw = quaternion_yaw(transform.rotation)
     return (
         translation.x + math.cos(yaw) * x - math.sin(yaw) * y,
         translation.y + math.sin(yaw) * x + math.cos(yaw) * y,
@@ -2052,6 +2055,7 @@ class HeadquartersControl(Node):
         self.target_received_source_time = None
         self.target_observing_robot = None
         self.target_view_distance = 3.0
+        self.target_view_fov_rad = math.pi / 2
         self.rally_observer_guard = None
         self.detecting_robot = None
         self.rally_targets = {}
@@ -2106,6 +2110,7 @@ class HeadquartersControl(Node):
             OccupancyGrid, "/merge_map", self.map_callback, 10
         )
         self.robot_positions = {}
+        self.robot_yaws = {}
         self.map_to_odom = {}
         self.robot_maps = {}
         self.robot_odom_received_at = {}
@@ -2137,6 +2142,7 @@ class HeadquartersControl(Node):
                 String, f"/gateway/request/{robot_name}/charge", 10
             )
             self.robot_positions[robot_name] = None
+            self.robot_yaws[robot_name] = None
             self.map_to_odom[robot_name] = None
             self.robot_maps[robot_name] = None
             self.robot_odom_received_at[robot_name] = None
@@ -2457,6 +2463,9 @@ class HeadquartersControl(Node):
             view_distance = float(event.get("max_distance_m", 3.0))
             if not math.isfinite(view_distance) or view_distance <= 0:
                 raise ValueError("invalid detector range")
+            view_fov = math.radians(float(event.get("field_of_view_deg", 90.0)))
+            if not math.isfinite(view_fov) or not 0 < view_fov <= 2 * math.pi:
+                raise ValueError("invalid detector field of view")
         except (KeyError, TypeError, ValueError, json.JSONDecodeError) as error:
             self.get_logger().error(f"Invalid target detection: {error}")
             return
@@ -2465,6 +2474,7 @@ class HeadquartersControl(Node):
         self.target_received_source_time = stamp
         self.target_observing_robot = robot
         self.target_view_distance = view_distance
+        self.target_view_fov_rad = view_fov
         if initial:
             self.detecting_robot = robot
         self.consumed_publisher.publish(String(data=json.dumps({
@@ -3099,6 +3109,7 @@ class HeadquartersControl(Node):
             )
             self.rally_goal_handles[name].cancel_goal_async()
 
+        heading_corrections = set()
         for name, handle in self.rally_goal_handles.items():
             if name not in self.rally_targets:
                 continue
@@ -3124,6 +3135,25 @@ class HeadquartersControl(Node):
                 > self.rally_position_tolerance
             ):
                 self.rally_arrived[name] = False
+            yaw = getattr(self, "robot_yaws", {}).get(name)
+            if (yaw is not None and math.isfinite(yaw) and position is not None
+                    and math.dist(position, (target.x, target.y)) <= self.rally_position_tolerance
+                    and name in (getattr(self, "rally_observer_guard", None),
+                                 getattr(self, "target_observing_robot", None))
+                    and handle is None and not self.rally_goal_pending[name]
+                    and name not in self.return_yield_targets
+                    and self.battery_modes[name] == "ACTIVE"
+                    and self.fresh_robot_inputs()
+                    and abs(math.atan2(math.sin(target.yaw - yaw),
+                                       math.cos(target.yaw - yaw)))
+                    > getattr(self, "target_view_fov_rad", math.pi / 2) / 4):
+                # A successful Nav2 result does not hold the camera heading.
+                # Reuse the reserved/energy-checked final leg before yaw drift
+                # loses the delivered observation lease. Never use native truth.
+                if self.rally_arrived[name]:
+                    self.get_logger().info(f"Correcting parked {name}'s observer heading.")
+                self.rally_arrived[name] = False
+                heading_corrections.add(name)
 
         self.yield_to_returning_robot()
         if (
@@ -3191,7 +3221,7 @@ class HeadquartersControl(Node):
                 name for name in self.rally_dispatch_order
                 if self.battery_modes[name] == 'FAILED'
                 or self.rally_arrived[name]
-            }
+            } | heading_corrections
             # A parked temporary refuge waits for traffic to clear before
             # restoring its final goal. Its deferred approach must not seal
             # unrelated traffic; its actual body remains in every plan mask.
@@ -3546,7 +3576,7 @@ class HeadquartersControl(Node):
                 # The requesting waiter lends its future priority until the
                 # blocker clears it. Parked refuges defer their approaches;
                 # real bodies/live legs and safety returns stay protected.
-                priority_routes = [] if name in stage_names else rally_priority_reservations(
+                priority_routes = [] if name in stage_names | heading_corrections else rally_priority_reservations(
                     self.rally_dispatch_order, name, approach_routes,
                     completed_approaches | {
                         beneficiary for yielding, beneficiary in
@@ -4280,6 +4310,8 @@ class HeadquartersControl(Node):
         )
         position = transform_point_2d(*odom_position, transform)
         self.robot_positions[robot_name] = position
+        yaw = quaternion_yaw(msg.pose.pose.orientation) + quaternion_yaw(transform.rotation)
+        self.robot_yaws[robot_name] = math.atan2(math.sin(yaw), math.cos(yaw))
         if (self.task_state == "RALLY" and self.rally_hold_started_at is not None
                 and robot_name in self.rally_targets):
             target = self.rally_targets[robot_name]
