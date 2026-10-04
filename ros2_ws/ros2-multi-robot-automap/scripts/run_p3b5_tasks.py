@@ -254,7 +254,7 @@ def main():
     base.mkdir(parents=True, exist_ok=True)
     manifest_args = SimpleNamespace(robot_count=3, duration=config["duration_sec"], goal_timeout=60,
         startup_timeout=600, message_timeout=90, evaluation_wait_timeout=900, shutdown_timeout=60,
-        ros_domain_base=args.ros_domain_base, seeds=[101, 202, 303, 707], scenarios=list(config["scenarios"]),
+        ros_domain_base=args.ros_domain_base, seeds=sorted({item["scenario"]["seed"] for item in planned.values()}), scenarios=list(config["scenarios"]),
         skip_cross_check=True, rally_assignment_objective="minimax", disable_map_safe_rally_order=False,
         enable_global_battery_rally_pause=False, disable_global_battery_rally_pause=True, rally_max_concurrent=2)
     manifest = build_manifest(args.config, manifest_args)

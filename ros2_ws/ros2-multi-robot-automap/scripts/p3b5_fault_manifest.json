@@ -7,7 +7,7 @@
     303
   ],
   "holdout_seeds": [
-    707
+    809
   ],
   "fault_seed": 17011,
   "duration_sec": 300,
@@ -39,11 +39,11 @@
       "energy": 45
     },
     "holdout3": {
-      "world": "p3a5_holdout.world",
+      "world": "p3b5_holdout809.world",
       "target_x": 4.4,
-      "target_y": 3.4,
+      "target_y": -3.4,
       "robot_count": 3,
-      "seed": 707,
+      "seed": 809,
       "energy": 45,
       "holdout": true
     },
@@ -144,15 +144,15 @@
     "battery_exhaust": {
       "battery_initial_energy": 0
     },
-    "up10_holdout27077": {
+    "up10_holdout28091": {
       "uplink_loss_rate": 0.1,
-      "gateway_seed": 27077
+      "gateway_seed": 28091
     },
-    "down10_holdout27077": {
+    "down10_holdout28091": {
       "downlink_loss_rate": 0.1,
-      "gateway_seed": 27077
+      "gateway_seed": 28091
     },
-    "burst_holdout27077": {
+    "burst_holdout28091": {
       "gateway_blackout_intervals": [
         [
           80,
@@ -163,7 +163,7 @@
           160
         ]
       ],
-      "gateway_seed": 27077
+      "gateway_seed": 28091
     }
   },
   "cases": [
@@ -309,19 +309,19 @@
       "id": "holdout_rally",
       "scenario": "holdout3",
       "mode": "rally",
-      "profile": "up10_holdout27077"
+      "profile": "up10_holdout28091"
     },
     {
       "id": "holdout_target",
       "scenario": "holdout3",
       "mode": "target",
-      "profile": "down10_holdout27077"
+      "profile": "down10_holdout28091"
     },
     {
       "id": "holdout_coverage",
       "scenario": "holdout3",
       "mode": "coverage",
-      "profile": "burst_holdout27077"
+      "profile": "burst_holdout28091"
     },
     {
       "id": "battery_exhaust_lab",
@@ -332,10 +332,84 @@
   ],
   "temporal_contract": "source<=enqueue<=admit/tx<=delivery; TF source is scan stamp, native validity offset derived from actual SLAM config; fault blackout relative first EXPLORE",
   "ideal_transport": "no fault intervention, zero stochastic loss/delay/reorder/duplicate/blackout/drop; normal bounded4096 queue; task load/deadline/retry unchanged",
-  "holdout_fault_seed": 27077,
+  "holdout_fault_seed": 28091,
   "holdout_fault_seed_declaration": {
-    "predeclared_at_utc": "2026-10-01T20:40:27.833419+00:00",
-    "reason": "20260928P3B.5 minimum requires un-tuned fault seed in holdout combination. Seed707 and world never executed; seed27077 not previously exercised or tuned. Development fault17011/cells/energy/horizons unchanged. Original planned holdout17011 cells never executed; original declaration retained. Configuration archive provided before any primary matrix or707.",
-    "supersedes_unexecuted_holdout_seed": 17011
+    "predeclared_at_utc": "2026-10-04T14:45:09.824843+00:00",
+    "reason": "Controller changed after707 exposure at011786e; use new unexposed world/seed809/independent fault28091. Selected before any new-world task run. Development17011, existing cells, fault magnitudes, energy, horizon and native gates unchanged. Old exposed originals/seed declaration remain historical evidence.",
+    "superseded_exposed_scenario": {
+      "world": "p3a5_holdout.world",
+      "target_x": 4.4,
+      "target_y": 3.4,
+      "robot_count": 3,
+      "seed": 707,
+      "energy": 45,
+      "holdout": true
+    },
+    "superseded_fault_seed": 27077,
+    "superseded_fault_seed_declaration": {
+      "predeclared_at_utc": "2026-10-01T20:40:27.833419+00:00",
+      "reason": "20260928P3B.5 minimum requires un-tuned fault seed in holdout combination. Seed707 and world never executed; seed27077 not previously exercised or tuned. Development fault17011/cells/energy/horizons unchanged. Original planned holdout17011 cells never executed; original declaration retained. Configuration archive provided before any primary matrix or707.",
+      "supersedes_unexecuted_holdout_seed": 17011
+    }
+  },
+  "holdout_world_declaration": {
+    "predeclared_at_utc": "2026-10-04T14:45:09.824843+00:00",
+    "world": "p3b5_holdout809.world",
+    "world_content_sha256": "2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd",
+    "gazebo_seed": 809,
+    "fault_seed": 28091,
+    "proposal": {
+      "proposed_at_utc": "2026-10-04T14:36:39.059239+00:00",
+      "world": "p3b5_holdout809.world",
+      "world_content_sha256": "2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd",
+      "gazebo_seed": 809,
+      "fault_seed": 28091,
+      "target": [
+        4.4,
+        -3.4
+      ],
+      "robot_count": 3,
+      "initial_energy": 45,
+      "duration_sec": 300,
+      "scope": "New staggered horizontal partition/central opening topology plus rotated blocks/pillar, not old707 rename/seed-only change. No Gazebo/task/vision/motion evaluation has been performed. Static geometry validation only before prospective canonical freeze; controller must be frozen before first exposure.",
+      "design_basis": "Same lab-sized box, valid start/chargers and reachable target with ordinary .45m clearance. Geometry selected before any new heldout run; never choose or tune based on heldout outcomes.",
+      "previous_exposed_world": "p3a5_holdout.world",
+      "previous_exposed_seed": 707,
+      "previous_independent_fault_seed": 27077,
+      "previous_first_exposure_commit": "011786e53e4c7c2a0eb1e2358fc0b81f651a8316"
+    },
+    "static_geometry_check": {
+      "status": "PASS",
+      "scope": "Static SDF/visual collision agreement, supported box rasterization and .45m-clearance connected start/charger/target geometry only. No task/controller/vision run or performance tuning.",
+      "world_content_sha256": "2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd",
+      "rectangle_count": 10,
+      "unsupported_collision_count": 0,
+      "points": {
+        "tb1_start_charge": [
+          0.0,
+          0.0
+        ],
+        "tb2_start_charge": [
+          0.0,
+          0.45
+        ],
+        "tb3_start_charge": [
+          0.0,
+          0.9
+        ],
+        "target": [
+          4.4,
+          -3.4
+        ]
+      },
+      "connected_distances_from_tb1_m": {
+        "tb1_start_charge": 0.0,
+        "tb2_start_charge": 0.45,
+        "tb3_start_charge": 0.9,
+        "target": 6.4234018715767665
+      }
+    },
+    "controller_content_sha256": "478fc6929675fed0f6435a3b6c81f7549655f438dbed9fae1e6ac0fa1e857960",
+    "first_task_exposure": "Pending: only after clean pushed freeze, forced-native subgate and all ten fixed same-commit cells pass; no tuning or replacement on heldout outcomes."
   }
 }

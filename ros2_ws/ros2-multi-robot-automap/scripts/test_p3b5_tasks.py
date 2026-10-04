@@ -54,6 +54,27 @@ def test_holdout_commands_use_declared_independent_fault_seed(tmp_path):
             assert arguments.gateway_seed==(config['holdout_fault_seed'] if case['scenario']=='holdout3' else config['fault_seed'])
 
 
+@pytest.mark.parametrize('seed',[303,809])
+def test_manifest_records_actual_selected_seed_without_historical_or_unused_seeds(tmp_path,monkeypatch,seed):
+    import sys
+    import run_p3b5_tasks as runner
+    config=tmp_path/'config.json'
+    config.write_text(json.dumps({'duration_sec':300,'coverage_threshold':.8,
+        'cases':[{'id':'basic','scenario':'selected','mode':'coverage','profile':'zero'}],
+        'scenarios':{'selected':{'world':'my_world.world','energy':45,'seed':seed},
+                     'unused':{'world':'p3a5_holdout.world','energy':45,'seed':707}},
+        'profiles':{'zero':{}}}))
+    captured={}
+    def capture_manifest(path,args):
+        captured['seeds']=args.seeds
+        raise RuntimeError('captured_before_any_spawn')
+    monkeypatch.setattr(runner,'PROJECT_ROOT',tmp_path)
+    monkeypatch.setattr(runner,'build_manifest',capture_manifest)
+    monkeypatch.setattr(sys,'argv',['run_p3b5_tasks','--config',str(config),'--run-id','metadata_only'])
+    with pytest.raises(RuntimeError,match='captured_before_any_spawn'):runner.main()
+    assert captured['seeds']==[seed]
+
+
 def test_tdi_excludes_process_modes_and_failed_ideal():
     ideal = {"success": True, "task_phase": "COMPLETE", "mission_mode": "rally", "robot_count": 3}
     assert tdi(ideal, {"success": True, "task_phase": "COMPLETE"}) == 0

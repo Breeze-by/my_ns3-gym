@@ -1027,3 +1027,9 @@ run_p3b5_tasks默认domain base改为30；run_p3b5_return_probe默认90。domain
 425组件检查、四包build和source旁路审计通过；controller、故障manifest、300s、完成门限与安全保留量字节/参数不变。707已经在011786e暴露，后续只能称同策略基础设施复验，不称首次或全新未暴露heldout；保留首次ideal与任务前失败，fault27077的首次声明不改。新clean提交仍须先跑全十fixed再完整57episode门禁；P3B.5尚未通过，P3A.6已验收冻结22c95a7保持，无ns3/WiFi/RL。
 
 2026-10-04 P3B.5 v55集合分配组件改进：避免ACTIVE观测者返充仍为首位；其后先比较所需充电台数和名义串行行程/返充时间，再比较额外观测者电量余量，最后按minimax/total_path决胜。额外余量不再迫使已满足完整预算的同伴充电或绕行。17相关/427全组件、四包5.24s构建、source审计通过；旧新自由图夹具额外位移8→0m、可避免充电1→0台，低电量观测者保护保留，非仿真因果结果。证据见report/20261004_p3b5_charge_time_assignment_component.json。v43原57失败保留，尚未通过P3B.5；需独立开发回归和新冻结完整矩阵，算法改变后的留出协议使用新未暴露组合，不能重用707声称未暴露验证。
+
+2026-10-04 P3B.5 v55独立开发回归通过，冻结cc21503：force ideal原生COMPLETE297.3s/两机各charge1；zero ideal/fault原生COMPLETE235.6/215.7s/各总charge1；force断网fault RALLY timeout300.3s，但两机各charge1、最低8.307、零碰撞。四原始结果、账本/graph/source/AP快照在report/20261004_p3b5_charge_time_assignment_development.json保留，不回填v43原57失败，开发仍非正式验收。force ideal仅2.7s余量，名义优化不是最坏时限保证。
+
+新正式v56协议在首次运行前改用p3b5_holdout809.world/seed809/fault28091/目标(4.4,-3.4)/3r/E45；这是交错隔断、中央开口、旋转块与柱的新拓扑，静态SDF/visual一致、十box和0.45m净空连通检查通过，尚未运行新场景。707及旧27077首次声明/暴露原样保留为历史，不能称未见测试。主矩阵27case/41unique、同提交十fixed和六安全探针、300s/.35m/.05mps/.1radps/5s、原开发fault17011和已有故障强度保持。新冻结须先检查force ideal真实native保持，再全十fixed，随后含新留出的完整主矩阵；P3B.5尚未完成，无ns3/RL。
+
+2026-10-04 v56冻结前检查：429组件12.92s、四包构建5.29s、source-only3r旁路0违规，27case/41unique清单validate-only通过，未启动Gazebo。runner manifest现在按实际选择case记录seed，不再硬编码707；严格gate新增预声明world/seed/fault及world/control纯bytes SHA验证。native_completion_ok与episode_ok两函数相对cc21503完全相同，300s/.35/.05/.1/5s与安全阈值未放宽。

@@ -706,3 +706,7 @@ OpenWiFi、学习式地图/图像压缩、未知初始位姿地图配准、机�
 9. 设计与本文冲突时，以用户最新要求、实验证据和代码为准，并同步更新本文。
 
 2026-10-01 更新：P3A.6 用户验收通过；22c95a7 的冻结证据见 report/20261001_p3a6_freeze.md/.json。此前“当前 HEAD 尚未冻结/待完成”均为2026-09-29历史状态。现在推进 P3B.5 的应用层故障任务闭环；必要的本地安全修复须同提交重跑理想门禁，未进入 ns-3/RL。
+
+2026-10-04 P3B.5 v55独立开发回归通过，冻结cc21503：force ideal原生COMPLETE297.3s/两机各charge1；zero ideal/fault原生COMPLETE235.6/215.7s/各总charge1；force断网fault RALLY timeout300.3s，但两机各charge1、最低8.307、零碰撞。四原始结果、账本/graph/source/AP快照在report/20261004_p3b5_charge_time_assignment_development.json保留，不回填v43原57失败，开发仍非正式验收。force ideal仅2.7s余量，名义优化不是最坏时限保证。
+
+新正式v56协议在首次运行前改用p3b5_holdout809.world/seed809/fault28091/目标(4.4,-3.4)/3r/E45；这是交错隔断、中央开口、旋转块与柱的新拓扑，静态SDF/visual一致、十box和0.45m净空连通检查通过，尚未运行新场景。707及旧27077首次声明/暴露原样保留为历史，不能称未见测试。主矩阵27case/41unique、同提交十fixed和六安全探针、300s/.35m/.05mps/.1radps/5s、原开发fault17011和已有故障强度保持。新冻结须先检查force ideal真实native保持，再全十fixed，随后含新留出的完整主矩阵；P3B.5尚未完成，无ns3/RL。

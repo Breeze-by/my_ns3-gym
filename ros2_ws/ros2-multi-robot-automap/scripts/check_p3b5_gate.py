@@ -298,6 +298,13 @@ def main():
     assert set(pairs)==set(cases), (set(cases)-pairs.keys())
     assert config['holdout_fault_seed']!=config['fault_seed']
     assert config['holdout_fault_seed_declaration']['predeclared_at_utc']<reference['generated_at_utc']
+    heldout=config['scenarios']['holdout3']; declaration=config['holdout_world_declaration']
+    assert declaration['predeclared_at_utc']<reference['generated_at_utc']
+    assert heldout['holdout'] and heldout['seed'] in config['holdout_seeds']
+    assert declaration['world']==heldout['world'] and declaration['gazebo_seed']==heldout['seed']
+    assert declaration['fault_seed']==config['holdout_fault_seed']
+    assert sha(ROOT/'src/multi_robot/worlds'/heldout['world'])==declaration['world_content_sha256']
+    assert sha(ROOT/'src/multi_robot_exploration/multi_robot_exploration/control.py')==declaration['controller_content_sha256']
     for case in cases.values():
         if case['scenario']=='holdout3':
             assert config['profiles'][case['profile']]['gateway_seed']==config['holdout_fault_seed']
