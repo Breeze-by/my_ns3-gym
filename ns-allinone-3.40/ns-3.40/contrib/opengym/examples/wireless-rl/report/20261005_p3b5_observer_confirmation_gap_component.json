@@ -1,0 +1,512 @@
+{
+  "created_at_utc": "2026-10-04T16:16:36.006768+00:00",
+  "status": "COMPONENT PASS; prospective v58 complete integration required",
+  "parent_commit": "5f503579aa0d90aca0de39ad81208ab1a8640331",
+  "source_sha256": "116d26e46a779694a290230aa5c2d2132e460a0ff2d5945eb09e215b8001d47a",
+  "protocol": {
+    "schema_version": 1,
+    "purpose": "Frozen paired application-fault task matrix; not Wi-Fi. Never tune on holdout rows.",
+    "development_seeds": [
+      101,
+      202,
+      303
+    ],
+    "holdout_seeds": [
+      809
+    ],
+    "fault_seed": 17011,
+    "duration_sec": 300,
+    "coverage_threshold": 0.8,
+    "task_stack_parent": "22c95a770a8812452c43fc177e4a00b5c032e6ef",
+    "scenarios": {
+      "lab2": {
+        "world": "my_world.world",
+        "target_x": -4,
+        "target_y": 4,
+        "robot_count": 2,
+        "seed": 303,
+        "energy": 40
+      },
+      "rooms3": {
+        "world": "p1c_rooms.world",
+        "target_x": 5,
+        "target_y": 3,
+        "robot_count": 3,
+        "seed": 101,
+        "energy": 40
+      },
+      "corridors2": {
+        "world": "p1c_corridors.world",
+        "target_x": -4.5,
+        "target_y": -0.5,
+        "robot_count": 2,
+        "seed": 202,
+        "energy": 45
+      },
+      "holdout3": {
+        "world": "p3b5_holdout809.world",
+        "target_x": 4.4,
+        "target_y": -3.4,
+        "robot_count": 3,
+        "seed": 809,
+        "energy": 45,
+        "holdout": true
+      },
+      "forced2": {
+        "world": "my_world.world",
+        "target_x": -4,
+        "target_y": 4,
+        "robot_count": 2,
+        "seed": 303,
+        "energy": 18,
+        "charge_duration": 10,
+        "safety_margin": 5,
+        "return_timeout": 120
+      }
+    },
+    "profiles": {
+      "zero": {},
+      "up10": {
+        "uplink_loss_rate": 0.1
+      },
+      "down10": {
+        "downlink_loss_rate": 0.1
+      },
+      "up100": {
+        "uplink_loss_rate": 1
+      },
+      "down100": {
+        "downlink_loss_rate": 1
+      },
+      "delay05": {
+        "uplink_delay_sec": 0.5,
+        "downlink_delay_sec": 0.5
+      },
+      "delay2": {
+        "uplink_delay_sec": 2,
+        "downlink_delay_sec": 2
+      },
+      "ttl": {
+        "uplink_delay_sec": 61,
+        "downlink_delay_sec": 61
+      },
+      "duplicate_reorder": {
+        "gateway_duplicate_rate": 1,
+        "gateway_reorder_window": 8,
+        "gateway_reorder_step_sec": 0.3
+      },
+      "overflow": {
+        "uplink_delay_sec": 0.5,
+        "downlink_delay_sec": 0.5,
+        "gateway_queue_capacity": 1
+      },
+      "burst": {
+        "gateway_blackout_intervals": [
+          [
+            80,
+            100
+          ],
+          [
+            140,
+            160
+          ]
+        ]
+      },
+      "deadline": {
+        "navigation_command_deadline_sec": 0.3,
+        "downlink_delay_sec": 0.5
+      },
+      "detection_loss": {
+        "gateway_drop_message_types": "target_detection"
+      },
+      "map_loss": {
+        "gateway_drop_message_types": "map_snapshot,fused_map_snapshot"
+      },
+      "pose_loss": {
+        "gateway_drop_message_types": "pose_state,frame_state"
+      },
+      "battery_loss": {
+        "gateway_drop_message_types": "battery_state"
+      },
+      "state_loss": {
+        "gateway_drop_message_types": "task_state"
+      },
+      "nav_loss": {
+        "gateway_drop_message_types": "navigation_goal,navigation_cancel"
+      },
+      "robot_failure": {
+        "inject_failure_robot": "tb3",
+        "inject_failure_after_sec": 45
+      },
+      "charge_outage": {
+        "gateway_blackout_intervals": [
+          [
+            20,
+            130
+          ]
+        ]
+      },
+      "battery_exhaust": {
+        "battery_initial_energy": 0
+      },
+      "up10_holdout28091": {
+        "uplink_loss_rate": 0.1,
+        "gateway_seed": 28091
+      },
+      "down10_holdout28091": {
+        "downlink_loss_rate": 0.1,
+        "gateway_seed": 28091
+      },
+      "burst_holdout28091": {
+        "gateway_blackout_intervals": [
+          [
+            80,
+            100
+          ],
+          [
+            140,
+            160
+          ]
+        ],
+        "gateway_seed": 28091
+      }
+    },
+    "cases": [
+      {
+        "id": "zero_rally_lab",
+        "scenario": "lab2",
+        "mode": "rally",
+        "profile": "zero"
+      },
+      {
+        "id": "up10_rooms",
+        "scenario": "rooms3",
+        "mode": "rally",
+        "profile": "up10"
+      },
+      {
+        "id": "down10_rooms",
+        "scenario": "rooms3",
+        "mode": "rally",
+        "profile": "down10"
+      },
+      {
+        "id": "delay05_corridors",
+        "scenario": "corridors2",
+        "mode": "rally",
+        "profile": "delay05"
+      },
+      {
+        "id": "delay2_rooms",
+        "scenario": "rooms3",
+        "mode": "rally",
+        "profile": "delay2"
+      },
+      {
+        "id": "up100_lab",
+        "scenario": "lab2",
+        "mode": "rally",
+        "profile": "up100"
+      },
+      {
+        "id": "down100_lab",
+        "scenario": "lab2",
+        "mode": "rally",
+        "profile": "down100"
+      },
+      {
+        "id": "ttl_lab",
+        "scenario": "lab2",
+        "mode": "rally",
+        "profile": "ttl"
+      },
+      {
+        "id": "duplicates_corridors",
+        "scenario": "corridors2",
+        "mode": "rally",
+        "profile": "duplicate_reorder"
+      },
+      {
+        "id": "overflow_rooms",
+        "scenario": "rooms3",
+        "mode": "rally",
+        "profile": "overflow"
+      },
+      {
+        "id": "burst_rooms",
+        "scenario": "rooms3",
+        "mode": "rally",
+        "profile": "burst"
+      },
+      {
+        "id": "deadline_rooms",
+        "scenario": "rooms3",
+        "mode": "rally",
+        "profile": "deadline"
+      },
+      {
+        "id": "detection_loss_rooms",
+        "scenario": "rooms3",
+        "mode": "rally",
+        "profile": "detection_loss"
+      },
+      {
+        "id": "map_loss_lab",
+        "scenario": "lab2",
+        "mode": "coverage",
+        "profile": "map_loss"
+      },
+      {
+        "id": "pose_loss_rooms",
+        "scenario": "rooms3",
+        "mode": "coverage",
+        "profile": "pose_loss"
+      },
+      {
+        "id": "battery_loss_lab",
+        "scenario": "lab2",
+        "mode": "rally",
+        "profile": "battery_loss"
+      },
+      {
+        "id": "state_loss_lab",
+        "scenario": "lab2",
+        "mode": "rally",
+        "profile": "state_loss"
+      },
+      {
+        "id": "nav_loss_corridors",
+        "scenario": "corridors2",
+        "mode": "rally",
+        "profile": "nav_loss"
+      },
+      {
+        "id": "single_failure_rooms",
+        "scenario": "rooms3",
+        "mode": "rally",
+        "profile": "robot_failure"
+      },
+      {
+        "id": "forced_charge_outage",
+        "scenario": "forced2",
+        "mode": "rally",
+        "profile": "charge_outage"
+      },
+      {
+        "id": "target_up10_lab",
+        "scenario": "lab2",
+        "mode": "target",
+        "profile": "up10"
+      },
+      {
+        "id": "target_loss_rooms",
+        "scenario": "rooms3",
+        "mode": "target",
+        "profile": "detection_loss"
+      },
+      {
+        "id": "coverage_delay_corridors",
+        "scenario": "corridors2",
+        "mode": "coverage",
+        "profile": "delay05"
+      },
+      {
+        "id": "holdout_rally",
+        "scenario": "holdout3",
+        "mode": "rally",
+        "profile": "up10_holdout28091"
+      },
+      {
+        "id": "holdout_target",
+        "scenario": "holdout3",
+        "mode": "target",
+        "profile": "down10_holdout28091"
+      },
+      {
+        "id": "holdout_coverage",
+        "scenario": "holdout3",
+        "mode": "coverage",
+        "profile": "burst_holdout28091"
+      },
+      {
+        "id": "battery_exhaust_lab",
+        "scenario": "lab2",
+        "mode": "rally",
+        "profile": "battery_exhaust"
+      }
+    ],
+    "temporal_contract": "source<=enqueue<=admit/tx<=delivery; TF source is scan stamp, native validity offset derived from actual SLAM config; fault blackout relative first EXPLORE",
+    "ideal_transport": "no fault intervention, zero stochastic loss/delay/reorder/duplicate/blackout/drop; normal bounded4096 queue; task load/deadline/retry unchanged",
+    "holdout_fault_seed": 28091,
+    "holdout_fault_seed_declaration": {
+      "predeclared_at_utc": "2026-10-04T14:45:09.824843+00:00",
+      "reason": "Controller changed after707 exposure at011786e; use new unexposed world/seed809/independent fault28091. Selected before any new-world task run. Development17011, existing cells, fault magnitudes, energy, horizon and native gates unchanged. Old exposed originals/seed declaration remain historical evidence.",
+      "superseded_exposed_scenario": {
+        "world": "p3a5_holdout.world",
+        "target_x": 4.4,
+        "target_y": 3.4,
+        "robot_count": 3,
+        "seed": 707,
+        "energy": 45,
+        "holdout": true
+      },
+      "superseded_fault_seed": 27077,
+      "superseded_fault_seed_declaration": {
+        "predeclared_at_utc": "2026-10-01T20:40:27.833419+00:00",
+        "reason": "20260928P3B.5 minimum requires un-tuned fault seed in holdout combination. Seed707 and world never executed; seed27077 not previously exercised or tuned. Development fault17011/cells/energy/horizons unchanged. Original planned holdout17011 cells never executed; original declaration retained. Configuration archive provided before any primary matrix or707.",
+        "supersedes_unexecuted_holdout_seed": 17011
+      }
+    },
+    "holdout_world_declaration": {
+      "predeclared_at_utc": "2026-10-04T16:14:30.112794+00:00",
+      "world": "p3b5_holdout809.world",
+      "world_content_sha256": "2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd",
+      "gazebo_seed": 809,
+      "fault_seed": 28091,
+      "proposal": {
+        "proposed_at_utc": "2026-10-04T14:36:39.059239+00:00",
+        "world": "p3b5_holdout809.world",
+        "world_content_sha256": "2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd",
+        "gazebo_seed": 809,
+        "fault_seed": 28091,
+        "target": [
+          4.4,
+          -3.4
+        ],
+        "robot_count": 3,
+        "initial_energy": 45,
+        "duration_sec": 300,
+        "scope": "New staggered horizontal partition/central opening topology plus rotated blocks/pillar, not old707 rename/seed-only change. No Gazebo/task/vision/motion evaluation has been performed. Static geometry validation only before prospective canonical freeze; controller must be frozen before first exposure.",
+        "design_basis": "Same lab-sized box, valid start/chargers and reachable target with ordinary .45m clearance. Geometry selected before any new heldout run; never choose or tune based on heldout outcomes.",
+        "previous_exposed_world": "p3a5_holdout.world",
+        "previous_exposed_seed": 707,
+        "previous_independent_fault_seed": 27077,
+        "previous_first_exposure_commit": "011786e53e4c7c2a0eb1e2358fc0b81f651a8316"
+      },
+      "static_geometry_check": {
+        "status": "PASS",
+        "scope": "Static SDF/visual collision agreement, supported box rasterization and .45m-clearance connected start/charger/target geometry only. No task/controller/vision run or performance tuning.",
+        "world_content_sha256": "2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd",
+        "rectangle_count": 10,
+        "unsupported_collision_count": 0,
+        "points": {
+          "tb1_start_charge": [
+            0.0,
+            0.0
+          ],
+          "tb2_start_charge": [
+            0.0,
+            0.45
+          ],
+          "tb3_start_charge": [
+            0.0,
+            0.9
+          ],
+          "target": [
+            4.4,
+            -3.4
+          ]
+        },
+        "connected_distances_from_tb1_m": {
+          "tb1_start_charge": 0.0,
+          "tb2_start_charge": 0.45,
+          "tb3_start_charge": 0.9,
+          "target": 6.4234018715767665
+        },
+        "original_point_label_correction": "The retained tb1_start_charge/tb3_start_charge labels were generic sample points, not actual launch poses. Original values are historical; use supplemental actual_launch_start_geometry_check below. No world/control/mission run was used to validate or tune809 geometry."
+      },
+      "controller_content_sha256": "116d26e46a779694a290230aa5c2d2132e460a0ff2d5945eb09e215b8001d47a",
+      "first_task_exposure": "Pending: unchanged809 world/seed/fault never executed. After clean pushed v58 freeze, forced-native/zero/physical-return subgates and all ten fixed originals pass, then first heldout3-row exposure. Source changes after exposure require a genuinely new combination.",
+      "controller_freeze_history": [
+        {
+          "predeclared_at_utc": "2026-10-04T14:45:09.824843+00:00",
+          "controller_content_sha256": "478fc6929675fed0f6435a3b6c81f7549655f438dbed9fae1e6ac0fa1e857960",
+          "frozen_commit": "3d079215caacf9e5e31866ca4db236a5cff3236c",
+          "new_holdout_exposed": false,
+          "evidence": "20261004_p3b5_charge_time_lab101_failed_candidate.json"
+        },
+        {
+          "development_commit": "f8297fa86a8227e99871f5b4916f15dcfa8d17e6",
+          "controller_content_sha256": "ef7f602058e2ab8e3659c425d8e432f36ef584a7fdb240d888f2607f77ab2018",
+          "new_holdout_exposed": false,
+          "evidence": "20261005_p3b5_observer_heading_development.json"
+        }
+      ],
+      "actual_launch_start_geometry_check": {
+        "status": "PASS",
+        "checked_at_utc": "2026-10-04T15:11:57.995218+00:00",
+        "initial_record_annotation": "Original static check used generic sample points mislabeled start/charge. Original source/data retained. This check uses actual frozen launch tb1(0,-.45),tb2(0,.45),tb3(.45,0) for both spawn and charge; no world geometry, task parameter or algorithm change.",
+        "launch_content_sha256": "e67270a7b4e756ce55b4cf9b20298c2363c82e870e790d99a4e846d64cfdf52d",
+        "scope": "Static SDF/visual collision agreement, supported box rasterization and .45m-clearance connected start/charger/target geometry only. No task/controller/vision run or performance tuning.",
+        "world_content_sha256": "2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd",
+        "rectangle_count": 10,
+        "unsupported_collision_count": 0,
+        "points": {
+          "tb1_start_charge": [
+            0.0,
+            -0.45
+          ],
+          "tb2_start_charge": [
+            0.0,
+            0.45
+          ],
+          "tb3_start_charge": [
+            0.45,
+            0.0
+          ],
+          "target": [
+            4.4,
+            -3.4
+          ]
+        },
+        "connected_distances_from_tb1_m": {
+          "tb1_start_charge": 0.0,
+          "tb2_start_charge": 0.9,
+          "tb3_start_charge": 0.636396103067893,
+          "target": 6.237005768508876
+        }
+      }
+    }
+  },
+  "source_diff": "diff --git a/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/control.py b/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/control.py\nindex e756fc7..ac56438 100644\n--- a/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/control.py\n+++ b/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/control.py\n@@ -41,6 +41,7 @@ MAX_NAVIGATION_LEG_M = 5.0\n NAVIGATION_POSITION_TOLERANCE_M = 0.02\n NAVIGATION_YAW_TOLERANCE_RAD = 0.25\n TARGET_HISTORY_SEC = 10.0\n+TARGET_OBSERVER_FRESHNESS_SEC = 5.0\n BAD_TARGET_SEC = 30.0\n NO_PROGRESS_SEC = 20.0\n USEFUL_TRAVEL_M = 0.75\n@@ -1868,11 +1869,11 @@ def rally_priority_reservations(order, robot_name, routes, completed):\n     return reservations\n \n \n-def rally_observation_guard(observer, source_time, now, modes, freshness_sec=5.0):\n+def rally_observation_guard(observer, source_time, now, modes, freshness_sec=TARGET_OBSERVER_FRESHNESS_SEC):\n     \"\"\"Keep the last live visual observer until a peer confirms a handoff.\"\"\"\n     if (observer not in modes or modes[observer] != \"ACTIVE\"\n             or source_time is None or not math.isfinite(source_time)\n-            or not 0 <= now - source_time <= min(freshness_sec, 5.0)\n+            or not 0 <= now - source_time <= min(freshness_sec, TARGET_OBSERVER_FRESHNESS_SEC)\n             or not any(name != observer and mode in (\"ACTIVE\", \"RETURNING\", \"CHARGING\")\n                        for name, mode in modes.items())):\n         return None\n@@ -3110,6 +3111,9 @@ class HeadquartersControl(Node):\n             self.rally_goal_handles[name].cancel_goal_async()\n \n         heading_corrections = set()\n+        last_confirmation = getattr(self, \"target_received_source_time\", None)\n+        confirmation_gap = (last_confirmation is not None\n+                            and TARGET_OBSERVER_FRESHNESS_SEC < now - last_confirmation <= TARGET_DETECTION_TTL_SEC)\n         for name, handle in self.rally_goal_handles.items():\n             if name not in self.rally_targets:\n                 continue\n@@ -3136,7 +3140,7 @@ class HeadquartersControl(Node):\n             ):\n                 self.rally_arrived[name] = False\n             yaw = getattr(self, \"robot_yaws\", {}).get(name)\n-            if (yaw is not None and math.isfinite(yaw) and position is not None\n+            if (confirmation_gap and yaw is not None and math.isfinite(yaw) and position is not None\n                     and math.dist(position, (target.x, target.y)) <= self.rally_position_tolerance\n                     and name in (getattr(self, \"rally_observer_guard\", None),\n                                  getattr(self, \"target_observing_robot\", None))\n@@ -3147,9 +3151,10 @@ class HeadquartersControl(Node):\n                     and abs(math.atan2(math.sin(target.yaw - yaw),\n                                        math.cos(target.yaw - yaw)))\n                     > getattr(self, \"target_view_fov_rad\", math.pi / 2) / 4):\n-                # A successful Nav2 result does not hold the camera heading.\n-                # Reuse the reserved/energy-checked final leg before yaw drift\n-                # loses the delivered observation lease. Never use native truth.\n+                # Healthy delivered confirmations already prove observation.\n+                # Let those parked robots settle; reopen the reserved/energy-\n+                # checked final leg only after the 5s observer heartbeat gap,\n+                # before the 60s target lease expires. Never use native truth.\n                 if self.rally_arrived[name]:\n                     self.get_logger().info(f\"Correcting parked {name}'s observer heading.\")\n                 self.rally_arrived[name] = False\ndiff --git a/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_control.py b/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_control.py\nindex b8c3882..fa27aa8 100644\n--- a/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_control.py\n+++ b/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_control.py\n@@ -1423,7 +1423,8 @@ def test_delivered_heading_uses_the_same_map_frame_as_rally_goals(odom_yaw, tf_y\n @pytest.mark.parametrize('condition', ['drift', 'wrapped', 'centered', 'busy', 'pending',\n                                      'local_return', 'stale_inputs', 'stale_pose', 'stale_target',\n                                      'returning', 'no_slot', 'route_conflict', 'non_observer',\n-                                     'no_yaw', 'nan_yaw', 'narrow_fov'])\n+                                     'no_yaw', 'nan_yaw', 'narrow_fov', 'recent_confirmation',\n+                                     'five_sec_confirmation', 'missing_confirmation'])\n def test_parked_observer_corrects_heading_through_reserved_navigation(condition):\n     from types import SimpleNamespace\n     from unittest.mock import Mock\n@@ -1462,6 +1463,8 @@ def test_parked_observer_corrects_heading_through_reserved_navigation(condition)\n         rally_attempts=dict.fromkeys(names, 0), rally_recovery_requested=dict.fromkeys(names, False),\n         rally_route_unavailable_since=dict.fromkeys(names), robot_positions=positions,\n         robot_yaws={'observer': measured}, target_observing_robot='unknown' if condition == 'non_observer' else 'observer',\n+        target_received_source_time={'recent_confirmation': 9., 'five_sec_confirmation': 5.,\n+                                     'missing_confirmation': None}.get(condition, 4.),\n         target_view_fov_rad=math.pi/3 if condition == 'narrow_fov' else math.pi/2,\n         map_data=np.zeros((100, 100), dtype=int), resolution=.1, origin=(0., 0.),\n         rally_position_tolerance=.35, target=(2.05, 4.05), get_logger=lambda: Mock(),\n",
+  "records": {
+    "/tmp/p3b5_v58_component_checks.log": {
+      "sha256": "129b63682e1d5109317491809e61e5915029e70b730ce016522614bb71ed5669",
+      "text": "........................................................................ [ 15%]\n........................................................................ [ 31%]\n........................................................................ [ 47%]\n........................................................................ [ 63%]\n........................................................................ [ 79%]\n........................................................................ [ 95%]\n...................                                                      [100%]\n451 passed in 14.21s\n"
+    },
+    "/tmp/p3b5_v58_build.log": {
+      "sha256": "7a64eff6723e1614c4bdcc47ce3217fffae866bfd515712f5043cf84667d4ce5",
+      "text": "Starting >>> multi_robot_interfaces\nFinished <<< multi_robot_interfaces [1.10s]\nStarting >>> merge_map\nStarting >>> multi_robot_exploration\nFinished <<< merge_map [3.04s]\nFinished <<< multi_robot_exploration [3.07s]\nStarting >>> multi_robot\nFinished <<< multi_robot [0.30s]\n\nSummary: 4 packages finished [5.15s]\n"
+    },
+    "/tmp/p3b5_v58_source_audit.log": {
+      "sha256": "b74fbe0283ffd47aa24b206b9f79613c2c81c731bbe8105dbfe968005604e47c",
+      "text": "{\n  \"graph_output\": null,\n  \"manifest\": \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot_exploration/share/multi_robot_exploration/config/p3a_forbidden_bypasses.json\",\n  \"pass\": true,\n  \"robot_count\": 3,\n  \"violations\": []\n}\n"
+    },
+    "/tmp/p3b5_v58_plan_validate.log": {
+      "sha256": "a69a4f1fce59a4fb97f477b0f9362b47b9e5253afe99cee70e9ccc0fd8b97e04",
+      "text": "{\n  \"cases\": 27,\n  \"episodes\": 41,\n  \"pairs\": {\n    \"zero_rally_lab\": {\n      \"ideal\": \"p3b5_v58_predeclare_validation_only_ideal_lab2_rally_8d4d5c469d\",\n      \"fault\": \"p3b5_v58_predeclare_validation_only_zero_rally_lab_fault\"\n    },\n    \"up10_rooms\": {\n      \"ideal\": \"p3b5_v58_predeclare_validation_only_ideal_rooms3_rally_980df9c157\",\n      \"fault\": \"p3b5_v58_predeclare_validation_only_up10_rooms_fault\"\n    },\n    \"down10_rooms\": {\n      \"ideal\": \"p3b5_v58_predeclare_validation_only_ideal_rooms3_rally_980df9c157\",\n      \"fault\": \"p3b5_v58_predeclare_validation_only_down10_rooms_fault\"\n    },\n    \"delay05_corridors\": {\n      \"ideal\": \"p3b5_v58_predeclare_validation_only_ideal_corridors2_rally_1e053e8bbc\",\n      \"fault\": \"p3b5_v58_predeclare_validation_only_delay05_corridors_fault\"\n    },\n    \"delay2_rooms\": {\n      \"ideal\": \"p3b5_v58_predeclare_validation_only_ideal_rooms3_rally_980df9c157\",\n      \"fault\": \"p3b5_v58_predeclare_validation_only_delay2_rooms_fault\"\n    },\n    \"up100_lab\": {\n      \"ideal\": \"p3b5_v58_predeclare_validation_only_ideal_lab2_rally_8d4d5c469d\",\n      \"fault\": \"p3b5_v58_predeclare_validation_only_up100_lab_fault\"\n    },\n    \"down100_lab\": {\n      \"ideal\": \"p3b5_v58_predeclare_validation_only_ideal_lab2_rally_8d4d5c469d\",\n      \"fault\": \"p3b5_v58_predeclare_validation_only_down100_lab_fault\"\n    },\n    \"ttl_lab\": {\n      \"ideal\": \"p3b5_v58_predeclare_validation_only_ideal_lab2_rally_8d4d5c469d\",\n      \"fault\": \"p3b5_v58_predeclare_validation_only_ttl_lab_fault\"\n    },\n    \"duplicates_corridors\": {\n      \"ideal\": \"p3b5_v58_predeclare_validation_only_ideal_corridors2_rally_1e053e8bbc\",\n      \"fault\": \"p3b5_v58_predeclare_validation_only_duplicates_corridors_fault\"\n    },\n    \"overflow_rooms\": {\n      \"ideal\": \"p3b5_v58_predeclare_validation_only_ideal_rooms3_rally_980df9c157\",\n      \"fault\": \"p3b5_v58_predeclare_validation_only_overflow_rooms_fault\"\n    },\n    \"burst_rooms\": {\n      \"ideal\": \"p3b5_v58_predeclare_validation_only_ideal_rooms3_rally_980df9c157\",\n      \"fault\": \"p3b5_v58_predeclare_validation_only_burst_rooms_fault\"\n    },\n    \"deadline_rooms\": {\n      \"ideal\": \"p3b5_v58_predeclare_validation_only_ideal_rooms3_rally_43f2051648\",\n      \"fault\": \"p3b5_v58_predeclare_validation_only_deadline_rooms_fault\"\n    },\n    \"detection_loss_rooms\": {\n      \"ideal\": \"p3b5_v58_predeclare_validation_only_ideal_rooms3_rally_980df9c157\",\n      \"fault\": \"p3b5_v58_predeclare_validation_only_detection_loss_rooms_fault\"\n    },\n    \"map_loss_lab\": {\n      \"ideal\": \"p3b5_v58_predeclare_validation_only_ideal_lab2_coverage_da95bad2c7\",\n      \"fault\": \"p3b5_v58_predeclare_validation_only_map_loss_lab_fault\"\n    },\n    \"pose_loss_rooms\": {\n      \"ideal\": \"p3b5_v58_predeclare_validation_only_ideal_rooms3_coverage_4c86e25248\",\n      \"fault\": \"p3b5_v58_predeclare_validation_only_pose_loss_rooms_fault\"\n    },\n    \"battery_loss_lab\": {\n      \"ideal\": \"p3b5_v58_predeclare_validation_only_ideal_lab2_rally_8d4d5c469d\",\n      \"fault\": \"p3b5_v58_predeclare_validation_only_battery_loss_lab_fault\"\n    },\n    \"state_loss_lab\": {\n      \"ideal\": \"p3b5_v58_predeclare_validation_only_ideal_lab2_rally_8d4d5c469d\",\n      \"fault\": \"p3b5_v58_predeclare_validation_only_state_loss_lab_fault\"\n    },\n    \"nav_loss_corridors\": {\n      \"ideal\": \"p3b5_v58_predeclare_validation_only_ideal_corridors2_rally_1e053e8bbc\",\n      \"fault\": \"p3b5_v58_predeclare_validation_only_nav_loss_corridors_fault\"\n    },\n    \"single_failure_rooms\": {\n      \"ideal\": \"p3b5_v58_predeclare_validation_only_ideal_rooms3_rally_980df9c157\",\n      \"fault\": \"p3b5_v58_predeclare_validation_only_single_failure_rooms_fault\"\n    },\n    \"forced_charge_outage\": {\n      \"ideal\": \"p3b5_v58_predeclare_validation_only_ideal_forced2_rally_86fbb43bc6\",\n      \"fault\": \"p3b5_v58_predeclare_validation_only_forced_charge_outage_fault\"\n    },\n    \"target_up10_lab\": {\n      \"ideal\": \"p3b5_v58_predeclare_validation_only_ideal_lab2_target_21212e763a\",\n      \"fault\": \"p3b5_v58_predeclare_validation_only_target_up10_lab_fault\"\n    },\n    \"target_loss_rooms\": {\n      \"ideal\": \"p3b5_v58_predeclare_validation_only_ideal_rooms3_target_01c25c1bef\",\n      \"fault\": \"p3b5_v58_predeclare_validation_only_target_loss_rooms_fault\"\n    },\n    \"coverage_delay_corridors\": {\n      \"ideal\": \"p3b5_v58_predeclare_validation_only_ideal_corridors2_coverage_0241ed3b33\",\n      \"fault\": \"p3b5_v58_predeclare_validation_only_coverage_delay_corridors_fault\"\n    },\n    \"holdout_rally\": {\n      \"ideal\": \"p3b5_v58_predeclare_validation_only_ideal_holdout3_rally_0e0a71b5e8\",\n      \"fault\": \"p3b5_v58_predeclare_validation_only_holdout_rally_fault\"\n    },\n    \"holdout_target\": {\n      \"ideal\": \"p3b5_v58_predeclare_validation_only_ideal_holdout3_target_5c91c8afdd\",\n      \"fault\": \"p3b5_v58_predeclare_validation_only_holdout_target_fault\"\n    },\n    \"holdout_coverage\": {\n      \"ideal\": \"p3b5_v58_predeclare_validation_only_ideal_holdout3_coverage_c8631e6a7f\",\n      \"fault\": \"p3b5_v58_predeclare_validation_only_holdout_coverage_fault\"\n    },\n    \"battery_exhaust_lab\": {\n      \"ideal\": \"p3b5_v58_predeclare_validation_only_ideal_lab2_rally_0678e85373\",\n      \"fault\": \"p3b5_v58_predeclare_validation_only_battery_exhaust_lab_fault\"\n    }\n  },\n  \"ros_domain_ids\": [\n    50,\n    51,\n    52,\n    53,\n    54,\n    55,\n    56,\n    57,\n    58,\n    59,\n    60,\n    61,\n    62,\n    63,\n    64,\n    65,\n    66,\n    67,\n    68,\n    69,\n    70,\n    71,\n    72,\n    73,\n    74,\n    75,\n    76,\n    77,\n    78,\n    79,\n    80,\n    81,\n    82,\n    83,\n    84,\n    85,\n    86,\n    87,\n    88,\n    89,\n    90\n  ]\n}\n"
+    },
+    "/tmp/p3b5_v58_protocol_metadata_checks.log": {
+      "sha256": "ab9234fb1d520462db3ee0623a88ca5c7ebdab2ac87048ed1b28d6973c249ca1",
+      "text": "..............................................                           [100%]\n46 passed in 0.63s\n"
+    },
+    "/tmp/p3b5_v58_holdout_refreeze.json": {
+      "sha256": "e83ada76ed45dc03e07cdbb2e835129863834bfa5df944b3163d7c175fea520e",
+      "text": "{\n  \"predeclared_at_utc\": \"2026-10-04T16:14:30.112794+00:00\",\n  \"declaration\": {\n    \"predeclared_at_utc\": \"2026-10-04T16:14:30.112794+00:00\",\n    \"world\": \"p3b5_holdout809.world\",\n    \"world_content_sha256\": \"2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd\",\n    \"gazebo_seed\": 809,\n    \"fault_seed\": 28091,\n    \"proposal\": {\n      \"proposed_at_utc\": \"2026-10-04T14:36:39.059239+00:00\",\n      \"world\": \"p3b5_holdout809.world\",\n      \"world_content_sha256\": \"2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd\",\n      \"gazebo_seed\": 809,\n      \"fault_seed\": 28091,\n      \"target\": [\n        4.4,\n        -3.4\n      ],\n      \"robot_count\": 3,\n      \"initial_energy\": 45,\n      \"duration_sec\": 300,\n      \"scope\": \"New staggered horizontal partition/central opening topology plus rotated blocks/pillar, not old707 rename/seed-only change. No Gazebo/task/vision/motion evaluation has been performed. Static geometry validation only before prospective canonical freeze; controller must be frozen before first exposure.\",\n      \"design_basis\": \"Same lab-sized box, valid start/chargers and reachable target with ordinary .45m clearance. Geometry selected before any new heldout run; never choose or tune based on heldout outcomes.\",\n      \"previous_exposed_world\": \"p3a5_holdout.world\",\n      \"previous_exposed_seed\": 707,\n      \"previous_independent_fault_seed\": 27077,\n      \"previous_first_exposure_commit\": \"011786e53e4c7c2a0eb1e2358fc0b81f651a8316\"\n    },\n    \"static_geometry_check\": {\n      \"status\": \"PASS\",\n      \"scope\": \"Static SDF/visual collision agreement, supported box rasterization and .45m-clearance connected start/charger/target geometry only. No task/controller/vision run or performance tuning.\",\n      \"world_content_sha256\": \"2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd\",\n      \"rectangle_count\": 10,\n      \"unsupported_collision_count\": 0,\n      \"points\": {\n        \"tb1_start_charge\": [\n          0.0,\n          0.0\n        ],\n        \"tb2_start_charge\": [\n          0.0,\n          0.45\n        ],\n        \"tb3_start_charge\": [\n          0.0,\n          0.9\n        ],\n        \"target\": [\n          4.4,\n          -3.4\n        ]\n      },\n      \"connected_distances_from_tb1_m\": {\n        \"tb1_start_charge\": 0.0,\n        \"tb2_start_charge\": 0.45,\n        \"tb3_start_charge\": 0.9,\n        \"target\": 6.4234018715767665\n      },\n      \"original_point_label_correction\": \"The retained tb1_start_charge/tb3_start_charge labels were generic sample points, not actual launch poses. Original values are historical; use supplemental actual_launch_start_geometry_check below. No world/control/mission run was used to validate or tune809 geometry.\"\n    },\n    \"controller_content_sha256\": \"116d26e46a779694a290230aa5c2d2132e460a0ff2d5945eb09e215b8001d47a\",\n    \"first_task_exposure\": \"Pending: unchanged809 world/seed/fault never executed. After clean pushed v58 freeze, forced-native/zero/physical-return subgates and all ten fixed originals pass, then first heldout3-row exposure. Source changes after exposure require a genuinely new combination.\",\n    \"controller_freeze_history\": [\n      {\n        \"predeclared_at_utc\": \"2026-10-04T14:45:09.824843+00:00\",\n        \"controller_content_sha256\": \"478fc6929675fed0f6435a3b6c81f7549655f438dbed9fae1e6ac0fa1e857960\",\n        \"frozen_commit\": \"3d079215caacf9e5e31866ca4db236a5cff3236c\",\n        \"new_holdout_exposed\": false,\n        \"evidence\": \"20261004_p3b5_charge_time_lab101_failed_candidate.json\"\n      },\n      {\n        \"development_commit\": \"f8297fa86a8227e99871f5b4916f15dcfa8d17e6\",\n        \"controller_content_sha256\": \"ef7f602058e2ab8e3659c425d8e432f36ef584a7fdb240d888f2607f77ab2018\",\n        \"new_holdout_exposed\": false,\n        \"evidence\": \"20261005_p3b5_observer_heading_development.json\"\n      }\n    ],\n    \"actual_launch_start_geometry_check\": {\n      \"status\": \"PASS\",\n      \"checked_at_utc\": \"2026-10-04T15:11:57.995218+00:00\",\n      \"initial_record_annotation\": \"Original static check used generic sample points mislabeled start/charge. Original source/data retained. This check uses actual frozen launch tb1(0,-.45),tb2(0,.45),tb3(.45,0) for both spawn and charge; no world geometry, task parameter or algorithm change.\",\n      \"launch_content_sha256\": \"e67270a7b4e756ce55b4cf9b20298c2363c82e870e790d99a4e846d64cfdf52d\",\n      \"scope\": \"Static SDF/visual collision agreement, supported box rasterization and .45m-clearance connected start/charger/target geometry only. No task/controller/vision run or performance tuning.\",\n      \"world_content_sha256\": \"2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd\",\n      \"rectangle_count\": 10,\n      \"unsupported_collision_count\": 0,\n      \"points\": {\n        \"tb1_start_charge\": [\n          0.0,\n          -0.45\n        ],\n        \"tb2_start_charge\": [\n          0.0,\n          0.45\n        ],\n        \"tb3_start_charge\": [\n          0.45,\n          0.0\n        ],\n        \"target\": [\n          4.4,\n          -3.4\n        ]\n      },\n      \"connected_distances_from_tb1_m\": {\n        \"tb1_start_charge\": 0.0,\n        \"tb2_start_charge\": 0.9,\n        \"tb3_start_charge\": 0.636396103067893,\n        \"target\": 6.237005768508876\n      }\n    }\n  },\n  \"writer_source\": \"import hashlib,json\\nfrom datetime import datetime,timezone\\nfrom pathlib import Path\\nROOT=Path('/home/zhuyulab/ns3-workspace');ROS=ROOT/'ros2_ws/ros2-multi-robot-automap'\\np=ROS/'scripts/p3b5_fault_manifest.json';a=json.loads(p.read_text());d=a['holdout_world_declaration']\\nassert d['world']=='p3b5_holdout809.world' and d['gazebo_seed']==809 and d['fault_seed']==28091\\nassert not (ROS/'log/p3b5/p3b5_v56_holdout').exists()\\nold=json.loads(Path('/tmp/20261004_p3b5_charge_time_lab101_failed_candidate.json').read_text())\\nassert old['new_holdout_exposed'] is False and old['unrun_episode_count']==50\\ndev=json.loads(Path('/tmp/p3b5_v57_development_audit.json').read_text())\\nassert not dev['new_holdout_exposed'] and dev['declaration'].get('finished_at_utc')\\nworld=ROS/'src/multi_robot/worlds'/d['world'];control=ROS/'src/multi_robot_exploration/multi_robot_exploration/control.py'\\nassert hashlib.sha256(world.read_bytes()).hexdigest()==d['world_content_sha256']\\nassert 'controller_freeze_history' not in d\\nd['controller_freeze_history']=[dict(predeclared_at_utc=d['predeclared_at_utc'],controller_content_sha256=d['controller_content_sha256'],frozen_commit='3d079215caacf9e5e31866ca4db236a5cff3236c',new_holdout_exposed=False,evidence='20261004_p3b5_charge_time_lab101_failed_candidate.json'),\\n    dict(development_commit=dev['declaration']['commit'],controller_content_sha256=dev['declaration']['control_sha256'],new_holdout_exposed=False,evidence='20261005_p3b5_observer_heading_development.json')]\\nd['predeclared_at_utc']=datetime.now(timezone.utc).isoformat()\\nd['controller_content_sha256']=hashlib.sha256(control.read_bytes()).hexdigest()\\nd['static_geometry_check']['original_point_label_correction']='The retained tb1_start_charge/tb3_start_charge labels were generic sample points, not actual launch poses. Original values are historical; use supplemental actual_launch_start_geometry_check below. No world/control/mission run was used to validate or tune809 geometry.'\\nd['actual_launch_start_geometry_check']=json.loads(Path('/tmp/p3b5_v56_fresh_holdout_proposal/actual_start_geometry_check.json').read_text())\\nd['first_task_exposure']='Pending: unchanged809 world/seed/fault never executed. After clean pushed v58 freeze, forced-native/zero/physical-return subgates and all ten fixed originals pass, then first heldout3-row exposure. Source changes after exposure require a genuinely new combination.'\\np.write_text(json.dumps(a,indent=2,ensure_ascii=False)+'\\\\n')\\nout=Path('/tmp/p3b5_v58_holdout_refreeze.json');assert not out.exists()\\nout.write_text(json.dumps(dict(predeclared_at_utc=d['predeclared_at_utc'],declaration=d,writer_source=Path(__file__).read_text()),indent=2,ensure_ascii=False)+'\\\\n')\\nprint('Fresh809 unchanged/unexposed, controller prospectively re-frozen',d['controller_content_sha256'])\\n\"\n}\n"
+    },
+    "/tmp/refreeze_p3b5_v58_holdout_controller.py": {
+      "sha256": "58923ca5f6e60aadc9f60799df8dcae849597081f21973f00d4132e2f77dcd6e",
+      "text": "import hashlib,json\nfrom datetime import datetime,timezone\nfrom pathlib import Path\nROOT=Path('/home/zhuyulab/ns3-workspace');ROS=ROOT/'ros2_ws/ros2-multi-robot-automap'\np=ROS/'scripts/p3b5_fault_manifest.json';a=json.loads(p.read_text());d=a['holdout_world_declaration']\nassert d['world']=='p3b5_holdout809.world' and d['gazebo_seed']==809 and d['fault_seed']==28091\nassert not (ROS/'log/p3b5/p3b5_v56_holdout').exists()\nold=json.loads(Path('/tmp/20261004_p3b5_charge_time_lab101_failed_candidate.json').read_text())\nassert old['new_holdout_exposed'] is False and old['unrun_episode_count']==50\ndev=json.loads(Path('/tmp/p3b5_v57_development_audit.json').read_text())\nassert not dev['new_holdout_exposed'] and dev['declaration'].get('finished_at_utc')\nworld=ROS/'src/multi_robot/worlds'/d['world'];control=ROS/'src/multi_robot_exploration/multi_robot_exploration/control.py'\nassert hashlib.sha256(world.read_bytes()).hexdigest()==d['world_content_sha256']\nassert 'controller_freeze_history' not in d\nd['controller_freeze_history']=[dict(predeclared_at_utc=d['predeclared_at_utc'],controller_content_sha256=d['controller_content_sha256'],frozen_commit='3d079215caacf9e5e31866ca4db236a5cff3236c',new_holdout_exposed=False,evidence='20261004_p3b5_charge_time_lab101_failed_candidate.json'),\n    dict(development_commit=dev['declaration']['commit'],controller_content_sha256=dev['declaration']['control_sha256'],new_holdout_exposed=False,evidence='20261005_p3b5_observer_heading_development.json')]\nd['predeclared_at_utc']=datetime.now(timezone.utc).isoformat()\nd['controller_content_sha256']=hashlib.sha256(control.read_bytes()).hexdigest()\nd['static_geometry_check']['original_point_label_correction']='The retained tb1_start_charge/tb3_start_charge labels were generic sample points, not actual launch poses. Original values are historical; use supplemental actual_launch_start_geometry_check below. No world/control/mission run was used to validate or tune809 geometry.'\nd['actual_launch_start_geometry_check']=json.loads(Path('/tmp/p3b5_v56_fresh_holdout_proposal/actual_start_geometry_check.json').read_text())\nd['first_task_exposure']='Pending: unchanged809 world/seed/fault never executed. After clean pushed v58 freeze, forced-native/zero/physical-return subgates and all ten fixed originals pass, then first heldout3-row exposure. Source changes after exposure require a genuinely new combination.'\np.write_text(json.dumps(a,indent=2,ensure_ascii=False)+'\\n')\nout=Path('/tmp/p3b5_v58_holdout_refreeze.json');assert not out.exists()\nout.write_text(json.dumps(dict(predeclared_at_utc=d['predeclared_at_utc'],declaration=d,writer_source=Path(__file__).read_text()),indent=2,ensure_ascii=False)+'\\n')\nprint('Fresh809 unchanged/unexposed, controller prospectively re-frozen',d['controller_content_sha256'])\n"
+    }
+  },
+  "checker_native_completion_functions_unchanged": true,
+  "observed_basis": "f8297fa independent lab101 failed; actual extra yaw legs at289.7/298.7 with confirmation source age1.2sec, uninterrupted native window<5sec. All5 original evidence retained before edits.",
+  "algorithm": "Use existing5sec visual-observer freshness window as confirmation-gap guard. Quarter delivered camera FOV heading threshold still applies; fresh60sec target/2sec poseTF/5sec mapbattery, ACTIVE, reserved real routes/bodies/returns, ordinary gateway energy/deadline admission remain. Continuously healthy detections do not reopen parked heading legs.",
+  "validation": "451 full checks14.21sec,4-package build5.15sec,source-only3r0bypass,27cases41unique validate-only. Metadata/gate component checks after new manifest. No mission/Gazebo or809 exposure during checks.",
+  "prospective_scope": "New clean/pushed same-commit original57: forced native+E0+controlled-return initial subgates then ten fixed, then full paired27/41 plus auxiliary6. First809 only after allten fixed/forced pass. Do not backfill any prior failure. Complete batch itself supplies the new lab101/force integration validation; no separate development result is claimed.",
+  "limitations": "Geometry/seed/fault809/28091 unchanged, not yet exposed; generic initial static point labels retained with correction and actual frozen launch static PASS. Gap/heading policy heuristic, detector remains geometric visibility proxy. Original300/.35/.05/.1/5 and native evaluator checker unchanged. No ns3/RL.",
+  "writer": {
+    "sha256": "f72bd047bb209cb25d3610a966a628bf12abacfdc666182e4b5a24e217dadd58",
+    "text": "import ast,hashlib,json,subprocess\nfrom pathlib import Path\nfrom datetime import datetime,timezone\nROOT=Path('/home/zhuyulab/ns3-workspace');ROS=ROOT/'ros2_ws/ros2-multi-robot-automap';W=ROOT/'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl'\nassert '451 passed in 14.21s' in Path('/tmp/p3b5_v58_component_checks.log').read_text()\nassert '4 packages finished [5.15s]' in Path('/tmp/p3b5_v58_build.log').read_text()\nassert json.loads(Path('/tmp/p3b5_v58_source_audit.log').read_text())['pass']\nvalidated=json.loads(Path('/tmp/p3b5_v58_plan_validate.log').read_text());assert validated['cases']==27 and validated['episodes']==41\nchecker=ROS/'scripts/check_p3b5_gate.py'\nold=subprocess.check_output(['rtk','proxy','git','show','f8297fa:'+str(checker.relative_to(ROOT))],cwd=ROOT,text=True)\ndef functions(text):\n    return {node.name:ast.get_source_segment(text,node) for node in ast.parse(text).body if isinstance(node,ast.FunctionDef) and node.name in ('native_completion_ok','episode_ok')}\nassert functions(old)==functions(checker.read_text())\nmanifest=ROS/'scripts/p3b5_fault_manifest.json';config=json.loads(manifest.read_text())\ncontrol=ROS/'src/multi_robot_exploration/multi_robot_exploration/control.py'\nassert config['holdout_world_declaration']['controller_content_sha256']==hashlib.sha256(control.read_bytes()).hexdigest()\npaths=[Path('/tmp',name) for name in ('p3b5_v58_component_checks.log','p3b5_v58_build.log','p3b5_v58_source_audit.log',\n    'p3b5_v58_plan_validate.log','p3b5_v58_protocol_metadata_checks.log','p3b5_v58_holdout_refreeze.json','refreeze_p3b5_v58_holdout_controller.py')]\ndef retained(p):return dict(sha256=hashlib.sha256(p.read_bytes()).hexdigest(),text=p.read_text())\ndata=dict(created_at_utc=datetime.now(timezone.utc).isoformat(),status='COMPONENT PASS; prospective v58 complete integration required',\n    parent_commit=subprocess.check_output(['rtk','proxy','git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),\n    source_sha256=hashlib.sha256(control.read_bytes()).hexdigest(),protocol=config,\n    source_diff=subprocess.check_output(['rtk','proxy','git','diff','--',str(control),str(ROS/'src/multi_robot_exploration/test/test_control.py')],cwd=ROOT,text=True),\n    records={str(p):retained(p) for p in paths},checker_native_completion_functions_unchanged=True,\n    observed_basis='f8297fa independent lab101 failed; actual extra yaw legs at289.7/298.7 with confirmation source age1.2sec, uninterrupted native window<5sec. All5 original evidence retained before edits.',\n    algorithm='Use existing5sec visual-observer freshness window as confirmation-gap guard. Quarter delivered camera FOV heading threshold still applies; fresh60sec target/2sec poseTF/5sec mapbattery, ACTIVE, reserved real routes/bodies/returns, ordinary gateway energy/deadline admission remain. Continuously healthy detections do not reopen parked heading legs.',\n    validation='451 full checks14.21sec,4-package build5.15sec,source-only3r0bypass,27cases41unique validate-only. Metadata/gate component checks after new manifest. No mission/Gazebo or809 exposure during checks.',\n    prospective_scope='New clean/pushed same-commit original57: forced native+E0+controlled-return initial subgates then ten fixed, then full paired27/41 plus auxiliary6. First809 only after allten fixed/forced pass. Do not backfill any prior failure. Complete batch itself supplies the new lab101/force integration validation; no separate development result is claimed.',\n    limitations='Geometry/seed/fault809/28091 unchanged, not yet exposed; generic initial static point labels retained with correction and actual frozen launch static PASS. Gap/heading policy heuristic, detector remains geometric visibility proxy. Original300/.35/.05/.1/5 and native evaluator checker unchanged. No ns3/RL.',writer=retained(Path(__file__)))\nreport=W/'report/20261005_p3b5_observer_confirmation_gap_component.json';assert not report.exists()\nreport.write_text(json.dumps(data,indent=2,ensure_ascii=False)+'\\n')\nparagraph=('2026-10-05 P3B.5 v58候选只在目标确认源间断超过现有5秒观测者新鲜度窗口、但60秒目标lease仍有效时'\n    '考虑停驻朝向校正；继续正常检测时允许安静保持。四分之一相机FOV、交付map-frame yaw、新鲜位姿/地图/目标、'\n    'ACTIVE、网关导航/完整能量/实际body/route/return/并发保护保持。451组件PASS14.21s、四包build5.15s、'\n    'source3r0旁路、27case/41unique validate-only；native_completion_ok/episode_ok原样，原300s/.35/.05/.1/5s未改。'\n    '证据report/20261005_p3b5_observer_confirmation_gap_component.json；原v57五格FAIL已5f50357归档，不回填。'\n    '809world/seed/fault原样未暴露，预声明更新控制SHA与实际launch静态补查并保留旧原文件标签/两次冻结历史。'\n    '新完整v58自身按先force原生/E0/真实断网返充→十fixed→完整27/41+六辅助推进，提供新的lab101/force集成验证，'\n    '无需另称独立开发PASS；总57原任务全部保留、无retry。P3B.5未通过，待完整门禁，无ns3/RL。')\nfor p in (ROOT/'AGENTS.md',W/'AGENTS.md',W/'IMPLEMENTATION_PLAN.md',W/'RESEARCH_PLAN.md',ROS/'launch_commands.md',ROS/'user_guide.md'):\n    with p.open('a') as f:f.write('\\n'+paragraph+'\\n')\nfiles=['src/multi_robot_exploration/test/'+n for n in ('test_control.py','test_battery_manager.py','test_gateway.py','test_fault_model.py','test_navigation_faults.py','test_task_evaluator.py','test_nav2_ready_gate.py','test_readiness.py','test_spawn_entity_checked.py','test_tf_ingress_sampler.py','test_target_detector.py')]+['src/merge_map/test/test_merge_map.py']+['scripts/'+n for n in ('test_p3b5_tasks.py','test_p3b5_gate.py','test_p3b5_return_staging.py','test_ros_smoke_native_probe.py','test_observer_lifetime.py')]\nwith (W/'log.md').open('a') as f:\n    f.write('\\n## 2026-10-05 P3B.5 v58持续确认与安静保持组件/留出控制再冻结\\n\\n'+paragraph+\n        '\\n\\nROS canonical cwd、source Humble/install、PYTHONNOUSERSITE=1、ROS_LOG_DIR=log/component_checks、通过rtk bash -lc，全部离线组件：\\n\\n```bash\\n'\n        '/usr/bin/python3 -m pytest -q --tb=short '+' '.join(files)+' > /tmp/p3b5_v58_component_checks.log 2>&1\\n'\n        'colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot > /tmp/p3b5_v58_build.log 2>&1\\n'\n        '/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v58_source_audit.log 2>&1\\n'\n        '/usr/bin/python3 scripts/run_p3b5_tasks.py --config scripts/p3b5_fault_manifest.json --run-id p3b5_v58_predeclare_validation_only --ros-domain-base 50 --validate-only > /tmp/p3b5_v58_plan_validate.log 2>&1\\n'\n        '/usr/bin/python3 -m pytest -q --tb=short scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py > /tmp/p3b5_v58_protocol_metadata_checks.log 2>&1\\n'\n        '/usr/bin/python3 /tmp/refreeze_p3b5_v58_holdout_controller.py\\n```\\n\\n'+data['limitations']+'\\n')\nprint(report,'451 components PASS;57 original gate still pending')\n"
+  }
+}

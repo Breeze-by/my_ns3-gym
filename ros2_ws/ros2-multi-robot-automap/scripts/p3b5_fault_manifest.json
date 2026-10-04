@@ -353,7 +353,7 @@
     }
   },
   "holdout_world_declaration": {
-    "predeclared_at_utc": "2026-10-04T14:45:09.824843+00:00",
+    "predeclared_at_utc": "2026-10-04T16:14:30.112794+00:00",
     "world": "p3b5_holdout809.world",
     "world_content_sha256": "2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd",
     "gazebo_seed": 809,
@@ -407,9 +407,59 @@
         "tb2_start_charge": 0.45,
         "tb3_start_charge": 0.9,
         "target": 6.4234018715767665
-      }
+      },
+      "original_point_label_correction": "The retained tb1_start_charge/tb3_start_charge labels were generic sample points, not actual launch poses. Original values are historical; use supplemental actual_launch_start_geometry_check below. No world/control/mission run was used to validate or tune809 geometry."
     },
-    "controller_content_sha256": "478fc6929675fed0f6435a3b6c81f7549655f438dbed9fae1e6ac0fa1e857960",
-    "first_task_exposure": "Pending: only after clean pushed freeze, forced-native subgate and all ten fixed same-commit cells pass; no tuning or replacement on heldout outcomes."
+    "controller_content_sha256": "116d26e46a779694a290230aa5c2d2132e460a0ff2d5945eb09e215b8001d47a",
+    "first_task_exposure": "Pending: unchanged809 world/seed/fault never executed. After clean pushed v58 freeze, forced-native/zero/physical-return subgates and all ten fixed originals pass, then first heldout3-row exposure. Source changes after exposure require a genuinely new combination.",
+    "controller_freeze_history": [
+      {
+        "predeclared_at_utc": "2026-10-04T14:45:09.824843+00:00",
+        "controller_content_sha256": "478fc6929675fed0f6435a3b6c81f7549655f438dbed9fae1e6ac0fa1e857960",
+        "frozen_commit": "3d079215caacf9e5e31866ca4db236a5cff3236c",
+        "new_holdout_exposed": false,
+        "evidence": "20261004_p3b5_charge_time_lab101_failed_candidate.json"
+      },
+      {
+        "development_commit": "f8297fa86a8227e99871f5b4916f15dcfa8d17e6",
+        "controller_content_sha256": "ef7f602058e2ab8e3659c425d8e432f36ef584a7fdb240d888f2607f77ab2018",
+        "new_holdout_exposed": false,
+        "evidence": "20261005_p3b5_observer_heading_development.json"
+      }
+    ],
+    "actual_launch_start_geometry_check": {
+      "status": "PASS",
+      "checked_at_utc": "2026-10-04T15:11:57.995218+00:00",
+      "initial_record_annotation": "Original static check used generic sample points mislabeled start/charge. Original source/data retained. This check uses actual frozen launch tb1(0,-.45),tb2(0,.45),tb3(.45,0) for both spawn and charge; no world geometry, task parameter or algorithm change.",
+      "launch_content_sha256": "e67270a7b4e756ce55b4cf9b20298c2363c82e870e790d99a4e846d64cfdf52d",
+      "scope": "Static SDF/visual collision agreement, supported box rasterization and .45m-clearance connected start/charger/target geometry only. No task/controller/vision run or performance tuning.",
+      "world_content_sha256": "2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd",
+      "rectangle_count": 10,
+      "unsupported_collision_count": 0,
+      "points": {
+        "tb1_start_charge": [
+          0.0,
+          -0.45
+        ],
+        "tb2_start_charge": [
+          0.0,
+          0.45
+        ],
+        "tb3_start_charge": [
+          0.45,
+          0.0
+        ],
+        "target": [
+          4.4,
+          -3.4
+        ]
+      },
+      "connected_distances_from_tb1_m": {
+        "tb1_start_charge": 0.0,
+        "tb2_start_charge": 0.9,
+        "tb3_start_charge": 0.636396103067893,
+        "target": 6.237005768508876
+      }
+    }
   }
 }

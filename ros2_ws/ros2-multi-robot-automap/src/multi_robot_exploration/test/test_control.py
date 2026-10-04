@@ -1423,7 +1423,8 @@ def test_delivered_heading_uses_the_same_map_frame_as_rally_goals(odom_yaw, tf_y
 @pytest.mark.parametrize('condition', ['drift', 'wrapped', 'centered', 'busy', 'pending',
                                      'local_return', 'stale_inputs', 'stale_pose', 'stale_target',
                                      'returning', 'no_slot', 'route_conflict', 'non_observer',
-                                     'no_yaw', 'nan_yaw', 'narrow_fov'])
+                                     'no_yaw', 'nan_yaw', 'narrow_fov', 'recent_confirmation',
+                                     'five_sec_confirmation', 'missing_confirmation'])
 def test_parked_observer_corrects_heading_through_reserved_navigation(condition):
     from types import SimpleNamespace
     from unittest.mock import Mock
@@ -1462,6 +1463,8 @@ def test_parked_observer_corrects_heading_through_reserved_navigation(condition)
         rally_attempts=dict.fromkeys(names, 0), rally_recovery_requested=dict.fromkeys(names, False),
         rally_route_unavailable_since=dict.fromkeys(names), robot_positions=positions,
         robot_yaws={'observer': measured}, target_observing_robot='unknown' if condition == 'non_observer' else 'observer',
+        target_received_source_time={'recent_confirmation': 9., 'five_sec_confirmation': 5.,
+                                     'missing_confirmation': None}.get(condition, 4.),
         target_view_fov_rad=math.pi/3 if condition == 'narrow_fov' else math.pi/2,
         map_data=np.zeros((100, 100), dtype=int), resolution=.1, origin=(0., 0.),
         rally_position_tolerance=.35, target=(2.05, 4.05), get_logger=lambda: Mock(),

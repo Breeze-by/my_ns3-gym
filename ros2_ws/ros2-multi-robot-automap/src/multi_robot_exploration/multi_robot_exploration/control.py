@@ -41,6 +41,7 @@ MAX_NAVIGATION_LEG_M = 5.0
 NAVIGATION_POSITION_TOLERANCE_M = 0.02
 NAVIGATION_YAW_TOLERANCE_RAD = 0.25
 TARGET_HISTORY_SEC = 10.0
+TARGET_OBSERVER_FRESHNESS_SEC = 5.0
 BAD_TARGET_SEC = 30.0
 NO_PROGRESS_SEC = 20.0
 USEFUL_TRAVEL_M = 0.75
@@ -1868,11 +1869,11 @@ def rally_priority_reservations(order, robot_name, routes, completed):
     return reservations
 
 
-def rally_observation_guard(observer, source_time, now, modes, freshness_sec=5.0):
+def rally_observation_guard(observer, source_time, now, modes, freshness_sec=TARGET_OBSERVER_FRESHNESS_SEC):
     """Keep the last live visual observer until a peer confirms a handoff."""
     if (observer not in modes or modes[observer] != "ACTIVE"
             or source_time is None or not math.isfinite(source_time)
-            or not 0 <= now - source_time <= min(freshness_sec, 5.0)
+            or not 0 <= now - source_time <= min(freshness_sec, TARGET_OBSERVER_FRESHNESS_SEC)
             or not any(name != observer and mode in ("ACTIVE", "RETURNING", "CHARGING")
                        for name, mode in modes.items())):
         return None
@@ -3110,6 +3111,9 @@ class HeadquartersControl(Node):
             self.rally_goal_handles[name].cancel_goal_async()
 
         heading_corrections = set()
+        last_confirmation = getattr(self, "target_received_source_time", None)
+        confirmation_gap = (last_confirmation is not None
+                            and TARGET_OBSERVER_FRESHNESS_SEC < now - last_confirmation <= TARGET_DETECTION_TTL_SEC)
         for name, handle in self.rally_goal_handles.items():
             if name not in self.rally_targets:
                 continue
@@ -3136,7 +3140,7 @@ class HeadquartersControl(Node):
             ):
                 self.rally_arrived[name] = False
             yaw = getattr(self, "robot_yaws", {}).get(name)
-            if (yaw is not None and math.isfinite(yaw) and position is not None
+            if (confirmation_gap and yaw is not None and math.isfinite(yaw) and position is not None
                     and math.dist(position, (target.x, target.y)) <= self.rally_position_tolerance
                     and name in (getattr(self, "rally_observer_guard", None),
                                  getattr(self, "target_observing_robot", None))
@@ -3147,9 +3151,10 @@ class HeadquartersControl(Node):
                     and abs(math.atan2(math.sin(target.yaw - yaw),
                                        math.cos(target.yaw - yaw)))
                     > getattr(self, "target_view_fov_rad", math.pi / 2) / 4):
-                # A successful Nav2 result does not hold the camera heading.
-                # Reuse the reserved/energy-checked final leg before yaw drift
-                # loses the delivered observation lease. Never use native truth.
+                # Healthy delivered confirmations already prove observation.
+                # Let those parked robots settle; reopen the reserved/energy-
+                # checked final leg only after the 5s observer heartbeat gap,
+                # before the 60s target lease expires. Never use native truth.
                 if self.rally_arrived[name]:
                     self.get_logger().info(f"Correcting parked {name}'s observer heading.")
                 self.rally_arrived[name] = False

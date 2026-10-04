@@ -5569,3 +5569,20 @@ ROS_DOMAIN_ID=20 GAZEBO_MASTER_URI=http://127.0.0.1:15652 /usr/bin/python3 /home
 Lab101 final poses near within3.3cm; read-only physics eligibility at final poses (not replacement mission proof) longest final-segment speed/position window3.0s. Extra yaw legs offsets289.7 and298.7 were emitted with fresh target source age1.2s; continuing correction despite healthy detection interrupted settling. Underlying physical yaw drift still not established from cmd_vel.
 
 全部结果含原生hold proof/无proof、完整AP快照、源/协议/参数/命令/环境/graph/ledger/file SHA与失败均保留。四个COMPLETE不能替代failed lab101；force余量4.7/.5s，不宣称最坏时限可靠性或单因素改善。zero fault不同async轨迹/充电数不是通信收益。仅开发，未调用完整strict checker/PASS图文，未暴露809，无ns3/RL。
+
+## 2026-10-05 P3B.5 v58持续确认与安静保持组件/留出控制再冻结
+
+2026-10-05 P3B.5 v58候选只在目标确认源间断超过现有5秒观测者新鲜度窗口、但60秒目标lease仍有效时考虑停驻朝向校正；继续正常检测时允许安静保持。四分之一相机FOV、交付map-frame yaw、新鲜位姿/地图/目标、ACTIVE、网关导航/完整能量/实际body/route/return/并发保护保持。451组件PASS14.21s、四包build5.15s、source3r0旁路、27case/41unique validate-only；native_completion_ok/episode_ok原样，原300s/.35/.05/.1/5s未改。证据report/20261005_p3b5_observer_confirmation_gap_component.json；原v57五格FAIL已5f50357归档，不回填。809world/seed/fault原样未暴露，预声明更新控制SHA与实际launch静态补查并保留旧原文件标签/两次冻结历史。新完整v58自身按先force原生/E0/真实断网返充→十fixed→完整27/41+六辅助推进，提供新的lab101/force集成验证，无需另称独立开发PASS；总57原任务全部保留、无retry。P3B.5未通过，待完整门禁，无ns3/RL。
+
+ROS canonical cwd、source Humble/install、PYTHONNOUSERSITE=1、ROS_LOG_DIR=log/component_checks、通过rtk bash -lc，全部离线组件：
+
+```bash
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_control.py src/multi_robot_exploration/test/test_battery_manager.py src/multi_robot_exploration/test/test_gateway.py src/multi_robot_exploration/test/test_fault_model.py src/multi_robot_exploration/test/test_navigation_faults.py src/multi_robot_exploration/test/test_task_evaluator.py src/multi_robot_exploration/test/test_nav2_ready_gate.py src/multi_robot_exploration/test/test_readiness.py src/multi_robot_exploration/test/test_spawn_entity_checked.py src/multi_robot_exploration/test/test_tf_ingress_sampler.py src/multi_robot_exploration/test/test_target_detector.py src/merge_map/test/test_merge_map.py scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py scripts/test_ros_smoke_native_probe.py scripts/test_observer_lifetime.py > /tmp/p3b5_v58_component_checks.log 2>&1
+colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot > /tmp/p3b5_v58_build.log 2>&1
+/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v58_source_audit.log 2>&1
+/usr/bin/python3 scripts/run_p3b5_tasks.py --config scripts/p3b5_fault_manifest.json --run-id p3b5_v58_predeclare_validation_only --ros-domain-base 50 --validate-only > /tmp/p3b5_v58_plan_validate.log 2>&1
+/usr/bin/python3 -m pytest -q --tb=short scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py > /tmp/p3b5_v58_protocol_metadata_checks.log 2>&1
+/usr/bin/python3 /tmp/refreeze_p3b5_v58_holdout_controller.py
+```
+
+Geometry/seed/fault809/28091 unchanged, not yet exposed; generic initial static point labels retained with correction and actual frozen launch static PASS. Gap/heading policy heuristic, detector remains geometric visibility proxy. Original300/.35/.05/.1/5 and native evaluator checker unchanged. No ns3/RL.
