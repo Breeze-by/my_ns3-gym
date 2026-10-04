@@ -191,3 +191,54 @@ def test_lower_unfunded_candidates_do_not_repeat_full_route_planning(monkeypatch
     assert len(requests)==1 and not sent
     assert node.exploration_resume_intents['tb1'][0]==6.
     assert planning.call_count<=2
+
+
+def opportunity_node():
+    node,requests,decisions,sent=charge_node()
+    node.robot_positions['tb1']=(3.,3.)
+    node.battery_states['tb1'].update(energy=18.,charge_radius_m=.8)
+    node.successful_exploration_legs={'tb1':1}
+    return node,requests,decisions,sent
+
+
+def test_funded_frontier_passing_home_can_request_opportunity_charge(monkeypatch):
+    node,requests,decisions,sent=opportunity_node()
+    goal=assignment(3.5,3.,distance=.5)
+    install_candidates(monkeypatch,{'tb1':[goal]})
+    control.HeadquartersControl.assign_idle_robots(node)
+    assert not sent and len(requests)==len(decisions)==1
+    assert requests[0][1]['required_energy']==40.
+    assert node.exploration_resume_intents['tb1']==(3.5,3.,1000)
+
+
+@pytest.mark.parametrize('reason',['spawn','no_success','full','distant','blocked_home','invalid_radius','live_peer','stale'])
+def test_opportunity_charge_requires_real_work_and_current_safe_home_route(monkeypatch,reason):
+    node,requests,_,sent=opportunity_node()
+    if reason=='spawn':node.robot_positions['tb1']=(2.,3.)
+    if reason=='no_success':node.successful_exploration_legs.clear()
+    if reason=='full':node.battery_states['tb1']['energy']=80.
+    if reason=='distant':node.robot_positions['tb1']=(4.,3.)
+    if reason=='blocked_home':node.map_data[:,23]=100
+    if reason=='invalid_radius':node.battery_states['tb1']['charge_radius_m']=float('nan')
+    if reason=='live_peer':node.robot_states['tb2']='active'
+    if reason=='stale':node.fresh_robot_inputs=lambda:False
+    install_candidates(monkeypatch,{'tb1':[assignment(3.5,3.,distance=.5)]})
+    control.HeadquartersControl.assign_idle_robots(node)
+    assert not requests
+    assert bool(sent)==(reason not in ('live_peer','stale'))
+
+
+def test_idle_robot_refines_reachable_candidates_while_peer_action_remains_live(monkeypatch):
+    node,requests,_,sent=charge_node()
+    node.battery_states['tb1']['energy']=80.
+    node.robot_states['tb2']='active'
+    calls=[]
+    goal=assignment(3.,3.,distance=1.)
+    def candidates(grid,resolution,origin,name,*args,**kwargs):
+        refined='blocked_positions' in kwargs
+        calls.append(refined)
+        return ([(goal.utility,name,goal.viewpoint.group_id,goal)] if refined else []),dict(frontier_groups=1,groups_with_viewpoints=1)
+    monkeypatch.setattr(control,'robot_candidate_assignments',candidates)
+    control.HeadquartersControl.assign_idle_robots(node)
+    assert calls==[False,True] and not requests
+    assert len(sent)==1 and sent[0][0]=='tb1'

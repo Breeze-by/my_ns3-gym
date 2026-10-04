@@ -2129,6 +2129,7 @@ class HeadquartersControl(Node):
         self.rally_battery_preempted = {}
         self.rally_charge_requested = {}
         self.exploration_charge_budgets = {}
+        self.successful_exploration_legs = {}
         self.rally_precharge_staging = {}
         self.rally_detour_budgets = {}
         self.rally_wait_budgets = {}
@@ -2376,7 +2377,7 @@ class HeadquartersControl(Node):
         except (KeyError, TypeError, ValueError, ZeroDivisionError):
             return None
 
-    def exploration_charge_budget(self, name, assignment):
+    def exploration_charge_budget(self, name, assignment, allow_opportunity=False):
         """Return a valid frontier budget that charging can actually fund."""
         required = HeadquartersControl.exploration_required_energy(
             self, name, assignment.path_distance_m, (assignment.x, assignment.y))
@@ -2391,7 +2392,30 @@ class HeadquartersControl(Node):
             home = (float(state['charge_x']), float(state['charge_y']))
             if (not all(math.isfinite(v) for v in (energy, capacity, fraction, charge_target, *home))
                     or not 0 < fraction <= 1 or capacity <= 0
-                    or not energy <= required < charge_target):
+                    or not required < charge_target):
+                return None
+            if energy > required:
+                # A low battery passing home can avoid a later distant return.
+                # Require real exploration first; never top up at initial spawn.
+                radius = float(state.get('charge_radius_m', 0.0))
+                if (not allow_opportunity
+                        or self.task_state not in ('EXPLORE', 'FOUND_UNCONFIRMED')
+                        or not getattr(self, 'successful_exploration_legs', {}).get(name, 0)
+                        or energy > .5 * charge_target
+                        or not math.isfinite(radius) or radius <= .2
+                        or not PATH_CLEARANCE_M < math.dist(self.robot_positions[name], home) <= 2. * radius):
+                    return None
+                leg, _ = plan_rally_leg(
+                    RallyPose(*home, 0.0), self.map_data, self.resolution, self.origin,
+                    self.robot_positions[name], 2. * radius,
+                    blocked_positions=[p for peer, p in self.robot_positions.items()
+                                       if peer != name and p is not None],
+                    clearance_m=PATH_CLEARANCE_M, visible_only=True,
+                )
+                if leg is None or world_to_grid(leg.x, leg.y, self.resolution, *self.origin) != world_to_grid(*home, self.resolution, *self.origin):
+                    return None
+                required = max(required, .5 * charge_target)
+            if energy > required:
                 return None
             return energy, required, home
         except (KeyError, TypeError, ValueError):
@@ -2414,7 +2438,8 @@ class HeadquartersControl(Node):
         for name, assignment in candidates:
             if self.rally_charge_requested and name not in self.rally_charge_requested:
                 continue
-            budget = HeadquartersControl.exploration_charge_budget(self, name, assignment)
+            budget = HeadquartersControl.exploration_charge_budget(
+                self, name, assignment, allow_opportunity=True)
             if budget is None:
                 continue
             energy, required, home = budget
@@ -4742,7 +4767,7 @@ class HeadquartersControl(Node):
                 reservations.append(route)
                 if len(selected) + active_explorers >= max_concurrent:
                     break
-            if selected or active_explorers:
+            if selected:
                 if search:
                     self.target_search_basis = ("current_map_known_free_sweep" if refine == "known_space"
                                                 else "current_map_frontiers")
@@ -4752,6 +4777,11 @@ class HeadquartersControl(Node):
         # including when those peers have enough energy for further work.
         charge_candidates = {name: assignment for name, assignment in charge_candidates.items()
                              if name not in plans}
+        if not search:
+            for name, assignment in plans.items():
+                if (getattr(self, 'enable_battery', False) and HeadquartersControl.exploration_charge_budget(
+                        self, name, assignment, allow_opportunity=True) is not None):
+                    charge_candidates[name] = assignment
         if charge_candidates:
             if active_explorers or any(mode == 'CHARGING' for mode in self.battery_modes.values()):
                 return
@@ -4943,6 +4973,10 @@ class HeadquartersControl(Node):
 
     def finish_goal(self, robot_name, success, blacklist=True):
         assignment = self.goal_targets[robot_name]
+        if (success and assignment is not None
+                and getattr(self, 'task_state', None) in ('EXPLORE', 'FOUND_UNCONFIRMED')):
+            completed = getattr(self, 'successful_exploration_legs', {})
+            completed[robot_name] = completed.get(robot_name, 0) + 1
         resume_intents = getattr(self, "exploration_resume_intents", {})
         if self.battery_modes[robot_name] == "FAILED":
             resume_intents.pop(robot_name, None)

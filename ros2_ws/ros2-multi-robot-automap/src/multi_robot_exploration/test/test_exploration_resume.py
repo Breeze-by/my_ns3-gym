@@ -36,7 +36,7 @@ def finish_node(goal, phase="EXPLORE", preempted=True):
         "cancel_requested", "robot_states")}
     return SimpleNamespace(
         **dictionaries, goal_targets={name: goal}, battery_preempted={name: preempted},
-        task_state=phase, exploration_resume_intents={}, battery_modes={name: "ACTIVE"},
+        task_state=phase, exploration_resume_intents={}, successful_exploration_legs={}, battery_modes={name: "ACTIVE"},
         target_history=[], bad_targets=[], now=lambda: 10., check_exploration_completion=lambda: None,
     )
 
@@ -56,6 +56,7 @@ def test_only_battery_interrupted_search_goals_are_remembered(phase, preempted, 
         assert node.exploration_resume_intents['tb1']==(4., 3., 1000)
     assert node.goal_targets['tb1'] is None and node.goal_routes['tb1']==()
     assert not node.bad_targets
+    assert node.successful_exploration_legs.get('tb1',0)==int(success and phase in ('EXPLORE','FOUND_UNCONFIRMED'))
 
 
 @pytest.mark.parametrize("navigation,remaining", [((2., 3.), True), ((7.5, 3.), False)])
