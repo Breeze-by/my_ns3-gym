@@ -6,6 +6,38 @@ import pytest
 from run_p3b5_tasks import CONFIG, episode_command, ledger_metrics, tdi
 
 
+@pytest.mark.parametrize('base,count,expected',[(18,2,[18,19]),(229,2,[229,230])])
+def test_declared_domains_match_native_observer_domains_without_modulo_aliases(base,count,expected):
+    from run_p3b5_tasks import episode_domains
+    assert episode_domains(base,count)==expected
+
+
+@pytest.mark.parametrize('base,count',[(-1,2),(232,2)])
+def test_domain_plans_reject_invalid_or_overflowed_ids(base,count):
+    from run_p3b5_tasks import episode_domains
+    with pytest.raises(ValueError,match='without wrapping'):episode_domains(base,count)
+
+
+@pytest.mark.parametrize('base,valid',[(18,True),(232,False)])
+def test_domain_validation_happens_before_any_episode_directory_or_spawn(tmp_path,monkeypatch,capsys,base,valid):
+    import sys
+    import run_p3b5_tasks as runner
+    config=tmp_path/'config.json'
+    config.write_text(json.dumps({'cases':[{'id':'basic','scenario':'lab','mode':'coverage','profile':'zero'}],
+        'scenarios':{'lab':{'world':'my_world.world','energy':40}},'profiles':{'zero':{}}}))
+    run='domain_check_never_start'
+    monkeypatch.setattr(sys,'argv',['run_p3b5_tasks','--config',str(config),'--run-id',run,
+        '--validate-only','--ros-domain-base',str(base)])
+    if valid:
+        assert runner.main()==0
+        assert json.loads(capsys.readouterr().out)['ros_domain_ids']==[18,19]
+    else:
+        with pytest.raises(SystemExit) as error:runner.main()
+        assert error.value.code==2
+        assert 'without wrapping' in capsys.readouterr().err
+    assert not (runner.PROJECT_ROOT/'log/p3b5'/run).exists()
+
+
 def test_holdout_commands_use_declared_independent_fault_seed(tmp_path):
     import argparse
     from pathlib import Path

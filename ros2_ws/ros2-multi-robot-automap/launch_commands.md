@@ -672,7 +672,7 @@ source install/setup.bash
 source /usr/share/gazebo/setup.sh
 export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1
 export GAZEBO_MASTER_URI=http://127.0.0.1:11420
-/usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_formal --ros-domain-base 170
+/usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_formal --ros-domain-base 30
 ```
 
 manifest 正式冻结27个case；同配置ideal共享一次对照，任务终态/通信账本/旁路图全部保留。
@@ -717,7 +717,7 @@ P3B.5 原生启动检查候选：生成器以 ModelStates 和 `/get_model_list` 
 补充物理返航开发配对（另加2episode；原四辅助probe保留）：
 
 ```bash
-PYTHONNOUSERSITE=1 /usr/bin/python3 scripts/run_p3b5_return_probe.py --run-id p3b5_return_new --ros-domain-base 166
+PYTHONNOUSERSITE=1 /usr/bin/python3 scripts/run_p3b5_return_probe.py --run-id p3b5_return_new --ros-domain-base 90
 ```
 
 参数冻结在 `scripts/p3b5_return_probe_manifest.json`。只读physics观察器记录 Gazebo 模型位置、本地电池和 Nav2 action 状态，写到 `log/p3b5/<run-id>_physics/`；控制节点不接收这些真值。断网守护窗口内，两机器人均须从距离home至少1.1m开始RETURNING、实际向home进展至少0.5m、至少0.5m路径具有原生Nav2 EXECUTING状态，且各充电一次，无碰撞或FAILED。在充电接触区进入RETURNING只证明状态/充电，不能代替物理导航证据。全部正式门禁预计57个独立episode：41primary、10固定ideal、6辅助；forced ideal复用primary对照。代码候选尚待全矩阵验证。
@@ -779,3 +779,11 @@ Gazebo factory 明确表示本次实体已经入队、确认阶段超时时，he
 目标区调查改为已知地图上的可视短腿，复用实际机体、在途集合与本地返航预约；若完整当前去程/终点返航预算不足，则缩短可选调查而非派发无资金全程goal。peer返航取消已接受或pending调查，晚接受也执行取消。FOUND调查成功不再因尚无最终集合位而被回调提前忽略；调查不能使用过期目标或绕过同gateway。300s、硬reserve、Nav2限制、0.35m/0.05mps/0.1radps/5s完成门槛保持。
 
 原42b099e正式七started/七raw保留：fixed lab101/202 COMPLETE286.7/242.7且0接触，lab303 timeout300.3/FOUND、两charge、6接触；E0 pair正确FAILED/no nav，受控返航两侧仅EXPLORE300.3/300.1安全过程证据。固定FAIL阻止其余七fixed、fullfault与首次707启动。11张原AP快照的纯几何分配均无三机解，tb2原始起点单格100、可达candidate0；条件规划副本重放恢复11张三机解，非原内部buffer/任务重演。两个不改control的附加局部地图诊断均不作为formal证据：v50标签303实际上seed202，RALLY timeout300.1/0接触，绑定错误与实际参数保留；v51实际303 COMPLETE171.6/0接触，未重现单格故障。候选v52 lab303/202独立开发COMPLETE244.8/166.9，v53同source rooms101 COMPLETE126.1，均0接触、原生保持合格；成功开发格不回填正式格。416组件、四包build/source审计通过，P3B.5仍待新clean提交的完整门禁；已验收P3A.6冻结22c95a7保持。
+
+2026-10-04 P3B.5基础设施复验候选：011786e同提交十fixed全部原生合格COMPLETE且零碰撞，但完整批次不能PASS：首次707 ideal COMPLETE148.1s，接下来的fault27077在机器人生成前未取得新鲜原生模型清单，90s原检查超时，episode未开始。原失败、所有其余自然结束结果、命令/图/账本/源哈希在report/20261004_p3b5_model_inventory_failed_candidate.json保留，未回填或挑成功。
+
+三个网络中断后遗留的v11只读观察器按原输出路径、已消失owner与已释放master核对后仅用SIGINT关闭；复用domain产生的旧流混合尾部不当作原v11任务证据。新的只读观察器在导入rclpy前绑定Linux父进程死亡信号，托管runner传入确切owner PID以闭合初始化竞态；正常退出仍保存原观察记录。该机制不作用于任务控制节点。两个真实ROS观察器父进程退出检查通过。
+
+run_p3b5_tasks默认domain base改为30；run_p3b5_return_probe默认90。domain范围提前校验0..232，严格使用声明的连续ID，不再取模改写；完整矩阵30..70，物理探针90/91。并发批次须事先分配互不重叠的domain范围及Gazebo master；下一冻结全批次使用显式20..95。生成器仅增加ModelStates消息和GetModelList请求/响应/超时计数，分开报告无清单和实体重名，原90s总检查、单次创建、原生存在性确认保持。独立lab101裸世界诊断在domain201与18均约2s收到模型/clock与服务成功，未复现原失败。Linux默认临时端口范围与高domain的重叠是配置风险，不能据此宣称已证明失败根因（[ROS2 Humble官方domain说明](https://github.com/ros2/ros2_documentation/blob/humble/source/Concepts/Intermediate/About-Domain-ID.rst)）。
+
+425组件检查、四包build和source旁路审计通过；controller、故障manifest、300s、完成门限与安全保留量字节/参数不变。707已经在011786e暴露，后续只能称同策略基础设施复验，不称首次或全新未暴露heldout；保留首次ideal与任务前失败，fault27077的首次声明不改。新clean提交仍须先跑全十fixed再完整57episode门禁；P3B.5尚未通过，P3A.6已验收冻结22c95a7保持，无ns3/WiFi/RL。

@@ -1,6 +1,8 @@
 """Read-only physical evidence for a prospective local return navigation probe."""
 import argparse, json, math
 from pathlib import Path
+from observer_lifetime import bind_to_owner
+bind_to_owner()
 import rclpy
 from rclpy.node import Node
 from rclpy.parameter import Parameter

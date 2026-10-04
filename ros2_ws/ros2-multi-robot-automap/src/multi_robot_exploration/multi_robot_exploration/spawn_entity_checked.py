@@ -27,11 +27,13 @@ class ModelInventory:
         self.client = node.create_client(GetModelList, '/get_model_list')
         self.pending = None
         self.next_query = 0.
+        self.queries = self.replies = self.timeouts = 0
 
     def poll(self, now):
         if self.pending is not None:
             future, started = self.pending
             if future.done():
+                self.replies += 1
                 try:
                     response = future.result()
                     if response is not None and response.success:
@@ -41,10 +43,12 @@ class ModelInventory:
                 self.pending = None
                 self.next_query = now + .5
             elif now - started >= 2.:
+                self.timeouts += 1
                 self.client.remove_pending_request(future)
                 future.cancel()
                 self.pending = None
         if self.pending is None and now >= self.next_query and self.client.service_is_ready():
+            self.queries += 1
             self.pending = self.client.call_async(GetModelList.Request()), now
 
 
@@ -98,8 +102,10 @@ def main(args=None):
     rclpy.init(args=args)
     node = Node('spawn_entity_checked')
     node.entity, node.model_names = options.entity, None
+    node.model_state_messages = 0
 
     def observe(message):
+        node.model_state_messages += 1
         node.model_names = set(message.name)
 
     node.create_subscription(ModelStates, '/gazebo/model_states', observe, qos_profile_sensor_data)
@@ -110,8 +116,16 @@ def main(args=None):
         while rclpy.ok() and node.model_names is None and time.monotonic() < deadline:
             inventory.poll(time.monotonic())
             rclpy.spin_once(node, timeout_sec=.1)
-        if node.model_names is None or options.entity in node.model_names:
-            node.get_logger().error('No fresh model inventory, or entity already exists; refusing spawn')
+        if node.model_names is None:
+            node.get_logger().error(
+                f'No model inventory within spawn wall timeout; refusing spawn: '
+                f'model_state_messages={node.model_state_messages}, '
+                f'get_model_list_ready={inventory.client.service_is_ready()}, '
+                f'queries={inventory.queries}, replies={inventory.replies}, '
+                f'query_timeouts={inventory.timeouts}'
+            )
+        elif options.entity in node.model_names:
+            node.get_logger().error(f'Gazebo entity {options.entity} already exists; refusing spawn')
         else:
             client = node.create_client(SpawnEntity, '/spawn_entity')
             if client.wait_for_service(timeout_sec=max(0., deadline-time.monotonic())):

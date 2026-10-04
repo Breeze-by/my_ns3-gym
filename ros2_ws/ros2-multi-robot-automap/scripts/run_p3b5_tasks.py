@@ -20,6 +20,13 @@ from run_p2d_baseline import PROJECT_ROOT, build_manifest, file_digest
 CONFIG = Path(__file__).with_name("p3b5_fault_manifest.json")
 
 
+def episode_domains(base, count):
+    """Keep each declared domain explicit; never wrap into another experiment."""
+    if count < 0 or base < 0 or base + count > 233:
+        raise ValueError('ROS domain plan must fit in 0..232 without wrapping')
+    return list(range(base, base + count))
+
+
 def stamp(event):
     return float(event.get("time", event.get("event_time", 0.)))
 
@@ -200,7 +207,7 @@ def main():
     parser.add_argument("--config", type=Path, default=CONFIG)
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--cases", nargs="+")
-    parser.add_argument("--ros-domain-base", type=int, default=170)
+    parser.add_argument("--ros-domain-base", type=int, default=30)
     parser.add_argument("--validate-only", action="store_true")
     parser.add_argument("--resume", action="store_true")
     args = parser.parse_args()
@@ -231,12 +238,16 @@ def main():
             planned.setdefault(identity, {"case": case, "scenario": scenario, "profile": profile,
                                          "mode": mode, "settings": settings})
         pairs[case["id"]] = pair
+    try:
+        domains = episode_domains(args.ros_domain_base, len(planned))
+    except ValueError as error:
+        parser.error(str(error))
     if args.validate_only:
         for item in planned.values():
             world = PROJECT_ROOT / "src/multi_robot/worlds" / item["scenario"]["world"]
             if not world.is_file():
                 parser.error(f"missing world {world}")
-        print(json.dumps({"cases": len(cases), "episodes": len(planned), "pairs": pairs}, indent=2))
+        print(json.dumps({"cases": len(cases), "episodes": len(planned), "pairs": pairs, "ros_domain_ids": domains}, indent=2))
         return 0
     if base.exists() and not args.resume:
         parser.error("run exists; never overwrite evidence")
@@ -252,6 +263,7 @@ def main():
     manifest["permitted_untracked_user_materials"] = "260929_report/ (recorded, untouched, excluded from task stack)"
     manifest["p3b5_runner_sha256"] = file_digest(Path(__file__))
     manifest["observer_sha256"] = file_digest(Path(__file__).with_name("observe_p3b5.py"))
+    manifest["observer_lifetime_sha256"] = file_digest(Path(__file__).with_name("observer_lifetime.py"))
     manifest["world_sha256"] = {name: file_digest(PROJECT_ROOT / "src/multi_robot/worlds" / scenario["world"])
                                   for name, scenario in config["scenarios"].items()}
     if not manifest["task_stack_clean"]:
@@ -277,7 +289,7 @@ def main():
         directory.mkdir()
         command = episode_command(item["case"], item["scenario"], item["profile"], item["mode"], directory, config)
         env = os.environ.copy()
-        env["ROS_DOMAIN_ID"] = str(20 + (args.ros_domain_base + index - 20) % 210)
+        env["ROS_DOMAIN_ID"] = str(domains[index])
         row = {**item, "command": shlex.join(command), "ros_domain_id": env["ROS_DOMAIN_ID"],
                "gazebo_master_uri": env.get("GAZEBO_MASTER_URI"), "result_path": str(directory / (identity + ".json"))}
         print(f"RUN {index + 1}/{len(planned)} {identity}", flush=True)
@@ -285,8 +297,11 @@ def main():
                             "--output", str(directory / "safety_events.jsonl"),
                             "--robot-count", str(item["scenario"]["robot_count"])]
         row["observer_command"] = shlex.join(observer_command)
+        row["observer_owner_pid"] = os.getpid()
+        observer_env = env.copy()
+        observer_env["P3B5_OBSERVER_OWNER_PID"] = str(os.getpid())
         with (directory / "observer.log").open("w") as observer_log:
-            observer = subprocess.Popen(observer_command, env=env, cwd=PROJECT_ROOT,
+            observer = subprocess.Popen(observer_command, env=observer_env, cwd=PROJECT_ROOT,
                                         stdout=observer_log, stderr=subprocess.STDOUT)
             staging = None
             staging_log = None

@@ -2,6 +2,8 @@
 """Read-only evaluator-side timing trace; never publishes into control."""
 import argparse, json
 from pathlib import Path
+from observer_lifetime import bind_to_owner
+bind_to_owner()
 import rclpy
 from rclpy.node import Node
 from rclpy.executors import ExternalShutdownException
