@@ -892,6 +892,100 @@ def test_rally_navigation_stages_long_paths():
     assert 0.6 <= math.dist((1.0, 1.0), (retry_leg.x, retry_leg.y)) <= 0.8
 
 
+def test_peer_information_penalty_prefers_unclaimed_space_without_removing_shared_frontiers():
+    grid = np.zeros((60, 100), dtype=int)
+    grid[:, :20] = -1
+    grid[:, 80:] = -1
+    before = grid.copy()
+    cache = {}
+    data = control.prepare_frontier_data(grid, .1, cache)
+    args = (grid, .1, (0., 0.), 'tb1', (5., 3.))
+    baseline, _ = control.robot_candidate_assignments(*args, frontier_data=data)
+    reserved = np.zeros(grid.size, dtype=bool)
+    peer_cells = control.visible_information_cells(grid, (30, 72), 20.)
+    reserved[peer_cells] = True
+    adjusted, _ = control.robot_candidate_assignments(
+        *args, frontier_data=data, reserved_information=reserved, visibility_cache=cache,
+    )
+    original = {(a.x, a.y): a for _, _, _, a in baseline}
+    assert len(adjusted) == len(baseline) > 0
+    decreased = 0
+    independent = 0
+    for _, _, _, a in adjusted:
+        prior = original[a.x, a.y]
+        assert a.viewpoint == prior.viewpoint and a.path_distance_m == prior.path_distance_m
+        assert .35*prior.utility <= a.utility <= prior.utility
+        if a.x > 6. and a.utility < prior.utility:
+            decreased += 1
+        if a.x < 4.:
+            independent += 1
+            assert a.utility == prior.utility
+    assert decreased and independent
+    assert np.array_equal(grid, before)
+
+
+def test_peer_information_reservation_uses_wall_occlusion_and_valid_unknown_cells():
+    grid = np.zeros((40, 80), dtype=int)
+    grid[:, 40:] = -1
+    grid[:, 35] = 100
+    assert control.visible_information_cells(grid, (20, 20), 30.).size == 0
+    grid[15:25, 35] = 0
+    cells = control.visible_information_cells(grid, (20, 20), 30.)
+    assert cells.size == control.visible_unknown_gain(grid, (20, 20), 30.) > 0
+    assert np.all(grid.ravel()[cells] < 0)
+    assert len(set(cells)) == cells.size
+    assert control.visible_information_cells(grid, (-1, 0), 30.).size == 0
+
+
+def test_frontier_visibility_cache_is_populated_by_the_same_map_gain_calculation(monkeypatch):
+    grid = np.zeros((60, 100), dtype=int)
+    grid[:, :20] = -1
+    grid[:, 80:] = -1
+    cache = {}
+    data = control.prepare_frontier_data(grid, .1, cache)
+    for viewpoints in data[2].values():
+        for point in viewpoints:
+            assert cache[point.row, point.column].size == point.information_gain
+    reserved = np.zeros(grid.size, dtype=bool)
+    monkeypatch.setattr(control, 'visible_information_cells', lambda *args: pytest.fail('repeated ray construction'))
+    candidates, _ = control.robot_candidate_assignments(
+        grid, .1, (0., 0.), 'tb1', (5., 3.), frontier_data=data,
+        reserved_information=reserved, visibility_cache=cache,
+    )
+    assert candidates
+
+
+def test_delivered_map_replaces_peer_visibility_cache_before_new_assignments(monkeypatch):
+    from types import SimpleNamespace
+    from nav_msgs.msg import OccupancyGrid
+
+    grid = np.zeros((40, 50), dtype=np.int16)
+    grid[:, 30:] = -1
+    node = SimpleNamespace(
+        task_state="EXPLORE", map_data=grid, resolution=.1, origin=(0., 0.),
+        robot_positions={'tb1': (1., 1.)}, robot_maps={'tb1': {}},
+        robot_states={'tb1': 'idle'}, battery_modes={'tb1': 'ACTIVE'},
+        frontier_cache=None, goal_targets={}, goal_routes={},
+        input_robot_names=lambda: ['tb1'], participating_robots=lambda: ['tb1'],
+        fresh_robot_inputs=lambda: True, active_exclusions=lambda: [],
+        now=lambda: 0., last_no_assignment_log=0.,
+    )
+    monkeypatch.setattr(control, 'robot_candidate_assignments', lambda *args, **kwargs:
+                        ([], {'frontier_groups': 0, 'groups_with_viewpoints': 0}))
+    control.HeadquartersControl.assign_idle_robots(node)
+    old_cache = node.frontier_visibility_cache
+    assert any(cells.size for cells in old_cache.values())
+
+    msg = OccupancyGrid()
+    msg.info.width, msg.info.height, msg.info.resolution = 50, 40, .1
+    msg.data = [0] * grid.size
+    control.HeadquartersControl.map_callback(node, msg)
+    control.HeadquartersControl.assign_idle_robots(node)
+    assert node.frontier_visibility_cache is not old_cache
+    assert not any(cells.size for cells in node.frontier_visibility_cache.values())
+    assert np.all(node.map_data == 0)
+
+
 def test_visible_intermediate_leg_faces_its_approach_before_a_wall_bend():
     grid = np.zeros((80, 80), dtype=int)
     grid[:55, 40] = 100
@@ -1232,7 +1326,7 @@ def test_parallel_explorers_try_independent_alternative_after_conflict(monkeypat
     grid = np.zeros((260, 100), dtype=int)
     names = [f"tb{i + 1}" for i in range(robot_count)]
     viewpoint = control.Viewpoint(0, 30, 80, 30, 81, 1000, 10)
-    def candidates(*args):
+    def candidates(*args, reserved_information=None, visibility_cache=None):
         name = args[3]
         index = names.index(name)
         positions = [(8.0, 3.0, 100.0 - index)]

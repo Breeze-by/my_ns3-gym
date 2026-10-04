@@ -6397,3 +6397,19 @@ export PYTHONNOUSERSITE=1
 ```
 
 Independent originals, no formal backfill or counterfactual causal claim. Detector is Gazebo geometric visibility proxy, not image recognition. Native evaluator/physics only read-only evidence; native truth never enters mission control. Nominal serial energy/time/parking costs remain heuristics.
+
+## 2026-10-05 P3B.5 v75边际信息组件及离线诊断
+
+2026-10-05 P3B.5 v75边际信息组件：普通前沿评分以当前交付地图的同一遮挡射线计算新增未知格比例，扣除健康同伴当前位置与已派发活动导航短段终点的预测观测重叠；不使用未执行的未来完整目标、目标真值或原生物理信息。评分乘以max(0.35,未重叠格/原可见格)，保留所有原候选与窄通道退路，原IG/路径距离/地图未知状态不变；不宣称预测格已完成。可见格cache随frontier cache按每次地图交付和规划副本变化失效，缓存只复用同一地图/半径。554全组件17.36s、四包build5.47s/source3r0旁路通过；新增共享/独立前沿、墙遮挡/有效未知格、同snapshot缓存和新地图丢弃旧cache回归。首三项失败是旧替身不接受新增keyword，已修正签名且原日志保留，无生产门限修改。保存AP三帧双机条件对照确认六组旧函数与无惩罚新函数候选完全相同，加惩罚后仍保留相同候选/路径/IG；该离线比较仅使用peer当前位姿，未还原原controller活动goal/回调buffer，不能证明任务耗时或因果收益。v74 late discovery/串行充电期间等待的原FAIL保留；另两种只读充电工作率和已返航后的出站refuge几何诊断已归档，但不足支持提前充电或出站抢占收益，未实现这些策略。原生完成与严格native_completion_ok/episode_ok、300s/.35m/.05mps/.1radps/5s、源TTL/实际body/live/return/完整能量准入保持。报告report/20261005_p3b5_marginal_information_component.json。新独立开发与正式57格待验证，809/28091从未执行，现协议controller hash尚待开发PASS后前瞻重冻；P3B.5未通过，无ns3/RL。
+
+canonical ROS cwd/source Humble/install，PYTHONNOUSERSITE=1、ROS_LOG_DIR=log/component_checks；rtk bash -lc，无新Gazebo/809试验：
+
+```bash
+/usr/bin/python3 -m pytest -q --tb=short --tb=short src/multi_robot_exploration/test/test_control.py src/multi_robot_exploration/test/test_exploration_resume.py src/multi_robot_exploration/test/test_exploration_charging.py src/multi_robot_exploration/test/test_return_progress.py src/multi_robot_exploration/test/test_rally_observer_parking.py src/multi_robot_exploration/test/test_battery_manager.py src/multi_robot_exploration/test/test_gateway.py src/multi_robot_exploration/test/test_fault_model.py src/multi_robot_exploration/test/test_navigation_faults.py src/multi_robot_exploration/test/test_task_evaluator.py src/multi_robot_exploration/test/test_nav2_ready_gate.py src/multi_robot_exploration/test/test_readiness.py src/multi_robot_exploration/test/test_spawn_entity_checked.py src/multi_robot_exploration/test/test_tf_ingress_sampler.py src/multi_robot_exploration/test/test_target_detector.py src/merge_map/test/test_merge_map.py scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py scripts/test_ros_smoke_native_probe.py scripts/test_observer_lifetime.py > /tmp/p3b5_v75_component_checks.log 2>&1
+colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot > /tmp/p3b5_v75_build.log 2>&1
+/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v75_source_audit.log 2>&1
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_control.py src/multi_robot_exploration/test/test_exploration_charging.py src/multi_robot_exploration/test/test_exploration_resume.py > /tmp/p3b5_v75_frontier_checks.log 2>&1
+/usr/bin/python3 /tmp/verify_p3b5_v75_marginal_information.py > /tmp/p3b5_v75_marginal_information_verification.log 2>&1
+/usr/bin/python3 /tmp/diagnose_p3b5_v74_frontier_charge_choices.py > /tmp/p3b5_v74_frontier_charge_choices.log 2>&1
+/usr/bin/python3 /tmp/diagnose_p3b5_v74_charge_departure.py > /tmp/p3b5_v74_charge_departure_geometry.log 2>&1
+```
