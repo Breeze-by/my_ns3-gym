@@ -1509,6 +1509,17 @@ def rally_dispatch_order(
     )
 
 
+def rally_approach_inversions(order, positions, routes):
+    """Count a behind intent reserving the body of a one-way ahead robot."""
+    return sum(
+        routes_conflict(routes[leader], (positions[follower],), RALLY_ROUTE_SEPARATION_M)
+        and not routes_conflict(routes[follower], (positions[leader],), RALLY_ROUTE_SEPARATION_M)
+        for index, leader in enumerate(order)
+        for follower in order[index + 1:]
+        if leader in routes and follower in routes
+    )
+
+
 def map_safe_rally_dispatch_order(
     raw_grid,
     resolution,
@@ -1531,6 +1542,19 @@ def map_safe_rally_dispatch_order(
     names = list(targets)
     if len(names) < 2:
         return names
+    intent_routes = {}
+    for name in names:
+        if robot_positions.get(name) is not None:
+            _, route = plan_rally_leg(
+                targets[name], raw_grid, resolution, origin, robot_positions[name],
+                max_distance_m=float("inf"),
+            )
+            if route:
+                intent_routes[name] = route
+    # A robot already ahead on a shared approach must not wait for a robot
+    # behind whose future reservation passes through that parked body. This
+    # preference only ranks complete body-masked serial plans below; it never
+    # exempts a live leg, return, body or source-age admission check.
     best = None
     for order in permutations(names):
         occupied = dict(robot_positions)
@@ -1573,7 +1597,8 @@ def map_safe_rally_dispatch_order(
             if priority_robot is None or order[0] == priority_robot
             else 0.25
         )
-        score = (total_distance + priority_penalty, order)
+        score = (rally_approach_inversions(order, robot_positions, intent_routes),
+                 total_distance + priority_penalty, order)
         if best is None or score < best[0]:
             best = (score, order)
     if best is not None:
@@ -3346,8 +3371,19 @@ class HeadquartersControl(Node):
                     return
                 charging = any(mode in ("RETURNING", "CHARGING")
                                for mode in self.battery_modes.values())
+                if charging:
+                    self.rally_preflight_complete = False
                 if not self.rally_preflight_complete:
                     self.rally_precharge_active |= bool(energy_unready or charging)
+                    if (self.rally_precharge_active and not energy_unready and not charging
+                            and (any(self.rally_goal_handles.values())
+                                 or any(self.rally_goal_pending.values()))):
+                        # Drain existing legs once after charging, otherwise
+                        # admitting a new leg at each callback can prevent the
+                        # current-map approach order from ever being recomputed.
+                        # Local safety/yields and accepted actions remain live.
+                        self.rally_hold_started_at = None
+                        return
                     if (not any(self.rally_goal_handles.values())
                             and not any(self.rally_goal_pending.values())):
                         # A waiting leader's future outbound route must not
@@ -3778,6 +3814,23 @@ class HeadquartersControl(Node):
                                 (return_reservations or {}).items() if other != name)]
                 admitted = reserve_rally_prefix(plan, reservations)
                 if admitted is None:
+                    live_reservations = [*reserved_routes, *(route for other, route in
+                                         (return_reservations or {}).items() if other != name)]
+                    inversions = rally_approach_inversions(
+                        self.rally_dispatch_order, self.robot_positions, approach_routes)
+                    if (self.enable_battery and inversions and getattr(self, "use_map_safe_rally_order", True)
+                            and priority_routes and reserve_rally_prefix(plan, live_reservations) is not None):
+                        repaired = map_safe_rally_dispatch_order(
+                            self.map_data, self.resolution, self.origin, self.rally_final_targets,
+                            self.robot_positions, self.target, self.detecting_robot)
+                        if rally_approach_inversions(repaired, self.robot_positions, approach_routes) < inversions:
+                            # Only future priority is blocking a viable leg.
+                            # Do not change order while old legs execute; drain
+                            # them, then re-evaluate all current body-masked plans.
+                            self.rally_preflight_complete = False
+                            self.rally_precharge_active = True
+                            self.get_logger().info("Draining rally legs to release an ahead robot's approach.")
+                            return
                     continue
                 self.send_rally_goal(name, admitted, name in stage_names)
                 if name in stage_names and self.rally_goal_pending[name]:
@@ -3941,6 +3994,8 @@ class HeadquartersControl(Node):
         if now - self.rally_charge_requested.get(name, -float("inf")) < 2.0:
             return blocked
         self.rally_charge_requested[name] = now
+        self.rally_preflight_complete = False
+        self.rally_precharge_active = True
         self.charge_request_publishers[name].publish(String(data=json.dumps({
             "robot": name, "stamp_sec": now, "task_phase": "RALLY",
             "reason": "rally_energy_budget", "required_energy": required,

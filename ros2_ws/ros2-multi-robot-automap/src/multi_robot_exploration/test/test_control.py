@@ -3155,3 +3155,102 @@ def test_return_refuge_waits_for_real_charged_owner_departure(owner_mode,owner_d
     assert bool(updates) is release
     assert node.rally_targets['yielding'] is (final if release else refuge)
     assert bool(node.return_yield_targets) is (not release)
+
+
+@pytest.mark.parametrize('pending', [False, True])
+def test_postcharge_rally_drains_original_legs_before_reordering(monkeypatch, pending):
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+    names = ['far', 'near']
+    handle = Mock()
+    targets = {'far': control.RallyPose(8., 3., 0.), 'near': control.RallyPose(2., 3., 0.)}
+    positions = {name: (pose.x, pose.y) for name, pose in targets.items()}
+    reordered = []
+    def order(grid, resolution, origin, goals, current, target, detector):
+        reordered.append(current.copy())
+        return ['near', 'far']
+    monkeypatch.setattr(control, 'map_safe_rally_dispatch_order', order)
+    node = SimpleNamespace(
+        enable_battery=True, task_state='RALLY', now=lambda:10.,
+        fresh_robot_inputs=lambda:True, fresh_robot_poses=lambda:True, fresh_target=lambda:True,
+        stop_target_scan=lambda:False, last_input_availability=True,
+        battery_monitor_started_at=0., message_freshness_timeout_sec=5.,
+        battery_state_received_at=dict.fromkeys(names,10.), battery_modes=dict.fromkeys(names,'ACTIVE'),
+        participating_robots=lambda:names, battery_states={}, prepare_rally_charges=lambda:set(),
+        rally_charge_requested={}, rally_precharge_staging={}, rally_approach_routes={},
+        rally_preflight_complete=False, rally_precharge_active=True,
+        rally_dispatch_order=names.copy(), rally_targets=targets.copy(), rally_final_targets=targets.copy(),
+        rally_goal_handles={'far':None if pending else handle, 'near':None},
+        rally_goal_pending={'far':pending, 'near':False}, rally_goal_started_at={'far':9., 'near':None},
+        rally_arrived={'far':False, 'near':True}, rally_leg_routes={'far':((8.,3.),(9.,3.)), 'near':()},
+        rally_yield_targets=set(), return_yield_targets={}, rally_probe_targets=set(),
+        rally_yield_requested=dict.fromkeys(names,False), rally_hold_started_at=9.,
+        survey_goal_handle=None, survey_goal_pending=False, survey_robot=None,
+        release_return_yields=lambda:None, yield_to_returning_robot=Mock(), last_rally_dispatch_at=0.,
+        global_battery_rally_pause=False, goal_timeout_sec=60., rally_goal_timeout_sec=30.,
+        rally_max_concurrent=2, robot_positions=positions, get_logger=lambda:Mock(),
+        use_map_safe_rally_order=True, detecting_robot='near', target=(5.,4.),
+        map_data=np.zeros((100,100),dtype=int), resolution=.1, origin=(0.,0.),
+        send_rally_goal=Mock(), robot_velocities=dict.fromkeys(names,(0.,0.)),
+        rally_position_tolerance=.35, rally_linear_tolerance=.05, rally_angular_tolerance=.1,
+        rally_hold_sec=5., active_batteries_ready=lambda:True,
+    )
+    control.HeadquartersControl.update_mission(node)
+    assert not reordered and not node.rally_preflight_complete
+    assert node.rally_hold_started_at is None and node.rally_dispatch_order == names
+    node.send_rally_goal.assert_not_called()
+    handle.cancel_goal_async.assert_not_called()
+    node.yield_to_returning_robot.assert_called_once()
+    # Only the original completion/acceptance callbacks clear these fields.
+    node.rally_goal_handles['far'] = None
+    node.rally_goal_pending['far'] = False
+    node.rally_arrived['far'] = True
+    node.now = lambda:12.
+    control.HeadquartersControl.update_mission(node)
+    assert reordered == [positions] and node.rally_preflight_complete
+    assert node.rally_dispatch_order == ['near','far']
+    assert node.rally_hold_started_at == 12.
+    node.send_rally_goal.assert_not_called()
+    # A later future-only reservation can recreate the same wait after the
+    # charge cycle. Repair it through the same drain, preserving the live leg.
+    node.robot_positions = {'far':(1.05,3.05), 'near':(5.05,3.05)}
+    node.rally_targets = {'far':control.RallyPose(9.05,3.05,0.),
+                          'near':control.RallyPose(7.05,3.85,0.)}
+    node.rally_final_targets = node.rally_targets.copy()
+    node.rally_dispatch_order = names.copy()
+    node.rally_arrived = dict.fromkeys(names,False)
+    node.rally_goal_handles['far'] = None if pending else handle
+    node.rally_goal_pending['far'] = pending
+    node.rally_leg_routes['far'] = ((1.05,3.05),(2.05,3.05))
+    node.rally_approach_routes = {
+        name:control.plan_rally_leg(node.rally_targets[name],node.map_data,.1,(0.,0.),
+                                    node.robot_positions[name])[1] for name in names}
+    node.rally_attempts = dict.fromkeys(names,0)
+    node.rally_recovery_requested = dict.fromkeys(names,False)
+    node.rally_route_unavailable_since = dict.fromkeys(names)
+    node.rally_preflight_complete = True
+    node.rally_precharge_active = False
+    node.now = lambda:14.
+    control.HeadquartersControl.update_mission(node)
+    assert not node.rally_preflight_complete and node.rally_precharge_active
+    assert node.rally_dispatch_order == names
+    node.send_rally_goal.assert_not_called()
+    handle.cancel_goal_async.assert_not_called()
+
+
+def test_map_safe_order_releases_ahead_robot_before_behind_future_reservation():
+    grid = np.zeros((80, 120), dtype=int)
+    positions = {'behind': (1.05,3.05), 'ahead': (5.05,3.05)}
+    targets = {'behind': control.RallyPose(9.05,3.05,0.),
+               'ahead': control.RallyPose(7.05,3.85,0.)}
+    order = control.map_safe_rally_dispatch_order(
+        grid,.1,(0.,0.),targets,positions,(9.05,5.05),'behind')
+    assert order == ['ahead','behind']
+    # The preference does not authorize a route through the remaining body.
+    occupied = positions.copy()
+    for name in order:
+        pose, route = control.plan_rally_leg(
+            targets[name],grid,.1,(0.,0.),positions[name],
+            blocked_positions=[p for peer,p in occupied.items() if peer != name])
+        assert pose is not None and route
+        occupied[name] = (targets[name].x, targets[name].y)

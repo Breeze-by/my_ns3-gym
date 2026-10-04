@@ -6129,3 +6129,26 @@ ROS_DOMAIN_ID=33 GAZEBO_MASTER_URI=http://127.0.0.1:16650 /usr/bin/python3 /home
 Original lab202 tb1 remains1.418m from its final pose, tb2/tb3 errors.003/.009m, each ACTIVE/positive and0contacts. Both tb1/tb2 charged once. Logs show tb1 waits near(-3.67,.19) while tb2 follows a body-masked detour; several conditional AP snapshots offer tb1 a valid known-free leg under actual bodies, but full higher-priority tb2 future approach rejects it. Reconstructed snapshots are not original buffers; do not infer a successful alternative mission. Charging preflight requires total goal quiescence to recompute the approach order, yet new legs keep being admitted as others finish, so it can remain unfinished throughout transit. A current-map route scheduling/drain optimization remains to validate; no lease, clearance, contact, horizon or native threshold relaxed.
 
 首离线archive误要求失败fixed任务runner exit0，原runner正确exit1；修改离线断言后完整审计，非episode重试。一次只读tail猜错launch时间戳，后rg定位真实路径；不影响试验。当前仍未正式通过。
+
+## 2026-10-05 P3B.5 v68充电后排空与集合优先次序组件
+
+2026-10-05 P3B.5 v68组件：实际发出集合预充电请求即使preflight失效；充电完成后停止接纳新集合腿，已接纳/待接受腿自然排空，再按当前地图与机体重算串行接近次序，原有本地安全/让行继续运行。完整串行机体避障可行排列优先减少后车未来路线覆盖前车当前位置、但反向不覆盖的单向接近逆序；只有未来优先级阻塞、实际已接纳/返航路线允许，且重新计算得到更少逆序时才排空重算，不在动作执行中换序。1.8m路线保留、.6m机体/.35m静态净空、源TTL/能量/300s/.35/.05/.1/5s原生完成门不变，native函数AST一致。542组件14.94s、四包build5.07s、source3r0旁路通过。历史中间单测1次作用域NameError、2项fixture恰到5s电池TTL而失败均保留，修复测试本身后284控制检查11.89s通过。v67 lab202接收AP快照回放中三种次序评分仍选tb3/tb2/tb1，32个已评估完整分配叶仍选入口观察驻点；不是原FOUND缓冲或反事实任务，不宣称该修正已经解决lab202超时或证明耗时收益。v67八原始FAIL与49unrun已f4dc4bb归档。报告report/20261005_p3b5_postcharge_order_component.json。新独立lab202/lab101及force/zero开发回归待执行；809/28091从未执行，正式57格尚未完成，无ns3/RL。
+
+ROS canonical cwd，source Humble/install、PYTHONNOUSERSITE=1、ROS_LOG_DIR=log/component_checks，rtk bash -lc；未运行Gazebo。全部中间检查/失败与离线诊断原文及SHA见组件JSON records。
+
+```bash
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_control.py src/multi_robot_exploration/test/test_exploration_resume.py src/multi_robot_exploration/test/test_exploration_charging.py src/multi_robot_exploration/test/test_return_progress.py src/multi_robot_exploration/test/test_rally_observer_parking.py src/multi_robot_exploration/test/test_battery_manager.py src/multi_robot_exploration/test/test_gateway.py src/multi_robot_exploration/test/test_fault_model.py src/multi_robot_exploration/test/test_navigation_faults.py src/multi_robot_exploration/test/test_task_evaluator.py src/multi_robot_exploration/test/test_nav2_ready_gate.py src/multi_robot_exploration/test/test_readiness.py src/multi_robot_exploration/test/test_spawn_entity_checked.py src/multi_robot_exploration/test/test_tf_ingress_sampler.py src/multi_robot_exploration/test/test_target_detector.py src/merge_map/test/test_merge_map.py scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py scripts/test_ros_smoke_native_probe.py scripts/test_observer_lifetime.py > /tmp/p3b5_v68_component_checks_current.log 2>&1
+colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot > /tmp/p3b5_v68_build_current.log 2>&1
+/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v68_source_audit_current.log 2>&1
+```
+
+离线只读诊断：
+
+```bash
+/usr/bin/python3 /tmp/diagnose_p3b5_v68_postcharge_order.py
+/usr/bin/python3 /tmp/diagnose_p3b5_v68_postcharge_order_final.py
+/usr/bin/python3 /tmp/diagnose_p3b5_v68_reservation_order.py
+/usr/bin/python3 /tmp/diagnose_p3b5_v68_candidate_costs.py
+```
+
+Nominal ordering heuristics do not establish deadline success or optimality. Accepted action drain and full current-map/body/source/energy admissions remain mandatory.
