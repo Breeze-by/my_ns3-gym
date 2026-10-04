@@ -702,7 +702,9 @@ class BatteryManager(Node):
         goal.pose.header.stamp = self.get_clock().now().to_msg()
         goal.pose.pose.position.x = target[0]
         goal.pose.pose.position.y = target[1]
-        goal.pose.pose.orientation.w = 1.0
+        yaw = staged.yaw if staged is not None else 0.0
+        goal.pose.pose.orientation.z = math.sin(yaw / 2.0)
+        goal.pose.pose.orientation.w = math.cos(yaw / 2.0)
         self.get_logger().info(
             f"{self.robot_name} return leg ({self.return_stage}) "
             f"from={self.map_position} to={target}."

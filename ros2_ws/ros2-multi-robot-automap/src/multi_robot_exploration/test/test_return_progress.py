@@ -1,5 +1,6 @@
 from types import SimpleNamespace
 from unittest.mock import Mock
+import math
 
 import numpy as np
 import pytest
@@ -83,3 +84,21 @@ def test_return_timeout_scales_with_the_actual_map_planned_leg():
     assert node.return_goal_pending and node.return_goal_target is not None
     assert node.return_goal_timeout_sec>30.
     node.navigation.send_goal_async.assert_called_once()
+
+
+@pytest.mark.parametrize('yaw',[0.,math.pi/2,-math.pi/2])
+def test_local_return_executor_preserves_the_map_planned_leg_heading(monkeypatch,yaw):
+    from multi_robot_exploration import battery_manager as battery
+    from multi_robot_exploration.control import RallyPose
+    monkeypatch.setattr(battery,'plan_charging_leg',lambda *args:(RallyPose(2.,1.,yaw),((3.,0.),(2.,1.))))
+    node=manager(return_attempts=0,max_return_attempts=3,navigation=Mock(),
+        return_map=np.zeros((100,100),dtype=int),return_map_resolution=.1,
+        return_map_origin=(-5.,-5.),map_position=(3.,0.),charge_x=0.,charge_y=0.,
+        charge_radius=.8,nominal_speed=.18,return_escape_failed=False,
+        return_goal_response=Mock(),
+        get_clock=lambda:SimpleNamespace(now=lambda:SimpleNamespace(to_msg=lambda:Time(sec=10))))
+    BatteryManager.send_return_goal(node)
+    pose=node.navigation.send_goal_async.call_args.args[0].pose.pose
+    assert (pose.position.x,pose.position.y)==(2.,1.)
+    assert pose.orientation.z==pytest.approx(math.sin(yaw/2))
+    assert pose.orientation.w==pytest.approx(math.cos(yaw/2))

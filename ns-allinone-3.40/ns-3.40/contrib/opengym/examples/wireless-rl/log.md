@@ -5941,3 +5941,17 @@ export PYTHONNOUSERSITE=1
 Lab detects271.9/RALLY273.8 and times out300.2, each robot charged once. Early E40 opportunity replenishments still cost time and task trajectories vary. Forced ideal native260.3 and zero pair native257.6/218.8; forced fault timeout300.0 but each charged and safe. Captured v63 AP geometry prefix (no native truth, no control publisher) shows some home-directed visible waypoints already inside the charging zone but not in the exact home target cell, so opportunity check can reject a valid contact leg. Local return code ignores staged.yaw and sends w=1/z=0 for every intermediate leg, a planner/executor mismatch; chronology is observational and does not prove task-time causality. AP prefix is not original buffers/local robot map; masks in central comparison vs unmasked local-contact comparison differ.
 
 AP地图仅重复data数组改为cell_count/SHA；完整原文件hash、其他源时间/位姿/TF/能量/目标均保留。完整COMPLETE只用原生保持，真值不作控制输入；正式批次仍需新冻结。
+
+## 2026-10-05 P3B.5 v64充电接触区与规划朝向组件
+
+2026-10-05 P3B.5 v64组件：本地RETURNING发送端保留已知自由规划staged.yaw，不再把每个中间腿朝向强写为零；最终home格仍按原planner零朝向，逃离fallback保持原行为，位置/路线/储备/返航时限/watchdog及充电稳定门不变。机会补能阈值从充电目标50%收紧到25%，请求预算max(完整前沿预算,充电目标25%)；普通E40富余阶段不因出生邻近再次充电，已真实成功探索、>.35m且≤2×charge_radius、当前数据新鲜、经同gateway串行请求等条件保持。可见已知自由home航段到达charge_radius−.2m接触区即可，而非必须与home同格，仍保留目标误差余量/peer body检查。537全组件14.86s、四包build5.48s、source3r0旁路，native300s/.35/.05/.1/5s函数AST不变。新增普通能量不机会返充、可见接触区/边缘拒绝、0/正负pi/2执行朝向检查；本版首次全组件PASS。阈值、返航/行程仍为启发式，源码朝向错配已确认，但不宣称已证明任务耗时根因或收益。v63五格1必需FAIL已5041fc8归档；报告report/20261005_p3b5_charging_contact_heading_component.json。809/28091从未执行，新独立开发/正式57格待验证，P3B.5未完成，无ns3/RL。
+
+ROS canonical cwd，source Humble/install、PYTHONNOUSERSITE=1、ROS_LOG_DIR=log/component_checks，rtk bash -lc；未运行Gazebo：
+
+```bash
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_control.py src/multi_robot_exploration/test/test_exploration_resume.py src/multi_robot_exploration/test/test_exploration_charging.py src/multi_robot_exploration/test/test_return_progress.py src/multi_robot_exploration/test/test_rally_observer_parking.py src/multi_robot_exploration/test/test_battery_manager.py src/multi_robot_exploration/test/test_gateway.py src/multi_robot_exploration/test/test_fault_model.py src/multi_robot_exploration/test/test_navigation_faults.py src/multi_robot_exploration/test/test_task_evaluator.py src/multi_robot_exploration/test/test_nav2_ready_gate.py src/multi_robot_exploration/test/test_readiness.py src/multi_robot_exploration/test/test_spawn_entity_checked.py src/multi_robot_exploration/test/test_tf_ingress_sampler.py src/multi_robot_exploration/test/test_target_detector.py src/merge_map/test/test_merge_map.py scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py scripts/test_ros_smoke_native_probe.py scripts/test_observer_lifetime.py > /tmp/p3b5_v64_component_checks.log 2>&1
+colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot > /tmp/p3b5_v64_build.log 2>&1
+/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v64_source_audit.log 2>&1
+```
+
+Opportunity replenishment is a nominal policy based only on delivered data, not an optimal or worst-case timing result. Body masks, current routes, input leases and local reserve remain mandatory. No native truth enters control and no809 source is consulted.

@@ -2401,7 +2401,7 @@ class HeadquartersControl(Node):
                 if (not allow_opportunity
                         or self.task_state not in ('EXPLORE', 'FOUND_UNCONFIRMED')
                         or not getattr(self, 'successful_exploration_legs', {}).get(name, 0)
-                        or energy > .5 * charge_target
+                        or energy > .25 * charge_target
                         or not math.isfinite(radius) or radius <= .2
                         or not PATH_CLEARANCE_M < math.dist(self.robot_positions[name], home) <= 2. * radius):
                     return None
@@ -2412,9 +2412,9 @@ class HeadquartersControl(Node):
                                        if peer != name and p is not None],
                     clearance_m=PATH_CLEARANCE_M, visible_only=True,
                 )
-                if leg is None or world_to_grid(leg.x, leg.y, self.resolution, *self.origin) != world_to_grid(*home, self.resolution, *self.origin):
+                if leg is None or math.dist((leg.x, leg.y), home) > radius - .2:
                     return None
-                required = max(required, .5 * charge_target)
+                required = max(required, .25 * charge_target)
             if energy > required:
                 return None
             return energy, required, home

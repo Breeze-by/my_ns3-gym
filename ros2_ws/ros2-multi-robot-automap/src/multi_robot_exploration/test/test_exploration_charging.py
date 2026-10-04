@@ -207,16 +207,17 @@ def test_funded_frontier_passing_home_can_request_opportunity_charge(monkeypatch
     install_candidates(monkeypatch,{'tb1':[goal]})
     control.HeadquartersControl.assign_idle_robots(node)
     assert not sent and len(requests)==len(decisions)==1
-    assert requests[0][1]['required_energy']==40.
+    assert requests[0][1]['required_energy']==20.
     assert node.exploration_resume_intents['tb1']==(3.5,3.,1000)
 
 
-@pytest.mark.parametrize('reason',['spawn','no_success','full','distant','blocked_home','invalid_radius','live_peer','stale'])
+@pytest.mark.parametrize('reason',['spawn','no_success','full','normal_energy','distant','blocked_home','invalid_radius','live_peer','stale'])
 def test_opportunity_charge_requires_real_work_and_current_safe_home_route(monkeypatch,reason):
     node,requests,_,sent=opportunity_node()
     if reason=='spawn':node.robot_positions['tb1']=(2.,3.)
     if reason=='no_success':node.successful_exploration_legs.clear()
     if reason=='full':node.battery_states['tb1']['energy']=80.
+    if reason=='normal_energy':node.battery_states['tb1']['energy']=38.
     if reason=='distant':node.robot_positions['tb1']=(4.,3.)
     if reason=='blocked_home':node.map_data[:,23]=100
     if reason=='invalid_radius':node.battery_states['tb1']['charge_radius_m']=float('nan')
@@ -242,3 +243,17 @@ def test_idle_robot_refines_reachable_candidates_while_peer_action_remains_live(
     control.HeadquartersControl.assign_idle_robots(node)
     assert calls==[False,True] and not requests
     assert len(sent)==1 and sent[0][0]=='tb1'
+
+
+@pytest.mark.parametrize('contact_x,expected',[(2.5,True),(2.7,False)])
+def test_visible_home_leg_only_needs_to_reach_the_safe_charging_contact_zone(monkeypatch,contact_x,expected):
+    node,requests,_,sent=opportunity_node()
+    original=control.plan_rally_leg
+    def plan(pose,*args,**kwargs):
+        if (pose.x,pose.y)==(2.,3.):
+            return control.RallyPose(contact_x,3.,0.),((3.,3.),(contact_x,3.))
+        return original(pose,*args,**kwargs)
+    monkeypatch.setattr(control,'plan_rally_leg',plan)
+    install_candidates(monkeypatch,{'tb1':[assignment(3.5,3.,distance=.5)]})
+    control.HeadquartersControl.assign_idle_robots(node)
+    assert bool(requests)==expected and bool(sent) is not expected
