@@ -23,7 +23,7 @@ try:
   argv=[sys.executable,str(observer),'--output',str(out)];env=os.environ.copy();env['ROS_DOMAIN_ID']=str(domain)
   env['P3B5_OBSERVER_OWNER_PID']=str(os.getpid())
   process=subprocess.Popen(argv,env=env,stdout=f,stderr=subprocess.STDOUT);processes.append((label,process))
-  meta['observers'].append({'mode':label,'ros_domain_id':domain,'command':shlex.join(argv),'output':str(out),'log':str(log),'pid':process.pid,'owner_pid':os.getpid()})
+  meta['observers'].append({'mode':label,'ros_domain_id':str(domain),'command':shlex.join(argv),'output':str(out),'log':str(log),'pid':process.pid,'owner_pid':os.getpid()})
  (base/'metadata.json').write_text(json.dumps(meta,indent=2)+'\n')
  code=subprocess.run(command,check=False).returncode
 finally:

@@ -5316,3 +5316,9 @@ colcon build --symlink-install --packages-select multi_robot_interfaces merge_ma
 ```
 
 425组件、四包build/source audit PASS；控制算法字节不变，完整门禁仍待新clean提交先十fixed后全57。707已暴露，后续为同策略基础设施复验；P3A.6 accepted22c95a7保留。
+
+## 2026-10-04 P3B.5 v43冻结前domain字段schema复核
+
+cf4d1c9已提交/推送。冻结前只读复核发现原v42物理metadata的ROS domain是int180/181，而runner原记录为str180/181；值相同但严格末端审计要求类型一致。原两记录/原来源/hash不改，新run_p3b5_return_probe仅把metadata字段序列化为字符串。下一新批次受控返航subgate提前检查observer与runner原ID完全匹配，再继续十fixed/全矩阵。该检查不是额外episode或失败回填。
+
+此前full425PASS12.78s、four-package build5.16s与source audit保存/tmp/p3b5_v43_pre_schema_verification及component报告；字段统一后重跑相同17文件425组件命令、相同four-package colcon及source-only audit（与前条日志相同完整命令，输出仍为/tmp/p3b5_v43_{component_checks,build,source_audit}.log），三项全通过，新stdout保留。未改变控制算法、faultmanifest、300秒或任何安全/原生完成门限。schema复核完整值/类型/source保存在component JSON的/tmp/p3b5_domain_schema_review.json；更新的prospective调度源码也已保留。
