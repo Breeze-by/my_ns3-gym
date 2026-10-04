@@ -1120,6 +1120,38 @@ def assign_rally_poses(
         name: tuple(min(values[column] for values in choices.values()) for column in range(3))
         for name, choices in energy_options.items()
     }
+    observer_route_caches = {}
+    observer_detour_costs = {}
+
+    def parked_observer_delay(needed):
+        # A funded observer stays near the target while peers return/charge.
+        # Its final body can add a detour that the static distance sums miss.
+        # This is a nominal cost preference, never a navigation authorization.
+        if modes.get(observer_robot) != "ACTIVE" or observer_robot in needed:
+            return 0.0
+        observer_index = selected_indices[observer_robot]
+        observer = candidates[observer_index]
+        delay = 0.0
+        for name in needed - {observer_robot}:
+            index = selected_indices[name]
+            key = (observer_index, name, index)
+            if key not in observer_detour_costs:
+                state = battery_states[name]
+                _, route = plan_rally_leg(
+                    candidates[index], raw_grid, resolution, origin,
+                    (float(state["charge_x"]), float(state["charge_y"])),
+                    blocked_positions=[(observer.x, observer.y)],
+                    route_cache=observer_route_caches.setdefault((observer_index, name), {}),
+                )
+                speed = float(state.get("nominal_speed_mps", .18))
+                cost = (sum(math.dist(a, b) for a, b in zip(route, route[1:])) / speed
+                        - energy_options[name][index][2]) if route else RALLY_GOAL_TIMEOUT_SEC
+                # A missing masked route keeps the existing recovery fallback;
+                # it adds a finite heuristic penalty rather than a false proof
+                # of infeasibility. Partial search bounds remain optimistic.
+                observer_detour_costs[key] = max(0.0, cost)
+            delay += observer_detour_costs[key]
+        return delay
 
     def search(
         assignments,
@@ -1162,6 +1194,10 @@ def assign_rally_poses(
         if score >= best_score:
             return
         if len(assignments) == len(search_order):
+            if battery_states is not None:
+                score = (score[0], score[1], score[2] + parked_observer_delay(needed), *score[3:])
+                if score >= best_score:
+                    return
             best = assignments.copy()
             best_score = score
             return

@@ -34,6 +34,7 @@ ACTIVE = "ACTIVE"
 RETURNING = "RETURNING"
 CHARGING = "CHARGING"
 FAILED = "FAILED"
+RETURN_PROGRESS_TIMEOUT_SEC = 20.0
 
 
 def consume_energy(energy, distance_m, elapsed_sec, move_cost, idle_cost):
@@ -307,6 +308,12 @@ class BatteryManager(Node):
         self.charge_stable_started_at = None
         self.return_goal_handle = None
         self.return_goal_pending = False
+        self.return_goal_target = None
+        self.return_goal_started_at = None
+        self.return_goal_timeout_sec = 30.0
+        self.return_goal_best_distance = None
+        self.return_goal_last_progress_at = None
+        self.return_goal_cancel_requested = False
         self.return_goal_due_at = None
         self.return_attempts = 0
         self.return_count = 0
@@ -584,6 +591,8 @@ class BatteryManager(Node):
             self.begin_charging()
         elif self.mode == CHARGING:
             self.update_charging(now)
+        if self.mode == RETURNING:
+            self.monitor_return_progress(now)
         if (
             self.mode == RETURNING
             and self.return_goal_handle is None
@@ -591,6 +600,32 @@ class BatteryManager(Node):
             and now >= self.return_goal_due_at
         ):
             self.send_return_goal()
+
+    def monitor_return_progress(self, now):
+        """Cancel a stalled local leg before repeated motion spends its reserve."""
+        if (self.mode != RETURNING or self.mission_terminal
+                or self.return_goal_handle is None or self.return_goal_target is None
+                or self.map_position is None or self.return_goal_cancel_requested):
+            return
+        distance = math.dist(self.map_position, self.return_goal_target)
+        if (self.return_goal_best_distance is None
+                or distance < self.return_goal_best_distance - 0.1):
+            self.return_goal_best_distance = distance
+            self.return_goal_last_progress_at = now
+        stalled = (self.return_goal_last_progress_at is not None
+                   and now - self.return_goal_last_progress_at >= RETURN_PROGRESS_TIMEOUT_SEC)
+        timed_out = (self.return_goal_started_at is not None
+                     and now - self.return_goal_started_at >= self.return_goal_timeout_sec)
+        if not (stalled or timed_out):
+            return
+        self.return_goal_cancel_requested = True
+        self.get_logger().warning(
+            f"Canceling {self.robot_name} return leg after "
+            + ("timeout." if timed_out else "no waypoint progress.")
+        )
+        # Keep the handle until its result, so cancellation cannot overlap a
+        # newly admitted local leg. The result path already replans on retry.
+        self.return_goal_handle.cancel_goal_async()
 
     def send_return_goal(self):
         reason = return_attempt_failure_reason(
@@ -624,7 +659,7 @@ class BatteryManager(Node):
                 throttle_duration_sec=5.0,
             )
             return
-        staged, _ = plan_charging_leg(
+        staged, route = plan_charging_leg(
             self.return_map, self.return_map_resolution, self.return_map_origin,
             self.map_position, (self.charge_x, self.charge_y), self.charge_radius,
         )
@@ -657,6 +692,10 @@ class BatteryManager(Node):
         else:
             self.return_goal_due_at = self.now() + 1.0
             return
+        self.return_goal_target = target
+        distance = (sum(math.dist(a, b) for a, b in zip(route, route[1:]))
+                    if staged is not None else math.dist(self.map_position, target))
+        self.return_goal_timeout_sec = max(30.0, 2.0 * distance / self.nominal_speed + 10.0)
         goal = NavigateToPose.Goal()
         goal.pose = PoseStamped()
         goal.pose.header.frame_id = "map"
@@ -689,6 +728,11 @@ class BatteryManager(Node):
         # flight. Cancel a late acceptance before it can drive out again.
         if self.mode != RETURNING or self.mission_terminal:
             handle.cancel_goal_async()
+        else:
+            self.return_goal_started_at = self.now()
+            self.return_goal_last_progress_at = self.return_goal_started_at
+            self.return_goal_best_distance = None
+            self.return_goal_cancel_requested = False
         result = handle.get_result_async()
         result.add_done_callback(
             lambda completed, goal_handle=handle: self.return_goal_result(
@@ -700,6 +744,11 @@ class BatteryManager(Node):
         if self.return_goal_handle is not goal_handle:
             return
         self.return_goal_handle = None
+        self.return_goal_target = None
+        self.return_goal_started_at = None
+        self.return_goal_last_progress_at = None
+        self.return_goal_best_distance = None
+        self.return_goal_cancel_requested = False
         try:
             status = future.result().status
         except Exception as error:

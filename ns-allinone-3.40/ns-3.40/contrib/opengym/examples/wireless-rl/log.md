@@ -5689,3 +5689,23 @@ ROS_DOMAIN_ID=20 GAZEBO_MASTER_URI=http://127.0.0.1:15852 /usr/bin/python3 /home
 Independent AP first snapshot conditional replay reproduces assigned coordinates, not original buffers. Actual parked observer at(-3.98093,1.40642) forces hypothetical charged-home routes6.808/6.515m to8.118/7.908m. Alternative known-free visible(-4.68093,1.50642) keeps observer funded/no extra predicted charge and leaves both baseline routes clear; estimated serial approach14.6595 versus16.6211m. This is static conditional geometry, not a validated alternative order or mission/causal benefit. Zero-fault tb1 return last local Nav2 goal from(-.997,-.308) to(-.0859,-.342) persisted about60wall seconds until battery exhausted; native final(-.111,-1.385), failed robot remains real failure. Local return lacks per-leg progress watchdog.
 
 AP地图保留原文件及SHA，规范JSON的AP快照仅把data数组替换cell_count/数据SHA来减少重复体积，其余源/时间/位姿/TF/battery/检测/assignment不删。诊断不是额外ROS/Gazebo实验，不用于controller；真实zero耗尽不能被TDI或正能量ideal替代，未来修改需重新冻结验证。
+
+## 2026-10-05 P3B.5 v60观测者驻点绕行/本地返充进度组件
+
+2026-10-05 P3B.5 v60组件：ACTIVE且无需预充电的真实观测者驻点选择，把待充电同伴home路线的驻点机体绕行加入名义时间评分；按observer候选/home缓存masked距离场，缺路线保留有限30s恢复代价而非假不可行，部分界仍乐观。本地返充独立监督已接受Nav2单腿：0.1m单调进展、20s无进展或max(30s,2*已知自由腿长/名义速+10s)超时仅请求一次取消，保留handle至result后重新规划，CHARGING/FAILED/terminal不干预；原总返航时限/储备/稳定充电未改。原300s/.35/.05/.1/5s与native completion函数原样，487组件13.72s、四包build5.38s、source3r0旁路。首return夹具漏callback1fail39pass、修正后321PASS；首parking夹具强求特定侧点1fail1pass，实际另一个funded非阻塞点更优，修正为验证入口不被堵与两条masked路线，全部487PASS；失败日志保留。独立AP条件重算选侧方点并消除预测绕行，0.81454s只是单次组件样本，无任务/因果/最坏保证。报告report/20261005_p3b5_observer_parking_return_progress_component.json。v59五格两失败已02c8d86完整归档，809/28091仍未执行；新独立开发和正式57格尚待验证，P3B.5未完成，无ns3/RL。
+
+ROS canonical cwd、source Humble/install，PYTHONNOUSERSITE=1/ROS_LOG_DIR=log/component_checks，rtk bash -lc；未运行Gazebo：
+
+```bash
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_return_progress.py src/multi_robot_exploration/test/test_battery_manager.py > /tmp/p3b5_v60_return_progress_targeted.log 2>&1
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_return_progress.py src/multi_robot_exploration/test/test_battery_manager.py src/multi_robot_exploration/test/test_control.py > /tmp/p3b5_v60_return_parking_targeted.log 2>&1
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_rally_observer_parking.py > /tmp/p3b5_v60_parking_targeted.log 2>&1
+/usr/bin/python3 /tmp/replay_p3b5_v60_parked_observer.py > /tmp/p3b5_v60_parked_route_component.log 2>&1
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_control.py src/multi_robot_exploration/test/test_exploration_resume.py src/multi_robot_exploration/test/test_return_progress.py src/multi_robot_exploration/test/test_rally_observer_parking.py src/multi_robot_exploration/test/test_battery_manager.py src/multi_robot_exploration/test/test_gateway.py src/multi_robot_exploration/test/test_fault_model.py src/multi_robot_exploration/test/test_navigation_faults.py src/multi_robot_exploration/test/test_task_evaluator.py src/multi_robot_exploration/test/test_nav2_ready_gate.py src/multi_robot_exploration/test/test_readiness.py src/multi_robot_exploration/test/test_spawn_entity_checked.py src/multi_robot_exploration/test/test_tf_ingress_sampler.py src/multi_robot_exploration/test/test_target_detector.py src/merge_map/test/test_merge_map.py scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py scripts/test_ros_smoke_native_probe.py scripts/test_observer_lifetime.py > /tmp/p3b5_v60_component_checks.log 2>&1
+colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot > /tmp/p3b5_v60_build.log 2>&1
+/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v60_source_audit.log 2>&1
+```
+
+First return fixture omitted callback:1fail39pass; corrected combined321PASS. First parking fixture wrongly insisted on alcove, but another funded nonblocking pose had lower score:1fail1pass; corrected assertion requires nonblocking observer and both actual masked peer routes, full487PASS. Raw logs and first parking fixture retained.
+
+Conditional AP replay uses a separate subscriber snapshot, not original controller buffers. New observer(-4.68093,1.50642) clears predicted peer routes while retaining two predicted charges; runtime0.81454s is one component sample, not worst-case or mission/causal benefit. Per-leg nominal watchdog and detour cost are heuristics; no worst-case safety/timing guarantee.809 unexposed; development101/202/303 are not heldout tests. No ns3/RL.
