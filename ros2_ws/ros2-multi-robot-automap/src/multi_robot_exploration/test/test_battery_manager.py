@@ -241,6 +241,7 @@ def test_delivered_charge_request_is_idempotent_and_late_retry_cannot_recharge()
 @pytest.mark.parametrize("changes", [
     {"stamp_sec": 1.0}, {"robot": "tb2"}, {"required_energy": float("nan")},
     {"required_energy": 1000}, {"task_phase": "COMPLETE"}, {"stamp_sec": "bad"},
+    {"stamp_sec": 11.1},
 ])
 def test_charge_request_rejects_expired_wrong_robot_and_invalid_budget(changes):
     from multi_robot_exploration.battery_manager import BatteryManager
@@ -257,6 +258,16 @@ def test_charge_request_after_mission_terminal_never_starts_return():
     node.mission_terminal = True
     BatteryManager.charge_request_callback(node, charge_message())
     assert not returns
+
+
+@pytest.mark.parametrize('phase',['EXPLORE','FOUND_UNCONFIRMED','FOUND','RALLY'])
+def test_frontier_and_rally_requests_share_local_idempotent_safety_return(phase):
+    from multi_robot_exploration.battery_manager import BatteryManager
+
+    node,returns,consumed=charge_request_node()
+    BatteryManager.charge_request_callback(node,charge_message(task_phase=phase))
+    BatteryManager.charge_request_callback(node,charge_message(task_phase=phase))
+    assert len(returns)==len(consumed)==1
 
 
 def test_safety_return_falls_back_to_own_map_after_ap_loss():

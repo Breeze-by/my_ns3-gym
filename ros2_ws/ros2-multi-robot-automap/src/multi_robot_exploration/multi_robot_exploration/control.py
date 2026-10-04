@@ -28,7 +28,7 @@ from scipy.sparse.csgraph import dijkstra
 from std_msgs.msg import String
 from tf2_msgs.msg import TFMessage
 
-from .fault_model import STATE_TTL_SEC, TARGET_DETECTION_TTL_SEC
+from .fault_model import CHARGE_REQUEST_TTL_SEC, STATE_TTL_SEC, TARGET_DETECTION_TTL_SEC
 
 OCCUPIED_THRESHOLD = 50
 MIN_FRONTIER_GROUP_SIZE = 6
@@ -2124,6 +2124,7 @@ class HeadquartersControl(Node):
         self.rally_yield_requested = {}
         self.rally_battery_preempted = {}
         self.rally_charge_requested = {}
+        self.exploration_charge_budgets = {}
         self.rally_precharge_staging = {}
         self.rally_detour_budgets = {}
         self.rally_wait_budgets = {}
@@ -2330,19 +2331,24 @@ class HeadquartersControl(Node):
         )
 
     def exploration_battery_factor(self, robot_name, distance_m, destination):
-        """Prefer a complete frontier trip with reserve at its future endpoint.
-
-        Unsafe estimates remain a lower-priority fallback; only malformed
-        delivered context is rejected. Local reserve still owns actual motion.
-        """
+        """Weight trip budgets; frontier admission separately requests charging."""
         if not self.enable_battery:
             return 1.0
-        if self.battery_modes[robot_name] != "ACTIVE":
+        required = HeadquartersControl.exploration_required_energy(
+            self, robot_name, distance_m, destination)
+        if required is None:
             return 0.0
+        energy = float(self.battery_states[robot_name]['energy'])
+        return 1.0 if energy > required else .25 * energy / required if required > 0 else 0.0
+
+    def exploration_required_energy(self, robot_name, distance_m, destination):
+        """Price the whole current frontier approach and endpoint return reserve."""
+        if self.battery_modes[robot_name] != "ACTIVE":
+            return None
         state = self.battery_states[robot_name]
         position = self.robot_positions.get(robot_name)
         if position is None or "energy" not in state:
-            return 0.0
+            return None
         try:
             home = (float(state["charge_x"]), float(state["charge_y"]))
             energy = float(state["energy"])
@@ -2355,16 +2361,79 @@ class HeadquartersControl(Node):
                     energy, distance_m, move, idle, factor, speed, margin))
                     or min(energy, distance_m, move, idle, margin) < 0
                     or speed <= 0 or factor < 1):
-                return 0.0
+                return None
             required = battery_assignment_required_energy(
                 distance_m, max(math.dist(position, home), math.dist(destination, home)),
                 move, idle, factor, speed, margin,
             )
             if not math.isfinite(required):
-                return 0.0
-            return 1.0 if energy > required else .25 * energy / required if required > 0 else 0.0
+                return None
+            return required
         except (KeyError, TypeError, ValueError, ZeroDivisionError):
-            return 0.0
+            return None
+
+    def request_exploration_charge(self, candidates):
+        """Charge one idle robot for an otherwise admissible current frontier.
+
+        Call only after all funded admissions fail and live exploration drains.
+        Reuse the rally return owner so a phase change cannot admit traffic for
+        a robot whose gateway charge request is still pending.
+        """
+        if (not self.enable_battery or not self.fresh_robot_inputs()
+                or self.task_state not in ('EXPLORE', 'FOUND_UNCONFIRMED', 'FOUND', 'RALLY')
+                or any(mode in ('RETURNING', 'CHARGING') for mode in self.battery_modes.values())
+                or any(state == 'active' for state in self.robot_states.values())):
+            return False
+        choices = []
+        for name, assignment in candidates:
+            if self.rally_charge_requested and name not in self.rally_charge_requested:
+                continue
+            required = HeadquartersControl.exploration_required_energy(
+                self, name, assignment.path_distance_m, (assignment.x, assignment.y))
+            if required is None:
+                continue
+            state = self.battery_states[name]
+            try:
+                energy = float(state['energy'])
+                capacity = float(state['capacity'])
+                fraction = float(state['charge_target_fraction'])
+                charge_target = capacity * fraction
+                home = (float(state['charge_x']), float(state['charge_y']))
+                if (not all(math.isfinite(v) for v in (energy, capacity, fraction, charge_target, *home))
+                        or not 0 < fraction <= 1 or capacity <= 0
+                        or not energy <= required < charge_target):
+                    continue
+            except (KeyError, TypeError, ValueError):
+                continue
+            choices.append((math.dist(self.robot_positions[name], home),
+                            -assignment.utility, name, assignment, energy, required))
+        if not choices:
+            return False
+        _, _, name, assignment, energy, required = min(choices, key=lambda choice: choice[:3])
+        now = self.now()
+        if now - self.rally_charge_requested.get(name, -float('inf')) < 2.0:
+            return True
+        self.rally_charge_requested[name] = now
+        self.exploration_charge_budgets[name] = required
+        self.exploration_resume_intents[name] = (
+            assignment.x, assignment.y, assignment.viewpoint.information_gain)
+        self.charge_request_publishers[name].publish(String(data=json.dumps({
+            'robot': name, 'stamp_sec': now, 'task_phase': self.task_state,
+            'reason': 'exploration_energy_budget', 'required_energy': required,
+            'available_energy': energy,
+        }, sort_keys=True)))
+        self.consumed_publisher.publish(String(data=json.dumps({
+            'event': 'coordinator_charge_decision', 'event_time': now,
+            'robot': name, 'task_phase': self.task_state,
+            'required_energy': required, 'available_energy': energy,
+            'frontier_position': [assignment.x, assignment.y],
+            'inputs': {key: sample for key, sample in self.input_freshness_details().items()
+                       if key != 'headquarters/target_detection'},
+        }, sort_keys=True)))
+        self.get_logger().warn(
+            f'Requesting early exploration charge for {name}: energy={energy:.2f}, '
+            f'whole_frontier_budget={required:.2f}.')
+        return True
 
     def target_observation_callback(self, message):
         if self.task_state not in ("EXPLORE", "FOUND_UNCONFIRMED"):
@@ -2577,8 +2646,20 @@ class HeadquartersControl(Node):
             return
         self.battery_modes[robot_name] = mode
         if mode not in ("RETURNING", "CHARGING"):
+            # Target discovery may move the mission to RALLY while an earlier
+            # exploration charge request is lost. A new ACTIVE source after
+            # its lease ends proves it can no longer initiate a local return.
+            pending = self.rally_charge_requested.get(robot_name)
+            source = self.battery_state_received_at[robot_name]
+            if (mode == 'ACTIVE' and robot_name in getattr(self, 'exploration_charge_budgets', {})
+                    and pending is not None and isinstance(source, (int, float))
+                    and math.isfinite(source) and source >= pending + CHARGE_REQUEST_TTL_SEC
+                    and self.now() - pending >= CHARGE_REQUEST_TTL_SEC):
+                self.rally_charge_requested.pop(robot_name, None)
+                self.exploration_charge_budgets.pop(robot_name, None)
             if mode == "ACTIVE" and previous != "ACTIVE":
                 self.rally_charge_requested.pop(robot_name, None)
+                getattr(self, 'exploration_charge_budgets', {}).pop(robot_name, None)
                 self.rally_precharge_staging.pop(robot_name, None)
                 getattr(self, "rally_detour_budgets", {}).pop(robot_name, None)
                 self.get_logger().info(
@@ -2649,6 +2730,7 @@ class HeadquartersControl(Node):
 
         self.rally_targets.pop(robot_name, None)
         self.rally_charge_requested.pop(robot_name, None)
+        getattr(self, 'exploration_charge_budgets', {}).pop(robot_name, None)
         self.rally_precharge_staging.pop(robot_name, None)
         self.rally_final_targets.pop(robot_name, None)
         self.rally_arrived.pop(robot_name, None)
@@ -4502,9 +4584,11 @@ class HeadquartersControl(Node):
         frontier_data = self.frontier_cache
         search_gain_cache = {}  # One immutable map/visit mask per admission batch.
         resume_intents = getattr(self, "exploration_resume_intents", {})
+        charge_candidates = {}
         for refine in ((False, True, "known_space") if search else (False, True)):
             candidates = []
             resume_candidates = set()
+            unfunded_candidates = set()
             diagnostics["frontier_groups"] = 0
             diagnostics["groups_with_viewpoints"] = 0
             for robot_name, position in idle_positions.items():
@@ -4547,10 +4631,9 @@ class HeadquartersControl(Node):
                     "groups_with_viewpoints"
                 ]
                 for _, _, group_id, assignment in robot_candidates:
-                    # Battery reserve is a preference signal. A hard filter can
-                    # leave every robot idle when the only useful frontier is
-                    # beyond the conservative estimate; the local manager still
-                    # owns the non-negotiable return trigger.
+                    # Preserve reachability analysis for an unfunded frontier,
+                    # but request charging instead of executing a trip that is
+                    # already expected to be interrupted by local reserve.
                     battery_factor = self.exploration_battery_factor(
                         robot_name, assignment.path_distance_m,
                         (assignment.x, assignment.y),
@@ -4567,6 +4650,8 @@ class HeadquartersControl(Node):
                         assignment.navigation_x,
                         assignment.navigation_y,
                     )
+                    if battery_factor < 1.0:
+                        unfunded_candidates.add((robot_name, coordinated))
                     if not search and interrupted_frontier_is_useful(
                         coordinated, resume_intents.get(robot_name), battery_factor
                     ):
@@ -4622,6 +4707,13 @@ class HeadquartersControl(Node):
                 ):
                     diagnostics["stationary_candidates"] += 1
                     continue
+                if (name, assignment) in unfunded_candidates:
+                    previous = charge_candidates.get(name)
+                    if previous is None or assignment.utility > previous.utility:
+                        charge_candidates[name] = assignment
+                    continue
+                if name in getattr(self, 'rally_charge_requested', {}):
+                    continue
                 plans[name] = Assignment(
                     assignment.viewpoint, assignment.x, assignment.y,
                     assignment.path_distance_m, assignment.utility, pose.x, pose.y,
@@ -4639,6 +4731,10 @@ class HeadquartersControl(Node):
                                                 else "current_map_frontiers")
                 break
         if not selected:
+            if (not active_explorers and charge_candidates
+                    and HeadquartersControl.request_exploration_charge(
+                        self, list(charge_candidates.items()))):
+                return
             now = self.now()
             if now - self.last_no_assignment_log >= 10.0:
                 self.get_logger().warn(

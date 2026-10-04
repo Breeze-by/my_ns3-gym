@@ -106,6 +106,27 @@ def test_reject_new_navigation_decision_using_a_future_or_expired_sample(tmp_pat
     with pytest.raises(AssertionError):ledger_audit(write_events(tmp_path,[event]))
 
 
+@pytest.mark.parametrize('age',[0.,2.,2.001,-.001])
+def test_charge_decision_requires_the_same_fresh_pose_lease_as_navigation(tmp_path,age):
+    event={'event':'coordinator_charge_decision','event_time':100.,
+           'task_phase':'EXPLORE','inputs':{'tb1/pose_state':{
+               'source_time':100.-age,'age_sec':age,'ttl_sec':2.}}}
+    if 0<=age<=2.:
+        assert ledger_audit(write_events(tmp_path,[event]))['coordinator_decision_source_leases']=='PASS'
+    else:
+        with pytest.raises(AssertionError):ledger_audit(write_events(tmp_path,[event]))
+
+
+@pytest.mark.parametrize('age',[0.,10.,10.001,-.001])
+def test_charge_consumption_cannot_use_an_expired_or_future_request(tmp_path,age):
+    event={'event':'consumed','message_type':'charge_request','consumed_time':100.,
+           'delivery_time':100.,'source_time':100.-age}
+    if 0<=age<=10.:
+        assert ledger_audit(write_events(tmp_path,[event]))['receiver_ttl_and_versions']=='PASS'
+    else:
+        with pytest.raises(AssertionError):ledger_audit(write_events(tmp_path,[event]))
+
+
 def test_expired_target_can_only_be_used_for_local_return_refuge_audit(tmp_path):
     event={"event":"coordinator_navigation_decision","event_time":100.,
            "kind":"local_return_yield","inputs":{

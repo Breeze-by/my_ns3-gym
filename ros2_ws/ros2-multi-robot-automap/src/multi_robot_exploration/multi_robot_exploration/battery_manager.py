@@ -358,10 +358,10 @@ class BatteryManager(Node):
             stamp = float(event["stamp_sec"])
             required = float(event["required_energy"])
             if (event["robot"] != self.robot_name
-                    or event["task_phase"] != "RALLY"
+                    or event["task_phase"] not in ('EXPLORE', 'FOUND_UNCONFIRMED', 'FOUND', 'RALLY')
                     or not math.isfinite(stamp) or not math.isfinite(required)
                     or not 0 < required <= self.charge_target
-                    or self.now() - stamp >= CHARGE_REQUEST_TTL_SEC
+                    or not 0 <= self.now() - stamp < CHARGE_REQUEST_TTL_SEC
                     or stamp <= self.last_charge_request_stamp):
                 return
         except (KeyError, TypeError, ValueError, json.JSONDecodeError):
@@ -380,7 +380,7 @@ class BatteryManager(Node):
             self.nominal_speed, self.safety_margin,
         )
         self.get_logger().info(
-            f"Early rally charge requested: energy={self.energy:.2f}, "
+            f"Early {event['task_phase'].lower()} charge requested: energy={self.energy:.2f}, "
             f"mission_budget={required:.2f}."
         )
         self.begin_return(reserve)

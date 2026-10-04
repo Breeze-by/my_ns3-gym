@@ -5757,3 +5757,21 @@ First closed audit invoked without sourcing ROS/install failed at import ModuleN
 A read-only rg used a nonexistent guessed owner log path; corrected using original summary command --log-dir. First chronology omitted launch logs because summary stores command/log directory rather than direct .log field; original output retained plus corrected chronology. None changed results or control.
 
 AP地图保留原文件SHA，规范快照仅以cell_count/数据SHA替换重复data数组；其他位姿、TF、battery、目标、源时间全部保留。真值只用于验收/诊断，不送controller。
+
+## 2026-10-05 P3B.5 v61完整探索预算准入与提前充电组件
+
+2026-10-05 P3B.5 v61组件：中央探索只准入当前可负担的完整前沿任务；未负担的前沿仍经当前地图/机体/可见短腿检查作为充电候选，不再执行已预计会被本地储备中断的远端fallback。所有已接收探索动作结束、无RETURNING/CHARGING后，只通过原gateway charge_request串行请求一个idle机器人提前充电，优先近home并保留当前前沿意图；充电后重新生成/核验。预算不小于充电目标或无效context不重复充电，现有rally pending owner覆盖阶段切换，2s重发；原10s请求租约保持，只在更新ACTIVE source超过租约后释放丢失请求，发现目标进入RALLY也适用。本地接受EXPLORE/FOUND_UNCONFIRMED/FOUND/RALLY有效幂等请求，拒绝未来/过期/terminal。增加charge决策输入租约与消费因果审核。516组件14.76s、四包build5.28s、source3r0旁路；native300s/.35/.05/.1/5s函数AST与d3acb28一致。首夹具5fail61pass：4漏导入、1误写5s而原租约10s；修正108PASS；跨阶段修复前515PASS日志保留。case template首命令漏--run-id仅参数解析失败，修正只读validate-only；不是任务启动/重试。组件报告report/20261005_p3b5_exploration_charge_admission_component.json。v60五格失败已d3acb28归档；809/28091未暴露，其旧cf73 controller声明待开发通过后前瞻重新冻结；新开发/正式57格仍未验证，P3B.5未完成，无ns3/RL。
+
+ROS canonical cwd，source Humble/install、PYTHONNOUSERSITE=1/ROS_LOG_DIR=log/component_checks，rtk bash -lc；未运行Gazebo：
+
+```bash
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_exploration_charging.py src/multi_robot_exploration/test/test_exploration_resume.py src/multi_robot_exploration/test/test_battery_manager.py > /tmp/p3b5_v61_charging_targeted.log 2>&1
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_exploration_charging.py src/multi_robot_exploration/test/test_exploration_resume.py src/multi_robot_exploration/test/test_battery_manager.py scripts/test_p3b5_gate.py > /tmp/p3b5_v61_charging_gate_targeted.log 2>&1
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_control.py src/multi_robot_exploration/test/test_exploration_resume.py src/multi_robot_exploration/test/test_exploration_charging.py src/multi_robot_exploration/test/test_return_progress.py src/multi_robot_exploration/test/test_rally_observer_parking.py src/multi_robot_exploration/test/test_battery_manager.py src/multi_robot_exploration/test/test_gateway.py src/multi_robot_exploration/test/test_fault_model.py src/multi_robot_exploration/test/test_navigation_faults.py src/multi_robot_exploration/test/test_task_evaluator.py src/multi_robot_exploration/test/test_nav2_ready_gate.py src/multi_robot_exploration/test/test_readiness.py src/multi_robot_exploration/test/test_spawn_entity_checked.py src/multi_robot_exploration/test/test_tf_ingress_sampler.py src/multi_robot_exploration/test/test_target_detector.py src/merge_map/test/test_merge_map.py scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py scripts/test_ros_smoke_native_probe.py scripts/test_observer_lifetime.py > /tmp/p3b5_v61_component_checks.log 2>&1
+colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot > /tmp/p3b5_v61_build.log 2>&1
+/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v61_source_audit.log 2>&1
+/usr/bin/python3 scripts/run_p3b5_tasks.py --validate-only > /tmp/p3b5_v61_case_template_attempt1.log 2>&1
+/usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v61_template_validation --validate-only > /tmp/p3b5_v61_case_template_validation.log 2>&1
+```
+
+Full-trip energy model uses inherited current/frontier-home Euclidean factor and nominal motion/idle costs, not a proved obstacle-route/time bound. Early charging, continuity, parking, return watchdog and heading recovery remain heuristics. Component tests prove specified invariants, not mission performance or worst-case safety. Actual motion still respects delivered source leases/body masks/accepted route reservations/gateway, local reserve owns safety. Geometric Gazebo visibility detector is not image recognition. AP truth remains evaluation-only. No809 exposure or ns3/RL. Template validation counts are not a current frozen holdout declaration or simulation results.

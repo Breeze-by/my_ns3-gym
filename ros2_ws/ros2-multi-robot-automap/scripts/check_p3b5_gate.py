@@ -16,6 +16,7 @@ from check_p3a6_gate import Snapshot, episode_ok as p3a_episode_ok, same_candida
 from run_p2d_baseline import file_digest
 from run_p3b5_tasks import tdi
 from multi_robot_exploration.bypass_audit import runtime_violations, source_violations
+from multi_robot_exploration.fault_model import CHARGE_REQUEST_TTL_SEC
 
 CORE_KEYS=('gateway_message','launch','exploration_source','merge_map_source','robot_params','slam_source','slam_config','bypass_manifest','smoke_runner')
 
@@ -61,23 +62,25 @@ def ledger_audit(path):
             key=(e['message_type'],e['sender'],e['recipient'])
             assert e['sequence']>last.get(key,0),(path,e)
             last[key]=e['sequence']
-        if event in ('consumed','target_reconfirmed') and e.get('message_type')=='target_detection':
+        if event in ('consumed','target_reconfirmed') and e.get('message_type') in ('target_detection','charge_request'):
             assert e['consumed_time']+1e-8>=e['delivery_time']>=e['source_time'],(path,e)
-            assert e['consumed_time']-e['source_time']<=60.+1e-8,(path,e)
+            ttl = 60. if e['message_type']=='target_detection' else CHARGE_REQUEST_TTL_SEC
+            assert e['consumed_time']-e['source_time']<=ttl+1e-8,(path,e)
         if event=='coordinator_observer_handoff_wait':
             assert 0<=e['event_time']-e['observer_source_time']<=5.+1e-8,(path,e)
-        if event=='coordinator_navigation_decision':
-            if e['kind']=='target_reacquisition_scan':
+        if event in ('coordinator_navigation_decision','coordinator_charge_decision'):
+            kind=e.get('kind')
+            if kind=='target_reacquisition_scan':
                 assert len(e['requested_position'])==len(e['current_position'])==2,(path,e)
                 assert all(abs(a-b)<1e-8 for a,b in zip(e['requested_position'],e['current_position'])),(path,e)
-            if e['kind']=='target_reacquisition_exploration':
+            if kind=='target_reacquisition_exploration':
                 import math
                 assert e['search_basis'] in ('current_map_frontiers','current_map_known_free_sweep'),(path,e)
                 route=e['search_route']
                 assert route and all(len(point)==2 and all(math.isfinite(x) for x in point) for point in route),(path,e)
                 assert math.dist(route[-1],e['requested_position'])<=e['map_resolution_m']+1e-8,(path,e)
             for name, sample in e['inputs'].items():
-                if name=='headquarters/target_detection' and e['kind'] in ('local_return_yield','target_reacquisition_scan','target_reacquisition_exploration'):
+                if name=='headquarters/target_detection' and kind in ('local_return_yield','target_reacquisition_scan','target_reacquisition_exploration'):
                     continue
                 assert sample['source_time'] is not None,(path,e)
                 assert -1e-8<=sample['age_sec']<=sample['ttl_sec']+1e-8,(path,e)

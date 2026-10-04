@@ -577,7 +577,7 @@ def test_exploration_preference_reserves_return_from_frontier_endpoint():
     required=control.battery_assignment_required_energy(4.,4.,1.,.02,2.,.18,8.)
     factor=control.HeadquartersControl.exploration_battery_factor(node,"tb1",4.,(4.5,1.5))
     assert factor == pytest.approx(.25*15./required)
-    assert 0 < factor < .25  # Useful frontiers remain fallback candidates.
+    assert 0 < factor < .25  # Rank useful unfunded frontiers for charge recovery.
     farther=control.HeadquartersControl.exploration_battery_factor(node,"tb1",7.,(7.5,1.5))
     assert 0 < farther < factor
 
