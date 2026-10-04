@@ -353,7 +353,7 @@
     }
   },
   "holdout_world_declaration": {
-    "predeclared_at_utc": "2026-10-04T19:52:41.099077+00:00",
+    "predeclared_at_utc": "2026-10-04T20:20:07.756773+00:00",
     "world": "p3b5_holdout809.world",
     "world_content_sha256": "2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd",
     "gazebo_seed": 809,
@@ -411,7 +411,7 @@
       "original_point_label_correction": "The retained tb1_start_charge/tb3_start_charge labels were generic sample points, not actual launch poses. Original values are historical; use supplemental actual_launch_start_geometry_check below. No world/control/mission run was used to validate or tune809 geometry."
     },
     "controller_content_sha256": "2e04f15d57a3c6c462f7d01b866d6669ffacfd24d9c66906fcbc859d4d35fef6",
-    "first_task_exposure": "Pending: unchanged809 world/seed/fault never executed. After clean pushed v66 freeze, initial forced-native/E0/controlled-return and all ten fixed originals PASS, then first heldout3-row exposure. Source changes after exposure require a genuinely new world/seed/fault combination.",
+    "first_task_exposure": "Pending: unchanged809 world/seed/fault never executed. New clean pushed apparatus freeze; initial forced-native/E0/controlled-return and all ten fixed originals must PASS before first809 exposure. New controller after exposure requires a genuinely new world/seed/fault combination.",
     "controller_freeze_history": [
       {
         "predeclared_at_utc": "2026-10-04T14:45:09.824843+00:00",
@@ -474,6 +474,16 @@
         "status": "PASS",
         "new_holdout_exposed": false,
         "evidence": "20261005_p3b5_contact_heading_development.json"
+      },
+      {
+        "predeclared_at_utc": "2026-10-04T19:52:41.099077+00:00",
+        "controller_content_sha256": "2e04f15d57a3c6c462f7d01b866d6669ffacfd24d9c66906fcbc859d4d35fef6",
+        "battery_manager_content_sha256": "6eb5c3fb074175ec4b1be33b36970e8ebd4d4aae8f6b2d18619f2576d5e36d42",
+        "staging_apparatus_sha256": "745d3251dab290e6e8996ace7f5e6e12674e2aa455c29e3479255ab061059241",
+        "frozen_commit": "61de29f69d3d8e92f83fa21dc2b202cef032f662",
+        "status": "FAIL: preparation deadline",
+        "new_holdout_exposed": false,
+        "evidence": "20261005_p3b5_staging_geometry_failed_candidate.json"
       }
     ],
     "actual_launch_start_geometry_check": {
@@ -510,6 +520,7 @@
         "target": 6.237005768508876
       }
     },
-    "battery_manager_content_sha256": "6eb5c3fb074175ec4b1be33b36970e8ebd4d4aae8f6b2d18619f2576d5e36d42"
+    "battery_manager_content_sha256": "6eb5c3fb074175ec4b1be33b36970e8ebd4d4aae8f6b2d18619f2576d5e36d42",
+    "staging_apparatus_content_sha256": "47ce7998e212a9463ab657bbc0b121d4903ed886016bbf0fd3a2399c986da05d"
   }
 }

@@ -1,0 +1,192 @@
+{
+  "predeclared_at_utc": "2026-10-04T20:20:07.756773+00:00",
+  "declaration": {
+    "predeclared_at_utc": "2026-10-04T20:20:07.756773+00:00",
+    "world": "p3b5_holdout809.world",
+    "world_content_sha256": "2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd",
+    "gazebo_seed": 809,
+    "fault_seed": 28091,
+    "proposal": {
+      "proposed_at_utc": "2026-10-04T14:36:39.059239+00:00",
+      "world": "p3b5_holdout809.world",
+      "world_content_sha256": "2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd",
+      "gazebo_seed": 809,
+      "fault_seed": 28091,
+      "target": [
+        4.4,
+        -3.4
+      ],
+      "robot_count": 3,
+      "initial_energy": 45,
+      "duration_sec": 300,
+      "scope": "New staggered horizontal partition/central opening topology plus rotated blocks/pillar, not old707 rename/seed-only change. No Gazebo/task/vision/motion evaluation has been performed. Static geometry validation only before prospective canonical freeze; controller must be frozen before first exposure.",
+      "design_basis": "Same lab-sized box, valid start/chargers and reachable target with ordinary .45m clearance. Geometry selected before any new heldout run; never choose or tune based on heldout outcomes.",
+      "previous_exposed_world": "p3a5_holdout.world",
+      "previous_exposed_seed": 707,
+      "previous_independent_fault_seed": 27077,
+      "previous_first_exposure_commit": "011786e53e4c7c2a0eb1e2358fc0b81f651a8316"
+    },
+    "static_geometry_check": {
+      "status": "PASS",
+      "scope": "Static SDF/visual collision agreement, supported box rasterization and .45m-clearance connected start/charger/target geometry only. No task/controller/vision run or performance tuning.",
+      "world_content_sha256": "2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd",
+      "rectangle_count": 10,
+      "unsupported_collision_count": 0,
+      "points": {
+        "tb1_start_charge": [
+          0.0,
+          0.0
+        ],
+        "tb2_start_charge": [
+          0.0,
+          0.45
+        ],
+        "tb3_start_charge": [
+          0.0,
+          0.9
+        ],
+        "target": [
+          4.4,
+          -3.4
+        ]
+      },
+      "connected_distances_from_tb1_m": {
+        "tb1_start_charge": 0.0,
+        "tb2_start_charge": 0.45,
+        "tb3_start_charge": 0.9,
+        "target": 6.4234018715767665
+      },
+      "original_point_label_correction": "The retained tb1_start_charge/tb3_start_charge labels were generic sample points, not actual launch poses. Original values are historical; use supplemental actual_launch_start_geometry_check below. No world/control/mission run was used to validate or tune809 geometry."
+    },
+    "controller_content_sha256": "2e04f15d57a3c6c462f7d01b866d6669ffacfd24d9c66906fcbc859d4d35fef6",
+    "first_task_exposure": "Pending: unchanged809 world/seed/fault never executed. New clean pushed apparatus freeze; initial forced-native/E0/controlled-return and all ten fixed originals must PASS before first809 exposure. New controller after exposure requires a genuinely new world/seed/fault combination.",
+    "controller_freeze_history": [
+      {
+        "predeclared_at_utc": "2026-10-04T14:45:09.824843+00:00",
+        "controller_content_sha256": "478fc6929675fed0f6435a3b6c81f7549655f438dbed9fae1e6ac0fa1e857960",
+        "frozen_commit": "3d079215caacf9e5e31866ca4db236a5cff3236c",
+        "new_holdout_exposed": false,
+        "evidence": "20261004_p3b5_charge_time_lab101_failed_candidate.json"
+      },
+      {
+        "development_commit": "f8297fa86a8227e99871f5b4916f15dcfa8d17e6",
+        "controller_content_sha256": "ef7f602058e2ab8e3659c425d8e432f36ef584a7fdb240d888f2607f77ab2018",
+        "new_holdout_exposed": false,
+        "evidence": "20261005_p3b5_observer_heading_development.json"
+      },
+      {
+        "predeclared_at_utc": "2026-10-04T16:14:30.112794+00:00",
+        "controller_content_sha256": "116d26e46a779694a290230aa5c2d2132e460a0ff2d5945eb09e215b8001d47a",
+        "frozen_commit": "cf73eebd875d990bd782cef572d09b484b23900a",
+        "new_holdout_exposed": false,
+        "evidence": "20261005_p3b5_confirmation_gap_forced_failed_candidate.json"
+      },
+      {
+        "development_commit": "5dcb398e1dbe72f9c34c667f924b2306ff11ffed",
+        "controller_content_sha256": "649c3f15021344ba3975a2b21caefd7faf70a002908f780bec86140af67d26f1",
+        "status": "FAIL",
+        "new_holdout_exposed": false,
+        "evidence": "20261005_p3b5_interrupted_frontier_development.json"
+      },
+      {
+        "development_commit": "79a3b05b5101418cd99dd8cb7cd6d4630c0eb823",
+        "controller_content_sha256": "ceba4463097419c53e9ae650dff47ea7ab4fa63e9f83d6410e572fcc55b527ae",
+        "status": "FAIL",
+        "new_holdout_exposed": false,
+        "evidence": "20261005_p3b5_parking_return_development.json"
+      },
+      {
+        "development_commit": "cf829cf23ae56adb65ca9a54b13b34132cddbd09",
+        "controller_content_sha256": "a90e71fa4fc1cbbeb9e58d8fef1e41b943a05cd53cdd503ecc4d821f0e5418de",
+        "status": "FAIL",
+        "new_holdout_exposed": false,
+        "evidence": "20261005_p3b5_frontier_charge_admission_development.json"
+      },
+      {
+        "development_commit": "d2a9b47b4deb5b19294d529a5a3209ceddef9d93",
+        "controller_content_sha256": "6b4c46e4c6a5c02298f95d2266ba2e25becc220922661a3f9c11d1d9f7c3170f",
+        "status": "FAIL",
+        "new_holdout_exposed": false,
+        "evidence": "20261005_p3b5_charging_fairness_development.json"
+      },
+      {
+        "development_commit": "a113550bec575cee8b386befec53f5130c18e482",
+        "controller_content_sha256": "3c3f2f2b534181dec060e0c136e938d3ed812ec6cbc2c29528ea3c8864f2923c",
+        "status": "FAIL",
+        "new_holdout_exposed": false,
+        "evidence": "20261005_p3b5_opportunity_charging_development.json"
+      },
+      {
+        "development_commit": "a49924abd43ff4406a982d73415b2ac304444cea",
+        "controller_content_sha256": "2e04f15d57a3c6c462f7d01b866d6669ffacfd24d9c66906fcbc859d4d35fef6",
+        "status": "PASS",
+        "new_holdout_exposed": false,
+        "evidence": "20261005_p3b5_contact_heading_development.json"
+      },
+      {
+        "predeclared_at_utc": "2026-10-04T19:52:41.099077+00:00",
+        "controller_content_sha256": "2e04f15d57a3c6c462f7d01b866d6669ffacfd24d9c66906fcbc859d4d35fef6",
+        "battery_manager_content_sha256": "6eb5c3fb074175ec4b1be33b36970e8ebd4d4aae8f6b2d18619f2576d5e36d42",
+        "staging_apparatus_sha256": "745d3251dab290e6e8996ace7f5e6e12674e2aa455c29e3479255ab061059241",
+        "frozen_commit": "61de29f69d3d8e92f83fa21dc2b202cef032f662",
+        "status": "FAIL: preparation deadline",
+        "new_holdout_exposed": false,
+        "evidence": "20261005_p3b5_staging_geometry_failed_candidate.json"
+      }
+    ],
+    "actual_launch_start_geometry_check": {
+      "status": "PASS",
+      "checked_at_utc": "2026-10-04T15:11:57.995218+00:00",
+      "initial_record_annotation": "Original static check used generic sample points mislabeled start/charge. Original source/data retained. This check uses actual frozen launch tb1(0,-.45),tb2(0,.45),tb3(.45,0) for both spawn and charge; no world geometry, task parameter or algorithm change.",
+      "launch_content_sha256": "e67270a7b4e756ce55b4cf9b20298c2363c82e870e790d99a4e846d64cfdf52d",
+      "scope": "Static SDF/visual collision agreement, supported box rasterization and .45m-clearance connected start/charger/target geometry only. No task/controller/vision run or performance tuning.",
+      "world_content_sha256": "2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd",
+      "rectangle_count": 10,
+      "unsupported_collision_count": 0,
+      "points": {
+        "tb1_start_charge": [
+          0.0,
+          -0.45
+        ],
+        "tb2_start_charge": [
+          0.0,
+          0.45
+        ],
+        "tb3_start_charge": [
+          0.45,
+          0.0
+        ],
+        "target": [
+          4.4,
+          -3.4
+        ]
+      },
+      "connected_distances_from_tb1_m": {
+        "tb1_start_charge": 0.0,
+        "tb2_start_charge": 0.9,
+        "tb3_start_charge": 0.636396103067893,
+        "target": 6.237005768508876
+      }
+    },
+    "battery_manager_content_sha256": "6eb5c3fb074175ec4b1be33b36970e8ebd4d4aae8f6b2d18619f2576d5e36d42",
+    "staging_apparatus_content_sha256": "47ce7998e212a9463ab657bbc0b121d4903ed886016bbf0fd3a2399c986da05d"
+  },
+  "staging_config_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
+  "writer_source": "\"\"\"Prospective unchanged809 cohort, with a declared staging apparatus correction.\"\"\"\nimport ast,hashlib,json,socket,subprocess\nfrom datetime import datetime,timezone\nfrom pathlib import Path\nROOT=Path('/home/zhuyulab/ns3-workspace');ROS=ROOT/'ros2_ws/ros2-multi-robot-automap';W=ROOT/'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl'\nold=json.loads((W/'report/20261005_p3b5_staging_geometry_failed_candidate.json').read_text())\nassert old['started_count']==5 and old['unrun_episode_count']==52 and not old['new_holdout_exposed']\nfor e in old['commands']['executions']:assert not Path('/proc',str(e['pid'])).exists()\nfor port in range(16550,16554):\n    with socket.socket() as s:assert s.connect_ex(('127.0.0.1',port))!=0\ndef digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()\nmanifest=ROS/'scripts/p3b5_fault_manifest.json';config=json.loads(manifest.read_text());d=config['holdout_world_declaration']\nassert d['world']=='p3b5_holdout809.world' and d['gazebo_seed']==809 and d['fault_seed']==28091\nassert digest(ROS/'src/multi_robot/worlds'/d['world'])==d['world_content_sha256']\nassert digest(ROS/'src/multi_robot_exploration/multi_robot_exploration/control.py')==d['controller_content_sha256']\nassert digest(ROS/'src/multi_robot_exploration/multi_robot_exploration/battery_manager.py')==d['battery_manager_content_sha256']\nfor folder in (ROS/'log/p3b5').glob('*holdout*'):\n    if not (folder/'summary.json').exists():continue\n    s=json.loads((folder/'summary.json').read_text());assert not (s.get('config',{}).get('scenarios',{}).get('holdout3',{}).get('world')==d['world'] and s.get('episodes'))\nprevious_fixture=next(r['staging_source_sha256'] for r in old['summaries']['returnproof']['episodes'].values())\nd.setdefault('controller_freeze_history',[]).append(dict(predeclared_at_utc=d['predeclared_at_utc'],controller_content_sha256=d['controller_content_sha256'],battery_manager_content_sha256=d['battery_manager_content_sha256'],staging_apparatus_sha256=previous_fixture,frozen_commit=old['frozen_commit'],status='FAIL: preparation deadline',new_holdout_exposed=False,evidence='20261005_p3b5_staging_geometry_failed_candidate.json'))\nd['predeclared_at_utc']=datetime.now(timezone.utc).isoformat();d['staging_apparatus_content_sha256']=digest(ROS/'scripts/stage_p3b5_return_probe.py')\nd['first_task_exposure']='Pending: unchanged809 world/seed/fault never executed. New clean pushed apparatus freeze; initial forced-native/E0/controlled-return and all ten fixed originals must PASS before first809 exposure. New controller after exposure requires a genuinely new world/seed/fault combination.'\nmanifest.write_text(json.dumps(config,indent=2,ensure_ascii=False)+'\\n')\nfixture_path=ROS/'scripts/p3b5_staged_return_probe_manifest.json';fixture=json.loads(fixture_path.read_text())\nfixture['design_reason']+=' v66 original ideal failed50s because an inflated known-free start needed a backward escape, rejected by geometric target-distance monotonicity; retained20261005_p3b5_staging_geometry_failed_candidate.json. Reuse existing bounded raw-known-free clearance escape and shared current-map route detours; never clear obstacle or unknown cells, no native truth input. Final poses,50s preparation,.75m leg,blackout60..250,1.1m exposure,.5m measured return and300s horizon unchanged.'\nfixture['return_staging']['scope']=fixture['return_staging']['scope'].replace('.45m navigation-clearance','.35m navigation-clearance').replace('Use <=.75m current known-free visible prefixes toward same finalpoint;', 'Use <=.75m current known-free visible prefixes and existing bounded clearance escape/path detours toward the same finalpoint;')\nfixture_path.write_text(json.dumps(fixture,indent=2,ensure_ascii=False)+'\\n')\nout=Path('/tmp/p3b5_v67_holdout_refreeze.json');assert not out.exists();out.write_text(json.dumps(dict(predeclared_at_utc=d['predeclared_at_utc'],declaration=d,staging_config_sha256=digest(fixture_path),writer_source=Path(__file__).read_text()),indent=2,ensure_ascii=False)+'\\n')\nprint('v67 prospective apparatus freeze',d['staging_apparatus_content_sha256'],'809 unexposed; controller unchanged')\n",
+  "configuration_validation": {
+    "component_checks": "......................................................                   [100%]\n54 passed in 0.95s",
+    "declared_cases": 27,
+    "declared_unique_primary": 41,
+    "no_simulator_or_holdout_exposure": true,
+    "records": {
+      "/tmp/p3b5_v67_protocol_checks.log": {
+        "sha256": "5221431b000b77f78ce8adf9f678a4a73aa5ddd8e0e1a34d19f536f64a438836",
+        "text": "......................................................                   [100%]\n54 passed in 0.95s\n"
+      },
+      "/tmp/p3b5_v67_protocol_validate.log": {
+        "sha256": "6ebb54772a145a675cf8e9da388fc0a2c4a59e4b81046d6dc28453199ce0114b",
+        "text": "{\n  \"cases\": 27,\n  \"episodes\": 41,\n  \"pairs\": {\n    \"zero_rally_lab\": {\n      \"ideal\": \"p3b5_v67_validate_only_ideal_lab2_rally_8d4d5c469d\",\n      \"fault\": \"p3b5_v67_validate_only_zero_rally_lab_fault\"\n    },\n    \"up10_rooms\": {\n      \"ideal\": \"p3b5_v67_validate_only_ideal_rooms3_rally_980df9c157\",\n      \"fault\": \"p3b5_v67_validate_only_up10_rooms_fault\"\n    },\n    \"down10_rooms\": {\n      \"ideal\": \"p3b5_v67_validate_only_ideal_rooms3_rally_980df9c157\",\n      \"fault\": \"p3b5_v67_validate_only_down10_rooms_fault\"\n    },\n    \"delay05_corridors\": {\n      \"ideal\": \"p3b5_v67_validate_only_ideal_corridors2_rally_1e053e8bbc\",\n      \"fault\": \"p3b5_v67_validate_only_delay05_corridors_fault\"\n    },\n    \"delay2_rooms\": {\n      \"ideal\": \"p3b5_v67_validate_only_ideal_rooms3_rally_980df9c157\",\n      \"fault\": \"p3b5_v67_validate_only_delay2_rooms_fault\"\n    },\n    \"up100_lab\": {\n      \"ideal\": \"p3b5_v67_validate_only_ideal_lab2_rally_8d4d5c469d\",\n      \"fault\": \"p3b5_v67_validate_only_up100_lab_fault\"\n    },\n    \"down100_lab\": {\n      \"ideal\": \"p3b5_v67_validate_only_ideal_lab2_rally_8d4d5c469d\",\n      \"fault\": \"p3b5_v67_validate_only_down100_lab_fault\"\n    },\n    \"ttl_lab\": {\n      \"ideal\": \"p3b5_v67_validate_only_ideal_lab2_rally_8d4d5c469d\",\n      \"fault\": \"p3b5_v67_validate_only_ttl_lab_fault\"\n    },\n    \"duplicates_corridors\": {\n      \"ideal\": \"p3b5_v67_validate_only_ideal_corridors2_rally_1e053e8bbc\",\n      \"fault\": \"p3b5_v67_validate_only_duplicates_corridors_fault\"\n    },\n    \"overflow_rooms\": {\n      \"ideal\": \"p3b5_v67_validate_only_ideal_rooms3_rally_980df9c157\",\n      \"fault\": \"p3b5_v67_validate_only_overflow_rooms_fault\"\n    },\n    \"burst_rooms\": {\n      \"ideal\": \"p3b5_v67_validate_only_ideal_rooms3_rally_980df9c157\",\n      \"fault\": \"p3b5_v67_validate_only_burst_rooms_fault\"\n    },\n    \"deadline_rooms\": {\n      \"ideal\": \"p3b5_v67_validate_only_ideal_rooms3_rally_43f2051648\",\n      \"fault\": \"p3b5_v67_validate_only_deadline_rooms_fault\"\n    },\n    \"detection_loss_rooms\": {\n      \"ideal\": \"p3b5_v67_validate_only_ideal_rooms3_rally_980df9c157\",\n      \"fault\": \"p3b5_v67_validate_only_detection_loss_rooms_fault\"\n    },\n    \"map_loss_lab\": {\n      \"ideal\": \"p3b5_v67_validate_only_ideal_lab2_coverage_da95bad2c7\",\n      \"fault\": \"p3b5_v67_validate_only_map_loss_lab_fault\"\n    },\n    \"pose_loss_rooms\": {\n      \"ideal\": \"p3b5_v67_validate_only_ideal_rooms3_coverage_4c86e25248\",\n      \"fault\": \"p3b5_v67_validate_only_pose_loss_rooms_fault\"\n    },\n    \"battery_loss_lab\": {\n      \"ideal\": \"p3b5_v67_validate_only_ideal_lab2_rally_8d4d5c469d\",\n      \"fault\": \"p3b5_v67_validate_only_battery_loss_lab_fault\"\n    },\n    \"state_loss_lab\": {\n      \"ideal\": \"p3b5_v67_validate_only_ideal_lab2_rally_8d4d5c469d\",\n      \"fault\": \"p3b5_v67_validate_only_state_loss_lab_fault\"\n    },\n    \"nav_loss_corridors\": {\n      \"ideal\": \"p3b5_v67_validate_only_ideal_corridors2_rally_1e053e8bbc\",\n      \"fault\": \"p3b5_v67_validate_only_nav_loss_corridors_fault\"\n    },\n    \"single_failure_rooms\": {\n      \"ideal\": \"p3b5_v67_validate_only_ideal_rooms3_rally_980df9c157\",\n      \"fault\": \"p3b5_v67_validate_only_single_failure_rooms_fault\"\n    },\n    \"forced_charge_outage\": {\n      \"ideal\": \"p3b5_v67_validate_only_ideal_forced2_rally_86fbb43bc6\",\n      \"fault\": \"p3b5_v67_validate_only_forced_charge_outage_fault\"\n    },\n    \"target_up10_lab\": {\n      \"ideal\": \"p3b5_v67_validate_only_ideal_lab2_target_21212e763a\",\n      \"fault\": \"p3b5_v67_validate_only_target_up10_lab_fault\"\n    },\n    \"target_loss_rooms\": {\n      \"ideal\": \"p3b5_v67_validate_only_ideal_rooms3_target_01c25c1bef\",\n      \"fault\": \"p3b5_v67_validate_only_target_loss_rooms_fault\"\n    },\n    \"coverage_delay_corridors\": {\n      \"ideal\": \"p3b5_v67_validate_only_ideal_corridors2_coverage_0241ed3b33\",\n      \"fault\": \"p3b5_v67_validate_only_coverage_delay_corridors_fault\"\n    },\n    \"holdout_rally\": {\n      \"ideal\": \"p3b5_v67_validate_only_ideal_holdout3_rally_0e0a71b5e8\",\n      \"fault\": \"p3b5_v67_validate_only_holdout_rally_fault\"\n    },\n    \"holdout_target\": {\n      \"ideal\": \"p3b5_v67_validate_only_ideal_holdout3_target_5c91c8afdd\",\n      \"fault\": \"p3b5_v67_validate_only_holdout_target_fault\"\n    },\n    \"holdout_coverage\": {\n      \"ideal\": \"p3b5_v67_validate_only_ideal_holdout3_coverage_c8631e6a7f\",\n      \"fault\": \"p3b5_v67_validate_only_holdout_coverage_fault\"\n    },\n    \"battery_exhaust_lab\": {\n      \"ideal\": \"p3b5_v67_validate_only_ideal_lab2_rally_0678e85373\",\n      \"fault\": \"p3b5_v67_validate_only_battery_exhaust_lab_fault\"\n    }\n  },\n  \"ros_domain_ids\": [\n    30,\n    31,\n    32,\n    33,\n    34,\n    35,\n    36,\n    37,\n    38,\n    39,\n    40,\n    41,\n    42,\n    43,\n    44,\n    45,\n    46,\n    47,\n    48,\n    49,\n    50,\n    51,\n    52,\n    53,\n    54,\n    55,\n    56,\n    57,\n    58,\n    59,\n    60,\n    61,\n    62,\n    63,\n    64,\n    65,\n    66,\n    67,\n    68,\n    69,\n    70\n  ]\n}\n"
+      }
+    }
+  }
+}

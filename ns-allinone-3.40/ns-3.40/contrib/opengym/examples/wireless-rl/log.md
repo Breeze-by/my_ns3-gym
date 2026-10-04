@@ -6057,3 +6057,22 @@ ROS_DOMAIN_ID=20 GAZEBO_MASTER_URI=http://127.0.0.1:16552 /usr/bin/python3 /home
 Saved AP raw start is free but inside static clearance inflation. Existing bounded self-return helper clears no cells and restores no prefix. Shared navigation_start_route finds a known-free escape backwards to a clearance-safe cell; the fixture rejects it because Euclidean distance to the final declared staging point initially increases. Pure replay found no allowed monotone candidate within.75m. This is conditional geometry evidence, not original buffers or an isolated mission causal claim. Keep original map bytes/obstacles; allow existing bounded escape/path detours in future fixture rather than weakening clearance or exposure/time/motion thresholds.
 
 进度曾误称physical fault启动，核查原summary后及时更正；paired fault实际上未执行。只读rg缺少tests目录/访问受限tmp和python命令不存在均不影响运行，保留记录。失败原件不替换；新fixture须新冻结、完整57格及严格图文门禁。
+
+## 2026-10-05 P3B.5 v67已知自由准备绕行组件与协议
+
+2026-10-05 P3B.5 v67准备程序修复与前瞻协议：受控返充fixture在known-free但净空膨胀起点复用现有navigation_start_route的.6m有界自由逃离；允许先增加距最终point的欧氏距离，之后通过当前地图共享plan_rally_leg已知自由visible路径绕行。不清障碍/未知格、不引入native truth，原始地图保持；四源TTL/current battery ACTIVE/gateway串行既有行为保持。最终点/50s/.75m/.35m/blackout60–250/1.1m远端/.5m实际Nav2返航/300s及原生保持门槛不变，native_completion_ok/episode_ok AST不变。61相关检查1.83s、539全组件14.80s、四包build5.30s/source3r0旁路、54配置检查及27cases/41primary validate-only PASS。控制器/电池算法源与v65开发PASS/v66force185.4原生PASS相同；v66五原始1操作FAIL及52unrun已c9719c5归档。809.world/seed809/fault28091此前从未执行，保留原字节/最初声明及全部未暴露历史，新增fixture源hash和当前准备协议。新冻结完整57格需initial强制原生/E0/受控实际返充及十fixed全PASS后首次809；本组件不是正式P3B.5通过，无ns3/RL。
+
+canonical ROS cwd/source Humble/install/PYTHONNOUSERSITE=1/ROS_LOG_DIR=log/component_checks；rtk bash -lc；没有Gazebo任务：
+
+```bash
+/usr/bin/python3 -m pytest -q scripts/test_p3b5_return_staging.py scripts/test_p3b5_gate.py scripts/test_p3b5_tasks.py > /tmp/p3b5_v67_staging_checks.log 2>&1
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_control.py src/multi_robot_exploration/test/test_exploration_resume.py src/multi_robot_exploration/test/test_exploration_charging.py src/multi_robot_exploration/test/test_return_progress.py src/multi_robot_exploration/test/test_rally_observer_parking.py src/multi_robot_exploration/test/test_battery_manager.py src/multi_robot_exploration/test/test_gateway.py src/multi_robot_exploration/test/test_fault_model.py src/multi_robot_exploration/test/test_navigation_faults.py src/multi_robot_exploration/test/test_task_evaluator.py src/multi_robot_exploration/test/test_nav2_ready_gate.py src/multi_robot_exploration/test/test_readiness.py src/multi_robot_exploration/test/test_spawn_entity_checked.py src/multi_robot_exploration/test/test_tf_ingress_sampler.py src/multi_robot_exploration/test/test_target_detector.py src/merge_map/test/test_merge_map.py scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py scripts/test_ros_smoke_native_probe.py scripts/test_observer_lifetime.py > /tmp/p3b5_v67_component_checks.log 2>&1
+colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot > /tmp/p3b5_v67_build.log 2>&1
+/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v67_source_audit.log 2>&1
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python /tmp/refreeze_p3b5_v67_staging_protocol.py > /tmp/p3b5_v67_holdout_refreeze.log 2>&1
+/usr/bin/python3 -m pytest -q --tb=short scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py > /tmp/p3b5_v67_protocol_checks.log 2>&1
+/usr/bin/python3 scripts/run_p3b5_tasks.py --config scripts/p3b5_fault_manifest.json --run-id p3b5_v67_validate_only --validate-only > /tmp/p3b5_v67_protocol_validate.log 2>&1
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python /tmp/document_p3b5_v67_staging_component.py
+```
+
+Bounded known-free staging escape/detours fix fixture admission; do not prove mission completion or optimality. Existing local safety and physical return checks remain mandatory; no original result replaced.

@@ -89,3 +89,37 @@ def test_staging_reuses_bounded_free_start_escape_without_clearing_source_map():
     for unsafe in (-1, 100):
         raw[start] = unsafe
         assert known_staging_prefix(clear, .1, (0., 0.), position, target, raw_grid=raw) is None
+
+
+def test_clearance_escape_can_go_away_from_fixture_before_safe_detour():
+    import math
+    import numpy as np
+    from multi_robot_exploration.control import traversable_grid, world_to_grid
+    raw = np.zeros((70, 70), dtype=int)
+    raw[20:40, 25:29] = 100
+    position, target = (2.45, 3.05), (4.05, 3.05)
+    original = raw.copy()
+    clear = np.where(traversable_grid(raw, .1), 0, 100)
+    start = world_to_grid(*position, .1, 0., 0.)
+    assert raw[start] == 0 and clear[start] != 0
+    point = known_staging_prefix(clear, .1, (0., 0.), position, target, raw_grid=raw)
+    assert point is not None and math.dist(position, point) <= .75
+    assert math.dist(point, target) > math.dist(position, target)
+    assert clear[world_to_grid(*point, .1, 0., 0.)] == 0
+    # From outside inflation, use the known-free route around the wall rather
+    # than insisting that every next step follows the direct target ray.
+    next_point = known_staging_prefix(clear, .1, (0., 0.), point, target, raw_grid=raw)
+    assert next_point is not None and .1 <= math.dist(point, next_point) <= .75
+    np.testing.assert_array_equal(raw, original)
+
+
+def test_staging_detour_never_crosses_unknown_or_occupied_partition():
+    import numpy as np
+    from multi_robot_exploration.control import traversable_grid
+    for obstacle in (-1, 100):
+        raw = np.zeros((40, 50), dtype=int)
+        raw[:, 20:24] = obstacle
+        original = raw.copy()
+        clear = np.where(traversable_grid(raw, .1), 0, 100)
+        assert known_staging_prefix(clear, .1, (0., 0.), (1.55, 2.05), (3.05, 2.05), raw_grid=raw) is None
+        np.testing.assert_array_equal(raw, original)
