@@ -6000,3 +6000,15 @@ export PYTHONNOUSERSITE=1
 Independent original development only. Contact/heading policy and 25%-target opportunity replenishment require new frozen integration; four required mission rows pass native5s hold, forced fault must charge each and stay positive/zero-contact. Exact results below. No isolated causal timing benefit or worst-case guarantee; AP snapshots remain independent received data, not original buffers; no native truth controls any decision. All owners/observers close before this documentary write and before prospective809 freeze.
 
 AP地图仅重复data数组改为cell_count/SHA；完整原文件hash、其他源时间/位姿/TF/能量/目标均保留。完整COMPLETE只用原生保持，真值不作控制输入；正式批次仍需新冻结。
+
+2026-10-05 P3B.5 v66前瞻正式冻结准备：已关闭并完整保留v65五个独立开发原始结果且开发PASS；保持809.world/seed809/fault28091/目标(4.4,-3.4)/3r/E45原字节与最初静态声明，更新当前control与battery源hash及未暴露失败历史。809此前从未任务执行；同提交强制原生/E0/受控物理返充及十fixed全部PASS后才允许首次运行。57格/27pair/41主格、300s/.35/.05/.1/5s、原故障强度保持，不重试/回填。当前仍待正式完整门禁，无ns3/RL。
+
+## 2026-10-05 P3B.5 v66前瞻协议配置校验
+
+未启动任何任务；源/场景字节和809未暴露记录保留。54配置/门禁脚本检查0.67s通过，validate-only为27cases/41unique。当前control SHA256=2e04f15d57a3c6c462f7d01b866d6669ffacfd24d9c66906fcbc859d4d35fef6，正式57格仍待执行。ns3gym/PYTHONNOUSERSITE=1写入协议记录；ROS源Humble/install/PYTHONNOUSERSITE=1/ROS_LOG_DIR=log/component_checks完成校验：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python /tmp/refreeze_p3b5_v66_holdout_controller.py > /tmp/p3b5_v66_holdout_refreeze.log 2>&1
+/usr/bin/python3 -m pytest -q --tb=short scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py > /tmp/p3b5_v66_protocol_checks.log 2>&1
+/usr/bin/python3 scripts/run_p3b5_tasks.py --config scripts/p3b5_fault_manifest.json --run-id p3b5_v66_validate_only --validate-only > /tmp/p3b5_v66_protocol_validate.log 2>&1
+```

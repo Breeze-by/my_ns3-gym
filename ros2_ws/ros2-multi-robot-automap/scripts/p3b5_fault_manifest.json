@@ -353,7 +353,7 @@
     }
   },
   "holdout_world_declaration": {
-    "predeclared_at_utc": "2026-10-04T16:14:30.112794+00:00",
+    "predeclared_at_utc": "2026-10-04T19:52:41.099077+00:00",
     "world": "p3b5_holdout809.world",
     "world_content_sha256": "2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd",
     "gazebo_seed": 809,
@@ -410,8 +410,8 @@
       },
       "original_point_label_correction": "The retained tb1_start_charge/tb3_start_charge labels were generic sample points, not actual launch poses. Original values are historical; use supplemental actual_launch_start_geometry_check below. No world/control/mission run was used to validate or tune809 geometry."
     },
-    "controller_content_sha256": "116d26e46a779694a290230aa5c2d2132e460a0ff2d5945eb09e215b8001d47a",
-    "first_task_exposure": "Pending: unchanged809 world/seed/fault never executed. After clean pushed v58 freeze, forced-native/zero/physical-return subgates and all ten fixed originals pass, then first heldout3-row exposure. Source changes after exposure require a genuinely new combination.",
+    "controller_content_sha256": "2e04f15d57a3c6c462f7d01b866d6669ffacfd24d9c66906fcbc859d4d35fef6",
+    "first_task_exposure": "Pending: unchanged809 world/seed/fault never executed. After clean pushed v66 freeze, initial forced-native/E0/controlled-return and all ten fixed originals PASS, then first heldout3-row exposure. Source changes after exposure require a genuinely new world/seed/fault combination.",
     "controller_freeze_history": [
       {
         "predeclared_at_utc": "2026-10-04T14:45:09.824843+00:00",
@@ -425,6 +425,55 @@
         "controller_content_sha256": "ef7f602058e2ab8e3659c425d8e432f36ef584a7fdb240d888f2607f77ab2018",
         "new_holdout_exposed": false,
         "evidence": "20261005_p3b5_observer_heading_development.json"
+      },
+      {
+        "predeclared_at_utc": "2026-10-04T16:14:30.112794+00:00",
+        "controller_content_sha256": "116d26e46a779694a290230aa5c2d2132e460a0ff2d5945eb09e215b8001d47a",
+        "frozen_commit": "cf73eebd875d990bd782cef572d09b484b23900a",
+        "new_holdout_exposed": false,
+        "evidence": "20261005_p3b5_confirmation_gap_forced_failed_candidate.json"
+      },
+      {
+        "development_commit": "5dcb398e1dbe72f9c34c667f924b2306ff11ffed",
+        "controller_content_sha256": "649c3f15021344ba3975a2b21caefd7faf70a002908f780bec86140af67d26f1",
+        "status": "FAIL",
+        "new_holdout_exposed": false,
+        "evidence": "20261005_p3b5_interrupted_frontier_development.json"
+      },
+      {
+        "development_commit": "79a3b05b5101418cd99dd8cb7cd6d4630c0eb823",
+        "controller_content_sha256": "ceba4463097419c53e9ae650dff47ea7ab4fa63e9f83d6410e572fcc55b527ae",
+        "status": "FAIL",
+        "new_holdout_exposed": false,
+        "evidence": "20261005_p3b5_parking_return_development.json"
+      },
+      {
+        "development_commit": "cf829cf23ae56adb65ca9a54b13b34132cddbd09",
+        "controller_content_sha256": "a90e71fa4fc1cbbeb9e58d8fef1e41b943a05cd53cdd503ecc4d821f0e5418de",
+        "status": "FAIL",
+        "new_holdout_exposed": false,
+        "evidence": "20261005_p3b5_frontier_charge_admission_development.json"
+      },
+      {
+        "development_commit": "d2a9b47b4deb5b19294d529a5a3209ceddef9d93",
+        "controller_content_sha256": "6b4c46e4c6a5c02298f95d2266ba2e25becc220922661a3f9c11d1d9f7c3170f",
+        "status": "FAIL",
+        "new_holdout_exposed": false,
+        "evidence": "20261005_p3b5_charging_fairness_development.json"
+      },
+      {
+        "development_commit": "a113550bec575cee8b386befec53f5130c18e482",
+        "controller_content_sha256": "3c3f2f2b534181dec060e0c136e938d3ed812ec6cbc2c29528ea3c8864f2923c",
+        "status": "FAIL",
+        "new_holdout_exposed": false,
+        "evidence": "20261005_p3b5_opportunity_charging_development.json"
+      },
+      {
+        "development_commit": "a49924abd43ff4406a982d73415b2ac304444cea",
+        "controller_content_sha256": "2e04f15d57a3c6c462f7d01b866d6669ffacfd24d9c66906fcbc859d4d35fef6",
+        "status": "PASS",
+        "new_holdout_exposed": false,
+        "evidence": "20261005_p3b5_contact_heading_development.json"
       }
     ],
     "actual_launch_start_geometry_check": {
@@ -460,6 +509,7 @@
         "tb3_start_charge": 0.636396103067893,
         "target": 6.237005768508876
       }
-    }
+    },
+    "battery_manager_content_sha256": "6eb5c3fb074175ec4b1be33b36970e8ebd4d4aae8f6b2d18619f2576d5e36d42"
   }
 }
