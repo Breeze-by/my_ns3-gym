@@ -892,6 +892,76 @@ def test_rally_navigation_stages_long_paths():
     assert 0.6 <= math.dist((1.0, 1.0), (retry_leg.x, retry_leg.y)) <= 0.8
 
 
+def test_visible_intermediate_leg_faces_its_approach_before_a_wall_bend():
+    grid = np.zeros((80, 80), dtype=int)
+    grid[:55, 40] = 100
+    target = control.RallyPose(6.0, 1.0, -0.7)
+    leg, route = control.plan_rally_leg(
+        target, grid, .1, (0., 0.), (2., 1.), 3.5, visible_only=True,
+    )
+    assert leg is not None and (leg.x, leg.y) != (target.x, target.y)
+    assert leg.yaw == pytest.approx(math.pi/2)
+    across_wall = math.atan2(target.y-leg.y, target.x-leg.x)
+    assert abs(math.atan2(math.sin(leg.yaw-across_wall), math.cos(leg.yaw-across_wall))) > 1.
+    final, _ = control.plan_rally_leg(target, grid, .1, (0., 0.), (6., 2.), 3.5, visible_only=True)
+    assert final.yaw == target.yaw
+
+
+def test_reserved_prefix_faces_incoming_leg_and_retains_original_reservation():
+    route = tuple((x*.1, 0.) for x in range(31)) + ((3., .1), (3., 1.))
+    plan = (control.RallyPose(3., 1., math.pi/2), route)
+    admitted = control.reserve_rally_prefix(plan, [((3., 1.85),)])
+    assert admitted is not None and admitted[1] == route[:31]
+    assert admitted[0].yaw == pytest.approx(0.)
+    assert control.reserve_rally_prefix(plan, []) is plan
+
+
+@pytest.mark.parametrize('wall', (False, True))
+def test_rally_order_cache_keeps_each_body_mask_and_stays_within_one_snapshot(monkeypatch, wall):
+    grid = np.zeros((80, 100), dtype=int)
+    if wall:
+        grid[:, 50] = 100
+        grid[30:50, 50] = 0
+    positions = {'a': (1., 1.), 'b': (1., 4.), 'c': (2., 6.)}
+    targets = {n: control.RallyPose(8., y, 0.) for n, y in zip(positions, (1., 4., 6.))}
+    original = control.plan_rally_leg
+    contexts = {}
+    calls = []
+
+    def capture(*args, **kwargs):
+        cache = kwargs['route_cache']
+        context = (args[4], tuple(kwargs.get('blocked_positions', ())))
+        assert id(cache) not in contexts or contexts[id(cache)] == context
+        contexts[id(cache)] = context
+        result = original(*args, **kwargs)
+        calls.append((cache, result))
+        return result
+
+    monkeypatch.setattr(control, 'plan_rally_leg', capture)
+    cached = control.map_safe_rally_dispatch_order(grid, .1, (0., 0.), targets, positions, (9., 4.))
+    cached_calls = list(calls)
+    assert len(contexts) < len(calls)
+
+    def uncached(*args, **kwargs):
+        kwargs.pop('route_cache')
+        result = original(*args, **kwargs)
+        calls.append((None, result))
+        return result
+
+    calls.clear()
+    monkeypatch.setattr(control, 'plan_rally_leg', uncached)
+    reference = control.map_safe_rally_dispatch_order(grid, .1, (0., 0.), targets, positions, (9., 4.))
+    assert cached == reference
+    assert [result for _, result in cached_calls] == [result for _, result in calls]
+    # A later map cannot inherit the earlier fields, even at the same poses.
+    grid[:, 50] = 100
+    calls.clear()
+    monkeypatch.setattr(control, 'plan_rally_leg', capture)
+    control.map_safe_rally_dispatch_order(grid, .1, (0., 0.), targets, positions, (9., 4.))
+    assert all(new is not old for new, _ in calls for old, _ in cached_calls)
+    assert all(not result[1] for _, result in calls)
+
+
 def test_rally_route_avoids_robot_already_parked_at_its_pose():
     grid = np.zeros((60, 60), dtype=int)
     pose = control.RallyPose(5.0, 3.0, 0.0)

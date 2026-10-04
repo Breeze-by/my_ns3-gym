@@ -1542,13 +1542,22 @@ def map_safe_rally_dispatch_order(
     names = list(targets)
     if len(names) < 2:
         return names
+    route_caches = {}
+
+    def plan_for(name, blocked=()):
+        # Each field is valid only for this snapshot, start and exact body mask.
+        # Permutations often revisit the same first or last mover context.
+        blocked = tuple(sorted(tuple(position) for position in blocked))
+        return plan_rally_leg(
+            targets[name], raw_grid, resolution, origin, robot_positions[name],
+            max_distance_m=float("inf"), blocked_positions=blocked,
+            route_cache=route_caches.setdefault((name, blocked), {}),
+        )
+
     intent_routes = {}
     for name in names:
         if robot_positions.get(name) is not None:
-            _, route = plan_rally_leg(
-                targets[name], raw_grid, resolution, origin, robot_positions[name],
-                max_distance_m=float("inf"),
-            )
+            _, route = plan_for(name)
             if route:
                 intent_routes[name] = route
     # A robot already ahead on a shared approach must not wait for a robot
@@ -1570,15 +1579,7 @@ def map_safe_rally_dispatch_order(
                 for other_name, other_position in occupied.items()
                 if other_name != name and other_position is not None
             ]
-            plan = plan_rally_leg(
-                targets[name],
-                raw_grid,
-                resolution,
-                origin,
-                position,
-                max_distance_m=float("inf"),
-                blocked_positions=blocked,
-            )
+            plan = plan_for(name, blocked)
             if plan[0] is None:
                 feasible = False
                 break
@@ -1607,15 +1608,7 @@ def map_safe_rally_dispatch_order(
     # future final-pose obstructions instead of filling the entrance first.
     # This chooses recovery priority only: live body/route admission is still
     # mandatory, including any safe refuge needed by the first mover.
-    routes = {}
-    for name in names:
-        if robot_positions.get(name) is None:
-            break
-        _, route = plan_rally_leg(targets[name], raw_grid, resolution, origin,
-                                 robot_positions[name], max_distance_m=float("inf"))
-        if not route:
-            break
-        routes[name] = route
+    routes = intent_routes
     if len(routes) == len(names):
         def recovery_score(order):
             obstructions = sum(
@@ -1731,7 +1724,9 @@ def plan_rally_leg(
         RallyPose(
             x,
             y,
-            pose.yaw if waypoint == target else math.atan2(pose.y - y, pose.x - x),
+            pose.yaw if waypoint == target else route_arrival_yaw(
+                world_route, math.atan2(pose.y - y, pose.x - x)
+            ),
         ),
         world_route,
     )
@@ -1763,6 +1758,20 @@ def remaining_rally_route(route, position):
     return (position, *route[nearest:])
 
 
+def route_arrival_yaw(route, fallback_yaw):
+    """Face along the actual incoming leg at a temporary stop, not across a wall."""
+    if len(route) < 2:
+        return fallback_yaw
+    x, y = route[-1]
+    # A short terminal chord avoids eight-connected single-cell yaw jumps.
+    for previous_x, previous_y in reversed(route[:-1]):
+        if math.dist((x, y), (previous_x, previous_y)) >= 0.3:
+            break
+    if math.dist((x, y), (previous_x, previous_y)) < 1e-6:
+        return fallback_yaw
+    return math.atan2(y - previous_y, x - previous_x)
+
+
 def reserve_rally_prefix(plan, reservations, min_travel=0.75):
     """Allow approach to a conflict, stopping before the reserved corridor.
 
@@ -1781,8 +1790,7 @@ def reserve_rally_prefix(plan, reservations, min_travel=0.75):
         if len(prefix) < 2 or math.dist(prefix[0], prefix[-1]) < min_travel:
             return None
         x, y = prefix[-1]
-        next_x, next_y = route[index]
-        return RallyPose(x, y, math.atan2(next_y - y, next_x - x)), prefix
+        return RallyPose(x, y, route_arrival_yaw(prefix, pose.yaw)), prefix
     return plan
 
 

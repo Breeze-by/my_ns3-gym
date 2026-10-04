@@ -6337,3 +6337,18 @@ ROS_DOMAIN_ID=42 GAZEBO_MASTER_URI=http://127.0.0.1:16952 /usr/bin/python3 /home
 ```
 
 Lab202 tb1 remains1.30480m away, tb2/tb3 errors.00442/.02365m. All ACTIVE/positive. After two serial charges, tb3 takes a long southern detour; tb1 waits for actual/future reservations, then still executes several visible waypoints. Saved snapshots are a distinct AP subscriber, not original buffers. Scoped-cache and intermediate approach-heading optimizations remain to be validated, without changing safety, leases or native completion.
+
+## 2026-10-05 P3B.5 v73入站朝向与距离场缓存组件
+
+2026-10-05 P3B.5 v73集合路径组件：串行排列评分仅在同一次不可变地图规划、同一机器人起点和完全相同机体障碍坐标配置内复用距离场；不同排列机体位置独立key，函数返回即丢弃，回退复用同一未屏蔽intent，不跨地图/位姿/TTL缓存。中间已验证路点与预约截断停点按实际入站路径末端0.3m弦朝向，减少绕墙时朝最终目标的额外转向；最终集合pose仍保留原请求yaw，交付目标可见朝向修正与实际body/live/return/源TTL/能量准入均保持。288控制14.41s、550全组件15.95s、四包build5.18s/source3r0旁路通过；新增绕墙朝向/最终yaw、预约截断与障碍配置/地图缓存隔离回归。首新增夹具两项假设错误（整段直线与栅格末段方向差0.061rad；预约障碍未在预期点触发）已按实际几何修正，原失败日志保留，未改生产门限。五个保存AP快照新旧源码排序、路线及坐标相同；缓存条件对照构建16–17→11–12个距离场，离线中位耗时约1.10–1.22→.75–.86s，实际新旧源码再次对照约.51–1.11→.31–.84s，受同时任务负载变化影响，非原控制执行器计时或任务因果收益。原生保持与严格native_completion_ok/episode_ok源码一致，300s/.35m/.05mps/.1radps/5s及原TTL/净空不变。v72十五原始失败/42unrun已f62262f归档，未回填；809/28091仍从未执行。报告report/20261005_p3b5_incoming_heading_cache_component.json。需要新冻结独立开发回归与完整正式57格，P3B.5尚未通过，无ns3/RL。
+
+canonical ROS cwd/source Humble/install；PYTHONNOUSERSITE=1、ROS_LOG_DIR=log/component_checks；rtk bash -lc，无新Gazebo/809试验：
+
+```bash
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_control.py src/multi_robot_exploration/test/test_exploration_resume.py src/multi_robot_exploration/test/test_exploration_charging.py src/multi_robot_exploration/test/test_return_progress.py src/multi_robot_exploration/test/test_rally_observer_parking.py src/multi_robot_exploration/test/test_battery_manager.py src/multi_robot_exploration/test/test_gateway.py src/multi_robot_exploration/test/test_fault_model.py src/multi_robot_exploration/test/test_navigation_faults.py src/multi_robot_exploration/test/test_task_evaluator.py src/multi_robot_exploration/test/test_nav2_ready_gate.py src/multi_robot_exploration/test/test_readiness.py src/multi_robot_exploration/test/test_spawn_entity_checked.py src/multi_robot_exploration/test/test_tf_ingress_sampler.py src/multi_robot_exploration/test/test_target_detector.py src/merge_map/test/test_merge_map.py scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py scripts/test_ros_smoke_native_probe.py scripts/test_observer_lifetime.py > /tmp/p3b5_v73_component_checks.log 2>&1
+colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot > /tmp/p3b5_v73_build.log 2>&1
+/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v73_source_audit.log 2>&1
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_control.py -k "order_cache or incoming_leg or approach_before" > /tmp/p3b5_v73_focused_checks.log 2>&1
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_control.py > /tmp/p3b5_v73_control_checks.log 2>&1
+/usr/bin/python3 /tmp/verify_p3b5_v73_saved_plans.py > /tmp/p3b5_v73_saved_plan_verification.log 2>&1
+```
