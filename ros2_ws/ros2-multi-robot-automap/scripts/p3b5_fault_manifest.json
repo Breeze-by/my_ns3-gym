@@ -353,7 +353,7 @@
     }
   },
   "holdout_world_declaration": {
-    "predeclared_at_utc": "2026-10-04T20:20:07.756773+00:00",
+    "predeclared_at_utc": "2026-10-04T21:40:45.633755+00:00",
     "world": "p3b5_holdout809.world",
     "world_content_sha256": "2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd",
     "gazebo_seed": 809,
@@ -410,8 +410,8 @@
       },
       "original_point_label_correction": "The retained tb1_start_charge/tb3_start_charge labels were generic sample points, not actual launch poses. Original values are historical; use supplemental actual_launch_start_geometry_check below. No world/control/mission run was used to validate or tune809 geometry."
     },
-    "controller_content_sha256": "2e04f15d57a3c6c462f7d01b866d6669ffacfd24d9c66906fcbc859d4d35fef6",
-    "first_task_exposure": "Pending: unchanged809 world/seed/fault never executed. New clean pushed apparatus freeze; initial forced-native/E0/controlled-return and all ten fixed originals must PASS before first809 exposure. New controller after exposure requires a genuinely new world/seed/fault combination.",
+    "controller_content_sha256": "aa6cd7c03016e38ae7f5eec808b226b5fdb67f206a1038f7e61d27c4a06cb9d2",
+    "first_task_exposure": "Pending:809/world/seed/fault never executed. New clean pushed controller freeze after independent six-original development PASS. Initial forced true-native ideal/E0/controlled physical return and all ten fixed originals must PASS before first809. After any809 exposure a controller change requires a genuinely new world/seed/fault combination.",
     "controller_freeze_history": [
       {
         "predeclared_at_utc": "2026-10-04T14:45:09.824843+00:00",
@@ -484,6 +484,18 @@
         "status": "FAIL: preparation deadline",
         "new_holdout_exposed": false,
         "evidence": "20261005_p3b5_staging_geometry_failed_candidate.json"
+      },
+      {
+        "predeclared_at_utc": "2026-10-04T20:20:07.756773+00:00",
+        "controller_content_sha256": "2e04f15d57a3c6c462f7d01b866d6669ffacfd24d9c66906fcbc859d4d35fef6",
+        "battery_manager_content_sha256": "6eb5c3fb074175ec4b1be33b36970e8ebd4d4aae8f6b2d18619f2576d5e36d42",
+        "staging_apparatus_sha256": "47ce7998e212a9463ab657bbc0b121d4903ed886016bbf0fd3a2399c986da05d",
+        "frozen_commit": "a7952b59ae9df722eabf3beddc5c159bf4e9a01c",
+        "status": "FAIL: original lab202 rally corridor timeout",
+        "new_holdout_exposed": false,
+        "started_count": 8,
+        "unrun_episode_count": 49,
+        "evidence": "20261005_p3b5_rally_corridor_lab202_failed_candidate.json"
       }
     ],
     "actual_launch_start_geometry_check": {
@@ -521,6 +533,8 @@
       }
     },
     "battery_manager_content_sha256": "6eb5c3fb074175ec4b1be33b36970e8ebd4d4aae8f6b2d18619f2576d5e36d42",
-    "staging_apparatus_content_sha256": "47ce7998e212a9463ab657bbc0b121d4903ed886016bbf0fd3a2399c986da05d"
+    "staging_apparatus_content_sha256": "47ce7998e212a9463ab657bbc0b121d4903ed886016bbf0fd3a2399c986da05d",
+    "controller_source_commit": "9ac2fb7dc10193c93092efdcf17f198fcb7554a8",
+    "independent_development_evidence": "20261005_p3b5_postcharge_order_development.json"
   }
 }
