@@ -8,6 +8,126 @@ from geometry_msgs.msg import Transform
 from multi_robot_exploration import control
 
 
+@pytest.mark.parametrize('change', ['wall', 'connected', 'unknown', 'boundary', 'coarse', 'untracked'])
+def test_body_cell_filter_preserves_static_and_unobserved_constraints(change):
+    grid = np.zeros((30, 30), dtype=np.int16)
+    grid[15, 15] = 100
+    position = (.775, .775)
+    resolution = .05
+    if change == 'wall': grid[15, :] = 100
+    if change == 'connected': grid[16, 16] = 100
+    if change == 'unknown': grid[14, 15] = -1
+    if change == 'boundary': grid[0, 0] = 100; position = (.025, .025)
+    if change == 'coarse': resolution = .1; position = (1.55, 1.55)
+    if change == 'untracked': position = (.525, .525)
+    before = grid.copy()
+    planned, cells = control.planning_grid_without_self_returns(grid, resolution, (0., 0.), {'tb1': position})
+    assert not cells and np.array_equal(planned, before)
+    assert np.array_equal(grid, before)
+
+
+def test_isolated_self_return_does_not_release_a_peer_body():
+    grid = np.zeros((80, 80), dtype=np.int16)
+    grid[20, 20] = 100
+    planned, cells = control.planning_grid_without_self_returns(grid, .05, (0., 0.), {'tb1': (1.025, 1.025)})
+    assert cells == {'tb1': (20, 20)} and planned[20, 20] == 0 and grid[20, 20] == 100
+    blocked = control.block_dynamic_positions(control.traversable_grid(planned, .05), .05, (0., 0.), [(1.025, 1.025)])
+    assert not blocked[20, 20]
+    assert control.navigation_start_cell(grid, control.traversable_grid(grid, .05), (20, 20), 12) is None
+
+
+@pytest.mark.parametrize('stale', ['none', 'pose', 'frame', 'local_map', 'fused_map'])
+def test_planning_self_return_requires_existing_source_leases(stale):
+    from types import SimpleNamespace
+    grid = np.zeros((30, 30), dtype=np.int16); grid[15, 15] = 100
+    node = SimpleNamespace(
+        source_map_data=grid, map_data=grid, map_self_return_cells={}, frontier_cache=object(),
+        map_received_at=100. if stale != 'fused_map' else 94.9,
+        message_freshness_timeout_sec=5., enable_battery=False, resolution=.05, origin=(0., 0.),
+        robot_positions={'tb1': (.775, .775)}, robot_maps={'tb1': {}},
+        robot_odom_received_at={'tb1': 100. if stale != 'pose' else 97.9},
+        robot_tf_received_at={'tb1': 100. if stale != 'frame' else 97.9},
+        robot_map_received_at={'tb1': 100. if stale != 'local_map' else 94.9},
+        now=lambda: 100., input_robot_names=lambda: ['tb1'],
+    )
+    node.fresh_robot_poses=lambda: control.HeadquartersControl.fresh_robot_poses(node)
+    ready=control.HeadquartersControl.fresh_robot_inputs(node)
+    assert ready == (stale == 'none')
+    assert node.map_data[15, 15] == (0 if ready else 100)
+    assert grid[15, 15] == 100
+
+
+def test_found_survey_success_is_processed_before_final_poses_exist():
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+    from action_msgs.msg import GoalStatus
+    handle=object()
+    node=SimpleNamespace(survey_goal_handle=handle, survey_goal_started_at=1., survey_robot='tb1',
+        survey_cancel_requested=False, rally_final_targets={}, battery_modes={'tb1': 'ACTIVE'},
+        rally_probe_targets=set(), rally_probe_robot=None, survey_battery_preempted=False,
+        rally_prepare_started_at=1., now=lambda: 20., get_logger=lambda: Mock())
+    future=SimpleNamespace(result=lambda: SimpleNamespace(status=GoalStatus.STATUS_SUCCEEDED))
+    control.HeadquartersControl.survey_goal_result(node, handle, future)
+    assert node.rally_prepare_started_at == 20. and node.survey_goal_handle is None
+
+
+@pytest.mark.parametrize('pending', [False, True])
+def test_peer_local_return_cancels_accepted_or_pending_survey(pending):
+    import json
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+    handle=None if pending else Mock()
+    names=('tb1','tb2')
+    node=SimpleNamespace(battery_modes=dict.fromkeys(names,'ACTIVE'), battery_states={},
+        battery_state_received_at={}, goal_handles=dict.fromkeys(names), cancel_requested=dict.fromkeys(names,False),
+        battery_preempted={}, rally_goal_handles=dict.fromkeys(names), rally_battery_preempted={},
+        task_state='FOUND', global_battery_rally_pause=False, survey_robot='tb1', survey_goal_handle=handle,
+        survey_goal_pending=pending, survey_battery_preempted=False, survey_cancel_requested=False,
+        now=lambda: 100., get_logger=lambda: Mock())
+    control.HeadquartersControl.battery_state_callback(node, SimpleNamespace(data=json.dumps({'mode':'RETURNING','stamp_sec':100.})), 'tb2')
+    assert node.survey_cancel_requested and node.survey_battery_preempted
+    if handle is not None:handle.cancel_goal_async.assert_called_once()
+
+
+def test_pending_survey_late_acceptance_honors_peer_return_cancellation():
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+    handle=Mock(); handle.accepted=True
+    node=SimpleNamespace(survey_goal_pending=True, survey_goal_handle=None,
+        survey_robot='tb1', battery_modes={'tb1':'ACTIVE'}, survey_cancel_requested=True,
+        survey_battery_preempted=True, now=lambda: 100., survey_goal_result=Mock())
+    control.HeadquartersControl.survey_goal_response(node, SimpleNamespace(result=lambda: handle))
+    handle.cancel_goal_async.assert_called_once()
+    assert not node.survey_goal_pending and node.survey_goal_handle is handle
+
+
+@pytest.mark.parametrize('energy,reservation,admitted', [(40.,False,True),(9.,False,False),(40.,True,False)])
+def test_optional_survey_funds_safe_prefix_and_respects_live_reservation(energy,reservation,admitted):
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+    from builtin_interfaces.msg import Time
+    client=Mock();client.server_is_ready.return_value=True
+    grid=np.zeros((100,100),dtype=np.int16)
+    states={'tb1':{'energy':energy,'charge_x':1.,'charge_y':1.,'move_cost_per_m':1.,
+        'idle_cost_per_sec':.02,'return_path_factor':2.,'nominal_speed_mps':.18,'return_safety_margin':8.}}
+    route=tuple((2.,y/10) for y in range(70)) if reservation else ()
+    node=SimpleNamespace(fresh_robot_inputs=lambda: True, fresh_target=lambda: True,
+        map_data=grid, resolution=.1, origin=(0.,0.), robot_positions={'tb1':(1.,1.),'tb2':(8.,8.)},
+        battery_modes={'tb1':'ACTIVE','tb2':'ACTIVE'}, battery_states=states, rally_charge_requested={},
+        rally_leg_routes={'tb1':(),'tb2':route}, rally_goal_handles={'tb1':None,'tb2':object() if reservation else None},
+        rally_goal_pending={'tb1':False,'tb2':False}, survey_goal_handle=None, survey_goal_pending=False,
+        rally_position_tolerance=.35, num_robots=2, rally_max_retries=2, survey_attempts=0,
+        enable_battery=True, robot_nav_clients={'tb1':client}, record_navigation_decision=Mock(),
+        survey_goal_response=Mock(), get_clock=lambda: SimpleNamespace(now=lambda: SimpleNamespace(to_msg=lambda: Time(sec=100))))
+    node.exploration_battery_factor=lambda *a: control.HeadquartersControl.exploration_battery_factor(node,*a)
+    actual=control.HeadquartersControl.send_survey_goal(node,'tb1',control.RallyPose(7.,1.,0.))
+    assert actual is admitted
+    assert client.send_goal_async.called is admitted
+    if admitted:
+        goal=client.send_goal_async.call_args.args[0]
+        assert math.dist((goal.pose.pose.position.x,goal.pose.pose.position.y),(1.,1.)) <= 5.1
+
+
 @pytest.mark.parametrize("leg_yaw,success,arrived", [(0., True, False),
     (math.pi / 2, True, True), (math.pi / 2, False, False),
     (math.pi / 2 + 2 * math.pi, True, True)])
