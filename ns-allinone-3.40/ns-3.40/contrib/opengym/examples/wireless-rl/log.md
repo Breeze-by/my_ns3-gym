@@ -6518,3 +6518,17 @@ export PYTHONNOUSERSITE=1
 ```
 
 Independent originals, no formal backfill or counterfactual causal claim. Detector is Gazebo geometric visibility proxy, not image recognition. Native evaluator/physics only read-only evidence; native truth never enters mission control. Nominal serial energy/time/parking costs remain heuristics.
+
+## 2026-10-05 P3B.5 v79未暴露留出前瞻协议
+
+2026-10-05 P3B.5 v79前瞻正式协议：v78六个独立原始开发全部关闭并严格PASS后，按当前探索入站朝向controller源hash重冻未执行的809.world/seed809/fault28091。追加v72正式15started/42unrun、v74独立六格zero ideal晚发现和v76独立六格三项超时历史，不覆盖旧失败或回填。world/电池/评估器/受控返航准备装置字节、300s与原生.35/.05/.1/5s保持；仅controller元数据/未暴露历史更新。61配置检查1.53s、27case/41unique validate-only和源码旁路通过；正式初始协议matrix仍为原54格，尚待新提交执行。552组件/build7.33与六开发ledger/graph已有记录；首静态validate-only命令缺必填run-id退出2，未启动任务，原错误保留后补参数。正式57格仍须新clean pushed同提交先强制原生ideal、E0双格、受控实际返充及全部十fixed PASS，再首次809并运行其余原primary/safety；所有同批owner/观察器自然关闭后才写报告/改源。独立master/domain/CPU池之间宿主资源仍共享，不声称任务轨迹可逐步重演；开发时间差不作因果收益。报告report/20261005_p3b5_exploration_heading_holdout_protocol.json。这是前瞻协议，不是P3B.5完成；完整严格报告待运行，无ns3/RL。
+
+canonical ROS cwd；source Humble/install；PYTHONNOUSERSITE=1，rtk bash -lc；无新增任务原始：
+
+```bash
+/usr/bin/python3 /tmp/refreeze_p3b5_v79_protocol.py
+/usr/bin/python3 -m pytest -q scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py > /tmp/p3b5_v79_config_checks.log 2>&1
+/usr/bin/python3 scripts/run_p3b5_tasks.py --validate-only > /tmp/p3b5_v79_validate_only_missing_run_id.log 2>&1
+/usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v79_validation --ros-domain-base 50 --validate-only > /tmp/p3b5_v79_validate_only.log 2>&1
+/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v79_source_audit.log 2>&1
+```
