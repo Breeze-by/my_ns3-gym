@@ -1510,6 +1510,9 @@ def test_delivered_odom_violation_resets_hold_before_the_next_timer(angular, lin
     message.pose.pose.position.x = position
     control.HeadquartersControl.robot_odom_callback(node, message, "tb1")
     assert node.rally_hold_started_at is None
+    assert node.rally_last_hold_reset["reason"] == (
+        "delivered_position" if position else "delivered_velocity")
+    assert node.rally_last_hold_reset["source_time"] == 100.
     message.twist.twist.angular.z = message.twist.twist.linear.x = 0.
     message.pose.pose.position.x = 0.
     control.HeadquartersControl.robot_odom_callback(node, message, "tb1")
@@ -1575,6 +1578,7 @@ def test_parked_observer_corrects_heading_through_reserved_navigation(condition)
         reacquire_target_by_scanning=lambda: None, last_rally_dispatch_at=0., global_battery_rally_pause=False,
         rally_attempts=dict.fromkeys(names, 0), rally_recovery_requested=dict.fromkeys(names, False),
         rally_route_unavailable_since=dict.fromkeys(names), robot_positions=positions,
+        robot_velocities=dict.fromkeys(names, (0., 0.)),
         robot_yaws={'observer': measured}, target_observing_robot='unknown' if condition == 'non_observer' else 'observer',
         target_received_source_time={'recent_confirmation': 9., 'five_sec_confirmation': 5.,
                                      'missing_confirmation': None}.get(condition, 4.),

@@ -3872,8 +3872,39 @@ class HeadquartersControl(Node):
             self.rally_linear_tolerance,
             self.rally_angular_tolerance,
         )
+        pose_velocity_ready = stable if navigation_quiescent else None
         stable = (stable and self.active_batteries_ready() and not energy_unready
                   and (not self.enable_battery or self.rally_preflight_complete))
+        if not stable and self.rally_hold_started_at is not None:
+            self.rally_last_hold_reset = {
+                "reason": "timer_gate", "event_time": now,
+                "navigation_quiescent": navigation_quiescent,
+                "pose_velocity_ready": pose_velocity_ready,
+                "energy_unready": sorted(energy_unready),
+            }
+        diagnostic_publisher = getattr(self, "consumed_publisher", None)
+        if (diagnostic_publisher is not None and any(self.rally_arrived.values())
+                and now - getattr(self, "last_rally_hold_diagnostic_at", -float("inf")) >= 5.0):
+            self.last_rally_hold_diagnostic_at = now
+            diagnostic_publisher.publish(String(data=json.dumps({
+                "event": "coordinator_rally_hold_diagnostic", "event_time": now,
+                "stable": stable, "navigation_quiescent": navigation_quiescent,
+                "pose_velocity_ready": pose_velocity_ready,
+                "active_goals": sorted(name for name, handle in self.rally_goal_handles.items() if handle is not None),
+                "pending_goals": sorted(name for name, pending in self.rally_goal_pending.items() if pending),
+                "survey_active": self.survey_goal_handle is not None or self.survey_goal_pending,
+                "yield_targets": sorted(self.rally_yield_targets),
+                "probe_targets": sorted(self.rally_probe_targets),
+                "arrived": self.rally_arrived, "positions": self.robot_positions,
+                "velocities": self.robot_velocities, "battery_modes": self.battery_modes,
+                "preflight_complete": getattr(self, "rally_preflight_complete", False),
+                "energy_unready": sorted(energy_unready),
+                "charge_requested": sorted(getattr(self, "rally_charge_requested", {})),
+                "wait_budgets_sec": getattr(self, "rally_wait_budgets", {}),
+                "whole_route_budgets": getattr(self, "rally_charge_budgets", {}),
+                "hold_started_at": self.rally_hold_started_at,
+                "last_reset": getattr(self, "rally_last_hold_reset", None),
+            }, sort_keys=True)))
         if not stable:
             self.rally_hold_started_at = None
             return
@@ -4538,6 +4569,12 @@ class HeadquartersControl(Node):
                 and not all(math.isfinite(value) and value <= limit
                             for value, limit in zip(self.robot_velocities[robot_name],
                                 (self.rally_linear_tolerance, self.rally_angular_tolerance)))):
+            self.rally_last_hold_reset = {
+                "reason": "delivered_velocity", "robot": robot_name,
+                "source_time": self.robot_odom_received_at[robot_name],
+                "velocity": self.robot_velocities[robot_name],
+                "hold_started_at": self.rally_hold_started_at,
+            }
             self.rally_hold_started_at = None
         transform = self.map_to_odom[robot_name]
         if transform is None:
@@ -4555,6 +4592,12 @@ class HeadquartersControl(Node):
             target = self.rally_targets[robot_name]
             distance = math.dist(position, (target.x, target.y))
             if not math.isfinite(distance) or distance > self.rally_position_tolerance:
+                self.rally_last_hold_reset = {
+                    "reason": "delivered_position", "robot": robot_name,
+                    "source_time": self.robot_odom_received_at[robot_name],
+                    "distance_m": distance,
+                    "hold_started_at": self.rally_hold_started_at,
+                }
                 self.rally_hold_started_at = None
         last_position = self.goal_last_position[robot_name]
         if (
