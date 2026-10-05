@@ -6684,3 +6684,27 @@ colcon build --symlink-install --packages-select multi_robot_interfaces merge_ma
 /usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v81_source_audit.log 2>&1
 /usr/bin/python3 /tmp/check_p3b5_v81_control_equivalence.py
 ```
+
+## 2026-10-05 P3B.5 v82独立保持诊断
+
+2026-10-05 P3B.5 v82独立保持诊断PASS，冻结7d2a5310d6dff88fc58be9f92af0dd6b6f1412a1，02:21:04–02:27:20UTC原owner/观察器自然关闭；lab202原生COMPLETE202.6s/0charge/min19.72218/0碰撞，ledger/graph与实际master17950/domain24/CPU0–79关闭审核PASS。三机已到位、无pending/live/yield/probe、预充电完成/预算充足后，tb2交付角速度.15991/.20801重置5s保持；0.1–0.2s原生ModelStates旁录在相近源时间实测约.19–.21rad/s峰值，说明保持重置有实际运动依据。最终原生51样本5s/最大角速度.09084/最大位置误差.02775m、观察gap.1s，完成门限不改。未采集实际cmd_vel，停止后运动的控制/动力学原因尚未确定，也不能推断该独立成功任务证明了v80失败原因。报告report/20261005_p3b5_rally_hold_diagnostic_development.json/.md；后续只读采集Nav2原输入/输出再选择运动算法优化。原15/42失败不回填；809/28091仍未暴露，P3B.5正式57格未通过，无ns3/RL。
+
+canonical ROS cwd/source Humble/install/Gazebo；TURTLEBOT3_MODEL=waffle、PYTHONNOUSERSITE=1、ROS_LOG_DIR=log/ros_launch；master17950/domain24/CPU0–79，无其他任务取消、无retry。精确命令：
+
+```bash
+/usr/bin/python3 /tmp/prepare_p3b5_v82_hold_diagnosis.py
+/usr/bin/python3 /tmp/run_p3b5_v82_development.py > /tmp/p3b5_v82_owner.log 2>&1
+GAZEBO_MASTER_URI=http://127.0.0.1:17950 taskset -c 0-79 /usr/bin/python3 /tmp/p3b5_v82_dev_first_lab202.py
+ROS_DOMAIN_ID=24 /usr/bin/python3 /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py --world my_world.world --robot-count 3 --gazebo-seed 202 --goal-timeout 60.0 --startup-timeout 600.0 --message-timeout 90.0 --shutdown-timeout 60.0 --evaluation-duration 300.0 --coverage-threshold 0 --evaluation-wait-timeout 900.0 --target-detection --rally --rally-assignment-objective minimax --rally-max-concurrent 2 --battery --battery-capacity 100.0 --battery-initial-energy 40.0 --target-x -4.0 --target-y 4.0 --evaluation-output-dir /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3b5_v82_dev_fixed_lab202/episodes --log-dir /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3b5_v82_dev_fixed_lab202/launch_logs --episode-id p3b5_v82_dev_fixed_lab202_lab_far_northwest_3r_seed202 --bypass-audit-output /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3b5_v82_dev_fixed_lab202/graphs/p3b5_v82_dev_fixed_lab202_lab_far_northwest_3r_seed202.json --gateway-ledger-path /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3b5_v82_dev_fixed_lab202/episodes/p3b5_v82_dev_fixed_lab202_lab_far_northwest_3r_seed202_ledger.jsonl --disable-global-battery-rally-pause
+```
+
+First standalone audit omitted source install/setup.bash and failed with ModuleNotFoundError:multi_robot_exploration before any audit/mission mutation. Re-executed the read-only audit after sourcing Humble/install, PASS. Not a task retry.
+
+```bash
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+export PYTHONNOUSERSITE=1
+/usr/bin/python3 /tmp/audit_p3b5_v82_hold_diagnosis.py > /tmp/p3b5_v82_hold_diagnosis_audit.log 2>&1
+```
+
+The delivered velocity resets are corroborated by actual native post-arrival angular spikes near0.19–0.21rad/s after Nav2 actions finish. Native thresholds must remain unchanged. This independent original completed and cannot establish the cause of the earlier v80 failed run. Actual cmd_vel was not captured, so the cause of physical settling spikes remains unestablished; next capture the existing Nav2 input/output commands read-only before selecting a motion-control optimization.

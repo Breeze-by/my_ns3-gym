@@ -1,0 +1,5 @@
+# P3B.5独立保持诊断
+
+2026-10-05 P3B.5 v82独立保持诊断PASS，冻结7d2a5310d6dff88fc58be9f92af0dd6b6f1412a1，02:21:04–02:27:20UTC原owner/观察器自然关闭；lab202原生COMPLETE202.6s/0charge/min19.72218/0碰撞，ledger/graph与实际master17950/domain24/CPU0–79关闭审核PASS。三机已到位、无pending/live/yield/probe、预充电完成/预算充足后，tb2交付角速度.15991/.20801重置5s保持；0.1–0.2s原生ModelStates旁录在相近源时间实测约.19–.21rad/s峰值，说明保持重置有实际运动依据。最终原生51样本5s/最大角速度.09084/最大位置误差.02775m、观察gap.1s，完成门限不改。未采集实际cmd_vel，停止后运动的控制/动力学原因尚未确定，也不能推断该独立成功任务证明了v80失败原因。报告report/20261005_p3b5_rally_hold_diagnostic_development.json/.md；后续只读采集Nav2原输入/输出再选择运动算法优化。原15/42失败不回填；809/28091仍未暴露，P3B.5正式57格未通过，无ns3/RL。
+
+The delivered velocity resets are corroborated by actual native post-arrival angular spikes near0.19–0.21rad/s after Nav2 actions finish. Native thresholds must remain unchanged. This independent original completed and cannot establish the cause of the earlier v80 failed run. Actual cmd_vel was not captured, so the cause of physical settling spikes remains unestablished; next capture the existing Nav2 input/output commands read-only before selecting a motion-control optimization.
