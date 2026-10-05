@@ -6729,3 +6729,17 @@ ROS_DOMAIN_ID=23 GAZEBO_MASTER_URI=http://127.0.0.1:18050 taskset -c 0-79 /usr/b
 Three runtime controller_server use_sim_time values are true while all three velocity_smoother values are false; the smoother has no YAML parameter section. This is a confirmed configuration inconsistency. The original task detected late and timed out; last observed commands are zero before post-arrival native angular spikes, so nonzero command replay is not established as the settling cause. Keep strict native criteria and physics unchanged. Supplemental capture is partial and apparatus failures remain FAIL.
 
 [Humble源码](https://api.nav2.org/nav2-humble/html/velocity__smoother_8cpp_source.html)：Humble uses a wall timer for smoothing callbacks; velocity command timeout uses the node clock via now(). Setting use_sim_time fixes timeout clock consistency, not the wall callback timer or a demonstrated physical-spike cause.
+
+## 2026-10-05 P3B.5 v84 Nav2平滑器时钟组件
+
+2026-10-05 P3B.5 v84 Nav2平滑器时钟组件：四份机器人Nav2 YAML新增velocity_smoother.ros__parameters.use_sim_time=true，launch原RewrittenYaml仍可随use_sim_time覆盖；修复v83实际三机参数确认的controller sim/smoother wall时钟不一致。语义比对确认每份YAML只新增该时钟键；20Hz/OPEN_LOOP/速度/加减速/1s超时数值默认、RPP/angular.7/accel3.2、Nav2.02/.25、Gazebo物理参数均不改。Humble平滑回调仍wall timer，变更统一的是命令超时节点时钟，不宣称改变了回调时基或解决物理峰值因果。现有四参数配置/身体/RPP测试加入时钟一致性，552组件16.26s、四包build5.23s/source3r0旁路PASS。controller/battery/evaluator/strict checker/staging/manifest/809world/SDF字节不变，300s/.35/.05/.1/5s不放宽。原v83任务超时与三次测量失败已0a1d00e归档，未重启/回填；组件报告report/20261005_p3b5_velocity_smoother_clock_component.json。下一六格独立开发将查询实际clock配置并保留所有原始结果，随后新冻结正式57格；809/28091仍未暴露，P3B.5未完成，无ns3/RL。
+
+canonical ROS cwd/source Humble/install，PYTHONNOUSERSITE=1；test ROS_LOG_DIR=log/component_checks；rtk bash -lc：
+
+```bash
+/usr/bin/python3 -m pytest -q --tb=short --tb=short src/multi_robot_exploration/test/test_control.py src/multi_robot_exploration/test/test_exploration_resume.py src/multi_robot_exploration/test/test_exploration_charging.py src/multi_robot_exploration/test/test_return_progress.py src/multi_robot_exploration/test/test_rally_observer_parking.py src/multi_robot_exploration/test/test_battery_manager.py src/multi_robot_exploration/test/test_gateway.py src/multi_robot_exploration/test/test_fault_model.py src/multi_robot_exploration/test/test_navigation_faults.py src/multi_robot_exploration/test/test_task_evaluator.py src/multi_robot_exploration/test/test_nav2_ready_gate.py src/multi_robot_exploration/test/test_readiness.py src/multi_robot_exploration/test/test_spawn_entity_checked.py src/multi_robot_exploration/test/test_tf_ingress_sampler.py src/multi_robot_exploration/test/test_target_detector.py src/merge_map/test/test_merge_map.py scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py scripts/test_ros_smoke_native_probe.py scripts/test_observer_lifetime.py > /tmp/p3b5_v84_component_checks.log 2>&1
+colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot > /tmp/p3b5_v84_build.log 2>&1
+/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v84_source_audit.log 2>&1
+```
+
+[Humble官方源码](https://api.nav2.org/nav2-humble/html/velocity__smoother_8cpp_source.html)用于核实wall timer与now()超时时基，未复制/改写外部Nav2库。

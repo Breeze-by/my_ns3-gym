@@ -561,3 +561,8 @@ ekf_filter_node:
                                       0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,     1e-9,   0.0,    0.0,
                                       0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,     0.0,    1e-9,   0.0,
                                       0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,     0.0,    0.0,    1e-9]
+
+# Match Nav2 command-expiry checks to the Gazebo simulation clock.
+velocity_smoother:
+  ros__parameters:
+    use_sim_time: True

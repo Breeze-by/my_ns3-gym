@@ -1799,6 +1799,9 @@ def test_navigation_footprint_covers_gazebo_body_and_rpp_cost_scale():
     )
     for index in range(1, 5):
         config = yaml.safe_load((src / f"multi_robot/params/nav2_params_tb{index}_0.yaml").read_text())
+        # An omitted section silently uses wall time in the velocity smoother.
+        assert config["velocity_smoother"]["ros__parameters"]["use_sim_time"] is True
+        assert config["controller_server"]["ros__parameters"]["use_sim_time"] is True
         local = config["local_costmap"]["local_costmap"]["ros__parameters"]
         global_map = config["global_costmap"]["global_costmap"]["ros__parameters"]
         assert local["robot_radius"] >= required_radius
