@@ -6790,3 +6790,15 @@ export PYTHONNOUSERSITE=1
 lab101 six original parameter responses are true; lab202 retains only five true responses, missing /tb3/controller_server. No sixth response is inferred. The original frozen archive checker is unchanged; a new post-closure read-only checker records this as an apparatus failure while retaining all six task outcomes.
 
 Independent originals, no formal backfill or counterfactual causal claim. Detector is Gazebo geometric visibility proxy, not image recognition. Native evaluator/physics only read-only evidence; native truth never enters mission control. Nominal serial energy/time/parking costs remain heuristics.
+
+## 2026-10-05 P3B.5 v87地图更新余量组件
+
+2026-10-05 P3B.5 v87地图更新余量组件：实际in-repo slam_toolbox overlay的map_update_interval从5.0缩短至2.0s；原publish loop rclcpp::Rate仍为Humble host system_clock，地图header仍最新实际scan源时间。个人/融合地图源TTL5s、pose/TF2s、电池5s及过期拒绝不变，不用重复发布时刻续租。现有规划源租约回归改用一个真实producer周期加TF偏移后的地图源龄，正常帧可用、过期map仍拒绝；552检查18.30s、含slam_toolbox的五包build6.17s、source3r0旁路PASS。YAML语义只改生成周期，SLAM C++、controller/battery/evaluator/strict checker/staging/四Nav2配置/manifest/809world/模型字节不变。地图计算和消息负载增加，所有ideal/fault需同新冻结栈；2s为wall标称而非最大sim源龄保证，需新独立开发实测，不宣称修复已带来任务成功或单因素耗时收益。v85六原始FAIL与测量缺响应已d17f97a完整归档；809/28091仍未暴露，正式57格待执行，P3B.5尚未完成，无ns3/WiFi/RL。组件报告report/20261005_p3b5_map_publication_margin_component.json。
+
+canonical ROS cwd，source /opt/ros/humble/setup.bash 和 install/setup.bash；PYTHONNOUSERSITE=1，组件ROS_LOG_DIR=log/ros_launch。552 checks/build/source audit均exit0并reaped：
+
+```bash
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_control.py src/multi_robot_exploration/test/test_exploration_resume.py src/multi_robot_exploration/test/test_exploration_charging.py src/multi_robot_exploration/test/test_return_progress.py src/multi_robot_exploration/test/test_rally_observer_parking.py src/multi_robot_exploration/test/test_battery_manager.py src/multi_robot_exploration/test/test_gateway.py src/multi_robot_exploration/test/test_fault_model.py src/multi_robot_exploration/test/test_navigation_faults.py src/multi_robot_exploration/test/test_task_evaluator.py src/multi_robot_exploration/test/test_nav2_ready_gate.py src/multi_robot_exploration/test/test_readiness.py src/multi_robot_exploration/test/test_spawn_entity_checked.py src/multi_robot_exploration/test/test_tf_ingress_sampler.py src/multi_robot_exploration/test/test_target_detector.py src/merge_map/test/test_merge_map.py scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py scripts/test_ros_smoke_native_probe.py scripts/test_observer_lifetime.py > /tmp/p3b5_v87_component_checks.log 2>&1
+colcon build --symlink-install --packages-select slam_toolbox multi_robot_interfaces merge_map multi_robot_exploration multi_robot > /tmp/p3b5_v87_build.log 2>&1
+/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v87_source_audit.log 2>&1
+```

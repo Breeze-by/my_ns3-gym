@@ -38,7 +38,14 @@ def test_isolated_self_return_does_not_release_a_peer_body():
 
 @pytest.mark.parametrize('stale', ['none', 'pose', 'frame', 'local_map', 'fused_map'])
 def test_planning_self_return_requires_existing_source_leases(stale):
+    from pathlib import Path
     from types import SimpleNamespace
+    import yaml
+    config = yaml.safe_load((Path(__file__).resolve().parents[2]
+        / 'slam_toolbox/config/mapper_params_online_multi_async.yaml').read_text())
+    params = config['$(var namespace)/slam_toolbox']['ros__parameters']
+    # A full producer period plus the scan/TF offset must still fit the lease.
+    map_age = params['map_update_interval'] + params['transform_timeout']
     grid = np.zeros((30, 30), dtype=np.int16); grid[15, 15] = 100
     node = SimpleNamespace(
         source_map_data=grid, map_data=grid, map_self_return_cells={}, frontier_cache=object(),
@@ -47,7 +54,7 @@ def test_planning_self_return_requires_existing_source_leases(stale):
         robot_positions={'tb1': (.775, .775)}, robot_maps={'tb1': {}},
         robot_odom_received_at={'tb1': 100. if stale != 'pose' else 97.9},
         robot_tf_received_at={'tb1': 100. if stale != 'frame' else 97.9},
-        robot_map_received_at={'tb1': 100. if stale != 'local_map' else 94.9},
+        robot_map_received_at={'tb1': 100. - map_age if stale != 'local_map' else 94.9},
         now=lambda: 100., input_robot_names=lambda: ['tb1'],
     )
     node.fresh_robot_poses=lambda: control.HeadquartersControl.fresh_robot_poses(node)
