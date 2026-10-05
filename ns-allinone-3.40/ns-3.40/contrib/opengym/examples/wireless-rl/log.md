@@ -6595,3 +6595,16 @@ PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python /tmp/documen
 ```
 
 All ten raw fixed tasks pass strict native completion. The unchanged aggregator rejected only cpu_affinity equality. Preserve this original failed candidate; no post-hoc normalization or resuming/backfilling its41 unrun cells. New prospective full57 cohort uses identical fixed CPU affinity. Task core source bytes and thresholds remain unchanged.
+
+## 2026-10-05 P3B.5 v80未暴露留出前瞻协议
+
+2026-10-05 P3B.5 v80前瞻正式协议：v79全部16原始任务/观察器自然关闭并归档ef24835后，保持controller/battery/evaluator/staging/world字节，重新预声明尚未执行的809.world/seed809/fault28091。v79十个固定任务全部原生COMPLETE，但strict same_candidate因预声明CPU0–19/20–39/40–59不同拒绝environment相等；原manifest不改，16started/41unrun与错误完整保留，不回填。新批全部十fixed及其观察器统一CPU0–79，独立world可在相同scheduler池并行，同world seeds串行；首次任务前AST解析实际helper计划并核验全部固定CPU相等、实际进程继承相同亲和性，原严格environment比较不改。初始/主故障池仍按0–19/20–39/40–59/60–79分区并用独立domain/master；所有池共享宿主资源/SMT，不宣称跨批耗时差为因果收益。61配置检查1.49s、27case/41unique validate-only和source3r旁路通过；552组件16.43s/四包7.33s及v78六开发PASS源仍相同。正式57格须新clean pushed同提交先强制原生ideal、E0双格、受控实际返充与十fixed全PASS，再首次809和其余primary/safety；原300s/.35/.05/.1/5s、源TTL、实际机体净空、能量与故障强度不变。报告report/20261005_p3b5_fixed_affinity_holdout_protocol.json。这是前瞻协议，完整P3B.5尚未通过，无ns3/WiFi/RL。
+
+canonical ROS cwd；source Humble/install；PYTHONNOUSERSITE=1，rtk bash -lc；无新增任务原始；固定任务正式入口继续run_p2d_baseline.py，十格统一taskset -c0-79；没有改launch默认参数：
+
+```bash
+/usr/bin/python3 /tmp/refreeze_p3b5_v80_protocol.py
+/usr/bin/python3 -m pytest -q scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py > /tmp/p3b5_v80_config_checks.log 2>&1
+/usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v80_validation --ros-domain-base 50 --validate-only > /tmp/p3b5_v80_validate_only.log 2>&1
+/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v80_source_audit.log 2>&1
+```
