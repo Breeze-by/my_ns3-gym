@@ -4127,10 +4127,12 @@ class HeadquartersControl(Node):
         heading = math.atan2(self.target[1] - position[1], self.target[0] - position[0])
         if (abs(math.atan2(math.sin(heading - yaw), math.cos(heading - yaw)))
                 <= getattr(self, "target_view_fov_rad", math.pi / 2) / 4
-                or not rally_target_view(self.map_data, self.resolution, self.origin,
-                    position, self.target,
-                    getattr(self, "target_view_distance", 3.) - self.rally_position_tolerance)):
+                or math.dist(position, self.target)
+                    > getattr(self, "target_view_distance", 3.) - self.rally_position_tolerance):
             return False
+        # Turning in a known-safe current cell does not require a translated
+        # path to the target. Unknown target LOS is not permission to move;
+        # only a subsequent real delivered detection can restore observation.
         return HeadquartersControl.send_survey_goal(
             self, name, RallyPose(*position, heading), heading_only=True)
 
@@ -4232,6 +4234,15 @@ class HeadquartersControl(Node):
                 return False
         pose = rally_observation_heading(plan[0], getattr(self, "target", None), self.map_data,
             self.resolution, self.origin, getattr(self, "target_view_distance", 3.))
+        if (robot_name == getattr(self, "target_observing_robot", None)
+                and self.target is not None
+                and math.dist((pose.x, pose.y), self.target)
+                    <= getattr(self, "target_view_distance", 3.) - NAVIGATION_POSITION_TOLERANCE_M):
+            # The known-free surveyed endpoint remains unchanged, including
+            # all reservations. Aim at its valid confirmation even when fused
+            # map LOS is still unknown; do not claim that it is visible.
+            pose = RallyPose(pose.x, pose.y,
+                math.atan2(self.target[1] - pose.y, self.target[0] - pose.x))
         allowed_attempts = self.num_robots * (1 + self.rally_max_retries)
         if self.survey_attempts >= allowed_attempts:
             self.fail_task(
@@ -5023,7 +5034,7 @@ class HeadquartersControl(Node):
             self.goal_targets[robot_name] = assignment
             self.goal_routes[robot_name] = routes[robot_name]
             self.goal_initial_gain[robot_name] = self.target_information_gain(
-                assignment.navigation_x, assignment.navigation_y
+                assignment.x, assignment.y
             )
             self.get_logger().info(
                 f"Assigned {robot_name} to group "
@@ -5256,13 +5267,13 @@ class HeadquartersControl(Node):
         for robot_name, goal_handle in self.goal_handles.items():
             started_at = self.goal_started_at[robot_name]
             last_progress = self.goal_last_progress_at[robot_name]
-            if goal_handle is None or started_at is None:
+            if goal_handle is None or started_at is None or self.cancel_requested[robot_name]:
                 continue
             timed_out = now - started_at >= self.goal_timeout_sec
             assignment = self.goal_targets[robot_name]
             remaining_gain = (
                 self.target_information_gain(
-                    assignment.navigation_x, assignment.navigation_y
+                    assignment.x, assignment.y
                 )
                 if assignment is not None and self.fresh_robot_inputs()
                 else 0
@@ -5272,8 +5283,11 @@ class HeadquartersControl(Node):
                 remaining_gain,
                 now - started_at,
             ) and (
-                last_progress is not None
-                and now - last_progress >= NO_PROGRESS_SEC
+                assignment is not None
+                and self.robot_positions[robot_name] is not None
+                and math.dist(self.robot_positions[robot_name],
+                    (assignment.navigation_x, assignment.navigation_y)) > USEFUL_TRAVEL_M
+                and HeadquartersControl.has_funded_frontier_alternative(self, robot_name, assignment)
             )
             stalled = (
                 last_progress is not None
@@ -5296,6 +5310,43 @@ class HeadquartersControl(Node):
             )
             self.cancel_requested[robot_name] = True
             goal_handle.cancel_goal_async()
+
+    def has_funded_frontier_alternative(self, robot_name, current):
+        """Do not abandon a disappearing frontier without useful current work."""
+        if (getattr(self, "target_search_active", False)
+                or not self.fresh_robot_inputs()
+                or self.battery_modes[robot_name] != "ACTIVE"
+                or any(mode == "RETURNING" for mode in self.battery_modes.values())):
+            return False  # A camera-search waypoint can remain useful after mapping.
+        if self.frontier_cache is None:
+            self.frontier_cache = prepare_frontier_data(self.map_data, self.resolution)
+        options, _ = robot_candidate_assignments(
+            self.map_data, self.resolution, self.origin, robot_name,
+            self.robot_positions[robot_name], frontier_data=self.frontier_cache,
+            blocked_positions=[p for name, p in self.robot_positions.items()
+                if name != robot_name and p is not None])
+        blocked = [p for name, p in self.robot_positions.items()
+                   if name != robot_name and p is not None]
+        reservations = [remaining_rally_route(route, self.robot_positions[name])
+            for name, route in self.goal_routes.items() if name != robot_name
+            and self.robot_states[name] == "active" and route]
+        cache = {}
+        for _, _, _, a in sorted(options, key=lambda row: -row[0]):
+            if (a.viewpoint.information_gain <= MIN_REMAINING_GAIN
+                    or a.path_distance_m < USEFUL_TRAVEL_M
+                    or math.dist((a.x, a.y), (current.x, current.y)) < MIN_TARGET_SEPARATION_M
+                    or self.exploration_battery_factor(robot_name, a.path_distance_m, (a.x, a.y)) != 1.):
+                continue
+            plan = plan_rally_leg(RallyPose(a.x, a.y, 0.), self.map_data,
+                self.resolution, self.origin, self.robot_positions[robot_name], MAX_NAVIGATION_LEG_M,
+                blocked_positions=blocked, clearance_m=PATH_CLEARANCE_M,
+                visible_only=True, route_cache=cache)
+            admitted = reserve_rally_prefix(plan, reservations)
+            if (admitted is not None
+                    and math.dist(self.robot_positions[robot_name],
+                        (admitted[0].x, admitted[0].y)) >= USEFUL_TRAVEL_M):
+                return True
+        return False
 
     def check_exploration_completion(self):
         now = time.monotonic()

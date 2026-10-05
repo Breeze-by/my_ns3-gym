@@ -6961,3 +6961,17 @@ ROS_DOMAIN_ID=28 GAZEBO_MASTER_URI=http://127.0.0.1:18853 /usr/bin/python3 /home
 ```bash
 /usr/bin/python3 /tmp/audit_p3b5_v94_retained_development.py > /tmp/p3b5_v94_retained_development_audit.log 2>&1
 ```
+
+## 2026-10-05 P3B.5 v96新鲜前沿收益重规划组件
+
+2026-10-05 P3B.5 v96组件PASS、尚非集成验收：v94六原始全部自然关闭并FAIL归档后，修复探索前沿过期重规划：原“stale”分支要求20s无进展，正常时钟/进展更新下被原stalled条件覆盖；旧收益取中间航点也不代表最终观察点。现在只在源新鲜、原3s成熟/收益门槛、距航点>.75m，且另有空间分离/实际机体/在途预约/已知可见有效前缀/完整去返预算均合格的前沿时取消旧腿，待旧结果才正常重分配；预算不足/近到达/摄像重搜/本地RETURNING/已取消均保留原行为。观测者可在当前已知.35净空且.6机体安全的位置对准未过期检测，即使融合目标LOS尚未知；调查端点/原路线预约不改，只改变范围内观测者朝向，不授权走入未知或宣称可见。v94旁录lab101首次无遮挡样本187.9s、确认188.1s，证据支持物理接近偏晚；zero fault安全驻点/目标LOS未知/yaw出FOV条件回放只读取证不当原buffer或反事实成功。聚焦323PASS13.43s，最终585PASS16.27s、四包5.32s、3r源码零旁路；其它控制函数AST/严格checker/电池/evaluator/准备夹具/world/model/参数hash不变。详见report/20261005_p3b5_fresh_frontier_replan_component.json。无原生控制输入、门槛/TTL/时限/次数放宽；809/28091仍未执行；新独立六格及同提交正式57格待通过，P3B.5未完成，无ns3/RL。
+
+ROS canonical cwd，rtk bash -lc/source Humble/install/PYTHONNOUSERSITE=1；实际命令：
+
+```bash
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_control.py src/multi_robot_exploration/test/test_rally_observation_recovery.py src/multi_robot_exploration/test/test_frontier_replanning.py src/multi_robot_exploration/test/test_exploration_resume.py src/multi_robot_exploration/test/test_exploration_charging.py src/multi_robot_exploration/test/test_return_progress.py src/multi_robot_exploration/test/test_rally_observer_parking.py src/multi_robot_exploration/test/test_battery_manager.py src/multi_robot_exploration/test/test_gateway.py src/multi_robot_exploration/test/test_fault_model.py src/multi_robot_exploration/test/test_navigation_faults.py src/multi_robot_exploration/test/test_task_evaluator.py src/multi_robot_exploration/test/test_nav2_ready_gate.py src/multi_robot_exploration/test/test_readiness.py src/multi_robot_exploration/test/test_spawn_entity_checked.py src/multi_robot_exploration/test/test_tf_ingress_sampler.py src/multi_robot_exploration/test/test_target_detector.py src/merge_map/test/test_merge_map.py scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py scripts/test_ros_smoke_native_probe.py scripts/test_observer_lifetime.py > /tmp/p3b5_v96_component_checks.log 2>&1
+colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot > /tmp/p3b5_v96_build.log 2>&1
+/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v96_source_audit.log 2>&1
+/usr/bin/python3 /tmp/diagnose_p3b5_v94_camera_geometry.py > /tmp/p3b5_v94_camera_geometry.log 2>&1
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_frontier_replanning.py src/multi_robot_exploration/test/test_rally_observation_recovery.py src/multi_robot_exploration/test/test_control.py > /tmp/p3b5_v96_focused_checks.log 2>&1
+```

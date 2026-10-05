@@ -30,6 +30,7 @@ def observer_node():
         robot_nav_clients={'tb1':client},record_navigation_decision=Mock(),survey_goal_response=Mock(),
         get_clock=lambda:SimpleNamespace(now=lambda:SimpleNamespace(to_msg=lambda:Time(sec=100))),
         fail_task=Mock(),rally_charge_budgets={'tb1':99.})
+    node.exploration_battery_factor=lambda *args:control.HeadquartersControl.exploration_battery_factor(node,*args)
     return node,client
 
 
@@ -38,6 +39,7 @@ def observer_node():
     ('stale_map',False),('returning_peer',False),('own_charge_admitted',False),
     ('live_frontier',False),('pending_rally',False),('low_energy',False),
     ('unknown',False),('static_wall',False),('peer_body',False),('live_route',False),('no_slot',False),
+    ('unknown_target_los',True),
 ])
 def test_waiting_observer_turn_funds_own_return_and_obeys_admission(condition,admitted):
     node,client=observer_node()
@@ -51,6 +53,7 @@ def test_waiting_observer_turn_funds_own_return_and_obeys_admission(condition,ad
     if condition=='pending_rally':node.rally_goal_pending['tb1']=True
     if condition=='low_energy':node.battery_states['tb1']['energy']=9.
     if condition=='unknown':node.map_data[20,20]=-1
+    if condition=='unknown_target_los':node.map_data[38,20]=-1
     if condition=='static_wall':node.map_data[20,22]=100
     if condition=='peer_body':node.robot_positions['tb2']=(2.45,2.05)
     if condition=='no_slot':node.rally_max_concurrent=1;node.rally_goal_pending['tb2']=True
@@ -65,6 +68,19 @@ def test_waiting_observer_turn_funds_own_return_and_obeys_admission(condition,ad
             1-2*goal.pose.orientation.z**2)==pytest.approx(math.pi/2)
         assert node.record_navigation_decision.call_args.args[1]=='target_observation_heading'
         assert node.survey_heading_only and node.rally_charge_budgets['tb1']==99.
+        if condition=='unknown_target_los':assert node.map_data[38,20]==-1
+
+
+def test_observer_survey_faces_confirmation_without_moving_into_unknown_los():
+    node,client=observer_node();node.map_data[38:42,20:28]=-1
+    pose=control.RallyPose(3.05,2.05,0.)
+    assert not control.rally_target_view(node.map_data,.1,(0.,0.),(pose.x,pose.y),node.target,3.)
+    assert control.HeadquartersControl.send_survey_goal(node,'tb1',pose)
+    goal=client.send_goal_async.call_args.args[0].pose
+    assert (goal.pose.position.x,goal.pose.position.y)==pytest.approx((3.05,2.05))
+    q=goal.pose.orientation
+    assert math.atan2(2*q.w*q.z,1-2*q.z*q.z)==pytest.approx(math.atan2(2.,-1.))
+    assert np.all(node.map_data[38:42,20:28]==-1)
 
 
 def test_heading_success_does_not_claim_map_survey_progress_or_final_arrival():

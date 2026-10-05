@@ -1,0 +1,452 @@
+{
+  "status": "COMPONENT_PASS",
+  "created_at_utc": "2026-10-05T04:42:37.484218+00:00",
+  "parent_commit": "1e553ddba25c324caae98a04930e330495e49aad",
+  "policy": "Evaluate disappearing final-frontier gain, not the already-traversed staged waypoint. During fresh-input progress and beyond useful arrival distance, cancel only if another spatially distinct meaningful frontier has a body-safe reachable known-free visible prefix outside accepted peer routes and its complete trip/return budget is funded. Keep existing retry/timeout, camera reacquisition, near-arrival and local return behavior; drain original accepted action before normal assignment. Avoid recalculating after cancellation requested. A waiting observer can aim a valid delivered confirmation in place even when fused target LOS remains unknown, while current cell/clearance/peer/route/return/concurrency/energy checks remain. Surveyed safe endpoint unchanged; observer faces confirmation within range without inventing LOS or renewing source timestamp.",
+  "changed_functions": [
+    "HeadquartersControl.assign_idle_robots",
+    "HeadquartersControl.cancel_stalled_goals",
+    "HeadquartersControl.restore_observer_heading",
+    "HeadquartersControl.send_survey_goal"
+  ],
+  "added_functions": [
+    "HeadquartersControl.has_funded_frontier_alternative"
+  ],
+  "other_controller_functions_ast_identical": true,
+  "source_sha256": {
+    "src/multi_robot_exploration/multi_robot_exploration/control.py": "d04f17fa20f0063ccfbc20ab25254bd1a532bf60b067b063c55bff3335c62298"
+  },
+  "unchanged_sha256": {
+    "src/multi_robot_exploration/multi_robot_exploration/battery_manager.py": "6eb5c3fb074175ec4b1be33b36970e8ebd4d4aae8f6b2d18619f2576d5e36d42",
+    "src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py": "bac6822d1c803ba1fdd9784d774d37b05f8701b4da7a8ea477dde69189d57630",
+    "scripts/check_p3b5_gate.py": "783776e3c66da7bfc71dff321c69c3dc5e7b2ea1a878f47dd37c29c35a6210a6",
+    "scripts/stage_p3b5_return_probe.py": "47ce7998e212a9463ab657bbc0b121d4903ed886016bbf0fd3a2399c986da05d",
+    "scripts/p3b5_fault_manifest.json": "0bbe4f1b888eb73b1235f91e7bdea5caab4d9d71ceb586c0de46119342b0754e",
+    "src/multi_robot/worlds/p3b5_holdout809.world": "2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd",
+    "src/multi_robot/models/turtlebot3_waffle/model.sdf": "0b4d22f768566c2497b9ec725dc36219a7c65066426703348ad5cc217e415b46",
+    "src/multi_robot/params/nav2_params_tb1_0.yaml": "bec6e3965f9f60efc6756675677e5d89fe8b526a252cbe91c34805fbb415feb1",
+    "src/multi_robot/params/nav2_params_tb2_0.yaml": "e451d08f764617b7b2bbbbb8b35c1c008afb267b98a11dc431a49fb3489c55f8",
+    "src/multi_robot/params/nav2_params_tb3_0.yaml": "d1000fa2d6457a5acf972426e971a7abde71a418d3d34f22d8de29b05a9fe06c",
+    "src/multi_robot/params/nav2_params_tb4_0.yaml": "122b864aa3962ae0291ba87e67a3adb02de10fd8316311d4a82dd30b1f1ba306",
+    "src/multi_robot/params/nav2_params_tb5_0.yaml": "22b03aff9d39c141a130162cc44046eb9bbe10e7bbc69c521c31db58383758f2",
+    "src/multi_robot/params/nav2_params_tb6_0.yaml": "c736f2648ace3eba24bb5216ecf1e322de858dedbcc9cdf31f51cfe6689a4205",
+    "src/slam_toolbox/config/mapper_params_online_multi_async.yaml": "d5d73fbe7f184528c9817492e696ad13ab1e2e1400020ee690f973818aad3c45",
+    "src/slam_toolbox/src/slam_toolbox_multirobot.cpp": "236dc8ba3a47e802e3784e01864b21da7be09bdaafa5c1d4d6b0a3f2495d6de7",
+    "src/slam_toolbox/src/slam_toolbox_common.cpp": "64129edefd94ec32b0799f5de60cd310c22686db360221a9df3f13648ab1b774"
+  },
+  "commands": [
+    "/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_control.py src/multi_robot_exploration/test/test_rally_observation_recovery.py src/multi_robot_exploration/test/test_frontier_replanning.py src/multi_robot_exploration/test/test_exploration_resume.py src/multi_robot_exploration/test/test_exploration_charging.py src/multi_robot_exploration/test/test_return_progress.py src/multi_robot_exploration/test/test_rally_observer_parking.py src/multi_robot_exploration/test/test_battery_manager.py src/multi_robot_exploration/test/test_gateway.py src/multi_robot_exploration/test/test_fault_model.py src/multi_robot_exploration/test/test_navigation_faults.py src/multi_robot_exploration/test/test_task_evaluator.py src/multi_robot_exploration/test/test_nav2_ready_gate.py src/multi_robot_exploration/test/test_readiness.py src/multi_robot_exploration/test/test_spawn_entity_checked.py src/multi_robot_exploration/test/test_tf_ingress_sampler.py src/multi_robot_exploration/test/test_target_detector.py src/merge_map/test/test_merge_map.py scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py scripts/test_ros_smoke_native_probe.py scripts/test_observer_lifetime.py > /tmp/p3b5_v96_component_checks.log 2>&1",
+    "colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot > /tmp/p3b5_v96_build.log 2>&1",
+    "/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v96_source_audit.log 2>&1"
+  ],
+  "records": {
+    "/tmp/p3b5_v96_focused_checks.log": {
+      "sha256": "37019e10f5c98fcfa4b6f87125be36e1f05e0ae3bb92d5e8a926c0296218d56d",
+      "text": "........................................................................ [ 22%]\n........................................................................ [ 44%]\n........................................................................ [ 66%]\n........................................................................ [ 89%]\n...................................                                      [100%]\n323 passed in 13.43s\n"
+    },
+    "/tmp/p3b5_v96_component_checks.log": {
+      "sha256": "cbabfbd153c6805ec8882d74f9b7bc1a8dc557fe36166393e6c5ccdfbd14c343",
+      "text": "........................................................................ [ 12%]\n........................................................................ [ 24%]\n........................................................................ [ 36%]\n........................................................................ [ 49%]\n........................................................................ [ 61%]\n........................................................................ [ 73%]\n........................................................................ [ 86%]\n........................................................................ [ 98%]\n.........                                                                [100%]\n585 passed in 16.27s\n"
+    },
+    "/tmp/p3b5_v96_build.log": {
+      "sha256": "8a4ce16dd36fdafd2669308540119b6f0ff296cb5249ba187e28b35e87518fcc",
+      "text": "Starting >>> multi_robot_interfaces\nFinished <<< multi_robot_interfaces [1.15s]\nStarting >>> merge_map\nStarting >>> multi_robot_exploration\nFinished <<< multi_robot_exploration [3.14s]\nFinished <<< merge_map [3.17s]\nStarting >>> multi_robot\nFinished <<< multi_robot [0.31s]\n\nSummary: 4 packages finished [5.32s]\n"
+    },
+    "/tmp/p3b5_v96_source_audit.log": {
+      "sha256": "b74fbe0283ffd47aa24b206b9f79613c2c81c731bbe8105dbfe968005604e47c",
+      "text": "{\n  \"graph_output\": null,\n  \"manifest\": \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot_exploration/share/multi_robot_exploration/config/p3a_forbidden_bypasses.json\",\n  \"pass\": true,\n  \"robot_count\": 3,\n  \"violations\": []\n}\n"
+    },
+    "/tmp/diagnose_p3b5_v94_camera_geometry.py": {
+      "sha256": "82986c847674910cf29b46dbc2bd06023758a2a53636b59242b9d6e025693f17",
+      "text": "import hashlib,json,math\nfrom pathlib import Path\nimport numpy as np\nfrom multi_robot_exploration import control as c\nfrom multi_robot_exploration.task_evaluator import load_truth_grid\nfrom multi_robot_exploration.target_detector import target_visible,line_of_sight_clear\n\nROOT=Path('/home/zhuyulab/ns3-workspace');ROS=ROOT/'ros2_ws/ros2-multi-robot-automap'\nout=dict(scope='Read-only retained original geometry, not original controller buffers or causal replay. Native truth only diagnoses recorded camera exposure; never policy input.',source=Path(__file__).read_text(),ap_frames=[],native_geometry={})\ndef yaw(q):return math.atan2(2*(q['w']*q['z']+q['x']*q['y']),1-2*(q['y']**2+q['z']**2))\nfor identity in ('p3b5_v94_dev_zero_zero_rally_lab_fault','p3b5_v94_dev_forced_ideal_forced2_rally_86fbb43bc6'):\n p=ROS/'log/p3b5/p3b5_v94_dev_task_ap'/(identity+'_ap')/'snapshots.jsonl'\n result=next((ROS/'log/p3b5').glob(f'p3b5_v94_dev_*/*/{identity}.json'));r=json.loads(result.read_text())\n frames=[]\n for line in p.open():\n  f=json.loads(line);m=f['messages']\n  if m.get('map') is None:continue\n  info=m['map']['info'];res=info['resolution'];o=(info['origin']['position']['x'],info['origin']['position']['y']);raw=np.array(m['map']['data'],dtype=np.int16).reshape(info['height'],info['width']);safe=c.traversable_grid(raw,res,c.RALLY_PATH_CLEARANCE_M)\n  for name in ('tb1','tb2'):\n   if m.get(name+'/odom') is None or m.get(name+'/tf') is None:continue\n   od=m[name+'/odom']['pose']['pose'];tf=next((t['transform'] for t in m[name+'/tf']['transforms'] if t['header']['frame_id'].lstrip('/').endswith('map') and t['child_frame_id'].lstrip('/').endswith('odom')),None)\n   if tf is None:continue\n   a=yaw(tf['rotation']);x=od['position']['x'];y=od['position']['y'];pos=(tf['translation']['x']+math.cos(a)*x-math.sin(a)*y,tf['translation']['y']+math.sin(a)*x+math.cos(a)*y);heading=a+yaw(od['orientation']);desired=math.atan2(4-pos[1],-4-pos[0]);distance=math.dist(pos,(-4.,4.))\n   if distance>3.:continue\n   cell=c.world_to_grid(*pos,res,*o);t=m.get('target_detection');t=json.loads(t['data']) if t else None\n   row=dict(episode=identity,observer_time=f['observer_time'],elapsed=f['observer_time']-r['start_sim_time_sec'],robot=name,position=pos,yaw=heading,target_heading=desired,heading_error=math.atan2(math.sin(desired-heading),math.cos(desired-heading)),target_distance=distance,known_current_cell=int(raw[cell]),static_safe=bool(safe[cell]),map_target_los=c.rally_target_view(raw,res,o,pos,(-4.,4.),3.),target_source_time=t['_gateway']['source_time'] if t else None,delivered_observer=t['robot'] if t else None)\n   frames.append(row)\n out['ap_frames'].extend(frames);print(identity,frames,flush=True)\ntruth=load_truth_grid(str(ROS/'src/multi_robot/worlds/my_world.world'))\np=ROS/'log/p3b5/p3b5_v94_dev_fixed_lab101_physics/physics.jsonl';result=next((ROS/'log/p2d_baseline/p3b5_v94_dev_fixed_lab101/episodes').glob('*_seed101.json'));r=json.loads(result.read_text())\nnear=[];visible=[];first_los=[]\nfor line in p.open():\n f=json.loads(line)\n if f.get('event')!='physics':continue\n elapsed=f['observer_time']-r['start_sim_time_sec']\n if not 0<=elapsed<=r['time_to_detect_sec']:continue\n for name,v in f['robots'].items():\n  pose=(v['x'],v['y'],v['yaw']);distance=math.dist(pose[:2],(-4.,4.))\n  if distance>3.:continue\n  row=dict(elapsed=elapsed,robot=name,pose=pose,distance=distance)\n  near.append(row)\n  if line_of_sight_clear(truth,pose[:2],(-4.,4.)):first_los.append(row)\n  if target_visible(pose,(-4.,4.),truth,3.,math.pi/2):visible.append(row)\nout['native_geometry']=dict(physics_sha256=hashlib.sha256(p.read_bytes()).hexdigest(),first_in_range=near[0] if near else None,first_unoccluded=first_los[0] if first_los else None,first_geometrically_visible=visible[0] if visible else None,near_sample_count=len(near),unoccluded_sample_count=len(first_los),visible_sample_count=len(visible),actual_detection_elapsed=r['time_to_detect_sec'],interpretation='Headerless native observer-time snapshots; finite sampled exposure is not continuous physical proof or a counterfactual successful scan.')\nprint('native lab101',out['native_geometry'],flush=True)\npath=Path('/tmp/p3b5_v94_camera_geometry.json');assert not path.exists();path.write_text(json.dumps(out,indent=2)+'\\n')\n"
+    },
+    "/tmp/p3b5_v94_camera_geometry.log": {
+      "sha256": "de750e22e325915528ed855d032aaeae2aefc83ea8c9a0eb6727aa2c5c2c1a55",
+      "text": "p3b5_v94_dev_zero_zero_rally_lab_fault [{'episode': 'p3b5_v94_dev_zero_zero_rally_lab_fault', 'observer_time': 2196.282, 'elapsed': 120.30000000000018, 'robot': 'tb2', 'position': (-4.002537724466834, 2.0175511839719853), 'yaw': 2.232493804744264, 'target_heading': 1.5695162316619606, 'heading_error': -0.6629775730823033, 'target_distance': 1.982450440292606, 'known_current_cell': 0, 'static_safe': True, 'map_target_los': False, 'target_source_time': 2195.982, 'delivered_observer': 'tb2'}, {'episode': 'p3b5_v94_dev_zero_zero_rally_lab_fault', 'observer_time': 2206.282, 'elapsed': 130.30000000000018, 'robot': 'tb2', 'position': (-4.014746681677106, 2.034654894354331), 'yaw': 2.446131448733393, 'target_heading': 1.5632931127810352, 'heading_error': -0.8828383359523576, 'target_distance': 1.965400429659532, 'known_current_cell': 0, 'static_safe': True, 'map_target_los': False, 'target_source_time': 2198.982, 'delivered_observer': 'tb2'}, {'episode': 'p3b5_v94_dev_zero_zero_rally_lab_fault', 'observer_time': 2216.282, 'elapsed': 140.30000000000018, 'robot': 'tb2', 'position': (-4.014599407388789, 2.034538226784834), 'yaw': 2.4536062125034075, 'target_heading': 1.5633684851091052, 'heading_error': -0.8902377273943023, 'target_distance': 1.9655159945078566, 'known_current_cell': 0, 'static_safe': True, 'map_target_los': False, 'target_source_time': 2198.982, 'delivered_observer': 'tb2'}, {'episode': 'p3b5_v94_dev_zero_zero_rally_lab_fault', 'observer_time': 2226.282, 'elapsed': 150.30000000000018, 'robot': 'tb2', 'position': (-4.0144876522818205, 2.0344421615440766), 'yaw': 2.4537409497930054, 'target_heading': 1.5634257017006825, 'heading_error': -0.8903152480923229, 'target_distance': 1.9656112302243698, 'known_current_cell': 0, 'static_safe': True, 'map_target_los': False, 'target_source_time': 2198.982, 'delivered_observer': 'tb2'}, {'episode': 'p3b5_v94_dev_zero_zero_rally_lab_fault', 'observer_time': 2236.282, 'elapsed': 160.30000000000018, 'robot': 'tb2', 'position': (-4.014392741240336, 2.034365596540397), 'yaw': 2.4537597363379886, 'target_heading': 1.5634742713791863, 'heading_error': -0.8902854649588023, 'target_distance': 1.9656870959194908, 'known_current_cell': 0, 'static_safe': True, 'map_target_los': False, 'target_source_time': 2198.982, 'delivered_observer': 'tb2'}, {'episode': 'p3b5_v94_dev_zero_zero_rally_lab_fault', 'observer_time': 2246.282, 'elapsed': 170.30000000000018, 'robot': 'tb2', 'position': (-4.014314838606834, 2.0343056373259043), 'yaw': 2.453777730724564, 'target_heading': 1.5635141237032946, 'heading_error': -0.8902636070212695, 'target_distance': 1.9657464846854131, 'known_current_cell': 0, 'static_safe': True, 'map_target_los': False, 'target_source_time': 2198.982, 'delivered_observer': 'tb2'}, {'episode': 'p3b5_v94_dev_zero_zero_rally_lab_fault', 'observer_time': 2256.282, 'elapsed': 180.30000000000018, 'robot': 'tb2', 'position': (-4.014256211710288, 2.0342572072475673), 'yaw': 2.453795631838139, 'target_heading': 1.5635441258306695, 'heading_error': -0.8902515060074696, 'target_distance': 1.9657944874351596, 'known_current_cell': 0, 'static_safe': True, 'map_target_los': False, 'target_source_time': 2198.982, 'delivered_observer': 'tb2'}, {'episode': 'p3b5_v94_dev_zero_zero_rally_lab_fault', 'observer_time': 2266.282, 'elapsed': 190.30000000000018, 'robot': 'tb2', 'position': (-4.014214018509088, 2.0342222852500926), 'yaw': 2.4538144661121386, 'target_heading': 1.5635657174078332, 'heading_error': -0.8902487487043054, 'target_distance': 1.9658291029816262, 'known_current_cell': 0, 'static_safe': True, 'map_target_los': True, 'target_source_time': 2198.982, 'delivered_observer': 'tb2'}, {'episode': 'p3b5_v94_dev_zero_zero_rally_lab_fault', 'observer_time': 2276.282, 'elapsed': 200.30000000000018, 'robot': 'tb2', 'position': (-4.014188213524368, 2.034201809986834), 'yaw': 2.4538352867805737, 'target_heading': 1.563578919007923, 'heading_error': -0.8902563677726507, 'target_distance': 1.9658493912968136, 'known_current_cell': 0, 'static_safe': True, 'map_target_los': True, 'target_source_time': 2198.982, 'delivered_observer': 'tb2'}, {'episode': 'p3b5_v94_dev_zero_zero_rally_lab_fault', 'observer_time': 2286.282, 'elapsed': 210.30000000000018, 'robot': 'tb2', 'position': (-4.111534162809045, 1.997687093816678), 'yaw': -2.9688987057966463, 'target_heading': 1.5151511670550215, 'heading_error': -1.7991354343279184, 'target_distance': 2.0054168753009476, 'known_current_cell': 0, 'static_safe': True, 'map_target_los': True, 'target_source_time': 2198.982, 'delivered_observer': 'tb2'}]\np3b5_v94_dev_forced_ideal_forced2_rally_86fbb43bc6 [{'episode': 'p3b5_v94_dev_forced_ideal_forced2_rally_86fbb43bc6', 'observer_time': 2315.982, 'elapsed': 240.19999999999982, 'robot': 'tb2', 'position': (-3.7190527273248897, 1.5591070504611235), 'yaw': 2.5368301561249935, 'target_heading': 1.6853922470165112, 'heading_error': -0.8514379091084823, 'target_distance': 2.457008294884692, 'known_current_cell': 0, 'static_safe': True, 'map_target_los': True, 'target_source_time': None, 'delivered_observer': None}, {'episode': 'p3b5_v94_dev_forced_ideal_forced2_rally_86fbb43bc6', 'observer_time': 2325.982, 'elapsed': 250.19999999999982, 'robot': 'tb2', 'position': (-4.075827147634428, 2.3308611725211286), 'yaw': 1.760597907029517, 'target_heading': 1.5253986359418792, 'heading_error': -0.23519927108763783, 'target_distance': 1.6708603118501304, 'known_current_cell': 0, 'static_safe': True, 'map_target_los': True, 'target_source_time': 2325.182, 'delivered_observer': 'tb2'}, {'episode': 'p3b5_v94_dev_forced_ideal_forced2_rally_86fbb43bc6', 'observer_time': 2335.982, 'elapsed': 260.1999999999998, 'robot': 'tb2', 'position': (-3.9810678707161724, 2.986816454977722), 'yaw': 1.7180681255408472, 'target_heading': 1.5894799368871892, 'heading_error': -0.12858818865365795, 'target_distance': 1.0133604104281606, 'known_current_cell': 0, 'static_safe': True, 'map_target_los': True, 'target_source_time': 2335.182, 'delivered_observer': 'tb2'}, {'episode': 'p3b5_v94_dev_forced_ideal_forced2_rally_86fbb43bc6', 'observer_time': 2345.982, 'elapsed': 270.1999999999998, 'robot': 'tb2', 'position': (-3.9811053571305464, 2.9866153751421787), 'yaw': 2.064500907756179, 'target_heading': 1.5894392520538518, 'heading_error': -0.4750616557023271, 'target_distance': 1.0135607556665716, 'known_current_cell': 0, 'static_safe': True, 'map_target_los': True, 'target_source_time': 2345.182, 'delivered_observer': 'tb2'}, {'episode': 'p3b5_v94_dev_forced_ideal_forced2_rally_86fbb43bc6', 'observer_time': 2355.982, 'elapsed': 280.1999999999998, 'robot': 'tb2', 'position': (-3.9806591038978656, 2.9860282699172154), 'yaw': 2.4146920855089595, 'target_heading': 1.5898684078251486, 'heading_error': -0.8248236776838109, 'target_distance': 1.014156171242432, 'known_current_cell': 0, 'static_safe': True, 'map_target_los': True, 'target_source_time': 2353.182, 'delivered_observer': 'tb2'}, {'episode': 'p3b5_v94_dev_forced_ideal_forced2_rally_86fbb43bc6', 'observer_time': 2365.982, 'elapsed': 290.1999999999998, 'robot': 'tb2', 'position': (-3.9812636131722394, 2.986706775115367), 'yaw': 1.971015416308126, 'target_heading': 1.5892848071979138, 'heading_error': -0.38173060911021217, 'target_distance': 1.0134664334789087, 'known_current_cell': 0, 'static_safe': True, 'map_target_los': True, 'target_source_time': 2365.282, 'delivered_observer': 'tb2'}, {'episode': 'p3b5_v94_dev_forced_ideal_forced2_rally_86fbb43bc6', 'observer_time': 2375.982, 'elapsed': 300.1999999999998, 'robot': 'tb2', 'position': (-3.9807870745101024, 2.9863791716730983), 'yaw': 2.365777519155425, 'target_heading': 1.5897488033952036, 'heading_error': -0.7760287157602213, 'target_distance': 1.013802900037278, 'known_current_cell': 0, 'static_safe': True, 'map_target_los': True, 'target_source_time': 2375.282, 'delivered_observer': 'tb2'}]\nnative lab101 {'physics_sha256': '34d1be81b7523cda2eece9eba5824d97fa388a8b8ed903a4c16fd22963eb61ed', 'first_in_range': {'elapsed': 186.0999999999999, 'robot': 'tb2', 'pose': (-3.2752453114601936, 1.1303597414506419, 2.4176580721064203), 'distance': 2.9597473831473624}, 'first_unoccluded': {'elapsed': 187.9000000000001, 'robot': 'tb2', 'pose': (-3.607487572680901, 1.4591212176174146, 2.4513339551780877), 'distance': 2.5710175013721592}, 'first_geometrically_visible': {'elapsed': 187.9000000000001, 'robot': 'tb2', 'pose': (-3.607487572680901, 1.4591212176174146, 2.4513339551780877), 'distance': 2.5710175013721592}, 'near_sample_count': 13, 'unoccluded_sample_count': 2, 'visible_sample_count': 2, 'actual_detection_elapsed': 188.0999999999999, 'interpretation': 'Headerless native observer-time snapshots; finite sampled exposure is not continuous physical proof or a counterfactual successful scan.'}\n"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_frontier_replanning.py": {
+      "sha256": "ea35cfbbf894abe8e4ecd9fbc375f160b56eab904bb7da29b2023eda78e9ee25",
+      "text": "import math\nfrom types import SimpleNamespace\nfrom unittest.mock import Mock\n\nimport numpy as np\nimport pytest\n\nfrom multi_robot_exploration import control\n\n\n@pytest.mark.parametrize('condition,cancel',[\n    ('moving_to_observed_frontier',True),('final_frontier_still_useful',False),\n    ('no_alternative',False),('alternative_unfunded',False),('stale_map',False),\n    ('near_waypoint',False),('already_canceling',False),('camera_search',False),\n    ('peer_reserved_route',False),('local_return',False),\n])\ndef test_stale_final_frontier_replans_during_progress_only_to_admissible_work(condition,cancel):\n    grid=np.zeros((120,120),dtype=np.int16);grid[75:100,20:40]=-1\n    if condition=='final_frontier_still_useful':grid[20:40,85:105]=-1\n    if condition=='no_alternative':grid[:]=0\n    position=(2.05,2.05)\n    if condition=='near_waypoint':position=(6.65,3.05)\n    current=control.Assignment(control.Viewpoint(0,30,80,30,90,1000,30),\n        8.05,3.05,8.,10.,7.05,3.05)\n    handle=Mock();logger=Mock();names=('tb1','tb2')\n    node=SimpleNamespace(task_state='EXPLORE',target_search_active=condition=='camera_search',\n        now=lambda:100.,goal_timeout_sec=60.,goal_handles={'tb1':handle,'tb2':None},\n        goal_started_at={'tb1':90.,'tb2':None},goal_last_progress_at={'tb1':99.,'tb2':None},\n        goal_targets={'tb1':current,'tb2':None},goal_initial_gain={'tb1':1000,'tb2':0},\n        cancel_requested={'tb1':condition=='already_canceling','tb2':False},\n        fresh_robot_inputs=lambda:condition!='stale_map',map_data=grid,resolution=.1,origin=(0.,0.),\n        robot_positions={'tb1':position,'tb2':(11.05,11.05)},\n        robot_states={'tb1':'active','tb2':'idle'},goal_routes=dict.fromkeys(names,()),\n        frontier_cache=None,battery_modes=dict.fromkeys(names,'ACTIVE'),enable_battery=True,\n        battery_states={'tb1':dict(energy=9. if condition=='alternative_unfunded' else 80.,\n            charge_x=1.05,charge_y=1.05,move_cost_per_m=1.,idle_cost_per_sec=.02,\n            return_path_factor=2.,nominal_speed_mps=.18,return_safety_margin=8.)},\n        get_logger=lambda:logger)\n    if condition=='peer_reserved_route':\n        node.robot_states['tb2']='active';node.robot_positions['tb2']=(1.05,2.65)\n        node.goal_routes['tb2']=((1.05,2.65),(10.55,2.65))\n    if condition=='local_return':node.battery_modes['tb2']='RETURNING'\n    queries=[]\n    def gain(x,y):\n        queries.append((x,y))\n        return control.visible_unknown_gain(grid,control.world_to_grid(x,y,.1,0.,0.),20.)\n    node.target_information_gain=gain\n    node.exploration_battery_factor=lambda *args:control.HeadquartersControl.exploration_battery_factor(node,*args)\n    control.HeadquartersControl.cancel_stalled_goals(node)\n    assert handle.cancel_goal_async.called is cancel\n    assert queries==([(current.x,current.y)] if condition not in ('stale_map','already_canceling') else [])\n    if cancel:\n        assert node.cancel_requested['tb1']\n        assert 'frontier already observed' in logger.warn.call_args.args[0]\n        # Accepted work remains owned until its original result, not replaced\n        # immediately by a speculative second action.\n        assert node.goal_handles['tb1'] is handle and node.robot_states['tb1']=='active'\n"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_rally_observation_recovery.py": {
+      "sha256": "71cef5554e51f8687909e9b9ffe485baed83e7c7a6104402f56113ba733f5959",
+      "text": "import math\nfrom types import SimpleNamespace\nfrom unittest.mock import Mock\n\nimport numpy as np\nimport pytest\nfrom action_msgs.msg import GoalStatus\nfrom builtin_interfaces.msg import Time\n\nfrom multi_robot_exploration import control\n\n\ndef observer_node():\n    names=('tb1','tb2')\n    client=Mock();client.server_is_ready.return_value=True\n    node=SimpleNamespace(\n        target_observing_robot='tb1',target=(2.05,4.05),target_view_distance=3.,\n        robot_positions={'tb1':(2.05,2.05),'tb2':(8.05,8.05)},robot_yaws={'tb1':2.5},\n        robot_states=dict.fromkeys(names,'idle'),goal_handles=dict.fromkeys(names),\n        battery_modes=dict.fromkeys(names,'ACTIVE'),enable_battery=True,\n        battery_states={name:dict(energy=20.,charge_x=1.05 if name=='tb1' else 8.05,\n            charge_y=1.05 if name=='tb1' else 8.05,move_cost_per_m=1.,idle_cost_per_sec=.02,\n            return_path_factor=2.,nominal_speed_mps=.18,return_safety_margin=8.) for name in names},\n        rally_charge_requested={},return_yield_targets={},rally_leg_routes=dict.fromkeys(names,()),\n        rally_goal_handles=dict.fromkeys(names),rally_goal_pending=dict.fromkeys(names,False),\n        survey_goal_handle=None,survey_goal_pending=False,survey_attempts=0,\n        map_data=np.zeros((100,100),dtype=np.int16),resolution=.1,origin=(0.,0.),\n        fresh_robot_inputs=lambda:True,fresh_target=lambda:True,\n        rally_position_tolerance=.35,goal_timeout_sec=60.,num_robots=2,rally_max_retries=2,\n        robot_nav_clients={'tb1':client},record_navigation_decision=Mock(),survey_goal_response=Mock(),\n        get_clock=lambda:SimpleNamespace(now=lambda:SimpleNamespace(to_msg=lambda:Time(sec=100))),\n        fail_task=Mock(),rally_charge_budgets={'tb1':99.})\n    node.exploration_battery_factor=lambda *args:control.HeadquartersControl.exploration_battery_factor(node,*args)\n    return node,client\n\n\n@pytest.mark.parametrize('condition,admitted', [\n    ('waiting',True),('already_facing',False),('no_target',False),('stale_target',False),\n    ('stale_map',False),('returning_peer',False),('own_charge_admitted',False),\n    ('live_frontier',False),('pending_rally',False),('low_energy',False),\n    ('unknown',False),('static_wall',False),('peer_body',False),('live_route',False),('no_slot',False),\n    ('unknown_target_los',True),\n])\ndef test_waiting_observer_turn_funds_own_return_and_obeys_admission(condition,admitted):\n    node,client=observer_node()\n    if condition=='already_facing':node.robot_yaws['tb1']=math.pi/2\n    if condition=='no_target':node.target=None\n    if condition=='stale_target':node.fresh_target=lambda:False\n    if condition=='stale_map':node.fresh_robot_inputs=lambda:False\n    if condition=='returning_peer':node.battery_modes['tb2']='RETURNING'\n    if condition=='own_charge_admitted':node.rally_charge_requested['tb1']=99.\n    if condition=='live_frontier':node.goal_handles['tb1']=object()\n    if condition=='pending_rally':node.rally_goal_pending['tb1']=True\n    if condition=='low_energy':node.battery_states['tb1']['energy']=9.\n    if condition=='unknown':node.map_data[20,20]=-1\n    if condition=='unknown_target_los':node.map_data[38,20]=-1\n    if condition=='static_wall':node.map_data[20,22]=100\n    if condition=='peer_body':node.robot_positions['tb2']=(2.45,2.05)\n    if condition=='no_slot':node.rally_max_concurrent=1;node.rally_goal_pending['tb2']=True\n    if condition=='live_route':\n        node.rally_goal_handles['tb2']=object();node.rally_leg_routes['tb2']=((2.05,1.),(2.05,3.))\n    assert control.HeadquartersControl.restore_observer_heading(node) is admitted\n    assert client.send_goal_async.called is admitted\n    if admitted:\n        goal=client.send_goal_async.call_args.args[0].pose\n        assert (goal.pose.position.x,goal.pose.position.y)==node.robot_positions['tb1']\n        assert math.atan2(2*goal.pose.orientation.w*goal.pose.orientation.z,\n            1-2*goal.pose.orientation.z**2)==pytest.approx(math.pi/2)\n        assert node.record_navigation_decision.call_args.args[1]=='target_observation_heading'\n        assert node.survey_heading_only and node.rally_charge_budgets['tb1']==99.\n        if condition=='unknown_target_los':assert node.map_data[38,20]==-1\n\n\ndef test_observer_survey_faces_confirmation_without_moving_into_unknown_los():\n    node,client=observer_node();node.map_data[38:42,20:28]=-1\n    pose=control.RallyPose(3.05,2.05,0.)\n    assert not control.rally_target_view(node.map_data,.1,(0.,0.),(pose.x,pose.y),node.target,3.)\n    assert control.HeadquartersControl.send_survey_goal(node,'tb1',pose)\n    goal=client.send_goal_async.call_args.args[0].pose\n    assert (goal.pose.position.x,goal.pose.position.y)==pytest.approx((3.05,2.05))\n    q=goal.pose.orientation\n    assert math.atan2(2*q.w*q.z,1-2*q.z*q.z)==pytest.approx(math.atan2(2.,-1.))\n    assert np.all(node.map_data[38:42,20:28]==-1)\n\n\ndef test_heading_success_does_not_claim_map_survey_progress_or_final_arrival():\n    node,_=observer_node();handle=object();node.survey_goal_handle=handle\n    node.survey_goal_started_at=90.;node.survey_robot='tb1';node.survey_heading_only=True\n    node.survey_cancel_requested=False;node.survey_battery_preempted=False\n    node.rally_probe_targets=set();node.rally_probe_robot=None;node.rally_final_targets={}\n    node.rally_prepare_started_at=80.;node.rally_arrived={'tb1':False}\n    node.now=lambda:100.;node.get_logger=lambda:Mock()\n    control.HeadquartersControl.survey_goal_result(node,handle,\n        SimpleNamespace(result=lambda:SimpleNamespace(status=GoalStatus.STATUS_SUCCEEDED)))\n    assert node.rally_prepare_started_at==80. and node.rally_arrived=={'tb1':False}\n    assert node.survey_goal_handle is None and not node.survey_heading_only\n\n\ndef test_connector_survey_uses_known_frontier_around_target_dead_end():\n    # Known U-shaped route initially moves away from the target; the missing\n    # connecting corridor is unknown. Straight-line target descent cannot help.\n    grid=np.full((100,100),-1,dtype=np.int16)\n    grid[10:30,10:80]=0;grid[10:80,60:80]=0;grid[60:80,30:80]=0\n    grid[60:80,10:25]=0\n    position=(3.05,6.55);target=(1.55,6.55)\n    assert control.rally_survey_pose(grid,.1,(0.,0.),position,target) is None\n    sent=[]\n    node=SimpleNamespace(map_data=grid,resolution=.1,origin=(0.,0.),target=target,\n        task_state='FOUND',\n        robot_positions={'tb1':position,'tb2':(1.55,6.55)},\n        battery_modes={'tb1':'ACTIVE','tb2':'ACTIVE'},target_observing_robot='tb2',\n        send_survey_goal=lambda name,pose:sent.append((name,pose)) or True)\n    assert control.HeadquartersControl.survey_rally_connection(node,node.robot_positions)\n    name,pose=sent[0]\n    assert name=='tb1'\n    cell=control.world_to_grid(pose.x,pose.y,.1,0.,0.)\n    safe=control.traversable_grid(grid,.1,control.ROBOT_CLEARANCE_M)\n    assert safe[cell] and grid[cell]==0\n    planned=control.plan_rally_leg(pose,grid,.1,(0.,0.),position,visible_only=True)\n    assert planned[0] is not None and planned[1]\n    assert all(grid[control.world_to_grid(*p,.1,0.,0.)]==0 for p in planned[1])\n    # Updating a copy with real observations can later connect the regions;\n    # choosing the survey must never fabricate those cells in the original.\n    assert np.all(grid[30:60,10:30]==-1)\n"
+    }
+  },
+  "retained_read_only_geometry": {
+    "scope": "Read-only retained original geometry, not original controller buffers or causal replay. Native truth only diagnoses recorded camera exposure; never policy input.",
+    "source": "import hashlib,json,math\nfrom pathlib import Path\nimport numpy as np\nfrom multi_robot_exploration import control as c\nfrom multi_robot_exploration.task_evaluator import load_truth_grid\nfrom multi_robot_exploration.target_detector import target_visible,line_of_sight_clear\n\nROOT=Path('/home/zhuyulab/ns3-workspace');ROS=ROOT/'ros2_ws/ros2-multi-robot-automap'\nout=dict(scope='Read-only retained original geometry, not original controller buffers or causal replay. Native truth only diagnoses recorded camera exposure; never policy input.',source=Path(__file__).read_text(),ap_frames=[],native_geometry={})\ndef yaw(q):return math.atan2(2*(q['w']*q['z']+q['x']*q['y']),1-2*(q['y']**2+q['z']**2))\nfor identity in ('p3b5_v94_dev_zero_zero_rally_lab_fault','p3b5_v94_dev_forced_ideal_forced2_rally_86fbb43bc6'):\n p=ROS/'log/p3b5/p3b5_v94_dev_task_ap'/(identity+'_ap')/'snapshots.jsonl'\n result=next((ROS/'log/p3b5').glob(f'p3b5_v94_dev_*/*/{identity}.json'));r=json.loads(result.read_text())\n frames=[]\n for line in p.open():\n  f=json.loads(line);m=f['messages']\n  if m.get('map') is None:continue\n  info=m['map']['info'];res=info['resolution'];o=(info['origin']['position']['x'],info['origin']['position']['y']);raw=np.array(m['map']['data'],dtype=np.int16).reshape(info['height'],info['width']);safe=c.traversable_grid(raw,res,c.RALLY_PATH_CLEARANCE_M)\n  for name in ('tb1','tb2'):\n   if m.get(name+'/odom') is None or m.get(name+'/tf') is None:continue\n   od=m[name+'/odom']['pose']['pose'];tf=next((t['transform'] for t in m[name+'/tf']['transforms'] if t['header']['frame_id'].lstrip('/').endswith('map') and t['child_frame_id'].lstrip('/').endswith('odom')),None)\n   if tf is None:continue\n   a=yaw(tf['rotation']);x=od['position']['x'];y=od['position']['y'];pos=(tf['translation']['x']+math.cos(a)*x-math.sin(a)*y,tf['translation']['y']+math.sin(a)*x+math.cos(a)*y);heading=a+yaw(od['orientation']);desired=math.atan2(4-pos[1],-4-pos[0]);distance=math.dist(pos,(-4.,4.))\n   if distance>3.:continue\n   cell=c.world_to_grid(*pos,res,*o);t=m.get('target_detection');t=json.loads(t['data']) if t else None\n   row=dict(episode=identity,observer_time=f['observer_time'],elapsed=f['observer_time']-r['start_sim_time_sec'],robot=name,position=pos,yaw=heading,target_heading=desired,heading_error=math.atan2(math.sin(desired-heading),math.cos(desired-heading)),target_distance=distance,known_current_cell=int(raw[cell]),static_safe=bool(safe[cell]),map_target_los=c.rally_target_view(raw,res,o,pos,(-4.,4.),3.),target_source_time=t['_gateway']['source_time'] if t else None,delivered_observer=t['robot'] if t else None)\n   frames.append(row)\n out['ap_frames'].extend(frames);print(identity,frames,flush=True)\ntruth=load_truth_grid(str(ROS/'src/multi_robot/worlds/my_world.world'))\np=ROS/'log/p3b5/p3b5_v94_dev_fixed_lab101_physics/physics.jsonl';result=next((ROS/'log/p2d_baseline/p3b5_v94_dev_fixed_lab101/episodes').glob('*_seed101.json'));r=json.loads(result.read_text())\nnear=[];visible=[];first_los=[]\nfor line in p.open():\n f=json.loads(line)\n if f.get('event')!='physics':continue\n elapsed=f['observer_time']-r['start_sim_time_sec']\n if not 0<=elapsed<=r['time_to_detect_sec']:continue\n for name,v in f['robots'].items():\n  pose=(v['x'],v['y'],v['yaw']);distance=math.dist(pose[:2],(-4.,4.))\n  if distance>3.:continue\n  row=dict(elapsed=elapsed,robot=name,pose=pose,distance=distance)\n  near.append(row)\n  if line_of_sight_clear(truth,pose[:2],(-4.,4.)):first_los.append(row)\n  if target_visible(pose,(-4.,4.),truth,3.,math.pi/2):visible.append(row)\nout['native_geometry']=dict(physics_sha256=hashlib.sha256(p.read_bytes()).hexdigest(),first_in_range=near[0] if near else None,first_unoccluded=first_los[0] if first_los else None,first_geometrically_visible=visible[0] if visible else None,near_sample_count=len(near),unoccluded_sample_count=len(first_los),visible_sample_count=len(visible),actual_detection_elapsed=r['time_to_detect_sec'],interpretation='Headerless native observer-time snapshots; finite sampled exposure is not continuous physical proof or a counterfactual successful scan.')\nprint('native lab101',out['native_geometry'],flush=True)\npath=Path('/tmp/p3b5_v94_camera_geometry.json');assert not path.exists();path.write_text(json.dumps(out,indent=2)+'\\n')\n",
+    "ap_frames": [
+      {
+        "episode": "p3b5_v94_dev_zero_zero_rally_lab_fault",
+        "observer_time": 2196.282,
+        "elapsed": 120.30000000000018,
+        "robot": "tb2",
+        "position": [
+          -4.002537724466834,
+          2.0175511839719853
+        ],
+        "yaw": 2.232493804744264,
+        "target_heading": 1.5695162316619606,
+        "heading_error": -0.6629775730823033,
+        "target_distance": 1.982450440292606,
+        "known_current_cell": 0,
+        "static_safe": true,
+        "map_target_los": false,
+        "target_source_time": 2195.982,
+        "delivered_observer": "tb2"
+      },
+      {
+        "episode": "p3b5_v94_dev_zero_zero_rally_lab_fault",
+        "observer_time": 2206.282,
+        "elapsed": 130.30000000000018,
+        "robot": "tb2",
+        "position": [
+          -4.014746681677106,
+          2.034654894354331
+        ],
+        "yaw": 2.446131448733393,
+        "target_heading": 1.5632931127810352,
+        "heading_error": -0.8828383359523576,
+        "target_distance": 1.965400429659532,
+        "known_current_cell": 0,
+        "static_safe": true,
+        "map_target_los": false,
+        "target_source_time": 2198.982,
+        "delivered_observer": "tb2"
+      },
+      {
+        "episode": "p3b5_v94_dev_zero_zero_rally_lab_fault",
+        "observer_time": 2216.282,
+        "elapsed": 140.30000000000018,
+        "robot": "tb2",
+        "position": [
+          -4.014599407388789,
+          2.034538226784834
+        ],
+        "yaw": 2.4536062125034075,
+        "target_heading": 1.5633684851091052,
+        "heading_error": -0.8902377273943023,
+        "target_distance": 1.9655159945078566,
+        "known_current_cell": 0,
+        "static_safe": true,
+        "map_target_los": false,
+        "target_source_time": 2198.982,
+        "delivered_observer": "tb2"
+      },
+      {
+        "episode": "p3b5_v94_dev_zero_zero_rally_lab_fault",
+        "observer_time": 2226.282,
+        "elapsed": 150.30000000000018,
+        "robot": "tb2",
+        "position": [
+          -4.0144876522818205,
+          2.0344421615440766
+        ],
+        "yaw": 2.4537409497930054,
+        "target_heading": 1.5634257017006825,
+        "heading_error": -0.8903152480923229,
+        "target_distance": 1.9656112302243698,
+        "known_current_cell": 0,
+        "static_safe": true,
+        "map_target_los": false,
+        "target_source_time": 2198.982,
+        "delivered_observer": "tb2"
+      },
+      {
+        "episode": "p3b5_v94_dev_zero_zero_rally_lab_fault",
+        "observer_time": 2236.282,
+        "elapsed": 160.30000000000018,
+        "robot": "tb2",
+        "position": [
+          -4.014392741240336,
+          2.034365596540397
+        ],
+        "yaw": 2.4537597363379886,
+        "target_heading": 1.5634742713791863,
+        "heading_error": -0.8902854649588023,
+        "target_distance": 1.9656870959194908,
+        "known_current_cell": 0,
+        "static_safe": true,
+        "map_target_los": false,
+        "target_source_time": 2198.982,
+        "delivered_observer": "tb2"
+      },
+      {
+        "episode": "p3b5_v94_dev_zero_zero_rally_lab_fault",
+        "observer_time": 2246.282,
+        "elapsed": 170.30000000000018,
+        "robot": "tb2",
+        "position": [
+          -4.014314838606834,
+          2.0343056373259043
+        ],
+        "yaw": 2.453777730724564,
+        "target_heading": 1.5635141237032946,
+        "heading_error": -0.8902636070212695,
+        "target_distance": 1.9657464846854131,
+        "known_current_cell": 0,
+        "static_safe": true,
+        "map_target_los": false,
+        "target_source_time": 2198.982,
+        "delivered_observer": "tb2"
+      },
+      {
+        "episode": "p3b5_v94_dev_zero_zero_rally_lab_fault",
+        "observer_time": 2256.282,
+        "elapsed": 180.30000000000018,
+        "robot": "tb2",
+        "position": [
+          -4.014256211710288,
+          2.0342572072475673
+        ],
+        "yaw": 2.453795631838139,
+        "target_heading": 1.5635441258306695,
+        "heading_error": -0.8902515060074696,
+        "target_distance": 1.9657944874351596,
+        "known_current_cell": 0,
+        "static_safe": true,
+        "map_target_los": false,
+        "target_source_time": 2198.982,
+        "delivered_observer": "tb2"
+      },
+      {
+        "episode": "p3b5_v94_dev_zero_zero_rally_lab_fault",
+        "observer_time": 2266.282,
+        "elapsed": 190.30000000000018,
+        "robot": "tb2",
+        "position": [
+          -4.014214018509088,
+          2.0342222852500926
+        ],
+        "yaw": 2.4538144661121386,
+        "target_heading": 1.5635657174078332,
+        "heading_error": -0.8902487487043054,
+        "target_distance": 1.9658291029816262,
+        "known_current_cell": 0,
+        "static_safe": true,
+        "map_target_los": true,
+        "target_source_time": 2198.982,
+        "delivered_observer": "tb2"
+      },
+      {
+        "episode": "p3b5_v94_dev_zero_zero_rally_lab_fault",
+        "observer_time": 2276.282,
+        "elapsed": 200.30000000000018,
+        "robot": "tb2",
+        "position": [
+          -4.014188213524368,
+          2.034201809986834
+        ],
+        "yaw": 2.4538352867805737,
+        "target_heading": 1.563578919007923,
+        "heading_error": -0.8902563677726507,
+        "target_distance": 1.9658493912968136,
+        "known_current_cell": 0,
+        "static_safe": true,
+        "map_target_los": true,
+        "target_source_time": 2198.982,
+        "delivered_observer": "tb2"
+      },
+      {
+        "episode": "p3b5_v94_dev_zero_zero_rally_lab_fault",
+        "observer_time": 2286.282,
+        "elapsed": 210.30000000000018,
+        "robot": "tb2",
+        "position": [
+          -4.111534162809045,
+          1.997687093816678
+        ],
+        "yaw": -2.9688987057966463,
+        "target_heading": 1.5151511670550215,
+        "heading_error": -1.7991354343279184,
+        "target_distance": 2.0054168753009476,
+        "known_current_cell": 0,
+        "static_safe": true,
+        "map_target_los": true,
+        "target_source_time": 2198.982,
+        "delivered_observer": "tb2"
+      },
+      {
+        "episode": "p3b5_v94_dev_forced_ideal_forced2_rally_86fbb43bc6",
+        "observer_time": 2315.982,
+        "elapsed": 240.19999999999982,
+        "robot": "tb2",
+        "position": [
+          -3.7190527273248897,
+          1.5591070504611235
+        ],
+        "yaw": 2.5368301561249935,
+        "target_heading": 1.6853922470165112,
+        "heading_error": -0.8514379091084823,
+        "target_distance": 2.457008294884692,
+        "known_current_cell": 0,
+        "static_safe": true,
+        "map_target_los": true,
+        "target_source_time": null,
+        "delivered_observer": null
+      },
+      {
+        "episode": "p3b5_v94_dev_forced_ideal_forced2_rally_86fbb43bc6",
+        "observer_time": 2325.982,
+        "elapsed": 250.19999999999982,
+        "robot": "tb2",
+        "position": [
+          -4.075827147634428,
+          2.3308611725211286
+        ],
+        "yaw": 1.760597907029517,
+        "target_heading": 1.5253986359418792,
+        "heading_error": -0.23519927108763783,
+        "target_distance": 1.6708603118501304,
+        "known_current_cell": 0,
+        "static_safe": true,
+        "map_target_los": true,
+        "target_source_time": 2325.182,
+        "delivered_observer": "tb2"
+      },
+      {
+        "episode": "p3b5_v94_dev_forced_ideal_forced2_rally_86fbb43bc6",
+        "observer_time": 2335.982,
+        "elapsed": 260.1999999999998,
+        "robot": "tb2",
+        "position": [
+          -3.9810678707161724,
+          2.986816454977722
+        ],
+        "yaw": 1.7180681255408472,
+        "target_heading": 1.5894799368871892,
+        "heading_error": -0.12858818865365795,
+        "target_distance": 1.0133604104281606,
+        "known_current_cell": 0,
+        "static_safe": true,
+        "map_target_los": true,
+        "target_source_time": 2335.182,
+        "delivered_observer": "tb2"
+      },
+      {
+        "episode": "p3b5_v94_dev_forced_ideal_forced2_rally_86fbb43bc6",
+        "observer_time": 2345.982,
+        "elapsed": 270.1999999999998,
+        "robot": "tb2",
+        "position": [
+          -3.9811053571305464,
+          2.9866153751421787
+        ],
+        "yaw": 2.064500907756179,
+        "target_heading": 1.5894392520538518,
+        "heading_error": -0.4750616557023271,
+        "target_distance": 1.0135607556665716,
+        "known_current_cell": 0,
+        "static_safe": true,
+        "map_target_los": true,
+        "target_source_time": 2345.182,
+        "delivered_observer": "tb2"
+      },
+      {
+        "episode": "p3b5_v94_dev_forced_ideal_forced2_rally_86fbb43bc6",
+        "observer_time": 2355.982,
+        "elapsed": 280.1999999999998,
+        "robot": "tb2",
+        "position": [
+          -3.9806591038978656,
+          2.9860282699172154
+        ],
+        "yaw": 2.4146920855089595,
+        "target_heading": 1.5898684078251486,
+        "heading_error": -0.8248236776838109,
+        "target_distance": 1.014156171242432,
+        "known_current_cell": 0,
+        "static_safe": true,
+        "map_target_los": true,
+        "target_source_time": 2353.182,
+        "delivered_observer": "tb2"
+      },
+      {
+        "episode": "p3b5_v94_dev_forced_ideal_forced2_rally_86fbb43bc6",
+        "observer_time": 2365.982,
+        "elapsed": 290.1999999999998,
+        "robot": "tb2",
+        "position": [
+          -3.9812636131722394,
+          2.986706775115367
+        ],
+        "yaw": 1.971015416308126,
+        "target_heading": 1.5892848071979138,
+        "heading_error": -0.38173060911021217,
+        "target_distance": 1.0134664334789087,
+        "known_current_cell": 0,
+        "static_safe": true,
+        "map_target_los": true,
+        "target_source_time": 2365.282,
+        "delivered_observer": "tb2"
+      },
+      {
+        "episode": "p3b5_v94_dev_forced_ideal_forced2_rally_86fbb43bc6",
+        "observer_time": 2375.982,
+        "elapsed": 300.1999999999998,
+        "robot": "tb2",
+        "position": [
+          -3.9807870745101024,
+          2.9863791716730983
+        ],
+        "yaw": 2.365777519155425,
+        "target_heading": 1.5897488033952036,
+        "heading_error": -0.7760287157602213,
+        "target_distance": 1.013802900037278,
+        "known_current_cell": 0,
+        "static_safe": true,
+        "map_target_los": true,
+        "target_source_time": 2375.282,
+        "delivered_observer": "tb2"
+      }
+    ],
+    "native_geometry": {
+      "physics_sha256": "34d1be81b7523cda2eece9eba5824d97fa388a8b8ed903a4c16fd22963eb61ed",
+      "first_in_range": {
+        "elapsed": 186.0999999999999,
+        "robot": "tb2",
+        "pose": [
+          -3.2752453114601936,
+          1.1303597414506419,
+          2.4176580721064203
+        ],
+        "distance": 2.9597473831473624
+      },
+      "first_unoccluded": {
+        "elapsed": 187.9000000000001,
+        "robot": "tb2",
+        "pose": [
+          -3.607487572680901,
+          1.4591212176174146,
+          2.4513339551780877
+        ],
+        "distance": 2.5710175013721592
+      },
+      "first_geometrically_visible": {
+        "elapsed": 187.9000000000001,
+        "robot": "tb2",
+        "pose": [
+          -3.607487572680901,
+          1.4591212176174146,
+          2.4513339551780877
+        ],
+        "distance": 2.5710175013721592
+      },
+      "near_sample_count": 13,
+      "unoccluded_sample_count": 2,
+      "visible_sample_count": 2,
+      "actual_detection_elapsed": 188.0999999999999,
+      "interpretation": "Headerless native observer-time snapshots; finite sampled exposure is not continuous physical proof or a counterfactual successful scan."
+    }
+  },
+  "source_diff": "diff --git a/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/control.py b/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/control.py\nindex 060a8d7..a0ae478 100644\n--- a/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/control.py\n+++ b/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/control.py\n@@ -4127,10 +4127,12 @@ class HeadquartersControl(Node):\n         heading = math.atan2(self.target[1] - position[1], self.target[0] - position[0])\n         if (abs(math.atan2(math.sin(heading - yaw), math.cos(heading - yaw)))\n                 <= getattr(self, \"target_view_fov_rad\", math.pi / 2) / 4\n-                or not rally_target_view(self.map_data, self.resolution, self.origin,\n-                    position, self.target,\n-                    getattr(self, \"target_view_distance\", 3.) - self.rally_position_tolerance)):\n+                or math.dist(position, self.target)\n+                    > getattr(self, \"target_view_distance\", 3.) - self.rally_position_tolerance):\n             return False\n+        # Turning in a known-safe current cell does not require a translated\n+        # path to the target. Unknown target LOS is not permission to move;\n+        # only a subsequent real delivered detection can restore observation.\n         return HeadquartersControl.send_survey_goal(\n             self, name, RallyPose(*position, heading), heading_only=True)\n \n@@ -4232,6 +4234,15 @@ class HeadquartersControl(Node):\n                 return False\n         pose = rally_observation_heading(plan[0], getattr(self, \"target\", None), self.map_data,\n             self.resolution, self.origin, getattr(self, \"target_view_distance\", 3.))\n+        if (robot_name == getattr(self, \"target_observing_robot\", None)\n+                and self.target is not None\n+                and math.dist((pose.x, pose.y), self.target)\n+                    <= getattr(self, \"target_view_distance\", 3.) - NAVIGATION_POSITION_TOLERANCE_M):\n+            # The known-free surveyed endpoint remains unchanged, including\n+            # all reservations. Aim at its valid confirmation even when fused\n+            # map LOS is still unknown; do not claim that it is visible.\n+            pose = RallyPose(pose.x, pose.y,\n+                math.atan2(self.target[1] - pose.y, self.target[0] - pose.x))\n         allowed_attempts = self.num_robots * (1 + self.rally_max_retries)\n         if self.survey_attempts >= allowed_attempts:\n             self.fail_task(\n@@ -5023,7 +5034,7 @@ class HeadquartersControl(Node):\n             self.goal_targets[robot_name] = assignment\n             self.goal_routes[robot_name] = routes[robot_name]\n             self.goal_initial_gain[robot_name] = self.target_information_gain(\n-                assignment.navigation_x, assignment.navigation_y\n+                assignment.x, assignment.y\n             )\n             self.get_logger().info(\n                 f\"Assigned {robot_name} to group \"\n@@ -5256,13 +5267,13 @@ class HeadquartersControl(Node):\n         for robot_name, goal_handle in self.goal_handles.items():\n             started_at = self.goal_started_at[robot_name]\n             last_progress = self.goal_last_progress_at[robot_name]\n-            if goal_handle is None or started_at is None:\n+            if goal_handle is None or started_at is None or self.cancel_requested[robot_name]:\n                 continue\n             timed_out = now - started_at >= self.goal_timeout_sec\n             assignment = self.goal_targets[robot_name]\n             remaining_gain = (\n                 self.target_information_gain(\n-                    assignment.navigation_x, assignment.navigation_y\n+                    assignment.x, assignment.y\n                 )\n                 if assignment is not None and self.fresh_robot_inputs()\n                 else 0\n@@ -5272,8 +5283,11 @@ class HeadquartersControl(Node):\n                 remaining_gain,\n                 now - started_at,\n             ) and (\n-                last_progress is not None\n-                and now - last_progress >= NO_PROGRESS_SEC\n+                assignment is not None\n+                and self.robot_positions[robot_name] is not None\n+                and math.dist(self.robot_positions[robot_name],\n+                    (assignment.navigation_x, assignment.navigation_y)) > USEFUL_TRAVEL_M\n+                and HeadquartersControl.has_funded_frontier_alternative(self, robot_name, assignment)\n             )\n             stalled = (\n                 last_progress is not None\n@@ -5297,6 +5311,43 @@ class HeadquartersControl(Node):\n             self.cancel_requested[robot_name] = True\n             goal_handle.cancel_goal_async()\n \n+    def has_funded_frontier_alternative(self, robot_name, current):\n+        \"\"\"Do not abandon a disappearing frontier without useful current work.\"\"\"\n+        if (getattr(self, \"target_search_active\", False)\n+                or not self.fresh_robot_inputs()\n+                or self.battery_modes[robot_name] != \"ACTIVE\"\n+                or any(mode == \"RETURNING\" for mode in self.battery_modes.values())):\n+            return False  # A camera-search waypoint can remain useful after mapping.\n+        if self.frontier_cache is None:\n+            self.frontier_cache = prepare_frontier_data(self.map_data, self.resolution)\n+        options, _ = robot_candidate_assignments(\n+            self.map_data, self.resolution, self.origin, robot_name,\n+            self.robot_positions[robot_name], frontier_data=self.frontier_cache,\n+            blocked_positions=[p for name, p in self.robot_positions.items()\n+                if name != robot_name and p is not None])\n+        blocked = [p for name, p in self.robot_positions.items()\n+                   if name != robot_name and p is not None]\n+        reservations = [remaining_rally_route(route, self.robot_positions[name])\n+            for name, route in self.goal_routes.items() if name != robot_name\n+            and self.robot_states[name] == \"active\" and route]\n+        cache = {}\n+        for _, _, _, a in sorted(options, key=lambda row: -row[0]):\n+            if (a.viewpoint.information_gain <= MIN_REMAINING_GAIN\n+                    or a.path_distance_m < USEFUL_TRAVEL_M\n+                    or math.dist((a.x, a.y), (current.x, current.y)) < MIN_TARGET_SEPARATION_M\n+                    or self.exploration_battery_factor(robot_name, a.path_distance_m, (a.x, a.y)) != 1.):\n+                continue\n+            plan = plan_rally_leg(RallyPose(a.x, a.y, 0.), self.map_data,\n+                self.resolution, self.origin, self.robot_positions[robot_name], MAX_NAVIGATION_LEG_M,\n+                blocked_positions=blocked, clearance_m=PATH_CLEARANCE_M,\n+                visible_only=True, route_cache=cache)\n+            admitted = reserve_rally_prefix(plan, reservations)\n+            if (admitted is not None\n+                    and math.dist(self.robot_positions[robot_name],\n+                        (admitted[0].x, admitted[0].y)) >= USEFUL_TRAVEL_M):\n+                return True\n+        return False\n+\n     def check_exploration_completion(self):\n         now = time.monotonic()\n         if (\ndiff --git a/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_rally_observation_recovery.py b/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_rally_observation_recovery.py\nindex 6bd4ea7..96a794c 100644\n--- a/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_rally_observation_recovery.py\n+++ b/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_rally_observation_recovery.py\n@@ -30,6 +30,7 @@ def observer_node():\n         robot_nav_clients={'tb1':client},record_navigation_decision=Mock(),survey_goal_response=Mock(),\n         get_clock=lambda:SimpleNamespace(now=lambda:SimpleNamespace(to_msg=lambda:Time(sec=100))),\n         fail_task=Mock(),rally_charge_budgets={'tb1':99.})\n+    node.exploration_battery_factor=lambda *args:control.HeadquartersControl.exploration_battery_factor(node,*args)\n     return node,client\n \n \n@@ -38,6 +39,7 @@ def observer_node():\n     ('stale_map',False),('returning_peer',False),('own_charge_admitted',False),\n     ('live_frontier',False),('pending_rally',False),('low_energy',False),\n     ('unknown',False),('static_wall',False),('peer_body',False),('live_route',False),('no_slot',False),\n+    ('unknown_target_los',True),\n ])\n def test_waiting_observer_turn_funds_own_return_and_obeys_admission(condition,admitted):\n     node,client=observer_node()\n@@ -51,6 +53,7 @@ def test_waiting_observer_turn_funds_own_return_and_obeys_admission(condition,ad\n     if condition=='pending_rally':node.rally_goal_pending['tb1']=True\n     if condition=='low_energy':node.battery_states['tb1']['energy']=9.\n     if condition=='unknown':node.map_data[20,20]=-1\n+    if condition=='unknown_target_los':node.map_data[38,20]=-1\n     if condition=='static_wall':node.map_data[20,22]=100\n     if condition=='peer_body':node.robot_positions['tb2']=(2.45,2.05)\n     if condition=='no_slot':node.rally_max_concurrent=1;node.rally_goal_pending['tb2']=True\n@@ -65,6 +68,19 @@ def test_waiting_observer_turn_funds_own_return_and_obeys_admission(condition,ad\n             1-2*goal.pose.orientation.z**2)==pytest.approx(math.pi/2)\n         assert node.record_navigation_decision.call_args.args[1]=='target_observation_heading'\n         assert node.survey_heading_only and node.rally_charge_budgets['tb1']==99.\n+        if condition=='unknown_target_los':assert node.map_data[38,20]==-1\n+\n+\n+def test_observer_survey_faces_confirmation_without_moving_into_unknown_los():\n+    node,client=observer_node();node.map_data[38:42,20:28]=-1\n+    pose=control.RallyPose(3.05,2.05,0.)\n+    assert not control.rally_target_view(node.map_data,.1,(0.,0.),(pose.x,pose.y),node.target,3.)\n+    assert control.HeadquartersControl.send_survey_goal(node,'tb1',pose)\n+    goal=client.send_goal_async.call_args.args[0].pose\n+    assert (goal.pose.position.x,goal.pose.position.y)==pytest.approx((3.05,2.05))\n+    q=goal.pose.orientation\n+    assert math.atan2(2*q.w*q.z,1-2*q.z*q.z)==pytest.approx(math.atan2(2.,-1.))\n+    assert np.all(node.map_data[38:42,20:28]==-1)\n \n \n def test_heading_success_does_not_claim_map_survey_progress_or_final_arrival():",
+  "prior_failure": "20261005_p3b5_observation_connection_development.json",
+  "new_holdout_exposed": false,
+  "limitations": [
+    "Native lab101 first sampled unobstructed in-range exposure187.9s followed detection188.1s; this supports late physical approach, not an earlier missed-camera root cause. AP snapshots are independent delivered data, not original controller buffers.",
+    "Zero-fault original had safe current observer cell and invalid map LOS with heading outside FOV; valid target coordinate can guide orientation only. No counterfactual successful scan proof.",
+    "Final-gain threshold, spatial diversity, useful-prefix and energy cost are bounded heuristics, not optimality or worst-case timing guarantees. Six independent originals and full57 same clean commit still required.",
+    "Keep strict checker, handoff5s, map/battery5s,poseTF2s,target60s,body/clearance/energy and native300s/.35/.05/.1/5s. No native control input, new retries or809 exposure."
+  ]
+}
