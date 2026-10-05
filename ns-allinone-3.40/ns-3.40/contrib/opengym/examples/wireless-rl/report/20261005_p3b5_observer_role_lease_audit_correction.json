@@ -1,0 +1,553 @@
+{
+  "status": "FAIL",
+  "recorded_at_utc": "2026-10-05T04:01:00.700274+00:00",
+  "original_archive": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261005_p3b5_observer_role_lease_development.json",
+    "sha256": "ceca4cb3a4a2726258f1d721869e10ec45b3ae5f097fa03bfa8d3b98335cfb2c",
+    "commit": "734bc8509fd13c034f5cf7b4e798296b5d9a5620"
+  },
+  "original_audit": {
+    "path": "/tmp/p3b5_v91_development_audit.json",
+    "sha256": "eb24dadf7c34f12fe96d92efbcc1fe0ec563f3a896852ea1d2402cb3fa617aba"
+  },
+  "checker_sha256": "783776e3c66da7bfc71dff321c69c3dc5e7b2ea1a878f47dd37c29c35a6210a6",
+  "correction": "The archive prose incorrectly stated all six temporal audits passed. lab101 was rejected by the unchanged 5-second observer-handoff lease; its graph check had not run because the combined try block stopped at that assertion. Audit every scope independently below. Preserve original raw, checker, failed audit and commit; do not weaken the gate.",
+  "closure": {
+    "ports_closed": [
+      18650,
+      18651,
+      18652,
+      18653
+    ],
+    "owners_closed": true,
+    "source_config_helper_and_user_hashes_unchanged": true,
+    "raw_file_manifest_unchanged": true
+  },
+  "evidence": [
+    {
+      "episode_id": "p3b5_v91_dev_fixed_lab101_lab_far_northwest_3r_seed101",
+      "ledger": "ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3b5_v91_dev_fixed_lab101/episodes/p3b5_v91_dev_fixed_lab101_lab_far_northwest_3r_seed101_ledger.jsonl",
+      "ledger_sha256": "5eac42e4e04575ec4c3d35db5108f52031e8de044290e3bfc1f6a48934d42d84",
+      "native_success": false,
+      "phase": "RALLY",
+      "elapsed_sim_time_sec": 300.1999999999998,
+      "temporal_audit": {
+        "status": "FAIL",
+        "reason": "AssertionError((PosixPath('/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3b5_v91_dev_fixed_lab101/episodes/p3b5_v91_dev_fixed_lab101_lab_far_northwest_3r_seed101_ledger.jsonl'), {'available_energy': 22.0937562505563, 'event': 'coordinator_observer_handoff_wait', 'event_time': 2243.282, 'mission_mode': 'rally', 'observer_source_time': 2234.082, 'required_energy': 27.83213432426428, 'robot': 'tb2'}))"
+      },
+      "observer_handoff_lease_violations": {
+        "count": 20,
+        "first": {
+          "available_energy": 22.0937562505563,
+          "event": "coordinator_observer_handoff_wait",
+          "event_time": 2243.282,
+          "mission_mode": "rally",
+          "observer_source_time": 2234.082,
+          "required_energy": 27.83213432426428,
+          "robot": "tb2"
+        },
+        "last": {
+          "available_energy": 19.282557734829094,
+          "event": "coordinator_observer_handoff_wait",
+          "event_time": 2376.482,
+          "mission_mode": "rally",
+          "observer_source_time": 2319.282,
+          "required_energy": 27.395326976403894,
+          "robot": "tb2"
+        }
+      },
+      "runtime_graph_audit": {
+        "status": "PASS",
+        "violations": [],
+        "graph_sha256": "70feba9bc130fd491c9ed4365274ed00cbd8f92cf1f880c6fd0db18831838ba7"
+      },
+      "native_completion_audit": {
+        "status": "FAIL",
+        "reason": "AssertionError()"
+      }
+    },
+    {
+      "episode_id": "p3b5_v91_dev_fixed_lab202_lab_far_northwest_3r_seed202",
+      "ledger": "ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3b5_v91_dev_fixed_lab202/episodes/p3b5_v91_dev_fixed_lab202_lab_far_northwest_3r_seed202_ledger.jsonl",
+      "ledger_sha256": "48fc254e1aa50cc31b85dde3162dc5440c176c334d0acbbb8cfedd800e383c30",
+      "native_success": false,
+      "phase": "FAILED",
+      "elapsed_sim_time_sec": 180.69999999999982,
+      "temporal_audit": {
+        "status": "PASS",
+        "details": {
+          "attempt_stage_causality": "PASS",
+          "receiver_ttl_and_versions": "PASS",
+          "coordinator_decision_source_leases": "PASS",
+          "event_counts": {
+            "generated": 7466,
+            "clock_deferred": 4905,
+            "enqueue": 7868,
+            "admitted": 7865,
+            "tx": 7865,
+            "delivered": 7865,
+            "accepted": 7764,
+            "drop": 3,
+            "fault_epoch": 1,
+            "acknowledged": 101,
+            "coordinator_wait": 30,
+            "coordinator_stale_inputs": 19,
+            "coordinator_recovered": 30,
+            "coordinator_navigation_decision": 18,
+            "command_accepted": 18,
+            "consumed": 1,
+            "target_reconfirmed": 39
+          },
+          "minimum_accepted_source_delay_sec": 0.007000000000061846,
+          "maximum_clock_deferral_sec": 0.08899999999994179,
+          "recovered_wait_intervals": [
+            [
+              2125.182,
+              2125.282
+            ],
+            [
+              2135.482,
+              2135.682
+            ],
+            [
+              2139.682,
+              2139.882
+            ],
+            [
+              2142.082,
+              2142.282
+            ],
+            [
+              2145.782,
+              2145.882
+            ],
+            [
+              2150.182,
+              2150.282
+            ],
+            [
+              2153.882,
+              2154.082
+            ],
+            [
+              2157.382,
+              2157.482
+            ],
+            [
+              2160.282,
+              2160.482
+            ],
+            [
+              2165.082,
+              2165.282
+            ],
+            [
+              2168.182,
+              2168.282
+            ],
+            [
+              2174.682,
+              2174.882
+            ],
+            [
+              2220.782,
+              2220.882
+            ],
+            [
+              2222.082,
+              2222.282
+            ],
+            [
+              2225.882,
+              2226.082
+            ],
+            [
+              2229.582,
+              2229.682
+            ],
+            [
+              2230.782,
+              2230.882
+            ],
+            [
+              2234.382,
+              2234.482
+            ],
+            [
+              2237.982,
+              2238.082
+            ],
+            [
+              2241.582,
+              2241.682
+            ],
+            [
+              2245.182,
+              2245.282
+            ],
+            [
+              2246.382,
+              2264.682
+            ],
+            [
+              2275.982,
+              2276.082
+            ],
+            [
+              2279.882,
+              2280.082
+            ],
+            [
+              2283.882,
+              2284.082
+            ],
+            [
+              2287.782,
+              2287.882
+            ],
+            [
+              2291.482,
+              2291.682
+            ],
+            [
+              2295.282,
+              2295.482
+            ],
+            [
+              2297.982,
+              2298.082
+            ],
+            [
+              2301.682,
+              2301.882
+            ]
+          ]
+        }
+      },
+      "observer_handoff_lease_violations": {
+        "count": 0,
+        "first": null,
+        "last": null
+      },
+      "runtime_graph_audit": {
+        "status": "PASS",
+        "violations": [],
+        "graph_sha256": "87bb43488f858a4bee422cdcb2a66b221a5937313bd0c4b49bc8cd93004b6c3e"
+      },
+      "native_completion_audit": {
+        "status": "FAIL",
+        "reason": "AssertionError()"
+      }
+    },
+    {
+      "episode_id": "p3b5_v91_dev_forced_ideal_forced2_rally_86fbb43bc6",
+      "ledger": "ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_v91_dev_forced/p3b5_v91_dev_forced_ideal_forced2_rally_86fbb43bc6/ledger.jsonl",
+      "ledger_sha256": "92519499cb3019b943e39b8823df77923bbe893582f0f5bc4e2075e57b952181",
+      "native_success": true,
+      "phase": "COMPLETE",
+      "elapsed_sim_time_sec": 233.0,
+      "temporal_audit": {
+        "status": "PASS",
+        "details": {
+          "attempt_stage_causality": "PASS",
+          "receiver_ttl_and_versions": "PASS",
+          "coordinator_decision_source_leases": "PASS",
+          "event_counts": {
+            "generated": 5241,
+            "clock_deferred": 3251,
+            "enqueue": 5919,
+            "admitted": 5917,
+            "tx": 5917,
+            "delivered": 5917,
+            "accepted": 5771,
+            "drop": 2,
+            "fault_epoch": 1,
+            "coordinator_wait": 9,
+            "coordinator_stale_inputs": 5,
+            "acknowledged": 146,
+            "coordinator_recovered": 9,
+            "coordinator_navigation_decision": 19,
+            "command_accepted": 19,
+            "coordinator_charge_decision": 2,
+            "consumed": 3,
+            "target_reconfirmed": 92,
+            "coordinator_rally_hold_diagnostic": 3
+          },
+          "minimum_accepted_source_delay_sec": 0.0009999999999763531,
+          "maximum_clock_deferral_sec": 0.08500000000003638,
+          "recovered_wait_intervals": [
+            [
+              2075.482,
+              2076.682
+            ],
+            [
+              2107.982,
+              2108.082
+            ],
+            [
+              2110.782,
+              2110.882
+            ],
+            [
+              2114.482,
+              2114.682
+            ],
+            [
+              2118.282,
+              2118.482
+            ],
+            [
+              2122.982,
+              2123.082
+            ],
+            [
+              2127.182,
+              2127.282
+            ],
+            [
+              2130.882,
+              2131.082
+            ],
+            [
+              2133.982,
+              2134.082
+            ]
+          ]
+        }
+      },
+      "observer_handoff_lease_violations": {
+        "count": 0,
+        "first": null,
+        "last": null
+      },
+      "runtime_graph_audit": {
+        "status": "PASS",
+        "violations": [],
+        "graph_sha256": "2e1c2a852329d638f6d2753d93896b9b9b45b84071836b629d731e3b2be297a0"
+      },
+      "native_completion_audit": {
+        "status": "PASS"
+      }
+    },
+    {
+      "episode_id": "p3b5_v91_dev_forced_forced_charge_outage_fault",
+      "ledger": "ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_v91_dev_forced/p3b5_v91_dev_forced_forced_charge_outage_fault/ledger.jsonl",
+      "ledger_sha256": "76c432e04e57c5305889ea45dabc1a89f2e1d868290ac1a86e7677714600814c",
+      "native_success": false,
+      "phase": "RALLY",
+      "elapsed_sim_time_sec": 300.4000000000001,
+      "temporal_audit": {
+        "status": "PASS",
+        "details": {
+          "attempt_stage_causality": "PASS",
+          "receiver_ttl_and_versions": "PASS",
+          "coordinator_decision_source_leases": "PASS",
+          "event_counts": {
+            "generated": 6215,
+            "clock_deferred": 3671,
+            "enqueue": 6877,
+            "admitted": 6881,
+            "tx": 6881,
+            "delivered": 5058,
+            "accepted": 4979,
+            "drop": 1823,
+            "fault_epoch": 1,
+            "acknowledged": 79,
+            "coordinator_wait": 7,
+            "coordinator_stale_inputs": 26,
+            "coordinator_recovered": 7,
+            "coordinator_navigation_decision": 24,
+            "command_accepted": 24,
+            "retry_scheduled": 6,
+            "failed": 3,
+            "coordinator_charge_decision": 2,
+            "consumed": 3,
+            "target_reconfirmed": 19,
+            "coordinator_rally_hold_diagnostic": 3
+          },
+          "minimum_accepted_source_delay_sec": 0.0029999999999290594,
+          "maximum_clock_deferral_sec": 0.08100000000013097,
+          "recovered_wait_intervals": [
+            [
+              2076.182,
+              2076.882
+            ],
+            [
+              2090.282,
+              2090.482
+            ],
+            [
+              2097.482,
+              2206.682
+            ],
+            [
+              2222.282,
+              2222.482
+            ],
+            [
+              2226.682,
+              2226.882
+            ],
+            [
+              2230.982,
+              2231.082
+            ],
+            [
+              2234.582,
+              2234.682
+            ]
+          ]
+        }
+      },
+      "observer_handoff_lease_violations": {
+        "count": 0,
+        "first": null,
+        "last": null
+      },
+      "runtime_graph_audit": {
+        "status": "PASS",
+        "violations": [],
+        "graph_sha256": "65ebe4ac85367db73000c4bd380f5a3754c2c5ceea3906ed721b7a659c00bd90"
+      },
+      "native_completion_audit": {
+        "status": "FAIL",
+        "reason": "AssertionError()"
+      }
+    },
+    {
+      "episode_id": "p3b5_v91_dev_zero_ideal_lab2_rally_8d4d5c469d",
+      "ledger": "ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_v91_dev_zero/p3b5_v91_dev_zero_ideal_lab2_rally_8d4d5c469d/ledger.jsonl",
+      "ledger_sha256": "78b2adfa55dbc68b19f6b42e357721be930a3439c05a593e85c9ae56eea82712",
+      "native_success": true,
+      "phase": "COMPLETE",
+      "elapsed_sim_time_sec": 196.20000000000027,
+      "temporal_audit": {
+        "status": "PASS",
+        "details": {
+          "attempt_stage_causality": "PASS",
+          "receiver_ttl_and_versions": "PASS",
+          "coordinator_decision_source_leases": "PASS",
+          "event_counts": {
+            "generated": 4567,
+            "clock_deferred": 2658,
+            "enqueue": 5216,
+            "admitted": 5214,
+            "tx": 5214,
+            "delivered": 5214,
+            "accepted": 5079,
+            "drop": 2,
+            "coordinator_wait": 2,
+            "coordinator_stale_inputs": 2,
+            "fault_epoch": 1,
+            "acknowledged": 135,
+            "coordinator_recovered": 2,
+            "coordinator_navigation_decision": 25,
+            "command_accepted": 25,
+            "consumed": 2,
+            "target_reconfirmed": 59,
+            "coordinator_rally_hold_diagnostic": 11
+          },
+          "minimum_accepted_source_delay_sec": 0.005000000000109139,
+          "maximum_clock_deferral_sec": 0.09200000000009823,
+          "recovered_wait_intervals": [
+            [
+              2075.182,
+              2076.482
+            ],
+            [
+              2085.482,
+              2085.682
+            ]
+          ]
+        }
+      },
+      "observer_handoff_lease_violations": {
+        "count": 0,
+        "first": null,
+        "last": null
+      },
+      "runtime_graph_audit": {
+        "status": "PASS",
+        "violations": [],
+        "graph_sha256": "78d9cfee75e0961299b37552909d4083d07545f021ce21342fb942fd9aac7a4d"
+      },
+      "native_completion_audit": {
+        "status": "PASS"
+      }
+    },
+    {
+      "episode_id": "p3b5_v91_dev_zero_zero_rally_lab_fault",
+      "ledger": "ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_v91_dev_zero/p3b5_v91_dev_zero_zero_rally_lab_fault/ledger.jsonl",
+      "ledger_sha256": "2965b23d57351a15ff3218d531a5a3befbdd4021868bb6de8891c883c5a19e75",
+      "native_success": true,
+      "phase": "COMPLETE",
+      "elapsed_sim_time_sec": 198.80000000000018,
+      "temporal_audit": {
+        "status": "PASS",
+        "details": {
+          "attempt_stage_causality": "PASS",
+          "receiver_ttl_and_versions": "PASS",
+          "coordinator_decision_source_leases": "PASS",
+          "event_counts": {
+            "generated": 5494,
+            "clock_deferred": 3200,
+            "enqueue": 6159,
+            "admitted": 6158,
+            "tx": 6158,
+            "delivered": 6158,
+            "accepted": 6018,
+            "drop": 1,
+            "fault_epoch": 1,
+            "acknowledged": 140,
+            "coordinator_wait": 2,
+            "coordinator_stale_inputs": 2,
+            "coordinator_recovered": 2,
+            "coordinator_navigation_decision": 25,
+            "command_accepted": 25,
+            "consumed": 2,
+            "target_reconfirmed": 75,
+            "coordinator_rally_hold_diagnostic": 14
+          },
+          "minimum_accepted_source_delay_sec": 0.005999999999858119,
+          "maximum_clock_deferral_sec": 0.09400000000005093,
+          "recovered_wait_intervals": [
+            [
+              2141.182,
+              2142.682
+            ],
+            [
+              2157.882,
+              2158.082
+            ]
+          ]
+        }
+      },
+      "observer_handoff_lease_violations": {
+        "count": 0,
+        "first": null,
+        "last": null
+      },
+      "runtime_graph_audit": {
+        "status": "PASS",
+        "violations": [],
+        "graph_sha256": "3dc1e9a226f5beb61be982b2216bba0e7c1bb24519a3c4d1a5e542d0b01cba07"
+      },
+      "native_completion_audit": {
+        "status": "PASS"
+      }
+    }
+  ],
+  "new_holdout_exposed": false,
+  "counts": {
+    "temporal_pass": 5,
+    "temporal_fail": 1,
+    "runtime_graph_pass": 6,
+    "native_complete": 3,
+    "original_episodes": 6
+  },
+  "reader": {
+    "path": "/tmp/correct_p3b5_v91_archive.py",
+    "sha256": "bfb71a22b90e619696804fefa1d41e86fbf32cd4cd7925d18fea8646774b59f3",
+    "text": "import hashlib,json,socket,subprocess,sys\nfrom datetime import datetime,timezone\nfrom pathlib import Path\n\nROOT=Path('/home/zhuyulab/ns3-workspace');ROS=ROOT/'ros2_ws/ros2-multi-robot-automap';W=ROOT/'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl'\nsys.path.insert(0,str(ROS/'scripts'))\nfrom check_p3b5_gate import ledger_audit,episode_ok,Snapshot,runtime_violations\n\noriginal=W/'report/20261005_p3b5_observer_role_lease_development.json'\na=json.loads(original.read_text());d=a['declaration']\nassert d.get('finished_at_utc') and a['status']=='FAIL' and len(a['evidence'])==6\nfor name,row in d['sources'].items():assert hashlib.sha256(Path(name).read_bytes()).hexdigest()==row['sha256'],name\nfor name,value in d['runtime_source_sha256'].items():assert hashlib.sha256((ROOT/name).read_bytes()).hexdigest()==value,name\nfor name,row in d['configs'].items():assert hashlib.sha256((ROOT/name).read_bytes()).hexdigest()==row['sha256'],name\nfor name,value in d['user_materials_sha256'].items():assert hashlib.sha256((ROOT/name).read_bytes()).hexdigest()==value,name\nfor name,row in a['file_manifest'].items():assert hashlib.sha256((ROOT/name).read_bytes()).hexdigest()==row['sha256'],name\nports=tuple(p['port'] for p in d['plans'])\nfor execution in d['executions']:\n    assert not Path('/proc',str(execution['pid'])).exists()\nfor port in ports:\n    with socket.socket() as sock:assert sock.connect_ex(('127.0.0.1',port))!=0\nfor p in Path('/proc').iterdir():\n    if not p.name.isdigit():continue\n    try:env=(p/'environ').read_bytes().split(b'\\0')\n    except OSError:continue\n    assert not any(f'GAZEBO_MASTER_URI=http://127.0.0.1:{port}'.encode() in env for port in ports),p.name\nchecker=ROS/'scripts/check_p3b5_gate.py'\nassert hashlib.sha256(checker.read_bytes()).hexdigest()=='783776e3c66da7bfc71dff321c69c3dc5e7b2ea1a878f47dd37c29c35a6210a6'\nmanifest=json.loads((ROS/'src/multi_robot_exploration/config/p3a_forbidden_bypasses.json').read_text())\nout=dict(status='FAIL',recorded_at_utc=datetime.now(timezone.utc).isoformat(),\n    original_archive=dict(path=str(original.relative_to(ROOT)),sha256=hashlib.sha256(original.read_bytes()).hexdigest(),commit=subprocess.check_output(['rtk','proxy','git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()),\n    original_audit=dict(path='/tmp/p3b5_v91_development_audit.json',sha256=hashlib.sha256(Path('/tmp/p3b5_v91_development_audit.json').read_bytes()).hexdigest()),\n    checker_sha256=hashlib.sha256(checker.read_bytes()).hexdigest(),\n    correction='The archive prose incorrectly stated all six temporal audits passed. lab101 was rejected by the unchanged 5-second observer-handoff lease; its graph check had not run because the combined try block stopped at that assertion. Audit every scope independently below. Preserve original raw, checker, failed audit and commit; do not weaken the gate.',\n    closure=dict(ports_closed=list(ports),owners_closed=True,source_config_helper_and_user_hashes_unchanged=True,raw_file_manifest_unchanged=True),evidence=[],new_holdout_exposed=False)\nfor e in a['evidence']:\n    path=Path(e['row']['result_path']);r=e['result'];kind=e['kind']\n    ledger=path.with_name(path.stem+'_ledger.jsonl') if kind.startswith('lab') else path.parent/'ledger.jsonl'\n    graph=Path(e['row']['graph_path']) if kind.startswith('lab') else path.parent/'graph.json'\n    row=dict(episode_id=e['episode_id'],ledger=str(ledger.relative_to(ROOT)),ledger_sha256=hashlib.sha256(ledger.read_bytes()).hexdigest(),native_success=r['success'],phase=r['task_phase'],elapsed_sim_time_sec=r['elapsed_sim_time_sec'])\n    try:row['temporal_audit']=dict(status='PASS',details=ledger_audit(ledger))\n    except Exception as error:row['temporal_audit']=dict(status='FAIL',reason=repr(error))\n    bad=[v for line in ledger.open() if (v:=json.loads(line))['event']=='coordinator_observer_handoff_wait' and not 0<=v['event_time']-v['observer_source_time']<=5+1e-8]\n    row['observer_handoff_lease_violations']=dict(count=len(bad),first=bad[0] if bad else None,last=bad[-1] if bad else None)\n    violations=runtime_violations(Snapshot(json.loads(graph.read_text())['nodes']),manifest,len(r['robots']))\n    row['runtime_graph_audit']=dict(status='FAIL' if violations else 'PASS',violations=violations,graph_sha256=hashlib.sha256(graph.read_bytes()).hexdigest())\n    try:episode_ok(r);row['native_completion_audit']=dict(status='PASS')\n    except Exception as error:row['native_completion_audit']=dict(status='FAIL',reason=repr(error))\n    out['evidence'].append(row)\nassert [e['temporal_audit']['status'] for e in out['evidence']]==['FAIL','PASS','PASS','PASS','PASS','PASS']\nassert all(e['runtime_graph_audit']['status']=='PASS' for e in out['evidence'])\nassert sum(e['native_completion_audit']['status']=='PASS' for e in out['evidence'])==3\nout['counts']=dict(temporal_pass=5,temporal_fail=1,runtime_graph_pass=6,native_complete=3,original_episodes=6)\nout['reader']=dict(path=__file__,sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),text=Path(__file__).read_text())\np=W/'report/20261005_p3b5_observer_role_lease_audit_correction.json';assert not p.exists();p.write_text(json.dumps(out,indent=2,ensure_ascii=False)+'\\n')\nparagraph=('2026-10-05 P3B.5 v91归档审计更正：此前734bc85“所有原ledger/graph审核通过”错误，后置核验KeyError(temporal_audit)后仍继续提交；现分别审计六原始格，未修改原checker/ledger/helper。lab101时间审计FAIL，首个observer_handoff_wait在2243.282使用2234.082确认、年龄9.2s，违反原5s交接门槛；其余五时间审计PASS，六运行图独立PASS，三个原生COMPLETE、两fixed任务失败及forced fault安全结果不变。原JSON/失败audit/原始物理旁录/hash/提交保留，report/20261005_p3b5_observer_role_lease_audit_correction.json/.md明确取代旧“六时间通过”结论。全部原owner/观察器/四master已关闭，原源/配置/helper/用户17文件及raw hash一致。v90角色保护60s未满足既定5s门槛，不能进入正式验收；后续恢复5s并修复实际朝向/连接调查，绝不放宽checker、TTL、能量、净空或原生完成条件。未重跑、回填或执行809/28091，P3B.5尚未完成，无ns3/RL。')\np.with_suffix('.md').write_text('# P3B.5 v91审计更正\\n\\n'+paragraph+'\\n\\n'+ '\\n'.join(f\"- {e['episode_id']}: temporal {e['temporal_audit']['status']}, graph {e['runtime_graph_audit']['status']}, native {e['native_completion_audit']['status']}\" for e in out['evidence'])+'\\n')\nfor p in (ROOT/'AGENTS.md',W/'AGENTS.md',W/'IMPLEMENTATION_PLAN.md',W/'RESEARCH_PLAN.md',W/'log.md',original.with_suffix('.md')):\n    text=p.read_text();text=text.replace('六格真实参数响应齐全且正确，所有原ledger/graph审核通过；','六格真实参数响应齐全且正确；时间审计五PASS、lab101 FAIL，六运行图独立审核PASS（见审计更正）；')\n    text=text.replace('仍RALLY timeout300.3；原生旁录','仍RALLY timeout300.2；原生旁录')\n    p.write_text(text+'\\n'+paragraph+'\\n')\nwith (W/'log.md').open('a') as s:s.write('\\n更正只读命令，ROS cwd/source Humble/install/PYTHONNOUSERSITE=1：\\n\\n```bash\\n/usr/bin/python3 /tmp/correct_p3b5_v91_archive.py > /tmp/p3b5_v91_archive_correction.log 2>&1\\n```\\n')\nprint(json.dumps(dict(output=str(p.relative_to(ROOT)),counts=out['counts'],first_violation=out['evidence'][0]['observer_handoff_lease_violations']),ensure_ascii=False))\n"
+  }
+}
