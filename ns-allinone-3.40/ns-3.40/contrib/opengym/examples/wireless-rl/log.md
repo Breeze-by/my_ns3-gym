@@ -6708,3 +6708,24 @@ export PYTHONNOUSERSITE=1
 ```
 
 The delivered velocity resets are corroborated by actual native post-arrival angular spikes near0.19–0.21rad/s after Nav2 actions finish. Native thresholds must remain unchanged. This independent original completed and cannot establish the cause of the earlier v80 failed run. Actual cmd_vel was not captured, so the cause of physical settling spikes remains unestablished; next capture the existing Nav2 input/output commands read-only before selecting a motion-control optimization.
+
+## 2026-10-05 P3B.5 v83运动与时钟诊断FAIL
+
+2026-10-05 P3B.5 v83独立lab101运动/时钟诊断FAIL，冻结473810d3c0188eb8efc282059980c5324a03f6d7，02:32:39–02:40:41UTC全部原任务/AP与补充观察器关闭；检测227.5s/RALLY229.7s，任务timeout300.2s/charge2/0碰撞/无原生保持。原运动观察器缺scripts导入路径失败，第一补充进程父归属校验失败，第二补充输出目录重复失败，第三补充在任务开始后正常采集；原冻结helper未修改、任务未重启，部分采集不标完整装置PASS。三机真实参数查询确认controller_server用sim时间而velocity_smoother均use_sim_time=false、其20Hz/OPEN_LOOP/速度及加减速使用默认值；YAML缺该节点参数段。最后转向.7rad/s后输入/输出已归零，任务297.4–297.5s原生角速度约.131/.184rad/s，交付.16221重置保持；不能推断非零命令重放或clock配置就是物理峰值原因。Humble源码平滑回调是wall timer，命令超时now()使用节点时钟；下一步修复可确认的timeout时钟不一致，不宣称修改了wall callback或消除了物理抖动。ledger/graph、显式18050/domain23及所有owner/PID/source/helper/用户资料关闭审核PASS；准备器stdout的domain24标签是文字错误，实际计划/runner/domain均23且保留原文本。报告report/20261005_p3b5_motion_clock_diagnostic_development.json/.md。全部失败保留、不回填；809/28091仍从未执行，P3B.5未完成，无ns3/RL。
+
+canonical ROS cwd/source Humble/install/Gazebo；TURTLEBOT3_MODEL=waffle、PYTHONNOUSERSITE=1、ROS_LOG_DIR=log/ros_launch；实际master18050/domain23/CPU0–79；原任务仅一次，无retry。入口与实际命令：
+
+```bash
+/usr/bin/python3 /tmp/prepare_p3b5_v83_motion_diagnosis.py
+/usr/bin/python3 /tmp/run_p3b5_v83_development.py > /tmp/p3b5_v83_owner.log 2>&1
+ROS_DOMAIN_ID=23 /usr/bin/python3 /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py --world my_world.world --robot-count 3 --gazebo-seed 101 --goal-timeout 60.0 --startup-timeout 600.0 --message-timeout 90.0 --shutdown-timeout 60.0 --evaluation-duration 300.0 --coverage-threshold 0 --evaluation-wait-timeout 900.0 --target-detection --rally --rally-assignment-objective minimax --rally-max-concurrent 2 --battery --battery-capacity 100.0 --battery-initial-energy 40.0 --target-x -4.0 --target-y 4.0 --evaluation-output-dir /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3b5_v83_dev_fixed_lab101/episodes --log-dir /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3b5_v83_dev_fixed_lab101/launch_logs --episode-id p3b5_v83_dev_fixed_lab101_lab_far_northwest_3r_seed101 --bypass-audit-output /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3b5_v83_dev_fixed_lab101/graphs/p3b5_v83_dev_fixed_lab101_lab_far_northwest_3r_seed101.json --gateway-ledger-path /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2d_baseline/p3b5_v83_dev_fixed_lab101/episodes/p3b5_v83_dev_fixed_lab101_lab_far_northwest_3r_seed101_ledger.jsonl --disable-global-battery-rally-pause
+/usr/bin/python3 /tmp/run_p3b5_v83_supplemental_motion_capture.py > /tmp/p3b5_v83_supplemental_owner.log 2>&1
+/usr/bin/python3 /tmp/run_p3b5_v83_supplemental_motion_capture2.py > /tmp/p3b5_v83_supplemental_owner2.log 2>&1
+/usr/bin/python3 /tmp/run_p3b5_v83_supplemental_motion_capture3.py > /tmp/p3b5_v83_supplemental_owner3.log 2>&1
+ROS_DOMAIN_ID=23 GAZEBO_MASTER_URI=http://127.0.0.1:18050 taskset -c 0-79 /usr/bin/python3 /tmp/query_p3b5_v83_smoother_clock.py > /tmp/p3b5_v83_smoother_clock.log 2>&1
+/usr/bin/python3 /tmp/audit_p3b5_v83_motion_diagnosis.py > /tmp/p3b5_v83_motion_diagnosis_audit.log 2>&1
+```
+
+Three runtime controller_server use_sim_time values are true while all three velocity_smoother values are false; the smoother has no YAML parameter section. This is a confirmed configuration inconsistency. The original task detected late and timed out; last observed commands are zero before post-arrival native angular spikes, so nonzero command replay is not established as the settling cause. Keep strict native criteria and physics unchanged. Supplemental capture is partial and apparatus failures remain FAIL.
+
+[Humble源码](https://api.nav2.org/nav2-humble/html/velocity__smoother_8cpp_source.html)：Humble uses a wall timer for smoothing callbacks; velocity command timeout uses the node clock via now(). Setting use_sim_time fixes timeout clock consistency, not the wall callback timer or a demonstrated physical-spike cause.
