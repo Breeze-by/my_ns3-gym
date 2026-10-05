@@ -1955,11 +1955,11 @@ def rally_priority_reservations(order, robot_name, routes, completed):
     return reservations
 
 
-def rally_observation_guard(observer, source_time, now, modes, freshness_sec=TARGET_OBSERVER_FRESHNESS_SEC):
-    """Keep the last live visual observer until a peer confirms a handoff."""
+def rally_observation_guard(observer, source_time, now, modes, freshness_sec=TARGET_DETECTION_TTL_SEC):
+    """Protect the last observer role within the accepted target lease."""
     if (observer not in modes or modes[observer] != "ACTIVE"
             or source_time is None or not math.isfinite(source_time)
-            or not 0 <= now - source_time <= min(freshness_sec, TARGET_OBSERVER_FRESHNESS_SEC)
+            or not 0 <= now - source_time <= min(freshness_sec, TARGET_DETECTION_TTL_SEC)
             or not any(name != observer and mode in ("ACTIVE", "RETURNING", "CHARGING")
                        for name, mode in modes.items())):
         return None
@@ -3930,7 +3930,7 @@ class HeadquartersControl(Node):
             getattr(self, "target_observing_robot", None),
             getattr(self, "target_received_source_time", None),
             now, self.battery_modes,
-            getattr(self, "message_freshness_timeout_sec", 5.0),
+            TARGET_DETECTION_TTL_SEC,
         )
         if self.rally_observer_guard in self.rally_charge_requested:
             self.rally_observer_guard = None  # Never revoke an admitted safety return.
@@ -4015,7 +4015,7 @@ class HeadquartersControl(Node):
                         "robot": name, "observer_source_time": self.target_received_source_time,
                         "available_energy": energy, "required_energy": required,
                     }, sort_keys=True)))
-                    self.get_logger().info(f"Preserving {name}'s fresh visual contact while a peer approaches.")
+                    self.get_logger().info(f"Preserving {name}'s observer role while a peer confirms a handoff.")
                 continue  # The local reserve may still preempt without permission.
             candidates.append((math.dist(self.robot_positions[name], home),
                                name, energy, required))

@@ -6847,3 +6847,15 @@ export PYTHONNOUSERSITE=1
 ```
 
 Independent originals, no formal backfill or counterfactual causal claim. Detector is Gazebo geometric visibility proxy, not image recognition. Native evaluator/physics only read-only evidence; native truth never enters mission control. Nominal serial energy/time/parking costs remain heuristics.
+
+## 2026-10-05 P3B.5 v90观测者角色交接组件
+
+2026-10-05 P3B.5 v90观测者角色租约组件：最后交付确认对应的观测者角色保留至原target源租约60s内的实际同伴新确认接替，5s心跳缺口不再被当作交接完成。角色保护不宣称当下仍可见，不生成检测/不续租source；本地非ACTIVE、已接纳早充请求及capacity不足仍优先。相机heartbeat/朝向修复5s、target TTL60s、其他源TTL/早充串行/全路线+等待+返航预算/机体净空/300s/.35/.05/.1/5s原生门不改。仅rally_observation_guard和prepare_rally_charges AST变化，其余控制函数AST一致；battery/evaluator/strict checker/staging/四Nav2/SLAM2s配置与C++/manifest/809world/SDF字节不变。现有handoff回归加入超过5s但有效target的实际等待、真实新peer确认才移交；边界60s/未来stamp/非finite/返航/充电/FAILED-peer均覆盖。556检查18.00s、四包build5.31s/source3r0旁路PASS；组件不证明任务收益，下一独立六格需完整关闭、保留再新冻结正式57格。v88六原始FAIL已14a5798完整归档，不回填；809/28091仍未执行，P3B.5未完成，无ns3/WiFi/RL。报告report/20261005_p3b5_observer_role_lease_component.json。
+
+canonical ROS cwd/source Humble+install/PYTHONNOUSERSITE=1/ROS_LOG_DIR=log/ros_launch；所有检查exit0并reaped。命令：
+
+```bash
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_control.py src/multi_robot_exploration/test/test_exploration_resume.py src/multi_robot_exploration/test/test_exploration_charging.py src/multi_robot_exploration/test/test_return_progress.py src/multi_robot_exploration/test/test_rally_observer_parking.py src/multi_robot_exploration/test/test_battery_manager.py src/multi_robot_exploration/test/test_gateway.py src/multi_robot_exploration/test/test_fault_model.py src/multi_robot_exploration/test/test_navigation_faults.py src/multi_robot_exploration/test/test_task_evaluator.py src/multi_robot_exploration/test/test_nav2_ready_gate.py src/multi_robot_exploration/test/test_readiness.py src/multi_robot_exploration/test/test_spawn_entity_checked.py src/multi_robot_exploration/test/test_tf_ingress_sampler.py src/multi_robot_exploration/test/test_target_detector.py src/merge_map/test/test_merge_map.py scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py scripts/test_ros_smoke_native_probe.py scripts/test_observer_lifetime.py > /tmp/p3b5_v90_component_checks.log 2>&1
+colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot > /tmp/p3b5_v90_build.log 2>&1
+/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v90_source_audit.log 2>&1
+```
