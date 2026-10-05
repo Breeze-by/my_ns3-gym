@@ -1955,11 +1955,11 @@ def rally_priority_reservations(order, robot_name, routes, completed):
     return reservations
 
 
-def rally_observation_guard(observer, source_time, now, modes, freshness_sec=TARGET_DETECTION_TTL_SEC):
-    """Protect the last observer role within the accepted target lease."""
+def rally_observation_guard(observer, source_time, now, modes, freshness_sec=TARGET_OBSERVER_FRESHNESS_SEC):
+    """Protect an observer only while its delivered confirmation is recent."""
     if (observer not in modes or modes[observer] != "ACTIVE"
             or source_time is None or not math.isfinite(source_time)
-            or not 0 <= now - source_time <= min(freshness_sec, TARGET_DETECTION_TTL_SEC)
+            or not 0 <= now - source_time <= min(freshness_sec, TARGET_OBSERVER_FRESHNESS_SEC)
             or not any(name != observer and mode in ("ACTIVE", "RETURNING", "CHARGING")
                        for name, mode in modes.items())):
         return None
@@ -2190,6 +2190,7 @@ class HeadquartersControl(Node):
         self.target_search_basis = "current_map_frontiers"
         self.survey_goal_started_at = None
         self.survey_attempts = 0
+        self.survey_heading_only = False
         self.survey_dispatch_cursor = 0
         self.survey_robot = None
         self.survey_battery_preempted = False
@@ -3118,6 +3119,9 @@ class HeadquartersControl(Node):
             ):
                 return
 
+            if HeadquartersControl.restore_observer_heading(self) or self.task_state == "FAILED":
+                return
+
             if not self.rally_targets:
                 if (
                     self.map_data is None
@@ -3198,6 +3202,10 @@ class HeadquartersControl(Node):
                         )
                         if survey_pose is not None and self.send_survey_goal(survey_robot, survey_pose):
                             return
+                    if (self.task_state == "FAILED"
+                            or HeadquartersControl.survey_rally_connection(self, active_positions)
+                            or self.task_state == "FAILED"):
+                        return
                     if (
                         self.rally_prepare_started_at is not None
                         and now - self.rally_prepare_started_at
@@ -3264,6 +3272,9 @@ class HeadquartersControl(Node):
             self.survey_goal_started_at = None
             self.survey_cancel_requested = True
             self.survey_goal_handle.cancel_goal_async()
+        if HeadquartersControl.restore_observer_heading(self) or self.task_state == "FAILED":
+            self.rally_hold_started_at = None
+            return
         self.release_return_yields()
         yielded_names = [
             name for name in self.rally_yield_targets
@@ -3930,7 +3941,7 @@ class HeadquartersControl(Node):
             getattr(self, "target_observing_robot", None),
             getattr(self, "target_received_source_time", None),
             now, self.battery_modes,
-            TARGET_DETECTION_TTL_SEC,
+            TARGET_OBSERVER_FRESHNESS_SEC,
         )
         if self.rally_observer_guard in self.rally_charge_requested:
             self.rally_observer_guard = None  # Never revoke an admitted safety return.
@@ -4092,7 +4103,69 @@ class HeadquartersControl(Node):
         self.rally_detour_budgets.pop(robot_name, None)
         return True
 
-    def send_survey_goal(self, robot_name, pose):
+    def restore_observer_heading(self):
+        """Center a valid delivered target before a waiting observer loses view."""
+        name = getattr(self, "target_observing_robot", None)
+        position = self.robot_positions.get(name)
+        yaw = getattr(self, "robot_yaws", {}).get(name)
+        if (position is None or yaw is None or not math.isfinite(yaw)
+                or self.battery_modes.get(name) != "ACTIVE"
+                or name in self.rally_charge_requested
+                or name in self.return_yield_targets
+                or getattr(self, "rally_arrived", {}).get(name, False)
+                or self.rally_goal_handles.get(name) is not None
+                or self.rally_goal_pending.get(name, False)
+                or getattr(self, "goal_handles", {}).get(name) is not None
+                or getattr(self, "robot_states", {}).get(name, "idle") != "idle"
+                or any(mode == "RETURNING" for mode in self.battery_modes.values())
+                or sum(self.rally_goal_handles.get(n) is not None
+                       or self.rally_goal_pending.get(n, False) for n in self.battery_modes)
+                    >= getattr(self, "rally_max_concurrent", RALLY_MAX_CONCURRENT)
+                or self.survey_goal_handle is not None or self.survey_goal_pending
+                or self.target is None or not self.fresh_target()):
+            return False
+        heading = math.atan2(self.target[1] - position[1], self.target[0] - position[0])
+        if (abs(math.atan2(math.sin(heading - yaw), math.cos(heading - yaw)))
+                <= getattr(self, "target_view_fov_rad", math.pi / 2) / 4
+                or not rally_target_view(self.map_data, self.resolution, self.origin,
+                    position, self.target,
+                    getattr(self, "target_view_distance", 3.) - self.rally_position_tolerance)):
+            return False
+        return HeadquartersControl.send_survey_goal(
+            self, name, RallyPose(*position, heading), heading_only=True)
+
+    def survey_rally_connection(self, positions):
+        """Investigate reachable unknown boundaries when target approaches stall."""
+        if getattr(self, "frontier_cache", None) is None:
+            self.frontier_cache = prepare_frontier_data(self.map_data, self.resolution)
+        frontier_data = self.frontier_cache
+        candidates = []
+        for name, position in positions.items():
+            if (self.battery_modes[name] != "ACTIVE"
+                    or name == getattr(self, "target_observing_robot", None)):
+                continue
+            options, _ = robot_candidate_assignments(
+                self.map_data, self.resolution, self.origin, name, position,
+                frontier_data=frontier_data, blocked_positions=[
+                    p for other, p in self.robot_positions.items()
+                    if other != name and p is not None])
+            for utility, _, _, assignment in options:
+                edge = grid_to_world(assignment.viewpoint.frontier_row,
+                    assignment.viewpoint.frontier_column, self.resolution, *self.origin)
+                # Target proximity ranks actual frontier boundaries, without
+                # requiring each known-free leg to reduce straight-line range.
+                candidates.append((math.dist(edge, self.target), -utility, name, assignment))
+        for _, _, name, assignment in sorted(candidates, key=lambda row: row[:3]):
+            view = assignment.viewpoint
+            pose = RallyPose(assignment.x, assignment.y, math.atan2(
+                view.frontier_row - view.row, view.frontier_column - view.column))
+            if self.send_survey_goal(name, pose):
+                return True
+            if self.task_state == "FAILED":
+                return False
+        return False
+
+    def send_survey_goal(self, robot_name, pose, heading_only=False):
         if not self.fresh_robot_inputs() or not self.fresh_target():
             return False
         if self.survey_goal_handle is not None or self.survey_goal_pending:
@@ -4112,26 +4185,53 @@ class HeadquartersControl(Node):
                    if name != robot_name and position is not None]
         # Fund the dispatched prefix and its own conservative return. Shorten
         # an optional survey instead of sending an unfunded whole-route goal.
-        cache = {}
-        length = MAX_NAVIGATION_LEG_M
-        plan = (None, ())
-        while length >= USEFUL_TRAVEL_M:
-            plan = plan_rally_leg(pose, self.map_data, self.resolution, self.origin,
-                                  self.robot_positions[robot_name], length,
-                                  blocked_positions=blocked, visible_only=True,
-                                  route_cache=cache)
-            plan = reserve_rally_prefix(plan, reservations)
-            if plan is not None and plan[0] is not None:
-                distance = sum(math.dist(a, b) for a, b in zip(
-                    (self.robot_positions[robot_name], *plan[1]), plan[1]))
-                if (math.dist(self.robot_positions[robot_name], (plan[0].x, plan[0].y)) > self.rally_position_tolerance
-                        and self.exploration_battery_factor(robot_name, distance,
-                            (plan[0].x, plan[0].y)) == 1.):
-                    break
-            length /= 2
+        if heading_only:
+            position = self.robot_positions[robot_name]
+            safe = block_dynamic_positions(traversable_grid(self.map_data,
+                self.resolution, RALLY_PATH_CLEARANCE_M), self.resolution, self.origin, blocked)
+            cell = world_to_grid(*position, self.resolution, *self.origin)
+            if (not all(math.isfinite(v) for v in (pose.x, pose.y, pose.yaw))
+                    or math.dist(position, (pose.x, pose.y)) > 1e-8
+                    or not (0 <= cell[0] < safe.shape[0] and 0 <= cell[1] < safe.shape[1])
+                    or not safe[cell]
+                    or any(mode == "RETURNING" for mode in self.battery_modes.values())
+                    or self.rally_goal_handles.get(robot_name) is not None
+                    or self.rally_goal_pending.get(robot_name, False)):
+                return False
+            plan = reserve_rally_prefix((pose, (position,)), reservations)
+            if plan is None:
+                return False
+            if self.enable_battery:
+                required = HeadquartersControl.exploration_required_energy(self, robot_name, 0., position)
+                if required is None:
+                    return False
+                state = self.battery_states[robot_name]
+                idle = float(state.get("idle_cost_per_sec", .02))
+                if (not math.isfinite(idle) or idle < 0
+                        or float(state["energy"]) <= required + idle * self.goal_timeout_sec):
+                    return False
         else:
-            return False
-        pose = plan[0]
+            cache = {}
+            length = MAX_NAVIGATION_LEG_M
+            plan = (None, ())
+            while length >= USEFUL_TRAVEL_M:
+                plan = plan_rally_leg(pose, self.map_data, self.resolution, self.origin,
+                                      self.robot_positions[robot_name], length,
+                                      blocked_positions=blocked, visible_only=True,
+                                      route_cache=cache)
+                plan = reserve_rally_prefix(plan, reservations)
+                if plan is not None and plan[0] is not None:
+                    distance = sum(math.dist(a, b) for a, b in zip(
+                        (self.robot_positions[robot_name], *plan[1]), plan[1]))
+                    if (math.dist(self.robot_positions[robot_name], (plan[0].x, plan[0].y)) > self.rally_position_tolerance
+                            and self.exploration_battery_factor(robot_name, distance,
+                                (plan[0].x, plan[0].y)) == 1.):
+                        break
+                length /= 2
+            else:
+                return False
+        pose = rally_observation_heading(plan[0], getattr(self, "target", None), self.map_data,
+            self.resolution, self.origin, getattr(self, "target_view_distance", 3.))
         allowed_attempts = self.num_robots * (1 + self.rally_max_retries)
         if self.survey_attempts >= allowed_attempts:
             self.fail_task(
@@ -4152,9 +4252,11 @@ class HeadquartersControl(Node):
         goal.pose.pose.orientation.w = math.cos(pose.yaw / 2.0)
         self.survey_attempts += 1
         self.survey_robot = robot_name
+        self.survey_heading_only = heading_only
         self.survey_cancel_requested = False
         self.survey_goal_pending = True
-        self.record_navigation_decision(robot_name, "target_survey", goal.pose)
+        self.record_navigation_decision(robot_name,
+            "target_observation_heading" if heading_only else "target_survey", goal.pose)
         future = client.send_goal_async(goal)
         future.add_done_callback(self.survey_goal_response)
         return True
@@ -4212,6 +4314,8 @@ class HeadquartersControl(Node):
         self.survey_goal_handle = None
         self.survey_goal_started_at = None
         survey_robot = self.survey_robot
+        heading_only = getattr(self, "survey_heading_only", False)
+        self.survey_heading_only = False
         canceled = self.survey_cancel_requested
         self.survey_cancel_requested = False
         self.survey_robot = None
@@ -4240,7 +4344,7 @@ class HeadquartersControl(Node):
                     f"{survey_robot} completed a rally probe; restoring its "
                     "final rally pose."
                 )
-            else:
+            elif not heading_only:
                 self.rally_prepare_started_at = self.now()
                 self.get_logger().info(
                     f"{survey_robot} completed a target-area survey leg."

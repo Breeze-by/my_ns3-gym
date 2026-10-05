@@ -2405,8 +2405,7 @@ def test_visual_handoff_charges_peer_first_then_releases_previous_observer():
 
     node, messages, failures = two_robot_rally_budget_node()
     node.target_observing_robot = "tb2"  # nearest charger is also the last observer
-    # A heartbeat gap is not a confirmed handoff; the target lease is valid.
-    node.target_received_source_time = 5.0
+    node.target_received_source_time = 10.5
     events = []
     node.consumed_publisher = SimpleNamespace(publish=events.append)
     assert control.HeadquartersControl.prepare_rally_charges(node) == {"tb1", "tb2"}
@@ -2424,8 +2423,8 @@ def test_visual_handoff_charges_peer_first_then_releases_previous_observer():
 
 @pytest.mark.parametrize("stamp,mode,peer,expected", [
     (95., "ACTIVE", "ACTIVE", "tb1"),
-    (94.99, "ACTIVE", "ACTIVE", "tb1"),
-    (40., "ACTIVE", "ACTIVE", "tb1"),
+    (94.99, "ACTIVE", "ACTIVE", None),
+    (40., "ACTIVE", "ACTIVE", None),
     (39.99, "ACTIVE", "ACTIVE", None),
     (100.01, "ACTIVE", "ACTIVE", None),
     (float("nan"), "ACTIVE", "ACTIVE", None),
@@ -2435,7 +2434,7 @@ def test_visual_handoff_charges_peer_first_then_releases_previous_observer():
     (99., "ACTIVE", "RETURNING", "tb1"),
     (99., "ACTIVE", "CHARGING", "tb1"),
 ])
-def test_observation_guard_needs_valid_target_lease_and_healthy_peer(stamp, mode, peer, expected):
+def test_observation_guard_needs_recent_confirmation_and_healthy_peer(stamp, mode, peer, expected):
     assert control.rally_observation_guard("tb1", stamp, 100., {"tb1": mode, "tb2": peer}) == expected
 
 
