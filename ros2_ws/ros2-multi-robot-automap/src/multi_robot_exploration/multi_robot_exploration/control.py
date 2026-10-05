@@ -105,6 +105,7 @@ class Assignment:
     utility: float
     navigation_x: float
     navigation_y: float
+    navigation_yaw: float | None = None
 
 
 @dataclass(frozen=True)
@@ -282,12 +283,12 @@ def _integral_image(mask):
     return np.pad(mask.astype(np.int32), ((1, 0), (1, 0))).cumsum(0).cumsum(1)
 
 
-def visible_information_cells(raw_grid, start, radius_cells, interest=None):
-    """Return distinct informative ray cells; a search mask needs known-free sight."""
+def visible_unknown_gain(raw_grid, start, radius_cells, interest=None):
+    """Count informative ray cells; a search mask requires known-free sight."""
     row, column = start
     height, width = raw_grid.shape
     if not (0 <= row < height and 0 <= column < width) or raw_grid[start] != 0:
-        return np.empty(0, dtype=int)
+        return 0
     radius = max(1, math.ceil(radius_cells))
     angles = np.linspace(
         0, 2 * math.pi, max(32, math.ceil(2 * math.pi * radius)), endpoint=False
@@ -304,11 +305,7 @@ def visible_information_cells(raw_grid, start, radius_cells, interest=None):
     )
     informative = values < 0 if interest is None else interest[rows, columns]
     unknown_cells = (rows * width + columns)[visible & informative]
-    return np.unique(unknown_cells)
-
-
-def visible_unknown_gain(raw_grid, start, radius_cells, interest=None):
-    return int(visible_information_cells(raw_grid, start, radius_cells, interest).size)
+    return int(np.unique(unknown_cells).size)
 
 
 def known_space_search_candidates(raw_grid, resolution, origin, robot_name,
@@ -362,8 +359,7 @@ def known_space_search_candidates(raw_grid, resolution, origin, robot_name,
     return candidates
 
 
-def frontier_viewpoints(raw_grid, groups, traversable, resolution, limit=12,
-                        visibility_cache=None):
+def frontier_viewpoints(raw_grid, groups, traversable, resolution, limit=12):
     """Generate safe known-free observation poses for every frontier group."""
     height, width = raw_grid.shape
     search_cells = max(1, math.ceil(VIEWPOINT_SEARCH_RADIUS_M / resolution))
@@ -434,18 +430,15 @@ def frontier_viewpoints(raw_grid, groups, traversable, resolution, limit=12,
                 ):
                     remaining = remaining[1:]
                     continue
-                cells = visible_information_cells(
-                    raw_grid, (row, column), INFORMATION_RADIUS_M / resolution
-                )
-                if visibility_cache is not None:
-                    visibility_cache[row, column] = cells
                 viewpoint = Viewpoint(
                     group_id,
                     row,
                     column,
                     frontier_row,
                     frontier_column,
-                    int(cells.size),
+                    visible_unknown_gain(
+                        raw_grid, (row, column), INFORMATION_RADIUS_M / resolution
+                    ),
                     len(group),
                 )
                 selected.append(viewpoint)
@@ -769,7 +762,7 @@ def stage_navigation_leg(
     )
 
 
-def prepare_frontier_data(raw_grid, resolution, visibility_cache=None):
+def prepare_frontier_data(raw_grid, resolution):
     """Build map-derived frontier data once for each map snapshot."""
     groups = frontier_groups(raw_grid)
     traversable = traversable_grid(
@@ -779,8 +772,7 @@ def prepare_frontier_data(raw_grid, resolution, visibility_cache=None):
         raw_grid, resolution, clearance_m=ROBOT_CLEARANCE_M
     )
     viewpoints = frontier_viewpoints(
-        raw_grid, groups, safe_viewpoints, resolution,
-        visibility_cache=visibility_cache,
+        raw_grid, groups, safe_viewpoints, resolution
     )
     return groups, traversable, viewpoints
 
@@ -794,12 +786,10 @@ def robot_candidate_assignments(
     excluded_targets=(),
     frontier_data=None,
     blocked_positions=None,
-    reserved_information=None,
-    visibility_cache=None,
 ):
     """Return diverse locally reachable viewpoints for every frontier group."""
     if frontier_data is None:
-        frontier_data = prepare_frontier_data(raw_grid, resolution, visibility_cache)
+        frontier_data = prepare_frontier_data(raw_grid, resolution)
     groups, traversable, viewpoints = frontier_data
     candidates = []
     if blocked_positions is not None:
@@ -831,8 +821,7 @@ def robot_candidate_assignments(
         # Refine within this robot’s safe reachable component only on demand.
         safe = traversable_grid(raw_grid, resolution, ROBOT_CLEARANCE_M)
         safe &= traversable & np.isfinite(distances)
-        viewpoints = frontier_viewpoints(raw_grid, groups, safe, resolution,
-                                         visibility_cache=visibility_cache)
+        viewpoints = frontier_viewpoints(raw_grid, groups, safe, resolution)
     for group_id, group_viewpoints in viewpoints.items():
         for viewpoint in group_viewpoints:
             if viewpoint.information_gain <= 0:
@@ -856,19 +845,6 @@ def robot_candidate_assignments(
             if utility <= 0:
                 continue
             utility *= target_reuse_penalty((x, y), excluded_targets)
-            if reserved_information is not None:
-                key = (viewpoint.row, viewpoint.column)
-                cells = None if visibility_cache is None else visibility_cache.get(key)
-                if cells is None:
-                    cells = visible_information_cells(
-                        raw_grid, key, INFORMATION_RADIUS_M / resolution
-                    )
-                    if visibility_cache is not None:
-                        visibility_cache[key] = cells
-                # Peer observations are predictions, so retain a fallback
-                # when every reachable viewpoint shares a narrow approach.
-                marginal = np.count_nonzero(~reserved_information[cells])
-                utility *= max(.35, marginal / max(1, cells.size))
             assignment = Assignment(
                 viewpoint, x, y, path_distance_m, utility, x, y
             )
@@ -4704,12 +4680,10 @@ class HeadquartersControl(Node):
             "candidate_assignments": 0,
         }
         if self.frontier_cache is None:
-            self.frontier_visibility_cache = {}
             self.frontier_cache = prepare_frontier_data(
-                self.map_data, self.resolution, self.frontier_visibility_cache
+                self.map_data, self.resolution
             )
         frontier_data = self.frontier_cache
-        visibility_cache = getattr(self, 'frontier_visibility_cache', {})
         search_gain_cache = {}  # One immutable map/visit mask per admission batch.
         resume_intents = getattr(self, "exploration_resume_intents", {})
         charge_candidates = {}
@@ -4739,25 +4713,6 @@ class HeadquartersControl(Node):
                         gain_cache=search_gain_cache)
                     robot_diagnostics = dict(frontier_groups=0, groups_with_viewpoints=0)
                 else:
-                    peer_viewpoints = [
-                        other for name, other in self.robot_positions.items()
-                        if name != robot_name and name in active_names and other is not None
-                    ]
-                    peer_viewpoints.extend(
-                        (goal.navigation_x, goal.navigation_y)
-                        for name, goal in self.goal_targets.items()
-                        if name != robot_name and name in active_names and goal is not None
-                        and self.robot_states[name] == 'active'
-                        and self.battery_modes[name] == 'ACTIVE'
-                    )
-                    reserved_information = np.zeros(self.map_data.size, dtype=bool)
-                    for peer_position in peer_viewpoints:
-                        cell = world_to_grid(*peer_position, self.resolution, *self.origin)
-                        if cell not in visibility_cache:
-                            visibility_cache[cell] = visible_information_cells(
-                                self.map_data, cell, INFORMATION_RADIUS_M / self.resolution
-                            )
-                        reserved_information[visibility_cache[cell]] = True
                     robot_candidates, robot_diagnostics = robot_candidate_assignments(
                         self.map_data,
                         self.resolution,
@@ -4766,8 +4721,6 @@ class HeadquartersControl(Node):
                         position,
                         robot_exclusions,
                         frontier_data,
-                        reserved_information=reserved_information,
-                        visibility_cache=visibility_cache,
                         **({"blocked_positions": [
                             other for name, other in self.robot_positions.items()
                             if name != robot_name and other is not None
@@ -4870,6 +4823,9 @@ class HeadquartersControl(Node):
                 plans[name] = Assignment(
                     assignment.viewpoint, assignment.x, assignment.y,
                     assignment.path_distance_m, assignment.utility, pose.x, pose.y,
+                    (pose.yaw if world_to_grid(pose.x, pose.y, self.resolution, *self.origin)
+                     != world_to_grid(assignment.x, assignment.y, self.resolution, *self.origin)
+                     else None),
                 )
                 routes[name] = route
                 selected.append(name)
@@ -4991,6 +4947,8 @@ class HeadquartersControl(Node):
         )
         yaw = math.atan2(frontier[1] - assignment.navigation_y,
                          frontier[0] - assignment.navigation_x)
+        if assignment.navigation_yaw is not None:
+            yaw = assignment.navigation_yaw
         goal.pose.pose.orientation.z = math.sin(yaw / 2.0)
         goal.pose.pose.orientation.w = math.cos(yaw / 2.0)
         self.record_navigation_decision(
