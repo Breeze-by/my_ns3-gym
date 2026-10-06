@@ -13,7 +13,7 @@ multi_robot/gazebo_multirobot_mapping_with_nav2.launch.py
 P2C 本地电池/充电管理；可选目标检测与 P2B 集结任务。手动运行默认同时打开贴地的 Gazebo
 重点区域标记和每机器人实时状态栏。
 
-最近核对：2026-10-06。P3A.6 已验收；P3B.5 技术门禁 PASS，待用户验收。
+最近核对：2026-10-07。P3A.6、P3B.5 已获用户验收；P3C 实时指标与控台进入集成验证。
 当前任务栈冻结在 `d8d361b`，最终报告提交为 `d0b1561`。
 本文第 1–8 节用于当前运行，第 9 节保留历史候选记录；其中“未通过”“未暴露”等描述
 只适用于记录当时。当前结果见 [P3B.5 完整报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261006_p3b5_gate.md)。
@@ -21,7 +21,60 @@ P2C 本地电池/充电管理；可选目标检测与 P2B 集结任务。手动�
 维护要求：以后新增或修改 launch 参数、默认组件或推荐运行方式时，必须在同一个提交中同步
 更新本文的默认命令和参数表。
 
-2026-10-07最新状态：原57格＋独立方向延迟6原任务的逐条技术复核PASS，待用户验收；任务算法和启动默认值不变。详见[逐条需求审计](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261007_p3b5_requirement_audit.md)。
+2026-10-07最新状态：用户已验收原57格＋独立方向延迟6原任务；P3C 新增默认通信面板及独立故障配置服务，任务算法不变。详见[逐条需求审计](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261007_p3b5_requirement_audit.md)。
+
+## P3C 实时通信指标与控台
+
+默认主 launch 同时启动 `gateway_metrics`、通信曲线窗口和在线通信故障控台。窗口包含上/下行吞吐与 goodput、已结算发送尝试 PDR/loss、源到交付时延/AoI、队列/重试、逐消息类别字节堆叠、任务/电池事件。关闭窗口不停止指标采集。手动模式 ledger 自动放在 `/tmp/multi_robot_gateway/<UTC_PID>/messages.jsonl`，同目录 `messages_metrics/` 保存结果；显式 `gateway_ledger_path` 时默认结果目录为账本同级 `<stem>_metrics/`。可用 `gateway_metrics_output_dir:=<新的空目录>` 指定路径，已有目录会被拒绝以保护证据。
+
+批量/headless 命令必须加入：
+
+```text
+enable_gzclient:=false enable_rviz:=false enable_merge_rviz:=false enable_status_panel:=false enable_gateway_monitor:=false
+```
+
+`ros_smoke_test.py` 已自动关闭通信 GUI，继续默认保存指标。需要关闭在线配置入口时加 `enable_gateway_fault_control:=false`；监测继续运行。窗口关闭后可以在同 ROS_DOMAIN_ID 的终端重新打开：
+
+```bash
+ros2 run multi_robot_exploration gateway_monitor
+```
+
+在控台选择 `fault`，修改上/下行丢包百分比、延迟、重复、乱序、ACK 等待、有限重试、队列容量、丢弃类别或断网区间，点击“应用通信配置”。服务确认的配置版本/生效仿真时刻同时出现在账本与曲线；`ideal` 模式保留输入值但有效损伤为零。队列容量输入 `0` 表示4096，断网输入 `[[15,30]]` 相对任务首次 `EXPLORE` 时刻。未知类别不会自动影响其他消息。实时修改只影响新发送 attempt，在途 attempt 保留原发送配置；不清队列、不更新源时间、不重置任务。
+
+脚本/另一终端使用同一个原子服务，例如上行10%丢包、下行0.5秒延迟：
+
+```bash
+/usr/bin/python3 scripts/gateway_configure.py --set \
+  network_mode='"fault"' uplink_loss_rate=0.1 downlink_delay_sec=0.5
+```
+
+恢复理想通信：
+
+```bash
+/usr/bin/python3 scripts/gateway_configure.py --set network_mode='"ideal"'
+```
+
+仅查询当前配置时不传 `--set`。服务名称为 `/gateway/configure`，类型 `rcl_interfaces/srv/SetParametersAtomically`；`/gateway/fault_configuration` 是权威生效值。节点启动 ROS 参数保持冻结，`ros2 param set` 会明确拒绝；运行中的配置必须走上述服务。TTL、导航 deadline、原生保持和本地安全参数不在控台白名单。`--expected-revision N` 可防止覆盖其他操作；GUI发现版本变化时要求读入当前配置再应用。
+
+按仿真时间自动施加故障，可直接使用集成清单的 schedule，或编写 JSON 数组：
+
+```json
+[{"after_sec":15,"parameters":{"network_mode":"fault","uplink_loss_rate":0.1}},
+ {"after_sec":30,"parameters":{"network_mode":"ideal"}}]
+```
+
+```bash
+/usr/bin/python3 scripts/gateway_configure.py --schedule schedule.json --output log/configuration_new.jsonl
+```
+
+自动保存 `inputs.jsonl`、`live.jsonl`、`live_windows.csv`、`windows.csv/jsonl`、`summary.json`、`events.jsonl`、`curves.svg`。实时窗口是账本当前前缀的暂定结果，最终累计量对账完整输入；需要统一1秒窗口的完整回放时执行：
+
+```bash
+PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python scripts/export_gateway_metrics.py \
+  --ledger <ledger.jsonl> --episode <原生任务结果.json> --task-events <safety_events.jsonl> --output <新的导出目录>
+```
+
+验证 GUI/文件同源：`scripts/export_gateway_metrics.py --verify-live <metrics目录>`。配对曲线导出加 `--reference <ideal导出目录>`；GUI加载参考目录的 `windows.jsonl`。world/seed/任务模式/机器人数量及可用的目标、能量、原生门槛必须一致。未发现目标的结果坐标保持null，配对验证使用原运行清单的目标声明，不能填入观测。细节与指标口径见 `user_guide.md` 的 P3C 节。
 
 ## 1. 每个新终端先执行
 
@@ -80,6 +133,8 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
   enable_gzclient:=true \
   enable_task_regions:=true \
   enable_status_panel:=true \
+  enable_gateway_monitor:=true \
+  enable_gateway_fault_control:=true \
   enable_rviz:=false \
   enable_merge_rviz:=false \
   auto_save_map:=false \

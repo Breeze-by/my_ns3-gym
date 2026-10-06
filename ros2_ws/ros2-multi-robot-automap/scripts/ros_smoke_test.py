@@ -668,6 +668,7 @@ def main():
         "enable_merge_rviz:=false",
         f"enable_task_regions:={str(args.task_regions).lower()}",
         "enable_status_panel:=false",
+        "enable_gateway_monitor:=false",
         "auto_save_map:=false",
         f"gazebo_seed:={args.gazebo_seed}",
         f"spawn_timeout:={args.spawn_timeout}",

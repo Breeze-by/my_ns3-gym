@@ -2,7 +2,7 @@
 
 常用启动命令、不同 world 和参数速查见 [`launch_commands.md`](launch_commands.md)。
 
-最近核对：2026-10-06。P3A.6 已于 2026-10-01 验收；P3B.5 技术门禁 PASS，待用户验收。
+最近核对：2026-10-07。P3A.6、P3B.5 已验收；P3C 实时指标与在线控台进入集成验证。
 当前任务栈冻结为 `d8d361b`，最终报告提交为 `d0b1561`，见
 [完整报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261006_p3b5_gate.md)。
 十格固定理想任务全部原生 COMPLETE，强故障下的失败和超时仍保留；尚未接入 ns-3/Wi-Fi/RL。
@@ -16,7 +16,25 @@ monorepo，与 ns-3/ns3-gym 共用一个 Git 根。旧的独立检出目录及�
 `/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap`，提交和查看状态
 必须从 `/home/zhuyulab/ns3-workspace` 进行。
 
-2026-10-07：P3B.5逐条技术复核PASS，待用户验收。原57格＋独立方向延迟6原任务已保留；新增三COMPLETE、一过期等待timeout，TDI按同配置ideal资格统计。任务算法、原生门槛及本指南的启动默认值不变，证据入口为[逐条需求审计](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261007_p3b5_requirement_audit.md)。
+2026-10-07：用户已验收P3B.5逐条复核，授权P3C与在线通信控台。原57格＋独立方向延迟6原任务已保留；新增三COMPLETE、一过期等待timeout，TDI按同配置ideal资格统计。任务算法、原生门槛及本指南的启动默认值不变，证据入口为[逐条需求审计](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261007_p3b5_requirement_audit.md)。
+
+## P3C 指标数据与运行边界
+
+主 launch 默认新增独立 `gateway_metrics` 和 Qt `gateway_monitor`。监测进程只读取账本、任务结果、任务/电池/故障/接收位姿与contact事件，只发布 `/gateway/metrics`；窗口中的 `gateway_fault_console` 是独立节点，只调用 `/gateway/configure`。监控没有任务、Nav2、速度或电池命令发布者、action client，也不消费Gazebo位姿真值。contact仅用于显示碰撞事件。全部时间窗、曲线和配置边界使用仿真时间；UI刷新和离线导出速度不作为任务耗时。
+
+GUI/headless/配置操作的完整命令见 `launch_commands.md` 的 P3C 节。`gateway_metrics_output_dir` 应为新目录；自动路径由 `/gateway/fault_configuration.ledger_path` 定位。启动参数与在线有效值明确分开，查询 `/gateway/configure` 或权威配置topic，不用启动ROS参数推断实时损伤。
+
+数据 schema v1：每个点记录episode、sim_time、相对任务时间、方向、类型、sender/recipient、Gazebo/fault seed、mission、完整有效配置及revision。CSV是同一JSON数值的扁平形式。窗口中generated/admitted/delivered/accepted按唯一logical message统计，attempted和retry按实际发送尝试统计，duplicate copies另列；ACK和外部导航命令没有原显式generated时，以首次enqueue作为推断生成证据。不能把attempt数当消息数，或把transport交付当应用有效接收。
+
+字节单位为序列化/压缩的应用payload，包含ACK payload，不包含envelope、CDR外框、DDS或Wi-Fi MAC/PHY开销。offered throughput=窗口生成payload/仿真秒；goodput=唯一receiver accepted payload/秒。attempt PDR/loss分母为该窗口已结算primary attempts；logical/application PDR跟踪该窗口生成的消息到当前回放边界，排队跨窗不会产生大于1的PDR。队列采用真实transport tick，含在途、可靠pending和capacity；旧P3B.5 ledger未记录队列depth，明确标为不可用，不从曲线推算。
+
+时延拆成enqueue→admit、admit→tx、tx→delivery、source→delivery、source→accepted，保留n/mean/max和分位数。p50至少2、p95至少20、p99至少100样本，否则null/“—”。一秒窗口里稀疏类型的p95通常不足，累计类型表可见完整样本。AoI按最新receiver accepted源时间连续积分，旧乱序版本不回退源时间；无数据时年龄未知，另记no_data/stale时长。freshness按源时间和原TTL，记录首个no_data、首个源超龄、恢复次数/平均与最大恢复时间、未恢复尾段；恢复时间在所查询窗口内计量，完整episode汇总使用整个任务窗口。类型表和选类曲线提供TTL参考线，事件类/ACK的源年龄不等同于中央必须等待的状态租约。
+
+`live.jsonl/live_windows.csv`保留当时可见账本前缀的暂定窗口；关闭任务时`summary.json`核验完整输入的累计守恒，并保存这些实时曲线至`windows.csv/jsonl`。离线export重新构建完整1秒窗，明确区分“实时前缀”和“完整回放”，不悄悄改写实时记录。`--verify-live`按每个snapshot的输入条数复算，空数据不算通过。最终守恒把未准入、终止丢失、未结算/in-flight分别列出，不为pending包捏造交付。
+
+同配置ideal/fault可以叠加曲线并导出TDI、300秒horizon惩罚时间差、发现/RALLY、覆盖率、路径、电量、碰撞和原生失败原因。TDI仅rally ideal原生COMPLETE合格，partial按原required_robot_count/ideal.robot_count计分；所有过程模式、失败ideal保持不合格。单对数字是描述性结果，success/partial总体率和RMST需明确配对样本集合。未检测到目标的观测坐标保持null，清单声明用于配置核验；原始raw文件及hash不变。P3C统计层不能改变任务结果或把应用损伤曲线称为Wi-Fi性能。
+
+在线服务一次验证整个通信参数集合；非法值、未知安全参数、重复参数名或过期revision全部拒绝且有效配置不变。新revision只用于后续发送尝试；旧attempt保持原loss/delay/blackout/ACK条件，原源时间、TTL/deadline、队列和可靠关联保留，retry新发送使用新配置。配置生效时间、版本、请求/拒绝和任务事件都可回放定位。此能力用于交互调试与预声明通信敏感性演示；任务算法、Nav2/SLAM、物理模型和原生安全门槛沿用已验收P3B.5。
 
 ## 1. 项目结构
 

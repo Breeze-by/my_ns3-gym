@@ -7496,3 +7496,56 @@ PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python /tmp/finaliz
 首只读checker FAIL为未发现目标的null结果坐标比较错误（不是任务失败），原trace/源码/六raw SHA已report/20261007_p3b5_directional_delay_initial_audit.json保留。修正按原命令核验配置目标且未发现时保持null，31检查/六raw re-audit PASS；原native及TTL/碰撞/电量阈值不变。当前manifest只更正错误queue说明文字；原完整配置以同basename归档report/20261007_p3b5_directional_delay_frozen/，重审查用该快照，不修改旧summary/输入。
 
 原57完整strict checker重新执行PASS，精确原argv见/tmp/p3b5_original57_requirement_reaudit_command.json和原报告校验记录，新output=/tmp/p3b5_original57_requirement_reaudit.json。报告JSON/MD含全部参数/门契约、阶段故障后果、每型/方向统计与paired AoI/时延/覆盖率/能量/时间增量。高延迟过期等待保留为失败，未人为要求故障格完整完成。P3B.5技术复核完成待用户验收。
+
+
+## 2026-10-07 P3C 用户授权、开发验证与正式集成预声明
+
+用户已验收P3B.5，授权完成P3C并新增实时通信故障控台。读取研究/实施计划、P3C计划及ROS指南后，保留d8d361b任务/安全/物理基线及63原始任务，不开始P3C.5/ns-3/Wi-Fi/RL。开发状态HEAD=4cfd9f8+未冻结working-tree实现；这些组件/读账本检查不是Gazebo任务证据，早期开发源码未逐版本冻结，不作正式源码绑定声明。全部正式新任务须在实现commit/push且task-stack clean之后开始。
+
+开发检查（ROS均source /opt/ros/humble/setup.bash及install/setup.bash，PYTHONNOUSERSITE=1，PYTHONPATH=$PWD/src/multi_robot_exploration:$PYTHONPATH，系统/usr/bin/python3）：
+
+```text
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test scripts/test_*.py --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+# v1 670 PASS/17.37s；v6 674 PASS/17.56s，完整stdout见log/p3c/pre_freeze/p3c_v{1,6}_components.txt
+colcon build --symlink-install --packages-select multi_robot_interfaces multi_robot_exploration merge_map multi_robot
+# v1四包PASS/5.48s；v3误写multirobot_map_merge，warning后仅三包4.86s，不算四包门禁；v6正确四包5.53s PASS
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_gateway.py src/multi_robot_exploration/test/test_gateway_metrics.py
+# v3 34 PASS/1.04s；另早期42相关、20新增检查及compileall PASS，非正式集成
+/usr/bin/python3 -m pytest -q scripts/test_p3c_exports.py
+# v6 2 PASS/0.12s，覆盖无检测null/声明配对及空实时文件拒绝
+/usr/bin/python3 scripts/check_p3c_source.py --output log/p3c/v5_source.json
+# 首次FAIL：误列不存在的gateway_store.py，trace保留；改为真实tf_ingress_sampler与navigation AST核验
+/usr/bin/python3 scripts/check_p3c_source.py --output log/p3c/v6_source.json
+# PASS：68文件bytes与d8d361b一致、54静态协议格完整事件字典等价，navigation仅多一条结果诊断
+/usr/bin/python3 scripts/check_p3c_runtime.py --output log/p3c/v3_runtime
+/usr/bin/python3 scripts/check_p3c_runtime.py --output log/p3c/v6_runtime
+# domain190/FastDDS UDPv4，无XML/discovery server，Qt offscreen；两次独立合成ROS组件PASS，各490输入/19实时样本逐前缀回放一致；shutdown .465/.565s，实际GUI按钮/service、非法原子拒绝、冻结参数拒绝、旧在途配置保留、溢出/重复、GUI关闭后继续采集、发布者边界通过。合成消息没有物理机器人，不代替Gazebo。
+```
+
+纯账本/曲线工具使用PYTHONNOUSERSITE=1和conda ns3gym解释器，不运行ns3：
+
+```text
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python scripts/export_gateway_metrics.py --ledger log/p3b5/p3b5_v106_lab/p3b5_v106_lab_ideal_lab2_rally_8d4d5c469d/ledger.jsonl --episode log/p3b5/p3b5_v106_lab/p3b5_v106_lab_ideal_lab2_rally_8d4d5c469d/p3b5_v106_lab_ideal_lab2_rally_8d4d5c469d.json --task-events log/p3b5/p3b5_v106_lab/p3b5_v106_lab_ideal_lab2_rally_8d4d5c469d/safety_events.jsonl --output log/p3c/v1_replay/ideal_lab
+# 首次全历史扫描超过107wall秒后仅中断这个只读导出进程PID3880083(SIGINT/exit130)；未中断任务。空导出目录保留，trace为_message_metrics过滤瓶颈。
+# 加索引/缓存后同argv改--output log/p3c/v2_replay/ideal_lab，27stream守恒PASS/12.733wall秒；不是任务耗时。
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python scripts/audit_p3c_evidence.py --accepted-report /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261007_p3b5_requirement_audit.json --output log/p3c/v4_accepted_replay --workers 4
+# 63守恒PASS/9曲线已写，但配对reader FAIL于未发现目标target_x=null；v4原输出保留。
+# 同argv改v5_accepted_replay：63守恒PASS，但reader仍FAIL target_max_distance_m=null。
+# 同argv改v6_accepted_replay：63守恒PASS，但reader仍FAIL rally_position_tolerance_m=null。
+# 三次reader traceback完整保留pre_freeze/p3c_v{4,5,6}_replay.txt，不算完整P3C门禁。
+# 修正统一使用原manifest command及d8d361b smoke argparse默认的目标/检测/保持声明（记录原命令、源码SHA），观测null原样保留。v7同argv独立只读复核正在运行。
+```
+
+实时窗口/CSV/GUI同源，完整回放另标；ACK/envelope字节、low-n分位、legacy队列未知等口径见20261007_p3c_protocol.md与ROS指南。新任务清单scripts/p3c_integration_manifest.json预声明三原始cell：lab2/303/E40 ideal，lab2/303/E18强制充电ideal，lab2/303/E40 fault在线15s上行10%→30s下行2秒→45s双向100%→60s恢复。使用新隔离domain195/196/197、master19820/19821/19822、CPU0–79；原300s/.35/.05/.1/5s和本地安全门限不变，无retry/回填。fault终态真实保留，不要求故障格人为COMPLETE；ideal/forced必须原生COMPLETE且forced两机都充电。精确argv由冻结runner manifest首任务前保存：
+
+```text
+/usr/bin/python3 scripts/run_p3c_integration.py --case ideal --run-id p3c_v7_ideal --domain 195 --gazebo-port 19820
+/usr/bin/python3 scripts/run_p3c_integration.py --case forced --run-id p3c_v7_forced --domain 196 --gazebo-port 19821
+/usr/bin/python3 scripts/run_p3c_integration.py --case dynamic --run-id p3c_v7_dynamic --domain 197 --gazebo-port 19822
+```
+
+原始63result/ledger摘要逐文件before/after核对；用户260929_report材料当前27文件（初始git列出14个未跟踪文件）SHA清单保存pre_freeze/user_materials_sha256.json，未修改/暂存。owned原任务、观察器全部结束后才修改源或归档。P3C尚待新任务、完整复核及图形QA；不提前声明PASS。
+
+冻结前补记：v7 accepted只读审计完整PASS：63原任务、1879方向/类型/端点流、9episode完整曲线、7配对图、31冻结TDI逐项等价。v4/v5/v6三次reader FAIL依次涉及target_x、target_max_distance_m、rally_position_tolerance_m，均因未接收目标/集合消息时观测字段为null；统一由原manifest命令与d8d361b argparse声明核验配置，未修改raw或填充观测。v7输出为log/p3c/v7_accepted_replay/summary.json。Qt实际monitor/details/console三页截图已逐页查看；编辑值与当前生效版本分列，旧编辑版本拒绝覆盖。正式任务尚未启动。
+
+最后冻结前：compileall PASS；24相关指标/配对测试0.08s PASS；三case --validate-only参数/环境清单已保存pre_freeze/p3c_v7_*_predeclared.json，三机器人source-only旁路0违规。git diff --check与git add -n .核对后，只暂存工程/文档，排除260929_report与全部log/build/install。

@@ -378,6 +378,7 @@ class NavigationGateway(Node):
                 self.publish_result(command_id, GoalStatus.STATUS_ABORTED)
 
     def publish_result(self, command_id, status):
+        self.record_local_event("navigation_outcome", command_id, status=int(status))
         result = String()
         result.data = json.dumps({"status": int(status)})
         self.uplink_sequence += 1

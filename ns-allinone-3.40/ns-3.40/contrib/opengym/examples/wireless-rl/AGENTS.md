@@ -1,5 +1,12 @@
 # wireless-rl Codex Memory
 
+2026-10-07 current boundary: P3B.5 accepted by the user; P3C authorized to
+completion, including an online communication fault console and synchronized
+metrics feedback. Preserve all accepted task/safety/native gates and original
+63 trials. Monitor and fault configuration are separate roles. P3C.5 and
+ns-3/Wi-Fi/RL remain later checkpoints. Historical pending-acceptance notes
+below describe their recording date.
+
 Last source/documentation review: 2026-10-06. Behavioral evidence is frozen in
 the dated reports and is not automatically evidence for a different HEAD. The
 user accepted P1C, P2A, P2B, P2C, P2D, P3A, P3A.5, and P3A.6. The P2C follow-up adds

@@ -1,0 +1,35 @@
+import json
+from pathlib import Path
+
+import pytest
+
+from export_gateway_metrics import compare, verify_live
+
+
+def test_pair_validation_uses_declared_target_without_fabricating_undetected_truth(tmp_path):
+    context = {"gazebo_seed": 303, "world": "my_world.world", "mission_mode": "rally", "robot_count": 2,
+               "configuration": {"settings": {"scenario": {"target_x": -4, "target_y": 4},
+                                                "protocol": {"target_max_distance_m": 3, "target_field_of_view_deg": 90,
+                                                             "target_confirmation_frames": 3, "rally_position_tolerance_m": .35,
+                                                             "rally_linear_tolerance_mps": .05, "rally_angular_tolerance_radps": .1,
+                                                             "rally_hold_sec": 5}}}}
+    ideal = {"mission_mode": "rally", "success": True, "task_phase": "COMPLETE", "robot_count": 2,
+             "target_x": -4, "target_y": 4, "completion_time_sec": 100}
+    fault = {"mission_mode": "rally", "success": False, "task_phase": "EXPLORE", "robot_count": 2,
+             "target_x": None, "target_y": None, "completion_time_sec": None}
+    (tmp_path / "windows.jsonl").write_text("")
+    reference = {"context": context, "task_result": ideal, "export_directory": str(tmp_path)}
+    current = {"context": context, "task_result": fault}
+    result = compare(current, reference, tmp_path)
+    assert result["tdi"] == 1 and result["rmst_300_delta_sec"] == 200
+    assert result["fault_task"]["target_x"] is None
+    current["context"] = {**context, "configuration": {"settings": {"scenario": {"target_x": 5, "target_y": 4}}}}
+    with pytest.raises(ValueError, match="configured target_x"):
+        compare(current, reference, tmp_path)
+
+
+def test_empty_live_data_cannot_pass_same_source_verification(tmp_path):
+    (tmp_path / "inputs.jsonl").write_text("")
+    (tmp_path / "live.jsonl").write_text("")
+    with pytest.raises(AssertionError, match="no live samples"):
+        verify_live(tmp_path)

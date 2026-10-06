@@ -59,6 +59,16 @@ tokens is not a reason to leave a problem unresolved or inadequately tested.
 
 ## Current Handoff
 
+2026-10-07: The user accepted P3B.5 (the 63-original/31-pair full requirement
+audit) and explicitly authorized P3C to completion. P3C also includes an online
+communication fault console: independently adjustable uplink/downlink loss and
+delay plus existing fault-model knobs, with applied simulation timestamps and
+feedback in the same metrics curves. The monitor remains read-only; only the
+separate configuration service changes communication faults. Preserve the
+accepted task algorithms, TTLs, deadlines, native completion and safety gates.
+No P3C.5/ns-3/Wi-Fi/RL is authorized by this checkpoint. Earlier awaiting-user
+acceptance statements below are historical.
+
 Update 2026-10-07: P3B.5 full wording recheck **PASS**, awaiting user acceptance.
 Original57 at d8d361b retained; four independent-direction delay TASK cases/six
 originals at 09f15df (identical runtime source) fill the protocol-only gap.

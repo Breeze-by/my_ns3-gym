@@ -242,6 +242,10 @@ def launch_setup(context, *args, **kwargs):
                     "robot_count": robot_count_cfg,
                     "use_sim_time": use_sim_time,
                     "network_mode": gateway_mode,
+                    "episode_id": evaluation_episode_id,
+                    "gazebo_seed": gazebo_seed,
+                    "world": world_filename,
+                    "enable_fault_control": LaunchConfiguration("enable_gateway_fault_control"),
                     "fault_seed": gateway_seed,
                     "mission_mode": mission_mode_value,
                     "uplink_loss_rate": uplink_loss_rate,
@@ -265,6 +269,17 @@ def launch_setup(context, *args, **kwargs):
             output="screen",
         )
     )
+    actions.append(Node(
+        package="multi_robot_exploration", executable="gateway_metrics", name="gateway_metrics",
+        parameters=[{"robot_count": robot_count_cfg, "use_sim_time": use_sim_time,
+                     "output_dir": LaunchConfiguration("gateway_metrics_output_dir"),
+                     "result_path": os.path.join(evaluation_output_dir.perform(context), evaluation_episode_id.perform(context) + ".json")
+                                    if enable_task_evaluator.perform(context).lower() == "true" else ""}], output="screen"))
+    actions.append(Node(
+        package="multi_robot_exploration", executable="gateway_monitor", name="gateway_monitor",
+        parameters=[{"use_sim_time": use_sim_time,
+                     "enable_fault_console": LaunchConfiguration("enable_gateway_fault_control")}],
+        condition=IfCondition(LaunchConfiguration("enable_gateway_monitor")), output="screen"))
     for robot in robots:
         actions.append(
             Node(
@@ -1145,6 +1160,9 @@ def generate_launch_description():
         )
     )
     for name, default, description in (
+        ("enable_gateway_monitor", "true", "Open the live communication metrics and fault console window."),
+        ("enable_gateway_fault_control", "true", "Enable the separate transactional communication fault service."),
+        ("gateway_metrics_output_dir", "", "Metrics directory; empty selects a unique ledger-adjacent directory."),
         ("gateway_drop_message_types", "", "Comma-separated message classes to drop in fault mode."),
         ("gateway_reorder_step_sec", "0.05", "Per-slot reorder delay; use 0.3 to reorder 5Hz pose updates."),
         ("gateway_blackout_intervals", "[]", "JSON outage seconds relative to first central EXPLORE."),

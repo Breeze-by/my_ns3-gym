@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "purpose": "P3C read-only monitor regression and explicitly controlled application fault demonstration; no task tuning",
+  "accepted_task_commit": "d8d361bfd9d81e0c7a00c428ea66cfac4b3a1a76",
+  "duration_sec": 300,
+  "fault_seed": 17011,
+  "coverage_threshold": 0.8,
+  "cases": {
+    "ideal": {
+      "world": "my_world.world", "target_x": -4, "target_y": 4, "robot_count": 2, "seed": 303, "energy": 40,
+      "mode": "ideal", "schedule": []
+    },
+    "forced": {
+      "world": "my_world.world", "target_x": -4, "target_y": 4, "robot_count": 2, "seed": 303, "energy": 18,
+      "charge_duration": 10, "safety_margin": 5, "return_timeout": 120, "mode": "ideal", "schedule": []
+    },
+    "dynamic": {
+      "world": "my_world.world", "target_x": -4, "target_y": 4, "robot_count": 2, "seed": 303, "energy": 40,
+      "mode": "fault",
+      "schedule": [
+        {"after_sec": 15, "parameters": {"uplink_loss_rate": 0.1}},
+        {"after_sec": 30, "parameters": {"uplink_loss_rate": 0.0, "downlink_delay_sec": 2.0}},
+        {"after_sec": 45, "parameters": {"uplink_loss_rate": 1.0, "downlink_loss_rate": 1.0, "downlink_delay_sec": 0.0}},
+        {"after_sec": 60, "parameters": {"uplink_loss_rate": 0.0, "downlink_loss_rate": 0.0}}
+      ]
+    }
+  },
+  "rules": ["101/202/303 are integration seeds, not holdout", "no retries, overwrite or filling failed cells",
+            "ideal and forced require native COMPLETE; forced requires both robots charging",
+            "dynamic task outcome is retained, not forced to succeed; positive energy and zero contacts required",
+            "all live samples must reproduce from saved input prefixes; all payload bytes must reconcile",
+            "no source edits until all task owners and observers have closed"]
+}

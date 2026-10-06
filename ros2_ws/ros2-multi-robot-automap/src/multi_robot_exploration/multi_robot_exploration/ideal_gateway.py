@@ -4,6 +4,8 @@ import math
 import os
 import zlib
 from dataclasses import dataclass, replace
+from datetime import datetime, timezone
+from pathlib import Path
 
 from multi_robot_interfaces.msg import GatewayEnvelope
 from nav_msgs.msg import OccupancyGrid, Odometry
@@ -13,6 +15,9 @@ from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
 from rclpy.serialization import deserialize_message, serialize_message
 from std_msgs.msg import String
+from rcl_interfaces.msg import SetParametersResult
+from rcl_interfaces.srv import SetParametersAtomically
+from rclpy.parameter import Parameter
 from tf2_msgs.msg import TFMessage
 
 from .fault_model import (
@@ -20,6 +25,7 @@ from .fault_model import (
     RELIABLE_TYPES, STATE_TYPES, STATE_TTL_SEC, TARGET_DETECTION_TTL_SEC,
     message_id, source_time,
 )
+from .gateway_config import FAULT_DEFAULTS, configs_for, configuration_snapshot, updated_configuration
 
 
 UPLINK_CANDIDATES = "/gateway/uplink/candidates"
@@ -129,6 +135,17 @@ class IdealGateway(Node):
         self.ledger_path = str(
             self.declare_parameter("ledger_path", "").value
         )
+        self.episode_id = str(self.declare_parameter("episode_id", "episode").value)
+        self.gazebo_seed = int(self.declare_parameter("gazebo_seed", 1).value)
+        self.world = str(self.declare_parameter("world", "unknown").value)
+        if not self.ledger_path:
+            session = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S_%f")
+            self.ledger_path = str(Path("/tmp/multi_robot_gateway") / f"{session}_{os.getpid()}" / "messages.jsonl")
+        self.ledger_index = 0
+        self.configuration_revision = 0
+        self.configuration_effective_time = self.now_sec()
+        self.requested_fault_configuration = {name: self.get_parameter(name).value for name in FAULT_DEFAULTS}
+        self.enable_fault_control = bool(self.declare_parameter("enable_fault_control", True).value)
         self.sequences = {}
         self.latest_sequences = {}
         self.last_generated_at = {}
@@ -259,10 +276,79 @@ class IdealGateway(Node):
             self._topic_qos(True),
         )
         self.transport_timer = self.create_timer(0.01, self.deliver_queued)
+        self.configuration_publisher = self.create_publisher(String, "/gateway/fault_configuration", self._topic_qos(True))
+        if self.enable_fault_control:
+            self.configuration_service = self.create_service(SetParametersAtomically, "/gateway/configure", self.configure_callback)
+        # Startup ROS parameters are immutable. Active faults have one authoritative
+        # transactional service, avoiding silently changed but ineffective parameters.
+        self.add_on_set_parameters_callback(lambda _: SetParametersResult(
+            successful=False, reason="Startup parameters are frozen; use /gateway/configure for communication faults."))
+        self.telemetry_timer = self.create_timer(1.0, self.publish_telemetry)
+        self._record({"event": "gateway_start", "configuration": self.active_configuration(),
+                      "episode_id": self.episode_id, "gazebo_seed": self.gazebo_seed, "world": self.world,
+                      "fault_seed": seed, "robot_count": self.robot_count,
+                      "ledger_path": self.ledger_path, "fault_control_enabled": self.enable_fault_control})
+        self.publish_configuration()
         self.get_logger().info(
             f"Gateway ready for {self.robot_count} robots "
             f"(mode={self.network_mode}, mission_mode={self.mission_mode})."
         )
+
+    def active_configuration(self):
+        state = configuration_snapshot(self.requested_fault_configuration, self.transport_by_direction,
+                                       self.configuration_revision, self.configuration_effective_time)
+        state.update(ledger_path=self.ledger_path, episode_id=self.episode_id, mission_mode=self.mission_mode,
+                     gazebo_seed=self.gazebo_seed, world=self.world, fault_seed=self.get_parameter("fault_seed").value,
+                     fault_control_enabled=self.enable_fault_control)
+        return state
+
+    def publish_configuration(self):
+        self.configuration_publisher.publish(String(data=json.dumps(self.active_configuration(), sort_keys=True)))
+
+    def configure_callback(self, request, response):
+        try:
+            changes = {}
+            for message in request.parameters:
+                parameter = Parameter.from_parameter_msg(message)
+                if parameter.name in changes:
+                    raise ValueError("duplicate parameter names in atomic request")
+                changes[parameter.name] = parameter.value
+            expected = changes.pop("expected_revision", self.configuration_revision)
+            if type(expected) is not int or expected != self.configuration_revision:
+                raise ValueError("configuration revision changed; refresh before applying")
+            if not changes:
+                response.result = SetParametersResult(successful=True, reason=json.dumps(self.active_configuration(), sort_keys=True))
+                return response
+            updated = updated_configuration(self.requested_fault_configuration, changes)
+            configs = configs_for(updated, int(self.get_parameter("fault_seed").value), self.fault_epoch)
+        except (ValueError, TypeError, KeyError) as error:
+            response.result = SetParametersResult(successful=False, reason=str(error))
+            self._record({"event": "configuration_rejected", "reason": str(error)})
+            return response
+        # All due old events settle under old faults before the atomic boundary.
+        self.deliver_queued()
+        self.configuration_revision += 1
+        self.configuration_effective_time = self.now_sec()
+        for direction, transport in self.transport_by_direction.items():
+            transport.reconfigure(configs[direction], self.configuration_revision)
+        self.requested_fault_configuration = updated
+        self.network_mode = updated["network_mode"]
+        self.fault_blackout_intervals = tuple(tuple(pair) for pair in json.loads(updated["blackout_intervals"])) if self.network_mode == "fault" else ()
+        state = self.active_configuration()
+        self._record({"event": "configuration_applied", "configuration": state, "changes": changes})
+        self.publish_configuration()
+        response.result = SetParametersResult(successful=True, reason=json.dumps(state, sort_keys=True))
+        return response
+
+    def publish_telemetry(self):
+        self._record({"event": "metrics_tick", "task_phase": self.task_phase,
+                      "queues": {key: transport.queue_state() for key, transport in self.transport_by_direction.items()}})
+
+    def destroy_node(self):
+        self.ledger_index += 1
+        self._write_ledger(json.dumps({"event": "gateway_stop", "event_time": self.now_sec(),
+                                     "ledger_index": self.ledger_index, "mission_mode": self.mission_mode}))
+        super().destroy_node()
 
     @staticmethod
     def _topic_qos(transient):
@@ -399,7 +485,9 @@ class IdealGateway(Node):
             for transport in self.transport_by_direction.values():
                 transport.config = replace(transport.config, blackout_intervals=intervals)
             self._record({"event": "fault_epoch", "event_time": self.fault_epoch,
-                          "blackout_intervals": intervals, "reference": "first central EXPLORE"})
+                          "blackout_intervals": intervals, "reference": "first central EXPLORE",
+                          "configuration": self.active_configuration()})
+            self.publish_configuration()
 
     def next_sequence(self, route):
         key = (route.message_type, route.sender, route.recipient)
@@ -519,6 +607,7 @@ class IdealGateway(Node):
             reverse = "downlink" if direction == "uplink" else "uplink"
             self.transport_by_direction[reverse].acknowledge(identity, self.now_sec())
             self.ack_publisher.publish(envelope)
+            self.publish_event("accepted", direction, envelope)
             return
         # Validate before acknowledging: an expired reliable packet must be retried
         # or reported failed instead of being silently accepted.
@@ -612,6 +701,9 @@ class IdealGateway(Node):
     def _record(self, event):
         event.setdefault("mission_mode", self.mission_mode)
         event.setdefault("event_time", self.now_sec())
+        self.ledger_index += 1
+        event["ledger_index"] = self.ledger_index
+        event.setdefault("fault_revision", self.configuration_revision)
         message = String(data=json.dumps(event, sort_keys=True))
         self.event_publisher.publish(message)
         self._write_ledger(message.data)

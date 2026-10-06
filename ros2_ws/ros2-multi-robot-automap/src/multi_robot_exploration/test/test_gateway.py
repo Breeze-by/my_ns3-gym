@@ -135,7 +135,8 @@ def test_blackout_epoch_excludes_cold_start_and_is_not_reset_by_phase_updates():
     transport = DeterministicFaultTransport(FaultConfig())
     gateway = SimpleNamespace(task_phase="EXPLORE", fault_epoch=None,
                               fault_blackout_intervals=((20., 30.),), now_sec=lambda: 150.,
-                              transport_by_direction={"uplink": transport}, _record=events.append)
+                              transport_by_direction={"uplink": transport}, _record=events.append,
+                              active_configuration=lambda: {}, publish_configuration=lambda: None)
     IdealGateway.task_state_callback(gateway, SimpleNamespace(data="EXPLORE"))
     assert transport.config.blackout_intervals == ((170., 180.),)
     gateway.now_sec = lambda: 200.

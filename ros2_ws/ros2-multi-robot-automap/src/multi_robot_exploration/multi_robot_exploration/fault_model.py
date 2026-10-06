@@ -75,6 +75,7 @@ class DeliveryAttempt:
     due_time: float
     duplicate: bool = False
     metadata: dict = field(default_factory=dict)
+    config_snapshot: object = None
 
 
 class DeterministicFaultTransport:
@@ -87,6 +88,20 @@ class DeterministicFaultTransport:
         self._ordinal = 0
         self._pending = {}
         self._inflight = 0
+        self.configuration_revision = 0
+
+    def reconfigure(self, config, revision):
+        """Keep queued attempts and their old faults; never clear the queue."""
+        for attempt in [item[3] for item in self._events] + [item[0] for item in self._pending.values()]:
+            if attempt.config_snapshot is None:
+                attempt.config_snapshot = self.config
+                attempt.metadata = {**attempt.metadata, "fault_revision": self.configuration_revision}
+        self.config = config
+        self.configuration_revision = revision
+
+    def queue_state(self):
+        return {"in_flight": self._inflight, "pending_reliable_or_unresolved": len(self._pending),
+                "capacity": self.config.queue_capacity, "scheduled_events": len(self._events)}
 
     def _emit(self, event, attempt, now, **extra):
         if self.event_callback:
@@ -103,7 +118,8 @@ class DeterministicFaultTransport:
         heapq.heappush(self._events, (when, self._ordinal, kind, attempt))
 
     def _sample(self, attempt, kind):
-        key = f"{self.config.seed}:{attempt.message_id}:{attempt.attempt}:{kind}"
+        config = attempt.config_snapshot or self.config
+        key = f"{config.seed}:{attempt.message_id}:{attempt.attempt}:{kind}"
         return int.from_bytes(hashlib.sha256(key.encode()).digest()[:8], "big") / 2**64
 
     def enqueue(self, identity, envelope, direction, now, reliable=False,
@@ -138,6 +154,9 @@ class DeterministicFaultTransport:
         return ttl > 0 and now >= attempt.metadata["source_time"] + ttl
 
     def _transmit(self, attempt, now):
+        if self.configuration_revision:
+            attempt.config_snapshot = self.config
+            attempt.metadata = {**attempt.metadata, "fault_revision": self.configuration_revision}
         if self._expired(attempt, now):
             self._emit("drop", attempt, now, drop_time=now, reason="expired_before_tx")
             self._pending.pop(attempt.message_id, None)
@@ -164,7 +183,8 @@ class DeterministicFaultTransport:
     def _retry_timer(self, attempt, now):
         state = self._pending.get(attempt.message_id)
         if state and state[1]:
-            self._push(now + self.config.ack_timeout_sec, "retry", attempt)
+            config = attempt.config_snapshot or self.config
+            self._push(now + config.ack_timeout_sec, "retry", attempt)
         elif "tx_time" not in attempt.metadata:
             self._pending.pop(attempt.message_id, None)
 
@@ -181,10 +201,11 @@ class DeterministicFaultTransport:
         while self._events and self._events[0][0] <= now:
             when, _, kind, attempt = heapq.heappop(self._events)
             state = self._pending.get(attempt.message_id)
+            config = attempt.config_snapshot or self.config
             if kind == "retry":
                 if state is None or state[0] is not attempt:
                     continue
-                if attempt.attempt > self.config.max_retries or self._expired(attempt, when):
+                if attempt.attempt > config.max_retries or self._expired(attempt, when):
                     self._emit("failed", attempt, when, reason="retry_exhausted_or_deadline")
                     self._pending.pop(attempt.message_id, None)
                     continue
@@ -202,11 +223,11 @@ class DeterministicFaultTransport:
             if self._expired(attempt, when):
                 self._emit("drop", attempt, when, drop_time=when, reason="expired_in_flight")
             elif kind != "duplicate" and (
-                attempt.envelope.message_type in self.config.drop_types
-                or self._sample(attempt, "loss") < self.config.loss_rate
-                or any(start <= when < end for start, end in self.config.blackout_intervals)
+                attempt.envelope.message_type in config.drop_types
+                or self._sample(attempt, "loss") < config.loss_rate
+                or any(start <= when < end for start, end in config.blackout_intervals)
             ):
-                blackout = any(start <= when < end for start, end in self.config.blackout_intervals)
+                blackout = any(start <= when < end for start, end in config.blackout_intervals)
                 self._emit("drop", attempt, when, drop_time=when,
                            reason="blackout" if blackout else "loss")
             else:
@@ -215,12 +236,13 @@ class DeterministicFaultTransport:
                 if (
                     kind != "duplicate"
                     and self._sample(attempt, "duplicate")
-                    < self.config.duplicate_rate
+                    < config.duplicate_rate
                 ):
                     duplicate = DeliveryAttempt(
                         attempt.message_id, attempt.envelope, attempt.direction,
                         attempt.attempt, attempt.enqueue_time, attempt.admit_time,
                         when + 0.01, True, dict(attempt.metadata),
+                        config_snapshot=attempt.config_snapshot,
                     )
                     if (
                         not self.config.queue_capacity

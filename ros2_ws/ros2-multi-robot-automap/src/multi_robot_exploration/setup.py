@@ -26,6 +26,8 @@ setup(
             'bypass_audit = multi_robot_exploration.bypass_audit:main',
             'control = multi_robot_exploration.control:main',
             'ideal_gateway = multi_robot_exploration.ideal_gateway:main',
+            'gateway_metrics = multi_robot_exploration.metrics_node:main',
+            'gateway_monitor = multi_robot_exploration.gateway_panel:main',
             'navigation_gateway = multi_robot_exploration.navigation_gateway:main',
             'nav2_ready_gate = multi_robot_exploration.nav2_ready_gate:main',
             'robot_status_panel = multi_robot_exploration.status_panel:main',

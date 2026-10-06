@@ -82,8 +82,8 @@
 | P3A.5 | 历史 task-stack 重验证（冻结候选） | 历史 commit 的 P2D/P3A 完整矩阵、强制充电回归、manifest、ROS graph edge 白名单 | 仅作为历史证据；不能替代当前 HEAD 的重新冻结 | 已验收 |
 | P3A.6 | 当前 task-stack 重新冻结 | 当前 HEAD 的 P2D/P3A 完整矩阵、强制充电回归、commit/config/environment manifest、ROS graph edge 白名单 | 在网络/RL 前重新跑固定门禁并输出 `task_stack_frozen_commit`；后续任务栈改动必须另开批次 | 已验收（2026-10-01） |
 | P3B | 固定 delay/loss 网络替身（已完成范围） | 独立上下行、固定 seed 队列、TTL/版本、重复/乱序、重传、逐消息账本和 stale-state 降级 | 4 项协议单测、54 格固定协议 matrix `PASS`；故障语义和安全降级可复现 | 已验收 |
-| P3B.5 | 故障条件下的完整任务闭环 | Gazebo fault-mode 任务矩阵、理想配对基线、任务/电池/碰撞/安全降级指标、机器人本地 freshness 保障、队列语义收敛 | 覆盖 `coverage/target/rally`、多 world/seed、丢包/延迟/TTL/deadline/retry/overflow；每格保留 ledger 和任务结果；健康机器人继续，未交付信息不触发错误任务；输出故障退化报告 | 待用户验收：完整逐条复核PASS |
-| P3C | gateway 通信指标与实时可视化 | 默认打开的 gateway 监控面板、实时曲线、CSV/JSON 指标快照、ideal/fault 对比报告 | 生成/准入/发送/交付/丢弃字节闭合；实时显示吞吐、PDR、丢包、时延、队列、重试、AoI 和任务阶段；面板不参与控制，headless 也可保存同一数据 | 待完成 |
+| P3B.5 | 故障条件下的完整任务闭环 | Gazebo fault-mode 任务矩阵、理想配对基线、任务/电池/碰撞/安全降级指标、机器人本地 freshness 保障、队列语义收敛 | 覆盖 `coverage/target/rally`、多 world/seed、丢包/延迟/TTL/deadline/retry/overflow；每格保留 ledger 和任务结果；健康机器人继续，未交付信息不触发错误任务；输出故障退化报告 | 已验收：2026-10-07 |
+| P3C | gateway 通信指标、实时可视化与在线故障控台 | 默认监控面板、独立故障配置入口、CSV/JSON 指标快照、ideal/fault 对比报告 | 消息与attempt字节闭合；显示吞吐/PDR/丢包/时延/队列/重试/AoI/任务；控台变更有实际生效仿真时刻及曲线反馈，监控只读，headless保存同数据 | 进行中 |
 | P3C.5 | 应用负载与协议控制开销审计 | candidate/request/grant/heartbeat/critical-event 的频率、字节、队列、AoI、deadline、控制开销与可观测性报告 | 在真实候选生成规则下测量负载，明确中央未知信息和审计边界；不得把仿真器隐藏队列作为输入 | 待完成 |
 | P4A | ns-3 数据包与时间同步 | P4A-0 trace ledger、P4A-1 固定窗/lock-step、Gazebo mobility、真实消息大小、资源/RTF 记录 | trace 生成/准入/发送/交付/丢弃字节闭合；相同 seed 事件账本一致；P4A-1 无墙钟竞态，记录 wall time、sim time、RTF 和资源峰值 | 待完成 |
 | P4B | Wi-Fi 4 场景、负载与瓶颈审计 | AP+2/3 STA、传播、墙损耗、背景干扰、网络指标、实测校准集/验证集 | 在 P3C.5 负载和协议开销下测量排队、过期、竞争和交付瓶颈；参数有来源；无实测时标为 synthetic sensitivity，不宣称 sim-to-real | 待完成 |
@@ -380,8 +380,7 @@ AoI/时延增量等原始指标。TDI 只表示任务结果退化，不能替代
 
 ### P3C：gateway 通信指标和可视化
 
-P3C 在 P3B.5 任务矩阵之上建立通信可观测性层，让 gateway 不再是黑盒。它不改变消息调度、
-机器人控制或故障参数，不把可视化节点放进控制闭环。默认 GUI 运行时打开监控面板；headless
+P3C 在已验收的 P3B.5 任务矩阵之上建立通信可观测性层，让 gateway 不再是黑盒。2026-10-07用户新增实时通信控台：通过独立配置服务在线设置应用层故障并记录生效时刻，既有任务算法、消息TTL、导航deadline及本地安全规则不改。监控节点只读，不把可视化节点放进任务控制闭环。默认 GUI 运行时打开监控面板；headless
 运行默认写出同一套 CSV/JSON/PNG（或等价无界面产物），保证手动运行和批量实验指标一致。
 
 每个固定仿真时间窗（建议 1 秒，同时保留 episode 累计值）按 `direction`、`message_type`、
