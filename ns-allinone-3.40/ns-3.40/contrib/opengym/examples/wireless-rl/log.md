@@ -7461,3 +7461,17 @@ PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python /tmp/finaliz
 ```
 
 冻结原builder首次KeyError completion_time_sec（包装row未取result），未写MD；原脚本保留。独立reviewed副本改正确字段及两个历史引用后exit0，未改任务或门禁JSON结果。PNG2520×1620已view_image核验三面板/图例/标签/分类/区间及脚注，无裁切重叠。全部原生/协议/安全限制原样，无单因素因果收益、未知场景总体或最坏时限声明。
+
+
+## 2026-10-07 P3B.5 字面要求复核与独立方向延迟补验预声明
+
+用户要求按IMPLEMENTATION_PLAN P3B.5逐条落实。原v106 57格/27pair严格checker PASS原样保留；复核发现原0.5/2秒任务延迟均为双向，独立方向仅有54协议格，不能替代任务证据。预冻结scripts/p3b5_directional_delay_manifest.json，四case（uplink/downlink ×0.5/2秒）、两同配置ideal，共六原任务；任务栈/TTL/native300s/.35/.05/.1/5s不变，development seed202/101与fault17011，capacity100/E45/E40/原充电配置。实际commit/环境/源hash由首任务前runner manifest记录；只增加清单、只读checker与文档，不调控制。
+
+将使用Humble/install、PYTHONNOUSERSITE=1、rmw_fastrtps_cpp/UDPv4、无XML/discovery-server、taskset CPU0–79、两个专用master19700/19701。精确两个runner argv：
+
+```text
+/usr/bin/python3 /tmp/run_p3b5_directional_delay_pool.py {"run":"p3b5_directional_delay_20261007_corridors","config":"scripts/p3b5_directional_delay_manifest.json","cases":["uplink_delay05_corridors2","downlink_delay05_corridors2"],"domain_base":180}
+/usr/bin/python3 /tmp/run_p3b5_directional_delay_pool.py {"run":"p3b5_directional_delay_20261007_rooms","config":"scripts/p3b5_directional_delay_manifest.json","cases":["uplink_delay2_rooms3","downlink_delay2_rooms3"],"domain_base":200}
+```
+
+原日志/文件树不修改；新结果、时序/图/参数与hash报告在自然关闭后归档report/20261007_p3b5_requirement_audit.md/.json；保留所有失败。冻结前--validate-only为4case/6episode且无Gazebo启动。

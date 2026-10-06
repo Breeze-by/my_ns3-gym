@@ -94,6 +94,8 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
 
 ## Current Handoff Snapshot
 
+2026-10-07逐条需求复核：原v106的57格严格checker PASS仍保留，但任务层0.5/2秒延迟原本为双向同时注入，独立上下行只在54格纯协议中验证。用户要求独立方向的任务后果，因此P3B.5全要求结论暂为进行中，先冻结四个独立方向延迟case/六个原始任务（两理想对照共享于各自方向配对），保持d8d361b任务源码、300s/.35/.05/.1/5s、TTL、故障seed17011和能量不变；不调参、不回填原57格、不再次使用已暴露809作新留出。补验清单scripts/p3b5_directional_delay_manifest.json；逐条证据见report/20261007_p3b5_requirement_audit.md。
+
 2026-10-06 P3B.5技术门禁PASS，待用户验收：v106原57格冻结d8d361bfd9d81e0c7a00c428ea66cfac4b3a1a76，2026-10-06 06:24–08:42:53UTC自然关闭；41主格/27pair+十fixed+六辅助，57时间与57图审核、54纯协议全部PASS，0接触/infra/操作失败、0整轮retry/backfill。十fixed原生COMPLETE；forced ideal155.2s各charge1。首次809/28091集合ideal/fault120.9/126.6s原生COMPLETE，目标两侧FOUND、覆盖率两侧达标，仅过程指标。真实tb3失败隔离0.1s，两健康机原生PARTIAL_COMPLETE148.9s/最低19.47128，success=false。TDI18eligible/5物理簇均值0.685185，95%描述性簇bootstrap[0.487179,0.823529]，10000次seed17011；rally fault5COMPLETE/20pair、1PARTIAL，其余真实失败/静默/超时保留，复用ideal不独立计样本。原checker摘要格式FAIL已5c1f931保留，77c201b仅修复只读摘要校验，636组件17.49s/九篡改反例PASS，原12审计函数AST和全部任务栈/原始记录未变；同57原数据重新严格审计PASS，无Gazebo重跑。lab101真实执行一次tb2驻点保留并原生完成，但无单因素收益或最坏保证；lab303294.8s仅5.2s余量。53参数旁录完整，E0双格和物理返充双格为独立原生证据。七port/所有owner/观察器/冻结source/helper/config及17用户资料SHA通过；JSON/MD/PNG视觉QA PASS。P3A.6已验收22c95a7历史冻结保留；809现已暴露，之后控制变化需新留出。报告report/20261006_p3b5_gate.json/.md与_results.png，技术完成待用户验收，未进入P3C/ns3/WiFi/RL。
 
 2026-10-01 P3A.6集成门禁通过，用户于2026-10-01验收通过。当时冻结任务栈
