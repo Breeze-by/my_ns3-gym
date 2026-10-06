@@ -8,7 +8,7 @@ from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src/multi_robot_exploration"))
-from multi_robot_exploration.gateway_metrics import LedgerMetrics, event_stamp, task_degradation_index
+from multi_robot_exploration.gateway_metrics import LedgerMetrics, event_stamp, task_degradation_index, validate_pair_configuration
 from multi_robot_exploration.metrics_io import render_svg, save_final, windows
 
 
@@ -61,24 +61,8 @@ def export(ledger, output, episode=None, task_events=None, context=None):
 
 
 def compare(current, reference, output):
-    for key in ("gazebo_seed", "world", "mission_mode", "robot_count"):
-        if current["context"].get(key) != reference["context"].get(key):
-            raise ValueError(f"not a paired comparison: {key}")
+    validate_pair_configuration(current, reference)
     ideal, fault = reference.get("task_result"), current.get("task_result")
-    if ideal and fault:
-        for key in ("target_x", "target_y", "target_max_distance_m", "target_field_of_view_deg", "target_confirmation_frames",
-                    "rally_position_tolerance_m", "rally_linear_tolerance_mps", "rally_angular_tolerance_radps", "rally_hold_sec"):
-            def configured_target(summary, task):
-                settings = summary["context"].get("configuration", {}).get("settings", {})
-                declaration = settings.get("scenario", {}) if key in ("target_x", "target_y") else settings.get("protocol", {})
-                return declaration.get(key, task.get(key))
-            left, right = configured_target(reference, ideal), configured_target(current, fault)
-            if left is None or right is None or left != right:
-                raise ValueError(f"not a paired comparison: configured {key} unavailable or different")
-        for name in ideal.get("robots", {}):
-            for key in ("battery_initial_energy", "battery_capacity", "battery_charge_x", "battery_charge_y"):
-                if ideal["robots"][name].get(key) != fault.get("robots", {}).get(name, {}).get(key):
-                    raise ValueError(f"not a paired comparison: {name}/{key}")
     result = {"tdi": task_degradation_index(ideal, fault) if ideal and fault else None,
               "ideal_task": ideal, "fault_task": fault,
               "scope": "descriptive same-configuration pair; application fault model, not Wi-Fi"}
@@ -104,11 +88,10 @@ def compare(current, reference, output):
 def verify_live(directory):
     directory = Path(directory)
     records = [json.loads(line) for line in (directory / "inputs.jsonl").read_text().splitlines()]
-    samples = [json.loads(line) for line in (directory / "live.jsonl").read_text().splitlines()]
-    if not samples:
-        raise AssertionError("no live samples to verify")
-    metrics, cursor = LedgerMetrics(), 0
-    for sample in samples:
+    metrics, cursor, count = LedgerMetrics(), 0, 0
+    for line in (directory / "live.jsonl").open():
+        sample = json.loads(line)
+        count += 1
         stop = sample["ledger_record_count"]
         for event in records[cursor:stop]:
             metrics.ingest(event)
@@ -117,7 +100,9 @@ def verify_live(directory):
         expected = [metrics.report(max(start, when-1), when, d) for d in ("uplink", "downlink")]
         if expected != sample["window"]:
             raise AssertionError(f"live/replay source mismatch at {when}")
-    return {"status": "PASS", "samples": len(samples), "input_records": len(records)}
+    if not count:
+        raise AssertionError("no live samples to verify")
+    return {"status": "PASS", "samples": count, "input_records": len(records)}
 
 
 def main():

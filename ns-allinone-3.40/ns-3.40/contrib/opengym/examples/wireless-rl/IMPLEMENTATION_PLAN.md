@@ -6,6 +6,8 @@
 研究边界、论文问题和最终指标仍以 `RESEARCH_PLAN.md` 为准；当前功能以源码和
 `ros2_ws/ros2-multi-robot-automap/user_guide.md` 为准；实验事实以 `log.md` 和日期报告为准。
 
+2026-10-07当前状态：用户已验收P3B.5；P3C与在线通信故障控台技术门禁PASS，待用户检查。冻结6a0a8eb的ideal/forced/dynamic三原任务均原生COMPLETE（197.1/235.0/265.6s），零碰撞/耗尽/失效/infra/retry，forced两机各充电一次。658实时快照/26852 CSV行同源、63历史原任务/1879流/31冻结TDI回放、676组件/四包build/68任务安全源/54静态协议/实际ROS与Qt控台审核通过。源与显示修订、原失败和取证分开保留，见[最终报告](report/20261007_p3c_gate.md)。P3C.5/P4尚未开始。
+
 ## 1. 实施原则
 
 - 一次只完成一个可运行、可判定的检查点，完成后由用户检查再进入下一步；
@@ -83,7 +85,7 @@
 | P3A.6 | 当前 task-stack 重新冻结 | 当前 HEAD 的 P2D/P3A 完整矩阵、强制充电回归、commit/config/environment manifest、ROS graph edge 白名单 | 在网络/RL 前重新跑固定门禁并输出 `task_stack_frozen_commit`；后续任务栈改动必须另开批次 | 已验收（2026-10-01） |
 | P3B | 固定 delay/loss 网络替身（已完成范围） | 独立上下行、固定 seed 队列、TTL/版本、重复/乱序、重传、逐消息账本和 stale-state 降级 | 4 项协议单测、54 格固定协议 matrix `PASS`；故障语义和安全降级可复现 | 已验收 |
 | P3B.5 | 故障条件下的完整任务闭环 | Gazebo fault-mode 任务矩阵、理想配对基线、任务/电池/碰撞/安全降级指标、机器人本地 freshness 保障、队列语义收敛 | 覆盖 `coverage/target/rally`、多 world/seed、丢包/延迟/TTL/deadline/retry/overflow；每格保留 ledger 和任务结果；健康机器人继续，未交付信息不触发错误任务；输出故障退化报告 | 已验收：2026-10-07 |
-| P3C | gateway 通信指标、实时可视化与在线故障控台 | 默认监控面板、独立故障配置入口、CSV/JSON 指标快照、ideal/fault 对比报告 | 消息与attempt字节闭合；显示吞吐/PDR/丢包/时延/队列/重试/AoI/任务；控台变更有实际生效仿真时刻及曲线反馈，监控只读，headless保存同数据 | 进行中 |
+| P3C | gateway 通信指标、实时可视化与在线故障控台 | 默认监控面板、独立故障配置入口、CSV/JSON 指标快照、ideal/fault 对比报告 | 消息与attempt字节闭合；显示吞吐/PDR/丢包/时延/队列/重试/AoI/任务；控台变更有实际生效仿真时刻及曲线反馈，监控只读，headless保存同数据 | 待用户验收：技术PASS 2026-10-07 |
 | P3C.5 | 应用负载与协议控制开销审计 | candidate/request/grant/heartbeat/critical-event 的频率、字节、队列、AoI、deadline、控制开销与可观测性报告 | 在真实候选生成规则下测量负载，明确中央未知信息和审计边界；不得把仿真器隐藏队列作为输入 | 待完成 |
 | P4A | ns-3 数据包与时间同步 | P4A-0 trace ledger、P4A-1 固定窗/lock-step、Gazebo mobility、真实消息大小、资源/RTF 记录 | trace 生成/准入/发送/交付/丢弃字节闭合；相同 seed 事件账本一致；P4A-1 无墙钟竞态，记录 wall time、sim time、RTF 和资源峰值 | 待完成 |
 | P4B | Wi-Fi 4 场景、负载与瓶颈审计 | AP+2/3 STA、传播、墙损耗、背景干扰、网络指标、实测校准集/验证集 | 在 P3C.5 负载和协议开销下测量排队、过期、竞争和交付瓶颈；参数有来源；无实测时标为 synthetic sensitivity，不宣称 sim-to-real | 待完成 |

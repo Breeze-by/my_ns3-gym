@@ -33,6 +33,30 @@ def task_degradation_index(ideal, fault):
     return 1.0
 
 
+def validate_pair_configuration(current, reference):
+    """Require declared physical/protocol settings; observations may be null."""
+    ideal, fault = reference.get("task_result"), current.get("task_result")
+    for key in ("gazebo_seed", "world", "mission_mode", "robot_count"):
+        if current["context"].get(key) is None or current["context"].get(key) != reference["context"].get(key):
+            raise ValueError(f"not a paired comparison: {key}")
+    if ideal and fault:
+        for key in ("target_x", "target_y", "target_max_distance_m", "target_field_of_view_deg", "target_confirmation_frames",
+                    "rally_position_tolerance_m", "rally_linear_tolerance_mps", "rally_angular_tolerance_radps", "rally_hold_sec"):
+            def configured_target(summary, task):
+                settings = (summary["context"].get("configuration") or {}).get("settings") or {}
+                declaration = settings.get("scenario", {}) if key in ("target_x", "target_y") else settings.get("protocol", {})
+                return declaration.get(key, task.get(key))
+            left, right = configured_target(reference, ideal), configured_target(current, fault)
+            if left is None or right is None or left != right:
+                raise ValueError(f"not a paired comparison: configured {key} unavailable or different")
+        if set(ideal.get("robots", {})) != set(fault.get("robots", {})):
+            raise ValueError("not a paired comparison: robot names")
+        for name in ideal.get("robots", {}):
+            for key in ("battery_initial_energy", "battery_capacity", "battery_charge_x", "battery_charge_y"):
+                if ideal["robots"][name].get(key) != fault.get("robots", {}).get(name, {}).get(key):
+                    raise ValueError(f"not a paired comparison: {name}/{key}")
+
+
 def event_stamp(event):
     return float(event.get("time", event.get("event_time", event.get("observer_time", 0.0))))
 
@@ -400,7 +424,7 @@ class LedgerMetrics:
         queue = ticks[-1]["queues"] if ticks else {}
         snapshot["queues"] = {key: value for key, value in queue.items() if direction is None or key == direction}
         snapshot["queue_measurement"] = "transport_sample" if ticks else "unavailable_in_legacy_ledger"
-        snapshot["first_events"] = self.first_events
+        snapshot["first_events"] = dict(self.first_events)
         reordered = 0
         for key in keys:
             if key not in self.order_cache:

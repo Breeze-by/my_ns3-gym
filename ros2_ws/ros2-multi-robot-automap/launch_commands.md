@@ -1,4 +1,4 @@
-<!-- 2026-10-07: P3B.5 literal requirement recheck; runtime launch defaults unchanged. -->
+<!-- 2026-10-07: P3C metrics and live fault console validated; GUI defaults documented below. -->
 
 # 多机器人任务启动命令速查
 
@@ -13,7 +13,7 @@ multi_robot/gazebo_multirobot_mapping_with_nav2.launch.py
 P2C 本地电池/充电管理；可选目标检测与 P2B 集结任务。手动运行默认同时打开贴地的 Gazebo
 重点区域标记和每机器人实时状态栏。
 
-最近核对：2026-10-07。P3A.6、P3B.5 已获用户验收；P3C 实时指标与控台进入集成验证。
+最近核对：2026-10-07。P3A.6、P3B.5 已获用户验收；P3C 实时指标与控台技术门禁PASS。
 当前任务栈冻结在 `d8d361b`，最终报告提交为 `d0b1561`。
 本文第 1–8 节用于当前运行，第 9 节保留历史候选记录；其中“未通过”“未暴露”等描述
 只适用于记录当时。当前结果见 [P3B.5 完整报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261006_p3b5_gate.md)。
@@ -21,7 +21,7 @@ P2C 本地电池/充电管理；可选目标检测与 P2B 集结任务。手动�
 维护要求：以后新增或修改 launch 参数、默认组件或推荐运行方式时，必须在同一个提交中同步
 更新本文的默认命令和参数表。
 
-2026-10-07最新状态：用户已验收原57格＋独立方向延迟6原任务；P3C 新增默认通信面板及独立故障配置服务，任务算法不变。详见[逐条需求审计](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261007_p3b5_requirement_audit.md)。
+2026-10-07最新状态：用户已验收原57格＋独立方向延迟6原任务；P3C 默认通信面板及独立故障配置服务已通过三真实任务、实时/CSV同源及实际Qt验证。任务算法不变。见[P3C报告与控台截图](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261007_p3c_gate.md)。
 
 ## P3C 实时通信指标与控台
 
@@ -67,7 +67,7 @@ ros2 run multi_robot_exploration gateway_monitor
 /usr/bin/python3 scripts/gateway_configure.py --schedule schedule.json --output log/configuration_new.jsonl
 ```
 
-自动保存 `inputs.jsonl`、`live.jsonl`、`live_windows.csv`、`windows.csv/jsonl`、`summary.json`、`events.jsonl`、`curves.svg`。实时窗口是账本当前前缀的暂定结果，最终累计量对账完整输入；需要统一1秒窗口的完整回放时执行：
+自动保存 `inputs.jsonl`、`live.jsonl`、`live_windows.csv`、`windows.csv/jsonl`、`summary.json`、`events.jsonl`、`curves.svg`。实时窗口是账本当前前缀的最近1秒暂定结果，负载下可能跳过tick，最终累计量对账完整输入；需要连续固定1秒窗口的完整回放时执行：
 
 ```bash
 PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python scripts/export_gateway_metrics.py \
@@ -93,7 +93,7 @@ unset FASTRTPS_DEFAULT_PROFILES_FILE ROS_DISCOVERY_SERVER
 从 P3B.5 v102 起，新验证候选显式使用 Fast DDS 的 UDPv4 transport。所有机器人、总部、
 理想/损伤 gateway 基线及独立只读观察器都从这个终端环境启动；它改变本机 ROS 中间件传输，
 网关故障模型仍由原 launch 参数控制。原 v101 的原生初始化超时完整保留，UDP 组件不证明
-该超时的根因；P3B.5 已由 v106 同提交完整57格和修复后的只读校验器通过技术门禁，待用户验收。
+该超时的根因；P3B.5 已由 v106 同提交完整57格、方向延迟补验及只读校验通过，并于2026-10-07由用户验收。
 完整结果见 [P3B.5报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261006_p3b5_gate.md)。实验 manifest 会记录 RMW、transport 环境以及已指定 XML
 profile 的路径/摘要；正式验证不混用两种环境。`FASTRTPS_DEFAULT_PROFILES_FILE` 若指定了禁用
 builtin transports 的 profile，会覆盖这项 transport 选择，应在冻结前核对实际初始化记录。

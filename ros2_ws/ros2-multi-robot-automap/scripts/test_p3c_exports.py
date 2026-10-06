@@ -33,3 +33,19 @@ def test_empty_live_data_cannot_pass_same_source_verification(tmp_path):
     (tmp_path / "live.jsonl").write_text("")
     with pytest.raises(AssertionError, match="no live samples"):
         verify_live(tmp_path)
+
+
+def test_console_keeps_new_service_revision_when_an_old_topic_update_arrives():
+    from types import SimpleNamespace
+    from std_msgs.msg import String
+    from multi_robot_exploration.gateway_panel import FaultControlNode
+    node = SimpleNamespace(configuration={"revision": 4, "ledger_path": "run-a", "requested": {"uplink_loss_rate": 0}})
+    FaultControlNode.receive(node, String(data=json.dumps({"revision": 3, "ledger_path": "run-a", "requested": {"uplink_loss_rate": 1}})))
+    assert node.configuration["revision"] == 4 and node.configuration["requested"]["uplink_loss_rate"] == 0
+    node.receive = lambda message: FaultControlNode.receive(node, message)
+    future = SimpleNamespace(result=lambda: SimpleNamespace(result=SimpleNamespace(successful=True, reason=json.dumps(
+        {"revision": 3, "effective_sim_time": 10, "ledger_path": "run-a", "requested": {"uplink_loss_rate": 1}}))))
+    FaultControlNode.applied(node, future)
+    assert node.configuration["revision"] == 4 and node.pending is None
+    FaultControlNode.receive(node, String(data=json.dumps({"revision": 0, "ledger_path": "run-b"})))
+    assert node.configuration["ledger_path"] == "run-b"

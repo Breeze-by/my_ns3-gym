@@ -1,13 +1,21 @@
 # wireless-rl Codex Memory
 
-2026-10-07 current boundary: P3B.5 accepted by the user; P3C authorized to
-completion, including an online communication fault console and synchronized
-metrics feedback. Preserve all accepted task/safety/native gates and original
-63 trials. Monitor and fault configuration are separate roles. P3C.5 and
-ns-3/Wi-Fi/RL remain later checkpoints. Historical pending-acceptance notes
-below describe their recording date.
+2026-10-07 current boundary: P3B.5 accepted by the user; P3C plus online
+communication fault console technically complete, gate PASS, ready for review.
+Three frozen `6a0a8eb` original tasks are native COMPLETE in
+197.1/235.0/265.6 s, zero contacts/exhaustion/failed robots/infra/retries;
+forced two-robot task has one charge per robot. All 658 live snapshots and
+26,852 CSV rows reproduce from saved inputs; 63 unchanged P3B.5 originals,
+1,879 streams and all 31 frozen paired TDI scores pass read-only replay.
+676 components, four-package build, 68 immutable task/safety files,
+54 static protocol cells and actual ROS/Qt service/graph/closure checks pass.
+Display and pair-validation refinements after original closure have separate
+evidence. See report/20261007_p3c_gate.md/.json and artifact provenance.
+Monitor and fault configuration are separate roles. P3C.5/ns-3/Wi-Fi/RL
+remain later checkpoints; 809 is exposed. Historical pending-acceptance
+notes below describe their recording date.
 
-Last source/documentation review: 2026-10-06. Behavioral evidence is frozen in
+Last source/documentation review: 2026-10-07. Behavioral evidence is frozen in
 the dated reports and is not automatically evidence for a different HEAD. The
 user accepted P1C, P2A, P2B, P2C, P2D, P3A, P3A.5, and P3A.6. The P2C follow-up adds
 Gazebo task-region overlays and a live operator status panel. Historical
@@ -17,7 +25,7 @@ collision events, both manifests report `worktree_dirty=false`, the graph/source
 bypass audits pass, and the forced two-robot regression completes two charges.
 P3B is accepted only for its deterministic application-layer fault transport,
 protocol matrix, ledger, and stale-state semantics. The full-task
-fault work is P3B.5 (technical PASS2026-10-06, awaiting user acceptance); gateway metrics and default visualization are P3C;
+fault work is P3B.5 (user-accepted 2026-10-07); gateway metrics, default visualization and the online fault console are P3C (technical PASS);
 ns-3 packet/clock coupling remains P4A. Earlier `41f63fb`, `c369c7d`, and
 `561de99` failures remain historical retained evidence and are not silently
 replaced.
@@ -117,13 +125,13 @@ forced最低8.63739。lab101最长293.4 s，开发种子不是holdout统计证�
 report/20261001_p3a6_freeze.md/.json及log.md。P3B.5是下一检查点，网络/RL未启动；
 以后改任务栈必须另开批次重验证。用户报告未修改；临时Git排除已在收尾移除。
 
-- Active boundary: P3A.6 accepted; P3B.5 technical PASS at d8d361b, awaiting user acceptance before P3C/network/RL work. P3A and
+- Active boundary: P3A.6 and P3B.5 accepted; P3C technical PASS, ready for review. P3C.5/network/RL work has not started. P3A and
   P3A.5 acceptance applies to their historical task-stack evidence. The historical integration freeze candidate is
   `task_stack_frozen_commit=2933c24`; clean 6+4 runner batches cover all ten
   fixed cells with `COMPLETE` and zero collisions, and the forced-charge
   regression completes two charges. P3B's deterministic application-layer
-  fault gateway and protocol matrix are user-accepted. After P3B.5 user acceptance, proceed to P3C
-  (gateway metrics and default visualization); P4A remains the later ns-3 bridge.
+  fault gateway and protocol matrix are user-accepted. P3C default metrics,
+  visualization and online console are implemented; P4A remains the later ns-3 bridge.
 - Historical P3A.5 evidence is retained at `log/p2d_baseline/p3a5_final_2933c24/`
   (lab/rooms six cells),
   `log/p2d_baseline/p3a5_final_2933c24_corridors_net/` (corridors four cells),

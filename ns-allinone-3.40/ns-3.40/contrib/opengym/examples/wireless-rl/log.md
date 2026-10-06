@@ -7551,3 +7551,88 @@ colcon build --symlink-install --packages-select multi_robot_interfaces multi_ro
 最后冻结前：compileall PASS；24相关指标/配对测试0.08s PASS；三case --validate-only参数/环境清单已保存pre_freeze/p3c_v7_*_predeclared.json，三机器人source-only旁路0违规。git diff --check与git add -n .核对后，只暂存工程/文档，排除260929_report与全部log/build/install。
 
 首次已push实现d4b53d3的三条v7启动argv均在runner preflight退出2：git status从ROS子目录返回../../260929_report路径，导致允许的用户资料被误认为task dirty。三个owner自然退出，0Gazebo/0原始任务/0账本，未发生任务重试；stdout完整保留pre_freeze/p3c_v7_{ideal,forced,dynamic}_owner.txt。修复仅runner按canonical Git根读取状态，仍只排除原260929_report未跟踪资料，不放宽task clean。重新commit/push后，使用同预声明三case/原schedule/seed/参数及相同隔离domain/port，以p3c_v8_{ideal,forced,dynamic}新目录首次启动。精确argv除--run-id v7→v8外不变，均taskset CPU0–79、Humble/install/Gazebo环境及rmw_fastrtps_cpp/UDPv4，无XML/discovery server。
+
+
+## 2026-10-07 P3C v8三原始任务、在线配置与完整门禁PASS
+
+用户已验收P3B.5，按原授权完成P3C及在线通信故障控台。本批冻结6a0a8eb2e0523c2e3a9446908c9693ea30f70aaa（canonical Git-root preflight修复已commit/push），2026-10-06 18:39:32UTC启动，三原owner/观察器/配置客户端自然结束后才修改显示/分析源。源码与环境/实际smoke命令/观察器/配置argv在各manifest；CPU0–79、domain195/196/197、master19820/19821/19822，Humble/install/Gazebo、PYTHONNOUSERSITE=1、rmw_fastrtps_cpp/UDPv4，无XML/discovery server。canonical ROS cwd，精确顶层argv：
+
+```text
+/usr/bin/python3 scripts/run_p3c_integration.py --case ideal --run-id p3c_v8_ideal --domain 195 --gazebo-port 19820
+/usr/bin/python3 scripts/run_p3c_integration.py --case forced --run-id p3c_v8_forced --domain 196 --gazebo-port 19821
+/usr/bin/python3 scripts/run_p3c_integration.py --case dynamic --run-id p3c_v8_dynamic --domain 197 --gazebo-port 19822
+```
+
+每条由taskset CPU0–79运行；stdout /tmp/p3c_v8_{ideal,forced,dynamic}_owner.txt。lab/my_world.world、2r、Gazebo303、fault17011、target(-4,4)、300s；ideal/dynamic初始E40，forced E18/charge10/safety5/return120。原生.35m/.05mps/.1radps/5s和原TTL/安全门槛不变。三case原任务自然结束，runner/observer/configuration exit0，无forced shutdown、0接触/耗尽/failed/infra/整轮retry。结果：
+
+| episode | 原生终态 | 完成s | detect/RALLY s | charge | minimum |
+| --- | --- | ---: | ---: | ---: | ---: |
+| p3c_v8_ideal_ideal | COMPLETE | 197.1 | 89.0/90.5 | 1 | 23.85796 |
+| p3c_v8_forced_forced | COMPLETE | 235.0 | 129.2/130.5 | 2，各机1 | 16.47589 |
+| p3c_v8_dynamic_dynamic | COMPLETE | 265.6 | 151.9/170.3 | 1 | 27.05247 |
+
+原生稳定保持5.0/5.4/5.0s均strict PASS。输出分别log/p3c/p3c_v8_<case>/p3c_v8_<case>_<case>/，raw result为同episode_id.json，原summary/manifest/ledger/safety_events/graph/launch/ledger_metrics全部保留。三个result/ledger/graph/SHA绑定，账本TTL/version/causality与无旁路核验通过；gateway_stop记录完整。全部自有进程结束，未操作domain222/master11345。
+
+dynamic首中央EXPLORE=2074.582，native evaluator start=2074.382；客户端按其观察EXPLORE后的15/30/45/60s请求，实际service applied绝对2090.582/2105.582/2120.682/2135.682，revision1–4分别up10%、down delay2s、both loss100%、恢复0。请求→生效.1/0/.1/0 simsec，不把名义调度时刻当实际边界。配置、loss/queue/源龄曲线同时间轴；在途attempt原配置保留，后续attempt/retry新配置，无队列清空或源续租。dynamic确实完整完成，但265.6 vs197.1s的+68.5s只是单对异步任务描述，不作单因素因果/最坏保证。
+
+实时输入与样本：ideal34601/184、forced38879/221、dynamic41351/253，共658快照；当前shared math按各原prefix record_count重新计算全部PASS。26,852 CSV行（7412/9318/10122）与JSON逐字段数值一致。实时为最近1秒暂定窗口，CPU负载可跳过tick；原记录不回填，完整1秒回放另导出。63历史原任务/1879流/9曲线episode/7展示pair/31冻结TDI只读PASS，原result/ledger SHA前后相同。22合格rally pairs/5物理簇原TDI.606061 CI[.384615,.8]；fault full8/22、partial1/22，RMST300 fault257.27727 vsideal149.36818。三新task不混入原统计。
+
+全部任务关闭之后执行的验证（ROS命令均Humble/install、系统/usr/bin/python3、PYTHONNOUSERSITE=1、PYTHONPATH=$PWD/src/multi_robot_exploration:$PYTHONPATH）：
+
+```text
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test scripts/test_*.py --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+# v10 675 PASS/18.08s；新增旧配置topic版本保护检查后v11 676 PASS/17.05s
+colcon build --symlink-install --packages-select multi_robot_interfaces multi_robot_exploration merge_map multi_robot
+# v10四包5.47s PASS
+/usr/bin/python3 scripts/check_p3c_source.py --output log/p3c/v8_source.json
+/usr/bin/python3 scripts/check_p3c_source.py --output log/p3c/v10_source.json
+/usr/bin/python3 scripts/check_p3c_source.py --output log/p3c/v11_source.json
+/usr/bin/python3 scripts/check_p3c_source.py --output log/p3c/v12_source.json
+# 每次独立输出PASS：68immutable files、54完整协议事件格、navigation除结果诊断AST等价、监控publisher/无truth边界
+/usr/bin/python3 scripts/check_p3c_runtime.py --output log/p3c/v10_runtime
+/usr/bin/python3 scripts/check_p3c_runtime.py --output log/p3c/v11_runtime
+/usr/bin/python3 scripts/check_p3c_runtime.py --output log/p3c/v12_runtime
+# 自有domain190/UDPv4/Qt offscreen，均PASS：490inputs/19samples、GUI按钮真实RPC、原子非法/stale拒绝、startup冻结、旧inflight、dup/overflow、graph与关闭GUI后继续采集、完整shutdown<5s。合成组件非任务/Gazebo证据。
+/usr/bin/python3 scripts/check_p3c_gate.py --source log/p3c/v11_source.json --runtime log/p3c/v11_runtime --replay log/p3c/v7_accepted_replay --episodes log/p3c/p3c_v8_ideal/p3c_v8_ideal_ideal/summary.json log/p3c/p3c_v8_forced/p3c_v8_forced_forced/summary.json log/p3c/p3c_v8_dynamic/p3c_v8_dynamic_dynamic/summary.json --output log/p3c/v11_gate.json
+# 完整门禁PASS：3新tasks/63原始/658实时；首次相同参数门禁原输出report/20261007_p3c_gate.json，finalizer另存log/p3c/v8_gate.json后加入最终检查metadata
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_gateway_metrics.py scripts/test_p3c_exports.py
+# v11/v12相关26 PASS，v12 stdout /tmp/p3c_v12_targeted.txt
+```
+
+纯读导出使用ns3gym Python/PYTHONNOUSERSITE=1，不运行ns3：
+
+```text
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python scripts/export_gateway_metrics.py --ledger log/p3c/p3c_v8_ideal/p3c_v8_ideal_ideal/ledger.jsonl --episode log/p3c/p3c_v8_ideal/p3c_v8_ideal_ideal/p3c_v8_ideal_ideal.json --task-events log/p3c/p3c_v8_ideal/p3c_v8_ideal_ideal/safety_events.jsonl --output log/p3c/v10_full_replay/ideal
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python scripts/export_gateway_metrics.py --ledger log/p3c/p3c_v8_dynamic/p3c_v8_dynamic_dynamic/ledger.jsonl --episode log/p3c/p3c_v8_dynamic/p3c_v8_dynamic_dynamic/p3c_v8_dynamic_dynamic.json --task-events log/p3c/p3c_v8_dynamic/p3c_v8_dynamic_dynamic/safety_events.jsonl --output log/p3c/v12_full_replay/dynamic --reference log/p3c/v10_full_replay/ideal
+# 两次完整连续1秒回放均28streams守恒PASS，pair TDI0/RMST差68.5s。
+```
+
+失败/修订完整保留：首gate汇总用补验pair不共有的fault_partial字段KeyError，trace /tmp/p3c_v8_gate_initial.txt；改读原native result success/partial，不改原判定后独立重审PASS。首figure /tmp/p3c_v8_figures.txt缺Matplotlib，仅离线失败；PYTHONPATH=/usr/lib/python3/dist-packages复用本机既有Matplotlib，v9/v10生成PASS并调整图例避免遮挡。一次v11 dynamic派生导出误传--episode .../episode.json，FileNotFound且未创建输出；trace /tmp/p3c_v11_full_dynamic.txt保留，改用manifest result_path后新v12输出PASS，不是任务重试。一次只读摘要遍历31pair误假设全部有7展示pair才有的comparison字段KeyError，工具记录保留，过滤字段后只读输出成功，未修改raw。首次导出exit130、v4/v5/v6 null reader失败、v5错误模块source审计、v3错误包名build和v7 preflight启动前失败仍在前条与原文件，不覆盖。
+
+任务关闭后只修改指标首次事件snapshot拷贝、流式prefix验证、统一GUI/CLI配对核验（未观测null仍保留）、旧topic不得回退配置版本、队列利用率显示与混合类型不画单一TTL。原生任务/TTL/安全及68源未变，原54静态事件字典不变；后检查不能冒充6a0a8eb任务源码。v12实际monitor/details/console逐页渲染，三科学图实际查看；legacy queue/ACK accepted未知、payload非MAC/PHY、p95/p99低n和实时prefix/完整回放区别明确说明。
+
+派生图与最后原始SHA/用户文件/CSV/进程闭合验证（repo根）：
+
+```text
+PYTHONNOUSERSITE=1 PYTHONPATH=/usr/lib/python3/dist-packages /home/zhuyulab/miniconda3/envs/ns3gym/bin/python /tmp/plot_p3c_results.py
+# v10 PASS；确切源复制report/20261007_p3c_artifact_tools/plot_p3c_results.py
+PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261007_p3c_artifact_tools/finalize_evidence.py
+```
+
+最终证据report/20261007_p3c_gate.md/.json、provenance.json、六PNG、artifact_tools和compact checks stdout；raw任务及用户资料不暂存。用户260929_report全部27文件SHA不变（14个未跟踪仍排除）。实现/报告/启动指南/研究实施计划/记忆同会话commit并push；不改历史候选记录。P3C技术完成供用户检查，无P3C.5/ns-3/Wi-Fi/RL实验，809已暴露、303为集成种子。
+
+
+P3C收尾补记：v12 finalizer首次完整PASS（27用户文件、63历史原始、26852 CSV、0自有残留进程），原派生gate/provenance另存log/p3c/v12_gate.json与v12_provenance.json。最终复核将GUI服务回应也送入同一单调revision入口，防止另一入口新配置topic先到、旧服务回应后到而回退显示；原同一并发回归测试新增这个响应顺序断言。此修订只涉及Qt控台显示状态，不改gateway配置语义或任何任务算法。之后执行：
+
+```text
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_gateway_metrics.py scripts/test_p3c_exports.py
+# v13 26 PASS/0.51s，/tmp/p3c_v13_targeted.txt
+/usr/bin/python3 scripts/check_p3c_source.py --output log/p3c/v13_source.json
+# PASS 68immutable/54protocol；绑定最终Qt源
+/usr/bin/python3 scripts/check_p3c_runtime.py --output log/p3c/v13_runtime
+# domain190/UDPv4/Qt offscreen，PASS；原live/input、GUI按钮/原子配置/关闭/graph门保留
+colcon build --symlink-install --packages-select multi_robot_interfaces multi_robot_exploration merge_map multi_robot
+# 最终四包5.62s PASS，/tmp/p3c_v13_build.txt
+```
+
+完整676回归对应v11源码；最终仅上述Qt保护和混合TTL显示，另有26相关检查/实际Qt/源码审核/四包build，不把新显示源码冒充三Gazebo原冻结。finalizer第二次读取同63原输入/三新raw，只重核与更新派生报告metadata/最终截图/当前源SHA；不重跑任务，不改原raw。命令同前条，结果入report/20261007_p3c_provenance.json。域195/196/197和190的自有进程全部关闭。

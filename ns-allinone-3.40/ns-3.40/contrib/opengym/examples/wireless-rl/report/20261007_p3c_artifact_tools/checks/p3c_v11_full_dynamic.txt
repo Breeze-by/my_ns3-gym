@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/export_gateway_metrics.py", line 138, in <module>
+    main()
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/export_gateway_metrics.py", line 126, in main
+    summary, _ = export(args.ledger, args.output, args.episode, args.task_events, context)
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/export_gateway_metrics.py", line 20, in export
+    result = json.loads(Path(episode).read_text()) if episode else None
+  File "/home/zhuyulab/miniconda3/envs/ns3gym/lib/python3.10/pathlib.py", line 1134, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+  File "/home/zhuyulab/miniconda3/envs/ns3gym/lib/python3.10/pathlib.py", line 1119, in open
+    return self._accessor.open(self, mode, buffering, encoding, errors,
+FileNotFoundError: [Errno 2] No such file or directory: 'log/p3c/p3c_v8_dynamic/p3c_v8_dynamic_dynamic/episode.json'

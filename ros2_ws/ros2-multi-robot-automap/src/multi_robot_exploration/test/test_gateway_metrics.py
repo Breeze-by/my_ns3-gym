@@ -119,6 +119,17 @@ def test_pending_attempts_are_explicit_and_corrupted_stages_fail_audit():
     assert metrics.audit()["status"] == "FAIL"
 
 
+def test_saved_window_first_events_do_not_change_when_a_later_loss_arrives():
+    metrics = collect(FaultConfig(), [("a", 0, 2, False)], .1, accept=True)
+    saved = metrics.report(0, 1)
+    later = DeterministicFaultTransport(FaultConfig(loss_rate=1), metrics.ingest)
+    later.enqueue("b", packet(2), "uplink", 2, source_time=2, ttl_sec=2)
+    later.poll(2)
+    assert metrics.first_events["first_drop"]["time"] == 2
+    assert saved["first_events"] == {}
+    assert saved["counts"]["accepted_messages"] == 1
+
+
 @pytest.mark.parametrize("changes", [
     {"uplink_loss_rate": float("nan")}, {"uplink_loss_rate": 1.1}, {"downlink_delay_sec": -1},
     {"queue_capacity": -1}, {"max_retries": True}, {"reorder_window": 1.5},

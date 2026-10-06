@@ -105,11 +105,14 @@ def main():
                                                         for r in final["streams"]]})
     accepted = load(replay["accepted_report"])
     qualified = [pair for pair in accepted["paired_results"] if pair["tdi"] is not None]
+    originals = {item["episode_id"]: load(item["raw_result_path"]) for item in accepted["episode_summaries"]}
+    fault_tasks = [originals[pair["fault"]] for pair in qualified]
+    ideal_tasks = [originals[pair["ideal"]] for pair in qualified]
     task_rates = {"cohort": "22 qualified fixed rally pairs, original P3B.5 unchanged", "n": len(qualified),
-                  "fault_success_rate": sum(pair["fault_complete"] for pair in qualified)/len(qualified),
-                  "fault_partial_rate": sum(pair["fault_partial"] for pair in qualified)/len(qualified),
-                  "mean_fault_rmst300_sec": sum(pair["rmst300_fault"] for pair in qualified)/len(qualified),
-                  "mean_ideal_rmst300_sec": sum(pair["rmst300_ideal"] for pair in qualified)/len(qualified),
+                  "fault_success_rate": sum(task["success"] for task in fault_tasks)/len(qualified),
+                  "fault_partial_rate": sum(task["partial_completion"] for task in fault_tasks)/len(qualified),
+                  "mean_fault_rmst300_sec": sum(task["completion_time_sec"] if task["success"] else 300 for task in fault_tasks)/len(qualified),
+                  "mean_ideal_rmst300_sec": sum(task["completion_time_sec"] for task in ideal_tasks)/len(qualified),
                   "original_tdi": accepted["combined_tdi"]}
     output = {"status": "PASS", "checked_at_utc": datetime.now(timezone.utc).isoformat(),
               "frozen_commit": rows[0]["git_commit"], "source_audit": source, "runtime_probe": runtime,

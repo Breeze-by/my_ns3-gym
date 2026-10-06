@@ -22,7 +22,7 @@ from rcl_interfaces.srv import SetParametersAtomically
 from std_msgs.msg import String
 
 from .gateway_config import FAULT_DEFAULTS
-from .gateway_metrics import task_degradation_index
+from .gateway_metrics import task_degradation_index, validate_pair_configuration
 
 
 def transient_qos():
@@ -58,7 +58,9 @@ class FaultControlNode(Node):
         self.create_subscription(String, "/gateway/fault_configuration", self.receive, transient_qos())
 
     def receive(self, message):
-        self.configuration = json.loads(message.data)
+        state = json.loads(message.data)
+        if not self.configuration or state.get("ledger_path") != self.configuration.get("ledger_path") or state["revision"] >= self.configuration["revision"]:
+            self.configuration = state
 
     def apply(self, values):
         if not self.configuration or self.pending or not self.client.service_is_ready():
@@ -76,9 +78,10 @@ class FaultControlNode(Node):
         try:
             result = future.result().result
             if result.successful:
-                self.configuration = json.loads(result.reason)
-                self.feedback = (f"已应用版本 {self.configuration['revision']}，仿真时刻 "
-                                 f"{self.configuration['effective_sim_time']:.3f} s")
+                acknowledged = json.loads(result.reason)
+                self.receive(String(data=result.reason))
+                self.feedback = (f"已应用版本 {acknowledged['revision']}，仿真时刻 "
+                                 f"{acknowledged['effective_sim_time']:.3f} s")
             else:
                 self.feedback = "拒绝：" + result.reason
         except Exception as error:
@@ -107,7 +110,7 @@ class Curve(QWidget):
         x_min, x_max = min(points, default=0), max(points, default=1)
         x_max = max(x_max, x_min + 1)
         values = [fn(r) for r in self.rows+self.reference for _, fn in self.measures]
-        thresholds = sorted({r["freshness_ttl_sec"] for r in self.rows if r.get("freshness_ttl_sec") is not None}) if "AoI" in self.title else []
+        thresholds = sorted({r["freshness_ttl_sec"] for r in self.rows if r.get("message_type") != "all" and r.get("freshness_ttl_sec") is not None}) if "AoI" in self.title else []
         values += thresholds
         maximum = max((v for v in values if v is not None and math.isfinite(v)), default=1) or 1
         for tick in range(5):
@@ -289,6 +292,8 @@ class GatewayPanel(QWidget):
         self.history = deque(maxlen=20000)
         self.reference, self.last_time = [], None
         self.reference_result = None
+        self.reference_context = {}
+        self.reference_is_ideal = False
         self.setWindowTitle("Gateway 通信指标与在线控台")
         self.resize(1250, 870)
         layout = QVBoxLayout(self)
@@ -351,6 +356,10 @@ class GatewayPanel(QWidget):
             rows = [json.loads(line) for line in Path(filename).read_text().splitlines()]
             if not rows or any("direction" not in r or "elapsed_sim_time" not in r for r in rows):
                 raise ValueError("需要windows.jsonl格式")
+            summary_path = Path(filename).with_name("summary.json")
+            data = json.loads(summary_path.read_text()) if summary_path.is_file() else {}
+            if not isinstance(data, dict):
+                raise ValueError("summary.json需要对象格式")
         except (ValueError, OSError) as error:
             self.task_details.setText("参考读取失败：" + str(error))
             return
@@ -359,10 +368,9 @@ class GatewayPanel(QWidget):
             self.summary.setText("参考拒绝：world、seed或mission_mode不同，不能标为配对曲线。")
             return
         self.reference = rows
-        self.reference_result = None
-        summary_path = Path(filename).with_name("summary.json")
-        if summary_path.is_file():
-            self.reference_result = json.loads(summary_path.read_text()).get("task_result")
+        self.reference_result = data.get("task_result")
+        self.reference_context = data.get("context") or {}
+        self.reference_is_ideal = all((r.get("configuration") or {}).get("requested", {}).get("network_mode", (r.get("configuration") or {}).get("legacy_declared_mode")) == "ideal" for r in rows)
 
     def refresh(self):
         if self.console:
@@ -374,9 +382,16 @@ class GatewayPanel(QWidget):
             self.last_time = snapshot["sim_time"]
             self.history.extend(snapshot["window"] + snapshot.get("by_type_window", []))
         context = snapshot["context"]
+        queue_text = []
+        for report in snapshot["window"]:
+            q = report["queues"].get(report["direction"], {})
+            capacity = q.get("capacity", 0)
+            ratio = 100*q.get("in_flight", 0)/capacity if capacity else None
+            queue_text.append(f"{report['direction']}={q.get('in_flight', '—')}/{capacity or '—'} ({shown(ratio, '%')})")
         self.summary.setText(f"{context.get('episode_id')} | seed={context.get('gazebo_seed')} | {context.get('mission_mode')} | "
                              f"任务={snapshot['phase']} | 仿真 t={snapshot['elapsed_sim_time']:.2f}s | {snapshot['output_dir']}\n"
-                             "曲线为实时暂定窗口，完整账本结算后保存final CSV/JSON/SVG；监控不发布任务命令。")
+                             "曲线为实时暂定窗口，完整账本结算后保存final CSV/JSON/SVG；监控不发布任务命令。\n"
+                             "在途队列/容量（利用率）：" + "; ".join(queue_text))
         types = sorted({r["message_type"] for r in snapshot["streams"]})
         for message_type in types:
             if self.message_type.findText(message_type) < 0:
@@ -405,8 +420,16 @@ class GatewayPanel(QWidget):
                 self.table.setItem(row, column, QTableWidgetItem(value))
         robot_text = [f"{name}: {state.get('battery', {}).get('mode', '—')} E={state.get('battery', {}).get('energy', '—')} "
                       f"接收位姿={state.get('pose', '—')} 速度={state.get('velocity', '—')}" for name, state in snapshot["robots"].items()]
-        degradation = task_degradation_index(self.reference_result, snapshot.get("task_result"))
-        task_text = f"与已加载ideal参考的TDI：{shown(degradation)}（当前原生任务结果尚未落盘或ideal未COMPLETE时为—）"
+        degradation, pair_error = None, "原生结果未落盘或参考不是完整ideal"
+        if self.reference_is_ideal and self.reference_result and snapshot.get("task_result"):
+            try:
+                validate_pair_configuration({"context": context, "task_result": snapshot["task_result"]},
+                                            {"context": self.reference_context, "task_result": self.reference_result})
+                degradation = task_degradation_index(self.reference_result, snapshot["task_result"])
+                pair_error = "同配置核验通过"
+            except ValueError as error:
+                pair_error = str(error)
+        task_text = f"与已加载ideal参考的TDI：{shown(degradation)}；{pair_error}"
         for label, task in (("当前", snapshot.get("task_result")), ("参考", self.reference_result)):
             if task:
                 task_text += (f"\n{label}原生任务：{task.get('task_phase')} success={task.get('success')} partial={task.get('partial_completion')} "

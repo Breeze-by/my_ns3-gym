@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/audit_p3c_evidence.py", line 111, in <module>
+    main()
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/audit_p3c_evidence.py", line 94, in main
+    comparison["comparison"] = compare(current, reference, fault_dir)
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/export_gateway_metrics.py", line 80, in compare
+    raise ValueError(f"not a paired comparison: {key}")
+ValueError: not a paired comparison: target_max_distance_m

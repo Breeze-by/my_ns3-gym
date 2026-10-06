@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3c_gate.py", line 129, in <module>
+    main()
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3c_gate.py", line 110, in main
+    "fault_partial_rate": sum(pair["fault_partial"] for pair in qualified)/len(qualified),
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3c_gate.py", line 110, in <genexpr>
+    "fault_partial_rate": sum(pair["fault_partial"] for pair in qualified)/len(qualified),
+KeyError: 'fault_partial'
