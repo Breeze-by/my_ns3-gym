@@ -2,6 +2,12 @@
 
 常用启动命令、不同 world 和参数速查见 [`launch_commands.md`](launch_commands.md)。
 
+最近核对：2026-10-06。P3A.6 已于 2026-10-01 验收；P3B.5 技术门禁 PASS，待用户验收。
+当前任务栈冻结为 `d8d361b`，最终报告提交为 `d0b1561`，见
+[完整报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261006_p3b5_gate.md)。
+十格固定理想任务全部原生 COMPLETE，强故障下的失败和超时仍保留；尚未接入 ns-3/Wi-Fi/RL。
+末尾第 12 节是历史开发记录，其中的候选、未暴露和待验收状态只适用于记录当时。
+
 本文档面向当前项目状态：ROS2 Humble + Gazebo Classic + TurtleBot3 Waffle，多机器人通过各自 SLAM 建图，`merge_map` 合并全局地图，`multi_robot_exploration` 统一分配探索目标。
 
 自 2026-09-02 起，本目录已通过 `git subtree` 合入 `Breeze-by/my_ns3-gym`
@@ -22,8 +28,9 @@ monorepo，与 ns-3/ns3-gym 共用一个 Git 根。旧的独立检出目录及�
 
 | 路径 | 作用 |
 | --- | --- |
+| `src/multi_robot_interfaces` | 跨机器人 gateway 的 `GatewayEnvelope` 消息定义。 |
 | `src/multi_robot` | 主仿真包。负责 Gazebo 世界、机器人 SDF/URDF、主 launch、Nav2 参数、RViz 配置。 |
-| `src/merge_map` | 地图合并包。按栅格原点对齐 `/tbN/map`，合并已知区域并发布 `/merge_map`。 |
+| `src/merge_map` | 地图合并包。消费 `/gateway/received/tbN/map`，按栅格原点合并已知区域并发布 `/merge_map`。 |
 | `src/multi_robot_exploration` | 中央协同探索节点。用本地地图验证每台机器人的可达性，用合并地图统一评价信息增益，并分配互不冲突的 Nav2 目标。 |
 | `src/multi_robot/params/nav2_params_tb*_0.yaml` | 每台机器人单独的 Nav2 参数。当前主 launch 使用 `tb1` 到 `tb4`。 |
 | `src/multi_robot/models/turtlebot3_waffle/model.sdf` | Gazebo 实体模型。当前保留 lidar、imu、diff_drive、joint_state，禁用了深度相机传感器。 |
@@ -31,7 +38,7 @@ monorepo，与 ns-3/ns3-gym 共用一个 Git 根。旧的独立检出目录及�
 
 ## 2. 启动链路
 
-主入口：
+建图入口（先执行第 8 节环境初始化；完整目标搜索与集结命令见第 8 节）：
 
 ```bash
 ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
@@ -41,7 +48,9 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
   enable_status_panel:=true \
   enable_battery:=true \
   battery_initial_energy:=40.0 \
-  enable_rviz:=false
+  enable_rviz:=false \
+  enable_merge_rviz:=false \
+  auto_save_map:=false
 ```
 
 主 launch 文件：
@@ -56,14 +65,16 @@ src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py
 | --- | --- |
 | Gazebo server | include `gazebo_ros/launch/gzserver.launch.py` |
 | Gazebo GUI | include `gazebo_ros/launch/gzclient.launch.py`，由 `enable_gzclient` 控制 |
-| 机器人 spawn | `gazebo_ros/spawn_entity.py`，按 `robot_count` 顺序启动 `tb1..tb4` |
+| 机器人 spawn | `multi_robot_exploration/spawn_entity_checked`，按 `robot_count` 顺序启动并确认 `tb1..tb4` 实体 |
 | robot_state_publisher | 每个机器人一个 namespace：`/tb1`、`/tb2` 等 |
 | joint_state_publisher | 每个机器人一个 |
 | Nav2 | include `src/multi_robot/launch/nav2_bringup/bringup_launch.py` |
 | slam_toolbox | include `slam_toolbox/launch/online_async_multirobot_launch.py` |
 | merge_map | 主 launch 直接启动 `merge_map` 节点，确保退出时不会遗留子 launch 进程 |
-| Nav2 就绪门控 | 等待所有 `/tbN/navigate_to_pose` action server 可用 |
+| Nav2 就绪门控 | 等待所有 `/tbN/navigate_to_pose` action server 与导航生命周期节点 active |
 | headquarters_control | `ros2 run multi_robot_exploration control` |
+| 通信适配 | `ideal_gateway`、每机器人 `navigation_gateway` 与 `gateway_tf_ingress`；ideal/fault 共用同一路径 |
+| 本地电池 | 每机器人一个 `battery_manager`，默认启用；独立执行安全返航与充电 |
 | Gazebo 任务区域 | `task_visualizer` 生成无碰撞的重点区域标记，默认开启 |
 | 机器人状态栏 | `robot_status_panel` 显示任务、电池、位姿和速度，默认开启 |
 | 每机器人 RViz | 由 `enable_rviz` 控制，默认关闭 |
@@ -144,8 +155,8 @@ multi_robot_exploration/control
 | `battery_move_cost_per_m` | `1.0` | 每行驶 1 m 的能量成本 |
 | `battery_idle_cost_per_sec` | `0.02` | 每仿真秒的基础能量成本 |
 | `battery_return_safety_margin` | `8.0` | 预计返航成本之外保留的安全余量 |
-| `battery_charge_duration_sec` | `10.0` | 在充电位静止后恢复到目标电量所需仿真秒数 |
-| `battery_charge_radius_m` | `0.5` | 充电位判定半径；允许 Nav2 到达误差仍进入充电 |
+| `battery_charge_duration_sec` | `6.0` | 在充电区域稳定后恢复到目标电量所需仿真秒数 |
+| `battery_charge_radius_m` | `0.8` | 充电区域判定半径；允许 Nav2 到达误差仍进入充电 |
 | `battery_charge_target_fraction` | `0.8` | 充到容量的 80% 后恢复探索，不必等到满电 |
 | `battery_return_timeout_sec` | `180.0` | 单次安全返航总超时 |
 | `battery_return_path_factor` | `2.0` | 返航路径相对直线距离的保守倍数 |
@@ -418,19 +429,21 @@ server 和所有导航生命周期节点；全部 active 后立即启动控制�
 门控超时会列出未就绪的 action 并阻止探索带病启动。探索行为树不使用的
 `smoother_server` 不再启动；速度平滑器 `velocity_smoother` 仍保留。
 
-P3A.6 候选版本增加滚动空间预约：探索最多三台并发，按当前已交付位姿为停驻机器人保留
+当前控制器沿用 P3A.6 的滚动空间预约：探索最多三台并发，按当前已交付位姿为停驻机器人保留
 0.6 m 动态障碍，并在活动路线之间维持 1.8 m 隔离。每个候选通过路线预约后才占用并发名额，
 冲突候选不会遮蔽同一机器人的其他前沿。交给 Nav2 的航点在首个遮挡转角前截断，最长 5 m；
 Nav2 goal checker 航点到达容差收紧为 0.02 m，避免短航点在原地被反复判为到达。每轮每机器人复用一次
 Dijkstra 距离场，下一轮地图/位姿更新后重新计算。返航开始时取消其他探索动作，尚未确认的
-动作在接受回调中也会检查返航状态。固定任务验收条件保持原样，候选算法尚未重新冻结。
+动作在接受回调中也会检查返航状态。固定任务验收条件保持原样；当前 P3B.5 的同提交十格已通过。
 
-新的 P3A.6 候选使用 Nav2 Humble 的 Regulated Pure Pursuit（RPP）替代 DWB，开启
+当前使用 Nav2 Humble 的 Regulated Pure Pursuit（RPP），开启
 曲率和近障碍限速、预测碰撞检测，最大线速度仍为 0.26 m/s。Nav2 局部/全局圆半径为
 0.25 m，以覆盖 Gazebo 偏心底盘的约 0.237 m 后角；可视分段也用于集合和本地返航。
 全局电池暂停只在进入 RETURNING 时触发一次取消，连续心跳不再打断恢复动作。
 静止机器人占用返航路线时，协调器可派发最近的路线外避让点，并保留最终集合位供恢复。
-RPP 配置与旧 DWB 结果属于不同 task-stack 候选，必须新开正式批次验证。
+合法已完成的避让驻点可在重新核验视线、朝向、净空、间距与能量后保留为 final。
+Nav2 controller 和 velocity_smoother 使用仿真时间，多机器人 SLAM 地图重建周期为 2 s。
+RPP 当前任务栈与旧 DWB 历史结果分开记录；控制或配置变化仍需新的同提交验证。
 
 ### 6.6 地图融合
 
@@ -442,55 +455,77 @@ RPP 配置与旧 DWB 结果属于不同 task-stack 候选，必须新开正式�
 
 ## 7. 编译
 
-推荐每次修改后执行：
-
-```bash
-cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
-colcon build --symlink-install --packages-select multi_robot merge_map multi_robot_exploration
-source install/setup.bash
-```
-
-如果 shell 没有 ROS 环境：
+首次检出或未构建本工作区时，先构建全部包，包含仓库内的自定义 SLAM Toolbox：
 
 ```bash
 source /opt/ros/humble/setup.bash
-source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash
-source /usr/share/gazebo/setup.sh
-export TURTLEBOT3_MODEL=waffle
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+export PYTHONNOUSERSITE=1
+colcon build --symlink-install
+source install/setup.bash
+```
+
+已有完整构建、仅修改以下四包时可增量构建；修改 SLAM Toolbox 时还需构建该包：
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+export PYTHONNOUSERSITE=1
+colcon build --symlink-install --packages-select \
+  multi_robot_interfaces multi_robot merge_map multi_robot_exploration
+source install/setup.bash
 ```
 
 ## 8. 启动
 
-启动前清理旧进程：
+每个启动或诊断终端先初始化同一 ROS/Gazebo 环境。旧实例在其启动终端按 `Ctrl-C` 退出并
+等待子进程结束；并行实例分别使用独立 `ROS_DOMAIN_ID` 和 `GAZEBO_MASTER_URI`，
+不要用全局 `pkill` 清理其他实例。
 
-```bash
-pkill -f gzserver
-pkill -f gzclient
-pkill -f gazebo
-pkill -f rviz2
-```
-
-推荐的两机器人 Gazebo 演示：
+推荐的三机器人完整搜索与集结演示：
 
 ```bash
 source /opt/ros/humble/setup.bash
-source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
 source /usr/share/gazebo/setup.sh
 export TURTLEBOT3_MODEL=waffle
+export PYTHONNOUSERSITE=1
+export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+export FASTDDS_BUILTIN_TRANSPORTS=UDPv4
+unset FASTRTPS_DEFAULT_PROFILES_FILE ROS_DISCOVERY_SERVER
 
 ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
-  robot_count:=2 \
+  world:=my_world.world \
+  robot_count:=3 \
   enable_gzclient:=true \
+  enable_task_regions:=true \
+  enable_status_panel:=true \
   enable_rviz:=false \
   enable_merge_rviz:=false \
   auto_save_map:=false \
-  gazebo_seed:=101
+  gazebo_seed:=101 \
+  nav2_ready_timeout_sec:=360.0 \
+  enable_target_detection:=true \
+  enable_rally:=true \
+  gateway_mode:=ideal \
+  mission_mode:=rally \
+  rally_max_concurrent:=2 \
+  global_battery_rally_pause:=false \
+  enable_battery:=true \
+  battery_initial_energy:=40.0 \
+  target_x:=-4.0 \
+  target_y:=4.0
 ```
+
+两机器人改为 `robot_count:=2`；只建图则同时关闭 `enable_target_detection` 和 `enable_rally`，
+并使用 `mission_mode:=coverage`。手动 launch 默认电池容量 60，正式固定 runner 显式使用 100。
+Fast DDS 环境应覆盖机器人、总部、ideal/fault 基线和诊断终端。
 
 协同探索不再固定等待两分钟。全部 Nav2 action server 实际就绪后，终端会依次出现：
 
 ```text
-All 2 Nav2 action servers are ready.
+All 3 Nav2 stacks are active.
 Nav2 ready; starting cooperative exploration.
 ```
 
@@ -503,13 +538,18 @@ Nav2 ready; starting cooperative exploration.
 
 ```bash
 source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
 source install/setup.bash
 source /usr/share/gazebo/setup.sh
 export TURTLEBOT3_MODEL=waffle
+export PYTHONNOUSERSITE=1
+export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+export FASTDDS_BUILTIN_TRANSPORTS=UDPv4
+unset FASTRTPS_DEFAULT_PROFILES_FILE ROS_DISCOVERY_SERVER
 
-python3 scripts/ros_smoke_test.py --robot-count 1 --gazebo-seed 1
-python3 scripts/ros_smoke_test.py --robot-count 2 --gazebo-seed 1
-python3 scripts/ros_smoke_test.py --robot-count 3 --gazebo-seed 1
+/usr/bin/python3 scripts/ros_smoke_test.py --robot-count 1 --gazebo-seed 1
+/usr/bin/python3 scripts/ros_smoke_test.py --robot-count 2 --gazebo-seed 1
+/usr/bin/python3 scripts/ros_smoke_test.py --robot-count 3 --gazebo-seed 1
 ```
 
 工具检查每台机器人的核心 topic、Nav2 controller/planner/bt_navigator lifecycle，以及至少一条
@@ -519,7 +559,7 @@ lidar 和合并地图消息。它只终止自己启动的进程组；原始 laun
 带 P1B 评估器的短 episode：
 
 ```bash
-python3 scripts/ros_smoke_test.py \
+/usr/bin/python3 scripts/ros_smoke_test.py \
   --robot-count 2 \
   --gazebo-seed 13 \
   --evaluation-duration 10 \
@@ -551,7 +591,7 @@ v5 起，episode 内任一接触都会使权威 `success=false`，即使状态�
 P1C 理想通信批量入口（每个 seed 启动独立 ROS/Gazebo 进程）：
 
 ```bash
-python3 scripts/run_ideal_baseline.py \
+/usr/bin/python3 scripts/run_ideal_baseline.py \
   --world p1c_corridors.world \
   --seeds 101 202 303 \
   --robot-count 2 \
@@ -559,7 +599,7 @@ python3 scripts/run_ideal_baseline.py \
   --coverage-threshold 0.90 \
   --goal-timeout 60 \
   --message-timeout 90 \
-  --run-id <unique-run-id>
+  --run-id "manual_ideal_$(date +%Y%m%d_%H%M%S)"
 ```
 
 结果写入 `log/ideal_baseline/<run-id>/`：每个 episode 的 CSV/JSON 位于 `episodes/`，
@@ -595,7 +635,7 @@ P2A 使用无 collision 的红色静态圆柱作为 Gazebo 搜索目标，因此
 正式 3 机器人验证命令示例：
 
 ```bash
-python3 scripts/ros_smoke_test.py \
+/usr/bin/python3 scripts/ros_smoke_test.py \
   --world my_world.world --robot-count 3 --gazebo-seed 101 \
   --startup-timeout 300 --message-timeout 90 --shutdown-timeout 60 \
   --evaluation-duration 180 --coverage-threshold 0 \
@@ -624,7 +664,7 @@ seeds 101/202/303 的目标确认时间为 60.7/72.9/61.5 仿真秒，均由 `tb
 正式命令模板：
 
 ```bash
-python3 scripts/ros_smoke_test.py \
+/usr/bin/python3 scripts/ros_smoke_test.py \
   --world my_world.world --robot-count 3 --gazebo-seed 101 \
   --startup-timeout 360 --message-timeout 90 --shutdown-timeout 60 \
   --evaluation-duration 300 --coverage-threshold 0 \
@@ -658,14 +698,15 @@ goal，并在约 5.2 秒后到达自己的目标附近集合位；117.9 秒进�
 
 `--battery` 会启动机器人本地能量模型。能量按 odom 行驶距离和仿真经过时间扣除；返航阈值
 为保守预计返航能耗加固定安全余量。触发后本地管理器抢占探索/集合 action，返回本机器人的
-出生充电位，只有在半径 0.5 m 内且速度低于集合静止门槛时才开始充电。定时器会独立检查
-到位和静止状态，因此不会依赖某一条 odom 回调；默认充到容量的 80% 就恢复探索。充电不会
+出生充电位；当前充电半径默认 0.8 m，线速度不超过 0.15 m/s、角速度不超过 0.10 rad/s
+并连续稳定 6 s 后恢复电量。定时器独立检查到位和静止状态；默认充到容量的 80% 就恢复探索。充电不会
 重启 SLAM、清空地图或重置任务状态。`--require-charge` 使 smoke 在没有真实发生充电时判失败。
 
-两机器人强制充电验收命令：
+以下是保留的 P2C 历史验收命令，显式使用当时的 10 s 充电配置；当前默认压力测试入口见
+[`launch_commands.md`](launch_commands.md#34-强制发生一次充电的完整任务)：
 
 ```bash
-python3 scripts/ros_smoke_test.py \
+/usr/bin/python3 scripts/ros_smoke_test.py \
   --world my_world.world --robot-count 2 --gazebo-seed 303 \
   --startup-timeout 300 --message-timeout 90 --shutdown-timeout 60 \
   --evaluation-duration 300 --coverage-threshold 0 \
@@ -684,7 +725,8 @@ python3 scripts/ros_smoke_test.py \
 分别为 6.81/6.66；之后继续探索，在 118.2 秒确认目标、126.2 秒进入 `RALLY`、190.1 秒
 进入 `COMPLETE`。最终覆盖率 92.15%、总路径 49.733 m、搜索重叠和碰撞均为 0。逐机器人
 最终集合误差为 0.216/0.128 m，最终电池模式均为 `ACTIVE`。耗尽、返航不可达和充电超时由
-构造测试验证为明确失败原因。P2C 已于 2026-09-18 通过用户验收；P2D 已完成实现和正式矩阵并通过用户验收；P3A 已完成实现和正式 gateway 矩阵，当前待用户验收。验收后新增的
+构造测试验证为明确失败原因。P2C、P2D 已通过用户验收；P3A.6 已于 2026-10-01 验收。
+当前 P3B.5 技术门禁 PASS，待用户验收。验收后新增的
 Gazebo 重点区域和实时状态栏只读现有任务数据，不改变 P2C 控制与评分口径。
 
 ### 9.4 P2D 完整理想通信任务基线
@@ -694,7 +736,7 @@ Gazebo 重点区域和实时状态栏只读现有任务数据，不改变 P2C �
 均显著低于 100 满电容量；电池始终启用，但不会用“每轮必须充电”把本来成功的短任务人为判失败。25
 能在单轮中触发并完成充电，但三机器人可能同时返航、拥堵相邻充电位，因此未作为正式默认值。
 
-评估结果 schema 7 除完整探索、检测、集合和完成时间外，还分别记录 `EXPLORE`、`FOUND`、
+当前评估结果 schema 9 除完整探索、检测、集合和完成时间外，还分别记录 `EXPLORE`、`FOUND`、
 `RALLY` 的路径长度、访问栅格并集和重叠率。`search_overlap_ratio` 现在严格只表示探索阶段，
 `total_overlap_ratio` 才表示整个 episode。正式运行命令和固定矩阵见
 [`launch_commands.md`](launch_commands.md#35-p2d-完整理想通信基线)。
@@ -703,7 +745,8 @@ Gazebo 重点区域和实时状态栏只读现有任务数据，不改变 P2C �
 能量，走廊三个 seeds 与双机器人交叉检查使用 45。至少一项 lab 任务在 40 能量下完成一次
 安全返充并继续到 `COMPLETE`，说明低电量闭环确实参与任务。P2D 已验收；P3A gateway 矩阵另外完成
 10/10 `COMPLETE`、零碰撞，强制充电回归完成两次充电；这些结果属于 gateway 提交时的历史代码状态，
-后续 HEAD 修改后需重新生成 manifest 并重跑，P3A 仍待用户验收。
+之后 P3A.6 的冻结 `22c95a7` 已验收；当前 P3B.5 冻结 `d8d361b` 的十格全部原生 COMPLETE，
+不能将不同提交的历史格混算为同一批。
 
 ### 9.5 P3A 显式零损 gateway
 
@@ -715,13 +758,13 @@ source install/setup.bash
 ros2 run multi_robot_exploration bypass_audit --robot-count 3 --wait-sec 10
 ```
 
-正式历史结果位于 `log/p2d_baseline/p3a_formal_gateway_3scenes_v2/`；当前 HEAD 的 P3A.5 需重新生成
-带 commit/config/environment manifest 的矩阵。P3B 才会在同一协议上加入固定 delay/loss，当前 P3A 不代表 Wi-Fi 性能结果。
+早期结果位于 `log/p2d_baseline/p3a_formal_gateway_3scenes_v2/`；P3A.6 已验收冻结为 `22c95a7`，
+当前任务栈另外完成了 P3B.5 同提交理想/故障门禁。它们都不代表真实 Wi-Fi 性能。
 
 ### 9.6 P3B 固定故障 gateway
 
 `ideal_gateway` 现在也支持 P3B 的确定性故障模式，默认参数仍是 `gateway_mode:=ideal`。设置
-`gateway_mode:=fault` 后，上行和下行分别经过固定延迟/丢包队列；`fault_seed` 保证同一输入得到
+`gateway_mode:=fault` 后，上行和下行分别经过固定延迟/丢包队列；`gateway_seed` 保证同一输入得到
 同一事件顺序，`gateway_duplicate_rate` 和 `gateway_reorder_window` 用于重复和乱序测试。地图、
 位姿和 TF 继续按序号、TTL 接收，旧版本不会覆盖新版本；中央协调器在这些输入超过
 `message_freshness_timeout_sec` 后暂停新的分配。目标检测、导航命令和电池失败消息使用有限重试，
@@ -731,7 +774,7 @@ ros2 run multi_robot_exploration bypass_audit --robot-count 3 --wait-sec 10
 
 ```bash
 export PYTHONPATH="$PWD/src/multi_robot_exploration:$PYTHONPATH"
-python3 scripts/run_p3b_fault_matrix.py
+/usr/bin/python3 scripts/run_p3b_fault_matrix.py
 ```
 
 运行任务 smoke 时可传入 `--gateway-mode fault`、`--uplink-loss-rate`、`--downlink-loss-rate`、
@@ -740,12 +783,12 @@ python3 scripts/run_p3b_fault_matrix.py
 `/gateway/message_events` 都保留每次尝试的消息 ID、序号、生成/入队/准入/发送/交付或丢弃时间、
 TTL、重复标记和重试次数。P3B 只验证应用层故障语义，尚未接入 ns-3 Wi-Fi。
 
-P3B.5 当前候选在 FOUND 阶段允许为 RETURNING/CHARGING 机器人从新鲜电池消息中的
+P3B.5 当前实现允许在 FOUND 阶段为 RETURNING/CHARGING 机器人从新鲜电池消息中的
 充电位规划后续集合点，避免全员恢复 ACTIVE 后才开始分配。该位置只是未来路线起点，
 不会覆盖收到的实际位姿；RALLY 派发仍检查实际机体、返航路线预约、ACTIVE 模式和完整
 能量预算。集合点不足时，额外地图探查仍须等待电池就绪。受控返航准备在原始起点已知
 自由但膨胀净空不足时复用有界脱困规划；未知/占用起点仍拒绝，不清除地图，原 .75m
-航段和 50s 准备期限保持。这些候选通过组件检查，完整固定任务与故障验收仍待重跑。
+航段和 50s 准备期限保持。当前同提交完整 57 格已通过技术门禁，待用户验收。
 让路机器人正在移动时，其他普通集合航段也可参与原并发预约检查；只有路线分离、
 并发名额与能量条件满足才派发，避免不相关的让路动作造成全局串行等待。
 临时让路还记录其受益机器人：确认停到让路点后，仅该受益机器人可暂时忽略让路者的
@@ -753,9 +796,12 @@ P3B.5 当前候选在 FOUND 阶段允许为 RETURNING/CHARGING 机器人从新�
 当阻挡者需多段移动到新的永久集合点时，请求它移开的机器人也暂让出自己的未来优先权，
 让恢复航段能够继续；恢复完成或独立返航让路接管后清理这项关系，仍检查真实机体与路线。
 
-阶段报告见
-`ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20260928_p3b.md`；其中区分了
-已完成的协议门禁、保留的 ROS fault-mode 失败样本和仍未完成的 Gazebo/ns-3 验收工作。
+当前配对任务入口见 [`launch_commands.md`](launch_commands.md#310-当前-p3b5-配对任务入口)，
+完整 57 格证据见本文顶部最终报告；809/28091 已在该批首次暴露，之后重复运行只算回归。
+只有 rally 全员原生 `COMPLETE` 是完整任务成功。schema 9 分开记录中央声明时间与原生合格
+完成时间；原生位置/速度连续合格 5 s、观察间断不超过 pose TTL 2 s 才保存保持证明，
+300 s 截止不延长。强故障超时仍失败，不能只凭 `/task_state` 判定成功。
+`wireless-rl/report/20260928_p3b.md` 为早期阶段报告；ns-3/Wi-Fi/RL 仍未启动。
 
 以下命令适合运行中的人工诊断：
 
@@ -807,8 +853,8 @@ pgrep -af gzclient
 预期：
 
 ```text
-rviz2 只有一个
-gzclient 有一个
+按第 8 节完整演示：rviz2 为 0，gzclient 为 1
+切换全局地图观察模式后：rviz2 为 1，gzclient 为 0
 ```
 
 检查相机话题是否已消失：
@@ -855,7 +901,9 @@ CPU 是否满载
 
 当前 `headquarters_control` 已增加目标点筛选和失败换点机制。少量失败仍是正常现象，关键是机器人应能自动换目标继续探索。
 
-### 10.4 DWBLocalPlanner No valid trajectories
+### 10.4 控制器找不到可执行轨迹
+
+当前控制器为 RPP；`DWBLocalPlanner No valid trajectories` 属于旧 DWB 配置的历史日志。
 
 常见原因：
 
@@ -865,7 +913,8 @@ CPU 是否满载
 Nav2 目标点太贴墙
 ```
 
-当前主要通过目标点避障和降低计算压力缓解。若仍严重，可考虑增大目标点安全距离或调整 DWB 参数。
+先核对当前 RPP 插件、costmap/footprint、已知自由路线与实际机器人占位，查看 action 失败和
+取消日志。不要按旧 DWB 参数调试当前 RPP；正式配置变化需要重新验证。
 
 ### 10.5 map_saver Failed to spin map subscription
 
@@ -933,8 +982,8 @@ server 下行：gateway -> `/gateway/{robot}/navigate_to_pose` -> 本地 `/{robo
 gateway，只把交付设为零丢包和零附加时延，同时保留真实候选生成频率；`oracle unlimited` 只作理论
 上界，不能恢复旧直连。
 
-P3B 将在此 gateway 上继续加入固定 delay/loss 和逐消息账本；在此之前不要把 P3A 的零损结果
-解读为 Wi-Fi 性能结论。
+P3B 已在同一路径实现固定 delay/loss 与逐消息账本，P3B.5 应用层故障任务门禁已技术通过。
+真实 ns-3/Wi-Fi 耦合尚未实现；后续按计划先完成 P3C，不能把当前结果解释为 Wi-Fi 性能。
 
 P2B 起只有全体仍参与任务的机器人在不同安全集合位姿连续稳定 5 秒后的 `COMPLETE` 才是完整任务成功；
 如果已有机器人故障，剩余机器人集合稳定后发布 `PARTIAL_COMPLETE`，表示任务完成了可用机器人的
@@ -942,6 +991,10 @@ P2B 起只有全体仍参与任务的机器人在不同安全集合位姿连续�
 当前 TurtleBot3 模型为降低仿真负载关闭了相机；
 P2A 真值检测只用于仿真 MVP，P8A 实物前必须恢复真实相机检测适配器，不能把 Gazebo 真值
 结果当作实物感知成果。
+
+## 12. 历史候选与门禁记录
+
+以下保留当时的配置、失败和未完成状态，不代表当前版本；当前状态与入口见本文顶部和第 7–9 节。
 
 2026-10-01 安全候选移除了集合中忽略机器人位置的软障碍兜底：无安全路线时触发
 停驻机器人让路/目标恢复，不能直接放行无动态障碍约束的长路线。停在中间航点的

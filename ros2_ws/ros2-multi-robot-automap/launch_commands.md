@@ -11,6 +11,11 @@ multi_robot/gazebo_multirobot_mapping_with_nav2.launch.py
 P2C 本地电池/充电管理；可选目标检测与 P2B 集结任务。手动运行默认同时打开贴地的 Gazebo
 重点区域标记和每机器人实时状态栏。
 
+最近核对：2026-10-06。P3A.6 已验收；P3B.5 技术门禁 PASS，待用户验收。
+当前任务栈冻结在 `d8d361b`，最终报告提交为 `d0b1561`。
+本文第 1–8 节用于当前运行，第 9 节保留历史候选记录；其中“未通过”“未暴露”等描述
+只适用于记录当时。当前结果见 [P3B.5 完整报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261006_p3b5_gate.md)。
+
 维护要求：以后新增或修改 launch 参数、默认组件或推荐运行方式时，必须在同一个提交中同步
 更新本文的默认命令和参数表。
 
@@ -22,8 +27,10 @@ cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
 source install/setup.bash
 source /usr/share/gazebo/setup.sh
 export TURTLEBOT3_MODEL=waffle
+export PYTHONNOUSERSITE=1
 export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
 export FASTDDS_BUILTIN_TRANSPORTS=UDPv4
+unset FASTRTPS_DEFAULT_PROFILES_FILE ROS_DISCOVERY_SERVER
 ```
 
 从 P3B.5 v102 起，新验证候选显式使用 Fast DDS 的 UDPv4 transport。所有机器人、总部、
@@ -34,15 +41,28 @@ export FASTDDS_BUILTIN_TRANSPORTS=UDPv4
 profile 的路径/摘要；正式验证不混用两种环境。`FASTRTPS_DEFAULT_PROFILES_FILE` 若指定了禁用
 builtin transports 的 profile，会覆盖这项 transport 选择，应在冻结前核对实际初始化记录。
 
-只有源码修改或首次检出后才需要重新编译：
+首次检出或尚未构建本工作区时，先构建全部包，包括仓库内的自定义 SLAM Toolbox：
 
 ```bash
 source /opt/ros/humble/setup.bash
 cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+export PYTHONNOUSERSITE=1
+colcon build --symlink-install
+source install/setup.bash
+```
+
+已有完整构建、仅修改以下四包时，可用增量构建：
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+export PYTHONNOUSERSITE=1
 colcon build --symlink-install --packages-select \
   multi_robot_interfaces multi_robot merge_map multi_robot_exploration
 source install/setup.bash
 ```
+
+修改 `slam_toolbox` 源码或其 launch 后，还需构建该包；新终端仍执行本节环境初始化。
 
 ## 2. 默认手动启动：三机器人完整搜索与集结任务
 
@@ -63,6 +83,10 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
   nav2_ready_timeout_sec:=360.0 \
   enable_target_detection:=true \
   enable_rally:=true \
+  gateway_mode:=ideal \
+  mission_mode:=rally \
+  rally_max_concurrent:=2 \
+  global_battery_rally_pause:=false \
   enable_battery:=true \
   battery_initial_energy:=40.0 \
   target_x:=-4.0 \
@@ -181,8 +205,9 @@ source /opt/ros/humble/setup.bash
 source install/setup.bash
 /usr/bin/python3 scripts/run_p2d_baseline.py \
   --seeds 101 202 303 \
-  --run-id p2d_formal_ideal_3scenes \
-  --ros-domain-base 130
+  --run-id "p3b5_current_fixed_$(date +%Y%m%d_%H%M%S)" \
+  --ros-domain-base 130 \
+  --infrastructure-retries 0
 ```
 
 当前冻结矩阵为：
@@ -223,10 +248,10 @@ ros2 run multi_robot_exploration bypass_audit --robot-count 3 --wait-sec 10
 历史 gateway 矩阵使用 `scripts/run_p2d_baseline.py` 的同一场景配置，运行 ID 为
 `p3a_formal_gateway_3scenes_v2`；结果写入 `log/p2d_baseline/<run-id>/`。该批次 10/10
 `COMPLETE`、零碰撞，另有 `p3a_gateway_forced_charge_2r_seed303` 以初始能量 18 完成两次
-充电并 `COMPLETE`。由于之后 HEAD 修改了协调器、电池和净空逻辑，当前 P3A.5 必须在冻结
-commit 上重跑并写入 manifest，不能把此历史目录直接当成当前验收证据。
+充电并 `COMPLETE`。之后 P3A.6 的冻结 `22c95a7` 已验收，当前 P3B.5 的冻结 `d8d361b`
+另行通过同提交门禁；早期目录不能替代这两批各自的证据。
 
-### 3.7 P3A.5 当前 task-stack 重验证
+### 3.7 当前 task-stack 理想重验证与 P3A.5 历史入口
 
 P3A.5 runner 会为每个 episode 保存尝试记录、启动日志和 ROS graph 快照，并在 summary 中写入
 `task_stack_frozen_commit`、源码/配置哈希和环境版本。旁路审计还支持将快照写入指定文件：
@@ -238,14 +263,16 @@ ros2 run multi_robot_exploration bypass_audit --robot-count 3 \
   --wait-sec 10 --graph-output /tmp/p3a_graph.json
 ```
 
-正式批量入口是 `scripts/run_p2d_baseline.py`。只有完整矩阵全部 `COMPLETE`、零碰撞、零基础
-设施失败且 graph audit 通过时，才将 manifest 中的提交冻结为后续 P3B/P4 基线。当前候选结果
-和失败保留规则见 `wireless-rl/report/20260923_p3a5.md`。
+正式批量入口是 `scripts/run_p2d_baseline.py`，当前命令见第 3.5 节；同提交十格必须全部原生
+`COMPLETE`、零碰撞、零基础设施失败且 graph/ledger audit 通过。P3A.6 已验收的历史冻结为
+`22c95a7`；当前 P3B.5 的十格证据属于 `d8d361b`，两批不能混算。
+`wireless-rl/report/20260923_p3a5.md` 是早期候选报告。
 
-### 3.8 P3A.5 held-out 算法消融
+### 3.8 P3A.5 历史 held-out 算法消融入口
 
-`scripts/run_p3a5_ablation.py` 使用 `scripts/p3a5_heldout_scenarios.json` 中冻结的未调试
-种子、目标和场景，四个变体只切换 rally 算法开关；评估器的 `COMPLETE`、零碰撞、姿态/速度、
+`scripts/run_p3a5_ablation.py` 使用 `scripts/p3a5_heldout_scenarios.json` 中原预声明的
+种子、目标和场景。这是历史协议入口，不能据此把当前重复运行称为新的未暴露测试。
+四个变体只切换 rally 算法开关；评估器的 `COMPLETE`、零碰撞、姿态/速度、
 电量和 300 秒规则保持一致：
 
 ```bash
@@ -311,8 +338,41 @@ P3B launch 参数完整表：
 | `gateway_max_retries` | `2` | 可靠消息最大重试次数 |
 | `gateway_queue_capacity` | `0` | 每方向队列参数；当前 gateway 的 0 使用 4096 默认容量，正数表示显式容量 |
 | `gateway_ledger_path` | 空 | 可选 JSONL 账本路径 |
-| `message_freshness_timeout_sec` | `5.0` | 地图/位姿/TF 超时后暂停中央新分配 |
+| `gateway_drop_message_types` | 空 | fault 模式按逗号分隔的消息类别丢弃 |
+| `gateway_reorder_step_sec` | `0.05` | 乱序槽延迟；测试 5 Hz pose 乱序可用 `0.3` |
+| `gateway_blackout_intervals` | `[]` | 从中央首次 EXPLORE 起计的仿真秒半开区间 JSON |
+| `inject_failure_robot` | 空 | 仿真失败注入机器人，例如 `tb3`；空值禁用 |
+| `inject_failure_after_sec` | `-1.0` | 从被注入机器人首条 odom 起计；负值禁用 |
+| `message_freshness_timeout_sec` | `5.0` | 中央输入新鲜度上限；仍受各类 TTL 约束，pose/TF 为 2 s、map/battery 为 5 s |
 | `navigation_command_deadline_sec` | `90.0` | 导航命令超过 deadline 后 abort |
+| `enable_return_probe_pause` | `false` | 仅用于补充受控返航夹具；普通任务保持关闭 |
+
+### 3.10 当前 P3B.5 配对任务入口
+
+先执行第 1 节环境初始化。只检查完整主矩阵配置、不启动 Gazebo：
+
+```bash
+/usr/bin/python3 scripts/run_p3b5_tasks.py \
+  --run-id p3b5_current_plan --ros-domain-base 30 --validate-only
+```
+
+预期为 27 个 pair case、41 个唯一主矩阵 episode。独立开发可只运行零故障配对：
+
+```bash
+/usr/bin/python3 scripts/run_p3b5_tasks.py \
+  --run-id "p3b5_current_zero_$(date +%Y%m%d_%H%M%S)" \
+  --cases zero_rally_lab --ros-domain-base 30
+```
+
+去掉 `--cases` 会运行完整 41 主格；这条入口本身不包含十格固定理想回归和六个辅助安全格。
+完整 P3B.5 门禁还要求同提交、同声明环境的十格回归、四个自然安全探针和两个受控物理返航格，
+并以严格 checker 审核全部证据。正式执行顺序是强制充电原生保持/E0/物理返航、十格 fixed，
+最后其余主矩阵及留出；不能把单个 runner 的 exit 0 当成完整门禁。
+
+当前最终 57 格已在 `d8d361b` 完成。`p3b5_holdout809.world` / seed 809 / fault seed 28091
+已于本批首次运行，之后重复运行属于回归；控制算法改变后需要新的预声明未暴露留出组合。
+只有 rally 的原生 `COMPLETE` 是完整任务成功，`PARTIAL_COMPLETE`、`FOUND` 和覆盖率达标
+分别保留为部分完成或过程指标；强故障超时按原结果保留。
 
 ## 4. 切换 Gazebo world
 
@@ -324,7 +384,9 @@ P3B launch 参数完整表：
 | `p1c_open.world` | 开放区域和离散障碍 |
 | `p1c_rooms.world` | 多房间、门洞和遮挡 |
 | `p1c_corridors.world` | 长走廊、绕行和支路 |
-| `p3a5_holdout.world` | P3A.5 未调试 holdout；目标 `(4.4, 3.4)`，种子 404/505；不属于 P2D 正式矩阵 |
+| `p3a5_holdout.world` | P3A.5 历史预声明 holdout；目标 `(4.4, 3.4)`，种子 404/505；重复运行不自动构成新留出 |
+| `p3b5_holdout.world` | P3B.5 历史留出场景，707 已暴露；不再作为新未见测试 |
+| `p3b5_holdout809.world` | 当前 P3B.5 首次留出已完成；目标 `(4.4, -3.4)`，3 台、seed 809、初始能量 45 |
 
 例如，在房间地图上运行三机器人协同探索：
 
@@ -423,19 +485,20 @@ Nav2 action 失败、实时位置发生冲突或机器人需要让路时会缩�
 单个集合 action 卡住 30 秒会被取消并触发恢复。需要最保守串行调试时可显式设置
 `rally_max_concurrent:=1`。
 
-P3A.6 候选控制器采用滚动路线预约：探索最多三台机器人并发，只有经过停驻位置避让和
+当前控制器沿用 P3A.6 的滚动路线预约：探索最多三台机器人并发，只有经过停驻位置避让和
 1.8 m 路线隔离检查的航段才能放行。共享通道等待已有路线释放，候选冲突时尝试其他前沿；
 可视航点最长 5 m，在遮挡转角前分段。Nav2 的航点到达容差为 0.02 m，任务 COMPLETE
 仍要求原来的 0.35 m/速度门限/连续 5 s。任何机器人返航时取消其他探索航段，待返航结束再
-恢复分配。当前仍需通过 P3A.6 完整固定矩阵才能作为网络实验冻结基线。
+恢复分配。P3A.6 已验收；当前任务栈另由 P3B.5 的同提交十格与完整故障门禁验证。
 
-当前 P3A.6 的下一版候选采用 RPP 控制器（最大线速度 0.26 m/s，预测碰撞检测开启），
+当前使用 RPP 控制器（最大线速度 0.26 m/s，预测碰撞检测开启），
 局部与全局 costmap 半径为 0.25 m；集合和本地返航也使用最长 5 m 的可视航点。
 返航通道被停驻机器人占用时，先让该机器人到路线外临时避让位，再恢复最终集合任务。
 每次进入 RETURNING 只触发一次全局取消，周期状态消息不会反复打断让路；返航者进入
-充电后，已到达避让位的机器人恢复原最终目标。串行/全局暂停的 RPP 诊断为零碰撞但超时；
-`rally_max_concurrent:=2` 与 `global_battery_rally_pause:=false` 的 lab/3r/101 定向回归
-已在 235.2 s COMPLETE、零碰撞。完整矩阵尚待验证，此配置还不是已冻结的网络基线。
+充电后重新核验集合路线；合法、已完成且朝向正确的避让位可在全部安全/能量条件通过后保留为最终位。
+默认 `rally_max_concurrent:=2`、`global_battery_rally_pause:=false`；Nav2 controller 与
+velocity_smoother 使用仿真时间，当前多机器人 SLAM 地图重建周期为 2 s。
+十格固定原生 COMPLETE 的结果见本页顶部报告，不保证其他场景都在 300 s 内完成。
 
 ### 电池、返航和充电
 
@@ -477,7 +540,11 @@ P3A.6 候选控制器采用滚动路线预约：探索最多三台机器人并�
 | `evaluation_stop_on_target_found` | `false` | 在 `FOUND` 后结束评估 |
 | `evaluation_stop_on_task_complete` | `false` | 在 `COMPLETE`/`PARTIAL_COMPLETE`/`FAILED` 后结束评估 |
 
-P3B.5完成判定候选使用schema9：收到`COMPLETE`/`PARTIAL_COMPLETE`先记录中央声明，只有新原生ModelStates样本在当前集合位/参与名单上满足原位置与速度限制、连续观测5s后才记录合格完成并结束；`FAILED`保持原有界事件排空。`coordinator_completion_time_sec`与`completion_time_sec`分别保存声明/合格时间，300s时限不延长。无header原生样本的proof只表示observer仿真时间上的采样保持，超过pose TTL2s的间断重置。真值仍只读，不反馈任务控制。
+当前 P3B.5 完成判定使用 schema 9：收到 `COMPLETE`/`PARTIAL_COMPLETE` 先记录中央声明，
+只有新原生 ModelStates 样本在当前集合位/参与名单上满足原位置与速度限制、连续观测 5 s 后
+才记录合格完成并结束。`coordinator_completion_time_sec` 与 `completion_time_sec` 分别保存
+声明/合格时间，300 s 时限不延长；超过 pose TTL 2 s 的观察间断重置。真值只读，不反馈任务控制。
+单看状态栏或 `/task_state=COMPLETE` 不能替代评估 JSON 的 `native_rally_hold_proof`。
 
 手工演示通常不需要评估器。正式、有界运行优先使用下一节的 smoke 工具，它会管理结果文件和
 进程退出。
@@ -493,32 +560,37 @@ source install/setup.bash
 source /usr/share/gazebo/setup.sh
 export TURTLEBOT3_MODEL=waffle
 export PYTHONNOUSERSITE=1
+export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+export FASTDDS_BUILTIN_TRANSPORTS=UDPv4
+unset FASTRTPS_DEFAULT_PROFILES_FILE ROS_DISCOVERY_SERVER
 ```
 
 这里的 ROS 脚本命令显式使用 `/usr/bin/python3`。`ns3gym` conda 环境只用于
 `wireless-rl` 下的 ns-3/Python 实验，不要用它替代 ROS 2 的系统解释器。
 
-三机器人完整 P2B 验证：
+三机器人当前完整任务验证（正式 runner 使用容量 100；手动 launch 默认容量为 60）：
 
 ```bash
 /usr/bin/python3 scripts/ros_smoke_test.py \
   --world my_world.world \
   --robot-count 3 \
   --gazebo-seed 101 \
-  --startup-timeout 360 \
+  --startup-timeout 600 \
   --message-timeout 90 \
   --shutdown-timeout 60 \
   --evaluation-duration 300 \
   --coverage-threshold 0 \
-  --evaluation-wait-timeout 480 \
+  --evaluation-wait-timeout 900 \
   --target-detection \
   --rally \
+  --battery --battery-capacity 100 --battery-initial-energy 40 \
+  --gateway-mode ideal --mission-mode rally \
   --target-x -4 \
   --target-y 4 \
   --target-max-distance 3 \
   --target-field-of-view 90 \
   --target-confirmation-frames 3 \
-  --episode-id manual_p2b_seed101
+  --episode-id "manual_p3b5_seed101_$(date +%Y%m%d_%H%M%S)"
 ```
 
 输出位置：
@@ -610,12 +682,17 @@ Nav2 ready; starting cooperative exploration.
 
 - 在启动终端按 `Ctrl-C`，等待 Gazebo 和 ROS 子进程退出。
 - 不要在另一个仿真实例仍运行时启动同一 ROS domain；需要并行运行时为所有相关终端设置同一个
-  独立值，例如 `export ROS_DOMAIN_ID=73`。
+  独立值，例如 `export ROS_DOMAIN_ID=73`，并为每个实例选择不同的
+  `GAZEBO_MASTER_URI`，例如 `export GAZEBO_MASTER_URI=http://127.0.0.1:19730`。
 - 如果三机器人启动偶发超时，先重试一个干净 ROS domain，并检查日志中点名的 Nav2
   lifecycle；不要绕过就绪门控。
 - `enable_rviz:=false` 只关闭每机器人 RViz，不会关闭全局 RViz；完全关闭还必须设置
   `enable_merge_rviz:=false`。
 - 目标只是 Gazebo 可视标记，没有 collision，不会改变 lidar 地图或成为障碍物。
+
+## 9. 历史候选与门禁记录
+
+以下内容按当时的代码状态保留，不作为当前推荐参数或验收状态。当前入口及结果见第 1–8 节。
 
 2026-10-01 安全候选移除了集合中忽略机器人位置的软障碍兜底：无安全路线时触发
 停驻机器人让路/目标恢复，不能直接放行无动态障碍约束的长路线。停在中间航点的
@@ -665,7 +742,7 @@ COMPLETE/零碰撞，同提交forced303为190.4 s COMPLETE、两台各充电一�
 必须重新跑门禁；开发seed结果不替代holdout测试。
 
 
-## P3B.5 固定故障任务配对矩阵（2026-10-01）
+### P3B.5 固定故障任务配对矩阵历史记录（2026-10-01）
 
 P3A.6 已验收。故障替身仍是应用层模型，不是 Wi-Fi/ns-3。
 本地 battery_manager 用自己的 Nav2 action 执行安全返航；网络命令不能抢占 RETURNING，
