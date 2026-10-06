@@ -320,7 +320,8 @@ src/multi_robot/params/nav2_params_tb4_0.yaml
 | global costmap `publish_frequency` | `1 Hz` | `0.5 Hz` |
 | recovery `cycle_frequency` | `10 Hz` | `5 Hz` |
 | EKF `frequency` | `30 Hz` | `20 Hz` |
-| DWB `debug_trajectory_details` | `True` | `False` |
+
+当前四套 Nav2 均使用 RPP，并保留上述频率；旧 DWB 的 `debug_trajectory_details` 开关不再适用。
 
 目的：
 
