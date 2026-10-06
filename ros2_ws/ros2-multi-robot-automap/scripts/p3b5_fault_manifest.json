@@ -353,7 +353,7 @@
     }
   },
   "holdout_world_declaration": {
-    "predeclared_at_utc": "2026-10-06T04:58:18.268838+00:00",
+    "predeclared_at_utc": "2026-10-06T06:20:15.752083+00:00",
     "world": "p3b5_holdout809.world",
     "world_content_sha256": "2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd",
     "gazebo_seed": 809,
@@ -410,8 +410,8 @@
       },
       "original_point_label_correction": "The retained tb1_start_charge/tb3_start_charge labels were generic sample points, not actual launch poses. Original values are historical; use supplemental actual_launch_start_geometry_check below. No world/control/mission run was used to validate or tune809 geometry."
     },
-    "controller_content_sha256": "d04f17fa20f0063ccfbc20ab25254bd1a532bf60b067b063c55bff3335c62298",
-    "first_task_exposure": "Pending:809/world/seed/fault never executed. Current task algorithms and original thresholds unchanged from v101, whose forced ideal lacked a native result after startup600s and whose four evaluated siblings remain historical originals. The prior six-original v100 development PASS validates these algorithms only under the previous middleware environment. v102 native actual descriptor inspection and bidirectional C++/Python receipts validate UDPv4 configuration, not task success or a proven shared-memory root cause. New clean full57 uniformly uses explicit rmw_fastrtps_cpp/UDPv4 with no undeclared XML profile; manifest records middleware. Same-commit forced true-native ideal/E0/actual physical-return and all ten fixed originals must PASS before first809. All fixed and their observers use actual0..79 affinity. Original300s/.35/.05/.1/5s, source leases and fault intensity unchanged. Preserve every attempted/missing/failed/unrun cell; no whole-episode retry/backfill. Core changes after exposure require truly new world/seed/fault.",
+    "controller_content_sha256": "d27f3f4979e4ea3730c39ca8a7e6a2d881ec103ef18059521af9cfb274af10e6",
+    "first_task_exposure": "Pending:809/world/seed/fault never executed. v103 lab303 native holding failure and all sixteen originals remain historical. New controller may retain a reached target-facing refuge only after traffic closes and original final geometry/source/energy checks; no new navigation or orientation is fabricated, hold resets and energy preflight reruns. Seven independent current-UDP development originals PASS: six native COMPLETE, forced fault positive/each-charge/no-contact safety only. New branch not observed in development logs; no single-factor benefit or worst-case time guarantee. Same clean commit forced true-native ideal/E0/physical-return and all ten fixed must PASS before first809. Full57 uniformly rmw_fastrtps_cpp/UDPv4, all fixed0..79 affinity, original300s/.35/.05/.1/5s/leases/fault intensity unchanged. Preserve every original/failed/unrun outcome; no whole-episode retry/backfill. Core changes after first exposure require genuinely new world/seed/fault.",
     "controller_freeze_history": [
       {
         "predeclared_at_utc": "2026-10-04T14:45:09.824843+00:00",
@@ -575,6 +575,19 @@
         "not_invoked_count": 52,
         "new_holdout_exposed": false,
         "evidence": "20261006_p3b5_native_startup_failed_candidate.json"
+      },
+      {
+        "predeclared_at_utc": "2026-10-06T04:58:18.268838+00:00",
+        "frozen_commit": "dbed34c0ed708803e131ef00ecff7791e6b3cde3",
+        "controller_content_sha256": "d04f17fa20f0063ccfbc20ab25254bd1a532bf60b067b063c55bff3335c62298",
+        "battery_manager_content_sha256": "3a769dd71916681b1e5ee4756e3ecf71a152d02b934d73a4cc0da2cdb88bfd19",
+        "status": "FAIL: all ten fixed originals ran; lab303 final arrival/velocity reset leaves insufficient native5s holding before300s. Nine fixed/native forced ideal complete; all original siblings naturally closed.",
+        "attempted_count": 16,
+        "native_started_count": 16,
+        "raw_result_count": 16,
+        "not_invoked_count": 41,
+        "new_holdout_exposed": false,
+        "evidence": "20261006_p3b5_rally_hold_time_failed_candidate.json"
       }
     ],
     "actual_launch_start_geometry_check": {
@@ -613,8 +626,8 @@
     },
     "battery_manager_content_sha256": "3a769dd71916681b1e5ee4756e3ecf71a152d02b934d73a4cc0da2cdb88bfd19",
     "staging_apparatus_content_sha256": "47ce7998e212a9463ab657bbc0b121d4903ed886016bbf0fd3a2399c986da05d",
-    "controller_source_commit": "e0b0345effe09e77e977feef3a8da1d4d89bb337",
-    "independent_development_evidence": "20261005_p3b5_exploration_heading_development.json",
+    "controller_source_commit": "c204e6464f0e010ae19c92c5f310e1607a877081",
+    "independent_development_evidence": "20261006_p3b5_rally_refuge_retention_development.json",
     "task_evaluator_content_sha256": "bac6822d1c803ba1fdd9784d774d37b05f8701b4da7a8ea477dde69189d57630",
     "fixed_environment_policy": {
       "cpu_affinity": [
@@ -711,7 +724,7 @@
     "slam_parameter_files_content_sha256": {
       "src/slam_toolbox/config/mapper_params_online_multi_async.yaml": "d5d73fbe7f184528c9817492e696ad13ab1e2e1400020ee690f973818aad3c45"
     },
-    "preceding_development_evidence": "20261006_p3b5_return_escape_prefix_development.json",
+    "preceding_development_evidence": "20261006_p3b5_rally_refuge_retention_development.json",
     "middleware_environment": {
       "rmw_implementation": "rmw_fastrtps_cpp",
       "fastdds_builtin_transports": "UDPv4",

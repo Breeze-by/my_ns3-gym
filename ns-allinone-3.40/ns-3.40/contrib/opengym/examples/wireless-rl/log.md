@@ -7266,3 +7266,17 @@ ROS_DOMAIN_ID=28 GAZEBO_MASTER_URI=http://127.0.0.1:19554 /usr/bin/python3 /home
 ```bash
 /usr/bin/python3 /tmp/audit_p3b5_v105_retained_development.py > /tmp/p3b5_v105_development_audit.log 2>&1
 ```
+
+## 2026-10-06 P3B.5 v106合法避让驻点保留前瞻协议（无任务启动）
+
+2026-10-06 P3B.5 v106前瞻正式冻结：v103十fixed原lab303保持失败和全部16原始已7442599归档；新控制v104c204e64与v105七独立开发PASS已2b87e5c保留并推送。原809.world/seed809/fault28091/目标(4.4,-3.4)/3rE45仍从未执行，world字节及最初静态/真实launch补查保留；更新当前controller SHA、控制源提交与开发引用，追加v103失败历史。当前保留合法已完成避让驻点仅为条件性恢复优化；七开发六原生COMPLETE、forced fault安全PASS，日志未见新分支触发，不能宣称新分支物理验证/因果加速或最坏时限。新批所有机器人/总部/ideal/fault/只读观察器统一显式rmw_fastrtps_cpp/UDPv4，无XML/discovery server；627组件18.50s/四包5.46s/源码3r零旁路，64配置1.71s、27case/41unique validate-only PASS，无仿真启动。正式仍57格：27pair/41主格+十fixed+六辅助；所有fixed/AP实际CPU0–79，initial/main20逻辑CPU分池，master19650..19656与独立domain。运行前冻结所有source/helper/config/report-builder哈希，按强制ideal真实原生保持/E0/实际断网返充→十fixed全PASS→首次809及其余主/安全矩阵推进；所有原owner/观察器自然关闭前不改源/文档/helper。300s/.35/.05/.1/5s、地图/电池5/poseTF2/target60/handoff5、原故障强度和实际储备/返充/机体/静态/最终位/在途预约保护不变，不重试/回填/把开发替代正式格。证据report/20261006_p3b5_rally_refuge_holdout_protocol.json；P3B.5仍待完整strict gate，无ns3/WiFi/RL。
+
+canonical ROS cwd；source Humble/install；PYTHONNOUSERSITE=1/RMW_IMPLEMENTATION=rmw_fastrtps_cpp/FASTDDS_BUILTIN_TRANSPORTS=UDPv4；不设置FASTRTPS_DEFAULT_PROFILES_FILE/ROS_DISCOVERY_SERVER。精确无仿真协议检查命令：
+
+```bash
+/usr/bin/python3 /tmp/refreeze_p3b5_v106_refuge_protocol.py
+/usr/bin/python3 -m pytest -q scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py > /tmp/p3b5_v106_config_checks.log 2>&1
+/usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v106_validation --ros-domain-base 50 --validate-only > /tmp/p3b5_v106_validate_only.log 2>&1
+/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v106_source_audit.log 2>&1
+PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python /tmp/document_p3b5_v106_protocol.py
+```
