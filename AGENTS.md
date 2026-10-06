@@ -59,6 +59,19 @@ tokens is not a reason to leave a problem unresolved or inadequately tested.
 
 ## Current Handoff
 
+Update 2026-10-06: P3B.5 technical gate **PASS**, awaiting user acceptance.
+All 57 originals at task freeze `d8d361bfd9d81e0c7a00c428ea66cfac4b3a1a76`
+closed naturally: ten fixed native COMPLETE, forced ideal 155.2 s/two charges,
+first 809 ideal/fault native COMPLETE in 120.9/126.6 s, zero contacts/infra/retries.
+Explicit tb3 failure isolates in 0.1 s; two healthy robots native PARTIAL_COMPLETE.
+Original SHA-reader FAIL is retained; read-only repair `77c201b` reaudits the
+same unchanged inputs with stronger source/command/declaration binding.
+636 components, 57 ledger/graph audits, 54 protocol cells and figure QA pass.
+Final evidence: wireless-rl/report/20261006_p3b5_gate.md; JSON/PNG alongside.
+P3A.6 `22c95a7` remains accepted historical evidence. Await P3B.5 acceptance
+before P3C; no ns-3/Wi-Fi/RL work. 809 is now exposed; future control changes
+require a new holdout. Fixed lab303 has only 5.2 s margin; no worst-case guarantee.
+
 As of 2026-09-23, the user has accepted P1C, P2A, P2B, P2C, and P2D. Each robot has
 a local distance/time energy model, safety-reserve return, a distinct charging
 pose, and charge/resume behavior. A forced-charge two-robot episode completed

@@ -7437,3 +7437,27 @@ canonical ROS cwd；Humble/install；PYTHONNOUSERSITE=1。精确检查：
 /usr/bin/python3 -m pytest -q src/multi_robot_exploration/test src/merge_map/test/test_merge_map.py scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py scripts/test_ros_smoke_native_probe.py scripts/test_observer_lifetime.py --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py > /tmp/p3b5_v107_sha_reader_components.log 2>&1
 PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python /tmp/document_p3b5_v107_reader_component.py
 ```
+
+
+## 2026-10-06 P3B.5 v106同57原数据只读严格重审PASS与最终图文
+
+2026-10-06 P3B.5技术门禁PASS，待用户验收：v106原57格冻结d8d361bfd9d81e0c7a00c428ea66cfac4b3a1a76，2026-10-06 06:24–08:42:53UTC自然关闭；41主格/27pair+十fixed+六辅助，57时间与57图审核、54纯协议全部PASS，0接触/infra/操作失败、0整轮retry/backfill。十fixed原生COMPLETE；forced ideal155.2s各charge1。首次809/28091集合ideal/fault120.9/126.6s原生COMPLETE，目标两侧FOUND、覆盖率两侧达标，仅过程指标。真实tb3失败隔离0.1s，两健康机原生PARTIAL_COMPLETE148.9s/最低19.47128，success=false。TDI18eligible/5物理簇均值0.685185，95%描述性簇bootstrap[0.487179,0.823529]，10000次seed17011；rally fault5COMPLETE/20pair、1PARTIAL，其余真实失败/静默/超时保留，复用ideal不独立计样本。原checker摘要格式FAIL已5c1f931保留，77c201b仅修复只读摘要校验，636组件17.49s/九篡改反例PASS，原12审计函数AST和全部任务栈/原始记录未变；同57原数据重新严格审计PASS，无Gazebo重跑。lab101真实执行一次tb2驻点保留并原生完成，但无单因素收益或最坏保证；lab303294.8s仅5.2s余量。53参数旁录完整，E0双格和物理返充双格为独立原生证据。七port/所有owner/观察器/冻结source/helper/config及17用户资料SHA通过；JSON/MD/PNG视觉QA PASS。P3A.6已验收22c95a7历史冻结保留；809现已暴露，之后控制变化需新留出。报告report/20261006_p3b5_gate.json/.md与_results.png，技术完成待用户验收，未进入P3C/ns3/WiFi/RL。
+
+原57个精确任务命令见本日志v106原摘要FAIL条目及20261006_p3b5_staging_digest_failed_check.json；未追加任何任务或重跑。ROS cwd/Humble/install/PYTHONNOUSERSITE=1，只读重审：
+
+```bash
+/usr/bin/python3 /tmp/check_p3b5_v106_corrected_reader.py > /tmp/p3b5_v106_corrected_reader_gate.log 2>&1
+```
+
+exit0/PASS。任务freeze d8d361b；只读reader77c201b已clean提交并push，源码/原数据与helper SHA核验后调用原完整命令，结果入report/20261006_p3b5_gate.json。636组件和原生/TTL/physical-return/isolation函数AST证据独立保存。原reader FAIL不覆盖。
+
+离线报告/科学图（ns3gym、PYTHONNOUSERSITE=1）：
+
+```bash
+PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python /tmp/build_p3b5_v106_final_report.py ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261006_p3b5_gate.json
+PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python /tmp/build_p3b5_v106_reviewed_report.py ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261006_p3b5_gate.json > /tmp/p3b5_v106_reviewed_report.log 2>&1
+PYTHONNOUSERSITE=1 PYTHONPATH=/usr/lib/python3/dist-packages /home/zhuyulab/miniconda3/envs/ns3gym/bin/python /tmp/plot_p3b5_results.py ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261006_p3b5_gate.json --output ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261006_p3b5_gate_results.png > /tmp/p3b5_v106_final_plot.log 2>&1
+PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python /tmp/finalize_p3b5_v106_documents.py
+```
+
+冻结原builder首次KeyError completion_time_sec（包装row未取result），未写MD；原脚本保留。独立reviewed副本改正确字段及两个历史引用后exit0，未改任务或门禁JSON结果。PNG2520×1620已view_image核验三面板/图例/标签/分类/区间及脚注，无裁切重叠。全部原生/协议/安全限制原样，无单因素因果收益、未知场景总体或最坏时限声明。

@@ -1,16 +1,16 @@
 # wireless-rl Codex Memory
 
-Last source/documentation review: 2026-10-01. Behavioral evidence is frozen in
+Last source/documentation review: 2026-10-06. Behavioral evidence is frozen in
 the dated reports and is not automatically evidence for a different HEAD. The
-user accepted P1C, P2A, P2B, P2C, P2D, P3A, and P3A.5. The P2C follow-up adds
+user accepted P1C, P2A, P2B, P2C, P2D, P3A, P3A.5, and P3A.6. The P2C follow-up adds
 Gazebo task-region overlays and a live operator status panel. Historical
 integration commit `2933c24` was revalidated with two clean runner batches
 covering the fixed 10-cell matrix: all 10 episodes are `COMPLETE` with zero
 collision events, both manifests report `worktree_dirty=false`, the graph/source
 bypass audits pass, and the forced two-robot regression completes two charges.
 P3B is accepted only for its deterministic application-layer fault transport,
-protocol matrix, ledger, and stale-state semantics. The remaining full-task
-fault work is now P3B.5; gateway metrics and default visualization are P3C;
+protocol matrix, ledger, and stale-state semantics. The full-task
+fault work is P3B.5 (technical PASS2026-10-06, awaiting user acceptance); gateway metrics and default visualization are P3C;
 ns-3 packet/clock coupling remains P4A. Earlier `41f63fb`, `c369c7d`, and
 `561de99` failures remain historical retained evidence and are not silently
 replaced.
@@ -94,7 +94,9 @@ have zero collisions; maximum search overlap is 0.44%. 95% remains optional.
 
 ## Current Handoff Snapshot
 
-2026-10-01 P3A.6集成门禁通过，用户于2026-10-01验收通过。当前冻结任务栈
+2026-10-06 P3B.5技术门禁PASS，待用户验收：v106原57格冻结d8d361bfd9d81e0c7a00c428ea66cfac4b3a1a76，2026-10-06 06:24–08:42:53UTC自然关闭；41主格/27pair+十fixed+六辅助，57时间与57图审核、54纯协议全部PASS，0接触/infra/操作失败、0整轮retry/backfill。十fixed原生COMPLETE；forced ideal155.2s各charge1。首次809/28091集合ideal/fault120.9/126.6s原生COMPLETE，目标两侧FOUND、覆盖率两侧达标，仅过程指标。真实tb3失败隔离0.1s，两健康机原生PARTIAL_COMPLETE148.9s/最低19.47128，success=false。TDI18eligible/5物理簇均值0.685185，95%描述性簇bootstrap[0.487179,0.823529]，10000次seed17011；rally fault5COMPLETE/20pair、1PARTIAL，其余真实失败/静默/超时保留，复用ideal不独立计样本。原checker摘要格式FAIL已5c1f931保留，77c201b仅修复只读摘要校验，636组件17.49s/九篡改反例PASS，原12审计函数AST和全部任务栈/原始记录未变；同57原数据重新严格审计PASS，无Gazebo重跑。lab101真实执行一次tb2驻点保留并原生完成，但无单因素收益或最坏保证；lab303294.8s仅5.2s余量。53参数旁录完整，E0双格和物理返充双格为独立原生证据。七port/所有owner/观察器/冻结source/helper/config及17用户资料SHA通过；JSON/MD/PNG视觉QA PASS。P3A.6已验收22c95a7历史冻结保留；809现已暴露，之后控制变化需新留出。报告report/20261006_p3b5_gate.json/.md与_results.png，技术完成待用户验收，未进入P3C/ns3/WiFi/RL。
+
+2026-10-01 P3A.6集成门禁通过，用户于2026-10-01验收通过。当时冻结任务栈
 `task_stack_frozen_commit=22c95a770a8812452c43fc177e4a00b5c032e6ef`，clean三批次1+7+2覆盖固定十格，
 全部COMPLETE、零碰撞/失效/耗尽、零基础设施失败或整格重试。同提交forced303为
 190.4 s COMPLETE、tb1/tb2各一次充电、零碰撞/耗尽。127项组件测试、四包构建、
@@ -106,13 +108,12 @@ forced最低8.63739。lab101最长293.4 s，开发种子不是holdout统计证�
 report/20261001_p3a6_freeze.md/.json及log.md。P3B.5是下一检查点，网络/RL未启动；
 以后改任务栈必须另开批次重验证。用户报告未修改；临时Git排除已在收尾移除。
 
-- Active boundary: P3A.6 passed; P3B.5 is next, before network/RL work. P3A and
+- Active boundary: P3A.6 accepted; P3B.5 technical PASS at d8d361b, awaiting user acceptance before P3C/network/RL work. P3A and
   P3A.5 acceptance applies to their historical task-stack evidence. The historical integration freeze candidate is
   `task_stack_frozen_commit=2933c24`; clean 6+4 runner batches cover all ten
   fixed cells with `COMPLETE` and zero collisions, and the forced-charge
   regression completes two charges. P3B's deterministic application-layer
-  fault gateway and protocol matrix are user-accepted. After P3A.6 passes, proceed
-  to P3B.5 (fault-mode Gazebo task matrix and safety degradation), followed by P3C
+  fault gateway and protocol matrix are user-accepted. After P3B.5 user acceptance, proceed to P3C
   (gateway metrics and default visualization); P4A remains the later ns-3 bridge.
 - Historical P3A.5 evidence is retained at `log/p2d_baseline/p3a5_final_2933c24/`
   (lab/rooms six cells),
@@ -543,3 +544,5 @@ algorithms.
 2026-10-06 P3B.5 v106全57原始自然关闭，冻结d8d361bfd9d81e0c7a00c428ea66cfac4b3a1a76；2026-10-06 06:24–08:42:53UTC。57raw/0unrun/0retry，0接触/infra/操作失败，57ledger与57graph独立PASS、54纯协议PASS。十fixed全部原生COMPLETE，lab303294.8s仅5.2s余量；forced ideal155.2s各charge1。首次809六格全部保留，rally ideal/fault120.9/126.6s原生COMPLETE，target两侧FOUND、coverage两侧达标。single_failure原生PARTIAL_COMPLETE148.9s，tb3为预声明真实FAILED、两健康机保持证明完整、最低19.47128、0碰撞。七port/PID/env与所有冻结source/helper/config、17用户资料hash PASS。原完整strict checker exit1：staging_source_sha256生产端为SHA256(文件名+原字节)，校验端却比较纯源码SHA；两行存储594a3fe...，原源码和预声明纯字节47ce799...完全一致。原FAIL traceback/源码、全部57原结果与命令/环境/hash/AP保留，不改原manifest、不补写结果、不重跑Gazebo。809已首次暴露，后续控制算法变化需真正新留出；只读校验修复待完成，P3B.5尚未PASS，无ns3/WiFi/RL。
 
 2026-10-06 P3B.5 v107只读摘要校验组件PASS：原v106全57同提交任务及首次checker FAIL已5c1f931独立归档。仅checker按原生产端file_digest的文件名+原字节SHA验证，并新增保存源码=实际文件=预声明纯字节SHA和实际命令脚本路径绑定；未接受纯字节摘要冒充旧字段、未改producer或任何任务栈/协议/原始数据。九组有效/篡改检查、全636组件17.49s PASS；除main接入外原12审计函数AST相同，57原始文件树全部SHA重核、17用户资料不变。原生300s/.35/.05/.1/5s、源TTL、碰撞/正电量、真实返充与5s隔离条件未变。完整修复后只读checker仍待执行，组件PASS不代替任务门禁；809已在原d8d361b首曝，本次非新任务/未见验证，无ns3/RL。证据report/20261006_p3b5_staging_digest_reader_component.json。
+
+2026-10-06 P3B.5技术门禁PASS，待用户验收：v106原57格冻结d8d361bfd9d81e0c7a00c428ea66cfac4b3a1a76，2026-10-06 06:24–08:42:53UTC自然关闭；41主格/27pair+十fixed+六辅助，57时间与57图审核、54纯协议全部PASS，0接触/infra/操作失败、0整轮retry/backfill。十fixed原生COMPLETE；forced ideal155.2s各charge1。首次809/28091集合ideal/fault120.9/126.6s原生COMPLETE，目标两侧FOUND、覆盖率两侧达标，仅过程指标。真实tb3失败隔离0.1s，两健康机原生PARTIAL_COMPLETE148.9s/最低19.47128，success=false。TDI18eligible/5物理簇均值0.685185，95%描述性簇bootstrap[0.487179,0.823529]，10000次seed17011；rally fault5COMPLETE/20pair、1PARTIAL，其余真实失败/静默/超时保留，复用ideal不独立计样本。原checker摘要格式FAIL已5c1f931保留，77c201b仅修复只读摘要校验，636组件17.49s/九篡改反例PASS，原12审计函数AST和全部任务栈/原始记录未变；同57原数据重新严格审计PASS，无Gazebo重跑。lab101真实执行一次tb2驻点保留并原生完成，但无单因素收益或最坏保证；lab303294.8s仅5.2s余量。53参数旁录完整，E0双格和物理返充双格为独立原生证据。七port/所有owner/观察器/冻结source/helper/config及17用户资料SHA通过；JSON/MD/PNG视觉QA PASS。P3A.6已验收22c95a7历史冻结保留；809现已暴露，之后控制变化需新留出。报告report/20261006_p3b5_gate.json/.md与_results.png，技术完成待用户验收，未进入P3C/ns3/WiFi/RL。
