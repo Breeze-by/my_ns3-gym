@@ -3,6 +3,41 @@ import pytest
 from check_p3b5_gate import ledger_audit, bootstrap
 
 
+@pytest.mark.parametrize('corruption', [None, 'source', 'digest', 'declaration', 'file',
+                                      'command', 'forged_source_digest', 'forged_file_source_digest', 'plain_digest'])
+def test_staging_digest_binds_original_bytes_command_and_declaration(tmp_path, monkeypatch, corruption):
+    import hashlib
+    import shlex
+    import check_p3b5_gate as gate
+    from run_p2d_baseline import file_digest
+    monkeypatch.setattr(gate, 'ROOT', tmp_path)
+    fixture = tmp_path / 'scripts/stage_p3b5_return_probe.py'
+    fixture.parent.mkdir()
+    fixture.write_text('# Original UTF-8 source: 中文 π\n')
+    declared = hashlib.sha256(fixture.read_bytes()).hexdigest()
+    row = {'staging_source': fixture.read_text(), 'staging_source_sha256': file_digest(fixture),
+           'staging_command': shlex.join(['/usr/bin/python3', str(fixture), '--owner-pid', '123'])}
+    if corruption == 'source': row['staging_source'] += '# changed\n'
+    if corruption == 'digest': row['staging_source_sha256'] = '0' * 64
+    if corruption == 'declaration': declared = '0' * 64
+    if corruption == 'file': fixture.write_text('# changed on disk\n')
+    if corruption == 'command':
+        other = fixture.with_name('other.py'); other.write_bytes(fixture.read_bytes())
+        row['staging_command'] = shlex.join(['/usr/bin/python3', str(other)])
+    if corruption in ('forged_source_digest', 'forged_file_source_digest'):
+        row['staging_source'] = '# forged source\n'
+        row['staging_source_sha256'] = hashlib.sha256(fixture.name.encode() + row['staging_source'].encode()).hexdigest()
+        if corruption == 'forged_file_source_digest': fixture.write_text(row['staging_source'])
+    if corruption == 'plain_digest': row['staging_source_sha256'] = declared
+    if corruption is None:
+        result = gate.staging_source_audit(row, declared)
+        assert result['source_content_sha256'] == declared
+        assert result['source_file_digest_sha256'] == row['staging_source_sha256']
+        assert result['source_matches_predeclared_apparatus']
+    else:
+        with pytest.raises(AssertionError): gate.staging_source_audit(row, declared)
+
+
 @pytest.mark.parametrize("corruption", [None, "angular", "duration", "gap", "roster", "clock", "declaration", "legacy"])
 def test_completion_requires_native_hold_without_weakening_the_frozen_gate(corruption):
     from check_p3b5_gate import native_completion_ok

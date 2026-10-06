@@ -23,6 +23,22 @@ CORE_KEYS=('gateway_message','launch','exploration_source','merge_map_source','r
 def load(p): return json.loads(Path(p).read_text())
 def sha(p): return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 
+def staging_source_audit(row, declared_content_sha256):
+    """Bind the runner's filename+bytes digest to the declared, executed source."""
+    fixture = ROOT / 'scripts/stage_p3b5_return_probe.py'
+    source = row['staging_source'].encode('utf-8')
+    assert source == fixture.read_bytes(), 'Saved staging source differs from the frozen file'
+    content_sha256 = hashlib.sha256(source).hexdigest()
+    assert content_sha256 == declared_content_sha256, 'Staging source differs from the predeclared apparatus'
+    assert row['staging_source_sha256'] == file_digest(fixture), 'Invalid filename+bytes staging digest'
+    command = shlex.split(row['staging_command'])
+    assert len(command) > 1 and Path(command[1]).resolve() == fixture.resolve(), 'Staging command source mismatch'
+    return {'source_content_sha256': content_sha256,
+            'source_file_digest_sha256': row['staging_source_sha256'],
+            'source_digest_format': 'SHA256(UTF8 basename || raw file bytes)',
+            'source_matches_predeclared_apparatus': True,
+            'command_source_path': str(fixture)}
+
 def native_completion_ok(result):
     """Require the new cohort's independent native hold, never backfill P3A."""
     assert result['schema_version'] >= 9
@@ -456,12 +472,13 @@ def main():
                 window=physical['config']['physical_verification']['return_motion_window_sec'])
         if 'return_staging' in physical['config']:
             assert row['staging_returncode']==0 and row['staging_events_sha256']==file_digest(d/'staging.jsonl')
-            assert hashlib.sha256(row['staging_source'].encode()).hexdigest()==row['staging_source_sha256']
+            staging_source = staging_source_audit(row, declaration['staging_apparatus_content_sha256'])
             stages=[json.loads(line) for line in (d/'staging.jsonl').open()]
             epoch=next(json.loads(line)['event_time'] for line in (d/'ledger.jsonl').open() if json.loads(line)['event']=='fault_epoch')
             prepared=staging_audit(stages,epoch,physical['config']['return_staging'])
             assert set(prepared)==set(r['robots'])
             detail['controlled_staging']={'source_sha256':row['staging_source_sha256'],
+                **staging_source,
                 'events_sha256':row['staging_events_sha256'],'prepared':prepared,
                 'scope':'Supplemental safety fixture; suspended central exploration; excluded from mission/TDI.'}
         physical_evidence.append(detail)

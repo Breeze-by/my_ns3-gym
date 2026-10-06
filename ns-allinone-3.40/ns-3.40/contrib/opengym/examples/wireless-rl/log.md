@@ -7425,3 +7425,15 @@ ROS_DOMAIN_ID=42 GAZEBO_MASTER_URI=http://127.0.0.1:19656 /usr/bin/python3 /home
 ```
 
 原checker exit1/traceback保留；独立归档exit0、57时间/图审核PASS。上述SHA核对是只读分析，不是任务重跑。期间一次functions.exec只读监控JS漏括号在工具调用前SyntaxError，立即更正；未调用任何模拟器，未改原任务。文档writer首次在已写MD/记忆后遇到固定row没有gazebo_master_uri的KeyError，未写log；旧writer留存为/tmp/document_p3b5_v106_digest_failure_first.py，修正按原执行声明取master且避免重复追加。该文档汇总重执行不是仿真重试。
+
+
+## 2026-10-06 P3B.5 v107只读摘要校验组件（无仿真）
+
+2026-10-06 P3B.5 v107只读摘要校验组件PASS：原v106全57同提交任务及首次checker FAIL已5c1f931独立归档。仅checker按原生产端file_digest的文件名+原字节SHA验证，并新增保存源码=实际文件=预声明纯字节SHA和实际命令脚本路径绑定；未接受纯字节摘要冒充旧字段、未改producer或任何任务栈/协议/原始数据。九组有效/篡改检查、全636组件17.49s PASS；除main接入外原12审计函数AST相同，57原始文件树全部SHA重核、17用户资料不变。原生300s/.35/.05/.1/5s、源TTL、碰撞/正电量、真实返充与5s隔离条件未变。完整修复后只读checker仍待执行，组件PASS不代替任务门禁；809已在原d8d361b首曝，本次非新任务/未见验证，无ns3/RL。证据report/20261006_p3b5_staging_digest_reader_component.json。
+
+canonical ROS cwd；Humble/install；PYTHONNOUSERSITE=1。精确检查：
+
+```bash
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test src/merge_map/test/test_merge_map.py scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py scripts/test_ros_smoke_native_probe.py scripts/test_observer_lifetime.py --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py > /tmp/p3b5_v107_sha_reader_components.log 2>&1
+PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python /tmp/document_p3b5_v107_reader_component.py
+```
