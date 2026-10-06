@@ -7010,3 +7010,20 @@ ROS_DOMAIN_ID=28 GAZEBO_MASTER_URI=http://127.0.0.1:19053 /usr/bin/python3 /home
 ```bash
 /usr/bin/python3 /tmp/audit_p3b5_v97_retained_development.py > /tmp/p3b5_v97_retained_development_audit.log 2>&1
 ```
+
+## 2026-10-06 P3B.5 v99 known-free返充逃离前缀
+
+2026-10-06 P3B.5 v99返航前缀组件PASS、尚非集成验收：v97六原始已自然关闭FAIL归档8cc441d。lab202实际tb3返充前两腿各20s停滞取消且Smac多次lethal-start；只读AP90/100自身格有多格占用簇，原单格自回波规则未清任何格，110..160自身虽known-free仍在净空膨胀区，原规划把短逃离与远端返航组合派发。现在只有已验证home/contact路线存在且包含原有known-free净空逃离时，先发送该原短前缀及实际入射yaw，待原动作结果再重规划；原占用/未知起点仍拒绝，所有障碍/未知/净空/机体/储备/TTL/返航总时限/watchdog保持，Smac/RPP仍可拒绝动作，不保证恢复或因果加速。54定向2.01s、591全组件17.28s、四包5.26s、3r源码零旁路；仅plan_charging_leg改动，其它电池函数AST/control/严格checker/原生300s与.35/.05/.1/5s/所有Nav2和SLAM参数hash不变。第一次inline只读诊断因stdin文件名失败，独立文件helper修正成功，原失败保留；无任务重试。证据report/20261006_p3b5_return_escape_prefix_component.json。开发101/202/303不是holdout；809/28091仍未执行，独立六格及正式57格待通过，P3B.5未完成，无ns3/RL。
+
+ROS canonical cwd，rtk bash/source Humble/install/PYTHONNOUSERSITE=1，实际命令：
+
+```bash
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_control.py src/multi_robot_exploration/test/test_rally_observation_recovery.py src/multi_robot_exploration/test/test_frontier_replanning.py src/multi_robot_exploration/test/test_exploration_resume.py src/multi_robot_exploration/test/test_exploration_charging.py src/multi_robot_exploration/test/test_return_progress.py src/multi_robot_exploration/test/test_rally_observer_parking.py src/multi_robot_exploration/test/test_battery_manager.py src/multi_robot_exploration/test/test_gateway.py src/multi_robot_exploration/test/test_fault_model.py src/multi_robot_exploration/test/test_navigation_faults.py src/multi_robot_exploration/test/test_task_evaluator.py src/multi_robot_exploration/test/test_nav2_ready_gate.py src/multi_robot_exploration/test/test_readiness.py src/multi_robot_exploration/test/test_spawn_entity_checked.py src/multi_robot_exploration/test/test_tf_ingress_sampler.py src/multi_robot_exploration/test/test_target_detector.py src/merge_map/test/test_merge_map.py scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py scripts/test_ros_smoke_native_probe.py scripts/test_observer_lifetime.py > /tmp/p3b5_v99_component_checks.log 2>&1
+colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot > /tmp/p3b5_v99_build.log 2>&1
+/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v99_source_audit.log 2>&1
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_battery_manager.py src/multi_robot_exploration/test/test_return_progress.py > /tmp/p3b5_v99_focused_checks.log 2>&1
+/usr/bin/python3 /tmp/diagnose_p3b5_v99_retained_return.py > /tmp/p3b5_v99_retained_return_geometry.log 2>&1
+/usr/bin/python3 /tmp/diagnose_p3b5_v99_retained_self_cell.py > /tmp/p3b5_v99_retained_self_cell_corrected.log 2>&1
+```
+
+首inline失败命令使用diagnose helper在for-loop前的初始化片段经exec运行，Path(__file__)为stdin，尚未开始几何遍历即exit1；原stdout/代码片段及修正file helper均保留于component records。

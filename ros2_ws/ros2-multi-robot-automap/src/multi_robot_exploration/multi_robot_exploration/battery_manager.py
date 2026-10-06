@@ -24,6 +24,7 @@ from .control import (
     grid_to_world,
     navigation_start_route,
     plan_rally_leg,
+    route_arrival_yaw,
     traversable_grid,
     transform_point_2d,
     world_to_grid,
@@ -131,12 +132,23 @@ def plan_charging_leg(raw_grid, resolution, origin, position, charger, radius):
     options = dict(max_distance_m=MAX_NAVIGATION_LEG_M,
                    clearance_m=RALLY_PATH_CLEARANCE_M, visible_only=True,
                    route_cache=cache)
+
+    def first_leg(leg, route):
+        escape = cache["field"][2]
+        if leg is not None and len(escape) > 1:
+            # Complete the already validated known-free clearance escape
+            # before asking Nav2 for a long home leg from its inflated start.
+            # Replan on the next result; retain every occupied/unknown cell.
+            route = tuple(grid_to_world(*cell, resolution, *origin) for cell in escape)
+            leg = RallyPose(*route[-1], route_arrival_yaw(route, leg.yaw))
+        return leg, route
+
     leg, route = plan_rally_leg(
         RallyPose(*charger, 0.0), raw_grid, resolution, origin, position,
         **options,
     )
     if leg is not None:
-        return leg, route
+        return first_leg(leg, route)
     traversable, start, _, distance_data = cache["field"]
     if start is None or distance_data is None or radius <= 0.2:
         return None, ()
@@ -149,10 +161,10 @@ def plan_charging_leg(raw_grid, resolution, origin, position, charger, radius):
     if not len(candidates):
         return None, ()
     chosen = min(candidates, key=lambda i: (squared[i], distances[rows[i], columns[i]]))
-    return plan_rally_leg(
+    return first_leg(*plan_rally_leg(
         RallyPose(float(xs[chosen]), float(ys[chosen]), 0.0), raw_grid,
         resolution, origin, position, **options,
-    )
+    ))
 
 
 class BatteryManager(Node):

@@ -1,0 +1,626 @@
+{
+  "status": "COMPONENT_PASS",
+  "created_at_utc": "2026-10-06T04:10:19.332757+00:00",
+  "parent_commit": "8cc441d6ba307cf7e212872d6db03ca1153335a9",
+  "component_checks": {
+    "passed": 591,
+    "seconds": 17.28
+  },
+  "build": {
+    "packages": 4,
+    "seconds": 5.26
+  },
+  "changed_functions": [
+    "plan_charging_leg"
+  ],
+  "other_battery_functions_ast_identical": true,
+  "policy": "When the existing valid home/contact route contains a known-free clearance escape, admit that existing bounded escape alone before its long return leg. Preserve its known-free cells and incoming heading; replan after the original action result. Raw occupied/unknown starts remain rejected. No occupied/unknown cell clearing, clearance/body/energy/TTL/watchdog/deadline change or native-control input.",
+  "source_sha256": {
+    "src/multi_robot_exploration/multi_robot_exploration/battery_manager.py": "3a769dd71916681b1e5ee4756e3ecf71a152d02b934d73a4cc0da2cdb88bfd19",
+    "src/multi_robot_exploration/multi_robot_exploration/control.py": "d04f17fa20f0063ccfbc20ab25254bd1a532bf60b067b063c55bff3335c62298"
+  },
+  "unchanged_sha256": {
+    "src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py": "bac6822d1c803ba1fdd9784d774d37b05f8701b4da7a8ea477dde69189d57630",
+    "scripts/check_p3b5_gate.py": "783776e3c66da7bfc71dff321c69c3dc5e7b2ea1a878f47dd37c29c35a6210a6",
+    "scripts/stage_p3b5_return_probe.py": "47ce7998e212a9463ab657bbc0b121d4903ed886016bbf0fd3a2399c986da05d",
+    "scripts/p3b5_fault_manifest.json": "0bbe4f1b888eb73b1235f91e7bdea5caab4d9d71ceb586c0de46119342b0754e",
+    "src/multi_robot/worlds/p3b5_holdout809.world": "2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd",
+    "src/multi_robot/models/turtlebot3_waffle/model.sdf": "0b4d22f768566c2497b9ec725dc36219a7c65066426703348ad5cc217e415b46",
+    "src/multi_robot/params/nav2_params_tb1_0.yaml": "bec6e3965f9f60efc6756675677e5d89fe8b526a252cbe91c34805fbb415feb1",
+    "src/multi_robot/params/nav2_params_tb2_0.yaml": "e451d08f764617b7b2bbbbb8b35c1c008afb267b98a11dc431a49fb3489c55f8",
+    "src/multi_robot/params/nav2_params_tb3_0.yaml": "d1000fa2d6457a5acf972426e971a7abde71a418d3d34f22d8de29b05a9fe06c",
+    "src/multi_robot/params/nav2_params_tb4_0.yaml": "122b864aa3962ae0291ba87e67a3adb02de10fd8316311d4a82dd30b1f1ba306",
+    "src/multi_robot/params/nav2_params_tb5_0.yaml": "22b03aff9d39c141a130162cc44046eb9bbe10e7bbc69c521c31db58383758f2",
+    "src/multi_robot/params/nav2_params_tb6_0.yaml": "c736f2648ace3eba24bb5216ecf1e322de858dedbcc9cdf31f51cfe6689a4205",
+    "src/slam_toolbox/config/mapper_params_online_multi_async.yaml": "d5d73fbe7f184528c9817492e696ad13ab1e2e1400020ee690f973818aad3c45",
+    "src/slam_toolbox/src/slam_toolbox_multirobot.cpp": "236dc8ba3a47e802e3784e01864b21da7be09bdaafa5c1d4d6b0a3f2495d6de7",
+    "src/slam_toolbox/src/slam_toolbox_common.cpp": "64129edefd94ec32b0799f5de60cd310c22686db360221a9df3f13648ab1b774",
+    "src/multi_robot_exploration/multi_robot_exploration/control.py": "d04f17fa20f0063ccfbc20ab25254bd1a532bf60b067b063c55bff3335c62298"
+  },
+  "commands": [
+    "/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_control.py src/multi_robot_exploration/test/test_rally_observation_recovery.py src/multi_robot_exploration/test/test_frontier_replanning.py src/multi_robot_exploration/test/test_exploration_resume.py src/multi_robot_exploration/test/test_exploration_charging.py src/multi_robot_exploration/test/test_return_progress.py src/multi_robot_exploration/test/test_rally_observer_parking.py src/multi_robot_exploration/test/test_battery_manager.py src/multi_robot_exploration/test/test_gateway.py src/multi_robot_exploration/test/test_fault_model.py src/multi_robot_exploration/test/test_navigation_faults.py src/multi_robot_exploration/test/test_task_evaluator.py src/multi_robot_exploration/test/test_nav2_ready_gate.py src/multi_robot_exploration/test/test_readiness.py src/multi_robot_exploration/test/test_spawn_entity_checked.py src/multi_robot_exploration/test/test_tf_ingress_sampler.py src/multi_robot_exploration/test/test_target_detector.py src/merge_map/test/test_merge_map.py scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py scripts/test_ros_smoke_native_probe.py scripts/test_observer_lifetime.py > /tmp/p3b5_v99_component_checks.log 2>&1",
+    "colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot > /tmp/p3b5_v99_build.log 2>&1",
+    "/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v99_source_audit.log 2>&1",
+    "/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_battery_manager.py src/multi_robot_exploration/test/test_return_progress.py > /tmp/p3b5_v99_focused_checks.log 2>&1",
+    "/usr/bin/python3 /tmp/diagnose_p3b5_v99_retained_return.py > /tmp/p3b5_v99_retained_return_geometry.log 2>&1",
+    "/usr/bin/python3 /tmp/diagnose_p3b5_v99_retained_self_cell.py > /tmp/p3b5_v99_retained_self_cell_corrected.log 2>&1"
+  ],
+  "records": {
+    "/tmp/diagnose_p3b5_v99_retained_return.py": {
+      "sha256": "7a3aa17974933c035b666157fed396b69ac8eed8ca961e4f2e2c500869fc662e",
+      "text": "import hashlib,json,math\nfrom pathlib import Path\nimport numpy as np\nfrom scipy import ndimage\nfrom multi_robot_exploration import control as c\nfrom multi_robot_exploration.battery_manager import plan_charging_leg\n\nROOT=Path('/home/zhuyulab/ns3-workspace');ROS=ROOT/'ros2_ws/ros2-multi-robot-automap'\nidentity='p3b5_v97_dev_fixed_lab202_lab_far_northwest_3r_seed202'\nap=ROS/'log/p3b5/p3b5_v97_dev_fixed_ap'/(identity+'_ap')/'snapshots.jsonl'\nr=json.loads((ROS/'log/p2d_baseline/p3b5_v97_dev_fixed_lab202/episodes'/(identity+'.json')).read_text())\nout=dict(scope='Read-only conditional AP geometry, not original controller buffers or causal replay. Native observations never used for control.',source=Path(__file__).read_text(),ap_sha256=hashlib.sha256(ap.read_bytes()).hexdigest(),frames=[])\ndef yaw(q):return math.atan2(2*(q['w']*q['z']+q['x']*q['y']),1-2*(q['y']**2+q['z']**2))\nfor line in ap.open():\n f=json.loads(line);t=f['observer_time']-r['start_sim_time_sec'];m=f['messages']\n if not 90<=t<=250 or 'map' not in m:continue\n info=m['map']['info'];res=info['resolution'];o=(info['origin']['position']['x'],info['origin']['position']['y']);grid=np.array(m['map']['data'],dtype=np.int16).reshape(info['height'],info['width'])\n positions={};states={}\n for name in ('tb1','tb2','tb3'):\n  od=m[name+'/odom']['pose']['pose'];tf=next(v['transform'] for v in m[name+'/tf']['transforms'] if v['header']['frame_id'].lstrip('/').endswith('map') and v['child_frame_id'].lstrip('/').endswith('odom'));a=yaw(tf['rotation']);x,y=od['position']['x'],od['position']['y'];positions[name]=(tf['translation']['x']+math.cos(a)*x-math.sin(a)*y,tf['translation']['y']+math.sin(a)*x+math.cos(a)*y)\n  if name+'/battery_state' in m:states[name]=json.loads(m[name+'/battery_state']['data'])\n pos=positions['tb3'];cell=c.world_to_grid(*pos,res,*o);safe=c.traversable_grid(grid,res,c.RALLY_PATH_CLEARANCE_M);end,escape=c.navigation_start_route(grid,safe,cell,math.ceil(.6/res));leg,route=plan_charging_leg(grid,res,o,pos,(.45,0.),.8)\n nearest=float(ndimage.distance_transform_edt(grid<c.OCCUPIED_THRESHOLD)[cell]*res)\n row=dict(elapsed=t,positions=positions,tb3_mode=states.get('tb3',{}).get('mode'),tb3_energy=states.get('tb3',{}).get('energy'),raw_current_cell=int(grid[cell]),clearance_safe=bool(safe[cell]),nearest_occupied_cell_m=nearest,escape_endpoint=c.grid_to_world(*end,res,*o) if end else None,escape_cells=len(escape),return_leg=dict(x=leg.x,y=leg.y,yaw=leg.yaw) if leg else None)\n if 95<t<115 and len(states)==3:\n  modes={n:s['mode'] for n,s in states.items()};starts={n:p if modes[n]=='ACTIVE' else (states[n]['charge_x'],states[n]['charge_y']) for n,p in positions.items()}\n  assigned=c.assign_rally_poses(grid,res,o,starts,(-4.,4.),battery_states=states,observer_robot='tb1',current_positions=positions)\n  row['conditional_assignment']={n:dict(x=p.x,y=p.y,yaw=p.yaw) for n,p in assigned.items()}\n out['frames'].append(row);print(json.dumps(row),flush=True)\np=Path('/tmp/p3b5_v99_retained_return_geometry.json');assert not p.exists();p.write_text(json.dumps(out,indent=2)+'\\n')\n"
+    },
+    "/tmp/diagnose_p3b5_v99_retained_self_cell.py": {
+      "sha256": "f3ccd1c2ec9d7d090827c1814f6b2d8dc8d56ab2f274a02d4986237f5d030fa7",
+      "text": "import hashlib,json,math\nfrom pathlib import Path\nimport numpy as np\nfrom scipy import ndimage\nfrom multi_robot_exploration import control as c\nfrom multi_robot_exploration.battery_manager import plan_charging_leg\n\nROOT=Path('/home/zhuyulab/ns3-workspace');ROS=ROOT/'ros2_ws/ros2-multi-robot-automap'\nidentity='p3b5_v97_dev_fixed_lab202_lab_far_northwest_3r_seed202'\nap=ROS/'log/p3b5/p3b5_v97_dev_fixed_ap'/(identity+'_ap')/'snapshots.jsonl'\nr=json.loads((ROS/'log/p2d_baseline/p3b5_v97_dev_fixed_lab202/episodes'/(identity+'.json')).read_text())\nout=dict(scope='Read-only conditional AP geometry, not original controller buffers or causal replay. Native observations never used for control.',source=Path(__file__).read_text(),ap_sha256=hashlib.sha256(ap.read_bytes()).hexdigest(),frames=[])\ndef yaw(q):return math.atan2(2*(q['w']*q['z']+q['x']*q['y']),1-2*(q['y']**2+q['z']**2))\nfor line in ap.open():\n f=json.loads(line);t=f['observer_time']-r['start_sim_time_sec'];m=f['messages']\n if not 90<t<141:continue\n info=m['map']['info'];res=info['resolution'];o=(info['origin']['position']['x'],info['origin']['position']['y']);grid=np.array(m['map']['data'],dtype=np.int16).reshape(info['height'],info['width'])\n pos=next(row['positions']['tb3'] for row in json.loads(Path('/tmp/p3b5_v99_retained_return_geometry.json').read_text())['frames'] if abs(row['elapsed']-t)<.001);cell=c.world_to_grid(*pos,res,*o);filtered,removed=c.planning_grid_without_self_returns(grid,res,o,{'tb3':pos});print(json.dumps(dict(elapsed=t,cell=cell,removed=removed,window=grid[cell[0]-4:cell[0]+5,cell[1]-4:cell[1]+5].tolist())))\n"
+    },
+    "/tmp/document_p3b5_v99_return_escape.py": {
+      "sha256": "289d1a4f56807bfa4dc22c068ea7f400e3f0c4717a6d665e271205352fcf86cf",
+      "text": "import ast,hashlib,json,socket,subprocess\nfrom datetime import datetime,timezone\nfrom pathlib import Path\nROOT=Path('/home/zhuyulab/ns3-workspace');ROS=ROOT/'ros2_ws/ros2-multi-robot-automap';W=ROOT/'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl'\ndef git(*args):return subprocess.check_output(['rtk','proxy','git',*args],cwd=ROOT,text=True).strip()\nparent=git('rev-parse','HEAD');assert parent.startswith('8cc441d') and parent==git('rev-parse','origin/main')\nprevious=json.loads((W/'report/20261005_p3b5_fresh_frontier_replan_component.json').read_text())\ndev=json.loads((W/'report/20261005_p3b5_fresh_frontier_replan_development.json').read_text());assert dev['status']=='FAIL' and dev['closure']['status']=='PASS'\nbattery='src/multi_robot_exploration/multi_robot_exploration/battery_manager.py';control='src/multi_robot_exploration/multi_robot_exploration/control.py'\nunchanged={k:v for k,v in previous['unchanged_sha256'].items() if k!=battery}\nunchanged[control]=previous['source_sha256'][control]\nfor name,value in unchanged.items():assert hashlib.sha256((ROS/name).read_bytes()).hexdigest()==value,name\nfor port in (19050,19051,19052,19053):\n with socket.socket() as s:assert s.connect_ex(('127.0.0.1',port))!=0\nfor p in Path('/proc').iterdir():\n if not p.name.isdigit():continue\n try:env=(p/'environ').read_bytes().split(b'\\0')\n except OSError:continue\n assert not any(f'GAZEBO_MASTER_URI=http://127.0.0.1:{port}'.encode() in env for port in (19050,19051,19052,19053)),p.name\nmaterials=json.loads(Path('/tmp/p3b5_user_material_hashes.json').read_text());assert all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==v for p,v in materials.items())\npath=ROS/battery;old=git('show',parent+':'+str(path.relative_to(ROOT)))\ndef functions(text):\n result={}\n for node in ast.parse(text).body:\n  if isinstance(node,ast.FunctionDef):result[node.name]=ast.dump(node,include_attributes=False)\n  elif isinstance(node,ast.ClassDef):\n   for f in node.body:\n    if isinstance(f,ast.FunctionDef):result[node.name+'.'+f.name]=ast.dump(f,include_attributes=False)\n return result\nbefore=functions(old);after=functions(path.read_text());changed=sorted(k for k in before if before[k]!=after.get(k));assert changed==['plan_charging_leg'] and set(before)==set(after),changed\nchecks=Path('/tmp/p3b5_v99_component_checks.log').read_text();build=Path('/tmp/p3b5_v99_build.log').read_text();audit=json.loads(Path('/tmp/p3b5_v99_source_audit.log').read_text())\nassert '591 passed in 17.28s' in checks and '4 packages finished [5.26s]' in build and audit['pass'] and not audit['violations']\ncommands=[Path('/tmp/p3b5_v99_checks_command.txt').read_text().strip(),'colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot > /tmp/p3b5_v99_build.log 2>&1','/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v99_source_audit.log 2>&1','/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test/test_battery_manager.py src/multi_robot_exploration/test/test_return_progress.py > /tmp/p3b5_v99_focused_checks.log 2>&1','/usr/bin/python3 /tmp/diagnose_p3b5_v99_retained_return.py > /tmp/p3b5_v99_retained_return_geometry.log 2>&1','/usr/bin/python3 /tmp/diagnose_p3b5_v99_retained_self_cell.py > /tmp/p3b5_v99_retained_self_cell_corrected.log 2>&1']\nrecords={}\nfor p in sorted(Path('/tmp').glob('*p3b5_v99*.py'))+sorted(Path('/tmp').glob('p3b5_v99*.log'))+[ROS/'src/multi_robot_exploration/test/test_battery_manager.py']:\n records[str(p)]=dict(sha256=hashlib.sha256(p.read_bytes()).hexdigest(),text=p.read_text())\nreport=dict(status='COMPONENT_PASS',created_at_utc=datetime.now(timezone.utc).isoformat(),parent_commit=parent,component_checks=dict(passed=591,seconds=17.28),build=dict(packages=4,seconds=5.26),changed_functions=changed,other_battery_functions_ast_identical=True,\n policy='When the existing valid home/contact route contains a known-free clearance escape, admit that existing bounded escape alone before its long return leg. Preserve its known-free cells and incoming heading; replan after the original action result. Raw occupied/unknown starts remain rejected. No occupied/unknown cell clearing, clearance/body/energy/TTL/watchdog/deadline change or native-control input.',\n source_sha256={name:hashlib.sha256((ROS/name).read_bytes()).hexdigest() for name in (battery,control)},unchanged_sha256=unchanged,commands=commands,records=records,retained_conditional_geometry=json.loads(Path('/tmp/p3b5_v99_retained_return_geometry.json').read_text()),source_diff=git('diff','--',str(path.relative_to(ROOT)),str((ROS/'src/multi_robot_exploration/test/test_battery_manager.py').relative_to(ROOT))),prior_failure='20261005_p3b5_fresh_frontier_replan_development.json',new_holdout_exposed=False,\n limitations=['Original lab202 actual return required two20s stalled cancellations and repeated native Smac lethal-start errors. AP90/100 had a compact multi-cell occupied cluster at tb3; existing isolated single-cell heuristic correctly removed none. AP110..160 known-free current cells were still clearance-inflated, and existing return combined escape with distant home prefixes.',\n 'A short known-free escape does not override Nav2 lethal-start/collision checks and does not prove successful physical recovery. Native/grid discrepancy and shared-host timing remain limitations; six independent originals and full57 still required.',\n 'First inline self-cell diagnosis failed on <stdin> __file__ before reading geometry; retained error log. A separate file-backed helper succeeded. Neither is a mission run/retry.',\n 'Original handoff5,map/battery5,poseTF2,target60,native300/.35/.05/.1/5,contact model,strict gate,all Nav2/SLAM parameters and every other controller function unchanged. No809 exposure or formal replacement.'])\nout=W/'report/20261006_p3b5_return_escape_prefix_component.json';assert not out.exists();out.write_text(json.dumps(report,indent=2,ensure_ascii=False)+'\\n')\nparagraph='2026-10-06 P3B.5 v99返航前缀组件PASS、尚非集成验收：v97六原始已自然关闭FAIL归档8cc441d。lab202实际tb3返充前两腿各20s停滞取消且Smac多次lethal-start；只读AP90/100自身格有多格占用簇，原单格自回波规则未清任何格，110..160自身虽known-free仍在净空膨胀区，原规划把短逃离与远端返航组合派发。现在只有已验证home/contact路线存在且包含原有known-free净空逃离时，先发送该原短前缀及实际入射yaw，待原动作结果再重规划；原占用/未知起点仍拒绝，所有障碍/未知/净空/机体/储备/TTL/返航总时限/watchdog保持，Smac/RPP仍可拒绝动作，不保证恢复或因果加速。54定向2.01s、591全组件17.28s、四包5.26s、3r源码零旁路；仅plan_charging_leg改动，其它电池函数AST/control/严格checker/原生300s与.35/.05/.1/5s/所有Nav2和SLAM参数hash不变。第一次inline只读诊断因stdin文件名失败，独立文件helper修正成功，原失败保留；无任务重试。证据report/20261006_p3b5_return_escape_prefix_component.json。开发101/202/303不是holdout；809/28091仍未执行，独立六格及正式57格待通过，P3B.5未完成，无ns3/RL。'\nfor p in (ROOT/'AGENTS.md',W/'AGENTS.md',W/'IMPLEMENTATION_PLAN.md',W/'RESEARCH_PLAN.md',ROS/'launch_commands.md'):\n with p.open('a') as s:s.write('\\n'+paragraph+'\\n')\nwith (W/'log.md').open('a') as s:s.write('\\n## 2026-10-06 P3B.5 v99 known-free返充逃离前缀\\n\\n'+paragraph+'\\n\\nROS canonical cwd，rtk bash/source Humble/install/PYTHONNOUSERSITE=1，实际命令：\\n\\n```bash\\n'+'\\n'.join(commands)+'\\n```\\n\\n首inline失败命令使用diagnose helper在for-loop前的初始化片段经exec运行，Path(__file__)为stdin，尚未开始几何遍历即exit1；原stdout/代码片段及修正file helper均保留于component records。\\n')\nprint('COMPONENT_PASS',report['source_sha256'],591)\n"
+    },
+    "/tmp/p3b5_v99_build.log": {
+      "sha256": "1eeaaf66f14e072f2eecf28714e0b867d42dcb62a23135461712821508e973a2",
+      "text": "Starting >>> multi_robot_interfaces\nFinished <<< multi_robot_interfaces [1.12s]\nStarting >>> merge_map\nStarting >>> multi_robot_exploration\nFinished <<< merge_map [3.12s]\nFinished <<< multi_robot_exploration [3.13s]\nStarting >>> multi_robot\nFinished <<< multi_robot [0.31s]\n\nSummary: 4 packages finished [5.26s]\n"
+    },
+    "/tmp/p3b5_v99_component_checks.log": {
+      "sha256": "3e87a38e6948082806c86fea62cf08535073147ef0ba0f3f9fc1b3663c439c48",
+      "text": "........................................................................ [ 12%]\n........................................................................ [ 24%]\n........................................................................ [ 36%]\n........................................................................ [ 48%]\n........................................................................ [ 60%]\n........................................................................ [ 73%]\n........................................................................ [ 85%]\n........................................................................ [ 97%]\n...............                                                          [100%]\n591 passed in 17.28s\n"
+    },
+    "/tmp/p3b5_v99_focused_checks.log": {
+      "sha256": "e87cbd4cf014613ced7caf040aa65bb72c00d4374f55c94edc19966ca19a5518",
+      "text": "......................................................                   [100%]\n54 passed in 2.01s\n"
+    },
+    "/tmp/p3b5_v99_retained_return_geometry.log": {
+      "sha256": "e5fc47acfd4c41e6eb5ae173a1cce1c75c302f554509ad810112252f3aa5d818",
+      "text": "{\"elapsed\": 90.20000000000027, \"positions\": {\"tb1\": [-3.229772820590502, -1.899848984702683], \"tb2\": [0.17091025763899828, 1.1374153574954633], \"tb3\": [4.677701936047812, -2.4357810331095653]}, \"tb3_mode\": \"ACTIVE\", \"tb3_energy\": 32.88439007840116, \"raw_current_cell\": 100, \"clearance_safe\": false, \"nearest_occupied_cell_m\": 0.0, \"escape_endpoint\": null, \"escape_cells\": 0, \"return_leg\": null}\n{\"elapsed\": 100.20000000000027, \"positions\": {\"tb1\": [-3.3976229968610543, 0.685766104556919], \"tb2\": [-0.5122036893026658, -0.09801458371973548], \"tb3\": [4.677406558423577, -2.4355261187400785]}, \"tb3_mode\": \"ACTIVE\", \"tb3_energy\": 32.68402961826849, \"raw_current_cell\": 100, \"clearance_safe\": false, \"nearest_occupied_cell_m\": 0.0, \"escape_endpoint\": null, \"escape_cells\": 0, \"return_leg\": null, \"conditional_assignment\": {}}\n{\"elapsed\": 110.20000000000027, \"positions\": {\"tb1\": [-4.156471438460777, 2.3210625252984842], \"tb2\": [-1.251438972097557, -0.17356692722245032], \"tb3\": [4.677599733751166, -2.435137287968144]}, \"tb3_mode\": \"RETURNING\", \"tb3_energy\": 32.47828756682752, \"raw_current_cell\": 0, \"clearance_safe\": false, \"nearest_occupied_cell_m\": 0.05000000074505806, \"escape_endpoint\": [4.459919498793127, -2.2003660643742435], \"escape_cells\": 6, \"return_leg\": {\"x\": 2.4099194682457465, \"y\": -0.3503660368070953, \"yaw\": 2.356194490192345}, \"conditional_assignment\": {\"tb1\": {\"x\": -4.690080637552498, \"y\": 3.299634017582143, \"yaw\": 0.7927951803892953}, \"tb2\": {\"x\": -3.740080623396395, \"y\": 3.0496340138568527, \"yaw\": 1.8377618650841445}, \"tb3\": {\"x\": -3.990080627121685, \"y\": 1.3996339892699368, \"yaw\": 1.5746109147124454}}}\n{\"elapsed\": 120.20000000000027, \"positions\": {\"tb1\": [-4.486090264247602, 3.1336437316834185], \"tb2\": [-1.3303636380340251, -0.1459554700678219], \"tb3\": [4.6700997514920415, -2.425161546347238]}, \"tb3_mode\": \"RETURNING\", \"tb3_energy\": 32.249642205767444, \"raw_current_cell\": 0, \"clearance_safe\": false, \"nearest_occupied_cell_m\": 0.11180340054098996, \"escape_endpoint\": [4.506972568394047, -2.2003660643742435], \"escape_cells\": 5, \"return_leg\": {\"x\": 2.406972537101608, \"y\": -0.3503660368070953, \"yaw\": 2.4668517113662407}}\n{\"elapsed\": 130.20000000000027, \"positions\": {\"tb1\": [-4.486434056625254, 3.1322352648285556], \"tb2\": [-1.344761339935922, -0.6367908807182239], \"tb3\": [4.629474534028637, -2.468665432152039]}, \"tb3_mode\": \"RETURNING\", \"tb3_energy\": 31.961265846718323, \"raw_current_cell\": 0, \"clearance_safe\": false, \"nearest_occupied_cell_m\": 0.15000000223517418, \"escape_endpoint\": [4.506972568394047, -2.2003660643742435], \"escape_cells\": 6, \"return_leg\": {\"x\": 2.406972537101608, \"y\": -0.3503660368070953, \"yaw\": 2.4668517113662407}}\n{\"elapsed\": 140.20000000000027, \"positions\": {\"tb1\": [-4.486036967460615, 3.132640395449059], \"tb2\": [-1.3452826789972394, -0.6369319313061726], \"tb3\": [4.843105840576101, -2.6489769651874577]}, \"tb3_mode\": \"RETURNING\", \"tb3_energy\": 31.48345760638193, \"raw_current_cell\": 0, \"clearance_safe\": false, \"nearest_occupied_cell_m\": 0.22360680108197992, \"escape_endpoint\": [4.856972573609453, -2.8003660733149403], \"escape_cells\": 4, \"return_leg\": {\"x\": 4.406972566903931, \"y\": -3.1003660777852886, \"yaw\": -2.5535900500422257}}\n{\"elapsed\": 150.20000000000027, \"positions\": {\"tb1\": [-4.485821455195931, 3.132819573072607], \"tb2\": [-1.3451113766369316, -0.6362170490378406], \"tb3\": [4.852375821601662, -2.6663483908776224]}, \"tb3_mode\": \"RETURNING\", \"tb3_energy\": 31.230769362796053, \"raw_current_cell\": 0, \"clearance_safe\": false, \"nearest_occupied_cell_m\": 0.18027756645954449, \"escape_endpoint\": [4.856972573609453, -2.8503660740599983], \"escape_cells\": 5, \"return_leg\": {\"x\": 4.3569725661588725, \"y\": -3.1503660785303467, \"yaw\": -2.5535900500422257}}\n{\"elapsed\": 160.20000000000027, \"positions\": {\"tb1\": [-4.485606780088966, 3.1329997403082053], \"tb2\": [-1.3448056233763688, -0.636412124651924], \"tb3\": [4.85217000330991, -2.6664459988095084]}, \"tb3_mode\": \"RETURNING\", \"tb3_energy\": 31.028237484658835, \"raw_current_cell\": 0, \"clearance_safe\": false, \"nearest_occupied_cell_m\": 0.18027756645954449, \"escape_endpoint\": [4.856972573609453, -2.8503660740599983], \"escape_cells\": 5, \"return_leg\": {\"x\": 4.3569725661588725, \"y\": -3.1503660785303467, \"yaw\": -2.5535900500422257}}\n{\"elapsed\": 170.20000000000027, \"positions\": {\"tb1\": [-4.485389247905055, 3.1331811932387854], \"tb2\": [-1.3444592240424942, -0.636127103378671], \"tb3\": [4.410518377999176, -3.1319533521856964]}, \"tb3_mode\": \"RETURNING\", \"tb3_energy\": 30.121011809856114, \"raw_current_cell\": 0, \"clearance_safe\": true, \"nearest_occupied_cell_m\": 0.41231056870567223, \"escape_endpoint\": [4.406972566903931, -3.1503660785303467], \"escape_cells\": 1, \"return_leg\": {\"x\": 4.706972571374279, \"y\": -2.8503660740599983, \"yaw\": 0.7853981633974483}}\n{\"elapsed\": 180.20000000000027, \"positions\": {\"tb1\": [-4.485169862930881, 3.1333624592752463], \"tb2\": [-1.3441206560622432, -0.635849362236611], \"tb3\": [4.377550347458465, -3.146158987298795]}, \"tb3_mode\": \"RETURNING\", \"tb3_energy\": 29.887992580727712, \"raw_current_cell\": 0, \"clearance_safe\": false, \"nearest_occupied_cell_m\": 0.10000000149011612, \"escape_endpoint\": [4.606972569884163, -3.0003660762951725], \"escape_cells\": 6, \"return_leg\": {\"x\": 4.756972572119337, \"y\": -2.700366071824824, \"yaw\": 1.1071487177940904}}\n{\"elapsed\": 190.20000000000027, \"positions\": {\"tb1\": [-4.484948267395692, 3.1335456374667903], \"tb2\": [-1.343789422658981, -0.635577621619095], \"tb3\": [4.728380810455409, -2.801176358355773]}, \"tb3_mode\": \"RETURNING\", \"tb3_energy\": 29.16935146740902, \"raw_current_cell\": 0, \"clearance_safe\": true, \"nearest_occupied_cell_m\": 0.36400549988813047, \"escape_endpoint\": [4.706972571374279, -2.8003660733149403], \"escape_cells\": 1, \"return_leg\": {\"x\": 4.756972572119337, \"y\": -2.600366070334708, \"yaw\": 1.3258176636680326}}\n{\"elapsed\": 200.20000000000027, \"positions\": {\"tb1\": [-4.484726378951741, 3.1337298996450107], \"tb2\": [-1.3434653079875385, -0.6353116281204572], \"tb3\": [4.6326261009146865, -2.31067549062378]}, \"tb3_mode\": \"RETURNING\", \"tb3_energy\": 28.44000600290279, \"raw_current_cell\": 0, \"clearance_safe\": true, \"nearest_occupied_cell_m\": 0.42426407503395575, \"escape_endpoint\": [4.656972570629221, -2.3003660658643597], \"escape_cells\": 1, \"return_leg\": {\"x\": 2.4569725378466662, \"y\": -0.4003660375521534, \"yaw\": 2.4668517113662407}}\n{\"elapsed\": 210.20000000000027, \"positions\": {\"tb1\": [-4.4845031676704155, 3.133915360311265], \"tb2\": [-1.3431477014091688, -0.6350507980182056], \"tb3\": [4.462363698066869, -2.1564373792748848]}, \"tb3_mode\": \"RETURNING\", \"tb3_energy\": 28.01298776708167, \"raw_current_cell\": 0, \"clearance_safe\": true, \"nearest_occupied_cell_m\": 0.4609772297337403, \"escape_endpoint\": [4.456972567648989, -2.1503660636291855], \"escape_cells\": 1, \"return_leg\": {\"x\": 2.4569725378466662, \"y\": -0.4003660375521534, \"yaw\": 2.4668517113662407}}\n{\"elapsed\": 220.20000000000027, \"positions\": {\"tb1\": [-4.484278816461528, 3.1341014589403082], \"tb2\": [-1.3428364915510898, -0.6347953104181158], \"tb3\": [2.625103837476807, -0.45255579090712506]}, \"tb3_mode\": \"RETURNING\", \"tb3_energy\": 25.29122371936385, \"raw_current_cell\": 0, \"clearance_safe\": true, \"nearest_occupied_cell_m\": 0.42426407503395575, \"escape_endpoint\": [2.6069725400818404, -0.45036603829721145], \"escape_cells\": 1, \"return_leg\": {\"x\": 2.206972534121376, \"y\": -0.3503660368070953, \"yaw\": 2.976443976175166}}\n{\"elapsed\": 230.20000000000027, \"positions\": {\"tb1\": [-4.484053897937517, 3.1342884039960874], \"tb2\": [-1.3425313080722103, -0.6345447614190444], \"tb3\": [1.4290519090714369, -0.2693757773691052]}, \"tb3_mode\": \"RETURNING\", \"tb3_energy\": 23.861757098178792, \"raw_current_cell\": 0, \"clearance_safe\": true, \"nearest_occupied_cell_m\": 0.8746427972599882, \"escape_endpoint\": [1.406972522200447, -0.2503660353169792], \"escape_cells\": 1, \"return_leg\": {\"x\": 0.45697250804434386, \"y\": -0.000366031591688909, \"yaw\": 0.0}}\n{\"elapsed\": 240.20000000000027, \"positions\": {\"tb1\": [-4.483828277024941, 3.1344757816414823], \"tb2\": [-1.3422314925941994, -0.6342986224749665], \"tb3\": [1.1197724674429448, -0.2321646048810528]}, \"tb3_mode\": \"ACTIVE\", \"tb3_energy\": 79.94957269938925, \"raw_current_cell\": 0, \"clearance_safe\": true, \"nearest_occupied_cell_m\": 1.1423659829021657, \"escape_endpoint\": [1.1069725177300986, -0.2503660353169792], \"escape_cells\": 1, \"return_leg\": {\"x\": 0.45697250804434386, \"y\": -0.000366031591688909, \"yaw\": 0.0}}\n"
+    },
+    "/tmp/p3b5_v99_retained_self_cell.log": {
+      "sha256": "0dae01eca15f7bcb207c3ae30dfa8d1c45ccc6f5b8224dbd9fcee79203e919e9",
+      "text": "Traceback (most recent call last):\n  File \"<stdin>\", line 1, in <module>\n  File \"<string>\", line 12, in <module>\n  File \"/usr/lib/python3.10/pathlib.py\", line 1134, in read_text\n    with self.open(mode='r', encoding=encoding, errors=errors) as f:\n  File \"/usr/lib/python3.10/pathlib.py\", line 1119, in open\n    return self._accessor.open(self, mode, buffering, encoding, errors,\nFileNotFoundError: [Errno 2] No such file or directory: '<stdin>'\n"
+    },
+    "/tmp/p3b5_v99_retained_self_cell_corrected.log": {
+      "sha256": "cc91e9d86c7f0fad17917fbeeca01b9e41dafee1d1ab7845591428fe0ce43aa6",
+      "text": "{\"elapsed\": 90.20000000000027, \"cell\": [60, 206], \"removed\": {}, \"window\": [[0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 100, 0, 0], [0, 0, 0, 0, 100, 100, 100, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0]]}\n{\"elapsed\": 100.20000000000027, \"cell\": [60, 206], \"removed\": {}, \"window\": [[0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 100, 0, 0], [0, 0, 0, 0, 100, 100, 100, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0]]}\n{\"elapsed\": 110.20000000000027, \"cell\": [60, 206], \"removed\": {}, \"window\": [[0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 100, 0], [0, 0, 0, 0, 0, 100, 100, 100, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0]]}\n{\"elapsed\": 120.20000000000027, \"cell\": [61, 206], \"removed\": {}, \"window\": [[0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 100, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0]]}\n{\"elapsed\": 130.20000000000027, \"cell\": [60, 205], \"removed\": {}, \"window\": [[0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 100, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0]]}\n{\"elapsed\": 140.20000000000027, \"cell\": [56, 210], \"removed\": {}, \"window\": [[0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 100, 0, 0, 0, 0, 0, 0]]}\n"
+    },
+    "/tmp/p3b5_v99_source_audit.log": {
+      "sha256": "b74fbe0283ffd47aa24b206b9f79613c2c81c731bbe8105dbfe968005604e47c",
+      "text": "{\n  \"graph_output\": null,\n  \"manifest\": \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot_exploration/share/multi_robot_exploration/config/p3a_forbidden_bypasses.json\",\n  \"pass\": true,\n  \"robot_count\": 3,\n  \"violations\": []\n}\n"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_battery_manager.py": {
+      "sha256": "6cc0faca7d8f0f9d43c770448b72201760254b125eef6250be7de681a10da64f",
+      "text": "import math\n\nimport pytest\nimport numpy as np\n\nfrom multi_robot_exploration.battery_manager import (\n    ACTIVE,\n    CHARGING,\n    FAILED,\n    RETURNING,\n    battery_failure_reason,\n    charging_zone_contains,\n    charge_target_energy,\n    consume_energy,\n    estimated_return_energy,\n    odometry_distance,\n    plan_charging_leg,\n    return_escape_pose,\n    return_attempt_failure_reason,\n)\n\n\ndef test_energy_model_charges_distance_and_elapsed_time():\n    assert consume_energy(20.0, 3.0, 10.0, 2.0, 0.1) == pytest.approx(\n        13.0\n    )\n\n\ndef test_return_reserve_includes_path_time_and_margin():\n    reserve = estimated_return_energy(2.0, 1.0, 0.1, 1.5, 0.5, 4.0)\n\n    assert reserve == pytest.approx(7.6)\n\n\ndef test_charge_target_is_a_fraction_of_capacity():\n    assert charge_target_energy(60.0, 0.8) == pytest.approx(48.0)\n\n\ndef test_charging_zone_accepts_a_nearby_pose_without_exact_alignment():\n    assert charging_zone_contains((0.6, 0.0), (0.0, 0.0), 0.8)\n    assert not charging_zone_contains((0.81, 0.0), (0.0, 0.0), 0.8)\n\n\ndef test_failure_reasons_cover_exhaustion_unreachable_and_charge_timeout():\n    assert battery_failure_reason(ACTIVE, 0.0, 0.0, 10.0, 20.0) == (\n        \"battery_exhausted\"\n    )\n    assert battery_failure_reason(RETURNING, 1.0, 10.0, 10.0, 20.0) == (\n        \"battery_return_unreachable\"\n    )\n    assert battery_failure_reason(CHARGING, 1.0, 20.0, 10.0, 20.0) == (\n        \"battery_charge_timeout\"\n    )\n    assert not battery_failure_reason(ACTIVE, 1.0, 100.0, 10.0, 20.0)\n\n\ndef test_simulation_empty_battery_constructs_failed_without_a_navigation_goal():\n    import json\n    import time\n    import rclpy\n    from rosgraph_msgs.msg import Clock\n    from std_msgs.msg import String\n    from rclpy.qos import QoSProfile, DurabilityPolicy\n    from multi_robot_exploration.battery_manager import BatteryManager\n    rclpy.init(args=['--ros-args','-p','use_sim_time:=true','-p','initial_energy:=0.0'], domain_id=206)\n    node = None\n    try:\n        node = BatteryManager()\n        assert node.mode == FAILED and node.failure_reason == 'battery_exhausted'\n        assert node.energy == 0 and node.minimum_energy == 0\n        assert node.return_goal_handle is None and not node.return_goal_pending\n        assert node.return_count == 0 and node.charge_count == 0\n        # Constructor runs before the executor receives /clock. FAILED must\n        # keep publishing current state after that initial zero clock stamp.\n        received=[]\n        qos=QoSProfile(depth=10,durability=DurabilityPolicy.TRANSIENT_LOCAL)\n        subscription=node.create_subscription(String,'/tb1/battery_state',\n            lambda message:received.append(json.loads(message.data)),qos)\n        clock=node.create_publisher(Clock,'/clock',10)\n        message=Clock();message.clock.sec=10\n        deadline=time.monotonic()+3\n        while node.now()<10 and time.monotonic()<deadline:\n            clock.publish(message)\n            rclpy.spin_once(node,timeout_sec=.02)\n        assert node.now()==10\n        node.timer_callback()\n        while not any(x['stamp_sec']==10 for x in received) and time.monotonic()<deadline:\n            rclpy.spin_once(node,timeout_sec=.02)\n        assert any(x['mode']==FAILED and x['stamp_sec']==10 for x in received)\n        assert node.mode == FAILED and node.return_count == 0\n    finally:\n        if node is not None:\n            node.destroy_node()\n        rclpy.shutdown()\n\n\ndef test_odometry_discontinuity_does_not_consume_travel_energy():\n    assert odometry_distance(None, (10.0, 10.0), 1.0) == 0.0\n    assert odometry_distance((0.0, 0.0), (0.3, 0.4), 1.0) == 0.5\n    assert odometry_distance((0.0, 0.0), (2.0, 0.0), 1.0) == 0.0\n\n\ndef test_exhausted_return_retries_report_unreachable():\n    assert not return_attempt_failure_reason(2, 3)\n    assert return_attempt_failure_reason(3, 3) == (\n        \"battery_return_unreachable\"\n    )\n\n\ndef test_return_escape_pose_moves_out_of_inflated_start_cell():\n    grid = np.zeros((11, 11), dtype=np.int16)\n    grid[4:7, 6:7] = 100\n    assert return_escape_pose(\n        grid, 0.1, (-0.5, -0.5), (0.0, 0.0), clearance_m=0.15\n    ) is not None\n\n\ndef test_charge_contact_planning_preserves_a_reachable_home_route():\n    from multi_robot_exploration.control import plan_rally_leg, RallyPose\n    grid = np.zeros((100, 100), dtype=np.int16)\n    expected = plan_rally_leg(\n        RallyPose(0., 0., 0.), grid, .1, (-5., -5.), (3., 0.),\n        visible_only=True,\n    )\n    assert plan_charging_leg(grid, .1, (-5., -5.), (3., 0.), (0., 0.), .8) == expected\n\n\n@pytest.mark.parametrize(\"resolution,side\", [(.05, -1), (.05, 1), (.1, -1), (.1, 1)])\ndef test_charging_completes_known_free_clearance_escape_before_long_home_leg(resolution, side):\n    from multi_robot_exploration import control\n    grid = np.zeros((int(10 / resolution), int(10 / resolution)), dtype=np.int16)\n    wall = int(5 / resolution)\n    grid[int(4.5 / resolution):int(5.5 / resolution), wall] = 100\n    position = (5 + side * .2 + resolution / 2, 5 + resolution / 2)\n    home = (5 + side * 3, 2.)\n    raw = grid.copy()\n    safe = control.traversable_grid(grid, resolution, control.RALLY_PATH_CLEARANCE_M)\n    cell = control.world_to_grid(*position, resolution, 0., 0.)\n    assert grid[cell] == 0 and not safe[cell]\n    endpoint, escape = control.navigation_start_route(grid, safe, cell, math.ceil(.6 / resolution))\n    leg, route = plan_charging_leg(grid, resolution, (0., 0.), position, home, .8)\n    assert route == tuple(control.grid_to_world(*p, resolution, 0., 0.) for p in escape)\n    assert (leg.x, leg.y) == route[-1] and safe[endpoint]\n    assert all(grid[p] == 0 for p in escape) and np.array_equal(grid, raw)\n    assert math.dist((leg.x, leg.y), home) > 2.\n    assert leg.yaw == pytest.approx(control.route_arrival_yaw(route, 0.))\n    # Reaching the safe endpoint permits an ordinary home prefix on new input.\n    following, _ = plan_charging_leg(grid, resolution, (0., 0.), route[-1], home, .8)\n    assert following is not None and math.dist((following.x, following.y), home) < .2\n\n\n@pytest.mark.parametrize(\"raw_start\", [-1, 100])\ndef test_charging_escape_never_snaps_unknown_or_occupied_start(raw_start):\n    grid = np.zeros((100, 100), dtype=np.int16)\n    grid[50, 50] = raw_start\n    raw = grid.copy()\n    assert plan_charging_leg(grid, .1, (0., 0.), (5.05, 5.05), (1., 1.), .8) == (None, ())\n    assert np.array_equal(grid, raw)\n\n\ndef test_blocked_charger_centre_uses_a_safe_reachable_contact_pose():\n    import math\n    from unittest.mock import patch\n    from multi_robot_exploration import control\n    grid = np.zeros((100, 100), dtype=np.int16)\n    grid[50, 50] = 100\n    with patch.object(control, \"path_distance_grid\", wraps=control.path_distance_grid) as search:\n        leg, route = plan_charging_leg(grid, .1, (-5., -5.), (3., 0.), (0., 0.), .8)\n    assert search.call_count == 1\n    assert leg is not None and route\n    assert math.hypot(leg.x, leg.y) <= .6\n    traversable = control.traversable_grid(grid, .1, control.RALLY_PATH_CLEARANCE_M)\n    assert all(traversable[control.world_to_grid(x, y, .1, -5., -5.)] for x, y in route)\n\n\ndef test_disconnected_charge_contact_region_never_generates_a_return_leg():\n    grid = np.zeros((100, 100), dtype=np.int16)\n    grid[:, 60] = 100\n    assert plan_charging_leg(grid, .1, (-5., -5.), (3., 0.), (0., 0.), .8) == (None, ())\n\n\ndef test_unknown_charge_contact_region_never_generates_a_return_leg():\n    grid = np.zeros((100, 100), dtype=np.int16)\n    grid[40:60, 40:60] = -1\n    assert plan_charging_leg(grid, .1, (-5., -5.), (3., 0.), (0., 0.), .8) == (None, ())\n\n\n@pytest.mark.parametrize(\"mode\", [CHARGING, FAILED])\ndef test_late_return_acceptance_is_canceled_after_charge_or_failure(mode):\n    from types import SimpleNamespace\n    from unittest.mock import Mock\n    from multi_robot_exploration.battery_manager import BatteryManager\n    handle = Mock(accepted=True)\n    manager = SimpleNamespace(\n        mode=mode, mission_terminal=False, return_goal_pending=True,\n        return_goal_handle=None, return_goal_result=Mock())\n    BatteryManager.return_goal_response(manager, Mock(result=lambda: handle))\n    handle.cancel_goal_async.assert_called_once()\n    assert manager.return_goal_handle is handle\n    assert not manager.return_goal_pending\n\n\ndef test_charging_waits_for_navigation_result_before_starting_timer():\n    from types import SimpleNamespace\n    from multi_robot_exploration.battery_manager import BatteryManager\n    manager = SimpleNamespace(\n        in_charging_zone=lambda **kwargs: True,\n        return_goal_pending=False, return_goal_handle=object(),\n        linear_speed=0.0, angular_speed=0.0,\n        stationary_linear=0.15, stationary_angular=0.1,\n        charge_stable_started_at=1.0)\n    BatteryManager.update_charging(manager, 20.0)\n    assert manager.charge_stable_started_at is None\n\n\ndef test_missing_map_route_does_not_send_a_straight_line_return():\n    from types import SimpleNamespace\n    from unittest.mock import Mock\n    from multi_robot_exploration.battery_manager import BatteryManager\n    grid = np.full((40, 40), 100, dtype=int)\n    grid[20, 10] = 0\n    navigation = Mock()\n    manager = SimpleNamespace(\n        robot_name=\"tb1\", return_attempts=0, max_return_attempts=3, navigation=navigation,\n        return_map=grid, return_map_resolution=0.1,\n        return_map_origin=(0.0, 0.0), map_position=(1.0, 2.0),\n        charge_x=3.0, charge_y=2.0, return_escape_failed=False,\n        return_escape_target=None, return_waypoint_target=None,\n        return_stage=\"charger\", now=lambda: 10.0)\n    manager.charge_radius = 0.8\n    manager.energy = 20.0\n    manager.get_logger = Mock()\n    BatteryManager.send_return_goal(manager)\n    navigation.send_goal_async.assert_not_called()\n    assert manager.return_goal_due_at == 11.0\n\n\ndef charge_request_node():\n    from types import SimpleNamespace\n\n    returns, consumed = [], []\n    node = SimpleNamespace(\n        robot_name=\"tb1\", now=lambda: 11.0, last_charge_request_stamp=-float(\"inf\"),\n        mission_terminal=False, mode=ACTIVE, energy=20.0, charge_target=80.0,\n        map_position=(0., 3.), charge_x=0., charge_y=0., move_cost=1., idle_cost=.02,\n        return_path_factor=2., nominal_speed=.18, safety_margin=8.,\n        begin_return=returns.append, consumed_publisher=SimpleNamespace(publish=consumed.append),\n        get_logger=lambda: SimpleNamespace(info=lambda *args: None),\n    )\n    return node, returns, consumed\n\n\ndef charge_message(**changes):\n    import json\n    from std_msgs.msg import String\n\n    return String(data=json.dumps({\"robot\": \"tb1\", \"stamp_sec\": 10.0,\n                                  \"required_energy\": 40., \"task_phase\": \"RALLY\", **changes}))\n\n\ndef test_delivered_charge_request_is_idempotent_and_late_retry_cannot_recharge():\n    from multi_robot_exploration.battery_manager import BatteryManager\n\n    node, returns, consumed = charge_request_node()\n    BatteryManager.charge_request_callback(node, charge_message())\n    BatteryManager.charge_request_callback(node, charge_message())\n    assert returns == [pytest.approx(14.6666666667)] and len(consumed) == 1\n    node.mode = RETURNING\n    BatteryManager.charge_request_callback(node, charge_message(stamp_sec=10.2))\n    assert len(returns) == 1\n    node.mode, node.energy = ACTIVE, 80.0\n    BatteryManager.charge_request_callback(node, charge_message(stamp_sec=10.3))\n    assert len(returns) == 1\n\n\n@pytest.mark.parametrize(\"changes\", [\n    {\"stamp_sec\": 1.0}, {\"robot\": \"tb2\"}, {\"required_energy\": float(\"nan\")},\n    {\"required_energy\": 1000}, {\"task_phase\": \"COMPLETE\"}, {\"stamp_sec\": \"bad\"},\n    {\"stamp_sec\": 11.1},\n])\ndef test_charge_request_rejects_expired_wrong_robot_and_invalid_budget(changes):\n    from multi_robot_exploration.battery_manager import BatteryManager\n\n    node, returns, consumed = charge_request_node()\n    BatteryManager.charge_request_callback(node, charge_message(**changes))\n    assert not returns and not consumed\n\n\ndef test_charge_request_after_mission_terminal_never_starts_return():\n    from multi_robot_exploration.battery_manager import BatteryManager\n\n    node, returns, _ = charge_request_node()\n    node.mission_terminal = True\n    BatteryManager.charge_request_callback(node, charge_message())\n    assert not returns\n\n\n@pytest.mark.parametrize('phase',['EXPLORE','FOUND_UNCONFIRMED','FOUND','RALLY'])\ndef test_frontier_and_rally_requests_share_local_idempotent_safety_return(phase):\n    from multi_robot_exploration.battery_manager import BatteryManager\n\n    node,returns,consumed=charge_request_node()\n    BatteryManager.charge_request_callback(node,charge_message(task_phase=phase))\n    BatteryManager.charge_request_callback(node,charge_message(task_phase=phase))\n    assert len(returns)==len(consumed)==1\n\n\ndef test_safety_return_falls_back_to_own_map_after_ap_loss():\n    from types import SimpleNamespace\n    from nav_msgs.msg import OccupancyGrid\n    from multi_robot_exploration.battery_manager import BatteryManager\n    applied=[]\n    manager=SimpleNamespace(now=lambda: 10., fused_map_received_at=8., map_callback=applied.append)\n    grid=OccupancyGrid()\n    BatteryManager.local_map_callback(manager, grid)\n    assert not applied\n    manager.fused_map_received_at=4.\n    BatteryManager.local_map_callback(manager, grid)\n    assert applied == [grid]\n\n\ndef test_physical_failure_cancels_owned_safety_return_once():\n    from types import SimpleNamespace\n    from unittest.mock import Mock\n    from multi_robot_exploration.battery_manager import BatteryManager, FAILED\n    handle=Mock()\n    manager=SimpleNamespace(mode=RETURNING,return_goal_handle=handle,robot_name=\"tb1\",\n                            publish_state=Mock(),failure_publisher=Mock(),get_logger=Mock())\n    BatteryManager.fail(manager,\"battery_exhausted\")\n    BatteryManager.fail(manager,\"battery_return_unreachable\")\n    assert manager.mode==FAILED and manager.failure_reason==\"battery_exhausted\"\n    handle.cancel_goal_async.assert_called_once()\n    manager.publish_state.assert_called_once()\n    assert manager.failure_publisher.publish.call_args.args[0].data==\"battery_exhausted:tb1\"\n"
+    }
+  },
+  "retained_conditional_geometry": {
+    "scope": "Read-only conditional AP geometry, not original controller buffers or causal replay. Native observations never used for control.",
+    "source": "import hashlib,json,math\nfrom pathlib import Path\nimport numpy as np\nfrom scipy import ndimage\nfrom multi_robot_exploration import control as c\nfrom multi_robot_exploration.battery_manager import plan_charging_leg\n\nROOT=Path('/home/zhuyulab/ns3-workspace');ROS=ROOT/'ros2_ws/ros2-multi-robot-automap'\nidentity='p3b5_v97_dev_fixed_lab202_lab_far_northwest_3r_seed202'\nap=ROS/'log/p3b5/p3b5_v97_dev_fixed_ap'/(identity+'_ap')/'snapshots.jsonl'\nr=json.loads((ROS/'log/p2d_baseline/p3b5_v97_dev_fixed_lab202/episodes'/(identity+'.json')).read_text())\nout=dict(scope='Read-only conditional AP geometry, not original controller buffers or causal replay. Native observations never used for control.',source=Path(__file__).read_text(),ap_sha256=hashlib.sha256(ap.read_bytes()).hexdigest(),frames=[])\ndef yaw(q):return math.atan2(2*(q['w']*q['z']+q['x']*q['y']),1-2*(q['y']**2+q['z']**2))\nfor line in ap.open():\n f=json.loads(line);t=f['observer_time']-r['start_sim_time_sec'];m=f['messages']\n if not 90<=t<=250 or 'map' not in m:continue\n info=m['map']['info'];res=info['resolution'];o=(info['origin']['position']['x'],info['origin']['position']['y']);grid=np.array(m['map']['data'],dtype=np.int16).reshape(info['height'],info['width'])\n positions={};states={}\n for name in ('tb1','tb2','tb3'):\n  od=m[name+'/odom']['pose']['pose'];tf=next(v['transform'] for v in m[name+'/tf']['transforms'] if v['header']['frame_id'].lstrip('/').endswith('map') and v['child_frame_id'].lstrip('/').endswith('odom'));a=yaw(tf['rotation']);x,y=od['position']['x'],od['position']['y'];positions[name]=(tf['translation']['x']+math.cos(a)*x-math.sin(a)*y,tf['translation']['y']+math.sin(a)*x+math.cos(a)*y)\n  if name+'/battery_state' in m:states[name]=json.loads(m[name+'/battery_state']['data'])\n pos=positions['tb3'];cell=c.world_to_grid(*pos,res,*o);safe=c.traversable_grid(grid,res,c.RALLY_PATH_CLEARANCE_M);end,escape=c.navigation_start_route(grid,safe,cell,math.ceil(.6/res));leg,route=plan_charging_leg(grid,res,o,pos,(.45,0.),.8)\n nearest=float(ndimage.distance_transform_edt(grid<c.OCCUPIED_THRESHOLD)[cell]*res)\n row=dict(elapsed=t,positions=positions,tb3_mode=states.get('tb3',{}).get('mode'),tb3_energy=states.get('tb3',{}).get('energy'),raw_current_cell=int(grid[cell]),clearance_safe=bool(safe[cell]),nearest_occupied_cell_m=nearest,escape_endpoint=c.grid_to_world(*end,res,*o) if end else None,escape_cells=len(escape),return_leg=dict(x=leg.x,y=leg.y,yaw=leg.yaw) if leg else None)\n if 95<t<115 and len(states)==3:\n  modes={n:s['mode'] for n,s in states.items()};starts={n:p if modes[n]=='ACTIVE' else (states[n]['charge_x'],states[n]['charge_y']) for n,p in positions.items()}\n  assigned=c.assign_rally_poses(grid,res,o,starts,(-4.,4.),battery_states=states,observer_robot='tb1',current_positions=positions)\n  row['conditional_assignment']={n:dict(x=p.x,y=p.y,yaw=p.yaw) for n,p in assigned.items()}\n out['frames'].append(row);print(json.dumps(row),flush=True)\np=Path('/tmp/p3b5_v99_retained_return_geometry.json');assert not p.exists();p.write_text(json.dumps(out,indent=2)+'\\n')\n",
+    "ap_sha256": "3bcb4b5838ef9b596d48dd18979bdc713d08ff99e42d3a6526b31a6abb01514a",
+    "frames": [
+      {
+        "elapsed": 90.20000000000027,
+        "positions": {
+          "tb1": [
+            -3.229772820590502,
+            -1.899848984702683
+          ],
+          "tb2": [
+            0.17091025763899828,
+            1.1374153574954633
+          ],
+          "tb3": [
+            4.677701936047812,
+            -2.4357810331095653
+          ]
+        },
+        "tb3_mode": "ACTIVE",
+        "tb3_energy": 32.88439007840116,
+        "raw_current_cell": 100,
+        "clearance_safe": false,
+        "nearest_occupied_cell_m": 0.0,
+        "escape_endpoint": null,
+        "escape_cells": 0,
+        "return_leg": null
+      },
+      {
+        "elapsed": 100.20000000000027,
+        "positions": {
+          "tb1": [
+            -3.3976229968610543,
+            0.685766104556919
+          ],
+          "tb2": [
+            -0.5122036893026658,
+            -0.09801458371973548
+          ],
+          "tb3": [
+            4.677406558423577,
+            -2.4355261187400785
+          ]
+        },
+        "tb3_mode": "ACTIVE",
+        "tb3_energy": 32.68402961826849,
+        "raw_current_cell": 100,
+        "clearance_safe": false,
+        "nearest_occupied_cell_m": 0.0,
+        "escape_endpoint": null,
+        "escape_cells": 0,
+        "return_leg": null,
+        "conditional_assignment": {}
+      },
+      {
+        "elapsed": 110.20000000000027,
+        "positions": {
+          "tb1": [
+            -4.156471438460777,
+            2.3210625252984842
+          ],
+          "tb2": [
+            -1.251438972097557,
+            -0.17356692722245032
+          ],
+          "tb3": [
+            4.677599733751166,
+            -2.435137287968144
+          ]
+        },
+        "tb3_mode": "RETURNING",
+        "tb3_energy": 32.47828756682752,
+        "raw_current_cell": 0,
+        "clearance_safe": false,
+        "nearest_occupied_cell_m": 0.05000000074505806,
+        "escape_endpoint": [
+          4.459919498793127,
+          -2.2003660643742435
+        ],
+        "escape_cells": 6,
+        "return_leg": {
+          "x": 2.4099194682457465,
+          "y": -0.3503660368070953,
+          "yaw": 2.356194490192345
+        },
+        "conditional_assignment": {
+          "tb1": {
+            "x": -4.690080637552498,
+            "y": 3.299634017582143,
+            "yaw": 0.7927951803892953
+          },
+          "tb2": {
+            "x": -3.740080623396395,
+            "y": 3.0496340138568527,
+            "yaw": 1.8377618650841445
+          },
+          "tb3": {
+            "x": -3.990080627121685,
+            "y": 1.3996339892699368,
+            "yaw": 1.5746109147124454
+          }
+        }
+      },
+      {
+        "elapsed": 120.20000000000027,
+        "positions": {
+          "tb1": [
+            -4.486090264247602,
+            3.1336437316834185
+          ],
+          "tb2": [
+            -1.3303636380340251,
+            -0.1459554700678219
+          ],
+          "tb3": [
+            4.6700997514920415,
+            -2.425161546347238
+          ]
+        },
+        "tb3_mode": "RETURNING",
+        "tb3_energy": 32.249642205767444,
+        "raw_current_cell": 0,
+        "clearance_safe": false,
+        "nearest_occupied_cell_m": 0.11180340054098996,
+        "escape_endpoint": [
+          4.506972568394047,
+          -2.2003660643742435
+        ],
+        "escape_cells": 5,
+        "return_leg": {
+          "x": 2.406972537101608,
+          "y": -0.3503660368070953,
+          "yaw": 2.4668517113662407
+        }
+      },
+      {
+        "elapsed": 130.20000000000027,
+        "positions": {
+          "tb1": [
+            -4.486434056625254,
+            3.1322352648285556
+          ],
+          "tb2": [
+            -1.344761339935922,
+            -0.6367908807182239
+          ],
+          "tb3": [
+            4.629474534028637,
+            -2.468665432152039
+          ]
+        },
+        "tb3_mode": "RETURNING",
+        "tb3_energy": 31.961265846718323,
+        "raw_current_cell": 0,
+        "clearance_safe": false,
+        "nearest_occupied_cell_m": 0.15000000223517418,
+        "escape_endpoint": [
+          4.506972568394047,
+          -2.2003660643742435
+        ],
+        "escape_cells": 6,
+        "return_leg": {
+          "x": 2.406972537101608,
+          "y": -0.3503660368070953,
+          "yaw": 2.4668517113662407
+        }
+      },
+      {
+        "elapsed": 140.20000000000027,
+        "positions": {
+          "tb1": [
+            -4.486036967460615,
+            3.132640395449059
+          ],
+          "tb2": [
+            -1.3452826789972394,
+            -0.6369319313061726
+          ],
+          "tb3": [
+            4.843105840576101,
+            -2.6489769651874577
+          ]
+        },
+        "tb3_mode": "RETURNING",
+        "tb3_energy": 31.48345760638193,
+        "raw_current_cell": 0,
+        "clearance_safe": false,
+        "nearest_occupied_cell_m": 0.22360680108197992,
+        "escape_endpoint": [
+          4.856972573609453,
+          -2.8003660733149403
+        ],
+        "escape_cells": 4,
+        "return_leg": {
+          "x": 4.406972566903931,
+          "y": -3.1003660777852886,
+          "yaw": -2.5535900500422257
+        }
+      },
+      {
+        "elapsed": 150.20000000000027,
+        "positions": {
+          "tb1": [
+            -4.485821455195931,
+            3.132819573072607
+          ],
+          "tb2": [
+            -1.3451113766369316,
+            -0.6362170490378406
+          ],
+          "tb3": [
+            4.852375821601662,
+            -2.6663483908776224
+          ]
+        },
+        "tb3_mode": "RETURNING",
+        "tb3_energy": 31.230769362796053,
+        "raw_current_cell": 0,
+        "clearance_safe": false,
+        "nearest_occupied_cell_m": 0.18027756645954449,
+        "escape_endpoint": [
+          4.856972573609453,
+          -2.8503660740599983
+        ],
+        "escape_cells": 5,
+        "return_leg": {
+          "x": 4.3569725661588725,
+          "y": -3.1503660785303467,
+          "yaw": -2.5535900500422257
+        }
+      },
+      {
+        "elapsed": 160.20000000000027,
+        "positions": {
+          "tb1": [
+            -4.485606780088966,
+            3.1329997403082053
+          ],
+          "tb2": [
+            -1.3448056233763688,
+            -0.636412124651924
+          ],
+          "tb3": [
+            4.85217000330991,
+            -2.6664459988095084
+          ]
+        },
+        "tb3_mode": "RETURNING",
+        "tb3_energy": 31.028237484658835,
+        "raw_current_cell": 0,
+        "clearance_safe": false,
+        "nearest_occupied_cell_m": 0.18027756645954449,
+        "escape_endpoint": [
+          4.856972573609453,
+          -2.8503660740599983
+        ],
+        "escape_cells": 5,
+        "return_leg": {
+          "x": 4.3569725661588725,
+          "y": -3.1503660785303467,
+          "yaw": -2.5535900500422257
+        }
+      },
+      {
+        "elapsed": 170.20000000000027,
+        "positions": {
+          "tb1": [
+            -4.485389247905055,
+            3.1331811932387854
+          ],
+          "tb2": [
+            -1.3444592240424942,
+            -0.636127103378671
+          ],
+          "tb3": [
+            4.410518377999176,
+            -3.1319533521856964
+          ]
+        },
+        "tb3_mode": "RETURNING",
+        "tb3_energy": 30.121011809856114,
+        "raw_current_cell": 0,
+        "clearance_safe": true,
+        "nearest_occupied_cell_m": 0.41231056870567223,
+        "escape_endpoint": [
+          4.406972566903931,
+          -3.1503660785303467
+        ],
+        "escape_cells": 1,
+        "return_leg": {
+          "x": 4.706972571374279,
+          "y": -2.8503660740599983,
+          "yaw": 0.7853981633974483
+        }
+      },
+      {
+        "elapsed": 180.20000000000027,
+        "positions": {
+          "tb1": [
+            -4.485169862930881,
+            3.1333624592752463
+          ],
+          "tb2": [
+            -1.3441206560622432,
+            -0.635849362236611
+          ],
+          "tb3": [
+            4.377550347458465,
+            -3.146158987298795
+          ]
+        },
+        "tb3_mode": "RETURNING",
+        "tb3_energy": 29.887992580727712,
+        "raw_current_cell": 0,
+        "clearance_safe": false,
+        "nearest_occupied_cell_m": 0.10000000149011612,
+        "escape_endpoint": [
+          4.606972569884163,
+          -3.0003660762951725
+        ],
+        "escape_cells": 6,
+        "return_leg": {
+          "x": 4.756972572119337,
+          "y": -2.700366071824824,
+          "yaw": 1.1071487177940904
+        }
+      },
+      {
+        "elapsed": 190.20000000000027,
+        "positions": {
+          "tb1": [
+            -4.484948267395692,
+            3.1335456374667903
+          ],
+          "tb2": [
+            -1.343789422658981,
+            -0.635577621619095
+          ],
+          "tb3": [
+            4.728380810455409,
+            -2.801176358355773
+          ]
+        },
+        "tb3_mode": "RETURNING",
+        "tb3_energy": 29.16935146740902,
+        "raw_current_cell": 0,
+        "clearance_safe": true,
+        "nearest_occupied_cell_m": 0.36400549988813047,
+        "escape_endpoint": [
+          4.706972571374279,
+          -2.8003660733149403
+        ],
+        "escape_cells": 1,
+        "return_leg": {
+          "x": 4.756972572119337,
+          "y": -2.600366070334708,
+          "yaw": 1.3258176636680326
+        }
+      },
+      {
+        "elapsed": 200.20000000000027,
+        "positions": {
+          "tb1": [
+            -4.484726378951741,
+            3.1337298996450107
+          ],
+          "tb2": [
+            -1.3434653079875385,
+            -0.6353116281204572
+          ],
+          "tb3": [
+            4.6326261009146865,
+            -2.31067549062378
+          ]
+        },
+        "tb3_mode": "RETURNING",
+        "tb3_energy": 28.44000600290279,
+        "raw_current_cell": 0,
+        "clearance_safe": true,
+        "nearest_occupied_cell_m": 0.42426407503395575,
+        "escape_endpoint": [
+          4.656972570629221,
+          -2.3003660658643597
+        ],
+        "escape_cells": 1,
+        "return_leg": {
+          "x": 2.4569725378466662,
+          "y": -0.4003660375521534,
+          "yaw": 2.4668517113662407
+        }
+      },
+      {
+        "elapsed": 210.20000000000027,
+        "positions": {
+          "tb1": [
+            -4.4845031676704155,
+            3.133915360311265
+          ],
+          "tb2": [
+            -1.3431477014091688,
+            -0.6350507980182056
+          ],
+          "tb3": [
+            4.462363698066869,
+            -2.1564373792748848
+          ]
+        },
+        "tb3_mode": "RETURNING",
+        "tb3_energy": 28.01298776708167,
+        "raw_current_cell": 0,
+        "clearance_safe": true,
+        "nearest_occupied_cell_m": 0.4609772297337403,
+        "escape_endpoint": [
+          4.456972567648989,
+          -2.1503660636291855
+        ],
+        "escape_cells": 1,
+        "return_leg": {
+          "x": 2.4569725378466662,
+          "y": -0.4003660375521534,
+          "yaw": 2.4668517113662407
+        }
+      },
+      {
+        "elapsed": 220.20000000000027,
+        "positions": {
+          "tb1": [
+            -4.484278816461528,
+            3.1341014589403082
+          ],
+          "tb2": [
+            -1.3428364915510898,
+            -0.6347953104181158
+          ],
+          "tb3": [
+            2.625103837476807,
+            -0.45255579090712506
+          ]
+        },
+        "tb3_mode": "RETURNING",
+        "tb3_energy": 25.29122371936385,
+        "raw_current_cell": 0,
+        "clearance_safe": true,
+        "nearest_occupied_cell_m": 0.42426407503395575,
+        "escape_endpoint": [
+          2.6069725400818404,
+          -0.45036603829721145
+        ],
+        "escape_cells": 1,
+        "return_leg": {
+          "x": 2.206972534121376,
+          "y": -0.3503660368070953,
+          "yaw": 2.976443976175166
+        }
+      },
+      {
+        "elapsed": 230.20000000000027,
+        "positions": {
+          "tb1": [
+            -4.484053897937517,
+            3.1342884039960874
+          ],
+          "tb2": [
+            -1.3425313080722103,
+            -0.6345447614190444
+          ],
+          "tb3": [
+            1.4290519090714369,
+            -0.2693757773691052
+          ]
+        },
+        "tb3_mode": "RETURNING",
+        "tb3_energy": 23.861757098178792,
+        "raw_current_cell": 0,
+        "clearance_safe": true,
+        "nearest_occupied_cell_m": 0.8746427972599882,
+        "escape_endpoint": [
+          1.406972522200447,
+          -0.2503660353169792
+        ],
+        "escape_cells": 1,
+        "return_leg": {
+          "x": 0.45697250804434386,
+          "y": -0.000366031591688909,
+          "yaw": 0.0
+        }
+      },
+      {
+        "elapsed": 240.20000000000027,
+        "positions": {
+          "tb1": [
+            -4.483828277024941,
+            3.1344757816414823
+          ],
+          "tb2": [
+            -1.3422314925941994,
+            -0.6342986224749665
+          ],
+          "tb3": [
+            1.1197724674429448,
+            -0.2321646048810528
+          ]
+        },
+        "tb3_mode": "ACTIVE",
+        "tb3_energy": 79.94957269938925,
+        "raw_current_cell": 0,
+        "clearance_safe": true,
+        "nearest_occupied_cell_m": 1.1423659829021657,
+        "escape_endpoint": [
+          1.1069725177300986,
+          -0.2503660353169792
+        ],
+        "escape_cells": 1,
+        "return_leg": {
+          "x": 0.45697250804434386,
+          "y": -0.000366031591688909,
+          "yaw": 0.0
+        }
+      }
+    ]
+  },
+  "source_diff": "diff --git a/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/battery_manager.py b/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/battery_manager.py\nindex 470214c..8aea156 100644\n--- a/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/battery_manager.py\n+++ b/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/battery_manager.py\n@@ -24,6 +24,7 @@ from .control import (\n     grid_to_world,\n     navigation_start_route,\n     plan_rally_leg,\n+    route_arrival_yaw,\n     traversable_grid,\n     transform_point_2d,\n     world_to_grid,\n@@ -131,12 +132,23 @@ def plan_charging_leg(raw_grid, resolution, origin, position, charger, radius):\n     options = dict(max_distance_m=MAX_NAVIGATION_LEG_M,\n                    clearance_m=RALLY_PATH_CLEARANCE_M, visible_only=True,\n                    route_cache=cache)\n+\n+    def first_leg(leg, route):\n+        escape = cache[\"field\"][2]\n+        if leg is not None and len(escape) > 1:\n+            # Complete the already validated known-free clearance escape\n+            # before asking Nav2 for a long home leg from its inflated start.\n+            # Replan on the next result; retain every occupied/unknown cell.\n+            route = tuple(grid_to_world(*cell, resolution, *origin) for cell in escape)\n+            leg = RallyPose(*route[-1], route_arrival_yaw(route, leg.yaw))\n+        return leg, route\n+\n     leg, route = plan_rally_leg(\n         RallyPose(*charger, 0.0), raw_grid, resolution, origin, position,\n         **options,\n     )\n     if leg is not None:\n-        return leg, route\n+        return first_leg(leg, route)\n     traversable, start, _, distance_data = cache[\"field\"]\n     if start is None or distance_data is None or radius <= 0.2:\n         return None, ()\n@@ -149,10 +161,10 @@ def plan_charging_leg(raw_grid, resolution, origin, position, charger, radius):\n     if not len(candidates):\n         return None, ()\n     chosen = min(candidates, key=lambda i: (squared[i], distances[rows[i], columns[i]]))\n-    return plan_rally_leg(\n+    return first_leg(*plan_rally_leg(\n         RallyPose(float(xs[chosen]), float(ys[chosen]), 0.0), raw_grid,\n         resolution, origin, position, **options,\n-    )\n+    ))\n \n \n class BatteryManager(Node):\ndiff --git a/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_battery_manager.py b/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_battery_manager.py\nindex a76e0c1..038b590 100644\n--- a/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_battery_manager.py\n+++ b/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_battery_manager.py\n@@ -1,3 +1,5 @@\n+import math\n+\n import pytest\n import numpy as np\n \n@@ -123,6 +125,39 @@ def test_charge_contact_planning_preserves_a_reachable_home_route():\n     assert plan_charging_leg(grid, .1, (-5., -5.), (3., 0.), (0., 0.), .8) == expected\n \n \n+@pytest.mark.parametrize(\"resolution,side\", [(.05, -1), (.05, 1), (.1, -1), (.1, 1)])\n+def test_charging_completes_known_free_clearance_escape_before_long_home_leg(resolution, side):\n+    from multi_robot_exploration import control\n+    grid = np.zeros((int(10 / resolution), int(10 / resolution)), dtype=np.int16)\n+    wall = int(5 / resolution)\n+    grid[int(4.5 / resolution):int(5.5 / resolution), wall] = 100\n+    position = (5 + side * .2 + resolution / 2, 5 + resolution / 2)\n+    home = (5 + side * 3, 2.)\n+    raw = grid.copy()\n+    safe = control.traversable_grid(grid, resolution, control.RALLY_PATH_CLEARANCE_M)\n+    cell = control.world_to_grid(*position, resolution, 0., 0.)\n+    assert grid[cell] == 0 and not safe[cell]\n+    endpoint, escape = control.navigation_start_route(grid, safe, cell, math.ceil(.6 / resolution))\n+    leg, route = plan_charging_leg(grid, resolution, (0., 0.), position, home, .8)\n+    assert route == tuple(control.grid_to_world(*p, resolution, 0., 0.) for p in escape)\n+    assert (leg.x, leg.y) == route[-1] and safe[endpoint]\n+    assert all(grid[p] == 0 for p in escape) and np.array_equal(grid, raw)\n+    assert math.dist((leg.x, leg.y), home) > 2.\n+    assert leg.yaw == pytest.approx(control.route_arrival_yaw(route, 0.))\n+    # Reaching the safe endpoint permits an ordinary home prefix on new input.\n+    following, _ = plan_charging_leg(grid, resolution, (0., 0.), route[-1], home, .8)\n+    assert following is not None and math.dist((following.x, following.y), home) < .2\n+\n+\n+@pytest.mark.parametrize(\"raw_start\", [-1, 100])\n+def test_charging_escape_never_snaps_unknown_or_occupied_start(raw_start):\n+    grid = np.zeros((100, 100), dtype=np.int16)\n+    grid[50, 50] = raw_start\n+    raw = grid.copy()\n+    assert plan_charging_leg(grid, .1, (0., 0.), (5.05, 5.05), (1., 1.), .8) == (None, ())\n+    assert np.array_equal(grid, raw)\n+\n+\n def test_blocked_charger_centre_uses_a_safe_reachable_contact_pose():\n     import math\n     from unittest.mock import patch",
+  "prior_failure": "20261005_p3b5_fresh_frontier_replan_development.json",
+  "new_holdout_exposed": false,
+  "limitations": [
+    "Original lab202 actual return required two20s stalled cancellations and repeated native Smac lethal-start errors. AP90/100 had a compact multi-cell occupied cluster at tb3; existing isolated single-cell heuristic correctly removed none. AP110..160 known-free current cells were still clearance-inflated, and existing return combined escape with distant home prefixes.",
+    "A short known-free escape does not override Nav2 lethal-start/collision checks and does not prove successful physical recovery. Native/grid discrepancy and shared-host timing remain limitations; six independent originals and full57 still required.",
+    "First inline self-cell diagnosis failed on <stdin> __file__ before reading geometry; retained error log. A separate file-backed helper succeeded. Neither is a mission run/retry.",
+    "Original handoff5,map/battery5,poseTF2,target60,native300/.35/.05/.1/5,contact model,strict gate,all Nav2/SLAM parameters and every other controller function unchanged. No809 exposure or formal replacement."
+  ]
+}

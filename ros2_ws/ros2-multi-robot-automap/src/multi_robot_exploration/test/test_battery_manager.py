@@ -1,3 +1,5 @@
+import math
+
 import pytest
 import numpy as np
 
@@ -121,6 +123,39 @@ def test_charge_contact_planning_preserves_a_reachable_home_route():
         visible_only=True,
     )
     assert plan_charging_leg(grid, .1, (-5., -5.), (3., 0.), (0., 0.), .8) == expected
+
+
+@pytest.mark.parametrize("resolution,side", [(.05, -1), (.05, 1), (.1, -1), (.1, 1)])
+def test_charging_completes_known_free_clearance_escape_before_long_home_leg(resolution, side):
+    from multi_robot_exploration import control
+    grid = np.zeros((int(10 / resolution), int(10 / resolution)), dtype=np.int16)
+    wall = int(5 / resolution)
+    grid[int(4.5 / resolution):int(5.5 / resolution), wall] = 100
+    position = (5 + side * .2 + resolution / 2, 5 + resolution / 2)
+    home = (5 + side * 3, 2.)
+    raw = grid.copy()
+    safe = control.traversable_grid(grid, resolution, control.RALLY_PATH_CLEARANCE_M)
+    cell = control.world_to_grid(*position, resolution, 0., 0.)
+    assert grid[cell] == 0 and not safe[cell]
+    endpoint, escape = control.navigation_start_route(grid, safe, cell, math.ceil(.6 / resolution))
+    leg, route = plan_charging_leg(grid, resolution, (0., 0.), position, home, .8)
+    assert route == tuple(control.grid_to_world(*p, resolution, 0., 0.) for p in escape)
+    assert (leg.x, leg.y) == route[-1] and safe[endpoint]
+    assert all(grid[p] == 0 for p in escape) and np.array_equal(grid, raw)
+    assert math.dist((leg.x, leg.y), home) > 2.
+    assert leg.yaw == pytest.approx(control.route_arrival_yaw(route, 0.))
+    # Reaching the safe endpoint permits an ordinary home prefix on new input.
+    following, _ = plan_charging_leg(grid, resolution, (0., 0.), route[-1], home, .8)
+    assert following is not None and math.dist((following.x, following.y), home) < .2
+
+
+@pytest.mark.parametrize("raw_start", [-1, 100])
+def test_charging_escape_never_snaps_unknown_or_occupied_start(raw_start):
+    grid = np.zeros((100, 100), dtype=np.int16)
+    grid[50, 50] = raw_start
+    raw = grid.copy()
+    assert plan_charging_leg(grid, .1, (0., 0.), (5.05, 5.05), (1., 1.), .8) == (None, ())
+    assert np.array_equal(grid, raw)
 
 
 def test_blocked_charger_centre_uses_a_safe_reachable_contact_pose():
