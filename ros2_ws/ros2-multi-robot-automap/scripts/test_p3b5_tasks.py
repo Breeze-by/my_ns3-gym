@@ -6,6 +6,46 @@ import pytest
 from run_p3b5_tasks import CONFIG, episode_command, ledger_metrics, tdi
 
 
+@pytest.mark.parametrize('variable,value', [
+    ('FASTDDS_BUILTIN_TRANSPORTS', 'DEFAULT'),
+    ('RMW_IMPLEMENTATION', 'rmw_cyclonedds_cpp'),
+])
+def test_candidate_comparison_rejects_changed_native_middleware(monkeypatch, variable, value):
+    import sys
+    import run_p2d_baseline as baseline
+    from check_p3a6_gate import same_candidate
+    monkeypatch.setattr(sys, 'argv', ['baseline'])
+    monkeypatch.setattr(baseline, 'command_output', lambda command: '')
+    monkeypatch.setenv('RMW_IMPLEMENTATION', 'rmw_fastrtps_cpp')
+    monkeypatch.setenv('FASTDDS_BUILTIN_TRANSPORTS', 'UDPv4')
+    args = baseline.parse_args()
+    reference = baseline.build_manifest(args.config, args)
+    same_candidate(reference, reference)
+    monkeypatch.setenv(variable, value)
+    changed = baseline.build_manifest(args.config, args)
+    with pytest.raises(AssertionError, match='environment'):
+        same_candidate(changed, reference)
+
+
+def test_candidate_comparison_rejects_changed_profile_bytes_at_same_path(tmp_path, monkeypatch):
+    import sys
+    import run_p2d_baseline as baseline
+    from check_p3a6_gate import same_candidate
+    monkeypatch.setattr(sys, 'argv', ['baseline'])
+    monkeypatch.setattr(baseline, 'command_output', lambda command: '')
+    profile = tmp_path/'profiles.xml'
+    profile.write_text('<profiles/>')
+    monkeypatch.setenv('FASTRTPS_DEFAULT_PROFILES_FILE', str(profile))
+    args = baseline.parse_args()
+    reference = baseline.build_manifest(args.config, args)
+    same_candidate(reference, reference)
+    profile.write_text('<profiles><participant/></profiles>')
+    changed = baseline.build_manifest(args.config, args)
+    assert reference['environment']['fastdds_profile_file'] == changed['environment']['fastdds_profile_file']
+    with pytest.raises(AssertionError, match='environment'):
+        same_candidate(changed, reference)
+
+
 @pytest.mark.parametrize('base,count,expected',[(18,2,[18,19]),(229,2,[229,230])])
 def test_declared_domains_match_native_observer_domains_without_modulo_aliases(base,count,expected):
     from run_p3b5_tasks import episode_domains

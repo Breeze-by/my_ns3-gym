@@ -7117,3 +7117,22 @@ rtk proxy python3 /tmp/prepare_p3b5_v101_cohort.py
 ```
 
 最后一次准备通过后才首次运行v101；未重复原任务。只读Smac1.1.20上游审查证实use_final_approach_orientation默认false、保留requested goal yaw；不凭参数默认错误归因漂移。
+
+## 2026-10-06 P3B.5 v102原生transport组件（两探针原始结果全部保留）
+
+2026-10-06 P3B.5 v102原生启动环境组件：本机FastDDS2.6.11官方实现与实际库均支持FASTDDS_BUILTIN_TRANSPORTS=UDPv4；新候选统一显式RMW=rmw_fastrtps_cpp/UDPv4，尚无新环境任务门禁PASS。新增manifest记录RMW、builtin transport、FASTRTPS XML路径与source digest；原same_candidate直接拒绝环境改变和同路径XML字节改变，未修改strict checker/native evaluator/control/battery算法。598组件17.04s、四包build6.87s、source3r0旁路；其中三项检查先确认reference自比通过，再只改transport/RMW/XML字节并要求environment断言失败。中间件探针原第一组4个native DEFAULT描述符通过，但16个demo ROS进程因话题末段纯数字参数解析失败，原stdout/exit与全部自有关闭保留；没有Gazebo/任务/809启动。修正命名后另起v102b独立组件探针，DEFAULT/UDPv4各四domain，8个native实际描述符+32个C++/Python ROS进程、16监听者双向交付各至少两条，全部PASS且自然/预声明10s窗口后正常关闭。实际UDPv4描述符为udp1/shm0/other0；DEFAULT为udp1/shm1。只证明当前模式配置与这些交付，不证明v101初始化卡住是SHM根因、消除所有死锁、任务提速或最坏启动时限。新推荐终端命令显式export环境，同环境覆盖机器人/总部/所有理想与故障基线/只读观察器；profile若关闭builtin transports可覆盖该环境，因此冻结前禁用未声明profile并核验actual descriptor。原v101的5attempted/4native/1absent/52not-invoked失败已ae50fe1归档，不修补/回填；v100六开发PASS是在原环境的算法证据，不能代替新环境任务验证。809.world/seed809/fault28091仍未执行；需新冻结完整57格、原forced/E0/物理返充→十fixed→新留出主矩阵。原300s/.35/.05/.1/5s与源TTL/故障强度不变，P3B.5未完成，无ns3/WiFi/RL。证据report/20261006_p3b5_native_transport_component.json。
+
+canonical ROS cwd；source Humble/install；PYTHONNOUSERSITE=1；组件CPU0–79/domain110..113，native FastDDS检查同domain；无Gazebo或任务episode。第一个探针04:54:18–04:54:29UTC FAIL，第二个探针04:55:16–04:55:37UTC PASS；实际准确时间、全部进程命令/exit/source哈希在JSON原声明。foreign222/master11345及17用户资料不动。精确命令：
+
+```bash
+/usr/bin/python3 -m pytest scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_observer_lifetime.py -q > /tmp/p3b5_v102_focused_checks.log 2>&1
+/usr/bin/python3 -m pytest -q --tb=short src/multi_robot_exploration/test scripts/test_p3b5_gate.py scripts/test_p3b5_tasks.py scripts/test_p3b5_return_staging.py scripts/test_observer_lifetime.py scripts/test_ros_smoke_native_probe.py --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py > /tmp/p3b5_v102_component_checks.log 2>&1
+colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot > /tmp/p3b5_v102_build.log 2>&1
+/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v102_source_audit.log 2>&1
+g++ -std=c++17 /tmp/probe_p3b5_v102_native_transports.cpp -I/opt/ros/humble/include/fastrtps -I/opt/ros/humble/include/fastcdr -L/opt/ros/humble/lib -Wl,-rpath,/opt/ros/humble/lib -lfastrtps -lfastcdr -pthread -o /tmp/probe_p3b5_v102_native_transports
+taskset -c 0-79 /usr/bin/python3 /tmp/run_p3b5_v102_transport_probe.py > /tmp/p3b5_v102_transport_probe.log 2>&1
+taskset -c 0-79 /usr/bin/python3 /tmp/run_p3b5_v102b_transport_probe.py > /tmp/p3b5_v102b_transport_probe.log 2>&1
+PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python /tmp/document_p3b5_v102_transport_component.py
+```
+
+初59定向检查在补reference-self/指定environment原因前通过，随后完整598含最终三项严检查；不将metadata检验视为任务成功。独立消息探针是组件装置更正，无正式episode重跑。

@@ -192,6 +192,7 @@ def command_version(command):
 
 
 def build_manifest(config_path, args):
+    fastdds_profile = os.environ.get("FASTRTPS_DEFAULT_PROFILES_FILE")
     commit = command_version(["git", "rev-parse", "HEAD"])
     status = command_output(
         ["git", "-C", str(PROJECT_ROOT.parents[1]), "status", "--short", "--untracked-files=all"]
@@ -236,6 +237,10 @@ def build_manifest(config_path, args):
             "cpu_affinity": sorted(os.sched_getaffinity(0)),
             "ros_distro": os.environ.get("ROS_DISTRO"),
             "ros_version": os.environ.get("ROS_VERSION"),
+            "rmw_implementation": os.environ.get("RMW_IMPLEMENTATION"),
+            "fastdds_builtin_transports": os.environ.get("FASTDDS_BUILTIN_TRANSPORTS"),
+            "fastdds_profile_file": fastdds_profile,
+            "fastdds_profile_source_digest": file_digest(fastdds_profile) if fastdds_profile else None,
             "gazebo": command_version(["gazebo", "--version"]),
             "headless_launch_display": None,
             "native_probe_isolation": "single_context_process_with_wall_deadline",

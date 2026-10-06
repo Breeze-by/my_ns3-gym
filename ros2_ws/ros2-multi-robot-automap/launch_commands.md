@@ -22,7 +22,16 @@ cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
 source install/setup.bash
 source /usr/share/gazebo/setup.sh
 export TURTLEBOT3_MODEL=waffle
+export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+export FASTDDS_BUILTIN_TRANSPORTS=UDPv4
 ```
+
+从 P3B.5 v102 起，新验证候选显式使用 Fast DDS 的 UDPv4 transport。所有机器人、总部、
+理想/损伤 gateway 基线及独立只读观察器都从这个终端环境启动；它改变本机 ROS 中间件传输，
+网关故障模型仍由原 launch 参数控制。原 v101 的原生初始化超时完整保留，UDP 模式尚不代表
+已证明该超时的根因或已通过 P3B.5。实验 manifest 会记录 RMW、transport 环境以及已指定 XML
+profile 的路径/摘要；正式验证不混用两种环境。`FASTRTPS_DEFAULT_PROFILES_FILE` 若指定了禁用
+builtin transports 的 profile，会覆盖这项 transport 选择，应在冻结前核对实际初始化记录。
 
 只有源码修改或首次检出后才需要重新编译：
 
