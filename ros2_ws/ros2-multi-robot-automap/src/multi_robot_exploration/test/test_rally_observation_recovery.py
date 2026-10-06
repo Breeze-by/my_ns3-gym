@@ -122,3 +122,94 @@ def test_connector_survey_uses_known_frontier_around_target_dead_end():
     # Updating a copy with real observations can later connect the regions;
     # choosing the survey must never fabricate those cells in the original.
     assert np.all(grid[30:60,10:30]==-1)
+
+
+@pytest.mark.parametrize('condition,retained', [
+    ('safe', True), ('stale_target', False), ('stale_map', False),
+    ('not_reached', False), ('displaced', False), ('live_goal', False),
+    ('pending_goal', False), ('survey', False), ('returning', False),
+    ('return_refuge', False), ('charge_requested', False), ('low_energy', False),
+    ('invalid_energy', False), ('unknown_los', False), ('static_clearance', False),
+    ('peer_final', False), ('range_margin', False), ('outside_map', False),
+    ('frontier_goal', False), ('peer_body', False), ('near_target', False),
+    ('invalid_speed', False), ('negative_cost', False), ('invalid_factor', False),
+    ('intermediate_heading', False),
+])
+def test_completed_refuge_requires_original_final_pose_and_energy_guards(condition,retained):
+    node,_=observer_node()
+    refuge=control.RallyPose(2.05,2.05,math.pi/2)
+    old_final=control.RallyPose(2.65,2.05,1.)
+    peer=control.RallyPose(3.75,3.05,2.)
+    node.rally_targets={'tb1':refuge,'tb2':peer}
+    node.rally_final_targets={'tb1':old_final,'tb2':peer}
+    node.rally_arrived={'tb1':True,'tb2':True}
+    node.rally_hold_sec=5.;node.rally_hold_started_at=90.
+    node.rally_preflight_complete=True;node.get_logger=lambda:Mock()
+    if condition=='stale_target':node.fresh_target=lambda:False
+    if condition=='stale_map':node.fresh_robot_inputs=lambda:False
+    if condition=='not_reached':node.rally_arrived['tb1']=False
+    if condition=='displaced':node.robot_positions['tb1']=(1.65,2.05)
+    if condition=='live_goal':node.rally_goal_handles['tb2']=object()
+    if condition=='pending_goal':node.rally_goal_pending['tb2']=True
+    if condition=='frontier_goal':node.goal_handles['tb2']=object()
+    if condition=='peer_body':node.robot_positions['tb2']=(2.45,2.05)
+    if condition=='survey':node.survey_goal_handle=object()
+    if condition=='returning':node.battery_modes['tb2']='RETURNING'
+    if condition=='return_refuge':node.return_yield_targets={'tb1':'tb2'}
+    if condition=='charge_requested':node.rally_charge_requested={'tb2':99.}
+    if condition=='low_energy':node.battery_states['tb1']['energy']=8.2
+    if condition=='invalid_energy':node.battery_states['tb1']['energy']=float('nan')
+    if condition=='invalid_speed':node.battery_states['tb1']['nominal_speed_mps']=0.
+    if condition=='negative_cost':node.battery_states['tb1']['idle_cost_per_sec']=-.02
+    if condition=='invalid_factor':node.battery_states['tb1']['return_path_factor']=.5
+    if condition=='intermediate_heading':node.rally_targets['tb1']=control.RallyPose(2.05,2.05,0.)
+    if condition=='unknown_los':node.map_data[35,20]=-1
+    if condition=='static_clearance':node.map_data[20,23]=100
+    if condition=='peer_final':node.rally_final_targets['tb2']=control.RallyPose(2.75,2.05,0.)
+    if condition=='range_margin':node.target=(2.05,4.75)
+    if condition=='near_target':node.target=(2.05,2.55)
+    if condition=='outside_map':
+        node.rally_targets['tb1']=control.RallyPose(-1.,2.05,0.)
+        node.robot_positions['tb1']=(-1.,2.05)
+    assert control.HeadquartersControl.retain_rally_refuge(node,'tb1') is retained
+    if retained:
+        final=node.rally_final_targets['tb1']
+        assert (final.x,final.y)==(refuge.x,refuge.y)
+        assert final.yaw==pytest.approx(math.pi/2)
+        assert node.rally_targets['tb1']==final and node.rally_arrived['tb1']
+        assert node.rally_hold_started_at is None and not node.rally_preflight_complete
+    else:
+        assert node.rally_final_targets['tb1']==old_final
+        assert node.rally_hold_started_at==90. and node.rally_preflight_complete
+    assert node.robot_nav_clients['tb1'].send_goal_async.call_count==0
+
+
+@pytest.mark.parametrize('known_view', [True,False])
+def test_finished_yield_reuses_only_a_valid_final_refuge_in_the_mission(monkeypatch,known_view):
+    node,_=observer_node();names=('tb1','tb2')
+    refuge=control.RallyPose(2.05,2.05,math.pi/2);old=control.RallyPose(2.65,2.05,1.)
+    peer=control.RallyPose(3.75,3.05,2.)
+    node.__dict__.update(
+        task_state='RALLY',last_input_availability=True,now=lambda:100.,
+        fresh_robot_poses=lambda:True,stop_target_scan=lambda:False,
+        message_freshness_timeout_sec=5.,battery_monitor_started_at=100.,
+        battery_state_received_at=dict.fromkeys(names,100.),participating_robots=lambda:list(names),
+        rally_targets={'tb1':refuge,'tb2':peer},rally_final_targets={'tb1':old,'tb2':peer},
+        rally_arrived=dict.fromkeys(names,True),rally_dispatch_order=list(names),
+        rally_yield_targets={'tb1'},rally_recovery_beneficiaries={'tb1':'tb2'},
+        rally_route_unavailable_since=dict.fromkeys(names),rally_hold_sec=5.,
+        rally_hold_started_at=99.,rally_preflight_complete=True,
+        get_logger=lambda:Mock(),
+        release_return_yields=lambda:None,publish_rally_assignments=Mock(),publish_task_state=Mock(),
+    )
+    if not known_view:node.map_data[35,20]=-1
+    monkeypatch.setattr(control.HeadquartersControl,'restore_observer_heading',lambda self:False)
+    control.HeadquartersControl.update_mission(node)
+    assert not node.rally_yield_targets and not node.rally_recovery_beneficiaries
+    assert node.rally_arrived['tb1'] is known_view
+    assert node.rally_final_targets['tb1']==(node.rally_targets['tb1'] if known_view else old)
+    assert (node.rally_targets['tb1'].x,node.rally_targets['tb1'].y)==(
+        (refuge.x,refuge.y) if known_view else (old.x,old.y))
+    node.publish_rally_assignments.assert_called_once()
+    node.publish_task_state.assert_not_called()
+    if known_view:assert node.rally_hold_started_at is None and not node.rally_preflight_complete

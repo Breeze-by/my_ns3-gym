@@ -2898,6 +2898,76 @@ class HeadquartersControl(Node):
         if released:
             self.publish_rally_assignments()
 
+    def retain_rally_refuge(self, robot_name):
+        """Reuse a reached refuge as a final pose after reserved traffic ends."""
+        if (not self.fresh_robot_inputs() or not self.fresh_target()
+                or not self.rally_arrived[robot_name]
+                or self.return_yield_targets or self.rally_charge_requested
+                or any(self.rally_goal_handles.values())
+                or any(self.rally_goal_pending.values())
+                or any(self.goal_handles.values())
+                or self.survey_goal_handle is not None or self.survey_goal_pending
+                or any(self.battery_modes[name] != 'ACTIVE'
+                       for name in self.rally_targets)):
+            return False
+        pose = self.rally_targets[robot_name]
+        position = self.robot_positions[robot_name]
+        if position is None or math.dist(position, (pose.x, pose.y)) > self.rally_position_tolerance:
+            return False
+        target_yaw = math.atan2(self.target[1] - pose.y, self.target[0] - pose.x)
+        if abs(math.atan2(math.sin(pose.yaw - target_yaw),
+                          math.cos(pose.yaw - target_yaw))) >= 1e-6:
+            return False  # A completed intermediate heading is not a final pose.
+        cell = world_to_grid(pose.x, pose.y, self.resolution, *self.origin)
+        safe = traversable_grid(self.map_data, self.resolution, RALLY_CLEARANCE_M)
+        if (not (0 <= cell[0] < safe.shape[0] and 0 <= cell[1] < safe.shape[1])
+                or not safe[cell]
+                or math.dist((pose.x, pose.y), self.target) < .7
+                or not rally_target_view(self.map_data, self.resolution, self.origin,
+                    (pose.x, pose.y), self.target,
+                    self.target_view_distance - self.rally_position_tolerance)
+                or any(math.dist((pose.x, pose.y), other) < RALLY_MIN_SEPARATION_M
+                       for other in rally_reserved_poses(self.rally_targets,
+                           self.rally_final_targets, exclude=(robot_name,)))):
+            return False
+        if any(other != robot_name and (
+                other_position is None
+                or math.dist(position, other_position) < RALLY_DYNAMIC_CLEARANCE_M)
+               for other, other_position in self.robot_positions.items()
+               if other in self.rally_targets):
+            return False
+        if self.enable_battery:
+            state = self.battery_states[robot_name]
+            try:
+                home = (float(state['charge_x']), float(state['charge_y']))
+                idle = float(state.get('idle_cost_per_sec', .02))
+                move = float(state.get('move_cost_per_m', 1.))
+                factor = float(state.get('return_path_factor', 2.))
+                speed = float(state.get('nominal_speed_mps', .18))
+                margin = float(state.get('return_safety_margin', 8.))
+                if (not all(math.isfinite(v) for v in (*home, idle, move, factor, speed, margin))
+                        or min(idle, move, margin) < 0 or factor < 1 or speed <= 0):
+                    return False
+                required = battery_assignment_required_energy(
+                    math.dist(position, (pose.x, pose.y)), math.dist((pose.x, pose.y), home),
+                    move, idle, factor, speed, margin,
+                ) + idle * self.rally_hold_sec
+                energy = float(state['energy'])
+                if not all(math.isfinite(v) for v in (required, energy)) or energy <= required:
+                    return False
+            except (KeyError, TypeError, ValueError, ZeroDivisionError):
+                return False
+        self.rally_final_targets[robot_name] = pose
+        # A completed gateway leg already reached these same coordinates.
+        # Changing the final intent never proves velocity/observation/holding;
+        # the original energy preflight and continuous native hold still run.
+        self.rally_preflight_complete = False
+        self.rally_hold_started_at = None
+        self.get_logger().info(
+            f"Retaining {robot_name}'s safe rally refuge as its final pose."
+        )
+        return True
+
     def preempt_rally_return_conflicts(self, protected):
         """Revalidate admitted legs when independent local returns appear.
 
@@ -3295,10 +3365,12 @@ class HeadquartersControl(Node):
                 and all(self.rally_arrived[name] for name in non_yield_names)
             ):
                 for name in yielded_names:
-                    self.rally_targets[name] = self.rally_final_targets[name]
+                    retained = HeadquartersControl.retain_rally_refuge(self, name)
+                    if not retained:
+                        self.rally_targets[name] = self.rally_final_targets[name]
+                        self.rally_arrived[name] = False
                     self.rally_yield_targets.discard(name)
                     getattr(self, "rally_recovery_beneficiaries", {}).pop(name, None)
-                    self.rally_arrived[name] = False
                     self.rally_route_unavailable_since[name] = None
                 self.publish_rally_assignments()
                 return

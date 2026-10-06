@@ -7215,3 +7215,16 @@ PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python /tmp/documen
 ```
 
 Original lab303 final navigation settles too close to300s; delivered angular speed resets hold near299.7s. Final qualifying instantaneous positions/speeds do not replace continuous5s native hold. Observer route yielding and late charged-peer arrival are recorded conditions, not single-factor causal proof. Keep all originals; develop dispatch/assignment improvement independently.
+
+## 2026-10-06 P3B.5 v104合法避让点保留组件
+
+2026-10-06 P3B.5 v104合法避让驻点保留组件PASS：v103十fixed中lab303末段原生保持失败已7442599归档。仅在所有非避让同伴到位、在途/待接收动作结束后，对已完成目标朝向的临时驻点，用当前交付地图检查原.45净空/已知目标视线/相机range减.35误差余量/原.8最终位间距/.6当前body间距；所有电池ACTIVE、无返充请求、输入/目标新鲜且完整保持返航预算充足时，将同一个已到达pose保留为final。无新动作或朝向声明；原发布路径、能量预检重做、保持计时重置、原生300s/.35/.05/.1/5s继续。无效驻点按原逻辑回旧final。46定向1.40s、627组件18.50s、四包5.46s、3r源码零旁路；仅update_mission及新增retain_rally_refuge，其余控制函数AST、电池/严格checker/评估器/Nav2/SLAM/809字节不变。首状态机夹具遗漏logger两次失败44/45pass和首广测路径错误no-tests原日志保留，修正全PASS，无任务重跑。已关闭AP三帧几何支持合法驻点，但不证明运行准入/连续原生保持/因果加速或最坏时限。证据report/20261006_p3b5_rally_refuge_retention_component.json；809/28091从未执行，需新独立lab101/202/303+force/zero开发和完整57冻结。P3B.5未完成，无ns3/RL。
+
+ROS canonical cwd，source Humble/install、PYTHONNOUSERSITE=1。原始及修正组件日志/完整源diff保留在JSON records；修正命令：
+
+```bash
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_rally_observation_recovery.py > /tmp/p3b5_v104_refuge_focused_final.log 2>&1
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test src/merge_map/test/test_merge_map.py scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py scripts/test_ros_smoke_native_probe.py scripts/test_observer_lifetime.py --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py > /tmp/p3b5_v104_components_corrected.log 2>&1
+colcon build --symlink-install --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot > /tmp/p3b5_v104_build.log 2>&1
+/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v104_source_audit.log 2>&1
+```
