@@ -353,7 +353,7 @@
     }
   },
   "holdout_world_declaration": {
-    "predeclared_at_utc": "2026-10-06T04:24:38.315863+00:00",
+    "predeclared_at_utc": "2026-10-06T04:58:18.268838+00:00",
     "world": "p3b5_holdout809.world",
     "world_content_sha256": "2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd",
     "gazebo_seed": 809,
@@ -411,7 +411,7 @@
       "original_point_label_correction": "The retained tb1_start_charge/tb3_start_charge labels were generic sample points, not actual launch poses. Original values are historical; use supplemental actual_launch_start_geometry_check below. No world/control/mission run was used to validate or tune809 geometry."
     },
     "controller_content_sha256": "d04f17fa20f0063ccfbc20ab25254bd1a532bf60b067b063c55bff3335c62298",
-    "first_task_exposure": "Pending:809/world/seed/fault never executed. Local diagnostics, smoother command-expiry sim-clock repair, genuine SLAM map generation period2s and fresh final-frontier gain replanning during progress toward a funded body/route-safe visible alternative, and safe valid-confirmation observer heading when target LOS is unknown; original handoff5s remains have passed six independent originals with actual Nav2 clock/SLAM parameters and measured map source ages. Map source headers and TTL unchanged. Map traffic is increased consistently for all ideal/fault baselines; host-clock publisher cadence is not a maximum simulation source-age guarantee. Only local charging-leg segmentation additionally stages its original known-free clearance escape before a long home leg, with original callbacks, Smac/RPP and occupied/unknown rejection retained. Controller/native decisions and original300s/.35/.05/.1/5s, default smoothing limits, wall callback timer and Gazebo physics unchanged. New clean full57 uses identical fixed0..79 affinity. All initial and ten fixed original subgates must pass before first809. Preserve every failure, no whole-episode retry/backfill. Any core change after809 exposure requires genuinely new world/seed/fault.",
+    "first_task_exposure": "Pending:809/world/seed/fault never executed. Current task algorithms and original thresholds unchanged from v101, whose forced ideal lacked a native result after startup600s and whose four evaluated siblings remain historical originals. The prior six-original v100 development PASS validates these algorithms only under the previous middleware environment. v102 native actual descriptor inspection and bidirectional C++/Python receipts validate UDPv4 configuration, not task success or a proven shared-memory root cause. New clean full57 uniformly uses explicit rmw_fastrtps_cpp/UDPv4 with no undeclared XML profile; manifest records middleware. Same-commit forced true-native ideal/E0/actual physical-return and all ten fixed originals must PASS before first809. All fixed and their observers use actual0..79 affinity. Original300s/.35/.05/.1/5s, source leases and fault intensity unchanged. Preserve every attempted/missing/failed/unrun cell; no whole-episode retry/backfill. Core changes after exposure require truly new world/seed/fault.",
     "controller_freeze_history": [
       {
         "predeclared_at_utc": "2026-10-04T14:45:09.824843+00:00",
@@ -561,6 +561,20 @@
         "started_count": 15,
         "unrun_episode_count": 42,
         "evidence": "20261005_p3b5_observer_late_charge_failed_candidate.json"
+      },
+      {
+        "predeclared_at_utc": "2026-10-06T04:24:38.315863+00:00",
+        "frozen_commit": "0fff5eb4ed3b57e1f60a9f7a6e8d1ecdabac1b93",
+        "controller_content_sha256": "d04f17fa20f0063ccfbc20ab25254bd1a532bf60b067b063c55bff3335c62298",
+        "battery_manager_content_sha256": "3a769dd71916681b1e5ee4756e3ecf71a152d02b934d73a4cc0da2cdb88bfd19",
+        "status": "FAIL: forced ideal native startup timeout, no native result; all original siblings naturally closed",
+        "attempted_count": 5,
+        "native_started_count": 4,
+        "raw_result_count": 4,
+        "absent_native_result_count": 1,
+        "not_invoked_count": 52,
+        "new_holdout_exposed": false,
+        "evidence": "20261006_p3b5_native_startup_failed_candidate.json"
       }
     ],
     "actual_launch_start_geometry_check": {
@@ -697,6 +711,14 @@
     "slam_parameter_files_content_sha256": {
       "src/slam_toolbox/config/mapper_params_online_multi_async.yaml": "d5d73fbe7f184528c9817492e696ad13ab1e2e1400020ee690f973818aad3c45"
     },
-    "preceding_development_evidence": "20261006_p3b5_return_escape_prefix_development.json"
+    "preceding_development_evidence": "20261006_p3b5_return_escape_prefix_development.json",
+    "middleware_environment": {
+      "rmw_implementation": "rmw_fastrtps_cpp",
+      "fastdds_builtin_transports": "UDPv4",
+      "fastdds_profile_file": null,
+      "baseline_runner_content_sha256": "ccee37fc05bd23184f9af8c5f3395cb38212ebe4fcfae17643184ddaa1dd127b",
+      "component_evidence": "20261006_p3b5_native_transport_component.json",
+      "all_ideal_fault_robots_headquarters_and_readonly_observers_same_environment": true
+    }
   }
 }

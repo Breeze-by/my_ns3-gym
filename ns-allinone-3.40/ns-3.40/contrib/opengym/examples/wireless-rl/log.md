@@ -7136,3 +7136,17 @@ PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python /tmp/documen
 ```
 
 初59定向检查在补reference-self/指定environment原因前通过，随后完整598含最终三项严检查；不将metadata检验视为任务成功。独立消息探针是组件装置更正，无正式episode重跑。
+
+## 2026-10-06 P3B.5 v103新中间件环境前瞻协议（无任务启动）
+
+2026-10-06 P3B.5 v103前瞻正式冻结：v101所有原owner/AP/网关观察器自然关闭且失败完整ae50fe1归档后，v102中间件组件dab2270已提交推送；当前control/battery/世界809原字节不变。新批统一显式RMW_IMPLEMENTATION=rmw_fastrtps_cpp/FASTDDS_BUILTIN_TRANSPORTS=UDPv4，所有机器人/总部/ideal及fault基线/只读观察器同环境；不使用未声明XML/discovery server。manifest新增环境记录，strict checker/native evaluator/control/battery均原字节；64配置1.51s、27case/41unique validate-only、source3r0旁路PASS；v102为598组件17.04s/四包6.87s和实际native descriptors/双向C++Python交付PASS，尚非新环境任务成功。原算法v100六独立开发PASS是在此前中间件环境，不能替代当前集成；v101五次调用/四原生启动/一缺结果/52未调用原失败仍保留。新AP helper仅只读真实参数/map源龄与实际RMW标识，使用本机已提供try_shutdown避免信号关闭后的重复shutdown异常；原AP partial metadata/traceback保持。正式仍57格：27pair/41主格+十fixed+六辅助；所有fixed/AP为实际CPU0–79，独立world可并行，同world seed串行；initial/main20逻辑CPU分池。所有源/helper/配置/最终报告builder在第一次运行前hash冻结；必须先强制ideal真实原生保持/E0/断网实际返航，再十fixed全部PASS，才首次运行809.world/seed809/fault28091/目标(4.4,-3.4)/3rE45及剩余主/安全矩阵。809从未运行，初静态world字节及真实launch连通补查保留；原300s/.35/.05/.1/5s、源TTL与故障强度保持，不重试/回填。全部已启动原owner/观察器自然关闭前不改源/文档/helper。证据report/20261006_p3b5_native_transport_holdout_protocol.json；P3B.5仍待完整strict gate，未启动ns3/WiFi/RL。
+
+canonical ROS cwd；source Humble/install；PYTHONNOUSERSITE=1/RMW_IMPLEMENTATION=rmw_fastrtps_cpp/FASTDDS_BUILTIN_TRANSPORTS=UDPv4；不设置FASTRTPS_DEFAULT_PROFILES_FILE/ROS_DISCOVERY_SERVER。精确无仿真协议检查命令：
+
+```bash
+/usr/bin/python3 /tmp/refreeze_p3b5_v103_transport_protocol.py
+/usr/bin/python3 -m pytest -q scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py > /tmp/p3b5_v103_config_checks.log 2>&1
+/usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v103_validation --ros-domain-base 50 --validate-only > /tmp/p3b5_v103_validate_only.log 2>&1
+/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v103_source_audit.log 2>&1
+PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python /tmp/document_p3b5_v103_protocol.py
+```
