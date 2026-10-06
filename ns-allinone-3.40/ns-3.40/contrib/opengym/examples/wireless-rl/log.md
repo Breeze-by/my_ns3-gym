@@ -7549,3 +7549,5 @@ colcon build --symlink-install --packages-select multi_robot_interfaces multi_ro
 冻结前补记：v7 accepted只读审计完整PASS：63原任务、1879方向/类型/端点流、9episode完整曲线、7配对图、31冻结TDI逐项等价。v4/v5/v6三次reader FAIL依次涉及target_x、target_max_distance_m、rally_position_tolerance_m，均因未接收目标/集合消息时观测字段为null；统一由原manifest命令与d8d361b argparse声明核验配置，未修改raw或填充观测。v7输出为log/p3c/v7_accepted_replay/summary.json。Qt实际monitor/details/console三页截图已逐页查看；编辑值与当前生效版本分列，旧编辑版本拒绝覆盖。正式任务尚未启动。
 
 最后冻结前：compileall PASS；24相关指标/配对测试0.08s PASS；三case --validate-only参数/环境清单已保存pre_freeze/p3c_v7_*_predeclared.json，三机器人source-only旁路0违规。git diff --check与git add -n .核对后，只暂存工程/文档，排除260929_report与全部log/build/install。
+
+首次已push实现d4b53d3的三条v7启动argv均在runner preflight退出2：git status从ROS子目录返回../../260929_report路径，导致允许的用户资料被误认为task dirty。三个owner自然退出，0Gazebo/0原始任务/0账本，未发生任务重试；stdout完整保留pre_freeze/p3c_v7_{ideal,forced,dynamic}_owner.txt。修复仅runner按canonical Git根读取状态，仍只排除原260929_report未跟踪资料，不放宽task clean。重新commit/push后，使用同预声明三case/原schedule/seed/参数及相同隔离domain/port，以p3c_v8_{ideal,forced,dynamic}新目录首次启动。精确argv除--run-id v7→v8外不变，均taskset CPU0–79、Humble/install/Gazebo环境及rmw_fastrtps_cpp/UDPv4，无XML/discovery server。

@@ -59,7 +59,7 @@ def main():
     if args.validate_only:
         print(json.dumps(manifest, indent=2))
         return 0
-    status = subprocess.check_output(["git", "status", "--short", "--untracked-files=all"], text=True)
+    status = subprocess.check_output(["git", "-C", str(PROJECT_ROOT.parents[1]), "status", "--short", "--untracked-files=all"], text=True)
     dirty = [line for line in status.splitlines() if not (line.startswith("?? 260929_report/") or line.startswith('?? "260929_report/'))]
     if dirty:
         parser.error("freeze and push the clean source before a task run: " + str(dirty))
