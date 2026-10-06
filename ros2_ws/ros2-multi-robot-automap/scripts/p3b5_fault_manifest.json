@@ -353,7 +353,7 @@
     }
   },
   "holdout_world_declaration": {
-    "predeclared_at_utc": "2026-10-05T01:14:18.395120+00:00",
+    "predeclared_at_utc": "2026-10-06T04:24:38.315863+00:00",
     "world": "p3b5_holdout809.world",
     "world_content_sha256": "2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd",
     "gazebo_seed": 809,
@@ -410,8 +410,8 @@
       },
       "original_point_label_correction": "The retained tb1_start_charge/tb3_start_charge labels were generic sample points, not actual launch poses. Original values are historical; use supplemental actual_launch_start_geometry_check below. No world/control/mission run was used to validate or tune809 geometry."
     },
-    "controller_content_sha256": "a4fb96c3486558bfe4c816da5e64c80a86a683075697e60d5ae3c13fd5b4f0e1",
-    "first_task_exposure": "Pending:809/world/seed/fault never executed. v79 preserved16 original results including all ten native-complete fixed tasks; unchanged aggregator rejected different CPU affinities. New full57 cohort prospectively uses identical fixed0..79 affinity without changing source, thresholds, world or data. All initial and ten fixed original subgates must PASS before first809. No whole-episode retry/backfill. Any core change after809 exposure requires genuinely new world/seed/fault.",
+    "controller_content_sha256": "d04f17fa20f0063ccfbc20ab25254bd1a532bf60b067b063c55bff3335c62298",
+    "first_task_exposure": "Pending:809/world/seed/fault never executed. Local diagnostics, smoother command-expiry sim-clock repair, genuine SLAM map generation period2s and fresh final-frontier gain replanning during progress toward a funded body/route-safe visible alternative, and safe valid-confirmation observer heading when target LOS is unknown; original handoff5s remains have passed six independent originals with actual Nav2 clock/SLAM parameters and measured map source ages. Map source headers and TTL unchanged. Map traffic is increased consistently for all ideal/fault baselines; host-clock publisher cadence is not a maximum simulation source-age guarantee. Only local charging-leg segmentation additionally stages its original known-free clearance escape before a long home leg, with original callbacks, Smac/RPP and occupied/unknown rejection retained. Controller/native decisions and original300s/.35/.05/.1/5s, default smoothing limits, wall callback timer and Gazebo physics unchanged. New clean full57 uses identical fixed0..79 affinity. All initial and ten fixed original subgates must pass before first809. Preserve every failure, no whole-episode retry/backfill. Any core change after809 exposure requires genuinely new world/seed/fault.",
     "controller_freeze_history": [
       {
         "predeclared_at_utc": "2026-10-04T14:45:09.824843+00:00",
@@ -550,6 +550,17 @@
         "started_count": 16,
         "unrun_episode_count": 41,
         "evidence": "20261005_p3b5_fixed_environment_failed_candidate.json"
+      },
+      {
+        "predeclared_at_utc": "2026-10-05T01:14:18.395120+00:00",
+        "controller_content_sha256": "a4fb96c3486558bfe4c816da5e64c80a86a683075697e60d5ae3c13fd5b4f0e1",
+        "frozen_commit": "196154e6d8627d48b0c6a2747c52f35ac3f5eed9",
+        "battery_manager_content_sha256": "6eb5c3fb074175ec4b1be33b36970e8ebd4d4aae8f6b2d18619f2576d5e36d42",
+        "status": "FAIL: nine started fixed originals, lab202 late observer return; original15/42 preserved",
+        "new_holdout_exposed": false,
+        "started_count": 15,
+        "unrun_episode_count": 42,
+        "evidence": "20261005_p3b5_observer_late_charge_failed_candidate.json"
       }
     ],
     "actual_launch_start_geometry_check": {
@@ -586,7 +597,7 @@
         "target": 6.237005768508876
       }
     },
-    "battery_manager_content_sha256": "6eb5c3fb074175ec4b1be33b36970e8ebd4d4aae8f6b2d18619f2576d5e36d42",
+    "battery_manager_content_sha256": "3a769dd71916681b1e5ee4756e3ecf71a152d02b934d73a4cc0da2cdb88bfd19",
     "staging_apparatus_content_sha256": "47ce7998e212a9463ab657bbc0b121d4903ed886016bbf0fd3a2399c986da05d",
     "controller_source_commit": "e0b0345effe09e77e977feef3a8da1d4d89bb337",
     "independent_development_evidence": "20261005_p3b5_exploration_heading_development.json",
@@ -676,6 +687,16 @@
       ],
       "scope": "All ten fixed originals and their observers use identical0..79 CPU affinity; independent worlds may run concurrently on that common scheduler pool. Existing strict same_candidate/environment comparison remains unchanged.",
       "resource_limitation": "CPU affinity does not isolate host scheduling, SMT or foreign processes. No causal performance claims across cohorts."
-    }
+    },
+    "nav2_parameter_files_content_sha256": {
+      "src/multi_robot/params/nav2_params_tb1_0.yaml": "bec6e3965f9f60efc6756675677e5d89fe8b526a252cbe91c34805fbb415feb1",
+      "src/multi_robot/params/nav2_params_tb2_0.yaml": "e451d08f764617b7b2bbbbb8b35c1c008afb267b98a11dc431a49fb3489c55f8",
+      "src/multi_robot/params/nav2_params_tb3_0.yaml": "d1000fa2d6457a5acf972426e971a7abde71a418d3d34f22d8de29b05a9fe06c",
+      "src/multi_robot/params/nav2_params_tb4_0.yaml": "122b864aa3962ae0291ba87e67a3adb02de10fd8316311d4a82dd30b1f1ba306"
+    },
+    "slam_parameter_files_content_sha256": {
+      "src/slam_toolbox/config/mapper_params_online_multi_async.yaml": "d5d73fbe7f184528c9817492e696ad13ab1e2e1400020ee690f973818aad3c45"
+    },
+    "preceding_development_evidence": "20261006_p3b5_return_escape_prefix_development.json"
   }
 }

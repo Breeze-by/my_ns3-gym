@@ -7062,3 +7062,16 @@ ROS_DOMAIN_ID=28 GAZEBO_MASTER_URI=http://127.0.0.1:19253 /usr/bin/python3 /home
 ```bash
 /usr/bin/python3 /tmp/audit_p3b5_v100_retained_development.py > /tmp/p3b5_v100_retained_development_audit.log 2>&1
 ```
+
+## 2026-10-06 P3B.5 v101未暴露留出前瞻协议
+
+2026-10-06 P3B.5 v101前瞻正式协议：v100全部六个独立开发原owner/观察器自然关闭且完整PASS归档后，更新当前control与battery源hash、四Nav2参数与SLAM2s参数，保持尚未执行的809.world/seed809/fault28091/目标(4.4,-3.4)/3rE45与原静态声明字节；原v80的15started/42unrun失败及其旧controller/battery/hash保留在冻结历史。开发源码仍为591组件17.28s、四包5.26s、3r源码零旁路；仅原已知自由净空逃离先单独执行，再于原回调重规划长返充，原占用/未知起点/障碍/净空/储备/Smac/RPP保护与时限不改。61配置检查、27case/41unique validate-only和source旁路PASS，无Gazebo任务启动。正式57格包括27pair/41主格、十fixed和六安全探针；所有fixed与AP观察器统一CPU0–79，其它池仍20逻辑CPU分区，独立world可并行同world seed串行，宿主/SMT共享不提供因果或最坏时间保证。AP只读参数请求使用有界2s重发，只测真实Nav2时钟/SLAM参数和map源龄，不重试任务、不续源header、不用于控制。所有源码/helper/协议首次执行前hash冻结，全部started原任务自然关闭前不改；原300s/.35/.05/.1/5s与TTLs/故障强度保持。必须先forced ideal原生保持、E0反例、真实受控断网返航与十fixed全部PASS，才能首次809及剩余主/安全矩阵；任何失败原样保留，无整轮重试或回填。证据report/20261006_p3b5_return_escape_holdout_protocol.json。P3B.5尚待完整严格门禁，无ns3/WiFi/RL。
+
+canonical ROS cwd；source Humble/install；PYTHONNOUSERSITE=1，rtk bash -lc；无新增任务原始；固定任务正式入口继续run_p2d_baseline.py，十格统一taskset -c0-79；没有改launch默认参数：
+
+```bash
+/usr/bin/python3 /tmp/refreeze_p3b5_v101_return_escape_protocol.py
+/usr/bin/python3 -m pytest -q scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py > /tmp/p3b5_v101_config_checks.log 2>&1
+/usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v101_validation --ros-domain-base 50 --validate-only > /tmp/p3b5_v101_validate_only.log 2>&1
+/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v101_source_audit.log 2>&1
+```

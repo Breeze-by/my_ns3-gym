@@ -1,0 +1,380 @@
+{
+  "status": "PROSPECTIVE FROZEN PROTOCOL; formal full57 pending",
+  "recorded_at_utc": "2026-10-06T04:25:25.264293+00:00",
+  "development_commit": "4233c620cb714f87a9c3067ff8fd9ce0bb267e2d",
+  "holdout_declaration": {
+    "predeclared_at_utc": "2026-10-06T04:24:38.315863+00:00",
+    "world": "p3b5_holdout809.world",
+    "world_content_sha256": "2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd",
+    "gazebo_seed": 809,
+    "fault_seed": 28091,
+    "proposal": {
+      "proposed_at_utc": "2026-10-04T14:36:39.059239+00:00",
+      "world": "p3b5_holdout809.world",
+      "world_content_sha256": "2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd",
+      "gazebo_seed": 809,
+      "fault_seed": 28091,
+      "target": [
+        4.4,
+        -3.4
+      ],
+      "robot_count": 3,
+      "initial_energy": 45,
+      "duration_sec": 300,
+      "scope": "New staggered horizontal partition/central opening topology plus rotated blocks/pillar, not old707 rename/seed-only change. No Gazebo/task/vision/motion evaluation has been performed. Static geometry validation only before prospective canonical freeze; controller must be frozen before first exposure.",
+      "design_basis": "Same lab-sized box, valid start/chargers and reachable target with ordinary .45m clearance. Geometry selected before any new heldout run; never choose or tune based on heldout outcomes.",
+      "previous_exposed_world": "p3a5_holdout.world",
+      "previous_exposed_seed": 707,
+      "previous_independent_fault_seed": 27077,
+      "previous_first_exposure_commit": "011786e53e4c7c2a0eb1e2358fc0b81f651a8316"
+    },
+    "static_geometry_check": {
+      "status": "PASS",
+      "scope": "Static SDF/visual collision agreement, supported box rasterization and .45m-clearance connected start/charger/target geometry only. No task/controller/vision run or performance tuning.",
+      "world_content_sha256": "2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd",
+      "rectangle_count": 10,
+      "unsupported_collision_count": 0,
+      "points": {
+        "tb1_start_charge": [
+          0.0,
+          0.0
+        ],
+        "tb2_start_charge": [
+          0.0,
+          0.45
+        ],
+        "tb3_start_charge": [
+          0.0,
+          0.9
+        ],
+        "target": [
+          4.4,
+          -3.4
+        ]
+      },
+      "connected_distances_from_tb1_m": {
+        "tb1_start_charge": 0.0,
+        "tb2_start_charge": 0.45,
+        "tb3_start_charge": 0.9,
+        "target": 6.4234018715767665
+      },
+      "original_point_label_correction": "The retained tb1_start_charge/tb3_start_charge labels were generic sample points, not actual launch poses. Original values are historical; use supplemental actual_launch_start_geometry_check below. No world/control/mission run was used to validate or tune809 geometry."
+    },
+    "controller_content_sha256": "d04f17fa20f0063ccfbc20ab25254bd1a532bf60b067b063c55bff3335c62298",
+    "first_task_exposure": "Pending:809/world/seed/fault never executed. Local diagnostics, smoother command-expiry sim-clock repair, genuine SLAM map generation period2s and fresh final-frontier gain replanning during progress toward a funded body/route-safe visible alternative, and safe valid-confirmation observer heading when target LOS is unknown; original handoff5s remains have passed six independent originals with actual Nav2 clock/SLAM parameters and measured map source ages. Map source headers and TTL unchanged. Map traffic is increased consistently for all ideal/fault baselines; host-clock publisher cadence is not a maximum simulation source-age guarantee. Only local charging-leg segmentation additionally stages its original known-free clearance escape before a long home leg, with original callbacks, Smac/RPP and occupied/unknown rejection retained. Controller/native decisions and original300s/.35/.05/.1/5s, default smoothing limits, wall callback timer and Gazebo physics unchanged. New clean full57 uses identical fixed0..79 affinity. All initial and ten fixed original subgates must pass before first809. Preserve every failure, no whole-episode retry/backfill. Any core change after809 exposure requires genuinely new world/seed/fault.",
+    "controller_freeze_history": [
+      {
+        "predeclared_at_utc": "2026-10-04T14:45:09.824843+00:00",
+        "controller_content_sha256": "478fc6929675fed0f6435a3b6c81f7549655f438dbed9fae1e6ac0fa1e857960",
+        "frozen_commit": "3d079215caacf9e5e31866ca4db236a5cff3236c",
+        "new_holdout_exposed": false,
+        "evidence": "20261004_p3b5_charge_time_lab101_failed_candidate.json"
+      },
+      {
+        "development_commit": "f8297fa86a8227e99871f5b4916f15dcfa8d17e6",
+        "controller_content_sha256": "ef7f602058e2ab8e3659c425d8e432f36ef584a7fdb240d888f2607f77ab2018",
+        "new_holdout_exposed": false,
+        "evidence": "20261005_p3b5_observer_heading_development.json"
+      },
+      {
+        "predeclared_at_utc": "2026-10-04T16:14:30.112794+00:00",
+        "controller_content_sha256": "116d26e46a779694a290230aa5c2d2132e460a0ff2d5945eb09e215b8001d47a",
+        "frozen_commit": "cf73eebd875d990bd782cef572d09b484b23900a",
+        "new_holdout_exposed": false,
+        "evidence": "20261005_p3b5_confirmation_gap_forced_failed_candidate.json"
+      },
+      {
+        "development_commit": "5dcb398e1dbe72f9c34c667f924b2306ff11ffed",
+        "controller_content_sha256": "649c3f15021344ba3975a2b21caefd7faf70a002908f780bec86140af67d26f1",
+        "status": "FAIL",
+        "new_holdout_exposed": false,
+        "evidence": "20261005_p3b5_interrupted_frontier_development.json"
+      },
+      {
+        "development_commit": "79a3b05b5101418cd99dd8cb7cd6d4630c0eb823",
+        "controller_content_sha256": "ceba4463097419c53e9ae650dff47ea7ab4fa63e9f83d6410e572fcc55b527ae",
+        "status": "FAIL",
+        "new_holdout_exposed": false,
+        "evidence": "20261005_p3b5_parking_return_development.json"
+      },
+      {
+        "development_commit": "cf829cf23ae56adb65ca9a54b13b34132cddbd09",
+        "controller_content_sha256": "a90e71fa4fc1cbbeb9e58d8fef1e41b943a05cd53cdd503ecc4d821f0e5418de",
+        "status": "FAIL",
+        "new_holdout_exposed": false,
+        "evidence": "20261005_p3b5_frontier_charge_admission_development.json"
+      },
+      {
+        "development_commit": "d2a9b47b4deb5b19294d529a5a3209ceddef9d93",
+        "controller_content_sha256": "6b4c46e4c6a5c02298f95d2266ba2e25becc220922661a3f9c11d1d9f7c3170f",
+        "status": "FAIL",
+        "new_holdout_exposed": false,
+        "evidence": "20261005_p3b5_charging_fairness_development.json"
+      },
+      {
+        "development_commit": "a113550bec575cee8b386befec53f5130c18e482",
+        "controller_content_sha256": "3c3f2f2b534181dec060e0c136e938d3ed812ec6cbc2c29528ea3c8864f2923c",
+        "status": "FAIL",
+        "new_holdout_exposed": false,
+        "evidence": "20261005_p3b5_opportunity_charging_development.json"
+      },
+      {
+        "development_commit": "a49924abd43ff4406a982d73415b2ac304444cea",
+        "controller_content_sha256": "2e04f15d57a3c6c462f7d01b866d6669ffacfd24d9c66906fcbc859d4d35fef6",
+        "status": "PASS",
+        "new_holdout_exposed": false,
+        "evidence": "20261005_p3b5_contact_heading_development.json"
+      },
+      {
+        "predeclared_at_utc": "2026-10-04T19:52:41.099077+00:00",
+        "controller_content_sha256": "2e04f15d57a3c6c462f7d01b866d6669ffacfd24d9c66906fcbc859d4d35fef6",
+        "battery_manager_content_sha256": "6eb5c3fb074175ec4b1be33b36970e8ebd4d4aae8f6b2d18619f2576d5e36d42",
+        "staging_apparatus_sha256": "745d3251dab290e6e8996ace7f5e6e12674e2aa455c29e3479255ab061059241",
+        "frozen_commit": "61de29f69d3d8e92f83fa21dc2b202cef032f662",
+        "status": "FAIL: preparation deadline",
+        "new_holdout_exposed": false,
+        "evidence": "20261005_p3b5_staging_geometry_failed_candidate.json"
+      },
+      {
+        "predeclared_at_utc": "2026-10-04T20:20:07.756773+00:00",
+        "controller_content_sha256": "2e04f15d57a3c6c462f7d01b866d6669ffacfd24d9c66906fcbc859d4d35fef6",
+        "battery_manager_content_sha256": "6eb5c3fb074175ec4b1be33b36970e8ebd4d4aae8f6b2d18619f2576d5e36d42",
+        "staging_apparatus_sha256": "47ce7998e212a9463ab657bbc0b121d4903ed886016bbf0fd3a2399c986da05d",
+        "frozen_commit": "a7952b59ae9df722eabf3beddc5c159bf4e9a01c",
+        "status": "FAIL: original lab202 rally corridor timeout",
+        "new_holdout_exposed": false,
+        "started_count": 8,
+        "unrun_episode_count": 49,
+        "evidence": "20261005_p3b5_rally_corridor_lab202_failed_candidate.json"
+      },
+      {
+        "predeclared_at_utc": "2026-10-04T21:40:45.633755+00:00",
+        "controller_content_sha256": "aa6cd7c03016e38ae7f5eec808b226b5fdb67f206a1038f7e61d27c4a06cb9d2",
+        "battery_manager_content_sha256": "6eb5c3fb074175ec4b1be33b36970e8ebd4d4aae8f6b2d18619f2576d5e36d42",
+        "staging_apparatus_sha256": "47ce7998e212a9463ab657bbc0b121d4903ed886016bbf0fd3a2399c986da05d",
+        "task_evaluator_content_sha256": "fad34dc25162716602f6b0c0223bcfc252d311d192824cf61dcd82e56c02a865",
+        "frozen_commit": "4653c13e6de18b8ad8ade2bc4c734ab76005c9b2",
+        "status": "FAIL: original E0 ideal missing native battery snapshot",
+        "new_holdout_exposed": false,
+        "started_count": 6,
+        "unrun_episode_count": 51,
+        "evidence": "20261005_p3b5_failure_battery_snapshot_failed_candidate.json"
+      },
+      {
+        "predeclared_at_utc": "2026-10-04T22:04:56.184142+00:00",
+        "controller_content_sha256": "aa6cd7c03016e38ae7f5eec808b226b5fdb67f206a1038f7e61d27c4a06cb9d2",
+        "battery_manager_content_sha256": "6eb5c3fb074175ec4b1be33b36970e8ebd4d4aae8f6b2d18619f2576d5e36d42",
+        "staging_apparatus_sha256": "47ce7998e212a9463ab657bbc0b121d4903ed886016bbf0fd3a2399c986da05d",
+        "task_evaluator_content_sha256": "bac6822d1c803ba1fdd9784d774d37b05f8701b4da7a8ea477dde69189d57630",
+        "frozen_commit": "a9745c393194aa941e289d812a57b2c890918380",
+        "status": "FAIL: original lab202 postcharge rally timeout",
+        "new_holdout_exposed": false,
+        "started_count": 15,
+        "unrun_episode_count": 42,
+        "evidence": "20261005_p3b5_postcharge_lab202_failed_candidate.json"
+      },
+      {
+        "controller_content_sha256": "70d40e86cd39888cfaad2fbf9c602de44572ce4290a3f5ff5044231cbc15ef1b",
+        "frozen_commit": "b5f6be544bab0cca7b7022648b8a4a6ff1f53671",
+        "status": "FAIL: independent zero-injection ideal late discovery/rally timeout",
+        "new_holdout_exposed": false,
+        "started_count": 6,
+        "scope": "independent development; no formal replacement",
+        "evidence": "20261005_p3b5_incoming_heading_cache_development.json"
+      },
+      {
+        "controller_content_sha256": "98f45f5f61b85e4121543fff62fd545f4ff429d4beae445e3601fa76ac4570d5",
+        "frozen_commit": "6fb534998f652af8a388f80581ec69c542319ddb",
+        "status": "FAIL: six-original marginal-information development, two fixed timeouts and zero ideal missing native hold",
+        "new_holdout_exposed": false,
+        "started_count": 6,
+        "scope": "independent development; no formal replacement",
+        "evidence": "20261005_p3b5_marginal_information_development.json"
+      },
+      {
+        "predeclared_at_utc": "2026-10-05T00:18:32.259962+00:00",
+        "controller_content_sha256": "a4fb96c3486558bfe4c816da5e64c80a86a683075697e60d5ae3c13fd5b4f0e1",
+        "frozen_commit": "c4c943ffc5dcecc7252f1eaba2f52dd7ce7f016d",
+        "status": "FAIL: fixed aggregator rejects prospectively different cpu_affinity; all ten original tasks native COMPLETE",
+        "new_holdout_exposed": false,
+        "started_count": 16,
+        "unrun_episode_count": 41,
+        "evidence": "20261005_p3b5_fixed_environment_failed_candidate.json"
+      },
+      {
+        "predeclared_at_utc": "2026-10-05T01:14:18.395120+00:00",
+        "controller_content_sha256": "a4fb96c3486558bfe4c816da5e64c80a86a683075697e60d5ae3c13fd5b4f0e1",
+        "frozen_commit": "196154e6d8627d48b0c6a2747c52f35ac3f5eed9",
+        "battery_manager_content_sha256": "6eb5c3fb074175ec4b1be33b36970e8ebd4d4aae8f6b2d18619f2576d5e36d42",
+        "status": "FAIL: nine started fixed originals, lab202 late observer return; original15/42 preserved",
+        "new_holdout_exposed": false,
+        "started_count": 15,
+        "unrun_episode_count": 42,
+        "evidence": "20261005_p3b5_observer_late_charge_failed_candidate.json"
+      }
+    ],
+    "actual_launch_start_geometry_check": {
+      "status": "PASS",
+      "checked_at_utc": "2026-10-04T15:11:57.995218+00:00",
+      "initial_record_annotation": "Original static check used generic sample points mislabeled start/charge. Original source/data retained. This check uses actual frozen launch tb1(0,-.45),tb2(0,.45),tb3(.45,0) for both spawn and charge; no world geometry, task parameter or algorithm change.",
+      "launch_content_sha256": "e67270a7b4e756ce55b4cf9b20298c2363c82e870e790d99a4e846d64cfdf52d",
+      "scope": "Static SDF/visual collision agreement, supported box rasterization and .45m-clearance connected start/charger/target geometry only. No task/controller/vision run or performance tuning.",
+      "world_content_sha256": "2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd",
+      "rectangle_count": 10,
+      "unsupported_collision_count": 0,
+      "points": {
+        "tb1_start_charge": [
+          0.0,
+          -0.45
+        ],
+        "tb2_start_charge": [
+          0.0,
+          0.45
+        ],
+        "tb3_start_charge": [
+          0.45,
+          0.0
+        ],
+        "target": [
+          4.4,
+          -3.4
+        ]
+      },
+      "connected_distances_from_tb1_m": {
+        "tb1_start_charge": 0.0,
+        "tb2_start_charge": 0.9,
+        "tb3_start_charge": 0.636396103067893,
+        "target": 6.237005768508876
+      }
+    },
+    "battery_manager_content_sha256": "3a769dd71916681b1e5ee4756e3ecf71a152d02b934d73a4cc0da2cdb88bfd19",
+    "staging_apparatus_content_sha256": "47ce7998e212a9463ab657bbc0b121d4903ed886016bbf0fd3a2399c986da05d",
+    "controller_source_commit": "e0b0345effe09e77e977feef3a8da1d4d89bb337",
+    "independent_development_evidence": "20261005_p3b5_exploration_heading_development.json",
+    "task_evaluator_content_sha256": "bac6822d1c803ba1fdd9784d774d37b05f8701b4da7a8ea477dde69189d57630",
+    "fixed_environment_policy": {
+      "cpu_affinity": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79
+      ],
+      "scope": "All ten fixed originals and their observers use identical0..79 CPU affinity; independent worlds may run concurrently on that common scheduler pool. Existing strict same_candidate/environment comparison remains unchanged.",
+      "resource_limitation": "CPU affinity does not isolate host scheduling, SMT or foreign processes. No causal performance claims across cohorts."
+    },
+    "nav2_parameter_files_content_sha256": {
+      "src/multi_robot/params/nav2_params_tb1_0.yaml": "bec6e3965f9f60efc6756675677e5d89fe8b526a252cbe91c34805fbb415feb1",
+      "src/multi_robot/params/nav2_params_tb2_0.yaml": "e451d08f764617b7b2bbbbb8b35c1c008afb267b98a11dc431a49fb3489c55f8",
+      "src/multi_robot/params/nav2_params_tb3_0.yaml": "d1000fa2d6457a5acf972426e971a7abde71a418d3d34f22d8de29b05a9fe06c",
+      "src/multi_robot/params/nav2_params_tb4_0.yaml": "122b864aa3962ae0291ba87e67a3adb02de10fd8316311d4a82dd30b1f1ba306"
+    },
+    "slam_parameter_files_content_sha256": {
+      "src/slam_toolbox/config/mapper_params_online_multi_async.yaml": "d5d73fbe7f184528c9817492e696ad13ab1e2e1400020ee690f973818aad3c45"
+    },
+    "preceding_development_evidence": "20261006_p3b5_return_escape_prefix_development.json"
+  },
+  "policy": "2026-10-06 P3B.5 v101前瞻正式协议：v100全部六个独立开发原owner/观察器自然关闭且完整PASS归档后，更新当前control与battery源hash、四Nav2参数与SLAM2s参数，保持尚未执行的809.world/seed809/fault28091/目标(4.4,-3.4)/3rE45与原静态声明字节；原v80的15started/42unrun失败及其旧controller/battery/hash保留在冻结历史。开发源码仍为591组件17.28s、四包5.26s、3r源码零旁路；仅原已知自由净空逃离先单独执行，再于原回调重规划长返充，原占用/未知起点/障碍/净空/储备/Smac/RPP保护与时限不改。61配置检查、27case/41unique validate-only和source旁路PASS，无Gazebo任务启动。正式57格包括27pair/41主格、十fixed和六安全探针；所有fixed与AP观察器统一CPU0–79，其它池仍20逻辑CPU分区，独立world可并行同world seed串行，宿主/SMT共享不提供因果或最坏时间保证。AP只读参数请求使用有界2s重发，只测真实Nav2时钟/SLAM参数和map源龄，不重试任务、不续源header、不用于控制。所有源码/helper/协议首次执行前hash冻结，全部started原任务自然关闭前不改；原300s/.35/.05/.1/5s与TTLs/故障强度保持。必须先forced ideal原生保持、E0反例、真实受控断网返航与十fixed全部PASS，才能首次809及剩余主/安全矩阵；任何失败原样保留，无整轮重试或回填。证据report/20261006_p3b5_return_escape_holdout_protocol.json。P3B.5尚待完整严格门禁，无ns3/WiFi/RL。",
+  "records": {
+    "/tmp/refreeze_p3b5_v101_return_escape_protocol.py": {
+      "sha256": "3c8324d08e8f1f8db3c865281d7503a5d0c0c1682b795304361e3f036448d934",
+      "text": "\"\"\"Prospective unexposed protocol only after the six observation/connection originals pass.\"\"\"\nimport hashlib,json,socket,subprocess\nfrom datetime import datetime,timezone\nfrom pathlib import Path\nROOT=Path('/home/zhuyulab/ns3-workspace');ROS=ROOT/'ros2_ws/ros2-multi-robot-automap';W=ROOT/'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl'\ndef git(*a):return subprocess.check_output(['rtk','proxy','git',*a],cwd=ROOT,text=True).strip()\nassert not git('diff','HEAD','--name-only') and git('rev-parse','HEAD')==git('rev-parse','origin/main')\ndev=json.loads((W/'report/20261006_p3b5_return_escape_prefix_development.json').read_text())\nassert dev['status']=='PASS' and len(dev['evidence'])==6 and dev['declaration'].get('finished_at_utc') and not dev['new_holdout_exposed']\nfor row in dev['declaration']['executions']:\n assert not Path('/proc',str(row['pid'])).exists()\n with socket.socket() as s:assert s.connect_ex(('127.0.0.1',row['plan']['port']))!=0\nassert not dev['failures'] and not dev['measurement_failures']\nfor e in dev['evidence']:\n assert e['temporal_audit_pass'] and not e['runtime_bypass_violations'] and e['development_check']=='PASS'\n values=e['ap_metadata']['nav2_clock_values'];assert len(values)==(6 if e['kind'].startswith('lab') else 4) and all(v is True for v in values.values())\n slam=e['ap_metadata']['slam_map_parameters'];assert len(slam)==(3 if e['kind'].startswith('lab') else 2) and all(v.get('use_sim_time') is True and v.get('map_update_interval')==2. for v in slam.values())\nprior=json.loads((W/'report/20261005_p3b5_observer_late_charge_failed_candidate.json').read_text())\nassert prior['started_count']==prior['raw_result_count']==15 and prior['unrun_episode_count']==42 and not prior['new_holdout_exposed'] and prior['closure']['status']=='PASS'\npath=ROS/'scripts/p3b5_fault_manifest.json';config=json.loads(path.read_text());d=config['holdout_world_declaration']\ndef sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()\nassert d['controller_content_sha256']==prior['commands']['fresh_holdout']['controller_content_sha256']\nassert d['battery_manager_content_sha256']==prior['commands']['fresh_holdout']['battery_manager_content_sha256']\ncomponent=json.loads((W/'report/20261006_p3b5_return_escape_prefix_component.json').read_text());assert component['status']=='COMPONENT_PASS'\nassert sha(ROS/'src/multi_robot_exploration/multi_robot_exploration/battery_manager.py')==component['source_sha256']['src/multi_robot_exploration/multi_robot_exploration/battery_manager.py']\nfor field,relative in (('staging_apparatus_content_sha256','scripts/stage_p3b5_return_probe.py'),('task_evaluator_content_sha256','src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py'),('world_content_sha256','src/multi_robot/worlds/p3b5_holdout809.world')):assert sha(ROS/relative)==d[field]\nfor summary in (ROS/'log/p3b5').glob('*/summary.json'):\n rows=json.loads(summary.read_text()).get('episodes',{});rows=rows.values() if isinstance(rows,dict) else rows\n for row in rows:\n  scenario=row.get('scenario',{});assert not isinstance(scenario,dict) or Path(scenario.get('world','')).name!=d['world']\nd['controller_freeze_history'].append(dict(predeclared_at_utc=d['predeclared_at_utc'],controller_content_sha256=d['controller_content_sha256'],frozen_commit=prior['frozen_commit'],battery_manager_content_sha256=d['battery_manager_content_sha256'],status='FAIL: nine started fixed originals, lab202 late observer return; original15/42 preserved',new_holdout_exposed=False,started_count=15,unrun_episode_count=42,evidence='20261005_p3b5_observer_late_charge_failed_candidate.json'))\nd['predeclared_at_utc']=datetime.now(timezone.utc).isoformat()\nd['controller_content_sha256']=sha(ROS/'src/multi_robot_exploration/multi_robot_exploration/control.py')\nd['battery_manager_content_sha256']=sha(ROS/'src/multi_robot_exploration/multi_robot_exploration/battery_manager.py')\nd['nav2_parameter_files_content_sha256']={str(p.relative_to(ROS)):sha(p) for p in sorted((ROS/'src/multi_robot/params').glob('nav2_params_tb[1-4]_0.yaml'))}\nassert len(d['nav2_parameter_files_content_sha256'])==4\nd['slam_parameter_files_content_sha256']={str((ROS/'src/slam_toolbox/config/mapper_params_online_multi_async.yaml').relative_to(ROS)):sha(ROS/'src/slam_toolbox/config/mapper_params_online_multi_async.yaml')}\nd['preceding_development_evidence']='20261006_p3b5_return_escape_prefix_development.json'\nassert d['fixed_environment_policy']['cpu_affinity']==list(range(80))\nd['first_task_exposure']='Pending:809/world/seed/fault never executed. Local diagnostics, smoother command-expiry sim-clock repair, genuine SLAM map generation period2s and fresh final-frontier gain replanning during progress toward a funded body/route-safe visible alternative, and safe valid-confirmation observer heading when target LOS is unknown; original handoff5s remains have passed six independent originals with actual Nav2 clock/SLAM parameters and measured map source ages. Map source headers and TTL unchanged. Map traffic is increased consistently for all ideal/fault baselines; host-clock publisher cadence is not a maximum simulation source-age guarantee. Only local charging-leg segmentation additionally stages its original known-free clearance escape before a long home leg, with original callbacks, Smac/RPP and occupied/unknown rejection retained. Controller/native decisions and original300s/.35/.05/.1/5s, default smoothing limits, wall callback timer and Gazebo physics unchanged. New clean full57 uses identical fixed0..79 affinity. All initial and ten fixed original subgates must pass before first809. Preserve every failure, no whole-episode retry/backfill. Any core change after809 exposure requires genuinely new world/seed/fault.'\npath.write_text(json.dumps(config,indent=2,ensure_ascii=False)+'\\n')\nout=Path('/tmp/p3b5_v101_holdout_refreeze.json');assert not out.exists();out.write_text(json.dumps(dict(predeclared_at_utc=d['predeclared_at_utc'],declaration=d,writer_source=Path(__file__).read_text()),indent=2,ensure_ascii=False)+'\\n')\nprint('Prospective unexposed809 protocol',d['controller_content_sha256'],'actualclock and map source-age proof;all fixed0-79; no simulation started')\n"
+    },
+    "/tmp/p3b5_v101_holdout_refreeze.json": {
+      "sha256": "bb3433ea72e3dec9321c9a41670066bce26fbd22cbea559d2724967a1b25e0ce",
+      "text": "{\n  \"predeclared_at_utc\": \"2026-10-06T04:24:38.315863+00:00\",\n  \"declaration\": {\n    \"predeclared_at_utc\": \"2026-10-06T04:24:38.315863+00:00\",\n    \"world\": \"p3b5_holdout809.world\",\n    \"world_content_sha256\": \"2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd\",\n    \"gazebo_seed\": 809,\n    \"fault_seed\": 28091,\n    \"proposal\": {\n      \"proposed_at_utc\": \"2026-10-04T14:36:39.059239+00:00\",\n      \"world\": \"p3b5_holdout809.world\",\n      \"world_content_sha256\": \"2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd\",\n      \"gazebo_seed\": 809,\n      \"fault_seed\": 28091,\n      \"target\": [\n        4.4,\n        -3.4\n      ],\n      \"robot_count\": 3,\n      \"initial_energy\": 45,\n      \"duration_sec\": 300,\n      \"scope\": \"New staggered horizontal partition/central opening topology plus rotated blocks/pillar, not old707 rename/seed-only change. No Gazebo/task/vision/motion evaluation has been performed. Static geometry validation only before prospective canonical freeze; controller must be frozen before first exposure.\",\n      \"design_basis\": \"Same lab-sized box, valid start/chargers and reachable target with ordinary .45m clearance. Geometry selected before any new heldout run; never choose or tune based on heldout outcomes.\",\n      \"previous_exposed_world\": \"p3a5_holdout.world\",\n      \"previous_exposed_seed\": 707,\n      \"previous_independent_fault_seed\": 27077,\n      \"previous_first_exposure_commit\": \"011786e53e4c7c2a0eb1e2358fc0b81f651a8316\"\n    },\n    \"static_geometry_check\": {\n      \"status\": \"PASS\",\n      \"scope\": \"Static SDF/visual collision agreement, supported box rasterization and .45m-clearance connected start/charger/target geometry only. No task/controller/vision run or performance tuning.\",\n      \"world_content_sha256\": \"2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd\",\n      \"rectangle_count\": 10,\n      \"unsupported_collision_count\": 0,\n      \"points\": {\n        \"tb1_start_charge\": [\n          0.0,\n          0.0\n        ],\n        \"tb2_start_charge\": [\n          0.0,\n          0.45\n        ],\n        \"tb3_start_charge\": [\n          0.0,\n          0.9\n        ],\n        \"target\": [\n          4.4,\n          -3.4\n        ]\n      },\n      \"connected_distances_from_tb1_m\": {\n        \"tb1_start_charge\": 0.0,\n        \"tb2_start_charge\": 0.45,\n        \"tb3_start_charge\": 0.9,\n        \"target\": 6.4234018715767665\n      },\n      \"original_point_label_correction\": \"The retained tb1_start_charge/tb3_start_charge labels were generic sample points, not actual launch poses. Original values are historical; use supplemental actual_launch_start_geometry_check below. No world/control/mission run was used to validate or tune809 geometry.\"\n    },\n    \"controller_content_sha256\": \"d04f17fa20f0063ccfbc20ab25254bd1a532bf60b067b063c55bff3335c62298\",\n    \"first_task_exposure\": \"Pending:809/world/seed/fault never executed. Local diagnostics, smoother command-expiry sim-clock repair, genuine SLAM map generation period2s and fresh final-frontier gain replanning during progress toward a funded body/route-safe visible alternative, and safe valid-confirmation observer heading when target LOS is unknown; original handoff5s remains have passed six independent originals with actual Nav2 clock/SLAM parameters and measured map source ages. Map source headers and TTL unchanged. Map traffic is increased consistently for all ideal/fault baselines; host-clock publisher cadence is not a maximum simulation source-age guarantee. Only local charging-leg segmentation additionally stages its original known-free clearance escape before a long home leg, with original callbacks, Smac/RPP and occupied/unknown rejection retained. Controller/native decisions and original300s/.35/.05/.1/5s, default smoothing limits, wall callback timer and Gazebo physics unchanged. New clean full57 uses identical fixed0..79 affinity. All initial and ten fixed original subgates must pass before first809. Preserve every failure, no whole-episode retry/backfill. Any core change after809 exposure requires genuinely new world/seed/fault.\",\n    \"controller_freeze_history\": [\n      {\n        \"predeclared_at_utc\": \"2026-10-04T14:45:09.824843+00:00\",\n        \"controller_content_sha256\": \"478fc6929675fed0f6435a3b6c81f7549655f438dbed9fae1e6ac0fa1e857960\",\n        \"frozen_commit\": \"3d079215caacf9e5e31866ca4db236a5cff3236c\",\n        \"new_holdout_exposed\": false,\n        \"evidence\": \"20261004_p3b5_charge_time_lab101_failed_candidate.json\"\n      },\n      {\n        \"development_commit\": \"f8297fa86a8227e99871f5b4916f15dcfa8d17e6\",\n        \"controller_content_sha256\": \"ef7f602058e2ab8e3659c425d8e432f36ef584a7fdb240d888f2607f77ab2018\",\n        \"new_holdout_exposed\": false,\n        \"evidence\": \"20261005_p3b5_observer_heading_development.json\"\n      },\n      {\n        \"predeclared_at_utc\": \"2026-10-04T16:14:30.112794+00:00\",\n        \"controller_content_sha256\": \"116d26e46a779694a290230aa5c2d2132e460a0ff2d5945eb09e215b8001d47a\",\n        \"frozen_commit\": \"cf73eebd875d990bd782cef572d09b484b23900a\",\n        \"new_holdout_exposed\": false,\n        \"evidence\": \"20261005_p3b5_confirmation_gap_forced_failed_candidate.json\"\n      },\n      {\n        \"development_commit\": \"5dcb398e1dbe72f9c34c667f924b2306ff11ffed\",\n        \"controller_content_sha256\": \"649c3f15021344ba3975a2b21caefd7faf70a002908f780bec86140af67d26f1\",\n        \"status\": \"FAIL\",\n        \"new_holdout_exposed\": false,\n        \"evidence\": \"20261005_p3b5_interrupted_frontier_development.json\"\n      },\n      {\n        \"development_commit\": \"79a3b05b5101418cd99dd8cb7cd6d4630c0eb823\",\n        \"controller_content_sha256\": \"ceba4463097419c53e9ae650dff47ea7ab4fa63e9f83d6410e572fcc55b527ae\",\n        \"status\": \"FAIL\",\n        \"new_holdout_exposed\": false,\n        \"evidence\": \"20261005_p3b5_parking_return_development.json\"\n      },\n      {\n        \"development_commit\": \"cf829cf23ae56adb65ca9a54b13b34132cddbd09\",\n        \"controller_content_sha256\": \"a90e71fa4fc1cbbeb9e58d8fef1e41b943a05cd53cdd503ecc4d821f0e5418de\",\n        \"status\": \"FAIL\",\n        \"new_holdout_exposed\": false,\n        \"evidence\": \"20261005_p3b5_frontier_charge_admission_development.json\"\n      },\n      {\n        \"development_commit\": \"d2a9b47b4deb5b19294d529a5a3209ceddef9d93\",\n        \"controller_content_sha256\": \"6b4c46e4c6a5c02298f95d2266ba2e25becc220922661a3f9c11d1d9f7c3170f\",\n        \"status\": \"FAIL\",\n        \"new_holdout_exposed\": false,\n        \"evidence\": \"20261005_p3b5_charging_fairness_development.json\"\n      },\n      {\n        \"development_commit\": \"a113550bec575cee8b386befec53f5130c18e482\",\n        \"controller_content_sha256\": \"3c3f2f2b534181dec060e0c136e938d3ed812ec6cbc2c29528ea3c8864f2923c\",\n        \"status\": \"FAIL\",\n        \"new_holdout_exposed\": false,\n        \"evidence\": \"20261005_p3b5_opportunity_charging_development.json\"\n      },\n      {\n        \"development_commit\": \"a49924abd43ff4406a982d73415b2ac304444cea\",\n        \"controller_content_sha256\": \"2e04f15d57a3c6c462f7d01b866d6669ffacfd24d9c66906fcbc859d4d35fef6\",\n        \"status\": \"PASS\",\n        \"new_holdout_exposed\": false,\n        \"evidence\": \"20261005_p3b5_contact_heading_development.json\"\n      },\n      {\n        \"predeclared_at_utc\": \"2026-10-04T19:52:41.099077+00:00\",\n        \"controller_content_sha256\": \"2e04f15d57a3c6c462f7d01b866d6669ffacfd24d9c66906fcbc859d4d35fef6\",\n        \"battery_manager_content_sha256\": \"6eb5c3fb074175ec4b1be33b36970e8ebd4d4aae8f6b2d18619f2576d5e36d42\",\n        \"staging_apparatus_sha256\": \"745d3251dab290e6e8996ace7f5e6e12674e2aa455c29e3479255ab061059241\",\n        \"frozen_commit\": \"61de29f69d3d8e92f83fa21dc2b202cef032f662\",\n        \"status\": \"FAIL: preparation deadline\",\n        \"new_holdout_exposed\": false,\n        \"evidence\": \"20261005_p3b5_staging_geometry_failed_candidate.json\"\n      },\n      {\n        \"predeclared_at_utc\": \"2026-10-04T20:20:07.756773+00:00\",\n        \"controller_content_sha256\": \"2e04f15d57a3c6c462f7d01b866d6669ffacfd24d9c66906fcbc859d4d35fef6\",\n        \"battery_manager_content_sha256\": \"6eb5c3fb074175ec4b1be33b36970e8ebd4d4aae8f6b2d18619f2576d5e36d42\",\n        \"staging_apparatus_sha256\": \"47ce7998e212a9463ab657bbc0b121d4903ed886016bbf0fd3a2399c986da05d\",\n        \"frozen_commit\": \"a7952b59ae9df722eabf3beddc5c159bf4e9a01c\",\n        \"status\": \"FAIL: original lab202 rally corridor timeout\",\n        \"new_holdout_exposed\": false,\n        \"started_count\": 8,\n        \"unrun_episode_count\": 49,\n        \"evidence\": \"20261005_p3b5_rally_corridor_lab202_failed_candidate.json\"\n      },\n      {\n        \"predeclared_at_utc\": \"2026-10-04T21:40:45.633755+00:00\",\n        \"controller_content_sha256\": \"aa6cd7c03016e38ae7f5eec808b226b5fdb67f206a1038f7e61d27c4a06cb9d2\",\n        \"battery_manager_content_sha256\": \"6eb5c3fb074175ec4b1be33b36970e8ebd4d4aae8f6b2d18619f2576d5e36d42\",\n        \"staging_apparatus_sha256\": \"47ce7998e212a9463ab657bbc0b121d4903ed886016bbf0fd3a2399c986da05d\",\n        \"task_evaluator_content_sha256\": \"fad34dc25162716602f6b0c0223bcfc252d311d192824cf61dcd82e56c02a865\",\n        \"frozen_commit\": \"4653c13e6de18b8ad8ade2bc4c734ab76005c9b2\",\n        \"status\": \"FAIL: original E0 ideal missing native battery snapshot\",\n        \"new_holdout_exposed\": false,\n        \"started_count\": 6,\n        \"unrun_episode_count\": 51,\n        \"evidence\": \"20261005_p3b5_failure_battery_snapshot_failed_candidate.json\"\n      },\n      {\n        \"predeclared_at_utc\": \"2026-10-04T22:04:56.184142+00:00\",\n        \"controller_content_sha256\": \"aa6cd7c03016e38ae7f5eec808b226b5fdb67f206a1038f7e61d27c4a06cb9d2\",\n        \"battery_manager_content_sha256\": \"6eb5c3fb074175ec4b1be33b36970e8ebd4d4aae8f6b2d18619f2576d5e36d42\",\n        \"staging_apparatus_sha256\": \"47ce7998e212a9463ab657bbc0b121d4903ed886016bbf0fd3a2399c986da05d\",\n        \"task_evaluator_content_sha256\": \"bac6822d1c803ba1fdd9784d774d37b05f8701b4da7a8ea477dde69189d57630\",\n        \"frozen_commit\": \"a9745c393194aa941e289d812a57b2c890918380\",\n        \"status\": \"FAIL: original lab202 postcharge rally timeout\",\n        \"new_holdout_exposed\": false,\n        \"started_count\": 15,\n        \"unrun_episode_count\": 42,\n        \"evidence\": \"20261005_p3b5_postcharge_lab202_failed_candidate.json\"\n      },\n      {\n        \"controller_content_sha256\": \"70d40e86cd39888cfaad2fbf9c602de44572ce4290a3f5ff5044231cbc15ef1b\",\n        \"frozen_commit\": \"b5f6be544bab0cca7b7022648b8a4a6ff1f53671\",\n        \"status\": \"FAIL: independent zero-injection ideal late discovery/rally timeout\",\n        \"new_holdout_exposed\": false,\n        \"started_count\": 6,\n        \"scope\": \"independent development; no formal replacement\",\n        \"evidence\": \"20261005_p3b5_incoming_heading_cache_development.json\"\n      },\n      {\n        \"controller_content_sha256\": \"98f45f5f61b85e4121543fff62fd545f4ff429d4beae445e3601fa76ac4570d5\",\n        \"frozen_commit\": \"6fb534998f652af8a388f80581ec69c542319ddb\",\n        \"status\": \"FAIL: six-original marginal-information development, two fixed timeouts and zero ideal missing native hold\",\n        \"new_holdout_exposed\": false,\n        \"started_count\": 6,\n        \"scope\": \"independent development; no formal replacement\",\n        \"evidence\": \"20261005_p3b5_marginal_information_development.json\"\n      },\n      {\n        \"predeclared_at_utc\": \"2026-10-05T00:18:32.259962+00:00\",\n        \"controller_content_sha256\": \"a4fb96c3486558bfe4c816da5e64c80a86a683075697e60d5ae3c13fd5b4f0e1\",\n        \"frozen_commit\": \"c4c943ffc5dcecc7252f1eaba2f52dd7ce7f016d\",\n        \"status\": \"FAIL: fixed aggregator rejects prospectively different cpu_affinity; all ten original tasks native COMPLETE\",\n        \"new_holdout_exposed\": false,\n        \"started_count\": 16,\n        \"unrun_episode_count\": 41,\n        \"evidence\": \"20261005_p3b5_fixed_environment_failed_candidate.json\"\n      },\n      {\n        \"predeclared_at_utc\": \"2026-10-05T01:14:18.395120+00:00\",\n        \"controller_content_sha256\": \"a4fb96c3486558bfe4c816da5e64c80a86a683075697e60d5ae3c13fd5b4f0e1\",\n        \"frozen_commit\": \"196154e6d8627d48b0c6a2747c52f35ac3f5eed9\",\n        \"battery_manager_content_sha256\": \"6eb5c3fb074175ec4b1be33b36970e8ebd4d4aae8f6b2d18619f2576d5e36d42\",\n        \"status\": \"FAIL: nine started fixed originals, lab202 late observer return; original15/42 preserved\",\n        \"new_holdout_exposed\": false,\n        \"started_count\": 15,\n        \"unrun_episode_count\": 42,\n        \"evidence\": \"20261005_p3b5_observer_late_charge_failed_candidate.json\"\n      }\n    ],\n    \"actual_launch_start_geometry_check\": {\n      \"status\": \"PASS\",\n      \"checked_at_utc\": \"2026-10-04T15:11:57.995218+00:00\",\n      \"initial_record_annotation\": \"Original static check used generic sample points mislabeled start/charge. Original source/data retained. This check uses actual frozen launch tb1(0,-.45),tb2(0,.45),tb3(.45,0) for both spawn and charge; no world geometry, task parameter or algorithm change.\",\n      \"launch_content_sha256\": \"e67270a7b4e756ce55b4cf9b20298c2363c82e870e790d99a4e846d64cfdf52d\",\n      \"scope\": \"Static SDF/visual collision agreement, supported box rasterization and .45m-clearance connected start/charger/target geometry only. No task/controller/vision run or performance tuning.\",\n      \"world_content_sha256\": \"2b5e443946e3e7405c46815686c3714e0b17b6d5ffe7e270acdb37f8522fafbd\",\n      \"rectangle_count\": 10,\n      \"unsupported_collision_count\": 0,\n      \"points\": {\n        \"tb1_start_charge\": [\n          0.0,\n          -0.45\n        ],\n        \"tb2_start_charge\": [\n          0.0,\n          0.45\n        ],\n        \"tb3_start_charge\": [\n          0.45,\n          0.0\n        ],\n        \"target\": [\n          4.4,\n          -3.4\n        ]\n      },\n      \"connected_distances_from_tb1_m\": {\n        \"tb1_start_charge\": 0.0,\n        \"tb2_start_charge\": 0.9,\n        \"tb3_start_charge\": 0.636396103067893,\n        \"target\": 6.237005768508876\n      }\n    },\n    \"battery_manager_content_sha256\": \"3a769dd71916681b1e5ee4756e3ecf71a152d02b934d73a4cc0da2cdb88bfd19\",\n    \"staging_apparatus_content_sha256\": \"47ce7998e212a9463ab657bbc0b121d4903ed886016bbf0fd3a2399c986da05d\",\n    \"controller_source_commit\": \"e0b0345effe09e77e977feef3a8da1d4d89bb337\",\n    \"independent_development_evidence\": \"20261005_p3b5_exploration_heading_development.json\",\n    \"task_evaluator_content_sha256\": \"bac6822d1c803ba1fdd9784d774d37b05f8701b4da7a8ea477dde69189d57630\",\n    \"fixed_environment_policy\": {\n      \"cpu_affinity\": [\n        0,\n        1,\n        2,\n        3,\n        4,\n        5,\n        6,\n        7,\n        8,\n        9,\n        10,\n        11,\n        12,\n        13,\n        14,\n        15,\n        16,\n        17,\n        18,\n        19,\n        20,\n        21,\n        22,\n        23,\n        24,\n        25,\n        26,\n        27,\n        28,\n        29,\n        30,\n        31,\n        32,\n        33,\n        34,\n        35,\n        36,\n        37,\n        38,\n        39,\n        40,\n        41,\n        42,\n        43,\n        44,\n        45,\n        46,\n        47,\n        48,\n        49,\n        50,\n        51,\n        52,\n        53,\n        54,\n        55,\n        56,\n        57,\n        58,\n        59,\n        60,\n        61,\n        62,\n        63,\n        64,\n        65,\n        66,\n        67,\n        68,\n        69,\n        70,\n        71,\n        72,\n        73,\n        74,\n        75,\n        76,\n        77,\n        78,\n        79\n      ],\n      \"scope\": \"All ten fixed originals and their observers use identical0..79 CPU affinity; independent worlds may run concurrently on that common scheduler pool. Existing strict same_candidate/environment comparison remains unchanged.\",\n      \"resource_limitation\": \"CPU affinity does not isolate host scheduling, SMT or foreign processes. No causal performance claims across cohorts.\"\n    },\n    \"nav2_parameter_files_content_sha256\": {\n      \"src/multi_robot/params/nav2_params_tb1_0.yaml\": \"bec6e3965f9f60efc6756675677e5d89fe8b526a252cbe91c34805fbb415feb1\",\n      \"src/multi_robot/params/nav2_params_tb2_0.yaml\": \"e451d08f764617b7b2bbbbb8b35c1c008afb267b98a11dc431a49fb3489c55f8\",\n      \"src/multi_robot/params/nav2_params_tb3_0.yaml\": \"d1000fa2d6457a5acf972426e971a7abde71a418d3d34f22d8de29b05a9fe06c\",\n      \"src/multi_robot/params/nav2_params_tb4_0.yaml\": \"122b864aa3962ae0291ba87e67a3adb02de10fd8316311d4a82dd30b1f1ba306\"\n    },\n    \"slam_parameter_files_content_sha256\": {\n      \"src/slam_toolbox/config/mapper_params_online_multi_async.yaml\": \"d5d73fbe7f184528c9817492e696ad13ab1e2e1400020ee690f973818aad3c45\"\n    },\n    \"preceding_development_evidence\": \"20261006_p3b5_return_escape_prefix_development.json\"\n  },\n  \"writer_source\": \"\\\"\\\"\\\"Prospective unexposed protocol only after the six observation/connection originals pass.\\\"\\\"\\\"\\nimport hashlib,json,socket,subprocess\\nfrom datetime import datetime,timezone\\nfrom pathlib import Path\\nROOT=Path('/home/zhuyulab/ns3-workspace');ROS=ROOT/'ros2_ws/ros2-multi-robot-automap';W=ROOT/'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl'\\ndef git(*a):return subprocess.check_output(['rtk','proxy','git',*a],cwd=ROOT,text=True).strip()\\nassert not git('diff','HEAD','--name-only') and git('rev-parse','HEAD')==git('rev-parse','origin/main')\\ndev=json.loads((W/'report/20261006_p3b5_return_escape_prefix_development.json').read_text())\\nassert dev['status']=='PASS' and len(dev['evidence'])==6 and dev['declaration'].get('finished_at_utc') and not dev['new_holdout_exposed']\\nfor row in dev['declaration']['executions']:\\n assert not Path('/proc',str(row['pid'])).exists()\\n with socket.socket() as s:assert s.connect_ex(('127.0.0.1',row['plan']['port']))!=0\\nassert not dev['failures'] and not dev['measurement_failures']\\nfor e in dev['evidence']:\\n assert e['temporal_audit_pass'] and not e['runtime_bypass_violations'] and e['development_check']=='PASS'\\n values=e['ap_metadata']['nav2_clock_values'];assert len(values)==(6 if e['kind'].startswith('lab') else 4) and all(v is True for v in values.values())\\n slam=e['ap_metadata']['slam_map_parameters'];assert len(slam)==(3 if e['kind'].startswith('lab') else 2) and all(v.get('use_sim_time') is True and v.get('map_update_interval')==2. for v in slam.values())\\nprior=json.loads((W/'report/20261005_p3b5_observer_late_charge_failed_candidate.json').read_text())\\nassert prior['started_count']==prior['raw_result_count']==15 and prior['unrun_episode_count']==42 and not prior['new_holdout_exposed'] and prior['closure']['status']=='PASS'\\npath=ROS/'scripts/p3b5_fault_manifest.json';config=json.loads(path.read_text());d=config['holdout_world_declaration']\\ndef sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()\\nassert d['controller_content_sha256']==prior['commands']['fresh_holdout']['controller_content_sha256']\\nassert d['battery_manager_content_sha256']==prior['commands']['fresh_holdout']['battery_manager_content_sha256']\\ncomponent=json.loads((W/'report/20261006_p3b5_return_escape_prefix_component.json').read_text());assert component['status']=='COMPONENT_PASS'\\nassert sha(ROS/'src/multi_robot_exploration/multi_robot_exploration/battery_manager.py')==component['source_sha256']['src/multi_robot_exploration/multi_robot_exploration/battery_manager.py']\\nfor field,relative in (('staging_apparatus_content_sha256','scripts/stage_p3b5_return_probe.py'),('task_evaluator_content_sha256','src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py'),('world_content_sha256','src/multi_robot/worlds/p3b5_holdout809.world')):assert sha(ROS/relative)==d[field]\\nfor summary in (ROS/'log/p3b5').glob('*/summary.json'):\\n rows=json.loads(summary.read_text()).get('episodes',{});rows=rows.values() if isinstance(rows,dict) else rows\\n for row in rows:\\n  scenario=row.get('scenario',{});assert not isinstance(scenario,dict) or Path(scenario.get('world','')).name!=d['world']\\nd['controller_freeze_history'].append(dict(predeclared_at_utc=d['predeclared_at_utc'],controller_content_sha256=d['controller_content_sha256'],frozen_commit=prior['frozen_commit'],battery_manager_content_sha256=d['battery_manager_content_sha256'],status='FAIL: nine started fixed originals, lab202 late observer return; original15/42 preserved',new_holdout_exposed=False,started_count=15,unrun_episode_count=42,evidence='20261005_p3b5_observer_late_charge_failed_candidate.json'))\\nd['predeclared_at_utc']=datetime.now(timezone.utc).isoformat()\\nd['controller_content_sha256']=sha(ROS/'src/multi_robot_exploration/multi_robot_exploration/control.py')\\nd['battery_manager_content_sha256']=sha(ROS/'src/multi_robot_exploration/multi_robot_exploration/battery_manager.py')\\nd['nav2_parameter_files_content_sha256']={str(p.relative_to(ROS)):sha(p) for p in sorted((ROS/'src/multi_robot/params').glob('nav2_params_tb[1-4]_0.yaml'))}\\nassert len(d['nav2_parameter_files_content_sha256'])==4\\nd['slam_parameter_files_content_sha256']={str((ROS/'src/slam_toolbox/config/mapper_params_online_multi_async.yaml').relative_to(ROS)):sha(ROS/'src/slam_toolbox/config/mapper_params_online_multi_async.yaml')}\\nd['preceding_development_evidence']='20261006_p3b5_return_escape_prefix_development.json'\\nassert d['fixed_environment_policy']['cpu_affinity']==list(range(80))\\nd['first_task_exposure']='Pending:809/world/seed/fault never executed. Local diagnostics, smoother command-expiry sim-clock repair, genuine SLAM map generation period2s and fresh final-frontier gain replanning during progress toward a funded body/route-safe visible alternative, and safe valid-confirmation observer heading when target LOS is unknown; original handoff5s remains have passed six independent originals with actual Nav2 clock/SLAM parameters and measured map source ages. Map source headers and TTL unchanged. Map traffic is increased consistently for all ideal/fault baselines; host-clock publisher cadence is not a maximum simulation source-age guarantee. Only local charging-leg segmentation additionally stages its original known-free clearance escape before a long home leg, with original callbacks, Smac/RPP and occupied/unknown rejection retained. Controller/native decisions and original300s/.35/.05/.1/5s, default smoothing limits, wall callback timer and Gazebo physics unchanged. New clean full57 uses identical fixed0..79 affinity. All initial and ten fixed original subgates must pass before first809. Preserve every failure, no whole-episode retry/backfill. Any core change after809 exposure requires genuinely new world/seed/fault.'\\npath.write_text(json.dumps(config,indent=2,ensure_ascii=False)+'\\\\n')\\nout=Path('/tmp/p3b5_v101_holdout_refreeze.json');assert not out.exists();out.write_text(json.dumps(dict(predeclared_at_utc=d['predeclared_at_utc'],declaration=d,writer_source=Path(__file__).read_text()),indent=2,ensure_ascii=False)+'\\\\n')\\nprint('Prospective unexposed809 protocol',d['controller_content_sha256'],'actualclock and map source-age proof;all fixed0-79; no simulation started')\\n\"\n}\n"
+    },
+    "/tmp/p3b5_v101_config_checks.log": {
+      "sha256": "dca5bc88ebb874c3fd13e3b5e926abd6457d312e8f016294413279e110411ddb",
+      "text": ".............................................................            [100%]\n61 passed in 1.69s\n"
+    },
+    "/tmp/p3b5_v101_validate_only.log": {
+      "sha256": "34cb04233180b103aee58234dd32d09774e82c98b715ee2f86b8f90153d7eedc",
+      "text": "{\n  \"cases\": 27,\n  \"episodes\": 41,\n  \"pairs\": {\n    \"zero_rally_lab\": {\n      \"ideal\": \"p3b5_v101_validation_ideal_lab2_rally_8d4d5c469d\",\n      \"fault\": \"p3b5_v101_validation_zero_rally_lab_fault\"\n    },\n    \"up10_rooms\": {\n      \"ideal\": \"p3b5_v101_validation_ideal_rooms3_rally_980df9c157\",\n      \"fault\": \"p3b5_v101_validation_up10_rooms_fault\"\n    },\n    \"down10_rooms\": {\n      \"ideal\": \"p3b5_v101_validation_ideal_rooms3_rally_980df9c157\",\n      \"fault\": \"p3b5_v101_validation_down10_rooms_fault\"\n    },\n    \"delay05_corridors\": {\n      \"ideal\": \"p3b5_v101_validation_ideal_corridors2_rally_1e053e8bbc\",\n      \"fault\": \"p3b5_v101_validation_delay05_corridors_fault\"\n    },\n    \"delay2_rooms\": {\n      \"ideal\": \"p3b5_v101_validation_ideal_rooms3_rally_980df9c157\",\n      \"fault\": \"p3b5_v101_validation_delay2_rooms_fault\"\n    },\n    \"up100_lab\": {\n      \"ideal\": \"p3b5_v101_validation_ideal_lab2_rally_8d4d5c469d\",\n      \"fault\": \"p3b5_v101_validation_up100_lab_fault\"\n    },\n    \"down100_lab\": {\n      \"ideal\": \"p3b5_v101_validation_ideal_lab2_rally_8d4d5c469d\",\n      \"fault\": \"p3b5_v101_validation_down100_lab_fault\"\n    },\n    \"ttl_lab\": {\n      \"ideal\": \"p3b5_v101_validation_ideal_lab2_rally_8d4d5c469d\",\n      \"fault\": \"p3b5_v101_validation_ttl_lab_fault\"\n    },\n    \"duplicates_corridors\": {\n      \"ideal\": \"p3b5_v101_validation_ideal_corridors2_rally_1e053e8bbc\",\n      \"fault\": \"p3b5_v101_validation_duplicates_corridors_fault\"\n    },\n    \"overflow_rooms\": {\n      \"ideal\": \"p3b5_v101_validation_ideal_rooms3_rally_980df9c157\",\n      \"fault\": \"p3b5_v101_validation_overflow_rooms_fault\"\n    },\n    \"burst_rooms\": {\n      \"ideal\": \"p3b5_v101_validation_ideal_rooms3_rally_980df9c157\",\n      \"fault\": \"p3b5_v101_validation_burst_rooms_fault\"\n    },\n    \"deadline_rooms\": {\n      \"ideal\": \"p3b5_v101_validation_ideal_rooms3_rally_43f2051648\",\n      \"fault\": \"p3b5_v101_validation_deadline_rooms_fault\"\n    },\n    \"detection_loss_rooms\": {\n      \"ideal\": \"p3b5_v101_validation_ideal_rooms3_rally_980df9c157\",\n      \"fault\": \"p3b5_v101_validation_detection_loss_rooms_fault\"\n    },\n    \"map_loss_lab\": {\n      \"ideal\": \"p3b5_v101_validation_ideal_lab2_coverage_da95bad2c7\",\n      \"fault\": \"p3b5_v101_validation_map_loss_lab_fault\"\n    },\n    \"pose_loss_rooms\": {\n      \"ideal\": \"p3b5_v101_validation_ideal_rooms3_coverage_4c86e25248\",\n      \"fault\": \"p3b5_v101_validation_pose_loss_rooms_fault\"\n    },\n    \"battery_loss_lab\": {\n      \"ideal\": \"p3b5_v101_validation_ideal_lab2_rally_8d4d5c469d\",\n      \"fault\": \"p3b5_v101_validation_battery_loss_lab_fault\"\n    },\n    \"state_loss_lab\": {\n      \"ideal\": \"p3b5_v101_validation_ideal_lab2_rally_8d4d5c469d\",\n      \"fault\": \"p3b5_v101_validation_state_loss_lab_fault\"\n    },\n    \"nav_loss_corridors\": {\n      \"ideal\": \"p3b5_v101_validation_ideal_corridors2_rally_1e053e8bbc\",\n      \"fault\": \"p3b5_v101_validation_nav_loss_corridors_fault\"\n    },\n    \"single_failure_rooms\": {\n      \"ideal\": \"p3b5_v101_validation_ideal_rooms3_rally_980df9c157\",\n      \"fault\": \"p3b5_v101_validation_single_failure_rooms_fault\"\n    },\n    \"forced_charge_outage\": {\n      \"ideal\": \"p3b5_v101_validation_ideal_forced2_rally_86fbb43bc6\",\n      \"fault\": \"p3b5_v101_validation_forced_charge_outage_fault\"\n    },\n    \"target_up10_lab\": {\n      \"ideal\": \"p3b5_v101_validation_ideal_lab2_target_21212e763a\",\n      \"fault\": \"p3b5_v101_validation_target_up10_lab_fault\"\n    },\n    \"target_loss_rooms\": {\n      \"ideal\": \"p3b5_v101_validation_ideal_rooms3_target_01c25c1bef\",\n      \"fault\": \"p3b5_v101_validation_target_loss_rooms_fault\"\n    },\n    \"coverage_delay_corridors\": {\n      \"ideal\": \"p3b5_v101_validation_ideal_corridors2_coverage_0241ed3b33\",\n      \"fault\": \"p3b5_v101_validation_coverage_delay_corridors_fault\"\n    },\n    \"holdout_rally\": {\n      \"ideal\": \"p3b5_v101_validation_ideal_holdout3_rally_0e0a71b5e8\",\n      \"fault\": \"p3b5_v101_validation_holdout_rally_fault\"\n    },\n    \"holdout_target\": {\n      \"ideal\": \"p3b5_v101_validation_ideal_holdout3_target_5c91c8afdd\",\n      \"fault\": \"p3b5_v101_validation_holdout_target_fault\"\n    },\n    \"holdout_coverage\": {\n      \"ideal\": \"p3b5_v101_validation_ideal_holdout3_coverage_c8631e6a7f\",\n      \"fault\": \"p3b5_v101_validation_holdout_coverage_fault\"\n    },\n    \"battery_exhaust_lab\": {\n      \"ideal\": \"p3b5_v101_validation_ideal_lab2_rally_0678e85373\",\n      \"fault\": \"p3b5_v101_validation_battery_exhaust_lab_fault\"\n    }\n  },\n  \"ros_domain_ids\": [\n    50,\n    51,\n    52,\n    53,\n    54,\n    55,\n    56,\n    57,\n    58,\n    59,\n    60,\n    61,\n    62,\n    63,\n    64,\n    65,\n    66,\n    67,\n    68,\n    69,\n    70,\n    71,\n    72,\n    73,\n    74,\n    75,\n    76,\n    77,\n    78,\n    79,\n    80,\n    81,\n    82,\n    83,\n    84,\n    85,\n    86,\n    87,\n    88,\n    89,\n    90\n  ]\n}\n"
+    },
+    "/tmp/p3b5_v101_source_audit.log": {
+      "sha256": "b74fbe0283ffd47aa24b206b9f79613c2c81c731bbe8105dbfe968005604e47c",
+      "text": "{\n  \"graph_output\": null,\n  \"manifest\": \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot_exploration/share/multi_robot_exploration/config/p3a_forbidden_bypasses.json\",\n  \"pass\": true,\n  \"robot_count\": 3,\n  \"violations\": []\n}\n"
+    },
+    "/tmp/document_p3b5_v101_protocol.py": {
+      "sha256": "d334625171f66b79571e2b676e5da9c6691cc2abf2c98e429d3ea7ad6b2fa1e7",
+      "text": "\"\"\"Record a prospective freeze only after independent originals close and pass.\"\"\"\nimport hashlib, json, subprocess\nfrom datetime import datetime, timezone\nfrom pathlib import Path\nROOT=Path('/home/zhuyulab/ns3-workspace');ROS=ROOT/'ros2_ws/ros2-multi-robot-automap';W=ROOT/'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl'\ndev=json.loads((W/'report/20261006_p3b5_return_escape_prefix_development.json').read_text())\nassert dev['status']=='PASS' and dev['declaration'].get('finished_at_utc') and len(dev['evidence'])==6 and not dev['new_holdout_exposed']\nfreeze=json.loads(Path('/tmp/p3b5_v101_holdout_refreeze.json').read_text())\nassert '61 passed' in Path('/tmp/p3b5_v101_config_checks.log').read_text()\nvalidation=json.loads(Path('/tmp/p3b5_v101_validate_only.log').read_text())\nassert len(validation['pairs'])==27 and validation['episodes']==41 and validation['cases']==27\np=ROS/'scripts/p3b5_fault_manifest.json';declaration=json.loads(p.read_text())['holdout_world_declaration']\nassert declaration==freeze['declaration']\nassert json.loads(Path('/tmp/p3b5_v101_source_audit.log').read_text())['pass']\nparagraph=('2026-10-06 P3B.5 v101前瞻正式协议：v100全部六个独立开发原owner/观察器自然关闭且完整PASS归档后，更新当前control与battery源hash、四Nav2参数与SLAM2s参数，保持尚未执行的809.world/seed809/fault28091/目标(4.4,-3.4)/3rE45与原静态声明字节；原v80的15started/42unrun失败及其旧controller/battery/hash保留在冻结历史。'\n '开发源码仍为591组件17.28s、四包5.26s、3r源码零旁路；仅原已知自由净空逃离先单独执行，再于原回调重规划长返充，原占用/未知起点/障碍/净空/储备/Smac/RPP保护与时限不改。'\n '61配置检查、27case/41unique validate-only和source旁路PASS，无Gazebo任务启动。正式57格包括27pair/41主格、十fixed和六安全探针；所有fixed与AP观察器统一CPU0–79，其它池仍20逻辑CPU分区，独立world可并行同world seed串行，宿主/SMT共享不提供因果或最坏时间保证。'\n 'AP只读参数请求使用有界2s重发，只测真实Nav2时钟/SLAM参数和map源龄，不重试任务、不续源header、不用于控制。所有源码/helper/协议首次执行前hash冻结，全部started原任务自然关闭前不改；原300s/.35/.05/.1/5s与TTLs/故障强度保持。'\n '必须先forced ideal原生保持、E0反例、真实受控断网返航与十fixed全部PASS，才能首次809及剩余主/安全矩阵；任何失败原样保留，无整轮重试或回填。证据report/20261006_p3b5_return_escape_holdout_protocol.json。P3B.5尚待完整严格门禁，无ns3/WiFi/RL。')\npaths=[Path('/tmp')/n for n in ('refreeze_p3b5_v101_return_escape_protocol.py','p3b5_v101_holdout_refreeze.json','p3b5_v101_config_checks.log','p3b5_v101_validate_only.log','p3b5_v101_source_audit.log')]+[Path(__file__)]\ndata=dict(status='PROSPECTIVE FROZEN PROTOCOL; formal full57 pending',recorded_at_utc=datetime.now(timezone.utc).isoformat(),development_commit=dev['declaration']['commit'],holdout_declaration=declaration,policy=paragraph,records={str(p):dict(sha256=hashlib.sha256(p.read_bytes()).hexdigest(),text=p.read_text()) for p in paths},new_holdout_exposed=False)\nout=W/'report/20261006_p3b5_return_escape_holdout_protocol.json';assert not out.exists();out.write_text(json.dumps(data,indent=2,ensure_ascii=False)+'\\n')\nfor p in (ROOT/'AGENTS.md',W/'AGENTS.md',W/'IMPLEMENTATION_PLAN.md',W/'RESEARCH_PLAN.md',ROS/'launch_commands.md',ROS/'user_guide.md'):\n    with p.open('a') as f:f.write('\\n'+paragraph+'\\n')\nwith (W/'log.md').open('a') as f:\n    f.write('\\n## 2026-10-06 P3B.5 v101未暴露留出前瞻协议\\n\\n'+paragraph+'\\n\\ncanonical ROS cwd；source Humble/install；PYTHONNOUSERSITE=1，rtk bash -lc；无新增任务原始；固定任务正式入口继续run_p2d_baseline.py，十格统一taskset -c0-79；没有改launch默认参数：\\n\\n```bash\\n/usr/bin/python3 /tmp/refreeze_p3b5_v101_return_escape_protocol.py\\n/usr/bin/python3 -m pytest -q scripts/test_p3b5_tasks.py scripts/test_p3b5_gate.py scripts/test_p3b5_return_staging.py > /tmp/p3b5_v101_config_checks.log 2>&1\\n/usr/bin/python3 scripts/run_p3b5_tasks.py --run-id p3b5_v101_validation --ros-domain-base 50 --validate-only > /tmp/p3b5_v101_validate_only.log 2>&1\\n/usr/bin/python3 -m multi_robot_exploration.bypass_audit --source-only --robot-count 3 > /tmp/p3b5_v101_source_audit.log 2>&1\\n```\\n')\nprint(out,'prospective protocol only, no809 exposure or PASS claim')\n"
+    }
+  },
+  "new_holdout_exposed": false
+}
