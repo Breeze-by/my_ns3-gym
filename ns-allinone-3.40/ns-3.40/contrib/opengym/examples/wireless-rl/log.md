@@ -7475,3 +7475,24 @@ PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python /tmp/finaliz
 ```
 
 原日志/文件树不修改；新结果、时序/图/参数与hash报告在自然关闭后归档report/20261007_p3b5_requirement_audit.md/.json；保留所有失败。冻结前--validate-only为4case/6episode且无Gazebo启动。
+
+
+## 2026-10-07 P3B.5 逐条需求复核完成，原57＋独立延迟六格技术PASS
+
+2026-10-07逐条需求复核完成：原v106 57格严格checker PASS保留，独立上下行0.5/2秒延迟已按预冻结09f15df补齐四TASK case/六原始episode（同场景复用同配置ideal），共63原始/31pair；新增fault三COMPLETE、一300s timeout且0导航，六格0碰撞/耗尽/失效/infra/retry。两ideal176.8/150.2s，新fault252.9/181.4/timeout300/175.9s。原任务源码与d8d361b一致，原300s/.35/.05/.1/5s、TTL/安全门槛未改。新增4eligible/2簇TDI均值.25 CI[0,.5]；合计22eligible/5簇.606061 CI[.384615,.8]，固定矩阵描述性cluster bootstrap，不覆盖原失败理想配对。目标未发现坐标null的只读checker错误原trace/SHA保留，配置绑定改为CLI且不伪造观测，54相关检查PASS；参数0实际取4096队列，旧说明及冻结快照保留，当前仅更正说明文字。63ledger/graph核验、六实际sim-clock/SLAM2s旁录、owned两master/domain全部关闭、17用户资料SHA不变。逐条F/M/S/O/T证据与每格任务/方向类型账本、展开清单、TDI及原始增量在report/20261007_p3b5_requirement_audit.md/.json。P3B.5技术复核PASS待用户验收，尚未进入P3C/ns3/WiFi/RL；809已暴露，控制变化需新留出，原lab303仍仅5.2s余量。
+
+补验两owner于2026-10-06 16:07:46UTC开始，16:27UTC前全部自然关闭；详细created/finished时间与六observer PID、精确argv/env/CPU/ports在报告JSON.executions/additional_predeclaration。六raw任务均runner/observer exit0，无启动后中断、任务重试或回填。17用户资料和全部任务源码SHA不变；domain222/master11345未操作。
+
+验证命令（均Humble/install、系统/usr/bin/python3、PYTHONNOUSERSITE=1）：
+
+```text
+/usr/bin/python3 -m pytest -q scripts/test_p3b5_directional_delay.py scripts/test_p3b5_tasks.py                 # 首26PASS，null处理新增五反例后31PASS
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_gateway.py src/multi_robot_exploration/test/test_navigation_faults.py src/multi_robot_exploration/test/test_control.py -k "freshness or source_lease or target_lease or network_commands or cancel_before_delayed or local_deadline or contact_loss or fixed_turtlebot" # 22PASS
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_control.py::test_navigation_footprint_covers_gazebo_body_and_rpp_cost_scale # 1PASS
+/usr/bin/python3 scripts/check_p3b5_directional_delay.py --base /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261006_p3b5_gate.json --config scripts/p3b5_directional_delay_manifest.json --summaries log/p3b5/p3b5_directional_delay_20261007_corridors/summary.json log/p3b5/p3b5_directional_delay_20261007_rooms/summary.json --output /tmp/p3b5_directional_delay_audited.json
+/usr/bin/python3 /tmp/build_p3b5_requirement_audit.py # 只读汇总63任务/31pair；首次因上游checker未生成输出而FileNotFound保留/tmp log，目标null修正后PASS
+```
+
+首只读checker FAIL为未发现目标的null结果坐标比较错误（不是任务失败），原trace/源码/六raw SHA已report/20261007_p3b5_directional_delay_initial_audit.json保留。修正按原命令核验配置目标且未发现时保持null，31检查/六raw re-audit PASS；原native及TTL/碰撞/电量阈值不变。当前manifest只更正错误queue说明文字；原完整配置以同basename归档report/20261007_p3b5_directional_delay_frozen/，重审查用该快照，不修改旧summary/输入。
+
+原57完整strict checker重新执行PASS，精确原argv见/tmp/p3b5_original57_requirement_reaudit_command.json和原报告校验记录，新output=/tmp/p3b5_original57_requirement_reaudit.json。报告JSON/MD含全部参数/门契约、阶段故障后果、每型/方向统计与paired AoI/时延/覆盖率/能量/时间增量。高延迟过期等待保留为失败，未人为要求故障格完整完成。P3B.5技术复核完成待用户验收。

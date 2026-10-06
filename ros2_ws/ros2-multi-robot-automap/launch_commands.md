@@ -21,7 +21,7 @@ P2C 本地电池/充电管理；可选目标检测与 P2B 集结任务。手动�
 维护要求：以后新增或修改 launch 参数、默认组件或推荐运行方式时，必须在同一个提交中同步
 更新本文的默认命令和参数表。
 
-2026-10-07补验状态：原57格checker PASS保留；独立上下行延迟的任务验证尚待六格补验，P3B.5暂为进行中。详见[逐条需求审计](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261007_p3b5_requirement_audit.md)。
+2026-10-07最新状态：原57格＋独立方向延迟6原任务的逐条技术复核PASS，待用户验收；任务算法和启动默认值不变。详见[逐条需求审计](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261007_p3b5_requirement_audit.md)。
 
 ## 1. 每个新终端先执行
 
@@ -694,6 +694,20 @@ Nav2 ready; starting cooperative exploration.
   `enable_merge_rviz:=false`。
 - 目标只是 Gazebo 可视标记，没有 collision，不会改变 lidar 地图或成为障碍物。
 
+### 2026-10-07 独立方向延迟补验入口
+
+保持已有任务算法和300秒原生任务门槛。预冻结四case对应六个独立任务；每个场景的两个方向共用一个同配置ideal对照，不把共用ideal重复计为独立样本。
+
+```bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+/usr/bin/python3 scripts/run_p3b5_tasks.py \
+  --config scripts/p3b5_directional_delay_manifest.json \
+  --run-id "p3b5_directional_delay_check_$(date +%Y%m%d_%H%M%S)" \
+  --ros-domain-base 180 --validate-only
+```
+
+`--validate-only`只检查清单，输出4 case/6任务，不启动Gazebo。已完成正式补验使用19700/19701专用master、开发seed202/101和fault seed17011；原始冻结命令、三COMPLETE/一过期等待timeout和TDI在上述审计报告记录。参数0实际选择默认4096队列，当前清单仅更正说明；复核原六格时使用报告归档的09f15df清单。
+
 ## 9. 历史候选与门禁记录
 
 以下内容按当时的代码状态保留，不作为当前推荐参数或验收状态。当前入口及结果见第 1–8 节。
@@ -942,17 +956,3 @@ run_p3b5_tasks默认domain base改为30；run_p3b5_return_probe默认90。domain
 2026-10-06 P3B.5 v104合法避让驻点保留组件PASS：v103十fixed中lab303末段原生保持失败已7442599归档。仅在所有非避让同伴到位、在途/待接收动作结束后，对已完成目标朝向的临时驻点，用当前交付地图检查原.45净空/已知目标视线/相机range减.35误差余量/原.8最终位间距/.6当前body间距；所有电池ACTIVE、无返充请求、输入/目标新鲜且完整保持返航预算充足时，将同一个已到达pose保留为final。无新动作或朝向声明；原发布路径、能量预检重做、保持计时重置、原生300s/.35/.05/.1/5s继续。无效驻点按原逻辑回旧final。46定向1.40s、627组件18.50s、四包5.46s、3r源码零旁路；仅update_mission及新增retain_rally_refuge，其余控制函数AST、电池/严格checker/评估器/Nav2/SLAM/809字节不变。首状态机夹具遗漏logger两次失败44/45pass和首广测路径错误no-tests原日志保留，修正全PASS，无任务重跑。已关闭AP三帧几何支持合法驻点，但不证明运行准入/连续原生保持/因果加速或最坏时限。证据report/20261006_p3b5_rally_refuge_retention_component.json；809/28091从未执行，需新独立lab101/202/303+force/zero开发和完整57冻结。P3B.5未完成，无ns3/RL。
 
 2026-10-06 P3B.5 v106前瞻正式冻结：v103十fixed原lab303保持失败和全部16原始已7442599归档；新控制v104c204e64与v105七独立开发PASS已2b87e5c保留并推送。原809.world/seed809/fault28091/目标(4.4,-3.4)/3rE45仍从未执行，world字节及最初静态/真实launch补查保留；更新当前controller SHA、控制源提交与开发引用，追加v103失败历史。当前保留合法已完成避让驻点仅为条件性恢复优化；七开发六原生COMPLETE、forced fault安全PASS，日志未见新分支触发，不能宣称新分支物理验证/因果加速或最坏时限。新批所有机器人/总部/ideal/fault/只读观察器统一显式rmw_fastrtps_cpp/UDPv4，无XML/discovery server；627组件18.50s/四包5.46s/源码3r零旁路，64配置1.71s、27case/41unique validate-only PASS，无仿真启动。正式仍57格：27pair/41主格+十fixed+六辅助；所有fixed/AP实际CPU0–79，initial/main20逻辑CPU分池，master19650..19656与独立domain。运行前冻结所有source/helper/config/report-builder哈希，按强制ideal真实原生保持/E0/实际断网返充→十fixed全PASS→首次809及其余主/安全矩阵推进；所有原owner/观察器自然关闭前不改源/文档/helper。300s/.35/.05/.1/5s、地图/电池5/poseTF2/target60/handoff5、原故障强度和实际储备/返充/机体/静态/最终位/在途预约保护不变，不重试/回填/把开发替代正式格。证据report/20261006_p3b5_rally_refuge_holdout_protocol.json；P3B.5仍待完整strict gate，无ns3/WiFi/RL。
-
-### 2026-10-07 独立方向延迟补验入口
-
-保持已有任务算法和300秒原生任务门槛。预冻结四case对应六个独立任务；每个场景的两个方向共用一个同配置ideal对照，不把共用ideal重复计为独立样本。
-
-```bash
-cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
-/usr/bin/python3 scripts/run_p3b5_tasks.py \
-  --config scripts/p3b5_directional_delay_manifest.json \
-  --run-id "p3b5_directional_delay_check_$(date +%Y%m%d_%H%M%S)" \
-  --ros-domain-base 180 --validate-only
-```
-
-`--validate-only`只检查清单，输出4 case/6任务，不启动Gazebo。实际正式补验分别使用19700/19701专用master、开发seed202/101和独立fault seed17011；冻结命令及结果在上述审计报告记录。

@@ -59,13 +59,16 @@ tokens is not a reason to leave a problem unresolved or inadequately tested.
 
 ## Current Handoff
 
-Update 2026-10-07: User requirement recheck found independently delayed task
-episodes missing (0.5/2 s were simultaneous directions; protocol-only independent
-coverage is insufficient). Original v106 checker PASS is retained; complete
-P3B.5 requirement status is in progress pending four prospectively declared task
-cases/six originals at unchanged runtime source. Do not enter P3C/ns-3/RL.
-See wireless-rl/report/20261007_p3b5_requirement_audit.md.
-
+Update 2026-10-07: P3B.5 full wording recheck **PASS**, awaiting user acceptance.
+Original57 at d8d361b retained; four independent-direction delay TASK cases/six
+originals at 09f15df (identical runtime source) fill the protocol-only gap.
+63 originals/31 pairs, zero new contacts/exhaustion/infra/retries; fault results
+252.9/181.4/timeout300/175.9 s. Combined eligible22/physical clusters5 TDI
+0.606061, descriptive95% CI[0.384615,0.8]. Null-undetected-target reader FAIL
+and queue-parameter annotation erratum retained; only read-only validation/docs
+changed, not native/TTL/safety gates or raw trials. Full requirement-to-evidence
+mapping: wireless-rl/report/20261007_p3b5_requirement_audit.md and .json.
+No P3C/ns-3/RL until user acceptance; 809 already exposed.
 
 Update 2026-10-06: P3B.5 technical gate **PASS**, awaiting user acceptance.
 All 57 originals at task freeze `d8d361bfd9d81e0c7a00c428ea66cfac4b3a1a76`

@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from check_p3b5_directional_delay import delay_audit, validate_declaration
+from check_p3b5_directional_delay import delay_audit, target_audit, validate_declaration
 
 
 def declaration():
@@ -52,3 +52,26 @@ def test_absence_of_real_task_deliveries_is_not_protocol_evidence(tmp_path):
     ledger.write_text('')
     with pytest.raises(AssertionError, match='No actual'):
         delay_audit(ledger, 'uplink', .5)
+
+
+@pytest.mark.parametrize('found', [False, True])
+def test_target_configuration_is_bound_even_when_no_detection_arrives(found):
+    row = {'command': 'python smoke.py --target-x 5 --target-y 3',
+           'result': {'target_found': found, 'target_x': 5 if found else None,
+                      'target_y': 3 if found else None, 'time_to_detect_sec': 10 if found else None}}
+    target_audit(row, {'target_x': 5, 'target_y': 3})
+
+
+@pytest.mark.parametrize('change', ['command', 'observation', 'false_detection'])
+def test_missing_detection_does_not_allow_target_rebinding_or_fake_observations(change):
+    row = {'command': 'python smoke.py --target-x 5 --target-y 3',
+           'result': {'target_found': False, 'target_x': None, 'target_y': None,
+                      'time_to_detect_sec': None}}
+    if change == 'command':
+        row['command'] = 'python smoke.py --target-x 6 --target-y 3'
+    elif change == 'observation':
+        row['result']['target_x'] = 5
+    else:
+        row['result']['time_to_detect_sec'] = 10
+    with pytest.raises(AssertionError):
+        target_audit(row, {'target_x': 5, 'target_y': 3})

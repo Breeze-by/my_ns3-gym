@@ -2,6 +2,7 @@
 """Audit independently delayed TASK pairs without changing the v106 gate."""
 import argparse
 import json
+import shlex
 from pathlib import Path
 
 from check_p3b5_gate import (
@@ -53,6 +54,21 @@ def delay_audit(path, direction, delay):
     assert latencies, 'No actual delayed delivery evidence'
     return {'direction': direction, 'configured_delay_sec': delay,
             'delivery_attempt_count': len(latencies), 'minimum_tx_delivery_sec': min(latencies)}
+
+
+def target_audit(row, scenario):
+    """Bind the configured target without inventing an undetected observation."""
+    command = shlex.split(row['command'])
+    expected = [scenario['target_x'], scenario['target_y']]
+    for option, coordinate in zip(('--target-x', '--target-y'), expected):
+        assert command.count(option) == 1
+        assert float(command[command.index(option) + 1]) == coordinate
+    result = row['result']
+    observed = [result['target_x'], result['target_y']]
+    if result['target_found']:
+        assert observed == expected
+    else:
+        assert observed == [None, None] and result['time_to_detect_sec'] is None
 
 
 def audit(base, summaries, config_path):
@@ -110,7 +126,7 @@ def audit(base, summaries, config_path):
             result, scenario = row['result'], config['scenarios'][case['scenario']]
             assert result['world_file'].endswith(scenario['world'])
             assert result['gazebo_seed'] == scenario['seed'] and result['robot_count'] == scenario['robot_count']
-            assert [result['target_x'], result['target_y']] == [scenario['target_x'], scenario['target_y']]
+            target_audit(row, scenario)
         ir, fr = ideal['result'], fault['result']
         value = tdi(ir, fr)
         if value is not None:

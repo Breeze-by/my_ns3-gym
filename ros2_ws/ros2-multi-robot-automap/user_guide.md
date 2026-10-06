@@ -16,7 +16,7 @@ monorepo，与 ns-3/ns3-gym 共用一个 Git 根。旧的独立检出目录及�
 `/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap`，提交和查看状态
 必须从 `/home/zhuyulab/ns3-workspace` 进行。
 
-2026-10-07：P3B.5逐条复核发现独立方向延迟任务格需补验，原57格checker PASS原样保留；全要求暂为进行中。补验不改变本指南的启动默认值和任务算法，证据入口为[逐条需求审计](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261007_p3b5_requirement_audit.md)。
+2026-10-07：P3B.5逐条技术复核PASS，待用户验收。原57格＋独立方向延迟6原任务已保留；新增三COMPLETE、一过期等待timeout，TDI按同配置ideal资格统计。任务算法、原生门槛及本指南的启动默认值不变，证据入口为[逐条需求审计](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261007_p3b5_requirement_audit.md)。
 
 ## 1. 项目结构
 

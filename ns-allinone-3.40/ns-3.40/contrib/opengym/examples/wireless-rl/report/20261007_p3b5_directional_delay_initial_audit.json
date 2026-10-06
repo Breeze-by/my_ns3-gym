@@ -1,0 +1,71 @@
+{
+  "kind": "read-only checker failure; not mission failure",
+  "checked_at_utc": "2026-10-06T16:31:27.256866+00:00",
+  "task_commit": "09f15dfbaae7045171c04a2fe963f64240048b02",
+  "checker_source": "#!/usr/bin/env python3\n\"\"\"Audit independently delayed TASK pairs without changing the v106 gate.\"\"\"\nimport argparse\nimport json\nfrom pathlib import Path\n\nfrom check_p3b5_gate import (\n    CORE_KEYS, ROOT, Snapshot, bootstrap, episode_ok, ledger_audit,\n    load, runtime_violations, same_candidate, sha,\n)\nfrom run_p2d_baseline import file_digest\nfrom run_p3b5_tasks import ledger_metrics, tdi\n\n\ndef validate_declaration(config):\n    cases = config['cases']\n    assert len(cases) == 4 and len({c['id'] for c in cases}) == 4\n    assert {(c['direction'], c['delay_sec']) for c in cases} == {\n        (direction, delay) for direction in ('uplink', 'downlink') for delay in (.5, 2.)}\n    for case in cases:\n        profile = config['profiles'][case['profile']]\n        expected = {direction + '_delay_sec': case['delay_sec'] if direction == case['direction'] else 0.\n                    for direction in ('uplink', 'downlink')}\n        assert profile == expected, 'Delay must affect exactly one direction'\n        contract = case['frozen_contract']\n        scenario = config['scenarios'][case['scenario']]\n        assert contract['world'] == scenario['world']\n        assert contract['target'] == [scenario['target_x'], scenario['target_y']]\n        assert contract['robot_count'] == scenario['robot_count']\n        assert contract['gazebo_seed'] == scenario['seed']\n        assert contract['battery_config']['initial_energy'] == scenario['energy']\n        assert contract['battery_config']['capacity'] == 100\n        assert contract['mission_mode'] == case['mode'] == 'rally'\n        assert contract['episode_horizon_sec'] == config['duration_sec'] == 300\n        assert contract['fault_seed'] == config['fault_seed'] == 17011\n        assert contract['ttl_sec_by_type'] == config['ttl_sec_by_type']\n        assert contract['navigation_deadline_sec'] == 90\n        assert contract['retry'] == {'ack_timeout_sec': 1., 'max_retries': 2}\n        assert contract['queue_capacity'] == 0\n        for direction in ('uplink', 'downlink'):\n            assert contract[direction + '_fault'] == {\n                'loss_rate': 0., 'delay_sec': expected[direction + '_delay_sec']}\n\n\ndef delay_audit(path, direction, delay):\n    latencies = []\n    for line in path.open():\n        event = json.loads(line)\n        if event['event'] == 'delivered' and event['direction'] == direction:\n            latency = event['time'] - event['tx_time']\n            assert latency + 1e-8 >= delay, 'Configured delay was bypassed'\n            latencies.append(latency)\n    assert latencies, 'No actual delayed delivery evidence'\n    return {'direction': direction, 'configured_delay_sec': delay,\n            'delivery_attempt_count': len(latencies), 'minimum_tx_delivery_sec': min(latencies)}\n\n\ndef audit(base, summaries, config_path):\n    config = load(config_path)\n    validate_declaration(config)\n    assert base['status'] == 'PASS' and base['all_gate_unique_episode_count'] == 57\n    cases = {c['id']: c for c in config['cases']}\n    pairs, episodes, reference = {}, {}, summaries[0]['manifest']\n    for summary in summaries:\n        assert summary['config'] == config\n        same_candidate(summary['manifest'], reference)\n        assert summary['manifest']['generated_at_utc'] >= config['declared_at_utc']\n        assert summary['manifest']['source_digests']['scenario_config'] == file_digest(config_path)\n        for key in CORE_KEYS:\n            assert summary['manifest']['source_digests'][key] == base['task_core_source_digests'][key], key\n        assert not (pairs.keys() & summary['pairs'].keys()), 'Repeated supplementary case'\n        pairs.update(summary['pairs'])\n        assert not (episodes.keys() & summary['episodes'].keys()), 'Repeated original episode'\n        episodes.update(summary['episodes'])\n    assert pairs.keys() == cases.keys() and len(episodes) == 6\n    bypass = load(ROOT/'src/multi_robot_exploration/config/p3a_forbidden_bypasses.json')\n    audited = {}\n    for identity, row in episodes.items():\n        assert not row['infrastructure_failure'] and not row['operational_failure']\n        assert row['episode_started'] and row['runner_returncode'] == row['observer_returncode'] == 0\n        result = row['result']\n        assert result['mission_mode'] == 'rally'\n        assert result['collision_monitoring_active'] and result['collision_events'] == 0\n        assert result['battery_minimum_energy'] > 0 and not result['failed_robots']\n        assert result['elapsed_sim_time_sec'] <= 300.6\n        directory = Path(row['result_path']).parent\n        assert load(Path(row['result_path'])) == result\n        for field, name in [('result_sha256', identity+'.json'), ('graph_sha256', 'graph.json'),\n                            ('safety_events_sha256', 'safety_events.jsonl')]:\n            assert row[field] == file_digest(directory/name)\n        assert row['communication']['ledger_sha256'] == file_digest(directory/'ledger.jsonl')\n        assert not runtime_violations(Snapshot(load(directory/'graph.json')['nodes']), bypass, result['robot_count'])\n        if result['success']:\n            episode_ok(result)\n        else:\n            assert result['task_phase'] != 'COMPLETE' and result['completion_time_sec'] is None\n        audited[identity] = {'command': row['command'], 'result': result,\n            'result_path': row['result_path'],\n            'content_sha256': {name: sha(directory/name) for name in\n                (identity+'.json', 'graph.json', 'ledger.jsonl', 'safety_events.jsonl')},\n            'ledger_audit': ledger_audit(directory/'ledger.jsonl'),\n            'communication': ledger_metrics(directory/'ledger.jsonl', result['start_sim_time_sec'], result['end_sim_time_sec'])}\n    rows, values = [], []\n    for case_id, pair in pairs.items():\n        ideal, fault = (episodes[pair[mode]] for mode in ('ideal', 'fault'))\n        case = cases[case_id]\n        assert ideal['settings'] == fault['settings']\n        assert fault['profile'] == config['profiles'][case['profile']]\n        for row in (ideal, fault):\n            result, scenario = row['result'], config['scenarios'][case['scenario']]\n            assert result['world_file'].endswith(scenario['world'])\n            assert result['gazebo_seed'] == scenario['seed'] and result['robot_count'] == scenario['robot_count']\n            assert [result['target_x'], result['target_y']] == [scenario['target_x'], scenario['target_y']]\n        ir, fr = ideal['result'], fault['result']\n        value = tdi(ir, fr)\n        if value is not None:\n            s = case['frozen_contract']\n            cluster = json.dumps([s['world'], s['robot_count'], s['gazebo_seed'], s['battery_config']['initial_energy']])\n            values.append((cluster, value))\n        rows.append({'case_id': case_id, **pair, 'tdi': value,\n                     'ideal_status': ir['termination_reason'], 'fault_status': fr['termination_reason'],\n                     'delay_audit': delay_audit(Path(fault['result_path']).parent/'ledger.jsonl', case['direction'], case['delay_sec'])})\n    return {'status': 'PASS', 'scope': 'Four additional independently delayed TASK pairs; original57 unchanged',\n            'config': config, 'manifest': reference, 'supplementary_unique_episodes': len(episodes),\n            'paired_results': rows, 'tdi': bootstrap(values), 'episodes': audited}\n\n\ndef main():\n    parser = argparse.ArgumentParser(description=__doc__)\n    parser.add_argument('--base', required=True, type=Path)\n    parser.add_argument('--config', required=True, type=Path)\n    parser.add_argument('--summaries', nargs='+', required=True, type=Path)\n    parser.add_argument('--output', required=True, type=Path)\n    args = parser.parse_args()\n    report = audit(load(args.base), [load(path) for path in args.summaries], args.config)\n    report['base_report'] = {'path': str(args.base), 'content_sha256': sha(args.base)}\n    report['summary_evidence'] = [{'path': str(path), 'content_sha256': sha(path)} for path in args.summaries]\n    args.output.write_text(json.dumps(report, indent=2)+'\\n')\n    print(json.dumps({'status': report['status'], 'episodes': report['supplementary_unique_episodes'], 'tdi': report['tdi']}))\n\n\nif __name__ == '__main__':\n    main()\n",
+  "checker_sha256": "c88e67d0dbf6b05d3a87de8dbdfd86c41abb75c2546197cfcb2331e04336fa9c",
+  "traceback": "Traceback (most recent call last):\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3b5_directional_delay.py\", line 143, in <module>\n    main()\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3b5_directional_delay.py\", line 135, in main\n    report = audit(load(args.base), [load(path) for path in args.summaries], args.config)\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3b5_directional_delay.py\", line 113, in audit\n    assert [result['target_x'], result['target_y']] == [scenario['target_x'], scenario['target_y']]\nAssertionError\n",
+  "cause": "Unobserved target coordinates are intentionally null. Initial reader compared these to declared coordinates; configured target must instead bind to exact CLI, with null retained until detected.",
+  "results": {
+    "p3b5_directional_delay_20261007_corridors_ideal_corridors2_rally_1e053e8bbc": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_directional_delay_20261007_corridors/p3b5_directional_delay_20261007_corridors_ideal_corridors2_rally_1e053e8bbc/p3b5_directional_delay_20261007_corridors_ideal_corridors2_rally_1e053e8bbc.json",
+      "sha256": "82b5dcebfb150c1e8e38927736a65e3115cce422cb1001b0ee210086afab8912",
+      "termination": "task_complete",
+      "target_found": true,
+      "observed_target": [
+        -4.5,
+        -0.5
+      ]
+    },
+    "p3b5_directional_delay_20261007_corridors_uplink_delay05_corridors2_fault": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_directional_delay_20261007_corridors/p3b5_directional_delay_20261007_corridors_uplink_delay05_corridors2_fault/p3b5_directional_delay_20261007_corridors_uplink_delay05_corridors2_fault.json",
+      "sha256": "0fb75da534e1253b34a18265d5b7a2cb99e0e0dd0eea1614a6fcdca9b894de39",
+      "termination": "task_complete",
+      "target_found": true,
+      "observed_target": [
+        -4.5,
+        -0.5
+      ]
+    },
+    "p3b5_directional_delay_20261007_corridors_downlink_delay05_corridors2_fault": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_directional_delay_20261007_corridors/p3b5_directional_delay_20261007_corridors_downlink_delay05_corridors2_fault/p3b5_directional_delay_20261007_corridors_downlink_delay05_corridors2_fault.json",
+      "sha256": "434f3b86a5b477844134d5c3f47a2b94ca8289db4bb2c25b632ce95c0f5ca18d",
+      "termination": "task_complete",
+      "target_found": true,
+      "observed_target": [
+        -4.5,
+        -0.5
+      ]
+    },
+    "p3b5_directional_delay_20261007_rooms_ideal_rooms3_rally_980df9c157": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_directional_delay_20261007_rooms/p3b5_directional_delay_20261007_rooms_ideal_rooms3_rally_980df9c157/p3b5_directional_delay_20261007_rooms_ideal_rooms3_rally_980df9c157.json",
+      "sha256": "b95be98de8bfa42e03d0337fffe72fb0f158cd1157e7ce39c5b7d9985fa56c94",
+      "termination": "task_complete",
+      "target_found": true,
+      "observed_target": [
+        5.0,
+        3.0
+      ]
+    },
+    "p3b5_directional_delay_20261007_rooms_uplink_delay2_rooms3_fault": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_directional_delay_20261007_rooms/p3b5_directional_delay_20261007_rooms_uplink_delay2_rooms3_fault/p3b5_directional_delay_20261007_rooms_uplink_delay2_rooms3_fault.json",
+      "sha256": "3798eb760760e4ef72d35d9d16f886885f21c825ed2375eec90b021aace768c8",
+      "termination": "timeout",
+      "target_found": false,
+      "observed_target": [
+        null,
+        null
+      ]
+    },
+    "p3b5_directional_delay_20261007_rooms_downlink_delay2_rooms3_fault": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p3b5/p3b5_directional_delay_20261007_rooms/p3b5_directional_delay_20261007_rooms_downlink_delay2_rooms3_fault/p3b5_directional_delay_20261007_rooms_downlink_delay2_rooms3_fault.json",
+      "sha256": "2f0f806d1884c0feb8ee86852268a96035065d16d34e83f3f2ba5a5f5c9c90a1",
+      "termination": "task_complete",
+      "target_found": true,
+      "observed_target": [
+        5.0,
+        3.0
+      ]
+    }
+  }
+}

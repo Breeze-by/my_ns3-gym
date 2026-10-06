@@ -760,7 +760,7 @@
     "max_retries": 2
   },
   "queue_capacity": 0,
-  "queue_capacity_semantics": "Launch parameter 0 selects effective capacity 4096 in the frozen IdealGateway; original overflow profile capacity=1 remains retained. Direct FaultConfig capacity0 is unbounded, but is not used by the launched gateway.",
+  "queue_capacity_semantics": "0 = unbounded, matching original non-overflow task settings; original overflow profile capacity=1 remains retained",
   "ttl_sec_by_type": {
     "map_snapshot": 5.0,
     "fused_map_snapshot": 5.0,
