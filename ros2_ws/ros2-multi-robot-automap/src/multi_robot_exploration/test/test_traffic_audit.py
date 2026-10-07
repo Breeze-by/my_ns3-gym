@@ -20,6 +20,12 @@ def test_real_ros_control_bytes_and_all_cost_coefficients_reconcile():
     assert sum(c["envelope_cdr_bytes"] for c in costs) == audit["total_tx_cdr_bytes"]
     assert all(c["actual_airtime_sec"] is None and c["actual_radio_energy_j"] is None for c in costs)
     assert sum(c["serialization_sec_per_mbps"] for c in costs) == pytest.approx(audit["physical_accounting"]["serialization_sec_per_mbps"])
+    original = {e["message_id"]: e for e in records() if e["event"] == "generated"}
+    for cost in costs:
+        message = original[cost["message_id"]]
+        assert cost["source_time"] == message["source_time"]
+        assert cost["deadline"] == message["deadline"]
+        assert cost["deadline"] == pytest.approx(cost["source_time"]+cost["ttl_sec"])
 
 
 @pytest.mark.parametrize("mutation", ["hidden_queue", "undelivered_request", "bytes", "renewed_source", "no_release", "double_release", "missing_closure"])

@@ -2,6 +2,7 @@
 """Audit every original P3C.5 cell and export stratified traffic/cost inventories."""
 import argparse
 from collections import Counter
+from concurrent.futures import ProcessPoolExecutor
 import csv
 from datetime import datetime, timezone
 import hashlib
@@ -9,6 +10,7 @@ import json
 from pathlib import Path
 import re
 import sys
+import time
 
 PROJECT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT/"src/multi_robot_exploration"))
@@ -22,6 +24,66 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def native_interval(result, horizon):
+    """Measure the actual native episode; clip timeout polling beyond its horizon."""
+    start, end = result["start_sim_time_sec"], result["end_sim_time_sec"]
+    assert end > start and abs(end-start-result["elapsed_sim_time_sec"]) < 1e-6
+    return start, min(end, start+horizon)
+
+
+def native_safety_ok(result):
+    """Mission failure remains measurable; native robot safety must still pass."""
+    assert result["battery_enabled"] and result["collision_monitoring_active"]
+    assert result["collision_events"] == 0 and result["battery_minimum_energy"] > 0
+    assert not result["failed_robots"]
+    assert len(result["robots"]) == result["robot_count"] == result["required_robot_count"]
+    assert set(result["robots"]) == set(result["required_robot_names"])
+    for robot in result["robots"].values():
+        assert robot["battery_message_count"] > 0 and robot["collision_message_count"] > 0
+        assert robot["battery_minimum_energy"] > 0 and robot["battery_final_energy"] > 0
+        assert robot["battery_mode"] != "FAILED" and robot["collision_events"] == 0
+    assert result["rally_hold_sec"] == 5 and result["rally_position_tolerance_m"] == .35
+    assert result["rally_linear_tolerance_mps"] == .05 and result["rally_angular_tolerance_radps"] == .1
+
+
+def audit_original(item):
+    row, config = item
+    began = time.monotonic()
+    name, result, scenario = row["case"], row["result"], config["cases"][row["case"]]
+    directory = Path(row["result_path"]).parent
+    assert row["runner_returncode"] == row["observer_returncode"] == 0
+    assert not any(value for key, value in row.items() if key.endswith("_forced_shutdown"))
+    for relative, expected in row["evidence_sha256"].items():
+        assert sha(directory/relative) == expected, f"raw evidence changed: {name}/{relative}"
+    native_safety_ok(result)
+    assert result["robot_count"] == scenario["robot_count"]
+    if result["success"] or result.get("partial_completion"):
+        native_completion_ok(result)
+    if name == "forced2":
+        assert all(robot["battery_charge_count"] >= 1 for robot in result["robots"].values())
+    records = [json.loads(line) for line in (directory/"ledger.jsonl").read_text().splitlines()]
+    assert any(e["event"] == "gateway_stop" for e in records), "gateway did not close"
+    launch_text = "\n".join(path.read_text() for path in (directory/"launch").glob("*.log"))
+    for node in ("ideal_gateway", "gateway_metrics"):
+        assert re.search(r"\["+node+r"-\d+\]: process has finished cleanly", launch_text), f"{node} did not exit cleanly"
+        assert not re.search(r"\["+node+r"-\d+\].*(?:failed to terminate|process has died)", launch_text), f"{node} shutdown was forced"
+    start, end = native_interval(result, config["duration_sec"])
+    audit, cost_rows = audit_traffic(records, start, end, scenario["admission_protocol"])
+    temporal = ledger_audit(directory/"ledger.jsonl")
+    graph = monitor_graph_audit(json.loads((directory/"graph.json").read_text()))
+    live = verify_live(directory/"ledger_metrics")
+    assert json.loads((directory/"ledger_metrics/summary.json").read_text())["task_result"] == result
+    evidence = {"case": name, "scenario": scenario, "raw_directory": str(directory),
+        "summary_sha256": sha(directory/"summary.json"), "ledger_sha256": sha(directory/"ledger.jsonl"),
+        "result_sha256": sha(row["result_path"]), "result": result, "audit": audit,
+        "temporal_audit": temporal, "graph_audit": graph, "live_replay": live,
+        "audit_wall_sec": time.monotonic()-began}
+    print(json.dumps({"case": name, "audit": "PASS", "native_success": result["success"],
+                      "native_phase": result["task_phase"], "live_samples": live["samples"],
+                      "audit_wall_sec": evidence["audit_wall_sec"]}), flush=True)
+    return evidence, cost_rows
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run-root", type=Path, required=True)
@@ -29,6 +91,7 @@ def main():
     parser.add_argument("--source", type=Path, required=True)
     parser.add_argument("--runtime", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--workers", type=int, default=3, choices=(1, 2, 3))
     args = parser.parse_args()
     if args.output.exists():
         parser.error("never overwrite an audit")
@@ -42,40 +105,14 @@ def main():
     assert all(row["source_digests"] == originals[0]["source_digests"] for row in originals)
     assert all(row["config"] == config for row in originals), "executed manifest differs from predeclaration"
     evidence, strata, costs, burst_rows = [], [], [], []
-    for row in sorted(originals, key=lambda item: item["case"]):
-        name, result, scenario = row["case"], row["result"], config["cases"][row["case"]]
-        directory = Path(row["result_path"]).parent
-        assert row["runner_returncode"] == row["observer_returncode"] == 0
-        assert not any(value for key, value in row.items() if key.endswith("_forced_shutdown"))
-        for relative, expected in row["evidence_sha256"].items():
-            assert sha(directory/relative) == expected, f"raw evidence changed: {name}/{relative}"
-        assert result["collision_events"] == 0 and result["battery_minimum_energy"] > 0
-        assert not result.get("battery_exhaustion_events", 0) and not result.get("failed_robot_names", [])
-        assert result["rally_hold_sec"] == 5 and result["rally_position_tolerance_m"] == .35
-        if result["success"] or result.get("partial_completion"):
-            native_completion_ok(result)
-        if name == "forced2":
-            assert all(robot["battery_charge_count"] >= 1 for robot in result["robots"].values())
-        records = [json.loads(line) for line in (directory/"ledger.jsonl").read_text().splitlines()]
-        assert any(e["event"] == "gateway_stop" for e in records), "gateway did not close"
-        launch_text = "\n".join(path.read_text() for path in (directory/"launch").glob("*.log"))
-        for node in ("ideal_gateway", "gateway_metrics"):
-            assert re.search(r"\["+node+r"-\d+\]: process has finished cleanly", launch_text), f"{node} did not exit cleanly"
-            assert not re.search(r"\["+node+r"-\d+\].*(?:failed to terminate|process has died)", launch_text), f"{node} shutdown was forced"
-        start = result["start_sim_time_sec"]
-        end = start+(result["completion_time_sec"] if result["success"] else config["duration_sec"])
-        audit, cost_rows = audit_traffic(records, start, end, scenario["admission_protocol"])
-        temporal = ledger_audit(directory/"ledger.jsonl")
-        graph = monitor_graph_audit(json.loads((directory/"graph.json").read_text()))
-        live = verify_live(directory/"ledger_metrics")
-        assert json.loads((directory/"ledger_metrics/summary.json").read_text())["task_result"] == result
-        evidence.append({"case": name, "scenario": scenario, "raw_directory": str(directory),
-            "summary_sha256": sha(directory/"summary.json"), "ledger_sha256": sha(directory/"ledger.jsonl"),
-            "result_sha256": sha(row["result_path"]), "result": result, "audit": audit,
-            "temporal_audit": temporal, "graph_audit": graph, "live_replay": live})
-        strata.extend({"case": name, **item} for item in audit["strata"])
-        costs.extend({"case": name, **item} for item in cost_rows)
-        burst_rows.extend({"case": name, **item} for item in audit["bursts"])
+    items = [(row, config) for row in sorted(originals, key=lambda item: item["case"])]
+    with ProcessPoolExecutor(max_workers=args.workers) as pool:
+        for episode, cost_rows in pool.map(audit_original, items):
+            name, audit = episode["case"], episode["audit"]
+            evidence.append(episode)
+            strata.extend({"case": name, **item} for item in audit["strata"])
+            costs.extend({"case": name, **item} for item in cost_rows)
+            burst_rows.extend({"case": name, **item} for item in audit["bursts"])
     args.output.mkdir(parents=True, exist_ok=False)
     for filename, rows in (("strata.jsonl", strata), ("attempt_costs.jsonl", costs), ("bursts.jsonl", burst_rows)):
         with (args.output/filename).open("w") as stream:
@@ -95,6 +132,9 @@ def main():
         "traffic_manifest_sha256": sha(args.manifest), "source_digests": originals[0]["source_digests"],
         "source_audit": source, "runtime_probe": runtime, "original_count": len(evidence),
         "native_task_status_counts": dict(statuses), "episodes": evidence,
+        "native_success_count": sum(e["result"]["success"] for e in evidence),
+        "native_termination_counts": dict(Counter(e["result"]["termination_reason"] for e in evidence)),
+        "read_only_audit_workers": args.workers,
         "strata_rows": len(strata), "attempt_cost_rows": len(costs), "burst_rows": len(burst_rows),
         "conclusion": {"capacity_bottleneck": "not demonstrated; no serialization/MAC model exists in this gateway",
             "negative_result": "通信不是瓶颈：当前 ideal 应用传输没有带宽排队证据；Wi-Fi 是否成为瓶颈尚未测量",

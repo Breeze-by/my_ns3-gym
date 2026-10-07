@@ -39,6 +39,8 @@ def main():
     directory = root / (args.run_id+"_"+args.case)
     case = {"id": args.case, "scenario": args.case, "mode": "rally", "profile": "online"}
     command = episode_command(case, scenario, scenario.get("profile", {}), scenario["mode"], directory, config)
+    # Export cleanup follows mission termination; it never extends native time.
+    command[command.index("--shutdown-timeout")+1] = str(config.get("owner_shutdown_timeout_sec", 60))
     if scenario["admission_protocol"]:
         command.append("--gateway-admission-protocol")
     observer_command = [sys.executable, str(PROJECT_ROOT / "scripts/observe_p3b5.py"),

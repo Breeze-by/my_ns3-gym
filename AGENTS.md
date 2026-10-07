@@ -59,6 +59,8 @@ tokens is not a reason to leave a problem unresolved or inadequately tested.
 
 ## Current Handoff
 
+2026-10-07 newest correction: P3C.5 v2 full14 candidate FAIL: delay_rooms3 metrics export escalated to SIGTERM after30s, then exited0; strict no-escalation gate retains FAIL. Native11 COMPLETE/2timeout/1FAILED, all zero contacts/exhaustion/failed robots, originals unchanged. Largest-trace read-only replay matches original summary (529508 records, cold-ingest20.194s + profiled-export42.175s). Prospective v3 changes only metrics export grace90s and owner cleanup120s, keeping native300s/TTL/5s/safety/protocol unchanged; all14 new originals require a new pushed freeze. No P4/ns-3/Wi-Fi/RL. Evidence wireless-rl/report/20261007_p3c5_export_grace_failed_candidate.json. Earlier pending/failure notes are historical.
+
 2026-10-07 latest correction: P3C.5 v1 at adb370e stopped after three native COMPLETE originals (154.7/129.8/166.2 s, zero contacts) because local queue/gateway closure and metrics shutdown failed. All raw trials and failure tracebacks are retained; eleven cells were not invoked. File-before-DDS closure, stopped-context publication guards and a 30 s read-only export grace period now pass actual ROS/Qt and component checks. The task algorithms/300 s horizon/5 s hold/TTL/safety are unchanged. A new full14-original p3c5_v2 cohort is pending a clean pushed freeze; do not reuse the v1 successes. See wireless-rl/report/20261007_p3c5_shutdown_failed_candidate.json.
 
 2026-10-07 latest: The user accepted P3C and authorized P3C.5 to completion.

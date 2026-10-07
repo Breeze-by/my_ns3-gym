@@ -1,5 +1,7 @@
 # wireless-rl Codex Memory
 
+2026-10-07 newest correction: P3C.5 v2 full14 candidate FAIL: delay_rooms3 metrics export escalated to SIGTERM after30s, then exited0; strict no-escalation gate retains FAIL. Native11 COMPLETE/2timeout/1FAILED, all zero contacts/exhaustion/failed robots, originals unchanged. Largest-trace read-only replay matches original summary (529508 records, cold-ingest20.194s + profiled-export42.175s). Prospective v3 changes only metrics export grace90s and owner cleanup120s, keeping native300s/TTL/5s/safety/protocol unchanged; all14 new originals require a new pushed freeze. No P4/ns-3/Wi-Fi/RL. Evidence wireless-rl/report/20261007_p3c5_export_grace_failed_candidate.json. Earlier pending/failure notes are historical.
+
 2026-10-07 latest correction: P3C.5 v1 instrumentation gate FAIL after three native COMPLETE tasks and eleven uninvoked cells. Missing local-queue/gateway closure and forced metrics shutdown are retained in report/20261007_p3c5_shutdown_failed_candidate.json. Actual stopped-context queue closure and prior-P3C ROS/Qt regressions pass after logging/cleanup-only corrections;705 functional checks and68 immutable task/safety files/54 exact static cells pass. New14-original p3c5_v2 requires a new pushed freeze. No task, candidate generation, native threshold, safety or physics changes.
 
 2026-10-07 latest boundary: P3C accepted by the user; P3C.5 explicitly

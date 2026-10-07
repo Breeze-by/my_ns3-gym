@@ -92,7 +92,8 @@ def audit_protocol(records, enabled):
         assert decisions > 0 and observations > 0 and queued
     else:
         assert not queued and not decisions and not observations
-    return {"status": "PASS", "local_generated": len(queued), "released": len(released),
+    return {"status": "PASS", "scope": "full raw ledger, including startup and closure",
+            "local_generated": len(queued), "released": len(released),
             "discarded": len(discarded), "discard_reasons": dict(Counter(e["reason"] for e in discarded.values())),
             "ap_decisions": decisions, "observation_samples": observations,
             "remote_current_queue_unknown": True, "all_decisions_bound_to_received_controls": True,
@@ -110,7 +111,7 @@ def audit_traffic(records, start, end, enabled):
     for e in records:
         if e["event"] == "generated" and e.get("message_type") == "task_state" and start <= event_stamp(e) <= end:
             phase_changes.append((event_stamp(e), e["task_phase"]))
-    phase_changes.sort()
+    phase_changes.sort(key=lambda item: item[0])  # Preserve ledger order for simultaneous phases.
     timeline = []
     for stamp, phase in phase_changes:
         if not timeline or phase != timeline[-1][1]:
@@ -174,6 +175,10 @@ def audit_traffic(records, start, end, enabled):
             counts["transport_retry_attempts"] += int(e["attempt"] > 1)
             samples[(key, "transport_queue_wait_sec")].append(max(0, e["tx_time"]-e["enqueue_time"]))
             costs.append({"message_id": identity, "attempt": e["attempt"], "sim_time": stamp,
+                "ledger_index": e["ledger_index"], "source_time": meta["source_time"],
+                "version": meta["version"], "ttl_sec": meta["ttl_sec"], "deadline": meta["deadline"],
+                "enqueue_time": e["enqueue_time"], "tx_time": e["tx_time"],
+                "candidate_id": meta.get("candidate_id"), "control_attempt": meta.get("control_attempt"),
                 "phase": phase, "message_type": meta["message_type"], "direction": meta["direction"],
                 "robot": key[3], "control_role": meta["control_role"], "payload_bytes": size,
                 "envelope_cdr_bytes": wire, "serialization_sec_per_mbps": wire*8/1e6,
@@ -229,7 +234,8 @@ def audit_traffic(records, start, end, enabled):
     role_bytes = Counter()
     for cost in costs:
         role_bytes[cost["control_role"]] += cost["envelope_cdr_bytes"]
-    return {"status": "PASS", "start_sim_time": start, "end_sim_time": end, "duration_sec": end-start,
+    return {"status": "PASS", "scope": "actual native interval, clipped at the predeclared horizon",
+        "start_sim_time": start, "end_sim_time": end, "duration_sec": end-start,
         "phase_duration_sec": dict(durations), "strata": rows, "aoi_streams": aoi, "phase_aoi_streams": phase_aoi,
         "queue_distributions": [{"phase": key[0], "direction_or_robot": key[1], "metric": key[2],
                                   "distribution": distribution(values)} for key, values in sorted(queues.items())],
