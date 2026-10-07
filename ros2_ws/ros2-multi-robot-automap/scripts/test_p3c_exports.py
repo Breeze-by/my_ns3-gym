@@ -4,6 +4,37 @@ from pathlib import Path
 import pytest
 
 from export_gateway_metrics import compare, verify_live
+from multi_robot_exploration.gateway_metrics import validate_pair_configuration
+
+
+@pytest.mark.parametrize("row_key", ["directions", "window", "cumulative"])
+def test_pair_validation_reads_protocol_from_real_export_and_live_row_shapes(row_key):
+    context = {"gazebo_seed": 101, "world": "p1c_rooms.world", "mission_mode": "rally", "robot_count": 3}
+    legacy = {"context": context}
+    direct = {"context": context, row_key: [{"configuration": {"admission_protocol": False}}]}
+    admitted = {"context": context, row_key: [{"configuration": {"admission_protocol": True}}]}
+    validate_pair_configuration(direct, legacy)
+    validate_pair_configuration(admitted, admitted)
+    with pytest.raises(ValueError, match="admission_protocol differs"):
+        validate_pair_configuration(admitted, direct)
+    with pytest.raises(ValueError, match="admission_protocol differs"):
+        validate_pair_configuration(legacy, admitted)
+
+
+@pytest.mark.parametrize("invalid", [None, 0, 1, "true", []])
+def test_pair_validation_rejects_invalid_protocol_declarations(invalid):
+    context = {"gazebo_seed": 101, "world": "p1c_rooms.world", "mission_mode": "rally", "robot_count": 3}
+    current = {"context": context, "directions": [{"configuration": {"admission_protocol": invalid}}]}
+    with pytest.raises(ValueError, match="admission_protocol invalid"):
+        validate_pair_configuration(current, {"context": context})
+
+
+def test_pair_validation_rejects_conflicting_protocol_metadata():
+    context = {"gazebo_seed": 101, "world": "p1c_rooms.world", "mission_mode": "rally", "robot_count": 3,
+               "configuration": {"admission_protocol": True}}
+    current = {"context": context, "directions": [{"configuration": {"admission_protocol": False}}]}
+    with pytest.raises(ValueError, match="admission_protocol invalid or conflicting"):
+        validate_pair_configuration(current, current)
 
 
 def test_pair_validation_uses_declared_target_without_fabricating_undetected_truth(tmp_path):

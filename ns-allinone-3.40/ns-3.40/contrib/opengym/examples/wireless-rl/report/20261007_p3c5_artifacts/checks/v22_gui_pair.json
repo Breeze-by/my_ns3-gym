@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "scope": "actual offscreen Qt rendering of unchanged closed original live snapshots; no Gazebo or new task",
+  "evidence": [
+    {
+      "current": "rooms3",
+      "reference": "direct_rooms3",
+      "same_protocol_pair": false,
+      "control_types_visible": [
+        "candidate",
+        "grant",
+        "heartbeat",
+        "request"
+      ],
+      "task_details": "与已加载ideal参考的TDI：—；not a paired comparison: admission_protocol differs\n参考原生任务：COMPLETE success=True partial=False 原因=task_complete；完成=144s RMST300=144.5s；发现/RALLY=53.3/71.5s；覆盖=0.951 路径=28.4m 最低电量=22.6 碰撞=0\ntb1: ACTIVE E=28.14994837107262 接收位姿=[3.6594384087045455, 0.72649117601321] 速度=[0.04990007395312607, 0.024444164048309448]\ntb2: ACTIVE E=33.46654023582017 接收位姿=[4.082601330165863, 1.4220320884152702] 速度=[-1.6873978467846246e-05, -0.007682025682655654]\ntb3: ACTIVE E=31.960833571257115 接收位姿=[5.50021559075769, 2.130164001247005] 速度=[1.2694689342414908e-05, -7.094364117402191e-07]\n最近事件：target_reconfirmed @ 226.7\n最近事件：target_reconfirmed @ 227.7\n最近事件：target_reconfirmed @ 228.7\n最近事件：target_reconfirmed @ 229.7\n最近事件：target_reconfirmed @ 230.7\n最近事件：target_reconfirmed @ 231.7\n最近事件：navigation_outcome @ 232.0\n最近事件：target_reconfirmed @ 232.7",
+      "raw_snapshot_sim_time": 232.0,
+      "raw_snapshot_task_result_present": false,
+      "figure": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261007_p3c5_artifacts/gui/pair_rejected.png"
+    },
+    {
+      "current": "loss_corridors2",
+      "reference": "corridors2",
+      "same_protocol_pair": true,
+      "control_types_visible": [
+        "candidate",
+        "grant",
+        "heartbeat",
+        "request"
+      ],
+      "task_details": "与已加载ideal参考的TDI：—；原生结果未落盘或参考不是完整ideal\n参考原生任务：COMPLETE success=True partial=False 原因=task_complete；完成=189s RMST300=188.70000000000002s；发现/RALLY=60.1/61.2s；覆盖=0.819 路径=25m 最低电量=23.7 碰撞=0\ntb1: ACTIVE E=24.560839087968382 接收位姿=[-3.1982883158309074, 1.7611922154563264] 速度=[-0.002034168852185039, -0.0632192095251694]\ntb2: ACTIVE E=34.00482602582525 接收位姿=[-3.6133608141338165, 1.0186338979098544] 速度=[-3.0557028353894894e-05, -1.9908723740491506e-06]\n最近事件：target_reconfirmed @ 244.5\n最近事件：target_reconfirmed @ 245.5\n最近事件：coordinator_wait @ 246.0\n最近事件：target_reconfirmed @ 246.5\n最近事件：coordinator_recovered @ 246.6\n最近事件：target_reconfirmed @ 247.5\n最近事件：target_reconfirmed @ 248.5\n最近事件：task_phase @ 253.2",
+      "raw_snapshot_sim_time": 253.0,
+      "raw_snapshot_task_result_present": false,
+      "figure": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261007_p3c5_artifacts/gui/admission_live.png"
+    }
+  ]
+}

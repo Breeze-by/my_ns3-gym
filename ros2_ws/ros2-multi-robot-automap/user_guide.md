@@ -2,7 +2,7 @@
 
 常用启动命令、不同 world 和参数速查见 [`launch_commands.md`](launch_commands.md)。
 
-最近核对：2026-10-07。P3A.6、P3B.5、P3C 已验收；当前执行 P3C.5 负载与协议审计。
+最近核对：2026-10-07。P3A.6、P3B.5、P3C 已验收；P3C.5技术完成、门禁PASS，待用户验收。
 当前任务栈冻结为 `d8d361b`，最终报告提交为 `d0b1561`，见
 [完整报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261006_p3b5_gate.md)。
 十格固定理想任务全部原生 COMPLETE，强故障下的失败和超时仍保留；尚未接入 ns-3/Wi-Fi/RL。
@@ -37,6 +37,16 @@ GUI/headless/配置操作的完整命令见 `launch_commands.md` 的 P3C 节。`
 同配置ideal/fault可以叠加曲线并导出TDI、300秒horizon惩罚时间差、发现/RALLY、覆盖率、路径、电量、碰撞和原生失败原因。TDI仅rally ideal原生COMPLETE合格，partial按原required_robot_count/ideal.robot_count计分；所有过程模式、失败ideal保持不合格。单对数字是描述性结果，success/partial总体率和RMST需明确配对样本集合。未检测到目标的观测坐标保持null，清单声明用于配置核验；原始raw文件及hash不变。P3C统计层不能改变任务结果或把应用损伤曲线称为Wi-Fi性能。
 
 在线服务一次验证整个通信参数集合；非法值、未知安全参数、重复参数名或过期revision全部拒绝且有效配置不变。新revision只用于后续发送尝试；旧attempt保持原loss/delay/blackout/ACK条件，原源时间、TTL/deadline、队列和可靠关联保留，retry新发送使用新配置。配置生效时间、版本、请求/拒绝和任务事件都可回放定位。此能力用于交互调试与预声明通信敏感性演示；任务算法、Nav2/SLAM、物理模型和原生安全门槛沿用已验收P3B.5。
+
+## P3C.5 负载与协议运行边界
+
+P3C.5的[完整负载/协议报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261007_p3c5_gate.md)记录bea7f8b冻结14原格、11 COMPLETE/3 RALLY超时，零碰撞/耗尽/失效/infra/retry。1272实时快照与2372766输入一致，全部14因果/时序/graph/native审计、723功能、四包build、68任务安全源码/54静态格和实际ROS/Qt验证通过。任务算法、TTL、原300秒/5秒门槛不变；原失败和旧v1/v2技术失败候选保持。
+
+手动选择`gateway_admission_protocol:=true`后，普通上行完整payload在机器人队列等待实际收到的有效grant；candidate/request/grant/heartbeat进入同一故障传输和P3C类别曲线。每候选初次立即发组、未授权时至少.75秒后重发、总计最多三组，不是全局4Hz限制。关键任务/电池/导航与ACK沿原安全路径、同样计费。AP只使用已交付摘要/请求/心跳/历史，远端当前队列为null；`local_queue_audit`只能离线查看。`frame_state`是TF而非图像。参数默认false保留已验收直接路径。
+
+P3C面板吞吐字节仍为应用payload；P3C.5报告额外测量原payload/压缩payload和实际envelope CDR、角色成本及每1秒burst。实际airtime/J为null，逐attempt的`8*envelope_cdr_bytes/1e6`只是条件Mbps/瓦数系数；任务电量不是焦耳。当前应用模型未证明容量拥塞，真实Wi-Fi尚待标定。
+
+参考配对还必须有相同admission_protocol；当前summary directions和live window/cumulative都携带该标记。旧P3B/P3C缺标记时为已知direct默认false。协议开/关结果可作为描述性独立参照，但显示/导出拒绝把它们标成同协议ideal/fault配对或TDI；冲突/非boolean同样拒绝。启动/重审命令见launch_commands.md的P3C.5节。
 
 ## 1. 项目结构
 

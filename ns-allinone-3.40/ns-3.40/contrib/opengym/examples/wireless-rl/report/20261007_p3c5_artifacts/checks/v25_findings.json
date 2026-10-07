@@ -1,0 +1,2363 @@
+{
+  "episodes": [
+    {
+      "actual_elapsed_sec": 188.70000000000002,
+      "all_nondata_fraction": 0.5145979956824684,
+      "case": "corridors2",
+      "completion_sec": 188.70000000000002,
+      "conditional_serialization_sec": {
+        "1": 40.111808,
+        "54": 0.7428112592592593,
+        "6": 6.685301333333334
+      },
+      "control_retry_messages": 0,
+      "drop_attempts": 2,
+      "expired_attempts": 2,
+      "explore_pose_tb1": {
+        "compression_payload_fraction": 1.0,
+        "counts": {
+          "accepted_messages": 240,
+          "accepted_payload_bytes": 173760,
+          "control_retry_messages": 0,
+          "delivered_attempts": 240,
+          "delivered_payload_bytes": 173760,
+          "generated_envelope_cdr_bytes": 202560,
+          "generated_messages": 240,
+          "generated_payload_bytes": 173760,
+          "transport_retry_attempts": 0,
+          "tx_attempts": 240,
+          "tx_envelope_cdr_bytes": 202560,
+          "tx_payload_bytes": 173760,
+          "uncompressed_payload_bytes": 173760
+        },
+        "direction": "uplink",
+        "distributions": {
+          "envelope_cdr_bytes": {
+            "max": 844,
+            "min": 844,
+            "n": 240,
+            "p50": 844,
+            "p95": 844,
+            "p99": 844
+          },
+          "local_wait_sec": {
+            "max": 0.20000000000001705,
+            "min": 0.09999999999999432,
+            "n": 240,
+            "p50": 0.19999999999998863,
+            "p95": 0.20000000000001705,
+            "p99": 0.20000000000001705
+          },
+          "payload_bytes": {
+            "max": 724,
+            "min": 724,
+            "n": 240,
+            "p50": 724,
+            "p95": 724,
+            "p99": 724
+          },
+          "source_to_delivery_sec": {
+            "max": 0.19900000000001228,
+            "min": 0.09900000000000375,
+            "n": 240,
+            "p50": 0.18299999999999272,
+            "p95": 0.19899999999999807,
+            "p99": 0.19900000000001228
+          },
+          "transport_delay_sec": {
+            "max": 0.0,
+            "min": 0.0,
+            "n": 240,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "transport_queue_wait_sec": {
+            "max": 0,
+            "min": 0,
+            "n": 240,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "ttl_sec": {
+            "max": 2.0,
+            "min": 2.0,
+            "n": 240,
+            "p50": 2.0,
+            "p95": 2.0,
+            "p99": 2.0
+          }
+        },
+        "generated_hz": 4.0,
+        "message_type": "pose_state",
+        "offered_payload_bps": 23168.0,
+        "phase": "EXPLORE",
+        "phase_duration_sec": 60.0,
+        "robot": "tb1",
+        "tx_envelope_cdr_bps": 27008.0
+      },
+      "failure_reason": "",
+      "map_compressed_bytes": 971378,
+      "map_compression_fraction": 0.057376736897958115,
+      "map_raw_bytes": 16929823,
+      "mean_cdr_bps": 212569.1997880233,
+      "measurement_duration_sec": 188.70000000000002,
+      "native_phase": "COMPLETE",
+      "native_success": true,
+      "new_protocol_fraction": 0.37829060210898496,
+      "one_second_cdr_bps": {
+        "max": 289416.0,
+        "min": 160184.0,
+        "n": 189,
+        "p50": 212984.0,
+        "p95": 260664.0,
+        "p99": 289272.0
+      },
+      "overflow_attempts": 0,
+      "pose_tb1_aoi": {
+        "first_freshness_recovery_time": null,
+        "first_no_data_time": null,
+        "first_source_stale_time": null,
+        "fresh_ratio": 1.0,
+        "fresh_sec": 188.70000000000002,
+        "max": 0.6850000000000023,
+        "mean": 0.4130720720720664,
+        "monitored_sec": 188.70000000000002,
+        "no_data_sec": 0.0,
+        "observed_sec": 188.70000000000002,
+        "p95": 0.5592373333271845,
+        "recovery_count": 0,
+        "recovery_time_max_sec": null,
+        "recovery_time_mean_sec": null,
+        "stale_sec": 0.0,
+        "unrecovered_stale_sec": 0.0
+      },
+      "protocol_full_ledger": {
+        "all_decisions_bound_to_received_controls": true,
+        "ap_decisions": 3318,
+        "discard_reasons": {
+          "episode_closed": 2
+        },
+        "discarded": 2,
+        "local_generated": 3320,
+        "local_wait_sec": {
+          "max": 0.4000000000000057,
+          "min": 0.0999999999999659,
+          "n": 3318,
+          "p50": 0.1999999999999993,
+          "p95": 0.20000000000001705,
+          "p99": 0.20000000000004547
+        },
+        "observation_samples": 267,
+        "released": 3318,
+        "remote_current_queue_unknown": true,
+        "scope": "full raw ledger, including startup and closure",
+        "status": "PASS"
+      },
+      "rmst300_sec": 188.70000000000002,
+      "termination_reason": "task_complete",
+      "transport_retry_attempts": 0,
+      "tx_cdr_bytes": 5013976,
+      "tx_cdr_bytes_by_role": {
+        "candidate": 812276,
+        "critical-event": 654652,
+        "data": 2433794,
+        "feedback": 28790,
+        "grant": 568404,
+        "heartbeat": 111132,
+        "request": 404928
+      }
+    },
+    {
+      "actual_elapsed_sec": 203.3,
+      "all_nondata_fraction": 0.5180582367327553,
+      "case": "corridors3",
+      "completion_sec": 203.3,
+      "conditional_serialization_sec": {
+        "1": 63.939576,
+        "54": 1.1840662222222222,
+        "6": 10.656596
+      },
+      "control_retry_messages": 0,
+      "drop_attempts": 3,
+      "expired_attempts": 3,
+      "explore_pose_tb1": {
+        "compression_payload_fraction": 1.0,
+        "counts": {
+          "accepted_messages": 248,
+          "accepted_payload_bytes": 179552,
+          "control_retry_messages": 0,
+          "delivered_attempts": 247,
+          "delivered_payload_bytes": 178828,
+          "generated_envelope_cdr_bytes": 208468,
+          "generated_messages": 247,
+          "generated_payload_bytes": 178828,
+          "transport_retry_attempts": 0,
+          "tx_attempts": 247,
+          "tx_envelope_cdr_bytes": 208468,
+          "tx_payload_bytes": 178828,
+          "uncompressed_payload_bytes": 178828
+        },
+        "direction": "uplink",
+        "distributions": {
+          "envelope_cdr_bytes": {
+            "max": 844,
+            "min": 844,
+            "n": 247,
+            "p50": 844,
+            "p95": 844,
+            "p99": 844
+          },
+          "local_wait_sec": {
+            "max": 0.20000000000001705,
+            "min": 0.19999999999998863,
+            "n": 247,
+            "p50": 0.19999999999998863,
+            "p95": 0.20000000000001705,
+            "p99": 0.20000000000001705
+          },
+          "payload_bytes": {
+            "max": 724,
+            "min": 724,
+            "n": 247,
+            "p50": 724,
+            "p95": 724,
+            "p99": 724
+          },
+          "source_to_delivery_sec": {
+            "max": 0.19900000000001228,
+            "min": 0.1670000000000016,
+            "n": 247,
+            "p50": 0.18299999999999272,
+            "p95": 0.19899999999998386,
+            "p99": 0.19900000000001228
+          },
+          "transport_delay_sec": {
+            "max": 0.0,
+            "min": 0.0,
+            "n": 247,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "transport_queue_wait_sec": {
+            "max": 0,
+            "min": 0,
+            "n": 247,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "ttl_sec": {
+            "max": 2.0,
+            "min": 2.0,
+            "n": 247,
+            "p50": 2.0,
+            "p95": 2.0,
+            "p99": 2.0
+          }
+        },
+        "generated_hz": 3.9903069466882064,
+        "message_type": "pose_state",
+        "offered_payload_bps": 23111.857835218092,
+        "phase": "EXPLORE",
+        "phase_duration_sec": 61.900000000000006,
+        "robot": "tb1",
+        "tx_envelope_cdr_bps": 26942.55250403877
+      },
+      "failure_reason": "",
+      "map_compressed_bytes": 1493190,
+      "map_compression_fraction": 0.05111908828023034,
+      "map_raw_bytes": 29210028,
+      "mean_cdr_bps": 314508.48991637974,
+      "measurement_duration_sec": 203.3,
+      "native_phase": "COMPLETE",
+      "native_success": true,
+      "new_protocol_fraction": 0.3843767747224348,
+      "one_second_cdr_bps": {
+        "max": 443192.0,
+        "min": 238384.0,
+        "n": 204,
+        "p50": 311592.0,
+        "p95": 376704.0,
+        "p99": 412040.0
+      },
+      "overflow_attempts": 0,
+      "pose_tb1_aoi": {
+        "first_freshness_recovery_time": null,
+        "first_no_data_time": null,
+        "first_source_stale_time": null,
+        "fresh_ratio": 1.0,
+        "fresh_sec": 203.3,
+        "max": 0.7330000000000041,
+        "mean": 0.4141283817019096,
+        "monitored_sec": 203.3,
+        "no_data_sec": 0.0,
+        "observed_sec": 203.3,
+        "p95": 0.5596658536627688,
+        "recovery_count": 0,
+        "recovery_time_max_sec": null,
+        "recovery_time_mean_sec": null,
+        "stale_sec": 0.0,
+        "unrecovered_stale_sec": 0.0
+      },
+      "protocol_full_ledger": {
+        "all_decisions_bound_to_received_controls": true,
+        "ap_decisions": 6266,
+        "discard_reasons": {
+          "episode_closed": 3
+        },
+        "discarded": 3,
+        "local_generated": 6266,
+        "local_wait_sec": {
+          "max": 0.30000000000001137,
+          "min": 0.0999999999999659,
+          "n": 6263,
+          "p50": 0.1999999999999993,
+          "p95": 0.20000000000004547,
+          "p99": 0.20000000000004547
+        },
+        "observation_samples": 337,
+        "released": 6263,
+        "remote_current_queue_unknown": true,
+        "scope": "full raw ledger, including startup and closure",
+        "status": "PASS"
+      },
+      "rmst300_sec": 203.3,
+      "termination_reason": "task_complete",
+      "transport_retry_attempts": 0,
+      "tx_cdr_bytes": 7992447,
+      "tx_cdr_bytes_by_role": {
+        "candidate": 1315427,
+        "critical-event": 1034566,
+        "data": 3851894,
+        "feedback": 33876,
+        "grant": 921733,
+        "heartbeat": 179928,
+        "request": 655023
+      }
+    },
+    {
+      "actual_elapsed_sec": 300.1999999999998,
+      "all_nondata_fraction": 0.6258849828784139,
+      "case": "delay_lab2",
+      "completion_sec": null,
+      "conditional_serialization_sec": {
+        "1": 101.198568,
+        "54": 1.8740475555555554,
+        "6": 16.866428
+      },
+      "control_retry_messages": 7422,
+      "drop_attempts": 17,
+      "expired_attempts": 17,
+      "explore_pose_tb1": {
+        "compression_payload_fraction": 1.0,
+        "counts": {
+          "accepted_messages": 372,
+          "accepted_payload_bytes": 269328,
+          "control_retry_messages": 0,
+          "delivered_attempts": 371,
+          "delivered_payload_bytes": 268604,
+          "generated_envelope_cdr_bytes": 313124,
+          "generated_messages": 371,
+          "generated_payload_bytes": 268604,
+          "transport_retry_attempts": 0,
+          "tx_attempts": 371,
+          "tx_envelope_cdr_bytes": 313124,
+          "tx_payload_bytes": 268604,
+          "uncompressed_payload_bytes": 268604
+        },
+        "direction": "uplink",
+        "distributions": {
+          "envelope_cdr_bytes": {
+            "max": 844,
+            "min": 844,
+            "n": 371,
+            "p50": 844,
+            "p95": 844,
+            "p99": 844
+          },
+          "local_wait_sec": {
+            "max": 1.1000000000003638,
+            "min": 1.0,
+            "n": 371,
+            "p50": 1.0,
+            "p95": 1.0,
+            "p99": 1.099999999999909
+          },
+          "payload_bytes": {
+            "max": 724,
+            "min": 724,
+            "n": 371,
+            "p50": 724,
+            "p95": 724,
+            "p99": 724
+          },
+          "source_to_delivery_sec": {
+            "max": 1.6769999999996799,
+            "min": 1.4669999999996435,
+            "n": 371,
+            "p50": 1.4830000000001746,
+            "p95": 1.499000000000251,
+            "p99": 1.5850000000000364
+          },
+          "transport_delay_sec": {
+            "max": 0.5,
+            "min": 0.5,
+            "n": 371,
+            "p50": 0.5,
+            "p95": 0.5,
+            "p99": 0.5
+          },
+          "transport_queue_wait_sec": {
+            "max": 0,
+            "min": 0,
+            "n": 371,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "ttl_sec": {
+            "max": 2.0,
+            "min": 2.0,
+            "n": 371,
+            "p50": 2.0,
+            "p95": 2.0,
+            "p99": 2.0
+          }
+        },
+        "generated_hz": 3.997844827586219,
+        "message_type": "pose_state",
+        "offered_payload_bps": 23155.517241379377,
+        "phase": "EXPLORE",
+        "phase_duration_sec": 92.79999999999973,
+        "robot": "tb1",
+        "tx_envelope_cdr_bps": 26993.44827586215
+      },
+      "failure_reason": "timeout",
+      "map_compressed_bytes": 2413127,
+      "map_compression_fraction": 0.0688115482342426,
+      "map_raw_bytes": 35068634,
+      "mean_cdr_bps": 337328.56,
+      "measurement_duration_sec": 300.0,
+      "native_phase": "RALLY",
+      "native_success": false,
+      "new_protocol_fraction": 0.5369180322788757,
+      "one_second_cdr_bps": {
+        "max": 438240.0,
+        "min": 187304.0,
+        "n": 300,
+        "p50": 351312.0,
+        "p95": 399960.0,
+        "p99": 422832.0
+      },
+      "overflow_attempts": 0,
+      "pose_tb1_aoi": {
+        "first_freshness_recovery_time": 2217.982,
+        "first_no_data_time": null,
+        "first_source_stale_time": 2217.809,
+        "fresh_ratio": 0.9977366666666694,
+        "fresh_sec": 299.3210000000008,
+        "max": 2.1970000000001164,
+        "mean": 1.6296519999999568,
+        "monitored_sec": 300.0,
+        "no_data_sec": 0.0,
+        "observed_sec": 300.0,
+        "p95": 1.7901118882025842,
+        "recovery_count": 5,
+        "recovery_time_max_sec": 0.19700000000011642,
+        "recovery_time_mean_sec": 0.13579999999983555,
+        "stale_sec": 0.6789999999991778,
+        "unrecovered_stale_sec": 0.0
+      },
+      "protocol_full_ledger": {
+        "all_decisions_bound_to_received_controls": true,
+        "ap_decisions": 14063,
+        "discard_reasons": {
+          "episode_closed": 11
+        },
+        "discarded": 11,
+        "local_generated": 4700,
+        "local_wait_sec": {
+          "max": 1.400000000000091,
+          "min": 0.9999999999997726,
+          "n": 4689,
+          "p50": 1.0,
+          "p95": 1.0,
+          "p99": 1.1000000000003638
+        },
+        "observation_samples": 381,
+        "released": 4689,
+        "remote_current_queue_unknown": true,
+        "scope": "full raw ledger, including startup and closure",
+        "status": "PASS"
+      },
+      "rmst300_sec": 300,
+      "termination_reason": "timeout",
+      "transport_retry_attempts": 250,
+      "tx_cdr_bytes": 12649821,
+      "tx_cdr_bytes_by_role": {
+        "candidate": 2587959,
+        "critical-event": 1050290,
+        "data": 4732488,
+        "feedback": 75126,
+        "grant": 2745923,
+        "heartbeat": 176400,
+        "request": 1281635
+      }
+    },
+    {
+      "actual_elapsed_sec": 300.0,
+      "all_nondata_fraction": 0.5731008752464744,
+      "case": "delay_rooms3",
+      "completion_sec": null,
+      "conditional_serialization_sec": {
+        "1": 163.802088,
+        "54": 3.033372,
+        "6": 27.300348
+      },
+      "control_retry_messages": 11244,
+      "drop_attempts": 87,
+      "expired_attempts": 87,
+      "explore_pose_tb1": {
+        "compression_payload_fraction": 1.0,
+        "counts": {
+          "accepted_messages": 188,
+          "accepted_payload_bytes": 136112,
+          "control_retry_messages": 0,
+          "delivered_attempts": 191,
+          "delivered_payload_bytes": 138284,
+          "drop_attempts": 2,
+          "expired_attempts": 2,
+          "generated_envelope_cdr_bytes": 164580,
+          "generated_messages": 195,
+          "generated_payload_bytes": 141180,
+          "local_discarded_messages": 2,
+          "queue_overflow_attempts": 0,
+          "receiver_expired_messages": 2,
+          "transport_retry_attempts": 0,
+          "tx_attempts": 192,
+          "tx_envelope_cdr_bytes": 162048,
+          "tx_payload_bytes": 139008,
+          "uncompressed_payload_bytes": 141180
+        },
+        "direction": "uplink",
+        "distributions": {
+          "envelope_cdr_bytes": {
+            "max": 844,
+            "min": 844,
+            "n": 195,
+            "p50": 844,
+            "p95": 844,
+            "p99": 844
+          },
+          "local_wait_sec": {
+            "max": 1.8000000000000114,
+            "min": 1.0,
+            "n": 192,
+            "p50": 1.0,
+            "p95": 1.1000000000000227,
+            "p99": 1.6999999999999886
+          },
+          "payload_bytes": {
+            "max": 724,
+            "min": 724,
+            "n": 195,
+            "p50": 724,
+            "p95": 724,
+            "p99": 724
+          },
+          "source_to_delivery_sec": {
+            "max": 1.896000000000015,
+            "min": 1.4680000000000177,
+            "n": 191,
+            "p50": 1.4920000000000186,
+            "p95": 1.592000000000013,
+            "p99": 1.8600000000000136
+          },
+          "transport_delay_sec": {
+            "max": 0.5,
+            "min": 0.5,
+            "n": 191,
+            "p50": 0.5,
+            "p95": 0.5,
+            "p99": 0.5
+          },
+          "transport_queue_wait_sec": {
+            "max": 0,
+            "min": 0,
+            "n": 192,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "ttl_sec": {
+            "max": 2.0,
+            "min": 2.0,
+            "n": 195,
+            "p50": 2.0,
+            "p95": 2.0,
+            "p99": 2.0
+          }
+        },
+        "generated_hz": 3.9553752535496947,
+        "message_type": "pose_state",
+        "offered_payload_bps": 22909.53346855983,
+        "phase": "EXPLORE",
+        "phase_duration_sec": 49.30000000000001,
+        "robot": "tb1",
+        "tx_envelope_cdr_bps": 26295.821501014194
+      },
+      "failure_reason": "timeout",
+      "map_compressed_bytes": 5251644,
+      "map_compression_fraction": 0.0852798578737238,
+      "map_raw_bytes": 61581294,
+      "mean_cdr_bps": 546006.96,
+      "measurement_duration_sec": 300.0,
+      "native_phase": "RALLY",
+      "native_success": false,
+      "new_protocol_fraction": 0.4979834933483876,
+      "one_second_cdr_bps": {
+        "max": 664512.0,
+        "min": 186920.0,
+        "n": 300,
+        "p50": 569168.0,
+        "p95": 629240.0,
+        "p99": 653568.0
+      },
+      "overflow_attempts": 0,
+      "pose_tb1_aoi": {
+        "first_freshness_recovery_time": 158.9,
+        "first_no_data_time": null,
+        "first_source_stale_time": 156.93,
+        "fresh_ratio": 0.9925666666666666,
+        "fresh_sec": 297.77,
+        "max": 3.969999999999999,
+        "mean": 1.6879206666666795,
+        "monitored_sec": 300.0,
+        "no_data_sec": 0.0,
+        "observed_sec": 300.0,
+        "p95": 1.8647575753938868,
+        "recovery_count": 3,
+        "recovery_time_max_sec": 1.9699999999999989,
+        "recovery_time_mean_sec": 0.74333333333333,
+        "stale_sec": 2.230000000000018,
+        "unrecovered_stale_sec": 0.0
+      },
+      "protocol_full_ledger": {
+        "all_decisions_bound_to_received_controls": true,
+        "ap_decisions": 24071,
+        "discard_reasons": {
+          "episode_closed": 20,
+          "source_expired": 9
+        },
+        "discarded": 29,
+        "local_generated": 8050,
+        "local_wait_sec": {
+          "max": 1.8000000000000114,
+          "min": 0.9999999999999716,
+          "n": 8021,
+          "p50": 1.0,
+          "p95": 1.1000000000000227,
+          "p99": 1.1000000000000227
+        },
+        "observation_samples": 432,
+        "released": 8021,
+        "remote_current_queue_unknown": true,
+        "scope": "full raw ledger, including startup and closure",
+        "status": "PASS"
+      },
+      "rmst300_sec": 300,
+      "termination_reason": "timeout",
+      "transport_retry_attempts": 286,
+      "tx_cdr_bytes": 20475261,
+      "tx_cdr_bytes_by_role": {
+        "candidate": 3890988,
+        "critical-event": 1451975,
+        "data": 8740871,
+        "feedback": 86073,
+        "grant": 4100910,
+        "heartbeat": 264600,
+        "request": 1939844
+      }
+    },
+    {
+      "actual_elapsed_sec": 231.5999999999999,
+      "all_nondata_fraction": 0.1963488764597413,
+      "case": "direct_lab2",
+      "completion_sec": 231.5999999999999,
+      "conditional_serialization_sec": {
+        "1": 34.004656,
+        "54": 0.6297158518518517,
+        "6": 5.667442666666666
+      },
+      "control_retry_messages": 0,
+      "drop_attempts": 2,
+      "expired_attempts": 2,
+      "explore_pose_tb1": {
+        "compression_payload_fraction": 1.0,
+        "counts": {
+          "accepted_messages": 527,
+          "accepted_payload_bytes": 381548,
+          "control_retry_messages": 0,
+          "delivered_attempts": 528,
+          "delivered_payload_bytes": 382272,
+          "generated_envelope_cdr_bytes": 445632,
+          "generated_messages": 528,
+          "generated_payload_bytes": 382272,
+          "transport_retry_attempts": 0,
+          "tx_attempts": 528,
+          "tx_envelope_cdr_bytes": 445632,
+          "tx_payload_bytes": 382272,
+          "uncompressed_payload_bytes": 382272
+        },
+        "direction": "uplink",
+        "distributions": {
+          "envelope_cdr_bytes": {
+            "max": 844,
+            "min": 844,
+            "n": 528,
+            "p50": 844,
+            "p95": 844,
+            "p99": 844
+          },
+          "payload_bytes": {
+            "max": 724,
+            "min": 724,
+            "n": 528,
+            "p50": 724,
+            "p95": 724,
+            "p99": 724
+          },
+          "source_to_delivery_sec": {
+            "max": 0.07200000000011642,
+            "min": 0.0,
+            "n": 528,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "transport_delay_sec": {
+            "max": 0.0,
+            "min": 0.0,
+            "n": 528,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "transport_queue_wait_sec": {
+            "max": 0,
+            "min": 0,
+            "n": 528,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "ttl_sec": {
+            "max": 2.0,
+            "min": 2.0,
+            "n": 528,
+            "p50": 2.0,
+            "p95": 2.0,
+            "p99": 2.0
+          }
+        },
+        "generated_hz": 4.003032600454888,
+        "message_type": "pose_state",
+        "offered_payload_bps": 23185.56482183471,
+        "phase": "EXPLORE",
+        "phase_duration_sec": 131.9000000000001,
+        "robot": "tb1",
+        "tx_envelope_cdr_bps": 27028.4761182714
+      },
+      "failure_reason": "",
+      "map_compressed_bytes": 1625237,
+      "map_compression_fraction": 0.06249244672622899,
+      "map_raw_bytes": 26006935,
+      "mean_cdr_bps": 146824.93955094996,
+      "measurement_duration_sec": 231.5999999999999,
+      "native_phase": "COMPLETE",
+      "native_success": true,
+      "new_protocol_fraction": 0.0,
+      "one_second_cdr_bps": {
+        "max": 255936.0,
+        "min": 84944.0,
+        "n": 232,
+        "p50": 144496.0,
+        "p95": 210896.0,
+        "p99": 252704.0
+      },
+      "overflow_attempts": 0,
+      "pose_tb1_aoi": {
+        "first_freshness_recovery_time": null,
+        "first_no_data_time": null,
+        "first_source_stale_time": null,
+        "fresh_ratio": 1.0,
+        "fresh_sec": 231.5999999999999,
+        "max": 0.4960000000000946,
+        "mean": 0.21478929188263957,
+        "monitored_sec": 231.5999999999999,
+        "no_data_sec": 0.0,
+        "observed_sec": 231.5999999999999,
+        "p95": 0.3602246219907644,
+        "recovery_count": 0,
+        "recovery_time_max_sec": null,
+        "recovery_time_mean_sec": null,
+        "stale_sec": 0.0,
+        "unrecovered_stale_sec": 0.0
+      },
+      "protocol_full_ledger": {
+        "all_decisions_bound_to_received_controls": true,
+        "ap_decisions": 0,
+        "discard_reasons": {},
+        "discarded": 0,
+        "local_generated": 0,
+        "local_wait_sec": {
+          "max": null,
+          "min": null,
+          "n": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "observation_samples": 0,
+        "released": 0,
+        "remote_current_queue_unknown": true,
+        "scope": "full raw ledger, including startup and closure",
+        "status": "PASS"
+      },
+      "rmst300_sec": 231.5999999999999,
+      "termination_reason": "task_complete",
+      "transport_retry_attempts": 0,
+      "tx_cdr_bytes": 4250582,
+      "tx_cdr_bytes_by_role": {
+        "critical-event": 810621,
+        "data": 3415985,
+        "feedback": 23976
+      }
+    },
+    {
+      "actual_elapsed_sec": 144.5,
+      "all_nondata_fraction": 0.17065706692352178,
+      "case": "direct_rooms3",
+      "completion_sec": 144.5,
+      "conditional_serialization_sec": {
+        "1": 34.318696,
+        "54": 0.6355314074074074,
+        "6": 5.719782666666667
+      },
+      "control_retry_messages": 0,
+      "drop_attempts": 0,
+      "expired_attempts": 0,
+      "explore_pose_tb1": {
+        "compression_payload_fraction": 1.0,
+        "counts": {
+          "accepted_messages": 213,
+          "accepted_payload_bytes": 154212,
+          "control_retry_messages": 0,
+          "delivered_attempts": 213,
+          "delivered_payload_bytes": 154212,
+          "generated_envelope_cdr_bytes": 179772,
+          "generated_messages": 213,
+          "generated_payload_bytes": 154212,
+          "transport_retry_attempts": 0,
+          "tx_attempts": 213,
+          "tx_envelope_cdr_bytes": 179772,
+          "tx_payload_bytes": 154212,
+          "uncompressed_payload_bytes": 154212
+        },
+        "direction": "uplink",
+        "distributions": {
+          "envelope_cdr_bytes": {
+            "max": 844,
+            "min": 844,
+            "n": 213,
+            "p50": 844,
+            "p95": 844,
+            "p99": 844
+          },
+          "payload_bytes": {
+            "max": 724,
+            "min": 724,
+            "n": 213,
+            "p50": 724,
+            "p95": 724,
+            "p99": 724
+          },
+          "source_to_delivery_sec": {
+            "max": 0.07400000000001228,
+            "min": 0.0,
+            "n": 213,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "transport_delay_sec": {
+            "max": 0.0,
+            "min": 0.0,
+            "n": 213,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "transport_queue_wait_sec": {
+            "max": 0,
+            "min": 0,
+            "n": 213,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "ttl_sec": {
+            "max": 2.0,
+            "min": 2.0,
+            "n": 213,
+            "p50": 2.0,
+            "p95": 2.0,
+            "p99": 2.0
+          }
+        },
+        "generated_hz": 4.003759398496242,
+        "message_type": "pose_state",
+        "offered_payload_bps": 23189.77443609023,
+        "phase": "EXPLORE",
+        "phase_duration_sec": 53.19999999999999,
+        "robot": "tb1",
+        "tx_envelope_cdr_bps": 27033.383458646622
+      },
+      "failure_reason": "",
+      "map_compressed_bytes": 1878382,
+      "map_compression_fraction": 0.07209252556384617,
+      "map_raw_bytes": 26055156,
+      "mean_cdr_bps": 237499.62629757787,
+      "measurement_duration_sec": 144.5,
+      "native_phase": "COMPLETE",
+      "native_success": true,
+      "new_protocol_fraction": 0.0,
+      "one_second_cdr_bps": {
+        "max": 419392.0,
+        "min": 104096.0,
+        "n": 145,
+        "p50": 265280.0,
+        "p95": 363888.0,
+        "p99": 391112.0
+      },
+      "overflow_attempts": 0,
+      "pose_tb1_aoi": {
+        "first_freshness_recovery_time": null,
+        "first_no_data_time": null,
+        "first_source_stale_time": null,
+        "fresh_ratio": 1.0,
+        "fresh_sec": 144.5,
+        "max": 0.4000000000000057,
+        "mean": 0.21261176470589008,
+        "monitored_sec": 144.5,
+        "no_data_sec": 0.0,
+        "observed_sec": 144.5,
+        "p95": 0.35864210524596785,
+        "recovery_count": 0,
+        "recovery_time_max_sec": null,
+        "recovery_time_mean_sec": null,
+        "stale_sec": 0.0,
+        "unrecovered_stale_sec": 0.0
+      },
+      "protocol_full_ledger": {
+        "all_decisions_bound_to_received_controls": true,
+        "ap_decisions": 0,
+        "discard_reasons": {},
+        "discarded": 0,
+        "local_generated": 0,
+        "local_wait_sec": {
+          "max": null,
+          "min": null,
+          "n": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "observation_samples": 0,
+        "released": 0,
+        "remote_current_queue_unknown": true,
+        "scope": "full raw ledger, including startup and closure",
+        "status": "PASS"
+      },
+      "rmst300_sec": 144.5,
+      "termination_reason": "task_complete",
+      "transport_retry_attempts": 0,
+      "tx_cdr_bytes": 4289837,
+      "tx_cdr_bytes_by_role": {
+        "critical-event": 712395,
+        "data": 3557746,
+        "feedback": 19696
+      }
+    },
+    {
+      "actual_elapsed_sec": 217.5,
+      "all_nondata_fraction": 0.48620943473129286,
+      "case": "forced2",
+      "completion_sec": 217.5,
+      "conditional_serialization_sec": {
+        "1": 48.951728,
+        "54": 0.9065134814814816,
+        "6": 8.158621333333334
+      },
+      "control_retry_messages": 0,
+      "drop_attempts": 1,
+      "expired_attempts": 1,
+      "explore_pose_tb1": {
+        "compression_payload_fraction": 1.0,
+        "counts": {
+          "accepted_messages": 517,
+          "accepted_payload_bytes": 374308,
+          "control_retry_messages": 0,
+          "delivered_attempts": 517,
+          "delivered_payload_bytes": 374308,
+          "generated_envelope_cdr_bytes": 436348,
+          "generated_messages": 517,
+          "generated_payload_bytes": 374308,
+          "transport_retry_attempts": 0,
+          "tx_attempts": 517,
+          "tx_envelope_cdr_bytes": 436348,
+          "tx_payload_bytes": 374308,
+          "uncompressed_payload_bytes": 374308
+        },
+        "direction": "uplink",
+        "distributions": {
+          "envelope_cdr_bytes": {
+            "max": 844,
+            "min": 844,
+            "n": 517,
+            "p50": 844,
+            "p95": 844,
+            "p99": 844
+          },
+          "local_wait_sec": {
+            "max": 0.20000000000027285,
+            "min": 0.1999999999998181,
+            "n": 517,
+            "p50": 0.1999999999998181,
+            "p95": 0.20000000000027285,
+            "p99": 0.20000000000027285
+          },
+          "payload_bytes": {
+            "max": 724,
+            "min": 724,
+            "n": 517,
+            "p50": 724,
+            "p95": 724,
+            "p99": 724
+          },
+          "source_to_delivery_sec": {
+            "max": 0.38599999999996726,
+            "min": 0.1679999999996653,
+            "n": 517,
+            "p50": 0.18400000000019645,
+            "p95": 0.1999999999998181,
+            "p99": 0.20000000000027285
+          },
+          "transport_delay_sec": {
+            "max": 0.0,
+            "min": 0.0,
+            "n": 517,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "transport_queue_wait_sec": {
+            "max": 0,
+            "min": 0,
+            "n": 517,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "ttl_sec": {
+            "max": 2.0,
+            "min": 2.0,
+            "n": 517,
+            "p50": 2.0,
+            "p95": 2.0,
+            "p99": 2.0
+          }
+        },
+        "generated_hz": 3.9953632148377096,
+        "message_type": "pose_state",
+        "offered_payload_bps": 23141.143740340016,
+        "phase": "EXPLORE",
+        "phase_duration_sec": 129.4000000000001,
+        "robot": "tb1",
+        "tx_envelope_cdr_bps": 26976.692426584217
+      },
+      "failure_reason": "",
+      "map_compressed_bytes": 1458597,
+      "map_compression_fraction": 0.05909834842749692,
+      "map_raw_bytes": 24680842,
+      "mean_cdr_bps": 225065.41609195402,
+      "measurement_duration_sec": 217.5,
+      "native_phase": "COMPLETE",
+      "native_success": true,
+      "new_protocol_fraction": 0.3600964607418966,
+      "one_second_cdr_bps": {
+        "max": 324680.0,
+        "min": 162608.0,
+        "n": 218,
+        "p50": 225872.0,
+        "p95": 291184.0,
+        "p99": 309104.0
+      },
+      "overflow_attempts": 0,
+      "pose_tb1_aoi": {
+        "first_freshness_recovery_time": null,
+        "first_no_data_time": null,
+        "first_source_stale_time": null,
+        "fresh_ratio": 1.0,
+        "fresh_sec": 217.5,
+        "max": 0.7860000000000582,
+        "mean": 0.41500413793096264,
+        "monitored_sec": 217.5,
+        "no_data_sec": 0.0,
+        "observed_sec": 217.5,
+        "p95": 0.5602847381208973,
+        "recovery_count": 0,
+        "recovery_time_max_sec": null,
+        "recovery_time_mean_sec": null,
+        "stale_sec": 0.0,
+        "unrecovered_stale_sec": 0.0
+      },
+      "protocol_full_ledger": {
+        "all_decisions_bound_to_received_controls": true,
+        "ap_decisions": 3683,
+        "discard_reasons": {
+          "episode_closed": 2
+        },
+        "discarded": 2,
+        "local_generated": 3683,
+        "local_wait_sec": {
+          "max": 0.40000000000009095,
+          "min": 0.09999999999990905,
+          "n": 3681,
+          "p50": 0.1999999999998181,
+          "p95": 0.20000000000027285,
+          "p99": 0.20000000000027285
+        },
+        "observation_samples": 297,
+        "released": 3681,
+        "remote_current_queue_unknown": true,
+        "scope": "full raw ledger, including startup and closure",
+        "status": "PASS"
+      },
+      "rmst300_sec": 217.5,
+      "termination_reason": "task_complete",
+      "transport_retry_attempts": 0,
+      "tx_cdr_bytes": 6118966,
+      "tx_cdr_bytes_by_role": {
+        "candidate": 943135,
+        "critical-event": 750146,
+        "data": 3143867,
+        "feedback": 21535,
+        "grant": 665540,
+        "heartbeat": 128184,
+        "request": 466559
+      }
+    },
+    {
+      "actual_elapsed_sec": 111.5,
+      "all_nondata_fraction": 0.489883404839507,
+      "case": "holdout2",
+      "completion_sec": 111.5,
+      "conditional_serialization_sec": {
+        "1": 24.906008,
+        "54": 0.4612223703703704,
+        "6": 4.151001333333333
+      },
+      "control_retry_messages": 0,
+      "drop_attempts": 1,
+      "expired_attempts": 1,
+      "explore_pose_tb1": {
+        "compression_payload_fraction": 1.0,
+        "counts": {
+          "accepted_messages": 272,
+          "accepted_payload_bytes": 196928,
+          "control_retry_messages": 0,
+          "delivered_attempts": 271,
+          "delivered_payload_bytes": 196204,
+          "generated_envelope_cdr_bytes": 228724,
+          "generated_messages": 271,
+          "generated_payload_bytes": 196204,
+          "transport_retry_attempts": 0,
+          "tx_attempts": 271,
+          "tx_envelope_cdr_bytes": 228724,
+          "tx_payload_bytes": 196204,
+          "uncompressed_payload_bytes": 196204
+        },
+        "direction": "uplink",
+        "distributions": {
+          "envelope_cdr_bytes": {
+            "max": 844,
+            "min": 844,
+            "n": 271,
+            "p50": 844,
+            "p95": 844,
+            "p99": 844
+          },
+          "local_wait_sec": {
+            "max": 0.3999999999999915,
+            "min": 0.09999999999999432,
+            "n": 271,
+            "p50": 0.19999999999998863,
+            "p95": 0.20000000000001705,
+            "p99": 0.29999999999999716
+          },
+          "payload_bytes": {
+            "max": 724,
+            "min": 724,
+            "n": 271,
+            "p50": 724,
+            "p95": 724,
+            "p99": 724
+          },
+          "source_to_delivery_sec": {
+            "max": 0.3850000000000051,
+            "min": 0.09900000000000375,
+            "n": 271,
+            "p50": 0.18299999999999272,
+            "p95": 0.19899999999999807,
+            "p99": 0.3370000000000033
+          },
+          "transport_delay_sec": {
+            "max": 0.0,
+            "min": 0.0,
+            "n": 271,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "transport_queue_wait_sec": {
+            "max": 0,
+            "min": 0,
+            "n": 271,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "ttl_sec": {
+            "max": 2.0,
+            "min": 2.0,
+            "n": 271,
+            "p50": 2.0,
+            "p95": 2.0,
+            "p99": 2.0
+          }
+        },
+        "generated_hz": 3.9911634756995578,
+        "message_type": "pose_state",
+        "offered_payload_bps": 23116.81885125184,
+        "phase": "EXPLORE",
+        "phase_duration_sec": 67.9,
+        "robot": "tb1",
+        "tx_envelope_cdr_bps": 26948.335787923414
+      },
+      "failure_reason": "",
+      "map_compressed_bytes": 724509,
+      "map_compression_fraction": 0.06641631982255466,
+      "map_raw_bytes": 10908599,
+      "mean_cdr_bps": 223372.26905829596,
+      "measurement_duration_sec": 111.5,
+      "native_phase": "COMPLETE",
+      "native_success": true,
+      "new_protocol_fraction": 0.36030535282892384,
+      "one_second_cdr_bps": {
+        "max": 302056.0,
+        "min": 166216.0,
+        "n": 112,
+        "p50": 205832.0,
+        "p95": 286848.0,
+        "p99": 292656.0
+      },
+      "overflow_attempts": 0,
+      "pose_tb1_aoi": {
+        "first_freshness_recovery_time": null,
+        "first_no_data_time": null,
+        "first_source_stale_time": null,
+        "fresh_ratio": 1.0,
+        "fresh_sec": 111.5,
+        "max": 0.7830000000000013,
+        "mean": 0.4145802690582925,
+        "monitored_sec": 111.5,
+        "no_data_sec": 0.0,
+        "observed_sec": 111.5,
+        "p95": 0.5624533333926239,
+        "recovery_count": 0,
+        "recovery_time_max_sec": null,
+        "recovery_time_mean_sec": null,
+        "stale_sec": 0.0,
+        "unrecovered_stale_sec": 0.0
+      },
+      "protocol_full_ledger": {
+        "all_decisions_bound_to_received_controls": true,
+        "ap_decisions": 2360,
+        "discard_reasons": {
+          "episode_closed": 1
+        },
+        "discarded": 1,
+        "local_generated": 2360,
+        "local_wait_sec": {
+          "max": 0.4000000000000057,
+          "min": 0.09999999999999432,
+          "n": 2359,
+          "p50": 0.20000000000000018,
+          "p95": 0.20000000000001705,
+          "p99": 0.20000000000001705
+        },
+        "observation_samples": 190,
+        "released": 2359,
+        "remote_current_queue_unknown": true,
+        "scope": "full raw ledger, including startup and closure",
+        "status": "PASS"
+      },
+      "rmst300_sec": 111.5,
+      "termination_reason": "task_complete",
+      "transport_retry_attempts": 0,
+      "tx_cdr_bytes": 3113251,
+      "tx_cdr_bytes_by_role": {
+        "candidate": 480803,
+        "critical-event": 390896,
+        "data": 1588121,
+        "feedback": 12513,
+        "grant": 335789,
+        "heartbeat": 65888,
+        "request": 239241
+      }
+    },
+    {
+      "actual_elapsed_sec": 121.80000000000001,
+      "all_nondata_fraction": 0.449338000679918,
+      "case": "holdout3",
+      "completion_sec": 121.80000000000001,
+      "conditional_serialization_sec": {
+        "1": 43.440528,
+        "54": 0.8044542222222222,
+        "6": 7.240088
+      },
+      "control_retry_messages": 0,
+      "drop_attempts": 0,
+      "expired_attempts": 0,
+      "explore_pose_tb1": {
+        "compression_payload_fraction": 1.0,
+        "counts": {
+          "accepted_messages": 167,
+          "accepted_payload_bytes": 120908,
+          "control_retry_messages": 0,
+          "delivered_attempts": 167,
+          "delivered_payload_bytes": 120908,
+          "generated_envelope_cdr_bytes": 141792,
+          "generated_messages": 168,
+          "generated_payload_bytes": 121632,
+          "transport_retry_attempts": 0,
+          "tx_attempts": 167,
+          "tx_envelope_cdr_bytes": 140948,
+          "tx_payload_bytes": 120908,
+          "uncompressed_payload_bytes": 121632
+        },
+        "direction": "uplink",
+        "distributions": {
+          "envelope_cdr_bytes": {
+            "max": 844,
+            "min": 844,
+            "n": 168,
+            "p50": 844,
+            "p95": 844,
+            "p99": 844
+          },
+          "local_wait_sec": {
+            "max": 0.29999999999998295,
+            "min": 0.09999999999999432,
+            "n": 167,
+            "p50": 0.19999999999998863,
+            "p95": 0.20000000000001705,
+            "p99": 0.20000000000001705
+          },
+          "payload_bytes": {
+            "max": 724,
+            "min": 724,
+            "n": 168,
+            "p50": 724,
+            "p95": 724,
+            "p99": 724
+          },
+          "source_to_delivery_sec": {
+            "max": 0.2769999999999868,
+            "min": 0.10099999999999909,
+            "n": 167,
+            "p50": 0.18300000000002115,
+            "p95": 0.19900000000001228,
+            "p99": 0.20699999999999363
+          },
+          "transport_delay_sec": {
+            "max": 0.0,
+            "min": 0.0,
+            "n": 167,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "transport_queue_wait_sec": {
+            "max": 0,
+            "min": 0,
+            "n": 167,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "ttl_sec": {
+            "max": 2.0,
+            "min": 2.0,
+            "n": 168,
+            "p50": 2.0,
+            "p95": 2.0,
+            "p99": 2.0
+          }
+        },
+        "generated_hz": 4.01913875598086,
+        "message_type": "pose_state",
+        "offered_payload_bps": 23278.85167464114,
+        "phase": "EXPLORE",
+        "phase_duration_sec": 41.80000000000001,
+        "robot": "tb1",
+        "tx_envelope_cdr_bps": 26975.693779904297
+      },
+      "failure_reason": "",
+      "map_compressed_bytes": 1561931,
+      "map_compression_fraction": 0.06563672961683602,
+      "map_raw_bytes": 23796600,
+      "mean_cdr_bps": 356654.5812807881,
+      "measurement_duration_sec": 121.80000000000001,
+      "native_phase": "COMPLETE",
+      "native_success": true,
+      "new_protocol_fraction": 0.3381264610780053,
+      "one_second_cdr_bps": {
+        "max": 446016.0,
+        "min": 249048.0,
+        "n": 122,
+        "p50": 363144.0,
+        "p95": 427864.0,
+        "p99": 437288.0
+      },
+      "overflow_attempts": 0,
+      "pose_tb1_aoi": {
+        "first_freshness_recovery_time": null,
+        "first_no_data_time": null,
+        "first_source_stale_time": null,
+        "fresh_ratio": 1.0,
+        "fresh_sec": 121.80000000000001,
+        "max": 0.8689999999999998,
+        "mean": 0.4145221674876842,
+        "monitored_sec": 121.80000000000001,
+        "no_data_sec": 0.0,
+        "observed_sec": 121.80000000000001,
+        "p95": 0.5620840336995896,
+        "recovery_count": 0,
+        "recovery_time_max_sec": null,
+        "recovery_time_mean_sec": null,
+        "stale_sec": 0.0,
+        "unrecovered_stale_sec": 0.0
+      },
+      "protocol_full_ledger": {
+        "all_decisions_bound_to_received_controls": true,
+        "ap_decisions": 4715,
+        "discard_reasons": {
+          "episode_closed": 4
+        },
+        "discarded": 4,
+        "local_generated": 4715,
+        "local_wait_sec": {
+          "max": 0.5,
+          "min": 0.09999999999999432,
+          "n": 4711,
+          "p50": 0.20000000000000018,
+          "p95": 0.20000000000001705,
+          "p99": 0.20000000000001705
+        },
+        "observation_samples": 254,
+        "released": 4711,
+        "remote_current_queue_unknown": true,
+        "scope": "full raw ledger, including startup and closure",
+        "status": "PASS"
+      },
+      "rmst300_sec": 121.80000000000001,
+      "termination_reason": "task_complete",
+      "transport_retry_attempts": 0,
+      "tx_cdr_bytes": 5430066,
+      "tx_cdr_bytes_by_role": {
+        "candidate": 786196,
+        "critical-event": 587489,
+        "data": 2990131,
+        "feedback": 16397,
+        "grant": 550443,
+        "heartbeat": 107652,
+        "request": 391758
+      }
+    },
+    {
+      "actual_elapsed_sec": 300.4000000000001,
+      "all_nondata_fraction": 0.49150087325680625,
+      "case": "lab2",
+      "completion_sec": null,
+      "conditional_serialization_sec": {
+        "1": 66.569192,
+        "54": 1.2327628148148149,
+        "6": 11.094865333333333
+      },
+      "control_retry_messages": 0,
+      "drop_attempts": 1,
+      "expired_attempts": 1,
+      "explore_pose_tb1": {
+        "compression_payload_fraction": 1.0,
+        "counts": {
+          "accepted_messages": 940,
+          "accepted_payload_bytes": 680560,
+          "control_retry_messages": 0,
+          "delivered_attempts": 940,
+          "delivered_payload_bytes": 680560,
+          "generated_envelope_cdr_bytes": 794204,
+          "generated_messages": 941,
+          "generated_payload_bytes": 681284,
+          "transport_retry_attempts": 0,
+          "tx_attempts": 940,
+          "tx_envelope_cdr_bytes": 793360,
+          "tx_payload_bytes": 680560,
+          "uncompressed_payload_bytes": 681284
+        },
+        "direction": "uplink",
+        "distributions": {
+          "envelope_cdr_bytes": {
+            "max": 844,
+            "min": 844,
+            "n": 941,
+            "p50": 844,
+            "p95": 844,
+            "p99": 844
+          },
+          "local_wait_sec": {
+            "max": 0.3999999999996362,
+            "min": 0.1999999999998181,
+            "n": 940,
+            "p50": 0.20000000000027285,
+            "p95": 0.20000000000027285,
+            "p99": 0.20000000000027285
+          },
+          "payload_bytes": {
+            "max": 724,
+            "min": 724,
+            "n": 941,
+            "p50": 724,
+            "p95": 724,
+            "p99": 724
+          },
+          "source_to_delivery_sec": {
+            "max": 0.42200000000002547,
+            "min": 0.1679999999996653,
+            "n": 940,
+            "p50": 0.18400000000019645,
+            "p95": 0.1999999999998181,
+            "p99": 0.20000000000027285
+          },
+          "transport_delay_sec": {
+            "max": 0.0,
+            "min": 0.0,
+            "n": 940,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "transport_queue_wait_sec": {
+            "max": 0,
+            "min": 0,
+            "n": 940,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "ttl_sec": {
+            "max": 2.0,
+            "min": 2.0,
+            "n": 941,
+            "p50": 2.0,
+            "p95": 2.0,
+            "p99": 2.0
+          }
+        },
+        "generated_hz": 3.9991500212494655,
+        "message_type": "pose_state",
+        "offered_payload_bps": 23163.076923076904,
+        "phase": "EXPLORE",
+        "phase_duration_sec": 235.30000000000018,
+        "robot": "tb1",
+        "tx_envelope_cdr_bps": 26973.565660858458
+      },
+      "failure_reason": "timeout",
+      "map_compressed_bytes": 1904173,
+      "map_compression_fraction": 0.05636846923008199,
+      "map_raw_bytes": 33780818,
+      "mean_cdr_bps": 221897.30666666667,
+      "measurement_duration_sec": 300.0,
+      "native_phase": "RALLY",
+      "native_success": false,
+      "new_protocol_fraction": 0.36773887836884067,
+      "one_second_cdr_bps": {
+        "max": 335720.0,
+        "min": 166160.0,
+        "n": 300,
+        "p50": 221584.0,
+        "p95": 285208.0,
+        "p99": 304072.0
+      },
+      "overflow_attempts": 0,
+      "pose_tb1_aoi": {
+        "first_freshness_recovery_time": null,
+        "first_no_data_time": null,
+        "first_source_stale_time": null,
+        "fresh_ratio": 1.0,
+        "fresh_sec": 300.0,
+        "max": 0.7999999999997272,
+        "mean": 0.4154339999999146,
+        "monitored_sec": 300.0,
+        "no_data_sec": 0.0,
+        "observed_sec": 300.0,
+        "p95": 0.5611721853723698,
+        "recovery_count": 0,
+        "recovery_time_max_sec": null,
+        "recovery_time_mean_sec": null,
+        "stale_sec": 0.0,
+        "unrecovered_stale_sec": 0.0
+      },
+      "protocol_full_ledger": {
+        "all_decisions_bound_to_received_controls": true,
+        "ap_decisions": 4734,
+        "discard_reasons": {
+          "episode_closed": 1
+        },
+        "discarded": 1,
+        "local_generated": 4735,
+        "local_wait_sec": {
+          "max": 0.40000000000009095,
+          "min": 0.09999999999990905,
+          "n": 4734,
+          "p50": 0.1999999999998181,
+          "p95": 0.20000000000027285,
+          "p99": 0.20000000000027285
+        },
+        "observation_samples": 381,
+        "released": 4734,
+        "remote_current_queue_unknown": true,
+        "scope": "full raw ledger, including startup and closure",
+        "status": "PASS"
+      },
+      "rmst300_sec": 300,
+      "termination_reason": "timeout",
+      "transport_retry_attempts": 0,
+      "tx_cdr_bytes": 8321149,
+      "tx_cdr_bytes_by_role": {
+        "candidate": 1310716,
+        "critical-event": 1010673,
+        "data": 4231297,
+        "feedback": 19169,
+        "grant": 925307,
+        "heartbeat": 176400,
+        "request": 647587
+      }
+    },
+    {
+      "actual_elapsed_sec": 139.0,
+      "all_nondata_fraction": 0.4485951110977098,
+      "case": "lab3",
+      "completion_sec": 139.0,
+      "conditional_serialization_sec": {
+        "1": 50.40968,
+        "54": 0.9335125925925927,
+        "6": 8.401613333333334
+      },
+      "control_retry_messages": 10,
+      "drop_attempts": 3,
+      "expired_attempts": 3,
+      "explore_pose_tb1": {
+        "compression_payload_fraction": 1.0,
+        "counts": {
+          "accepted_messages": 188,
+          "accepted_payload_bytes": 136112,
+          "control_retry_messages": 0,
+          "delivered_attempts": 189,
+          "delivered_payload_bytes": 136836,
+          "generated_envelope_cdr_bytes": 159516,
+          "generated_messages": 189,
+          "generated_payload_bytes": 136836,
+          "transport_retry_attempts": 0,
+          "tx_attempts": 189,
+          "tx_envelope_cdr_bytes": 159516,
+          "tx_payload_bytes": 136836,
+          "uncompressed_payload_bytes": 136836
+        },
+        "direction": "uplink",
+        "distributions": {
+          "envelope_cdr_bytes": {
+            "max": 844,
+            "min": 844,
+            "n": 189,
+            "p50": 844,
+            "p95": 844,
+            "p99": 844
+          },
+          "local_wait_sec": {
+            "max": 0.3000000000001819,
+            "min": 0.1000000000003638,
+            "n": 189,
+            "p50": 0.1999999999998181,
+            "p95": 0.20000000000027285,
+            "p99": 0.29999999999972715
+          },
+          "payload_bytes": {
+            "max": 724,
+            "min": 724,
+            "n": 189,
+            "p50": 724,
+            "p95": 724,
+            "p99": 724
+          },
+          "source_to_delivery_sec": {
+            "max": 0.2919999999999163,
+            "min": 0.1679999999996653,
+            "n": 189,
+            "p50": 0.18400000000019645,
+            "p95": 0.1999999999998181,
+            "p99": 0.2739999999998872
+          },
+          "transport_delay_sec": {
+            "max": 0.0,
+            "min": 0.0,
+            "n": 189,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "transport_queue_wait_sec": {
+            "max": 0,
+            "min": 0,
+            "n": 189,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "ttl_sec": {
+            "max": 2.0,
+            "min": 2.0,
+            "n": 189,
+            "p50": 2.0,
+            "p95": 2.0,
+            "p99": 2.0
+          }
+        },
+        "generated_hz": 3.9957716701902597,
+        "message_type": "pose_state",
+        "offered_payload_bps": 23143.50951374198,
+        "phase": "EXPLORE",
+        "phase_duration_sec": 47.30000000000018,
+        "robot": "tb1",
+        "tx_envelope_cdr_bps": 26979.450317124632
+      },
+      "failure_reason": "",
+      "map_compressed_bytes": 1868999,
+      "map_compression_fraction": 0.07432829101708915,
+      "map_raw_bytes": 25145190,
+      "mean_cdr_bps": 362659.5683453237,
+      "measurement_duration_sec": 139.0,
+      "native_phase": "COMPLETE",
+      "native_success": true,
+      "new_protocol_fraction": 0.3356710853947099,
+      "one_second_cdr_bps": {
+        "max": 494856.0,
+        "min": 47152.0,
+        "n": 139,
+        "p50": 374520.0,
+        "p95": 481456.0,
+        "p99": 486920.0
+      },
+      "overflow_attempts": 0,
+      "pose_tb1_aoi": {
+        "first_freshness_recovery_time": null,
+        "first_no_data_time": null,
+        "first_source_stale_time": null,
+        "fresh_ratio": 1.0,
+        "fresh_sec": 139.0,
+        "max": 1.7699999999999818,
+        "mean": 0.4227539568345088,
+        "monitored_sec": 139.0,
+        "no_data_sec": 0.0,
+        "observed_sec": 139.0,
+        "p95": 0.5654820144607162,
+        "recovery_count": 0,
+        "recovery_time_max_sec": null,
+        "recovery_time_mean_sec": null,
+        "stale_sec": 0.0,
+        "unrecovered_stale_sec": 0.0
+      },
+      "protocol_full_ledger": {
+        "all_decisions_bound_to_received_controls": true,
+        "ap_decisions": 5045,
+        "discard_reasons": {
+          "episode_closed": 3
+        },
+        "discarded": 3,
+        "local_generated": 5035,
+        "local_wait_sec": {
+          "max": 1.400000000000091,
+          "min": 0.09999999999990905,
+          "n": 5032,
+          "p50": 0.1999999999998181,
+          "p95": 0.20000000000027285,
+          "p99": 0.20000000000027285
+        },
+        "observation_samples": 272,
+        "released": 5032,
+        "remote_current_queue_unknown": true,
+        "scope": "full raw ledger, including startup and closure",
+        "status": "PASS"
+      },
+      "rmst300_sec": 139.0,
+      "termination_reason": "task_complete",
+      "transport_retry_attempts": 0,
+      "tx_cdr_bytes": 6301210,
+      "tx_cdr_bytes_by_role": {
+        "candidate": 904466,
+        "critical-event": 691563,
+        "data": 3474518,
+        "feedback": 19995,
+        "grant": 640963,
+        "heartbeat": 121716,
+        "request": 447989
+      }
+    },
+    {
+      "actual_elapsed_sec": 178.3,
+      "all_nondata_fraction": 0.5656526289338211,
+      "case": "loss_corridors2",
+      "completion_sec": 178.3,
+      "conditional_serialization_sec": {
+        "1": 41.54612,
+        "54": 0.7693725925925926,
+        "6": 6.924353333333333
+      },
+      "control_retry_messages": 1422,
+      "drop_attempts": 1358,
+      "expired_attempts": 1,
+      "explore_pose_tb1": {
+        "compression_payload_fraction": 1.0,
+        "counts": {
+          "accepted_messages": 156,
+          "accepted_payload_bytes": 112944,
+          "control_retry_messages": 0,
+          "delivered_attempts": 221,
+          "delivered_payload_bytes": 160004,
+          "drop_attempts": 21,
+          "expired_attempts": 0,
+          "generated_envelope_cdr_bytes": 205936,
+          "generated_messages": 244,
+          "generated_payload_bytes": 176656,
+          "queue_overflow_attempts": 0,
+          "transport_retry_attempts": 0,
+          "tx_attempts": 242,
+          "tx_envelope_cdr_bytes": 204248,
+          "tx_payload_bytes": 175208,
+          "uncompressed_payload_bytes": 176656
+        },
+        "direction": "uplink",
+        "distributions": {
+          "envelope_cdr_bytes": {
+            "max": 844,
+            "min": 844,
+            "n": 244,
+            "p50": 844,
+            "p95": 844,
+            "p99": 844
+          },
+          "local_wait_sec": {
+            "max": 1.700000000000017,
+            "min": 0.09999999999999432,
+            "n": 242,
+            "p50": 0.20000000000000284,
+            "p95": 0.9000000000000057,
+            "p99": 1.7000000000000028
+          },
+          "payload_bytes": {
+            "max": 724,
+            "min": 724,
+            "n": 244,
+            "p50": 724,
+            "p95": 724,
+            "p99": 724
+          },
+          "source_to_delivery_sec": {
+            "max": 1.6980000000000075,
+            "min": 0.09999999999999432,
+            "n": 221,
+            "p50": 0.19200000000000728,
+            "p95": 0.8979999999999961,
+            "p99": 1.676000000000002
+          },
+          "transport_delay_sec": {
+            "max": 0.0,
+            "min": 0.0,
+            "n": 221,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "transport_queue_wait_sec": {
+            "max": 0,
+            "min": 0,
+            "n": 242,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "ttl_sec": {
+            "max": 2.0,
+            "min": 2.0,
+            "n": 244,
+            "p50": 2.0,
+            "p95": 2.0,
+            "p99": 2.0
+          }
+        },
+        "generated_hz": 4.006568144499179,
+        "message_type": "pose_state",
+        "offered_payload_bps": 23206.04269293925,
+        "phase": "EXPLORE",
+        "phase_duration_sec": 60.89999999999999,
+        "robot": "tb1",
+        "tx_envelope_cdr_bps": 26830.60755336618
+      },
+      "failure_reason": "",
+      "map_compressed_bytes": 882316,
+      "map_compression_fraction": 0.054188422558360816,
+      "map_raw_bytes": 16282371,
+      "mean_cdr_bps": 233012.4509254066,
+      "measurement_duration_sec": 178.3,
+      "native_phase": "COMPLETE",
+      "native_success": true,
+      "new_protocol_fraction": 0.4406152969278479,
+      "one_second_cdr_bps": {
+        "max": 330424.0,
+        "min": 145640.0,
+        "n": 179,
+        "p50": 231704.0,
+        "p95": 306248.0,
+        "p99": 315576.0
+      },
+      "overflow_attempts": 0,
+      "pose_tb1_aoi": {
+        "first_freshness_recovery_time": null,
+        "first_no_data_time": null,
+        "first_source_stale_time": null,
+        "fresh_ratio": 0.9999999999999999,
+        "fresh_sec": 178.29999999999998,
+        "max": 1.593999999999994,
+        "mean": 0.5518048233314624,
+        "monitored_sec": 178.3,
+        "no_data_sec": 0.0,
+        "observed_sec": 178.29999999999998,
+        "p95": 1.0475500000237914,
+        "recovery_count": 0,
+        "recovery_time_max_sec": null,
+        "recovery_time_mean_sec": null,
+        "stale_sec": 2.842170943040401e-14,
+        "unrecovered_stale_sec": 0.0
+      },
+      "protocol_full_ledger": {
+        "all_decisions_bound_to_received_controls": true,
+        "ap_decisions": 3981,
+        "discard_reasons": {
+          "episode_closed": 2,
+          "source_expired": 14
+        },
+        "discarded": 16,
+        "local_generated": 3176,
+        "local_wait_sec": {
+          "max": 1.700000000000017,
+          "min": 0.09999999999999432,
+          "n": 3160,
+          "p50": 0.20000000000000284,
+          "p95": 0.9000000000000057,
+          "p99": 1.7000000000000028
+        },
+        "observation_samples": 258,
+        "released": 3160,
+        "remote_current_queue_unknown": true,
+        "scope": "full raw ledger, including startup and closure",
+        "status": "PASS"
+      },
+      "rmst300_sec": 178.3,
+      "termination_reason": "task_complete",
+      "transport_retry_attempts": 30,
+      "tx_cdr_bytes": 5193265,
+      "tx_cdr_bytes_by_role": {
+        "candidate": 1007560,
+        "critical-event": 623622,
+        "data": 2255681,
+        "feedback": 25730,
+        "grant": 673588,
+        "heartbeat": 104664,
+        "request": 502420
+      }
+    },
+    {
+      "actual_elapsed_sec": 148.7,
+      "all_nondata_fraction": 0.4658615407262925,
+      "case": "rooms2",
+      "completion_sec": 148.7,
+      "conditional_serialization_sec": {
+        "1": 34.78048,
+        "54": 0.6440829629629629,
+        "6": 5.7967466666666665
+      },
+      "control_retry_messages": 0,
+      "drop_attempts": 2,
+      "expired_attempts": 2,
+      "explore_pose_tb1": {
+        "compression_payload_fraction": 1.0,
+        "counts": {
+          "accepted_messages": 307,
+          "accepted_payload_bytes": 222268,
+          "control_retry_messages": 0,
+          "delivered_attempts": 306,
+          "delivered_payload_bytes": 221544,
+          "generated_envelope_cdr_bytes": 259108,
+          "generated_messages": 307,
+          "generated_payload_bytes": 222268,
+          "transport_retry_attempts": 0,
+          "tx_attempts": 306,
+          "tx_envelope_cdr_bytes": 258264,
+          "tx_payload_bytes": 221544,
+          "uncompressed_payload_bytes": 222268
+        },
+        "direction": "uplink",
+        "distributions": {
+          "envelope_cdr_bytes": {
+            "max": 844,
+            "min": 844,
+            "n": 307,
+            "p50": 844,
+            "p95": 844,
+            "p99": 844
+          },
+          "local_wait_sec": {
+            "max": 0.20000000000001705,
+            "min": 0.09999999999999432,
+            "n": 306,
+            "p50": 0.19999999999998863,
+            "p95": 0.20000000000001705,
+            "p99": 0.20000000000001705
+          },
+          "payload_bytes": {
+            "max": 724,
+            "min": 724,
+            "n": 307,
+            "p50": 724,
+            "p95": 724,
+            "p99": 724
+          },
+          "source_to_delivery_sec": {
+            "max": 0.19900000000001228,
+            "min": 0.09899999999998954,
+            "n": 306,
+            "p50": 0.18299999999999272,
+            "p95": 0.19700000000000273,
+            "p99": 0.19900000000001228
+          },
+          "transport_delay_sec": {
+            "max": 0.0,
+            "min": 0.0,
+            "n": 306,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "transport_queue_wait_sec": {
+            "max": 0,
+            "min": 0,
+            "n": 306,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "ttl_sec": {
+            "max": 2.0,
+            "min": 2.0,
+            "n": 307,
+            "p50": 2.0,
+            "p95": 2.0,
+            "p99": 2.0
+          }
+        },
+        "generated_hz": 4.007832898172324,
+        "message_type": "pose_state",
+        "offered_payload_bps": 23213.368146214096,
+        "phase": "EXPLORE",
+        "phase_duration_sec": 76.60000000000001,
+        "robot": "tb1",
+        "tx_envelope_cdr_bps": 26972.74151436031
+      },
+      "failure_reason": "",
+      "map_compressed_bytes": 1172403,
+      "map_compression_fraction": 0.06812453416540658,
+      "map_raw_bytes": 17209703,
+      "mean_cdr_bps": 233896.9737726967,
+      "measurement_duration_sec": 148.7,
+      "native_phase": "COMPLETE",
+      "native_success": true,
+      "new_protocol_fraction": 0.34428599030260654,
+      "one_second_cdr_bps": {
+        "max": 335040.0,
+        "min": 161417.1428571455,
+        "n": 149,
+        "p50": 236616.0,
+        "p95": 308984.0,
+        "p99": 328784.0
+      },
+      "overflow_attempts": 0,
+      "pose_tb1_aoi": {
+        "first_freshness_recovery_time": null,
+        "first_no_data_time": null,
+        "first_source_stale_time": null,
+        "fresh_ratio": 1.0000000000000002,
+        "fresh_sec": 148.70000000000002,
+        "max": 0.6929999999999836,
+        "mean": 0.41151378614659967,
+        "monitored_sec": 148.7,
+        "no_data_sec": 0.0,
+        "observed_sec": 148.70000000000002,
+        "p95": 0.5590034247325834,
+        "recovery_count": 0,
+        "recovery_time_max_sec": null,
+        "recovery_time_mean_sec": null,
+        "stale_sec": -2.842170943040401e-14,
+        "unrecovered_stale_sec": 0.0
+      },
+      "protocol_full_ledger": {
+        "all_decisions_bound_to_received_controls": true,
+        "ap_decisions": 2834,
+        "discard_reasons": {
+          "episode_closed": 2
+        },
+        "discarded": 2,
+        "local_generated": 2834,
+        "local_wait_sec": {
+          "max": 0.30000000000001137,
+          "min": 0.09999999999999432,
+          "n": 2832,
+          "p50": 0.19999999999999996,
+          "p95": 0.20000000000001705,
+          "p99": 0.20000000000001705
+        },
+        "observation_samples": 228,
+        "released": 2832,
+        "remote_current_queue_unknown": true,
+        "scope": "full raw ledger, including startup and closure",
+        "status": "PASS"
+      },
+      "rmst300_sec": 148.7,
+      "termination_reason": "task_complete",
+      "transport_retry_attempts": 0,
+      "tx_cdr_bytes": 4347560,
+      "tx_cdr_bytes_by_role": {
+        "candidate": 642081,
+        "critical-event": 512572,
+        "data": 2322199,
+        "feedback": 15985,
+        "grant": 448129,
+        "heartbeat": 87056,
+        "request": 319538
+      }
+    },
+    {
+      "actual_elapsed_sec": 107.5,
+      "all_nondata_fraction": 0.43127066358471156,
+      "case": "rooms3",
+      "completion_sec": 107.5,
+      "conditional_serialization_sec": {
+        "1": 40.068072,
+        "54": 0.7420013333333334,
+        "6": 6.678012
+      },
+      "control_retry_messages": 0,
+      "drop_attempts": 2,
+      "expired_attempts": 2,
+      "explore_pose_tb1": {
+        "compression_payload_fraction": 1.0,
+        "counts": {
+          "accepted_messages": 158,
+          "accepted_payload_bytes": 114392,
+          "control_retry_messages": 0,
+          "delivered_attempts": 158,
+          "delivered_payload_bytes": 114392,
+          "generated_envelope_cdr_bytes": 133352,
+          "generated_messages": 158,
+          "generated_payload_bytes": 114392,
+          "transport_retry_attempts": 0,
+          "tx_attempts": 158,
+          "tx_envelope_cdr_bytes": 133352,
+          "tx_payload_bytes": 114392,
+          "uncompressed_payload_bytes": 114392
+        },
+        "direction": "uplink",
+        "distributions": {
+          "envelope_cdr_bytes": {
+            "max": 844,
+            "min": 844,
+            "n": 158,
+            "p50": 844,
+            "p95": 844,
+            "p99": 844
+          },
+          "local_wait_sec": {
+            "max": 0.29999999999998295,
+            "min": 0.19999999999998863,
+            "n": 158,
+            "p50": 0.19999999999998863,
+            "p95": 0.20000000000001705,
+            "p99": 0.20000000000001705
+          },
+          "payload_bytes": {
+            "max": 724,
+            "min": 724,
+            "n": 158,
+            "p50": 724,
+            "p95": 724,
+            "p99": 724
+          },
+          "source_to_delivery_sec": {
+            "max": 0.3189999999999884,
+            "min": 0.1670000000000016,
+            "n": 158,
+            "p50": 0.18299999999999272,
+            "p95": 0.19900000000001228,
+            "p99": 0.28700000000000614
+          },
+          "transport_delay_sec": {
+            "max": 0.0,
+            "min": 0.0,
+            "n": 158,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "transport_queue_wait_sec": {
+            "max": 0,
+            "min": 0,
+            "n": 158,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "ttl_sec": {
+            "max": 2.0,
+            "min": 2.0,
+            "n": 158,
+            "p50": 2.0,
+            "p95": 2.0,
+            "p99": 2.0
+          }
+        },
+        "generated_hz": 4.0,
+        "message_type": "pose_state",
+        "offered_payload_bps": 23168.0,
+        "phase": "EXPLORE",
+        "phase_duration_sec": 39.5,
+        "robot": "tb1",
+        "tx_envelope_cdr_bps": 27008.0
+      },
+      "failure_reason": "",
+      "map_compressed_bytes": 1601731,
+      "map_compression_fraction": 0.08070678568331556,
+      "map_raw_bytes": 19846299,
+      "mean_cdr_bps": 372726.2511627907,
+      "measurement_duration_sec": 107.5,
+      "native_phase": "COMPLETE",
+      "native_success": true,
+      "new_protocol_fraction": 0.3243612021062556,
+      "one_second_cdr_bps": {
+        "max": 500480.0,
+        "min": 247400.0,
+        "n": 108,
+        "p50": 371040.0,
+        "p95": 458328.0,
+        "p99": 488400.0
+      },
+      "overflow_attempts": 0,
+      "pose_tb1_aoi": {
+        "first_freshness_recovery_time": null,
+        "first_no_data_time": null,
+        "first_source_stale_time": null,
+        "fresh_ratio": 1.0,
+        "fresh_sec": 107.5,
+        "max": 0.7189999999999941,
+        "mean": 0.41388186046510955,
+        "monitored_sec": 107.5,
+        "no_data_sec": 0.0,
+        "observed_sec": 107.5,
+        "p95": 0.559693023221912,
+        "recovery_count": 0,
+        "recovery_time_max_sec": null,
+        "recovery_time_mean_sec": null,
+        "stale_sec": 0.0,
+        "unrecovered_stale_sec": 0.0
+      },
+      "protocol_full_ledger": {
+        "all_decisions_bound_to_received_controls": true,
+        "ap_decisions": 4444,
+        "discard_reasons": {
+          "episode_closed": 3
+        },
+        "discarded": 3,
+        "local_generated": 4445,
+        "local_wait_sec": {
+          "max": 0.4000000000000057,
+          "min": 0.09999999999999432,
+          "n": 4442,
+          "p50": 0.20000000000000018,
+          "p95": 0.20000000000001705,
+          "p99": 0.20000000000001705
+        },
+        "observation_samples": 238,
+        "released": 4442,
+        "remote_current_queue_unknown": true,
+        "scope": "full raw ledger, including startup and closure",
+        "status": "PASS"
+      },
+      "rmst300_sec": 107.5,
+      "termination_reason": "task_complete",
+      "transport_retry_attempts": 0,
+      "tx_cdr_bytes": 5008509,
+      "tx_cdr_bytes_by_role": {
+        "candidate": 696040,
+        "critical-event": 520262,
+        "data": 2848486,
+        "feedback": 15195,
+        "grant": 486690,
+        "heartbeat": 95256,
+        "request": 346580
+      }
+    }
+  ],
+  "input_records": 2372766,
+  "live_samples": 1272,
+  "native_success": 11,
+  "native_terminations": {
+    "task_complete": 11,
+    "timeout": 3
+  },
+  "protocol_local_offers_full_ledger": 53319,
+  "received_bound_ap_decisions_full_ledger": 79514,
+  "scope": "application/protocol/observability audit, not Wi-Fi calibration",
+  "status": "PASS"
+}

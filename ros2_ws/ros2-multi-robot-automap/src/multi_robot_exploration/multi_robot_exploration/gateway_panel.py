@@ -6,7 +6,7 @@ import math
 from pathlib import Path
 import signal
 
-from python_qt_binding.QtCore import QPointF, QTimer, Qt
+from python_qt_binding.QtCore import QPointF, QRectF, QTimer, Qt
 from python_qt_binding.QtGui import QColor, QPainter, QPen, QPolygonF
 from python_qt_binding.QtWidgets import (
     QApplication, QComboBox, QDoubleSpinBox, QFileDialog, QFormLayout, QGridLayout,
@@ -263,7 +263,7 @@ class ByteShares(QWidget):
     def __init__(self):
         super().__init__()
         self.reports = []
-        self.setMinimumHeight(100)
+        self.setMinimumHeight(140)
         self.setAccessibleName("按消息类别的发送字节堆叠")
 
     def paintEvent(self, _):
@@ -282,7 +282,9 @@ class ByteShares(QWidget):
                 painter.fillRect(int(left), 4+index*28, max(0, int(width)), 20, colors[name])
                 left += width
         painter.setPen(QColor("#172033"))
-        painter.drawText(0, 78, "发送字节（含重试）类别顺序：" + " · ".join(types))
+        painter.drawText(QRectF(0, 65, self.width(), self.height()-65),
+                         Qt.AlignLeft | Qt.AlignTop | Qt.TextWordWrap,
+                         "发送字节（含重试）类别顺序：" + " · ".join(types))
 
 
 class GatewayPanel(QWidget):
@@ -364,12 +366,16 @@ class GatewayPanel(QWidget):
             self.task_details.setText("参考读取失败：" + str(error))
             return
         current = self.monitor.snapshot
-        if current and rows and any(rows[0].get(k) != current["context"].get(k) for k in ("gazebo_seed", "world", "mission_mode", "robot_count")):
-            self.summary.setText("参考拒绝：world、seed或mission_mode不同，不能标为配对曲线。")
-            return
+        if current:
+            try:
+                validate_pair_configuration(current, {"context": data.get("context") or rows[0],
+                    "task_result": data.get("task_result"), "directions": rows})
+            except ValueError as error:
+                self.summary.setText("参考拒绝：" + str(error))
+                return
         self.reference = rows
         self.reference_result = data.get("task_result")
-        self.reference_context = data.get("context") or {}
+        self.reference_context = data.get("context") or rows[0]
         self.reference_is_ideal = all((r.get("configuration") or {}).get("requested", {}).get("network_mode", (r.get("configuration") or {}).get("legacy_declared_mode")) == "ideal" for r in rows)
 
     def refresh(self):
@@ -399,6 +405,16 @@ class GatewayPanel(QWidget):
         selected = self.message_type.currentText()
         current_rows = [r for r in self.history if r["message_type"] == selected and r["sim_time"] >= snapshot["sim_time"]-120]
         ref_rows = [r for r in self.reference if r.get("message_type") == selected and r.get("sender") == "all"]
+        pair_error = "原生结果未落盘或参考不是完整ideal"
+        pair_valid = False
+        if self.reference:
+            try:
+                validate_pair_configuration(snapshot, {"context": self.reference_context,
+                    "task_result": self.reference_result, "directions": self.reference})
+                pair_valid = True
+            except ValueError as error:
+                ref_rows = []
+                pair_error = str(error)
         events = [{**event, "elapsed_sim_time": event.get("event_time", event.get("time", 0))-context["episode_start_sim_time"]}
                   for event in snapshot["timeline"]]
         for curve in self.curves:
@@ -420,15 +436,10 @@ class GatewayPanel(QWidget):
                 self.table.setItem(row, column, QTableWidgetItem(value))
         robot_text = [f"{name}: {state.get('battery', {}).get('mode', '—')} E={state.get('battery', {}).get('energy', '—')} "
                       f"接收位姿={state.get('pose', '—')} 速度={state.get('velocity', '—')}" for name, state in snapshot["robots"].items()]
-        degradation, pair_error = None, "原生结果未落盘或参考不是完整ideal"
-        if self.reference_is_ideal and self.reference_result and snapshot.get("task_result"):
-            try:
-                validate_pair_configuration({"context": context, "task_result": snapshot["task_result"]},
-                                            {"context": self.reference_context, "task_result": self.reference_result})
-                degradation = task_degradation_index(self.reference_result, snapshot["task_result"])
-                pair_error = "同配置核验通过"
-            except ValueError as error:
-                pair_error = str(error)
+        degradation = None
+        if pair_valid and self.reference_is_ideal and self.reference_result and snapshot.get("task_result"):
+            degradation = task_degradation_index(self.reference_result, snapshot["task_result"])
+            pair_error = "同配置核验通过"
         task_text = f"与已加载ideal参考的TDI：{shown(degradation)}；{pair_error}"
         for label, task in (("当前", snapshot.get("task_result")), ("参考", self.reference_result)):
             if task:

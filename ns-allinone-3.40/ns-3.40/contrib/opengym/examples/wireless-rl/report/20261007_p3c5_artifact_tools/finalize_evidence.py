@@ -193,9 +193,10 @@ def main():
     (artifacts/"final_findings.json").write_text(json.dumps(summary, indent=2, sort_keys=True, allow_nan=False)+"\n")
     (artifacts/"final_archival.json").write_text(json.dumps(archival, indent=2, sort_keys=True)+"\n")
     sources = [ros/"scripts"/name for name in ("check_p3c5_gate.py", "run_p3c5_audit.py", "check_p3c5_runtime.py",
-               "p3c5_traffic_manifest.json", "p3c5_control_schema.json", "test_p3c5_gate.py")]
+               "p3c5_traffic_manifest.json", "p3c5_control_schema.json", "test_p3c5_gate.py", "test_p3c_exports.py")]
     sources += [ros/"src/multi_robot_exploration/multi_robot_exploration"/name
-                for name in ("admission_protocol.py", "traffic_audit.py", "ideal_gateway.py", "metrics_node.py")]
+                for name in ("admission_protocol.py", "traffic_audit.py", "ideal_gateway.py", "metrics_node.py",
+                             "gateway_metrics.py", "gateway_panel.py")]
     sources += sorted((report/"20261007_p3c5_artifact_tools").glob("*.py"))
     provenance = {"status": "PASS", "checked_at_utc": datetime.now(timezone.utc).isoformat(),
         "task_frozen_commit": gate["task_cohort_commit"], "task_original_count": 14,

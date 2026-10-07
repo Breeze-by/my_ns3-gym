@@ -39,6 +39,17 @@ def validate_pair_configuration(current, reference):
     for key in ("gazebo_seed", "world", "mission_mode", "robot_count"):
         if current["context"].get(key) is None or current["context"].get(key) != reference["context"].get(key):
             raise ValueError(f"not a paired comparison: {key}")
+    def admission_enabled(summary):
+        configurations = [summary["context"].get("configuration") or {}]
+        for name in ("directions", "window", "cumulative"):
+            configurations.extend(row.get("configuration") or {} for row in summary.get(name, []))
+        values = [c["admission_protocol"] for c in configurations if "admission_protocol" in c]
+        if any(type(value) is not bool for value in values) or len(set(values)) > 1:
+            raise ValueError("not a paired comparison: admission_protocol invalid or conflicting")
+        # Accepted P3B/P3C exports predate this opt-in flag and used direct admission.
+        return values[0] if values else False
+    if admission_enabled(current) != admission_enabled(reference):
+        raise ValueError("not a paired comparison: admission_protocol differs")
     if ideal and fault:
         for key in ("target_x", "target_y", "target_max_distance_m", "target_field_of_view_deg", "target_confirmation_frames",
                     "rally_position_tolerance_m", "rally_linear_tolerance_mps", "rally_angular_tolerance_radps", "rally_hold_sec"):

@@ -1,0 +1,41 @@
+{
+  "status": "PASS",
+  "task_freeze": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
+  "checks": {
+    "gateway_metrics.py": {
+      "excluded_display_or_pair_validation_functions": [
+        "validate_pair_configuration"
+      ],
+      "all_other_ast_identical": true,
+      "current_sha256": "1a6c0d02644791f36e302608206ab55e5d2ac00b311070755a83aa41803d8adc"
+    },
+    "gateway_panel.py": {
+      "excluded_display_or_pair_validation_functions": [
+        "load_reference",
+        "refresh"
+      ],
+      "all_other_ast_identical": true,
+      "current_sha256": "ff9603636b7d406165442dfc4811cc5f4736892ac69c85bf190a702563e8e118"
+    },
+    "admission_protocol.py": {
+      "bytes_identical": true,
+      "sha256": "8abca3c6d00857d781088273b1052a01c97d10b3082df7c066e984f051066586"
+    },
+    "ideal_gateway.py": {
+      "bytes_identical": true,
+      "sha256": "d9d2fc80bc15eea92f0eadb1b7ba89acb1d83fb51ab4cc33cce4c5d194d4d83b"
+    },
+    "metrics_node.py": {
+      "bytes_identical": true,
+      "sha256": "8c467eab658f4d57ed4e6069d4241c8ee0da664a48c5c4057bddbc72bf6312b6"
+    },
+    "fault_model.py": {
+      "bytes_identical": true,
+      "sha256": "b2aea85f47591d2558848281fa53ae0f9de7c2319b256a54d8deff7cbc96261a"
+    },
+    "tf_ingress_sampler.py": {
+      "bytes_identical": true,
+      "sha256": "4d21f06920f8105ab8576763e55cb9e7e7ea6582b2ec997d19da61348e39bd63"
+    }
+  }
+}

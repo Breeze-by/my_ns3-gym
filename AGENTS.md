@@ -59,6 +59,24 @@ tokens is not a reason to leave a problem unresolved or inadequately tested.
 
 ## Current Handoff
 
+2026-10-07 P3C.5 technical gate PASS, ready for user acceptance. The user has
+accepted P3C. All14 originals at `bea7f8bfb41b19dc55c1ecdd351a5a797261d18a`
+closed naturally:11 native COMPLETE/3 RALLY timeout, zero contacts/exhaustion/
+failed robots/infra/retries; forced2 completes217.5s, each robot charges once.
+All14 protocol/temporal/graph/native/live audits pass;1272 snapshots/2372766
+inputs,2087 strata/220552 native tx cost rows/29894 burst rows.723 functional
+checks/1 skip, four-package build,68 immutable task/safety files/54 static
+cells and actual ROS/Qt checks pass. AP uses delivered controls/history only;
+hidden current queues stay null. Actual airtime/radio joules remain null;
+conditional CDR coefficients are not calibrated Wi-Fi measurements. No
+capacity bottleneck is demonstrated in this application model; keep measured
+load and the negative result, do not inflate traffic or start RL. v1/v2 failed
+cohorts and all original task failures remain retained. Post-task pair/display
+refinements have separate source evidence; no task/nativeTTL/safety changes.
+Report: wireless-rl/report/20261007_p3c5_gate.md/.json and provenance alongside.
+P3C.5 is technically complete, not yet accepted by the user. P4/ns-3/Wi-Fi/RL
+was not started. Older dated pending/failure statements below are historical.
+
 2026-10-07 newest correction: P3C.5 v2 full14 candidate FAIL: delay_rooms3 metrics export escalated to SIGTERM after30s, then exited0; strict no-escalation gate retains FAIL. Native11 COMPLETE/2timeout/1FAILED, all zero contacts/exhaustion/failed robots, originals unchanged. Largest-trace read-only replay matches original summary (529508 records, cold-ingest20.194s + profiled-export42.175s). Prospective v3 changes only metrics export grace90s and owner cleanup120s, keeping native300s/TTL/5s/safety/protocol unchanged; all14 new originals require a new pushed freeze. No P4/ns-3/Wi-Fi/RL. Evidence wireless-rl/report/20261007_p3c5_export_grace_failed_candidate.json. Earlier pending/failure notes are historical.
 
 2026-10-07 latest correction: P3C.5 v1 at adb370e stopped after three native COMPLETE originals (154.7/129.8/166.2 s, zero contacts) because local queue/gateway closure and metrics shutdown failed. All raw trials and failure tracebacks are retained; eleven cells were not invoked. File-before-DDS closure, stopped-context publication guards and a 30 s read-only export grace period now pass actual ROS/Qt and component checks. The task algorithms/300 s horizon/5 s hold/TTL/safety are unchanged. A new full14-original p3c5_v2 cohort is pending a clean pushed freeze; do not reuse the v1 successes. See wireless-rl/report/20261007_p3c5_shutdown_failed_candidate.json.

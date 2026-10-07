@@ -13,7 +13,7 @@ multi_robot/gazebo_multirobot_mapping_with_nav2.launch.py
 P2C 本地电池/充电管理；可选目标检测与 P2B 集结任务。手动运行默认同时打开贴地的 Gazebo
 重点区域标记和每机器人实时状态栏。
 
-最近核对：2026-10-07。P3A.6、P3B.5、P3C 已获用户验收；当前执行 P3C.5。
+最近核对：2026-10-07。P3A.6、P3B.5、P3C 已获用户验收；P3C.5技术完成、门禁PASS，待用户验收。
 当前任务栈冻结在 `d8d361b`，最终报告提交为 `d0b1561`。
 本文第 1–8 节用于当前运行，第 9 节保留历史候选记录；其中“未通过”“未暴露”等描述
 只适用于记录当时。当前结果见 [P3B.5 完整报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261006_p3b5_gate.md)。
@@ -78,6 +78,8 @@ PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python scripts/expo
 
 ## P3C.5 负载与协议审计
 
+bea7f8b冻结14原格已全部自然结束并通过严格审计：11原生COMPLETE/3 RALLY超时，原失败保持；零碰撞/耗尽/失效/infra/retry。曲线、角色成本、2/3机器人四拓扑与原生结果见[P3C.5最终报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261007_p3c5_gate.md)。本轮不进入P4/ns-3/Wi-Fi/RL。
+
 新增启动参数 `gateway_admission_protocol:=true` 启用 candidate/request/grant/heartbeat。
 默认 `false` 保留已验收 P3C 的直接准入路径；审计两侧使用相同任务栈与候选规则。
 普通上行完整 payload 在机器人队列中等待有效 grant，源 TTL 不续期；检测、
@@ -107,6 +109,21 @@ taskset -c 0-79 /usr/bin/python3 scripts/run_p3c5_audit.py \
 airtime/radio joules 当前没有 PHY/MAC 或功率校准，保存为 null；每次发送另外保存
 `8*envelope_cdr_bytes/1e6` 条件系数，可代入 Mbps 与瓦数，不能称为实测无线占用或能耗。
 任务能量仍是原距离/时间模型单位。现有控台与 P3C 曲线会计入新增控制消息。
+
+每个候选首次立即发送candidate/request，未授权时相隔至少.75秒重发、总计最多三组；不是所有候选全局限速。GUI/导出参考配对必须同时匹配admission_protocol，缺flag的已验收旧direct记录为false；协议开/关结果不能标成同协议TDI。
+
+只读重审当前原14格到新的输出目录（不启动Gazebo）：
+
+```bash
+export PYTHONNOUSERSITE=1
+export PYTHONPATH="$PWD/src/multi_robot_exploration:$PYTHONPATH"
+/usr/bin/python3 scripts/check_p3c_source.py --output log/p3c5/review_source_new.json
+/usr/bin/python3 scripts/check_p3c5_gate.py \
+  --run-root log/p3c5/p3c5_v3 --source log/p3c5/review_source_new.json \
+  --runtime log/p3c5/runtime_v10 --output log/p3c5/review_gate_new --workers 3
+```
+
+原ledger/实时输入保留log忽略目录；Git中的报告、审阅副本和无损成本/strata/burst归档绑定原始SHA。实际最终审计用gate_v21，后续纯显示源码检查用v24_source.json。再次实验须先新提交推送冻结、使用新run-id，不能回填v3。
 
 ## 1. 每个新终端先执行
 

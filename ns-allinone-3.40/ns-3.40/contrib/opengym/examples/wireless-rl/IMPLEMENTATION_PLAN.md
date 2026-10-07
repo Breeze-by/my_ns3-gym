@@ -2,16 +2,17 @@
 
 最后更新：2026-10-07（历史段落保留原日期）。
 
-最新授权：用户已验收P3C，要求完成P3C.5。准入协议、可部署观测与负载审计器已实现；
-v2完整14格已结束，记录侧收尾升级SIGTERM导致门禁FAIL，原11 COMPLETE/2timeout/1FAILED全部保留。
-新v3只改导出收尾90秒/owner等待120秒，准备重新冻结全部14格；native300秒/TTL/5秒/安全和任务源不变。P4/ns-3/Wi-Fi/RL不在本轮范围。
-实验协议见[20261007 P3C.5前瞻声明](report/20261007_p3c5_protocol.md)。
+当前状态：用户已验收P3C；P3C.5技术完成、严格门禁PASS，待用户验收。
+bea7f8b冻结14原始格全部自然关闭：11原生COMPLETE/3 RALLY超时，零碰撞/耗尽/失效/infra/retry，forced217.5秒各机充电一次。
+1272实时快照/2372766输入回放、2087分层/220552发送成本/29894突发记录、14时序/图/协议审计通过；723功能/四包build/68不可变源码/54静态格及实际ROS/Qt验证通过。
+v1/v2技术失败候选与全部原任务失败保持；native300秒/TTL/5秒/任务/安全不变。当前应用模型未证明容量瓶颈，保持真实负载，不人为增流量或启动RL。
+证据见[P3C.5最终报告](report/20261007_p3c5_gate.md)和[原前瞻协议](report/20261007_p3c5_protocol.md)。P4/ns-3/Wi-Fi/RL尚未开始。
 
 本文把 `RESEARCH_PLAN.md` 的研究路线拆成可逐步实现、验证和验收的工程检查点。
 研究边界、论文问题和最终指标仍以 `RESEARCH_PLAN.md` 为准；当前功能以源码和
 `ros2_ws/ros2-multi-robot-automap/user_guide.md` 为准；实验事实以 `log.md` 和日期报告为准。
 
-2026-10-07当前状态：用户已验收P3B.5；P3C与在线通信故障控台技术门禁PASS，待用户检查。冻结6a0a8eb的ideal/forced/dynamic三原任务均原生COMPLETE（197.1/235.0/265.6s），零碰撞/耗尽/失效/infra/retry，forced两机各充电一次。658实时快照/26852 CSV行同源、63历史原任务/1879流/31冻结TDI回放、676组件/四包build/68任务安全源/54静态协议/实际ROS与Qt控台审核通过。源与显示修订、原失败和取证分开保留，见[最终报告](report/20261007_p3c_gate.md)。P3C.5/P4尚未开始。
+2026-10-07 P3C已验收证据：冻结6a0a8eb的ideal/forced/dynamic三原任务原生COMPLETE（197.1/235.0/265.6s），零碰撞/耗尽/失效/infra/retry，forced各机充电一次。658实时快照/26852 CSV行同源、63历史原任务/1879流/31冻结TDI回放、676组件/四包build/68任务安全源/54静态协议/实际ROS与Qt控台审核通过。源/显示修订和原失败分别保留，见[P3C最终报告](report/20261007_p3c_gate.md)。
 
 ## 1. 实施原则
 
@@ -90,8 +91,8 @@ v2完整14格已结束，记录侧收尾升级SIGTERM导致门禁FAIL，原11 CO
 | P3A.6 | 当前 task-stack 重新冻结 | 当前 HEAD 的 P2D/P3A 完整矩阵、强制充电回归、commit/config/environment manifest、ROS graph edge 白名单 | 在网络/RL 前重新跑固定门禁并输出 `task_stack_frozen_commit`；后续任务栈改动必须另开批次 | 已验收（2026-10-01） |
 | P3B | 固定 delay/loss 网络替身（已完成范围） | 独立上下行、固定 seed 队列、TTL/版本、重复/乱序、重传、逐消息账本和 stale-state 降级 | 4 项协议单测、54 格固定协议 matrix `PASS`；故障语义和安全降级可复现 | 已验收 |
 | P3B.5 | 故障条件下的完整任务闭环 | Gazebo fault-mode 任务矩阵、理想配对基线、任务/电池/碰撞/安全降级指标、机器人本地 freshness 保障、队列语义收敛 | 覆盖 `coverage/target/rally`、多 world/seed、丢包/延迟/TTL/deadline/retry/overflow；每格保留 ledger 和任务结果；健康机器人继续，未交付信息不触发错误任务；输出故障退化报告 | 已验收：2026-10-07 |
-| P3C | gateway 通信指标、实时可视化与在线故障控台 | 默认监控面板、独立故障配置入口、CSV/JSON 指标快照、ideal/fault 对比报告 | 消息与attempt字节闭合；显示吞吐/PDR/丢包/时延/队列/重试/AoI/任务；控台变更有实际生效仿真时刻及曲线反馈，监控只读，headless保存同数据 | 待用户验收：技术PASS 2026-10-07 |
-| P3C.5 | 应用负载与协议控制开销审计 | candidate/request/grant/heartbeat/critical-event 的频率、字节、队列、AoI、deadline、控制开销与可观测性报告 | 在真实候选生成规则下测量负载，明确中央未知信息和审计边界；不得把仿真器隐藏队列作为输入 | 待完成 |
+| P3C | gateway 通信指标、实时可视化与在线故障控台 | 默认监控面板、独立故障配置入口、CSV/JSON 指标快照、ideal/fault 对比报告 | 消息与attempt字节闭合；显示吞吐/PDR/丢包/时延/队列/重试/AoI/任务；控台变更有实际生效仿真时刻及曲线反馈，监控只读，headless保存同数据 | 已验收：2026-10-07 |
+| P3C.5 | 应用负载与协议控制开销审计 | candidate/request/grant/heartbeat/critical-event 的频率、字节、队列、AoI、deadline、控制开销与可观测性报告 | 在真实候选生成规则下测量负载，明确中央未知信息和审计边界；不得把仿真器隐藏队列作为输入 | 待用户验收：技术PASS 2026-10-07，14原格完整 |
 | P4A | ns-3 数据包与时间同步 | P4A-0 trace ledger、P4A-1 固定窗/lock-step、Gazebo mobility、真实消息大小、资源/RTF 记录 | trace 生成/准入/发送/交付/丢弃字节闭合；相同 seed 事件账本一致；P4A-1 无墙钟竞态，记录 wall time、sim time、RTF 和资源峰值 | 待完成 |
 | P4B | Wi-Fi 4 场景、负载与瓶颈审计 | AP+2/3 STA、传播、墙损耗、背景干扰、网络指标、实测校准集/验证集 | 在 P3C.5 负载和协议开销下测量排队、过期、竞争和交付瓶颈；参数有来源；无实测时标为 synthetic sensitivity，不宣称 sim-to-real | 待完成 |
 | P5 | 强非学习通信调度基线与 RL go/no-go | 冻结场景/seed/主指标/最小动作集及 no/ideal/always/periodic/random/event、task-value greedy、freshness/deadline、link-aware、SchedNet-inspired | 同一 gateway 和配对 seed 一键运行，CSV 含所有任务失败和基础设施失败；完成负载/瓶颈审计后记录是否进入 RL | 待完成 |
@@ -416,7 +417,7 @@ P3C 的验收必须证明指标不是“看起来有图”：账本生成/准入
 故障退化图应回答：哪类消息先受影响、延迟还是丢包主导、AoI 何时超过安全 TTL、任务何时从
 COMPLETE 退化为 PARTIAL_COMPLETE/FAILED，以及健康机器人是否保持了保障性动作。
 
-### P3C.5：应用负载与协议控制开销审计（待完成）
+### P3C.5：应用负载与协议控制开销审计（技术PASS，待用户验收）
 
 在训练前，用冻结的任务栈和真实候选生成规则测量每类消息的生成频率、payload 字节、
 candidate/request/grant/heartbeat/critical-event 控制字节、队列深度、AoI、TTL/deadline、
@@ -425,6 +426,11 @@ candidate/request/grant/heartbeat/critical-event 控制字节、队列深度、A
 
 退出条件：给出按任务阶段、消息类型、方向和机器人分层的负载分布，明确实际应用负载是否可能
 造成排队/过期/竞争；若负载不足，记录“通信不是瓶颈”，不得先改规则或人为增加拥塞。
+
+2026-10-07完整14格通过应用/协议/观测审计，11原生COMPLETE/3超时全部保留；
+阶段/类型/方向/机器人分层、控制与关键/ACK成本、授权等待/源龄/AoI/队列/原TTL/有限重试、实时回放见[报告](report/20261007_p3c5_gate.md)。
+现阶段没有PHY/MAC/速率/射频功率模型，实际airtime/J为null、逐attempt保留条件系数，不能伪造实测值。
+未证明容量瓶颈的应用模型负结果和注入delay/loss敏感性分开，不等于真实Wi-Fi无瓶颈；保留负载交给后续标定。
 
 ### P4–P7：网络、策略和统计（待完成）
 

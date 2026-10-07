@@ -52,7 +52,7 @@ def plot_traffic(episodes, output):
     axes[0].set_ylim(0, max(bottom)*1.23)
     axes[0].set_ylabel("Mean envelope traffic (kbit/s)")
     axes[0].set_title("All 14 original cells: actual application CDR bytes, including every control attempt", loc="left")
-    axes[0].legend(ncols=4, frameon=False, fontsize=9, loc="upper left", bbox_to_anchor=(0, 1.29))
+    axes[0].legend(ncol=4, frameon=False, fontsize=9, loc="upper left", bbox_to_anchor=(0, 1.29))
     axes[0].text(.99, .98, "Labels: all non-data byte fraction", transform=axes[0].transAxes,
                  ha="right", va="top", fontsize=9)
     for off, key, color in ((-.19, "p95", "#4477aa"), (.19, "max", "#ee6677")):
@@ -114,14 +114,15 @@ def plot_feedback(episodes, output):
     bottom = np.zeros(len(cases))
     for key, label, color in (("fresh_sec", "fresh", "#228833"), ("stale_sec", "source-stale", "#ee6677"),
                               ("no_data_sec", "unknown", "#bbbbbb")):
-        values = np.array([r[key]/r["monitored_sec"] for r in aoi])
+        values = np.array([(r[key]-r["no_data_sec"] if key == "stale_sec" else r[key])/
+                           r["monitored_sec"] for r in aoi])
         axes[1, 1].bar(x, values, bottom=bottom, color=color, label=label, width=.65)
         bottom += values
     assert np.allclose(bottom, 1)
     axes[1, 1].set_ylim(0, 1.08)
     axes[1, 1].set_title("Time with fresh / stale / unknown received pose", loc="left", fontsize=11)
     axes[1, 1].set_ylabel("Native-interval time fraction")
-    axes[1, 1].legend(frameon=False, ncols=3, fontsize=8, loc="upper left", bbox_to_anchor=(0, 1.20))
+    axes[1, 1].legend(frameon=False, ncol=3, fontsize=8, loc="upper left", bbox_to_anchor=(0, 1.20))
     for ax in axes.flat:
         ax.set_xticks(x, labels, fontsize=8)
         tidy(ax)
@@ -187,7 +188,7 @@ def plot_native(episodes, output):
     ax.legend(handles=[Patch(color="#228833", label="Native COMPLETE"), Patch(facecolor="#ee9944", hatch="///", label="Native FAILED"),
                        Patch(facecolor="#ee6677", hatch="///", label="Timeout"),
                        Line2D([], [], color="#222222", marker="o", linestyle="", label="Detection"),
-                       Line2D([], [], color="#4477aa", marker="x", linestyle="", label="RALLY begins")], frameon=False, ncols=5,
+                       Line2D([], [], color="#4477aa", marker="x", linestyle="", label="RALLY begins")], frameon=False, ncol=5,
               loc="upper left", bbox_to_anchor=(0, 1.16))
     tidy(ax)
     fig.supxlabel("Original 300 s / 0.35 m / 0.05 m/s / 0.10 rad/s / continuous 5 s gates unchanged. No task retry or success-only selection.", fontsize=10)
