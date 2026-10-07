@@ -855,8 +855,15 @@ class IdealGateway(Node):
         event["ledger_index"] = self.ledger_index
         event.setdefault("fault_revision", self.configuration_revision)
         message = String(data=json.dumps(event, sort_keys=True))
-        self.event_publisher.publish(message)
+        # The file is authoritative, including pending-queue closure after
+        # SIGINT has invalidated DDS. Never lose it because publication stopped.
         self._write_ledger(message.data)
+        if self.context.ok():
+            try:
+                self.event_publisher.publish(message)
+            except RuntimeError:
+                if self.context.ok():
+                    raise  # Preserve active-context failures, tolerate only shutdown races.
 
     def _write_ledger(self, data):
         if not self.ledger_path:

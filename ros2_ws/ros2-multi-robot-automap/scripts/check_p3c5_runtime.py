@@ -77,11 +77,15 @@ def main():
         advance(7)
         assert len(received) == 2, "source TTL must expire before delayed grant/data"
         assert observations and all(o["remote_current_queue"] is None for o in observations)
+        pose()
+        advance(.1)
+        assert gateway.endpoint_queues["tb1"].pending
     finally:
+        # Match actual launch SIGINT ordering: context stops before node cleanup.
+        rclpy.shutdown()
         gateway.destroy_node()
         injector.destroy_node()
         executor.shutdown()
-        rclpy.shutdown()
     records = [json.loads(line) for line in (args.output/"ledger.jsonl").read_text().splitlines()]
     engine = LedgerMetrics()
     for event in records:
@@ -90,9 +94,12 @@ def main():
     assert audit["status"] == "PASS", audit["errors"]
     assert any(e["event"] == "local_discard" and e["reason"] == "source_expired" for e in records)
     assert any(e["event"] == "admission_release" and e["local_wait_sec"] >= 1 for e in records)
+    assert records[-1]["event"] == "gateway_stop"
+    assert any(e["event"] == "local_discard" and e["reason"] == "episode_closed" for e in records)
     result = {"status": "PASS", "ros_domain_id": os.environ.get("ROS_DOMAIN_ID"),
         "actual_ros_delivery_count": len(received), "delivered_only_observation_samples": len(observations),
         "source_ttl_not_renewed": True, "real_delayed_grant_wait": True, "conservation": audit}
+    result["actual_context_shutdown_closes_pending_queue"] = True
     (args.output/"checks.json").write_text(json.dumps(result, indent=2)+"\n")
     print(json.dumps({key: result[key] for key in ("status", "actual_ros_delivery_count", "delivered_only_observation_samples")}))
 

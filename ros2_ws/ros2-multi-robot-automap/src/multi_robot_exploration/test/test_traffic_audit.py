@@ -43,3 +43,23 @@ def test_auditor_rejects_observability_and_admission_tampering(mutation):
         events = [e for e in events if e["event"] != "admission_release"]
     with pytest.raises((AssertionError, KeyError)):
         audit_protocol(events, True)
+
+
+def test_stopped_metrics_context_keeps_json_csv_sample_without_publishing():
+    import io
+    from types import SimpleNamespace
+    from multi_robot_exploration.gateway_metrics import LedgerMetrics
+    from multi_robot_exploration.metrics_node import MetricsNode
+
+    engine = LedgerMetrics({"episode_start_sim_time": 10.0})
+    for event in records():
+        engine.ingest(event)
+    node = SimpleNamespace(metrics=engine, read_ledger=lambda: None, inputs=True, last_sample=-1,
+        history=[], samples=[], robots={}, latest_phase="EXPLORE", directory=Path("/tmp/p3c5_component"),
+        saved_samples=io.StringIO(), csv_stream=io.StringIO(), csv_writer=None, task_result=lambda: None,
+        context=SimpleNamespace(ok=lambda: False),
+        publisher=SimpleNamespace(publish=lambda _: (_ for _ in ()).throw(AssertionError("stopped context"))))
+    MetricsNode.poll(node)
+    snapshot = json.loads(node.saved_samples.getvalue())
+    assert snapshot["ledger_record_count"] == len(records())
+    assert node.csv_stream.getvalue() and node.samples

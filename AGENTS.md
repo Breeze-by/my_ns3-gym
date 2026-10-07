@@ -59,6 +59,8 @@ tokens is not a reason to leave a problem unresolved or inadequately tested.
 
 ## Current Handoff
 
+2026-10-07 latest correction: P3C.5 v1 at adb370e stopped after three native COMPLETE originals (154.7/129.8/166.2 s, zero contacts) because local queue/gateway closure and metrics shutdown failed. All raw trials and failure tracebacks are retained; eleven cells were not invoked. File-before-DDS closure, stopped-context publication guards and a 30 s read-only export grace period now pass actual ROS/Qt and component checks. The task algorithms/300 s horizon/5 s hold/TTL/safety are unchanged. A new full14-original p3c5_v2 cohort is pending a clean pushed freeze; do not reuse the v1 successes. See wireless-rl/report/20261007_p3c5_shutdown_failed_candidate.json.
+
 2026-10-07 latest: The user accepted P3C and authorized P3C.5 to completion.
 P3C.5 has an opt-in candidate/request/grant/heartbeat path and delivered-only
 AP observation, retaining accepted task sources and safety gates. The 14-cell

@@ -84,6 +84,10 @@ PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python scripts/expo
 电池/返充和导航关键消息独立于 grant。总部已拥有的下行队列执行本地准入，
 不伪装成发给自身的控制包；发往机器人的 grant/heartbeat 与原 ACK 全部计费。
 
+指标节点在 SIGINT 后有30秒完成只读导出，之后才升级终止信号；任务300秒、
+原生5秒保持、源TTL和本地安全不受影响。网关关闭后仍将本地候选终止事件写入文件，
+不再依赖已失效的DDS发布上下文。完整审计要求 gateway 与 metrics 都正常退出。
+
 在第1节环境初始化后，用新目录运行清单中的一个格，例如：
 
 ```bash

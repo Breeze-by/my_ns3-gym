@@ -1,0 +1,1651 @@
+{
+  "status": "PASS",
+  "start_sim_time": 10,
+  "end_sim_time": 22,
+  "duration_sec": 12,
+  "phase_duration_sec": {
+    "EXPLORE": 12
+  },
+  "strata": [
+    {
+      "phase": "EXPLORE",
+      "message_type": "candidate",
+      "direction": "uplink",
+      "robot": "tb1",
+      "phase_duration_sec": 12,
+      "counts": {
+        "generated_messages": 7,
+        "generated_payload_bytes": 1463,
+        "generated_envelope_cdr_bytes": 2359,
+        "uncompressed_payload_bytes": 1463,
+        "control_retry_messages": 3,
+        "tx_attempts": 7,
+        "tx_payload_bytes": 1463,
+        "tx_envelope_cdr_bytes": 2359,
+        "transport_retry_attempts": 0,
+        "delivered_attempts": 3,
+        "delivered_payload_bytes": 627,
+        "accepted_messages": 3,
+        "accepted_payload_bytes": 627,
+        "drop_attempts": 3,
+        "expired_attempts": 3,
+        "queue_overflow_attempts": 0
+      },
+      "generated_hz": 0.5833333333333334,
+      "offered_payload_bps": 975.3333333333334,
+      "tx_envelope_cdr_bps": 1572.6666666666667,
+      "compression_payload_fraction": 1.0,
+      "distributions": {
+        "payload_bytes": {
+          "n": 7,
+          "min": 209,
+          "p50": 209,
+          "p95": 209,
+          "p99": 209,
+          "max": 209
+        },
+        "envelope_cdr_bytes": {
+          "n": 7,
+          "min": 337,
+          "p50": 337,
+          "p95": 337,
+          "p99": 337,
+          "max": 337
+        },
+        "ttl_sec": {
+          "n": 7,
+          "min": 0.5,
+          "p50": 2.0,
+          "p95": 2.0,
+          "p99": 2.0,
+          "max": 2.0
+        },
+        "transport_queue_wait_sec": {
+          "n": 7,
+          "min": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "max": 0
+        },
+        "source_to_delivery_sec": {
+          "n": 3,
+          "min": 0.0,
+          "p50": 0.5,
+          "p95": 0.5,
+          "p99": 0.5,
+          "max": 0.5
+        },
+        "transport_delay_sec": {
+          "n": 3,
+          "min": 0.0,
+          "p50": 0.5,
+          "p95": 0.5,
+          "p99": 0.5,
+          "max": 0.5
+        }
+      }
+    },
+    {
+      "phase": "EXPLORE",
+      "message_type": "grant",
+      "direction": "downlink",
+      "robot": "tb1",
+      "phase_duration_sec": 12,
+      "counts": {
+        "generated_messages": 4,
+        "generated_payload_bytes": 457,
+        "generated_envelope_cdr_bytes": 937,
+        "uncompressed_payload_bytes": 457,
+        "control_retry_messages": 0,
+        "tx_attempts": 4,
+        "tx_payload_bytes": 457,
+        "tx_envelope_cdr_bytes": 937,
+        "transport_retry_attempts": 0,
+        "delivered_attempts": 4,
+        "delivered_payload_bytes": 457,
+        "accepted_messages": 4,
+        "accepted_payload_bytes": 457
+      },
+      "generated_hz": 0.3333333333333333,
+      "offered_payload_bps": 304.6666666666667,
+      "tx_envelope_cdr_bps": 624.6666666666666,
+      "compression_payload_fraction": 1.0,
+      "distributions": {
+        "payload_bytes": {
+          "n": 4,
+          "min": 114,
+          "p50": 114,
+          "p95": 115,
+          "p99": 115,
+          "max": 115
+        },
+        "envelope_cdr_bytes": {
+          "n": 4,
+          "min": 234,
+          "p50": 234,
+          "p95": 235,
+          "p99": 235,
+          "max": 235
+        },
+        "ttl_sec": {
+          "n": 4,
+          "min": 0.75,
+          "p50": 0.75,
+          "p95": 1.0,
+          "p99": 1.0,
+          "max": 1.0
+        },
+        "transport_queue_wait_sec": {
+          "n": 4,
+          "min": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "max": 0
+        },
+        "source_to_delivery_sec": {
+          "n": 4,
+          "min": 0.0,
+          "p50": 0.5,
+          "p95": 0.5,
+          "p99": 0.5,
+          "max": 0.5
+        },
+        "transport_delay_sec": {
+          "n": 4,
+          "min": 0.0,
+          "p50": 0.5,
+          "p95": 0.5,
+          "p99": 0.5,
+          "max": 0.5
+        }
+      }
+    },
+    {
+      "phase": "EXPLORE",
+      "message_type": "heartbeat",
+      "direction": "downlink",
+      "robot": "tb1",
+      "phase_duration_sec": 12,
+      "counts": {
+        "generated_messages": 11,
+        "generated_payload_bytes": 209,
+        "generated_envelope_cdr_bytes": 1617,
+        "uncompressed_payload_bytes": 209,
+        "control_retry_messages": 0,
+        "tx_attempts": 11,
+        "tx_payload_bytes": 209,
+        "tx_envelope_cdr_bytes": 1617,
+        "transport_retry_attempts": 0,
+        "delivered_attempts": 4,
+        "delivered_payload_bytes": 76,
+        "accepted_messages": 4,
+        "accepted_payload_bytes": 76,
+        "drop_attempts": 5,
+        "expired_attempts": 5,
+        "queue_overflow_attempts": 0
+      },
+      "generated_hz": 0.9166666666666666,
+      "offered_payload_bps": 139.33333333333334,
+      "tx_envelope_cdr_bps": 1078.0,
+      "compression_payload_fraction": 1.0,
+      "distributions": {
+        "payload_bytes": {
+          "n": 11,
+          "min": 19,
+          "p50": 19,
+          "p95": 19,
+          "p99": 19,
+          "max": 19
+        },
+        "envelope_cdr_bytes": {
+          "n": 11,
+          "min": 147,
+          "p50": 147,
+          "p95": 147,
+          "p99": 147,
+          "max": 147
+        },
+        "ttl_sec": {
+          "n": 11,
+          "min": 2.0,
+          "p50": 2.0,
+          "p95": 2.0,
+          "p99": 2.0,
+          "max": 2.0
+        },
+        "transport_queue_wait_sec": {
+          "n": 11,
+          "min": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "max": 0
+        },
+        "source_to_delivery_sec": {
+          "n": 4,
+          "min": 0.0,
+          "p50": 0.5,
+          "p95": 0.5,
+          "p99": 0.5,
+          "max": 0.5
+        },
+        "transport_delay_sec": {
+          "n": 4,
+          "min": 0.0,
+          "p50": 0.5,
+          "p95": 0.5,
+          "p99": 0.5,
+          "max": 0.5
+        }
+      }
+    },
+    {
+      "phase": "EXPLORE",
+      "message_type": "heartbeat",
+      "direction": "uplink",
+      "robot": "tb1",
+      "phase_duration_sec": 12,
+      "counts": {
+        "generated_messages": 11,
+        "generated_payload_bytes": 209,
+        "generated_envelope_cdr_bytes": 1617,
+        "uncompressed_payload_bytes": 209,
+        "control_retry_messages": 0,
+        "tx_attempts": 11,
+        "tx_payload_bytes": 209,
+        "tx_envelope_cdr_bytes": 1617,
+        "transport_retry_attempts": 0,
+        "delivered_attempts": 4,
+        "delivered_payload_bytes": 76,
+        "accepted_messages": 4,
+        "accepted_payload_bytes": 76,
+        "drop_attempts": 5,
+        "expired_attempts": 5,
+        "queue_overflow_attempts": 0
+      },
+      "generated_hz": 0.9166666666666666,
+      "offered_payload_bps": 139.33333333333334,
+      "tx_envelope_cdr_bps": 1078.0,
+      "compression_payload_fraction": 1.0,
+      "distributions": {
+        "payload_bytes": {
+          "n": 11,
+          "min": 19,
+          "p50": 19,
+          "p95": 19,
+          "p99": 19,
+          "max": 19
+        },
+        "envelope_cdr_bytes": {
+          "n": 11,
+          "min": 147,
+          "p50": 147,
+          "p95": 147,
+          "p99": 147,
+          "max": 147
+        },
+        "ttl_sec": {
+          "n": 11,
+          "min": 2.0,
+          "p50": 2.0,
+          "p95": 2.0,
+          "p99": 2.0,
+          "max": 2.0
+        },
+        "transport_queue_wait_sec": {
+          "n": 11,
+          "min": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "max": 0
+        },
+        "source_to_delivery_sec": {
+          "n": 4,
+          "min": 0.0,
+          "p50": 0.5,
+          "p95": 0.5,
+          "p99": 0.5,
+          "max": 0.5
+        },
+        "transport_delay_sec": {
+          "n": 4,
+          "min": 0.0,
+          "p50": 0.5,
+          "p95": 0.5,
+          "p99": 0.5,
+          "max": 0.5
+        }
+      }
+    },
+    {
+      "phase": "EXPLORE",
+      "message_type": "pose_state",
+      "direction": "uplink",
+      "robot": "tb1",
+      "phase_duration_sec": 12,
+      "counts": {
+        "generated_messages": 4,
+        "generated_payload_bytes": 2832,
+        "generated_envelope_cdr_bytes": 3312,
+        "uncompressed_payload_bytes": 2832,
+        "control_retry_messages": 0,
+        "tx_attempts": 2,
+        "tx_payload_bytes": 1416,
+        "tx_envelope_cdr_bytes": 1656,
+        "transport_retry_attempts": 0,
+        "delivered_attempts": 2,
+        "delivered_payload_bytes": 1416,
+        "accepted_messages": 2,
+        "accepted_payload_bytes": 1416,
+        "local_discarded_messages": 2
+      },
+      "generated_hz": 0.3333333333333333,
+      "offered_payload_bps": 1888.0,
+      "tx_envelope_cdr_bps": 1104.0,
+      "compression_payload_fraction": 1.0,
+      "distributions": {
+        "payload_bytes": {
+          "n": 4,
+          "min": 708,
+          "p50": 708,
+          "p95": 708,
+          "p99": 708,
+          "max": 708
+        },
+        "envelope_cdr_bytes": {
+          "n": 4,
+          "min": 828,
+          "p50": 828,
+          "p95": 828,
+          "p99": 828,
+          "max": 828
+        },
+        "ttl_sec": {
+          "n": 4,
+          "min": 2.0,
+          "p50": 2.0,
+          "p95": 2.0,
+          "p99": 2.0,
+          "max": 2.0
+        },
+        "local_wait_sec": {
+          "n": 2,
+          "min": 0.09999999999999964,
+          "p50": 0.09999999999999964,
+          "p95": 1.0,
+          "p99": 1.0,
+          "max": 1.0
+        },
+        "transport_queue_wait_sec": {
+          "n": 2,
+          "min": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "max": 0
+        },
+        "source_to_delivery_sec": {
+          "n": 2,
+          "min": 0.09999999999999964,
+          "p50": 0.09999999999999964,
+          "p95": 1.5,
+          "p99": 1.5,
+          "max": 1.5
+        },
+        "transport_delay_sec": {
+          "n": 2,
+          "min": 0.0,
+          "p50": 0.0,
+          "p95": 0.5,
+          "p99": 0.5,
+          "max": 0.5
+        }
+      }
+    },
+    {
+      "phase": "EXPLORE",
+      "message_type": "request",
+      "direction": "uplink",
+      "robot": "tb1",
+      "phase_duration_sec": 12,
+      "counts": {
+        "generated_messages": 7,
+        "generated_payload_bytes": 350,
+        "generated_envelope_cdr_bytes": 1190,
+        "uncompressed_payload_bytes": 350,
+        "control_retry_messages": 3,
+        "tx_attempts": 7,
+        "tx_payload_bytes": 350,
+        "tx_envelope_cdr_bytes": 1190,
+        "transport_retry_attempts": 0,
+        "delivered_attempts": 3,
+        "delivered_payload_bytes": 150,
+        "accepted_messages": 3,
+        "accepted_payload_bytes": 150,
+        "drop_attempts": 3,
+        "expired_attempts": 3,
+        "queue_overflow_attempts": 0
+      },
+      "generated_hz": 0.5833333333333334,
+      "offered_payload_bps": 233.33333333333334,
+      "tx_envelope_cdr_bps": 793.3333333333334,
+      "compression_payload_fraction": 1.0,
+      "distributions": {
+        "payload_bytes": {
+          "n": 7,
+          "min": 50,
+          "p50": 50,
+          "p95": 50,
+          "p99": 50,
+          "max": 50
+        },
+        "envelope_cdr_bytes": {
+          "n": 7,
+          "min": 170,
+          "p50": 170,
+          "p95": 170,
+          "p99": 170,
+          "max": 170
+        },
+        "ttl_sec": {
+          "n": 7,
+          "min": 0.5,
+          "p50": 2.0,
+          "p95": 2.0,
+          "p99": 2.0,
+          "max": 2.0
+        },
+        "transport_queue_wait_sec": {
+          "n": 7,
+          "min": 0,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "max": 0
+        },
+        "source_to_delivery_sec": {
+          "n": 3,
+          "min": 0.0,
+          "p50": 0.5,
+          "p95": 0.5,
+          "p99": 0.5,
+          "max": 0.5
+        },
+        "transport_delay_sec": {
+          "n": 3,
+          "min": 0.0,
+          "p50": 0.5,
+          "p95": 0.5,
+          "p99": 0.5,
+          "max": 0.5
+        }
+      }
+    }
+  ],
+  "aoi_streams": [
+    {
+      "direction": "downlink",
+      "message_type": "grant",
+      "sender": "headquarters",
+      "recipient": "tb1",
+      "aoi": {
+        "observed_sec": 11.4,
+        "no_data_sec": 0.049999999999998934,
+        "fresh_sec": 1.700000000000001,
+        "stale_sec": 9.749999999999998,
+        "monitored_sec": 11.45,
+        "fresh_ratio": 0.1484716157205241,
+        "first_no_data_time": 10.55,
+        "first_source_stale_time": 11.55,
+        "first_freshness_recovery_time": 10.6,
+        "recovery_count": 3,
+        "recovery_time_mean_sec": 0.24999999999999942,
+        "recovery_time_max_sec": 0.4499999999999993,
+        "unrecovered_stale_sec": 9.0,
+        "mean": 4.308114035087719,
+        "max": 9.75,
+        "p95": 9.180000000604196
+      }
+    },
+    {
+      "direction": "downlink",
+      "message_type": "heartbeat",
+      "sender": "headquarters",
+      "recipient": "tb1",
+      "aoi": {
+        "observed_sec": 11.95,
+        "no_data_sec": 0.0,
+        "fresh_sec": 5.0,
+        "stale_sec": 6.949999999999999,
+        "monitored_sec": 11.95,
+        "fresh_ratio": 0.4184100418410042,
+        "first_no_data_time": null,
+        "first_source_stale_time": 15.05,
+        "first_freshness_recovery_time": null,
+        "recovery_count": 0,
+        "recovery_time_mean_sec": null,
+        "recovery_time_max_sec": null,
+        "unrecovered_stale_sec": 6.949999999999999,
+        "mean": 3.6026150627615063,
+        "max": 8.95,
+        "p95": 8.352500000857978
+      }
+    },
+    {
+      "direction": "uplink",
+      "message_type": "candidate",
+      "sender": "tb1",
+      "recipient": "headquarters",
+      "aoi": {
+        "observed_sec": 11.45,
+        "no_data_sec": 0.05000000000000071,
+        "fresh_sec": 2.4499999999999993,
+        "stale_sec": 9.05,
+        "monitored_sec": 11.5,
+        "fresh_ratio": 0.2130434782608695,
+        "first_no_data_time": 10.5,
+        "first_source_stale_time": 13.0,
+        "first_freshness_recovery_time": 10.55,
+        "recovery_count": 1,
+        "recovery_time_mean_sec": 0.05000000000000071,
+        "recovery_time_max_sec": 0.05000000000000071,
+        "unrecovered_stale_sec": 9.0,
+        "mean": 4.677838427947599,
+        "max": 10.25,
+        "p95": 9.677500000660075
+      }
+    },
+    {
+      "direction": "uplink",
+      "message_type": "heartbeat",
+      "sender": "tb1",
+      "recipient": "headquarters",
+      "aoi": {
+        "observed_sec": 11.95,
+        "no_data_sec": 0.0,
+        "fresh_sec": 5.0,
+        "stale_sec": 6.949999999999999,
+        "monitored_sec": 11.95,
+        "fresh_ratio": 0.4184100418410042,
+        "first_no_data_time": null,
+        "first_source_stale_time": 15.05,
+        "first_freshness_recovery_time": null,
+        "recovery_count": 0,
+        "recovery_time_mean_sec": null,
+        "recovery_time_max_sec": null,
+        "unrecovered_stale_sec": 6.949999999999999,
+        "mean": 3.6026150627615063,
+        "max": 8.95,
+        "p95": 8.352500000857978
+      }
+    },
+    {
+      "direction": "uplink",
+      "message_type": "pose_state",
+      "sender": "tb1",
+      "recipient": "headquarters",
+      "aoi": {
+        "observed_sec": 11.35,
+        "no_data_sec": 0.15000000000000036,
+        "fresh_sec": 2.3499999999999996,
+        "stale_sec": 9.15,
+        "monitored_sec": 11.5,
+        "fresh_ratio": 0.20434782608695648,
+        "first_no_data_time": 10.5,
+        "first_source_stale_time": 13.0,
+        "first_freshness_recovery_time": 10.65,
+        "recovery_count": 1,
+        "recovery_time_mean_sec": 0.15000000000000036,
+        "recovery_time_max_sec": 0.15000000000000036,
+        "unrecovered_stale_sec": 9.0,
+        "mean": 5.4064977973568284,
+        "max": 11.0,
+        "p95": 10.432499999529682
+      }
+    },
+    {
+      "direction": "uplink",
+      "message_type": "request",
+      "sender": "tb1",
+      "recipient": "headquarters",
+      "aoi": {
+        "observed_sec": 11.45,
+        "no_data_sec": 0.05000000000000071,
+        "fresh_sec": 2.4499999999999993,
+        "stale_sec": 9.05,
+        "monitored_sec": 11.5,
+        "fresh_ratio": 0.2130434782608695,
+        "first_no_data_time": 10.5,
+        "first_source_stale_time": 13.0,
+        "first_freshness_recovery_time": 10.55,
+        "recovery_count": 1,
+        "recovery_time_mean_sec": 0.05000000000000071,
+        "recovery_time_max_sec": 0.05000000000000071,
+        "unrecovered_stale_sec": 9.0,
+        "mean": 4.677838427947599,
+        "max": 10.25,
+        "p95": 9.677500000660075
+      }
+    }
+  ],
+  "phase_aoi_streams": [
+    {
+      "phase": "EXPLORE",
+      "direction": "downlink",
+      "message_type": "grant",
+      "sender": "headquarters",
+      "recipient": "tb1",
+      "start": 10,
+      "end": 22,
+      "aoi": {
+        "observed_sec": 11.4,
+        "no_data_sec": 0.049999999999998934,
+        "fresh_sec": 1.700000000000001,
+        "stale_sec": 9.749999999999998,
+        "monitored_sec": 11.45,
+        "fresh_ratio": 0.1484716157205241,
+        "first_no_data_time": 10.55,
+        "first_source_stale_time": 11.55,
+        "first_freshness_recovery_time": 10.6,
+        "recovery_count": 3,
+        "recovery_time_mean_sec": 0.24999999999999942,
+        "recovery_time_max_sec": 0.4499999999999993,
+        "unrecovered_stale_sec": 9.0,
+        "mean": 4.308114035087719,
+        "max": 9.75,
+        "p95": 9.180000000604196
+      }
+    },
+    {
+      "phase": "EXPLORE",
+      "direction": "downlink",
+      "message_type": "heartbeat",
+      "sender": "headquarters",
+      "recipient": "tb1",
+      "start": 10,
+      "end": 22,
+      "aoi": {
+        "observed_sec": 11.95,
+        "no_data_sec": 0.0,
+        "fresh_sec": 5.0,
+        "stale_sec": 6.949999999999999,
+        "monitored_sec": 11.95,
+        "fresh_ratio": 0.4184100418410042,
+        "first_no_data_time": null,
+        "first_source_stale_time": 15.05,
+        "first_freshness_recovery_time": null,
+        "recovery_count": 0,
+        "recovery_time_mean_sec": null,
+        "recovery_time_max_sec": null,
+        "unrecovered_stale_sec": 6.949999999999999,
+        "mean": 3.6026150627615063,
+        "max": 8.95,
+        "p95": 8.352500000857978
+      }
+    },
+    {
+      "phase": "EXPLORE",
+      "direction": "uplink",
+      "message_type": "candidate",
+      "sender": "tb1",
+      "recipient": "headquarters",
+      "start": 10,
+      "end": 22,
+      "aoi": {
+        "observed_sec": 11.45,
+        "no_data_sec": 0.05000000000000071,
+        "fresh_sec": 2.4499999999999993,
+        "stale_sec": 9.05,
+        "monitored_sec": 11.5,
+        "fresh_ratio": 0.2130434782608695,
+        "first_no_data_time": 10.5,
+        "first_source_stale_time": 13.0,
+        "first_freshness_recovery_time": 10.55,
+        "recovery_count": 1,
+        "recovery_time_mean_sec": 0.05000000000000071,
+        "recovery_time_max_sec": 0.05000000000000071,
+        "unrecovered_stale_sec": 9.0,
+        "mean": 4.677838427947599,
+        "max": 10.25,
+        "p95": 9.677500000660075
+      }
+    },
+    {
+      "phase": "EXPLORE",
+      "direction": "uplink",
+      "message_type": "heartbeat",
+      "sender": "tb1",
+      "recipient": "headquarters",
+      "start": 10,
+      "end": 22,
+      "aoi": {
+        "observed_sec": 11.95,
+        "no_data_sec": 0.0,
+        "fresh_sec": 5.0,
+        "stale_sec": 6.949999999999999,
+        "monitored_sec": 11.95,
+        "fresh_ratio": 0.4184100418410042,
+        "first_no_data_time": null,
+        "first_source_stale_time": 15.05,
+        "first_freshness_recovery_time": null,
+        "recovery_count": 0,
+        "recovery_time_mean_sec": null,
+        "recovery_time_max_sec": null,
+        "unrecovered_stale_sec": 6.949999999999999,
+        "mean": 3.6026150627615063,
+        "max": 8.95,
+        "p95": 8.352500000857978
+      }
+    },
+    {
+      "phase": "EXPLORE",
+      "direction": "uplink",
+      "message_type": "pose_state",
+      "sender": "tb1",
+      "recipient": "headquarters",
+      "start": 10,
+      "end": 22,
+      "aoi": {
+        "observed_sec": 11.35,
+        "no_data_sec": 0.15000000000000036,
+        "fresh_sec": 2.3499999999999996,
+        "stale_sec": 9.15,
+        "monitored_sec": 11.5,
+        "fresh_ratio": 0.20434782608695648,
+        "first_no_data_time": 10.5,
+        "first_source_stale_time": 13.0,
+        "first_freshness_recovery_time": 10.65,
+        "recovery_count": 1,
+        "recovery_time_mean_sec": 0.15000000000000036,
+        "recovery_time_max_sec": 0.15000000000000036,
+        "unrecovered_stale_sec": 9.0,
+        "mean": 5.4064977973568284,
+        "max": 11.0,
+        "p95": 10.432499999529682
+      }
+    },
+    {
+      "phase": "EXPLORE",
+      "direction": "uplink",
+      "message_type": "request",
+      "sender": "tb1",
+      "recipient": "headquarters",
+      "start": 10,
+      "end": 22,
+      "aoi": {
+        "observed_sec": 11.45,
+        "no_data_sec": 0.05000000000000071,
+        "fresh_sec": 2.4499999999999993,
+        "stale_sec": 9.05,
+        "monitored_sec": 11.5,
+        "fresh_ratio": 0.2130434782608695,
+        "first_no_data_time": 10.5,
+        "first_source_stale_time": 13.0,
+        "first_freshness_recovery_time": 10.55,
+        "recovery_count": 1,
+        "recovery_time_mean_sec": 0.05000000000000071,
+        "recovery_time_max_sec": 0.05000000000000071,
+        "unrecovered_stale_sec": 9.0,
+        "mean": 4.677838427947599,
+        "max": 10.25,
+        "p95": 9.677500000660075
+      }
+    }
+  ],
+  "queue_distributions": [
+    {
+      "phase": "EXPLORE",
+      "direction_or_robot": "downlink",
+      "metric": "in_flight",
+      "distribution": {
+        "n": 11,
+        "min": 0,
+        "p50": 1,
+        "p95": 2,
+        "p99": 2,
+        "max": 2
+      }
+    },
+    {
+      "phase": "EXPLORE",
+      "direction_or_robot": "downlink",
+      "metric": "pending_reliable_or_unresolved",
+      "distribution": {
+        "n": 11,
+        "min": 0,
+        "p50": 1,
+        "p95": 2,
+        "p99": 2,
+        "max": 2
+      }
+    },
+    {
+      "phase": "EXPLORE",
+      "direction_or_robot": "downlink",
+      "metric": "scheduled_events",
+      "distribution": {
+        "n": 11,
+        "min": 0,
+        "p50": 1,
+        "p95": 2,
+        "p99": 2,
+        "max": 2
+      }
+    },
+    {
+      "phase": "EXPLORE",
+      "direction_or_robot": "tb1",
+      "metric": "local_pending",
+      "distribution": {
+        "n": 11,
+        "min": 0,
+        "p50": 0,
+        "p95": 1,
+        "p99": 1,
+        "max": 1
+      }
+    },
+    {
+      "phase": "EXPLORE",
+      "direction_or_robot": "uplink",
+      "metric": "in_flight",
+      "distribution": {
+        "n": 11,
+        "min": 0,
+        "p50": 2,
+        "p95": 7,
+        "p99": 7,
+        "max": 7
+      }
+    },
+    {
+      "phase": "EXPLORE",
+      "direction_or_robot": "uplink",
+      "metric": "pending_reliable_or_unresolved",
+      "distribution": {
+        "n": 11,
+        "min": 0,
+        "p50": 2,
+        "p95": 7,
+        "p99": 7,
+        "max": 7
+      }
+    },
+    {
+      "phase": "EXPLORE",
+      "direction_or_robot": "uplink",
+      "metric": "scheduled_events",
+      "distribution": {
+        "n": 11,
+        "min": 0,
+        "p50": 2,
+        "p95": 7,
+        "p99": 7,
+        "max": 7
+      }
+    }
+  ],
+  "one_second_cdr_bps": {
+    "n": 12,
+    "min": 0.0,
+    "p50": 6408.0,
+    "p95": 14912.0,
+    "p99": 14912.0,
+    "max": 14912.0
+  },
+  "tx_cdr_bytes_by_role": {
+    "heartbeat": 3234,
+    "candidate": 2359,
+    "request": 1190,
+    "grant": 937,
+    "data": 1656
+  },
+  "one_second_windows": [
+    {
+      "relative_second": 0,
+      "duration_sec": 1,
+      "uplink_cdr_bytes": 1482,
+      "downlink_cdr_bytes": 382
+    },
+    {
+      "relative_second": 1,
+      "duration_sec": 1,
+      "uplink_cdr_bytes": 1161,
+      "downlink_cdr_bytes": 381
+    },
+    {
+      "relative_second": 2,
+      "duration_sec": 1,
+      "uplink_cdr_bytes": 975,
+      "downlink_cdr_bytes": 615
+    },
+    {
+      "relative_second": 3,
+      "duration_sec": 1,
+      "uplink_cdr_bytes": 654,
+      "downlink_cdr_bytes": 147
+    },
+    {
+      "relative_second": 4,
+      "duration_sec": 1,
+      "uplink_cdr_bytes": 654,
+      "downlink_cdr_bytes": 147
+    },
+    {
+      "relative_second": 5,
+      "duration_sec": 1,
+      "uplink_cdr_bytes": 654,
+      "downlink_cdr_bytes": 147
+    },
+    {
+      "relative_second": 6,
+      "duration_sec": 1,
+      "uplink_cdr_bytes": 147,
+      "downlink_cdr_bytes": 147
+    },
+    {
+      "relative_second": 7,
+      "duration_sec": 1,
+      "uplink_cdr_bytes": 147,
+      "downlink_cdr_bytes": 147
+    },
+    {
+      "relative_second": 8,
+      "duration_sec": 1,
+      "uplink_cdr_bytes": 147,
+      "downlink_cdr_bytes": 147
+    },
+    {
+      "relative_second": 9,
+      "duration_sec": 1,
+      "uplink_cdr_bytes": 147,
+      "downlink_cdr_bytes": 147
+    },
+    {
+      "relative_second": 10,
+      "duration_sec": 1,
+      "uplink_cdr_bytes": 654,
+      "downlink_cdr_bytes": 147
+    },
+    {
+      "relative_second": 11,
+      "duration_sec": 1,
+      "uplink_cdr_bytes": 0,
+      "downlink_cdr_bytes": 0
+    }
+  ],
+  "total_tx_cdr_bytes": 9376,
+  "control_cdr_fraction": 0.8233788395904437,
+  "bursts": [
+    {
+      "relative_second": 0,
+      "direction": "downlink",
+      "message_type": "grant",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 0,
+      "direction": "downlink",
+      "message_type": "heartbeat",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 0,
+      "direction": "uplink",
+      "message_type": "candidate",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 0,
+      "direction": "uplink",
+      "message_type": "heartbeat",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 0,
+      "direction": "uplink",
+      "message_type": "pose_state",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 0,
+      "direction": "uplink",
+      "message_type": "request",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 1,
+      "direction": "downlink",
+      "message_type": "grant",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 1,
+      "direction": "downlink",
+      "message_type": "heartbeat",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 1,
+      "direction": "uplink",
+      "message_type": "candidate",
+      "generated_count": 2
+    },
+    {
+      "relative_second": 1,
+      "direction": "uplink",
+      "message_type": "heartbeat",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 1,
+      "direction": "uplink",
+      "message_type": "pose_state",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 1,
+      "direction": "uplink",
+      "message_type": "request",
+      "generated_count": 2
+    },
+    {
+      "relative_second": 2,
+      "direction": "downlink",
+      "message_type": "grant",
+      "generated_count": 2
+    },
+    {
+      "relative_second": 2,
+      "direction": "downlink",
+      "message_type": "heartbeat",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 2,
+      "direction": "uplink",
+      "message_type": "heartbeat",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 3,
+      "direction": "downlink",
+      "message_type": "heartbeat",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 3,
+      "direction": "uplink",
+      "message_type": "candidate",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 3,
+      "direction": "uplink",
+      "message_type": "heartbeat",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 3,
+      "direction": "uplink",
+      "message_type": "pose_state",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 3,
+      "direction": "uplink",
+      "message_type": "request",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 4,
+      "direction": "downlink",
+      "message_type": "heartbeat",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 4,
+      "direction": "uplink",
+      "message_type": "candidate",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 4,
+      "direction": "uplink",
+      "message_type": "heartbeat",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 4,
+      "direction": "uplink",
+      "message_type": "request",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 5,
+      "direction": "downlink",
+      "message_type": "heartbeat",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 5,
+      "direction": "uplink",
+      "message_type": "candidate",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 5,
+      "direction": "uplink",
+      "message_type": "heartbeat",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 5,
+      "direction": "uplink",
+      "message_type": "request",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 6,
+      "direction": "downlink",
+      "message_type": "heartbeat",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 6,
+      "direction": "uplink",
+      "message_type": "heartbeat",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 7,
+      "direction": "downlink",
+      "message_type": "heartbeat",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 7,
+      "direction": "uplink",
+      "message_type": "heartbeat",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 8,
+      "direction": "downlink",
+      "message_type": "heartbeat",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 8,
+      "direction": "uplink",
+      "message_type": "heartbeat",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 9,
+      "direction": "downlink",
+      "message_type": "heartbeat",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 9,
+      "direction": "uplink",
+      "message_type": "heartbeat",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 10,
+      "direction": "downlink",
+      "message_type": "heartbeat",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 10,
+      "direction": "uplink",
+      "message_type": "candidate",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 10,
+      "direction": "uplink",
+      "message_type": "heartbeat",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 10,
+      "direction": "uplink",
+      "message_type": "pose_state",
+      "generated_count": 1
+    },
+    {
+      "relative_second": 10,
+      "direction": "uplink",
+      "message_type": "request",
+      "generated_count": 1
+    }
+  ],
+  "protocol": {
+    "status": "PASS",
+    "local_generated": 4,
+    "released": 2,
+    "discarded": 2,
+    "discard_reasons": {
+      "source_expired": 1,
+      "episode_closed": 1
+    },
+    "ap_decisions": 4,
+    "observation_samples": 11,
+    "remote_current_queue_unknown": true,
+    "all_decisions_bound_to_received_controls": true,
+    "local_wait_sec": {
+      "n": 2,
+      "min": 0.09999999999999964,
+      "p50": 0.09999999999999964,
+      "p95": 1.0,
+      "p99": 1.0,
+      "max": 1.0
+    }
+  },
+  "conservation": {
+    "status": "PASS",
+    "errors": [],
+    "streams": [
+      {
+        "direction": "downlink",
+        "message_type": "grant",
+        "sender": "headquarters",
+        "recipient": "tb1",
+        "counts": {
+          "generated_messages": 4,
+          "generated_bytes": 457,
+          "explicit_generated_messages": 4,
+          "inferred_generated_messages": 0,
+          "carry_in_messages": 0,
+          "admitted_messages": 4,
+          "admitted_bytes": 457,
+          "admitted_attempts": 4,
+          "admitted_attempt_bytes": 457,
+          "attempted_messages": 4,
+          "attempted_bytes": 457,
+          "retry_attempts": 0,
+          "delivered_messages": 4,
+          "delivered_bytes": 457,
+          "accepted_messages": 4,
+          "accepted_bytes": 457,
+          "delivered_attempts": 4,
+          "delivered_attempts_bytes": 457,
+          "dropped_tx_attempts": 0,
+          "dropped_tx_attempts_bytes": 0,
+          "duplicate_copies": 0,
+          "duplicate_copy_bytes": 0,
+          "ttl_expired_attempts": 0,
+          "ttl_expired_bytes": 0,
+          "queue_overflow_attempts": 0,
+          "queue_overflow_bytes": 0,
+          "injected_loss_attempts": 0,
+          "injected_loss_bytes": 0,
+          "retry_exhausted_or_deadline_messages": 0,
+          "retry_exhausted_or_deadline_bytes": 0,
+          "stale_sequence_receipts": 0,
+          "receiver_expired_receipts": 0,
+          "cohort_delivered_messages": 4,
+          "cohort_accepted_messages": 4,
+          "ledger_generated_messages": 4,
+          "ledger_generated_bytes": 457,
+          "ledger_enqueued_messages": 4,
+          "ledger_enqueued_bytes": 457,
+          "ledger_admitted_messages": 4,
+          "ledger_admitted_bytes": 457,
+          "ledger_delivered_messages": 4,
+          "ledger_delivered_bytes": 457,
+          "ledger_generated_not_enqueued_messages": 0,
+          "ledger_generated_not_enqueued_bytes": 0,
+          "ledger_never_admitted_messages": 0,
+          "ledger_never_admitted_bytes": 0,
+          "ledger_terminal_without_delivery_messages": 0,
+          "ledger_terminal_without_delivery_bytes": 0,
+          "ledger_unresolved_messages": 0,
+          "ledger_unresolved_bytes": 0
+        },
+        "tx_attempts": 4,
+        "tx_bytes": 457,
+        "settled_attempts": 4,
+        "settled_bytes": 457,
+        "in_flight_attempts": 0,
+        "in_flight_bytes": 0
+      },
+      {
+        "direction": "downlink",
+        "message_type": "heartbeat",
+        "sender": "headquarters",
+        "recipient": "tb1",
+        "counts": {
+          "generated_messages": 11,
+          "generated_bytes": 209,
+          "explicit_generated_messages": 11,
+          "inferred_generated_messages": 0,
+          "carry_in_messages": 0,
+          "admitted_messages": 11,
+          "admitted_bytes": 209,
+          "admitted_attempts": 11,
+          "admitted_attempt_bytes": 209,
+          "attempted_messages": 11,
+          "attempted_bytes": 209,
+          "retry_attempts": 0,
+          "delivered_messages": 4,
+          "delivered_bytes": 76,
+          "accepted_messages": 4,
+          "accepted_bytes": 76,
+          "delivered_attempts": 4,
+          "delivered_attempts_bytes": 76,
+          "dropped_tx_attempts": 5,
+          "dropped_tx_attempts_bytes": 95,
+          "duplicate_copies": 0,
+          "duplicate_copy_bytes": 0,
+          "ttl_expired_attempts": 5,
+          "ttl_expired_bytes": 95,
+          "queue_overflow_attempts": 0,
+          "queue_overflow_bytes": 0,
+          "injected_loss_attempts": 0,
+          "injected_loss_bytes": 0,
+          "retry_exhausted_or_deadline_messages": 0,
+          "retry_exhausted_or_deadline_bytes": 0,
+          "stale_sequence_receipts": 0,
+          "receiver_expired_receipts": 0,
+          "cohort_delivered_messages": 4,
+          "cohort_accepted_messages": 4,
+          "ledger_generated_messages": 11,
+          "ledger_generated_bytes": 209,
+          "ledger_enqueued_messages": 11,
+          "ledger_enqueued_bytes": 209,
+          "ledger_admitted_messages": 11,
+          "ledger_admitted_bytes": 209,
+          "ledger_delivered_messages": 4,
+          "ledger_delivered_bytes": 76,
+          "ledger_generated_not_enqueued_messages": 0,
+          "ledger_generated_not_enqueued_bytes": 0,
+          "ledger_never_admitted_messages": 0,
+          "ledger_never_admitted_bytes": 0,
+          "ledger_terminal_without_delivery_messages": 5,
+          "ledger_terminal_without_delivery_bytes": 95,
+          "ledger_unresolved_messages": 2,
+          "ledger_unresolved_bytes": 38
+        },
+        "tx_attempts": 11,
+        "tx_bytes": 209,
+        "settled_attempts": 9,
+        "settled_bytes": 171,
+        "in_flight_attempts": 2,
+        "in_flight_bytes": 38
+      },
+      {
+        "direction": "uplink",
+        "message_type": "candidate",
+        "sender": "tb1",
+        "recipient": "headquarters",
+        "counts": {
+          "generated_messages": 7,
+          "generated_bytes": 1463,
+          "explicit_generated_messages": 7,
+          "inferred_generated_messages": 0,
+          "carry_in_messages": 0,
+          "admitted_messages": 7,
+          "admitted_bytes": 1463,
+          "admitted_attempts": 7,
+          "admitted_attempt_bytes": 1463,
+          "attempted_messages": 7,
+          "attempted_bytes": 1463,
+          "retry_attempts": 0,
+          "delivered_messages": 3,
+          "delivered_bytes": 627,
+          "accepted_messages": 3,
+          "accepted_bytes": 627,
+          "delivered_attempts": 3,
+          "delivered_attempts_bytes": 627,
+          "dropped_tx_attempts": 3,
+          "dropped_tx_attempts_bytes": 627,
+          "duplicate_copies": 0,
+          "duplicate_copy_bytes": 0,
+          "ttl_expired_attempts": 3,
+          "ttl_expired_bytes": 627,
+          "queue_overflow_attempts": 0,
+          "queue_overflow_bytes": 0,
+          "injected_loss_attempts": 0,
+          "injected_loss_bytes": 0,
+          "retry_exhausted_or_deadline_messages": 0,
+          "retry_exhausted_or_deadline_bytes": 0,
+          "stale_sequence_receipts": 0,
+          "receiver_expired_receipts": 0,
+          "cohort_delivered_messages": 3,
+          "cohort_accepted_messages": 3,
+          "ledger_generated_messages": 7,
+          "ledger_generated_bytes": 1463,
+          "ledger_enqueued_messages": 7,
+          "ledger_enqueued_bytes": 1463,
+          "ledger_admitted_messages": 7,
+          "ledger_admitted_bytes": 1463,
+          "ledger_delivered_messages": 3,
+          "ledger_delivered_bytes": 627,
+          "ledger_generated_not_enqueued_messages": 0,
+          "ledger_generated_not_enqueued_bytes": 0,
+          "ledger_never_admitted_messages": 0,
+          "ledger_never_admitted_bytes": 0,
+          "ledger_terminal_without_delivery_messages": 3,
+          "ledger_terminal_without_delivery_bytes": 627,
+          "ledger_unresolved_messages": 1,
+          "ledger_unresolved_bytes": 209
+        },
+        "tx_attempts": 7,
+        "tx_bytes": 1463,
+        "settled_attempts": 6,
+        "settled_bytes": 1254,
+        "in_flight_attempts": 1,
+        "in_flight_bytes": 209
+      },
+      {
+        "direction": "uplink",
+        "message_type": "heartbeat",
+        "sender": "tb1",
+        "recipient": "headquarters",
+        "counts": {
+          "generated_messages": 11,
+          "generated_bytes": 209,
+          "explicit_generated_messages": 11,
+          "inferred_generated_messages": 0,
+          "carry_in_messages": 0,
+          "admitted_messages": 11,
+          "admitted_bytes": 209,
+          "admitted_attempts": 11,
+          "admitted_attempt_bytes": 209,
+          "attempted_messages": 11,
+          "attempted_bytes": 209,
+          "retry_attempts": 0,
+          "delivered_messages": 4,
+          "delivered_bytes": 76,
+          "accepted_messages": 4,
+          "accepted_bytes": 76,
+          "delivered_attempts": 4,
+          "delivered_attempts_bytes": 76,
+          "dropped_tx_attempts": 5,
+          "dropped_tx_attempts_bytes": 95,
+          "duplicate_copies": 0,
+          "duplicate_copy_bytes": 0,
+          "ttl_expired_attempts": 5,
+          "ttl_expired_bytes": 95,
+          "queue_overflow_attempts": 0,
+          "queue_overflow_bytes": 0,
+          "injected_loss_attempts": 0,
+          "injected_loss_bytes": 0,
+          "retry_exhausted_or_deadline_messages": 0,
+          "retry_exhausted_or_deadline_bytes": 0,
+          "stale_sequence_receipts": 0,
+          "receiver_expired_receipts": 0,
+          "cohort_delivered_messages": 4,
+          "cohort_accepted_messages": 4,
+          "ledger_generated_messages": 11,
+          "ledger_generated_bytes": 209,
+          "ledger_enqueued_messages": 11,
+          "ledger_enqueued_bytes": 209,
+          "ledger_admitted_messages": 11,
+          "ledger_admitted_bytes": 209,
+          "ledger_delivered_messages": 4,
+          "ledger_delivered_bytes": 76,
+          "ledger_generated_not_enqueued_messages": 0,
+          "ledger_generated_not_enqueued_bytes": 0,
+          "ledger_never_admitted_messages": 0,
+          "ledger_never_admitted_bytes": 0,
+          "ledger_terminal_without_delivery_messages": 5,
+          "ledger_terminal_without_delivery_bytes": 95,
+          "ledger_unresolved_messages": 2,
+          "ledger_unresolved_bytes": 38
+        },
+        "tx_attempts": 11,
+        "tx_bytes": 209,
+        "settled_attempts": 9,
+        "settled_bytes": 171,
+        "in_flight_attempts": 2,
+        "in_flight_bytes": 38
+      },
+      {
+        "direction": "uplink",
+        "message_type": "pose_state",
+        "sender": "tb1",
+        "recipient": "headquarters",
+        "counts": {
+          "generated_messages": 4,
+          "generated_bytes": 2832,
+          "explicit_generated_messages": 4,
+          "inferred_generated_messages": 0,
+          "carry_in_messages": 0,
+          "admitted_messages": 2,
+          "admitted_bytes": 1416,
+          "admitted_attempts": 2,
+          "admitted_attempt_bytes": 1416,
+          "attempted_messages": 2,
+          "attempted_bytes": 1416,
+          "retry_attempts": 0,
+          "delivered_messages": 2,
+          "delivered_bytes": 1416,
+          "accepted_messages": 2,
+          "accepted_bytes": 1416,
+          "delivered_attempts": 2,
+          "delivered_attempts_bytes": 1416,
+          "dropped_tx_attempts": 0,
+          "dropped_tx_attempts_bytes": 0,
+          "duplicate_copies": 0,
+          "duplicate_copy_bytes": 0,
+          "ttl_expired_attempts": 0,
+          "ttl_expired_bytes": 0,
+          "queue_overflow_attempts": 0,
+          "queue_overflow_bytes": 0,
+          "injected_loss_attempts": 0,
+          "injected_loss_bytes": 0,
+          "retry_exhausted_or_deadline_messages": 0,
+          "retry_exhausted_or_deadline_bytes": 0,
+          "stale_sequence_receipts": 0,
+          "receiver_expired_receipts": 0,
+          "cohort_delivered_messages": 2,
+          "cohort_accepted_messages": 2,
+          "ledger_generated_messages": 4,
+          "ledger_generated_bytes": 2832,
+          "ledger_enqueued_messages": 2,
+          "ledger_enqueued_bytes": 1416,
+          "ledger_admitted_messages": 2,
+          "ledger_admitted_bytes": 1416,
+          "ledger_delivered_messages": 2,
+          "ledger_delivered_bytes": 1416,
+          "ledger_generated_not_enqueued_messages": 2,
+          "ledger_generated_not_enqueued_bytes": 1416,
+          "ledger_never_admitted_messages": 0,
+          "ledger_never_admitted_bytes": 0,
+          "ledger_terminal_without_delivery_messages": 0,
+          "ledger_terminal_without_delivery_bytes": 0,
+          "ledger_unresolved_messages": 0,
+          "ledger_unresolved_bytes": 0
+        },
+        "tx_attempts": 2,
+        "tx_bytes": 1416,
+        "settled_attempts": 2,
+        "settled_bytes": 1416,
+        "in_flight_attempts": 0,
+        "in_flight_bytes": 0
+      },
+      {
+        "direction": "uplink",
+        "message_type": "request",
+        "sender": "tb1",
+        "recipient": "headquarters",
+        "counts": {
+          "generated_messages": 7,
+          "generated_bytes": 350,
+          "explicit_generated_messages": 7,
+          "inferred_generated_messages": 0,
+          "carry_in_messages": 0,
+          "admitted_messages": 7,
+          "admitted_bytes": 350,
+          "admitted_attempts": 7,
+          "admitted_attempt_bytes": 350,
+          "attempted_messages": 7,
+          "attempted_bytes": 350,
+          "retry_attempts": 0,
+          "delivered_messages": 3,
+          "delivered_bytes": 150,
+          "accepted_messages": 3,
+          "accepted_bytes": 150,
+          "delivered_attempts": 3,
+          "delivered_attempts_bytes": 150,
+          "dropped_tx_attempts": 3,
+          "dropped_tx_attempts_bytes": 150,
+          "duplicate_copies": 0,
+          "duplicate_copy_bytes": 0,
+          "ttl_expired_attempts": 3,
+          "ttl_expired_bytes": 150,
+          "queue_overflow_attempts": 0,
+          "queue_overflow_bytes": 0,
+          "injected_loss_attempts": 0,
+          "injected_loss_bytes": 0,
+          "retry_exhausted_or_deadline_messages": 0,
+          "retry_exhausted_or_deadline_bytes": 0,
+          "stale_sequence_receipts": 0,
+          "receiver_expired_receipts": 0,
+          "cohort_delivered_messages": 3,
+          "cohort_accepted_messages": 3,
+          "ledger_generated_messages": 7,
+          "ledger_generated_bytes": 350,
+          "ledger_enqueued_messages": 7,
+          "ledger_enqueued_bytes": 350,
+          "ledger_admitted_messages": 7,
+          "ledger_admitted_bytes": 350,
+          "ledger_delivered_messages": 3,
+          "ledger_delivered_bytes": 150,
+          "ledger_generated_not_enqueued_messages": 0,
+          "ledger_generated_not_enqueued_bytes": 0,
+          "ledger_never_admitted_messages": 0,
+          "ledger_never_admitted_bytes": 0,
+          "ledger_terminal_without_delivery_messages": 3,
+          "ledger_terminal_without_delivery_bytes": 150,
+          "ledger_unresolved_messages": 1,
+          "ledger_unresolved_bytes": 50
+        },
+        "tx_attempts": 7,
+        "tx_bytes": 350,
+        "settled_attempts": 6,
+        "settled_bytes": 300,
+        "in_flight_attempts": 1,
+        "in_flight_bytes": 50
+      }
+    ],
+    "units": "serialized/compressed application payload bytes; ACK included; no MAC/PHY estimate"
+  },
+  "physical_accounting": {
+    "actual_airtime_sec": null,
+    "actual_radio_energy_j": null,
+    "serialization_sec_per_mbps": 0.075008,
+    "tx_energy_j_per_watt_per_mbps": 0.075008,
+    "status": "conditional coefficients only; no PHY/MAC, rate or calibrated radio power",
+    "task_energy_unit": "distance/time model units, not joules"
+  }
+}

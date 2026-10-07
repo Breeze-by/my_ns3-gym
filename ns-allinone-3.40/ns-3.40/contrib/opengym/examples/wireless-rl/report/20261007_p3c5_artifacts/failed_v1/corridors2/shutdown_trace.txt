@@ -1,0 +1,16 @@
+[ideal_gateway-1] Traceback (most recent call last):
+[ideal_gateway-1]   File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot_exploration/lib/multi_robot_exploration/ideal_gateway", line 33, in <module>
+[ideal_gateway-1]   File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/ideal_gateway.py", line 910, in main
+[ideal_gateway-1]   File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/ideal_gateway.py", line 375, in destroy_node
+[ideal_gateway-1]     queue.close()
+[ideal_gateway-1]   File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/admission_protocol.py", line 177, in close
+[ideal_gateway-1]     self.record({"event": "local_discard", "candidate_id": identity, "reason": "episode_closed"})
+[ideal_gateway-1]   File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/ideal_gateway.py", line 858, in _record
+[ideal_gateway-1]     self.event_publisher.publish(message)
+[ideal_gateway-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/publisher.py", line 70, in publish
+[ideal_gateway-1]     self.__publisher.publish(msg)
+[ideal_gateway-1] rclpy._rclpy_pybind11.RCLError: Failed to publish: publisher's context is invalid, at ./src/rcl/publisher.c:389
+[ERROR] [ideal_gateway-1]: process has died [pid 4017027, exit code 1, cmd '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot_exploration/lib/multi_robot_exploration/ideal_gateway --ros-args -r __node:=ideal_gateway --params-file /tmp/launch_params_0ydfec6h'].
+[ERROR] [gateway_metrics-2]: process[gateway_metrics-2] failed to terminate '5' seconds after receiving 'SIGINT', escalating to 'SIGTERM'
+[ERROR] [gateway_metrics-2]: process[gateway_metrics-2] failed to terminate '10.0' seconds after receiving 'SIGTERM', escalating to 'SIGKILL'
+[ERROR] [gateway_metrics-2]: process has died [pid 4017029, exit code -9, cmd '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot_exploration/lib/multi_robot_exploration/gateway_metrics --ros-args -r __node:=gateway_metrics --params-file /tmp/launch_params_vx17skmc'].

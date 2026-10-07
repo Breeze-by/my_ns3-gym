@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 import hashlib
 import json
 from pathlib import Path
+import re
 import sys
 
 PROJECT = Path(__file__).resolve().parents[1]
@@ -57,6 +58,10 @@ def main():
             assert all(robot["battery_charge_count"] >= 1 for robot in result["robots"].values())
         records = [json.loads(line) for line in (directory/"ledger.jsonl").read_text().splitlines()]
         assert any(e["event"] == "gateway_stop" for e in records), "gateway did not close"
+        launch_text = "\n".join(path.read_text() for path in (directory/"launch").glob("*.log"))
+        for node in ("ideal_gateway", "gateway_metrics"):
+            assert re.search(r"\["+node+r"-\d+\]: process has finished cleanly", launch_text), f"{node} did not exit cleanly"
+            assert not re.search(r"\["+node+r"-\d+\].*(?:failed to terminate|process has died)", launch_text), f"{node} shutdown was forced"
         start = result["start_sim_time_sec"]
         end = start+(result["completion_time_sec"] if result["success"] else config["duration_sec"])
         audit, cost_rows = audit_traffic(records, start, end, scenario["admission_protocol"])

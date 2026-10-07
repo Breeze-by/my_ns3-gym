@@ -158,7 +158,14 @@ class MetricsNode(Node):
                 self.csv_writer = csv.DictWriter(self.csv_stream, fieldnames=sorted(values))
                 self.csv_writer.writeheader()
             self.csv_writer.writerow(values)
-        self.publisher.publish(String(data=data))
+        # A signal can stop DDS during a long report. The saved sample remains
+        # authoritative and must survive the same shutdown race as the gateway.
+        if self.context.ok():
+            try:
+                self.publisher.publish(String(data=data))
+            except RuntimeError:
+                if self.context.ok():
+                    raise
 
     def finish(self):
         if not self.inputs:

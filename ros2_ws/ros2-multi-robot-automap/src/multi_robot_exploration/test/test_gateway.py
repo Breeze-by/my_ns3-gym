@@ -225,3 +225,32 @@ def test_charge_request_decode_deduplicates_and_does_not_ack_expired_command():
     envelope.payload_length = len(envelope.payload)
     IdealGateway.receive_envelope(node, envelope)
     assert len(messages) == 1 and events[-1][0] == "decode_error"
+
+
+def test_shutdown_queue_events_are_saved_without_using_invalid_publisher():
+    events = []
+    node = SimpleNamespace(wire_metadata={}, mission_mode="rally", now_sec=lambda: 12.,
+        ledger_index=0, configuration_revision=0, context=SimpleNamespace(ok=lambda: False),
+        _write_ledger=lambda text: events.append(json.loads(text)),
+        event_publisher=SimpleNamespace(publish=lambda _: (_ for _ in ()).throw(AssertionError("invalid publisher"))))
+    IdealGateway._record(node, {"event": "local_discard", "reason": "episode_closed"})
+    assert len(events) == 1 and events[0]["ledger_index"] == 1
+
+
+def test_publication_shutdown_race_keeps_original_file_event():
+    import pytest
+    for shuts_down in (True, False):
+        events, state = [], {"active": True}
+        def publish(_):
+            if shuts_down:
+                state["active"] = False
+            raise RuntimeError("publisher context invalid")
+        node = SimpleNamespace(wire_metadata={}, mission_mode="rally", now_sec=lambda: 12.,
+            ledger_index=0, configuration_revision=0, context=SimpleNamespace(ok=lambda: state["active"]),
+            _write_ledger=lambda text: events.append(json.loads(text)), event_publisher=SimpleNamespace(publish=publish))
+        if shuts_down:
+            IdealGateway._record(node, {"event": "local_discard"})
+        else:
+            with pytest.raises(RuntimeError):
+                IdealGateway._record(node, {"event": "local_discard"})
+        assert len(events) == 1

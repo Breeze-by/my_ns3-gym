@@ -276,7 +276,8 @@ def launch_setup(context, *args, **kwargs):
         parameters=[{"robot_count": robot_count_cfg, "use_sim_time": use_sim_time,
                      "output_dir": LaunchConfiguration("gateway_metrics_output_dir"),
                      "result_path": os.path.join(evaluation_output_dir.perform(context), evaluation_episode_id.perform(context) + ".json")
-                                    if enable_task_evaluator.perform(context).lower() == "true" else ""}], output="screen"))
+                                    if enable_task_evaluator.perform(context).lower() == "true" else ""}],
+        sigterm_timeout="30", sigkill_timeout="10", output="screen"))
     actions.append(Node(
         package="multi_robot_exploration", executable="gateway_monitor", name="gateway_monitor",
         parameters=[{"use_sim_time": use_sim_time,
