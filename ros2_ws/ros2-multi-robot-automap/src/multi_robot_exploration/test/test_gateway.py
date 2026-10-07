@@ -82,6 +82,7 @@ def sender():
         candidate_publishers={"uplink": SimpleNamespace(publish=emitted.append)},
         next_sequence=lambda route: len(emitted) + 1,
         publish_event=lambda *args: None,
+        describe_envelope=lambda *args: None,
     )
     fake.now_sec = lambda: fake.clock
     route = Route(
@@ -195,6 +196,7 @@ def test_charge_request_decode_deduplicates_and_does_not_ack_expired_command():
     key = (route.message_type, route.sender, route.recipient)
     node = SimpleNamespace(
         clock=11.0, latest_sequences={}, route_by_key={key: route},
+        admission_protocol_enabled=False,
         get_logger=lambda: SimpleNamespace(error=lambda *args: None),
         destination_publishers={key: SimpleNamespace(publish=messages.append)},
         publish_ack=lambda *args: acks.append(args), publish_event=lambda *args: events.append(args),

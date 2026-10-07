@@ -2,7 +2,7 @@
 
 常用启动命令、不同 world 和参数速查见 [`launch_commands.md`](launch_commands.md)。
 
-最近核对：2026-10-07。P3A.6、P3B.5 已验收；P3C 实时指标与在线控台技术门禁PASS。
+最近核对：2026-10-07。P3A.6、P3B.5、P3C 已验收；当前执行 P3C.5 负载与协议审计。
 当前任务栈冻结为 `d8d361b`，最终报告提交为 `d0b1561`，见
 [完整报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261006_p3b5_gate.md)。
 十格固定理想任务全部原生 COMPLETE，强故障下的失败和超时仍保留；尚未接入 ns-3/Wi-Fi/RL。

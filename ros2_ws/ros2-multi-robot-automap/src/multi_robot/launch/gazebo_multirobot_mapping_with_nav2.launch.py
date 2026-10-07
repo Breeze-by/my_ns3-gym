@@ -125,6 +125,7 @@ def launch_setup(context, *args, **kwargs):
         "battery_charge_timeout_sec"
     )
     gateway_mode = LaunchConfiguration("gateway_mode")
+    gateway_admission_protocol = LaunchConfiguration("gateway_admission_protocol")
     gateway_seed = LaunchConfiguration("gateway_seed")
     gateway_mission_mode = LaunchConfiguration("mission_mode")
     uplink_loss_rate = LaunchConfiguration("uplink_loss_rate")
@@ -242,6 +243,7 @@ def launch_setup(context, *args, **kwargs):
                     "robot_count": robot_count_cfg,
                     "use_sim_time": use_sim_time,
                     "network_mode": gateway_mode,
+                    "admission_protocol": ParameterValue(gateway_admission_protocol, value_type=bool),
                     "episode_id": evaluation_episode_id,
                     "gazebo_seed": gazebo_seed,
                     "world": world_filename,
@@ -1085,6 +1087,12 @@ def generate_launch_description():
         )
     )
 
+    ld.add_action(
+        DeclareLaunchArgument(
+            "gateway_admission_protocol", default_value="false",
+            description="P3C.5 measured candidate/request/grant/heartbeat admission protocol.",
+        )
+    )
     ld.add_action(
         DeclareLaunchArgument(
             "gateway_mode",

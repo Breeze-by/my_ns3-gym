@@ -1,5 +1,15 @@
 # wireless-rl Codex Memory
 
+2026-10-07 latest boundary: P3C accepted by the user; P3C.5 explicitly
+authorized. The opt-in admission protocol and read-only traffic audit are
+implemented; 14 predeclared original task cells are pending. Task algorithms,
+candidate throttles, source TTL, native gates and local safety stay frozen.
+AP observations only contain delivered summaries/requests/heartbeat snapshots
+and history; hidden queues remain offline audit data. No actual PHY airtime or
+radio-joule model exists here; all control/data attempts retain measured bytes
+and conditional cost coefficients. P4/ns-3/Wi-Fi/RL are outside the task. See
+report/20261007_p3c5_protocol.md. Older acceptance notes below are historical.
+
 2026-10-07 current boundary: P3B.5 accepted by the user; P3C plus online
 communication fault console technically complete, gate PASS, ready for review.
 Three frozen `6a0a8eb` original tasks are native COMPLETE in

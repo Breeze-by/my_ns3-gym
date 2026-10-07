@@ -571,6 +571,7 @@ def parse_args():
     )
     parser.add_argument("--bypass-audit-output", type=Path)
     parser.add_argument("--gateway-mode", choices=("ideal", "fault"), default="ideal")
+    parser.add_argument("--gateway-admission-protocol", action="store_true")
     parser.add_argument("--mission-mode", choices=("coverage", "target", "rally"), default="coverage")
     parser.add_argument("--gateway-seed", type=int, default=1)
     parser.add_argument("--uplink-loss-rate", type=float, default=0.0)
@@ -717,6 +718,7 @@ def main():
         f"battery_return_timeout_sec:={args.battery_return_timeout}",
         f"battery_charge_timeout_sec:={args.battery_charge_timeout}",
         f"gateway_mode:={args.gateway_mode}",
+        f"gateway_admission_protocol:={str(args.gateway_admission_protocol).lower()}",
         f"mission_mode:={mission_mode}",
         f"gateway_seed:={args.gateway_seed}",
         f"uplink_loss_rate:={args.uplink_loss_rate}",

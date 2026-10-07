@@ -59,6 +59,19 @@ tokens is not a reason to leave a problem unresolved or inadequately tested.
 
 ## Current Handoff
 
+2026-10-07 latest: The user accepted P3C and authorized P3C.5 to completion.
+P3C.5 has an opt-in candidate/request/grant/heartbeat path and delivered-only
+AP observation, retaining accepted task sources and safety gates. The 14-cell
+traffic predeclaration covers 2/3 robots in lab, rooms, corridors and the
+already-exposed 809 topology, forced charging, existing 0.5 s delay/10% loss
+conditions and two direct-path comparisons. No P3C.5 task experiments have
+started at this recording point. Retain every failure; do not inflate traffic.
+Actual PHY airtime/radio joules are unavailable before P4B; every control/data
+byte and conditional serialization/energy coefficient is retained without
+claiming Wi-Fi measurements. P4/ns-3/Wi-Fi/RL are outside this task. See
+`wireless-rl/report/20261007_p3c5_protocol.md` and ROS traffic manifest.
+Older pending-acceptance notes below are historical.
+
 2026-10-07: P3C and the requested online communication fault console are
 technically complete, gate **PASS**, ready for user review. Three original
 Gazebo tasks frozen at `6a0a8eb2e0523c2e3a9446908c9693ea30f70aaa`

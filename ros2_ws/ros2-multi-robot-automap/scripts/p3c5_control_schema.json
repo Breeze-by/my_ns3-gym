@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "wire_envelope": "multi_robot_interfaces/msg/GatewayEnvelope.msg (unchanged)",
+  "encoding": "utf8+json; compact sorted JSON keys, UTF-8",
+  "candidate": {"message_id":"native identity", "message_type":"ordinary native type", "sender":"tbN",
+    "recipient":"headquarters", "version":"native uint sequence", "source_time":"unchanged native sim stamp",
+    "deadline":"source_time + native TTL", "payload_length":"native compressed/serialized bytes", "task_phase":"source phase"},
+  "request": {"candidate_id":"exact candidate message_id"},
+  "grant": {"candidate_id":"exact candidate message_id", "version":"exact native version",
+    "payload_length":"exact native bytes", "deadline":"original native deadline", "expires":"min(decision_time+1, deadline)"},
+  "heartbeat": {"pending_count":"nonnegative endpoint/AP-local queue snapshot, maximum 4096"},
+  "critical-event": "existing detection, battery/return, task/charge and navigation envelopes bypass admission; unchanged native reliability and TTL",
+  "feedback": "existing reverse ack envelopes, plus local delivery/consumption records; local records are not charged as network packets",
+  "privacy": "only summary fields above cross to AP; full ordinary uplink payload is held by EndpointQueue until a valid delivered grant",
+  "downlink": "AP-local pending data is known locally; candidate/request/grant local decisions have zero wire bytes; grants and AP heartbeats sent to robots are charged"
+}

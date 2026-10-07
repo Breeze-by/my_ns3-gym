@@ -26,6 +26,9 @@ from .fault_model import (
     message_id, source_time,
 )
 from .gateway_config import FAULT_DEFAULTS, configs_for, configuration_snapshot, updated_configuration
+from .admission_protocol import (
+    AdmissionCoordinator, Candidate, EndpointQueue, CONTROL_TYPES, ORDINARY_TYPES, HEARTBEAT_SEC, LOCAL_CAPACITY,
+)
 
 
 UPLINK_CANDIDATES = "/gateway/uplink/candidates"
@@ -78,6 +81,10 @@ class IdealGateway(Node):
             raise ValueError("robot_count must be positive")
 
         self.task_phase = "EXPLORE"
+        self.admission_protocol_enabled = bool(self.declare_parameter("admission_protocol", False).value)
+        self.wire_metadata = {}
+        self.seen_controls = set()
+        self.next_heartbeat = -math.inf
         self.ack_counter = 0
         self.source_stamps = {}
         self.frame_stamp_offset_sec = float(
@@ -217,6 +224,15 @@ class IdealGateway(Node):
         self.event_publisher = self.create_publisher(
             String, "/gateway/message_events", reliable
         )
+        self.admission_observation_publisher = self.create_publisher(
+            String, "/gateway/admission_observation", reliable
+        )
+        self.admission_coordinator = AdmissionCoordinator(self.emit_control, self._record)
+        self.endpoint_queues = {
+            f"tb{index+1}": EndpointQueue(f"tb{index+1}", self.emit_control,
+                lambda envelope: self.enqueue_transport("uplink", envelope), self._record)
+            for index in range(self.robot_count)
+        }
         self.create_subscription(
             GatewayEnvelope,
             UPLINK_CANDIDATES,
@@ -287,7 +303,10 @@ class IdealGateway(Node):
         self._record({"event": "gateway_start", "configuration": self.active_configuration(),
                       "episode_id": self.episode_id, "gazebo_seed": self.gazebo_seed, "world": self.world,
                       "fault_seed": seed, "robot_count": self.robot_count,
-                      "ledger_path": self.ledger_path, "fault_control_enabled": self.enable_fault_control})
+                      "ledger_path": self.ledger_path, "fault_control_enabled": self.enable_fault_control,
+                      "admission_protocol": self.admission_protocol_enabled,
+                      "airtime_model": "unavailable: no PHY/MAC before P4B",
+                      "radio_energy_model": "unavailable: task energy is distance/time, not radio joules"})
         self.publish_configuration()
         self.get_logger().info(
             f"Gateway ready for {self.robot_count} robots "
@@ -299,7 +318,7 @@ class IdealGateway(Node):
                                        self.configuration_revision, self.configuration_effective_time)
         state.update(ledger_path=self.ledger_path, episode_id=self.episode_id, mission_mode=self.mission_mode,
                      gazebo_seed=self.gazebo_seed, world=self.world, fault_seed=self.get_parameter("fault_seed").value,
-                     fault_control_enabled=self.enable_fault_control)
+                     fault_control_enabled=self.enable_fault_control, admission_protocol=self.admission_protocol_enabled)
         return state
 
     def publish_configuration(self):
@@ -343,8 +362,17 @@ class IdealGateway(Node):
     def publish_telemetry(self):
         self._record({"event": "metrics_tick", "task_phase": self.task_phase,
                       "queues": {key: transport.queue_state() for key, transport in self.transport_by_direction.items()}})
+        if self.admission_protocol_enabled:
+            observation = self.admission_coordinator.observation(self.now_sec())
+            observation["ap_local_downlink_pending_count"] = 0  # Always-grant local admission is immediate.
+            self.admission_observation_publisher.publish(String(data=json.dumps(observation, sort_keys=True)))
+            self._record({"event": "admission_observation", "observation": observation})
+            self._record({"event": "local_queue_audit", "visibility": "offline audit only; not AP observation",
+                          "pending": {robot: len(queue.pending) for robot, queue in self.endpoint_queues.items()}})
 
     def destroy_node(self):
+        for queue in self.endpoint_queues.values():
+            queue.close()
         self.ledger_index += 1
         self._write_ledger(json.dumps({"event": "gateway_stop", "event_time": self.now_sec(),
                                      "ledger_index": self.ledger_index, "mission_mode": self.mission_mode}))
@@ -547,6 +575,7 @@ class IdealGateway(Node):
         if route.message_type in STATE_TYPES:
             self.source_stamps[key] = generated
         payload = serialize_message(message)
+        uncompressed_payload_length = len(payload)
         encoding = "cdr"
         if route.compress:
             payload = zlib.compress(payload, level=1)
@@ -573,6 +602,14 @@ class IdealGateway(Node):
         envelope.encoding = encoding
         envelope.ttl_sec = route.ttl_sec
         envelope.payload = list(payload)
+        metadata = self.describe_envelope(envelope, uncompressed_payload_length)
+        if isinstance(message, String):
+            try:
+                robot = json.loads(message.data).get("robot")
+                if robot in self.endpoint_queues:
+                    metadata["application_robot"] = robot
+            except (ValueError, TypeError, AttributeError):
+                pass
         self.candidate_publishers[direction].publish(envelope)
         self.publish_event("generated", direction, envelope)
 
@@ -581,6 +618,27 @@ class IdealGateway(Node):
         return message_id(envelope)
 
     def accept_candidate(self, direction, envelope):
+        self.describe_envelope(envelope)
+        if self.admission_protocol_enabled and envelope.message_type in ORDINARY_TYPES:
+            identity = message_id(envelope)
+            if direction == "uplink":
+                queue = self.endpoint_queues.get(envelope.sender)
+                if queue is None:
+                    self.publish_event("local_discard", direction, envelope,
+                                       candidate_id=identity, reason="unknown_endpoint")
+                    return
+                candidate = Candidate(identity, envelope.message_type, envelope.sender, envelope.recipient,
+                    int(envelope.sequence), source_time(envelope), source_time(envelope)+float(envelope.ttl_sec),
+                    int(envelope.payload_length), envelope.task_phase)
+                queue.offer(candidate, envelope, self.now_sec())
+                return
+            # AP owns its downlink queue. Local decisions consume no on-wire
+            # candidate/request/grant bytes and must not pretend otherwise.
+            self._record({"event": "ap_local_admission", "candidate_id": identity,
+                          "visibility": "AP local queue", "policy": "always_grant", "local_wait_sec": 0.0})
+        self.enqueue_transport(direction, envelope)
+
+    def enqueue_transport(self, direction, envelope):
         self.transport_by_direction[direction].enqueue(
             message_id(envelope), envelope, direction, self.now_sec(),
             reliable=envelope.message_type in RELIABLE_TYPES,
@@ -588,6 +646,16 @@ class IdealGateway(Node):
         )
 
     def deliver_queued(self):
+        if self.admission_protocol_enabled:
+            now = self.now_sec()
+            for queue in self.endpoint_queues.values():
+                queue.tick(now)
+            if now >= self.next_heartbeat:
+                self.next_heartbeat = now + HEARTBEAT_SEC
+                self.admission_coordinator.prune(now)
+                for robot, queue in self.endpoint_queues.items():
+                    self.emit_control("heartbeat", robot, "headquarters", {"pending_count": len(queue.pending)}, now, 2.0)
+                    self.emit_control("heartbeat", "headquarters", robot, {"pending_count": 0}, now, 2.0)
         for direction, transport in self.transport_by_direction.items():
             for attempt in transport.poll(self.now_sec()):
                 self.delivered_publishers[direction].publish(attempt.envelope)
@@ -599,6 +667,9 @@ class IdealGateway(Node):
             envelope.recipient,
         )
         direction = "uplink" if envelope.recipient == "headquarters" else "downlink"
+        if envelope.message_type in CONTROL_TYPES:
+            self.receive_control(direction, envelope)
+            return
         if envelope.message_type == "ack":
             try:
                 identity = bytes(envelope.payload).decode("utf-8")
@@ -660,6 +731,83 @@ class IdealGateway(Node):
             self.latest_sequences[key] = envelope.sequence
             self.destination_publishers[route_key].publish(message)
             self.publish_event("accepted", direction, envelope)
+            if direction == "uplink" and self.admission_protocol_enabled:
+                self.admission_coordinator.note_delivery(envelope.sender, envelope.message_type,
+                    message_id(envelope), source_time(envelope), self.now_sec())
+
+    def describe_envelope(self, envelope, uncompressed_payload_length=None):
+        identity = message_id(envelope)
+        role = (envelope.message_type if envelope.message_type in CONTROL_TYPES else
+                "feedback" if envelope.message_type == "ack" else
+                "data" if envelope.message_type in ORDINARY_TYPES else "critical-event")
+        metadata = self.wire_metadata.setdefault(identity, {
+            "message_type": envelope.message_type, "sender": envelope.sender, "recipient": envelope.recipient,
+            "direction": "uplink" if envelope.recipient == "headquarters" else "downlink",
+            "payload_length": int(envelope.payload_length), "version": int(envelope.sequence),
+            "source_time": source_time(envelope), "task_phase": envelope.task_phase,
+            "envelope_cdr_bytes": len(serialize_message(envelope)), "control_role": role,
+            "deadline": source_time(envelope)+float(envelope.ttl_sec),
+            "airtime_sec": None, "radio_energy_j": None,
+            "physical_accounting_status": "not modeled before P4B; all control and data bytes retained",
+        })
+        if uncompressed_payload_length is not None:
+            metadata["uncompressed_payload_length"] = uncompressed_payload_length
+        elif envelope.encoding != "cdr+zlib":
+            metadata.setdefault("uncompressed_payload_length", int(envelope.payload_length))
+        metadata["serialization_sec_per_mbps"] = metadata["envelope_cdr_bytes"]*8/1e6
+        metadata["tx_energy_j_per_watt_per_mbps"] = metadata["serialization_sec_per_mbps"]
+        return metadata
+
+    def emit_control(self, role, sender, recipient, payload, now, ttl, candidate_id=None, control_attempt=1):
+        envelope = GatewayEnvelope()
+        envelope.message_type, envelope.sender, envelope.recipient = role, sender, recipient
+        key = (role, sender, recipient)
+        self.sequences[key] = self.sequences.get(key, 0)+1
+        envelope.sequence = self.sequences[key]
+        envelope.generation_time.sec, envelope.generation_time.nanosec = divmod(round(now*1e9), 10**9)
+        envelope.task_phase, envelope.encoding, envelope.ttl_sec = self.task_phase, "utf8+json", float(ttl)
+        envelope.payload = list(json.dumps(payload, sort_keys=True, separators=(",", ":")).encode())
+        envelope.payload_length = len(envelope.payload)
+        metadata = self.describe_envelope(envelope, envelope.payload_length)
+        metadata.update(candidate_id=candidate_id, control_attempt=control_attempt)
+        direction = "uplink" if recipient == "headquarters" else "downlink"
+        self.publish_event("generated", direction, envelope, control_payload=payload)
+        self.enqueue_transport(direction, envelope)
+        return message_id(envelope)
+
+    def receive_control(self, direction, envelope):
+        valid, reason = envelope_is_valid(envelope, self.now_sec(), 0)
+        identity = message_id(envelope)
+        if not valid:
+            self.publish_event(reason, direction, envelope)
+            return
+        if not self.admission_protocol_enabled or identity in self.seen_controls:
+            self.publish_event("stale_sequence", direction, envelope)
+            return
+        try:
+            if envelope.encoding != "utf8+json":
+                raise ValueError("invalid control encoding")
+            payload = json.loads(bytes(envelope.payload))
+            self.publish_event("control_received", direction, envelope)
+            if direction == "uplink":
+                if envelope.sender not in self.endpoint_queues or envelope.message_type == "grant":
+                    raise ValueError("invalid AP control endpoint")
+                self.admission_coordinator.receive(envelope.message_type, envelope.sender, payload,
+                    self.now_sec(), identity, source_time(envelope))
+            elif envelope.sender != "headquarters" or envelope.recipient not in self.endpoint_queues:
+                raise ValueError("invalid robot control endpoint")
+            elif envelope.message_type == "grant":
+                self.endpoint_queues[envelope.recipient].receive_grant(payload, self.now_sec(), identity)
+            elif envelope.message_type != "heartbeat":
+                raise ValueError("unsupported robot control role")
+            elif (set(payload) != {"pending_count"} or type(payload["pending_count"]) is not int
+                    or not 0 <= payload["pending_count"] <= LOCAL_CAPACITY):
+                raise ValueError("invalid AP heartbeat")
+        except (ValueError, TypeError, KeyError) as error:
+            self.publish_event("decode_error", direction, envelope, reason=str(error))
+            return
+        self.seen_controls.add(identity)
+        self.publish_event("accepted", direction, envelope)
 
     def publish_ack(self, received, direction):
         ack = GatewayEnvelope()
@@ -699,6 +847,8 @@ class IdealGateway(Node):
         self._record(json.loads(message.data))
 
     def _record(self, event):
+        metadata = self.wire_metadata.get(event.get("message_id", event.get("candidate_id")), {})
+        event = {**metadata, **event}
         event.setdefault("mission_mode", self.mission_mode)
         event.setdefault("event_time", self.now_sec())
         self.ledger_index += 1
