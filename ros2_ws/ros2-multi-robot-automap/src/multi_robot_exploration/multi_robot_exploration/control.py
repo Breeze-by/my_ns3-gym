@@ -1179,7 +1179,7 @@ def coordinate_assignments(
     return assignments, diagnostics
 
 
-def rally_pose_candidates(raw_grid, resolution, origin, target):
+def rally_pose_candidates(raw_grid, resolution, origin, target, dense=False):
     """Return known-free, target-facing poses around the target."""
     safe = traversable_grid(
         raw_grid, resolution, clearance_m=RALLY_CLEARANCE_M
@@ -1224,7 +1224,88 @@ def rally_pose_candidates(raw_grid, resolution, origin, target):
                     math.atan2(target[1] - pose_y, target[0] - pose_x),
                 )
             )
+    if dense:
+        # Recovery searches the same 1..2.6m region instead of assuming the
+        # original three sampled rings contain every feasible stopping pose.
+        r0, c0 = world_to_grid(target[0]-2.6, target[1]-2.6, resolution, *origin)
+        r1, c1 = world_to_grid(target[0]+2.6, target[1]+2.6, resolution, *origin)
+        for row, column in np.argwhere(safe[max(0, r0):min(height, r1+1),
+                                          max(0, c0):min(width, c1+1)]):
+            row, column = int(row)+max(0, r0), int(column)+max(0, c0)
+            if (row, column) in seen_cells:
+                continue
+            x, y = grid_to_world(row, column, resolution, *origin)
+            if (1. <= math.dist((x, y), target) <= 2.6
+                    and has_known_line_of_sight(raw_grid, (row, column), target_cell)):
+                candidates.append(RallyPose(x, y, math.atan2(target[1]-y, target[0]-x)))
     return candidates
+
+
+def funded_rally_replacement(raw_grid, resolution, origin, position, target,
+                             state, local_map, map_age, pose_age, reserved=(),
+                             blocked=(), hold_sec=RALLY_HOLD_SEC, wait_sec=0.):
+    """Find a current-map stopping pose after an endpoint loses its return.
+
+    Search the original bounded rally region at grid resolution. One body-
+    masked distance field orders candidates; every accepted pose still needs
+    a complete qualified contact return and the full approach/hold/wait budget.
+    This changes a proposal only, never a live Nav2 action or safety authority.
+    """
+    try:
+        energy = float(state['energy'])
+        home = (float(state['charge_x']), float(state['charge_y']))
+        radius = float(state.get('charge_radius_m', .8))
+        idle = float(state.get('idle_cost_per_sec', .02))
+        if (state['mode'] != 'ACTIVE'
+                or not all(math.isfinite(v) for v in (*position, *target, *home,
+                                                     energy, radius, idle, map_age, pose_age, hold_sec, wait_sec))
+                or min(energy, radius) <= 0 or min(idle, map_age, pose_age, hold_sec, wait_sec) < 0
+                or map_age > STATE_TTL_SEC['map_snapshot'] or pose_age > STATE_TTL_SEC['pose_state']):
+            return None
+        model = (float(state.get('move_cost_per_m', 1.)), idle,
+                 float(state.get('return_path_factor', 2.)), float(state.get('nominal_speed_mps', .18)),
+                 float(state.get('return_safety_margin', 8.)),
+                 float(state.get('return_recovery_wait_sec', RETURN_RECOVERY_WAIT_SEC)), map_age, pose_age)
+        if energy <= battery_assignment_required_energy(0., 0., *model) + idle*(hold_sec+wait_sec):
+            return None
+        return_cache = {}
+        def contact_distance(point):
+            return min((r['path_distance_m'] for r in qualified_return_candidates(
+                raw_grid, resolution, origin, point, home, radius, local_map, return_cache)
+                if r['qualified']), default=None)
+        if contact_distance(position) is None:
+            return None
+        candidates = rally_pose_candidates(raw_grid, resolution, origin, target, dense=True)
+        if not candidates:
+            return None
+        route_cache = {}
+        plan_rally_leg(candidates[0], raw_grid, resolution, origin, position,
+                       blocked_positions=blocked, route_cache=route_cache)
+        field = route_cache['field'][3]
+        if field is None:
+            return None
+        distances = field[0]
+        candidates.sort(key=lambda pose: (distances[world_to_grid(pose.x, pose.y, resolution, *origin)],
+                                         pose.x, pose.y))
+        for pose in candidates:
+            if any(math.dist((pose.x, pose.y), other) < RALLY_MIN_SEPARATION_M for other in reserved):
+                continue
+            plan = plan_rally_leg(pose, raw_grid, resolution, origin, position,
+                                  blocked_positions=blocked, route_cache=route_cache)
+            if plan[0] is None:
+                continue
+            contact = contact_distance((pose.x, pose.y))
+            if contact is None:
+                continue
+            points = (position, *plan[1])
+            approach = sum(math.dist(a, b) for a, b in zip(points, points[1:]))
+            required = battery_assignment_required_energy(approach, contact, *model)
+            required += idle * (hold_sec + wait_sec)
+            if math.isfinite(required) and energy > required:
+                return pose, plan[1], required
+    except (KeyError, TypeError, ValueError, ZeroDivisionError):
+        return None
+    return None
 
 
 def assign_rally_poses(
@@ -4481,6 +4562,65 @@ class HeadquartersControl(Node):
             )
             self.publish_task_state(completion_state)
 
+    def repair_rally_return_target(self, name):
+        """Replace an invalid idle endpoint; leave live and parked peers intact."""
+        if (self.battery_modes.get(name) != 'ACTIVE'
+                or self.rally_arrived.get(name, False)
+                or name == getattr(self, 'rally_observer_guard', None)
+                or self.rally_goal_handles.get(name) is not None
+                or self.rally_goal_pending.get(name, False)
+                or self.goal_handles.get(name) is not None
+                or self.robot_states.get(name) != 'idle'
+                or name in self.rally_charge_requested
+                or name in self.rally_precharge_staging
+                or name in self.return_yield_targets
+                or name in self.rally_yield_targets
+                or name in self.rally_probe_targets
+                or (self.survey_robot == name and (self.survey_goal_pending or self.survey_goal_handle))
+                or not self.fresh_robot_inputs() or not self.fresh_target()):
+            return False
+        local_map = HeadquartersControl.delivered_return_maps(self).get(name)
+        if local_map is None:
+            return False
+        now = self.now()
+        inputs = self.input_freshness_details()
+        map_age = max(inputs['headquarters/fused_map_snapshot']['age_sec'],
+                      inputs[name+'/map_snapshot']['age_sec'])
+        pose_age = max(inputs[name+'/pose_state']['age_sec'], inputs[name+'/frame_state']['age_sec'])
+        reserved = rally_reserved_poses(self.rally_targets, self.rally_final_targets, exclude=(name,))
+        blocked = [position for other, position in self.robot_positions.items()
+                   if other != name and position is not None and self.battery_modes[other] != 'FAILED']
+        wait = getattr(self, 'rally_wait_budgets', {}).get(name, 0.)
+        replacement = funded_rally_replacement(self.map_data, self.resolution, self.origin,
+            self.robot_positions[name], self.target, self.battery_states[name], local_map,
+            map_age, pose_age, reserved, blocked, self.rally_hold_sec, wait)
+        if replacement is None:
+            return False
+        pose, route, required = replacement
+        previous = self.rally_final_targets[name]
+        if hasattr(self, 'consumed_publisher'):
+            self.consumed_publisher.publish(String(data=json.dumps(dict(
+                event='coordinator_rally_return_repair', event_time=now, robot=name,
+                inputs=inputs, target=self.target, target_source_time=self.target_received_source_time,
+                current_position=self.robot_positions[name], old_target=[previous.x, previous.y, previous.yaw],
+                replacement=[pose.x, pose.y, pose.yaw], route=route, required_energy=required,
+                state=self.battery_states[name], reserved=reserved, blocked=blocked,
+                map_age_sec=map_age, pose_age_sec=pose_age, hold_sec=self.rally_hold_sec, wait_sec=wait,
+                fused_map=grid_audit_evidence(self.map_data, self.resolution, self.origin,
+                    'ap_delivered_planning_map', self.map_received_at, self.map_received_at),
+                local_map=grid_audit_evidence(local_map['data'], local_map['resolution'], local_map['origin'],
+                    'ap_delivered_robot_map', self.robot_map_received_at[name], self.robot_map_received_at[name]),
+            ), sort_keys=True)))
+        self.rally_targets[name] = self.rally_final_targets[name] = pose
+        self.rally_route_unavailable_since[name] = None
+        self.rally_hold_started_at = None
+        self.rally_preflight_complete = False
+        getattr(self, 'rally_detour_budgets', {}).pop(name, None)
+        self.publish_rally_assignments()
+        self.get_logger().warn(f"Replaced {name}'s unavailable endpoint return with a funded "
+                               f"current-map rally pose ({pose.x:.2f}, {pose.y:.2f}).")
+        return True
+
     def prepare_rally_charges(self):
         """Check the whole final route before admitting another navigation leg."""
         blocked = set(self.rally_charge_requested) | set(self.rally_precharge_staging)
@@ -4549,6 +4689,9 @@ class HeadquartersControl(Node):
                     raise ValueError("nonfinite energy budget")
             except (KeyError, TypeError, ValueError, ZeroDivisionError) as error:
                 blocked.add(name)
+                if (str(error) == 'no delivered-map charger contact route'
+                        and HeadquartersControl.repair_rally_return_target(self, name)):
+                    continue  # Fresh preflight/route reservations own the next actual dispatch.
                 self.get_logger().warn(
                     f"Invalid rally battery budget for {name}: {error}"
                 )

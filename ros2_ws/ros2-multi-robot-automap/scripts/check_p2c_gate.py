@@ -240,6 +240,43 @@ def rally_assignment_audit(records):
     return dict(status='PASS',failed_assignments_rebuilt=count,computation_wall_sec=wall)
 
 
+def rally_repair_audit(records):
+    count=0
+    for e in records:
+        if e.get('event')!='coordinator_rally_return_repair':continue
+        name=e['robot'];maps=[]
+        for key,stream,source in (('fused_map','headquarters/fused_map_snapshot','ap_delivered_planning_map'),
+                                  ('local_map',name+'/map_snapshot','ap_delivered_robot_map')):
+            s=e[key];assert s['source']==source and s['encoding']=='zlib_base64_int16_le'
+            assert s['source_time']==e['inputs'][stream]['source_time']
+            assert 0<=e['event_time']-s['source_time']<=5.
+            g=np.frombuffer(zlib.decompress(base64.b64decode(s['grid'])),dtype='<i2').reshape(s['shape'])
+            maps.append(dict(data=g,resolution=s['resolution'],origin=s['origin']))
+        for stream,ttl in ((name+'/pose_state',2.),(name+'/frame_state',2.),(name+'/battery_state',5.)):
+            lease=e['inputs'][stream];age=e['event_time']-lease['source_time']
+            assert 0<=age<=ttl and math.isclose(age,lease['age_sec'],abs_tol=1e-8)
+        map_age=max(e['event_time']-e[k]['source_time'] for k in ('fused_map','local_map'))
+        pose_age=max(e['inputs'][name+'/'+k]['age_sec'] for k in ('pose_state','frame_state'))
+        assert math.isclose(map_age,e['map_age_sec'],abs_tol=1e-8)
+        assert math.isclose(pose_age,e['pose_age_sec'],abs_tol=1e-8)
+        assert 0<=e['event_time']-e['target_source_time']<=60.
+        state=e['state'];assert state['mode']=='ACTIVE' and state['stamp_sec']==e['inputs'][name+'/battery_state']['source_time']
+        fused,local=maps;home=(state['charge_x'],state['charge_y'])
+        old=control.qualified_return_candidates(fused['data'],fused['resolution'],fused['origin'],
+            e['old_target'][:2],home,state.get('charge_radius_m',.8),local)
+        assert not any(r['qualified'] for r in old),'Repaired an already qualified endpoint'
+        rebuilt=control.funded_rally_replacement(fused['data'],fused['resolution'],fused['origin'],
+            e['current_position'],e['target'],state,local,map_age,pose_age,e['reserved'],e['blocked'],
+            e['hold_sec'],e['wait_sec'])
+        assert rebuilt is not None
+        pose,route,required=rebuilt
+        assert np.allclose((pose.x,pose.y,pose.yaw),e['replacement'],atol=1e-8,rtol=0)
+        assert np.allclose(route,e['route'],atol=1e-8,rtol=0)
+        assert math.isclose(required,e['required_energy'],abs_tol=1e-8) and required<state['energy']
+        count+=1
+    return dict(status='PASS',funded_endpoint_repairs=count)
+
+
 def energy_audit(path,result,required=False):
     snapshots={name:[] for name in result['robots']}
     for line in path.open():
@@ -306,11 +343,12 @@ def check_one(path,config):
     forecast=lookahead_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     vetoes=ap_return_veto_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     assignments=rally_assignment_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
+    repairs=rally_repair_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     assert result['collision_monitoring_active']
     return dict(case=case,status='PASS',git_commit=row['git_commit'],source_digests=row['source_digests'],
         result=result,raw_summary=str(path.resolve()),raw_summary_sha256=sha(path),return_audit=native,
         communication_audit=communications,lookahead_audit=forecast,native_energy_audit=energy,
-        ap_return_veto_audit=vetoes,rally_assignment_audit=assignments)
+        ap_return_veto_audit=vetoes,rally_assignment_audit=assignments,rally_repair_audit=repairs)
 
 
 def audit_one(item):

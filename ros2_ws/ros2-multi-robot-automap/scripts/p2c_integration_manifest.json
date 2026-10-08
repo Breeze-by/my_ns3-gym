@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-08T16:49:19.946583+00:00",
+  "predeclared_at_utc": "2026-10-08T17:28:06.358904+00:00",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -301,7 +301,7 @@
   ],
   "safety_probe_manifest": "p3b5_staged_return_probe_manifest.json",
   "energy_unit": "simulation_model_units_not_joules",
-  "development_parent": "f22b1375feadcda9aa2123bd712ff791869cbe38",
+  "development_parent": "aaa5102354fc0e4470967e9c2979c75731f272a2",
   "retained_failed_development": "20261008_p2c_v1_failed_development.json",
   "opportunity_charge_algorithm": "two_current_frontiers_complete_route_budget",
   "retained_failed_developments": [
@@ -313,7 +313,8 @@
     "20261008_p2c_v7_failed_development.json",
     "20261008_p2c_v8_failed_development.json",
     "20261008_p2c_v9_failed_development.json",
-    "20261009_p2c_v10_failed_development.json"
+    "20261009_p2c_v10_failed_development.json",
+    "20261009_p2c_v11_failed_development.json"
   ],
   "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
   "opportunity_charge_rules": [
@@ -369,5 +370,12 @@
     "immutable_cache": "Only bytes-backed immutable map snapshots may reuse geometry by object identity; writable maps and readonly aliases of writable maps are content-checked. Source stamps and budget freshness are never cached or renewed.",
     "qualification": "Vectorized half-cell continuous sampling retains scalar0.35m/0.6m/known-free/no-diagonal-cutting semantics; frozen scalar reference is a test fixture only.",
     "private_diagnostics": "Failed rally assignments retain full delivered planning/source/robot maps, current and conditional positions, battery states, target and input timestamps; wall time is component timing, not simulated deadline proof."
+  },
+  "rally_return_repair": {
+    "trigger": "Idle ACTIVE unarrived non-observer; old endpoint has no qualified return, current pose retains one; all delivered source leases and target lease fresh; no live/pending exploration/rally/survey, charge or safety refuge.",
+    "search": "Known-free target-visible grid centres in the existing nominal1..2.6m rally region, endpoint clearance0.45m and separation0.8m, body-masked complete approach and same qualified contact return. Dense recovery supplements original72 ring samples; no obstacle/unknown clearing.",
+    "budget": "Complete approach+qualified endpoint return+reaction/map/max(odom,frame) age+hold/wait; strictly less than current energy. Next real dispatch revalidates all original leases/reservations/energy.",
+    "preservation": "Only a new proposal; preserve parked peers, original retries/300s horizon/5s native hold/safety. Reset hold on actual assignment change; never cancel a live action or reset retries.",
+    "evidence": "Private coordinator_rally_return_repair saves both delivered maps, original stamps, model, current/reserved/body positions, old/new endpoints and full route/cost; independent reconstruction. No native hidden input or added application traffic."
   }
 }

@@ -1200,3 +1200,7 @@ P2C.1 v2（2026-10-08，未集成候选）：原近站机会充电现增加两�
 2026-10-08 P2C.1 v10前瞻：v9首强制原格271.7s因目标区域survey失败，195.3s检测/未RALLY，两机各charge1/最低9.868180/零接触、耗尽和机器人失效；strict FAIL与257live/6返航预算/110能量样本/24AP否决重建完整保留。新候选只对不可变交付地图复用几何，将原连续障碍否决向量化，记录完整失败分配上下文；原300s/5s/TTL/净空保持。组件验证以新报告为准，新4开发/17正式/两真实blackout仍待同提交冻结验证，917未暴露。证据：[v9原失败](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261008_p2c_v9_failed_development.md)。P3C.5已验收，无P4/ns3/Wi-Fi/RL。
 
 2026-10-09 P2C.1候选：v10两开发COMPLETE/两任务失败，完整FAIL保留；v11增加由两原图确定重建的constrained_fused返路候选，source_time取最旧，两原源TTL均不延长，不改变原Nav2/物理/300s/5s。新任务必须从clean pushed freeze调用原run_p2c_tasks，17formal/blackout/917尚未执行。证据见无线研究目录report/20261009_p2c_v10_failed_development.md；当前P2C.1未通过。
+
+2026-10-09 P2C.1 v12前瞻：v11强制首格原生RALLY timeout300.2，发现222.1/集合223.8s，两机各charge1/最低15.327770819，零接触、耗尽或机器人失效；strict FAIL和18份原证据保留。tb2在已有接触区补能（native返航运动约9.16e-7m），不得当远端返航证明。旧终点失去合格返航后缺少在线重选；新候选仅在idle/未到位/非observer/无活动动作和安全返充时，搜索原1..2.6m区域的已知自由可见网格，保留0.45m净空/0.8m间距，核验完整去返/源龄/保持等待成本，再交原派发复查。构造旧AP双图+0.4s后的live快照证明稀疏候选无合格点、网格替代约0.135m；非原控制器反事实/任务收益。原300s/5s/TTL/Nav2/物理/重试保持；仍需新clean pushed4dev/17formal/2physical，917未暴露，P3C.5已验收，无P4/ns3/Wi-Fi/RL。
+
+v12组件验证：937功能/1skip48.75s、最终37定向18.78s（含重选→再预算）/四包5.45s/172保护/54协议PASS；两次构造夹具FAIL原样保留并仅修正夹具源戳/缺属性，不改原始任务。报告：20261009_p2c_repair_components.md/.json；任务门禁仍待新冻结。

@@ -887,3 +887,7 @@ OpenWiFi、学习式地图/图像压缩、未知初始位姿地图配准、机�
 2026-10-08 v10组件已核验：898pass/1skip、四包build/172保护/54协议PASS；2048冻结标量一致、192路径代价一致、100终点同进程五轮总CPU约减少三分之一，不能外推任务或硬时限收益。新cohort待冻结。报告：ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261008_p2c_geometry_components.md。
 
 2026-10-09 P2C.1 v11前瞻：v10四原两COMPLETE（297.8/217.8）/labsurveyFAILED262.4/corrFOUNDtimeout300.1，零接触/耗尽/机器人失败但strict FAIL，原44证据保留。原AP图重放证明否决最短路未搜索绕障替代；新明确第三保守约束返路不删任一源障碍/不补未知自由，仍经原continuous veto/min source stamp验证。909功能/1skip，仍需new clean pushed4dev/17formal/2physical；917未暴露、P3C.5已验收，无P4/ns3/Wi-Fi/RL。原失败：ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261009_p2c_v10_failed_development.md。
+
+2026-10-09 P2C.1 v12前瞻：v11强制首格原生RALLY timeout300.2，发现222.1/集合223.8s，两机各charge1/最低15.327770819，零接触、耗尽或机器人失效；strict FAIL和18份原证据保留。tb2在已有接触区补能（native返航运动约9.16e-7m），不得当远端返航证明。旧终点失去合格返航后缺少在线重选；新候选仅在idle/未到位/非observer/无活动动作和安全返充时，搜索原1..2.6m区域的已知自由可见网格，保留0.45m净空/0.8m间距，核验完整去返/源龄/保持等待成本，再交原派发复查。构造旧AP双图+0.4s后的live快照证明稀疏候选无合格点、网格替代约0.135m；非原控制器反事实/任务收益。原300s/5s/TTL/Nav2/物理/重试保持；仍需新clean pushed4dev/17formal/2physical，917未暴露，P3C.5已验收，无P4/ns3/Wi-Fi/RL。
+
+v12组件验证：937功能/1skip48.75s、最终37定向18.78s（含重选→再预算）/四包5.45s/172保护/54协议PASS；两次构造夹具FAIL原样保留并仅修正夹具源戳/缺属性，不改原始任务。报告：20261009_p2c_repair_components.md/.json；任务门禁仍待新冻结。

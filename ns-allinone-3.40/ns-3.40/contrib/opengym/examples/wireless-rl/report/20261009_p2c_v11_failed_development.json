@@ -1,0 +1,760 @@
+{
+  "status": "FAIL",
+  "task_stack_frozen_commit": "aaa5102354fc0e4470967e9c2979c75731f272a2",
+  "originals": 1,
+  "task_retries": 0,
+  "all_owned_closed_before_edits": true,
+  "strict_gate": {
+    "status": "FAIL",
+    "scope": "development",
+    "task_stack_frozen_commit": "aaa5102354fc0e4470967e9c2979c75731f272a2",
+    "cases": 1,
+    "errors": [
+      {
+        "case": "dev_forced2",
+        "error": "AssertionError()",
+        "traceback": "Traceback (most recent call last):\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 318, in audit_one\n    try:return check_one(path,config),None\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 295, in check_one\n    episode_ok(result)\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3b5_gate.py\", line 61, in episode_ok\n    p3a_episode_ok(result)\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3a6_gate.py\", line 39, in episode_ok\n    assert data[\"success\"]\nAssertionError\n"
+      }
+    ],
+    "evidence": [],
+    "full_declared_scope": false,
+    "raw_failures_retained": true,
+    "physical_blackout_gate": "separate_required_evidence",
+    "general_hardware_safety_guarantee": false
+  },
+  "result": {
+    "battery_enabled": true,
+    "battery_minimum_energy": 15.327770819121007,
+    "battery_total_charges": 2,
+    "battery_total_charging_time_sec": 33.5,
+    "battery_total_returns": 4,
+    "collision_duration_sec": 0.0,
+    "collision_events": 0,
+    "collision_history": [],
+    "collision_monitoring_active": true,
+    "completion_status": "RALLY",
+    "completion_time_sec": null,
+    "coordinator_completion_time_sec": null,
+    "correct_coverage_ratio": 0.7884459910717424,
+    "correct_free_coverage_ratio": 0.8297571507728758,
+    "correct_truth_cell_count": 44861,
+    "coverage_at_detection": 0.8029118978925044,
+    "coverage_threshold": 0.0,
+    "detecting_robot": "tb1",
+    "elapsed_sim_time_sec": 300.1999999999998,
+    "end_sim_time_sec": 2375.082,
+    "episode_id": "20261009_p2c_v11_dev_forced2",
+    "failed_robots": [],
+    "failure_reason": "timeout",
+    "gazebo_seed": 303,
+    "known_coverage_ratio": 0.8054764666596366,
+    "known_truth_cell_count": 45830,
+    "map_message_count": 306,
+    "merged_map_frame": "map",
+    "merged_map_height": 213,
+    "merged_map_origin_x": -5.664355599132669,
+    "merged_map_origin_y": -5.4878218582880915,
+    "merged_map_origin_yaw": 0.0,
+    "merged_map_resolution": 0.05000000074505806,
+    "merged_map_width": 256,
+    "mission_mode": "rally",
+    "model_state_message_count": 3002,
+    "native_rally_hold_proof": null,
+    "nav_aborted": 0,
+    "nav_canceled": 3,
+    "nav_goal_count": 26,
+    "nav_succeeded": 23,
+    "observed_accuracy": 0.9788566441195723,
+    "occupied_iou": 0.26674107142857145,
+    "partial_completion": false,
+    "phase_overlap_ratios": {
+      "EXPLORE": 0.0,
+      "FOUND": 0.0,
+      "RALLY": 0.0
+    },
+    "phase_path_lengths_m": {
+      "EXPLORE": 20.847369535306896,
+      "FOUND": 0.3100609623679873,
+      "RALLY": 12.958883895923943
+    },
+    "phase_union_visited_cell_counts": {
+      "EXPLORE": 238,
+      "FOUND": 6,
+      "RALLY": 163
+    },
+    "rally_angular_tolerance_radps": 0.1,
+    "rally_assignments": {
+      "tb1": {
+        "x": -4.618499668018103,
+        "y": 1.427608177114248,
+        "yaw": 1.3348376378525997
+      },
+      "tb2": {
+        "x": -4.0153614799491315,
+        "y": 2.998011699101685,
+        "yaw": 1.5554665304420079
+      }
+    },
+    "rally_hold_sec": 5.0,
+    "rally_linear_tolerance_mps": 0.05,
+    "rally_min_separation_m": 1.6822434115720795,
+    "rally_position_tolerance_m": 0.35,
+    "required_robot_count": 2,
+    "required_robot_names": [
+      "tb1",
+      "tb2"
+    ],
+    "robot_count": 2,
+    "robots": {
+      "tb1": {
+        "battery_capacity": 100.0,
+        "battery_charge_count": 1,
+        "battery_charge_x": 0.0,
+        "battery_charge_y": -0.45,
+        "battery_charging_time_sec": 23.5,
+        "battery_final_energy": 62.454018471190956,
+        "battery_initial_energy": 18.0,
+        "battery_message_count": 606,
+        "battery_minimum_energy": 16.118051147322223,
+        "battery_mode": "ACTIVE",
+        "battery_return_count": 2,
+        "collision_duration_sec": 0.0,
+        "collision_events": 0,
+        "collision_message_count": 6006,
+        "end_x": -4.607792948520763,
+        "end_y": 1.4167314940206508,
+        "final_angular_speed_radps": 7.807343793976113e-05,
+        "final_linear_speed_mps": 6.074617890118255e-05,
+        "nav_aborted": 0,
+        "nav_canceled": 2,
+        "nav_goal_count": 14,
+        "nav_succeeded": 12,
+        "path_length_m": 13.846388973869951,
+        "phase_path_lengths_m": {
+          "EXPLORE": 12.651080032183504,
+          "FOUND": 0.17146465254992607,
+          "RALLY": 1.0238442891365152
+        },
+        "rally_final_error_m": 0.015262243528172981,
+        "rally_target_x": -4.618499668018103,
+        "rally_target_y": 1.427608177114248,
+        "rally_target_yaw": 1.3348376378525997,
+        "start_x": 0.0023729432857361146,
+        "start_y": -0.4499950320455854,
+        "teleport_jump_count": 0,
+        "visited_cell_count": 149
+      },
+      "tb2": {
+        "battery_capacity": 100.0,
+        "battery_charge_count": 1,
+        "battery_charge_x": 0.0,
+        "battery_charge_y": 0.45,
+        "battery_charging_time_sec": 10.0,
+        "battery_final_energy": 56.590995742569795,
+        "battery_initial_energy": 18.0,
+        "battery_message_count": 604,
+        "battery_minimum_energy": 15.327770819121007,
+        "battery_mode": "ACTIVE",
+        "battery_return_count": 2,
+        "collision_duration_sec": 0.0,
+        "collision_events": 0,
+        "collision_message_count": 6007,
+        "end_x": -4.032940278037994,
+        "end_y": 2.050246078359735,
+        "final_angular_speed_radps": 0.018101890908458783,
+        "final_linear_speed_mps": 9.380947126442115e-05,
+        "nav_aborted": 0,
+        "nav_canceled": 1,
+        "nav_goal_count": 12,
+        "nav_succeeded": 11,
+        "path_length_m": 20.269925419728853,
+        "phase_path_lengths_m": {
+          "EXPLORE": 8.19628950312339,
+          "FOUND": 0.13859630981806123,
+          "RALLY": 11.935039606787427
+        },
+        "rally_final_error_m": 0.9479286291713224,
+        "rally_target_x": -4.0153614799491315,
+        "rally_target_y": 2.998011699101685,
+        "rally_target_yaw": 1.5554665304420079,
+        "start_x": 0.0023321200146329997,
+        "start_y": 0.4500047908769734,
+        "teleport_jump_count": 0,
+        "visited_cell_count": 253
+      }
+    },
+    "schema_version": 9,
+    "search_overlap_ratio": 0.0,
+    "start_sim_time_sec": 2074.882,
+    "success": false,
+    "target_confirmation_frames": 3,
+    "target_field_of_view_deg": 90.0,
+    "target_found": true,
+    "target_max_distance_m": 3.0,
+    "target_x": -4.0,
+    "target_y": 4.0,
+    "task_phase": "RALLY",
+    "termination_reason": "timeout",
+    "time_to_75_coverage_sec": 178.5999999999999,
+    "time_to_80_coverage_sec": 215.9000000000001,
+    "time_to_90_coverage_sec": null,
+    "time_to_95_coverage_sec": null,
+    "time_to_detect_sec": 222.0999999999999,
+    "time_to_rally_sec": 223.79999999999973,
+    "total_overlap_ratio": 0.03875968992248062,
+    "total_path_length_m": 34.116314393598806,
+    "truth_cell_count": 56898,
+    "truth_free_cell_count": 52337,
+    "truth_height": 218,
+    "truth_occupied_cell_count": 4561,
+    "truth_origin_x": -5.800000000000001,
+    "truth_origin_y": -5.6000000000000005,
+    "truth_rectangle_count": 26,
+    "truth_resolution": 0.05,
+    "truth_unsupported_collision_count": 1,
+    "truth_width": 261,
+    "union_visited_cell_count": 387,
+    "visit_resolution": 0.1,
+    "world_file": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/worlds/my_world.world"
+  },
+  "source_digests": {
+    "admission_protocol": "05f15651bfc831c541d5a662491a0467e64ae4084c27655a6f27e1ed56e6064a",
+    "control_cli": "f70c8f7a6ee4fb9a0a7d2e9468e3c77b3cc77d729cbd2a544c1f45adbf997c09",
+    "control_schema": "7fa7e5fa63dd0fb1e319fd08694773c675ac3fe8dcefa0051dd4f0fe71958d28",
+    "entrypoint": "78edb424db0a63347cf6b28f3fbff72a20207c3852f26a004907f868e8170a1f",
+    "exploration": "7edcf87cba34dfa743568c1d9ad48d1eb4f77d6f8ceb606a571251a3419be1d3",
+    "launch": "4b1716d8c83549245e0589f0a145495bd512bf1215c3608c2436aecdaab8a7d0",
+    "manifest": "f4f9703d68889b078e842fd3924ce409cabb8f779f26aacb3338a5a2f0a2270d",
+    "message_schema": "e0648e61473dfd2931038c79cda8a6fe4bf09c1d00f8d4acdfa0f4879e72925c",
+    "params": "2cb9b9e26015cbe79867fe3750296d9cb7626a05ad16f595b7692db4b4490f4f",
+    "runner": "cb14218542f8363fc8de4eda6082f3f1cbfe6479e3a61b98b171accf5657891a",
+    "slam": "61abada48d42602e5bb8950cdf81cd4804c0c45b787490681711e3cc228eb1c0",
+    "smoke": "74bd62337550b72309648571edb82a57b282cf7edfa09831ccd0f1aff7bfa97d",
+    "worlds": "2ee10406031815e3d0ea2e76074706a8e150e636ab2366428b201ecc72a5cc9a"
+  },
+  "command": [
+    "/usr/bin/python3",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py",
+    "--world",
+    "my_world.world",
+    "--robot-count",
+    "2",
+    "--gazebo-seed",
+    "303",
+    "--startup-timeout",
+    "600",
+    "--message-timeout",
+    "90",
+    "--shutdown-timeout",
+    "120",
+    "--evaluation-duration",
+    "300",
+    "--evaluation-wait-timeout",
+    "900",
+    "--coverage-threshold",
+    "0",
+    "--mission-mode",
+    "rally",
+    "--gateway-mode",
+    "ideal",
+    "--gateway-seed",
+    "17011",
+    "--battery",
+    "--battery-capacity",
+    "100",
+    "--battery-initial-energy",
+    "18.0",
+    "--target-x",
+    "-4",
+    "--target-y",
+    "4",
+    "--rally-max-concurrent",
+    "2",
+    "--disable-global-battery-rally-pause",
+    "--episode-id",
+    "20261009_p2c_v11_dev_forced2",
+    "--collect-fault-result",
+    "--dwell-seconds",
+    "0",
+    "--evaluation-output-dir",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v11/20261009_p2c_v11_dev_forced2",
+    "--log-dir",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v11/20261009_p2c_v11_dev_forced2/launch",
+    "--gateway-ledger-path",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v11/20261009_p2c_v11_dev_forced2/ledger.jsonl",
+    "--bypass-audit-output",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v11/20261009_p2c_v11_dev_forced2/graph.json",
+    "--target-detection",
+    "--rally",
+    "--battery-charge-duration",
+    "10.0",
+    "--battery-safety-margin",
+    "5.0",
+    "--battery-return-timeout",
+    "120"
+  ],
+  "independent_audits": {
+    "native_return": {
+      "status": "PASS",
+      "return_triggers": 4,
+      "map_budget_reconstructions": 2,
+      "pose_lease_reconstructions": 5,
+      "pose_leases_required": true,
+      "local_legs": 1,
+      "charger_returns": 2,
+      "returns": [
+        {
+          "actual_distance_m": 0.0,
+          "actual_elapsed_sec": 0.0,
+          "actual_energy_spent": 0.0,
+          "cancellation_count": 0,
+          "charge_radius_m": 0.8,
+          "energy": 18.0,
+          "energy_model": {
+            "idle_cost_per_sec": 0.02,
+            "move_cost_per_m": 1.0,
+            "nominal_speed_mps": 0.18,
+            "path_factor": 2.0,
+            "recovery_wait_sec": 30.0,
+            "safety_margin": 5.0
+          },
+          "event": "return_finished",
+          "home": [
+            0.0,
+            -0.45
+          ],
+          "outcome": "route_recovered_resume",
+          "predicted_energy_spent": null,
+          "prediction_error": null,
+          "rejection_count": 0,
+          "return_count": 1,
+          "robot": "tb1",
+          "sim_time": 2075.282,
+          "start": {
+            "budget": null,
+            "cancels": 0,
+            "distance": 0.0,
+            "elapsed": 0.0,
+            "energy": 18.0,
+            "reason": "no_known_route",
+            "rejections": 0,
+            "sim_time": 2075.182
+          }
+        },
+        {
+          "actual_distance_m": 0.0,
+          "actual_elapsed_sec": 0.0,
+          "actual_energy_spent": 0.0,
+          "cancellation_count": 0,
+          "charge_radius_m": 0.8,
+          "energy": 18.0,
+          "energy_model": {
+            "idle_cost_per_sec": 0.02,
+            "move_cost_per_m": 1.0,
+            "nominal_speed_mps": 0.18,
+            "path_factor": 2.0,
+            "recovery_wait_sec": 30.0,
+            "safety_margin": 5.0
+          },
+          "event": "return_finished",
+          "home": [
+            0.0,
+            0.45
+          ],
+          "outcome": "route_recovered_resume",
+          "predicted_energy_spent": null,
+          "prediction_error": null,
+          "rejection_count": 0,
+          "return_count": 1,
+          "robot": "tb2",
+          "sim_time": 2075.782,
+          "start": {
+            "budget": null,
+            "cancels": 0,
+            "distance": 0.0,
+            "elapsed": 0.0,
+            "energy": 18.0,
+            "reason": "no_known_route",
+            "rejections": 0,
+            "sim_time": 2075.682
+          }
+        },
+        {
+          "actual_distance_m": 0.17797957383983354,
+          "actual_elapsed_sec": 6.222000000000207,
+          "actual_energy_spent": 0.3024195738398987,
+          "cancellation_count": 1,
+          "charge_radius_m": 0.8,
+          "energy": 16.144161317289438,
+          "energy_model": {
+            "idle_cost_per_sec": 0.02,
+            "move_cost_per_m": 1.0,
+            "nominal_speed_mps": 0.18,
+            "path_factor": 2.0,
+            "recovery_wait_sec": 30.0,
+            "safety_margin": 5.0
+          },
+          "event": "return_finished",
+          "home": [
+            0.0,
+            -0.45
+          ],
+          "outcome": "charger_stopped",
+          "predicted_energy_spent": 1.9623792627808854,
+          "prediction_error": -1.6599596889409867,
+          "rejection_count": 0,
+          "return_count": 2,
+          "robot": "tb1",
+          "sim_time": 2110.682,
+          "start": {
+            "budget": {
+              "frame_source_time": 2104.1870000000004,
+              "frame_stamp_offset_sec": 0.2,
+              "idle_energy": 0.7756579262780814,
+              "map_age_sec": 0.8000000000001819,
+              "map_content_blake2b": "50786f391af9f5f92ae70f711ef6db7b",
+              "map_input_age_sec": 0.8949999999999818,
+              "map_source": "delivered_fused",
+              "map_source_time": 2103.682,
+              "map_version": 31,
+              "motion_distance_budget_m": 1.1867213365028038,
+              "move_energy": 1.1867213365028038,
+              "odom_source_time": 2104.359,
+              "path_distance_m": 0.39911066825145924,
+              "pose_age_sec": 0.294999999999618,
+              "required_energy": 6.962379262780885,
+              "route": [
+                [
+                  -0.20517769242006834,
+                  -1.3783928274280546
+                ],
+                [
+                  -0.2080035855650646,
+                  -1.3855440341434404
+                ],
+                [
+                  -0.15800358482000654,
+                  -1.3355440333983823
+                ],
+                [
+                  -0.10800358407494848,
+                  -1.2855440326533243
+                ],
+                [
+                  -0.10800358407494848,
+                  -1.2355440319082662
+                ],
+                [
+                  -0.10800358407494848,
+                  -1.1855440311632082
+                ],
+                [
+                  -0.10800358407494848,
+                  -1.13554403041815
+                ],
+                [
+                  -0.10800358407494848,
+                  -1.085544029673092
+                ],
+                [
+                  -0.10800358407494848,
+                  -1.035544028928034
+                ]
+              ],
+              "safety_margin": 5.0,
+              "travel_time_budget_sec": 6.592896313904466,
+              "waiting_time_budget_sec": 32.1899999999996
+            },
+            "cancels": 0,
+            "distance": 0.9699791088704697,
+            "elapsed": 29.172000000000025,
+            "energy": 16.446580891129337,
+            "reason": "energy_or_task_budget",
+            "rejections": 0,
+            "sim_time": 2104.482
+          }
+        },
+        {
+          "actual_distance_m": 9.160978474698211e-07,
+          "actual_elapsed_sec": 0.0340000000001055,
+          "actual_energy_spent": 0.0006809160978509254,
+          "cancellation_count": 0,
+          "charge_radius_m": 0.8,
+          "energy": 15.327770819121007,
+          "energy_model": {
+            "idle_cost_per_sec": 0.02,
+            "move_cost_per_m": 1.0,
+            "nominal_speed_mps": 0.18,
+            "path_factor": 2.0,
+            "recovery_wait_sec": 30.0,
+            "safety_margin": 5.0
+          },
+          "event": "return_finished",
+          "home": [
+            0.0,
+            0.45
+          ],
+          "outcome": "charger_stopped",
+          "predicted_energy_spent": 1.0292999999998909,
+          "prediction_error": -1.02861908390204,
+          "rejection_count": 0,
+          "return_count": 2,
+          "robot": "tb2",
+          "sim_time": 2181.482,
+          "start": {
+            "budget": {
+              "frame_source_time": 2181.1670000000004,
+              "frame_stamp_offset_sec": 0.2,
+              "idle_energy": 0.6647999999999835,
+              "map_age_sec": 0.0,
+              "map_content_blake2b": null,
+              "map_input_age_sec": 0.0,
+              "map_source": "local",
+              "map_source_time": 2180.767,
+              "map_version": 109,
+              "motion_distance_budget_m": 0.36449999999990723,
+              "move_energy": 0.36449999999990723,
+              "odom_source_time": 2181.362,
+              "path_distance_m": 0.0,
+              "pose_age_sec": 0.21499999999969077,
+              "required_energy": 6.029299999999891,
+              "route": [
+                [
+                  0.4395610760696805,
+                  0.791435722711642
+                ]
+              ],
+              "safety_margin": 5.0,
+              "travel_time_budget_sec": 2.0249999999994848,
+              "waiting_time_budget_sec": 31.21499999999969
+            },
+            "cancels": 0,
+            "distance": 0.5581082647800586,
+            "elapsed": 105.67200000000003,
+            "energy": 15.328451735218858,
+            "reason": "energy_or_task_budget",
+            "rejections": 0,
+            "sim_time": 2181.382
+          }
+        }
+      ]
+    },
+    "energy": {
+      "status": "PASS",
+      "required": true,
+      "snapshots": 120,
+      "robots": {
+        "tb1": {
+          "samples": 60,
+          "last": {
+            "actual_distance_m": 13.881078072040479,
+            "actual_elapsed_sec": 273.3600000000001,
+            "charge_radius_m": 0.8,
+            "charged_energy_added": 63.88194885267778,
+            "energy": 62.5336707806386,
+            "energy_model": {
+              "idle_cost_per_sec": 0.02,
+              "move_cost_per_m": 1.0,
+              "nominal_speed_mps": 0.18,
+              "path_factor": 2.0,
+              "recovery_wait_sec": 30.0,
+              "safety_margin": 5.0
+            },
+            "event": "energy_accounting",
+            "frame_source_time": 2370.3970000000004,
+            "home": [
+              0.0,
+              -0.45
+            ],
+            "initial_energy": 18.0,
+            "mode": "ACTIVE",
+            "odom_source_time": 2370.579,
+            "pending_native_inputs": 0,
+            "return_count": 2,
+            "robot": "tb1",
+            "sim_time": 2370.582
+          }
+        },
+        "tb2": {
+          "samples": 60,
+          "last": {
+            "actual_distance_m": 20.303819209456634,
+            "actual_elapsed_sec": 285.3620000000001,
+            "charge_radius_m": 0.8,
+            "charged_energy_added": 64.67222918087899,
+            "energy": 56.66116997142247,
+            "energy_model": {
+              "idle_cost_per_sec": 0.02,
+              "move_cost_per_m": 1.0,
+              "nominal_speed_mps": 0.18,
+              "path_factor": 2.0,
+              "recovery_wait_sec": 30.0,
+              "safety_margin": 5.0
+            },
+            "event": "energy_accounting",
+            "frame_source_time": 2370.976,
+            "home": [
+              0.0,
+              0.45
+            ],
+            "initial_energy": 18.0,
+            "mode": "ACTIVE",
+            "odom_source_time": 2371.048,
+            "pending_native_inputs": 0,
+            "return_count": 2,
+            "robot": "tb2",
+            "sim_time": 2371.082
+          }
+        }
+      }
+    },
+    "forecast": {
+      "status": "PASS",
+      "two_frontier_charge_decisions": 0
+    },
+    "ap_veto": {
+      "status": "PASS",
+      "delivered_return_vetoes": 2
+    },
+    "assignment": {
+      "status": "PASS",
+      "failed_assignments_rebuilt": 0,
+      "computation_wall_sec": []
+    }
+  },
+  "conditional_grid_diagnosis": {
+    "scope": "Grid-only conditional search; original task and native completion unchanged",
+    "sampled_qualified_options": 0,
+    "dense_clear_visible_separated_cells": 644,
+    "first_qualified_option": [
+      {
+        "pose": [
+          -4.1393555764083985,
+          2.0871782545882045,
+          1.4980714060425186
+        ],
+        "approach_m": 0.13537807647585703,
+        "home_m": 4.823401943451058,
+        "required": 17.09308275832984
+      }
+    ],
+    "search_wall_sec": 0.35240545589476824
+  },
+  "diagnostic_scope": "Saved AP veto maps plus nearest live snapshot0.4s later; constructed geometry input, not exact original controller context or counterfactual mission outcome.",
+  "unrun": [
+    "other three development cells",
+    "17 formal cells",
+    "physical blackout pair",
+    "holdout917"
+  ],
+  "artifacts": [
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v11/20261009_p2c_v11_dev_forced2/manifest.json",
+      "archive": "20261009_p2c_v11_artifacts/manifest.json.gz",
+      "source_sha256": "0a47e044f199a75a7df1c2d42df181b6109d82397c4a893d59f73f27e91269e7",
+      "archive_sha256": "b79a2c7f11fe79b32729996d047bd5a265a5f13921c4069358877189e7214365"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v11/20261009_p2c_v11_dev_forced2/graph.json",
+      "archive": "20261009_p2c_v11_artifacts/graph.json.gz",
+      "source_sha256": "17c8794cbb6c9286eb68091fc6f85563c8c646cdb84764644473b0544d4f6a10",
+      "archive_sha256": "26571f0d200e2254c54598130187ba5c29904f20c2713baa90a1145b2819e4b3"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v11/20261009_p2c_v11_dev_forced2/schedule.json",
+      "archive": "20261009_p2c_v11_artifacts/schedule.json.gz",
+      "source_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "archive_sha256": "abc129be8d26e8d4afe9ce45f9d5a73c8ed9aa62810ca24ee789fe4581dc4a80"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v11/20261009_p2c_v11_dev_forced2/summary.json",
+      "archive": "20261009_p2c_v11_artifacts/summary.json.gz",
+      "source_sha256": "dca14e8b5a5dc92adb8ca4ceb220fa39473b27a0363cc983e990a868af272a2d",
+      "archive_sha256": "f32cb048303cf1dc7a2eb7c3ef199675bc06608fcf6f378cffffe2dc0e00f172"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v11/20261009_p2c_v11_dev_forced2/20261009_p2c_v11_dev_forced2.json",
+      "archive": "20261009_p2c_v11_artifacts/20261009_p2c_v11_dev_forced2.json.gz",
+      "source_sha256": "cf1aa32fff1f83294fe75ada262e0c4ffd7b4877af8d53050ef1843364a4ed5c",
+      "archive_sha256": "8fd9e12e8021674e0b16d2e97ddb49d14e0e235272fb8854f891bee06958daa8"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v11/20261009_p2c_v11_dev_forced2/safety_events.jsonl",
+      "archive": "20261009_p2c_v11_artifacts/safety_events.jsonl.gz",
+      "source_sha256": "5b048c093d78bcc5e2342ef99d8ae14e92e368528c1a36849ebee6803b6ee9ca",
+      "archive_sha256": "1b3a9566653d668462d38b2bc86fe62ae7c54b0ef0a45c89fd01d3c091f9df8a"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v11/20261009_p2c_v11_dev_forced2/runner.log",
+      "archive": "20261009_p2c_v11_artifacts/runner.log.gz",
+      "source_sha256": "e7eef36293c775249f7a980d01386d88574a5cb59dde2de9c0e42a4f2069a694",
+      "archive_sha256": "d07268624e11f18e4fc873f11dba6ef184ab5314e9b549b8bf29d8ed72d9ae1c"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v11/20261009_p2c_v11_dev_forced2/observer.log",
+      "archive": "20261009_p2c_v11_artifacts/observer.log.gz",
+      "source_sha256": "3dfa3fb239f56c778a1e9b33eb31328349edd155a95806dac4378904e88527e5",
+      "archive_sha256": "341883acae54206eeb485456aaba713a7bffc1aca594c5ecb500d0601e28458b"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v11/20261009_p2c_v11_dev_forced2/launch/robots2_seed303_20261009-010307.log",
+      "archive": "20261009_p2c_v11_artifacts/launch/robots2_seed303_20261009-010307.log.gz",
+      "source_sha256": "b6353cee1f62b9ffe68752aabe5c45241fe4f2031d9c7b11c656019012d1c362",
+      "archive_sha256": "702da63d2712f1717f455d4cc3ed662258c5a75f4648f5fe8c90e3d9305dd2b5"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v11_development_gate.json",
+      "archive": "20261009_p2c_v11_artifacts/diagnostics/p2c_v11_development_gate.json.gz",
+      "source_sha256": "2cb99a2702014327aa9f242aa1da5338f4ce6edd4d2069d9d3dc0974af8a20ef",
+      "archive_sha256": "16c479cbc49c49d04f76548cabfdf7c6d660f7c2a351959589d1d80e2b06d1be"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v11_development_gate.log",
+      "archive": "20261009_p2c_v11_artifacts/diagnostics/p2c_v11_development_gate.log.gz",
+      "source_sha256": "9360b982b97e8f693ce503ffa65f81448dbd3a6341a6b896dbd99da10fcb81e1",
+      "archive_sha256": "1a8eaadb65b0358084bee47592c2040978490d3a4a808c1e00c5673cb1fb59d2"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v11_independent_audits.json",
+      "archive": "20261009_p2c_v11_artifacts/diagnostics/p2c_v11_independent_audits.json.gz",
+      "source_sha256": "020ddeee4aeaddd75e29f284803faa8f8d6b42aeeeafe5e4845e49e8c3101f70",
+      "archive_sha256": "fd9d0c6ffaf3d7323d962673fc571e503a7b9528e8e7b8ab1291694dffd3cf3e"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v11_independent_audits.log",
+      "archive": "20261009_p2c_v11_artifacts/diagnostics/p2c_v11_independent_audits.log.gz",
+      "source_sha256": "bceca66546e462f02372579a120c3e0f729a73d8a71ac12c6785d4227ffbf3d9",
+      "archive_sha256": "2b944b9c0ed4a909647b4a0f106f4b148ec2bc2104bb26ca781e75645894acf1"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v11_repair_feasibility.json",
+      "archive": "20261009_p2c_v11_artifacts/diagnostics/p2c_v11_repair_feasibility.json.gz",
+      "source_sha256": "159ac5f728a627cdb6778f0a5be5c2420cb5becd2e8fdbf7f1cfbd327a935de6",
+      "archive_sha256": "0932726551149aa89a300eaaa288a5d65b0230e20003424a36566d5e3029e3fb"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v11_repair_feasibility.log",
+      "archive": "20261009_p2c_v11_artifacts/diagnostics/p2c_v11_repair_feasibility.log.gz",
+      "source_sha256": "b588a0a1cded7d6df08d2b900e15f425cc81e2a46a484e10bc68c2fc6e053ed9",
+      "archive_sha256": "9bf187d4a6aba9d439a186b329dee9b26012a41c8acb95c27b9b2b6804adae11"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v11_dense_repair_feasibility.json",
+      "archive": "20261009_p2c_v11_artifacts/diagnostics/p2c_v11_dense_repair_feasibility.json.gz",
+      "source_sha256": "d1299f090386e0f5687e1aad3240d15e65cd4b372a1833367eb74eca4332bcf0",
+      "archive_sha256": "13ede4a49aeb8dc8cfaae815f7d75a78bdf6a58e55eb493a18080575a0335d8d"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v11_dense_repair_feasibility.log",
+      "archive": "20261009_p2c_v11_artifacts/diagnostics/p2c_v11_dense_repair_feasibility.log.gz",
+      "source_sha256": "59779bd4a906d5ee7d57ac37f89b76ef86912279fa8c0ed32b2164cd19f76c18",
+      "archive_sha256": "dc5b6c4f962cbb8f1d99739212ca8f88c8c4878268863d01a16ea0fe9adf4bcc"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v11_repair_input.json",
+      "archive": "20261009_p2c_v11_artifacts/diagnostics/p2c_v11_repair_input.json.gz",
+      "source_sha256": "122c0f89e5a6e6f5e04475da0f26bcd9bd3eba96b0bce8590363483770be6276",
+      "archive_sha256": "59ef423e47245fcfb9e91ba1b9beed73f53d54f0f69328e3d53041c0ba263b9a"
+    }
+  ]
+}
