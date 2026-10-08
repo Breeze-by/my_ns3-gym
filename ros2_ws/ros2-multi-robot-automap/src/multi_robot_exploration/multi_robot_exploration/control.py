@@ -52,6 +52,8 @@ GOAL_REPLAN_SEC = 3.0
 MIN_REMAINING_GAIN = 200
 MIN_REMAINING_GAIN_FRACTION = 0.2
 FRONTIER_CONTINUATION_WEIGHT = 2.0
+INITIAL_SEARCH_VISIT_BIN_M = 0.5
+INITIAL_SEARCH_VIEW_FOV_RAD = math.pi / 2.0
 # Calibrated against the existing Nav2 loop, including planner/controller pauses.
 NAVIGATION_TIME_EXPONENT = 1.5
 PLANNING_OVERHEAD_SEC = 1.0
@@ -290,12 +292,12 @@ def _integral_image(mask):
     return np.pad(mask.astype(np.int32), ((1, 0), (1, 0))).cumsum(0).cumsum(1)
 
 
-def visible_unknown_gain(raw_grid, start, radius_cells, interest=None):
+def visible_unknown_gain(raw_grid, start, radius_cells, interest=None, return_cells=False):
     """Count informative ray cells; a search mask requires known-free sight."""
     row, column = start
     height, width = raw_grid.shape
     if not (0 <= row < height and 0 <= column < width) or raw_grid[start] != 0:
-        return 0
+        return np.empty(0,dtype=np.int64) if return_cells else 0
     radius = max(1, math.ceil(radius_cells))
     angles = np.linspace(
         0, 2 * math.pi, max(32, math.ceil(2 * math.pi * radius)), endpoint=False
@@ -312,11 +314,34 @@ def visible_unknown_gain(raw_grid, start, radius_cells, interest=None):
     )
     informative = values < 0 if interest is None else interest[rows, columns]
     unknown_cells = (rows * width + columns)[visible & informative]
-    return int(np.unique(unknown_cells).size)
+    cells=np.unique(unknown_cells)
+    return cells if return_cells else int(cells.size)
+
+
+def known_search_interest(raw_grid,resolution,origin,visited):
+    """A visited-position preference, never proof that a camera saw every cell."""
+    rows,columns=np.indices(raw_grid.shape)
+    interest=raw_grid==0
+    for x,y in visited:
+        interest &= ((columns+.5)*resolution+origin[0]-x)**2 + (
+            (rows+.5)*resolution+origin[1]-y)**2 > INFORMATION_RADIUS_M**2
+    return interest
+
+
+def known_search_view(raw_grid,cell,radius_cells,interest):
+    cells=visible_unknown_gain(raw_grid,cell,radius_cells,interest,return_cells=True)
+    if cells.size==0:return 0,0.
+    rows,columns=np.unravel_index(cells,raw_grid.shape)
+    bearings=np.arctan2(rows-cell[0],columns-cell[1])
+    yaws=np.arange(16)*2.*math.pi/16
+    delta=np.arctan2(np.sin(bearings[:,None]-yaws),np.cos(bearings[:,None]-yaws))
+    gains=np.count_nonzero(np.abs(delta)<=INITIAL_SEARCH_VIEW_FOV_RAD/2.,axis=0)
+    best=int(np.argmax(gains))
+    return int(gains[best]),float(yaws[best])
 
 
 def known_space_search_candidates(raw_grid, resolution, origin, robot_name,
-                                  position, visited, exclusions=(), blocked=(), gain_cache=None):
+                                  position, visited, exclusions=(), blocked=(), gain_cache=None, face_interest=False):
     """Revisit current known space when mapping frontiers cannot aid detection.
 
     Visited neighborhoods are a search preference, not proof of visual coverage.
@@ -329,22 +354,24 @@ def known_space_search_candidates(raw_grid, resolution, origin, robot_name,
     distances = exploration_distance_field(raw_grid, traversable, resolution, origin, position)
     if distances is None:
         return []
-    rows, columns = np.indices(raw_grid.shape)
-    interest = raw_grid == 0
-    for x, y in visited:
-        interest &= ((columns + .5) * resolution + origin[0] - x) ** 2 + (
-            (rows + .5) * resolution + origin[1] - y) ** 2 > INFORMATION_RADIUS_M ** 2
+    if gain_cache is None:gain_cache={}
+    if face_interest:
+        if 'initial_search_interest' not in gain_cache:
+            gain_cache['initial_search_interest']=known_search_interest(raw_grid,resolution,origin,visited)
+        interest=gain_cache['initial_search_interest']
+    else:interest=known_search_interest(raw_grid,resolution,origin,visited)
     if not interest.any():
         return []
     # One sample per metre, snapped to actual reachable cells, includes narrow
     # corridors that a fixed lattice alone can miss.
     reachable = traversable & np.isfinite(distances)
+    if face_interest:
+        reachable &= traversable_grid(raw_grid,resolution,ROBOT_CLEARANCE_M)
+        if not reachable.any():return []
     nearest = ndimage.distance_transform_edt(~reachable, return_distances=False, return_indices=True)
     stride = max(1, math.ceil(1. / resolution))
     cells = sorted(set(zip(nearest[0, ::stride, ::stride].ravel(), nearest[1, ::stride, ::stride].ravel())))
     candidates = []
-    if gain_cache is None:
-        gain_cache = {}
     for row, column in cells:
         distance = float(distances[row, column])
         x, y = grid_to_world(row, column, resolution, *origin)
@@ -352,15 +379,17 @@ def known_space_search_candidates(raw_grid, resolution, origin, robot_name,
                 math.dist((x, y), point) < MIN_TARGET_SEPARATION_M for point in exclusions):
             continue
         cell = (row, column)
-        if cell not in gain_cache:
-            gain_cache[cell] = visible_unknown_gain(raw_grid, cell, INFORMATION_RADIUS_M / resolution, interest)
-        gain = gain_cache[cell]
+        key=('initial_search',row,column) if face_interest else cell
+        if key not in gain_cache:
+            gain_cache[key]=(known_search_view(raw_grid,cell,INFORMATION_RADIUS_M/resolution,interest)
+                if face_interest else visible_unknown_gain(raw_grid,cell,INFORMATION_RADIUS_M/resolution,interest))
+        gain,yaw=gain_cache[key] if face_interest else (gain_cache[key],None)
         if gain == 0:
             continue
         viewpoint = Viewpoint(row * raw_grid.shape[1] + column, row, column, row, column, gain, 1)
         utility = gain / (distance + 1.)
         candidates.append((utility, robot_name, viewpoint.group_id,
-                           Assignment(viewpoint, x, y, distance, utility, x, y)))
+                           Assignment(viewpoint, x, y, distance, utility, x, y,yaw)))
     return candidates
 
 
@@ -2688,6 +2717,9 @@ class HeadquartersControl(Node):
         self.target_scan_next_robot = None
         self.target_search_active = False
         self.target_search_visits = []
+        self.initial_search_visits = {} if self.enable_rally else None
+        self.initial_search_next = {}
+        self.initial_search_goals = {}
         self.target_search_basis = "current_map_frontiers"
         self.survey_goal_started_at = None
         self.survey_attempts = 0
@@ -5540,6 +5572,7 @@ class HeadquartersControl(Node):
         self.robot_positions[robot_name] = position
         yaw = quaternion_yaw(msg.pose.pose.orientation) + quaternion_yaw(transform.rotation)
         self.robot_yaws[robot_name] = math.atan2(math.sin(yaw), math.cos(yaw))
+        HeadquartersControl.record_initial_search_visit(self,robot_name)
         if (self.task_state == "RALLY" and self.rally_hold_started_at is not None
                 and robot_name in self.rally_targets):
             target = self.rally_targets[robot_name]
@@ -5587,6 +5620,20 @@ class HeadquartersControl(Node):
                 msg.info.origin.position.y,
             ),
         }
+
+    def record_initial_search_visit(self,name):
+        visits=getattr(self,'initial_search_visits',None)
+        if visits is None or self.task_state not in ('EXPLORE','FOUND_UNCONFIRMED'):
+            return
+        position=self.robot_positions[name];now=self.now()
+        odom=self.robot_odom_received_at.get(name);frame=self.robot_tf_received_at.get(name)
+        if (position is None or not all(math.isfinite(v) for v in position)
+                or any(stamp is None or not 0.<=now-stamp<=STATE_TTL_SEC['pose_state'] for stamp in (odom,frame))):
+            return
+        key=tuple(math.floor(v/INITIAL_SEARCH_VISIT_BIN_M) for v in position)
+        if key not in visits:
+            visits[key]=dict(source='ap_delivered_pose_history',robot=name,position=list(position),
+                observed_at_sec=now,pose_source_time=odom,frame_source_time=frame)
 
     def active_exclusions(self):
         now = self.now()
@@ -5733,6 +5780,8 @@ class HeadquartersControl(Node):
             diagnostics["frontier_groups"] = 0
             diagnostics["groups_with_viewpoints"] = 0
             for robot_name, position in idle_positions.items():
+                initial_search=(not search and getattr(self,'enable_rally',False)
+                    and getattr(self,'initial_search_next',{}).get(robot_name,False))
                 robot_exclusions = list(exclusions)
                 robot_exclusions.extend(
                     other_position
@@ -5744,6 +5793,15 @@ class HeadquartersControl(Node):
                         and other_position is not None
                     )
                 )
+                if initial_search:
+                    visits=[v['position'] for v in self.initial_search_visits.values()]
+                    robot_candidates=known_space_search_candidates(
+                        self.map_data,self.resolution,self.origin,robot_name,position,
+                        [*visits,*[p for p in self.robot_positions.values() if p is not None]],robot_exclusions,
+                        [p for name,p in self.robot_positions.items() if name!=robot_name and p is not None],
+                        gain_cache=search_gain_cache,face_interest=True)
+                    initial_search=bool(robot_candidates)
+                    robot_diagnostics=dict(frontier_groups=0,groups_with_viewpoints=0)
                 if refine == "known_space":
                     robot_candidates = known_space_search_candidates(
                         self.map_data, self.resolution, self.origin, robot_name, position,
@@ -5751,7 +5809,7 @@ class HeadquartersControl(Node):
                         robot_exclusions, [p for name,p in self.robot_positions.items() if name != robot_name and p is not None],
                         gain_cache=search_gain_cache)
                     robot_diagnostics = dict(frontier_groups=0, groups_with_viewpoints=0)
-                else:
+                elif not initial_search:
                     robot_candidates, robot_diagnostics = robot_candidate_assignments(
                         self.map_data,
                         self.resolution,
@@ -5796,6 +5854,7 @@ class HeadquartersControl(Node):
                         utility,
                         assignment.navigation_x,
                         assignment.navigation_y,
+                        assignment.navigation_yaw,
                     )
                     if battery_factor < 1.0:
                         unfunded_candidates.add((robot_name, coordinated))
@@ -5807,7 +5866,10 @@ class HeadquartersControl(Node):
                             excluded_targets=robot_exclusions,
                             battery_factor=battery_factor, adjusted_utility=utility,
                             nominal_blocked_positions=([p for other,p in self.robot_positions.items()
-                                if other != robot_name and p is not None] if refine else []))
+                                if other != robot_name and p is not None] if refine or initial_search else []))
+                        if initial_search:
+                            preference.update(initial_search_visits=list(self.initial_search_visits.values()),
+                                search_kind='known_space',view_yaw=assignment.navigation_yaw)
                         travel_preferences[robot_name, coordinated] = preference
                     if not search and interrupted_frontier_is_useful(
                         coordinated, resume_intents.get(robot_name), battery_factor
@@ -5890,7 +5952,8 @@ class HeadquartersControl(Node):
                 unfunded = unfunded or factor < 1.
                 original_assignment = assignment
                 assignment = Assignment(assignment.viewpoint, assignment.x, assignment.y,
-                    planned_distance, assignment.utility, assignment.navigation_x, assignment.navigation_y)
+                    planned_distance, assignment.utility, assignment.navigation_x, assignment.navigation_y,
+                    assignment.navigation_yaw)
                 if unfunded:
                     if HeadquartersControl.exploration_charge_budget(self, name, assignment) is not None:
                         charge_candidates[name] = assignment
@@ -5902,7 +5965,7 @@ class HeadquartersControl(Node):
                     assignment.path_distance_m, assignment.utility, pose.x, pose.y,
                     (pose.yaw if world_to_grid(pose.x, pose.y, self.resolution, *self.origin)
                      != world_to_grid(assignment.x, assignment.y, self.resolution, *self.origin)
-                     else None),
+                     else original_assignment.navigation_yaw),
                 )
                 routes[name] = route
                 selected.append(name)
@@ -5964,9 +6027,10 @@ class HeadquartersControl(Node):
             self.robot_states[robot_name] = "active"
             self.goal_targets[robot_name] = assignment
             self.goal_routes[robot_name] = routes[robot_name]
-            self.goal_initial_gain[robot_name] = self.target_information_gain(
-                assignment.x, assignment.y
-            )
+            visual=self.exploration_travel_choices.get(robot_name,{}).get('search_kind')=='known_space'
+            if hasattr(self,'initial_search_goals'):self.initial_search_goals[robot_name]=visual
+            self.goal_initial_gain[robot_name] = (0 if visual else self.target_information_gain(
+                assignment.x, assignment.y))
             self.get_logger().info(
                 f"Assigned {robot_name} to group "
                 f"{assignment.viewpoint.group_id} at "
@@ -6002,7 +6066,7 @@ class HeadquartersControl(Node):
             event["search_route"] = self.goal_routes[robot_name]
             event["map_resolution_m"] = self.resolution
         choice = getattr(self, 'exploration_travel_choices', {}).get(robot_name)
-        if kind == 'exploration' and choice is not None:
+        if kind in ('exploration','initial_visual_search') and choice is not None:
             event['travel_preference'] = choice
             event['robot_positions'] = self.robot_positions
             event['battery_states'] = self.battery_states if self.enable_battery else None
@@ -6057,7 +6121,8 @@ class HeadquartersControl(Node):
         self.record_navigation_decision(
             robot_name,
             "target_reacquisition_exploration"
-            if getattr(self, "target_search_active", False) else "exploration",
+            if getattr(self, "target_search_active", False) else (
+                "initial_visual_search" if getattr(self,'initial_search_goals',{}).get(robot_name,False) else "exploration"),
             goal.pose,
         )
         future = client.send_goal_async(
@@ -6174,6 +6239,13 @@ class HeadquartersControl(Node):
                 resume_intents.pop(robot_name,None)
         elif not success and not self.battery_preempted[robot_name]:
             resume_intents.pop(robot_name,None)
+        if hasattr(self,'initial_search_next') and getattr(self,'enable_rally',False):
+            if self.battery_modes[robot_name]=='FAILED' or (not success and not self.battery_preempted[robot_name]):
+                self.initial_search_next[robot_name]=False
+            elif (success and assignment is not None and self.task_state in ('EXPLORE','FOUND_UNCONFIRMED')
+                    and math.dist((assignment.navigation_x,assignment.navigation_y),(assignment.x,assignment.y))
+                    <=NAVIGATION_POSITION_TOLERANCE_M):
+                self.initial_search_next[robot_name]=not self.initial_search_goals.get(robot_name,False)
         if (success and getattr(self, "target_search_active", False)
                 and not self.fresh_target() and self.fresh_robot_poses()):
             # A travelled search waypoint deserves a real full-heading scan;

@@ -164,7 +164,7 @@ def test_bounded_commitment_reconstructs_base_and_scheduling_scores(corruption):
     grid=np.frombuffer(zlib.decompress(base64.b64decode(e['planning_map']['grid'])),
         dtype='<i2').reshape(e['planning_map']['shape'])
     groups=c.frontier_groups(grid)
-    f.update(frontier_group_id=1,frontier_group_size=len(groups[0]),excluded_targets=[],
+    f.update(frontier_group_id=0,frontier_group_size=len(groups[0]),excluded_targets=[],
         resume_intent=[*f['target'],f['information_gain']],continuation_weight=c.FRONTIER_CONTINUATION_WEIGHT)
     f['base_utility']=c.exploration_utility(f['information_gain'],f['frontier_group_size'],f['own_nominal_distance_m'])
     f['adjusted_utility']=f['base_utility']*f['factor']
@@ -173,7 +173,7 @@ def test_bounded_commitment_reconstructs_base_and_scheduling_scores(corruption):
     if corruption=='score':f['scheduling_score']+=1.
     if corruption=='base_and_score':
         f['base_utility']*=2.;f['adjusted_utility']*=2.;f['scheduling_score']*=2.
-    if corruption=='group':f['frontier_group_id']=0
+    if corruption=='group':f['frontier_group_id']=-1
     if corruption=='group_size':f['frontier_group_size']+=1
     if corruption=='exclusions':f['excluded_targets']=[f['target']]
     if corruption=='missing':f.pop('scheduling_score')

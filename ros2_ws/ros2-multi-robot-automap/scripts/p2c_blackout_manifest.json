@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-08T22:53:45.463425+00:00",
+  "predeclared_at_utc": "2026-10-08T23:46:51.752592+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "c5b0f5ea149fde7376d1b045412c3865bc654ec6",
+  "candidate_parent_commit": "7f616791d2e16da3e91f2fa05da3a2da46751d9c",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -177,5 +177,15 @@
   "native_tf_graph_capture": {
     "scope": "Read-only safety observer captures complete required application/native graph once all native battery topics are observed and all endpoint bindings exist; does not delay or change task clocks.",
     "evidence": "native_graph.json kept alongside original early bypass graph, owner-bound optional observer command and reader source digests required. Missing evidence FAIL; old incomplete graphs are never repaired."
+  },
+  "initial_known_space_search": {
+    "scope": "Complete object mission (enable_rally true) only; pure mapping and existing target reacquisition behavior stay unchanged.",
+    "alternation": "Successful full mapping viewpoint enables one known-space purpose; successful full known-space viewpoint returns to mapping. Short prefixes and safety charging preserve the current purpose; ordinary navigation failure returns to mapping.",
+    "history": "Only original delivered odometry and map-to-odom sources each0..2s old at recording; first position per0.5m world bin. Historical2m visit discs are search preferences, never proof of camera coverage or object absence.",
+    "view": "Current known-free visible interest in a90-degree sector;16 deterministic headings. Occupied and unknown cells block sight; selected heading retained at the final Nav2 endpoint.",
+    "admission": "Original0.45m endpoint/0.35m known-free route, body masks, accepted reservations, current source TTLs, full approach+qualified contact return+reaction/wait reserve and charging fairness. Empty known-space candidate set falls back to ordinary mapping; unfunded candidates request original serial charging.",
+    "inputs": "Existing gateway delivered maps/poses/models only; no ground-truth target, hidden camera, native audit stream or new application packet.",
+    "evidence": "Private initial_visual_search witnesses retain delivered grids, positions, source leases, historical visit inputs, sector gain/yaw, full travel/energy and scheduling score; reader reconstructs them. Complete cohort must exercise at least one such witness.",
+    "limits": "Heuristic bounded current-map search preference, not exhaustive visual coverage, optimality, hardware safety or worst-case completion guarantee."
   }
 }

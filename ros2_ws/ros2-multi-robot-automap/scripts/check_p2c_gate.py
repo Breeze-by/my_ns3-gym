@@ -187,11 +187,12 @@ def lookahead_audit(records,require_compound_pose=False):
     return dict(status='PASS',two_frontier_charge_decisions=count)
 
 
-def exploration_travel_audit(records,required=False,require_commitment=False,require_bounded_commitment=False):
+def exploration_travel_audit(records,required=False,require_commitment=False,require_bounded_commitment=False,
+        require_initial_search=False):
     """Rebuild executed frontier travel and delivered-only energy witnesses."""
-    count=0;discounts=0;resumed=0
+    count=0;discounts=0;resumed=0;visual_count=0
     for e in records:
-        if e.get('event')!='coordinator_navigation_decision' or e.get('kind')!='exploration':continue
+        if e.get('event')!='coordinator_navigation_decision' or e.get('kind') not in ('exploration','initial_visual_search'):continue
         f=e.get('travel_preference')
         if required:assert f is not None,'missing executed exploration travel witness'
         if f is None:continue
@@ -266,7 +267,30 @@ def exploration_travel_audit(records,required=False,require_commitment=False,req
         factor=control.relative_travel_factor(nominal,[r['distance_m'] for r in peers.values()])
         assert math.isclose(factor,f['factor'],abs_tol=1e-8)
         assert math.isclose(f['base_utility']*f['battery_factor']*factor,f['adjusted_utility'],abs_tol=1e-8)
-        if require_commitment:
+        visual=e['kind']=='initial_visual_search'
+        if visual:
+            if require_bounded_commitment:assert require_initial_search,'undeclared initial visual search'
+            assert f['search_kind']=='known_space'
+            assert control.traversable_grid(raw['data'],raw['resolution'],control.ROBOT_CLEARANCE_M)[cell]
+            visits=f['initial_search_visits'];bins=set()
+            for visit in visits:
+                assert visit['source']=='ap_delivered_pose_history' and visit['robot'] in positions
+                p=visit['position'];assert len(p)==2 and all(math.isfinite(v) for v in p)
+                observed=visit['observed_at_sec'];assert 0<=observed<=now
+                assert all(0<=observed-visit[k]<=2. for k in ('pose_source_time','frame_source_time'))
+                key=tuple(math.floor(v/control.INITIAL_SEARCH_VISIT_BIN_M) for v in p)
+                assert key not in bins;bins.add(key)
+            points=[v['position'] for v in visits]+[p for p in positions.values() if p is not None]
+            interest=control.known_search_interest(raw['data'],raw['resolution'],raw['origin'],points)
+            gain,yaw=control.known_search_view(raw['data'],cell,control.INFORMATION_RADIUS_M/raw['resolution'],interest)
+            assert gain==f['information_gain'] and gain>0
+            assert math.isclose(yaw,f['view_yaw'],abs_tol=1e-8)
+            assert f['nominal_blocked_positions']==blocked
+            if control.world_to_grid(*e['requested_position'],raw['resolution'],*raw['origin'])==cell:
+                delta=math.atan2(math.sin(e['requested_yaw']-yaw),math.cos(e['requested_yaw']-yaw))
+                assert abs(delta)<1e-8
+            visual_count+=1
+        elif require_commitment:
             assert math.isfinite(f['information_gain']) and f['information_gain']>0
             gain=control.visible_unknown_gain(raw['data'],cell,control.INFORMATION_RADIUS_M/raw['resolution'])
             assert gain==f['information_gain'],'current viewpoint gain differs from delivered grid'
@@ -277,14 +301,21 @@ def exploration_travel_audit(records,required=False,require_commitment=False,req
             assert f['battery_factor']==1.
             resumed+=1
         if require_bounded_commitment:
-            groups=control.frontier_groups(raw['data'])
             group=f['frontier_group_id']
-            assert isinstance(group,int) and 1<=group<=len(groups)
-            assert f['frontier_group_size']==len(groups[group-1])
+            if visual:
+                assert group==cell[0]*raw['data'].shape[1]+cell[1] and f['frontier_group_size']==1
+            else:
+                groups=control.frontier_groups(raw['data'])
+                assert isinstance(group,int) and 0<=group<len(groups)
+                assert f['frontier_group_size']==len(groups[group])
             exclusions=f['excluded_targets']
             assert all(len(p)==2 and all(math.isfinite(v) for v in p) for p in exclusions)
-            base=control.exploration_utility(f['information_gain'],f['frontier_group_size'],nominal)
-            base*=control.target_reuse_penalty(target,exclusions)
+            if visual:
+                assert all(math.dist(target,p)>=control.MIN_TARGET_SEPARATION_M for p in exclusions)
+                base=f['information_gain']/(nominal+1.)
+            else:
+                base=control.exploration_utility(f['information_gain'],f['frontier_group_size'],nominal)
+                base*=control.target_reuse_penalty(target,exclusions)
             assert math.isclose(base,f['base_utility'],abs_tol=1e-8),'base utility differs from delivered geometry'
             weight=control.FRONTIER_CONTINUATION_WEIGHT if 'resume_intent' in f else 1.
             assert f['continuation_weight']==weight
@@ -298,7 +329,8 @@ def exploration_travel_audit(records,required=False,require_commitment=False,req
         count+=1;discounts+=int(factor<1.)
     return dict(status='PASS',executed_frontier_witnesses=count,relative_travel_discounts=discounts,
         resumed_frontier_witnesses=resumed,required=required,commitment_required=require_commitment,
-        bounded_commitment_required=require_bounded_commitment)
+        bounded_commitment_required=require_bounded_commitment,initial_visual_witnesses=visual_count,
+        initial_search_required=require_initial_search)
 
 
 def ap_return_veto_audit(records):
@@ -493,7 +525,7 @@ def check_one(path,config):
     repairs=rally_repair_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     travel=exploration_travel_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
         bool(config.get('exploration_travel_preference')),bool(config.get('exploration_frontier_commitment')),
-        bool(config.get('exploration_bounded_commitment')))
+        bool(config.get('exploration_bounded_commitment')),bool(config.get('initial_known_space_search')))
     assert result['collision_monitoring_active']
     return dict(case=case,status='PASS',git_commit=row['git_commit'],source_digests=row['source_digests'],
         result=result,raw_summary=str(path.resolve()),raw_summary_sha256=sha(path),return_audit=native,
@@ -540,6 +572,9 @@ def main():
     root=Path(__file__).resolve().parents[3]
     original_manifest=json.loads(subprocess.check_output(['git','show',f"{originals[0]['git_commit']}:{a.manifest.resolve().relative_to(root)}"],cwd=root))
     assert original_manifest==config
+    if config.get('initial_known_space_search') and a.cases is None and not errors:
+        if not any(row['exploration_travel_audit']['initial_visual_witnesses'] for row in evidence):
+            errors.append(dict(case='initial_known_space_search',error='new search algorithm was never exercised'))
     physical=None
     if not a.development and a.cases is None:
         try:
