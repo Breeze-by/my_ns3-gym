@@ -782,14 +782,14 @@ def route_respects_known_obstacles(raw_grid, resolution, origin, route,
             cache.update(obstacle_snapshot=raw_grid, obstacle_geometry=geometry, obstacle_tree=tree)
     if tree is None:
         return True
-    samples = [np.asarray(route[:1], dtype=float)]
-    increments = [np.zeros(1)]
-    for start,end in zip(route,route[1:]):
-        distance=math.dist(start,end);steps=max(1,math.ceil(2*distance/resolution))
-        samples.append(np.asarray(start)+(np.asarray(end)-start)*np.arange(1,steps+1)[:,None]/steps)
-        increments.append(np.full(steps, distance/steps))
-    samples = np.concatenate(samples)
-    travel = np.cumsum(np.concatenate(increments))
+    points = np.asarray(route, dtype=float)
+    distances = np.asarray([math.dist(start, end) for start, end in zip(route, route[1:])])
+    steps = np.asarray([max(1, math.ceil(2*distance/resolution)) for distance in distances], dtype=int)
+    segments = np.repeat(np.arange(len(steps)), steps)
+    ordinal = np.arange(int(steps.sum())) - np.repeat(np.cumsum(steps)-steps, steps) + 1
+    samples = np.concatenate((points[:1], points[:-1][segments]
+        + (points[1:]-points[:-1])[segments]*ordinal[:, None]/steps[segments, None]))
+    travel = np.cumsum(np.concatenate((np.zeros(1), distances[segments]/steps[segments])))
     clearances = tree.query(samples)[0]
     cells = np.floor((samples-np.asarray(origin))/resolution).astype(int)[:, ::-1]
     def values_at(cells):
@@ -2577,8 +2577,10 @@ class HeadquartersControl(Node):
         self.survey_battery_preempted = False
         self.survey_cancel_requested = False
 
+        # Delivered maps/poses are replaceable snapshots. Do not replay older
+        # snapshots after a planning callback; keep their original timestamps.
         self.map_sub = self.create_subscription(
-            OccupancyGrid, "/merge_map", self.map_callback, 10
+            OccupancyGrid, "/merge_map", self.map_callback, 1
         )
         self.robot_positions = {}
         self.robot_yaws = {}
@@ -2660,7 +2662,7 @@ class HeadquartersControl(Node):
                     lambda msg, name=robot_name: self.robot_odom_callback(
                         msg, name
                     ),
-                    10,
+                    1,
                 )
             )
             self.robot_subscriptions.append(
@@ -2670,7 +2672,7 @@ class HeadquartersControl(Node):
                     lambda msg, name=robot_name: self.robot_tf_callback(
                         msg, name
                     ),
-                    20,
+                    1,
                 )
             )
             self.robot_subscriptions.append(
@@ -2680,7 +2682,7 @@ class HeadquartersControl(Node):
                     lambda msg, name=robot_name: self.robot_map_callback(
                         msg, name
                     ),
-                    10,
+                    1,
                 )
             )
             self.robot_subscriptions.append(

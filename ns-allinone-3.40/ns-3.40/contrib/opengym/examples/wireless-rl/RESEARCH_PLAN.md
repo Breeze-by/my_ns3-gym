@@ -891,3 +891,5 @@ OpenWiFi、学习式地图/图像压缩、未知初始位姿地图配准、机�
 2026-10-09 P2C.1 v12前瞻：v11强制首格原生RALLY timeout300.2，发现222.1/集合223.8s，两机各charge1/最低15.327770819，零接触、耗尽或机器人失效；strict FAIL和18份原证据保留。tb2在已有接触区补能（native返航运动约9.16e-7m），不得当远端返航证明。旧终点失去合格返航后缺少在线重选；新候选仅在idle/未到位/非observer/无活动动作和安全返充时，搜索原1..2.6m区域的已知自由可见网格，保留0.45m净空/0.8m间距，核验完整去返/源龄/保持等待成本，再交原派发复查。构造旧AP双图+0.4s后的live快照证明稀疏候选无合格点、网格替代约0.135m；非原控制器反事实/任务收益。原300s/5s/TTL/Nav2/物理/重试保持；仍需新clean pushed4dev/17formal/2physical，917未暴露，P3C.5已验收，无P4/ns3/Wi-Fi/RL。
 
 v12组件验证：937功能/1skip48.75s、最终37定向18.78s（含重选→再预算）/四包5.45s/172保护/54协议PASS；两次构造夹具FAIL原样保留并仅修正夹具源戳/缺属性，不改原始任务。报告：20261009_p2c_repair_components.md/.json；任务门禁仍待新冻结。
+
+2026-10-09 P2C.1 v13前瞻：v12四原开发FAIL（forcedCOMPLETE295.2s；lab surveyFAILED224.5s；rooms EXPLOREtimeout300.2s；corr RALLYtimeout300.2s），四格零接触/耗尽/真实机器人失效、原始和48附件保留。房间2200条网关frame accepted最大0.204s而中央TF约12s，改AP四类连续状态订阅keep-last1、保持原源戳/事件/TTL；实际DDS50快照旧队列首31/41、新队列首50验证PASS。连续障碍采样改批量数组，原资格/完整路径保持，938功能/四包5.85s/172保护/54协议PASS。新4开发/17正式/两真实断网仍须clean pushed冻结；917未暴露，P3C.5已验收，无P4/ns3/Wi-Fi/RL。证据：20261009_p2c_snapshot_components.md与20261009_p2c_v12_failed_development.md。
