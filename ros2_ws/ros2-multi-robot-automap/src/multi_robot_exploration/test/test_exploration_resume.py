@@ -59,12 +59,29 @@ def test_only_battery_interrupted_search_goals_are_remembered(phase, preempted, 
     assert node.successful_exploration_legs.get('tb1',0)==int(success and phase in ('EXPLORE','FOUND_UNCONFIRMED'))
 
 
-@pytest.mark.parametrize("navigation,remaining", [((2., 3.), True), ((7.5, 3.), False)])
+@pytest.mark.parametrize("navigation,remaining", [((2., 3.), True), ((7.5, 3.), True), ((8.,3.),False)])
 def test_safe_prefix_keeps_intent_until_the_interrupted_frontier_is_reached(navigation, remaining):
     node=finish_node(assignment(8., 3., navigation=navigation))
     node.exploration_resume_intents['tb1']=(8., 3., 1000)
     control.HeadquartersControl.finish_goal(node, "tb1", True)
     assert bool(node.exploration_resume_intents)==remaining
+
+
+@pytest.mark.parametrize('phase,success,remaining',[
+    ('EXPLORE',True,True),('FOUND_UNCONFIRMED',True,True),
+    ('RALLY',True,False),('EXPLORE',False,False)])
+def test_new_viewpoint_prefix_creates_intent_without_a_battery_interruption(phase,success,remaining):
+    node=finish_node(assignment(8.,3.,navigation=(2.,3.)),phase,preempted=False)
+    control.HeadquartersControl.finish_goal(node,'tb1',success)
+    assert bool(node.exploration_resume_intents)==remaining
+    if remaining:assert node.exploration_resume_intents['tb1']==(8.,3.,1000)
+
+
+def test_non_preempted_navigation_failure_clears_a_previous_prefix_intent():
+    node=finish_node(assignment(8.,3.,navigation=(2.,3.)),preempted=False)
+    node.exploration_resume_intents['tb1']=(8.,3.,1000)
+    control.HeadquartersControl.finish_goal(node,'tb1',False)
+    assert not node.exploration_resume_intents
 
 
 def test_physical_failure_drops_intent_instead_of_resuming():
@@ -109,3 +126,49 @@ def test_resume_preference_uses_existing_admission_and_falls_back(monkeypatch, r
         assert len(sent)==1 and sent[0].x==8. and node.exploration_resume_intents
     else:
         assert len(sent)==1 and sent[0].x==2. and not node.exploration_resume_intents
+
+
+def test_successful_new_prefix_preserves_a_useful_viewpoint_in_the_saved_delivered_snapshot():
+    import base64,json,zlib
+    from pathlib import Path
+    f=json.loads((Path(__file__).parent/'fixtures/p2c_v18_prefix_reassignment.json').read_text())
+    e=f['current_navigation_event'];prior=f['prior_navigation_event'];maps={}
+    for key,s in [('planning',e['planning_map']),('source',e['source_map']),*e['return_maps'].items()]:
+        maps[key]=dict(data=np.frombuffer(zlib.decompress(base64.b64decode(s['grid'])),dtype='<i2').reshape(s['shape']),
+            resolution=s['resolution'],origin=s['origin'])
+    intended=prior['travel_preference']['target'];prefix=prior['requested_position']
+    result_node=finish_node(assignment(*intended,gain=f['prior_information_gain'],navigation=prefix),preempted=False)
+    control.HeadquartersControl.finish_goal(result_node,'tb1',True)
+    assert result_node.exploration_resume_intents['tb1'][:2]==tuple(intended)
+    sent=[];grid=maps['planning'];states=e['battery_states']
+    node=SimpleNamespace(enable_battery=True,task_state='EXPLORE',now=lambda:e['event_time'],
+        map_data=grid['data'],resolution=grid['resolution'],origin=grid['origin'],
+        source_map_data=maps['source']['data'],map_self_return_cells=e['self_return_cells'],
+        map_received_at=e['planning_map']['source_time'],
+        robot_positions=e['robot_positions'],robot_states={'tb1':'idle','tb2':'active'},
+        battery_modes={name:state['mode'] for name,state in states.items()},battery_states=states,
+        robot_maps={name:maps[name] for name in e['return_maps']},
+        robot_map_received_at={name:s['source_time'] for name,s in e['return_maps'].items()},
+        robot_odom_received_at={name:e['inputs'][name+'/pose_state']['source_time'] for name in states},
+        robot_tf_received_at={name:e['inputs'][name+'/frame_state']['source_time'] for name in states},
+        battery_state_received_at={name:e['inputs'][name+'/battery_state']['source_time'] for name in states},
+        exploration_resume_intents=result_node.exploration_resume_intents,rally_charge_requested={},
+        input_robot_names=lambda:list(states),participating_robots=lambda:list(states),
+        fresh_robot_inputs=lambda:True,active_exclusions=lambda:[],frontier_cache=None,
+        goal_targets={},goal_routes={},goal_initial_gain={},last_no_assignment_log=-float('inf'),
+        target_information_gain=lambda *args:1000,input_freshness_details=lambda:e['inputs'],
+        get_logger=lambda:SimpleNamespace(info=lambda *args:None,warn=lambda *args:None),
+        consumed_publisher=SimpleNamespace(publish=lambda *args:None),
+        send_goal=lambda name,a:sent.append((name,a)))
+    node.exploration_battery_factor=lambda *args:control.HeadquartersControl.exploration_battery_factor(node,*args)
+    control.HeadquartersControl.assign_idle_robots(node)
+    assert len(sent)==1 and sent[0][0]=='tb1'
+    selected=sent[0][1]
+    assert np.linalg.norm(np.array([selected.x,selected.y])-intended)<=control.MIN_TARGET_SEPARATION_M
+    assert selected.viewpoint.information_gain>max(200.,.2*f['prior_information_gain'])
+    assert node.exploration_travel_choices['tb1']['resume_intent']==tuple(intended)+(f['prior_information_gain'],)
+    # Conditional snapshot fixture, with no original history/reservation replay.
+    # An empty intent on the same reconstructed inputs selects the nearby task.
+    node.robot_states['tb1']='idle';node.exploration_resume_intents={};node.goal_routes={};sent.clear()
+    control.HeadquartersControl.assign_idle_robots(node)
+    assert sent and np.linalg.norm(np.array([sent[0][1].x,sent[0][1].y])-intended)>control.MIN_TARGET_SEPARATION_M

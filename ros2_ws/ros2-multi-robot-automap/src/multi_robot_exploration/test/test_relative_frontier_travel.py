@@ -82,11 +82,13 @@ def test_ap_budget_prices_both_original_pose_sources_and_rejects_invalid_tf(fram
         with pytest.raises(ValueError):c.HeadquartersControl.task_return_required_energy(node,'tb1',1.,(3.,3.))
 
 
-def travel_event():
+def travel_event(unknown=False):
     node,_,_,_=charge_node();node.robot_positions={'tb1':(2.05,3.05),'tb2':(8.05,5.05)}
     node.robot_tf_received_at=dict.fromkeys(node.robot_positions,9.5)
     for state in node.battery_states.values():state.update(energy=80.,mode='ACTIVE',stamp_sec=10.)
-    grid=node.map_data;mask=c.traversable_grid(grid,.1,c.PATH_CLEARANCE_M)
+    grid=node.map_data
+    if unknown:grid[12:25,55:85]=-1
+    mask=c.traversable_grid(grid,.1,c.PATH_CLEARANCE_M)
     fields={name:c.exploration_distance_field(grid,mask,.1,(0.,0.),p) for name,p in node.robot_positions.items()}
     target=(7.05,3.05);cell=c.world_to_grid(*target,.1,0.,0.)
     distance=float(fields['tb1'][cell]);goal=assignment(*target,distance=distance)
@@ -95,6 +97,7 @@ def travel_event():
     planned=float(c.exploration_distance_field(grid,c.block_dynamic_positions(mask,.1,(0.,0.),blocked),
         .1,(0.,0.),node.robot_positions['tb1'])[cell])
     f.update(base_utility=100.,battery_factor=1.,adjusted_utility=100.*f['factor'],
+        information_gain=c.visible_unknown_gain(grid,cell,c.INFORMATION_RADIUS_M/.1),
         nominal_blocked_positions=[],blocked_positions=blocked,planned_distance_m=planned,
         required_energy=c.HeadquartersControl.exploration_required_energy(node,'tb1',planned,target))
     inputs={'headquarters/fused_map_snapshot':dict(source_time=10.,age_sec=0.)}
@@ -132,6 +135,24 @@ def test_executed_frontier_audit_rejects_forged_travel_energy_and_sources(corrup
         assert result['executed_frontier_witnesses']==result['relative_travel_discounts']==1
     else:
         with pytest.raises((AssertionError,KeyError)):exploration_travel_audit([e],True)
+
+
+@pytest.mark.parametrize('corruption',[None,'gain','missing_gain','far_intent','old_gain','nan_intent','unfunded'])
+def test_frontier_commitment_audit_uses_current_delivered_gain_and_funded_nearby_intent(corruption):
+    from check_p2c_gate import exploration_travel_audit
+    e=travel_event(unknown=True);f=e['travel_preference']
+    assert f['information_gain']>c.MIN_REMAINING_GAIN
+    f['resume_intent']=[*f['target'],f['information_gain']]
+    if corruption=='gain':f['information_gain']+=1
+    if corruption=='missing_gain':f.pop('information_gain')
+    if corruption=='far_intent':f['resume_intent'][0]+=2
+    if corruption=='old_gain':f['resume_intent'][2]=f['information_gain']/c.MIN_REMAINING_GAIN_FRACTION
+    if corruption=='nan_intent':f['resume_intent'][0]=float('nan')
+    if corruption=='unfunded':f['battery_factor']=.5
+    if corruption is None:
+        assert exploration_travel_audit([e],True,True)['resumed_frontier_witnesses']==1
+    else:
+        with pytest.raises((AssertionError,KeyError)):exploration_travel_audit([e],True,True)
 
 
 def test_executed_witness_excludes_an_unconsulted_charging_peer_map():

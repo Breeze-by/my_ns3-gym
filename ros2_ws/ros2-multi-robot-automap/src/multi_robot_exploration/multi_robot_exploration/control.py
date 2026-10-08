@@ -5795,6 +5795,7 @@ class HeadquartersControl(Node):
                         unfunded_candidates.add((robot_name, coordinated))
                     if preference is not None:
                         preference.update(base_utility=assignment.utility,
+                            information_gain=assignment.viewpoint.information_gain,
                             battery_factor=battery_factor, adjusted_utility=utility,
                             nominal_blocked_positions=([p for other,p in self.robot_positions.items()
                                 if other != robot_name and p is not None] if refine else []))
@@ -5902,6 +5903,8 @@ class HeadquartersControl(Node):
                 if (name, original_assignment) in travel_preferences:
                     witness = travel_preferences[name, original_assignment]
                     witness.update(planned_distance_m=planned_distance, blocked_positions=blocked)
+                    if name in resuming_names:
+                        witness['resume_intent'] = resume_intents[name]
                     if getattr(self, 'enable_battery', False):
                         witness['required_energy'] = HeadquartersControl.exploration_required_energy(
                             self, name, planned_distance, (assignment.x, assignment.y))
@@ -6147,10 +6150,19 @@ class HeadquartersControl(Node):
             resume_intents[robot_name] = (
                 assignment.x, assignment.y, assignment.viewpoint.information_gain
             )
-        elif (success and robot_name in resume_intents and assignment is not None
-              and math.dist((assignment.navigation_x, assignment.navigation_y),
-                            resume_intents[robot_name][:2]) <= MIN_TARGET_SEPARATION_M):
-            resume_intents.pop(robot_name)
+        elif (success and assignment is not None
+              and getattr(self, 'task_state', None) in ('EXPLORE','FOUND_UNCONFIRMED')):
+            # A successful short leg is not arrival at the chosen viewpoint.
+            # Retain only a preference: the next batch regenerates candidates
+            # from its current map and rechecks usefulness, energy and routes.
+            if math.dist((assignment.navigation_x,assignment.navigation_y),
+                         (assignment.x,assignment.y)) > NAVIGATION_POSITION_TOLERANCE_M:
+                resume_intents[robot_name] = (assignment.x,assignment.y,
+                                             assignment.viewpoint.information_gain)
+            else:
+                resume_intents.pop(robot_name,None)
+        elif not success and not self.battery_preempted[robot_name]:
+            resume_intents.pop(robot_name,None)
         if (success and getattr(self, "target_search_active", False)
                 and not self.fresh_target() and self.fresh_robot_poses()):
             # A travelled search waypoint deserves a real full-heading scan;

@@ -186,9 +186,9 @@ def lookahead_audit(records,require_compound_pose=False):
     return dict(status='PASS',two_frontier_charge_decisions=count)
 
 
-def exploration_travel_audit(records,required=False):
+def exploration_travel_audit(records,required=False,require_commitment=False):
     """Rebuild executed frontier travel and delivered-only energy witnesses."""
-    count=0;discounts=0
+    count=0;discounts=0;resumed=0
     for e in records:
         if e.get('event')!='coordinator_navigation_decision' or e.get('kind')!='exploration':continue
         f=e.get('travel_preference')
@@ -265,13 +265,24 @@ def exploration_travel_audit(records,required=False):
         factor=control.relative_travel_factor(nominal,[r['distance_m'] for r in peers.values()])
         assert math.isclose(factor,f['factor'],abs_tol=1e-8)
         assert math.isclose(f['base_utility']*f['battery_factor']*factor,f['adjusted_utility'],abs_tol=1e-8)
+        if require_commitment:
+            assert math.isfinite(f['information_gain']) and f['information_gain']>0
+            gain=control.visible_unknown_gain(raw['data'],cell,control.INFORMATION_RADIUS_M/raw['resolution'])
+            assert gain==f['information_gain'],'current viewpoint gain differs from delivered grid'
+        if 'resume_intent' in f:
+            intent=f['resume_intent'];assert len(intent)==3 and all(math.isfinite(x) for x in intent)
+            assert math.dist(target,intent[:2])<=control.MIN_TARGET_SEPARATION_M
+            assert f['information_gain']>max(control.MIN_REMAINING_GAIN,intent[2]*control.MIN_REMAINING_GAIN_FRACTION)
+            assert f['battery_factor']==1.
+            resumed+=1
         if states is not None:
             cost=energy(name,planned)
             assert math.isfinite(cost) and cost<states[name]['energy']
             assert math.isclose(cost,f['required_energy'],abs_tol=1e-8)
             assert f['battery_factor']==1.
         count+=1;discounts+=int(factor<1.)
-    return dict(status='PASS',executed_frontier_witnesses=count,relative_travel_discounts=discounts,required=required)
+    return dict(status='PASS',executed_frontier_witnesses=count,relative_travel_discounts=discounts,
+        resumed_frontier_witnesses=resumed,required=required,commitment_required=require_commitment)
 
 
 def ap_return_veto_audit(records):
@@ -451,7 +462,7 @@ def check_one(path,config):
         assert assignments['chosen_assignments_rebuilt']>=1, 'missing exact delivered assignment choice'
     repairs=rally_repair_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     travel=exploration_travel_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
-        bool(config.get('exploration_travel_preference')))
+        bool(config.get('exploration_travel_preference')),bool(config.get('exploration_frontier_commitment')))
     assert result['collision_monitoring_active']
     return dict(case=case,status='PASS',git_commit=row['git_commit'],source_digests=row['source_digests'],
         result=result,raw_summary=str(path.resolve()),raw_summary_sha256=sha(path),return_audit=native,
