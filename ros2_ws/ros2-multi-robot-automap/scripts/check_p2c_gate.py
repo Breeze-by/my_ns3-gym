@@ -472,6 +472,7 @@ def main():
     p.add_argument('--run-root',type=Path,required=True)
     p.add_argument('--manifest',type=Path,default=Path(__file__).with_name('p2c_integration_manifest.json'))
     p.add_argument('--development',action='store_true')
+    p.add_argument('--blackout-root',type=Path)
     p.add_argument('--cases',nargs='+')
     p.add_argument('--output',type=Path,required=True)
     p.add_argument('--workers',type=int,default=3,choices=(1,2,3))
@@ -497,10 +498,19 @@ def main():
     root=Path(__file__).resolve().parents[3]
     original_manifest=json.loads(subprocess.check_output(['git','show',f"{originals[0]['git_commit']}:{a.manifest.resolve().relative_to(root)}"],cwd=root))
     assert original_manifest==config
+    physical=None
+    if not a.development and a.cases is None:
+        try:
+            assert a.blackout_root is not None,'full P2C integration requires --blackout-root with both new physical originals'
+            from check_p2c_blackout import check_pair
+            physical=check_pair(a.blackout_root,expected_commit=originals[0]['git_commit'],
+                                reference_source_digests=originals[0]['source_digests'])
+        except Exception as error:
+            errors.append(dict(case='physical_blackout_pair',error=repr(error),traceback=traceback.format_exc()))
     result=dict(status='FAIL' if errors else 'PASS',scope='development' if a.development else 'integration',
         task_stack_frozen_commit=originals[0]['git_commit'],cases=len(summaries),errors=errors,evidence=evidence,
         full_declared_scope=a.cases is None,
-        raw_failures_retained=True,physical_blackout_gate='separate_required_evidence',
+        raw_failures_retained=True,physical_blackout_gate=physical or 'required_before_full_integration',
         general_hardware_safety_guarantee=False)
     a.output.parent.mkdir(parents=True,exist_ok=True);a.output.write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps({k:v for k,v in result.items() if k!='evidence'},indent=2))

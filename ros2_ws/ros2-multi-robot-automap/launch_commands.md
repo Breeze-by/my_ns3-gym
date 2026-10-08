@@ -1125,3 +1125,27 @@ v12组件验证：937功能/1skip48.75s、最终37定向18.78s（含重选→再
 2026-10-09 P2C.1 v16相关TF组件PASS、待新冻结任务：v15首forced原EXPLORE timeout300.0/零充电/min10.576148/零接触耗尽失效；122native快照中110 TF过期且对应网关源龄≤1s，原始和未closed返航FAIL保留。新两个executor worker只并行轻量TF筛选入箱，原状态/电量/动作/充电在同一串行组，TF队列20/相关源后合并/guard唤醒，odom10与原源戳/2s/5s/128未来heap/安全保持。actual混合DDS/domain220、104定向/966全功能/四包5.20s/172保护/54协议PASS；control字节未改，新4开发/17正式/两真实断网仍待clean pushed freeze，917未暴露。P3C.5已验收，无P4/ns-3/Wi-Fi/RL。报告20261009_p2c_relevant_tf_components.md与20261009_p2c_v15_failed_development.md。
 
 2026-10-09 P2C.1 v17相对已知路径调度组件PASS、待新冻结任务：v16首forced原RALLY timeout300.3/检测280.8/两机各charge1/min9.728593/零接触耗尽失效；120native快照零TF过期，四返航闭合/能量PASS，原任务FAIL完整保留。新前沿效用按更近且当前预算充足同伴的已知路径作非零软折扣；补真实起点/有界逃离与完整机体绕行成本，派发重新核验完整去返预算。中央预算源龄改max(odom,TF)，保存两源龄及每条实际探索的交付图/模型/距离/折扣，strict reader重建。994功能/四包5.26s/172保护/54协议/实际AP DDS/192路径一致性PASS；native battery字节保持。原300s/5s/TTLs/净空/SLAM/Nav2/物理保持；新4开发/17正式/两真实断网仍待clean pushed freeze，917未暴露。P3C.5已验收，无P4/ns-3/Wi-Fi/RL。报告20261009_p2c_relative_travel_components.md与20261009_p2c_v16_failed_development.md。
+
+### P2C.1 物理断网补充门禁（独立冻结原始证据）
+
+先通过新的四开发与十固定/强制充电/零电量安全格，再执行这两个原始安全探针，最后才首次暴露917。它们沿用原预声明E40/idle0.15、50秒准备、60–250秒断网、62–248秒物理核验、远端≥1.1m/实测返航与执行Nav2运动≥0.5m、300秒horizon；中央simulation-only dispatch guard和原fixture刺激保持，不能作为完整任务或TDI样本。安全、控制与记录必须在同一个clean pushed freeze，禁止重跑/回填或运行中修改源码。新owner统一保存原fixture源/命令/物理observer/退出状态/全部SHA；标准任务没有这些刺激。
+
+在前文ROS环境与canonical工作区下：
+
+```bash
+taskset -c 0-79 /usr/bin/python3 scripts/run_p2c_tasks.py \
+  --manifest scripts/p2c_blackout_manifest.json --case physical_ideal \
+  --run-id p2c1_blackout --domain 218 --gazebo-port 20298
+taskset -c 0-79 /usr/bin/python3 scripts/run_p2c_tasks.py \
+  --manifest scripts/p2c_blackout_manifest.json --case physical_fault \
+  --run-id p2c1_blackout --domain 219 --gazebo-port 20299
+/usr/bin/python3 scripts/check_p2c_blackout.py \
+  --run-root "$PWD/log/p2c/p2c1_blackout" --output log/p2c1_blackout_gate.json
+/usr/bin/python3 scripts/check_p2c_gate.py \
+  --run-root "$PWD/log/p2c/p2c1_gate" \
+  --blackout-root "$PWD/log/p2c/p2c1_blackout" --output log/p2c1_gate.json
+```
+
+实际使用尚未占用的domain/端口和全新run-id；222/11345属于用户会话，不能复用。完整P2C.1门禁现在必须包含两个同冻结物理探针；单格/开发PASS仍只是该范围验证。预算单位是仿真模型单位，不是joules或硬件校准安全保证。
+
+2026-10-09 P2C.1 v18组件PASS、待新冻结任务：v17首forced原生COMPLETE183.7/两机各charge1/min6.791936/零接触耗尽失效，协议/184live/四返航closed/74能量/分配重建PASS，但新探索旁录附带未咨询CHARGING同伴图却缺lease，严格技术FAIL保留。未来旁录仅保存eligible机器人图，其他159控制函数AST/native battery字节保持。统一owner前瞻加入原受控stage与物理observer，原50/60..250/62..248/1.1m/.5m/300s阈值全保持；完整门禁缺同冻结两物理原格即FAIL。1011功能/四包5.20s/172保护/54协议/实际DDS/普通与物理validate-onlyPASS。新4开发/17正式/2物理均待clean pushed freeze，917未暴露。P3C.5已验收，无P4/ns-3/Wi-Fi/RL。报告20261009_p2c_consulted_map_components.md与20261009_p2c_v17_failed_development.md。

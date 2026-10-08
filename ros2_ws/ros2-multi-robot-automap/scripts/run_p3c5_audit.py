@@ -20,6 +20,21 @@ def now():
     return datetime.now(timezone.utc).isoformat()
 
 
+def return_probe_commands(config, scenario, directory, owner_pid, manifest_path):
+    """Opt-in unchanged controlled exposure and read-only physical observer."""
+    if 'return_staging' not in config:
+        return {}
+    if len(config['return_staging']['poses']) != scenario['robot_count']:
+        raise ValueError('staging robot count differs from the declared case')
+    return {
+        'physics': [sys.executable,str(PROJECT_ROOT/'scripts/observe_p3b5_return_physics.py'),
+                    '--output',str(directory/'physics.jsonl'),'--robot-count',str(scenario['robot_count'])],
+        'staging': [sys.executable,str(PROJECT_ROOT/'scripts/stage_p3b5_return_probe.py'),
+                    '--owner-pid',str(owner_pid),'--config',str(manifest_path.resolve()),
+                    '--output',str(directory/'staging.jsonl')],
+    }
+
+
 def main(default_manifest=None, log_category='p3c5'):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--manifest", type=Path, default=default_manifest or Path(__file__).with_name("p3c5_traffic_manifest.json"))
@@ -48,6 +63,7 @@ def main(default_manifest=None, log_category='p3c5'):
     schedule_path = directory / "schedule.json"
     configure_command = [sys.executable, str(PROJECT_ROOT / "scripts/gateway_configure.py"),
                          "--schedule", str(schedule_path), "--output", str(directory / "configuration.jsonl")]
+    probe_commands = return_probe_commands(config,scenario,directory,os.getpid(),args.manifest)
     env = os.environ.copy()
     env.update(ROS_DOMAIN_ID=str(args.domain), GAZEBO_MASTER_URI=f"http://127.0.0.1:{args.gazebo_port}",
                P3B5_OBSERVER_OWNER_PID=str(os.getpid()))
@@ -66,6 +82,15 @@ def main(default_manifest=None, log_category='p3c5'):
                     "message_schema": "src/multi_robot_interfaces/msg/GatewayEnvelope.msg",
                     "control_schema": "scripts/p3c5_control_schema.json",
                     "admission_protocol": "src/multi_robot_exploration/multi_robot_exploration/admission_protocol.py"}.items()}}
+    manifest['source_digests'].update({name:file_digest(PROJECT_ROOT/'scripts'/filename)
+        for name,filename in (('staging_apparatus','stage_p3b5_return_probe.py'),
+                              ('physics_observer','observe_p3b5_return_physics.py'))})
+    if probe_commands:
+        fixture=PROJECT_ROOT/'scripts/stage_p3b5_return_probe.py'
+        manifest.update(staging_command=shlex.join(probe_commands['staging']),
+            physics_command=probe_commands['physics'],staging_source=fixture.read_text(),
+            staging_source_sha256=file_digest(fixture),
+            staging_content_sha256=hashlib.sha256(fixture.read_bytes()).hexdigest())
     if args.validate_only:
         print(json.dumps(manifest, indent=2))
         return 0
@@ -83,7 +108,8 @@ def main(default_manifest=None, log_category='p3c5'):
     (directory / "manifest.json").write_text(json.dumps(manifest, indent=2)+"\n")
     children, streams, row = [], [], dict(manifest)
     try:
-        for name, argv in (("observer", observer_command), ("configuration", configure_command if scenario["schedule"] else None)):
+        for name, argv in (("observer", observer_command),*probe_commands.items(),
+                          ("configuration", configure_command if scenario["schedule"] else None)):
             if argv:
                 stream = (directory / (name+".log")).open("w")
                 streams.append(stream)
@@ -117,7 +143,7 @@ def main(default_manifest=None, log_category='p3c5'):
     print(json.dumps({"case": args.case, "runner_returncode": row.get("runner_returncode"),
                       "task_phase": row.get("result", {}).get("task_phase"), "summary": str(directory / "summary.json")}))
     return int(row.get("runner_returncode", 1) != 0 or row.get("observer_returncode", 1) != 0
-               or row.get("configuration_returncode", 0) != 0)
+               or any(child.returncode != 0 for _,child in children))
 
 
 if __name__ == "__main__":

@@ -59,6 +59,8 @@ tokens is not a reason to leave a problem unresolved or inadequately tested.
 
 ## Current Handoff
 
+2026-10-09 P2C.1 v18组件PASS、待新冻结任务：v17首forced原生COMPLETE183.7/两机各charge1/min6.791936/零接触耗尽失效，协议/184live/四返航closed/74能量/分配重建PASS，但新探索旁录附带未咨询CHARGING同伴图却缺lease，严格技术FAIL保留。未来旁录仅保存eligible机器人图，其他159控制函数AST/native battery字节保持。统一owner前瞻加入原受控stage与物理observer，原50/60..250/62..248/1.1m/.5m/300s阈值全保持；完整门禁缺同冻结两物理原格即FAIL。1011功能/四包5.20s/172保护/54协议/实际DDS/普通与物理validate-onlyPASS。新4开发/17正式/2物理均待clean pushed freeze，917未暴露。P3C.5已验收，无P4/ns-3/Wi-Fi/RL。报告20261009_p2c_consulted_map_components.md与20261009_p2c_v17_failed_development.md。
+
 2026-10-09 P2C.1 v17相对已知路径调度组件PASS、待新冻结任务：v16首forced原RALLY timeout300.3/检测280.8/两机各charge1/min9.728593/零接触耗尽失效；120native快照零TF过期，四返航闭合/能量PASS，原任务FAIL完整保留。新前沿效用按更近且当前预算充足同伴的已知路径作非零软折扣；补真实起点/有界逃离与完整机体绕行成本，派发重新核验完整去返预算。中央预算源龄改max(odom,TF)，保存两源龄及每条实际探索的交付图/模型/距离/折扣，strict reader重建。994功能/四包5.26s/172保护/54协议/实际AP DDS/192路径一致性PASS；native battery字节保持。原300s/5s/TTLs/净空/SLAM/Nav2/物理保持；新4开发/17正式/两真实断网仍待clean pushed freeze，917未暴露。P3C.5已验收，无P4/ns-3/Wi-Fi/RL。报告20261009_p2c_relative_travel_components.md与20261009_p2c_v16_failed_development.md。
 
 2026-10-09 P2C.1 v16相关TF组件PASS、待新冻结任务：v15首forced原EXPLORE timeout300.0/零充电/min10.576148/零接触耗尽失效；122native快照中110 TF过期且对应网关源龄≤1s，原始和未closed返航FAIL保留。新两个executor worker只并行轻量TF筛选入箱，原状态/电量/动作/充电在同一串行组，TF队列20/相关源后合并/guard唤醒，odom10与原源戳/2s/5s/128未来heap/安全保持。actual混合DDS/domain220、104定向/966全功能/四包5.20s/172保护/54协议PASS；control字节未改，新4开发/17正式/两真实断网仍待clean pushed freeze，917未暴露。P3C.5已验收，无P4/ns-3/Wi-Fi/RL。报告20261009_p2c_relevant_tf_components.md与20261009_p2c_v15_failed_development.md。

@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "duration_sec": 300,
+  "coverage_threshold": 0.8,
+  "fault_seed": 17011,
+  "owner_shutdown_timeout_sec": 120,
+  "native_pose_contract": {
+    "odom_ttl_sec": 2.0,
+    "frame_ttl_sec": 2.0,
+    "frame_generation_stamp": "native validity stamp minus actual SLAM transform_timeout; launch supplies the same configured offset as gateway",
+    "source_order": "source stamps are preserved; valid sensor samples up to2s ahead of local /clock wait in one bounded128-entry heap; clock-matured duplicate/out-of-order sources are ignored, excessive-future samples never poison the current pose",
+    "unavailable": "no finite budget/nav return or stable charging; bounded30s stop then explicit positive-energy failure",
+    "startup_recovery": "Every charging entry, including immediate odom callbacks, resumes a funded initial missing-pose hold instead of charging; original low-energy/task charge requests remain valid."
+  },
+  "native_energy_accounting": {
+    "period_sec": 5.0,
+    "channel": "read-only native battery_return_audit; not AP input or extra network traffic",
+    "equation": "energy=max(0,initial_energy+charge_credits-distance*move_cost-elapsed*idle_cost)",
+    "required": "all regular originals; zero-energy negative has its independent no-navigation failure audit",
+    "freeze_counterexample": "native truth path>1m cannot have zero local distance/time accounting; retain all failures"
+  },
+  "return_source_selection": {
+    "strategy": "lowest qualified complete-contact energy budget; exact tie prefers local",
+    "sources": [
+      "fresh native local map",
+      "fresh gateway-delivered fused map",
+      "explicit conservative fused search with all fresh local occupied cell rectangles"
+    ],
+    "obstacle_veto": "a fused route may extend local unknown space but may not clear local known obstacles; continuous half-local-cell checks preserve0.35m clearance and original bounded0.6m known-free start escape; no diagonal cutting",
+    "ages": "original5s source TTL for both maps; budget prices the maximum source age actually consulted, plus original2s pose leases",
+    "evidence": "all fresh map candidates/costs/qualification/selected minimum retained on read-only native return audit only; not AP input or added communication",
+    "constrained_search": "Only when the original fused shortest route fails the local-obstacle veto: project all local positive cells into a separate fused-grid search layer; keep unknown cells unknown, promote positive source cells to occupied, retain both originals, and still apply the original continuous local veto. No route remains unavailable.",
+    "derived_provenance": "Private native constrained_fused candidate: deterministic reconstruction from original local+fused grids; source_time=min(original stamps), version=max(original versions); age prices both originals. Never publish the derived grid as an application map."
+  },
+  "rally_return_objective": {
+    "order": [
+      "active_observer_protection",
+      "predicted_charge_count",
+      "qualified_return_clearance_exposure",
+      "serial_time",
+      "observer_headroom",
+      "existing_path_objective"
+    ],
+    "exposure": "Soft weighted complete-return length between original0.35m path and0.45m endpoint margins; not energy, continuous clearance or dynamic-obstacle guarantee. Every existing hard constraint is unchanged."
+  },
+  "ap_pose_budget_contract": {
+    "age": "max(original delivered odometry source age, original delivered map-to-odom source age)",
+    "odom_ttl_sec": 2.0,
+    "frame_ttl_sec": 2.0,
+    "future_or_missing": "reject, no finite task admission",
+    "lookahead_evidence": "both source ages retained privately and independently reconstructed"
+  },
+  "exploration_travel_preference": {
+    "strategy": "relative_geodesic_travel",
+    "factor": "min(1,(1+closest currently funded peer known distance)/(1+own known distance))",
+    "inputs": "same delivered planning map/poses/frame/battery/own robot maps; pending charge and non-ACTIVE peers excluded",
+    "distance": "known-free no-corner-cut route with original bounded escape and actual starting offset; complete actual body-masked path is priced again before admission",
+    "scope": "soft conditional utility preference; resume priority, fair serial charging, source TTLs and actual reservations remain; no global optimality or peer future-availability guarantee",
+    "evidence": "every executed regular frontier privately retains delivered map geometry, source leases, poses/models, nominal/actual distance, eligible peer budgets and utility factor; strict read-only reconstruction",
+    "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
+  },
+  "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
+  "predeclared_at_utc": "2026-10-08T21:12:01.640115+00:00",
+  "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
+  "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
+  "return_staging": {
+    "poses": {
+      "tb1": [
+        0.0,
+        -2.45,
+        -1.5707963267948966
+      ],
+      "tb2": [
+        0.0,
+        2.45,
+        1.5707963267948966
+      ]
+    },
+    "stage_deadline_sec": 50,
+    "position_tolerance_m": 0.25,
+    "wall_timeout_sec": 1000,
+    "scope": "Simulation-only mission dispatch guard is enabled before coordinator startup, keeping DDS/all input callbacks alive; owner-verified fixture reads the explicit enabled parameter before AP staging. Command disjoint up/down .8m truth-clearance legs, with current received-map .35m navigation-clearance required known-free current-map legs via same gateway before50s, blackout60..250. Native battery safety untouched; idlecost .15 triggers independent return. Resume owned coordinator via SIGUSR2 after both actualcharges; no fullmission success claim. Fail exposure if stages not reached by50s; no episode retry. Use <=.75m current known-free visible prefixes and existing bounded clearance escape/path detours toward the same finalpoint; recompute only on new map. Latest-only input queues retain sourceTTL. No forced unknowngoal or episode retries.",
+    "navigation_leg_limit_m": 0.75,
+    "one_shot_staging": true,
+    "pause_method": "simulation-only mission timer guard; DDS/input callbacks alive; owned SIGUSR2 resumes after both charges"
+  },
+  "physical_verification": {
+    "both_robots": true,
+    "return_start_home_distance_m_min": 1.1,
+    "measured_return_motion_inside_blackout_m_min": 0.5,
+    "nav2_executing_during_return": true,
+    "charges_each_min": 1,
+    "collision_events": 0,
+    "robot_failures": 0,
+    "truth_observer": "read-only /gazebo/model_states + local battery + Nav2 status; never writes control; world charger coordinates match configured map-origin poses within margin; blackout boundaries use 2s guard",
+    "return_motion_window_sec": [
+      62,
+      248
+    ]
+  },
+  "staging_apparatus_content_sha256": "47ce7998e212a9463ab657bbc0b121d4903ed886016bbf0fd3a2399c986da05d",
+  "physical_observer_content_sha256": "1d8a86d39f57982ea1cf18619a35c4a39dcbe151e17eef2af35d16a27cdc899c",
+  "development_parent": "380ac518bff279d63b1c53124bdc8aae51d1fcc7",
+  "cases": {
+    "physical_ideal": {
+      "world": "my_world.world",
+      "target_x": -4,
+      "target_y": 4,
+      "robot_count": 2,
+      "seed": 303,
+      "energy": 40,
+      "charge_duration": 10,
+      "safety_margin": 5,
+      "return_timeout": 120,
+      "mode": "ideal",
+      "profile": {
+        "gateway_blackout_intervals": [
+          [
+            60,
+            250
+          ]
+        ],
+        "battery_idle_cost": 0.15
+      },
+      "admission_protocol": false,
+      "schedule": []
+    },
+    "physical_fault": {
+      "world": "my_world.world",
+      "target_x": -4,
+      "target_y": 4,
+      "robot_count": 2,
+      "seed": 303,
+      "energy": 40,
+      "charge_duration": 10,
+      "safety_margin": 5,
+      "return_timeout": 120,
+      "mode": "fault",
+      "profile": {
+        "gateway_blackout_intervals": [
+          [
+            60,
+            250
+          ]
+        ],
+        "battery_idle_cost": 0.15
+      },
+      "admission_protocol": false,
+      "schedule": []
+    }
+  },
+  "stimulus_frozen_commit": "380ac518bff279d63b1c53124bdc8aae51d1fcc7"
+}

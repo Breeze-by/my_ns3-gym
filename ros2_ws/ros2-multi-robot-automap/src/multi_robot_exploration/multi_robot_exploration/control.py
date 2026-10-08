@@ -5999,7 +5999,8 @@ class HeadquartersControl(Node):
             event['self_return_cells'] = getattr(self, 'map_self_return_cells', {})
             event['return_maps'] = {name:grid_audit_evidence(g['data'],g['resolution'],g['origin'],
                 'ap_delivered_robot_map',self.robot_map_received_at[name],self.robot_map_received_at[name])
-                for name,g in HeadquartersControl.delivered_return_maps(self).items()}
+                for name,g in HeadquartersControl.delivered_return_maps(self).items()
+                if name in choice['eligible_robot_names']}
         self.consumed_publisher.publish(String(data=json.dumps(event, sort_keys=True)))
 
     def send_goal(self, robot_name, assignment):
