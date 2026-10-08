@@ -325,11 +325,9 @@ def known_space_search_candidates(raw_grid, resolution, origin, robot_name,
     """
     traversable = block_dynamic_positions(
         traversable_grid(raw_grid, resolution, PATH_CLEARANCE_M), resolution, origin, blocked)
-    start = navigation_start_cell(raw_grid, traversable,
-        world_to_grid(*position, resolution, *origin), max(1, math.ceil(.6 / resolution)))
-    if start is None:
+    distances = exploration_distance_field(raw_grid, traversable, resolution, origin, position)
+    if distances is None:
         return []
-    distances = path_distance_grid(traversable, start)
     rows, columns = np.indices(raw_grid.shape)
     interest = raw_grid == 0
     for x, y in visited:
@@ -347,7 +345,7 @@ def known_space_search_candidates(raw_grid, resolution, origin, robot_name,
     if gain_cache is None:
         gain_cache = {}
     for row, column in cells:
-        distance = float(distances[row, column] * resolution)
+        distance = float(distances[row, column])
         x, y = grid_to_world(row, column, resolution, *origin)
         if not math.isfinite(distance) or distance < USEFUL_TRAVEL_M or any(
                 math.dist((x, y), point) < MIN_TARGET_SEPARATION_M for point in exclusions):
@@ -1056,6 +1054,23 @@ def stage_navigation_leg(
     )
 
 
+def exploration_distance_field(raw_grid, traversable, resolution, origin, position):
+    """Nominal metres include the actual start and its known-free escape."""
+    start, escape = navigation_start_route(raw_grid, traversable,
+        world_to_grid(*position, resolution, *origin), max(1, math.ceil(.6 / resolution)))
+    if start is None:
+        return None
+    points = [grid_to_world(*cell, resolution, *origin) for cell in escape]
+    offset = math.dist(position, points[0]) + sum(math.dist(a,b) for a,b in zip(points,points[1:]))
+    return path_distance_grid(traversable, start) * resolution + offset
+
+
+def relative_travel_factor(distance, peer_distances):
+    """A soft geodesic ownership preference; it never prohibits a frontier."""
+    finite = [d for d in peer_distances if math.isfinite(d) and d >= 0.]
+    return min(1., (1.+min(finite))/(1.+distance)) if finite else 1.
+
+
 def prepare_frontier_data(raw_grid, resolution):
     """Build map-derived frontier data once for each map snapshot."""
     groups = frontier_groups(raw_grid)
@@ -1080,6 +1095,7 @@ def robot_candidate_assignments(
     excluded_targets=(),
     frontier_data=None,
     blocked_positions=None,
+    distance_field=None,
 ):
     """Return diverse locally reachable viewpoints for every frontier group."""
     if frontier_data is None:
@@ -1090,26 +1106,14 @@ def robot_candidate_assignments(
         traversable = block_dynamic_positions(
             traversable, resolution, origin, blocked_positions
         )
-    start = world_to_grid(
-        robot_position[0],
-        robot_position[1],
-        resolution,
-        origin[0],
-        origin[1],
-    )
-    start = navigation_start_cell(
-        raw_grid,
-        traversable,
-        start,
-        max(1, math.ceil(0.6 / resolution)),
-    )
-    if start is None:
+    distances = (exploration_distance_field(raw_grid, traversable, resolution, origin, robot_position)
+                 if distance_field is None or blocked_positions is not None else distance_field)
+    if distances is None:
         return [], {
             "frontier_groups": len(groups),
             "groups_with_viewpoints": len(viewpoints),
             "candidate_assignments": 0,
         }
-    distances = path_distance_grid(traversable, start)
     if blocked_positions is not None:
         # Global top-K viewpoints can all lie in blocked/disconnected areas.
         # Refine within this robot’s safe reachable component only on demand.
@@ -1120,8 +1124,8 @@ def robot_candidate_assignments(
         for viewpoint in group_viewpoints:
             if viewpoint.information_gain <= 0:
                 continue
-            distance_cells = distances[viewpoint.row, viewpoint.column]
-            if not np.isfinite(distance_cells):
+            path_distance_m = float(distances[viewpoint.row, viewpoint.column])
+            if not np.isfinite(path_distance_m):
                 continue
             x, y = grid_to_world(
                 viewpoint.row,
@@ -1130,7 +1134,6 @@ def robot_candidate_assignments(
                 origin[0],
                 origin[1],
             )
-            path_distance_m = float(distance_cells * resolution)
             utility = exploration_utility(
                 viewpoint.information_gain,
                 viewpoint.group_size,
@@ -2957,6 +2960,17 @@ class HeadquartersControl(Node):
                 self.robot_map_received_at[name]) for name, geometry in return_maps.items()},
         ), sort_keys=True)))
 
+    def delivered_pose_age(self, robot_name):
+        stamps = [getattr(self, 'robot_odom_received_at', {}).get(robot_name)]
+        frames = getattr(self, 'robot_tf_received_at', {})
+        if robot_name in frames:
+            stamps.append(frames[robot_name])
+        now = self.now()
+        if any(stamp is None or not math.isfinite(stamp)
+               or not 0 <= now-stamp <= STATE_TTL_SEC['pose_state'] for stamp in stamps):
+            raise ValueError('missing or stale delivered pose/frame source')
+        return max(now-stamp for stamp in stamps)
+
     def task_return_required_energy(self, robot_name, task_distance, destination):
         """Budget a proposed complete approach and its full contact-route return."""
         state = self.battery_states[robot_name]
@@ -2965,15 +2979,14 @@ class HeadquartersControl(Node):
             raise ValueError('no delivered-map charger contact route')
         now = self.now()
         map_stamp = getattr(self, 'map_received_at', None)
-        pose_stamp = getattr(self, 'robot_odom_received_at', {}).get(robot_name)
-        if map_stamp is None or pose_stamp is None:
+        if map_stamp is None:
             raise ValueError('missing return budget source timestamps')
         map_age = now - map_stamp
         local_stamp = getattr(self, 'robot_map_received_at', {}).get(robot_name)
         if HeadquartersControl.delivered_return_maps(self).get(robot_name) is not None:
             map_age = max(map_age, now - local_stamp)
-        pose_age = now - pose_stamp
-        if map_age > STATE_TTL_SEC['fused_map_snapshot'] or pose_age > STATE_TTL_SEC['pose_state']:
+        pose_age = HeadquartersControl.delivered_pose_age(self, robot_name)
+        if not 0 <= map_age <= STATE_TTL_SEC['fused_map_snapshot']:
             raise ValueError('stale return budget input')
         return battery_assignment_required_energy(
             task_distance, home_distance, float(state.get('move_cost_per_m', 1.)),
@@ -3119,7 +3132,11 @@ class HeadquartersControl(Node):
                 first_path_distance_m=assignment.path_distance_m, between_distance_m=between,
                 between_route=route, home_distance_m=home_distance, home=home,
                 blocked_positions=blocked, battery_state=dict(state),
-                map_age_sec=now-self.map_received_at, pose_age_sec=now-self.robot_odom_received_at[name],
+                map_age_sec=now-self.map_received_at,
+                pose_age_sec=HeadquartersControl.delivered_pose_age(self, name),
+                pose_source_ages_sec=dict(odom=now-self.robot_odom_received_at[name],
+                    **({'frame':now-self.robot_tf_received_at[name]}
+                       if name in getattr(self,'robot_tf_received_at',{}) else {})),
                 map_input_age_sec=max(now-self.map_received_at, now-local_stamp) if local_map is not None else now-self.map_received_at,
                 local_map_evidence=None if local_map is None else grid_audit_evidence(
                     local_map['data'], local_map['resolution'], local_map['origin'],
@@ -5599,6 +5616,32 @@ class HeadquartersControl(Node):
             self.map_data, (row, column), INFORMATION_RADIUS_M / self.resolution
         )
 
+    def frontier_travel_preference(self, name, assignment, fields):
+        """Rank by relative known travel, considering currently funded peers."""
+        peers = {}
+        cell = world_to_grid(assignment.x, assignment.y, self.resolution, *self.origin)
+        for peer, distances in fields.items():
+            if peer == name or distances is None:
+                continue
+            distance = float(distances[cell])
+            if not math.isfinite(distance) or distance >= assignment.path_distance_m:
+                continue
+            required = None
+            if getattr(self, 'enable_battery', False):
+                if peer not in self.battery_states:
+                    continue
+                required = HeadquartersControl.exploration_required_energy(
+                    self, peer, distance, (assignment.x, assignment.y))
+                if required is None or self.battery_states[peer]['energy'] <= required:
+                    continue
+            peers[peer] = dict(distance_m=distance, required_energy=required)
+        return dict(strategy='relative_geodesic_travel',
+            eligible_robot_names=list(fields),
+            factor=relative_travel_factor(assignment.path_distance_m,
+                [row['distance_m'] for row in peers.values()]),
+            own_nominal_distance_m=assignment.path_distance_m,
+            target=[assignment.x, assignment.y], peers=peers)
+
     def assign_idle_robots(self):
         if getattr(self, "return_probe_paused", False):
             return
@@ -5660,6 +5703,14 @@ class HeadquartersControl(Node):
                 self.map_data, self.resolution
             )
         frontier_data = self.frontier_cache
+        travel_fields = {} if search else {
+            name: exploration_distance_field(self.map_data, frontier_data[1],
+                self.resolution, self.origin, position)
+            for name, position in self.robot_positions.items()
+            if name in self.participating_robots() and position is not None
+            and self.battery_modes[name] == 'ACTIVE'
+            and name not in getattr(self, 'rally_charge_requested', {})}
+        self.exploration_travel_choices = {}
         search_gain_cache = {}  # One immutable map/visit mask per admission batch.
         # This context belongs only to this map/admission callback; expired or
         # replaced maps and every newly generated batch discard the forecast.
@@ -5672,6 +5723,7 @@ class HeadquartersControl(Node):
             candidates = []
             resume_candidates = set()
             unfunded_candidates = set()
+            travel_preferences = {}
             diagnostics["frontier_groups"] = 0
             diagnostics["groups_with_viewpoints"] = 0
             for robot_name, position in idle_positions.items():
@@ -5702,6 +5754,7 @@ class HeadquartersControl(Node):
                         position,
                         robot_exclusions,
                         frontier_data,
+                        distance_field=travel_fields.get(robot_name),
                         **({"blocked_positions": [
                             other for name, other in self.robot_positions.items()
                             if name != robot_name and other is not None
@@ -5725,6 +5778,10 @@ class HeadquartersControl(Node):
                     if battery_factor <= 0:
                         continue
                     utility = assignment.utility * battery_factor
+                    preference = (None if search else HeadquartersControl.frontier_travel_preference(
+                        self, robot_name, assignment, travel_fields))
+                    if preference is not None:
+                        utility *= preference['factor']
                     coordinated = Assignment(
                         assignment.viewpoint,
                         assignment.x,
@@ -5736,6 +5793,12 @@ class HeadquartersControl(Node):
                     )
                     if battery_factor < 1.0:
                         unfunded_candidates.add((robot_name, coordinated))
+                    if preference is not None:
+                        preference.update(base_utility=assignment.utility,
+                            battery_factor=battery_factor, adjusted_utility=utility,
+                            nominal_blocked_positions=([p for other,p in self.robot_positions.items()
+                                if other != robot_name and p is not None] if refine else []))
+                        travel_preferences[robot_name, coordinated] = preference
                     if not search and interrupted_frontier_is_useful(
                         coordinated, resume_intents.get(robot_name), battery_factor
                     ):
@@ -5796,6 +5859,29 @@ class HeadquartersControl(Node):
                 ):
                     diagnostics["stationary_candidates"] += 1
                     continue
+                # Price the complete body-masked path, including the real
+                # starting offset/escape, rather than just this short prefix.
+                endpoint = world_to_grid(assignment.x, assignment.y, self.resolution, *self.origin)
+                field = route_caches[name].get('field')
+                if field is None:
+                    distances = exploration_distance_field(self.map_data,
+                        block_dynamic_positions(frontier_data[1], self.resolution, self.origin, blocked),
+                        self.resolution, self.origin, self.robot_positions[name])
+                    planned_distance = float('inf') if distances is None else float(distances[endpoint])
+                else:
+                    _, _, escape, distance_data = field
+                    points = [grid_to_world(*cell, self.resolution, *self.origin) for cell in escape]
+                    planned_distance = (float(distance_data[0][endpoint]) * self.resolution
+                        + math.dist(self.robot_positions[name], points[0])
+                        + sum(math.dist(a,b) for a,b in zip(points,points[1:])))
+                factor = self.exploration_battery_factor(name, planned_distance,
+                    (assignment.x, assignment.y))
+                if factor <= 0:
+                    continue
+                unfunded = unfunded or factor < 1.
+                original_assignment = assignment
+                assignment = Assignment(assignment.viewpoint, assignment.x, assignment.y,
+                    planned_distance, assignment.utility, assignment.navigation_x, assignment.navigation_y)
                 if unfunded:
                     if HeadquartersControl.exploration_charge_budget(self, name, assignment) is not None:
                         charge_candidates[name] = assignment
@@ -5811,8 +5897,15 @@ class HeadquartersControl(Node):
                 )
                 routes[name] = route
                 selected.append(name)
-                if (name, assignment) in resume_candidates:
+                if (name, original_assignment) in resume_candidates:
                     resuming_names.add(name)
+                if (name, original_assignment) in travel_preferences:
+                    witness = travel_preferences[name, original_assignment]
+                    witness.update(planned_distance_m=planned_distance, blocked_positions=blocked)
+                    if getattr(self, 'enable_battery', False):
+                        witness['required_energy'] = HeadquartersControl.exploration_required_energy(
+                            self, name, planned_distance, (assignment.x, assignment.y))
+                    self.exploration_travel_choices[name] = witness
                 reservations.append(route)
                 if len(selected) + active_explorers >= max_concurrent:
                     break
@@ -5894,6 +5987,19 @@ class HeadquartersControl(Node):
             event["search_basis"] = getattr(self, "target_search_basis", "current_map_frontiers")
             event["search_route"] = self.goal_routes[robot_name]
             event["map_resolution_m"] = self.resolution
+        choice = getattr(self, 'exploration_travel_choices', {}).get(robot_name)
+        if kind == 'exploration' and choice is not None:
+            event['travel_preference'] = choice
+            event['robot_positions'] = self.robot_positions
+            event['battery_states'] = self.battery_states if self.enable_battery else None
+            event['planning_map'] = grid_audit_evidence(self.map_data, self.resolution, self.origin,
+                'ap_delivered_planning_map', self.map_received_at, self.map_received_at)
+            event['source_map'] = grid_audit_evidence(self.source_map_data, self.resolution, self.origin,
+                'ap_delivered_fused_map', self.map_received_at, self.map_received_at)
+            event['self_return_cells'] = getattr(self, 'map_self_return_cells', {})
+            event['return_maps'] = {name:grid_audit_evidence(g['data'],g['resolution'],g['origin'],
+                'ap_delivered_robot_map',self.robot_map_received_at[name],self.robot_map_received_at[name])
+                for name,g in HeadquartersControl.delivered_return_maps(self).items()}
         self.consumed_publisher.publish(String(data=json.dumps(event, sort_keys=True)))
 
     def send_goal(self, robot_name, assignment):

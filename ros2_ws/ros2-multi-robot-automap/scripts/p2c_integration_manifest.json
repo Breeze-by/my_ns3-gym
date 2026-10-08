@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-08T20:16:09.508794+00:00",
+  "predeclared_at_utc": "2026-10-08T20:54:32.738672+00:00",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -301,7 +301,7 @@
   ],
   "safety_probe_manifest": "p3b5_staged_return_probe_manifest.json",
   "energy_unit": "simulation_model_units_not_joules",
-  "development_parent": "4712c019080ed461a7968fc4e1ef53ba57bf2903",
+  "development_parent": "c3ba13d357f6a3f4e9f6a843a7c4bcb1e444307f",
   "retained_failed_development": "20261008_p2c_v1_failed_development.json",
   "opportunity_charge_algorithm": "two_current_frontiers_complete_route_budget",
   "retained_failed_developments": [
@@ -318,7 +318,8 @@
     "20261009_p2c_v12_failed_development.json",
     "20261009_p2c_v13_failed_development.json",
     "20261009_p2c_v14_failed_development.json",
-    "20261009_p2c_v15_failed_development.json"
+    "20261009_p2c_v15_failed_development.json",
+    "20261009_p2c_v16_failed_development.json"
   ],
   "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
   "opportunity_charge_rules": [
@@ -414,5 +415,20 @@
     "meter": "Odometry accounting code and queue depth unchanged; TF-only reprojection does not bill map-frame jumps. Required private5s energy ledger adds only a relevant TF receipt count.",
     "mixed_tf": "Body transforms never overwrite a relevant snapshot or renew its lease. Original source offsets/2s pose/5s map TTLs remain, invalid future input cannot poison a later valid source.",
     "evidence": "Actual two-worker DDS with the state group blocked and mixed relevant/body TF; blocked historical1/20 queues end with no relevant TF while the input mailbox retains original source50, with no concurrent state/energy/action mutation."
+  },
+  "ap_pose_budget_contract": {
+    "age": "max(original delivered odometry source age, original delivered map-to-odom source age)",
+    "odom_ttl_sec": 2.0,
+    "frame_ttl_sec": 2.0,
+    "future_or_missing": "reject, no finite task admission",
+    "lookahead_evidence": "both source ages retained privately and independently reconstructed"
+  },
+  "exploration_travel_preference": {
+    "strategy": "relative_geodesic_travel",
+    "factor": "min(1,(1+closest currently funded peer known distance)/(1+own known distance))",
+    "inputs": "same delivered planning map/poses/frame/battery/own robot maps; pending charge and non-ACTIVE peers excluded",
+    "distance": "known-free no-corner-cut route with original bounded escape and actual starting offset; complete actual body-masked path is priced again before admission",
+    "scope": "soft conditional utility preference; resume priority, fair serial charging, source TTLs and actual reservations remain; no global optimality or peer future-availability guarantee",
+    "evidence": "every executed regular frontier privately retains delivered map geometry, source leases, poses/models, nominal/actual distance, eligible peer budgets and utility factor; strict read-only reconstruction"
   }
 }

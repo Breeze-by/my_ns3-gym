@@ -132,7 +132,7 @@ def return_audit(path,require_pose_leases=False,require_map_candidates=False):
         local_legs=legs,charger_returns=sum(r['outcome']=='charger_stopped' for r in rows),returns=rows)
 
 
-def lookahead_audit(records):
+def lookahead_audit(records,require_compound_pose=False):
     count=0
     for e in records:
         if e.get('event')!='coordinator_charge_decision' or not e.get('opportunity_lookahead'):
@@ -144,7 +144,15 @@ def lookahead_audit(records):
         assert math.dist(f['first_position'],f['second_position'])>=control.MIN_TARGET_SEPARATION_M
         assert math.isclose(e['event_time']-saved['source_time'],f['map_age_sec'],abs_tol=1e-8)
         assert e['inputs']['headquarters/fused_map_snapshot']['source_time']==saved['source_time']
-        assert math.isclose(e['inputs'][e['robot']+'/pose_state']['age_sec'],f['pose_age_sec'],abs_tol=1e-8)
+        ages=f.get('pose_source_ages_sec')
+        if require_compound_pose:assert ages is not None and set(ages)=={'odom','frame'}
+        if ages is None:
+            assert math.isclose(e['inputs'][e['robot']+'/pose_state']['age_sec'],f['pose_age_sec'],abs_tol=1e-8)
+        else:
+            for key,kind in (('odom','pose_state'),('frame','frame_state')):
+                if key in ages:assert math.isclose(ages[key],e['inputs'][e['robot']+'/'+kind]['age_sec'],abs_tol=1e-8)
+            assert all(math.isfinite(age) and 0<=age<=2. for age in ages.values())
+            assert math.isclose(max(ages.values()),f['pose_age_sec'],abs_tol=1e-8)
         assert 0<=f['map_age_sec']<=5 and 0<=f['pose_age_sec']<=2
         assert e['available_energy']<f['required_energy']<state['capacity']*state['charge_target_fraction']
         assert e['required_energy']==f['required_energy']
@@ -176,6 +184,94 @@ def lookahead_audit(records):
         assert math.isclose(required,f['required_energy'],abs_tol=1e-8)
         count+=1
     return dict(status='PASS',two_frontier_charge_decisions=count)
+
+
+def exploration_travel_audit(records,required=False):
+    """Rebuild executed frontier travel and delivered-only energy witnesses."""
+    count=0;discounts=0
+    for e in records:
+        if e.get('event')!='coordinator_navigation_decision' or e.get('kind')!='exploration':continue
+        f=e.get('travel_preference')
+        if required:assert f is not None,'missing executed exploration travel witness'
+        if f is None:continue
+        assert f['strategy']=='relative_geodesic_travel'
+        now=e['event_time'];geometry={}
+        for key,stream,source,s in [
+            ('planning','headquarters/fused_map_snapshot','ap_delivered_planning_map',e['planning_map']),
+            ('source','headquarters/fused_map_snapshot','ap_delivered_fused_map',e['source_map']),
+            *[(name,name+'/map_snapshot','ap_delivered_robot_map',s) for name,s in e['return_maps'].items()]]:
+            assert s['source']==source and s['encoding']=='zlib_base64_int16_le'
+            assert s['source_time']==e['inputs'][stream]['source_time'] and 0<=now-s['source_time']<=5.
+            g=np.frombuffer(zlib.decompress(base64.b64decode(s['grid'])),dtype='<i2').reshape(s['shape'])
+            geometry[key]=dict(data=g,resolution=s['resolution'],origin=s['origin'])
+        raw=geometry['planning'];original=geometry['source']['data'].copy()
+        assert raw['resolution']==geometry['source']['resolution'] and raw['origin']==geometry['source']['origin']
+        for r,c in e['self_return_cells'].values():
+            assert 1<=r<original.shape[0]-1 and 1<=c<original.shape[1]-1
+            assert original[r,c]>=control.OCCUPIED_THRESHOLD
+            window=original[r-1:r+2,c-1:c+2].copy();window[1,1]=0
+            assert np.all(window==0) and raw['resolution']*math.sqrt(2)<=.1
+            original[r,c]=0
+        assert np.array_equal(original,raw['data'])
+        positions=e['robot_positions'];name=e['robot'];target=f['target']
+        assert np.allclose(positions[name],e['current_position'],rtol=0,atol=1e-8)
+        blocked=[p for peer,p in positions.items() if peer!=name and p is not None]
+        assert f['blocked_positions']==blocked
+        assert f['nominal_blocked_positions'] in ([],blocked)
+        traversable=control.traversable_grid(raw['data'],raw['resolution'],control.PATH_CLEARANCE_M)
+        cell=control.world_to_grid(*target,raw['resolution'],*raw['origin'])
+        def distance(peer,blocks=()):
+            mask=control.block_dynamic_positions(traversable,raw['resolution'],raw['origin'],blocks)
+            field=control.exploration_distance_field(raw['data'],mask,raw['resolution'],raw['origin'],positions[peer])
+            return float('inf') if field is None else float(field[cell])
+        nominal=distance(name,f['nominal_blocked_positions']);planned=distance(name,blocked)
+        assert math.isfinite(nominal) and math.isfinite(planned)
+        assert math.isclose(nominal,f['own_nominal_distance_m'],abs_tol=1e-8)
+        assert math.isclose(planned,f['planned_distance_m'],abs_tol=1e-8)
+        states=e['battery_states']
+        def energy(peer,d):
+            state=states[peer];ages=[]
+            for kind,ttl in (('pose_state',2.),('frame_state',2.),('battery_state',5.)):
+                lease=e['inputs'][peer+'/'+kind];age=now-lease['source_time']
+                assert 0<=age<=ttl and math.isclose(age,lease['age_sec'],abs_tol=1e-8)
+                if kind!='battery_state':ages.append(age)
+            assert state['mode']=='ACTIVE' and state['stamp_sec']==e['inputs'][peer+'/battery_state']['source_time']
+            local=geometry.get(peer);home=(state['charge_x'],state['charge_y'])
+            map_age=max(now-e['planning_map']['source_time'],now-e['return_maps'][peer]['source_time']) if local else now-e['planning_map']['source_time']
+            def budget(task_distance,destination):
+                candidates=control.qualified_return_candidates(raw['data'],raw['resolution'],raw['origin'],destination,
+                    home,state.get('charge_radius_m',.8),local)
+                contact=min((r['path_distance_m'] for r in candidates if r['qualified']),default=None)
+                if contact is None:return float('inf')
+                return control.battery_assignment_required_energy(task_distance,contact,
+                    state.get('move_cost_per_m',1.),state.get('idle_cost_per_sec',.02),state.get('return_path_factor',2.),
+                    state.get('nominal_speed_mps',.18),state.get('return_safety_margin',8.),
+                    state.get('return_recovery_wait_sec',30.),map_age,max(ages))
+            return max(budget(d,target),budget(0.,positions[peer]))
+        peers={}
+        assert name in f['eligible_robot_names'] and len(set(f['eligible_robot_names']))==len(f['eligible_robot_names'])
+        for peer in f['eligible_robot_names']:
+            if peer==name:continue
+            d=distance(peer)
+            if not math.isfinite(d) or d>=nominal:continue
+            cost=None if states is None else energy(peer,d)
+            if cost is not None and (not math.isfinite(cost) or states[peer]['energy']<=cost):continue
+            peers[peer]=dict(distance_m=d,required_energy=cost)
+        assert set(peers)==set(f['peers'])
+        for peer,row in peers.items():
+            assert math.isclose(row['distance_m'],f['peers'][peer]['distance_m'],abs_tol=1e-8)
+            if row['required_energy'] is None:assert f['peers'][peer]['required_energy'] is None
+            else:assert math.isclose(row['required_energy'],f['peers'][peer]['required_energy'],abs_tol=1e-8)
+        factor=control.relative_travel_factor(nominal,[r['distance_m'] for r in peers.values()])
+        assert math.isclose(factor,f['factor'],abs_tol=1e-8)
+        assert math.isclose(f['base_utility']*f['battery_factor']*factor,f['adjusted_utility'],abs_tol=1e-8)
+        if states is not None:
+            cost=energy(name,planned)
+            assert math.isfinite(cost) and cost<states[name]['energy']
+            assert math.isclose(cost,f['required_energy'],abs_tol=1e-8)
+            assert f['battery_factor']==1.
+        count+=1;discounts+=int(factor<1.)
+    return dict(status='PASS',executed_frontier_witnesses=count,relative_travel_discounts=discounts,required=required)
 
 
 def ap_return_veto_audit(records):
@@ -347,17 +443,21 @@ def check_one(path,config):
         bool(config.get('return_source_selection')))
     energy=energy_audit(directory/'safety_events.jsonl',result,
         bool(config.get('native_energy_accounting')) and case!='empty_battery')
-    forecast=lookahead_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
+    forecast=lookahead_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
+        bool(config.get('ap_pose_budget_contract')))
     vetoes=ap_return_veto_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     assignments=rally_assignment_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     if config.get('rally_return_objective') and result.get('rally_assignments'):
         assert assignments['chosen_assignments_rebuilt']>=1, 'missing exact delivered assignment choice'
     repairs=rally_repair_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
+    travel=exploration_travel_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
+        bool(config.get('exploration_travel_preference')))
     assert result['collision_monitoring_active']
     return dict(case=case,status='PASS',git_commit=row['git_commit'],source_digests=row['source_digests'],
         result=result,raw_summary=str(path.resolve()),raw_summary_sha256=sha(path),return_audit=native,
         communication_audit=communications,lookahead_audit=forecast,native_energy_audit=energy,
-        ap_return_veto_audit=vetoes,rally_assignment_audit=assignments,rally_repair_audit=repairs)
+        ap_return_veto_audit=vetoes,rally_assignment_audit=assignments,rally_repair_audit=repairs,
+        exploration_travel_audit=travel)
 
 
 def audit_one(item):

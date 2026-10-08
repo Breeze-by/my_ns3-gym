@@ -1251,7 +1251,9 @@ def test_single_explorer_checks_parked_robots_after_previous_goal_finishes(monke
     control.HeadquartersControl.assign_idle_robots(node)
     assert sent and {name for name, _ in sent} <= {"tb1", "tb2"}
     assert calls == [(1.0, 3.0), (3.0, 3.0)]
-    assert min(math.dist(point, (3.0, 3.0)) for point in node.goal_routes["tb1"]) >= 0.55
+    for name, route in node.goal_routes.items():
+        peer = "tb2" if name == "tb1" else "tb1"
+        assert min(math.dist(point, node.robot_positions[peer]) for point in route) >= 0.55
     node.battery_modes["tb2"] = "RETURNING"
     node.robot_states["tb1"] = "idle"
     control.HeadquartersControl.assign_idle_robots(node)
@@ -1288,7 +1290,7 @@ def test_parallel_explorers_try_independent_alternative_after_conflict(monkeypat
     grid = np.zeros((260, 100), dtype=int)
     names = [f"tb{i + 1}" for i in range(robot_count)]
     viewpoint = control.Viewpoint(0, 30, 80, 30, 81, 1000, 10)
-    def candidates(*args):
+    def candidates(*args, **kwargs):
         name = args[3]
         index = names.index(name)
         positions = [(8.0, 3.0, 100.0 - index)]

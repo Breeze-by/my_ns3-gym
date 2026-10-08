@@ -117,3 +117,24 @@ def test_read_only_forecast_audit_reconstructs_and_rejects_forged_decisions(corr
         assert lookahead_audit([event])['two_frontier_charge_decisions']==1
     else:
         with pytest.raises(AssertionError):lookahead_audit([event])
+
+
+@pytest.mark.parametrize('corruption',[None,'omit_frame','renew_odom','scalar_age','future_frame'])
+def test_compound_pose_forecast_audit_requires_the_original_frame_age(corruption):
+    from check_p2c_gate import lookahead_audit
+    node,_,_,_,first,_=setup()
+    node.robot_tf_received_at={'tb1':9.3,'tb2':10.}
+    forecast=control.HeadquartersControl.frontier_lookahead_budget(node,'tb1',first,24.,80.)
+    assert forecast['pose_age_sec']==pytest.approx(.7)
+    event=dict(event='coordinator_charge_decision',robot='tb1',event_time=10.,available_energy=24.,
+        required_energy=forecast['required_energy'],opportunity_lookahead=copy.deepcopy(forecast),
+        inputs={'headquarters/fused_map_snapshot':dict(source_time=10.),
+                'tb1/pose_state':dict(age_sec=0.),'tb1/frame_state':dict(age_sec=.7)})
+    f=event['opportunity_lookahead']
+    if corruption=='omit_frame':f['pose_source_ages_sec'].pop('frame')
+    if corruption=='renew_odom':f['pose_source_ages_sec']['odom']=.1
+    if corruption=='scalar_age':f['pose_age_sec']=0.
+    if corruption=='future_frame':f['pose_source_ages_sec']['frame']=-.1;event['inputs']['tb1/frame_state']['age_sec']=-.1
+    if corruption is None:assert lookahead_audit([event],True)['two_frontier_charge_decisions']==1
+    else:
+        with pytest.raises(AssertionError):lookahead_audit([event],True)
