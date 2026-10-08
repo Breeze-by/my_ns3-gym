@@ -2,7 +2,7 @@
 
 常用启动命令、不同 world 和参数速查见 [`launch_commands.md`](launch_commands.md)。
 
-最近核对：2026-10-08。P3A.6、P3B.5、P3C 已验收；P3C.5技术完成、门禁PASS，待用户验收。
+最近核对：2026-10-08。P3A.6、P3B.5、P3C、P3C.5 已获用户验收；P2C.1安全补强为独立开发候选。
 本次[项目评审](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261008_project_review.md)修复只读协议/声明审计并重审所有P3原始证据；749功能检查/1 skip、四包build和150冻结任务/模型文件通过。发现返航能量预算仍为欧氏距离启发式，尚未满足研究计划的完整地图路径要求；后续闭环实验前必须补强并新批次冻结。本次没有改变任务算法、默认launch或原始实验。
 当前任务栈冻结为 `d8d361b`，最终报告提交为 `d0b1561`，见
 [完整报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261006_p3b5_gate.md)。
@@ -1016,7 +1016,7 @@ server 下行：gateway -> `/gateway/{robot}/navigate_to_pose` -> 本地 `/{robo
 gateway，只把交付设为零丢包和零附加时延，同时保留真实候选生成频率；`oracle unlimited` 只作理论
 上界，不能恢复旧直连。
 
-P3B已实现固定delay/loss与账本；P3B.5、P3C已验收，P3C.5技术完成待验收。真实ns-3/Wi-Fi尚未实现。后续按修订计划先做P4A-0消息/分片契约和P4B-0原负载无线测量，关闭返航预算缺口并重新冻结，再进入P4A-1闭环和P4B-1标定验证；最后先强非学习基线、再判断是否需要RL。被动trace不证明任务收益；当前结果不能解释为Wi-Fi性能。
+P3B已实现固定delay/loss与账本；P3B.5、P3C、P3C.5已验收，P2C.1安全补强正在开发验证。真实ns-3/Wi-Fi尚未实现。后续按修订计划先做P4A-0消息/分片契约和P4B-0原负载无线测量，关闭返航预算缺口并重新冻结，再进入P4A-1闭环和P4B-1标定验证；最后先强非学习基线、再判断是否需要RL。被动trace不证明任务收益；当前结果不能解释为Wi-Fi性能。
 
 P2B 起只有全体仍参与任务的机器人在不同安全集合位姿连续稳定 5 秒后的 `COMPLETE` 才是完整任务成功；
 如果已有机器人故障，剩余机器人集合稳定后发布 `PARTIAL_COMPLETE`，表示任务完成了可用机器人的
@@ -1165,3 +1165,9 @@ run_p3b5_tasks默认domain base改为30；run_p3b5_return_probe默认90。domain
 2026-10-06 P3B.5 v103前瞻正式冻结：v101所有原owner/AP/网关观察器自然关闭且失败完整ae50fe1归档后，v102中间件组件dab2270已提交推送；当前control/battery/世界809原字节不变。新批统一显式RMW_IMPLEMENTATION=rmw_fastrtps_cpp/FASTDDS_BUILTIN_TRANSPORTS=UDPv4，所有机器人/总部/ideal及fault基线/只读观察器同环境；不使用未声明XML/discovery server。manifest新增环境记录，strict checker/native evaluator/control/battery均原字节；64配置1.51s、27case/41unique validate-only、source3r0旁路PASS；v102为598组件17.04s/四包6.87s和实际native descriptors/双向C++Python交付PASS，尚非新环境任务成功。原算法v100六独立开发PASS是在此前中间件环境，不能替代当前集成；v101五次调用/四原生启动/一缺结果/52未调用原失败仍保留。新AP helper仅只读真实参数/map源龄与实际RMW标识，使用本机已提供try_shutdown避免信号关闭后的重复shutdown异常；原AP partial metadata/traceback保持。正式仍57格：27pair/41主格+十fixed+六辅助；所有fixed/AP为实际CPU0–79，独立world可并行，同world seed串行；initial/main20逻辑CPU分池。所有源/helper/配置/最终报告builder在第一次运行前hash冻结；必须先强制ideal真实原生保持/E0/断网实际返航，再十fixed全部PASS，才首次运行809.world/seed809/fault28091/目标(4.4,-3.4)/3rE45及剩余主/安全矩阵。809从未运行，初静态world字节及真实launch连通补查保留；原300s/.35/.05/.1/5s、源TTL与故障强度保持，不重试/回填。全部已启动原owner/观察器自然关闭前不改源/文档/helper。证据report/20261006_p3b5_native_transport_holdout_protocol.json；P3B.5仍待完整strict gate，未启动ns3/WiFi/RL。
 
 2026-10-06 P3B.5 v106前瞻正式冻结：v103十fixed原lab303保持失败和全部16原始已7442599归档；新控制v104c204e64与v105七独立开发PASS已2b87e5c保留并推送。原809.world/seed809/fault28091/目标(4.4,-3.4)/3rE45仍从未执行，world字节及最初静态/真实launch补查保留；更新当前controller SHA、控制源提交与开发引用，追加v103失败历史。当前保留合法已完成避让驻点仅为条件性恢复优化；七开发六原生COMPLETE、forced fault安全PASS，日志未见新分支触发，不能宣称新分支物理验证/因果加速或最坏时限。新批所有机器人/总部/ideal/fault/只读观察器统一显式rmw_fastrtps_cpp/UDPv4，无XML/discovery server；627组件18.50s/四包5.46s/源码3r零旁路，64配置1.71s、27case/41unique validate-only PASS，无仿真启动。正式仍57格：27pair/41主格+十fixed+六辅助；所有fixed/AP实际CPU0–79，initial/main20逻辑CPU分池，master19650..19656与独立domain。运行前冻结所有source/helper/config/report-builder哈希，按强制ideal真实原生保持/E0/实际断网返充→十fixed全PASS→首次809及其余主/安全矩阵推进；所有原owner/观察器自然关闭前不改源/文档/helper。300s/.35/.05/.1/5s、地图/电池5/poseTF2/target60/handoff5、原故障强度和实际储备/返充/机体/静态/最终位/在途预约保护不变，不重试/回填/把开发替代正式格。证据report/20261006_p3b5_rally_refuge_holdout_protocol.json；P3B.5仍待完整strict gate，无ns3/WiFi/RL。
+
+## P2C.1 评审后安全预算候选（2026-10-08）
+
+用户已验收P3C.5。P2C.1独立补强本地和中央返航预算，详情/参数见[启动文档P2C.1节](launch_commands.md#p2c1-完整返航路径与预算2026-10-08-开发候选)。完整接触区路径缓存覆盖去程终点的返航；本地优先其新鲜且有完整路线的自有地图，必要时使用已交付融合地图。AP预算仅来自其交付地图，不能访问本地审计快照。
+
+原能量单位、移动/空耗模型和充电保持要求不变；移动或取消未结束的CHARGING过渡仍计算消耗。路径包络、恢复/源龄/反应余量、失路暂停/有界失败是新候选，须以新任务冻结验证。`battery_return_audit`保存可重建地图、预测成本和实际成本，零耗尽样本不被解释为普遍安全保证。当前未开始P4/ns-3/Wi-Fi/RL。

@@ -30,6 +30,7 @@ def charge_node():
                                        'headquarters/target_detection':dict(source_time=0.,age_sec=10.,ttl_sec=5.)},
         get_logger=lambda:SimpleNamespace(warn=logs.append,info=logs.append),
         map_data=np.zeros((60,100),dtype=int),resolution=.1,origin=(0.,0.),
+        map_received_at=10.,robot_odom_received_at=dict.fromkeys(positions,10.),
         robot_maps={name:{} for name in positions},
         input_robot_names=lambda:list(positions),participating_robots=lambda:list(positions),
         active_exclusions=lambda:[],goal_routes={},goal_targets={},goal_initial_gain={},
@@ -103,6 +104,8 @@ def test_expired_pending_request_releases_only_after_new_active_battery_state(mo
     node,requests,_,sent=charge_node()
     expiry=10.+control.CHARGE_REQUEST_TTL_SEC
     node.now=lambda:expiry+1.
+    node.map_received_at=expiry
+    node.robot_odom_received_at=dict.fromkeys(node.battery_modes,expiry)
     node.rally_charge_requested['tb1']=10.
     node.exploration_charge_budgets['tb1']=30.
     node.battery_states['tb1']['energy']=40.
@@ -226,7 +229,7 @@ def test_opportunity_charge_requires_real_work_and_current_safe_home_route(monke
     install_candidates(monkeypatch,{'tb1':[assignment(3.5,3.,distance=.5)]})
     control.HeadquartersControl.assign_idle_robots(node)
     assert not requests
-    assert bool(sent)==(reason not in ('live_peer','stale'))
+    assert bool(sent)==(reason not in ('live_peer','stale','blocked_home','invalid_radius'))
 
 
 def test_idle_robot_refines_reachable_candidates_while_peer_action_remains_live(monkeypatch):

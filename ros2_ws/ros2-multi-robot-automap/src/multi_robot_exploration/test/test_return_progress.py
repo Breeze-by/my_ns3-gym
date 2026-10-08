@@ -17,6 +17,9 @@ def manager(**changes):
         return_goal_cancel_requested=False, return_goal_best_distance=2.,
         return_goal_last_progress_at=0., return_goal_started_at=0.,
         return_goal_timeout_sec=60., get_logger=Mock(),
+        return_cancels=0, return_rejections=0, return_route_cache={},
+        audit_return=Mock(), latest_return_budget=None,
+        return_map_evidence=Mock(return_value=None),
     )
     return SimpleNamespace(**{**values,**changes})
 

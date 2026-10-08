@@ -1,0 +1,145 @@
+#!/usr/bin/env python3
+"""Read-only P2C.1 original/return-budget gate; never repairs task outcomes."""
+import argparse,base64,hashlib,json,math,subprocess,traceback,zlib
+from pathlib import Path
+import numpy as np
+from check_p3a6_gate import Snapshot
+from check_p3b5_gate import episode_ok,ledger_audit,native_completion_ok
+from check_p3c5_gate import audit_original,declaration_audit
+from multi_robot_exploration import control
+from multi_robot_exploration.bypass_audit import runtime_violations
+
+
+def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def return_audit(path):
+    starts={};finished={};rows=[];maps=0;legs=0
+    for line in path.read_text().splitlines():
+        outer=json.loads(line)
+        if not outer['topic'].endswith('/battery_return_audit'):continue
+        e=outer['data'];key=(e['robot'],e['return_count']);kind=e['event']
+        assert math.isfinite(e['sim_time']) and math.isfinite(e['energy'])
+        if kind=='return_started':
+            assert key not in starts;starts[key]=e
+        if kind=='return_prediction_available':
+            assert key in starts and key not in finished
+            assert starts[key]['budget'] is None
+            starts[key]['budget']=e['start']['budget']
+        if kind=='return_finished':
+            assert key in starts and key not in finished;finished[key]=e
+            assert all(math.isfinite(e[k]) for k in ('actual_distance_m','actual_elapsed_sec','actual_energy_spent'))
+            assert e['actual_distance_m']>=0 and e['actual_elapsed_sec']>=0
+            assert e['actual_energy_spent']>=-1e-8
+            assert math.isclose(e['actual_energy_spent'],starts[key]['energy']-e['energy'],abs_tol=1e-6)
+            model=e['energy_model']
+            assert model==starts[key]['energy_model']
+            spent=e['actual_distance_m']*model['move_cost_per_m']+e['actual_elapsed_sec']*model['idle_cost_per_sec']
+            assert math.isclose(spent,e['actual_energy_spent'],abs_tol=1e-6)
+            if e['predicted_energy_spent'] is not None:
+                predicted=starts[key]['budget']
+                assert predicted is not None
+                assert math.isclose(e['predicted_energy_spent'],predicted['required_energy']-predicted['safety_margin'],abs_tol=1e-8)
+                assert abs(e['prediction_error']-(e['actual_energy_spent']-e['predicted_energy_spent']))<1e-8
+            if e['outcome']=='charger_stopped':
+                assert e['energy']>0 and e['prediction_error'] is not None and e['prediction_error']<=1e-6
+            rows.append(e)
+        saved=e.get('map_evidence');budget=e.get('budget')
+        if kind=='return_prediction_available':budget=e['start']['budget']
+        if saved and budget and budget['path_distance_m']>0:
+            assert saved['encoding']=='zlib_base64_int16_le'
+            raw=np.frombuffer(zlib.decompress(base64.b64decode(saved['grid'])),dtype='<i2').reshape(saved['shape'])
+            assert saved['version']==budget['map_version'] and saved['source_time']==budget['map_source_time']
+            assert saved['source']==budget['map_source']
+            assert 0<=e['sim_time']-saved['source_time']<=5.
+            assert math.isclose(budget['map_age_sec'],e['sim_time']-saved['source_time'],abs_tol=1e-8)
+            assert hashlib.blake2b(raw.tobytes(),digest_size=16).hexdigest()==budget['map_content_blake2b']
+            position=e.get('position')
+            if position is None and budget.get('route'):position=budget['route'][0]
+            assert position is not None
+            distance,route=control.known_return_route(raw,saved['resolution'],saved['origin'],position,
+                e['home'],e['charge_radius_m'],include_route=True)
+            assert distance is not None and math.isclose(distance,budget['path_distance_m'],abs_tol=1e-8)
+            m=e['energy_model']
+            rebuilt=control.return_energy_budget(distance,m['move_cost_per_m'],m['idle_cost_per_sec'],
+                m['path_factor'],m['nominal_speed_mps'],m['safety_margin'],m['recovery_wait_sec'],budget['map_age_sec'])
+            assert math.isclose(rebuilt['required_energy'],budget['required_energy'],abs_tol=1e-8)
+            if budget.get('route'):
+                assert abs(sum(math.dist(a,b) for a,b in zip(budget['route'],budget['route'][1:]))-distance)<1e-8
+            maps+=1
+        if kind=='return_leg_sent':
+            assert budget is not None and e['energy']>e['energy_model']['safety_margin']
+            assert saved is not None and e['route'];legs+=1
+    assert set(starts)==set(finished),('unclosed return prediction',set(starts)-set(finished))
+    return dict(status='PASS',return_triggers=len(starts),map_budget_reconstructions=maps,
+        local_legs=legs,charger_returns=sum(r['outcome']=='charger_stopped' for r in rows),returns=rows)
+
+
+def check_one(path,config):
+    row=json.loads(path.read_text());directory=path.parent
+    assert row['config']==config
+    declaration_audit(row,config,directory)
+    assert row['runner_returncode']==row['observer_returncode']==0
+    assert not any(v for k,v in row.items() if k.endswith('_forced_shutdown'))
+    for relative,expected in row['evidence_sha256'].items():assert sha(directory/relative)==expected
+    result=row['result'];case=row['case']
+    if case=='empty_battery':
+        assert not result['success'] and result['task_phase']=='FAILED' and result['collision_events']==0
+        assert all(r['battery_mode']=='FAILED' and r['battery_minimum_energy']==0 for r in result['robots'].values())
+        records=[json.loads(x) for x in (directory/'ledger.jsonl').read_text().splitlines()]
+        assert not any(e.get('message_type')=='navigation_goal' and e['event']=='tx' for e in records)
+        communications=dict(temporal_audit=ledger_audit(directory/'ledger.jsonl'))
+    else:
+        communications,_=audit_original((row,config))
+        if case.startswith(('fixed_','dev_')) or case in ('forced2','protocol_forced2','holdout_ideal'):
+            episode_ok(result)
+        if 'forced' in case:
+            assert all(r['battery_charge_count']>=1 for r in result['robots'].values())
+    original=json.loads((directory/'graph.json').read_text())
+    audit=json.loads((Path(__file__).resolve().parents[1]/'src/multi_robot_exploration/config/p3a_forbidden_bypasses.json').read_text())
+    violations=runtime_violations(Snapshot(original['nodes']),audit,result['robot_count'])
+    assert not violations,violations
+    native=return_audit(directory/'safety_events.jsonl')
+    assert result['collision_monitoring_active']
+    return dict(case=case,status='PASS',git_commit=row['git_commit'],source_digests=row['source_digests'],
+        result=result,raw_summary=str(path.resolve()),raw_summary_sha256=sha(path),return_audit=native,
+        communication_audit=communications)
+
+
+def main():
+    p=argparse.ArgumentParser(description=__doc__)
+    p.add_argument('--run-root',type=Path,required=True)
+    p.add_argument('--manifest',type=Path,default=Path(__file__).with_name('p2c_integration_manifest.json'))
+    p.add_argument('--development',action='store_true')
+    p.add_argument('--cases',nargs='+')
+    p.add_argument('--output',type=Path,required=True)
+    a=p.parse_args()
+    if a.output.exists():p.error('do not overwrite an audit')
+    config=json.loads(a.manifest.read_text())
+    required=set(a.cases or config['development_cases' if a.development else 'gate_cases'])
+    summaries={}
+    for path in a.run_root.glob('*/summary.json'):
+        row=json.loads(path.read_text())
+        if row['case'] in required:
+            assert row['case'] not in summaries,'duplicate original cell'
+            summaries[row['case']]=path
+    assert set(summaries)==required,dict(missing=sorted(required-set(summaries)),extra=sorted(set(summaries)-required))
+    evidence=[];errors=[]
+    for case,path in sorted(summaries.items()):
+        try:evidence.append(check_one(path,config))
+        except Exception as error:errors.append(dict(case=case,error=repr(error),traceback=traceback.format_exc()))
+    originals=[json.loads(path.read_text()) for path in summaries.values()]
+    assert len({r['git_commit'] for r in originals})==1,'cohort must share one pushed source freeze'
+    assert all(r['source_digests']==originals[0]['source_digests'] for r in originals)
+    root=Path(__file__).resolve().parents[3]
+    original_manifest=json.loads(subprocess.check_output(['git','show',f"{originals[0]['git_commit']}:{a.manifest.resolve().relative_to(root)}"],cwd=root))
+    assert original_manifest==config
+    result=dict(status='FAIL' if errors else 'PASS',scope='development' if a.development else 'integration',
+        task_stack_frozen_commit=originals[0]['git_commit'],cases=len(summaries),errors=errors,evidence=evidence,
+        raw_failures_retained=True,physical_blackout_gate='separate_required_evidence',
+        general_hardware_safety_guarantee=False)
+    a.output.parent.mkdir(parents=True,exist_ok=True);a.output.write_text(json.dumps(result,indent=2)+'\n')
+    print(json.dumps({k:v for k,v in result.items() if k!='evidence'},indent=2))
+    return int(bool(errors))
+
+if __name__=='__main__':raise SystemExit(main())

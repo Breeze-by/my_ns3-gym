@@ -116,13 +116,13 @@ def test_return_escape_pose_moves_out_of_inflated_start_cell():
 
 
 def test_charge_contact_planning_preserves_a_reachable_home_route():
-    from multi_robot_exploration.control import plan_rally_leg, RallyPose
+    from multi_robot_exploration.control import known_return_route
     grid = np.zeros((100, 100), dtype=np.int16)
-    expected = plan_rally_leg(
-        RallyPose(0., 0., 0.), grid, .1, (-5., -5.), (3., 0.),
-        visible_only=True,
-    )
-    assert plan_charging_leg(grid, .1, (-5., -5.), (3., 0.), (0., 0.), .8) == expected
+    _, full = known_return_route(grid, .1, (-5., -5.), (3., 0.), (0., 0.), .8, include_route=True)
+    leg, route = plan_charging_leg(grid, .1, (-5., -5.), (3., 0.), (0., 0.), .8)
+    assert (leg.x, leg.y) == full[-1] == route[-1]
+    assert math.hypot(leg.x, leg.y) <= .6
+    assert sum(math.dist(a, b) for a, b in zip(route, route[1:])) < 3.
 
 
 @pytest.mark.parametrize("resolution,side", [(.05, -1), (.05, 1), (.1, -1), (.1, 1)])
@@ -146,7 +146,7 @@ def test_charging_completes_known_free_clearance_escape_before_long_home_leg(res
     assert leg.yaw == pytest.approx(control.route_arrival_yaw(route, 0.))
     # Reaching the safe endpoint permits an ordinary home prefix on new input.
     following, _ = plan_charging_leg(grid, resolution, (0., 0.), route[-1], home, .8)
-    assert following is not None and math.dist((following.x, following.y), home) < .2
+    assert following is not None and math.dist((following.x, following.y), home) <= .6
 
 
 @pytest.mark.parametrize("raw_start", [-1, 100])
@@ -193,7 +193,7 @@ def test_late_return_acceptance_is_canceled_after_charge_or_failure(mode):
     handle = Mock(accepted=True)
     manager = SimpleNamespace(
         mode=mode, mission_terminal=False, return_goal_pending=True,
-        return_goal_handle=None, return_goal_result=Mock())
+        return_goal_handle=None, return_goal_result=Mock(), return_cancels=0)
     BatteryManager.return_goal_response(manager, Mock(result=lambda: handle))
     handle.cancel_goal_async.assert_called_once()
     assert manager.return_goal_handle is handle
@@ -227,6 +227,10 @@ def test_missing_map_route_does_not_send_a_straight_line_return():
         charge_x=3.0, charge_y=2.0, return_escape_failed=False,
         return_escape_target=None, return_waypoint_target=None,
         return_stage="charger", now=lambda: 10.0)
+    manager.return_map_version = 1
+    manager.return_route_cache = {}
+    manager.audit_return = Mock()
+    manager.return_map_evidence = Mock(return_value=None)
     manager.charge_radius = 0.8
     manager.energy = 20.0
     manager.get_logger = Mock()
@@ -244,6 +248,10 @@ def charge_request_node():
         mission_terminal=False, mode=ACTIVE, energy=20.0, charge_target=80.0,
         map_position=(0., 3.), charge_x=0., charge_y=0., move_cost=1., idle_cost=.02,
         return_path_factor=2., nominal_speed=.18, safety_margin=8.,
+        charge_radius=.8, return_map=np.zeros((100,100), dtype=np.int16),
+        return_map_resolution=.1, return_map_origin=(-5.,-5.),
+        return_map_source_time=10., return_map_source='local', return_map_version=1,
+        return_route_cache={}, return_recovery_wait=30., in_charging_zone=lambda:False,
         begin_return=returns.append, consumed_publisher=SimpleNamespace(publish=consumed.append),
         get_logger=lambda: SimpleNamespace(info=lambda *args: None),
     )
@@ -264,7 +272,9 @@ def test_delivered_charge_request_is_idempotent_and_late_retry_cannot_recharge()
     node, returns, consumed = charge_request_node()
     BatteryManager.charge_request_callback(node, charge_message())
     BatteryManager.charge_request_callback(node, charge_message())
-    assert returns == [pytest.approx(14.6666666667)] and len(consumed) == 1
+    from multi_robot_exploration.control import return_energy_budget
+    expected = return_energy_budget(2.5 + math.sqrt(.05 ** 2 * 2), 1., .02, 2., .18, 8., source_age_sec=1.)
+    assert returns == [pytest.approx(expected['required_energy'])] and len(consumed) == 1
     node.mode = RETURNING
     BatteryManager.charge_request_callback(node, charge_message(stamp_sec=10.2))
     assert len(returns) == 1
@@ -313,10 +323,10 @@ def test_safety_return_falls_back_to_own_map_after_ap_loss():
     manager=SimpleNamespace(now=lambda: 10., fused_map_received_at=8., map_callback=applied.append)
     grid=OccupancyGrid()
     BatteryManager.local_map_callback(manager, grid)
-    assert not applied
+    assert applied == [grid]
     manager.fused_map_received_at=4.
     BatteryManager.local_map_callback(manager, grid)
-    assert applied == [grid]
+    assert applied == [grid, grid]
 
 
 def test_physical_failure_cancels_owned_safety_return_once():
@@ -325,7 +335,7 @@ def test_physical_failure_cancels_owned_safety_return_once():
     from multi_robot_exploration.battery_manager import BatteryManager, FAILED
     handle=Mock()
     manager=SimpleNamespace(mode=RETURNING,return_goal_handle=handle,robot_name="tb1",
-                            publish_state=Mock(),failure_publisher=Mock(),get_logger=Mock())
+                            publish_state=Mock(),failure_publisher=Mock(),get_logger=Mock(),finish_return_audit=Mock(),return_cancels=0,return_goal_cancel_requested=False)
     BatteryManager.fail(manager,"battery_exhausted")
     BatteryManager.fail(manager,"battery_return_unreachable")
     assert manager.mode==FAILED and manager.failure_reason=="battery_exhausted"

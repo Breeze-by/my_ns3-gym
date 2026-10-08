@@ -1,0 +1,145 @@
+{
+  "status": "PASS",
+  "recorded_at_utc": "2026-10-08T10:56:09.848215+00:00",
+  "scope": "static_917_topology_preexposure_only",
+  "world_sha256": "34ccf0a8c4310ac81817654927bbb2db4a1c76b2071885b98d65750cc690c317",
+  "resolution_m": 0.05,
+  "clearance_m": 0.45,
+  "rectangle_count": 10,
+  "unsupported_collisions": 0,
+  "points": {
+    "tb1_spawn_and_charge": {
+      "position": [
+        0.0,
+        -0.45
+      ],
+      "cell": [
+        93,
+        122
+      ],
+      "clearance_safe": true,
+      "routes_m": {
+        "tb1_spawn_and_charge": 0.0,
+        "tb2_spawn_and_charge": 0.9,
+        "tb3_spawn_and_charge": 0.636396103067893,
+        "target": 5.854772721475241
+      }
+    },
+    "tb2_spawn_and_charge": {
+      "position": [
+        0.0,
+        0.45
+      ],
+      "cell": [
+        111,
+        122
+      ],
+      "clearance_safe": true,
+      "routes_m": {
+        "tb1_spawn_and_charge": 0.9,
+        "tb2_spawn_and_charge": 0.0,
+        "tb3_spawn_and_charge": 0.636396103067893,
+        "target": 6.227564927611027
+      }
+    },
+    "tb3_spawn_and_charge": {
+      "position": [
+        0.45,
+        0.0
+      ],
+      "cell": [
+        102,
+        131
+      ],
+      "clearance_safe": true,
+      "routes_m": {
+        "tb1_spawn_and_charge": 0.636396103067893,
+        "tb2_spawn_and_charge": 0.636396103067893,
+        "tb3_spawn_and_charge": 0.0,
+        "target": 5.591168824543136
+      }
+    },
+    "target": {
+      "position": [
+        4.6,
+        -3.6
+      ],
+      "cell": [
+        30,
+        213
+      ],
+      "clearance_safe": true,
+      "routes_m": {
+        "tb1_spawn_and_charge": 5.854772721475243,
+        "tb2_spawn_and_charge": 6.227564927611027,
+        "tb3_spawn_and_charge": 5.591168824543136,
+        "target": 0.0
+      }
+    }
+  },
+  "collision_visual_pairs": [
+    {
+      "model": "p2c917_static_geometry",
+      "box_size": "12.2 0.2 2",
+      "pose": null,
+      "visual_collision_match": true
+    },
+    {
+      "model": "p2c917_static_geometry",
+      "box_size": "12.2 0.2 2",
+      "pose": null,
+      "visual_collision_match": true
+    },
+    {
+      "model": "p2c917_static_geometry",
+      "box_size": "0.2 10.2 2",
+      "pose": null,
+      "visual_collision_match": true
+    },
+    {
+      "model": "p2c917_static_geometry",
+      "box_size": "0.2 10.2 2",
+      "pose": null,
+      "visual_collision_match": true
+    },
+    {
+      "model": "p2c917_static_geometry",
+      "box_size": "3.4 0.25 1.5",
+      "pose": null,
+      "visual_collision_match": true
+    },
+    {
+      "model": "p2c917_static_geometry",
+      "box_size": "3.2 0.25 1.5",
+      "pose": null,
+      "visual_collision_match": true
+    },
+    {
+      "model": "p2c917_static_geometry",
+      "box_size": "3.6 0.25 1.5",
+      "pose": null,
+      "visual_collision_match": true
+    },
+    {
+      "model": "p2c917_static_geometry",
+      "box_size": "1.15 1.2 1.5",
+      "pose": null,
+      "visual_collision_match": true
+    },
+    {
+      "model": "p2c917_static_geometry",
+      "box_size": "1.3 1.0 1.5",
+      "pose": null,
+      "visual_collision_match": true
+    },
+    {
+      "model": "p2c917_static_geometry",
+      "box_size": "0.9 0.65 1.5",
+      "pose": null,
+      "visual_collision_match": true
+    }
+  ],
+  "task_experiments_started": false,
+  "seed": 917,
+  "fault_seed": 29171
+}

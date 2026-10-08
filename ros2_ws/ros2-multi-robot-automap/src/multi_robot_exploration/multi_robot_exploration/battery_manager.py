@@ -1,5 +1,7 @@
+import base64
 import json
 import math
+import zlib
 
 from action_msgs.msg import GoalStatus
 from geometry_msgs.msg import PoseStamped
@@ -15,16 +17,21 @@ from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
 from std_msgs.msg import String
 from tf2_msgs.msg import TFMessage
 
-from .fault_model import CHARGE_REQUEST_TTL_SEC
+from .fault_model import CHARGE_REQUEST_TTL_SEC, STATE_TTL_SEC
 
 from .control import (
     MAX_NAVIGATION_LEG_M,
     RALLY_PATH_CLEARANCE_M,
     RallyPose,
+    RETURN_RECOVERY_WAIT_SEC,
     grid_to_world,
+    charging_route_field,
+    _line_cells,
+    known_return_route,
     navigation_start_route,
     plan_rally_leg,
     route_arrival_yaw,
+    return_energy_budget,
     traversable_grid,
     transform_point_2d,
     world_to_grid,
@@ -36,6 +43,7 @@ RETURNING = "RETURNING"
 CHARGING = "CHARGING"
 FAILED = "FAILED"
 RETURN_PROGRESS_TIMEOUT_SEC = 20.0
+RETURN_NO_ROUTE_WAIT_SEC = 30.0
 
 
 def consume_energy(energy, distance_m, elapsed_sec, move_cost, idle_cost):
@@ -121,50 +129,47 @@ def return_escape_pose(
     )
 
 
-def plan_charging_leg(raw_grid, resolution, origin, position, charger, radius):
+def plan_charging_leg(raw_grid, resolution, origin, position, charger, radius, route_cache=None):
     """Reach the charger contact region when its exact centre is blocked.
 
-    Prefer the existing home route. Reuse its distance field for a reachable,
-    clearance-safe contact point, leaving 0.2 m for goal-position error.
+    Select the shortest full contact route, leaving 0.2 m for goal error.
+    The budget and dispatched legs share the same contact endpoint.
     Unknown/occupied cells and disconnected contact regions remain forbidden.
     """
-    cache = {}
-    options = dict(max_distance_m=MAX_NAVIGATION_LEG_M,
-                   clearance_m=RALLY_PATH_CLEARANCE_M, visible_only=True,
-                   route_cache=cache)
-
-    def first_leg(leg, route):
-        escape = cache["field"][2]
-        if leg is not None and len(escape) > 1:
-            # Complete the already validated known-free clearance escape
-            # before asking Nav2 for a long home leg from its inflated start.
-            # Replan on the next result; retain every occupied/unknown cell.
-            route = tuple(grid_to_world(*cell, resolution, *origin) for cell in escape)
-            leg = RallyPose(*route[-1], route_arrival_yaw(route, leg.yaw))
-        return leg, route
-
-    leg, route = plan_rally_leg(
-        RallyPose(*charger, 0.0), raw_grid, resolution, origin, position,
-        **options,
-    )
-    if leg is not None:
-        return first_leg(leg, route)
-    traversable, start, _, distance_data = cache["field"]
-    if start is None or distance_data is None or radius <= 0.2:
+    if route_cache is None:
+        route_cache = {}
+    distance, full_route = known_return_route(
+        raw_grid, resolution, origin, position, charger, radius,
+        route_cache, include_route=True)
+    if distance is None or not full_route:
         return None, ()
-    distances = distance_data[0]
-    rows, columns = np.nonzero(traversable & np.isfinite(distances))
-    xs = origin[0] + (columns + 0.5) * resolution
-    ys = origin[1] + (rows + 0.5) * resolution
-    squared = (xs - charger[0]) ** 2 + (ys - charger[1]) ** 2
-    candidates = np.flatnonzero(squared <= (radius - 0.2) ** 2)
-    if not len(candidates):
-        return None, ()
-    chosen = min(candidates, key=lambda i: (squared[i], distances[rows[i], columns[i]]))
-    return first_leg(*plan_rally_leg(
-        RallyPose(float(xs[chosen]), float(ys[chosen]), 0.0), raw_grid,
-        resolution, origin, position, **options,
-    ))
+    safe, _, _ = charging_route_field(raw_grid, resolution, origin, charger, radius, route_cache)
+    initial = world_to_grid(*position, resolution, *origin)
+    start, escape = navigation_start_route(raw_grid, safe, initial, max(1, math.ceil(.6 / resolution)))
+    if len(escape) > 1:
+        route = tuple(grid_to_world(*cell, resolution, *origin) for cell in escape)
+        return RallyPose(*route[-1], route_arrival_yaw(route, 0.)), route
+    # Pull only a visible prefix of the complete, budgeted reverse-field path.
+    prefix = [full_route[1] if len(full_route) > 1 else full_route[0]]
+    length = 0.
+    for point in full_route[2:]:
+        length += math.dist(prefix[-1], point)
+        if length > MAX_NAVIGATION_LEG_M:
+            break
+        prefix.append(point)
+    for point in reversed(prefix):
+        target = world_to_grid(*point, resolution, *origin)
+        cells = tuple(_line_cells(start, target))
+        if not all(safe[cell] for cell in cells):
+            continue
+        # A visibility shortcut must preserve Dijkstra's no-corner-cut rule.
+        if any(a[0] != b[0] and a[1] != b[1]
+               and (not safe[a[0], b[1]] or not safe[b[0], a[1]])
+               for a, b in zip(cells, cells[1:])):
+            continue
+        route = tuple(grid_to_world(*cell, resolution, *origin) for cell in cells)
+        return RallyPose(*route[-1], route_arrival_yaw(route, 0.)), route
+    return None, ()
 
 
 class BatteryManager(Node):
@@ -202,6 +207,10 @@ class BatteryManager(Node):
         self.return_path_factor = float(
             self.declare_parameter("return_path_factor", 2.0).value
         )
+        self.return_recovery_wait = float(self.declare_parameter(
+            'return_recovery_wait_sec', RETURN_RECOVERY_WAIT_SEC).value)
+        self.no_route_timeout = float(self.declare_parameter(
+            'return_no_route_wait_sec', RETURN_NO_ROUTE_WAIT_SEC).value)
         self.nominal_speed = float(
             self.declare_parameter("nominal_speed_mps", 0.18).value
         )
@@ -241,6 +250,8 @@ class BatteryManager(Node):
             or self.idle_cost < 0
             or self.safety_margin < 0
             or self.return_path_factor < 1
+            or self.return_recovery_wait < 0
+            or self.no_route_timeout <= 0
             or self.nominal_speed <= 0
             or self.charge_radius <= 0
             or not 0 < self.charge_target_fraction <= 1
@@ -253,6 +264,13 @@ class BatteryManager(Node):
             or self.stationary_angular < 0
         ):
             raise ValueError("invalid battery parameters")
+        if not all(math.isfinite(v) for v in (
+                self.capacity, self.initial_energy, self.charge_x, self.charge_y,
+                self.move_cost, self.idle_cost, self.safety_margin,
+                self.return_path_factor, self.return_recovery_wait, self.no_route_timeout,
+                self.nominal_speed, self.charge_radius, self.charge_duration,
+                self.return_timeout, self.charge_timeout)):
+            raise ValueError('battery parameters must be finite')
 
         state_qos = QoSProfile(depth=1)
         state_qos.durability = DurabilityPolicy.TRANSIENT_LOCAL
@@ -266,6 +284,9 @@ class BatteryManager(Node):
         self.consumed_publisher = self.create_publisher(
             String, "/gateway/consumed", 100
         )
+        self.return_audit_publisher = self.create_publisher(
+            String, f'/{self.robot_name}/battery_return_audit',
+            QoSProfile(depth=100, durability=DurabilityPolicy.TRANSIENT_LOCAL))
         self.input_subscriptions = [
             self.create_subscription(
                 Odometry,
@@ -312,6 +333,20 @@ class BatteryManager(Node):
         self.return_map = None
         self.return_map_resolution = None
         self.return_map_origin = None
+        self.return_map_source_time = None
+        self.return_map_source = None
+        self.return_map_version = 0
+        self.return_map_generation = 0
+        self.return_map_candidates = {}
+        self.return_route_caches = {}
+        self.return_route_cache = {}
+        self.latest_return_budget = None
+        self.return_no_route_since = None
+        self.return_audit_start = None
+        self.total_motion_distance = 0.
+        self.total_energy_elapsed = 0.
+        self.return_cancels = 0
+        self.return_rejections = 0
         self.previous_odom_position = None
         self.last_odom_time = None
         self.linear_speed = 0.0
@@ -362,6 +397,12 @@ class BatteryManager(Node):
         self.mission_terminal = message.data in (
             "COMPLETE", "PARTIAL_COMPLETE", "FAILED"
         )
+        if self.mission_terminal:
+            if self.return_goal_handle is not None and not self.return_goal_cancel_requested:
+                self.return_goal_handle.cancel_goal_async()
+                self.return_goal_cancel_requested = True
+                self.return_cancels += 1
+            self.finish_return_audit('mission_terminated')
 
     def charge_request_callback(self, message):
         """A delivered mission budget may request early local safety return."""
@@ -386,11 +427,8 @@ class BatteryManager(Node):
         if (self.mission_terminal or self.mode != ACTIVE
                 or self.energy > required or self.map_position is None):
             return
-        reserve = estimated_return_energy(
-            math.dist(self.map_position, (self.charge_x, self.charge_y)),
-            self.move_cost, self.idle_cost, self.return_path_factor,
-            self.nominal_speed, self.safety_margin,
-        )
+        budget = BatteryManager.current_return_budget(self)
+        reserve = None if budget is None else budget['required_energy']
         self.get_logger().info(
             f"Early {event['task_phase'].lower()} charge requested: energy={self.energy:.2f}, "
             f"mission_budget={required:.2f}."
@@ -404,7 +442,14 @@ class BatteryManager(Node):
             if parent.endswith("map") and child.endswith("odom"):
                 self.map_to_odom = stamped_transform.transform
 
-    def map_callback(self, message):
+    def map_callback(self, message, source='local'):
+        if (not message.info.height or not message.info.width
+                or len(message.data) != message.info.height * message.info.width
+                or not all(math.isfinite(v) for v in (message.info.resolution,
+                    message.info.origin.position.x, message.info.origin.position.y))
+                or message.info.resolution <= 0):
+            self.get_logger().warning('Ignoring invalid return map.')
+            return
         self.return_map = np.asarray(
             message.data, dtype=np.int16
         ).reshape(message.info.height, message.info.width)
@@ -413,16 +458,22 @@ class BatteryManager(Node):
             message.info.origin.position.x,
             message.info.origin.position.y,
         )
+        self.return_map_source_time = message.header.stamp.sec + message.header.stamp.nanosec / 1e9
+        self.return_map_source = source
+        self.return_map_generation += 1
+        self.return_map_version = self.return_map_generation
+        self.return_map_candidates[source] = (
+            self.return_map, self.return_map_resolution, self.return_map_origin,
+            self.return_map_source_time, self.return_map_version, source)
 
     def fused_map_callback(self, message):
         self.fused_map_received_at = self.now()
-        self.map_callback(message)
+        self.map_callback(message, 'delivered_fused')
 
     def local_map_callback(self, message):
-        # Preserve the received fused map while live, but loss of AP contact
-        # cannot remove the robot's own known path home.
-        if self.fused_map_received_at is None or self.now() - self.fused_map_received_at > 5.0:
-            self.map_callback(message)
+        # Keep both sources. Prefer a complete local path while fresh; AP loss
+        # never removes that path or imposes an extra five-second fallback wait.
+        self.map_callback(message)
 
     def odom_callback(self, message):
         now = self.now()
@@ -437,14 +488,23 @@ class BatteryManager(Node):
             message.pose.pose.position.y,
         )
         twist = message.twist.twist
+        if not all(math.isfinite(v) for v in (odom_time, *odom_position,
+                twist.linear.x, twist.linear.y, twist.angular.z)):
+            self.fail('battery_invalid_odometry')
+            return
         self.linear_speed = math.hypot(twist.linear.x, twist.linear.y)
         self.angular_speed = abs(twist.angular.z)
         if self.map_to_odom is not None:
             self.map_position = transform_point_2d(
                 *odom_position, self.map_to_odom
             )
+            if not all(math.isfinite(v) for v in self.map_position):
+                self.fail('battery_invalid_transform')
+                return
 
-        if self.last_odom_time is not None and self.mode != CHARGING:
+        if self.last_odom_time is not None and (
+                self.mode != CHARGING or not self.at_charger_and_stopped()
+                or self.return_goal_pending or self.return_goal_handle is not None):
             elapsed = max(0.0, odom_time - self.last_odom_time)
             measured_distance = (
                 0.0
@@ -467,6 +527,8 @@ class BatteryManager(Node):
                 self.move_cost,
                 self.idle_cost,
             )
+            self.total_motion_distance += distance
+            self.total_energy_elapsed += elapsed
             self.minimum_energy = min(self.minimum_energy, self.energy)
         self.last_odom_time = odom_time
         self.previous_odom_position = odom_position
@@ -483,21 +545,7 @@ class BatteryManager(Node):
         if reason:
             self.fail(reason)
             return
-        if self.mode == ACTIVE and self.map_position is not None:
-            distance_home = math.dist(
-                self.map_position, (self.charge_x, self.charge_y)
-            )
-            reserve = estimated_return_energy(
-                distance_home,
-                self.move_cost,
-                self.idle_cost,
-                self.return_path_factor,
-                self.nominal_speed,
-                self.safety_margin,
-            )
-            if self.energy <= reserve:
-                self.begin_return(reserve)
-        elif self.mode == RETURNING and self.in_charging_zone():
+        if self.mode == RETURNING and self.in_charging_zone():
             self.begin_charging()
         elif self.mode == CHARGING:
             self.update_charging(now)
@@ -516,7 +564,90 @@ class BatteryManager(Node):
             self.charge_radius + margin,
         )
 
-    def begin_return(self, reserve):
+    def current_return_budget(self, include_route=False):
+        """Local known map and odometry only; unavailable is never finite."""
+        if self.in_charging_zone():
+            distance, route, age = 0., (self.map_position,), 0.
+        else:
+            if self.return_map_source_time is None or self.map_position is None:
+                self.latest_return_budget = None
+                return None
+            candidates = getattr(self, 'return_map_candidates', {})
+            if not candidates:
+                candidates = {self.return_map_source: (
+                    self.return_map, self.return_map_resolution, self.return_map_origin,
+                    self.return_map_source_time, self.return_map_version, self.return_map_source)}
+            distance, route = None, ()
+            for source, snapshot in sorted(candidates.items(), key=lambda item: item[0] != 'local'):
+                raw, resolution, origin, stamp, version, _ = snapshot
+                age = self.now() - stamp
+                if not 0 <= age <= STATE_TTL_SEC['map_snapshot']:
+                    continue
+                caches = getattr(self, 'return_route_caches', {source:self.return_route_cache})
+                cache = caches.setdefault(source, {})
+                distance, route = known_return_route(raw, resolution, origin,
+                    self.map_position, (self.charge_x, self.charge_y), self.charge_radius,
+                    cache, include_route)
+                if distance is not None:
+                    self.return_map, self.return_map_resolution, self.return_map_origin = raw, resolution, origin
+                    self.return_map_source_time, self.return_map_version, self.return_map_source = stamp, version, source
+                    self.return_route_cache = cache
+                    break
+            if distance is None:
+                self.latest_return_budget = None
+                return None
+        budget = return_energy_budget(distance, self.move_cost, self.idle_cost,
+            self.return_path_factor, self.nominal_speed, self.safety_margin,
+            self.return_recovery_wait, age)
+        budget.update(map_version=self.return_map_version,
+                      map_source=self.return_map_source,
+                      map_source_time=self.return_map_source_time,
+                      map_age_sec=age,
+                      map_content_blake2b=self.return_route_cache.get('key', (None, None))[1])
+        if include_route:
+            budget['route'] = route
+        self.latest_return_budget = budget
+        return budget
+
+    def audit_return(self, event, **details):
+        self.return_audit_publisher.publish(String(data=json.dumps({
+            'event': event, 'robot': self.robot_name, 'sim_time': self.now(),
+            'return_count': self.return_count, 'energy': self.energy,
+            'home': (self.charge_x, self.charge_y), 'charge_radius_m': self.charge_radius,
+            'energy_model': dict(move_cost_per_m=self.move_cost, idle_cost_per_sec=self.idle_cost,
+                path_factor=self.return_path_factor, nominal_speed_mps=self.nominal_speed,
+                safety_margin=self.safety_margin, recovery_wait_sec=self.return_recovery_wait),
+            **details}, sort_keys=True, allow_nan=False)))
+
+    def return_map_evidence(self):
+        """Native audit-only snapshot; never sent as AP planning information."""
+        if self.return_map is None:
+            return None
+        return dict(shape=self.return_map.shape, resolution=self.return_map_resolution,
+                    origin=self.return_map_origin, source=self.return_map_source,
+                    source_time=self.return_map_source_time, version=self.return_map_version,
+                    encoding='zlib_base64_int16_le',
+                    grid=base64.b64encode(zlib.compress(
+                        np.asarray(self.return_map, dtype='<i2').tobytes())).decode('ascii'))
+
+    def finish_return_audit(self, outcome):
+        start = self.return_audit_start
+        if start is None:
+            return
+        spent = start['energy'] - self.energy
+        budget = start['budget']
+        prediction = None if budget is None else budget['required_energy'] - budget['safety_margin']
+        self.audit_return('return_finished', outcome=outcome, start=start,
+            actual_distance_m=self.total_motion_distance - start['distance'],
+            actual_elapsed_sec=self.total_energy_elapsed - start['elapsed'],
+            actual_energy_spent=spent,
+            predicted_energy_spent=prediction,
+            prediction_error=None if prediction is None else spent - prediction,
+            cancellation_count=self.return_cancels - start['cancels'],
+            rejection_count=self.return_rejections - start['rejections'])
+        self.return_audit_start = None
+
+    def begin_return(self, reserve, reason='energy_or_task_budget'):
         now = self.now()
         self.mode = RETURNING
         self.mode_started_at = now
@@ -527,17 +658,27 @@ class BatteryManager(Node):
         self.return_escape_failed = False
         self.return_escape_target = None
         self.return_waypoint_target = None
+        budget = self.current_return_budget(include_route=True)
+        self.return_no_route_since = now if budget is None else None
+        self.return_audit_start = dict(energy=self.energy, distance=self.total_motion_distance,
+            elapsed=self.total_energy_elapsed, budget=budget, cancels=self.return_cancels,
+            rejections=self.return_rejections, sim_time=now, reason=reason)
+        self.audit_return('return_started', reason=reason,
+                          budget=budget, position=self.map_position,
+                          map_evidence=self.return_map_evidence())
         self.publish_state()
         self.get_logger().warning(
             f"{self.robot_name} returning to charge: energy={self.energy:.2f}, "
-            f"required_reserve={reserve:.2f}."
+            f"required_reserve={reserve if reserve is not None else 'unavailable'}."
         )
 
     def begin_charging(self):
         now = self.now()
         handle = self.return_goal_handle
-        if handle is not None:
+        if handle is not None and not self.return_goal_cancel_requested:
             handle.cancel_goal_async()
+            self.return_goal_cancel_requested = True
+            self.return_cancels += 1
         self.mode = CHARGING
         self.mode_started_at = now
         # Entering the zone is enough to stop navigation. The robot may
@@ -562,6 +703,7 @@ class BatteryManager(Node):
             self.charge_stable_started_at = None
             return
         if self.charge_stable_started_at is None:
+            self.finish_return_audit('charger_stopped')
             self.charge_stable_started_at = now
             return
         if now - self.charge_stable_started_at < self.charge_duration:
@@ -599,11 +741,22 @@ class BatteryManager(Node):
         if reason:
             self.fail(reason)
             return
+        if self.mode == ACTIVE and self.map_position is not None:
+            # One bounded 0.5 s safety tick, rather than a map search per odom.
+            # The budget explicitly retains a full 1 s motion/idle reaction.
+            budget = self.current_return_budget()
+            if budget is None:
+                self.begin_return(None, reason='no_known_route')
+            elif self.energy <= budget['required_energy']:
+                self.begin_return(budget['required_energy'])
         if self.mode == RETURNING and self.in_charging_zone():
             self.begin_charging()
         elif self.mode == CHARGING:
             self.update_charging(now)
         if self.mode == RETURNING:
+            budget = self.current_return_budget()
+            if not self.guard_return_budget(now, budget):
+                return
             self.monitor_return_progress(now)
         if (
             self.mode == RETURNING
@@ -612,6 +765,57 @@ class BatteryManager(Node):
             and now >= self.return_goal_due_at
         ):
             self.send_return_goal()
+
+    def guard_return_budget(self, now, budget):
+        """Bound map-loss waiting and spend no motion below the reserve floor."""
+        if self.energy <= self.safety_margin:
+            self.fail('battery_return_reserve_depleted')
+            return False
+        if budget is None:
+            if self.return_no_route_since is None:
+                self.return_no_route_since = now
+                self.audit_return('return_route_unavailable', map_version=self.return_map_version)
+            if self.return_goal_handle is not None and not self.return_goal_cancel_requested:
+                self.return_goal_cancel_requested = True
+                self.return_cancels += 1
+                self.return_goal_handle.cancel_goal_async()
+            if now - self.return_no_route_since >= self.no_route_timeout:
+                self.fail('battery_return_unreachable')
+            return False
+        if self.return_no_route_since is not None:
+            self.audit_return('return_route_recovered', budget=budget,
+                              wait_sec=now - self.return_no_route_since)
+            self.return_no_route_since = None
+            # A temporary map gap is a stop/hold, not a mandatory top-up.
+            # The central gateway retains cancellation handles until results.
+            if (self.return_audit_start is not None
+                    and self.return_audit_start['reason'] == 'no_known_route'
+                    and self.energy > budget['required_energy']
+                    and self.return_goal_handle is None and not self.return_goal_pending):
+                self.finish_return_audit('route_recovered_resume')
+                self.mode = ACTIVE
+                self.mode_started_at = now
+                self.publish_state()
+                return False
+        start = self.return_audit_start
+        if start is not None:
+            if start['budget'] is None:
+                start['budget'] = self.current_return_budget(include_route=True)
+                self.audit_return('return_prediction_available', start=start,
+                                  map_evidence=self.return_map_evidence())
+            predicted = start['budget']
+            if predicted is not None:
+                actual_distance = self.total_motion_distance - start['distance']
+                elapsed = now - start['sim_time']
+                # Keep the explicit reaction distance for cancellation/settling.
+                distance_limit = predicted['path_distance_m'] * self.return_path_factor
+                if actual_distance >= distance_limit:
+                    self.fail('battery_return_motion_envelope')
+                    return False
+                if elapsed >= predicted['travel_time_budget_sec'] + predicted['waiting_time_budget_sec']:
+                    self.fail('battery_return_time_envelope')
+                    return False
+        return True
 
     def monitor_return_progress(self, now):
         """Cancel a stalled local leg before repeated motion spends its reserve."""
@@ -631,6 +835,7 @@ class BatteryManager(Node):
         if not (stalled or timed_out):
             return
         self.return_goal_cancel_requested = True
+        self.return_cancels += 1
         self.get_logger().warning(
             f"Canceling {self.robot_name} return leg after "
             + ("timeout." if timed_out else "no waypoint progress.")
@@ -674,34 +879,16 @@ class BatteryManager(Node):
         staged, route = plan_charging_leg(
             self.return_map, self.return_map_resolution, self.return_map_origin,
             self.map_position, (self.charge_x, self.charge_y), self.charge_radius,
+            self.return_route_cache,
         )
         if staged is not None:
             target = (staged.x, staged.y)
             self.return_stage = "charger"
             self.return_escape_target = None
             self.return_waypoint_target = None
-        elif not self.return_escape_failed:
-            # The map can mark the current footprint inside inflated
-            # clearance. Use a short, map-validated escape leg, then rerun
-            # the charger planner. Never synthesize a geometric straight line.
-            self.return_escape_target = return_escape_pose(
-                self.return_map, self.return_map_resolution,
-                self.return_map_origin, self.map_position,
-                max_escape_m=1.5, clearance_m=RALLY_PATH_CLEARANCE_M,
-            )
-            if self.return_escape_target is None:
-                self.get_logger().warning(
-                    f"{self.robot_name} local return has no safe contact/escape route: "
-                    f"position={self.map_position}, home={(self.charge_x, self.charge_y)}, "
-                    f"map_shape={self.return_map.shape}, origin={self.return_map_origin}, "
-                    f"energy={self.energy:.2f}.", throttle_duration_sec=5.0,
-                )
-                self.return_goal_due_at = self.now() + 1.0
-                return
-            target = self.return_escape_target
-            self.return_stage = "escape"
-            self.return_waypoint_target = None
         else:
+            self.audit_return('return_leg_refused', reason='no_full_contact_route',
+                              map_version=self.return_map_version)
             self.return_goal_due_at = self.now() + 1.0
             return
         self.return_goal_target = target
@@ -723,6 +910,10 @@ class BatteryManager(Node):
         )
         self.return_attempts += 1
         self.return_goal_pending = True
+        self.audit_return('return_leg_sent', target=target, route=route,
+                          budget=self.latest_return_budget,
+                          position=self.map_position,
+                          map_evidence=self.return_map_evidence())
         future = self.navigation.send_goal_async(goal)
         future.add_done_callback(self.return_goal_response)
 
@@ -735,12 +926,15 @@ class BatteryManager(Node):
             self.return_goal_due_at = self.now() + 1.0
             return
         if handle is None or not handle.accepted:
+            self.return_rejections += 1
             self.return_goal_due_at = self.now() + 1.0
             return
         self.return_goal_handle = handle
         # The pose can enter the charge zone while the action request is in
         # flight. Cancel a late acceptance before it can drive out again.
         if self.mode != RETURNING or self.mission_terminal:
+            self.return_cancels += 1
+            self.return_goal_cancel_requested = True
             handle.cancel_goal_async()
         else:
             self.return_goal_started_at = self.now()
@@ -767,6 +961,7 @@ class BatteryManager(Node):
             status = future.result().status
         except Exception as error:
             status = f"exception: {error}"
+        self.audit_return('return_leg_result', status=status)
         if self.mode != RETURNING:
             return
         if status == GoalStatus.STATUS_SUCCEEDED:
@@ -812,8 +1007,11 @@ class BatteryManager(Node):
             return
         self.failure_reason = reason
         self.mode = FAILED
-        if self.return_goal_handle is not None:
+        if self.return_goal_handle is not None and not self.return_goal_cancel_requested:
             self.return_goal_handle.cancel_goal_async()
+            self.return_goal_cancel_requested = True
+            self.return_cancels += 1
+        self.finish_return_audit(reason)
         self.publish_state()
         message = String()
         message.data = f"{reason}:{self.robot_name}"
@@ -845,6 +1043,9 @@ class BatteryManager(Node):
                 "idle_cost_per_sec": self.idle_cost,
                 "tx_cost_per_byte": 0.0,
                 "return_path_factor": self.return_path_factor,
+                "return_budget_model": "known_contact_path_v1",
+                "return_recovery_wait_sec": self.return_recovery_wait,
+                "return_no_route_wait_sec": self.no_route_timeout,
                 "nominal_speed_mps": self.nominal_speed,
                 "return_safety_margin": self.safety_margin,
                 "return_timeout_sec": self.return_timeout,

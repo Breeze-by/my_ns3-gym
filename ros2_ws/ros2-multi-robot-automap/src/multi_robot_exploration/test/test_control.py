@@ -120,6 +120,7 @@ def test_optional_survey_funds_safe_prefix_and_respects_live_reservation(energy,
     route=tuple((2.,y/10) for y in range(70)) if reservation else ()
     node=SimpleNamespace(fresh_robot_inputs=lambda: True, fresh_target=lambda: True,
         map_data=grid, resolution=.1, origin=(0.,0.), robot_positions={'tb1':(1.,1.),'tb2':(8.,8.)},
+        now=lambda:100.,map_received_at=100.,robot_odom_received_at={'tb1':100.,'tb2':100.},
         battery_modes={'tb1':'ACTIVE','tb2':'ACTIVE'}, battery_states=states, rally_charge_requested={},
         rally_leg_routes={'tb1':(),'tb2':route}, rally_goal_handles={'tb1':None,'tb2':object() if reservation else None},
         rally_goal_pending={'tb1':False,'tb2':False}, survey_goal_handle=None, survey_goal_pending=False,
@@ -575,13 +576,15 @@ def exploration_energy_node(**changes):
            "idle_cost_per_sec":.02,"return_path_factor":2.,"nominal_speed_mps":.18,
            "return_safety_margin":8., **changes}
     return SimpleNamespace(enable_battery=True,battery_modes={"tb1":"ACTIVE"},
-        battery_states={"tb1":state},robot_positions={"tb1":(.5,1.5)})
+        battery_states={"tb1":state},robot_positions={"tb1":(.5,1.5)},
+        map_data=np.zeros((100,100),dtype=int),resolution=.1,origin=(0.,0.),
+        now=lambda:10.,map_received_at=10.,robot_odom_received_at={"tb1":10.})
 
 
 def test_exploration_preference_reserves_return_from_frontier_endpoint():
     node=exploration_energy_node()
     assert control.battery_assignment_is_safe(15.,4.,0.,1.,.02,2.,.18,8.)
-    required=control.battery_assignment_required_energy(4.,4.,1.,.02,2.,.18,8.)
+    required=control.battery_assignment_required_energy(4.,3.5+math.sqrt(.005),1.,.02,2.,.18,8.)
     factor=control.HeadquartersControl.exploration_battery_factor(node,"tb1",4.,(4.5,1.5))
     assert factor == pytest.approx(.25*15./required)
     assert 0 < factor < .25  # Rank useful unfunded frontiers for charge recovery.
@@ -614,7 +617,10 @@ def test_rally_assignment_keeps_low_energy_observer_without_a_return(monkeypatch
     assignments = control.assign_rally_poses(grid, .1, (0., 0.), positions, (4., 4.),
         objective, battery_states=states, observer_robot="tb2")
     assert original["tb2"].x == 5.55  # Zero travel ignores its independent return reserve.
-    assert assignments["tb2"].x == 1.55
+    assert assignments["tb2"].x in (1.55,3.55)
+    selected=assignments["tb2"]
+    home_distance,_=control.known_return_route(grid,.1,(0.,0.),(selected.x,selected.y),(.5,1.5),.8)
+    assert control.battery_assignment_required_energy(abs(5.55-selected.x),home_distance,1.,0.,2.,1.,0.) < 8.5
     assert len(set(assignments.values())) == 3
     assert all(p.yaw == .25 for p in assignments.values())
     assert positions["tb2"] == (5.55, 1.55) and states["tb2"]["energy"] == 8.5
@@ -2242,6 +2248,7 @@ def rally_budget_node(energy=25.0):
         rally_goal_handles={"tb1": None}, rally_goal_pending={"tb1": False},
         rally_final_targets={"tb1": control.RallyPose(8.05, 1.05, 0)},
         map_data=np.zeros((30, 100), dtype=int), resolution=.1, origin=(0., 0.),
+        map_received_at=11.,robot_odom_received_at={"tb1":11.},
         rally_hold_sec=5.0, fail_task=failures.append,
         charge_request_publishers={"tb1": SimpleNamespace(publish=messages.append)},
         get_logger=lambda: SimpleNamespace(warn=lambda *args: None, info=lambda *args: None),
@@ -2258,7 +2265,7 @@ def test_rally_preflight_reserves_return_from_final_pose_and_holds_until_resume(
     assert control.battery_assignment_is_safe(25, 7, 0, 1, .02, 2, .18, 8)
     assert control.HeadquartersControl.prepare_rally_charges(node) == {"tb1"}
     event = json.loads(messages[0].data)
-    assert event["required_energy"] == pytest.approx(33.3777777778)
+    assert event["required_energy"] == pytest.approx(32.9977777778)
     assert event["available_energy"] == 25 and not failures
     assert control.HeadquartersControl.prepare_rally_charges(node) == {"tb1"}
     assert len(messages) == 1  # retries cannot flood the command route
@@ -2368,7 +2375,7 @@ def two_robot_rally_budget_node():
     node.rally_dispatch_order.append("tb2")
     for field in ("battery_states", "robot_positions", "rally_goal_handles",
                   "rally_goal_pending", "rally_final_targets", "charge_request_publishers",
-                  "battery_modes"):
+                  "battery_modes", "robot_odom_received_at"):
         values = getattr(node, field)
         values["tb2"] = dict(values["tb1"]) if field == "battery_states" else values["tb1"]
     node.robot_positions["tb1"] = (3.05, 1.05)
@@ -2382,6 +2389,8 @@ def test_early_rally_charges_are_serialized_and_nearest_charger_goes_first():
     assert [json.loads(m.data)["robot"] for m in messages] == ["tb2"]
     # While delivery is pending only its owner can retry, even if priorities change.
     node.now = lambda: 14.0
+    node.map_received_at=14.
+    node.robot_odom_received_at=dict.fromkeys(node.battery_modes,14.)
     node.robot_positions["tb1"] = (1.05, 1.05)
     assert control.HeadquartersControl.prepare_rally_charges(node) == {"tb1", "tb2"}
     assert [json.loads(m.data)["robot"] for m in messages] == ["tb2", "tb2"]
@@ -3159,7 +3168,8 @@ def test_multi_robot_preflight_keeps_peer_wait_without_a_phantom_recovery():
     # Nominal trip plus the actual peer travel wait stays reserved.
     distance = 7.0
     state = node.battery_states["tb2"]
-    nominal = control.battery_assignment_required_energy(distance, distance, 1., .02, 2., .18, 8.) + .02 * 5
+    nominal = control.HeadquartersControl.task_return_required_energy(
+        node,"tb2",distance,(node.rally_final_targets["tb2"].x,node.rally_final_targets["tb2"].y)) + .02 * 5
     assert nominal < 40.
     assert node.rally_charge_budgets["tb2"] > nominal
     assert node.rally_charge_budgets["tb2"] < 40.

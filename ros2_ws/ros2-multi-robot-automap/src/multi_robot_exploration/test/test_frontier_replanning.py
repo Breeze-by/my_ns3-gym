@@ -29,6 +29,7 @@ def test_stale_final_frontier_replans_during_progress_only_to_admissible_work(co
         goal_targets={'tb1':current,'tb2':None},goal_initial_gain={'tb1':1000,'tb2':0},
         cancel_requested={'tb1':condition=='already_canceling','tb2':False},
         fresh_robot_inputs=lambda:condition!='stale_map',map_data=grid,resolution=.1,origin=(0.,0.),
+        map_received_at=100.,robot_odom_received_at=dict.fromkeys(names,100.),
         robot_positions={'tb1':position,'tb2':(11.05,11.05)},
         robot_states={'tb1':'active','tb2':'idle'},goal_routes=dict.fromkeys(names,()),
         frontier_cache=None,battery_modes=dict.fromkeys(names,'ACTIVE'),enable_battery=True,

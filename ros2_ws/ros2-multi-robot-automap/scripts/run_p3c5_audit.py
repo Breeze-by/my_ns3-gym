@@ -20,9 +20,9 @@ def now():
     return datetime.now(timezone.utc).isoformat()
 
 
-def main():
+def main(default_manifest=None, log_category='p3c5'):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--manifest", type=Path, default=Path(__file__).with_name("p3c5_traffic_manifest.json"))
+    parser.add_argument("--manifest", type=Path, default=default_manifest or Path(__file__).with_name("p3c5_traffic_manifest.json"))
     parser.add_argument("--case", required=True)
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--domain", type=int, required=True)
@@ -35,7 +35,7 @@ def main():
     if args.case not in config["cases"]:
         parser.error("unknown predeclared case")
     scenario = config["cases"][args.case]
-    root = PROJECT_ROOT / "log/p3c5" / args.run_id
+    root = PROJECT_ROOT / 'log' / log_category / args.run_id
     directory = root / (args.run_id+"_"+args.case)
     case = {"id": args.case, "scenario": args.case, "mode": "rally", "profile": "online"}
     command = episode_command(case, scenario, scenario.get("profile", {}), scenario["mode"], directory, config)
@@ -62,6 +62,7 @@ def main():
                     "params": "src/multi_robot/params", "worlds": "src/multi_robot/worlds", "slam": "src/slam_toolbox/src",
                     "manifest": str(args.manifest.resolve()), "runner": str(Path(__file__).resolve()),
                     "smoke": "scripts/ros_smoke_test.py", "control_cli": "scripts/gateway_configure.py",
+                    'entrypoint': str(Path(sys.argv[0]).resolve()),
                     "message_schema": "src/multi_robot_interfaces/msg/GatewayEnvelope.msg",
                     "control_schema": "scripts/p3c5_control_schema.json",
                     "admission_protocol": "src/multi_robot_exploration/multi_robot_exploration/admission_protocol.py"}.items()}}
@@ -72,6 +73,9 @@ def main():
     dirty = [line for line in status.splitlines() if not (line.startswith("?? 260929_report/") or line.startswith('?? "260929_report/'))]
     if dirty:
         parser.error("freeze and push the clean source before a task run: " + str(dirty))
+    upstream = subprocess.check_output(['git','rev-parse','@{u}'],text=True).strip()
+    if upstream != manifest['git_commit']:
+        parser.error('push the exact task freeze before a run')
     directory.mkdir(parents=True, exist_ok=False)
     schedule_path.write_text(json.dumps(scenario["schedule"], indent=2)+"\n")
     manifest["started_at_utc"] = now()

@@ -7890,3 +7890,29 @@ REVIEW_PY
 ```
 
 `/usr/bin/python3 -m py_compile`当前check_p3c_source/test_p3c_source、review_tools/audit_return_reserve/collect_evidence及gate/traffic_audit PASS。只删最后测试文件未用import后，3项inventory测试再次独立PASS；任务源码未改。`git diff --check`已PASS。新精选证据总864KiB；旧raw未复制成新实验。随后执行最终dry-stage、显式暂存、commit/push，push结果由会话最终回复确认。
+
+
+## 2026-10-08 P2C.1 评审后候选：组件与前瞻冻结
+
+用户明确验收 P3C.5，并授权继续补强 P2C、尝试新算法。父提交 `5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9`；以下为有记录 SHA 的未冻结开发源码，尚无新 Gazebo 任务。全部早期失败和成功 stdout/JSON 无损压缩在 `report/20261008_p2c_components_artifacts/`；源/结果/完整命令与哈希清单见 `report/20261008_p2c_components.json/.md`。
+
+ROS 通用前缀（以下所有 Python/colcon 命令均在仓库内 ROS workspace）：
+
+```bash
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+export PYTHONNOUSERSITE=1
+export PYTHONPATH="$PWD/src/multi_robot_exploration:$PWD/scripts:$PYTHONPATH"
+```
+
+定向早期检查24 FAIL/63 PASS（顶层 CLI 未单独保存，完整 pytest node IDs/stdout 保留，不计冻结证据）；完整命令 `/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test scripts/test_*.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py`：v1 collection ERROR（未 source 当前 install，缺 multi_robot_interfaces），v2 19 FAIL/730 PASS/1 skip，v3 21 FAIL/764 PASS/1 skip；修复合法接触终点、源时间/替身字段及实际两场重复构建、浮点边界后 v4 785 PASS/1 skip/21.43s。新增实际 ROS synthetic unreachable 和 timer/cancellation 记录改动后，最终同完整命令重验786 PASS/1 skip/20.50s，输出 `log/p2c_components_freeze_v1.log`。
+
+`/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_return_budget.py` ->37 PASS/2.18s（`p2c_native_components_v1.log`），包含实际 isolated domain207 DDS/clock/action 组件，合成断连图正能量失败/zero Nav2 goal，非物理返航。`/usr/bin/python3 -m pytest -q scripts/test_p2c_gate.py` ->14 PASS/1.23s，完整路径成本、地图哈希/版本/源龄、原生实际成本/预测与结束缺失篡改拒绝。
+
+`/usr/bin/python3 scripts/check_p2c_source.py --output log/p2c_source_freeze_v1.json` 首次 ERROR `KeyError(pass)`，stdout 保留；正确读取原54格 status 后，`--output log/p2c_source_freeze_v2.json` PASS：172保护字节不变、3明确授权任务文件改动、单独新917 world、native常量不变/54格协议。3r source bypass 输出 `log/p2c_source_bypass_v1.json` PASS/0 violation（沿现有 source-only 审核器）。
+
+`colcon build --symlink-install --packages-select multi_robot_interfaces multi_robot_exploration merge_map multi_robot`：初次5.32s/最终新world安装后5.19s均四包 PASS，`p2c_strengthen_build_v1.log`/`p2c_build_freeze_v1.log`。新helper `compileall -q` PASS；`/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261008_p2c_v1 --domain 170 --gazebo-port 20250 --validate-only` PASS（仅预声明校验，未启动仿真），实际展开 command 完整在 `p2c_manifest_validate_v1.json` 和候选 JSON。
+
+CPU组件命令 `OPENBLAS_NUM_THREADS=1 /usr/bin/python3 scripts/compare_p2c_return_algorithms.py --output ../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261008_p2c_algorithm_components_vN.json`，N=1 ERROR（numpy int64 JSON序列化），N=2 PASS192完整图查询一致/46旧低估/28旧假有限，N=3 cache dtype key补齐后的最终同192 PASS（最终control SHA `59318aa0cbd2f290037287cb6959d3d62d05f17c6f89a6bef661d339179ad6f3`）。完整日志/v2/v3均保留；seed20261008，4layout×2size×24query，前向Dijkstra/Python A*/反向内容缓存中位7.89/24.30/0.258ms，仅此组件实现CPU，不宣称任务或单因素收益。
+
+静态 inline `/usr/bin/python3` 调用原 `load_truth_grid`/`traversable_grid(...,.45)`/`path_distance_grid`，逐 collision/visual box匹配、真实launch三spawn/charge及目标连通 PASS；完整输入/结果在 `report/20261008_p2c_holdout917_static.json`（world SHA `34ccf0a8c4310ac81817654927bbb2db4a1c76b2071885b98d65750cc690c317`），无 Gazebo 暴露。新预声明4开发/17正式+两实际blackout原始任务，先强制开发→开发三地图→正式固定/安全→首次917，原300s/native5s/TTL/物理门限不变；不retry/backfill。候选必须新clean commit/push 后才能开始任务；所有原任务关闭前不改源。P3C.5用户已验收；P2C.1未集成通过，P4/ns-3/Wi-Fi/RL未开始。

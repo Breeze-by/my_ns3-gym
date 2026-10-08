@@ -34,6 +34,10 @@ def record(topic,message):
 
 for topic in ["/robot_failure","/task_state","/rally_assignments",*(f"/tb{i}/battery_state" for i in range(1,args.robot_count+1))]:
     node.create_subscription(String,topic,lambda m,t=topic: record(t,m),qos)
+audit_qos=QoSProfile(depth=100,reliability=ReliabilityPolicy.RELIABLE,durability=DurabilityPolicy.TRANSIENT_LOCAL)
+for i in range(1,args.robot_count+1):
+    topic=f'/tb{i}/battery_return_audit'
+    node.create_subscription(String,topic,lambda m,t=topic: record(t,m),audit_qos)
 print("READY",flush=True)
 try: rclpy.spin(node)
 except (KeyboardInterrupt, ExternalShutdownException): pass

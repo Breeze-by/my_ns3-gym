@@ -25,6 +25,7 @@ def observer_node():
         rally_goal_handles=dict.fromkeys(names),rally_goal_pending=dict.fromkeys(names,False),
         survey_goal_handle=None,survey_goal_pending=False,survey_attempts=0,
         map_data=np.zeros((100,100),dtype=np.int16),resolution=.1,origin=(0.,0.),
+        now=lambda:100.,map_received_at=100.,robot_odom_received_at=dict.fromkeys(names,100.),
         fresh_robot_inputs=lambda:True,fresh_target=lambda:True,
         rally_position_tolerance=.35,goal_timeout_sec=60.,num_robots=2,rally_max_retries=2,
         robot_nav_clients={'tb1':client},record_navigation_decision=Mock(),survey_goal_response=Mock(),

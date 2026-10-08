@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import hashlib
 import json
 import math
 import os
@@ -73,6 +74,9 @@ RALLY_ROUTE_SEPARATION_M = 1.8
 # until the delivered live pose confirms passage.
 RALLY_MAX_CONCURRENT = 2
 EXPLORATION_MAX_CONCURRENT = 3
+RETURN_RECOVERY_WAIT_SEC = 30.0
+RETURN_REACTION_SEC = 1.0
+RETURN_MAX_LINEAR_MPS = 0.3
 
 TASK_TRANSITIONS = {
     "EXPLORE": {"FOUND_UNCONFIRMED", "FOUND", "FAILED"},
@@ -601,11 +605,12 @@ def navigation_start_route(raw_grid, traversable, start, max_radius_cells):
     return None, ()
 
 
-def path_distance_grid(traversable, start, return_predecessors=False):
+def path_distance_grid(traversable, start, return_predecessors=False, goal_mask=None):
     """Return an 8-connected Dijkstra distance field in grid cells."""
     height, width = traversable.shape
-    if start is None:
-        return np.full(traversable.shape, np.inf)
+    if (goal_mask is None and start is None) or (goal_mask is not None and not np.any(goal_mask)):
+        empty = np.full(traversable.shape, np.inf)
+        return (empty, np.full(traversable.shape, -9999)) if return_predecessors else empty
 
     cell_ids = np.arange(height * width).reshape(height, width)
     sources = []
@@ -649,20 +654,86 @@ def path_distance_grid(traversable, start, return_predecessors=False):
         ),
         shape=(height * width, height * width),
     ).tocsr()
-    start_id = int(cell_ids[start])
+    start_id = int(cell_ids[start]) if goal_mask is None else cell_ids[goal_mask]
     result = dijkstra(
         graph,
         directed=False,
         indices=start_id,
         return_predecessors=return_predecessors,
+        min_only=goal_mask is not None,
     )
     if return_predecessors:
-        distances, predecessors = result
+        distances, predecessors = result[:2]
         return (
             distances.reshape(height, width),
             predecessors.reshape(height, width),
         )
     return result.reshape(height, width)
+
+
+def charging_route_field(raw_grid, resolution, origin, charger, radius, cache=None):
+    """One reverse multi-source Dijkstra field to every safe contact cell.
+
+    Cache geometry, not headers or feasibility decisions. A content change,
+    resolution/origin change or charger change always rebuilds the field.
+    No unknown cells, occupied starts or diagonal corner cutting are admitted.
+    """
+    if (raw_grid is None or np.ndim(raw_grid) != 2 or not np.size(raw_grid)
+            or not all(math.isfinite(v) for v in (resolution, *origin, *charger, radius))
+            or resolution <= 0 or radius <= .2):
+        return None
+    key = (raw_grid.shape, hashlib.blake2b(raw_grid.tobytes(), digest_size=16).hexdigest(), raw_grid.dtype.str,
+           resolution, *origin, *charger, radius)
+    if cache is not None and cache.get('key') == key:
+        return cache['field']
+    safe = traversable_grid(raw_grid, resolution, RALLY_PATH_CLEARANCE_M)
+    rows, columns = np.indices(raw_grid.shape)
+    xs = origin[0] + (columns + .5) * resolution
+    ys = origin[1] + (rows + .5) * resolution
+    contact = safe & ((xs - charger[0]) ** 2 + (ys - charger[1]) ** 2 <= (radius - .2) ** 2)
+    distances, predecessors = path_distance_grid(safe, None, True, goal_mask=contact)
+    field = (safe, distances, predecessors)
+    if cache is not None:
+        cache.clear()
+        cache.update(key=key, field=field)
+    return field
+
+
+def known_return_route(raw_grid, resolution, origin, position, charger, radius,
+                       cache=None, include_route=False):
+    """Full known-map distance to a charger contact, including start escape.
+
+    Return (None, ()) for missing/disconnected maps; never use a straight-line
+    fallback. The optional route follows the same field used by the budget.
+    """
+    if position is None or not all(math.isfinite(v) for v in position):
+        return None, ()
+    field = charging_route_field(raw_grid, resolution, origin, charger, radius, cache)
+    if field is None:
+        return None, ()
+    safe, distances, predecessors = field
+    initial = world_to_grid(*position, resolution, *origin)
+    start, escape = navigation_start_route(raw_grid, safe, initial,
+                                          max(1, math.ceil(.6 / resolution)))
+    if start is None:
+        return None, ()
+    if math.dist(position, charger) <= radius:
+        return 0.0, (position,) if include_route else ()
+    if not np.isfinite(distances[start]):
+        return None, ()
+    escape_world = tuple(grid_to_world(*cell, resolution, *origin) for cell in escape)
+    prefix = (position, *escape_world)
+    distance = sum(math.dist(a, b) for a, b in zip(prefix, prefix[1:])) + float(distances[start]) * resolution
+    if not include_route:
+        return distance, ()
+    route = list(prefix)
+    current = start[0] * safe.shape[1] + start[1]
+    while distances.flat[current] > 0:
+        current = int(predecessors.flat[current])
+        if current < 0:
+            return None, ()
+        route.append(grid_to_world(*divmod(current, safe.shape[1]), resolution, *origin))
+    return distance, tuple(route)
 
 
 def path_waypoint_route(traversable, start, target, max_distance_cells, distance_data=None):
@@ -1086,8 +1157,20 @@ def assign_rally_poses(
                 home_escape = sum(math.dist(a, b) for a, b in zip(escape, escape[1:]))
                 modes[name] = mode
                 charge_times[name] = duration
+                return_cache = {}
                 if mode != "CHARGING":
-                    charge_times[name] += math.dist(current_positions[name], home) * factor / speed
+                    current_home, _ = known_return_route(raw_grid, resolution, origin,
+                        current_positions[name], home, float(state.get('charge_radius_m', .8)), return_cache)
+                    if current_home is None:
+                        if mode != 'RETURNING':
+                            return {}
+                        # Conditional post-charge assignment only. A missing
+                        # delivered route is not priced as a feasible return;
+                        # peers reserve the bounded local failure/return wait.
+                        charge_times[name] += float(state.get('return_timeout_sec', 180.))
+                    else:
+                        charge_times[name] += current_home * factor / speed + float(
+                            state.get('return_recovery_wait_sec', RETURN_RECOVERY_WAIT_SEC))
                 charge_targets[name] = capacity * fraction
                 energy_options[name] = {}
                 for distance, index in options[name]:
@@ -1096,9 +1179,13 @@ def assign_rally_poses(
                     home_distance = (home_distances[cell] + home_escape) * resolution
                     if not math.isfinite(home_distance):
                         continue
+                    contact_distance, _ = known_return_route(raw_grid, resolution, origin,
+                        (pose.x, pose.y), home, float(state.get('charge_radius_m', .8)), return_cache)
+                    if contact_distance is None:
+                        continue
                     required = battery_assignment_required_energy(
-                        distance * resolution, math.dist((pose.x, pose.y), home),
-                        move, idle, factor, speed, margin) + idle * hold_sec
+                        distance * resolution, contact_distance, move, idle, factor, speed, margin,
+                        float(state.get('return_recovery_wait_sec', RETURN_RECOVERY_WAIT_SEC))) + idle * hold_sec
                     travel = distance * resolution / speed
                     after_charge = home_distance / speed
                     energy_options[name][index] = (required, travel, after_charge)
@@ -1869,11 +1956,41 @@ def all_batteries_active(battery_modes):
 
 
 def motion_energy(distance_m, move_cost, idle_cost, path_factor, nominal_speed):
-    """Conservative energy for moving a path and paying its travel time."""
+    """Path/time estimate under the declared distance and speed envelope."""
     distance_m = max(0.0, float(distance_m)) * max(1.0, float(path_factor))
     return distance_m * float(move_cost) + (
         distance_m / float(nominal_speed) * float(idle_cost)
     )
+
+
+def return_energy_budget(distance_m, move_cost, idle_cost, path_factor,
+                         nominal_speed, safety_margin,
+                         recovery_wait_sec=RETURN_RECOVERY_WAIT_SEC,
+                         source_age_sec=0., pose_age_sec=0.):
+    """Declared envelope, not an unconditional physical worst-case guarantee.
+
+    Full path times factor bounds deviation; travel at nominal speed plus a
+    recovery allowance budgets idle cost. Source age budgets additional wait;
+    pose age and one reaction interval reserve bounded unobserved motion.
+    Runtime invalid-route and reserve-floor guards stop before this envelope
+    can be treated as permission for unlimited recovery or motion.
+    """
+    values = (distance_m, move_cost, idle_cost, path_factor, nominal_speed,
+              safety_margin, recovery_wait_sec, source_age_sec, pose_age_sec)
+    if (not all(math.isfinite(v) for v in values) or min(values) < 0
+            or path_factor < 1 or nominal_speed <= 0):
+        raise ValueError('invalid full-route return budget')
+    reaction_distance = RETURN_MAX_LINEAR_MPS * (pose_age_sec + RETURN_REACTION_SEC)
+    motion_distance = distance_m * path_factor + reaction_distance
+    travel_sec = motion_distance / nominal_speed
+    waiting_sec = recovery_wait_sec + source_age_sec + pose_age_sec + RETURN_REACTION_SEC
+    return dict(path_distance_m=distance_m, motion_distance_budget_m=motion_distance,
+                travel_time_budget_sec=travel_sec, waiting_time_budget_sec=waiting_sec,
+                move_energy=motion_distance * move_cost,
+                idle_energy=(travel_sec + waiting_sec) * idle_cost,
+                safety_margin=safety_margin,
+                required_energy=motion_distance * move_cost
+                    + (travel_sec + waiting_sec) * idle_cost + safety_margin)
 
 
 def battery_assignment_required_energy(
@@ -1884,14 +2001,17 @@ def battery_assignment_required_energy(
     path_factor,
     nominal_speed,
     safety_margin,
+    recovery_wait_sec=RETURN_RECOVERY_WAIT_SEC,
+    source_age_sec=0.,
+    pose_age_sec=0.,
 ):
     """Budget navigation and the same conservative local return reserve."""
     task_cost = motion_energy(
         assignment_distance_m, move_cost, idle_cost, 1.25, nominal_speed
     )
-    return_cost = motion_energy(
-        home_distance_m, move_cost, idle_cost, path_factor, nominal_speed
-    ) + float(safety_margin)
+    return_cost = return_energy_budget(
+        home_distance_m, move_cost, idle_cost, path_factor, nominal_speed,
+        safety_margin, recovery_wait_sec, source_age_sec, pose_age_sec)['required_energy']
     return task_cost + return_cost
 
 
@@ -2381,6 +2501,42 @@ class HeadquartersControl(Node):
         energy = float(self.battery_states[robot_name]['energy'])
         return 1.0 if energy > required else .25 * energy / required if required > 0 else 0.0
 
+    def known_home_distance(self, robot_name, position):
+        """Use only the AP's delivered planning map, never native robot inputs."""
+        state = self.battery_states[robot_name]
+        home = (float(state['charge_x']), float(state['charge_y']))
+        caches = getattr(self, 'return_distance_caches', None)
+        if caches is None:
+            self.return_distance_caches = caches = {}
+        distance, _ = known_return_route(
+            self.map_data, self.resolution, self.origin, position, home,
+            float(state.get('charge_radius_m', .8)), caches.setdefault(robot_name, {}))
+        return distance
+
+    def task_return_required_energy(self, robot_name, task_distance, destination):
+        """Budget a proposed complete approach and its full contact-route return."""
+        state = self.battery_states[robot_name]
+        home_distance = HeadquartersControl.known_home_distance(self, robot_name, destination)
+        if home_distance is None:
+            raise ValueError('no delivered-map charger contact route')
+        now = self.now()
+        map_stamp = getattr(self, 'map_received_at', None)
+        pose_stamp = getattr(self, 'robot_odom_received_at', {}).get(robot_name)
+        if map_stamp is None or pose_stamp is None:
+            raise ValueError('missing return budget source timestamps')
+        map_age = now - map_stamp
+        pose_age = now - pose_stamp
+        if map_age > STATE_TTL_SEC['fused_map_snapshot'] or pose_age > STATE_TTL_SEC['pose_state']:
+            raise ValueError('stale return budget input')
+        return battery_assignment_required_energy(
+            task_distance, home_distance, float(state.get('move_cost_per_m', 1.)),
+            float(state.get('idle_cost_per_sec', .02)),
+            float(state.get('return_path_factor', 2.)),
+            float(state.get('nominal_speed_mps', .18)),
+            float(state.get('return_safety_margin', 8.)),
+            float(state.get('return_recovery_wait_sec', RETURN_RECOVERY_WAIT_SEC)),
+            map_age, pose_age)
+
     def exploration_required_energy(self, robot_name, distance_m, destination):
         """Price the whole current frontier approach and endpoint return reserve."""
         if self.battery_modes[robot_name] != "ACTIVE":
@@ -2402,10 +2558,12 @@ class HeadquartersControl(Node):
                     or min(energy, distance_m, move, idle, margin) < 0
                     or speed <= 0 or factor < 1):
                 return None
-            required = battery_assignment_required_energy(
-                distance_m, max(math.dist(position, home), math.dist(destination, home)),
-                move, idle, factor, speed, margin,
-            )
+            current_home = HeadquartersControl.known_home_distance(self, robot_name, position)
+            if current_home is None:
+                return None
+            required = max(
+                HeadquartersControl.task_return_required_energy(self, robot_name, distance_m, destination),
+                HeadquartersControl.task_return_required_energy(self, robot_name, 0., position))
             if not math.isfinite(required):
                 return None
             return required
@@ -2948,10 +3106,9 @@ class HeadquartersControl(Node):
                 if (not all(math.isfinite(v) for v in (*home, idle, move, factor, speed, margin))
                         or min(idle, move, margin) < 0 or factor < 1 or speed <= 0):
                     return False
-                required = battery_assignment_required_energy(
-                    math.dist(position, (pose.x, pose.y)), math.dist((pose.x, pose.y), home),
-                    move, idle, factor, speed, margin,
-                ) + idle * self.rally_hold_sec
+                required = HeadquartersControl.task_return_required_energy(
+                    self, robot_name, math.dist(position, (pose.x, pose.y)),
+                    (pose.x, pose.y)) + idle * self.rally_hold_sec
                 energy = float(state['energy'])
                 if not all(math.isfinite(v) for v in (required, energy)) or energy <= required:
                     return False
@@ -4031,7 +4188,12 @@ class HeadquartersControl(Node):
                     raise ValueError("invalid charge time estimate")
                 charge_times[name] = charge_time
                 if self.battery_modes[name] != "CHARGING":
-                    charge_times[name] += math.dist(self.robot_positions[name], home) * factor / speed
+                    contact_distance = HeadquartersControl.known_home_distance(
+                        self, name, self.robot_positions[name])
+                    if contact_distance is None:
+                        raise ValueError('no current contact route')
+                    charge_times[name] += contact_distance * factor / speed + float(
+                        state.get('return_recovery_wait_sec', RETURN_RECOVERY_WAIT_SEC))
             except (KeyError, TypeError, ValueError) as error:
                 blocked.add(name)
                 self.get_logger().warn(f"Invalid rally charge-time budget for {name}: {error}")
@@ -4056,13 +4218,8 @@ class HeadquartersControl(Node):
                 charge_target = (
                     float(state["capacity"]) * float(state["charge_target_fraction"])
                 )
-                required = battery_assignment_required_energy(
-                    distance, math.dist((target.x, target.y), home),
-                    float(state.get("move_cost_per_m", 1.0)), idle_cost,
-                    float(state.get("return_path_factor", 2.0)),
-                    float(state.get("nominal_speed_mps", 0.18)),
-                    float(state.get("return_safety_margin", 8.0)),
-                ) + idle_cost * self.rally_hold_sec
+                required = HeadquartersControl.task_return_required_energy(
+                    self, name, distance, (target.x, target.y)) + idle_cost * self.rally_hold_sec
                 if (not all(math.isfinite(value)
                             for value in (required, energy, charge_target))
                         or charge_target <= 0):
@@ -4159,11 +4316,8 @@ class HeadquartersControl(Node):
                 return False
             final = self.rally_final_targets[robot_name]
             home = (float(state["charge_x"]), float(state["charge_y"]))
-            required = battery_assignment_required_energy(
-                actual, math.dist((final.x, final.y), home), move, idle,
-                float(state.get("return_path_factor", 2.)), speed,
-                float(state.get("return_safety_margin", 8.)),
-            ) + idle * (self.rally_hold_sec + wait)
+            required = HeadquartersControl.task_return_required_energy(
+                self, robot_name, actual, (final.x, final.y)) + idle * (self.rally_hold_sec + wait)
             energy = float(state["energy"])
             if not all(math.isfinite(v) for v in (required, energy)):
                 return False

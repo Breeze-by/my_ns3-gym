@@ -1,5 +1,7 @@
 # wireless-rl Codex Memory
 
+2026-10-08 用户已明确验收 P3C.5，并授权按项目评审补强 P2C、比较新算法和优化算法。原 P3C.5 bea7f8b 的14原格/11 COMPLETE/3超时及所有失败保持。当前 P2C.1 为独立开发候选：本地/中央完整已知充电接触区路径预算、反向多源 Dijkstra 缓存、可见短腿、源龄/反应/恢复余量、失路有界等待和预算包络监督、预测误差与原地图审计。组件通过不代表集成完成；需要新推送冻结、开发、同提交理想十格/强制充电/真实断网返航/失路和耗尽反例及新留出验证。本次授权不包含 P4/ns-3/Wi-Fi/RL；101/202/303/707/809 已暴露，不称新留出。
+
 2026-10-08 current review: P3C.5 technical PASS, still pending user acceptance.
 More rigorous read-only protocol/content/grant/predeclaration binding passes
 all 14 originals unchanged. P3A.6 11, P3B.5 63/31 pairs and P3C 3 originals

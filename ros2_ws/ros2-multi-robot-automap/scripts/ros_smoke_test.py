@@ -554,6 +554,8 @@ def parse_args():
     )
     parser.add_argument("--battery-return-timeout", type=float, default=180.0)
     parser.add_argument("--battery-return-path-factor", type=float, default=2.0)
+    parser.add_argument('--battery-return-recovery-wait', type=float, default=30.0)
+    parser.add_argument('--battery-return-no-route-wait', type=float, default=30.0)
     parser.add_argument("--battery-nominal-speed", type=float, default=0.18)
     parser.add_argument("--battery-charge-timeout", type=float, default=60.0)
     parser.add_argument("--task-regions", action="store_true")
@@ -710,6 +712,8 @@ def main():
         f"battery_idle_cost_per_sec:={args.battery_idle_cost}",
         f"battery_return_safety_margin:={args.battery_safety_margin}",
         f"battery_return_path_factor:={args.battery_return_path_factor}",
+        f'battery_return_recovery_wait_sec:={args.battery_return_recovery_wait}',
+        f'battery_return_no_route_wait_sec:={args.battery_return_no_route_wait}',
         f"battery_nominal_speed_mps:={args.battery_nominal_speed}",
         f"battery_charge_duration_sec:={args.battery_charge_duration}",
         f"battery_charge_radius_m:={args.battery_charge_radius}",

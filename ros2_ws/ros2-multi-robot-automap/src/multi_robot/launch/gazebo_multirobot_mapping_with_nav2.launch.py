@@ -118,6 +118,8 @@ def launch_setup(context, *args, **kwargs):
     battery_return_path_factor = LaunchConfiguration(
         "battery_return_path_factor"
     )
+    battery_return_recovery_wait = LaunchConfiguration('battery_return_recovery_wait_sec')
+    battery_return_no_route_wait = LaunchConfiguration('battery_return_no_route_wait_sec')
     battery_nominal_speed = LaunchConfiguration(
         "battery_nominal_speed_mps"
     )
@@ -655,6 +657,8 @@ def launch_setup(context, *args, **kwargs):
                         "charge_target_fraction": battery_charge_target,
                         "return_timeout_sec": battery_return_timeout,
                         "return_path_factor": battery_return_path_factor,
+                        'return_recovery_wait_sec': battery_return_recovery_wait,
+                        'return_no_route_wait_sec': battery_return_no_route_wait,
                         "nominal_speed_mps": battery_nominal_speed,
                         "charge_timeout_sec": battery_charge_timeout,
                     }
@@ -1274,7 +1278,7 @@ def generate_launch_description():
         DeclareLaunchArgument(
             "battery_return_path_factor",
             default_value="2.0",
-            description="Conservative path multiplier used for return energy.",
+            description="Deviation multiplier on the complete known contact-route distance.",
         )
     )
 
@@ -1293,6 +1297,11 @@ def generate_launch_description():
             description="Maximum simulated seconds allowed at a charger.",
         )
     )
+
+    ld.add_action(DeclareLaunchArgument('battery_return_recovery_wait_sec', default_value='30.0',
+        description='Additional cancellation/recovery waiting budget in simulated seconds.'))
+    ld.add_action(DeclareLaunchArgument('battery_return_no_route_wait_sec', default_value='30.0',
+        description='Maximum safe map/route recovery wait; never enables unknown-cell motion.'))
 
     ld.add_action(OpaqueFunction(function=launch_setup))
 
