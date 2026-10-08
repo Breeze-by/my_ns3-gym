@@ -1094,3 +1094,6 @@ P2C.1 v2（2026-10-08，未集成候选）：原近站机会充电现增加两�
 
 
 2026-10-08 P2C.1 v5修正：native odom/TF若略领先本节点/clock，保持原源戳暂存（<=原2秒、128项），clock赶上后处理，避免丢弃合法样本造成计费冻结。初始姿态未就绪先停等、已负担后恢复ACTIVE而不补满；原30秒缺输入停止/失败与原生门槛保持。每5秒battery_return_audit增加native只读能量平衡快照，仅评估观察器消费，不作为AP输入或网络流。847功能/1skip通过，当前仍候选，新源码门禁待运行；917未暴露。
+
+
+2026-10-08 P2C.1 v6补充：v5起点姿态等待在快速odom入口错误转为充电，虽nativeCOMPLETE251.1/239live/能量PASS，强制返航证据不合格，原记录与新增reader FAIL完整保留。统一充电入口现先恢复已负担等待；实际DDS两个clock到达顺序、850功能/1skip、四包5.46s/172保护/54协议PASS。新4开发/17正式/两物理blackout待同提交冻结，917未暴露；原TTL/300s/5s保持，P3C.5已验收，无P4/ns3/Wi-Fi/RL。证据：[v6组件报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261008_p2c_charging_entry_components.md)。

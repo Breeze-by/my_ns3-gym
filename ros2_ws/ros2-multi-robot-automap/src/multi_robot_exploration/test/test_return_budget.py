@@ -334,7 +334,8 @@ def test_actual_ros_unavailable_input_emits_positive_energy_failure_without_nav_
         rclpy.shutdown()
 
 
-def test_actual_ros_native_sensor_before_clock_is_deferred_then_accounted_once():
+@pytest.mark.parametrize('sensor_ahead',[True,False])
+def test_actual_ros_native_sensor_before_clock_is_deferred_then_accounted_once(sensor_ahead):
     """Reproduce the v4 DDS ordering failure without changing any source stamp."""
     import time,rclpy
     from rclpy.qos import QoSProfile,DurabilityPolicy
@@ -369,10 +370,19 @@ def test_actual_ros_native_sensor_before_clock_is_deferred_then_accounted_once()
         tf.header.stamp.sec=12;tf.header.stamp.nanosec=25000000;tf.transform.rotation.w=1.
         odom=Odometry();odom.header.stamp.sec=10;odom.header.stamp.nanosec=25000000
         odom.pose.pose.position.x=5.1;odom.pose.pose.position.y=1.1
-        transforms.publish(TFMessage(transforms=[tf]));odoms.publish(odom)
-        spin_until(lambda:len(node.pending_native_inputs)==2)
-        assert node.last_odom_time is None and node.map_tf_source_time is None
-        assert node.current_return_budget() is None and node.energy==40.
+        if not sensor_ahead:
+            set_clock(100000000)
+        transforms.publish(TFMessage(transforms=[tf]))
+        if not sensor_ahead:
+            spin_until(lambda:node.map_tf_source_time is not None)
+        odoms.publish(odom)
+        if sensor_ahead:
+            spin_until(lambda:len(node.pending_native_inputs)==2)
+            assert node.last_odom_time is None and node.map_tf_source_time is None
+            assert node.current_return_budget() is None and node.energy==40.
+        else:
+            spin_until(lambda:node.last_odom_time is not None)
+            assert node.mode=='ACTIVE' and node.charge_count==0
         set_clock(100000000);node.timer_callback()
         assert not node.pending_native_inputs and node.last_odom_time==pytest.approx(10.025)
         assert node.map_tf_source_time==pytest.approx(10.025) and node.current_return_budget() is not None

@@ -44,6 +44,10 @@ def return_audit(path,require_pose_leases=False):
                 assert abs(e['prediction_error']-(e['actual_energy_spent']-e['predicted_energy_spent']))<1e-8
             if e['outcome']=='charger_stopped':
                 assert e['energy']>0 and e['prediction_error'] is not None and e['prediction_error']<=1e-6
+                if require_pose_leases and starts[key].get('reason')=='no_known_route':
+                    predicted=starts[key]['budget']
+                    assert not (predicted['path_distance_m']==0 and
+                        starts[key]['energy']>predicted['required_energy']), 'funded temporary hold became a charger top-up'
             rows.append(e)
         saved=e.get('map_evidence');budget=e.get('budget')
         if kind=='return_prediction_available':budget=e['start']['budget']

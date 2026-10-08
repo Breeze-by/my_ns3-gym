@@ -86,3 +86,20 @@ def test_native_energy_meter_cannot_freeze_while_truth_robot_moves(tmp_path,corr
     if corruption is None:assert energy_audit(path,result,True)['snapshots']==1
     else:
         with pytest.raises(AssertionError):energy_audit(path,result,True)
+
+
+@pytest.mark.parametrize('energy',[18.,8.5])
+def test_temporary_pose_hold_cannot_authorize_a_funded_charger_topup(tmp_path,energy):
+    common=trace()[0]
+    common.update(energy=energy,reason='no_known_route',position=None,budget=None)
+    budget=control.return_energy_budget(0.,1.,.02,2.,.18,8.,30.,0.,.5)
+    budget.update(odom_source_time=10.9,frame_source_time=10.5,pose_age_sec=.5,frame_stamp_offset_sec=.5,map_age_sec=0.)
+    predicted=budget['required_energy']-budget['safety_margin']
+    events=[common,dict(common,event='return_prediction_available',start=dict(budget=budget)),
+        dict(common,event='return_finished',outcome='charger_stopped',actual_distance_m=0.,
+            actual_elapsed_sec=0.,actual_energy_spent=0.,predicted_energy_spent=predicted,prediction_error=-predicted)]
+    path=tmp_path/'events.jsonl'
+    path.write_text(''.join(json.dumps(dict(topic='/tb1/battery_return_audit',data=e))+'\n' for e in events))
+    if energy>budget['required_energy']:
+        with pytest.raises(AssertionError,match='funded temporary hold'):return_audit(path,True)
+    else:assert return_audit(path,True)['charger_returns']==1

@@ -1,0 +1,95 @@
+{
+  "status": "COMPONENT_PASS_PENDING_NEW_TASK_FREEZE",
+  "parent_commit": "0587dcf9e77a55bb5d33bb013f6454dd6fea2833",
+  "recorded_at_utc": "2026-10-08T13:08:49.206745+00:00",
+  "functional": {
+    "passed": 850,
+    "skipped": 1,
+    "wall_sec": 22.29
+  },
+  "build": {
+    "packages": 4,
+    "wall_sec": 5.46
+  },
+  "source_audit_summary": {
+    "status": "PASS",
+    "protected_files": 172,
+    "authorized_changes": 3,
+    "protocol_cells": 54
+  },
+  "sources_sha256": {
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/battery_manager.py": "39a015f573d49eb757888a4a37a559d5afe27184c34ff86058d8ebb76e078f06",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/control.py": "78d60e1420c3256eae9c7107e557f78f3bffd625fc3120d8682586b9ae4be42d",
+    "ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py": "a34125b2cbb068b35f02384070928ab4ae9d4a94c64c02c721a4a7a9ea4b88f5",
+    "ros2_ws/ros2-multi-robot-automap/scripts/p2c_integration_manifest.json": "b281667e5afe6e5efdc9d4bef48f03758684c5f7ff6902377ac3ff5db68dfc59",
+    "ros2_ws/ros2-multi-robot-automap/scripts/test_p2c_gate.py": "c54a6d70acf1a7b700c00339d64c3ce2fc781da1a4c049d86cf7adc1003d98fb",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_return_budget.py": "bda51af16bbb7d9629a1475ba9ccefe9765642543283b0859dbab92d99616eb6"
+  },
+  "archives": [
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v6_directed.log",
+      "archive": "20261008_p2c_charging_entry_artifacts/p2c_v6_directed.log.gz",
+      "source_sha256": "22d13dc17206cfb773b29aaf86e208d185ad1889e0b54525210a98d85666d1da",
+      "archive_sha256": "995f706c606af76e51ae111aee10e6b5829320f66b7de48332b3c2f8c8c29f24"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v6_functional.log",
+      "archive": "20261008_p2c_charging_entry_artifacts/p2c_v6_functional.log.gz",
+      "source_sha256": "22bcd2c77e2bc4308a5beedf8779dfee56e217f141328cb73c1023263c5be3f6",
+      "archive_sha256": "edf990a0d6cc878c983d71b1693ec004f361b41baf0cf8012afbf4b0a722a403"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v6_build.log",
+      "archive": "20261008_p2c_charging_entry_artifacts/p2c_v6_build.log.gz",
+      "source_sha256": "d86ad549d7aec9ce4b2a462bc278d948826ea5ec89c33c96c4d2284122d46c15",
+      "archive_sha256": "48472df87b00bc74831b4b42b5ffe955bb2d9ab7a610eac7ca85f3c3093803a6"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v6_source.log",
+      "archive": "20261008_p2c_charging_entry_artifacts/p2c_v6_source.log.gz",
+      "source_sha256": "76eec7ea96d36fd9057326aab4a666933cb37bd43290eb96178fe04d29f51260",
+      "archive_sha256": "991c0b52826081d6a26e91619a2129e5eea24fa5ce2f2b70493468c99a01a7d6"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v6_source.json",
+      "archive": "20261008_p2c_charging_entry_artifacts/p2c_v6_source.json.gz",
+      "source_sha256": "677d14f7256a6017d76a896cb8d0053de2720f946a8cb050851858d4ee13bf3e",
+      "archive_sha256": "39948a8dbecc7a6a123d9c79a9285bf356e96c45e9be5ad6459761c645db56ce"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v6_manifest.log",
+      "archive": "20261008_p2c_charging_entry_artifacts/p2c_v6_manifest.log.gz",
+      "source_sha256": "6e20ca4e37e5a9114641981256d451244f360a242207f86b830796e60ee5f331",
+      "archive_sha256": "d36152c0d7c64a3ff9414e738c950d1b635fd9cda87f363dae3cafb8652e2977"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v6_manifest_v2.log",
+      "archive": "20261008_p2c_charging_entry_artifacts/p2c_v6_manifest_v2.log.gz",
+      "source_sha256": "73098d7607bd9a206aeb32410edfcf7d468185b16c88b74510e4c3a59a53d851",
+      "archive_sha256": "13880ddfc140e41a04c4ba81d4d1098bef8abb2352787278916a3ea86f85c036"
+    }
+  ],
+  "first_directed_fixture_failures": {
+    "failed": 3,
+    "passed": 114,
+    "wall_sec": 4.42,
+    "reasons": [
+      "DDS inter-topic order was incorrectly assumed in direct callback fixture; now explicitly waits for actual TF delivery",
+      "two audit fixtures omitted map_age_sec; corrected fixture only"
+    ]
+  },
+  "actual_ros_probes": {
+    "domain": 209,
+    "orders": [
+      "ahead-of-clock bounded native queue",
+      "clock-mature TF then odom direct callback"
+    ],
+    "original_source_stamps": true,
+    "initial_charges": 0,
+    "account_once_energy": 39.898,
+    "physical_motion_claim": false
+  },
+  "first_validate_only_failure": "argument parsing only: missing case/domain/gazebo-port; corrected invocation PASS; no task start",
+  "new_task_started": false,
+  "new_holdout917_exposed": false
+}

@@ -868,3 +868,6 @@ OpenWiFi、学习式地图/图像压缩、未知初始位姿地图配准、机�
 
 
 2026-10-08 P2C.1 v4真实时序FAIL：原生源略领先/clock被丢弃导致tb2电量冻结、forced未完成；原任务/worker收尾升级保留。新v5以标准heapq有界暂存128项/原2秒，clock成熟后按源处理，不续戳/重复计费；初始无姿态先停止等待、已负担恢复不补满。每5秒native只读能量账本覆盖完整距离/时间/charge credits平衡与冻结反例，不送AP/不加流量。847功能/1skip、实际DDS先样本后clock、四包5.39s、172保护/54协议PASS；控制完整路径算法不改，待新4开发/17正式/两blackout冻结，917未暴露。见[原生时钟组件](report/20261008_p2c_native_clock_components.md)与[v4失败](report/20261008_p2c_v4_failed_development.md)。
+
+
+2026-10-08 P2C.1 v6补充：v5起点姿态等待在快速odom入口错误转为充电，虽nativeCOMPLETE251.1/239live/能量PASS，强制返航证据不合格，原记录与新增reader FAIL完整保留。统一充电入口现先恢复已负担等待；实际DDS两个clock到达顺序、850功能/1skip、四包5.46s/172保护/54协议PASS。新4开发/17正式/两物理blackout待同提交冻结，917未暴露；原TTL/300s/5s保持，P3C.5已验收，无P4/ns3/Wi-Fi/RL。证据：[v6组件报告](report/20261008_p2c_charging_entry_components.md)。

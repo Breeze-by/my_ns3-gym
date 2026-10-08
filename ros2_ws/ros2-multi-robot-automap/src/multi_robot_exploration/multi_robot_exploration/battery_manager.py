@@ -752,6 +752,17 @@ class BatteryManager(Node):
 
     def begin_charging(self):
         now = self.now()
+        # Odom can restore the initial pose between safety ticks. Apply the
+        # same funded-hold recovery at this shared entry before any callback
+        # can turn a temporary missing sample into an initial battery top-up.
+        if (self.return_no_route_since is not None
+                and self.return_audit_start is not None
+                and self.return_audit_start['reason'] == 'no_known_route'
+                and self.return_goal_handle is None and not self.return_goal_pending):
+            budget = self.current_return_budget()
+            if budget is not None and self.energy > budget['required_energy']:
+                self.guard_return_budget(now, budget)
+                return
         if self.return_audit_start is not None and self.return_audit_start['budget'] is None:
             budget = self.current_return_budget(include_route=True)
             if budget is not None:
