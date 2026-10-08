@@ -6,7 +6,7 @@ wait-set even though its existing candidate throttle discards them later.
 """
 import rclpy
 from rclpy.node import Node
-from rclpy.qos import QoSProfile, qos_profile_sensor_data
+from rclpy.qos import QoSProfile, ReliabilityPolicy
 from tf2_msgs.msg import TFMessage
 
 
@@ -16,9 +16,14 @@ class TfIngressSampler(Node):
         robot = str(self.declare_parameter('robot_name', 'tb1').value)
         self.last_source_stamp = -1
         self.publisher = self.create_publisher(TFMessage, f'/{robot}/gateway/source_tf', QoSProfile(depth=1))
-        # Latest sensor observation is sufficient; commands and reliable
-        # envelopes retain their existing QoS and retransmission contracts.
-        self.create_subscription(TFMessage, f'/{robot}/tf', self.observe, qos_profile_sensor_data)
+        # Native safety owns ordering, future deferral and the original TTL.
+        # Filter body transforms before its DDS queue, but forward every
+        # relevant original sample, including duplicates and invalid futures.
+        self.native_publisher = self.create_publisher(TFMessage, f'/{robot}/battery/source_tf', QoSProfile(depth=1))
+        # A bounded mixed-TF queue must retain relevant transforms across body
+        # bursts. Consumer TTLs still reject old sources after any backlog.
+        self.create_subscription(TFMessage, f'/{robot}/tf', self.observe,
+                                 QoSProfile(depth=100, reliability=ReliabilityPolicy.BEST_EFFORT))
 
     def observe(self, message):
         relevant = [t for t in message.transforms
@@ -26,6 +31,7 @@ class TfIngressSampler(Node):
                     and t.child_frame_id.lstrip('/').endswith('odom')]
         if not relevant:
             return
+        self.native_publisher.publish(TFMessage(transforms=relevant))
         transform = max(relevant, key=lambda t: t.header.stamp.sec*10**9+t.header.stamp.nanosec)
         stamp = transform.header.stamp.sec*10**9+transform.header.stamp.nanosec
         if stamp <= self.last_source_stamp:

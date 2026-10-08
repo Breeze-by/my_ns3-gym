@@ -636,6 +636,7 @@ def launch_setup(context, *args, **kwargs):
                 executable="battery_manager",
                 namespace=namespace,
                 name="battery_manager",
+                remappings=[(f"/{robot_name}/tf", f"/{robot_name}/battery/source_tf")],
                 parameters=[
                     {
                         "use_sim_time": use_sim_time,

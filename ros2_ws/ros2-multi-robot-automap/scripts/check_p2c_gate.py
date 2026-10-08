@@ -425,6 +425,24 @@ def energy_audit(path,result,required=False):
         robots={name:dict(samples=len(rows),last=rows[-1] if rows else None) for name,rows in snapshots.items()})
 
 
+def native_tf_ingress_audit(graph,robot_count,required=False):
+    if not required:return dict(status='LEGACY_RAW_INPUT',required=False)
+    nodes=graph['nodes'];verified=[]
+    for index in range(1,robot_count+1):
+        robot=f'tb{index}';topic=f'/{robot}/battery/source_tf';battery=f'/{robot}/battery_manager'
+        producer=f'/{robot}/gateway_tf_ingress'
+        subscribers={row[0] for row in nodes[battery]['subscribers']}
+        assert topic in subscribers and f'/{robot}/tf' not in subscribers
+        assert f'/{robot}/tf' in {row[0] for row in nodes[producer]['subscribers']}
+        outputs={row[0] for row in nodes[producer]['publishers']}
+        assert {topic,f'/{robot}/gateway/source_tf'}<=outputs
+        consumers=[name for name,node in nodes.items() if topic in {row[0] for row in node['subscribers']}]
+        assert consumers==[battery],('native TF leaked to another consumer',topic,consumers)
+        verified.append(robot)
+    return dict(status='PASS',required=True,robot_local_filtered_tf=verified,
+        ap_native_tf_consumers=0,source_time_renewal=False)
+
+
 def check_one(path,config):
     path=path.resolve()
     row=json.loads(path.read_text());directory=path.parent
@@ -450,6 +468,7 @@ def check_one(path,config):
     audit=json.loads((Path(__file__).resolve().parents[1]/'src/multi_robot_exploration/config/p3a_forbidden_bypasses.json').read_text())
     violations=runtime_violations(Snapshot(original['nodes']),audit,result['robot_count'])
     assert not violations,violations
+    ingress=native_tf_ingress_audit(original,result['robot_count'],bool(config.get('native_filtered_tf')))
     native=return_audit(directory/'safety_events.jsonl',bool(config.get('native_pose_contract')),
         bool(config.get('return_source_selection')))
     energy=energy_audit(directory/'safety_events.jsonl',result,
@@ -468,7 +487,7 @@ def check_one(path,config):
         result=result,raw_summary=str(path.resolve()),raw_summary_sha256=sha(path),return_audit=native,
         communication_audit=communications,lookahead_audit=forecast,native_energy_audit=energy,
         ap_return_veto_audit=vetoes,rally_assignment_audit=assignments,rally_repair_audit=repairs,
-        exploration_travel_audit=travel)
+        exploration_travel_audit=travel,native_tf_ingress_audit=ingress)
 
 
 def audit_one(item):

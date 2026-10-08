@@ -8,6 +8,7 @@ import run_p3b_fault_matrix as matrix
 BASELINE='5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9'
 ALLOWED=('src/multi_robot_exploration/multi_robot_exploration/control.py',
          'src/multi_robot_exploration/multi_robot_exploration/battery_manager.py',
+         'src/multi_robot_exploration/multi_robot_exploration/tf_ingress_sampler.py',
          'src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py')
 NEW_WORLD='src/multi_robot/worlds/p2c_holdout917.world'
 

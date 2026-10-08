@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-08T21:50:03.309354+00:00",
+  "predeclared_at_utc": "2026-10-08T22:29:10.514054+00:00",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -301,7 +301,7 @@
   ],
   "safety_probe_manifest": "p3b5_staged_return_probe_manifest.json",
   "energy_unit": "simulation_model_units_not_joules",
-  "development_parent": "a858fdbed039ac29969458c61d60964d0497b7ea",
+  "development_parent": "79f211323ade3e949f91ad3896e727beeeef7522",
   "retained_failed_development": "20261008_p2c_v1_failed_development.json",
   "opportunity_charge_algorithm": "two_current_frontiers_complete_route_budget",
   "retained_failed_developments": [
@@ -441,5 +441,14 @@
     "clear": "Actual full viewpoint Nav2 success, native FAILED, ordinary navigation failure or no useful funded reachable current candidate clears preference; normal task/safety/retry limits remain.",
     "evidence": "Private executed witnesses retain current gain and optional prior intent; reconstruct gain from delivered map and verify current proximity/usefulness/funded energy. Not a new AP observation or application traffic.",
     "limits": "Receding-horizon commitment heuristic, not stale command replay, global optimality or time guarantee."
+  },
+  "native_filtered_tf": {
+    "source": "Existing robot-side sampler extracts only original map-to-odom transforms into /robot/battery/source_tf before the native DDS queue; no source stamp rewriting.",
+    "native": "All relevant transforms, duplicates, out-of-order and invalid futures reach the unchanged native consumer, which still owns original2s/5s/128/future deferral, ordering, energy and safety.",
+    "gateway": "Original /robot/gateway/source_tf monotonic filtering and packets unchanged; local sensor stream does not become an AP observation or modeled radio packet.",
+    "queues": "Native TF original reliable20/two-worker serialized-state-plus-input model, fused1/odom10 unchanged; native battery entire bytes unchanged from79f2113.",
+    "proof": "Actual DDS mixed reliability/body TF, source preservation/future/stale/energy checks; actual frozen graph binds each native stream only to its own battery manager.",
+    "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
+    "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   }
 }
