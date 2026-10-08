@@ -295,6 +295,8 @@ class BatteryManager(Node):
             String, f'/{self.robot_name}/battery_return_audit',
             QoSProfile(depth=100, durability=DurabilityPolicy.TRANSIENT_LOCAL))
         self.input_subscriptions = [
+            # Preserve the odometry accounting queue. Only replaceable TF
+            # and delivered-map snapshots coalesce; original leases remain.
             self.create_subscription(
                 Odometry,
                 f"/{self.robot_name}/odom",
@@ -305,7 +307,7 @@ class BatteryManager(Node):
                 TFMessage,
                 f"/{self.robot_name}/tf",
                 self.tf_callback,
-                20,
+                1,
             ),
             self.create_subscription(
                 String,
@@ -317,7 +319,7 @@ class BatteryManager(Node):
                 OccupancyGrid,
                 f"/{self.robot_name}/gateway/merge_map",
                 self.fused_map_callback,
-                10,
+                1,
             ),
             self.create_subscription(
                 OccupancyGrid, f"/{self.robot_name}/map", self.local_map_callback, state_qos,
