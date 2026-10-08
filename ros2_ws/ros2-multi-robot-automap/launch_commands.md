@@ -1091,3 +1091,6 @@ P2C.1 v2（2026-10-08，未集成候选）：原近站机会充电现增加两�
 
 
 2026-10-08 P2C.1 v4：battery manager新增原生odom/TF2秒源龄约束；launch自动把实际SLAM配置transform_timeout作为frame_stamp_offset_sec传给battery，值与gateway相同，原生TF不改。在独立直接启动battery manager时，frame_stamp_offset_sec须匹配该TF源实际有效时间偏移（构造默认0.5s；此项目launch从配置读取2s）。过期pose不能累计充电停稳时间或生成有限返航预算；缺姿态30秒停止后报告battery_return_pose_unavailable。原地图5秒/300秒任务/5秒保持及余量不变。840功能/1skip通过，候选仍需新冻结真实任务；917未暴露。
+
+
+2026-10-08 P2C.1 v5修正：native odom/TF若略领先本节点/clock，保持原源戳暂存（<=原2秒、128项），clock赶上后处理，避免丢弃合法样本造成计费冻结。初始姿态未就绪先停等、已负担后恢复ACTIVE而不补满；原30秒缺输入停止/失败与原生门槛保持。每5秒battery_return_audit增加native只读能量平衡快照，仅评估观察器消费，不作为AP输入或网络流。847功能/1skip通过，当前仍候选，新源码门禁待运行；917未暴露。

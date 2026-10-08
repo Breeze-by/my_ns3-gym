@@ -1,4 +1,5 @@
 import json
+import heapq
 import math
 
 from action_msgs.msg import GoalStatus
@@ -334,6 +335,8 @@ class BatteryManager(Node):
         self.minimum_energy = self.energy
         self.map_to_odom = None
         self.map_tf_source_time = None
+        self.pending_native_inputs = []
+        self.native_input_sequence = 0
         self.map_position = None
         self.return_map = None
         self.return_map_resolution = None
@@ -350,6 +353,8 @@ class BatteryManager(Node):
         self.return_audit_start = None
         self.total_motion_distance = 0.
         self.total_energy_elapsed = 0.
+        self.charging_energy_added = 0.
+        self.last_energy_audit_time = None
         self.return_cancels = 0
         self.return_rejections = 0
         self.previous_odom_position = None
@@ -447,14 +452,44 @@ class BatteryManager(Node):
             if parent.endswith("map") and child.endswith("odom"):
                 stamp = stamped_transform.header.stamp
                 source = stamp.sec + stamp.nanosec / 1e9 - self.frame_stamp_offset
-                if (source < 0 or source > self.now() + 1e-6 or not math.isfinite(source)
-                        or self.map_tf_source_time is not None and source <= self.map_tf_source_time):
-                    continue
-                self.map_to_odom = stamped_transform.transform
-                self.map_tf_source_time = source
-                if self.previous_odom_position is not None:
-                    self.map_position = transform_point_2d(
-                        *self.previous_odom_position, self.map_to_odom)
+                self.receive_native_input('frame', source, stamped_transform)
+
+    def receive_native_input(self, kind, source, message):
+        """DDS can deliver a sensor sample before its corresponding /clock."""
+        self.drain_native_inputs()
+        now = self.now()
+        if not math.isfinite(source) or source < 0 or source > now + STATE_TTL_SEC['pose_state']:
+            return
+        if source > now:
+            if any(k==kind and stamp==source for stamp,_,k,_ in self.pending_native_inputs):
+                return
+            if len(self.pending_native_inputs) >= 128:
+                self.fail('battery_native_input_backlog')
+                return
+            self.native_input_sequence += 1
+            heapq.heappush(self.pending_native_inputs,(source,self.native_input_sequence,kind,message))
+        elif kind == 'frame':
+            self.apply_native_frame(message, source)
+        else:
+            self.apply_native_odometry(message)
+
+    def drain_native_inputs(self):
+        now = self.now()
+        while self.pending_native_inputs and self.pending_native_inputs[0][0] <= now:
+            source, _, kind, message = heapq.heappop(self.pending_native_inputs)
+            if kind == 'frame':
+                self.apply_native_frame(message, source)
+            else:
+                self.apply_native_odometry(message)
+
+    def apply_native_frame(self, stamped_transform, source):
+        if self.map_tf_source_time is not None and source <= self.map_tf_source_time:
+            return
+        self.map_to_odom = stamped_transform.transform
+        self.map_tf_source_time = source
+        if self.previous_odom_position is not None:
+            self.map_position = transform_point_2d(
+                *self.previous_odom_position, self.map_to_odom)
 
     def map_callback(self, message, source='local'):
         if (not message.info.height or not message.info.width
@@ -490,6 +525,10 @@ class BatteryManager(Node):
         self.map_callback(message)
 
     def odom_callback(self, message):
+        stamp = message.header.stamp
+        self.receive_native_input('odom',stamp.sec + stamp.nanosec / 1e9,message)
+
+    def apply_native_odometry(self, message):
         now = self.now()
         if self.first_odom_time is None:
             self.first_odom_time = now
@@ -655,6 +694,14 @@ class BatteryManager(Node):
                 safety_margin=self.safety_margin, recovery_wait_sec=self.return_recovery_wait),
             **details}, sort_keys=True, allow_nan=False)))
 
+    def audit_native_energy(self):
+        self.audit_return('energy_accounting', mode=self.mode,
+            initial_energy=self.initial_energy, charged_energy_added=self.charging_energy_added,
+            actual_distance_m=self.total_motion_distance, actual_elapsed_sec=self.total_energy_elapsed,
+            odom_source_time=self.last_odom_time, frame_source_time=self.map_tf_source_time,
+            pending_native_inputs=len(self.pending_native_inputs))
+        self.last_energy_audit_time = self.now()
+
     def return_map_evidence(self):
         """Native audit-only snapshot; never sent as AP planning information."""
         return grid_audit_evidence(self.return_map, self.return_map_resolution,
@@ -705,6 +752,12 @@ class BatteryManager(Node):
 
     def begin_charging(self):
         now = self.now()
+        if self.return_audit_start is not None and self.return_audit_start['budget'] is None:
+            budget = self.current_return_budget(include_route=True)
+            if budget is not None:
+                self.return_audit_start['budget'] = budget
+                self.audit_return('return_prediction_available', start=self.return_audit_start,
+                                  map_evidence=self.return_map_evidence())
         handle = self.return_goal_handle
         if handle is not None and not self.return_goal_cancel_requested:
             handle.cancel_goal_async()
@@ -743,6 +796,7 @@ class BatteryManager(Node):
         if now - self.charge_stable_started_at < self.charge_duration:
             return
         self.total_charging_time += now - self.mode_started_at
+        self.charging_energy_added += self.charge_target - self.energy
         self.energy = self.charge_target
         self.charge_count += 1
         self.mode = ACTIVE
@@ -754,7 +808,10 @@ class BatteryManager(Node):
         )
 
     def timer_callback(self):
+        self.drain_native_inputs()
         now = self.now()
+        if self.last_energy_audit_time is None or now - self.last_energy_audit_time >= 5.:
+            self.audit_native_energy()
         if self.mode == FAILED:
             self.publish_state()
             return
@@ -775,7 +832,7 @@ class BatteryManager(Node):
         if reason:
             self.fail(reason)
             return
-        if self.mode == ACTIVE and self.map_position is not None:
+        if self.mode == ACTIVE:
             # One bounded 0.5 s safety tick, rather than a map search per odom.
             # The budget explicitly retains a full 1 s motion/idle reaction.
             budget = self.current_return_budget()
@@ -783,6 +840,13 @@ class BatteryManager(Node):
                 self.begin_return(None, reason='no_known_route')
             elif self.energy <= budget['required_energy']:
                 self.begin_return(budget['required_energy'])
+        if (self.mode == RETURNING and self.return_no_route_since is not None
+                and self.return_audit_start is not None
+                and self.return_audit_start['reason'] == 'no_known_route'
+                and self.return_goal_handle is None and not self.return_goal_pending):
+            budget = self.current_return_budget()
+            if budget is not None and self.energy > budget['required_energy']:
+                self.guard_return_budget(now, budget)
         if self.mode == RETURNING and self.in_charging_zone():
             self.begin_charging()
         elif self.mode == CHARGING:

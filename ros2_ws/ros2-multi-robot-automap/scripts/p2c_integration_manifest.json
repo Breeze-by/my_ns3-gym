@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-08T12:21:52.231631+00:00",
+  "predeclared_at_utc": "2026-10-08T12:54:46.917955+00:00",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -301,12 +301,13 @@
   ],
   "safety_probe_manifest": "p3b5_staged_return_probe_manifest.json",
   "energy_unit": "simulation_model_units_not_joules",
-  "development_parent": "f637f64ce0054b9554bc34030d67f731dcdf77b6",
+  "development_parent": "bc6b44ce9b86d86b2e355f75b3bb8d8f34a87fe9",
   "retained_failed_development": "20261008_p2c_v1_failed_development.json",
   "opportunity_charge_algorithm": "two_current_frontiers_complete_route_budget",
   "retained_failed_developments": [
     "20261008_p2c_v1_failed_development.json",
-    "20261008_p2c_v2_failed_development.json"
+    "20261008_p2c_v2_failed_development.json",
+    "20261008_p2c_v4_failed_development.json"
   ],
   "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
   "opportunity_charge_rules": [
@@ -319,8 +320,15 @@
     "odom_ttl_sec": 2.0,
     "frame_ttl_sec": 2.0,
     "frame_generation_stamp": "native validity stamp minus actual SLAM transform_timeout; launch supplies the same configured offset as gateway",
-    "source_order": "ignore duplicate/out-of-order and future source samples; reads never renew source time",
+    "source_order": "source stamps are preserved; valid sensor samples up to2s ahead of local /clock wait in one bounded128-entry heap; clock-matured duplicate/out-of-order sources are ignored, excessive-future samples never poison the current pose",
     "unavailable": "no finite budget/nav return or stable charging; bounded30s stop then explicit positive-energy failure"
   },
-  "retained_partial_development": "20261008_p2c_v3_partial_development.json"
+  "retained_partial_development": "20261008_p2c_v3_partial_development.json",
+  "native_energy_accounting": {
+    "period_sec": 5.0,
+    "channel": "read-only native battery_return_audit; not AP input or extra network traffic",
+    "equation": "energy=max(0,initial_energy+charge_credits-distance*move_cost-elapsed*idle_cost)",
+    "required": "all regular originals; zero-energy negative has its independent no-navigation failure audit",
+    "freeze_counterexample": "native truth path>1m cannot have zero local distance/time accounting; retain all failures"
+  }
 }

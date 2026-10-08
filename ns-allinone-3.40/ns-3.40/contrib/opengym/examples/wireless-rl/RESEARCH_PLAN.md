@@ -865,3 +865,6 @@ OpenWiFi、学习式地图/图像压缩、未知初始位姿地图配准、机�
 
 
 2026-10-08 P2C.1 v4补齐本地pose/TF2秒源龄与原生TF有效时间→实际SLAM source偏移、最新TF×odom重算；过期输入无有限预算或稳定充电进展，30秒有界停止/明确正能量失效。完整路径算法保持v3，原300s/5s/地图5s/余量未放宽；840功能/1skip、四包5.48s、172保护/54协议PASS，actual ROS synthetic stale-frame/disconnected皆正能量失败/零goal。v3首forced原格COMPLETE287.5s/两charge/min9.385784与269快照已保持，但为partial开发，不能替代v4新源码正式门禁。参见[本地源龄组件](report/20261008_p2c_native_pose_components.md)与[v3原格](report/20261008_p2c_v3_partial_development.md)。917未暴露；新4开发/17正式/两blackout待验证，无P4/ns3/Wi-Fi/RL。
+
+
+2026-10-08 P2C.1 v4真实时序FAIL：原生源略领先/clock被丢弃导致tb2电量冻结、forced未完成；原任务/worker收尾升级保留。新v5以标准heapq有界暂存128项/原2秒，clock成熟后按源处理，不续戳/重复计费；初始无姿态先停止等待、已负担恢复不补满。每5秒native只读能量账本覆盖完整距离/时间/charge credits平衡与冻结反例，不送AP/不加流量。847功能/1skip、实际DDS先样本后clock、四包5.39s、172保护/54协议PASS；控制完整路径算法不改，待新4开发/17正式/两blackout冻结，917未暴露。见[原生时钟组件](report/20261008_p2c_native_clock_components.md)与[v4失败](report/20261008_p2c_v4_failed_development.md)。

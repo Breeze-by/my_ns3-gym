@@ -8010,3 +8010,29 @@ colcon build --symlink-install --packages-select multi_robot_interfaces multi_ro
 定向106PASS/3.82s；随后增加actual DDS stale-frame变体与明确failure理由，完整840PASS/1skip/22.21s，两个isolated domain207/208 synthetic map+clock+action probes正能量失败/零Nav2goals，不是物理motion。build v1/v2均四包通过（最终5.48s），source v1/v2均172保护/3授权/54协议PASS；所有原日志/source/config/helper哈希与11精选gzip在report/20261008_p2c_native_pose_components.json/.md。control与v3原冻结算法字节相同，192算法组件不无故重复；未来新actual2s输入预算reader必校验源码计入的pose_age和两源时间。新4开发/17formal/2physical需new pushed freeze；917仍未暴露，原v1/v2FAIL/v3partial所有raw保持，无P4/ns3/Wi-Fi/RL。
 
 最后新增v3 partial引用及前瞻时刻后，相同validate-only命令再次PASS，最新输出log/p2c_native_pose_manifest_v2.json已无损保留，尚无v4任务启动。
+
+
+## 2026-10-08 P2C.1 v4真实时钟顺序FAIL与v5有界暂存
+
+v4冻结bc6b44ce9b86d86b2e355f75b3bb8d8f34a87fe9已推送；相同ROS/install/PYTHONNOUSERSITE/UDPv4/CPU0–79前缀：
+
+```bash
+taskset -c 0-79 /usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261008_p2c_v4 --domain 170 --gazebo-port 20250
+/usr/bin/python3 scripts/check_p2c_gate.py --run-root "$PWD/log/p2c/20261008_p2c_v4" --development --cases dev_forced2 --output log/p2c_v4_dev_forced2_gate.json
+```
+
+2026-10-08 12:24:39–12:32:22UTC原生RALLY timeout300.4/charge1，仅tb1实际charged；严格FAIL，266live/协议/时序/graph回放通过不能替代任务和能量安全。tb2 Gazebo motion13.570248m而E始终18/return0/charge0，能量证据无效，不称无耗尽证明。原native reported min16.675160/failed0/contacts0原样保留。owner/observer exit0，gateway/metrics正常退出；lifecycle_manager-32收尾SIGTERM/SIGKILL原升级记录另存，不称allworkers自然。其余3开发/17正式/physical未调用，917未暴露，源到全部owned关闭前保持bc6b44c，无retry/backfill。精选原结果/命令/环境/原SHA/严格失败见report/20261008_p2c_v4_failed_development.json/.md。
+
+只读原ledger显示合法source1998.607/callback1998.582（领先.025）已被gateway clock_deferred；v4本地丢弃源领先导致持续少输入。修正发生在所有owned关闭后：标准heapq128项/原2秒内先暂存，clock成熟按源次序结算；重复/倒序不再结算，异常未来不替换有效源。native_energy audit每5秒只读、仅评估器消费不送AP/不加网络流，累计距离/时间/充电增量重建能量并拒绝实际motion与零计费并存。初始无姿态先停等，恢复预算可负担则ACTIVE/不初始充电。原control完整路径/连通逃离/两前沿、native300s/.35/.05/.1/5s、地图5/pose2/余量不变。
+
+ROS通用前缀下精确命令：
+
+```bash
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_return_budget.py src/multi_robot_exploration/test/test_battery_manager.py scripts/test_p2c_gate.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test scripts/test_*.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+colcon build --symlink-install --packages-select multi_robot_interfaces multi_robot_exploration merge_map multi_robot
+/usr/bin/python3 scripts/check_p2c_source.py --output log/p2c_native_clock_source_vN.json
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261008_p2c_v5 --domain 170 --gazebo-port 20250 --validate-only
+```
+
+109定向PASS/4.15s；新增native能量账本与初始姿态等待后，全847PASS/1skip/22.07s，再补明确站内恢复不补满和欠预算接触预测后最终847PASS/1skip/22.52s；actual DDS domain209先样本10.025后clock10.1、下一.1m/.1s仅扣.102（40→39.898）、重复不扣/原源戳不改，初始hold恢复ACTIVE/charge0；actual stale-frame/domain208与断连map/domain207仍正电量fail/zero goals（非物理motion）。四包v1/v2 PASS，最终5.39s；source v1/v2 172保护/3授权/54协议PASS；前瞻validate-only PASS。所有源/检查/协议/hash/10无损gzip见report/20261008_p2c_native_clock_components.json/.md。control字节不变，192算法组件不无故重复。未来需要new pushed freeze及全4开发/17正式/2physical；917未暴露、accepted旧证据和全部v1/v2/v4失败/v3partial保持，无P4/ns3/Wi-Fi/RL。

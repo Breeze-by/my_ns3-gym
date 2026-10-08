@@ -123,6 +123,40 @@ def lookahead_audit(records):
     return dict(status='PASS',two_frontier_charge_decisions=count)
 
 
+def energy_audit(path,result,required=False):
+    snapshots={name:[] for name in result['robots']}
+    for line in path.open():
+        event=json.loads(line)['data']
+        if not isinstance(event,dict) or event.get('event')!='energy_accounting':continue
+        model=event['energy_model']
+        spent=event['actual_distance_m']*model['move_cost_per_m']+event['actual_elapsed_sec']*model['idle_cost_per_sec']
+        expected=max(0.,event['initial_energy']+event['charged_energy_added']-spent)
+        assert math.isfinite(expected) and math.isclose(event['energy'],expected,abs_tol=1e-6)
+        assert event['actual_distance_m']>=0 and event['actual_elapsed_sec']>=0
+        assert 0<=event['pending_native_inputs']<=128
+        assert event['initial_energy']==result['robots'][event['robot']]['battery_initial_energy']
+        assert all(event.get(k) is None or event[k]<=event['sim_time']
+                   for k in ('odom_source_time','frame_source_time'))
+        rows=snapshots[event['robot']]
+        if rows:
+            assert event['energy_model']==rows[-1]['energy_model']
+            assert event['actual_distance_m']>=rows[-1]['actual_distance_m']
+            assert event['actual_elapsed_sec']>=rows[-1]['actual_elapsed_sec']
+            assert event['charged_energy_added']>=rows[-1]['charged_energy_added']
+        rows.append(event)
+    if required:
+        for name,robot in result['robots'].items():
+            rows=snapshots[name];assert rows,('missing native energy accounting',name)
+            assert rows[-1]['sim_time']>=result['end_sim_time_sec']-6.
+            # Native truth motion cannot coexist with a frozen local energy meter.
+            if robot['path_length_m']>1.:
+                assert rows[-1]['actual_distance_m']>.1 and rows[-1]['actual_elapsed_sec']>0.
+                assert rows[-1]['odom_source_time'] is not None
+    return dict(status='PASS' if any(snapshots.values()) else 'LEGACY_NOT_INSTRUMENTED',
+        required=required,snapshots=sum(len(rows) for rows in snapshots.values()),
+        robots={name:dict(samples=len(rows),last=rows[-1] if rows else None) for name,rows in snapshots.items()})
+
+
 def check_one(path,config):
     path=path.resolve()
     row=json.loads(path.read_text());directory=path.parent
@@ -149,11 +183,13 @@ def check_one(path,config):
     violations=runtime_violations(Snapshot(original['nodes']),audit,result['robot_count'])
     assert not violations,violations
     native=return_audit(directory/'safety_events.jsonl',bool(config.get('native_pose_contract')))
+    energy=energy_audit(directory/'safety_events.jsonl',result,
+        bool(config.get('native_energy_accounting')) and case!='empty_battery')
     forecast=lookahead_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     assert result['collision_monitoring_active']
     return dict(case=case,status='PASS',git_commit=row['git_commit'],source_digests=row['source_digests'],
         result=result,raw_summary=str(path.resolve()),raw_summary_sha256=sha(path),return_audit=native,
-        communication_audit=communications,lookahead_audit=forecast)
+        communication_audit=communications,lookahead_audit=forecast,native_energy_audit=energy)
 
 
 def audit_one(item):

@@ -22,6 +22,7 @@ def manager(grid=None, position=(3.1, 1.1), home=(5.1, 1.1), energy=40.):
     node = SimpleNamespace(robot_name='tb1', now=lambda:11., mode='ACTIVE',
         mission_terminal=False, map_position=position, charge_x=home[0], charge_y=home[1],
         last_odom_time=11., map_tf_source_time=11., frame_stamp_offset=.5,
+        pending_native_inputs=[], native_input_sequence=0,
         charge_radius=.8, energy=energy, move_cost=1., idle_cost=.02,
         return_path_factor=2., nominal_speed=.18, safety_margin=8., return_recovery_wait=30.,
         no_route_timeout=30., return_map=detour_grid() if grid is None else grid,
@@ -34,7 +35,8 @@ def manager(grid=None, position=(3.1, 1.1), home=(5.1, 1.1), energy=40.):
         return_audit_publisher=SimpleNamespace(publish=lambda msg: events.append(json.loads(msg.data))),
         publish_state=lambda:states.append(node.mode), failure_publisher=Mock(),get_logger=Mock())
     for method in ('in_charging_zone','current_return_budget','begin_return','guard_return_budget',
-                   'audit_return','finish_return_audit','return_map_evidence','fail'):
+                   'audit_return','finish_return_audit','return_map_evidence','fail',
+                   'receive_native_input','drain_native_inputs','apply_native_frame','apply_native_odometry'):
         setattr(node, method, MethodType(getattr(BatteryManager, method), node))
     return node, events, states
 
@@ -176,6 +178,14 @@ def test_stale_native_pose_cannot_finish_a_charge_or_have_a_return_budget():
     BatteryManager.update_charging(node,11.)
     assert node.mode=='CHARGING' and node.charge_stable_started_at is None
     assert node.current_return_budget() is None
+
+
+def test_native_future_queue_is_bounded_and_fails_without_spending_its_reserve():
+    node,events,states=manager()
+    node.pending_native_inputs=[(12.,i,'frame',None) for i in range(128)]
+    node.receive_native_input('odom',12.5,object())
+    assert node.mode=='FAILED' and node.failure_reason=='battery_native_input_backlog'
+    assert node.energy==40. and states==['FAILED']
 
 
 def test_no_route_wait_cancels_once_keeps_handle_and_fails_with_positive_energy():
@@ -322,3 +332,60 @@ def test_actual_ros_unavailable_input_emits_positive_energy_failure_without_nav_
         if server is not None:server.destroy()
         if node is not None:node.destroy_node()
         rclpy.shutdown()
+
+
+def test_actual_ros_native_sensor_before_clock_is_deferred_then_accounted_once():
+    """Reproduce the v4 DDS ordering failure without changing any source stamp."""
+    import time,rclpy
+    from rclpy.qos import QoSProfile,DurabilityPolicy
+    from nav_msgs.msg import OccupancyGrid,Odometry
+    from rosgraph_msgs.msg import Clock
+    from tf2_msgs.msg import TFMessage
+    from geometry_msgs.msg import TransformStamped
+    rclpy.init(args=['--ros-args','-p','use_sim_time:=true','-p','initial_energy:=40.0',
+        '-p','charge_x:=5.1','-p','charge_y:=1.1','-p','frame_stamp_offset_sec:=2.0'],domain_id=209)
+    node=None
+    try:
+        node=BatteryManager()
+        qos=QoSProfile(depth=10,durability=DurabilityPolicy.TRANSIENT_LOCAL)
+        clock=node.create_publisher(Clock,'/clock',10)
+        odoms=node.create_publisher(Odometry,'/tb1/odom',10)
+        transforms=node.create_publisher(TFMessage,'/tb1/tf',10)
+        maps=node.create_publisher(OccupancyGrid,'/tb1/map',qos)
+        def spin_until(predicate):
+            deadline=time.monotonic()+2.
+            while not predicate() and time.monotonic()<deadline:rclpy.spin_once(node,timeout_sec=.01)
+            assert predicate()
+        def set_clock(nanosec):
+            m=Clock();m.clock.sec=10;m.clock.nanosec=nanosec;clock.publish(m)
+            spin_until(lambda:abs(node.now()-(10.+nanosec/1e9))<1e-8)
+        set_clock(0)
+        node.timer_callback()
+        assert node.mode=='RETURNING' and node.current_return_budget() is None
+        grid=OccupancyGrid();grid.header.stamp.sec=10;grid.info.resolution=.2
+        grid.info.width=grid.info.height=44;grid.data=[0]*(44*44);maps.publish(grid)
+        spin_until(lambda:node.return_map is not None)
+        tf=TransformStamped();tf.header.frame_id='tb1/map';tf.child_frame_id='tb1/odom'
+        tf.header.stamp.sec=12;tf.header.stamp.nanosec=25000000;tf.transform.rotation.w=1.
+        odom=Odometry();odom.header.stamp.sec=10;odom.header.stamp.nanosec=25000000
+        odom.pose.pose.position.x=5.1;odom.pose.pose.position.y=1.1
+        transforms.publish(TFMessage(transforms=[tf]));odoms.publish(odom)
+        spin_until(lambda:len(node.pending_native_inputs)==2)
+        assert node.last_odom_time is None and node.map_tf_source_time is None
+        assert node.current_return_budget() is None and node.energy==40.
+        set_clock(100000000);node.timer_callback()
+        assert not node.pending_native_inputs and node.last_odom_time==pytest.approx(10.025)
+        assert node.map_tf_source_time==pytest.approx(10.025) and node.current_return_budget() is not None
+        assert node.mode=='ACTIVE' and node.charge_count==0
+        odom.header.stamp.nanosec=125000000;odom.pose.pose.position.x=5.2;odoms.publish(odom)
+        spin_until(lambda:len(node.pending_native_inputs)==1)
+        assert node.energy==40.
+        set_clock(200000000);node.timer_callback()
+        assert node.energy==pytest.approx(39.898) and node.last_odom_time==pytest.approx(10.125)
+        assert node.current_return_budget()['pose_age_sec']==pytest.approx(.175)
+        odoms.publish(odom)
+        for _ in range(5):rclpy.spin_once(node,timeout_sec=.01)
+        assert node.energy==pytest.approx(39.898) and not node.pending_native_inputs
+    finally:
+        if node is not None:node.destroy_node()
+        if rclpy.ok():rclpy.shutdown()

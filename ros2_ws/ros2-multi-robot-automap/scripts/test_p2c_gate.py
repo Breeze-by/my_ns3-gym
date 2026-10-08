@@ -8,7 +8,7 @@ import zlib
 import numpy as np
 import pytest
 
-from check_p2c_gate import return_audit
+from check_p2c_gate import return_audit,energy_audit
 from multi_robot_exploration import control
 
 
@@ -70,3 +70,19 @@ def test_return_audit_reconstructs_originals_and_rejects_corruption(tmp_path, co
     else:
         with pytest.raises((AssertionError,KeyError)):
             return_audit(path,True)
+
+
+@pytest.mark.parametrize('corruption',[None,'frozen_motion','energy','credits','missing'])
+def test_native_energy_meter_cannot_freeze_while_truth_robot_moves(tmp_path,corruption):
+    result=dict(robots={'tb1':dict(path_length_m=4.,battery_initial_energy=18.)},end_sim_time_sec=50.)
+    e=dict(event='energy_accounting',robot='tb1',sim_time=50.,initial_energy=18.,
+        charged_energy_added=0.,actual_distance_m=4.,actual_elapsed_sec=30.,
+        energy=13.4,pending_native_inputs=0,odom_source_time=49.9,
+        energy_model=dict(move_cost_per_m=1.,idle_cost_per_sec=.02))
+    if corruption=='frozen_motion':e.update(actual_distance_m=0.,actual_elapsed_sec=0.,energy=18.,odom_source_time=None)
+    if corruption=='energy':e['energy']=18.
+    if corruption=='credits':e['charged_energy_added']=5.
+    path=tmp_path/'events.jsonl';path.write_text('' if corruption=='missing' else json.dumps(dict(data=e))+'\n')
+    if corruption is None:assert energy_audit(path,result,True)['snapshots']==1
+    else:
+        with pytest.raises(AssertionError):energy_audit(path,result,True)
