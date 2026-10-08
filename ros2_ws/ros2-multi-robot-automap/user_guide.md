@@ -2,7 +2,8 @@
 
 常用启动命令、不同 world 和参数速查见 [`launch_commands.md`](launch_commands.md)。
 
-最近核对：2026-10-07。P3A.6、P3B.5、P3C 已验收；P3C.5技术完成、门禁PASS，待用户验收。
+最近核对：2026-10-08。P3A.6、P3B.5、P3C 已验收；P3C.5技术完成、门禁PASS，待用户验收。
+本次[项目评审](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261008_project_review.md)修复只读协议/声明审计并重审所有P3原始证据；749功能检查/1 skip、四包build和150冻结任务/模型文件通过。发现返航能量预算仍为欧氏距离启发式，尚未满足研究计划的完整地图路径要求；后续闭环实验前必须补强并新批次冻结。本次没有改变任务算法、默认launch或原始实验。
 当前任务栈冻结为 `d8d361b`，最终报告提交为 `d0b1561`，见
 [完整报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261006_p3b5_gate.md)。
 十格固定理想任务全部原生 COMPLETE，强故障下的失败和超时仍保留；尚未接入 ns-3/Wi-Fi/RL。
@@ -44,7 +45,7 @@ P3C.5的[完整负载/协议报告](../../ns-allinone-3.40/ns-3.40/contrib/openg
 
 手动选择`gateway_admission_protocol:=true`后，普通上行完整payload在机器人队列等待实际收到的有效grant；candidate/request/grant/heartbeat进入同一故障传输和P3C类别曲线。每候选初次立即发组、未授权时至少.75秒后重发、总计最多三组，不是全局4Hz限制。关键任务/电池/导航与ACK沿原安全路径、同样计费。AP只使用已交付摘要/请求/心跳/历史，远端当前队列为null；`local_queue_audit`只能离线查看。`frame_state`是TF而非图像。参数默认false保留已验收直接路径。
 
-P3C面板吞吐字节仍为应用payload；P3C.5报告额外测量原payload/压缩payload和实际envelope CDR、角色成本及每1秒burst。实际airtime/J为null，逐attempt的`8*envelope_cdr_bytes/1e6`只是条件Mbps/瓦数系数；任务电量不是焦耳。当前应用模型未证明容量拥塞，真实Wi-Fi尚待标定。
+P3C面板吞吐字节仍为应用payload；P3C.5报告额外测量原payload/压缩payload和实际envelope CDR、角色成本及每1秒burst。实际airtime/J为null，逐attempt的`8*envelope_cdr_bytes/1e6`只是条件Mbps/瓦数系数；任务电量不是焦耳。当前没有速率/MAC容量模型，容量瓶颈不可由此识别，真实Wi-Fi尚未测量；不能写成测得无瓶颈的负结果。未来总代价须包含控制/ACK/各层重试。
 
 参考配对还必须有相同admission_protocol；当前summary directions和live window/cumulative都携带该标记。旧P3B/P3C缺标记时为已知direct默认false。协议开/关结果可作为描述性独立参照，但显示/导出拒绝把它们标成同协议ideal/fault配对或TDI；冲突/非boolean同样拒绝。启动/重审命令见launch_commands.md的P3C.5节。
 
@@ -191,7 +192,7 @@ multi_robot_exploration/control
 | `battery_charge_radius_m` | `0.8` | 充电区域判定半径；允许 Nav2 到达误差仍进入充电 |
 | `battery_charge_target_fraction` | `0.8` | 充到容量的 80% 后恢复探索，不必等到满电 |
 | `battery_return_timeout_sec` | `180.0` | 单次安全返航总超时 |
-| `battery_return_path_factor` | `2.0` | 返航路径相对直线距离的保守倍数 |
+| `battery_return_path_factor` | `2.0` | 欧氏距离预算的启发式倍数，不是地图返航路径上界 |
 | `battery_nominal_speed_mps` | `0.18` | 返航时间预算使用的标称速度 |
 | `battery_charge_timeout_sec` | `60.0` | 进入充电模式后的总超时 |
 
@@ -291,22 +292,22 @@ P3A 后 `ideal_gateway` 先把机器人地图包装并交付到 `/gateway/receiv
 ```
 
 它不发布导航目标。`/target_observation` 依次可能为 `EXPLORE`、
-`FOUND_UNCONFIRMED`、`FOUND`；`/target_detection` 只在确认后发布一次，包含发现机器人、
-目标 world 坐标和本次检测参数。评估器可以只读 Gazebo truth 计算指标，但不向控制链发布真值。
+`FOUND_UNCONFIRMED`、`FOUND`；`/target_detection`首次确认后发布，继续可见时按当前确认规则重新通告，以新源时间支持检测lease；包含发现机器人、目标world坐标和检测参数。不能把重复通告当第二次首次发现，也不能用gateway到达时间刷新源龄。评估器可以只读Gazebo truth计算指标，但不向控制链发布真值。
 `headquarters_control` 是 `/task_state` 的唯一发布者；启用
 P2B 后还发布 `/rally_assignments` 和 `/task_failure`。
 
-启用 P2C 后，每台机器人各运行一个本地 `battery_manager`。它只读取本机 `/tbN/odom`、
-`/tbN/tf` 和全局任务终态，发布 transient `/tbN/battery_state`，并在安全余量触发后直接
+启用P2C后，每台机器人各运行本地`battery_manager`。它读取本机`/tbN/odom`、`/tbN/tf`、本地地图、gateway交付融合地图/充电请求和任务终态，发布transient `/tbN/battery_state`，并在安全余量触发后直接
 调用本机 Nav2 返回该机器人的独立出生/充电位。总部根据电池模式暂停或恢复任务分配，但不能
 否决返航；总部会按电池状态动态维护参与机器人集合。明确失败经 `/battery_failure` 汇入
 `/robot_failure`，只有全部机器人都失败时才发布权威 `/task_failure`。第一版 `c_tx=0`。
 
-并向每台机器人发送 Nav2 action：
+中央任务导航通过gateway本地适配器发送：
 
 ```text
-/tbN/navigate_to_pose
+headquarters -> /gateway/tbN/navigate_to_pose -> local /tbN/navigate_to_pose
 ```
+
+本地电池返航直接调用本机Nav2是安全路径，不能据此为中央增加直连。当前返航导航检查已知自由地图，但触发能量预算仍是直线距离×系数，中央部分预算也如此；无路时保持RETURNING重试直至超时，尚无完整预算与预测误差审计。一般返航安全要求尚待专门修复/新冻结，不用零事故样本替代。
 
 ## 6. 稳定性优化内容
 
@@ -730,7 +731,7 @@ goal，并在约 5.2 秒后到达自己的目标附近集合位；117.9 秒进�
 ### 9.3 P2C 电池、返航和充电验证
 
 `--battery` 会启动机器人本地能量模型。能量按 odom 行驶距离和仿真经过时间扣除；返航阈值
-为保守预计返航能耗加固定安全余量。触发后本地管理器抢占探索/集合 action，返回本机器人的
+为欧氏距离路径系数的启发式能耗加固定余量，尚非完整已知地图路径预算。触发后本地管理器抢占探索/集合action，返回本机器人的
 出生充电位；当前充电半径默认 0.8 m，线速度不超过 0.15 m/s、角速度不超过 0.10 rad/s
 并连续稳定 6 s 后恢复电量。定时器独立检查到位和静止状态；默认充到容量的 80% 就恢复探索。充电不会
 重启 SLAM、清空地图或重置任务状态。`--require-charge` 使 smoke 在没有真实发生充电时判失败。
@@ -759,7 +760,7 @@ goal，并在约 5.2 秒后到达自己的目标附近集合位；117.9 秒进�
 进入 `COMPLETE`。最终覆盖率 92.15%、总路径 49.733 m、搜索重叠和碰撞均为 0。逐机器人
 最终集合误差为 0.216/0.128 m，最终电池模式均为 `ACTIVE`。耗尽、返航不可达和充电超时由
 构造测试验证为明确失败原因。P2C、P2D 已通过用户验收；P3A.6 已于 2026-10-01 验收。
-当前 P3B.5 技术门禁 PASS，待用户验收。验收后新增的
+P3B.5已于2026-10-07验收。此前P2C验收后新增的
 Gazebo 重点区域和实时状态栏只读现有任务数据，不改变 P2C 控制与评分口径。
 
 ### 9.4 P2D 完整理想通信任务基线
@@ -821,7 +822,7 @@ P3B.5 当前实现允许在 FOUND 阶段为 RETURNING/CHARGING 机器人从新�
 不会覆盖收到的实际位姿；RALLY 派发仍检查实际机体、返航路线预约、ACTIVE 模式和完整
 能量预算。集合点不足时，额外地图探查仍须等待电池就绪。受控返航准备在原始起点已知
 自由但膨胀净空不足时复用有界脱困规划；未知/占用起点仍拒绝，不清除地图，原 .75m
-航段和 50s 准备期限保持。当前同提交完整 57 格已通过技术门禁，待用户验收。
+航段和50s准备期限保持。原57格与独立方向延迟六格已于2026-10-07验收；本次重审仍PASS。
 让路机器人正在移动时，其他普通集合航段也可参与原并发预约检查；只有路线分离、
 并发名额与能量条件满足才派发，避免不相关的让路动作造成全局串行等待。
 临时让路还记录其受益机器人：确认停到让路点后，仅该受益机器人可暂时忽略让路者的
@@ -1015,8 +1016,7 @@ server 下行：gateway -> `/gateway/{robot}/navigate_to_pose` -> 本地 `/{robo
 gateway，只把交付设为零丢包和零附加时延，同时保留真实候选生成频率；`oracle unlimited` 只作理论
 上界，不能恢复旧直连。
 
-P3B 已在同一路径实现固定 delay/loss 与逐消息账本，P3B.5 应用层故障任务门禁已技术通过。
-真实 ns-3/Wi-Fi 耦合尚未实现；后续按计划先完成 P3C，不能把当前结果解释为 Wi-Fi 性能。
+P3B已实现固定delay/loss与账本；P3B.5、P3C已验收，P3C.5技术完成待验收。真实ns-3/Wi-Fi尚未实现。后续按修订计划先做P4A-0消息/分片契约和P4B-0原负载无线测量，关闭返航预算缺口并重新冻结，再进入P4A-1闭环和P4B-1标定验证；最后先强非学习基线、再判断是否需要RL。被动trace不证明任务收益；当前结果不能解释为Wi-Fi性能。
 
 P2B 起只有全体仍参与任务的机器人在不同安全集合位姿连续稳定 5 秒后的 `COMPLETE` 才是完整任务成功；
 如果已有机器人故障，剩余机器人集合稳定后发布 `PARTIAL_COMPLETE`，表示任务完成了可用机器人的

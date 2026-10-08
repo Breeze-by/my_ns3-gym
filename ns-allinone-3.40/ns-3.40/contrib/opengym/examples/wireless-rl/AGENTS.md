@@ -1,5 +1,26 @@
 # wireless-rl Codex Memory
 
+2026-10-08 current review: P3C.5 technical PASS, still pending user acceptance.
+More rigorous read-only protocol/content/grant/predeclaration binding passes
+all 14 originals unchanged. P3A.6 11, P3B.5 63/31 pairs and P3C 3 originals
+also replay PASS. 749 functional checks/1 skip, four-package build, expanded
+150 immutable task/model files and 54 static cells pass. No new task runs.
+Open safety requirement: local return trigger and central exploration reserve
+still use Euclidean distance times a factor; full known-map contact-route
+energy budgeting, no-route safety behavior and prediction error accounting
+require a new task freeze/integration cohort before P4A-1/P5. Known-free Nav2
+return routing and zero observed exhaustion do not close this requirement.
+Capacity is unmeasured/unidentifiable in the current application model; do not
+call lack of a capacity model a measured no-bottleneck negative result. Revised
+order: P4A-0 packet/payload contract, P4B-0 passive trace Wi-Fi/early hardware
+calibration, P4A-1 causal clock bridge, P4B-1 independent validation, P5 strong
+baselines and conditional P6. P7/P8 apply even without RL. Total network cost
+must include control/ACK and application/MAC retries; success, H-penalized time
+and safety constraints come first. Early FAILED is not independent censoring.
+See report/20261008_project_review.md/.json and current research/implementation
+plans. Original evidence and dated handoffs below remain historical; no user
+acceptance or new P4/ns-3/Wi-Fi/RL work is inferred from the review.
+
 2026-10-07 P3C.5 technical gate PASS, ready for user acceptance. P3C is accepted.
 Frozen `bea7f8bfb41b19dc55c1ecdd351a5a797261d18a`, p3c5_v3:14 originals
 closed naturally;11 native COMPLETE/3 RALLY timeout, zero contacts/exhaustion/

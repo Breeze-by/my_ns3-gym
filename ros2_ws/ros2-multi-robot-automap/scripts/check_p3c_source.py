@@ -16,6 +16,15 @@ sys.path.insert(0, str(PROJECT / "src/multi_robot_exploration"))
 import run_p3b_fault_matrix as matrix
 
 
+def check_inventory(files, paths, baseline):
+    frozen = subprocess.check_output(["git", "ls-tree", "-r", "--name-only", baseline, "--", *paths],
+                                     cwd=ROOT, text=True).splitlines()
+    expected = {path for path in frozen if Path(path).suffix != ".pyc" and "__pycache__" not in Path(path).parts}
+    current = {str(path.relative_to(ROOT)) for path in files}
+    assert current == expected, {"missing_immutable_files": sorted(expected-current),
+                                 "extra_immutable_files": sorted(current-expected)}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--baseline", default="d8d361bfd9d81e0c7a00c428ea66cfac4b3a1a76")
@@ -24,9 +33,14 @@ def main():
     if args.output.exists():
         parser.error("do not overwrite source evidence")
     files = [PROJECT / "src/multi_robot_exploration/multi_robot_exploration" / name for name in
-             ("control.py", "battery_manager.py", "task_evaluator.py", "target_detector.py", "tf_ingress_sampler.py")]
-    for directory in ("src/multi_robot/params", "src/multi_robot/worlds", "src/slam_toolbox/src", "src/slam_toolbox/config", "src/merge_map/merge_map"):
+             ("control.py", "battery_manager.py", "task_evaluator.py", "target_detector.py", "tf_ingress_sampler.py", "task_visualizer.py")]
+    directories = ("src/multi_robot/params", "src/multi_robot/worlds", "src/multi_robot/models", "src/multi_robot/urdf",
+                   "src/slam_toolbox/src", "src/slam_toolbox/config", "src/merge_map/merge_map")
+    inventory_paths = [str(path.relative_to(ROOT)) for path in files]
+    inventory_paths.extend(str((PROJECT/directory).relative_to(ROOT)) for directory in directories)
+    for directory in directories:
         files.extend(path for path in (PROJECT / directory).rglob("*") if path.is_file() and path.suffix != ".pyc" and "__pycache__" not in path.parts)
+    check_inventory(files, inventory_paths, args.baseline)
     rows = []
     for path in files:
         relative = path.relative_to(ROOT)
@@ -65,6 +79,7 @@ def main():
         assert "/gazebo/model_states" not in (metrics_dir / name).read_text()
         checks.append({"path": name, "allowed_application_publishers": sorted(allowed), "sha256": hashlib.sha256((metrics_dir/name).read_bytes()).hexdigest()})
     result = {"status": "PASS", "baseline": args.baseline, "immutable_files": rows,
+              "immutable_inventory_matches_frozen_tree": True,
               "static_protocol_matrix": current_matrix, "static_protocol_equivalence": True,
               "navigation_ast_equivalence_except_outcome_trace": True, "monitor_sources": checks}
     args.output.parent.mkdir(parents=True, exist_ok=True)

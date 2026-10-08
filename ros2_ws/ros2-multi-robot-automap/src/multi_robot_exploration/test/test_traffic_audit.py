@@ -51,6 +51,46 @@ def test_auditor_rejects_observability_and_admission_tampering(mutation):
         audit_protocol(events, True)
 
 
+@pytest.mark.parametrize("mutation", ["candidate_source", "candidate_type", "candidate_phase",
+                                     "request_sender", "heartbeat_age", "history_source",
+                                     "extra_hidden_payload", "grant_version", "grant_size",
+                                     "grant_recipient", "missing_decision", "retry_ordinal"])
+def test_auditor_binds_delivered_content_and_exact_grant_fields(mutation):
+    events = records()
+    if mutation.startswith("candidate_"):
+        if mutation == "candidate_source":
+            item = next(e for e in events if e["event"] == "admission_observation"
+                        and e["observation"]["received_candidates"])["observation"]["received_candidates"][0]
+            item["source_time"] -= 1
+        else:
+            item = next(e for e in events if e["event"] == "generated"
+                        and e["message_type"] == "candidate")["control_payload"]
+            item["message_type" if mutation == "candidate_type" else "task_phase"] = "invented"
+    elif mutation == "request_sender":
+        next(e for e in events if e["event"] == "admission_observation"
+             and e["observation"]["received_requests"])["observation"]["received_requests"][0]["sender"] = "tb2"
+    elif mutation == "heartbeat_age":
+        next(e for e in events if e["event"] == "admission_observation"
+             and e["observation"]["heartbeats"])["observation"]["heartbeats"]["tb1"]["age_sec"] += 1
+    elif mutation == "history_source":
+        next(e for e in events if e["event"] == "admission_observation"
+             and e["observation"]["delivered_history"])["observation"]["delivered_history"][0]["source_time"] -= 1
+    elif mutation == "extra_hidden_payload":
+        next(e for e in events if e["event"] == "admission_observation")["observation"]["hidden_payload"] = [1, 2, 3]
+    elif mutation.startswith("grant_"):
+        grant = next(e for e in events if e["event"] == "generated" and e["message_type"] == "grant")
+        if mutation == "grant_recipient":
+            grant["recipient"] = "tb2"
+        else:
+            grant["control_payload"]["version" if mutation == "grant_version" else "payload_length"] += 1
+    elif mutation == "missing_decision":
+        events = [e for e in events if e["event"] != "admission_decision"]
+    elif mutation == "retry_ordinal":
+        next(e for e in events if e["event"] == "generated" and e["message_type"] == "candidate")["control_attempt"] = 2
+    with pytest.raises((AssertionError, KeyError)):
+        audit_protocol(events, True)
+
+
 def test_stopped_metrics_context_keeps_json_csv_sample_without_publishing():
     import io
     from types import SimpleNamespace

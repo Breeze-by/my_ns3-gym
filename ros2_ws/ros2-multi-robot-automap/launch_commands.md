@@ -13,7 +13,8 @@ multi_robot/gazebo_multirobot_mapping_with_nav2.launch.py
 P2C 本地电池/充电管理；可选目标检测与 P2B 集结任务。手动运行默认同时打开贴地的 Gazebo
 重点区域标记和每机器人实时状态栏。
 
-最近核对：2026-10-07。P3A.6、P3B.5、P3C 已获用户验收；P3C.5技术完成、门禁PASS，待用户验收。
+最近核对：2026-10-08。P3A.6、P3B.5、P3C 已获用户验收；P3C.5技术完成、门禁PASS，待用户验收。
+本次[项目评审](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261008_project_review.md)修补只读审计、重审原证据，默认启动与任务算法不变。地图路径返航能量预算尚未关闭，进入后续闭环实验前须专门补强/新冻结；当前无容量模型，Wi-Fi瓶颈尚未测量。
 当前任务栈冻结在 `d8d361b`，最终报告提交为 `d0b1561`。
 本文第 1–8 节用于当前运行，第 9 节保留历史候选记录；其中“未通过”“未暴露”等描述
 只适用于记录当时。当前结果见 [P3B.5 完整报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261006_p3b5_gate.md)。
@@ -124,6 +125,8 @@ export PYTHONPATH="$PWD/src/multi_robot_exploration:$PYTHONPATH"
 ```
 
 原ledger/实时输入保留log忽略目录；Git中的报告、审阅副本和无损成本/strata/burst归档绑定原始SHA。实际最终审计用gate_v21，后续纯显示源码检查用v24_source.json。再次实验须先新提交推送冻结、使用新run-id，不能回填v3。
+
+2026-10-08审计器额外绑定已交付内容、grant版本/大小/接收端、重试序号/间隔，以及实际命令/原生文件/冻结清单；源码检查扩至150文件，含完整models/urdf。上述只读命令仍适用。本次新输出在`log/project_review/20261008/`，原14格全部PASS、11 COMPLETE/3 timeout保持；新输出不冒充原实验时审计器版本。后续任务算法修复将使当前源码相对旧冻结检查失败，这是需要新基线与新集成批次的信号，不能简单绕过检查。
 
 ## 1. 每个新终端先执行
 

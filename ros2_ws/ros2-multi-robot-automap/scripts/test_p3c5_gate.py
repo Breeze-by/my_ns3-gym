@@ -4,13 +4,72 @@ from pathlib import Path
 
 import pytest
 
-from check_p3c5_gate import native_interval, native_safety_ok
+from check_p3c5_gate import declaration_audit, native_interval, native_safety_ok
 from run_p3c5_audit import main as expand_original
+from run_p3b5_tasks import episode_command
 
 
 def failed_mission():
     path = Path(__file__).parents[1]/"src/multi_robot_exploration/test/fixtures/p3c5_native_early_failure.json"
     return json.loads(path.read_text())
+
+
+@pytest.fixture
+def declared_original(tmp_path):
+    config = json.loads((Path(__file__).with_name("p3c5_traffic_manifest.json")).read_text())
+    directory = tmp_path/"original_delay_lab2"
+    directory.mkdir()
+    result = failed_mission()
+    result["episode_id"] = directory.name
+    scenario = config["cases"]["delay_lab2"]
+    command = episode_command({"id": "delay_lab2", "scenario": "delay_lab2", "mode": "rally", "profile": "online"},
+                              scenario, scenario["profile"], scenario["mode"], directory, config)
+    command[command.index("--shutdown-timeout")+1] = str(config["owner_shutdown_timeout_sec"])
+    command.append("--gateway-admission-protocol")
+    row = {"case": "delay_lab2", "config": config, "command": command,
+           "result": result, "result_path": str(directory/(directory.name+".json"))}
+    Path(row["result_path"]).write_text(json.dumps(result))
+    (directory/"manifest.json").write_text(json.dumps({k: row[k] for k in ("case", "config", "command")}))
+    return row, config, directory
+
+
+def test_declaration_binding_keeps_the_real_early_failure(declared_original):
+    row, config, directory = declared_original
+    assert declaration_audit(row, config, directory)["status"] == "PASS"
+    assert not row["result"]["success"] and row["result"]["completion_time_sec"] is None
+
+
+@pytest.mark.parametrize("mutation", ["cache", "manifest", "seed", "world", "energy", "target",
+                                     "horizon", "delay", "protocol_flag", "extra_argument"])
+def test_declaration_binding_rejects_wrong_native_or_executed_cell(declared_original, mutation):
+    row, config, directory = declared_original
+    if mutation == "cache":
+        row["result"]["gazebo_seed"] += 1
+    elif mutation == "manifest":
+        manifest = json.loads((directory/"manifest.json").read_text())
+        manifest["case"] = "lab2"
+        (directory/"manifest.json").write_text(json.dumps(manifest))
+    elif mutation in ("seed", "world", "energy", "target"):
+        if mutation == "seed":
+            row["result"]["gazebo_seed"] += 1
+        elif mutation == "world":
+            row["result"]["world_file"] = "p1c_rooms.world"
+        elif mutation == "energy":
+            row["result"]["robots"]["tb1"]["battery_initial_energy"] += 1
+        else:
+            row["result"]["target_x"] = 10
+        Path(row["result_path"]).write_text(json.dumps(row["result"]))
+    else:
+        command = row["command"]
+        if mutation in ("horizon", "delay"):
+            command[command.index("--evaluation-duration" if mutation == "horizon" else "--uplink-delay-sec")+1] = "100"
+        elif mutation == "protocol_flag":
+            command.remove("--gateway-admission-protocol")
+        else:
+            command += ["--rally-max-concurrent", "1"]
+        (directory/"manifest.json").write_text(json.dumps({k: row[k] for k in ("case", "config", "command")}))
+    with pytest.raises(AssertionError):
+        declaration_audit(row, config, directory)
 
 
 def test_real_early_mission_failure_is_retained_without_fabricated_tail():

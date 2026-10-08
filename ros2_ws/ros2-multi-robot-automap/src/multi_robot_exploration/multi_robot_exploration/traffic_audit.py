@@ -3,7 +3,9 @@ from collections import Counter, defaultdict
 import bisect
 import math
 
-from .admission_protocol import CONTROL_TYPES, ORDINARY_TYPES, MAX_CONTROL_ATTEMPTS
+from .admission_protocol import (
+    CONTROL_TYPES, ORDINARY_TYPES, MAX_CONTROL_ATTEMPTS, CONTROL_RETRY_SEC, GRANT_LEASE_SEC,
+)
 from .gateway_metrics import LedgerMetrics, event_stamp
 
 
@@ -21,9 +23,11 @@ def audit_protocol(records, enabled):
     """Verify the actual received-information boundary and every local candidate."""
     generated, received, accepted, queued, released, discarded = {}, {}, {}, {}, {}, {}
     decisions, observations = 0, 0
+    grants, control_attempts = {}, {}
     for e in records:
         kind, identity = e["event"], e.get("message_id")
         if kind == "generated":
+            assert identity not in generated, "logical message generated twice"
             generated[identity] = e
         if kind == "control_received":
             assert identity in generated, "control receipt without original generation"
@@ -45,20 +49,33 @@ def audit_protocol(records, enabled):
             summary = generated[e["candidate_wire_id"]]["control_payload"]
             assert summary["message_id"] == generated[e["request_wire_id"]]["control_payload"]["candidate_id"] == e["candidate_id"]
             original = generated[e["candidate_id"]]
-            assert summary["sender"] == original["sender"] and summary["version"] == original["version"]
-            assert summary["payload_length"] == original["payload_length"]
+            for field in ("message_type", "sender", "recipient", "version", "payload_length", "task_phase"):
+                assert summary[field] == original[field], f"candidate changed {field}"
+            for wire in (candidate, request):
+                assert wire["sender"] == original["sender"] and wire["recipient"] == original["recipient"]
+                assert wire["direction"] == "uplink"
             assert abs(summary["source_time"]-original["source_time"]) < 1e-8
             assert abs(summary["deadline"]-original["deadline"]) < 1e-8
             assert e["decision_time"] < summary["deadline"]
-            grant = generated[e["grant_wire_id"]]["control_payload"]
+            grant_wire = generated[e["grant_wire_id"]]
+            assert grant_wire["message_type"] == "grant" and grant_wire["direction"] == "downlink"
+            assert grant_wire["sender"] == "headquarters" and grant_wire["recipient"] == original["sender"]
+            grant = grant_wire["control_payload"]
+            assert set(grant) == {"candidate_id", "version", "payload_length", "deadline", "expires"}
             assert grant["candidate_id"] == e["candidate_id"] and grant["deadline"] == summary["deadline"]
-            assert grant["expires"] <= min(e["decision_time"]+1, summary["deadline"])+1e-8
+            for field in ("version", "payload_length"):
+                assert type(grant[field]) is int and grant[field] == summary[field], f"grant changed {field}"
+            assert e["decision_time"] < grant["expires"] <= min(e["decision_time"]+GRANT_LEASE_SEC, summary["deadline"])+1e-8
+            assert e["grant_wire_id"] not in grants, "grant decision recorded twice"
+            grants[e["grant_wire_id"]] = e
             decisions += 1
         if kind == "admission_release":
             identity = e["candidate_id"]
             assert identity in queued and identity not in released and identity not in discarded
             grant_receipt = received[e["grant_wire_id"]]
             grant = generated[e["grant_wire_id"]]["control_payload"]
+            assert e["grant_wire_id"] in grants, "release without a bound AP decision"
+            assert grants[e["grant_wire_id"]]["ledger_index"] < grant_receipt["ledger_index"]
             assert grant_receipt["ledger_index"] < e["ledger_index"]
             assert grant["candidate_id"] == identity and event_stamp(e) < grant["expires"]
             assert abs(e["local_wait_sec"]-max(0, event_stamp(e)-event_stamp(queued[identity]))) < 1e-6
@@ -69,24 +86,52 @@ def audit_protocol(records, enabled):
             assert e["source_time"] == generated[identity]["source_time"], "admission renewed source TTL"
         if kind == "admission_observation":
             observation = e["observation"]
+            fields = {"policy", "remote_current_queue", "queue_information", "heartbeats",
+                      "received_candidates", "received_requests", "delivered_history"}
+            assert fields <= set(observation) <= fields | {"ap_local_downlink_pending_count"}
+            assert observation.get("ap_local_downlink_pending_count", 0) == 0
             assert observation["remote_current_queue"] is None
             for item in observation["received_candidates"]+observation["received_requests"]+list(observation["heartbeats"].values()):
                 receipt = received[item["wire_id"]]
                 assert receipt["ledger_index"] < e["ledger_index"]
+                assert item["wire_id"] in accepted and accepted[item["wire_id"]]["ledger_index"] < e["ledger_index"]
                 assert item["delivery_time"] <= event_stamp(e)+1e-8
+                assert abs(item["delivery_time"]-event_stamp(receipt)) < 1e-8
+            for item in observation["received_candidates"]:
+                wire = generated[item["wire_id"]]
+                assert wire["message_type"] == "candidate"
+                assert item == {**wire["control_payload"], "wire_id": item["wire_id"],
+                                "delivery_time": item["delivery_time"]}, "AP candidate differs from delivered content"
+            for item in observation["received_requests"]:
+                wire = generated[item["wire_id"]]
+                assert wire["message_type"] == "request"
+                assert item == {**wire["control_payload"], "sender": wire["sender"], "wire_id": item["wire_id"],
+                                "delivery_time": item["delivery_time"]}, "AP request differs from delivered content"
             for sender, item in observation["heartbeats"].items():
                 wire = generated[item["wire_id"]]
+                assert wire["message_type"] == "heartbeat"
+                assert set(item) == {"reported_pending_count", "source_time", "delivery_time", "wire_id", "age_sec", "stale"}
                 assert wire["sender"] == sender and item["reported_pending_count"] == wire["control_payload"]["pending_count"]
                 assert item["source_time"] == wire["source_time"]
+                assert abs(item["age_sec"]-max(0, event_stamp(e)-item["source_time"])) < 1e-8
                 assert item["stale"] == (event_stamp(e)-item["source_time"] >= 2)
             for item in observation["delivered_history"]:
                 assert item["message_id"] in accepted
-                assert accepted[item["message_id"]]["ledger_index"] < e["ledger_index"]
+                receipt = accepted[item["message_id"]]
+                assert receipt["ledger_index"] < e["ledger_index"]
+                assert item == {"message_id": item["message_id"], "source_time": receipt["source_time"],
+                                "delivery_time": event_stamp(receipt)}, "AP history differs from accepted information"
             observations += 1
         if kind == "generated" and e.get("message_type") in ("candidate", "request"):
             assert 1 <= e["control_attempt"] <= MAX_CONTROL_ATTEMPTS
             original = generated[e["candidate_id"]]
             assert e["source_time"]+e["ttl_sec"] <= original["deadline"]+1e-5, "control retry renewed data deadline"
+            key = (e["candidate_id"], e["message_type"])
+            previous = control_attempts.get(key)
+            assert e["control_attempt"] == (previous["control_attempt"]+1 if previous else 1)
+            if previous:
+                assert e["source_time"]-previous["source_time"] >= CONTROL_RETRY_SEC-1e-8, "control retry too early"
+            control_attempts[key] = e
     assert set(queued) == set(released) | set(discarded), "local queue does not reconcile at episode closure"
     if enabled:
         assert decisions > 0 and observations > 0 and queued

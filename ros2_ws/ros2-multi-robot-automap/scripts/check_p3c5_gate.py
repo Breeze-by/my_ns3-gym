@@ -9,6 +9,7 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import subprocess
 import sys
 import time
 
@@ -18,6 +19,7 @@ from multi_robot_exploration.traffic_audit import audit_traffic
 from check_p3b5_gate import native_completion_ok, ledger_audit
 from check_p3c_gate import monitor_graph_audit
 from export_gateway_metrics import verify_live
+from run_p3b5_tasks import episode_command
 
 
 def sha(path):
@@ -46,6 +48,32 @@ def native_safety_ok(result):
     assert result["rally_linear_tolerance_mps"] == .05 and result["rally_angular_tolerance_radps"] == .1
 
 
+def declaration_audit(row, config, directory):
+    """Bind the cached result and executed command to the original declaration."""
+    manifest = json.loads((directory/"manifest.json").read_text())
+    assert all(row[key] == value for key, value in manifest.items()), "summary differs from original manifest"
+    assert row["config"] == config
+    result_path = directory/(directory.name+".json")
+    assert Path(row["result_path"]).resolve() == result_path.resolve(), "native result path mismatch"
+    result = json.loads(result_path.read_text())
+    assert row["result"] == result, "cached native result differs from original file"
+    name, scenario = row["case"], config["cases"][row["case"]]
+    case = {"id": name, "scenario": name, "mode": "rally", "profile": "online"}
+    expected = episode_command(case, scenario, scenario.get("profile", {}), scenario["mode"], directory, config)
+    expected[expected.index("--shutdown-timeout")+1] = str(config.get("owner_shutdown_timeout_sec", 60))
+    if scenario["admission_protocol"]:
+        expected.append("--gateway-admission-protocol")
+    assert row["command"] == expected, "executed command differs from predeclared cell"
+    assert result["episode_id"] == directory.name and result["mission_mode"] == "rally"
+    assert result["gazebo_seed"] == scenario["seed"] and result["robot_count"] == scenario["robot_count"]
+    assert Path(result["world_file"]).name == scenario["world"]
+    for key in ("target_x", "target_y"):
+        assert result[key] is None or result[key] == scenario[key], "observed target differs from declaration"
+    for robot in result["robots"].values():
+        assert robot["battery_initial_energy"] == scenario["energy"] and robot["battery_capacity"] == 100
+    return {"status": "PASS", "manifest_command_and_native_result_bound": True}
+
+
 def audit_original(item):
     row, config = item
     began = time.monotonic()
@@ -55,6 +83,7 @@ def audit_original(item):
     assert not any(value for key, value in row.items() if key.endswith("_forced_shutdown"))
     for relative, expected in row["evidence_sha256"].items():
         assert sha(directory/relative) == expected, f"raw evidence changed: {name}/{relative}"
+    declaration = declaration_audit(row, config, directory)
     native_safety_ok(result)
     assert result["robot_count"] == scenario["robot_count"]
     if result["success"] or result.get("partial_completion"):
@@ -76,7 +105,7 @@ def audit_original(item):
     evidence = {"case": name, "scenario": scenario, "raw_directory": str(directory),
         "summary_sha256": sha(directory/"summary.json"), "ledger_sha256": sha(directory/"ledger.jsonl"),
         "result_sha256": sha(row["result_path"]), "result": result, "audit": audit,
-        "temporal_audit": temporal, "graph_audit": graph, "live_replay": live,
+        "declaration_audit": declaration, "temporal_audit": temporal, "graph_audit": graph, "live_replay": live,
         "audit_wall_sec": time.monotonic()-began}
     print(json.dumps({"case": name, "audit": "PASS", "native_success": result["success"],
                       "native_phase": result["task_phase"], "live_samples": live["samples"],
@@ -102,6 +131,10 @@ def main():
     originals = [json.loads(path.read_text()) for path in summaries]
     assert len(originals) == len(config["cases"]) and {row["case"] for row in originals} == set(config["cases"])
     assert len({row["git_commit"] for row in originals}) == 1, "task cohort not frozen at one commit"
+    root = PROJECT.parents[1]
+    relative = args.manifest.resolve().relative_to(root)
+    frozen_manifest = subprocess.check_output(["git", "show", f"{originals[0]['git_commit']}:{relative}"], cwd=root)
+    assert json.loads(frozen_manifest) == config, "manifest was not committed at the task freeze"
     assert all(row["source_digests"] == originals[0]["source_digests"] for row in originals)
     assert all(row["config"] == config for row in originals), "executed manifest differs from predeclaration"
     evidence, strata, costs, burst_rows = [], [], [], []
@@ -137,7 +170,7 @@ def main():
         "read_only_audit_workers": args.workers,
         "strata_rows": len(strata), "attempt_cost_rows": len(costs), "burst_rows": len(burst_rows),
         "conclusion": {"capacity_bottleneck": "not demonstrated; no serialization/MAC model exists in this gateway",
-            "negative_result": "通信不是瓶颈：当前 ideal 应用传输没有带宽排队证据；Wi-Fi 是否成为瓶颈尚未测量",
+        "capacity_measurement_status": "not testable in this application model; Wi-Fi capacity has not been measured",
             "delay_and_expiry": "injected delay/loss and finite admission handshake are measured separately from capacity contention",
             "next_research_direction": "keep the measured load; test communication savings and calibrate network before considering RL",
             "no_traffic_inflation": True, "actual_airtime_and_radio_joules": "unavailable before P4B; all bytes and conditional coefficients retained"},

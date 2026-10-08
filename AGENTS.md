@@ -59,6 +59,27 @@ tokens is not a reason to leave a problem unresolved or inadequately tested.
 
 ## Current Handoff
 
+2026-10-08 project review completed; P3C.5 remains technical PASS pending user
+acceptance. Read-only reaudits pass P3A.6 11 originals, P3B.5 63 originals/31
+pairs, P3C 3 originals/658 snapshots and P3C.5 14 originals/1272 snapshots.
+Protocol content/grant/declaration binding gaps were repaired; 749 functional
+checks/1 skip, four-package build, 150 immutable task/model files and 54 static
+protocol cells pass. Original tasks, failures and physics remain unchanged.
+Important open requirement: local return triggers and central exploration
+budgets still use Euclidean distance times a fixed factor. Known-free return
+navigation is not a conservative full-route energy budget. Close this with a
+new frozen task integration cohort before P4A-1/P5 closed-loop experiments;
+do not claim general safety from zero observed incidents. Current gateway has
+no capacity model: Wi-Fi bottlenecks are unmeasured, not a measured negative
+result. Future order: P4A-0 payload/packet contract -> P4B-0 passive measured-load
+Wi-Fi/early hardware calibration -> P4A-1 causal bridge -> P4B-1 validation ->
+P5 strong baselines -> conditional P6, with P7/P8 required in either branch.
+Primary cost includes controls and all retries, under success/time/safety
+constraints; early task failures are penalized to H, not independently censored.
+Report: wireless-rl/report/20261008_project_review.md/.json. No new Gazebo,
+ns-3, Wi-Fi or RL task was started by this review. Earlier dated claims retain
+their historical scope; this review does not constitute user acceptance.
+
 2026-10-07 P3C.5 technical gate PASS, ready for user acceptance. The user has
 accepted P3C. All14 originals at `bea7f8bfb41b19dc55c1ecdd351a5a797261d18a`
 closed naturally:11 native COMPLETE/3 RALLY timeout, zero contacts/exhaustion/

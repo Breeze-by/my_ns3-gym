@@ -7787,3 +7787,106 @@ Derived artifacts exact command (ns3gym/NoUser, existing dist-packages matplotli
 
 
 P3C.5 finalizer `conda activate ns3gym; PYTHONNOUSERSITE=1 python report/20261007_p3c5_artifact_tools/finalize_evidence.py --repo /home/zhuyulab/ns3-workspace --gate <ros>/log/p3c5/gate_v21/summary.json` exit0/PASS:27 protected files,83 historical originals,14 new originals unchanged; CSV/JSON exact136128rows, zero owned processes/ports. Original output redirection waschecks/v29_finalize.txt, moved atomically tolog/p3c5/v29_finalize.txt before the checks archive loop to exclude still-writing stdout from its own hash inventory; open descriptor retains all bytes. No original input touched. Final derived raw/compressed/archive/report/figure SHA and gzip round-trip rechecked after writer closure PASS. Hand-readable14native/14traffic rows independently match measured JSON at stated precision. All four scientific figures and final Qt legend visuallyPASS. Final provenance records executedbea source separately from read-only pair/display/report updates.
+
+
+## 2026-10-08 项目评审：P3C.5证据重审与研究准入修订
+
+任务：用户要求非常详细审阅当前项目，复查已完成工作、修补缺口并评估后续路径/目标/指标。审阅起点9d4fefde22a354c6f085b37af930a2d1699acd94，main与origin/main一致。初始无tracked改动；260929_report的14份untracked用户材料保留。P3C已验收，P3C.5技术完成待验收；本轮不推定验收、不启动P4/Wi-Fi/RL，不运行新的Gazebo任务。完整逐阶段评审为report/20261008_project_review.md/.json。
+
+源变更只涉及traffic_audit、check_p3c5_gate/check_p3c_source及对应反例测试。任务control/battery/evaluator/detector、Nav2/SLAM、world/models/urdf、源TTL/300s/.35m/.05mps/.1radps/5s、生成规则未改。current reader和原task freeze分开；历史gate及v1/v2所有失败原件保持。
+
+ROS检查统一在canonical ROS目录，system Python/Humble/install：
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source install/setup.bash
+export PYTHONNOUSERSITE=1
+export PYTHONPATH="$PWD/src/multi_robot_exploration:$PWD/scripts:$PYTHONPATH"
+```
+
+所有本次原始检查stdout/输出在log/project_review/20261008/，精选结果gzip归档到wireless-rl/report/20261008_project_review_artifacts/，非build/runtime意外暂存。精确命令与结果：
+
+```bash
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test scripts/test_*.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+/usr/bin/python3 scripts/check_p3c_source.py --output log/project_review/20261008/expanded_source.json
+/usr/bin/python3 -m pytest -q scripts/test_p3c5_gate.py src/multi_robot_exploration/test/test_traffic_audit.py
+/usr/bin/python3 scripts/check_p3c_source.py --output log/project_review/20261008/expanded_source_v2.json
+/usr/bin/python3 -m pytest -q scripts/test_p3c_source.py
+colcon build --symlink-install --packages-select multi_robot_interfaces multi_robot_exploration merge_map multi_robot
+```
+
+初始功能723 PASS/1 skip/10.03s。40针对性检查PASS/.81s；新增12协议内容/grant反例与11声明绑定检查。中间功能746 PASS/1 skip/15.81s；最终增加文件集合检查后749 PASS/1 skip/9.04s。文件集合正例、删除、新增反例3项最后独立再PASS。150不可变文件/54静态完整事件字典PASS，两次扩展source输出保留；导航除结果诊断AST等价。四包build PASS/5.49s。全workspace模板lint历史失败保留，不宣称通过。首次误将src/merge_map/test也加入同一pytest收集，重复test_copyright触发ImportMismatchError（final_functional.txt），未运行任务；恢复原功能范围通过。
+
+协议缺口复现使用保留fixture test/fixtures/p3c5_ros_protocol.json和起点traffic_audit（source SHA020e2225667e652404fbf493064ffb6c52a71250c42cff11d94e5fe91b29fa5a；fixture SHA c1d6a7bfb94112701943c9175ecbc269f7c9e44fb69e431db01cc79a00e250de）。分别修改AP candidate source、heartbeat age、generated grant version和candidate type，旧audit_protocol均未拒绝，valid仍PASS；audit_gaps_before.json保留。当前test_traffic_audit各篡改必须拒绝。修复不证明原记录有污染；更严格重审仍PASS。
+
+只读原记录重审命令（nice -n 10；没有Gazebo启动/任务retry）：
+
+```bash
+/usr/bin/python3 scripts/check_p3a6_gate.py log/p2d_baseline/p3a6_serial_22c95a7_lab303/summary.json log/p2d_baseline/p3a6_serial_22c95a7_rooms_corridors/summary.json log/p2d_baseline/p3a6_serial_22c95a7_lab101202/summary.json --forced log/p2d_baseline/p3a6_serial_22c95a7_forced303 --output log/project_review/20261008/p3a6_replay.json
+/usr/bin/python3 scripts/audit_p3c_evidence.py --accepted-report ../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261007_p3b5_requirement_audit.json --output log/project_review/20261008/p3b5_replay --workers 2
+/usr/bin/python3 scripts/check_p3c_gate.py --source log/project_review/20261008/expanded_source.json --runtime log/p3c/v13_runtime --replay log/project_review/20261008/p3b5_replay --episodes log/p3c/p3c_v8_ideal/p3c_v8_ideal_ideal/summary.json log/p3c/p3c_v8_forced/p3c_v8_forced_forced/summary.json log/p3c/p3c_v8_dynamic/p3c_v8_dynamic_dynamic/summary.json --output log/project_review/20261008/p3c_replay.json
+/usr/bin/python3 scripts/check_p3c5_gate.py --run-root log/p3c5/p3c5_v3 --source log/project_review/20261008/expanded_source.json --runtime log/p3c5/runtime_v10 --output log/project_review/20261008/p3c5_gate --workers 3
+```
+
+P3A.6原十固定+forced/11图PASS；P3B.5原63/1879流/31TDI、9曲线episode PASS；P3C原3 COMPLETE/658实时快照/4原配置生效边界PASS；P3C.5原14 PASS，11 COMPLETE/3 RALLYtimeout仍为真实失败，forced217.5s各charge1、零contact/exhaustion/failed/infra/retry。1272原快照/2372766输入、2087 strata/220552发送成本/29894 burst审计PASS。新strata.jsonl/.csv、attempt_costs.jsonl、bursts.jsonl SHA与原gate全部相同。原ROS/Qt探针作为字节未变actors的既有证据复用，不称新探针。当前更严格source库存检查独立在上述重审后执行；150文件字节、静态语义及任务数据未改。
+
+ROS函数的只读安全预算反例命令：
+
+```bash
+/usr/bin/python3 ../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261008_project_review_tools/audit_return_reserve.py --repo /home/zhuyulab/ns3-workspace --output log/project_review/20261008/return_reserve.json
+```
+
+构造44x44/.2m已知地图、隔墙/.45m净空、charge radius .8m，position(3.1,1.1)/home(5.1,1.1)，move1/idle.02/factor2/speed.18/margin8：当前本地及中央零去程预算12.4444，最短known-grid到任一接触区13.6971m，标称消耗15.2190（不加margin）/23.2190（加margin）；完全封闭地图无路径但原预算仍有限。CONFIRMED_REQUIREMENT_GAP，不是新Gazebo任务或物理因果证明。原研究总纲P3B/P4前路径能量要求未关闭；本轮明确列为P4A-1/P5闭环前阻断，未用文档声称算法已修复。以后需要完整路径预算/无路有界降级/预测误差记录、新冻结理想十格+forced+真实断网返航+不可达/耗尽验证，旧失败不回填。
+
+独立证据收集脚本在repo根执行：
+
+```bash
+/usr/bin/python3 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261008_project_review_tools/collect_evidence.py --repo /home/zhuyulab/ns3-workspace --checks ros2_ws/ros2-multi-robot-automap/log/project_review/20261008 --output ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261008_project_review.json --artifacts ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261008_project_review_artifacts
+```
+
+该stdlib归档命令v1因旧P3A.6无status字段KeyError；v2因relative/absolute混用ValueError，两次stdout保留gzip且没有改原任务。v3成功，后加入严格库存检查又以v4完成，之前自产的review/archives分别移至ROS忽略目录review_before_inventory.json/archive_before_inventory以保留，未覆盖历史报告。最终873条文件SHA核对记录、291原artifacts、75历史gzip原内容、27用户文件、v1原3/v2原14/v3原14及P3B.5/P3C原数据保持；23新精选归档无损往返。研究统计/归档最终校验使用ns3gym+PYTHONNOUSERSITE=1（下述追加），ROS反例/检查用system Python，未混合rclpy环境。
+
+研究修订：容量模型缺失意味着未测量/不可识别，不是已测的无瓶颈负结果；P4A-0 immutable payload/fragment契约→P4B-0原负载被动Wi-Fi/早期普通网卡标定→安全新冻结后P4A-1因果桥→P4B-1独立验证→P5强方法/显式GO→条件P6，两分支均P7/P8。主成本含所有控制/ACK/应用和MAC重试；成功/时间/安全约束先过，早期FAILED惩罚H而非独立右删失，真实暴露通信不伪造H尾部；20/24只是下限，NI用预声明δ的差值界而不是p>0.05。当前candidate无未交付信息gain，执行策略不能免费读隐藏payload或evaluator真值覆盖率。双向动作须有实际候选，protected消息不可任意压制。最终目标/2机器人实物仍保留，无增流量、无RL或新模型实验。
+
+研究/实施计划、root和wireless AGENTS、ROS指南/launch命令同步更新。git fetch origin成功且main未落后；commit前进行最后文档/归档/源码核验、diff --check和git add -n .，仅显式暂存本次代码/docs/精选证据，260929_report保持未暂存。
+
+
+评审最终一致性QA（repo根，ns3gym interpreter、PYTHONNOUSERSITE=1）已执行PASS。精确命令如下；输出为23新归档lossless、27用户资料、7本报告local links、21运行包模块（只读traffic_audit除外）相对起点逐字节相同、150冻结文件、749功能通过。
+
+```bash
+PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python - <<'REVIEW_PY'
+from pathlib import Path
+import json, hashlib, gzip, re, subprocess
+root=Path.cwd()
+report=root/'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report'
+d=json.loads((report/'20261008_project_review.json').read_text())
+assert d['checks']['functional_passed']==749 and d['checks']['frozen_inventory_exact']
+for item in d['archives']:
+    p=report/item['archive']; blob=p.read_bytes()
+    assert hashlib.sha256(blob).hexdigest()==item['archive_sha256']
+    assert hashlib.sha256(gzip.decompress(blob)).hexdigest()==item['original_sha256']
+for p,h in d['preservation']['protected_user_files'].items():
+    assert hashlib.sha256((root/p).read_bytes()).hexdigest()==h
+text=(report/'20261008_project_review.md').read_text(); n=0
+for target in re.findall(r'\[[^\]]+\]\(([^)]+)\)',text):
+    if target.startswith('https://'): continue
+    assert (report/target.split('#')[0]).exists(),target
+    n+=1
+package=Path('ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration')
+files=subprocess.check_output(['git','ls-files',str(package/'*.py')],text=True).splitlines()
+unchanged=0
+for p in files:
+    if Path(p).name=='traffic_audit.py': continue
+    original=subprocess.check_output(['git','show',f"{d['reviewed_initial_commit']}:{p}"])
+    assert (root/p).read_bytes()==original,p
+    unchanged+=1
+assert '749 PASS/1 skip' in text
+print(json.dumps({'status':'PASS','lossless_new_archives':len(d['archives']),
+    'protected_files':len(d['preservation']['protected_user_files']),
+    'report_local_links':n,'unchanged_actor_package_modules':unchanged,
+    'frozen_files':150,'functional_passed':749}))
+REVIEW_PY
+```
+
+`/usr/bin/python3 -m py_compile`当前check_p3c_source/test_p3c_source、review_tools/audit_return_reserve/collect_evidence及gate/traffic_audit PASS。只删最后测试文件未用import后，3项inventory测试再次独立PASS；任务源码未改。`git diff --check`已PASS。新精选证据总864KiB；旧raw未复制成新实验。随后执行最终dry-stage、显式暂存、commit/push，push结果由会话最终回复确认。
