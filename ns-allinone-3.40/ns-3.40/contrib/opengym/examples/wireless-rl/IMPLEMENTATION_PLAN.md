@@ -682,3 +682,5 @@ run_p3b5_tasks默认domain base改为30；run_p3b5_return_probe默认90。domain
 2026-10-08 P2C.1 v10前瞻：v9首强制原格271.7s因目标区域survey失败，195.3s检测/未RALLY，两机各charge1/最低9.868180/零接触、耗尽和机器人失效；strict FAIL与257live/6返航预算/110能量样本/24AP否决重建完整保留。新候选只对不可变交付地图复用几何，将原连续障碍否决向量化，记录完整失败分配上下文；原300s/5s/TTL/净空保持。组件验证以新报告为准，新4开发/17正式/两真实blackout仍待同提交冻结验证，917未暴露。证据：[v9原失败](report/20261008_p2c_v9_failed_development.md)。P3C.5已验收，无P4/ns3/Wi-Fi/RL。
 
 2026-10-08 v10组件已核验：898pass/1skip、四包build/172保护/54协议PASS；2048冻结标量一致、192路径代价一致、100终点同进程五轮总CPU约减少三分之一，不能外推任务或硬时限收益。新cohort待冻结。报告：ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261008_p2c_geometry_components.md。
+
+2026-10-09 P2C.1 v11前瞻：v10四原两COMPLETE（297.8/217.8）/labsurveyFAILED262.4/corrFOUNDtimeout300.1，零接触/耗尽/机器人失败但strict FAIL，原44证据保留。原AP图重放证明否决最短路未搜索绕障替代；新明确第三保守约束返路不删任一源障碍/不补未知自由，仍经原continuous veto/min source stamp验证。909功能/1skip，仍需new clean pushed4dev/17formal/2physical；917未暴露、P3C.5已验收，无P4/ns3/Wi-Fi/RL。原失败：ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261009_p2c_v10_failed_development.md。

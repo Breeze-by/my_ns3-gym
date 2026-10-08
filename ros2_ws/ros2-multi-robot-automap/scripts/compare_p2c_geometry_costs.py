@@ -51,6 +51,7 @@ def main():
                 times.append(time.perf_counter()-started)
             timings[label].append(times);answers[label]=rows
     for old,new in zip(answers['scalar_v9'],answers['vectorized_snapshot']):
+        assert len(old)==2 and len(new) in (2,3)
         for a,b in zip(old,new):
             assert a['source']==b['source'] and a['qualified']==b['qualified']
             assert a['path_distance_m']==b['path_distance_m']
@@ -60,7 +61,10 @@ def main():
         reference_control_sha256=hashlib.sha256(reference.encode()).hexdigest(),
         current_control_sha256=hashlib.sha256(Path(c.__file__).read_bytes()).hexdigest(),
         original_event_sha256=hashlib.sha256(json.dumps(event,sort_keys=True).encode()).hexdigest(),
-        constructed_endpoints=points,answers_equal=True,
+        constructed_endpoints=points,original_two_candidates_equal=True,
+        constrained_queries=sum(len(row)==3 for row in answers['vectorized_snapshot']),
+        qualified_constrained_alternatives=sum(len(row)==3 and row[2]['qualified'] for row in answers['vectorized_snapshot']),
+        note='Additional constrained candidates are a new search algorithm; only the original two candidates are compared for exact equivalence.',
         timings={name:dict(raw_seconds=values,total_sec_per_repeat=[sum(v) for v in values],
             median_warm_ms=float(np.median(np.asarray(values)[:,1:])*1000),
             p95_warm_ms=float(np.percentile(np.asarray(values)[:,1:],95)*1000),

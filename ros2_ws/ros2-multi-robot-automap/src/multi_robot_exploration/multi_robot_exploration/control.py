@@ -824,6 +824,47 @@ def grid_audit_evidence(raw_grid, resolution, origin, source, source_time, versi
                     np.asarray(raw_grid, dtype='<i2').tobytes())).decode('ascii'))
 
 
+def constrained_return_grid(raw_grid, resolution, origin, local_map, cache=None):
+    """Add every overlapping local occupied cell; never clear either source.
+
+    This is a conservative search layer, not a replacement published map.
+    Every positive source cell is occupied; negative source cells stay unknown.
+    Local unknown space can be supplied by the already delivered fused map.
+    The final continuous local-obstacle veto still checks the resulting route.
+    """
+    local = local_map['data']
+    local_resolution, local_origin = local_map['resolution'], local_map['origin']
+    if (np.ndim(raw_grid) != 2 or np.ndim(local) != 2 or not np.size(raw_grid)
+            or not all(math.isfinite(v) for v in (resolution, *origin, local_resolution, *local_origin))
+            or min(resolution, local_resolution) <= 0):
+        return None
+    geometry = (raw_grid.shape, raw_grid.dtype.str, resolution, *origin,
+                local.shape, local.dtype.str, local_resolution, *local_origin)
+    if (cache is not None and cache.get('fused') is raw_grid and cache.get('local') is local
+            and cache.get('geometry') == geometry and immutable_grid(raw_grid) and immutable_grid(local)):
+        return cache['grid']
+    key = (geometry, hashlib.blake2b(raw_grid.tobytes(), digest_size=16).hexdigest(),
+           hashlib.blake2b(local.tobytes(), digest_size=16).hexdigest())
+    if cache is not None and cache.get('key') == key:
+        cache.update(fused=raw_grid, local=local)
+        return cache['grid']
+    combined = np.where(raw_grid < 0, -1, np.where(raw_grid > 0, 100, 0)).astype(np.int16)
+    for row, column in np.argwhere(local > 0):
+        x = local_origin[0]+column*local_resolution
+        y = local_origin[1]+row*local_resolution
+        c0 = max(0, math.floor((x-origin[0])/resolution))
+        c1 = min(combined.shape[1], math.ceil((x+local_resolution-origin[0])/resolution))
+        r0 = max(0, math.floor((y-origin[1])/resolution))
+        r1 = min(combined.shape[0], math.ceil((y+local_resolution-origin[1])/resolution))
+        if r0 < r1 and c0 < c1:
+            combined[r0:r1, c0:c1] = 100
+    combined = immutable_grid_snapshot(combined, combined.shape)
+    if cache is not None:
+        cache.clear()
+        cache.update(key=key, fused=raw_grid, local=local, geometry=geometry, grid=combined)
+    return combined
+
+
 def qualified_return_candidates(raw_grid, resolution, origin, position, home, radius,
                                 local_map=None, caches=None):
     """Compare complete paths without overwriting a robot's known obstacles.
@@ -831,10 +872,12 @@ def qualified_return_candidates(raw_grid, resolution, origin, position, home, ra
     The caller supplies already delivered, fresh maps. A merged-map shortcut
     must satisfy the same local-obstacle veto as native battery safety.
     Missing geometry stays unavailable; no obstacle-union or distance fallback
-    is silently substituted for the declared input map.
+    is silently substituted for the declared input map. A rejected fused
+    shortest route triggers a separately labelled conservative search layer;
+    it never turns a rejected shortest route into an accepted one.
     """
     caches = {} if caches is None else caches
-    maps = [('delivered_fused', dict(data=raw_grid, resolution=resolution, origin=origin))]
+    maps = [] if raw_grid is None else [('delivered_fused', dict(data=raw_grid, resolution=resolution, origin=origin))]
     if local_map is not None:
         maps.insert(0, ('local', local_map))
     result = []
@@ -845,6 +888,18 @@ def qualified_return_candidates(raw_grid, resolution, origin, position, home, ra
             or route_respects_known_obstacles(local_map['data'], local_map['resolution'],
                                              local_map['origin'], route, cache=caches.setdefault('local', {})))
         result.append(dict(source=source, path_distance_m=distance, route=route, qualified=qualified))
+    fused = next((r for r in result if r['source'] == 'delivered_fused'), None)
+    if local_map is not None and fused and fused['path_distance_m'] is not None and not fused['qualified']:
+        combined = constrained_return_grid(raw_grid, resolution, origin, local_map,
+                                           caches.setdefault('constrained_map', {}))
+        if combined is not None:
+            distance, route = known_return_route(combined, resolution, origin, position, home, radius,
+                                                 caches.setdefault('constrained_fused', {}), True)
+            qualified = distance is not None and route_respects_known_obstacles(
+                local_map['data'], local_map['resolution'], local_map['origin'], route,
+                cache=caches.setdefault('local', {}))
+            result.append(dict(source='constrained_fused', path_distance_m=distance,
+                               route=route, qualified=qualified))
     return result
 
 
@@ -2678,9 +2733,14 @@ class HeadquartersControl(Node):
         if now - getattr(self, 'rally_assignment_audit_at', -float('inf')) < 5.:
             return
         self.rally_assignment_audit_at = now
+        inputs = self.input_freshness_details()
+        for name in return_maps:
+            stamp = self.robot_map_received_at[name]
+            inputs.setdefault(name+'/map_snapshot', dict(source_time=stamp, age_sec=now-stamp,
+                ttl_sec=STATE_TTL_SEC['map_snapshot']))
         self.consumed_publisher.publish(String(data=json.dumps(dict(
             event='coordinator_rally_assignment_failed', event_time=now,
-            computation_wall_sec=wall_sec, inputs=self.input_freshness_details(),
+            computation_wall_sec=wall_sec, inputs=inputs,
             robot_positions=active_positions, current_positions=self.robot_positions,
             target=self.target,
             objective=self.rally_assignment_objective, hold_sec=self.rally_hold_sec,

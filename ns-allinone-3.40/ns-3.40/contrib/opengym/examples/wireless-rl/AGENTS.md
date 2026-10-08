@@ -637,3 +637,8 @@ algorithms.
 
 
 2026-10-08 v10组件已核验：898pass/1skip、四包build/172保护/54协议PASS；2048冻结标量一致、192路径代价一致、100终点同进程五轮总CPU约减少三分之一，不能外推任务或硬时限收益。新cohort待冻结。报告：ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261008_p2c_geometry_components.md。
+
+2026-10-09 P2C.1 v11前瞻：v10四原两COMPLETE（297.8/217.8）/labsurveyFAILED262.4/corrFOUNDtimeout300.1，零接触/耗尽/机器人失败但strict FAIL，原44证据保留。原AP图重放证明否决最短路未搜索绕障替代；新明确第三保守约束返路不删任一源障碍/不补未知自由，仍经原continuous veto/min source stamp验证。909功能/1skip，仍需new clean pushed4dev/17formal/2physical；917未暴露、P3C.5已验收，无P4/ns3/Wi-Fi/RL。原失败：ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261009_p2c_v10_failed_development.md。
+
+2026-10-09 P2C.1 v11 component PASS, awaiting new source-frozen tasks. V10 full development FAIL retained: forced/rooms COMPLETE297.8/217.8s; lab survey FAILED262.4s; corridors FOUND timeout300.1s; all zero contacts/exhaustion/robot failures. New explicit conservative constrained_fused route candidate finds33 valid alternatives on the original AP corridor maps (component only), preserves v8 disconnection, retains both source grids and oldest source stamp, and never publishes the derived grid as application traffic.909 checks/1skip,4-package build6.13s,172 protected/54 static protocol cells pass. Full4dev/17formal/2physical pending;917 unexposed. P3C.5 accepted, no P4/ns-3/Wi-Fi/RL. Reports: wireless-rl/report/20261009_p2c_constrained_components.md and 20261009_p2c_v10_failed_development.md.
+

@@ -27,12 +27,12 @@ from .control import (
     grid_audit_evidence,
     charging_route_field,
     immutable_grid_snapshot,
+    qualified_return_candidates,
     _line_cells,
     known_return_route,
     navigation_start_route,
     plan_rally_leg,
     route_arrival_yaw,
-    route_respects_known_obstacles,
     return_energy_budget,
     traversable_grid,
     transform_point_2d,
@@ -651,25 +651,30 @@ class BatteryManager(Node):
                 candidates = {self.return_map_source: (
                     self.return_map, self.return_map_resolution, self.return_map_origin,
                     self.return_map_source_time, self.return_map_version, self.return_map_source)}
-            distance, route = None, ()
-            local = candidates.get('local')
-            if local is not None and not 0 <= self.now()-local[3] <= STATE_TTL_SEC['map_snapshot']:
-                local = None
+            fresh = {source: snapshot for source, snapshot in candidates.items()
+                     if source in ('local', 'delivered_fused')
+                     and 0 <= self.now()-snapshot[3] <= STATE_TTL_SEC['map_snapshot']}
+            local, fused = fresh.get('local'), fresh.get('delivered_fused')
+            if not fresh:
+                self.latest_return_budget = None
+                return None
+            caches = getattr(self, 'return_route_caches', {})
+            self.return_route_caches = caches
+            geometry = fused or local
+            routes = qualified_return_candidates(None if fused is None else fused[0], geometry[1], geometry[2],
+                self.map_position, (self.charge_x, self.charge_y), self.charge_radius,
+                None if local is None else dict(data=local[0], resolution=local[1], origin=local[2]), caches)
+            if any(r['source']=='constrained_fused' for r in routes):
+                fresh['constrained_fused'] = (caches['constrained_map']['grid'], fused[1], fused[2],
+                    min(local[3], fused[3]), max(local[4], fused[4]), 'constrained_fused')
             eligible=[]
             self.return_candidate_audits=[]
-            for source, snapshot in sorted(candidates.items(), key=lambda item: item[0] != 'local'):
+            for candidate in routes:
+                source = candidate['source'];snapshot = fresh[source]
                 raw, resolution, origin, stamp, version, _ = snapshot
                 age = self.now() - stamp
-                if not 0 <= age <= STATE_TTL_SEC['map_snapshot']:
-                    continue
-                caches = getattr(self, 'return_route_caches', {source:self.return_route_cache})
                 cache = caches.setdefault(source, {})
-                distance, route = known_return_route(raw, resolution, origin,
-                    self.map_position, (self.charge_x, self.charge_y), self.charge_radius,
-                    cache, True)
-                qualified = distance is not None and (source=='local' or local is None
-                    or route_respects_known_obstacles(local[0],local[1],local[2],route,
-                        cache=caches.setdefault('local', {})))
+                distance, route, qualified = candidate['path_distance_m'], candidate['route'], candidate['qualified']
                 input_age=max(age,self.now()-local[3]) if source!='local' and local is not None else age
                 candidate_budget=None if distance is None else return_energy_budget(distance,
                     self.move_cost,self.idle_cost,self.return_path_factor,self.nominal_speed,

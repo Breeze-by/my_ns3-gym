@@ -1198,3 +1198,5 @@ P2C.1 v2（2026-10-08，未集成候选）：原近站机会充电现增加两�
 
 
 2026-10-08 P2C.1 v10前瞻：v9首强制原格271.7s因目标区域survey失败，195.3s检测/未RALLY，两机各charge1/最低9.868180/零接触、耗尽和机器人失效；strict FAIL与257live/6返航预算/110能量样本/24AP否决重建完整保留。新候选只对不可变交付地图复用几何，将原连续障碍否决向量化，记录完整失败分配上下文；原300s/5s/TTL/净空保持。组件验证以新报告为准，新4开发/17正式/两真实blackout仍待同提交冻结验证，917未暴露。证据：[v9原失败](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261008_p2c_v9_failed_development.md)。P3C.5已验收，无P4/ns3/Wi-Fi/RL。
+
+2026-10-09 P2C.1候选：v10两开发COMPLETE/两任务失败，完整FAIL保留；v11增加由两原图确定重建的constrained_fused返路候选，source_time取最旧，两原源TTL均不延长，不改变原Nav2/物理/300s/5s。新任务必须从clean pushed freeze调用原run_p2c_tasks，17formal/blackout/917尚未执行。证据见无线研究目录report/20261009_p2c_v10_failed_development.md；当前P2C.1未通过。

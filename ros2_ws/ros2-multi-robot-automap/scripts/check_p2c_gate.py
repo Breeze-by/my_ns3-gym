@@ -95,6 +95,16 @@ def return_audit(path,require_pose_leases=False,require_map_candidates=False):
                     g=np.frombuffer(zlib.decompress(base64.b64decode(s['grid'])),dtype='<i2').reshape(s['shape'])
                     decoded[s['source']]=(s,g)
                 local=decoded.get('local');eligible=[]
+                assert set(decoded) <= {'local','delivered_fused','constrained_fused'}
+                if 'constrained_fused' in decoded:
+                    fused=decoded['delivered_fused'];derived,g=decoded['constrained_fused']
+                    assert local is not None
+                    rebuilt_grid=control.constrained_return_grid(fused[1],fused[0]['resolution'],fused[0]['origin'],
+                        dict(data=local[1],resolution=local[0]['resolution'],origin=local[0]['origin']))
+                    assert np.array_equal(g,rebuilt_grid), 'derived search grid changed a source obstacle'
+                    assert derived['resolution']==fused[0]['resolution'] and derived['origin']==fused[0]['origin']
+                    assert derived['source_time']==min(local[0]['source_time'],fused[0]['source_time'])
+                    assert derived['version']==max(local[0]['version'],fused[0]['version'])
                 for candidate in candidates:
                     s=candidate['map_evidence'];g=decoded[s['source']][1]
                     d,r=control.known_return_route(g,s['resolution'],s['origin'],position,e['home'],e['charge_radius_m'],include_route=True)
@@ -183,7 +193,7 @@ def ap_return_veto_audit(records):
         fused,local=maps
         actual=control.qualified_return_candidates(fused['data'],fused['resolution'],fused['origin'],
             e['destination'],e['home'],e['radius'],local)
-        assert len(actual)==len(e['candidates'])==2
+        assert len(actual)==len(e['candidates']) and len(actual)>=2
         for rebuilt,saved in zip(actual,e['candidates']):
             assert rebuilt['source']==saved['source'] and rebuilt['qualified']==saved['qualified']
             assert (rebuilt['path_distance_m'] is None)==(saved['path_distance_m'] is None)
