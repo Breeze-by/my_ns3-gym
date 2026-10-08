@@ -97,7 +97,7 @@ def test_assignment_failure_audit_retains_supplied_delivered_inputs_and_rate_lim
     geometry = {'tb1':dict(data=node.map_data, resolution=node.resolution, origin=node.origin)}
     conditional_positions = {'tb1':(1.1, 1.2)}
     for _ in range(2):
-        c.HeadquartersControl.record_rally_assignment_failure(node, conditional_positions, geometry, .123)
+        c.HeadquartersControl.record_rally_assignment(node, conditional_positions, geometry, .123)
     assert len(messages) == 1
     e = json.loads(messages[0].data)
     assert e['event'] == 'coordinator_rally_assignment_failed'

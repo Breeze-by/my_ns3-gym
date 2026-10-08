@@ -30,12 +30,15 @@ def main():
     if args.output.exists(): p.error('do not overwrite CPU evidence')
     path = 'ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/control.py'
     reference = subprocess.check_output(['git', 'show', args.reference_commit+':'+path], text=True)
-    names = {'route_respects_known_obstacles', 'qualified_return_candidates',
+    names = {'known_return_route', 'route_respects_known_obstacles', 'qualified_return_candidates',
              'funded_rally_replacement', 'assign_rally_poses'}
     functions = [n for n in ast.parse(reference).body if isinstance(n, ast.FunctionDef) and n.name in names]
     assert len(functions) == len(names)
     scope = dict(vars(c))
     exec(compile(ast.Module(body=functions, type_ignores=[]), '<frozen P2C v12>', 'exec'), scope)
+    geometry_scope = dict(vars(c))
+    fixed_algorithms = [n for n in functions if n.name in ('funded_rally_replacement','assign_rally_poses')]
+    exec(compile(ast.Module(body=fixed_algorithms,type_ignores=[]), '<frozen policy, current geometry>', 'exec'), geometry_scope)
     event = json.loads(args.assignment_input.read_text())
     g = geometry(event['planning_map'])
     maps = {name: geometry(e) for name, e in event['return_maps'].items()}
@@ -66,14 +69,14 @@ def main():
         for repeat in range(3):
             labels = list(timings) if repeat % 2 == 0 else list(timings)[::-1]
             for label in labels:
-                fn = scope[function] if label == 'frozen_v12' else getattr(c, function)
+                fn = scope[function] if label == 'frozen_v12' else geometry_scope[function]
                 start = time.perf_counter(); answer = fn(**kwargs)
                 timings[label].append(time.perf_counter()-start); answers[label] = answer
         assert answers['frozen_v12'] == answers['batch_samples'], (name, answers)
         rows[name] = dict(exact_output_equal=True, result=answers['batch_samples'],
             timings={label: dict(raw_sec=values, median_sec=float(np.median(values))) for label, values in timings.items()})
         print(name, rows[name], flush=True)
-    result = dict(status='PASS', scope='Same-process exact geometry outputs on one original assignment and two explicitly constructed repair inputs; no mission counterfactual or worst-case timing bound',
+    result = dict(status='PASS', scope='Frozen assignment/repair policy on both sides; same-process exact geometry outputs with current cache/sampling versus reference geometry. New return-exposure/stratified choice policy excluded; no mission counterfactual or worst-case timing bound',
         reference_commit=args.reference_commit, reference_control_sha256=hashlib.sha256(reference.encode()).hexdigest(),
         current_control_sha256=hashlib.sha256(Path(c.__file__).read_bytes()).hexdigest(),
         assignment_input_sha256=hashlib.sha256(args.assignment_input.read_bytes()).hexdigest(),

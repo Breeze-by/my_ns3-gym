@@ -607,6 +607,31 @@ def navigation_start_route(raw_grid, traversable, start, max_radius_cells):
     return None, ()
 
 
+def contact_escape_accessibility(raw_grid, connected, limit):
+    """Exact reverse reachability for the existing bounded raw-free escape.
+
+    Each expansion is one original 8-neighbour BFS step with the same two
+    diagonal corner checks. This only rejects impossible starts; the original
+    forward BFS still chooses the escape and its deterministic predecessors.
+    """
+    free = raw_grid == 0
+    reachable = connected.copy()
+    height, width = free.shape
+    for _ in range(limit):
+        expanded = reachable.copy()
+        for dr, dc in ((-1,0),(1,0),(0,-1),(0,1),(-1,-1),(-1,1),(1,-1),(1,1)):
+            r0,r1=max(0,-dr),min(height,height-dr)
+            c0,c1=max(0,-dc),min(width,width-dc)
+            reached = reachable[r0:r1,c0:c1] & free[r0+dr:r1+dr,c0+dc:c1+dc]
+            if dr and dc:
+                reached &= free[r0:r1,c0+dc:c1+dc] & free[r0+dr:r1+dr,c0:c1]
+            expanded[r0+dr:r1+dr,c0+dc:c1+dc] |= reached
+        if np.array_equal(expanded, reachable):
+            break
+        reachable = expanded
+    return reachable
+
+
 def path_distance_grid(traversable, start, return_predecessors=False, goal_mask=None):
     """Return an 8-connected Dijkstra distance field in grid cells."""
     height, width = traversable.shape
@@ -737,8 +762,19 @@ def known_return_route(raw_grid, resolution, origin, position, charger, radius,
     # The nearest inflated-free cell can belong to a disconnected pocket.
     # Escape only to cells whose reverse field actually reaches a contact;
     # retain the same raw-known-free path and bounded 0.6 m search.
-    start, escape = navigation_start_route(raw_grid, safe & np.isfinite(distances), initial,
-                                           max(1, math.ceil(.6 / resolution)))
+    if not (0 <= initial[0] < raw_grid.shape[0] and 0 <= initial[1] < raw_grid.shape[1]) or raw_grid[initial] != 0:
+        return None, ()
+    connected = safe & np.isfinite(distances)
+    if connected[initial]:
+        start, escape = initial, (initial,)
+    else:
+        limit = max(1, math.ceil(.6 / resolution))
+        if cache is not None:
+            if 'contact_accessible' not in cache:
+                cache['contact_accessible'] = contact_escape_accessibility(raw_grid, connected, limit)
+            if not cache['contact_accessible'][initial]:
+                return None, ()
+        start, escape = navigation_start_route(raw_grid, connected, initial, limit)
     if start is None:
         return None, ()
     if math.dist(position, charger) <= radius:
@@ -901,6 +937,26 @@ def qualified_return_candidates(raw_grid, resolution, origin, position, home, ra
             result.append(dict(source='constrained_fused', path_distance_m=distance,
                                route=route, qualified=qualified))
     return result
+
+
+def return_route_clearance_exposure(route, resolution, origin, clearance):
+    """Soft length near the existing goal-clearance margin, never admission.
+
+    The supplied complete route is already qualified by the hard safety
+    checks. This cell-centre preference discourages unnecessary narrow return
+    passages; it is not a continuous-clearance or dynamic-obstacle guarantee.
+    """
+    points = np.asarray(route, dtype=float)
+    if len(points) < 2:
+        return 0.0
+    cells = np.floor((points-np.asarray(origin))/resolution).astype(int)[:, ::-1]
+    if np.any(cells < 0) or np.any(cells >= np.asarray(clearance.shape)):
+        return float('inf')
+    margins = clearance[cells[:, 0], cells[:, 1]]
+    margins = np.minimum(margins[:-1], margins[1:])
+    weight = np.clip((RALLY_CLEARANCE_M-margins)
+                     / (RALLY_CLEARANCE_M-RALLY_PATH_CLEARANCE_M), 0., 1.)
+    return float(np.dot(np.linalg.norm(np.diff(points, axis=0), axis=1), weight))
 
 
 def path_waypoint_route(traversable, start, target, max_distance_cells, distance_data=None):
@@ -1179,7 +1235,7 @@ def coordinate_assignments(
     return assignments, diagnostics
 
 
-def rally_pose_candidates(raw_grid, resolution, origin, target, dense=False):
+def rally_pose_candidates(raw_grid, resolution, origin, target, dense=False, stratified=False):
     """Return known-free, target-facing poses around the target."""
     safe = traversable_grid(
         raw_grid, resolution, clearance_m=RALLY_CLEARANCE_M
@@ -1224,13 +1280,46 @@ def rally_pose_candidates(raw_grid, resolution, origin, target, dense=False):
                     math.atan2(target[1] - pose_y, target[0] - pose_x),
                 )
             )
-    if dense:
+    if dense or stratified:
         # Recovery searches the same 1..2.6m region instead of assuming the
         # original three sampled rings contain every feasible stopping pose.
         r0, c0 = world_to_grid(target[0]-2.6, target[1]-2.6, resolution, *origin)
         r1, c1 = world_to_grid(target[0]+2.6, target[1]+2.6, resolution, *origin)
-        for row, column in np.argwhere(safe[max(0, r0):min(height, r1+1),
-                                          max(0, c0):min(width, c1+1)]):
+        cells = np.argwhere(safe[max(0, r0):min(height, r1+1),
+                                max(0, c0):min(width, c1+1)])
+        if stratified and not dense:
+            # Two angular boundary representatives per half-separation bin
+            # preserve narrow visible slivers and separated stopping pairs.
+            # Keep the old rings; bound initial assignment cost independently
+            # of map resolution instead of scanning every grid pose in search.
+            bins = {}
+            spacing = RALLY_MIN_SEPARATION_M / 2
+            for row, column in cells:
+                x, y = grid_to_world(int(row)+max(0,r0), int(column)+max(0,c0), resolution, *origin)
+                if not 1. <= math.dist((x,y), target) <= 2.6:
+                    continue
+                key = (math.floor((x-target[0]+2.6)/spacing), math.floor((y-target[1]+2.6)/spacing))
+                centre = (target[0]-2.6+(key[0]+.5)*spacing, target[1]-2.6+(key[1]+.5)*spacing)
+                bins.setdefault(key, []).append((math.dist((x,y), centre), int(row), int(column)))
+            cells = []
+            for key in sorted(bins):
+                centre_angle = math.atan2(-2.6+(key[1]+.5)*spacing,
+                                          -2.6+(key[0]+.5)*spacing)
+                def angular_key(p):
+                    x, y = grid_to_world(p[1]+max(0,r0), p[2]+max(0,c0), resolution, *origin)
+                    angle = math.atan2(y-target[1], x-target[0])-centre_angle
+                    return math.atan2(math.sin(angle), math.cos(angle))
+                selected = set()
+                for direction in (-1, 1):
+                    for _, row, column in sorted(bins[key], key=lambda p:
+                            (direction*angular_key(p), *p)):
+                        cell = (row+max(0,r0), column+max(0,c0))
+                        if ((row,column) not in selected and cell not in seen_cells
+                                and has_known_line_of_sight(raw_grid, cell, target_cell)):
+                            cells.append((row,column))
+                            selected.add((row,column))
+                            break
+        for row, column in cells:
             row, column = int(row)+max(0, r0), int(column)+max(0, c0)
             if (row, column) in seen_cells:
                 continue
@@ -1324,7 +1413,7 @@ def assign_rally_poses(
     """Assign separated visible poses, accounting for serial charge waits.
 
     With delivered batteries, preserve an ACTIVE observer when feasible, then
-    minimize predicted charges and serial travel/charge time, then compare
+    minimize predicted charges, soft narrow-return exposure and serial time, then compare
     its remaining budget headroom before the chosen path objective. Extra
     observer surplus must not force a funded peer to charge or take a detour.
     These estimates never authorize a navigation or return.
@@ -1333,7 +1422,7 @@ def assign_rally_poses(
         raise ValueError(f"unknown rally assignment objective: {objective}")
     names = sorted(robot_positions)
     candidates = rally_pose_candidates(
-        raw_grid, resolution, origin, target
+        raw_grid, resolution, origin, target, False, True
     )
     if len(candidates) < len(names):
         return {}
@@ -1373,6 +1462,7 @@ def assign_rally_poses(
         options[name] = reachable
 
     energy_options, modes, charge_times, charge_targets = {}, {}, {}, {}
+    return_exposures = {}
     if battery_states is not None:
         current_positions = current_positions or robot_positions
         try:
@@ -1407,6 +1497,8 @@ def assign_rally_poses(
                 modes[name] = mode
                 charge_times[name] = duration
                 return_cache = {}
+                clearance_fields = {}
+                return_exposures[name] = {}
                 local_map = (return_maps or {}).get(name)
                 if mode != "CHARGING":
                     current_routes = qualified_return_candidates(raw_grid, resolution, origin,
@@ -1434,9 +1526,24 @@ def assign_rally_poses(
                     contact_routes = qualified_return_candidates(raw_grid, resolution, origin,
                         (pose.x, pose.y), home, float(state.get('charge_radius_m', .8)),
                         local_map, return_cache)
-                    contact_distance = min((r['path_distance_m'] for r in contact_routes if r['qualified']), default=None)
-                    if contact_distance is None:
+                    contact = min((r for r in contact_routes if r['qualified']),
+                        key=lambda r: (r['path_distance_m'], r['source'] != 'local'), default=None)
+                    if contact is None:
                         continue
+                    contact_distance = contact['path_distance_m']
+                    source = contact['source']
+                    geometry = local_map if source == 'local' else dict(
+                        data=raw_grid if source == 'delivered_fused' else return_cache['constrained_map']['grid'],
+                        resolution=resolution, origin=origin)
+                    if source not in clearance_fields:
+                        known = geometry['data'] == 0
+                        clearance_fields[source] = (np.full(known.shape, np.inf) if np.all(known)
+                            else ndimage.distance_transform_edt(known, sampling=geometry['resolution']))
+                    exposure = return_route_clearance_exposure(contact['route'], geometry['resolution'],
+                        geometry['origin'], clearance_fields[source])
+                    if not math.isfinite(exposure):
+                        continue
+                    return_exposures[name][index] = exposure
                     required = battery_assignment_required_energy(
                         distance * resolution, contact_distance, move, idle, factor, speed, margin,
                         float(state.get('return_recovery_wait_sec', RETURN_RECOVERY_WAIT_SEC))) + idle * hold_sec
@@ -1456,7 +1563,7 @@ def assign_rally_poses(
         battery_states is not None and observer_robot in names and name != observer_robot,
         len(options[name])))
     best = {}
-    best_score = (float("inf"),) * (7 if battery_states is not None else 3)
+    best_score = (float("inf"),) * (8 if battery_states is not None else 3)
     selected_indices = {}
     minimum_energy_options = {
         name: tuple(min(values[column] for values in choices.values()) for column in range(3))
@@ -1536,13 +1643,17 @@ def assign_rally_poses(
                              else values[1] if complete
                              else min(values[1], charge_times[name] + values[2])
                              for name, values in estimates.items())
+            # Positive soft costs preserve the optimistic partial bound and
+            # cannot override observer protection, charge count or feasibility.
+            exposure_bound = sum(return_exposures[name][selected_indices[name]]
+                if name in selected_indices else min(return_exposures[name].values()) for name in names)
             observer_charge = int(observer_robot in needed and modes.get(observer_robot) == "ACTIVE")
-            score = (observer_charge, len(needed), time_bound, -observer_headroom, *score)
+            score = (observer_charge, len(needed), exposure_bound, time_bound, -observer_headroom, *score)
         if score >= best_score:
             return
         if len(assignments) == len(search_order):
             if battery_states is not None:
-                score = (score[0], score[1], score[2] + parked_peer_delay(needed), *score[3:])
+                score = (*score[:3], score[3] + parked_peer_delay(needed), *score[4:])
                 if score >= best_score:
                     return
             best = assignments.copy()
@@ -2590,6 +2701,7 @@ class HeadquartersControl(Node):
         self.robot_tf_received_at = {}
         self.robot_map_received_at = {}
         self.robot_velocities = {}
+        self.robot_last_odom = {}
         self.robot_states = {}
         self.battery_modes = {}
         self.battery_states = {}
@@ -2796,11 +2908,15 @@ class HeadquartersControl(Node):
         if now - last.get(name, -float('inf')) < 5.:
             return
         self.return_map_veto_at = {**last, name: now}
+        inputs = self.input_freshness_details()
+        stamp = self.robot_map_received_at[name]
+        inputs.setdefault(name+'/map_snapshot', dict(source_time=stamp,
+            age_sec=now-stamp, ttl_sec=STATE_TTL_SEC['map_snapshot']))
         self.consumed_publisher.publish(String(data=json.dumps(dict(
             event='coordinator_return_map_veto', event_time=now, robot=name,
             destination=destination, home=home,
             radius=float(self.battery_states[name].get('charge_radius_m', .8)),
-            inputs=self.input_freshness_details(), candidates=candidates,
+            inputs=inputs, candidates=candidates,
             fused_map=grid_audit_evidence(self.map_data, self.resolution, self.origin,
                 'ap_delivered_planning_map', self.map_received_at, self.map_received_at),
             local_map=grid_audit_evidence(local_map['data'], local_map['resolution'],
@@ -2808,12 +2924,12 @@ class HeadquartersControl(Node):
                 self.robot_map_received_at[name]),
         ), sort_keys=True)))
 
-    def record_rally_assignment_failure(self, active_positions, return_maps, wall_sec):
-        """Retain the exact delivered assignment inputs on a private audit path."""
+    def record_rally_assignment(self, active_positions, return_maps, wall_sec, assignment=None):
+        """Retain exact delivered choice/failure inputs on a private audit path."""
         if not hasattr(self, 'consumed_publisher'):
             return
         now = self.now()
-        if now - getattr(self, 'rally_assignment_audit_at', -float('inf')) < 5.:
+        if assignment is None and now - getattr(self, 'rally_assignment_audit_at', -float('inf')) < 5.:
             return
         self.rally_assignment_audit_at = now
         inputs = self.input_freshness_details()
@@ -2822,7 +2938,9 @@ class HeadquartersControl(Node):
             inputs.setdefault(name+'/map_snapshot', dict(source_time=stamp, age_sec=now-stamp,
                 ttl_sec=STATE_TTL_SEC['map_snapshot']))
         self.consumed_publisher.publish(String(data=json.dumps(dict(
-            event='coordinator_rally_assignment_failed', event_time=now,
+            event='coordinator_rally_assignment_failed' if assignment is None else 'coordinator_rally_assignment_chosen',
+            event_time=now, assignment=None if assignment is None else
+                {name: (pose.x, pose.y, pose.yaw) for name, pose in assignment.items()},
             computation_wall_sec=wall_sec, inputs=inputs,
             robot_positions=active_positions, current_positions=self.robot_positions,
             target=self.target,
@@ -3796,9 +3914,10 @@ class HeadquartersControl(Node):
                     return_maps=return_maps,
                 )
                 self.rally_final_targets = dict(self.rally_targets)
+                HeadquartersControl.record_rally_assignment(self, active_positions, return_maps,
+                    time.perf_counter()-assignment_started,
+                    self.rally_targets if len(self.rally_targets) == len(active_names) else None)
                 if len(self.rally_targets) != len(active_names):
-                    HeadquartersControl.record_rally_assignment_failure(
-                        self, active_positions, return_maps, time.perf_counter()-assignment_started)
                     if not self.active_batteries_ready():
                         return  # Surveys do not reserve independent returns.
                     candidate_count = len(
@@ -5364,6 +5483,9 @@ class HeadquartersControl(Node):
         )
 
     def robot_odom_callback(self, msg, robot_name):
+        if not hasattr(self, 'robot_last_odom'):
+            self.robot_last_odom = {}
+        self.robot_last_odom[robot_name] = msg
         self.robot_odom_received_at[robot_name] = (
             msg.header.stamp.sec + msg.header.stamp.nanosec / 1e9
         )
@@ -5424,6 +5546,11 @@ class HeadquartersControl(Node):
                 self.map_to_odom[robot_name] = stamped_transform.transform
                 stamp = stamped_transform.header.stamp
                 self.robot_tf_received_at[robot_name] = stamp.sec + stamp.nanosec / 1e9
+                # A new frame correction must reproject the latest odometry;
+                # replaying this local calculation preserves its source stamp.
+                odom = getattr(self, 'robot_last_odom', {}).get(robot_name)
+                if odom is not None:
+                    HeadquartersControl.robot_odom_callback(self, odom, robot_name)
 
     def robot_map_callback(self, msg, robot_name):
         self.robot_map_received_at[robot_name] = (

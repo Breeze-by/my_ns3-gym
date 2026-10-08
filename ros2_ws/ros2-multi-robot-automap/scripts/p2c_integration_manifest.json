@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-08T18:26:02.783859+00:00",
+  "predeclared_at_utc": "2026-10-08T19:08:22.713973+00:00",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -301,7 +301,7 @@
   ],
   "safety_probe_manifest": "p3b5_staged_return_probe_manifest.json",
   "energy_unit": "simulation_model_units_not_joules",
-  "development_parent": "4de14884ff93d3c43aed22f60d4a16f4d9a3bb85",
+  "development_parent": "7ff90332d0ad977c4ef94a6a5964404101731737",
   "retained_failed_development": "20261008_p2c_v1_failed_development.json",
   "opportunity_charge_algorithm": "two_current_frontiers_complete_route_budget",
   "retained_failed_developments": [
@@ -315,7 +315,8 @@
     "20261008_p2c_v9_failed_development.json",
     "20261009_p2c_v10_failed_development.json",
     "20261009_p2c_v11_failed_development.json",
-    "20261009_p2c_v12_failed_development.json"
+    "20261009_p2c_v12_failed_development.json",
+    "20261009_p2c_v13_failed_development.json"
   ],
   "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
   "opportunity_charge_rules": [
@@ -370,7 +371,8 @@
   "geometry_computation": {
     "immutable_cache": "Only bytes-backed immutable map snapshots may reuse geometry by object identity; writable maps and readonly aliases of writable maps are content-checked. Source stamps and budget freshness are never cached or renewed.",
     "qualification": "Batch segment sampling with original math.dist/ceil/multiply-divide order retains scalar0.35m/half-cell/0.6m/known-free/no-diagonal semantics; full outputs compared to v12, including no-solution dense input.",
-    "private_diagnostics": "Failed rally assignments retain full delivered planning/source/robot maps, current and conditional positions, battery states, target and input timestamps; wall time is component timing, not simulated deadline proof."
+    "private_diagnostics": "Both successful and failed rally assignments retain all actual delivered grids, source leases, robot positions, conditional starts, models and target; strict reader reconstructs chosen poses. No new AP or radio input.",
+    "negative_cache": "Exact reverse bounded reachability mask matches original raw-known-free8-neighbour0.6m escape, diagonal corners and step count; it only rejects impossible starts. Original forward BFS still chooses every actual escape path; geometry changes invalidate cache."
   },
   "rally_return_repair": {
     "trigger": "Idle ACTIVE unarrived non-observer; old endpoint has no qualified return, current pose retains one; all delivered source leases and target lease fresh; no live/pending exploration/rally/survey, charge or safety refuge.",
@@ -383,6 +385,24 @@
     "subscriptions": "AP delivered fused/robot map, odometry and map-frame TF use original reliable volatile keep-last1; discrete events/publishers/native safety queues unchanged",
     "source_time": "Original source headers preserved; stale inputs still rejected by original5s/2s TTLs",
     "scope": "Application latest-state coalescing after gateway delivery, not injected radio loss or application traffic change",
-    "evidence": "Actual DDS blocked-executor probe compares original10/20 queues with latest1 on50 unchanged source-stamped snapshots"
+    "evidence": "Actual DDS blocked-executor probe compares original10/20 queues with latest1 on50 unchanged source-stamped snapshots",
+    "tf_reprojection": "Each new delivered map-to-odom TF reprojects the last original odometry sample; its source timestamp and velocity remain unchanged, and original two independent2s leases still apply."
+  },
+  "rally_return_objective": {
+    "order": [
+      "active_observer_protection",
+      "predicted_charge_count",
+      "qualified_return_clearance_exposure",
+      "serial_time",
+      "observer_headroom",
+      "existing_path_objective"
+    ],
+    "exposure": "Soft weighted complete-return length between original0.35m path and0.45m endpoint margins; not energy, continuous clearance or dynamic-obstacle guarantee. Every existing hard constraint is unchanged."
+  },
+  "rally_candidate_sampling": {
+    "algorithm": "original72 rings plus up to2 angular boundary representatives in each0.4m spatial bin",
+    "maximum_candidates": 464,
+    "region": "same known-free target-visible1..2.6m region,0.45m endpoint clearance and0.8m separation",
+    "limits": "Bounded spatial sampling remains a heuristic, not exhaustive joint-feasibility or optimality proof. No original obstacle/unknown cell is cleared."
   }
 }

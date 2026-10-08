@@ -86,6 +86,7 @@ def main():
             transform.header.frame_id = 'tb1/map'
             transform.child_frame_id = 'tb1/odom'
             transform.transform.rotation.w = 1.
+            transform.transform.translation.x = 1.
             for publisher, message in zip(publishers, (grid, odom, TFMessage(transforms=[transform]), grid)):
                 publisher.publish(message)
             time.sleep(.02)
@@ -100,12 +101,25 @@ def main():
         leases = dict(fused=coordinator.map_received_at, odom=coordinator.robot_odom_received_at['tb1'],
                       tf=coordinator.robot_tf_received_at['tb1'], local=coordinator.robot_map_received_at['tb1'])
         assert set(leases.values()) == {50.} and coordinator.now() == 0.
+        assert coordinator.robot_positions['tb1'] == (1., 0.)
+        transform.header.stamp.sec = 60
+        transform.transform.translation.x = 2.
+        publishers[2].publish(TFMessage(transforms=[transform]))
+        deadline = time.monotonic()+5
+        while coordinator.robot_tf_received_at['tb1'] != 60. and time.monotonic() < deadline:
+            executor.spin_once(timeout_sec=.01)
+        assert coordinator.robot_positions['tb1'] == (2., 0.)
+        assert coordinator.robot_odom_received_at['tb1'] == 50.
+        assert coordinator.robot_tf_received_at['tb1'] == 60.
         result = dict(status='PASS', scope='Actual ROS DDS with a blocked coordinator executor; synthetic messages, no task or Wi-Fi measurement',
                       reference_commit=REFERENCE, reference_control_sha256=hashlib.sha256(old_source.encode()).hexdigest(),
                       current_control_sha256=hashlib.sha256(Path(c.__file__).read_bytes()).hexdigest(),
                       old_subscription_depths=old_depths, current_subscription_depths=actual_depths,
                       source_stamps=list(range(1, 51)), first_historical_callbacks={k: v[0] for k, v in historical.items()},
                       first_current_callbacks={k: v[0] for k, v in received.items()}, actual_received_leases=leases,
+                      tf_only_update=dict(frame_source_time=coordinator.robot_tf_received_at['tb1'],
+                          unchanged_odom_source_time=coordinator.robot_odom_received_at['tb1'],
+                          recomputed_position=coordinator.robot_positions['tb1']),
                       frozen_simulation_time=coordinator.now(), source_timestamps_preserved=True)
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(json.dumps(result, indent=2)+'\n')

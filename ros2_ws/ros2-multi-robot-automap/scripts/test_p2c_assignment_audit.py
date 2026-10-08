@@ -30,3 +30,27 @@ def test_assignment_failure_audit_binds_delivered_maps_and_rebuilds_real_infeasi
     if corruption is None:assert rally_assignment_audit([e])['failed_assignments_rebuilt']==1
     else:
         with pytest.raises((AssertionError,ValueError)):rally_assignment_audit([e])
+
+
+@pytest.mark.parametrize('corruption', [None, 'missing_robot', 'wrong_pose', 'wrong_heading'])
+def test_chosen_assignment_witness_requires_the_exact_complete_rebuilt_choice(corruption):
+    grid=np.zeros((50,100),dtype=np.int16)
+    positions={'tb1':(1.05,2.05)};target=(8.05,2.05)
+    assigned=c.assign_rally_poses(grid,.1,(0.,0.),positions,target)
+    assert assigned
+    e=dict(event='coordinator_rally_assignment_chosen',event_time=11.,
+        inputs={'headquarters/fused_map_snapshot':dict(source_time=10.)},
+        planning_map=c.grid_audit_evidence(grid,.1,(0.,0.),'ap_delivered_planning_map',10.,10.),
+        source_map=c.grid_audit_evidence(grid,.1,(0.,0.),'ap_delivered_fused_map',10.,10.),
+        robot_positions=positions,current_positions=positions,target=target,
+        objective='minimax',hold_sec=5.,battery_states=None,observer_robot=None,
+        return_maps={},self_return_cells={},computation_wall_sec=.012,
+        assignment={name:[pose.x,pose.y,pose.yaw] for name,pose in assigned.items()})
+    if corruption=='missing_robot':e['assignment']={}
+    if corruption=='wrong_pose':e['assignment']['tb1'][0]+=.1
+    if corruption=='wrong_heading':e['assignment']['tb1'][2]+=.1
+    if corruption is None:
+        result=rally_assignment_audit([e])
+        assert result['chosen_assignments_rebuilt']==1 and result['failed_assignments_rebuilt']==0
+    else:
+        with pytest.raises(AssertionError):rally_assignment_audit([e])

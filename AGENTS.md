@@ -59,6 +59,8 @@ tokens is not a reason to leave a problem unresolved or inadequately tested.
 
 ## Current Handoff
 
+2026-10-09 P2C.1 v14组件PASS、尚待新冻结任务：v13强制首原格RALLY timeout300.3/两机各charge1/min9.464354/零接触耗尽失效，tb2末段返航未闭合与AP咨询map漏键严格FAIL保留。新候选以已合格完整返路软净空暴露择点，补原环形样本与最多464个角边界分层点，精确缓存原有界逃离可达性；新TF重投影不续odom源戳，成功分配可独立重建。961功能/四包5.33s/172保护/54协议/actual DDS PASS；密集负查询17.34→5.57s，正查询略慢，构造分配更耗时，均非任务因果或硬时限。原300s/5s/TTL/native battery/Nav2/SLAM/物理保持；新4开发/17正式/2真实断网仍待clean pushed freeze，917未暴露。P3C.5已验收，无P4/ns-3/Wi-Fi/RL。证据：20261009_p2c_angular_components.md与20261009_p2c_v13_failed_development.md。
+
 2026-10-09 P2C.1 v13前瞻：v12四原开发FAIL（forcedCOMPLETE295.2s；lab surveyFAILED224.5s；rooms EXPLOREtimeout300.2s；corr RALLYtimeout300.2s），四格零接触/耗尽/真实机器人失效、原始和48附件保留。房间2200条网关frame accepted最大0.204s而中央TF约12s，改AP四类连续状态订阅keep-last1、保持原源戳/事件/TTL；实际DDS50快照旧队列首31/41、新队列首50验证PASS。连续障碍采样改批量数组，原资格/完整路径保持，938功能/四包5.85s/172保护/54协议PASS。新4开发/17正式/两真实断网仍须clean pushed冻结；917未暴露，P3C.5已验收，无P4/ns3/Wi-Fi/RL。证据：20261009_p2c_snapshot_components.md与20261009_p2c_v12_failed_development.md。
 
 2026-10-09 P2C.1 v12前瞻：v11强制首格原生RALLY timeout300.2，发现222.1/集合223.8s，两机各charge1/最低15.327770819，零接触、耗尽或机器人失效；strict FAIL和18份原证据保留。tb2在已有接触区补能（native返航运动约9.16e-7m），不得当远端返航证明。旧终点失去合格返航后缺少在线重选；新候选仅在idle/未到位/非observer/无活动动作和安全返充时，搜索原1..2.6m区域的已知自由可见网格，保留0.45m净空/0.8m间距，核验完整去返/源龄/保持等待成本，再交原派发复查。构造旧AP双图+0.4s后的live快照证明稀疏候选无合格点、网格替代约0.135m；非原控制器反事实/任务收益。原300s/5s/TTL/Nav2/物理/重试保持；仍需新clean pushed4dev/17formal/2physical，917未暴露，P3C.5已验收，无P4/ns3/Wi-Fi/RL。

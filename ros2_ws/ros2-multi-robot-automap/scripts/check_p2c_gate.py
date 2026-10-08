@@ -206,9 +206,9 @@ def ap_return_veto_audit(records):
 
 
 def rally_assignment_audit(records):
-    count=0;wall=[]
+    count=0;chosen=0;wall=[]
     for e in records:
-        if e.get('event')!='coordinator_rally_assignment_failed':continue
+        if e.get('event') not in ('coordinator_rally_assignment_failed','coordinator_rally_assignment_chosen'):continue
         geometry={}
         declared=[('planning_map','headquarters/fused_map_snapshot','ap_delivered_planning_map',e['planning_map']),
                   ('source_map','headquarters/fused_map_snapshot','ap_delivered_fused_map',e['source_map'])]
@@ -234,10 +234,17 @@ def rally_assignment_audit(records):
             battery_states=e['battery_states'],observer_robot=e['observer_robot'],
             current_positions=e['current_positions'],hold_sec=e['hold_sec'],
             return_maps={name:geometry[name] for name in e['return_maps']})
-        assert len(rebuilt)!=len(e['robot_positions'])
+        if e['event']=='coordinator_rally_assignment_failed':
+            assert len(rebuilt)!=len(e['robot_positions']);count+=1
+        else:
+            assert len(rebuilt)==len(e['robot_positions'])
+            assert set(e['assignment'])==set(rebuilt)
+            for name,pose in rebuilt.items():
+                assert np.allclose(e['assignment'][name],(pose.x,pose.y,pose.yaw),atol=1e-8,rtol=0)
+            chosen+=1
         assert math.isfinite(e['computation_wall_sec']) and e['computation_wall_sec']>=0
-        wall.append(e['computation_wall_sec']);count+=1
-    return dict(status='PASS',failed_assignments_rebuilt=count,computation_wall_sec=wall)
+        wall.append(e['computation_wall_sec'])
+    return dict(status='PASS',failed_assignments_rebuilt=count,chosen_assignments_rebuilt=chosen,computation_wall_sec=wall)
 
 
 def rally_repair_audit(records):
@@ -343,6 +350,8 @@ def check_one(path,config):
     forecast=lookahead_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     vetoes=ap_return_veto_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     assignments=rally_assignment_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
+    if config.get('rally_return_objective') and result.get('rally_assignments'):
+        assert assignments['chosen_assignments_rebuilt']>=1, 'missing exact delivered assignment choice'
     repairs=rally_repair_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     assert result['collision_monitoring_active']
     return dict(case=case,status='PASS',git_commit=row['git_commit'],source_digests=row['source_digests'],
