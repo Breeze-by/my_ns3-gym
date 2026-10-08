@@ -1,7 +1,5 @@
-import base64
 import json
 import math
-import zlib
 
 from action_msgs.msg import GoalStatus
 from geometry_msgs.msg import PoseStamped
@@ -25,6 +23,7 @@ from .control import (
     RallyPose,
     RETURN_RECOVERY_WAIT_SEC,
     grid_to_world,
+    grid_audit_evidence,
     charging_route_field,
     _line_cells,
     known_return_route,
@@ -621,14 +620,9 @@ class BatteryManager(Node):
 
     def return_map_evidence(self):
         """Native audit-only snapshot; never sent as AP planning information."""
-        if self.return_map is None:
-            return None
-        return dict(shape=self.return_map.shape, resolution=self.return_map_resolution,
-                    origin=self.return_map_origin, source=self.return_map_source,
-                    source_time=self.return_map_source_time, version=self.return_map_version,
-                    encoding='zlib_base64_int16_le',
-                    grid=base64.b64encode(zlib.compress(
-                        np.asarray(self.return_map, dtype='<i2').tobytes())).decode('ascii'))
+        return grid_audit_evidence(self.return_map, self.return_map_resolution,
+            self.return_map_origin, self.return_map_source, self.return_map_source_time,
+            self.return_map_version)
 
     def finish_return_audit(self, outcome):
         start = self.return_audit_start

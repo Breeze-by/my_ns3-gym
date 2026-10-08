@@ -7916,3 +7916,42 @@ export PYTHONPATH="$PWD/src/multi_robot_exploration:$PWD/scripts:$PYTHONPATH"
 CPU组件命令 `OPENBLAS_NUM_THREADS=1 /usr/bin/python3 scripts/compare_p2c_return_algorithms.py --output ../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261008_p2c_algorithm_components_vN.json`，N=1 ERROR（numpy int64 JSON序列化），N=2 PASS192完整图查询一致/46旧低估/28旧假有限，N=3 cache dtype key补齐后的最终同192 PASS（最终control SHA `59318aa0cbd2f290037287cb6959d3d62d05f17c6f89a6bef661d339179ad6f3`）。完整日志/v2/v3均保留；seed20261008，4layout×2size×24query，前向Dijkstra/Python A*/反向内容缓存中位7.89/24.30/0.258ms，仅此组件实现CPU，不宣称任务或单因素收益。
 
 静态 inline `/usr/bin/python3` 调用原 `load_truth_grid`/`traversable_grid(...,.45)`/`path_distance_grid`，逐 collision/visual box匹配、真实launch三spawn/charge及目标连通 PASS；完整输入/结果在 `report/20261008_p2c_holdout917_static.json`（world SHA `34ccf0a8c4310ac81817654927bbb2db4a1c76b2071885b98d65750cc690c317`），无 Gazebo 暴露。新预声明4开发/17正式+两实际blackout原始任务，先强制开发→开发三地图→正式固定/安全→首次917，原300s/native5s/TTL/物理门限不变；不retry/backfill。候选必须新clean commit/push 后才能开始任务；所有原任务关闭前不改源。P3C.5用户已验收；P2C.1未集成通过，P4/ns-3/Wi-Fi/RL未开始。
+
+
+## 2026-10-08 P2C.1 v1 原始开发门禁 FAIL（已自然关闭）
+
+源码/协议冻结 `899a69db7e4998f0267a448c16668273fefc72de` 已推送后启动；统一 source ROS Humble/install、PYTHONNOUSERSITE=1 和项目 PYTHONPATH，显式 `RMW_IMPLEMENTATION=rmw_fastrtps_cpp FASTDDS_BUILTIN_TRANSPORTS=UDPv4`，unset FASTRTPS_DEFAULT_PROFILES_FILE/ROS_DISCOVERY_SERVER，所有 owner/观察器 CPU0–79。原执行命令：
+
+```bash
+taskset -c 0-79 /usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261008_p2c_v1 --domain 170 --gazebo-port 20250
+taskset -c 0-79 /usr/bin/python3 scripts/run_p2c_tasks.py --case dev_lab101 --run-id 20261008_p2c_v1 --domain 171 --gazebo-port 20251
+taskset -c 0-79 /usr/bin/python3 scripts/run_p2c_tasks.py --case dev_rooms202 --run-id 20261008_p2c_v1 --domain 172 --gazebo-port 20252
+taskset -c 0-79 /usr/bin/python3 scripts/run_p2c_tasks.py --case dev_corridors303 --run-id 20261008_p2c_v1 --domain 173 --gazebo-port 20253
+```
+
+forced先运行；同源native/协议gate PASS后3独立world并行。每条展开ros_smoke/launch/observer命令、全部参数/实际环境/UTC窗口/source digests/每raw SHA均保存于原summary与 `report/20261008_p2c_v1_failed_development.json`。结果：forced COMPLETE267.6/charge2/min15.755068；lab101 RALLY timeout300.4/charge2/min22.493950；rooms202 COMPLETE233.4/charge1/min18.756023；corridors303 COMPLETE168.3/charge0/min28.148412。四原任务0接触/0耗尽/0failed、owner/observer exit0、无infra/escalation/episode retry，源保持899a69d至所有原owner关闭。全部原任务保留，不回填。
+
+首审 `/usr/bin/python3 scripts/check_p2c_gate.py --run-root log/p2c/20261008_p2c_v1 --development --cases dev_forced2 --output log/p2c_v1_dev_forced2_gate.json` FAIL相对目录引发原绝对command字符串比较；没有改checker/raw或重跑任务。改用绝对root同命令 `--output log/p2c_v1_dev_forced2_gate_v2.json` PASS（246 live samples）。随后同绝对root `--development --output log/p2c_v1_development_gate.json` 对4原始严格 FAIL，唯一任务错误lab `episode_ok`拒绝success=false，四通信/时序/graph/live审核各PASS（144/246/206/179样本），所有原生结局不变。
+
+关闭后inline调用 `check_p2c_gate.return_audit(log/p2c/...dev_lab101/safety_events.jsonl)` 输出 `log/p2c_v1_lab101_return_audit.json` PASS：2return triggers/4原map budget重建/2locallegs/2positivecharges；另三格已由门禁审核预算。与其它轨迹的耗时差不作单因素或任务因果收益。全部原raw每SHA再验证PASS；精选原manifest/summary/native JSON/CSV/graph/safety/native maps/launch&reader失败日志无损gzip保留，巨量raw ledger/live/metrics留原log不直接stage。17正式格和physicalblackout pair尚未调用；917 world/seed917/fault29171仍未暴露。候选未满足集成，不放宽原300s/.35/.05/.1/5s/源TTL/余量；继续新算法开发与新cohort，P4/ns3/Wi-Fi/RL未启动。
+
+
+## 2026-10-08 P2C.1 v2 两步前沿机会充电组件 / 新前瞻冻结
+
+v1原四任务全部自然关闭、SHA/失败报告保留后才修改control。新增有限两步前沿完整去返预算，仅已有真实探索/近站/可见安全接触窗口、serial gateway charge、有效源lease下触发；不会初始补满、不会预派发未来指令或用目标真值。当前未开始v2任务。源SHA/原始日志/hash/完整新manifest与实际展开命令见 `report/20261008_p2c_lookahead_components.json/.md`。
+
+相同ROS Humble/install/PYTHONNOUSERSITE与项目PYTHONPATH前缀下：
+
+```bash
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_frontier_energy_lookahead.py src/multi_robot_exploration/test/test_exploration_charging.py src/multi_robot_exploration/test/test_return_budget.py scripts/test_p2c_gate.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test scripts/test_*.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+/usr/bin/python3 scripts/check_p2c_source.py --output log/p2c_lookahead_source_v1.json
+colcon build --symlink-install --packages-select multi_robot_interfaces multi_robot_exploration merge_map multi_robot
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261008_p2c_v2 --domain 170 --gazebo-port 20250 --validate-only
+```
+
+定向首39 FAIL/61 PASS/15.57s：上下文初始化误插入survey而非assign_idle导致NameError；另测试未来目标恰为peer身体，路线本应拒绝。修正位置与合法夹具后100 PASS/4.12s。完整首1 FAIL/821 PASS/1 skip/21.22s：开阔地图平移整数格导致相同世界路线，不能作为必失败的语义篡改；改为真实阻断route，并绑定map/pose源lease后822 PASS/1 skip/21.35s。全部原stdout保留。source172/3授权改动/54协议/native常量PASS，四包build5.40s。
+
+inline `/usr/bin/python3` AST对比899a69d和当前4核心函数 known_return_route/charging_route_field/path_distance_grid/return_energy_budget 完全相同，JSON `log/p2c_lookahead_core_preservation.json`；新shared grid证据只统一原编码。修复 `check_one` 的path.resolve后，在相对 `log/p2c/...dev_forced2/summary.json` 上调用 `check_one(path, original_row.config)`回放同原始record PASS/246 samples，输出 `p2c_lookahead_relative_reader_replay.json/.log`，原lab FAIL不变，无任务重跑。
+
+inline构造组件使用 test_frontier_energy_lookahead.setup 与原实际源码 `exploration_charge_budget`，关闭forecast上下文=>旧quarter策略None；恢复同map context=>新E24预测触发、完整成本/压缩源图/路径保留 `log/p2c_lookahead_policy_component.json`，仅构造组件，不是原buffer反事实或任务收益。新17格规则/父899a69d失败/algorithm和预声明时刻已更新manifest；917 world/seed917/fault29171未暴露，source/physics/native gates保持，须新clean commit/push冻结后才开始v2。P3C.5已用户验收，无P4/ns3/Wi-Fi/RL。

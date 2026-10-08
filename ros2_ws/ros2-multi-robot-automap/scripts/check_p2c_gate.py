@@ -2,6 +2,7 @@
 """Read-only P2C.1 original/return-budget gate; never repairs task outcomes."""
 import argparse,base64,hashlib,json,math,subprocess,traceback,zlib
 from pathlib import Path
+from concurrent.futures import ProcessPoolExecutor
 import numpy as np
 from check_p3a6_gate import Snapshot
 from check_p3b5_gate import episode_ok,ledger_audit,native_completion_ok
@@ -75,7 +76,42 @@ def return_audit(path):
         local_legs=legs,charger_returns=sum(r['outcome']=='charger_stopped' for r in rows),returns=rows)
 
 
+def lookahead_audit(records):
+    count=0
+    for e in records:
+        if e.get('event')!='coordinator_charge_decision' or not e.get('opportunity_lookahead'):
+            continue
+        f=e['opportunity_lookahead'];saved=f['map_evidence'];state=f['battery_state']
+        assert f['strategy']=='two_current_frontiers' and saved['source']=='ap_delivered_planning_map'
+        assert saved['encoding']=='zlib_base64_int16_le'
+        assert f['first_group']!=f['second_group']
+        assert math.dist(f['first_position'],f['second_position'])>=control.MIN_TARGET_SEPARATION_M
+        assert math.isclose(e['event_time']-saved['source_time'],f['map_age_sec'],abs_tol=1e-8)
+        assert e['inputs']['headquarters/fused_map_snapshot']['source_time']==saved['source_time']
+        assert math.isclose(e['inputs'][e['robot']+'/pose_state']['age_sec'],f['pose_age_sec'],abs_tol=1e-8)
+        assert 0<=f['map_age_sec']<=5 and 0<=f['pose_age_sec']<=2
+        assert e['available_energy']<f['required_energy']<state['capacity']*state['charge_target_fraction']
+        assert e['required_energy']==f['required_energy']
+        raw=np.frombuffer(zlib.decompress(base64.b64decode(saved['grid'])),dtype='<i2').reshape(saved['shape'])
+        first,second=f['first_position'],f['second_position']
+        _,route=control.plan_rally_leg(control.RallyPose(*second,0.),raw,saved['resolution'],saved['origin'],first,
+            max_distance_m=float('inf'),blocked_positions=f['blocked_positions'],clearance_m=control.PATH_CLEARANCE_M)
+        assert route and np.allclose(route,f['between_route'])
+        between=math.dist(first,route[0])+sum(math.dist(a,b) for a,b in zip(route,route[1:]))
+        assert math.isclose(between,f['between_distance_m'],abs_tol=1e-8)
+        home_distance,_=control.known_return_route(raw,saved['resolution'],saved['origin'],second,f['home'],state.get('charge_radius_m',.8))
+        assert home_distance is not None and math.isclose(home_distance,f['home_distance_m'],abs_tol=1e-8)
+        required=control.battery_assignment_required_energy(f['first_path_distance_m']+between,home_distance,
+            state.get('move_cost_per_m',1.),state.get('idle_cost_per_sec',.02),state.get('return_path_factor',2.),
+            state.get('nominal_speed_mps',.18),state.get('return_safety_margin',8.),
+            state.get('return_recovery_wait_sec',30.),f['map_age_sec'],f['pose_age_sec'])
+        assert math.isclose(required,f['required_energy'],abs_tol=1e-8)
+        count+=1
+    return dict(status='PASS',two_frontier_charge_decisions=count)
+
+
 def check_one(path,config):
+    path=path.resolve()
     row=json.loads(path.read_text());directory=path.parent
     assert row['config']==config
     declaration_audit(row,config,directory)
@@ -100,10 +136,18 @@ def check_one(path,config):
     violations=runtime_violations(Snapshot(original['nodes']),audit,result['robot_count'])
     assert not violations,violations
     native=return_audit(directory/'safety_events.jsonl')
+    forecast=lookahead_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     assert result['collision_monitoring_active']
     return dict(case=case,status='PASS',git_commit=row['git_commit'],source_digests=row['source_digests'],
         result=result,raw_summary=str(path.resolve()),raw_summary_sha256=sha(path),return_audit=native,
-        communication_audit=communications)
+        communication_audit=communications,lookahead_audit=forecast)
+
+
+def audit_one(item):
+    path,config=item
+    try:return check_one(path,config),None
+    except Exception as error:
+        return None,dict(case=json.loads(path.read_text())['case'],error=repr(error),traceback=traceback.format_exc())
 
 
 def main():
@@ -113,6 +157,7 @@ def main():
     p.add_argument('--development',action='store_true')
     p.add_argument('--cases',nargs='+')
     p.add_argument('--output',type=Path,required=True)
+    p.add_argument('--workers',type=int,default=3,choices=(1,2,3))
     a=p.parse_args()
     if a.output.exists():p.error('do not overwrite an audit')
     config=json.loads(a.manifest.read_text())
@@ -125,9 +170,10 @@ def main():
             summaries[row['case']]=path
     assert set(summaries)==required,dict(missing=sorted(required-set(summaries)),extra=sorted(set(summaries)-required))
     evidence=[];errors=[]
-    for case,path in sorted(summaries.items()):
-        try:evidence.append(check_one(path,config))
-        except Exception as error:errors.append(dict(case=case,error=repr(error),traceback=traceback.format_exc()))
+    with ProcessPoolExecutor(max_workers=a.workers) as pool:
+        for passed,failed in pool.map(audit_one,[(path,config) for case,path in sorted(summaries.items())]):
+            if failed:errors.append(failed)
+            else:evidence.append(passed)
     originals=[json.loads(path.read_text()) for path in summaries.values()]
     assert len({r['git_commit'] for r in originals})==1,'cohort must share one pushed source freeze'
     assert all(r['source_digests']==originals[0]['source_digests'] for r in originals)
@@ -136,6 +182,7 @@ def main():
     assert original_manifest==config
     result=dict(status='FAIL' if errors else 'PASS',scope='development' if a.development else 'integration',
         task_stack_frozen_commit=originals[0]['git_commit'],cases=len(summaries),errors=errors,evidence=evidence,
+        full_declared_scope=a.cases is None,
         raw_failures_retained=True,physical_blackout_gate='separate_required_evidence',
         general_hardware_safety_guarantee=False)
     a.output.parent.mkdir(parents=True,exist_ok=True);a.output.write_text(json.dumps(result,indent=2)+'\n')

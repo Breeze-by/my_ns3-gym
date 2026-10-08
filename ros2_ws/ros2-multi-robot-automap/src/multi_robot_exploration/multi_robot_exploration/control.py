@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import base64
 import hashlib
 import json
 import math
@@ -7,6 +8,7 @@ import signal
 import subprocess
 import threading
 import time
+import zlib
 from collections import deque
 from itertools import permutations
 
@@ -734,6 +736,17 @@ def known_return_route(raw_grid, resolution, origin, position, charger, radius,
             return None, ()
         route.append(grid_to_world(*divmod(current, safe.shape[1]), resolution, *origin))
     return distance, tuple(route)
+
+
+def grid_audit_evidence(raw_grid, resolution, origin, source, source_time, version):
+    """Lossless audit-only geometry; it is never a new planning input."""
+    if raw_grid is None:
+        return None
+    return dict(shape=raw_grid.shape, resolution=resolution, origin=origin,
+                source=source, source_time=source_time, version=version,
+                encoding='zlib_base64_int16_le',
+                grid=base64.b64encode(zlib.compress(
+                    np.asarray(raw_grid, dtype='<i2').tobytes())).decode('ascii'))
 
 
 def path_waypoint_route(traversable, start, target, max_distance_cells, distance_data=None):
@@ -2594,7 +2607,6 @@ class HeadquartersControl(Node):
                 if (not allow_opportunity
                         or self.task_state not in ('EXPLORE', 'FOUND_UNCONFIRMED')
                         or not getattr(self, 'successful_exploration_legs', {}).get(name, 0)
-                        or energy > .25 * charge_target
                         or not math.isfinite(radius) or radius <= .2
                         or not PATH_CLEARANCE_M < math.dist(self.robot_positions[name], home) <= 2. * radius):
                     return None
@@ -2607,12 +2619,71 @@ class HeadquartersControl(Node):
                 )
                 if leg is None or math.dist((leg.x, leg.y), home) > radius - .2:
                     return None
-                required = max(required, .25 * charge_target)
+                threshold = .25 * charge_target
+                if energy > threshold:
+                    forecast = HeadquartersControl.frontier_lookahead_budget(
+                        self, name, assignment, energy, charge_target)
+                    if forecast is None:
+                        return None
+                    required = max(required, forecast['required_energy'])
+                    self.opportunity_charge_evidence[name] = forecast
+                else:
+                    required = max(required, threshold)
             if energy > required:
                 return None
             return energy, required, home
         except (KeyError, TypeError, ValueError):
             return None
+
+    def frontier_lookahead_budget(self, name, assignment, energy, charge_target):
+        """Two current frontiers plus a full return, solely to rank a near-home top-up.
+
+        A future route is a conditional energy forecast, never a queued command.
+        Use one current admission batch and at most three useful alternatives;
+        every eventual navigation still passes the normal fresh-input gates.
+        """
+        context = getattr(self, 'frontier_charge_lookahead', None)
+        if (context is None or context[0] is not self.map_data
+                or context[1] is None
+                or context[1] != self.map_received_at
+                or not 0 <= self.now() - context[1] <= STATE_TTL_SEC['map_snapshot']):
+            return None
+        alternatives = sorted((candidate for candidate in context[2].get(name, ())
+            if candidate.viewpoint.group_id != assignment.viewpoint.group_id
+            and candidate.viewpoint.information_gain > 200
+            and candidate.utility >= .5 * assignment.utility
+            and math.dist((candidate.x, candidate.y), (assignment.x, assignment.y))
+                >= MIN_TARGET_SEPARATION_M), key=lambda candidate: -candidate.utility)[:3]
+        blocked = [p for peer, p in self.robot_positions.items() if peer != name and p is not None]
+        cache = {}
+        for candidate in alternatives:
+            _, route = plan_rally_leg(RallyPose(candidate.x, candidate.y, 0.),
+                self.map_data, self.resolution, self.origin, (assignment.x, assignment.y),
+                max_distance_m=float('inf'), blocked_positions=blocked,
+                clearance_m=PATH_CLEARANCE_M, route_cache=cache)
+            if not route:
+                continue
+            between = math.dist((assignment.x, assignment.y), route[0]) + sum(
+                math.dist(a, b) for a, b in zip(route, route[1:]))
+            task_distance = assignment.path_distance_m + between
+            required = HeadquartersControl.task_return_required_energy(
+                self, name, task_distance, (candidate.x, candidate.y))
+            if not energy < required < charge_target:
+                continue
+            state = self.battery_states[name]
+            home = (float(state['charge_x']), float(state['charge_y']))
+            home_distance = HeadquartersControl.known_home_distance(self, name, (candidate.x, candidate.y))
+            now = self.now()
+            return dict(strategy='two_current_frontiers', required_energy=required,
+                first_position=[assignment.x, assignment.y], second_position=[candidate.x, candidate.y],
+                first_group=assignment.viewpoint.group_id, second_group=candidate.viewpoint.group_id,
+                first_path_distance_m=assignment.path_distance_m, between_distance_m=between,
+                between_route=route, home_distance_m=home_distance, home=home,
+                blocked_positions=blocked, battery_state=dict(state),
+                map_age_sec=now-self.map_received_at, pose_age_sec=now-self.robot_odom_received_at[name],
+                map_evidence=grid_audit_evidence(self.map_data, self.resolution, self.origin,
+                    'ap_delivered_planning_map', self.map_received_at, None))
+        return None
 
     def request_exploration_charge(self, candidates):
         """Charge one idle robot for an otherwise admissible current frontier.
@@ -2658,6 +2729,7 @@ class HeadquartersControl(Node):
             'robot': name, 'task_phase': self.task_state,
             'required_energy': required, 'available_energy': energy,
             'frontier_position': [assignment.x, assignment.y],
+            'opportunity_lookahead': getattr(self, 'opportunity_charge_evidence', {}).get(name),
             'inputs': {key: sample for key, sample in self.input_freshness_details().items()
                        if key != 'headquarters/target_detection'},
         }, sort_keys=True)))
@@ -5069,6 +5141,11 @@ class HeadquartersControl(Node):
             )
         frontier_data = self.frontier_cache
         search_gain_cache = {}  # One immutable map/visit mask per admission batch.
+        # This context belongs only to this map/admission callback; expired or
+        # replaced maps and every newly generated batch discard the forecast.
+        lookahead_candidates = {}
+        self.frontier_charge_lookahead = (self.map_data, getattr(self, 'map_received_at', None), lookahead_candidates)
+        self.opportunity_charge_evidence = {}
         resume_intents = getattr(self, "exploration_resume_intents", {})
         charge_candidates = {}
         for refine in ((False, True, "known_space") if search else (False, True)):
@@ -5116,6 +5193,7 @@ class HeadquartersControl(Node):
                 diagnostics["groups_with_viewpoints"] += robot_diagnostics[
                     "groups_with_viewpoints"
                 ]
+                lookahead_candidates[robot_name] = [row[3] for row in robot_candidates]
                 for _, _, group_id, assignment in robot_candidates:
                     # Preserve reachability analysis for an unfunded frontier,
                     # but request charging instead of executing a trip that is

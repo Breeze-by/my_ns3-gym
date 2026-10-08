@@ -59,6 +59,10 @@ tokens is not a reason to leave a problem unresolved or inadequately tested.
 
 ## Current Handoff
 
+2026-10-08 P2C.1 v2 component candidate:two-current-frontier near-home opportunity charging,only after real exploration/current delivered map/body-safe contact route;forecast never queues future commands.822 checks/1skip,four-package build/172protected/54protocol/core AST4 pass;new task freeze/gates pending,917 still unexposed.899a69d v1 strict development FAIL and originals remain retained.P3C.5 user-accepted;no P4/ns3/Wi-Fi/RL.See report/20261008_p2c_lookahead_components.md/.json.
+
+2026-10-08 P2C.1 v1 new-source development FAIL at899a69d:4 originals naturally closed,3 native COMPLETE/1 lab101 RALLY timeout300.4,zero contacts/exhaustion/failed/infra/retries. Full-path budgets/native return audits pass but do not substitute task completion. All raw originals and first relative-path reader FAIL are retained; absolute-path reread uses same source/data. Formal17/physical blackout/new917 not invoked. P3C.5 user-accepted; continue independent P2C algorithms/new freezes. See report/20261008_p2c_v1_failed_development.md/.json; no P4/ns3/Wi-Fi/RL.
+
 2026-10-08 用户已明确验收 P3C.5，并授权按项目评审补强 P2C、比较新算法和优化算法。原 P3C.5 bea7f8b 的14原格/11 COMPLETE/3超时及所有失败保持。当前 P2C.1 为独立开发候选：本地/中央完整已知充电接触区路径预算、反向多源 Dijkstra 缓存、可见短腿、源龄/反应/恢复余量、失路有界等待和预算包络监督、预测误差与原地图审计。组件通过不代表集成完成；需要新推送冻结、开发、同提交理想十格/强制充电/真实断网返航/失路和耗尽反例及新留出验证。本次授权不包含 P4/ns-3/Wi-Fi/RL；101/202/303/707/809 已暴露，不称新留出。
 
 2026-10-08 project review completed; P3C.5 remains technical PASS pending user

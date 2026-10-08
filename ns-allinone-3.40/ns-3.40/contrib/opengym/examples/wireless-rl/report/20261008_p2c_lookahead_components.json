@@ -1,0 +1,754 @@
+{
+  "status": "COMPONENT_PASS_NEW_TASKS_PENDING",
+  "recorded_at_utc": "2026-10-08T11:46:16.618973+00:00",
+  "parent_task_commit": "899a69db7e4998f0267a448c16668273fefc72de",
+  "retained_failed_cohort": "20261008_p2c_v1_failed_development.json",
+  "authorized_source_sha256": [
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py",
+      "sha256": "c2b168efc53ff0b2e6772c2c740abd56c80ec401f8c4e987b988d50ec0ba47e6"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/battery_manager.py",
+      "sha256": "b41724f44f964ea7c3170f5cc7d75379c587fcd815e9b8341f0f56aba5a57c16"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/control.py",
+      "sha256": "b155eddc3394e86902de77dfe027ba3e4df7ec16a58ee57ff05af3e141f045e3"
+    }
+  ],
+  "validation": {
+    "functional_checks": 822,
+    "skip": 1,
+    "component_wall_sec": 21.35,
+    "protected_files": 172,
+    "static_protocol_cells": 54,
+    "four_package_build_sec": 5.4,
+    "unchanged_return_core_ast": [
+      "known_return_route",
+      "charging_route_field",
+      "path_distance_grid",
+      "return_energy_budget"
+    ]
+  },
+  "policy_component": {
+    "status": "PASS",
+    "scope": "constructed_component_not_task_or_causal_gain",
+    "source_sha256": "b155eddc3394e86902de77dfe027ba3e4df7ec16a58ee57ff05af3e141f045e3",
+    "same_known_map": true,
+    "available_energy": 24.0,
+    "legacy_quarter_threshold_units": 20.0,
+    "legacy_request": null,
+    "candidate_request": [
+      24.0,
+      28.37534411542848,
+      [
+        2.0,
+        3.0
+      ]
+    ],
+    "candidate_component_wall_sec": 0.0197791769169271,
+    "forecast": {
+      "strategy": "two_current_frontiers",
+      "required_energy": 28.37534411542848,
+      "first_position": [
+        3.5,
+        3.0
+      ],
+      "second_position": [
+        8.0,
+        3.0
+      ],
+      "first_group": 1,
+      "second_group": 2,
+      "first_path_distance_m": 0.5,
+      "between_distance_m": 4.5707106781186555,
+      "between_route": [
+        [
+          3.5500000000000003,
+          3.0500000000000003
+        ],
+        [
+          3.6500000000000004,
+          3.0500000000000003
+        ],
+        [
+          3.75,
+          3.0500000000000003
+        ],
+        [
+          3.85,
+          3.0500000000000003
+        ],
+        [
+          3.95,
+          3.0500000000000003
+        ],
+        [
+          4.05,
+          3.0500000000000003
+        ],
+        [
+          4.15,
+          3.0500000000000003
+        ],
+        [
+          4.25,
+          3.0500000000000003
+        ],
+        [
+          4.3500000000000005,
+          3.0500000000000003
+        ],
+        [
+          4.45,
+          3.0500000000000003
+        ],
+        [
+          4.55,
+          3.0500000000000003
+        ],
+        [
+          4.65,
+          3.0500000000000003
+        ],
+        [
+          4.75,
+          3.0500000000000003
+        ],
+        [
+          4.8500000000000005,
+          3.0500000000000003
+        ],
+        [
+          4.95,
+          3.0500000000000003
+        ],
+        [
+          5.050000000000001,
+          3.0500000000000003
+        ],
+        [
+          5.15,
+          3.0500000000000003
+        ],
+        [
+          5.25,
+          3.0500000000000003
+        ],
+        [
+          5.3500000000000005,
+          3.0500000000000003
+        ],
+        [
+          5.45,
+          3.0500000000000003
+        ],
+        [
+          5.550000000000001,
+          3.0500000000000003
+        ],
+        [
+          5.65,
+          3.0500000000000003
+        ],
+        [
+          5.75,
+          3.0500000000000003
+        ],
+        [
+          5.8500000000000005,
+          3.0500000000000003
+        ],
+        [
+          5.95,
+          3.0500000000000003
+        ],
+        [
+          6.050000000000001,
+          3.0500000000000003
+        ],
+        [
+          6.15,
+          3.0500000000000003
+        ],
+        [
+          6.25,
+          3.0500000000000003
+        ],
+        [
+          6.3500000000000005,
+          3.0500000000000003
+        ],
+        [
+          6.45,
+          3.0500000000000003
+        ],
+        [
+          6.550000000000001,
+          3.0500000000000003
+        ],
+        [
+          6.65,
+          3.0500000000000003
+        ],
+        [
+          6.75,
+          3.0500000000000003
+        ],
+        [
+          6.8500000000000005,
+          3.0500000000000003
+        ],
+        [
+          6.95,
+          3.0500000000000003
+        ],
+        [
+          7.050000000000001,
+          3.0500000000000003
+        ],
+        [
+          7.15,
+          3.0500000000000003
+        ],
+        [
+          7.25,
+          3.0500000000000003
+        ],
+        [
+          7.3500000000000005,
+          3.0500000000000003
+        ],
+        [
+          7.45,
+          3.0500000000000003
+        ],
+        [
+          7.550000000000001,
+          3.0500000000000003
+        ],
+        [
+          7.65,
+          3.0500000000000003
+        ],
+        [
+          7.75,
+          3.0500000000000003
+        ],
+        [
+          7.8500000000000005,
+          3.0500000000000003
+        ],
+        [
+          7.95,
+          3.0500000000000003
+        ],
+        [
+          8.05,
+          3.0500000000000003
+        ]
+      ],
+      "home_distance_m": 5.5707106781186555,
+      "home": [
+        2.0,
+        3.0
+      ],
+      "blocked_positions": [
+        [
+          8.0,
+          5.0
+        ]
+      ],
+      "battery_state": {
+        "energy": 24.0,
+        "capacity": 100.0,
+        "charge_target_fraction": 0.8,
+        "charge_x": 2.0,
+        "charge_y": 3.0,
+        "move_cost_per_m": 1.0,
+        "idle_cost_per_sec": 0.02,
+        "return_path_factor": 2.0,
+        "nominal_speed_mps": 0.18,
+        "return_safety_margin": 8.0,
+        "charge_radius_m": 0.8
+      },
+      "map_age_sec": 0.0,
+      "pose_age_sec": 0.0,
+      "map_evidence": {
+        "shape": [
+          60,
+          100
+        ],
+        "resolution": 0.1,
+        "origin": [
+          0.0,
+          0.0
+        ],
+        "source": "ap_delivered_planning_map",
+        "source_time": 10.0,
+        "version": null,
+        "encoding": "zlib_base64_int16_le",
+        "grid": "eJztwTEBAAAAwqD1T20MH6AAAAAAAAAAAAAAAOBvLuAAAQ=="
+      }
+    }
+  },
+  "relative_reader_replay": {
+    "status": "PASS",
+    "original_summary": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v1/20261008_p2c_v1_dev_forced2/summary.json",
+    "summary_sha256": "10d77bda5d364c05ea765f37eca807c37899e8281c73ab4d329496a4599a143f",
+    "live_samples": 246
+  },
+  "archives": [
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_lookahead_build_v1.log",
+      "archive": "20261008_p2c_lookahead_artifacts/p2c_lookahead_build_v1.log.gz",
+      "source_sha256": "e62cf796d8b7ed35e127ae4f9580e13b276475a33c5637487a576489c97dce77",
+      "archive_sha256": "399108af37865bb670f35c7eb06a73138de325e6aa891204fc7c865b76754934"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_lookahead_components_v1.log",
+      "archive": "20261008_p2c_lookahead_artifacts/p2c_lookahead_components_v1.log.gz",
+      "source_sha256": "3c9c6a747713f9bc6617b790190109c56ce7dca9b5d4f1fcb9218dbb3d0e3fe6",
+      "archive_sha256": "73a0445a6c09d44fd00044f87895d23b2e59db451b888a0a0216a54ecc3bce30"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_lookahead_components_v2.log",
+      "archive": "20261008_p2c_lookahead_artifacts/p2c_lookahead_components_v2.log.gz",
+      "source_sha256": "ef2724e883c1f0999719cb48b8caab7ecac38bbb15232667c13e8d3e0c8745b1",
+      "archive_sha256": "aa2d805c36a306b70ef7606a56324e838f60b2a758f8b6770be94f11407be53a"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_lookahead_core_preservation.json",
+      "archive": "20261008_p2c_lookahead_artifacts/p2c_lookahead_core_preservation.json.gz",
+      "source_sha256": "2349132b70029f423a4ce2f0b58c599a3927ae6176e2da734096caca6ca96b9b",
+      "archive_sha256": "56f6c181acfd65fa3bb3ed636c3e4faad1e5addf17f7f3875a7d5eb6efbcf0f1"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_lookahead_full_components_v1.log",
+      "archive": "20261008_p2c_lookahead_artifacts/p2c_lookahead_full_components_v1.log.gz",
+      "source_sha256": "4cf333df3bfe1070b6f8e77ffec46ce2e2782448fd88b3753490fd151f1ed077",
+      "archive_sha256": "1db9218a0b80e9689de4fe85a5fc92da1bcffe8ea6dd720bcafd45f6e47b5ab3"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_lookahead_full_components_v2.log",
+      "archive": "20261008_p2c_lookahead_artifacts/p2c_lookahead_full_components_v2.log.gz",
+      "source_sha256": "c80583e4225013f31dbef069ab8333c7a1139a3c487808ccc0936696a6661997",
+      "archive_sha256": "e3420f10d724cf88b71125c25b0fc347adb4549190ff18a1baac9588c5129bf4"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_lookahead_manifest_validate_v1.json",
+      "archive": "20261008_p2c_lookahead_artifacts/p2c_lookahead_manifest_validate_v1.json.gz",
+      "source_sha256": "faf601b1b361d5603e231b3f0da1883984e849d94978ca2a35b681f83e0dd15d",
+      "archive_sha256": "843196d35a877b5448ef12ff4a18301141671c1756dbcced609c9e39888aa0b5"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_lookahead_policy_component.json",
+      "archive": "20261008_p2c_lookahead_artifacts/p2c_lookahead_policy_component.json.gz",
+      "source_sha256": "12f046906524cdd21214857e41bf8fc143a5efcf7242cc6bbe2a5c096312464c",
+      "archive_sha256": "d87c0a85899f8824a35157c89f84382bc8a1317b13bd8c321cda5e38e773a2cf"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_lookahead_relative_reader_replay.json",
+      "archive": "20261008_p2c_lookahead_artifacts/p2c_lookahead_relative_reader_replay.json.gz",
+      "source_sha256": "9f43948880d405446876b831e938ffbc1cc38608c1bfc3ef27e96b28b8da6d11",
+      "archive_sha256": "ec9256b7843ded12e32c9fbbb3758111ad244098725b713043b8d261cdc93a75"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_lookahead_relative_reader_replay.log",
+      "archive": "20261008_p2c_lookahead_artifacts/p2c_lookahead_relative_reader_replay.log.gz",
+      "source_sha256": "2c90e41c9bc88744013d181a7ad2b0a5f7bc31c5533f123d644e9e24fc899c9d",
+      "archive_sha256": "0fa043ddf332f94087b678f4f91b69d564d6e9fe81f8b7b09fd8327638dc1e23"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_lookahead_source_v1.json",
+      "archive": "20261008_p2c_lookahead_artifacts/p2c_lookahead_source_v1.json.gz",
+      "source_sha256": "92f40844f10159b2e145f1b7de66c89ab6ba4e730bdca5f52758d067153a9010",
+      "archive_sha256": "28ed5d219be684cc177407f13772797e9208f52f5d4f7d1ed2f55bf3c1744d0b"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_lookahead_source_v1.log",
+      "archive": "20261008_p2c_lookahead_artifacts/p2c_lookahead_source_v1.log.gz",
+      "source_sha256": "76eec7ea96d36fd9057326aab4a666933cb37bd43290eb96178fe04d29f51260",
+      "archive_sha256": "991c0b52826081d6a26e91619a2129e5eea24fa5ce2f2b70493468c99a01a7d6"
+    }
+  ],
+  "new_manifest_sha256": "85808f15d4865914a9fe8b5116ffe2c0c499f15e80485098b00cea1e783d49a1",
+  "new_task_command": [
+    "/usr/bin/python3",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py",
+    "--world",
+    "my_world.world",
+    "--robot-count",
+    "2",
+    "--gazebo-seed",
+    "303",
+    "--startup-timeout",
+    "600",
+    "--message-timeout",
+    "90",
+    "--shutdown-timeout",
+    "120",
+    "--evaluation-duration",
+    "300",
+    "--evaluation-wait-timeout",
+    "900",
+    "--coverage-threshold",
+    "0",
+    "--mission-mode",
+    "rally",
+    "--gateway-mode",
+    "ideal",
+    "--gateway-seed",
+    "17011",
+    "--battery",
+    "--battery-capacity",
+    "100",
+    "--battery-initial-energy",
+    "18.0",
+    "--target-x",
+    "-4",
+    "--target-y",
+    "4",
+    "--rally-max-concurrent",
+    "2",
+    "--disable-global-battery-rally-pause",
+    "--episode-id",
+    "20261008_p2c_v2_dev_forced2",
+    "--collect-fault-result",
+    "--dwell-seconds",
+    "0",
+    "--evaluation-output-dir",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v2/20261008_p2c_v2_dev_forced2",
+    "--log-dir",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v2/20261008_p2c_v2_dev_forced2/launch",
+    "--gateway-ledger-path",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v2/20261008_p2c_v2_dev_forced2/ledger.jsonl",
+    "--bypass-audit-output",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v2/20261008_p2c_v2_dev_forced2/graph.json",
+    "--target-detection",
+    "--rally",
+    "--battery-charge-duration",
+    "10.0",
+    "--battery-safety-margin",
+    "5.0",
+    "--battery-return-timeout",
+    "120"
+  ],
+  "case_configs": {
+    "schema_version": 1,
+    "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
+    "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
+    "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
+    "predeclared_at_utc": "2026-10-08T11:40:29.592417+00:00",
+    "duration_sec": 300,
+    "coverage_threshold": 0.8,
+    "fault_seed": 17011,
+    "owner_shutdown_timeout_sec": 120,
+    "development_cases": [
+      "dev_forced2",
+      "dev_lab101",
+      "dev_rooms202",
+      "dev_corridors303"
+    ],
+    "gate_cases": [
+      "fixed_lab_101",
+      "fixed_lab_202",
+      "fixed_lab_303",
+      "fixed_rooms_101",
+      "fixed_rooms_202",
+      "fixed_rooms_303",
+      "fixed_corridors_101",
+      "fixed_corridors_202",
+      "fixed_corridors_303",
+      "fixed_corridors2_202",
+      "forced2",
+      "protocol_forced2",
+      "delay_rooms3",
+      "loss_corridors2",
+      "holdout_ideal",
+      "holdout_fault",
+      "empty_battery"
+    ],
+    "cases": {
+      "dev_forced2": {
+        "world": "my_world.world",
+        "target_x": -4,
+        "target_y": 4,
+        "robot_count": 2,
+        "seed": 303,
+        "energy": 18.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": [],
+        "charge_duration": 10.0,
+        "safety_margin": 5.0,
+        "return_timeout": 120
+      },
+      "dev_lab101": {
+        "world": "my_world.world",
+        "target_x": -4,
+        "target_y": 4,
+        "robot_count": 3,
+        "seed": 101,
+        "energy": 40.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": []
+      },
+      "dev_rooms202": {
+        "world": "p1c_rooms.world",
+        "target_x": 5.0,
+        "target_y": 3.0,
+        "robot_count": 3,
+        "seed": 202,
+        "energy": 40.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": []
+      },
+      "dev_corridors303": {
+        "world": "p1c_corridors.world",
+        "target_x": -4.5,
+        "target_y": -0.5,
+        "robot_count": 3,
+        "seed": 303,
+        "energy": 45.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": []
+      },
+      "fixed_lab_101": {
+        "world": "my_world.world",
+        "target_x": -4,
+        "target_y": 4,
+        "robot_count": 3,
+        "seed": 101,
+        "energy": 40.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": []
+      },
+      "fixed_lab_202": {
+        "world": "my_world.world",
+        "target_x": -4,
+        "target_y": 4,
+        "robot_count": 3,
+        "seed": 202,
+        "energy": 40.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": []
+      },
+      "fixed_lab_303": {
+        "world": "my_world.world",
+        "target_x": -4,
+        "target_y": 4,
+        "robot_count": 3,
+        "seed": 303,
+        "energy": 40.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": []
+      },
+      "fixed_rooms_101": {
+        "world": "p1c_rooms.world",
+        "target_x": 5.0,
+        "target_y": 3.0,
+        "robot_count": 3,
+        "seed": 101,
+        "energy": 40.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": []
+      },
+      "fixed_rooms_202": {
+        "world": "p1c_rooms.world",
+        "target_x": 5.0,
+        "target_y": 3.0,
+        "robot_count": 3,
+        "seed": 202,
+        "energy": 40.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": []
+      },
+      "fixed_rooms_303": {
+        "world": "p1c_rooms.world",
+        "target_x": 5.0,
+        "target_y": 3.0,
+        "robot_count": 3,
+        "seed": 303,
+        "energy": 40.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": []
+      },
+      "fixed_corridors_101": {
+        "world": "p1c_corridors.world",
+        "target_x": -4.5,
+        "target_y": -0.5,
+        "robot_count": 3,
+        "seed": 101,
+        "energy": 45.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": []
+      },
+      "fixed_corridors_202": {
+        "world": "p1c_corridors.world",
+        "target_x": -4.5,
+        "target_y": -0.5,
+        "robot_count": 3,
+        "seed": 202,
+        "energy": 45.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": []
+      },
+      "fixed_corridors_303": {
+        "world": "p1c_corridors.world",
+        "target_x": -4.5,
+        "target_y": -0.5,
+        "robot_count": 3,
+        "seed": 303,
+        "energy": 45.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": []
+      },
+      "fixed_corridors2_202": {
+        "world": "p1c_corridors.world",
+        "target_x": -4.5,
+        "target_y": -0.5,
+        "robot_count": 2,
+        "seed": 202,
+        "energy": 45.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": []
+      },
+      "forced2": {
+        "world": "my_world.world",
+        "target_x": -4,
+        "target_y": 4,
+        "robot_count": 2,
+        "seed": 303,
+        "energy": 18.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": [],
+        "charge_duration": 10.0,
+        "safety_margin": 5.0,
+        "return_timeout": 120
+      },
+      "protocol_forced2": {
+        "world": "my_world.world",
+        "target_x": -4,
+        "target_y": 4,
+        "robot_count": 2,
+        "seed": 303,
+        "energy": 18.0,
+        "mode": "ideal",
+        "admission_protocol": true,
+        "schedule": [],
+        "charge_duration": 10.0,
+        "safety_margin": 5.0,
+        "return_timeout": 120
+      },
+      "delay_rooms3": {
+        "world": "p1c_rooms.world",
+        "target_x": 5.0,
+        "target_y": 3.0,
+        "robot_count": 3,
+        "seed": 202,
+        "energy": 40.0,
+        "mode": "fault",
+        "admission_protocol": true,
+        "schedule": [],
+        "profile": {
+          "uplink_delay_sec": 0.5,
+          "downlink_delay_sec": 0.5
+        }
+      },
+      "loss_corridors2": {
+        "world": "p1c_corridors.world",
+        "target_x": -4.5,
+        "target_y": -0.5,
+        "robot_count": 2,
+        "seed": 202,
+        "energy": 45.0,
+        "mode": "fault",
+        "admission_protocol": true,
+        "schedule": [],
+        "profile": {
+          "uplink_loss_rate": 0.1,
+          "downlink_loss_rate": 0.1
+        }
+      },
+      "holdout_ideal": {
+        "world": "p2c_holdout917.world",
+        "target_x": 4.6,
+        "target_y": -3.6,
+        "robot_count": 3,
+        "seed": 917,
+        "energy": 45.0,
+        "mode": "ideal",
+        "admission_protocol": true,
+        "schedule": []
+      },
+      "holdout_fault": {
+        "world": "p2c_holdout917.world",
+        "target_x": 4.6,
+        "target_y": -3.6,
+        "robot_count": 3,
+        "seed": 917,
+        "energy": 45.0,
+        "mode": "fault",
+        "admission_protocol": true,
+        "schedule": [],
+        "profile": {
+          "uplink_delay_sec": 0.5,
+          "downlink_loss_rate": 0.1,
+          "gateway_seed": 29171
+        }
+      },
+      "empty_battery": {
+        "world": "my_world.world",
+        "target_x": -4,
+        "target_y": 4,
+        "robot_count": 2,
+        "seed": 303,
+        "energy": 0.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": []
+      }
+    },
+    "rules": [
+      "Commit and push all source/config/helper bytes before first task; no edits while any task owner/observer remains live.",
+      "Retain every original/failure/infrastructure interruption; no task retries or failed-cell backfill.",
+      "All ten fixed direct-ideal cells and forced2/protocol_forced2/holdout_ideal require native COMPLETE at unchanged300s/.35m/.05mps/.1radps/5s.",
+      "Delay/loss/holdout_fault outcomes are all retained; their safety and protocol gates require zero contacts/exhaustion/robot failures, not forced task success.",
+      "Each forced robot must charge; all actual charger_stopped return audits require positive energy and prediction error <=0 within1e-6.",
+      "No-route/empty-energy negative probes must fail correctly, never generate a straight-line Nav2 return; actual ROS synthetic-map failure is labelled component, not Gazebo motion.",
+      "Physical blackout probe reuses the predeclared60..250s staging stimulus and read-only native motion thresholds; both robots must independently return/charge.",
+      "101/202/303/707/809 are exposed;917/new geometry/target/fault29171 is first-exposure verification, not a held-out population estimate. First exposure only after development and full fixed/safety gates.",
+      "Budget envelope assumes bounded motion deviation, speed, reaction and recovery; no claim under infinite blockage, changing obstacles, broken executor or uncalibrated hardware."
+    ],
+    "safety_probe_manifest": "p3b5_staged_return_probe_manifest.json",
+    "energy_unit": "simulation_model_units_not_joules",
+    "development_parent": "899a69db7e4998f0267a448c16668273fefc72de",
+    "retained_failed_development": "20261008_p2c_v1_failed_development.json",
+    "opportunity_charge_algorithm": "two_current_frontiers_complete_route_budget",
+    "opportunity_charge_rules": [
+      "Successful real exploration first; never initial spawn top-up.",
+      "Only existing near-home range and visible body-safe contact route; serial request and handle drain retained.",
+      "At most three distinct useful current frontier alternatives; full known route and endpoint return; forecast is not a queued command.",
+      "Current map identity/source TTL and current delivered pose/TF/battery gates; next actual leg always revalidates."
+    ]
+  },
+  "new_holdout917_exposed": false,
+  "task_experiments_started": false,
+  "general_hardware_safety_guarantee": false
+}
