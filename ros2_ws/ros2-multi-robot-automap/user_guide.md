@@ -1,5 +1,7 @@
 # ROS2 多机器人自主建图项目使用指南
 
+2026-10-09 P2C.1 v21有限接续组件PASS、待新冻结任务：v20首forced原RALLY timeout300.3/检测277.9/两机各charge1/min14.159669/零接触耗尽机器人失效，strict FAIL与全部原输入保留；4closed返航/121能量/26探索17接续重建PASS；旧启动图缺tb2电池节点的native绑定审计FAIL原样保留，各60native TF样本零过期。新有用接续仅2倍效用，不再绝对优先，仍原1.2m/gain200与20%/完整机体预约能源TTL准入。独立读者补重建group/base/reuse/weight/score，有限条件快照更高收益选择非因果任务结果。1048功能/四包5.27s/171保护4授权/54协议/actual AP DDS/两manifest/actual完整native图DDS反例PASS，70其他中央方法AST/native battery/sampler/launch保持。新4开发/17正式/2物理待clean pushed freeze，917未暴露；P3C.5已验收，无P4/ns-3/Wi-Fi/RL。报告20261009_p2c_bounded_commitment_components.md及20261009_p2c_v20_failed_development.md。
+
 常用启动命令、不同 world 和参数速查见 [`launch_commands.md`](launch_commands.md)。
 
 最近核对：2026-10-08。P3A.6、P3B.5、P3C、P3C.5 已获用户验收；P2C.1安全补强为独立开发候选。

@@ -9,6 +9,7 @@ from check_p3b5_gate import episode_ok,ledger_audit,native_completion_ok
 from check_p3c5_gate import audit_original,declaration_audit
 from multi_robot_exploration import control
 from multi_robot_exploration.bypass_audit import runtime_violations
+from p2c_native_graph import native_tf_ingress_audit
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -186,7 +187,7 @@ def lookahead_audit(records,require_compound_pose=False):
     return dict(status='PASS',two_frontier_charge_decisions=count)
 
 
-def exploration_travel_audit(records,required=False,require_commitment=False):
+def exploration_travel_audit(records,required=False,require_commitment=False,require_bounded_commitment=False):
     """Rebuild executed frontier travel and delivered-only energy witnesses."""
     count=0;discounts=0;resumed=0
     for e in records:
@@ -275,6 +276,20 @@ def exploration_travel_audit(records,required=False,require_commitment=False):
             assert f['information_gain']>max(control.MIN_REMAINING_GAIN,intent[2]*control.MIN_REMAINING_GAIN_FRACTION)
             assert f['battery_factor']==1.
             resumed+=1
+        if require_bounded_commitment:
+            groups=control.frontier_groups(raw['data'])
+            group=f['frontier_group_id']
+            assert isinstance(group,int) and 1<=group<=len(groups)
+            assert f['frontier_group_size']==len(groups[group-1])
+            exclusions=f['excluded_targets']
+            assert all(len(p)==2 and all(math.isfinite(v) for v in p) for p in exclusions)
+            base=control.exploration_utility(f['information_gain'],f['frontier_group_size'],nominal)
+            base*=control.target_reuse_penalty(target,exclusions)
+            assert math.isclose(base,f['base_utility'],abs_tol=1e-8),'base utility differs from delivered geometry'
+            weight=control.FRONTIER_CONTINUATION_WEIGHT if 'resume_intent' in f else 1.
+            assert f['continuation_weight']==weight
+            score=control.frontier_scheduling_score(f['adjusted_utility'],'resume_intent' in f)
+            assert math.isclose(score,f['scheduling_score'],abs_tol=1e-8)
         if states is not None:
             cost=energy(name,planned)
             assert math.isfinite(cost) and cost<states[name]['energy']
@@ -282,7 +297,8 @@ def exploration_travel_audit(records,required=False,require_commitment=False):
             assert f['battery_factor']==1.
         count+=1;discounts+=int(factor<1.)
     return dict(status='PASS',executed_frontier_witnesses=count,relative_travel_discounts=discounts,
-        resumed_frontier_witnesses=resumed,required=required,commitment_required=require_commitment)
+        resumed_frontier_witnesses=resumed,required=required,commitment_required=require_commitment,
+        bounded_commitment_required=require_bounded_commitment)
 
 
 def ap_return_veto_audit(records):
@@ -425,22 +441,6 @@ def energy_audit(path,result,required=False):
         robots={name:dict(samples=len(rows),last=rows[-1] if rows else None) for name,rows in snapshots.items()})
 
 
-def native_tf_ingress_audit(graph,robot_count,required=False):
-    if not required:return dict(status='LEGACY_RAW_INPUT',required=False)
-    nodes=graph['nodes'];verified=[]
-    for index in range(1,robot_count+1):
-        robot=f'tb{index}';topic=f'/{robot}/battery/source_tf';battery=f'/{robot}/battery_manager'
-        producer=f'/{robot}/gateway_tf_ingress'
-        subscribers={row[0] for row in nodes[battery]['subscribers']}
-        assert topic in subscribers and f'/{robot}/tf' not in subscribers
-        assert f'/{robot}/tf' in {row[0] for row in nodes[producer]['subscribers']}
-        outputs={row[0] for row in nodes[producer]['publishers']}
-        assert {topic,f'/{robot}/gateway/source_tf'}<=outputs
-        consumers=[name for name,node in nodes.items() if topic in {row[0] for row in node['subscribers']}]
-        assert consumers==[battery],('native TF leaked to another consumer',topic,consumers)
-        verified.append(robot)
-    return dict(status='PASS',required=True,robot_local_filtered_tf=verified,
-        ap_native_tf_consumers=0,source_time_renewal=False)
 
 
 def check_one(path,config):
@@ -468,7 +468,18 @@ def check_one(path,config):
     audit=json.loads((Path(__file__).resolve().parents[1]/'src/multi_robot_exploration/config/p3a_forbidden_bypasses.json').read_text())
     violations=runtime_violations(Snapshot(original['nodes']),audit,result['robot_count'])
     assert not violations,violations
-    ingress=native_tf_ingress_audit(original,result['robot_count'],bool(config.get('native_filtered_tf')))
+    native_graph=original
+    if config.get('native_tf_graph_capture'):
+        graph_path=directory/'native_graph.json'
+        assert graph_path.name in row['evidence_sha256'],'missing prospective native graph evidence'
+        native_graph=json.loads(graph_path.read_text())
+        assert '--native-tf-graph-output' in row['observer_command']
+        assert Path(row['observer_command'][row['observer_command'].index('--native-tf-graph-output')+1])==graph_path
+        assert not runtime_violations(Snapshot(native_graph['nodes']),audit,result['robot_count'])
+        for key,filename in (('safety_observer','observe_p3b5.py'),('native_graph_reader','p2c_native_graph.py')):
+            from run_p2d_baseline import file_digest
+            assert row['source_digests'][key]==file_digest(Path(__file__).with_name(filename))
+    ingress=native_tf_ingress_audit(native_graph,result['robot_count'],bool(config.get('native_filtered_tf')))
     native=return_audit(directory/'safety_events.jsonl',bool(config.get('native_pose_contract')),
         bool(config.get('return_source_selection')))
     energy=energy_audit(directory/'safety_events.jsonl',result,
@@ -481,7 +492,8 @@ def check_one(path,config):
         assert assignments['chosen_assignments_rebuilt']>=1, 'missing exact delivered assignment choice'
     repairs=rally_repair_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     travel=exploration_travel_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
-        bool(config.get('exploration_travel_preference')),bool(config.get('exploration_frontier_commitment')))
+        bool(config.get('exploration_travel_preference')),bool(config.get('exploration_frontier_commitment')),
+        bool(config.get('exploration_bounded_commitment')))
     assert result['collision_monitoring_active']
     return dict(case=case,status='PASS',git_commit=row['git_commit'],source_digests=row['source_digests'],
         result=result,raw_summary=str(path.resolve()),raw_summary_sha256=sha(path),return_audit=native,

@@ -55,12 +55,12 @@
     "factor": "min(1,(1+closest currently funded peer known distance)/(1+own known distance))",
     "inputs": "same delivered planning map/poses/frame/battery/own robot maps; pending charge and non-ACTIVE peers excluded",
     "distance": "known-free no-corner-cut route with original bounded escape and actual starting offset; complete actual body-masked path is priced again before admission",
-    "scope": "soft conditional utility preference; resume priority, fair serial charging, source TTLs and actual reservations remain; no global optimality or peer future-availability guarantee",
+    "scope": "Soft conditional utility preference; bounded continuation, fair serial charging, source TTLs and actual reservations remain; no global optimality or peer future-availability guarantee.",
     "evidence": "every executed regular frontier privately retains delivered map geometry, source leases, poses/models, nominal/actual distance, eligible peer budgets and utility factor; strict read-only reconstruction",
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-08T22:29:10.515810+00:00",
+  "predeclared_at_utc": "2026-10-08T22:53:45.463425+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -155,7 +155,7 @@
     "admission": "Regenerate current candidates; resume only within original1.2m and gain>max(200,20% prior gain), with current full body/reservation/energy/source checks and battery_factor1.",
     "clear": "Actual full viewpoint Nav2 success, native FAILED, ordinary navigation failure or no useful funded reachable current candidate clears preference; normal task/safety/retry limits remain.",
     "evidence": "Private executed witnesses retain current gain and optional prior intent; reconstruct gain from delivered map and verify current proximity/usefulness/funded energy. Not a new AP observation or application traffic.",
-    "limits": "Receding-horizon commitment heuristic, not stale command replay, global optimality or time guarantee."
+    "limits": "Bounded receding-horizon preference: currently useful continuation receives2x adjusted utility, not absolute priority. No stale command replay, global optimality or time guarantee."
   },
   "native_filtered_tf": {
     "source": "Existing robot-side sampler extracts only original map-to-odom transforms into /robot/battery/source_tf before the native DDS queue; no source stamp rewriting.",
@@ -165,5 +165,17 @@
     "proof": "Actual DDS mixed reliability/body TF, source preservation/future/stale/energy checks; actual frozen graph binds each native stream only to its own battery manager.",
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
+  },
+  "candidate_parent_commit": "c5b0f5ea149fde7376d1b045412c3865bc654ec6",
+  "exploration_bounded_commitment": {
+    "weight": 2.0,
+    "score": "adjusted_utility*(2 if current useful funded continuation else1)",
+    "guards": "Original full body-masked travel, accepted route reservations, complete round-trip energy, charging fairness and source leases remain hard admission checks.",
+    "evidence": "Selected gain/group size/base utility/reuse exclusions/relative factor/continuation weight/score retained privately; strict reader reconstructs geometry and scores. Does not assert global maximum over unseen original history.",
+    "scope": "One nominal-utility ranking change. Actual body-path energy is repriced before dispatch; nominal score is not an actual travel-time guarantee."
+  },
+  "native_tf_graph_capture": {
+    "scope": "Read-only safety observer captures complete required application/native graph once all native battery topics are observed and all endpoint bindings exist; does not delay or change task clocks.",
+    "evidence": "native_graph.json kept alongside original early bypass graph, owner-bound optional observer command and reader source digests required. Missing evidence FAIL; old incomplete graphs are never repaired."
   }
 }

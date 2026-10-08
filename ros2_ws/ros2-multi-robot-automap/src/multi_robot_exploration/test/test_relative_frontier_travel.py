@@ -1,7 +1,9 @@
 """Geodesic preference is conditional; complete body-safe budgets remain hard."""
+import base64
 import copy
 import json
 import math
+import zlib
 
 import numpy as np
 import pytest
@@ -153,6 +155,32 @@ def test_frontier_commitment_audit_uses_current_delivered_gain_and_funded_nearby
         assert exploration_travel_audit([e],True,True)['resumed_frontier_witnesses']==1
     else:
         with pytest.raises((AssertionError,KeyError)):exploration_travel_audit([e],True,True)
+
+
+@pytest.mark.parametrize('corruption',[None,'weight','score','base_and_score','group','group_size','exclusions','missing'])
+def test_bounded_commitment_reconstructs_base_and_scheduling_scores(corruption):
+    from check_p2c_gate import exploration_travel_audit
+    e=travel_event(unknown=True);f=e['travel_preference']
+    grid=np.frombuffer(zlib.decompress(base64.b64decode(e['planning_map']['grid'])),
+        dtype='<i2').reshape(e['planning_map']['shape'])
+    groups=c.frontier_groups(grid)
+    f.update(frontier_group_id=1,frontier_group_size=len(groups[0]),excluded_targets=[],
+        resume_intent=[*f['target'],f['information_gain']],continuation_weight=c.FRONTIER_CONTINUATION_WEIGHT)
+    f['base_utility']=c.exploration_utility(f['information_gain'],f['frontier_group_size'],f['own_nominal_distance_m'])
+    f['adjusted_utility']=f['base_utility']*f['factor']
+    f['scheduling_score']=c.frontier_scheduling_score(f['adjusted_utility'],True)
+    if corruption=='weight':f['continuation_weight']=10.
+    if corruption=='score':f['scheduling_score']+=1.
+    if corruption=='base_and_score':
+        f['base_utility']*=2.;f['adjusted_utility']*=2.;f['scheduling_score']*=2.
+    if corruption=='group':f['frontier_group_id']=0
+    if corruption=='group_size':f['frontier_group_size']+=1
+    if corruption=='exclusions':f['excluded_targets']=[f['target']]
+    if corruption=='missing':f.pop('scheduling_score')
+    if corruption is None:
+        assert exploration_travel_audit([e],True,True,True)['bounded_commitment_required']
+    else:
+        with pytest.raises((AssertionError,KeyError)):exploration_travel_audit([e],True,True,True)
 
 
 def test_executed_witness_excludes_an_unconsulted_charging_peer_map():

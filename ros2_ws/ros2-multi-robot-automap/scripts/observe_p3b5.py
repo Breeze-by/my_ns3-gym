@@ -14,6 +14,7 @@ from std_msgs.msg import String
 parser=argparse.ArgumentParser()
 parser.add_argument("--output", type=Path, required=True)
 parser.add_argument("--robot-count", type=int, required=True)
+parser.add_argument("--native-tf-graph-output",type=Path)
 args=parser.parse_args()
 args.output.parent.mkdir(parents=True,exist_ok=True)
 rclpy.init()
@@ -38,6 +39,21 @@ audit_qos=QoSProfile(depth=100,reliability=ReliabilityPolicy.RELIABLE,durability
 for i in range(1,args.robot_count+1):
     topic=f'/tb{i}/battery_return_audit'
     node.create_subscription(String,topic,lambda m,t=topic: record(t,m),audit_qos)
+if args.native_tf_graph_output:
+    from p2c_native_graph import complete_native_graph
+    from rclpy.clock import Clock,ClockType
+    graph_saved=False
+    def save_native_graph():
+        global graph_saved
+        if graph_saved or not all(f'/tb{i}/battery_state' in last for i in range(1,args.robot_count+1)):
+            return
+        try:snapshot=complete_native_graph(node,args.robot_count)
+        except AssertionError:return  # Discovery is incomplete; never fabricate absent endpoints.
+        snapshot['observer_time']=node.get_clock().now().nanoseconds/1e9
+        args.native_tf_graph_output.write_text(json.dumps(snapshot,indent=2,sort_keys=True)+'\n')
+        graph_saved=True
+        print('NATIVE_GRAPH_SAVED',flush=True)
+    node.create_timer(2.,save_native_graph,clock=Clock(clock_type=ClockType.STEADY_TIME))
 print("READY",flush=True)
 try: rclpy.spin(node)
 except (KeyboardInterrupt, ExternalShutdownException): pass

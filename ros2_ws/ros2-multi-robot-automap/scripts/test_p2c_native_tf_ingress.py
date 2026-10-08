@@ -14,7 +14,7 @@ def graph():
     return dict(nodes=nodes)
 
 
-@pytest.mark.parametrize('corruption',[None,'missing_native','raw_native','missing_source','missing_ap','ap_leak','peer_leak'])
+@pytest.mark.parametrize('corruption',[None,'missing_battery_node','missing_producer_node','missing_native','raw_native','missing_source','missing_ap','ap_leak','peer_leak'])
 def test_native_filtered_graph_rejects_wrong_input_and_remote_consumers(corruption):
     g=graph();nodes=g['nodes'];battery=nodes['/tb3/battery_manager'];source=nodes['/tb3/gateway_tf_ingress']
     if corruption=='missing_native':battery['subscribers']=[]
@@ -23,6 +23,8 @@ def test_native_filtered_graph_rejects_wrong_input_and_remote_consumers(corrupti
     if corruption=='missing_ap':source['publishers'].pop()
     if corruption=='ap_leak':nodes['/headquarters_control']['subscribers'].append(['/tb3/battery/source_tf',[]])
     if corruption=='peer_leak':nodes['/tb1/battery_manager']['subscribers'].append(['/tb3/battery/source_tf',[]])
+    if corruption=='missing_battery_node':nodes.pop('/tb3/battery_manager')
+    if corruption=='missing_producer_node':nodes.pop('/tb3/gateway_tf_ingress')
     if corruption is None:
         result=native_tf_ingress_audit(g,3,True);assert result['robot_local_filtered_tf']==['tb1','tb2','tb3']
     else:

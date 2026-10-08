@@ -1,5 +1,7 @@
 <!-- 2026-10-07: P3C metrics and live fault console validated; GUI defaults documented below. -->
 
+2026-10-09 P2C.1 v21有限接续组件PASS、待新冻结任务：v20首forced原RALLY timeout300.3/检测277.9/两机各charge1/min14.159669/零接触耗尽机器人失效，strict FAIL与全部原输入保留；4closed返航/121能量/26探索17接续重建PASS；旧启动图缺tb2电池节点的native绑定审计FAIL原样保留，各60native TF样本零过期。新有用接续仅2倍效用，不再绝对优先，仍原1.2m/gain200与20%/完整机体预约能源TTL准入。独立读者补重建group/base/reuse/weight/score，有限条件快照更高收益选择非因果任务结果。1048功能/四包5.27s/171保护4授权/54协议/actual AP DDS/两manifest/actual完整native图DDS反例PASS，70其他中央方法AST/native battery/sampler/launch保持。新4开发/17正式/2物理待clean pushed freeze，917未暴露；P3C.5已验收，无P4/ns-3/Wi-Fi/RL。报告20261009_p2c_bounded_commitment_components.md及20261009_p2c_v20_failed_development.md。
+
 # 多机器人任务启动命令速查
 
 本文只记录当前代码可直接使用的启动入口和参数。完整架构、实现说明和实验结果见

@@ -1,5 +1,7 @@
 # 多机器人任务导向无线通信调度工程实施计划
 
+2026-10-09 P2C.1 v21有限接续组件PASS、待新冻结任务：v20首forced原RALLY timeout300.3/检测277.9/两机各charge1/min14.159669/零接触耗尽机器人失效，strict FAIL与全部原输入保留；4closed返航/121能量/26探索17接续重建PASS；旧启动图缺tb2电池节点的native绑定审计FAIL原样保留，各60native TF样本零过期。新有用接续仅2倍效用，不再绝对优先，仍原1.2m/gain200与20%/完整机体预约能源TTL准入。独立读者补重建group/base/reuse/weight/score，有限条件快照更高收益选择非因果任务结果。1048功能/四包5.27s/171保护4授权/54协议/actual AP DDS/两manifest/actual完整native图DDS反例PASS，70其他中央方法AST/native battery/sampler/launch保持。新4开发/17正式/2物理待clean pushed freeze，917未暴露；P3C.5已验收，无P4/ns-3/Wi-Fi/RL。报告20261009_p2c_bounded_commitment_components.md及20261009_p2c_v20_failed_development.md。
+
 最后更新：2026-10-08（历史段落保留原日期）。
 
 本次[项目评审](report/20261008_project_review.md)已完成只读复核和审计修补：749功能检查/1 skip、四包build、150不可变任务/模型文件/54静态协议格通过；P3A.6十一、P3B.5六十三、P3C三、P3C.5十四原任务均重审通过，原结果未改。技术PASS不代表完整研究要求已满足：返航触发预算的欧氏距离启发式仍未关闭原路径预算要求；Wi-Fi容量尚未测量。用户于2026-10-08已验收P3C.5，并授权先完成独立P2C.1安全补强。下一步采用下述P4子门顺序，先做安全补强/重新冻结和包契约、被动无线测量，再做闭环、强基线及条件式学习；本轮未执行这些新阶段。

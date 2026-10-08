@@ -51,6 +51,7 @@ USEFUL_TRAVEL_M = 0.75
 GOAL_REPLAN_SEC = 3.0
 MIN_REMAINING_GAIN = 200
 MIN_REMAINING_GAIN_FRACTION = 0.2
+FRONTIER_CONTINUATION_WEIGHT = 2.0
 # Calibrated against the existing Nav2 loop, including planner/controller pauses.
 NAVIGATION_TIME_EXPONENT = 1.5
 PLANNING_OVERHEAD_SEC = 1.0
@@ -506,6 +507,11 @@ def interrupted_frontier_is_useful(assignment, intent, battery_factor):
             MIN_REMAINING_GAIN, intent[2] * MIN_REMAINING_GAIN_FRACTION
         )
     )
+
+
+def frontier_scheduling_score(utility, resuming):
+    """Favor useful continuation without making a low-value intent absolute."""
+    return utility * (FRONTIER_CONTINUATION_WEIGHT if resuming else 1.0)
 
 
 def nearest_traversable(traversable, start, max_radius_cells):
@@ -5796,6 +5802,9 @@ class HeadquartersControl(Node):
                     if preference is not None:
                         preference.update(base_utility=assignment.utility,
                             information_gain=assignment.viewpoint.information_gain,
+                            frontier_group_id=assignment.viewpoint.group_id,
+                            frontier_group_size=assignment.viewpoint.group_size,
+                            excluded_targets=robot_exclusions,
                             battery_factor=battery_factor, adjusted_utility=utility,
                             nominal_blocked_positions=([p for other,p in self.robot_positions.items()
                                 if other != robot_name and p is not None] if refine else []))
@@ -5823,9 +5832,8 @@ class HeadquartersControl(Node):
                 for name, route in self.goal_routes.items()
                 if self.robot_states[name] == "active" and route
             ]
-            for _, name, _, assignment in sorted(candidates, key=lambda item: (
-                (item[1], item[3]) not in resume_candidates, -item[0]
-            )):
+            for _, name, _, assignment in sorted(candidates, key=lambda item:
+                -frontier_scheduling_score(item[0], (item[1], item[3]) in resume_candidates)):
                 if name in plans:
                     continue
                 unfunded = (name, assignment) in unfunded_candidates
@@ -5905,6 +5913,9 @@ class HeadquartersControl(Node):
                     witness.update(planned_distance_m=planned_distance, blocked_positions=blocked)
                     if name in resuming_names:
                         witness['resume_intent'] = resume_intents[name]
+                    witness['continuation_weight'] = FRONTIER_CONTINUATION_WEIGHT if name in resuming_names else 1.0
+                    witness['scheduling_score'] = frontier_scheduling_score(
+                        witness['adjusted_utility'], name in resuming_names)
                     if getattr(self, 'enable_battery', False):
                         witness['required_energy'] = HeadquartersControl.exploration_required_energy(
                             self, name, planned_distance, (assignment.x, assignment.y))

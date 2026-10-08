@@ -60,6 +60,8 @@ def main(default_manifest=None, log_category='p3c5'):
         command.append("--gateway-admission-protocol")
     observer_command = [sys.executable, str(PROJECT_ROOT / "scripts/observe_p3b5.py"),
                         "--output", str(directory / "safety_events.jsonl"), "--robot-count", str(scenario["robot_count"])]
+    if config.get('native_tf_graph_capture'):
+        observer_command.extend(['--native-tf-graph-output',str(directory/'native_graph.json')])
     schedule_path = directory / "schedule.json"
     configure_command = [sys.executable, str(PROJECT_ROOT / "scripts/gateway_configure.py"),
                          "--schedule", str(schedule_path), "--output", str(directory / "configuration.jsonl")]
@@ -85,6 +87,9 @@ def main(default_manifest=None, log_category='p3c5'):
     manifest['source_digests'].update({name:file_digest(PROJECT_ROOT/'scripts'/filename)
         for name,filename in (('staging_apparatus','stage_p3b5_return_probe.py'),
                               ('physics_observer','observe_p3b5_return_physics.py'))})
+    if config.get('native_tf_graph_capture'):
+        manifest['source_digests'].update({name:file_digest(PROJECT_ROOT/'scripts'/filename)
+            for name,filename in (('safety_observer','observe_p3b5.py'),('native_graph_reader','p2c_native_graph.py'))})
     if probe_commands:
         fixture=PROJECT_ROOT/'scripts/stage_p3b5_return_probe.py'
         manifest.update(staging_command=shlex.join(probe_commands['staging']),

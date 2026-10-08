@@ -92,10 +92,11 @@ def test_physical_failure_drops_intent_instead_of_resuming():
     assert not node.exploration_resume_intents and node.robot_states['tb1']=='failed'
 
 
-@pytest.mark.parametrize("reason", ["resume", "unfunded", "observed", "blocked", "stale", "returning"])
+@pytest.mark.parametrize("reason", ["resume", "low_value", "unfunded", "observed", "blocked", "stale", "returning"])
 def test_resume_preference_uses_existing_admission_and_falls_back(monkeypatch, reason):
     grid=np.zeros((60, 100), dtype=int)
-    old=assignment(8., 3., gain=100 if reason=='observed' else 1000)
+    old=assignment(8., 3., gain=100 if reason=='observed' else 1000,
+        utility=10 if reason=='low_value' else 70)
     new=assignment(2., 3., utility=100)
     if reason=='blocked':
         grid[:, 70:72]=100
@@ -128,6 +129,11 @@ def test_resume_preference_uses_existing_admission_and_falls_back(monkeypatch, r
         assert len(sent)==1 and sent[0].x==2. and not node.exploration_resume_intents
 
 
+def test_continuation_weight_has_a_finite_utility_tradeoff():
+    assert control.frontier_scheduling_score(60.,True)>control.frontier_scheduling_score(100.,False)
+    assert control.frontier_scheduling_score(10.,True)<control.frontier_scheduling_score(100.,False)
+
+
 def test_successful_new_prefix_preserves_a_useful_viewpoint_in_the_saved_delivered_snapshot():
     import base64,json,zlib
     from pathlib import Path
@@ -140,6 +146,26 @@ def test_successful_new_prefix_preserves_a_useful_viewpoint_in_the_saved_deliver
     result_node=finish_node(assignment(*intended,gain=f['prior_information_gain'],navigation=prefix),preempted=False)
     control.HeadquartersControl.finish_goal(result_node,'tb1',True)
     assert result_node.exploration_resume_intents['tb1'][:2]==tuple(intended)
+    node,sent=conditional_snapshot_node(e,result_node.exploration_resume_intents)
+    control.HeadquartersControl.assign_idle_robots(node)
+    assert len(sent)==1 and sent[0][0]=='tb1'
+    selected=sent[0][1]
+    assert np.linalg.norm(np.array([selected.x,selected.y])-intended)<=control.MIN_TARGET_SEPARATION_M
+    assert selected.viewpoint.information_gain>max(200.,.2*f['prior_information_gain'])
+    assert node.exploration_travel_choices['tb1']['resume_intent']==tuple(intended)+(f['prior_information_gain'],)
+    # Conditional snapshot fixture, with no original history/reservation replay.
+    # An empty intent on the same reconstructed inputs selects the nearby task.
+    node.robot_states['tb1']='idle';node.exploration_resume_intents={};node.goal_routes={};sent.clear()
+    control.HeadquartersControl.assign_idle_robots(node)
+    assert sent and np.linalg.norm(np.array([sent[0][1].x,sent[0][1].y])-intended)>control.MIN_TARGET_SEPARATION_M
+
+
+def conditional_snapshot_node(e,intents):
+    import base64,zlib
+    maps={}
+    for key,s in [("planning",e["planning_map"]),("source",e["source_map"]),*e["return_maps"].items()]:
+        maps[key]=dict(data=np.frombuffer(zlib.decompress(base64.b64decode(s["grid"])),dtype="<i2").reshape(s["shape"]),
+            resolution=s["resolution"],origin=s["origin"])
     sent=[];grid=maps['planning'];states=e['battery_states']
     node=SimpleNamespace(enable_battery=True,task_state='EXPLORE',now=lambda:e['event_time'],
         map_data=grid['data'],resolution=grid['resolution'],origin=grid['origin'],
@@ -152,7 +178,7 @@ def test_successful_new_prefix_preserves_a_useful_viewpoint_in_the_saved_deliver
         robot_odom_received_at={name:e['inputs'][name+'/pose_state']['source_time'] for name in states},
         robot_tf_received_at={name:e['inputs'][name+'/frame_state']['source_time'] for name in states},
         battery_state_received_at={name:e['inputs'][name+'/battery_state']['source_time'] for name in states},
-        exploration_resume_intents=result_node.exploration_resume_intents,rally_charge_requested={},
+        exploration_resume_intents=intents,rally_charge_requested={},
         input_robot_names=lambda:list(states),participating_robots=lambda:list(states),
         fresh_robot_inputs=lambda:True,active_exclusions=lambda:[],frontier_cache=None,
         goal_targets={},goal_routes={},goal_initial_gain={},last_no_assignment_log=-float('inf'),
@@ -161,14 +187,19 @@ def test_successful_new_prefix_preserves_a_useful_viewpoint_in_the_saved_deliver
         consumed_publisher=SimpleNamespace(publish=lambda *args:None),
         send_goal=lambda name,a:sent.append((name,a)))
     node.exploration_battery_factor=lambda *args:control.HeadquartersControl.exploration_battery_factor(node,*args)
+    return node,sent
+
+
+def test_low_value_continuation_yields_on_the_saved_delivered_snapshot():
+    import json
+    from pathlib import Path
+    f=json.loads((Path(__file__).parent/'fixtures/p2c_v20_low_value_continuation.json').read_text())
+    e=f['current_navigation_event'];prior=e['travel_preference']
+    node,sent=conditional_snapshot_node(e,{'tb1':tuple(prior['resume_intent'])})
     control.HeadquartersControl.assign_idle_robots(node)
     assert len(sent)==1 and sent[0][0]=='tb1'
-    selected=sent[0][1]
-    assert np.linalg.norm(np.array([selected.x,selected.y])-intended)<=control.MIN_TARGET_SEPARATION_M
-    assert selected.viewpoint.information_gain>max(200.,.2*f['prior_information_gain'])
-    assert node.exploration_travel_choices['tb1']['resume_intent']==tuple(intended)+(f['prior_information_gain'],)
-    # Conditional snapshot fixture, with no original history/reservation replay.
-    # An empty intent on the same reconstructed inputs selects the nearby task.
-    node.robot_states['tb1']='idle';node.exploration_resume_intents={};node.goal_routes={};sent.clear()
-    control.HeadquartersControl.assign_idle_robots(node)
-    assert sent and np.linalg.norm(np.array([sent[0][1].x,sent[0][1].y])-intended)>control.MIN_TARGET_SEPARATION_M
+    chosen=node.exploration_travel_choices['tb1']
+    assert 'resume_intent' not in chosen
+    assert chosen['adjusted_utility']>control.FRONTIER_CONTINUATION_WEIGHT*prior['adjusted_utility']
+    assert chosen['continuation_weight']==1.
+    assert chosen['required_energy']<e['battery_states']['tb1']['energy']

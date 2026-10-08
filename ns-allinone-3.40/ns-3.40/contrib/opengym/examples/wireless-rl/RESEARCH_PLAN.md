@@ -1,5 +1,7 @@
 # 面向多机器人任务的无线通信调度研究总纲
 
+2026-10-09 P2C.1 v21有限接续组件PASS、待新冻结任务：v20首forced原RALLY timeout300.3/检测277.9/两机各charge1/min14.159669/零接触耗尽机器人失效，strict FAIL与全部原输入保留；4closed返航/121能量/26探索17接续重建PASS；旧启动图缺tb2电池节点的native绑定审计FAIL原样保留，各60native TF样本零过期。新有用接续仅2倍效用，不再绝对优先，仍原1.2m/gain200与20%/完整机体预约能源TTL准入。独立读者补重建group/base/reuse/weight/score，有限条件快照更高收益选择非因果任务结果。1048功能/四包5.27s/171保护4授权/54协议/actual AP DDS/两manifest/actual完整native图DDS反例PASS，70其他中央方法AST/native battery/sampler/launch保持。新4开发/17正式/2物理待clean pushed freeze，917未暴露；P3C.5已验收，无P4/ns-3/Wi-Fi/RL。报告20261009_p2c_bounded_commitment_components.md及20261009_p2c_v20_failed_development.md。
+
 2026-10-08评审结论：既有P1–P3的工程证据按原边界保留，P3C.5技术PASS，用户于2026-10-08已验收；不能直接推导无线性能、一般安全或RL收益。更严格只读重审通过P3A.6十一原任务、P3B.5六十三原任务/31配对、P3C三原任务和P3C.5十四原任务。新增协议内容/预声明绑定与模型冻结检查已修复审计遗漏。**本地与部分中央返航预算仍用欧氏距离×系数，原计划的已知地图路径预算要求尚未关闭；进入P4A-1闭环及P5正式比较前必须完成安全补强和新的任务冻结。** 当前没有容量模型，Wi-Fi瓶颈状态是“未测量/不可由该模型识别”，不能称为已测得无瓶颈的负结果。完整要求映射、反例、修订理由和验证见[项目评审](report/20261008_project_review.md)及[机读证据](report/20261008_project_review.json)。本轮只有审阅、只读重放和审计/文档修改，没有启动新的Gazebo/ns-3/Wi-Fi/RL任务。
 
 2026-10-07最新进展：P3C已验收，P3C.5技术完成、严格门禁PASS，待用户验收。bea7f8b冻结14原格11原生COMPLETE/3 RALLY超时、零碰撞/耗尽/失效/infra/retry；forced217.5秒各机充电一次。真实协议/阶段分层/控制成本/截止与AoI/可部署观测/实时回放完成；原任务和前两技术失败候选保持。任务/生成器/源TTL/原生门槛/安全不变。当前应用模型未证明容量瓶颈，未标定真实airtime/J，保持负载、不得人为增流量或启动RL。见[P3C.5最终报告](report/20261007_p3c5_gate.md)和[前瞻协议](report/20261007_p3c5_protocol.md)。未进入P4/ns-3/Wi-Fi/RL。
