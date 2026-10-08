@@ -195,6 +195,41 @@ def ap_return_veto_audit(records):
     return dict(status='PASS',delivered_return_vetoes=count)
 
 
+def rally_assignment_audit(records):
+    count=0;wall=[]
+    for e in records:
+        if e.get('event')!='coordinator_rally_assignment_failed':continue
+        geometry={}
+        declared=[('planning_map','headquarters/fused_map_snapshot','ap_delivered_planning_map',e['planning_map']),
+                  ('source_map','headquarters/fused_map_snapshot','ap_delivered_fused_map',e['source_map'])]
+        declared.extend((name,name+'/map_snapshot','ap_delivered_robot_map',s) for name,s in e['return_maps'].items())
+        for key,stream,source,s in declared:
+            assert s['source']==source and s['encoding']=='zlib_base64_int16_le'
+            assert s['source_time']==e['inputs'][stream]['source_time']
+            assert 0<=e['event_time']-s['source_time']<=5.
+            raw=np.frombuffer(zlib.decompress(base64.b64decode(s['grid'])),dtype='<i2').reshape(s['shape'])
+            geometry[key]=dict(data=raw,resolution=s['resolution'],origin=s['origin'])
+        planned,source=geometry['planning_map'],geometry['source_map']
+        assert planned['resolution']==source['resolution'] and planned['origin']==source['origin']
+        original=source['data'].copy()
+        for cell in e['self_return_cells'].values():
+            r,c=cell;assert 1<=r<original.shape[0]-1 and 1<=c<original.shape[1]-1
+            assert original[r,c]>=control.OCCUPIED_THRESHOLD
+            window=original[r-1:r+2,c-1:c+2].copy();window[1,1]=0
+            assert np.all(window==0) and planned['resolution']*math.sqrt(2)<=.1
+            original[r,c]=0
+        assert np.array_equal(original,planned['data'])
+        rebuilt=control.assign_rally_poses(planned['data'],planned['resolution'],planned['origin'],
+            e['robot_positions'],e['target'],objective=e['objective'],
+            battery_states=e['battery_states'],observer_robot=e['observer_robot'],
+            current_positions=e['current_positions'],hold_sec=e['hold_sec'],
+            return_maps={name:geometry[name] for name in e['return_maps']})
+        assert len(rebuilt)!=len(e['robot_positions'])
+        assert math.isfinite(e['computation_wall_sec']) and e['computation_wall_sec']>=0
+        wall.append(e['computation_wall_sec']);count+=1
+    return dict(status='PASS',failed_assignments_rebuilt=count,computation_wall_sec=wall)
+
+
 def energy_audit(path,result,required=False):
     snapshots={name:[] for name in result['robots']}
     for line in path.open():
@@ -260,10 +295,12 @@ def check_one(path,config):
         bool(config.get('native_energy_accounting')) and case!='empty_battery')
     forecast=lookahead_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     vetoes=ap_return_veto_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
+    assignments=rally_assignment_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     assert result['collision_monitoring_active']
     return dict(case=case,status='PASS',git_commit=row['git_commit'],source_digests=row['source_digests'],
         result=result,raw_summary=str(path.resolve()),raw_summary_sha256=sha(path),return_audit=native,
-        communication_audit=communications,lookahead_audit=forecast,native_energy_audit=energy,ap_return_veto_audit=vetoes)
+        communication_audit=communications,lookahead_audit=forecast,native_energy_audit=energy,
+        ap_return_veto_audit=vetoes,rally_assignment_audit=assignments)
 
 
 def audit_one(item):

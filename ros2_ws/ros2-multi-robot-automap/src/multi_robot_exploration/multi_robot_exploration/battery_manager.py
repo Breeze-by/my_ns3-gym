@@ -26,6 +26,7 @@ from .control import (
     grid_to_world,
     grid_audit_evidence,
     charging_route_field,
+    immutable_grid_snapshot,
     _line_cells,
     known_return_route,
     navigation_start_route,
@@ -500,9 +501,7 @@ class BatteryManager(Node):
                 or message.info.resolution <= 0):
             self.get_logger().warning('Ignoring invalid return map.')
             return
-        self.return_map = np.asarray(
-            message.data, dtype=np.int16
-        ).reshape(message.info.height, message.info.width)
+        self.return_map = immutable_grid_snapshot(message.data, (message.info.height, message.info.width))
         self.return_map_resolution = float(message.info.resolution)
         self.return_map_origin = (
             message.info.origin.position.x,
@@ -669,7 +668,8 @@ class BatteryManager(Node):
                     self.map_position, (self.charge_x, self.charge_y), self.charge_radius,
                     cache, True)
                 qualified = distance is not None and (source=='local' or local is None
-                    or route_respects_known_obstacles(local[0],local[1],local[2],route))
+                    or route_respects_known_obstacles(local[0],local[1],local[2],route,
+                        cache=caches.setdefault('local', {})))
                 input_age=max(age,self.now()-local[3]) if source!='local' and local is not None else age
                 candidate_budget=None if distance is None else return_energy_budget(distance,
                     self.move_cost,self.idle_cost,self.return_path_factor,self.nominal_speed,

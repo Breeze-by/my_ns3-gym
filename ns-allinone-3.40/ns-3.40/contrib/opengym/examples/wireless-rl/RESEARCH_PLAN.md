@@ -880,3 +880,8 @@ OpenWiFi、学习式地图/图像压缩、未知初始位姿地图配准、机�
 
 
 2026-10-08 P2C.1 v9：v8强制首格EXPLOREtimeout300.1/tb1正电量失路FAILED，原始/282live/成本账本保留，三开发/17正式/blackout/917未运行。中央完整当前/终点预算、集合候选和返充预约现核验同网关交付的机器人图与融合图路径资格；融合捷径不能清除该机器人已知障碍，价格计入最旧已用新鲜源龄。AP私有否决与预测双图证据可重建，不读取本地native隐藏输入、不增加应用流量。本地battery与核心返路算法未改；878功能/1skip、四包5.57s/172保护/54协议PASS，仍须新全cohort，不作任务/硬件安全收益外推。 证据：[中央一致性组件](report/20261008_p2c_ap_consistency_components.md)。
+
+
+2026-10-08 P2C.1 v10前瞻：v9首强制原格271.7s因目标区域survey失败，195.3s检测/未RALLY，两机各charge1/最低9.868180/零接触、耗尽和机器人失效；strict FAIL与257live/6返航预算/110能量样本/24AP否决重建完整保留。新候选只对不可变交付地图复用几何，将原连续障碍否决向量化，记录完整失败分配上下文；原300s/5s/TTL/净空保持。组件验证以新报告为准，新4开发/17正式/两真实blackout仍待同提交冻结验证，917未暴露。证据：[v9原失败](report/20261008_p2c_v9_failed_development.md)。P3C.5已验收，无P4/ns3/Wi-Fi/RL。
+
+2026-10-08 v10组件已核验：898pass/1skip、四包build/172保护/54协议PASS；2048冻结标量一致、192路径代价一致、100终点同进程五轮总CPU约减少三分之一，不能外推任务或硬时限收益。新cohort待冻结。报告：ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261008_p2c_geometry_components.md。

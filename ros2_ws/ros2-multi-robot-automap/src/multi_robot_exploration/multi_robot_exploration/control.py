@@ -673,6 +673,20 @@ def path_distance_grid(traversable, start, return_predecessors=False, goal_mask=
     return result.reshape(height, width)
 
 
+def immutable_grid_snapshot(data, shape):
+    """Own a bytes-backed ROS map snapshot, so cached geometry cannot mutate."""
+    return np.frombuffer(np.asarray(data, dtype=np.int16).tobytes(), dtype=np.int16).reshape(shape)
+
+
+def immutable_grid(raw_grid):
+    base = raw_grid
+    while isinstance(base, np.ndarray):
+        if base.flags.writeable:
+            return False
+        base = base.base
+    return isinstance(base, bytes)
+
+
 def charging_route_field(raw_grid, resolution, origin, charger, radius, cache=None):
     """One reverse multi-source Dijkstra field to every safe contact cell.
 
@@ -684,9 +698,14 @@ def charging_route_field(raw_grid, resolution, origin, charger, radius, cache=No
             or not all(math.isfinite(v) for v in (resolution, *origin, *charger, radius))
             or resolution <= 0 or radius <= .2):
         return None
+    geometry = (raw_grid.shape, raw_grid.dtype.str, resolution, *origin, *charger, radius)
+    if (cache is not None and cache.get('snapshot') is raw_grid
+            and cache.get('geometry') == geometry and immutable_grid(raw_grid)):
+        return cache['field']
     key = (raw_grid.shape, hashlib.blake2b(raw_grid.tobytes(), digest_size=16).hexdigest(), raw_grid.dtype.str,
            resolution, *origin, *charger, radius)
     if cache is not None and cache.get('key') == key:
+        cache.update(snapshot=raw_grid, geometry=geometry)
         return cache['field']
     safe = traversable_grid(raw_grid, resolution, RALLY_PATH_CLEARANCE_M)
     rows, columns = np.indices(raw_grid.shape)
@@ -697,7 +716,7 @@ def charging_route_field(raw_grid, resolution, origin, charger, radius, cache=No
     field = (safe, distances, predecessors)
     if cache is not None:
         cache.clear()
-        cache.update(key=key, field=field)
+        cache.update(key=key, field=field, snapshot=raw_grid, geometry=geometry)
     return field
 
 
@@ -742,7 +761,7 @@ def known_return_route(raw_grid, resolution, origin, position, charger, radius,
 
 
 def route_respects_known_obstacles(raw_grid, resolution, origin, route,
-                                  clearance_m=RALLY_PATH_CLEARANCE_M):
+                                  clearance_m=RALLY_PATH_CLEARANCE_M, cache=None):
     """Peer-known space may extend local unknown space, never erase local obstacles.
 
     Check the continuous route at half-cell spacing against local obstacle
@@ -751,34 +770,47 @@ def route_respects_known_obstacles(raw_grid, resolution, origin, route,
     """
     if not route or raw_grid is None or resolution <= 0:
         return False
-    occupied = np.argwhere(raw_grid > 0)
-    if not len(occupied):
+    geometry = (resolution, *origin)
+    if (cache is not None and cache.get('obstacle_snapshot') is raw_grid
+            and cache.get('obstacle_geometry') == geometry and immutable_grid(raw_grid)):
+        tree = cache['obstacle_tree']
+    else:
+        occupied = np.argwhere(raw_grid > 0)
+        tree = cKDTree(np.column_stack((origin[0]+(occupied[:,1]+.5)*resolution,
+                                       origin[1]+(occupied[:,0]+.5)*resolution))) if len(occupied) else None
+        if cache is not None and immutable_grid(raw_grid):
+            cache.update(obstacle_snapshot=raw_grid, obstacle_geometry=geometry, obstacle_tree=tree)
+    if tree is None:
         return True
-    obstacles = np.column_stack((origin[0]+(occupied[:,1]+.5)*resolution,
-                                 origin[1]+(occupied[:,0]+.5)*resolution))
-    samples=[route[0]];travel=[0.]
+    samples = [np.asarray(route[:1], dtype=float)]
+    increments = [np.zeros(1)]
     for start,end in zip(route,route[1:]):
         distance=math.dist(start,end);steps=max(1,math.ceil(2*distance/resolution))
-        for step in range(1,steps+1):
-            samples.append(tuple(a+(b-a)*step/steps for a,b in zip(start,end)))
-            travel.append(travel[-1]+distance/steps)
-    clearances=cKDTree(obstacles).query(samples)[0]
-    escaped=False;previous=None
-    def blocked(cell):
-        r,col=cell
-        return 0<=r<raw_grid.shape[0] and 0<=col<raw_grid.shape[1] and raw_grid[r,col]>0
-    for point,distance,clearance in zip(samples,travel,clearances):
-        cell=world_to_grid(*point,resolution,*origin)
-        if blocked(cell):return False
-        if previous is not None and abs(cell[0]-previous[0])==abs(cell[1]-previous[1])==1:
-            if blocked((cell[0],previous[1])) or blocked((previous[0],cell[1])):return False
-        if clearance+1e-8>=clearance_m:
-            escaped=True
-        elif escaped or distance>.6+1e-8 or not (0<=cell[0]<raw_grid.shape[0]
-                and 0<=cell[1]<raw_grid.shape[1] and raw_grid[cell]==0):
+        samples.append(np.asarray(start)+(np.asarray(end)-start)*np.arange(1,steps+1)[:,None]/steps)
+        increments.append(np.full(steps, distance/steps))
+    samples = np.concatenate(samples)
+    travel = np.cumsum(np.concatenate(increments))
+    clearances = tree.query(samples)[0]
+    cells = np.floor((samples-np.asarray(origin))/resolution).astype(int)[:, ::-1]
+    def values_at(cells):
+        inside = ((cells[:,0] >= 0) & (cells[:,0] < raw_grid.shape[0])
+                  & (cells[:,1] >= 0) & (cells[:,1] < raw_grid.shape[1]))
+        values = np.full(len(cells), -1.)
+        values[inside] = raw_grid[cells[inside,0], cells[inside,1]]
+        return values, inside
+    values, inside = values_at(cells)
+    if np.any(values > 0):
+        return False
+    diagonal = np.all(np.abs(np.diff(cells, axis=0)) == 1, axis=1)
+    if np.any(diagonal):
+        first = np.column_stack((cells[1:,0], cells[:-1,1]))[diagonal]
+        second = np.column_stack((cells[:-1,0], cells[1:,1]))[diagonal]
+        if np.any(values_at(first)[0] > 0) or np.any(values_at(second)[0] > 0):
             return False
-        previous=cell
-    return True
+    safe = clearances+1e-8 >= clearance_m
+    invalid_escape = (~safe) & (np.maximum.accumulate(safe) | (travel > .6+1e-8)
+                                | ~inside | (values != 0))
+    return not np.any(invalid_escape)
 
 
 def grid_audit_evidence(raw_grid, resolution, origin, source, source_time, version):
@@ -811,7 +843,7 @@ def qualified_return_candidates(raw_grid, resolution, origin, position, home, ra
             geometry['origin'], position, home, radius, caches.setdefault(source, {}), True)
         qualified = distance is not None and (source == 'local' or local_map is None
             or route_respects_known_obstacles(local_map['data'], local_map['resolution'],
-                                             local_map['origin'], route))
+                                             local_map['origin'], route, cache=caches.setdefault('local', {})))
         result.append(dict(source=source, path_distance_m=distance, route=route, qualified=qualified))
     return result
 
@@ -2638,6 +2670,32 @@ class HeadquartersControl(Node):
                 self.robot_map_received_at[name]),
         ), sort_keys=True)))
 
+    def record_rally_assignment_failure(self, active_positions, return_maps, wall_sec):
+        """Retain the exact delivered assignment inputs on a private audit path."""
+        if not hasattr(self, 'consumed_publisher'):
+            return
+        now = self.now()
+        if now - getattr(self, 'rally_assignment_audit_at', -float('inf')) < 5.:
+            return
+        self.rally_assignment_audit_at = now
+        self.consumed_publisher.publish(String(data=json.dumps(dict(
+            event='coordinator_rally_assignment_failed', event_time=now,
+            computation_wall_sec=wall_sec, inputs=self.input_freshness_details(),
+            robot_positions=active_positions, current_positions=self.robot_positions,
+            target=self.target,
+            objective=self.rally_assignment_objective, hold_sec=self.rally_hold_sec,
+            observer_robot=getattr(self, 'target_observing_robot', None),
+            battery_states=self.battery_states if self.enable_battery else None,
+            planning_map=grid_audit_evidence(self.map_data, self.resolution, self.origin,
+                'ap_delivered_planning_map', self.map_received_at, self.map_received_at),
+            source_map=grid_audit_evidence(self.source_map_data, self.resolution, self.origin,
+                'ap_delivered_fused_map', self.map_received_at, self.map_received_at),
+            self_return_cells=getattr(self, 'map_self_return_cells', {}),
+            return_maps={name: grid_audit_evidence(geometry['data'], geometry['resolution'],
+                geometry['origin'], 'ap_delivered_robot_map', self.robot_map_received_at[name],
+                self.robot_map_received_at[name]) for name, geometry in return_maps.items()},
+        ), sort_keys=True)))
+
     def task_return_required_energy(self, robot_name, task_distance, destination):
         """Budget a proposed complete approach and its full contact-route return."""
         state = self.battery_states[robot_name]
@@ -3579,6 +3637,8 @@ class HeadquartersControl(Node):
                         except (KeyError, TypeError, ValueError):
                             return
                         active_positions[name] = home
+                return_maps = HeadquartersControl.delivered_return_maps(self)
+                assignment_started = time.perf_counter()
                 self.rally_targets = assign_rally_poses(
                     self.map_data,
                     self.resolution,
@@ -3590,10 +3650,12 @@ class HeadquartersControl(Node):
                     observer_robot=getattr(self, "target_observing_robot", None),
                     current_positions=self.robot_positions,
                     hold_sec=self.rally_hold_sec,
-                    return_maps=HeadquartersControl.delivered_return_maps(self),
+                    return_maps=return_maps,
                 )
                 self.rally_final_targets = dict(self.rally_targets)
                 if len(self.rally_targets) != len(active_names):
+                    HeadquartersControl.record_rally_assignment_failure(
+                        self, active_positions, return_maps, time.perf_counter()-assignment_started)
                     if not self.active_batteries_ready():
                         return  # Surveys do not reserve independent returns.
                     candidate_count = len(
@@ -5076,13 +5138,11 @@ class HeadquartersControl(Node):
         planning, cells = planning_grid_without_self_returns(source, self.resolution, self.origin, positions)
         if not np.array_equal(self.map_data, planning):
             self.frontier_cache = None
-        self.map_data = planning
+        self.map_data = planning if immutable_grid(planning) else immutable_grid_snapshot(planning, planning.shape)
         self.map_self_return_cells = cells
 
     def map_callback(self, msg):
-        self.map_data = np.asarray(msg.data, dtype=np.int16).reshape(
-            msg.info.height, msg.info.width
-        )
+        self.map_data = immutable_grid_snapshot(msg.data, (msg.info.height, msg.info.width))
         self.source_map_data = self.map_data
         self.map_self_return_cells = {}
         self.resolution = msg.info.resolution
@@ -5165,9 +5225,7 @@ class HeadquartersControl(Node):
             msg.header.stamp.sec + msg.header.stamp.nanosec / 1e9
         )
         self.robot_maps[robot_name] = {
-            "data": np.asarray(msg.data, dtype=np.int16).reshape(
-                msg.info.height, msg.info.width
-            ),
+            "data": immutable_grid_snapshot(msg.data, (msg.info.height, msg.info.width)),
             "resolution": msg.info.resolution,
             "origin": (
                 msg.info.origin.position.x,
