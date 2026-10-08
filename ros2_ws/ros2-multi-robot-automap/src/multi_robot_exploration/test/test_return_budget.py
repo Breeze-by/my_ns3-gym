@@ -86,6 +86,40 @@ def test_cache_reuses_geometry_but_in_place_obstacle_change_invalidates_it():
     assert cache['field'] is not second
 
 
+def test_bounded_escape_selects_a_charger_connected_component():
+    grid=np.zeros((60,60),dtype=np.int16)
+    grid[28:31,:]=100;grid[28:31,25:29]=0
+    position,home,res=(2.65,2.95),(2.65,4.15),.1
+    safe,distances,_=control.charging_route_field(grid,res,(0.,0.),home,.8)
+    initial=control.world_to_grid(*position,res,0.,0.)
+    nearest,_=control.navigation_start_route(grid,safe,initial,6)
+    assert nearest is not None and not np.isfinite(distances[nearest])
+    distance,route=control.known_return_route(grid,res,(0.,0.),position,home,.8,include_route=True)
+    assert distance is not None and math.dist(route[-1],home)<=.6+1e-8
+    assert all(grid[control.world_to_grid(*p,res,0.,0.)]==0 for p in route)
+    leg,prefix=plan_charging_leg(grid,res,(0.,0.),position,home,.8)
+    assert leg is not None and np.isfinite(distances[control.world_to_grid(leg.x,leg.y,res,0.,0.)])
+    assert len(prefix)-1<=6 and all(p in route for p in prefix)
+
+
+def test_original_v2_failure_map_has_a_bounded_connected_escape():
+    import base64,zlib
+    from pathlib import Path
+    event=json.loads((Path(__file__).with_name('fixtures')/'p2c_v2_wrong_escape.json').read_text())
+    saved=event['map_evidence'];res=saved['resolution'];origin=saved['origin']
+    grid=np.frombuffer(zlib.decompress(base64.b64decode(saved['grid'])),dtype='<i2').reshape(saved['shape'])
+    safe,distances,_=control.charging_route_field(grid,res,origin,event['home'],event['charge_radius_m'])
+    initial=control.world_to_grid(*event['position'],res,*origin)
+    nearest,_=control.navigation_start_route(grid,safe,initial,math.ceil(.6/res))
+    assert grid[initial]==0 and not safe[initial] and not np.isfinite(distances[nearest])
+    distance,route=control.known_return_route(grid,res,origin,event['position'],event['home'],.8,include_route=True)
+    assert distance is not None and 4.<distance<5.
+    leg,prefix=plan_charging_leg(grid,res,origin,event['position'],event['home'],.8)
+    assert leg is not None and len(prefix)-1<=math.ceil(.6/res)
+    assert np.isfinite(distances[control.world_to_grid(leg.x,leg.y,res,*origin)])
+    assert all(p in route for p in prefix)
+
+
 @pytest.mark.parametrize('source',['local','delivered_fused'])
 def test_fresh_complete_source_survives_other_source_loss_without_hidden_ap_input(source):
     node,_,_=manager(detour_grid(True))

@@ -7955,3 +7955,30 @@ colcon build --symlink-install --packages-select multi_robot_interfaces multi_ro
 inline `/usr/bin/python3` AST对比899a69d和当前4核心函数 known_return_route/charging_route_field/path_distance_grid/return_energy_budget 完全相同，JSON `log/p2c_lookahead_core_preservation.json`；新shared grid证据只统一原编码。修复 `check_one` 的path.resolve后，在相对 `log/p2c/...dev_forced2/summary.json` 上调用 `check_one(path, original_row.config)`回放同原始record PASS/246 samples，输出 `p2c_lookahead_relative_reader_replay.json/.log`，原lab FAIL不变，无任务重跑。
 
 inline构造组件使用 test_frontier_energy_lookahead.setup 与原实际源码 `exploration_charge_budget`，关闭forecast上下文=>旧quarter策略None；恢复同map context=>新E24预测触发、完整成本/压缩源图/路径保留 `log/p2c_lookahead_policy_component.json`，仅构造组件，不是原buffer反事实或任务收益。新17格规则/父899a69d失败/algorithm和预声明时刻已更新manifest；917 world/seed917/fault29171未暴露，source/physics/native gates保持，须新clean commit/push冻结后才开始v2。P3C.5已用户验收，无P4/ns3/Wi-Fi/RL。
+
+
+## 2026-10-08 P2C.1 v2 原失败与v3连通逃离组件
+
+v2冻结862fe4ad212f3d9b747002e08ae79ea09f35a98f已推送后，使用上一段ROS/RMW=rmw_fastrtps_cpp/FASTDDS_BUILTIN_TRANSPORTS=UDPv4、unset XML/discovery server、CPU0–79前缀运行：
+
+```bash
+taskset -c 0-79 /usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261008_p2c_v2 --domain 170 --gazebo-port 20250
+/usr/bin/python3 scripts/check_p2c_gate.py --run-root "$PWD/log/p2c/20261008_p2c_v2" --development --cases dev_forced2 --output log/p2c_v2_dev_forced2_gate.json
+```
+
+2026-10-08 11:47:15–11:53:57UTC原任务/观察器自然关闭，EXPLORE timeout300.0/tb1 FAILED，两机各charge1/min16.111190/0接触/0耗尽，owner/observer exit0、无关闭升级/任务retry。严格FAIL为原native failed_robots断言，不回填；三开发/17正式/physical blackout未调用，917未暴露。关闭后inline分别调用ledger_audit/monitor_graph_audit/verify_live/audit_traffic/return_audit/lookahead_audit，独立证据均PASS（273live samples、newlookahead决策0）但不代替native安全失败；JSON/stdout及原SHA、原展开命令见report/20261008_p2c_v2_failed_development.json/.md与15精选gzip。原完整raw留canonical log。
+
+新v3仅修正known_return_route与plan_charging_leg共同选择充电连通逃离，不改原0.6m/rawfree/角穿越/.35m净空/余量/native/TTL。原失败map source delivered_fused、age0.2、initial(41,45)rawfree/inflatedunsafe，最近(39,44)反向∞，连通(51,48)在原12step内。对原862fe4a模块+当前候选执行同图纯函数回放，旧None/新4.56243073164597m；首helper ImportError未设置动态package保留，第二次声明package PASS输出log/p2c_connected_escape_original_replay_v2.json/.log。回放不是新物理任务或修补原结局。
+
+ROS相同前缀下的精确验证命令：
+
+```bash
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test scripts/test*.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test scripts/test*.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+colcon build --symlink-install --packages-select multi_robot_interfaces multi_robot_exploration merge_map multi_robot
+/usr/bin/python3 scripts/check_p2c_source.py --output log/p2c_connected_escape_source_v1.json
+/usr/bin/python3 scripts/compare_p2c_return_algorithms.py --output log/p2c_algorithm_components_v4.json
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261008_p2c_v3 --domain 170 --gazebo-port 20250 --validate-only
+```
+
+首全套3FAIL/823PASS/1skip/48.49s：两既有全workspace风格检查（原功能集此前已排除）与新夹具.6000000000000001浮点；仅夹具容差修正，原功能完整命令824PASS/1skip/22.49s。四包5.89s、source172保护/3授权/54协议PASS；192query三完整算法成本/可达一致，legacy46低估/28假有限。所有首失败/最终检查/原图/源SHA/manifest和11无损gzip在report/20261008_p2c_connected_escape_components.json/.md。v3新4开发/17正式/两blackout预声明更新父862fe4a与保留v1/v2；917未暴露。提交/推送后才开始新任务，所有任务原owner关闭前不修改。无P4/ns-3/Wi-Fi/RL。

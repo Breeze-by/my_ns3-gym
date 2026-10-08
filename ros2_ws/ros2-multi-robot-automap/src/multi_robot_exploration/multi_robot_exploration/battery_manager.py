@@ -142,9 +142,10 @@ def plan_charging_leg(raw_grid, resolution, origin, position, charger, radius, r
         route_cache, include_route=True)
     if distance is None or not full_route:
         return None, ()
-    safe, _, _ = charging_route_field(raw_grid, resolution, origin, charger, radius, route_cache)
+    safe, distances, _ = charging_route_field(raw_grid, resolution, origin, charger, radius, route_cache)
     initial = world_to_grid(*position, resolution, *origin)
-    start, escape = navigation_start_route(raw_grid, safe, initial, max(1, math.ceil(.6 / resolution)))
+    start, escape = navigation_start_route(raw_grid, safe & np.isfinite(distances), initial,
+                                           max(1, math.ceil(.6 / resolution)))
     if len(escape) > 1:
         route = tuple(grid_to_world(*cell, resolution, *origin) for cell in escape)
         return RallyPose(*route[-1], route_arrival_yaw(route, 0.)), route

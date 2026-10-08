@@ -715,8 +715,11 @@ def known_return_route(raw_grid, resolution, origin, position, charger, radius,
         return None, ()
     safe, distances, predecessors = field
     initial = world_to_grid(*position, resolution, *origin)
-    start, escape = navigation_start_route(raw_grid, safe, initial,
-                                          max(1, math.ceil(.6 / resolution)))
+    # The nearest inflated-free cell can belong to a disconnected pocket.
+    # Escape only to cells whose reverse field actually reaches a contact;
+    # retain the same raw-known-free path and bounded 0.6 m search.
+    start, escape = navigation_start_route(raw_grid, safe & np.isfinite(distances), initial,
+                                           max(1, math.ceil(.6 / resolution)))
     if start is None:
         return None, ()
     if math.dist(position, charger) <= radius:

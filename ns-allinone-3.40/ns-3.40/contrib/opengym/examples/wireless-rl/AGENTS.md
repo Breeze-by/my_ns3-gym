@@ -1,5 +1,7 @@
 # wireless-rl Codex Memory
 
+2026-10-08 P2C.1 v2 strict development FAIL at862fe4a:one forced original EXPLORE timeout300s/tb1 FAILED with positive energy,zero contacts/exhaustion;all owners naturally closed,three development/17formal/blackout unrun,917 unexposed.Original map proves nearest escape selected a charger-disconnected pocket.Prospective v3 budgets and local legs select a contact-connected endpoint within original0.6m raw-free escape;824 functional/1skip,four-package build/172protected/54protocol pass,old/new same-map distance None/4.56243m.No new v3 task yet;new pushed freeze/cohort required,v1/v2 failures retained.P3C.5 user-accepted;no P4/ns3/Wi-Fi/RL.See report/20261008_p2c_connected_escape_components.md/.json and 20261008_p2c_v2_failed_development.md/.json.
+
 2026-10-08 用户已明确验收 P3C.5，并授权按项目评审补强 P2C、比较新算法和优化算法。原 P3C.5 bea7f8b 的14原格/11 COMPLETE/3超时及所有失败保持。当前 P2C.1 为独立开发候选：本地/中央完整已知充电接触区路径预算、反向多源 Dijkstra 缓存、可见短腿、源龄/反应/恢复余量、失路有界等待和预算包络监督、预测误差与原地图审计。组件通过不代表集成完成；需要新推送冻结、开发、同提交理想十格/强制充电/真实断网返航/失路和耗尽反例及新留出验证。本次授权不包含 P4/ns-3/Wi-Fi/RL；101/202/303/707/809 已暴露，不称新留出。
 
 2026-10-08 current review: P3C.5 technical PASS, still pending user acceptance.

@@ -1174,3 +1174,6 @@ run_p3b5_tasks默认domain base改为30；run_p3b5_return_probe默认90。domain
 
 
 P2C.1 v2（2026-10-08，未集成候选）：原近站机会充电现增加两步当前前沿完整预算预测，只有已完成真实探索、有新鲜可见接触路线且充电可供给当前两个不同前沿时使用。原25%低电分支保留；预测不预派发第二个目标，不在初始spawn补满。所有原源TTL/本地抢占/串行请求/任务300秒/原生5秒保持均不变；新AP只读地图证明在ledger的`coordinator_charge_decision.opportunity_lookahead`，不会把本地审计地图交给AP。v1原开发FAIL及三COMPLETE/一timeout保留，当前仍待独立新freeze/gates，P3C.5已验收，无P4/ns3/Wi-Fi/RL。
+
+
+2026-10-08 P2C.1 当前为v3开发候选：完整充电反向场预算/执行腿使用连通逃离终点，继续原0.6m已知自由逃离/.35m净空与TTL、保留失路30秒停止失败；v1/v2原任务失败已保留，组件824 PASS/1skip不代表新任务验收。两步前沿近站机会充电仅用当前交付状态，未来腿仍重新准入。默认launch/参数未再变化；新正式矩阵需事前推送冻结，917未暴露。报告在 wireless-rl/report/20261008_p2c_connected_escape_components.md。
