@@ -1,5 +1,7 @@
 # wireless-rl Codex Memory
 
+2026-10-09 P2C.1 v16相关TF组件PASS、待新冻结任务：v15首forced原EXPLORE timeout300.0/零充电/min10.576148/零接触耗尽失效；122native快照中110 TF过期且对应网关源龄≤1s，原始和未closed返航FAIL保留。新两个executor worker只并行轻量TF筛选入箱，原状态/电量/动作/充电在同一串行组，TF队列20/相关源后合并/guard唤醒，odom10与原源戳/2s/5s/128未来heap/安全保持。actual混合DDS/domain220、104定向/966全功能/四包5.20s/172保护/54协议PASS；control字节未改，新4开发/17正式/两真实断网仍待clean pushed freeze，917未暴露。P3C.5已验收，无P4/ns-3/Wi-Fi/RL。报告20261009_p2c_relevant_tf_components.md与20261009_p2c_v15_failed_development.md。
+
 2026-10-09 P2C.1 v15组件PASS、待新冻结任务：v14同提交四原3 COMPLETE（forced285.2/lab245.9/rooms275.7）/走廊RALLY timeout300.4，四零接触耗尽失效、原始与末次native return未closed FAIL保留。原网关TF交付≤.142s而native末段源龄多次>2s，提示本地队列积压；新仅native TF/交付融合图latest1，odom原10和全部非构造方法AST/control字节保持。actual DDS/domain218、961功能/四包5.43s/172保护/54协议PASS；原源戳/TTL/300s/5s/物理/安全不放宽。新4开发/17正式/2真实断网须clean pushed freeze，917未暴露；P3C.5已用户验收，无P4/ns-3/Wi-Fi/RL。证据：20261009_p2c_native_snapshot_components.md与20261009_p2c_v14_failed_development.md。
 
 2026-10-09 P2C.1 v14组件PASS、尚待新冻结任务：v13强制首原格RALLY timeout300.3/两机各charge1/min9.464354/零接触耗尽失效，tb2末段返航未闭合与AP咨询map漏键严格FAIL保留。新候选以已合格完整返路软净空暴露择点，补原环形样本与最多464个角边界分层点，精确缓存原有界逃离可达性；新TF重投影不续odom源戳，成功分配可独立重建。961功能/四包5.33s/172保护/54协议/actual DDS PASS；密集负查询17.34→5.57s，正查询略慢，构造分配更耗时，均非任务因果或硬时限。原300s/5s/TTL/native battery/Nav2/SLAM/物理保持；新4开发/17正式/2真实断网仍待clean pushed freeze，917未暴露。P3C.5已验收，无P4/ns-3/Wi-Fi/RL。证据：20261009_p2c_angular_components.md与20261009_p2c_v13_failed_development.md。

@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-08T19:47:53.498471+00:00",
+  "predeclared_at_utc": "2026-10-08T20:16:09.508794+00:00",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -301,7 +301,7 @@
   ],
   "safety_probe_manifest": "p3b5_staged_return_probe_manifest.json",
   "energy_unit": "simulation_model_units_not_joules",
-  "development_parent": "1a30fc76c8a583b1547fbcbf01a980011e8cdaaf",
+  "development_parent": "4712c019080ed461a7968fc4e1ef53ba57bf2903",
   "retained_failed_development": "20261008_p2c_v1_failed_development.json",
   "opportunity_charge_algorithm": "two_current_frontiers_complete_route_budget",
   "retained_failed_developments": [
@@ -317,7 +317,8 @@
     "20261009_p2c_v11_failed_development.json",
     "20261009_p2c_v12_failed_development.json",
     "20261009_p2c_v13_failed_development.json",
-    "20261009_p2c_v14_failed_development.json"
+    "20261009_p2c_v14_failed_development.json",
+    "20261009_p2c_v15_failed_development.json"
   ],
   "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
   "opportunity_charge_rules": [
@@ -407,9 +408,11 @@
     "limits": "Bounded spatial sampling remains a heuristic, not exhaustive joint-feasibility or optimality proof. No original obstacle/unknown cell is cleared."
   },
   "native_snapshot_consumption": {
-    "subscriptions": "Native TF and gateway-delivered fused-map queues retain latest1; native odometry remains original10, local map/task/charge/event/action queues unchanged",
-    "scope": "Continuous state coalescing after delivery, original source stamps/two2s pose leases/5s maps unchanged; no extra public state, traffic, hardware energy or new thread",
-    "meter": "All odometry accounting code and queue depth unchanged. TF projection does not bill artificial map-frame jumps; actual motion/time ledger remains required.",
-    "mixed_tf": "Irrelevant body transforms cannot renew the map-frame lease; stale or excessive-future map TF keeps budget unavailable, later valid source recovers."
+    "subscriptions": "Native mixed TF retains20 with a separate lightweight input callback group; fused-map latest1; odometry remains original10, local map/task/charge/event/action queues unchanged",
+    "scope": "Two executor workers: only relevant TF ingress can run independently. All pose application, energy, budget, safety, charging and actions remain in the original mutually exclusive state group; no new AP observation or application traffic.",
+    "coalescing": "Filter original map-to-odom transforms before preserving the latest matured source and at most128 unique future stamps; a guard wakes the serialized consumer. Original native128-entry future heap/2s ahead window remains; overflow fails explicitly.",
+    "meter": "Odometry accounting code and queue depth unchanged; TF-only reprojection does not bill map-frame jumps. Required private5s energy ledger adds only a relevant TF receipt count.",
+    "mixed_tf": "Body transforms never overwrite a relevant snapshot or renew its lease. Original source offsets/2s pose/5s map TTLs remain, invalid future input cannot poison a later valid source.",
+    "evidence": "Actual two-worker DDS with the state group blocked and mixed relevant/body TF; blocked historical1/20 queues end with no relevant TF while the input mailbox retains original source50, with no concurrent state/energy/action mutation."
   }
 }

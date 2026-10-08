@@ -1,6 +1,7 @@
 import json
 import heapq
 import math
+import threading
 
 from action_msgs.msg import GoalStatus
 from geometry_msgs.msg import PoseStamped
@@ -10,7 +11,8 @@ from nav_msgs.msg import Odometry
 import numpy as np
 import rclpy
 from rclpy.action import ActionClient
-from rclpy.executors import ExternalShutdownException
+from rclpy.callback_groups import MutuallyExclusiveCallbackGroup
+from rclpy.executors import ExternalShutdownException, MultiThreadedExecutor
 from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
 from std_msgs.msg import String
@@ -294,9 +296,15 @@ class BatteryManager(Node):
         self.return_audit_publisher = self.create_publisher(
             String, f'/{self.robot_name}/battery_return_audit',
             QoSProfile(depth=100, durability=DurabilityPolicy.TRANSIENT_LOCAL))
+        self.native_frame_lock = threading.Lock()
+        self.native_frame_inbox = {}
+        self.native_frame_overflow = False
+        self.native_frame_receipts = 0
+        self.native_tf_group = MutuallyExclusiveCallbackGroup()
+        self.native_frame_guard = self.create_guard_condition(self.drain_native_inputs)
         self.input_subscriptions = [
-            # Preserve the odometry accounting queue. Only replaceable TF
-            # and delivered-map snapshots coalesce; original leases remain.
+            # Odometry accounting stays serialized. A separate cheap TF input
+            # callback filters relevant transforms before snapshot coalescing.
             self.create_subscription(
                 Odometry,
                 f"/{self.robot_name}/odom",
@@ -306,8 +314,9 @@ class BatteryManager(Node):
             self.create_subscription(
                 TFMessage,
                 f"/{self.robot_name}/tf",
-                self.tf_callback,
-                1,
+                self.enqueue_native_tf,
+                20,
+                callback_group=self.native_tf_group,
             ),
             self.create_subscription(
                 String,
@@ -458,6 +467,63 @@ class BatteryManager(Node):
                 source = stamp.sec + stamp.nanosec / 1e9 - self.frame_stamp_offset
                 self.receive_native_input('frame', source, stamped_transform)
 
+    def enqueue_native_tf(self, message):
+        """The input thread only saves relevant stamped TF; it cannot act."""
+        now = self.now()
+        changed = False
+        with self.native_frame_lock:
+            for transform in message.transforms:
+                if not (transform.header.frame_id.lstrip('/').endswith('map')
+                        and transform.child_frame_id.lstrip('/').endswith('odom')):
+                    continue
+                stamp = transform.header.stamp
+                source = stamp.sec + stamp.nanosec / 1e9 - self.frame_stamp_offset
+                if not math.isfinite(source) or not 0 <= source <= now + STATE_TTL_SEC['pose_state']:
+                    continue
+                self.native_frame_receipts += 1
+                self.native_frame_inbox[source] = transform
+                changed = True
+            mature = [source for source in self.native_frame_inbox if source <= now]
+            if mature:
+                newest = max(mature)
+                for source in mature:
+                    if source != newest:
+                        del self.native_frame_inbox[source]
+            if len(self.native_frame_inbox) > 128:
+                self.native_frame_overflow = True
+                self.native_frame_inbox.clear()
+        if changed:
+            self.native_frame_guard.trigger()
+
+    def drain_native_frames(self):
+        """Apply TF only in the serialized state/energy/action callback group."""
+        lock = getattr(self, 'native_frame_lock', None)
+        if lock is None:
+            return
+        with lock:
+            frames, self.native_frame_inbox = self.native_frame_inbox, {}
+            overflow = self.native_frame_overflow
+        if overflow:
+            self.fail('battery_native_input_backlog')
+            return
+        now = self.now()
+        for source, transform in sorted(frames.items()):
+            if not 0 <= source <= now + STATE_TTL_SEC['pose_state']:
+                continue
+            if source > now:
+                self.queue_future_native_input('frame', source, transform)
+            else:
+                self.apply_native_frame(transform, source)
+
+    def queue_future_native_input(self, kind, source, message):
+        if any(k == kind and stamp == source for stamp, _, k, _ in self.pending_native_inputs):
+            return
+        if len(self.pending_native_inputs) >= 128:
+            self.fail('battery_native_input_backlog')
+            return
+        self.native_input_sequence += 1
+        heapq.heappush(self.pending_native_inputs, (source, self.native_input_sequence, kind, message))
+
     def receive_native_input(self, kind, source, message):
         """DDS can deliver a sensor sample before its corresponding /clock."""
         self.drain_native_inputs()
@@ -465,19 +531,14 @@ class BatteryManager(Node):
         if not math.isfinite(source) or source < 0 or source > now + STATE_TTL_SEC['pose_state']:
             return
         if source > now:
-            if any(k==kind and stamp==source for stamp,_,k,_ in self.pending_native_inputs):
-                return
-            if len(self.pending_native_inputs) >= 128:
-                self.fail('battery_native_input_backlog')
-                return
-            self.native_input_sequence += 1
-            heapq.heappush(self.pending_native_inputs,(source,self.native_input_sequence,kind,message))
+            self.queue_future_native_input(kind, source, message)
         elif kind == 'frame':
             self.apply_native_frame(message, source)
         else:
             self.apply_native_odometry(message)
 
     def drain_native_inputs(self):
+        self.drain_native_frames()
         now = self.now()
         while self.pending_native_inputs and self.pending_native_inputs[0][0] <= now:
             source, _, kind, message = heapq.heappop(self.pending_native_inputs)
@@ -727,7 +788,8 @@ class BatteryManager(Node):
             initial_energy=self.initial_energy, charged_energy_added=self.charging_energy_added,
             actual_distance_m=self.total_motion_distance, actual_elapsed_sec=self.total_energy_elapsed,
             odom_source_time=self.last_odom_time, frame_source_time=self.map_tf_source_time,
-            pending_native_inputs=len(self.pending_native_inputs))
+            pending_native_inputs=len(self.pending_native_inputs),
+            relevant_frame_receipts=getattr(self, 'native_frame_receipts', 0))
         self.last_energy_audit_time = self.now()
 
     def return_map_evidence(self):
@@ -1206,11 +1268,14 @@ class BatteryManager(Node):
 def main(args=None):
     rclpy.init(args=args)
     manager = BatteryManager()
+    executor = MultiThreadedExecutor(num_threads=2)
+    executor.add_node(manager)
     try:
-        rclpy.spin(manager)
+        executor.spin()
     except (KeyboardInterrupt, ExternalShutdownException):
         pass
     finally:
+        executor.shutdown()
         manager.destroy_node()
         if rclpy.ok():
             rclpy.shutdown()

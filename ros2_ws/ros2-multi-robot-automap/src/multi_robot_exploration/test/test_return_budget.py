@@ -38,6 +38,8 @@ def manager(grid=None, position=(3.1, 1.1), home=(5.1, 1.1), energy=40.):
                    'audit_return','finish_return_audit','return_map_evidence','fail',
                    'receive_native_input','drain_native_inputs','apply_native_frame','apply_native_odometry'):
         setattr(node, method, MethodType(getattr(BatteryManager, method), node))
+    for method in ('drain_native_frames', 'queue_future_native_input'):
+        setattr(node, method, MethodType(getattr(BatteryManager, method), node))
     return node, events, states
 
 
@@ -422,10 +424,12 @@ def test_actual_ros_native_sensor_before_clock_is_deferred_then_accounted_once(s
             set_clock(100000000)
         transforms.publish(TFMessage(transforms=[tf]))
         if not sensor_ahead:
-            spin_until(lambda:node.map_tf_source_time is not None)
+            spin_until(lambda:bool(node.native_frame_inbox))
+            node.drain_native_inputs()
+            assert node.map_tf_source_time is not None
         odoms.publish(odom)
         if sensor_ahead:
-            spin_until(lambda:len(node.pending_native_inputs)==2)
+            spin_until(lambda:len(node.pending_native_inputs)+len(node.native_frame_inbox)==2)
             assert node.last_odom_time is None and node.map_tf_source_time is None
             assert node.current_return_budget() is None and node.energy==40.
         else:

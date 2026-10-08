@@ -1,0 +1,2195 @@
+{
+  "status": "FAIL",
+  "task_stack_frozen_commit": "4712c019080ed461a7968fc4e1ef53ba57bf2903",
+  "originals": 1,
+  "task_retries": 0,
+  "all_owned_closed_before_edits": true,
+  "original": {
+    "case": "dev_forced2",
+    "command": [
+      "/usr/bin/python3",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py",
+      "--world",
+      "my_world.world",
+      "--robot-count",
+      "2",
+      "--gazebo-seed",
+      "303",
+      "--startup-timeout",
+      "600",
+      "--message-timeout",
+      "90",
+      "--shutdown-timeout",
+      "120",
+      "--evaluation-duration",
+      "300",
+      "--evaluation-wait-timeout",
+      "900",
+      "--coverage-threshold",
+      "0",
+      "--mission-mode",
+      "rally",
+      "--gateway-mode",
+      "ideal",
+      "--gateway-seed",
+      "17011",
+      "--battery",
+      "--battery-capacity",
+      "100",
+      "--battery-initial-energy",
+      "18.0",
+      "--target-x",
+      "-4",
+      "--target-y",
+      "4",
+      "--rally-max-concurrent",
+      "2",
+      "--disable-global-battery-rally-pause",
+      "--episode-id",
+      "20261009_p2c_v15_dev_forced2",
+      "--collect-fault-result",
+      "--dwell-seconds",
+      "0",
+      "--evaluation-output-dir",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v15/20261009_p2c_v15_dev_forced2",
+      "--log-dir",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v15/20261009_p2c_v15_dev_forced2/launch",
+      "--gateway-ledger-path",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v15/20261009_p2c_v15_dev_forced2/ledger.jsonl",
+      "--bypass-audit-output",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v15/20261009_p2c_v15_dev_forced2/graph.json",
+      "--target-detection",
+      "--rally",
+      "--battery-charge-duration",
+      "10.0",
+      "--battery-safety-margin",
+      "5.0",
+      "--battery-return-timeout",
+      "120"
+    ],
+    "config": {
+      "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
+      "ap_return_consistency": {
+        "admission": "current and endpoint complete return must have a qualified local or locally-vetoed fused path; missing remains unavailable",
+        "assignment": "same qualified geometry for rally candidate return reserve and serial return reservations",
+        "constrained_search": "Same pure qualifier and explicitly labelled third route candidate; AP uses its delivered maps only, never the native original-map audit.",
+        "evidence": "private coordinator_return_map_veto and optional own-map lookahead witnesses; not extra transmitted application load",
+        "inputs": "AP delivered fused planning map and per-robot maps only; current original map/pose/TF/battery leases remain",
+        "source_age": "maximum consulted fresh map age is priced; no header renewal or native hidden input"
+      },
+      "cases": {
+        "delay_rooms3": {
+          "admission_protocol": true,
+          "energy": 40.0,
+          "mode": "fault",
+          "profile": {
+            "downlink_delay_sec": 0.5,
+            "uplink_delay_sec": 0.5
+          },
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 202,
+          "target_x": 5.0,
+          "target_y": 3.0,
+          "world": "p1c_rooms.world"
+        },
+        "dev_corridors303": {
+          "admission_protocol": false,
+          "energy": 45.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 303,
+          "target_x": -4.5,
+          "target_y": -0.5,
+          "world": "p1c_corridors.world"
+        },
+        "dev_forced2": {
+          "admission_protocol": false,
+          "charge_duration": 10.0,
+          "energy": 18.0,
+          "mode": "ideal",
+          "return_timeout": 120,
+          "robot_count": 2,
+          "safety_margin": 5.0,
+          "schedule": [],
+          "seed": 303,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        },
+        "dev_lab101": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 101,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        },
+        "dev_rooms202": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 202,
+          "target_x": 5.0,
+          "target_y": 3.0,
+          "world": "p1c_rooms.world"
+        },
+        "empty_battery": {
+          "admission_protocol": false,
+          "energy": 0.0,
+          "mode": "ideal",
+          "robot_count": 2,
+          "schedule": [],
+          "seed": 303,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        },
+        "fixed_corridors2_202": {
+          "admission_protocol": false,
+          "energy": 45.0,
+          "mode": "ideal",
+          "robot_count": 2,
+          "schedule": [],
+          "seed": 202,
+          "target_x": -4.5,
+          "target_y": -0.5,
+          "world": "p1c_corridors.world"
+        },
+        "fixed_corridors_101": {
+          "admission_protocol": false,
+          "energy": 45.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 101,
+          "target_x": -4.5,
+          "target_y": -0.5,
+          "world": "p1c_corridors.world"
+        },
+        "fixed_corridors_202": {
+          "admission_protocol": false,
+          "energy": 45.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 202,
+          "target_x": -4.5,
+          "target_y": -0.5,
+          "world": "p1c_corridors.world"
+        },
+        "fixed_corridors_303": {
+          "admission_protocol": false,
+          "energy": 45.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 303,
+          "target_x": -4.5,
+          "target_y": -0.5,
+          "world": "p1c_corridors.world"
+        },
+        "fixed_lab_101": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 101,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        },
+        "fixed_lab_202": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 202,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        },
+        "fixed_lab_303": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 303,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        },
+        "fixed_rooms_101": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 101,
+          "target_x": 5.0,
+          "target_y": 3.0,
+          "world": "p1c_rooms.world"
+        },
+        "fixed_rooms_202": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 202,
+          "target_x": 5.0,
+          "target_y": 3.0,
+          "world": "p1c_rooms.world"
+        },
+        "fixed_rooms_303": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 303,
+          "target_x": 5.0,
+          "target_y": 3.0,
+          "world": "p1c_rooms.world"
+        },
+        "forced2": {
+          "admission_protocol": false,
+          "charge_duration": 10.0,
+          "energy": 18.0,
+          "mode": "ideal",
+          "return_timeout": 120,
+          "robot_count": 2,
+          "safety_margin": 5.0,
+          "schedule": [],
+          "seed": 303,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        },
+        "holdout_fault": {
+          "admission_protocol": true,
+          "energy": 45.0,
+          "mode": "fault",
+          "profile": {
+            "downlink_loss_rate": 0.1,
+            "gateway_seed": 29171,
+            "uplink_delay_sec": 0.5
+          },
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 917,
+          "target_x": 4.6,
+          "target_y": -3.6,
+          "world": "p2c_holdout917.world"
+        },
+        "holdout_ideal": {
+          "admission_protocol": true,
+          "energy": 45.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 917,
+          "target_x": 4.6,
+          "target_y": -3.6,
+          "world": "p2c_holdout917.world"
+        },
+        "loss_corridors2": {
+          "admission_protocol": true,
+          "energy": 45.0,
+          "mode": "fault",
+          "profile": {
+            "downlink_loss_rate": 0.1,
+            "uplink_loss_rate": 0.1
+          },
+          "robot_count": 2,
+          "schedule": [],
+          "seed": 202,
+          "target_x": -4.5,
+          "target_y": -0.5,
+          "world": "p1c_corridors.world"
+        },
+        "protocol_forced2": {
+          "admission_protocol": true,
+          "charge_duration": 10.0,
+          "energy": 18.0,
+          "mode": "ideal",
+          "return_timeout": 120,
+          "robot_count": 2,
+          "safety_margin": 5.0,
+          "schedule": [],
+          "seed": 303,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        }
+      },
+      "coverage_threshold": 0.8,
+      "development_cases": [
+        "dev_forced2",
+        "dev_lab101",
+        "dev_rooms202",
+        "dev_corridors303"
+      ],
+      "development_parent": "1a30fc76c8a583b1547fbcbf01a980011e8cdaaf",
+      "duration_sec": 300,
+      "energy_unit": "simulation_model_units_not_joules",
+      "fault_seed": 17011,
+      "gate_cases": [
+        "fixed_lab_101",
+        "fixed_lab_202",
+        "fixed_lab_303",
+        "fixed_rooms_101",
+        "fixed_rooms_202",
+        "fixed_rooms_303",
+        "fixed_corridors_101",
+        "fixed_corridors_202",
+        "fixed_corridors_303",
+        "fixed_corridors2_202",
+        "forced2",
+        "protocol_forced2",
+        "delay_rooms3",
+        "loss_corridors2",
+        "holdout_ideal",
+        "holdout_fault",
+        "empty_battery"
+      ],
+      "geometry_computation": {
+        "immutable_cache": "Only bytes-backed immutable map snapshots may reuse geometry by object identity; writable maps and readonly aliases of writable maps are content-checked. Source stamps and budget freshness are never cached or renewed.",
+        "negative_cache": "Exact reverse bounded reachability mask matches original raw-known-free8-neighbour0.6m escape, diagonal corners and step count; it only rejects impossible starts. Original forward BFS still chooses every actual escape path; geometry changes invalidate cache.",
+        "private_diagnostics": "Both successful and failed rally assignments retain all actual delivered grids, source leases, robot positions, conditional starts, models and target; strict reader reconstructs chosen poses. No new AP or radio input.",
+        "qualification": "Batch segment sampling with original math.dist/ceil/multiply-divide order retains scalar0.35m/half-cell/0.6m/known-free/no-diagonal semantics; full outputs compared to v12, including no-solution dense input."
+      },
+      "native_energy_accounting": {
+        "channel": "read-only native battery_return_audit; not AP input or extra network traffic",
+        "equation": "energy=max(0,initial_energy+charge_credits-distance*move_cost-elapsed*idle_cost)",
+        "freeze_counterexample": "native truth path>1m cannot have zero local distance/time accounting; retain all failures",
+        "period_sec": 5.0,
+        "required": "all regular originals; zero-energy negative has its independent no-navigation failure audit"
+      },
+      "native_pose_contract": {
+        "frame_generation_stamp": "native validity stamp minus actual SLAM transform_timeout; launch supplies the same configured offset as gateway",
+        "frame_ttl_sec": 2.0,
+        "odom_ttl_sec": 2.0,
+        "source_order": "source stamps are preserved; valid sensor samples up to2s ahead of local /clock wait in one bounded128-entry heap; clock-matured duplicate/out-of-order sources are ignored, excessive-future samples never poison the current pose",
+        "startup_recovery": "Every charging entry, including immediate odom callbacks, resumes a funded initial missing-pose hold instead of charging; original low-energy/task charge requests remain valid.",
+        "unavailable": "no finite budget/nav return or stable charging; bounded30s stop then explicit positive-energy failure"
+      },
+      "native_snapshot_consumption": {
+        "meter": "All odometry accounting code and queue depth unchanged. TF projection does not bill artificial map-frame jumps; actual motion/time ledger remains required.",
+        "mixed_tf": "Irrelevant body transforms cannot renew the map-frame lease; stale or excessive-future map TF keeps budget unavailable, later valid source recovers.",
+        "scope": "Continuous state coalescing after delivery, original source stamps/two2s pose leases/5s maps unchanged; no extra public state, traffic, hardware energy or new thread",
+        "subscriptions": "Native TF and gateway-delivered fused-map queues retain latest1; native odometry remains original10, local map/task/charge/event/action queues unchanged"
+      },
+      "opportunity_charge_algorithm": "two_current_frontiers_complete_route_budget",
+      "opportunity_charge_rules": [
+        "Successful real exploration first; never initial spawn top-up.",
+        "Only existing near-home range and visible body-safe contact route; serial request and handle drain retained.",
+        "At most three distinct useful current frontier alternatives; full known route and endpoint return; forecast is not a queued command.",
+        "Current map identity/source TTL and current delivered pose/TF/battery gates; next actual leg always revalidates."
+      ],
+      "owner_shutdown_timeout_sec": 120,
+      "predeclared_at_utc": "2026-10-08T19:47:53.498471+00:00",
+      "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
+      "rally_candidate_sampling": {
+        "algorithm": "original72 rings plus up to2 angular boundary representatives in each0.4m spatial bin",
+        "limits": "Bounded spatial sampling remains a heuristic, not exhaustive joint-feasibility or optimality proof. No original obstacle/unknown cell is cleared.",
+        "maximum_candidates": 464,
+        "region": "same known-free target-visible1..2.6m region,0.45m endpoint clearance and0.8m separation"
+      },
+      "rally_return_objective": {
+        "exposure": "Soft weighted complete-return length between original0.35m path and0.45m endpoint margins; not energy, continuous clearance or dynamic-obstacle guarantee. Every existing hard constraint is unchanged.",
+        "order": [
+          "active_observer_protection",
+          "predicted_charge_count",
+          "qualified_return_clearance_exposure",
+          "serial_time",
+          "observer_headroom",
+          "existing_path_objective"
+        ]
+      },
+      "rally_return_repair": {
+        "budget": "Complete approach+qualified endpoint return+reaction/map/max(odom,frame) age+hold/wait; strictly less than current energy. Next real dispatch revalidates all original leases/reservations/energy.",
+        "evidence": "Private coordinator_rally_return_repair saves both delivered maps, original stamps, model, current/reserved/body positions, old/new endpoints and full route/cost; independent reconstruction. No native hidden input or added application traffic.",
+        "preservation": "Only a new proposal; preserve parked peers, original retries/300s horizon/5s native hold/safety. Reset hold on actual assignment change; never cancel a live action or reset retries.",
+        "search": "Known-free target-visible grid centres in the existing nominal1..2.6m rally region, endpoint clearance0.45m and separation0.8m, body-masked complete approach and same qualified contact return. Dense recovery supplements original72 ring samples; no obstacle/unknown clearing.",
+        "trigger": "Idle ACTIVE unarrived non-observer; old endpoint has no qualified return, current pose retains one; all delivered source leases and target lease fresh; no live/pending exploration/rally/survey, charge or safety refuge."
+      },
+      "rally_route_consistency": {
+        "default_rally_route": "infinite complete path was already in use; initial five-metre diagnosis withdrawn",
+        "offsets": "actual start to first grid point included in nominal approach, detour and parking costs",
+        "return_reservation": "complete delivered-map contact-region route; same geometry cache and clearance as known_home_distance",
+        "unavailable": "wait; charging reserves actual body; no local hidden inputs or centre-route fallback"
+      },
+      "retained_failed_development": "20261008_p2c_v1_failed_development.json",
+      "retained_failed_developments": [
+        "20261008_p2c_v1_failed_development.json",
+        "20261008_p2c_v2_failed_development.json",
+        "20261008_p2c_v4_failed_development.json",
+        "20261008_p2c_v5_failed_development.json",
+        "20261008_p2c_v6_failed_development.json",
+        "20261008_p2c_v7_failed_development.json",
+        "20261008_p2c_v8_failed_development.json",
+        "20261008_p2c_v9_failed_development.json",
+        "20261009_p2c_v10_failed_development.json",
+        "20261009_p2c_v11_failed_development.json",
+        "20261009_p2c_v12_failed_development.json",
+        "20261009_p2c_v13_failed_development.json",
+        "20261009_p2c_v14_failed_development.json"
+      ],
+      "retained_partial_development": "20261008_p2c_v3_partial_development.json",
+      "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
+      "return_source_selection": {
+        "ages": "original5s source TTL for both maps; budget prices the maximum source age actually consulted, plus original2s pose leases",
+        "constrained_search": "Only when the original fused shortest route fails the local-obstacle veto: project all local positive cells into a separate fused-grid search layer; keep unknown cells unknown, promote positive source cells to occupied, retain both originals, and still apply the original continuous local veto. No route remains unavailable.",
+        "derived_provenance": "Private native constrained_fused candidate: deterministic reconstruction from original local+fused grids; source_time=min(original stamps), version=max(original versions); age prices both originals. Never publish the derived grid as an application map.",
+        "evidence": "all fresh map candidates/costs/qualification/selected minimum retained on read-only native return audit only; not AP input or added communication",
+        "obstacle_veto": "a fused route may extend local unknown space but may not clear local known obstacles; continuous half-local-cell checks preserve0.35m clearance and original bounded0.6m known-free start escape; no diagonal cutting",
+        "sources": [
+          "fresh native local map",
+          "fresh gateway-delivered fused map",
+          "explicit conservative fused search with all fresh local occupied cell rectangles"
+        ],
+        "strategy": "lowest qualified complete-contact energy budget; exact tie prefers local"
+      },
+      "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
+      "rules": [
+        "Commit and push all source/config/helper bytes before first task; no edits while any task owner/observer remains live.",
+        "Retain every original/failure/infrastructure interruption; no task retries or failed-cell backfill.",
+        "All ten fixed direct-ideal cells and forced2/protocol_forced2/holdout_ideal require native COMPLETE at unchanged300s/.35m/.05mps/.1radps/5s.",
+        "Delay/loss/holdout_fault outcomes are all retained; their safety and protocol gates require zero contacts/exhaustion/robot failures, not forced task success.",
+        "Each forced robot must charge; all actual charger_stopped return audits require positive energy and prediction error <=0 within1e-6.",
+        "No-route/empty-energy negative probes must fail correctly, never generate a straight-line Nav2 return; actual ROS synthetic-map failure is labelled component, not Gazebo motion.",
+        "Physical blackout probe reuses the predeclared60..250s staging stimulus and read-only native motion thresholds; both robots must independently return/charge.",
+        "101/202/303/707/809 are exposed;917/new geometry/target/fault29171 is first-exposure verification, not a held-out population estimate. First exposure only after development and full fixed/safety gates.",
+        "Budget envelope assumes bounded motion deviation, speed, reaction and recovery; no claim under infinite blockage, changing obstacles, broken executor or uncalibrated hardware."
+      ],
+      "safety_probe_manifest": "p3b5_staged_return_probe_manifest.json",
+      "schema_version": 1,
+      "snapshot_consumption": {
+        "evidence": "Actual DDS blocked-executor probe compares original10/20 queues with latest1 on50 unchanged source-stamped snapshots",
+        "scope": "Application latest-state coalescing after gateway delivery, not injected radio loss or application traffic change",
+        "source_time": "Original source headers preserved; stale inputs still rejected by original5s/2s TTLs",
+        "subscriptions": "AP delivered fused/robot map, odometry and map-frame TF use original reliable volatile keep-last1; discrete events/publishers/native safety queues unchanged",
+        "tf_reprojection": "Each new delivered map-to-odom TF reprojects the last original odometry sample; its source timestamp and velocity remain unchanged, and original two independent2s leases still apply."
+      }
+    },
+    "configuration_command": null,
+    "cpu_affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79
+    ],
+    "environment": {
+      "FASTDDS_BUILTIN_TRANSPORTS": "UDPv4",
+      "FASTRTPS_DEFAULT_PROFILES_FILE": null,
+      "GAZEBO_MASTER_URI": "http://127.0.0.1:20290",
+      "PYTHONNOUSERSITE": "1",
+      "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+      "ROS_DISCOVERY_SERVER": null,
+      "ROS_DISTRO": "humble",
+      "ROS_DOMAIN_ID": "210"
+    },
+    "evidence_sha256": {
+      "20261009_p2c_v15_dev_forced2.csv": "dafa8951d783dd2cd048a341eb0b148f585f25405fd039f177ce2d450ad61c55",
+      "20261009_p2c_v15_dev_forced2.json": "73652d3daa2c79fb72356ade61fd79fbfdca17d4c956aa6019fd18345d9a49c9",
+      "graph.json": "d41858e94e01276c56bf36ff0bb278105a6f925892aa08360020c434880d8367",
+      "launch/robots2_seed303_20261009-035810.log": "4c301f59992c69bc9dfac52dbe61d0007835e56ddfe941efaadf54062de611b1",
+      "ledger.jsonl": "f6f9ce5b64d0ed471c3a841d92134fdf7ee9ab65dc67b482f538aec00ab6788d",
+      "ledger_metrics/curves.svg": "45a3809b7e69e406b3ccd62d47e1dcf694f5f318dc35ce430d1a6d9242f27429",
+      "ledger_metrics/events.jsonl": "6a3595df23b1fcc3baf2aa156c43af0d768303edf071513cb47c010329f9a7e8",
+      "ledger_metrics/inputs.jsonl": "879778010879026b3e81c5dfd995168634f40fcc7032f2f7f12e8ada1ef957d2",
+      "ledger_metrics/live.jsonl": "356a5590c649794cda027b54aedd3f799fd1ef9b986c05f71f68e7d24b491811",
+      "ledger_metrics/live_windows.csv": "9ac7cfefa6600baab0469b4b2a54b2edd97fd4ae690325280c276932ee985eb0",
+      "ledger_metrics/summary.json": "3978f06ece0627e86461475ee1cd7d15bd7131a9ce8074d99ecdd955480989ab",
+      "ledger_metrics/windows.csv": "9ac7cfefa6600baab0469b4b2a54b2edd97fd4ae690325280c276932ee985eb0",
+      "ledger_metrics/windows.jsonl": "b50718ac2a1a68ab410b5d59891a27378fd42ce9a60ca0d121d1f9e3f9435be7",
+      "manifest.json": "265145850a3284a049180c6098adb66bf06d49412d2f636ac8e1195f8a592ec9",
+      "observer.log": "3dfa3fb239f56c778a1e9b33eb31328349edd155a95806dac4378904e88527e5",
+      "runner.log": "7470696e8a4f9ecc8d5da6824b8e02dec7e944968d382ad9f7f9b506b71bf380",
+      "safety_events.jsonl": "fcf5600b6fbc028815eae68126bbc768279de2ec92c622c9120e31388510a502",
+      "schedule.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    "finished_at_utc": "2026-10-08T20:05:42.312517+00:00",
+    "git_commit": "4712c019080ed461a7968fc4e1ef53ba57bf2903",
+    "observer_command": [
+      "/usr/bin/python3",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/observe_p3b5.py",
+      "--output",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v15/20261009_p2c_v15_dev_forced2/safety_events.jsonl",
+      "--robot-count",
+      "2"
+    ],
+    "observer_pid": 424562,
+    "observer_returncode": 0,
+    "owner_pid": 424545,
+    "result": {
+      "battery_enabled": true,
+      "battery_minimum_energy": 10.576148145260728,
+      "battery_total_charges": 0,
+      "battery_total_charging_time_sec": 0.0,
+      "battery_total_returns": 83,
+      "collision_duration_sec": 0.0,
+      "collision_events": 0,
+      "collision_history": [],
+      "collision_monitoring_active": true,
+      "completion_status": "EXPLORE",
+      "completion_time_sec": null,
+      "coordinator_completion_time_sec": null,
+      "correct_coverage_ratio": 0.36240289641112167,
+      "correct_free_coverage_ratio": 0.38789002044442744,
+      "correct_truth_cell_count": 20620,
+      "coverage_at_detection": null,
+      "coverage_threshold": 0.0,
+      "detecting_robot": "",
+      "elapsed_sim_time_sec": 300.0,
+      "end_sim_time_sec": 2375.582,
+      "episode_id": "20261009_p2c_v15_dev_forced2",
+      "failed_robots": [],
+      "failure_reason": "timeout",
+      "gazebo_seed": 303,
+      "known_coverage_ratio": 0.36927484270097366,
+      "known_truth_cell_count": 21011,
+      "map_message_count": 356,
+      "merged_map_frame": "map",
+      "merged_map_height": 212,
+      "merged_map_origin_x": -5.637449541002951,
+      "merged_map_origin_y": -5.448436425861561,
+      "merged_map_origin_yaw": 0.0,
+      "merged_map_resolution": 0.05000000074505806,
+      "merged_map_width": 255,
+      "mission_mode": "rally",
+      "model_state_message_count": 3001,
+      "native_rally_hold_proof": null,
+      "nav_aborted": 0,
+      "nav_canceled": 4,
+      "nav_goal_count": 4,
+      "nav_succeeded": 0,
+      "observed_accuracy": 0.9813907001094665,
+      "occupied_iou": 0.06448352536891046,
+      "partial_completion": false,
+      "phase_overlap_ratios": {
+        "EXPLORE": 0.0,
+        "FOUND": 0.0,
+        "RALLY": 0.0
+      },
+      "phase_path_lengths_m": {
+        "EXPLORE": 2.143139729141943,
+        "FOUND": 0.0,
+        "RALLY": 0.0
+      },
+      "phase_union_visited_cell_counts": {
+        "EXPLORE": 25,
+        "FOUND": 0,
+        "RALLY": 0
+      },
+      "rally_angular_tolerance_radps": null,
+      "rally_assignments": {},
+      "rally_hold_sec": null,
+      "rally_linear_tolerance_mps": null,
+      "rally_min_separation_m": null,
+      "rally_position_tolerance_m": null,
+      "required_robot_count": 2,
+      "required_robot_names": [
+        "tb1",
+        "tb2"
+      ],
+      "robot_count": 2,
+      "robots": {
+        "tb1": {
+          "battery_capacity": 100.0,
+          "battery_charge_count": 0,
+          "battery_charge_x": 0.0,
+          "battery_charge_y": -0.45,
+          "battery_charging_time_sec": 0.0,
+          "battery_final_energy": 11.317943103258118,
+          "battery_initial_energy": 18.0,
+          "battery_message_count": 644,
+          "battery_minimum_energy": 11.317943103258118,
+          "battery_mode": "RETURNING",
+          "battery_return_count": 52,
+          "collision_duration_sec": 0.0,
+          "collision_events": 0,
+          "collision_message_count": 6001,
+          "end_x": -0.17668515967924,
+          "end_y": -1.1091569099145144,
+          "final_angular_speed_radps": 1.1975498794951765e-06,
+          "final_linear_speed_mps": 7.318893169086277e-05,
+          "nav_aborted": 0,
+          "nav_canceled": 1,
+          "nav_goal_count": 1,
+          "nav_succeeded": 0,
+          "path_length_m": 0.700753316558351,
+          "phase_path_lengths_m": {
+            "EXPLORE": 0.700753316558351,
+            "FOUND": 0.0,
+            "RALLY": 0.0
+          },
+          "rally_final_error_m": null,
+          "rally_target_x": null,
+          "rally_target_y": null,
+          "rally_target_yaw": null,
+          "start_x": 0.0023935820473107044,
+          "start_y": -0.4499948547063106,
+          "teleport_jump_count": 0,
+          "visited_cell_count": 10
+        },
+        "tb2": {
+          "battery_capacity": 100.0,
+          "battery_charge_count": 0,
+          "battery_charge_x": 0.0,
+          "battery_charge_y": 0.45,
+          "battery_charging_time_sec": 0.0,
+          "battery_final_energy": 10.576148145260728,
+          "battery_initial_energy": 18.0,
+          "battery_message_count": 604,
+          "battery_minimum_energy": 10.576148145260728,
+          "battery_mode": "RETURNING",
+          "battery_return_count": 31,
+          "collision_duration_sec": 0.0,
+          "collision_events": 0,
+          "collision_message_count": 6002,
+          "end_x": 0.030689238135329974,
+          "end_y": 1.8795591624864512,
+          "final_angular_speed_radps": 1.0673841295880926e-05,
+          "final_linear_speed_mps": 6.420077174386661e-05,
+          "nav_aborted": 0,
+          "nav_canceled": 3,
+          "nav_goal_count": 3,
+          "nav_succeeded": 0,
+          "path_length_m": 1.4423864125835921,
+          "phase_path_lengths_m": {
+            "EXPLORE": 1.4423864125835921,
+            "FOUND": 0.0,
+            "RALLY": 0.0
+          },
+          "rally_final_error_m": null,
+          "rally_target_x": null,
+          "rally_target_y": null,
+          "rally_target_yaw": null,
+          "start_x": 0.0023465265617094023,
+          "start_y": 0.45000494170458155,
+          "teleport_jump_count": 0,
+          "visited_cell_count": 15
+        }
+      },
+      "schema_version": 9,
+      "search_overlap_ratio": 0.0,
+      "start_sim_time_sec": 2075.582,
+      "success": false,
+      "target_confirmation_frames": null,
+      "target_field_of_view_deg": null,
+      "target_found": false,
+      "target_max_distance_m": null,
+      "target_x": null,
+      "target_y": null,
+      "task_phase": "EXPLORE",
+      "termination_reason": "timeout",
+      "time_to_75_coverage_sec": null,
+      "time_to_80_coverage_sec": null,
+      "time_to_90_coverage_sec": null,
+      "time_to_95_coverage_sec": null,
+      "time_to_detect_sec": null,
+      "time_to_rally_sec": null,
+      "total_overlap_ratio": 0.0,
+      "total_path_length_m": 2.143139729141943,
+      "truth_cell_count": 56898,
+      "truth_free_cell_count": 52337,
+      "truth_height": 218,
+      "truth_occupied_cell_count": 4561,
+      "truth_origin_x": -5.800000000000001,
+      "truth_origin_y": -5.6000000000000005,
+      "truth_rectangle_count": 26,
+      "truth_resolution": 0.05,
+      "truth_unsupported_collision_count": 1,
+      "truth_width": 261,
+      "union_visited_cell_count": 25,
+      "visit_resolution": 0.1,
+      "world_file": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/worlds/my_world.world"
+    },
+    "result_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v15/20261009_p2c_v15_dev_forced2/20261009_p2c_v15_dev_forced2.json",
+    "runner_returncode": 0,
+    "source_digests": {
+      "admission_protocol": "05f15651bfc831c541d5a662491a0467e64ae4084c27655a6f27e1ed56e6064a",
+      "control_cli": "f70c8f7a6ee4fb9a0a7d2e9468e3c77b3cc77d729cbd2a544c1f45adbf997c09",
+      "control_schema": "7fa7e5fa63dd0fb1e319fd08694773c675ac3fe8dcefa0051dd4f0fe71958d28",
+      "entrypoint": "78edb424db0a63347cf6b28f3fbff72a20207c3852f26a004907f868e8170a1f",
+      "exploration": "21a54ab53768d09a66369c422b7191ad8f05fb944e3a85952ce320ca24c0f3d9",
+      "launch": "4b1716d8c83549245e0589f0a145495bd512bf1215c3608c2436aecdaab8a7d0",
+      "manifest": "46b52b4281a8e24ff81cdd56cf11800e71c068e3af32485e6f00042e06bcd315",
+      "message_schema": "e0648e61473dfd2931038c79cda8a6fe4bf09c1d00f8d4acdfa0f4879e72925c",
+      "params": "2cb9b9e26015cbe79867fe3750296d9cb7626a05ad16f595b7692db4b4490f4f",
+      "runner": "cb14218542f8363fc8de4eda6082f3f1cbfe6479e3a61b98b171accf5657891a",
+      "slam": "61abada48d42602e5bb8950cdf81cd4804c0c45b787490681711e3cc228eb1c0",
+      "smoke": "74bd62337550b72309648571edb82a57b282cf7edfa09831ccd0f1aff7bfa97d",
+      "worlds": "2ee10406031815e3d0ea2e76074706a8e150e636ab2366428b201ecc72a5cc9a"
+    },
+    "started_at_utc": "2026-10-08T19:58:09.608996+00:00",
+    "worktree_status": [
+      "?? 260929_report/1.pdf",
+      "?? 260929_report/2007.08564v1.pdf",
+      "?? 260929_report/2106.00574v1.pdf",
+      "?? 260929_report/2503.07278v3.pdf",
+      "?? \"260929_report/A Critical Review of Communications in Multi-robot Systems.pdf\"",
+      "?? \"260929_report/Adaptive resource allocation in dynamic wireless environments a systematic review.pdf\"",
+      "?? 260929_report/Applications_of_Deep_Reinforcement_Learning_in_Communications_and_Networking_A_Survey.pdf",
+      "?? \"260929_report/Towards reasoning-empowered task-oriented communication for agent networks.pdf\"",
+      "?? 260929_report/Towards_Autonomous_Multi-UAV_Wireless_Network_A_Su.pdf",
+      "?? 260929_report/c61bd00b-f250-4cfe-b5a5-f941e8c9b22b.png",
+      "?? 260929_report/sensors-23-03625.pdf",
+      "?? 260929_report/ssrn-7067272.pdf",
+      "?? \"260929_report/\\347\\273\\204\\344\\274\\232\\346\\226\\207\\347\\214\\256\\346\\261\\207\\346\\212\\245-\\346\\250\\241\\346\\235\\277.pptx\"",
+      "?? \"260929_report/\\347\\273\\274\\350\\277\\260\\350\\256\\272\\346\\226\\207\\350\\260\\203\\347\\240\\224.docx\""
+    ]
+  },
+  "strict_gate": {
+    "status": "FAIL",
+    "scope": "development",
+    "task_stack_frozen_commit": "4712c019080ed461a7968fc4e1ef53ba57bf2903",
+    "cases": 1,
+    "errors": [
+      {
+        "case": "dev_forced2",
+        "error": "AssertionError()",
+        "traceback": "Traceback (most recent call last):\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 365, in audit_one\n    try:return check_one(path,config),None\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 339, in check_one\n    episode_ok(result)\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3b5_gate.py\", line 61, in episode_ok\n    p3a_episode_ok(result)\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3a6_gate.py\", line 39, in episode_ok\n    assert data[\"success\"]\nAssertionError\n"
+      }
+    ],
+    "evidence": [],
+    "full_declared_scope": false,
+    "raw_failures_retained": true,
+    "physical_blackout_gate": "separate_required_evidence",
+    "general_hardware_safety_guarantee": false
+  },
+  "diagnosis": {
+    "scope": "Read-only pairing of native saved source ages and preceding original gateway accepts; not native callback receipt latency",
+    "source_commit": "4712c019080ed461a7968fc4e1ef53ba57bf2903",
+    "native_return_audit": {
+      "status": "FAIL",
+      "error": "AssertionError(('unclosed return prediction', {('tb2', 31), ('tb1', 52)}))"
+    },
+    "native_energy_audit": {
+      "status": "PASS",
+      "required": true,
+      "snapshots": 122,
+      "robots": {
+        "tb1": {
+          "samples": 61,
+          "last": {
+            "actual_distance_m": 0.7008120699134575,
+            "actual_elapsed_sec": 300.0499999999997,
+            "charge_radius_m": 0.8,
+            "charged_energy_added": 0.0,
+            "energy": 11.2981879300819,
+            "energy_model": {
+              "idle_cost_per_sec": 0.02,
+              "move_cost_per_m": 1.0,
+              "nominal_speed_mps": 0.18,
+              "path_factor": 2.0,
+              "recovery_wait_sec": 30.0,
+              "safety_margin": 5.0
+            },
+            "event": "energy_accounting",
+            "frame_source_time": 2364.998,
+            "home": [
+              0.0,
+              -0.45
+            ],
+            "initial_energy": 18.0,
+            "mode": "RETURNING",
+            "odom_source_time": 2376.053,
+            "pending_native_inputs": 0,
+            "return_count": 52,
+            "robot": "tb1",
+            "sim_time": 2376.082
+          }
+        },
+        "tb2": {
+          "samples": 61,
+          "last": {
+            "actual_distance_m": 1.4426033066127708,
+            "actual_elapsed_sec": 300.0499999999997,
+            "charge_radius_m": 0.8,
+            "charged_energy_added": 0.0,
+            "energy": 10.556396693382172,
+            "energy_model": {
+              "idle_cost_per_sec": 0.02,
+              "move_cost_per_m": 1.0,
+              "nominal_speed_mps": 0.18,
+              "path_factor": 2.0,
+              "recovery_wait_sec": 30.0,
+              "safety_margin": 5.0
+            },
+            "event": "energy_accounting",
+            "frame_source_time": 2352.2000000000003,
+            "home": [
+              0.0,
+              0.45
+            ],
+            "initial_energy": 18.0,
+            "mode": "RETURNING",
+            "odom_source_time": 2376.053,
+            "pending_native_inputs": 0,
+            "return_count": 31,
+            "robot": "tb2",
+            "sim_time": 2376.082
+          }
+        }
+      }
+    },
+    "snapshots": 122,
+    "stale_native_snapshots": 110,
+    "stale_native_with_gateway_age_at_most_1_sec": 110,
+    "native_frame_age_max": 23.881999999999607,
+    "gateway_delivery_source_age_max": 0.4010000000000673,
+    "rows": [
+      {
+        "robot": "tb1",
+        "sim_time": 2075.982,
+        "mode": "ACTIVE",
+        "native_frame_source": null,
+        "native_frame_age": null,
+        "latest_gateway_source": 2075.577,
+        "latest_gateway_source_age": 0.40499999999974534
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2075.982,
+        "mode": "ACTIVE",
+        "native_frame_source": null,
+        "native_frame_age": null,
+        "latest_gateway_source": 2075.779,
+        "latest_gateway_source_age": 0.20299999999997453
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2081.082,
+        "mode": "ACTIVE",
+        "native_frame_source": 2080.978,
+        "native_frame_age": 0.10399999999981446,
+        "latest_gateway_source": 2080.978,
+        "latest_gateway_source_age": 0.10399999999981446
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2081.082,
+        "mode": "ACTIVE",
+        "native_frame_source": 2080.9790000000003,
+        "native_frame_age": 0.10299999999961074,
+        "latest_gateway_source": 2080.58,
+        "latest_gateway_source_age": 0.5019999999999527
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2086.082,
+        "mode": "ACTIVE",
+        "native_frame_source": 2085.98,
+        "native_frame_age": 0.10199999999986176,
+        "latest_gateway_source": 2085.98,
+        "latest_gateway_source_age": 0.10199999999986176
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2086.082,
+        "mode": "ACTIVE",
+        "native_frame_source": 2085.978,
+        "native_frame_age": 0.10399999999981446,
+        "latest_gateway_source": 2085.778,
+        "latest_gateway_source_age": 0.3040000000000873
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2091.082,
+        "mode": "ACTIVE",
+        "native_frame_source": 2090.9790000000003,
+        "native_frame_age": 0.10299999999961074,
+        "latest_gateway_source": 2090.779,
+        "latest_gateway_source_age": 0.3029999999998836
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2091.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2088.378,
+        "native_frame_age": 2.7039999999997235,
+        "latest_gateway_source": 2090.578,
+        "latest_gateway_source_age": 0.5039999999999054
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2096.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2092.98,
+        "native_frame_age": 3.1019999999998618,
+        "latest_gateway_source": 2095.581,
+        "latest_gateway_source_age": 0.500999999999749
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2096.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2088.378,
+        "native_frame_age": 7.7039999999997235,
+        "latest_gateway_source": 2095.98,
+        "latest_gateway_source_age": 0.10199999999986176
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2101.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2092.98,
+        "native_frame_age": 8.101999999999862,
+        "latest_gateway_source": 2100.981,
+        "latest_gateway_source_age": 0.10099999999965803
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2101.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2096.5800000000004,
+        "native_frame_age": 4.501999999999498,
+        "latest_gateway_source": 2100.78,
+        "latest_gateway_source_age": 0.30199999999967986
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2106.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2103.38,
+        "native_frame_age": 2.701999999999771,
+        "latest_gateway_source": 2105.58,
+        "latest_gateway_source_age": 0.5019999999999527
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2106.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2102.181,
+        "native_frame_age": 3.90099999999984,
+        "latest_gateway_source": 2105.781,
+        "latest_gateway_source_age": 0.3009999999999309
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2111.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2102.181,
+        "native_frame_age": 8.90099999999984,
+        "latest_gateway_source": 2110.581,
+        "latest_gateway_source_age": 0.500999999999749
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2111.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2104.5800000000004,
+        "native_frame_age": 6.501999999999498,
+        "latest_gateway_source": 2110.98,
+        "latest_gateway_source_age": 0.10199999999986176
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2116.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2109.98,
+        "native_frame_age": 6.101999999999862,
+        "latest_gateway_source": 2115.579,
+        "latest_gateway_source_age": 0.5029999999997017
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2116.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2112.179,
+        "native_frame_age": 3.9029999999997926,
+        "latest_gateway_source": 2115.981,
+        "latest_gateway_source_age": 0.10099999999965803
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2121.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2109.98,
+        "native_frame_age": 11.101999999999862,
+        "latest_gateway_source": 2120.98,
+        "latest_gateway_source_age": 0.10199999999986176
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2121.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2114.981,
+        "native_frame_age": 6.100999999999658,
+        "latest_gateway_source": 2120.781,
+        "latest_gateway_source_age": 0.3009999999999309
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2126.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2114.981,
+        "native_frame_age": 11.100999999999658,
+        "latest_gateway_source": 2125.581,
+        "latest_gateway_source_age": 0.500999999999749
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2126.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2121.1800000000003,
+        "native_frame_age": 4.901999999999589,
+        "latest_gateway_source": 2125.779,
+        "latest_gateway_source_age": 0.3029999999998836
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2131.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2124.981,
+        "native_frame_age": 6.100999999999658,
+        "latest_gateway_source": 2130.981,
+        "latest_gateway_source_age": 0.10099999999965803
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2131.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2126.5800000000004,
+        "native_frame_age": 4.501999999999498,
+        "latest_gateway_source": 2130.58,
+        "latest_gateway_source_age": 0.5019999999999527
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2136.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2129.5800000000004,
+        "native_frame_age": 6.501999999999498,
+        "latest_gateway_source": 2135.982,
+        "latest_gateway_source_age": 0.09999999999990905
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2136.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2124.981,
+        "native_frame_age": 11.100999999999658,
+        "latest_gateway_source": 2135.782,
+        "latest_gateway_source_age": 0.29999999999972715
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2141.082,
+        "mode": "ACTIVE",
+        "native_frame_source": 2139.1820000000002,
+        "native_frame_age": 1.8999999999996362,
+        "latest_gateway_source": 2140.782,
+        "latest_gateway_source_age": 0.29999999999972715
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2141.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2139.183,
+        "native_frame_age": 1.8989999999998872,
+        "latest_gateway_source": 2140.584,
+        "latest_gateway_source_age": 0.4980000000000473
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2146.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2142.5820000000003,
+        "native_frame_age": 3.4999999999995453,
+        "latest_gateway_source": 2145.983,
+        "latest_gateway_source_age": 0.09899999999970532
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2146.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2139.1820000000002,
+        "native_frame_age": 6.899999999999636,
+        "latest_gateway_source": 2145.582,
+        "latest_gateway_source_age": 0.5
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2151.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2142.5820000000003,
+        "native_frame_age": 8.499999999999545,
+        "latest_gateway_source": 2150.788,
+        "latest_gateway_source_age": 0.29399999999986903
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2151.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2144.382,
+        "native_frame_age": 6.699999999999818,
+        "latest_gateway_source": 2150.985,
+        "latest_gateway_source_age": 0.09699999999975262
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2156.082,
+        "mode": "ACTIVE",
+        "native_frame_source": 2153.9860000000003,
+        "native_frame_age": 2.095999999999549,
+        "latest_gateway_source": 2155.786,
+        "latest_gateway_source_age": 0.29599999999982174
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2156.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2149.7870000000003,
+        "native_frame_age": 6.294999999999618,
+        "latest_gateway_source": 2155.587,
+        "latest_gateway_source_age": 0.49499999999989086
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2161.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2159.1870000000004,
+        "native_frame_age": 1.894999999999527,
+        "latest_gateway_source": 2160.987,
+        "latest_gateway_source_age": 0.09499999999979991
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2161.082,
+        "mode": "ACTIVE",
+        "native_frame_source": 2158.786,
+        "native_frame_age": 2.2959999999998217,
+        "latest_gateway_source": 2160.986,
+        "latest_gateway_source_age": 0.09600000000000364
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2166.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2158.786,
+        "native_frame_age": 7.295999999999822,
+        "latest_gateway_source": 2165.786,
+        "latest_gateway_source_age": 0.29599999999982174
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2166.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2159.1870000000004,
+        "native_frame_age": 6.894999999999527,
+        "latest_gateway_source": 2165.787,
+        "latest_gateway_source_age": 0.29500000000007276
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2171.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2165.9860000000003,
+        "native_frame_age": 5.095999999999549,
+        "latest_gateway_source": 2170.586,
+        "latest_gateway_source_age": 0.4960000000000946
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2171.082,
+        "mode": "ACTIVE",
+        "native_frame_source": 2168.585,
+        "native_frame_age": 2.4969999999998436,
+        "latest_gateway_source": 2170.588,
+        "latest_gateway_source_age": 0.49399999999968713
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2176.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2165.9860000000003,
+        "native_frame_age": 10.095999999999549,
+        "latest_gateway_source": 2175.986,
+        "latest_gateway_source_age": 0.09600000000000364
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2176.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2168.585,
+        "native_frame_age": 7.496999999999844,
+        "latest_gateway_source": 2175.988,
+        "latest_gateway_source_age": 0.09400000000005093
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2181.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2168.585,
+        "native_frame_age": 12.496999999999844,
+        "latest_gateway_source": 2180.788,
+        "latest_gateway_source_age": 0.29399999999986903
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2181.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2165.9860000000003,
+        "native_frame_age": 15.095999999999549,
+        "latest_gateway_source": 2180.786,
+        "latest_gateway_source_age": 0.29599999999982174
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2186.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2183.386,
+        "native_frame_age": 2.6959999999999127,
+        "latest_gateway_source": 2185.585,
+        "latest_gateway_source_age": 0.49699999999984357
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2186.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2180.786,
+        "native_frame_age": 5.295999999999822,
+        "latest_gateway_source": 2185.585,
+        "latest_gateway_source_age": 0.49699999999984357
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2191.082,
+        "mode": "ACTIVE",
+        "native_frame_source": 2188.985,
+        "native_frame_age": 2.0969999999997526,
+        "latest_gateway_source": 2190.986,
+        "latest_gateway_source_age": 0.09600000000000364
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2191.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2187.788,
+        "native_frame_age": 3.293999999999869,
+        "latest_gateway_source": 2190.988,
+        "latest_gateway_source_age": 0.09400000000005093
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2196.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2188.985,
+        "native_frame_age": 7.096999999999753,
+        "latest_gateway_source": 2195.785,
+        "latest_gateway_source_age": 0.29700000000002547
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2196.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2192.588,
+        "native_frame_age": 3.493999999999687,
+        "latest_gateway_source": 2195.785,
+        "latest_gateway_source_age": 0.29700000000002547
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2201.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2195.9880000000003,
+        "native_frame_age": 5.093999999999596,
+        "latest_gateway_source": 2200.589,
+        "latest_gateway_source_age": 0.49299999999993815
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2201.082,
+        "mode": "ACTIVE",
+        "native_frame_source": 2198.9880000000003,
+        "native_frame_age": 2.093999999999596,
+        "latest_gateway_source": 2200.588,
+        "latest_gateway_source_age": 0.49399999999968713
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2206.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2200.788,
+        "native_frame_age": 5.293999999999869,
+        "latest_gateway_source": 2205.988,
+        "latest_gateway_source_age": 0.09400000000005093
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2206.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2202.9900000000002,
+        "native_frame_age": 3.0919999999996435,
+        "latest_gateway_source": 2205.99,
+        "latest_gateway_source_age": 0.09200000000009823
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2211.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2200.788,
+        "native_frame_age": 10.293999999999869,
+        "latest_gateway_source": 2210.788,
+        "latest_gateway_source_age": 0.29399999999986903
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2211.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2202.9900000000002,
+        "native_frame_age": 8.091999999999643,
+        "latest_gateway_source": 2210.789,
+        "latest_gateway_source_age": 0.2929999999996653
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2216.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2209.3880000000004,
+        "native_frame_age": 6.693999999999505,
+        "latest_gateway_source": 2215.588,
+        "latest_gateway_source_age": 0.49399999999968713
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2216.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2202.9900000000002,
+        "native_frame_age": 13.091999999999643,
+        "latest_gateway_source": 2215.59,
+        "latest_gateway_source_age": 0.4919999999997344
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2221.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2215.9880000000003,
+        "native_frame_age": 5.093999999999596,
+        "latest_gateway_source": 2220.988,
+        "latest_gateway_source_age": 0.09400000000005093
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2221.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2202.9900000000002,
+        "native_frame_age": 18.091999999999643,
+        "latest_gateway_source": 2220.989,
+        "latest_gateway_source_age": 0.0929999999998472
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2226.082,
+        "mode": "ACTIVE",
+        "native_frame_source": 2224.188,
+        "native_frame_age": 1.893999999999778,
+        "latest_gateway_source": 2225.788,
+        "latest_gateway_source_age": 0.29399999999986903
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2226.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2220.19,
+        "native_frame_age": 5.891999999999825,
+        "latest_gateway_source": 2225.789,
+        "latest_gateway_source_age": 0.2929999999996653
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2231.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2228.1870000000004,
+        "native_frame_age": 2.894999999999527,
+        "latest_gateway_source": 2230.588,
+        "latest_gateway_source_age": 0.49399999999968713
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2231.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2220.19,
+        "native_frame_age": 10.891999999999825,
+        "latest_gateway_source": 2230.589,
+        "latest_gateway_source_age": 0.49299999999993815
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2236.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2220.19,
+        "native_frame_age": 15.891999999999825,
+        "latest_gateway_source": 2235.991,
+        "latest_gateway_source_age": 0.0909999999998945
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2236.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2228.1870000000004,
+        "native_frame_age": 7.894999999999527,
+        "latest_gateway_source": 2235.99,
+        "latest_gateway_source_age": 0.09200000000009823
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2241.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2237.3900000000003,
+        "native_frame_age": 3.6919999999995525,
+        "latest_gateway_source": 2240.79,
+        "latest_gateway_source_age": 0.2919999999999163
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2241.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2237.592,
+        "native_frame_age": 3.4899999999997817,
+        "latest_gateway_source": 2240.791,
+        "latest_gateway_source_age": 0.2909999999997126
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2246.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2237.592,
+        "native_frame_age": 8.489999999999782,
+        "latest_gateway_source": 2245.591,
+        "latest_gateway_source_age": 0.49099999999998545
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2246.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2237.3900000000003,
+        "native_frame_age": 8.691999999999553,
+        "latest_gateway_source": 2245.59,
+        "latest_gateway_source_age": 0.4919999999997344
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2251.082,
+        "mode": "ACTIVE",
+        "native_frame_source": 2248.59,
+        "native_frame_age": 2.4919999999997344,
+        "latest_gateway_source": 2250.99,
+        "latest_gateway_source_age": 0.09200000000009823
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2251.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2237.592,
+        "native_frame_age": 13.489999999999782,
+        "latest_gateway_source": 2250.992,
+        "latest_gateway_source_age": 0.08999999999969077
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2256.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2237.592,
+        "native_frame_age": 18.48999999999978,
+        "latest_gateway_source": 2255.791,
+        "latest_gateway_source_age": 0.2909999999997126
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2256.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2253.19,
+        "native_frame_age": 2.8919999999998254,
+        "latest_gateway_source": 2255.79,
+        "latest_gateway_source_age": 0.2919999999999163
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2261.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2255.19,
+        "native_frame_age": 5.891999999999825,
+        "latest_gateway_source": 2260.589,
+        "latest_gateway_source_age": 0.49299999999993815
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2261.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2258.1910000000003,
+        "native_frame_age": 2.8909999999996217,
+        "latest_gateway_source": 2260.589,
+        "latest_gateway_source_age": 0.49299999999993815
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2266.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2261.5910000000003,
+        "native_frame_age": 4.490999999999531,
+        "latest_gateway_source": 2265.992,
+        "latest_gateway_source_age": 0.08999999999969077
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2266.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2255.19,
+        "native_frame_age": 10.891999999999825,
+        "latest_gateway_source": 2265.99,
+        "latest_gateway_source_age": 0.09200000000009823
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2271.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2265.5910000000003,
+        "native_frame_age": 5.490999999999531,
+        "latest_gateway_source": 2270.789,
+        "latest_gateway_source_age": 0.2929999999996653
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2271.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2267.19,
+        "native_frame_age": 3.8919999999998254,
+        "latest_gateway_source": 2270.789,
+        "latest_gateway_source_age": 0.2929999999996653
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2276.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2271.3900000000003,
+        "native_frame_age": 4.6919999999995525,
+        "latest_gateway_source": 2275.59,
+        "latest_gateway_source_age": 0.4919999999997344
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2276.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2269.992,
+        "native_frame_age": 6.089999999999691,
+        "latest_gateway_source": 2275.592,
+        "latest_gateway_source_age": 0.4899999999997817
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2281.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2271.3900000000003,
+        "native_frame_age": 9.691999999999553,
+        "latest_gateway_source": 2280.989,
+        "latest_gateway_source_age": 0.0929999999998472
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2281.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2275.192,
+        "native_frame_age": 5.889999999999873,
+        "latest_gateway_source": 2280.989,
+        "latest_gateway_source_age": 0.0929999999998472
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2286.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2282.992,
+        "native_frame_age": 3.0899999999996908,
+        "latest_gateway_source": 2285.792,
+        "latest_gateway_source_age": 0.2899999999999636
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2286.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2280.989,
+        "native_frame_age": 5.092999999999847,
+        "latest_gateway_source": 2285.79,
+        "latest_gateway_source_age": 0.2919999999999163
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2291.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2287.19,
+        "native_frame_age": 3.8919999999998254,
+        "latest_gateway_source": 2290.59,
+        "latest_gateway_source_age": 0.4919999999997344
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2291.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2285.7920000000004,
+        "native_frame_age": 5.289999999999509,
+        "latest_gateway_source": 2290.591,
+        "latest_gateway_source_age": 0.49099999999998545
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2296.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2287.19,
+        "native_frame_age": 8.891999999999825,
+        "latest_gateway_source": 2295.99,
+        "latest_gateway_source_age": 0.09200000000009823
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2296.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2285.7920000000004,
+        "native_frame_age": 10.289999999999509,
+        "latest_gateway_source": 2295.992,
+        "latest_gateway_source_age": 0.08999999999969077
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2301.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2296.9900000000002,
+        "native_frame_age": 4.0919999999996435,
+        "latest_gateway_source": 2300.79,
+        "latest_gateway_source_age": 0.2919999999999163
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2301.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2296.391,
+        "native_frame_age": 4.6909999999998035,
+        "latest_gateway_source": 2300.792,
+        "latest_gateway_source_age": 0.2899999999999636
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2306.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2296.9900000000002,
+        "native_frame_age": 9.091999999999643,
+        "latest_gateway_source": 2305.59,
+        "latest_gateway_source_age": 0.4919999999997344
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2306.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2296.391,
+        "native_frame_age": 9.690999999999804,
+        "latest_gateway_source": 2305.591,
+        "latest_gateway_source_age": 0.49099999999998545
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2311.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2304.59,
+        "native_frame_age": 6.491999999999734,
+        "latest_gateway_source": 2310.99,
+        "latest_gateway_source_age": 0.09200000000009823
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2311.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2307.391,
+        "native_frame_age": 3.6909999999998035,
+        "latest_gateway_source": 2310.991,
+        "latest_gateway_source_age": 0.0909999999998945
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2316.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2307.391,
+        "native_frame_age": 8.690999999999804,
+        "latest_gateway_source": 2315.792,
+        "latest_gateway_source_age": 0.2899999999999636
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2316.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2312.3900000000003,
+        "native_frame_age": 3.6919999999995525,
+        "latest_gateway_source": 2315.79,
+        "latest_gateway_source_age": 0.2919999999999163
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2321.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2312.3900000000003,
+        "native_frame_age": 8.691999999999553,
+        "latest_gateway_source": 2320.59,
+        "latest_gateway_source_age": 0.4919999999997344
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2321.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2307.391,
+        "native_frame_age": 13.690999999999804,
+        "latest_gateway_source": 2320.592,
+        "latest_gateway_source_age": 0.4899999999997817
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2326.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2322.59,
+        "native_frame_age": 3.4919999999997344,
+        "latest_gateway_source": 2325.99,
+        "latest_gateway_source_age": 0.09200000000009823
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2326.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2321.592,
+        "native_frame_age": 4.489999999999782,
+        "latest_gateway_source": 2325.991,
+        "latest_gateway_source_age": 0.0909999999998945
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2331.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2321.592,
+        "native_frame_age": 9.489999999999782,
+        "latest_gateway_source": 2330.792,
+        "latest_gateway_source_age": 0.2899999999999636
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2331.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2325.3900000000003,
+        "native_frame_age": 5.6919999999995525,
+        "latest_gateway_source": 2330.791,
+        "latest_gateway_source_age": 0.2909999999997126
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2336.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2330.592,
+        "native_frame_age": 5.489999999999782,
+        "latest_gateway_source": 2335.593,
+        "latest_gateway_source_age": 0.48900000000003274
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2336.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2325.3900000000003,
+        "native_frame_age": 10.691999999999553,
+        "latest_gateway_source": 2335.593,
+        "latest_gateway_source_age": 0.48900000000003274
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2341.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2337.5930000000003,
+        "native_frame_age": 3.488999999999578,
+        "latest_gateway_source": 2340.993,
+        "latest_gateway_source_age": 0.08899999999994179
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2341.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2339.195,
+        "native_frame_age": 1.8869999999997162,
+        "latest_gateway_source": 2340.995,
+        "latest_gateway_source_age": 0.08699999999998909
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2346.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2342.598,
+        "native_frame_age": 3.4839999999999236,
+        "latest_gateway_source": 2345.799,
+        "latest_gateway_source_age": 0.2829999999999018
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2346.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2337.5930000000003,
+        "native_frame_age": 8.488999999999578,
+        "latest_gateway_source": 2345.798,
+        "latest_gateway_source_age": 0.2840000000001055
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2351.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2348.398,
+        "native_frame_age": 2.6839999999997417,
+        "latest_gateway_source": 2350.598,
+        "latest_gateway_source_age": 0.4839999999999236
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2351.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2342.598,
+        "native_frame_age": 8.483999999999924,
+        "latest_gateway_source": 2350.6,
+        "latest_gateway_source_age": 0.4819999999999709
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2356.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2349.998,
+        "native_frame_age": 6.083999999999833,
+        "latest_gateway_source": 2355.998,
+        "latest_gateway_source_age": 0.08399999999983265
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2356.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2352.2000000000003,
+        "native_frame_age": 3.881999999999607,
+        "latest_gateway_source": 2356.0,
+        "latest_gateway_source_age": 0.08199999999987995
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2361.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2352.2000000000003,
+        "native_frame_age": 8.881999999999607,
+        "latest_gateway_source": 2360.8,
+        "latest_gateway_source_age": 0.28199999999969805
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2361.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2354.598,
+        "native_frame_age": 6.483999999999924,
+        "latest_gateway_source": 2360.798,
+        "latest_gateway_source_age": 0.2840000000001055
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2366.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2354.598,
+        "native_frame_age": 11.483999999999924,
+        "latest_gateway_source": 2365.598,
+        "latest_gateway_source_age": 0.4839999999999236
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2366.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2352.2000000000003,
+        "native_frame_age": 13.881999999999607,
+        "latest_gateway_source": 2365.6,
+        "latest_gateway_source_age": 0.4819999999999709
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2371.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2364.998,
+        "native_frame_age": 6.083999999999833,
+        "latest_gateway_source": 2370.998,
+        "latest_gateway_source_age": 0.08399999999983265
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2371.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2352.2000000000003,
+        "native_frame_age": 18.881999999999607,
+        "latest_gateway_source": 2370.999,
+        "latest_gateway_source_age": 0.08300000000008367
+      },
+      {
+        "robot": "tb2",
+        "sim_time": 2376.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2352.2000000000003,
+        "native_frame_age": 23.881999999999607,
+        "latest_gateway_source": 2375.799,
+        "latest_gateway_source_age": 0.2829999999999018
+      },
+      {
+        "robot": "tb1",
+        "sim_time": 2376.082,
+        "mode": "RETURNING",
+        "native_frame_source": 2364.998,
+        "native_frame_age": 11.083999999999833,
+        "latest_gateway_source": 2375.798,
+        "latest_gateway_source_age": 0.2840000000001055
+      }
+    ]
+  },
+  "unrun": [
+    "other3 development",
+    "17 formal originals",
+    "both physical blackout originals",
+    "917 first exposure"
+  ],
+  "limit": "Same-clock saved sources establish native consumption failure despite fresh upstream transforms; no native callback receipt trace. Filtered independent ingress is a prospective remedy, not a mission causal proof.",
+  "artifacts": [
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v15/20261009_p2c_v15_dev_forced2/20261009_p2c_v15_dev_forced2.json",
+      "archive": "20261009_p2c_v15_artifacts/20261009_p2c_v15_dev_forced2_20261009_p2c_v15_dev_forced2.json.gz",
+      "source_sha256": "73652d3daa2c79fb72356ade61fd79fbfdca17d4c956aa6019fd18345d9a49c9",
+      "archive_sha256": "4c1a5e6ea1ddc117ab898ecfea52f4d2ee398ff49e2f73a6331a885213c93b75"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v15/20261009_p2c_v15_dev_forced2/manifest.json",
+      "archive": "20261009_p2c_v15_artifacts/20261009_p2c_v15_dev_forced2_manifest.json.gz",
+      "source_sha256": "265145850a3284a049180c6098adb66bf06d49412d2f636ac8e1195f8a592ec9",
+      "archive_sha256": "ef1e1f801d8cbb52a48ee8015698abe212e98a6d16cc26dcd3b93a44b1c8e3f8"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v15/20261009_p2c_v15_dev_forced2/graph.json",
+      "archive": "20261009_p2c_v15_artifacts/20261009_p2c_v15_dev_forced2_graph.json.gz",
+      "source_sha256": "d41858e94e01276c56bf36ff0bb278105a6f925892aa08360020c434880d8367",
+      "archive_sha256": "5a141dd39eb2e1138efa423df6865495cff8ded8c497ee15a2a0a3759e9bb56b"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v15/20261009_p2c_v15_dev_forced2/ledger.jsonl",
+      "archive": "20261009_p2c_v15_artifacts/20261009_p2c_v15_dev_forced2_ledger.jsonl.gz",
+      "source_sha256": "f6f9ce5b64d0ed471c3a841d92134fdf7ee9ab65dc67b482f538aec00ab6788d",
+      "archive_sha256": "050d41aa627842c177e175e6bf8a02879a94f95632aac830ce8a805d51630b76"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v15/20261009_p2c_v15_dev_forced2/schedule.json",
+      "archive": "20261009_p2c_v15_artifacts/20261009_p2c_v15_dev_forced2_schedule.json.gz",
+      "source_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "archive_sha256": "abc129be8d26e8d4afe9ce45f9d5a73c8ed9aa62810ca24ee789fe4581dc4a80"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v15/20261009_p2c_v15_dev_forced2/summary.json",
+      "archive": "20261009_p2c_v15_artifacts/20261009_p2c_v15_dev_forced2_summary.json.gz",
+      "source_sha256": "2ed510467c8ea0537b28b96149d5f19f274c3c9fe1e59553e2f468d02d3adb14",
+      "archive_sha256": "96d55d2c0cb395c931be7b56619ea6bfb424585c55bc528cc518f796eea71c3b"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v15/20261009_p2c_v15_dev_forced2/20261009_p2c_v15_dev_forced2.csv",
+      "archive": "20261009_p2c_v15_artifacts/20261009_p2c_v15_dev_forced2_20261009_p2c_v15_dev_forced2.csv.gz",
+      "source_sha256": "dafa8951d783dd2cd048a341eb0b148f585f25405fd039f177ce2d450ad61c55",
+      "archive_sha256": "e218d7962cf636f9643f0654351d5000ed85a0586a9aeda0a826950a37b98dc3"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v15/20261009_p2c_v15_dev_forced2/safety_events.jsonl",
+      "archive": "20261009_p2c_v15_artifacts/20261009_p2c_v15_dev_forced2_safety_events.jsonl.gz",
+      "source_sha256": "fcf5600b6fbc028815eae68126bbc768279de2ec92c622c9120e31388510a502",
+      "archive_sha256": "4a0d52e45bf73dc160bcdf157b0eb3c4968a445e921478fb160f6f16d6d17892"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v15/20261009_p2c_v15_dev_forced2/observer.log",
+      "archive": "20261009_p2c_v15_artifacts/20261009_p2c_v15_dev_forced2_observer.log.gz",
+      "source_sha256": "3dfa3fb239f56c778a1e9b33eb31328349edd155a95806dac4378904e88527e5",
+      "archive_sha256": "341883acae54206eeb485456aaba713a7bffc1aca594c5ecb500d0601e28458b"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v15/20261009_p2c_v15_dev_forced2/runner.log",
+      "archive": "20261009_p2c_v15_artifacts/20261009_p2c_v15_dev_forced2_runner.log.gz",
+      "source_sha256": "7470696e8a4f9ecc8d5da6824b8e02dec7e944968d382ad9f7f9b506b71bf380",
+      "archive_sha256": "80a46879f159219fc772e2e2bb458d76c698d7a47867120e9ecdc37f2e1f9002"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v15/20261009_p2c_v15_dev_forced2/launch/robots2_seed303_20261009-035810.log",
+      "archive": "20261009_p2c_v15_artifacts/20261009_p2c_v15_dev_forced2_launch_robots2_seed303_20261009-035810.log.gz",
+      "source_sha256": "4c301f59992c69bc9dfac52dbe61d0007835e56ddfe941efaadf54062de611b1",
+      "archive_sha256": "67e31d1cb69b982ffcc645c3df2c83e9f78cf28196bfca45e92f1f7a631a3770"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v15/20261009_p2c_v15_dev_forced2/ledger_metrics/live.jsonl",
+      "archive": "20261009_p2c_v15_artifacts/20261009_p2c_v15_dev_forced2_ledger_metrics_live.jsonl.gz",
+      "source_sha256": "356a5590c649794cda027b54aedd3f799fd1ef9b986c05f71f68e7d24b491811",
+      "archive_sha256": "f40a0e9f6dae06804122c57cd6292c4ef2c12832e20a24ba20c02b37d9b81c5d"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v15/20261009_p2c_v15_dev_forced2/ledger_metrics/live_windows.csv",
+      "archive": "20261009_p2c_v15_artifacts/20261009_p2c_v15_dev_forced2_ledger_metrics_live_windows.csv.gz",
+      "source_sha256": "9ac7cfefa6600baab0469b4b2a54b2edd97fd4ae690325280c276932ee985eb0",
+      "archive_sha256": "24e204f9db3e8006ca8e2cc3b349e9162fa72e19247a0770d54902ef5224abb8"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v15/20261009_p2c_v15_dev_forced2/ledger_metrics/curves.svg",
+      "archive": "20261009_p2c_v15_artifacts/20261009_p2c_v15_dev_forced2_ledger_metrics_curves.svg.gz",
+      "source_sha256": "45a3809b7e69e406b3ccd62d47e1dcf694f5f318dc35ce430d1a6d9242f27429",
+      "archive_sha256": "09da4c2df8998a163e530263f6d1d7506b3c7b1608357dcc1e84b0fc2e447f08"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v15/20261009_p2c_v15_dev_forced2/ledger_metrics/windows.jsonl",
+      "archive": "20261009_p2c_v15_artifacts/20261009_p2c_v15_dev_forced2_ledger_metrics_windows.jsonl.gz",
+      "source_sha256": "b50718ac2a1a68ab410b5d59891a27378fd42ce9a60ca0d121d1f9e3f9435be7",
+      "archive_sha256": "d3a0919c72055bfb357a545137bfd4b5aabb9211fcc2d2af2a0e1c63edcbabed"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v15/20261009_p2c_v15_dev_forced2/ledger_metrics/events.jsonl",
+      "archive": "20261009_p2c_v15_artifacts/20261009_p2c_v15_dev_forced2_ledger_metrics_events.jsonl.gz",
+      "source_sha256": "6a3595df23b1fcc3baf2aa156c43af0d768303edf071513cb47c010329f9a7e8",
+      "archive_sha256": "1c74d082efea54e96b20625eeba99e3ef7301829467f62f2a4dbf099d4962bc8"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v15/20261009_p2c_v15_dev_forced2/ledger_metrics/windows.csv",
+      "archive": "20261009_p2c_v15_artifacts/20261009_p2c_v15_dev_forced2_ledger_metrics_windows.csv.gz",
+      "source_sha256": "9ac7cfefa6600baab0469b4b2a54b2edd97fd4ae690325280c276932ee985eb0",
+      "archive_sha256": "24e204f9db3e8006ca8e2cc3b349e9162fa72e19247a0770d54902ef5224abb8"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v15/20261009_p2c_v15_dev_forced2/ledger_metrics/summary.json",
+      "archive": "20261009_p2c_v15_artifacts/20261009_p2c_v15_dev_forced2_ledger_metrics_summary.json.gz",
+      "source_sha256": "3978f06ece0627e86461475ee1cd7d15bd7131a9ce8074d99ecdd955480989ab",
+      "archive_sha256": "c088e519cc44b2429ee01582ee55e5480e7c53e4745faf360f1c6674aaf0d943"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v15/20261009_p2c_v15_dev_forced2/ledger_metrics/inputs.jsonl",
+      "archive": "20261009_p2c_v15_artifacts/20261009_p2c_v15_dev_forced2_ledger_metrics_inputs.jsonl.gz",
+      "source_sha256": "879778010879026b3e81c5dfd995168634f40fcc7032f2f7f12e8ada1ef957d2",
+      "archive_sha256": "e9a738275fae6e678acde27ca263086a4364bea996816949b944005b8c495c53"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v15_development_gate.json",
+      "archive": "20261009_p2c_v15_artifacts/p2c_v15_development_gate.json.gz",
+      "source_sha256": "acbec72f47fdcce1daab1461495e30c7918a755162dd01f74cc650f2cd9dc628",
+      "archive_sha256": "ff97f72a79dd0fefddf32b83465b1067e2a36e0f14cd89381a921fc764cbdf08"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v15_development_gate.log",
+      "archive": "20261009_p2c_v15_artifacts/p2c_v15_development_gate.log.gz",
+      "source_sha256": "d0ab853f80a1db0e8ecb92c47daface5e274fe0ceb491ffb6ad773942ebe4dd4",
+      "archive_sha256": "d949726ede97cb83bbf891caf0d34b16745a63dacef5ce1fb737b736bf251e43"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v15_native_tf_diagnosis.json",
+      "archive": "20261009_p2c_v15_artifacts/p2c_v15_native_tf_diagnosis.json.gz",
+      "source_sha256": "52b07dfacb58b2f01bf5c61e497182d64e258dd25d150d4685f471ebc6063965",
+      "archive_sha256": "881b8e4c39aa263343def4cc2a6312e17a397e1f61c434de2ca09ec94b2bc97a"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v15_native_tf_diagnosis.log",
+      "archive": "20261009_p2c_v15_artifacts/p2c_v15_native_tf_diagnosis.log.gz",
+      "source_sha256": "59339209e26c740eb49851f3189406c67cdec9ac801a8fbfd548390f84114a71",
+      "archive_sha256": "f0d18f497e7ad4b1122c239d57cad8c35ddb0123d1cc3c8a708f326f7d6ce391"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v15_freeze_check.json",
+      "archive": "20261009_p2c_v15_artifacts/p2c_v15_freeze_check.json.gz",
+      "source_sha256": "869cae5c6a90965c261d08bf0f157baaced492feeacf4cdea94e2076b3be7c5d",
+      "archive_sha256": "c6e71e9844fbd2b00e0e962e2d01f8471cb219f9101f234f61d636f7192639a7"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v15_dev_forced2_runner.log",
+      "archive": "20261009_p2c_v15_artifacts/p2c_v15_dev_forced2_runner.log.gz",
+      "source_sha256": "45549f4750a2ffa1be884f59993bdba0098d31bde3c5d143f8f60a459ffef9ca",
+      "archive_sha256": "de9cdc0503c80cb53ca47a44c39a832a83a4c75a8ec7da17ba3ea13cc83036a4"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/analyze_p2c_v15_native_tf.py",
+      "archive": "20261009_p2c_v15_artifacts/analyze_p2c_v15_native_tf.py.gz",
+      "source_sha256": "8b21016156c8eb413072fcfceab64e0f0a0c2a898d2b41f5589adc344b74548f",
+      "archive_sha256": "943a597424edc546c21b744699bd0ec83448b9f51b1ad39306693760d7890fdb"
+    }
+  ]
+}
