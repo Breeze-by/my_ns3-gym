@@ -792,6 +792,30 @@ def grid_audit_evidence(raw_grid, resolution, origin, source, source_time, versi
                     np.asarray(raw_grid, dtype='<i2').tobytes())).decode('ascii'))
 
 
+def qualified_return_candidates(raw_grid, resolution, origin, position, home, radius,
+                                local_map=None, caches=None):
+    """Compare complete paths without overwriting a robot's known obstacles.
+
+    The caller supplies already delivered, fresh maps. A merged-map shortcut
+    must satisfy the same local-obstacle veto as native battery safety.
+    Missing geometry stays unavailable; no obstacle-union or distance fallback
+    is silently substituted for the declared input map.
+    """
+    caches = {} if caches is None else caches
+    maps = [('delivered_fused', dict(data=raw_grid, resolution=resolution, origin=origin))]
+    if local_map is not None:
+        maps.insert(0, ('local', local_map))
+    result = []
+    for source, geometry in maps:
+        distance, route = known_return_route(geometry['data'], geometry['resolution'],
+            geometry['origin'], position, home, radius, caches.setdefault(source, {}), True)
+        qualified = distance is not None and (source == 'local' or local_map is None
+            or route_respects_known_obstacles(local_map['data'], local_map['resolution'],
+                                             local_map['origin'], route))
+        result.append(dict(source=source, path_distance_m=distance, route=route, qualified=qualified))
+    return result
+
+
 def path_waypoint_route(traversable, start, target, max_distance_cells, distance_data=None):
     """Return a limited waypoint and its shortest grid path from start."""
     height, width = traversable.shape
@@ -1127,6 +1151,7 @@ def assign_rally_poses(
     observer_robot=None,
     current_positions=None,
     hold_sec=RALLY_HOLD_SEC,
+    return_maps=None,
 ):
     """Assign separated visible poses, accounting for serial charge waits.
 
@@ -1214,9 +1239,12 @@ def assign_rally_poses(
                 modes[name] = mode
                 charge_times[name] = duration
                 return_cache = {}
+                local_map = (return_maps or {}).get(name)
                 if mode != "CHARGING":
-                    current_home, _ = known_return_route(raw_grid, resolution, origin,
-                        current_positions[name], home, float(state.get('charge_radius_m', .8)), return_cache)
+                    current_routes = qualified_return_candidates(raw_grid, resolution, origin,
+                        current_positions[name], home, float(state.get('charge_radius_m', .8)),
+                        local_map, return_cache)
+                    current_home = min((r['path_distance_m'] for r in current_routes if r['qualified']), default=None)
                     if current_home is None:
                         if mode != 'RETURNING':
                             return {}
@@ -1235,8 +1263,10 @@ def assign_rally_poses(
                     home_distance = (home_distances[cell] + home_escape) * resolution
                     if not math.isfinite(home_distance):
                         continue
-                    contact_distance, _ = known_return_route(raw_grid, resolution, origin,
-                        (pose.x, pose.y), home, float(state.get('charge_radius_m', .8)), return_cache)
+                    contact_routes = qualified_return_candidates(raw_grid, resolution, origin,
+                        (pose.x, pose.y), home, float(state.get('charge_radius_m', .8)),
+                        local_map, return_cache)
+                    contact_distance = min((r['path_distance_m'] for r in contact_routes if r['qualified']), default=None)
                     if contact_distance is None:
                         continue
                     required = battery_assignment_required_energy(
@@ -2151,7 +2181,7 @@ def rally_energy_ready_order(order, energy_unready, modes):
 
 
 def rally_return_reservations(grid, resolution, origin, positions, states, modes, pending,
-                              route_caches=None):
+                              route_caches=None, return_maps=None):
     """Protect current and future serial safety returns before allowing rally progress.
 
     Use the complete delivered-map contact route used by the energy budget,
@@ -2178,11 +2208,12 @@ def rally_return_reservations(grid, resolution, origin, positions, states, modes
         except (KeyError, TypeError, ValueError):
             return None
         cache = None if route_caches is None else route_caches.setdefault(name, {})
-        _, route = known_return_route(grid, resolution, origin, position, home, radius,
-                                     cache, include_route=True)
-        if not route:
+        candidates = qualified_return_candidates(grid, resolution, origin, position, home, radius,
+            (return_maps or {}).get(name), cache)
+        eligible = [row for row in candidates if row['qualified']]
+        if not eligible:
             return None
-        routes[name] = route
+        routes[name] = min(eligible, key=lambda row:(row['path_distance_m'], row['source'] != 'local'))['route']
     return routes
 
 
@@ -2564,16 +2595,48 @@ class HeadquartersControl(Node):
         return 1.0 if energy > required else .25 * energy / required if required > 0 else 0.0
 
     def known_home_distance(self, robot_name, position):
-        """Use only the AP's delivered planning map, never native robot inputs."""
+        """Keep AP admission consistent with delivered per-robot safety maps."""
         state = self.battery_states[robot_name]
         home = (float(state['charge_x']), float(state['charge_y']))
         caches = getattr(self, 'return_distance_caches', None)
         if caches is None:
             self.return_distance_caches = caches = {}
-        distance, _ = known_return_route(
+        local_map = HeadquartersControl.delivered_return_maps(self).get(robot_name)
+        candidates = qualified_return_candidates(
             self.map_data, self.resolution, self.origin, position, home,
-            float(state.get('charge_radius_m', .8)), caches.setdefault(robot_name, {}))
+            float(state.get('charge_radius_m', .8)), local_map, caches.setdefault(robot_name, {}))
+        distance = min((r['path_distance_m'] for r in candidates if r['qualified']), default=None)
+        if distance is None and local_map is not None and any(r['path_distance_m'] is not None for r in candidates):
+            HeadquartersControl.record_return_map_veto(self, robot_name, position, home, candidates, local_map)
         return distance
+
+    def delivered_return_maps(self):
+        now = self.now()
+        stamps = getattr(self, 'robot_map_received_at', {})
+        return {name: geometry for name, geometry in getattr(self, 'robot_maps', {}).items()
+                if geometry is not None and stamps.get(name) is not None
+                and 0 <= now - stamps[name] <= STATE_TTL_SEC['map_snapshot']}
+
+    def record_return_map_veto(self, name, destination, home, candidates, local_map):
+        """Private AP decision evidence; these are delivered inputs, not traffic."""
+        if not hasattr(self, 'consumed_publisher'):
+            return
+        now = self.now()
+        last = getattr(self, 'return_map_veto_at', {})
+        if now - last.get(name, -float('inf')) < 5.:
+            return
+        self.return_map_veto_at = {**last, name: now}
+        self.consumed_publisher.publish(String(data=json.dumps(dict(
+            event='coordinator_return_map_veto', event_time=now, robot=name,
+            destination=destination, home=home,
+            radius=float(self.battery_states[name].get('charge_radius_m', .8)),
+            inputs=self.input_freshness_details(), candidates=candidates,
+            fused_map=grid_audit_evidence(self.map_data, self.resolution, self.origin,
+                'ap_delivered_planning_map', self.map_received_at, self.map_received_at),
+            local_map=grid_audit_evidence(local_map['data'], local_map['resolution'],
+                local_map['origin'], 'ap_delivered_robot_map', self.robot_map_received_at[name],
+                self.robot_map_received_at[name]),
+        ), sort_keys=True)))
 
     def task_return_required_energy(self, robot_name, task_distance, destination):
         """Budget a proposed complete approach and its full contact-route return."""
@@ -2587,6 +2650,9 @@ class HeadquartersControl(Node):
         if map_stamp is None or pose_stamp is None:
             raise ValueError('missing return budget source timestamps')
         map_age = now - map_stamp
+        local_stamp = getattr(self, 'robot_map_received_at', {}).get(robot_name)
+        if HeadquartersControl.delivered_return_maps(self).get(robot_name) is not None:
+            map_age = max(map_age, now - local_stamp)
         pose_age = now - pose_stamp
         if map_age > STATE_TTL_SEC['fused_map_snapshot'] or pose_age > STATE_TTL_SEC['pose_state']:
             raise ValueError('stale return budget input')
@@ -2715,14 +2781,19 @@ class HeadquartersControl(Node):
             between = math.dist((assignment.x, assignment.y), route[0]) + sum(
                 math.dist(a, b) for a, b in zip(route, route[1:]))
             task_distance = assignment.path_distance_m + between
-            required = HeadquartersControl.task_return_required_energy(
-                self, name, task_distance, (candidate.x, candidate.y))
+            try:
+                required = HeadquartersControl.task_return_required_energy(
+                    self, name, task_distance, (candidate.x, candidate.y))
+            except ValueError:
+                continue  # A vetoed alternative must not mask the next feasible one.
             if not energy < required < charge_target:
                 continue
             state = self.battery_states[name]
             home = (float(state['charge_x']), float(state['charge_y']))
             home_distance = HeadquartersControl.known_home_distance(self, name, (candidate.x, candidate.y))
             now = self.now()
+            local_map = HeadquartersControl.delivered_return_maps(self).get(name)
+            local_stamp = getattr(self, 'robot_map_received_at', {}).get(name)
             return dict(strategy='two_current_frontiers', required_energy=required,
                 first_position=[assignment.x, assignment.y], second_position=[candidate.x, candidate.y],
                 first_group=assignment.viewpoint.group_id, second_group=candidate.viewpoint.group_id,
@@ -2730,6 +2801,10 @@ class HeadquartersControl(Node):
                 between_route=route, home_distance_m=home_distance, home=home,
                 blocked_positions=blocked, battery_state=dict(state),
                 map_age_sec=now-self.map_received_at, pose_age_sec=now-self.robot_odom_received_at[name],
+                map_input_age_sec=max(now-self.map_received_at, now-local_stamp) if local_map is not None else now-self.map_received_at,
+                local_map_evidence=None if local_map is None else grid_audit_evidence(
+                    local_map['data'], local_map['resolution'], local_map['origin'],
+                    'ap_delivered_robot_map', local_stamp, local_stamp),
                 map_evidence=grid_audit_evidence(self.map_data, self.resolution, self.origin,
                     'ap_delivered_planning_map', self.map_received_at, None))
         return None
@@ -3283,6 +3358,7 @@ class HeadquartersControl(Node):
             self.map_data, self.resolution, self.origin, self.robot_positions,
             self.battery_states, self.battery_modes,
             set(self.rally_charge_requested), getattr(self, 'return_distance_caches', None),
+            HeadquartersControl.delivered_return_maps(self),
         )
         # Pending return requests constrain new admission, but cannot
         # revoke an existing safe escape. Only actual local returns/charging
@@ -3293,7 +3369,7 @@ class HeadquartersControl(Node):
         } if protected is not None else rally_return_reservations(
             self.map_data, self.resolution, self.origin, self.robot_positions,
             self.battery_states, self.battery_modes, set(),
-            getattr(self, 'return_distance_caches', None))
+            getattr(self, 'return_distance_caches', None), HeadquartersControl.delivered_return_maps(self))
         HeadquartersControl.preempt_rally_return_conflicts(self, actual_returns)
         if protected is None:
             protected = actual_returns
@@ -3514,6 +3590,7 @@ class HeadquartersControl(Node):
                     observer_robot=getattr(self, "target_observing_robot", None),
                     current_positions=self.robot_positions,
                     hold_sec=self.rally_hold_sec,
+                    return_maps=HeadquartersControl.delivered_return_maps(self),
                 )
                 self.rally_final_targets = dict(self.rally_targets)
                 if len(self.rally_targets) != len(active_names):
@@ -3786,6 +3863,7 @@ class HeadquartersControl(Node):
                 self.map_data, self.resolution, self.origin, self.robot_positions,
                 self.battery_states, self.battery_modes,
                 set(self.rally_charge_requested), getattr(self, 'return_distance_caches', None),
+                HeadquartersControl.delivered_return_maps(self),
             ) if self.enable_battery else {})
             if self.enable_battery:
                 approach_routes = self.rally_approach_routes
@@ -4526,7 +4604,7 @@ class HeadquartersControl(Node):
         protected = rally_return_reservations(
             self.map_data, self.resolution, self.origin, self.robot_positions,
             self.battery_states, self.battery_modes, set(self.rally_charge_requested),
-            getattr(self, 'return_distance_caches', None))
+            getattr(self, 'return_distance_caches', None), HeadquartersControl.delivered_return_maps(self))
         if protected is None:
             return False
         reservations = list(protected.values()) + [

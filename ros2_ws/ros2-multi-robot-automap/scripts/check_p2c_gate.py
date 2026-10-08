@@ -145,15 +145,54 @@ def lookahead_audit(records):
         assert route and np.allclose(route,f['between_route'])
         between=math.dist(first,route[0])+sum(math.dist(a,b) for a,b in zip(route,route[1:]))
         assert math.isclose(between,f['between_distance_m'],abs_tol=1e-8)
-        home_distance,_=control.known_return_route(raw,saved['resolution'],saved['origin'],second,f['home'],state.get('charge_radius_m',.8))
+        local=f.get('local_map_evidence')
+        local_geometry=None
+        if local:
+            assert local['source']=='ap_delivered_robot_map'
+            assert local['source_time']==e['inputs'][e['robot']+'/map_snapshot']['source_time']
+            assert 0<=e['event_time']-local['source_time']<=5.
+            local_raw=np.frombuffer(zlib.decompress(base64.b64decode(local['grid'])),dtype='<i2').reshape(local['shape'])
+            local_geometry=dict(data=local_raw,resolution=local['resolution'],origin=local['origin'])
+        candidates=control.qualified_return_candidates(raw,saved['resolution'],saved['origin'],second,
+            f['home'],state.get('charge_radius_m',.8),local_geometry)
+        home_distance=min((r['path_distance_m'] for r in candidates if r['qualified']),default=None)
         assert home_distance is not None and math.isclose(home_distance,f['home_distance_m'],abs_tol=1e-8)
+        input_age=max(f['map_age_sec'],e['event_time']-local['source_time']) if local else f['map_age_sec']
+        assert math.isclose(f.get('map_input_age_sec',f['map_age_sec']),input_age,abs_tol=1e-8)
         required=control.battery_assignment_required_energy(f['first_path_distance_m']+between,home_distance,
             state.get('move_cost_per_m',1.),state.get('idle_cost_per_sec',.02),state.get('return_path_factor',2.),
             state.get('nominal_speed_mps',.18),state.get('return_safety_margin',8.),
-            state.get('return_recovery_wait_sec',30.),f['map_age_sec'],f['pose_age_sec'])
+            state.get('return_recovery_wait_sec',30.),input_age,f['pose_age_sec'])
         assert math.isclose(required,f['required_energy'],abs_tol=1e-8)
         count+=1
     return dict(status='PASS',two_frontier_charge_decisions=count)
+
+
+def ap_return_veto_audit(records):
+    count=0
+    for e in records:
+        if e.get('event')!='coordinator_return_map_veto':continue
+        maps=[]
+        for key,stream,source in (('fused_map','headquarters/fused_map_snapshot','ap_delivered_planning_map'),
+                                  ('local_map',e['robot']+'/map_snapshot','ap_delivered_robot_map')):
+            s=e[key];assert s['source']==source and s['encoding']=='zlib_base64_int16_le'
+            assert s['source_time']==e['inputs'][stream]['source_time']
+            assert 0<=e['event_time']-s['source_time']<=5.
+            g=np.frombuffer(zlib.decompress(base64.b64decode(s['grid'])),dtype='<i2').reshape(s['shape'])
+            maps.append(dict(data=g,resolution=s['resolution'],origin=s['origin']))
+        fused,local=maps
+        actual=control.qualified_return_candidates(fused['data'],fused['resolution'],fused['origin'],
+            e['destination'],e['home'],e['radius'],local)
+        assert len(actual)==len(e['candidates'])==2
+        for rebuilt,saved in zip(actual,e['candidates']):
+            assert rebuilt['source']==saved['source'] and rebuilt['qualified']==saved['qualified']
+            assert (rebuilt['path_distance_m'] is None)==(saved['path_distance_m'] is None)
+            if rebuilt['path_distance_m'] is not None:
+                assert math.isclose(rebuilt['path_distance_m'],saved['path_distance_m'],abs_tol=1e-8)
+            assert np.allclose(rebuilt['route'],saved['route'])
+        assert not any(r['qualified'] for r in actual) and any(r['path_distance_m'] is not None for r in actual)
+        count+=1
+    return dict(status='PASS',delivered_return_vetoes=count)
 
 
 def energy_audit(path,result,required=False):
@@ -220,10 +259,11 @@ def check_one(path,config):
     energy=energy_audit(directory/'safety_events.jsonl',result,
         bool(config.get('native_energy_accounting')) and case!='empty_battery')
     forecast=lookahead_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
+    vetoes=ap_return_veto_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     assert result['collision_monitoring_active']
     return dict(case=case,status='PASS',git_commit=row['git_commit'],source_digests=row['source_digests'],
         result=result,raw_summary=str(path.resolve()),raw_summary_sha256=sha(path),return_audit=native,
-        communication_audit=communications,lookahead_audit=forecast,native_energy_audit=energy)
+        communication_audit=communications,lookahead_audit=forecast,native_energy_audit=energy,ap_return_veto_audit=vetoes)
 
 
 def audit_one(item):

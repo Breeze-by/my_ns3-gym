@@ -1,0 +1,306 @@
+{
+  "status": "FAIL",
+  "task_stack_frozen_commit": "5291e92d6677be76911748b02d5f3c58b181ce76",
+  "started_at_utc": "2026-10-08T14:40:54.233142+00:00",
+  "finished_at_utc": "2026-10-08T14:47:36.798519+00:00",
+  "command": [
+    "/usr/bin/python3",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py",
+    "--world",
+    "my_world.world",
+    "--robot-count",
+    "2",
+    "--gazebo-seed",
+    "303",
+    "--startup-timeout",
+    "600",
+    "--message-timeout",
+    "90",
+    "--shutdown-timeout",
+    "120",
+    "--evaluation-duration",
+    "300",
+    "--evaluation-wait-timeout",
+    "900",
+    "--coverage-threshold",
+    "0",
+    "--mission-mode",
+    "rally",
+    "--gateway-mode",
+    "ideal",
+    "--gateway-seed",
+    "17011",
+    "--battery",
+    "--battery-capacity",
+    "100",
+    "--battery-initial-energy",
+    "18.0",
+    "--target-x",
+    "-4",
+    "--target-y",
+    "4",
+    "--rally-max-concurrent",
+    "2",
+    "--disable-global-battery-rally-pause",
+    "--episode-id",
+    "20261008_p2c_v8_dev_forced2",
+    "--collect-fault-result",
+    "--dwell-seconds",
+    "0",
+    "--evaluation-output-dir",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v8/20261008_p2c_v8_dev_forced2",
+    "--log-dir",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v8/20261008_p2c_v8_dev_forced2/launch",
+    "--gateway-ledger-path",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v8/20261008_p2c_v8_dev_forced2/ledger.jsonl",
+    "--bypass-audit-output",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v8/20261008_p2c_v8_dev_forced2/graph.json",
+    "--target-detection",
+    "--rally",
+    "--battery-charge-duration",
+    "10.0",
+    "--battery-safety-margin",
+    "5.0",
+    "--battery-return-timeout",
+    "120"
+  ],
+  "observer_command": [
+    "/usr/bin/python3",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/observe_p3b5.py",
+    "--output",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v8/20261008_p2c_v8_dev_forced2/safety_events.jsonl",
+    "--robot-count",
+    "2"
+  ],
+  "summary_sha256": "addc64e89f7870ca99e194752ce7b78da33348bfef91de8fd9939b223ae01138",
+  "result": {
+    "success": false,
+    "task_phase": "EXPLORE",
+    "termination_reason": "timeout",
+    "elapsed_sim_time_sec": 300.0999999999999,
+    "battery_minimum_energy": 10.123726752694026,
+    "battery_total_charges": 2,
+    "failed_robots": [
+      "tb1"
+    ],
+    "collision_events": 0,
+    "robots": {
+      "tb1": {
+        "battery_capacity": 100.0,
+        "battery_charge_count": 1,
+        "battery_charge_x": 0.0,
+        "battery_charge_y": -0.45,
+        "battery_charging_time_sec": 10.0,
+        "battery_final_energy": 73.7971032368632,
+        "battery_initial_energy": 18.0,
+        "battery_message_count": 607,
+        "battery_minimum_energy": 16.856296490323924,
+        "battery_mode": "FAILED",
+        "battery_return_count": 3,
+        "collision_duration_sec": 0.0,
+        "collision_events": 0,
+        "collision_message_count": 6003,
+        "end_x": -1.368896033256222,
+        "end_y": -0.5276958510185794,
+        "final_angular_speed_radps": 3.201480389168921e-06,
+        "final_linear_speed_mps": 6.787623131677515e-05,
+        "nav_aborted": 0,
+        "nav_canceled": 1,
+        "nav_goal_count": 3,
+        "nav_succeeded": 2,
+        "path_length_m": 1.5648877588926633,
+        "phase_path_lengths_m": {
+          "EXPLORE": 1.5648877588926633,
+          "FOUND": 0.0,
+          "RALLY": 0.0
+        },
+        "rally_final_error_m": null,
+        "rally_target_x": null,
+        "rally_target_y": null,
+        "rally_target_yaw": null,
+        "start_x": 0.002405333173017952,
+        "start_y": -0.44999472963526865,
+        "teleport_jump_count": 0,
+        "visited_cell_count": 19
+      },
+      "tb2": {
+        "battery_capacity": 100.0,
+        "battery_charge_count": 1,
+        "battery_charge_x": 0.0,
+        "battery_charge_y": 0.45,
+        "battery_charging_time_sec": 10.100000000000364,
+        "battery_final_energy": 52.07793257839126,
+        "battery_initial_energy": 18.0,
+        "battery_message_count": 607,
+        "battery_minimum_energy": 10.123726752694026,
+        "battery_mode": "ACTIVE",
+        "battery_return_count": 3,
+        "collision_duration_sec": 0.0,
+        "collision_events": 0,
+        "collision_message_count": 6004,
+        "end_x": 1.2467576854356803,
+        "end_y": 0.8137051895538343,
+        "final_angular_speed_radps": 0.02491375866049494,
+        "final_linear_speed_mps": 0.25898882679791885,
+        "nav_aborted": 0,
+        "nav_canceled": 5,
+        "nav_goal_count": 18,
+        "nav_succeeded": 12,
+        "path_length_m": 30.150183332620497,
+        "phase_path_lengths_m": {
+          "EXPLORE": 30.150183332620497,
+          "FOUND": 0.0,
+          "RALLY": 0.0
+        },
+        "rally_final_error_m": null,
+        "rally_target_x": null,
+        "rally_target_y": null,
+        "rally_target_yaw": null,
+        "start_x": 0.0023469517958231247,
+        "start_y": 0.45000497476471135,
+        "teleport_jump_count": 0,
+        "visited_cell_count": 308
+      }
+    }
+  },
+  "strict_errors": [
+    {
+      "case": "dev_forced2",
+      "error": "AssertionError()",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 231, in audit_one\n    try:return check_one(path,config),None\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 209, in check_one\n    communications,_=audit_original((row,config))\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3c5_gate.py\", line 96, in audit_original\n    native_safety_ok(result)\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3c5_gate.py\", line 40, in native_safety_ok\n    assert not result[\"failed_robots\"]\nAssertionError\n"
+    }
+  ],
+  "all_original_hashes_verified": true,
+  "all_owners_closed": true,
+  "whole_episode_retries": 0,
+  "development_invoked": 1,
+  "development_unrun": 3,
+  "formal_invoked": 0,
+  "blackout_pair_invoked": false,
+  "holdout917_exposed": false,
+  "independent_diagnostics": {
+    "status": "PASS_FOR_PROTOCOL_AND_ACCOUNTING_NOT_TASK_SAFETY",
+    "live_samples": 282,
+    "native_return_triggers": 6,
+    "native_energy_samples": 120
+  },
+  "same_map_union_component": {
+    "scope": "read-only same-original dual-map component, not task replay or native success",
+    "source_commit": "5291e92",
+    "robot": "tb1",
+    "return_count": 3,
+    "sim_time": 2120.082,
+    "old_candidates": [
+      {
+        "map_input_age_sec": 0.8930000000000291,
+        "path_distance_m": null,
+        "qualified": false,
+        "required_energy": null
+      },
+      {
+        "map_input_age_sec": 0.8930000000000291,
+        "path_distance_m": 0.8588835143127292,
+        "qualified": false,
+        "required_energy": 7.912683365139345
+      }
+    ],
+    "blocked_fused_cells": 933,
+    "obstacle_union_path_m": null,
+    "obstacle_union_qualified": false,
+    "route": []
+  },
+  "initial_readonly_component_failure": "AttributeError on string-valued safety data; filtered dictionary events and reran only the read-only component, not task.",
+  "causal_task_benefit_claim": false,
+  "archives": [
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v8/20261008_p2c_v8_dev_forced2/manifest.json",
+      "archive": "20261008_p2c_v8_artifacts/manifest.json.gz",
+      "source_sha256": "d669bedadf94f77847b9e49431957319a5cf2b0e053c1aedfe6bd7db159ca964",
+      "archive_sha256": "93af4af0f96a7b20956e5bae8973982aa46230ffe122c634e87bd00b38c59f71"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v8/20261008_p2c_v8_dev_forced2/summary.json",
+      "archive": "20261008_p2c_v8_artifacts/summary.json.gz",
+      "source_sha256": "addc64e89f7870ca99e194752ce7b78da33348bfef91de8fd9939b223ae01138",
+      "archive_sha256": "9ee021db0936e9ebb543637eb97f5a74c770cd1e7216207f8ae7336c23c301a0"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v8/20261008_p2c_v8_dev_forced2/20261008_p2c_v8_dev_forced2.json",
+      "archive": "20261008_p2c_v8_artifacts/20261008_p2c_v8_dev_forced2.json.gz",
+      "source_sha256": "3c00c4b86f1f027f879ba681e9182d5dfc3906f3ddf7a46151b9070c5c407aee",
+      "archive_sha256": "6a0fb93789b27664c72b69d886114242d095afde442ad624482f7030476d453a"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v8/20261008_p2c_v8_dev_forced2/20261008_p2c_v8_dev_forced2.csv",
+      "archive": "20261008_p2c_v8_artifacts/20261008_p2c_v8_dev_forced2.csv.gz",
+      "source_sha256": "4ef9f541ce7845267d5f8dddb8bb78baa4e4f0fc1a1d60b4e9ae1a50cbe0055b",
+      "archive_sha256": "217de64f34d6794eb54dfd25855dd2c036f10f74353a04c882dca4223e139724"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v8/20261008_p2c_v8_dev_forced2/graph.json",
+      "archive": "20261008_p2c_v8_artifacts/graph.json.gz",
+      "source_sha256": "cca23f8f2fb320a58d414dc4f7021ab526423b5e24ff476e20c6331c2be31290",
+      "archive_sha256": "f09188a368bedde16a6aa4c7ded7c75d460d0421653785c6f2019b76ab3389bf"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v8/20261008_p2c_v8_dev_forced2/safety_events.jsonl",
+      "archive": "20261008_p2c_v8_artifacts/safety_events.jsonl.gz",
+      "source_sha256": "7cd4e56091b50eff29247080e7b4e5de1dca82a5b60ee8c6f0e02eafc5db2194",
+      "archive_sha256": "71fbd618b15f763e72f5ace486c9b162b9de173a63d33c88598f4690bdc217cd"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v8/20261008_p2c_v8_dev_forced2/runner.log",
+      "archive": "20261008_p2c_v8_artifacts/runner.log.gz",
+      "source_sha256": "30384828881141c15305223088eff1e761aaa8c2a6c54517a75f50319450d710",
+      "archive_sha256": "88004422f48266bad797756b6a32b467e775b9f57f485fb6cd86de204149fcaa"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v8/20261008_p2c_v8_dev_forced2/observer.log",
+      "archive": "20261008_p2c_v8_artifacts/observer.log.gz",
+      "source_sha256": "3dfa3fb239f56c778a1e9b33eb31328349edd155a95806dac4378904e88527e5",
+      "archive_sha256": "341883acae54206eeb485456aaba713a7bffc1aca594c5ecb500d0601e28458b"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v8/20261008_p2c_v8_dev_forced2/launch/robots2_seed303_20261008-224054.log",
+      "archive": "20261008_p2c_v8_artifacts/robots2_seed303_20261008-224054.log.gz",
+      "source_sha256": "68b728a2f3d974fe025a71d30aeea56e14f03d00e013abc382653edb5e593ed8",
+      "archive_sha256": "585d246a222fd5e44576acd85e86d37b9a0a8316a7c8274ed41ed11311040ed6"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v8_dev_forced2_gate.json",
+      "archive": "20261008_p2c_v8_artifacts/p2c_v8_dev_forced2_gate.json.gz",
+      "source_sha256": "f92694e619c81b43d425644854bff8cda915749fdc5ccb3b3bb77776701e1078",
+      "archive_sha256": "00c305fa7ee6d924b668d68e7b4cacde1c8ab278381a3d5553196dd1659ad3cd"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v8_dev_forced2_gate.log",
+      "archive": "20261008_p2c_v8_artifacts/p2c_v8_dev_forced2_gate.log.gz",
+      "source_sha256": "3efa27a01e9c3d903dae4982a53e680668d686855fae4e634339b2596ee8ef13",
+      "archive_sha256": "cf2b9068135c295f26f49079af6ab953c87201eeb78f4843d6b21c5d385685fb"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v8_independent_diagnostics.json",
+      "archive": "20261008_p2c_v8_artifacts/p2c_v8_independent_diagnostics.json.gz",
+      "source_sha256": "d82b22cc361b74d801c850e674e7381edd88f08d56d8d9035b4e3a8145ef0a0e",
+      "archive_sha256": "7a469c57c57436257e137c399a32b26463b805258b41edc6771ee318161c1ef2"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v8_independent_diagnostics.log",
+      "archive": "20261008_p2c_v8_artifacts/p2c_v8_independent_diagnostics.log.gz",
+      "source_sha256": "38c8aed3b663a4d5fd3f3c9d79e42850ec538d9fe08e61efe82ab5209bd9b31d",
+      "archive_sha256": "ebf2bfd2890d5c2f6f24a66ff6ada71488fc9c9b0812710e08d1c549149c7f72"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v8_union_map_readonly_component.json",
+      "archive": "20261008_p2c_v8_artifacts/p2c_v8_union_map_readonly_component.json.gz",
+      "source_sha256": "1b55ae5b13af0257bc3aaa93f8d25ff8b9ca6ac3181c9d3dfcfdf71a382c0160",
+      "archive_sha256": "0166a91476b1e2b2be42731338ddd03943dec9e656a50451f72477162e8a25c6"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v8_union_map_readonly.png",
+      "archive": "20261008_p2c_v8_artifacts/p2c_v8_union_map_readonly.png.gz",
+      "source_sha256": "122bb57d199b1b60313163f3458f68f9a08d96f0a70da4a2024e291a91b7331c",
+      "archive_sha256": "555f967f557712c185121acb2a683747e59487e7a15ebf9cdd16cdba6d57e7d6"
+    }
+  ]
+}

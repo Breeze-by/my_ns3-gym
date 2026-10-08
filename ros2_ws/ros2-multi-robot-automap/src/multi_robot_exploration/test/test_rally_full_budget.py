@@ -20,7 +20,7 @@ def test_return_reserves_later_segments_and_reachable_contact_not_blocked_centre
         {'tb1': state}, {'tb1': 'RETURNING'}, set(), caches)['tb1']
     cost, expected = c.known_return_route(grid, .1, (0., 0.), position, home, .8,
         include_route=True)
-    assert reserved == expected and caches['tb1']['field'] is not None
+    assert reserved == expected and caches['tb1']['delivered_fused']['field'] is not None
     assert cost > 9. and sum(math.dist(a, b) for a, b in zip(reserved, reserved[1:])) == pytest.approx(cost)
     assert .35 < math.dist(reserved[-1], home) <= .6 + 1e-8
     assert c.routes_conflict(reserved, ((9.05, 4.05),))
