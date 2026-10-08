@@ -18,9 +18,10 @@ def trace():
     position, home = (3.1, 1.1), (5.1, 1.1)
     distance, route = control.known_return_route(
         grid, .2, (0., 0.), position, home, .8, include_route=True)
-    budget = control.return_energy_budget(distance, 1., .02, 2., .18, 8., 30., 1.)
+    budget = control.return_energy_budget(distance, 1., .02, 2., .18, 8., 30., 1.,.5)
     budget.update(route=route, map_version=1, map_source='local',
                   map_source_time=10., map_age_sec=1.,
+                  odom_source_time=10.9,frame_source_time=10.5,pose_age_sec=.5,frame_stamp_offset_sec=.5,
                   map_content_blake2b=hashlib.blake2b(grid.tobytes(), digest_size=16).hexdigest())
     saved = dict(shape=grid.shape, resolution=.2, origin=(0., 0.),
                  source='local', source_time=10., version=1,
@@ -40,7 +41,7 @@ def trace():
 
 @pytest.mark.parametrize('corruption', [None, 'distance', 'cost', 'map_digest', 'map_version',
     'stale', 'missing_finish', 'missing_start', 'duplicate_finish', 'actual_cost',
-    'actual_energy', 'prediction', 'overrun', 'nan'])
+    'actual_energy', 'prediction', 'overrun', 'nan','pose_age','stale_odom','future_tf','missing_pose'])
 def test_return_audit_reconstructs_originals_and_rejects_corruption(tmp_path, corruption):
     events = copy.deepcopy(trace())
     if corruption == 'distance': events[0]['budget']['path_distance_m'] = 2.
@@ -56,12 +57,16 @@ def test_return_audit_reconstructs_originals_and_rejects_corruption(tmp_path, co
     if corruption == 'prediction': events[-1]['predicted_energy_spent'] += 1.
     if corruption == 'overrun': events[-1]['prediction_error'] = 1.
     if corruption == 'nan': events[-1]['actual_elapsed_sec'] = float('nan')
+    if corruption == 'pose_age':events[0]['budget']['pose_age_sec']=0.
+    if corruption == 'stale_odom':events[0]['budget']['odom_source_time']=8.
+    if corruption == 'future_tf':events[0]['budget']['frame_source_time']=12.
+    if corruption == 'missing_pose':events[0]['budget'].pop('odom_source_time')
     path = tmp_path/'safety_events.jsonl'
     path.write_text(''.join(json.dumps(dict(topic='/tb1/battery_return_audit', data=e))+'\n' for e in events))
     if corruption is None:
-        result = return_audit(path)
+        result = return_audit(path,True)
         assert result['charger_returns'] == 1
         assert result['map_budget_reconstructions'] == 2
     else:
-        with pytest.raises(AssertionError):
-            return_audit(path)
+        with pytest.raises((AssertionError,KeyError)):
+            return_audit(path,True)

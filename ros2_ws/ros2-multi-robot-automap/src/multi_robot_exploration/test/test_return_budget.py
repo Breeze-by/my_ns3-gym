@@ -21,6 +21,7 @@ def manager(grid=None, position=(3.1, 1.1), home=(5.1, 1.1), energy=40.):
     events, states = [], []
     node = SimpleNamespace(robot_name='tb1', now=lambda:11., mode='ACTIVE',
         mission_terminal=False, map_position=position, charge_x=home[0], charge_y=home[1],
+        last_odom_time=11., map_tf_source_time=11., frame_stamp_offset=.5,
         charge_radius=.8, energy=energy, move_cost=1., idle_cost=.02,
         return_path_factor=2., nominal_speed=.18, safety_margin=8., return_recovery_wait=30.,
         no_route_timeout=30., return_map=detour_grid() if grid is None else grid,
@@ -134,6 +135,49 @@ def test_fresh_complete_source_survives_other_source_loss_without_hidden_ap_inpu
     assert node.current_return_budget() is None  # Reading a source never renews its TTL.
 
 
+@pytest.mark.parametrize('source',['last_odom_time','map_tf_source_time'])
+@pytest.mark.parametrize('stamp',[None,float('nan'),8.9,12.])
+def test_native_pose_lease_rejects_missing_stale_and_future_sources(source,stamp):
+    node,_,_=manager()
+    setattr(node,source,stamp)
+    assert node.current_return_budget() is None
+    node.map_position=(node.charge_x,node.charge_y)
+    assert not node.in_charging_zone()  # A stale pose cannot invent charging contact.
+
+
+def test_native_pose_age_is_priced_and_preserved_in_the_return_prediction():
+    node,_,_=manager();node.map_tf_source_time=9.5;node.last_odom_time=10.75
+    budget=node.current_return_budget()
+    assert budget['pose_age_sec']==1.5 and budget['frame_source_time']==9.5
+    expected=control.return_energy_budget(budget['path_distance_m'],1.,.02,2.,.18,8.,30.,1.,1.5)
+    assert budget['required_energy']==pytest.approx(expected['required_energy'])
+
+
+def test_native_tf_uses_scan_source_not_future_validity_and_replay_cannot_replace_it():
+    from geometry_msgs.msg import TransformStamped
+    from tf2_msgs.msg import TFMessage
+    node,_,_=manager();node.frame_stamp_offset=2.;node.map_tf_source_time=None
+    node.previous_odom_position=(3.,4.);node.map_to_odom=None
+    tf=TransformStamped();tf.header.frame_id='tb1/map';tf.child_frame_id='tb1/odom'
+    tf.header.stamp.sec=13;tf.transform.rotation.w=1.;tf.transform.translation.x=1.
+    BatteryManager.tf_callback(node,TFMessage(transforms=[tf]))
+    assert node.map_tf_source_time==11. and node.map_position==(4.,4.)
+    tf.header.stamp.sec=12;tf.transform.translation.x=9.
+    BatteryManager.tf_callback(node,TFMessage(transforms=[tf]))
+    assert node.map_tf_source_time==11. and node.map_position==(4.,4.)
+    tf.header.stamp.sec=100
+    BatteryManager.tf_callback(node,TFMessage(transforms=[tf]))
+    assert node.map_tf_source_time==11. and node.map_position==(4.,4.)
+
+
+def test_stale_native_pose_cannot_finish_a_charge_or_have_a_return_budget():
+    node,_,_=manager(position=(5.1,1.1));node.mode='CHARGING'
+    node.charge_stable_started_at=1.;node.last_odom_time=8.
+    BatteryManager.update_charging(node,11.)
+    assert node.mode=='CHARGING' and node.charge_stable_started_at is None
+    assert node.current_return_budget() is None
+
+
 def test_no_route_wait_cancels_once_keeps_handle_and_fails_with_positive_energy():
     node, events, states=manager(detour_grid(True))
     node.begin_return(None,reason='no_known_route')
@@ -225,7 +269,8 @@ def test_nonfinite_return_budget_inputs_are_rejected(parameter):
     with pytest.raises(ValueError):control.return_energy_budget(**values)
 
 
-def test_actual_ros_unreachable_map_emits_positive_energy_failure_without_nav_goal():
+@pytest.mark.parametrize('fault',['disconnected_map','stale_native_frame'])
+def test_actual_ros_unavailable_input_emits_positive_energy_failure_without_nav_goal(fault):
     """Actual DDS/clock/action interfaces, synthetic map; no physical-motion claim."""
     import time
     import rclpy
@@ -238,7 +283,7 @@ def test_actual_ros_unreachable_map_emits_positive_energy_failure_without_nav_go
     from tf2_msgs.msg import TFMessage
     from geometry_msgs.msg import TransformStamped
     rclpy.init(args=['--ros-args','-p','use_sim_time:=true','-p','initial_energy:=40.0',
-        '-p','charge_x:=5.1','-p','charge_y:=1.1'],domain_id=207)
+        '-p','charge_x:=5.1','-p','charge_y:=1.1'],domain_id=207 if fault=='disconnected_map' else 208)
     node=None;server=None;goals=[];failures=[]
     try:
         node=BatteryManager()
@@ -252,7 +297,7 @@ def test_actual_ros_unreachable_map_emits_positive_energy_failure_without_nav_go
         odoms=node.create_publisher(Odometry,'/tb1/odom',10)
         transforms=node.create_publisher(TFMessage,'/tb1/tf',10)
         grid=OccupancyGrid();grid.info.resolution=.2;grid.info.height=grid.info.width=44
-        grid.data=detour_grid(True).astype(np.int8).ravel().tolist()
+        grid.data=(detour_grid(True) if fault=='disconnected_map' else np.zeros((44,44))).astype(np.int8).ravel().tolist()
         tf=TransformStamped();tf.header.frame_id='tb1/map';tf.child_frame_id='tb1/odom';tf.transform.rotation.w=1.
         odom=Odometry();odom.pose.pose.position.x=3.1;odom.pose.pose.position.y=1.1
         deadline=time.monotonic()+8.
@@ -261,14 +306,17 @@ def test_actual_ros_unreachable_map_emits_positive_energy_failure_without_nav_go
             clock.publish(msg)
             while node.now()<stamp and time.monotonic()<deadline:rclpy.spin_once(node,timeout_sec=.01)
             assert node.now()==stamp
-            grid.header.stamp.sec=odom.header.stamp.sec=tf.header.stamp.sec=stamp
+            grid.header.stamp.sec=odom.header.stamp.sec=stamp
+            tf.header.stamp.sec=stamp if fault=='disconnected_map' else 10
+            tf.header.stamp.nanosec=500000000 if fault=='stale_native_frame' else 0
             maps.publish(grid);transforms.publish(TFMessage(transforms=[tf]));odoms.publish(odom)
             for _ in range(5):rclpy.spin_once(node,timeout_sec=.01)
             if node.mode=='FAILED':break
         for _ in range(10):rclpy.spin_once(node,timeout_sec=.01)
-        assert node.mode=='FAILED' and node.failure_reason=='battery_return_unreachable'
+        expected='battery_return_unreachable' if fault=='disconnected_map' else 'battery_return_pose_unavailable'
+        assert node.mode=='FAILED' and node.failure_reason==expected
         assert node.energy>node.safety_margin and not goals
-        assert failures==['battery_return_unreachable:tb1']
+        assert failures==[expected+':tb1']
         assert node.return_goal_handle is None and not node.return_goal_pending
     finally:
         if server is not None:server.destroy()

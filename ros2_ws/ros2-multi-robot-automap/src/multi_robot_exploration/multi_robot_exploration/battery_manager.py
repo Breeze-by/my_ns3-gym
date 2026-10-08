@@ -211,6 +211,8 @@ class BatteryManager(Node):
             'return_recovery_wait_sec', RETURN_RECOVERY_WAIT_SEC).value)
         self.no_route_timeout = float(self.declare_parameter(
             'return_no_route_wait_sec', RETURN_NO_ROUTE_WAIT_SEC).value)
+        self.frame_stamp_offset = float(self.declare_parameter(
+            'frame_stamp_offset_sec', .5).value)
         self.nominal_speed = float(
             self.declare_parameter("nominal_speed_mps", 0.18).value
         )
@@ -252,6 +254,7 @@ class BatteryManager(Node):
             or self.return_path_factor < 1
             or self.return_recovery_wait < 0
             or self.no_route_timeout <= 0
+            or self.frame_stamp_offset < 0
             or self.nominal_speed <= 0
             or self.charge_radius <= 0
             or not 0 < self.charge_target_fraction <= 1
@@ -268,6 +271,7 @@ class BatteryManager(Node):
                 self.capacity, self.initial_energy, self.charge_x, self.charge_y,
                 self.move_cost, self.idle_cost, self.safety_margin,
                 self.return_path_factor, self.return_recovery_wait, self.no_route_timeout,
+                self.frame_stamp_offset,
                 self.nominal_speed, self.charge_radius, self.charge_duration,
                 self.return_timeout, self.charge_timeout)):
             raise ValueError('battery parameters must be finite')
@@ -329,6 +333,7 @@ class BatteryManager(Node):
         self.energy = self.initial_energy
         self.minimum_energy = self.energy
         self.map_to_odom = None
+        self.map_tf_source_time = None
         self.map_position = None
         self.return_map = None
         self.return_map_resolution = None
@@ -440,7 +445,16 @@ class BatteryManager(Node):
             parent = stamped_transform.header.frame_id.lstrip("/")
             child = stamped_transform.child_frame_id.lstrip("/")
             if parent.endswith("map") and child.endswith("odom"):
+                stamp = stamped_transform.header.stamp
+                source = stamp.sec + stamp.nanosec / 1e9 - self.frame_stamp_offset
+                if (source < 0 or source > self.now() + 1e-6 or not math.isfinite(source)
+                        or self.map_tf_source_time is not None and source <= self.map_tf_source_time):
+                    continue
                 self.map_to_odom = stamped_transform.transform
+                self.map_tf_source_time = source
+                if self.previous_odom_position is not None:
+                    self.map_position = transform_point_2d(
+                        *self.previous_odom_position, self.map_to_odom)
 
     def map_callback(self, message, source='local'):
         if (not message.info.height or not message.info.width
@@ -487,6 +501,9 @@ class BatteryManager(Node):
             message.pose.pose.position.x,
             message.pose.pose.position.y,
         )
+        if (odom_time > now + 1e-6
+                or self.last_odom_time is not None and odom_time <= self.last_odom_time):
+            return
         twist = message.twist.twist
         if not all(math.isfinite(v) for v in (odom_time, *odom_position,
                 twist.linear.x, twist.linear.y, twist.angular.z)):
@@ -558,14 +575,30 @@ class BatteryManager(Node):
         )
 
     def in_charging_zone(self, margin=0.0):
+        if BatteryManager.pose_source_age(self) is None:
+            return False
         return charging_zone_contains(
             self.map_position,
             (self.charge_x, self.charge_y),
             self.charge_radius + margin,
         )
 
+    def pose_source_age(self):
+        """Native odometry and SLAM sample leases, never receipt-time renewal."""
+        stamps = (self.last_odom_time, self.map_tf_source_time)
+        if any(stamp is None or not math.isfinite(stamp) for stamp in stamps):
+            return None
+        ages = tuple(self.now() - stamp for stamp in stamps)
+        if any(not 0 <= age <= STATE_TTL_SEC['pose_state'] for age in ages):
+            return None
+        return max(ages)
+
     def current_return_budget(self, include_route=False):
         """Local known map and odometry only; unavailable is never finite."""
+        pose_age = BatteryManager.pose_source_age(self)
+        if pose_age is None:
+            self.latest_return_budget = None
+            return None
         if self.in_charging_zone():
             distance, route, age = 0., (self.map_position,), 0.
         else:
@@ -598,11 +631,14 @@ class BatteryManager(Node):
                 return None
         budget = return_energy_budget(distance, self.move_cost, self.idle_cost,
             self.return_path_factor, self.nominal_speed, self.safety_margin,
-            self.return_recovery_wait, age)
+            self.return_recovery_wait, age, pose_age)
         budget.update(map_version=self.return_map_version,
                       map_source=self.return_map_source,
                       map_source_time=self.return_map_source_time,
-                      map_age_sec=age,
+                      map_age_sec=age, pose_age_sec=pose_age,
+                      odom_source_time=self.last_odom_time,
+                      frame_source_time=self.map_tf_source_time,
+                      frame_stamp_offset_sec=self.frame_stamp_offset,
                       map_content_blake2b=self.return_route_cache.get('key', (None, None))[1])
         if include_route:
             budget['route'] = route
@@ -684,6 +720,9 @@ class BatteryManager(Node):
         self.get_logger().info(f"{self.robot_name} started charging.")
 
     def update_charging(self, now):
+        if BatteryManager.pose_source_age(self) is None:
+            self.charge_stable_started_at = None
+            return
         # Keep a small hysteresis band so map/odom jitter does not repeatedly
         # eject a robot that is already beside the charger.
         if not self.in_charging_zone(margin=0.2):
@@ -775,7 +814,8 @@ class BatteryManager(Node):
                 self.return_cancels += 1
                 self.return_goal_handle.cancel_goal_async()
             if now - self.return_no_route_since >= self.no_route_timeout:
-                self.fail('battery_return_unreachable')
+                self.fail('battery_return_pose_unavailable' if BatteryManager.pose_source_age(self) is None
+                          else 'battery_return_unreachable')
             return False
         if self.return_no_route_since is not None:
             self.audit_return('return_route_recovered', budget=budget,

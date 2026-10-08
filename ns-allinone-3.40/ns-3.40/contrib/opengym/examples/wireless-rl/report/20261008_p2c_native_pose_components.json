@@ -1,0 +1,462 @@
+{
+  "status": "COMPONENT_PASS_PENDING_NEW_TASK_FREEZE",
+  "recorded_at_utc": "2026-10-08T12:21:57.316624+00:00",
+  "parent_commit": "f637f64ce0054b9554bc34030d67f731dcdf77b6",
+  "sources_sha256": {
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/battery_manager.py": "af7b8045d7d634b08b1f92cfdbe68932744c47bc063944b887d4046a75ebf8f9",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/control.py": "78d60e1420c3256eae9c7107e557f78f3bffd625fc3120d8682586b9ae4be42d",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py": "cb01d81582b3afbf44353950cf22c592b0787d61932199e62d7f339e7dc563b8",
+    "ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py": "591c77928dd8f3bf6ba8042712aea11c7a4378c554c9b0578c868d9baed4eae7",
+    "ros2_ws/ros2-multi-robot-automap/scripts/p2c_integration_manifest.json": "a776fe6eed47313b610d86ab69076209911ac716fe64d226bfc575e114c2a6a1"
+  },
+  "native_pose_counterexample": {
+    "scope": "component stale-native-source counterexample; not a physical task",
+    "source_commit": "f637f64ce0054b9554bc34030d67f731dcdf77b6",
+    "now": 11.0,
+    "odom_source_time": -100.0,
+    "frame_source_time": -100.0,
+    "pose_age_sec": 111.0,
+    "known_map_source_age_sec": 1.0,
+    "returned_finite_budget": {
+      "path_distance_m": 13.262741699796951,
+      "motion_distance_budget_m": 26.825483399593903,
+      "travel_time_budget_sec": 149.03046333107724,
+      "waiting_time_budget_sec": 32.0,
+      "move_energy": 26.825483399593903,
+      "idle_energy": 3.620609266621545,
+      "safety_margin": 8.0,
+      "required_energy": 38.44609266621545,
+      "map_version": 1,
+      "map_source": "local",
+      "map_source_time": 10.0,
+      "map_age_sec": 1.0,
+      "map_content_blake2b": "2f50ae2ef4054f85ff3b2c3bd93f4cbe"
+    }
+  },
+  "functional": {
+    "passed": 840,
+    "skipped": 1,
+    "wall_sec": 22.21
+  },
+  "directed": {
+    "passed": 106,
+    "wall_sec": 3.82,
+    "scope": "before adding actual stale-frame DDS variant"
+  },
+  "final_build": {
+    "packages": 4,
+    "wall_sec": 5.48
+  },
+  "source_audit_summary": {
+    "status": "PASS",
+    "protected_files": 172,
+    "authorized_changed_files": 3,
+    "protocol_cells": 54
+  },
+  "new_manifest": {
+    "schema_version": 1,
+    "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
+    "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
+    "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
+    "predeclared_at_utc": "2026-10-08T12:21:52.231631+00:00",
+    "duration_sec": 300,
+    "coverage_threshold": 0.8,
+    "fault_seed": 17011,
+    "owner_shutdown_timeout_sec": 120,
+    "development_cases": [
+      "dev_forced2",
+      "dev_lab101",
+      "dev_rooms202",
+      "dev_corridors303"
+    ],
+    "gate_cases": [
+      "fixed_lab_101",
+      "fixed_lab_202",
+      "fixed_lab_303",
+      "fixed_rooms_101",
+      "fixed_rooms_202",
+      "fixed_rooms_303",
+      "fixed_corridors_101",
+      "fixed_corridors_202",
+      "fixed_corridors_303",
+      "fixed_corridors2_202",
+      "forced2",
+      "protocol_forced2",
+      "delay_rooms3",
+      "loss_corridors2",
+      "holdout_ideal",
+      "holdout_fault",
+      "empty_battery"
+    ],
+    "cases": {
+      "dev_forced2": {
+        "world": "my_world.world",
+        "target_x": -4,
+        "target_y": 4,
+        "robot_count": 2,
+        "seed": 303,
+        "energy": 18.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": [],
+        "charge_duration": 10.0,
+        "safety_margin": 5.0,
+        "return_timeout": 120
+      },
+      "dev_lab101": {
+        "world": "my_world.world",
+        "target_x": -4,
+        "target_y": 4,
+        "robot_count": 3,
+        "seed": 101,
+        "energy": 40.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": []
+      },
+      "dev_rooms202": {
+        "world": "p1c_rooms.world",
+        "target_x": 5.0,
+        "target_y": 3.0,
+        "robot_count": 3,
+        "seed": 202,
+        "energy": 40.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": []
+      },
+      "dev_corridors303": {
+        "world": "p1c_corridors.world",
+        "target_x": -4.5,
+        "target_y": -0.5,
+        "robot_count": 3,
+        "seed": 303,
+        "energy": 45.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": []
+      },
+      "fixed_lab_101": {
+        "world": "my_world.world",
+        "target_x": -4,
+        "target_y": 4,
+        "robot_count": 3,
+        "seed": 101,
+        "energy": 40.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": []
+      },
+      "fixed_lab_202": {
+        "world": "my_world.world",
+        "target_x": -4,
+        "target_y": 4,
+        "robot_count": 3,
+        "seed": 202,
+        "energy": 40.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": []
+      },
+      "fixed_lab_303": {
+        "world": "my_world.world",
+        "target_x": -4,
+        "target_y": 4,
+        "robot_count": 3,
+        "seed": 303,
+        "energy": 40.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": []
+      },
+      "fixed_rooms_101": {
+        "world": "p1c_rooms.world",
+        "target_x": 5.0,
+        "target_y": 3.0,
+        "robot_count": 3,
+        "seed": 101,
+        "energy": 40.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": []
+      },
+      "fixed_rooms_202": {
+        "world": "p1c_rooms.world",
+        "target_x": 5.0,
+        "target_y": 3.0,
+        "robot_count": 3,
+        "seed": 202,
+        "energy": 40.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": []
+      },
+      "fixed_rooms_303": {
+        "world": "p1c_rooms.world",
+        "target_x": 5.0,
+        "target_y": 3.0,
+        "robot_count": 3,
+        "seed": 303,
+        "energy": 40.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": []
+      },
+      "fixed_corridors_101": {
+        "world": "p1c_corridors.world",
+        "target_x": -4.5,
+        "target_y": -0.5,
+        "robot_count": 3,
+        "seed": 101,
+        "energy": 45.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": []
+      },
+      "fixed_corridors_202": {
+        "world": "p1c_corridors.world",
+        "target_x": -4.5,
+        "target_y": -0.5,
+        "robot_count": 3,
+        "seed": 202,
+        "energy": 45.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": []
+      },
+      "fixed_corridors_303": {
+        "world": "p1c_corridors.world",
+        "target_x": -4.5,
+        "target_y": -0.5,
+        "robot_count": 3,
+        "seed": 303,
+        "energy": 45.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": []
+      },
+      "fixed_corridors2_202": {
+        "world": "p1c_corridors.world",
+        "target_x": -4.5,
+        "target_y": -0.5,
+        "robot_count": 2,
+        "seed": 202,
+        "energy": 45.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": []
+      },
+      "forced2": {
+        "world": "my_world.world",
+        "target_x": -4,
+        "target_y": 4,
+        "robot_count": 2,
+        "seed": 303,
+        "energy": 18.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": [],
+        "charge_duration": 10.0,
+        "safety_margin": 5.0,
+        "return_timeout": 120
+      },
+      "protocol_forced2": {
+        "world": "my_world.world",
+        "target_x": -4,
+        "target_y": 4,
+        "robot_count": 2,
+        "seed": 303,
+        "energy": 18.0,
+        "mode": "ideal",
+        "admission_protocol": true,
+        "schedule": [],
+        "charge_duration": 10.0,
+        "safety_margin": 5.0,
+        "return_timeout": 120
+      },
+      "delay_rooms3": {
+        "world": "p1c_rooms.world",
+        "target_x": 5.0,
+        "target_y": 3.0,
+        "robot_count": 3,
+        "seed": 202,
+        "energy": 40.0,
+        "mode": "fault",
+        "admission_protocol": true,
+        "schedule": [],
+        "profile": {
+          "uplink_delay_sec": 0.5,
+          "downlink_delay_sec": 0.5
+        }
+      },
+      "loss_corridors2": {
+        "world": "p1c_corridors.world",
+        "target_x": -4.5,
+        "target_y": -0.5,
+        "robot_count": 2,
+        "seed": 202,
+        "energy": 45.0,
+        "mode": "fault",
+        "admission_protocol": true,
+        "schedule": [],
+        "profile": {
+          "uplink_loss_rate": 0.1,
+          "downlink_loss_rate": 0.1
+        }
+      },
+      "holdout_ideal": {
+        "world": "p2c_holdout917.world",
+        "target_x": 4.6,
+        "target_y": -3.6,
+        "robot_count": 3,
+        "seed": 917,
+        "energy": 45.0,
+        "mode": "ideal",
+        "admission_protocol": true,
+        "schedule": []
+      },
+      "holdout_fault": {
+        "world": "p2c_holdout917.world",
+        "target_x": 4.6,
+        "target_y": -3.6,
+        "robot_count": 3,
+        "seed": 917,
+        "energy": 45.0,
+        "mode": "fault",
+        "admission_protocol": true,
+        "schedule": [],
+        "profile": {
+          "uplink_delay_sec": 0.5,
+          "downlink_loss_rate": 0.1,
+          "gateway_seed": 29171
+        }
+      },
+      "empty_battery": {
+        "world": "my_world.world",
+        "target_x": -4,
+        "target_y": 4,
+        "robot_count": 2,
+        "seed": 303,
+        "energy": 0.0,
+        "mode": "ideal",
+        "admission_protocol": false,
+        "schedule": []
+      }
+    },
+    "rules": [
+      "Commit and push all source/config/helper bytes before first task; no edits while any task owner/observer remains live.",
+      "Retain every original/failure/infrastructure interruption; no task retries or failed-cell backfill.",
+      "All ten fixed direct-ideal cells and forced2/protocol_forced2/holdout_ideal require native COMPLETE at unchanged300s/.35m/.05mps/.1radps/5s.",
+      "Delay/loss/holdout_fault outcomes are all retained; their safety and protocol gates require zero contacts/exhaustion/robot failures, not forced task success.",
+      "Each forced robot must charge; all actual charger_stopped return audits require positive energy and prediction error <=0 within1e-6.",
+      "No-route/empty-energy negative probes must fail correctly, never generate a straight-line Nav2 return; actual ROS synthetic-map failure is labelled component, not Gazebo motion.",
+      "Physical blackout probe reuses the predeclared60..250s staging stimulus and read-only native motion thresholds; both robots must independently return/charge.",
+      "101/202/303/707/809 are exposed;917/new geometry/target/fault29171 is first-exposure verification, not a held-out population estimate. First exposure only after development and full fixed/safety gates.",
+      "Budget envelope assumes bounded motion deviation, speed, reaction and recovery; no claim under infinite blockage, changing obstacles, broken executor or uncalibrated hardware."
+    ],
+    "safety_probe_manifest": "p3b5_staged_return_probe_manifest.json",
+    "energy_unit": "simulation_model_units_not_joules",
+    "development_parent": "f637f64ce0054b9554bc34030d67f731dcdf77b6",
+    "retained_failed_development": "20261008_p2c_v1_failed_development.json",
+    "opportunity_charge_algorithm": "two_current_frontiers_complete_route_budget",
+    "retained_failed_developments": [
+      "20261008_p2c_v1_failed_development.json",
+      "20261008_p2c_v2_failed_development.json"
+    ],
+    "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
+    "opportunity_charge_rules": [
+      "Successful real exploration first; never initial spawn top-up.",
+      "Only existing near-home range and visible body-safe contact route; serial request and handle drain retained.",
+      "At most three distinct useful current frontier alternatives; full known route and endpoint return; forecast is not a queued command.",
+      "Current map identity/source TTL and current delivered pose/TF/battery gates; next actual leg always revalidates."
+    ],
+    "native_pose_contract": {
+      "odom_ttl_sec": 2.0,
+      "frame_ttl_sec": 2.0,
+      "frame_generation_stamp": "native validity stamp minus actual SLAM transform_timeout; launch supplies the same configured offset as gateway",
+      "source_order": "ignore duplicate/out-of-order and future source samples; reads never renew source time",
+      "unavailable": "no finite budget/nav return or stable charging; bounded30s stop then explicit positive-energy failure"
+    },
+    "retained_partial_development": "20261008_p2c_v3_partial_development.json"
+  },
+  "archives": [
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_native_pose_lease_counterexample_v2.json",
+      "archive": "20261008_p2c_native_pose_artifacts/p2c_native_pose_lease_counterexample_v2.json.gz",
+      "source_sha256": "5788cb8eee279d290d14cfc41e0623c61e3237c23f25bd5503c27cc2150e6e74",
+      "archive_sha256": "eb508cef6d0fdef7c898e90bfd12bd9c0737be124d821c52d87caf0c121b3249"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_native_pose_components_v1.log",
+      "archive": "20261008_p2c_native_pose_artifacts/p2c_native_pose_components_v1.log.gz",
+      "source_sha256": "b21b88109db61d74c9d25d3526594a67cbbde967be78f7352a753bf965a9b1ed",
+      "archive_sha256": "65dfbdaa110be880e7eabee2680ebc09763c1c96ea24d7c242d9b8d8a295d7db"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_native_pose_full_components_v1.log",
+      "archive": "20261008_p2c_native_pose_artifacts/p2c_native_pose_full_components_v1.log.gz",
+      "source_sha256": "83cb524a395063300f19fe73e88dd765653bfbe0716547ac298b2329360f37e7",
+      "archive_sha256": "8b5b1b96e58e41835d69f56bf42ec8ebe3d933e1afee330fcb6249b99570b4ed"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_native_pose_build_v1.log",
+      "archive": "20261008_p2c_native_pose_artifacts/p2c_native_pose_build_v1.log.gz",
+      "source_sha256": "439cc76fa5a4afdbdc110174d054127a48a90f9b652baf8b0e053330924b92c5",
+      "archive_sha256": "1417fc03103cc682cfddac4d0c7827fc889db2c05876cffce5a24c2d0d25460b"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_native_pose_build_v2.log",
+      "archive": "20261008_p2c_native_pose_artifacts/p2c_native_pose_build_v2.log.gz",
+      "source_sha256": "6506c9603413c723291b62cd1ed3f87f61cda3945b55626aeaf5ca5ea2a6d004",
+      "archive_sha256": "7599efb902a125db6a3e45b8ea4634053acc6acb8edb91bdd9d56deb586da939"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_native_pose_source_v1.json",
+      "archive": "20261008_p2c_native_pose_artifacts/p2c_native_pose_source_v1.json.gz",
+      "source_sha256": "0e32da9fc69dc0526f91a7bdd42ddf4e5ecdfe7a768dd43a0fa3a6bdd72a21e5",
+      "archive_sha256": "83443dff54b2d94a48fc287b2e0b6b349d6812d27b84f0e40e2dd4285f826d73"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_native_pose_source_v1.log",
+      "archive": "20261008_p2c_native_pose_artifacts/p2c_native_pose_source_v1.log.gz",
+      "source_sha256": "76eec7ea96d36fd9057326aab4a666933cb37bd43290eb96178fe04d29f51260",
+      "archive_sha256": "991c0b52826081d6a26e91619a2129e5eea24fa5ce2f2b70493468c99a01a7d6"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_native_pose_source_v2.json",
+      "archive": "20261008_p2c_native_pose_artifacts/p2c_native_pose_source_v2.json.gz",
+      "source_sha256": "ed0a9e5a168d73d0d8688c5cbb07766cb18ce6f3d93921cec421e0d11d664dfa",
+      "archive_sha256": "00e6a9f9dc58284c16dc4fa4d5f13a4ed903621b28493ed983b988a598344bed"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_native_pose_source_v2.log",
+      "archive": "20261008_p2c_native_pose_artifacts/p2c_native_pose_source_v2.log.gz",
+      "source_sha256": "76eec7ea96d36fd9057326aab4a666933cb37bd43290eb96178fe04d29f51260",
+      "archive_sha256": "991c0b52826081d6a26e91619a2129e5eea24fa5ce2f2b70493468c99a01a7d6"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_native_pose_manifest_v1.json",
+      "archive": "20261008_p2c_native_pose_artifacts/p2c_native_pose_manifest_v1.json.gz",
+      "source_sha256": "2f77bc35f57efcaa087d8f79a724c8336725ecaf2ab50ca5e3bb84af3561c48b",
+      "archive_sha256": "99c579db87e601f0fae01d2a41b2bbc529199e3c313801e0f902f786e8663482"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_native_pose_manifest_v2.json",
+      "archive": "20261008_p2c_native_pose_artifacts/p2c_native_pose_manifest_v2.json.gz",
+      "source_sha256": "6e0d7661060d6a29d962f2a44acf95c62d95502a434898c1f58642cfe8269235",
+      "archive_sha256": "381f977b926dbcf4bac1b47653f923de8e49bb3cd3c83a77baa1ed38d0d1fb7e"
+    }
+  ],
+  "actual_ros_components": {
+    "scope": "actual DDS/clock/action interfaces with synthetic map and no physical motion",
+    "domains": [
+      207,
+      208
+    ],
+    "disconnected_map": "positive-energy battery_return_unreachable/zero Nav2 goals",
+    "fresh_map_stale_native_frame": "positive-energy battery_return_pose_unavailable/zero Nav2 goals"
+  },
+  "task_complete_in_this_candidate": false,
+  "new_holdout917_exposed": false,
+  "general_hardware_safety_guarantee": false
+}

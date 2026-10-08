@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-08T12:02:46.967915+00:00",
+  "predeclared_at_utc": "2026-10-08T12:21:52.231631+00:00",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -301,7 +301,7 @@
   ],
   "safety_probe_manifest": "p3b5_staged_return_probe_manifest.json",
   "energy_unit": "simulation_model_units_not_joules",
-  "development_parent": "862fe4ad212f3d9b747002e08ae79ea09f35a98f",
+  "development_parent": "f637f64ce0054b9554bc34030d67f731dcdf77b6",
   "retained_failed_development": "20261008_p2c_v1_failed_development.json",
   "opportunity_charge_algorithm": "two_current_frontiers_complete_route_budget",
   "retained_failed_developments": [
@@ -314,5 +314,13 @@
     "Only existing near-home range and visible body-safe contact route; serial request and handle drain retained.",
     "At most three distinct useful current frontier alternatives; full known route and endpoint return; forecast is not a queued command.",
     "Current map identity/source TTL and current delivered pose/TF/battery gates; next actual leg always revalidates."
-  ]
+  ],
+  "native_pose_contract": {
+    "odom_ttl_sec": 2.0,
+    "frame_ttl_sec": 2.0,
+    "frame_generation_stamp": "native validity stamp minus actual SLAM transform_timeout; launch supplies the same configured offset as gateway",
+    "source_order": "ignore duplicate/out-of-order and future source samples; reads never renew source time",
+    "unavailable": "no finite budget/nav return or stable charging; bounded30s stop then explicit positive-energy failure"
+  },
+  "retained_partial_development": "20261008_p2c_v3_partial_development.json"
 }

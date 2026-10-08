@@ -659,3 +659,6 @@ run_p3b5_tasks默认domain base改为30；run_p3b5_return_probe默认90。domain
 
 
 2026-10-08 P2C.1 v2首个forced严格FAIL，tb1正电量失路FAILED、任务EXPLORE timeout300s；全部原始保留，未启动其余开发/正式/blackout/917。原地图复核确认最近净空逃离点位于充电断连区域；新v3只在原0.6m已知自由逃离内选择充电反向场有限点，预算/执行同源，原障碍/净空/300s/5s/TTL保持。824功能/1skip、四包build、172保护/54协议PASS，旧/新同图None/4.5624307m。待新freeze/cohort，不称任务完成。见[连通逃离组件](report/20261008_p2c_connected_escape_components.md)与[v2原失败](report/20261008_p2c_v2_failed_development.md)。
+
+
+2026-10-08 P2C.1 v4补齐本地pose/TF2秒源龄与原生TF有效时间→实际SLAM source偏移、最新TF×odom重算；过期输入无有限预算或稳定充电进展，30秒有界停止/明确正能量失效。完整路径算法保持v3，原300s/5s/地图5s/余量未放宽；840功能/1skip、四包5.48s、172保护/54协议PASS，actual ROS synthetic stale-frame/disconnected皆正能量失败/零goal。v3首forced原格COMPLETE287.5s/两charge/min9.385784与269快照已保持，但为partial开发，不能替代v4新源码正式门禁。参见[本地源龄组件](report/20261008_p2c_native_pose_components.md)与[v3原格](report/20261008_p2c_v3_partial_development.md)。917未暴露；新4开发/17正式/两blackout待验证，无P4/ns3/Wi-Fi/RL。

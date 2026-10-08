@@ -1088,3 +1088,6 @@ P2C.1 v2（2026-10-08，未集成候选）：原近站机会充电现增加两�
 
 
 2026-10-08 P2C.1 当前为v3开发候选：完整充电反向场预算/执行腿使用连通逃离终点，继续原0.6m已知自由逃离/.35m净空与TTL、保留失路30秒停止失败；v1/v2原任务失败已保留，组件824 PASS/1skip不代表新任务验收。两步前沿近站机会充电仅用当前交付状态，未来腿仍重新准入。默认launch/参数未再变化；新正式矩阵需事前推送冻结，917未暴露。报告在 wireless-rl/report/20261008_p2c_connected_escape_components.md。
+
+
+2026-10-08 P2C.1 v4：battery manager新增原生odom/TF2秒源龄约束；launch自动把实际SLAM配置transform_timeout作为frame_stamp_offset_sec传给battery，值与gateway相同，原生TF不改。在独立直接启动battery manager时，frame_stamp_offset_sec须匹配该TF源实际有效时间偏移（构造默认0.5s；此项目launch从配置读取2s）。过期pose不能累计充电停稳时间或生成有限返航预算；缺姿态30秒停止后报告battery_return_pose_unavailable。原地图5秒/300秒任务/5秒保持及余量不变。840功能/1skip通过，候选仍需新冻结真实任务；917未暴露。

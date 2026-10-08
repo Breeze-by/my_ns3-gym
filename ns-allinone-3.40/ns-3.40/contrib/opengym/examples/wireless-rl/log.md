@@ -7982,3 +7982,31 @@ colcon build --symlink-install --packages-select multi_robot_interfaces multi_ro
 ```
 
 首全套3FAIL/823PASS/1skip/48.49s：两既有全workspace风格检查（原功能集此前已排除）与新夹具.6000000000000001浮点；仅夹具容差修正，原功能完整命令824PASS/1skip/22.49s。四包5.89s、source172保护/3授权/54协议PASS；192query三完整算法成本/可达一致，legacy46低估/28假有限。所有首失败/最终检查/原图/源SHA/manifest和11无损gzip在report/20261008_p2c_connected_escape_components.json/.md。v3新4开发/17正式/两blackout预声明更新父862fe4a与保留v1/v2；917未暴露。提交/推送后才开始新任务，所有任务原owner关闭前不修改。无P4/ns-3/Wi-Fi/RL。
+
+
+## 2026-10-08 P2C.1 v3 原partial PASS与v4 native源龄补强
+
+v3冻结f637f64ce0054b9554bc34030d67f731dcdf77b6已推送，所有owned关闭前源不改；同ROS/RMW UDPv4/PYTHONNOUSERSITE/CPU0–79前缀：
+
+```bash
+taskset -c 0-79 /usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261008_p2c_v3 --domain 170 --gazebo-port 20250
+/usr/bin/python3 scripts/check_p2c_gate.py --run-root "$PWD/log/p2c/20261008_p2c_v3" --development --cases dev_forced2 --output log/p2c_v3_dev_forced2_gate.json
+```
+
+原生COMPLETE287.5/eachcharge1/min9.385784/0接触/耗尽/failed/infra/retry，所有owner/observer自然exit0/no escalation，strict partial PASS/269live样本。两实际返航.805016/2.353636m、误差-2.396769/-3.733164，lookahead新分支0。原native证据/命令/环境/哈希/精选gzip见report/20261008_p2c_v3_partial_development.json/.md；其它三开发/17正式/physical未调用，非完整PASS，917未暴露。
+
+任务期间只读组件反例（无源码修改）使用test_return_budget.manager、last_odom_time/map_tf_source_time=-100、now11、新鲜map10，旧budget仍finite，输出log/p2c_native_pose_lease_counterexample_v2.json；首次仅导入路径setup的stdin无输出/未运行断言，不计反例结果。所有原owner/observer自然关闭后才改本地native2s源龄/actualSLAMoffset/pose-age预算和充电停稳验证；不改control算法/原300s/5s/地图5s/余量、不回填v3。
+
+ROS通用前缀下：
+
+```bash
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_return_budget.py src/multi_robot_exploration/test/test_battery_manager.py scripts/test_p2c_gate.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test scripts/test_*.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+colcon build --symlink-install --packages-select multi_robot_interfaces multi_robot_exploration merge_map multi_robot
+/usr/bin/python3 scripts/check_p2c_source.py --output log/p2c_native_pose_source_vN.json
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261008_p2c_v4 --domain 170 --gazebo-port 20250 --validate-only
+```
+
+定向106PASS/3.82s；随后增加actual DDS stale-frame变体与明确failure理由，完整840PASS/1skip/22.21s，两个isolated domain207/208 synthetic map+clock+action probes正能量失败/零Nav2goals，不是物理motion。build v1/v2均四包通过（最终5.48s），source v1/v2均172保护/3授权/54协议PASS；所有原日志/source/config/helper哈希与11精选gzip在report/20261008_p2c_native_pose_components.json/.md。control与v3原冻结算法字节相同，192算法组件不无故重复；未来新actual2s输入预算reader必校验源码计入的pose_age和两源时间。新4开发/17formal/2physical需new pushed freeze；917仍未暴露，原v1/v2FAIL/v3partial所有raw保持，无P4/ns3/Wi-Fi/RL。
+
+最后新增v3 partial引用及前瞻时刻后，相同validate-only命令再次PASS，最新输出log/p2c_native_pose_manifest_v2.json已无损保留，尚无v4任务启动。

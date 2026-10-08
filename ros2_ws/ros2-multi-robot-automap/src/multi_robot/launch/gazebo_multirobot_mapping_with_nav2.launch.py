@@ -659,6 +659,7 @@ def launch_setup(context, *args, **kwargs):
                         "return_path_factor": battery_return_path_factor,
                         'return_recovery_wait_sec': battery_return_recovery_wait,
                         'return_no_route_wait_sec': battery_return_no_route_wait,
+                        'frame_stamp_offset_sec': frame_stamp_offset,
                         "nominal_speed_mps": battery_nominal_speed,
                         "charge_timeout_sec": battery_charge_timeout,
                     }

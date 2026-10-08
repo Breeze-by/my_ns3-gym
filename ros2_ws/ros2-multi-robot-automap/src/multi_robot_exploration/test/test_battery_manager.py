@@ -208,6 +208,7 @@ def test_charging_waits_for_navigation_result_before_starting_timer():
         return_goal_pending=False, return_goal_handle=object(),
         linear_speed=0.0, angular_speed=0.0,
         stationary_linear=0.15, stationary_angular=0.1,
+        last_odom_time=20., map_tf_source_time=20., now=lambda:20.,
         charge_stable_started_at=1.0)
     BatteryManager.update_charging(manager, 20.0)
     assert manager.charge_stable_started_at is None
@@ -247,6 +248,7 @@ def charge_request_node():
         robot_name="tb1", now=lambda: 11.0, last_charge_request_stamp=-float("inf"),
         mission_terminal=False, mode=ACTIVE, energy=20.0, charge_target=80.0,
         map_position=(0., 3.), charge_x=0., charge_y=0., move_cost=1., idle_cost=.02,
+        last_odom_time=11., map_tf_source_time=11., frame_stamp_offset=.5,
         return_path_factor=2., nominal_speed=.18, safety_margin=8.,
         charge_radius=.8, return_map=np.zeros((100,100), dtype=np.int16),
         return_map_resolution=.1, return_map_origin=(-5.,-5.),
