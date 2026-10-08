@@ -1168,7 +1168,7 @@ run_p3b5_tasks默认domain base改为30；run_p3b5_return_probe默认90。domain
 
 ## P2C.1 评审后安全预算候选（2026-10-08）
 
-用户已验收P3C.5。P2C.1独立补强本地和中央返航预算，详情/参数见[启动文档P2C.1节](launch_commands.md#p2c1-完整返航路径与预算2026-10-08-开发候选)。完整接触区路径缓存覆盖去程终点的返航；本地优先其新鲜且有完整路线的自有地图，必要时使用已交付融合地图。AP预算仅来自其交付地图，不能访问本地审计快照。
+用户已验收P3C.5。P2C.1独立补强本地和中央返航预算，详情/参数见[启动文档P2C.1节](launch_commands.md#p2c1-完整返航路径与预算2026-10-08-开发候选)。完整接触区路径缓存覆盖去程终点的返航；本地从新鲜自有图与已交付融合图的合格完整路线中择最低预算；融合路线必须通过自有图已知障碍否决，精确平局优先自有图。AP预算仅来自其交付地图，不能访问本地审计快照。
 
 原能量单位、移动/空耗模型和充电保持要求不变；移动或取消未结束的CHARGING过渡仍计算消耗。路径包络、恢复/源龄/反应余量、失路暂停/有界失败是新候选，须以新任务冻结验证。`battery_return_audit`保存可重建地图、预测成本和实际成本，零耗尽样本不被解释为普遍安全保证。当前未开始P4/ns-3/Wi-Fi/RL。
 
@@ -1179,7 +1179,7 @@ P2C.1 v2（2026-10-08，未集成候选）：原近站机会充电现增加两�
 2026-10-08 P2C.1 当前为v3开发候选：完整充电反向场预算/执行腿使用连通逃离终点，继续原0.6m已知自由逃离/.35m净空与TTL、保留失路30秒停止失败；v1/v2原任务失败已保留，组件824 PASS/1skip不代表新任务验收。两步前沿近站机会充电仅用当前交付状态，未来腿仍重新准入。默认launch/参数未再变化；新正式矩阵需事前推送冻结，917未暴露。报告在 wireless-rl/report/20261008_p2c_connected_escape_components.md。
 
 
-2026-10-08 P2C.1 v4：battery manager新增原生odom/TF2秒源龄约束；launch自动把实际SLAM配置transform_timeout作为frame_stamp_offset_sec传给battery，值与gateway相同，原生TF不改。在独立直接启动battery manager时，frame_stamp_offset_sec须匹配该TF源实际有效时间偏移（构造默认0.5s；此项目launch从配置读取2s）。过期pose不能累计充电停稳时间或生成有限返航预算；缺姿态30秒停止后报告battery_return_pose_unavailable。原地图5秒/300秒任务/5秒保持及余量不变。840功能/1skip通过，候选仍需新冻结真实任务；917未暴露。
+2026-10-08 P2C.1 v4：battery manager新增原生odom/TF2秒源龄约束；launch自动把实际SLAM配置transform_timeout作为frame_stamp_offset_sec传给battery，值与gateway相同，原生TF不改。在独立直接启动battery manager时，frame_stamp_offset_sec须匹配该TF源实际有效时间偏移（构造默认0.5s；此项目launch从实际SLAM配置读取，当前为0.2s）。过期pose不能累计充电停稳时间或生成有限返航预算；缺姿态30秒停止后报告battery_return_pose_unavailable。原地图5秒/300秒任务/5秒保持及余量不变。840功能/1skip通过，候选仍需新冻结真实任务；917未暴露。
 
 
 2026-10-08 P2C.1 v5修正：native odom/TF若略领先本节点/clock，保持原源戳暂存（<=原2秒、128项），clock赶上后处理，避免丢弃合法样本造成计费冻结。初始姿态未就绪先停等、已负担后恢复ACTIVE而不补满；原30秒缺输入停止/失败与原生门槛保持。每5秒battery_return_audit增加native只读能量平衡快照，仅评估观察器消费，不作为AP输入或网络流。847功能/1skip通过，当前仍候选，新源码门禁待运行；917未暴露。
@@ -1189,3 +1189,6 @@ P2C.1 v2（2026-10-08，未集成候选）：原近站机会充电现增加两�
 
 
 2026-10-08 P2C.1 v7补充：v6四开发三原生COMPLETE/一lab RALLY timeout300.3，四原始失败/766live/成本账本全部保留，17正式/blackout/917未运行。新候选从新鲜完整已知接触区路径中择最小合格预算，融合路径不得清除本地已知障碍；计入最大所用源龄，两地图/成本/否决/择优只存在native只读审计，不作为AP新信息，不增加通信。863功能/1skip、四包5.36s/172保护/54协议和P3C.5旧14 native reader通过；新全批次待冻结运行，不称已有任务收益。证据：[v7组件报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261008_p2c_multimap_components.md)。
+
+
+2026-10-08 P2C.1 v8：v7四开发三COMPLETE/一lab集合timeout300秒，四格零接触/耗尽/failed，760live及原生能量/返航择源审计通过；原失败完整保留。返充预约现用AP已交付地图的完整接触区路径并复用原几何缓存；充电身体、实际本地安全权威和失路等待保持。集合/剩余/驻点绕行补计实际起点到首网格点距离。初次“五米前缀”诊断已撤回（原默认无限长），首失败与更正保留。866功能/1skip、四包6.25s/172保护/54协议PASS；仍需新同提交4开发/17正式/真实blackout，917未暴露，不宣称任务收益。 证据：[v8组件](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261008_p2c_rally_contact_components.md)。

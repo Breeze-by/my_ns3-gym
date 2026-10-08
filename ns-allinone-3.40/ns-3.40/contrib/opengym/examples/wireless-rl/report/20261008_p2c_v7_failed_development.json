@@ -1,0 +1,710 @@
+{
+  "status": "FAIL",
+  "task_stack_frozen_commit": "76698dab2b3f49c8f868c23fc62b890c2bf8015d",
+  "development_cases": 4,
+  "native_complete": 3,
+  "originals": [
+    {
+      "case": "dev_corridors303",
+      "git_commit": "76698dab2b3f49c8f868c23fc62b890c2bf8015d",
+      "command": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py",
+        "--world",
+        "p1c_corridors.world",
+        "--robot-count",
+        "3",
+        "--gazebo-seed",
+        "303",
+        "--startup-timeout",
+        "600",
+        "--message-timeout",
+        "90",
+        "--shutdown-timeout",
+        "120",
+        "--evaluation-duration",
+        "300",
+        "--evaluation-wait-timeout",
+        "900",
+        "--coverage-threshold",
+        "0",
+        "--mission-mode",
+        "rally",
+        "--gateway-mode",
+        "ideal",
+        "--gateway-seed",
+        "17011",
+        "--battery",
+        "--battery-capacity",
+        "100",
+        "--battery-initial-energy",
+        "45.0",
+        "--target-x",
+        "-4.5",
+        "--target-y",
+        "-0.5",
+        "--rally-max-concurrent",
+        "2",
+        "--disable-global-battery-rally-pause",
+        "--episode-id",
+        "20261008_p2c_v7_dev_corridors303",
+        "--collect-fault-result",
+        "--dwell-seconds",
+        "0",
+        "--evaluation-output-dir",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_corridors303",
+        "--log-dir",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_corridors303/launch",
+        "--gateway-ledger-path",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_corridors303/ledger.jsonl",
+        "--bypass-audit-output",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_corridors303/graph.json",
+        "--target-detection",
+        "--rally"
+      ],
+      "observer_command": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/observe_p3b5.py",
+        "--output",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_corridors303/safety_events.jsonl",
+        "--robot-count",
+        "3"
+      ],
+      "started_at_utc": "2026-10-08T14:03:33.334814+00:00",
+      "finished_at_utc": "2026-10-08T14:11:11.051650+00:00",
+      "summary_sha256": "fcbae90236ed6cc2f34a9d161958e07e827c8a184474c17d09761261aacf7642",
+      "success": true,
+      "phase": "COMPLETE",
+      "termination": "task_complete",
+      "completion_time_sec": 259.40000000000003,
+      "elapsed_sim_time_sec": 259.40000000000003,
+      "time_to_detect_sec": 69.60000000000002,
+      "time_to_rally_sec": 83.5,
+      "contacts": 0,
+      "failed_robots": [],
+      "minimum_energy": 29.495940775820046,
+      "total_charges": 2,
+      "robots": {
+        "tb1": {
+          "battery_charge_count": 1,
+          "battery_minimum_energy": 29.495940775820046,
+          "battery_return_count": 2,
+          "path_length_m": 20.347901367801406
+        },
+        "tb2": {
+          "battery_charge_count": 0,
+          "battery_minimum_energy": 31.50203483747841,
+          "battery_return_count": 1,
+          "path_length_m": 8.31309195684092
+        },
+        "tb3": {
+          "battery_charge_count": 1,
+          "battery_minimum_energy": 43.02583949680209,
+          "battery_return_count": 2,
+          "path_length_m": 9.892960523276075
+        }
+      }
+    },
+    {
+      "case": "dev_forced2",
+      "git_commit": "76698dab2b3f49c8f868c23fc62b890c2bf8015d",
+      "command": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py",
+        "--world",
+        "my_world.world",
+        "--robot-count",
+        "2",
+        "--gazebo-seed",
+        "303",
+        "--startup-timeout",
+        "600",
+        "--message-timeout",
+        "90",
+        "--shutdown-timeout",
+        "120",
+        "--evaluation-duration",
+        "300",
+        "--evaluation-wait-timeout",
+        "900",
+        "--coverage-threshold",
+        "0",
+        "--mission-mode",
+        "rally",
+        "--gateway-mode",
+        "ideal",
+        "--gateway-seed",
+        "17011",
+        "--battery",
+        "--battery-capacity",
+        "100",
+        "--battery-initial-energy",
+        "18.0",
+        "--target-x",
+        "-4",
+        "--target-y",
+        "4",
+        "--rally-max-concurrent",
+        "2",
+        "--disable-global-battery-rally-pause",
+        "--episode-id",
+        "20261008_p2c_v7_dev_forced2",
+        "--collect-fault-result",
+        "--dwell-seconds",
+        "0",
+        "--evaluation-output-dir",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_forced2",
+        "--log-dir",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_forced2/launch",
+        "--gateway-ledger-path",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_forced2/ledger.jsonl",
+        "--bypass-audit-output",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_forced2/graph.json",
+        "--target-detection",
+        "--rally",
+        "--battery-charge-duration",
+        "10.0",
+        "--battery-safety-margin",
+        "5.0",
+        "--battery-return-timeout",
+        "120"
+      ],
+      "observer_command": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/observe_p3b5.py",
+        "--output",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_forced2/safety_events.jsonl",
+        "--robot-count",
+        "2"
+      ],
+      "started_at_utc": "2026-10-08T13:54:30.079390+00:00",
+      "finished_at_utc": "2026-10-08T14:00:17.095315+00:00",
+      "summary_sha256": "9fb0468d578c9e49054ae5722fee6e4ac1afecc78c39b1e44f1a08c4b092749b",
+      "success": true,
+      "phase": "COMPLETE",
+      "termination": "task_complete",
+      "completion_time_sec": 246.0,
+      "elapsed_sim_time_sec": 246.0,
+      "time_to_detect_sec": 130.0,
+      "time_to_rally_sec": 131.5,
+      "contacts": 0,
+      "failed_robots": [],
+      "minimum_energy": 16.120488583839688,
+      "total_charges": 2,
+      "robots": {
+        "tb1": {
+          "battery_charge_count": 1,
+          "battery_minimum_energy": 16.951477903074355,
+          "battery_return_count": 2,
+          "path_length_m": 11.746626333465562
+        },
+        "tb2": {
+          "battery_charge_count": 1,
+          "battery_minimum_energy": 16.120488583839688,
+          "battery_return_count": 2,
+          "path_length_m": 19.677833513876767
+        }
+      }
+    },
+    {
+      "case": "dev_lab101",
+      "git_commit": "76698dab2b3f49c8f868c23fc62b890c2bf8015d",
+      "command": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py",
+        "--world",
+        "my_world.world",
+        "--robot-count",
+        "3",
+        "--gazebo-seed",
+        "101",
+        "--startup-timeout",
+        "600",
+        "--message-timeout",
+        "90",
+        "--shutdown-timeout",
+        "120",
+        "--evaluation-duration",
+        "300",
+        "--evaluation-wait-timeout",
+        "900",
+        "--coverage-threshold",
+        "0",
+        "--mission-mode",
+        "rally",
+        "--gateway-mode",
+        "ideal",
+        "--gateway-seed",
+        "17011",
+        "--battery",
+        "--battery-capacity",
+        "100",
+        "--battery-initial-energy",
+        "40.0",
+        "--target-x",
+        "-4",
+        "--target-y",
+        "4",
+        "--rally-max-concurrent",
+        "2",
+        "--disable-global-battery-rally-pause",
+        "--episode-id",
+        "20261008_p2c_v7_dev_lab101",
+        "--collect-fault-result",
+        "--dwell-seconds",
+        "0",
+        "--evaluation-output-dir",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_lab101",
+        "--log-dir",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_lab101/launch",
+        "--gateway-ledger-path",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_lab101/ledger.jsonl",
+        "--bypass-audit-output",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_lab101/graph.json",
+        "--target-detection",
+        "--rally"
+      ],
+      "observer_command": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/observe_p3b5.py",
+        "--output",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_lab101/safety_events.jsonl",
+        "--robot-count",
+        "3"
+      ],
+      "started_at_utc": "2026-10-08T14:03:33.317215+00:00",
+      "finished_at_utc": "2026-10-08T14:12:54.041695+00:00",
+      "summary_sha256": "d73d0ad3115aa73617c6e15d577d3c0fce7b1f47355b44616489f68ffd2b02d3",
+      "success": false,
+      "phase": "RALLY",
+      "termination": "timeout",
+      "completion_time_sec": null,
+      "elapsed_sim_time_sec": 300.0,
+      "time_to_detect_sec": 80.5,
+      "time_to_rally_sec": 83.5,
+      "contacts": 0,
+      "failed_robots": [],
+      "minimum_energy": 25.085760095928737,
+      "total_charges": 2,
+      "robots": {
+        "tb1": {
+          "battery_charge_count": 0,
+          "battery_minimum_energy": 25.085760095928737,
+          "battery_return_count": 1,
+          "path_length_m": 8.95011977018837
+        },
+        "tb2": {
+          "battery_charge_count": 1,
+          "battery_minimum_energy": 29.993983901861835,
+          "battery_return_count": 2,
+          "path_length_m": 23.386051362285034
+        },
+        "tb3": {
+          "battery_charge_count": 1,
+          "battery_minimum_energy": 25.79756474191323,
+          "battery_return_count": 2,
+          "path_length_m": 18.631281575900402
+        }
+      }
+    },
+    {
+      "case": "dev_rooms202",
+      "git_commit": "76698dab2b3f49c8f868c23fc62b890c2bf8015d",
+      "command": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py",
+        "--world",
+        "p1c_rooms.world",
+        "--robot-count",
+        "3",
+        "--gazebo-seed",
+        "202",
+        "--startup-timeout",
+        "600",
+        "--message-timeout",
+        "90",
+        "--shutdown-timeout",
+        "120",
+        "--evaluation-duration",
+        "300",
+        "--evaluation-wait-timeout",
+        "900",
+        "--coverage-threshold",
+        "0",
+        "--mission-mode",
+        "rally",
+        "--gateway-mode",
+        "ideal",
+        "--gateway-seed",
+        "17011",
+        "--battery",
+        "--battery-capacity",
+        "100",
+        "--battery-initial-energy",
+        "40.0",
+        "--target-x",
+        "5.0",
+        "--target-y",
+        "3.0",
+        "--rally-max-concurrent",
+        "2",
+        "--disable-global-battery-rally-pause",
+        "--episode-id",
+        "20261008_p2c_v7_dev_rooms202",
+        "--collect-fault-result",
+        "--dwell-seconds",
+        "0",
+        "--evaluation-output-dir",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_rooms202",
+        "--log-dir",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_rooms202/launch",
+        "--gateway-ledger-path",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_rooms202/ledger.jsonl",
+        "--bypass-audit-output",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_rooms202/graph.json",
+        "--target-detection",
+        "--rally"
+      ],
+      "observer_command": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/observe_p3b5.py",
+        "--output",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_rooms202/safety_events.jsonl",
+        "--robot-count",
+        "3"
+      ],
+      "started_at_utc": "2026-10-08T14:03:33.334891+00:00",
+      "finished_at_utc": "2026-10-08T14:08:46.723413+00:00",
+      "summary_sha256": "f7eb7288c69c68b426549237ec724cb97c1c6c92dd6bdd27a29328578c1e1637",
+      "success": true,
+      "phase": "COMPLETE",
+      "termination": "task_complete",
+      "completion_time_sec": 131.2,
+      "elapsed_sim_time_sec": 131.2,
+      "time_to_detect_sec": 59.70000000000002,
+      "time_to_rally_sec": 62.400000000000006,
+      "contacts": 0,
+      "failed_robots": [],
+      "minimum_energy": 22.731026023249907,
+      "total_charges": 0,
+      "robots": {
+        "tb1": {
+          "battery_charge_count": 0,
+          "battery_minimum_energy": 28.56879655897031,
+          "battery_return_count": 1,
+          "path_length_m": 8.804614304943977
+        },
+        "tb2": {
+          "battery_charge_count": 0,
+          "battery_minimum_energy": 28.2016368963011,
+          "battery_return_count": 1,
+          "path_length_m": 9.181473187747185
+        },
+        "tb3": {
+          "battery_charge_count": 0,
+          "battery_minimum_energy": 22.731026023249907,
+          "battery_return_count": 2,
+          "path_length_m": 14.661473810597824
+        }
+      }
+    }
+  ],
+  "strict_errors": [
+    {
+      "case": "dev_lab101",
+      "error": "AssertionError()",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 231, in audit_one\n    try:return check_one(path,config),None\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 211, in check_one\n    episode_ok(result)\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3b5_gate.py\", line 61, in episode_ok\n    p3a_episode_ok(result)\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3a6_gate.py\", line 39, in episode_ok\n    assert data[\"success\"]\nAssertionError\n"
+    }
+  ],
+  "native_independent_audits": [
+    {
+      "case": "dev_corridors303",
+      "status": "PASS",
+      "return_triggers": 5,
+      "map_reconstructions": 9,
+      "pose_reconstructions": 12,
+      "energy_samples": 156
+    },
+    {
+      "case": "dev_forced2",
+      "status": "PASS",
+      "return_triggers": 4,
+      "map_reconstructions": 0,
+      "pose_reconstructions": 4,
+      "energy_samples": 100
+    },
+    {
+      "case": "dev_lab101",
+      "status": "PASS",
+      "return_triggers": 5,
+      "map_reconstructions": 7,
+      "pose_reconstructions": 10,
+      "energy_samples": 182
+    },
+    {
+      "case": "dev_rooms202",
+      "status": "PASS",
+      "return_triggers": 4,
+      "map_reconstructions": 0,
+      "pose_reconstructions": 4,
+      "energy_samples": 81
+    }
+  ],
+  "live_snapshot_reconstructions": 760,
+  "all_original_hashes_verified": true,
+  "all_owners_closed": true,
+  "whole_episode_retries": 0,
+  "formal_cases_invoked": 0,
+  "physical_blackout_pair_invoked": false,
+  "new_holdout917_exposed": false,
+  "causal_task_benefit_claim": false,
+  "diagnosis": "Lab detects at80.5s and enters RALLY at83.5s; final arrivals are late despite two positive-energy returns and no contacts. Return reservation still targets the charger centre while the P2C budget/local planner uses contact-region paths. Initial source inspection incorrectly assumed a five-metre default: RALLY_MAX_NAVIGATION_LEG_M is infinity, so the old approach and detour budgets already span complete routes. Only position-to-first-grid-cell offsets were omitted. The initial directed-test failure and this diagnostic correction are retained. No source-exact counterfactual AP geometry was captured; no sole-cause claim.",
+  "archives": [
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_corridors303/manifest.json",
+      "archive": "20261008_p2c_v7_artifacts/dev_corridors303/manifest.json.gz",
+      "source_sha256": "253e1d8aab4b14bf0015b3bc67013ebb4ffcc6c7aa902a99b932f120ce2430f8",
+      "archive_sha256": "4bcb9ddb90f00c6b540981aabc6752b0bf2eb9efb7bd977c09cb44d25845953c"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_corridors303/summary.json",
+      "archive": "20261008_p2c_v7_artifacts/dev_corridors303/summary.json.gz",
+      "source_sha256": "fcbae90236ed6cc2f34a9d161958e07e827c8a184474c17d09761261aacf7642",
+      "archive_sha256": "8bccb44948230d9710618c3095ca2ae7e9dd251eca4d0e84e440ef55a23be144"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_corridors303/20261008_p2c_v7_dev_corridors303.json",
+      "archive": "20261008_p2c_v7_artifacts/dev_corridors303/20261008_p2c_v7_dev_corridors303.json.gz",
+      "source_sha256": "afba65ee583b1cc2e466a049437d202dcf52d453af7510c96717e58b6de5fe22",
+      "archive_sha256": "74d8609cebc8a3febadde4001aab6be7875fc9f7404456013b3047ec27c8c449"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_corridors303/20261008_p2c_v7_dev_corridors303.csv",
+      "archive": "20261008_p2c_v7_artifacts/dev_corridors303/20261008_p2c_v7_dev_corridors303.csv.gz",
+      "source_sha256": "d670feb8da379c748a67754b3db8ff24bcca3c5a09bb7a4a8d645e4c092eb63b",
+      "archive_sha256": "3b72426df9dd6537c188b22fcb07ef2c650d7f584103a60be32d2cbd73d89a6c"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_corridors303/graph.json",
+      "archive": "20261008_p2c_v7_artifacts/dev_corridors303/graph.json.gz",
+      "source_sha256": "0685a03241db268ce07c5a6dcba88dfd7a18e682c4eb396f3665df260acf07a1",
+      "archive_sha256": "35df9f7b2ad4cd6d76530d22e9db1781c49eff0a83d4d376c67635af675912ed"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_corridors303/safety_events.jsonl",
+      "archive": "20261008_p2c_v7_artifacts/dev_corridors303/safety_events.jsonl.gz",
+      "source_sha256": "0082810af67d0f1672ea41dd5e9fcaef678d1c502a5d7787466b2fe51d0beaaf",
+      "archive_sha256": "50a51976c4bf9e5f75bc8e23bf460e21e1e8a95fcc0705ed54c150611fc2b1a5"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_corridors303/runner.log",
+      "archive": "20261008_p2c_v7_artifacts/dev_corridors303/runner.log.gz",
+      "source_sha256": "47cdbdcf22cfda6cb45912077fc54534b2cb3e52d9b756dcca576bea4a3e0005",
+      "archive_sha256": "e494b9f50717297aead607522f81a3c91768c920d651f15154c26ab4d6fb1601"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_corridors303/observer.log",
+      "archive": "20261008_p2c_v7_artifacts/dev_corridors303/observer.log.gz",
+      "source_sha256": "3dfa3fb239f56c778a1e9b33eb31328349edd155a95806dac4378904e88527e5",
+      "archive_sha256": "341883acae54206eeb485456aaba713a7bffc1aca594c5ecb500d0601e28458b"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_corridors303/launch/robots3_seed303_20261008-220333.log",
+      "archive": "20261008_p2c_v7_artifacts/dev_corridors303/robots3_seed303_20261008-220333.log.gz",
+      "source_sha256": "4d3544ec66ac5aa24b73857cac31f470195414160d5ba59511d0273fceedde49",
+      "archive_sha256": "67293005cadfb161b2703df95b3575960e3fee3fc96b655691d7a3853f9c2e80"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_forced2/manifest.json",
+      "archive": "20261008_p2c_v7_artifacts/dev_forced2/manifest.json.gz",
+      "source_sha256": "eea21416c989bdcaa13c7e0cd9c839e0797619b30d84c6e02f17c4b057c36083",
+      "archive_sha256": "65df8a4e7d5086fc5f5da1f2ca49c69071792402308ac5ac570dac20589b0943"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_forced2/summary.json",
+      "archive": "20261008_p2c_v7_artifacts/dev_forced2/summary.json.gz",
+      "source_sha256": "9fb0468d578c9e49054ae5722fee6e4ac1afecc78c39b1e44f1a08c4b092749b",
+      "archive_sha256": "012d5b441dd6547dc2b59b7c52ed87b787039e47528d2567a41919eeee3ecbc0"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_forced2/20261008_p2c_v7_dev_forced2.json",
+      "archive": "20261008_p2c_v7_artifacts/dev_forced2/20261008_p2c_v7_dev_forced2.json.gz",
+      "source_sha256": "d47de507beb1b354b38246dbecea9a5ac294aa23e79400a33f6e32ee0383f0af",
+      "archive_sha256": "facc4822706fb3c66556c2ba9b600aed4942ce03486d7bd590905b95608ac875"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_forced2/20261008_p2c_v7_dev_forced2.csv",
+      "archive": "20261008_p2c_v7_artifacts/dev_forced2/20261008_p2c_v7_dev_forced2.csv.gz",
+      "source_sha256": "0dd5d9079884cd1821e0281876933f1128db0a550c03baba840672ce577e057a",
+      "archive_sha256": "5afc622f306fb9a25bb63f865ec7d84e6a97d11df1e4b19435c54fc7ec032085"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_forced2/graph.json",
+      "archive": "20261008_p2c_v7_artifacts/dev_forced2/graph.json.gz",
+      "source_sha256": "e5e6df761947f3f7dac7940e9ae8784727730ab0c0270719b193a2504a8b7a56",
+      "archive_sha256": "68f47606c7d9ada58bd04a2ae909f7e2ecc2824c87c8c8a8844ee1dba6330181"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_forced2/safety_events.jsonl",
+      "archive": "20261008_p2c_v7_artifacts/dev_forced2/safety_events.jsonl.gz",
+      "source_sha256": "7fdcebcdee6deb95a280a34d1f338a45d0fe94eb3a5ffd252283f1b76b584f83",
+      "archive_sha256": "c952444adb10f4286cc5c2fa39938e040dd4793e1f882a4d9667e3503539716d"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_forced2/runner.log",
+      "archive": "20261008_p2c_v7_artifacts/dev_forced2/runner.log.gz",
+      "source_sha256": "8e1e4b9469dab90e29c60ffc9876e8aff12ce15640f3235753ba061e9db9f30b",
+      "archive_sha256": "24cc221d66af1776eb48030d095b2cc0de2885212f6dfea456cf6d3c25a73572"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_forced2/observer.log",
+      "archive": "20261008_p2c_v7_artifacts/dev_forced2/observer.log.gz",
+      "source_sha256": "3dfa3fb239f56c778a1e9b33eb31328349edd155a95806dac4378904e88527e5",
+      "archive_sha256": "341883acae54206eeb485456aaba713a7bffc1aca594c5ecb500d0601e28458b"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_forced2/launch/robots2_seed303_20261008-215430.log",
+      "archive": "20261008_p2c_v7_artifacts/dev_forced2/robots2_seed303_20261008-215430.log.gz",
+      "source_sha256": "d642b1f50a49c38471104a77c272b142b80e654c66a535587ad73659073faa5b",
+      "archive_sha256": "3039a05d49251de40e34a67985dce8f91408692c2e85888d57fc55b19a721951"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_lab101/manifest.json",
+      "archive": "20261008_p2c_v7_artifacts/dev_lab101/manifest.json.gz",
+      "source_sha256": "5abce015e85e2380dec8343c92768001abd2d6c08a9816bcddaf6a6ee7cdf531",
+      "archive_sha256": "a0aa67f2f6c948c2297d83e6147d6534a8f954f0ea87b787f0f375749b72181f"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_lab101/summary.json",
+      "archive": "20261008_p2c_v7_artifacts/dev_lab101/summary.json.gz",
+      "source_sha256": "d73d0ad3115aa73617c6e15d577d3c0fce7b1f47355b44616489f68ffd2b02d3",
+      "archive_sha256": "540b3b411417b5c4a40b08fb7012ef8aa52d6d3c6dd3e780d1fc0816634acdca"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_lab101/20261008_p2c_v7_dev_lab101.json",
+      "archive": "20261008_p2c_v7_artifacts/dev_lab101/20261008_p2c_v7_dev_lab101.json.gz",
+      "source_sha256": "9998164a3d391448fe5dc6a4b870ffdd7d06db5b0460bc0afa4fb389df7e93b2",
+      "archive_sha256": "b4707388f30da55e906964c1007f480d49fadf54db2383d052b480515c257a81"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_lab101/20261008_p2c_v7_dev_lab101.csv",
+      "archive": "20261008_p2c_v7_artifacts/dev_lab101/20261008_p2c_v7_dev_lab101.csv.gz",
+      "source_sha256": "0f10fffe62b518a956ce0db818f7baec09331777bfd80aa90d51a13ec82af4fd",
+      "archive_sha256": "8f4c2ec615a3f58afdf8c4d2bfb77fb4fb9221b7475fb3480dd8b03c1fc2f491"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_lab101/graph.json",
+      "archive": "20261008_p2c_v7_artifacts/dev_lab101/graph.json.gz",
+      "source_sha256": "7ce5ac14b980c2b83ff0f54494331ccbdfe8e9f40983ddbec4300e1c476d5cdb",
+      "archive_sha256": "255684f6767fbe65980d7ef2fbebc52ec56d2999cf48f6fd54eef1a4430cc253"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_lab101/safety_events.jsonl",
+      "archive": "20261008_p2c_v7_artifacts/dev_lab101/safety_events.jsonl.gz",
+      "source_sha256": "caf817637245eeb8b0e0897386c55e1083e7cbe3a76a4455421b9b5909b87b6b",
+      "archive_sha256": "bf9084b1b14e0b0ddcf5fa401a364d4b55d89a8bbf155a3104a55a0b40671058"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_lab101/runner.log",
+      "archive": "20261008_p2c_v7_artifacts/dev_lab101/runner.log.gz",
+      "source_sha256": "f120a1635ffd1fb77e57aa081cc7fae629b8d5fa27ce2a76cc162f5cce3e232c",
+      "archive_sha256": "c518f6ed5158255e4d008f4b7cc2c130bee1e67de701c99cb36a7361223a9e9d"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_lab101/observer.log",
+      "archive": "20261008_p2c_v7_artifacts/dev_lab101/observer.log.gz",
+      "source_sha256": "3dfa3fb239f56c778a1e9b33eb31328349edd155a95806dac4378904e88527e5",
+      "archive_sha256": "341883acae54206eeb485456aaba713a7bffc1aca594c5ecb500d0601e28458b"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_lab101/launch/robots3_seed101_20261008-220333.log",
+      "archive": "20261008_p2c_v7_artifacts/dev_lab101/robots3_seed101_20261008-220333.log.gz",
+      "source_sha256": "fea8f40da64dcdab36de3c4ada3b91e1a575fc81df724343677f83d998863709",
+      "archive_sha256": "e6486da29fe18b31d7887a13fd2c7b6119c94ca42c40aa59f4d576534e2d6143"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_rooms202/manifest.json",
+      "archive": "20261008_p2c_v7_artifacts/dev_rooms202/manifest.json.gz",
+      "source_sha256": "61202f91c6338c142e268cc95a10905ed4aa25c4a630b24c67e580e248aa493a",
+      "archive_sha256": "d67e85ad5ca6c76bcde1545368c1e299202a528a2ab0df70824b00732ef699db"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_rooms202/summary.json",
+      "archive": "20261008_p2c_v7_artifacts/dev_rooms202/summary.json.gz",
+      "source_sha256": "f7eb7288c69c68b426549237ec724cb97c1c6c92dd6bdd27a29328578c1e1637",
+      "archive_sha256": "b4397c7e947bab5c832440cc361ae83be1804ee3ef183f00e2197d7aeb384f48"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_rooms202/20261008_p2c_v7_dev_rooms202.json",
+      "archive": "20261008_p2c_v7_artifacts/dev_rooms202/20261008_p2c_v7_dev_rooms202.json.gz",
+      "source_sha256": "59ed3d180eb5c105cae6e4d45d5f29408a98b38b4438015985714be1b30b2a90",
+      "archive_sha256": "9106a59c27311ebfd17363bdf4a11cf62f8a1cf023e6608a5175ba64544e07e3"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_rooms202/20261008_p2c_v7_dev_rooms202.csv",
+      "archive": "20261008_p2c_v7_artifacts/dev_rooms202/20261008_p2c_v7_dev_rooms202.csv.gz",
+      "source_sha256": "b91eb354c7d351d20d35a9438c68f6635d0b9169252e5477f064b09b5376f568",
+      "archive_sha256": "219507b00948df9d5413bd4fe592cad9a2718a883362ce445460f9f8d21591cb"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_rooms202/graph.json",
+      "archive": "20261008_p2c_v7_artifacts/dev_rooms202/graph.json.gz",
+      "source_sha256": "6ee00af35b9bab2e4f1dc19e6c2a940d25d4a79a08819e99443ae5598e0bd8b7",
+      "archive_sha256": "9dd3600fd40f2fa820ab797506e340c98450affba7d0cf9860ea571196149c07"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_rooms202/safety_events.jsonl",
+      "archive": "20261008_p2c_v7_artifacts/dev_rooms202/safety_events.jsonl.gz",
+      "source_sha256": "e4a04f6f6454edb0ac6c1179dbf17608364393d2d15d8eae7c7c0e801ced9e99",
+      "archive_sha256": "2afaf50f6b6148a8318254951f4ba9ebe4a8d4f2b8b9417fab112bb9177cac45"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_rooms202/runner.log",
+      "archive": "20261008_p2c_v7_artifacts/dev_rooms202/runner.log.gz",
+      "source_sha256": "e351fabd1bc040c7278da1f5eb1c1e90fd074f2dbe5a123f4de633af5d893c51",
+      "archive_sha256": "a14c0a0d4421c147d98260e34c7321fa5b9767c2359d0bf2230b537b8737e9a4"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_rooms202/observer.log",
+      "archive": "20261008_p2c_v7_artifacts/dev_rooms202/observer.log.gz",
+      "source_sha256": "3dfa3fb239f56c778a1e9b33eb31328349edd155a95806dac4378904e88527e5",
+      "archive_sha256": "341883acae54206eeb485456aaba713a7bffc1aca594c5ecb500d0601e28458b"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261008_p2c_v7/20261008_p2c_v7_dev_rooms202/launch/robots3_seed202_20261008-220333.log",
+      "archive": "20261008_p2c_v7_artifacts/dev_rooms202/robots3_seed202_20261008-220333.log.gz",
+      "source_sha256": "9fbc0ec3e35172b05b4898e20527d20af0f1937db37c4c59ff27ae075a14404f",
+      "archive_sha256": "994ae697cbe49c24fd281c2a1eb5d802d8f00ef07c435d95c03a53c1fa861f55"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v7_development_gate.json",
+      "archive": "20261008_p2c_v7_artifacts/p2c_v7_development_gate.json.gz",
+      "source_sha256": "80555de47111a0b77229024978cf9474981be2060a77219be7a05a06fe28aad9",
+      "archive_sha256": "d4ce393a9551f59f76e636c43d9829fd85218bcdc59f6f4130c6015cfe9f638c"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v7_development_gate.log",
+      "archive": "20261008_p2c_v7_artifacts/p2c_v7_development_gate.log.gz",
+      "source_sha256": "8192dcac523482cfafdee965372020b6d12335ad9bcbe8a4ce328bfdeea9c900",
+      "archive_sha256": "d1053aafc6b19eeec7901b26535d5c23bf2b0330e05550db34287aeb6aad8933"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v7_dev_forced2_gate.json",
+      "archive": "20261008_p2c_v7_artifacts/p2c_v7_dev_forced2_gate.json.gz",
+      "source_sha256": "383ca76174378126cf0547e9fdce428e5b372519ddc3af9c04a83b3573825d41",
+      "archive_sha256": "148e325f66d56ad4c9e53efd38359f14c795d07e01994a17f4c4f18610fe217f"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v7_dev_forced2_gate.log",
+      "archive": "20261008_p2c_v7_artifacts/p2c_v7_dev_forced2_gate.log.gz",
+      "source_sha256": "7fab0183fcf04631662ceef96ac6f61584993fb8c711fe451db3b8cb3b8dcfdc",
+      "archive_sha256": "28755965f3421a9c46a352b9e58b1492680c039c9ad543ddf8e4ac1f6adfe829"
+    },
+    {
+      "original": "ros2_ws/ros2-multi-robot-automap/log/p2c_v7_native_diagnostics.json",
+      "archive": "20261008_p2c_v7_artifacts/p2c_v7_native_diagnostics.json.gz",
+      "source_sha256": "82c4b6beb258ad0567dc35177680023070b19ad3907300ace55bace94d4c64c9",
+      "archive_sha256": "fc711791c9e241d1f87245c179126ea8f60271d04f10b70a6b90a7ca025ae148"
+    }
+  ]
+}

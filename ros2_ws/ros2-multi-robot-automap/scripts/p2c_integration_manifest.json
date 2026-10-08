@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-08T13:46:56.036254+00:00",
+  "predeclared_at_utc": "2026-10-08T14:34:57.287037+00:00",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -301,7 +301,7 @@
   ],
   "safety_probe_manifest": "p3b5_staged_return_probe_manifest.json",
   "energy_unit": "simulation_model_units_not_joules",
-  "development_parent": "793ec32c9bb6bed30c2dbff78f52a95262cf6a2c",
+  "development_parent": "76698dab2b3f49c8f868c23fc62b890c2bf8015d",
   "retained_failed_development": "20261008_p2c_v1_failed_development.json",
   "opportunity_charge_algorithm": "two_current_frontiers_complete_route_budget",
   "retained_failed_developments": [
@@ -309,7 +309,8 @@
     "20261008_p2c_v2_failed_development.json",
     "20261008_p2c_v4_failed_development.json",
     "20261008_p2c_v5_failed_development.json",
-    "20261008_p2c_v6_failed_development.json"
+    "20261008_p2c_v6_failed_development.json",
+    "20261008_p2c_v7_failed_development.json"
   ],
   "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
   "opportunity_charge_rules": [
@@ -343,5 +344,11 @@
     "obstacle_veto": "a fused route may extend local unknown space but may not clear local known obstacles; continuous half-local-cell checks preserve0.35m clearance and original bounded0.6m known-free start escape; no diagonal cutting",
     "ages": "original5s source TTL for both maps; budget prices the maximum source age actually consulted, plus original2s pose leases",
     "evidence": "all fresh map candidates/costs/qualification/selected minimum retained on read-only native return audit only; not AP input or added communication"
+  },
+  "rally_route_consistency": {
+    "return_reservation": "complete delivered-map contact-region route; same geometry cache and clearance as known_home_distance",
+    "offsets": "actual start to first grid point included in nominal approach, detour and parking costs",
+    "unavailable": "wait; charging reserves actual body; no local hidden inputs or centre-route fallback",
+    "default_rally_route": "infinite complete path was already in use; initial five-metre diagnosis withdrawn"
   }
 }

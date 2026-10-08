@@ -1292,7 +1292,8 @@ def assign_rally_poses(
                         route_cache=parked_route_caches.setdefault((parked_index, name), {}),
                     )
                     speed = float(state.get("nominal_speed_mps", .18))
-                    cost = (sum(math.dist(a, b) for a, b in zip(route, route[1:])) / speed
+                    full_route = ((float(state['charge_x']), float(state['charge_y'])), *route)
+                    cost = (sum(math.dist(a, b) for a, b in zip(full_route, full_route[1:])) / speed
                             - energy_options[name][index][2]) if route else RALLY_GOAL_TIMEOUT_SEC
                     # Missing masked paths keep the finite recovery preference,
                     # not a false infeasibility proof. Partial bounds omit this
@@ -2149,11 +2150,13 @@ def rally_energy_ready_order(order, energy_unready, modes):
     ))
 
 
-def rally_return_reservations(grid, resolution, origin, positions, states, modes, pending):
+def rally_return_reservations(grid, resolution, origin, positions, states, modes, pending,
+                              route_caches=None):
     """Protect current and future serial safety returns before allowing rally progress.
 
-    Unknown return geometry means wait. Charging robots retain their physical
-    position; local safety still owns execution and can preempt network goals.
+    Use the complete delivered-map contact route used by the energy budget,
+    rather than a short leg to the charger centre. Unknown geometry means wait.
+    Charging robots retain their physical position; local safety owns execution.
     """
     routes = {}
     names = set(pending) | {name for name, mode in modes.items()
@@ -2169,11 +2172,14 @@ def rally_return_reservations(grid, resolution, origin, positions, states, modes
             continue
         try:
             home = (float(states[name]['charge_x']), float(states[name]['charge_y']))
+            radius = float(states[name].get('charge_radius_m', .8))
             if not all(math.isfinite(v) for v in home):
                 return None
         except (KeyError, TypeError, ValueError):
             return None
-        _, route = plan_rally_leg(RallyPose(*home, 0.), grid, resolution, origin, position)
+        cache = None if route_caches is None else route_caches.setdefault(name, {})
+        _, route = known_return_route(grid, resolution, origin, position, home, radius,
+                                     cache, include_route=True)
         if not route:
             return None
         routes[name] = route
@@ -3276,7 +3282,7 @@ class HeadquartersControl(Node):
         protected = rally_return_reservations(
             self.map_data, self.resolution, self.origin, self.robot_positions,
             self.battery_states, self.battery_modes,
-            set(self.rally_charge_requested),
+            set(self.rally_charge_requested), getattr(self, 'return_distance_caches', None),
         )
         # Pending return requests constrain new admission, but cannot
         # revoke an existing safe escape. Only actual local returns/charging
@@ -3286,7 +3292,8 @@ class HeadquartersControl(Node):
             if self.battery_modes[name] in ("RETURNING", "CHARGING")
         } if protected is not None else rally_return_reservations(
             self.map_data, self.resolution, self.origin, self.robot_positions,
-            self.battery_states, self.battery_modes, set())
+            self.battery_states, self.battery_modes, set(),
+            getattr(self, 'return_distance_caches', None))
         HeadquartersControl.preempt_rally_return_conflicts(self, actual_returns)
         if protected is None:
             protected = actual_returns
@@ -3778,7 +3785,7 @@ class HeadquartersControl(Node):
             return_reservations = (rally_return_reservations(
                 self.map_data, self.resolution, self.origin, self.robot_positions,
                 self.battery_states, self.battery_modes,
-                set(self.rally_charge_requested),
+                set(self.rally_charge_requested), getattr(self, 'return_distance_caches', None),
             ) if self.enable_battery else {})
             if self.enable_battery:
                 approach_routes = self.rally_approach_routes
@@ -4321,7 +4328,8 @@ class HeadquartersControl(Node):
             if not route:
                 continue  # The existing route/map recovery still owns this case.
             self.rally_approach_routes[name] = (position, *route)
-            distance = sum(math.dist(a, b) for a, b in zip(route, route[1:]))
+            complete_route = self.rally_approach_routes[name]
+            distance = sum(math.dist(a, b) for a, b in zip(complete_route, complete_route[1:]))
             travel_times[name] = distance / speed
             if (self.battery_modes[name] != "ACTIVE"
                     or ((self.rally_goal_handles[name] is not None or self.rally_goal_pending[name])
@@ -4421,7 +4429,7 @@ class HeadquartersControl(Node):
         if not remaining:
             return False
         distance = lambda points: sum(math.dist(a, b) for a, b in zip(points, points[1:]))
-        actual = distance((self.robot_positions[robot_name], *route)) + distance(remaining)
+        actual = distance((self.robot_positions[robot_name], *route)) + distance(((pose.x, pose.y), *remaining))
         state = self.battery_states[robot_name]
         try:
             move = float(state.get("move_cost_per_m", 1.))
@@ -4517,7 +4525,8 @@ class HeadquartersControl(Node):
             return False
         protected = rally_return_reservations(
             self.map_data, self.resolution, self.origin, self.robot_positions,
-            self.battery_states, self.battery_modes, set(self.rally_charge_requested))
+            self.battery_states, self.battery_modes, set(self.rally_charge_requested),
+            getattr(self, 'return_distance_caches', None))
         if protected is None:
             return False
         reservations = list(protected.values()) + [
