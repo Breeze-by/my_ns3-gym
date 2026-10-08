@@ -31,6 +31,7 @@ from .control import (
     navigation_start_route,
     plan_rally_leg,
     route_arrival_yaw,
+    route_respects_known_obstacles,
     return_energy_budget,
     traversable_grid,
     transform_point_2d,
@@ -639,7 +640,9 @@ class BatteryManager(Node):
             self.latest_return_budget = None
             return None
         if self.in_charging_zone():
+            self.return_candidate_audits = []
             distance, route, age = 0., (self.map_position,), 0.
+            input_age=0.
         else:
             if self.return_map_source_time is None or self.map_position is None:
                 self.latest_return_budget = None
@@ -650,6 +653,11 @@ class BatteryManager(Node):
                     self.return_map, self.return_map_resolution, self.return_map_origin,
                     self.return_map_source_time, self.return_map_version, self.return_map_source)}
             distance, route = None, ()
+            local = candidates.get('local')
+            if local is not None and not 0 <= self.now()-local[3] <= STATE_TTL_SEC['map_snapshot']:
+                local = None
+            eligible=[]
+            self.return_candidate_audits=[]
             for source, snapshot in sorted(candidates.items(), key=lambda item: item[0] != 'local'):
                 raw, resolution, origin, stamp, version, _ = snapshot
                 age = self.now() - stamp
@@ -659,22 +667,35 @@ class BatteryManager(Node):
                 cache = caches.setdefault(source, {})
                 distance, route = known_return_route(raw, resolution, origin,
                     self.map_position, (self.charge_x, self.charge_y), self.charge_radius,
-                    cache, include_route)
-                if distance is not None:
-                    self.return_map, self.return_map_resolution, self.return_map_origin = raw, resolution, origin
-                    self.return_map_source_time, self.return_map_version, self.return_map_source = stamp, version, source
-                    self.return_route_cache = cache
-                    break
-            if distance is None:
+                    cache, True)
+                qualified = distance is not None and (source=='local' or local is None
+                    or route_respects_known_obstacles(local[0],local[1],local[2],route))
+                input_age=max(age,self.now()-local[3]) if source!='local' and local is not None else age
+                candidate_budget=None if distance is None else return_energy_budget(distance,
+                    self.move_cost,self.idle_cost,self.return_path_factor,self.nominal_speed,
+                    self.safety_margin,self.return_recovery_wait,input_age,pose_age)
+                self.return_candidate_audits.append(dict(snapshot=snapshot,path_distance_m=distance,
+                    qualified=qualified,map_input_age_sec=input_age,
+                    required_energy=None if candidate_budget is None else candidate_budget['required_energy']))
+                if qualified:
+                    eligible.append((candidate_budget['required_energy'],source!='local',snapshot,cache,route,input_age))
+            if not eligible:
                 self.latest_return_budget = None
                 return None
+            _,_,snapshot,cache,route,input_age=min(eligible,key=lambda item:item[:2])
+            raw,resolution,origin,stamp,version,source=snapshot
+            self.return_map, self.return_map_resolution, self.return_map_origin = raw,resolution,origin
+            self.return_map_source_time, self.return_map_version, self.return_map_source = stamp,version,source
+            self.return_route_cache=cache
+            distance=next(item['path_distance_m'] for item in self.return_candidate_audits if item['snapshot'] is snapshot)
+            age=self.now()-stamp
         budget = return_energy_budget(distance, self.move_cost, self.idle_cost,
             self.return_path_factor, self.nominal_speed, self.safety_margin,
-            self.return_recovery_wait, age, pose_age)
+            self.return_recovery_wait, input_age, pose_age)
         budget.update(map_version=self.return_map_version,
                       map_source=self.return_map_source,
                       map_source_time=self.return_map_source_time,
-                      map_age_sec=age, pose_age_sec=pose_age,
+                      map_age_sec=age, map_input_age_sec=input_age, pose_age_sec=pose_age,
                       odom_source_time=self.last_odom_time,
                       frame_source_time=self.map_tf_source_time,
                       frame_stamp_offset_sec=self.frame_stamp_offset,
@@ -704,9 +725,17 @@ class BatteryManager(Node):
 
     def return_map_evidence(self):
         """Native audit-only snapshot; never sent as AP planning information."""
-        return grid_audit_evidence(self.return_map, self.return_map_resolution,
+        evidence=grid_audit_evidence(self.return_map, self.return_map_resolution,
             self.return_map_origin, self.return_map_source, self.return_map_source_time,
             self.return_map_version)
+        if evidence is not None:
+            evidence['route_candidates']=[]
+            for candidate in getattr(self,'return_candidate_audits',[]):
+                raw,resolution,origin,stamp,version,source=candidate['snapshot']
+                evidence['route_candidates'].append(dict(
+                    map_evidence=grid_audit_evidence(raw,resolution,origin,source,stamp,version),
+                    **{k:v for k,v in candidate.items() if k!='snapshot'}))
+        return evidence
 
     def finish_return_audit(self, outcome):
         start = self.return_audit_start

@@ -741,6 +741,46 @@ def known_return_route(raw_grid, resolution, origin, position, charger, radius,
     return distance, tuple(route)
 
 
+def route_respects_known_obstacles(raw_grid, resolution, origin, route,
+                                  clearance_m=RALLY_PATH_CLEARANCE_M):
+    """Peer-known space may extend local unknown space, never erase local obstacles.
+
+    Check the continuous route at half-cell spacing against local obstacle
+    centres, with the original bounded known-free initial clearance escape.
+    The supplied route must already be fully known and safe in its own map.
+    """
+    if not route or raw_grid is None or resolution <= 0:
+        return False
+    occupied = np.argwhere(raw_grid > 0)
+    if not len(occupied):
+        return True
+    obstacles = np.column_stack((origin[0]+(occupied[:,1]+.5)*resolution,
+                                 origin[1]+(occupied[:,0]+.5)*resolution))
+    samples=[route[0]];travel=[0.]
+    for start,end in zip(route,route[1:]):
+        distance=math.dist(start,end);steps=max(1,math.ceil(2*distance/resolution))
+        for step in range(1,steps+1):
+            samples.append(tuple(a+(b-a)*step/steps for a,b in zip(start,end)))
+            travel.append(travel[-1]+distance/steps)
+    clearances=cKDTree(obstacles).query(samples)[0]
+    escaped=False;previous=None
+    def blocked(cell):
+        r,col=cell
+        return 0<=r<raw_grid.shape[0] and 0<=col<raw_grid.shape[1] and raw_grid[r,col]>0
+    for point,distance,clearance in zip(samples,travel,clearances):
+        cell=world_to_grid(*point,resolution,*origin)
+        if blocked(cell):return False
+        if previous is not None and abs(cell[0]-previous[0])==abs(cell[1]-previous[1])==1:
+            if blocked((cell[0],previous[1])) or blocked((previous[0],cell[1])):return False
+        if clearance+1e-8>=clearance_m:
+            escaped=True
+        elif escaped or distance>.6+1e-8 or not (0<=cell[0]<raw_grid.shape[0]
+                and 0<=cell[1]<raw_grid.shape[1] and raw_grid[cell]==0):
+            return False
+        previous=cell
+    return True
+
+
 def grid_audit_evidence(raw_grid, resolution, origin, source, source_time, version):
     """Lossless audit-only geometry; it is never a new planning input."""
     if raw_grid is None:

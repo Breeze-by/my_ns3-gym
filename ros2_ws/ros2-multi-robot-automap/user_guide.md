@@ -1186,3 +1186,6 @@ P2C.1 v2（2026-10-08，未集成候选）：原近站机会充电现增加两�
 
 
 2026-10-08 P2C.1 v6补充：v5起点姿态等待在快速odom入口错误转为充电，虽nativeCOMPLETE251.1/239live/能量PASS，强制返航证据不合格，原记录与新增reader FAIL完整保留。统一充电入口现先恢复已负担等待；实际DDS两个clock到达顺序、850功能/1skip、四包5.46s/172保护/54协议PASS。新4开发/17正式/两物理blackout待同提交冻结，917未暴露；原TTL/300s/5s保持，P3C.5已验收，无P4/ns3/Wi-Fi/RL。证据：[v6组件报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261008_p2c_charging_entry_components.md)。
+
+
+2026-10-08 P2C.1 v7补充：v6四开发三原生COMPLETE/一lab RALLY timeout300.3，四原始失败/766live/成本账本全部保留，17正式/blackout/917未运行。新候选从新鲜完整已知接触区路径中择最小合格预算，融合路径不得清除本地已知障碍；计入最大所用源龄，两地图/成本/否决/择优只存在native只读审计，不作为AP新信息，不增加通信。863功能/1skip、四包5.36s/172保护/54协议和P3C.5旧14 native reader通过；新全批次待冻结运行，不称已有任务收益。证据：[v7组件报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261008_p2c_multimap_components.md)。

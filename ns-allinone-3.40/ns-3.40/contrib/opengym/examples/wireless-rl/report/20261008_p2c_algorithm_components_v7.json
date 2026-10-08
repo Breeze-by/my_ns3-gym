@@ -1,0 +1,3492 @@
+{
+  "schema_version": 1,
+  "scope": "component_grid_cost_and_cpu_only",
+  "seed": 20261008,
+  "comparison": [
+    "legacy_euclidean_factor_diagnostic",
+    "forward_Dijkstra_reference",
+    "A_star_Euclidean_heuristic_reference",
+    "cached_reverse_multi_source_Dijkstra"
+  ],
+  "source_sha256": "7fe73cc38b73cf47183e8964ea1088fca6227606343ef1d4efa8192c655f56f6",
+  "helper_sha256": "2a0a5c72d08db452987a4716d3bf0f6babaec2230b119b1e69e5a120d05cb3ef",
+  "git_commit": "793ec32c9bb6bed30c2dbff78f52a95262cf6a2c",
+  "python": "3.10.12",
+  "scipy": "1.8.0",
+  "timings": {
+    "forward_dijkstra_sec": {
+      "median": 0.008485337719321251,
+      "p95": 0.02158731035888195
+    },
+    "astar_sec": {
+      "median": 0.024518654914572835,
+      "p95": 0.19526891119312495
+    },
+    "cached_query_sec": {
+      "median": 0.0004054324235767126,
+      "p95": 0.0009352108230814338
+    }
+  },
+  "queries": 192,
+  "agreement": true,
+  "legacy_underestimates": 46,
+  "legacy_false_finite": 28,
+  "rows": [
+    {
+      "fixture": "open_64",
+      "start_cell": [
+        11,
+        30
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 5.179898987322334,
+      "legacy_euclidean_factor_m": 10.77032961426901,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 169,
+      "forward_dijkstra_sec": 0.004004329908639193,
+      "astar_sec": 0.0031622336246073246,
+      "cached_query_sec": 0.00026037078350782394,
+      "reverse_field_build_sec": 0.006384648382663727,
+      "agreement": true
+    },
+    {
+      "fixture": "open_64",
+      "start_cell": [
+        60,
+        49
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 14.327922061357842,
+      "legacy_euclidean_factor_m": 28.736040089058896,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 675,
+      "forward_dijkstra_sec": 0.004587150178849697,
+      "astar_sec": 0.014596516732126474,
+      "cached_query_sec": 0.0002717808820307255,
+      "reverse_field_build_sec": 0.006384648382663727,
+      "agreement": true
+    },
+    {
+      "fixture": "open_64",
+      "start_cell": [
+        15,
+        5
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 1.6828427124746193,
+      "legacy_euclidean_factor_m": 4.418144406874904,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 16,
+      "forward_dijkstra_sec": 0.004669453948736191,
+      "astar_sec": 0.00032843928784132004,
+      "cached_query_sec": 0.00022033089771866798,
+      "reverse_field_build_sec": 0.006384648382663727,
+      "agreement": true
+    },
+    {
+      "fixture": "open_64",
+      "start_cell": [
+        5,
+        26
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 3.8828427124746194,
+      "legacy_euclidean_factor_m": 8.809086218218097,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 38,
+      "forward_dijkstra_sec": 0.004510306753218174,
+      "astar_sec": 0.0007898933254182339,
+      "cached_query_sec": 0.00021219905465841293,
+      "reverse_field_build_sec": 0.006384648382663727,
+      "agreement": true
+    },
+    {
+      "fixture": "open_64",
+      "start_cell": [
+        21,
+        31
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 6.208326112068526,
+      "legacy_euclidean_factor_m": 12.762444906835054,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 213,
+      "forward_dijkstra_sec": 0.004767326638102531,
+      "astar_sec": 0.004109275061637163,
+      "cached_query_sec": 0.00028393836691975594,
+      "reverse_field_build_sec": 0.006384648382663727,
+      "agreement": true
+    },
+    {
+      "fixture": "open_64",
+      "start_cell": [
+        45,
+        52
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 12.39655121145937,
+      "legacy_euclidean_factor_m": 25.250742563338605,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 394,
+      "forward_dijkstra_sec": 0.004576676990836859,
+      "astar_sec": 0.0074918558821082115,
+      "cached_query_sec": 0.0002519558183848858,
+      "reverse_field_build_sec": 0.006384648382663727,
+      "agreement": true
+    },
+    {
+      "fixture": "open_64",
+      "start_cell": [
+        45,
+        61
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 14.196551211459365,
+      "legacy_euclidean_factor_m": 28.085583490467133,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 862,
+      "forward_dijkstra_sec": 0.00468422332778573,
+      "astar_sec": 0.01650272309780121,
+      "cached_query_sec": 0.0002573728561401367,
+      "reverse_field_build_sec": 0.006384648382663727,
+      "agreement": true
+    },
+    {
+      "fixture": "open_64",
+      "start_cell": [
+        61,
+        52
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 14.776450198781697,
+      "legacy_euclidean_factor_m": 29.80738163609813,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 599,
+      "forward_dijkstra_sec": 0.0047892918810248375,
+      "astar_sec": 0.011586676817387342,
+      "cached_query_sec": 0.00029008276760578156,
+      "reverse_field_build_sec": 0.006384648382663727,
+      "agreement": true
+    },
+    {
+      "fixture": "open_64",
+      "start_cell": [
+        52,
+        3
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 9.08284271247462,
+      "legacy_euclidean_factor_m": 19.204166214652485,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 90,
+      "forward_dijkstra_sec": 0.004642095882445574,
+      "astar_sec": 0.0019148881547152996,
+      "cached_query_sec": 0.00023309281095862389,
+      "reverse_field_build_sec": 0.006384648382663727,
+      "agreement": true
+    },
+    {
+      "fixture": "open_64",
+      "start_cell": [
+        50,
+        27
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 10.505382386916231,
+      "legacy_euclidean_factor_m": 20.57182539299807,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 650,
+      "forward_dijkstra_sec": 0.004503635223954916,
+      "astar_sec": 0.011828246992081404,
+      "cached_query_sec": 0.00026694778352975845,
+      "reverse_field_build_sec": 0.006384648382663727,
+      "agreement": true
+    },
+    {
+      "fixture": "open_64",
+      "start_cell": [
+        62,
+        31
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 13.2367532368147,
+      "legacy_euclidean_factor_m": 25.5906232827573,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 1025,
+      "forward_dijkstra_sec": 0.004519317764788866,
+      "astar_sec": 0.01934051839634776,
+      "cached_query_sec": 0.00025115394964814186,
+      "reverse_field_build_sec": 0.006384648382663727,
+      "agreement": true
+    },
+    {
+      "fixture": "open_64",
+      "start_cell": [
+        33,
+        29
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 7.271067811865476,
+      "legacy_euclidean_factor_m": 15.315351775261318,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 125,
+      "forward_dijkstra_sec": 0.004964075982570648,
+      "astar_sec": 0.0026155179366469383,
+      "cached_query_sec": 0.0002316129393875599,
+      "reverse_field_build_sec": 0.006384648382663727,
+      "agreement": true
+    },
+    {
+      "fixture": "open_64",
+      "start_cell": [
+        4,
+        43
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 7.2,
+      "legacy_euclidean_factor_m": 15.600000000000001,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 37,
+      "forward_dijkstra_sec": 0.004491041414439678,
+      "astar_sec": 0.0008249669335782528,
+      "cached_query_sec": 0.0002095503732562065,
+      "reverse_field_build_sec": 0.006384648382663727,
+      "agreement": true
+    },
+    {
+      "fixture": "open_64",
+      "start_cell": [
+        50,
+        61
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 14.61076477383246,
+      "legacy_euclidean_factor_m": 29.29846412356798,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 692,
+      "forward_dijkstra_sec": 0.004532131832093,
+      "astar_sec": 0.013547363691031933,
+      "cached_query_sec": 0.0002778042107820511,
+      "reverse_field_build_sec": 0.006384648382663727,
+      "agreement": true
+    },
+    {
+      "fixture": "open_64",
+      "start_cell": [
+        25,
+        18
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 4.759797974644668,
+      "legacy_euclidean_factor_m": 10.09554357129917,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 116,
+      "forward_dijkstra_sec": 0.004761005286127329,
+      "astar_sec": 0.0025387457571923733,
+      "cached_query_sec": 0.000230379868298769,
+      "reverse_field_build_sec": 0.006384648382663727,
+      "agreement": true
+    },
+    {
+      "fixture": "open_64",
+      "start_cell": [
+        6,
+        61
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 10.965685424949237,
+      "legacy_euclidean_factor_m": 22.81403077055872,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 170,
+      "forward_dijkstra_sec": 0.004606103058904409,
+      "astar_sec": 0.003323771059513092,
+      "cached_query_sec": 0.0002864077687263489,
+      "reverse_field_build_sec": 0.006384648382663727,
+      "agreement": true
+    },
+    {
+      "fixture": "open_64",
+      "start_cell": [
+        8,
+        59
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 10.731370849898475,
+      "legacy_euclidean_factor_m": 22.05810508633958,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 291,
+      "forward_dijkstra_sec": 0.00430735107511282,
+      "astar_sec": 0.004956045653671026,
+      "cached_query_sec": 0.00029381830245256424,
+      "reverse_field_build_sec": 0.006384648382663727,
+      "agreement": true
+    },
+    {
+      "fixture": "open_64",
+      "start_cell": [
+        56,
+        6
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 9.965685424949237,
+      "legacy_euclidean_factor_m": 20.8153789300123,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 150,
+      "forward_dijkstra_sec": 0.0044320267625153065,
+      "astar_sec": 0.002820852678269148,
+      "cached_query_sec": 0.00023519527167081833,
+      "reverse_field_build_sec": 0.006384648382663727,
+      "agreement": true
+    },
+    {
+      "fixture": "open_64",
+      "start_cell": [
+        63,
+        10
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 11.69705627484771,
+      "legacy_euclidean_factor_m": 23.72172000509238,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 443,
+      "forward_dijkstra_sec": 0.004471015650779009,
+      "astar_sec": 0.007873002905398607,
+      "cached_query_sec": 0.0002551511861383915,
+      "reverse_field_build_sec": 0.006384648382663727,
+      "agreement": true
+    },
+    {
+      "fixture": "open_64",
+      "start_cell": [
+        48,
+        38
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 11.01665222413704,
+      "legacy_euclidean_factor_m": 22.24230203913255,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 448,
+      "forward_dijkstra_sec": 0.004606449976563454,
+      "astar_sec": 0.008909676223993301,
+      "cached_query_sec": 0.00024538394063711166,
+      "reverse_field_build_sec": 0.006384648382663727,
+      "agreement": true
+    },
+    {
+      "fixture": "open_64",
+      "start_cell": [
+        7,
+        63
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 11.448528137423857,
+      "legacy_euclidean_factor_m": 23.63048878038709,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 259,
+      "forward_dijkstra_sec": 0.004465897101908922,
+      "astar_sec": 0.004479622934013605,
+      "cached_query_sec": 0.00025139283388853073,
+      "reverse_field_build_sec": 0.006384648382663727,
+      "agreement": true
+    },
+    {
+      "fixture": "open_64",
+      "start_cell": [
+        13,
+        28
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 4.945584412271572,
+      "legacy_euclidean_factor_m": 10.252804494381037,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 165,
+      "forward_dijkstra_sec": 0.004759593401104212,
+      "astar_sec": 0.002920854836702347,
+      "cached_query_sec": 0.00026357080787420273,
+      "reverse_field_build_sec": 0.006384648382663727,
+      "agreement": true
+    },
+    {
+      "fixture": "open_64",
+      "start_cell": [
+        54,
+        28
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 11.388225099390848,
+      "legacy_euclidean_factor_m": 22.184679398179277,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 767,
+      "forward_dijkstra_sec": 0.004575436934828758,
+      "astar_sec": 0.013907148968428373,
+      "cached_query_sec": 0.0002524149604141712,
+      "reverse_field_build_sec": 0.006384648382663727,
+      "agreement": true
+    },
+    {
+      "fixture": "open_64",
+      "start_cell": [
+        59,
+        57
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 14.824978336205556,
+      "legacy_euclidean_factor_m": 30.552250326285296,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 153,
+      "forward_dijkstra_sec": 0.0047155763022601604,
+      "astar_sec": 0.0034224060364067554,
+      "cached_query_sec": 0.0002620588056743145,
+      "reverse_field_build_sec": 0.006384648382663727,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_64",
+      "start_cell": [
+        46,
+        18
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 8.959797974644662,
+      "legacy_euclidean_factor_m": 17.708754896942924,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 473,
+      "forward_dijkstra_sec": 0.0038223229348659515,
+      "astar_sec": 0.00817337678745389,
+      "cached_query_sec": 0.00024165119975805283,
+      "reverse_field_build_sec": 0.004571216180920601,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_64",
+      "start_cell": [
+        63,
+        22
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 12.691168824543134,
+      "legacy_euclidean_factor_m": 24.673872821265817,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 910,
+      "forward_dijkstra_sec": 0.004295702092349529,
+      "astar_sec": 0.016000316943973303,
+      "cached_query_sec": 0.0002513430081307888,
+      "reverse_field_build_sec": 0.004571216180920601,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_64",
+      "start_cell": [
+        39,
+        0
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 6.731370849898475,
+      "legacy_euclidean_factor_m": 14.09113196304683,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 123,
+      "forward_dijkstra_sec": 0.004314499907195568,
+      "astar_sec": 0.0022973911836743355,
+      "cached_query_sec": 0.00024066492915153503,
+      "reverse_field_build_sec": 0.004571216180920601,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_64",
+      "start_cell": [
+        35,
+        13
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 6.345584412271572,
+      "legacy_euclidean_factor_m": 12.91200991325518,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 253,
+      "forward_dijkstra_sec": 0.00419110432267189,
+      "astar_sec": 0.004704480059444904,
+      "cached_query_sec": 0.0002460726536810398,
+      "reverse_field_build_sec": 0.004571216180920601,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_64",
+      "start_cell": [
+        60,
+        60
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 18.168124086713174,
+      "legacy_euclidean_factor_m": 31.67838379715733,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 2109,
+      "forward_dijkstra_sec": 0.004118455108255148,
+      "astar_sec": 0.03935345076024532,
+      "cached_query_sec": 0.00027307169511914253,
+      "reverse_field_build_sec": 0.004571216180920601,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_64",
+      "start_cell": [
+        61,
+        45
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 15.250966799187793,
+      "legacy_euclidean_factor_m": 28.085583490467133,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 1323,
+      "forward_dijkstra_sec": 0.00441028131172061,
+      "astar_sec": 0.02439159294590354,
+      "cached_query_sec": 0.0002759518101811409,
+      "reverse_field_build_sec": 0.004571216180920601,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_64",
+      "start_cell": [
+        11,
+        19
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 2.9798989873223336,
+      "legacy_euclidean_factor_m": 6.62117814289874,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 63,
+      "forward_dijkstra_sec": 0.004157730378210545,
+      "astar_sec": 0.0013203090056777,
+      "cached_query_sec": 0.00021957885473966599,
+      "reverse_field_build_sec": 0.004571216180920601,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_64",
+      "start_cell": [
+        3,
+        47
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 24.196551211459358,
+      "legacy_euclidean_factor_m": 17.204650534085253,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 2386,
+      "forward_dijkstra_sec": 0.004068882204592228,
+      "astar_sec": 0.041215104050934315,
+      "cached_query_sec": 0.00029371632263064384,
+      "reverse_field_build_sec": 0.004571216180920601,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_64",
+      "start_cell": [
+        39,
+        8
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 6.731370849898475,
+      "legacy_euclidean_factor_m": 14.09113196304683,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 155,
+      "forward_dijkstra_sec": 0.004560685716569424,
+      "astar_sec": 0.002981804311275482,
+      "cached_query_sec": 0.00024615414440631866,
+      "reverse_field_build_sec": 0.004571216180920601,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_64",
+      "start_cell": [
+        9,
+        58
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 23.907821048680162,
+      "legacy_euclidean_factor_m": 21.69239498073,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 2443,
+      "forward_dijkstra_sec": 0.0041659241542220116,
+      "astar_sec": 0.043011215049773455,
+      "cached_query_sec": 0.0002794889733195305,
+      "reverse_field_build_sec": 0.004571216180920601,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_64",
+      "start_cell": [
+        12,
+        12
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 1.6970562748477143,
+      "legacy_euclidean_factor_m": 4.525483399593904,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 7,
+      "forward_dijkstra_sec": 0.00440072501078248,
+      "astar_sec": 0.00018641212955117226,
+      "cached_query_sec": 0.0001899166963994503,
+      "reverse_field_build_sec": 0.004571216180920601,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_64",
+      "start_cell": [
+        14,
+        6
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 1.565685424949238,
+      "legacy_euclidean_factor_m": 4.079215610874229,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 18,
+      "forward_dijkstra_sec": 0.004017577040940523,
+      "astar_sec": 0.00038543203845620155,
+      "cached_query_sec": 0.00023293215781450272,
+      "reverse_field_build_sec": 0.004571216180920601,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_64",
+      "start_cell": [
+        42,
+        27
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 8.905382386916235,
+      "legacy_euclidean_factor_m": 17.767385851610246,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 428,
+      "forward_dijkstra_sec": 0.004220319911837578,
+      "astar_sec": 0.008408154360949993,
+      "cached_query_sec": 0.00027387868613004684,
+      "reverse_field_build_sec": 0.004571216180920601,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_64",
+      "start_cell": [
+        1,
+        6
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 0.2,
+      "legacy_euclidean_factor_m": 1.4422205101855956,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 2,
+      "forward_dijkstra_sec": 0.004139377269893885,
+      "astar_sec": 6.294110789895058e-05,
+      "cached_query_sec": 0.0001667630858719349,
+      "reverse_field_build_sec": 0.004571216180920601,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_64",
+      "start_cell": [
+        62,
+        46
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 15.533809511662415,
+      "legacy_euclidean_factor_m": 28.64402206394905,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 1358,
+      "forward_dijkstra_sec": 0.004267065320163965,
+      "astar_sec": 0.02464571688324213,
+      "cached_query_sec": 0.0002552429214119911,
+      "reverse_field_build_sec": 0.004571216180920601,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_64",
+      "start_cell": [
+        49,
+        62
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 18.81665222413703,
+      "legacy_euclidean_factor_m": 29.363923443572727,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 2511,
+      "forward_dijkstra_sec": 0.00438996497541666,
+      "astar_sec": 0.04698495892807841,
+      "cached_query_sec": 0.00027502933517098427,
+      "reverse_field_build_sec": 0.004571216180920601,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_64",
+      "start_cell": [
+        25,
+        43
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 19.465180361560886,
+      "legacy_euclidean_factor_m": 17.717787672280082,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 2346,
+      "forward_dijkstra_sec": 0.0043454826809465885,
+      "astar_sec": 0.040773834101855755,
+      "cached_query_sec": 0.0002907640300691128,
+      "reverse_field_build_sec": 0.004571216180920601,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_64",
+      "start_cell": [
+        0,
+        17
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 2.331370849898476,
+      "legacy_euclidean_factor_m": 5.440588203494178,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 41,
+      "forward_dijkstra_sec": 0.004014459904283285,
+      "astar_sec": 0.0007676729001104832,
+      "cached_query_sec": 0.00024526985362172127,
+      "reverse_field_build_sec": 0.004571216180920601,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_64",
+      "start_cell": [
+        4,
+        23
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 3.2,
+      "legacy_euclidean_factor_m": 7.6000000000000005,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 17,
+      "forward_dijkstra_sec": 0.0038612489588558674,
+      "astar_sec": 0.00040262332186102867,
+      "cached_query_sec": 0.00019611604511737823,
+      "reverse_field_build_sec": 0.004571216180920601,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_64",
+      "start_cell": [
+        45,
+        29
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 9.67106781186547,
+      "legacy_euclidean_factor_m": 19.20833152566875,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 479,
+      "forward_dijkstra_sec": 0.004162304103374481,
+      "astar_sec": 0.009346704930067062,
+      "cached_query_sec": 0.000254244077950716,
+      "reverse_field_build_sec": 0.004571216180920601,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_64",
+      "start_cell": [
+        0,
+        57
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 25.62497833620554,
+      "legacy_euclidean_factor_m": 21.260291625469296,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 2440,
+      "forward_dijkstra_sec": 0.004055527970194817,
+      "astar_sec": 0.04301647702232003,
+      "cached_query_sec": 0.00026545487344264984,
+      "reverse_field_build_sec": 0.004571216180920601,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_64",
+      "start_cell": [
+        60,
+        38
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 13.768124086713176,
+      "legacy_euclidean_factor_m": 26.205342966654722,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 987,
+      "forward_dijkstra_sec": 0.0043539260514080524,
+      "astar_sec": 0.018120150081813335,
+      "cached_query_sec": 0.0002726609818637371,
+      "reverse_field_build_sec": 0.004571216180920601,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_64",
+      "start_cell": [
+        63,
+        48
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 16.016652224137033,
+      "legacy_euclidean_factor_m": 29.440108695451517,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 1440,
+      "forward_dijkstra_sec": 0.0044846381060779095,
+      "astar_sec": 0.026996683795005083,
+      "cached_query_sec": 0.0002701450139284134,
+      "reverse_field_build_sec": 0.004571216180920601,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_64",
+      "start_cell": [
+        50,
+        4
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 8.6,
+      "legacy_euclidean_factor_m": 18.400000000000002,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 44,
+      "forward_dijkstra_sec": 0.00433563906699419,
+      "astar_sec": 0.0009849630296230316,
+      "cached_query_sec": 0.00022933632135391235,
+      "reverse_field_build_sec": 0.004571216180920601,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_64",
+      "start_cell": [
+        15,
+        19
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 18.67695526217004,
+      "legacy_euclidean_factor_m": 7.44043009509531,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 1497,
+      "forward_dijkstra_sec": 0.0033090231008827686,
+      "astar_sec": 0.023665704764425755,
+      "cached_query_sec": 0.0002689170651137829,
+      "reverse_field_build_sec": 0.0041327509097754955,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_64",
+      "start_cell": [
+        18,
+        40
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 23.6509667991878,
+      "legacy_euclidean_factor_m": 15.45056633266237,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 2018,
+      "forward_dijkstra_sec": 0.0038340487517416477,
+      "astar_sec": 0.03387048374861479,
+      "cached_query_sec": 0.00026055285707116127,
+      "reverse_field_build_sec": 0.0041327509097754955,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_64",
+      "start_cell": [
+        55,
+        8
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 9.931370849898475,
+      "legacy_euclidean_factor_m": 20.462648899885863,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 263,
+      "forward_dijkstra_sec": 0.0036144638434052467,
+      "astar_sec": 0.004793923813849688,
+      "cached_query_sec": 0.0002443520352244377,
+      "reverse_field_build_sec": 0.0041327509097754955,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_64",
+      "start_cell": [
+        26,
+        20
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 16.559797974644663,
+      "legacy_euclidean_factor_m": 10.881176406988356,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 1380,
+      "forward_dijkstra_sec": 0.005397237837314606,
+      "astar_sec": 0.022773590870201588,
+      "cached_query_sec": 0.0002703666687011719,
+      "reverse_field_build_sec": 0.0041327509097754955,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_64",
+      "start_cell": [
+        42,
+        53
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 34.56223663640861,
+      "legacy_euclidean_factor_m": 24.803225596683994,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 2699,
+      "forward_dijkstra_sec": 0.0037682699039578438,
+      "astar_sec": 0.04589183069765568,
+      "cached_query_sec": 0.0002534319646656513,
+      "reverse_field_build_sec": 0.0041327509097754955,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_64",
+      "start_cell": [
+        4,
+        52
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 42.07939392393402,
+      "legacy_euclidean_factor_m": 19.2,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 2699,
+      "forward_dijkstra_sec": 0.0036143437027931213,
+      "astar_sec": 0.04558949498459697,
+      "cached_query_sec": 0.00025738589465618134,
+      "reverse_field_build_sec": 0.0041327509097754955,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_64",
+      "start_cell": [
+        19,
+        9
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 2.8142135623730953,
+      "legacy_euclidean_factor_m": 6.32455532033676,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 58,
+      "forward_dijkstra_sec": 0.0035164388827979565,
+      "astar_sec": 0.0011633452959358692,
+      "cached_query_sec": 0.00022421404719352722,
+      "reverse_field_build_sec": 0.0041327509097754955,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_64",
+      "start_cell": [
+        43,
+        44
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 28.982337649086265,
+      "legacy_euclidean_factor_m": 22.346364357541475,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 2698,
+      "forward_dijkstra_sec": 0.0036837602965533733,
+      "astar_sec": 0.04501555673778057,
+      "cached_query_sec": 0.0002756938338279724,
+      "reverse_field_build_sec": 0.0041327509097754955,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_64",
+      "start_cell": [
+        54,
+        22
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 11.711269837220804,
+      "legacy_euclidean_factor_m": 21.256528408938276,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 807,
+      "forward_dijkstra_sec": 0.003622773103415966,
+      "astar_sec": 0.013551946263760328,
+      "cached_query_sec": 0.00026477593928575516,
+      "reverse_field_build_sec": 0.0041327509097754955,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_64",
+      "start_cell": [
+        27,
+        5
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 4.082842712474619,
+      "legacy_euclidean_factor_m": 9.20869154657707,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 40,
+      "forward_dijkstra_sec": 0.0034999409690499306,
+      "astar_sec": 0.0008691791445016861,
+      "cached_query_sec": 0.00023712404072284698,
+      "reverse_field_build_sec": 0.0041327509097754955,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_64",
+      "start_cell": [
+        21,
+        6
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 2.965685424949238,
+      "legacy_euclidean_factor_m": 6.846897107449475,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 41,
+      "forward_dijkstra_sec": 0.0032983911223709583,
+      "astar_sec": 0.000905181746929884,
+      "cached_query_sec": 0.0002138577401638031,
+      "reverse_field_build_sec": 0.0041327509097754955,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_64",
+      "start_cell": [
+        3,
+        56
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 42.61076477383249,
+      "legacy_euclidean_factor_m": 20.80384579831335,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 2699,
+      "forward_dijkstra_sec": 0.0033812159672379494,
+      "astar_sec": 0.045122487004846334,
+      "cached_query_sec": 0.00027387961745262146,
+      "reverse_field_build_sec": 0.0041327509097754955,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_64",
+      "start_cell": [
+        40,
+        52
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 34.879393923933996,
+      "legacy_euclidean_factor_m": 24.0,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 2702,
+      "forward_dijkstra_sec": 0.00370036531239748,
+      "astar_sec": 0.045792443212121725,
+      "cached_query_sec": 0.0002909502945840359,
+      "reverse_field_build_sec": 0.0041327509097754955,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_64",
+      "start_cell": [
+        37,
+        57
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 35.893607486307104,
+      "legacy_euclidean_factor_m": 24.973586046060746,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 2700,
+      "forward_dijkstra_sec": 0.0035611833445727825,
+      "astar_sec": 0.045606082770973444,
+      "cached_query_sec": 0.00032391631975769997,
+      "reverse_field_build_sec": 0.0041327509097754955,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_64",
+      "start_cell": [
+        30,
+        24
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 16.09116882454314,
+      "legacy_euclidean_factor_m": 13.12097557348538,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 1353,
+      "forward_dijkstra_sec": 0.0037544947117567062,
+      "astar_sec": 0.02224821411073208,
+      "cached_query_sec": 0.00027277087792754173,
+      "reverse_field_build_sec": 0.0041327509097754955,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_64",
+      "start_cell": [
+        52,
+        62
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 34.59655121145938,
+      "legacy_euclidean_factor_m": 30.11444835954994,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 2699,
+      "forward_dijkstra_sec": 0.0036538359709084034,
+      "astar_sec": 0.047422298695892096,
+      "cached_query_sec": 0.00027658697217702866,
+      "reverse_field_build_sec": 0.0041327509097754955,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_64",
+      "start_cell": [
+        26,
+        51
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 37.59655121145939,
+      "legacy_euclidean_factor_m": 20.757649192526596,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 2699,
+      "forward_dijkstra_sec": 0.003672629129141569,
+      "astar_sec": 0.045054701156914234,
+      "cached_query_sec": 0.0002617030404508114,
+      "reverse_field_build_sec": 0.0041327509097754955,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_64",
+      "start_cell": [
+        27,
+        52
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 37.47939392393402,
+      "legacy_euclidean_factor_m": 21.29037341147402,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 2699,
+      "forward_dijkstra_sec": 0.0034592729061841965,
+      "astar_sec": 0.0456813327036798,
+      "cached_query_sec": 0.0002795080654323101,
+      "reverse_field_build_sec": 0.0041327509097754955,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_64",
+      "start_cell": [
+        6,
+        0
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 0.4,
+      "legacy_euclidean_factor_m": 1.788854381999832,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 3,
+      "forward_dijkstra_sec": 0.0034533562138676643,
+      "astar_sec": 6.862403824925423e-05,
+      "cached_query_sec": 0.00017107324674725533,
+      "reverse_field_build_sec": 0.0041327509097754955,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_64",
+      "start_cell": [
+        1,
+        22
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 21.725483399593898,
+      "legacy_euclidean_factor_m": 7.299315036357863,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 1619,
+      "forward_dijkstra_sec": 0.003736809827387333,
+      "astar_sec": 0.026241865940392017,
+      "cached_query_sec": 0.00025869766250252724,
+      "reverse_field_build_sec": 0.0041327509097754955,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_64",
+      "start_cell": [
+        63,
+        26
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 13.256854249492376,
+      "legacy_euclidean_factor_m": 25.187298386289864,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 887,
+      "forward_dijkstra_sec": 0.003640393726527691,
+      "astar_sec": 0.015478717163205147,
+      "cached_query_sec": 0.00027554482221603394,
+      "reverse_field_build_sec": 0.0041327509097754955,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_64",
+      "start_cell": [
+        39,
+        25
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 14.374011537017758,
+      "legacy_euclidean_factor_m": 16.32666530556684,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 1141,
+      "forward_dijkstra_sec": 0.003815202973783016,
+      "astar_sec": 0.018850272987037897,
+      "cached_query_sec": 0.0003037257120013237,
+      "reverse_field_build_sec": 0.0041327509097754955,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_64",
+      "start_cell": [
+        42,
+        12
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 7.66274169979695,
+      "legacy_euclidean_factor_m": 15.533190271158078,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 274,
+      "forward_dijkstra_sec": 0.003929025959223509,
+      "astar_sec": 0.00470698019489646,
+      "cached_query_sec": 0.0002908087335526943,
+      "reverse_field_build_sec": 0.0041327509097754955,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_64",
+      "start_cell": [
+        22,
+        5
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 3.082842712474619,
+      "legacy_euclidean_factor_m": 7.211102550927979,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 30,
+      "forward_dijkstra_sec": 0.0037421672604978085,
+      "astar_sec": 0.0006139739416539669,
+      "cached_query_sec": 0.00020111631602048874,
+      "reverse_field_build_sec": 0.0041327509097754955,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_64",
+      "start_cell": [
+        2,
+        24
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 3.5656854249492387,
+      "legacy_euclidean_factor_m": 8.039900496896712,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 54,
+      "forward_dijkstra_sec": 0.0026078158989548683,
+      "astar_sec": 0.0009889551438391209,
+      "cached_query_sec": 0.00020460737869143486,
+      "reverse_field_build_sec": 0.0038466239348053932,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_64",
+      "start_cell": [
+        53,
+        15
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 10.111269837220803,
+      "legacy_euclidean_factor_m": 20.08780724718355,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 525,
+      "forward_dijkstra_sec": 0.0029710200615227222,
+      "astar_sec": 0.009273987729102373,
+      "cached_query_sec": 0.00024827010929584503,
+      "reverse_field_build_sec": 0.0038466239348053932,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_64",
+      "start_cell": [
+        28,
+        44
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": null,
+      "legacy_euclidean_factor_m": 18.659046063504963,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": true,
+      "astar_expanded": 1856,
+      "forward_dijkstra_sec": 0.003383734729140997,
+      "astar_sec": 0.03092230809852481,
+      "cached_query_sec": 0.0007628719322383404,
+      "reverse_field_build_sec": 0.0038466239348053932,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_64",
+      "start_cell": [
+        17,
+        12
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 2.662741699796953,
+      "legacy_euclidean_factor_m": 6.105735008989499,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 43,
+      "forward_dijkstra_sec": 0.0034461570903658867,
+      "astar_sec": 0.0009158803150057793,
+      "cached_query_sec": 0.00022867508232593536,
+      "reverse_field_build_sec": 0.0038466239348053932,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_64",
+      "start_cell": [
+        50,
+        21
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 10.008326112068517,
+      "legacy_euclidean_factor_m": 19.616319736382767,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 599,
+      "forward_dijkstra_sec": 0.003301504999399185,
+      "astar_sec": 0.01084127789363265,
+      "cached_query_sec": 0.0002536107785999775,
+      "reverse_field_build_sec": 0.0038466239348053932,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_64",
+      "start_cell": [
+        51,
+        57
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": null,
+      "legacy_euclidean_factor_m": 28.33513719747974,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": true,
+      "astar_expanded": 1856,
+      "forward_dijkstra_sec": 0.0032611400820314884,
+      "astar_sec": 0.032741574104875326,
+      "cached_query_sec": 0.0007735658437013626,
+      "reverse_field_build_sec": 0.0038466239348053932,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_64",
+      "start_cell": [
+        56,
+        3
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 9.88284271247462,
+      "legacy_euclidean_factor_m": 20.80384579831335,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 98,
+      "forward_dijkstra_sec": 0.0034708520397543907,
+      "astar_sec": 0.0020456910133361816,
+      "cached_query_sec": 0.0002350667491555214,
+      "reverse_field_build_sec": 0.0038466239348053932,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_64",
+      "start_cell": [
+        63,
+        25
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 12.939696961966987,
+      "legacy_euclidean_factor_m": 25.050349298961883,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 971,
+      "forward_dijkstra_sec": 0.003138237167149782,
+      "astar_sec": 0.01731144916266203,
+      "cached_query_sec": 0.0002752607688307762,
+      "reverse_field_build_sec": 0.0038466239348053932,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_64",
+      "start_cell": [
+        15,
+        23
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 4.11126983722081,
+      "legacy_euclidean_factor_m": 8.78179936004006,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 103,
+      "forward_dijkstra_sec": 0.003299565054476261,
+      "astar_sec": 0.0019146548584103584,
+      "cached_query_sec": 0.0002183881588280201,
+      "reverse_field_build_sec": 0.0038466239348053932,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_64",
+      "start_cell": [
+        36,
+        46
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": null,
+      "legacy_euclidean_factor_m": 21.12060605191054,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": true,
+      "astar_expanded": 1856,
+      "forward_dijkstra_sec": 0.003244495950639248,
+      "astar_sec": 0.03128508012741804,
+      "cached_query_sec": 0.0007779477164149284,
+      "reverse_field_build_sec": 0.0038466239348053932,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_64",
+      "start_cell": [
+        39,
+        26
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 8.222539674441617,
+      "legacy_euclidean_factor_m": 16.53602128687551,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 352,
+      "forward_dijkstra_sec": 0.0033298716880381107,
+      "astar_sec": 0.006571121048182249,
+      "cached_query_sec": 0.00024302396923303604,
+      "reverse_field_build_sec": 0.0038466239348053932,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_64",
+      "start_cell": [
+        36,
+        36
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": null,
+      "legacy_euclidean_factor_m": 18.101933598375616,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": true,
+      "astar_expanded": 1856,
+      "forward_dijkstra_sec": 0.0032367841340601444,
+      "astar_sec": 0.030608276836574078,
+      "cached_query_sec": 0.0007854700088500977,
+      "reverse_field_build_sec": 0.0038466239348053932,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_64",
+      "start_cell": [
+        19,
+        37
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": null,
+      "legacy_euclidean_factor_m": 14.499655168313486,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": true,
+      "astar_expanded": 1856,
+      "forward_dijkstra_sec": 0.003240048885345459,
+      "astar_sec": 0.029251745902001858,
+      "cached_query_sec": 0.0007652537897229195,
+      "reverse_field_build_sec": 0.0038466239348053932,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_64",
+      "start_cell": [
+        4,
+        0
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 0.2,
+      "legacy_euclidean_factor_m": 1.6,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 2,
+      "forward_dijkstra_sec": 0.003331352025270462,
+      "astar_sec": 4.763901233673096e-05,
+      "cached_query_sec": 0.00014511914923787117,
+      "reverse_field_build_sec": 0.0038466239348053932,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_64",
+      "start_cell": [
+        9,
+        36
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": null,
+      "legacy_euclidean_factor_m": 12.95530779256132,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": true,
+      "astar_expanded": 1856,
+      "forward_dijkstra_sec": 0.00302301486954093,
+      "astar_sec": 0.029377945233136415,
+      "cached_query_sec": 0.0007669506594538689,
+      "reverse_field_build_sec": 0.0038466239348053932,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_64",
+      "start_cell": [
+        19,
+        61
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": null,
+      "legacy_euclidean_factor_m": 23.5762592452662,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": true,
+      "astar_expanded": 1856,
+      "forward_dijkstra_sec": 0.003332453314214945,
+      "astar_sec": 0.031697817612439394,
+      "cached_query_sec": 0.0007069515995681286,
+      "reverse_field_build_sec": 0.0038466239348053932,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_64",
+      "start_cell": [
+        5,
+        49
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": null,
+      "legacy_euclidean_factor_m": 18.00444389588304,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": true,
+      "astar_expanded": 1856,
+      "forward_dijkstra_sec": 0.003355073742568493,
+      "astar_sec": 0.030742286704480648,
+      "cached_query_sec": 0.0007531796582043171,
+      "reverse_field_build_sec": 0.0038466239348053932,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_64",
+      "start_cell": [
+        47,
+        56
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": null,
+      "legacy_euclidean_factor_m": 26.990368652539743,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": true,
+      "astar_expanded": 1856,
+      "forward_dijkstra_sec": 0.0032185199670493603,
+      "astar_sec": 0.03286707308143377,
+      "cached_query_sec": 0.0007632030174136162,
+      "reverse_field_build_sec": 0.0038466239348053932,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_64",
+      "start_cell": [
+        16,
+        63
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": null,
+      "legacy_euclidean_factor_m": 24.08318915758459,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": true,
+      "astar_expanded": 1856,
+      "forward_dijkstra_sec": 0.003333259839564562,
+      "astar_sec": 0.03360991878435016,
+      "cached_query_sec": 0.0005416250787675381,
+      "reverse_field_build_sec": 0.0038466239348053932,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_64",
+      "start_cell": [
+        52,
+        47
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": null,
+      "legacy_euclidean_factor_m": 25.777509577148837,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": true,
+      "astar_expanded": 1856,
+      "forward_dijkstra_sec": 0.0033081858418881893,
+      "astar_sec": 0.03154003666713834,
+      "cached_query_sec": 0.0007644277065992355,
+      "reverse_field_build_sec": 0.0038466239348053932,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_64",
+      "start_cell": [
+        62,
+        46
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": null,
+      "legacy_euclidean_factor_m": 28.64402206394905,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": true,
+      "astar_expanded": 1856,
+      "forward_dijkstra_sec": 0.003121331799775362,
+      "astar_sec": 0.031485782004892826,
+      "cached_query_sec": 0.0006123329512774944,
+      "reverse_field_build_sec": 0.0038466239348053932,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_64",
+      "start_cell": [
+        31,
+        14
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 5.6284271247461914,
+      "legacy_euclidean_factor_m": 11.516944039110376,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 212,
+      "forward_dijkstra_sec": 0.003340359777212143,
+      "astar_sec": 0.003846772015094757,
+      "cached_query_sec": 0.00023788167163729668,
+      "reverse_field_build_sec": 0.0038466239348053932,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_64",
+      "start_cell": [
+        55,
+        27
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 11.505382386916228,
+      "legacy_euclidean_factor_m": 22.378561169118985,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 772,
+      "forward_dijkstra_sec": 0.0031542042270302773,
+      "astar_sec": 0.014116542879492044,
+      "cached_query_sec": 0.00025665201246738434,
+      "reverse_field_build_sec": 0.0038466239348053932,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_64",
+      "start_cell": [
+        18,
+        19
+      ],
+      "geometry_cells": 4096,
+      "known_contact_path_m": 3.5941125496954296,
+      "legacy_euclidean_factor_m": 8.207313811473277,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 26,
+      "forward_dijkstra_sec": 0.003238681238144636,
+      "astar_sec": 0.0006068488582968712,
+      "cached_query_sec": 0.0002042120322585106,
+      "reverse_field_build_sec": 0.0038466239348053932,
+      "agreement": true
+    },
+    {
+      "fixture": "open_128",
+      "start_cell": [
+        96,
+        62
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 22.604877323527873,
+      "legacy_euclidean_factor_m": 43.502643597832076,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 2554,
+      "forward_dijkstra_sec": 0.020586963277310133,
+      "astar_sec": 0.05067360494285822,
+      "cached_query_sec": 0.00045479461550712585,
+      "reverse_field_build_sec": 0.024846963118761778,
+      "agreement": true
+    },
+    {
+      "fixture": "open_128",
+      "start_cell": [
+        113,
+        116
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 30.829855659733482,
+      "legacy_euclidean_factor_m": 62.513998432351144,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 498,
+      "forward_dijkstra_sec": 0.020934853237122297,
+      "astar_sec": 0.010160735808312893,
+      "cached_query_sec": 0.00040868110954761505,
+      "reverse_field_build_sec": 0.024846963118761778,
+      "agreement": true
+    },
+    {
+      "fixture": "open_128",
+      "start_cell": [
+        96,
+        2
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 17.96568542494924,
+      "legacy_euclidean_factor_m": 36.808694625047494,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 342,
+      "forward_dijkstra_sec": 0.020756168756633997,
+      "astar_sec": 0.0059831226244568825,
+      "cached_query_sec": 0.00042877020314335823,
+      "reverse_field_build_sec": 0.024846963118761778,
+      "agreement": true
+    },
+    {
+      "fixture": "open_128",
+      "start_cell": [
+        64,
+        121
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 27.770562748477108,
+      "legacy_euclidean_factor_m": 52.595056801946704,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 4369,
+      "forward_dijkstra_sec": 0.020832823123782873,
+      "astar_sec": 0.08553827088326216,
+      "cached_query_sec": 0.000454452820122242,
+      "reverse_field_build_sec": 0.024846963118761778,
+      "agreement": true
+    },
+    {
+      "fixture": "open_128",
+      "start_cell": [
+        6,
+        40
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 6.765685424949237,
+      "legacy_euclidean_factor_m": 14.422205101855956,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 86,
+      "forward_dijkstra_sec": 0.021638718899339437,
+      "astar_sec": 0.0016251057386398315,
+      "cached_query_sec": 0.00038124900311231613,
+      "reverse_field_build_sec": 0.024846963118761778,
+      "agreement": true
+    },
+    {
+      "fixture": "open_128",
+      "start_cell": [
+        97,
+        43
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 21.230865786510122,
+      "legacy_euclidean_factor_m": 40.33856715353187,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 2662,
+      "forward_dijkstra_sec": 0.020687873009592295,
+      "astar_sec": 0.04927695216611028,
+      "cached_query_sec": 0.0005138223059475422,
+      "reverse_field_build_sec": 0.024846963118761778,
+      "agreement": true
+    },
+    {
+      "fixture": "open_128",
+      "start_cell": [
+        35,
+        74
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 15.968124086713173,
+      "legacy_euclidean_factor_m": 30.62286727267713,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 1512,
+      "forward_dijkstra_sec": 0.02314230427145958,
+      "astar_sec": 0.027750941924750805,
+      "cached_query_sec": 0.0004196157678961754,
+      "reverse_field_build_sec": 0.024846963118761778,
+      "agreement": true
+    },
+    {
+      "fixture": "open_128",
+      "start_cell": [
+        55,
+        12
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 10.262741699796948,
+      "legacy_euclidean_factor_m": 20.649455198624494,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 450,
+      "forward_dijkstra_sec": 0.022436929866671562,
+      "astar_sec": 0.007930194959044456,
+      "cached_query_sec": 0.00041134702041745186,
+      "reverse_field_build_sec": 0.024846963118761778,
+      "agreement": true
+    },
+    {
+      "fixture": "open_128",
+      "start_cell": [
+        100,
+        4
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 18.6,
+      "legacy_euclidean_factor_m": 38.400000000000006,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 94,
+      "forward_dijkstra_sec": 0.021750775165855885,
+      "astar_sec": 0.001881251111626625,
+      "cached_query_sec": 0.00039828475564718246,
+      "reverse_field_build_sec": 0.024846963118761778,
+      "agreement": true
+    },
+    {
+      "fixture": "open_128",
+      "start_cell": [
+        2,
+        68
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 12.365685424949238,
+      "legacy_euclidean_factor_m": 25.612496949731398,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 198,
+      "forward_dijkstra_sec": 0.02067215135321021,
+      "astar_sec": 0.0034119058400392532,
+      "cached_query_sec": 0.000495200976729393,
+      "reverse_field_build_sec": 0.024846963118761778,
+      "agreement": true
+    },
+    {
+      "fixture": "open_128",
+      "start_cell": [
+        5,
+        55
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 9.682842712474619,
+      "legacy_euclidean_factor_m": 20.40392119177096,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 96,
+      "forward_dijkstra_sec": 0.02160035166889429,
+      "astar_sec": 0.001772470772266388,
+      "cached_query_sec": 0.00042960699647665024,
+      "reverse_field_build_sec": 0.024846963118761778,
+      "agreement": true
+    },
+    {
+      "fixture": "open_128",
+      "start_cell": [
+        77,
+        20
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 15.325483399593896,
+      "legacy_euclidean_factor_m": 29.89314302645341,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 1192,
+      "forward_dijkstra_sec": 0.021439958829432726,
+      "astar_sec": 0.020442167297005653,
+      "cached_query_sec": 0.000469850841909647,
+      "reverse_field_build_sec": 0.024846963118761778,
+      "agreement": true
+    },
+    {
+      "fixture": "open_128",
+      "start_cell": [
+        126,
+        90
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 30.9244732728172,
+      "legacy_euclidean_factor_m": 59.705946102544935,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 4148,
+      "forward_dijkstra_sec": 0.020648904144763947,
+      "astar_sec": 0.0859345062635839,
+      "cached_query_sec": 0.00043660635128617287,
+      "reverse_field_build_sec": 0.024846963118761778,
+      "agreement": true
+    },
+    {
+      "fixture": "open_128",
+      "start_cell": [
+        46,
+        105
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 23.079393923933978,
+      "legacy_euclidean_factor_m": 43.75385697284298,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 3135,
+      "forward_dijkstra_sec": 0.0218317867256701,
+      "astar_sec": 0.05827822210267186,
+      "cached_query_sec": 0.00044350791722536087,
+      "reverse_field_build_sec": 0.024846963118761778,
+      "agreement": true
+    },
+    {
+      "fixture": "open_128",
+      "start_cell": [
+        61,
+        114
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 26.122034611053255,
+      "legacy_euclidean_factor_m": 49.55643247853906,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 3861,
+      "forward_dijkstra_sec": 0.02157664019614458,
+      "astar_sec": 0.07508097495883703,
+      "cached_query_sec": 0.00046510016545653343,
+      "reverse_field_build_sec": 0.024846963118761778,
+      "agreement": true
+    },
+    {
+      "fixture": "open_128",
+      "start_cell": [
+        119,
+        59
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 26.956349186104013,
+      "legacy_euclidean_factor_m": 50.990195135927856,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 4195,
+      "forward_dijkstra_sec": 0.022569482680410147,
+      "astar_sec": 0.08165444619953632,
+      "cached_query_sec": 0.00048700394108891487,
+      "reverse_field_build_sec": 0.024846963118761778,
+      "agreement": true
+    },
+    {
+      "fixture": "open_128",
+      "start_cell": [
+        31,
+        121
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 25.0367532368147,
+      "legacy_euclidean_factor_m": 48.029990630854805,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 3204,
+      "forward_dijkstra_sec": 0.021269062999635935,
+      "astar_sec": 0.05669385800138116,
+      "cached_query_sec": 0.0005757021717727184,
+      "reverse_field_build_sec": 0.024846963118761778,
+      "agreement": true
+    },
+    {
+      "fixture": "open_128",
+      "start_cell": [
+        52,
+        64
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 15.376450198781697,
+      "legacy_euclidean_factor_m": 30.73499633967767,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 787,
+      "forward_dijkstra_sec": 0.021507686004042625,
+      "astar_sec": 0.015438945963978767,
+      "cached_query_sec": 0.0004368298687040806,
+      "reverse_field_build_sec": 0.024846963118761778,
+      "agreement": true
+    },
+    {
+      "fixture": "open_128",
+      "start_cell": [
+        17,
+        119
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 23.47695526217004,
+      "legacy_euclidean_factor_m": 46.292980029373794,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 1918,
+      "forward_dijkstra_sec": 0.021194763015955687,
+      "astar_sec": 0.03266027895733714,
+      "cached_query_sec": 0.00043005309998989105,
+      "reverse_field_build_sec": 0.024846963118761778,
+      "agreement": true
+    },
+    {
+      "fixture": "open_128",
+      "start_cell": [
+        63,
+        75
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 18.4877200360025,
+      "legacy_euclidean_factor_m": 36.92587168910167,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 996,
+      "forward_dijkstra_sec": 0.0216384157538414,
+      "astar_sec": 0.0203888900578022,
+      "cached_query_sec": 0.0004416978918015957,
+      "reverse_field_build_sec": 0.024846963118761778,
+      "agreement": true
+    },
+    {
+      "fixture": "open_128",
+      "start_cell": [
+        74,
+        117
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 27.79898987322329,
+      "legacy_euclidean_factor_m": 53.169916306121834,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 3919,
+      "forward_dijkstra_sec": 0.021749841049313545,
+      "astar_sec": 0.08087447099387646,
+      "cached_query_sec": 0.00043232087045907974,
+      "reverse_field_build_sec": 0.024846963118761778,
+      "agreement": true
+    },
+    {
+      "fixture": "open_128",
+      "start_cell": [
+        48,
+        111
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 24.445079348883212,
+      "legacy_euclidean_factor_m": 46.27742430170461,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 3510,
+      "forward_dijkstra_sec": 0.021486700978130102,
+      "astar_sec": 0.06628760416060686,
+      "cached_query_sec": 0.00040362216532230377,
+      "reverse_field_build_sec": 0.024846963118761778,
+      "agreement": true
+    },
+    {
+      "fixture": "open_128",
+      "start_cell": [
+        5,
+        71
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 12.88284271247462,
+      "legacy_euclidean_factor_m": 26.802984908401527,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 128,
+      "forward_dijkstra_sec": 0.020691752899438143,
+      "astar_sec": 0.002347869798541069,
+      "cached_query_sec": 0.0004500369541347027,
+      "reverse_field_build_sec": 0.024846963118761778,
+      "agreement": true
+    },
+    {
+      "fixture": "open_128",
+      "start_cell": [
+        62,
+        41
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 14.06518036156089,
+      "legacy_euclidean_factor_m": 27.518720900506985,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 993,
+      "forward_dijkstra_sec": 0.021838262677192688,
+      "astar_sec": 0.01912190206348896,
+      "cached_query_sec": 0.0004947925917804241,
+      "reverse_field_build_sec": 0.024846963118761778,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_128",
+      "start_cell": [
+        17,
+        28
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 5.276955262170048,
+      "legacy_euclidean_factor_m": 10.917875251164944,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 174,
+      "forward_dijkstra_sec": 0.01876180898398161,
+      "astar_sec": 0.003397678956389427,
+      "cached_query_sec": 0.00042069796472787857,
+      "reverse_field_build_sec": 0.02150224195793271,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_128",
+      "start_cell": [
+        11,
+        96
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 52.255844122715814,
+      "legacy_euclidean_factor_m": 36.9063680142059,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 11182,
+      "forward_dijkstra_sec": 0.01881508994847536,
+      "astar_sec": 0.20454468298703432,
+      "cached_query_sec": 0.000412799883633852,
+      "reverse_field_build_sec": 0.02150224195793271,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_128",
+      "start_cell": [
+        47,
+        6
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 8.165685424949237,
+      "legacy_euclidean_factor_m": 17.218594600024705,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 114,
+      "forward_dijkstra_sec": 0.019248721655458212,
+      "astar_sec": 0.002030372153967619,
+      "cached_query_sec": 0.0004047970287501812,
+      "reverse_field_build_sec": 0.02150224195793271,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_128",
+      "start_cell": [
+        105,
+        106
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 37.33036072312178,
+      "legacy_euclidean_factor_m": 57.41776728504863,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 10540,
+      "forward_dijkstra_sec": 0.019426855258643627,
+      "astar_sec": 0.20573563082143664,
+      "cached_query_sec": 0.00045911967754364014,
+      "reverse_field_build_sec": 0.02150224195793271,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_128",
+      "start_cell": [
+        50,
+        99
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 44.7043722601396,
+      "legacy_euclidean_factor_m": 42.22037422856411,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 11274,
+      "forward_dijkstra_sec": 0.020963917952030897,
+      "astar_sec": 0.21012725122272968,
+      "cached_query_sec": 0.00040679890662431717,
+      "reverse_field_build_sec": 0.02150224195793271,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_128",
+      "start_cell": [
+        72,
+        23
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 14.574011537017752,
+      "legacy_euclidean_factor_m": 28.241812972966166,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 1181,
+      "forward_dijkstra_sec": 0.018750730901956558,
+      "astar_sec": 0.020941611845046282,
+      "cached_query_sec": 0.0004243459552526474,
+      "reverse_field_build_sec": 0.02150224195793271,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_128",
+      "start_cell": [
+        69,
+        74
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 38.83330444827408,
+      "legacy_euclidean_factor_m": 38.2099463490856,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 10509,
+      "forward_dijkstra_sec": 0.018725973553955555,
+      "astar_sec": 0.19633222604170442,
+      "cached_query_sec": 0.0004497538320720196,
+      "reverse_field_build_sec": 0.02150224195793271,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_128",
+      "start_cell": [
+        119,
+        35
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 24.968124086713175,
+      "legacy_euclidean_factor_m": 47.64199827882958,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 3380,
+      "forward_dijkstra_sec": 0.020369721110910177,
+      "astar_sec": 0.061498151160776615,
+      "cached_query_sec": 0.0005063540302217007,
+      "reverse_field_build_sec": 0.02150224195793271,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_128",
+      "start_cell": [
+        42,
+        50
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 11.748023074035515,
+      "legacy_euclidean_factor_m": 23.86629422428208,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 408,
+      "forward_dijkstra_sec": 0.01935111964121461,
+      "astar_sec": 0.007793680299073458,
+      "cached_query_sec": 0.0004288032650947571,
+      "reverse_field_build_sec": 0.02150224195793271,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_128",
+      "start_cell": [
+        111,
+        42
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 23.948023074035504,
+      "legacy_euclidean_factor_m": 45.418938781085586,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 3336,
+      "forward_dijkstra_sec": 0.01898413011804223,
+      "astar_sec": 0.06136112380772829,
+      "cached_query_sec": 0.0004248018376529217,
+      "reverse_field_build_sec": 0.02150224195793271,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_128",
+      "start_cell": [
+        20,
+        59
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 11.725483399593896,
+      "legacy_euclidean_factor_m": 22.912005586591498,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 776,
+      "forward_dijkstra_sec": 0.01912598218768835,
+      "astar_sec": 0.013734923209995031,
+      "cached_query_sec": 0.00040098605677485466,
+      "reverse_field_build_sec": 0.02150224195793271,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_128",
+      "start_cell": [
+        44,
+        0
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 7.731370849898474,
+      "legacy_euclidean_factor_m": 16.079800993793423,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 144,
+      "forward_dijkstra_sec": 0.020063171163201332,
+      "astar_sec": 0.0024061426520347595,
+      "cached_query_sec": 0.00038565415889024734,
+      "reverse_field_build_sec": 0.02150224195793271,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_128",
+      "start_cell": [
+        12,
+        92
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 51.72447327281734,
+      "legacy_euclidean_factor_m": 35.345155254999234,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 11164,
+      "forward_dijkstra_sec": 0.018170794937759638,
+      "astar_sec": 0.20297911018133163,
+      "cached_query_sec": 0.00046454090625047684,
+      "reverse_field_build_sec": 0.02150224195793271,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_128",
+      "start_cell": [
+        70,
+        24
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 14.25685424949237,
+      "legacy_euclidean_factor_m": 27.58550343930667,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 1161,
+      "forward_dijkstra_sec": 0.01975738490000367,
+      "astar_sec": 0.020516241900622845,
+      "cached_query_sec": 0.0003865286707878113,
+      "reverse_field_build_sec": 0.02150224195793271,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_128",
+      "start_cell": [
+        117,
+        105
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 36.136248173426345,
+      "legacy_euclidean_factor_m": 60.623427814665845,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 9042,
+      "forward_dijkstra_sec": 0.018885799683630466,
+      "astar_sec": 0.17892532469704747,
+      "cached_query_sec": 0.0004086163826286793,
+      "reverse_field_build_sec": 0.02150224195793271,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_128",
+      "start_cell": [
+        15,
+        16
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 2.745584412271572,
+      "legacy_euclidean_factor_m": 6.511528238439883,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 20,
+      "forward_dijkstra_sec": 0.0184234119951725,
+      "astar_sec": 0.0004198639653623104,
+      "cached_query_sec": 0.0004270882345736027,
+      "reverse_field_build_sec": 0.02150224195793271,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_128",
+      "start_cell": [
+        8,
+        102
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 53.352900397563545,
+      "legacy_euclidean_factor_m": 39.232639472765534,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 11314,
+      "forward_dijkstra_sec": 0.01822843588888645,
+      "astar_sec": 0.20798751059919596,
+      "cached_query_sec": 0.0004252856597304344,
+      "reverse_field_build_sec": 0.02150224195793271,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_128",
+      "start_cell": [
+        33,
+        45
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 10.002438661763946,
+      "legacy_euclidean_factor_m": 20.087807247183548,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 443,
+      "forward_dijkstra_sec": 0.019519411027431488,
+      "astar_sec": 0.008382563944905996,
+      "cached_query_sec": 0.0004177200607955456,
+      "reverse_field_build_sec": 0.02150224195793271,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_128",
+      "start_cell": [
+        90,
+        99
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 37.17300141024106,
+      "legacy_euclidean_factor_m": 51.2577798972995,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 10815,
+      "forward_dijkstra_sec": 0.019098536111414433,
+      "astar_sec": 0.21004811814054847,
+      "cached_query_sec": 0.000504503957927227,
+      "reverse_field_build_sec": 0.02150224195793271,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_128",
+      "start_cell": [
+        70,
+        43
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 15.830865786510124,
+      "legacy_euclidean_factor_m": 30.664637614033534,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 1335,
+      "forward_dijkstra_sec": 0.02008021529763937,
+      "astar_sec": 0.025607672054320574,
+      "cached_query_sec": 0.00041279103606939316,
+      "reverse_field_build_sec": 0.02150224195793271,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_128",
+      "start_cell": [
+        17,
+        52
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 10.07695526217004,
+      "legacy_euclidean_factor_m": 19.89170681465017,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 559,
+      "forward_dijkstra_sec": 0.018789892084896564,
+      "astar_sec": 0.009784263093024492,
+      "cached_query_sec": 0.00046569202095270157,
+      "reverse_field_build_sec": 0.02150224195793271,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_128",
+      "start_cell": [
+        41,
+        123
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 48.49259735953049,
+      "legacy_euclidean_factor_m": 49.84776825495803,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 11468,
+      "forward_dijkstra_sec": 0.019202868919819593,
+      "astar_sec": 0.21380026079714298,
+      "cached_query_sec": 0.00041584810242056847,
+      "reverse_field_build_sec": 0.02150224195793271,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_128",
+      "start_cell": [
+        110,
+        30
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 22.753910524340082,
+      "legacy_euclidean_factor_m": 43.65684367885522,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 2720,
+      "forward_dijkstra_sec": 0.019257695879787207,
+      "astar_sec": 0.04855194641277194,
+      "cached_query_sec": 0.0004100808873772621,
+      "reverse_field_build_sec": 0.02150224195793271,
+      "agreement": true
+    },
+    {
+      "fixture": "detour_128",
+      "start_cell": [
+        6,
+        57
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 10.165685424949238,
+      "legacy_euclidean_factor_m": 21.21508896988179,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 154,
+      "forward_dijkstra_sec": 0.018668961245566607,
+      "astar_sec": 0.002629542723298073,
+      "cached_query_sec": 0.00039881886914372444,
+      "reverse_field_build_sec": 0.02150224195793271,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_128",
+      "start_cell": [
+        11,
+        54
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 92.04507934888329,
+      "legacy_euclidean_factor_m": 20.19504889818294,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 9332,
+      "forward_dijkstra_sec": 0.012720733880996704,
+      "astar_sec": 0.15242178505286574,
+      "cached_query_sec": 0.000447763130068779,
+      "reverse_field_build_sec": 0.014856972731649876,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_128",
+      "start_cell": [
+        3,
+        61
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 94.22497833620565,
+      "legacy_euclidean_factor_m": 22.803508501982762,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 9432,
+      "forward_dijkstra_sec": 0.012171928770840168,
+      "astar_sec": 0.15567275416105986,
+      "cached_query_sec": 0.0004006149247288704,
+      "reverse_field_build_sec": 0.014856972731649876,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_128",
+      "start_cell": [
+        22,
+        73
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 96.85340546095185,
+      "legacy_euclidean_factor_m": 28.52367437761131,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 9669,
+      "forward_dijkstra_sec": 0.013690692838281393,
+      "astar_sec": 0.16337638441473246,
+      "cached_query_sec": 0.0004661870189011097,
+      "reverse_field_build_sec": 0.014856972731649876,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_128",
+      "start_cell": [
+        105,
+        19
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 26.276955262170045,
+      "legacy_euclidean_factor_m": 40.84311447478021,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 2411,
+      "forward_dijkstra_sec": 0.012467003893107176,
+      "astar_sec": 0.03967265412211418,
+      "cached_query_sec": 0.00041501689702272415,
+      "reverse_field_build_sec": 0.014856972731649876,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_128",
+      "start_cell": [
+        50,
+        92
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 131.4617315730204,
+      "legacy_euclidean_factor_m": 39.71901307938052,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 11453,
+      "forward_dijkstra_sec": 0.01290679257363081,
+      "astar_sec": 0.19280785508453846,
+      "cached_query_sec": 0.0004402068443596363,
+      "reverse_field_build_sec": 0.014856972731649876,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_128",
+      "start_cell": [
+        38,
+        74
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 100.13624817342647,
+      "legacy_euclidean_factor_m": 31.12812233334995,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 10522,
+      "forward_dijkstra_sec": 0.012047889176756144,
+      "astar_sec": 0.17653033277019858,
+      "cached_query_sec": 0.0004384629428386688,
+      "reverse_field_build_sec": 0.014856972731649876,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_128",
+      "start_cell": [
+        69,
+        43
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 59.69949493661168,
+      "legacy_euclidean_factor_m": 30.320949853195565,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 5992,
+      "forward_dijkstra_sec": 0.011998106725513935,
+      "astar_sec": 0.09955271286889911,
+      "cached_query_sec": 0.00045315735042095184,
+      "reverse_field_build_sec": 0.014856972731649876,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_128",
+      "start_cell": [
+        56,
+        45
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 57.26518036156092,
+      "legacy_euclidean_factor_m": 26.487733009829284,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 5815,
+      "forward_dijkstra_sec": 0.012837565038353205,
+      "astar_sec": 0.0963714960962534,
+      "cached_query_sec": 0.00041589420288801193,
+      "reverse_field_build_sec": 0.014856972731649876,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_128",
+      "start_cell": [
+        15,
+        71
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 95.28772003600261,
+      "legacy_euclidean_factor_m": 27.15879231482873,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 9569,
+      "forward_dijkstra_sec": 0.011944778263568878,
+      "astar_sec": 0.16062467312440276,
+      "cached_query_sec": 0.00039842259138822556,
+      "reverse_field_build_sec": 0.014856972731649876,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_128",
+      "start_cell": [
+        125,
+        79
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 117.95046173579959,
+      "legacy_euclidean_factor_m": 56.9434807506531,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 11453,
+      "forward_dijkstra_sec": 0.011774864047765732,
+      "astar_sec": 0.1937032537534833,
+      "cached_query_sec": 0.0004685530439019203,
+      "reverse_field_build_sec": 0.014856972731649876,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_128",
+      "start_cell": [
+        29,
+        86
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 135.16467529817268,
+      "legacy_euclidean_factor_m": 34.29052347223647,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 11453,
+      "forward_dijkstra_sec": 0.012637508101761341,
+      "astar_sec": 0.19178864220157266,
+      "cached_query_sec": 0.000425947830080986,
+      "reverse_field_build_sec": 0.014856972731649876,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_128",
+      "start_cell": [
+        6,
+        74
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 95.63919189857876,
+      "legacy_euclidean_factor_m": 28.011426240018555,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 9531,
+      "forward_dijkstra_sec": 0.011938927229493856,
+      "astar_sec": 0.15942839113995433,
+      "cached_query_sec": 0.00041378382593393326,
+      "reverse_field_build_sec": 0.014856972731649876,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_128",
+      "start_cell": [
+        10,
+        94
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 139.62741699796965,
+      "legacy_euclidean_factor_m": 36.079911308094985,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 11453,
+      "forward_dijkstra_sec": 0.011573437601327896,
+      "astar_sec": 0.19306864496320486,
+      "cached_query_sec": 0.0004218309186398983,
+      "reverse_field_build_sec": 0.014856972731649876,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_128",
+      "start_cell": [
+        81,
+        60
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 78.542135623731,
+      "legacy_euclidean_factor_m": 38.084117424459244,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 8239,
+      "forward_dijkstra_sec": 0.013349852990359068,
+      "astar_sec": 0.136714574880898,
+      "cached_query_sec": 0.0004362519830465317,
+      "reverse_field_build_sec": 0.014856972731649876,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_128",
+      "start_cell": [
+        98,
+        105
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 158.77300141024125,
+      "legacy_euclidean_factor_m": 55.189854140050066,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 11453,
+      "forward_dijkstra_sec": 0.011935838032513857,
+      "astar_sec": 0.19536476815119386,
+      "cached_query_sec": 0.000418773852288723,
+      "reverse_field_build_sec": 0.014856972731649876,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_128",
+      "start_cell": [
+        54,
+        69
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 102.92203461105338,
+      "legacy_euclidean_factor_m": 32.802438933713454,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 11099,
+      "forward_dijkstra_sec": 0.013094456866383553,
+      "astar_sec": 0.18369626626372337,
+      "cached_query_sec": 0.0004268479533493519,
+      "reverse_field_build_sec": 0.014856972731649876,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_128",
+      "start_cell": [
+        92,
+        120
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 169.4499566724113,
+      "legacy_euclidean_factor_m": 58.24087911424415,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 11453,
+      "forward_dijkstra_sec": 0.012929067946970463,
+      "astar_sec": 0.19622997008264065,
+      "cached_query_sec": 0.000404363963752985,
+      "reverse_field_build_sec": 0.014856972731649876,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_128",
+      "start_cell": [
+        6,
+        41
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 48.719595949289356,
+      "legacy_euclidean_factor_m": 14.821605850919124,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 4081,
+      "forward_dijkstra_sec": 0.012318746652454138,
+      "astar_sec": 0.06749327760189772,
+      "cached_query_sec": 0.000413666944950819,
+      "reverse_field_build_sec": 0.014856972731649876,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_128",
+      "start_cell": [
+        64,
+        105
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 151.97300141024124,
+      "legacy_euclidean_factor_m": 46.99106298010293,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 11453,
+      "forward_dijkstra_sec": 0.012215311173349619,
+      "astar_sec": 0.19452768564224243,
+      "cached_query_sec": 0.0005003148689866066,
+      "reverse_field_build_sec": 0.014856972731649876,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_128",
+      "start_cell": [
+        50,
+        75
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 102.61909088590107,
+      "legacy_euclidean_factor_m": 33.83962174729499,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 11048,
+      "forward_dijkstra_sec": 0.0122062130831182,
+      "astar_sec": 0.18544897204264998,
+      "cached_query_sec": 0.0004633939824998379,
+      "reverse_field_build_sec": 0.014856972731649876,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_128",
+      "start_cell": [
+        54,
+        91
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 130.5788888605458,
+      "legacy_euclidean_factor_m": 40.13776276774779,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 11453,
+      "forward_dijkstra_sec": 0.01209298800677061,
+      "astar_sec": 0.19264992559328675,
+      "cached_query_sec": 0.00044691096991300583,
+      "reverse_field_build_sec": 0.014856972731649876,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_128",
+      "start_cell": [
+        71,
+        102
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 153.1244732728174,
+      "legacy_euclidean_factor_m": 47.48557675757977,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 11453,
+      "forward_dijkstra_sec": 0.0123671293258667,
+      "astar_sec": 0.19281924096867442,
+      "cached_query_sec": 0.00046095484867691994,
+      "reverse_field_build_sec": 0.014856972731649876,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_128",
+      "start_cell": [
+        32,
+        103
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 145.407315985292,
+      "legacy_euclidean_factor_m": 41.15337167231867,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 11453,
+      "forward_dijkstra_sec": 0.012777127791196108,
+      "astar_sec": 0.19519048277288675,
+      "cached_query_sec": 0.0004501049406826496,
+      "reverse_field_build_sec": 0.014856972731649876,
+      "agreement": true
+    },
+    {
+      "fixture": "maze_128",
+      "start_cell": [
+        68,
+        20
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 33.75979797464466,
+      "legacy_euclidean_factor_m": 26.38787600395303,
+      "legacy_below_shortest_path": true,
+      "legacy_false_finite": false,
+      "astar_expanded": 3027,
+      "forward_dijkstra_sec": 0.011595301795750856,
+      "astar_sec": 0.04915969492867589,
+      "cached_query_sec": 0.00043022865429520607,
+      "reverse_field_build_sec": 0.014856972731649876,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_128",
+      "start_cell": [
+        2,
+        10
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 0.765685424949238,
+      "legacy_euclidean_factor_m": 2.529822128134704,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 4,
+      "forward_dijkstra_sec": 0.013752780854701996,
+      "astar_sec": 9.868713095784187e-05,
+      "cached_query_sec": 0.0003689671866595745,
+      "reverse_field_build_sec": 0.015309188980609179,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_128",
+      "start_cell": [
+        7,
+        109
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": null,
+      "legacy_euclidean_factor_m": 42.01713936002784,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": true,
+      "astar_expanded": 7808,
+      "forward_dijkstra_sec": 0.013538850005716085,
+      "astar_sec": 0.13736078096553683,
+      "cached_query_sec": 0.0009053400717675686,
+      "reverse_field_build_sec": 0.015309188980609179,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_128",
+      "start_cell": [
+        98,
+        120
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": null,
+      "legacy_euclidean_factor_m": 59.72202273868494,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": true,
+      "astar_expanded": 7808,
+      "forward_dijkstra_sec": 0.014607065822929144,
+      "astar_sec": 0.149719282053411,
+      "cached_query_sec": 0.0009349570609629154,
+      "reverse_field_build_sec": 0.015309188980609179,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_128",
+      "start_cell": [
+        8,
+        56
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 10.131370849898474,
+      "legacy_euclidean_factor_m": 20.861447696648476,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 270,
+      "forward_dijkstra_sec": 0.014569914434105158,
+      "astar_sec": 0.004663290921598673,
+      "cached_query_sec": 0.00047027692198753357,
+      "reverse_field_build_sec": 0.015309188980609179,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_128",
+      "start_cell": [
+        27,
+        67
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": null,
+      "legacy_euclidean_factor_m": 26.826852219371546,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": true,
+      "astar_expanded": 7808,
+      "forward_dijkstra_sec": 0.014638827182352543,
+      "astar_sec": 0.12816376565024257,
+      "cached_query_sec": 0.0009875469841063023,
+      "reverse_field_build_sec": 0.015309188980609179,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_128",
+      "start_cell": [
+        25,
+        106
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": null,
+      "legacy_euclidean_factor_m": 41.65573189850348,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": true,
+      "astar_expanded": 7808,
+      "forward_dijkstra_sec": 0.015454017091542482,
+      "astar_sec": 0.1370096430182457,
+      "cached_query_sec": 0.0009281877428293228,
+      "reverse_field_build_sec": 0.015309188980609179,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_128",
+      "start_cell": [
+        66,
+        89
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": null,
+      "legacy_euclidean_factor_m": 42.08372607077468,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": true,
+      "astar_expanded": 7808,
+      "forward_dijkstra_sec": 0.014927101787179708,
+      "astar_sec": 0.1379863079637289,
+      "cached_query_sec": 0.000980363693088293,
+      "reverse_field_build_sec": 0.015309188980609179,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_128",
+      "start_cell": [
+        33,
+        28
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 7.188225099390857,
+      "legacy_euclidean_factor_m": 15.05722417977497,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 149,
+      "forward_dijkstra_sec": 0.01437330013141036,
+      "astar_sec": 0.0027613090351223946,
+      "cached_query_sec": 0.0004341849125921726,
+      "reverse_field_build_sec": 0.015309188980609179,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_128",
+      "start_cell": [
+        19,
+        59
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 11.642640687119277,
+      "legacy_euclidean_factor_m": 22.80350850198276,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 749,
+      "forward_dijkstra_sec": 0.015011974610388279,
+      "astar_sec": 0.013136378955096006,
+      "cached_query_sec": 0.0004075346514582634,
+      "reverse_field_build_sec": 0.015309188980609179,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_128",
+      "start_cell": [
+        90,
+        16
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 17.59411254969542,
+      "legacy_euclidean_factor_m": 34.733269353747865,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 1239,
+      "forward_dijkstra_sec": 0.014193091075867414,
+      "astar_sec": 0.021594193764030933,
+      "cached_query_sec": 0.00041406601667404175,
+      "reverse_field_build_sec": 0.015309188980609179,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_128",
+      "start_cell": [
+        45,
+        0
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 7.9313708498984745,
+      "legacy_euclidean_factor_m": 16.477863939236784,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 149,
+      "forward_dijkstra_sec": 0.014225060120224953,
+      "astar_sec": 0.0024626650847494602,
+      "cached_query_sec": 0.000410689041018486,
+      "reverse_field_build_sec": 0.015309188980609179,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_128",
+      "start_cell": [
+        38,
+        100
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": null,
+      "legacy_euclidean_factor_m": 40.73720658071685,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": true,
+      "astar_expanded": 7808,
+      "forward_dijkstra_sec": 0.015434380620718002,
+      "astar_sec": 0.13654694985598326,
+      "cached_query_sec": 0.0009428900666534901,
+      "reverse_field_build_sec": 0.015309188980609179,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_128",
+      "start_cell": [
+        89,
+        83
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": null,
+      "legacy_euclidean_factor_m": 46.41723817721171,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": true,
+      "astar_expanded": 7808,
+      "forward_dijkstra_sec": 0.015569822862744331,
+      "astar_sec": 0.13905290281400084,
+      "cached_query_sec": 0.0009867912158370018,
+      "reverse_field_build_sec": 0.015309188980609179,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_128",
+      "start_cell": [
+        60,
+        126
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": null,
+      "legacy_euclidean_factor_m": 53.69543742255947,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": true,
+      "astar_expanded": 7808,
+      "forward_dijkstra_sec": 0.015178732108324766,
+      "astar_sec": 0.14318172400817275,
+      "cached_query_sec": 0.0008102459833025932,
+      "reverse_field_build_sec": 0.015309188980609179,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_128",
+      "start_cell": [
+        80,
+        97
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": null,
+      "legacy_euclidean_factor_m": 48.04164859785726,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": true,
+      "astar_expanded": 7808,
+      "forward_dijkstra_sec": 0.015787119045853615,
+      "astar_sec": 0.14228637516498566,
+      "cached_query_sec": 0.0009371521882712841,
+      "reverse_field_build_sec": 0.015309188980609179,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_128",
+      "start_cell": [
+        19,
+        86
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": null,
+      "legacy_euclidean_factor_m": 33.34426487418789,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": true,
+      "astar_expanded": 7808,
+      "forward_dijkstra_sec": 0.013758924789726734,
+      "astar_sec": 0.13303625909611583,
+      "cached_query_sec": 0.0009379521943628788,
+      "reverse_field_build_sec": 0.015309188980609179,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_128",
+      "start_cell": [
+        82,
+        97
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": null,
+      "legacy_euclidean_factor_m": 48.551827977945386,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": true,
+      "astar_expanded": 7808,
+      "forward_dijkstra_sec": 0.014310400001704693,
+      "astar_sec": 0.14132815692573786,
+      "cached_query_sec": 0.0009385077282786369,
+      "reverse_field_build_sec": 0.015309188980609179,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_128",
+      "start_cell": [
+        6,
+        70
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": null,
+      "legacy_euclidean_factor_m": 26.412118430750688,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": true,
+      "astar_expanded": 7808,
+      "forward_dijkstra_sec": 0.01358503894880414,
+      "astar_sec": 0.16943064099177718,
+      "cached_query_sec": 0.0009138160385191441,
+      "reverse_field_build_sec": 0.015309188980609179,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_128",
+      "start_cell": [
+        59,
+        73
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": null,
+      "legacy_euclidean_factor_m": 35.295325469529246,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": true,
+      "astar_expanded": 7808,
+      "forward_dijkstra_sec": 0.014326167292892933,
+      "astar_sec": 0.1311294911429286,
+      "cached_query_sec": 0.0009355209767818451,
+      "reverse_field_build_sec": 0.015309188980609179,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_128",
+      "start_cell": [
+        55,
+        38
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 12.416652224137037,
+      "legacy_euclidean_factor_m": 24.51774867315513,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 738,
+      "forward_dijkstra_sec": 0.01439535291865468,
+      "astar_sec": 0.013863150030374527,
+      "cached_query_sec": 0.000406067818403244,
+      "reverse_field_build_sec": 0.015309188980609179,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_128",
+      "start_cell": [
+        104,
+        114
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": null,
+      "legacy_euclidean_factor_m": 59.46427498927403,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": true,
+      "astar_expanded": 7826,
+      "forward_dijkstra_sec": 0.014597168192267418,
+      "astar_sec": 0.1483280868269503,
+      "cached_query_sec": 0.0009518163278698921,
+      "reverse_field_build_sec": 0.015309188980609179,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_128",
+      "start_cell": [
+        51,
+        80
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": null,
+      "legacy_euclidean_factor_m": 35.743530883224174,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": true,
+      "astar_expanded": 7808,
+      "forward_dijkstra_sec": 0.015558173879981041,
+      "astar_sec": 0.1339724943973124,
+      "cached_query_sec": 0.0009110821411013603,
+      "reverse_field_build_sec": 0.015309188980609179,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_128",
+      "start_cell": [
+        73,
+        10
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": 13.69705627484771,
+      "legacy_euclidean_factor_m": 27.704151313476473,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": false,
+      "astar_expanded": 555,
+      "forward_dijkstra_sec": 0.014729706104844809,
+      "astar_sec": 0.009739444125443697,
+      "cached_query_sec": 0.0004948652349412441,
+      "reverse_field_build_sec": 0.015309188980609179,
+      "agreement": true
+    },
+    {
+      "fixture": "disconnected_128",
+      "start_cell": [
+        88,
+        105
+      ],
+      "geometry_cells": 16384,
+      "known_contact_path_m": null,
+      "legacy_euclidean_factor_m": 52.546360482910714,
+      "legacy_below_shortest_path": false,
+      "legacy_false_finite": true,
+      "astar_expanded": 7808,
+      "forward_dijkstra_sec": 0.014974787831306458,
+      "astar_sec": 0.144365674816072,
+      "cached_query_sec": 0.0009380574338138103,
+      "reverse_field_build_sec": 0.015309188980609179,
+      "agreement": true
+    }
+  ]
+}

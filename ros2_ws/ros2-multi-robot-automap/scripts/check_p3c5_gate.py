@@ -44,8 +44,17 @@ def native_safety_ok(result):
         assert robot["battery_message_count"] > 0 and robot["collision_message_count"] > 0
         assert robot["battery_minimum_energy"] > 0 and robot["battery_final_energy"] > 0
         assert robot["battery_mode"] != "FAILED" and robot["collision_events"] == 0
-    assert result["rally_hold_sec"] == 5 and result["rally_position_tolerance_m"] == .35
-    assert result["rally_linear_tolerance_mps"] == .05 and result["rally_angular_tolerance_radps"] == .1
+    if result["rally_assignments"]:
+        assert result["rally_hold_sec"] == 5 and result["rally_position_tolerance_m"] == .35
+        assert result["rally_linear_tolerance_mps"] == .05 and result["rally_angular_tolerance_radps"] == .1
+    else:
+        # The immutable native evaluator learns these values only from a
+        # rally assignment. Preserve an unassigned fault failure as null.
+        assert not result["success"] and not result.get("partial_completion")
+        assert result["task_phase"] not in ("RALLY", "COMPLETE", "PARTIAL_COMPLETE")
+        assert result["native_rally_hold_proof"] is None
+        assert all(result[k] is None for k in ("rally_hold_sec", "rally_position_tolerance_m",
+            "rally_linear_tolerance_mps", "rally_angular_tolerance_radps"))
 
 
 def declaration_audit(row, config, directory):

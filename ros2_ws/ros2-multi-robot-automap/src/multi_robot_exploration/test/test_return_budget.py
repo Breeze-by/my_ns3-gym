@@ -128,13 +128,61 @@ def test_fresh_complete_source_survives_other_source_loss_without_hidden_ap_inpu
     node,_,_=manager(detour_grid(True))
     good=detour_grid()
     other='delivered_fused' if source=='local' else 'local'
+    unavailable=detour_grid(True)
+    if other=='local':unavailable[:,20]=-1  # Missing knowledge, not a contradictory known wall.
     node.return_map_candidates={source:(good,.2,(0.,0.),10.,2,source),
-        other:(detour_grid(True),.2,(0.,0.),10.,3,other)}
+        other:(unavailable,.2,(0.,0.),10.,3,other)}
     budget=node.current_return_budget()
     assert budget is not None and budget['map_source']==source and budget['map_version']==2
     assert np.array_equal(node.return_map,good)
     node.now=lambda:16.
     assert node.current_return_budget() is None  # Reading a source never renews its TTL.
+
+
+@pytest.mark.parametrize('local_obstruction',[-1,100])
+def test_lowest_complete_source_can_extend_unknown_but_never_clear_local_wall(local_obstruction):
+    local=detour_grid();local[:35,20]=local_obstruction
+    fused=np.zeros_like(local)
+    node,_,_=manager(local)
+    node.return_map_candidates={'local':(local,.2,(0.,0.),10.,2,'local'),
+        'delivered_fused':(fused,.2,(0.,0.),9.,3,'delivered_fused')}
+    budget=node.current_return_budget(include_route=True)
+    assert budget is not None
+    assert budget['map_source']==('delivered_fused' if local_obstruction==-1 else 'local')
+    assert budget['map_input_age_sec']==(2. if local_obstruction==-1 else 1.)
+    fused_audit=next(x for x in node.return_candidate_audits if x['snapshot'][-1]=='delivered_fused')
+    assert fused_audit['qualified']==(local_obstruction==-1)
+    node.return_map_candidates['delivered_fused']=(fused,.2,(0.,0.),4.,4,'delivered_fused')
+    assert node.current_return_budget()['map_source']=='local'
+
+
+def test_known_obstacle_veto_keeps_clearance_and_disallows_corner_cutting():
+    from multi_robot_exploration.control import route_respects_known_obstacles
+    grid=np.zeros((10,10),dtype=np.int16);grid[5,5]=100
+    assert route_respects_known_obstacles(grid,.2,(0.,0.),((.1,.1),(1.9,.1)))
+    assert not route_respects_known_obstacles(grid,.2,(0.,0.),((.1,.9),(1.9,.9)))
+    grid[3,4]=grid[4,3]=100
+    assert not route_respects_known_obstacles(grid,.2,(0.,0.),((.7,.7),(.9,.9)))
+
+
+@pytest.mark.parametrize('corruption',[None,'qualified','cost','missing_candidates'])
+def test_return_reader_reconstructs_two_source_choice_and_rejects_forged_witness(tmp_path,corruption):
+    from check_p2c_gate import return_audit
+    local=detour_grid();local[:35,20]=-1
+    node,events,_=manager(local)
+    node.return_map_candidates={'local':(local,.2,(0.,0.),10.,2,'local'),
+        'delivered_fused':(np.zeros_like(local),.2,(0.,0.),9.,3,'delivered_fused')}
+    node.begin_return(40.)
+    node.finish_return_audit('mission_terminal')
+    candidates=events[0]['map_evidence']['route_candidates']
+    if corruption=='qualified':candidates[1]['qualified']=False
+    if corruption=='cost':candidates[1]['required_energy']+=1.
+    if corruption=='missing_candidates':events[0]['map_evidence'].pop('route_candidates')
+    path=tmp_path/'audit.jsonl'
+    path.write_text(''.join(json.dumps(dict(topic='/tb1/battery_return_audit',data=e))+'\n' for e in events))
+    if corruption is None:assert return_audit(path,True,True)['map_budget_reconstructions']==1
+    else:
+        with pytest.raises(AssertionError):return_audit(path,True,True)
 
 
 @pytest.mark.parametrize('source',['last_odom_time','map_tf_source_time'])

@@ -14,7 +14,7 @@ from multi_robot_exploration.bypass_audit import runtime_violations
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def return_audit(path,require_pose_leases=False):
+def return_audit(path,require_pose_leases=False,require_map_candidates=False):
     starts={};finished={};rows=[];maps=0;legs=0;pose_checks=0
     for line in path.read_text().splitlines():
         outer=json.loads(line)
@@ -59,7 +59,7 @@ def return_audit(path,require_pose_leases=False):
             m=e['energy_model']
             rebuilt=control.return_energy_budget(budget['path_distance_m'],m['move_cost_per_m'],m['idle_cost_per_sec'],
                 m['path_factor'],m['nominal_speed_mps'],m['safety_margin'],m['recovery_wait_sec'],
-                budget['map_age_sec'],budget['pose_age_sec'])
+                budget.get('map_input_age_sec',budget['map_age_sec']),budget['pose_age_sec'])
             assert math.isclose(rebuilt['required_energy'],budget['required_energy'],abs_tol=1e-8)
             pose_checks+=1
         if saved and budget and budget['path_distance_m']>0:
@@ -78,12 +78,41 @@ def return_audit(path,require_pose_leases=False):
             assert distance is not None and math.isclose(distance,budget['path_distance_m'],abs_tol=1e-8)
             m=e['energy_model']
             rebuilt=control.return_energy_budget(distance,m['move_cost_per_m'],m['idle_cost_per_sec'],
-                m['path_factor'],m['nominal_speed_mps'],m['safety_margin'],m['recovery_wait_sec'],budget['map_age_sec'],
+                m['path_factor'],m['nominal_speed_mps'],m['safety_margin'],m['recovery_wait_sec'],
+                budget.get('map_input_age_sec',budget['map_age_sec']),
                 budget.get('pose_age_sec',0.))
             assert math.isclose(rebuilt['required_energy'],budget['required_energy'],abs_tol=1e-8)
             if budget.get('route'):
                 assert abs(sum(math.dist(a,b) for a,b in zip(budget['route'],budget['route'][1:]))-distance)<1e-8
             maps+=1
+            candidates=saved.get('route_candidates',[])
+            if require_map_candidates:assert candidates,'missing complete map-candidate evidence'
+            if candidates:
+                decoded={}
+                for candidate in candidates:
+                    s=candidate['map_evidence']
+                    assert s['source'] not in decoded and 0<=e['sim_time']-s['source_time']<=5.
+                    g=np.frombuffer(zlib.decompress(base64.b64decode(s['grid'])),dtype='<i2').reshape(s['shape'])
+                    decoded[s['source']]=(s,g)
+                local=decoded.get('local');eligible=[]
+                for candidate in candidates:
+                    s=candidate['map_evidence'];g=decoded[s['source']][1]
+                    d,r=control.known_return_route(g,s['resolution'],s['origin'],position,e['home'],e['charge_radius_m'],include_route=True)
+                    assert (d is None)==(candidate['path_distance_m'] is None)
+                    if d is not None:assert math.isclose(d,candidate['path_distance_m'],abs_tol=1e-8)
+                    qualified=d is not None and (s['source']=='local' or local is None
+                        or control.route_respects_known_obstacles(local[1],local[0]['resolution'],local[0]['origin'],r))
+                    assert candidate['qualified']==qualified
+                    input_age=max(e['sim_time']-s['source_time'],e['sim_time']-local[0]['source_time']) if s['source']!='local' and local else e['sim_time']-s['source_time']
+                    assert math.isclose(input_age,candidate['map_input_age_sec'],abs_tol=1e-8)
+                    required=None if d is None else control.return_energy_budget(d,m['move_cost_per_m'],m['idle_cost_per_sec'],
+                        m['path_factor'],m['nominal_speed_mps'],m['safety_margin'],m['recovery_wait_sec'],input_age,budget['pose_age_sec'])['required_energy']
+                    if required is None:assert candidate['required_energy'] is None
+                    else:assert math.isclose(required,candidate['required_energy'],abs_tol=1e-8)
+                    if qualified:eligible.append((required,s['source']!='local',s))
+                best=min(eligible,key=lambda row:row[:2])
+                assert best[2]['source']==saved['source'] and best[2]['version']==saved['version']
+                assert math.isclose(best[0],budget['required_energy'],abs_tol=1e-8)
         if kind=='return_leg_sent':
             assert budget is not None and e['energy']>e['energy_model']['safety_margin']
             assert saved is not None and e['route'];legs+=1
@@ -186,7 +215,8 @@ def check_one(path,config):
     audit=json.loads((Path(__file__).resolve().parents[1]/'src/multi_robot_exploration/config/p3a_forbidden_bypasses.json').read_text())
     violations=runtime_violations(Snapshot(original['nodes']),audit,result['robot_count'])
     assert not violations,violations
-    native=return_audit(directory/'safety_events.jsonl',bool(config.get('native_pose_contract')))
+    native=return_audit(directory/'safety_events.jsonl',bool(config.get('native_pose_contract')),
+        bool(config.get('return_source_selection')))
     energy=energy_audit(directory/'safety_events.jsonl',result,
         bool(config.get('native_energy_accounting')) and case!='empty_battery')
     forecast=lookahead_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())

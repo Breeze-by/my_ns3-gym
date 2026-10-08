@@ -82,6 +82,21 @@ def test_real_early_mission_failure_is_retained_without_fabricated_tail():
     assert end < start+300
 
 
+@pytest.mark.parametrize('mutation',[None,'success','partial_completion','proof','numeric_hold','rally_phase'])
+def test_unassigned_native_timeout_retains_null_hold_without_inventing_success(mutation):
+    result=failed_mission()
+    result.update(task_phase='EXPLORE',termination_reason='timeout',rally_assignments={},native_rally_hold_proof=None)
+    for k in ('rally_hold_sec','rally_position_tolerance_m','rally_linear_tolerance_mps','rally_angular_tolerance_radps'):
+        result[k]=None
+    if mutation in ('success','partial_completion'):result[mutation]=True
+    if mutation=='proof':result['native_rally_hold_proof']={'observed_duration_sec':5.}
+    if mutation=='numeric_hold':result['rally_hold_sec']=5.
+    if mutation=='rally_phase':result['task_phase']='RALLY'
+    if mutation is None:native_safety_ok(result)
+    else:
+        with pytest.raises(AssertionError):native_safety_ok(result)
+
+
 def test_timeout_polling_overrun_is_not_extra_measured_time():
     result = failed_mission()
     result["end_sim_time_sec"] = result["start_sim_time_sec"]+300.3
