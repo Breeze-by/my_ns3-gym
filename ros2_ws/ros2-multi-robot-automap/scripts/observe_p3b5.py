@@ -15,10 +15,15 @@ parser=argparse.ArgumentParser()
 parser.add_argument("--output", type=Path, required=True)
 parser.add_argument("--robot-count", type=int, required=True)
 parser.add_argument("--native-tf-graph-output",type=Path)
+parser.add_argument("--navigation-input-output",type=Path)
 args=parser.parse_args()
 args.output.parent.mkdir(parents=True,exist_ok=True)
 rclpy.init()
 node=Node("p3b5_read_only_observer",parameter_overrides=[Parameter("use_sim_time",value=True)])
+navigation_capture=None
+if args.navigation_input_output:
+    from p2c_navigation_capture import NavigationCapture
+    navigation_capture=NavigationCapture(node,args.navigation_input_output,args.robot_count)
 qos=QoSProfile(depth=20, reliability=ReliabilityPolicy.RELIABLE, durability=DurabilityPolicy.TRANSIENT_LOCAL)
 last={}
 
@@ -58,5 +63,6 @@ print("READY",flush=True)
 try: rclpy.spin(node)
 except (KeyboardInterrupt, ExternalShutdownException): pass
 finally:
+    if navigation_capture is not None: navigation_capture.close()
     node.destroy_node()
     if rclpy.ok(): rclpy.shutdown()

@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "scope": "Evaluator-only lossless navigation recording and declaration audit components; no new task results yet",
+  "utc": "2026-10-09T15:45:17.328076+00:00",
+  "parent": "b32c891",
+  "checks": 70,
+  "protected_files": 171,
+  "static_protocol_cells": 54,
+  "original_failed_checks": [
+    "p2c_navigation_capture_components.log: late transient TF absent with best-effort reliability; fixed to request reliable transient inputs",
+    "p2c_navigation_capture_components_v2.log: fixture incorrectly compared noncanonical CDR padding; corrected to decoded fields and independent exact recorder byte roundtrip",
+    "p2c_navigation_capture_components_v3.log: fixture compared original Python .05 to serialized float32; corrected to native float32 roundtrip"
+  ],
+  "sources": {
+    "scripts/p2c_navigation_capture.py": "036f710915780634e8b76cd922f3a5f2d719180655fadee7b7bfdcebdb3deab5",
+    "scripts/observe_p3b5.py": "b58bf86326fb4c55826ae375d5eee62b6bfa5cb37785b9ac753490482e30e35a",
+    "scripts/run_p3c5_audit.py": "bce2d5acb11576b930bb2cd576377022dfd103897e46a10e52c54a8fde211dd2",
+    "scripts/check_p2c_gate.py": "90b4009fdc2f7870097dc3010e9ed82501ce0921edc64fbe4257810fde182f2e",
+    "scripts/test_p2c_navigation_capture.py": "59cb2faa2e85a1108eda77f34a730b6c2e56d1852305e869c955fcf0e77fa068"
+  },
+  "outputs": {
+    "p2c_navigation_capture_components.log": "b6eeaa6de5bb9d6d5ac5db1e02af3a5a2876df2eae82b26aed76a6198c8f5d6e",
+    "p2c_navigation_capture_components_v2.log": "32e98f26133fda9f3cb2f18e12489dc408bddb13578c6fa0a46e9b7457f15777",
+    "p2c_navigation_capture_components_v3.log": "a94b64f4998ffa541715a6b485fd1fc810474d2316fea3d456db41a064aaca87",
+    "p2c_navigation_capture_components_v4.log": "40f696584529a148f334775fcbead4d33981049fbcc122f5b6a0562a17a2725d",
+    "p2c_navigation_capture_regression.log": "b88bfc64438fafd965999566b7c4c931601403721bdd901a48994cbd8791e794",
+    "p2c_navigation_capture_regression_v2.log": "0100c89d9f4fc3f128816bc4e99b570b46187b67d5b6a3bdf76849dcb8e44906",
+    "p2c_navigation_source_check.json": "c90296e90c9bcf94c6397155e8fd9ea8dd7336a313d2bd4fe459532258b11ec3"
+  },
+  "run_id": "20261009_p2c_v42",
+  "next": "First new dev_forced2 only, unchanged task/control/battery/SLAM/Nav2; retain native outcome and diagnose exact native inputs. Remaining development or integration only if first native gate passes."
+}

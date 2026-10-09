@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-09T13:19:47.699530+00:00",
+  "predeclared_at_utc": "2026-10-09T15:43:51.548307+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -390,5 +390,11 @@
   "retained_failed_physical_characterizations": [
     "20261009_p2c_return_characterization_failed.json",
     "20261009_p2c_return_ready_failed.json"
-  ]
+  ],
+  "navigation_input_capture": {
+    "scope": "Evaluator-only lossless original CDR; no publishers, no AP or native control input. Diagnostic sampling does not replace exact battery budget snapshots.",
+    "topics": "Native local map, delivered fused map, global/local Nav2 costmaps and updates, scan, odom, dynamic/static TF and Nav2 plan per robot; AP fused map.",
+    "encoding": "gzip JSONL with exact received CDR base64, original message type, receipt sim and wall times; original message headers are never rewritten.",
+    "predeclared_at_utc": "2026-10-09T15:43:51.548276+00:00"
+  }
 }

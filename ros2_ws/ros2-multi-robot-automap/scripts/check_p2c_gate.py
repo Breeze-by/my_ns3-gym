@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Read-only P2C.1 original/return-budget gate; never repairs task outcomes."""
-import argparse,base64,hashlib,json,math,re,subprocess,traceback,zlib
+import argparse,base64,gzip,hashlib,json,math,re,subprocess,traceback,zlib
+from collections import Counter
 from pathlib import Path
 from concurrent.futures import ProcessPoolExecutor
 import numpy as np
@@ -13,6 +14,32 @@ from p2c_native_graph import native_tf_ingress_audit
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def navigation_capture_audit(row,directory):
+    """Check the declared, completed lossless trace separately from task success."""
+    if not row['config'].get('navigation_input_capture'):return None
+    from run_p2d_baseline import file_digest
+    path=directory/'navigation_inputs.jsonl.gz'
+    assert path.name in row['evidence_sha256'] and sha(path)==row['evidence_sha256'][path.name]
+    command=row['observer_command']
+    assert Path(command[command.index('--navigation-input-output')+1])==path
+    assert row['source_digests']['navigation_capture']==file_digest(Path(__file__).with_name('p2c_navigation_capture.py'))
+    counts=Counter()
+    with gzip.open(path,'rt') as stream:
+        for line in stream:
+            e=json.loads(line)
+            assert len(base64.b64decode(e['cdr'],validate=True))>=4
+            assert math.isfinite(e['received_sim_time']) and e['received_wall_ns']>0
+            counts[e['topic']]+=1
+    markers=[line.removeprefix('NAVIGATION_CAPTURE_CLOSED ') for line in (directory/'observer.log').read_text().splitlines()
+             if line.startswith('NAVIGATION_CAPTURE_CLOSED ')]
+    assert len(markers)==1 and json.loads(markers[0])==dict(counts),'incomplete navigation trace'
+    if row['case']!='empty_battery':
+        required={'/merge_map'}|{f'/tb{i}/{suffix}' for i in range(1,row['result']['robot_count']+1)
+            for suffix in ('map','gateway/merge_map','global_costmap/costmap','local_costmap/costmap','scan','odom','tf','tf_static')}
+        assert required<=counts.keys(),('missing navigation inputs',sorted(required-counts.keys()))
+    return dict(status='PASS',messages=sum(counts.values()),topic_counts=dict(counts),control_input=False)
 
 
 def launch_process_audit(directory):
@@ -657,6 +684,7 @@ def check_one(path,config):
     assert row['runner_returncode']==row['observer_returncode']==0
     assert not any(v for k,v in row.items() if k.endswith('_forced_shutdown'))
     for relative,expected in row['evidence_sha256'].items():assert sha(directory/relative)==expected
+    navigation_inputs=navigation_capture_audit(row,directory)
     processes=launch_process_audit(directory) if config.get('task_child_process_audit') else None
     result=row['result'];case=row['case']
     if case=='empty_battery':
@@ -718,7 +746,7 @@ def check_one(path,config):
         ap_return_veto_audit=vetoes,rally_assignment_audit=assignments,rally_repair_audit=repairs,
         exploration_travel_audit=travel,target_survey_audit=surveys,observer_heading_audit=headings,
         planning_lease_audit=leases,
-        native_tf_ingress_audit=ingress,launch_process_audit=processes)
+        native_tf_ingress_audit=ingress,launch_process_audit=processes,navigation_input_audit=navigation_inputs)
 
 
 def observer_heading_audit(records,required=False,radius_m=3.,position_tolerance_m=.35,fov_rad=math.pi/2):

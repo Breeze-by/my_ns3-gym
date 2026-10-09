@@ -8664,3 +8664,12 @@ physical_fault UTC 2026-10-09T13:26:22.176264+00:00 → 2026-10-09T13:33:13.3268
 physical_ideal UTC 2026-10-09T13:26:22.176368+00:00 → 2026-10-09T13:33:13.547811+00:00；native FOUND 300.1s/success=False；runner/observer/staging/physics=0/0/0/0；contacts=0、failed=[]、minE=12.21473290102014、各charge=[1, 1]。完整真实展开argv/source/parameters见该原summary与无损归档。
 
 最终第三独立strict对子PASS，前两FAIL原样保留；非完整mission成功，主v41 FAIL不回填。最后派生归档检验因生成器stdout在capture后写完而拒绝；依赖copy因无证明停止，原工具错误/空archive保留。仅修正已结束生成器stdout的派生归档，verify_p2c_strengthening_final.py重新逐件77原SHA/解压SHA、组件报告SHA/链接/进程闭合PASS，追加五份修正/校验工具原件在final_provenance单独绑定；所有原任务数据未改。domain218/219无存活进程，domain222/master11345未操作。
+
+
+## 2026-10-09 P2C.1 下一轮：精确原导航诊断前瞻
+
+用户授权继续P2C.1直到解决。读取当前b32c891/最新v41正电量失路证据；不进入P4/ns3/WiFi/RL。新增只读CDR记录，不修改task/control/battery/SLAM/Nav2。源/实际命令/gzip关闭计数受原owner冻结和新reader约束。
+
+环境Humble+仓库install、PYTHONNOUSERSITE1/FastDDS UDPv4、组件domain217。实际`/usr/bin/python3 -m pytest -q scripts/test_p2c_navigation_capture.py`首次FAIL晚订阅TF缺样本；原components.log保留；v2/v3另两个原FAIL分别为非canonical CDR padding与float32夹具不当；全部日志保留，最终test70PASS3.43s含observer生命周期/原门禁/六capture篡改反例。`/usr/bin/python3 scripts/check_p2c_source.py --output log/p2c_navigation_source_check.json`171保护/4既有授权变化/54协议PASS。新脚本无需包构建。
+
+前瞻`/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261009_p2c_v42 --domain 218 --gazebo-port 20318 --validate-only > log/p2c_v42_predeclared.json`PASS；实际任务必须在本组件clean commit+push后启动。保持原seed303/2r/E18/cap100/charge10/margin5/return120、目标(-4,4)、300秒及原生5秒/TTL，不回填旧任务。只读消息不送AP、不计无线负载。报告report/20261009_p2c_navigation_capture_components.json/.md。
