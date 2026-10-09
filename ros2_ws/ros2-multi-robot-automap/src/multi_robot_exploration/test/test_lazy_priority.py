@@ -58,3 +58,38 @@ def test_nonfinite_upper_bound_fails_before_pricing(bound):
         raise AssertionError('invalid bound must fail before pricing')
     with pytest.raises(ValueError):
         next(lazy_priority_candidates([10], evaluate, lambda _: bound, float))
+
+
+def test_refined_gain_bound_is_requeued_before_expensive_budget_price():
+    calls = []
+    def evaluate(row):
+        calls.append(row); return row
+    stream = lazy_priority_candidates([100, 50, 20], evaluate, float, float,
+        refine_bound=lambda row: 1 if row == 100 else row)
+    assert next(stream) == 50 and calls == [50]
+    assert list(stream) == [20, 1] and calls == [50, 20, 1]
+
+
+@pytest.mark.parametrize('seed', range(12))
+def test_two_stage_stable_order_matches_full_gain_and_budget_evaluation(seed):
+    rng = random.Random(seed)
+    rows = [(i, rng.randrange(1, 30), rng.choice((0, .25, 1)),
+             rng.choice((0, .25, .5, 1))) for i in range(200)]
+    def refine(row):
+        i, bound, gain_factor, budget_factor = row
+        return None if gain_factor == 0 else (i, bound * gain_factor, budget_factor)
+    def evaluate(row):
+        i, gain_bound, factor = row
+        return None if factor == 0 else (i, gain_bound * factor)
+    expected = [(i, bound * gain * budget) for i, bound, gain, budget in rows if gain and budget]
+    expected.sort(key=lambda row: -row[1])
+    assert list(lazy_priority_candidates(rows, evaluate, lambda row: row[1],
+        lambda row: row[1], refine_bound=refine)) == expected
+
+
+def test_invalid_refined_bound_fails_before_budget_price():
+    def evaluate(_):
+        raise AssertionError('invalid refined bound must fail before budget')
+    with pytest.raises(ValueError):
+        next(lazy_priority_candidates([10], evaluate, float, float,
+                                      refine_bound=lambda _: 11))

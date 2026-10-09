@@ -125,6 +125,16 @@ class Assignment:
 
 
 @dataclass(frozen=True)
+class ViewpointGainBound(Viewpoint):
+    """Private unsampled rectangle bound, never an executed viewpoint."""
+
+
+@dataclass(frozen=True)
+class AssignmentGainBound(Assignment):
+    reuse_factor: float = 1.0
+
+
+@dataclass(frozen=True)
 class RallyPose:
     x: float
     y: float
@@ -492,7 +502,7 @@ def known_space_search_candidates(raw_grid, resolution, origin, robot_name,
     return candidates
 
 
-def frontier_viewpoints(raw_grid, groups, traversable, resolution, limit=12):
+def frontier_viewpoints(raw_grid, groups, traversable, resolution, limit=12, defer_gain=False):
     """Generate safe known-free observation poses for every frontier group."""
     height, width = raw_grid.shape
     search_cells = max(1, math.ceil(VIEWPOINT_SEARCH_RADIUS_M / resolution))
@@ -563,13 +573,14 @@ def frontier_viewpoints(raw_grid, groups, traversable, resolution, limit=12):
                 ):
                     remaining = remaining[1:]
                     continue
-                viewpoint = Viewpoint(
+                viewpoint_type = ViewpointGainBound if defer_gain else Viewpoint
+                viewpoint = viewpoint_type(
                     group_id,
                     row,
                     column,
                     frontier_row,
                     frontier_column,
-                    visible_unknown_gain(
+                    int(gains[index]) if defer_gain else visible_unknown_gain(
                         raw_grid, (row, column), INFORMATION_RADIUS_M / resolution
                     ),
                     len(group),
@@ -602,6 +613,28 @@ def exploration_utility(
     return (
         (information_gain + group_size) * departure / travel_time
     )
+
+
+def resolve_frontier_gain(assignment, raw_grid, resolution, gain_cache):
+    """Resolve a private gain bound on this admission's immutable map only."""
+    viewpoint = assignment.viewpoint
+    if not isinstance(viewpoint, ViewpointGainBound):
+        return assignment
+    cell = (viewpoint.row, viewpoint.column)
+    if cell not in gain_cache:
+        gain_cache[cell] = visible_unknown_gain(
+            raw_grid, cell, INFORMATION_RADIUS_M / resolution)
+    gain = gain_cache[cell]
+    if gain > viewpoint.information_gain:
+        raise ValueError('visible gain exceeds its rectangle upper bound')
+    if gain <= 0:
+        return None
+    actual = Viewpoint(viewpoint.group_id, *cell, viewpoint.frontier_row,
+        viewpoint.frontier_column, gain, viewpoint.group_size)
+    utility = exploration_utility(gain, actual.group_size,
+        assignment.path_distance_m) * assignment.reuse_factor
+    return Assignment(actual, assignment.x, assignment.y, assignment.path_distance_m,
+        utility, assignment.navigation_x, assignment.navigation_y, assignment.navigation_yaw)
 
 
 def target_reuse_penalty(target, excluded_targets):
@@ -642,7 +675,7 @@ def frontier_scheduling_score(utility, resuming):
     return utility * (FRONTIER_CONTINUATION_WEIGHT if resuming else 1.0)
 
 
-def lazy_priority_candidates(candidates, evaluate, upper_bound, priority):
+def lazy_priority_candidates(candidates, evaluate, upper_bound, priority, refine_bound=None):
     """Yield exact stable greedy order without pricing every unused option.
 
     Only a fully evaluated score above every remaining upper bound is yielded.
@@ -653,12 +686,21 @@ def lazy_priority_candidates(candidates, evaluate, upper_bound, priority):
         bound = upper_bound(candidate)
         if not math.isfinite(bound):
             raise ValueError('candidate upper bound must be finite')
-        heap.append((-bound, index, False, candidate))
+        heap.append((-bound, index, 0, candidate))
     heapq.heapify(heap)
     while heap:
-        negative_bound, index, evaluated, candidate = heapq.heappop(heap)
-        if evaluated:
+        negative_bound, index, stage, candidate = heapq.heappop(heap)
+        if stage == 2:
             yield candidate
+            continue
+        if stage == 0 and refine_bound is not None:
+            result = refine_bound(candidate)
+            if result is None:
+                continue
+            bound = upper_bound(result)
+            if not math.isfinite(bound) or bound > -negative_bound:
+                raise ValueError('refined candidate bound exceeds its original bound')
+            heapq.heappush(heap, (-bound, index, 1, result))
             continue
         result = evaluate(candidate)
         if result is None:
@@ -666,7 +708,7 @@ def lazy_priority_candidates(candidates, evaluate, upper_bound, priority):
         score = priority(result)
         if not math.isfinite(score) or score > -negative_bound:
             raise ValueError('candidate priority exceeds its declared finite upper bound')
-        heapq.heappush(heap, (-score, index, True, result))
+        heapq.heappush(heap, (-score, index, 2, result))
 
 
 def nearest_traversable(traversable, start, max_radius_cells):
@@ -1253,7 +1295,7 @@ def relative_travel_factor(distance, peer_distances):
     return min(1., (1.+min(finite))/(1.+distance)) if finite else 1.
 
 
-def prepare_frontier_data(raw_grid, resolution):
+def prepare_frontier_data(raw_grid, resolution, defer_gain=False):
     """Build map-derived frontier data once for each map snapshot."""
     groups = frontier_groups(raw_grid)
     traversable = traversable_grid(
@@ -1263,7 +1305,7 @@ def prepare_frontier_data(raw_grid, resolution):
         raw_grid, resolution, clearance_m=ROBOT_CLEARANCE_M
     )
     viewpoints = frontier_viewpoints(
-        raw_grid, groups, safe_viewpoints, resolution
+        raw_grid, groups, safe_viewpoints, resolution, defer_gain=defer_gain
     )
     return groups, traversable, viewpoints
 
@@ -1283,6 +1325,8 @@ def robot_candidate_assignments(
     if frontier_data is None:
         frontier_data = prepare_frontier_data(raw_grid, resolution)
     groups, traversable, viewpoints = frontier_data
+    defer_gain = any(isinstance(v, ViewpointGainBound)
+        for group in viewpoints.values() for v in group)
     candidates = []
     if blocked_positions is not None:
         traversable = block_dynamic_positions(
@@ -1301,7 +1345,7 @@ def robot_candidate_assignments(
         # Refine within this robot’s safe reachable component only on demand.
         safe = traversable_grid(raw_grid, resolution, ROBOT_CLEARANCE_M)
         safe &= traversable & np.isfinite(distances)
-        viewpoints = frontier_viewpoints(raw_grid, groups, safe, resolution)
+        viewpoints = frontier_viewpoints(raw_grid, groups, safe, resolution, defer_gain=defer_gain)
     for group_id, group_viewpoints in viewpoints.items():
         for viewpoint in group_viewpoints:
             if viewpoint.information_gain <= 0:
@@ -1323,9 +1367,12 @@ def robot_candidate_assignments(
             )
             if utility <= 0:
                 continue
-            utility *= target_reuse_penalty((x, y), excluded_targets)
-            assignment = Assignment(
-                viewpoint, x, y, path_distance_m, utility, x, y
+            reuse_factor = target_reuse_penalty((x, y), excluded_targets)
+            utility *= reuse_factor
+            assignment_type = AssignmentGainBound if isinstance(viewpoint, ViewpointGainBound) else Assignment
+            assignment = assignment_type(
+                viewpoint, x, y, path_distance_m, utility, x, y,
+                **({'reuse_factor': reuse_factor} if assignment_type is AssignmentGainBound else {})
             )
             candidates.append(
                 (assignment.utility, robot_name, group_id, assignment)
@@ -3339,12 +3386,20 @@ class HeadquartersControl(Node):
                 or context[1] != self.map_received_at
                 or not 0 <= self.now() - context[1] <= STATE_TTL_SEC['map_snapshot']):
             return None
-        alternatives = sorted((candidate for candidate in context[2].get(name, ())
-            if candidate.viewpoint.group_id != assignment.viewpoint.group_id
+        gain_cache = context[3] if len(context) > 3 else {}
+        ordered = lazy_priority_candidates(context[2].get(name, ()),
+            lambda candidate: resolve_frontier_gain(candidate, self.map_data, self.resolution, gain_cache),
+            lambda candidate: candidate.utility, lambda candidate: candidate.utility)
+        alternatives = []
+        for candidate in ordered:
+            if (candidate.viewpoint.group_id != assignment.viewpoint.group_id
             and candidate.viewpoint.information_gain > 200
             and candidate.utility >= .5 * assignment.utility
             and math.dist((candidate.x, candidate.y), (assignment.x, assignment.y))
-                >= MIN_TARGET_SEPARATION_M), key=lambda candidate: -candidate.utility)[:3]
+                >= MIN_TARGET_SEPARATION_M):
+                alternatives.append(candidate)
+                if len(alternatives) == 3:
+                    break
         blocked = [p for peer, p in self.robot_positions.items() if peer != name and p is not None]
         cache = {}
         for candidate in alternatives:
@@ -6067,6 +6122,10 @@ class HeadquartersControl(Node):
             "candidate_assignments": 0,
         }
         frontier_data = self.frontier_cache
+        geometry_cache = getattr(self, 'frontier_geometry_cache', None)
+        if (frontier_data is None and geometry_cache is not None
+                and geometry_cache[0] is self.map_data and immutable_grid(self.map_data)):
+            frontier_data = geometry_cache[1]
         traversable = (frontier_data[1] if frontier_data is not None else
             traversable_grid(self.map_data, self.resolution, PATH_CLEARANCE_M))
         travel_fields = {} if search else {
@@ -6082,7 +6141,9 @@ class HeadquartersControl(Node):
         # This context belongs only to this map/admission callback; expired or
         # replaced maps and every newly generated batch discard the forecast.
         lookahead_candidates = {}
-        self.frontier_charge_lookahead = (self.map_data, getattr(self, 'map_received_at', None), lookahead_candidates)
+        frontier_gain_cache = {}
+        self.frontier_charge_lookahead = (self.map_data, getattr(self, 'map_received_at', None),
+                                        lookahead_candidates, frontier_gain_cache)
         self.opportunity_charge_evidence = {}
         resume_intents = getattr(self, "exploration_resume_intents", {})
         charge_candidates = {}
@@ -6130,8 +6191,9 @@ class HeadquartersControl(Node):
                     robot_diagnostics = dict(frontier_groups=0, groups_with_viewpoints=0)
                 elif not initial_search:
                     if frontier_data is None:
-                        self.frontier_cache = frontier_data = prepare_frontier_data(
-                            self.map_data, self.resolution)
+                        frontier_data = prepare_frontier_data(
+                            self.map_data, self.resolution, defer_gain=True)
+                        self.frontier_geometry_cache = (self.map_data, frontier_data)
                     robot_candidates, robot_diagnostics = robot_candidate_assignments(
                         self.map_data,
                         self.resolution,
@@ -6155,6 +6217,18 @@ class HeadquartersControl(Node):
                 lookahead_candidates[robot_name] = [row[3] for row in robot_candidates]
                 raw_candidates.extend(robot_candidates)
                 candidate_contexts[robot_name] = (robot_exclusions, initial_search)
+
+            def refine_candidate_gain(raw):
+                nonlocal scoring_aborted
+                _, robot_name, group_id, assignment = raw
+                if scoring_aborted or robot_name in plans:
+                    return None
+                if not lease_current('candidate_generation'):
+                    scoring_aborted = True
+                    return None
+                assignment = resolve_frontier_gain(assignment, self.map_data,
+                    self.resolution, frontier_gain_cache)
+                return None if assignment is None else (assignment.utility, robot_name, group_id, assignment)
 
             def evaluate_candidate(raw):
                 nonlocal scoring_aborted
@@ -6239,7 +6313,8 @@ class HeadquartersControl(Node):
                     not search and interrupted_frontier_is_useful(
                         item[3], resume_intents.get(item[1]), 1.0)),
                 lambda item: frontier_scheduling_score(
-                    item[0], (item[1], item[3]) in resume_candidates))
+                    item[0], (item[1], item[3]) in resume_candidates),
+                refine_bound=refine_candidate_gain)
             for _, name, _, assignment in candidate_order:
                 if scoring_aborted or not lease_current('route_admission'):
                     return

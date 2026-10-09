@@ -35,12 +35,12 @@ def test_visual_admission_keeps_original_choice_without_computing_unused_mapping
 def test_empty_visual_interest_still_builds_and_uses_original_mapping_fallback(monkeypatch):
     node, sent, e = visual_snapshot_node(); calls = []
     original = control.prepare_frontier_data
-    def prepare(*args):
-        result = original(*args); calls.append(result); return result
+    def prepare(*args, **kwargs):
+        result = original(*args, **kwargs); calls.append(result); return result
     monkeypatch.setattr(control, 'prepare_frontier_data', prepare)
     monkeypatch.setattr(control, 'known_space_search_candidates', lambda *args, **kwargs: [])
     control.HeadquartersControl.assign_idle_robots(node)
-    assert len(calls) == 1 and node.frontier_cache is calls[0]
+    assert len(calls) == 1 and node.frontier_geometry_cache[1] is calls[0]
     assert calls[0][0] and calls[0][2]
     assert sent and sent[0][0] == e['robot'] and sent[0][1].viewpoint.information_gain > 0
     assert 'initial_search_views' not in node.exploration_travel_choices[e['robot']]

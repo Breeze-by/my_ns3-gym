@@ -86,4 +86,4 @@ def test_expired_remaining_lazy_candidate_revokes_earlier_provisional_plan(monke
     assert not sent and not requests and not node.rally_charge_requested
     assert all(state == 'idle' for state in node.robot_states.values())
     assert decisions[-1]['event'] == 'coordinator_planning_lease_expired'
-    assert decisions[-1]['stage'] == 'candidate_budget'
+    assert decisions[-1]['stage'] == 'candidate_generation'
