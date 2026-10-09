@@ -15,6 +15,9 @@ $(var namespace)/slam_toolbox:
     map_frame: map
     base_frame: base_footprint
     scan_topic: scan
+    # Strict intersection of the unchanged Waffle SDF/URDF chassis XY boxes.
+    # Native mapping only: original scan topic, headers and external points remain.
+    scan_self_filter_body_box: [-0.1965, 0.0685, -0.1325, 0.1325]
     mode: mapping #localization
 
     # if you'd like to immediately start continuing a map at a given pose

@@ -8682,3 +8682,21 @@ v42 dbacbbf clean pushed freeze，共同Humble+install/PYTHONNOUSERSITE1/FastDDS
 原rooms11/corr31 complete choices全部end lease过期，但同时有新pose/frame accepted；只读精确来源证据支持串行状态计算导致输入消费停顿。新只存几何点：同target/participants/当前交付图endpoint0.45/LOS/原camera/0.8/yaw/原dispatch order重核验；绝不续戳或复用旧价格/路线，所有RALLY full approach/qualified return/body/wait/hold预算原样。构造+update_mission两方法修改/加admit_rally_proposal，176其他AST/native/SLAM/Nav2/原期限TTL/全部case和物理刺激保持。
 
 pytest targeted323PASS13.74s、audit103PASS1.08s；完整首scripts import collection ERROR2.00s保留，补PYTHONPATH=$PWD/scripts后1571PASS139.82s；四包colcon build --symlink-install --packages-select multi_robot_interfaces multi_robot_exploration merge_map multi_robot 6.14s；check_p2c_source --output log/p2c_rally_handoff_source.json171/4/54PASS。ROS_DOMAIN_ID216 scripts/check_p2c_rally_handoff_runtime.py --output log/p2c_rally_handoff_runtime.json实际DDS旧两次仍FOUND/new一次source13交接RALLY零goal PASS；受控阻塞/合成图，不称任务或延迟最坏界。组件报告20261010_p2c_rally_handoff_components.md/.json绑定所有源码/旁证。新首dev_forced2/run-id20261010_p2c_v43/domain218/port20318 --validate-only PASS，实际必须在本commit/push+clean HEAD后开始；四开发→17+2待完成，P3C.5已验收/no P4/ns3/WiFi/RL，917未暴露。
+
+
+## 2026-10-10 P2C.1 v43失路诊断与原生机体内回波过滤
+
+原v43 63c2e17首forced自然结束UTC16:29:44.775→16:36:30.772，RALLY300.0timeout/tb2正电量FAILED，eachcharge1/min7.95904596/零接触耗尽；严格门FAIL原样保留，余3/17/2/917未调用。13组件子门PASS/总安全FAIL，全原summary及选择/native事件归档同名originals.json.gz。原CDR机体近回波与未改SDF/URDF几何及原生CPP对照后才修改，拒绝shouldProcessScan入口假设，没有任意占用单元清除、同伴屏蔽或SLAM阈值调参。
+
+验证命令（canonical ROS项目cwd；source /opt/ros/humble/setup.bash及install/setup.bash；PYTHONNOUSERSITE1，RMW FastDDS/UDPv4；fullpytest加PYTHONPATH=$PWD/scripts）：
+
+- `python3 -m pytest -q scripts/test_p2c_scan_self_filter.py scripts/test_p2c_gate.py scripts/test_p2c_assignment_audit.py scripts/test_p2c_repair_audit.py`：92PASS16.40s。
+- `colcon build --symlink-install --packages-select slam_toolbox multi_robot_interfaces multi_robot_exploration merge_map multi_robot`：首62秒、最终55.4秒均五包PASS；下层/叠层同slam包覆盖提示记录，并非task失败。
+- `python3 scripts/check_p2c_scan_self_filter_runtime.py --original log/p2c/20261010_p2c_v43/20261010_p2c_v43_dev_forced2 --baseline-binary-dir log/p2c_v43_slam_binary_snapshot --stop 2269 --output log/p2c_scan_self_filter_native_runtime2`：domain216，旧库SHA绑定63c；旧/新CPP子进程0、各1353精确CDR、150记录662点、原None/新3.84807474m原完整路径PASS、零Nav2目标。初Python对照与原生runtime1也保留。
+- `python3 -m pytest -q src/multi_robot_exploration/test scripts --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py`：1597PASS143.80s。
+- `python3 scripts/check_p2c_source.py --output log/p2c_scan_self_filter_source1.json`：190保护/6明确声明/54协议PASS。新原生CPP/几何配置/纯header事先声明，21个原header新增保护。control/native battery/common SLAM/Karto完全不改，原源龄/失路30s/完全预算/300s/5s保持。
+- 两manifest普通dev_forced2/物理physical_fault的`run_p2c_tasks.py --validate-only`：各exit0，无实际调用。
+
+条件源clock回放非原交付调度或任务因果，不能填原FAIL。新任务须另clean commit/push同源4→17+2，未暴露917；本轮不进入P4/ns-3/Wi-Fi/RL。完整source/helper/config/原生CDR/旁证SHA在组件report JSON与provenance。
+
+最终源码保护增加原mapper全部参数语义与getLaser/pose graph回调逐字节核验，source2同190/6/54 PASS，source1原件保留。

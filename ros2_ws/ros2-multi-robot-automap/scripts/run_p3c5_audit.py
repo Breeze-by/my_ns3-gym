@@ -101,6 +101,10 @@ def main(default_manifest=None, log_category='p3c5'):
             for name,filename in (('safety_observer','observe_p3b5.py'),('native_graph_reader','p2c_native_graph.py'))})
     if config.get('navigation_input_capture'):
         manifest['source_digests']['navigation_capture']=file_digest(PROJECT_ROOT/'scripts/p2c_navigation_capture.py')
+    if config.get('native_scan_self_filter'):
+        manifest['source_digests'].update({name:file_digest(PROJECT_ROOT/path) for name,path in (
+            ('slam','src/slam_toolbox'),('robot_models','src/multi_robot/models'),
+            ('robot_description','src/multi_robot/urdf'),('scan_self_filter_reader','scripts/p2c_scan_self_filter.py'))})
     if probe_commands:
         fixture=staging_apparatus(config)
         manifest.update(staging_command=shlex.join(probe_commands['staging']),

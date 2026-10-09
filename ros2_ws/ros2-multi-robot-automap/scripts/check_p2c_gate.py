@@ -11,6 +11,7 @@ from check_p3c5_gate import audit_original,declaration_audit
 from multi_robot_exploration import control
 from multi_robot_exploration.bypass_audit import runtime_violations
 from p2c_native_graph import native_tf_ingress_audit
+from p2c_scan_self_filter import scan_self_filter_audit
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -748,6 +749,7 @@ def check_one(path,config):
     assert not any(v for k,v in row.items() if k.endswith('_forced_shutdown'))
     for relative,expected in row['evidence_sha256'].items():assert sha(directory/relative)==expected
     navigation_inputs=navigation_capture_audit(row,directory)
+    scan_filter=scan_self_filter_audit(row,directory)
     processes=launch_process_audit(directory) if config.get('task_child_process_audit') else None
     result=row['result'];case=row['case']
     if case=='empty_battery':
@@ -811,7 +813,8 @@ def check_one(path,config):
         ap_return_veto_audit=vetoes,rally_assignment_audit=assignments,rally_proposal_audit=proposals,rally_repair_audit=repairs,
         exploration_travel_audit=travel,target_survey_audit=surveys,observer_heading_audit=headings,
         planning_lease_audit=leases,
-        native_tf_ingress_audit=ingress,launch_process_audit=processes,navigation_input_audit=navigation_inputs)
+        native_tf_ingress_audit=ingress,launch_process_audit=processes,navigation_input_audit=navigation_inputs,
+        native_scan_self_filter_audit=scan_filter)
 
 
 def observer_heading_audit(records,required=False,radius_m=3.,position_tolerance_m=.35,fov_rad=math.pi/2):

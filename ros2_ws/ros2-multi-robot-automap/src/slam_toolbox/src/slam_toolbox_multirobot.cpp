@@ -1,4 +1,8 @@
 #include "slam_toolbox/slam_toolbox_multirobot.hpp"
+#include "slam_toolbox/scan_self_filter.hpp"
+#include <algorithm>
+#include <limits>
+#include <stdexcept>
 
 namespace slam_toolbox
 {
@@ -8,6 +12,20 @@ MultiRobotSlamToolbox::MultiRobotSlamToolbox(rclcpp::NodeOptions options)
 : SlamToolbox(options)
 /*****************************************************************************/
 {
+    rcl_interfaces::msg::ParameterDescriptor descriptor;
+    descriptor.read_only = true;
+    const auto box = declare_parameter(
+        "scan_self_filter_body_box", std::vector<double>{}, descriptor);
+    if (!box.empty() && (box.size() != 4 ||
+        !std::all_of(box.begin(), box.end(), [](double v) {return std::isfinite(v);}) ||
+        box[0] >= box[1] || box[2] >= box[3]))
+    {
+        throw std::invalid_argument("scan_self_filter_body_box requires xmin,xmax,ymin,ymax");
+    }
+    if (!box.empty()) {
+        RCLCPP_INFO(get_logger(), "SCAN_SELF_FILTER_CONFIG box=%.9f,%.9f,%.9f,%.9f",
+            box[0], box[1], box[2], box[3]);
+    }
     // Subscribes to raw laser scan topic
     laser_scan_sub_ = this->create_subscription<sensor_msgs::msg::LaserScan>(
         "/scan", 10, std::bind(&MultiRobotSlamToolbox::laserCallback, this, std::placeholders::_1));
@@ -36,7 +54,34 @@ void MultiRobotSlamToolbox::laserCallback(
         return;
     }
 
-    addScan(laser, scan, pose);
+    const auto box = get_parameter("scan_self_filter_body_box").as_double_array();
+    if (box.empty() || lasers_[scan->header.frame_id].isInverted()) {
+        addScan(laser, scan, pose);
+        return;
+    }
+
+    auto filtered = std::make_shared<sensor_msgs::msg::LaserScan>(*scan);
+    const auto offset = laser->GetOffsetPose();
+    size_t removed = 0;
+    for (size_t i = 0; i < filtered->ranges.size(); ++i) {
+        const double range = scan->ranges[i];
+        if (range > scan->range_min && range < scan->range_max &&
+            scan_self_filter::insideBody(range,
+                scan->angle_min + i * static_cast<double>(scan->angle_increment),
+                offset.GetX(), offset.GetY(), offset.GetHeading(), box))
+        {
+            filtered->ranges[i] = std::numeric_limits<float>::quiet_NaN();
+            ++removed;
+        }
+    }
+    if (removed) {
+        RCLCPP_INFO(get_logger(), "SCAN_SELF_FILTER source=%.9f frame=%s removed=%zu",
+            rclcpp::Time(scan->header.stamp).nanoseconds() / 1.e9,
+            scan->header.frame_id.c_str(), removed);
+        addScan(laser, filtered, pose);
+    } else {
+        addScan(laser, scan, pose);
+    }
 }
 
 /*****************************************************************************/

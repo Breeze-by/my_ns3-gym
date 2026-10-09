@@ -343,7 +343,9 @@
     "20261009_p2c_v38_failed_development.json",
     "20261009_p2c_v39_failed_development.json",
     "20261009_p2c_v40_failed_development.json",
-    "20261009_p2c_v41_failed_development.json"
+    "20261009_p2c_v41_failed_development.json",
+    "20261010_p2c_v42_failed_development.json",
+    "20261010_p2c_v43_failed_development.json"
   ],
   "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
   "opportunity_charge_rules": [
@@ -495,7 +497,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "593b5dda923293ab855d4dca98baa0a3345ba051",
+  "candidate_parent_commit": "63c2e17f0718dad9235efca2caffc9b14b7eafad",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -659,5 +661,23 @@
     "authority": "No old battery prices, routes, received pose or source stamps reused. Original fresh complete approach/contact return/serial wait/hold/body guards remain in RALLY preflight and every actual goal.",
     "witness": "Original exact assignment search epoch plus independent current delivered geometry/source/order admission witness on the existing private audit path; no new application flow.",
     "scope": "Prevents repeated search starvation; no global optimality, task completion or worst-case callback guarantee from components alone."
+  },
+  "native_scan_self_filter": {
+    "algorithm": "Before native SLAM scan matching/map generation only, replace finite valid returns strictly inside the unchanged physical chassis XY interior with NaN. Original scan publishers/CDR, all boundary/external points, stamps, mapper parameters, native return/energy/TTL/body guards and AP flows remain.",
+    "body_box_m": [
+      -0.1965,
+      0.0685,
+      -0.1325,
+      0.1325
+    ],
+    "body_geometry": "Strict intersection of the original TurtleBot3 Waffle SDF base_collision and URDF base_link collision boxes; no padding or world truth.",
+    "laser_frame": "base_scan",
+    "laser_to_base_xy_yaw": [
+      -0.064,
+      0.0,
+      0.0
+    ],
+    "witness": "Lossless evaluator CDR plus native SCAN_SELF_FILTER source/header counts independently reconstructed, full SLAM headers/config/launch/models/description source digests.",
+    "scope": "Prospective same preprocessing for every robot/baseline in this freeze. Original v43 failure retained, conditional native replay is not task success."
   }
 }

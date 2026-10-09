@@ -2,6 +2,7 @@
 """Verify the explicitly scoped P2C task change against the accepted review."""
 import argparse,ast,hashlib,json,subprocess
 from pathlib import Path
+import yaml
 from check_p3c_source import PROJECT,ROOT
 import run_p3b_fault_matrix as matrix
 
@@ -9,9 +10,12 @@ BASELINE='5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9'
 ALLOWED=('src/multi_robot_exploration/multi_robot_exploration/control.py',
          'src/multi_robot_exploration/multi_robot_exploration/battery_manager.py',
          'src/multi_robot_exploration/multi_robot_exploration/tf_ingress_sampler.py',
-         'src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py')
+         'src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py',
+         'src/slam_toolbox/src/slam_toolbox_multirobot.cpp',
+         'src/slam_toolbox/config/mapper_params_online_multi_async.yaml')
 NEW_WORLD='src/multi_robot/worlds/p2c_holdout917.world'
 NEW_ACTION_HELPER='src/multi_robot_exploration/multi_robot_exploration/action_callbacks.py'
+NEW_SCAN_FILTER='src/slam_toolbox/include/slam_toolbox/scan_self_filter.hpp'
 
 
 def main():
@@ -20,13 +24,13 @@ def main():
     if a.output.exists():p.error('do not overwrite source evidence')
     directories=('src/multi_robot_exploration/multi_robot_exploration','src/multi_robot/params',
         'src/multi_robot/worlds','src/multi_robot/models','src/multi_robot/urdf',
-        'src/multi_robot/launch','src/slam_toolbox/src','src/slam_toolbox/config',
+        'src/multi_robot/launch','src/slam_toolbox/src','src/slam_toolbox/config','src/slam_toolbox/include',
         'src/merge_map/merge_map','src/multi_robot_interfaces/msg')
     roots=[str((PROJECT/d).relative_to(ROOT)) for d in directories]
     frozen=subprocess.check_output(['git','ls-tree','-r','--name-only',BASELINE,'--',*roots],cwd=ROOT,text=True).splitlines()
     current={str(x.relative_to(ROOT)) for d in directories for x in (PROJECT/d).rglob('*')
              if x.is_file() and '__pycache__' not in x.parts and x.suffix!='.pyc'}
-    expected=set(frozen)|{str((PROJECT/name).relative_to(ROOT)) for name in (NEW_WORLD,NEW_ACTION_HELPER)}
+    expected=set(frozen)|{str((PROJECT/name).relative_to(ROOT)) for name in (NEW_WORLD,NEW_ACTION_HELPER,NEW_SCAN_FILTER)}
     assert current==expected,dict(missing=sorted(expected-current),extra=sorted(current-expected))
     allowed={str((PROJECT/x).relative_to(ROOT)) for x in ALLOWED}
     protected=[];changed=[]
@@ -62,6 +66,16 @@ def main():
     direct=[n for n in ast.walk(shared) if isinstance(n,ast.Call)
         and isinstance(n.func,ast.Attribute) and n.func.attr=='add_done_callback']
     assert len(direct)==1
+    mapper_path=PROJECT/ALLOWED[-1]
+    old_mapper=yaml.safe_load(subprocess.check_output(['git','show',f'{BASELINE}:{mapper_path.relative_to(ROOT)}'],cwd=ROOT))
+    new_mapper=yaml.safe_load(mapper_path.read_text())
+    key=next(iter(new_mapper))
+    assert new_mapper[key]['ros__parameters'].pop('scan_self_filter_body_box')==[-.1965,.0685,-.1325,.1325]
+    assert old_mapper==new_mapper,'original SLAM mapper configuration changed'
+    native_path=PROJECT/ALLOWED[-2]
+    old_cpp=subprocess.check_output(['git','show',f'{BASELINE}:{native_path.relative_to(ROOT)}'],cwd=ROOT,text=True)
+    suffix='LaserRangeFinder * MultiRobotSlamToolbox::getLaser('
+    assert old_cpp.split(suffix,1)[1]==native_path.read_text().split(suffix,1)[1], 'native laser metadata/pose graph callbacks changed'
     protocol=matrix.run_matrix();assert protocol['status']=='PASS' and len(protocol['matrix'])==54
     result=dict(status='PASS',baseline=BASELINE,protected_files=protected,authorized_task_changes=changed,
                 new_world_sha256=hashlib.sha256((PROJECT/NEW_WORLD).read_bytes()).hexdigest(),
@@ -69,6 +83,10 @@ def main():
                 central_future_registrations_deferred=len(deferred),
                 native_future_registrations_deferred=len(native_deferred),
                 new_action_helper_sha256=hashlib.sha256((PROJECT/NEW_ACTION_HELPER).read_bytes()).hexdigest())
+    result['native_scan_self_filter_sha256']=hashlib.sha256((PROJECT/NEW_SCAN_FILTER).read_bytes()).hexdigest()
+    result['native_mapper_configuration_unchanged']=True
+    result['native_laser_metadata_and_pose_graph_callbacks_unchanged']=True
+    result['native_scan_scope']='Strict unchanged physical chassis interior in native SLAM inputs only; original map occupancy/return, parameters, source stamps and external scan points remain protected.'
     a.output.parent.mkdir(parents=True,exist_ok=True);a.output.write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps(dict(status='PASS',protected_files=len(protected),changed_files=len(changed),protocol_cells=len(protocol['matrix']))))
 
