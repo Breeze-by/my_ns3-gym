@@ -301,7 +301,7 @@
   ],
   "safety_probe_manifest": "p3b5_staged_return_probe_manifest.json",
   "energy_unit": "simulation_model_units_not_joules",
-  "development_parent": "c12db66cf666779978dd74b315a9e92b080f4a11",
+  "development_parent": "f455c2ee299501a61301318d61a4fd3ce8ad9fb2",
   "retained_failed_development": "20261008_p2c_v1_failed_development.json",
   "opportunity_charge_algorithm": "two_current_frontiers_complete_route_budget",
   "retained_failed_developments": [
@@ -323,7 +323,8 @@
     "20261009_p2c_v17_failed_development.json",
     "20261009_p2c_v27_failed_development.json",
     "20261009_p2c_v28_failed_development.json",
-    "20261009_p2c_v30_failed_development.json"
+    "20261009_p2c_v30_failed_development.json",
+    "20261009_p2c_v31_failed_development.json"
   ],
   "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
   "opportunity_charge_rules": [
@@ -513,5 +514,14 @@
   "evaluation_result_polling": "Read-only bounded polling of a not-yet-valid JSON file from the same original producer; complete invalid objects, producer failure and original deadline still fail. No episode retry, evaluator change or shutdown grace change.",
   "retained_unrun_candidates": [
     "20261009_p2c_v29_concurrency_correction.json"
-  ]
+  ],
+  "visibility_computation": {
+    "rays": "Original floating unrounded projections cached by radius only, max8 immutable tables; translation+rint occurs at actual grid cell exactly as before",
+    "deduplication": "Boolean flat hit mask replaces sort/unique; identical sorted cell set and count",
+    "sectors": "Original atan2(sin,cos) inclusive90degree/16yaw predicate precomputed for integer relative cells, max8 immutable radius/FOV tables; original tie order and yaw",
+    "inputs": "No map/history/source/age/energy budget cached here; current delivered occlusion and interest recomputed each call",
+    "scope": "Pure computation only; source TTL, true clock, native geometry/budget/300s/5s and all case/physical stimuli unchanged",
+    "evidence": "20261009_p2c_visibility_lookup_components.json",
+    "preparation": "Generate original mapping frontiers only when that branch is needed; known-space search retains original mapping fallback and identical path-clearance travel fields"
+  }
 }

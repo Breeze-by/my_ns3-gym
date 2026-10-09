@@ -10,6 +10,7 @@ import threading
 import time
 import zlib
 from collections import deque
+from functools import lru_cache
 from itertools import permutations
 
 from action_msgs.msg import GoalStatus
@@ -298,19 +299,30 @@ def _integral_image(mask):
     return np.pad(mask.astype(np.int32), ((1, 0), (1, 0))).cumsum(0).cumsum(1)
 
 
+@lru_cache(maxsize=8)
+def visibility_ray_projections(radius_cells):
+    """Unrounded original ray projections, independent of every input map."""
+    radius = max(1, math.ceil(radius_cells))
+    angles = np.linspace(
+        0, 2 * math.pi, max(32, math.ceil(2 * math.pi * radius)), endpoint=False
+    )
+    steps = np.arange(0.5, radius_cells + 0.25, 0.5)
+    projections = (np.sin(angles)[:, None] * steps, np.cos(angles)[:, None] * steps)
+    return tuple(np.frombuffer(value.tobytes(), dtype=value.dtype).reshape(value.shape)
+                 for value in projections)
+
+
 def visible_unknown_gain(raw_grid, start, radius_cells, interest=None, return_cells=False):
     """Count informative ray cells; a search mask requires known-free sight."""
     row, column = start
     height, width = raw_grid.shape
     if not (0 <= row < height and 0 <= column < width) or raw_grid[start] != 0:
         return np.empty(0,dtype=np.int64) if return_cells else 0
-    radius = max(1, math.ceil(radius_cells))
-    angles = np.linspace(
-        0, 2 * math.pi, max(32, math.ceil(2 * math.pi * radius)), endpoint=False
-    )
-    steps = np.arange(0.5, radius_cells + 0.25, 0.5)
-    rows = np.rint(row + np.sin(angles)[:, None] * steps).astype(int)
-    columns = np.rint(column + np.cos(angles)[:, None] * steps).astype(int)
+    row_projection, column_projection = visibility_ray_projections(radius_cells)
+    # Round after translating by the actual integer cell, retaining NumPy's
+    # original half-to-even and floating-point behavior at every map position.
+    rows = np.rint(row + row_projection).astype(int)
+    columns = np.rint(column + column_projection).astype(int)
     inside = (rows >= 0) & (rows < height) & (columns >= 0) & (columns < width)
     rows = np.clip(rows, 0, height - 1)
     columns = np.clip(columns, 0, width - 1)
@@ -320,8 +332,9 @@ def visible_unknown_gain(raw_grid, start, radius_cells, interest=None, return_ce
     )
     informative = values < 0 if interest is None else interest[rows, columns]
     unknown_cells = (rows * width + columns)[visible & informative]
-    cells=np.unique(unknown_cells)
-    return cells if return_cells else int(cells.size)
+    hits = np.zeros(height * width, dtype=bool)
+    hits[unknown_cells] = True
+    return np.flatnonzero(hits) if return_cells else int(np.count_nonzero(hits))
 
 
 def known_search_interest(raw_grid,resolution,origin,visited):
@@ -334,16 +347,27 @@ def known_search_interest(raw_grid,resolution,origin,visited):
     return interest
 
 
+@lru_cache(maxsize=8)
+def known_search_sector_table(radius, fov_rad):
+    """Exact original 16-yaw predicate on integer relative grid cells."""
+    offsets = np.arange(-radius, radius + 1)
+    rows, columns = np.meshgrid(offsets, offsets, indexing='ij')
+    bearings = np.arctan2(rows, columns)
+    yaws=np.arange(16)*2.*math.pi/16
+    delta=np.arctan2(np.sin(bearings[...,None]-yaws),np.cos(bearings[...,None]-yaws))
+    inside = np.abs(delta) <= fov_rad / 2.
+    return np.frombuffer(inside.tobytes(), dtype=bool).reshape(inside.shape)
+
+
 def known_search_view(raw_grid,cell,radius_cells,interest):
     cells=visible_unknown_gain(raw_grid,cell,radius_cells,interest,return_cells=True)
     if cells.size==0:return 0,0.
     rows,columns=np.unravel_index(cells,raw_grid.shape)
-    bearings=np.arctan2(rows-cell[0],columns-cell[1])
-    yaws=np.arange(16)*2.*math.pi/16
-    delta=np.arctan2(np.sin(bearings[:,None]-yaws),np.cos(bearings[:,None]-yaws))
-    gains=np.count_nonzero(np.abs(delta)<=INITIAL_SEARCH_VIEW_FOV_RAD/2.,axis=0)
+    radius = max(1, math.ceil(radius_cells))
+    sectors = known_search_sector_table(radius, INITIAL_SEARCH_VIEW_FOV_RAD)
+    gains=np.count_nonzero(sectors[rows-cell[0]+radius,columns-cell[1]+radius],axis=0)
     best=int(np.argmax(gains))
-    return int(gains[best]),float(yaws[best])
+    return int(gains[best]),float(best*2.*math.pi/16)
 
 
 def camera_search_interest(raw_grid, resolution, origin, views):
@@ -6014,13 +6038,11 @@ class HeadquartersControl(Node):
             "groups_with_viewpoints": 0,
             "candidate_assignments": 0,
         }
-        if self.frontier_cache is None:
-            self.frontier_cache = prepare_frontier_data(
-                self.map_data, self.resolution
-            )
         frontier_data = self.frontier_cache
+        traversable = (frontier_data[1] if frontier_data is not None else
+            traversable_grid(self.map_data, self.resolution, PATH_CLEARANCE_M))
         travel_fields = {} if search else {
-            name: exploration_distance_field(self.map_data, frontier_data[1],
+            name: exploration_distance_field(self.map_data, traversable,
                 self.resolution, self.origin, position)
             for name, position in self.robot_positions.items()
             if name in self.participating_robots() and position is not None
@@ -6076,6 +6098,9 @@ class HeadquartersControl(Node):
                         gain_cache=search_gain_cache)
                     robot_diagnostics = dict(frontier_groups=0, groups_with_viewpoints=0)
                 elif not initial_search:
+                    if frontier_data is None:
+                        self.frontier_cache = frontier_data = prepare_frontier_data(
+                            self.map_data, self.resolution)
                     robot_candidates, robot_diagnostics = robot_candidate_assignments(
                         self.map_data,
                         self.resolution,
@@ -6210,7 +6235,7 @@ class HeadquartersControl(Node):
                 field = route_caches[name].get('field')
                 if field is None:
                     distances = exploration_distance_field(self.map_data,
-                        block_dynamic_positions(frontier_data[1], self.resolution, self.origin, blocked),
+                        block_dynamic_positions(traversable, self.resolution, self.origin, blocked),
                         self.resolution, self.origin, self.robot_positions[name])
                     planned_distance = float('inf') if distances is None else float(distances[endpoint])
                 else:

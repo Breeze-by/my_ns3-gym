@@ -34,9 +34,10 @@ def main():
     before=ast.parse(old);after=ast.parse(Path(c.__file__).read_text())
     functions=lambda tree:{n.name:n for n in tree.body if isinstance(n,ast.FunctionDef)}
     old_functions=functions(before);new_functions=functions(after)
-    for name in ('visible_unknown_gain','known_search_interest','known_search_view'):
-        assert ast.dump(old_functions[name])==ast.dump(new_functions[name])
-    namespace=dict(vars(c));exec(compile(ast.Module(body=[old_functions['known_space_search_candidates']],type_ignores=[]),'<frozen known-space candidate>','exec'),namespace)
+    assert ast.dump(old_functions['known_search_interest'])==ast.dump(new_functions['known_search_interest'])
+    reference_math=('visible_unknown_gain','known_search_interest','known_search_view','known_space_search_candidates')
+    namespace=dict(vars(c));exec(compile(ast.Module(body=[old_functions[name] for name in reference_math],
+        type_ignores=[]),'<frozen known-space math and candidate>','exec'),namespace)
     rclpy.init(args=['--ros-args','-p','use_sim_time:=true','-p','robot_count:=1',
         '-p','enable_battery:=false','-p','enable_rally:=true','-p','auto_save_map:=false'])
     coordinator=receiver=None;executor=SingleThreadedExecutor();received=[]
@@ -60,6 +61,15 @@ def main():
         mask=c.traversable_grid(grid,.1,c.PATH_CLEARANCE_M)
         fields={'tb1':c.exploration_distance_field(grid,mask,.1,(0.,0.),coordinator.robot_positions['tb1'])}
         inputs=(grid,.1,(0.,0.),'tb1',coordinator.robot_positions['tb1'],[coordinator.robot_positions['tb1']])
+        interest=c.known_search_interest(grid,.1,(0.,0.),inputs[-1])
+        numeric_math_checks=0
+        for cell in ((0,0),(1,1),(39,49),(79,99)):
+            for radius in (.5,1.,19.9999997,20.,40.0000001):
+                expected=namespace['visible_unknown_gain'](grid,cell,radius,interest,True)
+                actual=c.visible_unknown_gain(grid,cell,radius,interest,True)
+                assert np.array_equal(actual,expected),'changed original sorted ray cells'
+                assert c.known_search_view(grid,cell,radius,interest)==namespace['known_search_view'](grid,cell,radius,interest)
+                numeric_math_checks+=1
         original_rows=namespace['known_space_search_candidates'](*inputs,face_interest=True)
         current_rows=c.known_space_search_candidates(*inputs,face_interest=True)
         assert original_rows==current_rows,'integer normalization changed a candidate value'
@@ -178,6 +188,7 @@ def main():
             reference_commit=REFERENCE,reference_control_sha256=hashlib.sha256(old.encode()).hexdigest(),
             control_sha256=hashlib.sha256(Path(c.__file__).read_bytes()).hexdigest(),
             numeric_candidate_equality=True,candidates_compared=len(current_rows),
+            independently_compiled_reference_math=list(reference_math),numeric_ray_and_view_checks=numeric_math_checks,
             frozen_expected_error=old_error,current_group_id=candidate.viewpoint.group_id,
             independent_audit=audit,mission_diversity_audit=mission_audit,
             target_survey_audit=survey_audit,synthetic_survey_action_client=True,received=received)

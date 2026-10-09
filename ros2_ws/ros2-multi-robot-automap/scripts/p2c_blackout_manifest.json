@@ -100,7 +100,7 @@
   },
   "staging_apparatus_content_sha256": "47ce7998e212a9463ab657bbc0b121d4903ed886016bbf0fd3a2399c986da05d",
   "physical_observer_content_sha256": "1d8a86d39f57982ea1cf18619a35c4a39dcbe151e17eef2af35d16a27cdc899c",
-  "development_parent": "c12db66cf666779978dd74b315a9e92b080f4a11",
+  "development_parent": "f455c2ee299501a61301318d61a4fd3ce8ad9fb2",
   "cases": {
     "physical_ideal": {
       "world": "my_world.world",
@@ -214,7 +214,8 @@
   "retained_failed_developments": [
     "20261009_p2c_v27_failed_development.json",
     "20261009_p2c_v28_failed_development.json",
-    "20261009_p2c_v30_failed_development.json"
+    "20261009_p2c_v30_failed_development.json",
+    "20261009_p2c_v31_failed_development.json"
   ],
   "coordinator_live_clock": {
     "executor": "Two workers; only the existing /clock subscription moves to an independent mutually exclusive group. Original state/action callbacks remain serialized.",
@@ -236,5 +237,14 @@
     "time_and_budget": "Geometry only. Original sources, true evaluation epochs, source ages, native2/5s TTLs and every final dispatch lease check remain. No cached energy budget or timestamp renewal",
     "validation": "Cell equality, qualification/route/budget equality, invalidation and actual ROS. Fixed snapshot timing is not a worst-case or mission result",
     "evidence": "20261009_p2c_geometry_performance_components.json"
+  },
+  "visibility_computation": {
+    "rays": "Original floating unrounded projections cached by radius only, max8 immutable tables; translation+rint occurs at actual grid cell exactly as before",
+    "deduplication": "Boolean flat hit mask replaces sort/unique; identical sorted cell set and count",
+    "sectors": "Original atan2(sin,cos) inclusive90degree/16yaw predicate precomputed for integer relative cells, max8 immutable radius/FOV tables; original tie order and yaw",
+    "inputs": "No map/history/source/age/energy budget cached here; current delivered occlusion and interest recomputed each call",
+    "scope": "Pure computation only; source TTL, true clock, native geometry/budget/300s/5s and all case/physical stimuli unchanged",
+    "evidence": "20261009_p2c_visibility_lookup_components.json",
+    "preparation": "Generate original mapping frontiers only when that branch is needed; known-space search retains original mapping fallback and identical path-clearance travel fields"
   }
 }
