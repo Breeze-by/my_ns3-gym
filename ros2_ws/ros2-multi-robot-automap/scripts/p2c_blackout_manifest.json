@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "73fb1606d4976c7d3300fcd1c85105e12bab7297",
+  "candidate_parent_commit": "56de2b91ca9f20c6608983a5c09a05a938a10d36",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -221,7 +221,8 @@
     "20261009_p2c_v34_failed_development.json",
     "20261009_p2c_v35_failed_development.json",
     "20261009_p2c_v36_failed_development.json",
-    "20261009_p2c_v37_failed_development.json"
+    "20261009_p2c_v37_failed_development.json",
+    "20261009_p2c_v38_failed_development.json"
   ],
   "coordinator_live_clock": {
     "executor": "Two workers; only the existing /clock subscription moves to an independent mutually exclusive group. Original state/action callbacks remain serialized.",
@@ -308,13 +309,14 @@
     }
   },
   "rally_candidate_sampling": {
-    "algorithm": "progressive original72 rings first, existing angular boundary representatives only if no complete feasible ring assignment",
+    "algorithm": "original72 rings plus5/10degree outer-ring visible boundary refinement; existing angular boundary representatives only if no complete feasible first-tier assignment",
     "maximum_candidates": 464,
-    "first_level_maximum": 72,
+    "first_level_maximum": 120,
     "region": "unchanged known-free target-visible1..2.6m region,0.45m endpoint clearance and0.8m separation",
     "pricing": "Each level retains original complete qualified return, observer/charge/wait/soft exposure/body cost optimization and cap feasibility; final fresh admission still required",
-    "limits": "Stop at first feasible candidate level; no claim of global soft-cost optimum across464, exhaustive feasibility, worst-case computation or native success",
-    "evidence": "20261009_p2c_progressive_planning_components.json"
+    "limits": "Stop at first feasible candidate tier; private known-map geometry only, no new perception/truth input. Offline saved-input soft risk/CPU comparisons are not original-history, causal native success, future-map robustness or worst-case guarantees",
+    "evidence": "20261009_p2c_outer_sampling_components.json",
+    "maximum_added_first_tier": 48
   },
   "native_contact_arrival": {
     "algorithm": "Finish the already accepted budgeted contact waypoint before entering CHARGING; crossing the original outer radius does not cancel a pending/owned leg",

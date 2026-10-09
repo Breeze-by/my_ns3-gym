@@ -19,7 +19,7 @@ def test_funded_observer_prefers_a_side_pose_and_missing_routes_keep_fallback(mo
     target=(6.5,4.)
     poses=[c.RallyPose(x,y,math.atan2(target[1]-y,target[0]-x))
            for x,y in ((5.,4.),(5.,2.5),(9.,4.))]
-    monkeypatch.setattr(c,'rally_pose_candidates',lambda *args:poses)
+    monkeypatch.setattr(c,'rally_pose_candidates',lambda *args, **kwargs:poses)
     positions={'tb1':(5.,4.),'tb2':(1.,4.),'tb3':(2.,4.)}
     states={n:dict(mode='ACTIVE',energy=40. if n=='tb1' else 1.,
                   charge_x=p[0],charge_y=p[1],capacity=100.,charge_target_fraction=.8,
@@ -57,7 +57,7 @@ def test_funded_nonobserver_also_leaves_the_charged_peers_entrance_free(monkeypa
     target=(6.5,4.)
     poses=[c.RallyPose(x,y,math.atan2(target[1]-y,target[0]-x))
            for x,y in ((5.,4.),(5.,2.5),(9.,4.))]
-    monkeypatch.setattr(c,'rally_pose_candidates',lambda *args:poses)
+    monkeypatch.setattr(c,'rally_pose_candidates',lambda *args, **kwargs:poses)
     positions={'tb1':(9.,4.),'tb2':(5.,4.),'tb3':(1.,4.)}
     states={n:dict(mode='ACTIVE',energy=40. if n!='tb3' else 1.,
                   charge_x=p[0],charge_y=p[1],capacity=100.,charge_target_fraction=.8,

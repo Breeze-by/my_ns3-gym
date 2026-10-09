@@ -32,7 +32,7 @@ def test_assignment_keeps_the_funded_observer_on_the_home_side_of_an_optional_na
     grid[100:120, 92:108] = 0
     target = (5.05, 7.)
     poses = [c.RallyPose(5.05, 6.55, math.pi/2), c.RallyPose(5.05, 4.45, math.pi/2)]
-    monkeypatch.setattr(c, 'rally_pose_candidates', lambda *args: poses)
+    monkeypatch.setattr(c, 'rally_pose_candidates', lambda *args, **kwargs: poses)
     position = (5.05, 6.65)
     state = dict(mode='ACTIVE', energy=80., charge_x=5.05, charge_y=3.05,
         capacity=100., charge_target_fraction=.8, nominal_speed_mps=.18,

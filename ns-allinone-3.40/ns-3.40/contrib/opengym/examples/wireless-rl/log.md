@@ -8519,3 +8519,23 @@ EXPLORE timeout300.1s，detect/rally/completion=null；Nav226/两机各charge1/m
 Humble+install/PYTHONNOUSERSITE1/FastDDS UDPv4清profiles，taskset -c 0-79；pytest -q src/multi_robot_exploration/test/test_charge_contact_arrival.py test_return_budget.py test_battery_manager.py（后三路径同目录）104PASS3.87s；full /usr/bin/python3 -m pytest -q src/multi_robot_exploration/test scripts --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py 1413PASS/99.39s。colcon build --symlink-install --packages-select multi_robot_interfaces multi_robot_exploration merge_map multi_robot 5.39s；check_p2c_source.py --output log/p2c_v38_source.json PASS171/4/54。
 
 ROS_DOMAIN_ID219 /usr/bin/python3 log/check_p2c_v38_contact_runtime.py实际旧73/new native deferred Future与独立DDS，旧CHARGING/cancel1→newRETURNING/cancel0，结果后原stable timer/charge0/energy40；221 scripts/check_p2c_native_future_runtime.py --output log/p2c_v38_native_future_runtime.json actual序列化回归PASS。控制器byte保持329719...、native只有begin_charging改变，所有其他函数/预算/TTL/物理/刺激保持；条件fixed epoch不是实际Nav2停车因果。run_p2c_tasks.py --case dev_forced2 --run-id 20261009_p2c_v38 --domain 210 --gazebo-port 20290 --validate-only与--manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261009_p2c_v38_physical --domain 219 --gazebo-port 20299 --validate-only均PASS，无任务。新4→17+2同clean pushed freeze待原生验证，917未暴露；domain222/master11345未操作。
+
+
+## 2026-10-09 P2C.1 v38 首强制开发原任务 FAIL
+
+56de2b commit/push0，check_p2c_v38_freeze.py PASS；Humble+install/PYTHONNOUSERSITE1/FastDDS UDPv4清profiles，taskset -c 0-79 /usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261009_p2c_v38 --domain 210 --gazebo-port 20290 > log/p2c_v38_dev_forced2_runner.log 2>&1。原launch/observer/config/case/sourceSHA保留。
+
+PARTIAL_COMPLETE262.8s，success=false/partial_completion/failed tb1；检测172.7/RALLY174.3s，各charge1/min8.900475326498496、0contacts/exhaustion/task-time infra/retry；tb1正电量约60.90 FAILED。owner688050/observer688069 exit0/0閉合，所有原件SHA保持。check_p2c_gate.py --run-root log/p2c/20261009_p2c_v38 --development --cases dev_forced2 --output log/p2c_v38_dev_forced2_gate.json exit1/FAIL；audit_p2c_v38_independent.py 12PASS。其他3dev/17formal/2physical/917未调用。
+
+tb2原2254.582接触腿→2263.782SUCCEEDED→2263.882return_finished/cancel0；不作跨原轨迹因果。2339.282 tb1在当前自由/安全单元仍无全known清空返路，原30s保护后FAILED；完整source snapshot逐字safety绑定、AP集合输入逐字ledger绑定。diagnose_p2c_v39_native_route.py首错误调用不存在API只读失败保留，改用existing charging_route_field/known_return_route重建local/fused均None；plot_p2c_v39_return_connectivity.py自由图连通/0.35净空断开。SDF未配准占用比较仅诊断、不证明同伴回波原因、不作安全地图或AP输入。后续原集合采样加密候选需新freeze及原任务，不放宽任何硬门。
+
+
+## 2026-10-09 P2C.1 v39 四采样比较与外圈边界候选组件
+
+2026-10-09 P2C.1 v39外圈可见边界采样组件PASS待新原任务：v38 56de2b首forced PARTIAL262.8s/success=false/正电量tb1 FAILED，双机各charge1/min8.90048；零contact/exhaustion/task-time infra/retry、12审计PASS不能替代门禁。第一层保留原72并仅可见外圈交界加5/10度，最多48额外，120→原464后备；原净空/视线/分离/完整known返路/预算与soft目标保持。四方法原输入11→13候选、软返路暴露1.615→.666，实际DDS两算法独立重建PASS；离线CPU/后时刻地图压力不作因果或未来保证。1428功能/四包5.87s/171保护54协议PASS，3纯函数改动、所有class/native/时钟/TF/Nav2/SLAM字节保持。新4→17+2同clean pushed freeze待验证，917未暴露；P3C.5已验收，无P4/ns3/Wi-Fi/RL。报告20261009_p2c_outer_sampling_components.md及20261009_p2c_v38_failed_development.md；旧pending为历史。
+
+Humble+install/PYTHONNOUSERSITE1/FastDDS UDPv4清profiles，taskset -c 0-79 /usr/bin/python3 log/prototype_p2c_v39_outer_sampling.py保存原AP输入；首full分支重复stratified只读参数错误保留并修正，3cold四方法比较PASS。ROS_DOMAIN_ID219 /usr/bin/python3 log/check_p2c_v39_rally_runtime.py实际两份coordinator producer/独立DDS consumer与源码版本完整rally_audit PASS，5cold实际选择/epochs/后时刻map压力仅条件检查。
+
+pytest -q test_adaptive_rally_sampling.py/test_progressive_rally.py/test_rally_return_exposure.py/test_rally_observer_parking.py/test_control.py（路径src/multi_robot_exploration/test/）325PASS19.21s；完整 /usr/bin/python3 -m pytest -q src/multi_robot_exploration/test scripts --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py 1428PASS106.16s；恢复无关测试替身扩展后test_control.py 294PASS13.72s。colcon build --symlink-install --packages-select multi_robot_interfaces multi_robot_exploration merge_map multi_robot 5.87s；check_p2c_source.py --output log/p2c_v39_source.json PASS。
+
+run_p2c_tasks.py --case dev_forced2 --run-id 20261009_p2c_v39 --domain 210 --gazebo-port 20290 --validate-only 与 --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261009_p2c_v39_physical --domain 219 --gazebo-port 20299 --validate-only均PASS、没有新任务。原cases/300s/TTL/刺激/native安全/其他源码保持；新同freeze4→17+2待验证，917未调用；domain222/master11345未操作。

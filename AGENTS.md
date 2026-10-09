@@ -59,7 +59,7 @@ tokens is not a reason to leave a problem unresolved or inadequately tested.
 
 ## Current Handoff
 
-2026-10-09 P2C.1 v38接触航段自然结束组件PASS待新原任务：v37 73fb160首forced EXPLOREtimeout300.1/未检测/两机各charge1/min8.34069，0安全/task-time infra/retry，277live与12审计PASS不替代任务成功。tb2外半径内提前取消后停在fresh local占用单元100，AP veto正确；因果仍待验证。仅native begin_charging等待原pending/accepted航段结果，再原稳定计时；原radius/TTL/储备/超时/物理与control源码保持。1413功能/四包5.39s/171保护54协议/实际native Future+独立DDS与串行回归PASS。Nav2容差/占用仍可能阻止接续，新4→17+2同clean pushed freeze待验证，917未暴露；P3C.5已验收，无P4/ns3/Wi-Fi/RL。报告20261009_p2c_contact_arrival_components.md与20261009_p2c_v37_failed_development.md；旧pending说明为历史。
+2026-10-09 P2C.1 v39外圈可见边界采样组件PASS待新原任务：v38 56de2b首forced PARTIAL262.8s/success=false/正电量tb1 FAILED，双机各charge1/min8.90048；零contact/exhaustion/task-time infra/retry、12审计PASS不能替代门禁。第一层保留原72并仅可见外圈交界加5/10度，最多48额外，120→原464后备；原净空/视线/分离/完整known返路/预算与soft目标保持。四方法原输入11→13候选、软返路暴露1.615→.666，实际DDS两算法独立重建PASS；离线CPU/后时刻地图压力不作因果或未来保证。1428功能/四包5.87s/171保护54协议PASS，3纯函数改动、所有class/native/时钟/TF/Nav2/SLAM字节保持。新4→17+2同clean pushed freeze待验证，917未暴露；P3C.5已验收，无P4/ns3/Wi-Fi/RL。报告20261009_p2c_outer_sampling_components.md及20261009_p2c_v38_failed_development.md；旧pending为历史。
 
 2026-10-09 P2C.1 v34两级惰性前沿gain组件PASS待新冻结：24e1e27首强制FOUNDtimeout300.0/检测291.4/13Nav2/两机各charge1/87原lease弃置，strict FAIL原件保留，余3/17/2/917未调用。批量射线157cell五样本更慢(.391..929vs.183s)已拒绝无task。新原几何采样+矩形unknown收益上界→竞争时准确ray gain重入heap→原budget评分，真实目标与充电top3均准确gain/原稳定顺序，bounds从不派发；完整raw forecast/source/TTL/native保持。1309功能/四包6.95s/171保护4授权54协议/实际ROS含2中央普通Assignment发布消费PASS。原早期交付双idle固定条件ray157→21/budget4→4/cold中位0.387→0.224s，导航偏好预算相同，非任务/最坏界。新4→17+2同clean pushed freeze未验证，917未暴露；P3C.5已验收，无P4/ns-3/Wi-Fi/RL。报告20261009_p2c_lazy_gain_components.md与20261009_p2c_v33_failed_development.md。
 

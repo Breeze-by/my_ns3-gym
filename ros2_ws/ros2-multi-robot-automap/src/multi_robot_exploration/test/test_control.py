@@ -626,7 +626,7 @@ def test_rally_assignment_keeps_low_energy_observer_without_a_return(monkeypatch
     grid = np.zeros((80, 80), dtype=int)
     positions = {"tb1": (1.55, 1.55), "tb2": (5.55, 1.55), "tb3": (3.55, 1.55)}
     candidates = [control.RallyPose(x, 1.55, .25) for x in (1.55, 3.55, 5.55)]
-    monkeypatch.setattr(control, "rally_pose_candidates", lambda *args: candidates)
+    monkeypatch.setattr(control, "rally_pose_candidates", lambda *args, **kwargs: candidates)
     original = control.assign_rally_poses(grid, .1, (0., 0.), positions, (4., 4.), objective)
     states = rally_assignment_batteries(positions, tb2={"energy": 8.5})
     assignments = control.assign_rally_poses(grid, .1, (0., 0.), positions, (4., 4.),
@@ -645,7 +645,7 @@ def test_rally_assignment_avoids_peer_charge_for_optional_observer_surplus(monke
     grid = np.zeros((80, 80), dtype=int)
     positions = {"tb1": (1.55, 1.55), "tb2": (5.55, 1.55), "tb3": (3.55, 1.55)}
     candidates = [control.RallyPose(x, 1.55, .25) for x in (1.55, 3.55, 5.55)]
-    monkeypatch.setattr(control, "rally_pose_candidates", lambda *args: candidates)
+    monkeypatch.setattr(control, "rally_pose_candidates", lambda *args, **kwargs: candidates)
     states = rally_assignment_batteries(positions,
         tb1={"energy": 9.5}, tb2={"energy": 16.}, tb3={"energy": 9.5})
     assignments = control.assign_rally_poses(grid, .1, (0., 0.), positions, (4., 4.),
@@ -660,7 +660,7 @@ def test_rally_assignment_charged_peers_avoid_detours_for_observer_surplus(monke
     grid = np.zeros((80, 80), dtype=int)
     positions = {"tb1": (1.55, 1.55), "tb2": (5.55, 1.55), "tb3": (3.55, 1.55)}
     candidates = [control.RallyPose(x, 1.55, .25) for x in (1.55, 3.55, 5.55)]
-    monkeypatch.setattr(control, "rally_pose_candidates", lambda *args: candidates)
+    monkeypatch.setattr(control, "rally_pose_candidates", lambda *args, **kwargs: candidates)
     states = rally_assignment_batteries(positions)
     assignments = control.assign_rally_poses(grid, .1, (0., 0.), positions, (3.5, 3.5),
         objective, battery_states=states, observer_robot="tb2")
@@ -675,7 +675,7 @@ def test_rally_assignment_inactive_observer_has_no_visual_headroom_priority(monk
     grid = np.zeros((80, 80), dtype=int)
     actual = {"tb1": (1.55, 1.55), "tb2": (5.55, 1.55), "tb3": (3.55, 1.55)}
     candidates = [control.RallyPose(x, 1.55, .25) for x in (1.55, 3.55, 5.55)]
-    monkeypatch.setattr(control, "rally_pose_candidates", lambda *args: candidates)
+    monkeypatch.setattr(control, "rally_pose_candidates", lambda *args, **kwargs: candidates)
     states = rally_assignment_batteries(actual, tb2={"mode": mode})
     planning = {**actual, "tb2": (.5, 1.5)}
     plain = control.assign_rally_poses(grid, .1, (0., 0.), planning, (4., 4.),
@@ -709,7 +709,7 @@ def test_rally_assignment_counts_peer_charge_wait_before_capacity_admission(monk
     grid = np.zeros((70, 70), dtype=int)
     positions = {"tb1": (1.55, 1.55), "tb2": (3.55, 1.55)}
     candidates = [control.RallyPose(x, 1.55, 0.) for x in (1.55, 3.55)]
-    monkeypatch.setattr(control, "rally_pose_candidates", lambda *args: candidates)
+    monkeypatch.setattr(control, "rally_pose_candidates", lambda *args, **kwargs: candidates)
     states = rally_assignment_batteries(positions)
     for name, state in states.items():
         state.update(energy=0., capacity=10., move_cost_per_m=0., idle_cost_per_sec=.1,

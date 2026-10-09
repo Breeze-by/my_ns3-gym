@@ -1536,7 +1536,8 @@ def coordinate_assignments(
     return assignments, diagnostics
 
 
-def rally_pose_candidates(raw_grid, resolution, origin, target, dense=False, stratified=False):
+def rally_pose_candidates(raw_grid, resolution, origin, target, dense=False,
+                          stratified=False, adaptive_outer=False):
     """Return known-free, target-facing poses around the target."""
     safe = traversable_grid(
         raw_grid, resolution, clearance_m=RALLY_CLEARANCE_M
@@ -1581,6 +1582,36 @@ def rally_pose_candidates(raw_grid, resolution, origin, target, dense=False, str
                     math.atan2(target[1] - pose_y, target[0] - pose_x),
                 )
             )
+    if adaptive_outer and not (dense or stratified):
+        # A narrow visible arc can contain only one original outer-ring sample,
+        # even when two separated, less exposed stopping poses exist there.
+        # Refine only transitions in the original 24-angle visibility mask;
+        # at most 24 directed edges, two extra samples each. Keep the old order.
+        def outer_cell(index):
+            angle = 2.0 * math.pi * index / 24
+            return world_to_grid(target[0] + 2.6 * math.cos(angle),
+                                 target[1] + 2.6 * math.sin(angle),
+                                 resolution, *origin)
+
+        def visible(cell):
+            row, column = cell
+            return (0 <= row < height and 0 <= column < width
+                    and safe[cell]
+                    and has_known_line_of_sight(raw_grid, cell, target_cell))
+
+        valid_angles = {index for index in range(24) if visible(outer_cell(index))}
+        for index in sorted(valid_angles):
+            for direction in (-1, 1):
+                if (index + direction) % 24 in valid_angles:
+                    continue
+                for fraction in (1 / 3, 2 / 3):
+                    cell = outer_cell(index + direction * fraction)
+                    if cell in seen_cells or not visible(cell):
+                        continue
+                    seen_cells.add(cell)
+                    x, y = grid_to_world(*cell, resolution, *origin)
+                    candidates.append(RallyPose(
+                        x, y, math.atan2(target[1] - y, target[0] - x)))
     if dense or stratified:
         # Recovery searches the same 1..2.6m region instead of assuming the
         # original three sampled rings contain every feasible stopping pose.
@@ -1705,8 +1736,9 @@ def assign_rally_poses(
 ):
     """Find a fully funded separated assignment with progressive candidates.
 
-    Prefer the original three sampled rings when they admit a complete
-    assignment. Otherwise expand to the existing angular boundary samples.
+    Refine visible outer-ring boundaries in the original three sampled rings.
+    If that bounded tier cannot assign all robots, expand to the existing
+    angular boundary samples.
     Each level keeps the full return, charge/wait and body-cost optimizer;
     stopping at the first feasible level trades global soft-cost optimality
     for less computation. Actual navigation still requires fresh admission.
@@ -1746,7 +1778,8 @@ def _assign_rally_poses(
         raise ValueError(f"unknown rally assignment objective: {objective}")
     names = sorted(robot_positions)
     candidates = rally_pose_candidates(
-        raw_grid, resolution, origin, target, False, stratified
+        raw_grid, resolution, origin, target, False, stratified,
+        adaptive_outer=not stratified,
     )
     if len(candidates) < len(names):
         return {}

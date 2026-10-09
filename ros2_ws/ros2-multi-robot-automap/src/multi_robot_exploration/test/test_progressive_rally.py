@@ -11,7 +11,7 @@ def test_feasible_old_rings_stop_before_global_soft_cost_search(monkeypatch):
     coarse = c.RallyPose(5.05, 4.05, math.pi)
     fine = c.RallyPose(3.05, 4.05, 0.)
     levels = []
-    def poses(*args):
+    def poses(*args, **kwargs):
         levels.append(args[-1])
         return [fine, coarse] if args[-1] else [coarse]
     monkeypatch.setattr(c, 'rally_pose_candidates', poses)
@@ -26,7 +26,7 @@ def test_coarse_separation_failure_expands_to_visible_sliver_representatives(mon
     near = [c.RallyPose(5.05, 4.05, math.pi), c.RallyPose(5.05, 4.15, math.pi)]
     other = c.RallyPose(3.05, 4.05, 0.)
     levels = []
-    def poses(*args):
+    def poses(*args, **kwargs):
         levels.append(args[-1])
         return near + [other] if args[-1] else near
     monkeypatch.setattr(c, 'rally_pose_candidates', poses)
@@ -41,7 +41,7 @@ def test_coarse_separation_failure_expands_to_visible_sliver_representatives(mon
 def test_coarse_unfunded_return_expands_instead_of_accepting_nominal_short_leg(monkeypatch):
     distant, funded = c.RallyPose(8.05, 8.05, 0.), c.RallyPose(3.05, 4.05, 0.)
     levels = []
-    def poses(*args):
+    def poses(*args, **kwargs):
         levels.append(args[-1])
         return [funded, distant] if args[-1] else [distant]
     monkeypatch.setattr(c, 'rally_pose_candidates', poses)
@@ -60,7 +60,7 @@ def test_coarse_unfunded_return_expands_instead_of_accepting_nominal_short_leg(m
 
 def test_both_levels_missing_geometry_remain_failure(monkeypatch):
     levels = []
-    def poses(*args):
+    def poses(*args, **kwargs):
         levels.append(args[-1])
         return []
     monkeypatch.setattr(c, 'rally_pose_candidates', poses)
