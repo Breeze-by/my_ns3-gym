@@ -1,3 +1,4 @@
+from test_control import static_planning_sources
 """A charging interruption preserves intent, while fresh admission owns motion."""
 from types import SimpleNamespace
 
@@ -120,6 +121,7 @@ def test_resume_preference_uses_existing_admission_and_falls_back(monkeypatch, r
         get_logger=lambda:SimpleNamespace(info=lambda *args:None,warn=lambda *args:None),
         send_goal=lambda name,goal:sent.append(goal),
     )
+    static_planning_sources(node)
     control.HeadquartersControl.assign_idle_robots(node)
     if reason in ('stale','returning'):
         assert not sent and node.exploration_resume_intents

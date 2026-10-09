@@ -8,6 +8,19 @@ from geometry_msgs.msg import Transform
 from multi_robot_exploration import control
 
 
+def static_planning_sources(node):
+    """Supply original static DDS source leases for geometry-only fixtures."""
+    if not hasattr(node, 'now'):
+        node.now = lambda: 100.
+    stamp = node.now()
+    streams = ['headquarters/fused_map_snapshot', *[
+        name+'/'+kind for name in node.input_robot_names()
+        for kind in ('pose_state', 'frame_state', 'map_snapshot')]]
+    node.input_freshness_details = lambda: {
+        key: dict(source_time=stamp, age_sec=node.now()-stamp,
+                  ttl_sec=control.STATE_TTL_SEC[key.rsplit('/', 1)[1]]) for key in streams}
+
+
 @pytest.mark.parametrize('change', ['wall', 'connected', 'unknown', 'boundary', 'coarse', 'untracked'])
 def test_body_cell_filter_preserves_static_and_unobserved_constraints(change):
     grid = np.zeros((30, 30), dtype=np.int16)
@@ -57,6 +70,8 @@ def test_planning_self_return_requires_existing_source_leases(stale):
         robot_map_received_at={'tb1': 100. - map_age if stale != 'local_map' else 94.9},
         now=lambda: 100., input_robot_names=lambda: ['tb1'],
     )
+    node.task_state='EXPLORE'
+    node.input_freshness_details=lambda: control.HeadquartersControl.input_freshness_details(node)
     node.fresh_robot_poses=lambda: control.HeadquartersControl.fresh_robot_poses(node)
     ready=control.HeadquartersControl.fresh_robot_inputs(node)
     assert ready == (stale == 'none')
@@ -934,6 +949,7 @@ def test_exploration_dispatch_carries_incoming_heading_only_for_intermediate_leg
         get_clock=lambda: SimpleNamespace(now=lambda: SimpleNamespace(to_msg=lambda: Time())),
     )
     node.send_goal=lambda name, goal: control.HeadquartersControl.send_goal(node, name, goal)
+    static_planning_sources(node)
     control.HeadquartersControl.assign_idle_robots(node)
     admitted=node.goal_targets['tb1']
     goal=client.send_goal_async.call_args.args[0]
@@ -1248,6 +1264,7 @@ def test_single_explorer_checks_parked_robots_after_previous_goal_finishes(monke
         get_logger=lambda: SimpleNamespace(info=lambda *args: None, warn=lambda *args: None),
         send_goal=lambda name, goal: sent.append((name, goal)),
     )
+    static_planning_sources(node)
     control.HeadquartersControl.assign_idle_robots(node)
     assert sent and {name for name, _ in sent} <= {"tb1", "tb2"}
     assert calls == [(1.0, 3.0), (3.0, 3.0)]
@@ -1317,6 +1334,7 @@ def test_parallel_explorers_try_independent_alternative_after_conflict(monkeypat
         get_logger=lambda: SimpleNamespace(info=lambda *args: None),
         send_goal=lambda name, goal: sent.append((name, goal)),
     )
+    static_planning_sources(node)
     control.HeadquartersControl.assign_idle_robots(node)
     assert [name for name, _ in sent] == names[:min(robot_count, 3)]
     assert node.goal_targets["tb2"].y == 9.0
@@ -1354,6 +1372,7 @@ def test_exploration_allows_short_initial_viewpoint(monkeypatch, step, expected)
         get_logger=lambda: SimpleNamespace(info=lambda *args: None, warn=lambda *args: None),
         send_goal=lambda name, goal: sent.append((name, goal)),
     )
+    static_planning_sources(node)
     control.HeadquartersControl.assign_idle_robots(node)
     assert len(sent) == expected
     if sent:
@@ -2818,6 +2837,7 @@ def test_blocked_coarse_viewpoint_is_refined_in_the_safe_reachable_component():
         now=lambda: 100., last_no_assignment_log=-math.inf,
         get_logger=lambda: SimpleNamespace(info=lambda *a: None, warn=lambda *a: None),
         send_goal=lambda name, goal: sent.append((name, goal)))
+    static_planning_sources(node)
     control.HeadquartersControl.assign_idle_robots(node)
     assert len(sent) == 1 and sent[0][0] == "tb1"
     route = node.goal_routes["tb1"]
@@ -2982,6 +3002,7 @@ def test_target_reacquisition_frontiers_do_not_depend_on_old_target_and_keep_ret
             get_logger=lambda: SimpleNamespace(info=lambda *a: None, warn=lambda *a: None),
             send_goal=lambda name, goal: sent.append((name, goal)),
         )
+        static_planning_sources(node)
         control.HeadquartersControl.assign_idle_robots(node)
         return sent, node
 

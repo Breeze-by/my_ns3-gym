@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-09T03:01:00.012836+00:00",
+  "predeclared_at_utc": "2026-10-09T04:05:16.197437+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -100,7 +100,7 @@
   },
   "staging_apparatus_content_sha256": "47ce7998e212a9463ab657bbc0b121d4903ed886016bbf0fd3a2399c986da05d",
   "physical_observer_content_sha256": "1d8a86d39f57982ea1cf18619a35c4a39dcbe151e17eef2af35d16a27cdc899c",
-  "development_parent": "79f211323ade3e949f91ad3896e727beeeef7522",
+  "development_parent": "b2b038c615af9fb728e90f7a57c150e936a9bce5",
   "cases": {
     "physical_ideal": {
       "world": "my_world.world",
@@ -212,6 +212,16 @@
     "limits": "Current-map predicted visual coverage is a search preference, never proof of target absence, perfect camera perception or exhaustive coverage; history reprojects through the current map only; no new radio packet"
   },
   "retained_failed_developments": [
-    "20261009_p2c_v27_failed_development.json"
-  ]
+    "20261009_p2c_v27_failed_development.json",
+    "20261009_p2c_v28_failed_development.json"
+  ],
+  "coordinator_live_clock": {
+    "executor": "Two workers; only the existing /clock subscription moves to an independent mutually exclusive group. Original state/action callbacks remain serialized.",
+    "clock_qos": "Existing best-effort depth1 unchanged; no extra subscription or application message.",
+    "planning_lease": "Capture original delivered source deadlines; abort current exploration batch at candidate/budget/route/dispatch checkpoints on expiry or clock reset. Recheck sources after charge/survey/rally computation before changing admitted owners.",
+    "budget_provenance": "Distinct immutable source stamps, ranking/pricing instants and actual decision instant; age reconstructed at each instant, never renewed.",
+    "shutdown": "Stop new admissions and cancel timers before waiting for executor completion.",
+    "limits": "Clock correctness is independently DDS-verified with controlled blocked callback, not a CPU latency or native completion guarantee. No native battery, Nav2, physics, TTL, horizon or wireless change."
+  },
+  "evaluation_result_polling": "Read-only bounded polling of a not-yet-valid JSON file from the same original producer; complete invalid objects, producer failure and original deadline still fail. No episode retry, evaluator change or shutdown grace change."
 }

@@ -20,7 +20,8 @@ from nav_msgs.msg import OccupancyGrid, Odometry
 import numpy as np
 import rclpy
 from rclpy.action import ActionClient
-from rclpy.executors import ExternalShutdownException
+from rclpy.callback_groups import MutuallyExclusiveCallbackGroup
+from rclpy.executors import ExternalShutdownException, MultiThreadedExecutor
 from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
 from scipy import ndimage
@@ -29,6 +30,7 @@ from scipy.optimize import linear_sum_assignment
 from scipy.sparse import coo_matrix
 from scipy.sparse.csgraph import dijkstra
 from std_msgs.msg import String
+from rosgraph_msgs.msg import Clock
 from tf2_msgs.msg import TFMessage
 
 from .fault_model import CHARGE_REQUEST_TTL_SEC, STATE_TTL_SEC, TARGET_DETECTION_TTL_SEC
@@ -371,6 +373,13 @@ def camera_search_interest(raw_grid, resolution, origin, views):
                 & (np.abs(delta) <= INITIAL_SEARCH_VIEW_FOV_RAD / 2.))
         interest[rows[seen], columns[seen]] = False
     return interest
+
+
+def input_freshness_at(inputs, at_time):
+    """Bind unchanged source stamps to one recorded evaluation instant."""
+    return {key: {**sample, 'age_sec': (None if sample['source_time'] is None
+                                     else at_time - sample['source_time'])}
+            for key, sample in inputs.items()}
 
 
 def mission_search_diversity(target,states,visits,raw_grid,resolution,origin):
@@ -2650,6 +2659,7 @@ def rally_return_reservations(grid, resolution, origin, positions, states, modes
 
 class HeadquartersControl(Node):
     def __init__(self):
+        self.clock_callback_group = MutuallyExclusiveCallbackGroup()
         super().__init__("headquarters_control")
         self.num_robots = self.declare_parameter("robot_count", 2).value
         self.return_probe_paused = self.declare_parameter(
@@ -3047,8 +3057,8 @@ class HeadquartersControl(Node):
             HeadquartersControl.record_return_map_veto(self, robot_name, position, home, candidates, local_map)
         return distance
 
-    def delivered_return_maps(self):
-        now = self.now()
+    def delivered_return_maps(self, at_time=None):
+        now = self.now() if at_time is None else at_time
         stamps = getattr(self, 'robot_map_received_at', {})
         return {name: geometry for name, geometry in getattr(self, 'robot_maps', {}).items()
                 if geometry is not None and stamps.get(name) is not None
@@ -3063,7 +3073,7 @@ class HeadquartersControl(Node):
         if now - last.get(name, -float('inf')) < 5.:
             return
         self.return_map_veto_at = {**last, name: now}
-        inputs = self.input_freshness_details()
+        inputs = input_freshness_at(self.input_freshness_details(), now)
         stamp = self.robot_map_received_at[name]
         inputs.setdefault(name+'/map_snapshot', dict(source_time=stamp,
             age_sec=now-stamp, ttl_sec=STATE_TTL_SEC['map_snapshot']))
@@ -3079,15 +3089,16 @@ class HeadquartersControl(Node):
                 self.robot_map_received_at[name]),
         ), sort_keys=True)))
 
-    def record_rally_assignment(self, active_positions, return_maps, wall_sec, assignment=None):
+    def record_rally_assignment(self, active_positions, return_maps, wall_sec, assignment=None, evaluated_at=None):
         """Retain exact delivered choice/failure inputs on a private audit path."""
         if not hasattr(self, 'consumed_publisher'):
             return
-        now = self.now()
-        if assignment is None and now - getattr(self, 'rally_assignment_audit_at', -float('inf')) < 5.:
+        completed_at = self.now()
+        now = completed_at if evaluated_at is None else evaluated_at
+        if assignment is None and completed_at - getattr(self, 'rally_assignment_audit_at', -float('inf')) < 5.:
             return
-        self.rally_assignment_audit_at = now
-        inputs = self.input_freshness_details()
+        self.rally_assignment_audit_at = completed_at
+        inputs = input_freshness_at(self.input_freshness_details(), now)
         for name in return_maps:
             stamp = self.robot_map_received_at[name]
             inputs.setdefault(name+'/map_snapshot', dict(source_time=stamp, age_sec=now-stamp,
@@ -3096,7 +3107,7 @@ class HeadquartersControl(Node):
             event='coordinator_rally_assignment_failed' if assignment is None else 'coordinator_rally_assignment_chosen',
             event_time=now, assignment=None if assignment is None else
                 {name: (pose.x, pose.y, pose.yaw) for name, pose in assignment.items()},
-            computation_wall_sec=wall_sec, inputs=inputs,
+            computation_wall_sec=wall_sec, computation_completed_at_sec=completed_at, inputs=inputs,
             robot_positions=active_positions, current_positions=self.robot_positions,
             target=self.target,
             objective=self.rally_assignment_objective, hold_sec=self.rally_hold_sec,
@@ -3112,32 +3123,32 @@ class HeadquartersControl(Node):
                 self.robot_map_received_at[name]) for name, geometry in return_maps.items()},
         ), sort_keys=True)))
 
-    def delivered_pose_age(self, robot_name):
+    def delivered_pose_age(self, robot_name, at_time=None):
         stamps = [getattr(self, 'robot_odom_received_at', {}).get(robot_name)]
         frames = getattr(self, 'robot_tf_received_at', {})
         if robot_name in frames:
             stamps.append(frames[robot_name])
-        now = self.now()
+        now = self.now() if at_time is None else at_time
         if any(stamp is None or not math.isfinite(stamp)
                or not 0 <= now-stamp <= STATE_TTL_SEC['pose_state'] for stamp in stamps):
             raise ValueError('missing or stale delivered pose/frame source')
         return max(now-stamp for stamp in stamps)
 
-    def task_return_required_energy(self, robot_name, task_distance, destination):
+    def task_return_required_energy(self, robot_name, task_distance, destination, at_time=None):
         """Budget a proposed complete approach and its full contact-route return."""
         state = self.battery_states[robot_name]
         home_distance = HeadquartersControl.known_home_distance(self, robot_name, destination)
         if home_distance is None:
             raise ValueError('no delivered-map charger contact route')
-        now = self.now()
+        now = self.now() if at_time is None else at_time
         map_stamp = getattr(self, 'map_received_at', None)
         if map_stamp is None:
             raise ValueError('missing return budget source timestamps')
         map_age = now - map_stamp
         local_stamp = getattr(self, 'robot_map_received_at', {}).get(robot_name)
-        if HeadquartersControl.delivered_return_maps(self).get(robot_name) is not None:
+        if HeadquartersControl.delivered_return_maps(self, now).get(robot_name) is not None:
             map_age = max(map_age, now - local_stamp)
-        pose_age = HeadquartersControl.delivered_pose_age(self, robot_name)
+        pose_age = HeadquartersControl.delivered_pose_age(self, robot_name, now)
         if not 0 <= map_age <= STATE_TTL_SEC['fused_map_snapshot']:
             raise ValueError('stale return budget input')
         return battery_assignment_required_energy(
@@ -3149,7 +3160,7 @@ class HeadquartersControl(Node):
             float(state.get('return_recovery_wait_sec', RETURN_RECOVERY_WAIT_SEC)),
             map_age, pose_age)
 
-    def exploration_required_energy(self, robot_name, distance_m, destination):
+    def exploration_required_energy(self, robot_name, distance_m, destination, at_time=None):
         """Price the whole current frontier approach and endpoint return reserve."""
         if self.battery_modes[robot_name] != "ACTIVE":
             return None
@@ -3173,11 +3184,15 @@ class HeadquartersControl(Node):
             current_home = HeadquartersControl.known_home_distance(self, robot_name, position)
             if current_home is None:
                 return None
+            if HeadquartersControl.known_home_distance(self, robot_name, destination) is None:
+                return None
+            evaluated_at = self.now() if at_time is None else at_time
             required = max(
-                HeadquartersControl.task_return_required_energy(self, robot_name, distance_m, destination),
-                HeadquartersControl.task_return_required_energy(self, robot_name, 0., position))
+                HeadquartersControl.task_return_required_energy(self, robot_name, distance_m, destination, evaluated_at),
+                HeadquartersControl.task_return_required_energy(self, robot_name, 0., position, evaluated_at))
             if not math.isfinite(required):
                 return None
+            self.exploration_budget_times = {**getattr(self, 'exploration_budget_times', {}), robot_name: evaluated_at}
             return required
         except (KeyError, TypeError, ValueError, ZeroDivisionError):
             return None
@@ -3266,26 +3281,26 @@ class HeadquartersControl(Node):
                 math.dist(a, b) for a, b in zip(route, route[1:]))
             task_distance = assignment.path_distance_m + between
             try:
+                home_distance = HeadquartersControl.known_home_distance(self, name, (candidate.x, candidate.y))
+                now = self.now()
                 required = HeadquartersControl.task_return_required_energy(
-                    self, name, task_distance, (candidate.x, candidate.y))
+                    self, name, task_distance, (candidate.x, candidate.y), now)
             except ValueError:
                 continue  # A vetoed alternative must not mask the next feasible one.
             if not energy < required < charge_target:
                 continue
             state = self.battery_states[name]
             home = (float(state['charge_x']), float(state['charge_y']))
-            home_distance = HeadquartersControl.known_home_distance(self, name, (candidate.x, candidate.y))
-            now = self.now()
-            local_map = HeadquartersControl.delivered_return_maps(self).get(name)
+            local_map = HeadquartersControl.delivered_return_maps(self, now).get(name)
             local_stamp = getattr(self, 'robot_map_received_at', {}).get(name)
-            return dict(strategy='two_current_frontiers', required_energy=required,
+            return dict(strategy='two_current_frontiers', required_energy=required, evaluated_at_sec=now,
                 first_position=[assignment.x, assignment.y], second_position=[candidate.x, candidate.y],
                 first_group=assignment.viewpoint.group_id, second_group=candidate.viewpoint.group_id,
                 first_path_distance_m=assignment.path_distance_m, between_distance_m=between,
                 between_route=route, home_distance_m=home_distance, home=home,
                 blocked_positions=blocked, battery_state=dict(state),
                 map_age_sec=now-self.map_received_at,
-                pose_age_sec=HeadquartersControl.delivered_pose_age(self, name),
+                pose_age_sec=HeadquartersControl.delivered_pose_age(self, name, now),
                 pose_source_ages_sec=dict(odom=now-self.robot_odom_received_at[name],
                     **({'frame':now-self.robot_tf_received_at[name]}
                        if name in getattr(self,'robot_tf_received_at',{}) else {})),
@@ -3321,7 +3336,7 @@ class HeadquartersControl(Node):
             energy, required, home = budget
             choices.append((math.dist(self.robot_positions[name], home),
                             -assignment.utility, name, assignment, energy, required))
-        if not choices:
+        if not choices or not self.fresh_robot_inputs() or getattr(self, 'shutdown_requested', False):
             return False
         _, _, name, assignment, energy, required = min(choices, key=lambda choice: choice[:3])
         now = self.now()
@@ -3342,7 +3357,7 @@ class HeadquartersControl(Node):
             'required_energy': required, 'available_energy': energy,
             'frontier_position': [assignment.x, assignment.y],
             'opportunity_lookahead': getattr(self, 'opportunity_charge_evidence', {}).get(name),
-            'inputs': {key: sample for key, sample in self.input_freshness_details().items()
+            'inputs': {key: sample for key, sample in input_freshness_at(self.input_freshness_details(), now).items()
                        if key != 'headquarters/target_detection'},
         }, sort_keys=True)))
         self.get_logger().warn(
@@ -3947,9 +3962,10 @@ class HeadquartersControl(Node):
             }, sort_keys=True)))
         if not ready and self.now() - self.last_input_diagnostic_at >= 5.0:
             self.last_input_diagnostic_at = self.now()
-            details = self.input_freshness_details()
+            diagnostic_time = self.now()
+            details = input_freshness_at(self.input_freshness_details(), diagnostic_time)
             self.consumed_publisher.publish(String(data=json.dumps({
-                "event": "coordinator_stale_inputs", "event_time": self.now(),
+                "event": "coordinator_stale_inputs", "event_time": diagnostic_time,
                 "task_phase": self.task_state, "inputs": details,
             }, sort_keys=True)))
             self.get_logger().warning(
@@ -4068,8 +4084,9 @@ class HeadquartersControl(Node):
                             return
                         active_positions[name] = home
                 return_maps = HeadquartersControl.delivered_return_maps(self)
+                assignment_time = self.now()
                 assignment_started = time.perf_counter()
-                self.rally_targets = assign_rally_poses(
+                assignment = assign_rally_poses(
                     self.map_data,
                     self.resolution,
                     self.origin,
@@ -4082,10 +4099,13 @@ class HeadquartersControl(Node):
                     hold_sec=self.rally_hold_sec,
                     return_maps=return_maps,
                 )
-                self.rally_final_targets = dict(self.rally_targets)
                 HeadquartersControl.record_rally_assignment(self, active_positions, return_maps,
                     time.perf_counter()-assignment_started,
-                    self.rally_targets if len(self.rally_targets) == len(active_names) else None)
+                    assignment if len(assignment) == len(active_names) else None, assignment_time)
+                if not self.fresh_robot_inputs() or not self.fresh_target():
+                    return
+                self.rally_targets = assignment
+                self.rally_final_targets = dict(self.rally_targets)
                 if len(self.rally_targets) != len(active_names):
                     if not self.active_batteries_ready():
                         return  # Surveys do not reserve independent returns.
@@ -4875,7 +4895,7 @@ class HeadquartersControl(Node):
         if local_map is None:
             return False
         now = self.now()
-        inputs = self.input_freshness_details()
+        inputs = input_freshness_at(self.input_freshness_details(), now)
         map_age = max(inputs['headquarters/fused_map_snapshot']['age_sec'],
                       inputs[name+'/map_snapshot']['age_sec'])
         pose_age = max(inputs[name+'/pose_state']['age_sec'], inputs[name+'/frame_state']['age_sec'])
@@ -4886,7 +4906,7 @@ class HeadquartersControl(Node):
         replacement = funded_rally_replacement(self.map_data, self.resolution, self.origin,
             self.robot_positions[name], self.target, self.battery_states[name], local_map,
             map_age, pose_age, reserved, blocked, self.rally_hold_sec, wait)
-        if replacement is None:
+        if replacement is None or not self.fresh_robot_inputs() or not self.fresh_target():
             return False
         pose, route, required = replacement
         previous = self.rally_final_targets[name]
@@ -5126,7 +5146,7 @@ class HeadquartersControl(Node):
                     robot=name,target=list(self.target),position=list(position),
                     yaw=yaw,desired_yaw=heading,
                     target_source_time=self.target_received_source_time,
-                    inputs=self.input_freshness_details(),
+                    inputs=input_freshness_at(self.input_freshness_details(), now),
                 ),sort_keys=True)))
             return False
         # Turning in a known-safe current cell does not require a translated
@@ -5273,6 +5293,20 @@ class HeadquartersControl(Node):
         if not client.server_is_ready():
             self.survey_attempts += 1
             return False
+        choice = None if heading_only else getattr(self, 'target_survey_choice', None)
+        if choice is not None:
+            choice['admitted_route'] = [list(point) for point in plan[1]]
+            choice['reserved_routes'] = [[list(point) for point in route] for route in reservations]
+            choice['admitted_distance_m'] = distance
+            choice['required_energy'] = (HeadquartersControl.exploration_required_energy(
+                self, robot_name, distance, (pose.x, pose.y)) if self.enable_battery else None)
+            choice['required_energy_evaluated_at_sec'] = getattr(
+                self, 'exploration_budget_times', {}).get(robot_name)
+            if self.enable_battery and (choice['required_energy'] is None
+                    or self.battery_states[robot_name]['energy'] <= choice['required_energy']):
+                return False
+        if not self.fresh_robot_inputs() or not self.fresh_target():
+            return False
         goal = NavigateToPose.Goal()
         goal.pose = PoseStamped()
         goal.pose.header.frame_id = "map"
@@ -5286,13 +5320,6 @@ class HeadquartersControl(Node):
         self.survey_heading_only = heading_only
         self.survey_cancel_requested = False
         self.survey_goal_pending = True
-        choice = None if heading_only else getattr(self, 'target_survey_choice', None)
-        if choice is not None:
-            choice['admitted_route'] = [list(point) for point in plan[1]]
-            choice['reserved_routes'] = [[list(point) for point in route] for route in reservations]
-            choice['admitted_distance_m'] = distance
-            choice['required_energy'] = (HeadquartersControl.exploration_required_energy(
-                self, robot_name, distance, (pose.x, pose.y)) if self.enable_battery else None)
         self.record_navigation_decision(robot_name,
             "target_observation_heading" if heading_only else
             "target_information_survey" if choice is not None else "target_survey", goal.pose)
@@ -5603,11 +5630,21 @@ class HeadquartersControl(Node):
                 f"{robot_name} rally goal failed with status {status}."
             )
 
+    def create_subscription(self, msg_type, topic, callback, qos_profile, **kwargs):
+        # TimeSource creates its subscription while Node.__init__ is running.
+        # Only the existing clock moves to another group; all state and action
+        # callbacks remain serialized in the original default group.
+        if msg_type is Clock and topic == '/clock' and kwargs.get('callback_group') is None:
+            kwargs['callback_group'] = self.clock_callback_group
+        return super().create_subscription(msg_type, topic, callback, qos_profile, **kwargs)
+
     def now(self):
         return self.get_clock().now().nanoseconds / 1e9
 
     def fresh_robot_inputs(self):
         """Only allocate from pose/TF/map data delivered within the TTL window."""
+        if getattr(self, 'shutdown_requested', False):
+            return False
         now = self.now()
         timeout = self.message_freshness_timeout_sec
         if (self.map_received_at is None or not 0 <= now - self.map_received_at
@@ -5625,7 +5662,13 @@ class HeadquartersControl(Node):
         )
         if ready:
             HeadquartersControl.refresh_planning_map(self)
-        return ready
+        if not ready:
+            return False
+        completed_at = self.now()
+        return all(sample['source_time'] is not None
+                   and 0 <= completed_at-sample['source_time'] <= sample['ttl_sec']
+                   for key, sample in self.input_freshness_details().items()
+                   if key != 'headquarters/target_detection')
 
     def fresh_robot_poses(self):
         """Require live pose/TF for traffic safety and the final hold gate."""
@@ -5843,6 +5886,7 @@ class HeadquartersControl(Node):
     def frontier_travel_preference(self, name, assignment, fields):
         """Rank by relative known travel, considering currently funded peers."""
         peers = {}
+        rank_time = self.now()
         cell = world_to_grid(assignment.x, assignment.y, self.resolution, *self.origin)
         for peer, distances in fields.items():
             if peer == name or distances is None:
@@ -5855,11 +5899,12 @@ class HeadquartersControl(Node):
                 if peer not in self.battery_states:
                     continue
                 required = HeadquartersControl.exploration_required_energy(
-                    self, peer, distance, (assignment.x, assignment.y))
+                    self, peer, distance, (assignment.x, assignment.y), rank_time)
                 if required is None or self.battery_states[peer]['energy'] <= required:
                     continue
             peers[peer] = dict(distance_m=distance, required_energy=required)
         preference=dict(strategy='relative_geodesic_travel',
+            ranking_time_sec=rank_time,
             eligible_robot_names=list(fields),
             factor=relative_travel_factor(assignment.path_distance_m,
                 [row['distance_m'] for row in peers.values()]),
@@ -5921,6 +5966,24 @@ class HeadquartersControl(Node):
             return
         if not idle_positions:
             return
+        planning_started = self.now()
+        planning_inputs = input_freshness_at(self.input_freshness_details(), planning_started)
+        deadline = min((sample['source_time'] + min(sample['ttl_sec'],
+                getattr(self, 'message_freshness_timeout_sec', 5.))
+            for key, sample in planning_inputs.items()
+            if key != 'headquarters/target_detection' and sample['source_time'] is not None),
+            default=planning_started)
+        def lease_current(stage):
+            now = self.now()
+            if getattr(self, 'shutdown_requested', False):
+                return False
+            if planning_started <= now <= deadline:
+                return True
+            self.consumed_publisher.publish(String(data=json.dumps(dict(
+                event='coordinator_planning_lease_expired', event_time=now,
+                planning_started_at_sec=planning_started, source_deadline_sec=deadline,
+                stage=stage, inputs_at_start=planning_inputs), sort_keys=True)))
+            return False
         exclusions = self.active_exclusions()
         candidates = []
         diagnostics = {
@@ -5958,6 +6021,8 @@ class HeadquartersControl(Node):
             diagnostics["frontier_groups"] = 0
             diagnostics["groups_with_viewpoints"] = 0
             for robot_name, position in idle_positions.items():
+                if not lease_current('candidate_generation'):
+                    return
                 initial_search=(not search and getattr(self,'enable_rally',False)
                     and getattr(self,'initial_search_next',{}).get(robot_name,False))
                 robot_exclusions = list(exclusions)
@@ -6010,6 +6075,8 @@ class HeadquartersControl(Node):
                 ]
                 lookahead_candidates[robot_name] = [row[3] for row in robot_candidates]
                 for _, _, group_id, assignment in robot_candidates:
+                    if not lease_current('candidate_budget'):
+                        return
                     # Preserve reachability analysis for an unfunded frontier,
                     # but request charging instead of executing a trip that is
                     # already expected to be interrupted by local reserve.
@@ -6078,6 +6145,8 @@ class HeadquartersControl(Node):
             ]
             for _, name, _, assignment in sorted(candidates, key=lambda item:
                 -frontier_scheduling_score(item[0], (item[1], item[3]) in resume_candidates)):
+                if not lease_current('route_admission'):
+                    return
                 if name in plans:
                     continue
                 unfunded = (name, assignment) in unfunded_candidates
@@ -6164,6 +6233,8 @@ class HeadquartersControl(Node):
                     if getattr(self, 'enable_battery', False):
                         witness['required_energy'] = HeadquartersControl.exploration_required_energy(
                             self, name, planned_distance, (assignment.x, assignment.y))
+                        witness['required_energy_evaluated_at_sec'] = getattr(
+                            self, 'exploration_budget_times', {}).get(name)
                     self.exploration_travel_choices[name] = witness
                 reservations.append(route)
                 if len(selected) + active_explorers >= max_concurrent:
@@ -6198,6 +6269,8 @@ class HeadquartersControl(Node):
                 )
                 self.last_no_assignment_log = now
             return
+        if not lease_current('dispatch') or not self.fresh_robot_inputs():
+            return
         for robot_name in selected:
             assignment = plans[robot_name]
             if robot_name not in resuming_names:
@@ -6226,10 +6299,11 @@ class HeadquartersControl(Node):
             self.send_goal(robot_name, assignment)
 
     def record_navigation_decision(self, robot_name, kind, goal_pose=None):
+        now = self.now()
         event = {
-            "event": "coordinator_navigation_decision", "event_time": self.now(),
+            "event": "coordinator_navigation_decision", "event_time": now,
             "robot": robot_name, "kind": kind, "task_phase": self.task_state,
-            "inputs": self.input_freshness_details(),
+            "inputs": input_freshness_at(self.input_freshness_details(), now),
         }
         if getattr(self, "map_self_return_cells", {}):
             event['planning_map_self_return_cells'] = self.map_self_return_cells
@@ -6620,11 +6694,17 @@ class HeadquartersControl(Node):
 def main(args=None):
     rclpy.init(args=args)
     control = HeadquartersControl()
+    executor = MultiThreadedExecutor(num_threads=2)
+    executor.add_node(control)
     try:
-        rclpy.spin(control)
+        executor.spin()
     except (KeyboardInterrupt, ExternalShutdownException):
         pass
     finally:
+        control.shutdown_requested = True
+        for timer in control.timers:
+            timer.cancel()
+        executor.shutdown()
         control.destroy_node()
         if rclpy.ok():
             rclpy.shutdown()

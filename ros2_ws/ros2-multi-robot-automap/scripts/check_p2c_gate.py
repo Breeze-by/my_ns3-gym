@@ -151,25 +151,58 @@ def return_audit(path,require_pose_leases=False,require_map_candidates=False):
         local_legs=legs,charger_returns=sum(r['outcome']=='charger_stopped' for r in rows),returns=rows)
 
 
-def lookahead_audit(records,require_compound_pose=False):
+def budget_evaluation_time(event, witness, key, required=False):
+    if required:assert key in witness, ('missing budget evaluation instant', key)
+    evaluated=witness.get(key,event['event_time'])
+    assert math.isfinite(evaluated) and evaluated<=event['event_time']
+    if not required:
+        return evaluated  # Historical cohorts retain their original evidence contract.
+    for stream,sample in event['inputs'].items():
+        if stream=='headquarters/target_detection':continue
+        assert sample['source_time'] is not None
+        assert 0<=event['event_time']-sample['source_time']<=sample['ttl_sec']
+        assert math.isclose(event['event_time']-sample['source_time'],sample['age_sec'],abs_tol=1e-8)
+        assert 0<=evaluated-sample['source_time']<=sample['ttl_sec']
+    return evaluated
+
+
+def planning_lease_audit(records):
+    count=0;stages={}
+    for e in records:
+        if e.get('event')!='coordinator_planning_lease_expired':continue
+        started=e['planning_started_at_sec'];ended=e['event_time'];inputs=e['inputs_at_start']
+        leases=[sample for key,sample in inputs.items() if key!='headquarters/target_detection']
+        assert leases and all(sample['source_time'] is not None for sample in leases)
+        for sample in leases:
+            assert 0<=started-sample['source_time']<=sample['ttl_sec']
+            assert math.isclose(started-sample['source_time'],sample['age_sec'],abs_tol=1e-8)
+        deadline=min(sample['source_time']+sample['ttl_sec'] for sample in leases)
+        assert math.isclose(deadline,e['source_deadline_sec'],abs_tol=1e-8)
+        assert ended<started or ended>deadline
+        stages[e['stage']]=stages.get(e['stage'],0)+1;count+=1
+    return dict(status='PASS',abandoned_expired_plans=count,stages=stages)
+
+
+def lookahead_audit(records,require_compound_pose=False,require_live_clock=False):
     count=0
     for e in records:
         if e.get('event')!='coordinator_charge_decision' or not e.get('opportunity_lookahead'):
             continue
         f=e['opportunity_lookahead'];saved=f['map_evidence'];state=f['battery_state']
+        evaluated=budget_evaluation_time(e,f,'evaluated_at_sec',require_live_clock)
         assert f['strategy']=='two_current_frontiers' and saved['source']=='ap_delivered_planning_map'
         assert saved['encoding']=='zlib_base64_int16_le'
         assert f['first_group']!=f['second_group']
         assert math.dist(f['first_position'],f['second_position'])>=control.MIN_TARGET_SEPARATION_M
-        assert math.isclose(e['event_time']-saved['source_time'],f['map_age_sec'],abs_tol=1e-8)
+        assert math.isclose(evaluated-saved['source_time'],f['map_age_sec'],abs_tol=1e-8)
         assert e['inputs']['headquarters/fused_map_snapshot']['source_time']==saved['source_time']
         ages=f.get('pose_source_ages_sec')
         if require_compound_pose:assert ages is not None and set(ages)=={'odom','frame'}
         if ages is None:
-            assert math.isclose(e['inputs'][e['robot']+'/pose_state']['age_sec'],f['pose_age_sec'],abs_tol=1e-8)
+            assert math.isclose(e['inputs'][e['robot']+'/pose_state']['age_sec']-(e['event_time']-evaluated),f['pose_age_sec'],abs_tol=1e-8)
         else:
             for key,kind in (('odom','pose_state'),('frame','frame_state')):
-                if key in ages:assert math.isclose(ages[key],e['inputs'][e['robot']+'/'+kind]['age_sec'],abs_tol=1e-8)
+                if key in ages:assert math.isclose(ages[key],e['inputs'][e['robot']+'/'+kind]['age_sec']-(e['event_time']-evaluated),abs_tol=1e-8)
             assert all(math.isfinite(age) and 0<=age<=2. for age in ages.values())
             assert math.isclose(max(ages.values()),f['pose_age_sec'],abs_tol=1e-8)
         assert 0<=f['map_age_sec']<=5 and 0<=f['pose_age_sec']<=2
@@ -194,7 +227,7 @@ def lookahead_audit(records,require_compound_pose=False):
             f['home'],state.get('charge_radius_m',.8),local_geometry)
         home_distance=min((r['path_distance_m'] for r in candidates if r['qualified']),default=None)
         assert home_distance is not None and math.isclose(home_distance,f['home_distance_m'],abs_tol=1e-8)
-        input_age=max(f['map_age_sec'],e['event_time']-local['source_time']) if local else f['map_age_sec']
+        input_age=max(f['map_age_sec'],evaluated-local['source_time']) if local else f['map_age_sec']
         assert math.isclose(f.get('map_input_age_sec',f['map_age_sec']),input_age,abs_tol=1e-8)
         required=control.battery_assignment_required_energy(f['first_path_distance_m']+between,home_distance,
             state.get('move_cost_per_m',1.),state.get('idle_cost_per_sec',.02),state.get('return_path_factor',2.),
@@ -206,7 +239,7 @@ def lookahead_audit(records,require_compound_pose=False):
 
 
 def exploration_travel_audit(records,required=False,require_commitment=False,require_bounded_commitment=False,
-        require_initial_search=False,require_diversity=False,require_camera_search=False):
+        require_initial_search=False,require_diversity=False,require_camera_search=False,require_live_clock=False):
     """Rebuild executed frontier travel and delivered-only energy witnesses."""
     count=0;discounts=0;resumed=0;visual_count=0;diversity_count=0;camera_count=0
     for e in records:
@@ -216,6 +249,7 @@ def exploration_travel_audit(records,required=False,require_commitment=False,req
         if f is None:continue
         assert f['strategy']=='relative_geodesic_travel'
         now=e['event_time'];geometry={}
+        ranked_at=budget_evaluation_time(e,f,'ranking_time_sec',require_live_clock)
         for key,stream,source,s in [
             ('planning','headquarters/fused_map_snapshot','ap_delivered_planning_map',e['planning_map']),
             ('source','headquarters/fused_map_snapshot','ap_delivered_fused_map',e['source_map']),
@@ -249,15 +283,15 @@ def exploration_travel_audit(records,required=False,require_commitment=False,req
         assert math.isclose(nominal,f['own_nominal_distance_m'],abs_tol=1e-8)
         assert math.isclose(planned,f['planned_distance_m'],abs_tol=1e-8)
         states=e['battery_states']
-        def energy(peer,d):
+        def energy(peer,d,evaluated):
             state=states[peer];ages=[]
             for kind,ttl in (('pose_state',2.),('frame_state',2.),('battery_state',5.)):
-                lease=e['inputs'][peer+'/'+kind];age=now-lease['source_time']
-                assert 0<=age<=ttl and math.isclose(age,lease['age_sec'],abs_tol=1e-8)
+                lease=e['inputs'][peer+'/'+kind];age=evaluated-lease['source_time']
+                assert 0<=age<=ttl and math.isclose(now-lease['source_time'],lease['age_sec'],abs_tol=1e-8)
                 if kind!='battery_state':ages.append(age)
             assert state['mode']=='ACTIVE' and state['stamp_sec']==e['inputs'][peer+'/battery_state']['source_time']
             local=geometry.get(peer);home=(state['charge_x'],state['charge_y'])
-            map_age=max(now-e['planning_map']['source_time'],now-e['return_maps'][peer]['source_time']) if local else now-e['planning_map']['source_time']
+            map_age=max(evaluated-e['planning_map']['source_time'],evaluated-e['return_maps'][peer]['source_time']) if local else evaluated-e['planning_map']['source_time']
             def budget(task_distance,destination):
                 candidates=control.qualified_return_candidates(raw['data'],raw['resolution'],raw['origin'],destination,
                     home,state.get('charge_radius_m',.8),local)
@@ -274,7 +308,7 @@ def exploration_travel_audit(records,required=False,require_commitment=False,req
             if peer==name:continue
             d=distance(peer)
             if not math.isfinite(d) or d>=nominal:continue
-            cost=None if states is None else energy(peer,d)
+            cost=None if states is None else energy(peer,d,ranked_at)
             if cost is not None and (not math.isfinite(cost) or states[peer]['energy']<=cost):continue
             peers[peer]=dict(distance_m=d,required_energy=cost)
         assert set(peers)==set(f['peers'])
@@ -374,7 +408,8 @@ def exploration_travel_audit(records,required=False,require_commitment=False,req
             score=control.frontier_scheduling_score(f['adjusted_utility'],'resume_intent' in f)
             assert math.isclose(score,f['scheduling_score'],abs_tol=1e-8)
         if states is not None:
-            cost=energy(name,planned)
+            priced_at=budget_evaluation_time(e,f,'required_energy_evaluated_at_sec',require_live_clock)
+            cost=energy(name,planned,priced_at)
             assert math.isfinite(cost) and cost<states[name]['energy']
             assert math.isclose(cost,f['required_energy'],abs_tol=1e-8)
             assert f['battery_factor']==1.
@@ -386,7 +421,7 @@ def exploration_travel_audit(records,required=False,require_commitment=False,req
         camera_aware_visual_witnesses=camera_count,camera_search_required=require_camera_search)
 
 
-def target_survey_audit(records, declared=False, radius_m=None, position_tolerance_m=None):
+def target_survey_audit(records, declared=False, radius_m=None, position_tolerance_m=None, require_live_clock=False):
     """Rebuild target-local gain and the actually admitted, funded survey leg."""
     count=0
     for e in records:
@@ -450,12 +485,13 @@ def target_survey_audit(records, declared=False, radius_m=None, position_toleran
         states=e['battery_states']
         if states is None:assert s['required_energy'] is None
         else:
+            evaluated=budget_evaluation_time(e,s,'required_energy_evaluated_at_sec',require_live_clock)
             state=states[name];lease=e['inputs'][name+'/battery_state']
             assert state['mode']=='ACTIVE' and state['stamp_sec']==lease['source_time']
             assert 0<=now-lease['source_time']<=5.
-            pose_age=max(e['inputs'][name+'/'+kind]['age_sec'] for kind in ('pose_state','frame_state'))
-            local=geometry.get(name);map_age=max(now-e['planning_map']['source_time'],
-                now-e['return_maps'][name]['source_time']) if local else now-e['planning_map']['source_time']
+            pose_age=max(evaluated-e['inputs'][name+'/'+kind]['source_time'] for kind in ('pose_state','frame_state'))
+            local=geometry.get(name);map_age=max(evaluated-e['planning_map']['source_time'],
+                evaluated-e['return_maps'][name]['source_time']) if local else evaluated-e['planning_map']['source_time']
             def budget(task_distance,destination):
                 candidates=control.qualified_return_candidates(g['data'],g['resolution'],g['origin'],
                     destination,(state['charge_x'],state['charge_y']),state.get('charge_radius_m',.8),local)
@@ -656,7 +692,7 @@ def check_one(path,config):
     energy=energy_audit(directory/'safety_events.jsonl',result,
         bool(config.get('native_energy_accounting')) and case!='empty_battery')
     forecast=lookahead_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
-        bool(config.get('ap_pose_budget_contract')))
+        bool(config.get('ap_pose_budget_contract')),bool(config.get('coordinator_live_clock')))
     vetoes=ap_return_veto_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     assignments=rally_assignment_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     if config.get('rally_return_objective') and result.get('rally_assignments'):
@@ -665,18 +701,22 @@ def check_one(path,config):
     travel=exploration_travel_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
         bool(config.get('exploration_travel_preference')),bool(config.get('exploration_frontier_commitment')),
         bool(config.get('exploration_bounded_commitment')),bool(config.get('initial_known_space_search')),
-        bool(config.get('mission_spatial_diversity')),bool(config.get('camera_aware_known_search')))
+        bool(config.get('mission_spatial_diversity')),bool(config.get('camera_aware_known_search')),
+        bool(config.get('coordinator_live_clock')))
     surveys=target_survey_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
-        bool(config.get('target_information_survey')),result['target_max_distance_m'],result['rally_position_tolerance_m'])
+        bool(config.get('target_information_survey')),result['target_max_distance_m'],result['rally_position_tolerance_m'],
+        bool(config.get('coordinator_live_clock')))
     headings=observer_heading_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
         bool(config.get('observer_heading_confirmation_gap')),result['target_max_distance_m'],
         result['rally_position_tolerance_m'],math.radians(result['target_field_of_view_deg']))
+    leases=planning_lease_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     assert result['collision_monitoring_active']
     return dict(case=case,status='PASS',git_commit=row['git_commit'],source_digests=row['source_digests'],
         result=result,raw_summary=str(path.resolve()),raw_summary_sha256=sha(path),return_audit=native,
         communication_audit=communications,lookahead_audit=forecast,native_energy_audit=energy,
         ap_return_veto_audit=vetoes,rally_assignment_audit=assignments,rally_repair_audit=repairs,
         exploration_travel_audit=travel,target_survey_audit=surveys,observer_heading_audit=headings,
+        planning_lease_audit=leases,
         native_tf_ingress_audit=ingress,launch_process_audit=processes)
 
 

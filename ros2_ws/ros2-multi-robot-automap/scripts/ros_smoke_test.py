@@ -288,6 +288,18 @@ def require_bypass_audit(robot_count, timeout, graph_output=None):
         )
 
 
+def read_evaluation_result(result_path):
+    """The evaluator may still be writing a newly created result file."""
+    try:
+        with result_path.open() as result_file:
+            result = json.load(result_file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return None
+    if not isinstance(result, dict):
+        raise RuntimeError('evaluation result must be a JSON object')
+    return result
+
+
 def wait_for_evaluation(
     process,
     result_path,
@@ -304,9 +316,8 @@ def wait_for_evaluation(
     deadline = time.monotonic() + timeout
     log_offset = 0
     while time.monotonic() < deadline:
-        if result_path.exists():
-            with result_path.open() as result_file:
-                result = json.load(result_file)
+        result = read_evaluation_result(result_path)
+        if result is not None:
             required = {
                 "correct_free_coverage_ratio",
                 "coverage_threshold",
