@@ -122,7 +122,7 @@ def test_real_known_candidate_passes_navigation_publication_and_independent_read
     node.initial_search_next={'tb1':True};node.initial_search_visits={};node.initial_search_goals={}
     node.input_freshness_details=lambda:{'headquarters/fused_map_snapshot':dict(source_time=10.,age_sec=0.,ttl_sec=5.),
         **{name+'/'+kind:dict(source_time=10.,age_sec=0.,ttl_sec=ttl)
-           for name in node.robot_positions for kind,ttl in (('pose_state',2.),('frame_state',2.),('battery_state',5.))}}
+           for name in node.robot_positions for kind,ttl in (('pose_state',2.),('frame_state',2.),('map_snapshot',5.),('battery_state',5.))}}
     def publish(name,a):
         goal=PoseStamped();goal.pose.position.x=a.navigation_x;goal.pose.position.y=a.navigation_y
         yaw=a.navigation_yaw or 0.;goal.pose.orientation.z=math.sin(yaw/2.);goal.pose.orientation.w=math.cos(yaw/2.)

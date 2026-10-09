@@ -3273,6 +3273,9 @@ class HeadquartersControl(Node):
         self.goal_targets = {}
         self.goal_routes = {}
         self.exploration_resume_intents = {}
+        self.pending_exploration_return_yield = None
+        self.exploration_return_yields = {}
+        self.exploration_charge_return_evidence = None
         self.cancel_requested = {}
         self.robot_subscriptions = []
 
@@ -3779,6 +3782,162 @@ class HeadquartersControl(Node):
                     'ap_delivered_planning_map', self.map_received_at, None))
         return None
 
+    def return_preparation_inputs(self):
+        """Include returning/charging bodies omitted from ordinary admissions."""
+        details = {'headquarters/fused_map_snapshot':dict(source_time=self.map_received_at, ttl_sec=5.)}
+        for name in self.participating_robots():
+            for kind, stamps, ttl in (
+                ('pose_state', self.robot_odom_received_at, 2.),
+                ('frame_state', self.robot_tf_received_at, 2.),
+                ('map_snapshot', self.robot_map_received_at, 5.),
+                ('battery_state', self.battery_state_received_at, 5.)):
+                details[name+'/'+kind] = dict(source_time=stamps.get(name),
+                    ttl_sec=min(getattr(self, 'message_freshness_timeout_sec', 5.), ttl))
+        return details
+
+    def fresh_return_preparation_inputs(self):
+        try:
+            positions_valid = all(p is not None and len(p) == 2 and all(math.isfinite(v) for v in p)
+                                  for p in self.robot_positions.values())
+        except (TypeError, ValueError):
+            return False
+        if not positions_valid:
+            return False
+        if not self.fresh_robot_inputs():
+            return False
+        now = self.now()
+        return all(isinstance(s['source_time'], (int, float)) and math.isfinite(s['source_time'])
+            and 0 <= now-s['source_time'] <= s['ttl_sec']
+            for s in HeadquartersControl.return_preparation_inputs(self).values())
+
+    def prepare_exploration_return(self, returning):
+        """Clear idle bodies before requesting a return, or help a live return.
+
+        Searching for a refuge can use up a source lease. Carry only its
+        geometric intent into the next callback; never carry route authority.
+        """
+        self.exploration_charge_return_evidence = None
+        if not HeadquartersControl.fresh_return_preparation_inputs(self):
+            return True
+        positions = self.robot_positions
+        protected = rally_return_reservations(
+            self.map_data, self.resolution, self.origin, positions,
+            self.battery_states, self.battery_modes, {returning},
+            getattr(self, 'return_distance_caches', None),
+            HeadquartersControl.delivered_return_maps(self))
+        if protected is None or returning not in protected:
+            return True
+        route = protected[returning]
+        if any(position is None for position in positions.values()):
+            return True
+        blockers = [name for name, position in positions.items()
+            if name != returning and routes_conflict((position,), route, RALLY_ROUTE_SEPARATION_M)]
+        blockers.sort(key=lambda name:(math.dist(positions[name], positions[returning]), name))
+        if not blockers:
+            if not HeadquartersControl.fresh_return_preparation_inputs(self):
+                return True
+            self.exploration_charge_return_evidence = dict(
+                returning=returning, protected_routes=protected,
+                clearance_m=RALLY_ROUTE_SEPARATION_M,
+                evaluated_at_sec=self.now())
+            return False
+        for name in blockers:
+            if (self.battery_modes[name] != 'ACTIVE' or self.robot_states[name] != 'idle'
+                    or self.goal_handles.get(name) is not None):
+                continue
+            blocked = [p for other, p in positions.items() if other != name and p is not None]
+            state = self.battery_states[returning]
+            refuge = rally_yield_pose(self.map_data, self.resolution, self.origin,
+                positions[name], (float(state['charge_x']), float(state['charge_y'])),
+                reserved_poses=self.active_exclusions(),
+                blocked_positions=blocked, reserved_routes=tuple(protected.values()),
+                route_separation_m=RALLY_ROUTE_SEPARATION_M, visible_only=True)
+            if refuge is not None:
+                self.pending_exploration_return_yield = dict(
+                    robot=name, returning=returning, refuge=refuge,
+                    task_phase=self.task_state)
+                break
+        return True
+
+    def admit_exploration_return_yield(self):
+        """Recheck one proposed refuge with fresh complete paths and energy."""
+        proposal = getattr(self, 'pending_exploration_return_yield', None)
+        if proposal is None:
+            return False
+        name, returning, refuge = proposal['robot'], proposal['returning'], proposal['refuge']
+        if (self.task_state != proposal['task_phase']
+                or self.task_state not in ('EXPLORE', 'FOUND_UNCONFIRMED')
+                or self.battery_modes[name] != 'ACTIVE'
+                or self.battery_modes[returning] not in ('ACTIVE', 'RETURNING')
+                or any(state == 'active' for state in self.robot_states.values())):
+            self.pending_exploration_return_yield = None
+            return False
+        if not HeadquartersControl.fresh_return_preparation_inputs(self):
+            return True
+        protected = rally_return_reservations(
+            self.map_data, self.resolution, self.origin, self.robot_positions,
+            self.battery_states, self.battery_modes, {returning},
+            getattr(self, 'return_distance_caches', None),
+            HeadquartersControl.delivered_return_maps(self))
+        point = (refuge.x, refuge.y)
+        if (protected is None or returning not in protected
+                or any(routes_conflict((point,), route, RALLY_ROUTE_SEPARATION_M)
+                       for route in protected.values())):
+            self.pending_exploration_return_yield = None
+            return True
+        if not routes_conflict((self.robot_positions[name],), protected[returning], RALLY_ROUTE_SEPARATION_M):
+            self.pending_exploration_return_yield = None
+            return True
+        blocked = [p for other, p in self.robot_positions.items() if other != name and p is not None]
+        target, route = plan_rally_leg(refuge, self.map_data, self.resolution,
+            self.origin, self.robot_positions[name], MAX_NAVIGATION_LEG_M,
+            blocked_positions=blocked, clearance_m=PATH_CLEARANCE_M, visible_only=True)
+        if (target is None or math.dist((target.x, target.y), point) > NAVIGATION_POSITION_TOLERANCE_M
+                or math.dist(self.robot_positions[name], point) < .5):
+            self.pending_exploration_return_yield = None
+            return True
+        for reserved in protected.values():
+            separations = cKDTree(reserved).query(route)[0]
+            if any(b+self.resolution < min(a, RALLY_ROUTE_SEPARATION_M)
+                   for a, b in zip(separations, separations[1:])):
+                self.pending_exploration_return_yield = None
+                return True
+        distance = sum(math.dist(a, b) for a, b in zip(route, route[1:]))
+        required = HeadquartersControl.exploration_required_energy(self, name, distance, point)
+        if (required is None or float(self.battery_states[name]['energy']) <= required
+                or not HeadquartersControl.fresh_return_preparation_inputs(self)):
+            return True
+        row, column = world_to_grid(*point, self.resolution, *self.origin)
+        assignment = Assignment(Viewpoint(-1, row, column, row, column, 0, 0),
+            *point, distance, 0., *point, target.yaw)
+        self.exploration_return_yields[name] = dict(
+            returning=returning, protected_routes=protected,
+            clearance_m=RALLY_ROUTE_SEPARATION_M, route=route,
+            required_energy=required, required_energy_evaluated_at_sec=self.exploration_budget_times[name])
+        self.pending_exploration_return_yield = None
+        self.robot_states[name] = 'active'
+        self.goal_targets[name] = assignment
+        self.goal_routes[name] = route
+        self.goal_initial_gain[name] = 0
+        self.send_goal(name, assignment)
+        if self.robot_states[name] != 'active':
+            self.exploration_return_yields.pop(name, None)
+        return True
+
+    def return_preparation_evidence(self, preparation):
+        """Lossless private witnesses; these copies never become new inputs."""
+        return dict(**preparation, inputs=input_freshness_at(
+                HeadquartersControl.return_preparation_inputs(self), self.now()), robot_positions=self.robot_positions,
+            battery_states=self.battery_states, battery_modes=self.battery_modes,
+            planning_map=grid_audit_evidence(self.map_data, self.resolution, self.origin,
+                'ap_delivered_planning_map', self.map_received_at, self.map_received_at),
+            source_map=grid_audit_evidence(self.source_map_data, self.resolution, self.origin,
+                'ap_delivered_fused_map', self.map_received_at, self.map_received_at),
+            self_return_cells=getattr(self, 'map_self_return_cells', {}),
+            return_maps={robot:grid_audit_evidence(g['data'],g['resolution'],g['origin'],
+                'ap_delivered_robot_map',self.robot_map_received_at[robot],self.robot_map_received_at[robot])
+                for robot,g in HeadquartersControl.delivered_return_maps(self).items()})
+
     def request_exploration_charge(self, candidates):
         """Charge one idle robot for an otherwise admissible current frontier.
 
@@ -3806,6 +3965,16 @@ class HeadquartersControl(Node):
         if not choices or not self.fresh_robot_inputs() or getattr(self, 'shutdown_requested', False):
             return False
         _, _, name, assignment, energy, required = min(choices, key=lambda choice: choice[:3])
+        exploration = self.task_state in ('EXPLORE', 'FOUND_UNCONFIRMED')
+        if exploration and HeadquartersControl.prepare_exploration_return(self, name):
+            return True
+        # Corridor preparation has its own computation cost. Reprice at the
+        # current clock and reject expired inputs before issuing the request.
+        budget = HeadquartersControl.exploration_charge_budget(self, name, assignment, allow_opportunity=True)
+        if budget is None or not self.fresh_robot_inputs() or (exploration
+                and not HeadquartersControl.fresh_return_preparation_inputs(self)):
+            return False
+        energy, required, _ = budget
         now = self.now()
         if now - self.rally_charge_requested.get(name, -float('inf')) < 2.0:
             return True
@@ -3824,6 +3993,8 @@ class HeadquartersControl(Node):
             'required_energy': required, 'available_energy': energy,
             'frontier_position': [assignment.x, assignment.y],
             'opportunity_lookahead': getattr(self, 'opportunity_charge_evidence', {}).get(name),
+            'return_preparation': (HeadquartersControl.return_preparation_evidence(
+                self, self.exploration_charge_return_evidence) if exploration else None),
             'inputs': {key: sample for key, sample in input_freshness_at(self.input_freshness_details(), now).items()
                        if key != 'headquarters/target_detection'},
         }, sort_keys=True)))
@@ -4074,7 +4245,8 @@ class HeadquartersControl(Node):
             # reservation. Drain other exploration actions before admitting
             # more traffic; a pending response is canceled on acceptance too.
             for other_name, other_handle in self.goal_handles.items():
-                if other_name == robot_name or other_handle is None:
+                yield_owner = getattr(self, 'exploration_return_yields', {}).get(other_name, {}).get('returning')
+                if other_name == robot_name or other_handle is None or yield_owner == robot_name:
                     continue
                 if not self.cancel_requested[other_name]:
                     self.battery_preempted[other_name] = True
@@ -4417,6 +4589,22 @@ class HeadquartersControl(Node):
         if getattr(self, "return_probe_paused", False):
             return
         state_ready = self.fresh_robot_inputs()
+        proposal = getattr(self, 'pending_exploration_return_yield', None)
+        if proposal is not None and proposal['task_phase'] != self.task_state:
+            self.pending_exploration_return_yield = None
+        if state_ready and self.task_state in ('EXPLORE', 'FOUND_UNCONFIRMED'):
+            if getattr(self, 'pending_exploration_return_yield', None) is not None:
+                HeadquartersControl.admit_exploration_return_yield(self)
+            elif (any(mode == 'RETURNING' for mode in self.battery_modes.values())
+                    and not any(state == 'active' for state in self.robot_states.values())
+                    and self.now()-getattr(self, 'last_exploration_return_attempt_at', -float('inf')) >= 1.):
+                self.last_exploration_return_attempt_at = self.now()
+                for name in self.participating_robots():
+                    if self.battery_modes[name] == 'RETURNING':
+                        HeadquartersControl.prepare_exploration_return(self, name)
+                        if self.pending_exploration_return_yield is not None:
+                            break
+            state_ready = self.fresh_robot_inputs()
         target_ready = self.task_state not in ("FOUND", "RALLY") or self.fresh_target()
         ready = state_ready and target_ready
         if ready != self.last_input_availability:
@@ -6392,6 +6580,11 @@ class HeadquartersControl(Node):
             return
         if not self.fresh_robot_inputs():
             return
+        if getattr(self, 'pending_exploration_return_yield', None) is not None:
+            HeadquartersControl.admit_exploration_return_yield(self)
+            return
+        if getattr(self, 'exploration_return_yields', {}):
+            return
         idle_positions = {
             name: self.robot_positions[name]
             for name, state in self.robot_states.items()
@@ -6946,6 +7139,9 @@ class HeadquartersControl(Node):
                 'ap_delivered_robot_map',self.robot_map_received_at[name],self.robot_map_received_at[name])
                 for name,g in HeadquartersControl.delivered_return_maps(self).items()
                 if name == robot_name}
+        if kind == 'exploration_return_yield':
+            event['return_preparation'] = HeadquartersControl.return_preparation_evidence(
+                self, self.exploration_return_yields[robot_name])
         choice = getattr(self, 'exploration_travel_choices', {}).get(robot_name)
         if kind in ('exploration','initial_visual_search') and choice is not None:
             event['travel_preference'] = choice
@@ -6963,7 +7159,8 @@ class HeadquartersControl(Node):
         self.consumed_publisher.publish(String(data=json.dumps(event, sort_keys=True)))
 
     def send_goal(self, robot_name, assignment):
-        if not self.fresh_robot_inputs():
+        if (not self.fresh_robot_inputs() or (robot_name in getattr(self, 'exploration_return_yields', {})
+                and not HeadquartersControl.fresh_return_preparation_inputs(self))):
             self.robot_states[robot_name] = "idle"
             self.goal_targets[robot_name] = None
             self.goal_routes[robot_name] = ()
@@ -7001,6 +7198,7 @@ class HeadquartersControl(Node):
         goal.pose.pose.orientation.w = math.cos(yaw / 2.0)
         self.record_navigation_decision(
             robot_name,
+            'exploration_return_yield' if robot_name in getattr(self, 'exploration_return_yields', {}) else
             "target_reacquisition_exploration"
             if getattr(self, "target_search_active", False) else (
                 "initial_visual_search" if getattr(self,'initial_search_goals',{}).get(robot_name,False) else "exploration"),
@@ -7039,8 +7237,9 @@ class HeadquartersControl(Node):
         self.goal_last_position[robot_name] = self.robot_positions[robot_name]
         self.goal_known_count[robot_name] = self.map_known_count
         self.cancel_requested[robot_name] = False
+        yield_owner = getattr(self, 'exploration_return_yields', {}).get(robot_name, {}).get('returning')
         if self.battery_modes[robot_name] != "ACTIVE" or any(
-            mode == "RETURNING" for mode in self.battery_modes.values()
+            mode == "RETURNING" and name != yield_owner for name, mode in self.battery_modes.items()
         ) or (getattr(self, "target_search_active", False) and self.fresh_target()):
             self.battery_preempted[robot_name] = True
             self.cancel_requested[robot_name] = True
@@ -7068,7 +7267,9 @@ class HeadquartersControl(Node):
         coverage_gain = (
             self.map_known_count - self.goal_known_count[robot_name]
         )
-        if success:
+        if robot_name in getattr(self, 'exploration_return_yields', {}):
+            self.get_logger().info(f"{robot_name} finished return-corridor escape with status {status}.")
+        elif success:
             self.get_logger().info(
                 f"{robot_name} reached cooperative frontier goal; "
                 f"known-cell delta={coverage_gain}."
@@ -7086,7 +7287,11 @@ class HeadquartersControl(Node):
         )
 
     def finish_goal(self, robot_name, success, blacklist=True):
-        assignment = self.goal_targets[robot_name]
+        return_yield = getattr(self, 'exploration_return_yields', {}).pop(robot_name, None)
+        if return_yield is not None and not success and blacklist and self.goal_targets[robot_name] is not None:
+            failed = self.goal_targets[robot_name]
+            self.bad_targets.append((failed.x, failed.y, self.now()+BAD_TARGET_SEC))
+        assignment = None if return_yield is not None else self.goal_targets[robot_name]
         if (success and assignment is not None
                 and getattr(self, 'task_state', None) in ('EXPLORE', 'FOUND_UNCONFIRMED')):
             completed = getattr(self, 'successful_exploration_legs', {})
@@ -7114,16 +7319,16 @@ class HeadquartersControl(Node):
                                              assignment.viewpoint.information_gain)
             else:
                 resume_intents.pop(robot_name,None)
-        elif not success and not self.battery_preempted[robot_name]:
+        elif not success and not self.battery_preempted[robot_name] and return_yield is None:
             resume_intents.pop(robot_name,None)
-        if hasattr(self,'initial_search_next') and getattr(self,'enable_rally',False):
+        if return_yield is None and hasattr(self,'initial_search_next') and getattr(self,'enable_rally',False):
             if self.battery_modes[robot_name]=='FAILED' or (not success and not self.battery_preempted[robot_name]):
                 self.initial_search_next[robot_name]=False
             elif (success and assignment is not None and self.task_state in ('EXPLORE','FOUND_UNCONFIRMED')
                     and math.dist((assignment.navigation_x,assignment.navigation_y),(assignment.x,assignment.y))
                     <=NAVIGATION_POSITION_TOLERANCE_M):
                 self.initial_search_next[robot_name]=not self.initial_search_goals.get(robot_name,False)
-        if (success and getattr(self, "target_search_active", False)
+        if (return_yield is None and success and getattr(self, "target_search_active", False)
                 and not self.fresh_target() and self.fresh_robot_poses()):
             # A travelled search waypoint deserves a real full-heading scan;
             # map coverage or a visited neighborhood cannot replace detection.
@@ -7173,7 +7378,8 @@ class HeadquartersControl(Node):
             if goal_handle is None or started_at is None or self.cancel_requested[robot_name]:
                 continue
             timed_out = now - started_at >= self.goal_timeout_sec
-            assignment = self.goal_targets[robot_name]
+            assignment = (None if robot_name in getattr(self, 'exploration_return_yields', {})
+                          else self.goal_targets[robot_name])
             remaining_gain = (
                 self.target_information_gain(
                     assignment.x, assignment.y

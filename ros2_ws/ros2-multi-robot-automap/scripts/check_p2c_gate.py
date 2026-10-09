@@ -12,6 +12,7 @@ from multi_robot_exploration import control
 from multi_robot_exploration.bypass_audit import runtime_violations
 from p2c_native_graph import native_tf_ingress_audit
 from p2c_scan_self_filter import scan_self_filter_audit
+from p2c_return_preparation import return_preparation_audit
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -806,6 +807,10 @@ def check_one(path,config):
         result['rally_position_tolerance_m'],None if result['target_field_of_view_deg'] is None
         else math.radians(result['target_field_of_view_deg']))
     leases=planning_lease_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
+    preparations=return_preparation_audit(directory/'ledger.jsonl',bool(config.get('exploration_return_preparation')))
+    if config.get('exploration_return_preparation'):
+        from run_p2d_baseline import file_digest
+        assert row['source_digests']['return_preparation_reader']==file_digest(Path(__file__).with_name('p2c_return_preparation.py'))
     assert result['collision_monitoring_active']
     return dict(case=case,status='PASS',git_commit=row['git_commit'],source_digests=row['source_digests'],
         result=result,raw_summary=str(path.resolve()),raw_summary_sha256=sha(path),return_audit=native,
@@ -814,7 +819,7 @@ def check_one(path,config):
         exploration_travel_audit=travel,target_survey_audit=surveys,observer_heading_audit=headings,
         planning_lease_audit=leases,
         native_tf_ingress_audit=ingress,launch_process_audit=processes,navigation_input_audit=navigation_inputs,
-        native_scan_self_filter_audit=scan_filter)
+        native_scan_self_filter_audit=scan_filter,exploration_return_preparation_audit=preparations)
 
 
 def observer_heading_audit(records,required=False,radius_m=3.,position_tolerance_m=.35,fov_rad=math.pi/2):

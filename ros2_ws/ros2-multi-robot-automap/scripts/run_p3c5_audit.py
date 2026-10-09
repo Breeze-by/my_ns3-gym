@@ -101,6 +101,8 @@ def main(default_manifest=None, log_category='p3c5'):
             for name,filename in (('safety_observer','observe_p3b5.py'),('native_graph_reader','p2c_native_graph.py'))})
     if config.get('navigation_input_capture'):
         manifest['source_digests']['navigation_capture']=file_digest(PROJECT_ROOT/'scripts/p2c_navigation_capture.py')
+    if config.get('exploration_return_preparation'):
+        manifest['source_digests']['return_preparation_reader']=file_digest(PROJECT_ROOT/'scripts/p2c_return_preparation.py')
     if config.get('native_scan_self_filter'):
         manifest['source_digests'].update({name:file_digest(PROJECT_ROOT/path) for name,path in (
             ('slam','src/slam_toolbox'),('robot_models','src/multi_robot/models'),

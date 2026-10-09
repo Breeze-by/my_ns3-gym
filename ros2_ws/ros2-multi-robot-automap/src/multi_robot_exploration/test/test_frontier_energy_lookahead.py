@@ -102,6 +102,8 @@ def test_read_only_forecast_audit_reconstructs_and_rejects_forged_decisions(corr
     event=dict(event='coordinator_charge_decision',robot='tb1',event_time=10.,available_energy=24.,
                required_energy=forecast['required_energy'],opportunity_lookahead=copy.deepcopy(forecast),
                inputs={'headquarters/fused_map_snapshot':dict(source_time=10.),
+                           'tb1/map_snapshot':dict(source_time=10.),
+                           'tb1/frame_state':dict(age_sec=0.),
                        'tb1/pose_state':dict(age_sec=0.)})
     f=event['opportunity_lookahead']
     if corruption=='path':f['between_distance_m']+=1.
@@ -129,6 +131,7 @@ def test_compound_pose_forecast_audit_requires_the_original_frame_age(corruption
     event=dict(event='coordinator_charge_decision',robot='tb1',event_time=10.,available_energy=24.,
         required_energy=forecast['required_energy'],opportunity_lookahead=copy.deepcopy(forecast),
         inputs={'headquarters/fused_map_snapshot':dict(source_time=10.),
+                'tb1/map_snapshot':dict(source_time=10.),
                 'tb1/pose_state':dict(age_sec=0.),'tb1/frame_state':dict(age_sec=.7)})
     f=event['opportunity_lookahead']
     if corruption=='omit_frame':f['pose_source_ages_sec'].pop('frame')

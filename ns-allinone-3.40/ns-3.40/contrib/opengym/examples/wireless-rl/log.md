@@ -8700,3 +8700,27 @@ pytest targeted323PASS13.74s、audit103PASS1.08s；完整首scripts import colle
 条件源clock回放非原交付调度或任务因果，不能填原FAIL。新任务须另clean commit/push同源4→17+2，未暴露917；本轮不进入P4/ns-3/Wi-Fi/RL。完整source/helper/config/原生CDR/旁证SHA在组件report JSON与provenance。
 
 最终源码保护增加原mapper全部参数语义与getLaser/pose graph回调逐字节核验，source2同190/6/54 PASS，source1原件保留。
+
+## 2026-10-10 P2C.1 v44 原四开发与探索返航清道组件
+
+原任务冻结 39e1840930c692612d0cf0584050ae961dce4fff，无 RL/checkpoint，原 forced seed303 / lab101 / rooms202 / corridors303。先首 forced 严格通过后，同源余三格并行；全四原生三 COMPLETE / corridors EXPLORE300.2timeout与10接触，完整严格 FAIL。任务期零非零子退出，关闭后 forced/lab sampler1、rooms navigation_gateway-11 原件保持。各 runner/observer 自然退出0，关闭后才编辑。原文件入口 log/p2c/20261010_p2c_v44，严格 log/p2c_v44_development_gate.json；未调用17正式/两同源物理/917。
+
+新组件 dirty on39e，仅探索入口清道与普通action避让、独立读者和源绑定；原native/SLAM/300s/5s/TTL/刺激保持。全功能1630、定向131、四包5.51s、190保护6声明54协议、实际DDS/Future与两声明 PASS；失败夹具和中间验证均归档。输出 log/p2c_return_preparation_* 及 report/20261010_p2c_return_preparation_components。合成DDS与原交付条件几何不作真实任务、因果收益或硬件保证。
+
+命令（ROS cwd，先 source /opt/ros/humble/setup.bash 与 install/setup.bash；PYTHONNOUSERSITE=1、PYTHONPATH含scripts、FastDDS UDPv4，taskset -c0-79；exact 每格command/config/env/owner/source由原summary绑定）：
+
+```bash
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v44 --domain 218 --gazebo-port 20318
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_lab101 --run-id 20261010_p2c_v44 --domain 218 --gazebo-port 20318
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_rooms202 --run-id 20261010_p2c_v44 --domain 219 --gazebo-port 20319
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_corridors303 --run-id 20261010_p2c_v44 --domain 220 --gazebo-port 20320
+/usr/bin/python3 scripts/check_p2c_gate.py --run-root log/p2c/20261010_p2c_v44 --development --workers 3 --output log/p2c_v44_development_gate.json
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test scripts --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+colcon build --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot --symlink-install
+/usr/bin/python3 scripts/check_p2c_source.py --output log/p2c_return_preparation_source3.json
+/usr/bin/python3 scripts/check_p2c_return_preparation_runtime.py --output log/p2c_return_preparation_runtime4.json
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v45 --domain 218 --gazebo-port 20318 --validate-only
+/usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_ideal --run-id 20261010_p2c_v45_physical --domain 218 --gazebo-port 20318 --validate-only
+```
+
+新冻结完整4→17+2待真实任务；917仍未暴露。原已知种子不称新留出。

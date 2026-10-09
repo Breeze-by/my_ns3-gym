@@ -1,0 +1,223 @@
+{
+  "status": "COMPONENT_PASS_FULL_INTEGRATION_PENDING",
+  "source_parent": "39e1840930c692612d0cf0584050ae961dce4fff",
+  "full_p2c1_status": "FAIL",
+  "retained_original_task_failure": "20261010_p2c_v44_failed_development.json",
+  "algorithm": "Exploration charge entry checks complete return corridors; nearest idle ACTIVE blocker gets a visible known-free body-safe fully funded escape. Only geometric proposal crosses callbacks; current complete routes, all body source leases, endpoint clearance and full energy are rechecked before ordinary action dispatch. A same-beneficiary returning update does not cancel the certified escape.",
+  "unchanged_limits": {
+    "task_horizon_sec": 300,
+    "hold_sec": 5,
+    "pose_tf_ttl_sec": 2,
+    "map_battery_ttl_sec": 5,
+    "target_ttl_sec": 60,
+    "return_corridor_clearance_m": 1.8
+  },
+  "control_ast_delta": {
+    "unchanged": [
+      "resume_return_probe",
+      "publish_task_state",
+      "participating_robots",
+      "input_robot_names",
+      "active_batteries_ready",
+      "active_inputs_ready",
+      "exploration_battery_factor",
+      "known_home_distance",
+      "delivered_return_maps",
+      "record_return_map_veto",
+      "record_rally_assignment",
+      "admit_rally_proposal",
+      "delivered_pose_age",
+      "task_return_required_energy",
+      "exploration_required_energy",
+      "exploration_charge_budget",
+      "frontier_lookahead_budget",
+      "target_observation_callback",
+      "fresh_target",
+      "stop_target_scan",
+      "reacquire_target_by_scanning",
+      "target_scan_response",
+      "target_scan_result",
+      "finish_target_scan",
+      "stop_target_search",
+      "target_detection_callback",
+      "battery_failure_callback",
+      "mark_robot_failed",
+      "publish_rally_assignments",
+      "fail_task",
+      "release_return_yields",
+      "retain_rally_refuge",
+      "preempt_rally_return_conflicts",
+      "yield_to_returning_robot",
+      "repair_rally_return_target",
+      "prepare_rally_charges",
+      "rally_plan_has_energy",
+      "restore_observer_heading",
+      "survey_rally_connection",
+      "survey_target_frontiers",
+      "send_survey_goal",
+      "survey_goal_response",
+      "survey_goal_result",
+      "send_rally_goal",
+      "rally_goal_response",
+      "rally_goal_result",
+      "create_subscription",
+      "now",
+      "fresh_robot_inputs",
+      "fresh_robot_poses",
+      "input_freshness_details",
+      "refresh_planning_map",
+      "map_callback",
+      "robot_odom_callback",
+      "robot_tf_callback",
+      "robot_map_callback",
+      "record_initial_search_visit",
+      "active_exclusions",
+      "target_information_gain",
+      "frontier_travel_preference",
+      "feedback_callback",
+      "has_funded_frontier_alternative",
+      "check_exploration_completion",
+      "save_map"
+    ],
+    "changed": [
+      "__init__",
+      "request_exploration_charge",
+      "battery_state_callback",
+      "update_mission",
+      "assign_idle_robots",
+      "record_navigation_decision",
+      "send_goal",
+      "goal_response_callback",
+      "goal_result_callback",
+      "finish_goal",
+      "cancel_stalled_goals"
+    ],
+    "added": [
+      "admit_exploration_return_yield",
+      "fresh_return_preparation_inputs",
+      "prepare_exploration_return",
+      "return_preparation_evidence",
+      "return_preparation_inputs"
+    ]
+  },
+  "unchanged_native_source_sha256": {
+    "src/multi_robot_exploration/multi_robot_exploration/battery_manager.py": "403809f4bc25f7c10c3a811afded2d3a1363e2a624fcd7fd851bde6609b99eee",
+    "src/slam_toolbox/src/slam_toolbox_common.cpp": "64129edefd94ec32b0799f5de60cd310c22686db360221a9df3f13648ab1b774",
+    "src/slam_toolbox/include/slam_toolbox/scan_self_filter.hpp": "1543d4eff290b48190cfeac00061d2973d09f3d94076ccf7b430150d1886aeae",
+    "scripts/stage_p2c_return_probe.py": "a3c8f0c6174c6909f02fcafa42818bb0ba6551eb7b4be2b419dc15846e16c405"
+  },
+  "source_checks": {
+    "status": "PASS",
+    "protected_files": 190,
+    "authorized_changes": 6,
+    "static_protocol_cells": 54
+  },
+  "validation": {
+    "full_functional": "1630 passed in 167.03s",
+    "last_targeted": "131 passed in 26.83s",
+    "four_package_build": "PASS 5.51s",
+    "actual_DDS_Futures_runtime": "PASS; exact final control and reader SHA",
+    "ordinary_declaration": "PASS validate-only",
+    "physical_declaration": "PASS validate-only"
+  },
+  "actual_DDS_scope": "Actual isolated DDS/Futures, synthetic poses/maps and action endpoint; no task, latency or physical safety claim",
+  "actual_DDS_results": [
+    {
+      "label": "frozen",
+      "callbacks": [
+        {
+          "clock": 10.0,
+          "pose_source": 10.0,
+          "pending": false,
+          "charge_owner": true
+        }
+      ],
+      "charge_requests": [
+        {
+          "available_energy": 25.0,
+          "reason": "exploration_energy_budget",
+          "required_energy": 37.22699831507856,
+          "robot": "tb1",
+          "stamp_sec": 10.0,
+          "task_phase": "EXPLORE"
+        }
+      ],
+      "synthetic_endpoint_goals": [],
+      "gazebo_or_real_nav2_goals": 0
+    },
+    {
+      "label": "current",
+      "callbacks": [
+        {
+          "clock": 13.0,
+          "pose_source": 10.0,
+          "pending": true,
+          "charge_owner": false
+        },
+        {
+          "clock": 13.0,
+          "pose_source": 13.0,
+          "pending": false,
+          "charge_owner": false
+        },
+        {
+          "clock": 14.0,
+          "pose_source": 14.0,
+          "pending": false,
+          "charge_owner": true
+        }
+      ],
+      "charge_requests": [
+        {
+          "available_energy": 25.0,
+          "reason": "exploration_energy_budget",
+          "required_energy": 37.22699831507856,
+          "robot": "tb1",
+          "stamp_sec": 14.0,
+          "task_phase": "EXPLORE"
+        }
+      ],
+      "synthetic_endpoint_goals": [
+        [
+          -0.04999985173344612,
+          -1.8499998785555363
+        ]
+      ],
+      "gazebo_or_real_nav2_goals": 0
+    }
+  ],
+  "conditional_original_fixture": {
+    "source_commit": "39e1840930c692612d0cf0584050ae961dce4fff",
+    "planning_clock": 379.0,
+    "sha256": "39b0ba1e1a02725afc2d728c1f1d087c54bea71f72df8ee305d87ffcfcd897e7",
+    "refuge_xy": [
+      -0.3578659206058239,
+      4.529894575157412
+    ],
+    "scope": "One original delivered state; no task counterfactual or measured benefit"
+  },
+  "case_checks": {
+    "scripts/p2c_integration_manifest.json": {
+      "cases_unchanged": true,
+      "count": 21,
+      "development_parent_unchanged": true
+    },
+    "scripts/p2c_blackout_manifest.json": {
+      "cases_unchanged": true,
+      "count": 2,
+      "development_parent_unchanged": true
+    }
+  },
+  "provenance": {
+    "path": "20261010_p2c_return_preparation_provenance.json.gz",
+    "sha256": "a42b071ca0b3273d67497361b45695ead48c3a4046a9790be0e2c86805dc74dc"
+  },
+  "not_invoked": [
+    "new source-frozen four development tasks",
+    "17 formal tasks",
+    "two same-source physical tasks",
+    "917"
+  ],
+  "general_hardware_safety_guarantee": false,
+  "actual_airtime_J_capacity_measured": false
+}

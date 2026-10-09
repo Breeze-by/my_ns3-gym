@@ -72,6 +72,8 @@ def test_shutdown_rejects_new_input_admission_without_touching_ros():
 
 def test_expired_remaining_lazy_candidate_revokes_earlier_provisional_plan(monkeypatch):
     node, requests, decisions, sent = charge_node()
+    for state in node.battery_states.values():
+        state['energy'] = 80.  # The mocked factor must satisfy the real source-bound upper bound.
     install_candidates(monkeypatch, {'tb1': [assignment(4., 3., utility=100.)],
                                      'tb2': [assignment(6., 3., utility=1.)]})
     calls = []

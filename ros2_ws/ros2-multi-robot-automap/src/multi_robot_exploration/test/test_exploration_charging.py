@@ -39,6 +39,11 @@ def charge_node():
         battery_state_received_at={name:10. for name in positions},
         last_no_assignment_log=-float('inf'))
     node.frontier_cache=control.prepare_frontier_data(node.map_data,node.resolution)
+    node.source_map_data=node.map_data
+    node.robot_map_received_at=dict.fromkeys(positions,10.)
+    node.robot_tf_received_at=dict.fromkeys(positions,10.)
+    node.robot_maps={name:dict(data=node.map_data,resolution=node.resolution,origin=node.origin) for name in positions}
+    node.goal_handles=dict.fromkeys(positions)
     node.exploration_battery_factor=lambda *args:control.HeadquartersControl.exploration_battery_factor(node,*args)
     return node,requests,decisions,sent
 
@@ -107,6 +112,8 @@ def test_expired_pending_request_releases_only_after_new_active_battery_state(mo
     node.now=lambda:expiry+1.
     node.map_received_at=expiry
     node.robot_odom_received_at=dict.fromkeys(node.battery_modes,expiry)
+    node.robot_tf_received_at=dict.fromkeys(node.battery_modes,expiry)
+    node.robot_map_received_at=dict.fromkeys(node.battery_modes,expiry)
     node.rally_charge_requested['tb1']=10.
     node.exploration_charge_budgets['tb1']=30.
     node.battery_states['tb1']['energy']=40.

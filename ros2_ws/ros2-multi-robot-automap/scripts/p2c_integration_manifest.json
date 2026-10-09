@@ -345,7 +345,8 @@
     "20261009_p2c_v40_failed_development.json",
     "20261009_p2c_v41_failed_development.json",
     "20261010_p2c_v42_failed_development.json",
-    "20261010_p2c_v43_failed_development.json"
+    "20261010_p2c_v43_failed_development.json",
+    "20261010_p2c_v44_failed_development.json"
   ],
   "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
   "opportunity_charge_rules": [
@@ -497,7 +498,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "63c2e17f0718dad9235efca2caffc9b14b7eafad",
+  "candidate_parent_commit": "39e1840930c692612d0cf0584050ae961dce4fff",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -679,5 +680,15 @@
     ],
     "witness": "Lossless evaluator CDR plus native SCAN_SELF_FILTER source/header counts independently reconstructed, full SLAM headers/config/launch/models/description source digests.",
     "scope": "Prospective same preprocessing for every robot/baseline in this freeze. Original v43 failure retained, conditional native replay is not task success."
+  },
+  "exploration_return_preparation": {
+    "scope": "Prospective exploration return corridor preparation; no new application flow",
+    "source": "Fresh gateway-delivered per-robot and fused maps, poses, TF and native energy models",
+    "clearance_m": 1.8,
+    "proposal_authority": "Geometry only; fresh complete body and return routes and energy before dispatch",
+    "before_charge": "Clear idle peer bodies before sending the original leased charge request",
+    "live_return": "Fresh AP inputs can fund an idle peer escape during exploration; native safety remains independent",
+    "navigation_kind": "exploration_return_yield",
+    "task_limits_unchanged": true
   }
 }

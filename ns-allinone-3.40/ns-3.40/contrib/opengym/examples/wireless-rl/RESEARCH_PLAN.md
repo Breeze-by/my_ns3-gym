@@ -1,5 +1,7 @@
 # 面向多机器人任务的无线通信调度研究总纲
 
+2026-10-10 P2C.1 v44四原整体FAIL保持：39e1840 forced/lab/rooms原生COMPLETE253.3/182.7/172.8，corr EXPLORE300.2timeout并tb2/tb3原生10接触18.8s、tb3第二return未闭合；四零耗尽failed/task期infra，owner-observer0，停止后3子非零清理退出原样保留。新探索返航清道：原完整保护路与1.8m同伴身体净空，最近idle ACTIVE可见避让只留几何，下回调重查全部身体源2/5s/完整机体路/去返能源；普通action无探索计数、同受益返航不自取消。独立读者与实际DDS/Future源10→clock13→fresh13逃离→交付14后charge PASS，合成endpoint零真实Nav2非任务保证。1630功能/131定向/四包5.51s/190保护6声明54协议/两声明PASS；64其他中央方法AST和native/SLAM/300s/5s/TTL保持。新v45待clean pushed4→17+2，917未暴露；完整P2C.1仍FAIL，无P4/ns3/WiFi/RL。报告20261010_p2c_v44_failed_development与20261010_p2c_return_preparation_components。
+
 2026-10-10 P2C.1 v43原首强制FAIL保持：63c2e17 RALLY300.0timeout/tb2正电量失路，双charge1/最低7.959/零接触耗尽/owner-observer0自然闭合；13子门PASS不代替总FAIL，余3/17/2/917未调用。新原生SLAM仅复制并过滤未改SDF/URDF共同机体内回波，原发布scan/外点/头戳/匹配参数/完整返路/能量/TTL/300s/5s保持，无地图清除或AP新流。独立旧二进制/新CPP各1353原CDR逐字节收齐，150过滤记录/662点一致，原图100失路、新图0返路3.848m，条件回放非任务因果，两子0/零Nav2goal。1597功能/92定向/五包含SLAM55.4s/190保护6声明54协议/两声明PASS；新v44待clean pushed4→17+2，917未暴露。报告20261010_p2c_v43_failed_development与20261010_p2c_scan_self_filter_components；P2C.1未完成，无P4/ns3/WiFi/RL。
 
 2026-10-09 P2C.1本轮补强评审完成，完整任务集成仍FAIL：40个主任务源码版本/76原任务，最新v41 PARTIAL279.1/tb2正电量失路；不跨版本合并成功率。完整路径/源龄/原生记账、探索/集合/计算优化和准备竞争修补1527功能/103定向/四包5.91s/171保护54协议/真实DDS9情形PASS。独立第三安全对子609ba9d为PASS，两前原对子FAIL全部保留；仅受控安全证据，不回填主任务。P2C.1A与完整B分开，B需新同源4开发→17正式+2物理，917仍未调用。P3C.5已验收，无P4/ns-3/Wi-Fi/RL，actual airtime/J和容量未测。完整结论/算法取舍/全部原任务与源SHA见report/20261009_p2c_strengthening_review.md/.json；旧pending说明均为历史。

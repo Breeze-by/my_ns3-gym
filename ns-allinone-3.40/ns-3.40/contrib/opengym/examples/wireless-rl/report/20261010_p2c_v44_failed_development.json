@@ -1,0 +1,457 @@
+{
+  "status": "FAIL",
+  "scope": "Four original development tasks at one pushed source; no formal/physical/holdout invocation",
+  "source_commit": "39e1840930c692612d0cf0584050ae961dce4fff",
+  "results": [
+    {
+      "case": "dev_forced2",
+      "phase": "COMPLETE",
+      "elapsed_sec": 253.30000000000018,
+      "completion_sec": 253.30000000000018,
+      "detection_sec": 139.0999999999999,
+      "rally_sec": 140.9000000000001,
+      "charges": {
+        "tb1": 1,
+        "tb2": 1
+      },
+      "minimum_energy": 9.077585499487965,
+      "contacts": 0,
+      "failed_robots": []
+    },
+    {
+      "case": "dev_lab101",
+      "phase": "COMPLETE",
+      "elapsed_sec": 182.69999999999982,
+      "completion_sec": 182.69999999999982,
+      "detection_sec": 63.19999999999982,
+      "rally_sec": 67.19999999999982,
+      "charges": {
+        "tb1": 1,
+        "tb2": 1,
+        "tb3": 0
+      },
+      "minimum_energy": 25.163347977131888,
+      "contacts": 0,
+      "failed_robots": []
+    },
+    {
+      "case": "dev_rooms202",
+      "phase": "COMPLETE",
+      "elapsed_sec": 172.8,
+      "completion_sec": 172.8,
+      "detection_sec": 53.0,
+      "rally_sec": 68.69999999999999,
+      "charges": {
+        "tb1": 0,
+        "tb2": 0,
+        "tb3": 0
+      },
+      "minimum_energy": 20.06501198052651,
+      "contacts": 0,
+      "failed_robots": []
+    },
+    {
+      "case": "dev_corridors303",
+      "phase": "EXPLORE",
+      "elapsed_sec": 300.2,
+      "completion_sec": null,
+      "detection_sec": null,
+      "rally_sec": null,
+      "charges": {
+        "tb1": 1,
+        "tb2": 1,
+        "tb3": 0
+      },
+      "minimum_energy": 24.14414105523397,
+      "contacts": 10,
+      "failed_robots": []
+    }
+  ],
+  "strict_gate": {
+    "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c_v44_development_gate.json",
+    "sha256": "3c907d1eeccbc5607a5c1e6b376d2906e4047cc922c8d319d3fa9a9fc5e19401",
+    "status": "FAIL",
+    "errors": [
+      {
+        "case": "dev_corridors303",
+        "error": "AssertionError()",
+        "traceback": "Traceback (most recent call last):\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 855, in audit_one\n    try:return check_one(path,config),None\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 762, in check_one\n    communications,_=audit_original((row,config))\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3c5_gate.py\", line 96, in audit_original\n    native_safety_ok(result)\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3c5_gate.py\", line 39, in native_safety_ok\n    assert result[\"collision_events\"] == 0 and result[\"battery_minimum_energy\"] > 0\nAssertionError\n"
+      }
+    ],
+    "passed_cases": [
+      "dev_forced2",
+      "dev_lab101",
+      "dev_rooms202"
+    ]
+  },
+  "native_failure": {
+    "contacts": [
+      {
+        "contacts": [
+          [
+            "tb3::base_link::base_collision",
+            "tb2::base_link::base_collision"
+          ]
+        ],
+        "phase": "EXPLORE",
+        "robot": "tb3",
+        "sim_time_sec": 424.0
+      },
+      {
+        "contacts": [
+          [
+            "tb3::base_link::base_collision",
+            "tb2::base_link::base_collision"
+          ]
+        ],
+        "phase": "EXPLORE",
+        "robot": "tb2",
+        "sim_time_sec": 424.1
+      },
+      {
+        "contacts": [
+          [
+            "tb3::base_link::base_collision",
+            "tb2::base_link::base_collision"
+          ]
+        ],
+        "phase": "EXPLORE",
+        "robot": "tb2",
+        "sim_time_sec": 425.4
+      },
+      {
+        "contacts": [
+          [
+            "tb3::base_link::base_collision",
+            "tb2::base_link::base_collision"
+          ]
+        ],
+        "phase": "EXPLORE",
+        "robot": "tb2",
+        "sim_time_sec": 430.6
+      },
+      {
+        "contacts": [
+          [
+            "tb3::base_link::base_collision",
+            "tb2::base_link::base_collision"
+          ]
+        ],
+        "phase": "EXPLORE",
+        "robot": "tb3",
+        "sim_time_sec": 430.6
+      },
+      {
+        "contacts": [
+          [
+            "tb3::base_link::base_collision",
+            "tb2::base_link::base_collision"
+          ]
+        ],
+        "phase": "EXPLORE",
+        "robot": "tb2",
+        "sim_time_sec": 433.8
+      },
+      {
+        "contacts": [
+          [
+            "tb3::base_link::base_collision",
+            "tb2::base_link::base_collision"
+          ]
+        ],
+        "phase": "EXPLORE",
+        "robot": "tb3",
+        "sim_time_sec": 433.8
+      },
+      {
+        "contacts": [
+          [
+            "tb3::base_link::base_collision",
+            "tb2::base_link::base_collision"
+          ]
+        ],
+        "phase": "EXPLORE",
+        "robot": "tb2",
+        "sim_time_sec": 436.0
+      },
+      {
+        "contacts": [
+          [
+            "tb3::base_link::base_collision",
+            "tb2::base_link::base_collision"
+          ]
+        ],
+        "phase": "EXPLORE",
+        "robot": "tb3",
+        "sim_time_sec": 436.0
+      },
+      {
+        "contacts": [
+          [
+            "tb3::base_link::base_collision",
+            "tb2::base_link::base_collision"
+          ]
+        ],
+        "phase": "EXPLORE",
+        "robot": "tb2",
+        "sim_time_sec": 437.3
+      }
+    ],
+    "open_returns": [
+      {
+        "robot": "tb3",
+        "return_count": 2,
+        "start_sim_time": 382.4,
+        "start_energy": 30.222075000552625
+      }
+    ],
+    "planning_lease_expirations": [
+      {
+        "event_time": 300.4,
+        "planning_started_at_sec": 299.0,
+        "source_deadline_sec": 300.387,
+        "stage": "candidate_budget"
+      },
+      {
+        "event_time": 302.6,
+        "planning_started_at_sec": 301.0,
+        "source_deadline_sec": 302.585,
+        "stage": "candidate_generation"
+      },
+      {
+        "event_time": 304.4,
+        "planning_started_at_sec": 303.0,
+        "source_deadline_sec": 304.387,
+        "stage": "candidate_budget"
+      },
+      {
+        "event_time": 306.5,
+        "planning_started_at_sec": 305.0,
+        "source_deadline_sec": 306.427,
+        "stage": "candidate_generation"
+      },
+      {
+        "event_time": 308.4,
+        "planning_started_at_sec": 307.0,
+        "source_deadline_sec": 308.387,
+        "stage": "candidate_generation"
+      },
+      {
+        "event_time": 310.4,
+        "planning_started_at_sec": 309.0,
+        "source_deadline_sec": 310.385,
+        "stage": "route_admission"
+      },
+      {
+        "event_time": 314.4,
+        "planning_started_at_sec": 313.0,
+        "source_deadline_sec": 314.385,
+        "stage": "candidate_budget"
+      },
+      {
+        "event_time": 316.6,
+        "planning_started_at_sec": 315.0,
+        "source_deadline_sec": 316.591,
+        "stage": "candidate_budget"
+      },
+      {
+        "event_time": 360.4,
+        "planning_started_at_sec": 359.0,
+        "source_deadline_sec": 360.385,
+        "stage": "candidate_generation"
+      },
+      {
+        "event_time": 365.4,
+        "planning_started_at_sec": 365.0,
+        "source_deadline_sec": 365.386,
+        "stage": "candidate_generation"
+      },
+      {
+        "event_time": 375.4,
+        "planning_started_at_sec": 375.0,
+        "source_deadline_sec": 375.385,
+        "stage": "candidate_budget"
+      },
+      {
+        "event_time": 378.4,
+        "planning_started_at_sec": 378.3,
+        "source_deadline_sec": 378.385,
+        "stage": "candidate_generation"
+      },
+      {
+        "event_time": 380.7,
+        "planning_started_at_sec": 379.0,
+        "source_deadline_sec": 380.606,
+        "stage": "dispatch"
+      },
+      {
+        "event_time": 382.4,
+        "planning_started_at_sec": 382.3,
+        "source_deadline_sec": 382.387,
+        "stage": "candidate_generation"
+      }
+    ]
+  },
+  "archive": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_v44_failed_development_originals.json.gz",
+    "sha256": "a2645ad488a262e12d77b6cf2707ff91481e1584ddabd06d079fbe53044e1431",
+    "scope": "Complete summaries/native observer records and every coordinator event; full ledger/CDR retained at canonical paths with SHA"
+  },
+  "raw_evidence": {
+    "dev_forced2": {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v44/20261010_p2c_v44_dev_forced2",
+      "summary_sha256": "617ce0b492a6ec8d3e64c0d17377770ee3cfd52036ac5c9f7d7c1a664606a03e",
+      "evidence_sha256": {
+        "20261010_p2c_v44_dev_forced2.csv": "06c0dc0e7702c6ec0c3d2ef70b690758af0e1c52fda4b47ff708f007c014ba6f",
+        "20261010_p2c_v44_dev_forced2.json": "79bd8edded38f0190365f77883d42d11b82fab68864454ee3e1303f51cbf590c",
+        "graph.json": "a78c51942d7e61dfd9f23e8042a7f0319d69f00824b5e0deb664ffa1178a16b3",
+        "launch/robots2_seed303_20261010-013712.log": "af74f81da33c3b5bf489ae7a8147c2096c6fedaa7b9208d772ace01c655a5ff9",
+        "ledger.jsonl": "5f85e89d7fbe72fe44556460c82ae85e781aa612994f528f35add78347cb8886",
+        "ledger_metrics/curves.svg": "9573837c75bfe090638deaa83351be9f2791876484181aa98f713b85d717ff57",
+        "ledger_metrics/events.jsonl": "602d8d4a26342f2c20fa60ad5cdabb03eb1e26234a85d1cd46682f1ae9db855e",
+        "ledger_metrics/inputs.jsonl": "3edf6d34904f8dbf5f2d3315f6d2ea0285c0bd78ce39244b9483e50a82997939",
+        "ledger_metrics/live.jsonl": "d746c14e981db2a08e394555abda73c8cb90002beb820c8b0cca4a37d3500a74",
+        "ledger_metrics/live_windows.csv": "279c62f97fd65ed68e33b98a8aee6a1cbce88a907b1a64f34a963a8c000086aa",
+        "ledger_metrics/summary.json": "f5c9ac2dc6bbe90f3e08dccb88a995ad342a271a26497ace0bd6f910ee76ca94",
+        "ledger_metrics/windows.csv": "279c62f97fd65ed68e33b98a8aee6a1cbce88a907b1a64f34a963a8c000086aa",
+        "ledger_metrics/windows.jsonl": "416c0c3f37f699620f0941fc5cb79d402dd69523e0d3037a5fe66ccf7a5a265e",
+        "manifest.json": "8b1a77cdcf5cb8f82dcb8ebfbe0a15487cbf6ffa9a021171915d5448824f1aed",
+        "native_graph.json": "d6f45853ec7f8b498583c896924e94da95db9bf1936c82def51b1fdce1dcf063",
+        "navigation_inputs.jsonl.gz": "83f9b7825605cb6df14efffaf8af9fb2089ffd16e52798ef5410dccacef0d8c9",
+        "observer.log": "c3a21f7c7037c0b09e74c75b78629c30666bb8fbc0dbe8ba0ffb260cbf9c814b",
+        "runner.log": "7d1fdea8c6a3e39150e0055140a072220c317348a60df64c714fc0cb382ac490",
+        "safety_events.jsonl": "5d300d77d0110d8325d752d2635997bfbeecdcda97f964bb7bade8520b73fa96",
+        "schedule.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+      }
+    },
+    "dev_lab101": {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v44/20261010_p2c_v44_dev_lab101",
+      "summary_sha256": "7cccc7d03e63714c607265a2fd18cb70b274fbb2956654241181c3d83682df60",
+      "evidence_sha256": {
+        "20261010_p2c_v44_dev_lab101.csv": "0b8d7399179999b8feb407771fd4120b66e780f3ef712da1f948236f76809d8b",
+        "20261010_p2c_v44_dev_lab101.json": "d8f548d61b796a31db75ff9c872179802ec94b72aa1ec37cfbd22938bc35852b",
+        "graph.json": "e404f6d458a6c73583c9328fa8dc51175e38016058355d880da78adca4e15dba",
+        "launch/robots3_seed101_20261010-014802.log": "ce2330b29ce500d9192b57a3629ec0ea454900b95ead0bb0fd52d2cff09a58ed",
+        "ledger.jsonl": "d7fce7cb2a626f5480a5c55804e095f5f9ce8414cb3b6e2d67aa312f9ca85585",
+        "ledger_metrics/curves.svg": "58128668e98ce3cef26b518e944d963e54ac1c7531c0bd6c4875f48684ccfbbb",
+        "ledger_metrics/events.jsonl": "15e94690b87c498840e07427aa2aeedc80e4f2b061a3c8a91ae5f6d8d9819a48",
+        "ledger_metrics/inputs.jsonl": "ff2a42487047abf5c996033ee4747eb58ec8f5936c86520eb42108270bb398c1",
+        "ledger_metrics/live.jsonl": "57d4fd92ceaf9dcda6ae1d2f827015de683c748e4e22df9f99241281e804cde4",
+        "ledger_metrics/live_windows.csv": "7b56082f3b745fda9873a4e660bc79a3683c913294b66797da201df70730118c",
+        "ledger_metrics/summary.json": "affa6804b109848c895f9b5f7a3479c0c0230ccc0cb46b11c28cd530de264bc6",
+        "ledger_metrics/windows.csv": "7b56082f3b745fda9873a4e660bc79a3683c913294b66797da201df70730118c",
+        "ledger_metrics/windows.jsonl": "5e5332d7a8e7aa0355e169021ed60930e7d2e953411bd6eca697c035b65bf372",
+        "manifest.json": "f57800e3fc6b1e2a7636154a372a207f369eb80716920452bb159f94874aeed0",
+        "native_graph.json": "843865bb9f7d2afca7b5d5b991d2ed96fa6e60e48072c62f4ecfa7f8c44ef9fc",
+        "navigation_inputs.jsonl.gz": "9feb7aae21b8e531d8672f43b34ca6be0d0d846e890bfb62bc269cf37de7680b",
+        "observer.log": "e237e6972e4aea680fe39ee3ab04815e707c715b464939e9cf5acc7157229ddf",
+        "runner.log": "9629d232a551f329df146a1a669711364abdb928376d5f29ecfc3d4ed8cbff7f",
+        "safety_events.jsonl": "b3d1ae9a1a35293fb72bfb700aaf652028d62221b921d8219db8872de31853b9",
+        "schedule.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+      }
+    },
+    "dev_rooms202": {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v44/20261010_p2c_v44_dev_rooms202",
+      "summary_sha256": "004206291a32dbd9e3276b4419d9b432cd13717c725cef228e87ae9992ead849",
+      "evidence_sha256": {
+        "20261010_p2c_v44_dev_rooms202.csv": "36edd7c92c50a7a200d8515399825331429c5b1b5b3af6cfadce75abb9cddd22",
+        "20261010_p2c_v44_dev_rooms202.json": "7bbc08074ea1a3e3e142b87fc53b8d80158317446dbb3e63996478e7ca4f4fb8",
+        "graph.json": "a4a9fd39a2c5349267ad282a8578c347ef29315a4b1a7d7298317337ad53c6bf",
+        "launch/robots3_seed202_20261010-014802.log": "18a92c48ccd2f278b046d9b3819c0ea81b0e241e0aaa7040c00bd9aff330acd9",
+        "ledger.jsonl": "cee0ee9274c79ee8ae490b46d9f7b39aba73e5054385f496d09f1fff82ff6a3b",
+        "ledger_metrics/curves.svg": "bc208d76345cc5ac03ceba33b07dc4255fe56b5e1fa47862d54aa590141b38de",
+        "ledger_metrics/events.jsonl": "aeeab21bca44135928c7dda39ede664a77fac2ed4796fd9bb6bd100578a3fb8f",
+        "ledger_metrics/inputs.jsonl": "ac30509b88b4ea3608008f20e643945047b960283333671e30b525f14def6b69",
+        "ledger_metrics/live.jsonl": "ff6818af488cbf011723bf05225d8b7925f1fa20e7614d1c4f7a70f3d44926c1",
+        "ledger_metrics/live_windows.csv": "6aca79ae49b9824edde77c6a361e3d3c98f1bea73deaa8882a7eda5db269a83c",
+        "ledger_metrics/summary.json": "36907d35a55d702cf6c91019f17dbf0e0b1cd32c59ea251203200f4da98e31c8",
+        "ledger_metrics/windows.csv": "6aca79ae49b9824edde77c6a361e3d3c98f1bea73deaa8882a7eda5db269a83c",
+        "ledger_metrics/windows.jsonl": "08006b95c3c7ea393391e91b4ebcc6d51b10075d33906df3e6910e941d6e9775",
+        "manifest.json": "6171dfbd735919d4e0e013e4b00ef380172448490009a9ececf8a66e5a9fd9d3",
+        "native_graph.json": "7df6184287985a28da5f75b16da529ba292442421ca1aa7e2fea785ee3a5ed61",
+        "navigation_inputs.jsonl.gz": "b32d5f8f6e4b1c261b823ac8f92ec01544d5501941d97fedfe9beec55a9eb9b0",
+        "observer.log": "c787b02a99a98654dd0d765e26773057b6dc74e3356e4e20ae3f6f3f748dbd7d",
+        "runner.log": "259ebd1590a91ec9e8fef690ec1abe71c6b85d1e602a85496700bbe072e19677",
+        "safety_events.jsonl": "760418e66e1bbec6c9112e715e07a4117b56ec09c0a776ec48b4cd8abbba2874",
+        "schedule.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+      }
+    },
+    "dev_corridors303": {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v44/20261010_p2c_v44_dev_corridors303",
+      "summary_sha256": "ab5740cadb2eebe2fe8c3c71795a481f687155e83d0df9955c4f803dbde62fb8",
+      "evidence_sha256": {
+        "20261010_p2c_v44_dev_corridors303.csv": "88a31ab235e3cdfb90b90f6797a3218a1f0b60e0df1a2c02ad9998758e1bc169",
+        "20261010_p2c_v44_dev_corridors303.json": "386b48ad6c2a4232ae494f7703710830191d5b814459e9fe7acd300922cc5137",
+        "graph.json": "9ddd85f48b131f0882f9595ae157f4a8ad7c689a159037b46db6a936a18521a2",
+        "launch/robots3_seed303_20261010-014802.log": "14abeefa425fa698cd635a32e33bb779f3cc6dc4540a26c4c0dcec62db0d33c5",
+        "ledger.jsonl": "9352b73fb4371d580a4454f4f8d2f8c52a224ef69ed768cf3a06764ba134760c",
+        "ledger_metrics/curves.svg": "9c9d251547dc9c9d6a2ee1298821a7a0d96ac21a79ed65949bcdb86c4a0e87a0",
+        "ledger_metrics/events.jsonl": "7a3a6100e8d19ffb26f43e8410c1b347c36a494b73ac7c718b0062514122d641",
+        "ledger_metrics/inputs.jsonl": "f5959d7da8b8b0623c61346754e46550760a235bba74dc103ae664831a66a1c9",
+        "ledger_metrics/live.jsonl": "2cca1ee1cafef0bf900cb98d9903728c9a9150decb4dcb12a24c30a4138673ad",
+        "ledger_metrics/live_windows.csv": "01842c33cffe02c4cfa1734c77f8a179e9cf9160cb2eab95d311176865cbb476",
+        "ledger_metrics/summary.json": "3edde941e634f02aeb707607ade562a6197357c0712637c5b668503cf17b41b7",
+        "ledger_metrics/windows.csv": "01842c33cffe02c4cfa1734c77f8a179e9cf9160cb2eab95d311176865cbb476",
+        "ledger_metrics/windows.jsonl": "7959579d2f69284e3036b15b8d3f8e2e4dd376742badaddb635d88e7d9bac63f",
+        "manifest.json": "ef44da00cfcf66e8d73381f0647c1eab41e0f2c35d38d272cbcbadff0cc09964",
+        "native_graph.json": "1007507f2af698c83d05e32f2ea99739a7542ca347be21e01f5e2b047e60a7e1",
+        "navigation_inputs.jsonl.gz": "01331e7d0f4ad3f9185bce0d0cd1273874526db9aa46e34e96c00210acb93853",
+        "observer.log": "543bac202bdd22f0e51414917b022961870c5062fb0e4caa1894d3f7ad1c6326",
+        "runner.log": "9a07a3d7beac361656919254fa3fad1ea86e1eb9b59f50f61c3a8c53235c5615",
+        "safety_events.jsonl": "2a278e263d00c27600210c086868c89b2c9c95abd717dc2c13a0172ec1150234",
+        "schedule.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+      }
+    }
+  },
+  "owned_closed": true,
+  "not_invoked": [
+    "17 formal",
+    "2 same-source physical",
+    "917 holdout"
+  ],
+  "corrections": [
+    "The early generated corridors result reported zero contacts; the closed final native JSON and summary both contain ten contacts. The final values are authoritative.",
+    "Initial NUL/quoted Unicode user-file listing diagnostic failure retained; corrected freeze verified same pushed commit and original fourteen user files, with no task retry."
+  ],
+  "post_task_child_cleanup": {
+    "dev_forced2": {
+      "status": "PASS",
+      "launch_transcripts": 1,
+      "task_time_nonzero_child_exits": 0,
+      "post_task_cleanup_exits": [
+        {
+          "file": "robots2_seed303_20261010-013712.log",
+          "line": 832,
+          "node": "tf_ingress_sampler-16",
+          "exit_code": 1
+        }
+      ]
+    },
+    "dev_lab101": {
+      "status": "PASS",
+      "launch_transcripts": 1,
+      "task_time_nonzero_child_exits": 0,
+      "post_task_cleanup_exits": [
+        {
+          "file": "robots3_seed101_20261010-014802.log",
+          "line": 742,
+          "node": "tf_ingress_sampler-17",
+          "exit_code": 1
+        }
+      ]
+    },
+    "dev_rooms202": {
+      "status": "PASS",
+      "launch_transcripts": 1,
+      "task_time_nonzero_child_exits": 0,
+      "post_task_cleanup_exits": [
+        {
+          "file": "robots3_seed202_20261010-014802.log",
+          "line": 974,
+          "node": "navigation_gateway-5",
+          "exit_code": -11
+        }
+      ]
+    }
+  }
+}
