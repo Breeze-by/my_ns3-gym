@@ -16,6 +16,11 @@ MultiRobotSlamToolbox::MultiRobotSlamToolbox(rclcpp::NodeOptions options)
     descriptor.read_only = true;
     const auto box = declare_parameter(
         "scan_self_filter_body_box", std::vector<double>{}, descriptor);
+    const double uncertainty = declare_parameter(
+        "scan_self_filter_range_uncertainty_m", 0.0, descriptor);
+    if (!std::isfinite(uncertainty) || uncertainty < 0.0) {
+        throw std::invalid_argument("scan_self_filter_range_uncertainty_m must be finite and nonnegative");
+    }
     if (!box.empty() && (box.size() != 4 ||
         !std::all_of(box.begin(), box.end(), [](double v) {return std::isfinite(v);}) ||
         box[0] >= box[1] || box[2] >= box[3]))
@@ -23,8 +28,8 @@ MultiRobotSlamToolbox::MultiRobotSlamToolbox(rclcpp::NodeOptions options)
         throw std::invalid_argument("scan_self_filter_body_box requires xmin,xmax,ymin,ymax");
     }
     if (!box.empty()) {
-        RCLCPP_INFO(get_logger(), "SCAN_SELF_FILTER_CONFIG box=%.9f,%.9f,%.9f,%.9f",
-            box[0], box[1], box[2], box[3]);
+        RCLCPP_INFO(get_logger(), "SCAN_SELF_FILTER_CONFIG box=%.9f,%.9f,%.9f,%.9f uncertainty=%.9f",
+            box[0], box[1], box[2], box[3], uncertainty);
     }
     // Subscribes to raw laser scan topic
     laser_scan_sub_ = this->create_subscription<sensor_msgs::msg::LaserScan>(
@@ -62,13 +67,13 @@ void MultiRobotSlamToolbox::laserCallback(
 
     auto filtered = std::make_shared<sensor_msgs::msg::LaserScan>(*scan);
     const auto offset = laser->GetOffsetPose();
+    const auto mask = scan_self_filter::selfReturnMask(scan->ranges,
+        scan->angle_min, scan->angle_increment, scan->range_min, scan->range_max,
+        offset.GetX(), offset.GetY(), offset.GetHeading(), box,
+        get_parameter("scan_self_filter_range_uncertainty_m").as_double());
     size_t removed = 0;
     for (size_t i = 0; i < filtered->ranges.size(); ++i) {
-        const double range = scan->ranges[i];
-        if (range > scan->range_min && range < scan->range_max &&
-            scan_self_filter::insideBody(range,
-                scan->angle_min + i * static_cast<double>(scan->angle_increment),
-                offset.GetX(), offset.GetY(), offset.GetHeading(), box))
+        if (mask[i])
         {
             filtered->ranges[i] = std::numeric_limits<float>::quiet_NaN();
             ++removed;

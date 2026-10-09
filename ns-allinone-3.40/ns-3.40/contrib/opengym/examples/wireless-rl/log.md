@@ -8724,3 +8724,26 @@ colcon build --packages-select multi_robot_interfaces merge_map multi_robot_expl
 ```
 
 新冻结完整4→17+2待真实任务；917仍未暴露。原已知种子不称新留出。
+
+
+## 2026-10-10 P2C.1 v45原首强制失败、边界噪声关联组件与新v46冻结
+
+2026-10-10 P2C.1 v45首原强制FAIL保持：531b2ab原生FAILED211.5/tb1正电量失路，检测156.8/两机各charge1/min13.837683/零接触耗尽；原导航CDR/图/能量/全账本保持，owner-observer0自然闭合。独立422内点过滤/73826CDR/2charge1真实让行及TTL子门PASS不替代整体FAIL。新机体边界噪声关联：原SDF sigma.01/resolution.015→.0375测距带、至少1严格内点与3连续匹配束，无扩物理矩形/擦格/改raw扫描Nav2；前两两内点方案原生重放FAIL保留，第三版原二进制/新CPP各1280CDR同输入/240记录1362束一致，None→完整6.084m路径，条件组件非任务因果。44定向/1648功能/SLAM70s四包5.38s/190保护6声明54协议与两声明PASS；control/native battery/common SLAM/Karto/300s/5s/TTL保持。新v46 clean pushed4→17+2待实测，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v45_failed_development与20261010_p2c_scan_noise_components。
+
+全部实际owner/原生重放子进程关闭后才改源/配置/文档。v45完整strict首格FAIL原件在log/p2c_v45_forced_gate.json，余格未调用。最初两噪声关联版本的单元通过/实际原生返路FAIL均保留；第3版最终完整功能1648PASS162.03秒、44定向9.90秒、SLAM构建70秒与原四包5.38秒、190保护6授权54协议PASS，两manifest原cases不变。native replay源戳clock与原1280份CDR严格相同、收件时序不是原任务，零Gazebo/Nav2。新冻结尚无任务成功声明。
+
+实际命令（ROS cwd、Humble+install、PYTHONNOUSERSITE1、PYTHONPATH含scripts、FastDDS UDPv4、清XML/discovery、taskset0–79；全部stdout/source/SHA见provenance）：
+
+```bash
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v45 --domain 218 --gazebo-port 20318
+/usr/bin/python3 -m pytest -q scripts/test_p2c_scan_self_filter.py scripts/test_p2c_scan_noise_association.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test scripts --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+colcon build --packages-select slam_toolbox --parallel-workers 4 --cmake-args -DCMAKE_BUILD_TYPE=Release
+colcon build --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot --symlink-install
+/usr/bin/python3 scripts/check_p2c_source.py --output log/p2c_scan_noise_source4.json
+/usr/bin/python3 scripts/check_p2c_scan_self_filter_runtime.py --robot tb1 --original log/p2c/20261010_p2c_v45/20261010_p2c_v45_dev_forced2 --baseline-binary-dir log/p2c_scan_noise_baseline531b --stop 2252.4 --output log/p2c_scan_noise_replay3
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v46 --domain 218 --gazebo-port 20318 --validate-only
+/usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v46_physical --domain 219 --gazebo-port 20319 --validate-only
+```
+
+原两次native重放FAIL/initial全套错误目录no-tests exit4与后正确全套通过保留。新实际需clean pushed完整4开发→17正式+2同源物理，全部固定/安全PASS后才调用917。

@@ -13,7 +13,7 @@ from sensor_msgs.msg import LaserScan
 from tf2_msgs.msg import TFMessage
 from geometry_msgs.msg import TransformStamped
 
-from p2c_scan_self_filter import PROJECT, body_return_mask, physical_body_box, scan_self_filter_audit
+from p2c_scan_self_filter import PROJECT, body_return_mask, physical_body_box, scan_self_filter_audit, noise_associated_mask
 from run_p2d_baseline import file_digest
 
 FIXTURE = PROJECT/'src/multi_robot_exploration/test/fixtures/p2c_v43_self_return_scan.json'
@@ -100,16 +100,17 @@ def source_digests():
 def test_independent_native_original_cdr_witness(tmp_path, source_digests, tamper):
     fixture = json.loads(FIXTURE.read_text());record = fixture['record']
     record = dict(record, topic='/tb1/scan')
-    declaration = dict(body_box_m=BOX.copy(),laser_to_base_xy_yaw=LASER.copy(),laser_frame='base_scan')
+    declaration = dict(body_box_m=BOX.copy(),laser_to_base_xy_yaw=LASER.copy(),laser_frame='base_scan',range_uncertainty_m=.0375)
     row = dict(config=dict(native_scan_self_filter=declaration,navigation_input_capture=True),
                result=dict(robot_count=1),source_digests=copy.deepcopy(source_digests))
     static = TFMessage()
     for parent, child, x in [('base_footprint','base_link',0.),('base_link','base_scan',-.064)]:
         t = TransformStamped();t.header.frame_id=parent;t.child_frame_id=child
         t.transform.translation.x=x;t.transform.rotation.w=1.;static.transforms.append(t)
-    config = '[tb1.slam_toolbox]: SCAN_SELF_FILTER_CONFIG box=-0.196500000,0.068500000,-0.132500000,0.132500000\n'
-    witness = '[tb1.slam_toolbox]: SCAN_SELF_FILTER source=2235.173000000 frame=base_scan removed=10\n'
-    if tamper=='removed':witness=witness.replace('removed=10','removed=11')
+    count = int(noise_associated_mask(deserialize_message(base64.b64decode(record['cdr']), LaserScan), BOX, LASER, .0375).sum())
+    config = '[tb1.slam_toolbox]: SCAN_SELF_FILTER_CONFIG box=-0.196500000,0.068500000,-0.132500000,0.132500000 uncertainty=0.037500000\n'
+    witness = f'[tb1.slam_toolbox]: SCAN_SELF_FILTER source=2235.173000000 frame=base_scan removed={count}\n'
+    if tamper=='removed':witness=witness.replace(f'removed={count}',f'removed={count+1}')
     if tamper=='source_time':witness=witness.replace('2235.173','2235.174')
     if tamper=='frame':witness=witness.replace('frame=base_scan','frame=other')
     if tamper=='source':row['source_digests']['slam']='unbound'
@@ -117,13 +118,13 @@ def test_independent_native_original_cdr_witness(tmp_path, source_digests, tampe
     if tamper=='tf':static.transforms[-1].transform.translation.x=-.05
     if tamper=='configuration':config=config.replace('0.068500000','0.100000000')
     if tamper=='missing_configuration':config=''
-    if tamper=='malformed':witness=witness.replace('removed=10','removed=oops')
+    if tamper=='malformed':witness=witness.replace(f'removed={count}','removed=oops')
     with gzip.open(tmp_path/'navigation_inputs.jsonl.gz','xt') as stream:
         stream.write(json.dumps(record)+'\n')
         stream.write(json.dumps(dict(topic='/tb1/tf_static',cdr=base64.b64encode(serialize_message(static)).decode()))+'\n')
     (tmp_path/'launch').mkdir();(tmp_path/'launch/native.log').write_text(config+witness)
     if tamper is None:
         result=scan_self_filter_audit(row,tmp_path)
-        assert result['native_witnesses']==1 and result['rejected_body_returns']==10
+        assert result['native_witnesses']==1 and result['rejected_body_returns']==count
     else:
         with pytest.raises(AssertionError):scan_self_filter_audit(row,tmp_path)

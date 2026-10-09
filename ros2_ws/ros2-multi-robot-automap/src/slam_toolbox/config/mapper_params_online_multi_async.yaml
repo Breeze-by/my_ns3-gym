@@ -18,6 +18,8 @@ $(var namespace)/slam_toolbox:
     # Strict intersection of the unchanged Waffle SDF/URDF chassis XY boxes.
     # Native mapping only: original scan topic, headers and external points remain.
     scan_self_filter_body_box: [-0.1965, 0.0685, -0.1325, 0.1325]
+    # 3 * original range noise sigma (0.01) + half resolution (0.015 / 2).
+    scan_self_filter_range_uncertainty_m: 0.0375
     mode: mapping #localization
 
     # if you'd like to immediately start continuing a map at a given pose

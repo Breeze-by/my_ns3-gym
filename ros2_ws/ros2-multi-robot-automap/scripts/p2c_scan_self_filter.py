@@ -39,6 +39,41 @@ def body_return_mask(scan, box, laser):
             & (box[0] < x) & (x < box[1]) & (box[2] < y) & (y < box[3]))
 
 
+def noise_associated_mask(scan, box, laser, uncertainty):
+    """Independent reconstruction of a seeded body-surface noise cluster."""
+    inside = body_return_mask(scan, box, laser)
+    if (not np.isfinite(uncertainty) or uncertainty <= 0
+            or not np.isfinite(scan.angle_increment) or scan.angle_increment == 0
+            or not (box[0] < laser[0] < box[1] and box[2] < laser[1] < box[3])):
+        return inside
+    ranges = np.asarray(scan.ranges, dtype=float)
+    angles = scan.angle_min + np.arange(len(ranges))*scan.angle_increment + laser[2]
+    dx, dy = np.cos(angles), np.sin(angles)
+    with np.errstate(divide='ignore', invalid='ignore'):
+        tx = np.where(dx != 0, np.where(dx > 0, box[1]-laser[0], box[0]-laser[0])/dx, np.inf)
+        ty = np.where(dy != 0, np.where(dy > 0, box[3]-laser[1], box[2]-laser[1])/dy, np.inf)
+        surface = np.minimum(tx, ty)
+    band = inside | (np.isfinite(ranges) & (ranges > scan.range_min) & (ranges < scan.range_max)
+        & np.isfinite(surface) & (np.abs(ranges-surface) <= uncertainty))
+    wrap = len(ranges) >= 9 and (len(ranges)-1)*abs(scan.angle_increment) >= 2*np.pi-2*abs(scan.angle_increment)
+    result = inside.copy()
+    indices = np.flatnonzero(band)
+    groups = list(np.split(indices, np.flatnonzero(np.diff(indices) != 1)+1)) if len(indices) else []
+    if wrap and len(groups) > 1 and groups[0][0] == 0 and groups[-1][-1] == len(ranges)-1:
+        groups = [np.concatenate((groups[-1], groups[0])), *groups[1:-1]]
+    for group in groups:
+        if np.count_nonzero(inside[group]) >= 1 and len(group) >= 3:
+            result[group] = True
+    return result
+
+
+def physical_range_uncertainty():
+    sensor = ET.parse(PROJECT/'src/multi_robot/models/turtlebot3_waffle/model.sdf').find(
+        ".//sensor[@name='hls_lfcd_lds']/ray")
+    assert sensor.findtext('noise/type') == 'gaussian' and float(sensor.findtext('noise/mean')) == 0.
+    return 3*float(sensor.findtext('noise/stddev')) + float(sensor.findtext('range/resolution'))/2
+
+
 def scan_self_filter_audit(row, directory):
     declaration = row['config'].get('native_scan_self_filter')
     if not declaration:
@@ -51,9 +86,13 @@ def scan_self_filter_audit(row, directory):
     assert row['config'].get('navigation_input_capture'), 'missing raw native scan evidence'
     box = declaration['body_box_m']
     laser = declaration['laser_to_base_xy_yaw']
+    uncertainty = declaration.get('range_uncertainty_m', 0.)
+    assert uncertainty == 0. or uncertainty == physical_range_uncertainty()
     assert np.allclose(box, physical_body_box(), rtol=0, atol=1e-15)
     params = yaml.safe_load((PROJECT/'src/slam_toolbox/config/mapper_params_online_multi_async.yaml').read_text())
-    assert next(iter(params.values()))['ros__parameters']['scan_self_filter_body_box'] == box
+    configured_params = next(iter(params.values()))['ros__parameters']
+    assert configured_params['scan_self_filter_body_box'] == box
+    assert configured_params.get('scan_self_filter_range_uncertainty_m', 0.) == uncertainty
     for name, path in (('slam', 'src/slam_toolbox'), ('robot_models', 'src/multi_robot/models'),
                        ('robot_description', 'src/multi_robot/urdf'), ('scan_self_filter_reader', 'scripts/p2c_scan_self_filter.py')):
         assert row['source_digests'][name] == file_digest(PROJECT/path), ('unbound native filter source', name)
@@ -69,6 +108,8 @@ def scan_self_filter_audit(row, directory):
                 assert np.allclose(actual, box, rtol=0, atol=1e-15)
                 assert match[1] not in configured or configured[match[1]] == actual
                 configured[match[1]] = actual
+                noise = re.search(r'uncertainty=([\d.]+)', line)
+                assert (float(noise[1]) if noise else 0.) == uncertainty
             if 'SCAN_SELF_FILTER source=' not in line:
                 continue
             match = pattern.search(line)
@@ -86,7 +127,7 @@ def scan_self_filter_audit(row, directory):
                 name = topic.split('/')[1]
                 msg = deserialize_message(base64.b64decode(e['cdr']), LaserScan)
                 key = (name, msg.header.stamp.sec*10**9+msg.header.stamp.nanosec, msg.header.frame_id)
-                count = int(body_return_mask(msg, box, laser).sum())
+                count = int(noise_associated_mask(msg, box, laser, uncertainty).sum())
                 assert key not in originals or originals[key] == count, ('ambiguous original scan', key)
                 originals[key] = count
                 scan_count += 1

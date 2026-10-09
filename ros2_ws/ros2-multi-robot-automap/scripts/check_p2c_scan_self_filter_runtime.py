@@ -12,9 +12,9 @@ from sensor_msgs.msg import LaserScan
 from tf2_msgs.msg import TFMessage
 from nav_msgs.msg import OccupancyGrid
 from multi_robot_exploration import control as c
-from p2c_scan_self_filter import body_return_mask, physical_body_box
+from p2c_scan_self_filter import noise_associated_mask, physical_body_box, physical_range_uncertainty
 
-a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);a.add_argument('--stop',type=float,required=True);a.add_argument('--original',type=Path,required=True);a.add_argument('--baseline-binary-dir',type=Path,required=True);a=a.parse_args()
+a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);a.add_argument('--stop',type=float,required=True);a.add_argument('--original',type=Path,required=True);a.add_argument('--baseline-binary-dir',type=Path,required=True);a.add_argument('--robot',default='tb2',choices=['tb1','tb2','tb3','tb4']);a=a.parse_args()
 assert os.environ.get('ROS_DOMAIN_ID') in ('216','217'), 'use an isolated component domain'
 original=json.loads((a.original/'summary.json').read_text())
 snapshot=json.loads((a.baseline_binary_dir/'manifest.json').read_text());assert snapshot['commit']==original['git_commit']
@@ -26,7 +26,7 @@ def stamp(h):return h.stamp.sec+h.stamp.nanosec/1e9
 with gzip.open(source,'rt') as f:
  for i,line in enumerate(f):
   e=json.loads(line);topic=e['topic']
-  if topic not in ['/tb2/scan','/tb2/tf','/tb2/tf_static','/tb2/odom']:continue
+  if topic not in [f'/{a.robot}/{suffix}' for suffix in ('scan','tf','tf_static','odom')]:continue
   raw=base64.b64decode(e['cdr']);msg=deserialize_message(raw,classes.setdefault(e['type'],get_message(e['type'])))
   if topic.endswith('scan'):
    if stamp(msg.header)<=a.stop:scans.append((stamp(msg.header),i,msg,raw))
@@ -44,12 +44,12 @@ box=physical_body_box();laser=(-.064,0.,0.);masked=[]
 for at,index,msg,raw in scans:
  ranges=np.asarray(msg.ranges);angles=msg.angle_min+np.arange(len(ranges))*msg.angle_increment
  with np.errstate(invalid='ignore'):x=laser[0]+ranges*np.cos(angles);y=laser[1]+ranges*np.sin(angles)
- mask=body_return_mask(msg,box,laser)
+ mask=noise_associated_mask(msg,box,laser,physical_range_uncertainty())
  if mask.any():masked.append(dict(source=at,capture_index=index,beams=np.flatnonzero(mask).tolist(),ranges=ranges[mask].tolist(),base_endpoints=np.column_stack((x[mask],y[mask])).tolist()))
 
 params=yaml.safe_load(Path('src/slam_toolbox/config/mapper_params_online_multi_async.yaml').read_text());params=next(iter(params.values()))['ros__parameters'];assert np.allclose(params['scan_self_filter_body_box'],box,rtol=0,atol=1e-15)
 old_config=subprocess.check_output(['git','show',original['git_commit']+':ros2_ws/ros2-multi-robot-automap/src/slam_toolbox/config/mapper_params_online_multi_async.yaml'],text=True)
-old_params=next(iter(yaml.safe_load(old_config).values()))['ros__parameters'];assert {k:v for k,v in params.items() if k!='scan_self_filter_body_box'}==old_params
+old_params=next(iter(yaml.safe_load(old_config).values()))['ros__parameters'];assert {k:v for k,v in params.items() if k not in ('scan_self_filter_body_box','scan_self_filter_range_uncertainty_m')}=={k:v for k,v in old_params.items() if k not in ('scan_self_filter_body_box','scan_self_filter_range_uncertainty_m')}
 params['use_sim_time']=True;old_params['use_sim_time']=True
 processes={};logs={};maps={};transforms={};counts={};streams={};commands={}
 rclpy.init();node=rclpy.create_node('p2c_native_scan_replay');qos=QoSProfile(depth=100,reliability=ReliabilityPolicy.RELIABLE);latched=QoSProfile(depth=100,reliability=ReliabilityPolicy.RELIABLE,durability=DurabilityPolicy.TRANSIENT_LOCAL)
@@ -105,19 +105,25 @@ try:
  for label,msg in maps.items():
   t=transforms[label];angle=c.quaternion_yaw(t.transform.rotation);dx=t.transform.translation.x;dy=t.transform.translation.y
   position=(math.cos(angle)*odom[1]-math.sin(angle)*odom[2]+dx,math.sin(angle)*odom[1]+math.cos(angle)*odom[2]+dy)
-  home=(-math.sin(angle)*.45+dx,math.cos(angle)*.45+dy)
+  home_state=original['result']['robots'][a.robot];hx=home_state['battery_charge_x'];hy=home_state['battery_charge_y']
+  # Native battery charging coordinates are fixed in map, not odometry.
+  home=(hx,hy)
   grid=np.asarray(msg.data,dtype=np.int16).reshape(msg.info.height,msg.info.width);origin=(msg.info.origin.position.x,msg.info.origin.position.y);cell=c.world_to_grid(*position,msg.info.resolution,*origin);r,col=cell
   distance,path=c.known_return_route(grid,msg.info.resolution,origin,position,home,.8,include_route=True)
   results[label]=dict(source=stamp(msg.header),position=position,home=home,cell=cell,value=int(grid[cell]),window=grid[r-4:r+5,col-4:col+5].tolist(),qualified_return_distance=distance,return_path=path,map_tf=dict(x=dx,y=dy,yaw=angle))
   (a.output/(label+'_final_map.json')).write_text(json.dumps(dict(cdr=base64.b64encode(serialize_message(msg)).decode(),type='nav_msgs/msg/OccupancyGrid'))+'\n')
  import re
  for log in logs.values():log.flush()
+ (a.output/'probe_results.json').write_text(json.dumps(dict(results=results,
+     reference_commit=original['git_commit'],robot=a.robot,
+     current_filter_header_sha256=hashlib.sha256(Path('src/slam_toolbox/include/slam_toolbox/scan_self_filter.hpp').read_bytes()).hexdigest(),
+     scope='Unclassified conditional map metrics, retained even when the comparison assertion fails.'),indent=2)+'\n')
  native_masks=[(float(at),int(count)) for at,count in re.findall(r'SCAN_SELF_FILTER source=([\d.]+) frame=base_scan removed=(\d+)',(a.output/'body_filtered_node.log').read_text())]
  expected_masks={round(row['source'],9):len(row['beams']) for row in masked}
  assert native_masks and all(expected_masks.get(round(at,9))==count for at,count in native_masks),'native C++/original CDR mask mismatch'
  assert results['raw']['qualified_return_distance'] is None and results['body_filtered']['qualified_return_distance'] is not None, 'raw failure and prospective path not reproduced'
  assert math.dist(results['body_filtered']['return_path'][-1],results['body_filtered']['home'])<=.8
- summary=dict(status='PASS',exact_original_cdr_received=received_cdr,baseline_snapshot=snapshot,native_cpp_mask_witnesses=len(native_masks),native_cpp_removed_returns=sum(count for _,count in native_masks),scope='Conditional native SLAM DDS replay with original scan/source headers, native odometry TF and original parameters. Synthetic replay clock derived from source headers; receipt scheduling and historical scan graph are not the original task. No task causal success claim.',source=str(source),source_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),original_commit=original['git_commit'],current_slam_cpp_sha256=hashlib.sha256(Path('src/slam_toolbox/src/slam_toolbox_multirobot.cpp').read_bytes()).hexdigest(),scan_count=len(scans),clock_stop=at,wall_sec=time.monotonic()-begin,chassis_box=box,laser_to_base=laser,masked_scans=masked,total_masked_beams=sum(len(row['beams']) for row in masked),results=results,commands=commands,environment={k:os.environ.get(k) for k in ['ROS_DOMAIN_ID','RMW_IMPLEMENTATION']},params=params)
+ summary=dict(status='PASS',exact_original_cdr_received=received_cdr,baseline_snapshot=snapshot,native_cpp_mask_witnesses=len(native_masks),native_cpp_removed_returns=sum(count for _,count in native_masks),scope='Conditional native SLAM DDS replay with original scan/source headers, native odometry TF and original parameters. Synthetic replay clock derived from source headers; receipt scheduling and historical scan graph are not the original task. No task causal success claim.',source=str(source),source_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),original_commit=original['git_commit'],robot=a.robot,range_uncertainty_m=physical_range_uncertainty(),current_scan_filter_header_sha256=hashlib.sha256(Path('src/slam_toolbox/include/slam_toolbox/scan_self_filter.hpp').read_bytes()).hexdigest(),current_slam_cpp_sha256=hashlib.sha256(Path('src/slam_toolbox/src/slam_toolbox_multirobot.cpp').read_bytes()).hexdigest(),scan_count=len(scans),clock_stop=at,wall_sec=time.monotonic()-begin,chassis_box=box,laser_to_base=laser,masked_scans=masked,total_masked_beams=sum(len(row['beams']) for row in masked),results=results,commands=commands,environment={k:os.environ.get(k) for k in ['ROS_DOMAIN_ID','RMW_IMPLEMENTATION']},params=params)
  (a.output/'result.json').write_text(json.dumps(summary,indent=2)+'\n');print(json.dumps(dict(status=summary['status'],exact_original_cdr_received=received_cdr,native_cpp_mask_witnesses=summary['native_cpp_mask_witnesses'],native_cpp_removed_returns=summary['native_cpp_removed_returns'],map_results={label:{k:r[k] for k in ['source','value','qualified_return_distance','map_tf']} for label,r in results.items()})),flush=True)
 finally:
  for p in processes.values():

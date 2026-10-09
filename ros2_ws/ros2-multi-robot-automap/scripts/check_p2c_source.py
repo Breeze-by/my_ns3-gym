@@ -71,6 +71,8 @@ def main():
     new_mapper=yaml.safe_load(mapper_path.read_text())
     key=next(iter(new_mapper))
     assert new_mapper[key]['ros__parameters'].pop('scan_self_filter_body_box')==[-.1965,.0685,-.1325,.1325]
+    from p2c_scan_self_filter import physical_range_uncertainty
+    assert new_mapper[key]['ros__parameters'].pop('scan_self_filter_range_uncertainty_m')==physical_range_uncertainty()==.0375
     assert old_mapper==new_mapper,'original SLAM mapper configuration changed'
     native_path=PROJECT/ALLOWED[-2]
     old_cpp=subprocess.check_output(['git','show',f'{BASELINE}:{native_path.relative_to(ROOT)}'],cwd=ROOT,text=True)
@@ -86,7 +88,7 @@ def main():
     result['native_scan_self_filter_sha256']=hashlib.sha256((PROJECT/NEW_SCAN_FILTER).read_bytes()).hexdigest()
     result['native_mapper_configuration_unchanged']=True
     result['native_laser_metadata_and_pose_graph_callbacks_unchanged']=True
-    result['native_scan_scope']='Strict unchanged physical chassis interior in native SLAM inputs only; original map occupancy/return, parameters, source stamps and external scan points remain protected.'
+    result['native_scan_scope']='Native SLAM only: unchanged physical chassis interior plus a contiguous boundary-noise run of at least three matched rays seeded by one physical interior beam; 3 original noise sigma plus half range resolution. NaNs are ignored, never free rays. Original occupancy/return, mapper parameters, source stamps and raw published scan/Nav2 remain protected.'
     a.output.parent.mkdir(parents=True,exist_ok=True);a.output.write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps(dict(status='PASS',protected_files=len(protected),changed_files=len(changed),protocol_cells=len(protocol['matrix']))))
 

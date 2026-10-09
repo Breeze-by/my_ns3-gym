@@ -346,7 +346,8 @@
     "20261009_p2c_v41_failed_development.json",
     "20261010_p2c_v42_failed_development.json",
     "20261010_p2c_v43_failed_development.json",
-    "20261010_p2c_v44_failed_development.json"
+    "20261010_p2c_v44_failed_development.json",
+    "20261010_p2c_v45_failed_development.json"
   ],
   "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
   "opportunity_charge_rules": [
@@ -498,7 +499,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "39e1840930c692612d0cf0584050ae961dce4fff",
+  "candidate_parent_commit": "531b2abde913f162514570bf99955a7ba0b50e85",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -664,14 +665,14 @@
     "scope": "Prevents repeated search starvation; no global optimality, task completion or worst-case callback guarantee from components alone."
   },
   "native_scan_self_filter": {
-    "algorithm": "Before native SLAM scan matching/map generation only, replace finite valid returns strictly inside the unchanged physical chassis XY interior with NaN. Original scan publishers/CDR, all boundary/external points, stamps, mapper parameters, native return/energy/TTL/body guards and AP flows remain.",
+    "algorithm": "Native SLAM input-only strict body interior rejection plus adjacent boundary-range noise association requiring at least one strict-interior seed and three matched rays through a contiguous band. NaNs are skipped, never traced as free rays. Original raw scan/CDR/Nav2, map occupancy rules, headers, energy, full return and TTL guards remain.",
     "body_box_m": [
       -0.1965,
       0.0685,
       -0.1325,
       0.1325
     ],
-    "body_geometry": "Strict intersection of the original TurtleBot3 Waffle SDF base_collision and URDF base_link collision boxes; no padding or world truth.",
+    "body_geometry": "Exact original SDF/URDF chassis interior intersection; unchanged rectangle. Optional calibrated range-noise association declared separately.",
     "laser_frame": "base_scan",
     "laser_to_base_xy_yaw": [
       -0.064,
@@ -679,7 +680,18 @@
       0.0
     ],
     "witness": "Lossless evaluator CDR plus native SCAN_SELF_FILTER source/header counts independently reconstructed, full SLAM headers/config/launch/models/description source digests.",
-    "scope": "Prospective same preprocessing for every robot/baseline in this freeze. Original v43 failure retained, conditional native replay is not task success."
+    "scope": "Prospective same preprocessing for every robot/baseline in this freeze. All original failures retained; conditional native replay is not task success.",
+    "range_uncertainty_m": 0.0375,
+    "noise_association": {
+      "model": "3 * unchanged SDF gaussian range sigma + half range resolution",
+      "range_noise_sigma_m": 0.01,
+      "range_resolution_m": 0.015,
+      "interior_seeds": 1,
+      "requires_contiguous_noise_band": true,
+      "scope": "Reject uncertain self-associated boundary echoes from native SLAM only. Returns outside the band, runs without an interior seed or runs shorter than three rays remain.",
+      "association": "One maximal contiguous near-surface band; at least one original physical-interior beam and three matched rays. Full-turn boundary joins only when adjacent; invalid/far rays split bands.",
+      "minimum_matched_rays": 3
+    }
   },
   "exploration_return_preparation": {
     "scope": "Prospective exploration return corridor preparation; no new application flow",

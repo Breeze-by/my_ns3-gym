@@ -1,0 +1,775 @@
+{
+  "status": "COMPONENT_PASS",
+  "full_p2c1_status": "FAIL_PENDING_NEW_SAME_SOURCE_TASKS",
+  "source_parent": "531b2abde913f162514570bf99955a7ba0b50e85",
+  "retained_original_task_failure": "20261010_p2c_v45_failed_development.json",
+  "algorithm": {
+    "body_rectangle_unchanged": true,
+    "calibrated_range_uncertainty_m": 0.0375,
+    "original_noise_sigma_m": 0.01,
+    "original_range_resolution_m": 0.015,
+    "association": "Maximal contiguous ray-to-exact-body-surface noise band, at least one strict interior beam and three matched rays; full-turn adjacency only; invalid/far beams split runs.",
+    "no_seed_or_short_run": "Original strict interior rejection only",
+    "mapper_effect": "Copy scan, replace associated measurements with NaN; unchanged Karto skips NaN without tracing free rays.",
+    "scope": "Native SLAM input only, all robots/baselines share this prospective preprocessing. Raw scans and Nav2 inputs unchanged.",
+    "limitation": "Model-based association may classify uncertain outside-boundary measurements within a supported run. It is not a proof for arbitrary real sensors/obstacles."
+  },
+  "unchanged_source_sha256": [
+    {
+      "path": "src/multi_robot_exploration/multi_robot_exploration/control.py",
+      "sha256": "7f093efd572e72eaacc850b0dd92cb4eb0a4327df47d26d123794fe97fa5245a"
+    },
+    {
+      "path": "src/multi_robot_exploration/multi_robot_exploration/battery_manager.py",
+      "sha256": "403809f4bc25f7c10c3a811afded2d3a1363e2a624fcd7fd851bde6609b99eee"
+    },
+    {
+      "path": "src/multi_robot_exploration/multi_robot_exploration/action_callbacks.py",
+      "sha256": "7edc9b3923caedf88f236311026f568540779653dafc0ce0aee01dc201880f8b"
+    },
+    {
+      "path": "src/slam_toolbox/src/slam_toolbox_common.cpp",
+      "sha256": "64129edefd94ec32b0799f5de60cd310c22686db360221a9df3f13648ab1b774"
+    },
+    {
+      "path": "src/slam_toolbox/lib/karto_sdk/include/karto_sdk/Karto.h",
+      "sha256": "69163118d0a6262a2746bc790c1ffb3c8aa00f1ddb3be0f3773c2b4ce2e9f1ac"
+    }
+  ],
+  "case_checks": [
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/scripts/p2c_integration_manifest.json",
+      "sha256": "93746ba2757c1920c4052307965222b25ff8867730b4fd42e7081c8148e276fb",
+      "original_cases_unchanged": true
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/scripts/p2c_blackout_manifest.json",
+      "sha256": "dc33deef8bfb6f52e3a659821cf77222f1d2f5125f123c8917b029ea216c4089",
+      "original_cases_unchanged": true
+    }
+  ],
+  "unchanged_limits": {
+    "duration_sec": 300,
+    "hold_sec": 5,
+    "pose_tf_ttl_sec": 2,
+    "map_battery_ttl_sec": 5,
+    "target_ttl_sec": 60,
+    "path_clearance_m": 0.35,
+    "endpoint_clearance_m": 0.45,
+    "native_no_route_wait_sec": 30,
+    "full_return_budget": true
+  },
+  "validation": {
+    "targeted": {
+      "passed": 44,
+      "seconds": 9.9
+    },
+    "functional": {
+      "passed": 1648,
+      "seconds": 162.03
+    },
+    "native_build_seconds": 70,
+    "four_package_build_seconds": 5.38,
+    "source_status": "PASS",
+    "protected_files": 190,
+    "authorized_task_changes": 6,
+    "static_protocol_cells": 54,
+    "ordinary_declaration": "PASS_validate_only",
+    "physical_declaration": "PASS_validate_only"
+  },
+  "actual_native_replay": {
+    "status": "PASS",
+    "exact_original_cdr_received": {
+      "raw": 1280,
+      "body_filtered": 1280
+    },
+    "native_cpp_mask_witnesses": 240,
+    "native_cpp_removed_returns": 1362,
+    "scan_count": 1280,
+    "wall_sec": 75.18809729302302,
+    "original_commit": "531b2abde913f162514570bf99955a7ba0b50e85",
+    "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v45/20261010_p2c_v45_dev_forced2/navigation_inputs.jsonl.gz",
+    "source_sha256": "cda9922ebe35a2822fcc577fb1fc89eb7544e5776332d32d96d34fe7320adc0b",
+    "scope": "Conditional native SLAM DDS replay with original scan/source headers, native odometry TF and original parameters. Synthetic replay clock derived from source headers; receipt scheduling and historical scan graph are not the original task. No task causal success claim.",
+    "current_scan_filter_header_sha256": "4e9b7acde1a50bdbae3cb104e3c95fb2c6e3699368dc511b282fab4e14b0cdab",
+    "current_slam_cpp_sha256": "1c9d41b108bce96c75fd108ace704df502b29bc622c60930cc6629b6f1c21d24"
+  },
+  "conditional_map_results": {
+    "raw": {
+      "source": 2252.399,
+      "position": [
+        -3.2987746316056596,
+        3.3333125833709016
+      ],
+      "home": [
+        0.0,
+        -0.45
+      ],
+      "cell": [
+        175,
+        47
+      ],
+      "value": 0,
+      "window": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "qualified_return_distance": null,
+      "return_path": [],
+      "map_tf": {
+        "x": 0.006853300694569984,
+        "y": 0.014418929727848948,
+        "yaw": 0.0034791667306144827
+      }
+    },
+    "body_filtered": {
+      "source": 2252.399,
+      "position": [
+        -3.298923019221242,
+        3.3314445525312566
+      ],
+      "home": [
+        0.0,
+        -0.45
+      ],
+      "cell": [
+        175,
+        47
+      ],
+      "value": 0,
+      "window": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "qualified_return_distance": 6.084025929514831,
+      "return_path": [
+        [
+          -3.298923019221242,
+          3.3314445525312566
+        ],
+        [
+          -3.2835206751759944,
+          3.317653190378609
+        ],
+        [
+          -3.3335206759210525,
+          3.267653189633551
+        ],
+        [
+          -3.3835206766661106,
+          3.2176531888884927
+        ],
+        [
+          -3.4335206774111686,
+          3.1676531881434347
+        ],
+        [
+          -3.4835206781562267,
+          3.1176531873983766
+        ],
+        [
+          -3.5335206789012847,
+          3.0676531866533185
+        ],
+        [
+          -3.583520679646343,
+          3.0176531859082605
+        ],
+        [
+          -3.633520680391401,
+          2.9676531851632024
+        ],
+        [
+          -3.683520681136459,
+          2.9176531844181444
+        ],
+        [
+          -3.733520681881517,
+          2.8676531836730863
+        ],
+        [
+          -3.783520682626575,
+          2.8176531829280282
+        ],
+        [
+          -3.833520683371633,
+          2.76765318218297
+        ],
+        [
+          -3.883520684116691,
+          2.717653181437912
+        ],
+        [
+          -3.933520684861749,
+          2.667653180692854
+        ],
+        [
+          -3.9835206856068073,
+          2.617653179947796
+        ],
+        [
+          -4.033520686351865,
+          2.567653179202738
+        ],
+        [
+          -4.083520687096923,
+          2.51765317845768
+        ],
+        [
+          -4.083520687096923,
+          2.467653177712622
+        ],
+        [
+          -4.083520687096923,
+          2.4176531769675638
+        ],
+        [
+          -4.083520687096923,
+          2.3676531762225057
+        ],
+        [
+          -4.083520687096923,
+          2.3176531754774476
+        ],
+        [
+          -4.083520687096923,
+          2.2676531747323896
+        ],
+        [
+          -4.083520687096923,
+          2.2176531739873315
+        ],
+        [
+          -4.083520687096923,
+          2.1676531732422735
+        ],
+        [
+          -4.033520686351865,
+          2.1176531724972154
+        ],
+        [
+          -4.033520686351865,
+          2.0676531717521573
+        ],
+        [
+          -4.033520686351865,
+          2.0176531710070993
+        ],
+        [
+          -3.9835206856068073,
+          1.9676531702620412
+        ],
+        [
+          -3.933520684861749,
+          1.9176531695169832
+        ],
+        [
+          -3.883520684116691,
+          1.867653168771925
+        ],
+        [
+          -3.833520683371633,
+          1.817653168026867
+        ],
+        [
+          -3.783520682626575,
+          1.767653167281809
+        ],
+        [
+          -3.733520681881517,
+          1.717653166536751
+        ],
+        [
+          -3.683520681136459,
+          1.6676531657916929
+        ],
+        [
+          -3.633520680391401,
+          1.6176531650466348
+        ],
+        [
+          -3.583520679646343,
+          1.5676531643015768
+        ],
+        [
+          -3.5335206789012847,
+          1.5176531635565187
+        ],
+        [
+          -3.4835206781562267,
+          1.4676531628114606
+        ],
+        [
+          -3.4335206774111686,
+          1.4176531620664026
+        ],
+        [
+          -3.3835206766661106,
+          1.3676531613213445
+        ],
+        [
+          -3.3335206759210525,
+          1.3176531605762865
+        ],
+        [
+          -3.2835206751759944,
+          1.2676531598312284
+        ],
+        [
+          -3.2335206744309364,
+          1.2176531590861703
+        ],
+        [
+          -3.1835206736858783,
+          1.1676531583411123
+        ],
+        [
+          -3.1335206729408203,
+          1.1176531575960542
+        ],
+        [
+          -3.083520672195762,
+          1.0676531568509962
+        ],
+        [
+          -3.033520671450704,
+          1.017653156105938
+        ],
+        [
+          -2.983520670705646,
+          0.96765315536088
+        ],
+        [
+          -2.933520669960588,
+          0.917653154615822
+        ],
+        [
+          -2.88352066921553,
+          0.8676531538707639
+        ],
+        [
+          -2.833520668470472,
+          0.8176531531257059
+        ],
+        [
+          -2.783520667725414,
+          0.7676531523806478
+        ],
+        [
+          -2.733520666980356,
+          0.7176531516355897
+        ],
+        [
+          -2.6835206662352977,
+          0.6676531508905317
+        ],
+        [
+          -2.6335206654902397,
+          0.6176531501454736
+        ],
+        [
+          -2.5835206647451816,
+          0.5676531494004156
+        ],
+        [
+          -2.5335206640001235,
+          0.5176531486553575
+        ],
+        [
+          -2.4835206632550655,
+          0.46765314791029944
+        ],
+        [
+          -2.4335206625100074,
+          0.4176531471652414
+        ],
+        [
+          -2.3835206617649494,
+          0.3676531464201833
+        ],
+        [
+          -2.3335206610198913,
+          0.31765314567512526
+        ],
+        [
+          -2.2835206602748332,
+          0.2676531449300672
+        ],
+        [
+          -2.233520659529775,
+          0.21765314418500914
+        ],
+        [
+          -2.183520658784717,
+          0.16765314343995108
+        ],
+        [
+          -2.133520658039659,
+          0.11765314269489302
+        ],
+        [
+          -2.083520657294601,
+          0.06765314194983496
+        ],
+        [
+          -2.033520656549543,
+          0.0176531412047769
+        ],
+        [
+          -1.983520655804485,
+          -0.03234685954028116
+        ],
+        [
+          -1.9335206550594268,
+          -0.08234686028533922
+        ],
+        [
+          -1.8835206543143688,
+          -0.13234686103039728
+        ],
+        [
+          -1.8335206535693107,
+          -0.18234686177545534
+        ],
+        [
+          -1.7835206528242527,
+          -0.18234686177545534
+        ],
+        [
+          -1.7335206520791946,
+          -0.18234686177545534
+        ],
+        [
+          -1.6835206513341365,
+          -0.18234686177545534
+        ],
+        [
+          -1.6335206505890785,
+          -0.18234686177545534
+        ],
+        [
+          -1.5835206498440204,
+          -0.18234686177545534
+        ],
+        [
+          -1.5335206490989624,
+          -0.18234686177545534
+        ],
+        [
+          -1.4835206483539043,
+          -0.18234686177545534
+        ],
+        [
+          -1.4335206476088462,
+          -0.18234686177545534
+        ],
+        [
+          -1.3835206468637882,
+          -0.18234686177545534
+        ],
+        [
+          -1.3335206461187301,
+          -0.18234686177545534
+        ],
+        [
+          -1.283520645373672,
+          -0.18234686177545534
+        ],
+        [
+          -1.233520644628614,
+          -0.18234686177545534
+        ],
+        [
+          -1.183520643883556,
+          -0.18234686177545534
+        ],
+        [
+          -1.1335206431384979,
+          -0.18234686177545534
+        ],
+        [
+          -1.0835206423934398,
+          -0.18234686177545534
+        ],
+        [
+          -1.0335206416483818,
+          -0.18234686177545534
+        ],
+        [
+          -0.9835206409033237,
+          -0.18234686177545534
+        ],
+        [
+          -0.9335206401582656,
+          -0.18234686177545534
+        ],
+        [
+          -0.8835206394132076,
+          -0.18234686177545534
+        ],
+        [
+          -0.8335206386681495,
+          -0.18234686177545534
+        ],
+        [
+          -0.7835206379230915,
+          -0.18234686177545534
+        ],
+        [
+          -0.7335206371780334,
+          -0.18234686177545534
+        ],
+        [
+          -0.6835206364329753,
+          -0.18234686177545534
+        ],
+        [
+          -0.6335206356879173,
+          -0.18234686177545534
+        ],
+        [
+          -0.5835206349428592,
+          -0.18234686177545534
+        ],
+        [
+          -0.5335206341978012,
+          -0.18234686177545534
+        ]
+      ],
+      "map_tf": {
+        "x": 0.00670491307898766,
+        "y": 0.012550898888204048,
+        "yaw": 0.0034791667306144827
+      }
+    }
+  },
+  "retained_failed_attempts": [
+    {
+      "variant": "four-beam two-seed",
+      "native_replay": "FAIL; old/new complete path both absent",
+      "header_sha256": "11b83396d5f5416951c8b8f4ed7790462d0f93abfa1f2cf925130524f6762722"
+    },
+    {
+      "variant": "maximal two-seed",
+      "native_replay": "FAIL; old/new complete path both absent",
+      "header_sha256": "4e4690013fe7217d268fab8ed88127f17e2356b4136314bd8a408e265e457106"
+    }
+  ],
+  "diagnostic_correction": "Replay helper now uses native fixed map charging coordinates directly; historical first/two failures retained and not relabelled. Their paths remain absent.",
+  "preserved_validation_failures": [
+    "Initial full3 command referenced nonexistent multi_robot_interfaces/test: exit4, no tests. Correct original full suite full3b passed.",
+    "Initial fixture float divide warning fixed before final validations.",
+    "Initial diagnostic tuple transform error and manifest wrong-key lookup preserved; neither launched tasks."
+  ],
+  "provenance": {
+    "path": "20261010_p2c_scan_noise_components_provenance.json.gz",
+    "sha256": "22fcb974fbf1646c60ee6a094464c0d4bcfcc9fd3e3617ff1743288c76b48900"
+  },
+  "not_invoked": [
+    "new v46 tasks",
+    "other three v45 development cases",
+    "17 formal",
+    "two same-source physical",
+    "917"
+  ],
+  "general_hardware_safety_guarantee": false,
+  "actual_airtime_J_capacity_measured": false,
+  "final_source_check": {
+    "path": "ros2_ws/ros2-multi-robot-automap/log/p2c_scan_noise_source4.json",
+    "sha256": "d30019e973411837c62722d6f7a64dbda284d5ec32c4764d964fa63603f39ee8"
+  }
+}

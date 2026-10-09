@@ -1,0 +1,385 @@
+{
+  "status": "FAIL",
+  "scope": "Original first forced development case only; remaining cases uninvoked",
+  "source_commit": "531b2abde913f162514570bf99955a7ba0b50e85",
+  "result": {
+    "battery_enabled": true,
+    "battery_minimum_energy": 13.837682651623036,
+    "battery_total_charges": 2,
+    "battery_total_charging_time_sec": 27.40000000000009,
+    "battery_total_returns": 5,
+    "collision_duration_sec": 0.0,
+    "collision_events": 0,
+    "collision_history": [],
+    "collision_monitoring_active": true,
+    "completion_status": "FAILED",
+    "completion_time_sec": null,
+    "coordinator_completion_time_sec": null,
+    "correct_coverage_ratio": 0.8161095293331927,
+    "correct_free_coverage_ratio": 0.8652960620593462,
+    "correct_truth_cell_count": 46435,
+    "coverage_at_detection": 0.813497143512238,
+    "coverage_threshold": 0.0,
+    "detecting_robot": "tb1",
+    "elapsed_sim_time_sec": 211.5,
+    "end_sim_time_sec": 2286.082,
+    "episode_id": "20261010_p2c_v45_dev_forced2",
+    "failed_robots": [
+      "tb1"
+    ],
+    "failure_reason": "insufficient_rally_poses",
+    "gazebo_seed": 303,
+    "known_coverage_ratio": 0.8441245737987275,
+    "known_truth_cell_count": 48029,
+    "map_message_count": 219,
+    "merged_map_frame": "map",
+    "merged_map_height": 213,
+    "merged_map_origin_x": -5.658372322950671,
+    "merged_map_origin_y": -5.5094437608922515,
+    "merged_map_origin_yaw": 0.0,
+    "merged_map_resolution": 0.05000000074505806,
+    "merged_map_width": 256,
+    "mission_mode": "rally",
+    "model_state_message_count": 2116,
+    "native_rally_hold_proof": null,
+    "nav_aborted": 0,
+    "nav_canceled": 5,
+    "nav_goal_count": 24,
+    "nav_succeeded": 19,
+    "observed_accuracy": 0.9668117179204231,
+    "occupied_iou": 0.19303850681015639,
+    "partial_completion": false,
+    "phase_overlap_ratios": {
+      "EXPLORE": 0.0,
+      "FOUND": 0.0,
+      "RALLY": 0.0
+    },
+    "phase_path_lengths_m": {
+      "EXPLORE": 26.484884476954385,
+      "FOUND": 2.7640972732114015,
+      "RALLY": 0.0
+    },
+    "phase_union_visited_cell_counts": {
+      "EXPLORE": 290,
+      "FOUND": 38,
+      "RALLY": 0
+    },
+    "rally_angular_tolerance_radps": null,
+    "rally_assignments": {},
+    "rally_hold_sec": null,
+    "rally_linear_tolerance_mps": null,
+    "rally_min_separation_m": null,
+    "rally_position_tolerance_m": null,
+    "required_robot_count": 1,
+    "required_robot_names": [
+      "tb2"
+    ],
+    "robot_count": 2,
+    "robots": {
+      "tb1": {
+        "battery_capacity": 100.0,
+        "battery_charge_count": 1,
+        "battery_charge_x": 0.0,
+        "battery_charge_y": -0.45,
+        "battery_charging_time_sec": 17.40000000000009,
+        "battery_final_energy": 64.83829129011124,
+        "battery_initial_energy": 18.0,
+        "battery_message_count": 430,
+        "battery_minimum_energy": 13.837682651623036,
+        "battery_mode": "FAILED",
+        "battery_return_count": 3,
+        "collision_duration_sec": 0.0,
+        "collision_events": 0,
+        "collision_message_count": 4231,
+        "end_x": -3.2023789608052415,
+        "end_y": 3.424608996735366,
+        "final_angular_speed_radps": 3.2574646425062267e-06,
+        "final_linear_speed_mps": 7.61024104338953e-05,
+        "nav_aborted": 0,
+        "nav_canceled": 2,
+        "nav_goal_count": 12,
+        "nav_succeeded": 10,
+        "path_length_m": 15.442035476028412,
+        "phase_path_lengths_m": {
+          "EXPLORE": 12.679552930468795,
+          "FOUND": 2.7624825455596316,
+          "RALLY": 0.0
+        },
+        "rally_final_error_m": null,
+        "rally_target_x": null,
+        "rally_target_y": null,
+        "rally_target_yaw": null,
+        "start_x": 0.002363772520334021,
+        "start_y": -0.4499950452643095,
+        "teleport_jump_count": 0,
+        "visited_cell_count": 171
+      },
+      "tb2": {
+        "battery_capacity": 100.0,
+        "battery_charge_count": 1,
+        "battery_charge_x": 0.0,
+        "battery_charge_y": 0.45,
+        "battery_charging_time_sec": 10.0,
+        "battery_final_energy": 63.51602069563049,
+        "battery_initial_energy": 18.0,
+        "battery_message_count": 427,
+        "battery_minimum_energy": 16.667172074172957,
+        "battery_mode": "ACTIVE",
+        "battery_return_count": 2,
+        "collision_duration_sec": 0.0,
+        "collision_events": 0,
+        "collision_message_count": 4231,
+        "end_x": 3.494765749646668,
+        "end_y": -0.06426622394138976,
+        "final_angular_speed_radps": 2.5122228657294517e-06,
+        "final_linear_speed_mps": 5.028916675149826e-05,
+        "nav_aborted": 0,
+        "nav_canceled": 3,
+        "nav_goal_count": 12,
+        "nav_succeeded": 9,
+        "path_length_m": 13.806946274137358,
+        "phase_path_lengths_m": {
+          "EXPLORE": 13.805331546485592,
+          "FOUND": 0.0016147276517698343,
+          "RALLY": 0.0
+        },
+        "rally_final_error_m": null,
+        "rally_target_x": null,
+        "rally_target_y": null,
+        "rally_target_yaw": null,
+        "start_x": 0.0023229845784293133,
+        "start_y": 0.45000478559994395,
+        "teleport_jump_count": 0,
+        "visited_cell_count": 154
+      }
+    },
+    "schema_version": 9,
+    "search_overlap_ratio": 0.0,
+    "start_sim_time_sec": 2074.582,
+    "success": false,
+    "target_confirmation_frames": 3,
+    "target_field_of_view_deg": 90.0,
+    "target_found": true,
+    "target_max_distance_m": 3.0,
+    "target_x": -4.0,
+    "target_y": 4.0,
+    "task_phase": "FAILED",
+    "termination_reason": "mission_failed",
+    "time_to_75_coverage_sec": 149.30000000000018,
+    "time_to_80_coverage_sec": 153.20000000000027,
+    "time_to_90_coverage_sec": null,
+    "time_to_95_coverage_sec": null,
+    "time_to_detect_sec": 156.80000000000018,
+    "time_to_rally_sec": null,
+    "total_overlap_ratio": 0.0,
+    "total_path_length_m": 29.24898175016577,
+    "truth_cell_count": 56898,
+    "truth_free_cell_count": 52337,
+    "truth_height": 218,
+    "truth_occupied_cell_count": 4561,
+    "truth_origin_x": -5.800000000000001,
+    "truth_origin_y": -5.6000000000000005,
+    "truth_rectangle_count": 26,
+    "truth_resolution": 0.05,
+    "truth_unsupported_collision_count": 1,
+    "truth_width": 261,
+    "union_visited_cell_count": 325,
+    "visit_resolution": 0.1,
+    "world_file": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/worlds/my_world.world"
+  },
+  "strict_gate": {
+    "status": "FAIL",
+    "scope": "development",
+    "task_stack_frozen_commit": "531b2abde913f162514570bf99955a7ba0b50e85",
+    "cases": 1,
+    "errors": [
+      {
+        "case": "dev_forced2",
+        "error": "AssertionError()",
+        "traceback": "Traceback (most recent call last):\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 860, in audit_one\n    try:return check_one(path,config),None\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 763, in check_one\n    communications,_=audit_original((row,config))\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3c5_gate.py\", line 96, in audit_original\n    native_safety_ok(result)\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3c5_gate.py\", line 40, in native_safety_ok\n    assert not result[\"failed_robots\"]\nAssertionError\n"
+      }
+    ],
+    "evidence": [],
+    "full_declared_scope": false,
+    "raw_failures_retained": true,
+    "physical_blackout_gate": "required_before_full_integration",
+    "general_hardware_safety_guarantee": false
+  },
+  "owner_observer_returncodes": [
+    0,
+    0
+  ],
+  "owner_observer_absent": true,
+  "archive": {
+    "path": "20261010_p2c_v45_failed_development_originals.json.gz",
+    "sha256": "a32df7604050205599f711fa6e044532663f2f0ac2078528cf1d8dbca2a50c34"
+  },
+  "raw_evidence": {
+    "20261010_p2c_v45_dev_forced2.csv": "b90dfb02ad5daec2ffe84907862809b83a753b157091371a81a8af064de078d3",
+    "20261010_p2c_v45_dev_forced2.json": "05ecbbff57d2b52c2c70f8ace6b119a2cf77ddf0004ef8e9f6dccd4e69cee0ab",
+    "graph.json": "9af93040f832ddf4ab13be1c33cbc6543c70338dfcda8193af4d3d10e36198f6",
+    "launch/robots2_seed303_20261010-025129.log": "38c98f67003780daa5623f7893b52491706e6246c93bc0585618db2139610d49",
+    "ledger.jsonl": "bc62171b533ca8e04cf54beb35df1a4d1260a1c09695c69257532e4cf7e08b4f",
+    "ledger_metrics/curves.svg": "83b693918f05933e613bd1d5068bfcbd3fdb11f62522da78a786f00ae7dfaba1",
+    "ledger_metrics/events.jsonl": "6ed3bc0217739e5cc2b7430fdee8e011764ce8a33c1b95c8af927a1ee52721ca",
+    "ledger_metrics/inputs.jsonl": "24a35acc04a36cb2316b110eb1ade928b5079c5e46bc1710746496d456792bbc",
+    "ledger_metrics/live.jsonl": "0b8617c97a7c332ecb7a5bedf26ed03512b287b48b82e64d7b0ef67ea3e9daad",
+    "ledger_metrics/live_windows.csv": "36552f00f514e71f823722d83c5612f1de0141dd8bb91e0c2c2e472beb119f0f",
+    "ledger_metrics/summary.json": "badb596f6cf469fed81b64a5b1575da085a6e07002989bfbf31df9d7159c61bb",
+    "ledger_metrics/windows.csv": "36552f00f514e71f823722d83c5612f1de0141dd8bb91e0c2c2e472beb119f0f",
+    "ledger_metrics/windows.jsonl": "46a94c6188624740e3709a44c9389305725371d903a7347d7576f8410f13f277",
+    "manifest.json": "592cdbe0645db97634fdfef6332d9b138738ab296268a5cb5d3c4f2f0a8099b9",
+    "native_graph.json": "ab1f9028bbe86c2897ed6c31075e5c60f0a1ddfd1c4c556f532ee644db4f0b17",
+    "navigation_inputs.jsonl.gz": "cda9922ebe35a2822fcc577fb1fc89eb7544e5776332d32d96d34fe7320adc0b",
+    "observer.log": "13fa2cc52aff038543a3e9bbab611c96fc71402d904dae2bf7be5ed8496fc07d",
+    "runner.log": "618c296ff073149833c253b2a0375afdd2e84b7d37e267bb3cb2a813aa22ffdc",
+    "safety_events.jsonl": "0565ac51af83f3313ee85637b1b16bc83303e8f05bda624f295c4f6ec6029873",
+    "schedule.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+  },
+  "not_invoked": [
+    "three remaining development",
+    "17 formal",
+    "two same-source physical",
+    "917"
+  ],
+  "native_failure": "tb1 return_count3 no_known_route2253.082 -> battery_return_unreachable2283.082 with positive64.8879 energy; isolated occupied cell near first surveyed pose closes inflated door despite raw-known-free path",
+  "independent_original_components": {
+    "scan": {
+      "status": "PASS",
+      "original_scans": 2899,
+      "native_witnesses": 422,
+      "rejected_body_returns": 1170,
+      "body_box_m": [
+        -0.1965,
+        0.0685,
+        -0.1325,
+        0.1325
+      ],
+      "physical_geometry_bound": true,
+      "full_slam_source_bound": true,
+      "raw_scan_control_flow_unchanged": true
+    },
+    "capture": {
+      "status": "PASS",
+      "messages": 73826,
+      "topic_counts": {
+        "/tb1/tf_static": 1,
+        "/tb1/tf": 26238,
+        "/tb1/scan": 1453,
+        "/tb1/odom": 8542,
+        "/tb2/tf_static": 1,
+        "/tb1/map": 148,
+        "/tb2/scan": 1446,
+        "/tb2/tf": 26072,
+        "/tb2/odom": 8501,
+        "/tb2/map": 148,
+        "/merge_map": 295,
+        "/tb1/gateway/merge_map": 148,
+        "/tb2/gateway/merge_map": 148,
+        "/tb1/local_costmap/costmap": 212,
+        "/tb1/global_costmap/costmap": 70,
+        "/tb2/local_costmap/costmap": 166,
+        "/tb2/global_costmap/costmap": 55,
+        "/tb2/plan": 84,
+        "/tb1/plan": 98
+      },
+      "control_input": false
+    },
+    "return_preparation": {
+      "status": "PASS",
+      "charge": 2,
+      "yield_moves": 1,
+      "route_clearance_m": 1.8,
+      "private_audit_only": true
+    },
+    "children": {
+      "status": "PASS",
+      "launch_transcripts": 1,
+      "task_time_nonzero_child_exits": 0,
+      "post_task_cleanup_exits": []
+    },
+    "temporal": {
+      "attempt_stage_causality": "PASS",
+      "receiver_ttl_and_versions": "PASS",
+      "coordinator_decision_source_leases": "PASS",
+      "event_counts": {
+        "gateway_start": 1,
+        "metrics_tick": 291,
+        "generated": 4751,
+        "clock_deferred": 3186,
+        "enqueue": 5323,
+        "admitted": 5322,
+        "tx": 5322,
+        "delivered": 5322,
+        "accepted": 5322,
+        "drop": 1,
+        "fault_epoch": 1,
+        "acknowledged": 79,
+        "coordinator_wait": 7,
+        "coordinator_stale_inputs": 7,
+        "coordinator_navigation_decision": 24,
+        "coordinator_recovered": 7,
+        "command_accepted": 24,
+        "navigation_outcome": 24,
+        "coordinator_charge_decision": 2,
+        "consumed": 3,
+        "coordinator_planning_lease_expired": 2,
+        "coordinator_rally_assignment_failed": 8,
+        "target_reconfirmed": 14,
+        "local_safety_cancel": 1,
+        "gateway_stop": 1
+      },
+      "minimum_accepted_source_delay_sec": 0.05700000000001637,
+      "maximum_clock_deferral_sec": 0.04299999999989268,
+      "recovered_wait_intervals": [
+        [
+          2075.482,
+          2077.282
+        ],
+        [
+          2100.382,
+          2100.482
+        ],
+        [
+          2114.782,
+          2114.882
+        ],
+        [
+          2137.582,
+          2137.682
+        ],
+        [
+          2235.182,
+          2235.282
+        ],
+        [
+          2256.182,
+          2256.282
+        ],
+        [
+          2285.682,
+          2285.882
+        ]
+      ]
+    }
+  },
+  "independent_original_components_sha256": "8f897c643d8e2ecbb781e9e87b9036034db834d804c021e2d879370913caf282",
+  "conditional_diagnostics": {
+    "component_report": "20261010_p2c_scan_noise_components.json",
+    "scope": "All three native replays are component checks after owners closed; original v45 FAIL unchanged.",
+    "raw_diagnosis_files": [
+      {
+        "path": "ros2_ws/ros2-multi-robot-automap/log/p2c_v45_failed_return_inputs.json",
+        "sha256": "4962b88db586b595f5de434beb8da380bb077ad65d788b57894492e9385d57a6"
+      },
+      {
+        "path": "ros2_ws/ros2-multi-robot-automap/log/p2c_v45_scan_boundary_diagnosis.json",
+        "sha256": "77704363b3a722903759851feaaa7cc81e6d2d5e7bcf152cc12187005a4de623"
+      },
+      {
+        "path": "ros2_ws/ros2-multi-robot-automap/log/p2c_v45_cut_ray_diagnosis.json",
+        "sha256": "be176cdb6de85096fce120c6b7a21fc8e5d685d33f408343e9bfadd46830f190"
+      }
+    ]
+  }
+}
