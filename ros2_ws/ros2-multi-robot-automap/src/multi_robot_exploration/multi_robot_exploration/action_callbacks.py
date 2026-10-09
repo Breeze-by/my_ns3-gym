@@ -29,4 +29,3 @@ def drain_action_done_callbacks(self):
         except queue.Empty:
             return
         callback(completed)
-
