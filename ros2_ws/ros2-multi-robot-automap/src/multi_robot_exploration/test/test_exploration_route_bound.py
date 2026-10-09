@@ -9,6 +9,7 @@ import pytest
 
 from multi_robot_exploration import control
 from test_exploration_resume import conditional_snapshot_node
+from outbound_reference import with_local_route_inputs
 
 
 REFERENCE = json.loads((Path(__file__).parent / 'fixtures/p2c_v35_route_pricing_reference.json').read_text())
@@ -18,7 +19,10 @@ def reference_functions():
     namespace = dict(vars(control))
     for name, source in REFERENCE['functions'].items():
         assert hashlib.sha256(source.encode()).hexdigest() == REFERENCE['function_sha256'][name]
-        exec(compile(source, '<7d9709b independent reference>', 'exec'), namespace)
+        exec(compile(with_local_route_inputs(source), '<7d9709b reference with local route input>', 'exec'), namespace)
+    # The old candidate optimizer now receives the shared corrected planner;
+    # its frozen route-admission bounds remain the comparison under test.
+    namespace['plan_rally_leg'] = control.plan_rally_leg
     return namespace
 
 

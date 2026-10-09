@@ -10,6 +10,7 @@ import pytest
 
 from multi_robot_exploration import control as c
 from test_candidate_battery_bound import conditional_charge
+from outbound_reference import with_local_route_inputs
 
 
 REFERENCE = json.loads((Path(__file__).parent / 'fixtures/p2c_v39_staged_bound_reference.json').read_text())
@@ -18,7 +19,7 @@ REFERENCE = json.loads((Path(__file__).parent / 'fixtures/p2c_v39_staged_bound_r
 def reference_assign():
     assert hashlib.sha256(REFERENCE['function'].encode()).hexdigest() == REFERENCE['function_sha256']
     namespace = dict(vars(c))
-    exec(compile(REFERENCE['function'], '<10860f4 independent assign reference>', 'exec'), namespace)
+    exec(compile(with_local_route_inputs(REFERENCE['function']), '<10860f4 reference with local route input>', 'exec'), namespace)
     return namespace['assign_idle_robots']
 
 

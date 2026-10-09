@@ -1974,7 +1974,7 @@ def test_idle_blocker_recovery_dispatches_motion_before_returning(
     targets = {"tb1": control.RallyPose(8.0, 2.5, 0.0), "tb2": control.RallyPose(8.0, 2.0, 0.0)}
     replacements = {"tb1": targets["tb1"], "tb2": control.RallyPose(4.0, 1.5, 0.0)}
     replacement_calls = []
-    def replacement(*args):
+    def replacement(*args, local_map=None):
         replacement_calls.append(args[3])
         if not permanent_reassignment:
             return None
@@ -3335,7 +3335,7 @@ def test_postcharge_rally_drains_original_legs_before_reordering(monkeypatch, pe
     targets = {'far': control.RallyPose(8., 3., 0.), 'near': control.RallyPose(2., 3., 0.)}
     positions = {name: (pose.x, pose.y) for name, pose in targets.items()}
     reordered = []
-    def order(grid, resolution, origin, goals, current, target, detector):
+    def order(grid, resolution, origin, goals, current, target, detector, return_maps=None):
         reordered.append(current.copy())
         return ['near', 'far']
     monkeypatch.setattr(control, 'map_safe_rally_dispatch_order', order)

@@ -15,6 +15,7 @@ from p2c_scan_self_filter import scan_self_filter_audit
 from p2c_return_preparation import return_preparation_audit
 from p2c_navigation_dispatch import navigation_dispatch_audit
 from p2c_rally_transit_heading import transit_heading_audit
+from p2c_outbound_routes import outbound_route_audit
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -214,7 +215,7 @@ def planning_lease_audit(records):
     return dict(status='PASS',abandoned_expired_plans=count,stages=stages)
 
 
-def lookahead_audit(records,require_compound_pose=False,require_live_clock=False):
+def lookahead_audit(records,require_compound_pose=False,require_live_clock=False,require_local_outbound=False):
     count=0
     for e in records:
         if e.get('event')!='coordinator_charge_decision' or not e.get('opportunity_lookahead'):
@@ -240,12 +241,6 @@ def lookahead_audit(records,require_compound_pose=False,require_live_clock=False
         assert e['available_energy']<f['required_energy']<state['capacity']*state['charge_target_fraction']
         assert e['required_energy']==f['required_energy']
         raw=np.frombuffer(zlib.decompress(base64.b64decode(saved['grid'])),dtype='<i2').reshape(saved['shape'])
-        first,second=f['first_position'],f['second_position']
-        _,route=control.plan_rally_leg(control.RallyPose(*second,0.),raw,saved['resolution'],saved['origin'],first,
-            max_distance_m=float('inf'),blocked_positions=f['blocked_positions'],clearance_m=control.PATH_CLEARANCE_M)
-        assert route and np.allclose(route,f['between_route'])
-        between=math.dist(first,route[0])+sum(math.dist(a,b) for a,b in zip(route,route[1:]))
-        assert math.isclose(between,f['between_distance_m'],abs_tol=1e-8)
         local=f.get('local_map_evidence')
         local_geometry=None
         if local:
@@ -254,6 +249,15 @@ def lookahead_audit(records,require_compound_pose=False,require_live_clock=False
             assert 0<=e['event_time']-local['source_time']<=5.
             local_raw=np.frombuffer(zlib.decompress(base64.b64decode(local['grid'])),dtype='<i2').reshape(local['shape'])
             local_geometry=dict(data=local_raw,resolution=local['resolution'],origin=local['origin'])
+        if require_local_outbound:
+            assert 'local_outbound_constraints' in f and f['local_outbound_constraints'] == (local_geometry is not None)
+        first,second=f['first_position'],f['second_position']
+        _,route=control.plan_rally_leg(control.RallyPose(*second,0.),raw,saved['resolution'],saved['origin'],first,
+            max_distance_m=float('inf'),blocked_positions=f['blocked_positions'],clearance_m=control.PATH_CLEARANCE_M,
+            local_map=local_geometry if f.get('local_outbound_constraints') else None)
+        assert route and np.allclose(route,f['between_route'])
+        between=math.dist(first,route[0])+sum(math.dist(a,b) for a,b in zip(route,route[1:]))
+        assert math.isclose(between,f['between_distance_m'],abs_tol=1e-8)
         candidates=control.qualified_return_candidates(raw,saved['resolution'],saved['origin'],second,
             f['home'],state.get('charge_radius_m',.8),local_geometry)
         home_distance=min((r['path_distance_m'] for r in candidates if r['qualified']),default=None)
@@ -305,11 +309,15 @@ def exploration_travel_audit(records,required=False,require_commitment=False,req
         assert f['nominal_blocked_positions'] in ([],blocked)
         traversable=control.traversable_grid(raw['data'],raw['resolution'],control.PATH_CLEARANCE_M)
         cell=control.world_to_grid(*target,raw['resolution'],*raw['origin'])
-        def distance(peer,blocks=()):
-            mask=control.block_dynamic_positions(traversable,raw['resolution'],raw['origin'],blocks)
-            field=control.exploration_distance_field(raw['data'],mask,raw['resolution'],raw['origin'],positions[peer])
+        def distance(peer,blocks=(),local_constraints=False):
+            grid=(control.constrained_return_grid(raw['data'],raw['resolution'],raw['origin'],geometry[peer])
+                  if local_constraints and peer in geometry else raw['data'])
+            safe=(control.traversable_grid(grid,raw['resolution'],control.PATH_CLEARANCE_M)
+                  if local_constraints else traversable)
+            mask=control.block_dynamic_positions(safe,raw['resolution'],raw['origin'],blocks)
+            field=control.exploration_distance_field(grid,mask,raw['resolution'],raw['origin'],positions[peer])
             return float('inf') if field is None else float(field[cell])
-        nominal=distance(name,f['nominal_blocked_positions']);planned=distance(name,blocked)
+        nominal=distance(name,f['nominal_blocked_positions']);planned=distance(name,blocked,'outbound_map_route' in e)
         assert math.isfinite(nominal) and math.isfinite(planned)
         assert math.isclose(nominal,f['own_nominal_distance_m'],abs_tol=1e-8)
         assert math.isclose(planned,f['planned_distance_m'],abs_tol=1e-8)
@@ -499,7 +507,8 @@ def target_survey_audit(records, declared=False, radius_m=None, position_toleran
         matched=False;limit=control.MAX_NAVIGATION_LEG_M
         while limit>=control.USEFUL_TRAVEL_M:
             plan=control.plan_rally_leg(desired,g['data'],g['resolution'],g['origin'],
-                positions[name],limit,blocked_positions=blocked,visible_only=True)
+                positions[name],limit,blocked_positions=blocked,visible_only=True,
+                local_map=geometry.get(name) if 'outbound_map_route' in e else None)
             plan=control.reserve_rally_prefix(plan,s['reserved_routes'])
             if plan is not None and plan[0] is not None:
                 pose,route=plan
@@ -788,7 +797,8 @@ def check_one(path,config):
     energy=energy_audit(directory/'safety_events.jsonl',result,
         bool(config.get('native_energy_accounting')) and case!='empty_battery')
     forecast=lookahead_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
-        bool(config.get('ap_pose_budget_contract')),bool(config.get('coordinator_live_clock')))
+        bool(config.get('ap_pose_budget_contract')),bool(config.get('coordinator_live_clock')),
+        bool(config.get('navigation_outbound_consistency')))
     vetoes=ap_return_veto_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     assignments=rally_assignment_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     proposals=rally_proposal_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
@@ -812,6 +822,11 @@ def check_one(path,config):
     preparations=return_preparation_audit(directory/'ledger.jsonl',bool(config.get('exploration_return_preparation')))
     dispatches=navigation_dispatch_audit(directory/'ledger.jsonl',bool(config.get('navigation_dispatch_boundary')))
     transit=transit_heading_audit(directory/'ledger.jsonl',bool(config.get('observed_rally_transit_heading')))
+    outbound=outbound_route_audit(directory/'ledger.jsonl',bool(config.get('navigation_outbound_consistency')),
+        directory/'navigation_inputs.jsonl.gz')
+    if config.get('navigation_outbound_consistency'):
+        from run_p2d_baseline import file_digest
+        assert row['source_digests']['outbound_route_reader']==file_digest(Path(__file__).with_name('p2c_outbound_routes.py'))
     if config.get('observed_rally_transit_heading'):
         from run_p2d_baseline import file_digest
         assert row['source_digests']['rally_transit_reader']==file_digest(Path(__file__).with_name('p2c_rally_transit_heading.py'))
@@ -830,7 +845,8 @@ def check_one(path,config):
         planning_lease_audit=leases,
         native_tf_ingress_audit=ingress,launch_process_audit=processes,navigation_input_audit=navigation_inputs,
         native_scan_self_filter_audit=scan_filter,exploration_return_preparation_audit=preparations,
-        navigation_dispatch_boundary_audit=dispatches,observed_rally_transit_heading_audit=transit)
+        navigation_dispatch_boundary_audit=dispatches,observed_rally_transit_heading_audit=transit,
+        navigation_outbound_consistency_audit=outbound)
 
 
 def observer_heading_audit(records,required=False,radius_m=3.,position_tolerance_m=.35,fov_rad=math.pi/2):

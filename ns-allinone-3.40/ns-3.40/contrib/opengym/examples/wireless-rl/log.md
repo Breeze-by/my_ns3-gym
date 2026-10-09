@@ -8798,3 +8798,23 @@ colcon build --symlink-install --packages-select multi_robot_exploration multi_r
 /usr/bin/python3 scripts/check_p2c_source.py --output log/p2c_observer_refinement_source.json
 /usr/bin/python3 scripts/check_p2c_graph_retry_runtime.py --output log/p2c_graph_retry_runtime1.json
 ```
+
+
+## 2026-10-10 P2C.1 v49 原失败与出发路径本机障碍一致性
+
+2026-10-10 P2C.1 v49四原整体FAIL：8be97e2 forced/lab/rooms原生COMPLETE257.9/152.8/139.7，corr PARTIAL292.8/tb3正电量失路；四零接触耗尽、owner/observer0关闭，原native FAIL保持。原371目标在369.046本机100/370.1融合0，367.247已有占用，物理来源未证；15原子审不替代任务。新复用保守融合为全出发候选/完整路线/去返预算约束，最终四动作携实际路并源lease复查，私有原图/CDR独立绑定；不清障碍/改scan或native。两个原前失败条件绕行PASS、占用起点仍None；四原选点3同/lab首原条件无解保持。实际DDS旧穿障碍1goal→新拒绝/绕行1goal结果闭合、clock13原源10过期零新goal。1772功能/44最终定向/四包5.42s/190保护6授权54协议/两声明PASS；16中央6纯修改，其余65/92及native/SLAM/300s/5s/TTL/物理保持。新v50 clean pushed4→17+2待实测，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v49_failed_development与20261010_p2c_outbound_consistency_components。
+
+所有实际task/DDS owner及observer均关闭后修改；最终源码53eb6efd11844a02474c337ee094ad539cf7c6a0405ccd1fa21627fc628fca52；与全量测试2c5d源码仅三处行尾空格差异、完整AST一致，source/DDS最终字节重新核验。Humble/install环境，PYTHONNOUSERSITE1、scripts PYTHONPATH、FastDDS UDPv4、清profiles/discovery server、taskset0-79。原始failure和新component独立归档，全部中间失败保持：
+
+```bash
+/usr/bin/python3 scripts/check_p2c_gate.py --run-root log/p2c/20261010_p2c_v49 --development --workers 3 --output log/p2c_v49_development_gate.json
+/usr/bin/python3 /tmp/audit_p2c_v49_components.py
+/usr/bin/python3 /tmp/p2c_v49_route_consistency.py
+/usr/bin/python3 /tmp/p2c_outbound_assignment_comparison.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test scripts --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+colcon build --symlink-install --packages-select multi_robot_exploration multi_robot_interfaces multi_robot merge_map
+/usr/bin/python3 scripts/check_p2c_source.py --output log/p2c_outbound_source3.json
+ROS_DOMAIN_ID=216 /usr/bin/python3 scripts/check_p2c_outbound_runtime.py --output log/p2c_outbound_runtime3.json
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v50 --domain 218 --gazebo-port 20318 --validate-only
+/usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v50_physical --domain 219 --gazebo-port 20319 --validate-only
+```

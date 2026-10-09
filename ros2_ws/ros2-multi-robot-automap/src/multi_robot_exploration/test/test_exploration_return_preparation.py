@@ -64,7 +64,7 @@ def node():
         sent.append((name, assignment))
         goal = PoseStamped();goal.pose.position.x=assignment.navigation_x;goal.pose.position.y=assignment.navigation_y
         goal.pose.orientation.z=math.sin(assignment.navigation_yaw/2.);goal.pose.orientation.w=math.cos(assignment.navigation_yaw/2.)
-        c.HeadquartersControl.record_navigation_decision(h, name, 'exploration_return_yield', goal)
+        c.HeadquartersControl.record_navigation_decision(h, name, 'exploration_return_yield', goal, None, h.goal_routes[name])
     h.send_goal = send
     return h, events, sent, requests
 

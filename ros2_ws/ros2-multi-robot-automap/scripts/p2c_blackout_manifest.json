@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-09T21:32:00.650342+00:00",
+  "predeclared_at_utc": "2026-10-09T22:27:13.607454+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "6834560329e3b6fab09177747fc23e4ff23f9081",
+  "candidate_parent_commit": "8be97e281a1b773b3fa4afecf14ea0d952e0c5ec",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -457,5 +457,13 @@
     "leases": "Bind the original target source as an additional original5s observation-support deadline at final preparation/publication admission; retain all original2/5/60s input TTLs, complete routes/reservations/energy, 300s mission and native5s hold.",
     "evidence": "Private geometry/lease witness and prospective reader source digest; no new application observation stream, no mission or causal saving claimed by components.",
     "confirmations": "Keep each known robot's original accepted stationary-target confirmation, source epoch and actual camera metadata; no acceptance/version rule changes. Select the freshest eligible quiescent peer even when the approaching robot made the latest global confirmation. Independent reader binds the support to that peer's prior consumed receipt; no source renewal or new application flow."
+  },
+  "navigation_outbound_consistency": {
+    "scope": "Native-energy tasks: every central navigation route respects the fresh delivered robot map as well as the original fused planning map; local unknown space may be extended, local positive cells are preserved.",
+    "planning": "Use the existing conservative occupied-cell projection for outbound candidate fields, prefixes, body/order plans, whole approaches and post-charge waits; independently veto an inconsistent prepared route before creating a goal owner.",
+    "leases": "Original pose/TF2s, map/battery5s, target60s and observer5s remain; witness construction is inside the existing final publication/source boundary.",
+    "evidence": "Original route, delivered local/planning grids and source epochs in the existing private decision audit; independent route and raw CDR map binding. No new application traffic, scan filtering, occupancy clearing or native return changes.",
+    "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_outbound_consistency_components.json",
+    "task_limits_unchanged": true
   }
 }

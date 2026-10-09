@@ -185,14 +185,17 @@ def test_bounded_commitment_reconstructs_base_and_scheduling_scores(corruption):
 
 def test_executed_witness_excludes_an_unconsulted_charging_peer_map():
     from types import SimpleNamespace
+    from geometry_msgs.msg import PoseStamped
     node,_,_,_=charge_node()
     node.battery_modes['tb1']='CHARGING';node.battery_states['tb1']['mode']='CHARGING'
     node.source_map_data=node.map_data
     node.robot_maps={name:dict(data=node.map_data,resolution=.1,origin=(0.,0.)) for name in node.robot_positions}
     node.robot_map_received_at=dict.fromkeys(node.robot_positions,10.)
     node.exploration_travel_choices={'tb2':dict(eligible_robot_names=['tb2'])}
-    node.input_freshness_details=lambda:{'tb2/map_snapshot':dict(source_time=10.,age_sec=0.,ttl_sec=5.)}
+    node.input_freshness_details=lambda:{key:dict(source_time=10.,age_sec=0.,ttl_sec=5.)
+        for key in ('tb2/map_snapshot','headquarters/fused_map_snapshot')}
     captured=[];node.consumed_publisher=SimpleNamespace(publish=lambda msg:captured.append(json.loads(msg.data)))
-    c.HeadquartersControl.record_navigation_decision(node,'tb2','exploration')
+    goal=PoseStamped();goal.pose.position.x,goal.pose.position.y=node.robot_positions['tb2']
+    assert c.HeadquartersControl.record_navigation_decision(node,'tb2','exploration',goal,None,(node.robot_positions['tb2'],))
     assert set(captured[0]['return_maps'])=={'tb2'}
     assert captured[0]['return_maps']['tb2']['source_time']==captured[0]['inputs']['tb2/map_snapshot']['source_time']

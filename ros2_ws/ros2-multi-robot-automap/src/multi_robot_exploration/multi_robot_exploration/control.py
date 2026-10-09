@@ -1808,23 +1808,31 @@ def _assign_rally_poses(
         geometry_cache["traversable"] = traversable_grid(
             raw_grid, resolution, clearance_m=RALLY_PATH_CLEARANCE_M)
     traversable = geometry_cache["traversable"]
+    approach_grids = geometry_cache.setdefault('approach_grids', {})
     approach_fields = geometry_cache.setdefault("approach_fields", {})
     options = {}
     for name in names:
         position = robot_positions[name]
         if name not in approach_fields:
+            local_map = (return_maps or {}).get(name)
+            grid = (constrained_return_grid(raw_grid, resolution, origin, local_map)
+                    if local_map is not None else raw_grid)
+            if grid is None:
+                return {}
+            safe = traversable_grid(grid, resolution, RALLY_PATH_CLEARANCE_M) if local_map is not None else traversable
+            approach_grids[name] = grid, safe
             start = world_to_grid(
                 position[0], position[1], resolution, origin[0], origin[1]
             )
             # Unknown and occupied starts remain rejected; only a known-free pose
             # may use the bounded clearance escape above.
             start, escape_route = navigation_start_route(
-                raw_grid,
-                traversable,
+                grid,
+                safe,
                 start,
                 max(1, math.ceil(0.6 / resolution)),
             )
-            distances = path_distance_grid(traversable, start)
+            distances = path_distance_grid(safe, start)
             escape_distance = 0.0
             for first, second in zip(escape_route, escape_route[1:]):
                 escape_distance += math.dist(first, second)
@@ -1889,10 +1897,11 @@ def _assign_rally_poses(
                     return {}
                 home_fields = geometry_cache.setdefault("home_fields", {})
                 if name not in home_fields:
+                    grid, safe = approach_grids[name]
                     home_start, escape = navigation_start_route(
-                        raw_grid, traversable, world_to_grid(*home, resolution, *origin),
+                        grid, safe, world_to_grid(*home, resolution, *origin),
                         max(1, math.ceil(.6 / resolution)))
-                    home_distances = path_distance_grid(traversable, home_start)
+                    home_distances = path_distance_grid(safe, home_start)
                     home_escape = sum(math.dist(a, b) for a, b in zip(escape, escape[1:]))
                     home_fields[name] = (home_distances, home_escape)
                 home_distances, home_escape = home_fields[name]
@@ -1999,6 +2008,7 @@ def _assign_rally_poses(
                         (float(state["charge_x"]), float(state["charge_y"])),
                         blocked_positions=[(body.x, body.y)],
                         route_cache=parked_route_caches.setdefault((parked_index, name), {}),
+                        local_map=(return_maps or {}).get(name),
                     )
                     speed = float(state.get("nominal_speed_mps", .18))
                     full_route = ((float(state['charge_x']), float(state['charge_y'])), *route)
@@ -2114,8 +2124,13 @@ def reassign_rally_pose(
     target,
     reserved_poses=(),
     blocked_positions=(),
+    local_map=None,
 ):
     """Choose a fresh reachable pose when a delivered map invalidates one."""
+    if local_map is not None:
+        raw_grid = constrained_return_grid(raw_grid, resolution, origin, local_map)
+        if raw_grid is None:
+            return None
     candidates = rally_pose_candidates(raw_grid, resolution, origin, target)
     traversable = traversable_grid(
         raw_grid, resolution, clearance_m=RALLY_PATH_CLEARANCE_M
@@ -2159,8 +2174,12 @@ def reassign_rally_pose(
     return None if best is None else best[1]
 
 
-def rally_survey_pose(raw_grid, resolution, origin, robot_position, target):
+def rally_survey_pose(raw_grid, resolution, origin, robot_position, target, local_map=None):
     """Choose a known, reachable pose that moves the detector toward target."""
+    if local_map is not None:
+        raw_grid = constrained_return_grid(raw_grid, resolution, origin, local_map)
+        if raw_grid is None:
+            return None
     traversable = traversable_grid(
         raw_grid, resolution, clearance_m=RALLY_PATH_CLEARANCE_M
     )
@@ -2228,8 +2247,13 @@ def rally_yield_pose(
     route_separation_m=RALLY_MIN_SEPARATION_M,
     visible_only=False,
     target_view_distance=None,
+    local_map=None,
 ):
     """Choose a reachable refuge outside parked poses and reserved corridors."""
+    if local_map is not None:
+        raw_grid = constrained_return_grid(raw_grid, resolution, origin, local_map)
+        if raw_grid is None:
+            return None
     traversable = traversable_grid(
         raw_grid, resolution, clearance_m=RALLY_PATH_CLEARANCE_M
     )
@@ -2440,6 +2464,7 @@ def map_safe_rally_dispatch_order(
     robot_positions,
     target,
     priority_robot=None,
+    return_maps=None,
 ):
     """
     Select a serial rally order whose successive routes stay reachable.
@@ -2464,6 +2489,7 @@ def map_safe_rally_dispatch_order(
             targets[name], raw_grid, resolution, origin, robot_positions[name],
             max_distance_m=float("inf"), blocked_positions=blocked,
             route_cache=route_caches.setdefault((name, blocked), {}),
+            local_map=(return_maps or {}).get(name),
         )
 
     intent_routes = {}
@@ -2564,11 +2590,25 @@ def plan_rally_leg(
     clearance_m=RALLY_PATH_CLEARANCE_M,
     visible_only=False,
     route_cache=None,
+    local_map=None,
 ):
     """Plan a leg; a cache may be shared within one immutable planning snapshot."""
     if route_cache is None:
         route_cache = {}
-    if not route_cache:
+    if local_map is not None:
+        combined = constrained_return_grid(raw_grid, resolution, origin, local_map,
+            route_cache.setdefault('constrained_map', {}))
+        if combined is None:
+            return None, ()
+        context = (resolution, *origin, *robot_position,
+                   tuple(tuple(point) for point in blocked_positions), clearance_m)
+        if route_cache.get('planning_grid') is not combined or route_cache.get('field_context') != context:
+            route_cache.pop('field', None)
+            route_cache.pop('visibility', None)
+            route_cache['planning_grid'] = combined
+            route_cache['field_context'] = context
+        raw_grid = combined
+    if 'field' not in route_cache:
         traversable = traversable_grid(
             raw_grid, resolution, clearance_m=clearance_m
         )
@@ -2638,6 +2678,10 @@ def plan_rally_leg(
         for point in world_route[1:]
         for blocked in blocked_positions
     ):
+        return None, ()
+    if local_map is not None and not route_respects_known_obstacles(
+            local_map['data'], local_map['resolution'], local_map['origin'],
+            (robot_position, *world_route), clearance_m=clearance_m):
         return None, ()
     return (
         RallyPose(
@@ -3563,7 +3607,9 @@ class HeadquartersControl(Node):
             points.append(point)
         positions = {name: self.robot_positions[name] for name in assignment}
         order = (map_safe_rally_dispatch_order(self.map_data, self.resolution, self.origin,
-            assignment, positions, self.target, self.detecting_robot)
+            assignment, positions, self.target, self.detecting_robot,
+            return_maps=HeadquartersControl.delivered_return_maps(self),
+        )
             if self.use_map_safe_rally_order else
             rally_dispatch_order(assignment, positions, self.target, self.detecting_robot))
         if not self.fresh_robot_inputs() or not self.fresh_target():
@@ -3703,6 +3749,7 @@ class HeadquartersControl(Node):
                     blocked_positions=[p for peer, p in self.robot_positions.items()
                                        if peer != name and p is not None],
                     clearance_m=PATH_CLEARANCE_M, visible_only=True,
+                    local_map=HeadquartersControl.delivered_return_maps(self).get(name),
                 )
                 if leg is None or math.dist((leg.x, leg.y), home) > radius - .2:
                     return None
@@ -3757,7 +3804,9 @@ class HeadquartersControl(Node):
             _, route = plan_rally_leg(RallyPose(candidate.x, candidate.y, 0.),
                 self.map_data, self.resolution, self.origin, (assignment.x, assignment.y),
                 max_distance_m=float('inf'), blocked_positions=blocked,
-                clearance_m=PATH_CLEARANCE_M, route_cache=cache)
+                clearance_m=PATH_CLEARANCE_M, route_cache=cache,
+                local_map=HeadquartersControl.delivered_return_maps(self).get(name),
+            )
             if not route:
                 continue
             between = math.dist((assignment.x, assignment.y), route[0]) + sum(
@@ -3777,6 +3826,7 @@ class HeadquartersControl(Node):
             local_map = HeadquartersControl.delivered_return_maps(self, now).get(name)
             local_stamp = getattr(self, 'robot_map_received_at', {}).get(name)
             return dict(strategy='two_current_frontiers', required_energy=required, evaluated_at_sec=now,
+                local_outbound_constraints=local_map is not None,
                 first_position=[assignment.x, assignment.y], second_position=[candidate.x, candidate.y],
                 first_group=assignment.viewpoint.group_id, second_group=candidate.viewpoint.group_id,
                 first_path_distance_m=assignment.path_distance_m, between_distance_m=between,
@@ -3864,7 +3914,9 @@ class HeadquartersControl(Node):
                 positions[name], (float(state['charge_x']), float(state['charge_y'])),
                 reserved_poses=self.active_exclusions(),
                 blocked_positions=blocked, reserved_routes=tuple(protected.values()),
-                route_separation_m=RALLY_ROUTE_SEPARATION_M, visible_only=True)
+                route_separation_m=RALLY_ROUTE_SEPARATION_M, visible_only=True,
+                local_map=HeadquartersControl.delivered_return_maps(self).get(name),
+            )
             if refuge is not None:
                 self.pending_exploration_return_yield = dict(
                     robot=name, returning=returning, refuge=refuge,
@@ -3904,7 +3956,9 @@ class HeadquartersControl(Node):
         blocked = [p for other, p in self.robot_positions.items() if other != name and p is not None]
         target, route = plan_rally_leg(refuge, self.map_data, self.resolution,
             self.origin, self.robot_positions[name], MAX_NAVIGATION_LEG_M,
-            blocked_positions=blocked, clearance_m=PATH_CLEARANCE_M, visible_only=True)
+            blocked_positions=blocked, clearance_m=PATH_CLEARANCE_M, visible_only=True,
+            local_map=HeadquartersControl.delivered_return_maps(self).get(name),
+        )
         if (target is None or math.dist((target.x, target.y), point) > NAVIGATION_POSITION_TOLERANCE_M
                 or math.dist(self.robot_positions[name], point) < .5):
             self.pending_exploration_return_yield = None
@@ -4077,7 +4131,7 @@ class HeadquartersControl(Node):
             goal.pose.pose.position.x, goal.pose.pose.position.y = position
             goal.pose.pose.orientation.z = math.sin(yaw / 2)
             goal.pose.pose.orientation.w = math.cos(yaw / 2)
-            if not self.record_navigation_decision(name, "target_reacquisition_scan", goal.pose):
+            if not self.record_navigation_decision(name, "target_reacquisition_scan", goal.pose, None, (position,)):
                 return
             self.target_scan_robot = name
             self.target_scan_cancel_requested = False
@@ -4577,12 +4631,14 @@ class HeadquartersControl(Node):
                     reserved_routes=(*active_routes, *(path for other, path in protected.items() if other != name)),
                     route_separation_m=return_clearance,
                     visible_only=True,
+                    local_map=HeadquartersControl.delivered_return_maps(self).get(name),
                 )
                 if refuge is None:
                     continue
                 plan = plan_rally_leg(
                     refuge, self.map_data, self.resolution, self.origin,
                     position, MAX_NAVIGATION_LEG_M, blocked, visible_only=True,
+                    local_map=HeadquartersControl.delivered_return_maps(self).get(name),
                 )
                 if plan[0] is None:
                     continue
@@ -4824,6 +4880,7 @@ class HeadquartersControl(Node):
                             self.origin,
                             self.robot_positions[survey_robot],
                             self.target,
+                            local_map=HeadquartersControl.delivered_return_maps(self).get(survey_robot),
                         )
                         if survey_pose is not None and self.send_survey_goal(survey_robot, survey_pose):
                             return
@@ -5022,6 +5079,7 @@ class HeadquartersControl(Node):
                                 self.rally_dispatch_order = map_safe_rally_dispatch_order(
                                     self.map_data, self.resolution, self.origin,
                                     self.rally_final_targets, positions, self.target, self.detecting_robot,
+                                    return_maps=HeadquartersControl.delivered_return_maps(self),
                                 )
                             else:
                                 self.rally_dispatch_order = rally_dispatch_order(
@@ -5043,6 +5101,7 @@ class HeadquartersControl(Node):
                     name: plan_rally_leg(
                         self.rally_final_targets[name], self.map_data,
                         self.resolution, self.origin, self.robot_positions[name],
+                        local_map=HeadquartersControl.delivered_return_maps(self).get(name),
                     )[1]
                     for name in self.rally_dispatch_order
                     if self.robot_positions[name] is not None
@@ -5108,6 +5167,7 @@ class HeadquartersControl(Node):
                             self.robot_positions, name,
                             reserved_names | set(return_reservations),
                         ), visible_only=True,
+                        local_map=HeadquartersControl.delivered_return_maps(self).get(name),
                     )
                     if plan[0] is not None:
                         plans[name] = plan
@@ -5127,6 +5187,7 @@ class HeadquartersControl(Node):
                         min(MAX_NAVIGATION_LEG_M, rally_leg_limit(self.rally_attempts[name])),
                         rally_stationary_positions(self.robot_positions, name, reserved_names),
                         visible_only=True,
+                        local_map=HeadquartersControl.delivered_return_maps(self).get(name),
                     )
                 if plan[0] is None:
                     if return_reservations:
@@ -5179,6 +5240,7 @@ class HeadquartersControl(Node):
                                     if candidate_name not in (name, other_name)
                                     and position is not None
                                 ],
+                                local_map=HeadquartersControl.delivered_return_maps(self).get(name),
                             )[0]
                             is not None
                         ]
@@ -5219,6 +5281,7 @@ class HeadquartersControl(Node):
                                     if other not in (name, blocker)
                                     and position is not None
                                 ],
+                                local_map=HeadquartersControl.delivered_return_maps(self).get(name),
                             )
                             blocker_replacement = None
                             if waiting_plan[0] is not None:
@@ -5228,6 +5291,7 @@ class HeadquartersControl(Node):
                                     blocker_reserved, blocker_positions,
                                     reserved_routes=(waiting_plan[1],), visible_only=True,
                                     target_view_distance=view_distance,
+                                    local_map=HeadquartersControl.delivered_return_maps(self).get(blocker),
                                 )
                             permanent_reassignment = blocker_replacement is None
                             if permanent_reassignment:
@@ -5235,6 +5299,7 @@ class HeadquartersControl(Node):
                                     self.map_data, self.resolution, self.origin,
                                     blocker, self.robot_positions[blocker],
                                     self.target, blocker_reserved, blocker_positions,
+                                    local_map=HeadquartersControl.delivered_return_maps(self).get(blocker),
                                 )
                             if blocker_replacement is None:
                                 continue
@@ -5248,6 +5313,7 @@ class HeadquartersControl(Node):
                                 [position for other, position in self.robot_positions.items()
                                  if other != blocker and position is not None],
                                 visible_only=True,
+                                local_map=HeadquartersControl.delivered_return_maps(self).get(blocker),
                             )
                             if blocker_plan[0] is None:
                                 continue
@@ -5300,6 +5366,7 @@ class HeadquartersControl(Node):
                                         for other_name in parked_names
                                         if other_name != blocker
                                     ],
+                                    local_map=HeadquartersControl.delivered_return_maps(self).get(name),
                                 )
                                 if current_replacement is not None:
                                     self.rally_targets[name] = current_replacement
@@ -5336,6 +5403,7 @@ class HeadquartersControl(Node):
                                     self.robot_positions[other_name]
                                     for other_name in parked_names
                                 ],
+                                local_map=HeadquartersControl.delivered_return_maps(self).get(name),
                             )
                             if replacement is not None:
                                 self.rally_targets[name] = replacement
@@ -5354,6 +5422,7 @@ class HeadquartersControl(Node):
                             self.origin,
                             self.robot_positions[name],
                             self.target,
+                            local_map=HeadquartersControl.delivered_return_maps(self).get(name),
                         )
                         if (
                             name not in self.rally_probe_targets
@@ -5429,6 +5498,7 @@ class HeadquartersControl(Node):
                             | (set(return_reservations) if name in stage_names else set()),
                         ),
                         visible_only=True,
+                        local_map=HeadquartersControl.delivered_return_maps(self).get(name),
                     )
                 reservations = [*reserved_routes, *priority_routes, *(route for other, route in
                                 (return_reservations or {}).items() if other != name)]
@@ -5442,7 +5512,9 @@ class HeadquartersControl(Node):
                             and priority_routes and reserve_rally_prefix(plan, live_reservations) is not None):
                         repaired = map_safe_rally_dispatch_order(
                             self.map_data, self.resolution, self.origin, self.rally_final_targets,
-                            self.robot_positions, self.target, self.detecting_robot)
+                            self.robot_positions, self.target, self.detecting_robot,
+                            return_maps=HeadquartersControl.delivered_return_maps(self),
+                        )
                         if rally_approach_inversions(repaired, self.robot_positions, approach_routes) < inversions:
                             # Only future priority is blocking a viable leg.
                             # Do not change order while old legs execute; drain
@@ -5632,6 +5704,7 @@ class HeadquartersControl(Node):
             _, route = plan_rally_leg(
                 target, self.map_data, self.resolution, self.origin,
                 position,
+                local_map=HeadquartersControl.delivered_return_maps(self).get(name),
             )
             if not route:
                 continue  # The existing route/map recovery still owns this case.
@@ -5736,6 +5809,7 @@ class HeadquartersControl(Node):
         _, remaining = plan_rally_leg(
             self.rally_final_targets[robot_name], self.map_data, self.resolution,
             self.origin, (pose.x, pose.y),
+            local_map=HeadquartersControl.delivered_return_maps(self).get(robot_name),
         )
         if not remaining:
             return False
@@ -5916,7 +5990,9 @@ class HeadquartersControl(Node):
                 plan = plan_rally_leg(pose, self.map_data, self.resolution, self.origin,
                                       self.robot_positions[robot_name], length,
                                       blocked_positions=blocked, visible_only=True,
-                                      route_cache=cache)
+                                      route_cache=cache,
+                    local_map=HeadquartersControl.delivered_return_maps(self).get(robot_name),
+                )
                 plan = reserve_rally_prefix(plan, reservations)
                 if plan is not None and plan[0] is not None:
                     distance = sum(math.dist(a, b) for a, b in zip(
@@ -5973,7 +6049,7 @@ class HeadquartersControl(Node):
         goal.pose.pose.orientation.w = math.cos(pose.yaw / 2.0)
         if not self.record_navigation_decision(robot_name,
             "target_observation_heading" if heading_only else
-            "target_information_survey" if choice is not None else "target_survey", goal.pose):
+            "target_information_survey" if choice is not None else "target_survey", goal.pose, None, plan[1]):
             return False
         self.survey_attempts += 1
         self.survey_robot = robot_name
@@ -6175,6 +6251,7 @@ class HeadquartersControl(Node):
                 self.robot_positions[robot_name],
                 min(MAX_NAVIGATION_LEG_M, rally_leg_limit(self.rally_attempts[robot_name])),
                 blocked_positions, visible_only=True,
+                local_map=HeadquartersControl.delivered_return_maps(self).get(robot_name),
             )
         target, route = plan
         if target is None:
@@ -6208,7 +6285,7 @@ class HeadquartersControl(Node):
         goal.pose.pose.position.y = target.y
         goal.pose.pose.orientation.z = math.sin(target.yaw / 2.0)
         goal.pose.pose.orientation.w = math.cos(target.yaw / 2.0)
-        if not self.record_navigation_decision(robot_name, "local_return_yield" if local_return_yield else "rally", goal.pose, transit_observer):
+        if not self.record_navigation_decision(robot_name, "local_return_yield" if local_return_yield else "rally", goal.pose, transit_observer, route):
             return
         self.rally_leg_routes[robot_name] = route
         self.rally_leg_poses[robot_name] = target
@@ -6912,7 +6989,9 @@ class HeadquartersControl(Node):
                             self.resolution, self.origin, self.robot_positions[robot_name],
                             MAX_NAVIGATION_LEG_M, blocked_positions=blocked,
                             clearance_m=PATH_CLEARANCE_M, visible_only=True,
-                            route_cache=route_caches[robot_name])
+                            route_cache=route_caches[robot_name],
+                            local_map=HeadquartersControl.delivered_return_maps(self).get(robot_name),
+                        )
                     if not exploration_prefix_can_move(route_proposals[key],
                             self.robot_positions[robot_name], reservations):
                         diagnostics['rejected_routes'] += 1
@@ -7041,7 +7120,9 @@ class HeadquartersControl(Node):
                         self.map_data, self.resolution, self.origin,
                         self.robot_positions[name], MAX_NAVIGATION_LEG_M,
                         blocked_positions=blocked, clearance_m=PATH_CLEARANCE_M,
-                        visible_only=True, route_cache=route_caches[name])
+                        visible_only=True, route_cache=route_caches[name],
+                        local_map=HeadquartersControl.delivered_return_maps(self).get(name),
+                    )
                 plan = route_proposals[key]
                 admitted = reserve_rally_prefix(plan, reservations)
                 if admitted is None:
@@ -7175,7 +7256,7 @@ class HeadquartersControl(Node):
             )
             self.send_goal(robot_name, assignment)
 
-    def record_navigation_decision(self, robot_name, kind, goal_pose=None, transit_observer=None):
+    def record_navigation_decision(self, robot_name, kind, goal_pose=None, transit_observer=None, outbound_route=None):
         """Prepare private witnesses, then admit publication from live source leases."""
         event = {
             "event": "coordinator_navigation_decision",
@@ -7195,6 +7276,25 @@ class HeadquartersControl(Node):
                 2 * (q.w * q.z + q.x * q.y),
                 1 - 2 * (q.y * q.y + q.z * q.z),
             )
+        if getattr(self, 'enable_battery', False):
+            local_map = HeadquartersControl.delivered_return_maps(self).get(robot_name)
+            if local_map is None or not outbound_route or goal_pose is None:
+                return False
+            route = (self.robot_positions[robot_name], *outbound_route)
+            if (not all(len(point) == 2 and all(math.isfinite(v) for v in point) for point in route)
+                    or math.dist(route[-1], event['requested_position']) > 1e-8):
+                return False
+            event['outbound_map_route'] = dict(route=route, clearance_m=RALLY_PATH_CLEARANCE_M,
+                local_map=grid_audit_evidence(local_map['data'], local_map['resolution'], local_map['origin'],
+                    'ap_delivered_robot_map', self.robot_map_received_at[robot_name], self.robot_map_received_at[robot_name]),
+                planning_map=grid_audit_evidence(self.map_data, self.resolution, self.origin,
+                    'ap_delivered_planning_map', self.map_received_at, self.map_received_at))
+            if not route_respects_known_obstacles(local_map['data'], local_map['resolution'],
+                    local_map['origin'], route):
+                event.update(event='coordinator_navigation_map_veto', event_time=self.now(),
+                    inputs=self.input_freshness_details(), reason='outbound_local_obstacle')
+                self.consumed_publisher.publish(String(data=json.dumps(event, sort_keys=True)))
+                return False
         if kind == "target_reacquisition_exploration":
             event["search_basis"] = getattr(self, "target_search_basis", "current_map_frontiers")
             event["search_route"] = self.goal_routes[robot_name]
@@ -7318,7 +7418,7 @@ class HeadquartersControl(Node):
             "target_reacquisition_exploration"
             if getattr(self, "target_search_active", False) else (
                 "initial_visual_search" if getattr(self,'initial_search_goals',{}).get(robot_name,False) else "exploration"),
-            goal.pose,
+            goal.pose, None, self.goal_routes[robot_name],
         ):
             self.robot_states[robot_name] = "idle"
             self.goal_targets[robot_name] = None
@@ -7569,7 +7669,9 @@ class HeadquartersControl(Node):
             plan = plan_rally_leg(RallyPose(a.x, a.y, 0.), self.map_data,
                 self.resolution, self.origin, self.robot_positions[robot_name], MAX_NAVIGATION_LEG_M,
                 blocked_positions=blocked, clearance_m=PATH_CLEARANCE_M,
-                visible_only=True, route_cache=cache)
+                visible_only=True, route_cache=cache,
+                local_map=HeadquartersControl.delivered_return_maps(self).get(robot_name),
+            )
             admitted = reserve_rally_prefix(plan, reservations)
             if (admitted is not None
                     and math.dist(self.robot_positions[robot_name],

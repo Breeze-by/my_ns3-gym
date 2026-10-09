@@ -1,0 +1,795 @@
+{
+  "scope": "Original captured source maps at actual decisions; conditional current-map planning only. No Nav2 replay or task counterfactual.",
+  "original_input_sha256": "19bcdf12ecaf43b7356b24d8c87564af5e0386b511913f50ae06f4ab9e9ada45",
+  "original_ledger_sha256": "cd4e2ec8e2d06e937901fcf559bf5d270fc61fc99719fd067538f412e579cb60",
+  "control_sha256": "75480ba8b0c34b5a5c763e083a46e69ed89d730ada034d344a24dba54df4d17c",
+  "assignment": [
+    -3.3980223940596836,
+    1.8703127994101152,
+    -2.0059784304513926
+  ],
+  "original_commit": "8be97e281a1b773b3fa4afecf14ea0d952e0c5ec",
+  "decisions": [
+    {
+      "event_time": 362.1,
+      "original_decision": {
+        "current_position": [
+          -0.9137612327799443,
+          2.353720627908479
+        ],
+        "dispatch_goal_source_time_sec": 362.1,
+        "dispatch_lease_deadline_sec": 363.044,
+        "event": "coordinator_navigation_decision",
+        "event_time": 362.1,
+        "fault_revision": 0,
+        "inputs": {
+          "headquarters/fused_map_snapshot": {
+            "age_sec": 1.400000000000034,
+            "source_time": 360.7,
+            "ttl_sec": 5.0
+          },
+          "headquarters/target_detection": {
+            "age_sec": 0.9000000000000341,
+            "source_time": 361.2,
+            "ttl_sec": 60.0
+          },
+          "tb1/battery_state": {
+            "age_sec": 1.1000000000000227,
+            "source_time": 361.0,
+            "ttl_sec": 5.0
+          },
+          "tb1/frame_state": {
+            "age_sec": 1.05600000000004,
+            "source_time": 361.044,
+            "ttl_sec": 2.0
+          },
+          "tb1/map_snapshot": {
+            "age_sec": 1.4570000000000505,
+            "source_time": 360.643,
+            "ttl_sec": 5.0
+          },
+          "tb1/pose_state": {
+            "age_sec": 0.6720000000000255,
+            "source_time": 361.428,
+            "ttl_sec": 2.0
+          },
+          "tb2/battery_state": {
+            "age_sec": 1.1000000000000227,
+            "source_time": 361.0,
+            "ttl_sec": 5.0
+          },
+          "tb2/frame_state": {
+            "age_sec": 1.0550000000000068,
+            "source_time": 361.045,
+            "ttl_sec": 2.0
+          },
+          "tb2/map_snapshot": {
+            "age_sec": 2.6550000000000296,
+            "source_time": 359.445,
+            "ttl_sec": 5.0
+          },
+          "tb2/pose_state": {
+            "age_sec": 0.6750000000000114,
+            "source_time": 361.425,
+            "ttl_sec": 2.0
+          },
+          "tb3/battery_state": {
+            "age_sec": 1.1000000000000227,
+            "source_time": 361.0,
+            "ttl_sec": 5.0
+          },
+          "tb3/frame_state": {
+            "age_sec": 0.6539999999999964,
+            "source_time": 361.446,
+            "ttl_sec": 2.0
+          },
+          "tb3/map_snapshot": {
+            "age_sec": 2.4530000000000314,
+            "source_time": 359.647,
+            "ttl_sec": 5.0
+          },
+          "tb3/pose_state": {
+            "age_sec": 0.6750000000000114,
+            "source_time": 361.425,
+            "ttl_sec": 2.0
+          }
+        },
+        "kind": "rally",
+        "ledger_index": 64563,
+        "mission_mode": "rally",
+        "requested_position": [
+          -1.5802982483894805,
+          3.1167252710252296
+        ],
+        "requested_yaw": 2.2455372690184494,
+        "robot": "tb3",
+        "task_phase": "RALLY"
+      },
+      "goal_local_cell": [
+        161,
+        67
+      ],
+      "goal_local_value": 0,
+      "fused_plan": [
+        [
+          -1.7302982506246547,
+          3.2667252732604037,
+          2.2455372690184494
+        ],
+        [
+          [
+            -0.9302982387037257,
+            2.3667252598493587
+          ],
+          [
+            -0.9802982394487838,
+            2.4167252605944167
+          ],
+          [
+            -1.0302982401938419,
+            2.466725261339475
+          ],
+          [
+            -1.0802982409389,
+            2.516725262084533
+          ],
+          [
+            -1.130298241683958,
+            2.566725262829591
+          ],
+          [
+            -1.130298241683958,
+            2.616725263574649
+          ],
+          [
+            -1.180298242429016,
+            2.666725264319707
+          ],
+          [
+            -1.230298243174074,
+            2.716725265064765
+          ],
+          [
+            -1.2802982439191322,
+            2.766725265809823
+          ],
+          [
+            -1.3302982446641902,
+            2.816725266554881
+          ],
+          [
+            -1.3802982454092483,
+            2.8667252672999393
+          ],
+          [
+            -1.4302982461543063,
+            2.9167252680449973
+          ],
+          [
+            -1.4802982468993644,
+            2.9667252687900554
+          ],
+          [
+            -1.5302982476444225,
+            3.0167252695351134
+          ],
+          [
+            -1.5302982476444225,
+            3.0667252702801715
+          ],
+          [
+            -1.5802982483894805,
+            3.1167252710252296
+          ],
+          [
+            -1.6302982491345386,
+            3.1667252717702876
+          ],
+          [
+            -1.6802982498795966,
+            3.2167252725153457
+          ],
+          [
+            -1.7302982506246547,
+            3.2667252732604037
+          ]
+        ]
+      ],
+      "constrained_plan": [
+        [
+          -1.130298241683958,
+          3.36672527475052,
+          1.7359450042095235
+        ],
+        [
+          [
+            -0.9302982387037257,
+            2.3667252598493587
+          ],
+          [
+            -0.9302982387037257,
+            2.4167252605944167
+          ],
+          [
+            -0.9302982387037257,
+            2.466725261339475
+          ],
+          [
+            -0.9802982394487838,
+            2.516725262084533
+          ],
+          [
+            -0.9802982394487838,
+            2.566725262829591
+          ],
+          [
+            -0.9802982394487838,
+            2.616725263574649
+          ],
+          [
+            -0.9802982394487838,
+            2.666725264319707
+          ],
+          [
+            -0.9802982394487838,
+            2.716725265064765
+          ],
+          [
+            -1.0302982401938419,
+            2.766725265809823
+          ],
+          [
+            -1.0302982401938419,
+            2.816725266554881
+          ],
+          [
+            -1.0302982401938419,
+            2.8667252672999393
+          ],
+          [
+            -1.0302982401938419,
+            2.9167252680449973
+          ],
+          [
+            -1.0302982401938419,
+            2.9667252687900554
+          ],
+          [
+            -1.0802982409389,
+            3.0167252695351134
+          ],
+          [
+            -1.0802982409389,
+            3.0667252702801715
+          ],
+          [
+            -1.0802982409389,
+            3.1167252710252296
+          ],
+          [
+            -1.0802982409389,
+            3.1667252717702876
+          ],
+          [
+            -1.0802982409389,
+            3.2167252725153457
+          ],
+          [
+            -1.130298241683958,
+            3.2667252732604037
+          ],
+          [
+            -1.130298241683958,
+            3.316725274005462
+          ],
+          [
+            -1.130298241683958,
+            3.36672527475052
+          ]
+        ]
+      ],
+      "fused_route_respects_local": false,
+      "constrained_route_respects_local": true,
+      "local_map": {
+        "shape": [
+          198,
+          157
+        ],
+        "resolution": 0.05000000074505806,
+        "origin": [
+          -4.934731885286185,
+          -4.942250084073775
+        ],
+        "source": "original_tb3_map",
+        "source_time": 359.647,
+        "version": null,
+        "encoding": "zlib_base64_int16_le",
+        "grid": "eJzt3AFO6kAURmEW2/1vwRdD+joIVDzMzH9Hz2kkWGro/TKFEKMfH3XaLo/2HHu3y37/eu/47vZrP6Ld2iNv9+/7jkfaY/b77XPen+fMvk623paTW72c3Np2KTfl3pFbuZzb6mtOOVbSbe2rNS23ql3WbeU1l5db0y7tptxfk0urfbaim3K0tNm1Fa/WtNm19eTSYnvK0VaTS3sdreVWS24lu7RWm3I03Wgrrbm01W3ryKWlvqYcbRW5tNN9ytHWkEsrPUo52gpyaaPHKUdTjlZV7jirtNCzqsrtpX2epxxNN1rtNZfWOauyXNrmPOVoVeWSf+nwWsrRlKMpR1OOphxNOZpyNOVoytGUoylHU46mHK2q3EU5mGuOVl+u6u9w6stVXXO+ztFcczTleMrRlGN5tdKUoylHU46mHE05mnI05WjK0ZSjKUdTjqYcTTmacjzlaMqxvFppyvGUY7nmaMrRlKMpR1OOphxNOZpyNOVoyvGUoylHU47l6xxNOZ5yLNccTzmWa46mHE05mnI05WjK0ZTjKcdyzdHqy/m/I2iuOVpVOd8heMqxvFp5yrFcczzlaMqxvFppytGU41WXq/qJv75c1TXn1cpTjlZdztc5mmuOVlXOdwiecjTlaNXlfG/lKcfyaqUpx1OO5ZqjKcdTjqYcTTmacjTlaMrRlKMpR1OOphzLT1885WjK0ZSjKcfyHYKV1jmrslza5ry6cs/Ot0pV5dIu31dTLq3ySvXk0iKvtoZcnVe3o1pyZ+dZrUpyaYufpRytilza4efVkEsrkCrIpQ1Yebm0AC0tl56fl5VLT/9OSbn07O+VkkvP/X4ZufTUPUrIpWfu03y59MS9miuXnrZnM+XSs/Ztnlx60t4pR5sll56zfzPk0jOOabxcesJRjZZLzzeusXLp6UY2Ui4929hGyaXnGt8YufRUMxohl55pTsrResul55lXT7n0LHPrJ5eeZHa/UW5rbtt9W/PI9v92a37ifmuP35pjesk9es7fv71m8w/a+WLm"
+      },
+      "fused_map": {
+        "shape": [
+          199,
+          258
+        ],
+        "resolution": 0.05000000074505806,
+        "origin": [
+          -6.455298321032641,
+          -4.958274849301647
+        ],
+        "source": "original_merge_map",
+        "source_time": 360.7,
+        "version": null,
+        "encoding": "zlib_base64_int16_le",
+        "grid": "eJztnYuSoyAQRf1Y//8XZstiGEBaA+6Vvp26x5o8jJnpxWPToMn+/HwH+2atKWv3LT9Oj8qz9idvUS/1lu36vK68Um+TH9d/s/19n/49VtTtb6xj7CMcWZ62+CrqCNv9qQW3eOzZYvnV/szrt2rdtpX3CRR+DhS2Ld/WP8dtJj3O6w+SEQJBPAdKLykwRHIgPzpekwE4WBw4YrEcqF9Pz5UH0MR1QKBgcOCg7O1631u9hPoCNHwOpLja+9oB9QVomBw44rl2oH6mPICEw4Ejkvb27EL97HhVeQDHvpX5OlYHzh6keAWKCHmgdUD1ABoWB9LtjAMCBasDOb5+9kA1IRouB9KtNSLsHZAFONrrLHw49wF3DqR3yAEcO6ED9hxBiVgOYGEZG/YzwlcOpHfIARzZgY3EgYOxPCBQRHGgrQaUB5CUcYGnBe2xrnpgLaUmjOaAQME1LjhIz9Oj9j5HnByQBSjqOSK/TNCPCQ6u6wM5gKSuCX0dOM8Sn4//slYOYGnnir0zwYgD6gvQtDUhlwMteRs5gIfLgUx75jDfy4E3KJ/sK/vCy4Gr/r/c65zRG5xrQm8Heg/Oa+QAmjoD+DpwPk98HbEcwNLPE/pYcMQyVhnKATT9uGC9A9aVQncRywEsDHNEcsCbvib0cOGIxK4J7XjlAI5zX8DnwHneQOcN0fDME47kgBRxckAW4MhzRP69geWAvU4OYLHmiPgcKK8pD+ApfYFfJri+dqB/zu9A+Sa9GOyNA5514f31I/Ur7A6wx3em/nzB8byduV/rQM11fcieB/aqwopCirjGpy6ciZe5jdnjs7DqAR4H4vUFcR0oEXuND+zo+vXsbcwen0XrQHv9zjoDvqkviDeT2Y9kfHqD8XgjOMAbn0VfE2bSnvFw4M6ItDVvG5f/cSIO19Yy1ANWvNzHWcy+oI/Xozf4HGnahr8v4I7P4uqoWj02GI83Qh7gjc/iLmKveuA+Xu42jlsPXMPmAPt8fLx6YP/gQNo7TA4oD+BpryFpybXhagfurylldyBaHhjpC1bmgfjXFcfNA9esygXj8XIfZ+x5ymIk4vcNUD3gydhRJQdGierASIu+78DoZ0zkAJpP9UDmbQfGM0FqYdY2ZnfUYiziFaOD0Xi52zhuHvDPBOPxsjvAPW6xYHFgPA+kFmZt4+/OAxyZQHkATzQHYtSEkRz4dM6ohcEB/jyQ/jWs8VnMtai9987feZ0/s1Dao3wDXvuo3no0XnYHouWBOQf2h8voO0djkANYnrbo/vvTr7XWI5EDaLhbtCfG2JA3Pot4DnBHrDzwPnIAD3eL9sgBPNwteqZ8Nx1rxHJgBdwRy4H3UV+Ah7tFe+QAHu4WteCOWA68j/IAHu4W7ZEDeGbOHXMgB9Bwt2iP8gAe7ha14I5YDqyAO2I58D7qC/CoJsQS1wFFjEIOvI/6AjzcLWrBHbEcWAF3xHJgBdwRy4EVcEcsB1bAHbEceB+NC/Bwt2iPHMATLWI5gIe7RS24I5YD76M8gCdF7B3FDHIADXeLWnBHHNeBSMgBNNwtasEdsRxYAXfEcmAF3BFHdUDjAhxRHeBtUQvuiKM6oDyAI6oDvC3ao3lCPJofwBLXgWgR87ZxXAciwW1tXAcUMYq4DkRCDqDhblEL7oijOhBpfkBjQzzcLWrBHXFUB5QHcER1gLdFLbgjjutAJOQAGu4W7VFfgCdaPcBubTwH2I8qC+6I4znA3qIW3G0c14FIcFsb1wFFjEIOrIA7YoQDe3O//y7b789ebbdXW5Ut9+o9Y38vlrPfVg/0+w25jMbAfFRZcEdcHBiN8OdVxmLmPaZsuB2Yz1MsDvC2aA93xPP1wLsOjFigPIAlqgOxLJADaAti5gHemOXACmI4sJGMC0YsiOlAhL6AyYF7C7hb1II74uzA+JHF4kAkYvQFM/F5WxDTAf48MPMeOTBLDAdmIlzjwLUFMR3gjZm3L7h3gLdFLbgjZnbgygLuzGohB95xIBLcDmwP6gFvC+QAGm4HLAvkAJYn4wI5MEsMBxhnCK4skANo2PPA4UDrgcYFWEpfMJ4J0l5Za0EbM2972kRxYBw5MAt35po/b5hY64DVF0SCOw9sj2pCBgd4W7SH24H564gOVhvQWiAHsDy5jsijIqgtUF+AZc6Bsv99HEgeRHRg5rN0q5mrCX0dyJkgogPczNSETA6wt2scxvOA9/6vLZADWJ464JkJ5ACSZ3nAMxtErAfYGZ0fOO9/PweOWzmAY3yOqFSN3lWB8gCakfmB9vytb1WY/rocwDE2R2Q74GmCHEDyyYFSi7drvB2QBThmxgX5kXdFoDyA5ZMD5zzAMVckB5Dsf3tybHv//X8gB5DMf/8AQ1WoegDJEwfSva8DAsczB7x7BDmAZNyBYys58H3MXEPSO+CHHEDyeVxwrgDyuvzcxwFZgGPWAY6RgRzAsU84YNUCcuAbeOqAb1UoB5B8vqbUcsB7ZCADkHweF9w54GWBHEAy+/kCFgdkAY45B/paQA7EJ6oDAsfc+YJ2z/tVhcoDSO7Hhue1vQM+FsgBJPd5oHagP2ssB76D+/kBywE7G6y3QKCw8sBdv8Bx3kgGIBlxwJof9K0K1RcgGRkX3DvgYYEcQHLtwMgcsRz4BkYcqJ+zOCBQjF5LdlUJKg98A9dzROdxYd7b5TU58B2M9QVXDnhZIAeQXM8RXTmQ+o/y/WByYJ795tnde/ot97/19aP61Xbt/rdtuS954Lyc1+U9Xt+mbwXJt6st0IJaVu+9/+cfdNADLw=="
+      }
+    },
+    {
+      "event_time": 371.0,
+      "original_decision": {
+        "current_position": [
+          -1.5700898855757357,
+          3.111252233826427
+        ],
+        "dispatch_goal_source_time_sec": 371.0,
+        "dispatch_lease_deadline_sec": 372.046,
+        "event": "coordinator_navigation_decision",
+        "event_time": 371.0,
+        "fault_revision": 0,
+        "inputs": {
+          "headquarters/fused_map_snapshot": {
+            "age_sec": 0.8999999999999773,
+            "source_time": 370.1,
+            "ttl_sec": 5.0
+          },
+          "headquarters/target_detection": {
+            "age_sec": 0.8000000000000114,
+            "source_time": 370.2,
+            "ttl_sec": 60.0
+          },
+          "tb1/battery_state": {
+            "age_sec": 1.0,
+            "source_time": 370.0,
+            "ttl_sec": 5.0
+          },
+          "tb1/frame_state": {
+            "age_sec": 0.9540000000000077,
+            "source_time": 370.046,
+            "ttl_sec": 2.0
+          },
+          "tb1/map_snapshot": {
+            "age_sec": 1.15300000000002,
+            "source_time": 369.847,
+            "ttl_sec": 5.0
+          },
+          "tb1/pose_state": {
+            "age_sec": 0.5960000000000036,
+            "source_time": 370.404,
+            "ttl_sec": 2.0
+          },
+          "tb2/battery_state": {
+            "age_sec": 1.0,
+            "source_time": 370.0,
+            "ttl_sec": 5.0
+          },
+          "tb2/frame_state": {
+            "age_sec": 0.9529999999999745,
+            "source_time": 370.047,
+            "ttl_sec": 2.0
+          },
+          "tb2/map_snapshot": {
+            "age_sec": 2.1549999999999727,
+            "source_time": 368.845,
+            "ttl_sec": 5.0
+          },
+          "tb2/pose_state": {
+            "age_sec": 0.5989999999999895,
+            "source_time": 370.401,
+            "ttl_sec": 2.0
+          },
+          "tb3/battery_state": {
+            "age_sec": 1.0,
+            "source_time": 370.0,
+            "ttl_sec": 5.0
+          },
+          "tb3/frame_state": {
+            "age_sec": 0.5520000000000209,
+            "source_time": 370.448,
+            "ttl_sec": 2.0
+          },
+          "tb3/map_snapshot": {
+            "age_sec": 1.9540000000000077,
+            "source_time": 369.046,
+            "ttl_sec": 5.0
+          },
+          "tb3/pose_state": {
+            "age_sec": 0.5989999999999895,
+            "source_time": 370.401,
+            "ttl_sec": 2.0
+          }
+        },
+        "kind": "rally",
+        "ledger_index": 66466,
+        "mission_mode": "rally",
+        "requested_position": [
+          -1.7333001900839395,
+          3.2667252732604037
+        ],
+        "requested_yaw": 2.356194490192345,
+        "robot": "tb3",
+        "task_phase": "RALLY"
+      },
+      "goal_local_cell": [
+        164,
+        93
+      ],
+      "goal_local_value": 100,
+      "fused_plan": [
+        [
+          -1.7333001900839395,
+          3.2667252732604037,
+          2.356194490192345
+        ],
+        [
+          [
+            -1.5833001878487654,
+            3.1167252710252296
+          ],
+          [
+            -1.6333001885938234,
+            3.1667252717702876
+          ],
+          [
+            -1.6833001893388815,
+            3.2167252725153457
+          ],
+          [
+            -1.7333001900839395,
+            3.2667252732604037
+          ]
+        ]
+      ],
+      "constrained_plan": [
+        [
+          -1.283300183378417,
+          3.2167252725153457,
+          0.3217505543966422
+        ],
+        [
+          [
+            -1.5833001878487654,
+            3.1167252710252296
+          ],
+          [
+            -1.5333001871037073,
+            3.1167252710252296
+          ],
+          [
+            -1.4833001863586492,
+            3.0667252702801715
+          ],
+          [
+            -1.4333001856135912,
+            3.0167252695351134
+          ],
+          [
+            -1.3833001848685331,
+            3.0667252702801715
+          ],
+          [
+            -1.333300184123475,
+            3.1167252710252296
+          ],
+          [
+            -1.333300184123475,
+            3.1667252717702876
+          ],
+          [
+            -1.283300183378417,
+            3.2167252725153457
+          ]
+        ]
+      ],
+      "fused_route_respects_local": false,
+      "constrained_route_respects_local": true,
+      "local_map": {
+        "shape": [
+          198,
+          187
+        ],
+        "resolution": 0.05000000074505806,
+        "origin": [
+          -6.403881788761781,
+          -4.942988568920045
+        ],
+        "source": "original_tb3_map",
+        "source_time": 369.046,
+        "version": null,
+        "encoding": "zlib_base64_int16_le",
+        "grid": "eJzt2wFuozAQQFEOm/tfYVcW8mJoug0E989M/kdqYKGK82oRt9v++VO3x9If27bt93Pr/vHMdv36uL9+f+b58bNtHEV/nlz9/Bqjb7TglR5L7mi/a6lOlFud1rua6kSZ1Wm766lOlFedlnsn1YmyqtNu76U6UU51Wu3dVCfKqE6bvZ/qRPnUabE7yqZOe92T6kS51Gmtu1KdKJM6bXVfqhPlUael7kx1ItWJsqjTTvemOlEOdVrp7lQnyqBOG92f6kTx1WmhGalOFF2d9plTVPU+LtpnTlHV12idWalOFFmdtpmX6kRx1WmZmUVVz/l3pK+mOpHqRKoTqU6kOpHqRKoTqU6kOpHqRKoTqU6kOpHqRKoTqU6kOpHqRKoTqU6kOpHqRKoTqU6kOpHqRKoTqU6kOpHqRKoTqU6kOpHqRKoTqU6kOpHqRKoTqU6kOpHqRKoTqU6kOpHqRKoTqU6kOpHqRKoTqU6kOpHqRKoTqU6kOpHqRKoTqU6kOpHqRKoTqU6kOpHqRHHVK7vHVadlZqY6kepEqhOpThRXvbK76kSqE6lOpDqR6kSPJaZ7dfWYqU6kOlFlc9WZ4qpXdo+rTsvMTHWiuOqV3eOq0zIzU51IdSLVieKqV3ZXnSiuOi0zM9WJVCdSnSiuemV31YlUJ4qrTsvMLK56ZXfVieKq0zIzU50ornpld9WJ4qrTMjNTnSjub1LTMjOLaV5fPaa76kTV1WNWQX359jU41++vjX/bO76udYtZZvUW7Xetet+b0qKvlN2c9rtWdvU1WvFsGe8w25pl3aMNz5fPfIzWu1pO9TbHX3+F8daPGdW7eea5nsu9jfncXI9YJvM23tzavQzqm3X+Wb6WQb2VdY34vNj39T671/1WDfm45n121/JeizzX2/i2+V7JPaZ5G1nf247ruEdTb2Maj/rHWneaOOrjO2c/Hv+dlrqzCOpH7+PZsRr65Ltpe/5n3vv1YrW7Syv6GqZmcdWrrhpbv6f+/Z372bVrfb+W+e+o/+R9PF9xdu+baX5mdvfPaB3fS+s1R/289/Gzq97R1yK9l47SVb3Xoqxhxv8Lravdi2S+/76JlpkZP9e/atcWb7HqbQSfpN1jfw6zaY/H9aPMR+du/Snm1Fw/zu/Pur+cUb/rq3Oc5Z+zctni7uufOcvXzqjfO9tH809zj7CGUf1/vfP12a8N99a/Z/7qb7Lv/27ysSxfjpZ/VzyGo3Ebn21/zfm5vl3d93567HvPPq7P/nXE9bdXvf8C5GxFMg=="
+      },
+      "fused_map": {
+        "shape": [
+          199,
+          258
+        ],
+        "resolution": 0.05000000074505806,
+        "origin": [
+          -6.458300260491926,
+          -4.958274849301647
+        ],
+        "source": "original_merge_map",
+        "source_time": 370.1,
+        "version": null,
+        "encoding": "zlib_base64_int16_le",
+        "grid": "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"
+      }
+    },
+    {
+      "event_time": 375.9,
+      "original_decision": {
+        "current_position": [
+          -1.7254871514450854,
+          3.2564725565274855
+        ],
+        "dispatch_goal_source_time_sec": 375.9,
+        "dispatch_lease_deadline_sec": 377.048,
+        "event": "coordinator_navigation_decision",
+        "event_time": 375.9,
+        "fault_revision": 0,
+        "inputs": {
+          "headquarters/fused_map_snapshot": {
+            "age_sec": 1.0,
+            "source_time": 374.9,
+            "ttl_sec": 5.0
+          },
+          "headquarters/target_detection": {
+            "age_sec": 0.6999999999999886,
+            "source_time": 375.2,
+            "ttl_sec": 60.0
+          },
+          "tb1/battery_state": {
+            "age_sec": 0.8999999999999773,
+            "source_time": 375.0,
+            "ttl_sec": 5.0
+          },
+          "tb1/frame_state": {
+            "age_sec": 0.4539999999999509,
+            "source_time": 375.446,
+            "ttl_sec": 2.0
+          },
+          "tb1/map_snapshot": {
+            "age_sec": 2.2539999999999623,
+            "source_time": 373.646,
+            "ttl_sec": 5.0
+          },
+          "tb1/pose_state": {
+            "age_sec": 0.49799999999999045,
+            "source_time": 375.402,
+            "ttl_sec": 2.0
+          },
+          "tb2/battery_state": {
+            "age_sec": 0.8999999999999773,
+            "source_time": 375.0,
+            "ttl_sec": 5.0
+          },
+          "tb2/frame_state": {
+            "age_sec": 0.45299999999997453,
+            "source_time": 375.447,
+            "ttl_sec": 2.0
+          },
+          "tb2/map_snapshot": {
+            "age_sec": 1.4529999999999745,
+            "source_time": 374.447,
+            "ttl_sec": 5.0
+          },
+          "tb2/pose_state": {
+            "age_sec": 0.46699999999998454,
+            "source_time": 375.433,
+            "ttl_sec": 2.0
+          },
+          "tb3/battery_state": {
+            "age_sec": 0.8999999999999773,
+            "source_time": 375.0,
+            "ttl_sec": 5.0
+          },
+          "tb3/frame_state": {
+            "age_sec": 0.8519999999999754,
+            "source_time": 375.048,
+            "ttl_sec": 2.0
+          },
+          "tb3/map_snapshot": {
+            "age_sec": 1.2519999999999527,
+            "source_time": 374.648,
+            "ttl_sec": 5.0
+          },
+          "tb3/pose_state": {
+            "age_sec": 0.5009999999999764,
+            "source_time": 375.399,
+            "ttl_sec": 2.0
+          }
+        },
+        "kind": "rally",
+        "ledger_index": 67470,
+        "mission_mode": "rally",
+        "rally_transit_observer": {
+          "angular_tolerance_radps": 0.1,
+          "confirmation": {
+            "robot": "tb1",
+            "source_time": 375.2,
+            "target": [
+              -4.5,
+              -0.5
+            ],
+            "view_distance_m": 3.0,
+            "view_fov_rad": 1.5707963267948966
+          },
+          "evaluated_at_sec": 375.9,
+          "final_pose": [
+            -4.498022410450961,
+            2.1203128031354055,
+            -1.5715510417171754
+          ],
+          "heartbeat_sec": 5.0,
+          "incoming_yaw": 2.976443976175166,
+          "linear_tolerance_mps": 0.05,
+          "map": {
+            "encoding": "zlib_base64_int16_le",
+            "grid": "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",
+            "origin": [
+              -6.458300260491926,
+              -4.958274849301647
+            ],
+            "resolution": 0.05000000074505806,
+            "shape": [
+              199,
+              258
+            ],
+            "source": "ap_delivered_planning_map",
+            "source_time": 374.9,
+            "version": 374.9
+          },
+          "observer": "tb1",
+          "observer_source_time": 375.2,
+          "participant_final_pose": [
+            -3.3980223940596836,
+            1.8703127994101152,
+            -2.0059784304513926
+          ],
+          "position": [
+            -4.476686695472077,
+            2.1274083728747666
+          ],
+          "position_tolerance_m": 0.35,
+          "route": [
+            [
+              -1.7333001900839395,
+              3.2667252732604037
+            ],
+            [
+              -1.7833001908289976,
+              3.2667252732604037
+            ],
+            [
+              -1.8333001915740557,
+              3.2667252732604037
+            ],
+            [
+              -1.8833001923191137,
+              3.316725274005462
+            ],
+            [
+              -1.9333001930641718,
+              3.316725274005462
+            ],
+            [
+              -1.9833001938092298,
+              3.316725274005462
+            ],
+            [
+              -2.033300194554288,
+              3.316725274005462
+            ]
+          ],
+          "target": [
+            -4.5,
+            -0.5
+          ],
+          "velocity": [
+            0.0007051236900365833,
+            0.05965576930231378
+          ],
+          "view_distance_m": 3.0,
+          "view_fov_rad": 1.5707963267948966,
+          "yaw": -1.8867839727134257
+        },
+        "requested_position": [
+          -2.033300194554288,
+          3.316725274005462
+        ],
+        "requested_yaw": 2.976443976175166,
+        "robot": "tb3",
+        "task_phase": "RALLY"
+      },
+      "goal_local_cell": [
+        165,
+        87
+      ],
+      "goal_local_value": 0,
+      "fused_plan": [
+        [
+          -2.033300194554288,
+          3.316725274005462,
+          2.976443976175166
+        ],
+        [
+          [
+            -1.7333001900839395,
+            3.2667252732604037
+          ],
+          [
+            -1.7833001908289976,
+            3.2667252732604037
+          ],
+          [
+            -1.8333001915740557,
+            3.2667252732604037
+          ],
+          [
+            -1.8833001923191137,
+            3.316725274005462
+          ],
+          [
+            -1.9333001930641718,
+            3.316725274005462
+          ],
+          [
+            -1.9833001938092298,
+            3.316725274005462
+          ],
+          [
+            -2.033300194554288,
+            3.316725274005462
+          ]
+        ]
+      ],
+      "constrained_plan": [
+        null,
+        []
+      ],
+      "fused_route_respects_local": false,
+      "constrained_route_respects_local": false,
+      "local_map": {
+        "shape": [
+          198,
+          187
+        ],
+        "resolution": 0.05000000074505806,
+        "origin": [
+          -6.403881788761781,
+          -4.942988568920045
+        ],
+        "source": "original_tb3_map",
+        "source_time": 374.648,
+        "version": null,
+        "encoding": "zlib_base64_int16_le",
+        "grid": "eJzt2wFuozAQQFEOm/tfYVcW8mJoug0E989M/kdqYKGK82oRt9v++VO3x9If27bt93Pr/vHMdv36uL9+f+b58bNtHEV/nlz9/Bqjb7TglR5L7mi/a6lOlFud1rua6kSZ1Wm766lOlFedlnsn1YmyqtNu76U6UU51Wu3dVCfKqE6bvZ/qRPnUabE7yqZOe92T6kS51Gmtu1KdKJM6bXVfqhPlUael7kx1ItWJsqjTTvemOlEOdVrp7lQnyqBOG92f6kTx1WmhGalOFF2d9plTVPU+LtpnTlHV12idWalOFFmdtpmX6kRx1WmZmUVVz/l3pK+mOpHqRKoTqU6kOpHqRKoTqU6kOpHqRKoTqU6kOpHqRKoTqU6kOpHqRKoTqU6kOpHqRKoTqU6kOpHqRKoTqU6kOpHqRKoTqU6kOpHqRKoTqU6kOpHqRKoTqU6kOpHqRKoTqU6kOpHqRKoTqU6kOpHqRKoTqU6kOpHqRKoTqU6kOpHqRKoTqU6kOpHqRKoTqU6kOpHqRHHVK7vHVadlZqY6kepEqhOpThRXvbK76kSqE6lOpDqR6kSPJaZ7dfWYqU6kOlFlc9WZ4qpXdo+rTsvMTHWiuOqV3eOq0zIzU51IdSLVieKqV3ZXnSiuOi0zM9WJVCdSnSiuemV31YlUJ4qrTsvMLK56ZXfVieKq0zIzU50ornpld9WJ4qrTMjNTnSjub1LTMjOLaV5fPaa76kTV1WNWQX359jU41++vjX/bO76udYtZZvUW7Xetet+b0qKvlN2c9rtWdvU1WvFsGe8w25pl3aMNz5fPfIzWu1pO9TbHX3+F8daPGdW7eea5nsu9jfncXI9YJvM23tzavQzqm3X+Wb6WQb2VdY34vNj39T671/1WDfm45n121/JeizzX2/i2+V7JPaZ5G1nf247ruEdTb2Maj/rHWneaOOrjO2c/Hv+dlrqzCOpH7+PZsRr65Ltpe/5n3vv1YrW7Syv6GqZmcdWrrhpbv6f+/Z372bVrfb+W+e+o/+R9PF9xdu+baX5mdvfPaB3fS+s1R/289/Gzq97R1yK9l47SVb3Xoqxhxv8Lravdi2S+/76JlpkZP9e/atcWb7HqbQSfpN1jfw6zaY/H9aPMR+du/Snm1Fw/zu/Pur+cUb/rq3Oc5Z+zctni7uufOcvXzqjfO9tH809zj7CGUf1/vfP12a8N99a/Z/7qb7Lv/27ysSxfjpZ/VzyGo3Ebn21/zfm5vl3d93567HvPPq7P/nXE9bdXvf8C5GxFMg=="
+      },
+      "fused_map": {
+        "shape": [
+          199,
+          258
+        ],
+        "resolution": 0.05000000074505806,
+        "origin": [
+          -6.458300260491926,
+          -4.958274849301647
+        ],
+        "source": "original_merge_map",
+        "source_time": 374.9,
+        "version": null,
+        "encoding": "zlib_base64_int16_le",
+        "grid": "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"
+      }
+    }
+  ]
+}

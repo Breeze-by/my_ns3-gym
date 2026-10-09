@@ -59,6 +59,9 @@ tokens is not a reason to leave a problem unresolved or inadequately tested.
 
 ## Current Handoff
 
+2026-10-10 P2C.1 v49四原整体FAIL：8be97e2 forced/lab/rooms原生COMPLETE257.9/152.8/139.7，corr PARTIAL292.8/tb3正电量失路；四零接触耗尽、owner/observer0关闭，原native FAIL保持。原371目标在369.046本机100/370.1融合0，367.247已有占用，物理来源未证；15原子审不替代任务。新复用保守融合为全出发候选/完整路线/去返预算约束，最终四动作携实际路并源lease复查，私有原图/CDR独立绑定；不清障碍/改scan或native。两个原前失败条件绕行PASS、占用起点仍None；四原选点3同/lab首原条件无解保持。实际DDS旧穿障碍1goal→新拒绝/绕行1goal结果闭合、clock13原源10过期零新goal。1772功能/44最终定向/四包5.42s/190保护6授权54协议/两声明PASS；16中央6纯修改，其余65/92及native/SLAM/300s/5s/TTL/物理保持。新v50 clean pushed4→17+2待实测，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v49_failed_development与20261010_p2c_outbound_consistency_components。
+
+
 2026-10-10 P2C.1 v48四原整体FAIL：6834560 forced/rooms/corr原生COMPLETE204.1/182.0/262.1，lab RALLY300.1timeout；四零接触耗尽failed，corr旁录图枚举节点消失退出1、部分原件保持，非电量计停滞。forced/rooms全审PASS、lab15独立子审与3真实同伴支持中间腿不替代任务。新集合第一层若ACTIVE观测机预测缺电则检查原第二层、原评分择优且原可行fallback；原lab1/3charge→0/2条件快照，其他三选择相同，源龄报价无改变未采用。图只读者仅NodeNameNonExistentError拒绝残图/原timer重试，真实DDS旧1/新0继续旁录完整图PASS。1742功能/179定向/四包5.25s/190保护6授权54协议/两声明PASS；仅2纯函数，81中央与96其他纯/native/SLAM/300s/5s/TTL/物理保持。新v49 clean pushed4→17+2待实测，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v48_failed_development与20261010_p2c_observer_refinement_components。
 
 2026-10-10 P2C.1 v47首forced原RALLY300.1timeout/两机各charge1/min14.78229213/零接触耗尽failed，末tb2仍运动，无原生保持，FAIL保留；14独立子审PASS不代替任务。新各机原确认缓存＋已到位安静同伴原5s观测支持时，中间腿保留原入射yaw；最终/量化格/安全让行/充电/无支持均原样，额外5s支持绑定最终派发，无源续租或新流。真实DDS接收peer10→latest10.1旧90deg/新26.565deg，15.1失效新恢复90deg，结果闭合；1733功能/56最终定向/四包5.32s/190保护6授权54协议/两声明PASS，4中央改＋1新增、其余76/纯几何/native/SLAM/300s/5s/TTL/物理保持。中间1730单最后观测者版本任务前改进、完整a144590源核验保留；范围夹具与QoS FAIL原件保持。新v48 clean pushed4→17+2待实测，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v47_failed_development与20261010_p2c_rally_transit_components。

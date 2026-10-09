@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-09T21:32:00.647493+00:00",
+  "predeclared_at_utc": "2026-10-09T22:27:13.604487+00:00",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -500,7 +500,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "6834560329e3b6fab09177747fc23e4ff23f9081",
+  "candidate_parent_commit": "8be97e281a1b773b3fa4afecf14ea0d952e0c5ec",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -713,5 +713,13 @@
     "leases": "Bind the original target source as an additional original5s observation-support deadline at final preparation/publication admission; retain all original2/5/60s input TTLs, complete routes/reservations/energy, 300s mission and native5s hold.",
     "evidence": "Private geometry/lease witness and prospective reader source digest; no new application observation stream, no mission or causal saving claimed by components.",
     "confirmations": "Keep each known robot's original accepted stationary-target confirmation, source epoch and actual camera metadata; no acceptance/version rule changes. Select the freshest eligible quiescent peer even when the approaching robot made the latest global confirmation. Independent reader binds the support to that peer's prior consumed receipt; no source renewal or new application flow."
+  },
+  "navigation_outbound_consistency": {
+    "scope": "Native-energy tasks: every central navigation route respects the fresh delivered robot map as well as the original fused planning map; local unknown space may be extended, local positive cells are preserved.",
+    "planning": "Use the existing conservative occupied-cell projection for outbound candidate fields, prefixes, body/order plans, whole approaches and post-charge waits; independently veto an inconsistent prepared route before creating a goal owner.",
+    "leases": "Original pose/TF2s, map/battery5s, target60s and observer5s remain; witness construction is inside the existing final publication/source boundary.",
+    "evidence": "Original route, delivered local/planning grids and source epochs in the existing private decision audit; independent route and raw CDR map binding. No new application traffic, scan filtering, occupancy clearing or native return changes.",
+    "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_outbound_consistency_components.json",
+    "task_limits_unchanged": true
   }
 }

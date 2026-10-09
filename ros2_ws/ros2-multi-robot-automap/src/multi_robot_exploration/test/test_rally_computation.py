@@ -36,9 +36,12 @@ def saved_arguments(event):
 
 
 @pytest.mark.parametrize("case", REFERENCE["cases"], ids=lambda case: case["name"])
-def test_original_inputs_have_exact_frozen_proposals(case):
-    assert c.assign_rally_poses(**saved_arguments(case["event"])) == \
-           original_assign(**saved_arguments(case["event"]))
+def test_original_unconstrained_inputs_have_exact_frozen_proposals(case):
+    # Local-obstacle approach constraints intentionally change two old choices;
+    # the original optimizer remains equivalent when that new input is absent.
+    arguments = saved_arguments(case["event"])
+    arguments['return_maps'] = None
+    assert c.assign_rally_poses(**arguments) == original_assign(**arguments)
 
 
 @pytest.mark.parametrize("kind", ["immutable", "mutable", "readonly_view"])

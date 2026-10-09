@@ -1,0 +1,227 @@
+{
+  "status": "FAIL",
+  "scope": "Original full four-cell development on one clean pushed freeze",
+  "source_commit": "8be97e281a1b773b3fa4afecf14ea0d952e0c5ec",
+  "cases": [
+    {
+      "case": "dev_corridors303",
+      "phase": "PARTIAL_COMPLETE",
+      "success": false,
+      "elapsed_sec": 292.8,
+      "detected_sec": 82.4,
+      "rally_sec": 106.5,
+      "collision_events": 0,
+      "failed_robots": [
+        "tb3"
+      ],
+      "minimum_energy": 30.14648350303372,
+      "charge_counts": {
+        "tb1": 1,
+        "tb2": 0,
+        "tb3": 1
+      },
+      "runner_returncode": 0,
+      "observer_returncode": 0
+    },
+    {
+      "case": "dev_forced2",
+      "phase": "COMPLETE",
+      "success": true,
+      "elapsed_sec": 257.9000000000001,
+      "detected_sec": 188.79999999999973,
+      "rally_sec": 190.4000000000001,
+      "collision_events": 0,
+      "failed_robots": [],
+      "minimum_energy": 15.554317351869045,
+      "charge_counts": {
+        "tb1": 1,
+        "tb2": 1
+      },
+      "runner_returncode": 0,
+      "observer_returncode": 0
+    },
+    {
+      "case": "dev_lab101",
+      "phase": "COMPLETE",
+      "success": true,
+      "elapsed_sec": 152.79999999999973,
+      "detected_sec": 62.69999999999982,
+      "rally_sec": 71.79999999999973,
+      "collision_events": 0,
+      "failed_robots": [],
+      "minimum_energy": 26.419806040858482,
+      "charge_counts": {
+        "tb1": 0,
+        "tb2": 0,
+        "tb3": 0
+      },
+      "runner_returncode": 0,
+      "observer_returncode": 0
+    },
+    {
+      "case": "dev_rooms202",
+      "phase": "COMPLETE",
+      "success": true,
+      "elapsed_sec": 139.70000000000002,
+      "detected_sec": 51.0,
+      "rally_sec": 68.6,
+      "collision_events": 0,
+      "failed_robots": [],
+      "minimum_energy": 24.160827528078954,
+      "charge_counts": {
+        "tb1": 0,
+        "tb2": 0,
+        "tb3": 0
+      },
+      "runner_returncode": 0,
+      "observer_returncode": 0
+    }
+  ],
+  "strict_gate": {
+    "path": "ros2_ws/ros2-multi-robot-automap/log/p2c_v49_development_gate.json",
+    "sha256": "aa5c742374524e60fc2373331819234a647475cbddf022de269ca0ad6175be95",
+    "status": "FAIL",
+    "errors": [
+      {
+        "case": "dev_corridors303",
+        "error": "AssertionError()",
+        "traceback": "Traceback (most recent call last):\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 871, in audit_one\n    try:return check_one(path,config),None\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 765, in check_one\n    communications,_=audit_original((row,config))\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3c5_gate.py\", line 96, in audit_original\n    native_safety_ok(result)\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3c5_gate.py\", line 40, in native_safety_ok\n    assert not result[\"failed_robots\"]\nAssertionError\n"
+      }
+    ]
+  },
+  "corridor_component_status": "15 PASS on frozen original sources; positive-energy native failure remains FAIL",
+  "native_failure": {
+    "robot": "tb3",
+    "return_start_sim_time_sec": 376.5,
+    "return_reason": "no_known_route",
+    "return_start_energy": 73.3777894392,
+    "failure_sim_time_sec": 406.5,
+    "failure_energy": 72.76036225,
+    "original_unreachable_delay_sec": 30.0,
+    "local_map_source_time_sec": 374.648,
+    "failed_position": [
+      -1.72612135504,
+      3.25704044557
+    ],
+    "local_cell": [
+      164,
+      93
+    ],
+    "local_value": 100,
+    "fused_value": 0,
+    "local_route": null,
+    "complete_fused_route_veto": "Delivered local occupied cells overlap its start; conservative union also has no route"
+  },
+  "dispatch_diagnosis": {
+    "original_decision_sim_time_sec": 371.0,
+    "local_source_time_sec": 369.046,
+    "fused_source_time_sec": 370.1,
+    "requested_position": [
+      -1.73330019008,
+      3.26672527326
+    ],
+    "local_value": 100,
+    "fused_value": 0,
+    "original_occupied_before_arrival": true,
+    "physical_origin": "Unknown; earlier tb1 pose near this location does not prove peer footprint causality"
+  },
+  "not_invoked": [
+    "17 formal cells",
+    "same-freeze physical pair",
+    "holdout917"
+  ],
+  "raw_bindings": {
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_corridors303/20261010_p2c_v49_dev_corridors303.csv": "ee49ce7df558492a01891a69728c71a8227b07fe178313a877e5443ff17d64cb",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_corridors303/20261010_p2c_v49_dev_corridors303.json": "5a4dbaca1e7dd6c40e3675851df526cc559c3e8d9f85e7e570ba4637093cfa48",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_corridors303/graph.json": "7f50b884a678087390f5590cdf92b13778b4d761a5043205c9b25021e019c36c",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_corridors303/launch/robots3_seed303_20261010-054839.log": "0c9024370dfd553ad2f36797e6c84db676e497cd7ef2e7ee73e22c2cf14b118f",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_corridors303/ledger.jsonl": "cd4e2ec8e2d06e937901fcf559bf5d270fc61fc99719fd067538f412e579cb60",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_corridors303/ledger_metrics/curves.svg": "056ea28517924152683b1e022e324205bfef64a6f972546611d3b02381920d06",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_corridors303/ledger_metrics/events.jsonl": "c56b3846ace1b4e74edf5d357f43608a04128ca87938d20850bf78e7ee3e65e7",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_corridors303/ledger_metrics/inputs.jsonl": "289f558089b4fe184ad73af3b37b919df4caf64b62a507362093b15608e430e7",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_corridors303/ledger_metrics/live.jsonl": "ca5d84cccd609b2a74c6dc53722ed8cfb7d84bf3b4172618aa45013610f217dc",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_corridors303/ledger_metrics/live_windows.csv": "aaa72b5c9fbdd8f63574daa1f538d66708565a02fe7124b2b24c28038984c5bd",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_corridors303/ledger_metrics/summary.json": "400d0b014443be4a498ad86b49f7259498567d83ac97f1d16cbb9dc4c3be68e5",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_corridors303/ledger_metrics/windows.csv": "aaa72b5c9fbdd8f63574daa1f538d66708565a02fe7124b2b24c28038984c5bd",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_corridors303/ledger_metrics/windows.jsonl": "31bea7b1096ffb3250a0ea39a5d3224be3860d0d1d8d14d83dbac30e6bd3d4fe",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_corridors303/manifest.json": "e43035284da25b999ed3efdf3bfa1eb0c2fa18fc8a431302ee0afc3c34762ee8",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_corridors303/native_graph.json": "6c8f79ec33936cdaef371747f7fc26f61199d601b53d2b68746ec637b8030a61",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_corridors303/navigation_inputs.jsonl.gz": "19bcdf12ecaf43b7356b24d8c87564af5e0386b511913f50ae06f4ab9e9ada45",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_corridors303/observer.log": "6d2d18802396ab0c4bca283c97c5c6f79b33ed280453b6ae2edbf89c0fea6883",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_corridors303/runner.log": "d5711360156c16363386608736d58a32943498300a376f7f78606e3af9ee3301",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_corridors303/safety_events.jsonl": "915a30862a389311e775531dfb43d36e2fe27d423e612a20de19d16ca83cbbcc",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_corridors303/schedule.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_corridors303/summary.json": "43ae6bed28d94b6d549450067bd7c4aececb621716816ab0ed387555703a7872",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_forced2/20261010_p2c_v49_dev_forced2.csv": "6906026ac24d2f7daca0599b9e13a6ce19b560cf5a12c9e879136755ade45637",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_forced2/20261010_p2c_v49_dev_forced2.json": "7faf3e011c400964e903666455a46bf50dea14ccd277256a5b5f0861b58501ec",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_forced2/graph.json": "29a21c0834b514138c200e4177f3ca9a7a18bc28be2e38d11e91c2af6de6ca34",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_forced2/launch/robots2_seed303_20261010-054031.log": "57f66495984ffa6f0ae20ca5e25085b82ba572c8757ddcd9ac928b7003cd028e",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_forced2/ledger.jsonl": "924722c6f9de6bef865160cd44c6819639d6e232c5023ab2a36de6b13aca0015",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_forced2/ledger_metrics/curves.svg": "97103dbaee9acb5b6c40d6347a19f0d41ec9d158cd1d07a20172861fc21dcd3d",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_forced2/ledger_metrics/events.jsonl": "4d3c75f3eb116a4f3cbb00c36e4e94c00d0409ea49b9b891cd720981875550f8",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_forced2/ledger_metrics/inputs.jsonl": "b1e817b45eb519243575ada86dec08fa6a5fea284749dc4581acde7e64f8295a",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_forced2/ledger_metrics/live.jsonl": "8301fbe9c0488fb85ae1b4e9decf5eec48ffd7e95623570b0c27bac2bf87048a",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_forced2/ledger_metrics/live_windows.csv": "0c9b8b563105cce7f456fec356a0d20fdfe3d50642f39852f63c9c851738ed50",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_forced2/ledger_metrics/summary.json": "f850b2e0433064a21861336ff82ecc2c4b74bc49f8d79d2189ca4ae965112183",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_forced2/ledger_metrics/windows.csv": "0c9b8b563105cce7f456fec356a0d20fdfe3d50642f39852f63c9c851738ed50",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_forced2/ledger_metrics/windows.jsonl": "d1a41d02d31b4763c19b58c5daf9e1456896bb269fe1969dc6b955a508dfd3df",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_forced2/manifest.json": "970c4c2e8e6aac2e05ebeea1bb28a3e3b6b3ddc825afc8e066feada3d7e3ac7c",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_forced2/native_graph.json": "70fd32cc91f39f2e5b8f3ff93ec8f2a8c188924f39f693736cd03cf5204ab0a1",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_forced2/navigation_inputs.jsonl.gz": "835d6815cd02c4ef1fcc2f89c8ee92c999e1792599ccd99f88961a5735a8e776",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_forced2/observer.log": "dfa026c9e8eb77a68424ccf81403df2788bb6ff432556f423807e175d1a8183c",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_forced2/runner.log": "10123e5acced1add2ffb8c4f39ed69435345467227c6556a6c1c20d72506e7f7",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_forced2/safety_events.jsonl": "e3b04d085cd3c3299bcffc38b691cb1986ff5fcf7156fcaf03b1beacf39a3b1d",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_forced2/schedule.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_forced2/summary.json": "7197d28b5915b6b6115ac1838806202cfb99f6150b8388d7dd671712a63467d6",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_lab101/20261010_p2c_v49_dev_lab101.csv": "b2b7949ef4578abef0042907658998c0adae14a29204364febf3e38447eb1e7f",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_lab101/20261010_p2c_v49_dev_lab101.json": "5f212da88bb843eac78a9f537faf987eae96a2825fd0f26f91a90ea8993205b6",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_lab101/graph.json": "24e294ee133bf01bc5f3e9383c77a7d8cd6da0fc40de47a928ca16f9bb0b22e0",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_lab101/launch/robots3_seed101_20261010-054839.log": "aad0da1f50bd86ab3c84ef258ea1a59f6903e03906caca99023cc48f5a677367",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_lab101/ledger.jsonl": "237f77dc0edfb69ace207b63c6022a6656d149f151239033ac5637d5d292cf7f",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_lab101/ledger_metrics/curves.svg": "2b97fe346de0ac2579fb1569c78aed276a5cd20f3c1ce45ee7adab03e62fb261",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_lab101/ledger_metrics/events.jsonl": "8be63b95b7a1d4de0a2c16a708a8fbf7f419a9d570d62ee3ac04306001bb3295",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_lab101/ledger_metrics/inputs.jsonl": "b37869fc84cbb7168e3cbda0b72c0516ef9e6a48ab79bb35de35ea78d275bf23",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_lab101/ledger_metrics/live.jsonl": "96520e642be3d05134ebbaed540a600bba63a6c1b470b45ee3af986d746b4016",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_lab101/ledger_metrics/live_windows.csv": "ab3dd9fc7e8a35b8e20c000bd022283b1c7a6ce56f04a16d57bc281e3aa1688a",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_lab101/ledger_metrics/summary.json": "2a09fa9d4b18daa122f7a759268d68daa1d7754bc054552ab29a2435a0f61a86",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_lab101/ledger_metrics/windows.csv": "ab3dd9fc7e8a35b8e20c000bd022283b1c7a6ce56f04a16d57bc281e3aa1688a",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_lab101/ledger_metrics/windows.jsonl": "705fdc5d89e3f18bdab077e5d51f565f1183a443d16f75e91c8693395d3fb5f7",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_lab101/manifest.json": "a4fc412732fa765ade27a7085c19a74739d20dfd7a9d188529243216bf15b0a1",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_lab101/native_graph.json": "95aa1207a51d2f6ce38419eedbba9d5a6ccfc02a0395d3306114a26656c367e5",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_lab101/navigation_inputs.jsonl.gz": "b40a1a443990b317bff9a761f32e7adb3a83b30ceba4a65813c52fbad0384932",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_lab101/observer.log": "795e7d8143e78c4b87a091f07dde880c374aaa2128cf4ffe53ce336b29efebcf",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_lab101/runner.log": "14bf39709765f716a5dcb271633291503ead7fbee59220d52840e4a1918b24b1",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_lab101/safety_events.jsonl": "76ad543700487c6359dcd98f78338768b6bc163d91ea7f8e3a181698ef510462",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_lab101/schedule.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_lab101/summary.json": "6295036cce8ff2b7f9f7ac6db2fba1853ab1be3f4ba535d4b08d3244f63a11bf",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_rooms202/20261010_p2c_v49_dev_rooms202.csv": "3514734db10dd9ab21e17e860eebaa6f37724354700e31278422298b5d1d6a1d",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_rooms202/20261010_p2c_v49_dev_rooms202.json": "1ff90e584a15d5aa939397c4c97a034a949794795e56e8d50b8e8d973cdc97ef",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_rooms202/graph.json": "f8aabf9c6417072e84f97ebd5ac7c1f096c4cd5c8671d7a8531a5d3dd036d81f",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_rooms202/launch/robots3_seed202_20261010-054839.log": "5dddea4aeeb0ad59347e23f2ed4d280c937e78d1aa3f676d98c6ffe3e06947f0",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_rooms202/ledger.jsonl": "6ecb1e62854b05aa096875db95923a5ee3ef6508461713d7c314711021b474d6",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_rooms202/ledger_metrics/curves.svg": "dc25bf8ded6f999f66fba1327b992aa22f60c93da38b99ae737e3b7796e79088",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_rooms202/ledger_metrics/events.jsonl": "ac0557f3dcc653a4671212e63da61a9af70b3a9d618c568883150ef37756c77e",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_rooms202/ledger_metrics/inputs.jsonl": "37e7d5ed9251e30b84d3a31e0556084161db27ad044acf92d5cac7aafb0c342e",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_rooms202/ledger_metrics/live.jsonl": "3bd460c5b91f2afd7b22430715cf18d52290193d2e7d976f026d64df00fd7e8a",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_rooms202/ledger_metrics/live_windows.csv": "070bbf615a058fb72adfcdffcb28221f0bbb6c20f5a716e8894d0faa4ab1b7f9",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_rooms202/ledger_metrics/summary.json": "30b48f4444941af93391545def04bac6ec9ac82b1f011b5843ad87d4715ad51f",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_rooms202/ledger_metrics/windows.csv": "070bbf615a058fb72adfcdffcb28221f0bbb6c20f5a716e8894d0faa4ab1b7f9",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_rooms202/ledger_metrics/windows.jsonl": "50a36959fc340aef9d70dc1c6ca0e623f04521379f5b0cbbd1e6064fdb768c77",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_rooms202/manifest.json": "ad257e0421944fbc412f10dd738e46abfb2485a73c415620301e14d180939c22",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_rooms202/native_graph.json": "bf5c1d38238115e1539fc7aeaeb3dee31726da47a7a8f50add23162bb5c8ada3",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_rooms202/navigation_inputs.jsonl.gz": "a279eaf926796359004a1df43eed73b66d6ebaa85d529f4a6406b55ce87f598b",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_rooms202/observer.log": "8bd954852dfac9b583ae96499b6bde5287c2e9329239c012ed89b73ef4201981",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_rooms202/runner.log": "5b82ca1c2caf61c7b580bc1d494a17faf799ddb672ae09581d53e7ad3ee09d6d",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_rooms202/safety_events.jsonl": "c6443a061ca284e956c771fe0fac52c7029913466619726964f9608d306d458f",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_rooms202/schedule.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v49/20261010_p2c_v49_dev_rooms202/summary.json": "baa4e41e4784b199dbceb4796d1ed6e82c6d9ec7b34b06ae8ffc1cc7d0eaf921"
+  },
+  "originals": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_v49_failed_development_originals.json.gz",
+    "sha256": "708d5e465be42ca42741eb39e9c1f4225f88995e4f2febed51d8189de596f4c6",
+    "uncompressed_sha256": "247d7f435cb9c1875fac5c1fa6b23583623f661b480c992baceb07e417d92db1"
+  },
+  "no_retry_or_backfill": true,
+  "no_cross_version_success_rate": true,
+  "general_safety_guarantee": false
+}

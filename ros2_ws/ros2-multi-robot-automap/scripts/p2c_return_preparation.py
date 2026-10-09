@@ -78,7 +78,8 @@ def audit_preparation(event):
     blocked = [p for other, p in positions.items() if other != name]
     target, route = control.plan_rally_leg(control.RallyPose(*point, event['requested_yaw']),
         grid, planning['resolution'], planning['origin'], positions[name], 5.,
-        blocked_positions=blocked, clearance_m=.35, visible_only=True)
+        blocked_positions=blocked, clearance_m=.35, visible_only=True,
+        local_map=maps[name] if 'outbound_map_route' in event else None)
     assert target is not None and math.dist((target.x, target.y), point) <= .02
     assert np.allclose(route, saved['route'], atol=1e-10, rtol=0.)
     for reserved in rebuilt.values():

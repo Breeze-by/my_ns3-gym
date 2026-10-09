@@ -126,7 +126,7 @@ def test_real_known_candidate_passes_navigation_publication_and_independent_read
     def publish(name,a):
         goal=PoseStamped();goal.pose.position.x=a.navigation_x;goal.pose.position.y=a.navigation_y
         yaw=a.navigation_yaw or 0.;goal.pose.orientation.z=math.sin(yaw/2.);goal.pose.orientation.w=math.cos(yaw/2.)
-        c.HeadquartersControl.record_navigation_decision(node,name,'initial_visual_search',goal)
+        c.HeadquartersControl.record_navigation_decision(node,name,'initial_visual_search',goal,None,node.goal_routes[name])
     node.send_goal=publish
     c.HeadquartersControl.assign_idle_robots(node)
     assert not requests and len(decisions)==1
