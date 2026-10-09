@@ -708,7 +708,8 @@ def check_one(path,config):
         bool(config.get('coordinator_live_clock')))
     headings=observer_heading_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
         bool(config.get('observer_heading_confirmation_gap')),result['target_max_distance_m'],
-        result['rally_position_tolerance_m'],math.radians(result['target_field_of_view_deg']))
+        result['rally_position_tolerance_m'],None if result['target_field_of_view_deg'] is None
+        else math.radians(result['target_field_of_view_deg']))
     leases=planning_lease_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     assert result['collision_monitoring_active']
     return dict(case=case,status='PASS',git_commit=row['git_commit'],source_digests=row['source_digests'],
@@ -728,6 +729,9 @@ def observer_heading_audit(records,required=False,radius_m=3.,position_tolerance
         is_quiet=e.get('event')=='coordinator_observer_heading_quiet_hold'
         is_turn=e.get('event')=='coordinator_navigation_decision' and e.get('kind')=='target_observation_heading'
         if not (is_quiet or is_turn):continue
+        assert (radius_m is not None and fov_rad is not None
+                and math.isfinite(radius_m) and radius_m>0
+                and math.isfinite(fov_rad) and 0<fov_rad<=2*math.pi), 'heading witness lacks camera metadata'
         now=e['event_time'];name=e['robot'];inputs=e['inputs']
         lease=inputs['headquarters/target_detection'];age=now-lease['source_time']
         assert math.isclose(age,lease['age_sec'],abs_tol=1e-8) and 0<=age<=60.

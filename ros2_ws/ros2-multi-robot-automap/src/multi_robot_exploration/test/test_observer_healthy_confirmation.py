@@ -38,6 +38,20 @@ def test_quiet_witness_throttles_without_renewing_target_source():
     assert node.target_received_source_time==99.5
 
 
+def test_undetected_target_keeps_null_camera_metadata_without_heading_witnesses():
+    result=observer_heading_audit([],True,None,.35,None)
+    assert result['quiet_holds']==result['heading_turns']==0 and result['status']=='PASS'
+
+
+@pytest.mark.parametrize('radius,fov',[(None,None),(None,math.pi/2),(3.,None),
+    (float('nan'),math.pi/2),(3.,float('inf')),(3.,0.),(3.,3*math.pi)])
+def test_real_heading_witness_requires_finite_delivered_camera_metadata(radius,fov):
+    node,_=quiet_node(.5);c.HeadquartersControl.restore_observer_heading(node)
+    event=json.loads(node.consumed_publisher.publish.call_args.args[0].data)
+    with pytest.raises(AssertionError,match='heading witness lacks camera metadata'):
+        observer_heading_audit([event],True,radius,.35,fov)
+
+
 @pytest.mark.parametrize('bad',[None,'healthy_turn','expired_quiet','future','heading','range','source','pose'])
 def test_reader_rejects_forged_confirmation_and_heading_witnesses(bad):
     node,_=quiet_node(.5);c.HeadquartersControl.restore_observer_heading(node)

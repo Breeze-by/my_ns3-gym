@@ -1,6 +1,6 @@
 # 多机器人任务导向无线通信调度工程实施计划
 
-2026-10-09 P2C.1 v41集合计算组件PASS待新原任务：v40 d70b277首forced FAILED192.8/insufficient_rally_poses，detect118.7/无RALLY，各charge1/min14.95501；0contact/exhaustion/failed/task-time infra/retry，12审计PASS不替任务成功。四计算法对照后合入单次提案两层不可变几何复用+本地已知终点较少者优先核验；只计算排序、不删未知融合候选/不缓存预算源戳，原全返路/硬门/分支tie保持。八ledger原输入5cold完整输出相同，两失败CPU约1.21/1.23→.45/.46s，走廊2.81→1.99s、另五略增0.06%..0.65%、rooms仍约2.3s；无普遍/因果/最坏保证。1484功能/40定向/四包7.71s/171保护54static与6实际DDS witness PASS。仅2纯函数变化，native/中央class字节保持；新4→17+2同freeze待验证，38失败索引补齐，917未暴露。P3C.5已验收，无P4/ns3/Wi-Fi/RL。报告20261009_p2c_rally_computation_components.md与20261009_p2c_v40_failed_development.md；旧pending为历史。
+2026-10-09 P2C.1当前完整集成FAIL：v41冻结723a844首forced PARTIAL279.1/success=false/tb2正电量失路，双机各charge1，0接触/耗尽/任务期infra；12审计PASS不替代任务成功。独立安全原对子也FAIL（ideal准备ABORTED，fault实际返航独立PASS）。新Nav2准备就绪适配和只读null/路径读者修复1517功能/93定向/四包5.57s/171保护54协议/实际DDS5情形PASS，任务/native/原准备刺激字节不变；新两原格待clean pushed freeze。40个有主任务版本共76原任务不能跨版本汇总成功率；余3开发/17正式/917未调用。P3C.5已验收，无P4/ns-3/Wi-Fi/RL。报告20261009_p2c_v41_failed_development.md、20261009_p2c_return_characterization_failed.md、20261009_p2c_return_readiness_components.md；旧pending记录为历史。
 
 2026-10-09 P2C.1 v34两级惰性前沿gain组件PASS待新冻结：24e1e27首强制FOUNDtimeout300.0/检测291.4/13Nav2/两机各charge1/87原lease弃置，strict FAIL原件保留，余3/17/2/917未调用。批量射线157cell五样本更慢(.391..929vs.183s)已拒绝无task。新原几何采样+矩形unknown收益上界→竞争时准确ray gain重入heap→原budget评分，真实目标与充电top3均准确gain/原稳定顺序，bounds从不派发；完整raw forecast/source/TTL/native保持。1309功能/四包6.95s/171保护4授权54协议/实际ROS含2中央普通Assignment发布消费PASS。原早期交付双idle固定条件ray157→21/budget4→4/cold中位0.387→0.224s，导航偏好预算相同，非任务/最坏界。新4→17+2同clean pushed freeze未验证，917未暴露；P3C.5已验收，无P4/ns-3/Wi-Fi/RL。报告20261009_p2c_lazy_gain_components.md与20261009_p2c_v33_failed_development.md。
 
@@ -117,7 +117,7 @@ v1/v2技术失败候选与全部原任务失败保持；native300秒/TTL/5秒/�
 | P2A | 目标检测与确认 MVP | Gazebo 真值评估、视场/距离/遮挡、连续帧确认 | 目标不可见时不触发，可见并满足规则时进入 `FOUND` | 已验收 |
 | P2B | 集合状态机 | 权威任务状态机、停止探索、独立 staging poses、保持判定 | 3 机器人收到理想直达目标事件后取消探索，在不同安全位姿以位置误差≤0.35 m、线/角速度≤0.05 m/s、0.10 rad/s 连续稳定 5 秒并只在此时进入 `COMPLETE` | 已验收 |
 | P2C | 电池、返航和充电 | 可校准能量、本地优先返航、独立充电目标、失败原因；原验收区域不重叠，当前区域几何另声明 | 至少一次被迫充电的 episode 中无耗尽，保留地图/任务并在充电后继续；不可返航和耗尽正确失败 | 已验收；P2C.1独立补强进行中 |
-| P2C.1 | 评审后完整路径能量与安全补强 | 同源完整接触区路径、预算包络/失路停止、预测与实际账本、算法组件比较、新冻结任务栈 | 新源码完成组件和四包构建；同提交十理想原格及强制充电原生COMPLETE；实际断网独立返航、失路/耗尽反例、新未暴露拓扑/元组和全部失败留存；逐次预算/地图/实际成本可审计 | 进行中；尚非新任务验收 |
+| P2C.1 | 评审后完整路径能量与安全补强 | P2C.1A能量/返航契约表征与P2C.1B完整任务集成；同源路径、预算包络、原生账本和算法比较 | 新源码完成组件和四包构建；同提交十理想原格及强制充电原生COMPLETE；实际断网独立返航、失路/耗尽反例、新未暴露拓扑/元组和全部失败留存；逐次预算/地图/实际成本可审计。A的受控表征不能替代B | 组件通过；B完整集成FAIL，A新物理对子待验证 |
 | P2D | 完整理想通信任务基线 | 统一 runner、完整状态/阶段指标、跨目标场景矩阵 | 至少 3 个预先验证的 world/目标/能量场景各跑 seeds 101/202/303，完成探索→发现→必要充电→集合；另做 2 机器人交叉检查 | 已验收 |
 | P3A | 显式消息协议和零损 gateway | 本地候选队列、序号/时间戳/ACK/过期、接收信息存储、命令适配器、旁路清单 | 零损 finite-rate 语义、旁路审计和安全等价通过；不把完成时间当作 P2D 等价 | 已验收 |
 | P3A.5 | 历史 task-stack 重验证（冻结候选） | 历史 commit 的 P2D/P3A 完整矩阵、强制充电回归、manifest、ROS graph edge 白名单 | 仅作为历史证据；不能替代当前 HEAD 的重新冻结 | 已验收 |
@@ -734,3 +734,14 @@ v12组件验证：937功能/1skip48.75s、最终37定向18.78s（含重选→再
 2026-10-09 P2C.1 v19前沿接续组件PASS、待新冻结任务：v18首forced原RALLY timeout300.3/两机各charge1/min10.641969/零接触耗尽失效，四返航closed/121能量/分配/21探索原输入重建PASS，任务FAIL保留。普通成功短前缀如今保留完整当前观测位为优先偏好；下一批仍须当前1.2m/gain>max200/20%/完整机体预约能量源龄准入，完整位成功或原导航失败清除；无旧指令重发。1025功能/四包5.19s/172保护/54协议/actual DDS/两manifest validate-onlyPASS；69其他中央方法AST及native battery字节保持。v18真实交付快照只作条件组件、非因果任务收益。新4开发/17正式/2物理待clean pushed freeze；原300s/5s/TTL与旧物理刺激保持，917未暴露。P3C.5已验收，无P4/ns-3/Wi-Fi/RL。报告20261009_p2c_frontier_commitment_components.md与20261009_p2c_v18_failed_development.md。
 
 2026-10-09 P2C.1 v20本地TF前置筛选组件PASS、待新冻结任务：v19四原2COMPLETE(forced225.2/rooms258.6)、lab181.5survey任务FAILED/corr299.6晚检测timeout300.4，四0接触耗尽机器人失效/自然关闭，严格FAIL保留；84closed返航/541能量/58探索26接续/12前瞻重建PASS，不是真实远返证明。labtb3 TF10/37过期(max2.712/网关max.536)，QoS未记录不作因果归因。新既有机器人端节点为native独立转发原相关TF，原始混合缓存5→100、native原20/odom10/2s/5s/未来128/计费不变；AP observe包字节保持。rawQoS与入口5紧密burst失败保留，最终同30body零间隔/DDS/过期未来能量检查PASS。1035功能/四包5.22s/171保护4授权/54协议/actual AP DDS/两manifest PASS；control/native battery字节保持。额外本地DDS与模型前源可用性变化明确声明，各未来baseline同冻结；无AP新观测/模型无线包。新4开发/17正式/2物理待clean pushed freeze，917未暴露。P3C.5已验收，无P4/ns-3/Wi-Fi/RL。报告20261009_p2c_filtered_tf_components.md与20261009_p2c_v19_failed_development.md。
+
+
+## P2C.1A / P2C.1B：2026-10-09 评审后补强门禁
+
+拆分用于区分证据，P2C.1完整验收要求保持。P2C.1A记录原能量方程、所有充电credit、同源完整接触路径/最大咨询源龄、预算包络与明确失路失败；以独立受控远端ideal/fault对子验证两机实际Nav2返航/充电。準备器必须实际就绪，原50秒准备/60..250秒断网/62..248秒物理窗口/.5米运动/1.1米起始距离/零接触失败保持。A的对子不计入任务成功率/TDI，不证明任意地图变化下安全。当前主v41正电量失路与原独立理想准备失败保留，新准备适配需另冻结新原格。
+
+P2C.1B仍先同源四开发（强制双机每charge≥1及全体native COMPLETE，然后lab101/rooms202/corr303），再原17正式和2物理全部严格门禁。不能混合版本、用partial/中央提前COMPLETE代替native保持、增加原300秒、减少原5秒或放宽原位速/TTL；917仅在前置通过后首次暴露。A若之后改变task source，旧A对子也不能代替B要求的新同源物理对子。所有原失败、未调用格和结束后清理失败分开记录。
+
+下一算法批次先建立可区分的反例与小型对照：准确原local/fused/Nav2地图和源TF/位置/路径断连诊断；必要时另预声明原range/scan证据，验证障碍/配准问题后再提修复。禁止凭单次地图猜测清除障碍、屏蔽同伴、旋转探测或改SLAM参数。完整路径在准入时可行不证明执行中持续连通。计算优化须保留原输入等价/失败与退化样本，报告wall和sim时钟差异，不能以CPU减少推导任务因果收益。尽量用少量有明确假设的算法对照，再新冻结完整矩阵，停止无边界地串行调整效用权重。
+
+本轮现有任务版本共76主原格、40个实际有主任务源码版本；这些是开发轨迹，不能跨版本合并为成功率或置信区间。P4A-1/P5和当前工作负载正式比较仍以B完成为前置；P4A-0/P4B-0的独立契约/被动测量路线保留，未在本轮启动。当前task策略已变化，未来无线研究必须采集新冻结任务负载，不能将已验收P3C.5历史负载当当前负载。

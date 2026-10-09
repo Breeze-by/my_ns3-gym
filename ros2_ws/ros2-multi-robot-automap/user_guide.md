@@ -1,6 +1,6 @@
 # ROS2 多机器人自主建图项目使用指南
 
-2026-10-09 P2C.1 v41集合计算组件PASS待新原任务：v40 d70b277首forced FAILED192.8/insufficient_rally_poses，detect118.7/无RALLY，各charge1/min14.95501；0contact/exhaustion/failed/task-time infra/retry，12审计PASS不替任务成功。四计算法对照后合入单次提案两层不可变几何复用+本地已知终点较少者优先核验；只计算排序、不删未知融合候选/不缓存预算源戳，原全返路/硬门/分支tie保持。八ledger原输入5cold完整输出相同，两失败CPU约1.21/1.23→.45/.46s，走廊2.81→1.99s、另五略增0.06%..0.65%、rooms仍约2.3s；无普遍/因果/最坏保证。1484功能/40定向/四包7.71s/171保护54static与6实际DDS witness PASS。仅2纯函数变化，native/中央class字节保持；新4→17+2同freeze待验证，38失败索引补齐，917未暴露。P3C.5已验收，无P4/ns3/Wi-Fi/RL。报告20261009_p2c_rally_computation_components.md与20261009_p2c_v40_failed_development.md；旧pending为历史。
+2026-10-09 P2C.1当前完整集成FAIL：v41冻结723a844首forced PARTIAL279.1/success=false/tb2正电量失路，双机各charge1，0接触/耗尽/任务期infra；12审计PASS不替代任务成功。独立安全原对子也FAIL（ideal准备ABORTED，fault实际返航独立PASS）。新Nav2准备就绪适配和只读null/路径读者修复1517功能/93定向/四包5.57s/171保护54协议/实际DDS5情形PASS，任务/native/原准备刺激字节不变；新两原格待clean pushed freeze。40个有主任务版本共76原任务不能跨版本汇总成功率；余3开发/17正式/917未调用。P3C.5已验收，无P4/ns-3/Wi-Fi/RL。报告20261009_p2c_v41_failed_development.md、20261009_p2c_return_characterization_failed.md、20261009_p2c_return_readiness_components.md；旧pending记录为历史。
 
 2026-10-09 P2C.1 v34两级惰性前沿gain组件PASS待新冻结：24e1e27首强制FOUNDtimeout300.0/检测291.4/13Nav2/两机各charge1/87原lease弃置，strict FAIL原件保留，余3/17/2/917未调用。批量射线157cell五样本更慢(.391..929vs.183s)已拒绝无task。新原几何采样+矩形unknown收益上界→竞争时准确ray gain重入heap→原budget评分，真实目标与充电top3均准确gain/原稳定顺序，bounds从不派发；完整raw forecast/source/TTL/native保持。1309功能/四包6.95s/171保护4授权54协议/实际ROS含2中央普通Assignment发布消费PASS。原早期交付双idle固定条件ray157→21/budget4→4/cold中位0.387→0.224s，导航偏好预算相同，非任务/最坏界。新4→17+2同clean pushed freeze未验证，917未暴露；P3C.5已验收，无P4/ns-3/Wi-Fi/RL。报告20261009_p2c_lazy_gain_components.md与20261009_p2c_v33_failed_development.md。
 
@@ -1252,3 +1252,19 @@ P2C.1物理断网验证已前瞻接入标准冻结owner与严格完整门禁，�
 2026-10-09 P2C.1 v19前沿接续组件PASS、待新冻结任务：v18首forced原RALLY timeout300.3/两机各charge1/min10.641969/零接触耗尽失效，四返航closed/121能量/分配/21探索原输入重建PASS，任务FAIL保留。普通成功短前缀如今保留完整当前观测位为优先偏好；下一批仍须当前1.2m/gain>max200/20%/完整机体预约能量源龄准入，完整位成功或原导航失败清除；无旧指令重发。1025功能/四包5.19s/172保护/54协议/actual DDS/两manifest validate-onlyPASS；69其他中央方法AST及native battery字节保持。v18真实交付快照只作条件组件、非因果任务收益。新4开发/17正式/2物理待clean pushed freeze；原300s/5s/TTL与旧物理刺激保持，917未暴露。P3C.5已验收，无P4/ns-3/Wi-Fi/RL。报告20261009_p2c_frontier_commitment_components.md与20261009_p2c_v18_failed_development.md。
 
 2026-10-09 P2C.1 v20本地TF前置筛选组件PASS、待新冻结任务：v19四原2COMPLETE(forced225.2/rooms258.6)、lab181.5survey任务FAILED/corr299.6晚检测timeout300.4，四0接触耗尽机器人失效/自然关闭，严格FAIL保留；84closed返航/541能量/58探索26接续/12前瞻重建PASS，不是真实远返证明。labtb3 TF10/37过期(max2.712/网关max.536)，QoS未记录不作因果归因。新既有机器人端节点为native独立转发原相关TF，原始混合缓存5→100、native原20/odom10/2s/5s/未来128/计费不变；AP observe包字节保持。rawQoS与入口5紧密burst失败保留，最终同30body零间隔/DDS/过期未来能量检查PASS。1035功能/四包5.22s/171保护4授权/54协议/actual AP DDS/两manifest PASS；control/native battery字节保持。额外本地DDS与模型前源可用性变化明确声明，各未来baseline同冻结；无AP新观测/模型无线包。新4开发/17正式/2物理待clean pushed freeze，917未暴露。P3C.5已验收，无P4/ns-3/Wi-Fi/RL。报告20261009_p2c_filtered_tf_components.md与20261009_p2c_v19_failed_development.md。
+
+
+## P2C.1 独立返航准备就绪验证（2026-10-09）
+
+这是独立受控安全表征，不是完整任务验收。p2c_blackout_manifest.json现使用stage_p2c_return_probe.py适配器，在原准备器前等待真实Nav2全局costmap新鲜且范围覆盖原准备位；原准备器/50秒期限/已知自由短腿/网关/断网及物理门限保持。旧对子保留FAIL，新对子必须使用新run-id和clean pushed freeze；两格都要运行并保留。原物理observations只做审计，不进入AP或无线负载。
+
+在ROS Humble和本仓库install环境、PYTHONNOUSERSITE=1、FastDDS UDPv4且清除旧profiles后，分别在终端执行：
+
+```bash
+taskset -c 0-79 /usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_ideal --run-id 20261009_p2c_return_ready --domain 218 --gazebo-port 20298
+taskset -c 0-79 /usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261009_p2c_return_ready --domain 219 --gazebo-port 20299
+```
+
+这两个名字仅供本次首次运行，已存在则不可重用/覆盖；后续必须先冻结新的前瞻声明和run-id。关闭全部owned进程后用check_p2c_blackout.py --run-root log/p2c/20261009_p2c_return_ready --expected-commit 本次冻结SHA --output 新审计文件核对实际准备/物理/source证据；Nav2动作或准备器失败均使对子FAIL，后来native COMPLETE不能代替准备成功。
+
+完整P2C.1B仍未通过。原v41 PARTIAL_COMPLETE保留success=false；新4开发→17正式+2物理要在同源通过，917尚未调用，不开展P4/ns-3/Wi-Fi/RL。

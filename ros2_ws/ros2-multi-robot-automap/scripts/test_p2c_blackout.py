@@ -48,8 +48,11 @@ def test_missing_physical_originals_cannot_pass_the_pair(tmp_path):
 
 def probe_files(tmp_path):
     m=config();m['predeclared_at_utc']='2026-10-08T00:00:00+00:00'
-    cfg=tmp_path/'manifest_config.json';cfg.write_text(json.dumps(m))
     fixture=PROJECT_ROOT/'scripts/stage_p3b5_return_probe.py';physics=PROJECT_ROOT/'scripts/observe_p3b5_return_physics.py'
+    # Legacy evidence remains auditable after the prospective apparatus changes.
+    m['staging_apparatus_script']=fixture.name
+    m['staging_apparatus_content_sha256']=hashlib.sha256(fixture.read_bytes()).hexdigest()
+    cfg=tmp_path/'manifest_config.json';cfg.write_text(json.dumps(m))
     events=[];robots={}
     for name,pose in m['return_staging']['poses'].items():
         sign=-1 if name=='tb1' else 1

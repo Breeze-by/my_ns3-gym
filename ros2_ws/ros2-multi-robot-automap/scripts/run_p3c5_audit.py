@@ -20,6 +20,13 @@ def now():
     return datetime.now(timezone.utc).isoformat()
 
 
+def staging_apparatus(config):
+    name=config.get('staging_apparatus_script','stage_p3b5_return_probe.py')
+    if name not in ('stage_p3b5_return_probe.py','stage_p2c_return_probe.py'):
+        raise ValueError('unknown staging apparatus')
+    return PROJECT_ROOT/'scripts'/name
+
+
 def return_probe_commands(config, scenario, directory, owner_pid, manifest_path):
     """Opt-in unchanged controlled exposure and read-only physical observer."""
     if 'return_staging' not in config:
@@ -29,7 +36,7 @@ def return_probe_commands(config, scenario, directory, owner_pid, manifest_path)
     return {
         'physics': [sys.executable,str(PROJECT_ROOT/'scripts/observe_p3b5_return_physics.py'),
                     '--output',str(directory/'physics.jsonl'),'--robot-count',str(scenario['robot_count'])],
-        'staging': [sys.executable,str(PROJECT_ROOT/'scripts/stage_p3b5_return_probe.py'),
+        'staging': [sys.executable,str(staging_apparatus(config)),
                     '--owner-pid',str(owner_pid),'--config',str(manifest_path.resolve()),
                     '--output',str(directory/'staging.jsonl')],
     }
@@ -85,13 +92,13 @@ def main(default_manifest=None, log_category='p3c5'):
                     "control_schema": "scripts/p3c5_control_schema.json",
                     "admission_protocol": "src/multi_robot_exploration/multi_robot_exploration/admission_protocol.py"}.items()}}
     manifest['source_digests'].update({name:file_digest(PROJECT_ROOT/'scripts'/filename)
-        for name,filename in (('staging_apparatus','stage_p3b5_return_probe.py'),
+        for name,filename in (('staging_apparatus',staging_apparatus(config).name),
                               ('physics_observer','observe_p3b5_return_physics.py'))})
     if config.get('native_tf_graph_capture'):
         manifest['source_digests'].update({name:file_digest(PROJECT_ROOT/'scripts'/filename)
             for name,filename in (('safety_observer','observe_p3b5.py'),('native_graph_reader','p2c_native_graph.py'))})
     if probe_commands:
-        fixture=PROJECT_ROOT/'scripts/stage_p3b5_return_probe.py'
+        fixture=staging_apparatus(config)
         manifest.update(staging_command=shlex.join(probe_commands['staging']),
             physics_command=probe_commands['physics'],staging_source=fixture.read_text(),
             staging_source_sha256=file_digest(fixture),

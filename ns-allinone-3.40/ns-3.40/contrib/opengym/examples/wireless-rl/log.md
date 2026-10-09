@@ -8581,3 +8581,21 @@ Humble+install/PYTHONNOUSERSITE1/FastDDS UDPv4清profiles，log/prototype_p2c_v4
 check_p2c_source.py --output log/p2c_v41_source.json PASS；ROS_DOMAIN_ID219 log/check_p2c_v41_rally_runtime.py 6真实DDS witness/3原输入两算法独立source与分配重建PASS、无Nav2动作或Gazebo。run_p2c_tasks.py --case dev_forced2 --run-id 20261009_p2c_v41 --domain 210 --gazebo-port 20290 --validate-only以及--manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261009_p2c_v41_physical --domain 219 --gazebo-port 20299 --validate-only PASS/no任务。全部38历史failed cohort索引补齐，不删除原数据或从异算法挑成功；原300s/5s/TTL/预算和物理刺激不变，clean pushed新4→17+2待验证，917仍未暴露。
 
 组件报告生成后，对同一未改八行对照做摘要勘误：原草稿“其余六近持平”遗漏一份走廊2.80508→1.99202s改善。最终三改善、五略增0.06%..0.65%，所有原CPU行/输入/命令不变；原生成器完整留档，JSON附文字勘误。
+
+
+## 2026-10-09 P2C.1 v41 首强制原任务 FAIL
+
+723a844 clean pushed freeze；taskset -c 0-79 /usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261009_p2c_v41 --domain 210 --gazebo-port 20290 > log/p2c_v41_dev_forced2_runner.log 2>&1。12:07:45.321295–12:14:06.322338 UTC，owner721454/observer721474 exit0/0。PARTIAL_COMPLETE279.1/successfalse/tb2正电量no_known_route FAILED；detect247/RALLY257/每机charge1/min16.366306239008143/0contact/exhaustion/task-time infra/retry。check_p2c_gate首强制FAIL、12独立审计PASS；其余3/17/主门2/917未调用。准确安全行89/SHA地图均current free且safe，但local/constrained无完整返路，融合3.72569m受local已知障碍veto。首次诊断脚本强求仅一个失路事件失败、改为准确末事件只读重审，初错误保留；map PNG已视检，不作传感器因果归因。原partial completion/proof保留，完整任务失败惩罚300秒。
+
+## 2026-10-09 P2C.1 独立受控返航两原格 FAIL
+
+相同723a844独立预声明，check_p2c_return_characterization_freeze.py PASS。Humble+install/PYTHONNOUSERSITE1/FastDDS UDPv4清profiles，taskset -c 0-79 /usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_ideal --run-id 20261009_p2c_return_characterization --domain 218 --gazebo-port 20298；fault改case physical_fault/domain219/port20299，各输出log/p2c_return_characterization_*_runner.log。12:23:51开始，ideal12:29:05.722392关闭、fault12:30:35.435229关闭；所有owner/stager/physics/observer闭合。ideal native211.2COMPLETE但首staging Nav2ABORTED/exit1，故strict pairFAIL；fault nativeEXPLOREtimeout300.1但实际62..248窗口原生Nav2返航/两机每charge1独立严格PASS。两格0contact/exhaustion/failed/retry，min20.9730/12.3324。
+
+check_p2c_blackout读者原null camera TypeError和相对run-root/absolute physics argv绑定FAIL全部保留；仅修复读者，27PASS1.26s，后同原数据fault independent PASS、pair仍FAIL。最新适配/读者68定向PASS1.65s（后续完整/actual DDS另录），实际任务/native/TTL/刺激未改；prepared实际Nav2默认地图bounds不覆盖负准备位，新就绪适配需独立freeze和新两原格，不能回填。
+
+
+## 2026-10-09 P2C.1 新准备就绪适配组件 PASS
+
+2026-10-09 P2C.1当前完整集成FAIL：v41冻结723a844首forced PARTIAL279.1/success=false/tb2正电量失路，双机各charge1，0接触/耗尽/任务期infra；12审计PASS不替代任务成功。独立安全原对子也FAIL（ideal准备ABORTED，fault实际返航独立PASS）。新Nav2准备就绪适配和只读null/路径读者修复1517功能/93定向/四包5.57s/171保护54协议/实际DDS5情形PASS，任务/native/原准备刺激字节不变；新两原格待clean pushed freeze。40个有主任务版本共76原任务不能跨版本汇总成功率；余3开发/17正式/917未调用。P3C.5已验收，无P4/ns-3/Wi-Fi/RL。报告20261009_p2c_v41_failed_development.md、20261009_p2c_return_characterization_failed.md、20261009_p2c_return_readiness_components.md；旧pending记录为历史。
+
+Humble+install/PYTHONNOUSERSITE1/FastDDS UDPv4清profiles；/usr/bin/python3 -m pytest -q scripts/test_p2c_staging_readiness.py scripts/test_p2c_blackout.py scripts/test_p3c5_gate.py src/multi_robot_exploration/test/test_observer_healthy_confirmation.py 93PASS1.82s。相同完整功能命令（排除copyright/flake8/pep257）1517PASS138.07s，四包colcon build --symlink-install --packages-select multi_robot_interfaces multi_robot_exploration merge_map multi_robot 5.57s。check_p2c_source.py --output log/p2c_return_readiness_source.json PASS；ROS_DOMAIN_ID220 log/check_p2c_return_readiness_runtime.py 真实DDS双ActionServer/costmap/clock5情形PASS，无Gazebo或导航请求。两个run_p2c_tasks --manifest scripts/p2c_blackout_manifest.json --case physical_ideal/physical_fault --run-id20261009_p2c_return_ready --domain218/219 --gazebo-port20298/20299 --validate-only PASS；未启动新任务。原stage_p3b5/physics/control/native/TF/launch bytes和原case/50s准备/60..250断网/62..248/.5m/1.1m刺激保持。下一新对子须clean pushed freeze，主任务FAIL保持。

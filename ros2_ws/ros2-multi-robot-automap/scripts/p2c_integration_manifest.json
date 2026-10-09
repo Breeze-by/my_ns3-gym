@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-09T11:57:51.811820+00:00",
+  "predeclared_at_utc": "2026-10-09T12:57:56.676567+00:00",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -342,7 +342,8 @@
     "20261009_p2c_v37_failed_development.json",
     "20261009_p2c_v38_failed_development.json",
     "20261009_p2c_v39_failed_development.json",
-    "20261009_p2c_v40_failed_development.json"
+    "20261009_p2c_v40_failed_development.json",
+    "20261009_p2c_v41_failed_development.json"
   ],
   "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
   "opportunity_charge_rules": [
@@ -494,7 +495,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "d70b277c853cc736c40b535a9d3551a0c99b0950",
+  "candidate_parent_commit": "723a844e54e6f28501d59fc4ed2785f5f2d65592",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -621,5 +622,22 @@
     "safety": "Original return deadline, progress watchdog, energy/reserve failure, cancel ownership, native Nav2 collision avoidance and charging radius/stopped stable duration remain; no new leg, no obstacle clearing or pose/source renewal",
     "scope": "Departure-map occupancy may still invalidate later exploration; this candidate does not claim to solve localization/dynamic SLAM artifacts or guarantee known-free parking after Nav2 goal tolerance",
     "evidence": "20261009_p2c_contact_arrival_components.json"
-  }
+  },
+  "staging_apparatus_script": "stage_p2c_return_probe.py",
+  "staging_base_content_sha256": "47ce7998e212a9463ab657bbc0b121d4903ed886016bbf0fd3a2399c986da05d",
+  "staging_apparatus_content_sha256": "e16bcd508d27e0c6e77459825f5cda2c892555332ebd2bcccca50b2b175c595d",
+  "nav2_staging_readiness": {
+    "scope": "Private simulation-only preparation readiness; does not modify task policy, native safety, AP observations or radio traffic.",
+    "topic": "/{robot}/global_costmap/costmap",
+    "frame": "map",
+    "map_header_age_sec_max": 2.0,
+    "requirements": [
+      "original action server ready",
+      "finite full unrotated costmap",
+      "all original stage poses in actual costmap bounds"
+    ],
+    "evidence": "nav2_readiness.jsonl before every original gateway staging leg; unchanged base checks own received map, pose/TF/battery leases and known-free prefix",
+    "original_stimulus": "50s preparation deadline / 60..250s blackout / 62..248s native motion verification / no abort retry are unchanged"
+  },
+  "retained_failed_physical_characterization": "20261009_p2c_return_characterization_failed.json"
 }
