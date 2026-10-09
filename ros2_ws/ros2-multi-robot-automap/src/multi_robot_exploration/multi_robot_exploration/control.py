@@ -3188,6 +3188,7 @@ class HeadquartersControl(Node):
         self.detecting_robot = None
         self.rally_targets = {}
         self.rally_final_targets = {}
+        self.pending_rally_proposal = None
         self.rally_yield_targets = set()
         self.rally_recovery_beneficiaries = {}
         self.return_yield_targets = {}
@@ -3510,6 +3511,74 @@ class HeadquartersControl(Node):
                 geometry['origin'], 'ap_delivered_robot_map', self.robot_map_received_at[name],
                 self.robot_map_received_at[name]) for name, geometry in return_maps.items()},
         ), sort_keys=True)))
+
+    def admit_rally_proposal(self, proposal):
+        """Revalidate geometric intent after queued delivered inputs can run.
+
+        The assignment search may outlive its pose leases while holding the
+        serial state callback. Retain its points, never its prices or authority.
+        RALLY preflight and each goal still price fresh complete routes below.
+        """
+        if not self.fresh_robot_inputs() or not self.fresh_target():
+            return False
+        assignment = proposal['assignment']
+        names = self.participating_robots()
+        if (set(assignment) != set(names) or tuple(self.target) != proposal['target']
+                or self.map_data is None):
+            self.pending_rally_proposal = None
+            return False
+        safe = traversable_grid(self.map_data, self.resolution, clearance_m=RALLY_CLEARANCE_M)
+        points = []
+        for pose in assignment.values():
+            point = (pose.x, pose.y)
+            if not all(math.isfinite(v) for v in (*point, pose.yaw)):
+                self.pending_rally_proposal = None
+                return False
+            cell = world_to_grid(*point, self.resolution, *self.origin)
+            heading = math.atan2(self.target[1]-pose.y, self.target[0]-pose.x)
+            if (not (0 <= cell[0] < safe.shape[0] and 0 <= cell[1] < safe.shape[1])
+                    or not safe[cell]
+                    or not rally_target_view(self.map_data, self.resolution, self.origin,
+                        point, self.target, getattr(self, 'target_view_distance', 3.))
+                    or abs(math.atan2(math.sin(pose.yaw-heading), math.cos(pose.yaw-heading))) > 1e-8
+                    or any(math.dist(point, other) < RALLY_MIN_SEPARATION_M for other in points)):
+                self.pending_rally_proposal = None
+                return False
+            points.append(point)
+        positions = {name: self.robot_positions[name] for name in assignment}
+        order = (map_safe_rally_dispatch_order(self.map_data, self.resolution, self.origin,
+            assignment, positions, self.target, self.detecting_robot)
+            if self.use_map_safe_rally_order else
+            rally_dispatch_order(assignment, positions, self.target, self.detecting_robot))
+        if not self.fresh_robot_inputs() or not self.fresh_target():
+            return False
+        now = self.now()
+        if hasattr(self, 'consumed_publisher'):
+            self.consumed_publisher.publish(String(data=json.dumps(dict(
+                event='coordinator_rally_proposal_admitted', event_time=now,
+                proposal_evaluated_at_sec=proposal['evaluated_at'],
+                assignment={name: (pose.x, pose.y, pose.yaw) for name, pose in assignment.items()},
+                target=self.target, required_robots=names, dispatch_order=order,
+                target_view_distance_m=getattr(self, 'target_view_distance', 3.),
+                robot_positions=positions, detecting_robot=self.detecting_robot,
+                map_safe_order=self.use_map_safe_rally_order,
+                inputs=input_freshness_at(self.input_freshness_details(), now),
+                planning_map=grid_audit_evidence(self.map_data, self.resolution, self.origin,
+                    'ap_delivered_planning_map', self.map_received_at, self.map_received_at),
+                source_map=grid_audit_evidence(self.source_map_data, self.resolution, self.origin,
+                    'ap_delivered_fused_map', self.map_received_at, self.map_received_at),
+                self_return_cells=getattr(self, 'map_self_return_cells', {}),
+                budget_reused=False,
+            ), sort_keys=True)))
+        if not self.fresh_robot_inputs() or not self.fresh_target():
+            return False
+        self.rally_targets = dict(assignment)
+        self.rally_final_targets = dict(assignment)
+        self.rally_dispatch_order = order
+        self.pending_rally_proposal = None
+        self.get_logger().info('Selected conflict-aware rally order: ' + ', '.join(order))
+        self.publish_rally_assignments()
+        return True
 
     def delivered_pose_age(self, robot_name, at_time=None):
         stamps = [getattr(self, 'robot_odom_received_at', {}).get(robot_name)]
@@ -4450,6 +4519,11 @@ class HeadquartersControl(Node):
                 return
 
             if not self.rally_targets:
+                proposal = getattr(self, 'pending_rally_proposal', None)
+                if proposal is not None:
+                    if HeadquartersControl.admit_rally_proposal(self, proposal):
+                        self.publish_task_state("RALLY")
+                    return
                 if (
                     self.map_data is None
                     or self.target is None
@@ -4500,6 +4574,12 @@ class HeadquartersControl(Node):
                 HeadquartersControl.record_rally_assignment(self, active_positions, return_maps,
                     time.perf_counter()-assignment_started,
                     assignment if len(assignment) == len(active_names) else None, assignment_time)
+                if len(assignment) == len(active_names):
+                    self.pending_rally_proposal = dict(assignment=dict(assignment),
+                        target=tuple(self.target), evaluated_at=assignment_time)
+                    if HeadquartersControl.admit_rally_proposal(self, self.pending_rally_proposal):
+                        self.publish_task_state("RALLY")
+                    return
                 if not self.fresh_robot_inputs() or not self.fresh_target():
                     return
                 self.rally_targets = assignment
@@ -4553,34 +4633,6 @@ class HeadquartersControl(Node):
                         return
                     self.fail_task("insufficient_rally_poses")
                     return
-                if self.use_map_safe_rally_order:
-                    self.rally_dispatch_order = map_safe_rally_dispatch_order(
-                        self.map_data,
-                        self.resolution,
-                        self.origin,
-                        self.rally_targets,
-                        {
-                            name: self.robot_positions[name]
-                            for name in self.rally_targets
-                        },
-                        self.target,
-                        self.detecting_robot,
-                    )
-                else:
-                    self.rally_dispatch_order = rally_dispatch_order(
-                        self.rally_targets,
-                        {
-                            name: self.robot_positions[name]
-                            for name in self.rally_targets
-                        },
-                        self.target,
-                        self.detecting_robot,
-                    )
-                self.get_logger().info(
-                    "Selected conflict-aware rally order: "
-                    + ", ".join(self.rally_dispatch_order)
-                )
-                self.publish_rally_assignments()
             self.publish_task_state("RALLY")
             return
 

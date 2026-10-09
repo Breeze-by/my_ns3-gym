@@ -603,6 +603,69 @@ def rally_assignment_audit(records):
     return dict(status='PASS',failed_assignments_rebuilt=count,chosen_assignments_rebuilt=chosen,computation_wall_sec=wall)
 
 
+def rally_proposal_audit(records, required=False):
+    """Bind retained points to their original search and a new delivered epoch."""
+    proposals={};count=0;deferred=0
+    for e in records:
+        if e.get('event')=='coordinator_rally_assignment_chosen':
+            proposals[e['event_time']]=e
+        if e.get('event')!='coordinator_rally_proposal_admitted':continue
+        original=proposals[e['proposal_evaluated_at_sec']]
+        assert e['assignment']==original['assignment'] and e['target']==original['target']
+        assert set(e['required_robots'])==set(e['assignment'])==set(original['robot_positions'])
+        assert len(e['dispatch_order'])==len(e['assignment']) and set(e['dispatch_order'])==set(e['assignment'])
+        assert e['event_time']>=original.get('computation_completed_at_sec',original['event_time'])
+        assert e['budget_reused'] is False
+        required_inputs={'headquarters/fused_map_snapshot','headquarters/target_detection'}|{
+            name+'/'+kind for name in e['required_robots'] for kind in ('pose_state','frame_state','map_snapshot')}
+        if original['battery_states'] is not None:
+            required_inputs|={name+'/battery_state' for name in e['required_robots']}
+        assert required_inputs<=e['inputs'].keys()
+        for stream,sample in e['inputs'].items():
+            kind=stream.split('/')[-1]
+            ttl=control.TARGET_DETECTION_TTL_SEC if kind=='target_detection' else control.STATE_TTL_SEC[kind]
+            assert sample['source_time'] is not None and 0<=sample['ttl_sec']<=ttl
+            age=e['event_time']-sample['source_time']
+            assert 0<=age<=sample['ttl_sec'] and math.isclose(age,sample['age_sec'],abs_tol=1e-8)
+        maps=[]
+        for key,source in [('planning_map','ap_delivered_planning_map'),('source_map','ap_delivered_fused_map')]:
+            saved=e[key]
+            assert saved['source']==source and saved['encoding']=='zlib_base64_int16_le'
+            assert saved['source_time']==e['inputs']['headquarters/fused_map_snapshot']['source_time']
+            maps.append(np.frombuffer(zlib.decompress(base64.b64decode(saved['grid'])),dtype='<i2').reshape(saved['shape']))
+        saved=e['planning_map'];source=e['source_map']
+        assert saved['resolution']==source['resolution'] and saved['origin']==source['origin']
+        rebuilt=maps[1].copy()
+        for cell in e['self_return_cells'].values():
+            r,c=cell;assert 1<=r<rebuilt.shape[0]-1 and 1<=c<rebuilt.shape[1]-1
+            assert rebuilt[r,c]>=control.OCCUPIED_THRESHOLD
+            window=rebuilt[r-1:r+2,c-1:c+2].copy();window[1,1]=0
+            assert np.all(window==0) and saved['resolution']*math.sqrt(2)<=.1
+            rebuilt[r,c]=0
+        assert np.array_equal(rebuilt,maps[0])
+        safe=control.traversable_grid(maps[0],saved['resolution'],clearance_m=control.RALLY_CLEARANCE_M)
+        points=[]
+        poses={name:control.RallyPose(*values) for name,values in e['assignment'].items()}
+        assert 0<e['target_view_distance_m']<=3.
+        for pose in poses.values():
+            point=(pose.x,pose.y);assert all(math.isfinite(v) for v in (*point,pose.yaw))
+            cell=control.world_to_grid(*point,saved['resolution'],*saved['origin'])
+            assert 0<=cell[0]<safe.shape[0] and 0<=cell[1]<safe.shape[1] and safe[cell]
+            assert control.rally_target_view(maps[0],saved['resolution'],saved['origin'],point,e['target'],e['target_view_distance_m'])
+            heading=math.atan2(e['target'][1]-pose.y,e['target'][0]-pose.x)
+            assert abs(math.atan2(math.sin(pose.yaw-heading),math.cos(pose.yaw-heading)))<=1e-8
+            assert all(math.dist(point,peer)>=control.RALLY_MIN_SEPARATION_M for peer in points)
+            points.append(point)
+        expected=(control.map_safe_rally_dispatch_order(maps[0],saved['resolution'],saved['origin'],poses,
+            e['robot_positions'],e['target'],e['detecting_robot']) if e['map_safe_order'] else
+            control.rally_dispatch_order(poses,e['robot_positions'],e['target'],e['detecting_robot']))
+        assert expected==e['dispatch_order']
+        count+=1
+        deferred+=e['event_time']>original.get('computation_completed_at_sec',original['event_time'])
+    assert not required or count>=1,'missing fresh geometric proposal admission'
+    return dict(status='PASS',admitted_proposals=count,deferred_proposals=deferred,budget_reused=False)
+
+
 def rally_repair_audit(records):
     count=0
     for e in records:
@@ -723,6 +786,8 @@ def check_one(path,config):
         bool(config.get('ap_pose_budget_contract')),bool(config.get('coordinator_live_clock')))
     vetoes=ap_return_veto_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     assignments=rally_assignment_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
+    proposals=rally_proposal_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
+        bool(config.get('rally_proposal_handoff') and result.get('rally_assignments')))
     if config.get('rally_return_objective') and result.get('rally_assignments'):
         assert assignments['chosen_assignments_rebuilt']>=1, 'missing exact delivered assignment choice'
     repairs=rally_repair_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
@@ -743,7 +808,7 @@ def check_one(path,config):
     return dict(case=case,status='PASS',git_commit=row['git_commit'],source_digests=row['source_digests'],
         result=result,raw_summary=str(path.resolve()),raw_summary_sha256=sha(path),return_audit=native,
         communication_audit=communications,lookahead_audit=forecast,native_energy_audit=energy,
-        ap_return_veto_audit=vetoes,rally_assignment_audit=assignments,rally_repair_audit=repairs,
+        ap_return_veto_audit=vetoes,rally_assignment_audit=assignments,rally_proposal_audit=proposals,rally_repair_audit=repairs,
         exploration_travel_audit=travel,target_survey_audit=surveys,observer_heading_audit=headings,
         planning_lease_audit=leases,
         native_tf_ingress_audit=ingress,launch_process_audit=processes,navigation_input_audit=navigation_inputs)

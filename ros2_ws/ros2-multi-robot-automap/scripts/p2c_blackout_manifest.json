@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-09T15:43:51.548307+00:00",
+  "predeclared_at_utc": "2026-10-09T16:18:26.374563+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -396,5 +396,12 @@
     "topics": "Native local map, delivered fused map, global/local Nav2 costmaps and updates, scan, odom, dynamic/static TF and Nav2 plan per robot; AP fused map.",
     "encoding": "gzip JSONL with exact received CDR base64, original message type, receipt sim and wall times; original message headers are never rewritten.",
     "predeclared_at_utc": "2026-10-09T15:43:51.548276+00:00"
+  },
+  "rally_proposal_handoff": {
+    "algorithm": "Retain a complete assignment as geometric intent when serial computation outlives its source leases; consume queued original-source updates before admission.",
+    "revalidation": "Same target and required robots; current delivered planning map known-free0.45m endpoints, known target LOS, original camera range, original0.8m separation and target-facing yaw; recalculate original dispatch order.",
+    "authority": "No old battery prices, routes, received pose or source stamps reused. Original fresh complete approach/contact return/serial wait/hold/body guards remain in RALLY preflight and every actual goal.",
+    "witness": "Original exact assignment search epoch plus independent current delivered geometry/source/order admission witness on the existing private audit path; no new application flow.",
+    "scope": "Prevents repeated search starvation; no global optimality, task completion or worst-case callback guarantee from components alone."
   }
 }

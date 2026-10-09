@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-09T15:43:51.537094+00:00",
+  "predeclared_at_utc": "2026-10-09T16:18:26.374563+00:00",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -652,5 +652,12 @@
     "topics": "Native local map, delivered fused map, global/local Nav2 costmaps and updates, scan, odom, dynamic/static TF and Nav2 plan per robot; AP fused map.",
     "encoding": "gzip JSONL with exact received CDR base64, original message type, receipt sim and wall times; original message headers are never rewritten.",
     "predeclared_at_utc": "2026-10-09T15:43:51.536767+00:00"
+  },
+  "rally_proposal_handoff": {
+    "algorithm": "Retain a complete assignment as geometric intent when serial computation outlives its source leases; consume queued original-source updates before admission.",
+    "revalidation": "Same target and required robots; current delivered planning map known-free0.45m endpoints, known target LOS, original camera range, original0.8m separation and target-facing yaw; recalculate original dispatch order.",
+    "authority": "No old battery prices, routes, received pose or source stamps reused. Original fresh complete approach/contact return/serial wait/hold/body guards remain in RALLY preflight and every actual goal.",
+    "witness": "Original exact assignment search epoch plus independent current delivered geometry/source/order admission witness on the existing private audit path; no new application flow.",
+    "scope": "Prevents repeated search starvation; no global optimality, task completion or worst-case callback guarantee from components alone."
   }
 }

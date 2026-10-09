@@ -1,0 +1,170 @@
+{
+  "status": "PASS",
+  "scope": "Components only; new full source-frozen tasks remain required",
+  "parent_commit": "dbacbbf336e482871e3a25eff3ce178c962e2b76",
+  "control_sha256": "ad66607dedd413ccb119d9c8d283df737a79a3053ebfc2447609df4c09ef7045",
+  "functional_tests": 1571,
+  "targeted_tests": [
+    323,
+    103
+  ],
+  "four_package_build_sec": 6.14,
+  "source_check": {
+    "protected_files": 171,
+    "authorized_changes": 4,
+    "protocol_cells": 54
+  },
+  "ast": {
+    "changed": [
+      "HeadquartersControl.__init__",
+      "HeadquartersControl.update_mission"
+    ],
+    "added": [
+      "HeadquartersControl.admit_rally_proposal"
+    ],
+    "removed": [],
+    "unchanged": 176
+  },
+  "dds": {
+    "status": "PASS",
+    "scope": "Actual isolated DDS and serial state callbacks with a controlled delay and synthetic map; no mission, latency or Wi-Fi claim",
+    "reference_commit": "dbacbbf336e482871e3a25eff3ce178c962e2b76",
+    "reference_sha256": "eb94e9407586ebfbc666d1340b56eabb010e51db443c13bbbca0df961490163d",
+    "control_sha256": "ad66607dedd413ccb119d9c8d283df737a79a3053ebfc2447609df4c09ef7045",
+    "cases": [
+      {
+        "status": "PASS",
+        "label": "frozen",
+        "searches": 2,
+        "callbacks": [
+          {
+            "clock": 13.0,
+            "source": 10.0,
+            "phase": "FOUND",
+            "pending": false
+          },
+          {
+            "clock": 16.0,
+            "source": 13.0,
+            "phase": "FOUND",
+            "pending": false
+          }
+        ],
+        "original_state_group_serial": true,
+        "source_stamps_preserved": true,
+        "navigation_goals": 0
+      },
+      {
+        "status": "PASS",
+        "label": "current",
+        "searches": 1,
+        "callbacks": [
+          {
+            "clock": 13.0,
+            "source": 10.0,
+            "phase": "FOUND",
+            "pending": true
+          },
+          {
+            "clock": 13.0,
+            "source": 13.0,
+            "phase": "RALLY",
+            "pending": false
+          }
+        ],
+        "original_state_group_serial": true,
+        "source_stamps_preserved": true,
+        "navigation_goals": 0
+      }
+    ]
+  },
+  "provenance": [
+    {
+      "raw_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c_v42_development_gate.json",
+      "raw_sha256": "9909194b9bc641fd58684daad9a953ce63c0c37e03b4a6879a5ddb5b1549e5d1",
+      "archive": "20261010_p2c_rally_handoff_components_p2c_v42_development_gate.json.gz",
+      "archive_sha256": "842a66908962fc944e77ec01577a43e842db54c06826d554ff268bdf7cb77c2f"
+    },
+    {
+      "raw_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c_v42_failure_analysis.json",
+      "raw_sha256": "cf8b0909588d52e0f3872310fe32abdd92d90a2cd3f37fc028841c2b6510a6dc",
+      "archive": "20261010_p2c_rally_handoff_components_p2c_v42_failure_analysis.json.gz",
+      "archive_sha256": "acc3317b00f6c590809b19e379e8e1c8329c48f7fa330b318f256d6953aca89d"
+    },
+    {
+      "raw_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c_v42_failure_analysis_corrected.json",
+      "raw_sha256": "3c139fe07ce8e83173b51f9daed508eff0f3ce2663d7ef915a8efe2f889bba3e",
+      "archive": "20261010_p2c_rally_handoff_components_p2c_v42_failure_analysis_corrected.json.gz",
+      "archive_sha256": "a60b0e0aad96a7b70bb52fc1314baa523fc1b8164fed24cffbea67db7da7aed8"
+    },
+    {
+      "raw_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c_v42_failure_analysis.log",
+      "raw_sha256": "4e36969c50193be3d8cecef80a32d07475d7fa664c1acbc41a758096b8fe40fe",
+      "archive": "20261010_p2c_rally_handoff_components_p2c_v42_failure_analysis.log.gz",
+      "archive_sha256": "9aee8093a8553b0203e27ab448ccccd37ffdb5f0eab4caaf4f9f018415f1f485"
+    },
+    {
+      "raw_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c_rally_handoff_first_tests.log",
+      "raw_sha256": "a58771f43fb1d1baa33bd199ac277a3f761020fdc25f0701e34b337e19f8e85e",
+      "archive": "20261010_p2c_rally_handoff_components_p2c_rally_handoff_first_tests.log.gz",
+      "archive_sha256": "333e9bc30c155bb598c6dba5d3ad8d51d6ab89b7a8fc387e5bc09c673aa1e2cb"
+    },
+    {
+      "raw_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c_rally_handoff_audit_tests.log",
+      "raw_sha256": "17f8b478a2a4aa85fff6142298fc4cd22650586c573a9452194d954edb486148",
+      "archive": "20261010_p2c_rally_handoff_components_p2c_rally_handoff_audit_tests.log.gz",
+      "archive_sha256": "aefa492f4a42b49afe4c6d3c8014905d611055a05e57feae3587fed3ea53de34"
+    },
+    {
+      "raw_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c_rally_handoff_full_tests.log",
+      "raw_sha256": "b59bf27b8f6ea599462e5b72242449e739f0ef897b6228c7b12353eac12431c5",
+      "archive": "20261010_p2c_rally_handoff_components_p2c_rally_handoff_full_tests.log.gz",
+      "archive_sha256": "0445e131b1d3616068e629fab601369a7450013d1cfb4eea9a8055681a67b082"
+    },
+    {
+      "raw_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c_rally_handoff_full_tests_v2.log",
+      "raw_sha256": "dd92a085b027f375923bbf17de005f92afc43fbec9f4d932720a90349599bc72",
+      "archive": "20261010_p2c_rally_handoff_components_p2c_rally_handoff_full_tests_v2.log.gz",
+      "archive_sha256": "0298fab0da18ed3fb70299b085eb51b306b556cb100d4bbaff8952360d74e173"
+    },
+    {
+      "raw_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c_rally_handoff_build.log",
+      "raw_sha256": "7311fc8e5032e2ab86b0f1a5249b3dc251ac9cb6332b43a4376f1bfa0e8a26d7",
+      "archive": "20261010_p2c_rally_handoff_components_p2c_rally_handoff_build.log.gz",
+      "archive_sha256": "c25b39459464de2070ee9d6c45ebccfc3ee886777e4a3bd63d062128b2f10015"
+    },
+    {
+      "raw_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c_rally_handoff_source.json",
+      "raw_sha256": "d863e3823b2fecfa0efabd53dc8660c384ce92f14fa0ad0a623344e18cb1dbdd",
+      "archive": "20261010_p2c_rally_handoff_components_p2c_rally_handoff_source.json.gz",
+      "archive_sha256": "9ffdac5e2b51b9181dbbd972380df7abe7ab6dd9ff3b0cc5bddd623a72119bbc"
+    },
+    {
+      "raw_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c_rally_handoff_ast.json",
+      "raw_sha256": "1610bf0af009725dc942a79627c5514d5bc4c99c4c9156aa9b3cf97e2a793c90",
+      "archive": "20261010_p2c_rally_handoff_components_p2c_rally_handoff_ast.json.gz",
+      "archive_sha256": "e106bb963c5017b7cae8b5ffe8147a65453195221e6322f1acbef18ced1c6156"
+    },
+    {
+      "raw_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c_rally_handoff_runtime.json",
+      "raw_sha256": "b24477ba5885114c6f5f34c291c1ec47339a5225a4c7e7853c2a49b8f676ea94",
+      "archive": "20261010_p2c_rally_handoff_components_p2c_rally_handoff_runtime.json.gz",
+      "archive_sha256": "11cecb2473ae0270cc281c9261ccde61273b7dfd090bb17407bc510927c85cda"
+    },
+    {
+      "raw_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c_rally_handoff_runtime.log",
+      "raw_sha256": "0f45e2634f30e67ced15f83e4ef2fb4e39d1331eed276800b710e55cc0f2bffa",
+      "archive": "20261010_p2c_rally_handoff_components_p2c_rally_handoff_runtime.log.gz",
+      "archive_sha256": "6acce342170cde8733f5ea359a751a6fa0147c8f0ab3215237ade828ec44667a"
+    },
+    {
+      "raw_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c_v43_predeclared.json",
+      "raw_sha256": "2581682798d11447701258b8012c40a10b0dc0448a22fb6ce01608afab847776",
+      "archive": "20261010_p2c_rally_handoff_components_p2c_v43_predeclared.json.gz",
+      "archive_sha256": "f25ce65d918c49d565fdec9ae270132914806831e539b750030efc9e656b949b"
+    }
+  ],
+  "native_battery_and_slam_nav2_unchanged": true,
+  "case_and_physical_stimuli_unchanged": true,
+  "new_run_id": "20261010_p2c_v43"
+}

@@ -1,5 +1,7 @@
 # wireless-rl Codex Memory
 
+2026-10-10 P2C.1 v42四原开发整体FAIL：dbacbbf首forced原生COMPLETE189.7/各charge1、lab277.3COMPLETE，rooms/corr FOUND300.3timeout，四零安全事故/失效/任务期infra，全部owned关闭后修改；两失败26子门PASS不替代任务。原rooms11/corr31完整集合均end源龄过期且期间gateway持续交付；新跨回调保存几何点、当前交付地图/target/participants/净空/LOS/间距/yaw/顺序重核验，旧价格不复用且原RALLY full-route/body/wait/hold预算与TTL不变。1571功能/四包6.14s/171保护54协议/真实DDS旧两次FOUND→新一次交接RALLY零goal PASS；新v43 clean pushed四开发→17+2仍待任务，917未暴露。原v42/所有历史FAIL保留，P3C.5已验收，无P4/ns3/WiFi/RL。报告20261010_p2c_v42_failed_development.md/.json与20261010_p2c_rally_handoff_components.md/.json；组件不是集成验收。
+
 2026-10-09 P2C.1本轮补强评审完成，完整任务集成仍FAIL：40个主任务源码版本/76原任务，最新v41 PARTIAL279.1/tb2正电量失路；不跨版本合并成功率。完整路径/源龄/原生记账、探索/集合/计算优化和准备竞争修补1527功能/103定向/四包5.91s/171保护54协议/真实DDS9情形PASS。独立第三安全对子609ba9d为PASS，两前原对子FAIL全部保留；仅受控安全证据，不回填主任务。P2C.1A与完整B分开，B需新同源4开发→17正式+2物理，917仍未调用。P3C.5已验收，无P4/ns-3/Wi-Fi/RL，actual airtime/J和容量未测。完整结论/算法取舍/全部原任务与源SHA见report/20261009_p2c_strengthening_review.md/.json；旧pending说明均为历史。
 
 2026-10-09 P2C.1 v34两级惰性前沿gain组件PASS待新冻结：24e1e27首强制FOUNDtimeout300.0/检测291.4/13Nav2/两机各charge1/87原lease弃置，strict FAIL原件保留，余3/17/2/917未调用。批量射线157cell五样本更慢(.391..929vs.183s)已拒绝无task。新原几何采样+矩形unknown收益上界→竞争时准确ray gain重入heap→原budget评分，真实目标与充电top3均准确gain/原稳定顺序，bounds从不派发；完整raw forecast/source/TTL/native保持。1309功能/四包6.95s/171保护4授权54协议/实际ROS含2中央普通Assignment发布消费PASS。原早期交付双idle固定条件ray157→21/budget4→4/cold中位0.387→0.224s，导航偏好预算相同，非任务/最坏界。新4→17+2同clean pushed freeze未验证，917未暴露；P3C.5已验收，无P4/ns-3/Wi-Fi/RL。报告20261009_p2c_lazy_gain_components.md与20261009_p2c_v33_failed_development.md。
