@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-09T08:35:04.791942+00:00",
+  "predeclared_at_utc": "2026-10-09T09:17:10.233997+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "7d9709b907f2f38f1252eee8ae4fb53c42f3cc13",
+  "candidate_parent_commit": "7a7fde63f0be9e75ce6e3f59899c956c709dd0b2",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -219,7 +219,8 @@
     "20261009_p2c_v32_failed_development.json",
     "20261009_p2c_v33_failed_development.json",
     "20261009_p2c_v34_failed_development.json",
-    "20261009_p2c_v35_failed_development.json"
+    "20261009_p2c_v35_failed_development.json",
+    "20261009_p2c_v36_failed_development.json"
   ],
   "coordinator_live_clock": {
     "executor": "Two workers; only the existing /clock subscription moves to an independent mutually exclusive group. Original state/action callbacks remain serialized.",
@@ -296,6 +297,13 @@
       "actual": "Original body/accepted reservation/full approach and qualified return/2-5s source checks and dispatch renewal prohibition remain; private bounds never become commands",
       "evidence": "20261009_p2c_admission_pruning_components.json",
       "limits": "Conditional fixed-source equivalence and CPU samples, not complete-history replay, causal mission effect or worst-case clock bound"
+    },
+    "battery_bound": {
+      "algorithm": "Same original model and original source epochs: straight contact-disc distances lower-bound both complete task+return and current return reserve, hence upper-bound actual battery factor. Private ranking only, never a route or admission budget",
+      "guards": "Every real choice still needs original complete qualified known-map contact paths, actual body route distance, reserve/age/energy/charging fairness; recheck original lease immediately after each expensive price",
+      "charging": "Within each original refinement pass, only if every raw option is proven unfunded: after the exact highest feasible charge intent is found, lower options may skip price. A possible funded alternative or later refinement pass remains independently evaluated",
+      "evidence": "20261009_p2c_budget_bound_components.json",
+      "limits": "Fixed-source commands/charge intent equivalence and CPU samples; no task causal gain, original-history replay, live clock bound or Euclidean safety fallback"
     }
   },
   "rally_candidate_sampling": {

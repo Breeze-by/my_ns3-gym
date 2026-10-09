@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-09T08:35:04.789682+00:00",
+  "predeclared_at_utc": "2026-10-09T09:17:10.231726+00:00",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -328,7 +328,8 @@
     "20261009_p2c_v32_failed_development.json",
     "20261009_p2c_v33_failed_development.json",
     "20261009_p2c_v34_failed_development.json",
-    "20261009_p2c_v35_failed_development.json"
+    "20261009_p2c_v35_failed_development.json",
+    "20261009_p2c_v36_failed_development.json"
   ],
   "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
   "opportunity_charge_rules": [
@@ -470,7 +471,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "7d9709b907f2f38f1252eee8ae4fb53c42f3cc13",
+  "candidate_parent_commit": "7a7fde63f0be9e75ce6e3f59899c956c709dd0b2",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -576,6 +577,13 @@
       "actual": "Original body/accepted reservation/full approach and qualified return/2-5s source checks and dispatch renewal prohibition remain; private bounds never become commands",
       "evidence": "20261009_p2c_admission_pruning_components.json",
       "limits": "Conditional fixed-source equivalence and CPU samples, not complete-history replay, causal mission effect or worst-case clock bound"
+    },
+    "battery_bound": {
+      "algorithm": "Same original model and original source epochs: straight contact-disc distances lower-bound both complete task+return and current return reserve, hence upper-bound actual battery factor. Private ranking only, never a route or admission budget",
+      "guards": "Every real choice still needs original complete qualified known-map contact paths, actual body route distance, reserve/age/energy/charging fairness; recheck original lease immediately after each expensive price",
+      "charging": "Within each original refinement pass, only if every raw option is proven unfunded: after the exact highest feasible charge intent is found, lower options may skip price. A possible funded alternative or later refinement pass remains independently evaluated",
+      "evidence": "20261009_p2c_budget_bound_components.json",
+      "limits": "Fixed-source commands/charge intent equivalence and CPU samples; no task causal gain, original-history replay, live clock bound or Euclidean safety fallback"
     }
   }
 }

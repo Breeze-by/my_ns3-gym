@@ -2787,6 +2787,43 @@ def battery_assignment_required_energy(
     return task_cost + return_cost
 
 
+def exploration_battery_factor_bound(state, position, distance, destination, map_age, pose_age):
+    """Upper bound for candidate pricing; never a feasible route or command.
+
+    Every qualified contact route is at least the straight distance to the
+    contact disc. Lower-bound both original energy terms with that distance,
+    retaining the original model, reserve and source ages. Complete known-map
+    routes and current epochs still determine every real admission/charge.
+    Invalid/missing metadata gives the original neutral upper bound.
+    """
+    try:
+        energy = float(state['energy'])
+        home = (float(state['charge_x']), float(state['charge_y']))
+        radius = float(state.get('charge_radius_m', .8))
+        move = float(state.get('move_cost_per_m', 1.))
+        idle = float(state.get('idle_cost_per_sec', .02))
+        factor = float(state.get('return_path_factor', 2.))
+        speed = float(state.get('nominal_speed_mps', .18))
+        margin = float(state.get('return_safety_margin', 8.))
+        wait = float(state.get('return_recovery_wait_sec', RETURN_RECOVERY_WAIT_SEC))
+        values = (energy, *home, *position, distance, *destination, radius,
+                  move, idle, factor, speed, margin, wait, map_age, pose_age)
+        if (not all(math.isfinite(v) for v in values)
+                or min(energy, distance, move, idle, margin, wait, map_age, pose_age) < 0
+                or radius <= .2 or speed <= 0 or factor < 1
+                or map_age > STATE_TTL_SEC['fused_map_snapshot']
+                or pose_age > STATE_TTL_SEC['pose_state']):
+            return 1.
+        def price(approach, point):
+            contact_lower_bound = max(0., math.dist(point, home) - radius)
+            return battery_assignment_required_energy(approach, contact_lower_bound,
+                move, idle, factor, speed, margin, wait, map_age, pose_age)
+        required = max(price(distance, destination), price(0., position))
+        return .25 * energy / required if required > 0 and energy <= required else 1.
+    except (KeyError, TypeError, ValueError, ZeroDivisionError):
+        return 1.
+
+
 def battery_assignment_is_safe(
     energy, assignment_distance_m, home_distance_m, move_cost, idle_cost,
     path_factor, nominal_speed, safety_margin,
@@ -6374,10 +6411,29 @@ class HeadquartersControl(Node):
                 raw_candidates.extend(robot_candidates)
                 candidate_contexts[robot_name] = (robot_exclusions, initial_search)
 
+            factor_bounds = {}
+            for _, name, _, a in raw_candidates:
+                bound = 1.
+                if getattr(self, 'enable_battery', False):
+                    try:
+                        map_age = max(planning_started-getattr(self, 'map_received_at', None),
+                            planning_started-getattr(self, 'robot_map_received_at', {}).get(name))
+                        pose_age = HeadquartersControl.delivered_pose_age(self, name, planning_started)
+                        bound = exploration_battery_factor_bound(self.battery_states[name],
+                            self.robot_positions[name], a.path_distance_m, (a.x, a.y), map_age, pose_age)
+                    except (KeyError, TypeError, ValueError):
+                        pass
+                factor_bounds[name, a.x, a.y, a.path_distance_m] = bound
+            unfunded_only = {name for name in idle_positions
+                if any(r[1] == name for r in raw_candidates)
+                and all(factor_bounds[name, r[3].x, r[3].y, r[3].path_distance_m] < 1.
+                        for r in raw_candidates if r[1] == name)}
+            resolved_charges = set()
+
             def refine_candidate_gain(raw):
                 nonlocal scoring_aborted
                 _, robot_name, group_id, assignment = raw
-                if scoring_aborted or robot_name in plans:
+                if scoring_aborted or robot_name in plans or robot_name in resolved_charges:
                     return None
                 if not lease_current('candidate_generation'):
                     scoring_aborted = True
@@ -6415,7 +6471,7 @@ class HeadquartersControl(Node):
             def evaluate_candidate(raw):
                 nonlocal scoring_aborted
                 _, robot_name, group_id, assignment = raw
-                if scoring_aborted or robot_name in plans:
+                if scoring_aborted or robot_name in plans or robot_name in resolved_charges:
                     return None
                 if not lease_current('candidate_budget'):
                     scoring_aborted = True
@@ -6428,6 +6484,9 @@ class HeadquartersControl(Node):
                     robot_name, assignment.path_distance_m,
                     (assignment.x, assignment.y),
                 )
+                if not lease_current('candidate_budget'):
+                    scoring_aborted = True
+                    return None
                 if battery_factor <= 0:
                     return None
                 utility = assignment.utility * battery_factor
@@ -6492,8 +6551,9 @@ class HeadquartersControl(Node):
             ]
             candidate_order = lazy_priority_candidates(
                 raw_candidates, evaluate_candidate,
-                lambda item: frontier_scheduling_score(item[3].utility,
-                    not search and interrupted_frontier_is_useful(
+                lambda item: frontier_scheduling_score(item[3].utility * factor_bounds[
+                    item[1], item[3].x, item[3].y, item[3].path_distance_m],
+                    item[1] not in unfunded_only and not search and interrupted_frontier_is_useful(
                         item[3], resume_intents.get(item[1]), 1.0)),
                 lambda item: frontier_scheduling_score(
                     item[0], (item[1], item[3]) in resume_candidates),
@@ -6507,6 +6567,8 @@ class HeadquartersControl(Node):
                 previous_charge = charge_candidates.get(name)
                 if (unfunded and previous_charge is not None
                         and assignment.utility <= previous_charge.utility):
+                    if name in unfunded_only:
+                        resolved_charges.add(name)
                     continue  # One best feasible charge intent per idle peer.
                 if any(
                     math.dist((assignment.x, assignment.y), (other.x, other.y))
@@ -6564,6 +6626,8 @@ class HeadquartersControl(Node):
                 if unfunded:
                     if HeadquartersControl.exploration_charge_budget(self, name, assignment) is not None:
                         charge_candidates[name] = assignment
+                        if name in unfunded_only:
+                            resolved_charges.add(name)
                     continue
                 if name in getattr(self, 'rally_charge_requested', {}):
                     continue
