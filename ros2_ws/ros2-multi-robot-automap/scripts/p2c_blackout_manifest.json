@@ -446,5 +446,9 @@
     "live_return": "Fresh AP inputs can fund an idle peer escape during exploration; native safety remains independent",
     "navigation_kind": "exploration_return_yield",
     "task_limits_unchanged": true
+  },
+  "navigation_dispatch_boundary": {
+    "scope": "Final navigation admission after goal/witness preparation and heavy serialization; original source epochs and 2/5/60s TTLs. Recheck before and after private audit publication; expire/reset/shutdown revokes without a goal, pending owner or consumed attempt. New command header uses the live admission epoch, never renews observation sources.",
+    "reader": "Private admission and revocation provenance; actual no-goal behavior checked separately with DDS and ActionServer; original strict full-ledger TTL checker remains authoritative."
   }
 }

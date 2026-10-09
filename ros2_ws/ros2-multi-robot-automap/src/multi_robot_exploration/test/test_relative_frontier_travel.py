@@ -191,7 +191,7 @@ def test_executed_witness_excludes_an_unconsulted_charging_peer_map():
     node.robot_maps={name:dict(data=node.map_data,resolution=.1,origin=(0.,0.)) for name in node.robot_positions}
     node.robot_map_received_at=dict.fromkeys(node.robot_positions,10.)
     node.exploration_travel_choices={'tb2':dict(eligible_robot_names=['tb2'])}
-    node.input_freshness_details=lambda:{'tb2/map_snapshot':dict(source_time=10.)}
+    node.input_freshness_details=lambda:{'tb2/map_snapshot':dict(source_time=10.,age_sec=0.,ttl_sec=5.)}
     captured=[];node.consumed_publisher=SimpleNamespace(publish=lambda msg:captured.append(json.loads(msg.data)))
     c.HeadquartersControl.record_navigation_decision(node,'tb2','exploration')
     assert set(captured[0]['return_maps'])=={'tb2'}

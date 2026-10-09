@@ -26,6 +26,7 @@ from rclpy.callback_groups import MutuallyExclusiveCallbackGroup
 from rclpy.executors import ExternalShutdownException, MultiThreadedExecutor
 from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
+from rclpy.time import Time
 from scipy import ndimage
 from scipy.spatial import cKDTree
 from scipy.optimize import linear_sum_assignment
@@ -4064,9 +4065,10 @@ class HeadquartersControl(Node):
             goal.pose.pose.position.x, goal.pose.pose.position.y = position
             goal.pose.pose.orientation.z = math.sin(yaw / 2)
             goal.pose.pose.orientation.w = math.cos(yaw / 2)
+            if not self.record_navigation_decision(name, "target_reacquisition_scan", goal.pose):
+                return
             self.target_scan_robot = name
             self.target_scan_cancel_requested = False
-            self.record_navigation_decision(name, "target_reacquisition_scan", goal.pose)
             HeadquartersControl.defer_action_done_callback(self, client.send_goal_async(goal), self.target_scan_response)
             self.get_logger().info(f"Scanning {name}'s current pose for a fresh target confirmation.")
             return
@@ -5953,14 +5955,15 @@ class HeadquartersControl(Node):
         goal.pose.pose.position.y = pose.y
         goal.pose.pose.orientation.z = math.sin(pose.yaw / 2.0)
         goal.pose.pose.orientation.w = math.cos(pose.yaw / 2.0)
+        if not self.record_navigation_decision(robot_name,
+            "target_observation_heading" if heading_only else
+            "target_information_survey" if choice is not None else "target_survey", goal.pose):
+            return False
         self.survey_attempts += 1
         self.survey_robot = robot_name
         self.survey_heading_only = heading_only
         self.survey_cancel_requested = False
         self.survey_goal_pending = True
-        self.record_navigation_decision(robot_name,
-            "target_observation_heading" if heading_only else
-            "target_information_survey" if choice is not None else "target_survey", goal.pose)
         future = client.send_goal_async(goal)
         HeadquartersControl.defer_action_done_callback(self, future, self.survey_goal_response)
         return True
@@ -6123,7 +6126,7 @@ class HeadquartersControl(Node):
                 target, getattr(self, "target", None), self.map_data,
                 self.resolution, self.origin, getattr(self, "target_view_distance", 3.0))
         self.get_logger().info(
-            f"Sending {robot_name} rally leg to "
+            f"Preparing {robot_name} rally leg to "
             f"({target.x:.2f}, {target.y:.2f}); final="
             f"({self.rally_targets[robot_name].x:.2f}, "
             f"{self.rally_targets[robot_name].y:.2f})."
@@ -6136,10 +6139,11 @@ class HeadquartersControl(Node):
         goal.pose.pose.position.y = target.y
         goal.pose.pose.orientation.z = math.sin(target.yaw / 2.0)
         goal.pose.pose.orientation.w = math.cos(target.yaw / 2.0)
+        if not self.record_navigation_decision(robot_name, "local_return_yield" if local_return_yield else "rally", goal.pose):
+            return
         self.rally_leg_routes[robot_name] = route
         self.rally_leg_poses[robot_name] = target
         self.rally_goal_pending[robot_name] = True
-        self.record_navigation_decision(robot_name, "local_return_yield" if local_return_yield else "rally", goal.pose)
         future = client.send_goal_async(goal)
         HeadquartersControl.defer_action_done_callback(self, future, lambda result, name=robot_name: self.rally_goal_response(name, result))
 
@@ -7103,11 +7107,10 @@ class HeadquartersControl(Node):
             self.send_goal(robot_name, assignment)
 
     def record_navigation_decision(self, robot_name, kind, goal_pose=None):
-        now = self.now()
+        """Prepare private witnesses, then admit publication from live source leases."""
         event = {
-            "event": "coordinator_navigation_decision", "event_time": now,
+            "event": "coordinator_navigation_decision",
             "robot": robot_name, "kind": kind, "task_phase": self.task_state,
-            "inputs": input_freshness_at(self.input_freshness_details(), now),
         }
         if getattr(self, "map_self_return_cells", {}):
             event['planning_map_self_return_cells'] = self.map_self_return_cells
@@ -7156,7 +7159,46 @@ class HeadquartersControl(Node):
                 'ap_delivered_robot_map',self.robot_map_received_at[name],self.robot_map_received_at[name])
                 for name,g in HeadquartersControl.delivered_return_maps(self).items()
                 if name in choice['eligible_robot_names']}
-        self.consumed_publisher.publish(String(data=json.dumps(event, sort_keys=True)))
+        # Expensive geometry evidence and serialization cannot lend authority
+        # to a later send. State callbacks stay serial; /clock keeps advancing.
+        body = json.dumps(event, sort_keys=True)
+        inputs = self.input_freshness_details()
+        used = {key: sample for key, sample in inputs.items()
+                if key != 'headquarters/target_detection' or kind not in (
+                    'local_return_yield', 'target_reacquisition_scan', 'target_reacquisition_exploration')}
+        if kind == 'exploration_return_yield':
+            used.update(event['return_preparation']['inputs'])
+        def current(at):
+            return (math.isfinite(at) and bool(used) and not getattr(self, 'shutdown_requested', False)
+                    and all(isinstance(sample.get('source_time'), (int, float))
+                        and math.isfinite(sample['source_time'])
+                        and isinstance(sample.get('ttl_sec'), (int, float))
+                        and math.isfinite(sample['ttl_sec']) and sample['ttl_sec'] > 0
+                        and 0 <= at - sample['source_time'] <= sample['ttl_sec']
+                        for sample in used.values()))
+        now = self.now()
+        if not current(now):
+            return False
+        if goal_pose is not None:
+            goal_pose.header.stamp = Time(seconds=now).to_msg()
+        metadata = dict(event_time=now, inputs=input_freshness_at(inputs, now),
+            dispatch_lease_deadline_sec=min((s['source_time'] + s['ttl_sec']
+                                            for s in used.values()), default=now),
+            dispatch_goal_source_time_sec=now)
+        message = String(data=body[:-1] + ', ' + json.dumps(metadata, sort_keys=True)[1:])
+        if not current(self.now()):
+            return False
+        self.consumed_publisher.publish(message)
+        completed_at = self.now()
+        if not current(completed_at):
+            self.consumed_publisher.publish(String(data=json.dumps(dict(
+                event='coordinator_navigation_dispatch_revoked', event_time=completed_at,
+                decision_time_sec=now, robot=robot_name, kind=kind,
+                dispatch_lease_deadline_sec=metadata['dispatch_lease_deadline_sec'],
+                inputs=input_freshness_at(inputs, completed_at), stage='audit_publication',
+                shutdown_requested=getattr(self, 'shutdown_requested', False)), sort_keys=True)))
+            return False
+        return True
 
     def send_goal(self, robot_name, assignment):
         if (not self.fresh_robot_inputs() or (robot_name in getattr(self, 'exploration_return_yields', {})
@@ -7196,14 +7238,18 @@ class HeadquartersControl(Node):
             yaw = assignment.navigation_yaw
         goal.pose.pose.orientation.z = math.sin(yaw / 2.0)
         goal.pose.pose.orientation.w = math.cos(yaw / 2.0)
-        self.record_navigation_decision(
+        if not self.record_navigation_decision(
             robot_name,
             'exploration_return_yield' if robot_name in getattr(self, 'exploration_return_yields', {}) else
             "target_reacquisition_exploration"
             if getattr(self, "target_search_active", False) else (
                 "initial_visual_search" if getattr(self,'initial_search_goals',{}).get(robot_name,False) else "exploration"),
             goal.pose,
-        )
+        ):
+            self.robot_states[robot_name] = "idle"
+            self.goal_targets[robot_name] = None
+            self.goal_routes[robot_name] = ()
+            return
         future = client.send_goal_async(
             goal,
             feedback_callback=lambda feedback, name=robot_name: (

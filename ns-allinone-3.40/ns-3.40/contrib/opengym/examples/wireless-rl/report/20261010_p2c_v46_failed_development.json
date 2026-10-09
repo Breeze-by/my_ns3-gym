@@ -1,0 +1,1487 @@
+{
+  "status": "FAIL",
+  "source_commit": "1a6bed893baa10c501953334046ffa7bd75302e4",
+  "original_tasks": [
+    {
+      "case": "dev_corridors303",
+      "result": {
+        "battery_enabled": true,
+        "battery_minimum_energy": 31.37424073713616,
+        "battery_total_charges": 2,
+        "battery_total_charging_time_sec": 33.00000000000003,
+        "battery_total_returns": 5,
+        "collision_duration_sec": 0.0,
+        "collision_events": 0,
+        "collision_history": [],
+        "collision_monitoring_active": true,
+        "completion_status": "COMPLETE",
+        "completion_time_sec": 245.5,
+        "coordinator_completion_time_sec": 245.39999999999998,
+        "correct_coverage_ratio": 0.754864824717766,
+        "correct_free_coverage_ratio": 0.8165362438220758,
+        "correct_truth_cell_count": 40654,
+        "coverage_at_detection": 0.6060543657331137,
+        "coverage_threshold": 0.0,
+        "detecting_robot": "tb2",
+        "elapsed_sim_time_sec": 245.5,
+        "end_sim_time_sec": 375.5,
+        "episode_id": "20261010_p2c_v46_dev_corridors303",
+        "failed_robots": [],
+        "failure_reason": "",
+        "gazebo_seed": 303,
+        "known_coverage_ratio": 0.7704805407011289,
+        "known_truth_cell_count": 41495,
+        "map_message_count": 418,
+        "merged_map_frame": "map",
+        "merged_map_height": 198,
+        "merged_map_origin_x": -6.434360111825633,
+        "merged_map_origin_y": -4.939838078940253,
+        "merged_map_origin_yaw": 0.0,
+        "merged_map_resolution": 0.05000000074505806,
+        "merged_map_width": 257,
+        "mission_mode": "rally",
+        "model_state_message_count": 2456,
+        "native_rally_hold_proof": {
+          "clock_basis": "headerless_model_states_observer_sim_time",
+          "end_observer_sim_time_sec": 375.5,
+          "maximum_allowed_observation_gap_sec": 2.0,
+          "maximum_angular_speed_radps": 0.0711367311884924,
+          "maximum_linear_speed_mps": 0.0002464185153830245,
+          "maximum_observation_gap_sec": 0.10000000000002274,
+          "maximum_position_error_m": 0.03525238911742748,
+          "observed_duration_sec": 5.300000000000011,
+          "required_robot_names": [
+            "tb1",
+            "tb2",
+            "tb3"
+          ],
+          "sample_count": 54,
+          "start_observer_sim_time_sec": 370.2
+        },
+        "nav_aborted": 0,
+        "nav_canceled": 5,
+        "nav_goal_count": 35,
+        "nav_succeeded": 30,
+        "observed_accuracy": 0.9797324978913122,
+        "occupied_iou": 0.16372837087822395,
+        "partial_completion": false,
+        "phase_overlap_ratios": {
+          "EXPLORE": 0.0,
+          "FOUND": 0.0,
+          "RALLY": 0.06140350877192982
+        },
+        "phase_path_lengths_m": {
+          "EXPLORE": 11.75995167552965,
+          "FOUND": 2.4347822335570535,
+          "RALLY": 19.756762923546475
+        },
+        "phase_union_visited_cell_counts": {
+          "EXPLORE": 136,
+          "FOUND": 32,
+          "RALLY": 228
+        },
+        "rally_angular_tolerance_radps": 0.1,
+        "rally_assignments": {
+          "tb1": {
+            "x": -3.8086085005316974,
+            "y": 1.9947908834868047,
+            "yaw": -1.8411454617731484
+          },
+          "tb2": {
+            "x": -4.50860851096251,
+            "y": 1.2947908730559918,
+            "yaw": -1.5659999769366537
+          },
+          "tb3": {
+            "x": -3.608608497551465,
+            "y": 1.0447908693307015,
+            "yaw": -2.094155268869174
+          }
+        },
+        "rally_hold_sec": 5.0,
+        "rally_linear_tolerance_mps": 0.05,
+        "rally_min_separation_m": 0.9340770985323035,
+        "rally_position_tolerance_m": 0.35,
+        "required_robot_count": 3,
+        "required_robot_names": [
+          "tb1",
+          "tb2",
+          "tb3"
+        ],
+        "robot_count": 3,
+        "robots": {
+          "tb1": {
+            "battery_capacity": 100.0,
+            "battery_charge_count": 1,
+            "battery_charge_x": 0.0,
+            "battery_charge_y": -0.45,
+            "battery_charging_time_sec": 25.80000000000001,
+            "battery_final_energy": 70.29577447523326,
+            "battery_initial_energy": 45.0,
+            "battery_message_count": 494,
+            "battery_minimum_energy": 33.1291970791885,
+            "battery_mode": "ACTIVE",
+            "battery_return_count": 2,
+            "collision_duration_sec": 0.0,
+            "collision_events": 0,
+            "collision_message_count": 4910,
+            "end_x": -3.7978260426043144,
+            "end_y": 2.000084022032756,
+            "final_angular_speed_radps": 3.5807055161039313e-06,
+            "final_linear_speed_mps": 5.100364013631174e-05,
+            "nav_aborted": 0,
+            "nav_canceled": 2,
+            "nav_goal_count": 12,
+            "nav_succeeded": 10,
+            "path_length_m": 17.178298011952457,
+            "phase_path_lengths_m": {
+              "EXPLORE": 5.056363998807416,
+              "FOUND": 0.1701297964143639,
+              "RALLY": 11.95180421673071
+            },
+            "rally_final_error_m": 0.01201160749535289,
+            "rally_target_x": -3.8086085005316974,
+            "rally_target_y": 1.9947908834868047,
+            "rally_target_yaw": -1.8411454617731484,
+            "start_x": 0.0038840695211373173,
+            "start_y": -0.44998620064724104,
+            "teleport_jump_count": 0,
+            "visited_cell_count": 195
+          },
+          "tb2": {
+            "battery_capacity": 100.0,
+            "battery_charge_count": 0,
+            "battery_charge_x": 0.0,
+            "battery_charge_y": 0.45,
+            "battery_charging_time_sec": 0.0,
+            "battery_final_energy": 31.37424073713616,
+            "battery_initial_energy": 45.0,
+            "battery_message_count": 492,
+            "battery_minimum_energy": 31.37424073713616,
+            "battery_mode": "ACTIVE",
+            "battery_return_count": 1,
+            "collision_duration_sec": 0.0,
+            "collision_events": 0,
+            "collision_message_count": 4910,
+            "end_x": -4.502251331464716,
+            "end_y": 1.2601164270284149,
+            "final_angular_speed_radps": 7.344588739498162e-05,
+            "final_linear_speed_mps": 5.4352603114818853e-05,
+            "nav_aborted": 0,
+            "nav_canceled": 2,
+            "nav_goal_count": 13,
+            "nav_succeeded": 11,
+            "path_length_m": 8.73206962345406,
+            "phase_path_lengths_m": {
+              "EXPLORE": 5.759554963903386,
+              "FOUND": 2.0842149700432144,
+              "RALLY": 0.8882996895074635
+            },
+            "rally_final_error_m": 0.03525238911742748,
+            "rally_target_x": -4.50860851096251,
+            "rally_target_y": 1.2947908730559918,
+            "rally_target_yaw": -1.5659999769366537,
+            "start_x": 0.0038271625736082436,
+            "start_y": 0.4500134518975957,
+            "teleport_jump_count": 0,
+            "visited_cell_count": 102
+          },
+          "tb3": {
+            "battery_capacity": 100.0,
+            "battery_charge_count": 1,
+            "battery_charge_x": 0.45,
+            "battery_charge_y": 0.0,
+            "battery_charging_time_sec": 7.200000000000017,
+            "battery_final_energy": 68.66393300579283,
+            "battery_initial_energy": 45.0,
+            "battery_message_count": 497,
+            "battery_minimum_energy": 43.51906245295605,
+            "battery_mode": "ACTIVE",
+            "battery_return_count": 2,
+            "collision_duration_sec": 0.0,
+            "collision_events": 0,
+            "collision_message_count": 4910,
+            "end_x": -3.597990937356677,
+            "end_y": 1.0521073876602631,
+            "final_angular_speed_radps": 0.017502273689054472,
+            "final_linear_speed_mps": 0.0001238484480440558,
+            "nav_aborted": 0,
+            "nav_canceled": 1,
+            "nav_goal_count": 10,
+            "nav_succeeded": 9,
+            "path_length_m": 8.041129197226619,
+            "phase_path_lengths_m": {
+              "EXPLORE": 0.9440327128188469,
+              "FOUND": 0.18043746709947509,
+              "RALLY": 6.9166590173083025
+            },
+            "rally_final_error_m": 0.012894340811253667,
+            "rally_target_x": -3.608608497551465,
+            "rally_target_y": 1.0447908693307015,
+            "rally_target_yaw": -2.094155268869174,
+            "start_x": 0.45378421969305577,
+            "start_y": 1.3111254503367247e-05,
+            "teleport_jump_count": 0,
+            "visited_cell_count": 93
+          }
+        },
+        "schema_version": 9,
+        "search_overlap_ratio": 0.0,
+        "start_sim_time_sec": 130.0,
+        "success": true,
+        "target_confirmation_frames": 3,
+        "target_field_of_view_deg": 90.0,
+        "target_found": true,
+        "target_max_distance_m": 3.0,
+        "target_x": -4.5,
+        "target_y": -0.5,
+        "task_phase": "COMPLETE",
+        "termination_reason": "task_complete",
+        "time_to_75_coverage_sec": 68.0,
+        "time_to_80_coverage_sec": 73.1,
+        "time_to_90_coverage_sec": null,
+        "time_to_95_coverage_sec": null,
+        "time_to_detect_sec": 48.30000000000001,
+        "time_to_rally_sec": 63.19999999999999,
+        "total_overlap_ratio": 0.13702623906705538,
+        "total_path_length_m": 33.95149683263313,
+        "truth_cell_count": 53856,
+        "truth_free_cell_count": 48560,
+        "truth_height": 204,
+        "truth_occupied_cell_count": 5296,
+        "truth_origin_x": -6.6000000000000005,
+        "truth_origin_y": -5.1000000000000005,
+        "truth_rectangle_count": 8,
+        "truth_resolution": 0.05,
+        "truth_unsupported_collision_count": 0,
+        "truth_width": 264,
+        "union_visited_cell_count": 343,
+        "visit_resolution": 0.1,
+        "world_file": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/worlds/p1c_corridors.world"
+      },
+      "owner_pid": 1033800,
+      "observer_pid": 1033939,
+      "runner_returncode": 0,
+      "observer_returncode": 0
+    },
+    {
+      "case": "dev_forced2",
+      "result": {
+        "battery_enabled": true,
+        "battery_minimum_energy": 10.417333692341431,
+        "battery_total_charges": 2,
+        "battery_total_charging_time_sec": 34.899999999999636,
+        "battery_total_returns": 4,
+        "collision_duration_sec": 0.0,
+        "collision_events": 0,
+        "collision_history": [],
+        "collision_monitoring_active": true,
+        "completion_status": "COMPLETE",
+        "completion_time_sec": 286.5,
+        "coordinator_completion_time_sec": 286.5,
+        "correct_coverage_ratio": 0.8837568983092552,
+        "correct_free_coverage_ratio": 0.9327626726789843,
+        "correct_truth_cell_count": 50284,
+        "coverage_at_detection": 0.8536790415958118,
+        "coverage_threshold": 0.0,
+        "detecting_robot": "tb2",
+        "elapsed_sim_time_sec": 286.5,
+        "end_sim_time_sec": 2361.882,
+        "episode_id": "20261010_p2c_v46_dev_forced2",
+        "failed_robots": [],
+        "failure_reason": "",
+        "gazebo_seed": 303,
+        "known_coverage_ratio": 0.908573236317621,
+        "known_truth_cell_count": 51696,
+        "map_message_count": 295,
+        "merged_map_frame": "map",
+        "merged_map_height": 213,
+        "merged_map_origin_x": -5.634222907561709,
+        "merged_map_origin_y": -5.470431627149108,
+        "merged_map_origin_yaw": 0.0,
+        "merged_map_resolution": 0.05000000074505806,
+        "merged_map_width": 255,
+        "mission_mode": "rally",
+        "model_state_message_count": 2867,
+        "native_rally_hold_proof": {
+          "clock_basis": "headerless_model_states_observer_sim_time",
+          "end_observer_sim_time_sec": 2361.882,
+          "maximum_allowed_observation_gap_sec": 2.0,
+          "maximum_angular_speed_radps": 0.08917299816305108,
+          "maximum_linear_speed_mps": 0.0004347536651936596,
+          "maximum_observation_gap_sec": 0.1000000000003638,
+          "maximum_position_error_m": 0.030467609284667966,
+          "observed_duration_sec": 5.300000000000182,
+          "required_robot_names": [
+            "tb1",
+            "tb2"
+          ],
+          "sample_count": 54,
+          "start_observer_sim_time_sec": 2356.582
+        },
+        "nav_aborted": 0,
+        "nav_canceled": 2,
+        "nav_goal_count": 34,
+        "nav_succeeded": 32,
+        "observed_accuracy": 0.9726864747756113,
+        "occupied_iou": 0.2508126603934987,
+        "partial_completion": false,
+        "phase_overlap_ratios": {
+          "EXPLORE": 0.0,
+          "FOUND": 0.0,
+          "RALLY": 0.0
+        },
+        "phase_path_lengths_m": {
+          "EXPLORE": 41.9428646054137,
+          "FOUND": 1.1483232678366622,
+          "RALLY": 5.832639622717004
+        },
+        "phase_union_visited_cell_counts": {
+          "EXPLORE": 431,
+          "FOUND": 15,
+          "RALLY": 71
+        },
+        "rally_angular_tolerance_radps": 0.1,
+        "rally_assignments": {
+          "tb1": {
+            "x": -4.607996820529794,
+            "y": 1.504568476786491,
+            "yaw": 1.331808706356496
+          },
+          "tb2": {
+            "x": -3.7079968071187492,
+            "y": 1.6545684790216653,
+            "yaw": 1.6946577106151572
+          }
+        },
+        "rally_hold_sec": 5.0,
+        "rally_linear_tolerance_mps": 0.05,
+        "rally_min_separation_m": 0.9124143931407667,
+        "rally_position_tolerance_m": 0.35,
+        "required_robot_count": 2,
+        "required_robot_names": [
+          "tb1",
+          "tb2"
+        ],
+        "robot_count": 2,
+        "robots": {
+          "tb1": {
+            "battery_capacity": 100.0,
+            "battery_charge_count": 1,
+            "battery_charge_x": 0.0,
+            "battery_charge_y": -0.45,
+            "battery_charging_time_sec": 10.0,
+            "battery_final_energy": 49.2224927396434,
+            "battery_initial_energy": 18.0,
+            "battery_message_count": 577,
+            "battery_minimum_energy": 16.7240034071137,
+            "battery_mode": "ACTIVE",
+            "battery_return_count": 2,
+            "collision_duration_sec": 0.0,
+            "collision_events": 0,
+            "collision_message_count": 5732,
+            "end_x": -4.612656774548367,
+            "end_y": 1.4748430041203264,
+            "final_angular_speed_radps": 0.04948772393359751,
+            "final_linear_speed_mps": 6.0754498088494984e-05,
+            "nav_aborted": 0,
+            "nav_canceled": 1,
+            "nav_goal_count": 17,
+            "nav_succeeded": 16,
+            "path_length_m": 26.52091143660953,
+            "phase_path_lengths_m": {
+              "EXPLORE": 21.282236340246122,
+              "FOUND": 0.14899674412524685,
+              "RALLY": 5.089678352238189
+            },
+            "rally_final_error_m": 0.030088517688349397,
+            "rally_target_x": -4.607996820529794,
+            "rally_target_y": 1.504568476786491,
+            "rally_target_yaw": 1.331808706356496,
+            "start_x": 0.00238474708850768,
+            "start_y": -0.4499949198183308,
+            "teleport_jump_count": 0,
+            "visited_cell_count": 283
+          },
+          "tb2": {
+            "battery_capacity": 100.0,
+            "battery_charge_count": 1,
+            "battery_charge_x": 0.0,
+            "battery_charge_y": 0.45,
+            "battery_charging_time_sec": 24.899999999999636,
+            "battery_final_energy": 59.84122186362512,
+            "battery_initial_energy": 18.0,
+            "battery_message_count": 578,
+            "battery_minimum_energy": 10.417333692341431,
+            "battery_mode": "ACTIVE",
+            "battery_return_count": 2,
+            "collision_duration_sec": 0.0,
+            "collision_events": 0,
+            "collision_message_count": 5732,
+            "end_x": -3.731629124777158,
+            "end_y": 1.6709297787142134,
+            "final_angular_speed_radps": 0.019012616186667834,
+            "final_linear_speed_mps": 7.899904880694031e-05,
+            "nav_aborted": 0,
+            "nav_canceled": 1,
+            "nav_goal_count": 17,
+            "nav_succeeded": 16,
+            "path_length_m": 22.402916059357807,
+            "phase_path_lengths_m": {
+              "EXPLORE": 20.660628265167578,
+              "FOUND": 0.9993265237114154,
+              "RALLY": 0.7429612704788144
+            },
+            "rally_final_error_m": 0.02874332210335657,
+            "rally_target_x": -3.7079968071187492,
+            "rally_target_y": 1.6545684790216653,
+            "rally_target_yaw": 1.6946577106151572,
+            "start_x": 0.002326303820791876,
+            "start_y": 0.45000485031827325,
+            "teleport_jump_count": 0,
+            "visited_cell_count": 221
+          }
+        },
+        "schema_version": 9,
+        "search_overlap_ratio": 0.0,
+        "start_sim_time_sec": 2075.382,
+        "success": true,
+        "target_confirmation_frames": 3,
+        "target_field_of_view_deg": 90.0,
+        "target_found": true,
+        "target_max_distance_m": 3.0,
+        "target_x": -4.0,
+        "target_y": 4.0,
+        "task_phase": "COMPLETE",
+        "termination_reason": "task_complete",
+        "time_to_75_coverage_sec": 121.59999999999991,
+        "time_to_80_coverage_sec": 131.4000000000001,
+        "time_to_90_coverage_sec": 235.5,
+        "time_to_95_coverage_sec": null,
+        "time_to_detect_sec": 220.69999999999982,
+        "time_to_rally_sec": 230.9000000000001,
+        "total_overlap_ratio": 0.0019880715705765406,
+        "total_path_length_m": 48.92382749596734,
+        "truth_cell_count": 56898,
+        "truth_free_cell_count": 52337,
+        "truth_height": 218,
+        "truth_occupied_cell_count": 4561,
+        "truth_origin_x": -5.800000000000001,
+        "truth_origin_y": -5.6000000000000005,
+        "truth_rectangle_count": 26,
+        "truth_resolution": 0.05,
+        "truth_unsupported_collision_count": 1,
+        "truth_width": 261,
+        "union_visited_cell_count": 503,
+        "visit_resolution": 0.1,
+        "world_file": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/worlds/my_world.world"
+      },
+      "owner_pid": 1030959,
+      "observer_pid": 1031005,
+      "runner_returncode": 0,
+      "observer_returncode": 0
+    },
+    {
+      "case": "dev_lab101",
+      "result": {
+        "battery_enabled": true,
+        "battery_minimum_energy": 26.152553646598893,
+        "battery_total_charges": 0,
+        "battery_total_charging_time_sec": 0.0,
+        "battery_total_returns": 3,
+        "collision_duration_sec": 0.0,
+        "collision_events": 0,
+        "collision_history": [],
+        "collision_monitoring_active": true,
+        "completion_status": "COMPLETE",
+        "completion_time_sec": 163.30000000000018,
+        "coordinator_completion_time_sec": 163.30000000000018,
+        "correct_coverage_ratio": 0.757267390769447,
+        "correct_free_coverage_ratio": 0.803255822840438,
+        "correct_truth_cell_count": 43087,
+        "coverage_at_detection": 0.5787683665475667,
+        "coverage_threshold": 0.0,
+        "detecting_robot": "tb1",
+        "elapsed_sim_time_sec": 163.30000000000018,
+        "end_sim_time_sec": 2289.882,
+        "episode_id": "20261010_p2c_v46_dev_lab101",
+        "failed_robots": [],
+        "failure_reason": "",
+        "gazebo_seed": 101,
+        "known_coverage_ratio": 0.7731027452634539,
+        "known_truth_cell_count": 43988,
+        "map_message_count": 286,
+        "merged_map_frame": "map",
+        "merged_map_height": 212,
+        "merged_map_origin_x": -5.649039394722458,
+        "merged_map_origin_y": -5.467137370754896,
+        "merged_map_origin_yaw": 0.0,
+        "merged_map_resolution": 0.05000000074505806,
+        "merged_map_width": 255,
+        "mission_mode": "rally",
+        "model_state_message_count": 1635,
+        "native_rally_hold_proof": {
+          "clock_basis": "headerless_model_states_observer_sim_time",
+          "end_observer_sim_time_sec": 2289.882,
+          "maximum_allowed_observation_gap_sec": 2.0,
+          "maximum_angular_speed_radps": 0.0698284990178749,
+          "maximum_linear_speed_mps": 0.00047493529820717353,
+          "maximum_observation_gap_sec": 0.1999999999998181,
+          "maximum_position_error_m": 0.018115455212478017,
+          "observed_duration_sec": 5.099999999999909,
+          "required_robot_names": [
+            "tb1",
+            "tb2",
+            "tb3"
+          ],
+          "sample_count": 52,
+          "start_observer_sim_time_sec": 2284.782
+        },
+        "nav_aborted": 0,
+        "nav_canceled": 4,
+        "nav_goal_count": 21,
+        "nav_succeeded": 17,
+        "observed_accuracy": 0.979517141038465,
+        "occupied_iou": 0.19228650137741046,
+        "partial_completion": false,
+        "phase_overlap_ratios": {
+          "EXPLORE": 0.0,
+          "FOUND": 0.0,
+          "RALLY": 0.15730337078651685
+        },
+        "phase_path_lengths_m": {
+          "EXPLORE": 9.156367929228066,
+          "FOUND": 1.5219219095485625,
+          "RALLY": 16.959687772940228
+        },
+        "phase_union_visited_cell_counts": {
+          "EXPLORE": 115,
+          "FOUND": 20,
+          "RALLY": 178
+        },
+        "rally_angular_tolerance_radps": 0.1,
+        "rally_assignments": {
+          "tb1": {
+            "x": -4.674039380193826,
+            "y": 1.4676426822010118,
+            "yaw": 1.310657009391827
+          },
+          "tb2": {
+            "x": -4.0240393705080715,
+            "y": 3.0176427052978116,
+            "yaw": 1.5463301027218215
+          },
+          "tb3": {
+            "x": -3.774039366782781,
+            "y": 1.4176426814559537,
+            "yaw": 1.6580757183101886
+          }
+        },
+        "rally_hold_sec": 5.0,
+        "rally_linear_tolerance_mps": 0.05,
+        "rally_min_separation_m": 0.9013878322977225,
+        "rally_position_tolerance_m": 0.35,
+        "required_robot_count": 3,
+        "required_robot_names": [
+          "tb1",
+          "tb2",
+          "tb3"
+        ],
+        "robot_count": 3,
+        "robots": {
+          "tb1": {
+            "battery_capacity": 100.0,
+            "battery_charge_count": 0,
+            "battery_charge_x": 0.0,
+            "battery_charge_y": -0.45,
+            "battery_charging_time_sec": 0.0,
+            "battery_final_energy": 28.632371737652473,
+            "battery_initial_energy": 40.0,
+            "battery_message_count": 330,
+            "battery_minimum_energy": 28.632371737652473,
+            "battery_mode": "ACTIVE",
+            "battery_return_count": 1,
+            "collision_duration_sec": 0.0,
+            "collision_events": 0,
+            "collision_message_count": 3269,
+            "end_x": -4.68401745134797,
+            "end_y": 1.4556969392883854,
+            "final_angular_speed_radps": 3.3650296313564755e-06,
+            "final_linear_speed_mps": 5.915000574756393e-05,
+            "nav_aborted": 0,
+            "nav_canceled": 2,
+            "nav_goal_count": 9,
+            "nav_succeeded": 7,
+            "path_length_m": 8.104997806072639,
+            "phase_path_lengths_m": {
+              "EXPLORE": 5.07842388071109,
+              "FOUND": 1.351659039305516,
+              "RALLY": 1.674914886056024
+            },
+            "rally_final_error_m": 0.015564789677079737,
+            "rally_target_x": -4.674039380193826,
+            "rally_target_y": 1.4676426822010118,
+            "rally_target_yaw": 1.310657009391827,
+            "start_x": 0.003892846807432481,
+            "start_y": -0.44998624486309297,
+            "teleport_jump_count": 0,
+            "visited_cell_count": 100
+          },
+          "tb2": {
+            "battery_capacity": 100.0,
+            "battery_charge_count": 0,
+            "battery_charge_x": 0.0,
+            "battery_charge_y": 0.45,
+            "battery_charging_time_sec": 0.0,
+            "battery_final_energy": 26.152553646598893,
+            "battery_initial_energy": 40.0,
+            "battery_message_count": 329,
+            "battery_minimum_energy": 26.152553646598893,
+            "battery_mode": "ACTIVE",
+            "battery_return_count": 1,
+            "collision_duration_sec": 0.0,
+            "collision_events": 0,
+            "collision_message_count": 3270,
+            "end_x": -4.026928523117153,
+            "end_y": 2.9998663420801694,
+            "final_angular_speed_radps": 0.00018476004270158563,
+            "final_linear_speed_mps": 5.336419629799113e-05,
+            "nav_aborted": 0,
+            "nav_canceled": 1,
+            "nav_goal_count": 6,
+            "nav_succeeded": 5,
+            "path_length_m": 10.594688375126594,
+            "phase_path_lengths_m": {
+              "EXPLORE": 2.004911505523899,
+              "FOUND": 0.1421876545763902,
+              "RALLY": 8.447589215026294
+            },
+            "rally_final_error_m": 0.018009616654557227,
+            "rally_target_x": -4.0240393705080715,
+            "rally_target_y": 3.0176427052978116,
+            "rally_target_yaw": 1.5463301027218215,
+            "start_x": 0.0038303888408653124,
+            "start_y": 0.4500131632253426,
+            "teleport_jump_count": 0,
+            "visited_cell_count": 125
+          },
+          "tb3": {
+            "battery_capacity": 100.0,
+            "battery_charge_count": 0,
+            "battery_charge_x": 0.45,
+            "battery_charge_y": 0.0,
+            "battery_charging_time_sec": 0.0,
+            "battery_final_energy": 27.810679683187978,
+            "battery_initial_energy": 40.0,
+            "battery_message_count": 327,
+            "battery_minimum_energy": 27.810679683187978,
+            "battery_mode": "ACTIVE",
+            "battery_return_count": 1,
+            "collision_duration_sec": 0.0,
+            "collision_events": 0,
+            "collision_message_count": 3270,
+            "end_x": -3.766156775465677,
+            "end_y": 1.4088556152796778,
+            "final_angular_speed_radps": 0.03700170769581316,
+            "final_linear_speed_mps": 0.00012284648914290413,
+            "nav_aborted": 0,
+            "nav_canceled": 1,
+            "nav_goal_count": 6,
+            "nav_succeeded": 5,
+            "path_length_m": 8.938291430517646,
+            "phase_path_lengths_m": {
+              "EXPLORE": 2.073032542993077,
+              "FOUND": 0.02807521566665646,
+              "RALLY": 6.837183671857909
+            },
+            "rally_final_error_m": 0.01180456597502581,
+            "rally_target_x": -3.774039366782781,
+            "rally_target_y": 1.4176426814559537,
+            "rally_target_yaw": 1.6580757183101886,
+            "start_x": 0.453770368571638,
+            "start_y": 1.2910948650525217e-05,
+            "teleport_jump_count": 0,
+            "visited_cell_count": 98
+          }
+        },
+        "schema_version": 9,
+        "search_overlap_ratio": 0.0,
+        "start_sim_time_sec": 2126.582,
+        "success": true,
+        "target_confirmation_frames": 3,
+        "target_field_of_view_deg": 90.0,
+        "target_found": true,
+        "target_max_distance_m": 3.0,
+        "target_x": -4.0,
+        "target_y": 4.0,
+        "task_phase": "COMPLETE",
+        "termination_reason": "task_complete",
+        "time_to_75_coverage_sec": 98.90000000000009,
+        "time_to_80_coverage_sec": 110.09999999999991,
+        "time_to_90_coverage_sec": null,
+        "time_to_95_coverage_sec": null,
+        "time_to_detect_sec": 47.90000000000009,
+        "time_to_rally_sec": 64.30000000000018,
+        "total_overlap_ratio": 0.2971887550200803,
+        "total_path_length_m": 27.637977611716877,
+        "truth_cell_count": 56898,
+        "truth_free_cell_count": 52337,
+        "truth_height": 218,
+        "truth_occupied_cell_count": 4561,
+        "truth_origin_x": -5.800000000000001,
+        "truth_origin_y": -5.6000000000000005,
+        "truth_rectangle_count": 26,
+        "truth_resolution": 0.05,
+        "truth_unsupported_collision_count": 1,
+        "truth_width": 261,
+        "union_visited_cell_count": 249,
+        "visit_resolution": 0.1,
+        "world_file": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/worlds/my_world.world"
+      },
+      "owner_pid": 1033797,
+      "observer_pid": 1033938,
+      "runner_returncode": 0,
+      "observer_returncode": 0
+    },
+    {
+      "case": "dev_rooms202",
+      "result": {
+        "battery_enabled": true,
+        "battery_minimum_energy": 23.571856923651996,
+        "battery_total_charges": 0,
+        "battery_total_charging_time_sec": 0.0,
+        "battery_total_returns": 3,
+        "collision_duration_sec": 0.0,
+        "collision_events": 0,
+        "collision_history": [],
+        "collision_monitoring_active": true,
+        "completion_status": "COMPLETE",
+        "completion_time_sec": 163.29999999999998,
+        "coordinator_completion_time_sec": 163.20000000000002,
+        "correct_coverage_ratio": 0.8562724385528859,
+        "correct_free_coverage_ratio": 0.9352395672333849,
+        "correct_truth_cell_count": 49609,
+        "coverage_at_detection": 0.6635046367851622,
+        "coverage_threshold": 0.0,
+        "detecting_robot": "tb1",
+        "elapsed_sim_time_sec": 163.29999999999998,
+        "end_sim_time_sec": 292.9,
+        "episode_id": "20261010_p2c_v46_dev_rooms202",
+        "failed_robots": [],
+        "failure_reason": "",
+        "gazebo_seed": 202,
+        "known_coverage_ratio": 0.8725490196078431,
+        "known_truth_cell_count": 50552,
+        "map_message_count": 287,
+        "merged_map_frame": "map",
+        "merged_map_height": 198,
+        "merged_map_origin_x": -6.944172005141343,
+        "merged_map_origin_y": -4.938609377284564,
+        "merged_map_origin_yaw": 0.0,
+        "merged_map_resolution": 0.05000000074505806,
+        "merged_map_width": 278,
+        "mission_mode": "rally",
+        "model_state_message_count": 1634,
+        "native_rally_hold_proof": {
+          "clock_basis": "headerless_model_states_observer_sim_time",
+          "end_observer_sim_time_sec": 292.9,
+          "maximum_allowed_observation_gap_sec": 2.0,
+          "maximum_angular_speed_radps": 0.07018298032431224,
+          "maximum_linear_speed_mps": 0.0002519113002042691,
+          "maximum_observation_gap_sec": 0.10000000000002274,
+          "maximum_position_error_m": 0.03635939149220917,
+          "observed_duration_sec": 7.699999999999989,
+          "required_robot_names": [
+            "tb1",
+            "tb2",
+            "tb3"
+          ],
+          "sample_count": 78,
+          "start_observer_sim_time_sec": 285.2
+        },
+        "nav_aborted": 0,
+        "nav_canceled": 3,
+        "nav_goal_count": 22,
+        "nav_succeeded": 19,
+        "observed_accuracy": 0.9813459408134199,
+        "occupied_iou": 0.1693696234663658,
+        "partial_completion": false,
+        "phase_overlap_ratios": {
+          "EXPLORE": 0.007633587786259542,
+          "FOUND": 0.0,
+          "RALLY": 0.046052631578947366
+        },
+        "phase_path_lengths_m": {
+          "EXPLORE": 11.12000173962177,
+          "FOUND": 2.4649809335603687,
+          "RALLY": 13.66329722388722
+        },
+        "phase_union_visited_cell_counts": {
+          "EXPLORE": 131,
+          "FOUND": 33,
+          "RALLY": 152
+        },
+        "rally_angular_tolerance_radps": 0.1,
+        "rally_assignments": {
+          "tb1": {
+            "x": 4.980828172555004,
+            "y": 1.9863907259059772,
+            "yaw": 1.5518841659136307
+          },
+          "tb2": {
+            "x": 4.480828165104423,
+            "y": 0.6363907057894096,
+            "yaw": 1.3545778487656013
+          },
+          "tb3": {
+            "x": 3.6808281531834943,
+            "y": 0.7363907072795257,
+            "yaw": 1.0431395686035676
+          }
+        },
+        "rally_hold_sec": 5.0,
+        "rally_linear_tolerance_mps": 0.05,
+        "rally_min_separation_m": 0.8062257868435552,
+        "rally_position_tolerance_m": 0.35,
+        "required_robot_count": 3,
+        "required_robot_names": [
+          "tb1",
+          "tb2",
+          "tb3"
+        ],
+        "robot_count": 3,
+        "robots": {
+          "tb1": {
+            "battery_capacity": 100.0,
+            "battery_charge_count": 0,
+            "battery_charge_x": 0.0,
+            "battery_charge_y": -0.45,
+            "battery_charging_time_sec": 0.0,
+            "battery_final_energy": 30.585343052613435,
+            "battery_initial_energy": 40.0,
+            "battery_message_count": 330,
+            "battery_minimum_energy": 30.585343052613435,
+            "battery_mode": "ACTIVE",
+            "battery_return_count": 1,
+            "collision_duration_sec": 0.0,
+            "collision_events": 0,
+            "collision_message_count": 3266,
+            "end_x": 4.9745375743347315,
+            "end_y": 1.9841442464361567,
+            "final_angular_speed_radps": 0.00017258109376725302,
+            "final_linear_speed_mps": 5.146390424121793e-05,
+            "nav_aborted": 0,
+            "nav_canceled": 1,
+            "nav_goal_count": 4,
+            "nav_succeeded": 3,
+            "path_length_m": 6.156009879435376,
+            "phase_path_lengths_m": {
+              "EXPLORE": 3.4689195917108764,
+              "FOUND": 2.2072828874152464,
+              "RALLY": 0.47980740030926566
+            },
+            "rally_final_error_m": 0.006679692805602546,
+            "rally_target_x": 4.980828172555004,
+            "rally_target_y": 1.9863907259059772,
+            "rally_target_yaw": 1.5518841659136307,
+            "start_x": 0.0038780725858706916,
+            "start_y": -0.4499863747530747,
+            "teleport_jump_count": 0,
+            "visited_cell_count": 71
+          },
+          "tb2": {
+            "battery_capacity": 100.0,
+            "battery_charge_count": 0,
+            "battery_charge_x": 0.0,
+            "battery_charge_y": 0.45,
+            "battery_charging_time_sec": 0.0,
+            "battery_final_energy": 23.571856923651996,
+            "battery_initial_energy": 40.0,
+            "battery_message_count": 326,
+            "battery_minimum_energy": 23.571856923651996,
+            "battery_mode": "ACTIVE",
+            "battery_return_count": 1,
+            "collision_duration_sec": 0.0,
+            "collision_events": 0,
+            "collision_message_count": 3266,
+            "end_x": 4.454786144565504,
+            "end_y": 0.6111399488073976,
+            "final_angular_speed_radps": 4.677062167577793e-05,
+            "final_linear_speed_mps": 4.479132263364058e-05,
+            "nav_aborted": 0,
+            "nav_canceled": 1,
+            "nav_goal_count": 9,
+            "nav_succeeded": 8,
+            "path_length_m": 13.158427501294598,
+            "phase_path_lengths_m": {
+              "EXPLORE": 4.360459352508317,
+              "FOUND": 0.14238066336444413,
+              "RALLY": 8.65558748542182
+            },
+            "rally_final_error_m": 0.036273786153558925,
+            "rally_target_x": 4.480828165104423,
+            "rally_target_y": 0.6363907057894096,
+            "rally_target_yaw": 1.3545778487656013,
+            "start_x": 0.0038384900489511114,
+            "start_y": 0.450013423201047,
+            "teleport_jump_count": 0,
+            "visited_cell_count": 132
+          },
+          "tb3": {
+            "battery_capacity": 100.0,
+            "battery_charge_count": 0,
+            "battery_charge_x": 0.45,
+            "battery_charge_y": 0.0,
+            "battery_charging_time_sec": 0.0,
+            "battery_final_energy": 28.82200424025703,
+            "battery_initial_energy": 40.0,
+            "battery_message_count": 326,
+            "battery_minimum_energy": 28.82200424025703,
+            "battery_mode": "ACTIVE",
+            "battery_return_count": 1,
+            "collision_duration_sec": 0.0,
+            "collision_events": 0,
+            "collision_message_count": 3266,
+            "end_x": 3.6591796413572366,
+            "end_y": 0.7415867238573176,
+            "final_angular_speed_radps": 0.006077879753089507,
+            "final_linear_speed_mps": 4.533417753206525e-05,
+            "nav_aborted": 0,
+            "nav_canceled": 1,
+            "nav_goal_count": 9,
+            "nav_succeeded": 8,
+            "path_length_m": 7.933842516339391,
+            "phase_path_lengths_m": {
+              "EXPLORE": 3.290622795402577,
+              "FOUND": 0.11531738278067823,
+              "RALLY": 4.527902338156134
+            },
+            "rally_final_error_m": 0.022263347739464256,
+            "rally_target_x": 3.6808281531834943,
+            "rally_target_y": 0.7363907072795257,
+            "rally_target_yaw": 1.0431395686035676,
+            "start_x": 0.45377814537840255,
+            "start_y": 1.2913085815723471e-05,
+            "teleport_jump_count": 0,
+            "visited_cell_count": 105
+          }
+        },
+        "schema_version": 9,
+        "search_overlap_ratio": 0.007633587786259542,
+        "start_sim_time_sec": 129.6,
+        "success": true,
+        "target_confirmation_frames": 3,
+        "target_field_of_view_deg": 90.0,
+        "target_found": true,
+        "target_max_distance_m": 3.0,
+        "target_x": 5.0,
+        "target_y": 3.0,
+        "task_phase": "COMPLETE",
+        "termination_reason": "task_complete",
+        "time_to_75_coverage_sec": 57.0,
+        "time_to_80_coverage_sec": 69.80000000000001,
+        "time_to_90_coverage_sec": 73.30000000000001,
+        "time_to_95_coverage_sec": null,
+        "time_to_detect_sec": 49.80000000000001,
+        "time_to_rally_sec": 66.1,
+        "total_overlap_ratio": 0.06206896551724138,
+        "total_path_length_m": 27.248279897069366,
+        "truth_cell_count": 57936,
+        "truth_free_cell_count": 51760,
+        "truth_height": 204,
+        "truth_occupied_cell_count": 6176,
+        "truth_origin_x": -7.1000000000000005,
+        "truth_origin_y": -5.1000000000000005,
+        "truth_rectangle_count": 14,
+        "truth_resolution": 0.05,
+        "truth_unsupported_collision_count": 0,
+        "truth_width": 284,
+        "union_visited_cell_count": 290,
+        "visit_resolution": 0.1,
+        "world_file": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/worlds/p1c_rooms.world"
+      },
+      "owner_pid": 1033807,
+      "observer_pid": 1033937,
+      "runner_returncode": 0,
+      "observer_returncode": 0
+    }
+  ],
+  "strict_gate_errors": [
+    {
+      "case": "dev_rooms202",
+      "error": "AssertionError((PosixPath('/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_rooms202/ledger.jsonl'), {'current_position': [3.9213874120513226, 0.6362264593810615], 'event': 'coordinator_navigation_decision', 'event_time': 252.9, 'fault_revision': 0, 'inputs': {'headquarters/fused_map_snapshot': {'age_sec': 2.0, 'source_time': 250.9, 'ttl_sec': 5.0}, 'headquarters/target_detection': {'age_sec': 2.5999999999999943, 'source_time': 250.3, 'ttl_sec': 60.0}, 'tb1/battery_state': {'age_sec': 1.9000000000000057, 'source_time': 251.0, 'ttl_sec': 5.0}, 'tb1/frame_state': {'age_sec': 1.8559999999999945, 'source_time': 251.044, 'ttl_sec': 2.0}, 'tb1/map_snapshot': {'age_sec': 2.2560000000000002, 'source_time': 250.644, 'ttl_sec': 5.0}, 'tb1/pose_state': {'age_sec': 2.0810000000000173, 'source_time': 250.819, 'ttl_sec': 2.0}, 'tb2/battery_state': {'age_sec': 1.9000000000000057, 'source_time': 251.0, 'ttl_sec': 5.0}, 'tb2/frame_state': {'age_sec': 1.8550000000000182, 'source_time': 251.045, 'ttl_sec': 2.0}, 'tb2/map_snapshot': {'age_sec': 3.254000000000019, 'source_time': 249.646, 'ttl_sec': 5.0}, 'tb2/pose_state': {'age_sec': 2.091000000000008, 'source_time': 250.809, 'ttl_sec': 2.0}, 'tb3/battery_state': {'age_sec': 1.9000000000000057, 'source_time': 251.0, 'ttl_sec': 5.0}, 'tb3/frame_state': {'age_sec': 1.8540000000000134, 'source_time': 251.046, 'ttl_sec': 2.0}, 'tb3/map_snapshot': {'age_sec': 3.054000000000002, 'source_time': 249.846, 'ttl_sec': 5.0}, 'tb3/pose_state': {'age_sec': 2.0970000000000084, 'source_time': 250.803, 'ttl_sec': 2.0}}, 'kind': 'rally', 'ledger_index': 42802, 'mission_mode': 'rally', 'requested_position': [4.480828165104423, 0.6363907057894096], 'requested_yaw': 1.3545778487656013, 'robot': 'tb2', 'task_phase': 'RALLY'}))",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 860, in audit_one\n    try:return check_one(path,config),None\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 763, in check_one\n    communications,_=audit_original((row,config))\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3c5_gate.py\", line 110, in audit_original\n    temporal = ledger_audit(directory/\"ledger.jsonl\")\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3b5_gate.py\", line 102, in ledger_audit\n    assert -1e-8<=sample['age_sec']<=sample['ttl_sec']+1e-8,(path,e)\nAssertionError: (PosixPath('/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_rooms202/ledger.jsonl'), {'current_position': [3.9213874120513226, 0.6362264593810615], 'event': 'coordinator_navigation_decision', 'event_time': 252.9, 'fault_revision': 0, 'inputs': {'headquarters/fused_map_snapshot': {'age_sec': 2.0, 'source_time': 250.9, 'ttl_sec': 5.0}, 'headquarters/target_detection': {'age_sec': 2.5999999999999943, 'source_time': 250.3, 'ttl_sec': 60.0}, 'tb1/battery_state': {'age_sec': 1.9000000000000057, 'source_time': 251.0, 'ttl_sec': 5.0}, 'tb1/frame_state': {'age_sec': 1.8559999999999945, 'source_time': 251.044, 'ttl_sec': 2.0}, 'tb1/map_snapshot': {'age_sec': 2.2560000000000002, 'source_time': 250.644, 'ttl_sec': 5.0}, 'tb1/pose_state': {'age_sec': 2.0810000000000173, 'source_time': 250.819, 'ttl_sec': 2.0}, 'tb2/battery_state': {'age_sec': 1.9000000000000057, 'source_time': 251.0, 'ttl_sec': 5.0}, 'tb2/frame_state': {'age_sec': 1.8550000000000182, 'source_time': 251.045, 'ttl_sec': 2.0}, 'tb2/map_snapshot': {'age_sec': 3.254000000000019, 'source_time': 249.646, 'ttl_sec': 5.0}, 'tb2/pose_state': {'age_sec': 2.091000000000008, 'source_time': 250.809, 'ttl_sec': 2.0}, 'tb3/battery_state': {'age_sec': 1.9000000000000057, 'source_time': 251.0, 'ttl_sec': 5.0}, 'tb3/frame_state': {'age_sec': 1.8540000000000134, 'source_time': 251.046, 'ttl_sec': 2.0}, 'tb3/map_snapshot': {'age_sec': 3.054000000000002, 'source_time': 249.846, 'ttl_sec': 5.0}, 'tb3/pose_state': {'age_sec': 2.0970000000000084, 'source_time': 250.803, 'ttl_sec': 2.0}}, 'kind': 'rally', 'ledger_index': 42802, 'mission_mode': 'rally', 'requested_position': [4.480828165104423, 0.6363907057894096], 'requested_yaw': 1.3545778487656013, 'robot': 'tb2', 'task_phase': 'RALLY'})\n"
+    }
+  ],
+  "passed_case_audits": [
+    {
+      "case": "dev_corridors303",
+      "status": "PASS",
+      "launch_process_audit": {
+        "status": "PASS",
+        "launch_transcripts": 1,
+        "task_time_nonzero_child_exits": 0,
+        "post_task_cleanup_exits": []
+      }
+    },
+    {
+      "case": "dev_forced2",
+      "status": "PASS",
+      "launch_process_audit": {
+        "status": "PASS",
+        "launch_transcripts": 1,
+        "task_time_nonzero_child_exits": 0,
+        "post_task_cleanup_exits": [
+          {
+            "file": "robots2_seed303_20261010-034146.log",
+            "line": 873,
+            "node": "tf_ingress_sampler-11",
+            "exit_code": 1
+          }
+        ]
+      }
+    },
+    {
+      "case": "dev_lab101",
+      "status": "PASS",
+      "launch_process_audit": {
+        "status": "PASS",
+        "launch_transcripts": 1,
+        "task_time_nonzero_child_exits": 0,
+        "post_task_cleanup_exits": []
+      }
+    }
+  ],
+  "originals_archive": {
+    "path": "20261010_p2c_v46_failed_development_originals.json.gz",
+    "sha256": "e642d2f9f77f95c386a4d1e7bbe568f9119908df6a393ba6edf511bee0412ab2"
+  },
+  "raw_bindings": [
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_corridors303/20261010_p2c_v46_dev_corridors303.csv",
+      "bytes": 6839,
+      "sha256": "9c63772f2c49f9fb0ce2fb7199ad4829b40c4dd7bcce14f048fc3f2445d1c1f2"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_corridors303/20261010_p2c_v46_dev_corridors303.json",
+      "bytes": 8358,
+      "sha256": "338b95d6d836ae6cf7f60dcf68d16e0cd1da014cd5e82596d7b1620e924f7c8e"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_corridors303/graph.json",
+      "bytes": 271120,
+      "sha256": "2255e49c2a3f519c4f04e151f1843858260ed6b6f37a39fe55e4d6fb3e9983cb"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_corridors303/launch/robots3_seed303_20261010-035029.log",
+      "bytes": 190693,
+      "sha256": "925e1e26b837732aaa8b04c448876d6c9d51ce3b1334aaffc099f2c8e0a5c881"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_corridors303/ledger.jsonl",
+      "bytes": 58186607,
+      "sha256": "160aceeaf509250c4a907af3ef0a7058d92c4443daf5143c739d57cb6b38d679"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_corridors303/ledger_metrics/curves.svg",
+      "bytes": 48613,
+      "sha256": "a60e6461188dea4f1ea62268990ce77ef52a2eb8e66d19959e8ceb0ef0320d57"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_corridors303/ledger_metrics/events.jsonl",
+      "bytes": 160536,
+      "sha256": "1ccbed64b799d6d08790e81ee5c2b1e5a645e9621ccf2651c6b76c8d188e58e2"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_corridors303/ledger_metrics/inputs.jsonl",
+      "bytes": 57834121,
+      "sha256": "bd640e01a9a75a33115dc624f69a80635ea6ae8bf715da3ba15c357d2cab699e"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_corridors303/ledger_metrics/live.jsonl",
+      "bytes": 358467944,
+      "sha256": "28daea54974c60272deb12210d0c6fa1b33a97878163a24ee51399cfe1cb2bf7"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_corridors303/ledger_metrics/live_windows.csv",
+      "bytes": 21063345,
+      "sha256": "67d0fb0323385145dab24b162c0520cfef5c4c9f9dc13de78d8230c0c60f0ef1"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_corridors303/ledger_metrics/summary.json",
+      "bytes": 643261,
+      "sha256": "04ce889a5ce2cd26b694c065c6e6736a3d0fada9483ff449b2fed651a5b41218"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_corridors303/ledger_metrics/windows.csv",
+      "bytes": 21063345,
+      "sha256": "67d0fb0323385145dab24b162c0520cfef5c4c9f9dc13de78d8230c0c60f0ef1"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_corridors303/ledger_metrics/windows.jsonl",
+      "bytes": 78473746,
+      "sha256": "1ce42fd2b6d1ee9273fca4266dac218636d3505419e0b696f38a989fe7ad61eb"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_corridors303/manifest.json",
+      "bytes": 56981,
+      "sha256": "902638bbca66bd827ede577dd71963e8451843b323c2c8bff8a17b08b1c1bb2f"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_corridors303/native_graph.json",
+      "bytes": 283576,
+      "sha256": "03581a62e6a88b92568362a909d38a9587dc2c523033de98e4cdac25687e60ab"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_corridors303/navigation_inputs.jsonl.gz",
+      "bytes": 28180124,
+      "sha256": "2210ccb2952c951f552dabb672cab7ddadb52f0602317db9c6b2a43fd8aaa02c"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_corridors303/observer.log",
+      "bytes": 712,
+      "sha256": "6292f5be0bede446d484ebff2c37d288056cb47343f89adc46830a53226b82b5"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_corridors303/runner.log",
+      "bytes": 4066,
+      "sha256": "70c7451147bed4ce7bf99f0ec8a43d80ef8feafdf85e67b3e698536660ce3526"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_corridors303/safety_events.jsonl",
+      "bytes": 198138,
+      "sha256": "c50abe137aa3cae9dd6f56e10bbea5a268b2c61ea47c62b3d298e811c53be134"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_corridors303/schedule.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_corridors303/summary.json",
+      "bytes": 68191,
+      "sha256": "59e14b26fbf19faab97544e348e0790153b71246242f6a9d9e807f6d1dd68a8f"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_forced2/20261010_p2c_v46_dev_forced2.csv",
+      "bytes": 5627,
+      "sha256": "fe2f9bff25488f5c096d5b60ce9ca2a6338c0ca3ea44f1ec88dcd3fcc6ecfca6"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_forced2/20261010_p2c_v46_dev_forced2.json",
+      "bytes": 6861,
+      "sha256": "8fef2127acbcb758b35b531fa08429763b92ac17963b0ccb61f25d578734278a"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_forced2/graph.json",
+      "bytes": 194547,
+      "sha256": "5ad1c18f0ca21c51ea14528abd30d2cb184090c6fccbd619910b8982fd377f89"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_forced2/launch/robots2_seed303_20261010-034146.log",
+      "bytes": 135021,
+      "sha256": "0736e286344a7524f4cce8e14832c05660a6d4b5b2c9b45ebff8a77c152cf1e5"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_forced2/ledger.jsonl",
+      "bytes": 41385174,
+      "sha256": "6881d82aa804bd86f33377f3fddbdd973045ad3e8910c7ec0e5f235d997e03ab"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_forced2/ledger_metrics/curves.svg",
+      "bytes": 69364,
+      "sha256": "732534f62870e238cc6d3015ee6a64d70354fad29b884bb42107be6267b22b67"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_forced2/ledger_metrics/events.jsonl",
+      "bytes": 63765,
+      "sha256": "012dd08dbefcd6c9c1ead069d72bedaa7fe1038eaa9351101be2264288871dbc"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_forced2/ledger_metrics/inputs.jsonl",
+      "bytes": 41394314,
+      "sha256": "df02281f8f6d2b83beca5ffbcae08cc48d93396a02e5e14ff52638590d380bce"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_forced2/ledger_metrics/live.jsonl",
+      "bytes": 482773942,
+      "sha256": "7d0cc254ca74e69971075b2bfa0bf5bb6703b523525af05b844538962d805cc9"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_forced2/ledger_metrics/live_windows.csv",
+      "bytes": 21191567,
+      "sha256": "62522278ef40d43e4df950bc6bbc79c2bf7c06ef00ece49f0fac5542e380d20b"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_forced2/ledger_metrics/summary.json",
+      "bytes": 438027,
+      "sha256": "b5f58558c4648d56cc0c13182273855480d587fc66f0771eb5979936c4f91ff2"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_forced2/ledger_metrics/windows.csv",
+      "bytes": 21191567,
+      "sha256": "62522278ef40d43e4df950bc6bbc79c2bf7c06ef00ece49f0fac5542e380d20b"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_forced2/ledger_metrics/windows.jsonl",
+      "bytes": 75596579,
+      "sha256": "4d177cf4e8b182c965c5b8cb46ff15732b6bdd823665924084b5b078a7220308"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_forced2/manifest.json",
+      "bytes": 57056,
+      "sha256": "2d32916c48d9792fb71f7886dc263529fe73c023d55f305c8e906861403a4bd1"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_forced2/native_graph.json",
+      "bytes": 195421,
+      "sha256": "8400c1325d72bff83478ad6d0393b6cd182244630b99a6c7e9cb1576eb418049"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_forced2/navigation_inputs.jsonl.gz",
+      "bytes": 20064030,
+      "sha256": "279761dba00221776f7450fb5d29a0870265b0802dc74a7c9b0a4f8560de6126"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_forced2/observer.log",
+      "bytes": 499,
+      "sha256": "63d9cb64c9064f5a49a21caf0260a78c20f3e1f3f82bbb310ca011c7ea8df692"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_forced2/runner.log",
+      "bytes": 3731,
+      "sha256": "a2788aff26f104e5bb71d1be4f28049164443e89cf23e967a7319e4a80b06126"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_forced2/safety_events.jsonl",
+      "bytes": 139946,
+      "sha256": "3894226fc55ccbddf672fcb04b0d25ad0c0ac8e0f4ea68f4fb39e81b324aa72d"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_forced2/schedule.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_forced2/summary.json",
+      "bytes": 66659,
+      "sha256": "e4982d8114c4d1c5b161e21002b7502e79e863a5469909e7a6ad921385bb4a89"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_lab101/20261010_p2c_v46_dev_lab101.csv",
+      "bytes": 6841,
+      "sha256": "8ad1d7d0494e2b80c238aa879150f4ca4be32b6f0d3b55160d7986415b7daeb2"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_lab101/20261010_p2c_v46_dev_lab101.json",
+      "bytes": 8360,
+      "sha256": "9006e0459d8ab938ae6420103f38282b12528420048cd16e49b0fd21a61e07c3"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_lab101/graph.json",
+      "bytes": 275829,
+      "sha256": "145273e4528ceff93489c90753c66a20137e9b14dfbd5928f0e0e2ea5f2b4dc6"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_lab101/launch/robots3_seed101_20261010-035029.log",
+      "bytes": 126424,
+      "sha256": "e4c06d1ce4fa7947505e51d1732727ed5480fc245d8a3e04911f64147d2ac049"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_lab101/ledger.jsonl",
+      "bytes": 44537565,
+      "sha256": "a6c23cf6baf95c75c7c072b37793f14efc7f57ccedde96072a1e06b26fb4a831"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_lab101/ledger_metrics/curves.svg",
+      "bytes": 41070,
+      "sha256": "d7b0a8710dd64ec95bf7f34427b239afe23d46adabb63f1e152a7bce48417cf6"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_lab101/ledger_metrics/events.jsonl",
+      "bytes": 96505,
+      "sha256": "421dc82480d5ee2ec85c74acc285ff822c45a0aa82bc80f30b406756d32c392e"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_lab101/ledger_metrics/inputs.jsonl",
+      "bytes": 44544395,
+      "sha256": "f62aefe3cefd955400edcf3d7357bb58527c15da987fa4698dbb4c4431ab4084"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_lab101/ledger_metrics/live.jsonl",
+      "bytes": 242152836,
+      "sha256": "61000f99c6b8d49465749d62b771e4c64cffaff35a3f4d775dcbd5a462ef4868"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_lab101/ledger_metrics/live_windows.csv",
+      "bytes": 14227918,
+      "sha256": "9a68c436214aeaa4c05957d7d53adc865ffc3e9717493c1c5a2cc3782ce38379"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_lab101/ledger_metrics/summary.json",
+      "bytes": 615995,
+      "sha256": "377cc23e8e196acfced57cd27ff86052e361b1eaf1f9a621c731a86c59791250"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_lab101/ledger_metrics/windows.csv",
+      "bytes": 14227918,
+      "sha256": "9a68c436214aeaa4c05957d7d53adc865ffc3e9717493c1c5a2cc3782ce38379"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_lab101/ledger_metrics/windows.jsonl",
+      "bytes": 53037312,
+      "sha256": "8b8b0e273269e50404cf8cd70fac2e22fbb03c5317575f05cfb98257c5f89c7b"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_lab101/manifest.json",
+      "bytes": 56917,
+      "sha256": "6cb73d72dbd6ab19fce82361eae23c99394ce94145572dd1299b6e997ac4ac46"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_lab101/native_graph.json",
+      "bytes": 282068,
+      "sha256": "f90e7f1bc8d13be1541f420c32772bf6d13cee0aeb4c2d9998d8d3153b820976"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_lab101/navigation_inputs.jsonl.gz",
+      "bytes": 23712995,
+      "sha256": "18d2f2209d820ca39f0b95d8e8832961d9dc9cb240f6a5c0f64e3e21833179c8"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_lab101/observer.log",
+      "bytes": 707,
+      "sha256": "b69167d76401b878e4a6968fb5ef3193447bcf6c4f2ad66b77e5ef9c66c3abb8"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_lab101/runner.log",
+      "bytes": 4046,
+      "sha256": "060e12d8c7464b7ec6bd29e1837ba59940c40c761d3bc1e772e4e7626ba9a192"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_lab101/safety_events.jsonl",
+      "bytes": 83797,
+      "sha256": "b352bbb7ce7892bceb422bd7f51da447b21c56928b7e40621d2fb3569880a9b7"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_lab101/schedule.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_lab101/summary.json",
+      "bytes": 68105,
+      "sha256": "c4ddda34dcbf7549936f55bf65e17839b23a9aa9ee8184080a4fcde09de25770"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_rooms202/20261010_p2c_v46_dev_rooms202.csv",
+      "bytes": 6859,
+      "sha256": "f4ec8717c50f5500e89fd666a82fe87da25a5be10edf3520d3f1b69267ddbc07"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_rooms202/20261010_p2c_v46_dev_rooms202.json",
+      "bytes": 8374,
+      "sha256": "361d89bd3b5913934dc9afb01412bdc9491397fc019c6c852fef246e06a344a5"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_rooms202/graph.json",
+      "bytes": 270963,
+      "sha256": "572255a467d9ce70e5ffd574d208ad466d676c0b55641fb9a5c0bbf423a80d08"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_rooms202/launch/robots3_seed202_20261010-035029.log",
+      "bytes": 158362,
+      "sha256": "b01e15936cd493e2ba6ec2638d104dbd5fe66a7ab57c0eea34db7240fc1177ee"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_rooms202/ledger.jsonl",
+      "bytes": 43772121,
+      "sha256": "f0b941ba9c079aef318fae66bd7e4a234e9a7bf6252636fee069f7ac3021398a"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_rooms202/ledger_metrics/curves.svg",
+      "bytes": 41005,
+      "sha256": "d23bb4d3c41e90bfbfd2279e356d6c9aa1abfba412ce6fb370a2c74ab5c101a2"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_rooms202/ledger_metrics/events.jsonl",
+      "bytes": 92643,
+      "sha256": "24f72cfaf4c079261b933b05bd41ec425786a831aab67b111908e3cec71d7746"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_rooms202/ledger_metrics/inputs.jsonl",
+      "bytes": 43776679,
+      "sha256": "179f6d5c8fa302da81d36ad3317f3aac5e275a219a294abb189d6e85a4af35f3"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_rooms202/ledger_metrics/live.jsonl",
+      "bytes": 251134677,
+      "sha256": "0dfcf7f1054a92f761073bcfd639f178cced27902df513ce001ce0ce9d1a5b65"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_rooms202/ledger_metrics/live_windows.csv",
+      "bytes": 14579058,
+      "sha256": "946c31772d48ab8c1d7b747639455397d1935f1ca3e00b9145abf972f037e295"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_rooms202/ledger_metrics/summary.json",
+      "bytes": 612637,
+      "sha256": "cdd5d21306f2359e2fb6f5da06a33bb3ee33d66cec878ed35aa7752144e665f4"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_rooms202/ledger_metrics/windows.csv",
+      "bytes": 14579058,
+      "sha256": "946c31772d48ab8c1d7b747639455397d1935f1ca3e00b9145abf972f037e295"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_rooms202/ledger_metrics/windows.jsonl",
+      "bytes": 54135424,
+      "sha256": "d46836374804d668a0fcbf65637304fc2c11f4f08445035495456287bf4d74e9"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_rooms202/manifest.json",
+      "bytes": 56939,
+      "sha256": "c077a57a03c269962aad1ab14045caf9df5fe360ba076c24ce561d61afe80c7e"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_rooms202/native_graph.json",
+      "bytes": 283576,
+      "sha256": "9e06545ebfb4172d988ce34684861d306b9ecb328cbb8428a2c0571918e852f0"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_rooms202/navigation_inputs.jsonl.gz",
+      "bytes": 23786561,
+      "sha256": "6ec990b16925c851288b3d31486627e21fb43a25db8f43a42d721c3d195e0fbf"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_rooms202/observer.log",
+      "bytes": 707,
+      "sha256": "4f1d2cf4f96792a651ff55b6d28190727b65bfeda61c2759ae4007f7f97252a6"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_rooms202/runner.log",
+      "bytes": 4036,
+      "sha256": "4c04724fc302fccc12b2a53a4381267599efde306f563e25ff79e923d7a3199e"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_rooms202/safety_events.jsonl",
+      "bytes": 84670,
+      "sha256": "f4888a3424c139c512ef922fed062fdcb122fba1c003b12f1369940b8761879c"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_rooms202/schedule.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v46/20261010_p2c_v46_dev_rooms202/summary.json",
+      "bytes": 68149,
+      "sha256": "af4868874bde61d86237f3814f1b8e0e56650cad7ce09502bbe252234d8cd3da"
+    }
+  ],
+  "not_invoked": [
+    "17 formal",
+    "two same-source physical",
+    "917"
+  ],
+  "raw_failures_retained": true
+}

@@ -2932,7 +2932,7 @@ def target_scan_node():
         target_scan_steps={}, target_scan_finished_at={},
         get_clock=lambda: SimpleNamespace(now=lambda: SimpleNamespace(to_msg=lambda: Time(sec=100))),
         get_logger=lambda: SimpleNamespace(info=lambda *a: None, warning=lambda *a: None),
-        record_navigation_decision=lambda *args: decisions.append(args))
+        record_navigation_decision=lambda *args: (decisions.append(args) or True))
     node.now = lambda: node.clock
     import queue
     node.shutdown_requested = False

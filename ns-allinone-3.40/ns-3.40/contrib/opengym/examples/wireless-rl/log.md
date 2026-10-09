@@ -8747,3 +8747,20 @@ colcon build --packages-select multi_robot_interfaces merge_map multi_robot_expl
 ```
 
 原两次native重放FAIL/initial全套错误目录no-tests exit4与后正确全套通过保留。新实际需clean pushed完整4开发→17正式+2同源物理，全部固定/安全PASS后才调用917。
+
+
+## 2026-10-10 P2C.1 v46四原生完成但来源协议失败与最终派发边界
+
+2026-10-10 P2C.1 v46四原生COMPLETE286.5/163.3/163.3/245.5、零接触耗尽failed，但rooms一原rally位姿源龄2.081/2.091/2.097超2秒，完整FAIL保留；其余三全审PASS，不替代协议。新最终四导航入口在准备/编码/private发布后核验原源戳，过期撤销且零未发送owner/尝试，header仅新命令准入时刻；无源续租。真实DDS旧两延迟各1过期goal，新各0→fresh12.1各1并结果闭合；511定向/1687功能/四包2.77s/190保护6授权54协议/两声明PASS。仅5中央方法、其余75与全部纯几何/native battery/SLAM/300s/5s/TTL/物理保持。新v47 clean pushed4→17+2待真实全审，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v46_failed_development与20261010_p2c_dispatch_boundary_components。
+
+命令均在canonical ROS cwd、Humble+install/PYTHONNOUSERSITE1、PYTHONPATH含scripts、FastDDS UDPv4清XML/discovery、taskset0–79。实际v46首forced strictPASS后同源后三格并行，全owner/observer自然0且关闭后编辑；17/2/917未调用。组件命令如下，stdout及原件SHA见report provenance：
+
+```bash
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_navigation_dispatch_boundary.py src/multi_robot_exploration/test/test_control.py src/multi_robot_exploration/test/test_target_information_survey.py src/multi_robot_exploration/test/test_initial_known_search.py src/multi_robot_exploration/test/test_exploration_return_preparation.py src/multi_robot_exploration/test/test_live_planning_clock.py src/multi_robot_exploration/test/test_rally_observation_recovery.py src/multi_robot_exploration/test/test_relative_frontier_travel.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test scripts --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+colcon build --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot --symlink-install
+/usr/bin/python3 scripts/check_p2c_source.py --output log/p2c_dispatch_boundary_source.json
+/usr/bin/python3 scripts/check_p2c_dispatch_boundary_runtime.py --output log/p2c_dispatch_boundary_runtime3.json # domain216
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v47 --domain 218 --gazebo-port 20318 --validate-only
+/usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v47_physical --domain 219 --gazebo-port 20319 --validate-only
+```
