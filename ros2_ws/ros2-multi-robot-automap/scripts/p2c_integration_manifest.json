@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-09T01:04:02.009516+00:00",
+  "predeclared_at_utc": "2026-10-09T03:01:00.012836+00:00",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -320,7 +320,8 @@
     "20261009_p2c_v14_failed_development.json",
     "20261009_p2c_v15_failed_development.json",
     "20261009_p2c_v16_failed_development.json",
-    "20261009_p2c_v17_failed_development.json"
+    "20261009_p2c_v17_failed_development.json",
+    "20261009_p2c_v27_failed_development.json"
   ],
   "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
   "opportunity_charge_rules": [
@@ -451,7 +452,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "67264507420969a9ae9ea3ffe74aa00d69573853",
+  "candidate_parent_commit": "dffcb1fd05aba143dd267ab327706662dfdcb641",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -466,7 +467,7 @@
   "initial_known_space_search": {
     "scope": "Complete object mission (enable_rally true) only; pure mapping and existing target reacquisition behavior stay unchanged.",
     "alternation": "Successful full mapping viewpoint enables one known-space purpose; successful full known-space viewpoint returns to mapping. Short prefixes and safety charging preserve the current purpose; ordinary navigation failure returns to mapping.",
-    "history": "Only original delivered odometry and map-to-odom sources each0..2s old at recording; first position per0.5m world bin. Historical2m visit discs are search preferences, never proof of camera coverage or object absence.",
+    "history": "Position history remains for bounded local diversity. Directional known-space interest instead uses original delivered yaw/pose/frame records and current known-free sight; two-metre90degree predicted cones, not omnidirectional visit discs or target absence proof.",
     "view": "Current known-free visible interest in a90-degree sector;16 deterministic headings. Occupied and unknown cells block sight; selected heading retained at the final Nav2 endpoint.",
     "admission": "Original0.45m endpoint/0.35m known-free route, body masks, accepted reservations, current source TTLs, full approach+qualified contact return+reaction/wait reserve and charging fairness. Empty known-space candidate set falls back to ordinary mapping; unfunded candidates request original serial charging.",
     "inputs": "Existing gateway delivered maps/poses/models only; no ground-truth target, hidden camera, native audit stream or new application packet.",
@@ -488,5 +489,12 @@
     "limits": "Current-map local visibility is a search preference, not historical90degree camera coverage, optimality, peer future availability or worst-case native completion guarantee."
   },
   "target_information_survey": true,
-  "observer_heading_confirmation_gap": true
+  "observer_heading_confirmation_gap": true,
+  "camera_aware_known_search": {
+    "history": "Original delivered pose and map-to-odom0..2s, first actual position/yaw per0.5m/22.5degree bin; no source rewriting or native input",
+    "view": "Current delivered known-free rays within original2m/90degree sector; occupied and unknown cells occlude history. A travelled position no longer masks its unseen back side.",
+    "purpose": "Alternating known-space search only; mapping, useful continuation, charging fairness, native energy and full known-free body/return admission unchanged",
+    "evidence": "Every actual visual witness retains original heading/pose source records, fixed view model, delivered grids, chosen gain/yaw and original full budget for independent reconstruction",
+    "limits": "Current-map predicted visual coverage is a search preference, never proof of target absence, perfect camera perception or exhaustive coverage; history reprojects through the current map only; no new radio packet"
+  }
 }

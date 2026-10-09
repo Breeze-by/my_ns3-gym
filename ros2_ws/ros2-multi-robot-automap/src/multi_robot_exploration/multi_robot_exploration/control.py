@@ -341,6 +341,38 @@ def known_search_view(raw_grid,cell,radius_cells,interest):
     return int(gains[best]),float(yaws[best])
 
 
+def camera_search_interest(raw_grid, resolution, origin, views):
+    """Prefer known cells outside delivered historical camera cones.
+
+    This is a current-map visibility estimate, never evidence of target absence.
+    The original two-metre information radius lies inside the task's three-metre
+    camera range; unknown/occupied cells block every historical sight ray.
+    """
+    known = raw_grid == 0
+    interest = known.copy()
+    height, width = raw_grid.shape
+    offsets = np.linspace(-INITIAL_SEARCH_VIEW_FOV_RAD / 2., INITIAL_SEARCH_VIEW_FOV_RAD / 2.,
+        max(16, math.ceil(INITIAL_SEARCH_VIEW_FOV_RAD * INFORMATION_RADIUS_M / resolution)) + 1)
+    steps = np.arange(0., INFORMATION_RADIUS_M + resolution / 4., resolution / 2.)
+    for view in views:
+        position = view['position']
+        angles = view['yaw'] + offsets
+        columns = np.floor((position[0] + np.cos(angles)[:, None] * steps - origin[0]) / resolution).astype(int)
+        rows = np.floor((position[1] + np.sin(angles)[:, None] * steps - origin[1]) / resolution).astype(int)
+        inside = (rows >= 0) & (rows < height) & (columns >= 0) & (columns < width)
+        rows = np.clip(rows, 0, height - 1)
+        columns = np.clip(columns, 0, width - 1)
+        visible = np.logical_and.accumulate(inside & known[rows, columns], axis=1)
+        dx = (columns + .5) * resolution + origin[0] - position[0]
+        dy = (rows + .5) * resolution + origin[1] - position[1]
+        bearing = np.arctan2(dy, dx)
+        delta = np.arctan2(np.sin(bearing - view['yaw']), np.cos(bearing - view['yaw']))
+        seen = (visible & (dx * dx + dy * dy <= INFORMATION_RADIUS_M ** 2)
+                & (np.abs(delta) <= INITIAL_SEARCH_VIEW_FOV_RAD / 2.))
+        interest[rows[seen], columns[seen]] = False
+    return interest
+
+
 def mission_search_diversity(target,states,visits,raw_grid,resolution,origin):
     """Discount nearby known-visible visits, never claim camera coverage."""
     homes={}
@@ -367,7 +399,8 @@ def mission_search_diversity(target,states,visits,raw_grid,resolution,origin):
 
 
 def known_space_search_candidates(raw_grid, resolution, origin, robot_name,
-                                  position, visited, exclusions=(), blocked=(), gain_cache=None, face_interest=False):
+                                  position, visited, exclusions=(), blocked=(), gain_cache=None, face_interest=False,
+                                  camera_views=None):
     """Revisit current known space when mapping frontiers cannot aid detection.
 
     Visited neighborhoods are a search preference, not proof of visual coverage.
@@ -382,9 +415,11 @@ def known_space_search_candidates(raw_grid, resolution, origin, robot_name,
         return []
     if gain_cache is None:gain_cache={}
     if face_interest:
-        if 'initial_search_interest' not in gain_cache:
-            gain_cache['initial_search_interest']=known_search_interest(raw_grid,resolution,origin,visited)
-        interest=gain_cache['initial_search_interest']
+        key = 'camera_search_interest' if camera_views is not None else 'initial_search_interest'
+        if key not in gain_cache:
+            gain_cache[key] = (camera_search_interest(raw_grid, resolution, origin, camera_views)
+                if camera_views is not None else known_search_interest(raw_grid,resolution,origin,visited))
+        interest=gain_cache[key]
     else:interest=known_search_interest(raw_grid,resolution,origin,visited)
     if not interest.any():
         return []
@@ -5758,6 +5793,18 @@ class HeadquartersControl(Node):
         if key not in visits:
             visits[key]=dict(source='ap_delivered_pose_history',robot=name,position=list(position),
                 observed_at_sec=now,pose_source_time=odom,frame_source_time=frame)
+        yaw = getattr(self, 'robot_yaws', {}).get(name)
+        if yaw is None or not math.isfinite(yaw):
+            return
+        views = getattr(self, 'initial_search_views', None)
+        if views is None:
+            self.initial_search_views = views = {}
+        heading_bin = math.floor((yaw + math.pi) / (2. * math.pi / 16)) % 16
+        view_key = (*key, heading_bin)
+        if view_key not in views:
+            views[view_key] = dict(source='ap_delivered_pose_and_heading_history',robot=name,
+                position=list(position),yaw=yaw,observed_at_sec=now,
+                pose_source_time=odom,frame_source_time=frame)
 
     def active_exclusions(self):
         now = self.now()
@@ -5895,6 +5942,7 @@ class HeadquartersControl(Node):
             and name not in getattr(self, 'rally_charge_requested', {})}
         self.exploration_travel_choices = {}
         search_gain_cache = {}  # One immutable map/visit mask per admission batch.
+        camera_views = list(getattr(self, 'initial_search_views', {}).values())
         # This context belongs only to this map/admission callback; expired or
         # replaced maps and every newly generated batch discard the forecast.
         lookahead_candidates = {}
@@ -5929,7 +5977,7 @@ class HeadquartersControl(Node):
                         self.map_data,self.resolution,self.origin,robot_name,position,
                         [*visits,*[p for p in self.robot_positions.values() if p is not None]],robot_exclusions,
                         [p for name,p in self.robot_positions.items() if name!=robot_name and p is not None],
-                        gain_cache=search_gain_cache,face_interest=True)
+                        gain_cache=search_gain_cache,face_interest=True,camera_views=camera_views)
                     initial_search=bool(robot_candidates)
                     robot_diagnostics=dict(frontier_groups=0,groups_with_viewpoints=0)
                 if refine == "known_space":
@@ -6000,6 +6048,9 @@ class HeadquartersControl(Node):
                                 if other != robot_name and p is not None] if refine or initial_search else []))
                         if initial_search:
                             preference.update(initial_search_visits=list(self.initial_search_visits.values()),
+                                initial_search_views=camera_views,
+                                search_view_model=dict(radius_m=INFORMATION_RADIUS_M,
+                                    fov_rad=INITIAL_SEARCH_VIEW_FOV_RAD,heading_bins=16),
                                 search_kind='known_space',view_yaw=assignment.navigation_yaw)
                         travel_preferences[robot_name, coordinated] = preference
                     if not search and interrupted_frontier_is_useful(

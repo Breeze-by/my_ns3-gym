@@ -12,10 +12,12 @@ from unittest.mock import Mock
 
 import numpy as np
 import rclpy
-from geometry_msgs.msg import PoseStamped
+from geometry_msgs.msg import PoseStamped, TransformStamped
+from nav_msgs.msg import Odometry
 from rclpy.executors import SingleThreadedExecutor
 from rclpy.node import Node
 from std_msgs.msg import String
+from tf2_msgs.msg import TFMessage
 
 from multi_robot_exploration import control as c
 from check_p2c_gate import exploration_travel_audit, target_survey_audit, observer_heading_audit
@@ -61,10 +63,12 @@ def main():
         original_rows=namespace['known_space_search_candidates'](*inputs,face_interest=True)
         current_rows=c.known_space_search_candidates(*inputs,face_interest=True)
         assert original_rows==current_rows,'integer normalization changed a candidate value'
-        def publish(candidate_function):
+        def publish(candidate_function, camera_views=None):
             visits=list(coordinator.initial_search_visits.values())
+            options=dict(face_interest=True)
+            if camera_views is not None:options['camera_views']=camera_views
             candidates=candidate_function(grid,.1,(0.,0.),'tb1',coordinator.robot_positions['tb1'],
-                [*[v['position'] for v in visits],coordinator.robot_positions['tb1']],face_interest=True)
+                [*[v['position'] for v in visits],coordinator.robot_positions['tb1']],**options)
             a=max(candidates,key=lambda row:row[0])[3]
             f=c.HeadquartersControl.frontier_travel_preference(coordinator,'tb1',a,fields)
             f.update(base_utility=a.utility,battery_factor=1.,adjusted_utility=a.utility*f['factor'],
@@ -73,6 +77,10 @@ def main():
                 blocked_positions=[],planned_distance_m=a.path_distance_m,initial_search_visits=visits,
                 search_kind='known_space',view_yaw=a.navigation_yaw,continuation_weight=1.)
             f['adjusted_utility']*=f.get('mission_spatial_diversity',{}).get('factor',1.)
+            if camera_views is not None:
+                f.update(initial_search_views=camera_views,
+                    search_view_model=dict(radius_m=c.INFORMATION_RADIUS_M,
+                        fov_rad=c.INITIAL_SEARCH_VIEW_FOV_RAD,heading_bins=16))
             if coordinator.enable_battery:
                 f['required_energy']=coordinator.exploration_required_energy('tb1',a.path_distance_m,(a.x,a.y))
             f['scheduling_score']=f['adjusted_utility'];coordinator.exploration_travel_choices={'tb1':f}
@@ -104,6 +112,29 @@ def main():
         while len(received)<2 and time.monotonic()<deadline:executor.spin_once(timeout_sec=.02)
         assert len(received)==2 and received[-1]['travel_preference']['mission_spatial_diversity']['visits']
         mission_audit=exploration_travel_audit(received[-1:],True,True,True,True,True)
+        odom_publisher=receiver.create_publisher(Odometry,'/gateway/received/tb1/odom',10)
+        tf_publisher=receiver.create_publisher(TFMessage,'/gateway/received/tb1/tf',10)
+        deadline=time.monotonic()+10.
+        while (odom_publisher.get_subscription_count()!=1 or tf_publisher.get_subscription_count()!=1
+                ) and time.monotonic()<deadline:
+            executor.spin_once(timeout_sec=.02)
+        assert odom_publisher.get_subscription_count()==tf_publisher.get_subscription_count()==1
+        transform=TransformStamped();transform.header.frame_id='tb1/map';transform.child_frame_id='tb1/odom'
+        transform.header.stamp.sec=10;transform.transform.rotation.w=1.
+        tf_publisher.publish(TFMessage(transforms=[transform]))
+        odom=Odometry();odom.header.stamp.sec=10
+        odom.pose.pose.position.x=2.05;odom.pose.pose.position.y=3.05;odom.pose.pose.orientation.w=1.
+        odom_publisher.publish(odom)
+        deadline=time.monotonic()+5.
+        while not getattr(coordinator,'initial_search_views',{}) and time.monotonic()<deadline:
+            executor.spin_once(timeout_sec=.02)
+        views=list(coordinator.initial_search_views.values())
+        assert len(views)==1 and views[0]['yaw']==0. and views[0]['pose_source_time']==views[0]['frame_source_time']==10.
+        publish(c.known_space_search_candidates,views)
+        deadline=time.monotonic()+5.
+        while len(received)<3 and time.monotonic()<deadline:executor.spin_once(timeout_sec=.02)
+        assert len(received)==3
+        camera_audit=exploration_travel_audit(received[-1:],True,True,True,True,True,True)
         survey_grid=np.zeros((80,100),dtype='<i2');survey_grid[55:,:50]=-1
         survey_grid.setflags(write=False)
         coordinator.map_data=coordinator.source_map_data=survey_grid
@@ -151,6 +182,8 @@ def main():
             independent_audit=audit,mission_diversity_audit=mission_audit,
             target_survey_audit=survey_audit,synthetic_survey_action_client=True,received=received)
         result['observer_heading_audit']=headings
+        result['camera_search_audit']=camera_audit
+        result['actual_delivered_pose_and_tf_dds_history']=views
         args.output.parent.mkdir(parents=True,exist_ok=True);args.output.write_text(json.dumps(result,indent=2)+'\n')
         print(json.dumps({k:v for k,v in result.items() if k!='received'}))
     finally:

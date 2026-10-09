@@ -206,9 +206,9 @@ def lookahead_audit(records,require_compound_pose=False):
 
 
 def exploration_travel_audit(records,required=False,require_commitment=False,require_bounded_commitment=False,
-        require_initial_search=False,require_diversity=False):
+        require_initial_search=False,require_diversity=False,require_camera_search=False):
     """Rebuild executed frontier travel and delivered-only energy witnesses."""
-    count=0;discounts=0;resumed=0;visual_count=0;diversity_count=0
+    count=0;discounts=0;resumed=0;visual_count=0;diversity_count=0;camera_count=0
     for e in records:
         if e.get('event')!='coordinator_navigation_decision' or e.get('kind') not in ('exploration','initial_visual_search'):continue
         f=e.get('travel_preference')
@@ -315,7 +315,25 @@ def exploration_travel_audit(records,required=False,require_commitment=False,req
                 key=tuple(math.floor(v/control.INITIAL_SEARCH_VISIT_BIN_M) for v in p)
                 assert key not in bins;bins.add(key)
             points=[v['position'] for v in visits]+[p for p in positions.values() if p is not None]
-            interest=control.known_search_interest(raw['data'],raw['resolution'],raw['origin'],points)
+            views=f.get('initial_search_views')
+            if require_camera_search:assert views,'missing delivered camera heading history'
+            if views is not None:
+                assert f['search_view_model']==dict(radius_m=control.INFORMATION_RADIUS_M,
+                    fov_rad=control.INITIAL_SEARCH_VIEW_FOV_RAD,heading_bins=16)
+                bins=set()
+                for view in views:
+                    assert view['source']=='ap_delivered_pose_and_heading_history' and view['robot'] in positions
+                    p=view['position'];yaw=view['yaw'];observed=view['observed_at_sec']
+                    assert len(p)==2 and all(math.isfinite(v) for v in p) and -math.pi<=yaw<=math.pi
+                    assert 0<=observed<=now
+                    assert all(0<=observed-view[k]<=2. for k in ('pose_source_time','frame_source_time'))
+                    key=(*(math.floor(v/control.INITIAL_SEARCH_VISIT_BIN_M) for v in p),
+                        math.floor((yaw+math.pi)/(2.*math.pi/16))%16)
+                    assert key not in bins;bins.add(key)
+                interest=control.camera_search_interest(raw['data'],raw['resolution'],raw['origin'],views)
+                camera_count+=1
+            else:
+                interest=control.known_search_interest(raw['data'],raw['resolution'],raw['origin'],points)
             gain,yaw=control.known_search_view(raw['data'],cell,control.INFORMATION_RADIUS_M/raw['resolution'],interest)
             assert gain==f['information_gain'] and gain>0
             assert math.isclose(yaw,f['view_yaw'],abs_tol=1e-8)
@@ -364,7 +382,8 @@ def exploration_travel_audit(records,required=False,require_commitment=False,req
     return dict(status='PASS',executed_frontier_witnesses=count,relative_travel_discounts=discounts,
         resumed_frontier_witnesses=resumed,required=required,commitment_required=require_commitment,
         bounded_commitment_required=require_bounded_commitment,initial_visual_witnesses=visual_count,
-        initial_search_required=require_initial_search,spatial_diversity_witnesses=diversity_count)
+        initial_search_required=require_initial_search,spatial_diversity_witnesses=diversity_count,
+        camera_aware_visual_witnesses=camera_count,camera_search_required=require_camera_search)
 
 
 def target_survey_audit(records, declared=False, radius_m=None, position_tolerance_m=None):
@@ -646,7 +665,7 @@ def check_one(path,config):
     travel=exploration_travel_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
         bool(config.get('exploration_travel_preference')),bool(config.get('exploration_frontier_commitment')),
         bool(config.get('exploration_bounded_commitment')),bool(config.get('initial_known_space_search')),
-        bool(config.get('mission_spatial_diversity')))
+        bool(config.get('mission_spatial_diversity')),bool(config.get('camera_aware_known_search')))
     surveys=target_survey_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
         bool(config.get('target_information_survey')),result['target_max_distance_m'],result['rally_position_tolerance_m'])
     headings=observer_heading_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
