@@ -66,3 +66,55 @@ def test_both_levels_missing_geometry_remain_failure(monkeypatch):
     monkeypatch.setattr(c, 'rally_pose_candidates', poses)
     assert not c.assign_rally_poses(np.zeros((30, 30)), .1, (0., 0.), {'tb1': (1., 1.)}, (2., 2.))
     assert levels == [False, True]
+
+
+def test_geometrically_feasible_charge_plan_still_searches_for_funded_observer(monkeypatch):
+    distant, funded = c.RallyPose(8.05, 8.05, 0.), c.RallyPose(3.05, 4.05, 0.)
+    levels = []
+    def poses(*args, **kwargs):
+        levels.append(args[-1])
+        return [funded, distant] if args[-1] else [distant]
+    monkeypatch.setattr(c, 'rally_pose_candidates', poses)
+    grid = np.zeros((120, 120), dtype=np.int16)
+    state = dict(mode='ACTIVE', energy=20., charge_x=4.05, charge_y=4.05,
+        capacity=100., charge_target_fraction=.8, nominal_speed_mps=.18,
+        idle_cost_per_sec=.02, move_cost_per_m=1., return_path_factor=2.,
+        return_safety_margin=8., charge_duration_sec=6.)
+    args = (grid, .1, (0., 0.), {'tb1': (4.05, 4.05)}, (4.05, 4.05))
+    score = []
+    assert c._assign_rally_poses(*args, battery_states={'tb1': state},
+        observer_robot='tb1', stratified=False, score_output=score) == {'tb1': distant}
+    assert score[0][:2] == (1, 1)  # Feasible after charging, but loses its observer.
+    levels.clear()
+    assert c.assign_rally_poses(*args, battery_states={'tb1': state},
+        observer_robot='tb1') == {'tb1': funded}
+    assert levels == [False, True]
+
+
+@pytest.mark.parametrize('fine', ['missing', 'worse'])
+def test_refinement_keeps_original_feasible_charge_plan_when_no_better_plan_exists(monkeypatch, fine):
+    coarse, distant = c.RallyPose(5.05, 4.05, 0.), c.RallyPose(8.05, 8.05, 0.)
+    def poses(*args, **kwargs):
+        return ([] if fine == 'missing' else [distant]) if args[-1] else [coarse]
+    monkeypatch.setattr(c, 'rally_pose_candidates', poses)
+    state = dict(mode='ACTIVE', energy=1., charge_x=4.05, charge_y=4.05,
+        capacity=100., charge_target_fraction=.8)
+    assert c.assign_rally_poses(np.zeros((120, 120), dtype=np.int16), .1, (0., 0.),
+        {'tb1': (4.05, 4.05)}, (4.05, 4.05), battery_states={'tb1': state},
+        observer_robot='tb1') == {'tb1': coarse}
+
+
+@pytest.mark.parametrize('observer', [None, 'unknown', 'tb1'])
+def test_refinement_does_not_expand_a_charge_plan_without_active_observer(monkeypatch, observer):
+    levels = []
+    coarse = c.RallyPose(5.05, 4.05, 0.)
+    def poses(*args, **kwargs):
+        levels.append(args[-1])
+        return [coarse]
+    monkeypatch.setattr(c, 'rally_pose_candidates', poses)
+    state = dict(mode='CHARGING' if observer == 'tb1' else 'ACTIVE', energy=1.,
+        charge_x=4.05, charge_y=4.05, capacity=100., charge_target_fraction=.8)
+    assert c.assign_rally_poses(np.zeros((120, 120), dtype=np.int16), .1, (0., 0.),
+        {'tb1': (4.05, 4.05)}, (4.05, 4.05), battery_states={'tb1': state},
+        observer_robot=observer) == {'tb1': coarse}
+    assert levels == [False]

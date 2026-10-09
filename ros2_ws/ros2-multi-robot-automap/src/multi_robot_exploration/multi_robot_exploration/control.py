@@ -1746,20 +1746,28 @@ def assign_rally_poses(
     angular boundary samples.
     Immutable geometry is reused only across levels of this one proposal.
     Each level keeps the full return, charge/wait and body-cost optimizer;
-    stopping at the first feasible level trades global soft-cost optimality
-    for less computation. Actual navigation still requires fresh admission.
+    A feasible level may stop once its ACTIVE observer is funded; otherwise
+    inspect the existing second level before planning an observer handoff.
+    Actual navigation still requires fresh admission.
     """
     # No geometry survives the proposal or a mutable source alias.
     geometry_cache = ({} if immutable_grid(raw_grid) and all(
         isinstance(g, dict) and immutable_grid(g.get("data"))
         for g in (return_maps or {}).values()) else None)
+    best, best_score = {}, None
     for stratified in (False, True):
+        score = []
         result = _assign_rally_poses(raw_grid, resolution, origin, robot_positions,
             target, objective, battery_states, observer_robot, current_positions,
-            hold_sec, return_maps, stratified, geometry_cache)
+            hold_sec, return_maps, stratified, geometry_cache, score)
         if result:
-            return result
-    return {}
+            if best_score is None or score[0] < best_score:
+                best, best_score = result, score[0]
+            if (battery_states is None
+                    or battery_states.get(observer_robot, {}).get('mode') != 'ACTIVE'
+                    or best_score[0] == 0):
+                return best
+    return best
 
 def _assign_rally_poses(
     raw_grid,
@@ -1775,6 +1783,7 @@ def _assign_rally_poses(
     return_maps=None,
     stratified=True,
     geometry_cache=None,
+    score_output=None,
 ):
     """Assign separated visible poses, accounting for serial charge waits.
 
@@ -2091,6 +2100,8 @@ def _assign_rally_poses(
     search({}, set(), 0.0, 0.0, 0.0)
     if not best:
         return {}
+    if score_output is not None:
+        score_output.append(best_score)
     return {name: best[name] for name in names}
 
 

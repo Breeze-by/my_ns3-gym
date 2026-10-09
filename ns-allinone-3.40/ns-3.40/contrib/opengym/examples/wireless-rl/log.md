@@ -8782,3 +8782,19 @@ colcon build --packages-select multi_robot_interfaces merge_map multi_robot_expl
 /usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v48 --domain 218 --gazebo-port 20318 --validate-only
 /usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v48_physical --domain 219 --gazebo-port 20319 --validate-only
 ```
+
+
+## 2026-10-10 P2C.1 v48 原失败与观测机候选细化
+
+2026-10-10 P2C.1 v48四原整体FAIL：6834560 forced/rooms/corr原生COMPLETE204.1/182.0/262.1，lab RALLY300.1timeout；四零接触耗尽failed，corr旁录图枚举节点消失退出1、部分原件保持，非电量计停滞。forced/rooms全审PASS、lab15独立子审与3真实同伴支持中间腿不替代任务。新集合第一层若ACTIVE观测机预测缺电则检查原第二层、原评分择优且原可行fallback；原lab1/3charge→0/2条件快照，其他三选择相同，源龄报价无改变未采用。图只读者仅NodeNameNonExistentError拒绝残图/原timer重试，真实DDS旧1/新0继续旁录完整图PASS。1742功能/179定向/四包5.25s/190保护6授权54协议/两声明PASS；仅2纯函数，81中央与96其他纯/native/SLAM/300s/5s/TTL/物理保持。新v49 clean pushed4→17+2待实测，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v48_failed_development与20261010_p2c_observer_refinement_components。
+
+原任务源码冻结6834560329e3b6fab09177747fc23e4ff23f9081；四owner/observer均已关闭后修改。完整原失败与组件证据分开，源龄假设未采用，未运行17正式或917。验证命令在ROS目录、Humble/install原环境、taskset0-79：
+
+```bash
+/usr/bin/python3 scripts/check_p2c_gate.py --run-root log/p2c/20261010_p2c_v48 --development --workers 3 --output log/p2c_v48_development_gate.json
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_*rally*.py scripts/test_p2c_native_graph_retry.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test scripts --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+colcon build --symlink-install --packages-select multi_robot_exploration multi_robot_interfaces multi_robot merge_map
+/usr/bin/python3 scripts/check_p2c_source.py --output log/p2c_observer_refinement_source.json
+/usr/bin/python3 scripts/check_p2c_graph_retry_runtime.py --output log/p2c_graph_retry_runtime1.json
+```

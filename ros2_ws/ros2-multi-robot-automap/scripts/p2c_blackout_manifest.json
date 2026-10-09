@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-09T16:18:26.374563+00:00",
+  "predeclared_at_utc": "2026-10-09T21:32:00.650342+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "531b2abde913f162514570bf99955a7ba0b50e85",
+  "candidate_parent_commit": "6834560329e3b6fab09177747fc23e4ff23f9081",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -357,14 +357,15 @@
     }
   },
   "rally_candidate_sampling": {
-    "algorithm": "original72 rings plus5/10degree outer-ring visible boundary refinement; existing angular boundary representatives only if no complete feasible first-tier assignment",
+    "algorithm": "original72 rings plus5/10degree outer-ring visible boundary refinement; inspect the existing angular tier if the first level is infeasible or requires its ACTIVE observer to charge",
     "maximum_candidates": 464,
     "first_level_maximum": 120,
     "region": "unchanged known-free target-visible1..2.6m region,0.45m endpoint clearance and0.8m separation",
     "pricing": "Each level retains original complete qualified return, observer/charge/wait/soft exposure/body cost optimization and cap feasibility; final fresh admission still required",
-    "limits": "Stop at first feasible candidate tier; private known-map geometry only, no new perception/truth input. Offline saved-input soft risk/CPU comparisons are not original-history, causal native success, future-map robustness or worst-case guarantees",
+    "limits": "At most the same two candidate tiers; retain the better complete original objective tuple, including a feasible first-tier fallback. A predicted funded observer only ranks geometry: current complete approach/return, wait/hold, original source-age and body admission remain mandatory. No new perception/truth input or causal/worst-case mission guarantee",
     "evidence": "20261009_p2c_outer_sampling_components.json",
-    "maximum_added_first_tier": 48
+    "maximum_added_first_tier": 48,
+    "observer_refinement_evidence": "20261010_p2c_observer_refinement_components.json"
   },
   "native_contact_arrival": {
     "algorithm": "Finish the already accepted budgeted contact waypoint before entering CHARGING; crossing the original outer radius does not cancel a pending/owned leg",

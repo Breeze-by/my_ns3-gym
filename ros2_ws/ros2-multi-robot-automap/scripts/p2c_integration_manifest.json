@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-09T16:18:26.374563+00:00",
+  "predeclared_at_utc": "2026-10-09T21:32:00.647493+00:00",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -448,14 +448,15 @@
     "exposure": "Soft weighted complete-return length between original0.35m path and0.45m endpoint margins; not energy, continuous clearance or dynamic-obstacle guarantee. Every existing hard constraint is unchanged."
   },
   "rally_candidate_sampling": {
-    "algorithm": "original72 rings plus5/10degree outer-ring visible boundary refinement; existing angular boundary representatives only if no complete feasible first-tier assignment",
+    "algorithm": "original72 rings plus5/10degree outer-ring visible boundary refinement; inspect the existing angular tier if the first level is infeasible or requires its ACTIVE observer to charge",
     "maximum_candidates": 464,
     "first_level_maximum": 120,
     "region": "unchanged known-free target-visible1..2.6m region,0.45m endpoint clearance and0.8m separation",
     "pricing": "Each level retains original complete qualified return, observer/charge/wait/soft exposure/body cost optimization and cap feasibility; final fresh admission still required",
-    "limits": "Stop at first feasible candidate tier; private known-map geometry only, no new perception/truth input. Offline saved-input soft risk/CPU comparisons are not original-history, causal native success, future-map robustness or worst-case guarantees",
+    "limits": "At most the same two candidate tiers; retain the better complete original objective tuple, including a feasible first-tier fallback. A predicted funded observer only ranks geometry: current complete approach/return, wait/hold, original source-age and body admission remain mandatory. No new perception/truth input or causal/worst-case mission guarantee",
     "evidence": "20261009_p2c_outer_sampling_components.json",
-    "maximum_added_first_tier": 48
+    "maximum_added_first_tier": 48,
+    "observer_refinement_evidence": "20261010_p2c_observer_refinement_components.json"
   },
   "native_snapshot_consumption": {
     "subscriptions": "Native mixed TF retains20 with a separate lightweight input callback group; fused-map latest1; odometry remains original10, local map/task/charge/event/action queues unchanged",
@@ -499,7 +500,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "531b2abde913f162514570bf99955a7ba0b50e85",
+  "candidate_parent_commit": "6834560329e3b6fab09177747fc23e4ff23f9081",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",

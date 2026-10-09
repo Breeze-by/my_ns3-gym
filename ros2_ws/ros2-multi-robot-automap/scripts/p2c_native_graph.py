@@ -23,10 +23,15 @@ def native_tf_ingress_audit(graph,robot_count,required=False):
 def complete_native_graph(node,robot_count):
     from multi_robot_exploration.bypass_audit import (
         expected_runtime_nodes,graph_snapshot,manifest_path,runtime_violations)
+    from rclpy.impl.implementation_singleton import rclpy_implementation
     import json
     rules=json.loads(manifest_path().read_text())
-    snapshot=graph_snapshot(node)
-    assert expected_runtime_nodes(rules,robot_count)<=snapshot['nodes'].keys(),'incomplete application graph'
-    native_tf_ingress_audit(snapshot,robot_count,True)
-    assert not runtime_violations(node,rules,robot_count),'forbidden bypass'
+    try:
+        snapshot=graph_snapshot(node)
+        assert expected_runtime_nodes(rules,robot_count)<=snapshot['nodes'].keys(),'incomplete application graph'
+        native_tf_ingress_audit(snapshot,robot_count,True)
+        assert not runtime_violations(node,rules,robot_count),'forbidden bypass'
+    except rclpy_implementation.NodeNameNonExistentError as error:
+        # The graph may change between discovery and endpoint enumeration.
+        raise AssertionError('discovery changed during native graph capture') from error
     return snapshot
