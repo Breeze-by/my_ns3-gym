@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-09T04:22:10.703222+00:00",
+  "predeclared_at_utc": "2026-10-09T05:54:15.216052+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -100,7 +100,7 @@
   },
   "staging_apparatus_content_sha256": "47ce7998e212a9463ab657bbc0b121d4903ed886016bbf0fd3a2399c986da05d",
   "physical_observer_content_sha256": "1d8a86d39f57982ea1cf18619a35c4a39dcbe151e17eef2af35d16a27cdc899c",
-  "development_parent": "f455c2ee299501a61301318d61a4fd3ce8ad9fb2",
+  "development_parent": "0972eec6561b92efb55b195a07b0716d3aca114b",
   "cases": {
     "physical_ideal": {
       "world": "my_world.world",
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "dffcb1fd05aba143dd267ab327706662dfdcb641",
+  "candidate_parent_commit": "0972eec6561b92efb55b195a07b0716d3aca114b",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -215,7 +215,8 @@
     "20261009_p2c_v27_failed_development.json",
     "20261009_p2c_v28_failed_development.json",
     "20261009_p2c_v30_failed_development.json",
-    "20261009_p2c_v31_failed_development.json"
+    "20261009_p2c_v31_failed_development.json",
+    "20261009_p2c_v32_failed_development.json"
   ],
   "coordinator_live_clock": {
     "executor": "Two workers; only the existing /clock subscription moves to an independent mutually exclusive group. Original state/action callbacks remain serialized.",
@@ -246,5 +247,14 @@
     "scope": "Pure computation only; source TTL, true clock, native geometry/budget/300s/5s and all case/physical stimuli unchanged",
     "evidence": "20261009_p2c_visibility_lookup_components.json",
     "preparation": "Generate original mapping frontiers only when that branch is needed; known-space search retains original mapping fallback and identical path-clearance travel fields"
+  },
+  "candidate_priority_computation": {
+    "algorithm": "lazy exact stable greedy with original raw utility and possible2x continuation as upper bounds",
+    "price": "original complete return battery factor, relative geodesic factor and mission spatial diversity; only fully priced priority above all remaining bounds enters original body/route/full-budget checks",
+    "skip": "unused options of already provisionally selected robot; original route loop skipped those same options; retain complete raw pool for existing charging lookahead",
+    "leases": "true clock/source TTL checks at generation, each price, route and final dispatch; an expired lazy price revokes all provisional plans, no source renewal",
+    "diagnostics": "candidate_assignments counts priced rows; generated_candidate_assignments counts raw rows",
+    "scope": "fixed-source order equivalence and conditional CPU evidence are not live callback latency, worst-case bound or mission acceptance",
+    "evidence": "20261009_p2c_lazy_priority_components.json"
   }
 }

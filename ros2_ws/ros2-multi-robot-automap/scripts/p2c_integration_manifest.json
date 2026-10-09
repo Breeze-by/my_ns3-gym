@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-09T04:22:10.701170+00:00",
+  "predeclared_at_utc": "2026-10-09T05:54:15.213611+00:00",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -301,7 +301,7 @@
   ],
   "safety_probe_manifest": "p3b5_staged_return_probe_manifest.json",
   "energy_unit": "simulation_model_units_not_joules",
-  "development_parent": "f455c2ee299501a61301318d61a4fd3ce8ad9fb2",
+  "development_parent": "0972eec6561b92efb55b195a07b0716d3aca114b",
   "retained_failed_development": "20261008_p2c_v1_failed_development.json",
   "opportunity_charge_algorithm": "two_current_frontiers_complete_route_budget",
   "retained_failed_developments": [
@@ -324,7 +324,8 @@
     "20261009_p2c_v27_failed_development.json",
     "20261009_p2c_v28_failed_development.json",
     "20261009_p2c_v30_failed_development.json",
-    "20261009_p2c_v31_failed_development.json"
+    "20261009_p2c_v31_failed_development.json",
+    "20261009_p2c_v32_failed_development.json"
   ],
   "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
   "opportunity_charge_rules": [
@@ -456,7 +457,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "dffcb1fd05aba143dd267ab327706662dfdcb641",
+  "candidate_parent_commit": "0972eec6561b92efb55b195a07b0716d3aca114b",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -523,5 +524,14 @@
     "scope": "Pure computation only; source TTL, true clock, native geometry/budget/300s/5s and all case/physical stimuli unchanged",
     "evidence": "20261009_p2c_visibility_lookup_components.json",
     "preparation": "Generate original mapping frontiers only when that branch is needed; known-space search retains original mapping fallback and identical path-clearance travel fields"
+  },
+  "candidate_priority_computation": {
+    "algorithm": "lazy exact stable greedy with original raw utility and possible2x continuation as upper bounds",
+    "price": "original complete return battery factor, relative geodesic factor and mission spatial diversity; only fully priced priority above all remaining bounds enters original body/route/full-budget checks",
+    "skip": "unused options of already provisionally selected robot; original route loop skipped those same options; retain complete raw pool for existing charging lookahead",
+    "leases": "true clock/source TTL checks at generation, each price, route and final dispatch; an expired lazy price revokes all provisional plans, no source renewal",
+    "diagnostics": "candidate_assignments counts priced rows; generated_candidate_assignments counts raw rows",
+    "scope": "fixed-source order equivalence and conditional CPU evidence are not live callback latency, worst-case bound or mission acceptance",
+    "evidence": "20261009_p2c_lazy_priority_components.json"
   }
 }

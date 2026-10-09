@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import base64
 import hashlib
+import heapq
 import json
 import math
 import os
@@ -639,6 +640,33 @@ def interrupted_frontier_is_useful(assignment, intent, battery_factor):
 def frontier_scheduling_score(utility, resuming):
     """Favor useful continuation without making a low-value intent absolute."""
     return utility * (FRONTIER_CONTINUATION_WEIGHT if resuming else 1.0)
+
+
+def lazy_priority_candidates(candidates, evaluate, upper_bound, priority):
+    """Yield exact stable greedy order without pricing every unused option.
+
+    Only a fully evaluated score above every remaining upper bound is yielded.
+    Original input indices retain the old stable-sort tie order.
+    """
+    heap = []
+    for index, candidate in enumerate(candidates):
+        bound = upper_bound(candidate)
+        if not math.isfinite(bound):
+            raise ValueError('candidate upper bound must be finite')
+        heap.append((-bound, index, False, candidate))
+    heapq.heapify(heap)
+    while heap:
+        negative_bound, index, evaluated, candidate = heapq.heappop(heap)
+        if evaluated:
+            yield candidate
+            continue
+        result = evaluate(candidate)
+        if result is None:
+            continue
+        score = priority(result)
+        if not math.isfinite(score) or score > -negative_bound:
+            raise ValueError('candidate priority exceeds its declared finite upper bound')
+        heapq.heappush(heap, (-score, index, True, result))
 
 
 def nearest_traversable(traversable, start, max_radius_cells):
@@ -6060,6 +6088,9 @@ class HeadquartersControl(Node):
         charge_candidates = {}
         for refine in ((False, True, "known_space") if search else (False, True)):
             candidates = []
+            raw_candidates = []
+            candidate_contexts = {}
+            scoring_aborted = False
             resume_candidates = set()
             unfunded_candidates = set()
             travel_preferences = {}
@@ -6122,60 +6153,71 @@ class HeadquartersControl(Node):
                     "groups_with_viewpoints"
                 ]
                 lookahead_candidates[robot_name] = [row[3] for row in robot_candidates]
-                for _, _, group_id, assignment in robot_candidates:
-                    if not lease_current('candidate_budget'):
-                        return
-                    # Preserve reachability analysis for an unfunded frontier,
-                    # but request charging instead of executing a trip that is
-                    # already expected to be interrupted by local reserve.
-                    battery_factor = self.exploration_battery_factor(
-                        robot_name, assignment.path_distance_m,
-                        (assignment.x, assignment.y),
-                    )
-                    if battery_factor <= 0:
-                        continue
-                    utility = assignment.utility * battery_factor
-                    preference = (None if search else HeadquartersControl.frontier_travel_preference(
-                        self, robot_name, assignment, travel_fields))
-                    if preference is not None:
-                        utility *= preference['factor']
-                        utility *= preference.get('mission_spatial_diversity',{}).get('factor',1.)
-                    coordinated = Assignment(
-                        assignment.viewpoint,
-                        assignment.x,
-                        assignment.y,
-                        assignment.path_distance_m,
-                        utility,
-                        assignment.navigation_x,
-                        assignment.navigation_y,
-                        assignment.navigation_yaw,
-                    )
-                    if battery_factor < 1.0:
-                        unfunded_candidates.add((robot_name, coordinated))
-                    if preference is not None:
-                        preference.update(base_utility=assignment.utility,
-                            information_gain=assignment.viewpoint.information_gain,
-                            frontier_group_id=assignment.viewpoint.group_id,
-                            frontier_group_size=assignment.viewpoint.group_size,
-                            excluded_targets=robot_exclusions,
-                            battery_factor=battery_factor, adjusted_utility=utility,
-                            nominal_blocked_positions=([p for other,p in self.robot_positions.items()
-                                if other != robot_name and p is not None] if refine or initial_search else []))
-                        if initial_search:
-                            preference.update(initial_search_visits=list(self.initial_search_visits.values()),
-                                initial_search_views=camera_views,
-                                search_view_model=dict(radius_m=INFORMATION_RADIUS_M,
-                                    fov_rad=INITIAL_SEARCH_VIEW_FOV_RAD,heading_bins=16),
-                                search_kind='known_space',view_yaw=assignment.navigation_yaw)
-                        travel_preferences[robot_name, coordinated] = preference
-                    if not search and interrupted_frontier_is_useful(
-                        coordinated, resume_intents.get(robot_name), battery_factor
-                    ):
-                        resume_candidates.add((robot_name, coordinated))
-                    candidates.append(
-                        (utility, robot_name, group_id, coordinated)
-                    )
-            diagnostics["candidate_assignments"] = len(candidates)
+                raw_candidates.extend(robot_candidates)
+                candidate_contexts[robot_name] = (robot_exclusions, initial_search)
+
+            def evaluate_candidate(raw):
+                nonlocal scoring_aborted
+                _, robot_name, group_id, assignment = raw
+                if scoring_aborted or robot_name in plans:
+                    return None
+                if not lease_current('candidate_budget'):
+                    scoring_aborted = True
+                    return None
+                robot_exclusions, initial_search = candidate_contexts[robot_name]
+                # Preserve reachability analysis for an unfunded frontier,
+                # but request charging instead of executing a trip that is
+                # already expected to be interrupted by local reserve.
+                battery_factor = self.exploration_battery_factor(
+                    robot_name, assignment.path_distance_m,
+                    (assignment.x, assignment.y),
+                )
+                if battery_factor <= 0:
+                    return None
+                utility = assignment.utility * battery_factor
+                preference = (None if search else HeadquartersControl.frontier_travel_preference(
+                    self, robot_name, assignment, travel_fields))
+                if preference is not None:
+                    utility *= preference['factor']
+                    utility *= preference.get('mission_spatial_diversity',{}).get('factor',1.)
+                coordinated = Assignment(
+                    assignment.viewpoint,
+                    assignment.x,
+                    assignment.y,
+                    assignment.path_distance_m,
+                    utility,
+                    assignment.navigation_x,
+                    assignment.navigation_y,
+                    assignment.navigation_yaw,
+                )
+                if battery_factor < 1.0:
+                    unfunded_candidates.add((robot_name, coordinated))
+                if preference is not None:
+                    preference.update(base_utility=assignment.utility,
+                        information_gain=assignment.viewpoint.information_gain,
+                        frontier_group_id=assignment.viewpoint.group_id,
+                        frontier_group_size=assignment.viewpoint.group_size,
+                        excluded_targets=robot_exclusions,
+                        battery_factor=battery_factor, adjusted_utility=utility,
+                        nominal_blocked_positions=([p for other,p in self.robot_positions.items()
+                            if other != robot_name and p is not None] if refine or initial_search else []))
+                    if initial_search:
+                        preference.update(initial_search_visits=list(self.initial_search_visits.values()),
+                            initial_search_views=camera_views,
+                            search_view_model=dict(radius_m=INFORMATION_RADIUS_M,
+                                fov_rad=INITIAL_SEARCH_VIEW_FOV_RAD,heading_bins=16),
+                            search_kind='known_space',view_yaw=assignment.navigation_yaw)
+                    travel_preferences[robot_name, coordinated] = preference
+                if not search and interrupted_frontier_is_useful(
+                    coordinated, resume_intents.get(robot_name), battery_factor
+                ):
+                    resume_candidates.add((robot_name, coordinated))
+                row = (utility, robot_name, group_id, coordinated)
+                candidates.append(row)
+                diagnostics["candidate_assignments"] = len(candidates)
+                return row
+            diagnostics["candidate_assignments"] = 0
+            diagnostics["generated_candidate_assignments"] = len(raw_candidates)
             diagnostics["reachable_refinement"] = refine
             diagnostics["rejected_routes"] = 0
             diagnostics["stationary_candidates"] = 0
@@ -6191,9 +6233,15 @@ class HeadquartersControl(Node):
                 for name, route in self.goal_routes.items()
                 if self.robot_states[name] == "active" and route
             ]
-            for _, name, _, assignment in sorted(candidates, key=lambda item:
-                -frontier_scheduling_score(item[0], (item[1], item[3]) in resume_candidates)):
-                if not lease_current('route_admission'):
+            candidate_order = lazy_priority_candidates(
+                raw_candidates, evaluate_candidate,
+                lambda item: frontier_scheduling_score(item[3].utility,
+                    not search and interrupted_frontier_is_useful(
+                        item[3], resume_intents.get(item[1]), 1.0)),
+                lambda item: frontier_scheduling_score(
+                    item[0], (item[1], item[3]) in resume_candidates))
+            for _, name, _, assignment in candidate_order:
+                if scoring_aborted or not lease_current('route_admission'):
                     return
                 if name in plans:
                     continue
@@ -6287,6 +6335,8 @@ class HeadquartersControl(Node):
                 reservations.append(route)
                 if len(selected) + active_explorers >= max_concurrent:
                     break
+            if scoring_aborted:
+                return
             if selected:
                 if search:
                     self.target_search_basis = ("current_map_known_free_sweep" if refine == "known_space"

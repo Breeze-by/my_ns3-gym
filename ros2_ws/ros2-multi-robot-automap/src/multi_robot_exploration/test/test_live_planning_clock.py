@@ -68,3 +68,22 @@ def test_charge_budget_that_outlives_input_lease_creates_no_request(monkeypatch)
 def test_shutdown_rejects_new_input_admission_without_touching_ros():
     node=SimpleNamespace(shutdown_requested=True)
     assert not control.HeadquartersControl.fresh_robot_inputs(node)
+
+
+def test_expired_remaining_lazy_candidate_revokes_earlier_provisional_plan(monkeypatch):
+    node, requests, decisions, sent = charge_node()
+    install_candidates(monkeypatch, {'tb1': [assignment(4., 3., utility=100.)],
+                                     'tb2': [assignment(6., 3., utility=1.)]})
+    calls = []
+    def budget(*args):
+        calls.append(args)
+        if len(calls) == 2:  # First candidate's body-masked route price.
+            node.now = lambda: 12.01
+        return 1.
+    node.exploration_battery_factor = budget
+    control.HeadquartersControl.assign_idle_robots(node)
+    assert len(calls) == 2
+    assert not sent and not requests and not node.rally_charge_requested
+    assert all(state == 'idle' for state in node.robot_states.values())
+    assert decisions[-1]['event'] == 'coordinator_planning_lease_expired'
+    assert decisions[-1]['stage'] == 'candidate_budget'
