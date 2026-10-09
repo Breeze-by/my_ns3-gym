@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Read-only P2C.1 original/return-budget gate; never repairs task outcomes."""
-import argparse,base64,hashlib,json,math,subprocess,traceback,zlib
+import argparse,base64,hashlib,json,math,re,subprocess,traceback,zlib
 from pathlib import Path
 from concurrent.futures import ProcessPoolExecutor
 import numpy as np
@@ -13,6 +13,24 @@ from p2c_native_graph import native_tf_ingress_audit
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def launch_process_audit(directory):
+    """Reject task-time child crashes; retain subsequent owned cleanup exits."""
+    files=sorted((directory/'launch').glob('*.log'));assert files,'missing actual launch transcript'
+    cleanup=[]
+    for path in files:
+        closing=False
+        for number,line in enumerate(path.read_text().splitlines(),1):
+            if '[launch]: user interrupted with ctrl-c (SIGINT)' in line:closing=True
+            match=re.search(r'\[([^\]]+)\]: process has died \[pid \d+, exit code (-?\d+),',line)
+            if not match:continue
+            code=int(match[2])
+            assert closing or code==0,('task-time child failure',str(path),number,match[1],code)
+            if closing:cleanup.append(dict(file=path.name,line=number,node=match[1],exit_code=code))
+        assert closing,('missing owned launch closure',str(path))
+    return dict(status='PASS',launch_transcripts=len(files),task_time_nonzero_child_exits=0,
+        post_task_cleanup_exits=cleanup)
 
 
 def return_audit(path,require_pose_leases=False,require_map_candidates=False):
@@ -483,6 +501,7 @@ def check_one(path,config):
     assert row['runner_returncode']==row['observer_returncode']==0
     assert not any(v for k,v in row.items() if k.endswith('_forced_shutdown'))
     for relative,expected in row['evidence_sha256'].items():assert sha(directory/relative)==expected
+    processes=launch_process_audit(directory) if config.get('task_child_process_audit') else None
     result=row['result'];case=row['case']
     if case=='empty_battery':
         assert not result['success'] and result['task_phase']=='FAILED' and result['collision_events']==0
@@ -531,7 +550,7 @@ def check_one(path,config):
         result=result,raw_summary=str(path.resolve()),raw_summary_sha256=sha(path),return_audit=native,
         communication_audit=communications,lookahead_audit=forecast,native_energy_audit=energy,
         ap_return_veto_audit=vetoes,rally_assignment_audit=assignments,rally_repair_audit=repairs,
-        exploration_travel_audit=travel,native_tf_ingress_audit=ingress)
+        exploration_travel_audit=travel,native_tf_ingress_audit=ingress,launch_process_audit=processes)
 
 
 def audit_one(item):

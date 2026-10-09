@@ -12,6 +12,7 @@ from multi_robot_exploration import control as c
 from test_exploration_charging import charge_node,assignment,install_candidates
 from test_exploration_resume import finish_node
 from test_relative_frontier_travel import travel_event
+from geometry_msgs.msg import PoseStamped
 
 
 @pytest.mark.parametrize('blocked',[False,True,'unknown'])
@@ -110,6 +111,27 @@ def test_mapping_only_mode_keeps_original_frontier_dispatch(monkeypatch):
     install_candidates(monkeypatch,{'tb1':[assignment(4.,3.)]})
     c.HeadquartersControl.assign_idle_robots(node)
     assert sent and not requests and not node.initial_search_goals['tb1']
+
+
+def test_real_known_candidate_passes_navigation_publication_and_independent_reader():
+    from check_p2c_gate import exploration_travel_audit
+    node,requests,decisions,_=charge_node();node.enable_rally=True
+    node.robot_states['tb2']='active';node.source_map_data=node.map_data
+    for state in node.battery_states.values():state.update(energy=80.,mode='ACTIVE',stamp_sec=10.)
+    node.robot_tf_received_at=dict.fromkeys(node.robot_positions,10.)
+    node.initial_search_next={'tb1':True};node.initial_search_visits={};node.initial_search_goals={}
+    node.input_freshness_details=lambda:{'headquarters/fused_map_snapshot':dict(source_time=10.,age_sec=0.,ttl_sec=5.),
+        **{name+'/'+kind:dict(source_time=10.,age_sec=0.,ttl_sec=ttl)
+           for name in node.robot_positions for kind,ttl in (('pose_state',2.),('frame_state',2.),('battery_state',5.))}}
+    def publish(name,a):
+        goal=PoseStamped();goal.pose.position.x=a.navigation_x;goal.pose.position.y=a.navigation_y
+        yaw=a.navigation_yaw or 0.;goal.pose.orientation.z=math.sin(yaw/2.);goal.pose.orientation.w=math.cos(yaw/2.)
+        c.HeadquartersControl.record_navigation_decision(node,name,'initial_visual_search',goal)
+    node.send_goal=publish
+    c.HeadquartersControl.assign_idle_robots(node)
+    assert not requests and len(decisions)==1
+    assert type(decisions[0]['travel_preference']['frontier_group_id']) is int
+    assert exploration_travel_audit(decisions,True,True,True,True)['initial_visual_witnesses']==1
 
 
 def visual_event():

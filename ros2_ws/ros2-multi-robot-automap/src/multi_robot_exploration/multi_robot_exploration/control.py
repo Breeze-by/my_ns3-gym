@@ -373,6 +373,7 @@ def known_space_search_candidates(raw_grid, resolution, origin, robot_name,
     cells = sorted(set(zip(nearest[0, ::stride, ::stride].ravel(), nearest[1, ::stride, ::stride].ravel())))
     candidates = []
     for row, column in cells:
+        row, column = int(row), int(column)
         distance = float(distances[row, column])
         x, y = grid_to_world(row, column, resolution, *origin)
         if not math.isfinite(distance) or distance < USEFUL_TRAVEL_M or any(

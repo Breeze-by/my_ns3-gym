@@ -8261,3 +8261,12 @@ v18未来旁录仅保存eligible机器人return_maps，159其他control函数AST
 v22 test_initial_known_search/test_exploration_resume/test_relative_frontier_travel/test_control 定向首1FAIL382PASS27.28s（协调丢yaw），修正397PASS27.52s；全pytest -q src/multi_robot_exploration/test scripts --ignore三lint文件见功能数；colcon build --symlink-install --packages-select multi_robot_interfaces multi_robot_exploration merge_map multi_robot；check_p2c_source.py --output log/p2c_v22_source.json；check_p2c_snapshot_runtime.py --output log/p2c_v22_snapshot_runtime.json；run_p2c_tasks.py普通dev_forced2与--manifest scripts/p2c_blackout_manifest.json physical_fault各--validate-only，未启动Gazebo。全部输出/脚本/参数/SHA在组件报告；新原任务未开始。
 
 初始定向383PASS25.76s发生于enable_rally范围补丁及终点yaw断言之前；后续1FAIL382PASS与修复397PASS均保留，最终全1081PASS80.75s。四原精确统计为50探索/24接续/484有效TF快照+9启动无源，按JSON重算修正报告草稿计数。
+
+
+## 2026-10-09 P2C.1 v22任务期崩溃FAIL与v23整数发布补强
+
+2026-10-09 P2C.1 v23发布边界组件PASS、待新冻结：v22首forced原EXPLORE timeout300.4/charge1与0/最低11.548989/零接触耗尽机器人失效，但control因NumPy int64 JSON异常在任务期间退出1，infra1严格FAIL，外层0不掩盖；其余格与917未跑，原始/trace保留。未来仅标准化候选编号类型，79候选数值一致，真实DDS旧异常复现/新发布+独立读者PASS，1088功能/四包5.45s/171保护4授权/54协议/两manifest PASS。72中央方法AST/native battery/sampler/launch/图工具保持；新读者任务期子进程非零即FAIL，停止后清理退出另记。新4开发/17正式/2物理须clean pushed freeze，原300s/5s/TTL/物理保持；P3C.5已验收，无P4/ns-3/Wi-Fi/RL。报告20261009_p2c_visual_publication_components.md与20261009_p2c_v22_failed_development.md。
+
+ROS工作区/source Humble+install/PYTHONNOUSERSITE=1/系统Python3/RMW FastRTPS+UDPv4。89ee853 push与独立clean freeze通过后，taskset0-79 run_p2c_tasks.py --case dev_forced2 --run-id 20261009_p2c_v22 --domain210 --gazebo-port20290。任务原300.4s超时，中央任务期间JSON TypeError/exit1，tb1charge1/tb2charge0，owner/observer最终0；原strict checker --development --cases dev_forced2 FAIL，独立七类budget/native/path只读检查PASS，未来launch_process_audit原launch重读FAIL。所有owned关闭后才修复；无任务重试/回填，其他3dev/17formal/2physical/917未启动。全部exact runner/observer/launch commands、配置/SHA与trace在原summary及无损归档。
+
+test_initial_known_search.py -k real_known_candidate旧1FAIL33deselected2.00s/修复1PASS33deselected1.54s；全pytest同三lint ignore，1088PASS79.21s；四包colcon build；check_p2c_source.py与两个manifest validate-only；check_p2c_visual_runtime.py隔离domain215两次实际DDS（最终加79候选数值一致性），原NumPy异常期望复现/新消息接收独立reader PASS，均无任务/无线测量。全部输出在20261009_p2c_visual_publication_components.json。

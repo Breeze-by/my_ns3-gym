@@ -12,6 +12,27 @@ from check_p2c_gate import return_audit,energy_audit
 from multi_robot_exploration import control
 
 
+@pytest.mark.parametrize('condition',['clean','during_positive','during_signal','after_signal','after_positive','missing_close'])
+def test_launch_process_gate_distinguishes_task_crash_and_owned_cleanup(tmp_path,condition):
+    from check_p2c_gate import launch_process_audit
+    directory=tmp_path/'launch';directory.mkdir()
+    close='[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)\n'
+    def died(code):return f"[ERROR] [control-33]: process has died [pid 123, exit code {code}, cmd 'control'].\n"
+    text=close
+    if condition=='during_positive':text=died(1)+close
+    if condition=='during_signal':text=died(-11)+close
+    if condition=='after_signal':text=close+died(-9)
+    if condition=='after_positive':text=close+died(1)
+    if condition=='missing_close':text='task running\n'
+    (directory/'task.log').write_text(text)
+    if condition in ('during_positive','during_signal','missing_close'):
+        with pytest.raises(AssertionError):launch_process_audit(tmp_path)
+    else:
+        result=launch_process_audit(tmp_path)
+        assert result['task_time_nonzero_child_exits']==0
+        assert len(result['post_task_cleanup_exits'])==int(condition.startswith('after'))
+
+
 def trace():
     grid = np.zeros((44, 44), dtype='<i2')
     grid[:35, 20] = 100
