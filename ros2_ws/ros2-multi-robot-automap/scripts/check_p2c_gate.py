@@ -366,6 +366,91 @@ def exploration_travel_audit(records,required=False,require_commitment=False,req
         initial_search_required=require_initial_search,spatial_diversity_witnesses=diversity_count)
 
 
+def target_survey_audit(records, declared=False, radius_m=None, position_tolerance_m=None):
+    """Rebuild target-local gain and the actually admitted, funded survey leg."""
+    count=0
+    for e in records:
+        if e.get('event')!='coordinator_navigation_decision' or e.get('kind')!='target_information_survey':continue
+        assert declared,'undeclared target information survey'
+        assert e['task_phase']=='FOUND'
+        s=e['target_survey_selection'];name=e['robot'];now=e['event_time']
+        assert s['strategy']=='target_area_gain_per_travel'
+        if radius_m is not None:assert s['radius_m']==radius_m
+        if position_tolerance_m is not None:assert s['position_tolerance_m']==position_tolerance_m
+        lease=e['inputs']['headquarters/target_detection'];age=now-lease['source_time']
+        assert 0<=age<=60. and math.isclose(age,lease['age_sec'],abs_tol=1e-8)
+        geometry={}
+        for key,stream,source,saved in [
+            ('planning','headquarters/fused_map_snapshot','ap_delivered_planning_map',e['planning_map']),
+            ('source','headquarters/fused_map_snapshot','ap_delivered_fused_map',e['source_map']),
+            *[(peer,peer+'/map_snapshot','ap_delivered_robot_map',g) for peer,g in e['return_maps'].items()]]:
+            assert saved['source']==source and saved['encoding']=='zlib_base64_int16_le'
+            assert saved['source_time']==e['inputs'][stream]['source_time'] and 0<=now-saved['source_time']<=5.
+            raw=np.frombuffer(zlib.decompress(base64.b64decode(saved['grid'])),dtype='<i2').reshape(saved['shape'])
+            geometry[key]=dict(data=raw,resolution=saved['resolution'],origin=saved['origin'])
+        g=geometry['planning'];source=geometry['source'];rebuilt=source['data'].copy()
+        assert g['resolution']==source['resolution'] and g['origin']==source['origin']
+        for row,column in e['self_return_cells'].values():
+            assert 1<=row<rebuilt.shape[0]-1 and 1<=column<rebuilt.shape[1]-1
+            assert rebuilt[row,column]>=control.OCCUPIED_THRESHOLD
+            window=rebuilt[row-1:row+2,column-1:column+2].copy();window[1,1]=0
+            assert np.all(window==0) and g['resolution']*math.sqrt(2)<=.1
+            rebuilt[row,column]=0
+        assert np.array_equal(rebuilt,g['data'])
+        positions=e['robot_positions'];modes=e['battery_modes'];choice=s['choice']
+        assert choice['robot']==name and modes[name]=='ACTIVE'
+        assert np.allclose(positions[name],e['current_position'],rtol=0,atol=1e-8)
+        for peer,mode in modes.items():
+            if mode!='ACTIVE':continue
+            for kind,ttl in (('pose_state',2.),('frame_state',2.),('map_snapshot',5.)):
+                lease=e['inputs'][peer+'/'+kind];age=now-lease['source_time']
+                assert 0<=age<=ttl and math.isclose(age,lease['age_sec'],abs_tol=1e-8)
+        ranked=control.target_survey_candidates(g['data'],g['resolution'],g['origin'],
+            positions,modes,s['target'],s['radius_m'],s['position_tolerance_m'])
+        assert choice in ranked,'survey gain/travel/ranking does not match delivered inputs'
+        blocked=[p for peer,p in positions.items() if peer!=name and p is not None]
+        desired=control.RallyPose(*choice['desired_position'],choice['desired_yaw'])
+        matched=False;limit=control.MAX_NAVIGATION_LEG_M
+        while limit>=control.USEFUL_TRAVEL_M:
+            plan=control.plan_rally_leg(desired,g['data'],g['resolution'],g['origin'],
+                positions[name],limit,blocked_positions=blocked,visible_only=True)
+            plan=control.reserve_rally_prefix(plan,s['reserved_routes'])
+            if plan is not None and plan[0] is not None:
+                pose,route=plan
+                if (len(route)==len(s['admitted_route'])
+                        and np.allclose(route,s['admitted_route'],rtol=0,atol=1e-8)
+                        and np.allclose((pose.x,pose.y),e['requested_position'],rtol=0,atol=1e-8)):
+                    matched=True;break
+            limit/=2
+        assert matched,'survey prefix does not match known-free body/reservation plan'
+        route=s['admitted_route'];distance=math.dist(positions[name],route[0])+sum(
+            math.dist(a,b) for a,b in zip(route,route[1:]))
+        assert math.isclose(distance,s['admitted_distance_m'],abs_tol=1e-8)
+        assert math.dist(positions[name],e['requested_position'])>s['position_tolerance_m']
+        states=e['battery_states']
+        if states is None:assert s['required_energy'] is None
+        else:
+            state=states[name];lease=e['inputs'][name+'/battery_state']
+            assert state['mode']=='ACTIVE' and state['stamp_sec']==lease['source_time']
+            assert 0<=now-lease['source_time']<=5.
+            pose_age=max(e['inputs'][name+'/'+kind]['age_sec'] for kind in ('pose_state','frame_state'))
+            local=geometry.get(name);map_age=max(now-e['planning_map']['source_time'],
+                now-e['return_maps'][name]['source_time']) if local else now-e['planning_map']['source_time']
+            def budget(task_distance,destination):
+                candidates=control.qualified_return_candidates(g['data'],g['resolution'],g['origin'],
+                    destination,(state['charge_x'],state['charge_y']),state.get('charge_radius_m',.8),local)
+                contact=min((r['path_distance_m'] for r in candidates if r['qualified']),default=None)
+                assert contact is not None,'survey has no qualified whole return'
+                return control.battery_assignment_required_energy(task_distance,contact,
+                    state.get('move_cost_per_m',1.),state.get('idle_cost_per_sec',.02),
+                    state.get('return_path_factor',2.),state.get('nominal_speed_mps',.18),
+                    state.get('return_safety_margin',8.),state.get('return_recovery_wait_sec',30.),map_age,pose_age)
+            required=max(budget(distance,e['requested_position']),budget(0.,positions[name]))
+            assert math.isclose(required,s['required_energy'],abs_tol=1e-8) and state['energy']>required
+        count+=1
+    return dict(status='PASS',target_information_survey_witnesses=count,declared=declared)
+
+
 def ap_return_veto_audit(records):
     count=0
     for e in records:
@@ -561,12 +646,15 @@ def check_one(path,config):
         bool(config.get('exploration_travel_preference')),bool(config.get('exploration_frontier_commitment')),
         bool(config.get('exploration_bounded_commitment')),bool(config.get('initial_known_space_search')),
         bool(config.get('mission_spatial_diversity')))
+    surveys=target_survey_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
+        bool(config.get('target_information_survey')),result['target_max_distance_m'],result['rally_position_tolerance_m'])
     assert result['collision_monitoring_active']
     return dict(case=case,status='PASS',git_commit=row['git_commit'],source_digests=row['source_digests'],
         result=result,raw_summary=str(path.resolve()),raw_summary_sha256=sha(path),return_audit=native,
         communication_audit=communications,lookahead_audit=forecast,native_energy_audit=energy,
         ap_return_veto_audit=vetoes,rally_assignment_audit=assignments,rally_repair_audit=repairs,
-        exploration_travel_audit=travel,native_tf_ingress_audit=ingress,launch_process_audit=processes)
+        exploration_travel_audit=travel,target_survey_audit=surveys,
+        native_tf_ingress_audit=ingress,launch_process_audit=processes)
 
 
 def audit_one(item):
@@ -610,6 +698,9 @@ def main():
     if config.get('initial_known_space_search') and a.cases is None and not errors:
         if not any(row['exploration_travel_audit']['initial_visual_witnesses'] for row in evidence):
             errors.append(dict(case='initial_known_space_search',error='new search algorithm was never exercised'))
+    if config.get('target_information_survey') and a.cases is None and not errors:
+        if not any(row['target_survey_audit']['target_information_survey_witnesses'] for row in evidence):
+            errors.append(dict(case='target_information_survey',error='new survey algorithm was never exercised'))
     physical=None
     if not a.development and a.cases is None:
         try:

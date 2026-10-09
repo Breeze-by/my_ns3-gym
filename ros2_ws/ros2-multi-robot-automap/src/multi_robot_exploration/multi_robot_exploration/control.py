@@ -1973,6 +1973,58 @@ def survey_robot_order(robot_positions, detecting_robot):
     )
 
 
+def target_survey_candidates(raw_grid, resolution, origin, positions, modes, target,
+                             radius_m=3., position_tolerance_m=RALLY_POSITION_TOLERANCE_M):
+    """Rank known-free viewpoints by target-area unknown gain per travel cost."""
+    if (not all(math.isfinite(v) for v in (*target, radius_m, position_tolerance_m))
+            or position_tolerance_m < 0 or radius_m <= position_tolerance_m):
+        return []
+    endpoints = traversable_grid(raw_grid, resolution, ROBOT_CLEARANCE_M)
+    traversable = traversable_grid(raw_grid, resolution, PATH_CLEARANCE_M)
+    rows, columns = np.indices(raw_grid.shape)
+    xs = (columns + .5) * resolution + origin[0]
+    ys = (rows + .5) * resolution + origin[1]
+    region = (xs-target[0])**2 + (ys-target[1])**2 <= (radius_m-position_tolerance_m)**2
+    stride = max(1, math.ceil(.25 / resolution))
+    region &= (rows % stride == 0) & (columns % stride == 0)
+    ranked = []; gains = {}
+    for name, position in sorted(positions.items()):
+        if position is None or modes.get(name) != 'ACTIVE':
+            continue
+        blocked = [p for other,p in positions.items() if other != name and p is not None]
+        safe = block_dynamic_positions(endpoints, resolution, origin, blocked)
+        field = exploration_distance_field(raw_grid,
+            block_dynamic_positions(traversable, resolution, origin, blocked), resolution, origin, position)
+        if field is None:
+            continue
+        choices = []
+        for row,column in np.argwhere(safe & region & np.isfinite(field)):
+            x,y = grid_to_world(row,column,resolution,*origin)
+            if math.dist(position, (x,y)) <= position_tolerance_m:
+                continue
+            cell = (int(row),int(column))
+            if cell not in gains:
+                cells = visible_unknown_gain(raw_grid, cell,
+                    INFORMATION_RADIUS_M / resolution, return_cells=True)
+                rows, columns = np.divmod(cells, raw_grid.shape[1])
+                xs = (columns + .5) * resolution + origin[0]
+                ys = (rows + .5) * resolution + origin[1]
+                gains[cell] = int(np.count_nonzero(
+                    (xs - target[0])**2 + (ys - target[1])**2 <= radius_m**2))
+            gain = gains[cell]
+            if not gain:
+                continue
+            distance = float(field[cell])
+            choices.append(dict(robot=name, group=int(row*raw_grid.shape[1]+column), target_gain=gain,
+                desired_position=[float(x),float(y)],
+                desired_yaw=math.atan2(target[1]-y,target[0]-x), path_distance_m=distance,
+                utility=gain / (1. + distance)))
+        key = lambda row: (-row['utility'], row['path_distance_m'], row['robot'],
+                           row['group'], *row['desired_position'])
+        ranked.extend(sorted(choices, key=key)[:2])
+    return sorted(ranked, key=key) if ranked else []
+
+
 def rotate_robot_order(order, cursor):
     """Rotate a deterministic robot order so one failed robot cannot starve others."""
     if not order:
@@ -4015,6 +4067,8 @@ class HeadquartersControl(Node):
                             f"currently {candidate_count} safe candidates."
                         )
                         self.last_rally_candidate_log = now
+                    if HeadquartersControl.survey_target_frontiers(self, self.robot_positions):
+                        return
                     survey_order = rotate_robot_order(
                         survey_robot_order(
                             active_positions, self.detecting_robot
@@ -5061,6 +5115,26 @@ class HeadquartersControl(Node):
                 return False
         return False
 
+    def survey_target_frontiers(self, positions):
+        """Try a bounded information survey before a long target-descent leg."""
+        choices = target_survey_candidates(self.map_data, self.resolution, self.origin,
+            positions, self.battery_modes, self.target,
+            getattr(self, 'target_view_distance', 3.), self.rally_position_tolerance)
+        for choice in choices:
+            self.target_survey_choice = dict(strategy='target_area_gain_per_travel',
+                radius_m=getattr(self, 'target_view_distance', 3.),
+                position_tolerance_m=self.rally_position_tolerance,
+                target=list(self.target), choice=choice)
+            try:
+                if self.send_survey_goal(choice['robot'], RallyPose(
+                        *choice['desired_position'], choice['desired_yaw'])):
+                    return True
+                if self.task_state == 'FAILED':
+                    return True
+            finally:
+                self.target_survey_choice = None
+        return False
+
     def send_survey_goal(self, robot_name, pose, heading_only=False):
         if not self.fresh_robot_inputs() or not self.fresh_target():
             return False
@@ -5161,8 +5235,16 @@ class HeadquartersControl(Node):
         self.survey_heading_only = heading_only
         self.survey_cancel_requested = False
         self.survey_goal_pending = True
+        choice = None if heading_only else getattr(self, 'target_survey_choice', None)
+        if choice is not None:
+            choice['admitted_route'] = [list(point) for point in plan[1]]
+            choice['reserved_routes'] = [[list(point) for point in route] for route in reservations]
+            choice['admitted_distance_m'] = distance
+            choice['required_energy'] = (HeadquartersControl.exploration_required_energy(
+                self, robot_name, distance, (pose.x, pose.y)) if self.enable_battery else None)
         self.record_navigation_decision(robot_name,
-            "target_observation_heading" if heading_only else "target_survey", goal.pose)
+            "target_observation_heading" if heading_only else
+            "target_information_survey" if choice is not None else "target_survey", goal.pose)
         future = client.send_goal_async(goal)
         future.add_done_callback(self.survey_goal_response)
         return True
@@ -6097,6 +6179,20 @@ class HeadquartersControl(Node):
             event["search_basis"] = getattr(self, "target_search_basis", "current_map_frontiers")
             event["search_route"] = self.goal_routes[robot_name]
             event["map_resolution_m"] = self.resolution
+        if kind == 'target_information_survey':
+            event['target_survey_selection'] = self.target_survey_choice
+            event['robot_positions'] = self.robot_positions
+            event['battery_modes'] = self.battery_modes
+            event['battery_states'] = self.battery_states if self.enable_battery else None
+            event['planning_map'] = grid_audit_evidence(self.map_data, self.resolution, self.origin,
+                'ap_delivered_planning_map', self.map_received_at, self.map_received_at)
+            event['source_map'] = grid_audit_evidence(self.source_map_data, self.resolution, self.origin,
+                'ap_delivered_fused_map', self.map_received_at, self.map_received_at)
+            event['self_return_cells'] = getattr(self, 'map_self_return_cells', {})
+            event['return_maps'] = {name:grid_audit_evidence(g['data'],g['resolution'],g['origin'],
+                'ap_delivered_robot_map',self.robot_map_received_at[name],self.robot_map_received_at[name])
+                for name,g in HeadquartersControl.delivered_return_maps(self).items()
+                if name == robot_name}
         choice = getattr(self, 'exploration_travel_choices', {}).get(robot_name)
         if kind in ('exploration','initial_visual_search') and choice is not None:
             event['travel_preference'] = choice

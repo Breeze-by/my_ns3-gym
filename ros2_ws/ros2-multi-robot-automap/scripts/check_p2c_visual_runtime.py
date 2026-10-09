@@ -8,6 +8,7 @@ import math
 from pathlib import Path
 import subprocess
 import time
+from unittest.mock import Mock
 
 import numpy as np
 import rclpy
@@ -17,7 +18,7 @@ from rclpy.node import Node
 from std_msgs.msg import String
 
 from multi_robot_exploration import control as c
-from check_p2c_gate import exploration_travel_audit
+from check_p2c_gate import exploration_travel_audit, target_survey_audit
 
 REFERENCE='89ee853151d45ae5dbe604f00ccafa8b522c7eb9'
 SOURCE='ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/control.py'
@@ -103,12 +104,33 @@ def main():
         while len(received)<2 and time.monotonic()<deadline:executor.spin_once(timeout_sec=.02)
         assert len(received)==2 and received[-1]['travel_preference']['mission_spatial_diversity']['visits']
         mission_audit=exploration_travel_audit(received[-1:],True,True,True,True,True)
+        survey_grid=np.zeros((80,100),dtype='<i2');survey_grid[55:,:50]=-1
+        survey_grid.setflags(write=False)
+        coordinator.map_data=coordinator.source_map_data=survey_grid
+        coordinator.robot_maps['tb1']=dict(data=survey_grid,resolution=.1,origin=(0.,0.))
+        coordinator.frontier_cache=None
+        coordinator.task_state='FOUND';coordinator.target=(2.05,6.55)
+        coordinator.target_received_source_time=10.;coordinator.target_observing_robot='tb1'
+        coordinator.battery_modes['tb1']='ACTIVE'
+        # The actual DDS recorder/selector/planner run on the real node; this
+        # synthetic action client does not run Nav2 or move a robot.
+        action_client=Mock();action_client.server_is_ready.return_value=True
+        coordinator.robot_nav_clients['tb1']=action_client
+        assert coordinator.survey_target_frontiers(coordinator.robot_positions)
+        assert action_client.send_goal_async.called and coordinator.target_survey_choice is None
+        deadline=time.monotonic()+5.
+        while not any(e.get('kind')=='target_information_survey' for e in received) and time.monotonic()<deadline:
+            executor.spin_once(timeout_sec=.02)
+        survey_events=[e for e in received if e.get('kind')=='target_information_survey']
+        assert len(survey_events)==1
+        survey_audit=target_survey_audit(survey_events,True,3.)
         result=dict(status='PASS',scope='Actual isolated ROS DDS publication, synthetic delivered grid/pose; no task or Wi-Fi claim',
             reference_commit=REFERENCE,reference_control_sha256=hashlib.sha256(old.encode()).hexdigest(),
             control_sha256=hashlib.sha256(Path(c.__file__).read_bytes()).hexdigest(),
             numeric_candidate_equality=True,candidates_compared=len(current_rows),
             frozen_expected_error=old_error,current_group_id=candidate.viewpoint.group_id,
-            independent_audit=audit,mission_diversity_audit=mission_audit,received=received)
+            independent_audit=audit,mission_diversity_audit=mission_audit,
+            target_survey_audit=survey_audit,synthetic_survey_action_client=True,received=received)
         args.output.parent.mkdir(parents=True,exist_ok=True);args.output.write_text(json.dumps(result,indent=2)+'\n')
         print(json.dumps({k:v for k,v in result.items() if k!='received'}))
     finally:

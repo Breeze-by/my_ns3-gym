@@ -8279,3 +8279,14 @@ test_initial_known_search.py -k real_known_candidate旧1FAIL33deselected2.00s/�
 系统Python3/source Humble+install/PYTHONNOUSERSITE=1、FastRTPS/UDPv4、taskset -c0-79。930d7a0推送后独立clean freeze PASS，run_p2c_tasks.py --case dev_forced2 --run-id 20261009_p2c_v23 --domain 210 --gazebo-port 20290；原RALLYtimeout300.4，无retry或回填，owner/observer自然0，全部关闭后才改源码。check_p2c_gate.py --run-root log/p2c/20261009_p2c_v23 --development --cases dev_forced2 --output log/p2c_v23_dev_forced2_gate.json FAIL；audit_p2c_v23_independent.py七类PASS（补查新旗标true），实际task-time launch exits PASS，cleanup退出另存。所有exact commands/配置/源和输入SHA见原summary与归档。
 
 probe_p2c_v23_rally_time_order.py只读保存原分配并内存编译替代排序：名义串行65.2442→64.9385s，未采用；probe_p2c_v23_spatial_diversity.py原实际114.4s/25历史/115 funded-body-route候选比较sqrt与linear，采用sqrt，所有原输入/输出与局限保留。定向test_mission_search_diversity/test_initial_known_search/test_relative_frontier_travel90PASS7.68s，补模型无效/缺失与视觉history一致性94PASS8.22s；全pytest三lint ignore见组件数；四包colcon build/check_p2c_source/two run_p2c_tasks validate-only/actual check_p2c_visual_runtime domain215完整模型偏好DDS PASS。新4开发/17正式/2物理/917未启动，无任务/无线因果宣称。
+
+
+## 2026-10-09 P2C.1 v24原失败与v25目标邻域信息勘察
+
+2026-10-09 P2C.1 v25目标邻域勘察组件PASS、待新冻结任务：v24首forced检测183.4/RALLY225.8/timeout300.1，位置已近但无完整native保持；两机各charge1/min16.592320/零接触耗尽机器人失效任务期infra，原FAIL保持。19探索8补查19空间偏好/120能量/4闭合近充电区return与图审计PASS，不能称远返证明；118有效TF零过期。前沿-only首prefix与旧相同，未采用；最终以已知自由0.45m端点/0.25m采样/原body完整路径/目标邻域预期unknown信息每距离择点，近端条件0.517414m/预算17.676113，不是任务反事实。1138功能/29新定向/四包5.62s/171保护4授权54协议/actual DDS两声明PASS，原native battery/sampler/launch/所有既有纯几何集合/300s/5s/TTL/硬派发保护保持。新4开发/17正式/两物理须clean pushed freeze，917未暴露，P3C.5已验收，无P4/ns-3/Wi-Fi/RL。报告20261009_p2c_target_survey_components.md及20261009_p2c_v24_failed_development.md。
+
+环境系统Python3/source Humble+install/PYTHONNOUSERSITE=1/FastRTPS-UDPv4/taskset -c0-79。8bd3491推送后独立check_p2c_v24_freeze.py PASS，run_p2c_tasks.py --case dev_forced2 --run-id 20261009_p2c_v24 --domain 210 --gazebo-port 20290；原RALLYtimeout300.1/owner及observer0/无任务retry，全部owned自然关闭后才编辑。check_p2c_gate --run-root log/p2c/20261009_p2c_v24 --development --cases dev_forced2 --output log/p2c_v24_dev_forced2_gate.json strict FAIL；audit_p2c_v24_independent.py七类PASS。完整原summary/config/commands/source/environment/evidenceSHA和失败trace归档，不将near-position/中央状态当5秒native完成。
+
+只读probe_p2c_v24_survey.py/compare_p2c_v24_survey_admission.py比较前沿信息版本，首实际prefix相同，未采用；probe_p2c_v24_dense_survey.py/compare_p2c_v24_dense_survey_admission.py第二原AP状态0.517414m/17.676113/108预期unknown条件准入PASS，synthetic action client且无counterfactual任务时间。地图PNG实际查看；首误以data包装抽取0项空文件保留并另存正确4项，一未source导入ModuleNotFoundError只读失败，未启动任务。
+
+v25前沿-only首73定向/1136全/8.33s构建/DDS/domain215原输出保持；最终密集版本73定向5.91s、补局部无法直线靠近和位置门限篡改后29定向6.10s，完整pytest功能范围三lint ignore、四包colcon build、check_p2c_source、普通/physical validate-only和check_p2c_visual_runtime --output log/p2c_v25_dense_visual_runtime.json actual DDS+synthetic action client PASS。所有精确argv/源码SHA/输出见机读组件归档；新all4/17/2原任务与917尚未调用，无P4/ns-3/Wi-Fi/RL。
