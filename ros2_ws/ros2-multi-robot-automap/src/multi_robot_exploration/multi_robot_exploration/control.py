@@ -198,10 +198,11 @@ def frontier_groups(raw_grid, minimum_size=MIN_FRONTIER_GROUP_SIZE):
 
 def inflated_obstacle_mask(raw_grid, clearance_cells):
     occupied = raw_grid >= OCCUPIED_THRESHOLD
-    offsets = np.arange(-clearance_cells, clearance_cells + 1)
-    rows, columns = np.meshgrid(offsets, offsets, indexing="ij")
-    footprint = rows * rows + columns * columns <= clearance_cells**2
-    return ndimage.binary_dilation(occupied, structure=footprint)
+    # Integer-cell Euclidean distance gives exactly the original closed disk.
+    # With no obstacle, EDT's implicit outside zero must not become a wall.
+    if not occupied.any():
+        return np.zeros_like(occupied)
+    return ndimage.distance_transform_edt(~occupied) <= clearance_cells
 
 
 def traversable_grid(raw_grid, resolution, clearance_m=ROBOT_CLEARANCE_M):
@@ -1018,6 +1019,21 @@ def qualified_return_candidates(raw_grid, resolution, origin, position, home, ra
     shortest route triggers a separately labelled conservative search layer;
     it never turns a rejected shortest route into an accepted one.
     """
+    memo = None
+    if (caches is not None and raw_grid is not None and immutable_grid(raw_grid)
+            and (local_map is None or immutable_grid(local_map['data']))
+            and position is not None and all(math.isfinite(v) for v in position)):
+        memo = caches.setdefault('qualified_paths', {})
+        local = None if local_map is None else local_map['data']
+        geometry = (resolution, *origin, *home, radius,
+            None if local_map is None else (local_map['resolution'], *local_map['origin']))
+        if (memo.get('fused') is not raw_grid or memo.get('local') is not local
+                or memo.get('geometry') != geometry):
+            memo.clear()
+            memo.update(fused=raw_grid, local=local, geometry=geometry, results={})
+        key = tuple(position)
+        if key in memo['results']:
+            return [dict(row) for row in memo['results'][key]]
     caches = {} if caches is None else caches
     maps = [] if raw_grid is None else [('delivered_fused', dict(data=raw_grid, resolution=resolution, origin=origin))]
     if local_map is not None:
@@ -1042,6 +1058,12 @@ def qualified_return_candidates(raw_grid, resolution, origin, position, home, ra
                 cache=caches.setdefault('local', {}))
             result.append(dict(source='constrained_fused', path_distance_m=distance,
                                route=route, qualified=qualified))
+    if memo is not None:
+        # Bound retained route vertices even when a static map never changes.
+        if len(memo['results']) >= 128:
+            memo['results'].clear()
+        memo['results'][key] = tuple({**row, 'route': tuple(tuple(point) for point in row['route'])}
+                                    for row in result)
     return result
 
 

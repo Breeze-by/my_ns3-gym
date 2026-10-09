@@ -1,0 +1,1827 @@
+{
+  "status": "FAIL",
+  "scope": "First clean frozen development original; remaining cells never invoked",
+  "task_stack_frozen_commit": "c12db66cf666779978dd74b315a9e92b080f4a11",
+  "original": {
+    "case": "dev_forced2",
+    "command": [
+      "/usr/bin/python3",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py",
+      "--world",
+      "my_world.world",
+      "--robot-count",
+      "2",
+      "--gazebo-seed",
+      "303",
+      "--startup-timeout",
+      "600",
+      "--message-timeout",
+      "90",
+      "--shutdown-timeout",
+      "120",
+      "--evaluation-duration",
+      "300",
+      "--evaluation-wait-timeout",
+      "900",
+      "--coverage-threshold",
+      "0",
+      "--mission-mode",
+      "rally",
+      "--gateway-mode",
+      "ideal",
+      "--gateway-seed",
+      "17011",
+      "--battery",
+      "--battery-capacity",
+      "100",
+      "--battery-initial-energy",
+      "18.0",
+      "--target-x",
+      "-4",
+      "--target-y",
+      "4",
+      "--rally-max-concurrent",
+      "2",
+      "--disable-global-battery-rally-pause",
+      "--episode-id",
+      "20261009_p2c_v30_dev_forced2",
+      "--collect-fault-result",
+      "--dwell-seconds",
+      "0",
+      "--evaluation-output-dir",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v30/20261009_p2c_v30_dev_forced2",
+      "--log-dir",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v30/20261009_p2c_v30_dev_forced2/launch",
+      "--gateway-ledger-path",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v30/20261009_p2c_v30_dev_forced2/ledger.jsonl",
+      "--bypass-audit-output",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v30/20261009_p2c_v30_dev_forced2/graph.json",
+      "--target-detection",
+      "--rally",
+      "--battery-charge-duration",
+      "10.0",
+      "--battery-safety-margin",
+      "5.0",
+      "--battery-return-timeout",
+      "120"
+    ],
+    "config": {
+      "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
+      "ap_pose_budget_contract": {
+        "age": "max(original delivered odometry source age, original delivered map-to-odom source age)",
+        "frame_ttl_sec": 2.0,
+        "future_or_missing": "reject, no finite task admission",
+        "lookahead_evidence": "both source ages retained privately and independently reconstructed",
+        "odom_ttl_sec": 2.0
+      },
+      "ap_return_consistency": {
+        "admission": "current and endpoint complete return must have a qualified local or locally-vetoed fused path; missing remains unavailable",
+        "assignment": "same qualified geometry for rally candidate return reserve and serial return reservations",
+        "constrained_search": "Same pure qualifier and explicitly labelled third route candidate; AP uses its delivered maps only, never the native original-map audit.",
+        "evidence": "private coordinator_return_map_veto and optional own-map lookahead witnesses; not extra transmitted application load",
+        "inputs": "AP delivered fused planning map and per-robot maps only; current original map/pose/TF/battery leases remain",
+        "source_age": "maximum consulted fresh map age is priced; no header renewal or native hidden input"
+      },
+      "camera_aware_known_search": {
+        "evidence": "Every actual visual witness retains original heading/pose source records, fixed view model, delivered grids, chosen gain/yaw and original full budget for independent reconstruction",
+        "history": "Original delivered pose and map-to-odom0..2s, first actual position/yaw per0.5m/22.5degree bin; no source rewriting or native input",
+        "limits": "Current-map predicted visual coverage is a search preference, never proof of target absence, perfect camera perception or exhaustive coverage; history reprojects through the current map only; no new radio packet",
+        "purpose": "Alternating known-space search only; mapping, useful continuation, charging fairness, native energy and full known-free body/return admission unchanged",
+        "view": "Current delivered known-free rays within original2m/90degree sector; occupied and unknown cells occlude history. A travelled position no longer masks its unseen back side."
+      },
+      "candidate_parent_commit": "dffcb1fd05aba143dd267ab327706662dfdcb641",
+      "cases": {
+        "delay_rooms3": {
+          "admission_protocol": true,
+          "energy": 40.0,
+          "mode": "fault",
+          "profile": {
+            "downlink_delay_sec": 0.5,
+            "uplink_delay_sec": 0.5
+          },
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 202,
+          "target_x": 5.0,
+          "target_y": 3.0,
+          "world": "p1c_rooms.world"
+        },
+        "dev_corridors303": {
+          "admission_protocol": false,
+          "energy": 45.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 303,
+          "target_x": -4.5,
+          "target_y": -0.5,
+          "world": "p1c_corridors.world"
+        },
+        "dev_forced2": {
+          "admission_protocol": false,
+          "charge_duration": 10.0,
+          "energy": 18.0,
+          "mode": "ideal",
+          "return_timeout": 120,
+          "robot_count": 2,
+          "safety_margin": 5.0,
+          "schedule": [],
+          "seed": 303,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        },
+        "dev_lab101": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 101,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        },
+        "dev_rooms202": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 202,
+          "target_x": 5.0,
+          "target_y": 3.0,
+          "world": "p1c_rooms.world"
+        },
+        "empty_battery": {
+          "admission_protocol": false,
+          "energy": 0.0,
+          "mode": "ideal",
+          "robot_count": 2,
+          "schedule": [],
+          "seed": 303,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        },
+        "fixed_corridors2_202": {
+          "admission_protocol": false,
+          "energy": 45.0,
+          "mode": "ideal",
+          "robot_count": 2,
+          "schedule": [],
+          "seed": 202,
+          "target_x": -4.5,
+          "target_y": -0.5,
+          "world": "p1c_corridors.world"
+        },
+        "fixed_corridors_101": {
+          "admission_protocol": false,
+          "energy": 45.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 101,
+          "target_x": -4.5,
+          "target_y": -0.5,
+          "world": "p1c_corridors.world"
+        },
+        "fixed_corridors_202": {
+          "admission_protocol": false,
+          "energy": 45.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 202,
+          "target_x": -4.5,
+          "target_y": -0.5,
+          "world": "p1c_corridors.world"
+        },
+        "fixed_corridors_303": {
+          "admission_protocol": false,
+          "energy": 45.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 303,
+          "target_x": -4.5,
+          "target_y": -0.5,
+          "world": "p1c_corridors.world"
+        },
+        "fixed_lab_101": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 101,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        },
+        "fixed_lab_202": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 202,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        },
+        "fixed_lab_303": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 303,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        },
+        "fixed_rooms_101": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 101,
+          "target_x": 5.0,
+          "target_y": 3.0,
+          "world": "p1c_rooms.world"
+        },
+        "fixed_rooms_202": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 202,
+          "target_x": 5.0,
+          "target_y": 3.0,
+          "world": "p1c_rooms.world"
+        },
+        "fixed_rooms_303": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 303,
+          "target_x": 5.0,
+          "target_y": 3.0,
+          "world": "p1c_rooms.world"
+        },
+        "forced2": {
+          "admission_protocol": false,
+          "charge_duration": 10.0,
+          "energy": 18.0,
+          "mode": "ideal",
+          "return_timeout": 120,
+          "robot_count": 2,
+          "safety_margin": 5.0,
+          "schedule": [],
+          "seed": 303,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        },
+        "holdout_fault": {
+          "admission_protocol": true,
+          "energy": 45.0,
+          "mode": "fault",
+          "profile": {
+            "downlink_loss_rate": 0.1,
+            "gateway_seed": 29171,
+            "uplink_delay_sec": 0.5
+          },
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 917,
+          "target_x": 4.6,
+          "target_y": -3.6,
+          "world": "p2c_holdout917.world"
+        },
+        "holdout_ideal": {
+          "admission_protocol": true,
+          "energy": 45.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 917,
+          "target_x": 4.6,
+          "target_y": -3.6,
+          "world": "p2c_holdout917.world"
+        },
+        "loss_corridors2": {
+          "admission_protocol": true,
+          "energy": 45.0,
+          "mode": "fault",
+          "profile": {
+            "downlink_loss_rate": 0.1,
+            "uplink_loss_rate": 0.1
+          },
+          "robot_count": 2,
+          "schedule": [],
+          "seed": 202,
+          "target_x": -4.5,
+          "target_y": -0.5,
+          "world": "p1c_corridors.world"
+        },
+        "protocol_forced2": {
+          "admission_protocol": true,
+          "charge_duration": 10.0,
+          "energy": 18.0,
+          "mode": "ideal",
+          "return_timeout": 120,
+          "robot_count": 2,
+          "safety_margin": 5.0,
+          "schedule": [],
+          "seed": 303,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        }
+      },
+      "coordinator_live_clock": {
+        "budget_provenance": "Distinct immutable source stamps, ranking/pricing instants and actual decision instant; age reconstructed at each instant, never renewed.",
+        "central_action_completion": "Humble Future done callbacks are executor tasks outside callback groups. All8 central response/result registrations enqueue completed futures into one private SimpleQueue and trigger an existing-state-group guard; only its serialized drain mutates mission owners. Late completions after shutdown are ignored; context-active guard failures remain visible. No new DDS topic or application traffic.",
+        "clock_qos": "Existing best-effort depth1 unchanged; no extra subscription or application message.",
+        "executor": "Two workers; only the existing /clock subscription moves to an independent mutually exclusive group. Original state/action callbacks remain serialized.",
+        "limits": "Clock correctness is independently DDS-verified with controlled blocked callback, not a CPU latency or native completion guarantee. No native battery, Nav2, physics, TTL, horizon or wireless change.",
+        "native_action_completion": "The same private callback serializer handles both native return response/result futures in the original native default state group; lightweight TF inbox remains independent, source stamps/heap/energy/return/charge equations and TTLs unchanged.",
+        "planning_lease": "Capture original delivered source deadlines; abort current exploration batch at candidate/budget/route/dispatch checkpoints on expiry or clock reset. Recheck sources after charge/survey/rally computation before changing admitted owners.",
+        "shutdown": "Stop new admissions and cancel timers before waiting for executor completion."
+      },
+      "coverage_threshold": 0.8,
+      "development_cases": [
+        "dev_forced2",
+        "dev_lab101",
+        "dev_rooms202",
+        "dev_corridors303"
+      ],
+      "development_parent": "f0fe12ca4396be79979296ebf2f72aeaff69216f",
+      "duration_sec": 300,
+      "energy_unit": "simulation_model_units_not_joules",
+      "evaluation_result_polling": "Read-only bounded polling of a not-yet-valid JSON file from the same original producer; complete invalid objects, producer failure and original deadline still fail. No episode retry, evaluator change or shutdown grace change.",
+      "exploration_bounded_commitment": {
+        "evidence": "Selected gain/group size/base utility/reuse exclusions/relative factor/continuation weight/score retained privately; strict reader reconstructs geometry and scores. Does not assert global maximum over unseen original history.",
+        "guards": "Original full body-masked travel, accepted route reservations, complete round-trip energy, charging fairness and source leases remain hard admission checks.",
+        "scope": "One nominal-utility ranking change. Actual body-path energy is repriced before dispatch; nominal score is not an actual travel-time guarantee.",
+        "score": "adjusted_utility*(2 if current useful funded continuation else1)",
+        "weight": 2.0
+      },
+      "exploration_frontier_commitment": {
+        "admission": "Regenerate current candidates; resume only within original1.2m and gain>max(200,20% prior gain), with current full body/reservation/energy/source checks and battery_factor1.",
+        "clear": "Actual full viewpoint Nav2 success, native FAILED, ordinary navigation failure or no useful funded reachable current candidate clears preference; normal task/safety/retry limits remain.",
+        "evidence": "Private executed witnesses retain current gain and optional prior intent; reconstruct gain from delivered map and verify current proximity/usefulness/funded energy. Not a new AP observation or application traffic.",
+        "limits": "Bounded receding-horizon preference: currently useful continuation receives2x adjusted utility, not absolute priority. No stale command replay, global optimality or time guarantee.",
+        "trigger": "Successful EXPLORE/FOUND_UNCONFIRMED short Nav2 prefix remains more than0.02m from full current viewpoint; retain that viewpoint as a scheduling preference."
+      },
+      "exploration_travel_preference": {
+        "distance": "known-free no-corner-cut route with original bounded escape and actual starting offset; complete actual body-masked path is priced again before admission",
+        "evidence": "every executed regular frontier privately retains delivered map geometry, source leases, poses/models, nominal/actual distance, eligible peer budgets and utility factor; strict read-only reconstruction",
+        "factor": "min(1,(1+closest currently funded peer known distance)/(1+own known distance))",
+        "inputs": "same delivered planning map/poses/frame/battery/own robot maps; pending charge and non-ACTIVE peers excluded",
+        "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded.",
+        "scope": "Soft conditional utility preference; bounded continuation, fair serial charging, source TTLs and actual reservations remain; no global optimality or peer future-availability guarantee.",
+        "strategy": "relative_geodesic_travel"
+      },
+      "fault_seed": 17011,
+      "gate_cases": [
+        "fixed_lab_101",
+        "fixed_lab_202",
+        "fixed_lab_303",
+        "fixed_rooms_101",
+        "fixed_rooms_202",
+        "fixed_rooms_303",
+        "fixed_corridors_101",
+        "fixed_corridors_202",
+        "fixed_corridors_303",
+        "fixed_corridors2_202",
+        "forced2",
+        "protocol_forced2",
+        "delay_rooms3",
+        "loss_corridors2",
+        "holdout_ideal",
+        "holdout_fault",
+        "empty_battery"
+      ],
+      "geometry_computation": {
+        "immutable_cache": "Only bytes-backed immutable map snapshots may reuse geometry by object identity; writable maps and readonly aliases of writable maps are content-checked. Source stamps and budget freshness are never cached or renewed.",
+        "negative_cache": "Exact reverse bounded reachability mask matches original raw-known-free8-neighbour0.6m escape, diagonal corners and step count; it only rejects impossible starts. Original forward BFS still chooses every actual escape path; geometry changes invalidate cache.",
+        "private_diagnostics": "Both successful and failed rally assignments retain all actual delivered grids, source leases, robot positions, conditional starts, models and target; strict reader reconstructs chosen poses. No new AP or radio input.",
+        "qualification": "Batch segment sampling with original math.dist/ceil/multiply-divide order retains scalar0.35m/half-cell/0.6m/known-free/no-diagonal semantics; full outputs compared to v12, including no-solution dense input."
+      },
+      "initial_known_space_search": {
+        "admission": "Original0.45m endpoint/0.35m known-free route, body masks, accepted reservations, current source TTLs, full approach+qualified contact return+reaction/wait reserve and charging fairness. Empty known-space candidate set falls back to ordinary mapping; unfunded candidates request original serial charging.",
+        "alternation": "Successful full mapping viewpoint enables one known-space purpose; successful full known-space viewpoint returns to mapping. Short prefixes and safety charging preserve the current purpose; ordinary navigation failure returns to mapping.",
+        "evidence": "Private initial_visual_search witnesses retain delivered grids, positions, source leases, historical visit inputs, sector gain/yaw, full travel/energy and scheduling score; reader reconstructs them. Complete cohort must exercise at least one such witness.",
+        "history": "Position history remains for bounded local diversity. Directional known-space interest instead uses original delivered yaw/pose/frame records and current known-free sight; two-metre90degree predicted cones, not omnidirectional visit discs or target absence proof.",
+        "inputs": "Existing gateway delivered maps/poses/models only; no ground-truth target, hidden camera, native audit stream or new application packet.",
+        "limits": "Heuristic bounded current-map search preference, not exhaustive visual coverage, optimality, hardware safety or worst-case completion guarantee.",
+        "scope": "Complete object mission (enable_rally true) only; pure mapping and existing target reacquisition behavior stay unchanged.",
+        "view": "Current known-free visible interest in a90-degree sector;16 deterministic headings. Occupied and unknown cells block sight; selected heading retained at the final Nav2 endpoint."
+      },
+      "mission_spatial_diversity": {
+        "admission": "Original current complete body-masked approach+qualified contact return, source TTLs, charging fairness and accepted route reservations unchanged. Soft positive factor never authorizes motion.",
+        "algorithm": "Outside original2m charger-centroid neutral region, count historical0.5m bins within2m of candidate with known-free line of sight in the current delivered planning grid; multiply nominal utility by max(0.25,1/sqrt(1+count)). Other rooms sharing a global direction are independent. Same bounded2x useful continuation and funded-nearer-peer preference remain.",
+        "anchor": "Centroid of cached delivered static charger poses; missing/invalid metadata skipped, no model gives neutral preference. Not a new AP input or ground-truth target.",
+        "evidence": "Private executed witnesses preserve static model anchor, complete visit-source records, local visible visit indices, radius/neutral flag/factor and adjusted score beside current delivered grid; independent reader reconstructs. No added application packet.",
+        "history": "Existing first fresh delivered position per0.5m bin; original odom/TF each0..2s at recording. Historical travel is a search preference, never camera coverage proof.",
+        "limits": "Current-map local visibility is a search preference, not historical90degree camera coverage, optimality, peer future availability or worst-case native completion guarantee.",
+        "scope": "Complete object missions with battery model only; ordinary mapping unchanged."
+      },
+      "native_energy_accounting": {
+        "channel": "read-only native battery_return_audit; not AP input or extra network traffic",
+        "equation": "energy=max(0,initial_energy+charge_credits-distance*move_cost-elapsed*idle_cost)",
+        "freeze_counterexample": "native truth path>1m cannot have zero local distance/time accounting; retain all failures",
+        "period_sec": 5.0,
+        "required": "all regular originals; zero-energy negative has its independent no-navigation failure audit"
+      },
+      "native_filtered_tf": {
+        "gateway": "Original /robot/gateway/source_tf monotonic filtering and packets unchanged; local sensor stream does not become an AP observation or modeled radio packet.",
+        "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
+        "native": "All relevant transforms, duplicates, out-of-order and invalid futures reach the unchanged native consumer, which still owns original2s/5s/128/future deferral, ordering, energy and safety.",
+        "proof": "Actual DDS mixed reliability/body TF, source preservation/future/stale/energy checks; actual frozen graph binds each native stream only to its own battery manager.",
+        "queues": "Native TF original reliable20/two-worker serialized-state-plus-input model, fused1/odom10 unchanged; native battery entire bytes unchanged from79f2113.",
+        "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source.",
+        "source": "Existing robot-side sampler extracts only original map-to-odom transforms into /robot/battery/source_tf before the native DDS queue; no source stamp rewriting."
+      },
+      "native_pose_contract": {
+        "frame_generation_stamp": "native validity stamp minus actual SLAM transform_timeout; launch supplies the same configured offset as gateway",
+        "frame_ttl_sec": 2.0,
+        "odom_ttl_sec": 2.0,
+        "source_order": "source stamps are preserved; valid sensor samples up to2s ahead of local /clock wait in one bounded128-entry heap; clock-matured duplicate/out-of-order sources are ignored, excessive-future samples never poison the current pose",
+        "startup_recovery": "Every charging entry, including immediate odom callbacks, resumes a funded initial missing-pose hold instead of charging; original low-energy/task charge requests remain valid.",
+        "unavailable": "no finite budget/nav return or stable charging; bounded30s stop then explicit positive-energy failure"
+      },
+      "native_snapshot_consumption": {
+        "coalescing": "Filter original map-to-odom transforms before preserving the latest matured source and at most128 unique future stamps; a guard wakes the serialized consumer. Original native128-entry future heap/2s ahead window remains; overflow fails explicitly.",
+        "evidence": "Actual two-worker DDS with the state group blocked and mixed relevant/body TF; blocked historical1/20 queues end with no relevant TF while the input mailbox retains original source50, with no concurrent state/energy/action mutation.",
+        "meter": "Odometry accounting code and queue depth unchanged; TF-only reprojection does not bill map-frame jumps. Required private5s energy ledger adds only a relevant TF receipt count.",
+        "mixed_tf": "Body transforms never overwrite a relevant snapshot or renew its lease. Original source offsets/2s pose/5s map TTLs remain, invalid future input cannot poison a later valid source.",
+        "scope": "Two executor workers: only relevant TF ingress can run independently. All pose application, energy, budget, safety, charging and actions remain in the original mutually exclusive state group; no new AP observation or application traffic.",
+        "subscriptions": "Native mixed TF retains20 with a separate lightweight input callback group; fused-map latest1; odometry remains original10, local map/task/charge/event/action queues unchanged"
+      },
+      "native_tf_graph_capture": {
+        "evidence": "native_graph.json kept alongside original early bypass graph, owner-bound optional observer command and reader source digests required. Missing evidence FAIL; old incomplete graphs are never repaired.",
+        "scope": "Read-only safety observer captures complete required application/native graph once all native battery topics are observed and all endpoint bindings exist; does not delay or change task clocks."
+      },
+      "observer_heading_confirmation_gap": true,
+      "opportunity_charge_algorithm": "two_current_frontiers_complete_route_budget",
+      "opportunity_charge_rules": [
+        "Successful real exploration first; never initial spawn top-up.",
+        "Only existing near-home range and visible body-safe contact route; serial request and handle drain retained.",
+        "At most three distinct useful current frontier alternatives; full known route and endpoint return; forecast is not a queued command.",
+        "Current map identity/source TTL and current delivered pose/TF/battery gates; next actual leg always revalidates."
+      ],
+      "owner_shutdown_timeout_sec": 120,
+      "physical_blackout_manifest": "p2c_blackout_manifest.json",
+      "physical_blackout_required": "Both new originals at the formal commit; unchanged controlled60..250/62..248/.5m/1.1m stimulus. Full integration cannot PASS without their strict evidence. Execute only after all development and fixed/safety prerequisites.",
+      "predeclared_at_utc": "2026-10-09T04:22:10.701170+00:00",
+      "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
+      "rally_candidate_sampling": {
+        "algorithm": "original72 rings plus up to2 angular boundary representatives in each0.4m spatial bin",
+        "limits": "Bounded spatial sampling remains a heuristic, not exhaustive joint-feasibility or optimality proof. No original obstacle/unknown cell is cleared.",
+        "maximum_candidates": 464,
+        "region": "same known-free target-visible1..2.6m region,0.45m endpoint clearance and0.8m separation"
+      },
+      "rally_return_objective": {
+        "exposure": "Soft weighted complete-return length between original0.35m path and0.45m endpoint margins; not energy, continuous clearance or dynamic-obstacle guarantee. Every existing hard constraint is unchanged.",
+        "order": [
+          "active_observer_protection",
+          "predicted_charge_count",
+          "qualified_return_clearance_exposure",
+          "serial_time",
+          "observer_headroom",
+          "existing_path_objective"
+        ]
+      },
+      "rally_return_repair": {
+        "budget": "Complete approach+qualified endpoint return+reaction/map/max(odom,frame) age+hold/wait; strictly less than current energy. Next real dispatch revalidates all original leases/reservations/energy.",
+        "evidence": "Private coordinator_rally_return_repair saves both delivered maps, original stamps, model, current/reserved/body positions, old/new endpoints and full route/cost; independent reconstruction. No native hidden input or added application traffic.",
+        "preservation": "Only a new proposal; preserve parked peers, original retries/300s horizon/5s native hold/safety. Reset hold on actual assignment change; never cancel a live action or reset retries.",
+        "search": "Known-free target-visible grid centres in the existing nominal1..2.6m rally region, endpoint clearance0.45m and separation0.8m, body-masked complete approach and same qualified contact return. Dense recovery supplements original72 ring samples; no obstacle/unknown clearing.",
+        "trigger": "Idle ACTIVE unarrived non-observer; old endpoint has no qualified return, current pose retains one; all delivered source leases and target lease fresh; no live/pending exploration/rally/survey, charge or safety refuge."
+      },
+      "rally_route_consistency": {
+        "default_rally_route": "infinite complete path was already in use; initial five-metre diagnosis withdrawn",
+        "offsets": "actual start to first grid point included in nominal approach, detour and parking costs",
+        "return_reservation": "complete delivered-map contact-region route; same geometry cache and clearance as known_home_distance",
+        "unavailable": "wait; charging reserves actual body; no local hidden inputs or centre-route fallback"
+      },
+      "retained_failed_development": "20261008_p2c_v1_failed_development.json",
+      "retained_failed_developments": [
+        "20261008_p2c_v1_failed_development.json",
+        "20261008_p2c_v2_failed_development.json",
+        "20261008_p2c_v4_failed_development.json",
+        "20261008_p2c_v5_failed_development.json",
+        "20261008_p2c_v6_failed_development.json",
+        "20261008_p2c_v7_failed_development.json",
+        "20261008_p2c_v8_failed_development.json",
+        "20261008_p2c_v9_failed_development.json",
+        "20261009_p2c_v10_failed_development.json",
+        "20261009_p2c_v11_failed_development.json",
+        "20261009_p2c_v12_failed_development.json",
+        "20261009_p2c_v13_failed_development.json",
+        "20261009_p2c_v14_failed_development.json",
+        "20261009_p2c_v15_failed_development.json",
+        "20261009_p2c_v16_failed_development.json",
+        "20261009_p2c_v17_failed_development.json",
+        "20261009_p2c_v27_failed_development.json",
+        "20261009_p2c_v28_failed_development.json"
+      ],
+      "retained_partial_development": "20261008_p2c_v3_partial_development.json",
+      "retained_unrun_candidates": [
+        "20261009_p2c_v29_concurrency_correction.json"
+      ],
+      "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
+      "return_source_selection": {
+        "ages": "original5s source TTL for both maps; budget prices the maximum source age actually consulted, plus original2s pose leases",
+        "constrained_search": "Only when the original fused shortest route fails the local-obstacle veto: project all local positive cells into a separate fused-grid search layer; keep unknown cells unknown, promote positive source cells to occupied, retain both originals, and still apply the original continuous local veto. No route remains unavailable.",
+        "derived_provenance": "Private native constrained_fused candidate: deterministic reconstruction from original local+fused grids; source_time=min(original stamps), version=max(original versions); age prices both originals. Never publish the derived grid as an application map.",
+        "evidence": "all fresh map candidates/costs/qualification/selected minimum retained on read-only native return audit only; not AP input or added communication",
+        "obstacle_veto": "a fused route may extend local unknown space but may not clear local known obstacles; continuous half-local-cell checks preserve0.35m clearance and original bounded0.6m known-free start escape; no diagonal cutting",
+        "sources": [
+          "fresh native local map",
+          "fresh gateway-delivered fused map",
+          "explicit conservative fused search with all fresh local occupied cell rectangles"
+        ],
+        "strategy": "lowest qualified complete-contact energy budget; exact tie prefers local"
+      },
+      "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
+      "rules": [
+        "Commit and push all source/config/helper bytes before first task; no edits while any task owner/observer remains live.",
+        "Retain every original/failure/infrastructure interruption; no task retries or failed-cell backfill.",
+        "All ten fixed direct-ideal cells and forced2/protocol_forced2/holdout_ideal require native COMPLETE at unchanged300s/.35m/.05mps/.1radps/5s.",
+        "Delay/loss/holdout_fault outcomes are all retained; their safety and protocol gates require zero contacts/exhaustion/robot failures, not forced task success.",
+        "Each forced robot must charge; all actual charger_stopped return audits require positive energy and prediction error <=0 within1e-6.",
+        "No-route/empty-energy negative probes must fail correctly, never generate a straight-line Nav2 return; actual ROS synthetic-map failure is labelled component, not Gazebo motion.",
+        "Physical blackout probe reuses the predeclared60..250s staging stimulus and read-only native motion thresholds; both robots must independently return/charge.",
+        "101/202/303/707/809 are exposed;917/new geometry/target/fault29171 is first-exposure verification, not a held-out population estimate. First exposure only after development and full fixed/safety gates.",
+        "Budget envelope assumes bounded motion deviation, speed, reaction and recovery; no claim under infinite blockage, changing obstacles, broken executor or uncalibrated hardware."
+      ],
+      "safety_probe_manifest": "p3b5_staged_return_probe_manifest.json",
+      "schema_version": 1,
+      "snapshot_consumption": {
+        "evidence": "Actual DDS blocked-executor probe compares original10/20 queues with latest1 on50 unchanged source-stamped snapshots",
+        "scope": "Application latest-state coalescing after gateway delivery, not injected radio loss or application traffic change",
+        "source_time": "Original source headers preserved; stale inputs still rejected by original5s/2s TTLs",
+        "subscriptions": "AP delivered fused/robot map, odometry and map-frame TF use original reliable volatile keep-last1; discrete events/publishers/native safety queues unchanged",
+        "tf_reprojection": "Each new delivered map-to-odom TF reprojects the last original odometry sample; its source timestamp and velocity remain unchanged, and original two independent2s leases still apply."
+      },
+      "target_information_survey": true,
+      "task_child_process_audit": {
+        "cleanup": "Actual post-task child exit codes retained separately; not task-time failures or evidence of graceful child exit.",
+        "during_task": "Every nonzero ROS launch child exit before the owned SIGINT closure marker fails; outer owner exit0 cannot mask a child crash.",
+        "evidence": "Original source-bound launch transcript required; no raw log repair."
+      }
+    },
+    "configuration_command": null,
+    "cpu_affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79
+    ],
+    "environment": {
+      "FASTDDS_BUILTIN_TRANSPORTS": "UDPv4",
+      "FASTRTPS_DEFAULT_PROFILES_FILE": null,
+      "GAZEBO_MASTER_URI": "http://127.0.0.1:20290",
+      "PYTHONNOUSERSITE": "1",
+      "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+      "ROS_DISCOVERY_SERVER": null,
+      "ROS_DISTRO": "humble",
+      "ROS_DOMAIN_ID": "210"
+    },
+    "evidence_sha256": {
+      "20261009_p2c_v30_dev_forced2.csv": "bc86637e4b36a3fb580eb958dfe4e3fd0702b063120c2d94e0e1de2cce155b67",
+      "20261009_p2c_v30_dev_forced2.json": "8843e7d2a5c1e0f125afa454cc08d90d121e457f81986deb633687e399ed7ed4",
+      "graph.json": "10bceabd03d2703a3d8a4ff69e3ce3cb71f1f170a32b498545dda7eaaa9b538a",
+      "launch/robots2_seed303_20261009-123851.log": "0c6b6bc7bfcdcb919ae831a740983b781cb9b29d25a24e88a84faae645fec646",
+      "ledger.jsonl": "e0612026ffa42dee6c9adacadf21ae895d4a43ea192ed5b83ab38c5bd2d58bfc",
+      "ledger_metrics/curves.svg": "c46ab9520feb936eb87481f5b86b871458581aebfa0f8406e7e6e34711f2a2de",
+      "ledger_metrics/events.jsonl": "2735daef0cc62290b8b37c2e15159655e887ce5c7ed317f8619a59c07ce29fd9",
+      "ledger_metrics/inputs.jsonl": "fab24ba5f6a5fcb445735a1168d8f4c93e12d5c54e503f959b13d090f71e59e2",
+      "ledger_metrics/live.jsonl": "fe06753bfc8ce87435223aedf10cae5bf16c5b88b10f421984509099103e91b6",
+      "ledger_metrics/live_windows.csv": "974f34f93183f63042a2bac66babb76884ee4f38ba4c9030f9aa697bd186447d",
+      "ledger_metrics/summary.json": "f417057e8f434ee43ffd76a0de774c51b7957a57cf4b1a4794134b5f3ff50ae6",
+      "ledger_metrics/windows.csv": "974f34f93183f63042a2bac66babb76884ee4f38ba4c9030f9aa697bd186447d",
+      "ledger_metrics/windows.jsonl": "0a3830c62a44860a2ce2074d51a2e45fb8cd4d8d8baa1d8198d77319de3ba981",
+      "manifest.json": "64d236ed67f40a9f151c240c840615d595e1a3d6a07efd6236ec4326b3cd91f8",
+      "native_graph.json": "af93cee95ef46c745f7d49b562141d8a841b0edb240bc61bb55ff2dc05b5120b",
+      "observer.log": "a2c82767eca72be383c122e6e4e87869e145b0febe34fd3fa00ca1f8fc6e2655",
+      "runner.log": "941f549d7daff58c680aa05db195c0f220a93e796b224e6fc9facba403049de0",
+      "safety_events.jsonl": "8f3b30a4aec1a12759390d567ee4a3b6bbf1b5b22ceca58790624a9b6a063cc1",
+      "schedule.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    "finished_at_utc": "2026-10-09T04:45:31.658417+00:00",
+    "git_commit": "c12db66cf666779978dd74b315a9e92b080f4a11",
+    "observer_command": [
+      "/usr/bin/python3",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/observe_p3b5.py",
+      "--output",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v30/20261009_p2c_v30_dev_forced2/safety_events.jsonl",
+      "--robot-count",
+      "2",
+      "--native-tf-graph-output",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v30/20261009_p2c_v30_dev_forced2/native_graph.json"
+    ],
+    "observer_pid": 592567,
+    "observer_returncode": 0,
+    "owner_pid": 592550,
+    "result": {
+      "battery_enabled": true,
+      "battery_minimum_energy": 11.264950567309238,
+      "battery_total_charges": 0,
+      "battery_total_charging_time_sec": 0.0,
+      "battery_total_returns": 2,
+      "collision_duration_sec": 0.0,
+      "collision_events": 0,
+      "collision_history": [],
+      "collision_monitoring_active": true,
+      "completion_status": "EXPLORE",
+      "completion_time_sec": null,
+      "coordinator_completion_time_sec": null,
+      "correct_coverage_ratio": 0.3858307849133537,
+      "correct_free_coverage_ratio": 0.41544223016221793,
+      "correct_truth_cell_count": 21953,
+      "coverage_at_detection": null,
+      "coverage_threshold": 0.0,
+      "detecting_robot": "",
+      "elapsed_sim_time_sec": 300.1999999999998,
+      "end_sim_time_sec": 2375.582,
+      "episode_id": "20261009_p2c_v30_dev_forced2",
+      "failed_robots": [],
+      "failure_reason": "timeout",
+      "gazebo_seed": 303,
+      "known_coverage_ratio": 0.39266758058279727,
+      "known_truth_cell_count": 22342,
+      "map_message_count": 307,
+      "merged_map_frame": "map",
+      "merged_map_height": 211,
+      "merged_map_origin_x": -5.641231874051185,
+      "merged_map_origin_y": -5.435430017070379,
+      "merged_map_origin_yaw": 0.0,
+      "merged_map_resolution": 0.05000000074505806,
+      "merged_map_width": 253,
+      "mission_mode": "rally",
+      "model_state_message_count": 3003,
+      "native_rally_hold_proof": null,
+      "nav_aborted": 0,
+      "nav_canceled": 0,
+      "nav_goal_count": 1,
+      "nav_succeeded": 1,
+      "observed_accuracy": 0.9825888461194163,
+      "occupied_iou": 0.042432814710042434,
+      "partial_completion": false,
+      "phase_overlap_ratios": {
+        "EXPLORE": 0.0,
+        "FOUND": 0.0,
+        "RALLY": 0.0
+      },
+      "phase_path_lengths_m": {
+        "EXPLORE": 0.7742905224813889,
+        "FOUND": 0.0,
+        "RALLY": 0.0
+      },
+      "phase_union_visited_cell_counts": {
+        "EXPLORE": 11,
+        "FOUND": 0,
+        "RALLY": 0
+      },
+      "rally_angular_tolerance_radps": null,
+      "rally_assignments": {},
+      "rally_hold_sec": null,
+      "rally_linear_tolerance_mps": null,
+      "rally_min_separation_m": null,
+      "rally_position_tolerance_m": null,
+      "required_robot_count": 2,
+      "required_robot_names": [
+        "tb1",
+        "tb2"
+      ],
+      "robot_count": 2,
+      "robots": {
+        "tb1": {
+          "battery_capacity": 100.0,
+          "battery_charge_count": 0,
+          "battery_charge_x": 0.0,
+          "battery_charge_y": -0.45,
+          "battery_charging_time_sec": 0.0,
+          "battery_final_energy": 11.264950567309238,
+          "battery_initial_energy": 18.0,
+          "battery_message_count": 599,
+          "battery_minimum_energy": 11.264950567309238,
+          "battery_mode": "ACTIVE",
+          "battery_return_count": 1,
+          "collision_duration_sec": 0.0,
+          "collision_events": 0,
+          "collision_message_count": 6005,
+          "end_x": -0.6770947347918979,
+          "end_y": -0.19858598062259394,
+          "final_angular_speed_radps": 1.8128088001596153e-06,
+          "final_linear_speed_mps": 6.671888266178884e-05,
+          "nav_aborted": 0,
+          "nav_canceled": 0,
+          "nav_goal_count": 1,
+          "nav_succeeded": 1,
+          "path_length_m": 0.7654812631480836,
+          "phase_path_lengths_m": {
+            "EXPLORE": 0.7654812631480836,
+            "FOUND": 0.0,
+            "RALLY": 0.0
+          },
+          "rally_final_error_m": null,
+          "rally_target_x": null,
+          "rally_target_y": null,
+          "rally_target_yaw": null,
+          "start_x": 0.0023848479208502995,
+          "start_y": -0.44999491261575636,
+          "teleport_jump_count": 0,
+          "visited_cell_count": 10
+        },
+        "tb2": {
+          "battery_capacity": 100.0,
+          "battery_charge_count": 0,
+          "battery_charge_x": 0.0,
+          "battery_charge_y": 0.45,
+          "battery_charging_time_sec": 0.0,
+          "battery_final_energy": 12.025604523654117,
+          "battery_initial_energy": 18.0,
+          "battery_message_count": 601,
+          "battery_minimum_energy": 12.025604523654117,
+          "battery_mode": "ACTIVE",
+          "battery_return_count": 1,
+          "collision_duration_sec": 0.0,
+          "collision_events": 0,
+          "collision_message_count": 6005,
+          "end_x": 0.011129401865500559,
+          "end_y": 0.45011519711748454,
+          "final_angular_speed_radps": 4.817418527160618e-05,
+          "final_linear_speed_mps": 6.185939268713352e-05,
+          "nav_aborted": 0,
+          "nav_canceled": 0,
+          "nav_goal_count": 0,
+          "nav_succeeded": 0,
+          "path_length_m": 0.008809259333305227,
+          "phase_path_lengths_m": {
+            "EXPLORE": 0.008809259333305227,
+            "FOUND": 0.0,
+            "RALLY": 0.0
+          },
+          "rally_final_error_m": null,
+          "rally_target_x": null,
+          "rally_target_y": null,
+          "rally_target_yaw": null,
+          "start_x": 0.002326516162336911,
+          "start_y": 0.4500048523580781,
+          "teleport_jump_count": 0,
+          "visited_cell_count": 1
+        }
+      },
+      "schema_version": 9,
+      "search_overlap_ratio": 0.0,
+      "start_sim_time_sec": 2075.382,
+      "success": false,
+      "target_confirmation_frames": null,
+      "target_field_of_view_deg": null,
+      "target_found": false,
+      "target_max_distance_m": null,
+      "target_x": null,
+      "target_y": null,
+      "task_phase": "EXPLORE",
+      "termination_reason": "timeout",
+      "time_to_75_coverage_sec": null,
+      "time_to_80_coverage_sec": null,
+      "time_to_90_coverage_sec": null,
+      "time_to_95_coverage_sec": null,
+      "time_to_detect_sec": null,
+      "time_to_rally_sec": null,
+      "total_overlap_ratio": 0.0,
+      "total_path_length_m": 0.7742905224813889,
+      "truth_cell_count": 56898,
+      "truth_free_cell_count": 52337,
+      "truth_height": 218,
+      "truth_occupied_cell_count": 4561,
+      "truth_origin_x": -5.800000000000001,
+      "truth_origin_y": -5.6000000000000005,
+      "truth_rectangle_count": 26,
+      "truth_resolution": 0.05,
+      "truth_unsupported_collision_count": 1,
+      "truth_width": 261,
+      "union_visited_cell_count": 11,
+      "visit_resolution": 0.1,
+      "world_file": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/worlds/my_world.world"
+    },
+    "result_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v30/20261009_p2c_v30_dev_forced2/20261009_p2c_v30_dev_forced2.json",
+    "runner_returncode": 0,
+    "source_digests": {
+      "admission_protocol": "05f15651bfc831c541d5a662491a0467e64ae4084c27655a6f27e1ed56e6064a",
+      "control_cli": "f70c8f7a6ee4fb9a0a7d2e9468e3c77b3cc77d729cbd2a544c1f45adbf997c09",
+      "control_schema": "7fa7e5fa63dd0fb1e319fd08694773c675ac3fe8dcefa0051dd4f0fe71958d28",
+      "entrypoint": "78edb424db0a63347cf6b28f3fbff72a20207c3852f26a004907f868e8170a1f",
+      "exploration": "ad3c3a6debf36c73dc649e1251d5adf8905f0c46372a90550e57d9dcdcca3655",
+      "launch": "6f26d9c5b1dce5bc681bc59cfe8fb8be68baff823f5334939f33261392380692",
+      "manifest": "3ccc641891d3b2fd3a5113ab1e5c0f0366e7e6abf98faf69178a1354647ede27",
+      "message_schema": "e0648e61473dfd2931038c79cda8a6fe4bf09c1d00f8d4acdfa0f4879e72925c",
+      "native_graph_reader": "42206ee2a824bded4f1111d5a097b853aeddbffd31a653393b94fb6b6e418b65",
+      "params": "2cb9b9e26015cbe79867fe3750296d9cb7626a05ad16f595b7692db4b4490f4f",
+      "physics_observer": "588693bf5f934081452925fc3ca80e10465f67ccc1738066cd91fb9fdf48527b",
+      "runner": "63607f21f1a1e6885ce0d0ae7dbc4d663057a59ab0ea2cd3a1325c6c74549df7",
+      "safety_observer": "bfeba81cac53bb13fcb029e983526a751e84b07870e82098db85d1d2055c7913",
+      "slam": "61abada48d42602e5bb8950cdf81cd4804c0c45b787490681711e3cc228eb1c0",
+      "smoke": "42cf2f93ba691e2f281d3e2938bc4c005346fcf3eac061edf1317c5b22492359",
+      "staging_apparatus": "594a3fe0937b5280619556c62625fcbdb893eabd8e0a6a62d761fe37fea5819b",
+      "worlds": "2ee10406031815e3d0ea2e76074706a8e150e636ab2366428b201ecc72a5cc9a"
+    },
+    "started_at_utc": "2026-10-09T04:38:50.476495+00:00",
+    "worktree_status": [
+      "?? 260929_report/1.pdf",
+      "?? 260929_report/2007.08564v1.pdf",
+      "?? 260929_report/2106.00574v1.pdf",
+      "?? 260929_report/2503.07278v3.pdf",
+      "?? \"260929_report/A Critical Review of Communications in Multi-robot Systems.pdf\"",
+      "?? \"260929_report/Adaptive resource allocation in dynamic wireless environments a systematic review.pdf\"",
+      "?? 260929_report/Applications_of_Deep_Reinforcement_Learning_in_Communications_and_Networking_A_Survey.pdf",
+      "?? \"260929_report/Towards reasoning-empowered task-oriented communication for agent networks.pdf\"",
+      "?? 260929_report/Towards_Autonomous_Multi-UAV_Wireless_Network_A_Su.pdf",
+      "?? 260929_report/c61bd00b-f250-4cfe-b5a5-f941e8c9b22b.png",
+      "?? 260929_report/sensors-23-03625.pdf",
+      "?? 260929_report/ssrn-7067272.pdf",
+      "?? \"260929_report/\\347\\273\\204\\344\\274\\232\\346\\226\\207\\347\\214\\256\\346\\261\\207\\346\\212\\245-\\346\\250\\241\\346\\235\\277.pptx\"",
+      "?? \"260929_report/\\347\\273\\274\\350\\277\\260\\350\\256\\272\\346\\226\\207\\350\\260\\203\\347\\240\\224.docx\""
+    ]
+  },
+  "strict_gate": {
+    "status": "FAIL",
+    "scope": "development",
+    "task_stack_frozen_commit": "c12db66cf666779978dd74b315a9e92b080f4a11",
+    "cases": 1,
+    "errors": [
+      {
+        "case": "dev_forced2",
+        "error": "AssertionError()",
+        "traceback": "Traceback (most recent call last):\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 755, in audit_one\n    try:return check_one(path,config),None\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 671, in check_one\n    episode_ok(result)\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3b5_gate.py\", line 61, in episode_ok\n    p3a_episode_ok(result)\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3a6_gate.py\", line 39, in episode_ok\n    assert data[\"success\"]\nAssertionError\n"
+      }
+    ],
+    "evidence": [],
+    "full_declared_scope": false,
+    "raw_failures_retained": true,
+    "physical_blackout_gate": "required_before_full_integration",
+    "general_hardware_safety_guarantee": false
+  },
+  "independent_audits": {
+    "dev_forced2": {
+      "native_return": {
+        "status": "PASS",
+        "return_triggers": 2,
+        "map_budget_reconstructions": 0,
+        "pose_lease_reconstructions": 2,
+        "pose_leases_required": true,
+        "local_legs": 0,
+        "charger_returns": 0,
+        "returns": [
+          {
+            "actual_distance_m": 0.0,
+            "actual_elapsed_sec": 0.0,
+            "actual_energy_spent": 0.0,
+            "cancellation_count": 0,
+            "charge_radius_m": 0.8,
+            "energy": 18.0,
+            "energy_model": {
+              "idle_cost_per_sec": 0.02,
+              "move_cost_per_m": 1.0,
+              "nominal_speed_mps": 0.18,
+              "path_factor": 2.0,
+              "recovery_wait_sec": 30.0,
+              "safety_margin": 5.0
+            },
+            "event": "return_finished",
+            "home": [
+              0.0,
+              -0.45
+            ],
+            "outcome": "route_recovered_resume",
+            "predicted_energy_spent": null,
+            "prediction_error": null,
+            "rejection_count": 0,
+            "return_count": 1,
+            "robot": "tb1",
+            "sim_time": 2076.682,
+            "start": {
+              "budget": null,
+              "cancels": 0,
+              "distance": 0.0,
+              "elapsed": 0.0,
+              "energy": 18.0,
+              "reason": "no_known_route",
+              "rejections": 0,
+              "sim_time": 2076.582
+            }
+          },
+          {
+            "actual_distance_m": 0.0,
+            "actual_elapsed_sec": 0.0,
+            "actual_energy_spent": 0.0,
+            "cancellation_count": 0,
+            "charge_radius_m": 0.8,
+            "energy": 18.0,
+            "energy_model": {
+              "idle_cost_per_sec": 0.02,
+              "move_cost_per_m": 1.0,
+              "nominal_speed_mps": 0.18,
+              "path_factor": 2.0,
+              "recovery_wait_sec": 30.0,
+              "safety_margin": 5.0
+            },
+            "event": "return_finished",
+            "home": [
+              0.0,
+              0.45
+            ],
+            "outcome": "route_recovered_resume",
+            "predicted_energy_spent": null,
+            "prediction_error": null,
+            "rejection_count": 0,
+            "return_count": 1,
+            "robot": "tb2",
+            "sim_time": 2076.882,
+            "start": {
+              "budget": null,
+              "cancels": 0,
+              "distance": 0.0,
+              "elapsed": 0.0,
+              "energy": 18.0,
+              "reason": "no_known_route",
+              "rejections": 0,
+              "sim_time": 2076.782
+            }
+          }
+        ]
+      },
+      "native_energy": {
+        "status": "PASS",
+        "required": true,
+        "snapshots": 121,
+        "robots": {
+          "tb1": {
+            "samples": 61,
+            "last": {
+              "actual_distance_m": 0.7660714549602287,
+              "actual_elapsed_sec": 299.9480000000003,
+              "charge_radius_m": 0.8,
+              "charged_energy_added": 0.0,
+              "energy": 11.234968545035095,
+              "energy_model": {
+                "idle_cost_per_sec": 0.02,
+                "move_cost_per_m": 1.0,
+                "nominal_speed_mps": 0.18,
+                "path_factor": 2.0,
+                "recovery_wait_sec": 30.0,
+                "safety_margin": 5.0
+              },
+              "event": "energy_accounting",
+              "frame_source_time": 2376.389,
+              "home": [
+                0.0,
+                -0.45
+              ],
+              "initial_energy": 18.0,
+              "mode": "ACTIVE",
+              "odom_source_time": 2376.561,
+              "pending_native_inputs": 0,
+              "relevant_frame_receipts": 15263,
+              "return_count": 1,
+              "robot": "tb1",
+              "sim_time": 2376.582
+            }
+          },
+          "tb2": {
+            "samples": 60,
+            "last": {
+              "actual_distance_m": 0.008667872805528916,
+              "actual_elapsed_sec": 295.28999999999996,
+              "charge_radius_m": 0.8,
+              "charged_energy_added": 0.0,
+              "energy": 12.085532127190461,
+              "energy_model": {
+                "idle_cost_per_sec": 0.02,
+                "move_cost_per_m": 1.0,
+                "nominal_speed_mps": 0.18,
+                "path_factor": 2.0,
+                "recovery_wait_sec": 30.0,
+                "safety_margin": 5.0
+              },
+              "event": "energy_accounting",
+              "frame_source_time": 2371.965,
+              "home": [
+                0.0,
+                0.45
+              ],
+              "initial_energy": 18.0,
+              "mode": "ACTIVE",
+              "odom_source_time": 2372.081,
+              "pending_native_inputs": 0,
+              "relevant_frame_receipts": 15023,
+              "return_count": 1,
+              "robot": "tb2",
+              "sim_time": 2372.082
+            }
+          }
+        }
+      },
+      "lookahead": {
+        "status": "PASS",
+        "two_frontier_charge_decisions": 0
+      },
+      "ap_return_veto": {
+        "status": "PASS",
+        "delivered_return_vetoes": 0
+      },
+      "rally_assignment": {
+        "status": "PASS",
+        "failed_assignments_rebuilt": 0,
+        "chosen_assignments_rebuilt": 0,
+        "computation_wall_sec": []
+      },
+      "rally_repair": {
+        "status": "PASS",
+        "funded_endpoint_repairs": 0
+      },
+      "exploration_travel": {
+        "status": "PASS",
+        "executed_frontier_witnesses": 1,
+        "relative_travel_discounts": 0,
+        "resumed_frontier_witnesses": 0,
+        "required": true,
+        "commitment_required": true,
+        "bounded_commitment_required": true,
+        "initial_visual_witnesses": 0,
+        "initial_search_required": true,
+        "spatial_diversity_witnesses": 1,
+        "camera_aware_visual_witnesses": 0,
+        "camera_search_required": true
+      },
+      "target_survey": {
+        "status": "PASS",
+        "target_information_survey_witnesses": 0,
+        "declared": true
+      },
+      "observer_heading": {
+        "status": "PASS",
+        "required": true,
+        "quiet_holds": 0,
+        "heading_turns": 0
+      },
+      "planning_leases": {
+        "status": "PASS",
+        "abandoned_expired_plans": 130,
+        "stages": {
+          "candidate_budget": 128,
+          "candidate_generation": 2
+        }
+      },
+      "launch_processes": {
+        "status": "PASS",
+        "launch_transcripts": 1,
+        "task_time_nonzero_child_exits": 0,
+        "post_task_cleanup_exits": []
+      },
+      "native_tf_graph": {
+        "status": "PASS",
+        "required": true,
+        "robot_local_filtered_tf": [
+          "tb1",
+          "tb2"
+        ],
+        "ap_native_tf_consumers": 0,
+        "source_time_renewal": false
+      }
+    }
+  },
+  "all_owned_closed_before_edits": {
+    "owner_pid": {
+      "pid": 592550,
+      "closed": true
+    },
+    "observer_pid": {
+      "pid": 592567,
+      "closed": true
+    },
+    "checked_at_utc": "2026-10-09T04:52:26.873428+00:00",
+    "task_processes_before_edit": "    PID    PPID COMMAND\n      1       0 /lib/systemd/systemd --system --deserialize 52 splash\n      2       0 [kthreadd]\n      3       2 [pool_workqueue_release]\n      4       2 [kworker/R-rcu_g]\n      5       2 [kworker/R-rcu_p]\n      6       2 [kworker/R-slub_]\n      7       2 [kworker/R-netns]\n      9       2 [kworker/0:0H-events_highpri]\n     12       2 [kworker/R-mm_pe]\n     13       2 [rcu_tasks_kthread]\n     14       2 [rcu_tasks_rude_kthread]\n     15       2 [rcu_tasks_trace_kthread]\n     16       2 [ksoftirqd/0]\n     17       2 [rcu_preempt]\n     18       2 [migration/0]\n     19       2 [idle_inject/0]\n     20       2 [cpuhp/0]\n     21       2 [cpuhp/1]\n     22       2 [idle_inject/1]\n     23       2 [migration/1]\n     24       2 [ksoftirqd/1]\n     26       2 [kworker/1:0H-events_highpri]\n     27       2 [cpuhp/2]\n     28       2 [idle_inject/2]\n     29       2 [migration/2]\n     30       2 [ksoftirqd/2]\n     32       2 [kworker/2:0H-events_highpri]\n     33       2 [cpuhp/3]\n     34       2 [idle_inject/3]\n     35       2 [migration/3]\n     36       2 [ksoftirqd/3]\n     38       2 [kworker/3:0H-events_highpri]\n     39       2 [cpuhp/4]\n     40       2 [idle_inject/4]\n     41       2 [migration/4]\n     42       2 [ksoftirqd/4]\n     44       2 [kworker/4:0H-events_highpri]\n     45       2 [cpuhp/5]\n     46       2 [idle_inject/5]\n     47       2 [migration/5]\n     48       2 [ksoftirqd/5]\n     50       2 [kworker/5:0H-events_highpri]\n     51       2 [cpuhp/6]\n     52       2 [idle_inject/6]\n     53       2 [migration/6]\n     54       2 [ksoftirqd/6]\n     56       2 [kworker/6:0H-events_highpri]\n     57       2 [cpuhp/7]\n     58       2 [idle_inject/7]\n     59       2 [migration/7]\n     60       2 [ksoftirqd/7]\n     62       2 [kworker/7:0H-events_highpri]\n     63       2 [cpuhp/8]\n     64       2 [idle_inject/8]\n     65       2 [migration/8]\n     66       2 [ksoftirqd/8]\n     68       2 [kworker/8:0H-events_highpri]\n     69       2 [cpuhp/9]\n     70       2 [idle_inject/9]\n     71       2 [migration/9]\n     72       2 [ksoftirqd/9]\n     74       2 [kworker/9:0H-kblockd]\n     75       2 [cpuhp/10]\n     76       2 [idle_inject/10]\n     77       2 [migration/10]\n     78       2 [ksoftirqd/10]\n     80       2 [kworker/10:0H-events_highpri]\n     81       2 [cpuhp/11]\n     82       2 [idle_inject/11]\n     83       2 [migration/11]\n     84       2 [ksoftirqd/11]\n     86       2 [kworker/11:0H-events_highpri]\n     87       2 [cpuhp/12]\n     88       2 [idle_inject/12]\n     89       2 [migration/12]\n     90       2 [ksoftirqd/12]\n     92       2 [kworker/12:0H-events_highpri]\n     93       2 [cpuhp/13]\n     94       2 [idle_inject/13]\n     95       2 [migration/13]\n     96       2 [ksoftirqd/13]\n     98       2 [kworker/13:0H-events_highpri]\n     99       2 [cpuhp/14]\n    100       2 [idle_inject/14]\n    101       2 [migration/14]\n    102       2 [ksoftirqd/14]\n    104       2 [kworker/14:0H-events_highpri]\n    105       2 [cpuhp/15]\n    106       2 [idle_inject/15]\n    107       2 [migration/15]\n    108       2 [ksoftirqd/15]\n    110       2 [kworker/15:0H-events_highpri]\n    111       2 [cpuhp/16]\n    112       2 [idle_inject/16]\n    113       2 [migration/16]\n    114       2 [ksoftirqd/16]\n    116       2 [kworker/16:0H-events_highpri]\n    117       2 [cpuhp/17]\n    118       2 [idle_inject/17]\n    119       2 [migration/17]\n    120       2 [ksoftirqd/17]\n    122       2 [kworker/17:0H-kblockd]\n    123       2 [cpuhp/18]\n    124       2 [idle_inject/18]\n    125       2 [migration/18]\n    126       2 [ksoftirqd/18]\n    128       2 [kworker/18:0H-events_highpri]\n    129       2 [cpuhp/19]\n    130       2 [idle_inject/19]\n    131       2 [migration/19]\n    132       2 [ksoftirqd/19]\n    134       2 [kworker/19:0H-events_highpri]\n    135       2 [cpuhp/20]\n    136       2 [idle_inject/20]\n    137       2 [migration/20]\n    138       2 [ksoftirqd/20]\n    140       2 [kworker/20:0H-events_highpri]\n    141       2 [cpuhp/21]\n    142       2 [idle_inject/21]\n    143       2 [migration/21]\n    144       2 [ksoftirqd/21]\n    146       2 [kworker/21:0H-kblockd]\n    147       2 [cpuhp/22]\n    148       2 [idle_inject/22]\n    149       2 [migration/22]\n    150       2 [ksoftirqd/22]\n    152       2 [kworker/22:0H-events_highpri]\n    153       2 [cpuhp/23]\n    154       2 [idle_inject/23]\n    155       2 [migration/23]\n    156       2 [ksoftirqd/23]\n    158       2 [kworker/23:0H-events_highpri]\n    159       2 [cpuhp/24]\n    160       2 [idle_inject/24]\n    161       2 [migration/24]\n    162       2 [ksoftirqd/24]\n    164       2 [kworker/24:0H-events_highpri]\n    165       2 [cpuhp/25]\n    166       2 [idle_inject/25]\n    167       2 [migration/25]\n    168       2 [ksoftirqd/25]\n    170       2 [kworker/25:0H-events_highpri]\n    171       2 [cpuhp/26]\n    172       2 [idle_inject/26]\n    173       2 [migration/26]\n    174       2 [ksoftirqd/26]\n    176       2 [kworker/26:0H-events_highpri]\n    177       2 [cpuhp/27]\n    178       2 [idle_inject/27]\n    179       2 [migration/27]\n    180       2 [ksoftirqd/27]\n    182       2 [kworker/27:0H-events_highpri]\n    183       2 [cpuhp/28]\n    184       2 [idle_inject/28]\n    185       2 [migration/28]\n    186       2 [ksoftirqd/28]\n    188       2 [kworker/28:0H-events_highpri]\n    189       2 [cpuhp/29]\n    190       2 [idle_inject/29]\n    191       2 [migration/29]\n    192       2 [ksoftirqd/29]\n    194       2 [kworker/29:0H-events_highpri]\n    195       2 [cpuhp/30]\n    196       2 [idle_inject/30]\n    197       2 [migration/30]\n    198       2 [ksoftirqd/30]\n    200       2 [kworker/30:0H-events_highpri]\n    201       2 [cpuhp/31]\n    202       2 [idle_inject/31]\n    203       2 [migration/31]\n    204       2 [ksoftirqd/31]\n    206       2 [kworker/31:0H-events_highpri]\n    207       2 [cpuhp/32]\n    208       2 [idle_inject/32]\n    209       2 [migration/32]\n    210       2 [ksoftirqd/32]\n    212       2 [kworker/32:0H-events_highpri]\n    213       2 [cpuhp/33]\n    214       2 [idle_inject/33]\n    215       2 [migration/33]\n    216       2 [ksoftirqd/33]\n    218       2 [kworker/33:0H-events_highpri]\n    219       2 [cpuhp/34]\n    220       2 [idle_inject/34]\n    221       2 [migration/34]\n    222       2 [ksoftirqd/34]\n    224       2 [kworker/34:0H-events_highpri]\n    225       2 [cpuhp/35]\n    226       2 [idle_inject/35]\n    227       2 [migration/35]\n    228       2 [ksoftirqd/35]\n    230       2 [kworker/35:0H-kblockd]\n    231       2 [cpuhp/36]\n    232       2 [idle_inject/36]\n    233       2 [migration/36]\n    234       2 [ksoftirqd/36]\n    236       2 [kworker/36:0H-events_highpri]\n    237       2 [cpuhp/37]\n    238       2 [idle_inject/37]\n    239       2 [migration/37]\n    240       2 [ksoftirqd/37]\n    242       2 [kworker/37:0H-events_highpri]\n    243       2 [cpuhp/38]\n    244       2 [idle_inject/38]\n    245       2 [migration/38]\n    246       2 [ksoftirqd/38]\n    248       2 [kworker/38:0H-events_highpri]\n    249       2 [cpuhp/39]\n    250       2 [idle_inject/39]\n    251       2 [migration/39]\n    252       2 [ksoftirqd/39]\n    254       2 [kworker/39:0H-events_highpri]\n    255       2 [cpuhp/40]\n    256       2 [idle_inject/40]\n    257       2 [migration/40]\n    258       2 [ksoftirqd/40]\n    260       2 [kworker/40:0H-events_highpri]\n    261       2 [cpuhp/41]\n    262       2 [idle_inject/41]\n    263       2 [migration/41]\n    264       2 [ksoftirqd/41]\n    266       2 [kworker/41:0H-events_highpri]\n    267       2 [cpuhp/42]\n    268       2 [idle_inject/42]\n    269       2 [migration/42]\n    270       2 [ksoftirqd/42]\n    272       2 [kworker/42:0H-events_highpri]\n    273       2 [cpuhp/43]\n    274       2 [idle_inject/43]\n    275       2 [migration/43]\n    276       2 [ksoftirqd/43]\n    278       2 [kworker/43:0H-events_highpri]\n    279       2 [cpuhp/44]\n    280       2 [idle_inject/44]\n    281       2 [migration/44]\n    282       2 [ksoftirqd/44]\n    284       2 [kworker/44:0H-events_highpri]\n    285       2 [cpuhp/45]\n    286       2 [idle_inject/45]\n    287       2 [migration/45]\n    288       2 [ksoftirqd/45]\n    290       2 [kworker/45:0H-events_highpri]\n    291       2 [cpuhp/46]\n    292       2 [idle_inject/46]\n    293       2 [migration/46]\n    294       2 [ksoftirqd/46]\n    296       2 [kworker/46:0H-events_highpri]\n    297       2 [cpuhp/47]\n    298       2 [idle_inject/47]\n    299       2 [migration/47]\n    300       2 [ksoftirqd/47]\n    302       2 [kworker/47:0H-events_highpri]\n    303       2 [cpuhp/48]\n    304       2 [idle_inject/48]\n    305       2 [migration/48]\n    306       2 [ksoftirqd/48]\n    308       2 [kworker/48:0H-events_highpri]\n    309       2 [cpuhp/49]\n    310       2 [idle_inject/49]\n    311       2 [migration/49]\n    312       2 [ksoftirqd/49]\n    314       2 [kworker/49:0H-events_highpri]\n    315       2 [cpuhp/50]\n    316       2 [idle_inject/50]\n    317       2 [migration/50]\n    318       2 [ksoftirqd/50]\n    320       2 [kworker/50:0H-events_highpri]\n    321       2 [cpuhp/51]\n    322       2 [idle_inject/51]\n    323       2 [migration/51]\n    324       2 [ksoftirqd/51]\n    326       2 [kworker/51:0H-events_highpri]\n    327       2 [cpuhp/52]\n    328       2 [idle_inject/52]\n    329       2 [migration/52]\n    330       2 [ksoftirqd/52]\n    332       2 [kworker/52:0H-events_highpri]\n    333       2 [cpuhp/53]\n    334       2 [idle_inject/53]\n    335       2 [migration/53]\n    336       2 [ksoftirqd/53]\n    338       2 [kworker/53:0H-events_highpri]\n    339       2 [cpuhp/54]\n    340       2 [idle_inject/54]\n    341       2 [migration/54]\n    342       2 [ksoftirqd/54]\n    344       2 [kworker/54:0H-events_highpri]\n    345       2 [cpuhp/55]\n    346       2 [idle_inject/55]\n    347       2 [migration/55]\n    348       2 [ksoftirqd/55]\n    350       2 [kworker/55:0H-events_highpri]\n    351       2 [cpuhp/56]\n    352       2 [idle_inject/56]\n    353       2 [migration/56]\n    354       2 [ksoftirqd/56]\n    356       2 [kworker/56:0H-events_highpri]\n    357       2 [cpuhp/57]\n    358       2 [idle_inject/57]\n    359       2 [migration/57]\n    360       2 [ksoftirqd/57]\n    362       2 [kworker/57:0H-events_highpri]\n    363       2 [cpuhp/58]\n    364       2 [idle_inject/58]\n    365       2 [migration/58]\n    366       2 [ksoftirqd/58]\n    368       2 [kworker/58:0H-events_highpri]\n    369       2 [cpuhp/59]\n    370       2 [idle_inject/59]\n    371       2 [migration/59]\n    372       2 [ksoftirqd/59]\n    374       2 [kworker/59:0H-events_highpri]\n    375       2 [cpuhp/60]\n    376       2 [idle_inject/60]\n    377       2 [migration/60]\n    378       2 [ksoftirqd/60]\n    380       2 [kworker/60:0H-events_highpri]\n    381       2 [cpuhp/61]\n    382       2 [idle_inject/61]\n    383       2 [migration/61]\n    384       2 [ksoftirqd/61]\n    386       2 [kworker/61:0H-events_highpri]\n    387       2 [cpuhp/62]\n    388       2 [idle_inject/62]\n    389       2 [migration/62]\n    390       2 [ksoftirqd/62]\n    392       2 [kworker/62:0H-events_highpri]\n    393       2 [cpuhp/63]\n    394       2 [idle_inject/63]\n    395       2 [migration/63]\n    396       2 [ksoftirqd/63]\n    398       2 [kworker/63:0H-events_highpri]\n    399       2 [cpuhp/64]\n    400       2 [idle_inject/64]\n    401       2 [migration/64]\n    402       2 [ksoftirqd/64]\n    404       2 [kworker/64:0H-events_highpri]\n    405       2 [cpuhp/65]\n    406       2 [idle_inject/65]\n    407       2 [migration/65]\n    408       2 [ksoftirqd/65]\n    410       2 [kworker/65:0H-events_highpri]\n    411       2 [cpuhp/66]\n    412       2 [idle_inject/66]\n    413       2 [migration/66]\n    414       2 [ksoftirqd/66]\n    416       2 [kworker/66:0H-events_highpri]\n    417       2 [cpuhp/67]\n    418       2 [idle_inject/67]\n    419       2 [migration/67]\n    420       2 [ksoftirqd/67]\n    422       2 [kworker/67:0H-events_highpri]\n    423       2 [cpuhp/68]\n    424       2 [idle_inject/68]\n    425       2 [migration/68]\n    426       2 [ksoftirqd/68]\n    428       2 [kworker/68:0H-events_highpri]\n    429       2 [cpuhp/69]\n    430       2 [idle_inject/69]\n    431       2 [migration/69]\n    432       2 [ksoftirqd/69]\n    434       2 [kworker/69:0H-kblockd]\n    435       2 [cpuhp/70]\n    436       2 [idle_inject/70]\n    437       2 [migration/70]\n    438       2 [ksoftirqd/70]\n    440       2 [kworker/70:0H-events_highpri]\n    441       2 [cpuhp/71]\n    442       2 [idle_inject/71]\n    443       2 [migration/71]\n    444       2 [ksoftirqd/71]\n    446       2 [kworker/71:0H-kblockd]\n    447       2 [cpuhp/72]\n    448       2 [idle_inject/72]\n    449       2 [migration/72]\n    450       2 [ksoftirqd/72]\n    452       2 [kworker/72:0H-events_highpri]\n    453       2 [cpuhp/73]\n    454       2 [idle_inject/73]\n    455       2 [migration/73]\n    456       2 [ksoftirqd/73]\n    458       2 [kworker/73:0H-kblockd]\n    459       2 [cpuhp/74]\n    460       2 [idle_inject/74]\n    461       2 [migration/74]\n    462       2 [ksoftirqd/74]\n    464       2 [kworker/74:0H-kblockd]\n    465       2 [cpuhp/75]\n    466       2 [idle_inject/75]\n    467       2 [migration/75]\n    468       2 [ksoftirqd/75]\n    470       2 [kworker/75:0H-events_highpri]\n    471       2 [cpuhp/76]\n    472       2 [idle_inject/76]\n    473       2 [migration/76]\n    474       2 [ksoftirqd/76]\n    476       2 [kworker/76:0H-events_highpri]\n    477       2 [cpuhp/77]\n    478       2 [idle_inject/77]\n    479       2 [migration/77]\n    480       2 [ksoftirqd/77]\n    482       2 [kworker/77:0H-events_highpri]\n    483       2 [cpuhp/78]\n    484       2 [idle_inject/78]\n    485       2 [migration/78]\n    486       2 [ksoftirqd/78]\n    488       2 [kworker/78:0H-events_highpri]\n    489       2 [cpuhp/79]\n    490       2 [idle_inject/79]\n    491       2 [migration/79]\n    492       2 [ksoftirqd/79]\n    494       2 [kworker/79:0H-events_highpri]\n    497       2 [kdevtmpfs]\n    498       2 [kworker/R-inet_]\n    499       2 [kauditd]\n    503       2 [khungtaskd]\n    506       2 [oom_reaper]\n    507       2 [kworker/R-write]\n    508       2 [kcompactd0]\n    509       2 [kcompactd1]\n    510       2 [ksmd]\n    511       2 [khugepaged]\n    512       2 [kworker/R-kinte]\n    513       2 [kworker/R-kbloc]\n    514       2 [kworker/R-blkcg]\n    515       2 [irq/9-acpi]\n    517       2 [kworker/R-tpm_d]\n    518       2 [kworker/R-ata_s]\n    519       2 [kworker/R-md]\n    520       2 [kworker/R-md_bi]\n    521       2 [kworker/R-edac-]\n    523       2 [kworker/R-devfr]\n    524       2 [watchdogd]\n    526       2 [kworker/R-quota]\n    527       2 [kworker/0:1H-kblockd]\n    530       2 [kswapd0]\n    531       2 [kswapd1]\n    532       2 [ecryptfs-kthread]\n    533       2 [kworker/R-kthro]\n    535       2 [irq/24-pciehp]\n    536       2 [kworker/R-acpi_]\n    541       2 [kworker/R-mld]\n    542       2 [kworker/1:1H-kblockd]\n    543       2 [kworker/R-ipv6_]\n    553       2 [kworker/R-kstrp]\n    606       2 [kworker/u163:0-cqp_cmpl_wq]\n    607       2 [kworker/u164:0]\n    608       2 [kworker/u165:0]\n    621       2 [kworker/R-charg]\n    640       2 [kworker/57:1H-kblockd]\n    644       2 [kworker/48:1H-kblockd]\n    645       2 [kworker/42:1H-kblockd]\n    659       2 [kworker/58:1H-kblockd]\n    662       2 [kworker/50:1H-kblockd]\n    663       2 [kworker/45:1H-kblockd]\n    664       2 [kworker/43:1H-kblockd]\n    665       2 [kworker/47:1H-kblockd]\n    666       2 [kworker/53:1H-kblockd]\n    667       2 [kworker/55:1H-kblockd]\n    668       2 [kworker/44:1H-kblockd]\n    669       2 [kworker/46:1H-kblockd]\n    671       2 [kworker/52:1H-kblockd]\n    672       2 [kworker/54:1H-kblockd]\n    673       2 [kworker/51:1H-kblockd]\n    674       2 [kworker/49:1H-kblockd]\n    675       2 [kworker/56:1H-kblockd]\n    678       2 [kworker/61:1H-kblockd]\n    680       2 [kworker/20:1H-kblockd]\n    682       2 [kworker/79:1H-kblockd]\n    691       2 [kworker/59:1H-kblockd]\n    694       2 [kworker/2:1H-kblockd]\n    695       2 [kworker/3:1H-kblockd]\n    696       2 [kworker/8:1H-kblockd]\n    697       2 [kworker/41:1H-kblockd]\n    698       2 [kworker/10:1H-kblockd]\n    699       2 [kworker/16:1H-kblockd]\n    700       2 [kworker/4:1H-kblockd]\n    701       2 [kworker/14:1H-kblockd]\n    703       2 [kworker/70:1H-kblockd]\n    736       2 [kworker/R-nvme-]\n    737       2 [kworker/R-nvme-]\n    738       2 [kworker/R-nvme-]\n    739       2 [kworker/R-nvme-]\n    740       2 [scsi_eh_0]\n    741       2 [kworker/R-scsi_]\n    742       2 [scsi_eh_1]\n    743       2 [kworker/R-scsi_]\n    744       2 [scsi_eh_2]\n    745       2 [kworker/R-scsi_]\n    746       2 [scsi_eh_3]\n    747       2 [kworker/R-scsi_]\n    748       2 [scsi_eh_4]\n    749       2 [kworker/R-scsi_]\n    750       2 [scsi_eh_5]\n    751       2 [kworker/R-scsi_]\n    758       2 [kworker/66:1H-kblockd]\n    765       2 [kworker/22:1H-kblockd]\n    770       2 [scsi_eh_6]\n    771       2 [kworker/R-scsi_]\n    772       2 [scsi_eh_7]\n    773       2 [kworker/R-scsi_]\n    774       2 [scsi_eh_8]\n    775       2 [kworker/R-scsi_]\n    776       2 [scsi_eh_9]\n    777       2 [kworker/R-scsi_]\n    778       2 [scsi_eh_10]\n    779       2 [kworker/R-scsi_]\n    780       2 [scsi_eh_11]\n    781       2 [kworker/R-scsi_]\n    782       2 [scsi_eh_12]\n    783       2 [kworker/R-scsi_]\n    784       2 [scsi_eh_13]\n    785       2 [kworker/R-scsi_]\n    799       2 [kworker/9:1H]\n    800       2 [kworker/6:1H-kblockd]\n    802       2 [kworker/18:1H-kblockd]\n    821       2 [kworker/67:1H-kblockd]\n    825       2 [kworker/23:1H-kblockd]\n    831       2 [kworker/7:1H-kblockd]\n    832       2 [kworker/21:1H]\n    835       2 [kworker/65:1H-kblockd]\n    839       2 [kworker/24:1H-kblockd]\n    840       2 [kworker/68:1H-kblockd]\n    843       2 [kworker/72:1H-kblockd]\n    844       2 [kworker/5:1H-kblockd]\n    845       2 [kworker/75:1H-kblockd]\n    846       2 [kworker/29:1H-kblockd]\n    847       2 [kworker/77:1H-kblockd]\n    848       2 [kworker/78:1H-kblockd]\n    850       2 [kworker/76:1H-kblockd]\n    853       2 [kworker/27:1H-kblockd]\n    855       2 [kworker/32:1H-kblockd]\n    956       2 [kworker/13:1H-kblockd]\n    957       2 [kworker/40:1H-kblockd]\n    958       2 [kworker/34:1H-kblockd]\n    959       2 [kworker/12:1H-kblockd]\n    960       2 [kworker/11:1H-kblockd]\n    982       2 [jbd2/sda3-8]\n    983       2 [kworker/R-ext4-]\n   1017       2 [kworker/17:1H-kblockd]\n   1048       2 [kworker/73:1H-kblockd]\n   1054       2 [kworker/74:1H]\n   1070       2 [kworker/63:1H-kblockd]\n   1072       2 [kworker/64:1H-kblockd]\n   1082       2 [kworker/69:1H-kblockd]\n   1091       2 [kworker/71:1H-kblockd]\n   1097       2 [kworker/35:1H]\n   1111       2 [kworker/25:1H-kblockd]\n   1120       2 [kworker/30:1H-kblockd]\n   1121       2 [kworker/26:1H-kblockd]\n   1123       2 [kworker/31:1H-kblockd]\n   1142       2 [kworker/33:1H-kblockd]\n   1143       2 [kworker/37:1H-kblockd]\n   1144       2 [kworker/38:1H-kblockd]\n   1145       2 [kworker/62:1H-kblockd]\n   1147       2 [kworker/60:1H-kblockd]\n   1148       2 [kworker/39:1H-kblockd]\n   1149       2 [kworker/36:1H-kblockd]\n   1170       2 [kworker/28:1H-kblockd]\n   1291       2 [kworker/15:1H-kblockd]\n   1292       2 [kworker/19:1H-kblockd]\n   1321       2 [kworker/R-ipmi-]\n   1334       2 [kworker/R-crypt]\n   1366       2 [kipmi0]\n   1368       2 [kworker/R-ib-co]\n   1369       2 [kworker/R-ib-co]\n   1370       2 [kworker/R-ib_mc]\n   1371       2 [kworker/R-ib_nl]\n   1465       2 [nv_queue]\n   1466       2 [nv_mem_pool_scrubber_queue]\n   1467       2 [nv_mem_pool_scrubber_queue]\n   1468       2 [nv_mem_pool_scrubber_queue]\n   1469       2 [nv_mem_pool_scrubber_queue]\n   1470       2 [nv_mem_pool_scrubber_queue]\n   1471       2 [nv_mem_pool_scrubber_queue]\n   1472       2 [nv_queue]\n   1473       2 [nv_open_q]\n   1474       2 [nv_open_q]\n   1482       2 [nvidia-modeset/kthread_q]\n   1483       2 [nvidia-modeset/deferred_close_kthread_q]\n   1494       2 [irq/291-nvidia]\n   1495       2 [nvidia]\n   1496       2 [nv_queue]\n   1512       2 [kworker/u163:1-cqp_cmpl_wq]\n   1525       2 [kworker/R-nfit]\n   1528       2 [irq/294-nvidia]\n   1529       2 [nvidia]\n   1530       2 [nv_queue]\n   1842       1 /usr/libexec/accounts-daemon\n   1844       1 /usr/sbin/acpid\n   1847       1 avahi-daemon: running [zhuyulab.local]\n   1848       1 /usr/sbin/cron -f -P\n   1849       1 @dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only\n   1850       1 /usr/sbin/NetworkManager --no-daemon\n   1862       1 /usr/sbin/irqbalance --foreground\n   1865       1 /usr/bin/python3 /usr/bin/networkd-dispatcher --run-startup-triggers\n   1866       1 /usr/libexec/polkitd --no-debug\n   1867       1 /usr/libexec/power-profiles-daemon\n   1868       1 /usr/sbin/rsyslogd -n -iNONE\n   1872       1 /usr/libexec/switcheroo-control\n   1873       1 /lib/systemd/systemd-logind\n   1876       1 /usr/libexec/udisks2/udisksd\n   1877       1 /sbin/wpa_supplicant -u -s -O /run/wpa_supplicant\n   1915    1847 avahi-daemon: chroot helper\n   1979       1 /usr/bin/python3 /usr/share/unattended-upgrades/unattended-upgrade-shutdown --wait-for-signal\n   1982       1 /usr/sbin/ModemManager\n   1997       1 /usr/bin/containerd\n   2027       1 sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups\n   2032       1 /usr/sbin/gdm3\n   2057    2032 gdm-session-worker [pam/gdm-autologin]\n   2138       1 /opt/todesk/bin/ToDesk_Service\n   2142       1 /lib/systemd/systemd --user\n   2144       1 /usr/sbin/kerneloops --test\n   2146       1 /usr/sbin/kerneloops\n   2150    2142 (sd-pam)\n   2194    2142 /usr/bin/pipewire\n   2195    2142 /usr/bin/pipewire-media-session\n   2196    2142 /usr/bin/pulseaudio --daemonize=no --log-target=journal\n   2228    2142 /usr/bin/dbus-daemon --session --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only\n   2233       1 /usr/bin/gnome-keyring-daemon --daemonize --login\n   2235       1 /usr/libexec/rtkit-daemon\n   2241    2057 /usr/libexec/gdm-x-session --run-script env GNOME_SHELL_SESSION_MODE=ubuntu /usr/bin/gnome-session --session=ubuntu\n   2243    2241 /usr/lib/xorg/Xorg vt2 -displayfd 3 -auth /run/user/1000/gdm/Xauthority -nolisten tcp -background none -noreset -keeptty -novtswitch -verbose 3\n   2257    2142 /usr/libexec/xdg-document-portal\n   2268    2142 /usr/libexec/xdg-permission-store\n   2277    2257 fusermount3 -o rw,nosuid,nodev,fsname=portal,auto_unmount,subtype=portal -- /run/user/1000/doc\n   2302       1 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock\n   2456       2 [nvidia-drm/timeline-b]\n   2457       2 [nvidia-drm/timeline-c]\n   2481    2241 /usr/libexec/gnome-session-binary --session=ubuntu\n   2563    2142 /usr/libexec/at-spi-bus-launcher\n   2571    2563 /usr/bin/dbus-daemon --config-file=/usr/share/defaults/at-spi2/accessibility.conf --nofork --print-address 11 --address=unix:path=/run/user/1000/at-spi/bus_0\n   2725    2142 /usr/libexec/gnome-session-ctl --monitor\n   2736    2142 /usr/libexec/gvfsd\n   2753    2142 /usr/libexec/gvfsd-fuse /run/user/1000/gvfs -f\n   2758    2142 /usr/libexec/gnome-session-binary --systemd-service --session=ubuntu\n   2821    2142 /usr/bin/gnome-shell\n   3155    2142 /usr/libexec/gnome-shell-calendar-server\n   3159       1 /usr/libexec/upowerd\n   3162    2142 /usr/libexec/dconf-service\n   3174    2142 /usr/libexec/evolution-source-registry\n   3177    2142 /usr/libexec/gvfs-udisks2-volume-monitor\n   3186    2142 /usr/libexec/gvfs-gphoto2-volume-monitor\n   3189    2142 /usr/libexec/goa-daemon\n   3193    2142 /usr/libexec/gvfs-afc-volume-monitor\n   3198    2142 /usr/libexec/gvfs-goa-volume-monitor\n   3203    2142 /usr/libexec/evolution-calendar-factory\n   3220    2142 /usr/libexec/goa-identity-service\n   3225    2142 /usr/libexec/evolution-addressbook-factory\n   3226    2142 /usr/libexec/gvfs-mtp-volume-monitor\n   3238       1 /usr/libexec/packagekitd\n   3248    2736 /usr/libexec/gvfsd-trash --spawner :1.23 /org/gtk/gvfs/exec_spaw/0\n   3257    2142 /usr/bin/gjs /usr/share/gnome-shell/org.gnome.Shell.Notifications\n   3272    2142 /usr/libexec/at-spi2-registryd --use-gnome-session\n   3284    2142 sh -c /usr/bin/ibus-daemon --panel disable $([ \"$XDG_SESSION_TYPE\" = \"x11\" ] && echo \"--xim\")\n   3285    2142 /usr/libexec/gsd-a11y-settings\n   3286    2142 /usr/libexec/gsd-color\n   3288    3284 /usr/bin/ibus-daemon --panel disable --xim\n   3289    2142 /usr/libexec/gsd-datetime\n   3290    2142 /usr/libexec/gsd-housekeeping\n   3291    2142 /usr/libexec/gsd-keyboard\n   3293    2142 /usr/libexec/gsd-media-keys\n   3295    2142 /usr/libexec/gsd-power\n   3296    2142 /usr/libexec/gsd-print-notifications\n   3297    2142 /usr/libexec/gsd-rfkill\n   3298    2142 /usr/libexec/gsd-screensaver-proxy\n   3300    2142 /usr/libexec/gsd-sharing\n   3301    2142 /usr/libexec/gsd-smartcard\n   3303    2142 /usr/libexec/gsd-sound\n   3304    2142 /usr/libexec/gsd-wacom\n   3305    2142 /usr/libexec/gsd-xsettings\n   3317    2758 /bin/bash /home/zhuyulab/.local/bin/keep-1080p.sh\n   3326    2758 /usr/libexec/evolution-data-server/evolution-alarm-notify\n   3333    2758 /usr/libexec/gsd-disk-utility-notify\n   3427    3288 /usr/libexec/ibus-memconf\n   3432    2142 /usr/libexec/gsd-printer\n   3443    3288 /usr/libexec/ibus-extension-gtk3\n   3453       1 /usr/libexec/colord\n   3456    2142 /snap/snap-store/1216/usr/bin/snap-store --gapplication-service\n   3474    2142 /usr/libexec/ibus-x11 --kill-daemon\n   3488    2142 /usr/libexec/ibus-portal\n   3515    2142 /usr/libexec/xdg-desktop-portal\n   3544    2142 /usr/libexec/xdg-desktop-portal-gnome\n   3588    2142 /usr/bin/gjs /usr/share/gnome-shell/org.gnome.ScreenSaver\n   3606    3288 /usr/libexec/ibus-engine-libpinyin --ibus\n   3610    2142 /usr/libexec/tracker-miner-fs-3\n   3904    2142 /usr/libexec/xdg-desktop-portal-gtk\n   3926    2142 /usr/libexec/gvfsd-metadata\n   4739    2142 /snap/snapd/current/usr/bin/snap userd\n   5652    2758 update-notifier\n   7657    2736 /usr/libexec/gvfsd-network --spawner :1.23 /org/gtk/gvfs/exec_spaw/1\n   7667    2736 /usr/libexec/gvfsd-smb-browse --spawner :1.23 /org/gtk/gvfs/exec_spaw/2\n   7674    2736 /usr/libexec/gvfsd-dnssd --spawner :1.23 /org/gtk/gvfs/exec_spaw/3\n   7805       2 [kworker/21:1-events]\n   7812       2 [kworker/17:0-events]\n   7821       2 [kworker/11:1-events]\n   7867    3288 /usr/libexec/ibus-engine-simple\n  12943       1 /lib/systemd/systemd-resolved\n  12952       1 /lib/systemd/systemd-journald\n  13008       1 /lib/systemd/systemd-timesyncd\n  13763       1 /lib/systemd/systemd-oomd\n  21166       2 [kworker/29:0-events]\n  31894       2 [kworker/40:0-events]\n  33756       1 /lib/systemd/systemd-udevd\n  40018       2 [kworker/59:0-mm_percpu_wq]\n  52020       2 [kworker/17:2-cgroup_free]\n  58974       2 [kworker/23:0-events]\n  69091       2 [kworker/71:2-mm_percpu_wq]\n  78192       2 [UVM global queue]\n  78193       2 [UVM deferred release queue]\n  78194       2 [UVM Tools Event Queue]\n  78894    2821 gjs /usr/share/gnome-shell/extensions/ding@rastersoft.com/ding.js -E -P /usr/share/gnome-shell/extensions/ding@rastersoft.com -M 0 -D 0:0:1920:1080:1:27:0:70:0:0\n  79401       1 python3 /usr/lib/software-properties/software-properties-dbus\n  79610       1 /usr/libexec/ubuntu-advantage-desktop-daemon\n  79693       2 [kworker/62:2-mm_percpu_wq]\n  89755       2 [kworker/65:0-mm_percpu_wq]\n  89856       2 [kworker/50:1-events]\n  91696       2 [kworker/68:1-mm_percpu_wq]\n  92051 3531947 bash\n  95640  492343 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=492331 --enable-crash-reporter=08dac59c-4a46-40b5-8322-5cb3b41ffdaf, --change-stack-guard-on-fork=enable --ozone-platform=x11 --disable-gpu-compositing --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=408 --time-ticks-at-unix-epoch=-1788254604987100 --launch-time-ticks=3172235459066 --shared-files=v8_context_snapshot_data:100 --metrics-shmem-handle=4,i,7316519094738804114,9127774326677266059,2097152 --field-trial-handle=3,i,1011358527585321561,7980237264107119593,262144 --variations-seed-version=20260921-170054.638000-production --pseudonymization-salt-handle=7,i,2205537036122350886,17002575464883847134,4 --trace-process-track-uuid=3190709368624945886\n 103009   92051 codex -c check_for_update_on_startup=false\n 104076  103009 /usr/lib/chatgpt/resources/cua_node/bin/node_repl\n 104077  103009 /usr/lib/chatgpt/resources/cua_node/bin/node /usr/lib/chatgpt/resources/cua_node/lib/node_modules/@oai/cua-repl/bin/cua-repl.mjs\n 104259  104077 /usr/lib/chatgpt/resources/cua_node/bin/node_repl\n 104343       2 [kworker/58:2-events]\n 111517  103009 /home/zhuyulab/.codex/packages/standalone/releases/0.160.1-x86_64-unknown-linux-musl/bin/codex-code-mode-host\n 122411 2968477 /proc/self/exe --type=renderer --string-annotations --enable-crash-reporter=, --change-stack-guard-on-fork=enable --no-zygote --disable-gpu-compositing --indexeddb-idle-check-seconds=5 --scene=profile_main --enable-run-before-paint --enable-renderer-jank-monitor --enable-native-resource-code-cache --enable-shellapi-jsb-permission-no-http --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=34 --time-ticks-at-unix-epoch=-1788254604987101 --browser-runtime --aha-multi-profile --launch-time-ticks=2445083395539 --shared-files --field-trial-handle=3,i,1186981019876714294,15326796371287159731,262144 --variations-seed-version --smc-metadata=7929855,10485344880803950494,17417212630896714178,20971520 --enable-userns --enable-netns --crashpad-client-sock=30\n 122426  122411 /proc/self/exe --type=renderer --string-annotations --enable-crash-reporter=, --change-stack-guard-on-fork=enable --no-zygote --disable-gpu-compositing --indexeddb-idle-check-seconds=5 --scene=profile_main --enable-run-before-paint --enable-renderer-jank-monitor --enable-native-resource-code-cache --enable-shellapi-jsb-permission-no-http --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=34 --time-ticks-at-unix-epoch=-1788254604987101 --browser-runtime --aha-multi-profile --launch-time-ticks=2445083395539 --shared-files --field-trial-handle=3,i,1186981019876714294,15326796371287159731,262144 --variations-seed-version --smc-metadata=7929855,10485344880803950494,17417212630896714178,20971520 --enable-userns --enable-netns --crashpad-client-sock=30\n 131105    2142 /home/zhuyulab/.nvm/versions/node/v22.22.3/bin/node /home/zhuyulab/codex-with-chatgpt/dist/cli/index.js serve --workspace /home/zhuyulab/ns3-workspace\n 131182  131105 cloudflared tunnel --url http://127.0.0.1:48765 --no-autoupdate\n 178901       2 [kworker/70:0-events]\n 188907       2 [kworker/60:0-mm_percpu_wq]\n 189234       2 [kworker/75:2-mm_percpu_wq]\n 218082       2 [kworker/18:2]\n 235496       2 [kworker/54:0-events]\n 236784       2 [kworker/30:2-events]\n 254296       2 [kworker/4:1]\n 262533       2 [kworker/39:2-events]\n 273626       2 [kworker/27:0-events]\n 275708       2 [kworker/27:2-cgroup_free]\n 294873       2 [kworker/31:1-events]\n 299004       2 [kworker/14:2-events]\n 303214  566777 [codex] <defunct>\n 311358       2 [kworker/3:1-cgroup_free]\n 340461       2 [kworker/12:0-rcu_gp]\n 343270       2 [kworker/52:0-mm_percpu_wq]\n 346668    2142 /snap/code/253/usr/share/code/chrome_crashpad_handler --monitor-self-annotation=ptype=crashpad-handler --no-rate-limit --database=/home/zhuyulab/.config/Code/Crashpad --url=appcenter://code?aid=fba07a4d-84bd-4fc8-a125-9640fc8ce171&uid=410ad1dc-8265-4e3e-a21f-d8c1552d4994&iid=410ad1dc-8265-4e3e-a21f-d8c1552d4994&sid=410ad1dc-8265-4e3e-a21f-d8c1552d4994 --annotation=_companyName=Microsoft --annotation=_productName=VSCode --annotation=_version=1.130.0 --annotation=lsb-release=Ubuntu 22.04.5 LTS --annotation=plat=Linux --annotation=prod=Electron --annotation=ver=42.6.0 --initial-client-fd=50 --shared-client-connection\n 347435    2142 dconf watch /system/proxy/\n 357074       2 [kworker/63:1-mm_percpu_wq]\n 357113       1 /usr/sbin/cupsd -l\n 357120       1 /usr/sbin/cups-browsed\n 361322       2 [kworker/33:1]\n 368678       2 [kworker/78:0-mm_percpu_wq]\n 377834       2 [kworker/77:2-mm_percpu_wq]\n 378306       2 [kworker/44:3-events]\n 396091       2 [kworker/72:1-events]\n 427113  566777 /home/zhuyulab/.codex/packages/app-server-daemon/releases/0.162.0-x86_64-unknown-linux-musl/bin/codex app-server --listen unix:// --analytics-default-enabled -c features.api_key_model_discovery=false -c features.auth_elicitation=true -c features.code_mode_host=true -c features.mcp_oauth_refresh_coordination=false --managed-daemon\n 427218       2 [kworker/73:0-mm_percpu_wq]\n 427259       2 [kworker/24:2-cgroup_free]\n 428959       2 [kworker/30:0]\n 431171  566777 [codex] <defunct>\n 435922       2 [kworker/43:2-mm_percpu_wq]\n 438191       2 [kworker/66:1-mm_percpu_wq]\n 450249       2 [kworker/11:2-cgroup_free]\n 451517       2 [kworker/49:1-mm_percpu_wq]\n 458959       2 [kworker/76:1-mm_percpu_wq]\n 466480       2 [kworker/61:2-events]\n 467913    2142 /usr/bin/python3 /usr/bin/update-manager --no-update --no-focus-on-map\n 483689       2 [kworker/0:0]\n 483884       2 [kworker/34:0-events]\n 484221       2 [kworker/20:0-events]\n 484325       2 [kworker/36:1-rcu_gp]\n 485879       2 [kworker/22:0-events]\n 485974       2 [kworker/8:2-events]\n 485977       2 [kworker/13:1-events]\n 492316    2142 /opt/google/chrome/chrome https://chatgpt.com/?surface=work&no_universal_links=1\n 492323  492316 cat\n 492324  492316 cat\n 492331    2142 /opt/google/chrome/chrome_crashpad_handler --monitor-self --monitor-self-annotation=ptype=crashpad-handler --database=/home/zhuyulab/.config/google-chrome/Crash Reports --metrics-dir=/home/zhuyulab/.config/google-chrome --url=https://clients2.google.com/cr/report --annotation=channel= --annotation=lsb-release=Ubuntu 22.04.5 LTS --annotation=plat=Linux --annotation=prod=Chrome_Linux --annotation=ver=147.0.7727.137 --initial-client-fd=5 --shared-client-connection\n 492333    2142 /opt/google/chrome/chrome_crashpad_handler --no-periodic-tasks --monitor-self-annotation=ptype=crashpad-handler --database=/home/zhuyulab/.config/google-chrome/Crash Reports --url=https://clients2.google.com/cr/report --annotation=channel= --annotation=lsb-release=Ubuntu 22.04.5 LTS --annotation=plat=Linux --annotation=prod=Chrome_Linux --annotation=ver=147.0.7727.137 --initial-client-fd=4 --shared-client-connection\n 492339  492316 /opt/google/chrome/chrome --type=zygote --no-zygote-sandbox --crashpad-handler-pid=492331 --enable-crash-reporter=08dac59c-4a46-40b5-8322-5cb3b41ffdaf, --change-stack-guard-on-fork=enable\n 492340  492316 /opt/google/chrome/chrome --type=zygote --crashpad-handler-pid=492331 --enable-crash-reporter=08dac59c-4a46-40b5-8322-5cb3b41ffdaf, --change-stack-guard-on-fork=enable\n 492343  492340 /opt/google/chrome/chrome --type=zygote --crashpad-handler-pid=492331 --enable-crash-reporter=08dac59c-4a46-40b5-8322-5cb3b41ffdaf, --change-stack-guard-on-fork=enable\n 492380  492339 /opt/google/chrome/chrome --type=gpu-process --ozone-platform=x11 --crashpad-handler-pid=492331 --enable-crash-reporter=08dac59c-4a46-40b5-8322-5cb3b41ffdaf, --change-stack-guard-on-fork=enable --gpu-preferences=UAAAAAAAAAAgAQAEAAAAAAAAAAAAAGAAAQAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAYAAAAAAAAABgAAAAAAAAAAQAAAAAAAAAIAAAAAAAAAAgAAAAAAAAA --shared-files --metrics-shmem-handle=4,i,16780183022966008919,6034341855726154135,262144 --field-trial-handle=3,i,1011358527585321561,7980237264107119593,262144 --variations-seed-version=20260921-170054.638000-production --pseudonymization-salt-handle=7,i,2205537036122350886,17002575464883847134,4 --trace-process-track-uuid=3190708988185955192\n 492381  492316 /opt/google/chrome/chrome --type=utility --utility-sub-type=network.mojom.NetworkService --lang=en-US --service-sandbox-type=none --crashpad-handler-pid=492331 --enable-crash-reporter=08dac59c-4a46-40b5-8322-5cb3b41ffdaf, --change-stack-guard-on-fork=enable --shared-files=v8_context_snapshot_data:100 --metrics-shmem-handle=4,i,7011293591006400423,10814871644835925463,524288 --field-trial-handle=3,i,1011358527585321561,7980237264107119593,262144 --variations-seed-version=20260921-170054.638000-production --pseudonymization-salt-handle=7,i,2205537036122350886,17002575464883847134,4 --trace-process-track-uuid=3190708989122997041\n 492483  492343 /opt/google/chrome/chrome --type=utility --utility-sub-type=storage.mojom.StorageService --lang=en-US --service-sandbox-type=utility --crashpad-handler-pid=492331 --enable-crash-reporter=08dac59c-4a46-40b5-8322-5cb3b41ffdaf, --change-stack-guard-on-fork=enable --shared-files=v8_context_snapshot_data:100 --metrics-shmem-handle=4,i,8169693677331331023,9510564770551560684,524288 --field-trial-handle=3,i,1011358527585321561,7980237264107119593,262144 --variations-seed-version=20260921-170054.638000-production --pseudonymization-salt-handle=7,i,2205537036122350886,17002575464883847134,4 --trace-process-track-uuid=3190708990060038890\n 492502  492343 /opt/google/chrome/chrome --type=renderer --top-chrome-webui --crashpad-handler-pid=492331 --enable-crash-reporter=08dac59c-4a46-40b5-8322-5cb3b41ffdaf, --change-stack-guard-on-fork=enable --ozone-platform=x11 --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=5 --time-ticks-at-unix-epoch=-1788254604987100 --launch-time-ticks=1820641167199 --shared-files=v8_context_snapshot_data:100 --metrics-shmem-handle=4,i,8801568310493617723,2727444323549303934,2097152 --field-trial-handle=3,i,1011358527585321561,7980237264107119593,262144 --variations-seed-version=20260921-170054.638000-production --pseudonymization-salt-handle=7,i,2205537036122350886,17002575464883847134,4 --trace-process-track-uuid=3190708990997080739\n 493669       2 [kworker/53:1-events]\n 494478       2 [kworker/45:0-mm_percpu_wq]\n 520489       2 [kworker/28:0-events]\n 522259       2 [kworker/3:2-events]\n 522273       2 [kworker/19:2-events]\n 530962       2 [kworker/50:0-cgroup_free]\n 540338       2 [kworker/55:1-cgroup_free]\n 549788       2 [kworker/40:1-cgroup_free]\n 550687       2 [kworker/52:1-cgroup_free]\n 558987       2 [kworker/66:0-cgroup_free]\n 559686       2 [kworker/54:2-cgroup_free]\n 562090       2 [kworker/49:0-cgroup_free]\n 566736       2 [kworker/56:2]\n 566777    2142 /home/zhuyulab/.codex/packages/app-server-daemon/releases/0.162.0-x86_64-unknown-linux-musl/bin/codex app-server daemon pid-update-loop\n 567323       2 [kworker/62:0-cgroup_free]\n 569847       2 [kworker/75:1]\n 573251       2 [kworker/61:1-cgroup_free]\n 573614       2 [kworker/45:1-cgroup_free]\n 574411       2 [kworker/57:2-events]\n 575048       2 [kworker/u161:1-events_unbound]\n 575090       2 [kworker/47:3-cgroup_free]\n 575144       2 [kworker/48:1-events]\n 575174       2 [kworker/u162:0-events_power_efficient]\n 575396       2 [kworker/64:0-cgroup_free]\n 576049       2 [kworker/67:2-cgroup_free]\n 577333       2 [kworker/u162:3-events_power_efficient]\n 577340       2 [kworker/u161:0-flush-8:0]\n 579320       2 [kworker/u162:1-events_unbound]\n 580075       2 [kworker/59:1-cgroup_free]\n 580390       2 [kworker/76:2-cgroup_free]\n 581622       2 [kworker/46:2-cgroup_free]\n 582012       2 [kworker/48:2]\n 582682       2 [kworker/25:1-rcu_par_gp]\n 582775       2 [kworker/70:2-cgroup_free]\n 583231       2 [kworker/58:1-cgroup_free]\n 584555       2 [kworker/69:1]\n 585930       2 [kworker/44:0-cgroup_free]\n 586376       2 [kworker/68:0-cgroup_release]\n 586961       2 [kworker/71:1-cgroup_free]\n 587781       2 [kworker/u160:2-ext4-rsv-conversion]\n 588096       2 [kworker/41:1-cgroup_release]\n 588280       2 [kworker/42:1-cgroup_free]\n 588351       2 [kworker/u161:5-flush-8:0]\n 588864       2 [kworker/60:1-cgroup_free]\n 590109       2 [kworker/43:0-cgroup_release]\n 591266       2 [kworker/79:0-cgroup_free]\n 591765       2 [kworker/74:1-cgroup_free]\n 592026       2 [kworker/65:1-cgroup_free]\n 592954       2 [kworker/77:1-cgroup_release]\n 593296       2 [kworker/53:2]\n 593748       2 [kworker/u161:2-events_unbound]\n 593774       2 [kworker/63:0]\n 593927       2 [kworker/78:2]\n 594106       2 [kworker/72:2-cgroup_free]\n 594458       2 [kworker/51:2-cgroup_free]\n 594610       2 [kworker/73:2-cgroup_free]\n 594906       2 [kworker/41:0-cgroup_free]\n 595134       2 [kworker/77:0-cgroup_free]\n 595610       2 [kworker/43:1-cgroup_free]\n 596428    3317 sleep 3\n 596430 1564662 sleep 2\n 596435  103009 rtk proxy /usr/bin/python3 log/prepare_p2c_v30_failure.py\n 596459  596435 /usr/bin/python3 log/prepare_p2c_v30_failure.py\n 596462  596459 ps -eo pid,ppid,args\n 729630       2 [kworker/2:1-cgroup_free]\n 951020    2233 /usr/bin/ssh-agent -D -a /run/user/1000/keyring/.ssh\n1018426       2 [kworker/1:2-events]\n1018430       2 [kworker/39:1-events]\n1026284  492343 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=492331 --enable-crash-reporter=08dac59c-4a46-40b5-8322-5cb3b41ffdaf, --change-stack-guard-on-fork=enable --ozone-platform=x11 --disable-gpu-compositing --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=19 --time-ticks-at-unix-epoch=-1788254604987100 --launch-time-ticks=1843394052957 --shared-files=v8_context_snapshot_data:100 --metrics-shmem-handle=4,i,15656973283894532243,5488658268270347621,2097152 --field-trial-handle=3,i,1011358527585321561,7980237264107119593,262144 --variations-seed-version=20260921-170054.638000-production --pseudonymization-salt-handle=7,i,2205537036122350886,17002575464883847134,4 --trace-process-track-uuid=3190709004115666625\n1026406  492343 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=492331 --enable-crash-reporter=08dac59c-4a46-40b5-8322-5cb3b41ffdaf, --change-stack-guard-on-fork=enable --ozone-platform=x11 --disable-gpu-compositing --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=22 --time-ticks-at-unix-epoch=-1788254604987100 --launch-time-ticks=1843397720829 --shared-files=v8_context_snapshot_data:100 --metrics-shmem-handle=4,i,5177683326890803132,11240628401153269192,2097152 --field-trial-handle=3,i,1011358527585321561,7980237264107119593,262144 --variations-seed-version=20260921-170054.638000-production --pseudonymization-salt-handle=7,i,2205537036122350886,17002575464883847134,4 --trace-process-track-uuid=3190709006926792172\n1026570  492343 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=492331 --enable-crash-reporter=08dac59c-4a46-40b5-8322-5cb3b41ffdaf, --change-stack-guard-on-fork=enable --ozone-platform=x11 --disable-gpu-compositing --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=24 --time-ticks-at-unix-epoch=-1788254604987100 --launch-time-ticks=1843401818648 --shared-files=v8_context_snapshot_data:100 --metrics-shmem-handle=4,i,15289947551144060890,4499203647183372476,2097152 --field-trial-handle=3,i,1011358527585321561,7980237264107119593,262144 --variations-seed-version=20260921-170054.638000-production --pseudonymization-salt-handle=7,i,2205537036122350886,17002575464883847134,4 --trace-process-track-uuid=3190709008800875870\n1050430       2 [kworker/2:2-events]\n1058086       2 [kworker/26:0]\n1124876       2 [kworker/28:3-events]\n1133617       2 [kworker/25:0-events]\n1134816       2 [kworker/26:1-events]\n1185047       2 [kworker/37:2-mm_percpu_wq]\n1188409       2 [kworker/20:2-cgroup_free]\n1213723  492343 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=492331 --enable-crash-reporter=08dac59c-4a46-40b5-8322-5cb3b41ffdaf, --change-stack-guard-on-fork=enable --ozone-platform=x11 --disable-gpu-compositing --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=315 --time-ticks-at-unix-epoch=-1788254604987100 --launch-time-ticks=2702661884317 --shared-files=v8_context_snapshot_data:100 --metrics-shmem-handle=4,i,1987029162226478595,7802587087546669770,2097152 --field-trial-handle=3,i,1011358527585321561,7980237264107119593,262144 --variations-seed-version=20260921-170054.638000-production --pseudonymization-salt-handle=7,i,2205537036122350886,17002575464883847134,4 --trace-process-track-uuid=3190709281480053929\n1213988  492343 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=492331 --enable-crash-reporter=08dac59c-4a46-40b5-8322-5cb3b41ffdaf, --change-stack-guard-on-fork=enable --ozone-platform=x11 --disable-gpu-compositing --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=317 --time-ticks-at-unix-epoch=-1788254604987100 --launch-time-ticks=2702668333635 --shared-files=v8_context_snapshot_data:100 --metrics-shmem-handle=4,i,15060760985005697347,18235226296000272713,2097152 --field-trial-handle=3,i,1011358527585321561,7980237264107119593,262144 --variations-seed-version=20260921-170054.638000-production --pseudonymization-salt-handle=7,i,2205537036122350886,17002575464883847134,4 --trace-process-track-uuid=3190709283354137627\n1214020  492316 /opt/google/chrome/chrome --type=utility --utility-sub-type=audio.mojom.AudioService --lang=en-US --service-sandbox-type=none --crashpad-handler-pid=492331 --enable-crash-reporter=08dac59c-4a46-40b5-8322-5cb3b41ffdaf, --change-stack-guard-on-fork=enable --shared-files=v8_context_snapshot_data:100 --metrics-shmem-handle=4,i,1053131655725634290,6263671260321434568,524288 --field-trial-handle=3,i,1011358527585321561,7980237264107119593,262144 --variations-seed-version=20260921-170054.638000-production --pseudonymization-salt-handle=7,i,2205537036122350886,17002575464883847134,4 --trace-process-track-uuid=3190709284291179476\n1214023  492343 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=492331 --enable-crash-reporter=08dac59c-4a46-40b5-8322-5cb3b41ffdaf, --change-stack-guard-on-fork=enable --ozone-platform=x11 --disable-gpu-compositing --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=320 --time-ticks-at-unix-epoch=-1788254604987100 --launch-time-ticks=2702668832211 --shared-files=v8_context_snapshot_data:100 --metrics-shmem-handle=4,i,15149135351656714848,8915487411113223994,2097152 --field-trial-handle=3,i,1011358527585321561,7980237264107119593,262144 --variations-seed-version=20260921-170054.638000-production --pseudonymization-salt-handle=7,i,2205537036122350886,17002575464883847134,4 --trace-process-track-uuid=3190709286165263174\n1237392       2 [kworker/12:2-events]\n1269708       2 [kworker/47:2-mm_percpu_wq]\n1296987       2 [kworker/29:2]\n1395464       2 [kworker/4:0-events]\n1406478       2 [kworker/13:2]\n1424646       2 [kworker/24:1-events]\n1513912       1 /snap/snapd/current/usr/lib/snapd/snapd\n1515762       2 [kworker/6:0-events]\n1515858       2 [kworker/33:0-events]\n1524705       2 [kworker/36:0-events]\n1525367  566777 [codex] <defunct>\n1527955       2 [kworker/5:2-cgroup_free]\n1560736  566777 [codex] <defunct>\n1564662    2142 bash /home/zhuyulab/codex-auto/monitor.sh\n1590295       2 [kworker/35:0-mm_percpu_wq]\n1609760       2 [kworker/5:1-events]\n1681614       2 [kworker/38:2-rcu_gp]\n1712535 3531947 bash\n1738595    2821 /usr/lib/chatgpt/ChatGPT\n1738602    2142 /usr/lib/chatgpt/browser_crashpad_handler --monitor-self --monitor-self-annotation=ptype=crashpad-handler --database=/home/zhuyulab/.config/Codex/Crash Reports --annotation=lsb-release=Ubuntu 22.04.5 LTS --annotation=plat=Linux --annotation=prod=Chrome_Linux --annotation=ver=153.0.8010.48 --initial-client-fd=5 --shared-client-connection\n1738604    2142 /usr/lib/chatgpt/browser_crashpad_handler --no-periodic-tasks --monitor-self-annotation=ptype=crashpad-handler --database=/home/zhuyulab/.config/Codex/Crash Reports --annotation=lsb-release=Ubuntu 22.04.5 LTS --annotation=plat=Linux --annotation=prod=Chrome_Linux --annotation=ver=153.0.8010.48 --initial-client-fd=4 --shared-client-connection\n1738608 1738595 /usr/lib/chatgpt/ChatGPT --type=zygote --no-zygote-sandbox --crashpad-handler-pid=1738602 --enable-crash-reporter=, --user-data-dir=/home/zhuyulab/.config/Codex --owl-electron-scheme-replay --change-stack-guard-on-fork=enable\n1738609 1738595 /usr/lib/chatgpt/ChatGPT --type=zygote --crashpad-handler-pid=1738602 --enable-crash-reporter=, --user-data-dir=/home/zhuyulab/.config/Codex --owl-electron-scheme-replay --change-stack-guard-on-fork=enable\n1738626 1738609 /usr/lib/chatgpt/ChatGPT --type=zygote --crashpad-handler-pid=1738602 --enable-crash-reporter=, --user-data-dir=/home/zhuyulab/.config/Codex --owl-electron-scheme-replay --change-stack-guard-on-fork=enable\n1738707 1738608 /usr/lib/chatgpt/ChatGPT --type=gpu-process --ozone-platform=x11 --crashpad-handler-pid=1738602 --enable-crash-reporter=, --user-data-dir=/home/zhuyulab/.config/Codex --change-stack-guard-on-fork=enable --gpu-preferences=YAAAAAAAAAAgAQAEAAAAAAAAAAAAAGAASAAAAAAAAAABAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAwAAAAAAAAAAEAAAAAAAAACAAAAAAAAAAMAAAAAQAAAAAAAAAAAAAACAAAAAAAAAAIAAAAAAAAAA== --shared-files --metrics-shmem-handle=4,i,11421612099402735105,17905748478609581719,262144 --field-trial-handle=3,i,2532383964773055537,14541160824904162776,262144 --enable-features=ReportStuckThrottle --disable-features=DropInputEventsWhilePaintHolding,WebUIOmniboxAimPopup,WebUIOmniboxPopup --variations-seed-version --pseudonymization-salt-handle=7,i,7799501123747656125,4866072657910042442,4 --trace-process-track-uuid=3190708988185955192\n1738709 1738595 /usr/lib/chatgpt/ChatGPT --type=utility --utility-sub-type=network.mojom.NetworkService --lang=en-US --service-sandbox-type=none --owl-scoped-user-agent-additional-hosts=openai.com,chatgpt.com,chatgpt.site,chatgpt-team.site --owl-scoped-user-agent-prefix=CodexBrowser --crashpad-handler-pid=1738602 --enable-crash-reporter=, --user-data-dir=/home/zhuyulab/.config/Codex --standard-schemes=app,codex-sandbox --service-worker-schemes=codex-sandbox --secure-schemes=app,codex-sandbox --fetch-schemes=app,codex-sandbox --cors-schemes=codex-sandbox --streaming-schemes=app,codex-sandbox --change-stack-guard-on-fork=enable --shared-files=v8_context_snapshot_data:100 --metrics-shmem-handle=4,i,4611955684277274518,2897052534762764880,524288 --field-trial-handle=3,i,2532383964773055537,14541160824904162776,262144 --enable-features=ReportStuckThrottle --disable-features=DropInputEventsWhilePaintHolding,WebUIOmniboxAimPopup,WebUIOmniboxPopup --variations-seed-version --pseudonymization-salt-handle=7,i,7799501123747656125,4866072657910042442,4 --trace-process-track-uuid=3190708989122997041\n1738726 1738626 /usr/lib/chatgpt/ChatGPT --type=utility --utility-sub-type=storage.mojom.StorageService --lang=en-US --service-sandbox-type=utility --crashpad-handler-pid=1738602 --enable-crash-reporter=, --user-data-dir=/home/zhuyulab/.config/Codex --owl-electron-scheme-replay --standard-schemes=app,codex-sandbox --service-worker-schemes=codex-sandbox --secure-schemes=app,codex-sandbox --fetch-schemes=app,codex-sandbox --cors-schemes=codex-sandbox --streaming-schemes=app,codex-sandbox --change-stack-guard-on-fork=enable --shared-files=v8_context_snapshot_data:100 --metrics-shmem-handle=4,i,16096980492128918354,1734781082397006407,524288 --field-trial-handle=3,i,2532383964773055537,14541160824904162776,262144 --enable-features=ReportStuckThrottle --disable-features=DropInputEventsWhilePaintHolding,WebUIOmniboxAimPopup,WebUIOmniboxPopup --variations-seed-version --pseudonymization-salt-handle=7,i,7799501123747656125,4866072657910042442,4 --trace-process-track-uuid=3190708990060038890\n1739321 1738626 /usr/lib/chatgpt/ChatGPT --type=renderer --crashpad-handler-pid=1738602 --enable-crash-reporter=, --user-data-dir=/home/zhuyulab/.config/Codex --owl-electron-scheme-replay --standard-schemes=app,codex-sandbox --service-worker-schemes=codex-sandbox --secure-schemes=app,codex-sandbox --fetch-schemes=app,codex-sandbox --cors-schemes=codex-sandbox --streaming-schemes=app,codex-sandbox --owl-scoped-user-agent-additional-hosts=openai.com,chatgpt.com,chatgpt.site,chatgpt-team.site --owl-scoped-user-agent-prefix=CodexBrowser --change-stack-guard-on-fork=enable --ozone-platform=x11 --disable-gpu-compositing --disable-blink-features=ReplacedNormalFlowStackingInlinePaint --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=6 --launch-time-ticks=2576186625692 --shared-files=v8_context_snapshot_data:100 --metrics-shmem-handle=4,i,4777162664921983487,16084725760368833587,1572864 --field-trial-handle=3,i,2532383964773055537,14541160824904162776,262144 --enable-features=ReportStuckThrottle --disable-features=DropInputEventsWhilePaintHolding,WebUIOmniboxAimPopup,WebUIOmniboxPopup --variations-seed-version --pseudonymization-salt-handle=7,i,7799501123747656125,4866072657910042442,4 --trace-process-track-uuid=3190708991934122588\n1739322 1738626 /usr/lib/chatgpt/ChatGPT --type=renderer --crashpad-handler-pid=1738602 --enable-crash-reporter=, --user-data-dir=/home/zhuyulab/.config/Codex --owl-electron-scheme-replay --standard-schemes=app,codex-sandbox --service-worker-schemes=codex-sandbox --secure-schemes=app,codex-sandbox --fetch-schemes=app,codex-sandbox --cors-schemes=codex-sandbox --streaming-schemes=app,codex-sandbox --owl-scoped-user-agent-additional-hosts=openai.com,chatgpt.com,chatgpt.site,chatgpt-team.site --owl-scoped-user-agent-prefix=CodexBrowser --change-stack-guard-on-fork=enable --ozone-platform=x11 --disable-gpu-compositing --disable-blink-features=ReplacedNormalFlowStackingInlinePaint --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=5 --launch-time-ticks=2576186630697 --shared-files=v8_context_snapshot_data:100 --metrics-shmem-handle=4,i,15889837093794862620,15331668741643620731,1572864 --field-trial-handle=3,i,2532383964773055537,14541160824904162776,262144 --enable-features=ReportStuckThrottle --disable-features=DropInputEventsWhilePaintHolding,WebUIOmniboxAimPopup,WebUIOmniboxPopup --variations-seed-version --pseudonymization-salt-handle=7,i,7799501123747656125,4866072657910042442,4 --trace-process-track-uuid=3190708990997080739\n1739374 1738595 /usr/lib/chatgpt/resources/codex -c features.code_mode_host=true app-server --analytics-default-enabled -c plugins.codex-app-tools@openai-bundled.mcp_servers.codex_app.enabled=true\n1740938 1738626 /usr/lib/chatgpt/ChatGPT --type=renderer --crashpad-handler-pid=1738602 --enable-crash-reporter=, --user-data-dir=/home/zhuyulab/.config/Codex --owl-electron-scheme-replay --standard-schemes=app,codex-sandbox --service-worker-schemes=codex-sandbox --secure-schemes=app,codex-sandbox --fetch-schemes=app,codex-sandbox --cors-schemes=codex-sandbox --streaming-schemes=app,codex-sandbox --owl-scoped-user-agent-additional-hosts=openai.com,chatgpt.com,chatgpt.site,chatgpt-team.site --owl-scoped-user-agent-prefix=CodexBrowser --change-stack-guard-on-fork=enable --ozone-platform=x11 --disable-gpu-compositing --disable-blink-features=ReplacedNormalFlowStackingInlinePaint --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=7 --launch-time-ticks=2576206933827 --shared-files=v8_context_snapshot_data:100 --metrics-shmem-handle=4,i,13326585689359024911,11808407700480196233,1572864 --field-trial-handle=3,i,2532383964773055537,14541160824904162776,262144 --enable-features=ReportStuckThrottle --disable-features=DropInputEventsWhilePaintHolding,WebUIOmniboxAimPopup,WebUIOmniboxPopup --variations-seed-version --pseudonymization-salt-handle=7,i,7799501123747656125,4866072657910042442,4 --trace-process-track-uuid=3190708992871164437\n1741479 1739374 /usr/lib/chatgpt/resources/cua_node/bin/node_repl\n1741480 1739374 /usr/lib/chatgpt/resources/cua_node/bin/node ./server.mjs\n1741481 1739374 /usr/lib/chatgpt/resources/cua_node/bin/node /usr/lib/chatgpt/resources/cua_node/lib/node_modules/@oai/cua-repl/bin/cua-repl.mjs\n1741666 1741481 /usr/lib/chatgpt/resources/cua_node/bin/node_repl\n1742396 1738626 /usr/lib/chatgpt/ChatGPT --type=renderer --crashpad-handler-pid=1738602 --enable-crash-reporter=, --user-data-dir=/home/zhuyulab/.config/Codex --owl-electron-scheme-replay --standard-schemes=app,codex-sandbox --service-worker-schemes=codex-sandbox --secure-schemes=app,codex-sandbox --fetch-schemes=app,codex-sandbox --cors-schemes=codex-sandbox --streaming-schemes=app,codex-sandbox --owl-scoped-user-agent-additional-hosts=openai.com,chatgpt.com,chatgpt.site,chatgpt-team.site --owl-scoped-user-agent-prefix=CodexBrowser --change-stack-guard-on-fork=enable --ozone-platform=x11 --disable-gpu-compositing --disable-blink-features=ReplacedNormalFlowStackingInlinePaint --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=11 --launch-time-ticks=2576212967571 --shared-files=v8_context_snapshot_data:100 --metrics-shmem-handle=4,i,10147475599671941290,14855902702865216778,1572864 --field-trial-handle=3,i,2532383964773055537,14541160824904162776,262144 --enable-features=ReportStuckThrottle --disable-features=DropInputEventsWhilePaintHolding,WebUIOmniboxAimPopup,WebUIOmniboxPopup --variations-seed-version --pseudonymization-salt-handle=7,i,7799501123747656125,4866072657910042442,4 --trace-process-track-uuid=3190708996619331833\n1742442 1738626 /usr/lib/chatgpt/ChatGPT --type=renderer --crashpad-handler-pid=1738602 --enable-crash-reporter=, --user-data-dir=/home/zhuyulab/.config/Codex --owl-electron-scheme-replay --standard-schemes=app,codex-sandbox --service-worker-schemes=codex-sandbox --secure-schemes=app,codex-sandbox --fetch-schemes=app,codex-sandbox --cors-schemes=codex-sandbox --streaming-schemes=app,codex-sandbox --owl-scoped-user-agent-additional-hosts=openai.com,chatgpt.com,chatgpt.site,chatgpt-team.site --owl-scoped-user-agent-prefix=CodexBrowser --change-stack-guard-on-fork=enable --ozone-platform=x11 --disable-gpu-compositing --disable-blink-features=ReplacedNormalFlowStackingInlinePaint --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=13 --launch-time-ticks=2576213576848 --shared-files=v8_context_snapshot_data:100 --metrics-shmem-handle=4,i,1650865470619532684,13358524108406393701,1572864 --field-trial-handle=3,i,2532383964773055537,14541160824904162776,262144 --enable-features=ReportStuckThrottle --disable-features=DropInputEventsWhilePaintHolding,WebUIOmniboxAimPopup,WebUIOmniboxPopup --variations-seed-version --pseudonymization-salt-handle=7,i,7799501123747656125,4866072657910042442,4 --trace-process-track-uuid=3190708998493415531\n1743043 1738626 /usr/lib/chatgpt/ChatGPT --type=renderer --crashpad-handler-pid=1738602 --enable-crash-reporter=, --user-data-dir=/home/zhuyulab/.config/Codex --owl-electron-scheme-replay --standard-schemes=app,codex-sandbox --service-worker-schemes=codex-sandbox --secure-schemes=app,codex-sandbox --fetch-schemes=app,codex-sandbox --cors-schemes=codex-sandbox --streaming-schemes=app,codex-sandbox --owl-scoped-user-agent-additional-hosts=openai.com,chatgpt.com,chatgpt.site,chatgpt-team.site --owl-scoped-user-agent-prefix=CodexBrowser --change-stack-guard-on-fork=enable --ozone-platform=x11 --disable-gpu-compositing --disable-blink-features=ReplacedNormalFlowStackingInlinePaint --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=16 --launch-time-ticks=2576224916585 --shared-files=v8_context_snapshot_data:100 --metrics-shmem-handle=4,i,9697268749699411396,12920299307300328623,1572864 --field-trial-handle=3,i,2532383964773055537,14541160824904162776,262144 --enable-features=ReportStuckThrottle --disable-features=DropInputEventsWhilePaintHolding,WebUIOmniboxAimPopup,WebUIOmniboxPopup --variations-seed-version --pseudonymization-salt-handle=7,i,7799501123747656125,4866072657910042442,4 --trace-process-track-uuid=3190709001304541078\n1861712       2 [kworker/32:1-events]\n1950951       2 [kworker/22:2]\n2008242       2 [kworker/15:2-events]\n2024212       2 [kworker/21:2]\n2060187       2 [kworker/R-tls-s]\n2060561       1 usr/sbin/httpd\n2190500       2 [kworker/15:0]\n2273376       2 [kworker/19:1-cgroup_free]\n2304374       2 [kworker/9:0-cgroup_free]\n2575406       2 [kworker/31:2]\n2808283    2821 /opt/todesk/bin/ToDesk\n2811572       2 [vidmem lazy free]\n2811578       2 [UVM GPU1 BH]\n2811579       2 [UVM GPU1 KC]\n2811580       2 [vidmem lazy free]\n2811582       2 [UVM GPU2 BH]\n2811583       2 [UVM GPU2 KC]\n2886927    2821 clash-verge\n2887296 2886927 /usr/lib/x86_64-linux-gnu/webkit2gtk-4.1/WebKitNetworkProcess 1 32 34\n2887313 2886927 /usr/lib/x86_64-linux-gnu/webkit2gtk-4.1/WebKitWebProcess 4 37 39\n2887432 2886927 /usr/bin/verge-mihomo -d /home/zhuyulab/.local/share/io.github.clash-verge-rev.clash-verge-rev -f /home/zhuyulab/.local/share/io.github.clash-verge-rev.clash-verge-rev/clash-verge.yaml -ext-ctl-unix /tmp/verge/verge-mihomo.sock\n2930953       2 [kworker/41:2-mm_percpu_wq]\n2955136 2886927 [tokio-rt-worker] <defunct>\n2956533 2886927 [tokio-rt-worker] <defunct>\n2962271       2 [kworker/42:0-mm_percpu_wq]\n2968339       2 [kworker/51:1-mm_percpu_wq]\n2968477    2821 /usr/bin/bytedance-feishu-stable\n2968491 2968477 cat\n2968492 2968477 cat\n2968511 2968477 /opt/bytedance/feishu/feishu --aha-process-t=aha-service --type=monitor --enable-pre-read-liblark-dll --smc-metadata=7929855,10485344880803950494,17417212630896714178,20971520 --mojo-platform-channel-handle=3 --crashpad-server-socks=12,14,16,18,22,25,27,29,31,33,35,37,39,41,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88,90,92,94,96,98,100,102,104,106 --crashpad-client-sock=11\n2968552 2968477 /proc/self/exe --type=gpu-process --string-annotations --enable-crash-reporter=, --change-stack-guard-on-fork=enable --gpu-preferences=WAAAAAAAAAAgAAAEAAAAAAAAAAAAAAAAAABgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAABgAAAAAAAAAGAAAAAAAAAAFAAAAFAAAAAgAAAAAAAAACAAAAAAAAAA= --use-gl=angle --use-angle=swiftshader-webgl --browser-runtime --aha-multi-profile --shared-files --field-trial-handle=3,i,1186981019876714294,15326796371287159731,262144 --variations-seed-version --smc-metadata=7929855,10485344880803950494,17417212630896714178,20971520 --crashpad-client-sock=13\n2968590 2968552 /proc/self/exe --type=gpu-process --string-annotations --enable-crash-reporter=, --change-stack-guard-on-fork=enable --gpu-preferences=WAAAAAAAAAAgAAAEAAAAAAAAAAAAAAAAAABgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAABgAAAAAAAAAGAAAAAAAAAAFAAAAFAAAAAgAAAAAAAAACAAAAAAAAAA= --use-gl=angle --use-angle=swiftshader-webgl --browser-runtime --aha-multi-profile --shared-files --field-trial-handle=3,i,1186981019876714294,15326796371287159731,262144 --variations-seed-version --smc-metadata=7929855,10485344880803950494,17417212630896714178,20971520 --crashpad-client-sock=13\n2968640 2968477 /proc/self/exe --type=utility --utility-sub-type=network.mojom.NetworkService --lang=en-US --service-sandbox-type=none --string-annotations --enable-crash-reporter=, --change-stack-guard-on-fork=enable --browser-runtime --aha-multi-profile --shared-files --field-trial-handle=3,i,1186981019876714294,15326796371287159731,262144 --variations-seed-version --smc-metadata=7929855,10485344880803950494,17417212630896714178,20971520 --crashpad-client-sock=15\n2968669 2968477 /proc/self/exe --type=utility --utility-sub-type=storage.mojom.StorageService --lang=en-US --service-sandbox-type=utility --string-annotations --enable-crash-reporter=, --change-stack-guard-on-fork=enable --browser-runtime --aha-multi-profile --shared-files --field-trial-handle=3,i,1186981019876714294,15326796371287159731,262144 --variations-seed-version --smc-metadata=7929855,10485344880803950494,17417212630896714178,20971520 --crashpad-client-sock=17\n2968689 2968477 /opt/bytedance/feishu/feishu --aha-process-t=aha-service --type=backend --task-jssdk-enabled --enable-backend-async-progress --no-proxy-server --enable-pre-read-liblark-dll --smc-metadata=7929855,10485344880803950494,17417212630896714178,20971520 --aha-multi-profile --enable-backend-async-progress --mojo-platform-channel-handle=3 --crashpad-client-sock=20\n2968776 2968477 /proc/self/exe --type=utility --utility-sub-type=jash.mojom.JSRuntimeService --lang=en-US --service-sandbox-type=none --js-runtime-verify-shellapi=strict --enable-js-runtime-shared-string --enable-backend-async-progress --string-annotations --enable-crash-reporter=, --change-stack-guard-on-fork=enable --browser-runtime --aha-multi-profile --shared-files --field-trial-handle=3,i,1186981019876714294,15326796371287159731,262144 --variations-seed-version --smc-metadata=7929855,10485344880803950494,17417212630896714178,20971520 --crashpad-client-sock=24\n2981333       2 [kworker/0:2-events]\n2983360    2736 /usr/libexec/gvfsd-http --spawner :1.23 /org/gtk/gvfs/exec_spaw/4\n2985693       2 [kworker/7:1]\n2989926       2 [kworker/10:0-cgroup_free]\n2990405 2968477 /proc/self/exe --type=renderer --string-annotations --enable-crash-reporter=, --change-stack-guard-on-fork=enable --no-zygote --disable-gpu-compositing --indexeddb-idle-check-seconds=5 --scene=profile_explorer --enable-run-before-paint --enable-renderer-jank-monitor --enable-native-resource-code-cache --enable-shellapi-jsb-permission-no-http --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=32 --time-ticks-at-unix-epoch=-1788254604987101 --browser-runtime --aha-multi-profile --launch-time-ticks=2401276967344 --shared-files --field-trial-handle=3,i,1186981019876714294,15326796371287159731,262144 --variations-seed-version --smc-metadata=7929855,10485344880803950494,17417212630896714178,20971520 --enable-userns --enable-netns --crashpad-client-sock=32\n2990414 2990405 /proc/self/exe --type=renderer --string-annotations --enable-crash-reporter=, --change-stack-guard-on-fork=enable --no-zygote --disable-gpu-compositing --indexeddb-idle-check-seconds=5 --scene=profile_explorer --enable-run-before-paint --enable-renderer-jank-monitor --enable-native-resource-code-cache --enable-shellapi-jsb-permission-no-http --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=32 --time-ticks-at-unix-epoch=-1788254604987101 --browser-runtime --aha-multi-profile --launch-time-ticks=2401276967344 --shared-files --field-trial-handle=3,i,1186981019876714294,15326796371287159731,262144 --variations-seed-version --smc-metadata=7929855,10485344880803950494,17417212630896714178,20971520 --enable-userns --enable-netns --crashpad-client-sock=32\n2990508 2968477 /proc/self/exe --type=renderer --string-annotations --enable-crash-reporter=, --change-stack-guard-on-fork=enable --no-zygote --disable-gpu-compositing --indexeddb-idle-check-seconds=5 --scene=profile_main --enable-run-before-paint --enable-renderer-jank-monitor --enable-native-resource-code-cache --enable-shellapi-jsb-permission-no-http --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=33 --time-ticks-at-unix-epoch=-1788254604987101 --browser-runtime --aha-multi-profile --launch-time-ticks=2401279200588 --shared-files --field-trial-handle=3,i,1186981019876714294,15326796371287159731,262144 --variations-seed-version --smc-metadata=7929855,10485344880803950494,17417212630896714178,20971520 --enable-userns --enable-netns --crashpad-client-sock=28\n2990523 2990508 /proc/self/exe --type=renderer --string-annotations --enable-crash-reporter=, --change-stack-guard-on-fork=enable --no-zygote --disable-gpu-compositing --indexeddb-idle-check-seconds=5 --scene=profile_main --enable-run-before-paint --enable-renderer-jank-monitor --enable-native-resource-code-cache --enable-shellapi-jsb-permission-no-http --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=33 --time-ticks-at-unix-epoch=-1788254604987101 --browser-runtime --aha-multi-profile --launch-time-ticks=2401279200588 --shared-files --field-trial-handle=3,i,1186981019876714294,15326796371287159731,262144 --variations-seed-version --smc-metadata=7929855,10485344880803950494,17417212630896714178,20971520 --enable-userns --enable-netns --crashpad-client-sock=28\n3025656       2 [kworker/9:1-events]\n3047792       2 [kworker/55:0-mm_percpu_wq]\n3135232       2 [kworker/74:0-mm_percpu_wq]\n3148671       2 [kworker/37:0-rcu_gp]\n3180306       2 [kworker/10:2-events]\n3196181       2 [kworker/1:0-rcu_gp]\n3211735       2 [kworker/u160:1-gid-cache-wq]\n3212707       2 [kworker/18:1-events]\n3212726       2 [kworker/7:2-events]\n3239198       2 [kworker/23:2-events]\n3242885       2 [kworker/35:2]\n3265785       2 [kworker/32:0-rcu_gp]\n3265797       2 [kworker/16:2-events]\n3291574  492343 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=492331 --enable-crash-reporter=08dac59c-4a46-40b5-8322-5cb3b41ffdaf, --change-stack-guard-on-fork=enable --ozone-platform=x11 --disable-gpu-compositing --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=273 --time-ticks-at-unix-epoch=-1788254604987100 --launch-time-ticks=2408358094104 --shared-files=v8_context_snapshot_data:100 --metrics-shmem-handle=4,i,11744953249158731536,4492030026666792398,2097152 --field-trial-handle=3,i,1011358527585321561,7980237264107119593,262144 --variations-seed-version=20260921-170054.638000-production --pseudonymization-salt-handle=7,i,2205537036122350886,17002575464883847134,4 --trace-process-track-uuid=3190709242124296271\n3344309 4147789 /snap/code/253/usr/share/code/code /snap/code/253/usr/share/code/resources/app/extensions/json-language-features/server/dist/node/jsonServerMain --node-ipc --clientProcessId=4147789\n3346042 2886927 [tokio-rt-worker] <defunct>\n3402095    2142 /snap/snapd-desktop-integration/391/usr/bin/user-session-helper /snap/snapd-desktop-integration/391/usr/bin/snapd-desktop-integration\n3402346 3402095 /snap/snapd-desktop-integration/391/usr/bin/snapd-desktop-integration\n3464995       2 [kworker/46:0-events]\n3531947    2142 /usr/libexec/gnome-terminal-server\n3623560  566777 [codex] <defunct>\n3755564       2 [kworker/38:1-events]\n3763555       2 [kworker/14:0]\n3796606    2142 /usr/bin/python3 /opt/ros/humble/lib/joint_state_publisher/joint_state_publisher --ros-args -r __node:=joint_state_publisher -r __ns:=/tb1 --params-file /tmp/launch_params_0s5ki2zh -r /tf:=tf -r /tf_static:=tf_static\n3797226    2142 /usr/bin/python3 /opt/ros/humble/lib/joint_state_publisher/joint_state_publisher --ros-args -r __node:=joint_state_publisher -r __ns:=/tb2 --params-file /tmp/launch_params_jd6xwvv3 -r /tf:=tf -r /tf_static:=tf_static\n3797389    2142 /usr/bin/python3 /opt/ros/humble/lib/joint_state_publisher/joint_state_publisher --ros-args -r __node:=joint_state_publisher -r __ns:=/tb3 --params-file /tmp/launch_params_v9ffv0il -r /tf:=tf -r /tf_static:=tf_static\n3822499       2 [kworker/6:1-mm_percpu_wq]\n3925991       2 [kworker/57:0-mm_percpu_wq]\n3951382       2 [kworker/8:0-cgroup_free]\n4080022       2 [kworker/64:1-mm_percpu_wq]\n4082272       2 [kworker/16:0-events]\n4117164    2142 /usr/bin/nautilus --gapplication-service\n4147114    2142 /snap/code/253/usr/share/code/code --no-sandbox --force-user-env --ozone-platform=x11\n4147116 4147114 /snap/code/253/usr/share/code/code --type=zygote --no-zygote-sandbox --no-sandbox\n4147117 4147114 /snap/code/253/usr/share/code/code --type=zygote --no-sandbox\n4147163    2142 /snap/code/253/usr/share/code/chrome_crashpad_handler --monitor-self-annotation=ptype=crashpad-handler --no-rate-limit --database=/home/zhuyulab/.config/Code/Crashpad --url=appcenter://code?aid=fba07a4d-84bd-4fc8-a125-9640fc8ce171&uid=410ad1dc-8265-4e3e-a21f-d8c1552d4994&iid=410ad1dc-8265-4e3e-a21f-d8c1552d4994&sid=410ad1dc-8265-4e3e-a21f-d8c1552d4994 --annotation=_companyName=Microsoft --annotation=_productName=VSCode --annotation=_version=1.130.0 --annotation=lsb-release=Ubuntu 22.04.5 LTS --annotation=plat=Linux --annotation=prod=Electron --annotation=ver=42.6.0 --initial-client-fd=50 --shared-client-connection\n4147192 4147114 /snap/code/253/usr/share/code/code --type=utility --utility-sub-type=network.mojom.NetworkService --lang=en-US --service-sandbox-type=none --no-sandbox --crashpad-handler-pid=4147163 --enable-crash-reporter=bf5e41fa-22fb-47e1-bacf-73bb194cfbfc,no_channel --user-data-dir=/home/zhuyulab/.config/Code --standard-schemes=vscode-webview,vscode-file --secure-schemes=vscode-webview,vscode-file,vscode-remote-resource,vscode-managed-remote-resource --cors-schemes=vscode-webview,vscode-file,vscode-remote-resource,vscode-managed-remote-resource --fetch-schemes=vscode-webview,vscode-file,vscode-remote-resource,vscode-managed-remote-resource --service-worker-schemes=vscode-webview --code-cache-schemes=vscode-webview,vscode-file --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,7874060382375971208,5107432691738869296,262144 --enable-features=DocumentPolicyIncludeJSCallStacksInCrashReports,EarlyEstablishGpuChannel,EstablishGpuChannelAsync,GlobalShortcutsPortal,PdfUseShowSaveFilePicker --disable-features=CalculateNativeWinOcclusion,DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=7,i,2540144214772887753,2221497540014761543,4 --trace-process-track-uuid=3190708989122997041\n4147303 4147117 /snap/code/253/usr/share/code/code --type=renderer --crashpad-handler-pid=4147163 --enable-crash-reporter=bf5e41fa-22fb-47e1-bacf-73bb194cfbfc,no_channel --user-data-dir=/home/zhuyulab/.config/Code --standard-schemes=vscode-webview,vscode-file --secure-schemes=vscode-webview,vscode-file,vscode-remote-resource,vscode-managed-remote-resource --cors-schemes=vscode-webview,vscode-file,vscode-remote-resource,vscode-managed-remote-resource --fetch-schemes=vscode-webview,vscode-file,vscode-remote-resource,vscode-managed-remote-resource --service-worker-schemes=vscode-webview --code-cache-schemes=vscode-webview,vscode-file --app-path=/snap/code/253/usr/share/code/resources/app --enable-sandbox --enable-blink-features=HighlightAPI --no-sandbox --max-active-webgl-contexts=32 --ozone-platform=x11 --disable-blink-features=FontMatchingCTMigration,StandardizedBrowserZoom, --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=5 --time-ticks-at-unix-epoch=-1788254604987100 --launch-time-ticks=2440954133961 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,7874060382375971208,5107432691738869296,262144 --enable-features=DocumentPolicyIncludeJSCallStacksInCrashReports,EarlyEstablishGpuChannel,EstablishGpuChannelAsync,GlobalShortcutsPortal,PdfUseShowSaveFilePicker --disable-features=CalculateNativeWinOcclusion,DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=7,i,2540144214772887753,2221497540014761543,4 --trace-process-track-uuid=3190708990997080739 --vscode-window-config=vscode:fd2fe06d-f5d6-435b-b243-7e382f85cb96\n4147332 4147114 /snap/code/253/usr/share/code/code --type=gpu-process --disable-gpu-sandbox --no-sandbox --ozone-platform=x11 --crashpad-handler-pid=4147163 --enable-crash-reporter=bf5e41fa-22fb-47e1-bacf-73bb194cfbfc,no_channel --user-data-dir=/home/zhuyulab/.config/Code --gpu-preferences=UAAAAAAAAAAgAQAEAAAAAAAAAAAAAGAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAYAAAAAAAAABgAAAAAAAAAAQAAAAAAAAAIAAAAAAAAAAgAAAAAAAAA --use-gl=disabled --shared-files --field-trial-handle=3,i,7874060382375971208,5107432691738869296,262144 --enable-features=DocumentPolicyIncludeJSCallStacksInCrashReports,EarlyEstablishGpuChannel,EstablishGpuChannelAsync,GlobalShortcutsPortal,PdfUseShowSaveFilePicker --disable-features=CalculateNativeWinOcclusion,DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=7,i,2540144214772887753,2221497540014761543,4 --trace-process-track-uuid=3190708991934122588\n4147768 4147114 dconf watch /system/proxy/\n4147789 4147114 /snap/code/253/usr/share/code/code --type=utility --utility-sub-type=node.mojom.NodeService --lang=en-US --service-sandbox-type=none --no-sandbox --dns-result-order=ipv4first --experimental-network-inspection --inspect-port=0 --crashpad-handler-pid=4147163 --enable-crash-reporter=bf5e41fa-22fb-47e1-bacf-73bb194cfbfc,no_channel --user-data-dir=/home/zhuyulab/.config/Code --standard-schemes=vscode-webview,vscode-file --secure-schemes=vscode-webview,vscode-file,vscode-remote-resource,vscode-managed-remote-resource --cors-schemes=vscode-webview,vscode-file,vscode-remote-resource,vscode-managed-remote-resource --fetch-schemes=vscode-webview,vscode-file,vscode-remote-resource,vscode-managed-remote-resource --service-worker-schemes=vscode-webview --code-cache-schemes=vscode-webview,vscode-file --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,7874060382375971208,5107432691738869296,262144 --enable-features=DocumentPolicyIncludeJSCallStacksInCrashReports,EarlyEstablishGpuChannel,EstablishGpuChannelAsync,GlobalShortcutsPortal,PdfUseShowSaveFilePicker --disable-features=CalculateNativeWinOcclusion,DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=7,i,2540144214772887753,2221497540014761543,4 --trace-process-track-uuid=3190708992871164437\n4147844 4147114 /snap/code/253/usr/share/code/code --type=utility --utility-sub-type=node.mojom.NodeService --lang=en-US --service-sandbox-type=none --no-sandbox --crashpad-handler-pid=4147163 --enable-crash-reporter=bf5e41fa-22fb-47e1-bacf-73bb194cfbfc,no_channel --user-data-dir=/home/zhuyulab/.config/Code --standard-schemes=vscode-webview,vscode-file --secure-schemes=vscode-webview,vscode-file,vscode-remote-resource,vscode-managed-remote-resource --cors-schemes=vscode-webview,vscode-file,vscode-remote-resource,vscode-managed-remote-resource --fetch-schemes=vscode-webview,vscode-file,vscode-remote-resource,vscode-managed-remote-resource --service-worker-schemes=vscode-webview --code-cache-schemes=vscode-webview,vscode-file --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,7874060382375971208,5107432691738869296,262144 --enable-features=DocumentPolicyIncludeJSCallStacksInCrashReports,EarlyEstablishGpuChannel,EstablishGpuChannelAsync,GlobalShortcutsPortal,PdfUseShowSaveFilePicker --disable-features=CalculateNativeWinOcclusion,DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=7,i,2540144214772887753,2221497540014761543,4 --trace-process-track-uuid=3190708993808206286\n4147845 4147114 /snap/code/253/usr/share/code/code --type=utility --utility-sub-type=node.mojom.NodeService --lang=en-US --service-sandbox-type=none --no-sandbox --crashpad-handler-pid=4147163 --enable-crash-reporter=bf5e41fa-22fb-47e1-bacf-73bb194cfbfc,no_channel --user-data-dir=/home/zhuyulab/.config/Code --standard-schemes=vscode-webview,vscode-file --secure-schemes=vscode-webview,vscode-file,vscode-remote-resource,vscode-managed-remote-resource --cors-schemes=vscode-webview,vscode-file,vscode-remote-resource,vscode-managed-remote-resource --fetch-schemes=vscode-webview,vscode-file,vscode-remote-resource,vscode-managed-remote-resource --service-worker-schemes=vscode-webview --code-cache-schemes=vscode-webview,vscode-file --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,7874060382375971208,5107432691738869296,262144 --enable-features=DocumentPolicyIncludeJSCallStacksInCrashReports,EarlyEstablishGpuChannel,EstablishGpuChannelAsync,GlobalShortcutsPortal,PdfUseShowSaveFilePicker --disable-features=CalculateNativeWinOcclusion,DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=7,i,2540144214772887753,2221497540014761543,4 --trace-process-track-uuid=3190708994745248135\n4147851 4147114 /snap/code/253/usr/share/code/code --type=utility --utility-sub-type=node.mojom.NodeService --lang=en-US --service-sandbox-type=none --no-sandbox --crashpad-handler-pid=4147163 --enable-crash-reporter=bf5e41fa-22fb-47e1-bacf-73bb194cfbfc,no_channel --user-data-dir=/home/zhuyulab/.config/Code --standard-schemes=vscode-webview,vscode-file --secure-schemes=vscode-webview,vscode-file,vscode-remote-resource,vscode-managed-remote-resource --cors-schemes=vscode-webview,vscode-file,vscode-remote-resource,vscode-managed-remote-resource --fetch-schemes=vscode-webview,vscode-file,vscode-remote-resource,vscode-managed-remote-resource --service-worker-schemes=vscode-webview --code-cache-schemes=vscode-webview,vscode-file --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,7874060382375971208,5107432691738869296,262144 --enable-features=DocumentPolicyIncludeJSCallStacksInCrashReports,EarlyEstablishGpuChannel,EstablishGpuChannelAsync,GlobalShortcutsPortal,PdfUseShowSaveFilePicker --disable-features=CalculateNativeWinOcclusion,DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=7,i,2540144214772887753,2221497540014761543,4 --trace-process-track-uuid=3190708995682289984\n4148474 4147844 /snap/code/253/usr/share/code/code /snap/code/253/usr/share/code/resources/app/node_modules.asar.unpacked/@github/copilot-linux-x64/index.js --headless --no-auto-update --log-level info --stdio --no-auto-login\n4148475 4147789 /snap/code/253/usr/share/code/code /snap/code/253/usr/share/code/resources/app/extensions/markdown-language-features/dist/serverWorkerMain --node-ipc --clientProcessId=4147789\n4148619 4147789 /home/zhuyulab/.vscode/extensions/openai.chatgpt-26.917.62051-linux-x64/bin/linux-x86_64/codex -c features.code_mode_host=true app-server --analytics-default-enabled\n4149041 4147117 /snap/code/253/usr/share/code/code --type=renderer --crashpad-handler-pid=4147163 --enable-crash-reporter=bf5e41fa-22fb-47e1-bacf-73bb194cfbfc,no_channel --user-data-dir=/home/zhuyulab/.config/Code --standard-schemes=vscode-webview,vscode-file --secure-schemes=vscode-webview,vscode-file,vscode-remote-resource,vscode-managed-remote-resource --cors-schemes=vscode-webview,vscode-file,vscode-remote-resource,vscode-managed-remote-resource --fetch-schemes=vscode-webview,vscode-file,vscode-remote-resource,vscode-managed-remote-resource --service-worker-schemes=vscode-webview --code-cache-schemes=vscode-webview,vscode-file --app-path=/snap/code/253/usr/share/code/resources/app --enable-sandbox --enable-blink-features=HighlightAPI --no-sandbox --max-active-webgl-contexts=32 --ozone-platform=x11 --disable-gpu-compositing --disable-blink-features=FontMatchingCTMigration,StandardizedBrowserZoom, --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=12 --time-ticks-at-unix-epoch=-1788254604987100 --launch-time-ticks=2440969639492 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,7874060382375971208,5107432691738869296,262144 --enable-features=DocumentPolicyIncludeJSCallStacksInCrashReports,EarlyEstablishGpuChannel,EstablishGpuChannelAsync,GlobalShortcutsPortal,PdfUseShowSaveFilePicker --disable-features=CalculateNativeWinOcclusion,DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=7,i,2540144214772887753,2221497540014761543,4 --trace-process-track-uuid=3190708997556373682 --vscode-window-config=vscode:fd2fe06d-f5d6-435b-b243-7e382f85cb96\n4171044       2 [kworker/34:2-events]\n4173507       2 [kworker/69:0-mm_percpu_wq]\n4174575       2 [kworker/79:1-events]\n4175686  566777 [codex] <defunct>\n4176236       2 [kworker/56:0-events]\n4176851       2 [kworker/67:0-mm_percpu_wq]\n"
+  },
+  "task_retries": 0,
+  "unrun": [
+    "other3 development",
+    "17 formal",
+    "both physical",
+    "917"
+  ],
+  "geometry_profile": {
+    "scope": "Read-only CPU profile of one saved original delivered map; no task replay, no fresh inputs, no dispatch",
+    "snapshot": "log/p2c_v30_planning_snapshot.json",
+    "shape": [
+      211,
+      253
+    ],
+    "results": {
+      "prepare_frontier": {
+        "profiled_wall_sec": 0.15115906624123454,
+        "groups": 4,
+        "viewpoints": 24
+      },
+      "distance_tb1": {
+        "profiled_wall_sec": 0.010136431083083153
+      },
+      "candidates_tb1": {
+        "profiled_wall_sec": 0.00033686868846416473,
+        "frontier_groups": 4,
+        "groups_with_viewpoints": 4,
+        "candidate_assignments": 10
+      },
+      "candidates_tb1_refine": {
+        "profiled_wall_sec": 0.10827125515788794,
+        "frontier_groups": 4,
+        "groups_with_viewpoints": 2,
+        "candidate_assignments": 18
+      },
+      "known_search_tb1": {
+        "profiled_wall_sec": 0.15028293197974563,
+        "candidates": 20
+      },
+      "distance_tb2": {
+        "profiled_wall_sec": 0.006425304803997278
+      },
+      "candidates_tb2": {
+        "profiled_wall_sec": 0.0003410368226468563,
+        "frontier_groups": 4,
+        "groups_with_viewpoints": 4,
+        "candidate_assignments": 10
+      },
+      "candidates_tb2_refine": {
+        "profiled_wall_sec": 0.10428906278684735,
+        "frontier_groups": 4,
+        "groups_with_viewpoints": 2,
+        "candidate_assignments": 17
+      },
+      "known_search_tb2": {
+        "profiled_wall_sec": 0.1510674082674086,
+        "candidates": 20
+      }
+    }
+  },
+  "assignment_profile": {
+    "scope": "Held original delivered snapshot computation only; fixed evaluation epoch, no actual robot dispatch, not counterfactual task replay",
+    "profiled_wall_sec": 0.6479508359916508,
+    "error": null,
+    "sent": [
+      {
+        "robot": "tb1",
+        "target": [
+          -0.6579967616702076,
+          -0.21015700343316635
+        ],
+        "navigation": [
+          -0.6579967616702076,
+          -0.21015700343316635
+        ]
+      }
+    ]
+  },
+  "interpretation": "130 abandoned plans bind unchanged original sources. Stage candidate_budget means between candidate budgets, not necessarily generation. Held early delivered snapshot CPU profile is not task replay or a worst-case bound. No radio-capacity inference.",
+  "artifacts": [
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/audit_p2c_v30_independent.py",
+      "source_sha256": "6c8fa0d01e038d4651401eb339f4e7531107760dbe32668b2aaa1658a89495fe",
+      "archive": "20261009_p2c_v30_artifacts/log__audit_p2c_v30_independent.py.gz",
+      "archive_sha256": "0ca9064f8c90904c7ca80189dff070d4affbf8d055a13faac4dadbd32b52e5a4"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/check_p2c_v30_freeze.py",
+      "source_sha256": "99cd3e06d8d2994b2c17eca8e8afc50cd6792cbed57be7a78e5cd162d76fca96",
+      "archive": "20261009_p2c_v30_artifacts/log__check_p2c_v30_freeze.py.gz",
+      "archive_sha256": "a948ab495ed240507e556b7e4201f6bbff2f734d0a4ef2a3aa314434a245e1c1"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v30/20261009_p2c_v30_dev_forced2/20261009_p2c_v30_dev_forced2.csv",
+      "source_sha256": "bc86637e4b36a3fb580eb958dfe4e3fd0702b063120c2d94e0e1de2cce155b67",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c__20261009_p2c_v30__20261009_p2c_v30_dev_forced2__20261009_p2c_v30_dev_forced2.csv.gz",
+      "archive_sha256": "81cfa82a10efa9de2e52eba36481e1392eb29dbdf62fd7a82b8dee11530a736c"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v30/20261009_p2c_v30_dev_forced2/20261009_p2c_v30_dev_forced2.json",
+      "source_sha256": "8843e7d2a5c1e0f125afa454cc08d90d121e457f81986deb633687e399ed7ed4",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c__20261009_p2c_v30__20261009_p2c_v30_dev_forced2__20261009_p2c_v30_dev_forced2.json.gz",
+      "archive_sha256": "159955619e1ec871820f6fd91b140b7c0a14fd75322ed00605135c1754f14f12"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v30/20261009_p2c_v30_dev_forced2/graph.json",
+      "source_sha256": "10bceabd03d2703a3d8a4ff69e3ce3cb71f1f170a32b498545dda7eaaa9b538a",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c__20261009_p2c_v30__20261009_p2c_v30_dev_forced2__graph.json.gz",
+      "archive_sha256": "2a30b0a6b496a549b303d9a9c1da3a2488cab922a89773d6587603916a985c61"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v30/20261009_p2c_v30_dev_forced2/launch/robots2_seed303_20261009-123851.log",
+      "source_sha256": "0c6b6bc7bfcdcb919ae831a740983b781cb9b29d25a24e88a84faae645fec646",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c__20261009_p2c_v30__20261009_p2c_v30_dev_forced2__launch__robots2_seed303_20261009-123851.log.gz",
+      "archive_sha256": "d273d25e8add169b5ae3791cd8e85e577cb03c3c28283b41dbc313453f99b6a7"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v30/20261009_p2c_v30_dev_forced2/ledger.jsonl",
+      "source_sha256": "e0612026ffa42dee6c9adacadf21ae895d4a43ea192ed5b83ab38c5bd2d58bfc",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c__20261009_p2c_v30__20261009_p2c_v30_dev_forced2__ledger.jsonl.gz",
+      "archive_sha256": "17997b81937b0005802b53d8838b128c6322a6cbbf5aac1e76b44d82cd7f4542"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v30/20261009_p2c_v30_dev_forced2/ledger_metrics/curves.svg",
+      "source_sha256": "c46ab9520feb936eb87481f5b86b871458581aebfa0f8406e7e6e34711f2a2de",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c__20261009_p2c_v30__20261009_p2c_v30_dev_forced2__ledger_metrics__curves.svg.gz",
+      "archive_sha256": "95c6477311fcb5e1619366501725a54c59b53f5ad8551f391de7720509b12664"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v30/20261009_p2c_v30_dev_forced2/ledger_metrics/events.jsonl",
+      "source_sha256": "2735daef0cc62290b8b37c2e15159655e887ce5c7ed317f8619a59c07ce29fd9",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c__20261009_p2c_v30__20261009_p2c_v30_dev_forced2__ledger_metrics__events.jsonl.gz",
+      "archive_sha256": "7961b7376d1afc9fe3faf77ef6d1ab1fb1cc0bd6b4f78cbb241b5cd4399e9ead"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v30/20261009_p2c_v30_dev_forced2/ledger_metrics/inputs.jsonl",
+      "source_sha256": "fab24ba5f6a5fcb445735a1168d8f4c93e12d5c54e503f959b13d090f71e59e2",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c__20261009_p2c_v30__20261009_p2c_v30_dev_forced2__ledger_metrics__inputs.jsonl.gz",
+      "archive_sha256": "e6c76d7923551150d50dd5d1a62b72c7e7e4d8b092bab2c2b49aca512ea78989"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v30/20261009_p2c_v30_dev_forced2/ledger_metrics/live.jsonl",
+      "source_sha256": "fe06753bfc8ce87435223aedf10cae5bf16c5b88b10f421984509099103e91b6",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c__20261009_p2c_v30__20261009_p2c_v30_dev_forced2__ledger_metrics__live.jsonl.gz",
+      "archive_sha256": "7dd38d3af07f8ea227a2b4e9e03406f242c4814f0cce31ceeabd426d605a2417"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v30/20261009_p2c_v30_dev_forced2/ledger_metrics/live_windows.csv",
+      "source_sha256": "974f34f93183f63042a2bac66babb76884ee4f38ba4c9030f9aa697bd186447d",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c__20261009_p2c_v30__20261009_p2c_v30_dev_forced2__ledger_metrics__live_windows.csv.gz",
+      "archive_sha256": "5ad96da180d601485a8250510ece187df370130019b568b88ec0335604e20784"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v30/20261009_p2c_v30_dev_forced2/ledger_metrics/summary.json",
+      "source_sha256": "f417057e8f434ee43ffd76a0de774c51b7957a57cf4b1a4794134b5f3ff50ae6",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c__20261009_p2c_v30__20261009_p2c_v30_dev_forced2__ledger_metrics__summary.json.gz",
+      "archive_sha256": "7a455a317c57c4a33236dbaff7f7550e609368de2d33ac6d3a1d0714e6e7f877"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v30/20261009_p2c_v30_dev_forced2/ledger_metrics/windows.csv",
+      "source_sha256": "974f34f93183f63042a2bac66babb76884ee4f38ba4c9030f9aa697bd186447d",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c__20261009_p2c_v30__20261009_p2c_v30_dev_forced2__ledger_metrics__windows.csv.gz",
+      "archive_sha256": "5ad96da180d601485a8250510ece187df370130019b568b88ec0335604e20784"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v30/20261009_p2c_v30_dev_forced2/ledger_metrics/windows.jsonl",
+      "source_sha256": "0a3830c62a44860a2ce2074d51a2e45fb8cd4d8d8baa1d8198d77319de3ba981",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c__20261009_p2c_v30__20261009_p2c_v30_dev_forced2__ledger_metrics__windows.jsonl.gz",
+      "archive_sha256": "3bc0b4a321c5762a26d6a0711646a09cfbd78d83f0ba83bc3b8159ca84369e19"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v30/20261009_p2c_v30_dev_forced2/manifest.json",
+      "source_sha256": "64d236ed67f40a9f151c240c840615d595e1a3d6a07efd6236ec4326b3cd91f8",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c__20261009_p2c_v30__20261009_p2c_v30_dev_forced2__manifest.json.gz",
+      "archive_sha256": "5690fefa45771104d24c8881808a095abb6cf688c8b8313d7350fe12573bef45"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v30/20261009_p2c_v30_dev_forced2/native_graph.json",
+      "source_sha256": "af93cee95ef46c745f7d49b562141d8a841b0edb240bc61bb55ff2dc05b5120b",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c__20261009_p2c_v30__20261009_p2c_v30_dev_forced2__native_graph.json.gz",
+      "archive_sha256": "e31a53f660b8bc62985853a0fb4df62e362347f2c6b7891476c53d893ac67def"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v30/20261009_p2c_v30_dev_forced2/observer.log",
+      "source_sha256": "a2c82767eca72be383c122e6e4e87869e145b0febe34fd3fa00ca1f8fc6e2655",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c__20261009_p2c_v30__20261009_p2c_v30_dev_forced2__observer.log.gz",
+      "archive_sha256": "69d9a419763e1a968398884c208b7853a5b112d899493d63c2889254046ef2bb"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v30/20261009_p2c_v30_dev_forced2/runner.log",
+      "source_sha256": "941f549d7daff58c680aa05db195c0f220a93e796b224e6fc9facba403049de0",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c__20261009_p2c_v30__20261009_p2c_v30_dev_forced2__runner.log.gz",
+      "archive_sha256": "85127305bdaa4863196ddee6eff9e711dceb899c3aa2d4d3d0c6eba486fa2485"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v30/20261009_p2c_v30_dev_forced2/safety_events.jsonl",
+      "source_sha256": "8f3b30a4aec1a12759390d567ee4a3b6bbf1b5b22ceca58790624a9b6a063cc1",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c__20261009_p2c_v30__20261009_p2c_v30_dev_forced2__safety_events.jsonl.gz",
+      "archive_sha256": "1a6c9d28ee07a7804494973fe33b0c0271c4eed9b37eb289ef465e96f6d4bbee"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v30/20261009_p2c_v30_dev_forced2/schedule.json",
+      "source_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c__20261009_p2c_v30__20261009_p2c_v30_dev_forced2__schedule.json.gz",
+      "archive_sha256": "029ac1ef2bb96aa9fa0166f8f60604b79b92f7fb5cd41a374f80171306cf1b52"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v30/20261009_p2c_v30_dev_forced2/summary.json",
+      "source_sha256": "da354931426c6812aeb2bff60dec519e0b687d1b0ee333366995e94a99a2fc7b",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c__20261009_p2c_v30__20261009_p2c_v30_dev_forced2__summary.json.gz",
+      "archive_sha256": "b057f101eaa467d71972bf9a15b019f8a43dbb117ae191c3aa24a80ac92ed0be"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_action_final.log",
+      "source_sha256": "dd98ec8c9efd5af554668f22958f9b27c3d7ab4d884893e8fff6203954128cda",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_action_final.log.gz",
+      "archive_sha256": "a41303ec761eafe9dd084108dff02434102cf0593fe7080c6446e1c1e64c405b"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_action_initial.log",
+      "source_sha256": "247bf8cdeff4346cacd2d7b68e7ba698aa225e6f13978ba0f65f89183a09175c",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_action_initial.log.gz",
+      "archive_sha256": "90133ece88154f3364bcab904fccb8278e9dd07a8f74613fd65d2d4e1684baa6"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_assignment.prof",
+      "source_sha256": "e2dc4473600ee9549470d4b9f6ff8ec3a95c99de30317534738b448076a7fb1c",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_assignment.prof.gz",
+      "archive_sha256": "0018c70d5e9ddd77ce7e83e8113e5a4fdd85326ae9f03bdb1614a1fb7f8b9ad2"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_assignment_profile.json",
+      "source_sha256": "b8f12f39bbcf5c6a3171a41c83b62c4a9ed95a78f130282999d6df949439e52a",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_assignment_profile.json.gz",
+      "archive_sha256": "09bf796d614b3226519176eb34543a0c1affb7e48cb9d19dfcb773f31c8a189e"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_assignment_profile.log",
+      "source_sha256": "745fc7dd16c29fe0e137b29b0c6768acc561c0e8fcd350e164fed618ed6938c3",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_assignment_profile.log.gz",
+      "archive_sha256": "947c410fa94d91cd70adfff018951191a0e73f06c4ecab6143181cc0ed751743"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_assignment_profile.txt",
+      "source_sha256": "415922183f59c868e6c9f76fb4ab75aa8519186d49c34e64f7b8756e13b6d31a",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_assignment_profile.txt.gz",
+      "archive_sha256": "bbb5f8b7f51a8cb3001d6743d07c74dd709d95e1a3223ee754dac9594dacb01a"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_blackout_manifest.json",
+      "source_sha256": "cbb817f3037aa44163c2cc914ad55a06a9d4ed3631186cd1a46288fd2931bc0b",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_blackout_manifest.json.gz",
+      "archive_sha256": "9818c842c6edbdf6a9dcc888ec035edfbfef96637b4b52d254c932b44e0e476a"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_blackout_manifest_final.json",
+      "source_sha256": "5b0b15402b2bf81dcd9c043d7abc779134057792bb1a88ac622ecce7f0e335db",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_blackout_manifest_final.json.gz",
+      "archive_sha256": "bbadb95d48d86499c2b891d05e02adc3138f12e4e20de29f65d91362537c7c2b"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_blackout_manifest_shared.json",
+      "source_sha256": "33cd1f52e55951710882ead3417ce3302d102eb55d215c5c450f08155cebf40f",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_blackout_manifest_shared.json.gz",
+      "archive_sha256": "35ed8500cb50f73d59dc2c1bfd305b49e945368303f219932679526469b79715"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_build.log",
+      "source_sha256": "25ff05bb661938f04ee95f1be2371ad135cfdb5c4c3e76565ef5e703b809b0a7",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_build.log.gz",
+      "archive_sha256": "aca63952e6aedd9a8017eeab5b4e6cbc7782def4100ddf3789450633f119c080"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_build_final.log",
+      "source_sha256": "af2e93650b653c56ac13aa7e64be7154d4ef497ced55166a29b415cdc9f22b4e",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_build_final.log.gz",
+      "archive_sha256": "25b2ae37af56f53d4cc7e2c1d01ccec127de237904bbb9e196cacbf5fc243aa8"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_candidates_tb1.prof",
+      "source_sha256": "9ee8059542af3183d868eeec67db89a775f95446f4c15940fdf4a939490dec28",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_candidates_tb1.prof.gz",
+      "archive_sha256": "67f7aee2a8b755de79f469eb25a29d143adb0962cdac55d932746a89ca52ab73"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_candidates_tb1_profile.txt",
+      "source_sha256": "c404a8c4fac5bf2b822c41bc5c0cfb65f7d2f479b8892596c9d9248fa3033057",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_candidates_tb1_profile.txt.gz",
+      "archive_sha256": "e62e14f54209dfae85dc1872774c8b143c2fe718c2948aeb45fb413fa31a2902"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_candidates_tb1_refine.prof",
+      "source_sha256": "7323b874040f1f231afb30aafc91793ac6803cd657e3cc438c8cfa59dfaeb8f8",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_candidates_tb1_refine.prof.gz",
+      "archive_sha256": "17a8c24b6bd485b3be37c531ce35b619fa86e312bbb113d9ceb5f76ecdbbef54"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_candidates_tb1_refine_profile.txt",
+      "source_sha256": "1df3c9263162f32771ab24c0e8b6066b6487168eb1406cfba5c52afec4b0cc06",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_candidates_tb1_refine_profile.txt.gz",
+      "archive_sha256": "57c40bdb48606e0853c4d652357c323faece73ad9b1987aeb75f12354eda51ea"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_candidates_tb2.prof",
+      "source_sha256": "cf9bf03e7aa1e220acca11d9559b2755d22fb4bcf5e40e01f75e32ba5264145c",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_candidates_tb2.prof.gz",
+      "archive_sha256": "5a8daf774e73f9d94a0db1b534128f51bb697f177aa5671d3c7647e05e99f2b0"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_candidates_tb2_profile.txt",
+      "source_sha256": "c404a8c4fac5bf2b822c41bc5c0cfb65f7d2f479b8892596c9d9248fa3033057",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_candidates_tb2_profile.txt.gz",
+      "archive_sha256": "e62e14f54209dfae85dc1872774c8b143c2fe718c2948aeb45fb413fa31a2902"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_candidates_tb2_refine.prof",
+      "source_sha256": "0f5d73f44c692f6f4da1fdcea88c668fe80fac3d6dcc965ec3a4a7d2daeb753c",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_candidates_tb2_refine.prof.gz",
+      "archive_sha256": "1f9238a10bc2f8b71ce0dfd49995ee50f6a9903319334d377e5d980135361913"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_candidates_tb2_refine_profile.txt",
+      "source_sha256": "11d0793cdec26910536845d597684fa17095e5ef7d0cf24409eef6ad32804cfe",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_candidates_tb2_refine_profile.txt.gz",
+      "archive_sha256": "317763b25f0b229f9de9edb45d3933f70abd6469a347265b4b2b179046873220"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_clock_action_runtime.json",
+      "source_sha256": "a36d64975b6fb566a3dbcb2302ffd271bd9ff4a97f0f7360dbcbe06b4294b601",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_clock_action_runtime.json.gz",
+      "archive_sha256": "6d6f68766233cd18e04654a9e296e850a1aed1e6d986082b08dda6984f646616"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_clock_action_runtime.log",
+      "source_sha256": "562dd7e2c2e550fb66b355998679edd8635f18187470059e0eb7a90ce602e556",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_clock_action_runtime.log.gz",
+      "archive_sha256": "06be3d3614056c1846ca9897826df42e2032d65f79b29734ebccc41d59ab2675"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_clock_action_runtime_final.json",
+      "source_sha256": "9d52cc5eaf8b8eabcd5051b3d15576928e49ff1d3e26c1cd02017ac3a7eccbc1",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_clock_action_runtime_final.json.gz",
+      "archive_sha256": "0ebc10a9520b04f2bc287833f81029deeaa2f7f93b5d24d3e2a8c3a410afae54"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_clock_action_runtime_final.log",
+      "source_sha256": "89c7a5c00fc06d0fc523932d979e5a8e89b50463900e76e55b7627dff3f20990",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_clock_action_runtime_final.log.gz",
+      "archive_sha256": "c2e7ee021a4446419799af1d5bbcbed8d687cb8cd2eb31b93f132604e0243d30"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_closed_before_edit.json",
+      "source_sha256": "dd0c583ce22a511b23cf040af8d2b394180af13c1cc5b8381d746e0b87fbe569",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_closed_before_edit.json.gz",
+      "archive_sha256": "a5eaf531a9906ccceb01eeb79b4cbd9705c125ae3eacd25f47ef5583cbc71543"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_dev_forced2_gate.json",
+      "source_sha256": "3afde72fcb397092d229653c168381eb4e1fea46bf5aa9d7888ddf9aab4c65ab",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_dev_forced2_gate.json.gz",
+      "archive_sha256": "2dc2ced6bce65cdcf30f798b60863ea90bf683e4ad5f8024aa2e7edfec6eb696"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_dev_forced2_gate.log",
+      "source_sha256": "99ba89fea360ebaf73e6d37eb289301d55105a49936efc083c735acffdc2edab",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_dev_forced2_gate.log.gz",
+      "archive_sha256": "a40c86e9a36cfb1f1e4754b7f9542c39cc7678ad13b815d92007fc720255ec22"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_dev_forced2_runner.log",
+      "source_sha256": "07eb0a1ff68b5959f6fec49449f157b7b97479704be78a998120c290e10955b4",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_dev_forced2_runner.log.gz",
+      "archive_sha256": "9979fcac2f07776e280d62e7c052d5e607ddd7496cb831e88418ef9fd2fa1b8e"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_distance_tb1.prof",
+      "source_sha256": "aaf36997403ccd322663cd07563a6063d6c38254f4331be8c4411e444d36faa8",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_distance_tb1.prof.gz",
+      "archive_sha256": "3986c548a6f5add8de5f58892ec656e625c8f558a7e484a5fe224b975f26d651"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_distance_tb1_profile.txt",
+      "source_sha256": "2bab75d5ee30409082dcd2a9fefc9da05389f690f6fc73ac5df165284fa903a2",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_distance_tb1_profile.txt.gz",
+      "archive_sha256": "e0908ab0fca75728212e84b902bed9dbad872e06fe58dd680839cb3b1268c866"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_distance_tb2.prof",
+      "source_sha256": "e9fe30e29e0e562d387a0e0769babd6b6f98f24a68c424b97d2872a6023637ac",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_distance_tb2.prof.gz",
+      "archive_sha256": "0dd7e833a1783779ae3a631e8b5f9715a3cbc61242b43cf3c7d24484d9296039"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_distance_tb2_profile.txt",
+      "source_sha256": "1227cff525cdb9d36ed3e8c60fe88085711beeac47bfda5d628c867e74320414",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_distance_tb2_profile.txt.gz",
+      "archive_sha256": "d7e51d9b0c7e3e0ae3e7d6240f0c10f3497d59ce7c2739fed15eb555887403f7"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_freeze_check.json",
+      "source_sha256": "7aa5520d2181f25a267e92972dfebcaaaa47889461a73391a39a5c1e35fbcb70",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_freeze_check.json.gz",
+      "archive_sha256": "357052aabc7a82262866f31698a10feca3fba15207044739780658b9aab8f814"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_full_components.log",
+      "source_sha256": "8bd1119dd8ed6be1a8d68480144c37782a05b00393e5573b156c75144e79531c",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_full_components.log.gz",
+      "archive_sha256": "46462714dad7a1f9cd8d23643492e86ffa165d1ba917657c9da8824e303b70f8"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_full_components_final.log",
+      "source_sha256": "91736f6f456b6b54641a28071e107d361de6703f7b70ab6ca691d678a34bedb7",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_full_components_final.log.gz",
+      "archive_sha256": "0c6a679c5ad7d379c1be7a4d0d8dd843e687433b945509d7ac0980a9894fabf0"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_geometry_profile.json",
+      "source_sha256": "bf18d00b802b92360771e66789ef83e53f5052ba01e5db942ae61e2f13bee628",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_geometry_profile.json.gz",
+      "archive_sha256": "d6608550d7e3097685cefa47b1eb971e648dc9a730e59bb182d13986cbe6e6fd"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_geometry_profile.log",
+      "source_sha256": "85cbfe4e91bf63cefb664ba962a48619b766921c0eff97f6ee13b46a2189cd6b",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_geometry_profile.log.gz",
+      "archive_sha256": "88c74c986e7c325b151b71ab59c3b695326e9ea9c6889977c05c76978c0591a8"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_independent_audits.json",
+      "source_sha256": "eb521546b24c62e2d21f44d306ace230208f3ef3cba1205c5a67b7bb8e59590b",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_independent_audits.json.gz",
+      "archive_sha256": "03530c56d82e88f2a5955358f8fe4d57743bf19a14f276f95b8ddff49013e87a"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_independent_audits.log",
+      "source_sha256": "7aacdc02588f2a67261b3cacec003acdaa6c583b5c82cc697f40b60ec420f18b",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_independent_audits.log.gz",
+      "archive_sha256": "0e79d68713eab58772724ec3f106cbe73d9b015b66f18d998e150f6bc12d6dfc"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_known_search_tb1.prof",
+      "source_sha256": "d19d14755ae3234ae9e7d53e7747879e527a731fcf7c6ec1381935aefb86a9de",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_known_search_tb1.prof.gz",
+      "archive_sha256": "e16a883fbed85c57ed29fd39b3019da1b9dd40e758928a98545f4ad22d6a30c9"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_known_search_tb1_profile.txt",
+      "source_sha256": "a8bd32a12274c9c15a348c10f71ee78ee2a40ee8143f617139fda7cc974d179c",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_known_search_tb1_profile.txt.gz",
+      "archive_sha256": "e62cc0d61b149f6097bb6b408605f7a2abb96bfe1188ed3353e13fe3d0e5112b"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_known_search_tb2.prof",
+      "source_sha256": "0e1457da9a2df4ff286170013f675f4542e470e64e48cd00c36e7d36ee782df8",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_known_search_tb2.prof.gz",
+      "archive_sha256": "db42a770b72eabef4b6db5f89b889b6d5a88357e3160a46682807e8d32c8dc48"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_known_search_tb2_profile.txt",
+      "source_sha256": "ba7e5bbc17a19c619deecd0a34ab704b20f8a8d4d76dbb4d9a2b084cc0c29172",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_known_search_tb2_profile.txt.gz",
+      "archive_sha256": "21d70131b31cadf0f60781cebb9253a114bedab6fd1f4d1eedde0794d08fd640"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_manifest.json",
+      "source_sha256": "ef611c7acb253eaf66cd74ade1ab0566bb16836e3626f24c84083837521399c5",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_manifest.json.gz",
+      "archive_sha256": "5a32ffa7ca027542342d2aec627929952020d4a9bfb885736e15fda2f24b6cba"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_manifest_final.json",
+      "source_sha256": "e2941647cedab0cfc2cc38783517eab20b299c24c2a646d4fc439505ae5d4827",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_manifest_final.json.gz",
+      "archive_sha256": "449e1c388f703c3d1d2f603fa51d7d043a773e809e574a33528a1b5949476851"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_manifest_shared.json",
+      "source_sha256": "5d606311392a7f32e9d6e19e516ae4bbe2f2cec00115e7302d7d633c62774365",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_manifest_shared.json.gz",
+      "archive_sha256": "933d9d133c564dda3b4c079a836e629ce26dfbe491b43a0b94bcaf4e411a0dc2"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_native_ast_scope.json",
+      "source_sha256": "8304c85f4f777cd45be36383d3888c92f629ed47b445e299bf27b9b6aec82ac5",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_native_ast_scope.json.gz",
+      "archive_sha256": "dc3e36154edf1d18b7ed46027d64db4e4f6d8375590963830089605fc0ec28a4"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_native_future_runtime.json",
+      "source_sha256": "f0699e5177c17e0308df312ce9be182f5ec2f6f456414221f44eca0e2c778322",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_native_future_runtime.json.gz",
+      "archive_sha256": "ce72e0dcab7242a951c9de1dab5dc1dce7260aaf3033d59e3a068f53b3b1ef43"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_native_future_runtime.log",
+      "source_sha256": "60b4e7eb6da4447a2e971a3a4f971b5e284240eb71fa7f8d29cc5cc60457a3c4",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_native_future_runtime.log.gz",
+      "archive_sha256": "2fd06b7c15c1bd11ed2dc7bfb8454dbd6fc847887fdaf6f495839c51bf117547"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_planning_snapshot.json",
+      "source_sha256": "2912c78a8cdef1988c9d556dd6ec08521fec7cdb39dc7205af72050ff09eb091",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_planning_snapshot.json.gz",
+      "archive_sha256": "1d618307081063db267a45b1460e26d28089393648a894facca3dc4f1ac3ceee"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_prepare_frontier.prof",
+      "source_sha256": "feb0082e0ae158c3c82905d142e5f03de37c917ac8c833cf61a7e90ad9121a0e",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_prepare_frontier.prof.gz",
+      "archive_sha256": "159c1d6d54fe706a1d66aea85bf4f3f785bf82c26405a929d87480766a4a22a3"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_prepare_frontier_profile.txt",
+      "source_sha256": "3ee0367cde8c3c8f6d800ce12d8f1522fbff7eff383dd5d1af74d11610ade87e",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_prepare_frontier_profile.txt.gz",
+      "archive_sha256": "e7ebb73e828748ff7da2e5c4a96c60b17cb69c45b752f2c10860622bc0828000"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_shared_clock_runtime.json",
+      "source_sha256": "596b6b14d915b5a462ef6ed9600b996296ad310fa66ac16abd7a6098cdcf2c18",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_shared_clock_runtime.json.gz",
+      "archive_sha256": "303b23d0d78e624b9e43bf1a8dfd6dd5bd127da15e9509d78828a182f9416e85"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_shared_clock_runtime.log",
+      "source_sha256": "8f83f22be9932bcf96a4e7efcce0a088fb31f92ad74fc5256b13d084ea16897e",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_shared_clock_runtime.log.gz",
+      "archive_sha256": "a00167523683ef2b28cfb20285265203b6a147d7316ae413afbb9e4a28aba0b3"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_shared_native_runtime.json",
+      "source_sha256": "05713241681fc3f3ab53aafd4ad9802fe3a981e43f21466382d44b05a738b81f",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_shared_native_runtime.json.gz",
+      "archive_sha256": "1f0dea0dd3684406ede9cec6f8e3a49bb1a54446b51b7f99aea4759dd1b2bc6d"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_shared_native_runtime.log",
+      "source_sha256": "1db6be437e480acb6a80075fde15c341c58015b170f1fc3e87b75b3085298db2",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_shared_native_runtime.log.gz",
+      "archive_sha256": "9137ad5f27102e90d56ce6f15321f66bdaee1c3cf39643a9a6f0118310f5ac7b"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_shared_targeted.log",
+      "source_sha256": "556c7303c86d174c65e0f9bcbab054801c65893c13ab36ca7d2076698b03e58c",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_shared_targeted.log.gz",
+      "archive_sha256": "cbb9a448dd74af0febbbd6bcda69a74b8441fcb49f29f940a8dfa00bfcdbd905"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_source.json",
+      "source_sha256": "a19c1c342e30236055bebde1f71fdfb1957498c2bd40244a7743fcf1a6400261",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_source.json.gz",
+      "archive_sha256": "f0c08cd80184048363add5da7195fc6540be77cec88bd755ca963700b8ad218c"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_source.log",
+      "source_sha256": "4a3c6d251f4ff1b4eeace913129cede3864b2d62e3f0d7d2c2b74095f9c5eb0e",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_source.log.gz",
+      "archive_sha256": "964e61447c3af3ff0550e7d28e11f7373ef8c1a1a8f08ad823946ef4a1406ab9"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_source_final.json",
+      "source_sha256": "7f40e0b18b57b97b768bec046dfbd10bc3a2c9ba796fff33c3c73987d413eae8",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_source_final.json.gz",
+      "archive_sha256": "b72058a223e2fe554453e475433a2cce54c49bbe80187a60814af486122bb52f"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_source_final.log",
+      "source_sha256": "4a3c6d251f4ff1b4eeace913129cede3864b2d62e3f0d7d2c2b74095f9c5eb0e",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_source_final.log.gz",
+      "archive_sha256": "964e61447c3af3ff0550e7d28e11f7373ef8c1a1a8f08ad823946ef4a1406ab9"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_visual_runtime.json",
+      "source_sha256": "6debf95fdfc582b579296f7c183f08d1b036d16e5fd20990423b59a10551b29d",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_visual_runtime.json.gz",
+      "archive_sha256": "c78e4c26a008dfeec03a4eabfd451e6c2a0a43b8743310aa2a87b5d1161f2cff"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_visual_runtime.log",
+      "source_sha256": "ed8e61fb2c82311e3c1d6dcccdeadafb2f8bd280f9a599f26fa9ac4c80c83dd0",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_visual_runtime.log.gz",
+      "archive_sha256": "7a70c2f5806175692de792a942008687b17fe0f2613aa1590c88be3b62629e1d"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_visual_runtime_final.json",
+      "source_sha256": "2cde993c0f5648a87618e20c63158a38777de6d8bcb7aeb79efc12e7b9e94363",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_visual_runtime_final.json.gz",
+      "archive_sha256": "70e033d8aab0f417b5c3cf904bdb1c50986187d6502a6f2bcd34302eff0854d8"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_visual_runtime_final.log",
+      "source_sha256": "48ac5401f5fb419c0b3acadf2420b3027fcec0fd57daec081adcfbcf2d3f5e83",
+      "archive": "20261009_p2c_v30_artifacts/log__p2c_v30_visual_runtime_final.log.gz",
+      "archive_sha256": "f9ee4e9c28877564fa01f6b89fc4e07b19c23a9eb476ecb7873f020f4ce5e235"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/peek_p2c_v30_tasks.py",
+      "source_sha256": "f7092e3e5b82abeba875fa7eaf7b3a912cb1f4a6ec83e1de077ebef31ab61c24",
+      "archive": "20261009_p2c_v30_artifacts/log__peek_p2c_v30_tasks.py.gz",
+      "archive_sha256": "718d09dde9f0950873ffdb643f6202c30b2dcd967d89c2f152615fa3f4b03fe1"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/prepare_p2c_v30_evidence.log",
+      "source_sha256": "636dd09cd0304cf838f9451d81a3a42809ba8075cb4fd5d943c57ef8398a5175",
+      "archive": "20261009_p2c_v30_artifacts/log__prepare_p2c_v30_evidence.log.gz",
+      "archive_sha256": "fbf9dab07e57ef5577cb7fb257e15b5246185b2b15a0092e023830849e5fcf00"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/prepare_p2c_v30_evidence.py",
+      "source_sha256": "333de98f6f5f84be2c0ca4836f99e6c462a198988f9831c66d131282c3c8a7f2",
+      "archive": "20261009_p2c_v30_artifacts/log__prepare_p2c_v30_evidence.py.gz",
+      "archive_sha256": "b66ff0d41250f11a5bebbf66b04d3355607f60a54e8574602db7d30d43e3e15e"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/prepare_p2c_v30_failure.py",
+      "source_sha256": "81884682514f1c5a16f842ac177ff99f6c27087c284f728a422b08a8f6e08db7",
+      "archive": "20261009_p2c_v30_artifacts/log__prepare_p2c_v30_failure.py.gz",
+      "archive_sha256": "ea9cc5cc2aab1091b555e4811d65927c25926923ecc3ab5f7127eecc3a7c4025"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/profile_p2c_v30_assignment.py",
+      "source_sha256": "a76859f0e85f1e3c257f3e40d34d8009380c13ca3c8908d23717da74c77497e4",
+      "archive": "20261009_p2c_v30_artifacts/log__profile_p2c_v30_assignment.py.gz",
+      "archive_sha256": "d760b956572fedfa5b66a410373885353e002cb802d399854b67bdcbf5748cc9"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/profile_p2c_v30_geometry.py",
+      "source_sha256": "cee9b6463f64dd3f0a8bf518540125e7fc17b1398b64820458068619a98db4cb",
+      "archive": "20261009_p2c_v30_artifacts/log__profile_p2c_v30_geometry.py.gz",
+      "archive_sha256": "2d9e2dd8da771f64c4795d23b57fdb17e70e07312c2c82f0a10b46a79d52262d"
+    }
+  ]
+}

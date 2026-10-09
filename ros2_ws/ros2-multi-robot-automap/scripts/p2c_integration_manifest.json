@@ -301,7 +301,7 @@
   ],
   "safety_probe_manifest": "p3b5_staged_return_probe_manifest.json",
   "energy_unit": "simulation_model_units_not_joules",
-  "development_parent": "f0fe12ca4396be79979296ebf2f72aeaff69216f",
+  "development_parent": "c12db66cf666779978dd74b315a9e92b080f4a11",
   "retained_failed_development": "20261008_p2c_v1_failed_development.json",
   "opportunity_charge_algorithm": "two_current_frontiers_complete_route_budget",
   "retained_failed_developments": [
@@ -322,7 +322,8 @@
     "20261009_p2c_v16_failed_development.json",
     "20261009_p2c_v17_failed_development.json",
     "20261009_p2c_v27_failed_development.json",
-    "20261009_p2c_v28_failed_development.json"
+    "20261009_p2c_v28_failed_development.json",
+    "20261009_p2c_v30_failed_development.json"
   ],
   "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
   "opportunity_charge_rules": [
@@ -375,10 +376,11 @@
     "constrained_search": "Same pure qualifier and explicitly labelled third route candidate; AP uses its delivered maps only, never the native original-map audit."
   },
   "geometry_computation": {
-    "immutable_cache": "Only bytes-backed immutable map snapshots may reuse geometry by object identity; writable maps and readonly aliases of writable maps are content-checked. Source stamps and budget freshness are never cached or renewed.",
-    "qualification": "Batch segment sampling with original math.dist/ceil/multiply-divide order retains scalar0.35m/half-cell/0.6m/known-free/no-diagonal semantics; full outputs compared to v12, including no-solution dense input.",
-    "private_diagnostics": "Both successful and failed rally assignments retain all actual delivered grids, source leases, robot positions, conditional starts, models and target; strict reader reconstructs chosen poses. No new AP or radio input.",
-    "negative_cache": "Exact reverse bounded reachability mask matches original raw-known-free8-neighbour0.6m escape, diagonal corners and step count; it only rejects impossible starts. Original forward BFS still chooses every actual escape path; geometry changes invalidate cache."
+    "obstacle_inflation": "Euclidean distance transform <= unchanged integer clearance radius, with empty-obstacle special case; same original closed disk in every cell",
+    "return_memo": "Only immutable fused and local source grids; identical geometry/home/radius/position, source replacement or mutable alias invalidates; at most128 positions; returns independent result rows",
+    "time_and_budget": "Geometry only. Original sources, true evaluation epochs, source ages, native2/5s TTLs and every final dispatch lease check remain. No cached energy budget or timestamp renewal",
+    "validation": "Cell equality, qualification/route/budget equality, invalidation and actual ROS. Fixed snapshot timing is not a worst-case or mission result",
+    "evidence": "20261009_p2c_geometry_performance_components.json"
   },
   "rally_return_repair": {
     "trigger": "Idle ACTIVE unarrived non-observer; old endpoint has no qualified return, current pose retains one; all delivered source leases and target lease fresh; no live/pending exploration/rally/survey, charge or safety refuge.",

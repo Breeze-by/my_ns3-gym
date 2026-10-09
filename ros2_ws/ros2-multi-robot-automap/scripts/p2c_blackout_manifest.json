@@ -100,7 +100,7 @@
   },
   "staging_apparatus_content_sha256": "47ce7998e212a9463ab657bbc0b121d4903ed886016bbf0fd3a2399c986da05d",
   "physical_observer_content_sha256": "1d8a86d39f57982ea1cf18619a35c4a39dcbe151e17eef2af35d16a27cdc899c",
-  "development_parent": "f0fe12ca4396be79979296ebf2f72aeaff69216f",
+  "development_parent": "c12db66cf666779978dd74b315a9e92b080f4a11",
   "cases": {
     "physical_ideal": {
       "world": "my_world.world",
@@ -213,7 +213,8 @@
   },
   "retained_failed_developments": [
     "20261009_p2c_v27_failed_development.json",
-    "20261009_p2c_v28_failed_development.json"
+    "20261009_p2c_v28_failed_development.json",
+    "20261009_p2c_v30_failed_development.json"
   ],
   "coordinator_live_clock": {
     "executor": "Two workers; only the existing /clock subscription moves to an independent mutually exclusive group. Original state/action callbacks remain serialized.",
@@ -228,5 +229,12 @@
   "evaluation_result_polling": "Read-only bounded polling of a not-yet-valid JSON file from the same original producer; complete invalid objects, producer failure and original deadline still fail. No episode retry, evaluator change or shutdown grace change.",
   "retained_unrun_candidates": [
     "20261009_p2c_v29_concurrency_correction.json"
-  ]
+  ],
+  "geometry_computation": {
+    "obstacle_inflation": "Euclidean distance transform <= unchanged integer clearance radius, with empty-obstacle special case; same original closed disk in every cell",
+    "return_memo": "Only immutable fused and local source grids; identical geometry/home/radius/position, source replacement or mutable alias invalidates; at most128 positions; returns independent result rows",
+    "time_and_budget": "Geometry only. Original sources, true evaluation epochs, source ages, native2/5s TTLs and every final dispatch lease check remain. No cached energy budget or timestamp renewal",
+    "validation": "Cell equality, qualification/route/budget equality, invalidation and actual ROS. Fixed snapshot timing is not a worst-case or mission result",
+    "evidence": "20261009_p2c_geometry_performance_components.json"
+  }
 }

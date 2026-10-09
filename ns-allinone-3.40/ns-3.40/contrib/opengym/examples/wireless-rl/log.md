@@ -8360,3 +8360,21 @@ v29 git commit f0fe12c/push exit0，但等待push完成后的最终执行器read
 ### 2026-10-09 P2C.1 v30 EOF检查流程修正（任务0）
 
 原d072097 stage diff check报action_callbacks.py末尾多空行exit2，但工具编排未及时阻断commit/push；推送exit0，无任务调用。移除多余末尾空行，AST完全相同。原1213全功能适用；/usr/bin/python3 -m pytest -q test_serial_action_callbacks.py 6PASS；check_p2c_source.py --output log/p2c_v30_source_eof.json171/4/54/8+2 PASS；check_p2c_clock_runtime.py --output log/p2c_v30_clock_eof.json/domain216与check_p2c_native_future_runtime.py --output log/p2c_v30_native_eof.json/domain217实际ROS PASS，同新helperSHA7edc9b3923caedf88f236311026f568540779653dafc0ce0aee01dc201880f8b。原/新文件SHA与各日志压缩归档；追加普通提交，不改写历史，之后每个依赖操作须检查exit0才继续。
+
+
+## 2026-10-09 P2C.1 v30 首强制原任务及只读计算诊断
+
+c12db66 clean push0后独立check_p2c_v30_freeze.py PASS；Humble+in-repo install/PYTHONNOUSERSITE=1/FastDDS UDPv4，taskset -c0-79 /usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261009_p2c_v30 --domain 210 --gazebo-port 20290 > log/p2c_v30_dev_forced2_runner.log 2>&1。04:38:50.476495..04:45:31.658417UTC自然结束，owner592550/observer5925670。300.2s EXPLORE timeout，仅1导航/0charge/0检测/最低11.2649506/零接触耗尽failed机器人。check_p2c_gate.py --run-root log/p2c/20261009_p2c_v30 --development --cases dev_forced2 --output log/p2c_v30_dev_forced2_gate.json FAIL native success；audit_p2c_v30_independent.py十二项PASS/130过期规划/121能量/1探索，未将子门改作任务成功。其余3开发/17/2/917未调用。
+
+所有owned关闭后，profile_p2c_v30_geometry.py和profile_p2c_v30_assignment.py对保存的2078.682s唯一导航事件中实际交付地图211x253/.05m只读cProfile，无机器人派发、无输入续租/历史回放；完整条件调度0.648s/33预算/132返路/9圆盘膨胀，其中返路0.392s与膨胀0.265s。sim起始来自原world state1996.381，evaluator start2075.382/elapsed300.2，physics未改；domain222/master11345未操作。首错误只读sed路径run_p2c_v28_independent_audits.py不存在exit2，rg发现实际audit_p2c_v28_independent.py后重新读取；不属于任务启动。保存原FAIL、gate traceback、全部原始SHA、独立审计、profile输入/程序/输出和closed-before-edit。无P4/ns3/Wi-Fi/RL。
+
+
+## 2026-10-09 P2C.1 v31 等价几何计算优化
+
+2026-10-09 P2C.1 v31等价几何组件PASS待新冻结：v30 c12首强制原EXPLORE300.2timeout/1导航/0charge/130原租约弃置，12独立检查PASS但任务FAIL；全部原始保留，后3/17/2/917未调用。仅2纯函数：同整数闭圆盘EDT逐格等价、immutable fused/local完整返路结果有界128点复用；不缓存预算/源龄，不续租，中央类AST与native文件保持。列表路径点污染反例1FAIL已修成immutable点、无中间任务。1238功能/四包5.56s/171保护4授权54协议/实际ROS/两manifest PASS；原交付图条件完整调度中位0.568→0.213s且选择预算一致，非任务反事实或最坏保证。v28四原只读重审保留corridors未闭合return FAIL。新4/17/2需同clean pushed freeze；P3C.5已验收，无P4/ns-3/Wi-Fi/RL。报告20261009_p2c_geometry_performance_components.md与20261009_p2c_v30_failed_development.md。
+
+Humble+in-repo install/PYTHONNOUSERSITE=1；pytest -q test_geometry_performance.py/test_return_geometry_optimization.py/test_return_budget.py/test_constrained_return_search.py/test_ap_return_consistency.py/test_live_planning_clock.py115 PASS18.20s；初版全pytest三lint ignore1237 PASS73.44s、四包/source/两声明/actualROS PASS。复查列表position→returned route引用，pytest -q test_geometry_performance.py -k caller_cannot_mutate 1FAIL/24 deselected1.19s实际重现，保存初版control SHA40a50586及负例日志；只缓存不可变tuple点后完整1238 PASS72.15s。无中间任务。
+
+最终colcon build --symlink-install --packages-select multi_robot_interfaces multi_robot_exploration merge_map multi_robot4包5.56s；check_p2c_source.py --output log/p2c_v31_source_final.json171/4/54与8+2 PASS；FastDDS UDPv4/unset旧profiles：ROS_DOMAIN_ID220 check_p2c_clock_runtime.py --output log/p2c_v31_clock_runtime_final.json，221 check_p2c_native_future_runtime.py --output log/p2c_v31_native_future_runtime_final.json，215 check_p2c_visual_runtime.py --output log/p2c_v31_visual_runtime_final.json全部最终bytes PASS。compare_p2c_v31_geometry.py冻c12 vs当前，5次cold固定地图/源/epoch/两idle条件组件，.568→.213s且选择预算一致；profile与源/输入有SHA，不称真实Nav2或最坏保证。audit_p2c_v31_previous_originals.py只读重审原v28四份不改raw，原corridors未闭合返航仍FAIL，其他类别原状态保持。
+
+run_p2c_tasks.py --case dev_forced2 --run-id 20261009_p2c_v31 --domain210 --gazebo-port20290 --validate-only；--case physical_fault --manifest scripts/p2c_blackout_manifest.json --run-id 20261009_p2c_v31_physical --domain219 --gazebo-port20299 --validate-only，均只验证声明。新4/17/2尚未运行，917未暴露。raw git diff --check、git add -n .须检查每个exit0，完成commit/push0后独立cleanfreeze才能首强制真实任务；domain222/master11345未操作。
