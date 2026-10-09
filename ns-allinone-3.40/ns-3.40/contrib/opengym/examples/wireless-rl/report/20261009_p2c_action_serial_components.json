@@ -1,20 +1,44 @@
 {
-  "status": "PARTIAL_PASS_REJECTED_CANDIDATE",
-  "scope": "Prospective central live clock, source-bound lease and read-only result polling; no mission-success claim",
-  "parent_commit": "b2b038c615af9fb728e90f7a57c150e936a9bce5",
-  "control_sha256": "5a088f7b49703e70430f387adafa5038f30598460d2a2c5896f8883f0ab7ee92",
-  "unchanged_from_parent": {
-    "src/multi_robot_exploration/multi_robot_exploration/battery_manager.py": "2a1672c6349822d90101f5ea40ee3bfd3cbc658bb5b05e3ef0570bd9819d4f3e",
-    "src/multi_robot_exploration/multi_robot_exploration/tf_ingress_sampler.py": "819573fffb17817c2135225f4effca4ea9c61422e309a3176f7933fdac2fc16d",
-    "src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py": "bf107d4711abcd4861d092c533d0d00baa8478ad3ce314e2d40451c9858f7e43",
-    "scripts/observe_p3b5.py": "62893287ce6facf45439291f09e855cb6fd35a779199d80621833539c8fa4248",
-    "scripts/p2c_native_graph.py": "c566357fc23116dc7fbe1f170308d1c0565427c1994e8471b21ab663bcbe0fb3"
+  "status": "PASS",
+  "scope": "Prospective corrected central Future serialization and live clock; no task success claim",
+  "parent_commit": "f0fe12ca4396be79979296ebf2f72aeaff69216f",
+  "control_sha256": "32dbe2b2a24f7e0e1f269b0023870a9f8ea15974a0a6540dcb0410a3522315ef",
+  "correction": {
+    "status": "REJECTED_BEFORE_TASKS",
+    "unused_candidate_commit": "f0fe12ca4396be79979296ebf2f72aeaff69216f",
+    "task_invocations": 0,
+    "cause": "Installed Humble Future._schedule_or_invoke_done_callbacks uses executor.create_task, outside node callback groups. Original v29 clock/normal-state DDS proof did not cover Future state callbacks; the serialization claim was too broad.",
+    "counterexample": {
+      "begin_sim_time": 1.1,
+      "action_state_concurrent": true,
+      "end_sim_time": 4.1,
+      "original_sources_still_fresh": false,
+      "original_pose_source_time": 1.1,
+      "normal_state_concurrent": false,
+      "label": "clock_only_two",
+      "workers": 2,
+      "status": "PASS",
+      "externally_published_clock": 4.1,
+      "clock_subscription_depth": 1,
+      "clock_subscription_reliability": "BEST_EFFORT",
+      "clock_has_separate_callback_group": true
+    },
+    "counterexample_source_sha256": "5a088f7b49703e70430f387adafa5038f30598460d2a2c5896f8883f0ab7ee92",
+    "original_component_checks": "Clock/QoS/source-expiry and serialized normal subscription checks remain valid; original1207 tests and build PASS are retained. They do not establish action-response serialization.",
+    "response": "All8 mission response/result callbacks now enqueue completed futures and use an original-state-group guard to drain. Clock alone remains independent.",
+    "no_task_retries": true,
+    "unrun": [
+      "v29 all4 development",
+      "v29 all17 formal",
+      "v29 both physical",
+      "917"
+    ]
   },
-  "functional_checks": 1207,
-  "component_wall_sec": 90.24,
-  "targeted_checks": 110,
-  "targeted_wall_sec": 8.1,
-  "build_wall_sec": 5.3,
+  "functional_checks": 1213,
+  "component_wall_sec": 91.69,
+  "directed_checks": 329,
+  "directed_wall_sec": 21.34,
+  "build_wall_sec": 5.37,
   "source_audit": {
     "status": "PASS",
     "baseline": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
@@ -711,11 +735,11 @@
       },
       {
         "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/battery_manager.py",
-        "sha256": "2a1672c6349822d90101f5ea40ee3bfd3cbc658bb5b05e3ef0570bd9819d4f3e"
+        "sha256": "e2eb58b29969cc5fd98671c9c715efd9cf712e358cb9ec395bb45334842eac51"
       },
       {
         "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/control.py",
-        "sha256": "5a088f7b49703e70430f387adafa5038f30598460d2a2c5896f8883f0ab7ee92"
+        "sha256": "32dbe2b2a24f7e0e1f269b0023870a9f8ea15974a0a6540dcb0410a3522315ef"
       },
       {
         "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/tf_ingress_sampler.py",
@@ -10696,20 +10720,27 @@
       ],
       "ttl_drop_reason": "expired_in_flight",
       "status": "PASS"
-    }
+    },
+    "central_future_registrations_deferred": 8,
+    "native_future_registrations_deferred": 2,
+    "new_action_helper_sha256": "4487a1c88aaf39f939f3f38c14278aa572044abf54e6e8b58cdaf6ad9a837617"
   },
-  "actual_dds_clock": {
+  "actual_dds_clock_and_future": {
     "status": "PASS",
     "scope": "Actual isolated DDS /clock and serialized state callbacks; synthetic grid and controlled wall sleep, no task/CPU/Wi-Fi claim",
     "reference_commit": "b2b038c615af9fb728e90f7a57c150e936a9bce5",
     "reference_control_sha256": "3317a83fa6d35f063e56bb5cd802887f3d831dffe6209cc56bb666b538d2b208",
-    "control_sha256": "5a088f7b49703e70430f387adafa5038f30598460d2a2c5896f8883f0ab7ee92",
+    "clock_only_commit": "f0fe12ca4396be79979296ebf2f72aeaff69216f",
+    "clock_only_control_sha256": "5a088f7b49703e70430f387adafa5038f30598460d2a2c5896f8883f0ab7ee92",
+    "control_sha256": "32dbe2b2a24f7e0e1f269b0023870a9f8ea15974a0a6540dcb0410a3522315ef",
+    "action_dispatcher_sha256": "4487a1c88aaf39f939f3f38c14278aa572044abf54e6e8b58cdaf6ad9a837617",
     "cases": [
       {
         "begin_sim_time": 1.1,
         "end_sim_time": 1.1,
         "original_sources_still_fresh": true,
         "original_pose_source_time": 1.1,
+        "action_state_concurrent": false,
         "normal_state_concurrent": false,
         "label": "frozen_single",
         "workers": 1,
@@ -10721,6 +10752,7 @@
       },
       {
         "begin_sim_time": 1.1,
+        "action_state_concurrent": true,
         "end_sim_time": 1.1,
         "original_sources_still_fresh": true,
         "original_pose_source_time": 1.1,
@@ -10735,10 +10767,26 @@
       },
       {
         "begin_sim_time": 1.1,
+        "action_state_concurrent": true,
         "end_sim_time": 4.1,
         "original_sources_still_fresh": false,
         "original_pose_source_time": 1.1,
         "normal_state_concurrent": false,
+        "label": "clock_only_two",
+        "workers": 2,
+        "status": "PASS",
+        "externally_published_clock": 4.1,
+        "clock_subscription_depth": 1,
+        "clock_subscription_reliability": "BEST_EFFORT",
+        "clock_has_separate_callback_group": true
+      },
+      {
+        "begin_sim_time": 1.1,
+        "end_sim_time": 4.1,
+        "original_sources_still_fresh": false,
+        "original_pose_source_time": 1.1,
+        "normal_state_concurrent": false,
+        "action_state_concurrent": false,
         "label": "current_two",
         "workers": 2,
         "status": "PASS",
@@ -10749,12 +10797,48 @@
       }
     ]
   },
+  "actual_native_future": {
+    "status": "PASS",
+    "scope": "Actual ROS native node, two-worker executor, real Future and real return_goal_response; controlled blocked callback and synthetic rejected handle; no Nav2/Gazebo motion or CPU bound claim",
+    "reference_commit": "f0fe12ca4396be79979296ebf2f72aeaff69216f",
+    "reference_source_sha256": "2a1672c6349822d90101f5ea40ee3bfd3cbc658bb5b05e3ef0570bd9819d4f3e",
+    "current_source_sha256": "e2eb58b29969cc5fd98671c9c715efd9cf712e358cb9ec395bb45334842eac51",
+    "action_dispatcher_sha256": "4487a1c88aaf39f939f3f38c14278aa572044abf54e6e8b58cdaf6ad9a837617",
+    "cases": [
+      {
+        "return_owner_mutated_during_state_callback": true,
+        "status": "PASS",
+        "label": "frozen_direct_future",
+        "return_rejections": 1,
+        "energy": 40.0,
+        "mode": "ACTIVE"
+      },
+      {
+        "return_owner_mutated_during_state_callback": false,
+        "status": "PASS",
+        "label": "current_grouped_future",
+        "return_rejections": 1,
+        "energy": 40.0,
+        "mode": "ACTIVE"
+      }
+    ]
+  },
+  "native_ast_scope": {
+    "status": "PASS",
+    "changed_native_methods": [
+      "__init__",
+      "return_goal_response",
+      "send_return_goal"
+    ],
+    "unchanged_native_methods": 33,
+    "all_native_energy_and_route_pure_functions_unchanged": true
+  },
   "actual_dds_visual_survey": {
     "status": "PASS",
     "scope": "Actual isolated ROS DDS publication, synthetic delivered grid/pose; no task or Wi-Fi claim",
     "reference_commit": "89ee853151d45ae5dbe604f00ccafa8b522c7eb9",
     "reference_control_sha256": "488e3a3398fa361d4500c961f48c531ced67696e64eb7e275398efa5f2aabb6a",
-    "control_sha256": "5a088f7b49703e70430f387adafa5038f30598460d2a2c5896f8883f0ab7ee92",
+    "control_sha256": "32dbe2b2a24f7e0e1f269b0023870a9f8ea15974a0a6540dcb0410a3522315ef",
     "numeric_candidate_equality": true,
     "candidates_compared": 79,
     "frozen_expected_error": "Object of type int64 is not JSON serializable",
@@ -12037,194 +12121,220 @@
       }
     ]
   },
-  "preserved_failures": [
-    "Original clock fixture missing __package__; corrected DDS publisher inherited global use_sim_time and subscribed to clock; fixed with use_global_arguments=False. Neither was a task.",
-    "Initial targeted command wrong filename/no tests; first corrected targeted92PASS/1FAIL original freshness fixture stale; next102PASS/2FAIL new delayed candidate fixture omitted diagnostics; corrected110PASS.",
-    "First full1171PASS/36FAIL legacy geometry fixtures missing now/source interface and legacy evidence lacked full TTL/source fields. Static fixture leases added without changing geometry assertions; historical evidence keeps its original contract, new manifest requires complete epochs/leases."
+  "unchanged_from_parent": {
+    "src/multi_robot_exploration/multi_robot_exploration/tf_ingress_sampler.py": "819573fffb17817c2135225f4effca4ea9c61422e309a3176f7933fdac2fc16d",
+    "src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py": "bf107d4711abcd4861d092c533d0d00baa8478ad3ce314e2d40451c9858f7e43",
+    "scripts/observe_p3b5.py": "62893287ce6facf45439291f09e855cb6fd35a779199d80621833539c8fa4248",
+    "scripts/p2c_native_graph.py": "c566357fc23116dc7fbe1f170308d1c0565427c1994e8471b21ab663bcbe0fb3",
+    "scripts/ros_smoke_test.py": "b2558586c44e808a603b19f9bfc360efa579c37d029b8271e46e37732bd761bf",
+    "src/multi_robot_exploration/package.xml": "fe805d01ce9ea29bf5231dea2d2c905e58423d4454cbf7ecac3df170655225b8"
+  },
+  "artifacts": [
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_action_final.log",
+      "source_sha256": "dd98ec8c9efd5af554668f22958f9b27c3d7ab4d884893e8fff6203954128cda",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_action_final.log.gz",
+      "archive_sha256": "a41303ec761eafe9dd084108dff02434102cf0593fe7080c6446e1c1e64c405b"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_action_initial.log",
+      "source_sha256": "247bf8cdeff4346cacd2d7b68e7ba698aa225e6f13978ba0f65f89183a09175c",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_action_initial.log.gz",
+      "archive_sha256": "90133ece88154f3364bcab904fccb8278e9dd07a8f74613fd65d2d4e1684baa6"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_blackout_manifest.json",
+      "source_sha256": "cbb817f3037aa44163c2cc914ad55a06a9d4ed3631186cd1a46288fd2931bc0b",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_blackout_manifest.json.gz",
+      "archive_sha256": "9818c842c6edbdf6a9dcc888ec035edfbfef96637b4b52d254c932b44e0e476a"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_blackout_manifest_final.json",
+      "source_sha256": "5b0b15402b2bf81dcd9c043d7abc779134057792bb1a88ac622ecce7f0e335db",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_blackout_manifest_final.json.gz",
+      "archive_sha256": "bbadb95d48d86499c2b891d05e02adc3138f12e4e20de29f65d91362537c7c2b"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_blackout_manifest_shared.json",
+      "source_sha256": "33cd1f52e55951710882ead3417ce3302d102eb55d215c5c450f08155cebf40f",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_blackout_manifest_shared.json.gz",
+      "archive_sha256": "35ed8500cb50f73d59dc2c1bfd305b49e945368303f219932679526469b79715"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_build.log",
+      "source_sha256": "25ff05bb661938f04ee95f1be2371ad135cfdb5c4c3e76565ef5e703b809b0a7",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_build.log.gz",
+      "archive_sha256": "aca63952e6aedd9a8017eeab5b4e6cbc7782def4100ddf3789450633f119c080"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_build_final.log",
+      "source_sha256": "af2e93650b653c56ac13aa7e64be7154d4ef497ced55166a29b415cdc9f22b4e",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_build_final.log.gz",
+      "archive_sha256": "25b2ae37af56f53d4cc7e2c1d01ccec127de237904bbb9e196cacbf5fc243aa8"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_clock_action_runtime.json",
+      "source_sha256": "a36d64975b6fb566a3dbcb2302ffd271bd9ff4a97f0f7360dbcbe06b4294b601",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_clock_action_runtime.json.gz",
+      "archive_sha256": "6d6f68766233cd18e04654a9e296e850a1aed1e6d986082b08dda6984f646616"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_clock_action_runtime.log",
+      "source_sha256": "562dd7e2c2e550fb66b355998679edd8635f18187470059e0eb7a90ce602e556",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_clock_action_runtime.log.gz",
+      "archive_sha256": "06be3d3614056c1846ca9897826df42e2032d65f79b29734ebccc41d59ab2675"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_clock_action_runtime_final.json",
+      "source_sha256": "9d52cc5eaf8b8eabcd5051b3d15576928e49ff1d3e26c1cd02017ac3a7eccbc1",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_clock_action_runtime_final.json.gz",
+      "archive_sha256": "0ebc10a9520b04f2bc287833f81029deeaa2f7f93b5d24d3e2a8c3a410afae54"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_clock_action_runtime_final.log",
+      "source_sha256": "89c7a5c00fc06d0fc523932d979e5a8e89b50463900e76e55b7627dff3f20990",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_clock_action_runtime_final.log.gz",
+      "archive_sha256": "c2e7ee021a4446419799af1d5bbcbed8d687cb8cd2eb31b93f132604e0243d30"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_full_components.log",
+      "source_sha256": "8bd1119dd8ed6be1a8d68480144c37782a05b00393e5573b156c75144e79531c",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_full_components.log.gz",
+      "archive_sha256": "46462714dad7a1f9cd8d23643492e86ffa165d1ba917657c9da8824e303b70f8"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_full_components_final.log",
+      "source_sha256": "91736f6f456b6b54641a28071e107d361de6703f7b70ab6ca691d678a34bedb7",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_full_components_final.log.gz",
+      "archive_sha256": "0c6a679c5ad7d379c1be7a4d0d8dd843e687433b945509d7ac0980a9894fabf0"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_manifest.json",
+      "source_sha256": "ef611c7acb253eaf66cd74ade1ab0566bb16836e3626f24c84083837521399c5",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_manifest.json.gz",
+      "archive_sha256": "5a32ffa7ca027542342d2aec627929952020d4a9bfb885736e15fda2f24b6cba"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_manifest_final.json",
+      "source_sha256": "e2941647cedab0cfc2cc38783517eab20b299c24c2a646d4fc439505ae5d4827",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_manifest_final.json.gz",
+      "archive_sha256": "449e1c388f703c3d1d2f603fa51d7d043a773e809e574a33528a1b5949476851"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_manifest_shared.json",
+      "source_sha256": "5d606311392a7f32e9d6e19e516ae4bbe2f2cec00115e7302d7d633c62774365",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_manifest_shared.json.gz",
+      "archive_sha256": "933d9d133c564dda3b4c079a836e629ce26dfbe491b43a0b94bcaf4e411a0dc2"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_native_ast_scope.json",
+      "source_sha256": "8304c85f4f777cd45be36383d3888c92f629ed47b445e299bf27b9b6aec82ac5",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_native_ast_scope.json.gz",
+      "archive_sha256": "dc3e36154edf1d18b7ed46027d64db4e4f6d8375590963830089605fc0ec28a4"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_native_future_runtime.json",
+      "source_sha256": "f0699e5177c17e0308df312ce9be182f5ec2f6f456414221f44eca0e2c778322",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_native_future_runtime.json.gz",
+      "archive_sha256": "ce72e0dcab7242a951c9de1dab5dc1dce7260aaf3033d59e3a068f53b3b1ef43"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_native_future_runtime.log",
+      "source_sha256": "60b4e7eb6da4447a2e971a3a4f971b5e284240eb71fa7f8d29cc5cc60457a3c4",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_native_future_runtime.log.gz",
+      "archive_sha256": "2fd06b7c15c1bd11ed2dc7bfb8454dbd6fc847887fdaf6f495839c51bf117547"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_shared_clock_runtime.json",
+      "source_sha256": "596b6b14d915b5a462ef6ed9600b996296ad310fa66ac16abd7a6098cdcf2c18",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_shared_clock_runtime.json.gz",
+      "archive_sha256": "303b23d0d78e624b9e43bf1a8dfd6dd5bd127da15e9509d78828a182f9416e85"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_shared_clock_runtime.log",
+      "source_sha256": "8f83f22be9932bcf96a4e7efcce0a088fb31f92ad74fc5256b13d084ea16897e",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_shared_clock_runtime.log.gz",
+      "archive_sha256": "a00167523683ef2b28cfb20285265203b6a147d7316ae413afbb9e4a28aba0b3"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_shared_native_runtime.json",
+      "source_sha256": "05713241681fc3f3ab53aafd4ad9802fe3a981e43f21466382d44b05a738b81f",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_shared_native_runtime.json.gz",
+      "archive_sha256": "1f0dea0dd3684406ede9cec6f8e3a49bb1a54446b51b7f99aea4759dd1b2bc6d"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_shared_native_runtime.log",
+      "source_sha256": "1db6be437e480acb6a80075fde15c341c58015b170f1fc3e87b75b3085298db2",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_shared_native_runtime.log.gz",
+      "archive_sha256": "9137ad5f27102e90d56ce6f15321f66bdaee1c3cf39643a9a6f0118310f5ac7b"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_shared_targeted.log",
+      "source_sha256": "556c7303c86d174c65e0f9bcbab054801c65893c13ab36ca7d2076698b03e58c",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_shared_targeted.log.gz",
+      "archive_sha256": "cbb9a448dd74af0febbbd6bcda69a74b8441fcb49f29f940a8dfa00bfcdbd905"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_source.json",
+      "source_sha256": "a19c1c342e30236055bebde1f71fdfb1957498c2bd40244a7743fcf1a6400261",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_source.json.gz",
+      "archive_sha256": "f0c08cd80184048363add5da7195fc6540be77cec88bd755ca963700b8ad218c"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_source.log",
+      "source_sha256": "4a3c6d251f4ff1b4eeace913129cede3864b2d62e3f0d7d2c2b74095f9c5eb0e",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_source.log.gz",
+      "archive_sha256": "964e61447c3af3ff0550e7d28e11f7373ef8c1a1a8f08ad823946ef4a1406ab9"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_source_final.json",
+      "source_sha256": "7f40e0b18b57b97b768bec046dfbd10bc3a2c9ba796fff33c3c73987d413eae8",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_source_final.json.gz",
+      "archive_sha256": "b72058a223e2fe554453e475433a2cce54c49bbe80187a60814af486122bb52f"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_source_final.log",
+      "source_sha256": "4a3c6d251f4ff1b4eeace913129cede3864b2d62e3f0d7d2c2b74095f9c5eb0e",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_source_final.log.gz",
+      "archive_sha256": "964e61447c3af3ff0550e7d28e11f7373ef8c1a1a8f08ad823946ef4a1406ab9"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_visual_runtime.json",
+      "source_sha256": "6debf95fdfc582b579296f7c183f08d1b036d16e5fd20990423b59a10551b29d",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_visual_runtime.json.gz",
+      "archive_sha256": "c78e4c26a008dfeec03a4eabfd451e6c2a0a43b8743310aa2a87b5d1161f2cff"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_visual_runtime.log",
+      "source_sha256": "ed8e61fb2c82311e3c1d6dcccdeadafb2f8bd280f9a599f26fa9ac4c80c83dd0",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_visual_runtime.log.gz",
+      "archive_sha256": "7a70c2f5806175692de792a942008687b17fe0f2613aa1590c88be3b62629e1d"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_visual_runtime_final.json",
+      "source_sha256": "2cde993c0f5648a87618e20c63158a38777de6d8bcb7aeb79efc12e7b9e94363",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_visual_runtime_final.json.gz",
+      "archive_sha256": "70e033d8aab0f417b5c3cf904bdb1c50986187d6502a6f2bcd34302eff0854d8"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v30_visual_runtime_final.log",
+      "source_sha256": "48ac5401f5fb419c0b3acadf2420b3027fcec0fd57daec081adcfbcf2d3f5e83",
+      "archive": "20261009_p2c_action_serial_artifacts/log__p2c_v30_visual_runtime_final.log.gz",
+      "archive_sha256": "f9ee4e9c28877564fa01f6b89fc4e07b19c23a9eb476ecb7873f020f4ce5e235"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/prepare_p2c_v30_evidence.py",
+      "source_sha256": "333de98f6f5f84be2c0ca4836f99e6c462a198988f9831c66d131282c3c8a7f2",
+      "archive": "20261009_p2c_action_serial_artifacts/log__prepare_p2c_v30_evidence.py.gz",
+      "archive_sha256": "b66ff0d41250f11a5bebbf66b04d3355607f60a54e8574602db7d30d43e3e15e"
+    }
   ],
-  "limits": "Only clock callback can run concurrently with central task state. Original source leases and energy equations remain; computations may now be discarded on actual expiry, which is safe but not a task-efficiency guarantee. Controlled0.6s blocked-callback clock probe is not a CPU benchmark; actual DDS survey uses synthetic map/action client. Native energy/TF/physics/Nav2/evaluator bytes remain unchanged. Pricing provenance does not renew any input.",
   "unrun": [
     "new4 development",
     "new17 formal",
     "new2 physical",
     "917"
   ],
-  "artifacts": [
-    {
-      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v29_ast_scope.json",
-      "source_sha256": "2c53819dba3a4b73bc09f97c9f99e1f87ee03ad05b8787fccc025684aa27cf7d",
-      "archive": "20261009_p2c_live_clock_artifacts/log__p2c_v29_ast_scope.json.gz",
-      "archive_sha256": "5609fa5e70c753e4c77072c5cfb8619639947ce6ecb724dd92c5f1a8be33bc35"
-    },
-    {
-      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v29_blackout_manifest.json",
-      "source_sha256": "60cafa9e5807882653ab9be5bbf5e265a2b1938ddb980dae0784bf114b2d8b1f",
-      "archive": "20261009_p2c_live_clock_artifacts/log__p2c_v29_blackout_manifest.json.gz",
-      "archive_sha256": "18fddd5f01ddca9bf2e19ae46a262b93215dcaf3b5bd2ed54828238e127eff38"
-    },
-    {
-      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v29_build.log",
-      "source_sha256": "79cb8ed070541b4e0a861c1562d035bd5ba2a83f4191b257c97a2547b183a8cf",
-      "archive": "20261009_p2c_live_clock_artifacts/log__p2c_v29_build.log.gz",
-      "archive_sha256": "903920ddd6ed7667847b2912103a89154ef89ec9340affe7143134e229fb4a5e"
-    },
-    {
-      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v29_build_pre_dependency.log",
-      "source_sha256": "88652292dfad33078d21fd29e7f44f5f9b62aba59544be893406587f446f7d66",
-      "archive": "20261009_p2c_live_clock_artifacts/log__p2c_v29_build_pre_dependency.log.gz",
-      "archive_sha256": "61df8d2ca6cadbd0537a0b55bc6c6340faef1d11954633d6cf3f02214a4b5021"
-    },
-    {
-      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v29_clock_runtime.json",
-      "source_sha256": "8bd7f9b3f91a734ffe21dcf4c7f5392e76ebb0044733c304ad5db86919d55744",
-      "archive": "20261009_p2c_live_clock_artifacts/log__p2c_v29_clock_runtime.json.gz",
-      "archive_sha256": "59c3e7d27e04b9153a84ccd28c762299a3fef8faa4807a83385f70cc5c3e9915"
-    },
-    {
-      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v29_clock_runtime.log",
-      "source_sha256": "feb1a67677ffc781cd69301cb4984ca93c9941a53332d44a958a7814ee741477",
-      "archive": "20261009_p2c_live_clock_artifacts/log__p2c_v29_clock_runtime.log.gz",
-      "archive_sha256": "7bac06a34950b519a7ad1f92cf94d2a028c53a91a7004f0c00008c3f9fe85e39"
-    },
-    {
-      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v29_clock_runtime_final.json",
-      "source_sha256": "b2b8c7f0376c011625fe6f3755a3968860dfa6ada58395178818eb7201e4562d",
-      "archive": "20261009_p2c_live_clock_artifacts/log__p2c_v29_clock_runtime_final.json.gz",
-      "archive_sha256": "2375d026f952ffcf3677aacbe72d4662df83b2c8c4ab7c69a492f9b8147974bd"
-    },
-    {
-      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v29_clock_runtime_final.log",
-      "source_sha256": "51d1cd8a5e769535d907ae225586fb4436b103675c14fa95634585df03373d12",
-      "archive": "20261009_p2c_live_clock_artifacts/log__p2c_v29_clock_runtime_final.log.gz",
-      "archive_sha256": "9007f4e6062cbaf34295a872b7556e19a8cb2b11aa560ba30cdbb7a92ba2c1ad"
-    },
-    {
-      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v29_full_components.log",
-      "source_sha256": "6e50248917b237febdf5e0e0346599aafda9a30dd2b386a5dc3cc81473221030",
-      "archive": "20261009_p2c_live_clock_artifacts/log__p2c_v29_full_components.log.gz",
-      "archive_sha256": "64b8a702879ef67df85ec1872f54e02ded9793d4c9e575d9a2d0e417922d4e46"
-    },
-    {
-      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v29_full_components_final.log",
-      "source_sha256": "4a8a3071b655e56bdf6471d9e1d1e046975d3f661d011754287ea713f2f7d086",
-      "archive": "20261009_p2c_live_clock_artifacts/log__p2c_v29_full_components_final.log.gz",
-      "archive_sha256": "660e71c280fd3956c2c70f69326255a1a90c7fc5071bdfc31a6f2625f42c1c2c"
-    },
-    {
-      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v29_manifest.json",
-      "source_sha256": "af8a88f5cc68dbcceddf9a7ab3abf48c19f16c8098a736d817c2f490e3323c64",
-      "archive": "20261009_p2c_live_clock_artifacts/log__p2c_v29_manifest.json.gz",
-      "archive_sha256": "8862fa4c952dae025ab146ebf4ea0d3ac2f47ed895e5323646797ddb9a5d6438"
-    },
-    {
-      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v29_old_owners_closed.json",
-      "source_sha256": "d234d8beef1eae96546df378d3355f9f3b788699e687215ed44e8b9128a4b8df",
-      "archive": "20261009_p2c_live_clock_artifacts/log__p2c_v29_old_owners_closed.json.gz",
-      "archive_sha256": "b80e4f6f498702d73b99df05db9467b66408ee86f26531f56a44e1aee4a7f9fa"
-    },
-    {
-      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v29_original_clock.log",
-      "source_sha256": "deb912e22a00f63da223c6ff962188e32a88d4114351af3d8a26ca84504d7f1a",
-      "archive": "20261009_p2c_live_clock_artifacts/log__p2c_v29_original_clock.log.gz",
-      "archive_sha256": "a194197b67bce9986fd02937eefbf582b6acb62037ecfccf24212555ccf0045f"
-    },
-    {
-      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v29_original_clock_fixed.log",
-      "source_sha256": "ce711c1492625b0b198dd9a6d41dc5ccc28f899b770678d1b84a2521c65bee41",
-      "archive": "20261009_p2c_live_clock_artifacts/log__p2c_v29_original_clock_fixed.log.gz",
-      "archive_sha256": "a2dbcb1206a4f20d07ca1e6a5b58e6be71c90e6038466eb69512228601efa411"
-    },
-    {
-      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v29_regression_corrected.log",
-      "source_sha256": "c20d8f4067c8634b8c2e34d741a059cc44edd65e7f98499b33877cf96b8db362",
-      "archive": "20261009_p2c_live_clock_artifacts/log__p2c_v29_regression_corrected.log.gz",
-      "archive_sha256": "681a9a892e1060260f1da69e90423bdedad853ac4400838ce0d25e44f2ed2b46"
-    },
-    {
-      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v29_source.json",
-      "source_sha256": "3b20b349153fd235398b9eab66676d8137ce91168a1ce5e53ac3f853491a5dcf",
-      "archive": "20261009_p2c_live_clock_artifacts/log__p2c_v29_source.json.gz",
-      "archive_sha256": "a8b8b661a746402c36eb44a5a8f76ed3e142162b609363314aebcc2b14d67908"
-    },
-    {
-      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v29_source.log",
-      "source_sha256": "4a3c6d251f4ff1b4eeace913129cede3864b2d62e3f0d7d2c2b74095f9c5eb0e",
-      "archive": "20261009_p2c_live_clock_artifacts/log__p2c_v29_source.log.gz",
-      "archive_sha256": "964e61447c3af3ff0550e7d28e11f7373ef8c1a1a8f08ad823946ef4a1406ab9"
-    },
-    {
-      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v29_targeted_corrected.log",
-      "source_sha256": "aca43a50c926c84ed83f0c38edcda1b6599f0c624745187a1e549bac29db1a69",
-      "archive": "20261009_p2c_live_clock_artifacts/log__p2c_v29_targeted_corrected.log.gz",
-      "archive_sha256": "2d913e5ab853a05582675e7354e4580d3e0d1146bf8178d22e8d510b6e8c4ec8"
-    },
-    {
-      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v29_targeted_final.log",
-      "source_sha256": "930d90c46f1b3c5479d10b71074715844dc00b53016ee501dea2294a0631d65b",
-      "archive": "20261009_p2c_live_clock_artifacts/log__p2c_v29_targeted_final.log.gz",
-      "archive_sha256": "6dfeb4876784c0291e0e8b41e8221015a3b47bfeb69977c6522f7b2faedf4e6d"
-    },
-    {
-      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v29_targeted_initial.log",
-      "source_sha256": "cf5cb8d0c81f2e74d5061f94f2c2106929aeeb3ec349572854d49a7ad6723a50",
-      "archive": "20261009_p2c_live_clock_artifacts/log__p2c_v29_targeted_initial.log.gz",
-      "archive_sha256": "04d20eda02e8903319bb36e82de78623b3a416a09cfb56b87cb63d702d619156"
-    },
-    {
-      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v29_targeted_v2.log",
-      "source_sha256": "753f557987841f39338a64ca0797139db13793139e3a8fb215809bd55ba4e6f2",
-      "archive": "20261009_p2c_live_clock_artifacts/log__p2c_v29_targeted_v2.log.gz",
-      "archive_sha256": "e298ba5e3f277d56e27c8dabcd19be79b81699239a1bf73ff617bf5181f5d0dc"
-    },
-    {
-      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v29_visual_runtime.json",
-      "source_sha256": "705ae17e6762af0281811a366313584ad67bf2eac07e028fa0e96a65d626ba2d",
-      "archive": "20261009_p2c_live_clock_artifacts/log__p2c_v29_visual_runtime.json.gz",
-      "archive_sha256": "efc39a12b03b722077762ca9dbec957d3a14c659ba2df175e6ef717649f4272d"
-    },
-    {
-      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v29_visual_runtime.log",
-      "source_sha256": "222edbd823bab578de3e4c4410d5ca3ccf378a9613753979b7c082a1187a085e",
-      "archive": "20261009_p2c_live_clock_artifacts/log__p2c_v29_visual_runtime.log.gz",
-      "archive_sha256": "49d62bcf36e59063e609ca61ca8f5342433a2e61dec60d5a0cfa68fe1056e045"
-    },
-    {
-      "source": "ros2_ws/ros2-multi-robot-automap/log/prepare_p2c_v29_evidence.py",
-      "source_sha256": "caa88fff90a812efedea573baaacd85bb9d0227f231d2ea23c530690ed5f7080",
-      "archive": "20261009_p2c_live_clock_artifacts/log__prepare_p2c_v29_evidence.py.gz",
-      "archive_sha256": "b332bba9303b52b2eefddaa6fb5faa99f91178ce19456a869f9aabd00d1a3f81"
-    }
-  ],
-  "post_review_correction": {
-    "status": "REJECTED_BEFORE_TASKS",
-    "unused_candidate_commit": "f0fe12ca4396be79979296ebf2f72aeaff69216f",
-    "task_invocations": 0,
-    "cause": "Installed Humble Future._schedule_or_invoke_done_callbacks uses executor.create_task, outside node callback groups. Original v29 clock/normal-state DDS proof did not cover Future state callbacks; the serialization claim was too broad.",
-    "counterexample": {
-      "begin_sim_time": 1.1,
-      "action_state_concurrent": true,
-      "end_sim_time": 4.1,
-      "original_sources_still_fresh": false,
-      "original_pose_source_time": 1.1,
-      "normal_state_concurrent": false,
-      "label": "clock_only_two",
-      "workers": 2,
-      "status": "PASS",
-      "externally_published_clock": 4.1,
-      "clock_subscription_depth": 1,
-      "clock_subscription_reliability": "BEST_EFFORT",
-      "clock_has_separate_callback_group": true
-    },
-    "counterexample_source_sha256": "5a088f7b49703e70430f387adafa5038f30598460d2a2c5896f8883f0ab7ee92",
-    "original_component_checks": "Clock/QoS/source-expiry and serialized normal subscription checks remain valid; original1207 tests and build PASS are retained. They do not establish action-response serialization.",
-    "response": "All8 mission response/result callbacks now enqueue completed futures and use an original-state-group guard to drain. Clock alone remains independent.",
-    "no_task_retries": true,
-    "unrun": [
-      "v29 all4 development",
-      "v29 all17 formal",
-      "v29 both physical",
-      "917"
-    ]
-  },
-  "original_status": "PASS"
+  "preserved_fixture_failure": "Initial322PASS/1FAIL late goal-acceptance fixture invoked new queued callback without dispatcher fields. Static fixture supplies queue and immediate single-thread drain, original cancellation/late-acceptance assertions preserved; actual DDS verifies real grouped drain.",
+  "limitations": "Controlled blocked callback and actual rclpy Future are component evidence, not real Nav2/Gazebo motion, CPU latency upper bound, mission efficiency, PHY airtime or radio joules. All original native/horizon/source/fault/stimulus criteria remain."
 }

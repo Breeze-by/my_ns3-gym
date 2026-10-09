@@ -11,6 +11,7 @@ ALLOWED=('src/multi_robot_exploration/multi_robot_exploration/control.py',
          'src/multi_robot_exploration/multi_robot_exploration/tf_ingress_sampler.py',
          'src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py')
 NEW_WORLD='src/multi_robot/worlds/p2c_holdout917.world'
+NEW_ACTION_HELPER='src/multi_robot_exploration/multi_robot_exploration/action_callbacks.py'
 
 
 def main():
@@ -25,7 +26,7 @@ def main():
     frozen=subprocess.check_output(['git','ls-tree','-r','--name-only',BASELINE,'--',*roots],cwd=ROOT,text=True).splitlines()
     current={str(x.relative_to(ROOT)) for d in directories for x in (PROJECT/d).rglob('*')
              if x.is_file() and '__pycache__' not in x.parts and x.suffix!='.pyc'}
-    expected=set(frozen)|{str((PROJECT/NEW_WORLD).relative_to(ROOT))}
+    expected=set(frozen)|{str((PROJECT/name).relative_to(ROOT)) for name in (NEW_WORLD,NEW_ACTION_HELPER)}
     assert current==expected,dict(missing=sorted(expected-current),extra=sorted(current-expected))
     allowed={str((PROJECT/x).relative_to(ROOT)) for x in ALLOWED}
     protected=[];changed=[]
@@ -45,10 +46,29 @@ def main():
         return {n.targets[0].id:ast.dump(n.value) for n in tree.body if isinstance(n,ast.Assign)
                 and len(n.targets)==1 and isinstance(n.targets[0],ast.Name) and n.targets[0].id in names}
     assert constants(old_tree)==constants(new_tree)
+    central=next(n for n in new_tree.body if isinstance(n,ast.ClassDef) and n.name=='HeadquartersControl')
+    deferred=[n for n in ast.walk(central) if isinstance(n,ast.Call)
+              and isinstance(n.func,ast.Attribute) and n.func.attr=='defer_action_done_callback']
+    direct=[n for n in ast.walk(central) if isinstance(n,ast.Call)
+            and isinstance(n.func,ast.Attribute) and n.func.attr=='add_done_callback']
+    assert len(deferred)==8 and not direct,('unserialized central Future registration',len(deferred),len(direct))
+    native_tree=ast.parse((PROJECT/ALLOWED[1]).read_text())
+    native=next(n for n in native_tree.body if isinstance(n,ast.ClassDef) and n.name=='BatteryManager')
+    native_deferred=[n for n in ast.walk(native) if isinstance(n,ast.Call)
+        and isinstance(n.func,ast.Attribute) and n.func.attr=='defer_action_done_callback']
+    assert len(native_deferred)==2 and not any(isinstance(n,ast.Call)
+        and isinstance(n.func,ast.Attribute) and n.func.attr=='add_done_callback' for n in ast.walk(native))
+    shared=ast.parse((PROJECT/NEW_ACTION_HELPER).read_text())
+    direct=[n for n in ast.walk(shared) if isinstance(n,ast.Call)
+        and isinstance(n.func,ast.Attribute) and n.func.attr=='add_done_callback']
+    assert len(direct)==1
     protocol=matrix.run_matrix();assert protocol['status']=='PASS' and len(protocol['matrix'])==54
     result=dict(status='PASS',baseline=BASELINE,protected_files=protected,authorized_task_changes=changed,
                 new_world_sha256=hashlib.sha256((PROJECT/NEW_WORLD).read_bytes()).hexdigest(),
-                native_constants_unchanged=True,static_protocol_matrix=protocol)
+                native_constants_unchanged=True,static_protocol_matrix=protocol,
+                central_future_registrations_deferred=len(deferred),
+                native_future_registrations_deferred=len(native_deferred),
+                new_action_helper_sha256=hashlib.sha256((PROJECT/NEW_ACTION_HELPER).read_bytes()).hexdigest())
     a.output.parent.mkdir(parents=True,exist_ok=True);a.output.write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps(dict(status='PASS',protected_files=len(protected),changed_files=len(changed),protocol_cells=len(protocol['matrix']))))
 

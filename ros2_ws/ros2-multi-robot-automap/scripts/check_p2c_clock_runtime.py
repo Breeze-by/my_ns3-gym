@@ -15,10 +15,12 @@ import rclpy
 from rclpy.executors import MultiThreadedExecutor, SingleThreadedExecutor
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, ReliabilityPolicy
+from rclpy.task import Future
 from rosgraph_msgs.msg import Clock
 from std_msgs.msg import String
 
 from multi_robot_exploration import control as current
+from multi_robot_exploration import action_callbacks
 
 REFERENCE='b2b038c615af9fb728e90f7a57c150e936a9bce5'
 SOURCE='ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/control.py'
@@ -32,7 +34,7 @@ def case(control_class, workers, label):
     qos=QoSProfile(depth=1,reliability=ReliabilityPolicy.BEST_EFFORT)
     clock=publisher.create_publisher(Clock,'/clock',qos)
     state=publisher.create_publisher(String,'/p2c_clock_probe/normal_state',10)
-    entered=threading.Event();finished=threading.Event();state_received=threading.Event();observed={}
+    entered=threading.Event();finished=threading.Event();state_received=threading.Event();action_received=threading.Event();observed={}
     timer=None;worker=None;spin_error=[]
     def spin():
         try:executor.spin()
@@ -44,6 +46,15 @@ def case(control_class, workers, label):
         observed['normal_state_concurrent']=entered.is_set() and not finished.is_set()
         state_received.set()
     subscription=node.create_subscription(String,'/p2c_clock_probe/normal_state',normal,10)
+    response=Future(executor=executor)
+    def action_done(future):
+        observed['action_state_concurrent']=entered.is_set() and not finished.is_set()
+        assert future.result()=='actual_rclpy_future'
+        action_received.set()
+    if hasattr(node,'defer_action_done_callback'):
+        node.defer_action_done_callback(response,action_done)
+    else:
+        response.add_done_callback(action_done)
     try:
         deadline=time.monotonic()+10.
         while (clock.get_subscription_count()!=1 or state.get_subscription_count()!=1) and time.monotonic()<deadline:
@@ -71,9 +82,10 @@ def case(control_class, workers, label):
         assert entered.wait(5.)
         def advance():
             state.publish(String(data='queued_state'))
+            response.set_result('actual_rclpy_future')
             for _ in range(15):tick(4.1);time.sleep(.02)
         worker=threading.Thread(target=advance);worker.start()
-        assert finished.wait(5.) and state_received.wait(5.)
+        assert finished.wait(5.) and state_received.wait(5.) and action_received.wait(5.)
         worker.join();assert not spin_error,spin_error
         observed.update(label=label,workers=workers,status='PASS',externally_published_clock=4.1,
             clock_subscription_depth=node._time_source._clock_sub.qos_profile.depth,
@@ -97,6 +109,10 @@ def main():
     frozen.__package__='multi_robot_exploration'
     sys.modules[frozen.__name__]=frozen
     exec(compile(old,'<frozen P2C control>','exec'),frozen.__dict__)
+    unqueued_source=subprocess.check_output(['git','show','f0fe12ca4396be79979296ebf2f72aeaff69216f:'+SOURCE],text=True)
+    unqueued=types.ModuleType('p2c_unqueued_clock_control');unqueued.__file__=current.__file__
+    unqueued.__package__='multi_robot_exploration';sys.modules[unqueued.__name__]=unqueued
+    exec(compile(unqueued_source,'<frozen P2C unqueued control>','exec'),unqueued.__dict__)
     rclpy.init(args=['--ros-args','-p','use_sim_time:=true','-p','robot_count:=1',
         '-p','enable_battery:=false','-p','enable_rally:=false','-p','auto_save_map:=false'])
     try:
@@ -104,13 +120,20 @@ def main():
         for row in rows:
             assert row['begin_sim_time']==row['end_sim_time']==1.1
             assert row['original_sources_still_fresh'] and not row['clock_has_separate_callback_group']
+            assert row['action_state_concurrent']==(row['workers']==2)
         if not args.original_only:
+            row=case(unqueued.HeadquartersControl,2,'clock_only_two');rows.append(row)
+            assert row['end_sim_time']==4.1 and row['action_state_concurrent']
             row=case(current.HeadquartersControl,2,'current_two');rows.append(row)
             assert row['begin_sim_time']==1.1 and row['end_sim_time']==4.1
             assert not row['original_sources_still_fresh'] and row['clock_has_separate_callback_group']
+            assert not row['action_state_concurrent']
         result=dict(status='PASS',scope='Actual isolated DDS /clock and serialized state callbacks; synthetic grid and controlled wall sleep, no task/CPU/Wi-Fi claim',
             reference_commit=REFERENCE,reference_control_sha256=hashlib.sha256(old.encode()).hexdigest(),
-            control_sha256=hashlib.sha256(Path(current.__file__).read_bytes()).hexdigest(),cases=rows)
+            clock_only_commit='f0fe12ca4396be79979296ebf2f72aeaff69216f',
+            clock_only_control_sha256=hashlib.sha256(unqueued_source.encode()).hexdigest(),
+            control_sha256=hashlib.sha256(Path(current.__file__).read_bytes()).hexdigest(),
+            action_dispatcher_sha256=hashlib.sha256(Path(action_callbacks.__file__).read_bytes()).hexdigest(),cases=rows)
         args.output.write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result))
     finally:rclpy.shutdown()
 

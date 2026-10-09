@@ -2934,6 +2934,11 @@ def target_scan_node():
         get_logger=lambda: SimpleNamespace(info=lambda *a: None, warning=lambda *a: None),
         record_navigation_decision=lambda *args: decisions.append(args))
     node.now = lambda: node.clock
+    import queue
+    node.shutdown_requested = False
+    node.action_done_callbacks = queue.SimpleQueue()
+    node.action_done_guard = SimpleNamespace(trigger=lambda:
+        control.HeadquartersControl.drain_action_done_callbacks(node))
     node.target_scan_response = lambda f: control.HeadquartersControl.target_scan_response(node, f)
     node.target_scan_result = lambda f: control.HeadquartersControl.target_scan_result(node, f)
     node.finish_target_scan = lambda: control.HeadquartersControl.finish_target_scan(node)

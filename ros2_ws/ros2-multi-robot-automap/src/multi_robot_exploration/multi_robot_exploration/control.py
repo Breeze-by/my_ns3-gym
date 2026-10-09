@@ -33,6 +33,8 @@ from std_msgs.msg import String
 from rosgraph_msgs.msg import Clock
 from tf2_msgs.msg import TFMessage
 
+from .action_callbacks import (initialize_action_callbacks, defer_action_done_callback, drain_action_done_callbacks)
+
 from .fault_model import CHARGE_REQUEST_TTL_SEC, STATE_TTL_SEC, TARGET_DETECTION_TTL_SEC
 
 OCCUPIED_THRESHOLD = 50
@@ -2661,6 +2663,7 @@ class HeadquartersControl(Node):
     def __init__(self):
         self.clock_callback_group = MutuallyExclusiveCallbackGroup()
         super().__init__("headquarters_control")
+        initialize_action_callbacks(self)
         self.num_robots = self.declare_parameter("robot_count", 2).value
         self.return_probe_paused = self.declare_parameter(
             "enable_return_probe_pause", False
@@ -3429,7 +3432,7 @@ class HeadquartersControl(Node):
             self.target_scan_robot = name
             self.target_scan_cancel_requested = False
             self.record_navigation_decision(name, "target_reacquisition_scan", goal.pose)
-            client.send_goal_async(goal).add_done_callback(self.target_scan_response)
+            HeadquartersControl.defer_action_done_callback(self, client.send_goal_async(goal), self.target_scan_response)
             self.get_logger().info(f"Scanning {name}'s current pose for a fresh target confirmation.")
             return
 
@@ -3449,7 +3452,7 @@ class HeadquartersControl(Node):
                 or self.battery_modes[self.target_scan_robot] != "ACTIVE"):
             self.target_scan_cancel_requested = True
             handle.cancel_goal_async()
-        handle.get_result_async().add_done_callback(self.target_scan_result)
+        HeadquartersControl.defer_action_done_callback(self, handle.get_result_async(), self.target_scan_result)
 
     def target_scan_result(self, future):
         try:
@@ -5324,7 +5327,7 @@ class HeadquartersControl(Node):
             "target_observation_heading" if heading_only else
             "target_information_survey" if choice is not None else "target_survey", goal.pose)
         future = client.send_goal_async(goal)
-        future.add_done_callback(self.survey_goal_response)
+        HeadquartersControl.defer_action_done_callback(self, future, self.survey_goal_response)
         return True
 
     def survey_goal_response(self, future):
@@ -5368,11 +5371,9 @@ class HeadquartersControl(Node):
             self.survey_battery_preempted = True
             goal_handle.cancel_goal_async()
         result_future = goal_handle.get_result_async()
-        result_future.add_done_callback(
-            lambda result, handle=goal_handle: self.survey_goal_result(
+        HeadquartersControl.defer_action_done_callback(self, result_future, lambda result, handle=goal_handle: self.survey_goal_result(
                 handle, result
-            )
-        )
+            ))
 
     def survey_goal_result(self, goal_handle, future):
         if self.survey_goal_handle is not goal_handle:
@@ -5505,9 +5506,7 @@ class HeadquartersControl(Node):
         self.rally_goal_pending[robot_name] = True
         self.record_navigation_decision(robot_name, "local_return_yield" if local_return_yield else "rally", goal.pose)
         future = client.send_goal_async(goal)
-        future.add_done_callback(
-            lambda result, name=robot_name: self.rally_goal_response(name, result)
-        )
+        HeadquartersControl.defer_action_done_callback(self, future, lambda result, name=robot_name: self.rally_goal_response(name, result))
 
     def rally_goal_response(self, robot_name, future):
         self.rally_goal_pending[robot_name] = False
@@ -5545,11 +5544,9 @@ class HeadquartersControl(Node):
         if preempted:
             goal_handle.cancel_goal_async()
         result_future = goal_handle.get_result_async()
-        result_future.add_done_callback(
-            lambda result, name=robot_name, handle=goal_handle: (
+        HeadquartersControl.defer_action_done_callback(self, result_future, lambda result, name=robot_name, handle=goal_handle: (
                 self.rally_goal_result(name, handle, result)
-            )
-        )
+            ))
 
     def rally_goal_result(self, robot_name, goal_handle, future):
         if self.rally_goal_handles[robot_name] is not goal_handle:
@@ -5637,6 +5634,10 @@ class HeadquartersControl(Node):
         if msg_type is Clock and topic == '/clock' and kwargs.get('callback_group') is None:
             kwargs['callback_group'] = self.clock_callback_group
         return super().create_subscription(msg_type, topic, callback, qos_profile, **kwargs)
+
+    defer_action_done_callback = defer_action_done_callback
+
+    drain_action_done_callbacks = drain_action_done_callbacks
 
     def now(self):
         return self.get_clock().now().nanoseconds / 1e9
@@ -6401,11 +6402,9 @@ class HeadquartersControl(Node):
                 self.feedback_callback(name, feedback)
             ),
         )
-        future.add_done_callback(
-            lambda result, name=robot_name: self.goal_response_callback(
+        HeadquartersControl.defer_action_done_callback(self, future, lambda result, name=robot_name: self.goal_response_callback(
                 name, result
-            )
-        )
+            ))
 
     def goal_response_callback(self, robot_name, future):
         assignment = self.goal_targets[robot_name]
@@ -6437,11 +6436,9 @@ class HeadquartersControl(Node):
             self.cancel_requested[robot_name] = True
             goal_handle.cancel_goal_async()
         result_future = goal_handle.get_result_async()
-        result_future.add_done_callback(
-            lambda result, name=robot_name, target=assignment: (
+        HeadquartersControl.defer_action_done_callback(self, result_future, lambda result, name=robot_name, target=assignment: (
                 self.goal_result_callback(name, target, result)
-            )
-        )
+            ))
 
     def feedback_callback(self, robot_name, feedback_msg):
         distance = float(feedback_msg.feedback.distance_remaining)

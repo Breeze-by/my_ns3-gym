@@ -1,0 +1,31 @@
+{
+  "status": "REJECTED_BEFORE_TASKS",
+  "unused_candidate_commit": "f0fe12ca4396be79979296ebf2f72aeaff69216f",
+  "task_invocations": 0,
+  "cause": "Installed Humble Future._schedule_or_invoke_done_callbacks uses executor.create_task, outside node callback groups. Original v29 clock/normal-state DDS proof did not cover Future state callbacks; the serialization claim was too broad.",
+  "counterexample": {
+    "begin_sim_time": 1.1,
+    "action_state_concurrent": true,
+    "end_sim_time": 4.1,
+    "original_sources_still_fresh": false,
+    "original_pose_source_time": 1.1,
+    "normal_state_concurrent": false,
+    "label": "clock_only_two",
+    "workers": 2,
+    "status": "PASS",
+    "externally_published_clock": 4.1,
+    "clock_subscription_depth": 1,
+    "clock_subscription_reliability": "BEST_EFFORT",
+    "clock_has_separate_callback_group": true
+  },
+  "counterexample_source_sha256": "5a088f7b49703e70430f387adafa5038f30598460d2a2c5896f8883f0ab7ee92",
+  "original_component_checks": "Clock/QoS/source-expiry and serialized normal subscription checks remain valid; original1207 tests and build PASS are retained. They do not establish action-response serialization.",
+  "response": "All8 mission response/result callbacks now enqueue completed futures and use an original-state-group guard to drain. Clock alone remains independent.",
+  "no_task_retries": true,
+  "unrun": [
+    "v29 all4 development",
+    "v29 all17 formal",
+    "v29 both physical",
+    "917"
+  ]
+}

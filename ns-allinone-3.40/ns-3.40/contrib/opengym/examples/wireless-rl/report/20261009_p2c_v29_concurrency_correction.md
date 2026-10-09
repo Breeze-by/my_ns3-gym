@@ -1,0 +1,7 @@
+# P2C.1 v29 冻结后、任务前并发复查勘误
+
+f0fe12ca4396be79979296ebf2f72aeaff69216f已正常推送，但没有启动任何Gazebo任务。最终执行器复查发现，Humble rclpy Future完成回调通过executor.create_task调度，不必经过Node互斥回调组。此前clock DDS证明和1207功能PASS只覆盖时钟、普通状态订阅与租约，不足以支持“动作状态也串行”这个更宽判断；该候选在任务前拒绝。
+
+使用同一实际DDS阻塞状态回调、真实rclpy Future/执行器的四变体复现：旧single时钟停1.1/动作不并发；旧只加two workers时钟仍1.1但动作并发；f0 clock-only two时钟到4.1但动作并发；新队列guard two时钟到4.1且普通状态与动作状态都不并发。f0源码SHA5a088f7b49703e70430f387adafa5038f30598460d2a2c5896f8883f0ab7ee92，原始源码/报告保留在Git f0提交；这是组件真实Future证明，不是实际Nav2任务成功、CPU上界或无线测量。
+
+新修复仅把8处中央动作response/result完成回调送到一个私有标准库SimpleQueue，并触发原default callback group的guard。Future线程不改任务owner；队列接收顺序一次处理，关闭后不收晚到future，context仍活动的guard错误保持可见。guard不建立DDStopic或应用包，原TTL/能量/native/物理参数保持。新同clean pushed freeze的开发与完整集成仍待。

@@ -18,6 +18,8 @@ from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
 from std_msgs.msg import String
 from tf2_msgs.msg import TFMessage
 
+from .action_callbacks import (initialize_action_callbacks, defer_action_done_callback, drain_action_done_callbacks)
+
 from .fault_model import CHARGE_REQUEST_TTL_SEC, STATE_TTL_SEC
 
 from .control import (
@@ -178,8 +180,12 @@ def plan_charging_leg(raw_grid, resolution, origin, position, charger, radius, r
 
 
 class BatteryManager(Node):
+    defer_action_done_callback = defer_action_done_callback
+    drain_action_done_callbacks = drain_action_done_callbacks
+
     def __init__(self):
         super().__init__("battery_manager")
+        initialize_action_callbacks(self)
         self.robot_name = self.declare_parameter("robot_name", "tb1").value
         self.charge_x = float(
             self.declare_parameter("charge_x", 0.0).value
@@ -1123,7 +1129,7 @@ class BatteryManager(Node):
                           position=self.map_position,
                           map_evidence=self.return_map_evidence())
         future = self.navigation.send_goal_async(goal)
-        future.add_done_callback(self.return_goal_response)
+        BatteryManager.defer_action_done_callback(self, future, self.return_goal_response)
 
     def return_goal_response(self, future):
         self.return_goal_pending = False
@@ -1150,11 +1156,8 @@ class BatteryManager(Node):
             self.return_goal_best_distance = None
             self.return_goal_cancel_requested = False
         result = handle.get_result_async()
-        result.add_done_callback(
-            lambda completed, goal_handle=handle: self.return_goal_result(
-                goal_handle, completed
-            )
-        )
+        BatteryManager.defer_action_done_callback(self, result,
+            lambda completed, goal_handle=handle: self.return_goal_result(goal_handle, completed))
 
     def return_goal_result(self, goal_handle, future):
         if self.return_goal_handle is not goal_handle:
@@ -1275,6 +1278,8 @@ def main(args=None):
     except (KeyboardInterrupt, ExternalShutdownException):
         pass
     finally:
+        manager.shutdown_requested = True
+        manager.timer.cancel()
         executor.shutdown()
         manager.destroy_node()
         if rclpy.ok():
