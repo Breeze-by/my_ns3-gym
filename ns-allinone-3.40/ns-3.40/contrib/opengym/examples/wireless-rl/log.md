@@ -8613,3 +8613,54 @@ check_p2c_blackout initial gate/fault audit FAIL因原双浮点clock换算差2.3
 2026-10-09 P2C.1当前完整集成FAIL：v41冻结723a844首forced PARTIAL279.1/success=false/tb2正电量失路，双机各charge1，0接触/耗尽/任务期infra；12审计PASS不替代任务成功。两组独立安全原对子均FAIL（ideal准备拒绝，第二组另有正电量失效；fault各自实际返航独立PASS）。新Nav2+原交付ACTIVE稳定准备适配/1ns等价读者修复1527功能/103定向/四包5.91s/171保护54协议/实际DDS9情形PASS，任务/native/原准备刺激字节不变；新两原格待clean pushed freeze。40个有主任务版本共76原任务不能跨版本汇总成功率；余3开发/17正式/917未调用。P3C.5已验收，无P4/ns-3/Wi-Fi/RL。报告20261009_p2c_v41_failed_development.md、20261009_p2c_return_ready_failed.md、20261009_p2c_return_stable_components.md；旧pending记录为历史。
 
 Humble+install/PYTHONNOUSERSITE1/FastDDS UDPv4清profiles；/usr/bin/python3 -m pytest -q scripts/test_p2c_staging_readiness.py scripts/test_p2c_blackout.py scripts/test_p3c5_gate.py src/multi_robot_exploration/test/test_observer_healthy_confirmation.py 103PASS1.84s。相同完整功能命令（排除copyright/flake8/pep257）1527PASS124.01s，四包colcon build --symlink-install --packages-select multi_robot_interfaces multi_robot_exploration merge_map multi_robot 5.91s。check_p2c_source.py --output log/p2c_return_stable_source.json PASS；ROS_DOMAIN_ID220 log/check_p2c_return_stable_runtime.py 真实DDS双ActionServer/costmap/clock9情形PASS，无Gazebo或导航请求。两个run_p2c_tasks --manifest scripts/p2c_blackout_manifest.json --case physical_ideal/physical_fault --run-id20261009_p2c_return_stable --domain218/219 --gazebo-port20298/20299 --validate-only PASS；未启动新任务。原stage_p3b5/physics/control/native/TF/launch bytes和原case/50s准备/60..250断网/62..248/.5m/1.1m刺激保持。下一新对子须clean pushed freeze，主任务FAIL保持。
+
+
+## 2026-10-09 P2C.1 第三独立受控返航对子与本轮补强评审
+
+2026-10-09 P2C.1本轮补强评审完成，完整任务集成仍FAIL：40个主任务源码版本/76原任务，最新v41 PARTIAL279.1/tb2正电量失路；不跨版本合并成功率。完整路径/源龄/原生记账、探索/集合/计算优化和准备竞争修补1527功能/103定向/四包5.91s/171保护54协议/真实DDS9情形PASS。独立第三安全对子609ba9d为PASS，两前原对子FAIL全部保留；仅受控安全证据，不回填主任务。P2C.1A与完整B分开，B需新同源4开发→17正式+2物理，917仍未调用。P3C.5已验收，无P4/ns-3/Wi-Fi/RL，actual airtime/J和容量未测。完整结论/算法取舍/全部原任务与源SHA见report/20261009_p2c_strengthening_review.md/.json；旧pending说明均为历史。
+
+609ba9d clean commit/push0、check_p2c_return_stable_freeze.py PASS；Humble+install/PYTHONNOUSERSITE1/FastDDS UDPv4清profiles，taskset -c 0-79 /usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_ideal/physical_fault --run-id 20261009_p2c_return_stable --domain218/219 --gazebo-port20298/20299，各log/p2c_return_stable_physical_*_runner.log。准确UTC/PID/command/config/source/environment与原结果见机读报告，两原格全部owned闭合后归档，no retry/overwrite；strict check_p2c_blackout --run-root log/p2c/20261009_p2c_return_stable --expected-commit609ba9d --output log/p2c_return_stable_gate.json，实际结果PASS。本组三角prepare/state证据与原50s/60..250/62..248/1.1m/.5m/零事故保持，不计mission/TDI或主失败回填。
+
+prepare_p2c_strengthening_inventory.py逐字绑定76summary，40实际源码版本，29native COMPLETE/20RALLY/7FOUND/5FAILED/13EXPLORE/2PARTIAL，零contact、四positive-energy failed originals，owner非零v28rooms与task-time异常v23保留。首次派生图误按native时间价格v28 owner1，修为失败300惩罚，原派生JSON/PNG/erratum全部保留；原任务不改。最终PNG已视检。各算法组件/CPU改善和退化/原任务FAIL分开，数据不足不作跨源码CI/因果收益；P2C.1B未通过，917未暴露，无P4/ns3/Wi-Fi/RL。
+
+
+### 本轮三组独立物理对子：精确命令与实际时刻
+
+共同环境：source /opt/ros/humble/setup.bash；source install/setup.bash；PYTHONNOUSERSITE=1；RMW_IMPLEMENTATION=rmw_fastrtps_cpp；FASTDDS_BUILTIN_TRANSPORTS=UDPv4；unset FASTRTPS_DEFAULT_PROFILES_FILE ROS_DISCOVERY_SERVER。seed303/fault17011、my_world.world、2r、E40/cap100/charge10/margin5/return120、idle0.15、目标(-4,4)、准备(0,±2.45)/50s、故障60..250s、物理62..248s/1.1m/.5m/300s。原case/profile/几何/门限不变；准备就绪边界的两次改动各自独立前瞻冻结。
+
+冻结 723a844e54e6f28501d59fc4ed2785f5f2d65592，两个新原格均保留，无retry。
+
+```bash
+taskset -c 0-79 /usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_ideal --run-id 20261009_p2c_return_characterization --domain 218 --gazebo-port 20298 > log/p2c_return_characterization_physical_ideal_runner.log 2>&1
+taskset -c 0-79 /usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261009_p2c_return_characterization --domain 219 --gazebo-port 20299 > log/p2c_return_characterization_physical_fault_runner.log 2>&1
+```
+
+physical_fault UTC 2026-10-09T12:23:51.641390+00:00 → 2026-10-09T12:30:35.435229+00:00；native EXPLORE 300.1s/success=False；runner/observer/staging/physics=0/0/0/0；contacts=0、failed=[]、minE=12.332414691017467、各charge=[1, 1]。完整真实展开argv/source/parameters见该原summary与无损归档。
+
+physical_ideal UTC 2026-10-09T12:23:51.642060+00:00 → 2026-10-09T12:29:05.722392+00:00；native COMPLETE 211.2s/success=True；runner/observer/staging/physics=0/0/1/0；contacts=0、failed=[]、minE=20.97300534492981、各charge=[1, 1]。完整真实展开argv/source/parameters见该原summary与无损归档。
+
+
+冻结 593b5dda923293ab855d4dca98baa0a3345ba051，两个新原格均保留，无retry。
+
+```bash
+taskset -c 0-79 /usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_ideal --run-id 20261009_p2c_return_ready --domain 218 --gazebo-port 20298 > log/p2c_return_ready_physical_ideal_runner.log 2>&1
+taskset -c 0-79 /usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261009_p2c_return_ready --domain 219 --gazebo-port 20299 > log/p2c_return_ready_physical_fault_runner.log 2>&1
+```
+
+physical_fault UTC 2026-10-09T13:05:05.164389+00:00 → 2026-10-09T13:11:53.175511+00:00；native EXPLORE 300.1s/success=False；runner/observer/staging/physics=0/0/0/0；contacts=0、failed=[]、minE=12.473829231068056、各charge=[1, 1]。完整真实展开argv/source/parameters见该原summary与无损归档。
+
+physical_ideal UTC 2026-10-09T13:05:05.164477+00:00 → 2026-10-09T13:11:53.642396+00:00；native RALLY 300.0s/success=False；runner/observer/staging/physics=0/0/1/0；contacts=0、failed=['tb1']、minE=16.962944851041364、各charge=[1, 1]。完整真实展开argv/source/parameters见该原summary与无损归档。
+
+
+冻结 609ba9d72850c6e41a2a3d0ee524d4d4e9720602，两个新原格均保留，无retry。
+
+```bash
+taskset -c 0-79 /usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_ideal --run-id 20261009_p2c_return_stable --domain 218 --gazebo-port 20298 > log/p2c_return_stable_physical_ideal_runner.log 2>&1
+taskset -c 0-79 /usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261009_p2c_return_stable --domain 219 --gazebo-port 20299 > log/p2c_return_stable_physical_fault_runner.log 2>&1
+```
+
+physical_fault UTC 2026-10-09T13:26:22.176264+00:00 → 2026-10-09T13:33:13.326865+00:00；native EXPLORE 300.2s/success=False；runner/observer/staging/physics=0/0/0/0；contacts=0、failed=[]、minE=12.244299988190171、各charge=[1, 1]。完整真实展开argv/source/parameters见该原summary与无损归档。
+
+physical_ideal UTC 2026-10-09T13:26:22.176368+00:00 → 2026-10-09T13:33:13.547811+00:00；native FOUND 300.1s/success=False；runner/observer/staging/physics=0/0/0/0；contacts=0、failed=[]、minE=12.21473290102014、各charge=[1, 1]。完整真实展开argv/source/parameters见该原summary与无损归档。
+
+最终第三独立strict对子PASS，前两FAIL原样保留；非完整mission成功，主v41 FAIL不回填。最后派生归档检验因生成器stdout在capture后写完而拒绝；依赖copy因无证明停止，原工具错误/空archive保留。仅修正已结束生成器stdout的派生归档，verify_p2c_strengthening_final.py重新逐件77原SHA/解压SHA、组件报告SHA/链接/进程闭合PASS，追加五份修正/校验工具原件在final_provenance单独绑定；所有原任务数据未改。domain218/219无存活进程，domain222/master11345未操作。
