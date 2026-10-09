@@ -2531,10 +2531,17 @@ def plan_rally_leg(
     if visible_only:
         # Pull the path to its farthest clear waypoint; a grid-path bend can
         # temporarily occlude a nearer point even when a later point is clear.
+        visibility = route_cache.setdefault('visibility', {})
         for candidate in reversed(route):
-            direct = tuple(_line_cells(start, candidate))
-            if all(traversable[cell] for cell in direct):
-                waypoint, route = candidate, direct
+            direct = None
+            if candidate not in visibility:
+                if len(visibility) >= 2048:
+                    visibility.clear()
+                direct = tuple(_line_cells(start, candidate))
+                visibility[candidate] = all(traversable[cell] for cell in direct)
+            if visibility[candidate]:
+                waypoint, route = candidate, (direct if direct is not None
+                    else tuple(_line_cells(start, candidate)))
                 break
     x, y = grid_to_world(
         waypoint[0], waypoint[1], resolution, origin[0], origin[1]
@@ -2624,6 +2631,27 @@ def reserve_rally_prefix(plan, reservations, min_travel=0.75):
         x, y = prefix[-1]
         return RallyPose(x, y, route_arrival_yaw(prefix, pose.yaw)), prefix
     return plan
+
+
+def exploration_prefix_can_move(plan, position, reservations):
+    """Necessary admission bound, including every possible later reservation.
+
+    More reservations can only move the first conflict earlier. Keep a route
+    if any preceding prefix could meet the existing 0.75 m reservation rule
+    and the original position tolerance, even if its current endpoint cannot.
+    A false result therefore cannot discard a later useful admitted prefix.
+    The actual reservation and energy checks still run after exact pricing.
+    """
+    pose, route = plan
+    if pose is None or not route:
+        return False
+    for index, point in enumerate(route):
+        if any(routes_conflict((point,), reserved) for reserved in reservations):
+            return False
+        if (index and math.dist(route[0], point) >= .75
+                and math.dist(position, point) > NAVIGATION_POSITION_TOLERANCE_M):
+            return True
+    return math.dist(position, (pose.x, pose.y)) > NAVIGATION_POSITION_TOLERANCE_M
 
 
 def rally_leg_limit(attempts):
@@ -6354,6 +6382,31 @@ class HeadquartersControl(Node):
                 if not lease_current('candidate_generation'):
                     scoring_aborted = True
                     return None
+                if reservations:
+                    field = route_caches[robot_name].get('field')
+                    if field is not None:
+                        _, start, escape, _ = field
+                        # Every candidate route begins at this same original
+                        # escape cell. A conflict there admits no prefix.
+                        if start is None or any(routes_conflict(
+                                (grid_to_world(*escape[0], self.resolution, *self.origin),), reserved)
+                                for reserved in reservations):
+                            diagnostics['rejected_routes'] += 1
+                            return None
+                    key = (robot_name, assignment.x, assignment.y)
+                    if key not in route_proposals:
+                        blocked = [p for peer, p in self.robot_positions.items()
+                                   if peer != robot_name and p is not None]
+                        route_proposals[key] = plan_rally_leg(
+                            RallyPose(assignment.x, assignment.y, 0.), self.map_data,
+                            self.resolution, self.origin, self.robot_positions[robot_name],
+                            MAX_NAVIGATION_LEG_M, blocked_positions=blocked,
+                            clearance_m=PATH_CLEARANCE_M, visible_only=True,
+                            route_cache=route_caches[robot_name])
+                    if not exploration_prefix_can_move(route_proposals[key],
+                            self.robot_positions[robot_name], reservations):
+                        diagnostics['rejected_routes'] += 1
+                        return None
                 assignment = (resolve_search_gain(assignment, self.map_data, self.resolution, search_gain_cache)
                     if isinstance(assignment.viewpoint, SearchGainBound) else resolve_frontier_gain(assignment,
                         self.map_data, self.resolution, frontier_gain_cache))
@@ -6431,6 +6484,7 @@ class HeadquartersControl(Node):
             selected = []
             resuming_names = set()
             route_caches = {name: {} for name in idle_positions}
+            route_proposals = {}
             reservations = [
                 remaining_rally_route(route, self.robot_positions[name])
                 for name, route in self.goal_routes.items()
@@ -6463,13 +6517,15 @@ class HeadquartersControl(Node):
                     position for other_name, position in self.robot_positions.items()
                     if other_name != name and position is not None
                 ]
-                plan = plan_rally_leg(
-                    RallyPose(assignment.x, assignment.y, 0.0),
-                    self.map_data, self.resolution, self.origin,
-                    self.robot_positions[name], MAX_NAVIGATION_LEG_M,
-                    blocked_positions=blocked, clearance_m=PATH_CLEARANCE_M,
-                    visible_only=True, route_cache=route_caches[name],
-                )
+                key = (name, assignment.x, assignment.y)
+                if key not in route_proposals:
+                    route_proposals[key] = plan_rally_leg(
+                        RallyPose(assignment.x, assignment.y, 0.),
+                        self.map_data, self.resolution, self.origin,
+                        self.robot_positions[name], MAX_NAVIGATION_LEG_M,
+                        blocked_positions=blocked, clearance_m=PATH_CLEARANCE_M,
+                        visible_only=True, route_cache=route_caches[name])
+                plan = route_proposals[key]
                 admitted = reserve_rally_prefix(plan, reservations)
                 if admitted is None:
                     diagnostics["rejected_routes"] += 1

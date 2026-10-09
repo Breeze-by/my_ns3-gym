@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-09T07:27:32.697318+00:00",
+  "predeclared_at_utc": "2026-10-09T08:35:04.789682+00:00",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -327,7 +327,8 @@
     "20261009_p2c_v31_failed_development.json",
     "20261009_p2c_v32_failed_development.json",
     "20261009_p2c_v33_failed_development.json",
-    "20261009_p2c_v34_failed_development.json"
+    "20261009_p2c_v34_failed_development.json",
+    "20261009_p2c_v35_failed_development.json"
   ],
   "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
   "opportunity_charge_rules": [
@@ -469,7 +470,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "08fe5f770f92fa2189b7c7d725491a56ec00ca2a",
+  "candidate_parent_commit": "7d9709b907f2f38f1252eee8ae4fb53c42f3cc13",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -566,6 +567,15 @@
         "limits": "Fixed-source equivalence; no original timing or mission causal claim",
         "evidence": "20261009_p2c_progressive_planning_components.json"
       }
+    },
+    "route_precheck": {
+      "algorithm": "Necessary useful-prefix bound before exact gains/prices only when actual/provisional reservations exist; original final greedy order and all hard guards retained",
+      "proof": "Any additional reservation can only move the first conflict earlier; retain every possible useful0.75m prefix even if current final endpoint is stationary. A common initial escape-cell conflict rejects all candidate routes for that robot in this same frozen batch",
+      "cache": "Body-masked field and geometric proposals only inside one immutable admission snapshot; at most2048 exact Boolean line-of-sight results per field. No source/header/energy decision cache",
+      "charging": "No speculative route precheck without reservations; existing lower-unfunded alternatives skip full planning and original best-intent serial fairness remains",
+      "actual": "Original body/accepted reservation/full approach and qualified return/2-5s source checks and dispatch renewal prohibition remain; private bounds never become commands",
+      "evidence": "20261009_p2c_admission_pruning_components.json",
+      "limits": "Conditional fixed-source equivalence and CPU samples, not complete-history replay, causal mission effect or worst-case clock bound"
     }
   }
 }

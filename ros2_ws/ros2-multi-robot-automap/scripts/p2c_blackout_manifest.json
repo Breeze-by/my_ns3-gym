@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-09T07:27:32.700305+00:00",
+  "predeclared_at_utc": "2026-10-09T08:35:04.791942+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "08fe5f770f92fa2189b7c7d725491a56ec00ca2a",
+  "candidate_parent_commit": "7d9709b907f2f38f1252eee8ae4fb53c42f3cc13",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -218,7 +218,8 @@
     "20261009_p2c_v31_failed_development.json",
     "20261009_p2c_v32_failed_development.json",
     "20261009_p2c_v33_failed_development.json",
-    "20261009_p2c_v34_failed_development.json"
+    "20261009_p2c_v34_failed_development.json",
+    "20261009_p2c_v35_failed_development.json"
   ],
   "coordinator_live_clock": {
     "executor": "Two workers; only the existing /clock subscription moves to an independent mutually exclusive group. Original state/action callbacks remain serialized.",
@@ -286,6 +287,15 @@
         "limits": "Fixed-source equivalence; no original timing or mission causal claim",
         "evidence": "20261009_p2c_progressive_planning_components.json"
       }
+    },
+    "route_precheck": {
+      "algorithm": "Necessary useful-prefix bound before exact gains/prices only when actual/provisional reservations exist; original final greedy order and all hard guards retained",
+      "proof": "Any additional reservation can only move the first conflict earlier; retain every possible useful0.75m prefix even if current final endpoint is stationary. A common initial escape-cell conflict rejects all candidate routes for that robot in this same frozen batch",
+      "cache": "Body-masked field and geometric proposals only inside one immutable admission snapshot; at most2048 exact Boolean line-of-sight results per field. No source/header/energy decision cache",
+      "charging": "No speculative route precheck without reservations; existing lower-unfunded alternatives skip full planning and original best-intent serial fairness remains",
+      "actual": "Original body/accepted reservation/full approach and qualified return/2-5s source checks and dispatch renewal prohibition remain; private bounds never become commands",
+      "evidence": "20261009_p2c_admission_pruning_components.json",
+      "limits": "Conditional fixed-source equivalence and CPU samples, not complete-history replay, causal mission effect or worst-case clock bound"
     }
   },
   "rally_candidate_sampling": {

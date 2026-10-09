@@ -8457,3 +8457,29 @@ Humble+install/PYTHONNOUSERSITE1/FastDDS UDPv4清profiles；pytest新suffix/prog
 
 
 P2C.1 v35提交前cached diffcheck初发现三份新测试末尾空行exit2，主动停止commit。仅strip EOF，三个AST相同，pytest test_lazy_search_gain/test_progressive_rally/test_return_suffix_cache34PASS，未改生产逻辑/source SHA；本检查旁证归档。
+
+
+## 2026-10-09 P2C.1 v35 四开发原任务 FAIL
+
+7d9709b commit/push0和check_p2c_v35_freeze.py PASS之后：Humble+install、PYTHONNOUSERSITE=1、FastDDS UDPv4、清旧profiles；taskset -c 0-79 /usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261009_p2c_v35 --domain 210 --gazebo-port 20290 > log/p2c_v35_dev_forced2_runner.log 2>&1。首强制strict checker PASS并关闭后，后三格同环境/同run-id/同freeze，case/domain/port分别dev_lab101/211/20291、dev_rooms202/212/20292、dev_corridors303/213/20293，各重定向log/p2c_v35_<case>_runner.log。完整launch/observer/configuration命令与参数在各原summary/manifest及归档JSON。
+
+dev_corridors303: FOUND/timeout elapsed=300.1, completion=None, detect=296.20000000000005, rally=None, Nav2=14, charges=0, min=31.74842798535202, owner=651346/observer=651402 exit0/0; lease={'route_admission': 29, 'candidate_generation': 20, 'candidate_budget': 71, 'dispatch': 1}。
+
+dev_forced2: COMPLETE/task_complete elapsed=200.7, completion=200.70000000000027, detect=100.09999999999991, rally=115.0, Nav2=22, charges=2, min=14.15699811791004, owner=648784/observer=648802 exit0/0; lease={'candidate_generation': 3, 'candidate_budget': 1, 'route_admission': 3, 'dispatch': 1}。
+
+dev_lab101: EXPLORE/timeout elapsed=300.4, completion=None, detect=None, rally=None, Nav2=3, charges=0, min=32.890376992171, owner=651348/observer=651400 exit0/0; lease={'candidate_budget': 54, 'candidate_generation': 42, 'route_admission': 50}。
+
+dev_rooms202: EXPLORE/timeout elapsed=300.3, completion=None, detect=None, rally=None, Nav2=1, charges=0, min=33.35184088166939, owner=651347/observer=651401 exit0/0; lease={'candidate_budget': 58, 'route_admission': 47, 'candidate_generation': 42}。
+
+全部原任务/owner/observer关闭后继续修改；4格0接触耗尽failed/infra/retry。check_p2c_gate.py --run-root log/p2c/20261009_p2c_v35 --development --output log/p2c_v35_development_gate.json exit1/FAIL，audit_p2c_v35_independent.py exit0/48PASS，来源是7d9709b对应当前helper，在任何v36生产修改前执行。profile_p2c_v35_expired.py exit0：精确原弃置输入、固定来源epoch/条件goal sink，cold3次lab2.346/2.409/2.378、rooms3.540/3.468/3.611、corr2.412/2.238/2.457s；原租约slack1.344/1.591/1.406s。条件剖析不是原实时/轨迹/任务因果证据。无formal17/physical2/917，不能复用forced200.7s填新freeze。报告20261009_p2c_v35_failed_development.md/.json。
+
+
+## 2026-10-09 P2C.1 v36 精确准入剪枝组件
+
+2026-10-09 P2C.1 v36精确准入剪枝组件PASS待新原任务：v35 7d9709b四原dev整体FAIL(仅forced200.7 COMPLETE/每机charge1，lab/rooms EXPLOREtimeout300.4/300.3，corr FOUNDtimeout300.1)，0安全/infra/retry、48子门PASS且owned关闭；原件保留。三份真实弃置输入采用必要有效前缀/公共escape起点剪枝和2048布尔视线cache，原稳定派发/yaw/完整能量保持；充电20候选≤2规划原回归保持。1376功能/四包5.52s/171保护54协议/七实际ROS PASS；五交错cold约2.38→.76、3.29→.65、2.23→.60wall秒，条件组件非真实时限/任务因果。新4→17+2同clean pushed freeze待验证，917未暴露；P3C.5已验收，无P4/ns3/Wi-Fi/RL。报告20261009_p2c_admission_pruning_components.md与20261009_p2c_v35_failed_development.md；旧pending说明为历史。
+
+Humble+install/PYTHONNOUSERSITE=1/FastDDS UDPv4清旧profiles，所有Python与colcon用taskset -c0-79；profile_p2c_v35_expired.py固定epoch实测→prototype_p2c_v36_route_first/prefix_first/stationary_first/visible_cache/admission_bound/reserved_start.py，各脚本/结果/失败保留。完整三输入cold5对照compare_p2c_v36_components.py（交错顺序）exit0、原目标/yaw/偏好/full energy同；源AST仅plan_rally_leg与assign_idle_robots、增加exploration_prefix_can_move。首仅None/check每点半径改善不足；任意前缀上界减少冗余价，进一步公共起点将31/9/18规划调用替代原270/561/243。上述条件计算不是端到端因果。
+
+首定向两个不存在clock文件命令exit4、无tests/tasks；原fixture错用0.1m tolerance与不足1.8m separation，纠正为实际0.02m及更远loop，无生产门限改变。首target25PASS2FAIL；首full1372PASS3FAIL/80.13s含两个旧fixture和真实40规划calls回归；收窄到有reservation时预检查，原20候选≤2规划test没改，67PASS13.23s与full1375PASS78.69s。增加公共原escape起点剪枝后68定向PASS13.23s，最终full pytest src/multi_robot_exploration/test scripts --ignore copyright/flake8/pep257 1376PASS/86.58s；四包colcon 5.52s；check_p2c_source.py --output log/p2c_v36_source_final.json PASS171/4/54。两个immutable output overwrite拒绝保留，改final文件；physical --config错误exit2仅解析，纠正--manifest validate-only PASS。
+
+实际ROS domains220 clock_runtime_final、221 native_future、215 visual_runtime、214 log/check_p2c_v36_lazy_gain_dds.py、216 lazy_visual_dds、217 rally_dds、218 expired_dds全部PASS及source绑定；前三使用scripts/check_p2c_*_runtime.py --output对应log/p2c_v36_*.json，后三fixture新实际publisher/consumer无Nav2/Gazebo/真实时界。audit_p2c_v36_previous_originals.py四原48详细判断相同，旧整组FAIL保持。run_p2c_tasks --case dev_forced2 --run-id20261009_p2c_v36 --domain210 --gazebo-port20290 --validate-only，与--manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id20261009_p2c_v36_physical --domain219 --gazebo-port20299 --validate-only均PASS；没有启动任务。全部原生/TTL/源包/case/物理刺激未改，P2C未完成；新4/17/2/917待本commit/push和cleanfreeze，domain222/master11345未操作。
