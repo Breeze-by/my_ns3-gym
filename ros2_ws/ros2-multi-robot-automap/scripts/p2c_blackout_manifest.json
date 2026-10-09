@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-09T00:04:02.119999+00:00",
+  "predeclared_at_utc": "2026-10-09T00:36:36.750681+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "89ee853151d45ae5dbe604f00ccafa8b522c7eb9",
+  "candidate_parent_commit": "930d7a041b361a731883c469ed51d553710a97fc",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -192,5 +192,14 @@
     "during_task": "Every nonzero ROS launch child exit before the owned SIGINT closure marker fails; outer owner exit0 cannot mask a child crash.",
     "cleanup": "Actual post-task child exit codes retained separately; not task-time failures or evidence of graceful child exit.",
     "evidence": "Original source-bound launch transcript required; no raw log repair."
+  },
+  "mission_spatial_diversity": {
+    "scope": "Complete object missions with battery model only; ordinary mapping unchanged.",
+    "anchor": "Centroid of cached delivered static charger poses; missing/invalid metadata skipped, no model gives neutral preference. Not a new AP input or ground-truth target.",
+    "history": "Existing first fresh delivered position per0.5m bin; original odom/TF each0..2s at recording. Historical travel is a search preference, never camera coverage proof.",
+    "algorithm": "Eight angular sectors outside2m anchor radius; multiply nominal utility by max(0.25,1/sqrt(1+visited_bins_in_sector)); near-anchor neutral. Same bounded2x useful continuation and currently-funded-nearer-peer preference remain.",
+    "admission": "Original current complete body-masked approach+qualified contact return, source TTLs, charging fairness and accepted route reservations unchanged. Soft positive factor never authorizes motion.",
+    "evidence": "Private executed witnesses preserve static model anchor, complete visit-source records, sector counts/target sector/factor and adjusted score; independent reader reconstructs. No added application packet.",
+    "limits": "Current-map directional heuristic, not optimality, exhaustive visual coverage, peer future availability or worst-case native completion guarantee."
   }
 }

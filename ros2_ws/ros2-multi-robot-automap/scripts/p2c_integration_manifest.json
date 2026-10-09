@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-09T00:04:02.037319+00:00",
+  "predeclared_at_utc": "2026-10-09T00:36:36.748676+00:00",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -451,7 +451,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "89ee853151d45ae5dbe604f00ccafa8b522c7eb9",
+  "candidate_parent_commit": "930d7a041b361a731883c469ed51d553710a97fc",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -477,5 +477,14 @@
     "during_task": "Every nonzero ROS launch child exit before the owned SIGINT closure marker fails; outer owner exit0 cannot mask a child crash.",
     "cleanup": "Actual post-task child exit codes retained separately; not task-time failures or evidence of graceful child exit.",
     "evidence": "Original source-bound launch transcript required; no raw log repair."
+  },
+  "mission_spatial_diversity": {
+    "scope": "Complete object missions with battery model only; ordinary mapping unchanged.",
+    "anchor": "Centroid of cached delivered static charger poses; missing/invalid metadata skipped, no model gives neutral preference. Not a new AP input or ground-truth target.",
+    "history": "Existing first fresh delivered position per0.5m bin; original odom/TF each0..2s at recording. Historical travel is a search preference, never camera coverage proof.",
+    "algorithm": "Eight angular sectors outside2m anchor radius; multiply nominal utility by max(0.25,1/sqrt(1+visited_bins_in_sector)); near-anchor neutral. Same bounded2x useful continuation and currently-funded-nearer-peer preference remain.",
+    "admission": "Original current complete body-masked approach+qualified contact return, source TTLs, charging fairness and accepted route reservations unchanged. Soft positive factor never authorizes motion.",
+    "evidence": "Private executed witnesses preserve static model anchor, complete visit-source records, sector counts/target sector/factor and adjusted score; independent reader reconstructs. No added application packet.",
+    "limits": "Current-map directional heuristic, not optimality, exhaustive visual coverage, peer future availability or worst-case native completion guarantee."
   }
 }

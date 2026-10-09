@@ -61,15 +61,19 @@ def main():
         current_rows=c.known_space_search_candidates(*inputs,face_interest=True)
         assert original_rows==current_rows,'integer normalization changed a candidate value'
         def publish(candidate_function):
+            visits=list(coordinator.initial_search_visits.values())
             candidates=candidate_function(grid,.1,(0.,0.),'tb1',coordinator.robot_positions['tb1'],
-                [coordinator.robot_positions['tb1']],face_interest=True)
+                [*[v['position'] for v in visits],coordinator.robot_positions['tb1']],face_interest=True)
             a=max(candidates,key=lambda row:row[0])[3]
             f=c.HeadquartersControl.frontier_travel_preference(coordinator,'tb1',a,fields)
             f.update(base_utility=a.utility,battery_factor=1.,adjusted_utility=a.utility*f['factor'],
                 information_gain=a.viewpoint.information_gain,frontier_group_id=a.viewpoint.group_id,
                 frontier_group_size=a.viewpoint.group_size,excluded_targets=[],nominal_blocked_positions=[],
-                blocked_positions=[],planned_distance_m=a.path_distance_m,initial_search_visits=[],
+                blocked_positions=[],planned_distance_m=a.path_distance_m,initial_search_visits=visits,
                 search_kind='known_space',view_yaw=a.navigation_yaw,continuation_weight=1.)
+            f['adjusted_utility']*=f.get('mission_spatial_diversity',{}).get('factor',1.)
+            if coordinator.enable_battery:
+                f['required_energy']=coordinator.exploration_required_energy('tb1',a.path_distance_m,(a.x,a.y))
             f['scheduling_score']=f['adjusted_utility'];coordinator.exploration_travel_choices={'tb1':f}
             pose=PoseStamped();pose.pose.position.x=a.x;pose.pose.position.y=a.y
             pose.pose.orientation.z=math.sin(a.navigation_yaw/2.);pose.pose.orientation.w=math.cos(a.navigation_yaw/2.)
@@ -86,12 +90,25 @@ def main():
         assert len(received)==1 and received[0]['kind']=='initial_visual_search'
         assert type(received[0]['travel_preference']['frontier_group_id']) is int
         audit=exploration_travel_audit(received,True,True,True,True)
+        coordinator.enable_battery=True
+        coordinator.battery_states['tb1']=dict(mode='ACTIVE',energy=80.,capacity=100.,stamp_sec=10.,
+            charge_x=2.05,charge_y=3.05,charge_radius_m=.8,charge_target_fraction=.8,
+            move_cost_per_m=1.,idle_cost_per_sec=.02,return_path_factor=2.,nominal_speed_mps=.18,
+            return_safety_margin=8.,return_recovery_wait_sec=30.)
+        coordinator.battery_state_received_at['tb1']=10.
+        coordinator.initial_search_visits={(i,0):dict(source='ap_delivered_pose_history',robot='tb1',
+            position=[4.55+.5*i,3.05],observed_at_sec=9.,pose_source_time=8.5,frame_source_time=8.7) for i in range(8)}
+        publish(c.known_space_search_candidates)
+        deadline=time.monotonic()+5.
+        while len(received)<2 and time.monotonic()<deadline:executor.spin_once(timeout_sec=.02)
+        assert len(received)==2 and received[-1]['travel_preference']['mission_spatial_diversity']['visits']
+        mission_audit=exploration_travel_audit(received[-1:],True,True,True,True,True)
         result=dict(status='PASS',scope='Actual isolated ROS DDS publication, synthetic delivered grid/pose; no task or Wi-Fi claim',
             reference_commit=REFERENCE,reference_control_sha256=hashlib.sha256(old.encode()).hexdigest(),
             control_sha256=hashlib.sha256(Path(c.__file__).read_bytes()).hexdigest(),
             numeric_candidate_equality=True,candidates_compared=len(current_rows),
             frozen_expected_error=old_error,current_group_id=candidate.viewpoint.group_id,
-            independent_audit=audit,received=received)
+            independent_audit=audit,mission_diversity_audit=mission_audit,received=received)
         args.output.parent.mkdir(parents=True,exist_ok=True);args.output.write_text(json.dumps(result,indent=2)+'\n')
         print(json.dumps({k:v for k,v in result.items() if k!='received'}))
     finally:

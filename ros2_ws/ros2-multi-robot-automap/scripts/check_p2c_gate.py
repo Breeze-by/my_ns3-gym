@@ -206,9 +206,9 @@ def lookahead_audit(records,require_compound_pose=False):
 
 
 def exploration_travel_audit(records,required=False,require_commitment=False,require_bounded_commitment=False,
-        require_initial_search=False):
+        require_initial_search=False,require_diversity=False):
     """Rebuild executed frontier travel and delivered-only energy witnesses."""
-    count=0;discounts=0;resumed=0;visual_count=0
+    count=0;discounts=0;resumed=0;visual_count=0;diversity_count=0
     for e in records:
         if e.get('event')!='coordinator_navigation_decision' or e.get('kind') not in ('exploration','initial_visual_search'):continue
         f=e.get('travel_preference')
@@ -284,10 +284,25 @@ def exploration_travel_audit(records,required=False,require_commitment=False,req
             else:assert math.isclose(row['required_energy'],f['peers'][peer]['required_energy'],abs_tol=1e-8)
         factor=control.relative_travel_factor(nominal,[r['distance_m'] for r in peers.values()])
         assert math.isclose(factor,f['factor'],abs_tol=1e-8)
-        assert math.isclose(f['base_utility']*f['battery_factor']*factor,f['adjusted_utility'],abs_tol=1e-8)
+        diversity=f.get('mission_spatial_diversity');diversity_factor=1.
+        if require_diversity:assert diversity is not None,'missing executed mission spatial preference'
+        if diversity is not None:
+            visits=diversity['visits'];bins=set()
+            for visit in visits:
+                assert visit['source']=='ap_delivered_pose_history' and visit['robot'] in positions
+                p=visit['position'];assert len(p)==2 and all(math.isfinite(v) for v in p)
+                observed=visit['observed_at_sec'];assert 0<=observed<=now
+                assert all(0<=observed-visit[k]<=2. for k in ('pose_source_time','frame_source_time'))
+                key=tuple(math.floor(v/control.INITIAL_SEARCH_VISIT_BIN_M) for v in p)
+                assert key not in bins;bins.add(key)
+            rebuilt=control.mission_search_diversity(target,states,visits)
+            assert rebuilt==diversity,'spatial preference differs from delivered models/history'
+            diversity_factor=rebuilt['factor'];diversity_count+=1
+        assert math.isclose(f['base_utility']*f['battery_factor']*factor*diversity_factor,f['adjusted_utility'],abs_tol=1e-8)
         visual=e['kind']=='initial_visual_search'
         if visual:
             if require_bounded_commitment:assert require_initial_search,'undeclared initial visual search'
+            if diversity is not None:assert diversity['visits']==f['initial_search_visits']
             assert f['search_kind']=='known_space'
             assert control.traversable_grid(raw['data'],raw['resolution'],control.ROBOT_CLEARANCE_M)[cell]
             visits=f['initial_search_visits'];bins=set()
@@ -348,7 +363,7 @@ def exploration_travel_audit(records,required=False,require_commitment=False,req
     return dict(status='PASS',executed_frontier_witnesses=count,relative_travel_discounts=discounts,
         resumed_frontier_witnesses=resumed,required=required,commitment_required=require_commitment,
         bounded_commitment_required=require_bounded_commitment,initial_visual_witnesses=visual_count,
-        initial_search_required=require_initial_search)
+        initial_search_required=require_initial_search,spatial_diversity_witnesses=diversity_count)
 
 
 def ap_return_veto_audit(records):
@@ -544,7 +559,8 @@ def check_one(path,config):
     repairs=rally_repair_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     travel=exploration_travel_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
         bool(config.get('exploration_travel_preference')),bool(config.get('exploration_frontier_commitment')),
-        bool(config.get('exploration_bounded_commitment')),bool(config.get('initial_known_space_search')))
+        bool(config.get('exploration_bounded_commitment')),bool(config.get('initial_known_space_search')),
+        bool(config.get('mission_spatial_diversity')))
     assert result['collision_monitoring_active']
     return dict(case=case,status='PASS',git_commit=row['git_commit'],source_digests=row['source_digests'],
         result=result,raw_summary=str(path.resolve()),raw_summary_sha256=sha(path),return_audit=native,

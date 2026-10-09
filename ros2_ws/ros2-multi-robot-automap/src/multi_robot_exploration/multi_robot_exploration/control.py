@@ -54,6 +54,8 @@ MIN_REMAINING_GAIN_FRACTION = 0.2
 FRONTIER_CONTINUATION_WEIGHT = 2.0
 INITIAL_SEARCH_VISIT_BIN_M = 0.5
 INITIAL_SEARCH_VIEW_FOV_RAD = math.pi / 2.0
+MISSION_SEARCH_SECTORS = 8
+MISSION_SEARCH_DIVERSITY_FLOOR = 0.25
 # Calibrated against the existing Nav2 loop, including planner/controller pauses.
 NAVIGATION_TIME_EXPONENT = 1.5
 PLANNING_OVERHEAD_SEC = 1.0
@@ -338,6 +340,29 @@ def known_search_view(raw_grid,cell,radius_cells,interest):
     gains=np.count_nonzero(np.abs(delta)<=INITIAL_SEARCH_VIEW_FOV_RAD/2.,axis=0)
     best=int(np.argmax(gains))
     return int(gains[best]),float(yaws[best])
+
+
+def mission_search_diversity(target,states,visits):
+    """Bounded directional travel preference; never proof of visual coverage."""
+    homes={}
+    for name,state in states.items():
+        try:point=[float(state['charge_x']),float(state['charge_y'])]
+        except (KeyError,TypeError,ValueError):continue
+        if all(math.isfinite(v) for v in point):homes[name]=point
+    if not homes:return None
+    center=tuple(sum(point[axis] for point in homes.values())/len(homes) for axis in (0,1))
+    def sector(point):
+        if math.dist(point,center)<INFORMATION_RADIUS_M:return None
+        angle=math.atan2(point[1]-center[1],point[0]-center[0])%(2.*math.pi)
+        return min(MISSION_SEARCH_SECTORS-1,int(angle*MISSION_SEARCH_SECTORS/(2.*math.pi)))
+    counts=[0]*MISSION_SEARCH_SECTORS
+    for visit in visits:
+        index=sector(visit['position'])
+        if index is not None:counts[index]+=1
+    index=sector(target)
+    factor=(1. if index is None else max(MISSION_SEARCH_DIVERSITY_FLOOR,1./math.sqrt(1.+counts[index])))
+    return dict(strategy='bounded_angular_visit_preference',center_source='delivered_static_charger_poses',
+        homes=homes,center=list(center),visits=list(visits),sector_counts=counts,target_sector=index,factor=factor)
 
 
 def known_space_search_candidates(raw_grid, resolution, origin, robot_name,
@@ -5689,12 +5714,17 @@ class HeadquartersControl(Node):
                 if required is None or self.battery_states[peer]['energy'] <= required:
                     continue
             peers[peer] = dict(distance_m=distance, required_energy=required)
-        return dict(strategy='relative_geodesic_travel',
+        preference=dict(strategy='relative_geodesic_travel',
             eligible_robot_names=list(fields),
             factor=relative_travel_factor(assignment.path_distance_m,
                 [row['distance_m'] for row in peers.values()]),
             own_nominal_distance_m=assignment.path_distance_m,
             target=[assignment.x, assignment.y], peers=peers)
+        if getattr(self,'enable_rally',False) and getattr(self,'enable_battery',False):
+            diversity=mission_search_diversity((assignment.x,assignment.y),self.battery_states,
+                list((getattr(self,'initial_search_visits',None) or {}).values()))
+            if diversity is not None:preference['mission_spatial_diversity']=diversity
+        return preference
 
     def assign_idle_robots(self):
         if getattr(self, "return_probe_paused", False):
@@ -5847,6 +5877,7 @@ class HeadquartersControl(Node):
                         self, robot_name, assignment, travel_fields))
                     if preference is not None:
                         utility *= preference['factor']
+                        utility *= preference.get('mission_spatial_diversity',{}).get('factor',1.)
                     coordinated = Assignment(
                         assignment.viewpoint,
                         assignment.x,

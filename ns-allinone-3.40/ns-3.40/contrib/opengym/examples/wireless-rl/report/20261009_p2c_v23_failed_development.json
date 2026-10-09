@@ -1,0 +1,2710 @@
+{
+  "status": "FAIL",
+  "scope": "First forced development original only",
+  "task_stack_frozen_commit": "930d7a041b361a731883c469ed51d553710a97fc",
+  "original": {
+    "case": "dev_forced2",
+    "command": [
+      "/usr/bin/python3",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py",
+      "--world",
+      "my_world.world",
+      "--robot-count",
+      "2",
+      "--gazebo-seed",
+      "303",
+      "--startup-timeout",
+      "600",
+      "--message-timeout",
+      "90",
+      "--shutdown-timeout",
+      "120",
+      "--evaluation-duration",
+      "300",
+      "--evaluation-wait-timeout",
+      "900",
+      "--coverage-threshold",
+      "0",
+      "--mission-mode",
+      "rally",
+      "--gateway-mode",
+      "ideal",
+      "--gateway-seed",
+      "17011",
+      "--battery",
+      "--battery-capacity",
+      "100",
+      "--battery-initial-energy",
+      "18.0",
+      "--target-x",
+      "-4",
+      "--target-y",
+      "4",
+      "--rally-max-concurrent",
+      "2",
+      "--disable-global-battery-rally-pause",
+      "--episode-id",
+      "20261009_p2c_v23_dev_forced2",
+      "--collect-fault-result",
+      "--dwell-seconds",
+      "0",
+      "--evaluation-output-dir",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v23/20261009_p2c_v23_dev_forced2",
+      "--log-dir",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v23/20261009_p2c_v23_dev_forced2/launch",
+      "--gateway-ledger-path",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v23/20261009_p2c_v23_dev_forced2/ledger.jsonl",
+      "--bypass-audit-output",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v23/20261009_p2c_v23_dev_forced2/graph.json",
+      "--target-detection",
+      "--rally",
+      "--battery-charge-duration",
+      "10.0",
+      "--battery-safety-margin",
+      "5.0",
+      "--battery-return-timeout",
+      "120"
+    ],
+    "config": {
+      "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
+      "ap_pose_budget_contract": {
+        "age": "max(original delivered odometry source age, original delivered map-to-odom source age)",
+        "frame_ttl_sec": 2.0,
+        "future_or_missing": "reject, no finite task admission",
+        "lookahead_evidence": "both source ages retained privately and independently reconstructed",
+        "odom_ttl_sec": 2.0
+      },
+      "ap_return_consistency": {
+        "admission": "current and endpoint complete return must have a qualified local or locally-vetoed fused path; missing remains unavailable",
+        "assignment": "same qualified geometry for rally candidate return reserve and serial return reservations",
+        "constrained_search": "Same pure qualifier and explicitly labelled third route candidate; AP uses its delivered maps only, never the native original-map audit.",
+        "evidence": "private coordinator_return_map_veto and optional own-map lookahead witnesses; not extra transmitted application load",
+        "inputs": "AP delivered fused planning map and per-robot maps only; current original map/pose/TF/battery leases remain",
+        "source_age": "maximum consulted fresh map age is priced; no header renewal or native hidden input"
+      },
+      "candidate_parent_commit": "89ee853151d45ae5dbe604f00ccafa8b522c7eb9",
+      "cases": {
+        "delay_rooms3": {
+          "admission_protocol": true,
+          "energy": 40.0,
+          "mode": "fault",
+          "profile": {
+            "downlink_delay_sec": 0.5,
+            "uplink_delay_sec": 0.5
+          },
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 202,
+          "target_x": 5.0,
+          "target_y": 3.0,
+          "world": "p1c_rooms.world"
+        },
+        "dev_corridors303": {
+          "admission_protocol": false,
+          "energy": 45.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 303,
+          "target_x": -4.5,
+          "target_y": -0.5,
+          "world": "p1c_corridors.world"
+        },
+        "dev_forced2": {
+          "admission_protocol": false,
+          "charge_duration": 10.0,
+          "energy": 18.0,
+          "mode": "ideal",
+          "return_timeout": 120,
+          "robot_count": 2,
+          "safety_margin": 5.0,
+          "schedule": [],
+          "seed": 303,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        },
+        "dev_lab101": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 101,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        },
+        "dev_rooms202": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 202,
+          "target_x": 5.0,
+          "target_y": 3.0,
+          "world": "p1c_rooms.world"
+        },
+        "empty_battery": {
+          "admission_protocol": false,
+          "energy": 0.0,
+          "mode": "ideal",
+          "robot_count": 2,
+          "schedule": [],
+          "seed": 303,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        },
+        "fixed_corridors2_202": {
+          "admission_protocol": false,
+          "energy": 45.0,
+          "mode": "ideal",
+          "robot_count": 2,
+          "schedule": [],
+          "seed": 202,
+          "target_x": -4.5,
+          "target_y": -0.5,
+          "world": "p1c_corridors.world"
+        },
+        "fixed_corridors_101": {
+          "admission_protocol": false,
+          "energy": 45.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 101,
+          "target_x": -4.5,
+          "target_y": -0.5,
+          "world": "p1c_corridors.world"
+        },
+        "fixed_corridors_202": {
+          "admission_protocol": false,
+          "energy": 45.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 202,
+          "target_x": -4.5,
+          "target_y": -0.5,
+          "world": "p1c_corridors.world"
+        },
+        "fixed_corridors_303": {
+          "admission_protocol": false,
+          "energy": 45.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 303,
+          "target_x": -4.5,
+          "target_y": -0.5,
+          "world": "p1c_corridors.world"
+        },
+        "fixed_lab_101": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 101,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        },
+        "fixed_lab_202": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 202,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        },
+        "fixed_lab_303": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 303,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        },
+        "fixed_rooms_101": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 101,
+          "target_x": 5.0,
+          "target_y": 3.0,
+          "world": "p1c_rooms.world"
+        },
+        "fixed_rooms_202": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 202,
+          "target_x": 5.0,
+          "target_y": 3.0,
+          "world": "p1c_rooms.world"
+        },
+        "fixed_rooms_303": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 303,
+          "target_x": 5.0,
+          "target_y": 3.0,
+          "world": "p1c_rooms.world"
+        },
+        "forced2": {
+          "admission_protocol": false,
+          "charge_duration": 10.0,
+          "energy": 18.0,
+          "mode": "ideal",
+          "return_timeout": 120,
+          "robot_count": 2,
+          "safety_margin": 5.0,
+          "schedule": [],
+          "seed": 303,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        },
+        "holdout_fault": {
+          "admission_protocol": true,
+          "energy": 45.0,
+          "mode": "fault",
+          "profile": {
+            "downlink_loss_rate": 0.1,
+            "gateway_seed": 29171,
+            "uplink_delay_sec": 0.5
+          },
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 917,
+          "target_x": 4.6,
+          "target_y": -3.6,
+          "world": "p2c_holdout917.world"
+        },
+        "holdout_ideal": {
+          "admission_protocol": true,
+          "energy": 45.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 917,
+          "target_x": 4.6,
+          "target_y": -3.6,
+          "world": "p2c_holdout917.world"
+        },
+        "loss_corridors2": {
+          "admission_protocol": true,
+          "energy": 45.0,
+          "mode": "fault",
+          "profile": {
+            "downlink_loss_rate": 0.1,
+            "uplink_loss_rate": 0.1
+          },
+          "robot_count": 2,
+          "schedule": [],
+          "seed": 202,
+          "target_x": -4.5,
+          "target_y": -0.5,
+          "world": "p1c_corridors.world"
+        },
+        "protocol_forced2": {
+          "admission_protocol": true,
+          "charge_duration": 10.0,
+          "energy": 18.0,
+          "mode": "ideal",
+          "return_timeout": 120,
+          "robot_count": 2,
+          "safety_margin": 5.0,
+          "schedule": [],
+          "seed": 303,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        }
+      },
+      "coverage_threshold": 0.8,
+      "development_cases": [
+        "dev_forced2",
+        "dev_lab101",
+        "dev_rooms202",
+        "dev_corridors303"
+      ],
+      "development_parent": "79f211323ade3e949f91ad3896e727beeeef7522",
+      "duration_sec": 300,
+      "energy_unit": "simulation_model_units_not_joules",
+      "exploration_bounded_commitment": {
+        "evidence": "Selected gain/group size/base utility/reuse exclusions/relative factor/continuation weight/score retained privately; strict reader reconstructs geometry and scores. Does not assert global maximum over unseen original history.",
+        "guards": "Original full body-masked travel, accepted route reservations, complete round-trip energy, charging fairness and source leases remain hard admission checks.",
+        "scope": "One nominal-utility ranking change. Actual body-path energy is repriced before dispatch; nominal score is not an actual travel-time guarantee.",
+        "score": "adjusted_utility*(2 if current useful funded continuation else1)",
+        "weight": 2.0
+      },
+      "exploration_frontier_commitment": {
+        "admission": "Regenerate current candidates; resume only within original1.2m and gain>max(200,20% prior gain), with current full body/reservation/energy/source checks and battery_factor1.",
+        "clear": "Actual full viewpoint Nav2 success, native FAILED, ordinary navigation failure or no useful funded reachable current candidate clears preference; normal task/safety/retry limits remain.",
+        "evidence": "Private executed witnesses retain current gain and optional prior intent; reconstruct gain from delivered map and verify current proximity/usefulness/funded energy. Not a new AP observation or application traffic.",
+        "limits": "Bounded receding-horizon preference: currently useful continuation receives2x adjusted utility, not absolute priority. No stale command replay, global optimality or time guarantee.",
+        "trigger": "Successful EXPLORE/FOUND_UNCONFIRMED short Nav2 prefix remains more than0.02m from full current viewpoint; retain that viewpoint as a scheduling preference."
+      },
+      "exploration_travel_preference": {
+        "distance": "known-free no-corner-cut route with original bounded escape and actual starting offset; complete actual body-masked path is priced again before admission",
+        "evidence": "every executed regular frontier privately retains delivered map geometry, source leases, poses/models, nominal/actual distance, eligible peer budgets and utility factor; strict read-only reconstruction",
+        "factor": "min(1,(1+closest currently funded peer known distance)/(1+own known distance))",
+        "inputs": "same delivered planning map/poses/frame/battery/own robot maps; pending charge and non-ACTIVE peers excluded",
+        "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded.",
+        "scope": "Soft conditional utility preference; bounded continuation, fair serial charging, source TTLs and actual reservations remain; no global optimality or peer future-availability guarantee.",
+        "strategy": "relative_geodesic_travel"
+      },
+      "fault_seed": 17011,
+      "gate_cases": [
+        "fixed_lab_101",
+        "fixed_lab_202",
+        "fixed_lab_303",
+        "fixed_rooms_101",
+        "fixed_rooms_202",
+        "fixed_rooms_303",
+        "fixed_corridors_101",
+        "fixed_corridors_202",
+        "fixed_corridors_303",
+        "fixed_corridors2_202",
+        "forced2",
+        "protocol_forced2",
+        "delay_rooms3",
+        "loss_corridors2",
+        "holdout_ideal",
+        "holdout_fault",
+        "empty_battery"
+      ],
+      "geometry_computation": {
+        "immutable_cache": "Only bytes-backed immutable map snapshots may reuse geometry by object identity; writable maps and readonly aliases of writable maps are content-checked. Source stamps and budget freshness are never cached or renewed.",
+        "negative_cache": "Exact reverse bounded reachability mask matches original raw-known-free8-neighbour0.6m escape, diagonal corners and step count; it only rejects impossible starts. Original forward BFS still chooses every actual escape path; geometry changes invalidate cache.",
+        "private_diagnostics": "Both successful and failed rally assignments retain all actual delivered grids, source leases, robot positions, conditional starts, models and target; strict reader reconstructs chosen poses. No new AP or radio input.",
+        "qualification": "Batch segment sampling with original math.dist/ceil/multiply-divide order retains scalar0.35m/half-cell/0.6m/known-free/no-diagonal semantics; full outputs compared to v12, including no-solution dense input."
+      },
+      "initial_known_space_search": {
+        "admission": "Original0.45m endpoint/0.35m known-free route, body masks, accepted reservations, current source TTLs, full approach+qualified contact return+reaction/wait reserve and charging fairness. Empty known-space candidate set falls back to ordinary mapping; unfunded candidates request original serial charging.",
+        "alternation": "Successful full mapping viewpoint enables one known-space purpose; successful full known-space viewpoint returns to mapping. Short prefixes and safety charging preserve the current purpose; ordinary navigation failure returns to mapping.",
+        "evidence": "Private initial_visual_search witnesses retain delivered grids, positions, source leases, historical visit inputs, sector gain/yaw, full travel/energy and scheduling score; reader reconstructs them. Complete cohort must exercise at least one such witness.",
+        "history": "Only original delivered odometry and map-to-odom sources each0..2s old at recording; first position per0.5m world bin. Historical2m visit discs are search preferences, never proof of camera coverage or object absence.",
+        "inputs": "Existing gateway delivered maps/poses/models only; no ground-truth target, hidden camera, native audit stream or new application packet.",
+        "limits": "Heuristic bounded current-map search preference, not exhaustive visual coverage, optimality, hardware safety or worst-case completion guarantee.",
+        "scope": "Complete object mission (enable_rally true) only; pure mapping and existing target reacquisition behavior stay unchanged.",
+        "view": "Current known-free visible interest in a90-degree sector;16 deterministic headings. Occupied and unknown cells block sight; selected heading retained at the final Nav2 endpoint."
+      },
+      "native_energy_accounting": {
+        "channel": "read-only native battery_return_audit; not AP input or extra network traffic",
+        "equation": "energy=max(0,initial_energy+charge_credits-distance*move_cost-elapsed*idle_cost)",
+        "freeze_counterexample": "native truth path>1m cannot have zero local distance/time accounting; retain all failures",
+        "period_sec": 5.0,
+        "required": "all regular originals; zero-energy negative has its independent no-navigation failure audit"
+      },
+      "native_filtered_tf": {
+        "gateway": "Original /robot/gateway/source_tf monotonic filtering and packets unchanged; local sensor stream does not become an AP observation or modeled radio packet.",
+        "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
+        "native": "All relevant transforms, duplicates, out-of-order and invalid futures reach the unchanged native consumer, which still owns original2s/5s/128/future deferral, ordering, energy and safety.",
+        "proof": "Actual DDS mixed reliability/body TF, source preservation/future/stale/energy checks; actual frozen graph binds each native stream only to its own battery manager.",
+        "queues": "Native TF original reliable20/two-worker serialized-state-plus-input model, fused1/odom10 unchanged; native battery entire bytes unchanged from79f2113.",
+        "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source.",
+        "source": "Existing robot-side sampler extracts only original map-to-odom transforms into /robot/battery/source_tf before the native DDS queue; no source stamp rewriting."
+      },
+      "native_pose_contract": {
+        "frame_generation_stamp": "native validity stamp minus actual SLAM transform_timeout; launch supplies the same configured offset as gateway",
+        "frame_ttl_sec": 2.0,
+        "odom_ttl_sec": 2.0,
+        "source_order": "source stamps are preserved; valid sensor samples up to2s ahead of local /clock wait in one bounded128-entry heap; clock-matured duplicate/out-of-order sources are ignored, excessive-future samples never poison the current pose",
+        "startup_recovery": "Every charging entry, including immediate odom callbacks, resumes a funded initial missing-pose hold instead of charging; original low-energy/task charge requests remain valid.",
+        "unavailable": "no finite budget/nav return or stable charging; bounded30s stop then explicit positive-energy failure"
+      },
+      "native_snapshot_consumption": {
+        "coalescing": "Filter original map-to-odom transforms before preserving the latest matured source and at most128 unique future stamps; a guard wakes the serialized consumer. Original native128-entry future heap/2s ahead window remains; overflow fails explicitly.",
+        "evidence": "Actual two-worker DDS with the state group blocked and mixed relevant/body TF; blocked historical1/20 queues end with no relevant TF while the input mailbox retains original source50, with no concurrent state/energy/action mutation.",
+        "meter": "Odometry accounting code and queue depth unchanged; TF-only reprojection does not bill map-frame jumps. Required private5s energy ledger adds only a relevant TF receipt count.",
+        "mixed_tf": "Body transforms never overwrite a relevant snapshot or renew its lease. Original source offsets/2s pose/5s map TTLs remain, invalid future input cannot poison a later valid source.",
+        "scope": "Two executor workers: only relevant TF ingress can run independently. All pose application, energy, budget, safety, charging and actions remain in the original mutually exclusive state group; no new AP observation or application traffic.",
+        "subscriptions": "Native mixed TF retains20 with a separate lightweight input callback group; fused-map latest1; odometry remains original10, local map/task/charge/event/action queues unchanged"
+      },
+      "native_tf_graph_capture": {
+        "evidence": "native_graph.json kept alongside original early bypass graph, owner-bound optional observer command and reader source digests required. Missing evidence FAIL; old incomplete graphs are never repaired.",
+        "scope": "Read-only safety observer captures complete required application/native graph once all native battery topics are observed and all endpoint bindings exist; does not delay or change task clocks."
+      },
+      "opportunity_charge_algorithm": "two_current_frontiers_complete_route_budget",
+      "opportunity_charge_rules": [
+        "Successful real exploration first; never initial spawn top-up.",
+        "Only existing near-home range and visible body-safe contact route; serial request and handle drain retained.",
+        "At most three distinct useful current frontier alternatives; full known route and endpoint return; forecast is not a queued command.",
+        "Current map identity/source TTL and current delivered pose/TF/battery gates; next actual leg always revalidates."
+      ],
+      "owner_shutdown_timeout_sec": 120,
+      "physical_blackout_manifest": "p2c_blackout_manifest.json",
+      "physical_blackout_required": "Both new originals at the formal commit; unchanged controlled60..250/62..248/.5m/1.1m stimulus. Full integration cannot PASS without their strict evidence. Execute only after all development and fixed/safety prerequisites.",
+      "predeclared_at_utc": "2026-10-09T00:04:02.037319+00:00",
+      "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
+      "rally_candidate_sampling": {
+        "algorithm": "original72 rings plus up to2 angular boundary representatives in each0.4m spatial bin",
+        "limits": "Bounded spatial sampling remains a heuristic, not exhaustive joint-feasibility or optimality proof. No original obstacle/unknown cell is cleared.",
+        "maximum_candidates": 464,
+        "region": "same known-free target-visible1..2.6m region,0.45m endpoint clearance and0.8m separation"
+      },
+      "rally_return_objective": {
+        "exposure": "Soft weighted complete-return length between original0.35m path and0.45m endpoint margins; not energy, continuous clearance or dynamic-obstacle guarantee. Every existing hard constraint is unchanged.",
+        "order": [
+          "active_observer_protection",
+          "predicted_charge_count",
+          "qualified_return_clearance_exposure",
+          "serial_time",
+          "observer_headroom",
+          "existing_path_objective"
+        ]
+      },
+      "rally_return_repair": {
+        "budget": "Complete approach+qualified endpoint return+reaction/map/max(odom,frame) age+hold/wait; strictly less than current energy. Next real dispatch revalidates all original leases/reservations/energy.",
+        "evidence": "Private coordinator_rally_return_repair saves both delivered maps, original stamps, model, current/reserved/body positions, old/new endpoints and full route/cost; independent reconstruction. No native hidden input or added application traffic.",
+        "preservation": "Only a new proposal; preserve parked peers, original retries/300s horizon/5s native hold/safety. Reset hold on actual assignment change; never cancel a live action or reset retries.",
+        "search": "Known-free target-visible grid centres in the existing nominal1..2.6m rally region, endpoint clearance0.45m and separation0.8m, body-masked complete approach and same qualified contact return. Dense recovery supplements original72 ring samples; no obstacle/unknown clearing.",
+        "trigger": "Idle ACTIVE unarrived non-observer; old endpoint has no qualified return, current pose retains one; all delivered source leases and target lease fresh; no live/pending exploration/rally/survey, charge or safety refuge."
+      },
+      "rally_route_consistency": {
+        "default_rally_route": "infinite complete path was already in use; initial five-metre diagnosis withdrawn",
+        "offsets": "actual start to first grid point included in nominal approach, detour and parking costs",
+        "return_reservation": "complete delivered-map contact-region route; same geometry cache and clearance as known_home_distance",
+        "unavailable": "wait; charging reserves actual body; no local hidden inputs or centre-route fallback"
+      },
+      "retained_failed_development": "20261008_p2c_v1_failed_development.json",
+      "retained_failed_developments": [
+        "20261008_p2c_v1_failed_development.json",
+        "20261008_p2c_v2_failed_development.json",
+        "20261008_p2c_v4_failed_development.json",
+        "20261008_p2c_v5_failed_development.json",
+        "20261008_p2c_v6_failed_development.json",
+        "20261008_p2c_v7_failed_development.json",
+        "20261008_p2c_v8_failed_development.json",
+        "20261008_p2c_v9_failed_development.json",
+        "20261009_p2c_v10_failed_development.json",
+        "20261009_p2c_v11_failed_development.json",
+        "20261009_p2c_v12_failed_development.json",
+        "20261009_p2c_v13_failed_development.json",
+        "20261009_p2c_v14_failed_development.json",
+        "20261009_p2c_v15_failed_development.json",
+        "20261009_p2c_v16_failed_development.json",
+        "20261009_p2c_v17_failed_development.json"
+      ],
+      "retained_partial_development": "20261008_p2c_v3_partial_development.json",
+      "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
+      "return_source_selection": {
+        "ages": "original5s source TTL for both maps; budget prices the maximum source age actually consulted, plus original2s pose leases",
+        "constrained_search": "Only when the original fused shortest route fails the local-obstacle veto: project all local positive cells into a separate fused-grid search layer; keep unknown cells unknown, promote positive source cells to occupied, retain both originals, and still apply the original continuous local veto. No route remains unavailable.",
+        "derived_provenance": "Private native constrained_fused candidate: deterministic reconstruction from original local+fused grids; source_time=min(original stamps), version=max(original versions); age prices both originals. Never publish the derived grid as an application map.",
+        "evidence": "all fresh map candidates/costs/qualification/selected minimum retained on read-only native return audit only; not AP input or added communication",
+        "obstacle_veto": "a fused route may extend local unknown space but may not clear local known obstacles; continuous half-local-cell checks preserve0.35m clearance and original bounded0.6m known-free start escape; no diagonal cutting",
+        "sources": [
+          "fresh native local map",
+          "fresh gateway-delivered fused map",
+          "explicit conservative fused search with all fresh local occupied cell rectangles"
+        ],
+        "strategy": "lowest qualified complete-contact energy budget; exact tie prefers local"
+      },
+      "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
+      "rules": [
+        "Commit and push all source/config/helper bytes before first task; no edits while any task owner/observer remains live.",
+        "Retain every original/failure/infrastructure interruption; no task retries or failed-cell backfill.",
+        "All ten fixed direct-ideal cells and forced2/protocol_forced2/holdout_ideal require native COMPLETE at unchanged300s/.35m/.05mps/.1radps/5s.",
+        "Delay/loss/holdout_fault outcomes are all retained; their safety and protocol gates require zero contacts/exhaustion/robot failures, not forced task success.",
+        "Each forced robot must charge; all actual charger_stopped return audits require positive energy and prediction error <=0 within1e-6.",
+        "No-route/empty-energy negative probes must fail correctly, never generate a straight-line Nav2 return; actual ROS synthetic-map failure is labelled component, not Gazebo motion.",
+        "Physical blackout probe reuses the predeclared60..250s staging stimulus and read-only native motion thresholds; both robots must independently return/charge.",
+        "101/202/303/707/809 are exposed;917/new geometry/target/fault29171 is first-exposure verification, not a held-out population estimate. First exposure only after development and full fixed/safety gates.",
+        "Budget envelope assumes bounded motion deviation, speed, reaction and recovery; no claim under infinite blockage, changing obstacles, broken executor or uncalibrated hardware."
+      ],
+      "safety_probe_manifest": "p3b5_staged_return_probe_manifest.json",
+      "schema_version": 1,
+      "snapshot_consumption": {
+        "evidence": "Actual DDS blocked-executor probe compares original10/20 queues with latest1 on50 unchanged source-stamped snapshots",
+        "scope": "Application latest-state coalescing after gateway delivery, not injected radio loss or application traffic change",
+        "source_time": "Original source headers preserved; stale inputs still rejected by original5s/2s TTLs",
+        "subscriptions": "AP delivered fused/robot map, odometry and map-frame TF use original reliable volatile keep-last1; discrete events/publishers/native safety queues unchanged",
+        "tf_reprojection": "Each new delivered map-to-odom TF reprojects the last original odometry sample; its source timestamp and velocity remain unchanged, and original two independent2s leases still apply."
+      },
+      "task_child_process_audit": {
+        "cleanup": "Actual post-task child exit codes retained separately; not task-time failures or evidence of graceful child exit.",
+        "during_task": "Every nonzero ROS launch child exit before the owned SIGINT closure marker fails; outer owner exit0 cannot mask a child crash.",
+        "evidence": "Original source-bound launch transcript required; no raw log repair."
+      }
+    },
+    "configuration_command": null,
+    "cpu_affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79
+    ],
+    "environment": {
+      "FASTDDS_BUILTIN_TRANSPORTS": "UDPv4",
+      "FASTRTPS_DEFAULT_PROFILES_FILE": null,
+      "GAZEBO_MASTER_URI": "http://127.0.0.1:20290",
+      "PYTHONNOUSERSITE": "1",
+      "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+      "ROS_DISCOVERY_SERVER": null,
+      "ROS_DISTRO": "humble",
+      "ROS_DOMAIN_ID": "210"
+    },
+    "evidence_sha256": {
+      "20261009_p2c_v23_dev_forced2.csv": "694c319d61b557492ee0f512e1b3ba309f34a0f918771f6589f31cd78002ab32",
+      "20261009_p2c_v23_dev_forced2.json": "b99c66fce2f9f73d1f0ec41c2269deb6cdf7f1be78839118cddaf5a893cc8e1f",
+      "graph.json": "253f86c79f37f1565b090e23dd4c3a5d3af95054779e129e4d5b217206380d0e",
+      "launch/robots2_seed303_20261009-080912.log": "3f1bb9f3aa71a1892e84dcbd726b8a35ec157c3c600d4c0979ba4c76493c8b40",
+      "ledger.jsonl": "4e0c0588159b00aab8755ce991aa013a8ba529e18a1bfeea9cd111d0e537d07b",
+      "ledger_metrics/curves.svg": "034142f68a54e1a262767d266b3ed4281a704efdfc2dcd46bdb51c68bc2ceae4",
+      "ledger_metrics/events.jsonl": "bd52c079def5d954d9d06f4f33e176ee1696ede57b737923c3d5aa71abd7acc0",
+      "ledger_metrics/inputs.jsonl": "7a64e3681844fa471d7a9fd2a8489403d02c16da9b37669ccd0da74e9fa5fcb0",
+      "ledger_metrics/live.jsonl": "e070700faf36d92a9c1228847c10d32d26c5cb958997579a09b205b30d841fab",
+      "ledger_metrics/live_windows.csv": "9523f68781238ea8ea74c9e34cf5807b3c88df1279c94bdabb911fe517f2faba",
+      "ledger_metrics/summary.json": "abdaf72e603112a16bad23b3005416635c96dd3f134d0fb90fd132a79f9bcc6c",
+      "ledger_metrics/windows.csv": "9523f68781238ea8ea74c9e34cf5807b3c88df1279c94bdabb911fe517f2faba",
+      "ledger_metrics/windows.jsonl": "25e27f64f65aa0207cab3dd860ab71d937c252fb5fa28fb26cf9a528f4416209",
+      "manifest.json": "1892f0dd5807f8103618a200c587eb3ecf7bdf1f01b4a9edf4ce81b4eeb662a3",
+      "native_graph.json": "172865045614314fcd6643ec124838f99c656a822d36d9e672cc1bc28c6d33eb",
+      "observer.log": "a2c82767eca72be383c122e6e4e87869e145b0febe34fd3fa00ca1f8fc6e2655",
+      "runner.log": "27817352ecc2ae5b26639186a09c5ee7a2287b2abca308fa4083f116bf651c4a",
+      "safety_events.jsonl": "6bdff42ed9b46adbfc2e0822638cc474d43bc8d088bdc4edd0567f31f5c8e9cc",
+      "schedule.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    "finished_at_utc": "2026-10-09T00:15:54.704414+00:00",
+    "git_commit": "930d7a041b361a731883c469ed51d553710a97fc",
+    "observer_command": [
+      "/usr/bin/python3",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/observe_p3b5.py",
+      "--output",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v23/20261009_p2c_v23_dev_forced2/safety_events.jsonl",
+      "--robot-count",
+      "2",
+      "--native-tf-graph-output",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v23/20261009_p2c_v23_dev_forced2/native_graph.json"
+    ],
+    "observer_pid": 509151,
+    "observer_returncode": 0,
+    "owner_pid": 509135,
+    "result": {
+      "battery_enabled": true,
+      "battery_minimum_energy": 16.311746953326,
+      "battery_total_charges": 2,
+      "battery_total_charging_time_sec": 24.699999999999818,
+      "battery_total_returns": 5,
+      "collision_duration_sec": 0.0,
+      "collision_events": 0,
+      "collision_history": [],
+      "collision_monitoring_active": true,
+      "completion_status": "RALLY",
+      "completion_time_sec": null,
+      "coordinator_completion_time_sec": null,
+      "correct_coverage_ratio": 0.8503110829906148,
+      "correct_free_coverage_ratio": 0.8946825381661158,
+      "correct_truth_cell_count": 48381,
+      "coverage_at_detection": 0.8691365573112712,
+      "coverage_threshold": 0.0,
+      "detecting_robot": "tb2",
+      "elapsed_sim_time_sec": 300.4000000000001,
+      "end_sim_time_sec": 2375.082,
+      "episode_id": "20261009_p2c_v23_dev_forced2",
+      "failed_robots": [],
+      "failure_reason": "timeout",
+      "gazebo_seed": 303,
+      "known_coverage_ratio": 0.8740377517663187,
+      "known_truth_cell_count": 49731,
+      "map_message_count": 308,
+      "merged_map_frame": "map",
+      "merged_map_height": 213,
+      "merged_map_origin_x": -5.669930771158498,
+      "merged_map_origin_y": -5.47800191748982,
+      "merged_map_origin_yaw": 0.0,
+      "merged_map_resolution": 0.05000000074505806,
+      "merged_map_width": 255,
+      "mission_mode": "rally",
+      "model_state_message_count": 3005,
+      "native_rally_hold_proof": null,
+      "nav_aborted": 0,
+      "nav_canceled": 6,
+      "nav_goal_count": 34,
+      "nav_succeeded": 27,
+      "observed_accuracy": 0.9728539542739941,
+      "occupied_iou": 0.26552901023890785,
+      "partial_completion": false,
+      "phase_overlap_ratios": {
+        "EXPLORE": 0.0,
+        "FOUND": 0.0,
+        "RALLY": 0.0
+      },
+      "phase_path_lengths_m": {
+        "EXPLORE": 39.12659284984352,
+        "FOUND": 0.12290241919268052,
+        "RALLY": 9.980118987574595
+      },
+      "phase_union_visited_cell_counts": {
+        "EXPLORE": 412,
+        "FOUND": 2,
+        "RALLY": 119
+      },
+      "rally_angular_tolerance_radps": 0.1,
+      "rally_assignments": {
+        "tb1": {
+          "x": -4.694559546396491,
+          "y": 1.5058176147399127,
+          "yaw": 1.2992052519163206
+        },
+        "tb2": {
+          "x": -3.9445595352206198,
+          "y": 1.805817619210261,
+          "yaw": 1.5960579785302638
+        }
+      },
+      "rally_hold_sec": 5.0,
+      "rally_linear_tolerance_mps": 0.05,
+      "rally_min_separation_m": 0.8077747331069569,
+      "rally_position_tolerance_m": 0.35,
+      "required_robot_count": 2,
+      "required_robot_names": [
+        "tb1",
+        "tb2"
+      ],
+      "robot_count": 2,
+      "robots": {
+        "tb1": {
+          "battery_capacity": 100.0,
+          "battery_charge_count": 1,
+          "battery_charge_x": 0.0,
+          "battery_charge_y": -0.45,
+          "battery_charging_time_sec": 14.699999999999818,
+          "battery_final_energy": 47.86607910861222,
+          "battery_initial_energy": 18.0,
+          "battery_message_count": 604,
+          "battery_minimum_energy": 16.311746953326,
+          "battery_mode": "ACTIVE",
+          "battery_return_count": 2,
+          "collision_duration_sec": 0.0,
+          "collision_events": 0,
+          "collision_message_count": 6009,
+          "end_x": -3.3548608646683893,
+          "end_y": 0.8293019587852372,
+          "final_angular_speed_radps": 0.013074211802836461,
+          "final_linear_speed_mps": 0.25978835036760745,
+          "nav_aborted": 0,
+          "nav_canceled": 3,
+          "nav_goal_count": 19,
+          "nav_succeeded": 15,
+          "path_length_m": 28.218676570957587,
+          "phase_path_lengths_m": {
+            "EXPLORE": 18.24484772041557,
+            "FOUND": 0.04103640068421068,
+            "RALLY": 9.932792449857809
+          },
+          "rally_final_error_m": 1.5008217717556598,
+          "rally_target_x": -4.694559546396491,
+          "rally_target_y": 1.5058176147399127,
+          "rally_target_yaw": 1.2992052519163206,
+          "start_x": 0.002366999564112199,
+          "start_y": -0.4499950125746423,
+          "teleport_jump_count": 0,
+          "visited_cell_count": 308
+        },
+        "tb2": {
+          "battery_capacity": 100.0,
+          "battery_charge_count": 1,
+          "battery_charge_x": 0.0,
+          "battery_charge_y": 0.45,
+          "battery_charging_time_sec": 10.0,
+          "battery_final_energy": 54.726976829856234,
+          "battery_initial_energy": 18.0,
+          "battery_message_count": 606,
+          "battery_minimum_energy": 16.46866245139252,
+          "battery_mode": "ACTIVE",
+          "battery_return_count": 3,
+          "collision_duration_sec": 0.0,
+          "collision_events": 0,
+          "collision_message_count": 6009,
+          "end_x": -3.9482579827578475,
+          "end_y": 1.8123301250347719,
+          "final_angular_speed_radps": 0.002239304809336346,
+          "final_linear_speed_mps": 7.54365946590848e-05,
+          "nav_aborted": 0,
+          "nav_canceled": 3,
+          "nav_goal_count": 15,
+          "nav_succeeded": 12,
+          "path_length_m": 21.010937685653218,
+          "phase_path_lengths_m": {
+            "EXPLORE": 20.88174512942795,
+            "FOUND": 0.08186601850846983,
+            "RALLY": 0.04732653771678651
+          },
+          "rally_final_error_m": 0.007489408941960151,
+          "rally_target_x": -3.9445595352206198,
+          "rally_target_y": 1.805817619210261,
+          "rally_target_yaw": 1.5960579785302638,
+          "start_x": 0.00232641176673707,
+          "start_y": 0.4500048486162248,
+          "teleport_jump_count": 0,
+          "visited_cell_count": 202
+        }
+      },
+      "schema_version": 9,
+      "search_overlap_ratio": 0.0,
+      "start_sim_time_sec": 2074.682,
+      "success": false,
+      "target_confirmation_frames": 3,
+      "target_field_of_view_deg": 90.0,
+      "target_found": true,
+      "target_max_distance_m": 3.0,
+      "target_x": -4.0,
+      "target_y": 4.0,
+      "task_phase": "RALLY",
+      "termination_reason": "timeout",
+      "time_to_75_coverage_sec": 143.10000000000036,
+      "time_to_80_coverage_sec": 166.70000000000027,
+      "time_to_90_coverage_sec": null,
+      "time_to_95_coverage_sec": null,
+      "time_to_detect_sec": 228.20000000000027,
+      "time_to_rally_sec": 232.30000000000018,
+      "total_overlap_ratio": 0.0,
+      "total_path_length_m": 49.2296142566108,
+      "truth_cell_count": 56898,
+      "truth_free_cell_count": 52337,
+      "truth_height": 218,
+      "truth_occupied_cell_count": 4561,
+      "truth_origin_x": -5.800000000000001,
+      "truth_origin_y": -5.6000000000000005,
+      "truth_rectangle_count": 26,
+      "truth_resolution": 0.05,
+      "truth_unsupported_collision_count": 1,
+      "truth_width": 261,
+      "union_visited_cell_count": 510,
+      "visit_resolution": 0.1,
+      "world_file": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/worlds/my_world.world"
+    },
+    "result_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v23/20261009_p2c_v23_dev_forced2/20261009_p2c_v23_dev_forced2.json",
+    "runner_returncode": 0,
+    "source_digests": {
+      "admission_protocol": "05f15651bfc831c541d5a662491a0467e64ae4084c27655a6f27e1ed56e6064a",
+      "control_cli": "f70c8f7a6ee4fb9a0a7d2e9468e3c77b3cc77d729cbd2a544c1f45adbf997c09",
+      "control_schema": "7fa7e5fa63dd0fb1e319fd08694773c675ac3fe8dcefa0051dd4f0fe71958d28",
+      "entrypoint": "78edb424db0a63347cf6b28f3fbff72a20207c3852f26a004907f868e8170a1f",
+      "exploration": "6c2b3124b6066b067a3584d6e3580a9c9c6f685e568fee8d6f74a4f40f77c42a",
+      "launch": "6f26d9c5b1dce5bc681bc59cfe8fb8be68baff823f5334939f33261392380692",
+      "manifest": "45194ceab008e0f4c22228176376c91eb702dcc0080d10fc661dfc805fe30f80",
+      "message_schema": "e0648e61473dfd2931038c79cda8a6fe4bf09c1d00f8d4acdfa0f4879e72925c",
+      "native_graph_reader": "42206ee2a824bded4f1111d5a097b853aeddbffd31a653393b94fb6b6e418b65",
+      "params": "2cb9b9e26015cbe79867fe3750296d9cb7626a05ad16f595b7692db4b4490f4f",
+      "physics_observer": "588693bf5f934081452925fc3ca80e10465f67ccc1738066cd91fb9fdf48527b",
+      "runner": "63607f21f1a1e6885ce0d0ae7dbc4d663057a59ab0ea2cd3a1325c6c74549df7",
+      "safety_observer": "bfeba81cac53bb13fcb029e983526a751e84b07870e82098db85d1d2055c7913",
+      "slam": "61abada48d42602e5bb8950cdf81cd4804c0c45b787490681711e3cc228eb1c0",
+      "smoke": "74bd62337550b72309648571edb82a57b282cf7edfa09831ccd0f1aff7bfa97d",
+      "staging_apparatus": "594a3fe0937b5280619556c62625fcbdb893eabd8e0a6a62d761fe37fea5819b",
+      "worlds": "2ee10406031815e3d0ea2e76074706a8e150e636ab2366428b201ecc72a5cc9a"
+    },
+    "started_at_utc": "2026-10-09T00:09:11.691576+00:00",
+    "worktree_status": [
+      "?? 260929_report/1.pdf",
+      "?? 260929_report/2007.08564v1.pdf",
+      "?? 260929_report/2106.00574v1.pdf",
+      "?? 260929_report/2503.07278v3.pdf",
+      "?? \"260929_report/A Critical Review of Communications in Multi-robot Systems.pdf\"",
+      "?? \"260929_report/Adaptive resource allocation in dynamic wireless environments a systematic review.pdf\"",
+      "?? 260929_report/Applications_of_Deep_Reinforcement_Learning_in_Communications_and_Networking_A_Survey.pdf",
+      "?? \"260929_report/Towards reasoning-empowered task-oriented communication for agent networks.pdf\"",
+      "?? 260929_report/Towards_Autonomous_Multi-UAV_Wireless_Network_A_Su.pdf",
+      "?? 260929_report/c61bd00b-f250-4cfe-b5a5-f941e8c9b22b.png",
+      "?? 260929_report/sensors-23-03625.pdf",
+      "?? 260929_report/ssrn-7067272.pdf",
+      "?? \"260929_report/\\347\\273\\204\\344\\274\\232\\346\\226\\207\\347\\214\\256\\346\\261\\207\\346\\212\\245-\\346\\250\\241\\346\\235\\277.pptx\"",
+      "?? \"260929_report/\\347\\273\\274\\350\\277\\260\\350\\256\\272\\346\\226\\207\\350\\260\\203\\347\\240\\224.docx\""
+    ]
+  },
+  "strict_gate": {
+    "status": "FAIL",
+    "scope": "development",
+    "task_stack_frozen_commit": "930d7a041b361a731883c469ed51d553710a97fc",
+    "cases": 1,
+    "errors": [
+      {
+        "case": "dev_forced2",
+        "error": "AssertionError()",
+        "traceback": "Traceback (most recent call last):\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 558, in audit_one\n    try:return check_one(path,config),None\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 515, in check_one\n    episode_ok(result)\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3b5_gate.py\", line 61, in episode_ok\n    p3a_episode_ok(result)\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3a6_gate.py\", line 39, in episode_ok\n    assert data[\"success\"]\nAssertionError\n"
+      }
+    ],
+    "evidence": [],
+    "full_declared_scope": false,
+    "raw_failures_retained": true,
+    "physical_blackout_gate": "required_before_full_integration",
+    "general_hardware_safety_guarantee": false
+  },
+  "independent_audits": {
+    "dev_forced2": {
+      "native_return": {
+        "status": "PASS",
+        "return_triggers": 5,
+        "map_budget_reconstructions": 3,
+        "pose_lease_reconstructions": 7,
+        "pose_leases_required": true,
+        "local_legs": 2,
+        "charger_returns": 2,
+        "returns": [
+          {
+            "actual_distance_m": 0.0,
+            "actual_elapsed_sec": 0.0,
+            "actual_energy_spent": 0.0,
+            "cancellation_count": 0,
+            "charge_radius_m": 0.8,
+            "energy": 18.0,
+            "energy_model": {
+              "idle_cost_per_sec": 0.02,
+              "move_cost_per_m": 1.0,
+              "nominal_speed_mps": 0.18,
+              "path_factor": 2.0,
+              "recovery_wait_sec": 30.0,
+              "safety_margin": 5.0
+            },
+            "event": "return_finished",
+            "home": [
+              0.0,
+              -0.45
+            ],
+            "outcome": "route_recovered_resume",
+            "predicted_energy_spent": null,
+            "prediction_error": null,
+            "rejection_count": 0,
+            "return_count": 1,
+            "robot": "tb1",
+            "sim_time": 2074.982,
+            "start": {
+              "budget": null,
+              "cancels": 0,
+              "distance": 0.0,
+              "elapsed": 0.0,
+              "energy": 18.0,
+              "reason": "no_known_route",
+              "rejections": 0,
+              "sim_time": 2074.882
+            }
+          },
+          {
+            "actual_distance_m": 0.0,
+            "actual_elapsed_sec": 0.0,
+            "actual_energy_spent": 0.0,
+            "cancellation_count": 0,
+            "charge_radius_m": 0.8,
+            "energy": 18.0,
+            "energy_model": {
+              "idle_cost_per_sec": 0.02,
+              "move_cost_per_m": 1.0,
+              "nominal_speed_mps": 0.18,
+              "path_factor": 2.0,
+              "recovery_wait_sec": 30.0,
+              "safety_margin": 5.0
+            },
+            "event": "return_finished",
+            "home": [
+              0.0,
+              0.45
+            ],
+            "outcome": "route_recovered_resume",
+            "predicted_energy_spent": null,
+            "prediction_error": null,
+            "rejection_count": 0,
+            "return_count": 1,
+            "robot": "tb2",
+            "sim_time": 2075.582,
+            "start": {
+              "budget": null,
+              "cancels": 0,
+              "distance": 0.0,
+              "elapsed": 0.0,
+              "energy": 18.0,
+              "reason": "no_known_route",
+              "rejections": 0,
+              "sim_time": 2075.482
+            }
+          },
+          {
+            "actual_distance_m": 0.10542562664917088,
+            "actual_elapsed_sec": 8.159999999999854,
+            "actual_energy_spent": 0.2686256266492286,
+            "cancellation_count": 1,
+            "charge_radius_m": 0.8,
+            "energy": 16.316004877708444,
+            "energy_model": {
+              "idle_cost_per_sec": 0.02,
+              "move_cost_per_m": 1.0,
+              "nominal_speed_mps": 0.18,
+              "path_factor": 2.0,
+              "recovery_wait_sec": 30.0,
+              "safety_margin": 5.0
+            },
+            "event": "return_finished",
+            "home": [
+              0.0,
+              -0.45
+            ],
+            "outcome": "charger_stopped",
+            "predicted_energy_spent": 1.796888678693298,
+            "prediction_error": -1.5282630520440694,
+            "rejection_count": 0,
+            "return_count": 2,
+            "robot": "tb1",
+            "sim_time": 2111.082,
+            "start": {
+              "budget": {
+                "frame_source_time": 2102.7850000000003,
+                "frame_stamp_offset_sec": 0.2,
+                "idle_energy": 0.7663808678693225,
+                "map_age_sec": 1.300000000000182,
+                "map_content_blake2b": "fffd6eb8384cdc0d3543728b9705ff52",
+                "map_input_age_sec": 1.3969999999999345,
+                "map_source": "delivered_fused",
+                "map_source_time": 2101.682,
+                "map_version": 30,
+                "motion_distance_budget_m": 1.0305078108239751,
+                "move_energy": 1.0305078108239751,
+                "odom_source_time": 2102.864,
+                "path_distance_m": 0.3357039054120383,
+                "pose_age_sec": 0.19699999999966167,
+                "required_energy": 6.796888678693298,
+                "route": [
+                  [
+                    -0.8081385801429174,
+                    -0.29124423141413214
+                  ],
+                  [
+                    -0.8229600855408821,
+                    -0.2935069066239393
+                  ],
+                  [
+                    -0.8229600855408821,
+                    -0.24350690587888124
+                  ],
+                  [
+                    -0.772960084795824,
+                    -0.24350690587888124
+                  ],
+                  [
+                    -0.722960084050766,
+                    -0.24350690587888124
+                  ],
+                  [
+                    -0.6729600833057079,
+                    -0.24350690587888124
+                  ],
+                  [
+                    -0.6229600825606498,
+                    -0.2935069066239393
+                  ],
+                  [
+                    -0.5729600818155918,
+                    -0.2935069066239393
+                  ]
+                ],
+                "safety_margin": 5.0,
+                "travel_time_budget_sec": 5.725043393466529,
+                "waiting_time_budget_sec": 32.593999999999596
+              },
+              "cancels": 0,
+              "distance": 0.8564094956421315,
+              "elapsed": 27.947999999999865,
+              "energy": 16.584630504357673,
+              "reason": "energy_or_task_budget",
+              "rejections": 0,
+              "sim_time": 2102.982
+            }
+          },
+          {
+            "actual_distance_m": 1.4576725819726022e-06,
+            "actual_elapsed_sec": 0.033999999999650754,
+            "actual_energy_spent": 0.0006814576725737709,
+            "cancellation_count": 0,
+            "charge_radius_m": 0.8,
+            "energy": 16.46866245139252,
+            "energy_model": {
+              "idle_cost_per_sec": 0.02,
+              "move_cost_per_m": 1.0,
+              "nominal_speed_mps": 0.18,
+              "path_factor": 2.0,
+              "recovery_wait_sec": 30.0,
+              "safety_margin": 5.0
+            },
+            "event": "return_finished",
+            "home": [
+              0.0,
+              0.45
+            ],
+            "outcome": "charger_stopped",
+            "predicted_energy_spent": 0.995026666666484,
+            "prediction_error": -0.9943452089939102,
+            "rejection_count": 0,
+            "return_count": 2,
+            "robot": "tb2",
+            "sim_time": 2128.182,
+            "start": {
+              "budget": {
+                "frame_source_time": 2127.9640000000004,
+                "frame_stamp_offset_sec": 0.2,
+                "idle_energy": 0.659626666666639,
+                "map_age_sec": 0.0,
+                "map_content_blake2b": null,
+                "map_input_age_sec": 0.0,
+                "map_source": "local",
+                "map_source_time": 2127.964,
+                "map_version": 56,
+                "motion_distance_budget_m": 0.335399999999845,
+                "move_energy": 0.335399999999845,
+                "odom_source_time": 2128.081,
+                "path_distance_m": 0.0,
+                "pose_age_sec": 0.11799999999948341,
+                "required_energy": 5.995026666666484,
+                "route": [
+                  [
+                    0.381717502796282,
+                    0.7272535092284914
+                  ]
+                ],
+                "safety_margin": 5.0,
+                "travel_time_budget_sec": 1.8633333333324722,
+                "waiting_time_budget_sec": 31.117999999999483
+              },
+              "cancels": 0,
+              "distance": 0.4786960909346285,
+              "elapsed": 52.597999999999956,
+              "energy": 16.469343909065095,
+              "reason": "energy_or_task_budget",
+              "rejections": 0,
+              "sim_time": 2128.082
+            }
+          },
+          {
+            "actual_distance_m": 0.028166361774626836,
+            "actual_elapsed_sec": 0.91800000000012,
+            "actual_energy_spent": 0.04652636177466718,
+            "cancellation_count": 0,
+            "charge_radius_m": 0.8,
+            "energy": 60.201441950571564,
+            "energy_model": {
+              "idle_cost_per_sec": 0.02,
+              "move_cost_per_m": 1.0,
+              "nominal_speed_mps": 0.18,
+              "path_factor": 2.0,
+              "recovery_wait_sec": 30.0,
+              "safety_margin": 5.0
+            },
+            "event": "return_finished",
+            "home": [
+              0.0,
+              0.45
+            ],
+            "outcome": "route_recovered_resume",
+            "predicted_energy_spent": null,
+            "prediction_error": null,
+            "rejection_count": 0,
+            "return_count": 3,
+            "robot": "tb2",
+            "sim_time": 2287.082,
+            "start": {
+              "budget": null,
+              "cancels": 0,
+              "distance": 17.270009236262446,
+              "elapsed": 200.66799999999967,
+              "energy": 60.24796831234623,
+              "reason": "no_known_route",
+              "rejections": 0,
+              "sim_time": 2286.482
+            }
+          }
+        ]
+      },
+      "native_energy": {
+        "status": "PASS",
+        "required": true,
+        "snapshots": 122,
+        "robots": {
+          "tb1": {
+            "samples": 61,
+            "last": {
+              "actual_distance_m": 28.377887440539084,
+              "actual_elapsed_sec": 286.4839999999999,
+              "charge_radius_m": 0.8,
+              "charged_energy_added": 63.688253046674,
+              "energy": 47.58068560613335,
+              "energy_model": {
+                "idle_cost_per_sec": 0.02,
+                "move_cost_per_m": 1.0,
+                "nominal_speed_mps": 0.18,
+                "path_factor": 2.0,
+                "recovery_wait_sec": 30.0,
+                "safety_margin": 5.0
+              },
+              "event": "energy_accounting",
+              "frame_source_time": 2375.389,
+              "home": [
+                0.0,
+                -0.45
+              ],
+              "initial_energy": 18.0,
+              "mode": "ACTIVE",
+              "odom_source_time": 2375.578,
+              "pending_native_inputs": 0,
+              "relevant_frame_receipts": 15307,
+              "return_count": 2,
+              "robot": "tb1",
+              "sim_time": 2375.582
+            }
+          },
+          "tb2": {
+            "samples": 61,
+            "last": {
+              "actual_distance_m": 21.02232683601478,
+              "actual_elapsed_sec": 290.08799999999974,
+              "charge_radius_m": 0.8,
+              "charged_energy_added": 63.53133754860748,
+              "energy": 54.70725071259129,
+              "energy_model": {
+                "idle_cost_per_sec": 0.02,
+                "move_cost_per_m": 1.0,
+                "nominal_speed_mps": 0.18,
+                "path_factor": 2.0,
+                "recovery_wait_sec": 30.0,
+                "safety_margin": 5.0
+              },
+              "event": "energy_accounting",
+              "frame_source_time": 2375.367,
+              "home": [
+                0.0,
+                0.45
+              ],
+              "initial_energy": 18.0,
+              "mode": "ACTIVE",
+              "odom_source_time": 2375.567,
+              "pending_native_inputs": 0,
+              "relevant_frame_receipts": 15266,
+              "return_count": 3,
+              "robot": "tb2",
+              "sim_time": 2375.582
+            }
+          }
+        }
+      },
+      "lookahead": {
+        "status": "PASS",
+        "two_frontier_charge_decisions": 0
+      },
+      "ap_return_veto": {
+        "status": "PASS",
+        "delivered_return_vetoes": 5
+      },
+      "rally_assignment": {
+        "status": "PASS",
+        "failed_assignments_rebuilt": 0,
+        "chosen_assignments_rebuilt": 1,
+        "computation_wall_sec": [
+          1.2955369562841952
+        ]
+      },
+      "rally_repair": {
+        "status": "PASS",
+        "funded_endpoint_repairs": 0
+      },
+      "exploration_travel": {
+        "status": "PASS",
+        "executed_frontier_witnesses": 24,
+        "relative_travel_discounts": 3,
+        "resumed_frontier_witnesses": 10,
+        "required": true,
+        "commitment_required": true,
+        "bounded_commitment_required": true,
+        "initial_visual_witnesses": 6,
+        "initial_search_required": true
+      },
+      "native_vs_gateway_frame_samples": {
+        "tb1": [
+          {
+            "sim_time": 2074.882,
+            "native_age_sec": null,
+            "gateway_age_sec": 0.2960000000002765,
+            "native_relevant_receipts": 0,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2080.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.09699999999975262,
+            "native_relevant_receipts": 268,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2085.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.29700000000002547,
+            "native_relevant_receipts": 522,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2090.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.4960000000000946,
+            "native_relevant_receipts": 776,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2095.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.09699999999975262,
+            "native_relevant_receipts": 1031,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2100.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.29700000000002547,
+            "native_relevant_receipts": 1285,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2105.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.49699999999984357,
+            "native_relevant_receipts": 1540,
+            "mode": "RETURNING"
+          },
+          {
+            "sim_time": 2110.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.09699999999975262,
+            "native_relevant_receipts": 1795,
+            "mode": "RETURNING"
+          },
+          {
+            "sim_time": 2115.082,
+            "native_age_sec": 0.09399999999959618,
+            "gateway_age_sec": 0.29700000000002547,
+            "native_relevant_receipts": 2049,
+            "mode": "CHARGING"
+          },
+          {
+            "sim_time": 2120.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.49699999999984357,
+            "native_relevant_receipts": 2304,
+            "mode": "CHARGING"
+          },
+          {
+            "sim_time": 2125.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.09699999999975262,
+            "native_relevant_receipts": 2557,
+            "mode": "CHARGING"
+          },
+          {
+            "sim_time": 2130.082,
+            "native_age_sec": 0.0979999999995016,
+            "gateway_age_sec": 0.29700000000002547,
+            "native_relevant_receipts": 2808,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2135.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.49699999999984357,
+            "native_relevant_receipts": 3060,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2140.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.09699999999975262,
+            "native_relevant_receipts": 3315,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2145.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.29700000000002547,
+            "native_relevant_receipts": 3570,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2150.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.49699999999984357,
+            "native_relevant_receipts": 3824,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2155.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.09699999999975262,
+            "native_relevant_receipts": 4078,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2160.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.29700000000002547,
+            "native_relevant_receipts": 4333,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2165.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.49699999999984357,
+            "native_relevant_receipts": 4587,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2170.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.09699999999975262,
+            "native_relevant_receipts": 4842,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2175.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.29700000000002547,
+            "native_relevant_receipts": 5096,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2180.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.49699999999984357,
+            "native_relevant_receipts": 5350,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2185.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.09699999999975262,
+            "native_relevant_receipts": 5605,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2190.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.29700000000002547,
+            "native_relevant_receipts": 5859,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2195.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.49699999999984357,
+            "native_relevant_receipts": 6114,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2200.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.09699999999975262,
+            "native_relevant_receipts": 6369,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2205.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.29700000000002547,
+            "native_relevant_receipts": 6623,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2210.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.49699999999984357,
+            "native_relevant_receipts": 6878,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2215.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.09699999999975262,
+            "native_relevant_receipts": 7132,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2220.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.29700000000002547,
+            "native_relevant_receipts": 7386,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2225.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.49699999999984357,
+            "native_relevant_receipts": 7640,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2230.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.09699999999975262,
+            "native_relevant_receipts": 7895,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2235.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.29700000000002547,
+            "native_relevant_receipts": 8149,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2240.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.49699999999984357,
+            "native_relevant_receipts": 8404,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2245.082,
+            "native_age_sec": 0.09699999999975262,
+            "gateway_age_sec": 0.09699999999975262,
+            "native_relevant_receipts": 8659,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2250.182,
+            "native_age_sec": 0.19699999999966167,
+            "gateway_age_sec": 0.3969999999999345,
+            "native_relevant_receipts": 8921,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2255.582,
+            "native_age_sec": 0.19699999999966167,
+            "gateway_age_sec": 0.3969999999999345,
+            "native_relevant_receipts": 9193,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2260.582,
+            "native_age_sec": 0.19699999999966167,
+            "gateway_age_sec": -0.003000000000156433,
+            "native_relevant_receipts": 9448,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2265.582,
+            "native_age_sec": 0.19699999999966167,
+            "gateway_age_sec": 0.19699999999966167,
+            "native_relevant_receipts": 9704,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2270.582,
+            "native_age_sec": 0.19699999999966167,
+            "gateway_age_sec": 0.3969999999999345,
+            "native_relevant_receipts": 9958,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2275.582,
+            "native_age_sec": 0.19499999999970896,
+            "gateway_age_sec": -0.005000000000109139,
+            "native_relevant_receipts": 10213,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2280.582,
+            "native_age_sec": 0.19499999999970896,
+            "gateway_age_sec": 0.19499999999970896,
+            "native_relevant_receipts": 10467,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2285.582,
+            "native_age_sec": 0.19499999999970896,
+            "gateway_age_sec": 0.3949999999999818,
+            "native_relevant_receipts": 10722,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2290.582,
+            "native_age_sec": 0.19499999999970896,
+            "gateway_age_sec": -0.005000000000109139,
+            "native_relevant_receipts": 10977,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2295.582,
+            "native_age_sec": 0.19499999999970896,
+            "gateway_age_sec": 0.19499999999970896,
+            "native_relevant_receipts": 11232,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2300.582,
+            "native_age_sec": 0.19499999999970896,
+            "gateway_age_sec": 0.3949999999999818,
+            "native_relevant_receipts": 11486,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2305.582,
+            "native_age_sec": 0.19499999999970896,
+            "gateway_age_sec": -0.005000000000109139,
+            "native_relevant_receipts": 11741,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2310.582,
+            "native_age_sec": 0.19499999999970896,
+            "gateway_age_sec": 0.19499999999970896,
+            "native_relevant_receipts": 11995,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2315.582,
+            "native_age_sec": 0.19499999999970896,
+            "gateway_age_sec": 0.3949999999999818,
+            "native_relevant_receipts": 12250,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2320.582,
+            "native_age_sec": 0.19499999999970896,
+            "gateway_age_sec": -0.005000000000109139,
+            "native_relevant_receipts": 12505,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2325.582,
+            "native_age_sec": 0.19499999999970896,
+            "gateway_age_sec": 0.19499999999970896,
+            "native_relevant_receipts": 12759,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2330.582,
+            "native_age_sec": 0.19499999999970896,
+            "gateway_age_sec": 0.3949999999999818,
+            "native_relevant_receipts": 13014,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2335.582,
+            "native_age_sec": 0.19499999999970896,
+            "gateway_age_sec": -0.005000000000109139,
+            "native_relevant_receipts": 13269,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2340.582,
+            "native_age_sec": 0.19499999999970896,
+            "gateway_age_sec": 0.19499999999970896,
+            "native_relevant_receipts": 13524,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2345.582,
+            "native_age_sec": 0.19499999999970896,
+            "gateway_age_sec": 0.3949999999999818,
+            "native_relevant_receipts": 13778,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2350.582,
+            "native_age_sec": 0.19499999999970896,
+            "gateway_age_sec": -0.005000000000109139,
+            "native_relevant_receipts": 14033,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2355.582,
+            "native_age_sec": 0.19499999999970896,
+            "gateway_age_sec": 0.19499999999970896,
+            "native_relevant_receipts": 14288,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2360.582,
+            "native_age_sec": 0.19499999999970896,
+            "gateway_age_sec": 0.3949999999999818,
+            "native_relevant_receipts": 14543,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2365.582,
+            "native_age_sec": 0.19299999999975626,
+            "gateway_age_sec": 0.19299999999975626,
+            "native_relevant_receipts": 14798,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2370.582,
+            "native_age_sec": 0.19299999999975626,
+            "gateway_age_sec": 0.19299999999975626,
+            "native_relevant_receipts": 15052,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2375.582,
+            "native_age_sec": 0.19299999999975626,
+            "gateway_age_sec": 0.3930000000000291,
+            "native_relevant_receipts": 15307,
+            "mode": "ACTIVE"
+          }
+        ],
+        "tb2": [
+          {
+            "sim_time": 2075.482,
+            "native_age_sec": null,
+            "gateway_age_sec": 0.5180000000000291,
+            "native_relevant_receipts": 0,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2080.582,
+            "native_age_sec": 0.2179999999998472,
+            "gateway_age_sec": 0.4179999999996653,
+            "native_relevant_receipts": 263,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2085.582,
+            "native_age_sec": 0.2179999999998472,
+            "gateway_age_sec": 0.4179999999996653,
+            "native_relevant_receipts": 517,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2090.582,
+            "native_age_sec": 0.2179999999998472,
+            "gateway_age_sec": 0.018000000000029104,
+            "native_relevant_receipts": 771,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2095.582,
+            "native_age_sec": 0.017999999999574356,
+            "gateway_age_sec": 0.4179999999996653,
+            "native_relevant_receipts": 1026,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2100.582,
+            "native_age_sec": 0.2179999999998472,
+            "gateway_age_sec": 0.2179999999998472,
+            "native_relevant_receipts": 1280,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2105.582,
+            "native_age_sec": 0.017999999999574356,
+            "gateway_age_sec": 0.018000000000029104,
+            "native_relevant_receipts": 1535,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2110.582,
+            "native_age_sec": 0.2179999999998472,
+            "gateway_age_sec": 0.018000000000029104,
+            "native_relevant_receipts": 1789,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2115.582,
+            "native_age_sec": 0.017999999999574356,
+            "gateway_age_sec": 0.4179999999996653,
+            "native_relevant_receipts": 2044,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2120.582,
+            "native_age_sec": 0.2179999999998472,
+            "gateway_age_sec": 0.2179999999998472,
+            "native_relevant_receipts": 2298,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2125.582,
+            "native_age_sec": 0.017999999999574356,
+            "gateway_age_sec": 0.018000000000029104,
+            "native_relevant_receipts": 2552,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2130.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.016999999999825377,
+            "native_relevant_receipts": 2803,
+            "mode": "CHARGING"
+          },
+          {
+            "sim_time": 2135.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.4169999999999163,
+            "native_relevant_receipts": 3055,
+            "mode": "CHARGING"
+          },
+          {
+            "sim_time": 2140.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.21700000000009823,
+            "native_relevant_receipts": 3310,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2145.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.016999999999825377,
+            "native_relevant_receipts": 3564,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2150.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.21700000000009823,
+            "native_relevant_receipts": 3819,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2155.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.21700000000009823,
+            "native_relevant_receipts": 4073,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2160.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.016999999999825377,
+            "native_relevant_receipts": 4328,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2165.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.016999999999825377,
+            "native_relevant_receipts": 4582,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2170.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.4169999999999163,
+            "native_relevant_receipts": 4836,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2175.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.21700000000009823,
+            "native_relevant_receipts": 5090,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2180.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.21700000000009823,
+            "native_relevant_receipts": 5345,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2185.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.016999999999825377,
+            "native_relevant_receipts": 5599,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2190.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.21700000000009823,
+            "native_relevant_receipts": 5854,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2195.582,
+            "native_age_sec": 0.016999999999825377,
+            "gateway_age_sec": 0.016999999999825377,
+            "native_relevant_receipts": 6109,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2200.582,
+            "native_age_sec": 0.016999999999825377,
+            "gateway_age_sec": 0.016999999999825377,
+            "native_relevant_receipts": 6364,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2205.582,
+            "native_age_sec": 0.016999999999825377,
+            "gateway_age_sec": 0.4169999999999163,
+            "native_relevant_receipts": 6618,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2210.582,
+            "native_age_sec": 0.016999999999825377,
+            "gateway_age_sec": 0.21700000000009823,
+            "native_relevant_receipts": 6873,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2215.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.21700000000009823,
+            "native_relevant_receipts": 7126,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2220.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.21700000000009823,
+            "native_relevant_receipts": 7381,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2225.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.4169999999999163,
+            "native_relevant_receipts": 7635,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2230.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.4169999999999163,
+            "native_relevant_receipts": 7889,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2235.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.21700000000009823,
+            "native_relevant_receipts": 8144,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2240.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.016999999999825377,
+            "native_relevant_receipts": 8399,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2245.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.4169999999999163,
+            "native_relevant_receipts": 8654,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2250.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.21700000000009823,
+            "native_relevant_receipts": 8908,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2255.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.016999999999825377,
+            "native_relevant_receipts": 9163,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2260.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.4169999999999163,
+            "native_relevant_receipts": 9418,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2265.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.21700000000009823,
+            "native_relevant_receipts": 9673,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2270.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.016999999999825377,
+            "native_relevant_receipts": 9928,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2275.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.016999999999825377,
+            "native_relevant_receipts": 10182,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2280.582,
+            "native_age_sec": 0.016999999999825377,
+            "gateway_age_sec": 0.4169999999999163,
+            "native_relevant_receipts": 10437,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2285.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.21700000000009823,
+            "native_relevant_receipts": 10691,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2290.582,
+            "native_age_sec": 0.016999999999825377,
+            "gateway_age_sec": 0.016999999999825377,
+            "native_relevant_receipts": 10938,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2295.582,
+            "native_age_sec": 0.016999999999825377,
+            "gateway_age_sec": 0.016999999999825377,
+            "native_relevant_receipts": 11193,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2300.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.016999999999825377,
+            "native_relevant_receipts": 11447,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2305.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.4169999999999163,
+            "native_relevant_receipts": 11702,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2310.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.4169999999999163,
+            "native_relevant_receipts": 11956,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2315.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.21700000000009823,
+            "native_relevant_receipts": 12212,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2320.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.21700000000009823,
+            "native_relevant_receipts": 12466,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2325.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.016999999999825377,
+            "native_relevant_receipts": 12719,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2330.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.016999999999825377,
+            "native_relevant_receipts": 12973,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2335.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.4169999999999163,
+            "native_relevant_receipts": 13228,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2340.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.21700000000009823,
+            "native_relevant_receipts": 13483,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2345.582,
+            "native_age_sec": 0.21699999999964348,
+            "gateway_age_sec": 0.21700000000009823,
+            "native_relevant_receipts": 13738,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2350.582,
+            "native_age_sec": 0.016999999999825377,
+            "gateway_age_sec": 0.21700000000009823,
+            "native_relevant_receipts": 13993,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2355.582,
+            "native_age_sec": 0.2159999999998945,
+            "gateway_age_sec": 0.016000000000076398,
+            "native_relevant_receipts": 14247,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2360.582,
+            "native_age_sec": 0.01599999999962165,
+            "gateway_age_sec": 0.2159999999998945,
+            "native_relevant_receipts": 14503,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2365.582,
+            "native_age_sec": 0.01499999999987267,
+            "gateway_age_sec": 0.01499999999987267,
+            "native_relevant_receipts": 14757,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2370.582,
+            "native_age_sec": 0.21499999999969077,
+            "gateway_age_sec": 0.21499999999969077,
+            "native_relevant_receipts": 15011,
+            "mode": "ACTIVE"
+          },
+          {
+            "sim_time": 2375.582,
+            "native_age_sec": 0.21499999999969077,
+            "gateway_age_sec": 0.01499999999987267,
+            "native_relevant_receipts": 15266,
+            "mode": "ACTIVE"
+          }
+        ]
+      }
+    }
+  },
+  "launch_process_audit": {
+    "status": "PASS",
+    "launch_transcripts": 1,
+    "task_time_nonzero_child_exits": 0,
+    "post_task_cleanup_exits": []
+  },
+  "task_time_infrastructure_failures": 0,
+  "task_retries": 0,
+  "all_owned_closed_before_edits": true,
+  "conditional_time_order_trial": {
+    "status": "PASS",
+    "scope": "Exact saved AP assignment inputs; conditional nominal selection, no counterfactual mission time/safety guarantee",
+    "original_event_time": 2305.282,
+    "task_commit": "930d7a041b361a731883c469ed51d553710a97fc",
+    "input_sha256": "fa9c3620e2d74fa47581cec6a5026e56b37b693b5d887705995b018e858fe59b",
+    "original_source_sha256": "4f2f7d096965c82720f3b130e916c5a801b1a96d99ac8d1b899ecb9058c1ab60",
+    "cases": {
+      "original_exposure_first": {
+        "assignment": {
+          "tb1": {
+            "x": -4.694559546396491,
+            "y": 1.5058176147399127,
+            "yaw": 1.2992052519163206
+          },
+          "tb2": {
+            "x": -3.9445595352206198,
+            "y": 1.805817619210261,
+            "yaw": 1.5960579785302638
+          }
+        },
+        "nominal_approach_distance_m": {
+          "tb1": 11.66602007422749,
+          "tb2": 0.0779376175802082
+        },
+        "nominal_serial_approach_sec": 65.24420939893166,
+        "largest_nominal_approach_m": 11.66602007422749,
+        "wall_sec": 1.2715146718546748
+      },
+      "proposed_time_first": {
+        "assignment": {
+          "tb1": {
+            "x": -3.8445595337305036,
+            "y": 1.6058176162300288,
+            "yaw": 1.6356295726043057
+          },
+          "tb2": {
+            "x": -4.644559545651433,
+            "y": 1.5058176147399127,
+            "yaw": 1.317903930982025
+          }
+        },
+        "nominal_approach_distance_m": {
+          "tb1": 10.85744141841604,
+          "tb2": 0.8314910194023025
+        },
+        "nominal_serial_approach_sec": 64.93851354343523,
+        "largest_nominal_approach_m": 10.85744141841604,
+        "wall_sec": 1.2636640202254057
+      }
+    }
+  },
+  "time_order_trial_adopted": false,
+  "conditional_diversity_trial": {
+    "status": "PASS",
+    "scope": "Actual complete visual-visit snapshot, current delivered grids/models/exclusions/body paths; missing original in-flight route reservations. Conditional ranking, no original-task counterfactual.",
+    "event_time": 2189.082,
+    "current_position": [
+      3.785860060603977,
+      2.761039941866556
+    ],
+    "current_energy": 73.63067552711814,
+    "original_selected": [
+      5.355440603360179,
+      2.8064931395696604
+    ],
+    "visits": 25,
+    "funded_body_route_candidates": 115,
+    "top": {
+      "original_score": [
+        {
+          "target": [
+            5.355440603360179,
+            2.8064931395696604
+          ],
+          "gain": 960,
+          "required_energy": 24.09170237475503,
+          "planned_distance_m": 2.680761708088303,
+          "original_score": 260.8155800714957,
+          "sqrt_score": 150.58194536312644,
+          "linear_score": 86.93852669049855,
+          "sqrt_factor": 0.5773502691896258,
+          "linear_factor": 0.3333333333333333,
+          "sector": 0,
+          "sector_counts": [
+            2,
+            7,
+            0,
+            0,
+            7,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "target": [
+            5.355440603360179,
+            3.5564931507455313
+          ],
+          "gain": 865,
+          "required_energy": 23.86733669179296,
+          "planned_distance_m": 2.6186296728064997,
+          "original_score": 239.04076355211342,
+          "sqrt_score": 138.01024918410639,
+          "linear_score": 79.68025451737114,
+          "sqrt_factor": 0.5773502691896258,
+          "linear_factor": 0.3333333333333333,
+          "sector": 0,
+          "sector_counts": [
+            2,
+            7,
+            0,
+            0,
+            7,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "target": [
+            4.355440588459018,
+            4.5564931656466925
+          ],
+          "gain": 815,
+          "required_energy": 22.321511347242918,
+          "planned_distance_m": 2.4428937388997585,
+          "original_score": 236.7194754783366,
+          "sqrt_score": 83.69297317482722,
+          "linear_score": 59.17986886958415,
+          "sqrt_factor": 0.35355339059327373,
+          "linear_factor": 0.25,
+          "sector": 1,
+          "sector_counts": [
+            2,
+            7,
+            0,
+            0,
+            7,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "sqrt_score": [
+        {
+          "target": [
+            2.3554405586566958,
+            -0.2935069066239393
+          ],
+          "gain": 1101,
+          "required_energy": 18.672763909999063,
+          "planned_distance_m": 5.751472431964112,
+          "original_score": 163.07553812816226,
+          "sqrt_score": 163.07553812816226,
+          "linear_score": 163.07553812816226,
+          "sqrt_factor": 1.0,
+          "linear_factor": 1.0,
+          "sector": 7,
+          "sector_counts": [
+            2,
+            7,
+            0,
+            0,
+            7,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "target": [
+            5.355440603360179,
+            2.8064931395696604
+          ],
+          "gain": 960,
+          "required_energy": 24.09170237475503,
+          "planned_distance_m": 2.680761708088303,
+          "original_score": 260.8155800714957,
+          "sqrt_score": 150.58194536312644,
+          "linear_score": 86.93852669049855,
+          "sqrt_factor": 0.5773502691896258,
+          "linear_factor": 0.3333333333333333,
+          "sector": 0,
+          "sector_counts": [
+            2,
+            7,
+            0,
+            0,
+            7,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "target": [
+            3.355440573557857,
+            -0.4435069088591135
+          ],
+          "gain": 1080,
+          "required_energy": 22.508240757881985,
+          "planned_distance_m": 6.813604482147077,
+          "original_score": 138.22045926020945,
+          "sqrt_score": 138.22045926020945,
+          "linear_score": 138.22045926020945,
+          "sqrt_factor": 1.0,
+          "linear_factor": 1.0,
+          "sector": 7,
+          "sector_counts": [
+            2,
+            7,
+            0,
+            0,
+            7,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "linear_score": [
+        {
+          "target": [
+            2.3554405586566958,
+            -0.2935069066239393
+          ],
+          "gain": 1101,
+          "required_energy": 18.672763909999063,
+          "planned_distance_m": 5.751472431964112,
+          "original_score": 163.07553812816226,
+          "sqrt_score": 163.07553812816226,
+          "linear_score": 163.07553812816226,
+          "sqrt_factor": 1.0,
+          "linear_factor": 1.0,
+          "sector": 7,
+          "sector_counts": [
+            2,
+            7,
+            0,
+            0,
+            7,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "target": [
+            3.355440573557857,
+            -0.4435069088591135
+          ],
+          "gain": 1080,
+          "required_energy": 22.508240757881985,
+          "planned_distance_m": 6.813604482147077,
+          "original_score": 138.22045926020945,
+          "sqrt_score": 138.22045926020945,
+          "linear_score": 138.22045926020945,
+          "sqrt_factor": 1.0,
+          "linear_factor": 1.0,
+          "sector": 7,
+          "sector_counts": [
+            2,
+            7,
+            0,
+            0,
+            7,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "target": [
+            1.3554405437555346,
+            -1.4435069237602747
+          ],
+          "gain": 1026,
+          "required_energy": 19.42466787939563,
+          "planned_distance_m": 6.601472444630099,
+          "original_score": 133.46049905458185,
+          "sqrt_score": 133.46049905458185,
+          "linear_score": 133.46049905458185,
+          "sqrt_factor": 1.0,
+          "linear_factor": 1.0,
+          "sector": null,
+          "sector_counts": [
+            2,
+            7,
+            0,
+            0,
+            7,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    }
+  },
+  "unrun": [
+    "other3 development",
+    "17 formal",
+    "both physical",
+    "917 first exposure"
+  ],
+  "artifacts": [
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/audit_p2c_v23_independent.py",
+      "source_sha256": "4711cf4e80dcfe1325545d6877515a55f9e0d3a3e38ab427b70e35eee2d366c5",
+      "archive": "20261009_p2c_v23_artifacts/log__audit_p2c_v23_independent.py.gz",
+      "archive_sha256": "e0196f094751d23ea7567e5cd9f0d87000ebcd345832be069525b7c0c931d7ba"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/check_p2c_v23_freeze.py",
+      "source_sha256": "ed8c4e8e84cd606fe9b17109938e550453bd3c7810c559d4866b53c38c452a56",
+      "archive": "20261009_p2c_v23_artifacts/log__check_p2c_v23_freeze.py.gz",
+      "archive_sha256": "8c635d2a04661c21cfca3491b526d724d31fe4f9ba3e5ec12cb291073304384e"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v23/20261009_p2c_v23_dev_forced2/20261009_p2c_v23_dev_forced2.csv",
+      "source_sha256": "694c319d61b557492ee0f512e1b3ba309f34a0f918771f6589f31cd78002ab32",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c__20261009_p2c_v23__20261009_p2c_v23_dev_forced2__20261009_p2c_v23_dev_forced2.csv.gz",
+      "archive_sha256": "30103613e91cadb7c959bf180e8d4dc7fc075c1023ec75efb18a3b7fda78fde8"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v23/20261009_p2c_v23_dev_forced2/20261009_p2c_v23_dev_forced2.json",
+      "source_sha256": "b99c66fce2f9f73d1f0ec41c2269deb6cdf7f1be78839118cddaf5a893cc8e1f",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c__20261009_p2c_v23__20261009_p2c_v23_dev_forced2__20261009_p2c_v23_dev_forced2.json.gz",
+      "archive_sha256": "591c9400e1c4eb8b6fef891c8e6b337ba8de742be165aef9efb6e6a8812a7112"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v23/20261009_p2c_v23_dev_forced2/graph.json",
+      "source_sha256": "253f86c79f37f1565b090e23dd4c3a5d3af95054779e129e4d5b217206380d0e",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c__20261009_p2c_v23__20261009_p2c_v23_dev_forced2__graph.json.gz",
+      "archive_sha256": "bc67e2b5b46311815cf9c88bc85b5546a981d8b4d7d6fe384d56c420cf025f86"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v23/20261009_p2c_v23_dev_forced2/launch/robots2_seed303_20261009-080912.log",
+      "source_sha256": "3f1bb9f3aa71a1892e84dcbd726b8a35ec157c3c600d4c0979ba4c76493c8b40",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c__20261009_p2c_v23__20261009_p2c_v23_dev_forced2__launch__robots2_seed303_20261009-080912.log.gz",
+      "archive_sha256": "4f6008b6328db566f67d149d3f7b99e40cea72832fd8637b6637efc0ce1c7255"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v23/20261009_p2c_v23_dev_forced2/ledger.jsonl",
+      "source_sha256": "4e0c0588159b00aab8755ce991aa013a8ba529e18a1bfeea9cd111d0e537d07b",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c__20261009_p2c_v23__20261009_p2c_v23_dev_forced2__ledger.jsonl.gz",
+      "archive_sha256": "6620bf5a4fe572cfe2d42c187f393738ef1b8159f5d369da2edbcc4290d24d42"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v23/20261009_p2c_v23_dev_forced2/ledger_metrics/curves.svg",
+      "source_sha256": "034142f68a54e1a262767d266b3ed4281a704efdfc2dcd46bdb51c68bc2ceae4",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c__20261009_p2c_v23__20261009_p2c_v23_dev_forced2__ledger_metrics__curves.svg.gz",
+      "archive_sha256": "3ce1a43884cdc0452fabb6646e96faa476fadad36afd58b61dd6e12e0ff0dc40"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v23/20261009_p2c_v23_dev_forced2/ledger_metrics/events.jsonl",
+      "source_sha256": "bd52c079def5d954d9d06f4f33e176ee1696ede57b737923c3d5aa71abd7acc0",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c__20261009_p2c_v23__20261009_p2c_v23_dev_forced2__ledger_metrics__events.jsonl.gz",
+      "archive_sha256": "697ddf18e2fc4b20f1f14951c292426850138506bec9775a56ebaa0eda2f3319"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v23/20261009_p2c_v23_dev_forced2/ledger_metrics/inputs.jsonl",
+      "source_sha256": "7a64e3681844fa471d7a9fd2a8489403d02c16da9b37669ccd0da74e9fa5fcb0",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c__20261009_p2c_v23__20261009_p2c_v23_dev_forced2__ledger_metrics__inputs.jsonl.gz",
+      "archive_sha256": "9991d65d66151ac7ca73c3c5549ebfb3dba0da8b297d6c0e0f10dbda72ba87b6"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v23/20261009_p2c_v23_dev_forced2/ledger_metrics/live.jsonl",
+      "source_sha256": "e070700faf36d92a9c1228847c10d32d26c5cb958997579a09b205b30d841fab",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c__20261009_p2c_v23__20261009_p2c_v23_dev_forced2__ledger_metrics__live.jsonl.gz",
+      "archive_sha256": "536a4642e1fefb1fba76fc6315658ed7d2988e2236f7e3dc122be9a6b2b42c21"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v23/20261009_p2c_v23_dev_forced2/ledger_metrics/live_windows.csv",
+      "source_sha256": "9523f68781238ea8ea74c9e34cf5807b3c88df1279c94bdabb911fe517f2faba",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c__20261009_p2c_v23__20261009_p2c_v23_dev_forced2__ledger_metrics__live_windows.csv.gz",
+      "archive_sha256": "a0aaf8634a31e839799eef6c1ac81557b2d981c0b8fab7163ca492b05cd478ff"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v23/20261009_p2c_v23_dev_forced2/ledger_metrics/summary.json",
+      "source_sha256": "abdaf72e603112a16bad23b3005416635c96dd3f134d0fb90fd132a79f9bcc6c",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c__20261009_p2c_v23__20261009_p2c_v23_dev_forced2__ledger_metrics__summary.json.gz",
+      "archive_sha256": "72806d6ce7c1f39f888ac0f9103c13cd050e38febc1d331eb8a9c2da21f626d0"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v23/20261009_p2c_v23_dev_forced2/ledger_metrics/windows.csv",
+      "source_sha256": "9523f68781238ea8ea74c9e34cf5807b3c88df1279c94bdabb911fe517f2faba",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c__20261009_p2c_v23__20261009_p2c_v23_dev_forced2__ledger_metrics__windows.csv.gz",
+      "archive_sha256": "a0aaf8634a31e839799eef6c1ac81557b2d981c0b8fab7163ca492b05cd478ff"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v23/20261009_p2c_v23_dev_forced2/ledger_metrics/windows.jsonl",
+      "source_sha256": "25e27f64f65aa0207cab3dd860ab71d937c252fb5fa28fb26cf9a528f4416209",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c__20261009_p2c_v23__20261009_p2c_v23_dev_forced2__ledger_metrics__windows.jsonl.gz",
+      "archive_sha256": "5a1001ca6a855e97d7ee7ae96ec46ce7975902ca98c86d6edcecca2c1e5590ab"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v23/20261009_p2c_v23_dev_forced2/manifest.json",
+      "source_sha256": "1892f0dd5807f8103618a200c587eb3ecf7bdf1f01b4a9edf4ce81b4eeb662a3",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c__20261009_p2c_v23__20261009_p2c_v23_dev_forced2__manifest.json.gz",
+      "archive_sha256": "fe1440caffa3dcd463b84eca7e84724cd14497c7b68e8d09d67b28f708498a40"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v23/20261009_p2c_v23_dev_forced2/native_graph.json",
+      "source_sha256": "172865045614314fcd6643ec124838f99c656a822d36d9e672cc1bc28c6d33eb",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c__20261009_p2c_v23__20261009_p2c_v23_dev_forced2__native_graph.json.gz",
+      "archive_sha256": "30e5728375685fe6e0757e2ca6695d30859d9f91d4d208c5fa6af4625dfb0448"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v23/20261009_p2c_v23_dev_forced2/observer.log",
+      "source_sha256": "a2c82767eca72be383c122e6e4e87869e145b0febe34fd3fa00ca1f8fc6e2655",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c__20261009_p2c_v23__20261009_p2c_v23_dev_forced2__observer.log.gz",
+      "archive_sha256": "69d9a419763e1a968398884c208b7853a5b112d899493d63c2889254046ef2bb"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v23/20261009_p2c_v23_dev_forced2/runner.log",
+      "source_sha256": "27817352ecc2ae5b26639186a09c5ee7a2287b2abca308fa4083f116bf651c4a",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c__20261009_p2c_v23__20261009_p2c_v23_dev_forced2__runner.log.gz",
+      "archive_sha256": "966d98eded157a60029187e96946064d25144c2568dc02f7cedaadd832dc6f38"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v23/20261009_p2c_v23_dev_forced2/safety_events.jsonl",
+      "source_sha256": "6bdff42ed9b46adbfc2e0822638cc474d43bc8d088bdc4edd0567f31f5c8e9cc",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c__20261009_p2c_v23__20261009_p2c_v23_dev_forced2__safety_events.jsonl.gz",
+      "archive_sha256": "9e5fd10ac36635845d95d985ea3eb2d44892c0a6c7d477f3bf01da85154e4b12"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v23/20261009_p2c_v23_dev_forced2/schedule.json",
+      "source_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c__20261009_p2c_v23__20261009_p2c_v23_dev_forced2__schedule.json.gz",
+      "archive_sha256": "029ac1ef2bb96aa9fa0166f8f60604b79b92f7fb5cd41a374f80171306cf1b52"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v23/20261009_p2c_v23_dev_forced2/summary.json",
+      "source_sha256": "0f716266090b13e5915140b0c9be9f4865e6ebeff52e5366536b0d0920a3185f",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c__20261009_p2c_v23__20261009_p2c_v23_dev_forced2__summary.json.gz",
+      "archive_sha256": "1cbfffed4e8b097be1ccc8c19f85657909a8eb372a8d3733760c27c4b74b92a3"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v23_dev_forced2_gate.json",
+      "source_sha256": "9d8a4d877673f4ec418beddb7990cd4285210e3bcb5b7ffe3121b200eb6f6fb0",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c_v23_dev_forced2_gate.json.gz",
+      "archive_sha256": "9f42e1e852ac3cc9bc48aeaef6305d9e79985298dfb2f22ccbf4d4f02fccef69"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v23_dev_forced2_gate.log",
+      "source_sha256": "dd5465fd21d0d7ecb98b9da46757bec99a4539c1b12b853ed79e2f3e74f8f00e",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c_v23_dev_forced2_gate.log.gz",
+      "archive_sha256": "43df5236943f2c4a8b7adc1c7fe2f2ea4d00b2bac56aeae93b8ec68d8553fbd8"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v23_dev_forced2_runner.log",
+      "source_sha256": "e86dbdc547dc8f2998f96d94b5b00ebbf922f8bcea079e9d6bd8745e90bc8aaa",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c_v23_dev_forced2_runner.log.gz",
+      "archive_sha256": "2913e75fecf1b690178044bf9b61a06b32d8465a99c223f4318e62a153b22967"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v23_diversity_input.json",
+      "source_sha256": "f5f09f197daf6a9055ad2b05e6c5e26acbac80af09ffb87dfea4819f61a96373",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c_v23_diversity_input.json.gz",
+      "archive_sha256": "e430aa05a8f544b113c9b44e1345a785978b01ecbbd7ca08987e91f3fd30b197"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v23_freeze_check.json",
+      "source_sha256": "94fb69f739e6dbc90f681f81a96d700ac5aabbff6c6532b897ab91727bd7c2c6",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c_v23_freeze_check.json.gz",
+      "archive_sha256": "0acc1822e99f97f4ac5ed7dca4fd4d9e9c6695c2a3787eecc0c6e99483ad16a1"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v23_independent_audits.json",
+      "source_sha256": "208b3ec76581e74fafb09423cfaaa57b73ca7401f155dae5eb8a63163d91cff0",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c_v23_independent_audits.json.gz",
+      "archive_sha256": "376aa1540c9ff3737825e1ffb894760ca8d3ee1b486c1520aa9ea7520f5ed3f5"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v23_independent_audits.log",
+      "source_sha256": "84739c57ec01688f7e09736f649df22dd4faebbc2e4c215bc2492e8e25e23a39",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c_v23_independent_audits.log.gz",
+      "archive_sha256": "d9a9dd1fe7d26c44a4b3f0892431a2a3abce82e6cc2e88d8d369c4dcb1098582"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v23_rally_assignment_input.json",
+      "source_sha256": "fa9c3620e2d74fa47581cec6a5026e56b37b693b5d887705995b018e858fe59b",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c_v23_rally_assignment_input.json.gz",
+      "archive_sha256": "2edde82135dea20ae25f17eeb4bfa69cfd8822ad0ecd018c5c798b5403fd65b4"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v23_rally_time_order_diagnostic.json",
+      "source_sha256": "87c3a78fee919524716e154c92de8e072ef0d5a119273b9ca0730c80c35b25d8",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c_v23_rally_time_order_diagnostic.json.gz",
+      "archive_sha256": "4db8b76bbbcf8de16b67413d599f8a36a2df3be4fc617260954e8e4212a5e683"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v23_rally_time_order_diagnostic.log",
+      "source_sha256": "87c3a78fee919524716e154c92de8e072ef0d5a119273b9ca0730c80c35b25d8",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c_v23_rally_time_order_diagnostic.log.gz",
+      "archive_sha256": "4db8b76bbbcf8de16b67413d599f8a36a2df3be4fc617260954e8e4212a5e683"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v23_spatial_diversity_diagnostic.json",
+      "source_sha256": "01df7def386d0fb6ce4e0db669a51fcaebb5fe8ab4b6839d4b0f13a964a9d279",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c_v23_spatial_diversity_diagnostic.json.gz",
+      "archive_sha256": "7810f05a9b2233199c0b43b177c25b5c221f921d371d30180f46c82e5e0c0fcb"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v23_spatial_diversity_diagnostic.log",
+      "source_sha256": "01df7def386d0fb6ce4e0db669a51fcaebb5fe8ab4b6839d4b0f13a964a9d279",
+      "archive": "20261009_p2c_v23_artifacts/log__p2c_v23_spatial_diversity_diagnostic.log.gz",
+      "archive_sha256": "7810f05a9b2233199c0b43b177c25b5c221f921d371d30180f46c82e5e0c0fcb"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/probe_p2c_v23_rally_time_order.py",
+      "source_sha256": "51451a8fa5d1686bdfc4993d76fb7b31af5a220e9b645292c11a6e8e9ef51cd1",
+      "archive": "20261009_p2c_v23_artifacts/log__probe_p2c_v23_rally_time_order.py.gz",
+      "archive_sha256": "ee13e0fe9a79026f29eaad1f6e6c105d5c497370371fada3bc778e920a576feb"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/probe_p2c_v23_spatial_diversity.py",
+      "source_sha256": "204916aa83a748310761875067d27002fd8a3e6f93a9e987bd2b5a6f2fa2552a",
+      "archive": "20261009_p2c_v23_artifacts/log__probe_p2c_v23_spatial_diversity.py.gz",
+      "archive_sha256": "b9dcc7792d485c4e5d1f20188b894187500ff7072b5f2ab818e57b18cd67fb60"
+    }
+  ]
+}
