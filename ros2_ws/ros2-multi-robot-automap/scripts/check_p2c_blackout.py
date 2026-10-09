@@ -11,7 +11,7 @@ from run_p2d_baseline import PROJECT_ROOT,file_digest
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def nav2_readiness_audit(records,staging,poses):
+def nav2_readiness_audit(records,staging,poses,require_active_stability=False):
     """Check actual Nav2 bounds before each unchanged gateway staging leg."""
     latest={};proof=[]
     for event in records:
@@ -20,15 +20,20 @@ def nav2_readiness_audit(records,staging,poses):
         latest.setdefault(event['robot'],[]).append(event)
     for event in staging:
         if event['event']!='staging_requested':continue
-        matches=[r for r in latest.get(event['robot'],[]) if r['observer_time']<=event['observer_time']]
+        matches=[r for r in latest.get(event['robot'],[]) if r['observer_time']<=event['observer_time']+1e-9]
         assert matches,'missing Nav2 readiness before staging'
         row=matches[-1]
-        assert row['ready'] is True and 0<=event['observer_time']-row['observer_time']<2.
+        assert row['ready'] is True and -1e-9<=event['observer_time']-row['observer_time']<2.
         assert row['frame']=='map' and 0<=row['observer_time']-row['map_header_time']<=2.
         assert all(math.isfinite(v) for v in [row['map_header_time'],row['resolution'],*row['origin'],*row['orientation']])
         assert row['resolution']>0 and row['width']>0 and row['height']>0
         assert row['data_length']==row['width']*row['height']
         assert all(abs(v)<=1e-6 for v in row['orientation'][:3]) and abs(abs(row['orientation'][3])-1.)<=1e-6
+        if require_active_stability:
+            states=row['delivered_battery_records'];assert len(states)==2
+            assert all(state['mode']=='ACTIVE' and math.isfinite(state['stamp_sec'])
+                       and 0<=row['observer_time']-state['stamp_sec']<5. for state in states)
+            assert states[1]['stamp_sec']-states[0]['stamp_sec']>=.5-1e-9
         for x,y,_ in poses.values():
             column=math.floor((x-row['origin'][0])/row['resolution'])
             line=math.floor((y-row['origin'][1])/row['resolution'])
@@ -87,7 +92,8 @@ def probe_detail(path,config):
     if fixture.name=='stage_p2c_return_probe.py':
         readiness_path=directory/'nav2_readiness.jsonl'
         readiness=nav2_readiness_audit([json.loads(line) for line in readiness_path.open()],
-                                     staging,config['return_staging']['poses'])
+            staging,config['return_staging']['poses'],
+            bool(config.get('nav2_staging_readiness',{}).get('delivered_active_span_sec_min')))
         source_proof.update(nav2_readiness=readiness,nav2_readiness_sha256=sha(readiness_path))
     mode=config['cases'][row['case']]['mode'];motion=None
     if mode=='fault':

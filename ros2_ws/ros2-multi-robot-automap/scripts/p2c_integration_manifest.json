@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-09T12:57:56.676567+00:00",
+  "predeclared_at_utc": "2026-10-09T13:19:47.702324+00:00",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -495,7 +495,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "723a844e54e6f28501d59fc4ed2785f5f2d65592",
+  "candidate_parent_commit": "593b5dda923293ab855d4dca98baa0a3345ba051",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -625,7 +625,7 @@
   },
   "staging_apparatus_script": "stage_p2c_return_probe.py",
   "staging_base_content_sha256": "47ce7998e212a9463ab657bbc0b121d4903ed886016bbf0fd3a2399c986da05d",
-  "staging_apparatus_content_sha256": "e16bcd508d27e0c6e77459825f5cda2c892555332ebd2bcccca50b2b175c595d",
+  "staging_apparatus_content_sha256": "a3c8f0c6174c6909f02fcafa42818bb0ba6551eb7b4be2b419dc15846e16c405",
   "nav2_staging_readiness": {
     "scope": "Private simulation-only preparation readiness; does not modify task policy, native safety, AP observations or radio traffic.",
     "topic": "/{robot}/global_costmap/costmap",
@@ -634,10 +634,17 @@
     "requirements": [
       "original action server ready",
       "finite full unrotated costmap",
-      "all original stage poses in actual costmap bounds"
+      "all original stage poses in actual costmap bounds",
+      "two distinct consecutive fresh delivered ACTIVE states separated by original0.5s heartbeat; duplicate sources do not count"
     ],
     "evidence": "nav2_readiness.jsonl before every original gateway staging leg; unchanged base checks own received map, pose/TF/battery leases and known-free prefix",
-    "original_stimulus": "50s preparation deadline / 60..250s blackout / 62..248s native motion verification / no abort retry are unchanged"
+    "original_stimulus": "50s preparation deadline / 60..250s blackout / 62..248s native motion verification / no abort retry are unchanged",
+    "delivered_active_span_sec_min": 0.5,
+    "state_source": "only existing /gateway/received/{robot}/battery_state; original5s source TTL; no native audit/hidden control input"
   },
-  "retained_failed_physical_characterization": "20261009_p2c_return_characterization_failed.json"
+  "retained_failed_physical_characterization": "20261009_p2c_return_ready_failed.json",
+  "retained_failed_physical_characterizations": [
+    "20261009_p2c_return_characterization_failed.json",
+    "20261009_p2c_return_ready_failed.json"
+  ]
 }

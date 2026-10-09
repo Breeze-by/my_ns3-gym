@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Keep the frozen staging stimulus, waiting for a real Nav2 map first."""
 import argparse
+from collections import deque
 import hashlib
 import json
 import math
@@ -9,6 +10,8 @@ from pathlib import Path
 from nav_msgs.msg import OccupancyGrid
 import rclpy.action
 from rclpy.action import ActionClient
+from rclpy.qos import DurabilityPolicy,QoSProfile,ReliabilityPolicy
+from std_msgs.msg import String
 
 import stage_p3b5_return_probe as original
 
@@ -35,6 +38,15 @@ def nav2_map_ready(grid, positions, now):
     return True
 
 
+def delivered_active_stable(records,now):
+    """Two distinct delivered heartbeat sources; no native hidden state."""
+    if len(records)!=2 or not math.isfinite(now):return False
+    stamps=[row['stamp_sec'] for row in records]
+    return (all(row['mode']=='ACTIVE' for row in records)
+        and all(math.isfinite(stamp) and 0<=now-stamp<5. for stamp in stamps)
+        and stamps[1]-stamps[0]>=.5-1e-9)
+
+
 def main():
     parser=argparse.ArgumentParser(add_help=False)
     parser.add_argument("--config",type=Path,required=True)
@@ -53,15 +65,30 @@ def main():
             self.robot=action_name.split("/")[2]
             self.grid=None
             self.last_ready=None
+            self.batteries=deque(maxlen=2)
             self.map_subscription=node.create_subscription(OccupancyGrid,
                 f"/{self.robot}/global_costmap/costmap",lambda message:setattr(self,"grid",message),1)
+            qos=QoSProfile(depth=1,reliability=ReliabilityPolicy.RELIABLE,
+                           durability=DurabilityPolicy.TRANSIENT_LOCAL)
+            self.battery_subscription=node.create_subscription(String,
+                f"/gateway/received/{self.robot}/battery_state",self.battery_received,qos)
+
+        def battery_received(self,message):
+            state=json.loads(message.data)
+            row=dict(mode=state['mode'],stamp_sec=state['stamp_sec'])
+            if row['mode']!='ACTIVE' or not math.isfinite(row['stamp_sec']):
+                self.batteries.clear()
+            elif not self.batteries or row['stamp_sec']>self.batteries[-1]['stamp_sec']:
+                self.batteries.append(row)
 
         def server_is_ready(self):
-            now=self.task_node.get_clock().now().nanoseconds*1e-9
-            ready=super().server_is_ready() and nav2_map_ready(self.grid,positions,now)
+            now=self.task_node.get_clock().now().nanoseconds/1e9
+            ready=(super().server_is_ready() and nav2_map_ready(self.grid,positions,now)
+                   and delivered_active_stable(self.batteries,now))
             if ready or ready!=self.last_ready:
                 self.last_ready=ready
-                row=dict(event="nav2_staging_readiness",robot=self.robot,observer_time=now,ready=ready)
+                row=dict(event="nav2_staging_readiness",robot=self.robot,observer_time=now,ready=ready,
+                         delivered_battery_records=list(self.batteries))
                 if self.grid is not None:
                     info=self.grid.info
                     row.update(map_header_time=self.grid.header.stamp.sec+self.grid.header.stamp.nanosec*1e-9,

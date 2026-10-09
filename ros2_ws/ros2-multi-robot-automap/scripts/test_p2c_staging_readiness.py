@@ -95,3 +95,32 @@ def test_legacy_staging_default_is_preserved_and_unrecognized_apparatus_rejected
     assert staging_apparatus({}).name=='stage_p3b5_return_probe.py'
     assert staging_apparatus({'staging_apparatus_script':'stage_p2c_return_probe.py'}).name=='stage_p2c_return_probe.py'
     with pytest.raises(ValueError):staging_apparatus({'staging_apparatus_script':'../../anything.py'})
+
+
+@pytest.mark.parametrize('difference',[2.3e-13,1e-6])
+def test_reader_accepts_equivalent_float_clock_conversions_but_rejects_actual_future(difference):
+    records=readiness()
+    for row in records:row['observer_time']=10.+difference
+    staging=[dict(event='staging_requested',robot=name,observer_time=10.) for name in POSES]
+    if difference<1e-9:assert len(nav2_readiness_audit(records,staging,POSES))==2
+    else:
+        with pytest.raises(AssertionError):nav2_readiness_audit(records,staging,POSES)
+
+
+@pytest.mark.parametrize('invalid',[None,'single','duplicate','short','future','stale','mode','nonfinite'])
+def test_delivered_active_requires_distinct_fresh_sources_over_original_heartbeat(invalid):
+    states=[dict(mode='ACTIVE',stamp_sec=9.),dict(mode='ACTIVE',stamp_sec=9.5)]
+    if invalid=='single':states=states[:1]
+    if invalid=='duplicate':states[1]['stamp_sec']=9.
+    if invalid=='short':states[1]['stamp_sec']=9.4
+    if invalid=='future':states[1]['stamp_sec']=11.
+    if invalid=='stale':states[0]['stamp_sec']=4.
+    if invalid=='mode':states[1]['mode']='RETURNING'
+    if invalid=='nonfinite':states[1]['stamp_sec']=float('nan')
+    assert wrapper.delivered_active_stable(states,10.) is (invalid is None)
+    records=readiness()
+    for row in records:row['delivered_battery_records']=copy.deepcopy(states)
+    staging=[dict(event='staging_requested',robot=name,observer_time=10.1) for name in POSES]
+    if invalid is None:assert len(nav2_readiness_audit(records,staging,POSES,True))==2
+    else:
+        with pytest.raises(AssertionError):nav2_readiness_audit(records,staging,POSES,True)
