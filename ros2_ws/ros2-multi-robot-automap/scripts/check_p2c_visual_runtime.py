@@ -18,7 +18,7 @@ from rclpy.node import Node
 from std_msgs.msg import String
 
 from multi_robot_exploration import control as c
-from check_p2c_gate import exploration_travel_audit, target_survey_audit
+from check_p2c_gate import exploration_travel_audit, target_survey_audit, observer_heading_audit
 
 REFERENCE='89ee853151d45ae5dbe604f00ccafa8b522c7eb9'
 SOURCE='ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/control.py'
@@ -124,6 +124,25 @@ def main():
         survey_events=[e for e in received if e.get('kind')=='target_information_survey']
         assert len(survey_events)==1
         survey_audit=target_survey_audit(survey_events,True,3.)
+        coordinator.survey_goal_pending=False;coordinator.survey_goal_handle=None
+        coordinator.robot_positions['tb1']=(2.05,4.05);coordinator.robot_yaws['tb1']=0.
+        coordinator.target_received_source_time=9.5
+        calls=action_client.send_goal_async.call_count
+        assert not coordinator.restore_observer_heading()
+        assert action_client.send_goal_async.call_count==calls
+        deadline=time.monotonic()+5.
+        while not any(e.get('event')=='coordinator_observer_heading_quiet_hold' for e in received) and time.monotonic()<deadline:
+            executor.spin_once(timeout_sec=.02)
+        coordinator.target_received_source_time=4.
+        assert coordinator.restore_observer_heading()
+        assert action_client.send_goal_async.call_count==calls+1
+        deadline=time.monotonic()+5.
+        while not any(e.get('kind')=='target_observation_heading' for e in received) and time.monotonic()<deadline:
+            executor.spin_once(timeout_sec=.02)
+        heading_events=[e for e in received if e.get('event')=='coordinator_observer_heading_quiet_hold'
+            or e.get('kind')=='target_observation_heading']
+        headings=observer_heading_audit(heading_events,True)
+        assert headings['quiet_holds']==headings['heading_turns']==1
         result=dict(status='PASS',scope='Actual isolated ROS DDS publication, synthetic delivered grid/pose; no task or Wi-Fi claim',
             reference_commit=REFERENCE,reference_control_sha256=hashlib.sha256(old.encode()).hexdigest(),
             control_sha256=hashlib.sha256(Path(c.__file__).read_bytes()).hexdigest(),
@@ -131,6 +150,7 @@ def main():
             frozen_expected_error=old_error,current_group_id=candidate.viewpoint.group_id,
             independent_audit=audit,mission_diversity_audit=mission_audit,
             target_survey_audit=survey_audit,synthetic_survey_action_client=True,received=received)
+        result['observer_heading_audit']=headings
         args.output.parent.mkdir(parents=True,exist_ok=True);args.output.write_text(json.dumps(result,indent=2)+'\n')
         print(json.dumps({k:v for k,v in result.items() if k!='received'}))
     finally:

@@ -5053,7 +5053,7 @@ class HeadquartersControl(Node):
         return True
 
     def restore_observer_heading(self):
-        """Center a valid delivered target before a waiting observer loses view."""
+        """Restore a lapsed observer heartbeat using a still-valid target."""
         name = getattr(self, "target_observing_robot", None)
         position = self.robot_positions.get(name)
         yaw = getattr(self, "robot_yaws", {}).get(name)
@@ -5078,6 +5078,21 @@ class HeadquartersControl(Node):
                 <= getattr(self, "target_view_fov_rad", math.pi / 2) / 4
                 or math.dist(position, self.target)
                     > getattr(self, "target_view_distance", 3.) - self.rally_position_tolerance):
+            return False
+        now=self.now()
+        if now-self.target_received_source_time <= TARGET_OBSERVER_FRESHNESS_SEC:
+            # A valid recent confirmation already shows that the target is
+            # observed. Recentring here would delay surveys, charging and
+            # ordinary approaches, and can disturb an otherwise quiet robot.
+            if now-getattr(self,'observer_heading_quiet_audit_at',-float('inf')) >= 5.:
+                self.observer_heading_quiet_audit_at=now
+                self.consumed_publisher.publish(String(data=json.dumps(dict(
+                    event='coordinator_observer_heading_quiet_hold',event_time=now,
+                    robot=name,target=list(self.target),position=list(position),
+                    yaw=yaw,desired_yaw=heading,
+                    target_source_time=self.target_received_source_time,
+                    inputs=self.input_freshness_details(),
+                ),sort_keys=True)))
             return False
         # Turning in a known-safe current cell does not require a translated
         # path to the target. Unknown target LOS is not permission to move;

@@ -8303,3 +8303,16 @@ ROS环境系统Python3/source Humble+install/PYTHONNOUSERSITE=1/FastRTPS-UDPv4/t
 归档首脚本误用competition_1_diagnostic文件名而FileNotFoundError，原脚本/错误保留，按实际diagnostic_1文件另存修正脚本，不覆盖实验输出。
 
 v26 directed pytest test_mission_search_diversity.py/test_initial_known_search.py/test_relative_frontier_travel.py：99 PASS7.75s；完整pytest功能范围三lint ignore1143 PASS92.70s，colcon build四包；check_p2c_source --output log/p2c_v26_source.json；run_p2c_tasks --case dev_forced2 --run-id 20261009_p2c_v26 --domain 210 --gazebo-port 20290 --validate-only与--manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261009_p2c_v26_physical --domain 219 --gazebo-port 20299 --validate-only；check_p2c_visual_runtime --output log/p2c_v26_visual_runtime.json实际DDS/domain215+synthetic action client全部PASS。前瞻all4/17/2原任务尚未调用，需新clean pushed freeze。全部精确argv、输出与源码SHA在组件/失败机读报告和压缩原件，无P4/ns-3/Wi-Fi/RL。
+
+
+## 2026-10-09 P2C.1 v26四原开发失败及v27健康确认窗口
+
+2026-10-09 P2C.1 v27健康确认安静保持组件PASS、待新冻结：v26 all4为forced241.9/rooms211.5原生COMPLETE和lab300.2/corr300.1 RALLYtimeout，四格零接触耗尽failed与task期infra、外层0，原FAIL保留不回填。53探索11补查/590能量/16closed返航/3真实目标信息勘察与四份八类独立审计PASS，不替代远端断网或native成功。7原heading请求中4源龄.5..1s；新统一原5s heartbeat，健康确认安静，>5s且60s lease有效仍按原保护恢复，私有quiet与独立读者/DDS验证。1162功能/94定向/四包5.54s/171保护4授权54协议/actual DDS两manifest PASS，其余72中央方法及全部纯函数/native源/300s/5s/TTL/硬预算/几何保持。新4开发/17正式/2物理需clean pushed freeze，917未暴露，P3C.5已验收，无P4/ns-3/Wi-Fi/RL。报告20261009_p2c_healthy_confirmation_components.md及20261009_p2c_v26_failed_development.md。
+
+6726450推送后独立check_p2c_v26_freeze.py PASS，source Humble+install/PYTHONNOUSERSITE=1/FastRTPS-UDPv4/taskset -c0-79，run_p2c_tasks.py --case dev_forced2 --run-id 20261009_p2c_v26 --domain 210 --gazebo-port 20290。原native241.9/各charge1/5.8s保持，严格--development --cases dev_forced2 PASS，检查源码/上游仍同freeze、其他三格未启动后同run-id并行--case dev_lab101 --domain 211 --gazebo-port 20291、dev_rooms202/domain212/20292、dev_corridors303/domain213/20293，各首次原owner及observer0全部自然结束后才修改。全--development --output log/p2c_v26_development_gate.json FAIL仅lab/corr原生超时，audit_p2c_v26_independent.py八类四格PASS，完整原始/命令/config/environment/sourceSHA/native图/失败/关闭记录归档；17正式/两物理/917未启动，无任务重试。
+
+房间209.4秒中间commentary有误，原summary native211.5秒已纠正，不改任何输入/输出。只读解析七个coordinator_navigation_decision/target_observation_heading并另存p2c_v26_heading_age_diagnostic.json，四健康源龄.5..1秒与三间断>5秒；原条件变更不称反事实任务收益。查看充电优先顺序时corr集合只余一个unfunded robot，未运行或采用新的排序试验。
+
+v27 pytest -q test_observer_healthy_confirmation.py/test_rally_observation_recovery.py/test_target_information_survey.py94 PASS7.02秒；完整pytest功能三lint ignore1162 PASS85.13秒；colcon build四包5.54秒；check_p2c_source --output log/p2c_v27_source.json；run_p2c_tasks --case dev_forced2 --run-id 20261009_p2c_v27 --domain 210 --gazebo-port 20290 --validate-only和physical_fault/--manifest scripts/p2c_blackout_manifest.json/20261009_p2c_v27_physical/domain219/20299 validate-only；check_p2c_visual_runtime --output log/p2c_v27_visual_runtime.json在domain215实际DDS quiet无action1/lapsed按原保护synthetic action1/原candidate与survey检查PASS。精确argv/输出/源码SHA见压缩原件，全部源/实验/文档须同session提交推送后新4/17/2，无P4/ns-3/Wi-Fi/RL。
+
+文档表述复查明确quiet不发动作、不咨询运动预算，只有实际恢复继续咨询全部原保护；生成脚本原件保留，机读报告补documentation_corrections。

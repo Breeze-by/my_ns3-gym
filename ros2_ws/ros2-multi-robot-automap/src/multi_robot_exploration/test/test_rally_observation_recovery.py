@@ -14,7 +14,7 @@ def observer_node():
     names=('tb1','tb2')
     client=Mock();client.server_is_ready.return_value=True
     node=SimpleNamespace(
-        target_observing_robot='tb1',target=(2.05,4.05),target_view_distance=3.,
+        target_observing_robot='tb1',target=(2.05,4.05),target_view_distance=3.,target_received_source_time=94.,
         robot_positions={'tb1':(2.05,2.05),'tb2':(8.05,8.05)},robot_yaws={'tb1':2.5},
         robot_states=dict.fromkeys(names,'idle'),goal_handles=dict.fromkeys(names),
         battery_modes=dict.fromkeys(names,'ACTIVE'),enable_battery=True,

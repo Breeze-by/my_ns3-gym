@@ -649,13 +649,46 @@ def check_one(path,config):
         bool(config.get('mission_spatial_diversity')))
     surveys=target_survey_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
         bool(config.get('target_information_survey')),result['target_max_distance_m'],result['rally_position_tolerance_m'])
+    headings=observer_heading_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
+        bool(config.get('observer_heading_confirmation_gap')),result['target_max_distance_m'],
+        result['rally_position_tolerance_m'],math.radians(result['target_field_of_view_deg']))
     assert result['collision_monitoring_active']
     return dict(case=case,status='PASS',git_commit=row['git_commit'],source_digests=row['source_digests'],
         result=result,raw_summary=str(path.resolve()),raw_summary_sha256=sha(path),return_audit=native,
         communication_audit=communications,lookahead_audit=forecast,native_energy_audit=energy,
         ap_return_veto_audit=vetoes,rally_assignment_audit=assignments,rally_repair_audit=repairs,
-        exploration_travel_audit=travel,target_survey_audit=surveys,
+        exploration_travel_audit=travel,target_survey_audit=surveys,observer_heading_audit=headings,
         native_tf_ingress_audit=ingress,launch_process_audit=processes)
+
+
+def observer_heading_audit(records,required=False,radius_m=3.,position_tolerance_m=.35,fov_rad=math.pi/2):
+    """A recent delivered confirmation stays quiet; a lapsed heartbeat may turn."""
+    quiet=turns=0
+    if not required:return dict(status='PASS',required=False,quiet_holds=0,heading_turns=0)
+    for e in records:
+        is_quiet=e.get('event')=='coordinator_observer_heading_quiet_hold'
+        is_turn=e.get('event')=='coordinator_navigation_decision' and e.get('kind')=='target_observation_heading'
+        if not (is_quiet or is_turn):continue
+        now=e['event_time'];name=e['robot'];inputs=e['inputs']
+        lease=inputs['headquarters/target_detection'];age=now-lease['source_time']
+        assert math.isclose(age,lease['age_sec'],abs_tol=1e-8) and 0<=age<=60.
+        for kind,ttl in (('pose_state',2.),('frame_state',2.),('battery_state',5.)):
+            state=inputs[name+'/'+kind];elapsed=now-state['source_time']
+            assert 0<=elapsed<=ttl and math.isclose(elapsed,state['age_sec'],abs_tol=1e-8)
+        if is_quiet:
+            assert age<=5. and e['target_source_time']==lease['source_time']
+            position=e['position'];target=e['target']
+            heading=math.atan2(target[1]-position[1],target[0]-position[0])
+            assert math.dist(position,target)<=radius_m-position_tolerance_m
+            assert math.isclose(heading,e['desired_yaw'],abs_tol=1e-8)
+            delta=math.atan2(math.sin(heading-e['yaw']),math.cos(heading-e['yaw']))
+            assert abs(delta)>fov_rad/4.
+            quiet+=1
+        else:
+            assert age>5.,'unnecessary observer turn during healthy delivered confirmation'
+            assert np.allclose(e['current_position'],e['requested_position'],rtol=0,atol=1e-8)
+            turns+=1
+    return dict(status='PASS',required=True,quiet_holds=quiet,heading_turns=turns)
 
 
 def audit_one(item):
