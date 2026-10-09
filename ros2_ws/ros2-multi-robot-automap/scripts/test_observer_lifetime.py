@@ -17,7 +17,18 @@ def fixture_env():
 
 def running(pid):
     try:return Path('/proc',str(pid),'stat').read_text().split()[2]!='Z'
-    except FileNotFoundError:return False
+    except (FileNotFoundError,ProcessLookupError):return False
+
+@pytest.mark.parametrize('error',[FileNotFoundError,ProcessLookupError])
+def test_proc_read_race_reports_a_vanished_child(monkeypatch,error):
+    def disappeared(*args,**kwargs):raise error('child exited during /proc read')
+    monkeypatch.setattr(Path,'read_text',disappeared)
+    assert not running(1)
+
+def test_proc_read_permission_error_is_not_reported_as_child_exit(monkeypatch):
+    def denied(*args,**kwargs):raise PermissionError('unreadable child status')
+    monkeypatch.setattr(Path,'read_text',denied)
+    with pytest.raises(PermissionError):running(1)
 
 def receive(process):
     deadline=time.monotonic()+3

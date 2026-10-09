@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 import base64
 import hashlib
 import heapq
@@ -127,6 +127,11 @@ class Assignment:
 @dataclass(frozen=True)
 class ViewpointGainBound(Viewpoint):
     """Private unsampled rectangle bound, never an executed viewpoint."""
+
+
+@dataclass(frozen=True)
+class SearchGainBound(Viewpoint):
+    face_interest: bool = False
 
 
 @dataclass(frozen=True)
@@ -447,7 +452,7 @@ def mission_search_diversity(target,states,visits,raw_grid,resolution,origin):
 
 def known_space_search_candidates(raw_grid, resolution, origin, robot_name,
                                   position, visited, exclusions=(), blocked=(), gain_cache=None, face_interest=False,
-                                  camera_views=None):
+                                  camera_views=None, defer_gain=False):
     """Revisit current known space when mapping frontiers cannot aid detection.
 
     Visited neighborhoods are a search preference, not proof of visual coverage.
@@ -468,6 +473,13 @@ def known_space_search_candidates(raw_grid, resolution, origin, robot_name,
                 if camera_views is not None else known_search_interest(raw_grid,resolution,origin,visited))
         interest=gain_cache[key]
     else:interest=known_search_interest(raw_grid,resolution,origin,visited)
+    if defer_gain:
+        key = 'camera_search_interest' if face_interest else 'known_search_interest'
+        gain_cache[key] = interest
+        integral_key = ('search_integral', key)
+        if integral_key not in gain_cache:
+            gain_cache[integral_key] = _integral_image(interest)
+        integral = gain_cache[integral_key]
     if not interest.any():
         return []
     # One sample per metre, snapped to actual reachable cells, includes narrow
@@ -489,16 +501,29 @@ def known_space_search_candidates(raw_grid, resolution, origin, robot_name,
             continue
         cell = (row, column)
         key=('initial_search',row,column) if face_interest else cell
-        if key not in gain_cache:
-            gain_cache[key]=(known_search_view(raw_grid,cell,INFORMATION_RADIUS_M/resolution,interest)
-                if face_interest else visible_unknown_gain(raw_grid,cell,INFORMATION_RADIUS_M/resolution,interest))
-        gain,yaw=gain_cache[key] if face_interest else (gain_cache[key],None)
+        if defer_gain:
+            radius = math.ceil(INFORMATION_RADIUS_M / resolution)
+            r0, r1 = max(0, row-radius), min(raw_grid.shape[0], row+radius+1)
+            c0, c1 = max(0, column-radius), min(raw_grid.shape[1], column+radius+1)
+            gain = int(integral[r1,c1]-integral[r0,c1]-integral[r1,c0]+integral[r0,c0])
+            yaw = None
+        else:
+            if key not in gain_cache:
+                gain_cache[key]=(known_search_view(raw_grid,cell,INFORMATION_RADIUS_M/resolution,interest)
+                    if face_interest else visible_unknown_gain(raw_grid,cell,INFORMATION_RADIUS_M/resolution,interest))
+            gain,yaw=gain_cache[key] if face_interest else (gain_cache[key],None)
         if gain == 0:
             continue
-        viewpoint = Viewpoint(row * raw_grid.shape[1] + column, row, column, row, column, gain, 1)
+        if defer_gain:
+            viewpoint = SearchGainBound(row * raw_grid.shape[1] + column, row, column, row, column, gain, 1, face_interest)
+        else:
+            viewpoint = Viewpoint(row * raw_grid.shape[1] + column, row, column, row, column, gain, 1)
         utility = gain / (distance + 1.)
         candidates.append((utility, robot_name, viewpoint.group_id,
                            Assignment(viewpoint, x, y, distance, utility, x, y,yaw)))
+    if defer_gain and not any(resolve_search_gain(row[3], raw_grid, resolution, gain_cache) is not None
+                             for row in sorted(candidates, key=lambda row: -row[0])):
+        return []
     return candidates
 
 
@@ -635,6 +660,28 @@ def resolve_frontier_gain(assignment, raw_grid, resolution, gain_cache):
         assignment.path_distance_m) * assignment.reuse_factor
     return Assignment(actual, assignment.x, assignment.y, assignment.path_distance_m,
         utility, assignment.navigation_x, assignment.navigation_y, assignment.navigation_yaw)
+
+
+def resolve_search_gain(assignment, raw_grid, resolution, gain_cache):
+    """Resolve actual visibility and heading before an option can be priced."""
+    viewpoint = assignment.viewpoint
+    if not isinstance(viewpoint, SearchGainBound):
+        return assignment
+    cell = (viewpoint.row, viewpoint.column)
+    key = ('initial_search', *cell) if viewpoint.face_interest else cell
+    interest = gain_cache['camera_search_interest' if viewpoint.face_interest else 'known_search_interest']
+    if key not in gain_cache:
+        gain_cache[key] = (known_search_view(raw_grid, cell, INFORMATION_RADIUS_M / resolution, interest)
+            if viewpoint.face_interest else visible_unknown_gain(raw_grid, cell, INFORMATION_RADIUS_M / resolution, interest))
+    gain, yaw = gain_cache[key] if viewpoint.face_interest else (gain_cache[key], None)
+    if gain > viewpoint.information_gain:
+        raise ValueError('search visibility exceeds its rectangle bound')
+    if gain <= 0:
+        return None
+    actual = Viewpoint(viewpoint.group_id, *cell, viewpoint.frontier_row,
+        viewpoint.frontier_column, gain, viewpoint.group_size)
+    return Assignment(actual, assignment.x, assignment.y, assignment.path_distance_m,
+        gain / (assignment.path_distance_m + 1.), assignment.navigation_x, assignment.navigation_y, yaw)
 
 
 def target_reuse_penalty(target, excluded_targets):
@@ -965,7 +1012,12 @@ def known_return_route(raw_grid, resolution, origin, position, charger, radius,
     # retain the same raw-known-free path and bounded 0.6 m search.
     if not (0 <= initial[0] < raw_grid.shape[0] and 0 <= initial[1] < raw_grid.shape[1]) or raw_grid[initial] != 0:
         return None, ()
-    connected = safe & np.isfinite(distances)
+    if cache is None:
+        connected = safe & np.isfinite(distances)
+    else:
+        if 'connected' not in cache:
+            cache['connected'] = safe & np.isfinite(distances)
+        connected = cache['connected']
     if connected[initial]:
         start, escape = initial, (initial,)
     else:
@@ -987,14 +1039,31 @@ def known_return_route(raw_grid, resolution, origin, position, charger, radius,
     distance = sum(math.dist(a, b) for a, b in zip(prefix, prefix[1:])) + float(distances[start]) * resolution
     if not include_route:
         return distance, ()
-    route = list(prefix)
+    suffixes = {} if cache is None else cache.setdefault('route_suffixes', {})
     current = start[0] * safe.shape[1] + start[1]
-    while distances.flat[current] > 0:
+    cells = []
+    while current not in suffixes:
+        cells.append(current)
+        if distances.flat[current] <= 0:
+            tail = ()
+            break
         current = int(predecessors.flat[current])
         if current < 0:
             return None, ()
-        route.append(grid_to_world(*divmod(current, safe.shape[1]), resolution, *origin))
-    return distance, tuple(route)
+    else:
+        shared, offset = suffixes[current]
+        tail = shared[offset:]
+    shared = tuple(grid_to_world(*divmod(cell, safe.shape[1]), resolution, *origin)
+                   for cell in cells) + tail
+    # Retain exact vertices, not a simplified path. Both the number of
+    # cached nodes and each shared tuple are bounded, even on a long maze.
+    first = max(0, len(shared) - 2048)
+    retained = shared[first:]
+    if len(suffixes) + max(0, len(cells) - first) > 2048:
+        suffixes.clear()
+    for offset in range(first, len(cells)):
+        suffixes[cells[offset]] = (retained, offset-first)
+    return distance, (*prefix, *shared[1:])
 
 
 def route_respects_known_obstacles(raw_grid, resolution, origin, route,
@@ -1630,6 +1699,28 @@ def funded_rally_replacement(raw_grid, resolution, origin, position, target,
 
 
 def assign_rally_poses(
+    raw_grid, resolution, origin, robot_positions, target, objective="minimax",
+    battery_states=None, observer_robot=None, current_positions=None,
+    hold_sec=RALLY_HOLD_SEC, return_maps=None,
+):
+    """Find a fully funded separated assignment with progressive candidates.
+
+    Prefer the original three sampled rings when they admit a complete
+    assignment. Otherwise expand to the existing angular boundary samples.
+    Each level keeps the full return, charge/wait and body-cost optimizer;
+    stopping at the first feasible level trades global soft-cost optimality
+    for less computation. Actual navigation still requires fresh admission.
+    """
+    for stratified in (False, True):
+        result = _assign_rally_poses(raw_grid, resolution, origin, robot_positions,
+            target, objective, battery_states, observer_robot, current_positions,
+            hold_sec, return_maps, stratified)
+        if result:
+            return result
+    return {}
+
+
+def _assign_rally_poses(
     raw_grid,
     resolution,
     origin,
@@ -1641,6 +1732,7 @@ def assign_rally_poses(
     current_positions=None,
     hold_sec=RALLY_HOLD_SEC,
     return_maps=None,
+    stratified=True,
 ):
     """Assign separated visible poses, accounting for serial charge waits.
 
@@ -1654,7 +1746,7 @@ def assign_rally_poses(
         raise ValueError(f"unknown rally assignment objective: {objective}")
     names = sorted(robot_positions)
     candidates = rally_pose_candidates(
-        raw_grid, resolution, origin, target, False, True
+        raw_grid, resolution, origin, target, False, stratified
     )
     if len(candidates) < len(names):
         return {}
@@ -1801,6 +1893,8 @@ def assign_rally_poses(
         name: tuple(min(values[column] for values in choices.values()) for column in range(3))
         for name, choices in energy_options.items()
     }
+    minimum_return_exposures = {name: min(values.values())
+                                for name, values in return_exposures.items()}
     parked_route_caches = {}
     parked_detour_costs = {}
 
@@ -1878,7 +1972,7 @@ def assign_rally_poses(
             # Positive soft costs preserve the optimistic partial bound and
             # cannot override observer protection, charge count or feasibility.
             exposure_bound = sum(return_exposures[name][selected_indices[name]]
-                if name in selected_indices else min(return_exposures[name].values()) for name in names)
+                if name in selected_indices else minimum_return_exposures[name] for name in names)
             observer_charge = int(observer_robot in needed and modes.get(observer_robot) == "ACTIVE")
             score = (observer_charge, len(needed), exposure_bound, time_bound, -observer_headroom, *score)
         if score >= best_score:
@@ -2967,6 +3061,7 @@ class HeadquartersControl(Node):
         self.target_search_visits = []
         self.initial_search_visits = {} if self.enable_rally else None
         self.initial_search_next = {}
+        self.planning_lease_diagnostics = {}
         self.initial_search_goals = {}
         self.target_search_basis = "current_map_frontiers"
         self.survey_goal_started_at = None
@@ -3388,7 +3483,9 @@ class HeadquartersControl(Node):
             return None
         gain_cache = context[3] if len(context) > 3 else {}
         ordered = lazy_priority_candidates(context[2].get(name, ()),
-            lambda candidate: resolve_frontier_gain(candidate, self.map_data, self.resolution, gain_cache),
+            lambda candidate: (resolve_search_gain(candidate, self.map_data, self.resolution, context[4])
+                if isinstance(candidate.viewpoint, SearchGainBound) else resolve_frontier_gain(candidate,
+                    self.map_data, self.resolution, gain_cache)),
             lambda candidate: candidate.utility, lambda candidate: candidate.utility)
         alternatives = []
         for candidate in ordered:
@@ -6109,10 +6206,41 @@ class HeadquartersControl(Node):
                 return False
             if planning_started <= now <= deadline:
                 return True
+            details = None
+            diagnostics = getattr(self, 'planning_lease_diagnostics', None)
+            key = (self.task_state, stage)
+            if diagnostics is not None and now-diagnostics.get(key, -float('inf')) >= 30.:
+                diagnostics[key] = now
+                # Audit only, after this proposal is already irrevocably
+                # abandoned. No input stamps are renewed and no command uses
+                # these copies. Keep at most one per phase/stage/30 sim seconds.
+                details = dict(
+                    scope='abandoned frozen callback inputs; read-only diagnostics',
+                    planning_map=grid_audit_evidence(self.map_data, self.resolution, self.origin,
+                        'ap_delivered_planning_map', self.map_received_at, None),
+                    source_map=grid_audit_evidence(self.source_map_data, self.resolution, self.origin,
+                        'ap_delivered_fused_map', self.map_received_at, None),
+                    self_return_cells=self.map_self_return_cells,
+                    return_maps={name: grid_audit_evidence(value['data'], value['resolution'], value['origin'],
+                        'ap_delivered_robot_map', self.robot_map_received_at[name], None)
+                        for name, value in self.robot_maps.items() if value is not None},
+                    robot_positions=self.robot_positions, robot_states=self.robot_states,
+                    battery_states=self.battery_states, battery_modes=self.battery_modes,
+                    exclusions=exclusions, enable_rally=self.enable_rally,
+                    initial_search_next=self.initial_search_next,
+                    initial_search_visits=list((getattr(self, 'initial_search_visits', None) or {}).values()),
+                    initial_search_views=list((getattr(self, 'initial_search_views', None) or {}).values()),
+                    target_search_visits=self.target_search_visits,
+                    exploration_resume_intents=self.exploration_resume_intents,
+                    successful_exploration_legs=self.successful_exploration_legs,
+                    rally_charge_requested=self.rally_charge_requested,
+                    goal_targets={name: asdict(goal) if goal is not None else None
+                                  for name, goal in self.goal_targets.items()},
+                    goal_routes=self.goal_routes)
             self.consumed_publisher.publish(String(data=json.dumps(dict(
                 event='coordinator_planning_lease_expired', event_time=now,
                 planning_started_at_sec=planning_started, source_deadline_sec=deadline,
-                stage=stage, inputs_at_start=planning_inputs), sort_keys=True)))
+                stage=stage, inputs_at_start=planning_inputs, diagnostic_inputs=details), sort_keys=True)))
             return False
         exclusions = self.active_exclusions()
         candidates = []
@@ -6143,7 +6271,7 @@ class HeadquartersControl(Node):
         lookahead_candidates = {}
         frontier_gain_cache = {}
         self.frontier_charge_lookahead = (self.map_data, getattr(self, 'map_received_at', None),
-                                        lookahead_candidates, frontier_gain_cache)
+                                        lookahead_candidates, frontier_gain_cache, search_gain_cache)
         self.opportunity_charge_evidence = {}
         resume_intents = getattr(self, "exploration_resume_intents", {})
         charge_candidates = {}
@@ -6179,7 +6307,7 @@ class HeadquartersControl(Node):
                         self.map_data,self.resolution,self.origin,robot_name,position,
                         [*visits,*[p for p in self.robot_positions.values() if p is not None]],robot_exclusions,
                         [p for name,p in self.robot_positions.items() if name!=robot_name and p is not None],
-                        gain_cache=search_gain_cache,face_interest=True,camera_views=camera_views)
+                        gain_cache=search_gain_cache,face_interest=True,camera_views=camera_views,defer_gain=True)
                     initial_search=bool(robot_candidates)
                     robot_diagnostics=dict(frontier_groups=0,groups_with_viewpoints=0)
                 if refine == "known_space":
@@ -6187,7 +6315,7 @@ class HeadquartersControl(Node):
                         self.map_data, self.resolution, self.origin, robot_name, position,
                         [*self.target_search_visits, *[p for p in self.robot_positions.values() if p is not None]],
                         robot_exclusions, [p for name,p in self.robot_positions.items() if name != robot_name and p is not None],
-                        gain_cache=search_gain_cache)
+                        gain_cache=search_gain_cache,defer_gain=True)
                     robot_diagnostics = dict(frontier_groups=0, groups_with_viewpoints=0)
                 elif not initial_search:
                     if frontier_data is None:
@@ -6226,8 +6354,9 @@ class HeadquartersControl(Node):
                 if not lease_current('candidate_generation'):
                     scoring_aborted = True
                     return None
-                assignment = resolve_frontier_gain(assignment, self.map_data,
-                    self.resolution, frontier_gain_cache)
+                assignment = (resolve_search_gain(assignment, self.map_data, self.resolution, search_gain_cache)
+                    if isinstance(assignment.viewpoint, SearchGainBound) else resolve_frontier_gain(assignment,
+                        self.map_data, self.resolution, frontier_gain_cache))
                 return None if assignment is None else (assignment.utility, robot_name, group_id, assignment)
 
             def evaluate_candidate(raw):

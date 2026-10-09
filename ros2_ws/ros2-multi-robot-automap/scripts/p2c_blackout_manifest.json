@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-09T06:23:11.521783+00:00",
+  "predeclared_at_utc": "2026-10-09T07:27:32.700305+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -100,7 +100,7 @@
   },
   "staging_apparatus_content_sha256": "47ce7998e212a9463ab657bbc0b121d4903ed886016bbf0fd3a2399c986da05d",
   "physical_observer_content_sha256": "1d8a86d39f57982ea1cf18619a35c4a39dcbe151e17eef2af35d16a27cdc899c",
-  "development_parent": "24e1e27bbb4ada0df1ae9a6a5b42e692c958b916",
+  "development_parent": "08fe5f770f92fa2189b7c7d725491a56ec00ca2a",
   "cases": {
     "physical_ideal": {
       "world": "my_world.world",
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "24e1e27bbb4ada0df1ae9a6a5b42e692c958b916",
+  "candidate_parent_commit": "08fe5f770f92fa2189b7c7d725491a56ec00ca2a",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -217,7 +217,8 @@
     "20261009_p2c_v30_failed_development.json",
     "20261009_p2c_v31_failed_development.json",
     "20261009_p2c_v32_failed_development.json",
-    "20261009_p2c_v33_failed_development.json"
+    "20261009_p2c_v33_failed_development.json",
+    "20261009_p2c_v34_failed_development.json"
   ],
   "coordinator_live_clock": {
     "executor": "Two workers; only the existing /clock subscription moves to an independent mutually exclusive group. Original state/action callbacks remain serialized.",
@@ -227,7 +228,14 @@
     "shutdown": "Stop new admissions and cancel timers before waiting for executor completion.",
     "limits": "Clock correctness is independently DDS-verified with controlled blocked callback, not a CPU latency or native completion guarantee. No native battery, Nav2, physics, TTL, horizon or wireless change.",
     "central_action_completion": "Humble Future done callbacks are executor tasks outside callback groups. All8 central response/result registrations enqueue completed futures into one private SimpleQueue and trigger an existing-state-group guard; only its serialized drain mutates mission owners. Late completions after shutdown are ignored; context-active guard failures remain visible. No new DDS topic or application traffic.",
-    "native_action_completion": "The same private callback serializer handles both native return response/result futures in the original native default state group; lightweight TF inbox remains independent, source stamps/heap/energy/return/charge equations and TTLs unchanged."
+    "native_action_completion": "The same private callback serializer handles both native return response/result futures in the original native default state group; lightweight TF inbox remains independent, source stamps/heap/energy/return/charge equations and TTLs unchanged.",
+    "abandoned_input_diagnostics": {
+      "channel": "Existing private read-only coordinator audit, after irrevocable proposal abandonment",
+      "interval_sim_sec": 30.0,
+      "key": "phase and expiry stage",
+      "inputs": "Exact frozen callback geometry/source stamps/state/heading and visit history; source stamps never renewed",
+      "limits": "Diagnostic copies never enter the planner, protocol admission, native safety or navigation; no extra application network packet"
+    }
   },
   "evaluation_result_polling": "Read-only bounded polling of a not-yet-valid JSON file from the same original producer; complete invalid objects, producer failure and original deadline still fail. No episode retry, evaluator change or shutdown grace change.",
   "retained_unrun_candidates": [
@@ -238,7 +246,14 @@
     "return_memo": "Only immutable fused and local source grids; identical geometry/home/radius/position, source replacement or mutable alias invalidates; at most128 positions; returns independent result rows",
     "time_and_budget": "Geometry only. Original sources, true evaluation epochs, source ages, native2/5s TTLs and every final dispatch lease check remain. No cached energy budget or timestamp renewal",
     "validation": "Cell equality, qualification/route/budget equality, invalidation and actual ROS. Fixed snapshot timing is not a worst-case or mission result",
-    "evidence": "20261009_p2c_geometry_performance_components.json"
+    "evidence": "20261009_p2c_geometry_performance_components.json",
+    "return_tree_suffixes": {
+      "algorithm": "Exact shared reverse-predecessor route suffixes and contact-connected mask, reset with the existing content/geometry/home/radius field",
+      "cached_nodes_maximum": 2048,
+      "shared_tuple_vertices_maximum": 2048,
+      "safety": "Every original continuous-check route vertex retained in identical order; no simplification, budget or timestamp cache",
+      "evidence": "20261009_p2c_progressive_planning_components.json"
+    }
   },
   "visibility_computation": {
     "rays": "Original floating unrounded projections cached by radius only, max8 immutable tables; translation+rint occurs at actual grid cell exactly as before",
@@ -263,7 +278,23 @@
       "cache": "One immutable source identity for geometry; replacement and mutable aliases cannot reuse it. Exact ray gains belong to one admission/charging context only",
       "lookahead": "Complete original raw alternative pool; same exact stable order and top3 qualifying alternative rules via lazy gain resolution, never use rectangle gain in energy forecast",
       "proof": "Bounds only rank computation. Executed gain/utility/relative/diversity, complete body/return budgets, true current epochs and original2/5s leases are rechecked",
-      "evidence": "20261009_p2c_lazy_gain_components.json"
+      "evidence": "20261009_p2c_lazy_gain_components.json",
+      "known_space": {
+        "algorithm": "Rectangle current-interest bound then exact original visibility/16yaw before existing stable budget heap",
+        "cache": "Same immutable admission map and delivered-history interest only; ordinary Viewpoint/Assignment before prices/commands/forecast",
+        "fallback": "Resolve enough candidates to establish actual positive visibility; if none, preserve original mapping fallback",
+        "limits": "Fixed-source equivalence; no original timing or mission causal claim",
+        "evidence": "20261009_p2c_progressive_planning_components.json"
+      }
     }
+  },
+  "rally_candidate_sampling": {
+    "algorithm": "progressive original72 rings first, existing angular boundary representatives only if no complete feasible ring assignment",
+    "maximum_candidates": 464,
+    "first_level_maximum": 72,
+    "region": "unchanged known-free target-visible1..2.6m region,0.45m endpoint clearance and0.8m separation",
+    "pricing": "Each level retains original complete qualified return, observer/charge/wait/soft exposure/body cost optimization and cap feasibility; final fresh admission still required",
+    "limits": "Stop at first feasible candidate level; no claim of global soft-cost optimum across464, exhaustive feasibility, worst-case computation or native success",
+    "evidence": "20261009_p2c_progressive_planning_components.json"
   }
 }
