@@ -726,8 +726,12 @@ def lazy_priority_candidates(candidates, evaluate, upper_bound, priority, refine
     """Yield exact stable greedy order without pricing every unused option.
 
     Only a fully evaluated score above every remaining upper bound is yielded.
-    Original input indices retain the old stable-sort tie order.
+    Original input indices retain the old stable-sort tie order. Refinements
+    may be one callback or an ordered sequence of progressively tighter bounds.
     """
+    refinements = (() if refine_bound is None else (refine_bound,)
+                   if callable(refine_bound) else tuple(refine_bound))
+    fully_priced = len(refinements) + 1
     heap = []
     for index, candidate in enumerate(candidates):
         bound = upper_bound(candidate)
@@ -737,17 +741,17 @@ def lazy_priority_candidates(candidates, evaluate, upper_bound, priority, refine
     heapq.heapify(heap)
     while heap:
         negative_bound, index, stage, candidate = heapq.heappop(heap)
-        if stage == 2:
+        if stage == fully_priced:
             yield candidate
             continue
-        if stage == 0 and refine_bound is not None:
-            result = refine_bound(candidate)
+        if stage < len(refinements):
+            result = refinements[stage](candidate)
             if result is None:
                 continue
             bound = upper_bound(result)
             if not math.isfinite(bound) or bound > -negative_bound:
                 raise ValueError('refined candidate bound exceeds its original bound')
-            heapq.heappush(heap, (-bound, index, 1, result))
+            heapq.heappush(heap, (-bound, index, stage + 1, result))
             continue
         result = evaluate(candidate)
         if result is None:
@@ -755,7 +759,7 @@ def lazy_priority_candidates(candidates, evaluate, upper_bound, priority, refine
         score = priority(result)
         if not math.isfinite(score) or score > -negative_bound:
             raise ValueError('candidate priority exceeds its declared finite upper bound')
-        heapq.heappush(heap, (-score, index, 2, result))
+        heapq.heappush(heap, (-score, index, fully_priced, result))
 
 
 def nearest_traversable(traversable, start, max_radius_cells):
@@ -2855,6 +2859,42 @@ def exploration_battery_factor_bound(state, position, distance, destination, map
         return .25 * energy / required if required > 0 and energy <= required else 1.
     except (KeyError, TypeError, ValueError, ZeroDivisionError):
         return 1.
+
+
+def local_peer_funded_for_lease(state, position, distance, destination, local_map, cache=None):
+    """Prove a peer's ranking budget with one complete local contact path.
+
+    A qualified local route upper-bounds the minimum among all qualified
+    returns. Price it at the largest legal map/pose source ages, so a peer
+    proven funded remains eligible throughout this frozen admission lease.
+    Failure is inconclusive: use the original neutral ranking bound. This
+    never replaces an actual route, energy budget or fresh dispatch check.
+    """
+    try:
+        energy = float(state['energy'])
+        home = (float(state['charge_x']), float(state['charge_y']))
+        radius = float(state.get('charge_radius_m', .8))
+        if (state['mode'] != 'ACTIVE' or not math.isfinite(energy)
+                or energy < 0 or not math.isfinite(distance) or distance < 0):
+            return False
+        current, _ = known_return_route(local_map['data'], local_map['resolution'],
+            local_map['origin'], position, home, radius, cache)
+        endpoint, _ = known_return_route(local_map['data'], local_map['resolution'],
+            local_map['origin'], destination, home, radius, cache)
+        if current is None or endpoint is None:
+            return False
+        model = (float(state.get('move_cost_per_m', 1.)),
+                 float(state.get('idle_cost_per_sec', .02)),
+                 float(state.get('return_path_factor', 2.)),
+                 float(state.get('nominal_speed_mps', .18)),
+                 float(state.get('return_safety_margin', 8.)),
+                 float(state.get('return_recovery_wait_sec', RETURN_RECOVERY_WAIT_SEC)),
+                 STATE_TTL_SEC['fused_map_snapshot'], STATE_TTL_SEC['pose_state'])
+        upper = max(battery_assignment_required_energy(distance, endpoint, *model),
+                    battery_assignment_required_energy(0., current, *model))
+        return math.isfinite(upper) and energy > upper
+    except (KeyError, TypeError, ValueError, ZeroDivisionError):
+        return False
 
 
 def battery_assignment_is_safe(
@@ -6445,6 +6485,7 @@ class HeadquartersControl(Node):
                 candidate_contexts[robot_name] = (robot_exclusions, initial_search)
 
             factor_bounds = {}
+            travel_bounds = {}
             for _, name, _, a in raw_candidates:
                 bound = 1.
                 if getattr(self, 'enable_battery', False):
@@ -6462,6 +6503,37 @@ class HeadquartersControl(Node):
                 and all(factor_bounds[name, r[3].x, r[3].y, r[3].path_distance_m] < 1.
                         for r in raw_candidates if r[1] == name)}
             resolved_charges = set()
+
+            def refine_travel_bound(raw):
+                nonlocal scoring_aborted
+                _, robot_name, _, assignment = raw
+                if scoring_aborted or robot_name in plans or robot_name in resolved_charges:
+                    return None
+                if not lease_current('candidate_generation'):
+                    scoring_aborted = True
+                    return None
+                if not search and getattr(self, 'enable_battery', False):
+                    peers = []
+                    cell = world_to_grid(assignment.x, assignment.y, self.resolution, *self.origin)
+                    local_maps = HeadquartersControl.delivered_return_maps(self)
+                    caches = getattr(self, 'return_distance_caches', {})
+                    self.return_distance_caches = caches
+                    for peer, distances in travel_fields.items():
+                        if peer == robot_name or distances is None or peer not in local_maps:
+                            continue
+                        distance = float(distances[cell])
+                        if not math.isfinite(distance) or distance >= assignment.path_distance_m:
+                            continue
+                        if local_peer_funded_for_lease(self.battery_states[peer],
+                                self.robot_positions[peer], distance, (assignment.x, assignment.y),
+                                local_maps[peer], caches.setdefault(peer, {}).setdefault('local', {})):
+                            peers.append(distance)
+                    travel_bounds[robot_name, assignment.x, assignment.y] = relative_travel_factor(
+                        assignment.path_distance_m, peers)
+                if not lease_current('candidate_generation'):
+                    scoring_aborted = True
+                    return None
+                return raw
 
             def refine_candidate_gain(raw):
                 nonlocal scoring_aborted
@@ -6585,12 +6657,13 @@ class HeadquartersControl(Node):
             candidate_order = lazy_priority_candidates(
                 raw_candidates, evaluate_candidate,
                 lambda item: frontier_scheduling_score(item[3].utility * factor_bounds[
-                    item[1], item[3].x, item[3].y, item[3].path_distance_m],
+                    item[1], item[3].x, item[3].y, item[3].path_distance_m]
+                    * travel_bounds.get((item[1], item[3].x, item[3].y), 1.),
                     item[1] not in unfunded_only and not search and interrupted_frontier_is_useful(
                         item[3], resume_intents.get(item[1]), 1.0)),
                 lambda item: frontier_scheduling_score(
                     item[0], (item[1], item[3]) in resume_candidates),
-                refine_bound=refine_candidate_gain)
+                refine_bound=(refine_travel_bound, refine_candidate_gain))
             for _, name, _, assignment in candidate_order:
                 if scoring_aborted or not lease_current('route_admission'):
                     return

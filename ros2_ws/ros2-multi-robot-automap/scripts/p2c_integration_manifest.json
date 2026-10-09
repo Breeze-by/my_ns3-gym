@@ -331,7 +331,8 @@
     "20261009_p2c_v35_failed_development.json",
     "20261009_p2c_v36_failed_development.json",
     "20261009_p2c_v37_failed_development.json",
-    "20261009_p2c_v38_failed_development.json"
+    "20261009_p2c_v38_failed_development.json",
+    "20261009_p2c_v39_failed_development.json"
   ],
   "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
   "opportunity_charge_rules": [
@@ -474,7 +475,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "56de2b91ca9f20c6608983a5c09a05a938a10d36",
+  "candidate_parent_commit": "10860f4029fe26c1517bd550ff6251870693bf7b",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -587,6 +588,13 @@
       "charging": "Within each original refinement pass, only if every raw option is proven unfunded: after the exact highest feasible charge intent is found, lower options may skip price. A possible funded alternative or later refinement pass remains independently evaluated",
       "evidence": "20261009_p2c_budget_bound_components.json",
       "limits": "Fixed-source commands/charge intent equivalence and CPU samples; no task causal gain, original-history replay, live clock bound or Euclidean safety fallback"
+    },
+    "peer_travel_bound": {
+      "algorithm": "ordered local funded-peer proof before original exact gain and complete actual budget; only a guaranteed-funded subset tightens the original relative-travel factor upper bound",
+      "proof": "one complete qualified local path at original maximum legal map5s/pose2s ages upper-bounds the min-qualified-route energy; unknown/missing/unfunded proof keeps original neutral bound",
+      "scope": "ranking only; preserve complete original candidate pool, stable greedy ties, whole body/return budgets, charging fairness, source epochs and all dispatch gates",
+      "evidence": "20261009_p2c_staged_peer_bound_components.json",
+      "limits": "Fixed-epoch equivalent choices/CPU comparisons only; no original-history, causal mission gain or worst-case completion guarantee"
     }
   },
   "native_contact_arrival": {
