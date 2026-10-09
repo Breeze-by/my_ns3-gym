@@ -8764,3 +8764,21 @@ colcon build --packages-select multi_robot_interfaces merge_map multi_robot_expl
 /usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v47 --domain 218 --gazebo-port 20318 --validate-only
 /usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v47_physical --domain 219 --gazebo-port 20319 --validate-only
 ```
+
+
+## 2026-10-10 P2C.1 v47末段原生保持失败与同伴观测支持的中间腿
+
+2026-10-10 P2C.1 v47首forced原RALLY300.1timeout/两机各charge1/min14.78229213/零接触耗尽failed，末tb2仍运动，无原生保持，FAIL保留；14独立子审PASS不代替任务。新各机原确认缓存＋已到位安静同伴原5s观测支持时，中间腿保留原入射yaw；最终/量化格/安全让行/充电/无支持均原样，额外5s支持绑定最终派发，无源续租或新流。真实DDS接收peer10→latest10.1旧90deg/新26.565deg，15.1失效新恢复90deg，结果闭合；1733功能/56最终定向/四包5.32s/190保护6授权54协议/两声明PASS，4中央改＋1新增、其余76/纯几何/native/SLAM/300s/5s/TTL/物理保持。中间1730单最后观测者版本任务前改进、完整a144590源核验保留；范围夹具与QoS FAIL原件保持。新v48 clean pushed4→17+2待实测，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v47_failed_development与20261010_p2c_rally_transit_components。
+
+全部实际任务/组件DDS关闭后才改。命令：canonical ROS cwd、Humble+install/PYTHONNOUSERSITE1、PYTHONPATH含scripts、FastDDS UDPv4清XML/discovery、taskset0–79。所有stdout/source/SHA绑定见组件provenance。
+
+```bash
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v47 --domain 218 --gazebo-port 20318
+/usr/bin/python3 scripts/check_p2c_gate.py --run-root log/p2c/20261010_p2c_v47 --development --cases dev_forced2 --workers 1 --output log/p2c_v47_forced_gate.json
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test scripts --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+colcon build --packages-select multi_robot_interfaces merge_map multi_robot_exploration multi_robot --symlink-install
+/usr/bin/python3 scripts/check_p2c_source.py --output log/p2c_rally_transit_source2.json
+/usr/bin/python3 scripts/check_p2c_rally_transit_runtime.py --output log/p2c_rally_transit_runtime4.json # domain216
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v48 --domain 218 --gazebo-port 20318 --validate-only
+/usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v48_physical --domain 219 --gazebo-port 20319 --validate-only
+```

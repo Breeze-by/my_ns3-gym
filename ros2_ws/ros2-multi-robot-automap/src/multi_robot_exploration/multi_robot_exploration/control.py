@@ -3183,6 +3183,7 @@ class HeadquartersControl(Node):
         self.target = None
         self.target_received_source_time = None
         self.target_observing_robot = None
+        self.target_observer_confirmations = {}
         self.target_view_distance = 3.0
         self.target_view_fov_rad = math.pi / 2
         self.rally_observer_guard = None
@@ -4162,6 +4163,10 @@ class HeadquartersControl(Node):
         self.target = target
         self.target_received_source_time = stamp
         self.target_observing_robot = robot
+        confirmations = getattr(self, 'target_observer_confirmations', None)
+        if confirmations is not None and robot in self.robot_positions:
+            confirmations[robot] = dict(robot=robot, source_time=stamp, target=list(target),
+                view_distance_m=view_distance, view_fov_rad=view_fov)
         self.target_view_distance = view_distance
         self.target_view_fov_rad = view_fov
         if initial:
@@ -6074,6 +6079,56 @@ class HeadquartersControl(Node):
                 f"Target-area survey failed with status {status}."
             )
 
+    def rally_transit_observer(self, robot_name, pose, route):
+        """A settled, current peer can keep observation while this leg faces ahead."""
+        confirmations = getattr(self, 'target_observer_confirmations', {})
+        if not confirmations:
+            return None
+        now = self.now()
+        for observer, confirmation in sorted(confirmations.items(), key=lambda item:(-item[1]['source_time'], item[0])):
+            if (observer == robot_name or confirmation['target'] != list(self.target)
+                    or rally_observation_guard(observer, confirmation['source_time'], now,
+                        self.battery_modes) != observer
+                    or not getattr(self, 'rally_arrived', {}).get(observer, False)
+                    or observer in self.rally_charge_requested
+                    or observer in self.return_yield_targets
+                    or observer in self.rally_probe_targets
+                    or self.rally_goal_handles.get(observer) is not None
+                    or self.rally_goal_pending.get(observer, False)
+                    or self.goal_handles.get(observer) is not None
+                    or self.robot_states.get(observer) != 'idle'
+                    or (self.survey_robot == observer and (self.survey_goal_pending or self.survey_goal_handle))):
+                continue
+            position = self.robot_positions.get(observer)
+            yaw = self.robot_yaws.get(observer)
+            velocity = self.robot_velocities.get(observer)
+            final = self.rally_targets.get(observer)
+            if (position is None or yaw is None or velocity is None or final is None or len(route) < 2
+                    or not all(math.isfinite(v) for v in (*position, yaw, *velocity, pose.yaw))):
+                continue
+            incoming_yaw = route_arrival_yaw(route, pose.yaw)
+            target_yaw = math.atan2(self.target[1]-position[1], self.target[0]-position[0])
+            if (abs(math.atan2(math.sin(pose.yaw-incoming_yaw), math.cos(pose.yaw-incoming_yaw))) > 1e-8
+                    or not 0 <= velocity[0] <= self.rally_linear_tolerance
+                    or not 0 <= velocity[1] <= self.rally_angular_tolerance
+                    or math.dist(position, (final.x, final.y)) > self.rally_position_tolerance
+                    or not rally_target_view(self.map_data, self.resolution, self.origin, position,
+                        self.target, confirmation['view_distance_m']-self.rally_position_tolerance)
+                    or abs(math.atan2(math.sin(target_yaw-yaw), math.cos(target_yaw-yaw))) > confirmation['view_fov_rad']/4):
+                continue
+            participant_final = self.rally_targets[robot_name]
+            return dict(observer=observer, evaluated_at_sec=now, confirmation=dict(confirmation),
+                target=list(self.target), observer_source_time=confirmation['source_time'],
+                heartbeat_sec=TARGET_OBSERVER_FRESHNESS_SEC, position=position, yaw=yaw,
+                velocity=velocity, final_pose=[final.x, final.y, final.yaw], route=route, incoming_yaw=pose.yaw,
+                participant_final_pose=[participant_final.x, participant_final.y, participant_final.yaw],
+                position_tolerance_m=self.rally_position_tolerance,
+                linear_tolerance_mps=self.rally_linear_tolerance, angular_tolerance_radps=self.rally_angular_tolerance,
+                view_distance_m=confirmation['view_distance_m'], view_fov_rad=confirmation['view_fov_rad'],
+                map=grid_audit_evidence(self.map_data, self.resolution, self.origin,
+                    'ap_delivered_planning_map', self.map_received_at, self.map_received_at))
+        return None
+
     def send_rally_goal(self, robot_name, plan=None, charge_staging=False):
         if not self.fresh_robot_inputs():
             return
@@ -6119,12 +6174,15 @@ class HeadquartersControl(Node):
         if not self.fresh_robot_inputs() or (not local_return_yield and not self.fresh_target()):
             return
         final = self.rally_targets[robot_name]
+        transit_observer = None
         if (not local_return_yield and not charge_staging
                 and world_to_grid(target.x, target.y, self.resolution, *self.origin)
                 != world_to_grid(final.x, final.y, self.resolution, *self.origin)):
-            target = rally_observation_heading(
-                target, getattr(self, "target", None), self.map_data,
-                self.resolution, self.origin, getattr(self, "target_view_distance", 3.0))
+            transit_observer = HeadquartersControl.rally_transit_observer(self, robot_name, target, route)
+            if transit_observer is None:
+                target = rally_observation_heading(
+                    target, getattr(self, "target", None), self.map_data,
+                    self.resolution, self.origin, getattr(self, "target_view_distance", 3.0))
         self.get_logger().info(
             f"Preparing {robot_name} rally leg to "
             f"({target.x:.2f}, {target.y:.2f}); final="
@@ -6139,7 +6197,7 @@ class HeadquartersControl(Node):
         goal.pose.pose.position.y = target.y
         goal.pose.pose.orientation.z = math.sin(target.yaw / 2.0)
         goal.pose.pose.orientation.w = math.cos(target.yaw / 2.0)
-        if not self.record_navigation_decision(robot_name, "local_return_yield" if local_return_yield else "rally", goal.pose):
+        if not self.record_navigation_decision(robot_name, "local_return_yield" if local_return_yield else "rally", goal.pose, transit_observer):
             return
         self.rally_leg_routes[robot_name] = route
         self.rally_leg_poses[robot_name] = target
@@ -7106,12 +7164,14 @@ class HeadquartersControl(Node):
             )
             self.send_goal(robot_name, assignment)
 
-    def record_navigation_decision(self, robot_name, kind, goal_pose=None):
+    def record_navigation_decision(self, robot_name, kind, goal_pose=None, transit_observer=None):
         """Prepare private witnesses, then admit publication from live source leases."""
         event = {
             "event": "coordinator_navigation_decision",
             "robot": robot_name, "kind": kind, "task_phase": self.task_state,
         }
+        if transit_observer is not None:
+            event['rally_transit_observer'] = transit_observer
         if getattr(self, "map_self_return_cells", {}):
             event['planning_map_self_return_cells'] = self.map_self_return_cells
             event['planning_map_resolution_m'] = self.resolution
@@ -7168,6 +7228,9 @@ class HeadquartersControl(Node):
                     'local_return_yield', 'target_reacquisition_scan', 'target_reacquisition_exploration')}
         if kind == 'exploration_return_yield':
             used.update(event['return_preparation']['inputs'])
+        if transit_observer is not None:
+            used['headquarters/transit_observer_heartbeat'] = dict(
+                source_time=transit_observer['observer_source_time'], ttl_sec=TARGET_OBSERVER_FRESHNESS_SEC)
         def current(at):
             return (math.isfinite(at) and bool(used) and not getattr(self, 'shutdown_requested', False)
                     and all(isinstance(sample.get('source_time'), (int, float))

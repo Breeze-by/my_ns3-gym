@@ -14,6 +14,7 @@ from p2c_native_graph import native_tf_ingress_audit
 from p2c_scan_self_filter import scan_self_filter_audit
 from p2c_return_preparation import return_preparation_audit
 from p2c_navigation_dispatch import navigation_dispatch_audit
+from p2c_rally_transit_heading import transit_heading_audit
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -810,6 +811,10 @@ def check_one(path,config):
     leases=planning_lease_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     preparations=return_preparation_audit(directory/'ledger.jsonl',bool(config.get('exploration_return_preparation')))
     dispatches=navigation_dispatch_audit(directory/'ledger.jsonl',bool(config.get('navigation_dispatch_boundary')))
+    transit=transit_heading_audit(directory/'ledger.jsonl',bool(config.get('observed_rally_transit_heading')))
+    if config.get('observed_rally_transit_heading'):
+        from run_p2d_baseline import file_digest
+        assert row['source_digests']['rally_transit_reader']==file_digest(Path(__file__).with_name('p2c_rally_transit_heading.py'))
     if config.get('navigation_dispatch_boundary'):
         from run_p2d_baseline import file_digest
         assert row['source_digests']['navigation_dispatch_reader']==file_digest(Path(__file__).with_name('p2c_navigation_dispatch.py'))
@@ -825,7 +830,7 @@ def check_one(path,config):
         planning_lease_audit=leases,
         native_tf_ingress_audit=ingress,launch_process_audit=processes,navigation_input_audit=navigation_inputs,
         native_scan_self_filter_audit=scan_filter,exploration_return_preparation_audit=preparations,
-        navigation_dispatch_boundary_audit=dispatches)
+        navigation_dispatch_boundary_audit=dispatches,observed_rally_transit_heading_audit=transit)
 
 
 def observer_heading_audit(records,required=False,radius_m=3.,position_tolerance_m=.35,fov_rad=math.pi/2):

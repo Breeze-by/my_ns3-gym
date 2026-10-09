@@ -59,6 +59,8 @@ tokens is not a reason to leave a problem unresolved or inadequately tested.
 
 ## Current Handoff
 
+2026-10-10 P2C.1 v47首forced原RALLY300.1timeout/两机各charge1/min14.78229213/零接触耗尽failed，末tb2仍运动，无原生保持，FAIL保留；14独立子审PASS不代替任务。新各机原确认缓存＋已到位安静同伴原5s观测支持时，中间腿保留原入射yaw；最终/量化格/安全让行/充电/无支持均原样，额外5s支持绑定最终派发，无源续租或新流。真实DDS接收peer10→latest10.1旧90deg/新26.565deg，15.1失效新恢复90deg，结果闭合；1733功能/56最终定向/四包5.32s/190保护6授权54协议/两声明PASS，4中央改＋1新增、其余76/纯几何/native/SLAM/300s/5s/TTL/物理保持。中间1730单最后观测者版本任务前改进、完整a144590源核验保留；范围夹具与QoS FAIL原件保持。新v48 clean pushed4→17+2待实测，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v47_failed_development与20261010_p2c_rally_transit_components。
+
 2026-10-10 P2C.1 v46四原生COMPLETE286.5/163.3/163.3/245.5、零接触耗尽failed，但rooms一原rally位姿源龄2.081/2.091/2.097超2秒，完整FAIL保留；其余三全审PASS，不替代协议。新最终四导航入口在准备/编码/private发布后核验原源戳，过期撤销且零未发送owner/尝试，header仅新命令准入时刻；无源续租。真实DDS旧两延迟各1过期goal，新各0→fresh12.1各1并结果闭合；511定向/1687功能/四包2.77s/190保护6授权54协议/两声明PASS。仅5中央方法、其余75与全部纯几何/native battery/SLAM/300s/5s/TTL/物理保持。新v47 clean pushed4→17+2待真实全审，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v46_failed_development与20261010_p2c_dispatch_boundary_components。
 
 2026-10-10 P2C.1 v45首原强制FAIL保持：531b2ab原生FAILED211.5/tb1正电量失路，检测156.8/两机各charge1/min13.837683/零接触耗尽；原导航CDR/图/能量/全账本保持，owner-observer0自然闭合。独立422内点过滤/73826CDR/2charge1真实让行及TTL子门PASS不替代整体FAIL。新机体边界噪声关联：原SDF sigma.01/resolution.015→.0375测距带、至少1严格内点与3连续匹配束，无扩物理矩形/擦格/改raw扫描Nav2；前两两内点方案原生重放FAIL保留，第三版原二进制/新CPP各1280CDR同输入/240记录1362束一致，None→完整6.084m路径，条件组件非任务因果。44定向/1648功能/SLAM70s四包5.38s/190保护6声明54协议与两声明PASS；control/native battery/common SLAM/Karto/300s/5s/TTL保持。新v46 clean pushed4→17+2待实测，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v45_failed_development与20261010_p2c_scan_noise_components。

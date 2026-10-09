@@ -16,6 +16,12 @@ def used_inputs(event):
             assert used[key]['source_time'] == extra[key]['source_time']
             assert used[key]['ttl_sec'] == extra[key]['ttl_sec']
         used.update(extra)
+    if 'rally_transit_observer' in event:
+        saved = event['rally_transit_observer']
+        assert saved['heartbeat_sec'] == 5.
+        assert saved['observer_source_time'] == saved['confirmation']['source_time']
+        assert saved['observer_source_time'] <= event['inputs']['headquarters/target_detection']['source_time']
+        used['headquarters/transit_observer_heartbeat'] = dict(source_time=saved['observer_source_time'], ttl_sec=5.)
     assert used, 'navigation decision without source leases'
     return used
 
