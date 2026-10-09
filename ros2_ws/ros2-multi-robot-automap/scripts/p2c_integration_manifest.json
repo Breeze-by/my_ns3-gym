@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-09T09:17:10.231726+00:00",
+  "predeclared_at_utc": "2026-10-09T09:48:58.262839+00:00",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -329,7 +329,8 @@
     "20261009_p2c_v33_failed_development.json",
     "20261009_p2c_v34_failed_development.json",
     "20261009_p2c_v35_failed_development.json",
-    "20261009_p2c_v36_failed_development.json"
+    "20261009_p2c_v36_failed_development.json",
+    "20261009_p2c_v37_failed_development.json"
   ],
   "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
   "opportunity_charge_rules": [
@@ -471,7 +472,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "7a7fde63f0be9e75ce6e3f59899c956c709dd0b2",
+  "candidate_parent_commit": "73fb1606d4976c7d3300fcd1c85105e12bab7297",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -585,5 +586,11 @@
       "evidence": "20261009_p2c_budget_bound_components.json",
       "limits": "Fixed-source commands/charge intent equivalence and CPU samples; no task causal gain, original-history replay, live clock bound or Euclidean safety fallback"
     }
+  },
+  "native_contact_arrival": {
+    "algorithm": "Finish the already accepted budgeted contact waypoint before entering CHARGING; crossing the original outer radius does not cancel a pending/owned leg",
+    "safety": "Original return deadline, progress watchdog, energy/reserve failure, cancel ownership, native Nav2 collision avoidance and charging radius/stopped stable duration remain; no new leg, no obstacle clearing or pose/source renewal",
+    "scope": "Departure-map occupancy may still invalidate later exploration; this candidate does not claim to solve localization/dynamic SLAM artifacts or guarantee known-free parking after Nav2 goal tolerance",
+    "evidence": "20261009_p2c_contact_arrival_components.json"
   }
 }

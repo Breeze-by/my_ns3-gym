@@ -856,6 +856,11 @@ class BatteryManager(Node):
 
     def begin_charging(self):
         now = self.now()
+        # Finish the already budgeted contact waypoint. Canceling as soon as
+        # the outer contact radius is crossed can leave the robot before its
+        # known-free endpoint; the original return watchdog/reserve still run.
+        if self.return_goal_pending or self.return_goal_handle is not None:
+            return
         # Odom can restore the initial pose between safety ticks. Apply the
         # same funded-hold recovery at this shared entry before any callback
         # can turn a temporary missing sample into an initial battery top-up.
@@ -873,16 +878,10 @@ class BatteryManager(Node):
                 self.return_audit_start['budget'] = budget
                 self.audit_return('return_prediction_available', start=self.return_audit_start,
                                   map_evidence=self.return_map_evidence())
-        handle = self.return_goal_handle
-        if handle is not None and not self.return_goal_cancel_requested:
-            handle.cancel_goal_async()
-            self.return_goal_cancel_requested = True
-            self.return_cancels += 1
         self.mode = CHARGING
         self.mode_started_at = now
-        # Entering the zone is enough to stop navigation. The robot may
-        # still be settling, so start the stable timer only after its speed
-        # drops below the relaxed charging threshold.
+        # The completed contact leg can still be settling; retain the
+        # original stopped-pose threshold and stable charging timer.
         self.charge_stable_started_at = None
         self.publish_state()
         self.get_logger().info(f"{self.robot_name} started charging.")

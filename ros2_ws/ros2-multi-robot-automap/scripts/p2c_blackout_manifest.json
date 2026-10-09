@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-09T09:17:10.233997+00:00",
+  "predeclared_at_utc": "2026-10-09T09:48:58.265263+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "7a7fde63f0be9e75ce6e3f59899c956c709dd0b2",
+  "candidate_parent_commit": "73fb1606d4976c7d3300fcd1c85105e12bab7297",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -220,7 +220,8 @@
     "20261009_p2c_v33_failed_development.json",
     "20261009_p2c_v34_failed_development.json",
     "20261009_p2c_v35_failed_development.json",
-    "20261009_p2c_v36_failed_development.json"
+    "20261009_p2c_v36_failed_development.json",
+    "20261009_p2c_v37_failed_development.json"
   ],
   "coordinator_live_clock": {
     "executor": "Two workers; only the existing /clock subscription moves to an independent mutually exclusive group. Original state/action callbacks remain serialized.",
@@ -314,5 +315,11 @@
     "pricing": "Each level retains original complete qualified return, observer/charge/wait/soft exposure/body cost optimization and cap feasibility; final fresh admission still required",
     "limits": "Stop at first feasible candidate level; no claim of global soft-cost optimum across464, exhaustive feasibility, worst-case computation or native success",
     "evidence": "20261009_p2c_progressive_planning_components.json"
+  },
+  "native_contact_arrival": {
+    "algorithm": "Finish the already accepted budgeted contact waypoint before entering CHARGING; crossing the original outer radius does not cancel a pending/owned leg",
+    "safety": "Original return deadline, progress watchdog, energy/reserve failure, cancel ownership, native Nav2 collision avoidance and charging radius/stopped stable duration remain; no new leg, no obstacle clearing or pose/source renewal",
+    "scope": "Departure-map occupancy may still invalidate later exploration; this candidate does not claim to solve localization/dynamic SLAM artifacts or guarantee known-free parking after Nav2 goal tolerance",
+    "evidence": "20261009_p2c_contact_arrival_components.json"
   }
 }
