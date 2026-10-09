@@ -54,7 +54,6 @@ MIN_REMAINING_GAIN_FRACTION = 0.2
 FRONTIER_CONTINUATION_WEIGHT = 2.0
 INITIAL_SEARCH_VISIT_BIN_M = 0.5
 INITIAL_SEARCH_VIEW_FOV_RAD = math.pi / 2.0
-MISSION_SEARCH_SECTORS = 8
 MISSION_SEARCH_DIVERSITY_FLOOR = 0.25
 # Calibrated against the existing Nav2 loop, including planner/controller pauses.
 NAVIGATION_TIME_EXPONENT = 1.5
@@ -342,8 +341,8 @@ def known_search_view(raw_grid,cell,radius_cells,interest):
     return int(gains[best]),float(yaws[best])
 
 
-def mission_search_diversity(target,states,visits):
-    """Bounded directional travel preference; never proof of visual coverage."""
+def mission_search_diversity(target,states,visits,raw_grid,resolution,origin):
+    """Discount nearby known-visible visits, never claim camera coverage."""
     homes={}
     for name,state in states.items():
         try:point=[float(state['charge_x']),float(state['charge_y'])]
@@ -351,18 +350,20 @@ def mission_search_diversity(target,states,visits):
         if all(math.isfinite(v) for v in point):homes[name]=point
     if not homes:return None
     center=tuple(sum(point[axis] for point in homes.values())/len(homes) for axis in (0,1))
-    def sector(point):
-        if math.dist(point,center)<INFORMATION_RADIUS_M:return None
-        angle=math.atan2(point[1]-center[1],point[0]-center[0])%(2.*math.pi)
-        return min(MISSION_SEARCH_SECTORS-1,int(angle*MISSION_SEARCH_SECTORS/(2.*math.pi)))
-    counts=[0]*MISSION_SEARCH_SECTORS
-    for visit in visits:
-        index=sector(visit['position'])
-        if index is not None:counts[index]+=1
-    index=sector(target)
-    factor=(1. if index is None else max(MISSION_SEARCH_DIVERSITY_FLOOR,1./math.sqrt(1.+counts[index])))
-    return dict(strategy='bounded_angular_visit_preference',center_source='delivered_static_charger_poses',
-        homes=homes,center=list(center),visits=list(visits),sector_counts=counts,target_sector=index,factor=factor)
+    target_cell=world_to_grid(*target,resolution,*origin)
+    visible=[]
+    def inside(cell):return 0<=cell[0]<raw_grid.shape[0] and 0<=cell[1]<raw_grid.shape[1]
+    if inside(target_cell):
+        for index,visit in enumerate(visits):
+            point=visit['position']
+            if math.dist(target,point)>INFORMATION_RADIUS_M:continue
+            cell=world_to_grid(*point,resolution,*origin)
+            if inside(cell) and has_known_line_of_sight(raw_grid,target_cell,cell):visible.append(index)
+    neutral=math.dist(target,center)<INFORMATION_RADIUS_M
+    factor=1. if neutral else max(MISSION_SEARCH_DIVERSITY_FLOOR,1./math.sqrt(1.+len(visible)))
+    return dict(strategy='bounded_local_visible_visit_preference',center_source='delivered_static_charger_poses',
+        homes=homes,center=list(center),visits=list(visits),radius_m=INFORMATION_RADIUS_M,
+        visible_visit_indices=visible,near_home_neutral=neutral,factor=factor)
 
 
 def known_space_search_candidates(raw_grid, resolution, origin, robot_name,
@@ -5804,7 +5805,8 @@ class HeadquartersControl(Node):
             target=[assignment.x, assignment.y], peers=peers)
         if getattr(self,'enable_rally',False) and getattr(self,'enable_battery',False):
             diversity=mission_search_diversity((assignment.x,assignment.y),self.battery_states,
-                list((getattr(self,'initial_search_visits',None) or {}).values()))
+                list((getattr(self,'initial_search_visits',None) or {}).values()),
+                self.map_data,self.resolution,self.origin)
             if diversity is not None:preference['mission_spatial_diversity']=diversity
         return preference
 

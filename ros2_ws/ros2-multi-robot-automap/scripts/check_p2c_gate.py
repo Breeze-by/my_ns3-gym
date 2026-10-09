@@ -295,7 +295,8 @@ def exploration_travel_audit(records,required=False,require_commitment=False,req
                 assert all(0<=observed-visit[k]<=2. for k in ('pose_source_time','frame_source_time'))
                 key=tuple(math.floor(v/control.INITIAL_SEARCH_VISIT_BIN_M) for v in p)
                 assert key not in bins;bins.add(key)
-            rebuilt=control.mission_search_diversity(target,states,visits)
+            rebuilt=control.mission_search_diversity(target,states,visits,
+                raw['data'],raw['resolution'],raw['origin'])
             assert rebuilt==diversity,'spatial preference differs from delivered models/history'
             diversity_factor=rebuilt['factor'];diversity_count+=1
         assert math.isclose(f['base_utility']*f['battery_factor']*factor*diversity_factor,f['adjusted_utility'],abs_tol=1e-8)

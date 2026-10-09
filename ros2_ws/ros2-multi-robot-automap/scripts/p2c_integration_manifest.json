@@ -451,7 +451,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "930d7a041b361a731883c469ed51d553710a97fc",
+  "candidate_parent_commit": "47a75f9c0a92ba38c8835aec6d0e90a918b6446a",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -482,10 +482,10 @@
     "scope": "Complete object missions with battery model only; ordinary mapping unchanged.",
     "anchor": "Centroid of cached delivered static charger poses; missing/invalid metadata skipped, no model gives neutral preference. Not a new AP input or ground-truth target.",
     "history": "Existing first fresh delivered position per0.5m bin; original odom/TF each0..2s at recording. Historical travel is a search preference, never camera coverage proof.",
-    "algorithm": "Eight angular sectors outside2m anchor radius; multiply nominal utility by max(0.25,1/sqrt(1+visited_bins_in_sector)); near-anchor neutral. Same bounded2x useful continuation and currently-funded-nearer-peer preference remain.",
+    "algorithm": "Outside original2m charger-centroid neutral region, count historical0.5m bins within2m of candidate with known-free line of sight in the current delivered planning grid; multiply nominal utility by max(0.25,1/sqrt(1+count)). Other rooms sharing a global direction are independent. Same bounded2x useful continuation and funded-nearer-peer preference remain.",
     "admission": "Original current complete body-masked approach+qualified contact return, source TTLs, charging fairness and accepted route reservations unchanged. Soft positive factor never authorizes motion.",
-    "evidence": "Private executed witnesses preserve static model anchor, complete visit-source records, sector counts/target sector/factor and adjusted score; independent reader reconstructs. No added application packet.",
-    "limits": "Current-map directional heuristic, not optimality, exhaustive visual coverage, peer future availability or worst-case native completion guarantee."
+    "evidence": "Private executed witnesses preserve static model anchor, complete visit-source records, local visible visit indices, radius/neutral flag/factor and adjusted score beside current delivered grid; independent reader reconstructs. No added application packet.",
+    "limits": "Current-map local visibility is a search preference, not historical90degree camera coverage, optimality, peer future availability or worst-case native completion guarantee."
   },
   "target_information_survey": true
 }

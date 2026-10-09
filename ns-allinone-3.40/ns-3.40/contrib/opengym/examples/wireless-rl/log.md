@@ -8290,3 +8290,16 @@ probe_p2c_v23_rally_time_order.py只读保存原分配并内存编译替代排�
 只读probe_p2c_v24_survey.py/compare_p2c_v24_survey_admission.py比较前沿信息版本，首实际prefix相同，未采用；probe_p2c_v24_dense_survey.py/compare_p2c_v24_dense_survey_admission.py第二原AP状态0.517414m/17.676113/108预期unknown条件准入PASS，synthetic action client且无counterfactual任务时间。地图PNG实际查看；首误以data包装抽取0项空文件保留并另存正确4项，一未source导入ModuleNotFoundError只读失败，未启动任务。
 
 v25前沿-only首73定向/1136全/8.33s构建/DDS/domain215原输出保持；最终密集版本73定向5.91s、补局部无法直线靠近和位置门限篡改后29定向6.10s，完整pytest功能范围三lint ignore、四包colcon build、check_p2c_source、普通/physical validate-only和check_p2c_visual_runtime --output log/p2c_v25_dense_visual_runtime.json actual DDS+synthetic action client PASS。所有精确argv/源码SHA/输出见机读组件归档；新all4/17/2原任务与917尚未调用，无P4/ns-3/Wi-Fi/RL。
+
+
+## 2026-10-09 P2C.1 v25原任务失败及v26局部可见偏好
+
+2026-10-09 P2C.1 v26局部可见密度组件PASS、待新冻结任务：v25首forced检测270.4/RALLY284.2/native timeout300、两机各charge1/min14.188054/零接触耗尽机器人失效任务期infra，原FAIL保留；停止后lifecycle子进程SIGKILL/-9原样记录，外层0不称全子进程优雅关闭。27探索/4视觉/14接续/120能量/5closed return/native图与八类独立审计PASS，v25目标信息勘察0实际记录。四原视觉共享评分首选全同、七原映射扩大半径无新增候选、圆盘遮挡版本目的地多未变，均不采用。105.8s原交付状态局部可见偏好条件2.707918m/预算21.043203，原4.285126m/22.280431；缺原在途预约，不称因果收益。保留原home2m中性区，范围外统计候选2m内当前已知视线访问位置，max(.25,1/sqrt(1+count))；完整去返/源龄/身体/预约/300s/5s原样。1143功能/99定向/四包6.62s/171保护4授权54协议/actual DDS两声明PASS。新4开发/17正式/2物理须clean pushed freeze，917未暴露，P3C.5已验收，无P4/ns-3/Wi-Fi/RL。报告20261009_p2c_local_diversity_components.md与20261009_p2c_v25_failed_development.md。
+
+ROS环境系统Python3/source Humble+install/PYTHONNOUSERSITE=1/FastRTPS-UDPv4/taskset -c0-79。47a75f9推送后check_p2c_v25_freeze.py独立PASS；run_p2c_tasks.py --case dev_forced2 --run-id 20261009_p2c_v25 --domain 210 --gazebo-port 20290；owner及observer0，native RALLYtimeout300，post-SIGINT lifecycle_manager-32升级SIGTERM/SIGKILL/-9，完整原启动与清理记录保留，全部owned关闭后才修改。check_p2c_gate --run-root log/p2c/20261009_p2c_v25 --development --cases dev_forced2 --output log/p2c_v25_dev_forced2_gate.json FAIL，audit_p2c_v25_independent.py八类PASS。无任务重试/回填，其余格与917未调用。
+
+只读probe_p2c_v25_competition.py及_1/_2/_3四原视觉共享评分比较，首选均不变；probe_p2c_v25_radius.py KeyError原错误保留，另存radius_fixed.py五状态、radius_early.py两状态，.8/1.4/2.0m均未新增候选；probe_p2c_v25_occlusion.py四原视觉比较目的地基本相同，均未采用。probe_p2c_v25_local_diversity.py五原映射状态比较全局角向/局部known-visible密度，105.8s完整预算与路径改善仅条件排名，未含原在途预约；最终保留原near-home中性区。early_maps.png以真实输入绘制并view_image检查。所有程序/原输入/输出/错误gzip与SHA保持。
+
+归档首脚本误用competition_1_diagnostic文件名而FileNotFoundError，原脚本/错误保留，按实际diagnostic_1文件另存修正脚本，不覆盖实验输出。
+
+v26 directed pytest test_mission_search_diversity.py/test_initial_known_search.py/test_relative_frontier_travel.py：99 PASS7.75s；完整pytest功能范围三lint ignore1143 PASS92.70s，colcon build四包；check_p2c_source --output log/p2c_v26_source.json；run_p2c_tasks --case dev_forced2 --run-id 20261009_p2c_v26 --domain 210 --gazebo-port 20290 --validate-only与--manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261009_p2c_v26_physical --domain 219 --gazebo-port 20299 --validate-only；check_p2c_visual_runtime --output log/p2c_v26_visual_runtime.json实际DDS/domain215+synthetic action client全部PASS。前瞻all4/17/2原任务尚未调用，需新clean pushed freeze。全部精确argv、输出与源码SHA在组件/失败机读报告和压缩原件，无P4/ns-3/Wi-Fi/RL。
