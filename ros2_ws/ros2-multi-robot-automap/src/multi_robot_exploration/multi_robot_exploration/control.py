@@ -1743,18 +1743,22 @@ def assign_rally_poses(
     Refine visible outer-ring boundaries in the original three sampled rings.
     If that bounded tier cannot assign all robots, expand to the existing
     angular boundary samples.
+    Immutable geometry is reused only across levels of this one proposal.
     Each level keeps the full return, charge/wait and body-cost optimizer;
     stopping at the first feasible level trades global soft-cost optimality
     for less computation. Actual navigation still requires fresh admission.
     """
+    # No geometry survives the proposal or a mutable source alias.
+    geometry_cache = ({} if immutable_grid(raw_grid) and all(
+        isinstance(g, dict) and immutable_grid(g.get("data"))
+        for g in (return_maps or {}).values()) else None)
     for stratified in (False, True):
         result = _assign_rally_poses(raw_grid, resolution, origin, robot_positions,
             target, objective, battery_states, observer_robot, current_positions,
-            hold_sec, return_maps, stratified)
+            hold_sec, return_maps, stratified, geometry_cache)
         if result:
             return result
     return {}
-
 
 def _assign_rally_poses(
     raw_grid,
@@ -1769,6 +1773,7 @@ def _assign_rally_poses(
     hold_sec=RALLY_HOLD_SEC,
     return_maps=None,
     stratified=True,
+    geometry_cache=None,
 ):
     """Assign separated visible poses, accounting for serial charge waits.
 
@@ -1788,27 +1793,33 @@ def _assign_rally_poses(
     if len(candidates) < len(names):
         return {}
 
-    traversable = traversable_grid(
-        raw_grid, resolution, clearance_m=RALLY_PATH_CLEARANCE_M
-    )
+    geometry_cache = {} if geometry_cache is None else geometry_cache
+    if "traversable" not in geometry_cache:
+        geometry_cache["traversable"] = traversable_grid(
+            raw_grid, resolution, clearance_m=RALLY_PATH_CLEARANCE_M)
+    traversable = geometry_cache["traversable"]
+    approach_fields = geometry_cache.setdefault("approach_fields", {})
     options = {}
     for name in names:
         position = robot_positions[name]
-        start = world_to_grid(
-            position[0], position[1], resolution, origin[0], origin[1]
-        )
-        # Unknown and occupied starts remain rejected; only a known-free pose
-        # may use the bounded clearance escape above.
-        start, escape_route = navigation_start_route(
-            raw_grid,
-            traversable,
-            start,
-            max(1, math.ceil(0.6 / resolution)),
-        )
-        distances = path_distance_grid(traversable, start)
-        escape_distance = 0.0
-        for first, second in zip(escape_route, escape_route[1:]):
-            escape_distance += math.dist(first, second)
+        if name not in approach_fields:
+            start = world_to_grid(
+                position[0], position[1], resolution, origin[0], origin[1]
+            )
+            # Unknown and occupied starts remain rejected; only a known-free pose
+            # may use the bounded clearance escape above.
+            start, escape_route = navigation_start_route(
+                raw_grid,
+                traversable,
+                start,
+                max(1, math.ceil(0.6 / resolution)),
+            )
+            distances = path_distance_grid(traversable, start)
+            escape_distance = 0.0
+            for first, second in zip(escape_route, escape_route[1:]):
+                escape_distance += math.dist(first, second)
+            approach_fields[name] = (distances, escape_distance)
+        distances, escape_distance = approach_fields[name]
         reachable = []
         for index, pose in enumerate(candidates):
             row, column = world_to_grid(
@@ -1829,7 +1840,23 @@ def _assign_rally_poses(
         try:
             if not math.isfinite(hold_sec) or hold_sec < 0:
                 return {}
-            for name in names:
+            def local_known_options(name):
+                # Ordering only: local unknown cells do not veto fused routes.
+                geometry = (return_maps or {}).get(name)
+                if geometry is None:
+                    return len(options[name]), name
+                try:
+                    known = 0
+                    for _, index in options[name]:
+                        pose = candidates[index]
+                        cell = world_to_grid(pose.x, pose.y, geometry["resolution"], *geometry["origin"])
+                        grid = geometry["data"]
+                        known += (0 <= cell[0] < grid.shape[0] and 0 <= cell[1] < grid.shape[1]
+                                  and grid[cell] == 0)
+                    return known, name
+                except (KeyError, TypeError, ValueError, ZeroDivisionError, AttributeError):
+                    return len(options[name]), name
+            for name in sorted(names, key=local_known_options):
                 state = battery_states[name]
                 mode = state["mode"]
                 energy = float(state["energy"])
@@ -1850,15 +1877,19 @@ def _assign_rally_poses(
                         or speed <= 0 or capacity <= 0 or factor < 1
                         or not 0 < fraction <= 1):
                     return {}
-                home_start, escape = navigation_start_route(
-                    raw_grid, traversable, world_to_grid(*home, resolution, *origin),
-                    max(1, math.ceil(.6 / resolution)))
-                home_distances = path_distance_grid(traversable, home_start)
-                home_escape = sum(math.dist(a, b) for a, b in zip(escape, escape[1:]))
+                home_fields = geometry_cache.setdefault("home_fields", {})
+                if name not in home_fields:
+                    home_start, escape = navigation_start_route(
+                        raw_grid, traversable, world_to_grid(*home, resolution, *origin),
+                        max(1, math.ceil(.6 / resolution)))
+                    home_distances = path_distance_grid(traversable, home_start)
+                    home_escape = sum(math.dist(a, b) for a, b in zip(escape, escape[1:]))
+                    home_fields[name] = (home_distances, home_escape)
+                home_distances, home_escape = home_fields[name]
                 modes[name] = mode
                 charge_times[name] = duration
-                return_cache = {}
-                clearance_fields = {}
+                return_cache = geometry_cache.setdefault("return_caches", {}).setdefault(name, {})
+                clearance_fields = geometry_cache.setdefault("clearance_fields", {}).setdefault(name, {})
                 return_exposures[name] = {}
                 local_map = (return_maps or {}).get(name)
                 if mode != "CHARGING":

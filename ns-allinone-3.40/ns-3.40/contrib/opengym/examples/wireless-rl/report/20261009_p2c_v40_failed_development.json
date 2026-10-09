@@ -1,0 +1,1740 @@
+{
+  "status": "FAIL",
+  "scope": "First required forced-development original failed; other3 development/formal17/physical2/917 not invoked",
+  "task_stack_frozen_commit": "d70b277c853cc736c40b535a9d3551a0c99b0950",
+  "original": {
+    "case": "dev_forced2",
+    "command": [
+      "/usr/bin/python3",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py",
+      "--world",
+      "my_world.world",
+      "--robot-count",
+      "2",
+      "--gazebo-seed",
+      "303",
+      "--startup-timeout",
+      "600",
+      "--message-timeout",
+      "90",
+      "--shutdown-timeout",
+      "120",
+      "--evaluation-duration",
+      "300",
+      "--evaluation-wait-timeout",
+      "900",
+      "--coverage-threshold",
+      "0",
+      "--mission-mode",
+      "rally",
+      "--gateway-mode",
+      "ideal",
+      "--gateway-seed",
+      "17011",
+      "--battery",
+      "--battery-capacity",
+      "100",
+      "--battery-initial-energy",
+      "18.0",
+      "--target-x",
+      "-4",
+      "--target-y",
+      "4",
+      "--rally-max-concurrent",
+      "2",
+      "--disable-global-battery-rally-pause",
+      "--episode-id",
+      "20261009_p2c_v40_dev_forced2",
+      "--collect-fault-result",
+      "--dwell-seconds",
+      "0",
+      "--evaluation-output-dir",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v40/20261009_p2c_v40_dev_forced2",
+      "--log-dir",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v40/20261009_p2c_v40_dev_forced2/launch",
+      "--gateway-ledger-path",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v40/20261009_p2c_v40_dev_forced2/ledger.jsonl",
+      "--bypass-audit-output",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v40/20261009_p2c_v40_dev_forced2/graph.json",
+      "--target-detection",
+      "--rally",
+      "--battery-charge-duration",
+      "10.0",
+      "--battery-safety-margin",
+      "5.0",
+      "--battery-return-timeout",
+      "120"
+    ],
+    "config": {
+      "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
+      "ap_pose_budget_contract": {
+        "age": "max(original delivered odometry source age, original delivered map-to-odom source age)",
+        "frame_ttl_sec": 2.0,
+        "future_or_missing": "reject, no finite task admission",
+        "lookahead_evidence": "both source ages retained privately and independently reconstructed",
+        "odom_ttl_sec": 2.0
+      },
+      "ap_return_consistency": {
+        "admission": "current and endpoint complete return must have a qualified local or locally-vetoed fused path; missing remains unavailable",
+        "assignment": "same qualified geometry for rally candidate return reserve and serial return reservations",
+        "constrained_search": "Same pure qualifier and explicitly labelled third route candidate; AP uses its delivered maps only, never the native original-map audit.",
+        "evidence": "private coordinator_return_map_veto and optional own-map lookahead witnesses; not extra transmitted application load",
+        "inputs": "AP delivered fused planning map and per-robot maps only; current original map/pose/TF/battery leases remain",
+        "source_age": "maximum consulted fresh map age is priced; no header renewal or native hidden input"
+      },
+      "camera_aware_known_search": {
+        "evidence": "Every actual visual witness retains original heading/pose source records, fixed view model, delivered grids, chosen gain/yaw and original full budget for independent reconstruction",
+        "history": "Original delivered pose and map-to-odom0..2s, first actual position/yaw per0.5m/22.5degree bin; no source rewriting or native input",
+        "limits": "Current-map predicted visual coverage is a search preference, never proof of target absence, perfect camera perception or exhaustive coverage; history reprojects through the current map only; no new radio packet",
+        "purpose": "Alternating known-space search only; mapping, useful continuation, charging fairness, native energy and full known-free body/return admission unchanged",
+        "view": "Current delivered known-free rays within original2m/90degree sector; occupied and unknown cells occlude history. A travelled position no longer masks its unseen back side."
+      },
+      "candidate_parent_commit": "10860f4029fe26c1517bd550ff6251870693bf7b",
+      "candidate_priority_computation": {
+        "algorithm": "lazy exact stable greedy with original raw utility and possible2x continuation as upper bounds",
+        "battery_bound": {
+          "algorithm": "Same original model and original source epochs: straight contact-disc distances lower-bound both complete task+return and current return reserve, hence upper-bound actual battery factor. Private ranking only, never a route or admission budget",
+          "charging": "Within each original refinement pass, only if every raw option is proven unfunded: after the exact highest feasible charge intent is found, lower options may skip price. A possible funded alternative or later refinement pass remains independently evaluated",
+          "evidence": "20261009_p2c_budget_bound_components.json",
+          "guards": "Every real choice still needs original complete qualified known-map contact paths, actual body route distance, reserve/age/energy/charging fairness; recheck original lease immediately after each expensive price",
+          "limits": "Fixed-source commands/charge intent equivalence and CPU samples; no task causal gain, original-history replay, live clock bound or Euclidean safety fallback"
+        },
+        "diagnostics": "candidate_assignments counts priced rows; generated_candidate_assignments counts raw rows",
+        "evidence": "20261009_p2c_lazy_priority_components.json",
+        "gain_refinement": {
+          "algorithm": "Original frontier geometry and stable sampling order with unknown rectangle-count upper bounds; refine ray gain then reinsert utility bound before original budget price",
+          "cache": "One immutable source identity for geometry; replacement and mutable aliases cannot reuse it. Exact ray gains belong to one admission/charging context only",
+          "evidence": "20261009_p2c_lazy_gain_components.json",
+          "known_space": {
+            "algorithm": "Rectangle current-interest bound then exact original visibility/16yaw before existing stable budget heap",
+            "cache": "Same immutable admission map and delivered-history interest only; ordinary Viewpoint/Assignment before prices/commands/forecast",
+            "evidence": "20261009_p2c_progressive_planning_components.json",
+            "fallback": "Resolve enough candidates to establish actual positive visibility; if none, preserve original mapping fallback",
+            "limits": "Fixed-source equivalence; no original timing or mission causal claim"
+          },
+          "lookahead": "Complete original raw alternative pool; same exact stable order and top3 qualifying alternative rules via lazy gain resolution, never use rectangle gain in energy forecast",
+          "proof": "Bounds only rank computation. Executed gain/utility/relative/diversity, complete body/return budgets, true current epochs and original2/5s leases are rechecked",
+          "types": "Private ViewpointGainBound/AssignmentGainBound, fully resolved normal Viewpoint/Assignment before actual goal or charging forecast"
+        },
+        "leases": "true clock/source TTL checks at generation, each price, route and final dispatch; an expired lazy price revokes all provisional plans, no source renewal",
+        "peer_travel_bound": {
+          "algorithm": "ordered local funded-peer proof before original exact gain and complete actual budget; only a guaranteed-funded subset tightens the original relative-travel factor upper bound",
+          "evidence": "20261009_p2c_staged_peer_bound_components.json",
+          "limits": "Fixed-epoch equivalent choices/CPU comparisons only; no original-history, causal mission gain or worst-case completion guarantee",
+          "proof": "one complete qualified local path at original maximum legal map5s/pose2s ages upper-bounds the min-qualified-route energy; unknown/missing/unfunded proof keeps original neutral bound",
+          "scope": "ranking only; preserve complete original candidate pool, stable greedy ties, whole body/return budgets, charging fairness, source epochs and all dispatch gates"
+        },
+        "price": "original complete return battery factor, relative geodesic factor and mission spatial diversity; only fully priced priority above all remaining bounds enters original body/route/full-budget checks",
+        "route_precheck": {
+          "actual": "Original body/accepted reservation/full approach and qualified return/2-5s source checks and dispatch renewal prohibition remain; private bounds never become commands",
+          "algorithm": "Necessary useful-prefix bound before exact gains/prices only when actual/provisional reservations exist; original final greedy order and all hard guards retained",
+          "cache": "Body-masked field and geometric proposals only inside one immutable admission snapshot; at most2048 exact Boolean line-of-sight results per field. No source/header/energy decision cache",
+          "charging": "No speculative route precheck without reservations; existing lower-unfunded alternatives skip full planning and original best-intent serial fairness remains",
+          "evidence": "20261009_p2c_admission_pruning_components.json",
+          "limits": "Conditional fixed-source equivalence and CPU samples, not complete-history replay, causal mission effect or worst-case clock bound",
+          "proof": "Any additional reservation can only move the first conflict earlier; retain every possible useful0.75m prefix even if current final endpoint is stationary. A common initial escape-cell conflict rejects all candidate routes for that robot in this same frozen batch"
+        },
+        "scope": "fixed-source order equivalence and conditional CPU evidence are not live callback latency, worst-case bound or mission acceptance",
+        "skip": "unused options of already provisionally selected robot; original route loop skipped those same options; retain complete raw pool for existing charging lookahead"
+      },
+      "cases": {
+        "delay_rooms3": {
+          "admission_protocol": true,
+          "energy": 40.0,
+          "mode": "fault",
+          "profile": {
+            "downlink_delay_sec": 0.5,
+            "uplink_delay_sec": 0.5
+          },
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 202,
+          "target_x": 5.0,
+          "target_y": 3.0,
+          "world": "p1c_rooms.world"
+        },
+        "dev_corridors303": {
+          "admission_protocol": false,
+          "energy": 45.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 303,
+          "target_x": -4.5,
+          "target_y": -0.5,
+          "world": "p1c_corridors.world"
+        },
+        "dev_forced2": {
+          "admission_protocol": false,
+          "charge_duration": 10.0,
+          "energy": 18.0,
+          "mode": "ideal",
+          "return_timeout": 120,
+          "robot_count": 2,
+          "safety_margin": 5.0,
+          "schedule": [],
+          "seed": 303,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        },
+        "dev_lab101": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 101,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        },
+        "dev_rooms202": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 202,
+          "target_x": 5.0,
+          "target_y": 3.0,
+          "world": "p1c_rooms.world"
+        },
+        "empty_battery": {
+          "admission_protocol": false,
+          "energy": 0.0,
+          "mode": "ideal",
+          "robot_count": 2,
+          "schedule": [],
+          "seed": 303,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        },
+        "fixed_corridors2_202": {
+          "admission_protocol": false,
+          "energy": 45.0,
+          "mode": "ideal",
+          "robot_count": 2,
+          "schedule": [],
+          "seed": 202,
+          "target_x": -4.5,
+          "target_y": -0.5,
+          "world": "p1c_corridors.world"
+        },
+        "fixed_corridors_101": {
+          "admission_protocol": false,
+          "energy": 45.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 101,
+          "target_x": -4.5,
+          "target_y": -0.5,
+          "world": "p1c_corridors.world"
+        },
+        "fixed_corridors_202": {
+          "admission_protocol": false,
+          "energy": 45.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 202,
+          "target_x": -4.5,
+          "target_y": -0.5,
+          "world": "p1c_corridors.world"
+        },
+        "fixed_corridors_303": {
+          "admission_protocol": false,
+          "energy": 45.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 303,
+          "target_x": -4.5,
+          "target_y": -0.5,
+          "world": "p1c_corridors.world"
+        },
+        "fixed_lab_101": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 101,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        },
+        "fixed_lab_202": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 202,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        },
+        "fixed_lab_303": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 303,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        },
+        "fixed_rooms_101": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 101,
+          "target_x": 5.0,
+          "target_y": 3.0,
+          "world": "p1c_rooms.world"
+        },
+        "fixed_rooms_202": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 202,
+          "target_x": 5.0,
+          "target_y": 3.0,
+          "world": "p1c_rooms.world"
+        },
+        "fixed_rooms_303": {
+          "admission_protocol": false,
+          "energy": 40.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 303,
+          "target_x": 5.0,
+          "target_y": 3.0,
+          "world": "p1c_rooms.world"
+        },
+        "forced2": {
+          "admission_protocol": false,
+          "charge_duration": 10.0,
+          "energy": 18.0,
+          "mode": "ideal",
+          "return_timeout": 120,
+          "robot_count": 2,
+          "safety_margin": 5.0,
+          "schedule": [],
+          "seed": 303,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        },
+        "holdout_fault": {
+          "admission_protocol": true,
+          "energy": 45.0,
+          "mode": "fault",
+          "profile": {
+            "downlink_loss_rate": 0.1,
+            "gateway_seed": 29171,
+            "uplink_delay_sec": 0.5
+          },
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 917,
+          "target_x": 4.6,
+          "target_y": -3.6,
+          "world": "p2c_holdout917.world"
+        },
+        "holdout_ideal": {
+          "admission_protocol": true,
+          "energy": 45.0,
+          "mode": "ideal",
+          "robot_count": 3,
+          "schedule": [],
+          "seed": 917,
+          "target_x": 4.6,
+          "target_y": -3.6,
+          "world": "p2c_holdout917.world"
+        },
+        "loss_corridors2": {
+          "admission_protocol": true,
+          "energy": 45.0,
+          "mode": "fault",
+          "profile": {
+            "downlink_loss_rate": 0.1,
+            "uplink_loss_rate": 0.1
+          },
+          "robot_count": 2,
+          "schedule": [],
+          "seed": 202,
+          "target_x": -4.5,
+          "target_y": -0.5,
+          "world": "p1c_corridors.world"
+        },
+        "protocol_forced2": {
+          "admission_protocol": true,
+          "charge_duration": 10.0,
+          "energy": 18.0,
+          "mode": "ideal",
+          "return_timeout": 120,
+          "robot_count": 2,
+          "safety_margin": 5.0,
+          "schedule": [],
+          "seed": 303,
+          "target_x": -4,
+          "target_y": 4,
+          "world": "my_world.world"
+        }
+      },
+      "coordinator_live_clock": {
+        "abandoned_input_diagnostics": {
+          "channel": "Existing private read-only coordinator audit, after irrevocable proposal abandonment",
+          "inputs": "Exact frozen callback geometry/source stamps/state/heading and visit history; source stamps never renewed",
+          "interval_sim_sec": 30.0,
+          "key": "phase and expiry stage",
+          "limits": "Diagnostic copies never enter the planner, protocol admission, native safety or navigation; no extra application network packet"
+        },
+        "budget_provenance": "Distinct immutable source stamps, ranking/pricing instants and actual decision instant; age reconstructed at each instant, never renewed.",
+        "central_action_completion": "Humble Future done callbacks are executor tasks outside callback groups. All8 central response/result registrations enqueue completed futures into one private SimpleQueue and trigger an existing-state-group guard; only its serialized drain mutates mission owners. Late completions after shutdown are ignored; context-active guard failures remain visible. No new DDS topic or application traffic.",
+        "clock_qos": "Existing best-effort depth1 unchanged; no extra subscription or application message.",
+        "executor": "Two workers; only the existing /clock subscription moves to an independent mutually exclusive group. Original state/action callbacks remain serialized.",
+        "limits": "Clock correctness is independently DDS-verified with controlled blocked callback, not a CPU latency or native completion guarantee. No native battery, Nav2, physics, TTL, horizon or wireless change.",
+        "native_action_completion": "The same private callback serializer handles both native return response/result futures in the original native default state group; lightweight TF inbox remains independent, source stamps/heap/energy/return/charge equations and TTLs unchanged.",
+        "planning_lease": "Capture original delivered source deadlines; abort current exploration batch at candidate/budget/route/dispatch checkpoints on expiry or clock reset. Recheck sources after charge/survey/rally computation before changing admitted owners.",
+        "shutdown": "Stop new admissions and cancel timers before waiting for executor completion."
+      },
+      "coverage_threshold": 0.8,
+      "development_cases": [
+        "dev_forced2",
+        "dev_lab101",
+        "dev_rooms202",
+        "dev_corridors303"
+      ],
+      "development_parent": "08fe5f770f92fa2189b7c7d725491a56ec00ca2a",
+      "duration_sec": 300,
+      "energy_unit": "simulation_model_units_not_joules",
+      "evaluation_result_polling": "Read-only bounded polling of a not-yet-valid JSON file from the same original producer; complete invalid objects, producer failure and original deadline still fail. No episode retry, evaluator change or shutdown grace change.",
+      "exploration_bounded_commitment": {
+        "evidence": "Selected gain/group size/base utility/reuse exclusions/relative factor/continuation weight/score retained privately; strict reader reconstructs geometry and scores. Does not assert global maximum over unseen original history.",
+        "guards": "Original full body-masked travel, accepted route reservations, complete round-trip energy, charging fairness and source leases remain hard admission checks.",
+        "scope": "One nominal-utility ranking change. Actual body-path energy is repriced before dispatch; nominal score is not an actual travel-time guarantee.",
+        "score": "adjusted_utility*(2 if current useful funded continuation else1)",
+        "weight": 2.0
+      },
+      "exploration_frontier_commitment": {
+        "admission": "Regenerate current candidates; resume only within original1.2m and gain>max(200,20% prior gain), with current full body/reservation/energy/source checks and battery_factor1.",
+        "clear": "Actual full viewpoint Nav2 success, native FAILED, ordinary navigation failure or no useful funded reachable current candidate clears preference; normal task/safety/retry limits remain.",
+        "evidence": "Private executed witnesses retain current gain and optional prior intent; reconstruct gain from delivered map and verify current proximity/usefulness/funded energy. Not a new AP observation or application traffic.",
+        "limits": "Bounded receding-horizon preference: currently useful continuation receives2x adjusted utility, not absolute priority. No stale command replay, global optimality or time guarantee.",
+        "trigger": "Successful EXPLORE/FOUND_UNCONFIRMED short Nav2 prefix remains more than0.02m from full current viewpoint; retain that viewpoint as a scheduling preference."
+      },
+      "exploration_travel_preference": {
+        "distance": "known-free no-corner-cut route with original bounded escape and actual starting offset; complete actual body-masked path is priced again before admission",
+        "evidence": "every executed regular frontier privately retains delivered map geometry, source leases, poses/models, nominal/actual distance, eligible peer budgets and utility factor; strict read-only reconstruction",
+        "factor": "min(1,(1+closest currently funded peer known distance)/(1+own known distance))",
+        "inputs": "same delivered planning map/poses/frame/battery/own robot maps; pending charge and non-ACTIVE peers excluded",
+        "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded.",
+        "scope": "Soft conditional utility preference; bounded continuation, fair serial charging, source TTLs and actual reservations remain; no global optimality or peer future-availability guarantee.",
+        "strategy": "relative_geodesic_travel"
+      },
+      "fault_seed": 17011,
+      "gate_cases": [
+        "fixed_lab_101",
+        "fixed_lab_202",
+        "fixed_lab_303",
+        "fixed_rooms_101",
+        "fixed_rooms_202",
+        "fixed_rooms_303",
+        "fixed_corridors_101",
+        "fixed_corridors_202",
+        "fixed_corridors_303",
+        "fixed_corridors2_202",
+        "forced2",
+        "protocol_forced2",
+        "delay_rooms3",
+        "loss_corridors2",
+        "holdout_ideal",
+        "holdout_fault",
+        "empty_battery"
+      ],
+      "geometry_computation": {
+        "evidence": "20261009_p2c_geometry_performance_components.json",
+        "obstacle_inflation": "Euclidean distance transform <= unchanged integer clearance radius, with empty-obstacle special case; same original closed disk in every cell",
+        "return_memo": "Only immutable fused and local source grids; identical geometry/home/radius/position, source replacement or mutable alias invalidates; at most128 positions; returns independent result rows",
+        "return_tree_suffixes": {
+          "algorithm": "Exact shared reverse-predecessor route suffixes and contact-connected mask, reset with the existing content/geometry/home/radius field",
+          "cached_nodes_maximum": 2048,
+          "evidence": "20261009_p2c_progressive_planning_components.json",
+          "safety": "Every original continuous-check route vertex retained in identical order; no simplification, budget or timestamp cache",
+          "shared_tuple_vertices_maximum": 2048
+        },
+        "time_and_budget": "Geometry only. Original sources, true evaluation epochs, source ages, native2/5s TTLs and every final dispatch lease check remain. No cached energy budget or timestamp renewal",
+        "validation": "Cell equality, qualification/route/budget equality, invalidation and actual ROS. Fixed snapshot timing is not a worst-case or mission result"
+      },
+      "initial_known_space_search": {
+        "admission": "Original0.45m endpoint/0.35m known-free route, body masks, accepted reservations, current source TTLs, full approach+qualified contact return+reaction/wait reserve and charging fairness. Empty known-space candidate set falls back to ordinary mapping; unfunded candidates request original serial charging.",
+        "alternation": "Successful full mapping viewpoint enables one known-space purpose; successful full known-space viewpoint returns to mapping. Short prefixes and safety charging preserve the current purpose; ordinary navigation failure returns to mapping.",
+        "evidence": "Private initial_visual_search witnesses retain delivered grids, positions, source leases, historical visit inputs, sector gain/yaw, full travel/energy and scheduling score; reader reconstructs them. Complete cohort must exercise at least one such witness.",
+        "history": "Position history remains for bounded local diversity. Directional known-space interest instead uses original delivered yaw/pose/frame records and current known-free sight; two-metre90degree predicted cones, not omnidirectional visit discs or target absence proof.",
+        "inputs": "Existing gateway delivered maps/poses/models only; no ground-truth target, hidden camera, native audit stream or new application packet.",
+        "limits": "Heuristic bounded current-map search preference, not exhaustive visual coverage, optimality, hardware safety or worst-case completion guarantee.",
+        "scope": "Complete object mission (enable_rally true) only; pure mapping and existing target reacquisition behavior stay unchanged.",
+        "view": "Current known-free visible interest in a90-degree sector;16 deterministic headings. Occupied and unknown cells block sight; selected heading retained at the final Nav2 endpoint."
+      },
+      "mission_spatial_diversity": {
+        "admission": "Original current complete body-masked approach+qualified contact return, source TTLs, charging fairness and accepted route reservations unchanged. Soft positive factor never authorizes motion.",
+        "algorithm": "Outside original2m charger-centroid neutral region, count historical0.5m bins within2m of candidate with known-free line of sight in the current delivered planning grid; multiply nominal utility by max(0.25,1/sqrt(1+count)). Other rooms sharing a global direction are independent. Same bounded2x useful continuation and funded-nearer-peer preference remain.",
+        "anchor": "Centroid of cached delivered static charger poses; missing/invalid metadata skipped, no model gives neutral preference. Not a new AP input or ground-truth target.",
+        "evidence": "Private executed witnesses preserve static model anchor, complete visit-source records, local visible visit indices, radius/neutral flag/factor and adjusted score beside current delivered grid; independent reader reconstructs. No added application packet.",
+        "history": "Existing first fresh delivered position per0.5m bin; original odom/TF each0..2s at recording. Historical travel is a search preference, never camera coverage proof.",
+        "limits": "Current-map local visibility is a search preference, not historical90degree camera coverage, optimality, peer future availability or worst-case native completion guarantee.",
+        "scope": "Complete object missions with battery model only; ordinary mapping unchanged."
+      },
+      "native_contact_arrival": {
+        "algorithm": "Finish the already accepted budgeted contact waypoint before entering CHARGING; crossing the original outer radius does not cancel a pending/owned leg",
+        "evidence": "20261009_p2c_contact_arrival_components.json",
+        "safety": "Original return deadline, progress watchdog, energy/reserve failure, cancel ownership, native Nav2 collision avoidance and charging radius/stopped stable duration remain; no new leg, no obstacle clearing or pose/source renewal",
+        "scope": "Departure-map occupancy may still invalidate later exploration; this candidate does not claim to solve localization/dynamic SLAM artifacts or guarantee known-free parking after Nav2 goal tolerance"
+      },
+      "native_energy_accounting": {
+        "channel": "read-only native battery_return_audit; not AP input or extra network traffic",
+        "equation": "energy=max(0,initial_energy+charge_credits-distance*move_cost-elapsed*idle_cost)",
+        "freeze_counterexample": "native truth path>1m cannot have zero local distance/time accounting; retain all failures",
+        "period_sec": 5.0,
+        "required": "all regular originals; zero-energy negative has its independent no-navigation failure audit"
+      },
+      "native_filtered_tf": {
+        "gateway": "Original /robot/gateway/source_tf monotonic filtering and packets unchanged; local sensor stream does not become an AP observation or modeled radio packet.",
+        "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
+        "native": "All relevant transforms, duplicates, out-of-order and invalid futures reach the unchanged native consumer, which still owns original2s/5s/128/future deferral, ordering, energy and safety.",
+        "proof": "Actual DDS mixed reliability/body TF, source preservation/future/stale/energy checks; actual frozen graph binds each native stream only to its own battery manager.",
+        "queues": "Native TF original reliable20/two-worker serialized-state-plus-input model, fused1/odom10 unchanged; native battery entire bytes unchanged from79f2113.",
+        "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source.",
+        "source": "Existing robot-side sampler extracts only original map-to-odom transforms into /robot/battery/source_tf before the native DDS queue; no source stamp rewriting."
+      },
+      "native_pose_contract": {
+        "frame_generation_stamp": "native validity stamp minus actual SLAM transform_timeout; launch supplies the same configured offset as gateway",
+        "frame_ttl_sec": 2.0,
+        "odom_ttl_sec": 2.0,
+        "source_order": "source stamps are preserved; valid sensor samples up to2s ahead of local /clock wait in one bounded128-entry heap; clock-matured duplicate/out-of-order sources are ignored, excessive-future samples never poison the current pose",
+        "startup_recovery": "Every charging entry, including immediate odom callbacks, resumes a funded initial missing-pose hold instead of charging; original low-energy/task charge requests remain valid.",
+        "unavailable": "no finite budget/nav return or stable charging; bounded30s stop then explicit positive-energy failure"
+      },
+      "native_snapshot_consumption": {
+        "coalescing": "Filter original map-to-odom transforms before preserving the latest matured source and at most128 unique future stamps; a guard wakes the serialized consumer. Original native128-entry future heap/2s ahead window remains; overflow fails explicitly.",
+        "evidence": "Actual two-worker DDS with the state group blocked and mixed relevant/body TF; blocked historical1/20 queues end with no relevant TF while the input mailbox retains original source50, with no concurrent state/energy/action mutation.",
+        "meter": "Odometry accounting code and queue depth unchanged; TF-only reprojection does not bill map-frame jumps. Required private5s energy ledger adds only a relevant TF receipt count.",
+        "mixed_tf": "Body transforms never overwrite a relevant snapshot or renew its lease. Original source offsets/2s pose/5s map TTLs remain, invalid future input cannot poison a later valid source.",
+        "scope": "Two executor workers: only relevant TF ingress can run independently. All pose application, energy, budget, safety, charging and actions remain in the original mutually exclusive state group; no new AP observation or application traffic.",
+        "subscriptions": "Native mixed TF retains20 with a separate lightweight input callback group; fused-map latest1; odometry remains original10, local map/task/charge/event/action queues unchanged"
+      },
+      "native_tf_graph_capture": {
+        "evidence": "native_graph.json kept alongside original early bypass graph, owner-bound optional observer command and reader source digests required. Missing evidence FAIL; old incomplete graphs are never repaired.",
+        "scope": "Read-only safety observer captures complete required application/native graph once all native battery topics are observed and all endpoint bindings exist; does not delay or change task clocks."
+      },
+      "observer_heading_confirmation_gap": true,
+      "opportunity_charge_algorithm": "two_current_frontiers_complete_route_budget",
+      "opportunity_charge_rules": [
+        "Successful real exploration first; never initial spawn top-up.",
+        "Only existing near-home range and visible body-safe contact route; serial request and handle drain retained.",
+        "At most three distinct useful current frontier alternatives; full known route and endpoint return; forecast is not a queued command.",
+        "Current map identity/source TTL and current delivered pose/TF/battery gates; next actual leg always revalidates."
+      ],
+      "owner_shutdown_timeout_sec": 120,
+      "physical_blackout_manifest": "p2c_blackout_manifest.json",
+      "physical_blackout_required": "Both new originals at the formal commit; unchanged controlled60..250/62..248/.5m/1.1m stimulus. Full integration cannot PASS without their strict evidence. Execute only after all development and fixed/safety prerequisites.",
+      "predeclared_at_utc": "2026-10-09T09:48:58.262839+00:00",
+      "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
+      "rally_candidate_sampling": {
+        "algorithm": "original72 rings plus5/10degree outer-ring visible boundary refinement; existing angular boundary representatives only if no complete feasible first-tier assignment",
+        "evidence": "20261009_p2c_outer_sampling_components.json",
+        "first_level_maximum": 120,
+        "limits": "Stop at first feasible candidate tier; private known-map geometry only, no new perception/truth input. Offline saved-input soft risk/CPU comparisons are not original-history, causal native success, future-map robustness or worst-case guarantees",
+        "maximum_added_first_tier": 48,
+        "maximum_candidates": 464,
+        "pricing": "Each level retains original complete qualified return, observer/charge/wait/soft exposure/body cost optimization and cap feasibility; final fresh admission still required",
+        "region": "unchanged known-free target-visible1..2.6m region,0.45m endpoint clearance and0.8m separation"
+      },
+      "rally_return_objective": {
+        "exposure": "Soft weighted complete-return length between original0.35m path and0.45m endpoint margins; not energy, continuous clearance or dynamic-obstacle guarantee. Every existing hard constraint is unchanged.",
+        "order": [
+          "active_observer_protection",
+          "predicted_charge_count",
+          "qualified_return_clearance_exposure",
+          "serial_time",
+          "observer_headroom",
+          "existing_path_objective"
+        ]
+      },
+      "rally_return_repair": {
+        "budget": "Complete approach+qualified endpoint return+reaction/map/max(odom,frame) age+hold/wait; strictly less than current energy. Next real dispatch revalidates all original leases/reservations/energy.",
+        "evidence": "Private coordinator_rally_return_repair saves both delivered maps, original stamps, model, current/reserved/body positions, old/new endpoints and full route/cost; independent reconstruction. No native hidden input or added application traffic.",
+        "preservation": "Only a new proposal; preserve parked peers, original retries/300s horizon/5s native hold/safety. Reset hold on actual assignment change; never cancel a live action or reset retries.",
+        "search": "Known-free target-visible grid centres in the existing nominal1..2.6m rally region, endpoint clearance0.45m and separation0.8m, body-masked complete approach and same qualified contact return. Dense recovery supplements original72 ring samples; no obstacle/unknown clearing.",
+        "trigger": "Idle ACTIVE unarrived non-observer; old endpoint has no qualified return, current pose retains one; all delivered source leases and target lease fresh; no live/pending exploration/rally/survey, charge or safety refuge."
+      },
+      "rally_route_consistency": {
+        "default_rally_route": "infinite complete path was already in use; initial five-metre diagnosis withdrawn",
+        "offsets": "actual start to first grid point included in nominal approach, detour and parking costs",
+        "return_reservation": "complete delivered-map contact-region route; same geometry cache and clearance as known_home_distance",
+        "unavailable": "wait; charging reserves actual body; no local hidden inputs or centre-route fallback"
+      },
+      "retained_failed_development": "20261008_p2c_v1_failed_development.json",
+      "retained_failed_developments": [
+        "20261008_p2c_v1_failed_development.json",
+        "20261008_p2c_v2_failed_development.json",
+        "20261008_p2c_v4_failed_development.json",
+        "20261008_p2c_v5_failed_development.json",
+        "20261008_p2c_v6_failed_development.json",
+        "20261008_p2c_v7_failed_development.json",
+        "20261008_p2c_v8_failed_development.json",
+        "20261008_p2c_v9_failed_development.json",
+        "20261009_p2c_v10_failed_development.json",
+        "20261009_p2c_v11_failed_development.json",
+        "20261009_p2c_v12_failed_development.json",
+        "20261009_p2c_v13_failed_development.json",
+        "20261009_p2c_v14_failed_development.json",
+        "20261009_p2c_v15_failed_development.json",
+        "20261009_p2c_v16_failed_development.json",
+        "20261009_p2c_v17_failed_development.json",
+        "20261009_p2c_v27_failed_development.json",
+        "20261009_p2c_v28_failed_development.json",
+        "20261009_p2c_v30_failed_development.json",
+        "20261009_p2c_v31_failed_development.json",
+        "20261009_p2c_v32_failed_development.json",
+        "20261009_p2c_v33_failed_development.json",
+        "20261009_p2c_v34_failed_development.json",
+        "20261009_p2c_v35_failed_development.json",
+        "20261009_p2c_v36_failed_development.json",
+        "20261009_p2c_v37_failed_development.json",
+        "20261009_p2c_v38_failed_development.json",
+        "20261009_p2c_v39_failed_development.json"
+      ],
+      "retained_partial_development": "20261008_p2c_v3_partial_development.json",
+      "retained_unrun_candidates": [
+        "20261009_p2c_v29_concurrency_correction.json"
+      ],
+      "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
+      "return_source_selection": {
+        "ages": "original5s source TTL for both maps; budget prices the maximum source age actually consulted, plus original2s pose leases",
+        "constrained_search": "Only when the original fused shortest route fails the local-obstacle veto: project all local positive cells into a separate fused-grid search layer; keep unknown cells unknown, promote positive source cells to occupied, retain both originals, and still apply the original continuous local veto. No route remains unavailable.",
+        "derived_provenance": "Private native constrained_fused candidate: deterministic reconstruction from original local+fused grids; source_time=min(original stamps), version=max(original versions); age prices both originals. Never publish the derived grid as an application map.",
+        "evidence": "all fresh map candidates/costs/qualification/selected minimum retained on read-only native return audit only; not AP input or added communication",
+        "obstacle_veto": "a fused route may extend local unknown space but may not clear local known obstacles; continuous half-local-cell checks preserve0.35m clearance and original bounded0.6m known-free start escape; no diagonal cutting",
+        "sources": [
+          "fresh native local map",
+          "fresh gateway-delivered fused map",
+          "explicit conservative fused search with all fresh local occupied cell rectangles"
+        ],
+        "strategy": "lowest qualified complete-contact energy budget; exact tie prefers local"
+      },
+      "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
+      "rules": [
+        "Commit and push all source/config/helper bytes before first task; no edits while any task owner/observer remains live.",
+        "Retain every original/failure/infrastructure interruption; no task retries or failed-cell backfill.",
+        "All ten fixed direct-ideal cells and forced2/protocol_forced2/holdout_ideal require native COMPLETE at unchanged300s/.35m/.05mps/.1radps/5s.",
+        "Delay/loss/holdout_fault outcomes are all retained; their safety and protocol gates require zero contacts/exhaustion/robot failures, not forced task success.",
+        "Each forced robot must charge; all actual charger_stopped return audits require positive energy and prediction error <=0 within1e-6.",
+        "No-route/empty-energy negative probes must fail correctly, never generate a straight-line Nav2 return; actual ROS synthetic-map failure is labelled component, not Gazebo motion.",
+        "Physical blackout probe reuses the predeclared60..250s staging stimulus and read-only native motion thresholds; both robots must independently return/charge.",
+        "101/202/303/707/809 are exposed;917/new geometry/target/fault29171 is first-exposure verification, not a held-out population estimate. First exposure only after development and full fixed/safety gates.",
+        "Budget envelope assumes bounded motion deviation, speed, reaction and recovery; no claim under infinite blockage, changing obstacles, broken executor or uncalibrated hardware."
+      ],
+      "safety_probe_manifest": "p3b5_staged_return_probe_manifest.json",
+      "schema_version": 1,
+      "snapshot_consumption": {
+        "evidence": "Actual DDS blocked-executor probe compares original10/20 queues with latest1 on50 unchanged source-stamped snapshots",
+        "scope": "Application latest-state coalescing after gateway delivery, not injected radio loss or application traffic change",
+        "source_time": "Original source headers preserved; stale inputs still rejected by original5s/2s TTLs",
+        "subscriptions": "AP delivered fused/robot map, odometry and map-frame TF use original reliable volatile keep-last1; discrete events/publishers/native safety queues unchanged",
+        "tf_reprojection": "Each new delivered map-to-odom TF reprojects the last original odometry sample; its source timestamp and velocity remain unchanged, and original two independent2s leases still apply."
+      },
+      "target_information_survey": true,
+      "task_child_process_audit": {
+        "cleanup": "Actual post-task child exit codes retained separately; not task-time failures or evidence of graceful child exit.",
+        "during_task": "Every nonzero ROS launch child exit before the owned SIGINT closure marker fails; outer owner exit0 cannot mask a child crash.",
+        "evidence": "Original source-bound launch transcript required; no raw log repair."
+      },
+      "visibility_computation": {
+        "deduplication": "Boolean flat hit mask replaces sort/unique; identical sorted cell set and count",
+        "evidence": "20261009_p2c_visibility_lookup_components.json",
+        "inputs": "No map/history/source/age/energy budget cached here; current delivered occlusion and interest recomputed each call",
+        "preparation": "Generate original mapping frontiers only when that branch is needed; known-space search retains original mapping fallback and identical path-clearance travel fields",
+        "rays": "Original floating unrounded projections cached by radius only, max8 immutable tables; translation+rint occurs at actual grid cell exactly as before",
+        "scope": "Pure computation only; source TTL, true clock, native geometry/budget/300s/5s and all case/physical stimuli unchanged",
+        "sectors": "Original atan2(sin,cos) inclusive90degree/16yaw predicate precomputed for integer relative cells, max8 immutable radius/FOV tables; original tie order and yaw"
+      }
+    },
+    "configuration_command": null,
+    "cpu_affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79
+    ],
+    "environment": {
+      "FASTDDS_BUILTIN_TRANSPORTS": "UDPv4",
+      "FASTRTPS_DEFAULT_PROFILES_FILE": null,
+      "GAZEBO_MASTER_URI": "http://127.0.0.1:20290",
+      "PYTHONNOUSERSITE": "1",
+      "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+      "ROS_DISCOVERY_SERVER": null,
+      "ROS_DISTRO": "humble",
+      "ROS_DOMAIN_ID": "210"
+    },
+    "evidence_sha256": {
+      "20261009_p2c_v40_dev_forced2.csv": "13617d8303469caafa161682e06a0425e916c276161aec014f7b6eb466720c8e",
+      "20261009_p2c_v40_dev_forced2.json": "183e199d9a8ef6cfad28dcf933a4bae3eee0a16da123877fc1ff204274215dc5",
+      "graph.json": "2e3424b1da74f309f7832228539fb8a07d3b173d7704d01abde5fe85fd697ce9",
+      "launch/robots2_seed303_20261009-193829.log": "5f1632ea23cc53d0a5fb4eb676dfeadd5a3cbaf11d580dd262a2af074c4b314f",
+      "ledger.jsonl": "65bf2a7c017404a5fc6e9c2b8961c312fbdecb001f59902f0905df9da334ac38",
+      "ledger_metrics/curves.svg": "4e1e38f72372e0125cfa1ab80468280858b8f35cc9548f03887fdc4325a9c14b",
+      "ledger_metrics/events.jsonl": "1fb6f52ea3b2da659509adb40a964bda8e6d8fe56b19c301e5012d1770c848e5",
+      "ledger_metrics/inputs.jsonl": "30526d301f31eb88dcfeeeb08496b2adf045402ff54277ce3194f1c2d8796b32",
+      "ledger_metrics/live.jsonl": "8d92948c1b2f56d4a910de0ec6b6f538a38a6c2d2d8161a1dbc37117444ecc7c",
+      "ledger_metrics/live_windows.csv": "340dff4e223d863a01f0cd313a1923d805ff9d8952e07a26b7250ab27bef523f",
+      "ledger_metrics/summary.json": "82675ed2fdb3ba92a93613e7e3fdc1a790f7abb4b58c2d2ab5ee3a222353d95b",
+      "ledger_metrics/windows.csv": "340dff4e223d863a01f0cd313a1923d805ff9d8952e07a26b7250ab27bef523f",
+      "ledger_metrics/windows.jsonl": "e5bc5d9623821ffac294ba1854f872ff7b99bac6b60db8ec0977973d663fd084",
+      "manifest.json": "2cd7cede55ffa77147b7ef1cdd606e6addde59ee3c62ae1ca1e8c548a052e3fc",
+      "native_graph.json": "65cd6d94689d5b2e4615a2adb748ec745bb586a9498e213367fb8bf5cbe156f9",
+      "observer.log": "a2c82767eca72be383c122e6e4e87869e145b0febe34fd3fa00ca1f8fc6e2655",
+      "runner.log": "20176fa290b0f79c5b194c4f14f45ed5919b3b75e56b931ce1e342a7593906ca",
+      "safety_events.jsonl": "3f9bb10f7a965251db6c7b9c520addb78670319260980848cfef3d72a45de028",
+      "schedule.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    "finished_at_utc": "2026-10-09T11:43:18.964261+00:00",
+    "git_commit": "d70b277c853cc736c40b535a9d3551a0c99b0950",
+    "observer_command": [
+      "/usr/bin/python3",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/observe_p3b5.py",
+      "--output",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v40/20261009_p2c_v40_dev_forced2/safety_events.jsonl",
+      "--robot-count",
+      "2",
+      "--native-tf-graph-output",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v40/20261009_p2c_v40_dev_forced2/native_graph.json"
+    ],
+    "observer_pid": 713349,
+    "observer_returncode": 0,
+    "owner_pid": 713329,
+    "result": {
+      "battery_enabled": true,
+      "battery_minimum_energy": 14.95501051806788,
+      "battery_total_charges": 2,
+      "battery_total_charging_time_sec": 41.90000000000009,
+      "battery_total_returns": 4,
+      "collision_duration_sec": 0.0,
+      "collision_events": 0,
+      "collision_history": [],
+      "collision_monitoring_active": true,
+      "completion_status": "FAILED",
+      "completion_time_sec": null,
+      "coordinator_completion_time_sec": null,
+      "correct_coverage_ratio": 0.693785370311786,
+      "correct_free_coverage_ratio": 0.7377381202590901,
+      "correct_truth_cell_count": 39475,
+      "coverage_at_detection": 0.7315665781378374,
+      "coverage_threshold": 0.0,
+      "detecting_robot": "tb1",
+      "elapsed_sim_time_sec": 192.79999999999973,
+      "end_sim_time_sec": 2267.582,
+      "episode_id": "20261009_p2c_v40_dev_forced2",
+      "failed_robots": [],
+      "failure_reason": "insufficient_rally_poses",
+      "gazebo_seed": 303,
+      "known_coverage_ratio": 0.7119582410629548,
+      "known_truth_cell_count": 40509,
+      "map_message_count": 199,
+      "merged_map_frame": "map",
+      "merged_map_height": 212,
+      "merged_map_origin_x": -5.660708001777671,
+      "merged_map_origin_y": -5.454334479510562,
+      "merged_map_origin_yaw": 0.0,
+      "merged_map_resolution": 0.05000000074505806,
+      "merged_map_width": 255,
+      "mission_mode": "rally",
+      "model_state_message_count": 1929,
+      "native_rally_hold_proof": null,
+      "nav_aborted": 0,
+      "nav_canceled": 2,
+      "nav_goal_count": 10,
+      "nav_succeeded": 8,
+      "observed_accuracy": 0.9744748080673431,
+      "occupied_iou": 0.15517241379310345,
+      "partial_completion": false,
+      "phase_overlap_ratios": {
+        "EXPLORE": 0.0,
+        "FOUND": 0.0,
+        "RALLY": 0.0
+      },
+      "phase_path_lengths_m": {
+        "EXPLORE": 15.461796481836899,
+        "FOUND": 0.15803612206388296,
+        "RALLY": 0.0
+      },
+      "phase_union_visited_cell_counts": {
+        "EXPLORE": 168,
+        "FOUND": 3,
+        "RALLY": 0
+      },
+      "rally_angular_tolerance_radps": null,
+      "rally_assignments": {},
+      "rally_hold_sec": null,
+      "rally_linear_tolerance_mps": null,
+      "rally_min_separation_m": null,
+      "rally_position_tolerance_m": null,
+      "required_robot_count": 2,
+      "required_robot_names": [
+        "tb1",
+        "tb2"
+      ],
+      "robot_count": 2,
+      "robots": {
+        "tb1": {
+          "battery_capacity": 100.0,
+          "battery_charge_count": 1,
+          "battery_charge_x": 0.0,
+          "battery_charge_y": -0.45,
+          "battery_charging_time_sec": 18.199999999999818,
+          "battery_final_energy": 69.22003291592257,
+          "battery_initial_energy": 18.0,
+          "battery_message_count": 389,
+          "battery_minimum_energy": 16.240728025415713,
+          "battery_mode": "ACTIVE",
+          "battery_return_count": 2,
+          "collision_duration_sec": 0.0,
+          "collision_events": 0,
+          "collision_message_count": 3856,
+          "end_x": -3.60960909821062,
+          "end_y": 1.2972228085134034,
+          "final_angular_speed_radps": 2.337388278368405e-06,
+          "final_linear_speed_mps": 5.9229173337897047e-05,
+          "nav_aborted": 0,
+          "nav_canceled": 1,
+          "nav_goal_count": 6,
+          "nav_succeeded": 5,
+          "path_length_m": 9.049130640309293,
+          "phase_path_lengths_m": {
+            "EXPLORE": 8.909430234265692,
+            "FOUND": 0.1397004060435722,
+            "RALLY": 0.0
+          },
+          "rally_final_error_m": null,
+          "rally_target_x": null,
+          "rally_target_y": null,
+          "rally_target_yaw": null,
+          "start_x": 0.0023699754505339815,
+          "start_y": -0.44999502066974245,
+          "teleport_jump_count": 0,
+          "visited_cell_count": 103
+        },
+        "tb2": {
+          "battery_capacity": 100.0,
+          "battery_charge_count": 1,
+          "battery_charge_x": 0.0,
+          "battery_charge_y": 0.45,
+          "battery_charging_time_sec": 23.700000000000273,
+          "battery_final_energy": 73.08842450241109,
+          "battery_initial_energy": 18.0,
+          "battery_message_count": 387,
+          "battery_minimum_energy": 14.95501051806788,
+          "battery_mode": "ACTIVE",
+          "battery_return_count": 2,
+          "collision_duration_sec": 0.0,
+          "collision_events": 0,
+          "collision_message_count": 3857,
+          "end_x": 2.3790571332342085,
+          "end_y": 3.0056934707699012,
+          "final_angular_speed_radps": 1.976405504297373e-06,
+          "final_linear_speed_mps": 7.646127797365576e-05,
+          "nav_aborted": 0,
+          "nav_canceled": 1,
+          "nav_goal_count": 4,
+          "nav_succeeded": 3,
+          "path_length_m": 6.570701963591528,
+          "phase_path_lengths_m": {
+            "EXPLORE": 6.552366247571208,
+            "FOUND": 0.01833571602031074,
+            "RALLY": 0.0
+          },
+          "rally_final_error_m": null,
+          "rally_target_x": null,
+          "rally_target_y": null,
+          "rally_target_yaw": null,
+          "start_x": 0.0023292915825854177,
+          "start_y": 0.45000483664119617,
+          "teleport_jump_count": 0,
+          "visited_cell_count": 66
+        }
+      },
+      "schema_version": 9,
+      "search_overlap_ratio": 0.0,
+      "start_sim_time_sec": 2074.782,
+      "success": false,
+      "target_confirmation_frames": 3,
+      "target_field_of_view_deg": 90.0,
+      "target_found": true,
+      "target_max_distance_m": 3.0,
+      "target_x": -4.0,
+      "target_y": 4.0,
+      "task_phase": "FAILED",
+      "termination_reason": "mission_failed",
+      "time_to_75_coverage_sec": null,
+      "time_to_80_coverage_sec": null,
+      "time_to_90_coverage_sec": null,
+      "time_to_95_coverage_sec": null,
+      "time_to_detect_sec": 118.69999999999982,
+      "time_to_rally_sec": null,
+      "total_overlap_ratio": 0.0,
+      "total_path_length_m": 15.619832603900822,
+      "truth_cell_count": 56898,
+      "truth_free_cell_count": 52337,
+      "truth_height": 218,
+      "truth_occupied_cell_count": 4561,
+      "truth_origin_x": -5.800000000000001,
+      "truth_origin_y": -5.6000000000000005,
+      "truth_rectangle_count": 26,
+      "truth_resolution": 0.05,
+      "truth_unsupported_collision_count": 1,
+      "truth_width": 261,
+      "union_visited_cell_count": 169,
+      "visit_resolution": 0.1,
+      "world_file": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/worlds/my_world.world"
+    },
+    "result_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v40/20261009_p2c_v40_dev_forced2/20261009_p2c_v40_dev_forced2.json",
+    "runner_returncode": 0,
+    "source_digests": {
+      "admission_protocol": "05f15651bfc831c541d5a662491a0467e64ae4084c27655a6f27e1ed56e6064a",
+      "control_cli": "f70c8f7a6ee4fb9a0a7d2e9468e3c77b3cc77d729cbd2a544c1f45adbf997c09",
+      "control_schema": "7fa7e5fa63dd0fb1e319fd08694773c675ac3fe8dcefa0051dd4f0fe71958d28",
+      "entrypoint": "78edb424db0a63347cf6b28f3fbff72a20207c3852f26a004907f868e8170a1f",
+      "exploration": "0d68387c7147d25dcac804a7212c20b673301d4ae17edd8911b25f0302866a95",
+      "launch": "6f26d9c5b1dce5bc681bc59cfe8fb8be68baff823f5334939f33261392380692",
+      "manifest": "a94f9e5b9c9171aec19126a04d623af0d12a40e94d282e8f017e9fc8ebfaf5e8",
+      "message_schema": "e0648e61473dfd2931038c79cda8a6fe4bf09c1d00f8d4acdfa0f4879e72925c",
+      "native_graph_reader": "42206ee2a824bded4f1111d5a097b853aeddbffd31a653393b94fb6b6e418b65",
+      "params": "2cb9b9e26015cbe79867fe3750296d9cb7626a05ad16f595b7692db4b4490f4f",
+      "physics_observer": "588693bf5f934081452925fc3ca80e10465f67ccc1738066cd91fb9fdf48527b",
+      "runner": "63607f21f1a1e6885ce0d0ae7dbc4d663057a59ab0ea2cd3a1325c6c74549df7",
+      "safety_observer": "bfeba81cac53bb13fcb029e983526a751e84b07870e82098db85d1d2055c7913",
+      "slam": "61abada48d42602e5bb8950cdf81cd4804c0c45b787490681711e3cc228eb1c0",
+      "smoke": "42cf2f93ba691e2f281d3e2938bc4c005346fcf3eac061edf1317c5b22492359",
+      "staging_apparatus": "594a3fe0937b5280619556c62625fcbdb893eabd8e0a6a62d761fe37fea5819b",
+      "worlds": "2ee10406031815e3d0ea2e76074706a8e150e636ab2366428b201ecc72a5cc9a"
+    },
+    "started_at_utc": "2026-10-09T11:38:28.796855+00:00",
+    "worktree_status": [
+      "?? 260929_report/1.pdf",
+      "?? 260929_report/2007.08564v1.pdf",
+      "?? 260929_report/2106.00574v1.pdf",
+      "?? 260929_report/2503.07278v3.pdf",
+      "?? \"260929_report/A Critical Review of Communications in Multi-robot Systems.pdf\"",
+      "?? \"260929_report/Adaptive resource allocation in dynamic wireless environments a systematic review.pdf\"",
+      "?? 260929_report/Applications_of_Deep_Reinforcement_Learning_in_Communications_and_Networking_A_Survey.pdf",
+      "?? \"260929_report/Towards reasoning-empowered task-oriented communication for agent networks.pdf\"",
+      "?? 260929_report/Towards_Autonomous_Multi-UAV_Wireless_Network_A_Su.pdf",
+      "?? 260929_report/c61bd00b-f250-4cfe-b5a5-f941e8c9b22b.png",
+      "?? 260929_report/sensors-23-03625.pdf",
+      "?? 260929_report/ssrn-7067272.pdf",
+      "?? \"260929_report/\\347\\273\\204\\344\\274\\232\\346\\226\\207\\347\\214\\256\\346\\261\\207\\346\\212\\245-\\346\\250\\241\\346\\235\\277.pptx\"",
+      "?? \"260929_report/\\347\\273\\274\\350\\277\\260\\350\\256\\272\\346\\226\\207\\350\\260\\203\\347\\240\\224.docx\""
+    ]
+  },
+  "first_required_gate": {
+    "status": "FAIL",
+    "scope": "development",
+    "task_stack_frozen_commit": "d70b277c853cc736c40b535a9d3551a0c99b0950",
+    "cases": 1,
+    "errors": [
+      {
+        "case": "dev_forced2",
+        "error": "AssertionError()",
+        "traceback": "Traceback (most recent call last):\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 755, in audit_one\n    try:return check_one(path,config),None\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 671, in check_one\n    episode_ok(result)\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3b5_gate.py\", line 61, in episode_ok\n    p3a_episode_ok(result)\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3a6_gate.py\", line 39, in episode_ok\n    assert data[\"success\"]\nAssertionError\n"
+      }
+    ],
+    "evidence": [],
+    "full_declared_scope": false,
+    "raw_failures_retained": true,
+    "physical_blackout_gate": "required_before_full_integration",
+    "general_hardware_safety_guarantee": false
+  },
+  "independent_audits": {
+    "dev_forced2": {
+      "native_return": {
+        "status": "PASS",
+        "return_triggers": 4,
+        "map_budget_reconstructions": 4,
+        "pose_lease_reconstructions": 6,
+        "pose_leases_required": true,
+        "local_legs": 2,
+        "charger_returns": 2,
+        "returns": [
+          {
+            "actual_distance_m": 0.0,
+            "actual_elapsed_sec": 0.0,
+            "actual_energy_spent": 0.0,
+            "cancellation_count": 0,
+            "charge_radius_m": 0.8,
+            "energy": 18.0,
+            "energy_model": {
+              "idle_cost_per_sec": 0.02,
+              "move_cost_per_m": 1.0,
+              "nominal_speed_mps": 0.18,
+              "path_factor": 2.0,
+              "recovery_wait_sec": 30.0,
+              "safety_margin": 5.0
+            },
+            "event": "return_finished",
+            "home": [
+              0.0,
+              0.45
+            ],
+            "outcome": "route_recovered_resume",
+            "predicted_energy_spent": null,
+            "prediction_error": null,
+            "rejection_count": 0,
+            "return_count": 1,
+            "robot": "tb2",
+            "sim_time": 2075.382,
+            "start": {
+              "budget": null,
+              "cancels": 0,
+              "distance": 0.0,
+              "elapsed": 0.0,
+              "energy": 18.0,
+              "reason": "no_known_route",
+              "rejections": 0,
+              "sim_time": 2075.282
+            }
+          },
+          {
+            "actual_distance_m": 0.0,
+            "actual_elapsed_sec": 0.0,
+            "actual_energy_spent": 0.0,
+            "cancellation_count": 0,
+            "charge_radius_m": 0.8,
+            "energy": 18.0,
+            "energy_model": {
+              "idle_cost_per_sec": 0.02,
+              "move_cost_per_m": 1.0,
+              "nominal_speed_mps": 0.18,
+              "path_factor": 2.0,
+              "recovery_wait_sec": 30.0,
+              "safety_margin": 5.0
+            },
+            "event": "return_finished",
+            "home": [
+              0.0,
+              -0.45
+            ],
+            "outcome": "route_recovered_resume",
+            "predicted_energy_spent": null,
+            "prediction_error": null,
+            "rejection_count": 0,
+            "return_count": 1,
+            "robot": "tb1",
+            "sim_time": 2075.482,
+            "start": {
+              "budget": null,
+              "cancels": 0,
+              "distance": 0.0,
+              "elapsed": 0.0,
+              "energy": 18.0,
+              "reason": "no_known_route",
+              "rejections": 0,
+              "sim_time": 2075.382
+            }
+          },
+          {
+            "actual_distance_m": 0.25612852341306125,
+            "actual_elapsed_sec": 11.118000000000393,
+            "actual_energy_spent": 0.4784885234131231,
+            "cancellation_count": 0,
+            "charge_radius_m": 0.8,
+            "energy": 16.249484943594595,
+            "energy_model": {
+              "idle_cost_per_sec": 0.02,
+              "move_cost_per_m": 1.0,
+              "nominal_speed_mps": 0.18,
+              "path_factor": 2.0,
+              "recovery_wait_sec": 30.0,
+              "safety_margin": 5.0
+            },
+            "event": "return_finished",
+            "home": [
+              0.0,
+              -0.45
+            ],
+            "outcome": "charger_stopped",
+            "predicted_energy_spent": 1.6080530630533705,
+            "prediction_error": -1.1295645396402474,
+            "rejection_count": 0,
+            "return_count": 2,
+            "robot": "tb1",
+            "sim_time": 2106.982,
+            "start": {
+              "budget": {
+                "frame_source_time": 2095.581,
+                "frame_stamp_offset_sec": 0.2,
+                "idle_energy": 0.7260413063053379,
+                "map_age_sec": 0.20100000000002183,
+                "map_content_blake2b": "8ade7eba3f74454f792eef15fd514841",
+                "map_input_age_sec": 0.20100000000002183,
+                "map_source": "local",
+                "map_source_time": 2095.581,
+                "map_version": 24,
+                "motion_distance_budget_m": 0.8820117567480328,
+                "move_energy": 0.8820117567480328,
+                "odom_source_time": 2095.758,
+                "path_distance_m": 0.2608558783740131,
+                "pose_age_sec": 0.20100000000002183,
+                "required_energy": 6.6080530630533705,
+                "route": [
+                  [
+                    -0.8050149595500626,
+                    -0.2658204746758225
+                  ],
+                  [
+                    -0.8155892924262638,
+                    -0.2633641565750722
+                  ],
+                  [
+                    -0.7655892916812057,
+                    -0.2633641565750722
+                  ],
+                  [
+                    -0.7155892909361476,
+                    -0.2633641565750722
+                  ],
+                  [
+                    -0.6655892901910896,
+                    -0.2633641565750722
+                  ],
+                  [
+                    -0.6155892894460315,
+                    -0.2633641565750722
+                  ],
+                  [
+                    -0.5655892887009735,
+                    -0.2633641565750722
+                  ]
+                ],
+                "safety_margin": 5.0,
+                "travel_time_budget_sec": 4.900065315266849,
+                "waiting_time_budget_sec": 31.402000000000044
+              },
+              "cancels": 0,
+              "distance": 0.8647065329921504,
+              "elapsed": 20.365999999999985,
+              "energy": 16.72797346700772,
+              "reason": "energy_or_task_budget",
+              "rejections": 0,
+              "sim_time": 2095.782
+            }
+          },
+          {
+            "actual_distance_m": 0.6055639794135108,
+            "actual_elapsed_sec": 9.315999999999804,
+            "actual_energy_spent": 0.7918839794136598,
+            "cancellation_count": 0,
+            "charge_radius_m": 0.8,
+            "energy": 14.978387020028986,
+            "energy_model": {
+              "idle_cost_per_sec": 0.02,
+              "move_cost_per_m": 1.0,
+              "nominal_speed_mps": 0.18,
+              "path_factor": 2.0,
+              "recovery_wait_sec": 30.0,
+              "safety_margin": 5.0
+            },
+            "event": "return_finished",
+            "home": [
+              0.0,
+              0.45
+            ],
+            "outcome": "charger_stopped",
+            "predicted_energy_spent": 2.381804819917475,
+            "prediction_error": -1.5899208405038152,
+            "rejection_count": 0,
+            "return_count": 2,
+            "robot": "tb2",
+            "sim_time": 2136.782,
+            "start": {
+              "budget": {
+                "frame_source_time": 2127.367,
+                "frame_stamp_offset_sec": 0.2,
+                "idle_energy": 0.825538481991745,
+                "map_age_sec": 1.5149999999998727,
+                "map_content_blake2b": "1ad7a1f69331618458678e3f992a5f7f",
+                "map_input_age_sec": 1.5149999999998727,
+                "map_source": "local",
+                "map_source_time": 2125.967,
+                "map_version": 59,
+                "motion_distance_budget_m": 1.5562663379257307,
+                "move_energy": 1.5562663379257307,
+                "odom_source_time": 2127.366,
+                "path_distance_m": 0.6107331689628676,
+                "pose_age_sec": 0.11599999999998545,
+                "required_energy": 7.381804819917475,
+                "route": [
+                  [
+                    -0.007418795140146556,
+                    1.6288758850884666
+                  ],
+                  [
+                    0.00257224504203446,
+                    1.6327975990172954
+                  ],
+                  [
+                    0.00257224504203446,
+                    1.5827975982722373
+                  ],
+                  [
+                    0.00257224504203446,
+                    1.5327975975271793
+                  ],
+                  [
+                    0.00257224504203446,
+                    1.4827975967821212
+                  ],
+                  [
+                    0.00257224504203446,
+                    1.4327975960370631
+                  ],
+                  [
+                    0.00257224504203446,
+                    1.382797595292005
+                  ],
+                  [
+                    0.00257224504203446,
+                    1.332797594546947
+                  ],
+                  [
+                    0.00257224504203446,
+                    1.282797593801889
+                  ],
+                  [
+                    0.00257224504203446,
+                    1.232797593056831
+                  ],
+                  [
+                    0.00257224504203446,
+                    1.1827975923117728
+                  ],
+                  [
+                    0.00257224504203446,
+                    1.1327975915667148
+                  ],
+                  [
+                    0.00257224504203446,
+                    1.0827975908216567
+                  ],
+                  [
+                    0.00257224504203446,
+                    1.0327975900765987
+                  ]
+                ],
+                "safety_margin": 5.0,
+                "travel_time_budget_sec": 8.645924099587393,
+                "waiting_time_budget_sec": 32.63099999999986
+              },
+              "cancels": 0,
+              "distance": 1.18864900055688,
+              "elapsed": 52.05400000000009,
+              "energy": 15.770270999442646,
+              "reason": "energy_or_task_budget",
+              "rejections": 0,
+              "sim_time": 2127.482
+            }
+          }
+        ]
+      },
+      "native_energy": {
+        "status": "PASS",
+        "required": true,
+        "snapshots": 78,
+        "robots": {
+          "tb1": {
+            "samples": 39,
+            "last": {
+              "actual_distance_m": 9.060236546491076,
+              "actual_elapsed_sec": 172.44799999999987,
+              "charge_radius_m": 0.8,
+              "charged_energy_added": 63.75927197458429,
+              "energy": 69.25007542809554,
+              "energy_model": {
+                "idle_cost_per_sec": 0.02,
+                "move_cost_per_m": 1.0,
+                "nominal_speed_mps": 0.18,
+                "path_factor": 2.0,
+                "recovery_wait_sec": 30.0,
+                "safety_margin": 5.0
+              },
+              "event": "energy_accounting",
+              "frame_source_time": 2265.3900000000003,
+              "home": [
+                0.0,
+                -0.45
+              ],
+              "initial_energy": 18.0,
+              "mode": "ACTIVE",
+              "odom_source_time": 2265.554,
+              "pending_native_inputs": 0,
+              "relevant_frame_receipts": 9684,
+              "return_count": 2,
+              "robot": "tb1",
+              "sim_time": 2265.582
+            }
+          },
+          "tb2": {
+            "samples": 39,
+            "last": {
+              "actual_distance_m": 6.5708378010447275,
+              "actual_elapsed_sec": 167.79000000000087,
+              "charge_radius_m": 0.8,
+              "charged_energy_added": 65.04498948193212,
+              "energy": 73.11835168088831,
+              "energy_model": {
+                "idle_cost_per_sec": 0.02,
+                "move_cost_per_m": 1.0,
+                "nominal_speed_mps": 0.18,
+                "path_factor": 2.0,
+                "recovery_wait_sec": 30.0,
+                "safety_margin": 5.0
+              },
+              "event": "energy_accounting",
+              "frame_source_time": 2265.371,
+              "home": [
+                0.0,
+                0.45
+              ],
+              "initial_energy": 18.0,
+              "mode": "ACTIVE",
+              "odom_source_time": 2265.576,
+              "pending_native_inputs": 0,
+              "relevant_frame_receipts": 9690,
+              "return_count": 2,
+              "robot": "tb2",
+              "sim_time": 2265.582
+            }
+          }
+        }
+      },
+      "lookahead": {
+        "status": "PASS",
+        "two_frontier_charge_decisions": 0
+      },
+      "ap_return_veto": {
+        "status": "PASS",
+        "delivered_return_vetoes": 1
+      },
+      "rally_assignment": {
+        "status": "PASS",
+        "failed_assignments_rebuilt": 12,
+        "chosen_assignments_rebuilt": 0,
+        "computation_wall_sec": [
+          1.820407380349934,
+          1.692889476660639,
+          2.3065865733660758,
+          1.7031826740130782,
+          1.4224389870651066,
+          1.7750915517099202,
+          1.5915356152690947,
+          1.6860885019414127,
+          1.8028432438150048,
+          2.1291289450600743,
+          1.894011524040252,
+          1.899382112082094
+        ]
+      },
+      "rally_repair": {
+        "status": "PASS",
+        "funded_endpoint_repairs": 0
+      },
+      "exploration_travel": {
+        "status": "PASS",
+        "executed_frontier_witnesses": 8,
+        "relative_travel_discounts": 0,
+        "resumed_frontier_witnesses": 3,
+        "required": true,
+        "commitment_required": true,
+        "bounded_commitment_required": true,
+        "initial_visual_witnesses": 1,
+        "initial_search_required": true,
+        "spatial_diversity_witnesses": 8,
+        "camera_aware_visual_witnesses": 1,
+        "camera_search_required": true
+      },
+      "target_survey": {
+        "status": "PASS",
+        "target_information_survey_witnesses": 0,
+        "declared": true
+      },
+      "observer_heading": {
+        "status": "PASS",
+        "required": true,
+        "quiet_holds": 0,
+        "heading_turns": 0
+      },
+      "planning_leases": {
+        "status": "PASS",
+        "abandoned_expired_plans": 2,
+        "stages": {
+          "candidate_budget": 1,
+          "candidate_generation": 1
+        }
+      },
+      "launch_processes": {
+        "status": "PASS",
+        "launch_transcripts": 1,
+        "task_time_nonzero_child_exits": 0,
+        "post_task_cleanup_exits": []
+      },
+      "native_tf_graph": {
+        "status": "PASS",
+        "required": true,
+        "robot_local_filtered_tf": [
+          "tb1",
+          "tb2"
+        ],
+        "ap_native_tf_consumers": 0,
+        "source_time_renewal": false
+      }
+    }
+  },
+  "all_owned_closed": {
+    "owner_pid": {
+      "pid": 713329,
+      "closed": true
+    },
+    "observer_pid": {
+      "pid": 713349,
+      "closed": true
+    },
+    "checked_at_utc": "2026-10-09T11:49:21.603960+00:00"
+  },
+  "planning_lease_aborts": {
+    "candidate_budget": 1,
+    "candidate_generation": 1
+  },
+  "exact_snapshot_binding": {
+    "p2c_v40_dev_forced2_candidate_budget_expired_snapshot.json": {
+      "snapshot_sha256": "1b0b6bc779ec6a64d3953ab48d750eea95480666d2d963690ddf2c46a8bbffbc",
+      "original_ledger_sha256": "65bf2a7c017404a5fc6e9c2b8961c312fbdecb001f59902f0905df9da334ac38",
+      "ledger_index": 9998
+    },
+    "p2c_v40_dev_forced2_candidate_generation_expired_snapshot.json": {
+      "snapshot_sha256": "6d8f301febc973273a9900c604b324294c579ed52258f688eb44f12f22d11f8a",
+      "original_ledger_sha256": "65bf2a7c017404a5fc6e9c2b8961c312fbdecb001f59902f0905df9da334ac38",
+      "ledger_index": 13498
+    }
+  },
+  "task_retries": 0,
+  "artifacts": [
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/audit_p2c_v40_independent.py",
+      "source_sha256": "c3ff4b7521cb024240c0ebc37805fbb2af26296e3e7da21af52336803cdee5d2",
+      "archive": "20261009_p2c_v40_artifacts/log__audit_p2c_v40_independent.py.gz",
+      "archive_sha256": "bedec37202b97363fd1e3aa773d4b47423f3d0e0d618b019df803974ddd8ff21"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/check_p2c_v40_freeze.py",
+      "source_sha256": "3d452316ec419cf30b9ab1a18271ca6a04d5eb53d81f266e7e14da58f2522821",
+      "archive": "20261009_p2c_v40_artifacts/log__check_p2c_v40_freeze.py.gz",
+      "archive_sha256": "284550a7de2b8e2b9b96796e21b266564ff23551d71ba2e9979d0883ba62297e"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/diagnose_p2c_v41_rally_failure.py",
+      "source_sha256": "8eedd761aa557c9c8ec2eaaa06841340ef52cfee30e3b405e750b298096738d9",
+      "archive": "20261009_p2c_v40_artifacts/log__diagnose_p2c_v41_rally_failure.py.gz",
+      "archive_sha256": "4c1cf7d3e51f6b07161f51ad06723c20328765a346053e5f5524f84b43e2841d"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v40/20261009_p2c_v40_dev_forced2/20261009_p2c_v40_dev_forced2.csv",
+      "source_sha256": "13617d8303469caafa161682e06a0425e916c276161aec014f7b6eb466720c8e",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c__20261009_p2c_v40__20261009_p2c_v40_dev_forced2__20261009_p2c_v40_dev_forced2.csv.gz",
+      "archive_sha256": "bc6dc092f11da29d051b206a1bc196af09cab8288240c7bcb30dd2a101d38b00"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v40/20261009_p2c_v40_dev_forced2/20261009_p2c_v40_dev_forced2.json",
+      "source_sha256": "183e199d9a8ef6cfad28dcf933a4bae3eee0a16da123877fc1ff204274215dc5",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c__20261009_p2c_v40__20261009_p2c_v40_dev_forced2__20261009_p2c_v40_dev_forced2.json.gz",
+      "archive_sha256": "83b5b3bb88cea801c85545279156df831c3249374c888485e37f58408cf1fe1d"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v40/20261009_p2c_v40_dev_forced2/graph.json",
+      "source_sha256": "2e3424b1da74f309f7832228539fb8a07d3b173d7704d01abde5fe85fd697ce9",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c__20261009_p2c_v40__20261009_p2c_v40_dev_forced2__graph.json.gz",
+      "archive_sha256": "4e92e8fc3290d65038c69872415f749bcebb361eba7397101d06bc73c91de5be"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v40/20261009_p2c_v40_dev_forced2/launch/robots2_seed303_20261009-193829.log",
+      "source_sha256": "5f1632ea23cc53d0a5fb4eb676dfeadd5a3cbaf11d580dd262a2af074c4b314f",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c__20261009_p2c_v40__20261009_p2c_v40_dev_forced2__launch__robots2_seed303_20261009-193829.log.gz",
+      "archive_sha256": "5b1a76d9322ce9b6ba33166011429404de08a3542167362074f52be11d223e48"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v40/20261009_p2c_v40_dev_forced2/ledger.jsonl",
+      "source_sha256": "65bf2a7c017404a5fc6e9c2b8961c312fbdecb001f59902f0905df9da334ac38",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c__20261009_p2c_v40__20261009_p2c_v40_dev_forced2__ledger.jsonl.gz",
+      "archive_sha256": "7a243b4f3d072b8307ad52dffea2d692105ff72881efb4cee249e28f2b8d272f"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v40/20261009_p2c_v40_dev_forced2/ledger_metrics/curves.svg",
+      "source_sha256": "4e1e38f72372e0125cfa1ab80468280858b8f35cc9548f03887fdc4325a9c14b",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c__20261009_p2c_v40__20261009_p2c_v40_dev_forced2__ledger_metrics__curves.svg.gz",
+      "archive_sha256": "ab892cf786e50215e6f68089f88d208ba883fdd91406f89b39b56bce497da60d"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v40/20261009_p2c_v40_dev_forced2/ledger_metrics/events.jsonl",
+      "source_sha256": "1fb6f52ea3b2da659509adb40a964bda8e6d8fe56b19c301e5012d1770c848e5",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c__20261009_p2c_v40__20261009_p2c_v40_dev_forced2__ledger_metrics__events.jsonl.gz",
+      "archive_sha256": "cafbfba99eb18e411a16b4394634d0619584d262ea539fd60eadc52d762fd66f"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v40/20261009_p2c_v40_dev_forced2/ledger_metrics/inputs.jsonl",
+      "source_sha256": "30526d301f31eb88dcfeeeb08496b2adf045402ff54277ce3194f1c2d8796b32",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c__20261009_p2c_v40__20261009_p2c_v40_dev_forced2__ledger_metrics__inputs.jsonl.gz",
+      "archive_sha256": "6a7e1aff2b3411e218e062a032592102fc727a709760e0e2819b6c02a5a40606"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v40/20261009_p2c_v40_dev_forced2/ledger_metrics/live.jsonl",
+      "source_sha256": "8d92948c1b2f56d4a910de0ec6b6f538a38a6c2d2d8161a1dbc37117444ecc7c",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c__20261009_p2c_v40__20261009_p2c_v40_dev_forced2__ledger_metrics__live.jsonl.gz",
+      "archive_sha256": "fd419cb9fe996cea3abae2a1777f76dab19b52cd963fc4126b09befe14876c94"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v40/20261009_p2c_v40_dev_forced2/ledger_metrics/live_windows.csv",
+      "source_sha256": "340dff4e223d863a01f0cd313a1923d805ff9d8952e07a26b7250ab27bef523f",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c__20261009_p2c_v40__20261009_p2c_v40_dev_forced2__ledger_metrics__live_windows.csv.gz",
+      "archive_sha256": "34b4a5dc9741bb499b568c106f5a8cb1ce4fe6679d5b812f23d68fdfd5a05617"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v40/20261009_p2c_v40_dev_forced2/ledger_metrics/summary.json",
+      "source_sha256": "82675ed2fdb3ba92a93613e7e3fdc1a790f7abb4b58c2d2ab5ee3a222353d95b",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c__20261009_p2c_v40__20261009_p2c_v40_dev_forced2__ledger_metrics__summary.json.gz",
+      "archive_sha256": "9832f98d205a205c475343eefd5af0c3e4fa5f12a511948ecf7f21a84bb6d201"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v40/20261009_p2c_v40_dev_forced2/ledger_metrics/windows.csv",
+      "source_sha256": "340dff4e223d863a01f0cd313a1923d805ff9d8952e07a26b7250ab27bef523f",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c__20261009_p2c_v40__20261009_p2c_v40_dev_forced2__ledger_metrics__windows.csv.gz",
+      "archive_sha256": "34b4a5dc9741bb499b568c106f5a8cb1ce4fe6679d5b812f23d68fdfd5a05617"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v40/20261009_p2c_v40_dev_forced2/ledger_metrics/windows.jsonl",
+      "source_sha256": "e5bc5d9623821ffac294ba1854f872ff7b99bac6b60db8ec0977973d663fd084",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c__20261009_p2c_v40__20261009_p2c_v40_dev_forced2__ledger_metrics__windows.jsonl.gz",
+      "archive_sha256": "a9309e99175d646b14f556e212b1c543fe8fafcee368a17d9a08c3c7f8b23041"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v40/20261009_p2c_v40_dev_forced2/manifest.json",
+      "source_sha256": "2cd7cede55ffa77147b7ef1cdd606e6addde59ee3c62ae1ca1e8c548a052e3fc",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c__20261009_p2c_v40__20261009_p2c_v40_dev_forced2__manifest.json.gz",
+      "archive_sha256": "d3aa60521b2e15648f2f90fc04ab74bd52a8c5542088b179a28f87e462989216"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v40/20261009_p2c_v40_dev_forced2/native_graph.json",
+      "source_sha256": "65cd6d94689d5b2e4615a2adb748ec745bb586a9498e213367fb8bf5cbe156f9",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c__20261009_p2c_v40__20261009_p2c_v40_dev_forced2__native_graph.json.gz",
+      "archive_sha256": "778f8925fe53996ad4e4c4590069bcf497eb7368264a1fdd9d5380b292b2a394"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v40/20261009_p2c_v40_dev_forced2/observer.log",
+      "source_sha256": "a2c82767eca72be383c122e6e4e87869e145b0febe34fd3fa00ca1f8fc6e2655",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c__20261009_p2c_v40__20261009_p2c_v40_dev_forced2__observer.log.gz",
+      "archive_sha256": "69d9a419763e1a968398884c208b7853a5b112d899493d63c2889254046ef2bb"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v40/20261009_p2c_v40_dev_forced2/runner.log",
+      "source_sha256": "20176fa290b0f79c5b194c4f14f45ed5919b3b75e56b931ce1e342a7593906ca",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c__20261009_p2c_v40__20261009_p2c_v40_dev_forced2__runner.log.gz",
+      "archive_sha256": "1ab05ba53d86938a3549a6cb3a2374d7ad6ae305ffc5f9d79d59eb0c86086ecd"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v40/20261009_p2c_v40_dev_forced2/safety_events.jsonl",
+      "source_sha256": "3f9bb10f7a965251db6c7b9c520addb78670319260980848cfef3d72a45de028",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c__20261009_p2c_v40__20261009_p2c_v40_dev_forced2__safety_events.jsonl.gz",
+      "archive_sha256": "8fda7f6803819093f8d434937a9037d5413a0e3ae93f90ce14d13556ff31d1fd"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v40/20261009_p2c_v40_dev_forced2/schedule.json",
+      "source_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c__20261009_p2c_v40__20261009_p2c_v40_dev_forced2__schedule.json.gz",
+      "archive_sha256": "029ac1ef2bb96aa9fa0166f8f60604b79b92f7fb5cd41a374f80171306cf1b52"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c/20261009_p2c_v40/20261009_p2c_v40_dev_forced2/summary.json",
+      "source_sha256": "af29f493c76ed8bdd5dce292894cfb9b7ea449420b99a8a80bd2badad225218e",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c__20261009_p2c_v40__20261009_p2c_v40_dev_forced2__summary.json.gz",
+      "archive_sha256": "6e5f411ad5259de1aa8c124413be89aeb588d6286162cc10a7211a21a312191f"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v40_closed_before_edit.json",
+      "source_sha256": "07e68701a3d04ccd0c8539073e63496dc40008eac1831528839afe0ef0c96fc0",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c_v40_closed_before_edit.json.gz",
+      "archive_sha256": "5bf905551bdabe610998f897bb53bd0f219f1c75f37b58eb981305a0cd7ba50a"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v40_dev_forced2_candidate_budget_expired_snapshot.json",
+      "source_sha256": "1b0b6bc779ec6a64d3953ab48d750eea95480666d2d963690ddf2c46a8bbffbc",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c_v40_dev_forced2_candidate_budget_expired_snapshot.json.gz",
+      "archive_sha256": "068d25f7e6c88265fded3d90f113fe12943a3f9e2bda4a68db29501644fd8f23"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v40_dev_forced2_candidate_generation_expired_snapshot.json",
+      "source_sha256": "6d8f301febc973273a9900c604b324294c579ed52258f688eb44f12f22d11f8a",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c_v40_dev_forced2_candidate_generation_expired_snapshot.json.gz",
+      "archive_sha256": "66bef816cb57427b686a4d3ac989258909576d447f4946f9bf23ae45df9dba63"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v40_dev_forced2_gate.json",
+      "source_sha256": "de781f7b13d0c55f5cc662453cc84775ee4698a93b88d12473c0348e524936c2",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c_v40_dev_forced2_gate.json.gz",
+      "archive_sha256": "230b21646f89fe399ee71c33695faca3ef437ceac1001937d92190d99cceb95c"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v40_dev_forced2_gate.log",
+      "source_sha256": "00028c2e83bf92859e97c8c12dd9b1ed36ee3f2455643c05e8618d89018ade24",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c_v40_dev_forced2_gate.log.gz",
+      "archive_sha256": "91f316d411cc2389ddded63f33af403ecaebb6befe1ddc5e32839f6a1f19aab0"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v40_dev_forced2_runner.log",
+      "source_sha256": "b6ada5af2518e68a7beae7393746c9ace168d0f045737bc6b9e191088f0de705",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c_v40_dev_forced2_runner.log.gz",
+      "archive_sha256": "bbba345c63c07cec8cabc8879f58293e94534e81a8931e145d25e9613f30f71f"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v40_freeze_check.json",
+      "source_sha256": "741c0c6ecea8c94c0e7330c35e361ebd0be5f437dca5dda8e500ba4b80412c00",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c_v40_freeze_check.json.gz",
+      "archive_sha256": "9af16ddce3a047ae77956999bd1e4749d789dc7a85f234b423a25537f47b13f7"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v40_independent_audits.json",
+      "source_sha256": "a305a6c141d89cf915651d24ecdaa884b4a5aa452165ee26ace460cfff5c087c",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c_v40_independent_audits.json.gz",
+      "archive_sha256": "2fb5c271b314d16cf69b58bb6af4df4601de45cde050c10434ce16c0085c5fce"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v40_independent_audits.log",
+      "source_sha256": "302023215203dd569c4fe2780d325195b5b518a0b430902932a6354bc5d7958d",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c_v40_independent_audits.log.gz",
+      "archive_sha256": "b29e85112ad3cef0b5980496704aed069302260f67ae6c5987428c3c270a9b8d"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v41_rally_failure_diagnosis.json",
+      "source_sha256": "ab9923c31ccee21571044170e228b8fc43b647074f1ab73d3a99dddee6e27c64",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c_v41_rally_failure_diagnosis.json.gz",
+      "archive_sha256": "b6843206fe4160af1fc1dde29a5d3a08ba0dcfce2fae7cddd0f93db81f916813"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v41_rally_failure_diagnosis.log",
+      "source_sha256": "6c257c27193cfcf251f3afc78de16290bf677621b7ebc41bcde0b7bd7aa941e4",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c_v41_rally_failure_diagnosis.log.gz",
+      "archive_sha256": "49adc913bd2d4a1c34d2d51160b10c520b6249da79c52f5fe6f0fdbf203b142a"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/p2c_v41_rally_failure_profile.txt",
+      "source_sha256": "647991fcbee94e20838f767d09869a56497ff865ff8a08e5637c1d9aa4d53f93",
+      "archive": "20261009_p2c_v40_artifacts/log__p2c_v41_rally_failure_profile.txt.gz",
+      "archive_sha256": "002680c65940de64db67d624e93f651ceed8bb3548039118a9a91984abd47faa"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/peek_p2c_v40_tasks.py",
+      "source_sha256": "3e62f9c7d7c3e6aef465e63e55ca7c32f5a6e8e4d379aa8de587e28c7f5bd162",
+      "archive": "20261009_p2c_v40_artifacts/log__peek_p2c_v40_tasks.py.gz",
+      "archive_sha256": "14c684726b38843059235fab1f4fc2e04922876687c92cb69c083ca53f67ea6b"
+    },
+    {
+      "source": "ros2_ws/ros2-multi-robot-automap/log/prepare_p2c_v40_failure.py",
+      "source_sha256": "19edb0f05e8dd9c580e23f2c60bc162237c8628f17175b40190039060e5d70ac",
+      "archive": "20261009_p2c_v40_artifacts/log__prepare_p2c_v40_failure.py.gz",
+      "archive_sha256": "616043b4e9d98805e41db68c0f828a5aa7d77fa829ee81010e5294ea017238ea"
+    }
+  ]
+}

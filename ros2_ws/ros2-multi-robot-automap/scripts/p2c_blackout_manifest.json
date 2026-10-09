@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-09T09:48:58.265263+00:00",
+  "predeclared_at_utc": "2026-10-09T11:57:51.814170+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "10860f4029fe26c1517bd550ff6251870693bf7b",
+  "candidate_parent_commit": "d70b277c853cc736c40b535a9d3551a0c99b0950",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -212,6 +212,31 @@
     "limits": "Current-map predicted visual coverage is a search preference, never proof of target absence, perfect camera perception or exhaustive coverage; history reprojects through the current map only; no new radio packet"
   },
   "retained_failed_developments": [
+    "20261008_p2c_v1_failed_development.json",
+    "20261008_p2c_v2_failed_development.json",
+    "20261008_p2c_v4_failed_development.json",
+    "20261008_p2c_v5_failed_development.json",
+    "20261008_p2c_v6_failed_development.json",
+    "20261008_p2c_v7_failed_development.json",
+    "20261008_p2c_v8_failed_development.json",
+    "20261008_p2c_v9_failed_development.json",
+    "20261009_p2c_v10_failed_development.json",
+    "20261009_p2c_v11_failed_development.json",
+    "20261009_p2c_v12_failed_development.json",
+    "20261009_p2c_v13_failed_development.json",
+    "20261009_p2c_v14_failed_development.json",
+    "20261009_p2c_v15_failed_development.json",
+    "20261009_p2c_v16_failed_development.json",
+    "20261009_p2c_v17_failed_development.json",
+    "20261009_p2c_v18_failed_development.json",
+    "20261009_p2c_v19_failed_development.json",
+    "20261009_p2c_v20_failed_development.json",
+    "20261009_p2c_v21_failed_development.json",
+    "20261009_p2c_v22_failed_development.json",
+    "20261009_p2c_v23_failed_development.json",
+    "20261009_p2c_v24_failed_development.json",
+    "20261009_p2c_v25_failed_development.json",
+    "20261009_p2c_v26_failed_development.json",
     "20261009_p2c_v27_failed_development.json",
     "20261009_p2c_v28_failed_development.json",
     "20261009_p2c_v30_failed_development.json",
@@ -223,7 +248,8 @@
     "20261009_p2c_v36_failed_development.json",
     "20261009_p2c_v37_failed_development.json",
     "20261009_p2c_v38_failed_development.json",
-    "20261009_p2c_v39_failed_development.json"
+    "20261009_p2c_v39_failed_development.json",
+    "20261009_p2c_v40_failed_development.json"
   ],
   "coordinator_live_clock": {
     "executor": "Two workers; only the existing /clock subscription moves to an independent mutually exclusive group. Original state/action callbacks remain serialized.",
@@ -258,6 +284,15 @@
       "shared_tuple_vertices_maximum": 2048,
       "safety": "Every original continuous-check route vertex retained in identical order; no simplification, budget or timestamp cache",
       "evidence": "20261009_p2c_progressive_planning_components.json"
+    },
+    "rally_level_reuse": {
+      "algorithm": "Invocation-only shared approach/home/qualified-return/clearance geometry for the original two candidate levels; never cache energy, charge waits, assignment or timestamps",
+      "sources": "Only bytes-owned immutable fused grid and every supplied local map; mutable grids and readonly views of mutable parents rebuild each level",
+      "lifetime": "One public assign_rally_poses call only; original positions/home/geometry fixed inside it, new proposal always gets a new cache",
+      "computation_order": "Prepare full energy options for the robot with fewer locally known raw endpoints first; local unknown/missing is only an ordering hint and never rejects a fused qualified path",
+      "decisions": "Original complete-return/body/observer/charge/wait/cap optimization and stable branch order; every final dispatch keeps original source TTL and budgets",
+      "evidence": "20261009_p2c_rally_computation_components.json",
+      "limits": "Equal proposals and fixed-epoch CPU samples, not original timing/history, causal task benefit or a worst-case response guarantee"
     }
   },
   "visibility_computation": {

@@ -8559,3 +8559,25 @@ Humble+install/PYTHONNOUSERSITE1/FastDDS UDPv4清profiles，taskset -c 0-79 /usr
 pytest -q test_staged_peer_bound.py/test_lazy_priority.py/test_candidate_battery_bound.py/test_exploration_route_bound.py（src/multi_robot_exploration/test/）127PASS39.83s；完整 /usr/bin/python3 -m pytest -q src/multi_robot_exploration/test scripts --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py 1462PASS121.52s；新增证明中source到期检查后test_staged_peer_bound.py35PASS6.97s。四包colcon build --symlink-install --packages-select multi_robot_interfaces multi_robot_exploration merge_map multi_robot 5.63s；check_p2c_source.py --output log/p2c_v40_source.json PASS。
 
 ROS_DOMAIN_ID217 scripts/check_p2c_clock_runtime.py --output log/p2c_v40_clock_runtime.json实际DDS/clock与互斥普通state+action PASS；219 log/check_p2c_v40_selection_runtime.py实际coordinator fresh input/selector→3 synthetic pending action request/独立DDS witness→完整travel审计PASS，原map和冻结39选择相同。重复coordinator名的rosout warning保留，无实际任务；fixed epoch不作实际Nav2/clock latency收益。run_p2c_tasks.py --case dev_forced2 --run-id 20261009_p2c_v40 --domain 210 --gazebo-port 20290 --validate-only与--manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261009_p2c_v40_physical --domain 219 --gazebo-port 20299 --validate-only PASS/no任务；新4→17+2同freeze仍待验证，917未运行，domain222/master11345未操作。
+
+
+## 2026-10-09 P2C.1 v40 首强制开发原任务 FAIL
+
+d70b277 commit/push0；check_p2c_v40_freeze.py PASS，Humble+install/PYTHONNOUSERSITE1/FastDDS UDPv4清profiles，taskset -c 0-79 /usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261009_p2c_v40 --domain 210 --gazebo-port 20290 > log/p2c_v40_dev_forced2_runner.log 2>&1。2026-10-09T11:38:28.796855+00:00到11:43:18.964261+00:00，owner713329/observer713349 exit0/0且闭合。
+
+192.8s native FAILED/insufficient_rally_poses，detect118.7、rally/completion/nativeproof=null；两机各charge1/min14.95501051806788、Nav2总10，0接触耗尽机器人失效/task-time infra/retry。check_p2c_gate.py --run-root log/p2c/20261009_p2c_v40 --development --cases dev_forced2 --output log/p2c_v40_dev_forced2_gate.json exit1/FAIL；audit_p2c_v40_independent.py 12PASS不替代任务成功。其他3/17/2/917未调用。
+
+2lease弃置原输入逐字ledger绑定，12原集合失败全部重建PASS。diagnose_p2c_v41_rally_failure.py只读固定epoch首/末原输入：两个当前均有完整返路，远侧tb2终点无合格返路，0实际补查。三cold1.265/1.246/1.233wall秒；profile18距离场/358接触路径，来源窗口sim单位不能转为现场因果损失。所有原件/失败/命令/SHA闭合证据保留，原硬门不变。
+
+
+## 2026-10-09 P2C.1 v41 集合计算四候选与原输出等价优化
+
+2026-10-09 P2C.1 v41集合计算组件PASS待新原任务：v40 d70b277首forced FAILED192.8/insufficient_rally_poses，detect118.7/无RALLY，各charge1/min14.95501；0contact/exhaustion/failed/task-time infra/retry，12审计PASS不替任务成功。四计算法对照后合入单次提案两层不可变几何复用+本地已知终点较少者优先核验；只计算排序、不删未知融合候选/不缓存预算源戳，原全返路/硬门/分支tie保持。八ledger原输入5cold完整输出相同，两失败CPU约1.21/1.23→.45/.46s，走廊2.81→1.99s、另五略增0.06%..0.65%、rooms仍约2.3s；无普遍/因果/最坏保证。1484功能/40定向/四包7.71s/171保护54static与6实际DDS witness PASS。仅2纯函数变化，native/中央class字节保持；新4→17+2同freeze待验证，38失败索引补齐，917未暴露。P3C.5已验收，无P4/ns3/Wi-Fi/RL。报告20261009_p2c_rally_computation_components.md与20261009_p2c_v40_failed_development.md；旧pending为历史。
+
+Humble+install/PYTHONNOUSERSITE1/FastDDS UDPv4清profiles，log/prototype_p2c_v41_rally_computation.py 原/共享几何/约束优先/组合，3原输入各5paired cold完整输出相同；log/prepare_p2c_v41_rally_fixture.py八输入逐字绑定原ledger SHA/index、冻结d70两函数；log/compare_p2c_v41_rally_final.py 最终八输入各5paired cold proposal位置/yaw完全相同，两个失败约1.21/1.23→.45/.46秒，走廊2.81→1.99秒、另五略退化0.06%..0.65%/rooms2.3秒，非live sim时延/任务因果或最坏证明。
+
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_rally_computation.py src/multi_robot_exploration/test/test_progressive_rally.py src/multi_robot_exploration/test/test_adaptive_rally_sampling.py 40PASS32.08s；/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test scripts --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py 1484PASS147.47s；colcon build --symlink-install --packages-select multi_robot_interfaces multi_robot_exploration merge_map multi_robot 四包7.71s。
+
+check_p2c_source.py --output log/p2c_v41_source.json PASS；ROS_DOMAIN_ID219 log/check_p2c_v41_rally_runtime.py 6真实DDS witness/3原输入两算法独立source与分配重建PASS、无Nav2动作或Gazebo。run_p2c_tasks.py --case dev_forced2 --run-id 20261009_p2c_v41 --domain 210 --gazebo-port 20290 --validate-only以及--manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261009_p2c_v41_physical --domain 219 --gazebo-port 20299 --validate-only PASS/no任务。全部38历史failed cohort索引补齐，不删除原数据或从异算法挑成功；原300s/5s/TTL/预算和物理刺激不变，clean pushed新4→17+2待验证，917仍未暴露。
+
+组件报告生成后，对同一未改八行对照做摘要勘误：原草稿“其余六近持平”遗漏一份走廊2.80508→1.99202s改善。最终三改善、五略增0.06%..0.65%，所有原CPU行/输入/命令不变；原生成器完整留档，JSON附文字勘误。
