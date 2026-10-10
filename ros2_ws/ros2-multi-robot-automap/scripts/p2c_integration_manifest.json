@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-10T21:52:42.817465+00:00",
+  "predeclared_at_utc": "2026-10-10T22:38:39.353434+00:00",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -352,7 +352,8 @@
     "20261011_p2c_v73_failed_development.json",
     "20261011_p2c_v74_failed_development.json",
     "20261011_p2c_v75_failed_development.json",
-    "20261011_p2c_v76_failed_development.json"
+    "20261011_p2c_v76_failed_development.json",
+    "20261011_p2c_v77_failed_development.json"
   ],
   "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
   "opportunity_charge_rules": [
@@ -505,7 +506,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "8ea497ed0bb146da4263ed6d7ca102085dd85ffe",
+  "candidate_parent_commit": "ff2a22d4738a9a4ae15867d62a256d2b8c26ff67",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -1038,5 +1039,23 @@
     "latest_arrival": "max of original per-robot nominal active approach or serial return/charge/post-charge estimates; additive nonnegative parked-peer delay at complete leaves",
     "total_time": "sum of the same estimates plus the same parked-peer delay",
     "retained_optional_clearance_preference": true
+  },
+  "departure_heading_preference": {
+    "strategy": "bounded_direct_bearing_departure",
+    "inputs": "Current AP delivered pose/heading and original nominal candidate distance; original 2sec odom/frame lease.",
+    "turn_speed_radps": 0.7,
+    "minimum_factor": 0.25,
+    "application": "Existing exploration utility only, bounded multiplier <=1. Original lazy upper bound remains conservative; missing finite fresh heading falls back to original score.",
+    "limitations": "Direct bearing is not curved route heading or calibrated duration; no route, energy, deadline or task proof.",
+    "evidence": "20261011_p2c_departure_heading_components.json"
+  },
+  "native_velocity_command_capture": {
+    "topics": [
+      "/gazebo/model_states",
+      "/tbN/cmd_vel_nav",
+      "/tbN/cmd_vel"
+    ],
+    "scope": "Additional local read-only evaluator subscriptions with exact raw CDR; never AP input, controller output or extra modelled wireless application stream.",
+    "shared_freeze": "Future baselines use the same observer. Original physics, plugin, navigation configuration and native hold evaluator unchanged."
   }
 }

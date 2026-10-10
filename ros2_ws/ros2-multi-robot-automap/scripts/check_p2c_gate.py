@@ -18,6 +18,7 @@ from p2c_rally_transit_heading import transit_heading_audit
 from p2c_outbound_routes import outbound_route_audit, bind_original_maps, check_route, decode
 from p2c_refuge_release import refuge_release_audit
 from p2c_rally_connection import rally_connection_audit
+from p2c_departure_heading import heading_preference_factor, departure_heading_audit
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -46,6 +47,20 @@ def navigation_capture_audit(row,directory):
         required={'/merge_map'}|{f'/tb{i}/{suffix}' for i in range(1,row['result']['robot_count']+1)
             for suffix in ('map','gateway/merge_map','global_costmap/costmap','local_costmap/costmap','scan','odom','tf','tf_static')}
         assert required<=counts.keys(),('missing navigation inputs',sorted(required-counts.keys()))
+    if row['config'].get('native_velocity_command_capture'):
+        subscriptions=[json.loads(line.removeprefix('NAVIGATION_CAPTURE_SUBSCRIPTIONS '))
+            for line in (directory/'observer.log').read_text().splitlines()
+            if line.startswith('NAVIGATION_CAPTURE_SUBSCRIPTIONS ')]
+        assert len(subscriptions)==1,'missing or duplicated actual capture subscription declaration'
+        expected={'/gazebo/model_states':'gazebo_msgs/msg/ModelStates',**{
+            f'/tb{i}/{suffix}':'geometry_msgs/msg/Twist' for i in range(1,row['result']['robot_count']+1)
+            for suffix in ('cmd_vel_nav','cmd_vel')}}
+        assert all(subscriptions[0].get(topic)==kind for topic,kind in expected.items()),'missing declared motion/command subscription'
+        assert set(counts)<=subscriptions[0].keys(),'recorded topic outside actual subscriptions'
+        if row['case']!='empty_battery':assert counts['/gazebo/model_states']>0,'missing native motion trace'
+        # A robot may legally receive no navigation command in a safety cell.
+        # Zero command messages remain zero; the subscription and closure are
+        # proved without inventing motion or requiring a task action.
     return dict(status='PASS',messages=sum(counts.values()),topic_counts=dict(counts),control_input=False)
 
 
@@ -408,7 +423,8 @@ def exploration_travel_audit(records,required=False,require_commitment=False,req
                 raw['data'],raw['resolution'],raw['origin'])
             assert rebuilt==diversity,'spatial preference differs from delivered models/history'
             diversity_factor=rebuilt['factor'];diversity_count+=1
-        assert math.isclose(f['base_utility']*f['battery_factor']*factor*diversity_factor,f['adjusted_utility'],abs_tol=1e-8)
+        heading_factor=heading_preference_factor(e)
+        assert math.isclose(f['base_utility']*f['battery_factor']*factor*diversity_factor*heading_factor,f['adjusted_utility'],abs_tol=1e-8)
         visual=e['kind']=='initial_visual_search'
         fallback=f.get('known_space_fallback')
         if fallback is not None:
@@ -971,6 +987,12 @@ def check_one(path,config):
     if config.get('initial_near_home_replenishment'):
         from run_p2d_baseline import file_digest
         assert row['source_digests']['initial_replenishment_reader']==file_digest(Path(__file__).with_name('p2c_initial_replenishment.py'))
+    departure=departure_heading_audit(directory/'ledger.jsonl',directory/'navigation_inputs.jsonl.gz',
+        bool(config.get('departure_heading_preference')),
+        config.get('parallel_rally_preparation',{}).get('frame_generation_offset_sec',.2))
+    if config.get('departure_heading_preference'):
+        from run_p2d_baseline import file_digest
+        assert row['source_digests']['departure_heading_reader']==file_digest(Path(__file__).with_name('p2c_departure_heading.py'))
     if config.get('rally_connection_handoff'):
         from run_p2d_baseline import file_digest
         assert row['source_digests']['rally_connection_reader']==file_digest(Path(__file__).with_name('p2c_rally_connection.py'))
@@ -1001,7 +1023,8 @@ def check_one(path,config):
         navigation_dispatch_boundary_audit=dispatches,observed_rally_transit_heading_audit=transit,
         navigation_outbound_consistency_audit=outbound,charged_return_refuge_release_audit=refuge,
         rally_connection_handoff_audit=connection,parallel_rally_preparation_audit=preparations_approach,
-        exploration_charge_geometry_handoff_audit=charge_handoff,initial_replenishment_audit=replenishment)
+        exploration_charge_geometry_handoff_audit=charge_handoff,initial_replenishment_audit=replenishment,
+        exploration_departure_heading_audit=departure)
 
 
 def observer_heading_audit(records,required=False,radius_m=3.,position_tolerance_m=.35,fov_rad=math.pi/2):

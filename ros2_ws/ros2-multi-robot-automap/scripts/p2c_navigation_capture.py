@@ -5,6 +5,8 @@ import json
 import time
 from collections import Counter
 
+from gazebo_msgs.msg import ModelStates
+from geometry_msgs.msg import Twist
 from map_msgs.msg import OccupancyGridUpdate
 from nav_msgs.msg import OccupancyGrid, Odometry, Path
 from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
@@ -13,7 +15,7 @@ from tf2_msgs.msg import TFMessage
 
 
 def navigation_topics(robot_count):
-    topics = [('/merge_map', OccupancyGrid, True)]
+    topics = [('/merge_map', OccupancyGrid, True), ('/gazebo/model_states', ModelStates, False)]
     for i in range(1, robot_count + 1):
         prefix = f'/tb{i}/'
         topics.extend((prefix + suffix, message_type, latched) for suffix, message_type, latched in (
@@ -25,6 +27,7 @@ def navigation_topics(robot_count):
             ('scan', LaserScan, False), ('odom', Odometry, False),
             ('tf', TFMessage, False), ('tf_static', TFMessage, True),
             ('plan', Path, False),
+            ('cmd_vel_nav', Twist, False), ('cmd_vel', Twist, False),
         ))
     return topics
 
@@ -35,12 +38,15 @@ class NavigationCapture:
         self.stream = gzip.open(output, 'xt', compresslevel=1)
         self.counts = Counter()
         self.subscriptions = []
+        declared = {}
         for topic, message_type, latched in navigation_topics(robot_count):
             qos = QoSProfile(depth=100, reliability=ReliabilityPolicy.RELIABLE if latched else ReliabilityPolicy.BEST_EFFORT,
                 durability=DurabilityPolicy.TRANSIENT_LOCAL if latched else DurabilityPolicy.VOLATILE)
             type_name = message_type.__module__.split('.')[0] + '/msg/' + message_type.__name__
             self.subscriptions.append(node.create_subscription(message_type, topic,
                 lambda data, t=topic, kind=type_name: self.record(t, kind, data), qos, raw=True))
+            declared[topic] = type_name
+        print('NAVIGATION_CAPTURE_SUBSCRIPTIONS ' + json.dumps(declared, sort_keys=True), flush=True)
 
     def record(self, topic, type_name, data):
         self.stream.write(json.dumps(dict(topic=topic, type=type_name,

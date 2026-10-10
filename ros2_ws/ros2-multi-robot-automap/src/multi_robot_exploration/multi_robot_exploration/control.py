@@ -651,6 +651,29 @@ def exploration_utility(
     )
 
 
+def exploration_departure_heading(position, yaw, target, distance_m):
+    """Bound a direct-bearing turn preference; never estimate route feasibility."""
+    if (position is None or yaw is None or len(position) != 2 or len(target) != 2
+            or not all(math.isfinite(v) for v in (*position, yaw, *target, distance_m))
+            or distance_m < 0):
+        return None
+    bearing = math.atan2(target[1] - position[1], target[0] - position[0])
+    angle = abs(math.atan2(math.sin(bearing - yaw), math.cos(bearing - yaw)))
+    # The existing RPP rotate_to_heading_angular_vel is .7 rad/s. This is
+    # a soft direct-bearing estimate, not the first heading of a curved route.
+    try:
+        travel = PLANNING_OVERHEAD_SEC + (1. + distance_m) ** NAVIGATION_TIME_EXPONENT - 1.
+    except OverflowError:
+        return None
+    if not math.isfinite(travel) or travel <= 0:
+        return None
+    return dict(strategy='bounded_direct_bearing_departure',
+        position=list(position), yaw=yaw, target=list(target), nominal_distance_m=distance_m,
+        bearing_rad=bearing, angle_rad=angle, turn_speed_radps=.7,
+        turn_time_estimate_sec=angle / .7, original_travel_time_units=travel,
+        factor=max(.25, travel / (travel + angle / .7)))
+
+
 def resolve_frontier_gain(assignment, raw_grid, resolution, gain_cache):
     """Resolve a private gain bound on this admission's immutable map only."""
     viewpoint = assignment.viewpoint
@@ -7364,6 +7387,17 @@ class HeadquartersControl(Node):
                 list((getattr(self,'initial_search_visits',None) or {}).values()),
                 self.map_data,self.resolution,self.origin)
             if diversity is not None:preference['mission_spatial_diversity']=diversity
+            pose_source = getattr(self, 'robot_odom_received_at', {}).get(name)
+            frame_source = getattr(self, 'robot_tf_received_at', {}).get(name)
+            if (pose_source is not None and frame_source is not None
+                    and all(0 <= rank_time - source <= 2. for source in (pose_source, frame_source))):
+                heading = exploration_departure_heading(self.robot_positions[name],
+                    getattr(self, 'robot_yaws', {}).get(name),
+                    (assignment.x, assignment.y), assignment.path_distance_m)
+                if heading is not None:
+                    heading.update(pose_source_time=pose_source, frame_source_time=frame_source,
+                        evaluated_at_sec=rank_time, source='ap_delivered_pose_and_heading')
+                    preference['departure_heading'] = heading
         return preference
 
     def assign_idle_robots(self):
@@ -7501,7 +7535,8 @@ class HeadquartersControl(Node):
                     return_maps={name: grid_audit_evidence(value['data'], value['resolution'], value['origin'],
                         'ap_delivered_robot_map', self.robot_map_received_at[name], None)
                         for name, value in self.robot_maps.items() if value is not None},
-                    robot_positions=self.robot_positions, robot_states=self.robot_states,
+                    robot_positions=self.robot_positions, robot_yaws=getattr(self, 'robot_yaws', {}),
+                    robot_states=self.robot_states,
                     battery_states=self.battery_states, battery_modes=self.battery_modes,
                     exclusions=exclusions, enable_rally=self.enable_rally,
                     initial_search_next=self.initial_search_next,
@@ -7809,6 +7844,7 @@ class HeadquartersControl(Node):
                         ) if camera_first else None)
                     utility *= preference['factor']
                     utility *= preference.get('mission_spatial_diversity',{}).get('factor',1.)
+                    utility *= preference.get('departure_heading',{}).get('factor',1.)
                 coordinated = Assignment(
                     assignment.viewpoint,
                     assignment.x,

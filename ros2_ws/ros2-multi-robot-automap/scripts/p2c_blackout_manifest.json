@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-10T21:52:42.821496+00:00",
+  "predeclared_at_utc": "2026-10-10T22:38:39.357831+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "8ea497ed0bb146da4263ed6d7ca102085dd85ffe",
+  "candidate_parent_commit": "ff2a22d4738a9a4ae15867d62a256d2b8c26ff67",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -259,7 +259,8 @@
     "20261011_p2c_v73_failed_development.json",
     "20261011_p2c_v74_failed_development.json",
     "20261011_p2c_v75_failed_development.json",
-    "20261011_p2c_v76_failed_development.json"
+    "20261011_p2c_v76_failed_development.json",
+    "20261011_p2c_v77_failed_development.json"
   ],
   "coordinator_live_clock": {
     "executor": "Two workers; only the existing /clock subscription moves to an independent mutually exclusive group. Original state/action callbacks remain serialized.",
@@ -782,5 +783,23 @@
     "latest_arrival": "max of original per-robot nominal active approach or serial return/charge/post-charge estimates; additive nonnegative parked-peer delay at complete leaves",
     "total_time": "sum of the same estimates plus the same parked-peer delay",
     "retained_optional_clearance_preference": true
+  },
+  "departure_heading_preference": {
+    "strategy": "bounded_direct_bearing_departure",
+    "inputs": "Current AP delivered pose/heading and original nominal candidate distance; original 2sec odom/frame lease.",
+    "turn_speed_radps": 0.7,
+    "minimum_factor": 0.25,
+    "application": "Existing exploration utility only, bounded multiplier <=1. Original lazy upper bound remains conservative; missing finite fresh heading falls back to original score.",
+    "limitations": "Direct bearing is not curved route heading or calibrated duration; no route, energy, deadline or task proof.",
+    "evidence": "20261011_p2c_departure_heading_components.json"
+  },
+  "native_velocity_command_capture": {
+    "topics": [
+      "/gazebo/model_states",
+      "/tbN/cmd_vel_nav",
+      "/tbN/cmd_vel"
+    ],
+    "scope": "Additional local read-only evaluator subscriptions with exact raw CDR; never AP input, controller output or extra modelled wireless application stream.",
+    "shared_freeze": "Future baselines use the same observer. Original physics, plugin, navigation configuration and native hold evaluator unchanged."
   }
 }
