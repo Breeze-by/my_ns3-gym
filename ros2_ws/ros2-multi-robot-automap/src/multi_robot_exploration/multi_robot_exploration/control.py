@@ -4566,14 +4566,29 @@ class HeadquartersControl(Node):
                 or self.survey_goal_handle is not None or self.survey_goal_pending
                 or not self.fresh_robot_inputs() or not self.fresh_target()):
             return False
+        # Preflight owns these current whole-route waits. Do not spend the
+        # pose lease searching permutations before that prerequisite exists.
+        try:
+            waits = {robot: float(self.rally_wait_budgets[robot]) for robot in (name, owner)}
+            if any(not math.isfinite(wait) or wait < 0 for wait in waits.values()):
+                return False
+        except (KeyError, TypeError, ValueError):
+            return False
         inputs = self.input_freshness_details()
         maps = HeadquartersControl.delivered_return_maps(self)
         positions = dict(self.robot_positions)
         if any(point is None for point in positions.values()) or not {name, owner} <= maps.keys():
             return False
-        order = map_safe_rally_dispatch_order(
-            self.map_data, self.resolution, self.origin, self.rally_final_targets,
-            positions, self.target, self.detecting_robot, return_maps=maps)
+        previous_order = list(self.rally_dispatch_order)
+        order = previous_order
+        order_source = 'existing_dispatch_order'
+        if (len(order) != len(self.rally_final_targets)
+                or set(order) != set(self.rally_final_targets)
+                or order.index(name) >= order.index(owner)):
+            order = map_safe_rally_dispatch_order(
+                self.map_data, self.resolution, self.origin, self.rally_final_targets,
+                positions, self.target, self.detecting_robot, return_maps=maps)
+            order_source = 'current_map_replan'
         if order.index(name) >= order.index(owner):
             return False
         routes = {}
@@ -4594,7 +4609,7 @@ class HeadquartersControl(Node):
             for robot, route in routes.items():
                 state = self.battery_states[robot]
                 idle = float(state.get('idle_cost_per_sec', .02))
-                wait = float(self.rally_wait_budgets[robot])
+                wait = waits[robot]
                 distance = sum(math.dist(a, b) for a, b in zip(route, route[1:]))
                 final = self.rally_final_targets[robot]
                 required = HeadquartersControl.task_return_required_energy(
@@ -4613,7 +4628,8 @@ class HeadquartersControl(Node):
                 or not 0 <= now-priced_at <= STATE_TTL_SEC['pose_state']):
             return False
         evidence = dict(event='coordinator_return_refuge_release_eligibility', event_time=now,
-            robot=name, charged_owner=owner, order=order, robot_positions=positions,
+            robot=name, charged_owner=owner, order=order, order_source=order_source,
+            previous_dispatch_order=previous_order, robot_positions=positions,
             refuge_arrived=self.rally_arrived[name], active_rally_goals=[], active_frontier_goals=[],
             survey_active=False, target_scan_active=False, charge_requested=[],
             final_targets={n:(p.x, p.y, p.yaw) for n,p in self.rally_final_targets.items()},

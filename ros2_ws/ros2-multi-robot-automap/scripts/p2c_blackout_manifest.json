@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-10T07:44:33.880688+00:00",
+  "predeclared_at_utc": "2026-10-10T08:43:22.241420+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "41f6d86b2ac05712e3bc392e39dd5a1e0f58d4c5",
+  "candidate_parent_commit": "c5e333160b9f357a5f6836365abd2e742f087705",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -551,5 +551,13 @@
     "reader": "Recalculate current order using those maps; bind local cells and planning geometry to exact original captured OccupancyGrid CDR",
     "traffic": "No new application stream; old failed tasks/readers remain failed",
     "evidence": "20261010_p2c_survey_curves_components.json"
+  },
+  "refuge_release_preflight_guard": {
+    "precondition": "Finite nonnegative original complete-route wait budgets must exist before a charged refuge release spends the current pose lease on geometry",
+    "order": "Retain the existing complete participant order if the helper precedes its ACTIVE owner; otherwise use the unchanged current map-safe search",
+    "guards": "Both complete serial approaches still mask every other current body and then the placed helper, and fund current and endpoint qualified return plus original wait and5s hold at the original source deadlines",
+    "evidence": "Private previous order/order source and independently reconstructed complete routes/budgets; original failed tasks remain failed",
+    "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_refuge_preflight_components.json",
+    "limits": "Conditional original native-map geometry and actual DDS/Futures; no physical Nav2, causal task or worst-case latency claim. Original4\u219217+2 and917 boundary remain"
   }
 }

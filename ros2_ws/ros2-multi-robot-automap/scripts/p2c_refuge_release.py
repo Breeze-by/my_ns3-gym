@@ -7,7 +7,7 @@ from multi_robot_exploration import control
 from p2c_outbound_routes import bind_original_maps, check_route, decode
 
 
-def audit_eligibility(event):
+def audit_eligibility(event, preflight_guard=False):
     now, priced = event['event_time'], event['required_energy_evaluated_at_sec']
     assert 0 <= now-priced <= 2.
     name, owner = event['robot'], event['charged_owner']
@@ -19,6 +19,15 @@ def audit_eligibility(event):
     assert not event['target_scan_active']
     assert set(event['order']) == set(event['final_targets']) and event['order'].index(name) < event['order'].index(owner)
     assert len(event['order']) == len(set(event['order']))
+    if preflight_guard or 'order_source' in event:
+        assert event['order_source'] in ('existing_dispatch_order', 'current_map_replan')
+        previous = event['previous_dispatch_order']
+        if event['order_source'] == 'existing_dispatch_order':
+            assert event['order'] == previous
+        else:
+            assert (len(previous) != len(event['final_targets'])
+                    or set(previous) != set(event['final_targets'])
+                    or previous.index(name) >= previous.index(owner))
     assert event['hold_sec'] == 5.
     inputs = event['inputs']
     for key, row in inputs.items():
@@ -75,12 +84,12 @@ def audit_eligibility(event):
     return bindings
 
 
-def refuge_release_audit(path, required=False, capture=None):
+def refuge_release_audit(path, required=False, capture=None, preflight_guard=False):
     if not required:
         return None
     events = [json.loads(line) for line in path.open()]
     checks = [event for event in events if event.get('event') == 'coordinator_return_refuge_release_eligibility']
-    bindings = [binding for event in checks for binding in audit_eligibility(event)]
+    bindings = [binding for event in checks for binding in audit_eligibility(event, preflight_guard)]
     sources = bind_original_maps(bindings, capture) if bindings and capture is not None else 0
     return dict(status='PASS', eligibility_checks=len(checks), original_source_maps=sources,
         scope='Fresh, funded complete serial geometry at the conditional release; ordinary dispatch and native holding remain required')

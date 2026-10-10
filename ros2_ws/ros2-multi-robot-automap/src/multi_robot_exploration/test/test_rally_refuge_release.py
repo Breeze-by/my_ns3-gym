@@ -112,6 +112,44 @@ def test_original_release_when_owner_has_a_reserved_leg_stays_available():
     assert not node.consumed_publisher.publish.called
 
 
+@pytest.mark.parametrize('wait', [None, -1., float('nan'), 'invalid'])
+def test_unprepared_wait_rejects_before_expensive_geometry(monkeypatch, wait):
+    node,_,_=refuge_node()
+    if wait is None:
+        node.rally_wait_budgets.clear()
+    else:
+        node.rally_wait_budgets['tb2']=wait
+    def unexpected(*args, **kwargs):
+        pytest.fail('unprepared waits must reach the ordinary preflight without a geometry search')
+    monkeypatch.setattr(control,'map_safe_rally_dispatch_order',unexpected)
+    monkeypatch.setattr(control,'plan_rally_leg',unexpected)
+    control.HeadquartersControl.release_return_yields(node)
+    assert node.return_yield_targets=={'tb1':'tb2'}
+    assert not node.consumed_publisher.publish.called
+
+
+def test_existing_priority_still_certifies_both_complete_body_masked_routes(monkeypatch):
+    node,_,_=refuge_node();node.rally_dispatch_order=['tb1','tb2']
+    def unexpected(*args, **kwargs):
+        pytest.fail('a suitable existing order needs complete route proof, not another permutation search')
+    monkeypatch.setattr(control,'map_safe_rally_dispatch_order',unexpected)
+    control.HeadquartersControl.release_return_yields(node)
+    assert not node.return_yield_targets
+    event=json.loads(node.consumed_publisher.publish.call_args.args[0].data)
+    assert event['order_source']=='existing_dispatch_order'
+    assert event['previous_dispatch_order']==event['order']==['tb1','tb2']
+    assert set(event['routes'])=={'tb1','tb2'}
+    import sys
+    from pathlib import Path
+    sys.path.insert(0,str(Path(__file__).resolve().parents[3]/'scripts'))
+    from p2c_refuge_release import audit_eligibility
+    assert len(audit_eligibility(event,True))==2
+    changed=copy.deepcopy(event);changed['previous_dispatch_order'].reverse()
+    with pytest.raises(AssertionError):audit_eligibility(changed,True)
+    changed=copy.deepcopy(event);changed.pop('order_source')
+    with pytest.raises(KeyError):audit_eligibility(changed,True)
+
+
 def test_eligibility_reader_reconstructs_complete_routes_and_original_budget():
     import sys
     from pathlib import Path

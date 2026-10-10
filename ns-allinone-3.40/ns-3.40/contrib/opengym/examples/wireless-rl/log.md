@@ -9166,3 +9166,22 @@ ROS_DOMAIN_ID=217 /usr/bin/python3 scripts/check_p2c_proposal_maps_runtime.py --
 /usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v61 --domain 218 --gazebo-port 20318 --validate-only
 /usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v61_physical --domain 219 --gazebo-port 20319 --validate-only
 ```
+
+
+## 2026-10-10 P2C.1 v61首正式失败与让行释放准备门槛
+
+2026-10-10 P2C.1 v61同c5e3331四原开发COMPLETE199.1/230.8/211.0/271.0完整strictPASS、两原物理安全PASS后首正式fixed_lab_101原RALLY300.0timeout/两charge/min24.971566/零接触耗尽FAILED，17子PASS及tb2第2return未闭合FAIL原样保留；所有owner-observer0关闭，剩余14+917未调用。新释放先检查原有限非负wait前提，既有完整helper-before-owner顺序直接逐条重证两机完整body/local去返+wait/hold/TTL；不适合仍原map-safe排列，恢复仅意图。1902功能214.34s/32定向/原symlink四包6.20s/190保护6授权54协议/两声明/实际DDS四条件及原两机回归PASS；旧缺wait1.472s→.001s、完整1.434→.177s仅条件耗时，过期/低电量拒绝。只1中央变化，82中央101纯/native/300s/5s/TTL/物理保持。新v62 clean pushed4→17+2待任务，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v61_failed_formal与20261010_p2c_refuge_preflight_components。
+
+全部7原同c5冻结：除普通/物理manifest各自哈希外26项软件/仪器源digest一致；旧全部strict门禁原样保留，不在新读者下回填PASS。无效预算前提的早拒绝与既有顺序避免重复搜索是有限机制修复，不声称完全解释目标确认消失或确保所有任务收敛。DDS原几何/合成时代与电量条件的真实回调/Future，所有owned关闭后修改声明文档。full1902无失败；初只读geometry缺gateway map KeyError保留。用户14个260929_report原内容/hash保持、不stage。control SHA ea5db2910c7702b722b8928388a6ac554b8355f41106b9f4dbdf094562ef3540。
+
+```bash
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_rally_refuge_release.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test src/merge_map/test/test_merge_map.py scripts --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+colcon build --symlink-install --packages-select multi_robot_exploration multi_robot_interfaces merge_map multi_robot
+ROS_DOMAIN_ID=216 /usr/bin/python3 scripts/check_p2c_refuge_preflight_runtime.py --output log/p2c_refuge_preflight_runtime1.json
+ROS_DOMAIN_ID=216 /usr/bin/python3 scripts/check_p2c_refuge_release_runtime.py --output log/p2c_refuge_preflight_original_runtime1.json
+/usr/bin/python3 scripts/check_p2c_source.py --output log/p2c_refuge_preflight_source1.json
+/usr/bin/python3 /tmp/p2c_refuge_preflight_scope.py
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v62 --domain 218 --gazebo-port 20318 --validate-only
+/usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v62_physical --domain 219 --gazebo-port 20319 --validate-only
+```

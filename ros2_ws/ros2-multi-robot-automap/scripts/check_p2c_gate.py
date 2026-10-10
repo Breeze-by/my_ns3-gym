@@ -852,7 +852,7 @@ def check_one(path,config):
     outbound=outbound_route_audit(directory/'ledger.jsonl',bool(config.get('navigation_outbound_consistency')),
         directory/'navigation_inputs.jsonl.gz')
     refuge=refuge_release_audit(directory/'ledger.jsonl',bool(config.get('charged_return_refuge_release')),
-        directory/'navigation_inputs.jsonl.gz')
+        directory/'navigation_inputs.jsonl.gz',bool(config.get('refuge_release_preflight_guard')))
     connection=rally_connection_audit(directory/'ledger.jsonl',bool(config.get('rally_connection_handoff')),
         directory/'navigation_inputs.jsonl.gz')
     if config.get('rally_connection_handoff'):
