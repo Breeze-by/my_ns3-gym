@@ -63,7 +63,7 @@ def test_local_known_view_can_map_target_when_straight_target_descent_is_exhaust
     assert c.HeadquartersControl.survey_target_frontiers(node,node.robot_positions)
     event=next(e for e in events if e.get('kind')=='target_information_survey')
     assert event['robot']=='tb1' and event['target_survey_selection']['choice']['target_gain']>0
-    assert target_survey_audit([event],True,3.,.35)['target_information_survey_witnesses']==1
+    assert target_survey_audit([event],True,3.,.35,curved_surveys=True)['target_information_survey_witnesses']==1
     assert np.all(node.map_data[60:,:50]==-1)
 
 
@@ -91,7 +91,7 @@ def test_actual_dispatch_preserves_energy_freshness_and_live_handle_guards(condi
     assert node.target_survey_choice is None
     if condition=='safe':
         event=next(e for e in events if e.get('kind')=='target_information_survey')
-        assert target_survey_audit([event],True,3.)['target_information_survey_witnesses']==1
+        assert target_survey_audit([event],True,3.,curved_surveys=True)['target_information_survey_witnesses']==1
         assert event['target_survey_selection']['required_energy']<80.
 
 
@@ -115,7 +115,42 @@ def test_independent_reader_rejects_forged_gain_path_budget_and_leases(corruptio
     if corruption=='missing':del event['target_survey_selection']
     if corruption=='unfunded':event['battery_states'][event['robot']]['energy']=1.
     if corruption is None:
-        assert target_survey_audit([event],True,3.,.35)['target_information_survey_witnesses']==1
+        assert target_survey_audit([event],True,3.,.35,curved_surveys=True)['target_information_survey_witnesses']==1
     else:
         with pytest.raises((AssertionError,KeyError)):
-            target_survey_audit([event],corruption!='undeclared',3.,.35)
+            target_survey_audit([event],corruption!='undeclared',3.,.35,curved_surveys=True)
+
+
+def test_curved_survey_requires_an_explicit_reader_declaration():
+    event=survey_event()
+    assert event['target_survey_selection']['visible_only'] is False
+    with pytest.raises(AssertionError,match='undeclared survey path policy'):
+        target_survey_audit([event],True,3.,.35)
+
+
+def test_curve_survey_reaches_known_viewpoint_beyond_visible_prefix():
+    node,client,events=survey_node()
+    grid=np.full((100,100),100,dtype='<i2')
+    grid[15:25,5:75]=0
+    grid[15:70,55:75]=0
+    grid[70:85,55:75]=-1
+    node.map_data=node.source_map_data=grid
+    node.target=(6.05,7.05)
+    node.robot_positions={'tb1':(5.55,2.05),'tb2':(1.05,2.05)}
+    for name,position in node.robot_positions.items():
+        node.battery_states[name].update(charge_x=position[0],charge_y=position[1])
+    node.robot_maps={n:dict(data=grid,resolution=.1,origin=(0.,0.)) for n in node.robot_positions}
+    pose=c.RallyPose(6.05,4.05,0.)
+    blocked=[node.robot_positions['tb2']]
+    visible=c.plan_rally_leg(pose,grid,.1,(0.,0.),node.robot_positions['tb1'],
+        blocked_positions=blocked,visible_only=True,local_map=node.robot_maps['tb1'])
+    curve=c.plan_rally_leg(pose,grid,.1,(0.,0.),node.robot_positions['tb1'],
+        blocked_positions=blocked,local_map=node.robot_maps['tb1'])
+    assert curve[0] is not None
+    assert visible[0] is not None
+    assert c.math.dist(node.robot_positions['tb1'],(curve[0].x,curve[0].y))>1.+c.math.dist(
+        node.robot_positions['tb1'],(visible[0].x,visible[0].y))
+    assert c.HeadquartersControl.send_survey_goal(node,'tb1',pose)
+    assert client.send_goal_async.called
+    decision=next(e for e in events if e.get('event')=='coordinator_navigation_decision')
+    assert np.allclose(decision['requested_position'],(curve[0].x,curve[0].y))

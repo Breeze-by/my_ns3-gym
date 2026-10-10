@@ -88,6 +88,8 @@ def bind_original_maps(events, capture):
     for index, event in enumerate(events):
         for key, topic in (('local_map', '/'+event['robot']+'/map'), ('planning_map', '/merge_map')):
             saved = event['outbound_map_route'][key]
+            if saved is None:
+                continue
             wanted.setdefault((topic, round(saved['source_time']*1e9)), []).append((index, event, key))
     required = {(index, label) for rows in wanted.values() for index, _, label in rows}
     found = set()

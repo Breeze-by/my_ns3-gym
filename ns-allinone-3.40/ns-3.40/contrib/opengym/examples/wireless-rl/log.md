@@ -9147,3 +9147,22 @@ ROS_DOMAIN_ID=216 /usr/bin/python3 scripts/check_p2c_rally_priority_runtime.py -
 /usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v60 --domain 218 --gazebo-port 20318 --validate-only
 /usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v60_physical --domain 219 --gazebo-port 20319 --validate-only
 ```
+
+
+## 2026-10-10 P2C.1 v60原失败与完整已知曲线勘察
+
+2026-10-10 P2C.1 v60四原整体FAIL：41f6d86 forced/corr原生COMPLETE218.9/280.9且完整strictPASS；lab RALLY300.1timeout、17子PASS含原return闭合与proposal读者1FAIL；rooms185.9原9survey耗尽FAILED，18子PASS不代任务。四零接触耗尽FAILED机器人、owner-observer0关闭。原rooms目标unknown、近observer旧直视前缀.174<.35，新有电池非heading survey完整known-free弯路仍原5m/身体/local/预约/完整去返预算/次数/TTL；无电池heading原样。提案只旁录实际咨询原图/源并独立raw CDR重建，不回填旧FAIL。1897功能203.65s/92定向/四包原symlink5.72s/190保护6授权54协议/两声明/7真实DDS情形PASS：旧tb1前缀→新tb3完整2.444m、pending/accepted/过期/缺电保持，local图改变顺序与4原CDR绑定。81中央101纯/globals/native/300s/5s/物理保持，初失败保留；新v61 clean pushed4→17+2待实测，917未暴露，P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v60_failed_development与20261010_p2c_survey_curves_components。
+
+实际新旧DDS两组共7情形，原几何+刷新戳条件不是原任务重放，合成map-order输入不是任务导航。原v60 lab return子审实际PASS，proposal遗漏咨询图导致1独立FAIL；rooms原9survey、unknown目标LOS保留。原字面初unit、full、DDS错误保留；不改原阈值/次数/CDR。Humble/install，FastDDS UDPv4，probe216/217，其他222/11345不访问；所有actual owned关闭后更新manifest/doc。用户14个260929_report保持不stage。control SHA 60ae8d8ba988ae3836b7a9b8b8dc8cd41ef98a8880f77a551965fbd6c97fb006。
+
+```bash
+/usr/bin/python3 -m pytest -q scripts/test_p2c_assignment_audit.py scripts/test_p2c_outbound_routes.py src/multi_robot_exploration/test/test_target_information_survey.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test src/merge_map/test/test_merge_map.py scripts --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+colcon build --symlink-install --packages-select multi_robot_exploration multi_robot_interfaces merge_map multi_robot
+ROS_DOMAIN_ID=216 /usr/bin/python3 scripts/check_p2c_survey_curves_runtime.py --output log/p2c_survey_curves_runtime2.json
+ROS_DOMAIN_ID=217 /usr/bin/python3 scripts/check_p2c_proposal_maps_runtime.py --output log/p2c_proposal_maps_runtime2.json
+/usr/bin/python3 scripts/check_p2c_source.py --output log/p2c_survey_curve_source1.json
+/usr/bin/python3 /tmp/p2c_survey_curve_scope.py
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v61 --domain 218 --gazebo-port 20318 --validate-only
+/usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v61_physical --domain 219 --gazebo-port 20319 --validate-only
+```

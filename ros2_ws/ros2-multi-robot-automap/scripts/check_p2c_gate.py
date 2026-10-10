@@ -15,7 +15,7 @@ from p2c_scan_self_filter import scan_self_filter_audit
 from p2c_return_preparation import return_preparation_audit
 from p2c_navigation_dispatch import navigation_dispatch_audit
 from p2c_rally_transit_heading import transit_heading_audit
-from p2c_outbound_routes import outbound_route_audit
+from p2c_outbound_routes import outbound_route_audit, bind_original_maps
 from p2c_refuge_release import refuge_release_audit
 from p2c_rally_connection import rally_connection_audit
 
@@ -462,7 +462,8 @@ def exploration_travel_audit(records,required=False,require_commitment=False,req
         camera_aware_visual_witnesses=camera_count,camera_search_required=require_camera_search)
 
 
-def target_survey_audit(records, declared=False, radius_m=None, position_tolerance_m=None, require_live_clock=False):
+def target_survey_audit(records, declared=False, radius_m=None, position_tolerance_m=None, require_live_clock=False,
+                        curved_surveys=False):
     """Rebuild target-local gain and the actually admitted, funded survey leg."""
     count=0
     for e in records:
@@ -470,6 +471,8 @@ def target_survey_audit(records, declared=False, radius_m=None, position_toleran
         assert declared,'undeclared target information survey'
         assert e['task_phase']=='FOUND'
         s=e['target_survey_selection'];name=e['robot'];now=e['event_time']
+        visible_only = not curved_surveys or e['battery_states'] is None
+        assert s.get('visible_only', True) is visible_only, 'undeclared survey path policy'
         assert s['strategy']=='target_area_gain_per_travel'
         if radius_m is not None:assert s['radius_m']==radius_m
         if position_tolerance_m is not None:assert s['position_tolerance_m']==position_tolerance_m
@@ -509,8 +512,8 @@ def target_survey_audit(records, declared=False, radius_m=None, position_toleran
         matched=False;limit=control.MAX_NAVIGATION_LEG_M
         while limit>=control.USEFUL_TRAVEL_M:
             plan=control.plan_rally_leg(desired,g['data'],g['resolution'],g['origin'],
-                positions[name],limit,blocked_positions=blocked,visible_only=True,
-                local_map=geometry.get(name) if 'outbound_map_route' in e else None)
+                positions[name],limit,blocked_positions=blocked,visible_only=visible_only,
+                local_map=geometry.get(name))
             plan=control.reserve_rally_prefix(plan,s['reserved_routes'])
             if plan is not None and plan[0] is not None:
                 pose,route=plan
@@ -618,9 +621,9 @@ def rally_assignment_audit(records):
     return dict(status='PASS',failed_assignments_rebuilt=count,chosen_assignments_rebuilt=chosen,computation_wall_sec=wall)
 
 
-def rally_proposal_audit(records, required=False):
+def rally_proposal_audit(records, required=False, require_return_maps=False, capture=None):
     """Bind retained points to their original search and a new delivered epoch."""
-    proposals={};count=0;deferred=0
+    proposals={};count=0;deferred=0;admissions=[]
     for e in records:
         if e.get('event')=='coordinator_rally_assignment_chosen':
             proposals[e['event_time']]=e
@@ -661,6 +664,20 @@ def rally_proposal_audit(records, required=False):
         safe=control.traversable_grid(maps[0],saved['resolution'],clearance_m=control.RALLY_CLEARANCE_M)
         points=[]
         poses={name:control.RallyPose(*values) for name,values in e['assignment'].items()}
+        return_maps={}
+        if require_return_maps:
+            assert 'return_maps' in e, 'missing consulted proposal maps'
+        for name,saved_map in e.get('return_maps',{}).items():
+            assert name in poses
+            assert saved_map['source']=='ap_delivered_robot_map' and saved_map['encoding']=='zlib_base64_int16_le'
+            stamp=e['inputs'][name+'/map_snapshot']['source_time']
+            assert saved_map['source_time']==stamp and 0<=e['event_time']-stamp<=5.
+            assert len(saved_map['shape'])==2 and all(type(v) is int and v>0 for v in saved_map['shape'])
+            assert math.isfinite(saved_map['resolution']) and saved_map['resolution']>0
+            assert len(saved_map['origin'])==2 and all(math.isfinite(v) for v in saved_map['origin'])
+            raw=np.frombuffer(zlib.decompress(base64.b64decode(saved_map['grid'],validate=True)),dtype='<i2').reshape(saved_map['shape'])
+            assert np.all((raw>=-1)&(raw<=100))
+            return_maps[name]=dict(data=raw,resolution=saved_map['resolution'],origin=saved_map['origin'])
         assert 0<e['target_view_distance_m']<=3.
         for pose in poses.values():
             point=(pose.x,pose.y);assert all(math.isfinite(v) for v in (*point,pose.yaw))
@@ -672,13 +689,19 @@ def rally_proposal_audit(records, required=False):
             assert all(math.dist(point,peer)>=control.RALLY_MIN_SEPARATION_M for peer in points)
             points.append(point)
         expected=(control.map_safe_rally_dispatch_order(maps[0],saved['resolution'],saved['origin'],poses,
-            e['robot_positions'],e['target'],e['detecting_robot']) if e['map_safe_order'] else
+            e['robot_positions'],e['target'],e['detecting_robot'],return_maps=return_maps) if e['map_safe_order'] else
             control.rally_dispatch_order(poses,e['robot_positions'],e['target'],e['detecting_robot']))
         assert expected==e['dispatch_order']
         count+=1
+        admissions.append(e)
         deferred+=e['event_time']>original.get('computation_completed_at_sec',original['event_time'])
     assert not required or count>=1,'missing fresh geometric proposal admission'
-    return dict(status='PASS',admitted_proposals=count,deferred_proposals=deferred,budget_reused=False)
+    bindings=[dict(robot=name, outbound_map_route=dict(local_map=local,planning_map=e['planning_map']),
+        planning_map_self_return_cells=e['self_return_cells'])
+        for e in admissions for name,local in (e.get('return_maps') or {'':None}).items()]
+    bound=bind_original_maps(bindings,capture) if capture is not None else None
+    return dict(status='PASS',admitted_proposals=count,deferred_proposals=deferred,budget_reused=False,
+        consulted_maps_required=require_return_maps,original_source_maps=bound)
 
 
 def rally_repair_audit(records):
@@ -804,7 +827,9 @@ def check_one(path,config):
     vetoes=ap_return_veto_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     assignments=rally_assignment_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     proposals=rally_proposal_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
-        bool(config.get('rally_proposal_handoff') and result.get('rally_assignments')))
+        bool(config.get('rally_proposal_handoff') and result.get('rally_assignments')),
+        bool(config.get('rally_proposal_return_map_witnesses')),
+        directory/'navigation_inputs.jsonl.gz' if config.get('rally_proposal_return_map_witnesses') else None)
     if config.get('rally_return_objective') and result.get('rally_assignments'):
         assert assignments['chosen_assignments_rebuilt']>=1, 'missing exact delivered assignment choice'
     repairs=rally_repair_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
@@ -815,7 +840,7 @@ def check_one(path,config):
         bool(config.get('coordinator_live_clock')))
     surveys=target_survey_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
         bool(config.get('target_information_survey')),result['target_max_distance_m'],result['rally_position_tolerance_m'],
-        bool(config.get('coordinator_live_clock')))
+        bool(config.get('coordinator_live_clock')),bool(config.get('curved_target_surveys')))
     headings=observer_heading_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
         bool(config.get('observer_heading_confirmation_gap')),result['target_max_distance_m'],
         result['rally_position_tolerance_m'],None if result['target_field_of_view_deg'] is None

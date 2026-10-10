@@ -164,7 +164,7 @@ def main():
             executor.spin_once(timeout_sec=.02)
         survey_events=[e for e in received if e.get('kind')=='target_information_survey']
         assert len(survey_events)==1
-        survey_audit=target_survey_audit(survey_events,True,3.)
+        survey_audit=target_survey_audit(survey_events,True,3.,curved_surveys=True)
         coordinator.survey_goal_pending=False;coordinator.survey_goal_handle=None
         coordinator.robot_positions['tb1']=(2.05,4.05);coordinator.robot_yaws['tb1']=0.
         coordinator.target_received_source_time=9.5

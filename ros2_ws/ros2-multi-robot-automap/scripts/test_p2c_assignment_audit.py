@@ -1,7 +1,12 @@
 import copy
+import base64
+import gzip
+import json
 
 import numpy as np
 import pytest
+from nav_msgs.msg import OccupancyGrid
+from rclpy.serialization import deserialize_message, serialize_message
 
 from check_p2c_gate import rally_assignment_audit, rally_proposal_audit
 from multi_robot_exploration import control as c
@@ -111,3 +116,67 @@ def test_proposal_reader_binds_original_intent_and_checks_current_delivered_geom
 def test_declared_handoff_requires_an_actual_admission_witness():
     assert rally_proposal_audit([],False)['admitted_proposals']==0
     with pytest.raises(AssertionError):rally_proposal_audit([],True)
+
+
+@pytest.mark.parametrize('corruption',[None,'missing','source','stamp','encoding','shape','resolution','origin','values'])
+def test_proposal_reader_uses_current_consulted_return_maps(corruption):
+    events,grid=proposal_records();old,e=events
+    e['map_safe_order']=True
+    e['return_maps']={'tb1':c.grid_audit_evidence(grid,.1,(0.,0.),'ap_delivered_robot_map',13.1,13.1)}
+    local=e['return_maps']['tb1']
+    if corruption=='missing':del e['return_maps']
+    if corruption=='source':local['source']='native_hidden_map'
+    if corruption=='stamp':local['source_time']=10.
+    if corruption=='encoding':local['encoding']='unknown'
+    if corruption=='shape':local['shape']=[0,100]
+    if corruption=='resolution':local['resolution']=float('nan')
+    if corruption=='origin':local['origin']=[float('inf'),0.]
+    if corruption=='values':
+        grid[1,1]=101
+        e['return_maps']['tb1']=c.grid_audit_evidence(grid,.1,(0.,0.),'ap_delivered_robot_map',13.1,13.1)
+    if corruption is None:
+        r=rally_proposal_audit(events,True,True)
+        assert r['admitted_proposals']==1 and r['consulted_maps_required']
+    else:
+        with pytest.raises((AssertionError,KeyError,ValueError)):
+            rally_proposal_audit(events,True,True)
+
+
+@pytest.mark.parametrize('corruption',[None,'fused_order','missing_local_cdr','changed_local_cdr','changed_fused_cdr'])
+def test_proposal_order_uses_local_obstacles_and_binds_exact_original_cdr(tmp_path,corruption):
+    grid=np.full((40,100),100,dtype=np.int16);grid[10:21,10:90]=0
+    local=grid.copy();local[:,45]=100
+    msg=OccupancyGrid();msg.header.stamp.sec=13;msg.header.stamp.nanosec=100000000
+    msg.info.height,msg.info.width=grid.shape;msg.info.resolution=.1;msg.info.origin.orientation.w=1.
+    msg.data=grid.ravel().tolist();msg=deserialize_message(serialize_message(msg),OccupancyGrid)
+    res=msg.info.resolution;target=[8.45,1.55]
+    positions={'tb1':[3.55,1.55],'tb2':[1.55,1.55],'tb3':[2.55,1.55]}
+    poses={n:c.RallyPose(x,1.55,0.) for n,x in [('tb1',5.55),('tb2',6.55),('tb3',7.55)]}
+    fused_order=c.map_safe_rally_dispatch_order(grid,res,(0.,0.),poses,positions,target,'tb1')
+    order=c.map_safe_rally_dispatch_order(grid,res,(0.,0.),poses,positions,target,'tb1',
+        return_maps={'tb3':dict(data=local,resolution=res,origin=(0.,0.))})
+    assert fused_order==['tb3','tb2','tb1'] and order==['tb1','tb2','tb3']
+    events,_=proposal_records();old,e=events
+    assignment={n:[p.x,p.y,p.yaw] for n,p in poses.items()}
+    for event in events:event.update(assignment=assignment,target=target,robot_positions=positions)
+    e.update(required_robots=list(poses),dispatch_order=order,detecting_robot='tb1',map_safe_order=True,
+        planning_map=c.grid_audit_evidence(grid,res,(0.,0.),'ap_delivered_planning_map',13.1,13.1),
+        source_map=c.grid_audit_evidence(grid,res,(0.,0.),'ap_delivered_fused_map',13.1,13.1),
+        return_maps={'tb3':c.grid_audit_evidence(local,res,(0.,0.),'ap_delivered_robot_map',13.1,13.1)})
+    for name in poses:
+        for kind,ttl in [('pose_state',2.),('frame_state',2.),('map_snapshot',5.)]:
+            e['inputs'][name+'/'+kind]=dict(source_time=13.1,age_sec=.1,ttl_sec=ttl)
+    local_msg=copy.deepcopy(msg);local_msg.data=local.ravel().tolist()
+    if corruption=='fused_order':e['dispatch_order']=fused_order
+    if corruption=='changed_local_cdr':local_msg.data[100]=0
+    if corruption=='changed_fused_cdr':msg.data[100]=0
+    rows=[dict(topic='/merge_map',cdr=base64.b64encode(serialize_message(msg)).decode())]
+    if corruption!='missing_local_cdr':
+        rows.append(dict(topic='/tb3/map',cdr=base64.b64encode(serialize_message(local_msg)).decode()))
+    capture=tmp_path/'proposal_sources.jsonl.gz'
+    with gzip.open(capture,'wt') as stream:
+        for row in rows:stream.write(json.dumps(row)+'\n')
+    if corruption is None:
+        assert rally_proposal_audit(events,True,True,capture)['original_source_maps']==2
+    else:
+        with pytest.raises(AssertionError):rally_proposal_audit(events,True,True,capture)

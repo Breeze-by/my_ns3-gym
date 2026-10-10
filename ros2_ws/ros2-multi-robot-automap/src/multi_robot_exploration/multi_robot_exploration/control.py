@@ -3673,16 +3673,27 @@ class HeadquartersControl(Node):
                 return False
             points.append(point)
         positions = {name: self.robot_positions[name] for name in assignment}
+        return_maps = ({name:geometry for name,geometry in HeadquartersControl.delivered_return_maps(self).items()
+                       if name in assignment} if self.use_map_safe_rally_order else {})
         order = (map_safe_rally_dispatch_order(self.map_data, self.resolution, self.origin,
             assignment, positions, self.target, self.detecting_robot,
-            return_maps=HeadquartersControl.delivered_return_maps(self),
+            return_maps=return_maps,
         )
             if self.use_map_safe_rally_order else
             rally_dispatch_order(assignment, positions, self.target, self.detecting_robot))
         if not self.fresh_robot_inputs() or not self.fresh_target():
             return False
         now = self.now()
+        for name in return_maps:
+            stamp = self.robot_map_received_at[name]
+            if not 0 <= now-stamp <= STATE_TTL_SEC['map_snapshot']:
+                return False
         if hasattr(self, 'consumed_publisher'):
+            inputs = input_freshness_at(self.input_freshness_details(), now)
+            for name in return_maps:
+                stamp = self.robot_map_received_at[name]
+                inputs.setdefault(name+'/map_snapshot', dict(source_time=stamp,
+                    age_sec=now-stamp, ttl_sec=STATE_TTL_SEC['map_snapshot']))
             self.consumed_publisher.publish(String(data=json.dumps(dict(
                 event='coordinator_rally_proposal_admitted', event_time=now,
                 proposal_evaluated_at_sec=proposal['evaluated_at'],
@@ -3691,12 +3702,15 @@ class HeadquartersControl(Node):
                 target_view_distance_m=getattr(self, 'target_view_distance', 3.),
                 robot_positions=positions, detecting_robot=self.detecting_robot,
                 map_safe_order=self.use_map_safe_rally_order,
-                inputs=input_freshness_at(self.input_freshness_details(), now),
+                inputs=inputs,
                 planning_map=grid_audit_evidence(self.map_data, self.resolution, self.origin,
                     'ap_delivered_planning_map', self.map_received_at, self.map_received_at),
                 source_map=grid_audit_evidence(self.source_map_data, self.resolution, self.origin,
                     'ap_delivered_fused_map', self.map_received_at, self.map_received_at),
                 self_return_cells=getattr(self, 'map_self_return_cells', {}),
+                return_maps={name:grid_audit_evidence(m['data'], m['resolution'], m['origin'],
+                    'ap_delivered_robot_map', self.robot_map_received_at[name], self.robot_map_received_at[name])
+                    for name,m in return_maps.items()},
                 budget_reused=False,
             ), sort_keys=True)))
         if not self.fresh_robot_inputs() or not self.fresh_target():
@@ -6253,7 +6267,7 @@ class HeadquartersControl(Node):
             while length >= USEFUL_TRAVEL_M:
                 plan = plan_rally_leg(pose, self.map_data, self.resolution, self.origin,
                                       self.robot_positions[robot_name], length,
-                                      blocked_positions=blocked, visible_only=True,
+                                      blocked_positions=blocked, visible_only=not self.enable_battery,
                                       route_cache=cache,
                     local_map=HeadquartersControl.delivered_return_maps(self).get(robot_name),
                 )
@@ -6291,6 +6305,7 @@ class HeadquartersControl(Node):
             return False
         choice = None if heading_only else getattr(self, 'target_survey_choice', None)
         if choice is not None:
+            choice['visible_only'] = not self.enable_battery
             choice['admitted_route'] = [list(point) for point in plan[1]]
             choice['reserved_routes'] = [[list(point) for point in route] for route in reservations]
             choice['admitted_distance_m'] = distance
