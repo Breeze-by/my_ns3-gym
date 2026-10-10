@@ -9107,3 +9107,23 @@ ROS_DOMAIN_ID=217 /usr/bin/python3 scripts/check_p2c_return_preparation_runtime.
 /usr/bin/python3 /tmp/p2c_multi_return_yield_report.py
 /usr/bin/python3 /tmp/p2c_multi_return_yield_docs.py
 ```
+
+
+## 2026-10-10 P2C.1 v58 启动失败与原symlink安装恢复
+
+2026-10-10 P2C.1 v58首启动FAIL保持：920d541原forced owner/runner1 observer0关闭，未开始native评估/result None；本轮漏原--symlink-install导致安装审计manifest复制根FileNotFoundError，原trace/CDR/strict缺result_path FAIL保留，余3/17/2/917未调用。恢复原symlink四包8.44s，实际control和manifest resolve规范源、七原规则与920字节相同、source-only零violations、7真实DDS owned关闭PASS；生产全源不改，1876功能/190保护6授权54协议复用不虚称重跑。仅parent/time/安装声明更新两manifest，cases/刺激/300s/5s/TTL/native保持；临时预检单包限制错误原件保留。新v59 clean pushed4→17+2待任务，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v58_failed_startup与20261010_p2c_install_restore_components。
+
+原命令省略--symlink-install是本轮构建错误，非控制算法结论。原forced的runner1/observer0、没有result、错误路径与strict缺result_path FAIL全部原样保存，没有用原组件PASS掩盖该原格。恢复原安装mode，显式执行实际installed进口/manifest解析和七规则父冻结字节检查；原source-only zero violations，并重验七真实DDS。功能验证记录复用原1876项结果，不虚称此次重跑。全部生产源与920d541相同，只更新未来安装声明和parent/time，case/物理刺激不变，用户14文件不stage。
+
+命令均canonical ROS目录、rtk proxy、Humble+install/PYTHONNOUSERSITE1/scripts PYTHONPATH/taskset0-79，FastDDS UDPv4清profiles/discovery server；首格domain218/port20318、DDS216；其他domain222/11345不触碰。新v59从首格开始，300秒/native5秒/源TTL全部不变。
+
+```bash
+colcon build --symlink-install --packages-select multi_robot_exploration multi_robot_interfaces merge_map multi_robot
+/usr/bin/python3 /tmp/p2c_install_restore_check.py
+/usr/bin/python3 -c "from multi_robot_exploration import bypass_audit; bypass_audit.main(['--source-only'])"
+ROS_DOMAIN_ID=216 /usr/bin/python3 scripts/check_p2c_multi_return_yield_runtime.py --output log/p2c_install_restore_runtime1.json
+/usr/bin/python3 scripts/check_p2c_gate.py --run-root log/p2c/20261010_p2c_v58 --cases dev_forced2 --development --output log/p2c_v58_forced_gate.json
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v59 --domain 218 --gazebo-port 20318 --validate-only
+/usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v59_physical --domain 219 --gazebo-port 20319 --validate-only
+/usr/bin/python3 /tmp/p2c_install_restore_report.py
+```

@@ -1,0 +1,57 @@
+{
+  "status": "FAIL",
+  "scope": "Original v58 forced startup failed before native evaluation result; no task metrics inferred",
+  "source_commit": "920d54176619e75abd71bd8cce380f9a85957957",
+  "runner_returncode": 1,
+  "observer_returncode": 0,
+  "native_result": null,
+  "owner_observer_closed": true,
+  "error": "Build command omitted the original --symlink-install; copied installed bypass manifest resolves to installed share root, where the expected source control.py does not exist. Original source-only audit raises FileNotFoundError before evaluation starts.",
+  "strict_gate": {
+    "status": "FAIL",
+    "scope": "development",
+    "task_stack_frozen_commit": "920d54176619e75abd71bd8cce380f9a85957957",
+    "cases": 1,
+    "errors": [
+      {
+        "case": "dev_forced2",
+        "error": "KeyError('result_path')",
+        "traceback": "Traceback (most recent call last):\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 900, in audit_one\n    try:return check_one(path,config),None\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 761, in check_one\n    declaration_audit(row,config,directory)\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3c5_gate.py\", line 66, in declaration_audit\n    assert Path(row[\"result_path\"]).resolve() == result_path.resolve(), \"native result path mismatch\"\nKeyError: 'result_path'\n"
+      }
+    ],
+    "evidence": [],
+    "full_declared_scope": false,
+    "raw_failures_retained": true,
+    "physical_blackout_gate": "required_before_full_integration",
+    "general_hardware_safety_guarantee": false
+  },
+  "raw_sha256": {
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v58/20261010_p2c_v58_dev_forced2/manifest.json": "8f71320e10e48748cac0743b1b436f34f29804ce3432e4fd09bd6856a1fe8ab8",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v58/20261010_p2c_v58_dev_forced2/ledger.jsonl": "7d32676c2a960b6aae5da937518b0e813d610214a7b98c93a31d005b2898d196",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v58/20261010_p2c_v58_dev_forced2/schedule.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v58/20261010_p2c_v58_dev_forced2/summary.json": "599e4dcd9f0a42bc096d8e6dfdbfd5f89d87aa292f66d9a568b9c49bf0554d09",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v58/20261010_p2c_v58_dev_forced2/observer.log": "075b13c32e11a9c11f5fdd4b893bad91ec897f46caebc1c43468839adcd1a3fb",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v58/20261010_p2c_v58_dev_forced2/navigation_inputs.jsonl.gz": "e1e3cd0a055ed03f1add6954007452a6dcaeb19de47a3c5bc0019ca6a31dba98",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v58/20261010_p2c_v58_dev_forced2/runner.log": "5542ae1244ae98d0be1cc3d83d60a8a000745656b81f5c87b29bf7b8e1e2a101",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v58/20261010_p2c_v58_dev_forced2/launch/robots2_seed303_20261010-134759.log": "97be8ffed5954f331e24ac524d78854a08d8521e1d864d48a76e8b61f68d1f24",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v58/20261010_p2c_v58_dev_forced2/ledger_metrics/live.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v58/20261010_p2c_v58_dev_forced2/ledger_metrics/live_windows.csv": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v58/20261010_p2c_v58_dev_forced2/ledger_metrics/curves.svg": "b3882aa2e07d47256ce0f73848de67a171a7c92d8ad82c414b9d1ccc729e732b",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v58/20261010_p2c_v58_dev_forced2/ledger_metrics/windows.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v58/20261010_p2c_v58_dev_forced2/ledger_metrics/events.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v58/20261010_p2c_v58_dev_forced2/ledger_metrics/windows.csv": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v58/20261010_p2c_v58_dev_forced2/ledger_metrics/summary.json": "1e2bcf6c6b0180279f29f9769d3a5720f777401a15b109550aa25fdb71dcf0e1",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v58/20261010_p2c_v58_dev_forced2/ledger_metrics/inputs.jsonl": "7d32676c2a960b6aae5da937518b0e813d610214a7b98c93a31d005b2898d196"
+  },
+  "originals": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_v58_failed_startup_originals.json.gz",
+    "sha256": "2546a7fbf9cde04f54a7285ffbcb0e06b851758fa428a1248f9fdd9315a8e9c3"
+  },
+  "not_invoked": [
+    "remaining3 development",
+    "17 formal",
+    "same-freeze physical pair",
+    "917"
+  ],
+  "limits": "Original failed startup and outer1 preserved, no retry or backfill; startup captures do not prove task completion, charging, safety or native5s hold."
+}
