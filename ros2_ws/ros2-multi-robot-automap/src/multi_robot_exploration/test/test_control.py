@@ -3409,6 +3409,75 @@ def test_postcharge_rally_drains_original_legs_before_reordering(monkeypatch, pe
     handle.cancel_goal_async.assert_not_called()
 
 
+@pytest.mark.parametrize('live_leg', ['none', 'pending', 'accepted'])
+def test_quiescent_rally_repair_releases_ready_peer_while_observer_waits(live_leg):
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+    names = ['far', 'near', 'observer']
+    positions = {'far': (1.05,3.05), 'near': (5.05,3.05), 'observer': (10.05,6.05)}
+    targets = {'far': control.RallyPose(9.05,3.05,0.),
+               'near': control.RallyPose(7.05,3.85,0.),
+               'observer': control.RallyPose(10.05,6.05,0.)}
+    grid = np.full((100,120),100,dtype=int)
+    grid[26:35,5:115] = 0
+    grid[26:90,65:115] = 0
+    states = {name: dict(mode='ACTIVE',stamp_sec=10.,energy=80.,capacity=100.,
+        charge_target_fraction=.8,charge_x=1.05,charge_y=1.05,charge_radius_m=.8,
+        move_cost_per_m=1.,idle_cost_per_sec=.02,nominal_speed_mps=.18,
+        return_path_factor=2.,return_safety_margin=8.,return_recovery_wait_sec=30.) for name in names}
+    handle = Mock()
+    node = SimpleNamespace(
+        enable_battery=True,task_state='RALLY',now=lambda:10.,
+        fresh_robot_inputs=lambda:True,fresh_robot_poses=lambda:True,fresh_target=lambda:True,
+        stop_target_scan=lambda:False,last_input_availability=True,battery_monitor_started_at=0.,
+        message_freshness_timeout_sec=5.,battery_state_received_at=dict.fromkeys(names,10.),
+        battery_modes=dict.fromkeys(names,'ACTIVE'),participating_robots=lambda:names,battery_states=states,
+        prepare_rally_charges=lambda:{'observer'},rally_charge_requested={},rally_precharge_staging={},
+        rally_preflight_complete=True,rally_precharge_active=False,rally_dispatch_order=names.copy(),
+        rally_targets=targets.copy(),rally_final_targets=targets.copy(),
+        rally_goal_handles={'far':handle if live_leg=='accepted' else None,'near':None,'observer':None},
+        rally_goal_pending={'far':live_leg=='pending','near':False,'observer':False},
+        rally_goal_started_at={'far':9.,'near':None,'observer':None},
+        rally_arrived=dict.fromkeys(names,False),rally_leg_routes={name:() for name in names},
+        rally_yield_targets=set(),return_yield_targets={},rally_probe_targets=set(),
+        rally_yield_requested=dict.fromkeys(names,False),rally_hold_started_at=None,
+        survey_goal_handle=None,survey_goal_pending=False,survey_robot=None,
+        release_return_yields=lambda:None,yield_to_returning_robot=lambda:None,last_rally_dispatch_at=0.,
+        global_battery_rally_pause=False,goal_timeout_sec=60.,rally_goal_timeout_sec=30.,rally_max_concurrent=2,
+        robot_positions=positions,get_logger=lambda:Mock(),consumed_publisher=Mock(),
+        input_freshness_details=lambda:{},use_map_safe_rally_order=True,detecting_robot='observer',
+        target=(10.05,8.05),target_observing_robot='observer',rally_observer_guard='observer',
+        robot_yaws=dict.fromkeys(names,0.),target_received_source_time=10.,map_data=grid,
+        resolution=.1,origin=(0.,0.),robot_maps={},robot_map_received_at={},
+        rally_attempts=dict.fromkeys(names,0),rally_recovery_requested=dict.fromkeys(names,False),
+        rally_route_unavailable_since=dict.fromkeys(names),robot_velocities=dict.fromkeys(names,(0.,0.)),
+        rally_position_tolerance=.35,rally_linear_tolerance=.05,rally_angular_tolerance=.1,
+        rally_hold_sec=5.,active_batteries_ready=lambda:False,
+    )
+    node.rally_approach_routes = {name: control.plan_rally_leg(pose,grid,.1,(0.,0.),positions[name],
+        max_distance_m=float('inf'))[1] for name,pose in targets.items()}
+    if live_leg != 'none':
+        node.rally_leg_routes['far'] = ((1.05,3.05),(2.05,3.05))
+    sent = []
+    def send(name,plan,charge_staging=False):
+        assert not charge_staging and name != 'observer'
+        assert not control.routes_conflict(plan[1],(positions['far'],),control.RALLY_DYNAMIC_CLEARANCE_M)
+        sent.append(name)
+        node.rally_goal_pending[name] = True
+    node.send_rally_goal = send
+    control.HeadquartersControl.update_mission(node)
+    assert not sent and not node.rally_preflight_complete and node.rally_precharge_active
+    if live_leg != 'none':
+        assert node.rally_dispatch_order == names
+        handle.cancel_goal_async.assert_not_called()
+    else:
+        assert node.rally_dispatch_order == ['observer','near','far']
+        node.now = lambda:11.
+        control.HeadquartersControl.update_mission(node)
+        assert sent == ['near'] and node.rally_dispatch_order == ['near','far','observer']
+        assert not node.rally_preflight_complete
+
+
 def test_map_safe_order_releases_ahead_robot_before_behind_future_reservation():
     grid = np.zeros((80, 120), dtype=int)
     positions = {'behind': (1.05,3.05), 'ahead': (5.05,3.05)}

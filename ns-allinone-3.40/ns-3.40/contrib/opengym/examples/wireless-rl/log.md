@@ -9127,3 +9127,23 @@ ROS_DOMAIN_ID=216 /usr/bin/python3 scripts/check_p2c_multi_return_yield_runtime.
 /usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v59_physical --domain 219 --gazebo-port 20319 --validate-only
 /usr/bin/python3 /tmp/p2c_install_restore_report.py
 ```
+
+
+## 2026-10-10 P2C.1 v59原失败与空闲集合优先级
+
+2026-10-10 P2C.1 v59四原整体FAIL：978c8dd forced/rooms/corr原生COMPLETE230.0/206.5/224.9且原native6s61/5s51/5s51完整strictPASS；lab RALLY300.0timeout/三机各charge1/18子审与原return全闭合PASS不替代整体。四零接触耗尽FAILED、owner-observer0关闭。原6drain无普通RALLY派发；新仅既有map-safe修复在全central accepted/pending空时保存未来顺序、返回，下一回调原ready排序和完整身体返路预算TTL重查；旧腿保持。1881功能208.81s/6定向/原symlink四包5.77s/190保护6授权54协议/两声明/实际DDS四情形8goal180点PASS，源过期/缺电0追加目标，Future关闭。只1中央修改，82中央101纯/globals/native/300s/5s/TTL/物理保持；初夹具及错误full路径FAIL保留。新v60 clean pushed4→17+2待任务，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v59_failed_development与20261010_p2c_rally_priority_components。
+
+同源四原开发未重跑回填：三原完整strict PASS，lab300秒FAIL和18独立审计PASS均原样归档。这里只修既有优先级修复未应用的有限机制；原chosen条件geometry排序仍有2 inversion，不据组件许诺全局收敛。pending/accepted期间不改未来顺序，真实原Future关闭后，下个回调只重排，再下个才重做原完整准入派发；未就绪observer始终不派发，实际fresh/资金guard在DDS条件独立拒绝。所有probe owned关闭后才改两manifest/文档，新任务只在clean pushed之后调用。
+
+RTK，Humble+install，PYTHONNOUSERSITE1/scripts PYTHONPATH，FastDDS UDPv4，probe216；其他222/11345不访问。四包明确--symlink-install；1881功能覆盖原exploration/scripts并新增2 merge-map测试。首full错误src/multi_robot/test exit4零测试保存；所有trial失败保留，不误称反例PASS。用户14个260929_report原hash与内容保持，不stage。生产control SHA e3824ceed94dd3e99e30dbcb4303c4f9ed2075b91994f454c18ccab66c0ec8a1。
+
+```bash
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_control.py -k "quiescent_rally_repair or postcharge_rally_drains_original_legs or map_safe_order_releases"
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test src/merge_map/test/test_merge_map.py scripts --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+colcon build --symlink-install --packages-select multi_robot_exploration multi_robot_interfaces merge_map multi_robot
+ROS_DOMAIN_ID=216 /usr/bin/python3 scripts/check_p2c_rally_priority_runtime.py --output log/p2c_rally_priority_runtime1.json
+/usr/bin/python3 scripts/check_p2c_source.py --output log/p2c_rally_priority_source1.json
+/usr/bin/python3 /tmp/p2c_rally_priority_scope.py
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v60 --domain 218 --gazebo-port 20318 --validate-only
+/usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v60_physical --domain 219 --gazebo-port 20319 --validate-only
+```

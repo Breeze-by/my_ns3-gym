@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-10T05:52:04.252401+00:00",
+  "predeclared_at_utc": "2026-10-10T06:44:32.816430+00:00",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -500,7 +500,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "920d54176619e75abd71bd8cce380f9a85957957",
+  "candidate_parent_commit": "978c8dda8102a155dd7c282988ad18787c0ab36b",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -788,5 +788,12 @@
     "preflight": "Installed control and bypass-audit manifest must resolve to the canonical current source tree; original source-only forbidden-bypass audit passes",
     "evidence": "20261010_p2c_install_restore_components.json",
     "limits": "Correct installation/preflight only; original v58 startup FAIL retained, complete P2C.1 still requires a new same-source cohort"
+  },
+  "quiescent_rally_priority_repair": {
+    "trigger": "Existing viable current body-masked leg is blocked only by future priority and the existing map-safe order reduces original approach inversions",
+    "order": "Apply that future preference only when every central rally accepted/pending leg is absent; return without dispatch and re-evaluate on the next original callback",
+    "guards": "Accepted/pending legs keep their original order; existing readiness sorting, current maps, complete body/return routes, budgets, reservations and source TTLs still authorize actual dispatch",
+    "evidence": "20261010_p2c_rally_priority_components.json",
+    "limits": "Conditional liveness mechanism only, no task benefit or general deadlock freedom; fresh same-source4 development then17 formal plus2 physical remain mandatory"
   }
 }

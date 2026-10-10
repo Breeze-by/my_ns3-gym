@@ -5707,11 +5707,17 @@ class HeadquartersControl(Node):
                         )
                         if rally_approach_inversions(repaired, self.robot_positions, approach_routes) < inversions:
                             # Only future priority is blocking a viable leg.
-                            # Do not change order while old legs execute; drain
-                            # them, then re-evaluate all current body-masked plans.
+                            # Change future priority only between legs, then
+                            # re-evaluate current body-masked plans next callback.
                             self.rally_preflight_complete = False
                             self.rally_precharge_active = True
-                            self.get_logger().info("Draining rally legs to release an ahead robot's approach.")
+                            if (not any(self.rally_goal_handles.values())
+                                    and not any(self.rally_goal_pending.values())):
+                                self.rally_dispatch_order = repaired
+                                self.get_logger().info("Rally order after quiescent priority repair: "
+                                                       + ", ".join(repaired))
+                            else:
+                                self.get_logger().info("Draining rally legs to release an ahead robot's approach.")
                             return
                     continue
                 self.send_rally_goal(name, admitted, name in stage_names)
