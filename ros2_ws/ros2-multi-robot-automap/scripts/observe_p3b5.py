@@ -15,8 +15,11 @@ parser=argparse.ArgumentParser()
 parser.add_argument("--output", type=Path, required=True)
 parser.add_argument("--robot-count", type=int, required=True)
 parser.add_argument("--native-tf-graph-output",type=Path)
+parser.add_argument("--application-graph-output",type=Path)
 parser.add_argument("--navigation-input-output",type=Path)
 args=parser.parse_args()
+if args.application_graph_output and not args.native_tf_graph_output:
+    parser.error('complete application graph requires the native graph capture')
 args.output.parent.mkdir(parents=True,exist_ok=True)
 rclpy.init()
 node=Node("p3b5_read_only_observer",parameter_overrides=[Parameter("use_sim_time",value=True)])
@@ -52,10 +55,13 @@ if args.native_tf_graph_output:
         global graph_saved
         if graph_saved or not all(f'/tb{i}/battery_state' in last for i in range(1,args.robot_count+1)):
             return
-        try:snapshot=complete_native_graph(node,args.robot_count)
+        try:snapshot=complete_native_graph(node,args.robot_count,bool(args.application_graph_output))
         except AssertionError:return  # Discovery is incomplete; never fabricate absent endpoints.
         snapshot['observer_time']=node.get_clock().now().nanoseconds/1e9
-        args.native_tf_graph_output.write_text(json.dumps(snapshot,indent=2,sort_keys=True)+'\n')
+        text=json.dumps(snapshot,indent=2,sort_keys=True)+'\n'
+        with args.native_tf_graph_output.open('x') as stream:stream.write(text)
+        if args.application_graph_output:
+            with args.application_graph_output.open('x') as stream:stream.write(text)
         graph_saved=True
         print('NATIVE_GRAPH_SAVED',flush=True)
     node.create_timer(2.,save_native_graph,clock=Clock(clock_type=ClockType.STEADY_TIME))

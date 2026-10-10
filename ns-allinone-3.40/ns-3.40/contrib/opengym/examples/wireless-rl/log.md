@@ -9263,3 +9263,24 @@ colcon build --symlink-install --packages-select multi_robot_exploration multi_r
 /usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v66 --domain 218 --gazebo-port 20318 --validate-only
 /usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v66_physical --domain 219 --gazebo-port 20319 --validate-only
 ```
+
+
+## 2026-10-10 P2C.1 v66图采集失败与完整图正端点
+
+2026-10-10 P2C.1 v66首forced原生COMPLETE241.3/检测131.3/RALLY176.5/双charge1/min16.520507/零接触耗尽FAILED/原生5.5s56样本，原strict早期graph缺metrics KeyError FAIL保持，18独立分项PASS不代总门，owner-observer0闭合，余3/17/2/917未调用。原早图AP端点未齐，另原native图63节点完整；新只read-only等原native/bypass/headless与typed metrics/AP/merge正端点，初旁路图独留，首次合格实际snapshot独占写相同canonical/native图，无补造/覆盖。实际DDS六缺失/非法端点阶段拒绝且账本持续→完整双图PASS/零Nav2；2018功能232.14s/63定向29新反例/四包原symlink5.99s/190保护6授权54协议/两声明及两原CLI对照PASS。八production-native-SLAM字节、原nativeTF/安全record/19gate方法AST、300s/5s/TTL/全部case物理保持。新v67 clean pushed4→17+2待任务，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v66_failed_graph_capture与20261010_p2c_application_graph_components。
+
+Current read-only observer legacy option demonstrates the native-only capture contract; not a frozen original full-task replay. Six actual delayed/disallowed DDS endpoint stages are rejected while read-only event delivery continues; no real task, physics or Nav2 goals. Native TF audit, original monitor and forbidden bypass checks retained. Eight production/native/SLAM/launch source bytes and all task/energy/physics/2-5-60s TTL/300s/5s/cases/stimuli unchanged. New clean-pushed same-freeze4→17+2 mandatory;917 remains unexposed.
+
+control SHA 3727f00df49979bceb9a76090a2ac95a12513a154be6cc929ad8b0665fed257b；native SHA f4845fb03667e766c0202a470fa5f2c3c4a49ff39f77a898bf90ec1b60261a6c。
+
+```bash
+/usr/bin/python3 -m pytest -q scripts/test_p2c_application_graph.py scripts/test_p2c_native_graph_retry.py scripts/test_p2c_gate.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test src/merge_map/test/test_merge_map.py scripts --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+colcon build --symlink-install --packages-select multi_robot_exploration multi_robot_interfaces merge_map multi_robot
+/usr/bin/python3 scripts/check_p2c_application_graph_runtime.py --output log/p2c_application_graph_runtime1.json
+/usr/bin/python3 /tmp/p2c_application_graph_scope.py
+/usr/bin/python3 /tmp/p2c_application_graph_commands.py
+/usr/bin/python3 scripts/check_p2c_source.py --output log/p2c_application_graph_source1.json
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v67 --domain 218 --gazebo-port 20318 --validate-only
+/usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v67_physical --domain 219 --gazebo-port 20319 --validate-only
+```

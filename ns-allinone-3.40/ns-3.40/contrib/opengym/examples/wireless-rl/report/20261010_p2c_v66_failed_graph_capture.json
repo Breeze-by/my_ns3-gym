@@ -1,0 +1,139 @@
+{
+  "status": "FAIL",
+  "scope": "Original complete P2C.1 first-task gate FAIL remains despite original native completion; no original backfill or retry",
+  "source_commit": "a54ecfbe21fdf12ca5674b6af685748815b23ee4",
+  "result": {
+    "task_phase": "COMPLETE",
+    "failure_reason": "",
+    "elapsed_sim_time_sec": 241.29999999999973,
+    "time_to_detect_sec": 131.29999999999973,
+    "time_to_rally_sec": 176.5,
+    "battery_minimum_energy": 16.520507164303126,
+    "battery_total_charges": 2,
+    "nav_goal_count": 18,
+    "collision_events": 0,
+    "collision_duration_sec": 0.0,
+    "failed_robots": [],
+    "native_rally_hold_proof": {
+      "clock_basis": "headerless_model_states_observer_sim_time",
+      "end_observer_sim_time_sec": 2316.082,
+      "maximum_allowed_observation_gap_sec": 2.0,
+      "maximum_angular_speed_radps": 0.06989934336210044,
+      "maximum_linear_speed_mps": 0.0001620417193616884,
+      "maximum_observation_gap_sec": 0.1000000000003638,
+      "maximum_position_error_m": 0.025208851764240568,
+      "observed_duration_sec": 5.5,
+      "required_robot_names": [
+        "tb1",
+        "tb2"
+      ],
+      "sample_count": 56,
+      "start_observer_sim_time_sec": 2310.582
+    }
+  },
+  "original_gate": {
+    "status": "FAIL",
+    "scope": "development",
+    "task_stack_frozen_commit": "a54ecfbe21fdf12ca5674b6af685748815b23ee4",
+    "cases": 1,
+    "errors": [
+      {
+        "case": "dev_forced2",
+        "error": "KeyError('/gateway_metrics')",
+        "traceback": "Traceback (most recent call last):\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 996, in audit_one\n    try:return check_one(path,config),None\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 866, in check_one\n    communications,_=audit_original((row,config))\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3c5_gate.py\", line 111, in audit_original\n    graph = monitor_graph_audit(json.loads((directory/\"graph.json\").read_text()))\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3c_gate.py\", line 20, in monitor_graph_audit\n    node = nodes[\"/gateway_metrics\"]\nKeyError: '/gateway_metrics'\n"
+      }
+    ],
+    "full_declared_scope": false,
+    "raw_failures_retained": true,
+    "physical_blackout_gate": "required_before_full_integration",
+    "general_hardware_safety_guarantee": false
+  },
+  "independent_components": {
+    "status": "PASS",
+    "audits": [
+      "rally_connection",
+      "native_return",
+      "native_energy",
+      "processes",
+      "outbound_routes",
+      "navigation_dispatch",
+      "transit_heading",
+      "lookahead",
+      "ap_return_vetoes",
+      "rally_assignments",
+      "rally_proposals",
+      "rally_repairs",
+      "exploration",
+      "surveys",
+      "headings",
+      "planning_leases",
+      "refuge_release",
+      "return_preparation"
+    ]
+  },
+  "source_digests": {
+    "admission_protocol": "05f15651bfc831c541d5a662491a0467e64ae4084c27655a6f27e1ed56e6064a",
+    "control_cli": "f70c8f7a6ee4fb9a0a7d2e9468e3c77b3cc77d729cbd2a544c1f45adbf997c09",
+    "control_schema": "7fa7e5fa63dd0fb1e319fd08694773c675ac3fe8dcefa0051dd4f0fe71958d28",
+    "entrypoint": "78edb424db0a63347cf6b28f3fbff72a20207c3852f26a004907f868e8170a1f",
+    "exploration": "97dafc136a7c87e8db73d331dc87f19c340a9fe4dc915024834f9ff91ffab4fa",
+    "launch": "6f26d9c5b1dce5bc681bc59cfe8fb8be68baff823f5334939f33261392380692",
+    "manifest": "d9b9971f394db86b84da860d1de357e445c9d39837948c131706b335a9ea0149",
+    "message_schema": "e0648e61473dfd2931038c79cda8a6fe4bf09c1d00f8d4acdfa0f4879e72925c",
+    "native_graph_reader": "2cccd6bfbbef3503e1f646a31e445d36db31a2fa3b2192867146e637da75d4f1",
+    "navigation_capture": "739f2b9e7a7c89fbbe10860e9de76e70e849bbc12d048ad066a32da38837c636",
+    "navigation_dispatch_reader": "69ec0bf55849112834f6b844e248b2c848290ff1c3d6f8a8e7268d381de724a0",
+    "outbound_route_reader": "440ee0ba46828150a3d72bd26762aca342485cb18246a7bbf002ac7e82a22069",
+    "params": "2cb9b9e26015cbe79867fe3750296d9cb7626a05ad16f595b7692db4b4490f4f",
+    "physics_observer": "588693bf5f934081452925fc3ca80e10465f67ccc1738066cd91fb9fdf48527b",
+    "rally_connection_reader": "8d05c6a0b8ce8778b6997d0b5086d717c0d9e77bc48dc3c0645917352ea4134c",
+    "rally_transit_reader": "6fbaa087c212223cbce36ef81b13a0f2acb0382c020db5e4fa03b54d2f36f03e",
+    "refuge_release_reader": "f816d383aeb2211ace40476365734e5bc2883b9cfd9d5217bee021786e3a0ba3",
+    "return_preparation_reader": "0458ff41855b77c1ea507f837d36dde4d43e6b5fdb6f83aba5464b51ca826099",
+    "robot_description": "9770e035bc85014df99373d3557b5c567b3242a51794d53dcbbff617057538a8",
+    "robot_models": "55494138cfad63dbb2d36331bc3a8c784c65d4632cc19217a58ce9f129ae69dd",
+    "runner": "342ee2c4450c1190e3bc79e91dff00f8b729ba4e926249f0aea9fd485a3acb28",
+    "safety_observer": "6e8fdbbcff2a45c61d97b441f0cc68e3f1072961a1d9f717f840175cd06d8fab",
+    "scan_self_filter_reader": "25b68c64593f0aa39aa63ceedcb9dae9b61df6ff1c8a16c351aeb206f5a4c94c",
+    "slam": "37295c44991eb0c84883b966f81ca06928e8c1e1a45bed18f4605252dc9374c9",
+    "smoke": "42cf2f93ba691e2f281d3e2938bc4c005346fcf3eac061edf1317c5b22492359",
+    "staging_apparatus": "7b281c9a6ded4d1ff61649b709b8090d13d1834af21643aa0822b3d5cdc7645c",
+    "worlds": "2ee10406031815e3d0ea2e76074706a8e150e636ab2366428b201ecc72a5cc9a"
+  },
+  "raw_bindings": {
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v66/20261010_p2c_v66_dev_forced2/20261010_p2c_v66_dev_forced2.json": "24f4540c125b17aa3f4c0ca40457e41531847678427e1c4c24f7e9bcdbdd0d9c",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v66/20261010_p2c_v66_dev_forced2/native_graph.json": "ab5f3b4ba293e124be3c3f0241b777544adc185e22d47a8fbba7f71e6f85f235",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v66/20261010_p2c_v66_dev_forced2/manifest.json": "38755e9b2f743ccf21284cc2e995cf6f63d45762da097f78f616943aed4599fc",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v66/20261010_p2c_v66_dev_forced2/graph.json": "08986d363f3fd9daf4f94dec3f3c2afadfed2371b5b4427ab3716728dae2cf3d",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v66/20261010_p2c_v66_dev_forced2/ledger.jsonl": "d363e227d252e597fe58c0a5dc949ce1e4b3b80b108b2976960bd1a7339eafcb",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v66/20261010_p2c_v66_dev_forced2/schedule.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v66/20261010_p2c_v66_dev_forced2/summary.json": "54363b474ee94c76cecd64f248d920592021f44a80f84523f4d501762c02d157",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v66/20261010_p2c_v66_dev_forced2/20261010_p2c_v66_dev_forced2.csv": "5c02d7d27089ce2c92274f5726a2f0aa0484195e9ca4965c251e544392310a68",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v66/20261010_p2c_v66_dev_forced2/safety_events.jsonl": "aa948eb65ced70633ed72d647f48d6f0e846d04b6a44ec3b32488e8a594cce77",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v66/20261010_p2c_v66_dev_forced2/observer.log": "87611808405a123e371f39510ac29020b5aac58459309d6cf3ccd457e0bee9d9",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v66/20261010_p2c_v66_dev_forced2/navigation_inputs.jsonl.gz": "7077135243d4b8da4b6f78006f7b7d678524ea48c8907ce68a79912c7be43be5",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v66/20261010_p2c_v66_dev_forced2/runner.log": "ea89ab93c309b0e1d33c24dd7cb1488d4ae5cc6ba9969a01d2beca916d8a1816",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v66/20261010_p2c_v66_dev_forced2/launch/robots2_seed303_20261010-201359.log": "e121878bf9a049f7f5f0e9be1be8fef5c5b303b6f1c04797f57613e07124d66f",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v66/20261010_p2c_v66_dev_forced2/ledger_metrics/live.jsonl": "fd57cb7f1034bc4c9867b7778e0b013691160a9cd4a338738192b7211b4ab9aa",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v66/20261010_p2c_v66_dev_forced2/ledger_metrics/live_windows.csv": "351c2e51cf928f4beaa15959fa0a181faf2cde31edbc9f4a0f3b5ed0869d9ff5",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v66/20261010_p2c_v66_dev_forced2/ledger_metrics/curves.svg": "c800dc76b37b16c76b272a19ea7d71ced6acda7466f3b9298115468730e3e6a1",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v66/20261010_p2c_v66_dev_forced2/ledger_metrics/windows.jsonl": "66a2817cef632c3cf05f4115d6bc2e4aeca118fc8341316dd77ab436c183cc23",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v66/20261010_p2c_v66_dev_forced2/ledger_metrics/events.jsonl": "2f52d3ef4a6f9fe78c2bc8b5723272dfbfd6512dcc79495ae0bd4c86862015a0",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v66/20261010_p2c_v66_dev_forced2/ledger_metrics/windows.csv": "351c2e51cf928f4beaa15959fa0a181faf2cde31edbc9f4a0f3b5ed0869d9ff5",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v66/20261010_p2c_v66_dev_forced2/ledger_metrics/summary.json": "bbe4f3af4e2f6ec81a77e22eaef8f51d11d7e178516610281879087a6b7bb8bc",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v66/20261010_p2c_v66_dev_forced2/ledger_metrics/inputs.jsonl": "c7d77af0cda98915a748fdcb93851dac3771698a74a329525372be41f6be92a8"
+  },
+  "originals": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_v66_failed_graph_capture_originals.json.gz",
+    "sha256": "3d04fac29cf171ddc135139d02b60908d07a02639810e65205f2f2543248efdf",
+    "uncompressed_sha256": "4d25232763fe09b414a63bc88121944bb63eb2d80bb5c2438ca4b5b4e60bd8f4"
+  },
+  "not_invoked": [
+    "remaining3 development",
+    "17formal",
+    "2physical",
+    "holdout_ideal917",
+    "holdout_fault917"
+  ],
+  "diagnosis": "Initial bypass observer waits only for its existing central/costmap node names. In this actual early snapshot metrics node is absent and HQ has not exposed its full subscriptions/action clients. The unchanged strict monitor refuses with KeyError. Separate actual native observer snapshot has full native/metrics/AP endpoints; no missing endpoint should be synthesized or retroactively replace the first raw graph. Prospectively retain initial snapshot separately and canonically capture first fully observed typed metrics/AP/native snapshot, with original bypass and monitor vetoes and exclusive file creation. All task/native/physics/300s/5s/TTLs remain unchanged; same-freeze4\u219217+2 still required."
+}

@@ -69,6 +69,11 @@ def main(default_manifest=None, log_category='p3c5'):
                         "--output", str(directory / "safety_events.jsonl"), "--robot-count", str(scenario["robot_count"])]
     if config.get('native_tf_graph_capture'):
         observer_command.extend(['--native-tf-graph-output',str(directory/'native_graph.json')])
+    if config.get('complete_application_graph'):
+        if not config.get('native_tf_graph_capture'):
+            raise ValueError('complete application graph requires native graph capture')
+        command[command.index('--bypass-audit-output')+1]=str(directory/'initial_bypass_graph.json')
+        observer_command.extend(['--application-graph-output',str(directory/'graph.json')])
     if config.get('navigation_input_capture'):
         observer_command.extend(['--navigation-input-output',str(directory/'navigation_inputs.jsonl.gz')])
     schedule_path = directory / "schedule.json"
