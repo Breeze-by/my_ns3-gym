@@ -8428,6 +8428,9 @@ class HeadquartersControl(Node):
                 or self.cancel_requested[robot_name]
             ):
                 continue
+            if (not timed_out and not stalled and stale
+                    and HeadquartersControl.funded_initial_goal_completion(self, robot_name, assignment)):
+                continue
             if timed_out:
                 reason = "timeout"
             elif stalled:
@@ -8439,6 +8442,115 @@ class HeadquartersControl(Node):
             )
             self.cancel_requested[robot_name] = True
             goal_handle.cancel_goal_async()
+
+    def funded_initial_goal_completion(self, name, assignment):
+        """Finish real near-home work before the existing first replenishment."""
+        if (not getattr(self, 'enable_rally', False) or not self.enable_battery
+                or self.task_state not in ('EXPLORE', 'FOUND_UNCONFIRMED')
+                or getattr(self, 'target_search_active', False)
+                or name in getattr(self, 'exploration_return_yields', {})
+                or assignment is None or self.robot_states[name] != 'active'
+                or self.battery_modes[name] != 'ACTIVE'
+                or any(mode == 'RETURNING' for mode in self.battery_modes.values())
+                or not self.fresh_robot_inputs()):
+            return False
+        state = self.battery_states[name]
+        completed = getattr(self, 'successful_exploration_legs', {}).get(name, 0)
+        if (type(completed) is not int or completed != 0
+                or type(state.get('charge_count')) is not int or state['charge_count'] != 0):
+            return False
+        started = self.goal_started_at[name]
+        progress = self.goal_last_progress_at[name]
+        now = self.now()
+        deadline = started + self.goal_timeout_sec
+        if (not all(math.isfinite(v) for v in (started, now, deadline, self.goal_timeout_sec))
+                or not 0 <= now - started < self.goal_timeout_sec
+                or (progress is not None and (not math.isfinite(progress) or not started <= progress <= now))
+                or (progress is not None and now - started >= 10. and now - progress >= NO_PROGRESS_SEC)):
+            return False
+        try:
+            destination = (assignment.navigation_x, assignment.navigation_y)
+            home = (float(state['charge_x']), float(state['charge_y']))
+            radius = float(state['charge_radius_m'])
+            energy = float(state['energy'])
+            idle = float(state.get('idle_cost_per_sec', .02))
+            capacity = float(state['capacity'])
+            fraction = float(state['charge_target_fraction'])
+            if (not all(math.isfinite(v) for v in (*home, *destination, radius, energy, idle, capacity, fraction))
+                    or radius <= .2 or min(energy, idle) < 0
+                    or capacity <= 0 or not 0 < fraction <= 1 or not energy < capacity * fraction
+                    or not PATH_CLEARANCE_M < math.dist(destination, home) <= 2. * radius):
+                return False
+        except (KeyError, TypeError, ValueError):
+            return False
+        position = self.robot_positions[name]
+        local = HeadquartersControl.delivered_return_maps(self).get(name)
+        if local is None:
+            return False
+        peers = {peer: point for peer, point in self.robot_positions.items() if peer != name and point is not None}
+        reservations = {peer: remaining_rally_route(route, self.robot_positions[peer])
+            for peer, route in self.goal_routes.items() if peer != name
+            and self.robot_states[peer] == 'active' and route}
+        leg, path = plan_rally_leg(RallyPose(*destination, 0.), self.map_data, self.resolution,
+            self.origin, position, math.inf, blocked_positions=list(peers.values()),
+            clearance_m=PATH_CLEARANCE_M, local_map=local)
+        if leg is None or math.dist((leg.x, leg.y), destination) > self.resolution / math.sqrt(2.) + 1e-8:
+            return False
+        route = (position, *path, destination)
+        distance = sum(math.dist(a, b) for a, b in zip(route, route[1:]))
+        endpoint = world_to_grid(*destination, self.resolution, *self.origin)
+        combined = constrained_return_grid(self.map_data, self.resolution, self.origin, local)
+        safe = traversable_grid(combined, self.resolution, ROBOT_CLEARANCE_M)
+        if (not 0 <= endpoint[0] < safe.shape[0] or not 0 <= endpoint[1] < safe.shape[1]
+                or not safe[endpoint] or distance > MAX_NAVIGATION_LEG_M
+                or not route_respects_known_obstacles(local['data'], local['resolution'], local['origin'], route)
+                or any(routes_conflict(route, (point,), RALLY_DYNAMIC_CLEARANCE_M) for point in peers.values())
+                or any(routes_conflict(route, reserved) for reserved in reservations.values())):
+            return False
+        event = dict(event='coordinator_initial_exploration_completion_hold', robot=name,
+            task_phase=self.task_state, strategy='funded_first_near_home_goal',
+            goal_accepted_at_sec=started, goal_timeout_sec=self.goal_timeout_sec,
+            last_progress_at_sec=progress, completed_exploration_legs=completed,
+            frontier_position=[assignment.x, assignment.y],
+            initial_information_gain=self.goal_initial_gain[name],
+            remaining_information_gain=self.target_information_gain(assignment.x, assignment.y),
+            requested_position=destination, current_position=position,
+            robot_positions=self.robot_positions, robot_states=self.robot_states,
+            battery_modes=self.battery_modes, battery_states=self.battery_states,
+            goal_routes=self.goal_routes, remaining_peer_routes=reservations, remaining_distance_m=distance,
+            outbound_map_route=dict(route=route, clearance_m=PATH_CLEARANCE_M,
+                planning_map=grid_audit_evidence(self.map_data, self.resolution, self.origin,
+                    'ap_delivered_planning_map', self.map_received_at, self.map_received_at),
+                local_map=grid_audit_evidence(local['data'], local['resolution'], local['origin'],
+                    'ap_delivered_robot_map', self.robot_map_received_at[name], self.robot_map_received_at[name])),
+            planning_map_self_return_cells=getattr(self, 'map_self_return_cells', {}))
+        evaluated = self.now()
+        required = HeadquartersControl.exploration_required_energy(self, name, distance, destination, evaluated)
+        if required is None or evaluated >= deadline:
+            return False
+        wait = idle * (deadline - evaluated)
+        if not energy > required + wait:
+            return False
+        inputs = self.input_freshness_details()
+        event.update(evaluated_at_sec=evaluated, trip_required_energy=required,
+            remaining_wait_energy=wait, required_energy=required + wait)
+        body = json.dumps(event, sort_keys=True)
+        checked = self.now()
+        if (getattr(self, 'shutdown_requested', False) or not evaluated <= checked < deadline
+                or (progress is not None and checked - started >= 10. and checked - progress >= NO_PROGRESS_SEC)
+                or any(sample['source_time'] is None or not 0 <= checked - sample['source_time'] <= sample['ttl_sec']
+                       for sample in inputs.values())):
+            return False
+        last = getattr(self, 'initial_goal_hold_recorded_at', {})
+        if checked - last.get(name, -math.inf) >= TARGET_OBSERVER_FRESHNESS_SEC:
+            metadata = dict(event_time=checked, inputs=input_freshness_at(inputs, checked))
+            self.consumed_publisher.publish(String(data=body[:-1] + ', ' + json.dumps(metadata, sort_keys=True)[1:]))
+            self.initial_goal_hold_recorded_at = {**last, name: checked}
+        finished = self.now()
+        return (checked <= finished < deadline
+                and not (progress is not None and finished - started >= 10. and finished - progress >= NO_PROGRESS_SEC)
+                and all(sample['source_time'] is not None
+                    and 0 <= finished - sample['source_time'] <= sample['ttl_sec'] for sample in inputs.values()))
 
     def has_funded_frontier_alternative(self, robot_name, current):
         """Do not abandon a disappearing frontier without useful current work."""

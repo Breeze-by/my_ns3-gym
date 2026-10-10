@@ -9326,3 +9326,8 @@ colcon build --symlink-install --packages-select multi_robot_exploration multi_r
 2026-10-11 P2C.1 v72四原整体FAIL保持：5be5ce8 forced268.9/rooms248.5/corr222.1原生COMPLETE，lab EXPLORE300.4timeout；strict两PASS两FAIL，原lab未闭合tb2第二return与corr同戳不同地图断言FAIL均保留。四零接触耗尽FAILED/owner-observer0/双图同，子审21/20/21/20，17+2/917未调用。新精确512项immutable射线几何，只1纯修改+1新增/86中央102其他纯与11native-SLAM-observer-command保持，当前地图遮挡预算源龄全重算；冻原17样本/12随机逐位一致，原热0.196→新0.018秒、冷略慢非任务保证。集合来源复用现有逐见证CDR内容核验，缺源/非法擦除仍FAIL，旧CDR组件PASS不回填。2232功能309.17s/89定向43新/四包6.77s/190保护6历史授权54协议/三31源声明/actual DDS过期0、新源两版各合成Future1且几何预算同、cache1374hit PASS，零实际运动补能。原300s/5s/TTL/case/物理保持；新v73 owned任务逐格串行/未来比较同规则、clean pushed4→17+2待实测，917未暴露，P2C.1未完成，无P4/ns3/WiFi/RL。报告20261011_p2c_v72_failed_development与20261011_p2c_camera_geometry_components。
 
 原v72全部任务与本轮所有检查已关闭，所有原FAIL和探针失败保留；用户260929_report十四文件不修改或提交。
+
+
+2026-10-11 P2C.1 v73四原整体FAIL保持：d0be454 forced231.7/rooms285.0原生COMPLETE，lab RALLY300.1timeout，corr中央COMPLETE但native success=false/300.4timeout；strict两PASS两FAIL、四格各21子PASS不代任务。四零接触耗尽FAILED/任务期infra、owner-observer0关闭、双图同；17+2/917未调用。新仅首个未成功未充电的原近家普通目标，在当前完整known本图/融合去返+剩余60s等待预算及.45/.35/.6/1.8几何/2-5源合格时继续原动作，原60s/20s超时无进展取消与真实SUCCESS计数保持。只1中央变+1新增，85其他中央104纯及11native-SLAM-observer-command保持；独立原命令/raw CDR/native电池子审接入。2290功能357.23s/120定向58新/四包5.96s/190保护6历史授权54协议/三31源声明/actual DDS五情形PASS：旧取消success0、新继续真实Future1→正常charge request1，过期/timeout/no-progress取消0成功；零physical Nav2/Gazebo/原生credit周期。原11首派发条件及首CDR夹具1FAIL保留非任务因果。新v74 clean pushed串行4→17+2待任务，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261011_p2c_v73_failed_development与20261011_p2c_initial_goal_completion_components。
+
+原v73任务和本轮全部检查均关闭；原FAIL、夹具FAIL全保留，用户260929_report十四文件保持不提交。

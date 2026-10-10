@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-10T19:03:03.859406+00:00",
+  "predeclared_at_utc": "2026-10-10T19:58:37.875491+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "5be5ce8cedfbe38fcb6d8e50a35e3ae7356ecdfd",
+  "candidate_parent_commit": "d0be454749a80d2d20a4daa4bdc9efe544a1e5f1",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -255,7 +255,8 @@
     "20261010_p2c_v43_failed_development.json",
     "20261010_p2c_v44_failed_development.json",
     "20261010_p2c_v45_failed_development.json",
-    "20261011_p2c_v72_failed_development.json"
+    "20261011_p2c_v72_failed_development.json",
+    "20261011_p2c_v73_failed_development.json"
   ],
   "coordinator_live_clock": {
     "executor": "Two workers; only the existing /clock subscription moves to an independent mutually exclusive group. Original state/action callbacks remain serialized.",
@@ -748,5 +749,16 @@
     ],
     "comparison": "Apply the same execution policy to every future compared baseline and all development, formal and physical cells.",
     "limits": "Original v72 concurrent three-case results remain original FAIL evidence; this changes execution scheduling only, not simulator physics, native deadline or case stimuli. Unrelated user processes are untouched."
+  },
+  "funded_initial_goal_completion": {
+    "scope": "Full object EXPLORE/FOUND_UNCONFIRMED only: retain an accepted first ordinary near-home goal through informational frontier cancellation, solely while currently safe and fully funded.",
+    "native_charge_count": 0,
+    "completed_exploration_legs": 0,
+    "endpoint_distance_min_m": 0.35,
+    "endpoint_distance_max": "2 * native charge_radius_m",
+    "current_admission": "Fresh all-body pose/frame/map/battery 2/5s sources; complete current constrained-local/fused known route, .45m endpoint, .35m static route, .6m body and 1.8m active route separation; full go/return plus remaining original60s idle wait; energy below original native charge target.",
+    "unchanged": "Original60s timeout and20s no-progress cancellation, actual action-result success accounting, first-replenishment real-work requirement, source stamps and TTL, native battery/SLAM/Nav2/physics,300s and5s/cases/stimuli. No new goal or command refresh.",
+    "evidence": "Private rate-limited continuation witnesses; independent initial replenishment reader binds original command/raw CDR maps/native battery and rechecks full geometry and physical budget.",
+    "component_report": "20261011_p2c_initial_goal_completion_components.json"
   }
 }
