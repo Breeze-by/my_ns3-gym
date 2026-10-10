@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-10T03:15:52.888883+00:00",
+  "predeclared_at_utc": "2026-10-10T04:43:10.748289+00:00",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -500,7 +500,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "d5e9da317e26ef96b63f7413d786d0d9ddef460f",
+  "candidate_parent_commit": "0bfaf4211b971dc64572d7790f831bc26531c7ad",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -766,5 +766,13 @@
     "unchanged": "No-battery behavior, safety refuges/local-return yields, charge staging and observer correction use original visible legs. Native300s/5s/pose2s/map-battery5s/target60s/observer5s, Nav2/SLAM/scan/physics and retries remain.",
     "evidence": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_curve_legs_components.json",
     "limits": "Independent source-map/body/whole-return/energy checks prove dispatch-time planned geometry only. Nav2 need not follow every grid vertex; current source lease does not guarantee future connectivity or completion."
+  },
+  "deferred_exploration_geometry": {
+    "scope": "Original source-lease expiry fallback, consistently frozen for every baseline and task case",
+    "algorithm": "Keep only ordered geometry suggestions, at most128 points per robot. Completed-score suggestions precede raw suggestions; numeric scores, routes and source authority are discarded. Within original10s TARGET_HISTORY at admission start, regenerate the complete current candidate catalogue and select up to3 current rows per robot nearest its next3 suggested points within original1.2m separation; otherwise use current top3 utility bounds. Advance geometry cursor only after current scoring lease survives; context/participants/target/phase changes discard the preference.",
+    "preserved": "All current exact gains, relative/diversity scores, complete body-masked approach and qualified local/fused/constrained contact returns, energy/wait/source-age budgets and final dispatch leases. Full raw charging lookahead pool retained. Native300s/5s/pose-TF2s/map-battery5s/target60s/observer5s, Nav2/SLAM/scan/physics/retries unchanged.",
+    "refuge_query": "Batch the original scalar KDTree route-separation queries, preserving predicate, cell order and all original geometry.",
+    "policy_limits": "Expired-batch recovery ranks a small regenerated subset, not the complete current global catalogue. No global optimality, worst-case runtime, actual Nav2 route tracking or continuous execution connectivity claim.",
+    "evidence": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_exploration_handoff_components.json"
   }
 }

@@ -723,6 +723,42 @@ def frontier_scheduling_score(utility, resuming):
     return utility * (FRONTIER_CONTINUATION_WEIGHT if resuming else 1.0)
 
 
+def retained_exploration_geometry(scored, raw):
+    """Keep only bounded points as search preferences, never prices or routes."""
+    points = {}
+    for _, name, _, assignment in [*sorted(scored, key=lambda row: -row[0]),
+                                  *sorted(raw, key=lambda row: -row[0])]:
+        point = (assignment.x, assignment.y)
+        bucket = points.setdefault(name, [])
+        if point not in bucket and len(bucket) < 128:
+            bucket.append(point)
+    return {name: tuple(bucket) for name, bucket in points.items()}
+
+
+def exploration_geometry_subset(rows, points, cursor):
+    """Rebuild a small current candidate set near earlier geometry preferences.
+
+    Every returned Assignment comes from the caller's current candidate
+    generator. Original gains, complete paths, prices and dispatch leases
+    still have to be evaluated. Exhausted/no-longer-near preferences use the
+    current generator's first three utility bounds; bounds cannot dispatch.
+    """
+    retained = []
+    for name in dict.fromkeys(row[1] for row in rows):
+        choices = [row for row in rows if row[1] == name]
+        hints = points.get(name, ())[cursor.get(name, 0):cursor.get(name, 0)+3]
+        ranked = []
+        for index, row in enumerate(choices):
+            distance = min((math.dist((row[3].x, row[3].y), hint) for hint in hints), default=float('inf'))
+            if distance <= MIN_TARGET_SEPARATION_M:
+                ranked.append((distance, -row[0], index, row))
+        selected = [item[-1] for item in sorted(ranked, key=lambda item:item[:3])[:3]]
+        if not selected:
+            selected = sorted(choices, key=lambda row: -row[0])[:3]
+        retained.extend(selected)
+    return retained
+
+
 def lazy_priority_candidates(candidates, evaluate, upper_bound, priority, refine_bound=None):
     """Yield exact stable greedy order without pricing every unused option.
 
@@ -2305,9 +2341,11 @@ def rally_yield_pose(
             for pose in (*reserved_poses, *blocked_positions)
         ):
             continue
-        if route_tree is not None and route_tree.query((x, y))[0] < route_separation_m:
-            continue
         candidates.append((target_distance, path_distance, x, y))
+    if route_tree is not None and candidates:
+        separations = route_tree.query([(item[2], item[3]) for item in candidates])[0]
+        candidates = [item for item, separation in zip(candidates, separations)
+                      if not separation < route_separation_m]
     if not candidates:
         return None
     if reserved_routes:
@@ -6963,6 +7001,14 @@ class HeadquartersControl(Node):
         if not idle_positions:
             return
         planning_started = self.now()
+        proposal = getattr(self, 'pending_exploration_geometry', None)
+        context = (self.task_state, search, tuple(sorted(self.participating_robots())),
+                   None if getattr(self, 'target', None) is None else tuple(self.target))
+        if (proposal is not None and (proposal['context'] != context
+                or not 0 <= planning_started-proposal['generated_at'] <= TARGET_HISTORY_SEC)):
+            self.pending_exploration_geometry = proposal = None
+        raw_candidates = []
+        candidates = []
         planning_inputs = input_freshness_at(self.input_freshness_details(), planning_started)
         deadline = min((sample['source_time'] + min(sample['ttl_sec'],
                 getattr(self, 'message_freshness_timeout_sec', 5.))
@@ -6975,6 +7021,11 @@ class HeadquartersControl(Node):
                 return False
             if planning_started <= now <= deadline:
                 return True
+            if proposal is None:
+                points = retained_exploration_geometry(candidates, raw_candidates)
+                if points:
+                    self.pending_exploration_geometry = dict(context=context,
+                        generated_at=planning_started, points=points, cursor={})
             details = None
             diagnostics = getattr(self, 'planning_lease_diagnostics', None)
             key = (self.task_state, stage)
@@ -7009,7 +7060,8 @@ class HeadquartersControl(Node):
             self.consumed_publisher.publish(String(data=json.dumps(dict(
                 event='coordinator_planning_lease_expired', event_time=now,
                 planning_started_at_sec=planning_started, source_deadline_sec=deadline,
-                stage=stage, inputs_at_start=planning_inputs, diagnostic_inputs=details), sort_keys=True)))
+                stage=stage, inputs_at_start=planning_inputs, diagnostic_inputs=details,
+                geometry_preferences=getattr(self, 'pending_exploration_geometry', None)), sort_keys=True)))
             return False
         exclusions = self.active_exclusions()
         candidates = []
@@ -7115,6 +7167,9 @@ class HeadquartersControl(Node):
                 raw_candidates.extend(robot_candidates)
                 candidate_contexts[robot_name] = (robot_exclusions, initial_search)
 
+            if proposal is not None:
+                raw_candidates = exploration_geometry_subset(
+                    raw_candidates, proposal['points'], proposal['cursor'])
             factor_bounds = {}
             travel_bounds = {}
             for _, name, _, a in raw_candidates:
@@ -7283,6 +7338,13 @@ class HeadquartersControl(Node):
                         battery_factor=battery_factor, adjusted_utility=utility,
                         nominal_blocked_positions=([p for other,p in self.robot_positions.items()
                             if other != robot_name and p is not None] if refine or initial_search else []))
+                    if proposal is not None:
+                        preference['deferred_geometry_preference'] = dict(
+                            generated_at_sec=proposal['generated_at'],
+                            admission_started_at_sec=planning_started,
+                            points=proposal['points'].get(robot_name, ()),
+                            cursor=proposal['cursor'].get(robot_name, 0),
+                            current_candidates_per_robot=3, prices_reused=False)
                     if initial_search:
                         preference.update(initial_search_visits=list(self.initial_search_visits.values()),
                             initial_search_views=camera_views,
@@ -7446,6 +7508,13 @@ class HeadquartersControl(Node):
         # A robot with its own funded alternative still explores normally.
         # Otherwise stop new admissions until accepted peer actions drain,
         # including when those peers have enough energy for further work.
+        if proposal is not None:
+            if not lease_current('route_admission'):
+                return
+            for name in proposal['points']:
+                proposal['cursor'][name] = proposal['cursor'].get(name, 0)+3
+            if all(proposal['cursor'][name] >= len(points) for name, points in proposal['points'].items()):
+                self.pending_exploration_geometry = None
         charge_candidates = {name: assignment for name, assignment in charge_candidates.items()
                              if name not in plans}
         if not search:

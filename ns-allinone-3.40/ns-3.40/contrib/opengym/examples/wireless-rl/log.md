@@ -9008,3 +9008,58 @@ colcon build --symlink-install --packages-select multi_robot_exploration multi_r
 /usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v56 --domain 218 --gazebo-port 20318 --validate-only
 /usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v56_physical --domain 219 --gazebo-port 20319 --validate-only
 ```
+
+
+## 2026-10-10 P2C.1 v56 四原失败与探索几何交接
+
+2026-10-10 P2C.1 v56四原整体FAIL：0bfaf42 forced原生COMPLETE214.8/双charge1/native5s51样本PASS；lab/rooms原EXPLORE timeout300.2未发现0charge，corr原RALLY timeout300.2/双charge1/末中央hold仅4.2s无native5s。四零接触耗尽失效，owner-observer0，72子审不代整体；125/139探索租约弃置保持，不能归因唯一并行负载。新原过期探索只保存各机128点/原10s软偏好，当前候选重生后按下一3点/1.2m取每机3当前候选，完整raw充电池/准确gain/身体/完整去返能源/最终TTL保持；过期恢复有意子集排序，不称全局原排序。原refuge KDTree批查谓词/顺序等价，六无过期结果一致/24原CDR图绑定。1858功能187.33s/四包6.25s/190保护6授权54协议/两声明/6实际DDS+3充电兼容PASS；82中央97纯/globals/native/300s/5s/次数/物理保持。多种未采用优化与初失败原件保留。新v57 clean pushed4→17+2待任务，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v56_failed_development与20261010_p2c_exploration_handoff_components。
+
+原任务四格72审与两strict gate完整保存，全部owned关闭后才修改。实际同时三world只是环境事实，profile固定epoch/空缓存/合成动作和时钟重交不能证明任务因果或唯一负载原因。forced原native窗口及其样本间隔真实PASS；其他三个native证明None原样保留。
+
+新只存点、10s软偏好/上下文与cursor；完整当前候选重生、raw充电lookahead始终全量，当前子集准确gain、peer/diversity、完整身体路径与完整contact去返/能源、派发lease原样。恢复只对小子集排序，不能承诺全目录等价。标明选择变化并同冻结用于所有下一任务，不借旧价格、源戳或旧Assignment派发。batch refuge使用原完全相同KDTree距离谓词和顺序。
+
+LRU/distance/None-veto/local-funded/segment/earlybody/ownproof/mappedbound临时试验均未采用，具体源和完整输出在provenance。segment泛化浮点边界未证；distance两输出source字段覆盖保留，字面源码仍归档；builder assertion与SyntaxError原输出保留。初定向87中11失败均JSON tuple/list断言，只有测试改标准化，13新定向与1858功能随后全PASS。真实DDS六场景及充电兼容三场景均关闭，合成候选和ActionServer不是真实Nav2；private实际派发和原全路径读者PASS。
+
+生产control SHA 4d24666e4f10236ef90db08df323ca59cf292d1ea723310e622b2453ccf453cb；四包构建、190保护6授权54协议、82中央97纯/globals/native七类及两声明PASS，24原输入源图与CDR严格绑定。完整4开发→17正式+2物理仍需同clean pushed源码；917未暴露。14用户260929_report未改未stage。
+
+下列命令均canonical ROS目录、rtk proxy；ROS使用Humble+install/PYTHONNOUSERSITE1/scripts PYTHONPATH/taskset0-79，DDS FastDDS UDPv4且清profiles/discovery server。各stdout原名保留，未覆盖失败。三个原任务各隔离domain/port，probe216/217；没有访问其他ROS域222/11345。
+
+```bash
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v56 --domain 218 --gazebo-port 20318
+/usr/bin/python3 scripts/check_p2c_gate.py --run-root log/p2c/20261010_p2c_v56 --cases dev_forced2 --development --output log/p2c_v56_forced_gate.json
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_lab101 --run-id 20261010_p2c_v56 --domain 218 --gazebo-port 20318
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_rooms202 --run-id 20261010_p2c_v56 --domain 219 --gazebo-port 20319
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_corridors303 --run-id 20261010_p2c_v56 --domain 220 --gazebo-port 20320
+/usr/bin/python3 scripts/check_p2c_gate.py --run-root log/p2c/20261010_p2c_v56 --cases dev_forced2 dev_lab101 dev_rooms202 dev_corridors303 --development --workers 3 --output log/p2c_v56_development_gate.json
+/usr/bin/python3 /tmp/audit_p2c_v56_components.py dev_forced2
+/usr/bin/python3 /tmp/audit_p2c_v56_components.py dev_lab101
+/usr/bin/python3 /tmp/audit_p2c_v56_components.py dev_rooms202
+/usr/bin/python3 /tmp/audit_p2c_v56_components.py dev_corridors303
+/usr/bin/python3 /tmp/p2c_v56_planning_profile.py dev_lab101
+/usr/bin/python3 /tmp/p2c_v56_planning_profile.py dev_rooms202
+/usr/bin/python3 /tmp/p2c_v56_equivalent_geometry_variants.py
+/usr/bin/python3 /tmp/p2c_v56_distance_variants.py
+/usr/bin/python3 /tmp/p2c_v56_distance_variants2.py
+/usr/bin/python3 /tmp/p2c_v56_distance_variants3.py
+/usr/bin/python3 /tmp/p2c_v56_local_proof_variants.py
+/usr/bin/python3 /tmp/p2c_v56_segment_variants.py
+/usr/bin/python3 /tmp/p2c_v56_body_prefilter_variants.py
+/usr/bin/python3 /tmp/p2c_v56_body_prefilter_variants2.py
+/usr/bin/python3 /tmp/p2c_v56_own_proof_variants.py
+/usr/bin/python3 /tmp/p2c_v56_mapped_bound_variants.py
+/usr/bin/python3 /tmp/p2c_v56_geometry_handoff_trials.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_exploration_geometry_handoff.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test scripts --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+colcon build --symlink-install --packages-select multi_robot_exploration multi_robot_interfaces merge_map multi_robot
+ROS_DOMAIN_ID=216 /usr/bin/python3 scripts/check_p2c_geometry_handoff_runtime.py --output log/p2c_geometry_handoff_runtime1.json
+ROS_DOMAIN_ID=217 /usr/bin/python3 scripts/check_p2c_charge_reservations_runtime.py --output log/p2c_geometry_handoff_charge_compat1.json
+/usr/bin/python3 scripts/check_p2c_source.py --output log/p2c_geometry_handoff_source1.json
+/usr/bin/python3 /tmp/p2c_geometry_handoff_scope.py
+/usr/bin/python3 /tmp/p2c_geometry_handoff_binding.py
+/usr/bin/python3 /tmp/p2c_geometry_handoff_nonexpired.py
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v57 --domain 218 --gazebo-port 20318 --validate-only
+/usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v57_physical --domain 219 --gazebo-port 20319 --validate-only
+/usr/bin/python3 /tmp/p2c_v56_failed_report.py
+/usr/bin/python3 /tmp/p2c_geometry_handoff_report.py
+/usr/bin/python3 /tmp/p2c_geometry_handoff_docs.py
+```
