@@ -106,6 +106,8 @@ def main(default_manifest=None, log_category='p3c5'):
         manifest['source_digests']['preparation_approach_reader']=file_digest(PROJECT_ROOT/'scripts/p2c_preparation_approach.py')
     if config.get('exploration_charge_geometry_handoff'):
         manifest['source_digests']['charge_geometry_reader']=file_digest(PROJECT_ROOT/'scripts/p2c_charge_handoff.py')
+    if config.get('initial_near_home_replenishment'):
+        manifest['source_digests']['initial_replenishment_reader']=file_digest(PROJECT_ROOT/'scripts/p2c_initial_replenishment.py')
     if config.get('native_tf_graph_capture'):
         manifest['source_digests'].update({name:file_digest(PROJECT_ROOT/'scripts'/filename)
             for name,filename in (('safety_observer','observe_p3b5.py'),('native_graph_reader','p2c_native_graph.py'))})

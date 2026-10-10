@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-10T15:55:06.397991+00:00",
+  "predeclared_at_utc": "2026-10-10T17:12:46.851772+00:00",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -500,7 +500,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "939a77f17b6b21ec0966263d7883f016a71a1ca4",
+  "candidate_parent_commit": "a383cda7296f3e696ef2349b3f0fceb0448dc3a9",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -888,5 +888,16 @@
     "evidence": "Private expired-origin and new-source handoff events; required independent reader digest; original full exploration, return preparation, native energy, command and task audits still apply",
     "unchanged": "Original103pure geometry/energy functions, native battery/SLAM/Nav2/physics,3 ordinary explorers, all cases/stimuli300s5s and optional parallel rally preparation unchanged",
     "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261011_p2c_charge_handoff_components.json"
+  },
+  "initial_near_home_replenishment": {
+    "scope": "Full object mission: one initial near-home replenishment after an ordinary successful exploration leg",
+    "native_charge_count": 0,
+    "completed_exploration_legs_min": 1,
+    "distance_min_m": 0.35,
+    "distance_max": "2 * native charge_radius_m",
+    "scheduling_threshold": "native capacity * charge_target_fraction",
+    "physical_trip_cost": "separate unchanged complete current outbound and qualified return budget",
+    "preserved": "current body clearance, original full return preparation, source leases, native energy and charge credit",
+    "component_report": "20261011_p2c_initial_replenishment_components.json"
   }
 }

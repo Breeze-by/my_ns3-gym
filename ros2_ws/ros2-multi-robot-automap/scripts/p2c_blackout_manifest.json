@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-10T15:55:06.401511+00:00",
+  "predeclared_at_utc": "2026-10-10T17:12:46.855801+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "939a77f17b6b21ec0966263d7883f016a71a1ca4",
+  "candidate_parent_commit": "a383cda7296f3e696ef2349b3f0fceb0448dc3a9",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -632,5 +632,16 @@
     "evidence": "Private expired-origin and new-source handoff events; required independent reader digest; original full exploration, return preparation, native energy, command and task audits still apply",
     "unchanged": "Original103pure geometry/energy functions, native battery/SLAM/Nav2/physics,3 ordinary explorers, all cases/stimuli300s5s and optional parallel rally preparation unchanged",
     "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261011_p2c_charge_handoff_components.json"
+  },
+  "initial_near_home_replenishment": {
+    "scope": "Full object mission: one initial near-home replenishment after an ordinary successful exploration leg",
+    "native_charge_count": 0,
+    "completed_exploration_legs_min": 1,
+    "distance_min_m": 0.35,
+    "distance_max": "2 * native charge_radius_m",
+    "scheduling_threshold": "native capacity * charge_target_fraction",
+    "physical_trip_cost": "separate unchanged complete current outbound and qualified return budget",
+    "preserved": "current body clearance, original full return preparation, source leases, native energy and charge credit",
+    "component_report": "20261011_p2c_initial_replenishment_components.json"
   }
 }

@@ -3908,6 +3908,10 @@ class HeadquartersControl(Node):
 
     def exploration_charge_budget(self, name, assignment, allow_opportunity=False):
         """Return a valid frontier budget that charging can actually fund."""
+        replenishments = getattr(self, 'initial_replenishment_evidence', None)
+        if replenishments is None:
+            self.initial_replenishment_evidence = replenishments = {}
+        replenishments.pop(name, None)
         required = HeadquartersControl.exploration_required_energy(
             self, name, assignment.path_distance_m, (assignment.x, assignment.y))
         if required is None:
@@ -3933,7 +3937,7 @@ class HeadquartersControl(Node):
                         or not math.isfinite(radius) or radius <= .2
                         or not PATH_CLEARANCE_M < math.dist(self.robot_positions[name], home) <= 2. * radius):
                     return None
-                leg, _ = plan_rally_leg(
+                leg, route = plan_rally_leg(
                     RallyPose(*home, 0.0), self.map_data, self.resolution, self.origin,
                     self.robot_positions[name], 2. * radius,
                     blocked_positions=[p for peer, p in self.robot_positions.items()
@@ -3943,6 +3947,28 @@ class HeadquartersControl(Node):
                 )
                 if leg is None or math.dist((leg.x, leg.y), home) > radius - .2:
                     return None
+                if (getattr(self, 'enable_rally', False)
+                        and type(state.get('charge_count')) is int and state['charge_count'] == 0
+                        and energy < charge_target):
+                    # Fill once after actual exploration while still near home.
+                    # This target is a scheduling threshold, not a claim that
+                    # the current frontier physically consumes that energy.
+                    replenishments[name] = dict(
+                        strategy='initial_near_home_replenishment',
+                        evaluated_at_sec=self.now(),
+                        trip_evaluated_at_sec=self.exploration_budget_times[name],
+                        trip_required_energy=required,
+                        trip_distance_m=assignment.path_distance_m,
+                        frontier_position=[assignment.x, assignment.y],
+                        charge_target_energy=charge_target,
+                        completed_exploration_legs=self.successful_exploration_legs[name],
+                        battery_state=dict(state),
+                        robot_position=list(self.robot_positions[name]),
+                        home=list(home), contact_goal=[leg.x, leg.y, leg.yaw],
+                        contact_route=route,
+                    )
+                    getattr(self, 'opportunity_charge_evidence', {}).pop(name, None)
+                    return energy, charge_target, home
                 threshold = .25 * charge_target
                 if energy > threshold:
                     forecast = HeadquartersControl.frontier_lookahead_budget(
@@ -4245,7 +4271,9 @@ class HeadquartersControl(Node):
             assignment.x, assignment.y, assignment.viewpoint.information_gain)
         self.charge_request_publishers[name].publish(String(data=json.dumps({
             'robot': name, 'stamp_sec': now, 'task_phase': self.task_state,
-            'reason': 'exploration_energy_budget', 'required_energy': required,
+            'reason': ('initial_near_home_replenishment' if name in getattr(
+                self, 'initial_replenishment_evidence', {}) else 'exploration_energy_budget'),
+            'required_energy': required,
             'available_energy': energy,
         }, sort_keys=True)))
         self.consumed_publisher.publish(String(data=json.dumps({
@@ -4254,6 +4282,7 @@ class HeadquartersControl(Node):
             'required_energy': required, 'available_energy': energy,
             'frontier_position': [assignment.x, assignment.y],
             'opportunity_lookahead': getattr(self, 'opportunity_charge_evidence', {}).get(name),
+            'initial_replenishment': getattr(self, 'initial_replenishment_evidence', {}).get(name),
             'return_preparation': (HeadquartersControl.return_preparation_evidence(
                 self, self.exploration_charge_return_evidence) if exploration else None),
             'inputs': {key: sample for key, sample in input_freshness_at(self.input_freshness_details(), now).items()
@@ -4261,7 +4290,7 @@ class HeadquartersControl(Node):
         }, sort_keys=True)))
         self.get_logger().warn(
             f'Requesting early exploration charge for {name}: energy={energy:.2f}, '
-            f'whole_frontier_budget={required:.2f}.')
+            f'charge_threshold={required:.2f}.')
         return True
 
     def target_observation_callback(self, message):
