@@ -26,7 +26,7 @@ def test_soft_exposure_retains_unavailable_geometry():
     assert math.isinf(c.return_route_clearance_exposure(((-1., 1.), (1., 1.)), .1, (0., 0.), field))
 
 
-def test_assignment_keeps_the_funded_observer_on_the_home_side_of_an_optional_narrow_passage(monkeypatch):
+def test_funded_observer_prefers_earlier_arrival_with_both_complete_returns_qualified(monkeypatch):
     grid = np.zeros((200, 200), dtype=np.int16)
     grid[100:120, :] = 100
     grid[100:120, 92:108] = 0
@@ -40,7 +40,7 @@ def test_assignment_keeps_the_funded_observer_on_the_home_side_of_an_optional_na
         return_safety_margin=8., charge_duration_sec=6.)
     assigned = c.assign_rally_poses(grid, .05, (0., 0.), {'tb1': position}, target,
         battery_states={'tb1': state}, observer_robot='tb1')
-    assert assigned == {'tb1': poses[1]}
+    assert assigned == {'tb1': poses[0]}
     for pose in poses:
         cell = c.world_to_grid(pose.x, pose.y, .05, 0., 0.)
         target_cell = c.world_to_grid(*target, .05, 0., 0.)

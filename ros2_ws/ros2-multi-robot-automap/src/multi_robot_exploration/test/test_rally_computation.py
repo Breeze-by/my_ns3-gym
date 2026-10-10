@@ -1,6 +1,7 @@
 """Rally computation stays equivalent without retaining mutable or stale geometry."""
 import base64
 import hashlib
+import gzip
 import json
 from pathlib import Path
 import zlib
@@ -17,6 +18,12 @@ assert hashlib.sha256(REFERENCE["reference_functions"].encode()).hexdigest() == 
 scope = dict(vars(c))
 exec(compile(REFERENCE["reference_functions"], "<frozen d70 rally>", "exec"), scope)
 original_assign = scope["assign_rally_poses"]
+ARRIVAL = json.load(gzip.open(Path(__file__).parent / "fixtures" /
+                             "p2c_v76_rally_arrival.json.gz", "rt"))
+arrival_scope = dict(vars(c))
+exec(compile(ARRIVAL['variants']['arrival_first'], '<frozen nominal arrival>', 'exec'), arrival_scope)
+exec(compile(ARRIVAL['wrapper'], '<frozen nominal arrival wrapper>', 'exec'), arrival_scope)
+arrival_assign = arrival_scope['assign_rally_poses']
 
 
 def decode(saved):
@@ -37,10 +44,11 @@ def saved_arguments(event):
 
 @pytest.mark.parametrize("case", REFERENCE["cases"], ids=lambda case: case["name"])
 def test_original_unconstrained_inputs_have_exact_frozen_proposals(case):
-    # Local-obstacle approach constraints intentionally change two old choices;
-    # the original optimizer remains equivalent when that new input is absent.
+    # The original geometric objective remains equivalent without the newer
+    # delivered-map constraints and intentional battery/time preferences.
     arguments = saved_arguments(case["event"])
     arguments['return_maps'] = None
+    arguments['battery_states'] = None
     assert c.assign_rally_poses(**arguments) == original_assign(**arguments)
 
 
@@ -113,13 +121,19 @@ def test_unknown_or_missing_local_map_never_drops_qualified_fused_candidates(mis
         arguments["return_maps"]["tb2"]["data"] = c.immutable_grid_snapshot(
             np.full((100, 100), -1), (100, 100))
     answer = c.assign_rally_poses(**arguments)
-    assert len(answer) == 2 and answer == original_assign(**arguments)
+    assert len(answer) == 2 and answer == arrival_assign(**arguments)
+    for name,pose in answer.items():
+        state = arguments['battery_states'][name]
+        routes = c.qualified_return_candidates(arguments['raw_grid'],arguments['resolution'],
+            arguments['origin'],(pose.x,pose.y),(state['charge_x'],state['charge_y']),.8,
+            arguments['return_maps'].get(name))
+        assert any(route['qualified'] for route in routes)
 
 
 @pytest.mark.parametrize("change", ["map", "origin", "position", "home", "energy", "mode"])
 def test_new_public_proposal_rebuilds_geometry_and_reprices_battery(change):
     arguments = synthetic_arguments()
-    assert c.assign_rally_poses(**arguments) == original_assign(**arguments)
+    assert c.assign_rally_poses(**arguments) == arrival_assign(**arguments)
     if change == "map":
         raw = np.array(arguments["raw_grid"])
         raw[:, 25:35] = 100
@@ -134,5 +148,5 @@ def test_new_public_proposal_rebuilds_geometry_and_reprices_battery(change):
         arguments["battery_states"]["tb2"]["energy"] = 0.
     else:
         arguments["battery_states"]["tb2"]["mode"] = "RETURNING"
-    assert c.assign_rally_poses(**arguments) == original_assign(**arguments)
+    assert c.assign_rally_poses(**arguments) == arrival_assign(**arguments)
 

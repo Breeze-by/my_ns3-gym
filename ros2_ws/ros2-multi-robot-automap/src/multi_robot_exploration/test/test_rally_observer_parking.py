@@ -42,10 +42,13 @@ def test_funded_observer_prefers_a_side_pose_and_missing_routes_keep_fallback(mo
         assert sum(call.kwargs.get('goal_mask') is not None for call in fields.call_args_list)==3
         assert fields.call_count<=15
     else:
-        # The missing body-masked route retains its finite recovery cost.
-        # The new return-clearance objective may choose the alcove even when
-        # those nominal masked costs tie; it must still keep a complete plan.
-        assert assigned['tb1'] in poses[:2]
+        # Missing body-masked routes retain finite recovery preferences,
+        # rather than claiming static infeasibility. Earlier arrival may
+        # change the funded observer's pose; dispatch still rechecks bodies.
+        assert set(assigned.values()) == set(poses)
+        pose = assigned['tb1']
+        routes = c.qualified_return_candidates(grid,.1,(0.,0.),(pose.x,pose.y),positions['tb1'],.8)
+        assert any(route['qualified'] for route in routes)
 
 
 def test_funded_nonobserver_also_leaves_the_charged_peers_entrance_free(monkeypatch):

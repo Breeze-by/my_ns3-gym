@@ -1,0 +1,323 @@
+{
+  "status": "PASS",
+  "scope": "Latest nominal rally arrival preference components only;P2C.1 remains FAIL pending a complete new source-frozen cohort.",
+  "reference_commit": "8ea497ed0bb146da4263ed6d7ca102085dd85ffe",
+  "source_scope": {
+    "status": "PASS",
+    "reference_commit": "8ea497ed0bb146da4263ed6d7ca102085dd85ffe",
+    "central_unchanged": 87,
+    "pure_changed": [
+      "_assign_rally_poses"
+    ],
+    "pure_added": [],
+    "pure_unchanged": 103,
+    "unchanged_sources": {
+      "scripts/run_p3b5_tasks.py": "a3438c304c205747daa992647a3688ca9afb1d43684a3e4d2ecff0d7283d84ea",
+      "src/slam_toolbox/include/slam_toolbox/scan_self_filter.hpp": "4e9b7acde1a50bdbae3cb104e3c95fb2c6e3699368dc511b282fab4e14b0cdab",
+      "scripts/p2c_initial_replenishment.py": "bc70f068eb06b86156b162eeefddf196e027f625870bbfbfc6f7f4944825b32c",
+      "src/slam_toolbox/src/slam_toolbox_multirobot.cpp": "1c9d41b108bce96c75fd108ace704df502b29bc622c60930cc6629b6f1c21d24",
+      "scripts/check_p2c_gate.py": "40687222dadad9bf15361d23b9481d039df12b1632e38079723a65316f69ba6e",
+      "src/multi_robot_exploration/multi_robot_exploration/action_callbacks.py": "7edc9b3923caedf88f236311026f568540779653dafc0ce0aee01dc201880f8b",
+      "src/slam_toolbox/config/mapper_params_online_multi_async.yaml": "3a5339dd39476b196fc6f0e62c225bcb85889ed728ce279f45d759e5319dcde1",
+      "scripts/observe_p3b5.py": "8605217913f55d1761943bf701381c5da2fd924dc44cf5e7fbd9cf6b73f5bbc6",
+      "scripts/p2c_native_graph.py": "e08b675ceba504d8b3562a7b11c2084d6cf9a3bc39ec4954758ac77c31c6a897",
+      "scripts/ros_smoke_test.py": "b2558586c44e808a603b19f9bfc360efa579c37d029b8271e46e37732bd761bf",
+      "src/multi_robot_exploration/multi_robot_exploration/tf_ingress_sampler.py": "819573fffb17817c2135225f4effca4ea9c61422e309a3176f7933fdac2fc16d",
+      "src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py": "bf107d4711abcd4861d092c533d0d00baa8478ad3ce314e2d40451c9858f7e43",
+      "scripts/run_p3c5_audit.py": "170c726dc2ebef58476f3d25550825a5d5932347a5e12034d5eb945ced10a8da",
+      "src/multi_robot_exploration/multi_robot_exploration/battery_manager.py": "f4845fb03667e766c0202a470fa5f2c3c4a49ff39f77a898bf90ec1b60261a6c",
+      "scripts/p2c_outbound_routes.py": "33cd3f2b56b8b863c119e93df5fc4124b17933ac8057372cfa9b1a1e04b1c665"
+    },
+    "manifest_changes": {
+      "p2c_integration_manifest.json": [
+        "candidate_parent_commit",
+        "predeclared_at_utc",
+        "rally_arrival_preference",
+        "retained_failed_developments"
+      ],
+      "p2c_blackout_manifest.json": [
+        "candidate_parent_commit",
+        "predeclared_at_utc",
+        "rally_arrival_preference",
+        "retained_failed_developments"
+      ]
+    },
+    "native_sha256": "f4845fb03667e766c0202a470fa5f2c3c4a49ff39f77a898bf90ec1b60261a6c"
+  },
+  "test_changes": {
+    "test_rally_return_exposure.py": {
+      "removed": [
+        "test_assignment_keeps_the_funded_observer_on_the_home_side_of_an_optional_narrow_passage"
+      ],
+      "changed": [],
+      "added": [
+        "test_funded_observer_prefers_earlier_arrival_with_both_complete_returns_qualified"
+      ]
+    },
+    "test_rally_observer_parking.py": {
+      "removed": [],
+      "changed": [
+        "test_funded_observer_prefers_a_side_pose_and_missing_routes_keep_fallback"
+      ],
+      "added": []
+    },
+    "test_rally_computation.py": {
+      "removed": [],
+      "changed": [
+        "test_original_unconstrained_inputs_have_exact_frozen_proposals",
+        "test_unknown_or_missing_local_map_never_drops_qualified_fused_candidates",
+        "test_new_public_proposal_rebuilds_geometry_and_reprices_battery"
+      ],
+      "added": []
+    }
+  },
+  "functional": {
+    "passed": 2386,
+    "elapsed_sec": 399.02
+  },
+  "targeted": {
+    "passed": 57,
+    "elapsed_sec": 27.2
+  },
+  "new_tests": 21,
+  "three_robot_oracle_cases": 12,
+  "build": {
+    "packages": 4,
+    "elapsed_sec": 6.9
+  },
+  "source_protection": {
+    "protected_files": 190,
+    "historical_authorized_changes": 6,
+    "protocol_cells": 54
+  },
+  "runtime": {
+    "status": "PASS",
+    "scope": "Actual isolated DDS and serial state callbacks with a controlled delay and synthetic map; no mission, latency or Wi-Fi claim",
+    "reference_commit": "dbacbbf336e482871e3a25eff3ce178c962e2b76",
+    "reference_sha256": "eb94e9407586ebfbc666d1340b56eabb010e51db443c13bbbca0df961490163d",
+    "control_sha256": "2e15997535af5b28bec3460a67973c2f088b400f2d5b4e4f7844b40f61517ed1",
+    "cases": [
+      {
+        "status": "PASS",
+        "label": "frozen",
+        "searches": 2,
+        "callbacks": [
+          {
+            "clock": 13.0,
+            "source": 10.0,
+            "phase": "FOUND",
+            "pending": false
+          },
+          {
+            "clock": 16.0,
+            "source": 13.0,
+            "phase": "FOUND",
+            "pending": false
+          }
+        ],
+        "original_state_group_serial": true,
+        "source_stamps_preserved": true,
+        "navigation_goals": 0
+      },
+      {
+        "status": "PASS",
+        "label": "current",
+        "searches": 1,
+        "callbacks": [
+          {
+            "clock": 13.0,
+            "source": 10.0,
+            "phase": "FOUND",
+            "pending": true
+          },
+          {
+            "clock": 13.0,
+            "source": 13.0,
+            "phase": "RALLY",
+            "pending": false
+          }
+        ],
+        "original_state_group_serial": true,
+        "source_stamps_preserved": true,
+        "navigation_goals": 0
+      }
+    ]
+  },
+  "original_failure": "20261011_p2c_v76_failed_development.json",
+  "command_comparison": {
+    "p2c_v77_predeclared1.log": "Original commands/observer/configuration/staging/physics after sole run-ID and ownership-PID normalization;31 current sources.",
+    "p2c_v77_physical_predeclared1.log": "Original commands/observer/configuration/staging/physics after sole run-ID and ownership-PID normalization;31 current sources.",
+    "p2c_v77_physical_predeclared2.log": "Original commands/observer/configuration/staging/physics after sole run-ID and ownership-PID normalization;31 current sources."
+  },
+  "fixture": {
+    "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/fixtures/p2c_v76_rally_arrival.json.gz",
+    "sha256": "2f3ba61e239a451cefe17169f7a33426b555fdcebf2f74e205c7c865ec116078",
+    "comparison": [
+      {
+        "approach_m": {
+          "tb1": 1.8571068088595948,
+          "tb2": 8.716295220273143
+        },
+        "body_route_preferences": {
+          "tb1": {
+            "current": {
+              "available": true,
+              "distance_m": 1.8728794366749115
+            },
+            "selected": {
+              "available": true,
+              "distance_m": 1.8728794366749115
+            }
+          },
+          "tb2": {
+            "current": {
+              "available": true,
+              "distance_m": 8.741556441163018
+            },
+            "selected": {
+              "available": true,
+              "distance_m": 8.8001350857986
+            }
+          }
+        },
+        "complete_wait_energy": {
+          "tb1": 18.296107277004996,
+          "tb2": 29.578054090156282
+        },
+        "latest_nominal_arrival_sec": 48.423862334850796,
+        "nominal_arrival_sec": {
+          "tb1": 10.317260049219971,
+          "tb2": 48.423862334850796
+        },
+        "poses": {
+          "tb1": [
+            -3.7865403687762402,
+            1.4001816421456335,
+            1.6527181634764037
+          ],
+          "tb2": [
+            -4.686540382187285,
+            1.5001816436357496,
+            1.3027684555599843
+          ]
+        },
+        "serial_nominal_sec": 58.74112238407076,
+        "strategy": "frozen"
+      },
+      {
+        "approach_m": {
+          "tb1": 0.12071067991738402,
+          "tb2": 7.774873850007561
+        },
+        "body_route_preferences": {
+          "tb1": {
+            "current": {
+              "available": true,
+              "distance_m": 0.13648330773270034
+            },
+            "selected": {
+              "available": true,
+              "distance_m": 0.13648330773270034
+            }
+          },
+          "tb2": {
+            "current": {
+              "available": true,
+              "distance_m": 7.800135070897438
+            },
+            "selected": {
+              "available": true,
+              "distance_m": 7.800135070897438
+            }
+          }
+        },
+        "complete_wait_energy": {
+          "tb1": 19.24797737907901,
+          "tb2": 25.985544016537
+        },
+        "latest_nominal_arrival_sec": 43.19374361115312,
+        "nominal_arrival_sec": {
+          "tb1": 0.6706148884299112,
+          "tb2": 43.19374361115312
+        },
+        "poses": {
+          "tb1": [
+            -3.9865403717564725,
+            3.0001816659874914,
+            1.584257587495421
+          ],
+          "tb2": [
+            -3.7865403687762402,
+            1.4001816421456335,
+            1.6527181634764037
+          ]
+        },
+        "serial_nominal_sec": 43.86435849958303,
+        "strategy": "serial_first"
+      },
+      {
+        "approach_m": {
+          "tb1": 0.12071067991738402,
+          "tb2": 7.774873850007561
+        },
+        "body_route_preferences": {
+          "tb1": {
+            "current": {
+              "available": true,
+              "distance_m": 0.13648330773270034
+            },
+            "selected": {
+              "available": true,
+              "distance_m": 0.13648330773270034
+            }
+          },
+          "tb2": {
+            "current": {
+              "available": true,
+              "distance_m": 7.800135070897438
+            },
+            "selected": {
+              "available": true,
+              "distance_m": 7.800135070897438
+            }
+          }
+        },
+        "complete_wait_energy": {
+          "tb1": 19.24797737907901,
+          "tb2": 25.985544016537
+        },
+        "latest_nominal_arrival_sec": 43.19374361115312,
+        "nominal_arrival_sec": {
+          "tb1": 0.6706148884299112,
+          "tb2": 43.19374361115312
+        },
+        "poses": {
+          "tb1": [
+            -3.9865403717564725,
+            3.0001816659874914,
+            1.584257587495421
+          ],
+          "tb2": [
+            -3.7865403687762402,
+            1.4001816421456335,
+            1.6527181634764037
+          ]
+        },
+        "serial_nominal_sec": 43.86435849958303,
+        "strategy": "arrival_first"
+      }
+    ],
+    "limits": "Conditional original delivered found-target snapshot; immutable maps and stopped clock. Nominal speed preference, not task replay, causal benefit, deadline or physical-motion proof."
+  },
+  "retained_failures": [
+    "Probe1 AttributeError on a nonexistent maximum-distance constant before completing frozen hard checks;retained source/log. Probe2 fixed only that diagnostic assertion to original native3m;three complete comparisons pass.",
+    "Unit1:17FAIL/40PASS40.42s;21 new tests all pass. Old optional-return exposure and missing-body-route pose preferences, plus prior battery-score equivalence assertions conflict with intentional time preference. Original log/literal sources retained. Distance-only frozen equivalence remains, battery/cache tests use bound fixed prototype, qualification assertions added. No dispatch/TTL/full-budget/body guard changed."
+  ],
+  "provenance": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261011_p2c_rally_arrival_components_provenance.json.gz",
+    "sha256": "20e112735e1298de2c6b1336533ee93e765d99520b727dbabab690f534a8c94a",
+    "bytes": 552233
+  },
+  "unchanged": "87 central methods,103 other pure functions,original two-level candidate pools/stop criteria,native/SLAM/observer/commands,full approach/return/wait budgets,body/clearances/2-5 TTL/300s/5s/cases/physical stimuli. Reader bytes unchanged.",
+  "pending": "Clean-pushed v77 serial4 development\u219215 nonheldout formal+2 physical\u2192first917\u2192full17 strict gate. No task-validation overlap;no P4/ns3/WiFi/RL."
+}

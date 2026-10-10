@@ -1839,8 +1839,9 @@ def _assign_rally_poses(
     """Assign separated visible poses, accounting for serial charge waits.
 
     With delivered batteries, preserve an ACTIVE observer when feasible, then
-    minimize predicted charges, soft narrow-return exposure and serial time, then compare
-    its remaining budget headroom before the chosen path objective. Extra
+    minimize predicted charges, latest nominal arrival and total nominal time,
+    then soft narrow-return exposure and remaining observer budget headroom
+    before the chosen path objective. Extra
     observer surplus must not force a funded peer to charge or take a detour.
     These estimates never authorize a navigation or return.
     """
@@ -2033,7 +2034,7 @@ def _assign_rally_poses(
         battery_states is not None and observer_robot in names and name != observer_robot,
         len(options[name])))
     best = {}
-    best_score = (float("inf"),) * (8 if battery_states is not None else 3)
+    best_score = (float("inf"),) * (9 if battery_states is not None else 3)
     selected_indices = {}
     minimum_energy_options = {
         name: tuple(min(values[column] for values in choices.values()) for column in range(3))
@@ -2112,21 +2113,24 @@ def _assign_rally_poses(
                                      - requirements[observer_robot])
                                  if modes.get(observer_robot) == "ACTIVE" else 0.)
             complete = len(assignments) == len(search_order)
-            time_bound = sum(charge_times[name] + values[2] if name in needed
+            travel_bounds = [charge_times[name] + values[2] if name in needed
                              else values[1] if complete
                              else min(values[1], charge_times[name] + values[2])
-                             for name, values in estimates.items())
+                             for name, values in estimates.items()]
+            arrival_bound = max(travel_bounds, default=0.)
+            time_bound = sum(travel_bounds)
             # Positive soft costs preserve the optimistic partial bound and
             # cannot override observer protection, charge count or feasibility.
             exposure_bound = sum(return_exposures[name][selected_indices[name]]
                 if name in selected_indices else minimum_return_exposures[name] for name in names)
             observer_charge = int(observer_robot in needed and modes.get(observer_robot) == "ACTIVE")
-            score = (observer_charge, len(needed), exposure_bound, time_bound, -observer_headroom, *score)
+            score = (observer_charge, len(needed), arrival_bound, time_bound, exposure_bound, -observer_headroom, *score)
         if score >= best_score:
             return
         if len(assignments) == len(search_order):
             if battery_states is not None:
-                score = (*score[:3], score[3] + parked_peer_delay(needed), *score[4:])
+                delay = parked_peer_delay(needed)
+                score = (*score[:2], score[2] + delay, score[3] + delay, *score[4:])
                 if score >= best_score:
                     return
             best = assignments.copy()

@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-10T21:19:35.163172+00:00",
+  "predeclared_at_utc": "2026-10-10T21:52:42.821496+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "8668a42012e77f6e7bc8e418bcd6680b642fe68e",
+  "candidate_parent_commit": "8ea497ed0bb146da4263ed6d7ca102085dd85ffe",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -258,7 +258,8 @@
     "20261011_p2c_v72_failed_development.json",
     "20261011_p2c_v73_failed_development.json",
     "20261011_p2c_v74_failed_development.json",
-    "20261011_p2c_v75_failed_development.json"
+    "20261011_p2c_v75_failed_development.json",
+    "20261011_p2c_v76_failed_development.json"
   ],
   "coordinator_live_clock": {
     "executor": "Two workers; only the existing /clock subscription moves to an independent mutually exclusive group. Original state/action callbacks remain serialized.",
@@ -773,5 +774,13 @@
     "component_report": "20261011_p2c_alternating_search_components.json",
     "alternate_on_real_work": true,
     "work_turns": "Existing camera-first priority is used only after an odd integer count of real ordinary SUCCESS. On even counts the original initial-search/mapping/fallback scheduler is restored; its legacy visual flags remain. Cancellation/yield do not count, and all current go-return/body/source/TTL hard admission remains."
+  },
+  "rally_arrival_preference": {
+    "strategy": "observer_charge_count_then_latest_and_total_nominal_time",
+    "component_report": "20261011_p2c_rally_arrival_components.json",
+    "scope": "Soft planning preference only; full approach/return/wait energy, body geometry and independent dispatch TTL remain authoritative.",
+    "latest_arrival": "max of original per-robot nominal active approach or serial return/charge/post-charge estimates; additive nonnegative parked-peer delay at complete leaves",
+    "total_time": "sum of the same estimates plus the same parked-peer delay",
+    "retained_optional_clearance_preference": true
   }
 }
