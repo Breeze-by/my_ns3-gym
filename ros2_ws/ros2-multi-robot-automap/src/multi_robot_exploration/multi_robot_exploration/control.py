@@ -2261,6 +2261,7 @@ def rally_yield_pose(
     visible_only=False,
     target_view_distance=None,
     local_map=None,
+    min_displacement_m=0.,
 ):
     """Choose a reachable refuge outside parked poses and reserved corridors."""
     if local_map is not None:
@@ -2295,7 +2296,7 @@ def rally_yield_pose(
             continue
         x, y = grid_to_world(row, column, resolution, origin[0], origin[1])
         target_distance = math.dist((x, y), target)
-        if target_distance < 0.7:
+        if target_distance < 0.7 or math.dist(robot_position, (x, y)) < min_displacement_m:
             continue
         if target_view_distance is not None and target_distance > target_view_distance:
             continue
@@ -3933,6 +3934,7 @@ class HeadquartersControl(Node):
                 blocked_positions=blocked, reserved_routes=tuple(protected.values()),
                 route_separation_m=RALLY_ROUTE_SEPARATION_M, visible_only=True,
                 local_map=HeadquartersControl.delivered_return_maps(self).get(name),
+                min_displacement_m=.5,
             )
             if refuge is not None:
                 self.pending_exploration_return_yield = dict(

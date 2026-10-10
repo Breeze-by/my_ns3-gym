@@ -8945,3 +8945,33 @@ ROS_DOMAIN_ID=217 /usr/bin/python3 scripts/check_p2c_rally_connection_runtime.py
 ```
 
 最终control SHA62c4169d79e4fbf6681ee3b54272457ece893b1d45f781a95528ef5d0afaaa79，仅3中央/2纯诊断，80其他中央/96纯/globals和七native源类别不变。实际radio airtime/J与容量仍未测，无P4/ns-3/Wi-Fi/RL。
+
+
+## 2026-10-10 P2C.1 v54 原失败与返充避让位移一致性
+
+2026-10-10 P2C.1 v54首原forced FAIL：1a3018a EXPLORE timeout300.2/未发现/0charge/min11.430367/零接触耗尽失效，1原导航因前沿已观测取消；owner-observer0，18原子审不代任务。只有1预算过期/87输入等待，先前全归预算的诊断撤回。固定原完整输入旧refuge实际0.483412562m被原>=.5准入拒，新返充选点用同原实际下限，下一0.507799521m完整身体/1.8净空/去返预算合格；其他RALLY默认原样。1845功能186.95s/42定向/四包5.48s/190保护6授权54协议/两声明/原3图CDR与2派发图绑定/实际DDS旧0→新1让行Future闭合及过期拒绝/原充电准备兼容PASS；仅1中央1纯，82中央97纯/globals/native/300s/5s/TTL/次数/物理保持。条件机制非原活意图回放或因果任务，新v55 clean pushed4→17+2待实测，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v54_failed_development与20261010_p2c_refuge_displacement_components。
+
+原生/观察全部关闭后才修改。原1a首格只有1租约过期，87输入等待；原state补查优先分支未触发，不称其任务回归。完整原输入复现旧>=.5 grid距离但实际.4834的准备/准入不一致；活pending未直接记录，固定旧epoch+synthetic sender非任务反事实。新只给返充搜索附原实际>=.5条件，不改变原1.8m净空、全身体路/返路/预算/TTL、其他RALLY默认和原次数。九新反例覆盖原图、平移及原拒绝保护。第一次DDS组件错误提前交付新源13，旧源过期断言无效；修为只clock13后过期0goal，再交付13才动作，初失败源码/log原样保留。
+
+原始原审第一次None FOV读者错误保留，按原声明3m/90度参数18原审PASS；不替代native任务。各原始文件SHA、summary/gate/私有/安全账本与conditional诊断归档。最终控制SHAba60a45619d30ae2f318e5319afd22c55afaa805db3437f8e4950f2282dde192。两实际DDSprobe owned/Future闭合，synthetic endpoint非物理Nav2；位移探针自身无充电请求，既有兼容探针实际让行后charge1。
+
+命令在canonical ROS目录，用rtk proxy bash -c source Humble+install，PYTHONNOUSERSITE1/scripts PYTHONPATH/taskset0-79；DDS另FastDDS UDPv4清profiles/discovery server。新v55首forced218/20318严格PASS后继续其余3开发，同源4全PASS后17正式+2物理，非留出及物理全PASS后才首次917。
+
+```bash
+/usr/bin/python3 scripts/check_p2c_gate.py --run-root log/p2c/20261010_p2c_v54 --cases dev_forced2 --development --output log/p2c_v54_forced_gate.json
+/usr/bin/python3 /tmp/audit_p2c_v54_components2.py
+/usr/bin/python3 /tmp/p2c_v54_planning_profile.py
+/usr/bin/python3 /tmp/p2c_v54_planning_profile2.py
+/usr/bin/python3 /tmp/p2c_v54_refuge_diagnosis.py
+/usr/bin/python3 /tmp/p2c_refuge_displacement_experiment.py
+/usr/bin/python3 /tmp/p2c_refuge_displacement_comparison.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_refuge_displacement.py src/multi_robot_exploration/test/test_exploration_return_preparation.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test scripts --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+colcon build --symlink-install --packages-select multi_robot_exploration multi_robot_interfaces merge_map multi_robot
+/usr/bin/python3 scripts/check_p2c_source.py --output log/p2c_refuge_displacement_source1.json
+/usr/bin/python3 /tmp/p2c_refuge_displacement_scope.py
+ROS_DOMAIN_ID=217 /usr/bin/python3 scripts/check_p2c_return_preparation_runtime.py --displacement-fixture src/multi_robot_exploration/test/fixtures/p2c_v54_refuge_input.json.gz --output log/p2c_refuge_displacement_runtime2.json
+ROS_DOMAIN_ID=217 /usr/bin/python3 scripts/check_p2c_return_preparation_runtime.py --output log/p2c_refuge_displacement_runtime_compat1.json
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v55 --domain 218 --gazebo-port 20318 --validate-only
+/usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v55_physical --domain 219 --gazebo-port 20319 --validate-only
+```
