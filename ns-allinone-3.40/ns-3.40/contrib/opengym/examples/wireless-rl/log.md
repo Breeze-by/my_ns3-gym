@@ -9063,3 +9063,47 @@ ROS_DOMAIN_ID=217 /usr/bin/python3 scripts/check_p2c_charge_reservations_runtime
 /usr/bin/python3 /tmp/p2c_geometry_handoff_report.py
 /usr/bin/python3 /tmp/p2c_geometry_handoff_docs.py
 ```
+
+
+## 2026-10-10 P2C.1 v57 四原失败与同时返航让行
+
+2026-10-10 P2C.1 v57四原整体FAIL：abd9822 forced/rooms原生COMPLETE266.7/140.0均native5s51样本；lab FOUND300.4timeout且tb3第二return未闭合，corr RALLY300.2timeout/三机各charge1/22清道取消1成功。四零接触耗尽FAILED，owner-observer0；70子审PASS/2原FAIL保留，不能代整体。lab原同header两CDR不同内容、第二完整匹配且两receipt早于派发；原读者FAIL保留，独立修正31决策/895点/59header PASS非任务修复。新清道仅保存已合格完整返路的当前RETURNING计数或ACTIVEowner下一计数，Future/心跳豁免同周期；新周期/未覆盖/helper返航/普通探索仍取消。完整身体/.35出路/1.8端点/单调离开/全去返能源/最后TTL保持。1876功能202.93s/四包14.5s/190保护6授权54协议/两声明/7真实DDS+2单返航兼容PASS；23原清道184图见证绑定67原header。80中央100纯/globals/native/调度gain/300s/5s/次数/物理保持；初夹具/full属性/JSON失败原件保留。新v58 clean pushed4→17+2待任务，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v57_failed_development与20261010_p2c_multi_return_yield_components。
+
+四原完整结果、严格gate和70/2子审全部保留；lab native return2未闭合是真实独立门禁失败。重复header的两原CDR receipt均早于派发，旧读者误拒绝第一个不同内容版本，不能当控制器改地图证据；严格逐见证匹配修正独立复核，原任务与原读者结果不覆盖。原完整outbound路径/本机图、shape/res/origin/有限isolated own-cell规则保持，全部见证必须匹配某原同header内容。计数是header键，不是版本级网关因果；TTL与gateway因果继续由原独立审计核验。
+
+首corr原两RETURNING计数2，已有两完整保护路但旧只豁免名义owner。新仅豁免本次准入已经完整核验的各native周期；当前RETURNING用当前计数，原ACTIVEowner用下一计数，CHARGING不授权未来周期。没有续lease或扩充几何/能量许可；新周期、未覆盖、自身return及普通探索原取消保持。7实际DDS与2单返航兼容全部owned关闭，原几何加合成刷新时戳和ActionServer不是实际Nav2运动/原任务回放/任务收益。23原清道184本机/同伴/融合见证绑定67原header，读者独立重建周期。
+
+首定向命令错用不存在文件exit4；两轮新增fixture错传额外Assignment导致5失败，修正实际3参签名后11 PASS；inline替换SyntaxError未写源。首full1875 PASS/1普通夹具缺battery_states失败，恢复普通preparationNone短路后1876 PASS。原CDR诊断首次NumPy int64 JSON失败仅改坐标序列化后成功；所有初日志及字面源都归档，无中间任务调用。
+
+生产control SHA e284836b14d0520979ca8c0b44dc30e03f137066b101f4ae84f18fbc6d3f4956。四包构建14.5s（与全量功能验证同时运行，非性能因果实验）、190保护6授权54协议、80其他中央100原纯/globals/native七类、全部任务case与物理刺激及两新声明PASS。300s/5s/2-5-60s、.45端点/.35路/1.8预约、原5m腿/30s超时/次数全部保持。新v58完整4→17+2仍待同clean pushed，917未暴露；14用户260929_report原hash全保持且不stage。
+
+下列命令均canonical ROS目录、rtk proxy；ROS用Humble+install/PYTHONNOUSERSITE1/scripts PYTHONPATH/taskset0-79，DDS FastDDS UDPv4，清profiles/discovery server；任务域218/219/220及20318/20319/20320，probe216/217，不访问其他域222/11345。原输出各名字保存，没有覆盖原失败。
+
+```bash
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v57 --domain 218 --gazebo-port 20318
+/usr/bin/python3 scripts/check_p2c_gate.py --run-root log/p2c/20261010_p2c_v57 --cases dev_forced2 --development --output log/p2c_v57_forced_gate.json
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_lab101 --run-id 20261010_p2c_v57 --domain 218 --gazebo-port 20318
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_rooms202 --run-id 20261010_p2c_v57 --domain 219 --gazebo-port 20319
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_corridors303 --run-id 20261010_p2c_v57 --domain 220 --gazebo-port 20320
+/usr/bin/python3 scripts/check_p2c_gate.py --run-root log/p2c/20261010_p2c_v57 --cases dev_forced2 dev_lab101 dev_rooms202 dev_corridors303 --development --workers 3 --output log/p2c_v57_development_gate.json
+/usr/bin/python3 /tmp/audit_p2c_v57_components.py dev_forced2
+/usr/bin/python3 /tmp/audit_p2c_v57_components.py dev_lab101
+/usr/bin/python3 /tmp/audit_p2c_v57_components.py dev_rooms202
+/usr/bin/python3 /tmp/audit_p2c_v57_components.py dev_corridors303
+/usr/bin/python3 /tmp/p2c_v57_outbound_binding_diagnostic.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_multi_return_yield.py
+/usr/bin/python3 -m pytest -q scripts/test_p2c_outbound_routes.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_exploration_return_preparation.py src/multi_robot_exploration/test/test_serial_action_callbacks.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test scripts --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+colcon build --packages-select multi_robot_exploration multi_robot_interfaces merge_map multi_robot
+ROS_DOMAIN_ID=216 /usr/bin/python3 scripts/check_p2c_multi_return_yield_runtime.py --output log/p2c_multi_return_yield_runtime2.json
+ROS_DOMAIN_ID=217 /usr/bin/python3 scripts/check_p2c_return_preparation_runtime.py --output log/p2c_multi_return_yield_single_compat1.json
+/usr/bin/python3 scripts/check_p2c_source.py --output log/p2c_multi_return_yield_source2.json
+/usr/bin/python3 /tmp/p2c_multi_return_yield_scope.py
+/usr/bin/python3 /tmp/p2c_multi_return_yield_binding.py
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v58 --domain 218 --gazebo-port 20318 --validate-only
+/usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v58_physical --domain 219 --gazebo-port 20319 --validate-only
+/usr/bin/python3 /tmp/p2c_v57_failed_report.py
+/usr/bin/python3 /tmp/p2c_multi_return_yield_report.py
+/usr/bin/python3 /tmp/p2c_multi_return_yield_docs.py
+```

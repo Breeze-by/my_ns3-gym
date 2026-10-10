@@ -85,10 +85,11 @@ def bind_original_maps(events, capture):
     from nav_msgs.msg import OccupancyGrid
 
     wanted = {}
-    for event in events:
+    for index, event in enumerate(events):
         for key, topic in (('local_map', '/'+event['robot']+'/map'), ('planning_map', '/merge_map')):
             saved = event['outbound_map_route'][key]
-            wanted.setdefault((topic, round(saved['source_time']*1e9)), []).append((event, key))
+            wanted.setdefault((topic, round(saved['source_time']*1e9)), []).append((index, event, key))
+    required = {(index, label) for rows in wanted.values() for index, _, label in rows}
     found = set()
     with gzip.open(capture, 'rt') as stream:
         for line in stream:
@@ -100,25 +101,40 @@ def bind_original_maps(events, capture):
             if key not in wanted:
                 continue
             original = np.asarray(msg.data).reshape(msg.info.height, msg.info.width)
-            for event, label in wanted[key]:
+            # A mapper can publish different contents with the same header.
+            # Match each witness independently; an earlier nonmatching version
+            # must neither reject nor stand in for a later exact raw sample.
+            for index, event, label in wanted[key]:
+                if (index, label) in found:
+                    continue
                 saved = event['outbound_map_route'][label]
                 grid = decode(saved)
-                assert tuple(original.shape) == tuple(saved['shape']) and msg.info.resolution == saved['resolution']
-                assert tuple(saved['origin']) == (msg.info.origin.position.x, msg.info.origin.position.y)
+                if (tuple(original.shape) != tuple(saved['shape']) or msg.info.resolution != saved['resolution']
+                        or tuple(saved['origin']) != (msg.info.origin.position.x, msg.info.origin.position.y)):
+                    continue
                 if label == 'local_map':
-                    assert np.array_equal(original, grid), 'outbound local witness differs from raw map'
+                    if not np.array_equal(original, grid):
+                        continue
                 else:
                     changed = set(map(tuple, np.argwhere(original != grid)))
                     declared = set(map(tuple, event.get('planning_map_self_return_cells', {}).values()))
-                    assert changed == declared, 'unrecorded planning-map mutation'
+                    if changed != declared:
+                        continue
+                    valid = True
                     for r, col in changed:
-                        assert original[r, col] >= 50 and grid[r, col] == 0 and saved['resolution']*math.sqrt(2) <= .1
-                        assert 1 <= r < grid.shape[0]-1 and 1 <= col < grid.shape[1]-1
+                        if not (original[r, col] >= 50 and grid[r, col] == 0 and saved['resolution']*math.sqrt(2) <= .1
+                                and 1 <= r < grid.shape[0]-1 and 1 <= col < grid.shape[1]-1):
+                            valid = False
+                            break
                         window = original[r-1:r+2, col-1:col+2].copy();window[1,1] = 0
-                        assert np.all(window == 0), 'changed non-isolated source obstacle'
-            found.add(key)
-    assert found == wanted.keys(), ('missing original outbound source map', wanted.keys()-found)
-    return len(found)
+                        if not np.all(window == 0):
+                            valid = False
+                            break
+                    if not valid:
+                        continue
+                found.add((index, label))
+    assert found == required, ('missing matching original outbound source map', required-found)
+    return len(wanted)
 
 
 def outbound_route_audit(path, required=False, capture=None):

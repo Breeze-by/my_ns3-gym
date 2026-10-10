@@ -59,3 +59,41 @@ def test_dispatch_witness_cannot_relabel_an_unsafe_or_expired_route(change):
         event['outbound_map_route']['local_map']=control.grid_audit_evidence(
             grid,msg.info.resolution,(0.,0.),'ap_delivered_robot_map',10.,10)
     with pytest.raises(AssertionError):audit_outbound(event)
+
+
+@pytest.mark.parametrize('case', ['matching_second', 'matching_first', 'each_version',
+    'one_unmatched', 'wrong_geometry_only', 'invalid_first_clear', 'invalid_clear_only'])
+def test_duplicate_headers_bind_every_witness_to_qualifying_raw_contents(tmp_path, case):
+    event, rows, msg = event_and_cdr()
+    changed = copy.deepcopy(msg);changed.data[300] = 100
+    row = lambda m:dict(topic='/merge_map', type='nav_msgs/msg/OccupancyGrid',
+                        cdr=base64.b64encode(serialize_message(m)).decode())
+    samples = [rows[0], row(changed), rows[1]]
+    events = [event]
+    if case == 'matching_first':samples = [rows[0], rows[1], row(changed)]
+    if case in ('each_version', 'one_unmatched'):
+        other = copy.deepcopy(event)
+        grid = np.zeros((40,40), dtype=np.int16);grid.ravel()[300 if case == 'each_version' else 200] = 100
+        other['outbound_map_route']['planning_map'] = control.grid_audit_evidence(
+            grid, msg.info.resolution, (0.,0.), 'ap_delivered_planning_map', 10., 10)
+        events.append(other)
+    if case == 'wrong_geometry_only':
+        changed.info.resolution = .2;samples = [rows[0], row(changed)]
+    if case in ('invalid_first_clear', 'invalid_clear_only'):
+        msg.info.resolution = changed.info.resolution = .05
+        msg = deserialize_message(serialize_message(msg), OccupancyGrid)
+        for label, tag in [('local_map','ap_delivered_robot_map'),('planning_map','ap_delivered_planning_map')]:
+            event['outbound_map_route'][label] = control.grid_audit_evidence(
+                np.zeros((40,40), dtype=np.int16), msg.info.resolution, (0.,0.), tag, 10., 10)
+        event['planning_map_self_return_cells'] = {'tb1':[7,20]}
+        invalid = copy.deepcopy(changed);invalid.data[300] = -1
+        local = dict(topic='/tb1/map', type='nav_msgs/msg/OccupancyGrid',
+                     cdr=base64.b64encode(serialize_message(msg)).decode())
+        samples = [local, row(invalid)] + ([] if case == 'invalid_clear_only' else [row(changed)])
+    capture = tmp_path/'same_headers.jsonl.gz'
+    with gzip.open(capture, 'wt') as stream:
+        for sample in samples:stream.write(json.dumps(sample)+'\n')
+    if case in ('one_unmatched', 'wrong_geometry_only', 'invalid_clear_only'):
+        with pytest.raises(AssertionError):bind_original_maps(events, capture)
+    else:
+        assert bind_original_maps(events, capture) == 2

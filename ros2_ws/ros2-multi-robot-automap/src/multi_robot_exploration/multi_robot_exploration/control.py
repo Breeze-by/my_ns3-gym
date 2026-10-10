@@ -2809,6 +2809,17 @@ def reserve_rally_prefix(plan, reservations, min_travel=0.75):
     return plan
 
 
+def exploration_yield_covers_return(preparation, returning, state):
+    """Exempt only return cycles whose full routes qualified this escape."""
+    if preparation is None:
+        return False
+    cycles = preparation.get('protected_return_cycles')
+    if cycles is None:
+        return preparation.get('returning') == returning
+    return (returning in cycles and returning in preparation['protected_routes']
+            and state.get('return_count', 0) == cycles[returning])
+
+
 def exploration_prefix_can_move(plan, position, reservations):
     """Necessary admission bound, including every possible later reservation.
 
@@ -4036,6 +4047,9 @@ class HeadquartersControl(Node):
             *point, distance, 0., *point, target.yaw)
         self.exploration_return_yields[name] = dict(
             returning=returning, protected_routes=protected,
+            protected_return_cycles={other: self.battery_states[other].get('return_count', 0)
+                + int(self.battery_modes[other] == 'ACTIVE') for other in protected
+                if other == returning or self.battery_modes[other] == 'RETURNING'},
             clearance_m=RALLY_ROUTE_SEPARATION_M, route=route,
             required_energy=required, required_energy_evaluated_at_sec=self.exploration_budget_times[name])
         self.pending_exploration_return_yield = None
@@ -4374,8 +4388,9 @@ class HeadquartersControl(Node):
             # reservation. Drain other exploration actions before admitting
             # more traffic; a pending response is canceled on acceptance too.
             for other_name, other_handle in self.goal_handles.items():
-                yield_owner = getattr(self, 'exploration_return_yields', {}).get(other_name, {}).get('returning')
-                if other_name == robot_name or other_handle is None or yield_owner == robot_name:
+                preparation = getattr(self, 'exploration_return_yields', {}).get(other_name)
+                if (other_name == robot_name or other_handle is None
+                        or exploration_yield_covers_return(preparation, robot_name, event)):
                     continue
                 if not self.cancel_requested[other_name]:
                     self.battery_preempted[other_name] = True
@@ -7767,9 +7782,10 @@ class HeadquartersControl(Node):
         self.goal_last_position[robot_name] = self.robot_positions[robot_name]
         self.goal_known_count[robot_name] = self.map_known_count
         self.cancel_requested[robot_name] = False
-        yield_owner = getattr(self, 'exploration_return_yields', {}).get(robot_name, {}).get('returning')
+        preparation = getattr(self, 'exploration_return_yields', {}).get(robot_name)
         if self.battery_modes[robot_name] != "ACTIVE" or any(
-            mode == "RETURNING" and name != yield_owner for name, mode in self.battery_modes.items()
+            mode == "RETURNING" and (preparation is None or not exploration_yield_covers_return(
+                preparation, name, self.battery_states[name])) for name, mode in self.battery_modes.items()
         ) or (getattr(self, "target_search_active", False) and self.fresh_target()):
             self.battery_preempted[robot_name] = True
             self.cancel_requested[robot_name] = True

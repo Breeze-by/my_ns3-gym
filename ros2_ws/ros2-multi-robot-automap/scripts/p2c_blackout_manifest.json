@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-10T04:43:10.751366+00:00",
+  "predeclared_at_utc": "2026-10-10T05:33:28.832162+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "0bfaf4211b971dc64572d7790f831bc26531c7ad",
+  "candidate_parent_commit": "abd9822c486b487af0999b6f20e58f150fb29cb0",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -518,5 +518,13 @@
     "refuge_query": "Batch the original scalar KDTree route-separation queries, preserving predicate, cell order and all original geometry.",
     "policy_limits": "Expired-batch recovery ranks a small regenerated subset, not the complete current global catalogue. No global optimality, worst-case runtime, actual Nav2 route tracking or continuous execution connectivity claim.",
     "evidence": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_exploration_handoff_components.json"
-  }
+  },
+  "concurrent_exploration_return_yield": {
+    "evidence": "report/20261010_p2c_multi_return_yield_components.json",
+    "qualification": "Same original complete protected return routes, endpoint1.8m clearance, monotonic escape, full outbound and current plus endpoint contact-return budgets and final2/5s source guards",
+    "cycle_binding": "At escape admission, bind every already RETURNING protected robot to its delivered return_count; prospective ACTIVE owner to return_count+1. CHARGING peers excluded from cycle authority.",
+    "callbacks": "Accepted escape and subsequent returning battery updates exempt only these route-qualified cycles; own inactive helper, uncovered returner, new cycle and ordinary exploration retain cancellation",
+    "limits": "Dispatch-time qualification, not a guarantee of continuous connectivity or that Nav2 follows the exact route. No scheduling, geometry, budget, source TTL, timeout, retries or physics changes."
+  },
+  "outbound_duplicate_header_binding": "Read-only: each witness independently requires some captured raw same-header map with exactly matching geometry and cells, except the unchanged bounded isolated own-cell correction. Nonmatching versions cannot stand in for any unmatched witness; counts remain unique topic/header keys. Gateway causality and source lease checks remain separate."
 }

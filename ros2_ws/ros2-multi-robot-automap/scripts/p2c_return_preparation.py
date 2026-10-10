@@ -70,6 +70,11 @@ def audit_preparation(event):
         assert 0 <= now-saved['evaluated_at_sec'] <= 2.
         return 'charge'
     assert event['kind'] == 'exploration_return_yield'
+    if 'protected_return_cycles' in saved:
+        expected_cycles = {other: states[other].get('return_count', 0) + int(modes[other] == 'ACTIVE')
+            for other in rebuilt if other == returning or modes[other] == 'RETURNING'}
+        assert saved['protected_return_cycles'] == expected_cycles
+        assert all(isinstance(count, int) and count >= 0 for count in expected_cycles.values())
     name, point = event['robot'], event['requested_position']
     assert name != returning and modes[name] == 'ACTIVE'
     assert event['task_phase'] in ('EXPLORE', 'FOUND_UNCONFIRMED')
