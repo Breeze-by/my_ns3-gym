@@ -1956,14 +1956,16 @@ def test_viewpoint_gain_uses_obstacle_visibility():
             assert point.information_gain == control.visible_unknown_gain(grid, (point.row, point.column), 20)
 
 
-@pytest.mark.parametrize("permanent_reassignment, refuge_available, preflight_blocked, guard, refuge_owner", [
-    (True, True, False, False, None), (False, True, False, False, None),
-    (True, False, False, False, None), (True, True, True, False, None), (True, True, False, True, None),
-    (False, True, False, False, "tb1"), (True, False, False, False, "tb1"),
-    (False, True, False, True, "tb1"), (False, True, False, False, "other"),
+@pytest.mark.parametrize("permanent_reassignment, refuge_available, preflight_blocked, guard, refuge_owner, waiter_refuge", [
+    (True, True, False, False, None, False), (False, True, False, False, None, False),
+    (True, False, False, False, None, False), (True, True, True, False, None, False), (True, True, False, True, None, False),
+    (False, True, False, False, "tb1", False), (True, False, False, False, "tb1", False),
+    (False, True, False, True, "tb1", False), (False, True, False, False, "other", False),
+    (True, False, False, False, None, True), (False, True, False, False, None, True),
+    (True, True, False, False, None, True), (True, True, True, False, None, True),
 ])
 def test_idle_blocker_recovery_dispatches_motion_before_returning(
-    monkeypatch, permanent_reassignment, refuge_available, preflight_blocked, guard, refuge_owner
+    monkeypatch, permanent_reassignment, refuge_available, preflight_blocked, guard, refuge_owner, waiter_refuge
 ):
     from types import SimpleNamespace
 
@@ -2024,12 +2026,24 @@ def test_idle_blocker_recovery_dispatches_motion_before_returning(
         get_logger=lambda: SimpleNamespace(warn=lambda *args: None),
         send_rally_goal=lambda name, *args: requests.append(name),
     )
+    if waiter_refuge:
+        node.return_yield_targets['tb1'] = 'tb2'
+        node.rally_yield_targets.add('tb1')
+        node.rally_probe_targets.add('tb1')
     if refuge_owner:
         node.rally_yield_targets.add("tb2")
         node.return_yield_targets["tb2"] = refuge_owner
         node.rally_arrived["tb2"] = True
         monkeypatch.setattr(control, "rally_survey_pose", lambda *args, **kwargs: None)
     control.HeadquartersControl.update_mission(node)
+    if waiter_refuge:
+        if permanent_reassignment and not refuge_available and not preflight_blocked:
+            assert node.rally_final_targets['tb1'] == control.RallyPose(6., 2.5, 0.)
+            assert 'tb1' not in node.return_yield_targets
+            assert 'tb1' not in node.rally_yield_targets and 'tb1' not in node.rally_probe_targets
+        else:
+            assert node.return_yield_targets['tb1'] == 'tb2'
+            assert 'tb1' in node.rally_yield_targets and 'tb1' in node.rally_probe_targets
     if refuge_owner == "other":
         assert not requests
         assert node.return_yield_targets == {"tb2": "other"}

@@ -2508,6 +2508,27 @@ def rally_approach_inversions(order, positions, routes):
     )
 
 
+def serial_rally_routes(raw_grid, resolution, origin, targets, positions, order, return_maps=None):
+    """Reprove a preferred complete serial approach at the current geometry."""
+    if (len(order) != len(targets) or set(order) != set(targets)
+            or any(positions.get(name) is None for name in order)):
+        return None
+    occupied = dict(positions)
+    routes = {}
+    for name in order:
+        pose, route = plan_rally_leg(
+            targets[name], raw_grid, resolution, origin, positions[name],
+            max_distance_m=float('inf'),
+            blocked_positions=[point for other, point in occupied.items()
+                               if other != name and point is not None],
+            local_map=(return_maps or {}).get(name))
+        if pose is None:
+            return None
+        routes[name] = (positions[name], *route)
+        occupied[name] = (targets[name].x, targets[name].y)
+    return routes
+
+
 def map_safe_rally_dispatch_order(
     raw_grid,
     resolution,
@@ -3683,12 +3704,20 @@ class HeadquartersControl(Node):
         positions = {name: self.robot_positions[name] for name in assignment}
         return_maps = ({name:geometry for name,geometry in HeadquartersControl.delivered_return_maps(self).items()
                        if name in assignment} if self.use_map_safe_rally_order else {})
-        order = (map_safe_rally_dispatch_order(self.map_data, self.resolution, self.origin,
-            assignment, positions, self.target, self.detecting_robot,
-            return_maps=return_maps,
-        )
+        preferred_order = proposal.get('dispatch_order_preference')
+        serial_routes = (serial_rally_routes(self.map_data, self.resolution, self.origin,
+            assignment, positions, preferred_order, return_maps)
+            if self.use_map_safe_rally_order and preferred_order is not None else None)
+        order_source = 'current_serial_revalidation' if serial_routes is not None else 'current_map_search'
+        order = list(preferred_order) if serial_routes is not None else (
+            map_safe_rally_dispatch_order(self.map_data, self.resolution, self.origin,
+                assignment, positions, self.target, self.detecting_robot, return_maps=return_maps)
             if self.use_map_safe_rally_order else
             rally_dispatch_order(assignment, positions, self.target, self.detecting_robot))
+        # Retain only this geometric preference if computation expires. The
+        # next callback rechecks all current bodies/maps and original leases;
+        # no old route, price, pose or movement authority is retained.
+        proposal['dispatch_order_preference'] = list(order)
         if not self.fresh_robot_inputs() or not self.fresh_target():
             return False
         now = self.now()
@@ -3710,6 +3739,8 @@ class HeadquartersControl(Node):
                 proposal_evaluated_at_sec=proposal['evaluated_at'],
                 assignment={name: (pose.x, pose.y, pose.yaw) for name, pose in assignment.items()},
                 target=self.target, required_robots=names, dispatch_order=order,
+                order_source=order_source, previous_order_preference=preferred_order,
+                serial_routes=serial_routes,
                 target_view_distance_m=getattr(self, 'target_view_distance', 3.),
                 robot_positions=positions, detecting_robot=self.detecting_robot,
                 map_safe_order=self.use_map_safe_rally_order,
@@ -5602,8 +5633,26 @@ class HeadquartersControl(Node):
                                     local_map=HeadquartersControl.delivered_return_maps(self).get(name),
                                 )
                                 if current_replacement is not None:
+                                    previous_intent = dict(
+                                        return_yield_owner=self.return_yield_targets.get(name),
+                                        temporary_yield=name in self.rally_yield_targets,
+                                        probe=name in self.rally_probe_targets)
                                     self.rally_targets[name] = current_replacement
                                     self.rally_final_targets[name] = current_replacement
+                                    # A new permanent rally destination ends
+                                    # the prior refuge's safety exception and
+                                    # visible-only escape intent. Its next goal
+                                    # must pass ordinary target/energy guards.
+                                    self.return_yield_targets.pop(name, None)
+                                    self.rally_yield_targets.discard(name)
+                                    self.rally_probe_targets.discard(name)
+                                    getattr(self, 'rally_recovery_beneficiaries', {}).pop(name, None)
+                                    if hasattr(self, 'consumed_publisher'):
+                                        self.consumed_publisher.publish(String(data=json.dumps(dict(
+                                            event='coordinator_rally_recovery_retarget', event_time=self.now(),
+                                            robot=name, blocker=blocker, previous_intent=previous_intent,
+                                            new_target=[current_replacement.x, current_replacement.y, current_replacement.yaw],
+                                            movement_authorized=False), sort_keys=True)))
                                     self.rally_route_unavailable_since[name] = now
                                     self.rally_recovery_requested[name] = True
                                     self.publish_rally_assignments()
@@ -7693,6 +7742,15 @@ class HeadquartersControl(Node):
         if kind == 'exploration_return_yield':
             event['return_preparation'] = HeadquartersControl.return_preparation_evidence(
                 self, self.exploration_return_yields[robot_name])
+        if kind in ('rally', 'local_return_yield'):
+            current = getattr(self, 'rally_targets', {}).get(robot_name)
+            final = getattr(self, 'rally_final_targets', {}).get(robot_name)
+            event['rally_recovery_intent'] = dict(
+                return_yield_owner=getattr(self, 'return_yield_targets', {}).get(robot_name),
+                temporary_yield=robot_name in getattr(self, 'rally_yield_targets', set()),
+                probe=robot_name in getattr(self, 'rally_probe_targets', set()),
+                current_target=None if current is None else [current.x, current.y, current.yaw],
+                final_target=None if final is None else [final.x, final.y, final.yaw])
         choice = getattr(self, 'exploration_travel_choices', {}).get(robot_name)
         if kind in ('exploration','initial_visual_search') and choice is not None:
             event['travel_preference'] = choice

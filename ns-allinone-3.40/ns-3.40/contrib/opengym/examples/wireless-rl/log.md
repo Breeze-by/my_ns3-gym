@@ -9205,3 +9205,23 @@ ROS_DOMAIN_ID=216 /usr/bin/python3 scripts/check_p2c_proposal_maps_runtime.py --
 /usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v63 --domain 218 --gazebo-port 20318 --validate-only
 /usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v63_physical --domain 219 --gazebo-port 20319 --validate-only
 ```
+
+
+## 2026-10-10 P2C.1 v63失败与当前串行集合/永久意图
+
+2026-10-10 P2C.1 v63同b488cd5四原：forced/lab/rooms nativeCOMPLETE156.5/234.5/209.2完整strictPASS，corridors原RALLY300.0timeout；四零接触耗尽FAILED，owner-observer0关闭、27digest同源，原走廊18子PASS/六native return闭合/四腿八原CDR不代任务，17+2/917未调用。新提案过期仅保留排列偏好，以当前完整body/local路线重新复核，不合格原全搜索；全参与2/5/60s源与派发全预算保持。永久等待者改派清旧return-owner/yield/probe/捐赠键，恢复普通RALLY目标/预算准入，真实临时refuge保持。1954功能202.29s/80定向/原symlink四包5.56s/190保护6授权54协议/两声明/实际DDS serial和retarget加两旧回归PASS；旧搜索两过期→新当前三路线接纳，旧安全角色→新普通预算且拒旧target/.1电量，Future关闭。条件合成epoch/chooser无物理运动，非任务因果/最坏保证。只3中央+1新纯，80中央101旧纯/globals/全部native/300s/5s/TTL/物理保持。新v64 clean pushed4→17+2待任务，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v63_failed_development与20261010_p2c_rally_intent_components。
+
+原四整体FAIL完整归档；三旧strict PASS及18子审仍为原版本范围，不跨版本合并。原几何五次cold比较只作条件；真实DDS serial强制clock跳变、retarget合成chooser/位姿/电量，无物理动作证明。新独立reader重建全current serial/CDR与永久role边界，原能量/本地返充闭合/物理hold始终强制。用户14个260929_report保持并排除stage。control SHA bbb7436c7529470f4d4087f54de86a66766131e0eedf82170df9e4a8a70c2ebd；native SHA f4845fb03667e766c0202a470fa5f2c3c4a49ff39f77a898bf90ec1b60261a6c。
+
+```bash
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test src/merge_map/test/test_merge_map.py scripts --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+colcon build --symlink-install --packages-select multi_robot_exploration multi_robot_interfaces merge_map multi_robot
+ROS_DOMAIN_ID=216 /usr/bin/python3 scripts/check_p2c_rally_intent_runtime.py --part serial --output log/p2c_rally_intent_serial_runtime1.json
+ROS_DOMAIN_ID=217 /usr/bin/python3 scripts/check_p2c_rally_intent_runtime.py --part retarget --output log/p2c_rally_intent_retarget_runtime1.json
+ROS_DOMAIN_ID=216 /usr/bin/python3 scripts/check_p2c_proposal_participants_runtime.py --output log/p2c_rally_intent_participants_regression1.json
+ROS_DOMAIN_ID=217 /usr/bin/python3 scripts/check_p2c_dispatch_boundary_runtime.py --output log/p2c_rally_intent_dispatch_regression1.json
+/usr/bin/python3 /tmp/p2c_rally_intent_scope.py
+/usr/bin/python3 scripts/check_p2c_source.py --output log/p2c_rally_intent_source1.json
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v64 --domain 218 --gazebo-port 20318 --validate-only
+/usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v64_physical --domain 219 --gazebo-port 20319 --validate-only
+```

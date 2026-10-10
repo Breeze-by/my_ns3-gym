@@ -35,18 +35,36 @@ def sample_deadline(key, row):
     return source + ttl
 
 
-def navigation_dispatch_audit(path, required=False):
+def navigation_dispatch_audit(path, required=False, require_recovery_intent=False):
     if not required:
         return None
-    decisions = {}; count = revoked = 0
+    decisions = {}; retargets = {}; count = revoked = transitions = 0
     for line in path.open():
         event = json.loads(line)
         kind = event.get('event')
+        if kind == 'coordinator_rally_recovery_retarget':
+            assert event['movement_authorized'] is False
+            assert len(event['new_target']) == 3 and all(math.isfinite(v) for v in event['new_target'])
+            assert set(event['previous_intent']) == {'return_yield_owner', 'temporary_yield', 'probe'}
+            retargets[event['robot']] = event['new_target']; transitions += 1
+            continue
         if kind not in ('coordinator_navigation_decision', 'coordinator_navigation_dispatch_revoked'):
             continue
         now = event['event_time']
         assert math.isfinite(now)
         if kind == 'coordinator_navigation_decision':
+            if require_recovery_intent and event['kind'] in ('rally', 'local_return_yield'):
+                intent = event['rally_recovery_intent']
+                assert all(intent[key] is not None and len(intent[key]) == 3
+                           and all(math.isfinite(v) for v in intent[key])
+                           for key in ('current_target', 'final_target'))
+                if event['kind'] == 'local_return_yield':
+                    assert isinstance(intent['return_yield_owner'], str) and intent['temporary_yield'] is True
+                else:
+                    assert intent['return_yield_owner'] is None
+                if intent['current_target'] == retargets.get(event['robot']):
+                    assert event['kind'] == 'rally'
+                    assert not intent['temporary_yield'] and not intent['probe']
             used = used_inputs(event)
             deadline = min(sample_deadline(key, row) for key, row in used.items())
             assert math.isclose(event['dispatch_lease_deadline_sec'], deadline, abs_tol=1e-9, rel_tol=0.)
@@ -75,4 +93,5 @@ def navigation_dispatch_audit(path, required=False):
                 now < row['source_time'] or now > sample_deadline(name, row) for name, row in used.items()))
             revoked += 1
     return dict(status='PASS', decisions=count, publication_revocations=revoked,
+                recovery_intent_required=require_recovery_intent,permanent_retargets=transitions,
                 scope='Private admission/deadline and revocation provenance; actual ActionServer non-dispatch is separately exercised by the DDS component proof')

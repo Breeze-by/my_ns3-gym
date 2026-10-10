@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-10T09:39:19.904294+00:00",
+  "predeclared_at_utc": "2026-10-10T10:38:28.480478+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "df0f3fc3911dfc513369c7650de1237d817effa1",
+  "candidate_parent_commit": "b488cd5ecd16f6061e19f6b8f47755fd055e51a8",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -571,5 +571,19 @@
     "authority": "Every proposed participant body, including RETURNING/CHARGING robots, must have original fresh delivered pose/TF/map/battery sources before geometry, after order reconstruction and after private publication",
     "evidence": "Record the original captured source epochs for all participants; reject expiration without renewing source stamps or dispatching an assignment",
     "limits": "Original proposal geometry, map-safe order and ordinary assignment full-budget/source/body guards are preserved; no task completion claim"
+  },
+  "proposal_serial_order_revalidation": {
+    "preference": "Retain only the last computed permutation after a proposal attempt expires; it carries no old route, pose, price or movement permission",
+    "qualification": "Reconstruct every complete current serial body-masked approach using current delivered planning and local maps, updating occupied bodies after each hypothetical placement; otherwise use the original full current search",
+    "guards": "All original participant pose/TF/map/battery/target source deadlines and endpoint/LOS/spacing/yaw checks remain, including checks after geometry and private publication. Ordinary RALLY preflight/dispatch still price complete current returns, waits and5s hold",
+    "evidence": "Private order source, prior preference, complete serial routes and exact current source/CDR binding; this intentionally prefers a currently qualified retained permutation over reranking every soft-cost alternative",
+    "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_rally_intent_components.json",
+    "limits": "Original proposal snapshot and conditional actual DDS/clock; no original live replay, task causal or worst-case deadline claim. Same-clean-pushed4\u219217+2 required;917 remains unexposed"
+  },
+  "rally_recovery_retarget_intent": {
+    "transition": "Permanent reassignment of the waiting beneficiary clears its previous return-owner, temporary-yield, probe and old donated-priority flags; the new target is ordinary RALLY intent",
+    "guards": "The same current body/local route chooser and ordinary full target/source/energy/hold admission remain; genuine local-return refuge exceptions remain available",
+    "evidence": "Private permanent retarget and current/final target/yield/probe/return-owner roles; independently reject stale safety roles attached to the retargeted formal intent",
+    "limits": "Conditional synthetic corridor, permanent chooser and stale state via actual DDS/ActionClient Futures; no physical motion or task causal completion claim"
   }
 }

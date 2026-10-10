@@ -654,7 +654,7 @@ def rally_assignment_audit(records):
     return dict(status='PASS',failed_assignments_rebuilt=count,chosen_assignments_rebuilt=chosen,computation_wall_sec=wall)
 
 
-def rally_proposal_audit(records, required=False, require_return_maps=False, capture=None):
+def rally_proposal_audit(records, required=False, require_return_maps=False, capture=None, require_order_source=False):
     """Bind retained points to their original search and a new delivered epoch."""
     proposals={};count=0;deferred=0;admissions=[]
     for e in records:
@@ -721,10 +721,31 @@ def rally_proposal_audit(records, required=False, require_return_maps=False, cap
             assert abs(math.atan2(math.sin(pose.yaw-heading),math.cos(pose.yaw-heading)))<=1e-8
             assert all(math.dist(point,peer)>=control.RALLY_MIN_SEPARATION_M for peer in points)
             points.append(point)
-        expected=(control.map_safe_rally_dispatch_order(maps[0],saved['resolution'],saved['origin'],poses,
-            e['robot_positions'],e['target'],e['detecting_robot'],return_maps=return_maps) if e['map_safe_order'] else
-            control.rally_dispatch_order(poses,e['robot_positions'],e['target'],e['detecting_robot']))
-        assert expected==e['dispatch_order']
+        order_source=e.get('order_source')
+        if require_order_source:
+            assert order_source in ('current_serial_revalidation','current_map_search')
+        if order_source=='current_serial_revalidation':
+            assert e['map_safe_order'] and e['previous_order_preference']==e['dispatch_order']
+            assert set(e['serial_routes'])==set(poses)
+            occupied=dict(e['robot_positions'])
+            for name in e['dispatch_order']:
+                blocked=[point for other,point in occupied.items() if other!=name and point is not None]
+                pose,route=control.plan_rally_leg(poses[name],maps[0],saved['resolution'],saved['origin'],
+                    e['robot_positions'][name],max_distance_m=float('inf'),blocked_positions=blocked,
+                    local_map=return_maps.get(name))
+                assert pose is not None
+                full=[e['robot_positions'][name],*route]
+                assert np.allclose(e['serial_routes'][name],full,atol=1e-10,rtol=0.)
+                check_route(saved,full)
+                if name in return_maps:check_route(e['return_maps'][name],full,local=True)
+                assert all(math.dist(point,body)>=control.RALLY_PATH_CLEARANCE_M
+                           for point in route[1:] for body in blocked)
+                occupied[name]=(poses[name].x,poses[name].y)
+        else:
+            expected=(control.map_safe_rally_dispatch_order(maps[0],saved['resolution'],saved['origin'],poses,
+                e['robot_positions'],e['target'],e['detecting_robot'],return_maps=return_maps) if e['map_safe_order'] else
+                control.rally_dispatch_order(poses,e['robot_positions'],e['target'],e['detecting_robot']))
+            assert expected==e['dispatch_order']
         count+=1
         admissions.append(e)
         deferred+=e['event_time']>original.get('computation_completed_at_sec',original['event_time'])
@@ -734,7 +755,7 @@ def rally_proposal_audit(records, required=False, require_return_maps=False, cap
         for e in admissions for name,local in (e.get('return_maps') or {'':None}).items()]
     bound=bind_original_maps(bindings,capture) if capture is not None else None
     return dict(status='PASS',admitted_proposals=count,deferred_proposals=deferred,budget_reused=False,
-        consulted_maps_required=require_return_maps,original_source_maps=bound)
+        consulted_maps_required=require_return_maps,serial_order_source_required=require_order_source,original_source_maps=bound)
 
 
 def rally_repair_audit(records):
@@ -863,7 +884,8 @@ def check_one(path,config):
     proposals=rally_proposal_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
         bool(config.get('rally_proposal_handoff') and result.get('rally_assignments')),
         bool(config.get('rally_proposal_return_map_witnesses')),
-        directory/'navigation_inputs.jsonl.gz' if config.get('rally_proposal_return_map_witnesses') else None)
+        directory/'navigation_inputs.jsonl.gz' if config.get('rally_proposal_return_map_witnesses') else None,
+        bool(config.get('proposal_serial_order_revalidation')))
     if config.get('rally_return_objective') and result.get('rally_assignments'):
         assert assignments['chosen_assignments_rebuilt']>=1, 'missing exact delivered assignment choice'
     repairs=rally_repair_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
@@ -881,7 +903,8 @@ def check_one(path,config):
         else math.radians(result['target_field_of_view_deg']))
     leases=planning_lease_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     preparations=return_preparation_audit(directory/'ledger.jsonl',bool(config.get('exploration_return_preparation')))
-    dispatches=navigation_dispatch_audit(directory/'ledger.jsonl',bool(config.get('navigation_dispatch_boundary')))
+    dispatches=navigation_dispatch_audit(directory/'ledger.jsonl',bool(config.get('navigation_dispatch_boundary')),
+        bool(config.get('rally_recovery_retarget_intent')))
     transit=transit_heading_audit(directory/'ledger.jsonl',bool(config.get('observed_rally_transit_heading')))
     outbound=outbound_route_audit(directory/'ledger.jsonl',bool(config.get('navigation_outbound_consistency')),
         directory/'navigation_inputs.jsonl.gz')
