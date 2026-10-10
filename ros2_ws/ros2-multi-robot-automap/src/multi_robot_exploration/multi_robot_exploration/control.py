@@ -4452,7 +4452,8 @@ class HeadquartersControl(Node):
                     self.rally_goal_handles.get(returning) is not None
                     or self.rally_goal_pending.get(returning, False)
                     or self.rally_arrived.get(returning, False))):
-                continue
+                if not HeadquartersControl.release_return_refuge_before_owner(self, name, returning):
+                    continue
             if (not self.rally_arrived[name] or self.rally_goal_handles[name] is not None
                     or self.rally_goal_pending[name]):
                 continue
@@ -4465,6 +4466,92 @@ class HeadquartersControl(Node):
             released = True
         if released:
             self.publish_rally_assignments()
+
+    def release_return_refuge_before_owner(self, name, owner):
+        """Restore a charged leader when both complete serial approaches are funded."""
+        if (not self.enable_battery or self.rally_charge_requested
+                or any(mode != 'ACTIVE' for mode in self.battery_modes.values())
+                or not {name, owner} <= self.rally_final_targets.keys()
+                or not self.rally_arrived[name]
+                or any(self.rally_goal_handles.values()) or any(self.rally_goal_pending.values())
+                or any(self.goal_handles.values())
+                or any(state != 'idle' for state in self.robot_states.values())
+                or self.target_scan_robot is not None or self.target_scan_handle is not None
+                or self.survey_goal_handle is not None or self.survey_goal_pending
+                or not self.fresh_robot_inputs() or not self.fresh_target()):
+            return False
+        inputs = self.input_freshness_details()
+        maps = HeadquartersControl.delivered_return_maps(self)
+        positions = dict(self.robot_positions)
+        if any(point is None for point in positions.values()) or not {name, owner} <= maps.keys():
+            return False
+        order = map_safe_rally_dispatch_order(
+            self.map_data, self.resolution, self.origin, self.rally_final_targets,
+            positions, self.target, self.detecting_robot, return_maps=maps)
+        if order.index(name) >= order.index(owner):
+            return False
+        routes = {}
+        occupied = dict(positions)
+        for robot in (name, owner):
+            final = self.rally_final_targets[robot]
+            pose, route = plan_rally_leg(final, self.map_data, self.resolution, self.origin,
+                positions[robot], max_distance_m=float('inf'),
+                blocked_positions=[point for other, point in occupied.items() if other != robot],
+                local_map=maps[robot])
+            if pose is None:
+                return False
+            routes[robot] = (positions[robot], *route)
+            occupied[robot] = (final.x, final.y)
+        priced_at = self.now()
+        requirements = {}
+        try:
+            for robot, route in routes.items():
+                state = self.battery_states[robot]
+                idle = float(state.get('idle_cost_per_sec', .02))
+                wait = float(self.rally_wait_budgets[robot])
+                distance = sum(math.dist(a, b) for a, b in zip(route, route[1:]))
+                final = self.rally_final_targets[robot]
+                required = HeadquartersControl.task_return_required_energy(
+                    self, robot, distance, (final.x, final.y), priced_at) + idle * (self.rally_hold_sec + wait)
+                current = HeadquartersControl.task_return_required_energy(
+                    self, robot, 0., positions[robot], priced_at)
+                requirements[robot] = max(required, current)
+                if (not all(math.isfinite(v) for v in (idle, wait, required, current, float(state['energy'])))
+                        or min(idle, wait) < 0 or float(state['energy']) <= requirements[robot]):
+                    return False
+        except (KeyError, TypeError, ValueError, ZeroDivisionError):
+            return False
+        now = self.now()
+        if (not all(sample['source_time'] is not None
+                    and 0 <= now-sample['source_time'] <= sample['ttl_sec'] for sample in inputs.values())
+                or not 0 <= now-priced_at <= STATE_TTL_SEC['pose_state']):
+            return False
+        evidence = dict(event='coordinator_return_refuge_release_eligibility', event_time=now,
+            robot=name, charged_owner=owner, order=order, robot_positions=positions,
+            refuge_arrived=self.rally_arrived[name], active_rally_goals=[], active_frontier_goals=[],
+            survey_active=False, target_scan_active=False, charge_requested=[],
+            final_targets={n:(p.x, p.y, p.yaw) for n,p in self.rally_final_targets.items()},
+            routes=routes, battery_states=self.battery_states, battery_modes=self.battery_modes,
+            required_energy=requirements, required_energy_evaluated_at_sec=priced_at,
+            wait_budgets_sec=self.rally_wait_budgets, hold_sec=self.rally_hold_sec,
+            inputs=input_freshness_at(inputs, now),
+            planning_map=grid_audit_evidence(self.map_data, self.resolution, self.origin,
+                'ap_delivered_planning_map', self.map_received_at, self.map_received_at),
+            planning_map_self_return_cells=getattr(self, 'map_self_return_cells', {}),
+            return_maps={n:grid_audit_evidence(m['data'], m['resolution'], m['origin'],
+                'ap_delivered_robot_map', self.robot_map_received_at[n], self.robot_map_received_at[n])
+                for n,m in maps.items()})
+        self.consumed_publisher.publish(String(data=json.dumps(evidence, sort_keys=True)))
+        now = self.now()
+        if not all(0 <= now-sample['source_time'] <= sample['ttl_sec'] for sample in inputs.values()):
+            return False
+        # The owner stays parked. Restored targets acquire no permission to
+        # move: ordinary current-map body/return/energy/lease checks still run.
+        self.rally_dispatch_order = order
+        self.rally_preflight_complete = False
+        self.rally_precharge_active = True
+        self.rally_hold_started_at = None
+        return True
 
     def retain_rally_refuge(self, robot_name):
         """Reuse a reached refuge as a final pose after reserved traffic ends."""

@@ -1,5 +1,7 @@
 # 多机器人任务导向无线通信调度工程实施计划
 
+2026-10-10 P2C.1 v50四原整体FAIL：e8af7f0 forced/rooms/corr原生COMPLETE240.3/224.0/235.4，lab RALLYtimeout300.1；四零接触耗尽失效，owner/observer0关闭，16原子门不替代任务。新充电清道refuge释放：全部ACTIVE/零普通待接受、集合、专用扫描动作与充电请求/当前local+fused完整两机顺序路及原完整去返/保持/等待预算合格、源TTL前后复核才恢复先行者final；普通派发/native保持仍独立，旧owner预约动作释放保持。条件原图/原native能量样本PASS但缺两机精确TF，明确非完整AP回放/任务因果；原Nav2 Path保留yaw，成功后偏转原因未证、未改Nav2/SLAM/物理。1799功能/69前版定向/四包7.26s/190保护6授权54协议/实际DDS旧等待→新1普通goal闭合及过期无动作/两声明PASS；只1中央修改+1新增，80中央98纯/native/300s/5s/TTL/物理保持。新v51 clean pushed4→17+2待实测，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v50_failed_development与20261010_p2c_refuge_release_components。
+
 2026-10-10 P2C.1 v49四原整体FAIL：8be97e2 forced/lab/rooms原生COMPLETE257.9/152.8/139.7，corr PARTIAL292.8/tb3正电量失路；四零接触耗尽、owner/observer0关闭，原native FAIL保持。原371目标在369.046本机100/370.1融合0，367.247已有占用，物理来源未证；15原子审不替代任务。新复用保守融合为全出发候选/完整路线/去返预算约束，最终四动作携实际路并源lease复查，私有原图/CDR独立绑定；不清障碍/改scan或native。两个原前失败条件绕行PASS、占用起点仍None；四原选点3同/lab首原条件无解保持。实际DDS旧穿障碍1goal→新拒绝/绕行1goal结果闭合、clock13原源10过期零新goal。1772功能/44最终定向/四包5.42s/190保护6授权54协议/两声明PASS；16中央6纯修改，其余65/92及native/SLAM/300s/5s/TTL/物理保持。新v50 clean pushed4→17+2待实测，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v49_failed_development与20261010_p2c_outbound_consistency_components。
 
 

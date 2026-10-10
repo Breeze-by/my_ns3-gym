@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-09T22:27:13.607454+00:00",
+  "predeclared_at_utc": "2026-10-09T23:49:34.264626+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "8be97e281a1b773b3fa4afecf14ea0d952e0c5ec",
+  "candidate_parent_commit": "e8af7f00bd2ce199636b3c3f317e2de4f89e38fb",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -465,5 +465,12 @@
     "evidence": "Original route, delivered local/planning grids and source epochs in the existing private decision audit; independent route and raw CDR map binding. No new application traffic, scan filtering, occupancy clearing or native return changes.",
     "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_outbound_consistency_components.json",
     "task_limits_unchanged": true
+  },
+  "charged_return_refuge_release": {
+    "scope": "An idle completed safety refuge may lead its ACTIVE owner only with fresh full serial geometry, complete endpoint/current contact-return energy and original hold/wait/source budgets; restored goals still require ordinary dispatch and native holding",
+    "maps": "Already-delivered fused and respective local maps; all stationary bodies remain masked; no obstacle removal",
+    "private_evidence": "Original maps, positions, complete two approaches, energy models, waits, source stamps and eligibility audit",
+    "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_refuge_release_components.json",
+    "limits_unchanged": "300s/native5s/2s pose-TF/5s map-battery/60s target/complete return and native safety"
   }
 }

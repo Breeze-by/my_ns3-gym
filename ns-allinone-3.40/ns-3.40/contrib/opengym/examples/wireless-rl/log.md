@@ -8818,3 +8818,35 @@ ROS_DOMAIN_ID=216 /usr/bin/python3 scripts/check_p2c_outbound_runtime.py --outpu
 /usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v50 --domain 218 --gazebo-port 20318 --validate-only
 /usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v50_physical --domain 219 --gazebo-port 20319 --validate-only
 ```
+
+
+## 2026-10-10 P2C.1 v50 原失败与充电清道避让的顺序释放
+
+2026-10-10 P2C.1 v50四原整体FAIL：e8af7f0 forced/rooms/corr原生COMPLETE240.3/224.0/235.4，lab RALLYtimeout300.1；四零接触耗尽失效，owner/observer0关闭，16原子门不替代任务。新充电清道refuge释放：全部ACTIVE/零活动动作与充电请求/当前local+fused完整两机顺序路及原完整去返/保持/等待预算合格、源TTL前后复核才恢复先行者final；普通派发/native保持仍独立，旧owner预约动作释放保持。条件原图/原native能量样本PASS但缺两机精确TF，明确非完整AP回放/任务因果；原Nav2 Path保留yaw，成功后偏转原因未证、未改Nav2/SLAM/物理。1799功能/69前版定向/四包7.26s/190保护6授权54协议/实际DDS旧等待→新1普通goal闭合及过期无动作/两声明PASS；只1中央修改+1新增，80中央98纯/native/300s/5s/TTL/物理保持。新v51 clean pushed4→17+2待实测，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v50_failed_development与20261010_p2c_refuge_release_components。
+
+Humble/canonical install、PYTHONNOUSERSITE1、scripts PYTHONPATH、FastDDS UDPv4清旧profiles/discovery server、taskset0-79。v50源码e8af冻结四原owner/observer全部关闭后才修改；原forced先独立gatePASS，再同源其余三原并行并全部自然关闭，完整开发gate仅labFAIL。三个COMPLETE格不回填完整成功率；17正式、新同源物理两格和917未调用。所有原始文件SHA、summary、完整gate、16原子审和私有旁录保存于v50 originals压缩包。全部exact argv及诊断/验证输出和脚本源码另存新组件provenance。
+
+修复仅一个中央方法和一个新增方法；其余80中央/98纯完整AST及七类native文件字节一致，case/schedule/物理刺激与300s/5s/TTL保持。新eligibility证据只证明元数据释放时两条完整条件路径及原预算；恢复目标仍不授权动作，下一普通派发重新校验当前身体、全部返路和源lease。原图条件组件用两机相邻private位置（精确TF原CDR缺失）和决策前原native energy_accounting样本，不伪称精确AP电量回放。原Nav2 Path后偏转物理成因未知，不调参。扩大候选、提前时间评分两个试验未采用，完整失败保留。
+
+原开发命令均为rtk proxy bash -c source Humble+install后taskset0-79，run-id20261010_p2c_v50：dev_forced2/domain218/port20318，随后dev_lab101/domain218/port20318、dev_rooms202/domain219/port20319、dev_corridors303/domain220/port20320。首forced gate--cases dev_forced2 PASS，完整development--workers3 FAIL。原v50原生16独立审计PASS不替代任务。
+
+```bash
+/usr/bin/python3 scripts/check_p2c_gate.py --run-root log/p2c/20261010_p2c_v50 --development --workers 3 --output log/p2c_v50_development_gate.json
+/usr/bin/python3 /tmp/audit_p2c_v50_components.py
+/usr/bin/python3 /tmp/p2c_v50_path_heading_diagnosis.py
+/usr/bin/python3 /tmp/p2c_all_charge_candidate_comparison.py
+/usr/bin/python3 /tmp/p2c_rally_time_candidate_comparison.py
+/usr/bin/python3 /tmp/p2c_v50_postcharge_order_diagnosis6.py
+/usr/bin/python3 /tmp/p2c_refuge_release_original_bindings.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_rally_refuge_release.py src/multi_robot_exploration/test/test_rally_observation_recovery.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test scripts --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+colcon build --symlink-install --packages-select multi_robot_exploration multi_robot_interfaces multi_robot merge_map
+/usr/bin/python3 scripts/check_p2c_source.py --output log/p2c_refuge_release_source1.json
+ROS_DOMAIN_ID=217 /usr/bin/python3 scripts/check_p2c_refuge_release_runtime.py --output log/p2c_refuge_release_runtime1.json
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v51 --domain 218 --gazebo-port 20318 --validate-only
+/usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v51_physical --domain 219 --gazebo-port 20319 --validate-only
+```
+
+初定向1/2各2FAIL67PASS：夹具将owner已有预约动作当作新增空闲分支、又错误断言输入既有动作应消失，改为阻止先行者已有动作并保留输入；最后69PASS3.39s。首功能命令只选scripts/test_p2c并误含三lint，4FAIL1639PASS1skip223.58s：两旧SimpleNamespace缺新branch所需enable_battery/final owner，补明真实battery模式、保留缺owner完整计划仍等待；其余全仓库flake8/pep257扫历史失败log/其他包，恢复既有功能范围，最终1796PASS182.70s。没有改旧任务结果或golden地图。六次原图诊断含两次精确TF缺失/未完整计划、model源不在只记录mode变化的native旁录、data为String、types变量遮蔽module，均保持，最后条件比较和原CDR地图独立绑定合格；这些接口失败不是任务。
+
+最终提交前补强：专用target_scan pending/handle及ordinary robot_states active（Future待接受但handle为None）也阻止提前释放。加入三反例，1799功能PASS183.09s、四包7.26s、source2/实际DDS runtime2/条件原图比较2+原CDR绑定2及scope2/两声明2全PASS，最终control SHA5dd929703ada43ba5062f4b104bc06861aa11b6aac3fe76094bfc9daa9f0274f；此前1796PASS的初组件报告完整移入ignored log并收进最终provenance，无中间实际任务。最终报告记录实际final验证，原失败结论不变。

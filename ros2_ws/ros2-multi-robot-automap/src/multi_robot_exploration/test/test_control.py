@@ -1860,6 +1860,7 @@ def test_return_yield_restores_final_goal_after_charger_reached():
     updates = []
     node = SimpleNamespace(
         return_yield_targets={"tb2": "tb1"},
+        enable_battery=True, rally_charge_requested={},
         battery_modes={"tb1": "RETURNING", "tb2": "ACTIVE"},
         rally_arrived={"tb2": True}, rally_goal_handles={"tb2": None},
         rally_goal_pending={"tb2": False}, rally_yield_targets={"tb2"},
@@ -3307,12 +3308,13 @@ def test_home_staging_does_not_seal_a_charged_peers_disjoint_live_leg(reservatio
     ('CHARGING','pending',True,False),('RETURNING','accepted',True,False),
     ('UNKNOWN','idle',True,False),('FAILED','idle',True,True),
     ('ACTIVE','pending',False,False)])
-def test_return_refuge_waits_for_real_charged_owner_departure(owner_mode,owner_departure,refuge_arrived,release):
+def test_return_refuge_without_joint_plan_waits_for_owner_departure(owner_mode,owner_departure,refuge_arrived,release):
     from types import SimpleNamespace
     final=control.RallyPose(4.,3.,0.)
     refuge=control.RallyPose(1.,1.,0.)
     updates=[]
     node=SimpleNamespace(return_yield_targets={'yielding':'owner'},
+        enable_battery=True,rally_charge_requested={},
         battery_modes={'owner':owner_mode,'yielding':'ACTIVE'},
         rally_arrived={'yielding':refuge_arrived,'owner':owner_departure=='arrived'},
         rally_goal_handles={'yielding':None,'owner':object() if owner_departure=='accepted' else None},
