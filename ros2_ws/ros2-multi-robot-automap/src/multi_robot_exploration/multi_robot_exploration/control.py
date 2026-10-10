@@ -7381,6 +7381,20 @@ class HeadquartersControl(Node):
         proposal = getattr(self, 'pending_exploration_geometry', None)
         context = (self.task_state, search, tuple(sorted(self.participating_robots())),
                    None if getattr(self, 'target', None) is None else tuple(self.target))
+        charge_hint = getattr(self, 'pending_exploration_charge_geometry', None)
+        self.pending_exploration_charge_geometry = None
+        charge_handoff = None
+        if (charge_hint is not None and charge_hint['context'] == context
+                and 0 <= planning_started-charge_hint['generated_at'] <= TARGET_HISTORY_SEC
+                and charge_hint['robot'] in idle_positions and not active_explorers
+                and not getattr(self, 'rally_charge_requested', {})
+                and all(mode == 'ACTIVE' for mode in self.battery_modes.values())):
+            name = charge_hint['robot']
+            idle_positions = {name: idle_positions[name]}
+            proposal = dict(context=context, generated_at=charge_hint['generated_at'],
+                points={name: (charge_hint['point'],)}, cursor={})
+            self.pending_exploration_geometry = proposal
+            charge_handoff = charge_hint
         if (proposal is not None and (proposal['context'] != context
                 or not 0 <= planning_started-proposal['generated_at'] <= TARGET_HISTORY_SEC)):
             self.pending_exploration_geometry = proposal = None
@@ -7392,6 +7406,14 @@ class HeadquartersControl(Node):
             for key, sample in planning_inputs.items()
             if key != 'headquarters/target_detection' and sample['source_time'] is not None),
             default=planning_started)
+        if charge_handoff is not None:
+            self.consumed_publisher.publish(String(data=json.dumps(dict(
+                event='coordinator_charge_geometry_handoff', event_time=planning_started,
+                task_phase=self.task_state, preference=charge_handoff,
+                candidate_robot_names=list(idle_positions),
+                robot_states=dict(self.robot_states), battery_modes=dict(self.battery_modes),
+                inputs=planning_inputs), sort_keys=True)))
+        charge_geometry_names = set()
         def lease_current(stage):
             now = self.now()
             if getattr(self, 'shutdown_requested', False):
@@ -7403,6 +7425,21 @@ class HeadquartersControl(Node):
                 if points:
                     self.pending_exploration_geometry = dict(context=context,
                         generated_at=planning_started, points=points, cursor={})
+            preferences = getattr(self, 'pending_exploration_geometry', None)
+            names = [name for name in charge_geometry_names
+                if (preferences or {}).get('points', {}).get(name)
+                and name not in getattr(self, 'rally_charge_requested', {})]
+            if names:
+                name = min(names, key=lambda n: (float(self.battery_states[n]['energy']),
+                    math.dist(self.robot_positions[n],
+                    (float(self.battery_states[n]['charge_x']),
+                     float(self.battery_states[n]['charge_y']))), n))
+                points = preferences['points'][name]
+                index = min(preferences['cursor'].get(name, 0), len(points)-1)
+                # Carry a point preference only. The next callback regenerates
+                # candidates and reprices the complete trip on its own sources.
+                self.pending_exploration_charge_geometry = dict(robot=name,
+                    point=points[index], context=context, generated_at=planning_started)
             details = None
             diagnostics = getattr(self, 'planning_lease_diagnostics', None)
             key = (self.task_state, stage)
@@ -7438,7 +7475,8 @@ class HeadquartersControl(Node):
                 event='coordinator_planning_lease_expired', event_time=now,
                 planning_started_at_sec=planning_started, source_deadline_sec=deadline,
                 stage=stage, inputs_at_start=planning_inputs, diagnostic_inputs=details,
-                geometry_preferences=getattr(self, 'pending_exploration_geometry', None)), sort_keys=True)))
+                geometry_preferences=getattr(self, 'pending_exploration_geometry', None),
+                charge_geometry_preference=getattr(self, 'pending_exploration_charge_geometry', None)), sort_keys=True)))
             return False
         exclusions = self.active_exclusions()
         candidates = []
@@ -7565,6 +7603,8 @@ class HeadquartersControl(Node):
                 if any(r[1] == name for r in raw_candidates)
                 and all(factor_bounds[name, r[3].x, r[3].y, r[3].path_distance_m] < 1.
                         for r in raw_candidates if r[1] == name)}
+            charge_geometry_names.update(name for _, name, _, assignment in raw_candidates
+                if factor_bounds[name, assignment.x, assignment.y, assignment.path_distance_m] < 1.)
             resolved_charges = set()
 
             def refine_travel_bound(raw):

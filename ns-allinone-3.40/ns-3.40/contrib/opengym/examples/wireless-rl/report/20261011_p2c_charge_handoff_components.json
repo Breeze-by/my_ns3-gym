@@ -1,0 +1,91 @@
+{
+  "status": "PASS",
+  "scope": "Components only; original v69 full4 strictFAIL and firstforced strictPASS retained. New v70 actual tasks not invoked yet; no counterfactual mission or physical benefit claim",
+  "source_scope": {
+    "status": "PASS",
+    "baseline": "939a77f17b6b21ec0966263d7883f016a71a1ca4",
+    "changed_methods": [
+      "assign_idle_robots"
+    ],
+    "unchanged_methods": 85,
+    "pure_functions_unchanged": 103,
+    "shared": {
+      "check_p2c_gate.py": {
+        "changed": [
+          "check_one"
+        ],
+        "unchanged_functions": 19
+      },
+      "run_p3c5_audit.py": {
+        "changed": [
+          "main"
+        ],
+        "unchanged_functions": 3
+      }
+    },
+    "unchanged_sources": {
+      "src/multi_robot_exploration/multi_robot_exploration/battery_manager.py": "f4845fb03667e766c0202a470fa5f2c3c4a49ff39f77a898bf90ec1b60261a6c",
+      "src/multi_robot_exploration/multi_robot_exploration/action_callbacks.py": "7edc9b3923caedf88f236311026f568540779653dafc0ce0aee01dc201880f8b",
+      "src/multi_robot_exploration/multi_robot_exploration/tf_ingress_sampler.py": "819573fffb17817c2135225f4effca4ea9c61422e309a3176f7933fdac2fc16d",
+      "src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py": "bf107d4711abcd4861d092c533d0d00baa8478ad3ce314e2d40451c9858f7e43",
+      "src/slam_toolbox/src/slam_toolbox_multirobot.cpp": "1c9d41b108bce96c75fd108ace704df502b29bc622c60930cc6629b6f1c21d24",
+      "src/slam_toolbox/include/slam_toolbox/scan_self_filter.hpp": "4e9b7acde1a50bdbae3cb104e3c95fb2c6e3699368dc511b282fab4e14b0cdab",
+      "src/slam_toolbox/config/mapper_params_online_multi_async.yaml": "3a5339dd39476b196fc6f0e62c225bcb85889ed728ce279f45d759e5319dcde1",
+      "scripts/observe_p3b5.py": "8605217913f55d1761943bf701381c5da2fd924dc44cf5e7fbd9cf6b73f5bbc6",
+      "scripts/p2c_native_graph.py": "e08b675ceba504d8b3562a7b11c2084d6cf9a3bc39ec4954758ac77c31c6a897",
+      "scripts/ros_smoke_test.py": "b2558586c44e808a603b19f9bfc360efa579c37d029b8271e46e37732bd761bf",
+      "scripts/run_p3b5_tasks.py": "a3438c304c205747daa992647a3688ca9afb1d43684a3e4d2ecff0d7283d84ea"
+    },
+    "control_sha256": "50e3b5779ed934567bca46ac4eff6d31ed1201c4f0d026a85189af1fd77bea41",
+    "native_sha256": "f4845fb03667e766c0202a470fa5f2c3c4a49ff39f77a898bf90ec1b60261a6c",
+    "cases_stimuli_ttl_model_native_source_unchanged": true
+  },
+  "declarations": [
+    {
+      "case": "dev_forced2",
+      "source_count": 30,
+      "same_cli_as_v69": true,
+      "reader_digest": "9771d6b49485b065bdd0d40933214115b21f4403ef9421b4dbc5122ad2872c86"
+    },
+    {
+      "case": "physical_fault",
+      "source_count": 30,
+      "same_cli_as_v69": true,
+      "reader_digest": "9771d6b49485b065bdd0d40933214115b21f4403ef9421b4dbc5122ad2872c86"
+    }
+  ],
+  "validation": {
+    "functional_checks": 2115,
+    "functional_seconds": 329.77,
+    "new_checks": 42,
+    "symlink_packages": 4,
+    "build_seconds": 5.95,
+    "protected": 190,
+    "historical_allowed_changes": 6,
+    "protocol_cells": 54,
+    "actual_dds_comparisons": 2,
+    "actual_current_handoffs": 1,
+    "actual_charge_request_each": 1,
+    "physical_motion": 0,
+    "native_charges_executed": 0
+  },
+  "conditional_scope": "Original snapshot components: forced clock expiry retains only geometry and sends no command; an isolated original fresh snapshot plus a synthetic pending preference rebuilds current candidates. No DDS replay, actual subsequent original source epoch or mission benefit claim.",
+  "conditional_room_seconds": {
+    "original_all_idle": 2.3783536409027874,
+    "focused_current_rebuild": 0.9128024787642062
+  },
+  "retained_failures": {
+    "builder1": "Indentation in textual prototype replacement",
+    "conditional1": "All-candidate-unfunded criterion found no hint; rejected in favor of an explicitly tentative individual-candidate preference",
+    "conditional2": "Probe wrongly required handoff while peers active; retained guarded non-handoff, corrected probe checks the original all-idle requirement",
+    "compile1": "Runtime scaffold multi-line condition syntax",
+    "finalize1": "Physical ideal declaration was compared with prior fault case; matching fault declaration added without a task",
+    "unit1": "41PASS/1FAIL: counted only mapping generator, omitted visual generator",
+    "runtime1": "Frozen comparison instrumented only mapping generator; all owned resources closed; complete generator instrumentation now covers both paths"
+  },
+  "provenance": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261011_p2c_charge_handoff_components_provenance.json.gz",
+    "sha256": "3c0969dced1e49e91c840fd63918c60440c8e054447d75929a94b2b8903dc0d9"
+  },
+  "next": "20261011_p2c_v70: same clean-pushed source4development then17formal+2physical,917 only after15nonheldout+2physical strictPASS"
+}

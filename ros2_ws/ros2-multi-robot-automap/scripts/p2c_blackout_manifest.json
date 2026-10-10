@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-10T13:51:14.435215+00:00",
+  "predeclared_at_utc": "2026-10-10T15:55:06.401511+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "7e0222c5f5ff8cd005fb177f346a4a0a73c113f2",
+  "candidate_parent_commit": "939a77f17b6b21ec0966263d7883f016a71a1ca4",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -624,5 +624,13 @@
     "unchanged": "Original exploration/scoring/observer/charging/return/native/SLAM/Nav2/physics, original300s/5s/TTLs,8central and2native serialized registrations, schedules/cases/stimuli remain",
     "limits": "Original v68 RALLY300.4 timeout FAIL preserved. Exact-source conditional geometry4.978m/budget16.215 is not physical staging,time benefit or task causal proof; actual DDS and new same-clean-pushed4\u219217+2 mandatory;917 remains unexposed",
     "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_parallel_preparation_components.json"
+  },
+  "exploration_charge_geometry_handoff": {
+    "trigger": "After original source-lease expiry, a robot with an unfunded candidate upper bound may retain one point for the next idle callback; prefer its lowest current available energy",
+    "scope": "One next-callback current generator preference, only all-idle/all-ACTIVE/no pending charge and same task/search/participants/target context within original10s geometric preference lifetime. No old budget, route, gain, source stamp or action authority is carried",
+    "admission": "Regenerate current candidates near the point, recompute original complete body-masked go/return budgets and charger corridor preparation, preserve all2s/5s/60s leases and live dispatch boundary",
+    "evidence": "Private expired-origin and new-source handoff events; required independent reader digest; original full exploration, return preparation, native energy, command and task audits still apply",
+    "unchanged": "Original103pure geometry/energy functions, native battery/SLAM/Nav2/physics,3 ordinary explorers, all cases/stimuli300s5s and optional parallel rally preparation unchanged",
+    "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261011_p2c_charge_handoff_components.json"
   }
 }
