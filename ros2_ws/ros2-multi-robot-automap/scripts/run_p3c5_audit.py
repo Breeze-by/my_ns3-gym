@@ -102,6 +102,8 @@ def main(default_manifest=None, log_category='p3c5'):
                               ('physics_observer','observe_p3b5_return_physics.py'))})
     if config.get('predeclared_graph_command'):
         manifest['source_digests']['episode_command_builder']=file_digest(PROJECT_ROOT/'scripts/run_p3b5_tasks.py')
+    if config.get('parallel_rally_preparation'):
+        manifest['source_digests']['preparation_approach_reader']=file_digest(PROJECT_ROOT/'scripts/p2c_preparation_approach.py')
     if config.get('native_tf_graph_capture'):
         manifest['source_digests'].update({name:file_digest(PROJECT_ROOT/'scripts'/filename)
             for name,filename in (('safety_observer','observe_p3b5.py'),('native_graph_reader','p2c_native_graph.py'))})

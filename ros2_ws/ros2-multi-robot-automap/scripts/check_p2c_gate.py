@@ -936,6 +936,12 @@ def check_one(path,config):
         directory/'navigation_inputs.jsonl.gz',bool(config.get('refuge_release_preflight_guard')))
     connection=rally_connection_audit(directory/'ledger.jsonl',bool(config.get('rally_connection_handoff')),
         directory/'navigation_inputs.jsonl.gz',bool(config.get('rally_connection_local_reinspection')))
+    from p2c_preparation_approach import preparation_approach_audit
+    preparations_approach=preparation_approach_audit(directory/'ledger.jsonl',bool(config.get('parallel_rally_preparation')),
+        directory/'navigation_inputs.jsonl.gz',config.get('parallel_rally_preparation',{}).get('frame_generation_offset_sec',.2))
+    if config.get('parallel_rally_preparation'):
+        from run_p2d_baseline import file_digest
+        assert row['source_digests']['preparation_approach_reader']==file_digest(Path(__file__).with_name('p2c_preparation_approach.py'))
     if config.get('rally_connection_handoff'):
         from run_p2d_baseline import file_digest
         assert row['source_digests']['rally_connection_reader']==file_digest(Path(__file__).with_name('p2c_rally_connection.py'))
@@ -965,7 +971,7 @@ def check_one(path,config):
         native_scan_self_filter_audit=scan_filter,exploration_return_preparation_audit=preparations,
         navigation_dispatch_boundary_audit=dispatches,observed_rally_transit_heading_audit=transit,
         navigation_outbound_consistency_audit=outbound,charged_return_refuge_release_audit=refuge,
-        rally_connection_handoff_audit=connection)
+        rally_connection_handoff_audit=connection,parallel_rally_preparation_audit=preparations_approach)
 
 
 def observer_heading_audit(records,required=False,radius_m=3.,position_tolerance_m=.35,fov_rad=math.pi/2):

@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-10T12:53:20.891292+00:00",
+  "predeclared_at_utc": "2026-10-10T13:51:14.422387+00:00",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -500,7 +500,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "78deb068f40fc88f356c0cd93756bd723565ac59",
+  "candidate_parent_commit": "7e0222c5f5ff8cd005fb177f346a4a0a73c113f2",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -870,5 +870,15 @@
     "scope": "Same actual command, evidence paths, controller/native/SLAM/physical/source/energy/TTL/300s/5s bytes and original cases/stimuli as v67",
     "limits": "Original v67 native COMPLETE288.8 but strict declaration FAIL remains. Read-only original declaration binding is a component, never status backfill. New clean-pushed same-source4\u219217+2 required;917 remains unexposed",
     "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_graph_command_components.json"
+  },
+  "parallel_rally_preparation": {
+    "scope": "Only while a confirmed target observer has an active positional survey in FOUND: one optional peer prefix per original bounded survey, using the existing serialized rally ActionClient/Future path; no complete assignment, mission phase or hold credit from preparation",
+    "guards": "All robots ACTIVE/no pending charge; current2s pose/frame5s map/battery60s target; current constrained known-free complete path, at-most5m including actual offset,.45m endpoint/.35m path,.6m continuous body clearance and original1.8m survey/peer route reservations; complete prefix plus full contact return and original60s action wait funded",
+    "closure": "Survey end/cancel, stale sources, target change, battery return/failure or shutdown cancel pending/accepted preparation through existing role handles; drain all preparation Futures before formal RALLY; no original rally/survey retry counters spent, one request per peer per already bounded survey",
+    "frame_generation_offset_sec": 0.2,
+    "evidence": "Private exact original survey route/goal source, current positions/models/maps/source leases/budget; independent route,body,reservation,energy and original pose/TF/map CDR binding plus future-before-RALLY audit",
+    "unchanged": "Original exploration/scoring/observer/charging/return/native/SLAM/Nav2/physics, original300s/5s/TTLs,8central and2native serialized registrations, schedules/cases/stimuli remain",
+    "limits": "Original v68 RALLY300.4 timeout FAIL preserved. Exact-source conditional geometry4.978m/budget16.215 is not physical staging,time benefit or task causal proof; actual DDS and new same-clean-pushed4\u219217+2 mandatory;917 remains unexposed",
+    "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_parallel_preparation_components.json"
   }
 }

@@ -1,0 +1,1523 @@
+{
+  "status": "FAIL",
+  "scope": "Original v68 first development task timeout; all original FAIL retained, no retry or cross-version backfill",
+  "source_commit": "7e0222c5f5ff8cd005fb177f346a4a0a73c113f2",
+  "result": {
+    "battery_enabled": true,
+    "battery_minimum_energy": 10.021084269919742,
+    "battery_total_charges": 2,
+    "battery_total_charging_time_sec": 20.600000000000364,
+    "battery_total_returns": 4,
+    "collision_duration_sec": 0.0,
+    "collision_events": 0,
+    "collision_history": [],
+    "collision_monitoring_active": true,
+    "completion_status": "RALLY",
+    "completion_time_sec": null,
+    "coordinator_completion_time_sec": null,
+    "correct_coverage_ratio": 0.8991001441175437,
+    "correct_free_coverage_ratio": 0.945889141525116,
+    "correct_truth_cell_count": 51157,
+    "coverage_at_detection": 0.86646158549401,
+    "coverage_threshold": 0.0,
+    "detecting_robot": "tb1",
+    "elapsed_sim_time_sec": 300.4000000000001,
+    "end_sim_time_sec": 2434.582,
+    "episode_id": "20261010_p2c_v68_dev_forced2",
+    "failed_robots": [],
+    "failure_reason": "timeout",
+    "gazebo_seed": 303,
+    "known_coverage_ratio": 0.9192941755421983,
+    "known_truth_cell_count": 52306,
+    "map_message_count": 310,
+    "merged_map_frame": "map",
+    "merged_map_height": 213,
+    "merged_map_origin_x": -5.658238391414297,
+    "merged_map_origin_y": -5.485881251148662,
+    "merged_map_origin_yaw": 0.0,
+    "merged_map_resolution": 0.05000000074505806,
+    "merged_map_width": 256,
+    "mission_mode": "rally",
+    "model_state_message_count": 3004,
+    "native_rally_hold_proof": null,
+    "nav_aborted": 0,
+    "nav_canceled": 4,
+    "nav_goal_count": 31,
+    "nav_succeeded": 27,
+    "observed_accuracy": 0.9780331128360035,
+    "occupied_iou": 0.2907426962337205,
+    "partial_completion": false,
+    "phase_overlap_ratios": {
+      "EXPLORE": 0.0,
+      "FOUND": 0.0,
+      "RALLY": 0.0
+    },
+    "phase_path_lengths_m": {
+      "EXPLORE": 38.10859561446355,
+      "FOUND": 1.535535169750339,
+      "RALLY": 16.598335493357535
+    },
+    "phase_union_visited_cell_counts": {
+      "EXPLORE": 417,
+      "FOUND": 21,
+      "RALLY": 199
+    },
+    "rally_angular_tolerance_radps": 0.1,
+    "rally_assignments": {
+      "tb1": {
+        "x": -4.676820743766456,
+        "y": 1.4891188527869375,
+        "yaw": 1.3074992370914622
+      },
+      "tb2": {
+        "x": -3.7768207303554107,
+        "y": 1.3891188512968213,
+        "yaw": 1.656069475764669
+      }
+    },
+    "rally_hold_sec": 5.0,
+    "rally_linear_tolerance_mps": 0.05,
+    "rally_min_separation_m": 0.905538527307317,
+    "rally_position_tolerance_m": 0.35,
+    "required_robot_count": 2,
+    "required_robot_names": [
+      "tb1",
+      "tb2"
+    ],
+    "robot_count": 2,
+    "robots": {
+      "tb1": {
+        "battery_capacity": 100.0,
+        "battery_charge_count": 1,
+        "battery_charge_x": 0.0,
+        "battery_charge_y": -0.45,
+        "battery_charging_time_sec": 10.0,
+        "battery_final_energy": 53.143904834758665,
+        "battery_initial_energy": 18.0,
+        "battery_message_count": 604,
+        "battery_minimum_energy": 15.627910140993533,
+        "battery_mode": "ACTIVE",
+        "battery_return_count": 2,
+        "collision_duration_sec": 0.0,
+        "collision_events": 0,
+        "collision_message_count": 6013,
+        "end_x": -4.6788461498443015,
+        "end_y": 1.4899301499948399,
+        "final_angular_speed_radps": 3.3061839005736254e-06,
+        "final_linear_speed_mps": 5.1746195837740754e-05,
+        "nav_aborted": 0,
+        "nav_canceled": 2,
+        "nav_goal_count": 15,
+        "nav_succeeded": 13,
+        "path_length_m": 23.411876309485127,
+        "phase_path_lengths_m": {
+          "EXPLORE": 20.304051548389833,
+          "FOUND": 1.4845094642809724,
+          "RALLY": 1.6233152968143223
+        },
+        "rally_final_error_m": 0.0021818508060187556,
+        "rally_target_x": -4.676820743766456,
+        "rally_target_y": 1.4891188527869375,
+        "rally_target_yaw": 1.3074992370914622,
+        "start_x": 0.004113218463921548,
+        "start_y": -0.449984496580651,
+        "teleport_jump_count": 0,
+        "visited_cell_count": 264
+      },
+      "tb2": {
+        "battery_capacity": 100.0,
+        "battery_charge_count": 1,
+        "battery_charge_x": 0.0,
+        "battery_charge_y": 0.45,
+        "battery_charging_time_sec": 10.600000000000364,
+        "battery_final_energy": 49.32473746138449,
+        "battery_initial_energy": 18.0,
+        "battery_message_count": 607,
+        "battery_minimum_energy": 10.021084269919742,
+        "battery_mode": "ACTIVE",
+        "battery_return_count": 2,
+        "collision_duration_sec": 0.0,
+        "collision_events": 0,
+        "collision_message_count": 6013,
+        "end_x": -3.772699761778965,
+        "end_y": 1.4024395222967234,
+        "final_angular_speed_radps": 0.045480029024668814,
+        "final_linear_speed_mps": 6.511196364472227e-05,
+        "nav_aborted": 0,
+        "nav_canceled": 2,
+        "nav_goal_count": 16,
+        "nav_succeeded": 14,
+        "path_length_m": 32.830589968086315,
+        "phase_path_lengths_m": {
+          "EXPLORE": 17.80454406607372,
+          "FOUND": 0.051025705469366626,
+          "RALLY": 14.975020196543213
+        },
+        "rally_final_error_m": 0.013943552556493077,
+        "rally_target_x": -3.7768207303554107,
+        "rally_target_y": 1.3891188512968213,
+        "rally_target_yaw": 1.656069475764669,
+        "start_x": 0.004066846471158675,
+        "start_y": 0.45001508558458486,
+        "teleport_jump_count": 0,
+        "visited_cell_count": 344
+      }
+    },
+    "schema_version": 9,
+    "search_overlap_ratio": 0.0,
+    "start_sim_time_sec": 2134.182,
+    "success": false,
+    "target_confirmation_frames": 3,
+    "target_field_of_view_deg": 90.0,
+    "target_found": true,
+    "target_max_distance_m": 3.0,
+    "target_x": -4.0,
+    "target_y": 4.0,
+    "task_phase": "RALLY",
+    "termination_reason": "timeout",
+    "time_to_75_coverage_sec": 129.4000000000001,
+    "time_to_80_coverage_sec": 135.20000000000027,
+    "time_to_90_coverage_sec": 218.9000000000001,
+    "time_to_95_coverage_sec": null,
+    "time_to_detect_sec": 201.70000000000027,
+    "time_to_rally_sec": 215.30000000000018,
+    "total_overlap_ratio": 0.006622516556291391,
+    "total_path_length_m": 56.24246627757144,
+    "truth_cell_count": 56898,
+    "truth_free_cell_count": 52337,
+    "truth_height": 218,
+    "truth_occupied_cell_count": 4561,
+    "truth_origin_x": -5.800000000000001,
+    "truth_origin_y": -5.6000000000000005,
+    "truth_rectangle_count": 26,
+    "truth_resolution": 0.05,
+    "truth_unsupported_collision_count": 1,
+    "truth_width": 261,
+    "union_visited_cell_count": 604,
+    "visit_resolution": 0.1,
+    "world_file": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/worlds/my_world.world"
+  },
+  "original_gate": {
+    "status": "FAIL",
+    "scope": "development",
+    "task_stack_frozen_commit": "7e0222c5f5ff8cd005fb177f346a4a0a73c113f2",
+    "cases": 1,
+    "errors": [
+      {
+        "case": "dev_forced2",
+        "error": "AssertionError()",
+        "traceback": "Traceback (most recent call last):\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 1006, in audit_one\n    try:return check_one(path,config),None\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 868, in check_one\n    episode_ok(result)\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3b5_gate.py\", line 61, in episode_ok\n    p3a_episode_ok(result)\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3a6_gate.py\", line 39, in episode_ok\n    assert data[\"success\"]\nAssertionError\n"
+      }
+    ],
+    "full_declared_scope": false,
+    "raw_failures_retained": true,
+    "physical_blackout_gate": "required_before_full_integration",
+    "general_hardware_safety_guarantee": false
+  },
+  "components": [
+    "rally_connection",
+    "native_return",
+    "native_energy",
+    "processes",
+    "outbound_routes",
+    "navigation_dispatch",
+    "transit_heading",
+    "lookahead",
+    "ap_return_vetoes",
+    "rally_assignments",
+    "rally_proposals",
+    "rally_repairs",
+    "exploration",
+    "surveys",
+    "headings",
+    "planning_leases",
+    "refuge_release",
+    "return_preparation"
+  ],
+  "diagnostics": {
+    "p2c_v68_rally_curves1.json": {
+      "status": "PASS",
+      "scope": "Original source-bound pose/TF and local/fused geometry; conditional pure planner comparison only, not a physical task causal replay or dispatch budget qualification",
+      "source_commit": "7e0222c5f5ff8cd005fb177f346a4a0a73c113f2",
+      "original_maps": 9,
+      "pose_frame_cdr_bindings": 16,
+      "frame_generation_offset_sec": 0.2,
+      "rows": [
+        {
+          "robot": "tb1",
+          "event_time": 2350.582,
+          "actual_position": [
+            -3.8843655893933984,
+            2.77873652482889
+          ],
+          "original_endpoint": [
+            -4.676820743766456,
+            1.4891188527869375
+          ],
+          "actual_witness_distance_m": 1.644205125704835,
+          "original_peer_positions": {
+            "tb1": [
+              -3.8843655893933984,
+              2.77873652482889
+            ],
+            "tb2": [
+              2.8068093272773185,
+              3.2334700012330666
+            ]
+          },
+          "original_source_pose_error_m": 0.0,
+          "comparison": {
+            "old_visible": {
+              "pose": [
+                -4.076820734825759,
+                2.3891188661979825,
+                -2.0344439357957027
+              ],
+              "planned_distance_m": 0.49567697116657466,
+              "remaining_distance_m": 1.1485281545382602,
+              "same_as_original_endpoint": false
+            },
+            "complete_curve": {
+              "pose": [
+                -4.676820743766456,
+                1.4891188527869375,
+                1.3074992370914622
+              ],
+              "planned_distance_m": 1.644205125704835,
+              "remaining_distance_m": 0.0,
+              "same_as_original_endpoint": true
+            }
+          }
+        },
+        {
+          "robot": "tb2",
+          "event_time": 2350.882,
+          "actual_position": [
+            2.8068093272773185,
+            3.2334700012330666
+          ],
+          "original_endpoint": [
+            0.7731793374448728,
+            -0.5108811770153849
+          ],
+          "actual_witness_distance_m": 4.967927015310061,
+          "original_peer_positions": {
+            "tb1": [
+              -3.8843655893933984,
+              2.77873652482889
+            ],
+            "tb2": [
+              2.8068093272773185,
+              3.2334700012330666
+            ]
+          },
+          "original_source_pose_error_m": 0.0,
+          "comparison": {
+            "old_visible": {
+              "pose": [
+                1.87317935383615,
+                2.889118873648563,
+                -2.819842099193151
+              ],
+              "planned_distance_m": 1.1122920392462252,
+              "remaining_distance_m": 14.258326324534114,
+              "same_as_original_endpoint": false
+            },
+            "complete_curve": {
+              "pose": [
+                0.7731793374448728,
+                -0.5108811770153849,
+                -2.356194490192345
+              ],
+              "planned_distance_m": 4.967927015310061,
+              "remaining_distance_m": 10.402691348470288,
+              "same_as_original_endpoint": true
+            }
+          }
+        },
+        {
+          "robot": "tb2",
+          "event_time": 2378.482,
+          "actual_position": [
+            0.7722355389506906,
+            -0.4984495536032599
+          ],
+          "original_endpoint": [
+            -2.3332383418679363,
+            -3.160881216503462
+          ],
+          "actual_witness_distance_m": 5.002061082251242,
+          "original_peer_positions": {
+            "tb1": [
+              -4.68088416299558,
+              1.4860226650061394
+            ],
+            "tb2": [
+              0.7722355389506906,
+              -0.4984495536032599
+            ]
+          },
+          "original_source_pose_error_m": 0.0,
+          "comparison": {
+            "old_visible": {
+              "pose": [
+                -0.383238312810672,
+                -3.010881214268288,
+                -2.0344439357957027
+              ],
+              "planned_distance_m": 2.989929017912173,
+              "remaining_distance_m": 7.426345707390227,
+              "same_as_original_endpoint": false
+            },
+            "complete_curve": {
+              "pose": [
+                -2.3332383418679363,
+                -3.160881216503462,
+                3.141592653589793
+              ],
+              "planned_distance_m": 5.002061082251242,
+              "remaining_distance_m": 5.414213643051159,
+              "same_as_original_endpoint": true
+            }
+          }
+        },
+        {
+          "robot": "tb2",
+          "event_time": 2403.282,
+          "actual_position": [
+            -2.3234763951090565,
+            -3.1714551721759094
+          ],
+          "original_endpoint": [
+            -3.4832383590042717,
+            1.089118846826473
+          ],
+          "actual_witness_distance_m": 5.004340681354473,
+          "original_peer_positions": {
+            "tb1": [
+              -4.680121137489479,
+              1.4865733855148593
+            ],
+            "tb2": [
+              -2.3234763951090565,
+              -3.1714551721759094
+            ]
+          },
+          "original_source_pose_error_m": 0.0,
+          "comparison": {
+            "old_visible": {
+              "pose": [
+                -2.783238348573459,
+                -3.160881216503462,
+                3.141592653589793
+              ],
+              "planned_distance_m": 0.4643911200427903,
+              "remaining_distance_m": 4.964213636345636,
+              "same_as_original_endpoint": false
+            },
+            "complete_curve": {
+              "pose": [
+                -3.4832383590042717,
+                1.089118846826473,
+                2.356194490192345
+              ],
+              "planned_distance_m": 5.004340681354473,
+              "remaining_distance_m": 0.42426407503395586,
+              "same_as_original_endpoint": true
+            }
+          }
+        },
+        {
+          "robot": "tb2",
+          "event_time": 2426.382,
+          "actual_position": [
+            -3.476918836644024,
+            1.077108319887371
+          ],
+          "original_endpoint": [
+            -3.78323836347462,
+            1.3891188512968213
+          ],
+          "actual_witness_distance_m": 0.43783570427353385,
+          "original_peer_positions": {
+            "tb1": [
+              -4.679739150445421,
+              1.486887103684711
+            ],
+            "tb2": [
+              -3.476918836644024,
+              1.077108319887371
+            ]
+          },
+          "original_source_pose_error_m": 0.0,
+          "comparison": {
+            "old_visible": {
+              "pose": [
+                -3.78323836347462,
+                1.3891188512968213,
+                1.656069475764669
+              ],
+              "planned_distance_m": 0.43783570427353385,
+              "remaining_distance_m": 0.0,
+              "same_as_original_endpoint": true
+            },
+            "complete_curve": {
+              "pose": [
+                -3.78323836347462,
+                1.3891188512968213,
+                1.656069475764669
+              ],
+              "planned_distance_m": 0.43783570427353385,
+              "remaining_distance_m": 0.0,
+              "same_as_original_endpoint": true
+            }
+          }
+        }
+      ]
+    },
+    "p2c_v68_assignment_time1.json": {
+      "status": "PASS",
+      "scope": "Conditional same original delivered grids/poses/models only; original assignment exactly reconstructed, no task causal replay or runtime source/energy admission",
+      "rows": [
+        {
+          "run": "20261010_p2c_v68",
+          "case": "dev_forced2",
+          "event_time": 2347.282,
+          "choices": {
+            "original": {
+              "assignment": {
+                "tb1": [
+                  -4.676820743766456,
+                  1.4891188527869375,
+                  1.3074992370914622
+                ],
+                "tb2": [
+                  -3.7768207303554107,
+                  1.3891188512968213,
+                  1.656069475764669
+                ]
+              },
+              "first_tier_matches": true,
+              "score": [
+                0,
+                0,
+                1.473833810777609,
+                94.35928867716069,
+                -35.71338537496207,
+                307.0660171779823,
+                0.29446147269268297,
+                339.69343417595184
+              ],
+              "serial_routes_qualified": true,
+              "serial_route_distances_m": {
+                "tb1": 1.6450764363603139,
+                "tb2": 15.370558394242796
+              }
+            },
+            "time_first": {
+              "assignment": {
+                "tb1": [
+                  -3.976820733335643,
+                  2.9891188751386792,
+                  1.5937220744644915
+                ],
+                "tb2": [
+                  -3.7768207303554107,
+                  1.3891188512968213,
+                  1.656069475764669
+                ]
+              },
+              "first_tier_matches": true,
+              "score": [
+                0,
+                0,
+                86.63734693064386,
+                1.9677935426946953,
+                -36.332871917253286,
+                307.0660171779823,
+                0.0,
+                311.8944443027285
+              ],
+              "serial_routes_qualified": true,
+              "serial_route_distances_m": {
+                "tb1": 0.2551269219872857,
+                "tb2": 15.370558394242796
+              }
+            }
+          }
+        },
+        {
+          "run": "20261010_p2c_v67",
+          "case": "dev_forced2",
+          "event_time": 2261.482,
+          "choices": {
+            "original": {
+              "assignment": {
+                "tb1": [
+                  -3.7935477397109345,
+                  1.4085863716809994,
+                  1.6502962307916778
+                ],
+                "tb2": [
+                  -4.69354775312198,
+                  1.5085863731711155,
+                  1.2992949400533675
+                ]
+              },
+              "first_tier_matches": true,
+              "score": [
+                0,
+                0,
+                0.427619617254288,
+                59.34772411090813,
+                -53.477805567155485,
+                188.09545442950522,
+                0.29446147269268297,
+                213.65180361560928
+              ],
+              "serial_routes_qualified": true,
+              "serial_route_distances_m": {
+                "tb2": 1.2904962630845251,
+                "tb1": 9.427643203270039
+              }
+            },
+            "time_first": {
+              "assignment": {
+                "tb1": [
+                  -3.7935477397109345,
+                  1.4085863716809994,
+                  1.6502962307916778
+                ],
+                "tb2": [
+                  -3.9935477426911667,
+                  3.0085863955228573,
+                  1.577304373673636
+                ]
+              },
+              "first_tier_matches": true,
+              "score": [
+                0,
+                0,
+                55.093916131136794,
+                0.9215793491713743,
+                -53.165171284831914,
+                188.09545442950522,
+                0.0,
+                198.33809511662452
+              ],
+              "serial_routes_qualified": true,
+              "serial_route_distances_m": {
+                "tb2": 0.524810826725685,
+                "tb1": 9.427643203270039
+              }
+            }
+          }
+        },
+        {
+          "run": "20261010_p2c_v66",
+          "case": "dev_forced2",
+          "event_time": 2249.082,
+          "choices": {
+            "original": {
+              "assignment": {
+                "tb1": [
+                  -3.783466731175878,
+                  1.3991640900630218,
+                  1.6538600228754765
+                ],
+                "tb2": [
+                  -4.683466744586923,
+                  1.499164091553138,
+                  1.30401563496331
+                ]
+              },
+              "first_tier_matches": true,
+              "score": [
+                0,
+                0,
+                0.427619617254288,
+                53.918791841876164,
+                -47.82973671963468,
+                163.5512985522208,
+                0.29446147269268297,
+                194.10764773832486
+              ],
+              "serial_routes_qualified": true,
+              "serial_route_distances_m": {
+                "tb2": 1.5464908070961443,
+                "tb1": 8.185269339281286
+              }
+            },
+            "time_first": {
+              "assignment": {
+                "tb1": [
+                  -3.783466731175878,
+                  1.3991640900630218,
+                  1.6538600228754765
+                ],
+                "tb2": [
+                  -3.98346673415611,
+                  2.9991641139048797,
+                  1.587314281821449
+                ]
+              },
+              "first_tier_matches": true,
+              "score": [
+                0,
+                0,
+                46.887206042934935,
+                0.9433871326391361,
+                -48.276634275031995,
+                163.5512985522208,
+                0.0,
+                168.7939392393401
+              ],
+              "serial_routes_qualified": true,
+              "serial_route_distances_m": {
+                "tb2": 0.28080536328672345,
+                "tb1": 8.185269339281286
+              }
+            }
+          }
+        },
+        {
+          "run": "20261010_p2c_v64",
+          "case": "dev_lab101",
+          "event_time": 2191.482,
+          "choices": {
+            "original": {
+              "assignment": {
+                "tb1": [
+                  -4.021547127219517,
+                  1.4139543911702015,
+                  1.562464444116113
+                ],
+                "tb2": [
+                  -4.7215471376503295,
+                  3.3139544194824078,
+                  0.7601820396094482
+                ],
+                "tb3": [
+                  -3.7215471227491683,
+                  3.0139544150120594,
+                  1.8460231521557262
+                ]
+              },
+              "first_tier_matches": true,
+              "score": [
+                0,
+                1,
+                4.917832092221048,
+                220.12713753554226,
+                -4.159384744774606,
+                306.42135623730974,
+                0.15596933355167586,
+                476.7888886054568
+              ],
+              "serial_routes_qualified": true,
+              "serial_route_distances_m": {
+                "tb2": 1.0132230104075206,
+                "tb3": 16.793639657481933,
+                "tb1": 7.525118086897097
+              }
+            },
+            "time_first": {
+              "assignment": {
+                "tb1": [
+                  -3.571547120513994,
+                  1.4639543919152596,
+                  1.7381611894529152
+                ],
+                "tb2": [
+                  -3.7215471227491683,
+                  3.0139544150120594,
+                  1.8460231521557262
+                ],
+                "tb3": [
+                  -4.7215471376503295,
+                  3.3139544194824078,
+                  0.7601820396094482
+                ]
+              },
+              "first_tier_matches": true,
+              "score": [
+                0,
+                1,
+                188.34505079264682,
+                4.931394329406189,
+                -5.6344781593486175,
+                314.9066376115484,
+                0.15596933355167586,
+                469.0315292925761
+              ],
+              "serial_routes_qualified": true,
+              "serial_route_distances_m": {
+                "tb2": 0.6303802922281007,
+                "tb1": 7.0958287586188415,
+                "tb3": 15.793639642580777
+              }
+            }
+          }
+        },
+        {
+          "run": "20261010_p2c_v64",
+          "case": "dev_rooms202",
+          "event_time": 172.2,
+          "choices": {
+            "original": {
+              "assignment": {
+                "tb1": [
+                  4.996551412154403,
+                  1.9795303220587517,
+                  1.5674169272966894
+                ],
+                "tb2": [
+                  3.6965513927828937,
+                  0.7295303034323002,
+                  1.0496479742871232
+                ],
+                "tb3": [
+                  4.096551398743358,
+                  1.429530313863113,
+                  1.0487570032319373
+                ]
+              },
+              "first_tier_matches": true,
+              "score": [
+                0,
+                0,
+                1.4981714924255478,
+                75.11704451858381,
+                -14.43263261674559,
+                154.61017305526647,
+                0.5390230419529785,
+                270.42135623730945
+              ],
+              "serial_routes_qualified": true,
+              "serial_route_distances_m": {
+                "tb3": 0.8728983767437165,
+                "tb1": 8.074499933445487,
+                "tb2": 4.941828026404934
+              }
+            },
+            "time_first": {
+              "assignment": {
+                "tb1": [
+                  4.996551412154403,
+                  0.37953029821689377,
+                  1.5694803085816826
+                ],
+                "tb2": [
+                  3.6965513927828937,
+                  0.7295303034323002,
+                  1.0496479742871232
+                ],
+                "tb3": [
+                  4.496551404703823,
+                  2.129530324293926,
+                  1.0464373528701392
+                ]
+              },
+              "first_tier_matches": true,
+              "score": [
+                0,
+                0,
+                64.0896874626425,
+                2.102934732607719,
+                -13.735472313514276,
+                129.63961030678917,
+                0.0,
+                230.72287142747433
+              ],
+              "serial_routes_qualified": true,
+              "serial_route_distances_m": {
+                "tb3": 0.13650226270266658,
+                "tb1": 6.503789231921425,
+                "tb2": 4.941828026404934
+              }
+            }
+          }
+        },
+        {
+          "run": "20261010_p2c_v64",
+          "case": "dev_corridors303",
+          "event_time": 218.2,
+          "choices": {
+            "original": {
+              "assignment": {
+                "tb1": [
+                  -3.8300570312241886,
+                  2.0363285727262603,
+                  -1.8290372627327494
+                ],
+                "tb2": [
+                  -5.180057051340756,
+                  2.0363285727262603,
+                  -1.3088314615725718
+                ],
+                "tb3": [
+                  -4.030057034204421,
+                  1.2363285608053314,
+                  -1.8351169237226816
+                ]
+              },
+              "first_tier_matches": true,
+              "score": [
+                0,
+                1,
+                2.2631241800008146,
+                227.9487343707811,
+                -5.169977269541992,
+                326.8599564173229,
+                0.3753788625886555,
+                532.0681092190364
+              ],
+              "serial_routes_qualified": true,
+              "serial_route_distances_m": {
+                "tb2": 0.2888278017769503,
+                "tb3": 10.009362864802418,
+                "tb1": 16.35229488084297
+              }
+            },
+            "time_first": {
+              "assignment": {
+                "tb1": [
+                  -2.6800570140878532,
+                  1.3363285622954475,
+                  -2.351713021441041
+                ],
+                "tb2": [
+                  -5.180057051340756,
+                  2.0363285727262603,
+                  -1.3088314615725718
+                ],
+                "tb3": [
+                  -3.8300570312241886,
+                  2.0363285727262603,
+                  -1.8290372627327494
+                ]
+              },
+              "first_tier_matches": true,
+              "score": [
+                0,
+                1,
+                223.47298475625178,
+                3.2834428152271045,
+                -5.25949226183258,
+                327.8183258569801,
+                0.0,
+                515.955410846828
+              ],
+              "serial_routes_qualified": true,
+              "serial_route_distances_m": {
+                "tb2": 0.2888278017769503,
+                "tb3": 9.15580946149021,
+                "tb1": 16.400213353539886
+              }
+            }
+          }
+        }
+      ]
+    },
+    "p2c_v68_preparation_geometry1.json": {
+      "status": "PASS",
+      "scope": "Conditional preparation geometry on exact original survey/map/pose/model snapshots; no executed staging, physical motion, time gain or task causal replay",
+      "survey_event_time": 2337.482,
+      "survey_robot": "tb1",
+      "original_survey_route": [
+        [
+          -3.684862204721402,
+          1.5604868415159983
+        ],
+        [
+          -3.6768207288652945,
+          1.5391188535319955
+        ],
+        [
+          -3.6768207288652945,
+          1.5891188542770536
+        ],
+        [
+          -3.6768207288652945,
+          1.6391188550221116
+        ],
+        [
+          -3.7268207296103526,
+          1.6891188557671697
+        ],
+        [
+          -3.7768207303554107,
+          1.7391188565122278
+        ],
+        [
+          -3.8268207311004687,
+          1.7891188572572858
+        ],
+        [
+          -3.876820731845527,
+          1.8391188580023439
+        ],
+        [
+          -3.926820732590585,
+          1.889118858747402
+        ],
+        [
+          -3.976820733335643,
+          1.93911885949246
+        ],
+        [
+          -4.026820734080701,
+          1.989118860237518
+        ],
+        [
+          -4.026820734080701,
+          2.039118860982576
+        ],
+        [
+          -4.026820734080701,
+          2.089118861727634
+        ],
+        [
+          -4.076820734825759,
+          2.1391188624726922
+        ],
+        [
+          -4.076820734825759,
+          2.1891188632177503
+        ],
+        [
+          -4.076820734825759,
+          2.2391188639628083
+        ],
+        [
+          -4.076820734825759,
+          2.2891188647078664
+        ],
+        [
+          -4.076820734825759,
+          2.3391188654529245
+        ],
+        [
+          -4.076820734825759,
+          2.3891188661979825
+        ],
+        [
+          -4.076820734825759,
+          2.4391188669430406
+        ],
+        [
+          -4.076820734825759,
+          2.4891188676880986
+        ],
+        [
+          -4.076820734825759,
+          2.5391188684331567
+        ],
+        [
+          -4.076820734825759,
+          2.5891188691782148
+        ],
+        [
+          -4.026820734080701,
+          2.639118869923273
+        ],
+        [
+          -3.976820733335643,
+          2.689118870668331
+        ],
+        [
+          -3.926820732590585,
+          2.739118871413389
+        ],
+        [
+          -3.876820731845527,
+          2.789118872158447
+        ]
+      ],
+      "original_source_maps": 2,
+      "stage_robot": "tb2",
+      "route": [
+        [
+          2.7982320723241116,
+          3.2266677421882504
+        ],
+        [
+          2.823179367992253,
+          3.2391188788639695
+        ],
+        [
+          2.773179367247195,
+          3.2391188788639695
+        ],
+        [
+          2.723179366502137,
+          3.2391188788639695
+        ],
+        [
+          2.673179365757079,
+          3.2391188788639695
+        ],
+        [
+          2.623179365012021,
+          3.1891188781189115
+        ],
+        [
+          2.573179364266963,
+          3.1391188773738534
+        ],
+        [
+          2.523179363521905,
+          3.0891188766287954
+        ],
+        [
+          2.473179362776847,
+          3.0891188766287954
+        ],
+        [
+          2.4231793620317887,
+          3.0891188766287954
+        ],
+        [
+          2.3731793612867307,
+          3.0891188766287954
+        ],
+        [
+          2.3231793605416726,
+          3.0891188766287954
+        ],
+        [
+          2.2731793597966146,
+          3.0891188766287954
+        ],
+        [
+          2.2231793590515565,
+          3.0891188766287954
+        ],
+        [
+          2.1731793583064984,
+          3.0891188766287954
+        ],
+        [
+          2.1231793575614404,
+          3.0891188766287954
+        ],
+        [
+          2.0731793568163823,
+          3.0891188766287954
+        ],
+        [
+          2.0231793560713243,
+          3.0391188758837373
+        ],
+        [
+          1.9731793553262662,
+          2.9891188751386792
+        ],
+        [
+          1.9231793545812081,
+          2.939118874393621
+        ],
+        [
+          1.87317935383615,
+          2.889118873648563
+        ],
+        [
+          1.823179353091092,
+          2.839118872903505
+        ],
+        [
+          1.773179352346034,
+          2.789118872158447
+        ],
+        [
+          1.773179352346034,
+          2.739118871413389
+        ],
+        [
+          1.723179351600976,
+          2.689118870668331
+        ],
+        [
+          1.723179351600976,
+          2.639118869923273
+        ],
+        [
+          1.723179351600976,
+          2.5891188691782148
+        ],
+        [
+          1.6731793508559178,
+          2.5391188684331567
+        ],
+        [
+          1.6731793508559178,
+          2.4891188676880986
+        ],
+        [
+          1.6731793508559178,
+          2.4391188669430406
+        ],
+        [
+          1.6731793508559178,
+          2.3891188661979825
+        ],
+        [
+          1.6731793508559178,
+          2.3391188654529245
+        ],
+        [
+          1.6731793508559178,
+          2.2891188647078664
+        ],
+        [
+          1.6731793508559178,
+          2.2391188639628083
+        ],
+        [
+          1.6731793508559178,
+          2.1891188632177503
+        ],
+        [
+          1.6731793508559178,
+          2.1391188624726922
+        ],
+        [
+          1.6731793508559178,
+          2.089118861727634
+        ],
+        [
+          1.6731793508559178,
+          2.039118860982576
+        ],
+        [
+          1.6731793508559178,
+          1.989118860237518
+        ],
+        [
+          1.6731793508559178,
+          1.93911885949246
+        ],
+        [
+          1.6731793508559178,
+          1.889118858747402
+        ],
+        [
+          1.6731793508559178,
+          1.8391188580023439
+        ],
+        [
+          1.6731793508559178,
+          1.7891188572572858
+        ],
+        [
+          1.6731793508559178,
+          1.7391188565122278
+        ],
+        [
+          1.6731793508559178,
+          1.6891188557671697
+        ],
+        [
+          1.6731793508559178,
+          1.6391188550221116
+        ],
+        [
+          1.6731793508559178,
+          1.5891188542770536
+        ],
+        [
+          1.6731793508559178,
+          1.5391188535319955
+        ],
+        [
+          1.6731793508559178,
+          1.4891188527869375
+        ],
+        [
+          1.6731793508559178,
+          1.4391188520418794
+        ],
+        [
+          1.6731793508559178,
+          1.3891188512968213
+        ],
+        [
+          1.6731793508559178,
+          1.3391188505517633
+        ],
+        [
+          1.6731793508559178,
+          1.2891188498067052
+        ],
+        [
+          1.6731793508559178,
+          1.2391188490616472
+        ],
+        [
+          1.6731793508559178,
+          1.189118848316589
+        ],
+        [
+          1.6731793508559178,
+          1.139118847571531
+        ],
+        [
+          1.6731793508559178,
+          1.089118846826473
+        ],
+        [
+          1.6731793508559178,
+          1.039118846081415
+        ],
+        [
+          1.6731793508559178,
+          0.9891188453363569
+        ],
+        [
+          1.6731793508559178,
+          0.9391188445912988
+        ],
+        [
+          1.6231793501108598,
+          0.8891188438462407
+        ],
+        [
+          1.6231793501108598,
+          0.8391188431011827
+        ],
+        [
+          1.6231793501108598,
+          0.7891188423561246
+        ],
+        [
+          1.6231793501108598,
+          0.7391188416110666
+        ],
+        [
+          1.6231793501108598,
+          0.6891188408660085
+        ],
+        [
+          1.6231793501108598,
+          0.6391188401209504
+        ],
+        [
+          1.6231793501108598,
+          0.5891188393758924
+        ],
+        [
+          1.6231793501108598,
+          0.5391188386308343
+        ],
+        [
+          1.6231793501108598,
+          0.48911883788577626
+        ],
+        [
+          1.6231793501108598,
+          0.4391188371407182
+        ],
+        [
+          1.6231793501108598,
+          0.38911883639566014
+        ],
+        [
+          1.6231793501108598,
+          0.3391188356506021
+        ],
+        [
+          1.5731793493658017,
+          0.289118834905544
+        ],
+        [
+          1.5231793486207437,
+          0.23911883416048596
+        ],
+        [
+          1.4731793478756856,
+          0.1891188334154279
+        ],
+        [
+          1.4231793471306275,
+          0.13911883267036984
+        ],
+        [
+          1.3731793463855695,
+          0.08911883192531178
+        ],
+        [
+          1.3231793456405114,
+          0.03911883118025372
+        ],
+        [
+          1.2731793448954534,
+          -0.010881169564804338
+        ],
+        [
+          1.2231793441503953,
+          -0.0608811703098624
+        ],
+        [
+          1.1731793434053372,
+          -0.11088117105492046
+        ],
+        [
+          1.1231793426602792,
+          -0.16088117179997852
+        ],
+        [
+          1.0731793419152211,
+          -0.21088117254503658
+        ],
+        [
+          1.023179341170163,
+          -0.26088117329009464
+        ],
+        [
+          0.973179340425105,
+          -0.3108811740351527
+        ],
+        [
+          0.923179339680047,
+          -0.36088117478021076
+        ],
+        [
+          0.8731793389349889,
+          -0.4108811755252688
+        ],
+        [
+          0.8231793381899308,
+          -0.4608811762703269
+        ],
+        [
+          0.7731793374448728,
+          -0.5108811770153849
+        ]
+      ],
+      "path_distance_m": 4.9784916036691165,
+      "endpoint": [
+        0.7731793374448728,
+        -0.5108811770153849
+      ],
+      "required_energy": 16.214725971471,
+      "available_energy": 66.29098900148105,
+      "source_ages": {
+        "headquarters/fused_map_snapshot": {
+          "age_sec": 2.099999999999909,
+          "source_time": 2335.382,
+          "ttl_sec": 5.0
+        },
+        "headquarters/target_detection": {
+          "age_sec": 1.699999999999818,
+          "source_time": 2335.782,
+          "ttl_sec": 60.0
+        },
+        "tb1/battery_state": {
+          "age_sec": 1.400000000000091,
+          "source_time": 2336.082,
+          "ttl_sec": 5.0
+        },
+        "tb1/frame_state": {
+          "age_sec": 1.68100000000004,
+          "source_time": 2335.801,
+          "ttl_sec": 2.0
+        },
+        "tb1/map_snapshot": {
+          "age_sec": 2.280999999999949,
+          "source_time": 2335.201,
+          "ttl_sec": 5.0
+        },
+        "tb1/pose_state": {
+          "age_sec": 1.2779999999997926,
+          "source_time": 2336.204,
+          "ttl_sec": 2.0
+        },
+        "tb2/battery_state": {
+          "age_sec": 1.400000000000091,
+          "source_time": 2336.082,
+          "ttl_sec": 5.0
+        },
+        "tb2/frame_state": {
+          "age_sec": 1.7130000000001928,
+          "source_time": 2335.769,
+          "ttl_sec": 2.0
+        },
+        "tb2/map_snapshot": {
+          "age_sec": 3.112999999999829,
+          "source_time": 2334.369,
+          "ttl_sec": 5.0
+        },
+        "tb2/pose_state": {
+          "age_sec": 1.2970000000000255,
+          "source_time": 2336.185,
+          "ttl_sec": 2.0
+        }
+      }
+    }
+  },
+  "source_digests": {
+    "admission_protocol": "05f15651bfc831c541d5a662491a0467e64ae4084c27655a6f27e1ed56e6064a",
+    "control_cli": "f70c8f7a6ee4fb9a0a7d2e9468e3c77b3cc77d729cbd2a544c1f45adbf997c09",
+    "control_schema": "7fa7e5fa63dd0fb1e319fd08694773c675ac3fe8dcefa0051dd4f0fe71958d28",
+    "entrypoint": "78edb424db0a63347cf6b28f3fbff72a20207c3852f26a004907f868e8170a1f",
+    "episode_command_builder": "972dbc2fb118a2f2fda2689ae162948689ff28f16914d17b1135fdd182831a86",
+    "exploration": "97dafc136a7c87e8db73d331dc87f19c340a9fe4dc915024834f9ff91ffab4fa",
+    "launch": "6f26d9c5b1dce5bc681bc59cfe8fb8be68baff823f5334939f33261392380692",
+    "manifest": "d110cd044fbdf32f6b32c99215a5368a6f1cc210809eb031bee0f42d1c332b18",
+    "message_schema": "e0648e61473dfd2931038c79cda8a6fe4bf09c1d00f8d4acdfa0f4879e72925c",
+    "native_graph_reader": "df8798fd494f5628719f6960d5c549233805898c88842776035567b165928ed1",
+    "navigation_capture": "739f2b9e7a7c89fbbe10860e9de76e70e849bbc12d048ad066a32da38837c636",
+    "navigation_dispatch_reader": "69ec0bf55849112834f6b844e248b2c848290ff1c3d6f8a8e7268d381de724a0",
+    "outbound_route_reader": "440ee0ba46828150a3d72bd26762aca342485cb18246a7bbf002ac7e82a22069",
+    "params": "2cb9b9e26015cbe79867fe3750296d9cb7626a05ad16f595b7692db4b4490f4f",
+    "physics_observer": "588693bf5f934081452925fc3ca80e10465f67ccc1738066cd91fb9fdf48527b",
+    "rally_connection_reader": "8d05c6a0b8ce8778b6997d0b5086d717c0d9e77bc48dc3c0645917352ea4134c",
+    "rally_transit_reader": "6fbaa087c212223cbce36ef81b13a0f2acb0382c020db5e4fa03b54d2f36f03e",
+    "refuge_release_reader": "f816d383aeb2211ace40476365734e5bc2883b9cfd9d5217bee021786e3a0ba3",
+    "return_preparation_reader": "0458ff41855b77c1ea507f837d36dde4d43e6b5fdb6f83aba5464b51ca826099",
+    "robot_description": "9770e035bc85014df99373d3557b5c567b3242a51794d53dcbbff617057538a8",
+    "robot_models": "55494138cfad63dbb2d36331bc3a8c784c65d4632cc19217a58ce9f129ae69dd",
+    "runner": "3e0e391e6ce3a5a193167de7e5477a3df56c4e2e39f90a3eb07c7e6844a18cc4",
+    "safety_observer": "0cbb5ab2e12eb6933da06f7fe4820a03be10e04be28c1e927f9f33766329663c",
+    "scan_self_filter_reader": "25b68c64593f0aa39aa63ceedcb9dae9b61df6ff1c8a16c351aeb206f5a4c94c",
+    "slam": "37295c44991eb0c84883b966f81ca06928e8c1e1a45bed18f4605252dc9374c9",
+    "smoke": "42cf2f93ba691e2f281d3e2938bc4c005346fcf3eac061edf1317c5b22492359",
+    "staging_apparatus": "7b281c9a6ded4d1ff61649b709b8090d13d1834af21643aa0822b3d5cdc7645c",
+    "worlds": "2ee10406031815e3d0ea2e76074706a8e150e636ab2366428b201ecc72a5cc9a"
+  },
+  "raw_bindings": {
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2/native_graph.json": "ce1f69530c9629c18d025bb1a66a73e94520ceb53bbda6db3a44bff68f72e334",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2/manifest.json": "d95368f5bced27793dd882e1cf72ce084a0c47ea5557a869e356e5498e4b8935",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2/initial_bypass_graph.json": "d0241d87b145fb78eb5c604a5aa5e8577749621613230a7173d0e8b8616d76ce",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2/graph.json": "ce1f69530c9629c18d025bb1a66a73e94520ceb53bbda6db3a44bff68f72e334",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2/20261010_p2c_v68_dev_forced2.csv": "eb276c96bf8f2d18834f09683fb187a9db096fe70f3a02ca9d18798a7633d86a",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2/ledger.jsonl": "bdd66512813536be38b55305295bd28fc8da31ebc7809150a83d00592067b15f",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2/20261010_p2c_v68_dev_forced2.json": "72bb82ecf6baf5e3a15bed9adaa92f0def7dcb35079ff7e5d90403df8c815484",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2/schedule.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2/summary.json": "9a0250132a0b5a55856c34e29a4867c2d6b25139a234b526c9ad0954501c2763",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2/safety_events.jsonl": "75556dfc30b15265ceadd7c4e53a83743739f141b50af031e71e7b0d41681368",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2/observer.log": "99f7e6811c4734d904e5cd3e7617b002bd513012e1bbe8b22952340c8e1b00ce",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2/navigation_inputs.jsonl.gz": "f28fb60cc8321d7031eb30145ef12334df7d5ff6c1dee41b64d07220d5e023f5",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2/runner.log": "10afae79a05cf76d3914a3c620aab61329f98d1f11e7987bfa5a59d6a02f5c37",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2/launch/robots2_seed303_20261010-210352.log": "66988d106d4c043a638216b402cccc2aca7e5ba10395fae4bbb03bcb8675919f",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2/ledger_metrics/live.jsonl": "a3f9d8d4c0ca0eff0ee3fec61b41491b20c1bf3e9fc8923fee77e315b1d6c8c5",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2/ledger_metrics/live_windows.csv": "278c96710a5ff05e4f64dbcafbd2164ad9f3b681c1ae19281249f5b68b0f2251",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2/ledger_metrics/curves.svg": "8388c85bccb3ac64cc660e0ebd41377e89a9d198039bfc59218630e34c49901e",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2/ledger_metrics/windows.jsonl": "14d39adc6b927d1d3f8d857791656fd5e5f840a15c054b7c90d0b210aff1acae",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2/ledger_metrics/events.jsonl": "22440c016954c6793647412830a34174cd4c99e498ebcc79dafecdd502a3bb1a",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2/ledger_metrics/windows.csv": "278c96710a5ff05e4f64dbcafbd2164ad9f3b681c1ae19281249f5b68b0f2251",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2/ledger_metrics/summary.json": "7570e194d30e71d34c04d83f2ad92dfa0aa588f3c0cfb9d4d32d1f1f30f30a9e",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2/ledger_metrics/inputs.jsonl": "c25d22e89546b38b431234beece856cdffba44892a3b496f2e3df9b0f5f9a5d6"
+  },
+  "originals": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_v68_failed_development_originals.json.gz",
+    "sha256": "d57541a85f49ba1f711a7e9f9af699a2d8e56efff44eb2ad4428b7127763404d"
+  },
+  "not_invoked": [
+    "remaining3 development",
+    "17formal",
+    "2physical",
+    "holdout_ideal917",
+    "holdout_fault917"
+  ]
+}
