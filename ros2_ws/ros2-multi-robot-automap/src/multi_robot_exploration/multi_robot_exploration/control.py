@@ -7568,7 +7568,7 @@ class HeadquartersControl(Node):
                     return
                 completed = getattr(self, 'successful_exploration_legs', {}).get(robot_name, 0)
                 camera_first = (not search and getattr(self, 'enable_rally', False) and bool(camera_views)
-                    and type(completed) is int and completed >= 1)
+                    and type(completed) is int and completed >= 1 and completed % 2 == 1)
                 camera_mapping = (refine == 'known_space' and camera_first
                     and robot_name in camera_primary_attempted)
                 initial_search=(not search and getattr(self,'enable_rally',False)

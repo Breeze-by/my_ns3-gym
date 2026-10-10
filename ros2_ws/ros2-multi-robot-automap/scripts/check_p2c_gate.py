@@ -966,7 +966,8 @@ def check_one(path,config):
     from p2c_initial_replenishment import initial_replenishment_audit
     replenishment=initial_replenishment_audit(directory/'ledger.jsonl',bool(config.get('initial_near_home_replenishment')),
         directory/'safety_events.jsonl',bool(config.get('funded_initial_goal_completion')),
-        directory/'navigation_inputs.jsonl.gz',bool(config.get('camera_first_search')))
+        directory/'navigation_inputs.jsonl.gz',bool(config.get('camera_first_search')),
+            isinstance(config.get('camera_first_search'), dict) and bool(config['camera_first_search'].get('alternate_on_real_work')))
     if config.get('initial_near_home_replenishment'):
         from run_p2d_baseline import file_digest
         assert row['source_digests']['initial_replenishment_reader']==file_digest(Path(__file__).with_name('p2c_initial_replenishment.py'))

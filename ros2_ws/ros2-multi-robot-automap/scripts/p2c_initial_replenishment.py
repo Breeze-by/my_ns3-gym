@@ -9,7 +9,7 @@ from p2c_return_preparation import audit_preparation, decode_grid
 
 
 def initial_replenishment_audit(ledger, enabled=False, native_capture=None, require_completion_hold=False, map_capture=None,
-                              require_camera_first=False):
+                              require_camera_first=False, require_alternating=False):
     native = {}
     if enabled:
         assert native_capture is not None and native_capture.is_file()
@@ -48,7 +48,7 @@ def initial_replenishment_audit(ledger, enabled=False, native_capture=None, requ
         if len(kinds) == 1 and kinds <= {'exploration', 'initial_visual_search'}:
             successes.setdefault(key[0], []).append(at)
     audit_completion_holds(holds, navigation, commands, successes, native, require_completion_hold, map_capture)
-    camera_first = audit_camera_first(navigation, successes, require_camera_first)
+    camera_first = audit_camera_first(navigation, successes, require_camera_first, require_alternating)
     decisions, robots = 0, set()
     for line in ledger.open():
         event = json.loads(line)
@@ -127,8 +127,9 @@ def initial_replenishment_audit(ledger, enabled=False, native_capture=None, requ
         scope='One initial near-home replenishment after actual ordinary success; scheduling threshold and current full trip cost rebuilt separately. Native credit and physical return remain separate original audits.')
 
 
-def audit_camera_first(navigation, successes, required):
+def audit_camera_first(navigation, successes, required, alternating=False):
     """Bind the camera-first preference to actual prior ordinary outcomes."""
+    assert not alternating or required, 'alternating priority requires camera declaration'
     visual = mapping = 0
     for name, events in navigation.items():
         for event in events:
@@ -148,6 +149,8 @@ def audit_camera_first(navigation, successes, required):
             assert math.isfinite(generated) and generated <= evaluated <= now
             completed = saved['completed_exploration_legs']
             assert type(completed) is int and 1 <= completed <= sum(at <= generated for at in successes.get(name, []))
+            if alternating:
+                assert completed % 2 == 1, 'camera priority needs an odd real-work count'
             count = saved['camera_history_count']
             assert type(count) is int and count > 0
             for key, sample in event['inputs'].items():
@@ -173,7 +176,7 @@ def audit_camera_first(navigation, successes, required):
                         assert name in row['considered_candidates']
                         assert all(type(n) is int and n >= 0 for n in row['considered_candidates'].values())
                 mapping += 1
-    return dict(status='PASS', enabled=required, camera_primary=visual, mapping_after_camera=mapping,
+    return dict(status='PASS', enabled=required, alternating_declared=alternating, camera_primary=visual, mapping_after_camera=mapping,
         scope='Prior real ordinary outcomes and current selection provenance; full geometry/energy/heading remain the independent exploration audit. Attempt counters do not prove absence of every alternative.')
 
 

@@ -125,12 +125,17 @@ def test_expiration_during_camera_generation_rejects_then_new_sources_reprice(mo
 def test_original_checkpoints_choose_a_funded_camera_leg_with_current_physical_budget(index):
     h,requests,events,sent=original_snapshot_node(copy.deepcopy(SAVED['snapshots'][index]));install_publication(h,events,sent)
     c.HeadquartersControl.assign_idle_robots(h)
-    assert len(sent)==1 and not requests and h.initial_search_goals[sent[0][0]]
-    expected=SAVED['comparisons'][index]['candidate']['goals'][0]
+    assert len(sent)==1 and not requests
+    completed=h.successful_exploration_legs[sent[0][0]]
+    expected=SAVED['comparisons'][index]['candidate' if completed % 2 else 'frozen']['goals'][0]
+    assert h.initial_search_goals[sent[0][0]] == expected['visual']
     a=sent[0][1];assert [a.navigation_x,a.navigation_y]==expected['position'] and a.navigation_yaw==expected['yaw']
     assert a.path_distance_m==pytest.approx(expected['planned_distance_m'])
     saved=events[0]['travel_preference'];assert saved['required_energy'] < h.battery_states[sent[0][0]]['energy']
-    assert saved['camera_first_search']['completed_exploration_legs']>=1
+    if completed % 2:
+        assert saved['camera_first_search']['completed_exploration_legs']==completed
+    else:
+        assert saved['camera_first_search'] is None
 
 
 def reader_inputs():

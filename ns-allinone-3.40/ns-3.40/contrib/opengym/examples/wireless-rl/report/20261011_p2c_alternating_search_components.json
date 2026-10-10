@@ -1,0 +1,215 @@
+{
+  "status": "PASS",
+  "scope": "Odd real-work camera priority components only;P2C.1 still FAIL pending complete new source-frozen tasks.",
+  "reference_commit": "8668a42012e77f6e7bc8e418bcd6680b642fe68e",
+  "source_scope": {
+    "status": "PASS",
+    "reference_commit": "8668a42012e77f6e7bc8e418bcd6680b642fe68e",
+    "central_changed": [
+      "assign_idle_robots"
+    ],
+    "central_added": [],
+    "central_unchanged": 86,
+    "pure_unchanged": 104,
+    "reader_changed": [
+      "initial_replenishment_audit",
+      "audit_camera_first"
+    ],
+    "reader_added": [],
+    "gate_changed": [
+      "check_one"
+    ],
+    "unchanged_sources": {
+      "src/multi_robot_exploration/multi_robot_exploration/battery_manager.py": "f4845fb03667e766c0202a470fa5f2c3c4a49ff39f77a898bf90ec1b60261a6c",
+      "src/multi_robot_exploration/multi_robot_exploration/action_callbacks.py": "7edc9b3923caedf88f236311026f568540779653dafc0ce0aee01dc201880f8b",
+      "src/multi_robot_exploration/multi_robot_exploration/tf_ingress_sampler.py": "819573fffb17817c2135225f4effca4ea9c61422e309a3176f7933fdac2fc16d",
+      "src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py": "bf107d4711abcd4861d092c533d0d00baa8478ad3ce314e2d40451c9858f7e43",
+      "src/slam_toolbox/src/slam_toolbox_multirobot.cpp": "1c9d41b108bce96c75fd108ace704df502b29bc622c60930cc6629b6f1c21d24",
+      "src/slam_toolbox/include/slam_toolbox/scan_self_filter.hpp": "4e9b7acde1a50bdbae3cb104e3c95fb2c6e3699368dc511b282fab4e14b0cdab",
+      "src/slam_toolbox/config/mapper_params_online_multi_async.yaml": "3a5339dd39476b196fc6f0e62c225bcb85889ed728ce279f45d759e5319dcde1",
+      "scripts/observe_p3b5.py": "8605217913f55d1761943bf701381c5da2fd924dc44cf5e7fbd9cf6b73f5bbc6",
+      "scripts/p2c_native_graph.py": "e08b675ceba504d8b3562a7b11c2084d6cf9a3bc39ec4954758ac77c31c6a897",
+      "scripts/ros_smoke_test.py": "b2558586c44e808a603b19f9bfc360efa579c37d029b8271e46e37732bd761bf",
+      "scripts/run_p3b5_tasks.py": "a3438c304c205747daa992647a3688ca9afb1d43684a3e4d2ecff0d7283d84ea",
+      "scripts/run_p3c5_audit.py": "170c726dc2ebef58476f3d25550825a5d5932347a5e12034d5eb945ced10a8da",
+      "scripts/p2c_outbound_routes.py": "33cd3f2b56b8b863c119e93df5fc4124b17933ac8057372cfa9b1a1e04b1c665"
+    },
+    "manifest_changes": {
+      "p2c_integration_manifest.json": [
+        "camera_first_search",
+        "candidate_parent_commit",
+        "predeclared_at_utc",
+        "retained_failed_developments"
+      ],
+      "p2c_blackout_manifest.json": [
+        "camera_first_search",
+        "candidate_parent_commit",
+        "predeclared_at_utc",
+        "retained_failed_developments"
+      ]
+    },
+    "native_sha256": "f4845fb03667e766c0202a470fa5f2c3c4a49ff39f77a898bf90ec1b60261a6c"
+  },
+  "functional": {
+    "passed": 2365,
+    "elapsed_sec": 340.13
+  },
+  "targeted": {
+    "passed": 149,
+    "elapsed_sec": 42.26
+  },
+  "new_tests": 39,
+  "build": {
+    "packages": 4,
+    "elapsed_sec": 5.82
+  },
+  "source_protection": {
+    "protected_files": 190,
+    "historical_authorized_changes": 6,
+    "protocol_cells": 54
+  },
+  "runtime": {
+    "status": "PASS",
+    "scope": "Actual isolated DDS/Futures with recorded map, body and prior-work counters, controlled headings/epochs and stopped clock during fresh computation. Both full versions price current full go/return; at the same recorded even work count old chooses camera,new restores mapping. Current actual Future SUCCESS moves the count to the odd camera-priority turn. Original prior count is controlled snapshot state; only newly returned Future SUCCESS increment is actual. No native credit, Gazebo/Nav2 motion or causal task/deadline proof.",
+    "reference_commit": "8668a42012e77f6e7bc8e418bcd6680b642fe68e",
+    "reference_control_sha256": "ea6c41e8d263ac352a9433ba53e87cf6aea240885e41f8b9cfe42bcbd561df23",
+    "control_sha256": "d095bf3ba003b58d81faad0dff6f23f084ae983d21103abe51f341b9aeb481c3",
+    "reader_sha256": "40687222dadad9bf15361d23b9481d039df12b1632e38079723a65316f69ba6e",
+    "fixture_sha256": "854184a0f2e44e424c7e3a74f49f043a1156263f98c3624d43b3b0f9628b3534",
+    "all_owned_closed": true,
+    "cases": [
+      {
+        "status": "PASS",
+        "label": "frozen",
+        "callbacks": [
+          {
+            "stage": "expire",
+            "clock": 2167.0,
+            "pose_sources": {
+              "tb1": 2164.0,
+              "tb2": 2164.0
+            },
+            "private_decisions": 0
+          },
+          {
+            "stage": "fresh0",
+            "clock": 2168.0,
+            "pose_sources": {
+              "tb1": 2168.0,
+              "tb2": 2168.0
+            },
+            "private_decisions": 0
+          }
+        ],
+        "actual_action_endpoint_goals": [
+          {
+            "robot": "tb2",
+            "source": 2168.0,
+            "point": [
+              1.9420032770728115,
+              3.1166877883348416
+            ],
+            "kind": "synthetic_action_endpoint"
+          }
+        ],
+        "ordinary_future_successes": 1,
+        "travel_audit": {
+          "status": "PASS",
+          "executed_frontier_witnesses": 1,
+          "relative_travel_discounts": 0,
+          "resumed_frontier_witnesses": 0,
+          "required": true,
+          "commitment_required": true,
+          "bounded_commitment_required": true,
+          "initial_visual_witnesses": 1,
+          "initial_search_required": true,
+          "spatial_diversity_witnesses": 1,
+          "camera_aware_visual_witnesses": 1,
+          "camera_search_required": true
+        },
+        "expired_sources_dispatched_zero": true,
+        "refreshed_source_epoch_sec": 2168,
+        "recorded_prior_work_count": 4,
+        "controlled_snapshot_prior_work": true,
+        "gazebo_or_real_nav2_motion": 0,
+        "native_charge_cycles_executed": 0
+      },
+      {
+        "status": "PASS",
+        "label": "current",
+        "callbacks": [
+          {
+            "stage": "expire",
+            "clock": 2167.0,
+            "pose_sources": {
+              "tb1": 2164.0,
+              "tb2": 2164.0
+            },
+            "private_decisions": 0
+          },
+          {
+            "stage": "fresh0",
+            "clock": 2168.0,
+            "pose_sources": {
+              "tb1": 2168.0,
+              "tb2": 2168.0
+            },
+            "private_decisions": 0
+          }
+        ],
+        "actual_action_endpoint_goals": [
+          {
+            "robot": "tb2",
+            "source": 2168.0,
+            "point": [
+              1.9420032770728115,
+              3.1166877883348416
+            ],
+            "kind": "synthetic_action_endpoint"
+          }
+        ],
+        "ordinary_future_successes": 1,
+        "travel_audit": {
+          "status": "PASS",
+          "executed_frontier_witnesses": 1,
+          "relative_travel_discounts": 0,
+          "resumed_frontier_witnesses": 0,
+          "required": true,
+          "commitment_required": true,
+          "bounded_commitment_required": true,
+          "initial_visual_witnesses": 0,
+          "initial_search_required": true,
+          "spatial_diversity_witnesses": 1,
+          "camera_aware_visual_witnesses": 0,
+          "camera_search_required": true
+        },
+        "expired_sources_dispatched_zero": true,
+        "refreshed_source_epoch_sec": 2168,
+        "recorded_prior_work_count": 4,
+        "controlled_snapshot_prior_work": true,
+        "gazebo_or_real_nav2_motion": 0,
+        "native_charge_cycles_executed": 0
+      }
+    ]
+  },
+  "original_failure": "20261011_p2c_v75_failed_development.json",
+  "command_comparison": {
+    "p2c_v76_predeclared1.log": "Original command/observer/configuration/staging/physics after sole run-ID and ownership-PID normalization;31 current sources.",
+    "p2c_v76_physical_predeclared1.log": "Original command/observer/configuration/staging/physics after sole run-ID and ownership-PID normalization;31 current sources.",
+    "p2c_v76_physical_predeclared2.log": "Original command/observer/configuration/staging/physics after sole run-ID and ownership-PID normalization;31 current sources."
+  },
+  "fixture": {
+    "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/fixtures/p2c_v75_alternating_search.json.gz",
+    "sha256": "854184a0f2e44e424c7e3a74f49f043a1156263f98c3624d43b3b0f9628b3534",
+    "original_checkpoints": 7,
+    "variants": "Frozen/candidate retained;frozen/candidate clearing only private geometry/charge preferences. Controlled recorded work counts and stopped clock;no causal task/deadline/motion proof."
+  },
+  "retained_failure": "Unit1:7FAIL/142PASS44.30s. Six expected4/3 instead of original grid-center4.05/3.05;now check original mapping group. One v75 all-camera assertion on an even-count legacy fallback;restored explicit fallback checks. No source/budget/geometry/TTL protection relaxed.",
+  "provenance": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261011_p2c_alternating_search_components_provenance.json.gz",
+    "sha256": "b911dcb07cd1c13b6c4f6c6bf18d8977b922319a37c4007c91bd39aaeb4e6140",
+    "bytes": 3460790
+  },
+  "unchanged": "Only assign_idle_robots priority predicate;86 other central methods,104 pure functions,native/SLAM/observer/commands. Original initial visual flags/fallback,real SUCCESS counting,all full go-return/body/2-5 TTL/300s/5s/cases/physical stimuli.",
+  "pending": "Clean-pushed v76 serial4 development\u219215 nonheldout formal+2 physical\u2192first917\u2192full17 gate. No task-validation overlap;no P4/ns3/WiFi/RL."
+}

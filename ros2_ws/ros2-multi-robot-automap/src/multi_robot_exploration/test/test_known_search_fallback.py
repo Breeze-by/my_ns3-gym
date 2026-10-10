@@ -179,7 +179,11 @@ def test_original_late_delivered_snapshot_has_a_safe_fallback_when_frozen_parent
     new,requests,events,sent=original_snapshot_node(copy.deepcopy(saved))
     c.HeadquartersControl.assign_idle_robots(new)
     assert len(sent)==1 and not requests and sent[0][0]=='tb2'
-    assert events[0]['travel_preference']['camera_first_search']['selected_kind']=='camera'
-    assert events[0]['travel_preference']['camera_first_search']['completed_exploration_legs']>=1
-    assert 'known_space_fallback' not in events[0]['travel_preference']
+    preference=events[0]['travel_preference']
+    if new.successful_exploration_legs[sent[0][0]] % 2:
+        assert preference['camera_first_search']['selected_kind']=='camera'
+        assert preference['camera_first_search']['completed_exploration_legs']>=1
+        assert 'known_space_fallback' not in preference
+    else:
+        assert preference['camera_first_search'] is None and preference['known_space_fallback']
     assert exploration_travel_audit(events,True,True,True,True,True,True,True,True)['initial_visual_witnesses']==1

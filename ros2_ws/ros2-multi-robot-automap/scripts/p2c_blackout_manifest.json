@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-10T20:41:46.097383+00:00",
+  "predeclared_at_utc": "2026-10-10T21:19:35.163172+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "1dbc38d55738bc43f52436547944bf8b9397d0d2",
+  "candidate_parent_commit": "8668a42012e77f6e7bc8e418bcd6680b642fe68e",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -257,7 +257,8 @@
     "20261010_p2c_v45_failed_development.json",
     "20261011_p2c_v72_failed_development.json",
     "20261011_p2c_v73_failed_development.json",
-    "20261011_p2c_v74_failed_development.json"
+    "20261011_p2c_v74_failed_development.json",
+    "20261011_p2c_v75_failed_development.json"
   ],
   "coordinator_live_clock": {
     "executor": "Two workers; only the existing /clock subscription moves to an independent mutually exclusive group. Original state/action callbacks remain serialized.",
@@ -769,6 +770,8 @@
     "preserved": "All existing exact camera gain and yaw, diversity/relative travel, complete current local/fused full go/return budgets, body/reservations,2/5s leases, original Nav2/SLAM/native battery and300s/5s/cases/physical stimuli. Mapping-only and first ordinary selection retain existing policy.",
     "evidence": "Existing private travel preference explicitly carries camera-first or null. Independent initial replenishment reader binds prior actual ordinary command/outcome and current marker; existing exploration/source/energy/route audits remain mandatory.",
     "limits": "Camera history is a search preference, not evidence of target absence; conditional original checkpoints and DDS synthetic endpoints do not prove task benefit.",
-    "component_report": "20261011_p2c_camera_primary_components.json"
+    "component_report": "20261011_p2c_alternating_search_components.json",
+    "alternate_on_real_work": true,
+    "work_turns": "Existing camera-first priority is used only after an odd integer count of real ordinary SUCCESS. On even counts the original initial-search/mapping/fallback scheduler is restored; its legacy visual flags remain. Cancellation/yield do not count, and all current go-return/body/source/TTL hard admission remains."
   }
 }
