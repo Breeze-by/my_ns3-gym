@@ -17,7 +17,7 @@ def segment_distance(point, start, end):
     return math.dist(point,[a+fraction*v for a,v in zip(start,edge)])
 
 
-def audit_preparation(event, survey):
+def audit_preparation(event, survey, connection_reinspection=False):
     saved=event['rally_preparation'];name=event['robot'];peer=saved['survey_robot']
     assert event['kind']=='rally_preparation_approach' and event['task_phase']=='FOUND' and name!=peer
     assert saved['timeout_sec']==60. and saved['dynamic_clearance_m']==.6
@@ -26,7 +26,26 @@ def audit_preparation(event, survey):
     choice=survey.get('target_survey_selection')
     if choice is not None:assert saved['target']==choice['target']
     original=survey['outbound_map_route']['route']
-    assert saved['original_survey_route']==original and saved['stage_destination']==original[-1]
+    assert saved['original_survey_route']==original
+    witness=saved.get('connection_reinspection')
+    if witness is None:
+        assert saved['stage_destination']==original[-1]
+    else:
+        assert connection_reinspection,'undeclared parallel known connection reinspection'
+        from p2c_rally_connection import rebuild_reinspection
+        geometry=event['outbound_map_route']
+        reference=dict(planning_map=geometry['planning_map'],inputs=event['inputs'],event_time=event['event_time'],
+            robot_positions=saved['robot_positions'],current_positions=saved['robot_positions'],target=saved['target'])
+        rebuilt=rebuild_reinspection(reference,name,geometry['local_map'])
+        assert rebuilt is not None and rebuilt[1]==witness,'parallel reinspection differs from current conservative sources'
+        assert np.allclose(saved['stage_destination'],rebuilt[0][1:3],rtol=0,atol=1e-8)
+        raw=decode(geometry['planning_map']);local=geometry['local_map']
+        local=dict(data=decode(local),resolution=local['resolution'],origin=local['origin'])
+        previous=control.plan_rally_leg(control.RallyPose(*original[-1],0.),raw,
+            geometry['planning_map']['resolution'],geometry['planning_map']['origin'],saved['robot_positions'][name],5.,
+            blocked_positions=[body for other,body in saved['robot_positions'].items() if other!=name and body is not None],
+            local_map=local)
+        assert previous[0] is None,'parallel reinspection bypassed an available original full approach'
     assert list(saved['robot_positions'][name])==event['current_position']
     route=event['outbound_map_route']['route'];audit_outbound(event)
     length=sum(math.dist(a,b) for a,b in zip(route,route[1:]))
@@ -39,7 +58,8 @@ def audit_preparation(event, survey):
             assert all(segment_distance(body,a,b)>=.6-1e-8 for a,b in zip(route,route[1:]))
     reservation=control.remaining_rally_route(original,saved['robot_positions'][peer])
     assert np.allclose(reservation,saved['survey_reservation'],rtol=0,atol=1e-8)
-    assert saved['reserved_routes'] and np.allclose(saved['reserved_routes'][0],reservation,rtol=0,atol=1e-8)
+    assert saved['reserved_routes'] and len(saved['reserved_routes'][0])==len(reservation)
+    assert np.allclose(saved['reserved_routes'][0],reservation,rtol=0,atol=1e-8)
     assert all(math.dist(p,q)>=1.8-1e-8 for reserved in saved['reserved_routes'] for p in route for q in reserved)
     geometry=event['outbound_map_route'];grid=decode(geometry['planning_map']);local=geometry['local_map']
     local=dict(data=decode(local),resolution=local['resolution'],origin=local['origin'])
@@ -98,7 +118,7 @@ def bind_original_positions(events, capture, frame_offset_sec):
     return count
 
 
-def preparation_approach_audit(path, required=False, capture=None, frame_offset_sec=.2):
+def preparation_approach_audit(path, required=False, capture=None, frame_offset_sec=.2, connection_reinspection=False):
     if not required:return None
     surveys={};pending={};seen=set();events=[];closed=revoked=0
     def source_key(records,robot,stamp):
@@ -115,7 +135,7 @@ def preparation_approach_audit(path, required=False, capture=None, frame_offset_
                 once=(event['robot'],saved['survey_robot'],saved['survey_goal_source_time_sec'])
                 assert once not in seen,'repeated preparation during one bounded survey'
                 seen.add(once);survey=surveys[source_key(surveys,saved['survey_robot'],saved['survey_goal_source_time_sec'])]
-                audit_preparation(event,survey);pending[key]=event;events.append(event)
+                audit_preparation(event,survey,connection_reinspection);pending[key]=event;events.append(event)
             elif event['kind']=='rally':assert not pending,'RALLY dispatched before preparation Futures drained'
         elif kind=='coordinator_rally_preparation_finished':
             pending.pop(source_key(pending,event['robot'],event['goal_source_time_sec']))

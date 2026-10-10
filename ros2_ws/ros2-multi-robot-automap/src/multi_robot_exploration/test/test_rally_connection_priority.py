@@ -28,15 +28,20 @@ def disconnected_node():
     return node, clock, phases
 
 
-def test_actual_failed_search_prioritizes_disconnected_peer_before_optional_information(monkeypatch):
+@pytest.mark.parametrize('observer_dispatched',[True,False])
+def test_actual_failed_search_tries_once_observer_then_disconnected_peer(monkeypatch,observer_dispatched):
     node, _, phases = disconnected_node()
     connection = Mock(return_value=True)
-    information = Mock(return_value=True)
+    information = Mock(return_value=observer_dispatched)
     monkeypatch.setattr(c.HeadquartersControl, 'survey_rally_connection', connection)
     monkeypatch.setattr(c.HeadquartersControl, 'survey_target_frontiers', information)
     c.HeadquartersControl.update_mission(node)
-    assert connection.call_args.args == (node, node.robot_positions, 'tb2', 10.)
-    information.assert_not_called()
+    information.assert_called_once_with(node, node.robot_positions,
+        observer_connection='tb2', assignment_time=10.)
+    if observer_dispatched:
+        connection.assert_not_called()
+    else:
+        assert connection.call_args.args == (node, node.robot_positions, 'tb2', 10.)
     assert node.survey_attempts == 5 and not phases
     node.fail_task.assert_not_called()
     diagnostic = records(node)[-1]['geometry_diagnostics']

@@ -5085,6 +5085,18 @@ class HeadquartersControl(Node):
                 self.resolution, self.origin, position, MAX_NAVIGATION_LEG_M,
                 blocked_positions=[p for other,p in self.robot_positions.items()
                                    if other != name and p is not None], local_map=local)
+            stage_destination = list(survey_route[-1])
+            reinspection_witness = None
+            if plan[0] is None:
+                answer = rally_connection_reinspection(self.map_data, self.resolution, self.origin,
+                    position, self.target, local, blocked_positions=[p for other,p in self.robot_positions.items()
+                        if other != name and p is not None])
+                if answer is not None:
+                    preferred, reinspection_witness = answer
+                    stage_destination = [preferred.x, preferred.y]
+                    plan = plan_rally_leg(preferred, self.map_data, self.resolution, self.origin,
+                        position, MAX_NAVIGATION_LEG_M, blocked_positions=[p for other,p in self.robot_positions.items()
+                            if other != name and p is not None], local_map=local)
             plan = reserve_rally_prefix(plan, reservations)
             if plan is None or plan[0] is None:
                 continue
@@ -5125,7 +5137,8 @@ class HeadquartersControl(Node):
                 survey_goal_source_time_sec=self.survey_leg_source_time,
                 original_survey_route=survey_route, survey_reservation=reservation,
                 reserved_routes=list(reservations), target=list(self.target),
-                stage_destination=list(survey_route[-1]), robot_positions=dict(self.robot_positions),
+                stage_destination=stage_destination, robot_positions=dict(self.robot_positions),
+                connection_reinspection=reinspection_witness,
                 battery_states=dict(self.battery_states), timeout_sec=self.goal_timeout_sec,
                 dynamic_clearance_m=RALLY_DYNAMIC_CLEARANCE_M)
             self.send_rally_goal(name, (pose, route), preparation=True)
@@ -5366,6 +5379,12 @@ class HeadquartersControl(Node):
                         )
                         self.last_rally_candidate_log = now
                     disconnected = geometry_diagnostics.get('robot')
+                    if (not connection_exhausted and self.enable_battery
+                            and geometry_diagnostics.get('reason') == 'disconnected_rally_approach'
+                            and disconnected != getattr(self, 'target_observing_robot', None)
+                            and HeadquartersControl.survey_target_frontiers(self, self.robot_positions,
+                                observer_connection=disconnected, assignment_time=assignment_time)):
+                        return
                     if (not connection_exhausted
                             and geometry_diagnostics.get('reason') == 'disconnected_rally_approach'
                             and disconnected != getattr(self, 'target_observing_robot', None)
@@ -6547,19 +6566,43 @@ class HeadquartersControl(Node):
         self.pending_rally_connection = None
         return False
 
-    def survey_target_frontiers(self, positions):
+    def survey_target_frontiers(self, positions, observer_connection=None, assignment_time=None):
         """Try a bounded information survey before a long target-descent leg."""
+        context = None
+        if observer_connection is not None:
+            if (not self.enable_battery or self.task_state != 'FOUND'
+                    or observer_connection not in positions or assignment_time is None
+                    or not math.isfinite(assignment_time) or assignment_time > self.now()):
+                return False
+            observer = getattr(self, 'target_observing_robot', None)
+            context = (tuple(self.target), tuple(sorted(self.participating_robots())),
+                observer, observer_connection)
+            if (observer is None or observer == observer_connection
+                    or self.battery_modes.get(observer) != 'ACTIVE'
+                    or context in getattr(self, 'observer_connection_information_dispatched', ())):
+                return False
         choices = target_survey_candidates(self.map_data, self.resolution, self.origin,
             positions, self.battery_modes, self.target,
             getattr(self, 'target_view_distance', 3.), self.rally_position_tolerance)
+        if context is not None:
+            choices = [choice for choice in choices if choice['robot'] == observer]
         for choice in choices:
             self.target_survey_choice = dict(strategy='target_area_gain_per_travel',
                 radius_m=getattr(self, 'target_view_distance', 3.),
                 position_tolerance_m=self.rally_position_tolerance,
                 target=list(self.target), choice=choice)
+            if context is not None:
+                self.target_survey_choice['observer_connection_priority'] = dict(
+                    strategy='one_observer_information_survey_before_peer_reinspection',
+                    observer_robot=context[2], disconnected_robot=context[3],
+                    target=list(context[0]), participants=list(context[1]),
+                    assignment_evaluated_at_sec=assignment_time, limit='one_dispatched_survey_per_context')
             try:
                 if self.send_survey_goal(choice['robot'], RallyPose(
                         *choice['desired_position'], choice['desired_yaw'])):
+                    if context is not None:
+                        self.observer_connection_information_dispatched = {
+                            *getattr(self, 'observer_connection_information_dispatched', ()), context}
                     return True
                 if self.task_state == 'FAILED':
                     return True

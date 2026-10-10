@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-10T22:38:39.357831+00:00",
+  "predeclared_at_utc": "2026-10-10T23:15:52.838294+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "ff2a22d4738a9a4ae15867d62a256d2b8c26ff67",
+  "candidate_parent_commit": "41407f2a55a918f794091fbbb928c2ac516249cc",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -260,7 +260,8 @@
     "20261011_p2c_v74_failed_development.json",
     "20261011_p2c_v75_failed_development.json",
     "20261011_p2c_v76_failed_development.json",
-    "20261011_p2c_v77_failed_development.json"
+    "20261011_p2c_v77_failed_development.json",
+    "20261011_p2c_v78_failed_development.json"
   ],
   "coordinator_live_clock": {
     "executor": "Two workers; only the existing /clock subscription moves to an independent mutually exclusive group. Original state/action callbacks remain serialized.",
@@ -629,7 +630,12 @@
     "evidence": "Private exact original survey route/goal source, current positions/models/maps/source leases/budget; independent route,body,reservation,energy and original pose/TF/map CDR binding plus future-before-RALLY audit",
     "unchanged": "Original exploration/scoring/observer/charging/return/native/SLAM/Nav2/physics, original300s/5s/TTLs,8central and2native serialized registrations, schedules/cases/stimuli remain",
     "limits": "Original v68 RALLY300.4 timeout FAIL preserved. Exact-source conditional geometry4.978m/budget16.215 is not physical staging,time benefit or task causal proof; actual DDS and new same-clean-pushed4\u219217+2 mandatory;917 remains unexposed",
-    "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_parallel_preparation_components.json"
+    "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_parallel_preparation_components.json",
+    "known_connection_reinspection": {
+      "trigger": "Only when the original complete approach to the active observer survey endpoint is unavailable.",
+      "destination": "Original conservative local/fused reinspection endpoint, recomputed on current delivered sources. No route stays unavailable.",
+      "admission": "Original .35m path/.45m endpoint/.6m body/1.8m survey-route reservation, <=5m prefix, full return plus original60s wait budget and current2/5s sources; no RALLY assignment before action closure."
+    }
   },
   "exploration_charge_geometry_handoff": {
     "trigger": "After original source-lease expiry, a robot with an unfunded candidate upper bound may retain one point for the next idle callback; prefer its lowest current available energy",
@@ -801,5 +807,12 @@
     ],
     "scope": "Additional local read-only evaluator subscriptions with exact raw CDR; never AP input, controller output or extra modelled wireless application stream.",
     "shared_freeze": "Future baselines use the same observer. Original physics, plugin, navigation configuration and native hold evaluator unchanged."
+  },
+  "observer_connection_information_priority": {
+    "strategy": "one_observer_information_survey_before_peer_reinspection",
+    "trigger": "Current original failed conservative rally assignment names a disconnected nonobserver peer; complete battery task, ACTIVE observer, existing fully funded information survey only.",
+    "limit": "One dispatched existing survey per target/participants/observer/disconnected-peer context; no dispatch does not consume the optional preference. Existing survey attempts, ordinary work counters, failure handling and leases unchanged.",
+    "provenance": "Private priority witness binds the original failed assignment; full existing survey/route/energy/source audits retained.",
+    "evidence": "20261011_p2c_observer_connection_components.json"
   }
 }

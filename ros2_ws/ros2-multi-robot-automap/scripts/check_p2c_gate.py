@@ -19,6 +19,7 @@ from p2c_outbound_routes import outbound_route_audit, bind_original_maps, check_
 from p2c_refuge_release import refuge_release_audit
 from p2c_rally_connection import rally_connection_audit
 from p2c_departure_heading import heading_preference_factor, departure_heading_audit
+from p2c_observer_information import observer_information_audit
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -971,7 +972,8 @@ def check_one(path,config):
         directory/'navigation_inputs.jsonl.gz',bool(config.get('rally_connection_local_reinspection')))
     from p2c_preparation_approach import preparation_approach_audit
     preparations_approach=preparation_approach_audit(directory/'ledger.jsonl',bool(config.get('parallel_rally_preparation')),
-        directory/'navigation_inputs.jsonl.gz',config.get('parallel_rally_preparation',{}).get('frame_generation_offset_sec',.2))
+        directory/'navigation_inputs.jsonl.gz',config.get('parallel_rally_preparation',{}).get('frame_generation_offset_sec',.2),
+        bool(config.get('parallel_rally_preparation',{}).get('known_connection_reinspection')))
     if config.get('parallel_rally_preparation'):
         from run_p2d_baseline import file_digest
         assert row['source_digests']['preparation_approach_reader']==file_digest(Path(__file__).with_name('p2c_preparation_approach.py'))
@@ -993,6 +995,10 @@ def check_one(path,config):
     if config.get('departure_heading_preference'):
         from run_p2d_baseline import file_digest
         assert row['source_digests']['departure_heading_reader']==file_digest(Path(__file__).with_name('p2c_departure_heading.py'))
+    observer_information=observer_information_audit(directory/'ledger.jsonl',bool(config.get('observer_connection_information_priority')))
+    if config.get('observer_connection_information_priority'):
+        from run_p2d_baseline import file_digest
+        assert row['source_digests']['observer_information_reader']==file_digest(Path(__file__).with_name('p2c_observer_information.py'))
     if config.get('rally_connection_handoff'):
         from run_p2d_baseline import file_digest
         assert row['source_digests']['rally_connection_reader']==file_digest(Path(__file__).with_name('p2c_rally_connection.py'))
@@ -1024,7 +1030,7 @@ def check_one(path,config):
         navigation_outbound_consistency_audit=outbound,charged_return_refuge_release_audit=refuge,
         rally_connection_handoff_audit=connection,parallel_rally_preparation_audit=preparations_approach,
         exploration_charge_geometry_handoff_audit=charge_handoff,initial_replenishment_audit=replenishment,
-        exploration_departure_heading_audit=departure)
+        exploration_departure_heading_audit=departure,observer_connection_information_audit=observer_information)
 
 
 def observer_heading_audit(records,required=False,radius_m=3.,position_tolerance_m=.35,fov_rad=math.pi/2):

@@ -9351,3 +9351,8 @@ colcon build --symlink-install --packages-select multi_robot_exploration multi_r
 2026-10-11 P2C.1 v77首原FAIL保持：ff2a22d forced success=false/COMPLETE300.0timeout，检测227.2/集合238.5/中央296.3无native5秒proof，双charge1/min13.318675329/零接触耗尽FAILED任务期infra，owner-observer0关闭/双图同，21子PASS不代任务，余3/17+2/917未调用。新原探索乘当前交付起步直线方位转角/原RPP.7估计的[.25,1]软折扣，缺fresh朝向回原；惰性原上界/完整机体去返能源/2-5源/300s5s保持。六原条件前三保持后三角1.444→.058/.978→.494/2.811→.353，原型/冻原精确与完整身体预算PASS，非任务因果/时限。2中央改+1纯增，85中央104原纯/native-SLAM-Nav2-SDF-plugin与原命令保持；独立raw odom/TF偏移.2同源位置朝向绑定，私有ModelStates/cmd_vel双层旁录新增订阅声明，不作AP/无线流。2440功能423.08s/128定向48+6新/四包5.74s/190保护6历史授权54协议/三32声明与actual DDS过期0、新源各1Future5→6PASS，固定历史清准备明示、零physical/native credit。原简单/混合置零均长静止，插件任务因果未证实、原错误全保留。新v78 clean pushed串行4→17+2待任务，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261011_p2c_v77_failed_development与20261011_p2c_departure_heading_components。
 
 所有原任务/验证/组件关闭后写报告；用户260929_report十四文件未改未提交。
+
+
+2026-10-11 P2C.1 v78首原FAIL保持：41407f2 forced原生RALLY300.0timeout，检测214.6/集合266.7/FOUND52.1s，双charge1/min13.612741711/零接触耗尽FAILED任务期infra，owner-observer0/双图同；原相对helper路径错误和strictFAIL保留，23不同子PASS不代任务，余3/17+2/917未调用。新当前非观察者完整返路断连时每target/participants/observer/peer上下文最多一次原观察者信息勘察；直接准备路不可用才现有known重查端点，第一原条件(-.232,.113)一准备、第二fused断连零准备，完整.45/.35/.6身体/1.8预约/5m/60s/去返能源及2-5源保持。3中央改/84其他105纯/native-SLAM-Nav2-SDF保持，独立失败选位/次数及nativeCDR绑定。2477功能439.62s/122定向37新/四包5.87s/190保护6历史授权54协议/三33源声明与actual DDS/Future九情形PASS；合成endpoint零physical/native credit、非任务因果。原夹具/原型失败与261PASS主动中止及A→B→A次数修补全部保留。新v79 clean pushed串行4→17+2待任务，917未暴露，P2C.1未完成，无P4/ns3/WiFi/RL。报告20261011_p2c_v78_failed_development与20261011_p2c_observer_connection_components。
+
+所有owned验证关闭后写报告；用户260929_report十四文件未改未提交。
