@@ -5314,7 +5314,14 @@ class HeadquartersControl(Node):
                         self.robot_positions[name],
                         min(MAX_NAVIGATION_LEG_M, rally_leg_limit(self.rally_attempts[name])),
                         rally_stationary_positions(self.robot_positions, name, reserved_names),
-                        visible_only=True,
+                        # A funded normal rally leg may follow the complete
+                        # known-free path around a bend instead of stopping at
+                        # every line-of-sight boundary. Keep safety refuges and
+                        # observer corrections on their visible escape legs.
+                        visible_only=(not self.enable_battery
+                            or name in self.rally_yield_targets
+                            or name in self.return_yield_targets
+                            or name in heading_corrections),
                         local_map=HeadquartersControl.delivered_return_maps(self).get(name),
                     )
                 if plan[0] is None:
@@ -5625,7 +5632,9 @@ class HeadquartersControl(Node):
                             self.robot_positions, name, admitted_names
                             | (set(return_reservations) if name in stage_names else set()),
                         ),
-                        visible_only=True,
+                        visible_only=(not self.enable_battery or name in stage_names
+                            or name in heading_corrections or name in self.rally_yield_targets
+                            or name in self.return_yield_targets),
                         local_map=HeadquartersControl.delivered_return_maps(self).get(name),
                     )
                 reservations = [*reserved_routes, *priority_routes, *(route for other, route in

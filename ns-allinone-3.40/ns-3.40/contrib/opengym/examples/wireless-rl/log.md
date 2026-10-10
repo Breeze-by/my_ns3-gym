@@ -8975,3 +8975,36 @@ ROS_DOMAIN_ID=217 /usr/bin/python3 scripts/check_p2c_return_preparation_runtime.
 /usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v55 --domain 218 --gazebo-port 20318 --validate-only
 /usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v55_physical --domain 219 --gazebo-port 20319 --validate-only
 ```
+
+
+## 2026-10-10 P2C.1 v55 原失败与完整弯曲集合腿
+
+2026-10-10 P2C.1 v55首原forced FAIL：d5e9da3 RALLY timeout300.1/检测199.2/集合210.0/双charge1/min10.257786/零接触耗尽失效，原生34goal32成功2普通取消；中央hold2431.882→任务结束2433.582仅1.7s，native5sNone，owner-observer0，18子审不代任务。新仅有电池保护的普通集合腿保留原完整known-free弯路，5m/attempt/body/预约/去返能源/最终TTL原样，refuge/return-yield/staging/heading/no-battery仍直视；原固定图tb2名义7→3腿且同11.558m/3原CDR图绑定，非物理或因果收益。1845功能197.93s/四包6.28s/190保护6授权54协议/两声明/五实际DDS场景与源过期和缺电拒绝PASS；只1中央方法两flag，82中央98纯/globals/native/300s/5s/次数/物理保持。两未采用时间评分和两初探针失败保留。新v56 clean pushed4→17+2待任务，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v55_failed_development与20261010_p2c_curve_legs_components。
+
+所有原owned任务和实际DDS观察结束关闭才修改。原最终中央诊断可证明其稳定条件开始后仅1.7秒，不能声称重建完整native物理窗口或唯一朝向原因。两评分候选只减观察者名义时间、tb2最长路没变，均未采用。固定原分配图假定精确端点和同伴身体保持，7→3腿只是组件，没有实测时延或反事实任务收益。三原输入源图CDR绑定独立PASS。
+
+新普通有电池集合的兩个flag采用既有完整known-free格路，不扩大5m/attempt cap，也不改Nav2/SLAM/地图或物理。各原实际身体/动态预约/full approach、完整contact返路、等待/保持/能源及最终source边界仍原检查。两新普通DDS与两个兼容分支的实际callback、publisher、ActionServer和Future都关闭；目标/分配与动作完成为合成，没有物理Nav2。第一probe battery QoS volatile不满足consumer transient-local；第三probe无电池时误读只有电池才记录的outbound。仅修probe，全部初stdout与源码保留。无电池读者optional保持原要求，probe被动保存此前实际leg route。
+
+最终控制SHA b94779d6e13b69c231eedf885bede0289050fcf1c8c8f403f7485f3c39e17507。原native安全/能量/TF/scan/SLAM/Nav2/物理七类字节和82其他中央/98纯/globals一致。P2C.1新同源4开发→17正式+2物理，原300s/5s/TTL/次数保持，非留出和物理全PASS后才首次917。
+
+命令在canonical ROS目录，rtk proxy bash -c source Humble+install，PYTHONNOUSERSITE1/scripts PYTHONPATH/taskset0-79；DDS另FastDDS UDPv4清profiles/discovery server，隔离domain217。各command输出保存在原log，不覆盖失败。
+
+```bash
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v55 --domain 218 --gazebo-port 20318
+/usr/bin/python3 scripts/check_p2c_gate.py --run-root log/p2c/20261010_p2c_v55 --cases dev_forced2 --development --output log/p2c_v55_forced_gate.json
+/usr/bin/python3 /tmp/audit_p2c_v55_components.py
+/usr/bin/python3 /tmp/p2c_v55_assignment_variants.py
+/usr/bin/python3 /tmp/p2c_v55_curve_leg_experiment.py
+/usr/bin/python3 /tmp/p2c_curve_legs_binding.py
+ROS_DOMAIN_ID=217 /usr/bin/python3 scripts/check_p2c_curve_legs_runtime.py --output log/p2c_curve_legs_runtime1.json
+ROS_DOMAIN_ID=217 /usr/bin/python3 scripts/check_p2c_curve_legs_runtime.py --output log/p2c_curve_legs_runtime2.json
+ROS_DOMAIN_ID=217 /usr/bin/python3 scripts/check_p2c_curve_legs_runtime.py --output log/p2c_curve_legs_runtime3.json
+ROS_DOMAIN_ID=217 /usr/bin/python3 scripts/check_p2c_curve_legs_runtime.py --output log/p2c_curve_legs_runtime4.json
+ROS_DOMAIN_ID=217 /usr/bin/python3 scripts/check_p2c_curve_legs_runtime.py --output log/p2c_curve_legs_runtime5.json
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test scripts --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+colcon build --symlink-install --packages-select multi_robot_exploration multi_robot_interfaces merge_map multi_robot
+/usr/bin/python3 scripts/check_p2c_source.py --output log/p2c_curve_legs_source1.json
+/usr/bin/python3 /tmp/p2c_curve_legs_scope.py
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v56 --domain 218 --gazebo-port 20318 --validate-only
+/usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v56_physical --domain 219 --gazebo-port 20319 --validate-only
+```
