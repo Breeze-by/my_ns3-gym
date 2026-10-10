@@ -72,7 +72,6 @@ def main(default_manifest=None, log_category='p3c5'):
     if config.get('complete_application_graph'):
         if not config.get('native_tf_graph_capture'):
             raise ValueError('complete application graph requires native graph capture')
-        command[command.index('--bypass-audit-output')+1]=str(directory/'initial_bypass_graph.json')
         observer_command.extend(['--application-graph-output',str(directory/'graph.json')])
     if config.get('navigation_input_capture'):
         observer_command.extend(['--navigation-input-output',str(directory/'navigation_inputs.jsonl.gz')])
@@ -101,6 +100,8 @@ def main(default_manifest=None, log_category='p3c5'):
     manifest['source_digests'].update({name:file_digest(PROJECT_ROOT/'scripts'/filename)
         for name,filename in (('staging_apparatus',staging_apparatus(config).name),
                               ('physics_observer','observe_p3b5_return_physics.py'))})
+    if config.get('predeclared_graph_command'):
+        manifest['source_digests']['episode_command_builder']=file_digest(PROJECT_ROOT/'scripts/run_p3b5_tasks.py')
     if config.get('native_tf_graph_capture'):
         manifest['source_digests'].update({name:file_digest(PROJECT_ROOT/'scripts'/filename)
             for name,filename in (('safety_observer','observe_p3b5.py'),('native_graph_reader','p2c_native_graph.py'))})

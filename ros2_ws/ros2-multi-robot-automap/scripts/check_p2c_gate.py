@@ -890,6 +890,9 @@ def check_one(path,config):
         assert Path(row['command'][row['command'].index('--bypass-audit-output')+1])==directory/'initial_bypass_graph.json'
         assert Path(row['observer_command'][row['observer_command'].index('--application-graph-output')+1])==directory/'graph.json'
         application_graph_audit(original,result['robot_count'])
+    if config.get('predeclared_graph_command'):
+        from run_p2d_baseline import file_digest
+        assert row['source_digests']['episode_command_builder']==file_digest(Path(__file__).with_name('run_p3b5_tasks.py'))
     ingress=native_tf_ingress_audit(native_graph,result['robot_count'],bool(config.get('native_filtered_tf')))
     native=return_audit(directory/'safety_events.jsonl',bool(config.get('native_pose_contract')),
         bool(config.get('return_source_selection')),bool(config.get('native_curved_return_legs')),

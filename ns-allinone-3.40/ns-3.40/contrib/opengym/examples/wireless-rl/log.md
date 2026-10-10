@@ -9284,3 +9284,20 @@ colcon build --symlink-install --packages-select multi_robot_exploration multi_r
 /usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v67 --domain 218 --gazebo-port 20318 --validate-only
 /usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v67_physical --domain 219 --gazebo-port 20319 --validate-only
 ```
+
+
+## 2026-10-10 P2C.1 v67声明失败与共享命令生成
+
+2026-10-10 P2C.1 v67首forced原生COMPLETE288.8/检测178.1/RALLY188.7/双charge1/min14.392242/零接触耗尽FAILED/原5.0s51样本，canonical-native完整双图逐字同；原strict owner独改图路径导致executed command differs from predeclared cell FAIL保持，18原子审不代整体，owner-observer0闭合，余3/17/2/917未调用。新将唯一路径规则放共享episode_command，删owner重复改写并新增builder原源摘要强制绑定；实际两案CLI与v67全同，28摘要。2032功能218.34s/70定向14新反例/四包原symlink13.4s/190保护6授权54协议/两声明PASS；11production-native-SLAM-observer源字节和其余7/3/19函数AST、300s/5s/TTL/case/物理保持。原声明复读为组件，无新DDS/Gazebo或回填FAIL。新v68 clean pushed4→17+2待任务，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v67_failed_graph_declaration与20261010_p2c_graph_command_components。
+
+No new production/controller/native/SLAM/observer/physics behavior or DDS/Gazebo component run. Actual prospective commands equal original v67 commands; shared builder and original required source SHA are now used by owner and strict audit. Original closed v67 declaration rebinding is a component, never original status backfill. New same-clean-pushed4 development→17formal+2physical required;917 remains unexposed.。
+
+```bash
+/usr/bin/python3 -m pytest -q scripts/test_p2c_graph_command.py scripts/test_p2c_application_graph.py scripts/test_p2c_gate.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test src/merge_map/test/test_merge_map.py scripts --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+colcon build --symlink-install --packages-select multi_robot_exploration multi_robot_interfaces merge_map multi_robot
+/usr/bin/python3 /tmp/p2c_graph_command_scope.py
+/usr/bin/python3 scripts/check_p2c_source.py --output log/p2c_graph_command_source1.json
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v68 --domain 218 --gazebo-port 20318 --validate-only
+/usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v68_physical --domain 219 --gazebo-port 20319 --validate-only
+```

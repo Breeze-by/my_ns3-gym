@@ -1,0 +1,2050 @@
+{
+  "status": "PASS",
+  "scope": "Shared executed/predeclared graph command and source-binding components only; original v67 strict FAIL retained, complete P2C.1 incomplete",
+  "baseline": "78deb068f40fc88f356c0cd93756bd723565ac59",
+  "functional": {
+    "passed": 2032,
+    "elapsed_sec": 218.34
+  },
+  "targeted": {
+    "passed": 70,
+    "new_cases": 14,
+    "elapsed_sec": 8.6
+  },
+  "build": {
+    "packages": 4,
+    "symlink_install": true,
+    "elapsed_sec": 13.4
+  },
+  "source_scope": {
+    "status": "PASS",
+    "baseline": "78deb068f40fc88f356c0cd93756bd723565ac59",
+    "unchanged_sources": {
+      "src/multi_robot_exploration/multi_robot_exploration/control.py": "3727f00df49979bceb9a76090a2ac95a12513a154be6cc929ad8b0665fed257b",
+      "src/multi_robot_exploration/multi_robot_exploration/battery_manager.py": "f4845fb03667e766c0202a470fa5f2c3c4a49ff39f77a898bf90ec1b60261a6c",
+      "src/multi_robot_exploration/multi_robot_exploration/action_callbacks.py": "7edc9b3923caedf88f236311026f568540779653dafc0ce0aee01dc201880f8b",
+      "src/multi_robot_exploration/multi_robot_exploration/tf_ingress_sampler.py": "819573fffb17817c2135225f4effca4ea9c61422e309a3176f7933fdac2fc16d",
+      "src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py": "bf107d4711abcd4861d092c533d0d00baa8478ad3ce314e2d40451c9858f7e43",
+      "src/slam_toolbox/src/slam_toolbox_multirobot.cpp": "1c9d41b108bce96c75fd108ace704df502b29bc622c60930cc6629b6f1c21d24",
+      "src/slam_toolbox/include/slam_toolbox/scan_self_filter.hpp": "4e9b7acde1a50bdbae3cb104e3c95fb2c6e3699368dc511b282fab4e14b0cdab",
+      "src/slam_toolbox/config/mapper_params_online_multi_async.yaml": "3a5339dd39476b196fc6f0e62c225bcb85889ed728ce279f45d759e5319dcde1",
+      "scripts/observe_p3b5.py": "8605217913f55d1761943bf701381c5da2fd924dc44cf5e7fbd9cf6b73f5bbc6",
+      "scripts/p2c_native_graph.py": "e08b675ceba504d8b3562a7b11c2084d6cf9a3bc39ec4954758ac77c31c6a897",
+      "scripts/ros_smoke_test.py": "b2558586c44e808a603b19f9bfc360efa579c37d029b8271e46e37732bd761bf"
+    },
+    "changed_functions": {
+      "run_p3b5_tasks.py": {
+        "changed": [
+          "episode_command"
+        ],
+        "unchanged_functions": 7
+      },
+      "run_p3c5_audit.py": {
+        "changed": [
+          "main"
+        ],
+        "unchanged_functions": 3
+      },
+      "check_p2c_gate.py": {
+        "changed": [
+          "check_one"
+        ],
+        "unchanged_functions": 19
+      }
+    },
+    "control_sha256": "3727f00df49979bceb9a76090a2ac95a12513a154be6cc929ad8b0665fed257b",
+    "native_sha256": "f4845fb03667e766c0202a470fa5f2c3c4a49ff39f77a898bf90ec1b60261a6c",
+    "case_schedules_stimuli_unchanged": true,
+    "original_closed_declaration_binding_component": {
+      "status": "PASS",
+      "manifest_command_and_native_result_bound": true
+    },
+    "prospective_checks": [
+      {
+        "declaration": "predeclared1",
+        "same_actual_command_as_v67": true,
+        "shared_generator_matches": true,
+        "builder_sha256": "972dbc2fb118a2f2fda2689ae162948689ff28f16914d17b1135fdd182831a86"
+      },
+      {
+        "declaration": "physical_predeclared1",
+        "same_actual_command_as_v67": true,
+        "shared_generator_matches": true,
+        "builder_sha256": "972dbc2fb118a2f2fda2689ae162948689ff28f16914d17b1135fdd182831a86"
+      }
+    ],
+    "scope": "Same actual command as v67; shared declaration generator and its new required original source SHA only, no original status backfill"
+  },
+  "manifest_scope": {
+    "status": "PASS",
+    "checks": [
+      {
+        "manifest": "p2c_integration_manifest.json",
+        "changed_keys": [
+          "candidate_parent_commit",
+          "predeclared_at_utc",
+          "predeclared_graph_command"
+        ],
+        "cases_and_stimuli_unchanged": true
+      },
+      {
+        "manifest": "p2c_blackout_manifest.json",
+        "changed_keys": [
+          "candidate_parent_commit",
+          "predeclared_at_utc",
+          "predeclared_graph_command"
+        ],
+        "cases_and_stimuli_unchanged": true
+      }
+    ]
+  },
+  "protection": {
+    "protected": 190,
+    "authorized": 6,
+    "protocol_cells": 54
+  },
+  "declarations": [
+    {
+      "case": "dev_forced2",
+      "config": {
+        "schema_version": 1,
+        "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
+        "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
+        "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
+        "predeclared_at_utc": "2026-10-10T12:53:20.891292+00:00",
+        "duration_sec": 300,
+        "coverage_threshold": 0.8,
+        "fault_seed": 17011,
+        "owner_shutdown_timeout_sec": 120,
+        "development_cases": [
+          "dev_forced2",
+          "dev_lab101",
+          "dev_rooms202",
+          "dev_corridors303"
+        ],
+        "gate_cases": [
+          "fixed_lab_101",
+          "fixed_lab_202",
+          "fixed_lab_303",
+          "fixed_rooms_101",
+          "fixed_rooms_202",
+          "fixed_rooms_303",
+          "fixed_corridors_101",
+          "fixed_corridors_202",
+          "fixed_corridors_303",
+          "fixed_corridors2_202",
+          "forced2",
+          "protocol_forced2",
+          "delay_rooms3",
+          "loss_corridors2",
+          "holdout_ideal",
+          "holdout_fault",
+          "empty_battery"
+        ],
+        "cases": {
+          "dev_forced2": {
+            "world": "my_world.world",
+            "target_x": -4,
+            "target_y": 4,
+            "robot_count": 2,
+            "seed": 303,
+            "energy": 18.0,
+            "mode": "ideal",
+            "admission_protocol": false,
+            "schedule": [],
+            "charge_duration": 10.0,
+            "safety_margin": 5.0,
+            "return_timeout": 120
+          },
+          "dev_lab101": {
+            "world": "my_world.world",
+            "target_x": -4,
+            "target_y": 4,
+            "robot_count": 3,
+            "seed": 101,
+            "energy": 40.0,
+            "mode": "ideal",
+            "admission_protocol": false,
+            "schedule": []
+          },
+          "dev_rooms202": {
+            "world": "p1c_rooms.world",
+            "target_x": 5.0,
+            "target_y": 3.0,
+            "robot_count": 3,
+            "seed": 202,
+            "energy": 40.0,
+            "mode": "ideal",
+            "admission_protocol": false,
+            "schedule": []
+          },
+          "dev_corridors303": {
+            "world": "p1c_corridors.world",
+            "target_x": -4.5,
+            "target_y": -0.5,
+            "robot_count": 3,
+            "seed": 303,
+            "energy": 45.0,
+            "mode": "ideal",
+            "admission_protocol": false,
+            "schedule": []
+          },
+          "fixed_lab_101": {
+            "world": "my_world.world",
+            "target_x": -4,
+            "target_y": 4,
+            "robot_count": 3,
+            "seed": 101,
+            "energy": 40.0,
+            "mode": "ideal",
+            "admission_protocol": false,
+            "schedule": []
+          },
+          "fixed_lab_202": {
+            "world": "my_world.world",
+            "target_x": -4,
+            "target_y": 4,
+            "robot_count": 3,
+            "seed": 202,
+            "energy": 40.0,
+            "mode": "ideal",
+            "admission_protocol": false,
+            "schedule": []
+          },
+          "fixed_lab_303": {
+            "world": "my_world.world",
+            "target_x": -4,
+            "target_y": 4,
+            "robot_count": 3,
+            "seed": 303,
+            "energy": 40.0,
+            "mode": "ideal",
+            "admission_protocol": false,
+            "schedule": []
+          },
+          "fixed_rooms_101": {
+            "world": "p1c_rooms.world",
+            "target_x": 5.0,
+            "target_y": 3.0,
+            "robot_count": 3,
+            "seed": 101,
+            "energy": 40.0,
+            "mode": "ideal",
+            "admission_protocol": false,
+            "schedule": []
+          },
+          "fixed_rooms_202": {
+            "world": "p1c_rooms.world",
+            "target_x": 5.0,
+            "target_y": 3.0,
+            "robot_count": 3,
+            "seed": 202,
+            "energy": 40.0,
+            "mode": "ideal",
+            "admission_protocol": false,
+            "schedule": []
+          },
+          "fixed_rooms_303": {
+            "world": "p1c_rooms.world",
+            "target_x": 5.0,
+            "target_y": 3.0,
+            "robot_count": 3,
+            "seed": 303,
+            "energy": 40.0,
+            "mode": "ideal",
+            "admission_protocol": false,
+            "schedule": []
+          },
+          "fixed_corridors_101": {
+            "world": "p1c_corridors.world",
+            "target_x": -4.5,
+            "target_y": -0.5,
+            "robot_count": 3,
+            "seed": 101,
+            "energy": 45.0,
+            "mode": "ideal",
+            "admission_protocol": false,
+            "schedule": []
+          },
+          "fixed_corridors_202": {
+            "world": "p1c_corridors.world",
+            "target_x": -4.5,
+            "target_y": -0.5,
+            "robot_count": 3,
+            "seed": 202,
+            "energy": 45.0,
+            "mode": "ideal",
+            "admission_protocol": false,
+            "schedule": []
+          },
+          "fixed_corridors_303": {
+            "world": "p1c_corridors.world",
+            "target_x": -4.5,
+            "target_y": -0.5,
+            "robot_count": 3,
+            "seed": 303,
+            "energy": 45.0,
+            "mode": "ideal",
+            "admission_protocol": false,
+            "schedule": []
+          },
+          "fixed_corridors2_202": {
+            "world": "p1c_corridors.world",
+            "target_x": -4.5,
+            "target_y": -0.5,
+            "robot_count": 2,
+            "seed": 202,
+            "energy": 45.0,
+            "mode": "ideal",
+            "admission_protocol": false,
+            "schedule": []
+          },
+          "forced2": {
+            "world": "my_world.world",
+            "target_x": -4,
+            "target_y": 4,
+            "robot_count": 2,
+            "seed": 303,
+            "energy": 18.0,
+            "mode": "ideal",
+            "admission_protocol": false,
+            "schedule": [],
+            "charge_duration": 10.0,
+            "safety_margin": 5.0,
+            "return_timeout": 120
+          },
+          "protocol_forced2": {
+            "world": "my_world.world",
+            "target_x": -4,
+            "target_y": 4,
+            "robot_count": 2,
+            "seed": 303,
+            "energy": 18.0,
+            "mode": "ideal",
+            "admission_protocol": true,
+            "schedule": [],
+            "charge_duration": 10.0,
+            "safety_margin": 5.0,
+            "return_timeout": 120
+          },
+          "delay_rooms3": {
+            "world": "p1c_rooms.world",
+            "target_x": 5.0,
+            "target_y": 3.0,
+            "robot_count": 3,
+            "seed": 202,
+            "energy": 40.0,
+            "mode": "fault",
+            "admission_protocol": true,
+            "schedule": [],
+            "profile": {
+              "uplink_delay_sec": 0.5,
+              "downlink_delay_sec": 0.5
+            }
+          },
+          "loss_corridors2": {
+            "world": "p1c_corridors.world",
+            "target_x": -4.5,
+            "target_y": -0.5,
+            "robot_count": 2,
+            "seed": 202,
+            "energy": 45.0,
+            "mode": "fault",
+            "admission_protocol": true,
+            "schedule": [],
+            "profile": {
+              "uplink_loss_rate": 0.1,
+              "downlink_loss_rate": 0.1
+            }
+          },
+          "holdout_ideal": {
+            "world": "p2c_holdout917.world",
+            "target_x": 4.6,
+            "target_y": -3.6,
+            "robot_count": 3,
+            "seed": 917,
+            "energy": 45.0,
+            "mode": "ideal",
+            "admission_protocol": true,
+            "schedule": []
+          },
+          "holdout_fault": {
+            "world": "p2c_holdout917.world",
+            "target_x": 4.6,
+            "target_y": -3.6,
+            "robot_count": 3,
+            "seed": 917,
+            "energy": 45.0,
+            "mode": "fault",
+            "admission_protocol": true,
+            "schedule": [],
+            "profile": {
+              "uplink_delay_sec": 0.5,
+              "downlink_loss_rate": 0.1,
+              "gateway_seed": 29171
+            }
+          },
+          "empty_battery": {
+            "world": "my_world.world",
+            "target_x": -4,
+            "target_y": 4,
+            "robot_count": 2,
+            "seed": 303,
+            "energy": 0.0,
+            "mode": "ideal",
+            "admission_protocol": false,
+            "schedule": []
+          }
+        },
+        "rules": [
+          "Commit and push all source/config/helper bytes before first task; no edits while any task owner/observer remains live.",
+          "Retain every original/failure/infrastructure interruption; no task retries or failed-cell backfill.",
+          "All ten fixed direct-ideal cells and forced2/protocol_forced2/holdout_ideal require native COMPLETE at unchanged300s/.35m/.05mps/.1radps/5s.",
+          "Delay/loss/holdout_fault outcomes are all retained; their safety and protocol gates require zero contacts/exhaustion/robot failures, not forced task success.",
+          "Each forced robot must charge; all actual charger_stopped return audits require positive energy and prediction error <=0 within1e-6.",
+          "No-route/empty-energy negative probes must fail correctly, never generate a straight-line Nav2 return; actual ROS synthetic-map failure is labelled component, not Gazebo motion.",
+          "Physical blackout probe reuses the predeclared60..250s staging stimulus and read-only native motion thresholds; both robots must independently return/charge.",
+          "101/202/303/707/809 are exposed;917/new geometry/target/fault29171 is first-exposure verification, not a held-out population estimate. First exposure only after development and full fixed/safety gates.",
+          "Budget envelope assumes bounded motion deviation, speed, reaction and recovery; no claim under infinite blockage, changing obstacles, broken executor or uncalibrated hardware."
+        ],
+        "safety_probe_manifest": "p3b5_staged_return_probe_manifest.json",
+        "energy_unit": "simulation_model_units_not_joules",
+        "development_parent": "08fe5f770f92fa2189b7c7d725491a56ec00ca2a",
+        "retained_failed_development": "20261008_p2c_v1_failed_development.json",
+        "opportunity_charge_algorithm": "two_current_frontiers_complete_route_budget",
+        "retained_failed_developments": [
+          "20261008_p2c_v1_failed_development.json",
+          "20261008_p2c_v2_failed_development.json",
+          "20261008_p2c_v4_failed_development.json",
+          "20261008_p2c_v5_failed_development.json",
+          "20261008_p2c_v6_failed_development.json",
+          "20261008_p2c_v7_failed_development.json",
+          "20261008_p2c_v8_failed_development.json",
+          "20261008_p2c_v9_failed_development.json",
+          "20261009_p2c_v10_failed_development.json",
+          "20261009_p2c_v11_failed_development.json",
+          "20261009_p2c_v12_failed_development.json",
+          "20261009_p2c_v13_failed_development.json",
+          "20261009_p2c_v14_failed_development.json",
+          "20261009_p2c_v15_failed_development.json",
+          "20261009_p2c_v16_failed_development.json",
+          "20261009_p2c_v17_failed_development.json",
+          "20261009_p2c_v18_failed_development.json",
+          "20261009_p2c_v19_failed_development.json",
+          "20261009_p2c_v20_failed_development.json",
+          "20261009_p2c_v21_failed_development.json",
+          "20261009_p2c_v22_failed_development.json",
+          "20261009_p2c_v23_failed_development.json",
+          "20261009_p2c_v24_failed_development.json",
+          "20261009_p2c_v25_failed_development.json",
+          "20261009_p2c_v26_failed_development.json",
+          "20261009_p2c_v27_failed_development.json",
+          "20261009_p2c_v28_failed_development.json",
+          "20261009_p2c_v30_failed_development.json",
+          "20261009_p2c_v31_failed_development.json",
+          "20261009_p2c_v32_failed_development.json",
+          "20261009_p2c_v33_failed_development.json",
+          "20261009_p2c_v34_failed_development.json",
+          "20261009_p2c_v35_failed_development.json",
+          "20261009_p2c_v36_failed_development.json",
+          "20261009_p2c_v37_failed_development.json",
+          "20261009_p2c_v38_failed_development.json",
+          "20261009_p2c_v39_failed_development.json",
+          "20261009_p2c_v40_failed_development.json",
+          "20261009_p2c_v41_failed_development.json",
+          "20261010_p2c_v42_failed_development.json",
+          "20261010_p2c_v43_failed_development.json",
+          "20261010_p2c_v44_failed_development.json",
+          "20261010_p2c_v45_failed_development.json"
+        ],
+        "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
+        "opportunity_charge_rules": [
+          "Successful real exploration first; never initial spawn top-up.",
+          "Only existing near-home range and visible body-safe contact route; serial request and handle drain retained.",
+          "At most three distinct useful current frontier alternatives; full known route and endpoint return; forecast is not a queued command.",
+          "Current map identity/source TTL and current delivered pose/TF/battery gates; next actual leg always revalidates."
+        ],
+        "native_pose_contract": {
+          "odom_ttl_sec": 2.0,
+          "frame_ttl_sec": 2.0,
+          "frame_generation_stamp": "native validity stamp minus actual SLAM transform_timeout; launch supplies the same configured offset as gateway",
+          "source_order": "source stamps are preserved; valid sensor samples up to2s ahead of local /clock wait in one bounded128-entry heap; clock-matured duplicate/out-of-order sources are ignored, excessive-future samples never poison the current pose",
+          "unavailable": "no finite budget/nav return or stable charging; bounded30s stop then explicit positive-energy failure",
+          "startup_recovery": "Every charging entry, including immediate odom callbacks, resumes a funded initial missing-pose hold instead of charging; original low-energy/task charge requests remain valid."
+        },
+        "retained_partial_development": "20261008_p2c_v3_partial_development.json",
+        "native_energy_accounting": {
+          "period_sec": 5.0,
+          "channel": "read-only native battery_return_audit; not AP input or extra network traffic",
+          "equation": "energy=max(0,initial_energy+charge_credits-distance*move_cost-elapsed*idle_cost)",
+          "required": "all regular originals; zero-energy negative has its independent no-navigation failure audit",
+          "freeze_counterexample": "native truth path>1m cannot have zero local distance/time accounting; retain all failures"
+        },
+        "return_source_selection": {
+          "strategy": "lowest qualified complete-contact energy budget; exact tie prefers local",
+          "sources": [
+            "fresh native local map",
+            "fresh gateway-delivered fused map",
+            "explicit conservative fused search with all fresh local occupied cell rectangles"
+          ],
+          "obstacle_veto": "a fused route may extend local unknown space but may not clear local known obstacles; continuous half-local-cell checks preserve0.35m clearance and original bounded0.6m known-free start escape; no diagonal cutting",
+          "ages": "original5s source TTL for both maps; budget prices the maximum source age actually consulted, plus original2s pose leases",
+          "evidence": "all fresh map candidates/costs/qualification/selected minimum retained on read-only native return audit only; not AP input or added communication",
+          "constrained_search": "Only when the original fused shortest route fails the local-obstacle veto: project all local positive cells into a separate fused-grid search layer; keep unknown cells unknown, promote positive source cells to occupied, retain both originals, and still apply the original continuous local veto. No route remains unavailable.",
+          "derived_provenance": "Private native constrained_fused candidate: deterministic reconstruction from original local+fused grids; source_time=min(original stamps), version=max(original versions); age prices both originals. Never publish the derived grid as an application map."
+        },
+        "rally_route_consistency": {
+          "return_reservation": "complete delivered-map contact-region route; same geometry cache and clearance as known_home_distance",
+          "offsets": "actual start to first grid point included in nominal approach, detour and parking costs",
+          "unavailable": "wait; charging reserves actual body; no local hidden inputs or centre-route fallback",
+          "default_rally_route": "infinite complete path was already in use; initial five-metre diagnosis withdrawn"
+        },
+        "ap_return_consistency": {
+          "inputs": "AP delivered fused planning map and per-robot maps only; current original map/pose/TF/battery leases remain",
+          "admission": "current and endpoint complete return must have a qualified local or locally-vetoed fused path; missing remains unavailable",
+          "assignment": "same qualified geometry for rally candidate return reserve and serial return reservations",
+          "source_age": "maximum consulted fresh map age is priced; no header renewal or native hidden input",
+          "evidence": "private coordinator_return_map_veto and optional own-map lookahead witnesses; not extra transmitted application load",
+          "constrained_search": "Same pure qualifier and explicitly labelled third route candidate; AP uses its delivered maps only, never the native original-map audit."
+        },
+        "geometry_computation": {
+          "obstacle_inflation": "Euclidean distance transform <= unchanged integer clearance radius, with empty-obstacle special case; same original closed disk in every cell",
+          "return_memo": "Only immutable fused and local source grids; identical geometry/home/radius/position, source replacement or mutable alias invalidates; at most128 positions; returns independent result rows",
+          "time_and_budget": "Geometry only. Original sources, true evaluation epochs, source ages, native2/5s TTLs and every final dispatch lease check remain. No cached energy budget or timestamp renewal",
+          "validation": "Cell equality, qualification/route/budget equality, invalidation and actual ROS. Fixed snapshot timing is not a worst-case or mission result",
+          "evidence": "20261009_p2c_geometry_performance_components.json",
+          "return_tree_suffixes": {
+            "algorithm": "Exact shared reverse-predecessor route suffixes and contact-connected mask, reset with the existing content/geometry/home/radius field",
+            "cached_nodes_maximum": 2048,
+            "shared_tuple_vertices_maximum": 2048,
+            "safety": "Every original continuous-check route vertex retained in identical order; no simplification, budget or timestamp cache",
+            "evidence": "20261009_p2c_progressive_planning_components.json"
+          },
+          "rally_level_reuse": {
+            "algorithm": "Invocation-only shared approach/home/qualified-return/clearance geometry for the original two candidate levels; never cache energy, charge waits, assignment or timestamps",
+            "sources": "Only bytes-owned immutable fused grid and every supplied local map; mutable grids and readonly views of mutable parents rebuild each level",
+            "lifetime": "One public assign_rally_poses call only; original positions/home/geometry fixed inside it, new proposal always gets a new cache",
+            "computation_order": "Prepare full energy options for the robot with fewer locally known raw endpoints first; local unknown/missing is only an ordering hint and never rejects a fused qualified path",
+            "decisions": "Original complete-return/body/observer/charge/wait/cap optimization and stable branch order; every final dispatch keeps original source TTL and budgets",
+            "evidence": "20261009_p2c_rally_computation_components.json",
+            "limits": "Equal proposals and fixed-epoch CPU samples, not original timing/history, causal task benefit or a worst-case response guarantee"
+          }
+        },
+        "rally_return_repair": {
+          "trigger": "Idle ACTIVE unarrived non-observer; old endpoint has no qualified return, current pose retains one; all delivered source leases and target lease fresh; no live/pending exploration/rally/survey, charge or safety refuge.",
+          "search": "Known-free target-visible grid centres in the existing nominal1..2.6m rally region, endpoint clearance0.45m and separation0.8m, body-masked complete approach and same qualified contact return. Dense recovery supplements original72 ring samples; no obstacle/unknown clearing.",
+          "budget": "Complete approach+qualified endpoint return+reaction/map/max(odom,frame) age+hold/wait; strictly less than current energy. Next real dispatch revalidates all original leases/reservations/energy.",
+          "preservation": "Only a new proposal; preserve parked peers, original retries/300s horizon/5s native hold/safety. Reset hold on actual assignment change; never cancel a live action or reset retries.",
+          "evidence": "Private coordinator_rally_return_repair saves both delivered maps, original stamps, model, current/reserved/body positions, old/new endpoints and full route/cost; independent reconstruction. No native hidden input or added application traffic."
+        },
+        "snapshot_consumption": {
+          "subscriptions": "AP delivered fused/robot map, odometry and map-frame TF use original reliable volatile keep-last1; discrete events/publishers/native safety queues unchanged",
+          "source_time": "Original source headers preserved; stale inputs still rejected by original5s/2s TTLs",
+          "scope": "Application latest-state coalescing after gateway delivery, not injected radio loss or application traffic change",
+          "evidence": "Actual DDS blocked-executor probe compares original10/20 queues with latest1 on50 unchanged source-stamped snapshots",
+          "tf_reprojection": "Each new delivered map-to-odom TF reprojects the last original odometry sample; its source timestamp and velocity remain unchanged, and original two independent2s leases still apply."
+        },
+        "rally_return_objective": {
+          "order": [
+            "active_observer_protection",
+            "predicted_charge_count",
+            "qualified_return_clearance_exposure",
+            "serial_time",
+            "observer_headroom",
+            "existing_path_objective"
+          ],
+          "exposure": "Soft weighted complete-return length between original0.35m path and0.45m endpoint margins; not energy, continuous clearance or dynamic-obstacle guarantee. Every existing hard constraint is unchanged."
+        },
+        "rally_candidate_sampling": {
+          "algorithm": "original72 rings plus5/10degree outer-ring visible boundary refinement; inspect the existing angular tier if the first level is infeasible or requires its ACTIVE observer to charge",
+          "maximum_candidates": 464,
+          "first_level_maximum": 120,
+          "region": "unchanged known-free target-visible1..2.6m region,0.45m endpoint clearance and0.8m separation",
+          "pricing": "Each level retains original complete qualified return, observer/charge/wait/soft exposure/body cost optimization and cap feasibility; final fresh admission still required",
+          "limits": "At most the same two candidate tiers; retain the better complete original objective tuple, including a feasible first-tier fallback. A predicted funded observer only ranks geometry: current complete approach/return, wait/hold, original source-age and body admission remain mandatory. No new perception/truth input or causal/worst-case mission guarantee",
+          "evidence": "20261009_p2c_outer_sampling_components.json",
+          "maximum_added_first_tier": 48,
+          "observer_refinement_evidence": "20261010_p2c_observer_refinement_components.json"
+        },
+        "native_snapshot_consumption": {
+          "subscriptions": "Native mixed TF retains20 with a separate lightweight input callback group; fused-map latest1; odometry remains original10, local map/task/charge/event/action queues unchanged",
+          "scope": "Two executor workers: only relevant TF ingress can run independently. All pose application, energy, budget, safety, charging and actions remain in the original mutually exclusive state group; no new AP observation or application traffic.",
+          "coalescing": "Filter original map-to-odom transforms before preserving the latest matured source and at most128 unique future stamps; a guard wakes the serialized consumer. Original native128-entry future heap/2s ahead window remains; overflow fails explicitly.",
+          "meter": "Odometry accounting code and queue depth unchanged; TF-only reprojection does not bill map-frame jumps. Required private5s energy ledger adds only a relevant TF receipt count.",
+          "mixed_tf": "Body transforms never overwrite a relevant snapshot or renew its lease. Original source offsets/2s pose/5s map TTLs remain, invalid future input cannot poison a later valid source.",
+          "evidence": "Actual two-worker DDS with the state group blocked and mixed relevant/body TF; blocked historical1/20 queues end with no relevant TF while the input mailbox retains original source50, with no concurrent state/energy/action mutation."
+        },
+        "ap_pose_budget_contract": {
+          "age": "max(original delivered odometry source age, original delivered map-to-odom source age)",
+          "odom_ttl_sec": 2.0,
+          "frame_ttl_sec": 2.0,
+          "future_or_missing": "reject, no finite task admission",
+          "lookahead_evidence": "both source ages retained privately and independently reconstructed"
+        },
+        "exploration_travel_preference": {
+          "strategy": "relative_geodesic_travel",
+          "factor": "min(1,(1+closest currently funded peer known distance)/(1+own known distance))",
+          "inputs": "same delivered planning map/poses/frame/battery/own robot maps; pending charge and non-ACTIVE peers excluded",
+          "distance": "known-free no-corner-cut route with original bounded escape and actual starting offset; complete actual body-masked path is priced again before admission",
+          "scope": "Soft conditional utility preference; bounded continuation, fair serial charging, source TTLs and actual reservations remain; no global optimality or peer future-availability guarantee.",
+          "evidence": "every executed regular frontier privately retains delivered map geometry, source leases, poses/models, nominal/actual distance, eligible peer budgets and utility factor; strict read-only reconstruction",
+          "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
+        },
+        "physical_blackout_manifest": "p2c_blackout_manifest.json",
+        "physical_blackout_required": "Both new originals at the formal commit; unchanged controlled60..250/62..248/.5m/1.1m stimulus. Full integration cannot PASS without their strict evidence. Execute only after all development and fixed/safety prerequisites.",
+        "exploration_frontier_commitment": {
+          "trigger": "Successful EXPLORE/FOUND_UNCONFIRMED short Nav2 prefix remains more than0.02m from full current viewpoint; retain that viewpoint as a scheduling preference.",
+          "admission": "Regenerate current candidates; resume only within original1.2m and gain>max(200,20% prior gain), with current full body/reservation/energy/source checks and battery_factor1.",
+          "clear": "Actual full viewpoint Nav2 success, native FAILED, ordinary navigation failure or no useful funded reachable current candidate clears preference; normal task/safety/retry limits remain.",
+          "evidence": "Private executed witnesses retain current gain and optional prior intent; reconstruct gain from delivered map and verify current proximity/usefulness/funded energy. Not a new AP observation or application traffic.",
+          "limits": "Bounded receding-horizon preference: currently useful continuation receives2x adjusted utility, not absolute priority. No stale command replay, global optimality or time guarantee."
+        },
+        "native_filtered_tf": {
+          "source": "Existing robot-side sampler extracts only original map-to-odom transforms into /robot/battery/source_tf before the native DDS queue; no source stamp rewriting.",
+          "native": "All relevant transforms, duplicates, out-of-order and invalid futures reach the unchanged native consumer, which still owns original2s/5s/128/future deferral, ordering, energy and safety.",
+          "gateway": "Original /robot/gateway/source_tf monotonic filtering and packets unchanged; local sensor stream does not become an AP observation or modeled radio packet.",
+          "queues": "Native TF original reliable20/two-worker serialized-state-plus-input model, fused1/odom10 unchanged; native battery entire bytes unchanged from79f2113.",
+          "proof": "Actual DDS mixed reliability/body TF, source preservation/future/stale/energy checks; actual frozen graph binds each native stream only to its own battery manager.",
+          "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
+          "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
+        },
+        "candidate_parent_commit": "78deb068f40fc88f356c0cd93756bd723565ac59",
+        "exploration_bounded_commitment": {
+          "weight": 2.0,
+          "score": "adjusted_utility*(2 if current useful funded continuation else1)",
+          "guards": "Original full body-masked travel, accepted route reservations, complete round-trip energy, charging fairness and source leases remain hard admission checks.",
+          "evidence": "Selected gain/group size/base utility/reuse exclusions/relative factor/continuation weight/score retained privately; strict reader reconstructs geometry and scores. Does not assert global maximum over unseen original history.",
+          "scope": "One nominal-utility ranking change. Actual body-path energy is repriced before dispatch; nominal score is not an actual travel-time guarantee."
+        },
+        "native_tf_graph_capture": {
+          "scope": "Read-only safety observer captures complete required application/native graph once all native battery topics are observed and all endpoint bindings exist; does not delay or change task clocks.",
+          "evidence": "native_graph.json kept alongside original early bypass graph, owner-bound optional observer command and reader source digests required. Missing evidence FAIL; old incomplete graphs are never repaired."
+        },
+        "initial_known_space_search": {
+          "scope": "Complete object mission (enable_rally true) only; pure mapping and existing target reacquisition behavior stay unchanged.",
+          "alternation": "Successful full mapping viewpoint enables one known-space purpose; successful full known-space viewpoint returns to mapping. Short prefixes and safety charging preserve the current purpose; ordinary navigation failure returns to mapping.",
+          "history": "Position history remains for bounded local diversity. Directional known-space interest instead uses original delivered yaw/pose/frame records and current known-free sight; two-metre90degree predicted cones, not omnidirectional visit discs or target absence proof.",
+          "view": "Current known-free visible interest in a90-degree sector;16 deterministic headings. Occupied and unknown cells block sight; selected heading retained at the final Nav2 endpoint.",
+          "admission": "Original0.45m endpoint/0.35m known-free route, body masks, accepted reservations, current source TTLs, full approach+qualified contact return+reaction/wait reserve and charging fairness. Empty known-space candidate set falls back to ordinary mapping; unfunded candidates request original serial charging.",
+          "inputs": "Existing gateway delivered maps/poses/models only; no ground-truth target, hidden camera, native audit stream or new application packet.",
+          "evidence": "Private initial_visual_search witnesses retain delivered grids, positions, source leases, historical visit inputs, sector gain/yaw, full travel/energy and scheduling score; reader reconstructs them. Complete cohort must exercise at least one such witness.",
+          "limits": "Heuristic bounded current-map search preference, not exhaustive visual coverage, optimality, hardware safety or worst-case completion guarantee."
+        },
+        "task_child_process_audit": {
+          "during_task": "Every nonzero ROS launch child exit before the owned SIGINT closure marker fails; outer owner exit0 cannot mask a child crash.",
+          "cleanup": "Actual post-task child exit codes retained separately; not task-time failures or evidence of graceful child exit.",
+          "evidence": "Original source-bound launch transcript required; no raw log repair."
+        },
+        "mission_spatial_diversity": {
+          "scope": "Complete object missions with battery model only; ordinary mapping unchanged.",
+          "anchor": "Centroid of cached delivered static charger poses; missing/invalid metadata skipped, no model gives neutral preference. Not a new AP input or ground-truth target.",
+          "history": "Existing first fresh delivered position per0.5m bin; original odom/TF each0..2s at recording. Historical travel is a search preference, never camera coverage proof.",
+          "algorithm": "Outside original2m charger-centroid neutral region, count historical0.5m bins within2m of candidate with known-free line of sight in the current delivered planning grid; multiply nominal utility by max(0.25,1/sqrt(1+count)). Other rooms sharing a global direction are independent. Same bounded2x useful continuation and funded-nearer-peer preference remain.",
+          "admission": "Original current complete body-masked approach+qualified contact return, source TTLs, charging fairness and accepted route reservations unchanged. Soft positive factor never authorizes motion.",
+          "evidence": "Private executed witnesses preserve static model anchor, complete visit-source records, local visible visit indices, radius/neutral flag/factor and adjusted score beside current delivered grid; independent reader reconstructs. No added application packet.",
+          "limits": "Current-map local visibility is a search preference, not historical90degree camera coverage, optimality, peer future availability or worst-case native completion guarantee."
+        },
+        "target_information_survey": true,
+        "observer_heading_confirmation_gap": true,
+        "camera_aware_known_search": {
+          "history": "Original delivered pose and map-to-odom0..2s, first actual position/yaw per0.5m/22.5degree bin; no source rewriting or native input",
+          "view": "Current delivered known-free rays within original2m/90degree sector; occupied and unknown cells occlude history. A travelled position no longer masks its unseen back side.",
+          "purpose": "Alternating known-space search only; mapping, useful continuation, charging fairness, native energy and full known-free body/return admission unchanged",
+          "evidence": "Every actual visual witness retains original heading/pose source records, fixed view model, delivered grids, chosen gain/yaw and original full budget for independent reconstruction",
+          "limits": "Current-map predicted visual coverage is a search preference, never proof of target absence, perfect camera perception or exhaustive coverage; history reprojects through the current map only; no new radio packet"
+        },
+        "coordinator_live_clock": {
+          "executor": "Two workers; only the existing /clock subscription moves to an independent mutually exclusive group. Original state/action callbacks remain serialized.",
+          "clock_qos": "Existing best-effort depth1 unchanged; no extra subscription or application message.",
+          "planning_lease": "Capture original delivered source deadlines; abort current exploration batch at candidate/budget/route/dispatch checkpoints on expiry or clock reset. Recheck sources after charge/survey/rally computation before changing admitted owners.",
+          "budget_provenance": "Distinct immutable source stamps, ranking/pricing instants and actual decision instant; age reconstructed at each instant, never renewed.",
+          "shutdown": "Stop new admissions and cancel timers before waiting for executor completion.",
+          "limits": "Clock correctness is independently DDS-verified with controlled blocked callback, not a CPU latency or native completion guarantee. No native battery, Nav2, physics, TTL, horizon or wireless change.",
+          "central_action_completion": "Humble Future done callbacks are executor tasks outside callback groups. All8 central response/result registrations enqueue completed futures into one private SimpleQueue and trigger an existing-state-group guard; only its serialized drain mutates mission owners. Late completions after shutdown are ignored; context-active guard failures remain visible. No new DDS topic or application traffic.",
+          "native_action_completion": "The same private callback serializer handles both native return response/result futures in the original native default state group; lightweight TF inbox remains independent, source stamps/heap/energy/return/charge equations and TTLs unchanged.",
+          "abandoned_input_diagnostics": {
+            "channel": "Existing private read-only coordinator audit, after irrevocable proposal abandonment",
+            "interval_sim_sec": 30.0,
+            "key": "phase and expiry stage",
+            "inputs": "Exact frozen callback geometry/source stamps/state/heading and visit history; source stamps never renewed",
+            "limits": "Diagnostic copies never enter the planner, protocol admission, native safety or navigation; no extra application network packet"
+          }
+        },
+        "evaluation_result_polling": "Read-only bounded polling of a not-yet-valid JSON file from the same original producer; complete invalid objects, producer failure and original deadline still fail. No episode retry, evaluator change or shutdown grace change.",
+        "retained_unrun_candidates": [
+          "20261009_p2c_v29_concurrency_correction.json"
+        ],
+        "visibility_computation": {
+          "rays": "Original floating unrounded projections cached by radius only, max8 immutable tables; translation+rint occurs at actual grid cell exactly as before",
+          "deduplication": "Boolean flat hit mask replaces sort/unique; identical sorted cell set and count",
+          "sectors": "Original atan2(sin,cos) inclusive90degree/16yaw predicate precomputed for integer relative cells, max8 immutable radius/FOV tables; original tie order and yaw",
+          "inputs": "No map/history/source/age/energy budget cached here; current delivered occlusion and interest recomputed each call",
+          "scope": "Pure computation only; source TTL, true clock, native geometry/budget/300s/5s and all case/physical stimuli unchanged",
+          "evidence": "20261009_p2c_visibility_lookup_components.json",
+          "preparation": "Generate original mapping frontiers only when that branch is needed; known-space search retains original mapping fallback and identical path-clearance travel fields"
+        },
+        "candidate_priority_computation": {
+          "algorithm": "lazy exact stable greedy with original raw utility and possible2x continuation as upper bounds",
+          "price": "original complete return battery factor, relative geodesic factor and mission spatial diversity; only fully priced priority above all remaining bounds enters original body/route/full-budget checks",
+          "skip": "unused options of already provisionally selected robot; original route loop skipped those same options; retain complete raw pool for existing charging lookahead",
+          "leases": "true clock/source TTL checks at generation, each price, route and final dispatch; an expired lazy price revokes all provisional plans, no source renewal",
+          "diagnostics": "candidate_assignments counts priced rows; generated_candidate_assignments counts raw rows",
+          "scope": "fixed-source order equivalence and conditional CPU evidence are not live callback latency, worst-case bound or mission acceptance",
+          "evidence": "20261009_p2c_lazy_priority_components.json",
+          "gain_refinement": {
+            "algorithm": "Original frontier geometry and stable sampling order with unknown rectangle-count upper bounds; refine ray gain then reinsert utility bound before original budget price",
+            "types": "Private ViewpointGainBound/AssignmentGainBound, fully resolved normal Viewpoint/Assignment before actual goal or charging forecast",
+            "cache": "One immutable source identity for geometry; replacement and mutable aliases cannot reuse it. Exact ray gains belong to one admission/charging context only",
+            "lookahead": "Complete original raw alternative pool; same exact stable order and top3 qualifying alternative rules via lazy gain resolution, never use rectangle gain in energy forecast",
+            "proof": "Bounds only rank computation. Executed gain/utility/relative/diversity, complete body/return budgets, true current epochs and original2/5s leases are rechecked",
+            "evidence": "20261009_p2c_lazy_gain_components.json",
+            "known_space": {
+              "algorithm": "Rectangle current-interest bound then exact original visibility/16yaw before existing stable budget heap",
+              "cache": "Same immutable admission map and delivered-history interest only; ordinary Viewpoint/Assignment before prices/commands/forecast",
+              "fallback": "Resolve enough candidates to establish actual positive visibility; if none, preserve original mapping fallback",
+              "limits": "Fixed-source equivalence; no original timing or mission causal claim",
+              "evidence": "20261009_p2c_progressive_planning_components.json"
+            }
+          },
+          "route_precheck": {
+            "algorithm": "Necessary useful-prefix bound before exact gains/prices only when actual/provisional reservations exist; original final greedy order and all hard guards retained",
+            "proof": "Any additional reservation can only move the first conflict earlier; retain every possible useful0.75m prefix even if current final endpoint is stationary. A common initial escape-cell conflict rejects all candidate routes for that robot in this same frozen batch",
+            "cache": "Body-masked field and geometric proposals only inside one immutable admission snapshot; at most2048 exact Boolean line-of-sight results per field. No source/header/energy decision cache",
+            "charging": "No speculative route precheck without reservations; existing lower-unfunded alternatives skip full planning and original best-intent serial fairness remains",
+            "actual": "Original body/accepted reservation/full approach and qualified return/2-5s source checks and dispatch renewal prohibition remain; private bounds never become commands",
+            "evidence": "20261009_p2c_admission_pruning_components.json",
+            "limits": "Conditional fixed-source equivalence and CPU samples, not complete-history replay, causal mission effect or worst-case clock bound"
+          },
+          "battery_bound": {
+            "algorithm": "Same original model and original source epochs: straight contact-disc distances lower-bound both complete task+return and current return reserve, hence upper-bound actual battery factor. Private ranking only, never a route or admission budget",
+            "guards": "Every real choice still needs original complete qualified known-map contact paths, actual body route distance, reserve/age/energy/charging fairness; recheck original lease immediately after each expensive price",
+            "charging": "Within each original refinement pass, only if every raw option is proven unfunded: after the exact highest feasible charge intent is found, lower options may skip price. A possible funded alternative or later refinement pass remains independently evaluated",
+            "evidence": "20261009_p2c_budget_bound_components.json",
+            "limits": "Fixed-source commands/charge intent equivalence and CPU samples; no task causal gain, original-history replay, live clock bound or Euclidean safety fallback"
+          },
+          "peer_travel_bound": {
+            "algorithm": "ordered local funded-peer proof before original exact gain and complete actual budget; only a guaranteed-funded subset tightens the original relative-travel factor upper bound",
+            "proof": "one complete qualified local path at original maximum legal map5s/pose2s ages upper-bounds the min-qualified-route energy; unknown/missing/unfunded proof keeps original neutral bound",
+            "scope": "ranking only; preserve complete original candidate pool, stable greedy ties, whole body/return budgets, charging fairness, source epochs and all dispatch gates",
+            "evidence": "20261009_p2c_staged_peer_bound_components.json",
+            "limits": "Fixed-epoch equivalent choices/CPU comparisons only; no original-history, causal mission gain or worst-case completion guarantee"
+          }
+        },
+        "native_contact_arrival": {
+          "algorithm": "Finish the already accepted budgeted contact waypoint before entering CHARGING; crossing the original outer radius does not cancel a pending/owned leg",
+          "safety": "Original return deadline, progress watchdog, energy/reserve failure, cancel ownership, native Nav2 collision avoidance and charging radius/stopped stable duration remain; no new leg, no obstacle clearing or pose/source renewal",
+          "scope": "Departure-map occupancy may still invalidate later exploration; this candidate does not claim to solve localization/dynamic SLAM artifacts or guarantee known-free parking after Nav2 goal tolerance",
+          "evidence": "20261009_p2c_contact_arrival_components.json"
+        },
+        "staging_apparatus_script": "stage_p2c_return_probe.py",
+        "staging_base_content_sha256": "47ce7998e212a9463ab657bbc0b121d4903ed886016bbf0fd3a2399c986da05d",
+        "staging_apparatus_content_sha256": "a3c8f0c6174c6909f02fcafa42818bb0ba6551eb7b4be2b419dc15846e16c405",
+        "nav2_staging_readiness": {
+          "scope": "Private simulation-only preparation readiness; does not modify task policy, native safety, AP observations or radio traffic.",
+          "topic": "/{robot}/global_costmap/costmap",
+          "frame": "map",
+          "map_header_age_sec_max": 2.0,
+          "requirements": [
+            "original action server ready",
+            "finite full unrotated costmap",
+            "all original stage poses in actual costmap bounds",
+            "two distinct consecutive fresh delivered ACTIVE states separated by original0.5s heartbeat; duplicate sources do not count"
+          ],
+          "evidence": "nav2_readiness.jsonl before every original gateway staging leg; unchanged base checks own received map, pose/TF/battery leases and known-free prefix",
+          "original_stimulus": "50s preparation deadline / 60..250s blackout / 62..248s native motion verification / no abort retry are unchanged",
+          "delivered_active_span_sec_min": 0.5,
+          "state_source": "only existing /gateway/received/{robot}/battery_state; original5s source TTL; no native audit/hidden control input"
+        },
+        "retained_failed_physical_characterization": "20261009_p2c_return_ready_failed.json",
+        "retained_failed_physical_characterizations": [
+          "20261009_p2c_return_characterization_failed.json",
+          "20261009_p2c_return_ready_failed.json"
+        ],
+        "navigation_input_capture": {
+          "scope": "Evaluator-only lossless original CDR; no publishers, no AP or native control input. Diagnostic sampling does not replace exact battery budget snapshots.",
+          "topics": "Native local map, delivered fused map, global/local Nav2 costmaps and updates, scan, odom, dynamic/static TF and Nav2 plan per robot; AP fused map.",
+          "encoding": "gzip JSONL with exact received CDR base64, original message type, receipt sim and wall times; original message headers are never rewritten.",
+          "predeclared_at_utc": "2026-10-09T15:43:51.536767+00:00"
+        },
+        "rally_proposal_handoff": {
+          "algorithm": "Retain a complete assignment as geometric intent when serial computation outlives its source leases; consume queued original-source updates before admission.",
+          "revalidation": "Same target and required robots; current delivered planning map known-free0.45m endpoints, known target LOS, original camera range, original0.8m separation and target-facing yaw; recalculate original dispatch order.",
+          "authority": "No old battery prices, routes, received pose or source stamps reused. Original fresh complete approach/contact return/serial wait/hold/body guards remain in RALLY preflight and every actual goal.",
+          "witness": "Original exact assignment search epoch plus independent current delivered geometry/source/order admission witness on the existing private audit path; no new application flow.",
+          "scope": "Prevents repeated search starvation; no global optimality, task completion or worst-case callback guarantee from components alone."
+        },
+        "native_scan_self_filter": {
+          "algorithm": "Native SLAM input-only strict body interior rejection plus adjacent boundary-range noise association requiring at least one strict-interior seed and three matched rays through a contiguous band. NaNs are skipped, never traced as free rays. Original raw scan/CDR/Nav2, map occupancy rules, headers, energy, full return and TTL guards remain.",
+          "body_box_m": [
+            -0.1965,
+            0.0685,
+            -0.1325,
+            0.1325
+          ],
+          "body_geometry": "Exact original SDF/URDF chassis interior intersection; unchanged rectangle. Optional calibrated range-noise association declared separately.",
+          "laser_frame": "base_scan",
+          "laser_to_base_xy_yaw": [
+            -0.064,
+            0.0,
+            0.0
+          ],
+          "witness": "Lossless evaluator CDR plus native SCAN_SELF_FILTER source/header counts independently reconstructed, full SLAM headers/config/launch/models/description source digests.",
+          "scope": "Prospective same preprocessing for every robot/baseline in this freeze. All original failures retained; conditional native replay is not task success.",
+          "range_uncertainty_m": 0.0375,
+          "noise_association": {
+            "model": "3 * unchanged SDF gaussian range sigma + half range resolution",
+            "range_noise_sigma_m": 0.01,
+            "range_resolution_m": 0.015,
+            "interior_seeds": 1,
+            "requires_contiguous_noise_band": true,
+            "scope": "Reject uncertain self-associated boundary echoes from native SLAM only. Returns outside the band, runs without an interior seed or runs shorter than three rays remain.",
+            "association": "One maximal contiguous near-surface band; at least one original physical-interior beam and three matched rays. Full-turn boundary joins only when adjacent; invalid/far rays split bands.",
+            "minimum_matched_rays": 3
+          }
+        },
+        "exploration_return_preparation": {
+          "scope": "Prospective exploration return corridor preparation; no new application flow",
+          "source": "Fresh gateway-delivered per-robot and fused maps, poses, TF and native energy models",
+          "clearance_m": 1.8,
+          "proposal_authority": "Geometry only; fresh complete body and return routes and energy before dispatch",
+          "before_charge": "Clear idle peer bodies before sending the original leased charge request",
+          "live_return": "Fresh AP inputs can fund an idle peer escape during exploration; native safety remains independent",
+          "navigation_kind": "exploration_return_yield",
+          "task_limits_unchanged": true
+        },
+        "navigation_dispatch_boundary": {
+          "scope": "Final navigation admission after goal/witness preparation and heavy serialization; original source epochs and 2/5/60s TTLs. Recheck before and after private audit publication; expire/reset/shutdown revokes without a goal, pending owner or consumed attempt. New command header uses the live admission epoch, never renews observation sources.",
+          "reader": "Private admission and revocation provenance; actual no-goal behavior checked separately with DDS and ActionServer; original strict full-ledger TTL checker remains authoritative."
+        },
+        "observed_rally_transit_heading": {
+          "scope": "Incoming yaw only at an intermediate ordinary RALLY leg, when another ACTIVE arrived peer is quiescent within the original pose/velocity tolerance and keeps the current known target view/FOV with its original <=5s delivered heartbeat. Otherwise retain original target-facing intermediate yaw. Final, local-return-yield and charge staging unchanged.",
+          "leases": "Bind the original target source as an additional original5s observation-support deadline at final preparation/publication admission; retain all original2/5/60s input TTLs, complete routes/reservations/energy, 300s mission and native5s hold.",
+          "evidence": "Private geometry/lease witness and prospective reader source digest; no new application observation stream, no mission or causal saving claimed by components.",
+          "confirmations": "Keep each known robot's original accepted stationary-target confirmation, source epoch and actual camera metadata; no acceptance/version rule changes. Select the freshest eligible quiescent peer even when the approaching robot made the latest global confirmation. Independent reader binds the support to that peer's prior consumed receipt; no source renewal or new application flow."
+        },
+        "navigation_outbound_consistency": {
+          "scope": "Native-energy tasks: every central navigation route respects the fresh delivered robot map as well as the original fused planning map; local unknown space may be extended, local positive cells are preserved.",
+          "planning": "Use the existing conservative occupied-cell projection for outbound candidate fields, prefixes, body/order plans, whole approaches and post-charge waits; independently veto an inconsistent prepared route before creating a goal owner.",
+          "leases": "Original pose/TF2s, map/battery5s, target60s and observer5s remain; witness construction is inside the existing final publication/source boundary.",
+          "evidence": "Original route, delivered local/planning grids and source epochs in the existing private decision audit; independent route and raw CDR map binding. No new application traffic, scan filtering, occupancy clearing or native return changes.",
+          "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_outbound_consistency_components.json",
+          "task_limits_unchanged": true
+        },
+        "charged_return_refuge_release": {
+          "scope": "An idle completed safety refuge may lead its ACTIVE owner only with fresh full serial geometry, complete endpoint/current contact-return energy and original hold/wait/source budgets; restored goals still require ordinary dispatch and native holding",
+          "maps": "Already-delivered fused and respective local maps; all stationary bodies remain masked; no obstacle removal",
+          "private_evidence": "Original maps, positions, complete two approaches, energy models, waits, source stamps and eligibility audit",
+          "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_refuge_release_components.json",
+          "limits_unchanged": "300s/native5s/2s pose-TF/5s map-battery/60s target/complete return and native safety"
+        },
+        "rally_connection_handoff": {
+          "geometry": "Original fused frontier ranking and existing body mask; retained points only, no retained prices or source authority",
+          "admission": "Next serial state callback uses current delivered maps, poses, TF, bodies, full energy/return and original source leases through unchanged send_survey_goal",
+          "expiry": "Wait for fresh delivery; target/participant/phase/clock rewind invalidates points; rejected fresh trials advance, expired trials retain their cursor",
+          "limits": "Original preparation wait, survey attempts, 300 second deadline, 5 second native hold and physical stimulation remain",
+          "evidence": "Private geometry/trial records, independent ranking and raw CDR source binding; no new application traffic"
+        },
+        "exploration_charge_reservations": {
+          "change": "A required exploration charge pauses new plans. Possibly unfunded intents respect accepted live route reservations, rather than discarded tentative plans. Complete nominal/body-masked qualified budgets at the unchanged source deadline prove funded candidates before retaining the original tentative-reservation prefilter. Actual body-masked pricing classifies charge need before reservation admission; funded dispatch retains all concurrent reservations.",
+          "preserved": [
+            "all robot bodies",
+            "original complete outbound and qualified return paths",
+            "original energy and source age budgets",
+            "live action drain before charge",
+            "native charge/return cores",
+            "300s task and 5s native hold",
+            "all cases schedules physical stimuli and holdout boundary"
+          ],
+          "reader": "original charge, outbound, exploration, process, energy and return audits; no new application stream",
+          "component_probe": "check_p2c_charge_reservations_runtime.py"
+        },
+        "rally_connection_priority": {
+          "scope": "When the original progressive complete rally search has zero reachable poses for a nonobserver ACTIVE peer, survey that peer connection frontier before optional target-area information or descent. Reuse the existing search field, retain geometry only, reprice the unchanged complete body/return/energy/source dispatch.",
+          "limits": "Original survey attempts/retries, 300s task, 5s native hold, native return, 2/5/60s source TTLs, all cases/schedules/physical stimuli unchanged.",
+          "evidence": "Private final-tier candidate count and disconnected robot; independent approach/ranking reconstruction plus original local/fused raw CDR binding."
+        },
+        "exploration_refuge_displacement": {
+          "scope": "Exploration return-refuge search rejects grid-centre candidates whose actual robot-to-point displacement is below the unchanged 0.5m admission minimum. Other rally_yield_pose calls retain the original default.",
+          "preserved": "Original 1.8m protected return corridor, local/fused body paths and complete energy/source validation; native safety, 300s/5s/TTLs, survey attempts/retries and physical stimuli unchanged.",
+          "evidence": "Original v54 frozen 0.483412562m refusal, next 0.507799521m complete admissible escape; raw CDR map binding and actual DDS/Futures at shifted synthetic epochs."
+        },
+        "curved_normal_rally_legs": {
+          "scope": "Battery-protected ordinary rally approach only, at the existing full-path/body/priority/return budget and final original source-age admission boundaries",
+          "algorithm": "Existing plan_rally_leg known-free bounded grid path may retain bends. Normal legs no longer require a direct line of sight to their endpoint. Existing prefix reservations and original5m/attempt-dependent limits remain.",
+          "unchanged": "No-battery behavior, safety refuges/local-return yields, charge staging and observer correction use original visible legs. Native300s/5s/pose2s/map-battery5s/target60s/observer5s, Nav2/SLAM/scan/physics and retries remain.",
+          "evidence": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_curve_legs_components.json",
+          "limits": "Independent source-map/body/whole-return/energy checks prove dispatch-time planned geometry only. Nav2 need not follow every grid vertex; current source lease does not guarantee future connectivity or completion."
+        },
+        "deferred_exploration_geometry": {
+          "scope": "Original source-lease expiry fallback, consistently frozen for every baseline and task case",
+          "algorithm": "Keep only ordered geometry suggestions, at most128 points per robot. Completed-score suggestions precede raw suggestions; numeric scores, routes and source authority are discarded. Within original10s TARGET_HISTORY at admission start, regenerate the complete current candidate catalogue and select up to3 current rows per robot nearest its next3 suggested points within original1.2m separation; otherwise use current top3 utility bounds. Advance geometry cursor only after current scoring lease survives; context/participants/target/phase changes discard the preference.",
+          "preserved": "All current exact gains, relative/diversity scores, complete body-masked approach and qualified local/fused/constrained contact returns, energy/wait/source-age budgets and final dispatch leases. Full raw charging lookahead pool retained. Native300s/5s/pose-TF2s/map-battery5s/target60s/observer5s, Nav2/SLAM/scan/physics/retries unchanged.",
+          "refuge_query": "Batch the original scalar KDTree route-separation queries, preserving predicate, cell order and all original geometry.",
+          "policy_limits": "Expired-batch recovery ranks a small regenerated subset, not the complete current global catalogue. No global optimality, worst-case runtime, actual Nav2 route tracking or continuous execution connectivity claim.",
+          "evidence": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_exploration_handoff_components.json"
+        },
+        "concurrent_exploration_return_yield": {
+          "evidence": "report/20261010_p2c_multi_return_yield_components.json",
+          "qualification": "Same original complete protected return routes, endpoint1.8m clearance, monotonic escape, full outbound and current plus endpoint contact-return budgets and final2/5s source guards",
+          "cycle_binding": "At escape admission, bind every already RETURNING protected robot to its delivered return_count; prospective ACTIVE owner to return_count+1. CHARGING peers excluded from cycle authority.",
+          "callbacks": "Accepted escape and subsequent returning battery updates exempt only these route-qualified cycles; own inactive helper, uncovered returner, new cycle and ordinary exploration retain cancellation",
+          "limits": "Dispatch-time qualification, not a guarantee of continuous connectivity or that Nav2 follows the exact route. No scheduling, geometry, budget, source TTL, timeout, retries or physics changes."
+        },
+        "outbound_duplicate_header_binding": "Read-only: each witness independently requires some captured raw same-header map with exactly matching geometry and cells, except the unchanged bounded isolated own-cell correction. Nonmatching versions cannot stand in for any unmatched witness; counts remain unique topic/header keys. Gateway causality and source lease checks remain separate.",
+        "installed_source_environment": {
+          "build_mode": "Original colcon build --symlink-install restored; no production source change",
+          "preflight": "Installed control and bypass-audit manifest must resolve to the canonical current source tree; original source-only forbidden-bypass audit passes",
+          "evidence": "20261010_p2c_install_restore_components.json",
+          "limits": "Correct installation/preflight only; original v58 startup FAIL retained, complete P2C.1 still requires a new same-source cohort"
+        },
+        "quiescent_rally_priority_repair": {
+          "trigger": "Existing viable current body-masked leg is blocked only by future priority and the existing map-safe order reduces original approach inversions",
+          "order": "Apply that future preference only when every central rally accepted/pending leg is absent; return without dispatch and re-evaluate on the next original callback",
+          "guards": "Accepted/pending legs keep their original order; existing readiness sorting, current maps, complete body/return routes, budgets, reservations and source TTLs still authorize actual dispatch",
+          "evidence": "20261010_p2c_rally_priority_components.json",
+          "limits": "Conditional liveness mechanism only, no task benefit or general deadlock freedom; fresh same-source4 development then17 formal plus2 physical remain mandatory"
+        },
+        "curved_target_surveys": {
+          "motion": "Battery-protected non-heading surveys may follow a complete known-free curved path within the original5m leg limit; no-battery and heading-only behavior is preserved",
+          "guards": "Original body/local obstacle/return reservations, current and endpoint full return budgets, attempt count, timeout, final source TTLs and camera-facing endpoint rules remain",
+          "evidence": "20261010_p2c_survey_curves_components.json",
+          "limits": "Conditional path availability and actual DDS/action Future checks; no physical Nav2 or task causal guarantee"
+        },
+        "rally_proposal_return_map_witnesses": {
+          "witness": "Private admission records exactly the delivered per-robot maps consulted by map-safe order, including their original source stamps",
+          "reader": "Recalculate current order using those maps; bind local cells and planning geometry to exact original captured OccupancyGrid CDR",
+          "traffic": "No new application stream; old failed tasks/readers remain failed",
+          "evidence": "20261010_p2c_survey_curves_components.json"
+        },
+        "refuge_release_preflight_guard": {
+          "precondition": "Finite nonnegative original complete-route wait budgets must exist before a charged refuge release spends the current pose lease on geometry",
+          "order": "Retain the existing complete participant order if the helper precedes its ACTIVE owner; otherwise use the unchanged current map-safe search",
+          "guards": "Both complete serial approaches still mask every other current body and then the placed helper, and fund current and endpoint qualified return plus original wait and5s hold at the original source deadlines",
+          "evidence": "Private previous order/order source and independently reconstructed complete routes/budgets; original failed tasks remain failed",
+          "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_refuge_preflight_components.json",
+          "limits": "Conditional original native-map geometry and actual DDS/Futures; no physical Nav2, causal task or worst-case latency claim. Original4\u219217+2 and917 boundary remain"
+        },
+        "native_curved_return_legs": {
+          "navigation": "Ordinary native return legs use the maximal at-most5m prefix of the existing complete known-free contact route, including the actual position offset; the original bounded inflated-start escape branch is preserved",
+          "guards": "Original full contact return, local-obstacle veto, energy model/credit/reserve, source deadlines, timeout/retry counters, Nav2/SLAM and physical parameters remain unchanged",
+          "evidence": "Independent complete-route prefix/continuous-clearance reconstruction and exact original local/fused CDR binding; all original returns must still close",
+          "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_native_return_curves_components.json",
+          "limits": "Conditional original decision geometry and actual DDS/stationary ActionClient Futures; no physical motion, task causal or worst-case guarantee. New same-clean-pushed4\u219217+2 required;917 remains unexposed"
+        },
+        "proposal_all_participant_sources": {
+          "authority": "Every proposed participant body, including RETURNING/CHARGING robots, must have original fresh delivered pose/TF/map/battery sources before geometry, after order reconstruction and after private publication",
+          "evidence": "Record the original captured source epochs for all participants; reject expiration without renewing source stamps or dispatching an assignment",
+          "limits": "Original proposal geometry, map-safe order and ordinary assignment full-budget/source/body guards are preserved; no task completion claim"
+        },
+        "proposal_serial_order_revalidation": {
+          "preference": "Retain only the last computed permutation after a proposal attempt expires; it carries no old route, pose, price or movement permission",
+          "qualification": "Reconstruct every complete current serial body-masked approach using current delivered planning and local maps, updating occupied bodies after each hypothetical placement; otherwise use the original full current search",
+          "guards": "All original participant pose/TF/map/battery/target source deadlines and endpoint/LOS/spacing/yaw checks remain, including checks after geometry and private publication. Ordinary RALLY preflight/dispatch still price complete current returns, waits and5s hold",
+          "evidence": "Private order source, prior preference, complete serial routes and exact current source/CDR binding; this intentionally prefers a currently qualified retained permutation over reranking every soft-cost alternative",
+          "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_rally_intent_components.json",
+          "limits": "Original proposal snapshot and conditional actual DDS/clock; no original live replay, task causal or worst-case deadline claim. Same-clean-pushed4\u219217+2 required;917 remains unexposed"
+        },
+        "rally_recovery_retarget_intent": {
+          "transition": "Permanent reassignment of the waiting beneficiary clears its previous return-owner, temporary-yield, probe and old donated-priority flags; the new target is ordinary RALLY intent",
+          "guards": "The same current body/local route chooser and ordinary full target/source/energy/hold admission remain; genuine local-return refuge exceptions remain available",
+          "evidence": "Private permanent retarget and current/final target/yield/probe/return-owner roles; independently reject stale safety roles attached to the retargeted formal intent",
+          "limits": "Conditional synthetic corridor, permanent chooser and stale state via actual DDS/ActionClient Futures; no physical motion or task causal completion claim"
+        },
+        "preassignment_planning_tolerance": {
+          "source": "Original SHA-bound runner.log executed launch command must contain exactly one rally_position_tolerance_m:=0.35; any non-null native field must agree",
+          "scope": "Read-only FOUND observer and target-information-survey planning; preserve the immutable evaluator null rally parameters and null native hold before any assignment",
+          "guards": "All original camera/error margin,2/5/60s source/energy/route/physical/native completion/300s/5s requirements unchanged; this is not an assignment or native success claim",
+          "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_partial_heading_components.json",
+          "limits": "v64 original physical checker FAIL remains; corrected original closed evidence review is a reader component only. New clean-pushed same-source4\u219217+2 required;917 remains unexposed"
+        },
+        "rally_connection_local_reinspection": {
+          "trigger": "Existing complete rally search proves a nonobserver ACTIVE robot cannot reach a rally pose in the conservative fused plus original local map",
+          "preference": "When fused space connects, rank known-free conservative-component endpoints by original body-masked fused geodesic distance to existing rally poses; prefer a safe approach for actual scan reinspection before unchanged connection frontiers",
+          "guards": "All positive source obstacles remain; original0.45 endpoint/0.35 path/0.6 body and bounded known-free escape; no unknown movement, obstacle erasure or route permission from preference. Next callback uses unchanged full local/body/go-return energy and2/5/60s leases",
+          "evidence": "Private exact original local/fused geometry, independently reconstructed minimum and raw CDR binding; ordinary actual source-bound target survey decisions",
+          "limits": "No guaranteed obstacle cause, clearing or task benefit. Original six/nine survey attempts, retries,300s,5s native hold and physical cases/stimuli unchanged; new same-freeze4\u219217+2 mandatory,917 remains unexposed",
+          "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_reinspection_components.json"
+        },
+        "complete_application_graph": {
+          "capture": "The existing read-only observer waits for native TF and complete typed metrics/AP/merge endpoints plus unchanged bypass and headless monitor vetoes; canonical graph.json and native_graph.json are the same first qualified actual snapshot",
+          "initial": "Keep the original early bypass_audit snapshot separately in initial_bypass_graph.json with original source/graph/SHA evidence; never replace missing endpoints or overwrite either graph",
+          "limits": "Read-only discovery capture only; no controller/native/SLAM/physics/source/TTL/300s/5s or task-case/stimulus changes. Original v66 native COMPLETE but strict graph FAIL retained; new same-source4\u219217+2 required,917 remains unexposed",
+          "evidence": "Exclusive graph creation, exact observer/runner command and original SHA binding, positive typed endpoints and actual delayed DDS rejection/delivery/closure checks",
+          "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_application_graph_components.json"
+        },
+        "predeclared_graph_command": {
+          "authority": "Shared episode_command selects initial_bypass_graph.json under the already declared complete_application_graph option; owner and strict declaration auditor use that same generator",
+          "source_binding": "Record and require the actual run_p3b5_tasks.py builder SHA alongside runner/observer/native graph source digests; no owner-only rewrite or reader-only exception",
+          "scope": "Same actual command, evidence paths, controller/native/SLAM/physical/source/energy/TTL/300s/5s bytes and original cases/stimuli as v67",
+          "limits": "Original v67 native COMPLETE288.8 but strict declaration FAIL remains. Read-only original declaration binding is a component, never status backfill. New clean-pushed same-source4\u219217+2 required;917 remains unexposed",
+          "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_graph_command_components.json"
+        }
+      },
+      "command": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py",
+        "--world",
+        "my_world.world",
+        "--robot-count",
+        "2",
+        "--gazebo-seed",
+        "303",
+        "--startup-timeout",
+        "600",
+        "--message-timeout",
+        "90",
+        "--shutdown-timeout",
+        "120",
+        "--evaluation-duration",
+        "300",
+        "--evaluation-wait-timeout",
+        "900",
+        "--coverage-threshold",
+        "0",
+        "--mission-mode",
+        "rally",
+        "--gateway-mode",
+        "ideal",
+        "--gateway-seed",
+        "17011",
+        "--battery",
+        "--battery-capacity",
+        "100",
+        "--battery-initial-energy",
+        "18.0",
+        "--target-x",
+        "-4",
+        "--target-y",
+        "4",
+        "--rally-max-concurrent",
+        "2",
+        "--disable-global-battery-rally-pause",
+        "--episode-id",
+        "20261010_p2c_v68_dev_forced2",
+        "--collect-fault-result",
+        "--dwell-seconds",
+        "0",
+        "--evaluation-output-dir",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2",
+        "--log-dir",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2/launch",
+        "--gateway-ledger-path",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2/ledger.jsonl",
+        "--bypass-audit-output",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2/initial_bypass_graph.json",
+        "--target-detection",
+        "--rally",
+        "--battery-charge-duration",
+        "10.0",
+        "--battery-safety-margin",
+        "5.0",
+        "--battery-return-timeout",
+        "120"
+      ],
+      "observer_command": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/observe_p3b5.py",
+        "--output",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2/safety_events.jsonl",
+        "--robot-count",
+        "2",
+        "--native-tf-graph-output",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2/native_graph.json",
+        "--application-graph-output",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2/graph.json",
+        "--navigation-input-output",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68/20261010_p2c_v68_dev_forced2/navigation_inputs.jsonl.gz"
+      ],
+      "configuration_command": null,
+      "environment": {
+        "ROS_DOMAIN_ID": "218",
+        "GAZEBO_MASTER_URI": "http://127.0.0.1:20318",
+        "ROS_DISTRO": "humble",
+        "RMW_IMPLEMENTATION": null,
+        "FASTDDS_BUILTIN_TRANSPORTS": null,
+        "PYTHONNOUSERSITE": "1",
+        "FASTRTPS_DEFAULT_PROFILES_FILE": null,
+        "ROS_DISCOVERY_SERVER": null
+      },
+      "cpu_affinity": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79
+      ],
+      "owner_pid": 2503022,
+      "git_commit": "78deb068f40fc88f356c0cd93756bd723565ac59",
+      "source_digests": {
+        "exploration": "97dafc136a7c87e8db73d331dc87f19c340a9fe4dc915024834f9ff91ffab4fa",
+        "launch": "6f26d9c5b1dce5bc681bc59cfe8fb8be68baff823f5334939f33261392380692",
+        "params": "2cb9b9e26015cbe79867fe3750296d9cb7626a05ad16f595b7692db4b4490f4f",
+        "worlds": "2ee10406031815e3d0ea2e76074706a8e150e636ab2366428b201ecc72a5cc9a",
+        "slam": "37295c44991eb0c84883b966f81ca06928e8c1e1a45bed18f4605252dc9374c9",
+        "manifest": "d110cd044fbdf32f6b32c99215a5368a6f1cc210809eb031bee0f42d1c332b18",
+        "runner": "3e0e391e6ce3a5a193167de7e5477a3df56c4e2e39f90a3eb07c7e6844a18cc4",
+        "smoke": "42cf2f93ba691e2f281d3e2938bc4c005346fcf3eac061edf1317c5b22492359",
+        "control_cli": "f70c8f7a6ee4fb9a0a7d2e9468e3c77b3cc77d729cbd2a544c1f45adbf997c09",
+        "entrypoint": "78edb424db0a63347cf6b28f3fbff72a20207c3852f26a004907f868e8170a1f",
+        "message_schema": "e0648e61473dfd2931038c79cda8a6fe4bf09c1d00f8d4acdfa0f4879e72925c",
+        "control_schema": "7fa7e5fa63dd0fb1e319fd08694773c675ac3fe8dcefa0051dd4f0fe71958d28",
+        "admission_protocol": "05f15651bfc831c541d5a662491a0467e64ae4084c27655a6f27e1ed56e6064a",
+        "staging_apparatus": "7b281c9a6ded4d1ff61649b709b8090d13d1834af21643aa0822b3d5cdc7645c",
+        "physics_observer": "588693bf5f934081452925fc3ca80e10465f67ccc1738066cd91fb9fdf48527b",
+        "episode_command_builder": "972dbc2fb118a2f2fda2689ae162948689ff28f16914d17b1135fdd182831a86",
+        "safety_observer": "0cbb5ab2e12eb6933da06f7fe4820a03be10e04be28c1e927f9f33766329663c",
+        "native_graph_reader": "df8798fd494f5628719f6960d5c549233805898c88842776035567b165928ed1",
+        "navigation_capture": "739f2b9e7a7c89fbbe10860e9de76e70e849bbc12d048ad066a32da38837c636",
+        "return_preparation_reader": "0458ff41855b77c1ea507f837d36dde4d43e6b5fdb6f83aba5464b51ca826099",
+        "navigation_dispatch_reader": "69ec0bf55849112834f6b844e248b2c848290ff1c3d6f8a8e7268d381de724a0",
+        "rally_transit_reader": "6fbaa087c212223cbce36ef81b13a0f2acb0382c020db5e4fa03b54d2f36f03e",
+        "outbound_route_reader": "440ee0ba46828150a3d72bd26762aca342485cb18246a7bbf002ac7e82a22069",
+        "refuge_release_reader": "f816d383aeb2211ace40476365734e5bc2883b9cfd9d5217bee021786e3a0ba3",
+        "rally_connection_reader": "8d05c6a0b8ce8778b6997d0b5086d717c0d9e77bc48dc3c0645917352ea4134c",
+        "robot_models": "55494138cfad63dbb2d36331bc3a8c784c65d4632cc19217a58ce9f129ae69dd",
+        "robot_description": "9770e035bc85014df99373d3557b5c567b3242a51794d53dcbbff617057538a8",
+        "scan_self_filter_reader": "25b68c64593f0aa39aa63ceedcb9dae9b61df6ff1c8a16c351aeb206f5a4c94c"
+      }
+    },
+    {
+      "case": "physical_fault",
+      "config": {
+        "schema_version": 1,
+        "duration_sec": 300,
+        "coverage_threshold": 0.8,
+        "fault_seed": 17011,
+        "owner_shutdown_timeout_sec": 120,
+        "native_pose_contract": {
+          "odom_ttl_sec": 2.0,
+          "frame_ttl_sec": 2.0,
+          "frame_generation_stamp": "native validity stamp minus actual SLAM transform_timeout; launch supplies the same configured offset as gateway",
+          "source_order": "source stamps are preserved; valid sensor samples up to2s ahead of local /clock wait in one bounded128-entry heap; clock-matured duplicate/out-of-order sources are ignored, excessive-future samples never poison the current pose",
+          "unavailable": "no finite budget/nav return or stable charging; bounded30s stop then explicit positive-energy failure",
+          "startup_recovery": "Every charging entry, including immediate odom callbacks, resumes a funded initial missing-pose hold instead of charging; original low-energy/task charge requests remain valid."
+        },
+        "native_energy_accounting": {
+          "period_sec": 5.0,
+          "channel": "read-only native battery_return_audit; not AP input or extra network traffic",
+          "equation": "energy=max(0,initial_energy+charge_credits-distance*move_cost-elapsed*idle_cost)",
+          "required": "all regular originals; zero-energy negative has its independent no-navigation failure audit",
+          "freeze_counterexample": "native truth path>1m cannot have zero local distance/time accounting; retain all failures"
+        },
+        "return_source_selection": {
+          "strategy": "lowest qualified complete-contact energy budget; exact tie prefers local",
+          "sources": [
+            "fresh native local map",
+            "fresh gateway-delivered fused map",
+            "explicit conservative fused search with all fresh local occupied cell rectangles"
+          ],
+          "obstacle_veto": "a fused route may extend local unknown space but may not clear local known obstacles; continuous half-local-cell checks preserve0.35m clearance and original bounded0.6m known-free start escape; no diagonal cutting",
+          "ages": "original5s source TTL for both maps; budget prices the maximum source age actually consulted, plus original2s pose leases",
+          "evidence": "all fresh map candidates/costs/qualification/selected minimum retained on read-only native return audit only; not AP input or added communication",
+          "constrained_search": "Only when the original fused shortest route fails the local-obstacle veto: project all local positive cells into a separate fused-grid search layer; keep unknown cells unknown, promote positive source cells to occupied, retain both originals, and still apply the original continuous local veto. No route remains unavailable.",
+          "derived_provenance": "Private native constrained_fused candidate: deterministic reconstruction from original local+fused grids; source_time=min(original stamps), version=max(original versions); age prices both originals. Never publish the derived grid as an application map."
+        },
+        "rally_return_objective": {
+          "order": [
+            "active_observer_protection",
+            "predicted_charge_count",
+            "qualified_return_clearance_exposure",
+            "serial_time",
+            "observer_headroom",
+            "existing_path_objective"
+          ],
+          "exposure": "Soft weighted complete-return length between original0.35m path and0.45m endpoint margins; not energy, continuous clearance or dynamic-obstacle guarantee. Every existing hard constraint is unchanged."
+        },
+        "ap_pose_budget_contract": {
+          "age": "max(original delivered odometry source age, original delivered map-to-odom source age)",
+          "odom_ttl_sec": 2.0,
+          "frame_ttl_sec": 2.0,
+          "future_or_missing": "reject, no finite task admission",
+          "lookahead_evidence": "both source ages retained privately and independently reconstructed"
+        },
+        "exploration_travel_preference": {
+          "strategy": "relative_geodesic_travel",
+          "factor": "min(1,(1+closest currently funded peer known distance)/(1+own known distance))",
+          "inputs": "same delivered planning map/poses/frame/battery/own robot maps; pending charge and non-ACTIVE peers excluded",
+          "distance": "known-free no-corner-cut route with original bounded escape and actual starting offset; complete actual body-masked path is priced again before admission",
+          "scope": "Soft conditional utility preference; bounded continuation, fair serial charging, source TTLs and actual reservations remain; no global optimality or peer future-availability guarantee.",
+          "evidence": "every executed regular frontier privately retains delivered map geometry, source leases, poses/models, nominal/actual distance, eligible peer budgets and utility factor; strict read-only reconstruction",
+          "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
+        },
+        "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
+        "predeclared_at_utc": "2026-10-10T12:53:21.180541+00:00",
+        "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
+        "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
+        "return_staging": {
+          "poses": {
+            "tb1": [
+              0.0,
+              -2.45,
+              -1.5707963267948966
+            ],
+            "tb2": [
+              0.0,
+              2.45,
+              1.5707963267948966
+            ]
+          },
+          "stage_deadline_sec": 50,
+          "position_tolerance_m": 0.25,
+          "wall_timeout_sec": 1000,
+          "scope": "Simulation-only mission dispatch guard is enabled before coordinator startup, keeping DDS/all input callbacks alive; owner-verified fixture reads the explicit enabled parameter before AP staging. Command disjoint up/down .8m truth-clearance legs, with current received-map .35m navigation-clearance required known-free current-map legs via same gateway before50s, blackout60..250. Native battery safety untouched; idlecost .15 triggers independent return. Resume owned coordinator via SIGUSR2 after both actualcharges; no fullmission success claim. Fail exposure if stages not reached by50s; no episode retry. Use <=.75m current known-free visible prefixes and existing bounded clearance escape/path detours toward the same finalpoint; recompute only on new map. Latest-only input queues retain sourceTTL. No forced unknowngoal or episode retries.",
+          "navigation_leg_limit_m": 0.75,
+          "one_shot_staging": true,
+          "pause_method": "simulation-only mission timer guard; DDS/input callbacks alive; owned SIGUSR2 resumes after both charges"
+        },
+        "physical_verification": {
+          "both_robots": true,
+          "return_start_home_distance_m_min": 1.1,
+          "measured_return_motion_inside_blackout_m_min": 0.5,
+          "nav2_executing_during_return": true,
+          "charges_each_min": 1,
+          "collision_events": 0,
+          "robot_failures": 0,
+          "truth_observer": "read-only /gazebo/model_states + local battery + Nav2 status; never writes control; world charger coordinates match configured map-origin poses within margin; blackout boundaries use 2s guard",
+          "return_motion_window_sec": [
+            62,
+            248
+          ]
+        },
+        "staging_apparatus_content_sha256": "a3c8f0c6174c6909f02fcafa42818bb0ba6551eb7b4be2b419dc15846e16c405",
+        "physical_observer_content_sha256": "1d8a86d39f57982ea1cf18619a35c4a39dcbe151e17eef2af35d16a27cdc899c",
+        "development_parent": "08fe5f770f92fa2189b7c7d725491a56ec00ca2a",
+        "cases": {
+          "physical_ideal": {
+            "world": "my_world.world",
+            "target_x": -4,
+            "target_y": 4,
+            "robot_count": 2,
+            "seed": 303,
+            "energy": 40,
+            "charge_duration": 10,
+            "safety_margin": 5,
+            "return_timeout": 120,
+            "mode": "ideal",
+            "profile": {
+              "gateway_blackout_intervals": [
+                [
+                  60,
+                  250
+                ]
+              ],
+              "battery_idle_cost": 0.15
+            },
+            "admission_protocol": false,
+            "schedule": []
+          },
+          "physical_fault": {
+            "world": "my_world.world",
+            "target_x": -4,
+            "target_y": 4,
+            "robot_count": 2,
+            "seed": 303,
+            "energy": 40,
+            "charge_duration": 10,
+            "safety_margin": 5,
+            "return_timeout": 120,
+            "mode": "fault",
+            "profile": {
+              "gateway_blackout_intervals": [
+                [
+                  60,
+                  250
+                ]
+              ],
+              "battery_idle_cost": 0.15
+            },
+            "admission_protocol": false,
+            "schedule": []
+          }
+        },
+        "stimulus_frozen_commit": "380ac518bff279d63b1c53124bdc8aae51d1fcc7",
+        "exploration_frontier_commitment": {
+          "trigger": "Successful EXPLORE/FOUND_UNCONFIRMED short Nav2 prefix remains more than0.02m from full current viewpoint; retain that viewpoint as a scheduling preference.",
+          "admission": "Regenerate current candidates; resume only within original1.2m and gain>max(200,20% prior gain), with current full body/reservation/energy/source checks and battery_factor1.",
+          "clear": "Actual full viewpoint Nav2 success, native FAILED, ordinary navigation failure or no useful funded reachable current candidate clears preference; normal task/safety/retry limits remain.",
+          "evidence": "Private executed witnesses retain current gain and optional prior intent; reconstruct gain from delivered map and verify current proximity/usefulness/funded energy. Not a new AP observation or application traffic.",
+          "limits": "Bounded receding-horizon preference: currently useful continuation receives2x adjusted utility, not absolute priority. No stale command replay, global optimality or time guarantee."
+        },
+        "native_filtered_tf": {
+          "source": "Existing robot-side sampler extracts only original map-to-odom transforms into /robot/battery/source_tf before the native DDS queue; no source stamp rewriting.",
+          "native": "All relevant transforms, duplicates, out-of-order and invalid futures reach the unchanged native consumer, which still owns original2s/5s/128/future deferral, ordering, energy and safety.",
+          "gateway": "Original /robot/gateway/source_tf monotonic filtering and packets unchanged; local sensor stream does not become an AP observation or modeled radio packet.",
+          "queues": "Native TF original reliable20/two-worker serialized-state-plus-input model, fused1/odom10 unchanged; native battery entire bytes unchanged from79f2113.",
+          "proof": "Actual DDS mixed reliability/body TF, source preservation/future/stale/energy checks; actual frozen graph binds each native stream only to its own battery manager.",
+          "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
+          "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
+        },
+        "candidate_parent_commit": "78deb068f40fc88f356c0cd93756bd723565ac59",
+        "exploration_bounded_commitment": {
+          "weight": 2.0,
+          "score": "adjusted_utility*(2 if current useful funded continuation else1)",
+          "guards": "Original full body-masked travel, accepted route reservations, complete round-trip energy, charging fairness and source leases remain hard admission checks.",
+          "evidence": "Selected gain/group size/base utility/reuse exclusions/relative factor/continuation weight/score retained privately; strict reader reconstructs geometry and scores. Does not assert global maximum over unseen original history.",
+          "scope": "One nominal-utility ranking change. Actual body-path energy is repriced before dispatch; nominal score is not an actual travel-time guarantee."
+        },
+        "native_tf_graph_capture": {
+          "scope": "Read-only safety observer captures complete required application/native graph once all native battery topics are observed and all endpoint bindings exist; does not delay or change task clocks.",
+          "evidence": "native_graph.json kept alongside original early bypass graph, owner-bound optional observer command and reader source digests required. Missing evidence FAIL; old incomplete graphs are never repaired."
+        },
+        "initial_known_space_search": {
+          "scope": "Complete object mission (enable_rally true) only; pure mapping and existing target reacquisition behavior stay unchanged.",
+          "alternation": "Successful full mapping viewpoint enables one known-space purpose; successful full known-space viewpoint returns to mapping. Short prefixes and safety charging preserve the current purpose; ordinary navigation failure returns to mapping.",
+          "history": "Position history remains for bounded local diversity. Directional known-space interest instead uses original delivered yaw/pose/frame records and current known-free sight; two-metre90degree predicted cones, not omnidirectional visit discs or target absence proof.",
+          "view": "Current known-free visible interest in a90-degree sector;16 deterministic headings. Occupied and unknown cells block sight; selected heading retained at the final Nav2 endpoint.",
+          "admission": "Original0.45m endpoint/0.35m known-free route, body masks, accepted reservations, current source TTLs, full approach+qualified contact return+reaction/wait reserve and charging fairness. Empty known-space candidate set falls back to ordinary mapping; unfunded candidates request original serial charging.",
+          "inputs": "Existing gateway delivered maps/poses/models only; no ground-truth target, hidden camera, native audit stream or new application packet.",
+          "evidence": "Private initial_visual_search witnesses retain delivered grids, positions, source leases, historical visit inputs, sector gain/yaw, full travel/energy and scheduling score; reader reconstructs them. Complete cohort must exercise at least one such witness.",
+          "limits": "Heuristic bounded current-map search preference, not exhaustive visual coverage, optimality, hardware safety or worst-case completion guarantee."
+        },
+        "task_child_process_audit": {
+          "during_task": "Every nonzero ROS launch child exit before the owned SIGINT closure marker fails; outer owner exit0 cannot mask a child crash.",
+          "cleanup": "Actual post-task child exit codes retained separately; not task-time failures or evidence of graceful child exit.",
+          "evidence": "Original source-bound launch transcript required; no raw log repair."
+        },
+        "mission_spatial_diversity": {
+          "scope": "Complete object missions with battery model only; ordinary mapping unchanged.",
+          "anchor": "Centroid of cached delivered static charger poses; missing/invalid metadata skipped, no model gives neutral preference. Not a new AP input or ground-truth target.",
+          "history": "Existing first fresh delivered position per0.5m bin; original odom/TF each0..2s at recording. Historical travel is a search preference, never camera coverage proof.",
+          "algorithm": "Outside original2m charger-centroid neutral region, count historical0.5m bins within2m of candidate with known-free line of sight in the current delivered planning grid; multiply nominal utility by max(0.25,1/sqrt(1+count)). Other rooms sharing a global direction are independent. Same bounded2x useful continuation and funded-nearer-peer preference remain.",
+          "admission": "Original current complete body-masked approach+qualified contact return, source TTLs, charging fairness and accepted route reservations unchanged. Soft positive factor never authorizes motion.",
+          "evidence": "Private executed witnesses preserve static model anchor, complete visit-source records, local visible visit indices, radius/neutral flag/factor and adjusted score beside current delivered grid; independent reader reconstructs. No added application packet.",
+          "limits": "Current-map local visibility is a search preference, not historical90degree camera coverage, optimality, peer future availability or worst-case native completion guarantee."
+        },
+        "target_information_survey": true,
+        "observer_heading_confirmation_gap": true,
+        "camera_aware_known_search": {
+          "history": "Original delivered pose and map-to-odom0..2s, first actual position/yaw per0.5m/22.5degree bin; no source rewriting or native input",
+          "view": "Current delivered known-free rays within original2m/90degree sector; occupied and unknown cells occlude history. A travelled position no longer masks its unseen back side.",
+          "purpose": "Alternating known-space search only; mapping, useful continuation, charging fairness, native energy and full known-free body/return admission unchanged",
+          "evidence": "Every actual visual witness retains original heading/pose source records, fixed view model, delivered grids, chosen gain/yaw and original full budget for independent reconstruction",
+          "limits": "Current-map predicted visual coverage is a search preference, never proof of target absence, perfect camera perception or exhaustive coverage; history reprojects through the current map only; no new radio packet"
+        },
+        "retained_failed_developments": [
+          "20261008_p2c_v1_failed_development.json",
+          "20261008_p2c_v2_failed_development.json",
+          "20261008_p2c_v4_failed_development.json",
+          "20261008_p2c_v5_failed_development.json",
+          "20261008_p2c_v6_failed_development.json",
+          "20261008_p2c_v7_failed_development.json",
+          "20261008_p2c_v8_failed_development.json",
+          "20261008_p2c_v9_failed_development.json",
+          "20261009_p2c_v10_failed_development.json",
+          "20261009_p2c_v11_failed_development.json",
+          "20261009_p2c_v12_failed_development.json",
+          "20261009_p2c_v13_failed_development.json",
+          "20261009_p2c_v14_failed_development.json",
+          "20261009_p2c_v15_failed_development.json",
+          "20261009_p2c_v16_failed_development.json",
+          "20261009_p2c_v17_failed_development.json",
+          "20261009_p2c_v18_failed_development.json",
+          "20261009_p2c_v19_failed_development.json",
+          "20261009_p2c_v20_failed_development.json",
+          "20261009_p2c_v21_failed_development.json",
+          "20261009_p2c_v22_failed_development.json",
+          "20261009_p2c_v23_failed_development.json",
+          "20261009_p2c_v24_failed_development.json",
+          "20261009_p2c_v25_failed_development.json",
+          "20261009_p2c_v26_failed_development.json",
+          "20261009_p2c_v27_failed_development.json",
+          "20261009_p2c_v28_failed_development.json",
+          "20261009_p2c_v30_failed_development.json",
+          "20261009_p2c_v31_failed_development.json",
+          "20261009_p2c_v32_failed_development.json",
+          "20261009_p2c_v33_failed_development.json",
+          "20261009_p2c_v34_failed_development.json",
+          "20261009_p2c_v35_failed_development.json",
+          "20261009_p2c_v36_failed_development.json",
+          "20261009_p2c_v37_failed_development.json",
+          "20261009_p2c_v38_failed_development.json",
+          "20261009_p2c_v39_failed_development.json",
+          "20261009_p2c_v40_failed_development.json",
+          "20261009_p2c_v41_failed_development.json",
+          "20261010_p2c_v42_failed_development.json",
+          "20261010_p2c_v43_failed_development.json",
+          "20261010_p2c_v44_failed_development.json",
+          "20261010_p2c_v45_failed_development.json"
+        ],
+        "coordinator_live_clock": {
+          "executor": "Two workers; only the existing /clock subscription moves to an independent mutually exclusive group. Original state/action callbacks remain serialized.",
+          "clock_qos": "Existing best-effort depth1 unchanged; no extra subscription or application message.",
+          "planning_lease": "Capture original delivered source deadlines; abort current exploration batch at candidate/budget/route/dispatch checkpoints on expiry or clock reset. Recheck sources after charge/survey/rally computation before changing admitted owners.",
+          "budget_provenance": "Distinct immutable source stamps, ranking/pricing instants and actual decision instant; age reconstructed at each instant, never renewed.",
+          "shutdown": "Stop new admissions and cancel timers before waiting for executor completion.",
+          "limits": "Clock correctness is independently DDS-verified with controlled blocked callback, not a CPU latency or native completion guarantee. No native battery, Nav2, physics, TTL, horizon or wireless change.",
+          "central_action_completion": "Humble Future done callbacks are executor tasks outside callback groups. All8 central response/result registrations enqueue completed futures into one private SimpleQueue and trigger an existing-state-group guard; only its serialized drain mutates mission owners. Late completions after shutdown are ignored; context-active guard failures remain visible. No new DDS topic or application traffic.",
+          "native_action_completion": "The same private callback serializer handles both native return response/result futures in the original native default state group; lightweight TF inbox remains independent, source stamps/heap/energy/return/charge equations and TTLs unchanged.",
+          "abandoned_input_diagnostics": {
+            "channel": "Existing private read-only coordinator audit, after irrevocable proposal abandonment",
+            "interval_sim_sec": 30.0,
+            "key": "phase and expiry stage",
+            "inputs": "Exact frozen callback geometry/source stamps/state/heading and visit history; source stamps never renewed",
+            "limits": "Diagnostic copies never enter the planner, protocol admission, native safety or navigation; no extra application network packet"
+          }
+        },
+        "evaluation_result_polling": "Read-only bounded polling of a not-yet-valid JSON file from the same original producer; complete invalid objects, producer failure and original deadline still fail. No episode retry, evaluator change or shutdown grace change.",
+        "retained_unrun_candidates": [
+          "20261009_p2c_v29_concurrency_correction.json"
+        ],
+        "geometry_computation": {
+          "obstacle_inflation": "Euclidean distance transform <= unchanged integer clearance radius, with empty-obstacle special case; same original closed disk in every cell",
+          "return_memo": "Only immutable fused and local source grids; identical geometry/home/radius/position, source replacement or mutable alias invalidates; at most128 positions; returns independent result rows",
+          "time_and_budget": "Geometry only. Original sources, true evaluation epochs, source ages, native2/5s TTLs and every final dispatch lease check remain. No cached energy budget or timestamp renewal",
+          "validation": "Cell equality, qualification/route/budget equality, invalidation and actual ROS. Fixed snapshot timing is not a worst-case or mission result",
+          "evidence": "20261009_p2c_geometry_performance_components.json",
+          "return_tree_suffixes": {
+            "algorithm": "Exact shared reverse-predecessor route suffixes and contact-connected mask, reset with the existing content/geometry/home/radius field",
+            "cached_nodes_maximum": 2048,
+            "shared_tuple_vertices_maximum": 2048,
+            "safety": "Every original continuous-check route vertex retained in identical order; no simplification, budget or timestamp cache",
+            "evidence": "20261009_p2c_progressive_planning_components.json"
+          },
+          "rally_level_reuse": {
+            "algorithm": "Invocation-only shared approach/home/qualified-return/clearance geometry for the original two candidate levels; never cache energy, charge waits, assignment or timestamps",
+            "sources": "Only bytes-owned immutable fused grid and every supplied local map; mutable grids and readonly views of mutable parents rebuild each level",
+            "lifetime": "One public assign_rally_poses call only; original positions/home/geometry fixed inside it, new proposal always gets a new cache",
+            "computation_order": "Prepare full energy options for the robot with fewer locally known raw endpoints first; local unknown/missing is only an ordering hint and never rejects a fused qualified path",
+            "decisions": "Original complete-return/body/observer/charge/wait/cap optimization and stable branch order; every final dispatch keeps original source TTL and budgets",
+            "evidence": "20261009_p2c_rally_computation_components.json",
+            "limits": "Equal proposals and fixed-epoch CPU samples, not original timing/history, causal task benefit or a worst-case response guarantee"
+          }
+        },
+        "visibility_computation": {
+          "rays": "Original floating unrounded projections cached by radius only, max8 immutable tables; translation+rint occurs at actual grid cell exactly as before",
+          "deduplication": "Boolean flat hit mask replaces sort/unique; identical sorted cell set and count",
+          "sectors": "Original atan2(sin,cos) inclusive90degree/16yaw predicate precomputed for integer relative cells, max8 immutable radius/FOV tables; original tie order and yaw",
+          "inputs": "No map/history/source/age/energy budget cached here; current delivered occlusion and interest recomputed each call",
+          "scope": "Pure computation only; source TTL, true clock, native geometry/budget/300s/5s and all case/physical stimuli unchanged",
+          "evidence": "20261009_p2c_visibility_lookup_components.json",
+          "preparation": "Generate original mapping frontiers only when that branch is needed; known-space search retains original mapping fallback and identical path-clearance travel fields"
+        },
+        "candidate_priority_computation": {
+          "algorithm": "lazy exact stable greedy with original raw utility and possible2x continuation as upper bounds",
+          "price": "original complete return battery factor, relative geodesic factor and mission spatial diversity; only fully priced priority above all remaining bounds enters original body/route/full-budget checks",
+          "skip": "unused options of already provisionally selected robot; original route loop skipped those same options; retain complete raw pool for existing charging lookahead",
+          "leases": "true clock/source TTL checks at generation, each price, route and final dispatch; an expired lazy price revokes all provisional plans, no source renewal",
+          "diagnostics": "candidate_assignments counts priced rows; generated_candidate_assignments counts raw rows",
+          "scope": "fixed-source order equivalence and conditional CPU evidence are not live callback latency, worst-case bound or mission acceptance",
+          "evidence": "20261009_p2c_lazy_priority_components.json",
+          "gain_refinement": {
+            "algorithm": "Original frontier geometry and stable sampling order with unknown rectangle-count upper bounds; refine ray gain then reinsert utility bound before original budget price",
+            "types": "Private ViewpointGainBound/AssignmentGainBound, fully resolved normal Viewpoint/Assignment before actual goal or charging forecast",
+            "cache": "One immutable source identity for geometry; replacement and mutable aliases cannot reuse it. Exact ray gains belong to one admission/charging context only",
+            "lookahead": "Complete original raw alternative pool; same exact stable order and top3 qualifying alternative rules via lazy gain resolution, never use rectangle gain in energy forecast",
+            "proof": "Bounds only rank computation. Executed gain/utility/relative/diversity, complete body/return budgets, true current epochs and original2/5s leases are rechecked",
+            "evidence": "20261009_p2c_lazy_gain_components.json",
+            "known_space": {
+              "algorithm": "Rectangle current-interest bound then exact original visibility/16yaw before existing stable budget heap",
+              "cache": "Same immutable admission map and delivered-history interest only; ordinary Viewpoint/Assignment before prices/commands/forecast",
+              "fallback": "Resolve enough candidates to establish actual positive visibility; if none, preserve original mapping fallback",
+              "limits": "Fixed-source equivalence; no original timing or mission causal claim",
+              "evidence": "20261009_p2c_progressive_planning_components.json"
+            }
+          },
+          "route_precheck": {
+            "algorithm": "Necessary useful-prefix bound before exact gains/prices only when actual/provisional reservations exist; original final greedy order and all hard guards retained",
+            "proof": "Any additional reservation can only move the first conflict earlier; retain every possible useful0.75m prefix even if current final endpoint is stationary. A common initial escape-cell conflict rejects all candidate routes for that robot in this same frozen batch",
+            "cache": "Body-masked field and geometric proposals only inside one immutable admission snapshot; at most2048 exact Boolean line-of-sight results per field. No source/header/energy decision cache",
+            "charging": "No speculative route precheck without reservations; existing lower-unfunded alternatives skip full planning and original best-intent serial fairness remains",
+            "actual": "Original body/accepted reservation/full approach and qualified return/2-5s source checks and dispatch renewal prohibition remain; private bounds never become commands",
+            "evidence": "20261009_p2c_admission_pruning_components.json",
+            "limits": "Conditional fixed-source equivalence and CPU samples, not complete-history replay, causal mission effect or worst-case clock bound"
+          },
+          "battery_bound": {
+            "algorithm": "Same original model and original source epochs: straight contact-disc distances lower-bound both complete task+return and current return reserve, hence upper-bound actual battery factor. Private ranking only, never a route or admission budget",
+            "guards": "Every real choice still needs original complete qualified known-map contact paths, actual body route distance, reserve/age/energy/charging fairness; recheck original lease immediately after each expensive price",
+            "charging": "Within each original refinement pass, only if every raw option is proven unfunded: after the exact highest feasible charge intent is found, lower options may skip price. A possible funded alternative or later refinement pass remains independently evaluated",
+            "evidence": "20261009_p2c_budget_bound_components.json",
+            "limits": "Fixed-source commands/charge intent equivalence and CPU samples; no task causal gain, original-history replay, live clock bound or Euclidean safety fallback"
+          },
+          "peer_travel_bound": {
+            "algorithm": "ordered local funded-peer proof before original exact gain and complete actual budget; only a guaranteed-funded subset tightens the original relative-travel factor upper bound",
+            "proof": "one complete qualified local path at original maximum legal map5s/pose2s ages upper-bounds the min-qualified-route energy; unknown/missing/unfunded proof keeps original neutral bound",
+            "scope": "ranking only; preserve complete original candidate pool, stable greedy ties, whole body/return budgets, charging fairness, source epochs and all dispatch gates",
+            "evidence": "20261009_p2c_staged_peer_bound_components.json",
+            "limits": "Fixed-epoch equivalent choices/CPU comparisons only; no original-history, causal mission gain or worst-case completion guarantee"
+          }
+        },
+        "rally_candidate_sampling": {
+          "algorithm": "original72 rings plus5/10degree outer-ring visible boundary refinement; inspect the existing angular tier if the first level is infeasible or requires its ACTIVE observer to charge",
+          "maximum_candidates": 464,
+          "first_level_maximum": 120,
+          "region": "unchanged known-free target-visible1..2.6m region,0.45m endpoint clearance and0.8m separation",
+          "pricing": "Each level retains original complete qualified return, observer/charge/wait/soft exposure/body cost optimization and cap feasibility; final fresh admission still required",
+          "limits": "At most the same two candidate tiers; retain the better complete original objective tuple, including a feasible first-tier fallback. A predicted funded observer only ranks geometry: current complete approach/return, wait/hold, original source-age and body admission remain mandatory. No new perception/truth input or causal/worst-case mission guarantee",
+          "evidence": "20261009_p2c_outer_sampling_components.json",
+          "maximum_added_first_tier": 48,
+          "observer_refinement_evidence": "20261010_p2c_observer_refinement_components.json"
+        },
+        "native_contact_arrival": {
+          "algorithm": "Finish the already accepted budgeted contact waypoint before entering CHARGING; crossing the original outer radius does not cancel a pending/owned leg",
+          "safety": "Original return deadline, progress watchdog, energy/reserve failure, cancel ownership, native Nav2 collision avoidance and charging radius/stopped stable duration remain; no new leg, no obstacle clearing or pose/source renewal",
+          "scope": "Departure-map occupancy may still invalidate later exploration; this candidate does not claim to solve localization/dynamic SLAM artifacts or guarantee known-free parking after Nav2 goal tolerance",
+          "evidence": "20261009_p2c_contact_arrival_components.json"
+        },
+        "staging_apparatus_script": "stage_p2c_return_probe.py",
+        "staging_base_content_sha256": "47ce7998e212a9463ab657bbc0b121d4903ed886016bbf0fd3a2399c986da05d",
+        "nav2_staging_readiness": {
+          "scope": "Private simulation-only preparation readiness; does not modify task policy, native safety, AP observations or radio traffic.",
+          "topic": "/{robot}/global_costmap/costmap",
+          "frame": "map",
+          "map_header_age_sec_max": 2.0,
+          "requirements": [
+            "original action server ready",
+            "finite full unrotated costmap",
+            "all original stage poses in actual costmap bounds",
+            "two distinct consecutive fresh delivered ACTIVE states separated by original0.5s heartbeat; duplicate sources do not count"
+          ],
+          "evidence": "nav2_readiness.jsonl before every original gateway staging leg; unchanged base checks own received map, pose/TF/battery leases and known-free prefix",
+          "original_stimulus": "50s preparation deadline / 60..250s blackout / 62..248s native motion verification / no abort retry are unchanged",
+          "delivered_active_span_sec_min": 0.5,
+          "state_source": "only existing /gateway/received/{robot}/battery_state; original5s source TTL; no native audit/hidden control input"
+        },
+        "retained_failed_physical_characterization": "20261009_p2c_return_ready_failed.json",
+        "retained_failed_physical_characterizations": [
+          "20261009_p2c_return_characterization_failed.json",
+          "20261009_p2c_return_ready_failed.json"
+        ],
+        "navigation_input_capture": {
+          "scope": "Evaluator-only lossless original CDR; no publishers, no AP or native control input. Diagnostic sampling does not replace exact battery budget snapshots.",
+          "topics": "Native local map, delivered fused map, global/local Nav2 costmaps and updates, scan, odom, dynamic/static TF and Nav2 plan per robot; AP fused map.",
+          "encoding": "gzip JSONL with exact received CDR base64, original message type, receipt sim and wall times; original message headers are never rewritten.",
+          "predeclared_at_utc": "2026-10-09T15:43:51.548276+00:00"
+        },
+        "rally_proposal_handoff": {
+          "algorithm": "Retain a complete assignment as geometric intent when serial computation outlives its source leases; consume queued original-source updates before admission.",
+          "revalidation": "Same target and required robots; current delivered planning map known-free0.45m endpoints, known target LOS, original camera range, original0.8m separation and target-facing yaw; recalculate original dispatch order.",
+          "authority": "No old battery prices, routes, received pose or source stamps reused. Original fresh complete approach/contact return/serial wait/hold/body guards remain in RALLY preflight and every actual goal.",
+          "witness": "Original exact assignment search epoch plus independent current delivered geometry/source/order admission witness on the existing private audit path; no new application flow.",
+          "scope": "Prevents repeated search starvation; no global optimality, task completion or worst-case callback guarantee from components alone."
+        },
+        "native_scan_self_filter": {
+          "algorithm": "Native SLAM input-only strict body interior rejection plus adjacent boundary-range noise association requiring at least one strict-interior seed and three matched rays through a contiguous band. NaNs are skipped, never traced as free rays. Original raw scan/CDR/Nav2, map occupancy rules, headers, energy, full return and TTL guards remain.",
+          "body_box_m": [
+            -0.1965,
+            0.0685,
+            -0.1325,
+            0.1325
+          ],
+          "body_geometry": "Exact original SDF/URDF chassis interior intersection; unchanged rectangle. Optional calibrated range-noise association declared separately.",
+          "laser_frame": "base_scan",
+          "laser_to_base_xy_yaw": [
+            -0.064,
+            0.0,
+            0.0
+          ],
+          "witness": "Lossless evaluator CDR plus native SCAN_SELF_FILTER source/header counts independently reconstructed, full SLAM headers/config/launch/models/description source digests.",
+          "scope": "Prospective same preprocessing for every robot/baseline in this freeze. All original failures retained; conditional native replay is not task success.",
+          "range_uncertainty_m": 0.0375,
+          "noise_association": {
+            "model": "3 * unchanged SDF gaussian range sigma + half range resolution",
+            "range_noise_sigma_m": 0.01,
+            "range_resolution_m": 0.015,
+            "interior_seeds": 1,
+            "requires_contiguous_noise_band": true,
+            "scope": "Reject uncertain self-associated boundary echoes from native SLAM only. Returns outside the band, runs without an interior seed or runs shorter than three rays remain.",
+            "association": "One maximal contiguous near-surface band; at least one original physical-interior beam and three matched rays. Full-turn boundary joins only when adjacent; invalid/far rays split bands.",
+            "minimum_matched_rays": 3
+          }
+        },
+        "exploration_return_preparation": {
+          "scope": "Prospective exploration return corridor preparation; no new application flow",
+          "source": "Fresh gateway-delivered per-robot and fused maps, poses, TF and native energy models",
+          "clearance_m": 1.8,
+          "proposal_authority": "Geometry only; fresh complete body and return routes and energy before dispatch",
+          "before_charge": "Clear idle peer bodies before sending the original leased charge request",
+          "live_return": "Fresh AP inputs can fund an idle peer escape during exploration; native safety remains independent",
+          "navigation_kind": "exploration_return_yield",
+          "task_limits_unchanged": true
+        },
+        "navigation_dispatch_boundary": {
+          "scope": "Final navigation admission after goal/witness preparation and heavy serialization; original source epochs and 2/5/60s TTLs. Recheck before and after private audit publication; expire/reset/shutdown revokes without a goal, pending owner or consumed attempt. New command header uses the live admission epoch, never renews observation sources.",
+          "reader": "Private admission and revocation provenance; actual no-goal behavior checked separately with DDS and ActionServer; original strict full-ledger TTL checker remains authoritative."
+        },
+        "observed_rally_transit_heading": {
+          "scope": "Incoming yaw only at an intermediate ordinary RALLY leg, when another ACTIVE arrived peer is quiescent within the original pose/velocity tolerance and keeps the current known target view/FOV with its original <=5s delivered heartbeat. Otherwise retain original target-facing intermediate yaw. Final, local-return-yield and charge staging unchanged.",
+          "leases": "Bind the original target source as an additional original5s observation-support deadline at final preparation/publication admission; retain all original2/5/60s input TTLs, complete routes/reservations/energy, 300s mission and native5s hold.",
+          "evidence": "Private geometry/lease witness and prospective reader source digest; no new application observation stream, no mission or causal saving claimed by components.",
+          "confirmations": "Keep each known robot's original accepted stationary-target confirmation, source epoch and actual camera metadata; no acceptance/version rule changes. Select the freshest eligible quiescent peer even when the approaching robot made the latest global confirmation. Independent reader binds the support to that peer's prior consumed receipt; no source renewal or new application flow."
+        },
+        "navigation_outbound_consistency": {
+          "scope": "Native-energy tasks: every central navigation route respects the fresh delivered robot map as well as the original fused planning map; local unknown space may be extended, local positive cells are preserved.",
+          "planning": "Use the existing conservative occupied-cell projection for outbound candidate fields, prefixes, body/order plans, whole approaches and post-charge waits; independently veto an inconsistent prepared route before creating a goal owner.",
+          "leases": "Original pose/TF2s, map/battery5s, target60s and observer5s remain; witness construction is inside the existing final publication/source boundary.",
+          "evidence": "Original route, delivered local/planning grids and source epochs in the existing private decision audit; independent route and raw CDR map binding. No new application traffic, scan filtering, occupancy clearing or native return changes.",
+          "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_outbound_consistency_components.json",
+          "task_limits_unchanged": true
+        },
+        "charged_return_refuge_release": {
+          "scope": "An idle completed safety refuge may lead its ACTIVE owner only with fresh full serial geometry, complete endpoint/current contact-return energy and original hold/wait/source budgets; restored goals still require ordinary dispatch and native holding",
+          "maps": "Already-delivered fused and respective local maps; all stationary bodies remain masked; no obstacle removal",
+          "private_evidence": "Original maps, positions, complete two approaches, energy models, waits, source stamps and eligibility audit",
+          "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_refuge_release_components.json",
+          "limits_unchanged": "300s/native5s/2s pose-TF/5s map-battery/60s target/complete return and native safety"
+        },
+        "rally_connection_handoff": {
+          "geometry": "Original fused frontier ranking and existing body mask; retained points only, no retained prices or source authority",
+          "admission": "Next serial state callback uses current delivered maps, poses, TF, bodies, full energy/return and original source leases through unchanged send_survey_goal",
+          "expiry": "Wait for fresh delivery; target/participant/phase/clock rewind invalidates points; rejected fresh trials advance, expired trials retain their cursor",
+          "limits": "Original preparation wait, survey attempts, 300 second deadline, 5 second native hold and physical stimulation remain",
+          "evidence": "Private geometry/trial records, independent ranking and raw CDR source binding; no new application traffic"
+        },
+        "exploration_charge_reservations": {
+          "change": "A required exploration charge pauses new plans. Possibly unfunded intents respect accepted live route reservations, rather than discarded tentative plans. Complete nominal/body-masked qualified budgets at the unchanged source deadline prove funded candidates before retaining the original tentative-reservation prefilter. Actual body-masked pricing classifies charge need before reservation admission; funded dispatch retains all concurrent reservations.",
+          "preserved": [
+            "all robot bodies",
+            "original complete outbound and qualified return paths",
+            "original energy and source age budgets",
+            "live action drain before charge",
+            "native charge/return cores",
+            "300s task and 5s native hold",
+            "all cases schedules physical stimuli and holdout boundary"
+          ],
+          "reader": "original charge, outbound, exploration, process, energy and return audits; no new application stream",
+          "component_probe": "check_p2c_charge_reservations_runtime.py"
+        },
+        "rally_connection_priority": {
+          "scope": "When the original progressive complete rally search has zero reachable poses for a nonobserver ACTIVE peer, survey that peer connection frontier before optional target-area information or descent. Reuse the existing search field, retain geometry only, reprice the unchanged complete body/return/energy/source dispatch.",
+          "limits": "Original survey attempts/retries, 300s task, 5s native hold, native return, 2/5/60s source TTLs, all cases/schedules/physical stimuli unchanged.",
+          "evidence": "Private final-tier candidate count and disconnected robot; independent approach/ranking reconstruction plus original local/fused raw CDR binding."
+        },
+        "exploration_refuge_displacement": {
+          "scope": "Exploration return-refuge search rejects grid-centre candidates whose actual robot-to-point displacement is below the unchanged 0.5m admission minimum. Other rally_yield_pose calls retain the original default.",
+          "preserved": "Original 1.8m protected return corridor, local/fused body paths and complete energy/source validation; native safety, 300s/5s/TTLs, survey attempts/retries and physical stimuli unchanged.",
+          "evidence": "Original v54 frozen 0.483412562m refusal, next 0.507799521m complete admissible escape; raw CDR map binding and actual DDS/Futures at shifted synthetic epochs."
+        },
+        "curved_normal_rally_legs": {
+          "scope": "Battery-protected ordinary rally approach only, at the existing full-path/body/priority/return budget and final original source-age admission boundaries",
+          "algorithm": "Existing plan_rally_leg known-free bounded grid path may retain bends. Normal legs no longer require a direct line of sight to their endpoint. Existing prefix reservations and original5m/attempt-dependent limits remain.",
+          "unchanged": "No-battery behavior, safety refuges/local-return yields, charge staging and observer correction use original visible legs. Native300s/5s/pose2s/map-battery5s/target60s/observer5s, Nav2/SLAM/scan/physics and retries remain.",
+          "evidence": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_curve_legs_components.json",
+          "limits": "Independent source-map/body/whole-return/energy checks prove dispatch-time planned geometry only. Nav2 need not follow every grid vertex; current source lease does not guarantee future connectivity or completion."
+        },
+        "deferred_exploration_geometry": {
+          "scope": "Original source-lease expiry fallback, consistently frozen for every baseline and task case",
+          "algorithm": "Keep only ordered geometry suggestions, at most128 points per robot. Completed-score suggestions precede raw suggestions; numeric scores, routes and source authority are discarded. Within original10s TARGET_HISTORY at admission start, regenerate the complete current candidate catalogue and select up to3 current rows per robot nearest its next3 suggested points within original1.2m separation; otherwise use current top3 utility bounds. Advance geometry cursor only after current scoring lease survives; context/participants/target/phase changes discard the preference.",
+          "preserved": "All current exact gains, relative/diversity scores, complete body-masked approach and qualified local/fused/constrained contact returns, energy/wait/source-age budgets and final dispatch leases. Full raw charging lookahead pool retained. Native300s/5s/pose-TF2s/map-battery5s/target60s/observer5s, Nav2/SLAM/scan/physics/retries unchanged.",
+          "refuge_query": "Batch the original scalar KDTree route-separation queries, preserving predicate, cell order and all original geometry.",
+          "policy_limits": "Expired-batch recovery ranks a small regenerated subset, not the complete current global catalogue. No global optimality, worst-case runtime, actual Nav2 route tracking or continuous execution connectivity claim.",
+          "evidence": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_exploration_handoff_components.json"
+        },
+        "concurrent_exploration_return_yield": {
+          "evidence": "report/20261010_p2c_multi_return_yield_components.json",
+          "qualification": "Same original complete protected return routes, endpoint1.8m clearance, monotonic escape, full outbound and current plus endpoint contact-return budgets and final2/5s source guards",
+          "cycle_binding": "At escape admission, bind every already RETURNING protected robot to its delivered return_count; prospective ACTIVE owner to return_count+1. CHARGING peers excluded from cycle authority.",
+          "callbacks": "Accepted escape and subsequent returning battery updates exempt only these route-qualified cycles; own inactive helper, uncovered returner, new cycle and ordinary exploration retain cancellation",
+          "limits": "Dispatch-time qualification, not a guarantee of continuous connectivity or that Nav2 follows the exact route. No scheduling, geometry, budget, source TTL, timeout, retries or physics changes."
+        },
+        "outbound_duplicate_header_binding": "Read-only: each witness independently requires some captured raw same-header map with exactly matching geometry and cells, except the unchanged bounded isolated own-cell correction. Nonmatching versions cannot stand in for any unmatched witness; counts remain unique topic/header keys. Gateway causality and source lease checks remain separate.",
+        "installed_source_environment": {
+          "build_mode": "Original colcon build --symlink-install restored; no production source change",
+          "preflight": "Installed control and bypass-audit manifest must resolve to the canonical current source tree; original source-only forbidden-bypass audit passes",
+          "evidence": "20261010_p2c_install_restore_components.json",
+          "limits": "Correct installation/preflight only; original v58 startup FAIL retained, complete P2C.1 still requires a new same-source cohort"
+        },
+        "quiescent_rally_priority_repair": {
+          "trigger": "Existing viable current body-masked leg is blocked only by future priority and the existing map-safe order reduces original approach inversions",
+          "order": "Apply that future preference only when every central rally accepted/pending leg is absent; return without dispatch and re-evaluate on the next original callback",
+          "guards": "Accepted/pending legs keep their original order; existing readiness sorting, current maps, complete body/return routes, budgets, reservations and source TTLs still authorize actual dispatch",
+          "evidence": "20261010_p2c_rally_priority_components.json",
+          "limits": "Conditional liveness mechanism only, no task benefit or general deadlock freedom; fresh same-source4 development then17 formal plus2 physical remain mandatory"
+        },
+        "curved_target_surveys": {
+          "motion": "Battery-protected non-heading surveys may follow a complete known-free curved path within the original5m leg limit; no-battery and heading-only behavior is preserved",
+          "guards": "Original body/local obstacle/return reservations, current and endpoint full return budgets, attempt count, timeout, final source TTLs and camera-facing endpoint rules remain",
+          "evidence": "20261010_p2c_survey_curves_components.json",
+          "limits": "Conditional path availability and actual DDS/action Future checks; no physical Nav2 or task causal guarantee"
+        },
+        "rally_proposal_return_map_witnesses": {
+          "witness": "Private admission records exactly the delivered per-robot maps consulted by map-safe order, including their original source stamps",
+          "reader": "Recalculate current order using those maps; bind local cells and planning geometry to exact original captured OccupancyGrid CDR",
+          "traffic": "No new application stream; old failed tasks/readers remain failed",
+          "evidence": "20261010_p2c_survey_curves_components.json"
+        },
+        "refuge_release_preflight_guard": {
+          "precondition": "Finite nonnegative original complete-route wait budgets must exist before a charged refuge release spends the current pose lease on geometry",
+          "order": "Retain the existing complete participant order if the helper precedes its ACTIVE owner; otherwise use the unchanged current map-safe search",
+          "guards": "Both complete serial approaches still mask every other current body and then the placed helper, and fund current and endpoint qualified return plus original wait and5s hold at the original source deadlines",
+          "evidence": "Private previous order/order source and independently reconstructed complete routes/budgets; original failed tasks remain failed",
+          "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_refuge_preflight_components.json",
+          "limits": "Conditional original native-map geometry and actual DDS/Futures; no physical Nav2, causal task or worst-case latency claim. Original4\u219217+2 and917 boundary remain"
+        },
+        "native_curved_return_legs": {
+          "navigation": "Ordinary native return legs use the maximal at-most5m prefix of the existing complete known-free contact route, including the actual position offset; the original bounded inflated-start escape branch is preserved",
+          "guards": "Original full contact return, local-obstacle veto, energy model/credit/reserve, source deadlines, timeout/retry counters, Nav2/SLAM and physical parameters remain unchanged",
+          "evidence": "Independent complete-route prefix/continuous-clearance reconstruction and exact original local/fused CDR binding; all original returns must still close",
+          "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_native_return_curves_components.json",
+          "limits": "Conditional original decision geometry and actual DDS/stationary ActionClient Futures; no physical motion, task causal or worst-case guarantee. New same-clean-pushed4\u219217+2 required;917 remains unexposed"
+        },
+        "proposal_all_participant_sources": {
+          "authority": "Every proposed participant body, including RETURNING/CHARGING robots, must have original fresh delivered pose/TF/map/battery sources before geometry, after order reconstruction and after private publication",
+          "evidence": "Record the original captured source epochs for all participants; reject expiration without renewing source stamps or dispatching an assignment",
+          "limits": "Original proposal geometry, map-safe order and ordinary assignment full-budget/source/body guards are preserved; no task completion claim"
+        },
+        "proposal_serial_order_revalidation": {
+          "preference": "Retain only the last computed permutation after a proposal attempt expires; it carries no old route, pose, price or movement permission",
+          "qualification": "Reconstruct every complete current serial body-masked approach using current delivered planning and local maps, updating occupied bodies after each hypothetical placement; otherwise use the original full current search",
+          "guards": "All original participant pose/TF/map/battery/target source deadlines and endpoint/LOS/spacing/yaw checks remain, including checks after geometry and private publication. Ordinary RALLY preflight/dispatch still price complete current returns, waits and5s hold",
+          "evidence": "Private order source, prior preference, complete serial routes and exact current source/CDR binding; this intentionally prefers a currently qualified retained permutation over reranking every soft-cost alternative",
+          "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_rally_intent_components.json",
+          "limits": "Original proposal snapshot and conditional actual DDS/clock; no original live replay, task causal or worst-case deadline claim. Same-clean-pushed4\u219217+2 required;917 remains unexposed"
+        },
+        "rally_recovery_retarget_intent": {
+          "transition": "Permanent reassignment of the waiting beneficiary clears its previous return-owner, temporary-yield, probe and old donated-priority flags; the new target is ordinary RALLY intent",
+          "guards": "The same current body/local route chooser and ordinary full target/source/energy/hold admission remain; genuine local-return refuge exceptions remain available",
+          "evidence": "Private permanent retarget and current/final target/yield/probe/return-owner roles; independently reject stale safety roles attached to the retargeted formal intent",
+          "limits": "Conditional synthetic corridor, permanent chooser and stale state via actual DDS/ActionClient Futures; no physical motion or task causal completion claim"
+        },
+        "preassignment_planning_tolerance": {
+          "source": "Original SHA-bound runner.log executed launch command must contain exactly one rally_position_tolerance_m:=0.35; any non-null native field must agree",
+          "scope": "Read-only FOUND observer and target-information-survey planning; preserve the immutable evaluator null rally parameters and null native hold before any assignment",
+          "guards": "All original camera/error margin,2/5/60s source/energy/route/physical/native completion/300s/5s requirements unchanged; this is not an assignment or native success claim",
+          "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_partial_heading_components.json",
+          "limits": "v64 original physical checker FAIL remains; corrected original closed evidence review is a reader component only. New clean-pushed same-source4\u219217+2 required;917 remains unexposed"
+        },
+        "rally_connection_local_reinspection": {
+          "trigger": "Existing complete rally search proves a nonobserver ACTIVE robot cannot reach a rally pose in the conservative fused plus original local map",
+          "preference": "When fused space connects, rank known-free conservative-component endpoints by original body-masked fused geodesic distance to existing rally poses; prefer a safe approach for actual scan reinspection before unchanged connection frontiers",
+          "guards": "All positive source obstacles remain; original0.45 endpoint/0.35 path/0.6 body and bounded known-free escape; no unknown movement, obstacle erasure or route permission from preference. Next callback uses unchanged full local/body/go-return energy and2/5/60s leases",
+          "evidence": "Private exact original local/fused geometry, independently reconstructed minimum and raw CDR binding; ordinary actual source-bound target survey decisions",
+          "limits": "No guaranteed obstacle cause, clearing or task benefit. Original six/nine survey attempts, retries,300s,5s native hold and physical cases/stimuli unchanged; new same-freeze4\u219217+2 mandatory,917 remains unexposed",
+          "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_reinspection_components.json"
+        },
+        "complete_application_graph": {
+          "capture": "The existing read-only observer waits for native TF and complete typed metrics/AP/merge endpoints plus unchanged bypass and headless monitor vetoes; canonical graph.json and native_graph.json are the same first qualified actual snapshot",
+          "initial": "Keep the original early bypass_audit snapshot separately in initial_bypass_graph.json with original source/graph/SHA evidence; never replace missing endpoints or overwrite either graph",
+          "limits": "Read-only discovery capture only; no controller/native/SLAM/physics/source/TTL/300s/5s or task-case/stimulus changes. Original v66 native COMPLETE but strict graph FAIL retained; new same-source4\u219217+2 required,917 remains unexposed",
+          "evidence": "Exclusive graph creation, exact observer/runner command and original SHA binding, positive typed endpoints and actual delayed DDS rejection/delivery/closure checks",
+          "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_application_graph_components.json"
+        },
+        "predeclared_graph_command": {
+          "authority": "Shared episode_command selects initial_bypass_graph.json under the already declared complete_application_graph option; owner and strict declaration auditor use that same generator",
+          "source_binding": "Record and require the actual run_p3b5_tasks.py builder SHA alongside runner/observer/native graph source digests; no owner-only rewrite or reader-only exception",
+          "scope": "Same actual command, evidence paths, controller/native/SLAM/physical/source/energy/TTL/300s/5s bytes and original cases/stimuli as v67",
+          "limits": "Original v67 native COMPLETE288.8 but strict declaration FAIL remains. Read-only original declaration binding is a component, never status backfill. New clean-pushed same-source4\u219217+2 required;917 remains unexposed",
+          "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_graph_command_components.json"
+        }
+      },
+      "command": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py",
+        "--world",
+        "my_world.world",
+        "--robot-count",
+        "2",
+        "--gazebo-seed",
+        "303",
+        "--startup-timeout",
+        "600",
+        "--message-timeout",
+        "90",
+        "--shutdown-timeout",
+        "120",
+        "--evaluation-duration",
+        "300",
+        "--evaluation-wait-timeout",
+        "900",
+        "--coverage-threshold",
+        "0",
+        "--mission-mode",
+        "rally",
+        "--gateway-mode",
+        "fault",
+        "--gateway-seed",
+        "17011",
+        "--battery",
+        "--battery-capacity",
+        "100",
+        "--battery-initial-energy",
+        "40",
+        "--target-x",
+        "-4",
+        "--target-y",
+        "4",
+        "--rally-max-concurrent",
+        "2",
+        "--disable-global-battery-rally-pause",
+        "--episode-id",
+        "20261010_p2c_v68_physical_physical_fault",
+        "--collect-fault-result",
+        "--dwell-seconds",
+        "0",
+        "--evaluation-output-dir",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68_physical/20261010_p2c_v68_physical_physical_fault",
+        "--log-dir",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68_physical/20261010_p2c_v68_physical_physical_fault/launch",
+        "--gateway-ledger-path",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68_physical/20261010_p2c_v68_physical_physical_fault/ledger.jsonl",
+        "--bypass-audit-output",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68_physical/20261010_p2c_v68_physical_physical_fault/initial_bypass_graph.json",
+        "--target-detection",
+        "--rally",
+        "--enable-return-probe-pause",
+        "--battery-charge-duration",
+        "10",
+        "--battery-safety-margin",
+        "5",
+        "--battery-return-timeout",
+        "120",
+        "--gateway-blackout-intervals",
+        "[[60, 250]]",
+        "--battery-idle-cost",
+        "0.15"
+      ],
+      "observer_command": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/observe_p3b5.py",
+        "--output",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68_physical/20261010_p2c_v68_physical_physical_fault/safety_events.jsonl",
+        "--robot-count",
+        "2",
+        "--native-tf-graph-output",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68_physical/20261010_p2c_v68_physical_physical_fault/native_graph.json",
+        "--application-graph-output",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68_physical/20261010_p2c_v68_physical_physical_fault/graph.json",
+        "--navigation-input-output",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68_physical/20261010_p2c_v68_physical_physical_fault/navigation_inputs.jsonl.gz"
+      ],
+      "configuration_command": null,
+      "environment": {
+        "ROS_DOMAIN_ID": "219",
+        "GAZEBO_MASTER_URI": "http://127.0.0.1:20319",
+        "ROS_DISTRO": "humble",
+        "RMW_IMPLEMENTATION": null,
+        "FASTDDS_BUILTIN_TRANSPORTS": null,
+        "PYTHONNOUSERSITE": "1",
+        "FASTRTPS_DEFAULT_PROFILES_FILE": null,
+        "ROS_DISCOVERY_SERVER": null
+      },
+      "cpu_affinity": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79
+      ],
+      "owner_pid": 2503029,
+      "git_commit": "78deb068f40fc88f356c0cd93756bd723565ac59",
+      "source_digests": {
+        "exploration": "97dafc136a7c87e8db73d331dc87f19c340a9fe4dc915024834f9ff91ffab4fa",
+        "launch": "6f26d9c5b1dce5bc681bc59cfe8fb8be68baff823f5334939f33261392380692",
+        "params": "2cb9b9e26015cbe79867fe3750296d9cb7626a05ad16f595b7692db4b4490f4f",
+        "worlds": "2ee10406031815e3d0ea2e76074706a8e150e636ab2366428b201ecc72a5cc9a",
+        "slam": "37295c44991eb0c84883b966f81ca06928e8c1e1a45bed18f4605252dc9374c9",
+        "manifest": "2bbca5e6cf0dd1f5db2d983b65eef8f4add6f369ed798e62b3f210e63fc2b5b6",
+        "runner": "3e0e391e6ce3a5a193167de7e5477a3df56c4e2e39f90a3eb07c7e6844a18cc4",
+        "smoke": "42cf2f93ba691e2f281d3e2938bc4c005346fcf3eac061edf1317c5b22492359",
+        "control_cli": "f70c8f7a6ee4fb9a0a7d2e9468e3c77b3cc77d729cbd2a544c1f45adbf997c09",
+        "entrypoint": "78edb424db0a63347cf6b28f3fbff72a20207c3852f26a004907f868e8170a1f",
+        "message_schema": "e0648e61473dfd2931038c79cda8a6fe4bf09c1d00f8d4acdfa0f4879e72925c",
+        "control_schema": "7fa7e5fa63dd0fb1e319fd08694773c675ac3fe8dcefa0051dd4f0fe71958d28",
+        "admission_protocol": "05f15651bfc831c541d5a662491a0467e64ae4084c27655a6f27e1ed56e6064a",
+        "staging_apparatus": "7b281c9a6ded4d1ff61649b709b8090d13d1834af21643aa0822b3d5cdc7645c",
+        "physics_observer": "588693bf5f934081452925fc3ca80e10465f67ccc1738066cd91fb9fdf48527b",
+        "episode_command_builder": "972dbc2fb118a2f2fda2689ae162948689ff28f16914d17b1135fdd182831a86",
+        "safety_observer": "0cbb5ab2e12eb6933da06f7fe4820a03be10e04be28c1e927f9f33766329663c",
+        "native_graph_reader": "df8798fd494f5628719f6960d5c549233805898c88842776035567b165928ed1",
+        "navigation_capture": "739f2b9e7a7c89fbbe10860e9de76e70e849bbc12d048ad066a32da38837c636",
+        "return_preparation_reader": "0458ff41855b77c1ea507f837d36dde4d43e6b5fdb6f83aba5464b51ca826099",
+        "navigation_dispatch_reader": "69ec0bf55849112834f6b844e248b2c848290ff1c3d6f8a8e7268d381de724a0",
+        "rally_transit_reader": "6fbaa087c212223cbce36ef81b13a0f2acb0382c020db5e4fa03b54d2f36f03e",
+        "outbound_route_reader": "440ee0ba46828150a3d72bd26762aca342485cb18246a7bbf002ac7e82a22069",
+        "refuge_release_reader": "f816d383aeb2211ace40476365734e5bc2883b9cfd9d5217bee021786e3a0ba3",
+        "rally_connection_reader": "8d05c6a0b8ce8778b6997d0b5086d717c0d9e77bc48dc3c0645917352ea4134c",
+        "robot_models": "55494138cfad63dbb2d36331bc3a8c784c65d4632cc19217a58ce9f129ae69dd",
+        "robot_description": "9770e035bc85014df99373d3557b5c567b3242a51794d53dcbbff617057538a8",
+        "scan_self_filter_reader": "25b68c64593f0aa39aa63ceedcb9dae9b61df6ff1c8a16c351aeb206f5a4c94c"
+      },
+      "staging_command": "/usr/bin/python3 /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/stage_p2c_return_probe.py --owner-pid 2503029 --config /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/p2c_blackout_manifest.json --output /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68_physical/20261010_p2c_v68_physical_physical_fault/staging.jsonl",
+      "physics_command": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/observe_p3b5_return_physics.py",
+        "--output",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v68_physical/20261010_p2c_v68_physical_physical_fault/physics.jsonl",
+        "--robot-count",
+        "2"
+      ],
+      "staging_source": "#!/usr/bin/env python3\n\"\"\"Keep the frozen staging stimulus, waiting for a real Nav2 map first.\"\"\"\nimport argparse\nfrom collections import deque\nimport hashlib\nimport json\nimport math\nfrom pathlib import Path\n\nfrom nav_msgs.msg import OccupancyGrid\nimport rclpy.action\nfrom rclpy.action import ActionClient\nfrom rclpy.qos import DurabilityPolicy,QoSProfile,ReliabilityPolicy\nfrom std_msgs.msg import String\n\nimport stage_p3b5_return_probe as original\n\n\ndef nav2_map_ready(grid, positions, now):\n    if grid is None or grid.header.frame_id != \"map\":\n        return False\n    stamp=grid.header.stamp.sec+grid.header.stamp.nanosec*1e-9\n    info=grid.info\n    orientation=info.origin.orientation\n    values=(now,stamp,info.resolution,info.origin.position.x,info.origin.position.y,\n            orientation.x,orientation.y,orientation.z,orientation.w)\n    if (not all(math.isfinite(v) for v in values) or not 0<=now-stamp<=2.\n            or info.resolution<=0 or info.width<=0 or info.height<=0\n            or len(grid.data)!=info.width*info.height\n            or any(abs(v)>1e-6 for v in (orientation.x,orientation.y,orientation.z))\n            or abs(abs(orientation.w)-1.)>1e-6):\n        return False\n    for x,y in positions:\n        column=math.floor((x-info.origin.position.x)/info.resolution)\n        row=math.floor((y-info.origin.position.y)/info.resolution)\n        if not (0<=row<info.height and 0<=column<info.width):\n            return False\n    return True\n\n\ndef delivered_active_stable(records,now):\n    \"\"\"Two distinct delivered heartbeat sources; no native hidden state.\"\"\"\n    if len(records)!=2 or not math.isfinite(now):return False\n    stamps=[row['stamp_sec'] for row in records]\n    return (all(row['mode']=='ACTIVE' for row in records)\n        and all(math.isfinite(stamp) and 0<=now-stamp<5. for stamp in stamps)\n        and stamps[1]-stamps[0]>=.5-1e-9)\n\n\ndef main():\n    parser=argparse.ArgumentParser(add_help=False)\n    parser.add_argument(\"--config\",type=Path,required=True)\n    parser.add_argument(\"--output\",type=Path,required=True)\n    arguments,_=parser.parse_known_args()\n    config=json.loads(arguments.config.read_text())\n    assert hashlib.sha256(Path(original.__file__).read_bytes()).hexdigest()==config[\"staging_base_content_sha256\"]\n    positions=[pose[:2] for pose in config[\"return_staging\"][\"poses\"].values()]\n    evidence=arguments.output.with_name(\"nav2_readiness.jsonl\")\n    assert not evidence.exists()\n\n    class ReadyStagingClient(ActionClient):\n        def __init__(self,node,action_type,action_name):\n            super().__init__(node,action_type,action_name)\n            self.task_node=node\n            self.robot=action_name.split(\"/\")[2]\n            self.grid=None\n            self.last_ready=None\n            self.batteries=deque(maxlen=2)\n            self.map_subscription=node.create_subscription(OccupancyGrid,\n                f\"/{self.robot}/global_costmap/costmap\",lambda message:setattr(self,\"grid\",message),1)\n            qos=QoSProfile(depth=1,reliability=ReliabilityPolicy.RELIABLE,\n                           durability=DurabilityPolicy.TRANSIENT_LOCAL)\n            self.battery_subscription=node.create_subscription(String,\n                f\"/gateway/received/{self.robot}/battery_state\",self.battery_received,qos)\n\n        def battery_received(self,message):\n            state=json.loads(message.data)\n            row=dict(mode=state['mode'],stamp_sec=state['stamp_sec'])\n            if row['mode']!='ACTIVE' or not math.isfinite(row['stamp_sec']):\n                self.batteries.clear()\n            elif not self.batteries or row['stamp_sec']>self.batteries[-1]['stamp_sec']:\n                self.batteries.append(row)\n\n        def server_is_ready(self):\n            now=self.task_node.get_clock().now().nanoseconds/1e9\n            ready=(super().server_is_ready() and nav2_map_ready(self.grid,positions,now)\n                   and delivered_active_stable(self.batteries,now))\n            if ready or ready!=self.last_ready:\n                self.last_ready=ready\n                row=dict(event=\"nav2_staging_readiness\",robot=self.robot,observer_time=now,ready=ready,\n                         delivered_battery_records=list(self.batteries))\n                if self.grid is not None:\n                    info=self.grid.info\n                    row.update(map_header_time=self.grid.header.stamp.sec+self.grid.header.stamp.nanosec*1e-9,\n                        frame=self.grid.header.frame_id,width=info.width,height=info.height,\n                        resolution=info.resolution,origin=[info.origin.position.x,info.origin.position.y],\n                        data_length=len(self.grid.data),\n                        orientation=[info.origin.orientation.x,info.origin.orientation.y,\n                                     info.origin.orientation.z,info.origin.orientation.w])\n                with evidence.open(\"a\") as output:\n                    output.write(json.dumps(row,allow_nan=False)+\"\\n\")\n            return ready\n\n    # The frozen fixture imports ActionClient inside main. Scope this adapter\n    # to this single-process fixture invocation and restore it on every exit.\n    rclpy.action.ActionClient=ReadyStagingClient\n    try:\n        return original.main()\n    finally:\n        rclpy.action.ActionClient=ActionClient\n\n\nif __name__==\"__main__\":\n    raise SystemExit(main())\n",
+      "staging_source_sha256": "7b281c9a6ded4d1ff61649b709b8090d13d1834af21643aa0822b3d5cdc7645c",
+      "staging_content_sha256": "a3c8f0c6174c6909f02fcafa42818bb0ba6551eb7b4be2b419dc15846e16c405"
+    }
+  ],
+  "fixture_sha256": "089aa12f8e4b523efbcce7e4af65dca2a2e0d1a9a678caa18685b94c978383fb",
+  "provenance": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_graph_command_components_provenance.json.gz",
+    "sha256": "ccee2539f7c5e44fb8ff12e862b2f13473e2c447052a48eb935297a737051462",
+    "uncompressed_sha256": "ef4aab5844297c6860b53fd73afce2a21b858c1efa0783ce117e3b66579ef517"
+  },
+  "source_sha256": {
+    "ros2_ws/ros2-multi-robot-automap/log/p2c_graph_command_build1.log": "c83eacd81d01226deb83a344fdc0914a40176244e2e3592368f662301c70a983",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c_graph_command_full1.log": "cddbda428f8322be00a726125844bb16bdfca1de72ff87a8408901d7a701bbac",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c_graph_command_manifest_scope1.json": "9834eed23fbc4ebc518dda49611a0ab5c1e5460fabe6494461465388a24714fa",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c_graph_command_scope1.json": "0bee5c71c448bedc7819e67905a18e0ced7aef6c20bd7b856442428ce5a043d8",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c_graph_command_source1.json": "69e8380cd058b3723360daf7f60149756fcf467a20a59b1deb0f8d8ef8ba610b",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c_graph_command_source1.log": "b794cffde2a54dc4da0b8a19cdc56da23922baf497d77642f8b4c97ec90a4bad",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c_graph_command_unit1.log": "f6eee490b01af1807643b249f45e9f691bf850a5f12d1209d2bcf0ed656b927e",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c_v68_physical_predeclared1.json": "afbdaf89eb44200d0ad260976da84d3455cbe1a24bafe790a9b39aaca28fdc3c",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c_v68_physical_predeclared1.log": "afbdaf89eb44200d0ad260976da84d3455cbe1a24bafe790a9b39aaca28fdc3c",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c_v68_predeclared1.json": "589d5e2281922112310610b0b61b5390b550e95f8d49f6d6d5dda3b21395cfab",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c_v68_predeclared1.log": "589d5e2281922112310610b0b61b5390b550e95f8d49f6d6d5dda3b21395cfab",
+    "ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py": "88def0e6a7fdf1f5c9dba022b56d2526a1acfca29e19eeb913d6a91d34eb1864",
+    "ros2_ws/ros2-multi-robot-automap/scripts/p2c_blackout_manifest.json": "bf910393936b11c87cd4e95c714434b0f6a6d39ca8df522dda2768959eb4b8f5",
+    "ros2_ws/ros2-multi-robot-automap/scripts/p2c_integration_manifest.json": "0bb54d660b906eda376a3e7c87360f393a939c6b700a7c1eb0ac3f39ae109a1e",
+    "ros2_ws/ros2-multi-robot-automap/scripts/run_p3b5_tasks.py": "a3438c304c205747daa992647a3688ca9afb1d43684a3e4d2ecff0d7283d84ea",
+    "ros2_ws/ros2-multi-robot-automap/scripts/run_p3c5_audit.py": "e03ed24cc5d8db3262cf39784674730cedb305fe6eaec6b2389a37fe4d710ed3",
+    "ros2_ws/ros2-multi-robot-automap/scripts/test_p2c_graph_command.py": "6b4a31d599b915b89843b52d63dca0eff377dfd26817f5f61c5f20124d59e6ef",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/fixtures/p2c_v67_graph_command.json.gz": "089aa12f8e4b523efbcce7e4af65dca2a2e0d1a9a678caa18685b94c978383fb"
+  },
+  "validation_limits": "No new production/controller/native/SLAM/observer/physics behavior or DDS/Gazebo component run. Actual prospective commands equal original v67 commands; shared builder and original required source SHA are now used by owner and strict audit. Original closed v67 declaration rebinding is a component, never original status backfill. New same-clean-pushed4 development\u219217formal+2physical required;917 remains unexposed."
+}
