@@ -8850,3 +8850,34 @@ ROS_DOMAIN_ID=217 /usr/bin/python3 scripts/check_p2c_refuge_release_runtime.py -
 初定向1/2各2FAIL67PASS：夹具将owner已有预约动作当作新增空闲分支、又错误断言输入既有动作应消失，改为阻止先行者已有动作并保留输入；最后69PASS3.39s。首功能命令只选scripts/test_p2c并误含三lint，4FAIL1639PASS1skip223.58s：两旧SimpleNamespace缺新branch所需enable_battery/final owner，补明真实battery模式、保留缺owner完整计划仍等待；其余全仓库flake8/pep257扫历史失败log/其他包，恢复既有功能范围，最终1796PASS182.70s。没有改旧任务结果或golden地图。六次原图诊断含两次精确TF缺失/未完整计划、model源不在只记录mode变化的native旁录、data为String、types变量遮蔽module，均保持，最后条件比较和原CDR地图独立绑定合格；这些接口失败不是任务。
 
 最终提交前补强：专用target_scan pending/handle及ordinary robot_states active（Future待接受但handle为None）也阻止提前释放。加入三反例，1799功能PASS183.09s、四包7.26s、source2/实际DDS runtime2/条件原图比较2+原CDR绑定2及scope2/两声明2全PASS，最终control SHA5dd929703ada43ba5062f4b104bc06861aa11b6aac3fe76094bfc9daa9f0274f；此前1796PASS的初组件报告完整移入ignored log并收进最终provenance，无中间实际任务。最终报告记录实际final验证，原失败结论不变。
+
+
+## 2026-10-10 P2C.1 v51 原失败与连接补查候选交接
+
+2026-10-10 P2C.1 v51四原整体FAIL：861c48e forced/rooms原生COMPLETE183.6/132.1，lab原生FAILED141.0不足集合点，corr原生300.3timeout（中央COMPLETE298.7无native5s保持）；四零接触耗尽机器人失效、owner/observer0关闭，17原子审不替代任务。原12失败图/CDR绑定，tb3全候选及home路不连通；固定纯补查几何1.944..2.021s不是精确回调因果。新原连接候选跨串行回调仅保留点/目标/参与集合，新交付后原send_survey_goal完整身体/去返预算/源TTL重新派发；过期等待不续源，变更丢弃，判无点前复核鲜度。1814功能173.90s/355定向/四包6.60s/190保护6授权54协议/实际DDS旧0→新1原补查Future闭合/五篡改拒绝/两声明PASS；2中央修改+1新增、80中央98纯/native/SLAM/300s/5s/TTL/物理保持。新v52 clean pushed4→17+2待实测，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v51_failed_development与20261010_p2c_connection_handoff_components。
+
+原861c冻结四格均关闭后才修改。forced首独立gatePASS；其余三原同源并行，完整development仅forced/rooms全审PASS，lab/corr FAIL保持。未调用17正式、同源物理对子或917，不跨版本合并成功率。原完整summary/gate/私有旁录/native safety与SHA在v51 originals，所有诊断和新源码/输出在connection provenance。
+
+原lab12失败分配冻结控制器重建，原TB3约束图到全部候选与home中心均不连通，分配计算0.120..0.386s。固定末次交付输入：gain/下降/连接几何三轮总1.944..2.021s，另完整路线等条件检查；原stale旁录pose/TF多次2.5..3.3s。缺原各函数单独计时，明确非精确完整AP回调反事实、非障碍物理来源证明。未清图、未过滤同伴、未调Nav2/SLAM/物理。
+
+几何交接不保存价格或派发权限。下串行回调及每个尝试均用新交付源通过完全原send_survey_goal安全保护，过期不推进候选游标，新鲜真实否决才推进；目标/参与/阶段/clock回退丢弃，pending动作等待。无点判定前补鲜度检查，原prepare30s/attempts/retries/300s/5s/TTL保持。只2中央方法修改+1新增，80中央98纯AST和七native文件相同；无AP新应用包。
+
+原失败命令及新验证在canonical ROS目录：rtk proxy bash -c source Humble+install，PYTHONNOUSERSITE1、scripts PYTHONPATH、FastDDS UDPv4清profiles/discovery server、taskset0-79。下一run-id20261010_p2c_v52首forced218/20318严格gatePASS后，其余lab218/20318、rooms219/20319、corr220/20320。新同冻结四格全PASS才能17正式+2物理；917仍首次未暴露。
+
+```bash
+/usr/bin/python3 scripts/check_p2c_gate.py --run-root log/p2c/20261010_p2c_v51 --development --workers 3 --output log/p2c_v51_development_gate.json
+/usr/bin/python3 /tmp/audit_p2c_v51_components3.py
+/usr/bin/python3 /tmp/p2c_v51_lab_assignment_diagnosis.py
+/usr/bin/python3 /tmp/p2c_v51_lab_connection_diagnosis.py
+/usr/bin/python3 /tmp/p2c_v51_lab_survey_costs.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_rally_connection_handoff.py src/multi_robot_exploration/test/test_rally_observation_recovery.py src/multi_robot_exploration/test/test_control.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test scripts --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+colcon build --symlink-install --packages-select multi_robot_exploration multi_robot_interfaces multi_robot merge_map
+/usr/bin/python3 scripts/check_p2c_source.py --output log/p2c_connection_handoff_source1.json
+ROS_DOMAIN_ID=217 /usr/bin/python3 scripts/check_p2c_rally_connection_runtime.py --output log/p2c_connection_handoff_runtime1.json
+/usr/bin/python3 /tmp/p2c_connection_reader_checks.py
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v52 --domain 218 --gazebo-port 20318 --validate-only
+/usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v52_physical --domain 219 --gazebo-port 20319 --validate-only
+```
+
+首完整功能1FAIL1813PASS183.17s为旧U形连接夹具期望立即派发、缺clock/private publisher；更新为先无goal，再原U形完整route，未知图不改断言保持。第二1814PASS173.90s、最终355定向13.42s。首误用未知robot_battery/task_evaluation包名只构建2包3.84s，保留warning；正确四包6.60s。原组件第一次错误要求不存在的RALLY proposal及两次None位置阈值调用fail，最后正确optional+冻结.35阈值17原子审PASS；不替代任务。scope1实际比较861c但继承旧e8af标签，scope2更正；runner digest临时脚本找错字典结构未写入后改正确原条件分支。所有日志和脚本保持。最终control SHAedda99389cbd119364cd6ff2bbdc9c13adc988489eefc8f0da3a8dd3b23972a5；真实DDS输入过期源10/clock13仍0goal，新交付13后1goal与Future闭合，合成endpoint非任务验证。五tamper被拒、12原图/CDR绑定PASS。

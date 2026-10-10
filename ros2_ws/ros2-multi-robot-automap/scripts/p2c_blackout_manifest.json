@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-09T23:49:34.264626+00:00",
+  "predeclared_at_utc": "2026-10-10T00:38:17.298549+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "e8af7f00bd2ce199636b3c3f317e2de4f89e38fb",
+  "candidate_parent_commit": "861c48e6e1c15201996677852d996a41b143263f",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -472,5 +472,12 @@
     "private_evidence": "Original maps, positions, complete two approaches, energy models, waits, source stamps and eligibility audit",
     "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_refuge_release_components.json",
     "limits_unchanged": "300s/native5s/2s pose-TF/5s map-battery/60s target/complete return and native safety"
+  },
+  "rally_connection_handoff": {
+    "geometry": "Original fused frontier ranking and existing body mask; retained points only, no retained prices or source authority",
+    "admission": "Next serial state callback uses current delivered maps, poses, TF, bodies, full energy/return and original source leases through unchanged send_survey_goal",
+    "expiry": "Wait for fresh delivery; target/participant/phase/clock rewind invalidates points; rejected fresh trials advance, expired trials retain their cursor",
+    "limits": "Original preparation wait, survey attempts, 300 second deadline, 5 second native hold and physical stimulation remain",
+    "evidence": "Private geometry/trial records, independent ranking and raw CDR source binding; no new application traffic"
   }
 }

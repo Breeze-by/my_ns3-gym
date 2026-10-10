@@ -108,10 +108,16 @@ def test_connector_survey_uses_known_frontier_around_target_dead_end():
     sent=[]
     node=SimpleNamespace(map_data=grid,resolution=.1,origin=(0.,0.),target=target,
         task_state='FOUND',
+        now=lambda:10., input_freshness_details=lambda:{}, map_received_at=10.,
+        consumed_publisher=Mock(), participating_robots=lambda:['tb1','tb2'],
+        active_batteries_ready=lambda:True, fresh_robot_inputs=lambda:True, fresh_target=lambda:True,
+        survey_goal_handle=None, survey_goal_pending=False, robot_states={'tb1':'idle','tb2':'idle'},
         robot_positions={'tb1':position,'tb2':(1.55,6.55)},
         battery_modes={'tb1':'ACTIVE','tb2':'ACTIVE'},target_observing_robot='tb2',
         send_survey_goal=lambda name,pose:sent.append((name,pose)) or True)
     assert control.HeadquartersControl.survey_rally_connection(node,node.robot_positions)
+    assert not sent and node.pending_rally_connection is not None
+    assert control.HeadquartersControl.admit_rally_connection(node)
     name,pose=sent[0]
     assert name=='tb1'
     cell=control.world_to_grid(pose.x,pose.y,.1,0.,0.)

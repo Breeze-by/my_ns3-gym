@@ -17,6 +17,7 @@ from p2c_navigation_dispatch import navigation_dispatch_audit
 from p2c_rally_transit_heading import transit_heading_audit
 from p2c_outbound_routes import outbound_route_audit
 from p2c_refuge_release import refuge_release_audit
+from p2c_rally_connection import rally_connection_audit
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -827,6 +828,11 @@ def check_one(path,config):
         directory/'navigation_inputs.jsonl.gz')
     refuge=refuge_release_audit(directory/'ledger.jsonl',bool(config.get('charged_return_refuge_release')),
         directory/'navigation_inputs.jsonl.gz')
+    connection=rally_connection_audit(directory/'ledger.jsonl',bool(config.get('rally_connection_handoff')),
+        directory/'navigation_inputs.jsonl.gz')
+    if config.get('rally_connection_handoff'):
+        from run_p2d_baseline import file_digest
+        assert row['source_digests']['rally_connection_reader']==file_digest(Path(__file__).with_name('p2c_rally_connection.py'))
     if config.get('charged_return_refuge_release'):
         from run_p2d_baseline import file_digest
         assert row['source_digests']['refuge_release_reader']==file_digest(Path(__file__).with_name('p2c_refuge_release.py'))
@@ -852,7 +858,8 @@ def check_one(path,config):
         native_tf_ingress_audit=ingress,launch_process_audit=processes,navigation_input_audit=navigation_inputs,
         native_scan_self_filter_audit=scan_filter,exploration_return_preparation_audit=preparations,
         navigation_dispatch_boundary_audit=dispatches,observed_rally_transit_heading_audit=transit,
-        navigation_outbound_consistency_audit=outbound,charged_return_refuge_release_audit=refuge)
+        navigation_outbound_consistency_audit=outbound,charged_return_refuge_release_audit=refuge,
+        rally_connection_handoff_audit=connection)
 
 
 def observer_heading_audit(records,required=False,radius_m=3.,position_tolerance_m=.35,fov_rad=math.pi/2):

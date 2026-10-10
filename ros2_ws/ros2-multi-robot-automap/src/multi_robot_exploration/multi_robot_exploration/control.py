@@ -4749,6 +4749,8 @@ class HeadquartersControl(Node):
     def update_mission(self):
         if getattr(self, "return_probe_paused", False):
             return
+        if self.task_state != 'FOUND':
+            self.pending_rally_connection = None
         state_ready = self.fresh_robot_inputs()
         proposal = getattr(self, 'pending_exploration_return_yield', None)
         if proposal is not None and proposal['task_phase'] != self.task_state:
@@ -4867,6 +4869,14 @@ class HeadquartersControl(Node):
             if HeadquartersControl.restore_observer_heading(self) or self.task_state == "FAILED":
                 return
 
+            connection_exhausted = False
+            connection_proposal = getattr(self, 'pending_rally_connection', None)
+            if connection_proposal is not None:
+                if HeadquartersControl.admit_rally_connection(self):
+                    return
+                connection_exhausted = (tuple(self.target) == connection_proposal['target']
+                    and tuple(sorted(self.participating_robots())) == connection_proposal['names'])
+
             if not self.rally_targets:
                 proposal = getattr(self, 'pending_rally_proposal', None)
                 if proposal is not None:
@@ -4972,8 +4982,10 @@ class HeadquartersControl(Node):
                         if survey_pose is not None and self.send_survey_goal(survey_robot, survey_pose):
                             return
                     if (self.task_state == "FAILED"
-                            or HeadquartersControl.survey_rally_connection(self, active_positions)
+                            or not connection_exhausted and HeadquartersControl.survey_rally_connection(self, active_positions)
                             or self.task_state == "FAILED"):
+                        return
+                    if not self.fresh_robot_inputs() or not self.fresh_target():
                         return
                     if (
                         self.rally_prepare_started_at is not None
@@ -5973,7 +5985,9 @@ class HeadquartersControl(Node):
             self, name, RallyPose(*position, heading), heading_only=True)
 
     def survey_rally_connection(self, positions):
-        """Investigate reachable unknown boundaries when target approaches stall."""
+        """Retain frontier geometry while queued delivered state can catch up."""
+        started = self.now()
+        inputs = input_freshness_at(self.input_freshness_details(), started)
         if getattr(self, "frontier_cache", None) is None:
             self.frontier_cache = prepare_frontier_data(self.map_data, self.resolution)
         frontier_data = self.frontier_cache
@@ -5993,14 +6007,77 @@ class HeadquartersControl(Node):
                 # Target proximity ranks actual frontier boundaries, without
                 # requiring each known-free leg to reduce straight-line range.
                 candidates.append((math.dist(edge, self.target), -utility, name, assignment))
+        choices = []
         for _, _, name, assignment in sorted(candidates, key=lambda row: row[:3]):
             view = assignment.viewpoint
             pose = RallyPose(assignment.x, assignment.y, math.atan2(
                 view.frontier_row - view.row, view.frontier_column - view.column))
-            if self.send_survey_goal(name, pose):
+            choices.append((name, pose))
+        if not choices:
+            return False
+        completed = self.now()
+        proposal = dict(target=tuple(self.target), names=tuple(sorted(self.participating_robots())),
+            choices=tuple(choices), cursor=0, generated_at=started)
+        self.pending_rally_connection = proposal
+        self.consumed_publisher.publish(String(data=json.dumps(dict(
+            event='coordinator_rally_connection_geometry', event_time=started,
+            computation_completed_at_sec=completed, inputs=inputs,
+            target=self.target, robot_positions=positions, battery_modes=self.battery_modes,
+            current_positions=self.robot_positions,
+            observer_robot=getattr(self, 'target_observing_robot', None), names=proposal['names'],
+            candidates=[(name, pose.x, pose.y, pose.yaw) for name, pose in choices],
+            planning_map=grid_audit_evidence(self.map_data, self.resolution, self.origin,
+                'ap_delivered_planning_map', self.map_received_at, self.map_received_at),
+            planning_map_self_return_cells=getattr(self, 'map_self_return_cells', {}),
+        ), sort_keys=True)))
+        return True
+
+    def admit_rally_connection(self):
+        """Reprice retained points using current routes, bodies and source leases."""
+        proposal = getattr(self, 'pending_rally_connection', None)
+        if proposal is None:
+            return False
+        if (self.task_state != 'FOUND' or self.now() < proposal['generated_at'] or self.target is None
+                or tuple(self.target) != proposal['target']
+                or tuple(sorted(self.participating_robots())) != proposal['names']):
+            self.pending_rally_connection = None
+            return False
+        if not self.active_batteries_ready():
+            self.pending_rally_connection = None
+            return False
+        if (self.survey_goal_handle is not None or self.survey_goal_pending
+                or any(self.robot_states[name] != 'idle' for name in proposal['names'])
+                or getattr(self, 'target_scan_robot', None) is not None
+                or getattr(self, 'target_scan_handle', None) is not None):
+            return True
+        if not self.fresh_robot_inputs() or not self.fresh_target():
+            return True
+        while proposal['cursor'] < len(proposal['choices']):
+            index = proposal['cursor']
+            name, pose = proposal['choices'][index]
+            if name == getattr(self, 'target_observing_robot', None):
+                proposal['cursor'] += 1
+                continue
+            started = self.now()
+            inputs = input_freshness_at(self.input_freshness_details(), started)
+            accepted = self.send_survey_goal(name, pose)
+            fresh = self.fresh_robot_inputs() and self.fresh_target()
+            self.consumed_publisher.publish(String(data=json.dumps(dict(
+                event='coordinator_rally_connection_trial', event_time=started,
+                completed_at_sec=self.now(), generated_at_sec=proposal['generated_at'],
+                index=index, robot=name, desired_pose=(pose.x, pose.y, pose.yaw),
+                target=self.target, inputs=inputs, accepted=accepted, fresh_after=fresh,
+            ), sort_keys=True)))
+            if accepted:
+                self.pending_rally_connection = None
                 return True
             if self.task_state == "FAILED":
+                self.pending_rally_connection = None
                 return False
+            if not fresh or not self.fresh_robot_inputs() or not self.fresh_target():
+                return True
+            proposal['cursor'] += 1
+        self.pending_rally_connection = None
         return False
 
     def survey_target_frontiers(self, positions):
