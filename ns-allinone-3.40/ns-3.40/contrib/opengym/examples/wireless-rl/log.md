@@ -9225,3 +9225,21 @@ ROS_DOMAIN_ID=217 /usr/bin/python3 scripts/check_p2c_dispatch_boundary_runtime.p
 /usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v64 --domain 218 --gazebo-port 20318 --validate-only
 /usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v64_physical --domain 219 --gazebo-port 20319 --validate-only
 ```
+
+
+## 2026-10-10 P2C.1 v64原读者失败与未集合参数来源
+
+2026-10-10 P2C.1 v64同69c0e61四开发nativeCOMPLETE223.1/207.1/123.5/251.3与首正式lab101 COMPLETE298.6完整strictPASS；两物理FOUND/EXPLORE300.0/300.3timeout各双charge1/零接触耗尽FAILED，七owner-observer0/两staging-physics0关闭，27摘要除manifest均同源。原ideal未集合quiet checker以原生null容差运算TypeError，原对子FAIL保持，余14非留出/917未调用。新只从SHA绑定runner.log恰好一执行参数.35取FOUND observer/survey规划容差，原生null参数/hold不改；缺失重复放宽NaN/不一致及原误差/源反例拒绝。1966功能205.00s/101定向12新反例/四包原symlink6.73s/190保护6授权54协议/两声明/七日志绑定与原两物理独立复读PASS，fault原Nav2运动1.386689/1.446499m、净回home1.379355/1.439514m，仅组件不回填原FAIL。仅1读者调用+1纯读者，18旧读者AST/八task-native-SLAM/300s/5s/TTL/物理保持，无新DDS/Gazebo。新v65 clean pushed4→17+2待任务，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v64_failed_physical_reader与20261010_p2c_partial_heading_components。
+
+原七全部关闭后仅修读者；evaluator固定null契约保持。原五任务strictPASS/物理TypeError保持，修正复读仅组件，完整B仍新4→17+2。无新任务/DDS动作，原两充电/1.38和1.45米actual black-window运动经原完整guard读者验证；原无集合hold不得记作COMPLETE。12新测试/101定向/1966完整功能零失败。control SHA bbb7436c7529470f4d4087f54de86a66766131e0eedf82170df9e4a8a70c2ebd；native SHA f4845fb03667e766c0202a470fa5f2c3c4a49ff39f77a898bf90ec1b60261a6c；reader SHA 6d89d6761e2e572e52a0b572440b5e8cebb8cc2b7a0a7a7e59ce76920cf239d1。
+
+```bash
+/usr/bin/python3 -m pytest -q scripts/test_p2c_partial_heading.py scripts/test_p2c_gate.py src/multi_robot_exploration/test/test_observer_healthy_confirmation.py src/multi_robot_exploration/test/test_target_information_survey.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test src/merge_map/test/test_merge_map.py scripts --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+colcon build --symlink-install --packages-select multi_robot_exploration multi_robot_interfaces merge_map multi_robot
+/usr/bin/python3 scripts/check_p2c_blackout.py --run-root log/p2c/20261010_p2c_v64_physical --expected-commit 69c0e610642a0cf2cea68a402beaae267e2199ab --output log/p2c_partial_heading_original_physical2.json
+/usr/bin/python3 /tmp/p2c_partial_heading_scope.py
+/usr/bin/python3 scripts/check_p2c_source.py --output log/p2c_partial_heading_source1.json
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v65 --domain 218 --gazebo-port 20318 --validate-only
+/usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v65_physical --domain 219 --gazebo-port 20319 --validate-only
+```

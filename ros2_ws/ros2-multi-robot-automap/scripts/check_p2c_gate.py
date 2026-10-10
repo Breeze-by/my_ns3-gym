@@ -831,6 +831,19 @@ def energy_audit(path,result,required=False):
 
 
 
+def planning_position_tolerance(result,directory):
+    """Read the fixed executed limit without populating unassigned native fields."""
+    commands=[line.removeprefix('Command: ') for line in (directory/'runner.log').read_text().splitlines()
+              if line.startswith('Command: ')]
+    assert len(commands)==1,'missing exact executed launch command'
+    values=re.findall(r'(?:^|\s)rally_position_tolerance_m:=(\S+)',commands[0])
+    assert len(values)==1,'missing or duplicate executed position tolerance'
+    value=float(values[0])
+    assert value==control.RALLY_POSITION_TOLERANCE_M,'executed position tolerance changed'
+    assert result['rally_position_tolerance_m'] is None or result['rally_position_tolerance_m']==value
+    return value
+
+
 def check_one(path,config):
     path=path.resolve()
     row=json.loads(path.read_text());directory=path.parent
@@ -894,12 +907,13 @@ def check_one(path,config):
         bool(config.get('exploration_bounded_commitment')),bool(config.get('initial_known_space_search')),
         bool(config.get('mission_spatial_diversity')),bool(config.get('camera_aware_known_search')),
         bool(config.get('coordinator_live_clock')))
+    position_tolerance=planning_position_tolerance(result,directory)
     surveys=target_survey_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
-        bool(config.get('target_information_survey')),result['target_max_distance_m'],result['rally_position_tolerance_m'],
+        bool(config.get('target_information_survey')),result['target_max_distance_m'],position_tolerance,
         bool(config.get('coordinator_live_clock')),bool(config.get('curved_target_surveys')))
     headings=observer_heading_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
         bool(config.get('observer_heading_confirmation_gap')),result['target_max_distance_m'],
-        result['rally_position_tolerance_m'],None if result['target_field_of_view_deg'] is None
+        position_tolerance,None if result['target_field_of_view_deg'] is None
         else math.radians(result['target_field_of_view_deg']))
     leases=planning_lease_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     preparations=return_preparation_audit(directory/'ledger.jsonl',bool(config.get('exploration_return_preparation')))

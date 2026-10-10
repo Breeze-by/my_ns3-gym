@@ -1,0 +1,263 @@
+{
+  "source_commit": "69c0e610642a0cf2cea68a402beaae267e2199ab",
+  "scope": "Original unassigned FOUND observer evidence; no raw result repair",
+  "ledger_sha256": "fbf01e4d5f00861c48362ab2228686fcafea4a334b72e814a28a65463932e45a",
+  "runner_text": "Command: ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py world:=my_world.world robot_count:=2 enable_gzclient:=false enable_rviz:=false enable_merge_rviz:=false enable_task_regions:=false enable_status_panel:=false enable_gateway_monitor:=false auto_save_map:=false gazebo_seed:=303 spawn_timeout:=90.0 nav2_ready_timeout_sec:=600.0 exploration_goal_timeout_sec:=60.0 rally_goal_timeout_sec:=30.0 enable_task_evaluator:=true evaluation_episode_id:=20261010_p2c_v64_physical_physical_ideal evaluation_output_dir:=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v64_physical/20261010_p2c_v64_physical_physical_ideal evaluation_duration_sec:=300.0 evaluation_coverage_threshold:=0.0 enable_target_detection:=true enable_rally:=true evaluation_stop_on_target_found:=false evaluation_stop_on_task_complete:=true target_x:=-4.0 target_y:=4.0 target_max_distance_m:=3.0 target_field_of_view_deg:=90.0 target_confirmation_frames:=3 rally_position_tolerance_m:=0.35 rally_linear_tolerance_mps:=0.05 rally_angular_tolerance_radps:=0.1 rally_hold_sec:=5.0 rally_max_retries:=2 rally_assignment_objective:=minimax use_map_safe_rally_order:=true global_battery_rally_pause:=false enable_return_probe_pause:=true rally_max_concurrent:=2 enable_battery:=true battery_capacity:=100.0 battery_initial_energy:=40.0 battery_move_cost_per_m:=1.0 battery_idle_cost_per_sec:=0.15 battery_return_safety_margin:=5.0 battery_return_path_factor:=2.0 battery_return_recovery_wait_sec:=30.0 battery_return_no_route_wait_sec:=30.0 battery_nominal_speed_mps:=0.18 battery_charge_duration_sec:=10.0 battery_charge_radius_m:=0.8 battery_charge_target_fraction:=0.8 battery_return_timeout_sec:=120.0 battery_charge_timeout_sec:=60.0 gateway_mode:=ideal gateway_admission_protocol:=false mission_mode:=rally gateway_seed:=17011 uplink_loss_rate:=0.0 downlink_loss_rate:=0.0 uplink_delay_sec:=0.0 downlink_delay_sec:=0.0 gateway_duplicate_rate:=0.0 gateway_reorder_window:=0 gateway_reorder_step_sec:=0.05 gateway_ack_timeout_sec:=1.0 gateway_max_retries:=2 gateway_queue_capacity:=0 gateway_blackout_intervals:=[[60, 250]] inject_failure_after_sec:=-1.0 message_freshness_timeout_sec:=5.0 navigation_command_deadline_sec:=90.0 gateway_ledger_path:=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v64_physical/20261010_p2c_v64_physical_physical_ideal/ledger.jsonl\nLaunch log: /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v64_physical/20261010_p2c_v64_physical_physical_ideal/launch/robots2_seed303_20261010-190728.log\nROS graph and Nav2 lifecycle nodes are ready.\nP3A forbidden-bypass audit passed.\nNative messages waiting: domain=219 topics=['/tb1/scan', '/tb1/battery_state', '/tb2/battery_state']; common_wall_deadline=90.0s\nNative message subscribed: /tb1/scan; type=sensor_msgs/msg/LaserScan; qos={'--qos-reliability': 'best_effort'}\nNative message subscribed: /tb1/battery_state; type=std_msgs/msg/String; qos={'--qos-reliability': 'reliable', '--qos-durability': 'transient_local'}\nNative message subscribed: /tb2/battery_state; type=std_msgs/msg/String; qos={'--qos-reliability': 'reliable', '--qos-durability': 'transient_local'}\nNative message received: /tb1/scan; pending=['/tb1/battery_state', '/tb2/battery_state']\nNative message received: /tb1/battery_state; pending=['/tb2/battery_state']\nNative message received: /tb2/battery_state; pending=[]\nReceived lidar and merged-map messages.\nEvaluation result: /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v64_physical/20261010_p2c_v64_physical_physical_ideal/20261010_p2c_v64_physical_physical_ideal.json coverage=0.906 path=34.901m termination=timeout detection=292.2000000000003 rally=None completion=None charges=2\nPASS: 2-robot headless smoke test\n",
+  "result": {
+    "battery_enabled": true,
+    "battery_minimum_energy": 12.190507513994488,
+    "battery_total_charges": 2,
+    "battery_total_charging_time_sec": 20.200000000000273,
+    "battery_total_returns": 4,
+    "collision_duration_sec": 0.0,
+    "collision_events": 0,
+    "collision_history": [],
+    "collision_monitoring_active": true,
+    "completion_status": "FOUND",
+    "completion_time_sec": null,
+    "coordinator_completion_time_sec": null,
+    "correct_coverage_ratio": 0.852595873317164,
+    "correct_free_coverage_ratio": 0.9057263503830941,
+    "correct_truth_cell_count": 48511,
+    "coverage_at_detection": 0.8563731203546249,
+    "coverage_threshold": 0.0,
+    "detecting_robot": "tb1",
+    "elapsed_sim_time_sec": 300.0,
+    "end_sim_time_sec": 2374.082,
+    "episode_id": "20261010_p2c_v64_physical_physical_ideal",
+    "failed_robots": [],
+    "failure_reason": "timeout",
+    "gazebo_seed": 303,
+    "known_coverage_ratio": 0.8817708882561778,
+    "known_truth_cell_count": 50171,
+    "map_message_count": 327,
+    "merged_map_frame": "map",
+    "merged_map_height": 212,
+    "merged_map_origin_x": -5.668330296432969,
+    "merged_map_origin_y": -5.466916863003285,
+    "merged_map_origin_yaw": 0.0,
+    "merged_map_resolution": 0.05000000074505806,
+    "merged_map_width": 256,
+    "mission_mode": "rally",
+    "model_state_message_count": 3001,
+    "native_rally_hold_proof": null,
+    "nav_aborted": 0,
+    "nav_canceled": 4,
+    "nav_goal_count": 25,
+    "nav_succeeded": 20,
+    "observed_accuracy": 0.9669131570030496,
+    "occupied_iou": 0.1899211518683579,
+    "partial_completion": false,
+    "phase_overlap_ratios": {
+      "EXPLORE": 0.002932551319648094,
+      "FOUND": 0.0,
+      "RALLY": 0.0
+    },
+    "phase_path_lengths_m": {
+      "EXPLORE": 33.33336653586948,
+      "FOUND": 1.5676683756839829,
+      "RALLY": 0.0
+    },
+    "phase_union_visited_cell_counts": {
+      "EXPLORE": 341,
+      "FOUND": 18,
+      "RALLY": 0
+    },
+    "rally_angular_tolerance_radps": null,
+    "rally_assignments": {},
+    "rally_hold_sec": null,
+    "rally_linear_tolerance_mps": null,
+    "rally_min_separation_m": null,
+    "rally_position_tolerance_m": null,
+    "required_robot_count": 2,
+    "required_robot_names": [
+      "tb1",
+      "tb2"
+    ],
+    "robot_count": 2,
+    "robots": {
+      "tb1": {
+        "battery_capacity": 100.0,
+        "battery_charge_count": 1,
+        "battery_charge_x": 0.0,
+        "battery_charge_y": -0.45,
+        "battery_charging_time_sec": 10.100000000000364,
+        "battery_final_energy": 48.01805854458008,
+        "battery_initial_energy": 40.0,
+        "battery_message_count": 604,
+        "battery_minimum_energy": 12.190507513994488,
+        "battery_mode": "ACTIVE",
+        "battery_return_count": 2,
+        "collision_duration_sec": 0.0,
+        "collision_events": 0,
+        "collision_message_count": 6000,
+        "end_x": -4.122421620010388,
+        "end_y": 2.9399041011122877,
+        "final_angular_speed_radps": 0.032557315591959006,
+        "final_linear_speed_mps": 0.09035008904775793,
+        "nav_aborted": 0,
+        "nav_canceled": 2,
+        "nav_goal_count": 11,
+        "nav_succeeded": 8,
+        "path_length_m": 16.51761321886003,
+        "phase_path_lengths_m": {
+          "EXPLORE": 14.970599509098658,
+          "FOUND": 1.5470137097613772,
+          "RALLY": 0.0
+        },
+        "rally_final_error_m": null,
+        "rally_target_x": null,
+        "rally_target_y": null,
+        "rally_target_yaw": null,
+        "start_x": 0.002355194407948378,
+        "start_y": -0.4499949613841027,
+        "teleport_jump_count": 0,
+        "visited_cell_count": 180
+      },
+      "tb2": {
+        "battery_capacity": 100.0,
+        "battery_charge_count": 1,
+        "battery_charge_x": 0.0,
+        "battery_charge_y": 0.45,
+        "battery_charging_time_sec": 10.099999999999909,
+        "battery_final_energy": 46.03452807875561,
+        "battery_initial_energy": 40.0,
+        "battery_message_count": 602,
+        "battery_minimum_energy": 12.35203194929267,
+        "battery_mode": "ACTIVE",
+        "battery_return_count": 2,
+        "collision_duration_sec": 0.0,
+        "collision_events": 0,
+        "collision_message_count": 5999,
+        "end_x": 6.028595008591497,
+        "end_y": 3.107363642427732,
+        "final_angular_speed_radps": 0.01681878821073221,
+        "final_linear_speed_mps": 7.571696971855183e-05,
+        "nav_aborted": 0,
+        "nav_canceled": 2,
+        "nav_goal_count": 14,
+        "nav_succeeded": 12,
+        "path_length_m": 18.383421692693425,
+        "phase_path_lengths_m": {
+          "EXPLORE": 18.362767026770822,
+          "FOUND": 0.020654665922605585,
+          "RALLY": 0.0
+        },
+        "rally_final_error_m": null,
+        "rally_target_x": null,
+        "rally_target_y": null,
+        "rally_target_yaw": null,
+        "start_x": 0.002287373075425769,
+        "start_y": 0.45000446281645556,
+        "teleport_jump_count": 0,
+        "visited_cell_count": 179
+      }
+    },
+    "schema_version": 9,
+    "search_overlap_ratio": 0.002932551319648094,
+    "start_sim_time_sec": 2074.082,
+    "success": false,
+    "target_confirmation_frames": 3,
+    "target_field_of_view_deg": 90.0,
+    "target_found": true,
+    "target_max_distance_m": 3.0,
+    "target_x": -4.0,
+    "target_y": 4.0,
+    "task_phase": "FOUND",
+    "termination_reason": "timeout",
+    "time_to_75_coverage_sec": 225.5999999999999,
+    "time_to_80_coverage_sec": 240.5,
+    "time_to_90_coverage_sec": 299.5999999999999,
+    "time_to_95_coverage_sec": null,
+    "time_to_detect_sec": 292.2000000000003,
+    "time_to_rally_sec": null,
+    "total_overlap_ratio": 0.002793296089385475,
+    "total_path_length_m": 34.90103491155345,
+    "truth_cell_count": 56898,
+    "truth_free_cell_count": 52337,
+    "truth_height": 218,
+    "truth_occupied_cell_count": 4561,
+    "truth_origin_x": -5.800000000000001,
+    "truth_origin_y": -5.6000000000000005,
+    "truth_rectangle_count": 26,
+    "truth_resolution": 0.05,
+    "truth_unsupported_collision_count": 1,
+    "truth_width": 261,
+    "union_visited_cell_count": 358,
+    "visit_resolution": 0.1,
+    "world_file": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/worlds/my_world.world"
+  },
+  "heading_records": [
+    {
+      "desired_yaw": 1.6873981858715053,
+      "event": "coordinator_observer_heading_quiet_hold",
+      "event_time": 2366.882,
+      "fault_revision": 0,
+      "inputs": {
+        "headquarters/fused_map_snapshot": {
+          "age_sec": 0.5,
+          "source_time": 2366.382,
+          "ttl_sec": 5.0
+        },
+        "headquarters/target_detection": {
+          "age_sec": 0.7000000000002728,
+          "source_time": 2366.182,
+          "ttl_sec": 60.0
+        },
+        "tb1/battery_state": {
+          "age_sec": 0.3000000000001819,
+          "source_time": 2366.582,
+          "ttl_sec": 5.0
+        },
+        "tb1/frame_state": {
+          "age_sec": 0.43600000000014916,
+          "source_time": 2366.446,
+          "ttl_sec": 2.0
+        },
+        "tb1/map_snapshot": {
+          "age_sec": 0.637000000000171,
+          "source_time": 2366.245,
+          "ttl_sec": 5.0
+        },
+        "tb1/pose_state": {
+          "age_sec": 0.17200000000002547,
+          "source_time": 2366.71,
+          "ttl_sec": 2.0
+        },
+        "tb2/battery_state": {
+          "age_sec": 0.3000000000001819,
+          "source_time": 2366.582,
+          "ttl_sec": 5.0
+        },
+        "tb2/frame_state": {
+          "age_sec": 0.5489999999999782,
+          "source_time": 2366.333,
+          "ttl_sec": 2.0
+        },
+        "tb2/map_snapshot": {
+          "age_sec": 1.349999999999909,
+          "source_time": 2365.532,
+          "ttl_sec": 5.0
+        },
+        "tb2/pose_state": {
+          "age_sec": 0.1750000000001819,
+          "source_time": 2366.707,
+          "ttl_sec": 2.0
+        }
+      },
+      "ledger_index": 44047,
+      "mission_mode": "rally",
+      "position": [
+        -3.7196470699293127,
+        1.6065457251013384
+      ],
+      "robot": "tb1",
+      "target": [
+        -4.0,
+        4.0
+      ],
+      "target_source_time": 2366.182,
+      "yaw": 2.3483676485473035
+    }
+  ]
+}
