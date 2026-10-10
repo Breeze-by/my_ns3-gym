@@ -156,27 +156,19 @@ def plan_charging_leg(raw_grid, resolution, origin, position, charger, radius, r
     if len(escape) > 1:
         route = tuple(grid_to_world(*cell, resolution, *origin) for cell in escape)
         return RallyPose(*route[-1], route_arrival_yaw(route, 0.)), route
-    # Pull only a visible prefix of the complete, budgeted reverse-field path.
-    prefix = [full_route[1] if len(full_route) > 1 else full_route[0]]
+    # Nav2 can follow a bend in the complete known-free contact route. A
+    # visible-only prefix can stop at the same cell centre on every retry.
+    # Count the actual-position offset in the unchanged maximum leg length.
+    prefix = [full_route[0]]
     length = 0.
-    for point in full_route[2:]:
-        length += math.dist(prefix[-1], point)
-        if length > MAX_NAVIGATION_LEG_M:
+    for point in full_route[1:]:
+        step = math.dist(prefix[-1], point)
+        if length + step > MAX_NAVIGATION_LEG_M:
             break
         prefix.append(point)
-    for point in reversed(prefix):
-        target = world_to_grid(*point, resolution, *origin)
-        cells = tuple(_line_cells(start, target))
-        if not all(safe[cell] for cell in cells):
-            continue
-        # A visibility shortcut must preserve Dijkstra's no-corner-cut rule.
-        if any(a[0] != b[0] and a[1] != b[1]
-               and (not safe[a[0], b[1]] or not safe[b[0], a[1]])
-               for a, b in zip(cells, cells[1:])):
-            continue
-        route = tuple(grid_to_world(*cell, resolution, *origin) for cell in cells)
-        return RallyPose(*route[-1], route_arrival_yaw(route, 0.)), route
-    return None, ()
+        length += step
+    route = tuple(prefix)
+    return RallyPose(*route[-1], route_arrival_yaw(route, 0.)), route
 
 
 class BatteryManager(Node):

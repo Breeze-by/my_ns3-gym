@@ -185,6 +185,55 @@ def test_unknown_charge_contact_region_never_generates_a_return_leg():
     assert plan_charging_leg(grid, .1, (-5., -5.), (3., 0.), (0., 0.), .8) == (None, ())
 
 
+@pytest.mark.parametrize('index',range(7))
+def test_original_return_bend_has_a_complete_bounded_prefix(index):
+    import gzip,json,sys
+    from pathlib import Path
+    from multi_robot_exploration import control
+    sys.path.insert(0,str(Path(__file__).resolve().parents[3]/'scripts'))
+    from p2c_outbound_routes import check_route,decode
+    fixture=Path(__file__).with_name('fixtures')/'p2c_v62_native_prefix_input.json.gz'
+    event=json.loads(gzip.decompress(fixture.read_bytes()))['original_legs'][index]
+    saved=event['map_evidence'];raw=decode(saved);unchanged=raw.copy()
+    distance,full=control.known_return_route(raw,saved['resolution'],saved['origin'],
+        event['position'],event['home'],event['charge_radius_m'],include_route=True)
+    assert distance==pytest.approx(event['budget']['path_distance_m'])
+    leg,route=plan_charging_leg(raw,saved['resolution'],saved['origin'],
+        event['position'],event['home'],event['charge_radius_m'])
+    assert route==full[:len(route)] and np.array_equal(raw,unchanged)
+    length=sum(math.dist(a,b) for a,b in zip(route,route[1:]))
+    assert length<=control.MAX_NAVIGATION_LEG_M
+    if len(route)<len(full):
+        assert length+math.dist(route[-1],full[len(route)])>control.MAX_NAVIGATION_LEG_M
+    else:assert math.dist((leg.x,leg.y),event['home'])<=event['charge_radius_m']-.2
+    assert math.dist(event['position'],(leg.x,leg.y))>2.
+    assert leg.yaw==pytest.approx(control.route_arrival_yaw(route,0.))
+    check_route(saved,route)
+
+
+@pytest.mark.parametrize('change',['endpoint','shortcut','overlength'])
+def test_native_leg_reader_rejects_unbudgeted_prefix_changes(change):
+    import copy,gzip,json,sys
+    from pathlib import Path
+    from multi_robot_exploration import control
+    sys.path.insert(0,str(Path(__file__).resolve().parents[3]/'scripts'))
+    from check_p2c_gate import native_return_leg_audit
+    from p2c_outbound_routes import decode
+    fixture=Path(__file__).with_name('fixtures')/'p2c_v62_native_prefix_input.json.gz'
+    event=json.loads(gzip.decompress(fixture.read_bytes()))['original_legs'][0]
+    saved=event['map_evidence'];raw=decode(saved)
+    leg,route=plan_charging_leg(raw,saved['resolution'],saved['origin'],event['position'],event['home'],event['charge_radius_m'])
+    event['route']=route;event['target']=(leg.x,leg.y)
+    assert native_return_leg_audit(event)['robot']=='tb1'
+    changed=copy.deepcopy(event)
+    if change=='endpoint':changed['target']=(0.,0.)
+    if change=='shortcut':changed['route']=(route[0],route[-1])
+    if change=='overlength':
+        _,full=control.known_return_route(raw,saved['resolution'],saved['origin'],event['position'],event['home'],event['charge_radius_m'],include_route=True)
+        changed['route']=full;changed['target']=full[-1]
+    with pytest.raises(AssertionError):native_return_leg_audit(changed)
+
+
 @pytest.mark.parametrize("mode", [CHARGING, FAILED])
 def test_late_return_acceptance_is_canceled_after_charge_or_failure(mode):
     from types import SimpleNamespace

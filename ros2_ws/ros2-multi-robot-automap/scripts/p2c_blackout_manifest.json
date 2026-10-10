@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-10T08:43:22.241420+00:00",
+  "predeclared_at_utc": "2026-10-10T09:39:19.904294+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "c5e333160b9f357a5f6836365abd2e742f087705",
+  "candidate_parent_commit": "df0f3fc3911dfc513369c7650de1237d817effa1",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -559,5 +559,17 @@
     "evidence": "Private previous order/order source and independently reconstructed complete routes/budgets; original failed tasks remain failed",
     "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_refuge_preflight_components.json",
     "limits": "Conditional original native-map geometry and actual DDS/Futures; no physical Nav2, causal task or worst-case latency claim. Original4\u219217+2 and917 boundary remain"
+  },
+  "native_curved_return_legs": {
+    "navigation": "Ordinary native return legs use the maximal at-most5m prefix of the existing complete known-free contact route, including the actual position offset; the original bounded inflated-start escape branch is preserved",
+    "guards": "Original full contact return, local-obstacle veto, energy model/credit/reserve, source deadlines, timeout/retry counters, Nav2/SLAM and physical parameters remain unchanged",
+    "evidence": "Independent complete-route prefix/continuous-clearance reconstruction and exact original local/fused CDR binding; all original returns must still close",
+    "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_native_return_curves_components.json",
+    "limits": "Conditional original decision geometry and actual DDS/stationary ActionClient Futures; no physical motion, task causal or worst-case guarantee. New same-clean-pushed4\u219217+2 required;917 remains unexposed"
+  },
+  "proposal_all_participant_sources": {
+    "authority": "Every proposed participant body, including RETURNING/CHARGING robots, must have original fresh delivered pose/TF/map/battery sources before geometry, after order reconstruction and after private publication",
+    "evidence": "Record the original captured source epochs for all participants; reject expiration without renewing source stamps or dispatching an assignment",
+    "limits": "Original proposal geometry, map-safe order and ordinary assignment full-budget/source/body guards are preserved; no task completion claim"
   }
 }

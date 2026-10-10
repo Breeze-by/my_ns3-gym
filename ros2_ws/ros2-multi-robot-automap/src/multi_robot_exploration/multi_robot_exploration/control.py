@@ -3654,6 +3654,14 @@ class HeadquartersControl(Node):
                 or self.map_data is None):
             self.pending_rally_proposal = None
             return False
+        # A returning/charging participant still supplies a body and a start
+        # for the serial approach order; its source leases remain necessary.
+        planning_inputs = HeadquartersControl.input_freshness_details(self, names)
+        now = self.now()
+        if any(sample['source_time'] is None
+               or not 0 <= now-sample['source_time'] <= sample['ttl_sec']
+               for sample in planning_inputs.values()):
+            return False
         safe = traversable_grid(self.map_data, self.resolution, clearance_m=RALLY_CLEARANCE_M)
         points = []
         for pose in assignment.values():
@@ -3684,12 +3692,15 @@ class HeadquartersControl(Node):
         if not self.fresh_robot_inputs() or not self.fresh_target():
             return False
         now = self.now()
+        if any(not 0 <= now-sample['source_time'] <= sample['ttl_sec']
+               for sample in planning_inputs.values()):
+            return False
         for name in return_maps:
             stamp = self.robot_map_received_at[name]
             if not 0 <= now-stamp <= STATE_TTL_SEC['map_snapshot']:
                 return False
         if hasattr(self, 'consumed_publisher'):
-            inputs = input_freshness_at(self.input_freshness_details(), now)
+            inputs = input_freshness_at(planning_inputs, now)
             for name in return_maps:
                 stamp = self.robot_map_received_at[name]
                 inputs.setdefault(name+'/map_snapshot', dict(source_time=stamp,
@@ -3714,6 +3725,10 @@ class HeadquartersControl(Node):
                 budget_reused=False,
             ), sort_keys=True)))
         if not self.fresh_robot_inputs() or not self.fresh_target():
+            return False
+        now = self.now()
+        if any(not 0 <= now-sample['source_time'] <= sample['ttl_sec']
+               for sample in planning_inputs.values()):
             return False
         self.rally_targets = dict(assignment)
         self.rally_final_targets = dict(assignment)
@@ -6767,11 +6782,11 @@ class HeadquartersControl(Node):
                 return False
         return True
 
-    def input_freshness_details(self):
+    def input_freshness_details(self, robot_names=None):
         """Expose missing/stale delivered inputs without renewing their stamps."""
         now = self.now()
         inputs = {"headquarters/fused_map_snapshot": (self.map_received_at, "fused_map_snapshot")}
-        for name in self.input_robot_names():
+        for name in self.input_robot_names() if robot_names is None else robot_names:
             for kind, times in (("pose_state", self.robot_odom_received_at),
                                 ("frame_state", self.robot_tf_received_at),
                                 ("map_snapshot", self.robot_map_received_at)):

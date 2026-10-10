@@ -125,3 +125,28 @@ def test_order_computation_that_expires_a_lease_retains_points_without_publishin
     assert not c.HeadquartersControl.admit_rally_proposal(node,proposal)
     assert node.pending_rally_proposal is proposal and not node.rally_targets and not phases
     node.publish_rally_assignments.assert_not_called()
+
+
+@pytest.mark.parametrize('mode',['RETURNING','CHARGING'])
+@pytest.mark.parametrize('stream',['fresh','pose','frame','map','battery','late_order','late_publication'])
+def test_pending_proposal_keeps_inactive_participant_original_source_authority(mode,stream,monkeypatch):
+    node,clock,_,assignment=node_fixture();node.battery_modes['tb2']=mode
+    node.input_robot_names=lambda:['tb1']
+    proposal=dict(assignment=assignment,target=tuple(node.target),evaluated_at=9.)
+    node.pending_rally_proposal=proposal
+    if stream in ('pose','frame','map','battery'):
+        stamps={'pose':node.robot_odom_received_at,'frame':node.robot_tf_received_at,
+            'map':node.robot_map_received_at,'battery':node.battery_state_received_at}[stream]
+        stamps['tb2']=None if stream=='frame' else 7.9 if stream=='pose' else 4.9
+    if stream=='late_order':
+        def slow(*args):clock[0]=12.1;return ['tb1','tb2']
+        monkeypatch.setattr(c,'rally_dispatch_order',slow)
+    if stream=='late_publication':node.consumed_publisher.publish.side_effect=lambda msg:clock.__setitem__(0,12.1)
+    assert c.HeadquartersControl.admit_rally_proposal(node,proposal) is (stream=='fresh')
+    if stream=='fresh':
+        event=records(node)[0]
+        for kind in ('pose_state','frame_state','map_snapshot','battery_state'):
+            assert event['inputs']['tb2/'+kind]['source_time']==10.
+    else:
+        assert node.pending_rally_proposal is proposal and not node.rally_targets
+        node.publish_rally_assignments.assert_not_called()

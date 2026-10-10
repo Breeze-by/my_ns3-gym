@@ -15,7 +15,7 @@ from p2c_scan_self_filter import scan_self_filter_audit
 from p2c_return_preparation import return_preparation_audit
 from p2c_navigation_dispatch import navigation_dispatch_audit
 from p2c_rally_transit_heading import transit_heading_audit
-from p2c_outbound_routes import outbound_route_audit, bind_original_maps
+from p2c_outbound_routes import outbound_route_audit, bind_original_maps, check_route, decode
 from p2c_refuge_release import refuge_release_audit
 from p2c_rally_connection import rally_connection_audit
 
@@ -67,8 +67,38 @@ def launch_process_audit(directory):
         post_task_cleanup_exits=cleanup)
 
 
-def return_audit(path,require_pose_leases=False,require_map_candidates=False):
-    starts={};finished={};rows=[];maps=0;legs=0;pose_checks=0
+def native_return_leg_audit(event):
+    """Prove the original clearance escape or a complete-path bounded prefix."""
+    saved=event['map_evidence'];raw=decode(saved);res=saved['resolution'];origin=saved['origin']
+    position=event['position'];route=event['route']
+    distance,full=control.known_return_route(raw,res,origin,position,event['home'],event['charge_radius_m'],include_route=True)
+    assert distance is not None and full
+    safe,field,_=control.charging_route_field(raw,res,origin,event['home'],event['charge_radius_m'])
+    start=control.world_to_grid(*position,res,*origin)
+    _,escape=control.navigation_start_route(raw,safe & np.isfinite(field),start,max(1,math.ceil(.6/res)))
+    if len(escape)>1:
+        expected=[control.grid_to_world(*cell,res,*origin) for cell in escape]
+        assert np.allclose(route,expected,atol=1e-10,rtol=0.)
+        checked=[position,*route]
+    else:
+        assert len(route)<=len(full) and np.allclose(route,full[:len(route)],atol=1e-10,rtol=0.)
+        length=sum(math.dist(a,b) for a,b in zip(route,route[1:]))
+        assert length<=control.MAX_NAVIGATION_LEG_M+1e-10
+        if len(route)<len(full):
+            assert length+math.dist(route[-1],full[len(route)])>control.MAX_NAVIGATION_LEG_M-1e-10
+        checked=route
+    assert np.allclose(event['target'],route[-1],atol=1e-10,rtol=0.)
+    check_route(saved,checked)
+    candidates={c['map_evidence']['source']:c['map_evidence'] for c in saved['route_candidates']}
+    local=candidates.get('local');fused=candidates.get('delivered_fused')
+    assert local is not None or fused is not None
+    if local is not None:check_route(local,checked,local=True)
+    return dict(robot=event['robot'],outbound_map_route=dict(local_map=local,planning_map=fused),
+        planning_map_self_return_cells={})
+
+
+def return_audit(path,require_pose_leases=False,require_map_candidates=False,require_leg_paths=False,capture=None):
+    starts={};finished={};rows=[];maps=0;legs=0;pose_checks=0;leg_bindings=[]
     for line in path.read_text().splitlines():
         outer=json.loads(line)
         if not outer['topic'].endswith('/battery_return_audit'):continue
@@ -179,10 +209,13 @@ def return_audit(path,require_pose_leases=False,require_map_candidates=False):
         if kind=='return_leg_sent':
             assert budget is not None and e['energy']>e['energy_model']['safety_margin']
             assert saved is not None and e['route'];legs+=1
+            if require_leg_paths:leg_bindings.append(native_return_leg_audit(e))
     assert set(starts)==set(finished),('unclosed return prediction',set(starts)-set(finished))
+    sources=bind_original_maps(leg_bindings,capture) if capture is not None and leg_bindings else 0
     return dict(status='PASS',return_triggers=len(starts),map_budget_reconstructions=maps,
         pose_lease_reconstructions=pose_checks,pose_leases_required=require_pose_leases,
-        local_legs=legs,charger_returns=sum(r['outcome']=='charger_stopped' for r in rows),returns=rows)
+        local_legs=legs,native_leg_paths_reconstructed=len(leg_bindings),native_leg_original_source_maps=sources,
+        charger_returns=sum(r['outcome']=='charger_stopped' for r in rows),returns=rows)
 
 
 def budget_evaluation_time(event, witness, key, required=False):
@@ -818,7 +851,8 @@ def check_one(path,config):
             assert row['source_digests'][key]==file_digest(Path(__file__).with_name(filename))
     ingress=native_tf_ingress_audit(native_graph,result['robot_count'],bool(config.get('native_filtered_tf')))
     native=return_audit(directory/'safety_events.jsonl',bool(config.get('native_pose_contract')),
-        bool(config.get('return_source_selection')))
+        bool(config.get('return_source_selection')),bool(config.get('native_curved_return_legs')),
+        directory/'navigation_inputs.jsonl.gz')
     energy=energy_audit(directory/'safety_events.jsonl',result,
         bool(config.get('native_energy_accounting')) and case!='empty_battery')
     forecast=lookahead_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),

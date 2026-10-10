@@ -9185,3 +9185,23 @@ ROS_DOMAIN_ID=216 /usr/bin/python3 scripts/check_p2c_refuge_release_runtime.py -
 /usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v62 --domain 218 --gazebo-port 20318 --validate-only
 /usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v62_physical --domain 219 --gazebo-port 20319 --validate-only
 ```
+
+
+## 2026-10-10 P2C.1 v62失败与完整native返路前缀/全参与源
+
+2026-10-10 P2C.1 v62同df0f3fc四原：forced/lab/rooms nativeCOMPLETE242.1/193.8/158.8完整strictPASS，corridors原RALLY300.0timeout/tb1第2return未闭合/提案缺tb2pose-TF原FAIL保持；四零接触耗尽FAILED，owner-observer0关闭，17+2/917未调用。新native普通腿取原完整contact曲线最大5m前缀含真实偏移，原inflation escape与全部36状态方法/能源记账/credit/timeout/retry保持；七原决策14原CDR绑定PASS，原七escape均1且短目标来自直视前缀，撤回初逃离猜测。proposal全部参与身体pose/TF/map/battery原源2/5/60s几何前后和旁录后重查，含RETURNING/CHARGING不续租。1926功能210.62s/77定向加3读者反例/原symlink四包5.65s/190保护6授权54协议/两声明/实际nativeDDS与proposalDDS和旧map回归PASS，过期/低电量拒绝；条件静止动作非物理任务。仅2中央+1native纯变，81中央101纯/其余native/300s/5s/TTL/物理保持。新v63 clean pushed4→17+2待任务，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v62_failed_development与20261010_p2c_native_return_curves_components。
+
+原四同df0freeze全部27软件/仪器digest一致。旧整体FAIL、three strict PASS、16组件PASS/2FAIL完整归档，不在新政策下重审回填。七原地图完整路径净空/CDR只是条件；真实DDS无物理运动，新return必须在新原任务闭合。初0测试路径、full1924/2夹具、CDR/tmp错误字面/log均保留；full1926零失败。用户14个260929_report保持并排除stage。control SHA eedbd6c18888ea32cfca9e0a8b27eb3a7ed7a4a596e9d4262fd7929f960c84c3；native SHA f4845fb03667e766c0202a470fa5f2c3c4a49ff39f77a898bf90ec1b60261a6c。
+
+```bash
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test src/merge_map/test/test_merge_map.py scripts --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+colcon build --symlink-install --packages-select multi_robot_exploration multi_robot_interfaces merge_map multi_robot
+ROS_DOMAIN_ID=217 /usr/bin/python3 scripts/check_p2c_native_return_curves_runtime.py --output log/p2c_native_curves_runtime1.json
+ROS_DOMAIN_ID=216 /usr/bin/python3 scripts/check_p2c_proposal_participants_runtime.py --output log/p2c_proposal_participants_runtime1.json
+ROS_DOMAIN_ID=216 /usr/bin/python3 scripts/check_p2c_proposal_maps_runtime.py --output log/p2c_native_curves_proposal_regression1.json
+/usr/bin/python3 /tmp/p2c_native_curves_original_cdr.py
+/usr/bin/python3 /tmp/p2c_native_curves_scope.py
+/usr/bin/python3 scripts/check_p2c_source.py --output log/p2c_native_curves_source1.json
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v63 --domain 218 --gazebo-port 20318 --validate-only
+/usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v63_physical --domain 219 --gazebo-port 20319 --validate-only
+```
