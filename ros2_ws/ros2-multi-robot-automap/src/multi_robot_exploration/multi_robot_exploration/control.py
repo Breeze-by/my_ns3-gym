@@ -7133,7 +7133,36 @@ class HeadquartersControl(Node):
                 if not lease_current('candidate_generation'):
                     scoring_aborted = True
                     return None
-                if reservations:
+                scoring_reservations = active_reservations
+                if not getattr(self, 'enable_battery', False):
+                    scoring_reservations = reservations
+                elif (len(reservations) > len(active_reservations)
+                        and factor_bounds[robot_name, assignment.x, assignment.y, assignment.path_distance_m] >= 1.):
+                    field = route_caches[robot_name].get('field')
+                    local_maps = HeadquartersControl.delivered_return_maps(self)
+                    if field is not None and field[1] is not None and robot_name in local_maps:
+                        _, _, escape, distance_data = field
+                        endpoint = world_to_grid(assignment.x, assignment.y, self.resolution, *self.origin)
+                        points = [grid_to_world(*cell, self.resolution, *self.origin) for cell in escape]
+                        distance = (float(distance_data[0][endpoint]) * self.resolution
+                            + math.dist(self.robot_positions[robot_name], points[0])
+                            + sum(math.dist(a, b) for a, b in zip(points, points[1:])))
+                        # A complete qualified budget at the last legal
+                        # source epoch bounds every earlier frozen price.
+                        # Include both nominal and body-masked distances;
+                        # a different bounded start escape can shorten either.
+                        try:
+                            required = max(HeadquartersControl.task_return_required_energy(
+                                    self, robot_name, max(distance, assignment.path_distance_m),
+                                    (assignment.x, assignment.y), deadline),
+                                HeadquartersControl.task_return_required_energy(
+                                    self, robot_name, 0., self.robot_positions[robot_name], deadline))
+                            if (math.isfinite(required) and required >= 0
+                                    and float(self.battery_states[robot_name]['energy']) > required):
+                                scoring_reservations = reservations
+                        except (KeyError, TypeError, ValueError, ZeroDivisionError):
+                            pass
+                if scoring_reservations:
                     field = route_caches[robot_name].get('field')
                     if field is not None:
                         _, start, escape, _ = field
@@ -7141,7 +7170,7 @@ class HeadquartersControl(Node):
                         # escape cell. A conflict there admits no prefix.
                         if start is None or any(routes_conflict(
                                 (grid_to_world(*escape[0], self.resolution, *self.origin),), reserved)
-                                for reserved in reservations):
+                                for reserved in scoring_reservations):
                             diagnostics['rejected_routes'] += 1
                             return None
                     key = (robot_name, assignment.x, assignment.y)
@@ -7157,7 +7186,7 @@ class HeadquartersControl(Node):
                             local_map=HeadquartersControl.delivered_return_maps(self).get(robot_name),
                         )
                     if not exploration_prefix_can_move(route_proposals[key],
-                            self.robot_positions[robot_name], reservations):
+                            self.robot_positions[robot_name], scoring_reservations):
                         diagnostics['rejected_routes'] += 1
                         return None
                 assignment = (resolve_search_gain(assignment, self.map_data, self.resolution, search_gain_cache)
@@ -7246,6 +7275,10 @@ class HeadquartersControl(Node):
                 for name, route in self.goal_routes.items()
                 if self.robot_states[name] == "active" and route
             ]
+            # A required charge pauses every new exploration admission. Its
+            # intent must respect live traffic, rather than routes of plans
+            # that would be discarded before the charge request is sent.
+            active_reservations = tuple(reservations)
             candidate_order = lazy_priority_candidates(
                 raw_candidates, evaluate_candidate,
                 lambda item: frontier_scheduling_score(item[3].utility * factor_bounds[
@@ -7288,16 +7321,8 @@ class HeadquartersControl(Node):
                         local_map=HeadquartersControl.delivered_return_maps(self).get(name),
                     )
                 plan = route_proposals[key]
-                admitted = reserve_rally_prefix(plan, reservations)
-                if admitted is None:
+                if plan[0] is None:
                     diagnostics["rejected_routes"] += 1
-                    continue
-                pose, route = admitted
-                if (
-                    math.dist(self.robot_positions[name], (pose.x, pose.y))
-                    <= NAVIGATION_POSITION_TOLERANCE_M
-                ):
-                    diagnostics["stationary_candidates"] += 1
                     continue
                 # Price the complete body-masked path, including the real
                 # starting offset/escape, rather than just this short prefix.
@@ -7319,6 +7344,17 @@ class HeadquartersControl(Node):
                 if factor <= 0:
                     continue
                 unfunded = unfunded or factor < 1.
+                admitted = reserve_rally_prefix(plan, active_reservations if unfunded else reservations)
+                if admitted is None:
+                    diagnostics["rejected_routes"] += 1
+                    continue
+                pose, route = admitted
+                if (
+                    math.dist(self.robot_positions[name], (pose.x, pose.y))
+                    <= NAVIGATION_POSITION_TOLERANCE_M
+                ):
+                    diagnostics["stationary_candidates"] += 1
+                    continue
                 original_assignment = assignment
                 assignment = Assignment(assignment.viewpoint, assignment.x, assignment.y,
                     planned_distance, assignment.utility, assignment.navigation_x, assignment.navigation_y,

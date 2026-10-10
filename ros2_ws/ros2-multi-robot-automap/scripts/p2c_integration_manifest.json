@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-10T00:38:17.295485+00:00",
+  "predeclared_at_utc": "2026-10-10T01:30:57.316802+00:00",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -500,7 +500,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "861c48e6e1c15201996677852d996a41b143263f",
+  "candidate_parent_commit": "97332ae3c034bbd7b1e321070ed198c95a722df3",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -735,5 +735,19 @@
     "expiry": "Wait for fresh delivery; target/participant/phase/clock rewind invalidates points; rejected fresh trials advance, expired trials retain their cursor",
     "limits": "Original preparation wait, survey attempts, 300 second deadline, 5 second native hold and physical stimulation remain",
     "evidence": "Private geometry/trial records, independent ranking and raw CDR source binding; no new application traffic"
+  },
+  "exploration_charge_reservations": {
+    "change": "A required exploration charge pauses new plans. Possibly unfunded intents respect accepted live route reservations, rather than discarded tentative plans. Complete nominal/body-masked qualified budgets at the unchanged source deadline prove funded candidates before retaining the original tentative-reservation prefilter. Actual body-masked pricing classifies charge need before reservation admission; funded dispatch retains all concurrent reservations.",
+    "preserved": [
+      "all robot bodies",
+      "original complete outbound and qualified return paths",
+      "original energy and source age budgets",
+      "live action drain before charge",
+      "native charge/return cores",
+      "300s task and 5s native hold",
+      "all cases schedules physical stimuli and holdout boundary"
+    ],
+    "reader": "original charge, outbound, exploration, process, energy and return audits; no new application stream",
+    "component_probe": "check_p2c_charge_reservations_runtime.py"
   }
 }

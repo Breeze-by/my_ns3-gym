@@ -8881,3 +8881,38 @@ ROS_DOMAIN_ID=217 /usr/bin/python3 scripts/check_p2c_rally_connection_runtime.py
 ```
 
 首完整功能1FAIL1813PASS183.17s为旧U形连接夹具期望立即派发、缺clock/private publisher；更新为先无goal，再原U形完整route，未知图不改断言保持。第二1814PASS173.90s、最终355定向13.42s。首误用未知robot_battery/task_evaluation包名只构建2包3.84s，保留warning；正确四包6.60s。原组件第一次错误要求不存在的RALLY proposal及两次None位置阈值调用fail，最后正确optional+冻结.35阈值17原子审PASS；不替代任务。scope1实际比较861c但继承旧e8af标签，scope2更正；runner digest临时脚本找错字典结构未写入后改正确原条件分支。所有日志和脚本保持。最终control SHAedda99389cbd119364cd6ff2bbdc9c13adc988489eefc8f0da3a8dd3b23972a5；真实DDS输入过期源10/clock13仍0goal，新交付13后1goal与Future闭合，合成endpoint非任务验证。五tamper被拒、12原图/CDR绑定PASS。
+
+
+## 2026-10-10 P2C.1 v52 原失败与必要充电意图的暂存预约修复
+
+2026-10-10 P2C.1 v52首原forced FAIL：97332ae原生RALLY timeout300.2/检测242.3/集合253.4、两机各charge1/min6.241368/零接触耗尽失效，owner-observer0关闭；17原子审不代替任务，余3/17/2/917未调用。56租约弃置/11完整原输入及33源图CDR绑定；新充电意图排除会在充电前丢弃的暂存探索预约，真实在途/身体保留，完整名义＋身体预算在原deadline证明有电后才保留原预约预筛，实际完整预算先分类再预约。11条件原动作/充电/接续一致非因果；1823功能178.27s/136定向/四包2.70s/190保护6授权54协议/实际DDS旧1goal→新必要充电0goal及过期拒绝/两声明PASS。只1中央修改、82中央98纯/native/SLAM/300s/5s/TTL/物理保持；两优化拒绝和中间失败保留。新v53 clean pushed4→17+2待实测，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v52_failed_development与20261010_p2c_charge_reservations_components。
+
+原973冻结首强制任务严格FAIL，全部owner/observer0/0关闭后修改，剩余开发和正式/物理/917没有调用。原summary、gate、17独立原审、native安全、全部private事件与原文件SHA归档。固定epoch空缓存条件比较不是精确活回调或任务反事实，时钟与原源不续租。
+
+新增9反例与实际DDS检查覆盖必要充电、完整身体绕行后不足、仍有实际在途/返回/充电、容量不足、身体未消失和源过期。原算法的完整source-deadline价格只作有电证明；真实派发和充电仍按原fresh源重新计价。旧几何夹具缺native charging回调，明确停用charge publication以只比较原几何/评分，原输入与金标准图不变。全部body/local/fused/完整contact去返能源保留。
+
+尝试的名义contact上界三样本更慢、全部提前route核验改善很小，均未采用。初误含lint的full1中断105PASS；full2中间源回归中断1FAIL1147PASS，原共同start预筛失效导致561查询。恢复完整qualified源deadline有电证明后，原不足30查询与全部几何比较断言PASS。targeted2错误lazy文件未运行、首次DDS读者接口误调用、无profile时请求pstats及归档Markdown引号错误均保留。最终1823PASS178.27s，136定向23.22s，四包2.70s，最终runtime3/source3/scope3及两声明PASS。
+
+完整冻结973旧DDS控制器发1普通goal并Future关闭，新请求tb2充电且0新goal；实际clock10→13原源10到期0请求/goal，新交付13后才能请求。合成候选和ActionServer不是物理任务。最终control SHA f9c03c50fe11aeb46120069aa07ce537534f95ec655b75ce41214be72b541127。
+
+Humble/canonical install、PYTHONNOUSERSITE1、scripts PYTHONPATH、FastDDS UDPv4清旧profiles/discovery server、taskset0-79。新v53首forced domain218/port20318严格PASS后，余三原lab218/20318、rooms219/20319、corr220/20320。四格同冻结全PASS才推进15非留出正式与新同冻结两物理，之后首次917两格；原300s/5s/TTL/所有case和物理刺激保持。
+
+```bash
+/usr/bin/python3 scripts/check_p2c_gate.py --run-root log/p2c/20261010_p2c_v52 --cases dev_forced2 --development --output log/p2c_v52_forced_gate.json
+/usr/bin/python3 /tmp/audit_p2c_v52_components.py
+/usr/bin/python3 /tmp/p2c_v52_planning_profile.py
+/usr/bin/python3 /tmp/p2c_nominal_bound_experiment.py
+/usr/bin/python3 /tmp/p2c_early_route_experiment.py
+/usr/bin/python3 /tmp/p2c_v52_order_diagnosis.py
+/usr/bin/python3 /tmp/p2c_charge_reservations_experiment2.py
+/usr/bin/python3 /tmp/p2c_charge_reservations_snapshots3.py
+/usr/bin/python3 /tmp/p2c_charge_reservations_original_bindings.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_charge_reservations.py src/multi_robot_exploration/test/test_exploration_charging.py src/multi_robot_exploration/test/test_exploration_route_bound.py src/multi_robot_exploration/test/test_lazy_priority.py src/multi_robot_exploration/test/test_lazy_frontier_gain.py src/multi_robot_exploration/test/test_lazy_search_gain.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test scripts --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+colcon build --symlink-install --packages-select multi_robot_exploration multi_robot_interfaces multi_robot merge_map
+/usr/bin/python3 scripts/check_p2c_source.py --output log/p2c_charge_reservations_source3.json
+ROS_DOMAIN_ID=217 /usr/bin/python3 scripts/check_p2c_charge_reservations_runtime.py --output log/p2c_charge_reservations_runtime3.json
+/usr/bin/python3 /tmp/p2c_charge_reservations_scope3.py
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v53 --domain 218 --gazebo-port 20318 --validate-only
+/usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v53_physical --domain 219 --gazebo-port 20319 --validate-only
+```

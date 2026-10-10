@@ -1,0 +1,501 @@
+{
+  "status": "FAIL",
+  "scope": "Original first development cell on a clean pushed freeze",
+  "source_commit": "97332ae3c034bbd7b1e321070ed198c95a722df3",
+  "cases": [
+    {
+      "case": "dev_forced2",
+      "phase": "RALLY",
+      "success": false,
+      "elapsed_sec": 300.1999999999998,
+      "detected_sec": 242.29999999999973,
+      "rally_sec": 253.4000000000001,
+      "minimum_energy": 6.24136755431116,
+      "charge_counts": {
+        "tb1": 1,
+        "tb2": 1
+      },
+      "collision_events": 0,
+      "failed_robots": [],
+      "runner_returncode": 0,
+      "observer_returncode": 0
+    }
+  ],
+  "gate_errors": [
+    {
+      "case": "dev_forced2",
+      "error": "AssertionError()",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 900, in audit_one\n    try:return check_one(path,config),None\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 778, in check_one\n    episode_ok(result)\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3b5_gate.py\", line 61, in episode_ok\n    p3a_episode_ok(result)\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3a6_gate.py\", line 39, in episode_ok\n    assert data[\"success\"]\nAssertionError\n"
+    }
+  ],
+  "component_audits": {
+    "native_return": {
+      "status": "PASS",
+      "return_triggers": 4,
+      "map_budget_reconstructions": 4,
+      "pose_lease_reconstructions": 6,
+      "pose_leases_required": true,
+      "local_legs": 2,
+      "charger_returns": 2,
+      "returns": [
+        {
+          "actual_distance_m": 0.0,
+          "actual_elapsed_sec": 0.0,
+          "actual_energy_spent": 0.0,
+          "cancellation_count": 0,
+          "charge_radius_m": 0.8,
+          "energy": 18.0,
+          "energy_model": {
+            "idle_cost_per_sec": 0.02,
+            "move_cost_per_m": 1.0,
+            "nominal_speed_mps": 0.18,
+            "path_factor": 2.0,
+            "recovery_wait_sec": 30.0,
+            "safety_margin": 5.0
+          },
+          "event": "return_finished",
+          "home": [
+            0.0,
+            -0.45
+          ],
+          "outcome": "route_recovered_resume",
+          "predicted_energy_spent": null,
+          "prediction_error": null,
+          "rejection_count": 0,
+          "return_count": 1,
+          "robot": "tb1",
+          "sim_time": 2139.682,
+          "start": {
+            "budget": null,
+            "cancels": 0,
+            "distance": 0.0,
+            "elapsed": 0.0,
+            "energy": 18.0,
+            "reason": "no_known_route",
+            "rejections": 0,
+            "sim_time": 2139.582
+          }
+        },
+        {
+          "actual_distance_m": 0.0,
+          "actual_elapsed_sec": 0.0,
+          "actual_energy_spent": 0.0,
+          "cancellation_count": 0,
+          "charge_radius_m": 0.8,
+          "energy": 18.0,
+          "energy_model": {
+            "idle_cost_per_sec": 0.02,
+            "move_cost_per_m": 1.0,
+            "nominal_speed_mps": 0.18,
+            "path_factor": 2.0,
+            "recovery_wait_sec": 30.0,
+            "safety_margin": 5.0
+          },
+          "event": "return_finished",
+          "home": [
+            0.0,
+            0.45
+          ],
+          "outcome": "route_recovered_resume",
+          "predicted_energy_spent": null,
+          "prediction_error": null,
+          "rejection_count": 0,
+          "return_count": 1,
+          "robot": "tb2",
+          "sim_time": 2140.282,
+          "start": {
+            "budget": null,
+            "cancels": 0,
+            "distance": 0.0,
+            "elapsed": 0.0,
+            "energy": 18.0,
+            "reason": "no_known_route",
+            "rejections": 0,
+            "sim_time": 2140.182
+          }
+        },
+        {
+          "actual_distance_m": 0.37706674686328767,
+          "actual_elapsed_sec": 8.53399999999965,
+          "actual_energy_spent": 0.5477467468633517,
+          "cancellation_count": 0,
+          "charge_radius_m": 0.8,
+          "energy": 15.930007628318682,
+          "energy_model": {
+            "idle_cost_per_sec": 0.02,
+            "move_cost_per_m": 1.0,
+            "nominal_speed_mps": 0.18,
+            "path_factor": 2.0,
+            "recovery_wait_sec": 30.0,
+            "safety_margin": 5.0
+          },
+          "event": "return_finished",
+          "home": [
+            0.0,
+            -0.45
+          ],
+          "outcome": "charger_stopped",
+          "predicted_energy_spent": 1.8207741836525546,
+          "prediction_error": -1.273027436789203,
+          "rejection_count": 0,
+          "return_count": 2,
+          "robot": "tb1",
+          "sim_time": 2177.682,
+          "start": {
+            "budget": {
+              "frame_source_time": 2168.9930000000004,
+              "frame_stamp_offset_sec": 0.2,
+              "idle_energy": 0.7540814183652437,
+              "map_age_sec": 0.6889999999998508,
+              "map_content_blake2b": "5ec4734b8e12a79d1338ce559fb4af87",
+              "map_input_age_sec": 0.6889999999998508,
+              "map_source": "local",
+              "map_source_time": 2168.393,
+              "map_version": 30,
+              "motion_distance_budget_m": 1.0666927652873115,
+              "move_energy": 1.0666927652873115,
+              "odom_source_time": 2169.061,
+              "path_distance_m": 0.3699963826437327,
+              "pose_age_sec": 0.08899999999948704,
+              "required_energy": 6.820774183652555,
+              "route": [
+                [
+                  0.44020534334878586,
+                  -1.2700372229607886
+                ],
+                [
+                  0.4354282475498792,
+                  -1.2543034640315156
+                ],
+                [
+                  0.38542824680482113,
+                  -1.2043034632864575
+                ],
+                [
+                  0.33542824605976307,
+                  -1.1543034625413995
+                ],
+                [
+                  0.285428245314705,
+                  -1.1043034617963414
+                ],
+                [
+                  0.23542824456964695,
+                  -1.0543034610512834
+                ],
+                [
+                  0.1854282438245889,
+                  -1.0043034603062253
+                ]
+              ],
+              "safety_margin": 5.0,
+              "travel_time_budget_sec": 5.926070918262842,
+              "waiting_time_budget_sec": 31.777999999999338
+            },
+            "cancels": 0,
+            "distance": 0.9326856248177827,
+            "elapsed": 29.478000000000065,
+            "energy": 16.477754375182034,
+            "reason": "energy_or_task_budget",
+            "rejections": 0,
+            "sim_time": 2169.082
+          }
+        },
+        {
+          "actual_distance_m": 0.2626604283604159,
+          "actual_elapsed_sec": 9.282000000000153,
+          "actual_energy_spent": 0.448300428360346,
+          "cancellation_count": 0,
+          "charge_radius_m": 0.8,
+          "energy": 6.24136755431116,
+          "energy_model": {
+            "idle_cost_per_sec": 0.02,
+            "move_cost_per_m": 1.0,
+            "nominal_speed_mps": 0.18,
+            "path_factor": 2.0,
+            "recovery_wait_sec": 30.0,
+            "safety_margin": 5.0
+          },
+          "event": "return_finished",
+          "home": [
+            0.0,
+            0.45
+          ],
+          "outcome": "charger_stopped",
+          "predicted_energy_spent": 1.69781113558831,
+          "prediction_error": -1.249510707227964,
+          "rejection_count": 0,
+          "return_count": 2,
+          "robot": "tb2",
+          "sim_time": 2333.982,
+          "start": {
+            "budget": {
+              "frame_source_time": 2324.4030000000002,
+              "frame_stamp_offset_sec": 0.2,
+              "idle_energy": 0.7526031135588211,
+              "map_age_sec": 1.199999999999818,
+              "map_content_blake2b": "4b1efe690a9790d13483eef337a5ce4a",
+              "map_input_age_sec": 1.199999999999818,
+              "map_source": "delivered_fused",
+              "map_source_time": 2323.382,
+              "map_version": 188,
+              "motion_distance_budget_m": 0.9452080220294887,
+              "move_energy": 0.9452080220294887,
+              "odom_source_time": 2324.582,
+              "path_distance_m": 0.2957540110147995,
+              "pose_age_sec": 0.17899999999963256,
+              "required_energy": 6.69781113558831,
+              "route": [
+                [
+                  -0.4636776582906058,
+                  -0.2706946060246669
+                ],
+                [
+                  -0.4720736614131562,
+                  -0.28050320698126097
+                ],
+                [
+                  -0.42207366066809815,
+                  -0.2305032062362029
+                ],
+                [
+                  -0.3720736599230401,
+                  -0.18050320549114485
+                ],
+                [
+                  -0.32207365917798203,
+                  -0.1305032047460868
+                ],
+                [
+                  -0.27207365843292397,
+                  -0.08050320400102873
+                ]
+              ],
+              "safety_margin": 5.0,
+              "travel_time_budget_sec": 5.251155677941604,
+              "waiting_time_budget_sec": 32.37899999999945
+            },
+            "cancels": 0,
+            "distance": 7.622692017327107,
+            "elapsed": 184.38200000000006,
+            "energy": 6.689667982671506,
+            "reason": "energy_or_task_budget",
+            "rejections": 0,
+            "sim_time": 2324.582
+          }
+        }
+      ]
+    },
+    "native_energy": {
+      "status": "PASS",
+      "required": true,
+      "snapshots": 122,
+      "robots": {
+        "tb1": {
+          "samples": 61,
+          "last": {
+            "actual_distance_m": 13.529766851729502,
+            "actual_elapsed_sec": 289.9859999999999,
+            "charge_radius_m": 0.8,
+            "charged_energy_added": 64.06999237168132,
+            "energy": 62.740505519953864,
+            "energy_model": {
+              "idle_cost_per_sec": 0.02,
+              "move_cost_per_m": 1.0,
+              "nominal_speed_mps": 0.18,
+              "path_factor": 2.0,
+              "recovery_wait_sec": 30.0,
+              "safety_margin": 5.0
+            },
+            "event": "energy_accounting",
+            "frame_source_time": 2439.404,
+            "home": [
+              0.0,
+              -0.45
+            ],
+            "initial_energy": 18.0,
+            "mode": "ACTIVE",
+            "odom_source_time": 2439.565,
+            "pending_native_inputs": 0,
+            "relevant_frame_receipts": 15303,
+            "return_count": 2,
+            "robot": "tb1",
+            "sim_time": 2439.582
+          }
+        },
+        "tb2": {
+          "samples": 61,
+          "last": {
+            "actual_distance_m": 13.98148027318977,
+            "actual_elapsed_sec": 290.3260000000005,
+            "charge_radius_m": 0.8,
+            "charged_energy_added": 73.75863244568885,
+            "energy": 71.97063217249926,
+            "energy_model": {
+              "idle_cost_per_sec": 0.02,
+              "move_cost_per_m": 1.0,
+              "nominal_speed_mps": 0.18,
+              "path_factor": 2.0,
+              "recovery_wait_sec": 30.0,
+              "safety_margin": 5.0
+            },
+            "event": "energy_accounting",
+            "frame_source_time": 2440.4060000000004,
+            "home": [
+              0.0,
+              0.45
+            ],
+            "initial_energy": 18.0,
+            "mode": "ACTIVE",
+            "odom_source_time": 2440.556,
+            "pending_native_inputs": 0,
+            "relevant_frame_receipts": 15323,
+            "return_count": 2,
+            "robot": "tb2",
+            "sim_time": 2440.582
+          }
+        }
+      }
+    },
+    "processes": {
+      "status": "PASS",
+      "launch_transcripts": 1,
+      "task_time_nonzero_child_exits": 0,
+      "post_task_cleanup_exits": [
+        {
+          "file": "robots2_seed303_20261010-084726.log",
+          "line": 849,
+          "node": "lifecycle_manager-32",
+          "exit_code": -9
+        }
+      ]
+    },
+    "outbound_routes": {
+      "status": "PASS",
+      "decisions": 18,
+      "vertices": 533,
+      "map_vetoes": 0,
+      "original_source_maps": 35,
+      "scope": "Dispatch-time planned routes and original map/source binding; no claim that Nav2 follows every vertex or that execution remains connected"
+    },
+    "navigation_dispatch": {
+      "status": "PASS",
+      "decisions": 18,
+      "publication_revocations": 0,
+      "scope": "Private admission/deadline and revocation provenance; actual ActionServer non-dispatch is separately exercised by the DDS component proof"
+    },
+    "transit_heading": {
+      "status": "PASS",
+      "supported_intermediate_legs": 1,
+      "scope": "Private delivered geometry/pose/velocity/heartbeat provenance; ordinary route, energy and native final hold retain their separate gates"
+    },
+    "lookahead": {
+      "status": "PASS",
+      "two_frontier_charge_decisions": 0
+    },
+    "ap_return_vetoes": {
+      "status": "PASS",
+      "delivered_return_vetoes": 2
+    },
+    "rally_assignments": {
+      "status": "PASS",
+      "failed_assignments_rebuilt": 1,
+      "chosen_assignments_rebuilt": 1,
+      "computation_wall_sec": [
+        0.2967634969390929,
+        1.0633241082541645
+      ]
+    },
+    "rally_proposals": {
+      "status": "PASS",
+      "admitted_proposals": 1,
+      "deferred_proposals": 1,
+      "budget_reused": false
+    },
+    "rally_repairs": {
+      "status": "PASS",
+      "funded_endpoint_repairs": 0
+    },
+    "exploration": {
+      "status": "PASS",
+      "executed_frontier_witnesses": 13,
+      "relative_travel_discounts": 1,
+      "resumed_frontier_witnesses": 4,
+      "required": true,
+      "commitment_required": true,
+      "bounded_commitment_required": true,
+      "initial_visual_witnesses": 3,
+      "initial_search_required": true,
+      "spatial_diversity_witnesses": 13,
+      "camera_aware_visual_witnesses": 3,
+      "camera_search_required": true
+    },
+    "surveys": {
+      "status": "PASS",
+      "target_information_survey_witnesses": 1,
+      "declared": true
+    },
+    "headings": {
+      "status": "PASS",
+      "required": true,
+      "quiet_holds": 0,
+      "heading_turns": 0
+    },
+    "planning_leases": {
+      "status": "PASS",
+      "abandoned_expired_plans": 56,
+      "stages": {
+        "candidate_generation": 13,
+        "candidate_budget": 35,
+        "route_admission": 8
+      }
+    },
+    "refuge_release": null,
+    "return_preparation": {
+      "status": "PASS",
+      "charge": 1,
+      "yield_moves": 0,
+      "route_clearance_m": 1.8,
+      "private_audit_only": true
+    }
+  },
+  "planning_lease_expirations": 56,
+  "abandoned_input_snapshots": 11,
+  "diagnosis": "56 original planning lease abandonments, including 11 complete frozen input snapshots. A roughly110s idle/charge stall is present. Conditional fixed-epoch comparisons are not exact live replay or causal task proof.",
+  "no_retry_or_backfill": true,
+  "no_cross_version_success_rate": true,
+  "not_invoked": [
+    "other3 development cells",
+    "17 formal cells",
+    "same-freeze physical pair",
+    "917"
+  ],
+  "raw_bindings": {
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v52/20261010_p2c_v52_dev_forced2/20261010_p2c_v52_dev_forced2.csv": "5a00166db3e0cfd82d16d56d635b6cae311e98de8f5281bb8ed6db15dbb7d711",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v52/20261010_p2c_v52_dev_forced2/20261010_p2c_v52_dev_forced2.json": "7554c6e697486f32e8a164285ad30d6272d0b8954ffd044cc551b0007b2a6d01",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v52/20261010_p2c_v52_dev_forced2/graph.json": "7577220c3f70afe85d055504368e9d4eae2d1dc4b988029f6c4aa735136936c0",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v52/20261010_p2c_v52_dev_forced2/launch/robots2_seed303_20261010-084726.log": "a33daefc50d626c51cb042c34c80561dd32f152d78b04ca46838599e6e89ccc5",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v52/20261010_p2c_v52_dev_forced2/ledger.jsonl": "e96c80e2210d1f4cf18b0d505e628d64c50c7443608be3d0194226b751ead4c9",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v52/20261010_p2c_v52_dev_forced2/ledger_metrics/curves.svg": "3d10c1907685e13c6edfcd00b0fc536f3fdab90a78bc39b646f9de4ed030fbea",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v52/20261010_p2c_v52_dev_forced2/ledger_metrics/events.jsonl": "68f3f8fcfa984647d6c7cf62f3ba4de41bc82ed53194a074238626ad87db7898",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v52/20261010_p2c_v52_dev_forced2/ledger_metrics/inputs.jsonl": "c8675d591a98babcea86f83d5042795db100b2846e6edb6161d9d03912ff864b",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v52/20261010_p2c_v52_dev_forced2/ledger_metrics/live.jsonl": "7de55a9b2930ef435a5d856a76dbe2374c789cec4f01e14e3f718752783f6f45",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v52/20261010_p2c_v52_dev_forced2/ledger_metrics/live_windows.csv": "74b560b48fd2a751a883dc31d4b9795383be8cb36c054ddcd0dd5d6fc523f52b",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v52/20261010_p2c_v52_dev_forced2/ledger_metrics/summary.json": "0101aced6d90953b8406a0a17e680090db23e99b10fc3d911d4359448c3c37a9",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v52/20261010_p2c_v52_dev_forced2/ledger_metrics/windows.csv": "74b560b48fd2a751a883dc31d4b9795383be8cb36c054ddcd0dd5d6fc523f52b",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v52/20261010_p2c_v52_dev_forced2/ledger_metrics/windows.jsonl": "2e6f80dff5ca66e953fd1c3e953461e52f9c0d945fb7b6528221b7ab3df6f8b0",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v52/20261010_p2c_v52_dev_forced2/manifest.json": "6f15ffd3e2b3c2de74f862a9ece858fb2a8f5d038141e9f940913200cbfc8acd",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v52/20261010_p2c_v52_dev_forced2/native_graph.json": "527c42f6cd5d1e5042cc0b773f467f883fb152aa5a2e36c62cbd5be7c747ef1e",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v52/20261010_p2c_v52_dev_forced2/navigation_inputs.jsonl.gz": "8fa83f9334a4c994494aa3e535f2cb20ff43f2f3e57dbad1fb100dacd8d7f9a5",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v52/20261010_p2c_v52_dev_forced2/observer.log": "274ec62f03d30e6ae31379d2a566af38ea46c7430d7bd41a4c8b7312e7b220d1",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v52/20261010_p2c_v52_dev_forced2/runner.log": "de446ef62fb324651f07c8d67bb10e9a7f12dcc62a5c3fd9d993f264f1c95427",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v52/20261010_p2c_v52_dev_forced2/safety_events.jsonl": "ebe8d555c6ff5007bbdc47527d70f0c03314f969dcbdda53ca95e392edeae305",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v52/20261010_p2c_v52_dev_forced2/schedule.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261010_p2c_v52/20261010_p2c_v52_dev_forced2/summary.json": "56e3d518d5ef62e27a598d238864c5f97e557079dc453fb6432673f95f6693c8"
+  },
+  "originals": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_v52_failed_development_originals.json.gz",
+    "sha256": "655a5d02107e2fa31925993f9aa3a7a804cf080826635eac494ae0dc1703a66f",
+    "uncompressed_sha256": "0cedffde6b8cf6910377e302a91072c2ccf7bff31f1415bd8536953d1f4eb0c0"
+  }
+}
