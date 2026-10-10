@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-10T17:12:46.855801+00:00",
+  "predeclared_at_utc": "2026-10-10T18:02:26.694233+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "a383cda7296f3e696ef2349b3f0fceb0448dc3a9",
+  "candidate_parent_commit": "d205de135f650b9187b9eea5b4f567053f0d982d",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -643,5 +643,11 @@
     "physical_trip_cost": "separate unchanged complete current outbound and qualified return budget",
     "preserved": "current body clearance, original full return preparation, source leases, native energy and charge credit",
     "component_report": "20261011_p2c_initial_replenishment_components.json"
+  },
+  "initial_known_space_fallback": {
+    "scope": "Full object exploration only: after two current primary rounds admit no action, use the existing delivered heading-aware known-space candidate pool for robots that did not already try it.",
+    "report": "20261011_p2c_known_search_fallback_components.json",
+    "preserved": "Existing exact camera gain/yaw, complete physical trip/return budgets, current local obstacles, body route/reservations and 2/5/60 source leases; no map mutation or target absence claim.",
+    "provenance_limit": "Primary attempt counts are private scheduler diagnostics; independent travel audit proves the executed geometry, sources, camera gain and full energy admission, not absence of every possible primary trajectory."
   }
 }

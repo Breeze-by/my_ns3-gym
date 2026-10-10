@@ -1,0 +1,199 @@
+{
+  "status": "PASS",
+  "scope": "Components only. Original v71 native first-task FAIL retained; v72 actual full cohort still pending.",
+  "source_scope": {
+    "status": "PASS",
+    "baseline": "d205de135f650b9187b9eea5b4f567053f0d982d",
+    "changed_methods": [
+      "assign_idle_robots"
+    ],
+    "unchanged_methods": 85,
+    "pure_functions_unchanged": 103,
+    "shared": {
+      "check_p2c_gate.py": {
+        "changed": [
+          "check_one",
+          "exploration_travel_audit"
+        ],
+        "unchanged_functions": 18
+      },
+      "run_p3c5_audit.py": {
+        "changed": [],
+        "unchanged_functions": 4
+      }
+    },
+    "unchanged_sources": {
+      "src/multi_robot_exploration/multi_robot_exploration/battery_manager.py": "f4845fb03667e766c0202a470fa5f2c3c4a49ff39f77a898bf90ec1b60261a6c",
+      "src/multi_robot_exploration/multi_robot_exploration/action_callbacks.py": "7edc9b3923caedf88f236311026f568540779653dafc0ce0aee01dc201880f8b",
+      "src/multi_robot_exploration/multi_robot_exploration/tf_ingress_sampler.py": "819573fffb17817c2135225f4effca4ea9c61422e309a3176f7933fdac2fc16d",
+      "src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py": "bf107d4711abcd4861d092c533d0d00baa8478ad3ce314e2d40451c9858f7e43",
+      "src/slam_toolbox/src/slam_toolbox_multirobot.cpp": "1c9d41b108bce96c75fd108ace704df502b29bc622c60930cc6629b6f1c21d24",
+      "src/slam_toolbox/include/slam_toolbox/scan_self_filter.hpp": "4e9b7acde1a50bdbae3cb104e3c95fb2c6e3699368dc511b282fab4e14b0cdab",
+      "src/slam_toolbox/config/mapper_params_online_multi_async.yaml": "3a5339dd39476b196fc6f0e62c225bcb85889ed728ce279f45d759e5319dcde1",
+      "scripts/observe_p3b5.py": "8605217913f55d1761943bf701381c5da2fd924dc44cf5e7fbd9cf6b73f5bbc6",
+      "scripts/p2c_native_graph.py": "e08b675ceba504d8b3562a7b11c2084d6cf9a3bc39ec4954758ac77c31c6a897",
+      "scripts/ros_smoke_test.py": "b2558586c44e808a603b19f9bfc360efa579c37d029b8271e46e37732bd761bf",
+      "scripts/run_p3b5_tasks.py": "a3438c304c205747daa992647a3688ca9afb1d43684a3e4d2ecff0d7283d84ea"
+    },
+    "manifest_changes": {
+      "p2c_integration_manifest.json": [
+        "candidate_parent_commit",
+        "initial_known_space_fallback",
+        "predeclared_at_utc"
+      ],
+      "p2c_blackout_manifest.json": [
+        "candidate_parent_commit",
+        "initial_known_space_fallback",
+        "predeclared_at_utc"
+      ]
+    },
+    "native_sha256": "f4845fb03667e766c0202a470fa5f2c3c4a49ff39f77a898bf90ec1b60261a6c",
+    "control_sha256": "f94f76763b9310137a64fe1b04da191c9abbd73b738f87003d65d6b83f7dbd3d",
+    "cases_stimuli_ttl_model_native_source_unchanged": true
+  },
+  "declarations": [
+    {
+      "case": "dev_forced2",
+      "sources": 31,
+      "original_cli_stimuli_unchanged": true
+    },
+    {
+      "case": "physical_ideal",
+      "sources": 31,
+      "original_cli_stimuli_unchanged": true
+    },
+    {
+      "case": "physical_fault",
+      "sources": 31,
+      "original_cli_stimuli_unchanged": true
+    }
+  ],
+  "validation": {
+    "functional_checks": 2189,
+    "functional_seconds": 346.87,
+    "new_checks": 22,
+    "targeted_checks": 64,
+    "symlink_packages": 4,
+    "build_seconds": 6.16,
+    "protected_files": 190,
+    "historical_allowed_changes": 6,
+    "protocol_cells": 54,
+    "conditional_original_candidates": 125,
+    "conditional_qualified_candidates": 94,
+    "actual_dds_action_goals": [
+      0,
+      1
+    ],
+    "actual_action_future_successes": [
+      0,
+      1
+    ],
+    "real_gazebo_nav2_motion": 0
+  },
+  "rejected_probe": {
+    "conservative_unknown_free_union": "Five original maps: zero unknown cells filled, no qualified path; not adopted."
+  },
+  "retained_failures": {
+    "unit1": "Three fixture assertions failed: two lacked required delivered camera history; one confused allowed bounded start escape with unconditional rejection. Original log and reconstructed initial fixture preserved.",
+    "functional1": "Two old parity cases4/11 intentionally changed from no admitted action to a safe camera fallback. Original2FAIL/2187PASS retained; revised assertions reconstruct complete geometry and energy, remaining12 decisions retain parity.",
+    "runtime1": "Duplicate position/view keys after synthetic DDS delivery because original histories were restored using enumeration keys; original log and literal preserved.",
+    "runtime2": "Same duplicate-bin reader rejection reproduced with both raw transcripts/CDRs retained; no task. Original spatial/heading bin keys restored before runtime3PASS."
+  },
+  "limits": "Primary attempt counters are private scheduler diagnostics, not an independent proof that every possible primary trajectory is absent. Existing independent travel checks rebuild executed camera gain/yaw, source epochs, body route and complete physical trip/return energy. Fixed snapshot and synthetic DDS comparisons are not mission replay, causal benefit or physical safety acceptance.",
+  "original_failed_task": {
+    "status": "FAIL",
+    "source_commit": "d205de135f650b9187b9eea5b4f567053f0d982d",
+    "scope": "Original first forced development; native EXPLORE timeout. No other task was invoked.",
+    "case": "dev_forced2",
+    "native_phase": "EXPLORE",
+    "elapsed_sec": 300.0999999999999,
+    "failure_reason": "timeout",
+    "detected_sec": null,
+    "charges": 2,
+    "minimum_energy": 14.500254588460473,
+    "collision_events": 0,
+    "failed_robots": [],
+    "component_audits": 21,
+    "initial_policy_requests": 2,
+    "runner_returncode": 0,
+    "observer_returncode": 0,
+    "owned_closed": true,
+    "original_gate_errors": [
+      {
+        "case": "dev_forced2",
+        "error": "AssertionError()",
+        "traceback": "Traceback (most recent call last):\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 1023, in audit_one\n    try:return check_one(path,config),None\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 868, in check_one\n    episode_ok(result)\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3b5_gate.py\", line 61, in episode_ok\n    p3a_episode_ok(result)\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p3a6_gate.py\", line 39, in episode_ok\n    assert data[\"success\"]\nAssertionError\n"
+      }
+    ],
+    "raw_bindings": {
+      "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v71/20261011_p2c_v71_dev_forced2/20261011_p2c_v71_dev_forced2.json": "e55024fab4f9552bc4f6d2563299a20c2bb4e9a9488180b41fcbeef5f85f7d40",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v71/20261011_p2c_v71_dev_forced2/native_graph.json": "ecfdbb020a9e45019e4b09fa71500b9284d6ac2ed85ee8fddd3b7866cf8db4e6",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v71/20261011_p2c_v71_dev_forced2/manifest.json": "69a8773f7fea5ee6271994a9ba3d3a38d4067256262c63431c38e6be01e87a55",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v71/20261011_p2c_v71_dev_forced2/initial_bypass_graph.json": "a815fb7b6b0a4c80b6f31c4f0af2b382a1052e6f86a9f76aa938ede8ae04aa1b",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v71/20261011_p2c_v71_dev_forced2/graph.json": "ecfdbb020a9e45019e4b09fa71500b9284d6ac2ed85ee8fddd3b7866cf8db4e6",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v71/20261011_p2c_v71_dev_forced2/ledger.jsonl": "d6086ce77208ec8263eee91a935194fac73d696b368929318d1da3ba94fe29c2",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v71/20261011_p2c_v71_dev_forced2/schedule.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v71/20261011_p2c_v71_dev_forced2/summary.json": "61ed792a8dc2498b2dac688203936e6ff6d3646062cdaa2b843452fbd783f015",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v71/20261011_p2c_v71_dev_forced2/safety_events.jsonl": "26b6aeaa5248edd749dbcdbc2e188cb114003dd32a94924abb36b3c0913eac45",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v71/20261011_p2c_v71_dev_forced2/observer.log": "5750efa4dc2dd49e691107f05f37d18e32ad7514a0a890e06d551a7d8ef99c05",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v71/20261011_p2c_v71_dev_forced2/navigation_inputs.jsonl.gz": "59a100095c2af07ec2769cc958b4a4ef1626e7857bae66628f9759933cd65e6e",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v71/20261011_p2c_v71_dev_forced2/runner.log": "63984e5e8b5aefcedef2ed138f23d84760ce64afd3d18f84abf240eee4c3b78c",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v71/20261011_p2c_v71_dev_forced2/20261011_p2c_v71_dev_forced2.csv": "3e66b7e1abe70cb21dd3c48d21db87755bc88b6706ee17db5e642c717c375b58",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v71/20261011_p2c_v71_dev_forced2/launch/robots2_seed303_20261011-013744.log": "6a3469dab95ab1af359a8df1a329683f8208001fb58968e77c7f664a0e5aaf87",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v71/20261011_p2c_v71_dev_forced2/ledger_metrics/live.jsonl": "3f72cb360e7fc88e4d9d1121b14b1f40fed7c80780ac9bf030dc34526f9814d2",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v71/20261011_p2c_v71_dev_forced2/ledger_metrics/live_windows.csv": "08ff12b31664a1efe3e14819332ebfd9bcd52b4d10b1658ecdd90275a20a2ed7",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v71/20261011_p2c_v71_dev_forced2/ledger_metrics/curves.svg": "bc1a5a7e000ad7b2096ff1f51703ddb1432bc34e2898f69fdd2782ddbc255278",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v71/20261011_p2c_v71_dev_forced2/ledger_metrics/windows.jsonl": "4be95a2a2998e084070612e896a9026accfaa7e128dc2ceeb484390c90e09bf0",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v71/20261011_p2c_v71_dev_forced2/ledger_metrics/events.jsonl": "02115c6c6d9a19432e27c14055dfc6017041c86e48baa2d1619f0aa9319c8a1f",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v71/20261011_p2c_v71_dev_forced2/ledger_metrics/windows.csv": "08ff12b31664a1efe3e14819332ebfd9bcd52b4d10b1658ecdd90275a20a2ed7",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v71/20261011_p2c_v71_dev_forced2/ledger_metrics/summary.json": "7f88e5b7c4c660cb7d945f468503caae145c78b0a06e40af94fbf91b753e6868",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v71/20261011_p2c_v71_dev_forced2/ledger_metrics/inputs.jsonl": "cbd416e3f054b90307700a5f08aa67a03d24759dd7ac8c4ce740adf9ac793e27",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c_v71_dev_forced2_components1.json": "06f21698dfc8b0cb03eed102fbc75347c9a46ae9793af7aa99497d23d6b8cd26",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c_v71_dev_forced2_components1.log": "09e5892f620527d8980d297461c710dded7381cd20e891e32eaa3b2a09651cf9",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c_v71_forced_gate.json": "3cb708c86bbd8b93a002a467b7f5cbcc674fa042489e1ab5c50f11d3c01cd5cd",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c_v71_forced_gate.log": "158f0694d1d473889adab6ae79925e67e43a1c023f67310826ac940a95f77422",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c_v71_forced_owner.log": "9abc18c9e63cc56b8463e21a8b5578dec8675088033a6651a9c5fe653aec633e",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c_v71_physical_predeclared1.json": "a77de876047c23f548097f9b7ce21fc071302594301df9e2a43131d15e812914",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c_v71_physical_predeclared1.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c_v71_physical_predeclared2.json": "737062aefeb7f574b35127ca7abd5b350e151a2196588b2e17dbd680ef6ee515",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c_v71_physical_predeclared2.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c_v71_physical_predeclared3.json": "0873b4efde9ab836372c987ef11e140294023a3287eda6bb0fad8a000625b097",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c_v71_physical_predeclared3.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c_v71_physical_predeclared4.json": "d33e8274969aa684525c80e10d468447f09104a3679e52cfd6db05bee88bc15d",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c_v71_physical_predeclared4.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c_v71_predeclared1.json": "913ac2fcdb87a4041f7d7aa3f33bc89827e12a87feacf314dab2f0e24e487860",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c_v71_predeclared1.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c_v71_predeclared2.json": "856b34bec417d513c710ac142cd0ebf2881bb97c77a2a647b29f02c62dc29ff8",
+      "ros2_ws/ros2-multi-robot-automap/log/p2c_v71_predeclared2.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "originals": {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261011_p2c_v71_failed_development_originals.json.gz",
+      "sha256": "c97cc4a4ade1a300ba2ba272a9cfbf118661a480c40b506c840110756fb600ce"
+    },
+    "diagnostic_facts": {
+      "first_ordinary_dispatch_sec": 2.3,
+      "initial_policy_requests_sec": [
+        53.2,
+        95.3
+      ],
+      "post_charge_first_ordinary_dispatch_sec": 102.9,
+      "tb2_last_ordinary_dispatch_sec": 202.9,
+      "tb1_first_late_leftward_dispatch_sec": 272.9,
+      "planning_lease_expirations": 7,
+      "final_correct_free_coverage_ratio": 0.8643980358064085
+    },
+    "diagnostic_limits": "Original chronology only; neither exclusive cause nor counterfactual mission benefit.",
+    "not_invoked": [
+      "other3development",
+      "17formal",
+      "2physical",
+      "holdout_ideal917",
+      "holdout_fault917"
+    ]
+  },
+  "provenance": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261011_p2c_known_search_fallback_components_provenance.json.gz",
+    "sha256": "8d3d00b1575097eb98747c3fe460ebec72ea39429ea6407b9193db32645c07d9"
+  },
+  "next": "Same clean-pushed v72: full4 development then17formal+2physical;917 remains unexposed until15nonheldout+2physical strictPASS."
+}

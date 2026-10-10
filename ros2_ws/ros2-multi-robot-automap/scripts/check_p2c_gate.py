@@ -309,7 +309,8 @@ def lookahead_audit(records,require_compound_pose=False,require_live_clock=False
 
 
 def exploration_travel_audit(records,required=False,require_commitment=False,require_bounded_commitment=False,
-        require_initial_search=False,require_diversity=False,require_camera_search=False,require_live_clock=False):
+        require_initial_search=False,require_diversity=False,require_camera_search=False,require_live_clock=False,
+        require_known_fallback=False):
     """Rebuild executed frontier travel and delivered-only energy witnesses."""
     count=0;discounts=0;resumed=0;visual_count=0;diversity_count=0;camera_count=0
     for e in records:
@@ -409,6 +410,22 @@ def exploration_travel_audit(records,required=False,require_commitment=False,req
             diversity_factor=rebuilt['factor'];diversity_count+=1
         assert math.isclose(f['base_utility']*f['battery_factor']*factor*diversity_factor,f['adjusted_utility'],abs_tol=1e-8)
         visual=e['kind']=='initial_visual_search'
+        fallback=f.get('known_space_fallback')
+        if fallback is not None:
+            assert require_known_fallback and visual, 'undeclared known-space fallback'
+            assert e['task_phase'] in ('EXPLORE','FOUND_UNCONFIRMED')
+            assert fallback['strategy']=='after_no_primary_admission'
+            assert fallback['generated_at_sec']<=ranked_at<=now
+            for key,sample in e['inputs'].items():
+                if key!='headquarters/target_detection' and sample['source_time'] is not None:
+                    assert 0<=fallback['generated_at_sec']-sample['source_time']<=sample['ttl_sec']
+            attempts=fallback['primary_attempts']
+            assert len(attempts)==2 and [row['refine'] for row in attempts]==[False,True]
+            for row in attempts:
+                assert type(row['refine']) is bool
+                assert type(row['admitted']) is int and row['admitted']==0
+                assert name in row['considered_candidates']
+                assert all(type(n) is int and n>=0 for n in row['considered_candidates'].values())
         if visual:
             if require_bounded_commitment:assert require_initial_search,'undeclared initial visual search'
             if diversity is not None:assert diversity['visits']==f['initial_search_visits']
@@ -916,7 +933,7 @@ def check_one(path,config):
         bool(config.get('exploration_travel_preference')),bool(config.get('exploration_frontier_commitment')),
         bool(config.get('exploration_bounded_commitment')),bool(config.get('initial_known_space_search')),
         bool(config.get('mission_spatial_diversity')),bool(config.get('camera_aware_known_search')),
-        bool(config.get('coordinator_live_clock')))
+        bool(config.get('coordinator_live_clock')),bool(config.get('initial_known_space_fallback')))
     position_tolerance=planning_position_tolerance(result,directory)
     surveys=target_survey_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
         bool(config.get('target_information_survey')),result['target_max_distance_m'],position_tolerance,

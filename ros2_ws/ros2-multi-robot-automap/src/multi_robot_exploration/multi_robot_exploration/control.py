@@ -7540,7 +7540,9 @@ class HeadquartersControl(Node):
         self.opportunity_charge_evidence = {}
         resume_intents = getattr(self, "exploration_resume_intents", {})
         charge_candidates = {}
-        for refine in ((False, True, "known_space") if search else (False, True)):
+        primary_attempts = []
+        for refine in ((False, True, "known_space")
+                       if search or getattr(self, 'enable_rally', False) else (False, True)):
             candidates = []
             raw_candidates = []
             candidate_contexts = {}
@@ -7566,7 +7568,7 @@ class HeadquartersControl(Node):
                         and other_position is not None
                     )
                 )
-                if initial_search:
+                if initial_search and refine != "known_space":
                     visits=[v['position'] for v in self.initial_search_visits.values()]
                     robot_candidates=known_space_search_candidates(
                         self.map_data,self.resolution,self.origin,robot_name,position,
@@ -7576,11 +7578,23 @@ class HeadquartersControl(Node):
                     initial_search=bool(robot_candidates)
                     robot_diagnostics=dict(frontier_groups=0,groups_with_viewpoints=0)
                 if refine == "known_space":
-                    robot_candidates = known_space_search_candidates(
-                        self.map_data, self.resolution, self.origin, robot_name, position,
-                        [*self.target_search_visits, *[p for p in self.robot_positions.values() if p is not None]],
-                        robot_exclusions, [p for name,p in self.robot_positions.items() if name != robot_name and p is not None],
-                        gain_cache=search_gain_cache,defer_gain=True)
+                    if search:
+                        robot_candidates = known_space_search_candidates(
+                            self.map_data, self.resolution, self.origin, robot_name, position,
+                            [*self.target_search_visits, *[p for p in self.robot_positions.values() if p is not None]],
+                            robot_exclusions, [p for name,p in self.robot_positions.items() if name != robot_name and p is not None],
+                            gain_cache=search_gain_cache,defer_gain=True)
+                    elif getattr(self, 'initial_search_next', {}).get(robot_name, False) or not camera_views:
+                        robot_candidates = []  # The primary rounds already tried this camera pool.
+                    else:
+                        robot_candidates = known_space_search_candidates(
+                            self.map_data, self.resolution, self.origin, robot_name, position,
+                            [*[v['position'] for v in (getattr(self, 'initial_search_visits', {}) or {}).values()],
+                             *[p for p in self.robot_positions.values() if p is not None]],
+                            robot_exclusions, [p for name,p in self.robot_positions.items() if name != robot_name and p is not None],
+                            gain_cache=search_gain_cache, face_interest=True,
+                            camera_views=camera_views, defer_gain=True)
+                        initial_search = bool(robot_candidates)
                     robot_diagnostics = dict(frontier_groups=0, groups_with_viewpoints=0)
                 elif not initial_search:
                     if frontier_data is None:
@@ -7792,11 +7806,15 @@ class HeadquartersControl(Node):
                             cursor=proposal['cursor'].get(robot_name, 0),
                             current_candidates_per_robot=3, prices_reused=False)
                     if initial_search:
-                        preference.update(initial_search_visits=list(self.initial_search_visits.values()),
+                        preference.update(initial_search_visits=list((getattr(self, 'initial_search_visits', {}) or {}).values()),
                             initial_search_views=camera_views,
                             search_view_model=dict(radius_m=INFORMATION_RADIUS_M,
                                 fov_rad=INITIAL_SEARCH_VIEW_FOV_RAD,heading_bins=16),
                             search_kind='known_space',view_yaw=assignment.navigation_yaw)
+                        if refine == 'known_space':
+                            preference['known_space_fallback'] = dict(
+                                strategy='after_no_primary_admission', generated_at_sec=planning_started,
+                                primary_attempts=primary_attempts)
                     travel_preferences[robot_name, coordinated] = preference
                 if not search and interrupted_frontier_is_useful(
                     coordinated, resume_intents.get(robot_name), battery_factor
@@ -7951,6 +7969,10 @@ class HeadquartersControl(Node):
                     self.target_search_basis = ("current_map_known_free_sweep" if refine == "known_space"
                                                 else "current_map_frontiers")
                 break
+            if refine != 'known_space':
+                primary_attempts.append(dict(refine=refine, admitted=0,
+                    considered_candidates={name:sum(row[1] == name for row in raw_candidates)
+                                           for name in idle_positions}))
         # A robot with its own funded alternative still explores normally.
         # Otherwise stop new admissions until accepted peer actions drain,
         # including when those peers have enough energy for further work.

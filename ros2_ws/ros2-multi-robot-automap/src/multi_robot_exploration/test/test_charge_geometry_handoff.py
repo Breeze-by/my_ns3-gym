@@ -69,10 +69,10 @@ def decision(node, sent):
 
 
 @pytest.mark.parametrize('index', range(len(REFERENCE['snapshots'])))
-def test_uninterrupted_geometry_choices_after_first_charge_remain_unchanged(index):
+def test_primary_geometry_after_first_charge_stays_equal_or_safe_new_fallback_is_rebuilt(index):
     event = REFERENCE['snapshots'][index]['event']
     before, old_goals, _, _ = snapshot_node(event)
-    after, new_goals, _, _ = snapshot_node(event)
+    after, new_goals, _, private = snapshot_node(event)
     # The initial replenishment policy has its own frozen-budget comparison.
     # This conditional geometry regression deliberately excludes that policy.
     for node in (before, after):
@@ -80,7 +80,25 @@ def test_uninterrupted_geometry_choices_after_first_charge_remain_unchanged(inde
             state['charge_count'] = max(1, state.get('charge_count', 0))
     reference_assign()(before)
     c.HeadquartersControl.assign_idle_robots(after)
-    assert decision(before, old_goals) == decision(after, new_goals)
+    fallback = any(choice.get('known_space_fallback') for choice in after.exploration_travel_choices.values())
+    if not fallback:
+        assert decision(before, old_goals) == decision(after, new_goals)
+    else:
+        # This new policy adds a safe camera search where the frozen parent
+        # admitted no action; its complete inputs replace a parity assertion.
+        assert not old_goals and not before.rally_charge_requested and new_goals
+        from check_p2c_gate import exploration_travel_audit
+        from geometry_msgs.msg import PoseStamped
+        for name, goal in new_goals:
+            assert after.exploration_travel_choices[name]['known_space_fallback']
+            pose = PoseStamped()
+            pose.pose.position.x, pose.pose.position.y = goal.navigation_x, goal.navigation_y
+            yaw = goal.navigation_yaw or 0.
+            pose.pose.orientation.z, pose.pose.orientation.w = c.math.sin(yaw/2.), c.math.cos(yaw/2.)
+            assert c.HeadquartersControl.record_navigation_decision(
+                after, name, 'initial_visual_search', pose, None, after.goal_routes[name])
+        assert exploration_travel_audit(private, True, True, True, True, True, True, True, True)[
+            'initial_visual_witnesses'] == len(new_goals)
 
 
 def hint(node):
