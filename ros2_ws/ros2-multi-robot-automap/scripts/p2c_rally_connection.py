@@ -19,6 +19,7 @@ def audit_geometry(event):
     data=control.prepare_frontier_data(grid,saved['resolution']);ranked=[]
     for name,position in event['robot_positions'].items():
         if event['battery_modes'][name]!='ACTIVE' or name==event['observer_robot']:continue
+        if event.get('prioritized_names') and name not in event['prioritized_names']:continue
         options,_=control.robot_candidate_assignments(grid,saved['resolution'],saved['origin'],name,position,
             frontier_data=data,blocked_positions=[p for other,p in event['current_positions'].items()
                 if other!=name and p is not None])
@@ -34,14 +35,52 @@ def audit_geometry(event):
     return len(expected)
 
 
+def audit_priority(event,assignment):
+    """Rebuild the missing approach from original cells, without trusting its label."""
+    assert assignment['event']=='coordinator_rally_assignment_failed'
+    diagnostic=assignment['geometry_diagnostics'];name=diagnostic['robot']
+    assert diagnostic['reason']=='disconnected_rally_approach'
+    assert event['prioritized_names']==[name] and name!=event['observer_robot']
+    assert event['target']==assignment['target'] and event['robot_positions']==assignment['robot_positions']
+    assert event['current_positions']==assignment['current_positions']
+    assert event['planning_map']==assignment['planning_map']
+    assert event['event_time']>=assignment['computation_completed_at_sec']
+    assert event['battery_modes'][name]=='ACTIVE'
+    saved=assignment['planning_map'];raw=decode(saved)
+    poses=control.rally_pose_candidates(raw,saved['resolution'],saved['origin'],assignment['target'],
+        False,diagnostic['stratified'],adaptive_outer=not diagnostic['stratified'])
+    assert len(poses)==diagnostic['candidate_count'] and len(poses)>=len(assignment['robot_positions'])
+    local=assignment['return_maps'].get(name)
+    geometry=None if local is None else dict(data=decode(local),resolution=local['resolution'],origin=local['origin'])
+    grid=control.constrained_return_grid(raw,saved['resolution'],saved['origin'],geometry) if geometry else raw
+    assert grid is not None
+    safe=control.traversable_grid(grid,saved['resolution'],.35)
+    cell=control.world_to_grid(*assignment['robot_positions'][name],saved['resolution'],*saved['origin'])
+    start,_=control.navigation_start_route(grid,safe,cell,max(1,math.ceil(.6/saved['resolution'])))
+    distances=control.path_distance_grid(safe,start)
+    assert not any(np.isfinite(distances[control.world_to_grid(p.x,p.y,saved['resolution'],*saved['origin'])]) for p in poses)
+    for stream in ('headquarters/fused_map_snapshot',name+'/map_snapshot',name+'/pose_state',name+'/frame_state'):
+        assert event['inputs'][stream]['source_time']==assignment['inputs'][stream]['source_time']
+    return len(poses)
+
+
 def rally_connection_audit(path,required=False,capture=None):
     if not required:return None
     events=[json.loads(line) for line in path.open()]
-    proposals={};trials=0;accepted=[];points=0
+    proposals={};assignments={};trials=0;accepted=[];points=0;priority_inputs=[]
     for offset,event in enumerate(events):
         kind=event.get('event')
+        if kind=='coordinator_rally_assignment_failed':assignments[event['event_time']]=event
         if kind=='coordinator_rally_connection_geometry':
             epoch=event['event_time'];assert epoch not in proposals
+            if event.get('prioritized_names'):
+                assignment=assignments[event['assignment_evaluated_at_sec']]
+                audit_priority(event,assignment)
+                name=event['prioritized_names'][0]
+                # Reuse the raw local/planning CDR binder; these are inputs,
+                # not a second claimed navigation dispatch.
+                priority_inputs.append(dict(robot=name,planning_map_self_return_cells=assignment['self_return_cells'],
+                    outbound_map_route=dict(local_map=assignment['return_maps'][name],planning_map=assignment['planning_map'])))
             points+=audit_geometry(event);proposals[epoch]=event
         elif kind=='coordinator_rally_connection_trial':
             proposal=proposals[event['generated_at_sec']]
@@ -67,7 +106,9 @@ def rally_connection_audit(path,required=False,capture=None):
             trials+=1
     sources=bind_original_maps(accepted,capture) if capture is not None and accepted else 0
     generated_sources=bind_geometry_maps(proposals.values(),capture) if capture is not None and proposals else 0
+    priority_sources=bind_original_maps(priority_inputs,capture) if capture is not None and priority_inputs else 0
     return dict(status='PASS',geometric_proposals=len(proposals),geometric_candidates=points,
+        disconnected_approaches_rebuilt=len(priority_inputs),original_priority_source_maps=priority_sources,
         current_input_trials=trials,actual_dispatches=len(accepted),original_dispatch_source_maps=sources,
         original_geometric_source_maps=generated_sources,
         scope='Original geometric ranking and current dispatch/source binding; no physical movement, persistent connectivity or native task completion claim')

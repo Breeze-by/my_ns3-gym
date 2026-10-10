@@ -8916,3 +8916,32 @@ ROS_DOMAIN_ID=217 /usr/bin/python3 scripts/check_p2c_charge_reservations_runtime
 /usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v53 --domain 218 --gazebo-port 20318 --validate-only
 /usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v53_physical --domain 219 --gazebo-port 20319 --validate-only
 ```
+
+
+## 2026-10-10 P2C.1 v53 原失败与缺集合通路机器人优先补查
+
+2026-10-10 P2C.1 v53首原forced FAIL：6094c4e原生FAILED197.3/rally_survey_failed:tb2，检测131.8/未RALLY，双charge1/min14.628340/零接触耗尽失效；六原补查均成功但原次数耗尽，前四tb1信息补查，owner-observer0关闭，18原子审不替代任务。七原失败输入最终层tb2零可达7/50/127/129/129/129候选；新仅旁记原失路字段并优先非observer连接前沿，保留原次数/完整身体去返预算/源TTL/300s/5s/native/SLAM/物理。七新旧分配等价/21原CDR图、1836功能192.49s/56定向/四包5.60s/190保护6授权54协议/两声明/实际DDS旧tb1信息→新tb2连接及clock13过期拒绝/原交接兼容PASS，80中央96纯/globals保持。新v54 clean pushed4→17+2待实测，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261010_p2c_v53_failed_development与20261010_p2c_connection_priority_components。
+
+准确原失败是survey_attempts达到2*(1+2)=6，并非insufficient_rally_poses或Nav2中止。六原补查均成功；原cap、重试和prepare等待保持。新完整progressive搜索旁记最终层零完整接近路径的机器人，优先非observer ACTIVE机原连接前沿，保留纯几何交接与原实时准入；其他原因及observer保持原顺序。若早层已有可行分配，后层失败清诊断。独立读者重建零接近场与过滤排名，并绑定原失败图/pose/TF源、实际派发与原CDR。无清图/屏蔽同伴/调SLAM或Nav2。
+
+所有原始失败、七冻结输入和18原子审归档，不能证明物理占用来源或任务反事实。实际DDS synthetic ActionServer支持clock10→13旧源到期零goal，新交付13才tb2动作/Future闭合；无物理Nav2运动声明。两probe全部owned关闭。13新增回归包括原cap和7种篡改拒绝。全功能首命令lint排除路径误写且中断，未计完整通过；validate-only首CLI误写且无task调用，正确两声明PASS。所有原日志、最终源码和临时诊断脚本保存provenance。
+
+以下命令在canonical ROS目录，以rtk proxy bash -c source Humble+install，PYTHONNOUSERSITE=1，scripts PYTHONPATH，taskset0-79；DDS另FastDDS UDPv4，清profiles/discovery server。新v54首forced218/20318严格PASS后再其余lab218/20318、rooms219/20319、corr220/20320；必须新同源4→17+2，917最后首次暴露。
+
+```bash
+/usr/bin/python3 scripts/check_p2c_gate.py --run-root log/p2c/20261010_p2c_v53 --cases dev_forced2 --development --output log/p2c_v53_forced_gate.json
+/usr/bin/python3 /tmp/audit_p2c_v53_components.py
+/usr/bin/python3 /tmp/p2c_v53_forced_assignment_diagnosis.py
+/usr/bin/python3 /tmp/p2c_connection_priority_comparison.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_rally_connection_priority.py src/multi_robot_exploration/test/test_progressive_rally.py src/multi_robot_exploration/test/test_rally_connection_handoff.py src/multi_robot_exploration/test/test_rally_proposal_handoff.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test scripts --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+colcon build --symlink-install --packages-select multi_robot_exploration multi_robot_interfaces merge_map multi_robot
+/usr/bin/python3 scripts/check_p2c_source.py --output log/p2c_connection_priority_source1.json
+/usr/bin/python3 /tmp/p2c_connection_priority_scope.py
+ROS_DOMAIN_ID=217 /usr/bin/python3 scripts/check_p2c_rally_connection_runtime.py --priority --output log/p2c_connection_priority_runtime1.json
+ROS_DOMAIN_ID=217 /usr/bin/python3 scripts/check_p2c_rally_connection_runtime.py --output log/p2c_connection_priority_runtime_compat1.json
+/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261010_p2c_v54 --domain 218 --gazebo-port 20318 --validate-only
+/usr/bin/python3 scripts/run_p2c_tasks.py --manifest scripts/p2c_blackout_manifest.json --case physical_fault --run-id 20261010_p2c_v54_physical --domain 219 --gazebo-port 20319 --validate-only
+```
+
+最终control SHA62c4169d79e4fbf6681ee3b54272457ece893b1d45f781a95528ef5d0afaaa79，仅3中央/2纯诊断，80其他中央/96纯/globals和七native源类别不变。实际radio airtime/J与容量仍未测，无P4/ns-3/Wi-Fi/RL。

@@ -1737,7 +1737,7 @@ def funded_rally_replacement(raw_grid, resolution, origin, position, target,
 def assign_rally_poses(
     raw_grid, resolution, origin, robot_positions, target, objective="minimax",
     battery_states=None, observer_robot=None, current_positions=None,
-    hold_sec=RALLY_HOLD_SEC, return_maps=None,
+    hold_sec=RALLY_HOLD_SEC, return_maps=None, geometry_diagnostics=None,
 ):
     """Find a fully funded separated assignment with progressive candidates.
 
@@ -1759,14 +1759,18 @@ def assign_rally_poses(
         score = []
         result = _assign_rally_poses(raw_grid, resolution, origin, robot_positions,
             target, objective, battery_states, observer_robot, current_positions,
-            hold_sec, return_maps, stratified, geometry_cache, score)
+            hold_sec, return_maps, stratified, geometry_cache, score, geometry_diagnostics)
         if result:
             if best_score is None or score[0] < best_score:
                 best, best_score = result, score[0]
             if (battery_states is None
                     or battery_states.get(observer_robot, {}).get('mode') != 'ACTIVE'
                     or best_score[0] == 0):
+                if geometry_diagnostics is not None:
+                    geometry_diagnostics.clear()
                 return best
+    if best and geometry_diagnostics is not None:
+        geometry_diagnostics.clear()
     return best
 
 def _assign_rally_poses(
@@ -1784,6 +1788,7 @@ def _assign_rally_poses(
     stratified=True,
     geometry_cache=None,
     score_output=None,
+    geometry_diagnostics=None,
 ):
     """Assign separated visible poses, accounting for serial charge waits.
 
@@ -1800,7 +1805,13 @@ def _assign_rally_poses(
         raw_grid, resolution, origin, target, False, stratified,
         adaptive_outer=not stratified,
     )
+    if geometry_diagnostics is not None:
+        geometry_diagnostics.clear()
+        geometry_diagnostics.update(stratified=stratified, candidate_count=len(candidates),
+            reason='infeasible_assignment')
     if len(candidates) < len(names):
+        if geometry_diagnostics is not None:
+            geometry_diagnostics['reason'] = 'insufficient_candidates'
         return {}
 
     geometry_cache = {} if geometry_cache is None else geometry_cache
@@ -1848,6 +1859,8 @@ def _assign_rally_poses(
                 reachable.append((float(distance + escape_distance), index))
         reachable.sort()
         if not reachable:
+            if geometry_diagnostics is not None:
+                geometry_diagnostics.update(reason='disconnected_rally_approach', robot=name)
             return {}
         options[name] = reachable
 
@@ -3538,13 +3551,16 @@ class HeadquartersControl(Node):
                 self.robot_map_received_at[name]),
         ), sort_keys=True)))
 
-    def record_rally_assignment(self, active_positions, return_maps, wall_sec, assignment=None, evaluated_at=None):
+    def record_rally_assignment(self, active_positions, return_maps, wall_sec, assignment=None, evaluated_at=None,
+                                geometry_diagnostics=None):
         """Retain exact delivered choice/failure inputs on a private audit path."""
         if not hasattr(self, 'consumed_publisher'):
             return
         completed_at = self.now()
         now = completed_at if evaluated_at is None else evaluated_at
-        if assignment is None and completed_at - getattr(self, 'rally_assignment_audit_at', -float('inf')) < 5.:
+        if (assignment is None
+                and (geometry_diagnostics or {}).get('reason') != 'disconnected_rally_approach'
+                and completed_at - getattr(self, 'rally_assignment_audit_at', -float('inf')) < 5.):
             return
         self.rally_assignment_audit_at = completed_at
         inputs = input_freshness_at(self.input_freshness_details(), now)
@@ -3557,6 +3573,7 @@ class HeadquartersControl(Node):
             event_time=now, assignment=None if assignment is None else
                 {name: (pose.x, pose.y, pose.yaw) for name, pose in assignment.items()},
             computation_wall_sec=wall_sec, computation_completed_at_sec=completed_at, inputs=inputs,
+            geometry_diagnostics=geometry_diagnostics,
             robot_positions=active_positions, current_positions=self.robot_positions,
             target=self.target,
             objective=self.rally_assignment_objective, hold_sec=self.rally_hold_sec,
@@ -4917,6 +4934,7 @@ class HeadquartersControl(Node):
                 return_maps = HeadquartersControl.delivered_return_maps(self)
                 assignment_time = self.now()
                 assignment_started = time.perf_counter()
+                geometry_diagnostics = {}
                 assignment = assign_rally_poses(
                     self.map_data,
                     self.resolution,
@@ -4929,10 +4947,12 @@ class HeadquartersControl(Node):
                     current_positions=self.robot_positions,
                     hold_sec=self.rally_hold_sec,
                     return_maps=return_maps,
+                    geometry_diagnostics=geometry_diagnostics,
                 )
                 HeadquartersControl.record_rally_assignment(self, active_positions, return_maps,
                     time.perf_counter()-assignment_started,
-                    assignment if len(assignment) == len(active_names) else None, assignment_time)
+                    assignment if len(assignment) == len(active_names) else None, assignment_time,
+                    geometry_diagnostics)
                 if len(assignment) == len(active_names):
                     self.pending_rally_proposal = dict(assignment=dict(assignment),
                         target=tuple(self.target), evaluated_at=assignment_time)
@@ -4960,6 +4980,13 @@ class HeadquartersControl(Node):
                             f"currently {candidate_count} safe candidates."
                         )
                         self.last_rally_candidate_log = now
+                    disconnected = geometry_diagnostics.get('robot')
+                    if (not connection_exhausted
+                            and geometry_diagnostics.get('reason') == 'disconnected_rally_approach'
+                            and disconnected != getattr(self, 'target_observing_robot', None)
+                            and HeadquartersControl.survey_rally_connection(self, active_positions,
+                                disconnected, assignment_time)):
+                        return
                     if HeadquartersControl.survey_target_frontiers(self, self.robot_positions):
                         return
                     survey_order = rotate_robot_order(
@@ -5984,7 +6011,7 @@ class HeadquartersControl(Node):
         return HeadquartersControl.send_survey_goal(
             self, name, RallyPose(*position, heading), heading_only=True)
 
-    def survey_rally_connection(self, positions):
+    def survey_rally_connection(self, positions, disconnected_robot=None, assignment_time=None):
         """Retain frontier geometry while queued delivered state can catch up."""
         started = self.now()
         inputs = input_freshness_at(self.input_freshness_details(), started)
@@ -5994,7 +6021,8 @@ class HeadquartersControl(Node):
         candidates = []
         for name, position in positions.items():
             if (self.battery_modes[name] != "ACTIVE"
-                    or name == getattr(self, "target_observing_robot", None)):
+                    or name == getattr(self, "target_observing_robot", None)
+                    or disconnected_robot is not None and name != disconnected_robot):
                 continue
             options, _ = robot_candidate_assignments(
                 self.map_data, self.resolution, self.origin, name, position,
@@ -6025,6 +6053,8 @@ class HeadquartersControl(Node):
             target=self.target, robot_positions=positions, battery_modes=self.battery_modes,
             current_positions=self.robot_positions,
             observer_robot=getattr(self, 'target_observing_robot', None), names=proposal['names'],
+            prioritized_names=[] if disconnected_robot is None else [disconnected_robot],
+            assignment_evaluated_at_sec=assignment_time,
             candidates=[(name, pose.x, pose.y, pose.yaw) for name, pose in choices],
             planning_map=grid_audit_evidence(self.map_data, self.resolution, self.origin,
                 'ap_delivered_planning_map', self.map_received_at, self.map_received_at),

@@ -99,9 +99,11 @@ def test_refinement_keeps_original_feasible_charge_plan_when_no_better_plan_exis
     monkeypatch.setattr(c, 'rally_pose_candidates', poses)
     state = dict(mode='ACTIVE', energy=1., charge_x=4.05, charge_y=4.05,
         capacity=100., charge_target_fraction=.8)
+    diagnostics = {'reason': 'stale prior failure'}
     assert c.assign_rally_poses(np.zeros((120, 120), dtype=np.int16), .1, (0., 0.),
         {'tb1': (4.05, 4.05)}, (4.05, 4.05), battery_states={'tb1': state},
-        observer_robot='tb1') == {'tb1': coarse}
+        observer_robot='tb1', geometry_diagnostics=diagnostics) == {'tb1': coarse}
+    assert diagnostics == {}
 
 
 @pytest.mark.parametrize('observer', [None, 'unknown', 'tb1'])
