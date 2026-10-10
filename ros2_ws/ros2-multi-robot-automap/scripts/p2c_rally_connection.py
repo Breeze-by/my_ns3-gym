@@ -1,8 +1,6 @@
 """Rebuild private geometric survey proposals and bind their actual dispatches."""
 import json
 import math
-import base64
-import gzip
 
 import numpy as np
 from multi_robot_exploration import control
@@ -172,32 +170,8 @@ def rally_connection_audit(path,required=False,capture=None,require_reinspection
 
 
 def bind_geometry_maps(proposals,capture):
-    from nav_msgs.msg import OccupancyGrid
-    from rclpy.serialization import deserialize_message
-
-    wanted={}
-    for event in proposals:
-        epoch=round(event['planning_map']['source_time']*1e9)
-        wanted.setdefault(epoch,[]).append(event)
-    found=set()
-    with gzip.open(capture,'rt') as stream:
-        for line in stream:
-            row=json.loads(line)
-            if row['topic']!='/merge_map':continue
-            msg=deserialize_message(base64.b64decode(row['cdr']),OccupancyGrid)
-            epoch=msg.header.stamp.sec*10**9+msg.header.stamp.nanosec
-            if epoch not in wanted:continue
-            original=np.asarray(msg.data).reshape(msg.info.height,msg.info.width)
-            for event in wanted[epoch]:
-                saved=event['planning_map'];planned=decode(saved)
-                assert original.shape==planned.shape and msg.info.resolution==saved['resolution']
-                assert saved['origin']==[msg.info.origin.position.x,msg.info.origin.position.y]
-                changed=set(map(tuple,np.argwhere(original!=planned)))
-                assert changed==set(map(tuple,event['planning_map_self_return_cells'].values()))
-                for r,c in changed:
-                    assert 1<=r<original.shape[0]-1 and 1<=c<original.shape[1]-1
-                    assert original[r,c]>=50 and planned[r,c]==0 and saved['resolution']*math.sqrt(2)<=.1
-                    window=original[r-1:r+2,c-1:c+2].copy();window[1,1]=0;assert np.all(window==0)
-            found.add(epoch)
-    assert found==wanted.keys(),('missing original geometric source map',wanted.keys()-found)
-    return len(found)
+    """Bind every proposal to its exact raw version, including shared headers."""
+    return bind_original_maps([dict(robot='',
+        planning_map_self_return_cells=event['planning_map_self_return_cells'],
+        outbound_map_route=dict(local_map=None,planning_map=event['planning_map']))
+        for event in proposals],capture)

@@ -387,6 +387,30 @@ def known_search_view(raw_grid,cell,radius_cells,interest):
     return int(gains[best]),float(best*2.*math.pi/16)
 
 
+@lru_cache(maxsize=512)
+def camera_search_ray_geometry(shape, resolution, origin, position, yaw):
+    """Immutable exact projections only; current occupancy is never cached."""
+    height, width = shape
+    offsets = np.linspace(-INITIAL_SEARCH_VIEW_FOV_RAD / 2., INITIAL_SEARCH_VIEW_FOV_RAD / 2.,
+        max(16, math.ceil(INITIAL_SEARCH_VIEW_FOV_RAD * INFORMATION_RADIUS_M / resolution)) + 1)
+    steps = np.arange(0., INFORMATION_RADIUS_M + resolution / 4., resolution / 2.)
+    angles = yaw + offsets
+    columns = np.floor((position[0] + np.cos(angles)[:, None] * steps - origin[0]) / resolution).astype(int)
+    rows = np.floor((position[1] + np.sin(angles)[:, None] * steps - origin[1]) / resolution).astype(int)
+    inside = (rows >= 0) & (rows < height) & (columns >= 0) & (columns < width)
+    rows = np.clip(rows, 0, height - 1)
+    columns = np.clip(columns, 0, width - 1)
+    dx = (columns + .5) * resolution + origin[0] - position[0]
+    dy = (rows + .5) * resolution + origin[1] - position[1]
+    bearing = np.arctan2(dy, dx)
+    delta = np.arctan2(np.sin(bearing - yaw), np.cos(bearing - yaw))
+    sector = ((dx * dx + dy * dy <= INFORMATION_RADIUS_M ** 2)
+              & (np.abs(delta) <= INITIAL_SEARCH_VIEW_FOV_RAD / 2.))
+    values = (rows * width + columns, inside, sector)
+    return tuple(np.frombuffer(value.tobytes(), dtype=value.dtype).reshape(value.shape)
+                 for value in values)
+
+
 def camera_search_interest(raw_grid, resolution, origin, views):
     """Prefer known cells outside delivered historical camera cones.
 
@@ -394,28 +418,14 @@ def camera_search_interest(raw_grid, resolution, origin, views):
     The original two-metre information radius lies inside the task's three-metre
     camera range; unknown/occupied cells block every historical sight ray.
     """
-    known = raw_grid == 0
-    interest = known.copy()
-    height, width = raw_grid.shape
-    offsets = np.linspace(-INITIAL_SEARCH_VIEW_FOV_RAD / 2., INITIAL_SEARCH_VIEW_FOV_RAD / 2.,
-        max(16, math.ceil(INITIAL_SEARCH_VIEW_FOV_RAD * INFORMATION_RADIUS_M / resolution)) + 1)
-    steps = np.arange(0., INFORMATION_RADIUS_M + resolution / 4., resolution / 2.)
+    known = (raw_grid == 0).ravel()
+    interest = (raw_grid == 0).copy()
+    flat = interest.ravel()
     for view in views:
-        position = view['position']
-        angles = view['yaw'] + offsets
-        columns = np.floor((position[0] + np.cos(angles)[:, None] * steps - origin[0]) / resolution).astype(int)
-        rows = np.floor((position[1] + np.sin(angles)[:, None] * steps - origin[1]) / resolution).astype(int)
-        inside = (rows >= 0) & (rows < height) & (columns >= 0) & (columns < width)
-        rows = np.clip(rows, 0, height - 1)
-        columns = np.clip(columns, 0, width - 1)
-        visible = np.logical_and.accumulate(inside & known[rows, columns], axis=1)
-        dx = (columns + .5) * resolution + origin[0] - position[0]
-        dy = (rows + .5) * resolution + origin[1] - position[1]
-        bearing = np.arctan2(dy, dx)
-        delta = np.arctan2(np.sin(bearing - view['yaw']), np.cos(bearing - view['yaw']))
-        seen = (visible & (dx * dx + dy * dy <= INFORMATION_RADIUS_M ** 2)
-                & (np.abs(delta) <= INITIAL_SEARCH_VIEW_FOV_RAD / 2.))
-        interest[rows[seen], columns[seen]] = False
+        cells, inside, sector = camera_search_ray_geometry(
+            raw_grid.shape, resolution, tuple(origin), tuple(view['position']), view['yaw'])
+        visible = np.logical_and.accumulate(inside & known[cells], axis=1)
+        flat[cells[visible & sector]] = False
     return interest
 
 
