@@ -1,0 +1,220 @@
+{
+  "status": "PASS",
+  "scope": "Camera-first scheduling components only;P2C.1 still FAIL pending a new complete frozen cohort.",
+  "reference_commit": "1dbc38d55738bc43f52436547944bf8b9397d0d2",
+  "source_scope": {
+    "status": "PASS",
+    "reference_commit": "1dbc38d55738bc43f52436547944bf8b9397d0d2",
+    "central_changed": [
+      "assign_idle_robots"
+    ],
+    "central_added": [],
+    "central_unchanged": 86,
+    "pure_unchanged": 104,
+    "reader_changed": [
+      "initial_replenishment_audit"
+    ],
+    "reader_added": [
+      "audit_camera_first"
+    ],
+    "gate_changed": [
+      "check_one"
+    ],
+    "unchanged_sources": {
+      "src/multi_robot_exploration/multi_robot_exploration/battery_manager.py": "f4845fb03667e766c0202a470fa5f2c3c4a49ff39f77a898bf90ec1b60261a6c",
+      "src/multi_robot_exploration/multi_robot_exploration/action_callbacks.py": "7edc9b3923caedf88f236311026f568540779653dafc0ce0aee01dc201880f8b",
+      "src/multi_robot_exploration/multi_robot_exploration/tf_ingress_sampler.py": "819573fffb17817c2135225f4effca4ea9c61422e309a3176f7933fdac2fc16d",
+      "src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py": "bf107d4711abcd4861d092c533d0d00baa8478ad3ce314e2d40451c9858f7e43",
+      "src/slam_toolbox/src/slam_toolbox_multirobot.cpp": "1c9d41b108bce96c75fd108ace704df502b29bc622c60930cc6629b6f1c21d24",
+      "src/slam_toolbox/include/slam_toolbox/scan_self_filter.hpp": "4e9b7acde1a50bdbae3cb104e3c95fb2c6e3699368dc511b282fab4e14b0cdab",
+      "src/slam_toolbox/config/mapper_params_online_multi_async.yaml": "3a5339dd39476b196fc6f0e62c225bcb85889ed728ce279f45d759e5319dcde1",
+      "scripts/observe_p3b5.py": "8605217913f55d1761943bf701381c5da2fd924dc44cf5e7fbd9cf6b73f5bbc6",
+      "scripts/p2c_native_graph.py": "e08b675ceba504d8b3562a7b11c2084d6cf9a3bc39ec4954758ac77c31c6a897",
+      "scripts/ros_smoke_test.py": "b2558586c44e808a603b19f9bfc360efa579c37d029b8271e46e37732bd761bf",
+      "scripts/run_p3b5_tasks.py": "a3438c304c205747daa992647a3688ca9afb1d43684a3e4d2ecff0d7283d84ea",
+      "scripts/run_p3c5_audit.py": "170c726dc2ebef58476f3d25550825a5d5932347a5e12034d5eb945ced10a8da",
+      "scripts/p2c_outbound_routes.py": "33cd3f2b56b8b863c119e93df5fc4124b17933ac8057372cfa9b1a1e04b1c665"
+    },
+    "manifest_changes": {
+      "p2c_integration_manifest.json": [
+        "camera_first_search",
+        "candidate_parent_commit",
+        "predeclared_at_utc",
+        "retained_failed_developments"
+      ],
+      "p2c_blackout_manifest.json": [
+        "camera_first_search",
+        "candidate_parent_commit",
+        "predeclared_at_utc",
+        "retained_failed_developments"
+      ]
+    },
+    "native_sha256": "f4845fb03667e766c0202a470fa5f2c3c4a49ff39f77a898bf90ec1b60261a6c"
+  },
+  "source_protection": {
+    "protected_files": 190,
+    "historical_authorized_changes": 6,
+    "protocol_cells": 54
+  },
+  "functional": {
+    "passed": 2326,
+    "elapsed_sec": 324.98
+  },
+  "targeted": {
+    "passed": 138,
+    "elapsed_sec": 107.43,
+    "previous90_pass": true
+  },
+  "new_tests": 36,
+  "build": "4 symlink packages,6.27sec",
+  "runtime": {
+    "status": "PASS",
+    "scope": "Actual isolated DDS/Futures with recorded map, body and prior-work counters, controlled headings/epochs and stopped clock during fresh computation. Both full versions price current full go/return; old maps first, new camera first. Original prior count is controlled snapshot state; only newly returned Future SUCCESS increment is actual. No native credit, Gazebo/Nav2 motion or causal task/deadline proof.",
+    "reference_commit": "1dbc38d55738bc43f52436547944bf8b9397d0d2",
+    "reference_control_sha256": "84641e62c28ef3c7ff182af90b65c3ba67aee7ee13c446d480fbd33c0f7b343e",
+    "control_sha256": "ea6c41e8d263ac352a9433ba53e87cf6aea240885e41f8b9cfe42bcbd561df23",
+    "reader_sha256": "d70e9ebff092c1a4bf751e7106a869212da24a6f80979633724b8795440264ab",
+    "fixture_sha256": "2166663a0fa432fabd214ae89d9db7a2dc35b77533980958aebc570e6bc084c6",
+    "all_owned_closed": true,
+    "cases": [
+      {
+        "status": "PASS",
+        "label": "frozen",
+        "callbacks": [
+          {
+            "stage": "expire",
+            "clock": 2346.0,
+            "pose_sources": {
+              "tb1": 2343.0,
+              "tb2": 2343.0
+            },
+            "private_decisions": 0
+          },
+          {
+            "stage": "fresh0",
+            "clock": 2347.0,
+            "pose_sources": {
+              "tb1": 2347.0,
+              "tb2": 2347.0
+            },
+            "private_decisions": 0
+          }
+        ],
+        "actual_action_endpoint_goals": [
+          {
+            "robot": "tb2",
+            "source": 2347.0,
+            "point": [
+              4.4120112709680885,
+              0.3026017984740257
+            ],
+            "kind": "synthetic_action_endpoint"
+          }
+        ],
+        "ordinary_future_successes": 1,
+        "travel_audit": {
+          "status": "PASS",
+          "executed_frontier_witnesses": 1,
+          "relative_travel_discounts": 1,
+          "resumed_frontier_witnesses": 0,
+          "required": true,
+          "commitment_required": true,
+          "bounded_commitment_required": true,
+          "initial_visual_witnesses": 0,
+          "initial_search_required": true,
+          "spatial_diversity_witnesses": 1,
+          "camera_aware_visual_witnesses": 0,
+          "camera_search_required": true
+        },
+        "expired_sources_dispatched_zero": true,
+        "refreshed_source_epoch_sec": 2347,
+        "recorded_prior_work_count": 13,
+        "controlled_snapshot_prior_work": true,
+        "gazebo_or_real_nav2_motion": 0,
+        "native_charge_cycles_executed": 0
+      },
+      {
+        "status": "PASS",
+        "label": "current",
+        "callbacks": [
+          {
+            "stage": "expire",
+            "clock": 2346.0,
+            "pose_sources": {
+              "tb1": 2343.0,
+              "tb2": 2343.0
+            },
+            "private_decisions": 0
+          },
+          {
+            "stage": "fresh0",
+            "clock": 2347.0,
+            "pose_sources": {
+              "tb1": 2347.0,
+              "tb2": 2347.0
+            },
+            "private_decisions": 0
+          }
+        ],
+        "actual_action_endpoint_goals": [
+          {
+            "robot": "tb2",
+            "source": 2347.0,
+            "point": [
+              6.362011300025353,
+              -0.4473982127018452
+            ],
+            "kind": "synthetic_action_endpoint"
+          }
+        ],
+        "ordinary_future_successes": 1,
+        "travel_audit": {
+          "status": "PASS",
+          "executed_frontier_witnesses": 1,
+          "relative_travel_discounts": 0,
+          "resumed_frontier_witnesses": 0,
+          "required": true,
+          "commitment_required": true,
+          "bounded_commitment_required": true,
+          "initial_visual_witnesses": 1,
+          "initial_search_required": true,
+          "spatial_diversity_witnesses": 1,
+          "camera_aware_visual_witnesses": 1,
+          "camera_search_required": true
+        },
+        "expired_sources_dispatched_zero": true,
+        "refreshed_source_epoch_sec": 2347,
+        "recorded_prior_work_count": 13,
+        "controlled_snapshot_prior_work": true,
+        "gazebo_or_real_nav2_motion": 0,
+        "native_charge_cycles_executed": 0
+      }
+    ]
+  },
+  "original_failure": "20261011_p2c_v74_failed_development.json",
+  "command_comparison": {
+    "p2c_v75_predeclared1.log": "Original command/observer/configuration/staging/physics unchanged after run-id and sole ownership-PID normalization;31 current source digests.",
+    "p2c_v75_physical_predeclared1.log": "Original command/observer/configuration/staging/physics unchanged after run-id and sole ownership-PID normalization;31 current source digests.",
+    "p2c_v75_physical_predeclared2.log": "Original command/observer/configuration/staging/physics unchanged after run-id and sole ownership-PID normalization;31 current source digests."
+  },
+  "original_conditional_fixture": {
+    "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/fixtures/p2c_v74_camera_primary.json.gz",
+    "sha256": "2166663a0fa432fabd214ae89d9db7a2dc35b77533980958aebc570e6bc084c6",
+    "checkpoints": 4,
+    "limits": "Original fixed delivered checkpoints with stopped clock;recorded prior-work counter is controlled state. No causal task benefit/deadline/motion claim."
+  },
+  "retained_failures": [
+    "Finalizer1 assertion failure before all report writes:staging_command is a string with the actual owner PID. Fixed type-aware comparison normalizes run-id and only --owner-pid;staging literal source and all physical thresholds unchanged.",
+    "Probe1 import SystemExit2 from /tmp shadow module;debug traceback retained;explicit canonical scripts path fixes probe2.",
+    "Unit1:2FAIL/88PASS,explicit metadata prefix and changed old fallback assertion;unit2:90PASS.",
+    "Unit3:4FAIL/104PASS due mapping-only generator capture;handoff diagnostic1:1FAIL/16PASS. Full2:7FAIL/2317PASS361.84s,4 call-capture and3 old route-optimizer parity assumptions; repaired scope/capture preserves current camera and old bounds.",
+    "Full1:14FAIL/212PASS,manually SIGINT during difflib huge-record comparison at344.37s;exit2. Bound diagnostic1:1FAIL/7.03s. Old parity context excluded camera qualification,asserted only null new field then removed it;all existing hard geometry/budget assertions preserved."
+  ],
+  "provenance": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261011_p2c_camera_primary_components_provenance.json.gz",
+    "sha256": "b82b0e37c7d9614639b3e63687e191d8040795abaf782ffcbeaa513890023ba7",
+    "bytes": 1365601
+  },
+  "unchanged": "86 other central methods,104 pure functions,native/SLAM/observer/commands;all300s/5s/sourceTTL/body/full go-return/cases/physical stimuli.",
+  "pending": "Clean-pushed v75 serial4 development,then15 nonheldout formal+2 physical before first917,then full17 gate;no task-validation overlap. No P4/ns3/WiFi/RL."
+}

@@ -7551,6 +7551,7 @@ class HeadquartersControl(Node):
         resume_intents = getattr(self, "exploration_resume_intents", {})
         charge_candidates = {}
         primary_attempts = []
+        camera_primary_attempted = set()
         for refine in ((False, True, "known_space")
                        if search or getattr(self, 'enable_rally', False) else (False, True)):
             candidates = []
@@ -7565,8 +7566,13 @@ class HeadquartersControl(Node):
             for robot_name, position in idle_positions.items():
                 if not lease_current('candidate_generation'):
                     return
+                completed = getattr(self, 'successful_exploration_legs', {}).get(robot_name, 0)
+                camera_first = (not search and getattr(self, 'enable_rally', False) and bool(camera_views)
+                    and type(completed) is int and completed >= 1)
+                camera_mapping = (refine == 'known_space' and camera_first
+                    and robot_name in camera_primary_attempted)
                 initial_search=(not search and getattr(self,'enable_rally',False)
-                    and getattr(self,'initial_search_next',{}).get(robot_name,False))
+                    and (getattr(self,'initial_search_next',{}).get(robot_name,False) or camera_first))
                 robot_exclusions = list(exclusions)
                 robot_exclusions.extend(
                     other_position
@@ -7586,15 +7592,17 @@ class HeadquartersControl(Node):
                         [p for name,p in self.robot_positions.items() if name!=robot_name and p is not None],
                         gain_cache=search_gain_cache,face_interest=True,camera_views=camera_views,defer_gain=True)
                     initial_search=bool(robot_candidates)
+                    if camera_first and robot_candidates:
+                        camera_primary_attempted.add(robot_name)
                     robot_diagnostics=dict(frontier_groups=0,groups_with_viewpoints=0)
-                if refine == "known_space":
+                if refine == "known_space" and not camera_mapping:
                     if search:
                         robot_candidates = known_space_search_candidates(
                             self.map_data, self.resolution, self.origin, robot_name, position,
                             [*self.target_search_visits, *[p for p in self.robot_positions.values() if p is not None]],
                             robot_exclusions, [p for name,p in self.robot_positions.items() if name != robot_name and p is not None],
                             gain_cache=search_gain_cache,defer_gain=True)
-                    elif getattr(self, 'initial_search_next', {}).get(robot_name, False) or not camera_views:
+                    elif camera_first or getattr(self, 'initial_search_next', {}).get(robot_name, False) or not camera_views:
                         robot_candidates = []  # The primary rounds already tried this camera pool.
                     else:
                         robot_candidates = known_space_search_candidates(
@@ -7606,7 +7614,8 @@ class HeadquartersControl(Node):
                             camera_views=camera_views, defer_gain=True)
                         initial_search = bool(robot_candidates)
                     robot_diagnostics = dict(frontier_groups=0, groups_with_viewpoints=0)
-                elif not initial_search:
+                elif not initial_search or camera_mapping:
+                    initial_search = False
                     if frontier_data is None:
                         frontier_data = prepare_frontier_data(
                             self.map_data, self.resolution, defer_gain=True)
@@ -7633,7 +7642,7 @@ class HeadquartersControl(Node):
                 ]
                 lookahead_candidates[robot_name] = [row[3] for row in robot_candidates]
                 raw_candidates.extend(robot_candidates)
-                candidate_contexts[robot_name] = (robot_exclusions, initial_search)
+                candidate_contexts[robot_name] = (robot_exclusions, initial_search, camera_first, camera_mapping, completed)
 
             if proposal is not None:
                 raw_candidates = exploration_geometry_subset(
@@ -7768,7 +7777,7 @@ class HeadquartersControl(Node):
                 if not lease_current('candidate_budget'):
                     scoring_aborted = True
                     return None
-                robot_exclusions, initial_search = candidate_contexts[robot_name]
+                robot_exclusions, initial_search, camera_first, camera_mapping, completed = candidate_contexts[robot_name]
                 # Preserve reachability analysis for an unfunded frontier,
                 # but request charging instead of executing a trip that is
                 # already expected to be interrupted by local reserve.
@@ -7785,6 +7794,15 @@ class HeadquartersControl(Node):
                 preference = (None if search else HeadquartersControl.frontier_travel_preference(
                     self, robot_name, assignment, travel_fields))
                 if preference is not None:
+                    if getattr(self, 'enable_rally', False):
+                        preference['camera_first_search'] = (dict(
+                            strategy='camera_first_after_real_work', generated_at_sec=planning_started,
+                            completed_exploration_legs=completed, camera_history_count=len(camera_views),
+                            selected_kind='camera' if initial_search else 'mapping',
+                            mapping_reason=(None if initial_search else 'two_visual_rounds_without_action'
+                                if camera_mapping else 'empty_visual_pool'),
+                            primary_attempts=primary_attempts if camera_mapping else None,
+                        ) if camera_first else None)
                     utility *= preference['factor']
                     utility *= preference.get('mission_spatial_diversity',{}).get('factor',1.)
                 coordinated = Assignment(

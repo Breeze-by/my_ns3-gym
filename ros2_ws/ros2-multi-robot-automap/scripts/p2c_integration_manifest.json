@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-10T19:58:37.871476+00:00",
+  "predeclared_at_utc": "2026-10-10T20:41:46.092939+00:00",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -349,7 +349,8 @@
     "20261010_p2c_v44_failed_development.json",
     "20261010_p2c_v45_failed_development.json",
     "20261011_p2c_v72_failed_development.json",
-    "20261011_p2c_v73_failed_development.json"
+    "20261011_p2c_v73_failed_development.json",
+    "20261011_p2c_v74_failed_development.json"
   ],
   "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
   "opportunity_charge_rules": [
@@ -502,7 +503,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "d0be454749a80d2d20a4daa4bdc9efe544a1e5f1",
+  "candidate_parent_commit": "1dbc38d55738bc43f52436547944bf8b9397d0d2",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -1016,5 +1017,14 @@
     "unchanged": "Original60s timeout and20s no-progress cancellation, actual action-result success accounting, first-replenishment real-work requirement, source stamps and TTL, native battery/SLAM/Nav2/physics,300s and5s/cases/stimuli. No new goal or command refresh.",
     "evidence": "Private rate-limited continuation witnesses; independent initial replenishment reader binds original command/raw CDR maps/native battery and rechecks full geometry and physical budget.",
     "component_report": "20261011_p2c_initial_goal_completion_components.json"
+  },
+  "camera_first_search": {
+    "scope": "Full object EXPLORE/FOUND_UNCONFIRMED after at least one real ordinary successful leg and delivered heading history: existing known-free camera-interest pool is primary.",
+    "work": "Existing exact int successful_exploration_legs >=1; no successful-count credit from canceled/resultless actions or return-clearance actions.",
+    "fallback": "Empty camera pool immediately uses original mapping. Two nonempty primary camera rounds without admission use original refined mapping; no repeated mapping third round when the camera pool is empty.",
+    "preserved": "All existing exact camera gain and yaw, diversity/relative travel, complete current local/fused full go/return budgets, body/reservations,2/5s leases, original Nav2/SLAM/native battery and300s/5s/cases/physical stimuli. Mapping-only and first ordinary selection retain existing policy.",
+    "evidence": "Existing private travel preference explicitly carries camera-first or null. Independent initial replenishment reader binds prior actual ordinary command/outcome and current marker; existing exploration/source/energy/route audits remain mandatory.",
+    "limits": "Camera history is a search preference, not evidence of target absence; conditional original checkpoints and DDS synthetic endpoints do not prove task benefit.",
+    "component_report": "20261011_p2c_camera_primary_components.json"
   }
 }

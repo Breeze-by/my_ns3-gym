@@ -36,7 +36,9 @@ def conditional_charge(event, assign):
     node.initial_search_visits = dict(enumerate(d['initial_search_visits']))
     node.initial_search_views = dict(enumerate(d['initial_search_views']))
     node.target_search_visits = d['target_search_visits'].copy()
-    node.successful_exploration_legs = d['successful_exploration_legs'].copy()
+    # Compare the pricing bound in the original policy context. Camera-first
+    # after real work has separate selection and hard-admission coverage.
+    node.successful_exploration_legs = dict.fromkeys(d['successful_exploration_legs'], 0)
     node.rally_charge_requested = d['rally_charge_requested'].copy()
     node.goal_routes = d['goal_routes'].copy()
     node.goal_targets = {n: None if a is None else control.Assignment(
@@ -46,6 +48,9 @@ def conditional_charge(event, assign):
     node.charge_request_publishers = {n: SimpleNamespace(publish=lambda msg: requests.append(json.loads(msg.data)))
                                     for n in d['battery_states']}
     assign(node)
+    for choice in node.exploration_travel_choices.values():
+        assert choice.get('camera_first_search') is None
+        choice.pop('camera_first_search', None)
     return json.loads(json.dumps(dict(sent=sent, requests=requests, choices=node.exploration_travel_choices),
                                 default=dataclasses.asdict))
 

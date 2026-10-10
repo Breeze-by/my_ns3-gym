@@ -39,7 +39,9 @@ def conditional_assignment(event, assign):
     node.initial_search_visits = dict(enumerate(d['initial_search_visits']))
     node.initial_search_views = dict(enumerate(d['initial_search_views']))
     node.target_search_visits = d['target_search_visits'].copy()
-    node.successful_exploration_legs = d['successful_exploration_legs'].copy()
+    # Test the frozen route optimizer outside the separately tested camera-first
+    # qualification; retain its original history, headings and gain candidates.
+    node.successful_exploration_legs = dict.fromkeys(d['successful_exploration_legs'], 0)
     node.rally_charge_requested = d['rally_charge_requested'].copy()
     node.goal_routes = d['goal_routes'].copy()
     node.goal_targets = {n: None if a is None else control.Assignment(
@@ -49,6 +51,9 @@ def conditional_assignment(event, assign):
     # has its own complete fixture and actual DDS/Future regression probe.
     with patch.object(control.HeadquartersControl, 'request_exploration_charge', return_value=False):
         assign(node)
+    for choice in node.exploration_travel_choices.values():
+        assert choice.get('camera_first_search') is None
+        choice.pop('camera_first_search', None)
     return json.loads(json.dumps(dict(sent=sent, choices=node.exploration_travel_choices),
                                 default=dataclasses.asdict))
 

@@ -76,10 +76,16 @@ def test_primary_geometry_after_first_charge_stays_equal_or_safe_new_fallback_is
     # The initial replenishment policy has its own frozen-budget comparison.
     # This conditional geometry regression deliberately excludes that policy.
     for node in (before, after):
+        # Keep this geometry parity comparison outside the new work-qualified
+        # camera preference; the original camera history/fallback stay intact.
+        node.successful_exploration_legs = dict.fromkeys(node.successful_exploration_legs, 0)
         for state in node.battery_states.values():
             state['charge_count'] = max(1, state.get('charge_count', 0))
     reference_assign()(before)
     c.HeadquartersControl.assign_idle_robots(after)
+    for choice in after.exploration_travel_choices.values():
+        assert choice.get('camera_first_search') is None
+        choice.pop('camera_first_search', None)
     fallback = any(choice.get('known_space_fallback') for choice in after.exploration_travel_choices.values())
     if not fallback:
         assert decision(before, old_goals) == decision(after, new_goals)
@@ -166,6 +172,8 @@ def test_invalid_handoff_returns_to_current_ordinary_generator(monkeypatch, chan
     generated = []
     monkeypatch.setattr(c, 'robot_candidate_assignments',
         lambda *args, **kwargs: (generated.append(args[3]) or ([], dict(frontier_groups=0, groups_with_viewpoints=0))))
+    monkeypatch.setattr(c, 'known_space_search_candidates',
+        lambda *args, **kwargs: (generated.append(args[3]) or []))
     c.HeadquartersControl.assign_idle_robots(node)
     assert all(row['event'] != 'coordinator_charge_geometry_handoff' for row in private)
     assert generated and set(generated) != {'tb2'}

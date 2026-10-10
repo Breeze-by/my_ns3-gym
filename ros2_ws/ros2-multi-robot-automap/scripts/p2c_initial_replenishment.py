@@ -8,7 +8,8 @@ from multi_robot_exploration import control
 from p2c_return_preparation import audit_preparation, decode_grid
 
 
-def initial_replenishment_audit(ledger, enabled=False, native_capture=None, require_completion_hold=False, map_capture=None):
+def initial_replenishment_audit(ledger, enabled=False, native_capture=None, require_completion_hold=False, map_capture=None,
+                              require_camera_first=False):
     native = {}
     if enabled:
         assert native_capture is not None and native_capture.is_file()
@@ -47,6 +48,7 @@ def initial_replenishment_audit(ledger, enabled=False, native_capture=None, requ
         if len(kinds) == 1 and kinds <= {'exploration', 'initial_visual_search'}:
             successes.setdefault(key[0], []).append(at)
     audit_completion_holds(holds, navigation, commands, successes, native, require_completion_hold, map_capture)
+    camera_first = audit_camera_first(navigation, successes, require_camera_first)
     decisions, robots = 0, set()
     for line in ledger.open():
         event = json.loads(line)
@@ -121,7 +123,58 @@ def initial_replenishment_audit(ledger, enabled=False, native_capture=None, requ
         robots.add(name)
     return dict(enabled=enabled, status='PASS', policy_requests=decisions,
         robots=sorted(robots), first_goal_completion_holds=len(holds), completion_hold_declared=require_completion_hold,
+        camera_first_search=camera_first,
         scope='One initial near-home replenishment after actual ordinary success; scheduling threshold and current full trip cost rebuilt separately. Native credit and physical return remain separate original audits.')
+
+
+def audit_camera_first(navigation, successes, required):
+    """Bind the camera-first preference to actual prior ordinary outcomes."""
+    visual = mapping = 0
+    for name, events in navigation.items():
+        for event in events:
+            if event['kind'] not in ('exploration', 'initial_visual_search'):
+                continue
+            preference = event.get('travel_preference', {})
+            if required:
+                assert 'camera_first_search' in preference, 'missing camera-first declaration'
+            saved = preference.get('camera_first_search')
+            if saved is None:
+                continue
+            assert required, 'undeclared camera-first selection'
+            assert event['task_phase'] in ('EXPLORE', 'FOUND_UNCONFIRMED')
+            assert saved['strategy'] == 'camera_first_after_real_work'
+            generated, now = saved['generated_at_sec'], event['event_time']
+            evaluated = preference['required_energy_evaluated_at_sec']
+            assert math.isfinite(generated) and generated <= evaluated <= now
+            completed = saved['completed_exploration_legs']
+            assert type(completed) is int and 1 <= completed <= sum(at <= generated for at in successes.get(name, []))
+            count = saved['camera_history_count']
+            assert type(count) is int and count > 0
+            for key, sample in event['inputs'].items():
+                if key == 'headquarters/target_detection':
+                    continue
+                assert 0 <= generated - sample['source_time'] <= sample['ttl_sec']
+                assert 0 <= now - sample['source_time'] <= sample['ttl_sec']
+            if saved['selected_kind'] == 'camera':
+                assert event['kind'] == 'initial_visual_search'
+                assert count == len(preference['initial_search_views'])
+                assert saved['mapping_reason'] is None and saved['primary_attempts'] is None
+                visual += 1
+            else:
+                assert saved['selected_kind'] == 'mapping' and event['kind'] == 'exploration'
+                reason, attempts = saved['mapping_reason'], saved['primary_attempts']
+                if reason == 'empty_visual_pool':
+                    assert attempts is None
+                else:
+                    assert reason == 'two_visual_rounds_without_action'
+                    assert len(attempts) == 2 and [row['refine'] for row in attempts] == [False, True]
+                    for row in attempts:
+                        assert type(row['refine']) is bool and type(row['admitted']) is int and row['admitted'] == 0
+                        assert name in row['considered_candidates']
+                        assert all(type(n) is int and n >= 0 for n in row['considered_candidates'].values())
+                mapping += 1
+    return dict(status='PASS', enabled=required, camera_primary=visual, mapping_after_camera=mapping,
+        scope='Prior real ordinary outcomes and current selection provenance; full geometry/energy/heading remain the independent exploration audit. Attempt counters do not prove absence of every alternative.')
 
 
 def audit_completion_holds(events, navigation, commands, successes, native, required, capture):
