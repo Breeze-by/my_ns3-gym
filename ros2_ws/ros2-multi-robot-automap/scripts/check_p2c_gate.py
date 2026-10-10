@@ -925,7 +925,7 @@ def check_one(path,config):
     refuge=refuge_release_audit(directory/'ledger.jsonl',bool(config.get('charged_return_refuge_release')),
         directory/'navigation_inputs.jsonl.gz',bool(config.get('refuge_release_preflight_guard')))
     connection=rally_connection_audit(directory/'ledger.jsonl',bool(config.get('rally_connection_handoff')),
-        directory/'navigation_inputs.jsonl.gz')
+        directory/'navigation_inputs.jsonl.gz',bool(config.get('rally_connection_local_reinspection')))
     if config.get('rally_connection_handoff'):
         from run_p2d_baseline import file_digest
         assert row['source_digests']['rally_connection_reader']==file_digest(Path(__file__).with_name('p2c_rally_connection.py'))
