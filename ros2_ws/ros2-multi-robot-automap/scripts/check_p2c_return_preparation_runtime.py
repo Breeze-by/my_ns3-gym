@@ -31,6 +31,7 @@ from p2c_outbound_routes import decode
 
 REFERENCE = '39e1840930c692612d0cf0584050ae961dce4fff'
 HEADING_REFERENCE = 'fcbc3f47fd1e03bfb3574da8650142d092da8a98'
+WINDOW_REFERENCE = 'e309353c13ec979e504da61fc8d132fa6cfc1b14'
 SOURCE = 'ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/control.py'
 
 
@@ -60,8 +61,9 @@ def case(module, label, displacement=None, purpose="yield"):
         charge_radius_m=.8, move_cost_per_m=1., idle_cost_per_sec=.02,
         return_path_factor=2., nominal_speed_mps=.18, return_safety_margin=8.) for name in positions}
     helper, returning = 'tb2', 'tb1'
-    if purpose == 'prefix':
+    if purpose in ('prefix', 'window'):
         states[helper].update(energy=40., charge_count=0, charge_x=0., charge_y=0.)
+        if purpose == 'window':positions[helper]=(1.15,0.)
     if displacement:
         original_inputs = displacement['original_event']['diagnostic_inputs']
         positions = dict(original_inputs['robot_positions'])
@@ -80,6 +82,9 @@ def case(module, label, displacement=None, purpose="yield"):
         lambda msg:events.append(json.loads(msg.data)),10),
         probe.create_subscription(String,node.charge_request_publishers[returning].topic_name,
         lambda msg:requests.append(json.loads(msg.data)),10)]
+    if purpose=='window':
+        subscriptions.append(probe.create_subscription(String,node.charge_request_publishers[helper].topic_name,
+            lambda msg:requests.append(json.loads(msg.data)),10))
     def execute(handle):
         goals.append((handle.request.pose.pose.position.x, handle.request.pose.pose.position.y))
         q=handle.request.pose.pose.orientation;goal_yaws.append(2.*math.atan2(q.z,q.w))
@@ -94,12 +99,16 @@ def case(module, label, displacement=None, purpose="yield"):
         return result
     if label == 'current':module.rally_yield_pose=slow
     original_candidates=module.robot_candidate_assignments
-    if purpose == 'prefix':
+    if purpose in ('prefix', 'window'):
         def candidates(grid,resolution,origin,name,*args,**kwargs):
             if name != helper:return [],dict(frontier_groups=0,groups_with_viewpoints=0)
             entered.set();time.sleep(.6)
             goal=module.Assignment(module.Viewpoint(1,100,140,100,140,1000,10),4.,0.,4.,100.,4.,0.)
-            return [(100.,helper,1,goal)],dict(frontier_groups=1,groups_with_viewpoints=1)
+            rows=[(100.,helper,1,goal)]
+            if purpose=='window':
+                homeward=module.Assignment(module.Viewpoint(2,100,80,100,80,1000,10),-2.,0.,3.15,50.,-2.,0.)
+                rows.append((50.,helper,2,homeward))
+            return rows,dict(frontier_groups=len(rows),groups_with_viewpoints=len(rows))
         module.robot_candidate_assignments=candidates
     def run(message):
         try:
@@ -108,6 +117,13 @@ def case(module, label, displacement=None, purpose="yield"):
                 result=module.HeadquartersControl.prepare_exploration_return(node,returning)
                 if message.data=='cleared':assert result is False
             elif message.data == 'request':module.HeadquartersControl.request_exploration_charge(node,[(returning,assignment)])
+            elif message.data == 'topup':
+                traversable=module.block_dynamic_positions(module.traversable_grid(node.map_data,node.resolution,module.PATH_CLEARANCE_M),
+                    node.resolution,node.origin,[p for n,p in node.robot_positions.items() if n!=helper])
+                distances=module.exploration_distance_field(node.map_data,traversable,node.resolution,node.origin,node.robot_positions[helper])
+                target=module.world_to_grid(4.,0.,node.resolution,*node.origin)
+                goal=module.Assignment(module.Viewpoint(1,100,140,100,140,1000,10),4.,0.,float(distances[target]),100.,4.,0.)
+                module.HeadquartersControl.request_exploration_charge(node,[(helper,goal)])
             else:module.HeadquartersControl.admit_exploration_return_yield(node)
             callbacks.append(dict(clock=node.now(),pose_source=node.robot_odom_received_at[helper],
                 pending=bool(getattr(node,'pending_exploration_return_yield',None)),charge_owner=bool(node.rally_charge_requested)))
@@ -149,7 +165,7 @@ def case(module, label, displacement=None, purpose="yield"):
         until(lambda:node.robot_nav_clients[helper].server_is_ready())
         consume(10.)
         assert node.task_state=='EXPLORE'
-        trigger.publish(String(data='assign' if purpose == 'prefix' else 'prepare' if displacement else 'request'))
+        trigger.publish(String(data='assign' if purpose in ('prefix','window') else 'prepare' if displacement else 'request'))
         if label=='current':
             assert entered.wait(10.)
             for _ in range(12):
@@ -157,29 +173,43 @@ def case(module, label, displacement=None, purpose="yield"):
                 if not displacement:deliver(13.)
                 time.sleep(.02)
         assert finished.wait(10.) and not errors,errors
-        if purpose == 'prefix':
+        if purpose in ('prefix','window'):
             assert callbacks[0]['clock']==13. and not goals and not requests
             assert not node.successful_exploration_legs
             consume(13.);node.pending_exploration_geometry=None;node.pending_exploration_charge_geometry=None
+            if purpose=='window':
+                node.pending_exploration_geometry=dict(context=('EXPLORE',False,tuple(sorted(node.participating_robots())),None),
+                    generated_at=13.,points={helper:((4.,0.),)},cursor={})
             finished.clear();trigger.publish(String(data='assign'))
             assert finished.wait(10.) and not errors,errors
             until(lambda:len(goals)==1 and node.goal_handles[helper] is not None)
             assert not node.successful_exploration_legs and not requests
+            if purpose=='window':
+                finished.clear();trigger.publish(String(data='topup'))
+                assert finished.wait(10.) and not errors and not requests and not node.successful_exploration_legs
             positions[helper]=goals[0];consume(14.);release.set()
             until(lambda:node.goal_handles[helper] is None and node.robot_states[helper]=='idle'
                 and node.successful_exploration_legs.get(helper,0)==1)
             until(lambda:any(e.get('event')=='coordinator_navigation_decision' for e in events))
             decisions=[e for e in events if e.get('event')=='coordinator_navigation_decision']
             assert len(decisions)==1 and decisions[0]['kind']=='exploration'
-            assert decisions[0]['travel_preference']['target']==[4.,0.]
+            assert decisions[0]['travel_preference']['target']==([-2.,0.] if purpose=='window' and is_current else [4.,0.])
             if is_current:
                 from p2c_initial_replenishment import audit_initial_prefix
                 assert math.dist(goals[0],(0.,0.))+.35<=1.6
-                assert audit_initial_prefix({helper:decisions},{},True)['bounded_first_legs']==1
+                assert audit_initial_prefix({helper:decisions},{},True,purpose=='window')['bounded_first_legs']==1
             else:
                 assert math.dist(goals[0],(0.,0.))>1.6
-                assert 'initial_replenishment_prefix' not in decisions[0]['travel_preference']
+                assert decisions[0]['travel_preference'].get('initial_replenishment_prefix') is None
             assert not requests
+            if purpose=='window':
+                finished.clear();trigger.publish(String(data='topup'))
+                assert finished.wait(10.) and not errors,errors
+                if is_current:
+                    until(lambda:len(requests)==1)
+                    assert requests[0]['robot']==helper and requests[0]['reason']=='initial_near_home_replenishment'
+                    assert requests[0]['stamp_sec']==14.
+                else:assert not requests
         elif label=='frozen' and displacement:
             assert callbacks[0]['pending'] and not goals and not requests
             point=node.pending_exploration_return_yield['refuge']
@@ -238,14 +268,15 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--displacement-fixture',type=Path,help='Original v54 grids/positions for the actual half-metre displacement counterexample')
     parser.add_argument('--first-leg-heading',action='store_true',help='Probe v79 versus current first prefix and fresh clearance heading')
+    parser.add_argument('--first-leg-window',action='store_true',help='Probe v80 versus current real homeward work after clearance displacement')
     args=parser.parse_args()
     if args.output.exists():parser.error('do not overwrite evidence')
     assert os.environ.get('ROS_DOMAIN_ID') in ('216','217'), 'use an isolated component domain'
     displacement=None
     if args.displacement_fixture:
         with gzip.open(args.displacement_fixture,'rt') as stream:displacement=json.load(stream)
-    assert not (args.first_leg_heading and displacement)
-    reference=HEADING_REFERENCE if args.first_leg_heading else displacement['reference_commit'] if displacement else REFERENCE
+    assert sum(bool(x) for x in (args.first_leg_heading,args.first_leg_window,displacement))<=1
+    reference=WINDOW_REFERENCE if args.first_leg_window else HEADING_REFERENCE if args.first_leg_heading else displacement['reference_commit'] if displacement else REFERENCE
     old=subprocess.check_output(['git','show',reference+':'+SOURCE],text=True)
     frozen=types.ModuleType('p2c_frozen_return_preparation');frozen.__file__=current.__file__
     frozen.__package__='multi_robot_exploration';sys.modules[frozen.__name__]=frozen
@@ -257,8 +288,10 @@ def main():
             reference_commit=reference,reference_sha256=hashlib.sha256(old.encode()).hexdigest(),
             control_sha256=hashlib.sha256(Path(current.__file__).read_bytes()).hexdigest(),
             reader_sha256=hashlib.sha256(Path(__file__).with_name('p2c_return_preparation.py').read_bytes()).hexdigest(),
+            initial_reader_sha256=hashlib.sha256(Path(__file__).with_name('p2c_initial_replenishment.py').read_bytes()).hexdigest(),
             displacement_fixture=displacement,
-            cases=([case(module,'current',purpose=purpose) for purpose in ('prefix','yield_heading') for module in (frozen,current)]
+            cases=([case(module,'current',purpose='window') for module in (frozen,current)] if args.first_leg_window else
+                [case(module,'current',purpose=purpose) for purpose in ('prefix','yield_heading') for module in (frozen,current)]
                 if args.first_leg_heading else [case(frozen,'frozen',displacement),case(current,'current',displacement)]),all_owned_closed=True)
         args.output.write_text(json.dumps(result,indent=2)+'\n')
         print(json.dumps(dict(status=result['status'],cases=[dict(label=r['label'],requests=len(r['charge_requests']),goals=len(r['synthetic_endpoint_goals'])) for r in result['cases']])))

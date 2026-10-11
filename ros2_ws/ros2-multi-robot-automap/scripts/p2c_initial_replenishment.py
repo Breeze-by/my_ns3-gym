@@ -9,7 +9,8 @@ from p2c_return_preparation import audit_preparation, decode_grid
 
 
 def initial_replenishment_audit(ledger, enabled=False, native_capture=None, require_completion_hold=False, map_capture=None,
-                              require_camera_first=False, require_alternating=False, require_initial_prefix=False):
+                              require_camera_first=False, require_alternating=False, require_initial_prefix=False,
+                              require_geometry_window=False):
     native = {}
     if enabled:
         assert native_capture is not None and native_capture.is_file()
@@ -49,7 +50,7 @@ def initial_replenishment_audit(ledger, enabled=False, native_capture=None, requ
             successes.setdefault(key[0], []).append(at)
     audit_completion_holds(holds, navigation, commands, successes, native, require_completion_hold, map_capture)
     camera_first = audit_camera_first(navigation, successes, require_camera_first, require_alternating)
-    prefixes = audit_initial_prefix(navigation, successes, require_initial_prefix)
+    prefixes = audit_initial_prefix(navigation, successes, require_initial_prefix, require_geometry_window)
     decisions, robots = 0, set()
     for line in ledger.open():
         event = json.loads(line)
@@ -129,7 +130,7 @@ def initial_replenishment_audit(ledger, enabled=False, native_capture=None, requ
         scope='One initial near-home replenishment after actual ordinary success; scheduling threshold and current full trip cost rebuilt separately. Native credit and physical return remain separate original audits.')
 
 
-def audit_initial_prefix(navigation, successes, required=False):
+def audit_initial_prefix(navigation, successes, required=False, require_geometry_window=False):
     """Rebuild a first-leg preference without counting it as completed work."""
     count = 0
     for name, events in navigation.items():
@@ -143,7 +144,9 @@ def audit_initial_prefix(navigation, successes, required=False):
             if saved is None:
                 continue
             assert required, 'undeclared first-leg prefix'
-            assert saved['strategy'] == 'first_real_leg_near_home'
+            assert saved['strategy'] in ('first_real_leg_near_home', 'first_real_leg_home_window')
+            if require_geometry_window:
+                assert saved['strategy'] == 'first_real_leg_home_window'
             assert event['task_phase'] in ('EXPLORE', 'FOUND_UNCONFIRMED')
             state, position = event['battery_states'][name], event['current_position']
             assert state == saved['battery_state'] and state['mode'] == 'ACTIVE'
@@ -163,15 +166,41 @@ def audit_initial_prefix(navigation, successes, required=False):
             assert all(math.isfinite(v) for v in (radius, capacity, fraction, energy))
             assert radius > .2 and capacity > 0 and 0 < fraction <= 1 and 0 < energy < capacity*fraction
             home = (state['charge_x'], state['charge_y'])
-            limit = (2.*radius - math.dist(position, home)
-                - control.RALLY_POSITION_TOLERANCE_M - math.sqrt(2.)*event['planning_map']['resolution'])
-            assert control.PATH_CLEARANCE_M < limit < control.MAX_NAVIGATION_LEG_M
-            assert math.isclose(saved['max_distance_m'], limit, abs_tol=1e-10)
-            assert math.dist(event['requested_position'], home) + control.RALLY_POSITION_TOLERANCE_M <= 2.*radius + 1e-10
+            if saved['strategy'] == 'first_real_leg_near_home':
+                limit = (2.*radius - math.dist(position, home)
+                    - control.RALLY_POSITION_TOLERANCE_M - math.sqrt(2.)*event['planning_map']['resolution'])
+                assert control.PATH_CLEARANCE_M < limit < control.MAX_NAVIGATION_LEG_M
+                assert math.isclose(saved['max_distance_m'], limit, abs_tol=1e-10)
+                assert math.dist(event['requested_position'], home) + control.RALLY_POSITION_TOLERANCE_M <= 2.*radius + 1e-10
+            else:
+                minimum = control.PATH_CLEARANCE_M + control.RALLY_POSITION_TOLERANCE_M
+                maximum = 2.*radius - control.RALLY_POSITION_TOLERANCE_M
+                assert minimum < maximum and math.dist(position, home) <= 2.*radius
+                assert saved['minimum_home_distance_m'] == minimum
+                assert saved['maximum_home_distance_m'] == maximum
+                assert saved['minimum_motion_m'] == control.RALLY_POSITION_TOLERANCE_M
+                assert saved['max_distance_m'] == control.MAX_NAVIGATION_LEG_M
+                planning, local = event['planning_map'], event['return_maps'][name]
+                target = preference['target']
+                goal, route = control.plan_rally_leg(control.RallyPose(*target, 0.), decode_grid(planning),
+                    planning['resolution'], planning['origin'], position, control.MAX_NAVIGATION_LEG_M,
+                    blocked_positions=[point for other, point in event['robot_positions'].items() if other != name],
+                    clearance_m=control.PATH_CLEARANCE_M, visible_only=True,
+                    local_map=dict(data=decode_grid(local), resolution=local['resolution'], origin=local['origin']))
+                assert goal is not None, 'missing complete visible first-leg route'
+                eligible = [(i, point) for i, point in enumerate(route)
+                    if minimum <= math.dist(point, home) <= maximum
+                    and math.dist(point, position) > control.RALLY_POSITION_TOLERANCE_M]
+                assert eligible and np.allclose(saved['window_endpoint'], eligible[-1][1], atol=1e-10, rtol=0.)
+                endpoint = event['requested_position']
+                assert minimum <= math.dist(endpoint, home) <= maximum
+                assert math.dist(endpoint, position) > control.RALLY_POSITION_TOLERANCE_M
+                assert any(np.allclose(endpoint, point, atol=1e-10, rtol=0.) for point in route[:eligible[-1][0]+1])
             assert preference['required_energy'] > 0 and preference['planned_distance_m'] > 0
             count += 1
     return dict(status='PASS', declared=required, bounded_first_legs=count,
-        scope='First ordinary dispatch only; actual success and native charge credit remain separate original checks.')
+        geometry_window_declared=require_geometry_window,
+        scope='Before the first ordinary success; actual success and native charge credit remain separate original checks.')
 
 
 def audit_camera_first(navigation, successes, required, alternating=False):

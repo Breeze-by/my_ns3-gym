@@ -88,7 +88,7 @@ def test_independent_first_prefix_reader_rejects_invalid_authority(monkeypatch, 
     saved = event['travel_preference']['initial_replenishment_prefix']; successes = {}
     if tamper == 'missing': del event['travel_preference']['initial_replenishment_prefix']
     if tamper == 'position': saved['robot_position'][0] += .1
-    if tamper == 'limit': saved['max_distance_m'] += .1
+    if tamper == 'limit': saved['maximum_home_distance_m'] += .1
     if tamper == 'source': saved['generated_at_sec'] = 13.
     if tamper == 'prior_success': successes = {'tb1': [9.]}
     if tamper == 'charged': saved['battery_state']['charge_count'] = 1
@@ -112,7 +112,7 @@ def test_first_prefix_model_requires_valid_exact_initial_history(bad):
     if bad == 'capacity': state['capacity'] = -100.
     if bad == 'fraction': state['charge_target_fraction'] = 2.
     if bad == 'energy': state['energy'] = 80.
-    if bad == 'far': position = (1.2, 0.)
+    if bad == 'far': position = (2., 0.)
     assert c.initial_replenishment_prefix(state, position, completed, .1) is None
 
 
@@ -137,7 +137,8 @@ def test_final_reservation_endpoint_must_still_satisfy_the_near_home_window(monk
     monkeypatch.setattr(c, 'reserve_rally_prefix',
         lambda plan, reservations: (c.RallyPose(3.5, 3., 0.), ((2., 3.), (3.5, 3.))))
     c.HeadquartersControl.assign_idle_robots(h)
-    assert not sent and not h.successful_exploration_legs
+    assert len(sent) == 1 and not h.successful_exploration_legs
+    assert h.exploration_travel_choices['tb1']['initial_replenishment_prefix'] is None
 
 
 @pytest.mark.parametrize('index', range(4))

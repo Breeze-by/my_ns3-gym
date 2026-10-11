@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-11T00:29:40.285850+00:00",
+  "predeclared_at_utc": "2026-10-11T02:00:42Z",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "fcbc3f47fd1e03bfb3574da8650142d092da8a98",
+  "candidate_parent_commit": "e309353c13ec979e504da61fc8d132fa6cfc1b14",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -262,7 +262,8 @@
     "20261011_p2c_v76_failed_development.json",
     "20261011_p2c_v77_failed_development.json",
     "20261011_p2c_v78_failed_development.json",
-    "20261011_p2c_v79_failed_development.json"
+    "20261011_p2c_v79_failed_development.json",
+    "20261011_p2c_v80_failed_development.json"
   ],
   "coordinator_live_clock": {
     "executor": "Two workers; only the existing /clock subscription moves to an independent mutually exclusive group. Original state/action callbacks remain serialized.",
@@ -661,8 +662,10 @@
     "preserved": "current body clearance, original full return preparation, source leases, native energy and charge credit",
     "component_report": "20261011_p2c_initial_replenishment_components.json",
     "first_leg_prefix": {
-      "strategy": "first_real_leg_near_home",
-      "scope": "Before any real ordinary success or native charge, bound one proposed prefix inside the original 2*charge-radius window with the original position tolerance. Complete selected frontier cost remains mandatory; real success and fresh clear native return still required for charging."
+      "strategy": "first_real_leg_home_window",
+      "scope": "Before any real ordinary success/native charge and still within original 2*radius: prefer real motion on a prefix of the unchanged complete visible, body-masked and local-consistent route. Endpoint annulus uses original0.35m arrival margin on both original near-home bounds. Complete selected frontier cost remains mandatory; no dispatch or clearance success earns work credit.",
+      "deferred_candidates": "With retained geometry hints, up to3 fresh geometry-qualified near-home candidates then up to3 original normal candidates; otherwise both tiers use the original current full pool. Original accurate gain/score/full-budget/route reservations/source leases remain. No admitted near-home candidate preserves normal fallback. Retained hints carry only points; geometry and prices are fresh.",
+      "component_report": "20261011_p2c_first_leg_home_window_components.json"
     }
   },
   "initial_known_space_fallback": {

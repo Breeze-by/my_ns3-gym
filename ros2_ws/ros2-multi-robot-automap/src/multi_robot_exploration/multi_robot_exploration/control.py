@@ -1368,7 +1368,7 @@ def path_waypoint(traversable, start, target, max_distance_cells):
 
 
 def initial_replenishment_prefix(state, position, completed, resolution):
-    """Keep a first real leg near the existing one-time top-up window."""
+    """Prefer a first real leg inside the existing one-time top-up window."""
     try:
         if type(completed) is not int or completed != 0 or type(state.get('charge_count')) is not int or state['charge_count'] != 0:
             return None
@@ -1380,15 +1380,35 @@ def initial_replenishment_prefix(state, position, completed, resolution):
         if (not all(math.isfinite(v) for v in (*position, *home, radius, capacity, fraction, target, energy, resolution))
                 or resolution <= 0 or radius <= .2 or capacity <= 0 or not 0 < fraction <= 1 or not 0 < energy < target):
             return None
-        limit = (2. * radius - math.dist(position, home)
-            - RALLY_POSITION_TOLERANCE_M - math.sqrt(2.) * resolution)
-        if not PATH_CLEARANCE_M < limit < MAX_NAVIGATION_LEG_M:
+        minimum = PATH_CLEARANCE_M + RALLY_POSITION_TOLERANCE_M
+        maximum = 2. * radius - RALLY_POSITION_TOLERANCE_M
+        if minimum >= maximum or math.dist(position, home) > 2. * radius:
             return None
-        return dict(strategy='first_real_leg_near_home', max_distance_m=limit,
+        return dict(strategy='first_real_leg_home_window', max_distance_m=MAX_NAVIGATION_LEG_M,
+            minimum_home_distance_m=minimum, maximum_home_distance_m=maximum,
+            minimum_motion_m=RALLY_POSITION_TOLERANCE_M,
             robot_position=list(position), battery_state=dict(state),
             completed_exploration_legs=completed)
     except (KeyError, TypeError, ValueError):
         return None
+
+
+def initial_replenishment_leg(plan, preference):
+    """Take a real near-home prefix of an already qualified visible route."""
+    pose, route = plan
+    if pose is None or preference is None:
+        return None
+    state = preference['battery_state']
+    home = (state['charge_x'], state['charge_y'])
+    for index in range(len(route)-1, -1, -1):
+        point = route[index]
+        if (preference['minimum_home_distance_m'] <= math.dist(point, home)
+                <= preference['maximum_home_distance_m']
+                and math.dist(point, preference['robot_position']) > preference['minimum_motion_m']):
+            prefix = route[:index+1]
+            return (RallyPose(*point, pose.yaw if index == len(route)-1
+                else route_arrival_yaw(prefix, pose.yaw)), prefix)
+    return None
 
 
 def stage_navigation_leg(
@@ -7671,6 +7691,9 @@ class HeadquartersControl(Node):
             resume_candidates = set()
             unfunded_candidates = set()
             travel_preferences = {}
+            route_caches = {name: {} for name in idle_positions}
+            initial_plans = {}
+            initial_windows = {}
             diagnostics["frontier_groups"] = 0
             diagnostics["groups_with_viewpoints"] = 0
             for robot_name, position in idle_positions.items():
@@ -7754,9 +7777,35 @@ class HeadquartersControl(Node):
                 raw_candidates.extend(robot_candidates)
                 candidate_contexts[robot_name] = (robot_exclusions, initial_search, camera_first, camera_mapping, completed)
 
+            # Geometry only: find useful first prefixes before the small
+            # deferred subset hides candidates whose route turns toward home.
+            # Exact gain, full target price, reservations and leases stay below.
+            if not search and getattr(self, 'enable_battery', False) and getattr(self, 'enable_rally', False):
+                for name in idle_positions:
+                    preference = initial_replenishment_prefix(self.battery_states[name],
+                        self.robot_positions[name], getattr(self, 'successful_exploration_legs', {}).get(name, 0), self.resolution)
+                    if preference is not None:
+                        preference['generated_at_sec'] = planning_started
+                        initial_windows[name] = preference
+                local_maps = HeadquartersControl.delivered_return_maps(self)
+                for _, name, _, assignment in raw_candidates:
+                    if name not in initial_windows:
+                        continue
+                    if not lease_current('first_leg_geometry'):
+                        return
+                    complete_plan = plan_rally_leg(RallyPose(assignment.x, assignment.y, 0.),
+                        self.map_data, self.resolution, self.origin, self.robot_positions[name], MAX_NAVIGATION_LEG_M,
+                        blocked_positions=[p for other,p in self.robot_positions.items() if other != name and p is not None],
+                        clearance_m=PATH_CLEARANCE_M, visible_only=True, route_cache=route_caches[name], local_map=local_maps.get(name))
+                    prefix = initial_replenishment_leg(complete_plan, initial_windows[name])
+                    if prefix is not None:
+                        initial_plans[name, assignment.x, assignment.y] = prefix
+            first_candidates = [row for row in raw_candidates if (row[1], row[3].x, row[3].y) in initial_plans]
+            normal_candidates = raw_candidates
             if proposal is not None:
-                raw_candidates = exploration_geometry_subset(
-                    raw_candidates, proposal['points'], proposal['cursor'])
+                first_candidates = exploration_geometry_subset(first_candidates, proposal['points'], proposal['cursor'])
+                normal_candidates = exploration_geometry_subset(normal_candidates, proposal['points'], proposal['cursor'])
+            raw_candidates = [*first_candidates, *[row for row in normal_candidates if row not in first_candidates]]
             factor_bounds = {}
             travel_bounds = {}
             for _, name, _, a in raw_candidates:
@@ -7974,7 +8023,6 @@ class HeadquartersControl(Node):
             routes = {}
             selected = []
             resuming_names = set()
-            route_caches = {name: {} for name in idle_positions}
             route_proposals = {}
             reservations = [
                 remaining_rally_route(route, self.robot_positions[name])
@@ -7985,17 +8033,18 @@ class HeadquartersControl(Node):
             # intent must respect live traffic, rather than routes of plans
             # that would be discarded before the charge request is sent.
             active_reservations = tuple(reservations)
-            candidate_order = lazy_priority_candidates(
-                raw_candidates, evaluate_candidate,
-                lambda item: frontier_scheduling_score(item[3].utility * factor_bounds[
-                    item[1], item[3].x, item[3].y, item[3].path_distance_m]
-                    * travel_bounds.get((item[1], item[3].x, item[3].y), 1.),
-                    item[1] not in unfunded_only and not search and interrupted_frontier_is_useful(
-                        item[3], resume_intents.get(item[1]), 1.0)),
-                lambda item: frontier_scheduling_score(
-                    item[0], (item[1], item[3]) in resume_candidates),
-                refine_bound=(refine_travel_bound, refine_candidate_gain))
-            for _, name, _, assignment in candidate_order:
+            def candidate_order():
+                for rows, near_home in ((first_candidates, True), (normal_candidates, False)):
+                    for row in lazy_priority_candidates(rows, evaluate_candidate,
+                        lambda item: frontier_scheduling_score(item[3].utility * factor_bounds[
+                            item[1], item[3].x, item[3].y, item[3].path_distance_m]
+                            * travel_bounds.get((item[1], item[3].x, item[3].y), 1.),
+                            item[1] not in unfunded_only and not search and interrupted_frontier_is_useful(
+                                item[3], resume_intents.get(item[1]), 1.0)),
+                        lambda item: frontier_scheduling_score(item[0], (item[1], item[3]) in resume_candidates),
+                        refine_bound=(refine_travel_bound, refine_candidate_gain)):
+                        yield row, near_home
+            for (_, name, _, assignment), near_home in candidate_order():
                 if scoring_aborted or not lease_current('route_admission'):
                     return
                 if name in plans:
@@ -8017,38 +8066,21 @@ class HeadquartersControl(Node):
                     if other_name != name and position is not None
                 ]
                 key = (name, assignment.x, assignment.y)
-                initial_prefix = (initial_replenishment_prefix(
-                    self.battery_states[name], self.robot_positions[name],
-                    getattr(self, 'successful_exploration_legs', {}).get(name, 0), self.resolution)
-                    if not search and getattr(self, 'enable_battery', False)
-                    and getattr(self, 'enable_rally', False) else None)
-                if initial_prefix is not None:
-                    initial_prefix['generated_at_sec'] = planning_started
-                if key not in route_proposals:
+                initial_prefix = dict(initial_windows[name]) if near_home else None
+                if near_home:
+                    plan = initial_plans[key]
+                    initial_prefix['window_endpoint'] = [plan[0].x, plan[0].y]
+                elif key not in route_proposals:
                     route_proposals[key] = plan_rally_leg(
                         RallyPose(assignment.x, assignment.y, 0.),
                         self.map_data, self.resolution, self.origin,
-                        self.robot_positions[name], (initial_prefix['max_distance_m']
-                            if initial_prefix is not None else MAX_NAVIGATION_LEG_M),
+                        self.robot_positions[name], MAX_NAVIGATION_LEG_M,
                         blocked_positions=blocked, clearance_m=PATH_CLEARANCE_M,
                         visible_only=True, route_cache=route_caches[name],
                         local_map=HeadquartersControl.delivered_return_maps(self).get(name),
                     )
-                plan = route_proposals[key]
-                if initial_prefix is not None and plan[0] is not None:
-                    # A clearance escape can precede the bounded grid prefix.
-                    # Keep the actual proposed endpoint inside the old window.
-                    state = self.battery_states[name]
-                    home = (state['charge_x'], state['charge_y'])
-                    if (math.dist((plan[0].x, plan[0].y), home)
-                            + RALLY_POSITION_TOLERANCE_M > 2. * state['charge_radius_m']):
-                        initial_prefix = None
-                        plan = plan_rally_leg(RallyPose(assignment.x, assignment.y, 0.),
-                            self.map_data, self.resolution, self.origin,
-                            self.robot_positions[name], MAX_NAVIGATION_LEG_M,
-                            blocked_positions=blocked, clearance_m=PATH_CLEARANCE_M,
-                            visible_only=True, route_cache=route_caches[name],
-                            local_map=HeadquartersControl.delivered_return_maps(self).get(name))
+                if not near_home:
+                    plan = route_proposals[key]
                 if plan[0] is None:
                     diagnostics["rejected_routes"] += 1
                     continue
@@ -8079,8 +8111,9 @@ class HeadquartersControl(Node):
                 pose, route = admitted
                 if initial_prefix is not None:
                     state = self.battery_states[name]
-                    if (math.dist((pose.x, pose.y), (state['charge_x'], state['charge_y']))
-                            + RALLY_POSITION_TOLERANCE_M > 2. * state['charge_radius_m']):
+                    if (not initial_prefix['minimum_home_distance_m'] <= math.dist((pose.x, pose.y), (state['charge_x'], state['charge_y']))
+                            <= initial_prefix['maximum_home_distance_m']
+                            or math.dist((pose.x, pose.y), self.robot_positions[name]) <= initial_prefix['minimum_motion_m']):
                         diagnostics['rejected_routes'] += 1
                         continue
                 if (

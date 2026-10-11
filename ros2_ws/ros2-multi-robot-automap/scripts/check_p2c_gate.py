@@ -987,7 +987,8 @@ def check_one(path,config):
         directory/'safety_events.jsonl',bool(config.get('funded_initial_goal_completion')),
         directory/'navigation_inputs.jsonl.gz',bool(config.get('camera_first_search')),
             isinstance(config.get('camera_first_search'), dict) and bool(config['camera_first_search'].get('alternate_on_real_work')),
-        bool(config.get('initial_near_home_replenishment',{}).get('first_leg_prefix')))
+        bool(config.get('initial_near_home_replenishment',{}).get('first_leg_prefix')),
+        config.get('initial_near_home_replenishment',{}).get('first_leg_prefix',{}).get('strategy') == 'first_real_leg_home_window')
     if config.get('initial_near_home_replenishment'):
         from run_p2d_baseline import file_digest
         assert row['source_digests']['initial_replenishment_reader']==file_digest(Path(__file__).with_name('p2c_initial_replenishment.py'))
