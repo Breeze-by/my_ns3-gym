@@ -57,6 +57,8 @@ def conditional_assignment(event, assign):
         choice.pop('camera_first_search', None)
         assert choice.get('initial_replenishment_prefix') is None
         choice.pop('initial_replenishment_prefix', None)
+        assert choice.get('first_window_geometry_preference') is None
+        choice.pop('first_window_geometry_preference', None)
     return json.loads(json.dumps(dict(sent=sent, choices=node.exploration_travel_choices),
                                 default=dataclasses.asdict))
 

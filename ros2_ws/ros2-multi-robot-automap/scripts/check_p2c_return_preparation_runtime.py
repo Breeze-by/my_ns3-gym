@@ -32,6 +32,7 @@ from p2c_outbound_routes import decode
 REFERENCE = '39e1840930c692612d0cf0584050ae961dce4fff'
 HEADING_REFERENCE = 'fcbc3f47fd1e03bfb3574da8650142d092da8a98'
 WINDOW_REFERENCE = 'e309353c13ec979e504da61fc8d132fa6cfc1b14'
+HANDOFF_REFERENCE = 'b9ef25542d498b3a076f8bd350519298a974345b'
 SOURCE = 'ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/control.py'
 
 
@@ -61,7 +62,7 @@ def case(module, label, displacement=None, purpose="yield"):
         charge_radius_m=.8, move_cost_per_m=1., idle_cost_per_sec=.02,
         return_path_factor=2., nominal_speed_mps=.18, return_safety_margin=8.) for name in positions}
     helper, returning = 'tb2', 'tb1'
-    if purpose in ('prefix', 'window'):
+    if purpose in ('prefix', 'window', 'window_handoff'):
         states[helper].update(energy=40., charge_count=0, charge_x=0., charge_y=0.)
         if purpose == 'window':positions[helper]=(1.15,0.)
     if displacement:
@@ -82,7 +83,7 @@ def case(module, label, displacement=None, purpose="yield"):
         lambda msg:events.append(json.loads(msg.data)),10),
         probe.create_subscription(String,node.charge_request_publishers[returning].topic_name,
         lambda msg:requests.append(json.loads(msg.data)),10)]
-    if purpose=='window':
+    if purpose in ('window', 'window_handoff'):
         subscriptions.append(probe.create_subscription(String,node.charge_request_publishers[helper].topic_name,
             lambda msg:requests.append(json.loads(msg.data)),10))
     def execute(handle):
@@ -99,9 +100,27 @@ def case(module, label, displacement=None, purpose="yield"):
         return result
     if label == 'current':module.rally_yield_pose=slow
     original_candidates=module.robot_candidate_assignments
-    if purpose in ('prefix', 'window'):
+    original_prefix = module.initial_replenishment_leg
+    geometry_calls = []
+    if purpose == 'window_handoff':
+        def slow_geometry(*args):
+            result = original_prefix(*args)
+            geometry_calls.append(result is not None)
+            if len(geometry_calls) == 4:
+                entered.set(); time.sleep(.6)
+            return result
+        module.initial_replenishment_leg = slow_geometry
+    if purpose in ('prefix', 'window', 'window_handoff'):
         def candidates(grid,resolution,origin,name,*args,**kwargs):
             if name != helper:return [],dict(frontier_groups=0,groups_with_viewpoints=0)
+            if purpose == 'window_handoff':
+                rows = []
+                for index, y in enumerate((-.6, -.4, -.2, 0., .2, .4)):
+                    cell = module.world_to_grid(4., y, resolution, *origin)
+                    goal = module.Assignment(module.Viewpoint(index+1, *cell, cell[0], cell[1]+1, 1000, 10),
+                        4., y, math.hypot(4., y), 100.-index, 4., y)
+                    rows.append((100.-index, helper, index+1, goal))
+                return rows, dict(frontier_groups=len(rows), groups_with_viewpoints=len(rows))
             entered.set();time.sleep(.6)
             goal=module.Assignment(module.Viewpoint(1,100,140,100,140,1000,10),4.,0.,4.,100.,4.,0.)
             rows=[(100.,helper,1,goal)]
@@ -165,7 +184,7 @@ def case(module, label, displacement=None, purpose="yield"):
         until(lambda:node.robot_nav_clients[helper].server_is_ready())
         consume(10.)
         assert node.task_state=='EXPLORE'
-        trigger.publish(String(data='assign' if purpose in ('prefix','window') else 'prepare' if displacement else 'request'))
+        trigger.publish(String(data='assign' if purpose in ('prefix','window','window_handoff') else 'prepare' if displacement else 'request'))
         if label=='current':
             assert entered.wait(10.)
             for _ in range(12):
@@ -173,18 +192,36 @@ def case(module, label, displacement=None, purpose="yield"):
                 if not displacement:deliver(13.)
                 time.sleep(.02)
         assert finished.wait(10.) and not errors,errors
-        if purpose in ('prefix','window'):
+        if purpose in ('prefix','window','window_handoff'):
             assert callbacks[0]['clock']==13. and not goals and not requests
             assert not node.successful_exploration_legs
-            consume(13.);node.pending_exploration_geometry=None;node.pending_exploration_charge_geometry=None
+            consume(13.)
+            if purpose != 'window_handoff':
+                node.pending_exploration_geometry=None;node.pending_exploration_charge_geometry=None
+            else:
+                geometry_calls.clear(); entered.clear()
             if purpose=='window':
                 node.pending_exploration_geometry=dict(context=('EXPLORE',False,tuple(sorted(node.participating_robots())),None),
                     generated_at=13.,points={helper:((4.,0.),)},cursor={})
             finished.clear();trigger.publish(String(data='assign'))
+            if purpose == 'window_handoff' and not is_current:
+                assert entered.wait(10.)
+                for _ in range(12):
+                    tick(16.); deliver(16.); time.sleep(.02)
+                assert finished.wait(10.) and not errors, errors
+                assert node.now() == 16. and len(geometry_calls) == 4
+                assert not goals and not requests and not node.successful_exploration_legs
+                until(lambda:len([e for e in events if e.get('event')=='coordinator_planning_lease_expired'])==2)
+                return dict(status='PASS',label='window_handoff_frozen',callbacks=callbacks,
+                    charge_requests=requests,synthetic_endpoint_goals=goals,synthetic_endpoint_yaws=goal_yaws,
+                    private_events=events,ordinary_future_successes=0,second_geometry_calls=len(geometry_calls),
+                    gazebo_or_real_nav2_goals=0,source_stamps_preserved=True,action_futures_closed=True)
             assert finished.wait(10.) and not errors,errors
+            if purpose == 'window_handoff':
+                assert len(geometry_calls) == 3 and not entered.is_set()
             until(lambda:len(goals)==1 and node.goal_handles[helper] is not None)
             assert not node.successful_exploration_legs and not requests
-            if purpose=='window':
+            if purpose in ('window', 'window_handoff'):
                 finished.clear();trigger.publish(String(data='topup'))
                 assert finished.wait(10.) and not errors and not requests and not node.successful_exploration_legs
             positions[helper]=goals[0];consume(14.);release.set()
@@ -193,16 +230,20 @@ def case(module, label, displacement=None, purpose="yield"):
             until(lambda:any(e.get('event')=='coordinator_navigation_decision' for e in events))
             decisions=[e for e in events if e.get('event')=='coordinator_navigation_decision']
             assert len(decisions)==1 and decisions[0]['kind']=='exploration'
-            assert decisions[0]['travel_preference']['target']==([-2.,0.] if purpose=='window' and is_current else [4.,0.])
+            if purpose != 'window_handoff':
+                assert decisions[0]['travel_preference']['target']==([-2.,0.] if purpose=='window' and is_current else [4.,0.])
             if is_current:
-                from p2c_initial_replenishment import audit_initial_prefix
+                from p2c_initial_replenishment import audit_initial_prefix, audit_first_window_handoffs
                 assert math.dist(goals[0],(0.,0.))+.35<=1.6
-                assert audit_initial_prefix({helper:decisions},{},True,purpose=='window')['bounded_first_legs']==1
+                assert audit_initial_prefix({helper:decisions},{},True,purpose in ('window','window_handoff'))['bounded_first_legs']==1
+                if purpose == 'window_handoff':
+                    expirations=[e for e in events if e.get('event')=='coordinator_planning_lease_expired']
+                    assert audit_first_window_handoffs({helper:decisions},expirations,True)['revalidated_navigation']==1
             else:
                 assert math.dist(goals[0],(0.,0.))>1.6
                 assert decisions[0]['travel_preference'].get('initial_replenishment_prefix') is None
             assert not requests
-            if purpose=='window':
+            if purpose in ('window', 'window_handoff'):
                 finished.clear();trigger.publish(String(data='topup'))
                 assert finished.wait(10.) and not errors,errors
                 if is_current:
@@ -258,7 +299,8 @@ def case(module, label, displacement=None, purpose="yield"):
             ordinary_future_successes=node.successful_exploration_legs.get(helper,0),
             gazebo_or_real_nav2_goals=0,source_stamps_preserved=True,action_futures_closed=True)
     finally:
-        module.rally_yield_pose=original;module.robot_candidate_assignments=original_candidates;release.set()
+        module.rally_yield_pose=original;module.robot_candidate_assignments=original_candidates
+        module.initial_replenishment_leg=original_prefix;release.set()
         executor.shutdown();probe_executor.shutdown()
         for thread in threads:thread.join(timeout=5.);assert not thread.is_alive()
         server.destroy();node.destroy_node();probe.destroy_node()
@@ -269,14 +311,15 @@ def main():
     parser.add_argument('--displacement-fixture',type=Path,help='Original v54 grids/positions for the actual half-metre displacement counterexample')
     parser.add_argument('--first-leg-heading',action='store_true',help='Probe v79 versus current first prefix and fresh clearance heading')
     parser.add_argument('--first-leg-window',action='store_true',help='Probe v80 versus current real homeward work after clearance displacement')
+    parser.add_argument('--first-window-handoff',action='store_true',help='Probe v81 repeated expiration versus current revalidated geometry points')
     args=parser.parse_args()
     if args.output.exists():parser.error('do not overwrite evidence')
     assert os.environ.get('ROS_DOMAIN_ID') in ('216','217'), 'use an isolated component domain'
     displacement=None
     if args.displacement_fixture:
         with gzip.open(args.displacement_fixture,'rt') as stream:displacement=json.load(stream)
-    assert sum(bool(x) for x in (args.first_leg_heading,args.first_leg_window,displacement))<=1
-    reference=WINDOW_REFERENCE if args.first_leg_window else HEADING_REFERENCE if args.first_leg_heading else displacement['reference_commit'] if displacement else REFERENCE
+    assert sum(bool(x) for x in (args.first_leg_heading,args.first_leg_window,args.first_window_handoff,displacement))<=1
+    reference=HANDOFF_REFERENCE if args.first_window_handoff else WINDOW_REFERENCE if args.first_leg_window else HEADING_REFERENCE if args.first_leg_heading else displacement['reference_commit'] if displacement else REFERENCE
     old=subprocess.check_output(['git','show',reference+':'+SOURCE],text=True)
     frozen=types.ModuleType('p2c_frozen_return_preparation');frozen.__file__=current.__file__
     frozen.__package__='multi_robot_exploration';sys.modules[frozen.__name__]=frozen
@@ -290,7 +333,8 @@ def main():
             reader_sha256=hashlib.sha256(Path(__file__).with_name('p2c_return_preparation.py').read_bytes()).hexdigest(),
             initial_reader_sha256=hashlib.sha256(Path(__file__).with_name('p2c_initial_replenishment.py').read_bytes()).hexdigest(),
             displacement_fixture=displacement,
-            cases=([case(module,'current',purpose='window') for module in (frozen,current)] if args.first_leg_window else
+            cases=([case(module,'current',purpose='window_handoff') for module in (frozen,current)] if args.first_window_handoff else
+                [case(module,'current',purpose='window') for module in (frozen,current)] if args.first_leg_window else
                 [case(module,'current',purpose=purpose) for purpose in ('prefix','yield_heading') for module in (frozen,current)]
                 if args.first_leg_heading else [case(frozen,'frozen',displacement),case(current,'current',displacement)]),all_owned_closed=True)
         args.output.write_text(json.dumps(result,indent=2)+'\n')

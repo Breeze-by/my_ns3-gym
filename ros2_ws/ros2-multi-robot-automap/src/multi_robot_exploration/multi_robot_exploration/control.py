@@ -7568,6 +7568,7 @@ class HeadquartersControl(Node):
             self.pending_exploration_geometry = proposal = None
         raw_candidates = []
         candidates = []
+        first_geometry_points = {}
         planning_inputs = input_freshness_at(self.input_freshness_details(), planning_started)
         deadline = min((sample['source_time'] + min(sample['ttl_sec'],
                 getattr(self, 'message_freshness_timeout_sec', 5.))
@@ -7594,6 +7595,14 @@ class HeadquartersControl(Node):
                     self.pending_exploration_geometry = dict(context=context,
                         generated_at=planning_started, points=points, cursor={})
             preferences = getattr(self, 'pending_exploration_geometry', None)
+            if preferences is not None and first_geometry_points and now > deadline:
+                # Geometry points are hints, never leased routes or prices.
+                # A following callback regenerates its pool and rechecks these
+                # few points against its own map, bodies, budget and sources.
+                preferences.setdefault('first_window_geometry', {}).update({
+                    name: dict(points=points[:3], generated_at_sec=planning_started,
+                               expired_at_sec=now)
+                    for name, points in first_geometry_points.items() if points})
             names = [name for name in charge_geometry_names
                 if (preferences or {}).get('points', {}).get(name)
                 and name not in getattr(self, 'rally_charge_requested', {})]
@@ -7694,6 +7703,7 @@ class HeadquartersControl(Node):
             route_caches = {name: {} for name in idle_positions}
             initial_plans = {}
             initial_windows = {}
+            first_window_preferences = {}
             diagnostics["frontier_groups"] = 0
             diagnostics["groups_with_viewpoints"] = 0
             for robot_name, position in idle_positions.items():
@@ -7788,7 +7798,21 @@ class HeadquartersControl(Node):
                         preference['generated_at_sec'] = planning_started
                         initial_windows[name] = preference
                 local_maps = HeadquartersControl.delivered_return_maps(self)
-                for _, name, _, assignment in raw_candidates:
+                geometry_rows = []
+                for name in initial_windows:
+                    rows = [row for row in raw_candidates if row[1] == name]
+                    saved = (proposal or {}).get('first_window_geometry', {}).get(name)
+                    if (saved is not None
+                            and saved['generated_at_sec'] <= saved['expired_at_sec'] <= planning_started
+                            and 0 <= planning_started-saved['generated_at_sec'] <= TARGET_HISTORY_SEC):
+                        rows = exploration_geometry_subset(rows, {name: saved['points']}, {name: 0})
+                        first_window_preferences[name] = dict(
+                            strategy='expired_callback_points_revalidated', **saved,
+                            context=context, revalidation_started_at_sec=planning_started,
+                            current_candidate_points=[(float(row[3].x), float(row[3].y)) for row in rows],
+                            route_reused=False, budget_reused=False)
+                    geometry_rows.extend(rows)
+                for _, name, _, assignment in geometry_rows:
                     if name not in initial_windows:
                         continue
                     if not lease_current('first_leg_geometry'):
@@ -7800,6 +7824,10 @@ class HeadquartersControl(Node):
                     prefix = initial_replenishment_leg(complete_plan, initial_windows[name])
                     if prefix is not None:
                         initial_plans[name, assignment.x, assignment.y] = prefix
+                        point = (float(assignment.x), float(assignment.y))
+                        points = first_geometry_points.setdefault(name, [])
+                        if point not in points and len(points) < 3:
+                            points.append(point)
             first_candidates = [row for row in raw_candidates if (row[1], row[3].x, row[3].y) in initial_plans]
             normal_candidates = raw_candidates
             if proposal is not None:
@@ -8149,6 +8177,7 @@ class HeadquartersControl(Node):
                     witness = travel_preferences[name, original_assignment]
                     witness.update(planned_distance_m=planned_distance, blocked_positions=blocked)
                     witness['initial_replenishment_prefix'] = initial_prefix
+                    witness['first_window_geometry_preference'] = first_window_preferences.get(name)
                     if name in resuming_names:
                         witness['resume_intent'] = resume_intents[name]
                     witness['continuation_weight'] = FRONTIER_CONTINUATION_WEIGHT if name in resuming_names else 1.0

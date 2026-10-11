@@ -10,7 +10,7 @@ from p2c_return_preparation import audit_preparation, decode_grid
 
 def initial_replenishment_audit(ledger, enabled=False, native_capture=None, require_completion_hold=False, map_capture=None,
                               require_camera_first=False, require_alternating=False, require_initial_prefix=False,
-                              require_geometry_window=False):
+                              require_geometry_window=False, require_window_handoff=False):
     native = {}
     if enabled:
         assert native_capture is not None and native_capture.is_file()
@@ -19,7 +19,7 @@ def initial_replenishment_audit(ledger, enabled=False, native_capture=None, requ
             if row['topic'].endswith('/battery_state'):
                 name = row['topic'].split('/')[1]
                 native.setdefault(name, []).append(row['data'])
-    decisions_by_robot, commands, outcomes, navigation, holds = {}, {}, {}, {}, []
+    decisions_by_robot, commands, outcomes, navigation, holds, expirations = {}, {}, {}, {}, [], []
     for line in ledger.open():
         event = json.loads(line)
         kind = event.get('event')
@@ -29,6 +29,8 @@ def initial_replenishment_audit(ledger, enabled=False, native_capture=None, requ
             navigation.setdefault(event['robot'], []).append(event)
         elif kind == 'coordinator_initial_exploration_completion_hold':
             holds.append(event)
+        elif kind == 'coordinator_planning_lease_expired':
+            expirations.append(event)
         elif kind == 'enqueue' and event.get('message_type') == 'navigation_goal':
             commands.setdefault((event['recipient'], event['correlation_id']), event.get('source_time', event['event_time']))
         elif kind == 'navigation_outcome':
@@ -51,6 +53,7 @@ def initial_replenishment_audit(ledger, enabled=False, native_capture=None, requ
     audit_completion_holds(holds, navigation, commands, successes, native, require_completion_hold, map_capture)
     camera_first = audit_camera_first(navigation, successes, require_camera_first, require_alternating)
     prefixes = audit_initial_prefix(navigation, successes, require_initial_prefix, require_geometry_window)
+    window_handoffs = audit_first_window_handoffs(navigation, expirations, require_window_handoff)
     decisions, robots = 0, set()
     for line in ledger.open():
         event = json.loads(line)
@@ -127,7 +130,67 @@ def initial_replenishment_audit(ledger, enabled=False, native_capture=None, requ
         robots=sorted(robots), first_goal_completion_holds=len(holds), completion_hold_declared=require_completion_hold,
         camera_first_search=camera_first,
         first_leg_prefixes=prefixes,
+        first_window_geometry_handoffs=window_handoffs,
         scope='One initial near-home replenishment after actual ordinary success; scheduling threshold and current full trip cost rebuilt separately. Native credit and physical return remain separate original audits.')
+
+
+def audit_first_window_handoffs(navigation, expirations, declared=False):
+    """Trace point hints to an abandoned callback; reprice only current sources."""
+    count = 0
+    for name, events in navigation.items():
+        for event in events:
+            if event['kind'] not in ('exploration', 'initial_visual_search'):
+                continue
+            preference = event.get('travel_preference', {})
+            if declared:
+                assert 'first_window_geometry_preference' in preference
+            saved = preference.get('first_window_geometry_preference')
+            if saved is None:
+                continue
+            assert declared, 'undeclared first-window geometry handoff'
+            assert set(saved) == {'strategy', 'points', 'generated_at_sec', 'expired_at_sec', 'context',
+                'revalidation_started_at_sec', 'current_candidate_points', 'route_reused', 'budget_reused'}
+            assert saved['strategy'] == 'expired_callback_points_revalidated'
+            assert saved['route_reused'] is False and saved['budget_reused'] is False
+            generated, expired, current = (saved[key] for key in (
+                'generated_at_sec', 'expired_at_sec', 'revalidation_started_at_sec'))
+            now = event['event_time']
+            assert all(math.isfinite(value) for value in (generated, expired, current, now))
+            assert generated <= expired <= current <= preference['required_energy_evaluated_at_sec'] <= now
+            assert 0 <= current-generated <= control.TARGET_HISTORY_SEC
+            assert event['task_phase'] in ('EXPLORE', 'FOUND_UNCONFIRMED')
+            assert saved['context'][0] == event['task_phase'] and saved['context'][1] is False
+            for field in ('points', 'current_candidate_points'):
+                points = saved[field]
+                assert len(points) <= 3
+                if field == 'points':
+                    assert points
+                assert all(len(point) == 2 and all(math.isfinite(value) for value in point) for point in points)
+                if field == 'points':
+                    assert len({tuple(point) for point in points}) == len(points)
+            original = [row for row in expirations if row['event_time'] == expired
+                and row['planning_started_at_sec'] == generated
+                and (row.get('geometry_preferences') or {}).get('first_window_geometry', {}).get(name) is not None]
+            assert original, 'missing original abandoned geometry callback'
+            assert any(row['event_time'] > row['source_deadline_sec']
+                and row['geometry_preferences']['context'] == saved['context']
+                and row['geometry_preferences']['first_window_geometry'][name] == {
+                    'points': saved['points'], 'generated_at_sec': generated, 'expired_at_sec': expired}
+                for row in original), 'geometry hint differs from the original expiration'
+            state = event['battery_states'][name]
+            assert state['mode'] == 'ACTIVE' and type(state['charge_count']) is int and state['charge_count'] == 0
+            for key, sample in event['inputs'].items():
+                if key != 'headquarters/target_detection':
+                    assert 0 <= current-sample['source_time'] <= sample['ttl_sec']
+                    assert 0 <= now-sample['source_time'] <= sample['ttl_sec']
+            prefix = preference.get('initial_replenishment_prefix')
+            if prefix is not None:
+                assert prefix['generated_at_sec'] == current
+                assert any(np.allclose(preference['target'], point, atol=1e-10, rtol=0.)
+                    for point in saved['current_candidate_points'])
+            count += 1
+    return dict(status='PASS', declared=declared, revalidated_navigation=count,
+        scope='At most three original point hints; current full routes, budgets, leases and native outcomes remain independently audited.')
 
 
 def audit_initial_prefix(navigation, successes, required=False, require_geometry_window=False):
