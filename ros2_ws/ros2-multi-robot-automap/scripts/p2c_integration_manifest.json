@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-11 14:41:28 UTC",
+  "predeclared_at_utc": "2026-10-11T16:50:00Z",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -365,7 +365,8 @@
     "20261011_p2c_v86_failed_development.json",
     "20261011_p2c_v87_failed_development.json",
     "20261011_p2c_v88_failed_development.json",
-    "20261011_p2c_v89_failed_development.json"
+    "20261011_p2c_v89_failed_development.json",
+    "20261012_p2c_v90_failed_formal.json"
   ],
   "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
   "opportunity_charge_rules": [
@@ -518,7 +519,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "7a02e7032862e00e48abe4c4e7092a45da2fee95",
+  "candidate_parent_commit": "ad5f32e17f00b8d14c8a1fa4ee45d9947cb022aa",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -1176,5 +1177,13 @@
     "controller_changed": false,
     "old_full_gate_retained": "log/p2c_v89_development_full_gate1.json",
     "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261011_p2c_conditional_survey_coverage_components.json"
+  },
+  "partial_visual_viewpoint_continuation": {
+    "scope": "EXPLORE/FOUND_UNCONFIRMED full object mission, successful actual ordinary visual command whose admitted endpoint is still farther than original navigation tolerance from its complete known-space viewpoint",
+    "policy": "Keep the existing initial_search_next preference for a freshly regenerated camera pool; existing useful continuation proximity/gain/funded test and finite2x utility remain. No stored command/route/price is replayed.",
+    "completion": "Full visual viewpoint success restores original mapping turn. Failure, cancellation, physical failure, mapping-only, return-clearance and non-search phases retain original rules.",
+    "evidence": "20261012_p2c_visual_viewpoint_continuation_components.json",
+    "preserved": "All prior action counts, current delivered maps/heading/pose/battery source2/5s leases, full outbound and qualified return budget, bodies/reservations, original Nav2/SLAM/native battery300s/5s and all case/physical stimuli.",
+    "limits": "Original fixed-snapshot comparisons and controlled DDS/Future endpoints are conditional components, not mission causality or native navigation/completion credit."
   }
 }

@@ -8913,6 +8913,12 @@ class HeadquartersControl(Node):
                     and math.dist((assignment.navigation_x,assignment.navigation_y),(assignment.x,assignment.y))
                     <=NAVIGATION_POSITION_TOLERANCE_M):
                 self.initial_search_next[robot_name]=not self.initial_search_goals.get(robot_name,False)
+            elif (success and assignment is not None and self.task_state in ('EXPLORE','FOUND_UNCONFIRMED')
+                    and self.initial_search_goals.get(robot_name,False)
+                    and math.dist((assignment.navigation_x,assignment.navigation_y),(assignment.x,assignment.y))
+                    >NAVIGATION_POSITION_TOLERANCE_M):
+                # A successful prefix has not completed its camera viewpoint.
+                self.initial_search_next[robot_name]=True
         if (return_yield is None and success and getattr(self, "target_search_active", False)
                 and not self.fresh_target() and self.fresh_robot_poses()):
             # A travelled search waypoint deserves a real full-heading scan;
