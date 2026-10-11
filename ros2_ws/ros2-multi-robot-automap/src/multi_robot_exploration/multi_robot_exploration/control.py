@@ -2345,23 +2345,80 @@ def rally_connection_reinspection(raw_grid, resolution, origin, robot_position,
         RALLY_CLEARANCE_M), resolution, origin, blocked_positions)
     cells = np.argwhere(endpoints & np.isfinite(distances) & np.isfinite(remaining)
                         & (remaining * resolution < current - .4))
-    if not len(cells):
-        return None
     worlds = np.column_stack((origin[0] + (cells[:, 1] + .5) * resolution,
                               origin[1] + (cells[:, 0] + .5) * resolution))
     moving = np.linalg.norm(worlds - np.asarray(robot_position), axis=1) > RALLY_POSITION_TOLERANCE_M
     cells, worlds = cells[moving], worlds[moving]
-    if not len(cells):
+    if len(cells):
+        order = np.lexsort((cells[:, 1], cells[:, 0], distances[tuple(cells.T)],
+                           remaining[tuple(cells.T)]))
+        row, column = map(int, cells[order[0]])
+        x, y = map(float, worlds[order[0]])
+        pose = RallyPose(x, y, math.atan2(target[1] - y, target[0] - x))
+        return pose, dict(cell=[row, column], rally_candidate_count=int(targets.sum()),
+            fused_remaining_distance_m=float(remaining[row, column] * resolution),
+            current_fused_remaining_distance_m=current,
+            known_approach_distance_m=float(distances[row, column] * resolution))
+
+    # At the nearest safe boundary, target-descent alone has no further point.
+    # Observe the blocking local/fused disagreement from a different known-safe
+    # position. This proposes a survey, never clears a cell or certifies a route
+    # through the disagreement; the original sender still checks every source.
+    fused_distances, predecessors = path_distance_grid(fused, fused_start, return_predecessors=True)
+    reachable_targets = np.argwhere(targets & np.isfinite(fused_distances))
+    if not len(reachable_targets):
         return None
-    order = np.lexsort((cells[:, 1], cells[:, 0], distances[tuple(cells.T)],
-                       remaining[tuple(cells.T)]))
-    row, column = map(int, cells[order[0]])
-    x, y = map(float, worlds[order[0]])
-    pose = RallyPose(x, y, math.atan2(target[1] - y, target[0] - x))
-    return pose, dict(cell=[row, column], rally_candidate_count=int(targets.sum()),
-        fused_remaining_distance_m=float(remaining[row, column] * resolution),
-        current_fused_remaining_distance_m=current,
-        known_approach_distance_m=float(distances[row, column] * resolution))
+    goal = min((float(fused_distances[r, c]), int(r), int(c)) for r, c in reachable_targets)
+    _, fused_route = path_waypoint_route(fused, fused_start, goal[1:], float('inf'),
+                                        (fused_distances, predecessors))
+    blocked = next((point for point in fused_route if not safe[point]), None)
+    if blocked is None:
+        return None
+    blocked_world = np.asarray(grid_to_world(*blocked, resolution, *origin))
+    local = local_map['data']
+    local_resolution, local_origin = local_map['resolution'], local_map['origin']
+    occupied = np.argwhere(local > 0)
+    obstacle_worlds = np.column_stack((local_origin[0] + (occupied[:, 1] + .5) * local_resolution,
+                                     local_origin[1] + (occupied[:, 0] + .5) * local_resolution))
+    order = np.argsort(np.linalg.norm(obstacle_worlds - blocked_world, axis=1), kind='stable')
+    barrier = None
+    for index in order:
+        if np.linalg.norm(obstacle_worlds[index] - blocked_world) > RALLY_PATH_CLEARANCE_M + math.sqrt(2) * resolution:
+            break
+        cell = world_to_grid(*obstacle_worlds[index], resolution, *origin)
+        if (0 <= cell[0] < raw_grid.shape[0] and 0 <= cell[1] < raw_grid.shape[1]
+                and raw_grid[cell] == 0):
+            barrier = obstacle_worlds[index]
+            barrier_cell = list(map(int, occupied[index]))
+            break
+    if barrier is None:
+        return None
+    stride = max(1, math.ceil(.25 / resolution))
+    cells = np.argwhere(endpoints & np.isfinite(distances)
+                        & (distances * resolution <= MAX_NAVIGATION_LEG_M))
+    cells = cells[(cells[:, 0] % stride == 0) & (cells[:, 1] % stride == 0)]
+    bearing = math.atan2(barrier[1] - robot_position[1], barrier[0] - robot_position[0])
+    options = []
+    for row, column in cells:
+        x, y = grid_to_world(int(row), int(column), resolution, *origin)
+        if (math.dist(robot_position, (x, y)) < USEFUL_TRAVEL_M
+                or math.dist((x, y), barrier) > INFORMATION_RADIUS_M):
+            continue
+        yaw = math.atan2(barrier[1] - y, barrier[0] - x)
+        parallax = abs(math.atan2(math.sin(yaw - bearing), math.cos(yaw - bearing)))
+        if (parallax < INITIAL_SEARCH_VIEW_FOV_RAD / 4
+                or not has_known_line_of_sight(raw_grid, (int(row), int(column)),
+                                               world_to_grid(*barrier, resolution, *origin))):
+            continue
+        path_m = float(distances[row, column] * resolution)
+        options.append((-parallax / (1. + path_m), path_m, int(row), int(column), x, y, yaw, parallax))
+    if not options:
+        return None
+    score, path_m, row, column, x, y, yaw, parallax = min(options)
+    return RallyPose(x, y, yaw), dict(strategy='known_route_disagreement_view',
+        cell=[row, column], barrier_local_cell=barrier_cell, barrier_world=barrier.tolist(),
+        first_blocked_fused_route_cell=list(map(int, blocked)), known_approach_distance_m=path_m,
+        angular_parallax_rad=parallax, score=-score)
 
 
 def rally_survey_pose(raw_grid, resolution, origin, robot_position, target, local_map=None):

@@ -40,13 +40,58 @@ def rebuild_reinspection(event, name, local):
         x,y=control.grid_to_world(r,c,res,*origin)
         if remaining[r,c]*res<current-.4 and math.dist(position,(x,y))>.35:
             eligible.append((remaining[r,c],approach[r,c],int(r),int(c),x,y))
-    if not eligible:return None
-    rest,distance,r,c,x,y=min(eligible)
-    pose=(name,x,y,math.atan2(event['target'][1]-y,event['target'][0]-x))
-    witness=dict(cell=[r,c],rally_candidate_count=int(targets.sum()),
-        fused_remaining_distance_m=float(rest*res),current_fused_remaining_distance_m=current,
-        known_approach_distance_m=float(distance*res))
-    return pose,witness
+    if eligible:
+        rest,distance,r,c,x,y=min(eligible)
+        pose=(name,x,y,math.atan2(event['target'][1]-y,event['target'][0]-x))
+        witness=dict(cell=[r,c],rally_candidate_count=int(targets.sum()),
+            fused_remaining_distance_m=float(rest*res),current_fused_remaining_distance_m=current,
+            known_approach_distance_m=float(distance*res))
+        return pose,witness
+
+    # Independently walk the original fused shortest approach, identify its
+    # first local barrier, and rank safe alternative observation positions.
+    fd,previous=control.path_distance_grid(fused,fstart,return_predecessors=True)
+    possible=[(float(fd[r,c]),int(r),int(c)) for r,c in np.argwhere(targets) if np.isfinite(fd[r,c])]
+    if not possible:return None
+    _,r,c=min(possible);width=fused.shape[1];index=r*width+c;start_id=fstart[0]*width+fstart[1]
+    path=[]
+    while index!=start_id:
+        path.append(divmod(index,width));index=int(previous.flat[index])
+        assert index>=0
+    path.append(fstart);path.reverse()
+    blocked=next((p for p in path if not safe[p]),None)
+    if blocked is None:return None
+    blocked_world=control.grid_to_world(*blocked,res,*origin)
+    local_grid=decode(local);lr=local['resolution'];lo=local['origin']
+    obstacles=[]
+    for r,c in np.argwhere(local_grid>0):
+        x,y=control.grid_to_world(int(r),int(c),lr,*lo)
+        obstacles.append((math.dist((x,y),blocked_world),int(r),int(c),x,y))
+    barrier=None
+    for distance,r,c,x,y in sorted(obstacles,key=lambda item:item[0]):
+        if distance>.35+math.sqrt(2)*res:break
+        cell=control.world_to_grid(x,y,res,*origin)
+        if 0<=cell[0]<raw.shape[0] and 0<=cell[1]<raw.shape[1] and raw[cell]==0:
+            barrier=(x,y);barrier_cell=[r,c];break
+    if barrier is None:return None
+    bearing=math.atan2(barrier[1]-position[1],barrier[0]-position[0]);stride=max(1,math.ceil(.25/res))
+    choices=[]
+    for r,c in np.argwhere(endpoints):
+        r,c=int(r),int(c)
+        if r%stride or c%stride or not np.isfinite(approach[r,c]) or approach[r,c]*res>5.:continue
+        x,y=control.grid_to_world(r,c,res,*origin)
+        if math.dist(position,(x,y))<.75 or math.dist((x,y),barrier)>2.:continue
+        yaw=math.atan2(barrier[1]-y,barrier[0]-x)
+        angle=abs(math.atan2(math.sin(yaw-bearing),math.cos(yaw-bearing)))
+        if angle<math.pi/8 or not control.has_known_line_of_sight(raw,(r,c),control.world_to_grid(*barrier,res,*origin)):continue
+        distance=float(approach[r,c]*res)
+        choices.append((-angle/(1.+distance),distance,r,c,x,y,yaw,angle))
+    if not choices:return None
+    score,distance,r,c,x,y,yaw,angle=min(choices)
+    return (name,x,y,yaw),dict(strategy='known_route_disagreement_view',cell=[r,c],
+        barrier_local_cell=barrier_cell,barrier_world=list(barrier),
+        first_blocked_fused_route_cell=list(map(int,blocked)),known_approach_distance_m=distance,
+        angular_parallax_rad=angle,score=-score)
 
 
 def audit_geometry(event, require_reinspection=False):

@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-11T06:52:17.650584+00:00",
+  "predeclared_at_utc": "2026-10-11 08:20:31 UTC",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -360,7 +360,8 @@
     "20261011_p2c_v81_failed_development.json",
     "20261011_p2c_v82_failed_development.json",
     "20261011_p2c_v83_failed_development.json",
-    "20261011_p2c_v84_failed_development.json"
+    "20261011_p2c_v84_failed_development.json",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261011_p2c_v85_failed_development.json"
   ],
   "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
   "opportunity_charge_rules": [
@@ -513,7 +514,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "84d3096d22a0a62917dd538ab01e99546dfebf35",
+  "candidate_parent_commit": "f25d3fd14dd291026c726cdf99ea201390e51f0f",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -1124,5 +1125,14 @@
     "source_authority": "Message objects and original source headers remain intact. Receipt is not source renewal. In-progress route/energy lease objects are never refreshed or reused by the inbox; expired and future inputs remain rejected. Actual state and action Future mutations remain in the original serial group.",
     "limits": "New source availability must be shared by future baselines. Controlled full constructor/DDS/Future tests are scheduling components, not physical/task completion, native credit or a task-level causal counterfactual. Original v84 lab EXPLORE300 timeout and all four originals remain unchanged.",
     "original_constraints": "190 protected sources, native battery and return, SLAM/Nav2/physics, complete route/body/energy admission, original2/5/60 source TTLs,10s geometry/30s unavailable-route timers,300s task and5s native hold remain unchanged."
+  },
+  "local_route_disagreement_view": {
+    "trigger": "Only after original conservative target-approach disconnection and no remaining original target-descent reinspection point, with a complete known fused approach.",
+    "selection": "Identify the first local barrier on the original fused shortest approach. Rank current conservative .45m endpoints on .25m samples within original5m path, at least original.75m useful motion, within original2m information radius and at least one original22.5deg heading bin of parallax; maximize parallax/(1+known approach metres).",
+    "authority": "A local positive/fused free disagreement is an observation interest only. Never clear or replace either original map, grant the blocked approach, renew source time, or create a target confirmation.",
+    "admission": "Existing survey/preparation senders recompute full .35m local/fused route, .6m current bodies, 1.8m original reservations, complete go/contact-return/60s wait budgets and every original2/5/60s source lease; existing bounded survey attempts and Future closure apply.",
+    "evidence": "Original v85 failed maps and exact old pure function retained; independent scalar reader reconstructs barrier, endpoint, parallax, rank and source binding. Controlled full-constructor actual DDS/Future proof is not physical navigation or native task credit.",
+    "preserved": "All90central methods,106other pure functions,native/SLAM/Nav2/physics,topics/QoS/timers/two workers,300s/5s,source TTLs,allcases/stimuli unchanged. Every future baseline uses the same freeze.",
+    "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261011_p2c_route_disagreement_view_components.json"
   }
 }
