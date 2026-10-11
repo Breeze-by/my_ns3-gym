@@ -2421,7 +2421,8 @@ def rally_connection_reinspection(raw_grid, resolution, origin, robot_position,
         angular_parallax_rad=parallax, score=-score)
 
 
-def rally_survey_pose(raw_grid, resolution, origin, robot_position, target, local_map=None):
+def rally_survey_pose(raw_grid, resolution, origin, robot_position, target, local_map=None,
+                      blocked_positions=()):
     """Choose a known, reachable pose that moves the detector toward target."""
     if local_map is not None:
         raw_grid = constrained_return_grid(raw_grid, resolution, origin, local_map)
@@ -2429,6 +2430,9 @@ def rally_survey_pose(raw_grid, resolution, origin, robot_position, target, loca
             return None
     traversable = traversable_grid(
         raw_grid, resolution, clearance_m=RALLY_PATH_CLEARANCE_M
+    )
+    traversable = block_dynamic_positions(
+        traversable, resolution, origin, blocked_positions
     )
     start = world_to_grid(
         robot_position[0],
@@ -3506,7 +3510,7 @@ class HeadquartersControl(Node):
                 self.target_observation_callback,
                 state_qos,
             ),
-            self.create_subscription(
+            self.create_snapshot_subscription(
                 String,
                 "/gateway/received/target_detection",
                 self.target_detection_callback,
@@ -6153,6 +6157,8 @@ class HeadquartersControl(Node):
                             self.robot_positions[name],
                             self.target,
                             local_map=HeadquartersControl.delivered_return_maps(self).get(name),
+                            blocked_positions=[position for other, position in self.robot_positions.items()
+                                               if other != name and position is not None],
                         )
                         if (
                             name not in self.rally_probe_targets
