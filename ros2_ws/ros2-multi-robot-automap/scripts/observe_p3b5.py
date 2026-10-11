@@ -36,7 +36,7 @@ def record(topic,message):
     except (ValueError,TypeError): pass
     if topic.endswith("battery_state") and isinstance(data, dict):
         key=(data.get("mode"),data.get("return_count"),data.get("charge_count"))
-        if last.get(topic)==key: return
+        if last.get(topic)==key and navigation_capture is None: return
         last[topic]=key
     event={"topic":topic,"observer_time":node.get_clock().now().nanoseconds/1e9,"data":data}
     with args.output.open("a") as stream: stream.write(json.dumps(event,sort_keys=True)+"\n")

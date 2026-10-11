@@ -9376,3 +9376,8 @@ colcon build --symlink-install --packages-select multi_robot_exploration multi_r
 2026-10-11 P2C.1 v82四原整体FAIL保持：2f4aeda forced/rooms原生COMPLETE220.8/295.0，lab/corrRALLY300.4/300.2timeout，四零接触耗尽FAILED任务期infra、owner-observer0关闭/双图同，各24子PASS不代替总FAIL；17+2/917未调用。原rooms/corr首近家三点几何3合格但预约0，corr完整池另33几何可用仅条件证明；lab14探查准备零实际探查，其中5准备后直接报过期，不能归因全部。新首近家候选绕过纯预约预筛后按原完整价格/最后预约核验，仅全额合格却同伴占用时有限10s等待，不随新源续起点；过期回原后备，普通SUCCESS后才计功。新RALLY过期只留点与target/participants/final上下文，下一fresh回调先查当前final可达性，再交原完整机体路/返回预约/去返预算/源龄sender；失败计算不续原30s失路时钟。2中央改+1新增/85其他及107纯/native-SLAM-Nav2-SDF保持。2594功能487.72s/43新定向/四包8.28s/190保护6历史授权54协议/三33源声明/actual DDS-Future四情形PASS，探查零普通功/零nativecredit。所有夹具、runtime错误与初声明60s误述保留；代码始终原10/30s，后闭合修正文案和10s边界。新v83待clean pushed冻结后4→17+2原任务，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261011_p2c_v82_failed_development与20261011_p2c_wait_probe_components。
 
 所有owned验证关闭后写报告；用户260929_report十四文件保持。
+
+
+2026-10-11 P2C.1 v83首原技术FAIL保持：25f45dc forced原生COMPLETE215.3/检测149.6/集合152.0，双charge1/min15.091204571/零接触耗尽FAILED任务期infra，owner-observer0关闭/双图同；23子PASS及initial_replenishment缺原native电池源FAIL。原observer只在mode/return_count/charge_count变化时存档，9等待所用连续电池源均未留，strictFAIL不可回填，余3开发/17+2/917未调用。新显式完整导航旁录模式在原同一native订阅保留每次完整发布，legacy事件模式原样；无新增发布/订阅/AP观测/应用无线流。等待仍须原发布字典精确相同，并新增stamp_sec与当前battery源戳一致，邻近/重建消息不替代。全部88中央/107纯及native-SLAM-Nav2-物理保持。2604功能440.26s/30定向10新/四包7.11s/190保护6历史授权54协议/三33源声明/actual DDS四组PASS：旧新legacy各1、旧full1、新full3且精确源绑定；旧缺源仍FAIL，全部owned关闭，无physical/nativecredit。新v84待clean pushed冻结后4→17+2原任务，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261011_p2c_v83_failed_development与20261011_p2c_native_battery_retention_components。
+
+所有owned验证关闭后写报告；用户260929_report十四文件保持。

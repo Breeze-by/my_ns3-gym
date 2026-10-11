@@ -154,6 +154,7 @@ def audit_first_window_reservation_waits(events, native, declared=False):
         state = e['battery_state']
         assert type(state['charge_count']) is int and state['charge_count'] == 0 and state['mode'] == 'ACTIVE'
         assert any(row == state for row in native[e['robot']]), 'wait lacks original native battery source'
+        assert state['stamp_sec'] == e['inputs'][e['robot']+'/battery_state']['source_time'], 'wait battery epoch differs from its native source'
         expected = control.initial_replenishment_prefix(state, e['current_position'], 0, 1.)
         assert expected is not None
         actual = dict(e['initial_window']);assert actual.pop('generated_at_sec') == planning and actual == expected

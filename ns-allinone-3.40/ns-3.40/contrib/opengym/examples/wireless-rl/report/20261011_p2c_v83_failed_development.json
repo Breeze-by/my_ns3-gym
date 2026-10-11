@@ -1,0 +1,85 @@
+{
+  "status": "FAIL",
+  "source_commit": "25f45dc9778c3227c24c77ee0a2c6110a611f575",
+  "cases": [
+    {
+      "case": "dev_forced2",
+      "native_success": true,
+      "phase": "COMPLETE",
+      "elapsed_sec": 215.29999999999973,
+      "detected_sec": 149.5999999999999,
+      "rally_sec": 152.0,
+      "charges": 2,
+      "minimum_energy": 15.091204571185639,
+      "collision_events": 0,
+      "failed_robots": [],
+      "runner_returncode": 0,
+      "observer_returncode": 0,
+      "canonical_native_graphs_identical": true,
+      "strict_gate": "FAIL",
+      "strict_gate_errors": [
+        {
+          "case": "dev_forced2",
+          "error": "AssertionError('wait lacks original native battery source')",
+          "traceback": "Traceback (most recent call last):\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 1076, in audit_one\n    try:return check_one(path,config),None\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_p2c_gate.py\", line 986, in check_one\n    replenishment=initial_replenishment_audit(directory/'ledger.jsonl',bool(config.get('initial_near_home_replenishment')),\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/p2c_initial_replenishment.py\", line 59, in initial_replenishment_audit\n    reservation_waits = audit_first_window_reservation_waits(window_waits, native, require_reservation_wait)\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/p2c_initial_replenishment.py\", line 156, in audit_first_window_reservation_waits\n    assert any(row == state for row in native[e['robot']]), 'wait lacks original native battery source'\nAssertionError: wait lacks original native battery source\n"
+        }
+      ],
+      "components_pass": 23,
+      "component_errors": {
+        "initial_replenishment": "Traceback (most recent call last):\n  File \"/tmp/audit_p2c_v83_components.py\", line 55, in <module>\n    try:out[name]=check()\n  File \"/tmp/audit_p2c_v83_components.py\", line 31, in <lambda>\n    'initial_replenishment':lambda:initial_replenishment_audit(ledger,True,directory/'safety_events.jsonl',True,directory/'navigation_inputs.jsonl.gz',True,True,True,True,True,True),\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/p2c_initial_replenishment.py\", line 59, in initial_replenishment_audit\n    reservation_waits = audit_first_window_reservation_waits(window_waits, native, require_reservation_wait)\n  File \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/p2c_initial_replenishment.py\", line 156, in audit_first_window_reservation_waits\n    assert any(row == state for row in native[e['robot']]), 'wait lacks original native battery source'\nAssertionError: wait lacks original native battery source\n"
+      },
+      "owned_closed": true
+    }
+  ],
+  "owned_closed": true,
+  "not_invoked": [
+    "remaining3development"
+  ],
+  "formal17_not_invoked": true,
+  "physical2_not_invoked": true,
+  "holdout917_unexposed": true,
+  "originals": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261011_p2c_v83_failed_development_originals.json.gz",
+    "sha256": "fca0d3bedce1308c288414dc99596eaf391fd1172f02ecfbd1b3090b4d4a0200",
+    "bytes": 1944226
+  },
+  "raw_bindings": {
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v83/20261011_p2c_v83_dev_forced2/native_graph.json": "e8a56ab7d55a84b1bd5bd6cd0694a7c9f03511825e2c959ad9fc55c195cc361f",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v83/20261011_p2c_v83_dev_forced2/manifest.json": "fe7fba00638295f64c29f167b3e337dcd9d98b01adc487ed2c4bfc677f329765",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v83/20261011_p2c_v83_dev_forced2/initial_bypass_graph.json": "519dbf75f5b9b60b817051ff1461bd7cf674c55a4deb2c1d8ffb8889280d78bd",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v83/20261011_p2c_v83_dev_forced2/graph.json": "e8a56ab7d55a84b1bd5bd6cd0694a7c9f03511825e2c959ad9fc55c195cc361f",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v83/20261011_p2c_v83_dev_forced2/ledger.jsonl": "531f7756c2e7b2bcffed4c3d34420fed093f0570cec5fa416e167aa81dd84ba4",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v83/20261011_p2c_v83_dev_forced2/20261011_p2c_v83_dev_forced2.csv": "144a3b89bd102722f7e2e75de40d021b13f987c0bb7903d390b5c73bde2052f6",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v83/20261011_p2c_v83_dev_forced2/schedule.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v83/20261011_p2c_v83_dev_forced2/summary.json": "b032674740aad91ec912763b19681a9fbd9d8022fe7eb15386c689ecf994188f",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v83/20261011_p2c_v83_dev_forced2/safety_events.jsonl": "8eaa499058a39dd20bd274d26432ffd3c62f8c77076c729d56cca4957af41c5c",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v83/20261011_p2c_v83_dev_forced2/20261011_p2c_v83_dev_forced2.json": "f24b00c8aa81821fb56f6f9d68988cdeee730d683604ba7d275de7f0ae4ea851",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v83/20261011_p2c_v83_dev_forced2/observer.log": "7253e0c1c0aa1e913df0bbe15c6d693f60af118ec30c9055ae65751593778d8f",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v83/20261011_p2c_v83_dev_forced2/navigation_inputs.jsonl.gz": "87775918daa974069cfbeea280ffcea38635ae05842a4679105f8013ba7ab615",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v83/20261011_p2c_v83_dev_forced2/runner.log": "dba0145e767528a6d1830f4d8dbad075b2fcffd8d51e486a4f06c3dd71f59a9a",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v83/20261011_p2c_v83_dev_forced2/launch/robots2_seed303_20261011-132131.log": "bdba09679461f93b3b38aea09818b7a874b808e208cba760a76c49f2ec53405b",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v83/20261011_p2c_v83_dev_forced2/ledger_metrics/live.jsonl": "8a30667d7553b87344241a24bd3e23c794ba81194c27b3ca4dfba2c90d7bbad0",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v83/20261011_p2c_v83_dev_forced2/ledger_metrics/live_windows.csv": "7e242aac24096cc7fe2c8681546a526c1f059bd6fa8bdd7977a5957f538ea26b",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v83/20261011_p2c_v83_dev_forced2/ledger_metrics/curves.svg": "37bfabac874fba8af4f45ec3987b152df2701d5144edf3978696855ed69c3d40",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v83/20261011_p2c_v83_dev_forced2/ledger_metrics/windows.jsonl": "470aba17d8fca29a5ade9d44560f8c44da0283d805a40bd7e9d06b424230b520",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v83/20261011_p2c_v83_dev_forced2/ledger_metrics/events.jsonl": "9526d1cad2a376b8d9ee236222caf2dab54b2785d3e249e0d7b44be4a36e4757",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v83/20261011_p2c_v83_dev_forced2/ledger_metrics/windows.csv": "7e242aac24096cc7fe2c8681546a526c1f059bd6fa8bdd7977a5957f538ea26b",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v83/20261011_p2c_v83_dev_forced2/ledger_metrics/summary.json": "5ac14b15407c49f7e5b7a817aef0a5fce31c1262e30f0cb070c4c6d37344e721",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c/20261011_p2c_v83/20261011_p2c_v83_dev_forced2/ledger_metrics/inputs.jsonl": "8b6c00f8a591f3e7effbd86e89b9b1e8ba7f27f0f42d366f19accb4b82e668eb",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c_v83_dev_forced2_components1.json": "38b7485cc1dc25e56d56b8c267b6709e3caef52d29d9a4fece88b6473fabc558",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c_v83_dev_forced2_native_command_stop1.json": "7547bcb0061528d582a7a05b485f744acfa9237261bfb7607da59dc6a2ba2899",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c_v83_development_workflow1.json": "3f07ff2b0852d7b54ee9086b0fc396a980766e051688dd19b6ec84767f822a0f",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c_v83_development_workflow1.log": "c461a1e1772affd44a42e6d72a55b13f03032af9b91043b2df2ce299e8b86fe8",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c_v83_failed_report1.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c_v83_forced_components1.log": "593fd1dd93a76405f7fcc3f821aa8b68556e2aa687d2bcbc00c74faeb84ebaad",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c_v83_forced_gate1.json": "261a4a4e47cc5cdd1038afe831b55bf2ffe7c24746bcf8c3243c775b9b86d7f3",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c_v83_forced_gate1.log": "6bda9eb98c5a41ba91c381e4de4573b45ced19586820b8eba1b4355086905b10",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c_v83_forced_native_command_stop1.log": "c91156cfff0b3c58b2fe2abbf9bc3fb73bb3b83af8cd7a9e48aa1b708bea11e5",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c_v83_forced_owner.log": "fa2b64c613cb80784c251f9b456b4d9370b86bf5f8b1cf95e8533a427c63b421",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c_v83_freeze1.json": "8e2c6fc562f278c3cd6fea7e8f49587e4b3a0b51f37ca1ae48b091f8edb2a909",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c_v83_physical_predeclared1.log": "fb8a89a771eddf79c91605951783712f4404f5ad7dcc0f7ed763595a6a1f99c2",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c_v83_physical_predeclared2.log": "d9a16f31d71f642dfded147c7325803611a285371e8d1030d5a0071d896baaa2",
+    "ros2_ws/ros2-multi-robot-automap/log/p2c_v83_predeclared1.log": "beed198cc68161ea4008cd92d8914b9b9b604421adc19a944dc38424c5225d57"
+  },
+  "limits": "All original native outcomes, strict source/protocol/geometry/energy gates and failures retained. Components do not substitute for complete tasks; no reruns, outcome backfill or causal cross-version rate claims."
+}

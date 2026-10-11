@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-11T05:07:22Z",
+  "predeclared_at_utc": "2026-10-11T05:36:50Z",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -358,7 +358,8 @@
     "20261011_p2c_v79_failed_development.json",
     "20261011_p2c_v80_failed_development.json",
     "20261011_p2c_v81_failed_development.json",
-    "20261011_p2c_v82_failed_development.json"
+    "20261011_p2c_v82_failed_development.json",
+    "20261011_p2c_v83_failed_development.json"
   ],
   "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
   "opportunity_charge_rules": [
@@ -511,7 +512,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "2f4aeda579e8ec2efe2c419d8e8ab3adb844d349",
+  "candidate_parent_commit": "25f45dc9778c3227c24c77ee0a2c6110a611f575",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -1109,5 +1110,11 @@
     "returns": "No pending charge, actual return/charge, yield, live frontier/rally/survey or arrival may admit the pending probe. A now-reachable final route discards the optional hint.",
     "preserved": "Native battery/return, action Future serialization, SLAM/Nav2,300s task,5s hold, original2/5/60s sources and physical stimuli",
     "component_report": "20261011_p2c_wait_probe_components.json"
+  },
+  "private_native_battery_retention": {
+    "scope": "Existing evaluator-only native battery subscription; with full navigation capture, retain every received complete native battery publication in safety_events.jsonl rather than filtering by mode/return/charge counters.",
+    "unchanged": "No new publisher/subscription/application flow, controller/native battery/SLAM/Nav2/physics/TTL or task command change. Legacy observer event mode keeps original filtering.",
+    "binding": "Waiting requires the exact original native published dictionary and its unchanged stamp_sec equal to the declared battery source epoch. Nearest mode events or reconstructed/fabricated messages cannot replace an absent original source.",
+    "component_report": "20261011_p2c_native_battery_retention_components.json"
   }
 }

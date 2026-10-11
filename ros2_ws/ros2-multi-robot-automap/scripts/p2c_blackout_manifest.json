@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-11T05:07:22Z",
+  "predeclared_at_utc": "2026-10-11T05:36:50Z",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "2f4aeda579e8ec2efe2c419d8e8ab3adb844d349",
+  "candidate_parent_commit": "25f45dc9778c3227c24c77ee0a2c6110a611f575",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -265,7 +265,8 @@
     "20261011_p2c_v79_failed_development.json",
     "20261011_p2c_v80_failed_development.json",
     "20261011_p2c_v81_failed_development.json",
-    "20261011_p2c_v82_failed_development.json"
+    "20261011_p2c_v82_failed_development.json",
+    "20261011_p2c_v83_failed_development.json"
   ],
   "coordinator_live_clock": {
     "executor": "Two workers; only the existing /clock subscription moves to an independent mutually exclusive group. Original state/action callbacks remain serialized.",
@@ -853,5 +854,11 @@
     "returns": "No pending charge, actual return/charge, yield, live frontier/rally/survey or arrival may admit the pending probe. A now-reachable final route discards the optional hint.",
     "preserved": "Native battery/return, action Future serialization, SLAM/Nav2,300s task,5s hold, original2/5/60s sources and physical stimuli",
     "component_report": "20261011_p2c_wait_probe_components.json"
+  },
+  "private_native_battery_retention": {
+    "scope": "Existing evaluator-only native battery subscription; with full navigation capture, retain every received complete native battery publication in safety_events.jsonl rather than filtering by mode/return/charge counters.",
+    "unchanged": "No new publisher/subscription/application flow, controller/native battery/SLAM/Nav2/physics/TTL or task command change. Legacy observer event mode keeps original filtering.",
+    "binding": "Waiting requires the exact original native published dictionary and its unchanged stamp_sec equal to the declared battery source epoch. Nearest mode events or reconstructed/fabricated messages cannot replace an absent original source.",
+    "component_report": "20261011_p2c_native_battery_retention_components.json"
   }
 }
