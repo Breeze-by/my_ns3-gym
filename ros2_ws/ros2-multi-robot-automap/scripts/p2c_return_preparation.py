@@ -68,6 +68,8 @@ def audit_preparation(event, require_motion_heading=False):
         assert not any(control.routes_conflict((point,), rebuilt[returning], 1.8)
                        for name, point in positions.items() if name != returning)
         assert 0 <= now-saved['evaluated_at_sec'] <= 2.
+        if event.get('preparation_charge') is not None:
+            audit_preparation_charge(event)
         return 'charge'
     assert event['kind'] == 'exploration_return_yield'
     if 'protected_return_cycles' in saved:
@@ -113,6 +115,67 @@ def audit_preparation(event, require_motion_heading=False):
     assert required is not None and math.isclose(required, saved['required_energy'], abs_tol=1e-8)
     assert float(states[name]['energy']) > required
     return 'yield'
+
+
+def audit_preparation_charge(event):
+    """Rebuild why a blocker needs energy before clearing another return."""
+    proof, own = event['preparation_charge'], event['return_preparation']
+    now, name = event['event_time'], event['robot']
+    positions, states, modes = (own[k] for k in ('robot_positions', 'battery_states', 'battery_modes'))
+    assert proof['blocker'] == name and proof['returning'] != name
+    assert event['task_phase'] in ('EXPLORE', 'FOUND_UNCONFIRMED')
+    assert all(mode == 'ACTIVE' for mode in modes.values())
+    assert proof['ordinary_navigation_authorized'] is False and proof['clearance_m'] == 1.8
+    # The normal charge reader already verified these exact delivered maps,
+    # bodies, original source leases and the blocker's clear complete return.
+    assert set(proof['inputs']) == set(own['inputs'])
+    for key,sample in proof['inputs'].items():
+        assert sample['source_time'] == own['inputs'][key]['source_time']
+        assert sample['ttl_sec'] == own['inputs'][key]['ttl_sec']
+    for key in ('planning_map', 'source_map', 'self_return_cells',
+                'return_maps', 'robot_positions', 'battery_states', 'battery_modes'):
+        assert proof[key] == own[key], 'preparation charge changed its input snapshot'
+    assert 0 <= now-proof['evaluated_at_sec'] <= 2.
+    planning=own['planning_map'];grid=decode_grid(planning)
+    maps={n:dict(data=decode_grid(row),resolution=row['resolution'],origin=row['origin'])
+          for n,row in own['return_maps'].items()}
+    protected=control.rally_return_reservations(grid,planning['resolution'],planning['origin'],
+        positions,states,modes,{proof['returning']},return_maps=maps)
+    assert protected is not None and set(protected)==set(proof['protected_routes'])
+    for owner,route in protected.items():
+        assert np.allclose(route,proof['protected_routes'][owner],rtol=0.,atol=1e-10)
+    assert control.routes_conflict((positions[name],),protected[proof['returning']],1.8)
+    point=proof['refuge_position'];assert point==event['frontier_position']
+    assert math.dist(positions[name],point)>=.5
+    assert not any(control.routes_conflict((point,),route,1.8) for route in protected.values())
+    target,route=control.plan_rally_leg(control.RallyPose(*point,0.),grid,planning['resolution'],planning['origin'],
+        positions[name],5.,blocked_positions=[p for n,p in positions.items() if n!=name],
+        clearance_m=.35,visible_only=True,local_map=maps[name])
+    assert target is not None and math.dist((target.x,target.y),point)<=.02
+    assert np.allclose(route,proof['refuge_route'],rtol=0.,atol=1e-10)
+    for reserved in protected.values():
+        separations=[min(math.dist(p,q) for q in reserved) for p in route]
+        assert all(b+planning['resolution']>=min(a,1.8) for a,b in zip(separations,separations[1:]))
+    distance=sum(math.dist(a,b) for a,b in zip(route,route[1:]));assert math.isclose(distance,proof['path_distance_m'],abs_tol=1e-10)
+    def price(at,length,destination):
+        assert 0<=now-at<=2.
+        h=SimpleNamespace(now=lambda:at,battery_modes=modes,battery_states=states,robot_positions=positions,
+            map_data=grid,resolution=planning['resolution'],origin=planning['origin'],map_received_at=planning['source_time'],
+            robot_maps=maps,robot_map_received_at={n:r['source_time'] for n,r in own['return_maps'].items()},
+            robot_odom_received_at={n:own['inputs'][n+'/pose_state']['source_time'] for n in positions},
+            robot_tf_received_at={n:own['inputs'][n+'/frame_state']['source_time'] for n in positions})
+        value=control.HeadquartersControl.exploration_required_energy(h,name,length,destination,at)
+        assert value is not None
+        return value
+    refuge=price(proof['refuge_required_energy_evaluated_at_sec'],distance,point)
+    current=price(proof['current_return_required_energy_evaluated_at_sec'],0.,positions[name])
+    charged=price(proof['charge_budget_evaluated_at_sec'],distance,point)
+    assert math.isclose(refuge,proof['refuge_required_energy'],abs_tol=1e-8)
+    assert math.isclose(current,proof['current_return_required_energy'],abs_tol=1e-8)
+    assert math.isclose(charged,event['required_energy'],abs_tol=1e-8)
+    energy=float(states[name]['energy']);assert event['available_energy']==energy
+    assert current<energy<=refuge and charged<float(states[name]['capacity'])*float(states[name]['charge_target_fraction'])
+    return 'preparation_charge'
 
 
 def return_preparation_audit(path, required=False, require_motion_heading=False):

@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-11T20:52:35Z",
+  "predeclared_at_utc": "2026-10-11T22:59:45Z",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -368,7 +368,8 @@
     "20261011_p2c_v89_failed_development.json",
     "20261012_p2c_v90_failed_formal.json",
     "20261012_p2c_v91_failed_development.json",
-    "20261012_p2c_v92_failed_formal.json"
+    "20261012_p2c_v92_failed_formal.json",
+    "20261012_p2c_v93_failed_development.json"
   ],
   "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
   "opportunity_charge_rules": [
@@ -521,7 +522,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "b851a57148cc3a506750e8258e60a31f9712a610",
+  "candidate_parent_commit": "8fe24f86461be5034979e237b3a0987154aee1fe",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -1200,5 +1201,12 @@
     "policy": "Existing known-grid body-masked complete curved prefix then original visible prefix; both share one immutable planning-snapshot route field. Existing necessary reservation bound and actual full reservations choose a valid prefix. Original complete target/return energy, source leases, ranking, finite continuation and publication guards remain.",
     "unchanged": "All native battery/SLAM/Nav2, source headers/TTL,300s/5s,first-window evidence,task cases and physical stimuli.",
     "component_credit": "No physical/native/task credit from fixed geometry or synthetic DDS/Future endpoints; all five v92 originals retain full-development PASS and formal-first FAIL."
+  },
+  "unfunded_return_blocker_precharge": {
+    "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261012_p2c_return_blocker_charge_components.json",
+    "rule": "When a body-blocking refuge fails its original full budget, discard the unavailable proposal; if the blocker can fund its current full return, request its charge through the unchanged serial charge and full corridor preparation gates before retrying the beneficiary.",
+    "guards": "Original complete visible escape, 1.8m protected return corridor, body/local maps, full trip/current return/charge-target capacity budgets, no live/pending/returning/charging peer and original source TTLs; preserve ordinary search intent and completed-work counters.",
+    "private_evidence": "Original consumed audit stream carries both protected beneficiary return and blocker own return, matched maps/body/source stamps and independently reconstructed three prices; no new application flow or native/task credit.",
+    "limits": "Component witnesses and controlled DDS/ActionClient Future inputs do not establish physical Nav2/charging or task causality; new same-freeze4development,17formal and2physical remain mandatory."
   }
 }

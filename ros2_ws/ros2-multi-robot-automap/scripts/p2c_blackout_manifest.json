@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-11T20:52:35Z",
+  "predeclared_at_utc": "2026-10-11T22:59:45Z",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "b851a57148cc3a506750e8258e60a31f9712a610",
+  "candidate_parent_commit": "8fe24f86461be5034979e237b3a0987154aee1fe",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -275,7 +275,8 @@
     "20261011_p2c_v89_failed_development.json",
     "20261012_p2c_v90_failed_formal.json",
     "20261012_p2c_v91_failed_development.json",
-    "20261012_p2c_v92_failed_formal.json"
+    "20261012_p2c_v92_failed_formal.json",
+    "20261012_p2c_v93_failed_development.json"
   ],
   "coordinator_live_clock": {
     "executor": "Two workers; only the existing /clock subscription moves to an independent mutually exclusive group. Original state/action callbacks remain serialized.",
@@ -944,5 +945,12 @@
     "policy": "Existing known-grid body-masked complete curved prefix then original visible prefix; both share one immutable planning-snapshot route field. Existing necessary reservation bound and actual full reservations choose a valid prefix. Original complete target/return energy, source leases, ranking, finite continuation and publication guards remain.",
     "unchanged": "All native battery/SLAM/Nav2, source headers/TTL,300s/5s,first-window evidence,task cases and physical stimuli.",
     "component_credit": "No physical/native/task credit from fixed geometry or synthetic DDS/Future endpoints; all five v92 originals retain full-development PASS and formal-first FAIL."
+  },
+  "unfunded_return_blocker_precharge": {
+    "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261012_p2c_return_blocker_charge_components.json",
+    "rule": "When a body-blocking refuge fails its original full budget, discard the unavailable proposal; if the blocker can fund its current full return, request its charge through the unchanged serial charge and full corridor preparation gates before retrying the beneficiary.",
+    "guards": "Original complete visible escape, 1.8m protected return corridor, body/local maps, full trip/current return/charge-target capacity budgets, no live/pending/returning/charging peer and original source TTLs; preserve ordinary search intent and completed-work counters.",
+    "private_evidence": "Original consumed audit stream carries both protected beneficiary return and blocker own return, matched maps/body/source stamps and independently reconstructed three prices; no new application flow or native/task credit.",
+    "limits": "Component witnesses and controlled DDS/ActionClient Future inputs do not establish physical Nav2/charging or task causality; new same-freeze4development,17formal and2physical remain mandatory."
   }
 }

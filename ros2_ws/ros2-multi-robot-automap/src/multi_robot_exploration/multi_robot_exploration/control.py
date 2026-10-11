@@ -4404,8 +4404,45 @@ class HeadquartersControl(Node):
                 return True
         distance = sum(math.dist(a, b) for a, b in zip(route, route[1:]))
         required = HeadquartersControl.exploration_required_energy(self, name, distance, point)
-        if (required is None or float(self.battery_states[name]['energy']) <= required
-                or not HeadquartersControl.fresh_return_preparation_inputs(self)):
+        if not HeadquartersControl.fresh_return_preparation_inputs(self):
+            return True
+        if required is None:
+            self.pending_exploration_return_yield = None
+            return True
+        if float(self.battery_states[name]['energy']) <= required:
+            # A parked blocker can afford its own return yet lack the budget
+            # for an escape followed by that return. Keeping this unaffordable
+            # proposal would prevent every subsequent exploration admission.
+            self.pending_exploration_return_yield = None
+            if (self.battery_modes[returning] != 'ACTIVE'
+                    or getattr(self, 'rally_charge_requested', {})
+                    or any(mode != 'ACTIVE' for mode in self.battery_modes.values())):
+                return True
+            refuge_evaluated = self.exploration_budget_times[name]
+            current_required = HeadquartersControl.exploration_required_energy(
+                self, name, 0., self.robot_positions[name])
+            if (current_required is None or float(self.battery_states[name]['energy']) <= current_required
+                    or not HeadquartersControl.fresh_return_preparation_inputs(self)):
+                return True
+            preparation = HeadquartersControl.return_preparation_evidence(self, dict(
+                returning=returning, blocker=name, protected_routes=protected,
+                clearance_m=RALLY_ROUTE_SEPARATION_M, evaluated_at_sec=self.now(),
+                refuge_position=list(point), refuge_route=route, path_distance_m=distance,
+                refuge_required_energy=required,
+                refuge_required_energy_evaluated_at_sec=refuge_evaluated,
+                current_return_required_energy=current_required,
+                current_return_required_energy_evaluated_at_sec=self.exploration_budget_times[name],
+                ordinary_navigation_authorized=False))
+            row, column = world_to_grid(*point, self.resolution, *self.origin)
+            assignment = Assignment(Viewpoint(-1, row, column, row, column, 0, 0),
+                *point, distance, 0., *point, refuge.yaw)
+            previous_intent = getattr(self, 'exploration_resume_intents', {}).get(name)
+            HeadquartersControl.request_exploration_charge(
+                self, [(name, assignment)], preparation_charge=preparation)
+            if previous_intent is None:
+                self.exploration_resume_intents.pop(name, None)
+            else:
+                self.exploration_resume_intents[name] = previous_intent
             return True
         row, column = world_to_grid(*point, self.resolution, *self.origin)
         start = self.robot_positions[name]
@@ -4445,7 +4482,7 @@ class HeadquartersControl(Node):
                 'ap_delivered_robot_map',self.robot_map_received_at[robot],self.robot_map_received_at[robot])
                 for robot,g in HeadquartersControl.delivered_return_maps(self).items()})
 
-    def request_exploration_charge(self, candidates):
+    def request_exploration_charge(self, candidates, preparation_charge=None):
         """Charge one idle robot for an otherwise admissible current frontier.
 
         Call after a needed idle peer has no funded admission and live actions
@@ -4507,6 +4544,9 @@ class HeadquartersControl(Node):
                 self, self.exploration_charge_return_evidence) if exploration else None),
             'inputs': {key: sample for key, sample in input_freshness_at(self.input_freshness_details(), now).items()
                        if key != 'headquarters/target_detection'},
+            **({'preparation_charge': dict(preparation_charge,
+                charge_budget_evaluated_at_sec=self.exploration_budget_times[name])}
+               if preparation_charge is not None else {}),
         }, sort_keys=True)))
         self.get_logger().warn(
             f'Requesting early exploration charge for {name}: energy={energy:.2f}, '
