@@ -1086,6 +1086,26 @@ def audit_one(item):
         return None,dict(case=json.loads(path.read_text())['case'],error=repr(error),traceback=traceback.format_exc())
 
 
+def target_survey_coverage_audit(evidence, conditional=False):
+    """A complete assignment never enters the information-survey fallback."""
+    counts=[]
+    for row in evidence:
+        assignment=row['rally_assignment_audit'];survey=row['target_survey_audit']
+        assert assignment['status']==survey['status']=='PASS' and survey['declared']
+        values=(assignment['failed_assignments_rebuilt'],assignment['chosen_assignments_rebuilt'],
+                survey['target_information_survey_witnesses'])
+        assert all(type(value) is int and value>=0 for value in values),'invalid original coverage counts'
+        counts.append(values)
+    incomplete=sum(row[0] for row in counts);complete=sum(row[1] for row in counts)
+    surveys=sum(row[2] for row in counts)
+    if not surveys:
+        assert conditional and not incomplete,'new survey algorithm was never exercised'
+        assert complete,'no reconstructed complete assignment proves the fallback was unnecessary'
+    return dict(status='PASS' if surveys else 'NOT_TRIGGERED',conditional=conditional,
+                incomplete_assignments=incomplete,complete_assignments=complete,information_surveys=surveys,
+                scope='Conditional fallback coverage; NOT_TRIGGERED adds no navigation or native task-work credit.')
+
+
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--run-root',type=Path,required=True)
@@ -1120,9 +1140,13 @@ def main():
     if config.get('initial_known_space_search') and a.cases is None and not errors:
         if not any(row['exploration_travel_audit']['initial_visual_witnesses'] for row in evidence):
             errors.append(dict(case='initial_known_space_search',error='new search algorithm was never exercised'))
+    survey_coverage=None
     if config.get('target_information_survey') and a.cases is None and not errors:
-        if not any(row['target_survey_audit']['target_information_survey_witnesses'] for row in evidence):
-            errors.append(dict(case='target_information_survey',error='new survey algorithm was never exercised'))
+        try:
+            survey_coverage=target_survey_coverage_audit(evidence,
+                conditional=bool(config.get('conditional_target_survey_coverage')))
+        except (AssertionError,KeyError,TypeError) as error:
+            errors.append(dict(case='target_information_survey',error=str(error)))
     physical=None
     if not a.development and a.cases is None:
         try:
@@ -1134,7 +1158,7 @@ def main():
             errors.append(dict(case='physical_blackout_pair',error=repr(error),traceback=traceback.format_exc()))
     result=dict(status='FAIL' if errors else 'PASS',scope='development' if a.development else 'integration',
         task_stack_frozen_commit=originals[0]['git_commit'],cases=len(summaries),errors=errors,evidence=evidence,
-        full_declared_scope=a.cases is None,
+        full_declared_scope=a.cases is None,target_survey_coverage=survey_coverage,
         raw_failures_retained=True,physical_blackout_gate=physical or 'required_before_full_integration',
         general_hardware_safety_guarantee=False)
     a.output.parent.mkdir(parents=True,exist_ok=True);a.output.write_text(json.dumps(result,indent=2)+'\n')
