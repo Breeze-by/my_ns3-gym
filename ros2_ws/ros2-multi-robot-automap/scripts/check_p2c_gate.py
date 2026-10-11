@@ -17,6 +17,7 @@ from p2c_navigation_dispatch import navigation_dispatch_audit
 from p2c_rally_transit_heading import transit_heading_audit
 from p2c_outbound_routes import outbound_route_audit, bind_original_maps, check_route, decode
 from p2c_refuge_release import refuge_release_audit
+from p2c_prepared_dispatch import prepared_dispatch_audit
 from p2c_rally_connection import rally_connection_audit
 from p2c_departure_heading import heading_preference_factor, departure_heading_audit
 from p2c_observer_information import observer_information_audit
@@ -968,6 +969,8 @@ def check_one(path,config):
     outbound=outbound_route_audit(directory/'ledger.jsonl',bool(config.get('navigation_outbound_consistency')),
         directory/'navigation_inputs.jsonl.gz', bool(config.get('exploration_parallel_return_reservations')),
         directory/'safety_events.jsonl')
+    prepared_batch=prepared_dispatch_audit(directory/'ledger.jsonl',bool(config.get('normal_rally_batch_before_recovery')),
+        directory/'navigation_inputs.jsonl.gz',directory/'safety_events.jsonl')
     refuge=refuge_release_audit(directory/'ledger.jsonl',bool(config.get('charged_return_refuge_release')),
         directory/'navigation_inputs.jsonl.gz',bool(config.get('refuge_release_preflight_guard')))
     connection=rally_connection_audit(directory/'ledger.jsonl',bool(config.get('rally_connection_handoff')),
@@ -1012,6 +1015,8 @@ def check_one(path,config):
     if config.get('charged_return_refuge_release'):
         from run_p2d_baseline import file_digest
         assert row['source_digests']['refuge_release_reader']==file_digest(Path(__file__).with_name('p2c_refuge_release.py'))
+    if config.get('normal_rally_batch_before_recovery'):
+        assert row['source_digests']['prepared_dispatch_reader']==file_digest(Path(__file__).with_name('p2c_prepared_dispatch.py'))
     if config.get('navigation_outbound_consistency'):
         from run_p2d_baseline import file_digest
         assert row['source_digests']['outbound_route_reader']==file_digest(Path(__file__).with_name('p2c_outbound_routes.py'))
@@ -1035,6 +1040,7 @@ def check_one(path,config):
         native_scan_self_filter_audit=scan_filter,exploration_return_preparation_audit=preparations,
         navigation_dispatch_boundary_audit=dispatches,observed_rally_transit_heading_audit=transit,
         navigation_outbound_consistency_audit=outbound,charged_return_refuge_release_audit=refuge,
+        normal_rally_batch_before_recovery_audit=prepared_batch,
         rally_connection_handoff_audit=connection,parallel_rally_preparation_audit=preparations_approach,
         exploration_charge_geometry_handoff_audit=charge_handoff,initial_replenishment_audit=replenishment,
         exploration_departure_heading_audit=departure,observer_connection_information_audit=observer_information)

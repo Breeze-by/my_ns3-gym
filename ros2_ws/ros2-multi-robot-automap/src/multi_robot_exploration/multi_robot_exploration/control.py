@@ -5913,6 +5913,10 @@ class HeadquartersControl(Node):
                             f"target={self.rally_targets[name]}."
                         )
                     elif now - since >= 2.0:
+                        # Give this batch's normal plans their original admission
+                        # before replacing a parked robot's ready final approach.
+                        if self.enable_battery and plans and any(HeadquartersControl.admit_prepared_rally_plans(self, plans, planning_targets, stage_names, heading_corrections, approach_routes, completed_approaches, reserved_names, return_reservations, recovery_waiter=name)):
+                            return
                         if any(
                             self.rally_goal_handles[other_name] is not None
                             or self.rally_goal_pending[other_name]
@@ -6191,6 +6195,121 @@ class HeadquartersControl(Node):
                 planning_targets[name] = self.rally_targets[name]
             if self.survey_goal_pending or self.survey_goal_handle is not None:
                 return
+            if HeadquartersControl.admit_prepared_rally_plans(self, plans, planning_targets, stage_names, heading_corrections, approach_routes, completed_approaches, reserved_names, return_reservations)[1]:
+                return
+
+        navigation_quiescent = (
+            not any(
+                self.rally_goal_handles[name] is not None
+                or self.rally_goal_pending[name]
+                for name in self.rally_dispatch_order
+            )
+            and self.survey_goal_handle is None
+            and not self.survey_goal_pending
+            and not self.rally_yield_targets
+            and not self.rally_probe_targets
+            and all(
+                self.rally_arrived[name]
+                for name in self.rally_dispatch_order
+            )
+        )
+        stable = navigation_quiescent and robots_stable(
+            self.robot_positions,
+            self.robot_velocities,
+            self.rally_targets,
+            self.rally_position_tolerance,
+            self.rally_linear_tolerance,
+            self.rally_angular_tolerance,
+        )
+        pose_velocity_ready = stable if navigation_quiescent else None
+        stable = (stable and self.active_batteries_ready() and not energy_unready
+                  and (not self.enable_battery or self.rally_preflight_complete))
+        if not stable and self.rally_hold_started_at is not None:
+            self.rally_last_hold_reset = {
+                "reason": "timer_gate", "event_time": now,
+                "navigation_quiescent": navigation_quiescent,
+                "pose_velocity_ready": pose_velocity_ready,
+                "energy_unready": sorted(energy_unready),
+            }
+        diagnostic_publisher = getattr(self, "consumed_publisher", None)
+        if (diagnostic_publisher is not None and any(self.rally_arrived.values())
+                and now - getattr(self, "last_rally_hold_diagnostic_at", -float("inf")) >= 5.0):
+            self.last_rally_hold_diagnostic_at = now
+            diagnostic_publisher.publish(String(data=json.dumps({
+                "event": "coordinator_rally_hold_diagnostic", "event_time": now,
+                "stable": stable, "navigation_quiescent": navigation_quiescent,
+                "pose_velocity_ready": pose_velocity_ready,
+                "active_goals": sorted(name for name, handle in self.rally_goal_handles.items() if handle is not None),
+                "pending_goals": sorted(name for name, pending in self.rally_goal_pending.items() if pending),
+                "survey_active": self.survey_goal_handle is not None or self.survey_goal_pending,
+                "yield_targets": sorted(self.rally_yield_targets),
+                "probe_targets": sorted(self.rally_probe_targets),
+                "arrived": self.rally_arrived, "positions": self.robot_positions,
+                "velocities": self.robot_velocities, "battery_modes": self.battery_modes,
+                "preflight_complete": getattr(self, "rally_preflight_complete", False),
+                "energy_unready": sorted(energy_unready),
+                "charge_requested": sorted(getattr(self, "rally_charge_requested", {})),
+                "wait_budgets_sec": getattr(self, "rally_wait_budgets", {}),
+                "whole_route_budgets": getattr(self, "rally_charge_budgets", {}),
+                "hold_started_at": self.rally_hold_started_at,
+                "last_reset": getattr(self, "rally_last_hold_reset", None),
+            }, sort_keys=True)))
+        if not stable:
+            self.rally_hold_started_at = None
+            return
+        if self.rally_hold_started_at is None:
+            self.rally_hold_started_at = now
+            return
+        if now - self.rally_hold_started_at >= self.rally_hold_sec:
+            completion_state = (
+                "PARTIAL_COMPLETE"
+                if any(mode == "FAILED" for mode in self.battery_modes.values())
+                else "COMPLETE"
+            )
+            self.publish_task_state(completion_state)
+
+    def admit_prepared_rally_plans(self, plans, planning_targets, stage_names,
+                                   heading_corrections, approach_routes,
+                                   completed_approaches, reserved_names,
+                                   return_reservations, recovery_waiter=None):
+        """Apply the original batch admission before forcing a route recovery."""
+        dispatched = []
+        witness = None
+        if recovery_waiter is not None and hasattr(self, 'consumed_publisher'):
+            inputs = self.input_freshness_details()
+            maps = HeadquartersControl.delivered_return_maps(self)
+            witness = dict(event='coordinator_rally_prepared_batch_before_recovery',
+                evaluated_at_sec=self.now(), blocked_robot=recovery_waiter,
+                dispatch_order=list(self.rally_dispatch_order),
+                robot_positions=dict(self.robot_positions),
+                targets={n:(p.x,p.y,p.yaw) for n,p in self.rally_targets.items()},
+                final_targets={n:(p.x,p.y,p.yaw) for n,p in self.rally_final_targets.items()},
+                prepared_plans={n:dict(goal=(p.x,p.y,p.yaw),route=route)
+                                for n,(p,route) in plans.items()},
+                planning_targets={n:(p.x,p.y,p.yaw) for n,p in planning_targets.items()},
+                stage_names=sorted(stage_names), heading_corrections=sorted(heading_corrections),
+                completed_approaches=sorted(completed_approaches),
+                reserved_names=sorted(reserved_names), approach_routes=approach_routes,
+                return_reservations=return_reservations,
+                existing_leg_routes={n:route for n,route in self.rally_leg_routes.items()
+                    if self.rally_goal_handles[n] is not None or self.rally_goal_pending[n]},
+                max_concurrent=self.rally_max_concurrent,
+                rally_attempts=dict(self.rally_attempts),
+                yield_targets=sorted(self.rally_yield_targets),
+                return_yield_targets=dict(self.return_yield_targets),
+                recovery_beneficiaries=dict(getattr(self,'rally_recovery_beneficiaries',{})),
+                arrived=dict(self.rally_arrived), battery_states=self.battery_states,
+                battery_modes=dict(self.battery_modes), charge_requested=dict(self.rally_charge_requested),
+                wait_budgets_sec=self.rally_wait_budgets, hold_sec=self.rally_hold_sec,
+                inputs=inputs,
+                planning_map=grid_audit_evidence(self.map_data,self.resolution,self.origin,
+                    'ap_delivered_planning_map',self.map_received_at,self.map_received_at),
+                planning_map_self_return_cells=getattr(self,'map_self_return_cells',{}),
+                return_maps={n:grid_audit_evidence(m['data'],m['resolution'],m['origin'],
+                    'ap_delivered_robot_map',self.robot_map_received_at[n],self.robot_map_received_at[n])
+                    for n,m in maps.items()},
+                native_credit_added=False, admission='original_send_rally_goal')
+        try:
             routes = {name: plan[1] for name, plan in plans.items()}
             reserved_routes = [
                 remaining_rally_route(
@@ -6268,85 +6387,29 @@ class HeadquartersControl(Node):
                                                        + ", ".join(repaired))
                             else:
                                 self.get_logger().info("Draining rally legs to release an ahead robot's approach.")
-                            return
+                            return bool(dispatched), True
                     continue
                 self.send_rally_goal(name, admitted, name in stage_names)
+                if self.rally_goal_pending[name]:
+                    row = dict(robot=name)
+                    if witness is not None:
+                        row.update(position=(self.rally_leg_poses[name].x, self.rally_leg_poses[name].y),
+                            route=self.rally_leg_routes[name], budget=(None if name in stage_names | set(self.return_yield_targets)
+                                else getattr(self,'rally_latest_leg_budget',{}).get(name)))
+                    dispatched.append(row)
                 if name in stage_names and self.rally_goal_pending[name]:
                     self.rally_precharge_staging.setdefault(name, self.rally_charge_budgets[name])
                     self.get_logger().info(f"Staging {name} along its reserved home approach before serial charging.")
                 reserved_routes.append(admitted[1])
                 admitted_names.add(name)
                 slots -= 1
-
-        navigation_quiescent = (
-            not any(
-                self.rally_goal_handles[name] is not None
-                or self.rally_goal_pending[name]
-                for name in self.rally_dispatch_order
-            )
-            and self.survey_goal_handle is None
-            and not self.survey_goal_pending
-            and not self.rally_yield_targets
-            and not self.rally_probe_targets
-            and all(
-                self.rally_arrived[name]
-                for name in self.rally_dispatch_order
-            )
-        )
-        stable = navigation_quiescent and robots_stable(
-            self.robot_positions,
-            self.robot_velocities,
-            self.rally_targets,
-            self.rally_position_tolerance,
-            self.rally_linear_tolerance,
-            self.rally_angular_tolerance,
-        )
-        pose_velocity_ready = stable if navigation_quiescent else None
-        stable = (stable and self.active_batteries_ready() and not energy_unready
-                  and (not self.enable_battery or self.rally_preflight_complete))
-        if not stable and self.rally_hold_started_at is not None:
-            self.rally_last_hold_reset = {
-                "reason": "timer_gate", "event_time": now,
-                "navigation_quiescent": navigation_quiescent,
-                "pose_velocity_ready": pose_velocity_ready,
-                "energy_unready": sorted(energy_unready),
-            }
-        diagnostic_publisher = getattr(self, "consumed_publisher", None)
-        if (diagnostic_publisher is not None and any(self.rally_arrived.values())
-                and now - getattr(self, "last_rally_hold_diagnostic_at", -float("inf")) >= 5.0):
-            self.last_rally_hold_diagnostic_at = now
-            diagnostic_publisher.publish(String(data=json.dumps({
-                "event": "coordinator_rally_hold_diagnostic", "event_time": now,
-                "stable": stable, "navigation_quiescent": navigation_quiescent,
-                "pose_velocity_ready": pose_velocity_ready,
-                "active_goals": sorted(name for name, handle in self.rally_goal_handles.items() if handle is not None),
-                "pending_goals": sorted(name for name, pending in self.rally_goal_pending.items() if pending),
-                "survey_active": self.survey_goal_handle is not None or self.survey_goal_pending,
-                "yield_targets": sorted(self.rally_yield_targets),
-                "probe_targets": sorted(self.rally_probe_targets),
-                "arrived": self.rally_arrived, "positions": self.robot_positions,
-                "velocities": self.robot_velocities, "battery_modes": self.battery_modes,
-                "preflight_complete": getattr(self, "rally_preflight_complete", False),
-                "energy_unready": sorted(energy_unready),
-                "charge_requested": sorted(getattr(self, "rally_charge_requested", {})),
-                "wait_budgets_sec": getattr(self, "rally_wait_budgets", {}),
-                "whole_route_budgets": getattr(self, "rally_charge_budgets", {}),
-                "hold_started_at": self.rally_hold_started_at,
-                "last_reset": getattr(self, "rally_last_hold_reset", None),
-            }, sort_keys=True)))
-        if not stable:
-            self.rally_hold_started_at = None
-            return
-        if self.rally_hold_started_at is None:
-            self.rally_hold_started_at = now
-            return
-        if now - self.rally_hold_started_at >= self.rally_hold_sec:
-            completion_state = (
-                "PARTIAL_COMPLETE"
-                if any(mode == "FAILED" for mode in self.battery_modes.values())
-                else "COMPLETE"
-            )
-            self.publish_task_state(completion_state)
+            return bool(dispatched), False
+        finally:
+            if witness is not None and dispatched:
+                now = self.now()
+                witness.update(event_time=now, dispatched=dispatched,
+                               inputs=input_freshness_at(witness['inputs'],now))
+                self.consumed_publisher.publish(String(data=json.dumps(witness,sort_keys=True)))
 
     def repair_rally_return_target(self, name):
         """Replace an invalid idle endpoint; leave live and parked peers intact."""
@@ -6570,13 +6633,20 @@ class HeadquartersControl(Node):
                 return False
             final = self.rally_final_targets[robot_name]
             home = (float(state["charge_x"]), float(state["charge_y"]))
+            priced_at = self.now()
             required = HeadquartersControl.task_return_required_energy(
-                self, robot_name, actual, (final.x, final.y)) + idle * (self.rally_hold_sec + wait)
+                self, robot_name, actual, (final.x, final.y), priced_at) + idle * (self.rally_hold_sec + wait)
             energy = float(state["energy"])
             if not all(math.isfinite(v) for v in (required, energy)):
                 return False
         except (KeyError, TypeError, ValueError, ZeroDivisionError):
             return False
+        if not hasattr(self, 'rally_latest_leg_budget'):
+            self.rally_latest_leg_budget = {}
+        self.rally_latest_leg_budget[robot_name] = dict(
+            priced_at_sec=priced_at, actual_distance_m=actual,
+            remaining_route=remaining, required_energy=required,
+            available_energy=energy, wait_budget_sec=wait, hold_sec=self.rally_hold_sec)
         if energy <= required:
             self.rally_detour_budgets[robot_name] = required
             return False  # Next preflight owns serial charging/capacity checks.

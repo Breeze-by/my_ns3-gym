@@ -125,6 +125,8 @@ def main(default_manifest=None, log_category='p3c5'):
         manifest['source_digests']['rally_transit_reader']=file_digest(PROJECT_ROOT/'scripts/p2c_rally_transit_heading.py')
     if config.get('navigation_outbound_consistency'):
         manifest['source_digests']['outbound_route_reader']=file_digest(PROJECT_ROOT/'scripts/p2c_outbound_routes.py')
+    if config.get('normal_rally_batch_before_recovery'):
+        manifest['source_digests']['prepared_dispatch_reader']=file_digest(PROJECT_ROOT/'scripts/p2c_prepared_dispatch.py')
     if config.get('charged_return_refuge_release'):
         manifest['source_digests']['refuge_release_reader']=file_digest(PROJECT_ROOT/'scripts/p2c_refuge_release.py')
     if config.get('rally_connection_handoff'):
