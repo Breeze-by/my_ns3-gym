@@ -13,6 +13,7 @@ from multi_robot_exploration import control as c
 from p2c_initial_replenishment import initial_replenishment_audit
 from test_known_search_fallback import fallback_node, original_snapshot_node
 from test_exploration_charging import assignment, install_candidates
+from curve_reference import preserve_straight_prefix,assert_full_prefix_safety
 
 FIXTURE=Path(__file__).parent/'fixtures/p2c_v74_camera_primary.json.gz'
 assert hashlib.sha256(FIXTURE.read_bytes()).hexdigest()=='2166663a0fa432fabd214ae89d9db7a2dc35b77533980958aebc570e6bc084c6'
@@ -122,20 +123,26 @@ def test_expiration_during_camera_generation_rejects_then_new_sources_reprice(mo
 
 
 @pytest.mark.parametrize('index',range(4))
-def test_original_checkpoints_choose_a_funded_camera_leg_with_current_physical_budget(index):
+@pytest.mark.parametrize('curved',[False,True])
+def test_original_checkpoints_choose_a_funded_camera_leg_with_current_physical_budget(index,curved,monkeypatch):
+    if not curved:
+        preserve_straight_prefix(monkeypatch)
     h,requests,events,sent=original_snapshot_node(copy.deepcopy(SAVED['snapshots'][index]));install_publication(h,events,sent)
     c.HeadquartersControl.assign_idle_robots(h)
     assert len(sent)==1 and not requests
     completed=h.successful_exploration_legs[sent[0][0]]
     expected=SAVED['comparisons'][index]['candidate' if completed % 2 else 'frozen']['goals'][0]
     assert h.initial_search_goals[sent[0][0]] == expected['visual']
-    a=sent[0][1];assert [a.navigation_x,a.navigation_y]==expected['position'] and a.navigation_yaw==expected['yaw']
+    a=sent[0][1]
+    if not curved:
+        assert [a.navigation_x,a.navigation_y]==expected['position'] and a.navigation_yaw==expected['yaw']
     assert a.path_distance_m==pytest.approx(expected['planned_distance_m'])
     saved=events[0]['travel_preference'];assert saved['required_energy'] < h.battery_states[sent[0][0]]['energy']
     if completed % 2:
         assert saved['camera_first_search']['completed_exploration_legs']==completed
     else:
         assert saved['camera_first_search'] is None
+    assert_full_prefix_safety(h,sent)
 
 
 def reader_inputs():

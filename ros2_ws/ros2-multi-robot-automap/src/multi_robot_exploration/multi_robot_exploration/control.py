@@ -2970,6 +2970,19 @@ def plan_rally_leg(
     )
 
 
+def exploration_leg_plans(pose, raw_grid, resolution, origin, position,
+                          blocked_positions=(), route_cache=None, local_map=None,
+                          curved=False):
+    """Try complete known paths while retaining the original visible prefix."""
+    if route_cache is None:
+        route_cache = {}
+    return tuple(plan_rally_leg(
+        pose, raw_grid, resolution, origin, position, MAX_NAVIGATION_LEG_M,
+        blocked_positions=blocked_positions, clearance_m=PATH_CLEARANCE_M,
+        visible_only=visible, route_cache=route_cache, local_map=local_map,
+    ) for visible in ((False, True) if curved else (True,)))
+
+
 def routes_conflict(
     first, second, min_separation=RALLY_ROUTE_SEPARATION_M
 ):
@@ -8246,16 +8259,17 @@ class HeadquartersControl(Node):
                     if key not in route_proposals:
                         blocked = [p for peer, p in self.robot_positions.items()
                                    if peer != robot_name and p is not None]
-                        route_proposals[key] = plan_rally_leg(
+                        route_proposals[key] = exploration_leg_plans(
                             RallyPose(assignment.x, assignment.y, 0.), self.map_data,
                             self.resolution, self.origin, self.robot_positions[robot_name],
-                            MAX_NAVIGATION_LEG_M, blocked_positions=blocked,
-                            clearance_m=PATH_CLEARANCE_M, visible_only=True,
+                            blocked_positions=blocked,
+                            curved=getattr(self, 'enable_battery', False) and getattr(self, 'enable_rally', False),
                             route_cache=route_caches[robot_name],
                             local_map=HeadquartersControl.delivered_return_maps(self).get(robot_name),
                         )
-                    if not exploration_prefix_can_move(route_proposals[key],
-                            self.robot_positions[robot_name], scoring_reservations):
+                    if not any(exploration_prefix_can_move(plan,
+                            self.robot_positions[robot_name], scoring_reservations)
+                            for plan in route_proposals[key]):
                         diagnostics['rejected_routes'] += 1
                         return None
                 assignment = (resolve_search_gain(assignment, self.map_data, self.resolution, search_gain_cache)
@@ -8414,17 +8428,16 @@ class HeadquartersControl(Node):
                     plan = initial_plans[key]
                     initial_prefix['window_endpoint'] = [plan[0].x, plan[0].y]
                 elif key not in route_proposals:
-                    route_proposals[key] = plan_rally_leg(
+                    route_proposals[key] = exploration_leg_plans(
                         RallyPose(assignment.x, assignment.y, 0.),
                         self.map_data, self.resolution, self.origin,
-                        self.robot_positions[name], MAX_NAVIGATION_LEG_M,
-                        blocked_positions=blocked, clearance_m=PATH_CLEARANCE_M,
-                        visible_only=True, route_cache=route_caches[name],
+                        self.robot_positions[name], blocked_positions=blocked,
+                        curved=getattr(self, 'enable_battery', False) and getattr(self, 'enable_rally', False),
+                        route_cache=route_caches[name],
                         local_map=HeadquartersControl.delivered_return_maps(self).get(name),
                     )
-                if not near_home:
-                    plan = route_proposals[key]
-                if plan[0] is None:
+                available_plans = (plan,) if near_home else route_proposals[key]
+                if all(plan[0] is None for plan in available_plans):
                     diagnostics["rejected_routes"] += 1
                     continue
                 # Price the complete body-masked path, including the real
@@ -8447,7 +8460,12 @@ class HeadquartersControl(Node):
                 if factor <= 0:
                     continue
                 unfunded = unfunded or factor < 1.
-                admitted = reserve_rally_prefix(plan, active_reservations if unfunded else reservations)
+                admitted = None
+                for plan in available_plans:
+                    admitted = reserve_rally_prefix(plan, active_reservations if unfunded else reservations)
+                    if (admitted is not None and math.dist(self.robot_positions[name],
+                            (admitted[0].x, admitted[0].y)) > NAVIGATION_POSITION_TOLERANCE_M):
+                        break
                 if admitted is None:
                     if near_home and not unfunded and reservations:
                         first_reservation_blocks.setdefault(name, []).append([assignment.x, assignment.y])

@@ -11,6 +11,7 @@ import pytest
 from multi_robot_exploration import control as c
 from test_candidate_battery_bound import conditional_charge
 from outbound_reference import with_local_route_inputs
+from curve_reference import preserve_straight_prefix,assert_full_prefix_safety
 
 
 REFERENCE = json.loads((Path(__file__).parent / 'fixtures/p2c_v39_staged_bound_reference.json').read_text())
@@ -24,11 +25,21 @@ def reference_assign():
 
 
 @pytest.mark.parametrize('stage', sorted(REFERENCE['snapshots']))
-def test_actual_abandoned_choices_headings_charge_intents_and_budgets_remain_equal(stage):
+@pytest.mark.parametrize('curved',[False,True])
+def test_actual_abandoned_choices_headings_charge_intents_and_budgets_remain_equal(stage,curved,monkeypatch):
+    if not curved:
+        preserve_straight_prefix(monkeypatch)
     event = REFERENCE['snapshots'][stage]
     expected = conditional_charge(event, reference_assign())
     assert expected['sent']
-    assert conditional_charge(event, c.HeadquartersControl.assign_idle_robots) == expected
+    actual,node=conditional_charge(event,c.HeadquartersControl.assign_idle_robots,True)
+    if not curved:
+        assert actual==expected
+    else:
+        assert actual['requests']==expected['requests'] and actual['choices']==expected['choices']
+        nominal=lambda rows:[(name,{k:v for k,v in a.items() if not k.startswith('navigation_')}) for name,a in rows]
+        assert nominal(actual['sent'])==nominal(expected['sent'])
+    assert_full_prefix_safety(node,actual['sent'])
 
 
 def state():

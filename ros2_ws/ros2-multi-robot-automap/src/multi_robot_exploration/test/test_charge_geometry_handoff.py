@@ -13,6 +13,7 @@ import pytest
 from multi_robot_exploration import control as c
 from p2c_charge_handoff import charge_geometry_handoff_audit
 from test_exploration_resume import conditional_snapshot_node
+from curve_reference import preserve_straight_prefix,assert_full_prefix_safety
 
 
 FIXTURE = Path(__file__).parent/'fixtures/p2c_v69_charge_handoff_inputs.json.gz'
@@ -69,7 +70,10 @@ def decision(node, sent):
 
 
 @pytest.mark.parametrize('index', range(len(REFERENCE['snapshots'])))
-def test_primary_geometry_after_first_charge_stays_equal_or_safe_new_fallback_is_rebuilt(index):
+@pytest.mark.parametrize('curved',[False,True])
+def test_primary_geometry_after_first_charge_stays_equal_or_safe_new_fallback_is_rebuilt(index,curved,monkeypatch):
+    if not curved:
+        preserve_straight_prefix(monkeypatch)
     event = REFERENCE['snapshots'][index]['event']
     before, old_goals, _, _ = snapshot_node(event)
     after, new_goals, _, private = snapshot_node(event)
@@ -100,6 +104,7 @@ def test_primary_geometry_after_first_charge_stays_equal_or_safe_new_fallback_is
             assert c.HeadquartersControl.record_navigation_decision(after,name,'exploration',pose,None,after.goal_routes[name])
             assert audit_exploration_returns(private[-1],True) is not None
             assert audit_outbound(private[-1])>1
+        assert_full_prefix_safety(after,new_goals)
         return
     for choice in after.exploration_travel_choices.values():
         assert choice.get('camera_first_search') is None
@@ -110,7 +115,14 @@ def test_primary_geometry_after_first_charge_stays_equal_or_safe_new_fallback_is
         choice.pop('first_window_geometry_preference', None)
     fallback = any(choice.get('known_space_fallback') for choice in after.exploration_travel_choices.values())
     if not fallback:
-        assert decision(before, old_goals) == decision(after, new_goals)
+        if not curved:
+            assert decision(before, old_goals) == decision(after, new_goals)
+        else:
+            def nominal(node,goals):
+                result=json.loads(decision(node,goals))
+                result['sent']=[(name,{k:v for k,v in a.items() if not k.startswith('navigation_')}) for name,a in result['sent']]
+                return result
+            assert nominal(before,old_goals)==nominal(after,new_goals)
     else:
         # This new policy adds a safe camera search where the frozen parent
         # admitted no action; its complete inputs replace a parity assertion.
@@ -127,6 +139,7 @@ def test_primary_geometry_after_first_charge_stays_equal_or_safe_new_fallback_is
                 after, name, 'initial_visual_search', pose, None, after.goal_routes[name])
         assert exploration_travel_audit(private, True, True, True, True, True, True, True, True)[
             'initial_visual_witnesses'] == len(new_goals)
+    assert_full_prefix_safety(after,new_goals)
 
 
 def hint(node):

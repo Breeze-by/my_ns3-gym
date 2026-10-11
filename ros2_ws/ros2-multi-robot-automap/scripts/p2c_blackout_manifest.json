@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-11T18:55:04Z",
+  "predeclared_at_utc": "2026-10-11T20:52:35Z",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "10272ffcd49a5577e08e70faf244d3a1b8614d02",
+  "candidate_parent_commit": "b851a57148cc3a506750e8258e60a31f9712a610",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -274,7 +274,8 @@
     "20261011_p2c_v88_failed_development.json",
     "20261011_p2c_v89_failed_development.json",
     "20261012_p2c_v90_failed_formal.json",
-    "20261012_p2c_v91_failed_development.json"
+    "20261012_p2c_v91_failed_development.json",
+    "20261012_p2c_v92_failed_formal.json"
   ],
   "coordinator_live_clock": {
     "executor": "Two workers; only the existing /clock subscription moves to an independent mutually exclusive group. Original state/action callbacks remain serialized.",
@@ -936,5 +937,12 @@
     "confirmation": "The existing stationary target confirmation subscription retains original reliable transient-local keep-last1 QoS and message metadata. Its lightweight receipt uses the existing snapshot/clock group; the original callback applies in the existing default serial guard and three timer entries. At most one typed message per declared topic, fourteen topics for three robots. In-progress inputs/leases do not change; original60s target and2/5s state TTLs remain.",
     "probe": "The original constrained fused/local survey candidate mask now includes the unchanged dynamic-body predicate for every other known body before ranking. Original0.7m target exclusion and0.4m progress rule/rank are unchanged; the original sender rebuilds current full body/route reservations and outbound/contact-return energy.",
     "scope": "Same publishers/subscriptions/application flows, native detector/battery/SLAM/Nav2/physics, action guards, original300s/5s and all cases/stimuli remain. Conditional geometry and full-constructor DDS/Future components provide no physical/charging/native/task-causality credit."
+  },
+  "curved_complete_object_exploration": {
+    "component_report": "20261012_p2c_exploration_curve_components.json",
+    "scope": "Complete object missions with native battery enabled, ordinary exploration and camera search only; original near-home first replenishment window stays visible-only.",
+    "policy": "Existing known-grid body-masked complete curved prefix then original visible prefix; both share one immutable planning-snapshot route field. Existing necessary reservation bound and actual full reservations choose a valid prefix. Original complete target/return energy, source leases, ranking, finite continuation and publication guards remain.",
+    "unchanged": "All native battery/SLAM/Nav2, source headers/TTL,300s/5s,first-window evidence,task cases and physical stimuli.",
+    "component_credit": "No physical/native/task credit from fixed geometry or synthetic DDS/Future endpoints; all five v92 originals retain full-development PASS and formal-first FAIL."
   }
 }

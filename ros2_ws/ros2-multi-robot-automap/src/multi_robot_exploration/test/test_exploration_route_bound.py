@@ -11,6 +11,8 @@ import pytest
 from multi_robot_exploration import control
 from test_exploration_resume import conditional_snapshot_node
 from outbound_reference import with_local_route_inputs
+from p2c_outbound_routes import check_route
+from curve_reference import preserve_straight_prefix,assert_full_prefix_safety
 
 
 REFERENCE = json.loads((Path(__file__).parent / 'fixtures/p2c_v35_route_pricing_reference.json').read_text())
@@ -27,7 +29,7 @@ def reference_functions():
     return namespace
 
 
-def conditional_assignment(event, assign):
+def conditional_assignment(event, assign, return_node=False):
     d = event['diagnostic_inputs']
     e = dict(d, inputs=event['inputs_at_start'], event_time=event['planning_started_at_sec'])
     node, sent = conditional_snapshot_node(e, d['exploration_resume_intents'].copy())
@@ -59,16 +61,35 @@ def conditional_assignment(event, assign):
         choice.pop('initial_replenishment_prefix', None)
         assert choice.get('first_window_geometry_preference') is None
         choice.pop('first_window_geometry_preference', None)
-    return json.loads(json.dumps(dict(sent=sent, choices=node.exploration_travel_choices),
+    result=json.loads(json.dumps(dict(sent=sent, choices=node.exploration_travel_choices),
                                 default=dataclasses.asdict))
+    return (result,node) if return_node else result
 
 
 @pytest.mark.parametrize('case', sorted(REFERENCE['snapshots']))
-def test_unchanged_goals_headings_and_full_energy_on_actual_expired_inputs(case):
+@pytest.mark.parametrize('curved',[False,True])
+def test_unchanged_goals_headings_and_full_energy_on_actual_expired_inputs(case,curved,monkeypatch):
+    if not curved:
+        preserve_straight_prefix(monkeypatch)
     event = REFERENCE['snapshots'][case]
     expected = conditional_assignment(event, reference_functions()['assign_idle_robots'])
-    actual = conditional_assignment(event, control.HeadquartersControl.assign_idle_robots)
-    assert expected['sent'] and actual == expected
+    actual,node = conditional_assignment(event, control.HeadquartersControl.assign_idle_robots,True)
+    assert expected['sent'] and actual['choices']==expected['choices']
+    if not curved:
+        assert actual == expected
+    else:
+        nominal=lambda rows:[(name,{k:v for k,v in a.items() if not k.startswith('navigation_')}) for name,a in rows]
+        assert nominal(actual['sent'])==nominal(expected['sent'])
+        for name,a in actual['sent']:
+            route=(node.robot_positions[name],*node.goal_routes[name])
+            assert route[-1]==pytest.approx((a['navigation_x'],a['navigation_y']))
+            check_route(control.grid_audit_evidence(node.map_data,node.resolution,node.origin,
+                        'synthetic_fused_input',node.map_received_at,node.map_received_at),route)
+            local=control.HeadquartersControl.delivered_return_maps(node)[name]
+            check_route(control.grid_audit_evidence(local['data'],local['resolution'],local['origin'],
+                        'synthetic_local_input',0.,0.),route,local=True)
+            assert actual['choices'][name]['required_energy']<node.battery_states[name]['energy']
+    assert_full_prefix_safety(node,actual['sent'])
 
 
 def test_reserved_common_start_avoids_replanning_every_rooms_candidate(monkeypatch):

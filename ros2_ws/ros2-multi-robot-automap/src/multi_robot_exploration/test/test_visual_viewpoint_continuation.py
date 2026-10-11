@@ -9,6 +9,8 @@ from types import SimpleNamespace
 import pytest
 from multi_robot_exploration import control as c
 from check_p2c_gate import exploration_travel_audit
+from p2c_outbound_routes import check_route
+from curve_reference import preserve_straight_prefix,assert_full_prefix_safety
 from test_camera_primary import install_publication
 from test_exploration_resume import assignment, finish_node
 from test_known_search_fallback import original_snapshot_node
@@ -92,19 +94,34 @@ def snapshot_node(retain):
 
 
 @pytest.mark.parametrize('retain',[False,True])
-def test_original_delivered_three_robot_snapshot_rebuilds_full_safe_choice(retain):
+@pytest.mark.parametrize('curved',[False,True])
+def test_original_delivered_three_robot_snapshot_rebuilds_full_safe_choice(retain,curved,monkeypatch):
+    if not curved:
+        preserve_straight_prefix(monkeypatch)
     h,requests,events,sent=snapshot_node(retain)
     c.HeadquartersControl.assign_idle_robots(h)
     expected=SAVED['comparisons']['both_visual_pools' if retain else 'original']
     assert len(sent)==2 and requests==expected['requests']==[]
     for (name,a),goal in zip(sent,expected['goals']):
         f=h.exploration_travel_choices[name]
-        assert name==goal['robot'] and [a.navigation_x,a.navigation_y]==goal['position']
+        assert name==goal['robot']
+        if not curved:
+            assert [a.navigation_x,a.navigation_y]==goal['position']
         assert [a.x,a.y]==goal['target'] and h.initial_search_goals[name]==goal['visual']
         assert a.path_distance_m==pytest.approx(goal['planned_distance_m'])
         assert f['required_energy']==pytest.approx(goal['required_energy'])
         assert f['required_energy']<h.battery_states[name]['energy']
         assert f['continuation_weight']==goal['continuation_weight']
+    decisions=[e for e in events if e.get('event')=='coordinator_navigation_decision']
+    assert len(decisions)==2
+    for e in decisions:
+        route=e['outbound_map_route']['route']
+        assert route[-1]==pytest.approx(e['requested_position'])
+        check_route(e['planning_map'],route)
+        check_route(e['return_maps'][e['robot']],route,local=True)
+    assert not c.routes_conflict(decisions[0]['outbound_map_route']['route'][1:],
+                                decisions[1]['outbound_map_route']['route'][1:])
+    assert_full_prefix_safety(h,sent)
     rebuilt=exploration_travel_audit(events,True,True,True,True,True,True,True,True)
     assert rebuilt['status']=='PASS' and rebuilt['resumed_frontier_witnesses']==(2 if retain else 0)
 

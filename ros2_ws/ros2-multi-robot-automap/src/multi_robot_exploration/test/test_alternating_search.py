@@ -12,6 +12,7 @@ from check_p2c_gate import exploration_travel_audit
 from test_camera_primary import node, install_publication
 from test_exploration_charging import assignment, install_candidates
 from test_known_search_fallback import original_snapshot_node
+from curve_reference import preserve_straight_prefix,assert_full_prefix_safety
 
 FIXTURE=Path(__file__).parent/'fixtures/p2c_v75_alternating_search.json.gz'
 assert hashlib.sha256(FIXTURE.read_bytes()).hexdigest()=='854184a0f2e44e424c7e3a74f49f043a1156263f98c3624d43b3b0f9628b3534'
@@ -44,7 +45,10 @@ def test_even_turn_preserves_original_explicit_visual_flag(monkeypatch):
 
 @pytest.mark.parametrize('index',range(7))
 @pytest.mark.parametrize('fresh',[False,True])
-def test_original_retained_and_fresh_checkpoints_match_prototype_and_full_budget(index,fresh):
+@pytest.mark.parametrize('curved',[False,True])
+def test_original_retained_and_fresh_checkpoints_match_prototype_and_full_budget(index,fresh,curved,monkeypatch):
+    if not curved:
+        preserve_straight_prefix(monkeypatch)
     h,requests,events,sent=original_snapshot_node(copy.deepcopy(SAVED['snapshots'][index]))
     if fresh:
         h.pending_exploration_geometry=None;h.pending_exploration_charge_geometry=None
@@ -70,7 +74,11 @@ def test_original_retained_and_fresh_checkpoints_match_prototype_and_full_budget
             assert protected is None or protected
         assert not requests
     else:
-        assert actual==[{k:a[k] for k in keys} for a in expected['goals']]
+        if not curved:
+            assert actual==[{k:a[k] for k in keys} for a in expected['goals']]
+        else:
+            nominal=lambda rows:[{k:a[k] for k in ('robot','visual','planned_distance_m')} for a in rows]
+            assert nominal(actual)==nominal(expected['goals'])
         assert requests==expected['requests']
     for name,_ in sent:
         preference=h.exploration_travel_choices[name]
@@ -78,6 +86,7 @@ def test_original_retained_and_fresh_checkpoints_match_prototype_and_full_budget
         if preference.get('camera_first_search') is not None:
             assert preference['camera_first_search']['completed_exploration_legs']%2==1
     assert exploration_travel_audit(events,True,True,True,True,True,True,True,True)['status']=='PASS'
+    assert_full_prefix_safety(h,sent)
 
 
 @pytest.mark.parametrize('reason',['stale','returning','missing_route','low_capacity'])
