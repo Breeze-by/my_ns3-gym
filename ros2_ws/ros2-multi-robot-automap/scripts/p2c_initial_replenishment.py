@@ -10,7 +10,7 @@ from p2c_return_preparation import audit_preparation, decode_grid
 
 def initial_replenishment_audit(ledger, enabled=False, native_capture=None, require_completion_hold=False, map_capture=None,
                               require_camera_first=False, require_alternating=False, require_initial_prefix=False,
-                              require_geometry_window=False, require_window_handoff=False):
+                              require_geometry_window=False, require_window_handoff=False, require_reservation_wait=False):
     native = {}
     if enabled:
         assert native_capture is not None and native_capture.is_file()
@@ -19,7 +19,7 @@ def initial_replenishment_audit(ledger, enabled=False, native_capture=None, requ
             if row['topic'].endswith('/battery_state'):
                 name = row['topic'].split('/')[1]
                 native.setdefault(name, []).append(row['data'])
-    decisions_by_robot, commands, outcomes, navigation, holds, expirations = {}, {}, {}, {}, [], []
+    decisions_by_robot, commands, outcomes, navigation, holds, expirations, window_waits = {}, {}, {}, {}, [], [], []
     for line in ledger.open():
         event = json.loads(line)
         kind = event.get('event')
@@ -31,6 +31,8 @@ def initial_replenishment_audit(ledger, enabled=False, native_capture=None, requ
             holds.append(event)
         elif kind == 'coordinator_planning_lease_expired':
             expirations.append(event)
+        elif kind == 'coordinator_first_window_reservation_wait':
+            window_waits.append(event)
         elif kind == 'enqueue' and event.get('message_type') == 'navigation_goal':
             commands.setdefault((event['recipient'], event['correlation_id']), event.get('source_time', event['event_time']))
         elif kind == 'navigation_outcome':
@@ -54,6 +56,7 @@ def initial_replenishment_audit(ledger, enabled=False, native_capture=None, requ
     camera_first = audit_camera_first(navigation, successes, require_camera_first, require_alternating)
     prefixes = audit_initial_prefix(navigation, successes, require_initial_prefix, require_geometry_window)
     window_handoffs = audit_first_window_handoffs(navigation, expirations, require_window_handoff)
+    reservation_waits = audit_first_window_reservation_waits(window_waits, native, require_reservation_wait)
     decisions, robots = 0, set()
     for line in ledger.open():
         event = json.loads(line)
@@ -131,7 +134,38 @@ def initial_replenishment_audit(ledger, enabled=False, native_capture=None, requ
         camera_first_search=camera_first,
         first_leg_prefixes=prefixes,
         first_window_geometry_handoffs=window_handoffs,
+        first_window_reservation_waits=reservation_waits,
         scope='One initial near-home replenishment after actual ordinary success; scheduling threshold and current full trip cost rebuilt separately. Native credit and physical return remain separate original audits.')
+
+
+def audit_first_window_reservation_waits(events, native, declared=False):
+    """A finite optional wait has no motion or native work authority."""
+    for e in events:
+        assert declared, 'undeclared first-window reservation wait'
+        now, start, planning = e['event_time'], e['started_at_sec'], e['planning_started_at_sec']
+        timeout = e['wait_timeout_sec']
+        assert all(math.isfinite(value) for value in (now, start, planning, timeout, e['navigation_timeout_sec']))
+        assert timeout == min(control.TARGET_HISTORY_SEC, e['navigation_timeout_sec']) and timeout > 0
+        assert start <= planning <= now and 0 <= now-start < timeout
+        assert e['movement_authorized'] is False and e['native_credit_added'] is False
+        assert e['task_phase'] in ('EXPLORE', 'FOUND_UNCONFIRMED')
+        assert e['context'][0] == e['task_phase'] and e['context'][1] is False and e['robot'] in e['context'][2]
+        assert type(e['completed_exploration_legs']) is int and e['completed_exploration_legs'] == 0
+        state = e['battery_state']
+        assert type(state['charge_count']) is int and state['charge_count'] == 0 and state['mode'] == 'ACTIVE'
+        assert any(row == state for row in native[e['robot']]), 'wait lacks original native battery source'
+        expected = control.initial_replenishment_prefix(state, e['current_position'], 0, 1.)
+        assert expected is not None
+        actual = dict(e['initial_window']);assert actual.pop('generated_at_sec') == planning and actual == expected
+        assert 1 <= len(e['rejected_targets']) <= 3
+        assert all(len(point) == 2 and all(math.isfinite(value) for value in point) for point in e['rejected_targets'])
+        assert e['reserved_routes'] and all(route for route in e['reserved_routes'])
+        for key, sample in e['inputs'].items():
+            if key != 'headquarters/target_detection':
+                age = now-sample['source_time'];assert 0 <= age <= sample['ttl_sec']
+                assert math.isclose(age, sample['age_sec'], abs_tol=1e-8)
+    return dict(status='PASS', declared=declared, waits=len(events),
+        scope='Finite optional scheduling wait only; no command, work count or native credit. Every later actual route and complete budget remains independently audited.')
 
 
 def audit_first_window_handoffs(navigation, expirations, declared=False):

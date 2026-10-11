@@ -5666,6 +5666,8 @@ class HeadquartersControl(Node):
                             self.get_logger().info("Rally order after precharging: "
                                                    + ", ".join(self.rally_dispatch_order))
                         self.rally_preflight_complete = True
+            if HeadquartersControl.admit_rally_probe(self):
+                return
             return_reservations = (rally_return_reservations(
                 self.map_data, self.resolution, self.origin, self.robot_positions,
                 self.battery_states, self.battery_modes,
@@ -6037,16 +6039,28 @@ class HeadquartersControl(Node):
                         ):
                             self.rally_probe_targets.add(name)
                             self.rally_probe_robot = name
-                            self.rally_route_unavailable_since[name] = now
                             self.get_logger().warn(
                                 f"Probing a reachable rally survey pose for "
                                 f"{name} ({probe.x:.2f}, {probe.y:.2f}) "
                                 "before retrying its final pose."
                             )
                             if self.send_survey_goal(name, probe):
+                                self.rally_route_unavailable_since[name] = now
                                 continue
                             self.rally_probe_targets.discard(name)
                             self.rally_probe_robot = None
+                            if not self.fresh_robot_inputs() or not self.fresh_target():
+                                self.pending_rally_probe_geometry = dict(robot=name,
+                                    point=[probe.x, probe.y], generated_at_sec=now,
+                                    expired_at_sec=self.now(), target=tuple(self.target),
+                                    participants=tuple(sorted(self.participating_robots())),
+                                    final_pose=self.rally_final_targets[name])
+                                self.consumed_publisher.publish(String(data=json.dumps(dict(
+                                    event='coordinator_rally_probe_geometry_deferred', event_time=self.now(),
+                                    preference={**self.pending_rally_probe_geometry,
+                                        'final_pose': asdict(self.rally_final_targets[name])},
+                                    movement_authorized=False, native_credit_added=False), sort_keys=True)))
+                                return
                     if now - self.rally_route_unavailable_since[name] >= RALLY_ASSIGNMENT_WAIT_SEC:
                         self.fail_task(f"rally_route_unavailable:{name}")
                         return
@@ -6657,6 +6671,52 @@ class HeadquartersControl(Node):
             finally:
                 self.target_survey_choice = None
         return False
+
+    def admit_rally_probe(self):
+        """Recheck a point hint before repeating the slow parked-robot search."""
+        hint = getattr(self, 'pending_rally_probe_geometry', None)
+        if hint is None:
+            return False
+        name = hint['robot']
+        since = self.rally_route_unavailable_since.get(name)
+        if (self.task_state != 'RALLY' or self.target is None or tuple(self.target) != hint['target']
+                or tuple(sorted(self.participating_robots())) != hint['participants']
+                or self.rally_final_targets.get(name) != hint['final_pose']
+                or since is None or self.now()-since >= RALLY_ASSIGNMENT_WAIT_SEC
+                or not 0 <= self.now()-hint['generated_at_sec'] <= TARGET_HISTORY_SEC):
+            self.pending_rally_probe_geometry = None
+            return False
+        if (not self.fresh_robot_inputs() or not self.fresh_target()
+                or self.rally_arrived[name] or self.battery_modes[name] != 'ACTIVE'
+                or self.rally_charge_requested
+                or any(mode in ('RETURNING', 'CHARGING') for mode in self.battery_modes.values())
+                or name in self.rally_yield_targets
+                or name in self.return_yield_targets or self.robot_states[name] != 'idle'
+                or self.survey_goal_pending or self.survey_goal_handle is not None
+                or any(self.rally_goal_pending.values()) or any(self.rally_goal_handles.values())
+                or any(self.goal_handles.values())):
+            return False
+        blocked = [p for other, p in self.robot_positions.items() if other != name and p is not None]
+        if plan_rally_leg(self.rally_targets[name], self.map_data, self.resolution,
+                self.origin, self.robot_positions[name], MAX_NAVIGATION_LEG_M,
+                blocked_positions=blocked, visible_only=not self.enable_battery,
+                local_map=HeadquartersControl.delivered_return_maps(self).get(name))[0] is not None:
+            self.pending_rally_probe_geometry = None
+            return False
+        self.rally_probe_targets.add(name)
+        self.rally_probe_robot = name
+        # The original sender rebuilds current complete routes/reservations,
+        # funds the actual prefix and its return, and checks live source leases.
+        sent = self.send_survey_goal(name, RallyPose(*hint['point'], 0.))
+        if sent:
+            self.pending_rally_probe_geometry = None
+            self.rally_route_unavailable_since[name] = self.now()
+        else:
+            self.rally_probe_targets.discard(name)
+            self.rally_probe_robot = None
+            if self.fresh_robot_inputs() and self.fresh_target():
+                self.pending_rally_probe_geometry = None
+        return sent
 
     def send_survey_goal(self, robot_name, pose, heading_only=False):
         if not self.fresh_robot_inputs() or not self.fresh_target():
@@ -7549,6 +7609,10 @@ class HeadquartersControl(Node):
         proposal = getattr(self, 'pending_exploration_geometry', None)
         context = (self.task_state, search, tuple(sorted(self.participating_robots())),
                    None if getattr(self, 'target', None) is None else tuple(self.target))
+        first_waits = getattr(self, 'first_window_reservation_waits', None)
+        if first_waits is None or first_waits['context'] != context:
+            first_waits = dict(context=context, started={})
+        self.first_window_reservation_waits = first_waits
         charge_hint = getattr(self, 'pending_exploration_charge_geometry', None)
         self.pending_exploration_charge_geometry = None
         charge_handoff = None
@@ -7704,6 +7768,8 @@ class HeadquartersControl(Node):
             initial_plans = {}
             initial_windows = {}
             first_window_preferences = {}
+            first_reservation_blocks = {}
+            first_window_deferred = {}
             diagnostics["frontier_groups"] = 0
             diagnostics["groups_with_viewpoints"] = 0
             for robot_name, position in idle_positions.items():
@@ -7924,6 +7990,11 @@ class HeadquartersControl(Node):
                                 scoring_reservations = reservations
                         except (KeyError, TypeError, ValueError, ZeroDivisionError):
                             pass
+                if (robot_name, assignment.x, assignment.y) in initial_plans:
+                    # Price these few qualified homeward prefixes before the
+                    # exact reservation check. An early reservation prune
+                    # would hide a funded first-window waiting opportunity.
+                    scoring_reservations = ()
                 if scoring_reservations:
                     field = route_caches[robot_name].get('field')
                     if field is not None:
@@ -8077,6 +8148,13 @@ class HeadquartersControl(Node):
                     return
                 if name in plans:
                     continue
+                if not near_home and name in first_reservation_blocks and reservations:
+                    started = first_waits['started'].setdefault(name, planning_started)
+                    timeout = min(TARGET_HISTORY_SEC, self.goal_timeout_sec)
+                    if 0 <= self.now()-started < timeout:
+                        first_window_deferred[name] = dict(started_at_sec=started,
+                            wait_timeout_sec=timeout, rejected_targets=first_reservation_blocks[name][:3])
+                        continue
                 unfunded = (name, assignment) in unfunded_candidates
                 previous_charge = charge_candidates.get(name)
                 if (unfunded and previous_charge is not None
@@ -8134,6 +8212,8 @@ class HeadquartersControl(Node):
                 unfunded = unfunded or factor < 1.
                 admitted = reserve_rally_prefix(plan, active_reservations if unfunded else reservations)
                 if admitted is None:
+                    if near_home and not unfunded and reservations:
+                        first_reservation_blocks.setdefault(name, []).append([assignment.x, assignment.y])
                     diagnostics["rejected_routes"] += 1
                     continue
                 pose, route = admitted
@@ -8142,6 +8222,8 @@ class HeadquartersControl(Node):
                     if (not initial_prefix['minimum_home_distance_m'] <= math.dist((pose.x, pose.y), (state['charge_x'], state['charge_y']))
                             <= initial_prefix['maximum_home_distance_m']
                             or math.dist((pose.x, pose.y), self.robot_positions[name]) <= initial_prefix['minimum_motion_m']):
+                        if not unfunded and reservations:
+                            first_reservation_blocks.setdefault(name, []).append([assignment.x, assignment.y])
                         diagnostics['rejected_routes'] += 1
                         continue
                 if (
@@ -8194,7 +8276,7 @@ class HeadquartersControl(Node):
                     break
             if scoring_aborted:
                 return
-            if selected:
+            if selected or first_window_deferred:
                 if search:
                     self.target_search_basis = ("current_map_known_free_sweep" if refine == "known_space"
                                                 else "current_map_frontiers")
@@ -8225,6 +8307,21 @@ class HeadquartersControl(Node):
                 return
             if HeadquartersControl.request_exploration_charge(self, list(charge_candidates.items())):
                 return
+        if first_window_deferred and lease_current('first_window_reservation_wait') and self.fresh_robot_inputs():
+            for name, wait in first_window_deferred.items():
+                wait_time = self.now()
+                if name in plans or not 0 <= wait_time-wait['started_at_sec'] < wait['wait_timeout_sec']:
+                    continue
+                self.consumed_publisher.publish(String(data=json.dumps(dict(
+                    event='coordinator_first_window_reservation_wait', event_time=wait_time,
+                    robot=name, task_phase=self.task_state, planning_started_at_sec=planning_started,
+                    context=context, **wait, navigation_timeout_sec=self.goal_timeout_sec,
+                    current_position=self.robot_positions[name],
+                    battery_state=self.battery_states[name], completed_exploration_legs=0,
+                    initial_window=initial_windows[name], reserved_routes=reservations,
+                    selected_peer_robots=selected,
+                    inputs=input_freshness_at(self.input_freshness_details(), wait_time),
+                    movement_authorized=False, native_credit_added=False), sort_keys=True)))
         if not selected:
             now = self.now()
             if now - self.last_no_assignment_log >= 10.0:
@@ -8239,6 +8336,7 @@ class HeadquartersControl(Node):
             return
         for robot_name in selected:
             assignment = plans[robot_name]
+            first_waits['started'].pop(robot_name, None)
             if robot_name not in resuming_names:
                 resume_intents.pop(robot_name, None)
             else:
