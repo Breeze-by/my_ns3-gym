@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Actual DDS/Future probe for corridor preparation; no Gazebo or real Nav2."""
+"""Actual DDS/Futures for bounded first work and fresh clearance heading; synthetic endpoints only."""
 import argparse
 import hashlib
 import gzip
 import json
+import math
 import os
 from pathlib import Path
 import subprocess
@@ -29,6 +30,7 @@ from p2c_return_preparation import audit_preparation
 from p2c_outbound_routes import decode
 
 REFERENCE = '39e1840930c692612d0cf0584050ae961dce4fff'
+HEADING_REFERENCE = 'fcbc3f47fd1e03bfb3574da8650142d092da8a98'
 SOURCE = 'ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/control.py'
 
 
@@ -39,7 +41,8 @@ def until(predicate, timeout=10.):
     assert predicate(), 'bounded probe wait expired'
 
 
-def case(module, label, displacement=None):
+def case(module, label, displacement=None, purpose="yield"):
+    is_current = module is current
     node = module.HeadquartersControl()
     for timer in node.timers:
         timer.cancel()
@@ -57,6 +60,8 @@ def case(module, label, displacement=None):
         charge_radius_m=.8, move_cost_per_m=1., idle_cost_per_sec=.02,
         return_path_factor=2., nominal_speed_mps=.18, return_safety_margin=8.) for name in positions}
     helper, returning = 'tb2', 'tb1'
+    if purpose == 'prefix':
+        states[helper].update(energy=40., charge_count=0, charge_x=0., charge_y=0.)
     if displacement:
         original_inputs = displacement['original_event']['diagnostic_inputs']
         positions = dict(original_inputs['robot_positions'])
@@ -70,13 +75,14 @@ def case(module, label, displacement=None):
     publishers = {topic:probe.create_publisher(kind,topic,
         QoSProfile(depth=10,durability=DurabilityPolicy.TRANSIENT_LOCAL) if kind is String else 10)
         for topic,kind in topics.items()}
-    events=[];requests=[];goals=[];callbacks=[];errors=[]
+    events=[];requests=[];goals=[];goal_yaws=[];callbacks=[];errors=[]
     subscriptions = [probe.create_subscription(String,node.consumed_publisher.topic_name,
         lambda msg:events.append(json.loads(msg.data)),10),
         probe.create_subscription(String,node.charge_request_publishers[returning].topic_name,
         lambda msg:requests.append(json.loads(msg.data)),10)]
     def execute(handle):
         goals.append((handle.request.pose.pose.position.x, handle.request.pose.pose.position.y))
+        q=handle.request.pose.pose.orientation;goal_yaws.append(2.*math.atan2(q.z,q.w))
         assert release.wait(15.), 'synthetic action result was not released'
         handle.succeed()
         return NavigateToPose.Result()
@@ -87,9 +93,18 @@ def case(module, label, displacement=None):
         result = original(*args,**kwargs);entered.set();time.sleep(.6)
         return result
     if label == 'current':module.rally_yield_pose=slow
+    original_candidates=module.robot_candidate_assignments
+    if purpose == 'prefix':
+        def candidates(grid,resolution,origin,name,*args,**kwargs):
+            if name != helper:return [],dict(frontier_groups=0,groups_with_viewpoints=0)
+            entered.set();time.sleep(.6)
+            goal=module.Assignment(module.Viewpoint(1,100,140,100,140,1000,10),4.,0.,4.,100.,4.,0.)
+            return [(100.,helper,1,goal)],dict(frontier_groups=1,groups_with_viewpoints=1)
+        module.robot_candidate_assignments=candidates
     def run(message):
         try:
-            if message.data in ('prepare','cleared'):
+            if message.data == 'assign':module.HeadquartersControl.assign_idle_robots(node)
+            elif message.data in ('prepare','cleared'):
                 result=module.HeadquartersControl.prepare_exploration_return(node,returning)
                 if message.data=='cleared':assert result is False
             elif message.data == 'request':module.HeadquartersControl.request_exploration_charge(node,[(returning,assignment)])
@@ -134,7 +149,7 @@ def case(module, label, displacement=None):
         until(lambda:node.robot_nav_clients[helper].server_is_ready())
         consume(10.)
         assert node.task_state=='EXPLORE'
-        trigger.publish(String(data='prepare' if displacement else 'request'))
+        trigger.publish(String(data='assign' if purpose == 'prefix' else 'prepare' if displacement else 'request'))
         if label=='current':
             assert entered.wait(10.)
             for _ in range(12):
@@ -142,10 +157,32 @@ def case(module, label, displacement=None):
                 if not displacement:deliver(13.)
                 time.sleep(.02)
         assert finished.wait(10.) and not errors,errors
-        if label=='frozen' and displacement:
+        if purpose == 'prefix':
+            assert callbacks[0]['clock']==13. and not goals and not requests
+            assert not node.successful_exploration_legs
+            consume(13.);node.pending_exploration_geometry=None;node.pending_exploration_charge_geometry=None
+            finished.clear();trigger.publish(String(data='assign'))
+            assert finished.wait(10.) and not errors,errors
+            until(lambda:len(goals)==1 and node.goal_handles[helper] is not None)
+            assert not node.successful_exploration_legs and not requests
+            positions[helper]=goals[0];consume(14.);release.set()
+            until(lambda:node.goal_handles[helper] is None and node.robot_states[helper]=='idle'
+                and node.successful_exploration_legs.get(helper,0)==1)
+            until(lambda:any(e.get('event')=='coordinator_navigation_decision' for e in events))
+            decisions=[e for e in events if e.get('event')=='coordinator_navigation_decision']
+            assert len(decisions)==1 and decisions[0]['kind']=='exploration'
+            assert decisions[0]['travel_preference']['target']==[4.,0.]
+            if is_current:
+                from p2c_initial_replenishment import audit_initial_prefix
+                assert math.dist(goals[0],(0.,0.))+.35<=1.6
+                assert audit_initial_prefix({helper:decisions},{},True)['bounded_first_legs']==1
+            else:
+                assert math.dist(goals[0],(0.,0.))>1.6
+                assert 'initial_replenishment_prefix' not in decisions[0]['travel_preference']
+            assert not requests
+        elif label=='frozen' and displacement:
             assert callbacks[0]['pending'] and not goals and not requests
             point=node.pending_exploration_return_yield['refuge']
-            import math
             assert math.dist(node.robot_positions[helper],(point.x,point.y))<.5
             finished.clear();trigger.publish(String(data='admit'))
             assert finished.wait(10.) and not errors,errors
@@ -160,6 +197,7 @@ def case(module, label, displacement=None):
                 finished.clear();trigger.publish(String(data='admit'))
                 assert finished.wait(10.) and not errors,errors
                 assert not requests and not goals and node.pending_exploration_return_yield
+            if purpose == 'yield_heading':positions[helper]=(.1,0.)
             consume(13.);finished.clear();trigger.publish(String(data='admit'))
             assert finished.wait(10.) and not errors,errors
             until(lambda:len(goals)==1 and node.goal_handles[helper] is not None)
@@ -178,13 +216,19 @@ def case(module, label, displacement=None):
                 assert finished.wait(10.) and not errors,errors
                 until(lambda:len(requests)==1 and len(events)>=2)
                 relevant=[e for e in events if e.get('event')=='coordinator_charge_decision' or e.get('kind')=='exploration_return_yield']
-                assert [audit_preparation(e) for e in relevant]==['yield','charge']
+                assert [audit_preparation(e,is_current) for e in relevant]==['yield','charge']
+                navigation=relevant[0];point=navigation['requested_position'];start=navigation['current_position']
+                expected=math.atan2(point[1]-start[1],point[0]-start[0])
+                assert math.isclose(goal_yaws[0],navigation['requested_yaw'],abs_tol=1e-10)
+                if is_current:assert math.isclose(goal_yaws[0],expected,abs_tol=1e-10)
+                else:assert not math.isclose(goal_yaws[0],expected,abs_tol=1e-10)
                 assert requests[0]['stamp_sec']==14.
-        return dict(status='PASS',label=label,callbacks=callbacks,charge_requests=requests,
-            synthetic_endpoint_goals=goals,private_events=events,
+        return dict(status='PASS',label=purpose+('_current' if is_current else '_frozen'),callbacks=callbacks,charge_requests=requests,
+            synthetic_endpoint_goals=goals,synthetic_endpoint_yaws=goal_yaws,private_events=events,
+            ordinary_future_successes=node.successful_exploration_legs.get(helper,0),
             gazebo_or_real_nav2_goals=0,source_stamps_preserved=True,action_futures_closed=True)
     finally:
-        module.rally_yield_pose=original;release.set()
+        module.rally_yield_pose=original;module.robot_candidate_assignments=original_candidates;release.set()
         executor.shutdown();probe_executor.shutdown()
         for thread in threads:thread.join(timeout=5.);assert not thread.is_alive()
         server.destroy();node.destroy_node();probe.destroy_node()
@@ -193,13 +237,15 @@ def case(module, label, displacement=None):
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--displacement-fixture',type=Path,help='Original v54 grids/positions for the actual half-metre displacement counterexample')
+    parser.add_argument('--first-leg-heading',action='store_true',help='Probe v79 versus current first prefix and fresh clearance heading')
     args=parser.parse_args()
     if args.output.exists():parser.error('do not overwrite evidence')
     assert os.environ.get('ROS_DOMAIN_ID') in ('216','217'), 'use an isolated component domain'
     displacement=None
     if args.displacement_fixture:
         with gzip.open(args.displacement_fixture,'rt') as stream:displacement=json.load(stream)
-    reference=displacement['reference_commit'] if displacement else REFERENCE
+    assert not (args.first_leg_heading and displacement)
+    reference=HEADING_REFERENCE if args.first_leg_heading else displacement['reference_commit'] if displacement else REFERENCE
     old=subprocess.check_output(['git','show',reference+':'+SOURCE],text=True)
     frozen=types.ModuleType('p2c_frozen_return_preparation');frozen.__file__=current.__file__
     frozen.__package__='multi_robot_exploration';sys.modules[frozen.__name__]=frozen
@@ -207,12 +253,13 @@ def main():
     rclpy.init(args=['--ros-args','-p','use_sim_time:=true','-p','robot_count:=2',
         '-p','enable_battery:=true','-p','enable_rally:=true','-p','auto_save_map:=false'])
     try:
-        result=dict(status='PASS',scope='Actual isolated DDS/Futures, synthetic poses/maps and action endpoint; no task, latency or physical safety claim',
+        result=dict(status='PASS',scope='Actual isolated DDS/Futures, controlled free grids, pose/model epochs and synthetic candidate/action endpoint. Expired computation dispatches zero; fresh first ordinary SUCCESS increments only after the Future, while clearance SUCCESS earns zero ordinary credit. Old and new complete target budgets remain mandatory. No Gazebo/Nav2 motion, native charge credit, causal timing or task safety claim.',
             reference_commit=reference,reference_sha256=hashlib.sha256(old.encode()).hexdigest(),
             control_sha256=hashlib.sha256(Path(current.__file__).read_bytes()).hexdigest(),
             reader_sha256=hashlib.sha256(Path(__file__).with_name('p2c_return_preparation.py').read_bytes()).hexdigest(),
             displacement_fixture=displacement,
-            cases=[case(frozen,'frozen',displacement),case(current,'current',displacement)],all_owned_closed=True)
+            cases=([case(module,'current',purpose=purpose) for purpose in ('prefix','yield_heading') for module in (frozen,current)]
+                if args.first_leg_heading else [case(frozen,'frozen',displacement),case(current,'current',displacement)]),all_owned_closed=True)
         args.output.write_text(json.dumps(result,indent=2)+'\n')
         print(json.dumps(dict(status=result['status'],cases=[dict(label=r['label'],requests=len(r['charge_requests']),goals=len(r['synthetic_endpoint_goals'])) for r in result['cases']])))
     finally:rclpy.shutdown()

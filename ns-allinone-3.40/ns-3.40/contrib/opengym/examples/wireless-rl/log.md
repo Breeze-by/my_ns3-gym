@@ -9356,3 +9356,8 @@ colcon build --symlink-install --packages-select multi_robot_exploration multi_r
 2026-10-11 P2C.1 v78首原FAIL保持：41407f2 forced原生RALLY300.0timeout，检测214.6/集合266.7/FOUND52.1s，双charge1/min13.612741711/零接触耗尽FAILED任务期infra，owner-observer0/双图同；原相对helper路径错误和strictFAIL保留，23不同子PASS不代任务，余3/17+2/917未调用。新当前非观察者完整返路断连时每target/participants/observer/peer上下文最多一次原观察者信息勘察；直接准备路不可用才现有known重查端点，第一原条件(-.232,.113)一准备、第二fused断连零准备，完整.45/.35/.6身体/1.8预约/5m/60s/去返能源及2-5源保持。3中央改/84其他105纯/native-SLAM-Nav2-SDF保持，独立失败选位/次数及nativeCDR绑定。2477功能439.62s/122定向37新/四包5.87s/190保护6历史授权54协议/三33源声明与actual DDS/Future九情形PASS；合成endpoint零physical/native credit、非任务因果。原夹具/原型失败与261PASS主动中止及A→B→A次数修补全部保留。新v79 clean pushed串行4→17+2待任务，917未暴露，P2C.1未完成，无P4/ns3/WiFi/RL。报告20261011_p2c_v78_failed_development与20261011_p2c_observer_connection_components。
 
 所有owned验证关闭后写报告；用户260929_report十四文件未改未提交。
+
+
+2026-10-11 P2C.1 v79四原整体FAIL保持：fcbc3f4 forced/rooms原生COMPLETE244.8/297.0，lab/corr原生RALLY300.0/300.2timeout；检测151.5/165.8，集合212.3/175.3，四零接触耗尽FAILED任务期infra、owner-observer0/双图同，24不同子PASS不替代整体FAIL，17+2/917未调用。lab原tb2三清道倒向充电点，corr首tb1探索越过初补能近家窗口，条件观察非任务因果。新未完成普通探索且nativecharge0时首段前缀按原2*radius/0.35m容差+一格对角线截短，完整前沿评分/去返预算不改；清道仅在原可见路径/完整去返/1.8m净空/2-5s源龄通过后按fresh位移朝向，零探索计数，普通相机/finalRALLY保持。2中央改/85其他105纯/native-SLAM-Nav2-SDF保持，1新纯偏好，独立读者绑定原状态/实际普通Future历史/原source与路径预算。2514功能395.40s/259定向37新/四包12.7s/190保护6历史授权54协议/三33源声明及actual DDS/Future四场景两对子PASS；合成endpoint零physical/nativecredit，原4FAIL与math运行失败保留。新v80 clean pushed4→17+2待任务，917未暴露；P2C.1未完成，无P4/ns3/WiFi/RL。报告20261011_p2c_v79_failed_development与20261011_p2c_first_leg_heading_components。
+
+所有owned验证关闭后写报告；用户260929_report十四文件未改未提交。

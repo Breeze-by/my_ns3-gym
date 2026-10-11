@@ -9,7 +9,7 @@ from p2c_return_preparation import audit_preparation, decode_grid
 
 
 def initial_replenishment_audit(ledger, enabled=False, native_capture=None, require_completion_hold=False, map_capture=None,
-                              require_camera_first=False, require_alternating=False):
+                              require_camera_first=False, require_alternating=False, require_initial_prefix=False):
     native = {}
     if enabled:
         assert native_capture is not None and native_capture.is_file()
@@ -49,6 +49,7 @@ def initial_replenishment_audit(ledger, enabled=False, native_capture=None, requ
             successes.setdefault(key[0], []).append(at)
     audit_completion_holds(holds, navigation, commands, successes, native, require_completion_hold, map_capture)
     camera_first = audit_camera_first(navigation, successes, require_camera_first, require_alternating)
+    prefixes = audit_initial_prefix(navigation, successes, require_initial_prefix)
     decisions, robots = 0, set()
     for line in ledger.open():
         event = json.loads(line)
@@ -124,7 +125,53 @@ def initial_replenishment_audit(ledger, enabled=False, native_capture=None, requ
     return dict(enabled=enabled, status='PASS', policy_requests=decisions,
         robots=sorted(robots), first_goal_completion_holds=len(holds), completion_hold_declared=require_completion_hold,
         camera_first_search=camera_first,
+        first_leg_prefixes=prefixes,
         scope='One initial near-home replenishment after actual ordinary success; scheduling threshold and current full trip cost rebuilt separately. Native credit and physical return remain separate original audits.')
+
+
+def audit_initial_prefix(navigation, successes, required=False):
+    """Rebuild a first-leg preference without counting it as completed work."""
+    count = 0
+    for name, events in navigation.items():
+        for event in events:
+            if event['kind'] not in ('exploration', 'initial_visual_search'):
+                continue
+            preference = event.get('travel_preference', {})
+            if required:
+                assert 'initial_replenishment_prefix' in preference
+            saved = preference.get('initial_replenishment_prefix')
+            if saved is None:
+                continue
+            assert required, 'undeclared first-leg prefix'
+            assert saved['strategy'] == 'first_real_leg_near_home'
+            assert event['task_phase'] in ('EXPLORE', 'FOUND_UNCONFIRMED')
+            state, position = event['battery_states'][name], event['current_position']
+            assert state == saved['battery_state'] and state['mode'] == 'ACTIVE'
+            assert list(position) == saved['robot_position']
+            assert state['stamp_sec'] == event['inputs'][name+'/battery_state']['source_time']
+            assert type(state['charge_count']) is int and state['charge_count'] == 0
+            assert type(saved['completed_exploration_legs']) is int and saved['completed_exploration_legs'] == 0
+            generated, now = saved['generated_at_sec'], event['event_time']
+            assert math.isfinite(generated) and generated <= preference['required_energy_evaluated_at_sec'] <= now
+            for key, sample in event['inputs'].items():
+                if key != 'headquarters/target_detection':
+                    assert 0 <= generated - sample['source_time'] <= sample['ttl_sec']
+                    assert 0 <= now - sample['source_time'] <= sample['ttl_sec']
+            assert not any(at <= generated for at in successes.get(name, []))
+            radius, capacity, fraction, energy = (float(state[k]) for k in
+                ('charge_radius_m', 'capacity', 'charge_target_fraction', 'energy'))
+            assert all(math.isfinite(v) for v in (radius, capacity, fraction, energy))
+            assert radius > .2 and capacity > 0 and 0 < fraction <= 1 and 0 < energy < capacity*fraction
+            home = (state['charge_x'], state['charge_y'])
+            limit = (2.*radius - math.dist(position, home)
+                - control.RALLY_POSITION_TOLERANCE_M - math.sqrt(2.)*event['planning_map']['resolution'])
+            assert control.PATH_CLEARANCE_M < limit < control.MAX_NAVIGATION_LEG_M
+            assert math.isclose(saved['max_distance_m'], limit, abs_tol=1e-10)
+            assert math.dist(event['requested_position'], home) + control.RALLY_POSITION_TOLERANCE_M <= 2.*radius + 1e-10
+            assert preference['required_energy'] > 0 and preference['planned_distance_m'] > 0
+            count += 1
+    return dict(status='PASS', declared=required, bounded_first_legs=count,
+        scope='First ordinary dispatch only; actual success and native charge credit remain separate original checks.')
 
 
 def audit_camera_first(navigation, successes, required, alternating=False):

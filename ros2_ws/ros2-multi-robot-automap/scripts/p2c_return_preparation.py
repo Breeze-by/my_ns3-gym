@@ -15,7 +15,7 @@ def decode_grid(saved):
                          dtype='<i2').reshape(saved['shape'])
 
 
-def audit_preparation(event):
+def audit_preparation(event, require_motion_heading=False):
     now = event['event_time']
     saved = event['return_preparation']
     positions, states, modes = (saved[k] for k in ('robot_positions', 'battery_states', 'battery_modes'))
@@ -78,6 +78,16 @@ def audit_preparation(event):
     name, point = event['robot'], event['requested_position']
     assert name != returning and modes[name] == 'ACTIVE'
     assert event['task_phase'] in ('EXPLORE', 'FOUND_UNCONFIRMED')
+    heading = saved.get('motion_heading')
+    if require_motion_heading:
+        assert heading is not None, 'missing visible escape heading'
+    if heading is not None:
+        assert heading['strategy'] == 'fresh_visible_leg_bearing'
+        assert heading['robot_position'] == list(positions[name])
+        assert 0 <= now - heading['evaluated_at_sec'] <= 2.
+        expected_yaw = math.atan2(point[1] - positions[name][1], point[0] - positions[name][0])
+        assert math.isclose(heading['yaw'], expected_yaw, abs_tol=1e-10)
+        assert math.isclose(event['requested_yaw'], expected_yaw, abs_tol=1e-10)
     assert control.routes_conflict((positions[name],), rebuilt[returning], 1.8)
     assert not any(control.routes_conflict((point,), route, 1.8) for route in rebuilt.values())
     blocked = [p for other, p in positions.items() if other != name]
@@ -105,7 +115,7 @@ def audit_preparation(event):
     return 'yield'
 
 
-def return_preparation_audit(path, required=False):
+def return_preparation_audit(path, required=False, require_motion_heading=False):
     if not required:
         return None
     counts = dict(charge=0, yield_moves=0)
@@ -116,6 +126,6 @@ def return_preparation_audit(path, required=False):
             continue
         if event.get('event') == 'coordinator_charge_decision' and event['task_phase'] not in ('EXPLORE', 'FOUND_UNCONFIRMED'):
             continue  # Existing FOUND/RALLY coordination has its own guards.
-        kind = audit_preparation(event)
+        kind = audit_preparation(event, require_motion_heading)
         counts['charge' if kind == 'charge' else 'yield_moves'] += 1
     return dict(status='PASS', **counts, route_clearance_m=1.8, private_audit_only=True)

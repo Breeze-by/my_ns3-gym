@@ -86,6 +86,8 @@ def test_primary_geometry_after_first_charge_stays_equal_or_safe_new_fallback_is
     for choice in after.exploration_travel_choices.values():
         assert choice.get('camera_first_search') is None
         choice.pop('camera_first_search', None)
+        assert choice.get('initial_replenishment_prefix') is None
+        choice.pop('initial_replenishment_prefix', None)
     fallback = any(choice.get('known_space_fallback') for choice in after.exploration_travel_choices.values())
     if not fallback:
         assert decision(before, old_goals) == decision(after, new_goals)

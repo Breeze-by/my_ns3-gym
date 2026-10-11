@@ -49,11 +49,14 @@ def conditional_assignment(event, assign):
     # Isolate route/gain ordering on the saved geometry. These synthetic
     # endpoints omit native charging callbacks; the charge-reservation policy
     # has its own complete fixture and actual DDS/Future regression probe.
-    with patch.object(control.HeadquartersControl, 'request_exploration_charge', return_value=False):
+    with patch.object(control.HeadquartersControl, 'request_exploration_charge', return_value=False), \
+            patch.object(control, 'initial_replenishment_prefix', return_value=None):
         assign(node)
     for choice in node.exploration_travel_choices.values():
         assert choice.get('camera_first_search') is None
         choice.pop('camera_first_search', None)
+        assert choice.get('initial_replenishment_prefix') is None
+        choice.pop('initial_replenishment_prefix', None)
     return json.loads(json.dumps(dict(sent=sent, choices=node.exploration_travel_choices),
                                 default=dataclasses.asdict))
 

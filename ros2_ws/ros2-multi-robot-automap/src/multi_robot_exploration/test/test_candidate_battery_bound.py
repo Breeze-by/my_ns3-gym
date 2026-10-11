@@ -5,6 +5,7 @@ import json
 import math
 from pathlib import Path
 from types import SimpleNamespace
+from unittest.mock import patch
 
 import numpy as np
 import pytest
@@ -47,10 +48,15 @@ def conditional_charge(event, assign):
     node.exploration_charge_budgets = {}
     node.charge_request_publishers = {n: SimpleNamespace(publish=lambda msg: requests.append(json.loads(msg.data)))
                                     for n in d['battery_states']}
-    assign(node)
+    # Compare the frozen pricing optimizer outside the separately tested
+    # first-leg top-up preference; keep the original full targets and costs.
+    with patch.object(control, 'initial_replenishment_prefix', return_value=None):
+        assign(node)
     for choice in node.exploration_travel_choices.values():
         assert choice.get('camera_first_search') is None
         choice.pop('camera_first_search', None)
+        assert choice.get('initial_replenishment_prefix') is None
+        choice.pop('initial_replenishment_prefix', None)
     return json.loads(json.dumps(dict(sent=sent, requests=requests, choices=node.exploration_travel_choices),
                                 default=dataclasses.asdict))
 

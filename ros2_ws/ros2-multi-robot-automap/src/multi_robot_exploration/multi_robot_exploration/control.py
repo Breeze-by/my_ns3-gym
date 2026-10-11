@@ -1367,6 +1367,30 @@ def path_waypoint(traversable, start, target, max_distance_cells):
     )[0]
 
 
+def initial_replenishment_prefix(state, position, completed, resolution):
+    """Keep a first real leg near the existing one-time top-up window."""
+    try:
+        if type(completed) is not int or completed != 0 or type(state.get('charge_count')) is not int or state['charge_count'] != 0:
+            return None
+        radius = float(state['charge_radius_m'])
+        capacity, fraction = float(state['capacity']), float(state['charge_target_fraction'])
+        target = capacity * fraction
+        energy = float(state['energy'])
+        home = (float(state['charge_x']), float(state['charge_y']))
+        if (not all(math.isfinite(v) for v in (*position, *home, radius, capacity, fraction, target, energy, resolution))
+                or resolution <= 0 or radius <= .2 or capacity <= 0 or not 0 < fraction <= 1 or not 0 < energy < target):
+            return None
+        limit = (2. * radius - math.dist(position, home)
+            - RALLY_POSITION_TOLERANCE_M - math.sqrt(2.) * resolution)
+        if not PATH_CLEARANCE_M < limit < MAX_NAVIGATION_LEG_M:
+            return None
+        return dict(strategy='first_real_leg_near_home', max_distance_m=limit,
+            robot_position=list(position), battery_state=dict(state),
+            completed_exploration_legs=completed)
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
 def stage_navigation_leg(
     assignment, raw_grid, resolution, origin, robot_position
 ):
@@ -4229,15 +4253,19 @@ class HeadquartersControl(Node):
                 or not HeadquartersControl.fresh_return_preparation_inputs(self)):
             return True
         row, column = world_to_grid(*point, self.resolution, *self.origin)
+        start = self.robot_positions[name]
+        yaw = math.atan2(point[1] - start[1], point[0] - start[0])
         assignment = Assignment(Viewpoint(-1, row, column, row, column, 0, 0),
-            *point, distance, 0., *point, target.yaw)
+            *point, distance, 0., *point, yaw)
         self.exploration_return_yields[name] = dict(
             returning=returning, protected_routes=protected,
             protected_return_cycles={other: self.battery_states[other].get('return_count', 0)
                 + int(self.battery_modes[other] == 'ACTIVE') for other in protected
                 if other == returning or self.battery_modes[other] == 'RETURNING'},
             clearance_m=RALLY_ROUTE_SEPARATION_M, route=route,
-            required_energy=required, required_energy_evaluated_at_sec=self.exploration_budget_times[name])
+            required_energy=required, required_energy_evaluated_at_sec=self.exploration_budget_times[name],
+            motion_heading=dict(strategy='fresh_visible_leg_bearing',
+                robot_position=list(start), yaw=yaw, evaluated_at_sec=self.now()))
         self.pending_exploration_return_yield = None
         self.robot_states[name] = 'active'
         self.goal_targets[name] = assignment
@@ -7989,16 +8017,38 @@ class HeadquartersControl(Node):
                     if other_name != name and position is not None
                 ]
                 key = (name, assignment.x, assignment.y)
+                initial_prefix = (initial_replenishment_prefix(
+                    self.battery_states[name], self.robot_positions[name],
+                    getattr(self, 'successful_exploration_legs', {}).get(name, 0), self.resolution)
+                    if not search and getattr(self, 'enable_battery', False)
+                    and getattr(self, 'enable_rally', False) else None)
+                if initial_prefix is not None:
+                    initial_prefix['generated_at_sec'] = planning_started
                 if key not in route_proposals:
                     route_proposals[key] = plan_rally_leg(
                         RallyPose(assignment.x, assignment.y, 0.),
                         self.map_data, self.resolution, self.origin,
-                        self.robot_positions[name], MAX_NAVIGATION_LEG_M,
+                        self.robot_positions[name], (initial_prefix['max_distance_m']
+                            if initial_prefix is not None else MAX_NAVIGATION_LEG_M),
                         blocked_positions=blocked, clearance_m=PATH_CLEARANCE_M,
                         visible_only=True, route_cache=route_caches[name],
                         local_map=HeadquartersControl.delivered_return_maps(self).get(name),
                     )
                 plan = route_proposals[key]
+                if initial_prefix is not None and plan[0] is not None:
+                    # A clearance escape can precede the bounded grid prefix.
+                    # Keep the actual proposed endpoint inside the old window.
+                    state = self.battery_states[name]
+                    home = (state['charge_x'], state['charge_y'])
+                    if (math.dist((plan[0].x, plan[0].y), home)
+                            + RALLY_POSITION_TOLERANCE_M > 2. * state['charge_radius_m']):
+                        initial_prefix = None
+                        plan = plan_rally_leg(RallyPose(assignment.x, assignment.y, 0.),
+                            self.map_data, self.resolution, self.origin,
+                            self.robot_positions[name], MAX_NAVIGATION_LEG_M,
+                            blocked_positions=blocked, clearance_m=PATH_CLEARANCE_M,
+                            visible_only=True, route_cache=route_caches[name],
+                            local_map=HeadquartersControl.delivered_return_maps(self).get(name))
                 if plan[0] is None:
                     diagnostics["rejected_routes"] += 1
                     continue
@@ -8027,6 +8077,12 @@ class HeadquartersControl(Node):
                     diagnostics["rejected_routes"] += 1
                     continue
                 pose, route = admitted
+                if initial_prefix is not None:
+                    state = self.battery_states[name]
+                    if (math.dist((pose.x, pose.y), (state['charge_x'], state['charge_y']))
+                            + RALLY_POSITION_TOLERANCE_M > 2. * state['charge_radius_m']):
+                        diagnostics['rejected_routes'] += 1
+                        continue
                 if (
                     math.dist(self.robot_positions[name], (pose.x, pose.y))
                     <= NAVIGATION_POSITION_TOLERANCE_M
@@ -8059,6 +8115,7 @@ class HeadquartersControl(Node):
                 if (name, original_assignment) in travel_preferences:
                     witness = travel_preferences[name, original_assignment]
                     witness.update(planned_distance_m=planned_distance, blocked_positions=blocked)
+                    witness['initial_replenishment_prefix'] = initial_prefix
                     if name in resuming_names:
                         witness['resume_intent'] = resume_intents[name]
                     witness['continuation_weight'] = FRONTIER_CONTINUATION_WEIGHT if name in resuming_names else 1.0

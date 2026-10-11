@@ -960,7 +960,8 @@ def check_one(path,config):
         position_tolerance,None if result['target_field_of_view_deg'] is None
         else math.radians(result['target_field_of_view_deg']))
     leases=planning_lease_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
-    preparations=return_preparation_audit(directory/'ledger.jsonl',bool(config.get('exploration_return_preparation')))
+    preparations=return_preparation_audit(directory/'ledger.jsonl',bool(config.get('exploration_return_preparation')),
+        bool(config.get('exploration_return_preparation',{}).get('motion_heading')))
     dispatches=navigation_dispatch_audit(directory/'ledger.jsonl',bool(config.get('navigation_dispatch_boundary')),
         bool(config.get('rally_recovery_retarget_intent')))
     transit=transit_heading_audit(directory/'ledger.jsonl',bool(config.get('observed_rally_transit_heading')))
@@ -985,7 +986,8 @@ def check_one(path,config):
     replenishment=initial_replenishment_audit(directory/'ledger.jsonl',bool(config.get('initial_near_home_replenishment')),
         directory/'safety_events.jsonl',bool(config.get('funded_initial_goal_completion')),
         directory/'navigation_inputs.jsonl.gz',bool(config.get('camera_first_search')),
-            isinstance(config.get('camera_first_search'), dict) and bool(config['camera_first_search'].get('alternate_on_real_work')))
+            isinstance(config.get('camera_first_search'), dict) and bool(config['camera_first_search'].get('alternate_on_real_work')),
+        bool(config.get('initial_near_home_replenishment',{}).get('first_leg_prefix')))
     if config.get('initial_near_home_replenishment'):
         from run_p2d_baseline import file_digest
         assert row['source_digests']['initial_replenishment_reader']==file_digest(Path(__file__).with_name('p2c_initial_replenishment.py'))
