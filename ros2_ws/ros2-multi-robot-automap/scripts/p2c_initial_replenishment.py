@@ -10,7 +10,8 @@ from p2c_return_preparation import audit_preparation, decode_grid
 
 def initial_replenishment_audit(ledger, enabled=False, native_capture=None, require_completion_hold=False, map_capture=None,
                               require_camera_first=False, require_alternating=False, require_initial_prefix=False,
-                              require_geometry_window=False, require_window_handoff=False, require_reservation_wait=False):
+                              require_geometry_window=False, require_window_handoff=False, require_reservation_wait=False,
+                              allow_contact_region=False):
     native = {}
     if enabled:
         assert native_capture is not None and native_capture.is_file()
@@ -124,6 +125,29 @@ def initial_replenishment_audit(ledger, enabled=False, native_capture=None, requ
             planning['resolution'], planning['origin'], position, 2 * radius,
             blocked_positions=[point for robot, point in positions.items() if robot != name],
             clearance_m=control.PATH_CLEARANCE_M, visible_only=True, local_map=maps[name])
+        contact = saved.get('contact_region')
+        if contact is not None:
+            assert allow_contact_region, 'undeclared initial contact-region fallback'
+            assert goal is None or math.dist((goal.x, goal.y), home) > radius - .2
+            assert contact['strategy'] == 'qualified_contact_endpoint'
+            candidates = control.qualified_return_candidates(raw, planning['resolution'], planning['origin'],
+                position, home, radius, maps[name])
+            chosen = None
+            for candidate in sorted((row for row in candidates if row['qualified']),
+                    key=lambda row: (row['path_distance_m'], row['source'] != 'local')):
+                point = candidate['route'][-1]
+                trial, trial_route = control.plan_rally_leg(control.RallyPose(*point, 0.), raw,
+                    planning['resolution'], planning['origin'], position, 2 * radius,
+                    blocked_positions=[p for robot, p in positions.items() if robot != name],
+                    clearance_m=control.PATH_CLEARANCE_M, visible_only=True, local_map=maps[name])
+                if trial is not None and math.dist((trial.x, trial.y), home) <= radius - .2:
+                    chosen, goal, route = candidate, trial, trial_route
+                    break
+            assert chosen is not None
+            assert contact['source'] == chosen['source']
+            assert math.isclose(contact['path_distance_m'], chosen['path_distance_m'], abs_tol=1e-10)
+            assert np.allclose(contact['qualified_route'], chosen['route'], atol=1e-10, rtol=0.)
+            assert np.allclose(contact['endpoint'], chosen['route'][-1], atol=1e-10, rtol=0.)
         assert goal is not None and math.dist((goal.x, goal.y), home) <= radius - .2
         assert np.allclose([goal.x, goal.y, goal.yaw], saved['contact_goal'], atol=1e-10, rtol=0.)
         assert np.allclose(route, saved['contact_route'], atol=1e-10, rtol=0.)
@@ -131,7 +155,7 @@ def initial_replenishment_audit(ledger, enabled=False, native_capture=None, requ
         robots.add(name)
     return dict(enabled=enabled, status='PASS', policy_requests=decisions,
         robots=sorted(robots), first_goal_completion_holds=len(holds), completion_hold_declared=require_completion_hold,
-        camera_first_search=camera_first,
+        camera_first_search=camera_first, contact_region_declared=allow_contact_region,
         first_leg_prefixes=prefixes,
         first_window_geometry_handoffs=window_handoffs,
         first_window_reservation_waits=reservation_waits,

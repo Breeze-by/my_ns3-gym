@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-11 09:44:49 UTC",
+  "predeclared_at_utc": "2026-10-11 11:28:00 UTC",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -362,7 +362,8 @@
     "20261011_p2c_v83_failed_development.json",
     "20261011_p2c_v84_failed_development.json",
     "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261011_p2c_v85_failed_development.json",
-    "20261011_p2c_v86_failed_development.json"
+    "20261011_p2c_v86_failed_development.json",
+    "20261011_p2c_v87_failed_development.json"
   ],
   "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
   "opportunity_charge_rules": [
@@ -515,7 +516,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "1948d5a4c3c22a3dafbc6f9fdbf8ef6bbd300101",
+  "candidate_parent_commit": "6df4f880829f075b5a24c887648878fc7502c0a3",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -833,14 +834,14 @@
     "guards": "Both complete serial approaches still mask every other current body and then the placed helper, and fund current and endpoint qualified return plus original wait and5s hold at the original source deadlines",
     "evidence": "Private previous order/order source and independently reconstructed complete routes/budgets; original failed tasks remain failed",
     "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_refuge_preflight_components.json",
-    "limits": "Conditional original native-map geometry and actual DDS/Futures; no physical Nav2, causal task or worst-case latency claim. Original4\u219217+2 and917 boundary remain"
+    "limits": "Conditional original native-map geometry and actual DDS/Futures; no physical Nav2, causal task or worst-case latency claim. Original4→17+2 and917 boundary remain"
   },
   "native_curved_return_legs": {
     "navigation": "Ordinary native return legs use the maximal at-most5m prefix of the existing complete known-free contact route, including the actual position offset; the original bounded inflated-start escape branch is preserved",
     "guards": "Original full contact return, local-obstacle veto, energy model/credit/reserve, source deadlines, timeout/retry counters, Nav2/SLAM and physical parameters remain unchanged",
     "evidence": "Independent complete-route prefix/continuous-clearance reconstruction and exact original local/fused CDR binding; all original returns must still close",
     "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_native_return_curves_components.json",
-    "limits": "Conditional original decision geometry and actual DDS/stationary ActionClient Futures; no physical motion, task causal or worst-case guarantee. New same-clean-pushed4\u219217+2 required;917 remains unexposed"
+    "limits": "Conditional original decision geometry and actual DDS/stationary ActionClient Futures; no physical motion, task causal or worst-case guarantee. New same-clean-pushed4→17+2 required;917 remains unexposed"
   },
   "proposal_all_participant_sources": {
     "authority": "Every proposed participant body, including RETURNING/CHARGING robots, must have original fresh delivered pose/TF/map/battery sources before geometry, after order reconstruction and after private publication",
@@ -853,7 +854,7 @@
     "guards": "All original participant pose/TF/map/battery/target source deadlines and endpoint/LOS/spacing/yaw checks remain, including checks after geometry and private publication. Ordinary RALLY preflight/dispatch still price complete current returns, waits and5s hold",
     "evidence": "Private order source, prior preference, complete serial routes and exact current source/CDR binding; this intentionally prefers a currently qualified retained permutation over reranking every soft-cost alternative",
     "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_rally_intent_components.json",
-    "limits": "Original proposal snapshot and conditional actual DDS/clock; no original live replay, task causal or worst-case deadline claim. Same-clean-pushed4\u219217+2 required;917 remains unexposed"
+    "limits": "Original proposal snapshot and conditional actual DDS/clock; no original live replay, task causal or worst-case deadline claim. Same-clean-pushed4→17+2 required;917 remains unexposed"
   },
   "rally_recovery_retarget_intent": {
     "transition": "Permanent reassignment of the waiting beneficiary clears its previous return-owner, temporary-yield, probe and old donated-priority flags; the new target is ordinary RALLY intent",
@@ -866,20 +867,20 @@
     "scope": "Read-only FOUND observer and target-information-survey planning; preserve the immutable evaluator null rally parameters and null native hold before any assignment",
     "guards": "All original camera/error margin,2/5/60s source/energy/route/physical/native completion/300s/5s requirements unchanged; this is not an assignment or native success claim",
     "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_partial_heading_components.json",
-    "limits": "v64 original physical checker FAIL remains; corrected original closed evidence review is a reader component only. New clean-pushed same-source4\u219217+2 required;917 remains unexposed"
+    "limits": "v64 original physical checker FAIL remains; corrected original closed evidence review is a reader component only. New clean-pushed same-source4→17+2 required;917 remains unexposed"
   },
   "rally_connection_local_reinspection": {
     "trigger": "Existing complete rally search proves a nonobserver ACTIVE robot cannot reach a rally pose in the conservative fused plus original local map",
     "preference": "When fused space connects, rank known-free conservative-component endpoints by original body-masked fused geodesic distance to existing rally poses; prefer a safe approach for actual scan reinspection before unchanged connection frontiers",
     "guards": "All positive source obstacles remain; original0.45 endpoint/0.35 path/0.6 body and bounded known-free escape; no unknown movement, obstacle erasure or route permission from preference. Next callback uses unchanged full local/body/go-return energy and2/5/60s leases",
     "evidence": "Private exact original local/fused geometry, independently reconstructed minimum and raw CDR binding; ordinary actual source-bound target survey decisions",
-    "limits": "No guaranteed obstacle cause, clearing or task benefit. Original six/nine survey attempts, retries,300s,5s native hold and physical cases/stimuli unchanged; new same-freeze4\u219217+2 mandatory,917 remains unexposed",
+    "limits": "No guaranteed obstacle cause, clearing or task benefit. Original six/nine survey attempts, retries,300s,5s native hold and physical cases/stimuli unchanged; new same-freeze4→17+2 mandatory,917 remains unexposed",
     "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_reinspection_components.json"
   },
   "complete_application_graph": {
     "capture": "The existing read-only observer waits for native TF and complete typed metrics/AP/merge endpoints plus unchanged bypass and headless monitor vetoes; canonical graph.json and native_graph.json are the same first qualified actual snapshot",
     "initial": "Keep the original early bypass_audit snapshot separately in initial_bypass_graph.json with original source/graph/SHA evidence; never replace missing endpoints or overwrite either graph",
-    "limits": "Read-only discovery capture only; no controller/native/SLAM/physics/source/TTL/300s/5s or task-case/stimulus changes. Original v66 native COMPLETE but strict graph FAIL retained; new same-source4\u219217+2 required,917 remains unexposed",
+    "limits": "Read-only discovery capture only; no controller/native/SLAM/physics/source/TTL/300s/5s or task-case/stimulus changes. Original v66 native COMPLETE but strict graph FAIL retained; new same-source4→17+2 required,917 remains unexposed",
     "evidence": "Exclusive graph creation, exact observer/runner command and original SHA binding, positive typed endpoints and actual delayed DDS rejection/delivery/closure checks",
     "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_application_graph_components.json"
   },
@@ -887,7 +888,7 @@
     "authority": "Shared episode_command selects initial_bypass_graph.json under the already declared complete_application_graph option; owner and strict declaration auditor use that same generator",
     "source_binding": "Record and require the actual run_p3b5_tasks.py builder SHA alongside runner/observer/native graph source digests; no owner-only rewrite or reader-only exception",
     "scope": "Same actual command, evidence paths, controller/native/SLAM/physical/source/energy/TTL/300s/5s bytes and original cases/stimuli as v67",
-    "limits": "Original v67 native COMPLETE288.8 but strict declaration FAIL remains. Read-only original declaration binding is a component, never status backfill. New clean-pushed same-source4\u219217+2 required;917 remains unexposed",
+    "limits": "Original v67 native COMPLETE288.8 but strict declaration FAIL remains. Read-only original declaration binding is a component, never status backfill. New clean-pushed same-source4→17+2 required;917 remains unexposed",
     "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_graph_command_components.json"
   },
   "parallel_rally_preparation": {
@@ -897,7 +898,7 @@
     "frame_generation_offset_sec": 0.2,
     "evidence": "Private exact original survey route/goal source, current positions/models/maps/source leases/budget; independent route,body,reservation,energy and original pose/TF/map CDR binding plus future-before-RALLY audit",
     "unchanged": "Original exploration/scoring/observer/charging/return/native/SLAM/Nav2/physics, original300s/5s/TTLs,8central and2native serialized registrations, schedules/cases/stimuli remain",
-    "limits": "Original v68 RALLY300.4 timeout FAIL preserved. Exact-source conditional geometry4.978m/budget16.215 is not physical staging,time benefit or task causal proof; actual DDS and new same-clean-pushed4\u219217+2 mandatory;917 remains unexposed",
+    "limits": "Original v68 RALLY300.4 timeout FAIL preserved. Exact-source conditional geometry4.978m/budget16.215 is not physical staging,time benefit or task causal proof; actual DDS and new same-clean-pushed4→17+2 mandatory;917 remains unexposed",
     "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261010_p2c_parallel_preparation_components.json",
     "known_connection_reinspection": {
       "trigger": "Only when the original complete approach to the active observer survey endpoint is unavailable.",
@@ -944,6 +945,14 @@
         "evidence": "Existing private consumed stream coordinator_first_window_reservation_wait; exact native battery/source and finite no-authority reader",
         "component_report": "20261011_p2c_wait_probe_components.json"
       }
+    },
+    "contact_region_fallback": {
+      "strategy": "qualified_contact_endpoint",
+      "scope": "Only original one-time near-home replenishment after counted ordinary success, ACTIVE/no prior native charge and energy below original native target. Preserve centre first; if it is unavailable or its original visible prefix does not reach the contact margin, replan existing qualified contact endpoints.",
+      "geometry": "Original complete local/fused qualified contact endpoints in stable distance/local-source order; original visible2*radius leg with every delivered peer body and local obstacle constraint, endpoint within radius-.2. No new sample pool or physical region.",
+      "authority": "Feasibility preference only: original full return preparation1.8m, whole outbound/contact reserve, exact native sources, final2/5s leases and native execution/charge credit remain mandatory.",
+      "evidence": "Existing private initial_replenishment.contact_region retains qualified source/path/endpoint. Independent reader verifies failed centre and first feasible current qualified contact plan.",
+      "component_report": "20261011_p2c_contact_region_components.json"
     }
   },
   "initial_known_space_fallback": {

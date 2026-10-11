@@ -4088,8 +4088,34 @@ class HeadquartersControl(Node):
                     clearance_m=PATH_CLEARANCE_M, visible_only=True,
                     local_map=HeadquartersControl.delivered_return_maps(self).get(name),
                 )
+                contact_region = None
                 if leg is None or math.dist((leg.x, leg.y), home) > radius - .2:
-                    return None
+                    if (not getattr(self, 'enable_rally', False)
+                            or type(state.get('charge_count')) is not int or state['charge_count'] != 0
+                            or energy >= charge_target):
+                        return None
+                    # The original safety budget returns to a contact region,
+                    # whose centre can be occupied by a parked peer. Replan
+                    # only existing qualified endpoints with every body mask;
+                    # the full return owner still clears/reserves its route.
+                    local_map = HeadquartersControl.delivered_return_maps(self).get(name)
+                    candidates = qualified_return_candidates(self.map_data, self.resolution,
+                        self.origin, self.robot_positions[name], home, radius, local_map)
+                    for candidate in sorted((row for row in candidates if row['qualified']),
+                            key=lambda row: (row['path_distance_m'], row['source'] != 'local')):
+                        endpoint = candidate['route'][-1]
+                        leg, route = plan_rally_leg(RallyPose(*endpoint, 0.), self.map_data,
+                            self.resolution, self.origin, self.robot_positions[name], 2. * radius,
+                            blocked_positions=[p for peer, p in self.robot_positions.items()
+                                               if peer != name and p is not None],
+                            clearance_m=PATH_CLEARANCE_M, visible_only=True, local_map=local_map)
+                        if leg is not None and math.dist((leg.x, leg.y), home) <= radius - .2:
+                            contact_region = dict(strategy='qualified_contact_endpoint',
+                                source=candidate['source'], path_distance_m=candidate['path_distance_m'],
+                                qualified_route=candidate['route'], endpoint=list(endpoint))
+                            break
+                    else:
+                        return None
                 if (getattr(self, 'enable_rally', False)
                         and type(state.get('charge_count')) is int and state['charge_count'] == 0
                         and energy < charge_target):
@@ -4109,6 +4135,7 @@ class HeadquartersControl(Node):
                         robot_position=list(self.robot_positions[name]),
                         home=list(home), contact_goal=[leg.x, leg.y, leg.yaw],
                         contact_route=route,
+                        **({'contact_region': contact_region} if contact_region is not None else {}),
                     )
                     getattr(self, 'opportunity_charge_evidence', {}).pop(name, None)
                     return energy, charge_target, home

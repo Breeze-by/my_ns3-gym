@@ -991,7 +991,8 @@ def check_one(path,config):
         bool(config.get('initial_near_home_replenishment',{}).get('first_leg_prefix')),
         config.get('initial_near_home_replenishment',{}).get('first_leg_prefix',{}).get('strategy') == 'first_real_leg_home_window',
         bool(config.get('initial_near_home_replenishment',{}).get('first_leg_prefix',{}).get('geometry_handoff')),
-        bool(config.get('initial_near_home_replenishment',{}).get('first_leg_prefix',{}).get('reservation_wait')))
+        bool(config.get('initial_near_home_replenishment',{}).get('first_leg_prefix',{}).get('reservation_wait')),
+        bool(config.get('initial_near_home_replenishment',{}).get('contact_region_fallback')))
     if config.get('initial_near_home_replenishment'):
         from run_p2d_baseline import file_digest
         assert row['source_digests']['initial_replenishment_reader']==file_digest(Path(__file__).with_name('p2c_initial_replenishment.py'))
