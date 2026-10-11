@@ -4232,6 +4232,35 @@ class HeadquartersControl(Node):
             and 0 <= now-s['source_time'] <= s['ttl_sec']
             for s in HeadquartersControl.return_preparation_inputs(self).values())
 
+    def exploration_return_reservations(self, robot_name=None, route=None):
+        """Admit independent ordinary work outside fresh full safety returns."""
+        pending = set(getattr(self, 'rally_charge_requested', {}))
+        returning = {name for name, mode in self.battery_modes.items() if mode == 'RETURNING'}
+        if not pending and not returning:
+            return {}
+        if (not getattr(self, 'enable_rally', False) or not self.enable_battery
+                or self.task_state not in ('EXPLORE', 'FOUND_UNCONFIRMED')):
+            return None if returning else {}
+        if (any(mode == 'FAILED' for mode in self.battery_modes.values())
+                or not HeadquartersControl.fresh_return_preparation_inputs(self)):
+            return None
+        maps = HeadquartersControl.delivered_return_maps(self)
+        if any(name not in maps for name in self.participating_robots()):
+            return None
+        protected = rally_return_reservations(self.map_data, self.resolution, self.origin,
+            self.robot_positions, self.battery_states, self.battery_modes, pending,
+            getattr(self, 'return_distance_caches', None), maps)
+        if protected is None:
+            return None
+        if robot_name is not None:
+            if self.battery_modes[robot_name] != 'ACTIVE' or robot_name in protected or not route:
+                return None
+            remaining = remaining_rally_route(route, self.robot_positions[robot_name])
+            if (not remaining or any(routes_conflict(remaining, reserved, RALLY_ROUTE_SEPARATION_M)
+                                     for reserved in protected.values())):
+                return None
+        return protected if HeadquartersControl.fresh_return_preparation_inputs(self) else None
+
     def prepare_exploration_return(self, returning):
         """Clear idle bodies before requesting a return, or help a live return.
 
@@ -4685,13 +4714,15 @@ class HeadquartersControl(Node):
             self.cancel_requested[robot_name] = True
             goal_handle.cancel_goal_async()
         if mode == "RETURNING":
-            # Return routes are owned locally and have no central frontier
-            # reservation. Drain other exploration actions before admitting
-            # more traffic; a pending response is canceled on acceptance too.
+            # Local return priority permits only fresh, independently separated
+            # ordinary routes; conflicting and late responses are still drained.
             for other_name, other_handle in self.goal_handles.items():
                 preparation = getattr(self, 'exploration_return_yields', {}).get(other_name)
                 if (other_name == robot_name or other_handle is None
                         or exploration_yield_covers_return(preparation, robot_name, event)):
+                    continue
+                if HeadquartersControl.exploration_return_reservations(
+                        self, other_name, self.goal_routes[other_name]) is not None:
                     continue
                 if not self.cancel_requested[other_name]:
                     self.battery_preempted[other_name] = True
@@ -7697,9 +7728,10 @@ class HeadquartersControl(Node):
             if name in self.participating_robots()
         )
         max_concurrent = 1 if search else EXPLORATION_MAX_CONCURRENT
-        if active_explorers >= max_concurrent or any(
-            mode == "RETURNING" for mode in self.battery_modes.values()
-        ):
+        if active_explorers >= max_concurrent:
+            return
+        return_reservations = HeadquartersControl.exploration_return_reservations(self)
+        if return_reservations is None:
             return
         if not idle_positions:
             return
@@ -7732,6 +7764,9 @@ class HeadquartersControl(Node):
         candidates = []
         first_geometry_points = {}
         planning_inputs = input_freshness_at(self.input_freshness_details(), planning_started)
+        if return_reservations:
+            planning_inputs.update(input_freshness_at(
+                HeadquartersControl.return_preparation_inputs(self), planning_started))
         deadline = min((sample['source_time'] + min(sample['ttl_sec'],
                 getattr(self, 'message_freshness_timeout_sec', 5.))
             for key, sample in planning_inputs.items()
@@ -8226,6 +8261,7 @@ class HeadquartersControl(Node):
                 for name, route in self.goal_routes.items()
                 if self.robot_states[name] == "active" and route
             ]
+            reservations.extend(return_reservations.values())
             # A required charge pauses every new exploration admission. Its
             # intent must respect live traffic, rather than routes of plans
             # that would be discarded before the charge request is sent.
@@ -8520,6 +8556,18 @@ class HeadquartersControl(Node):
         if kind == 'exploration_return_yield':
             event['return_preparation'] = HeadquartersControl.return_preparation_evidence(
                 self, self.exploration_return_yields[robot_name])
+        if (kind in ('exploration', 'initial_visual_search') and self.enable_battery
+                and getattr(self, 'enable_rally', False)
+                and self.task_state in ('EXPLORE', 'FOUND_UNCONFIRMED')):
+            protected = HeadquartersControl.exploration_return_reservations(self, robot_name, outbound_route)
+            if protected is None:
+                return False
+            event['exploration_pending_charge_requests'] = dict(self.rally_charge_requested)
+            event['exploration_safety_returns'] = (HeadquartersControl.return_preparation_evidence(self, dict(
+                protected_routes=protected, clearance_m=RALLY_ROUTE_SEPARATION_M,
+                evaluated_at_sec=self.now(), admitted_route=outbound_route,
+                route=remaining_rally_route(outbound_route, self.robot_positions[robot_name])))
+                if protected else None)
         if kind == 'rally_preparation_approach':
             event['rally_preparation'] = self.rally_preparation_approaches[robot_name]
         if kind in ('rally', 'local_return_yield'):
@@ -8549,6 +8597,8 @@ class HeadquartersControl(Node):
         # to a later send. State callbacks stay serial; /clock keeps advancing.
         body = json.dumps(event, sort_keys=True)
         inputs = self.input_freshness_details()
+        if event.get('exploration_safety_returns') is not None:
+            inputs.update(HeadquartersControl.return_preparation_inputs(self))
         used = {key: sample for key, sample in inputs.items()
                 if key != 'headquarters/target_detection' or kind not in (
                     'local_return_yield', 'target_reacquisition_scan', 'target_reacquisition_exploration')}
@@ -8673,10 +8723,12 @@ class HeadquartersControl(Node):
         self.goal_known_count[robot_name] = self.map_known_count
         self.cancel_requested[robot_name] = False
         preparation = getattr(self, 'exploration_return_yields', {}).get(robot_name)
-        if self.battery_modes[robot_name] != "ACTIVE" or any(
-            mode == "RETURNING" and (preparation is None or not exploration_yield_covers_return(
-                preparation, name, self.battery_states[name])) for name, mode in self.battery_modes.items()
-        ) or (getattr(self, "target_search_active", False) and self.fresh_target()):
+        return_conflict = (HeadquartersControl.exploration_return_reservations(
+            self, robot_name, self.goal_routes[robot_name]) is None if preparation is None else any(
+                mode == 'RETURNING' and not exploration_yield_covers_return(preparation, name, self.battery_states[name])
+                for name, mode in self.battery_modes.items()))
+        if self.battery_modes[robot_name] != "ACTIVE" or return_conflict or (
+                getattr(self, "target_search_active", False) and self.fresh_target()):
             self.battery_preempted[robot_name] = True
             self.cancel_requested[robot_name] = True
             goal_handle.cancel_goal_async()
@@ -8813,6 +8865,14 @@ class HeadquartersControl(Node):
             started_at = self.goal_started_at[robot_name]
             last_progress = self.goal_last_progress_at[robot_name]
             if goal_handle is None or started_at is None or self.cancel_requested[robot_name]:
+                continue
+            if (getattr(self, 'enable_rally', False) and self.enable_battery
+                    and robot_name not in getattr(self, 'exploration_return_yields', {})
+                    and HeadquartersControl.exploration_return_reservations(
+                        self, robot_name, self.goal_routes[robot_name]) is None):
+                self.battery_preempted[robot_name] = True
+                self.cancel_requested[robot_name] = True
+                goal_handle.cancel_goal_async()
                 continue
             timed_out = now - started_at >= self.goal_timeout_sec
             assignment = (None if robot_name in getattr(self, 'exploration_return_yields', {})

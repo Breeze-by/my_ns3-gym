@@ -55,8 +55,23 @@ def test_original_retained_and_fresh_checkpoints_match_prototype_and_full_budget
                  visual=h.initial_search_goals.get(n,False),planned_distance_m=a.path_distance_m)
             for n,a in sent]
     keys=('robot','position','yaw','visual','planned_distance_m')
-    assert actual==[{k:a[k] for k in keys} for a in expected['goals']]
-    assert requests==expected['requests']
+    if saved_pending := SAVED['snapshots'][index]['event']['diagnostic_inputs']['rally_charge_requested']:
+        # The new admission policy protects pending complete returns. Original
+        # camera/turn arithmetic remains independently checked below; a former
+        # global scheduling result is not a golden value for this new policy.
+        from p2c_outbound_routes import audit_exploration_returns, audit_outbound
+        for event in events:
+            if event.get('event') == 'coordinator_navigation_decision':
+                assert event['exploration_pending_charge_requests'] == saved_pending
+                assert audit_exploration_returns(event,True) is not None
+                assert audit_outbound(event) > 1
+        if not actual:
+            protected=c.HeadquartersControl.exploration_return_reservations(h)
+            assert protected is None or protected
+        assert not requests
+    else:
+        assert actual==[{k:a[k] for k in keys} for a in expected['goals']]
+        assert requests==expected['requests']
     for name,_ in sent:
         preference=h.exploration_travel_choices[name]
         assert preference['required_energy']<h.battery_states[name]['energy']

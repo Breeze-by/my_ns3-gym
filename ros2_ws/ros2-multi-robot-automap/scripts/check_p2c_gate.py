@@ -966,7 +966,8 @@ def check_one(path,config):
         bool(config.get('rally_recovery_retarget_intent')))
     transit=transit_heading_audit(directory/'ledger.jsonl',bool(config.get('observed_rally_transit_heading')))
     outbound=outbound_route_audit(directory/'ledger.jsonl',bool(config.get('navigation_outbound_consistency')),
-        directory/'navigation_inputs.jsonl.gz')
+        directory/'navigation_inputs.jsonl.gz', bool(config.get('exploration_parallel_return_reservations')),
+        directory/'safety_events.jsonl')
     refuge=refuge_release_audit(directory/'ledger.jsonl',bool(config.get('charged_return_refuge_release')),
         directory/'navigation_inputs.jsonl.gz',bool(config.get('refuge_release_preflight_guard')))
     connection=rally_connection_audit(directory/'ledger.jsonl',bool(config.get('rally_connection_handoff')),

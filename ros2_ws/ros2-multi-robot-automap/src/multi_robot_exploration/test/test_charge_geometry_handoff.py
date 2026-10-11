@@ -83,6 +83,24 @@ def test_primary_geometry_after_first_charge_stays_equal_or_safe_new_fallback_is
             state['charge_count'] = max(1, state.get('charge_count', 0))
     reference_assign()(before)
     c.HeadquartersControl.assign_idle_robots(after)
+    if event['diagnostic_inputs']['rally_charge_requested']:
+        # This original pending return is already at contact. Its complete
+        # body reservation changes admission and provisional price choices;
+        # the old scheduling result is not a geometry-equivalence reference.
+        protected=c.HeadquartersControl.exploration_return_reservations(after)
+        assert protected
+        from p2c_outbound_routes import audit_exploration_returns,audit_outbound
+        from geometry_msgs.msg import PoseStamped
+        for name,goal in new_goals:
+            assert c.HeadquartersControl.exploration_return_reservations(after,name,after.goal_routes[name]) is not None
+            required=c.HeadquartersControl.exploration_required_energy(after,name,goal.path_distance_m,(goal.x,goal.y))
+            assert required is not None and after.battery_states[name]['energy']>required
+            pose=PoseStamped();pose.pose.position.x,pose.pose.position.y=goal.navigation_x,goal.navigation_y
+            yaw=goal.navigation_yaw or 0.;pose.pose.orientation.z=c.math.sin(yaw/2.);pose.pose.orientation.w=c.math.cos(yaw/2.)
+            assert c.HeadquartersControl.record_navigation_decision(after,name,'exploration',pose,None,after.goal_routes[name])
+            assert audit_exploration_returns(private[-1],True) is not None
+            assert audit_outbound(private[-1])>1
+        return
     for choice in after.exploration_travel_choices.values():
         assert choice.get('camera_first_search') is None
         choice.pop('camera_first_search', None)

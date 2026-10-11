@@ -3,7 +3,7 @@
   "purpose": "Independent P2C.1 development and new source-frozen integration; accepted P3C.5 evidence remains historical.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-11 08:20:31 UTC",
+  "predeclared_at_utc": "2026-10-11 09:44:49 UTC",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -361,7 +361,8 @@
     "20261011_p2c_v82_failed_development.json",
     "20261011_p2c_v83_failed_development.json",
     "20261011_p2c_v84_failed_development.json",
-    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261011_p2c_v85_failed_development.json"
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261011_p2c_v85_failed_development.json",
+    "20261011_p2c_v86_failed_development.json"
   ],
   "return_escape_algorithm": "bounded_raw_known_free_escape_to_contact_connected_component",
   "opportunity_charge_rules": [
@@ -514,7 +515,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "f25d3fd14dd291026c726cdf99ea201390e51f0f",
+  "candidate_parent_commit": "1948d5a4c3c22a3dafbc6f9fdbf8ef6bbd300101",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -1134,5 +1135,16 @@
     "evidence": "Original v85 failed maps and exact old pure function retained; independent scalar reader reconstructs barrier, endpoint, parallax, rank and source binding. Controlled full-constructor actual DDS/Future proof is not physical navigation or native task credit.",
     "preserved": "All90central methods,106other pure functions,native/SLAM/Nav2/physics,topics/QoS/timers/two workers,300s/5s,source TTLs,allcases/stimuli unchanged. Every future baseline uses the same freeze.",
     "component_report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261011_p2c_route_disagreement_view_components.json"
+  },
+  "exploration_parallel_return_reservations": {
+    "scope": "Full object EXPLORE/FOUND_UNCONFIRMED only, with pending charge requests or actual RETURNING; mapping-only and target reacquisition retain the original pause.",
+    "geometry": "Reuse original complete qualified contact-return reservations for every pending/local return and current charging body; preserve original1.8m route separation,.35m static paths,.6m bodies,.45m endpoints and original bounded start escape. Missing/unknown/local map geometry remains unavailable.",
+    "sources": "All participating delivered pose/frame2s and map/battery5s, original fused map and pending request epochs; current source deadlines at generation, publication, action acceptance and each original execution check. No callback/header/source renewal.",
+    "lifecycle": "Only independent full-budget ordinary prefixes may proceed. Fresh return conflicts, missing/stale/future body inputs or changed roles cancel pending/accepted ordinary goals through original serialized Futures. Existing return-clearing cycle exceptions and native battery priority remain.",
+    "credit": "Original ordinary SUCCESS alone increments work; no policy charge/native credit is created. Native distance/time accounting, complete go/contact-return budgets, charging fairness and original60s navigation/no-progress boundaries remain.",
+    "evidence": "Existing private navigation witnesses retain complete protected routes/all original delivered maps/body/model epochs. Independent scalar reservation reader plus original raw CDR/native battery publication binding; original full trip/energy/route readers remain mandatory.",
+    "preserved": "All original cases/worlds/targets/seeds/stimuli,300s task/5s native hold/2-5-60s TTL, SLAM/Nav2/native battery/physics, topics/QoS/timers/two executor workers and Future serialization.",
+    "limits": "Original v86 four tasks remain aggregateFAIL. Conditional original charging maps with explicit synthetic RETURNING and empty camera history show feasible separated paths only; not an earlier full-controller choice or mission/timing counterfactual. Native truth is offline diagnosis only.",
+    "component_report": "20261011_p2c_parallel_exploration_returns_components.json"
   }
 }

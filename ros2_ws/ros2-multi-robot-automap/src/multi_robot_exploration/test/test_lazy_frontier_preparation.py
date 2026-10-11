@@ -13,10 +13,16 @@ def visual_snapshot_node():
     node.robot_maps.setdefault('tb1', None)
     node.robot_states = {name: 'idle' for name in node.robot_states}
     node.enable_rally = True; node.initial_search_next = {e['robot']: True}
-    node.rally_charge_requested = {'tb1': e['event_time']}
+    # This computation-only snapshot contains no tb1 local map. Missing map
+    # excludes it from admission; a fictitious pending safety return must not
+    # supply permission to ignore its missing return authority.
+    node.rally_charge_requested = {}
     node.initial_search_visits = {i: v for i, v in enumerate(e['travel_preference']['initial_search_visits'])}
     node.initial_search_views = {i: v for i, v in enumerate(e['travel_preference']['initial_search_views'])}
-    node.successful_exploration_legs = {e['robot']: 1}; node.target_search_visits = []
+    # Explicit visual selection already supplies the camera pool. Zero prior
+    # work keeps this calculation outside opportunistic charging, while the
+    # original map, pose, energy, gain and yaw remain the reference values.
+    node.successful_exploration_legs = {e['robot']: 0}; node.target_search_visits = []
     node.exploration_travel_choices = {}; node.frontier_charge_lookahead = None
     return node, sent, e
 

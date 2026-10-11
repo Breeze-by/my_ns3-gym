@@ -139,10 +139,74 @@ def bind_original_maps(events, capture):
     return len(wanted)
 
 
-def outbound_route_audit(path, required=False, capture=None):
+def audit_exploration_returns(event, required=False):
+    """Rebuild ordinary traffic's complete safety-return reservations."""
+    if (event['kind'] not in ('exploration', 'initial_visual_search') or not event.get('battery_states')
+            or event.get('task_phase') not in ('EXPLORE', 'FOUND_UNCONFIRMED')):
+        return None
+    if required:
+        assert 'exploration_pending_charge_requests' in event and 'exploration_safety_returns' in event
+    states = event['battery_states']
+    pending = event.get('exploration_pending_charge_requests', {})
+    busy = bool(pending) or any(state['mode'] == 'RETURNING' for state in states.values())
+    saved = event.get('exploration_safety_returns')
+    if not busy:
+        assert saved is None
+        return None
+    assert saved is not None, 'ordinary traffic lacks safety-return reservations'
+    assert event['task_phase'] in ('EXPLORE', 'FOUND_UNCONFIRMED') and saved['clearance_m'] == 1.8
+    assert states == saved['battery_states'] and event['robot_positions'] == saved['robot_positions']
+    modes = saved['battery_modes']
+    assert modes == {name: state['mode'] for name, state in states.items()}
+    now, inputs = event['event_time'], saved['inputs']
+    assert 0 <= now-saved['evaluated_at_sec'] <= 2.
+    for name, stamp in pending.items():
+        assert name in states and modes[name] != 'FAILED' and math.isfinite(stamp) and stamp <= now
+    active = {name for name, mode in modes.items() if mode != 'FAILED'}
+    for name in active:
+        assert all(name+'/'+kind in inputs and name+'/'+kind in event['inputs']
+                   for kind in ('pose_state', 'frame_state', 'map_snapshot', 'battery_state'))
+        assert states[name]['stamp_sec'] == inputs[name+'/battery_state']['source_time']
+    for key, sample in inputs.items():
+        limit = 2. if key.endswith(('/pose_state', '/frame_state')) else 5.
+        assert math.isfinite(sample['source_time']) and 0 < sample['ttl_sec'] <= limit
+        assert 0 <= now-sample['source_time'] <= sample['ttl_sec']
+        assert key in event['inputs'] and event['inputs'][key]['source_time'] == sample['source_time']
+    from multi_robot_exploration import control
+    planning, source = saved['planning_map'], saved['source_map']
+    assert planning['source_time'] == source['source_time'] == inputs['headquarters/fused_map_snapshot']['source_time']
+    assert planning['resolution'] == source['resolution'] and planning['origin'] == source['origin']
+    positions = saved['robot_positions']
+    grid, cells = control.planning_grid_without_self_returns(decode(source), planning['resolution'], planning['origin'],
+        {name: point for name, point in positions.items() if modes[name] in ('ACTIVE', 'UNKNOWN')})
+    assert np.array_equal(grid, decode(planning))
+    assert {name: list(cell) for name, cell in cells.items()} == saved['self_return_cells']
+    maps = {}
+    for name, geometry in saved['return_maps'].items():
+        assert geometry['source_time'] == inputs[name+'/map_snapshot']['source_time']
+        maps[name] = dict(data=decode(geometry), resolution=geometry['resolution'], origin=geometry['origin'])
+    assert active <= maps.keys()
+    rebuilt = control.rally_return_reservations(grid, planning['resolution'], planning['origin'], positions,
+        states, modes, set(pending), return_maps=maps)
+    assert rebuilt is not None and rebuilt and set(rebuilt) == set(saved['protected_routes'])
+    assert all(np.array_equal(route, saved['protected_routes'][name]) for name, route in rebuilt.items())
+    name = event['robot']
+    assert modes[name] == 'ACTIVE' and name not in rebuilt
+    original = saved['admitted_route']
+    assert original and np.array_equal(original, event['outbound_map_route']['route'][1:])
+    position = positions[name]
+    nearest = min(range(len(original)), key=lambda index: math.dist(position, original[index]))
+    remaining = [position, *original[nearest if math.dist(position, original[nearest]) <= .35 else 0:]]
+    assert np.array_equal(remaining, saved['route'])
+    assert all(math.dist(point, other) >= 1.8 for point in remaining
+               for reserved in rebuilt.values() for other in reserved), 'ordinary route enters safety-return reservation'
+    return saved
+
+
+def outbound_route_audit(path, required=False, capture=None, require_return_reservations=False, native_capture=None):
     if not required:
         return None
-    events = [];vetoes = 0;vertices = 0
+    events = [];vetoes = 0;vertices = 0;protected_events = []
     for line in path.open():
         event = json.loads(line)
         if event.get('event') == 'coordinator_navigation_map_veto':
@@ -151,8 +215,33 @@ def outbound_route_audit(path, required=False, capture=None):
         if event.get('event') != 'coordinator_navigation_decision':
             continue
         vertices += audit_outbound(event)
+        saved = audit_exploration_returns(event, require_return_reservations)
+        if saved is not None:
+            protected_events.append(event)
         events.append(event)
     sources = bind_original_maps(events, capture) if capture is not None else None
+    return_sources = body_sources = native_sources = 0
+    if protected_events:
+        assert capture is not None and native_capture is not None
+        bindings = [dict(robot=name, outbound_map_route=dict(local_map=geometry, planning_map=saved['planning_map']),
+            planning_map_self_return_cells=saved['self_return_cells'])
+            for event in protected_events for saved in (event['exploration_safety_returns'],)
+            for name, geometry in saved['return_maps'].items()]
+        return_sources = bind_original_maps(bindings, capture)
+        from p2c_preparation_approach import bind_original_positions
+        body_sources = bind_original_positions([dict(inputs=event['inputs'],
+            rally_preparation=event['exploration_safety_returns']) for event in protected_events], capture, .2)
+        originals = {}
+        for line in native_capture.open():
+            row = json.loads(line)
+            if row['topic'].endswith('/battery_state'):
+                originals.setdefault(row['topic'].split('/')[1], []).append(row['data'])
+        for event in protected_events:
+            for name, state in event['exploration_safety_returns']['battery_states'].items():
+                assert state in originals.get(name, []), 'missing exact native safety-return battery source'
+                native_sources += 1
     return dict(status='PASS', decisions=len(events), vertices=vertices, map_vetoes=vetoes,
                 original_source_maps=sources,
+                return_reservations_declared=require_return_reservations, independent_return_decisions=len(protected_events),
+                return_source_maps=return_sources, return_pose_frame_sources=body_sources, return_native_battery_sources=native_sources,
                 scope='Dispatch-time planned routes and original map/source binding; no claim that Nav2 follows every vertex or that execution remains connected')

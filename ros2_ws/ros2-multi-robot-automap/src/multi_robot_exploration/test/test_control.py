@@ -1417,6 +1417,7 @@ def test_returning_robot_drains_other_active_exploration():
         goal_handles={"tb1": None, "tb2": handle},
         cancel_requested={"tb1": False, "tb2": False},
         battery_preempted={"tb1": False, "tb2": False},
+        enable_rally=False, goal_routes={"tb1": (), "tb2": ()},
         rally_goal_handles={"tb1": None, "tb2": None},
         task_state="EXPLORE", survey_robot=None, now=lambda: 1.0,
     )
@@ -1442,6 +1443,7 @@ def test_pending_explorer_is_canceled_when_another_robot_starts_returning():
         goal_known_count={}, map_known_count=1, cancel_requested={},
         robot_positions={"tb2": (1.0, 1.0)}, battery_preempted={},
         battery_modes={"tb1": "RETURNING", "tb2": "ACTIVE"}, now=lambda: 2.0,
+        enable_rally=False, goal_routes={"tb2": ()},
     )
     control.HeadquartersControl.goal_response_callback(
         node, "tb2", SimpleNamespace(result=lambda: handle),
@@ -3056,6 +3058,7 @@ def test_fresh_confirmation_drains_pending_and_accepted_frontier_search_once():
         goal_last_position={}, goal_known_count={}, map_known_count=1,
         robot_positions={"tb1": (1., 1.)}, battery_preempted={},
         battery_modes={"tb1": "ACTIVE"}, now=lambda: 101.,
+        enable_rally=False, goal_routes={"tb1": ()},
     )
     assert control.HeadquartersControl.stop_target_search(node)
     control.HeadquartersControl.goal_response_callback(node, "tb1", SimpleNamespace(result=lambda: handle))
