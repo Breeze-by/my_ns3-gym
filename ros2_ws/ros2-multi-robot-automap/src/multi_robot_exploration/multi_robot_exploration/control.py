@@ -3329,6 +3329,11 @@ class HeadquartersControl(Node):
         self.clock_callback_group = MutuallyExclusiveCallbackGroup()
         super().__init__("headquarters_control")
         initialize_action_callbacks(self)
+        self.received_snapshot_lock = threading.Lock()
+        self.received_snapshot_callbacks = {}
+        self.received_snapshot_guard = self.create_guard_condition(
+            self.drain_received_snapshots
+        )
         self.num_robots = self.declare_parameter("robot_count", 2).value
         self.return_probe_paused = self.declare_parameter(
             "enable_return_probe_pause", False
@@ -3529,7 +3534,7 @@ class HeadquartersControl(Node):
 
         # Delivered maps/poses are replaceable snapshots. Do not replay older
         # snapshots after a planning callback; keep their original timestamps.
-        self.map_sub = self.create_subscription(
+        self.map_sub = self.create_snapshot_subscription(
             OccupancyGrid, "/merge_map", self.map_callback, 1
         )
         self.robot_positions = {}
@@ -3610,7 +3615,7 @@ class HeadquartersControl(Node):
                 f"/gateway/{robot_name}/navigate_to_pose",
             )
             self.robot_subscriptions.append(
-                self.create_subscription(
+                self.create_snapshot_subscription(
                     Odometry,
                     f"/gateway/received/{robot_name}/odom",
                     lambda msg, name=robot_name: self.robot_odom_callback(
@@ -3620,7 +3625,7 @@ class HeadquartersControl(Node):
                 )
             )
             self.robot_subscriptions.append(
-                self.create_subscription(
+                self.create_snapshot_subscription(
                     TFMessage,
                     f"/gateway/received/{robot_name}/tf",
                     lambda msg, name=robot_name: self.robot_tf_callback(
@@ -3630,7 +3635,7 @@ class HeadquartersControl(Node):
                 )
             )
             self.robot_subscriptions.append(
-                self.create_subscription(
+                self.create_snapshot_subscription(
                     OccupancyGrid,
                     f"/gateway/received/{robot_name}/map",
                     lambda msg, name=robot_name: self.robot_map_callback(
@@ -3640,7 +3645,7 @@ class HeadquartersControl(Node):
                 )
             )
             self.robot_subscriptions.append(
-                self.create_subscription(
+                self.create_snapshot_subscription(
                     String,
                     f"/gateway/received/{robot_name}/battery_state",
                     lambda msg, name=robot_name: self.battery_state_callback(
@@ -5196,6 +5201,7 @@ class HeadquartersControl(Node):
                 prepared.pop(name, None)
 
     def update_mission(self):
+        HeadquartersControl.drain_received_snapshots(self)
         if getattr(self, "return_probe_paused", False):
             return
         if self.task_state != 'FOUND':
@@ -7249,10 +7255,44 @@ class HeadquartersControl(Node):
                 f"{robot_name} rally goal failed with status {status}."
             )
 
+    def create_snapshot_subscription(self, msg_type, topic, callback, qos_profile):
+        """Receive replaceable snapshots without mutating planning state."""
+        def received(message):
+            if self.shutdown_requested:
+                return
+            with self.received_snapshot_lock:
+                self.received_snapshot_callbacks[topic] = (callback, message)
+            try:
+                self.received_snapshot_guard.trigger()
+            except Exception:
+                if not self.shutdown_requested and self.context.ok():
+                    raise
+
+        # Sharing the light clock group preserves the existing two workers.
+        # The guard and all real state callbacks use the default serial group.
+        return self.create_subscription(
+            msg_type, topic, received, qos_profile,
+            callback_group=self.clock_callback_group,
+        )
+
+    def drain_received_snapshots(self):
+        lock = getattr(self, 'received_snapshot_lock', None)
+        if lock is None:
+            return
+        with lock:
+            pending = self.received_snapshot_callbacks
+            self.received_snapshot_callbacks = {}
+        if self.shutdown_requested:
+            return
+        # One bounded batch. New receipts wait for another guard/entry; they
+        # cannot change a route or renew its sources during computation.
+        for callback, message in pending.values():
+            callback(message)
+
     def create_subscription(self, msg_type, topic, callback, qos_profile, **kwargs):
         # TimeSource creates its subscription while Node.__init__ is running.
-        # Only the existing clock moves to another group; all state and action
-        # callbacks remain serialized in the original default group.
+        # Snapshot subscriptions explicitly share this light ingress group;
+        # their real state work and action callbacks use the default group.
         if msg_type is Clock and topic == '/clock' and kwargs.get('callback_group') is None:
             kwargs['callback_group'] = self.clock_callback_group
         return super().create_subscription(msg_type, topic, callback, qos_profile, **kwargs)
@@ -7552,6 +7592,7 @@ class HeadquartersControl(Node):
         return preference
 
     def assign_idle_robots(self):
+        HeadquartersControl.drain_received_snapshots(self)
         if getattr(self, "return_probe_paused", False):
             return
         search = (
@@ -8706,6 +8747,7 @@ class HeadquartersControl(Node):
         self.check_exploration_completion()
 
     def cancel_stalled_goals(self):
+        HeadquartersControl.drain_received_snapshots(self)
         if (self.task_state not in ("EXPLORE", "FOUND_UNCONFIRMED")
                 and not getattr(self, "target_search_active", False)):
             return

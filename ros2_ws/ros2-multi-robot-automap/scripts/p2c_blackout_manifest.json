@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-11T05:36:50Z",
+  "predeclared_at_utc": "2026-10-11T06:52:17.655342+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "25f45dc9778c3227c24c77ee0a2c6110a611f575",
+  "candidate_parent_commit": "84d3096d22a0a62917dd538ab01e99546dfebf35",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -266,7 +266,8 @@
     "20261011_p2c_v80_failed_development.json",
     "20261011_p2c_v81_failed_development.json",
     "20261011_p2c_v82_failed_development.json",
-    "20261011_p2c_v83_failed_development.json"
+    "20261011_p2c_v83_failed_development.json",
+    "20261011_p2c_v84_failed_development.json"
   ],
   "coordinator_live_clock": {
     "executor": "Two workers; only the existing /clock subscription moves to an independent mutually exclusive group. Original state/action callbacks remain serialized.",
@@ -860,5 +861,12 @@
     "unchanged": "No new publisher/subscription/application flow, controller/native battery/SLAM/Nav2/physics/TTL or task command change. Legacy observer event mode keeps original filtering.",
     "binding": "Waiting requires the exact original native published dictionary and its unchanged stamp_sec equal to the declared battery source epoch. Nearest mode events or reconstructed/fabricated messages cannot replace an absent original source.",
     "component_report": "20261011_p2c_native_battery_retention_components.json"
+  },
+  "private_delivered_snapshot_ingress": {
+    "component_report": "20261011_p2c_delivered_snapshot_ingress_components.json",
+    "scope": "Existing fused map and per-robot gateway-delivered pose/TF/map/battery subscriptions only. Lightweight receive wrappers use the existing clock group and store at most one complete typed message per declared topic; a private default-group guard and the three existing timer-entry methods apply one bounded batch through original callbacks. Two executor workers, all publishers/subscriptions/QoS/timer periods/application flows unchanged.",
+    "source_authority": "Message objects and original source headers remain intact. Receipt is not source renewal. In-progress route/energy lease objects are never refreshed or reused by the inbox; expired and future inputs remain rejected. Actual state and action Future mutations remain in the original serial group.",
+    "limits": "New source availability must be shared by future baselines. Controlled full constructor/DDS/Future tests are scheduling components, not physical/task completion, native credit or a task-level causal counterfactual. Original v84 lab EXPLORE300 timeout and all four originals remain unchanged.",
+    "original_constraints": "190 protected sources, native battery and return, SLAM/Nav2/physics, complete route/body/energy admission, original2/5/60 source TTLs,10s geometry/30s unavailable-route timers,300s task and5s native hold remain unchanged."
   }
 }
