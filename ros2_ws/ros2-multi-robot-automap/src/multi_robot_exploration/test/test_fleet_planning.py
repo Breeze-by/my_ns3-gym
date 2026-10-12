@@ -2,11 +2,28 @@ import math
 from dataclasses import replace
 
 import numpy as np
+from types import SimpleNamespace
 
 from multi_robot_exploration import control as c
 from multi_robot_exploration.fleet_planning import (
-    FleetSnapshot, MotionProposal, complete_budget, joint_motions, plan_fleet,
+    FleetSnapshot, MotionProposal, complete_budget, joint_motions, plan_fleet, plan_exploration,
 )
+
+
+def test_generator_upper_bound_order_cannot_hide_better_actual_information_goal(monkeypatch):
+    grid=c.immutable_grid_snapshot(np.zeros((80,80),dtype=np.int16),(80,80))
+    snapshot=FleetSnapshot('EXPLORE',10.,grid,.1,(0.,0.),{'tb1':(4.25,4.25)},
+        {},{}, {'headquarters/fused_map_snapshot':10.,'tb1/pose_state':10.,
+        'tb1/frame_state':10.},('tb1',))
+    # Eight highly optimistic distant generator rows precede a genuinely
+    # useful nearby camera point. All gains and paths below are real geometry.
+    rows=[(10000.,'tb1',i,SimpleNamespace(x=.55,y=.55+.1*i)) for i in range(8)]
+    rows.append((1.,'tb1',8,SimpleNamespace(x=2.55,y=4.25)))
+    monkeypatch.setattr(c,'robot_candidate_assignments',lambda *a,**k:(rows,{}))
+    monkeypatch.setattr(c,'known_space_search_candidates',lambda *a,**k:[])
+    proposal=plan_exploration(snapshot,{}, {})
+    assert len(proposal.motions)==1
+    assert math.dist((proposal.motions[0].pose.x,proposal.motions[0].pose.y),(2.55,4.25))<1e-8
 
 
 def world(energy=40., obstacle=False):

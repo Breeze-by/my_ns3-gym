@@ -9489,3 +9489,12 @@ v2_components1 20PASS8.99s，加入独立观察源后 components2 21PASS8.04s，
 v2_forced_gate和v2_development_gate严格FAIL：两原NativeCOMPLETE的global完整路径端点不等永久目标。原forced三条差异.01123185276m，原required28.2401417/22.1337630/19.9616804，按原完整路末点重算28.2151820/22.1088034/19.9367207；条件价格比较非因果/硬件保证，端点不一致FAIL不回填。lab私有proposal源pose2.199s过2s，清道反复提案无实际sent；条件直接构造选错末proposal导致charge_intent None TypeError，v2_lab_clearance_conditions.log保留排除，不能称原动作回放。
 
 原四owned全部闭合后v3统一完整路径末点连接永久目标、实际短停点返回独立核价并取max，原同一个budget_epoch/完整价格/源龄/门槛保持；静态名义全去程字段独立按图内容+起点cell，当前实际前缀重算，身体派发字段仍全position epoch；独立reader源码SHA在canonical门禁绑定。23定向（两个新一致性/缓存反例+原实际DDS/Futures/native原件）PASS8.68s，v3_source190保护/6授权/54协议PASS，F821/F822/F823/E999和diff-checkPASS；v3_full完整功能1602PASS158.15s，四包build4.60sPASS。只有一个累计技术报告，无候选大附件。
+
+
+### global v3 四原与 v4 一致评分候选池
+
+8834ac16aa21761b8f1726bb1a873aeb49893800 clean pushed，20261012_p2c_global_v3/domain204/port11573原四格全部owned关闭后才改源。rooms原生COMPLETE200s/检测45.9，全单格及四格中rooms严格PASS；forced检测284.3后RALLY300timeout、lab未检测EXPLORE300timeout、corr检测88.2后RALLY300timeout。四格整体严格FAIL、17/物理/917未调用。四零contact/exhaustion/FAILED，minE9.7330/11.9353/24.3796/24.6858，owner/observer0，四完整CDR129633575bytes原位保留，失败不回填。v3房间完整审计证明新的精确名义终点和实际停点预算、源图/native/原CDR、动作代次/闭合在真实任务被核验；不外推其他格。
+
+搜索生成器源码揭示frontier旧utility和known-camera旧utility的分母不同，新控制器混排且首次8funded后提前停、再按共同actual gain计算，因此后方实际高价值候选会被压掉；远端bound也不约束短航段新端点收益。v4实现所有不同当前合格短航段的几何池，在实际端点对interest|unknown矩形计数取安全信息上界，统一实际完整航段成本和原近期访问偏好，复用原lazy_priority_candidates逐步精化并取得前8个已证明实际funded分数，然后原joint信息集合边际收益决策。补能/完整去返预算/机体预约/源龄/Native判据保持，未使用地图目标真值或case特例。
+
+原v4_components1错调用helper不存在的lazy_ranked_candidates，3FAIL20PASS15.17s（actualDDS检验暴露，原输出保留）；修为确切原函数+关键词参数，几何池逐项保存前沿朝向避免闭包取末个候选。新增开放已知图排序反例：八遥远宽松旧上界不能吞掉第九近端真实较优目标，路径/信息/相机视线均实算，无物理/native信用。v4_components2 24PASS8.49s，v4_source190保护/6授权/54协议PASS；四包build4.90sPASS，核心F821/F822/F823/E999/diffcheckPASS，v4_full完整功能1603PASS159.62s。只有一个累计技术报告。

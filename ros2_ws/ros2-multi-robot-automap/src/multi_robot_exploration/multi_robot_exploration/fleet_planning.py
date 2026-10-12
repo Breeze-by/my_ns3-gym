@@ -318,6 +318,7 @@ def plan_exploration(snapshot, caches, protected):
     frontier = geometry.prepare_frontier_data(snapshot.grid, snapshot.resolution, defer_gain=True)
     camera_interest = geometry.camera_search_interest(
         snapshot.grid, snapshot.resolution, snapshot.origin, snapshot.views)
+    combined_interest = camera_interest | (snapshot.grid < 0)
     reservations = (*snapshot.live_routes.values(), *protected.values())
     for robot in snapshot.available:
         state = snapshot.batteries.get(robot)
@@ -336,11 +337,13 @@ def plan_exploration(snapshot, caches, protected):
             snapshot.positions[robot], (), snapshot.history, bodies,
             gain_cache=search_cache, face_interest=True,
             camera_views=snapshot.views, defer_gain=True))
-        candidates, seen = [], set()
+        candidates, seen, geometric = [], set(), []
         route_cache = {}
-        # Upper bounds only order evaluation. Every retained endpoint has its
-        # actual gain, complete current-body route and qualified return priced.
-        for _, _, _, assignment in sorted(rows, key=lambda row: (-row[0], row[3].x, row[3].y)):
+        # Realize the actual dispatched endpoint before comparing bounds.
+        # Frontier and known-camera generators use different old score units;
+        # neither their order nor their unexecuted distant endpoint is an
+        # upper bound on the new combined short-leg objective.
+        for _, _, _, assignment in rows:
             pose, leg = geometry.plan_rally_leg(
                 geometry.RallyPose(assignment.x, assignment.y, 0.), grid,
                 snapshot.resolution, snapshot.origin, snapshot.positions[robot],
@@ -358,6 +361,19 @@ def plan_exploration(snapshot, caches, protected):
                 continue
             if any(geometry.routes_conflict(full, reserved) for reserved in reservations):
                 continue
+            radius=math.ceil(geometry.INFORMATION_RADIUS_M/snapshot.resolution)+1
+            r,c=cell
+            count=int(np.count_nonzero(combined_interest[
+                max(0,r-radius):min(snapshot.grid.shape[0],r+radius+1),
+                max(0,c-radius):min(snapshot.grid.shape[1],c+radius+1)]))
+            reuse=geometry.target_reuse_penalty((pose.x,pose.y),snapshot.history)
+            bound=geometry.exploration_utility(count,0,route_length(full))*reuse
+            if bound>0:
+                geometric.append((bound,pose,full,cell,reuse,
+                    math.atan2(assignment.y-pose.y,assignment.x-pose.x)))
+
+        def refine(candidate):
+            _,pose,full,cell,reuse,frontier_yaw=candidate
             mapping = frozenset(map(int, geometry.visible_unknown_gain(
                 snapshot.grid, cell, geometry.INFORMATION_RADIUS_M / snapshot.resolution,
                 return_cells=True)))
@@ -366,24 +382,33 @@ def plan_exploration(snapshot, caches, protected):
                                        camera_interest)
             information = mapping | visual
             if not information:
-                continue
+                return None
             if not visual:
-                yaw = math.atan2(assignment.y - pose.y, assignment.x - pose.x)
+                yaw = frontier_yaw
             pose = geometry.RallyPose(pose.x, pose.y, yaw)
             required = complete_budget(snapshot, robot, full, (pose.x, pose.y), caches[robot])
             if required is None:
                 blocked[robot] = "no_qualified_complete_return"
-                continue
-            utility = geometry.exploration_utility(len(information), 0, route_length(full))
+                return None
+            utility = geometry.exploration_utility(len(information), 0, route_length(full))*reuse
             choice = MotionProposal(robot, "exploration", pose, full, utility,
                                     required, information)
             if state is None or float(state["energy"]) > required:
-                candidates.append(choice)
+                return choice
             elif required < float(state["capacity"]) * float(state["charge_target_fraction"]):
                 contact = contact_route(snapshot, robot, snapshot.positions[robot], caches[robot])
                 charges.append(ChargeProposal(robot, required, contact["route"], "unfunded_information_task",
                                               (pose.x, pose.y)))
-            if len(candidates) >= 8:
+            return None
+
+        # Reuse the reviewed lazy ranking algorithm. Stop only after it has
+        # proved each of the retained eight actual funded scores against all
+        # remaining bounds, not after eight feasible rows in generator order.
+        for choice in geometry.lazy_priority_candidates(geometric,evaluate=refine,
+                upper_bound=lambda item:item.utility if isinstance(item,MotionProposal) else item[0],
+                priority=lambda item:item.utility):
+            candidates.append(choice)
+            if len(candidates)==8:
                 break
         candidates.sort(key=lambda choice: (-choice.utility, choice.pose.x, choice.pose.y))
         pools[robot] = candidates[:8]
