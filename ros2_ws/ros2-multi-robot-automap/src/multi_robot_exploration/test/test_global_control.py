@@ -16,7 +16,9 @@ from std_msgs.msg import String
 from tf2_msgs.msg import TFMessage
 
 from multi_robot_exploration import control as c
-from multi_robot_exploration.fleet_planning import MotionProposal, ChargeProposal, FleetProposal
+from multi_robot_exploration.fleet_planning import (
+    MotionProposal, ChargeProposal, FleetProposal, complete_budget, plan_fleet,
+)
 from multi_robot_exploration.global_control import GlobalHeadquartersControl
 
 
@@ -123,6 +125,58 @@ def delivered_state(node, at, position=(1.25, 1.25), yaw=0., energy=40., obstacl
     node.robot_odom_callback(odom, 'tb1')
     node.battery_state_callback(String(data=json.dumps({**node.battery_states['tb1'],
         'stamp_sec':at, 'energy':energy})), 'tb1')
+
+
+def test_information_prerequisite_returns_charges_and_resumes_without_ordinary_credit(node):
+    local = OccupancyGrid()
+    local.header.stamp.sec = 10
+    local.info.width = local.info.height = 80
+    local.info.resolution = .1
+    local.info.origin.orientation.w = 1.
+    local.data = [100 if column == 40 else 0 for row in range(80) for column in range(80)]
+    node.robot_map_callback(local,'tb1')
+    node.task_state = 'FOUND'
+    node.target,node.target_received_source_time = (7.25,4.25),10.
+    snapshot = node._snapshot()
+    task = plan_fleet(snapshot).motions[0]
+    reserve = complete_budget(snapshot,'tb1',(snapshot.positions['tb1'],),
+                              snapshot.positions['tb1'],{})
+    node.now = lambda:10.1
+    node.battery_state_callback(String(data=json.dumps({**node.battery_states['tb1'],
+        'stamp_sec':10.1,'energy':(reserve+task.required_energy)/2.})), 'tb1')
+    proposal = plan_fleet(node._snapshot())
+    assert len(proposal.charges) == 1 and not proposal.motions
+    node.global_charge_intent = proposal.charges[0]
+    node.global_charge_context = proposal.snapshot.context
+    node.charge_request_publishers['tb1'] = Mock()
+    node._prepare_charge(node._snapshot())
+    assert node.charge_request_publishers['tb1'].publish.call_count == 1
+    assert not node.navigation_tasks and not node.successful_exploration_legs
+    for at,mode,energy in [(10.2,'RETURNING',15.),(10.3,'CHARGING',15.),(10.4,'ACTIVE',80.)]:
+        node.now = lambda at=at:at
+        node.battery_state_callback(String(data=json.dumps({**node.battery_states['tb1'],
+            'stamp_sec':at,'energy':energy,'mode':mode})), 'tb1')
+        if mode != 'ACTIVE':
+            assert node.global_charge_intent is not None
+    assert node.global_charge_intent is None and not node.rally_charge_requested
+    assert node.global_charge_requested_at is None and not node.successful_exploration_legs
+    snapshot = node._snapshot()
+    motion = plan_fleet(snapshot).motions[0]
+    assert motion.kind == 'target_information_survey'
+    actual = node._current_motion(snapshot,motion,{})
+    assert actual is not None
+    pending = Future()
+    client = Mock()
+    client.server_is_ready.return_value = True
+    client.send_goal_async.return_value = pending
+    node.robot_nav_clients['tb1'] = client
+    assert node._send_motion(snapshot,actual)
+    _,result = accept(node,pending)
+    result.set_result(SimpleNamespace(status=GoalStatus.STATUS_SUCCEEDED))
+    node.drain_action_done_callbacks()
+    assert not node.navigation_tasks and not node.successful_exploration_legs
+    assert node.global_survey_attempts == 1 and node.task_state == 'FOUND'
+    assert node.robot_maps['tb1']['data'][:,40].min() == 100
 
 
 def test_physical_odom_progress_survives_zero_action_feedback(node):

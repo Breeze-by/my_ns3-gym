@@ -9575,3 +9575,18 @@ v9_components1旧45PASS26.64s；加入多航段SUCCESS→驻留→真实短前�
 manifest更新父a435d45/UTC及refuge_lifecycle说明，原cases/物理刺激/条件保持；新freeze仍从四开发起步，P2C.1未完成，无P4/ns3/WiFi/RL。
 
 v9_full最终完整功能1626PASS167.98s，含旧arrived标志不能盖过真实pending Future与同步模拟时钟的独立账本反例；四包v9_build9.13sPASS。v9_source190保护/6授权/54协议/native常量/原8+新2/native2/shared1 Future契约PASS，六核心/测试/独立reader F821/F822/F823/E999 PASS，git diff-check PASS。v9_declaration validate-only PASS；两manifest与a435d45仅parent/predeclared_at/global_algorithm变，原cases和其他字段一致。新消息只在既有私有consumed诊断流，无新增AP输入/无线流，原native模型/世界/SLAM/Nav2不变。下一步clean pushed v9原四开发；任何旧FAIL和新夹具FAIL保留、没有跨版拼PASS。
+
+
+### global v9 原四格整体FAIL与 v10 信息前提资金闭合
+
+61e5dd7ec1c8dbe6bec7554b6a0372318717525e clean pushed，20261012_p2c_global_v9/domain204/port11573原四格串行全部owned关闭。forced COMPLETE211.7/检测147.2/集合151.6/charge2，lab FOUND300.2timeout/检测145.2/无RALLY/charge1，rooms COMPLETE219.7/90.6/92.9/charge1，corr COMPLETE233.9/85.6/90.0/charge1。最低E7.613833026817384/11.799724396435884/26.01489456586061/30.3671350752936；四零contact/exhaustion/FAILED/任务期infra，runner/observer0。完整CDR116359005bytes原位保留。v9_forced_gate单PASS非完整scope，v9_development_gate完整FAIL仅lab任务未成功，其他三完整严格PASS；原FAIL不回填，17正式/两物理/917未调用。
+
+v9_lab_information_funding_conditions原末5s实际交付CDR、2430.582s手工FOUND/空final表：tb1 E20.99246051623196、自身完整返充17.459425407917323、勘察25.462115040757265、原充后capacity*fraction80；tb2 E15.848173123999116、返充13.874534818255736。旧实际planner零motions/charges、no_funded_target_survey；条件只充后电量产生tb1勘察(-3.636060692364742,3.284107431803026)。非历史回调/动作时序或任务因果重放，无native信用。v10同原输入构造提出tb1/tb2补能，仍零真实执行信用，原日志均保留。
+
+v10仅fleet_planning统一探索/目标信息勘察信息任务资金决策：无owned/live/charge_pending、ACTIVE、任务预算<原充后容量，contact完整且当前完整返充可付才提ChargeProposal；原sender重建实际任务/返回与body/1.8/当前source、保护last observer和串行原生补能。信息勘察以已可付动作优先，否则每机保留最低所需的补能前提；不擦障碍、不改次数/计数、native/300s/5s/TTL。
+
+v10_components1旧47PASS28.35s；新增8pure真实几何条件和1完整构造补能状态→勘察→匹配Action Future/零ordinary功测试后components2=56PASS40.22s。7拒绝反例：unaffordable return/inactive/pending/owned/capacity不足/stale/future；原墙不擦除、补能不计功。夹具为模拟动作和输入状态，不称Gazebo/native物理任务。下一步完整功能/build/source/static/声明冻结与新四原，累积报告仅20261012_p2c1_global_mission.md。
+
+v9四原ledger中coordinator_global_rally_yield_held均0，驻留让行未触发；零pending/dependency不能替代该分支的整任务证据。
+
+v10_full最终1635PASS186.24s；四包v10_build4.48sPASS，v10_source190保护/6授权/54协议/native常量/中央8+global2+native2 Future注册契约PASS，六核心/测试/reader F821/F822/F823/E999 PASS，git diff-check PASS。v10_declaration原共享owner --validate-only PASS；辅助检查误断言mission_planner:=global导致FAIL（tool记录），实际命令是--mission-planner global，按实际CLI核验PASS，命令生成未改。两manifest逐对象相比父61e5dd7仅parent/UTC/新增information_funding策略，case及既有global策略、所有其他字段不变。新run-id预定20261013_p2c_global_v10；下一clean pushed冻结原四开发，保持15非留出+两物理后首次917，无跨版任务信用。

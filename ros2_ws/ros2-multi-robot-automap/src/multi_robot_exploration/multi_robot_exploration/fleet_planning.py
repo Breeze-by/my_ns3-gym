@@ -208,6 +208,30 @@ def complete_budget(snapshot, robot, task_route, destination, caches, wait_sec=0
     return max(task, reserve) + model[1] * wait_sec
 
 
+def information_motion_funding(snapshot, motion, caches):
+    """Use one funding decision for exploration and information prerequisites.
+
+    A charge proposal still needs its own affordable complete contact return.
+    The executor retains observer protection, body clearance, serialization
+    and current-source repricing before publishing a real request.
+    """
+    robot = motion.robot
+    state = snapshot.batteries.get(robot)
+    if state is None or state['energy'] > motion.required_energy:
+        return motion
+    if (state['mode'] != 'ACTIVE' or robot in snapshot.charge_pending
+            or robot in snapshot.live_routes
+            or motion.required_energy >= state['capacity'] * state['charge_target_fraction']):
+        return None
+    contact = contact_route(snapshot, robot, snapshot.positions[robot], caches)
+    reserve = complete_budget(snapshot, robot, (snapshot.positions[robot],),
+                              snapshot.positions[robot], caches)
+    if contact is None or reserve is None or state['energy'] <= reserve:
+        return None
+    return ChargeProposal(robot, motion.required_energy, contact['route'],
+                          'unfunded_information_task', (motion.pose.x, motion.pose.y))
+
+
 def protected_returns(snapshot, caches):
     result = {}
     for robot, state in snapshot.batteries.items():
@@ -435,12 +459,11 @@ def plan_exploration(snapshot, caches, protected):
             utility = geometry.exploration_utility(len(information), 0, route_length(full))*reuse
             choice = MotionProposal(robot, "exploration", pose, full, utility,
                                     required, information)
-            if state is None or float(state["energy"]) > required:
-                return choice
-            elif required < float(state["capacity"]) * float(state["charge_target_fraction"]):
-                contact = contact_route(snapshot, robot, snapshot.positions[robot], caches[robot])
-                charges.append(ChargeProposal(robot, required, contact["route"], "unfunded_information_task",
-                                              (pose.x, pose.y)))
+            decision = information_motion_funding(snapshot, choice, caches[robot])
+            if isinstance(decision, MotionProposal):
+                return decision
+            if isinstance(decision, ChargeProposal):
+                charges.append(decision)
             return None
 
         # Reuse the reviewed lazy ranking algorithm. Stop only after it has
@@ -737,6 +760,7 @@ def plan_target_survey(snapshot, caches, protected):
             snapshot.origin, snapshot.positions[robot], snapshot.target)
         if pose is not None:
             desired.append((robot, pose, 1., snapshot.target))
+    charges = {}
     for robot, pose, utility, information_target in desired:
         if robot not in snapshot.available:
             continue
@@ -757,11 +781,19 @@ def plan_target_survey(snapshot, caches, protected):
         actual = geometry.RallyPose(actual.x, actual.y,
             math.atan2(information_target[1] - actual.y, information_target[0] - actual.x))
         required = complete_budget(snapshot, robot, full, (actual.x, actual.y), caches[robot])
-        if required is None or snapshot.batteries and snapshot.batteries[robot]["energy"] <= required:
+        if required is None:
             continue
-        return FleetProposal(snapshot, motions=(MotionProposal(robot, "target_information_survey",
-            actual, full, utility, required),), blocked={"fleet": "incomplete_target_area_assignment"})
-    return FleetProposal(snapshot, blocked={"fleet": "no_funded_target_survey"})
+        decision = information_motion_funding(snapshot, MotionProposal(robot, 'target_information_survey',
+            actual, full, utility, required), caches[robot])
+        if isinstance(decision, MotionProposal):
+            return FleetProposal(snapshot, motions=(decision,),
+                                 blocked={'fleet':'incomplete_target_area_assignment'})
+        if isinstance(decision, ChargeProposal):
+            old = charges.get(robot)
+            if old is None or decision.required_energy < old.required_energy:
+                charges[robot] = decision
+    return FleetProposal(snapshot, charges=tuple(charges.values()),
+                         blocked={"fleet": "no_funded_target_survey"})
 
 
 def plan_blind_scan(snapshot, caches, protected):

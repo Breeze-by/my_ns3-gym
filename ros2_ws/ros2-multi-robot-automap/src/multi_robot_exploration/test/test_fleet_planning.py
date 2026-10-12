@@ -2,6 +2,7 @@ import math
 from dataclasses import replace
 
 import numpy as np
+import pytest
 from types import SimpleNamespace
 
 from multi_robot_exploration import control as c
@@ -161,3 +162,62 @@ def test_disconnected_local_approach_observes_disputed_route_from_its_own_compon
     assert not plan_fleet(replace(snapshot,survey_attempts=snapshot.survey_limit)).motions
     assert not plan_fleet(replace(snapshot,at_time=12.1)).motions
     assert local[:,40].min()==100
+
+
+def unfunded_survey_world():
+    snapshot = world()
+    local = np.zeros_like(snapshot.grid)
+    local[:,40] = 100
+    local = c.immutable_grid_snapshot(local,local.shape)
+    snapshot = replace(snapshot,phase='FOUND',target=(7.25,4.25),maps={
+        'tb1':dict(data=local,resolution=.1,origin=(0.,0.))})
+    funded = plan_fleet(snapshot).motions[0]
+    reserve = complete_budget(snapshot,'tb1',(snapshot.positions['tb1'],),
+                              snapshot.positions['tb1'],{})
+    assert reserve < funded.required_energy < 80.
+    energy = (reserve + funded.required_energy) / 2.
+    return replace(snapshot,batteries={'tb1':{**snapshot.batteries['tb1'],'energy':energy}})
+
+
+def test_missing_local_information_can_fund_its_prerequisite_without_erasing_the_wall():
+    snapshot = unfunded_survey_world()
+    proposal = plan_fleet(snapshot)
+    assert not proposal.motions and not proposal.final_poses
+    assert len(proposal.charges) == 1
+    charge = proposal.charges[0]
+    assert charge.robot == 'tb1' and charge.reason == 'unfunded_information_task'
+    assert snapshot.batteries['tb1']['energy'] < charge.required_energy < 80.
+    assert c.route_respects_known_obstacles(snapshot.maps['tb1']['data'],.1,(0.,0.),
+                                          charge.return_route)
+    replenished = replace(snapshot,batteries={'tb1':{**snapshot.batteries['tb1'],
+                                                    'energy':80.,'charge_count':1}})
+    after = plan_fleet(replenished)
+    assert not after.charges and len(after.motions) == 1
+    assert after.motions[0].kind == 'target_information_survey'
+    assert after.motions[0].required_energy < 80.
+    assert not after.final_poses and not after.snapshot.completed_legs
+    assert snapshot.maps['tb1']['data'][:,40].min() == 100
+
+
+@pytest.mark.parametrize('condition',[
+    'unaffordable_return','inactive','pending_charge','owned_navigation',
+    'insufficient_capacity','stale_source','future_source'])
+def test_information_funding_requires_a_safe_available_current_return(condition):
+    snapshot = unfunded_survey_world()
+    state = dict(snapshot.batteries['tb1'])
+    if condition == 'unaffordable_return':
+        state['energy'] = 0.
+    elif condition == 'inactive':
+        state['mode'] = 'CHARGING'
+    elif condition == 'pending_charge':
+        snapshot = replace(snapshot,charge_pending=('tb1',))
+    elif condition == 'owned_navigation':
+        snapshot = replace(snapshot,live_routes={'tb1':((1.25,1.25),(2.25,1.25))})
+    elif condition == 'insufficient_capacity':
+        state['charge_target_fraction'] = .1
+    elif condition == 'stale_source':
+        snapshot = replace(snapshot,at_time=12.1)
+    else:
+        snapshot = replace(snapshot,at_time=9.9)
+    proposal = plan_fleet(replace(snapshot,batteries={'tb1':state}))
+    assert not proposal.motions and not proposal.charges
