@@ -9444,3 +9444,9 @@ colcon build --symlink-install --packages-select multi_robot_exploration multi_r
 178个有变化的代码/测试/声明/活跃规划文件恢复；control9492→7269行，src/scripts/测试/manifests与b32逐字一致，364历史证据SHA保持。两个指导skill按用户要求卸载，清市场/hooks/lock和使用指令，备份位于自动发现目录外。恢复验证：1527功能PASS，完整pytest另2原lintFAIL(test_flake8/pep257)+1SKIP/201.22s/exit1；四包构建4.34s PASS；171保护/4已有授权源/54静态协议及原native常量/Future约束PASS；安装launch --show-args PASS无新节点。另从包目录重查两原lint入口仍FAIL/11.50s/8107风格诊断，无undefined-name/syntax；不把根目录扫描日志/build的诊断当新增核心错误。第一条未source读者import失败、过早run1测试收集失败/构建中断保留并排除；闭合恢复后run2计入。无新任务实验，不把恢复或组件PASS当任务通过。
 
 命令与完整成功/失败输出、所有原格索引/源SHA/恢复路径/v95终态与门禁在report/20261012_p2c1_session_recovery.md/.json及同名前缀artifacts。原始ledger/CDR/日志留原位，260929_report用户资料不动，无P4/ns3/WiFi/RL。
+
+## 2026-10-12 用户要求整理报告和重复资料
+
+从当前工作树移除363个已回退长会话报告/附件（1424.07MiB），删除6份经SHA-256及逐分片拼接核验完全相同的本地压缩副本（1112.07MiB），合计2659336914bytes/约2.48GiB。整理前完整报告与指南已推送backup/project-before-report-cleanup-20261012，冻结a48c9b4；路径、Git对象、原字节数和分片SHA在report/ARCHIVE_INDEX.json。保留原始任务账本、导航/安全/CDR和所有已验收阶段资料，失败历史不抹除、不回填；Git历史不重写，260929_report用户资料不动。
+
+六份常读AGENTS/计划/ROS指南去除重复候选过程，927186→232739bytes（减少74.9%），保留研究目标、环境、检查点、300s/5s/TTL/安全条件与实际运行方法；README增加当前状态和精选报告入口。代码、测试、fixtures、manifest与b32c891一致；source检查仍171保护/4已有安全源/54协议PASS。仅文档/资料清理，没有新任务仿真，原长会话继续暂停。已核对363归档blob、25处新增/更新本地链接与命令代码块，未引入断链。
