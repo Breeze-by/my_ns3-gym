@@ -9558,3 +9558,20 @@ v8只统一全局契约：已有rally_yield_pose新增显式endpoint_clearance_m
 新增7例包含pure失格表在未发意图可替换/实际返充等待、实际构造sender .45候选加原独立audit_motion预算/单调清道核验、未发/已发布/native-return/真实pending-Future四阻塞状态和local正障碍拒绝。v8_components1 43PASS2FAIL28.27s：插入处旧assert blocked被误移新函数致NameError，新proof缺event_time致KeyError；原输出保留并排除。恢复旧assert所属函数、加夹具实际当前event_time后components2=45PASS27.11s，含原双线程DDS/两真实ActionServers/Futures；零physical/native任务信用。完整功能/build/source/static及新声明核验继续，manifest仅父9711cf7/UTC/global依赖说明；原case/物理刺激/预算/source门禁保持。
 
 v8_full完整功能1624PASS175.83s，四包v8_build4.18sPASS，v8_source190保护/6授权/54协议/native原常量及8+2+2+1 Future契约PASS；六核心/测试/独立读者F821/F822/F823/E999 PASS，git diff --check PASS。v8_declaration validate-only共享命令/源图旁录声明PASS；两manifest与9711cf7逐对象相比仅parent/predeclared_at/global_algorithm变，cases和全部其他字段保持。下一步clean pushed单冻结仍从四开发起步；全部旧失败保留，无P4/ns3/WiFi/RL或未测17/物理/917信用。
+
+
+### global v8 同冻结三严格PASS与 v9 驻留任务依赖
+
+a435d45203decfa58218b0cec956f4205f3b8656 clean pushed，20261012_p2c_global_v8/domain204/port11573原四格串行全owned关闭后修改。forced原生COMPLETE228.5/检测122.7/集合124.2/charge2；lab RALLY300timeout/73.8/106.4/charge1；rooms COMPLETE174.3/77.9/110.2/charge0；corr COMPLETE235.7/86.7/91.2/charge1。最低E14.903058898212775/19.29653094882027/21.990440205745617/28.96757681710197，四零contacts/exhaustion/FAILED，runner/observer0。四片完整CDR115471040bytes原位保持；v8_forced_gate单PASS（非完整scope）、v8_development_gate完整FAIL，仅lab任务FAIL，其他三个完整严格PASS。17正式/两物理/917未调用；原件不回填、不跨版本拼矩阵。
+
+lab原rally_yield tb2/gen16于2316.182派发、2331.482SUCCESS；受益tb3/gen17于2353.482仅到(-2.9413,.04676)短航段，tb2/gen18于2356.782返回(-3.7913,1.39676)，2370.282SUCCESS；gen19于2373.582再次让行、2391.082SUCCESS，gen20于2393.582再返回、2404.182SUCCESS。之后tb3/gen21 charge_clearance 2409.082→2426.682SUCCESS，晚期tb2未发补能意图且任务超时。原执行角色/Future时间表不等另一任务收益因果重放。源码确认原HeadquartersControl保留rally_yield_targets直到其他永久接近完成，全局替代遗漏此驻留生命周期；修复该回归，未据猜测改相机范围、曲线路限制或更换物理场景。
+
+v9新增有界yielded_for快照状态和global_rally_yields参与者依赖：真实RALLY yield SUCCESS释放nav owner、继续驻留；受益者在永久目标真实SUCCESS、当前Fresh pose达原.35且ACTIVE/无owned后释放。旧到达标志、成功短前缀、stale输入不能释放；迟到普通RALLY返回拒绝，held机器人不被选为新的RALLY避让受益者；native补能/返充优先不变，目标/参与者失效和完整当前全机重新分配可清旧依赖。每依赖仅参与者名字/原永久目标关系，没有缓存旧路/预算/源租约或增加timer。
+
+原_current_wait完整名义去程/qualified-return/serial-charge模型抽为纯rally_wait_budgets，当前快照与pricing epoch保持；RALLY避让与其补能使用max(原30s目标时限,当前全Peer等待)+原5s保持，完整去返/当前位置返充价格保持。独立reader原标量算法不调用新等待函数，增加等待下界、held/closed/释放及不得提前普通返回的账本核验，release世界绑定原CDR；其余Native/300s/TTL/1.8/当前机体门禁保持。
+
+v9_components1旧45PASS26.64s；加入多航段SUCCESS→驻留→真实短前缀SUCCESS仍驻留→永久目标成功且新交付pose后释放、旧返回proposal拒绝以及stale旧到达拒绝后components2=47PASS27.80s，真实两参与者替换无效自依赖夹具后components3 PASS；components4=47PASS28.52s。专项独立账本v9_refuge_reader1FAIL1PASS2.38s：夹具now=10/11模拟秒，get_clock实际墙钟1791818593，严格源龄拒绝。原失败账本16498bytes移入v9_refuge_reader_fixture_failed，日志保留；只让夹具get_clock也按模拟时间返回，reader2两例PASS3.37s，未放宽任何生产断言。账本单测bind_sources被显式替换为0（无原DDS/native夹具），零原件/physical信用；两actualDDS/ActionServer/Future原件测试保留不替换。删等待并重新降价仍FAIL，提前释放位姿仍FAIL。最终增加旧arrived标志不能盖过真实pending Future的断言，完整功能/build/source/static检查运行中。
+
+manifest更新父a435d45/UTC及refuge_lifecycle说明，原cases/物理刺激/条件保持；新freeze仍从四开发起步，P2C.1未完成，无P4/ns3/WiFi/RL。
+
+v9_full最终完整功能1626PASS167.98s，含旧arrived标志不能盖过真实pending Future与同步模拟时钟的独立账本反例；四包v9_build9.13sPASS。v9_source190保护/6授权/54协议/native常量/原8+新2/native2/shared1 Future契约PASS，六核心/测试/独立reader F821/F822/F823/E999 PASS，git diff-check PASS。v9_declaration validate-only PASS；两manifest与a435d45仅parent/predeclared_at/global_algorithm变，原cases和其他字段一致。新消息只在既有私有consumed诊断流，无新增AP输入/无线流，原native模型/世界/SLAM/Nav2不变。下一步clean pushed v9原四开发；任何旧FAIL和新夹具FAIL保留、没有跨版拼PASS。

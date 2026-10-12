@@ -49,6 +49,7 @@ class FleetSnapshot:
     survey_limit: int = 9
     source_grid: np.ndarray | None = None
     self_return_cells: dict = field(default_factory=dict)
+    yielded_for: dict = field(default_factory=dict)
 
     @property
     def context(self):
@@ -77,6 +78,7 @@ class ChargeProposal:
     return_route: tuple
     reason: str
     destination: tuple | None = None
+    park_for: str | None = None
 
 
 @dataclass(frozen=True)
@@ -281,7 +283,7 @@ def _safe_endpoint(safe, snapshot, pose):
     return 0 <= cell[0] < safe.shape[0] and 0 <= cell[1] < safe.shape[1] and safe[cell]
 
 
-def _escape(snapshot, beneficiary, protected, caches):
+def _escape(snapshot, beneficiary, protected, caches, rally_waits=None):
     """Clear an actual corridor before requesting traffic that would use it."""
     route = protected[beneficiary]
     target = route[-1]
@@ -317,8 +319,10 @@ def _escape(snapshot, beneficiary, protected, caches):
         full = qualified_motion_route(snapshot,robot,leg,caches[robot])
         if full is None:
             continue
+        wait = (0. if rally_waits is None else snapshot.hold_sec
+                + max(geometry.RALLY_GOAL_TIMEOUT_SEC, rally_waits.get(robot, math.inf)))
         required = complete_budget(snapshot, robot, full, (pose.x, pose.y),
-                                   caches[robot])
+                                   caches[robot], wait)
         if required is None:
             continue
         if snapshot.batteries and float(snapshot.batteries[robot]["energy"]) <= required:
@@ -334,7 +338,8 @@ def _escape(snapshot, beneficiary, protected, caches):
                     and not any(geometry.routes_conflict(contact["route"], live)
                                 for live in snapshot.live_routes.values())):
                 return ChargeProposal(robot, required, contact["route"],
-                                      "unfunded_return_clearance", (pose.x, pose.y))
+                                      "unfunded_return_clearance", (pose.x, pose.y),
+                                      beneficiary if rally_waits is not None else None)
             continue
         if any(geometry.routes_conflict(full, other) for peer, other in protected.items()
                if peer not in (robot, beneficiary)):
@@ -344,7 +349,7 @@ def _escape(snapshot, beneficiary, protected, caches):
         kind = ("local_return_yield" if snapshot.batteries.get(beneficiary, {}).get("mode")
                 in ("RETURNING", "CHARGING") else "charge_clearance")
         choices.append(MotionProposal(robot, kind, actual, full,
-                                      1., required, beneficiary=beneficiary))
+                                      1., required, beneficiary=beneficiary, wait_sec=wait))
     return min(choices, key=lambda choice: (route_length(choice.route), choice.robot), default=None)
 
 
@@ -472,6 +477,50 @@ def plan_exploration(snapshot, caches, protected):
     return FleetProposal(snapshot, motions, tuple(best_charges.values()), blocked=blocked)
 
 
+def rally_wait_budgets(snapshot, poses, caches):
+    """The existing complete nominal peer/serial-charge waiting model.
+
+    Planning and execution share prices; callers still use their own current
+    immutable snapshot and pricing epoch. No body or Euclidean shortcut can
+    supply a missing qualified return.
+    """
+    bases, travel, charge_times = {}, {}, {}
+    for robot, final in poses.items():
+        cache = caches.setdefault(robot, {})
+        grid = robot_grid(snapshot, robot, cache)
+        _, route = geometry.plan_rally_leg(final, grid, snapshot.resolution,
+            snapshot.origin, snapshot.positions[robot],
+            route_cache=cache.setdefault('nominal_rally_routes', {}))
+        if not route:
+            return None
+        state = snapshot.batteries.get(robot, {})
+        speed = float(state.get('nominal_speed_mps', .18))
+        full = (snapshot.positions[robot], *route)
+        travel[robot] = route_length(full) / speed
+        base = complete_budget(snapshot, robot, full, (final.x, final.y), cache, snapshot.hold_sec)
+        if base is None:
+            return None
+        bases[robot] = base
+        if snapshot.batteries:
+            contact = contact_route(snapshot, robot, snapshot.positions[robot], cache)
+            if contact is None:
+                return None
+            charge_times[robot] = (contact['path_distance_m'] * float(state.get('return_path_factor', 2.)) / speed
+                + float(state.get('charge_duration_sec', 6.))
+                + float(state.get('return_recovery_wait_sec', geometry.RETURN_RECOVERY_WAIT_SEC)))
+    if not snapshot.batteries:
+        return {waiting: max((duration for peer, duration in travel.items() if peer != waiting), default=0.)
+                for waiting in poses}
+    _, waits = geometry.rally_wait_requirements(bases, snapshot.batteries,
+        {robot: state['mode'] for robot, state in snapshot.batteries.items()}, travel, charge_times)
+    return waits
+
+
+def rally_beneficiary_complete(snapshot, robot):
+    return (robot in snapshot.arrived and robot not in snapshot.live_routes
+            and snapshot.batteries.get(robot, {}).get('mode', 'ACTIVE') == 'ACTIVE')
+
+
 def plan_rally(snapshot, caches, protected):
     poses = dict(snapshot.final_poses)
     if poses:
@@ -567,7 +616,7 @@ def plan_rally(snapshot, caches, protected):
             else:
                 blocked[robot] = "complete_rally_exceeds_charge_capacity"
             continue
-        if robot in snapshot.arrived:
+        if robot in snapshot.arrived or robot in snapshot.yielded_for:
             continue
         limit = min(geometry.MAX_NAVIGATION_LEG_M,
                     geometry.rally_leg_limit(snapshot.attempts.get(robot, 0)))
@@ -594,8 +643,9 @@ def plan_rally(snapshot, caches, protected):
     if not motions and blocked:
         # Clearing a real parked body is a dependency of a complete approach.
         # A future priority route alone does not acquire physical ownership.
-        for beneficiary in sorted(blocked):
-            if beneficiary not in snapshot.available:
+        nominal_waits = rally_wait_budgets(snapshot, poses, {})
+        for beneficiary in sorted(blocked) if nominal_waits is not None else ():
+            if beneficiary not in snapshot.available or beneficiary in snapshot.yielded_for:
                 continue
             grid = robot_grid(snapshot, beneficiary, caches.setdefault(beneficiary, {}))
             for peer in snapshot.available:
@@ -609,14 +659,15 @@ def plan_rally(snapshot, caches, protected):
                 if not route:
                     continue
                 escape = _escape(snapshot, beneficiary,
-                                 {beneficiary: (snapshot.positions[beneficiary], *route)}, caches)
+                                 {beneficiary: (snapshot.positions[beneficiary], *route)}, caches,
+                                 rally_waits=nominal_waits)
                 if escape is not None and escape.robot == peer:
                     if isinstance(escape, ChargeProposal):
                         return FleetProposal(snapshot, charges=(escape,), final_poses=poses,
                                              wait_budgets=waits, blocked=blocked)
                     motions = (MotionProposal(escape.robot, "rally_yield", escape.pose,
                         escape.route, escape.utility, escape.required_energy,
-                        beneficiary=beneficiary),)
+                        beneficiary=beneficiary, wait_sec=escape.wait_sec),)
                     break
             if motions:
                 break

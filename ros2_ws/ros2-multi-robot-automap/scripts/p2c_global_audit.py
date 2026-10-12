@@ -132,6 +132,32 @@ def scalar_budget(event, grid, maps, route, destination, wait=0.):
     return max(task, returning(current['path_distance_m'])) + idle * wait
 
 
+def nominal_peer_wait(event, grid, maps):
+    """Independently rebuild the existing nominal all-peer waiting price."""
+    from multi_robot_exploration import control
+    world=event['world']
+    if not world['battery_states']:
+        return 0.
+    bases,travel,charge_times={},{},{}
+    assert set(event['final_poses'])==set(world['required'])
+    for peer,final in event['final_poses'].items():
+        local_grid=control.constrained_return_grid(grid,world['planning_map']['resolution'],
+            world['planning_map']['origin'],maps[peer],{})
+        _,nominal=control.plan_rally_leg(control.RallyPose(*final),local_grid,
+            world['planning_map']['resolution'],world['planning_map']['origin'],world['positions'][peer])
+        assert nominal,('missing complete nominal peer approach',peer)
+        state=world['battery_states'][peer]
+        full=(world['positions'][peer],*nominal)
+        travel[peer]=sum(math.dist(a,b) for a,b in zip(full,full[1:]))/state['nominal_speed_mps']
+        bases[peer]=scalar_budget({**event,'robot':peer},grid,maps,full,final[:2],5.)
+        returning=contact(world,grid,maps,peer,world['positions'][peer])
+        charge_times[peer]=(returning['path_distance_m']*state['return_path_factor']/state['nominal_speed_mps']
+            +state['charge_duration_sec']+state.get('return_recovery_wait_sec',30.))
+    _,waits=control.rally_wait_requirements(bases,world['battery_states'],
+        {peer:state['mode'] for peer,state in world['battery_states'].items()},travel,charge_times)
+    return waits[event['robot']]
+
+
 def audit_motion(event):
     from multi_robot_exploration import control
     grid, maps = geometry_world(event)
@@ -179,23 +205,10 @@ def audit_motion(event):
             assert all(other == peer or math.dist(pose[:2], p[:2]) >= .8
                        for other, p in event['final_poses'].items())
         if world['battery_states']:
-            bases, travel, charge_times = {}, {}, {}
-            for peer, final in event['final_poses'].items():
-                local_grid = control.constrained_return_grid(grid, world['planning_map']['resolution'],
-                    world['planning_map']['origin'], maps[peer], {})
-                _, nominal = control.plan_rally_leg(control.RallyPose(*final), local_grid,
-                    world['planning_map']['resolution'], world['planning_map']['origin'], world['positions'][peer])
-                assert nominal, ('missing complete nominal peer approach', peer)
-                state = world['battery_states'][peer]
-                full = (world['positions'][peer], *nominal)
-                travel[peer] = sum(math.dist(a,b) for a,b in zip(full,full[1:])) / state['nominal_speed_mps']
-                bases[peer] = scalar_budget({**event,'robot':peer},grid,maps,full,final[:2],5.)
-                returning = contact(world,grid,maps,peer,world['positions'][peer])
-                charge_times[peer] = (returning['path_distance_m']*state['return_path_factor'] / state['nominal_speed_mps']
-                    + state['charge_duration_sec'] + state.get('return_recovery_wait_sec',30.))
-            _, waits = control.rally_wait_requirements(bases,world['battery_states'],
-                {peer:state['mode'] for peer,state in world['battery_states'].items()},travel,charge_times)
-            assert event['waiting_time_budget_sec'] + 1e-8 >= waits[robot] + 5., 'incomplete fleet wait budget'
+            assert event['waiting_time_budget_sec']+1e-8>=nominal_peer_wait(event,grid,maps)+5., 'incomplete fleet wait budget'
+    elif kind=='rally_yield':
+        assert event['beneficiary'] in event['final_poses']
+        assert event['waiting_time_budget_sec']+1e-8>=max(30.,nominal_peer_wait(event,grid,maps))+5., 'unfunded refuge waiting'
     expected = scalar_budget(event, grid, maps, complete, destination, event['waiting_time_budget_sec'])
     if kind=='rally':
         expected=max(expected,scalar_budget(event,grid,maps,route,event['requested_position'],
@@ -304,6 +317,7 @@ def global_mission_audit(directory, required=False):
     if not required:
         return None
     events, admissions, owners, charge_proofs, revalidations = [], {}, {}, {}, {}
+    completed,held_for={},defaultdict(dict)
     sent = closed = revoked = charges = validated = 0
     for line in (directory / 'ledger.jsonl').open():
         event = json.loads(line)
@@ -316,6 +330,7 @@ def global_mission_audit(directory, required=False):
             token = event['robot'], event['generation']
             assert token in admissions and event['robot'] not in owners
             saved = admissions[token]
+            assert saved['kind']!='rally' or not held_for[event['robot']], 'returning before refuge dependency closes'
             for key, source in saved['world']['sources'].items():
                 ttl=60. if key.endswith('/target_detection') else 2. if key.endswith(('/pose_state','/frame_state')) else 5.
                 assert 0 <= event['stamp_sec']-source <= ttl, 'expired source at actual send'
@@ -329,6 +344,39 @@ def global_mission_audit(directory, required=False):
             assert previous == token or (previous is None and token in admissions
                 and str(event['error']).startswith('send_exception:')), 'old result released another generation'
             closed += 1
+            completed[token]=event['status']
+        elif kind=='coordinator_global_rally_yield_held':
+            token=event['robot'],event['generation']
+            assert completed.get(token)==4 and admissions[token]['kind']=='rally_yield'
+            assert admissions[token]['beneficiary']==event['beneficiary']
+            assert admissions[token]['final_poses'][event['beneficiary']]==event['final_pose']
+            held_for[event['robot']][event['beneficiary']]=event['final_pose']
+        elif kind=='coordinator_global_rally_yield_released':
+            assert event['beneficiary'] in held_for[event['robot']]
+            geometry_world(event)
+            world,beneficiary=event['world'],event['beneficiary']
+            if event['reason']=='beneficiary_complete':
+                final=held_for[event['robot']][beneficiary]
+                assert event['final_pose']==final and beneficiary not in owners
+                assert world['battery_states'].get(beneficiary,{}).get('mode','ACTIVE')=='ACTIVE'
+                assert math.dist(world['positions'][beneficiary],final[:2])<=.35
+                assert any(robot==beneficiary and status==4 and admissions[token]['kind']=='rally'
+                    and math.dist(admissions[token]['requested_position'],final[:2])<=.35
+                    for token,status in completed.items() for robot in (token[0],))
+            elif event['reason']=='target_unavailable':
+                assert world['target'] is None
+            else:
+                assert event['reason']=='participant_unavailable'
+                assert event['robot'] not in world['required'] or beneficiary not in world['required']
+            held_for[event['robot']].pop(beneficiary)
+            events.append(event)
+        elif kind=='coordinator_global_rally_yields_reassigned':
+            geometry_world(event)
+            assert not owners and all(state['mode']=='ACTIVE' for state in event['world']['battery_states'].values())
+            assert {robot:sorted(peers) for robot,peers in held_for.items() if peers}==event['yielded_for']
+            assert set(event['final_poses'])==set(event['world']['required'])
+            held_for.clear()
+            events.append(event)
         elif kind == 'coordinator_global_motion_revalidation':
             token = event['robot'], event['generation']
             assert owners.get(event['robot']) == token
@@ -376,6 +424,10 @@ def global_mission_audit(directory, required=False):
             assert event['desired_task_route'] and event['destination'] is not None
             desired = scalar_budget({**event,'budget_evaluated_at_sec':event['desired_task_budget_at_sec']},
                 grid,maps,event['desired_task_route'],event['destination'],event['desired_task_wait_sec'])
+            if event.get('park_for') is not None:
+                priced={**event,'budget_evaluated_at_sec':event['desired_task_budget_at_sec']}
+                assert event['park_for'] in event['final_poses']
+                assert event['desired_task_wait_sec']+1e-8>=max(30.,nominal_peer_wait(priced,grid,maps))+5.
             if event['reason']=='low_energy_after_actual_work':
                 assert world['completed_legs'].get(robot,0)>0 and int(state.get('charge_count',0))==0
                 desired=max(desired,.25*state['capacity']*state['charge_target_fraction'])
@@ -385,5 +437,6 @@ def global_mission_audit(directory, required=False):
     bindings = bind_sources(events, directory / 'navigation_inputs.jsonl.gz', directory / 'safety_events.jsonl')
     return dict(status='PASS', sent=sent, closed=closed, revoked=revoked, charge_admissions=charges,
         current_revalidations=validated,
+        refuge_dependencies_at_shutdown={robot:sorted(peers) for robot,peers in held_for.items() if peers},
         original_map_bindings=bindings, pending_at_owned_shutdown=sorted(owners),
         scope='Original DDS content, complete dispatch budgets, reservations and generation ownership; no physical success substitution')

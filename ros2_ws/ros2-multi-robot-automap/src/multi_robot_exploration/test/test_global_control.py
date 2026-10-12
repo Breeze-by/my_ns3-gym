@@ -530,6 +530,117 @@ def test_fresh_fleet_assignment_cannot_erase_a_local_positive_obstacle(node):
     assert snapshot.maps['tb1']['data'][22,12]==100
 
 
+@pytest.mark.parametrize('node', [2], indirect=True)
+def test_refuge_waits_for_beneficiary_full_completion_and_rejects_late_return_proposals(node,monkeypatch,tmp_path):
+    from multi_robot_exploration.fleet_planning import plan_fleet
+    node.get_clock=Mock()
+    node.get_clock.return_value.now.side_effect=lambda:rclpy.time.Time(seconds=node.now())
+    node.task_state='RALLY'
+    node.target,node.target_received_source_time=(3.5,3.),10.
+    finals={'tb1':c.RallyPose(2.25,1.25,math.atan2(1.75,1.25)),
+            'tb2':c.RallyPose(5.25,4.25,math.atan2(-1.25,-1.75))}
+    node.rally_targets=node.rally_final_targets=finals
+    snapshot=node._snapshot()
+    retreat=MotionProposal('tb1','rally_yield',c.RallyPose(1.25,3.25,0.),
+        ((1.25,1.25),(1.25,3.25)),1.,20.,beneficiary='tb2')
+    actual=node._current_motion(snapshot,retreat,{})
+    assert actual is not None and actual.wait_sec>=35.
+    from p2c_global_audit import audit_motion
+    proof={**node._motion_proof(snapshot,SimpleNamespace(generation=1),actual),'event_time':10.}
+    assert audit_motion(proof)>0
+    # Even recomputing the scalar energy after deleting its waiting allowance
+    # cannot turn an unpriced refuge into a valid admission.
+    from p2c_global_audit import geometry_world,scalar_budget
+    grid,maps=geometry_world(proof)
+    no_wait={**proof,'waiting_time_budget_sec':0.}
+    no_wait['required_energy']=scalar_budget(no_wait,grid,maps,actual.complete_route,
+        (actual.pose.x,actual.pose.y),0.)
+    with pytest.raises(AssertionError,match='unfunded refuge waiting'):
+        audit_motion(no_wait)
+    client=Mock()
+    client.server_is_ready.return_value=True
+    pending=Future()
+    client.send_goal_async.return_value=pending
+    node.robot_nav_clients['tb1']=client
+    assert node._send_motion(snapshot,actual)
+    _,result=accept(node,pending)
+    delivered_state(node,11.,position=(1.25,3.25))
+    result.set_result(SimpleNamespace(status=GoalStatus.STATUS_SUCCEEDED))
+    node.drain_action_done_callbacks()
+    assert 'tb1' not in node.navigation_tasks
+    parked=node._snapshot()
+    assert parked.yielded_for=={'tb1':('tb2',)}
+    assert not any(m.robot=='tb1' and m.kind=='rally' for m in plan_fleet(parked).motions)
+    resume=MotionProposal('tb1','rally',finals['tb1'],((1.25,3.25),(2.25,1.25)),1.,20.)
+    assert node._current_motion(parked,resume,{}) is None
+    assert node._current_motion(replace(parked,yielded_for={}),resume,{}) is not None
+    # A real successful short leg belongs to the beneficiary, but it does not
+    # finish that robot's permanent endpoint or release the refuge.
+    short=MotionProposal('tb2','rally',c.RallyPose(4.85,4.25,finals['tb2'].yaw),
+        ((4.25,4.25),(4.85,4.25)),1.,20.)
+    short_actual=node._current_motion(parked,short,{})
+    assert short_actual is not None
+    second=Mock()
+    second.server_is_ready.return_value=True
+    short_pending=Future()
+    second.send_goal_async.return_value=short_pending
+    node.robot_nav_clients['tb2']=second
+    assert node._send_motion(parked,short_actual)
+    _,short_result=accept(node,short_pending)
+    short_result.set_result(SimpleNamespace(status=GoalStatus.STATUS_SUCCEEDED))
+    node.drain_action_done_callbacks()
+    assert not node.rally_arrived['tb2'] and node._snapshot().yielded_for
+    last_snapshot=node._snapshot()
+    final_motion=replace(short,pose=finals['tb2'])
+    final_actual=node._current_motion(last_snapshot,final_motion,{})
+    assert final_actual is not None
+    final_pending=Future()
+    second.send_goal_async.return_value=final_pending
+    assert node._send_motion(last_snapshot,final_actual)
+    _,final_result=accept(node,final_pending)
+    odom=Odometry()
+    odom.header.stamp.sec=11
+    odom.header.stamp.nanosec=500000000
+    odom.pose.pose.position.x,odom.pose.pose.position.y=5.25,4.25
+    odom.pose.pose.orientation.w=1.
+    node.now=lambda:11.5
+    node.robot_odom_callback(odom,'tb2')
+    node.rally_arrived['tb2']=True  # A prior arrival flag cannot close this real Future.
+    assert node._snapshot().yielded_for and 'tb2' in node.navigation_tasks
+    final_result.set_result(SimpleNamespace(status=GoalStatus.STATUS_SUCCEEDED))
+    node.drain_action_done_callbacks()
+    released=node._snapshot()
+    assert node.rally_arrived['tb2'] and not released.yielded_for
+    assert node._current_motion(released,resume,{}) is not None
+    assert not node.successful_exploration_legs
+    # This fixture has no original DDS/native recording. Exercise the ledger
+    # lifecycle independently; the existing real DDS tests retain binding.
+    import p2c_global_audit as reader
+    records=[json.loads(call.args[0].data) for call in node.consumed_publisher.publish.call_args_list]
+    (tmp_path/'ledger.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in records))
+    monkeypatch.setattr(reader,'bind_sources',lambda *args:0)
+    audited=reader.global_mission_audit(tmp_path,True)
+    assert audited['sent']==audited['closed']==3 and not audited['refuge_dependencies_at_shutdown']
+    release=next(row for row in records if row['event']=='coordinator_global_rally_yield_released')
+    release['world']['positions']['tb2']=[4.25,4.25]
+    (tmp_path/'ledger.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in records))
+    with pytest.raises(AssertionError):
+        reader.global_mission_audit(tmp_path,True)
+
+
+@pytest.mark.parametrize('node', [2], indirect=True)
+def test_missing_fresh_inputs_do_not_release_a_refuge_from_old_arrival_data(node):
+    node.task_state='RALLY'
+    node.target,node.target_received_source_time=(3.,3.),10.
+    node.rally_targets=node.rally_final_targets={'tb1':c.RallyPose(1.25,1.25,math.pi/4),
+                                                'tb2':c.RallyPose(4.25,4.25,-3*math.pi/4)}
+    node.global_rally_yields={'tb1':{'tb2'}}
+    node.rally_arrived['tb2']=True
+    node.now=lambda:12.1
+    assert node._snapshot() is None
+    assert node.global_rally_yields=={'tb1':{'tb2'}}
+
+
 def test_stationary_arrival_waits_for_original_five_second_hold(node):
     final = c.RallyPose(1.25, 1.25, 0.)
     node.task_state = 'RALLY'

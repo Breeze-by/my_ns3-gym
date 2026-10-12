@@ -22,6 +22,8 @@ from .fleet_planning import (
     FleetSnapshot, MotionProposal, PlanningWorker, camera_cells, complete_budget,
     contact_route, protected_returns, robot_grid, route_length,
     qualified_motion_route,
+    rally_wait_budgets,
+    rally_beneficiary_complete,
 )
 
 
@@ -60,6 +62,7 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
         self.global_blocked_since = {}
         self.global_scan_steps = {}
         self.global_survey_attempts = 0
+        self.global_rally_yields = {}
         self.global_map_encodings = {}
         self.admission_geometry_caches = {}
         self.return_geometry_caches = {}
@@ -306,7 +309,7 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
             pending = tuple(set(pending) | {self.global_charge_intent.robot})
         history = tuple((x, y) for x, y, expiry in (*self.target_history, *self.bad_targets)
                         if expiry > now)
-        return FleetSnapshot(
+        snapshot = FleetSnapshot(
             self.task_state, now, self.map_data, self.resolution, tuple(self.origin),
             positions, {robot: dict(state) for robot, state in self.battery_states.items()
                         if state and state.get('mode') != 'FAILED'} if self.enable_battery else {},
@@ -325,6 +328,34 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
             dict(self.global_scan_steps), self.global_survey_attempts,
             self.num_robots * (1 + self.rally_max_retries),
             self.source_map_data, dict(self.map_self_return_cells))
+        self._refresh_rally_yields(snapshot)
+        return replace(snapshot, yielded_for={robot:tuple(sorted(peers))
+            for robot,peers in self.global_rally_yields.items()})
+
+    def _refresh_rally_yields(self, snapshot):
+        # Navigation ownership has already closed. The refuge remains a
+        # mission dependency until the beneficiary finishes its full final
+        # approach, not merely a short intermediate leg.
+        for robot, peers in tuple(self.global_rally_yields.items()):
+            for beneficiary in tuple(peers):
+                final = snapshot.final_poses.get(beneficiary)
+                reason = None
+                if snapshot.target is None:
+                    reason = 'target_unavailable'
+                elif robot not in snapshot.required or beneficiary not in snapshot.required:
+                    reason = 'participant_unavailable'
+                elif rally_beneficiary_complete(snapshot, beneficiary) and final is not None:
+                    reason = 'beneficiary_complete'
+                if reason is not None:
+                    world = self._world_evidence(snapshot)
+                    if not self._sources_current(snapshot.sources):
+                        continue
+                    self._emit('coordinator_global_rally_yield_released', robot=robot,
+                        beneficiary=beneficiary, reason=reason,
+                        final_pose=None if final is None else [final.x,final.y,final.yaw], world=world)
+                    peers.remove(beneficiary)
+            if not peers:
+                self.global_rally_yields.pop(robot, None)
 
     def _encoded_map(self, data, resolution, origin, source, stamp):
         key = (data.shape, resolution, tuple(origin),
@@ -452,6 +483,12 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
 
     def _current_motion(self, snapshot, proposal, waits, owned_task=None):
         robot, kind = proposal.robot, proposal.kind
+        if kind == 'rally' and robot in snapshot.yielded_for:
+            return None
+        if kind == 'rally_yield' and (proposal.beneficiary not in snapshot.final_poses
+                or rally_beneficiary_complete(snapshot, proposal.beneficiary)
+                or proposal.beneficiary in snapshot.yielded_for):
+            return None
         if owned_task is None and (robot not in snapshot.available or robot in self.navigation_tasks):
             return None
         if owned_task is not None and (self.navigation_tasks.get(robot) is not owned_task
@@ -527,6 +564,9 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
         pricing = replace(snapshot, at_time=budget_time)
         wait = geometry.RALLY_GOAL_TIMEOUT_SEC if kind == "target_reacquisition_scan" else 0.
         complete = full
+        if kind == 'rally_yield':
+            wait = self.rally_hold_sec + max(self.rally_goal_timeout_sec,
+                                            self._current_wait(pricing, robot))
         if kind == "rally":
             final = self.rally_final_targets[robot]
             _, remaining = geometry.plan_rally_leg(final, grid, snapshot.resolution,
@@ -583,35 +623,9 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
     def _current_wait(self, snapshot, waiting_robot):
         # Bound nominal outstanding peer travel and serialized charge time.
         # No Euclidean fallback can supply a feasible path or a return price.
-        bases, travel, charge_times = {}, {}, {}
-        for robot, final in self.rally_final_targets.items():
-            caches = self._nominal_caches(snapshot, robot)
-            grid = robot_grid(snapshot, robot, caches)
-            _, route = geometry.plan_rally_leg(final, grid, snapshot.resolution,
-                snapshot.origin, snapshot.positions[robot],
-                route_cache=caches.setdefault("nominal_rally_routes", {}))
-            if not route:
-                return math.inf
-            state = snapshot.batteries.get(robot, {})
-            speed = float(state.get("nominal_speed_mps", .18))
-            full = (snapshot.positions[robot], *route)
-            travel[robot] = route_length(full) / speed
-            base = complete_budget(snapshot, robot, full, (final.x, final.y), caches, self.rally_hold_sec)
-            if base is None:
-                return math.inf
-            bases[robot] = base
-            if snapshot.batteries:
-                contact = contact_route(snapshot, robot, snapshot.positions[robot], caches)
-                if contact is None:
-                    return math.inf
-                charge_times[robot] = (contact["path_distance_m"] * float(state.get("return_path_factor", 2.)) / speed
-                    + float(state.get("charge_duration_sec", 6.))
-                    + float(state.get("return_recovery_wait_sec", geometry.RETURN_RECOVERY_WAIT_SEC)))
-        if not snapshot.batteries:
-            return max((duration for robot, duration in travel.items() if robot != waiting_robot), default=0.)
-        _, waits = geometry.rally_wait_requirements(bases, snapshot.batteries,
-            {robot: state["mode"] for robot, state in snapshot.batteries.items()}, travel, charge_times)
-        return waits.get(waiting_robot, math.inf)
+        waits = rally_wait_budgets(snapshot, self.rally_final_targets,
+            {robot:self._nominal_caches(snapshot, robot) for robot in self.rally_final_targets})
+        return math.inf if waits is None else waits.get(waiting_robot, math.inf)
 
     def _send_motion(self, snapshot, proposal):
         robot = proposal.robot
@@ -763,9 +777,14 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
         self.goal_routes[robot] = ()
         success = status == GoalStatus.STATUS_SUCCEEDED
         kind = task.proposal.kind
+        held = False
         if success:
             self.global_nav_failures[robot] = 0
             final = self.rally_final_targets.get(robot)
+            if (kind == 'rally_yield' and task.proposal.beneficiary in self.rally_final_targets
+                    and self.task_state == 'RALLY' and not self.shutdown_requested):
+                self.global_rally_yields.setdefault(robot, set()).add(task.proposal.beneficiary)
+                held = True
             if kind == "rally" and final is not None:
                 self.rally_arrived[robot] = (
                     math.dist((task.proposal.pose.x, task.proposal.pose.y), (final.x, final.y))
@@ -792,12 +811,25 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                                          self.now() + geometry.BAD_TARGET_SEC))
         self._emit("coordinator_global_motion_closed", robot=robot, generation=task.generation,
                    kind=kind, status=status, error=error, cancel_reason=task.cancel_reason)
+        if held:
+            beneficiary = task.proposal.beneficiary
+            final = self.rally_final_targets[beneficiary]
+            self._emit('coordinator_global_rally_yield_held', robot=robot,
+                beneficiary=beneficiary, generation=task.generation,
+                final_pose=[final.x,final.y,final.yaw])
 
     def _prepare_charge(self, snapshot):
         intent = self.global_charge_intent
         if snapshot is None or intent is None or self.global_charge_requested_at is not None:
             return
         robot = intent.robot
+        if intent.park_for is not None and (intent.park_for not in snapshot.final_poses
+                or rally_beneficiary_complete(snapshot, intent.park_for)):
+            self.global_charge_intent = self.deferred_charge_intent
+            self.deferred_charge_intent = None
+            self._emit('coordinator_global_charge_intent_closed', robot=robot,
+                       reason='refuge_beneficiary_already_complete')
+            return
         if robot in self.navigation_tasks or snapshot.batteries[robot]["mode"] != "ACTIVE":
             return
         caches = self._admission_caches(snapshot, robot)
@@ -824,6 +856,9 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
             desired_time = self.now()
             pricing = replace(snapshot, at_time=desired_time)
             desired_wait = self.rally_hold_sec + self._current_wait(pricing, robot) if intent.reason == "whole_rally_and_wait" else 0.
+            if intent.park_for is not None:
+                desired_wait = self.rally_hold_sec + max(self.rally_goal_timeout_sec,
+                                                        self._current_wait(pricing, robot))
             required = complete_budget(pricing, robot, desired_route,
                                       intent.destination, caches, desired_wait)
             if required is None:
@@ -868,7 +903,8 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                    budget_evaluated_at_sec=return_budget_time, destination=intent.destination,
                    desired_task_route=desired_route, desired_task_wait_sec=desired_wait,
                    desired_task_budget_at_sec=desired_time,
-                   reason=intent.reason, world=self._world_evidence(snapshot))
+                   final_poses={peer:[pose.x,pose.y,pose.yaw] for peer,pose in self.rally_final_targets.items()},
+                   reason=intent.reason, park_for=intent.park_for, world=self._world_evidence(snapshot))
         if not self._sources_current(snapshot.sources, include_target=intent.reason == "whole_rally_and_wait"):
             return
         self.charge_request_publishers[robot].publish(message)
@@ -970,6 +1006,7 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                               "position": [motion.pose.x, motion.pose.y]} for motion in proposal.motions],
                     charges=[charge.robot for charge in proposal.charges],
                     arrived=dict(self.rally_arrived),owned=list(self.navigation_tasks),
+                    yielded_for=snapshot.yielded_for,
                     charge_intent=None if self.global_charge_intent is None else {
                         'robot':self.global_charge_intent.robot,'reason':self.global_charge_intent.reason,
                         'requested_at':self.global_charge_requested_at,
@@ -994,6 +1031,12 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                     self.global_charge_context = None
                     self.global_charge_started = False
                 self.rally_targets = dict(proposal.final_poses)
+                if self.global_rally_yields:
+                    self._emit('coordinator_global_rally_yields_reassigned',
+                        yielded_for={robot:sorted(peers) for robot,peers in self.global_rally_yields.items()},
+                        final_poses={robot:[pose.x,pose.y,pose.yaw] for robot,pose in proposal.final_poses.items()},
+                        world=self._world_evidence(snapshot))
+                    self.global_rally_yields.clear()
                 self.rally_final_targets = dict(proposal.final_poses)
                 self.rally_dispatch_order = sorted(proposal.final_poses)
                 self.rally_arrived = dict.fromkeys(self.robot_positions, False)
