@@ -17,6 +17,7 @@ from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.executors import MultiThreadedExecutor
 from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
+from rclpy.serialization import deserialize_message
 from rclpy.task import Future
 from rosgraph_msgs.msg import Clock
 from std_msgs.msg import String
@@ -27,7 +28,8 @@ from p2c_navigation_capture import NavigationCapture
 from p2c_global_audit import global_mission_audit
 
 
-def test_real_dds_worker_dispatch_result_and_cancel_ownership(tmp_path):
+@pytest.mark.parametrize('late_acceptance', [False, True])
+def test_real_dds_worker_dispatch_result_and_cancel_ownership(tmp_path, late_acceptance):
     rclpy.init(args=['--ros-args', '-p', 'robot_count:=1', '-p', 'use_sim_time:=true',
                     '-p', 'enable_battery:=true', '-p', 'enable_rally:=false'])
     node = GlobalHeadquartersControl()
@@ -49,6 +51,19 @@ def test_real_dds_worker_dispatch_result_and_cancel_ownership(tmp_path):
         'native_battery': source.create_publisher(String, '/tb1/battery_state', latched),
     }
     capture = NavigationCapture(observer, tmp_path / 'navigation_inputs.jsonl.gz', 1)
+    captured_sources = set()
+    original_record = capture.record
+
+    def record(topic, kind, data):
+        original_record(topic, kind, data)
+        if topic.endswith('/odom'):
+            message = deserialize_message(data, Odometry)
+            captured_sources.add((topic, message.header.stamp.sec))
+        elif topic.endswith('/tf'):
+            message = deserialize_message(data, TFMessage)
+            captured_sources.update((topic, transform.header.stamp.sec) for transform in message.transforms)
+
+    capture.record = record
     native = []
     source.create_subscription(String, '/tb1/battery_state',
         lambda msg: native.append(dict(topic='/tb1/battery_state', data=json.loads(msg.data))), latched)
@@ -69,6 +84,17 @@ def test_real_dds_worker_dispatch_result_and_cancel_ownership(tmp_path):
     server = ActionServer(source, NavigateToPose, '/gateway/tb1/navigate_to_pose', execute,
         cancel_callback=lambda _: CancelResponse.ACCEPT, callback_group=ReentrantCallbackGroup())
     sim = 10.
+    state_source = 10.
+    held_responses = []
+    original_response = node._goal_response
+
+    def delayed_response(task, future):
+        held_responses.append((task, future))
+
+    if late_acceptance:
+        # Delay only serialized consumption of the real acceptance Future.
+        # The actual server and DDS continue running with the same owner.
+        node._goal_response = delayed_response
 
     def publish():
         stamp = Clock()
@@ -83,7 +109,7 @@ def test_real_dds_worker_dispatch_result_and_cancel_ownership(tmp_path):
         grid = OccupancyGrid()
         # Repeat one original stationary snapshot. Repetition does not renew
         # its lease; the actual clock and budget evaluation still advance.
-        grid.header.stamp.sec = 10
+        grid.header.stamp.sec = int(state_source)
         grid.header.frame_id = 'map'
         grid.info.width = grid.info.height = 80
         grid.info.resolution = .1
@@ -101,7 +127,7 @@ def test_real_dds_worker_dispatch_result_and_cancel_ownership(tmp_path):
         frame.header.frame_id, frame.child_frame_id = 'map', 'odom'
         frame.transform.rotation.w = 1.
         publishers['tf'].publish(TFMessage(transforms=[frame]))
-        state = dict(mode='ACTIVE', stamp_sec=10., energy=80., charge_x=4.25, charge_y=4.25,
+        state = dict(mode='ACTIVE', stamp_sec=state_source, energy=80., charge_x=4.25, charge_y=4.25,
             capacity=100., charge_target_fraction=.8, charge_radius_m=.8, move_cost_per_m=1.,
             idle_cost_per_sec=.02, return_path_factor=2., nominal_speed_mps=.18,
             return_safety_margin=8., charge_duration_sec=6.)
@@ -126,12 +152,29 @@ def test_real_dds_worker_dispatch_result_and_cancel_ownership(tmp_path):
 
     try:
         pump_until(lambda: len(goals) == 1 and node.navigation_tasks.get('tb1') is not None
-                   and node.navigation_tasks['tb1'].handle is not None)
+                   and (held_responses if late_acceptance else node.navigation_tasks['tb1'].handle is not None))
         task = node.navigation_tasks['tb1']
         assert task.proposal.kind == 'exploration'
         assert task.proposal.budget_time is not None
         assert task.proposal.required_energy < 80.
         node.return_probe_paused = True
+        if late_acceptance:
+            sim = state_source = 13.
+            pump_until(lambda: node.robot_odom_received_at['tb1'] == 13.
+                       and node.robot_tf_received_at['tb1'] == 13.
+                       and node.battery_state_received_at['tb1'] == 13.
+                       and node.map_received_at == 13.
+                       and ('/gateway/received/tb1/odom', 13) in captured_sources
+                       and ('/gateway/received/tb1/tf', 13) in captured_sources)
+            assert task.sources['tb1/pose_state'] == 10. and not task.handle
+            node._goal_response = original_response
+            delayed_task, completed = held_responses.pop()
+            assert delayed_task is task and completed.done()
+            node.action_done_callbacks.put((lambda future: original_response(task, future), completed))
+            node.action_done_guard.trigger()
+            pump_until(lambda: task.handle is not None and any(
+                event.get('event') == 'coordinator_global_motion_revalidated' for event in events))
+            assert task.cancel_reason is None and task.sources['tb1/pose_state'] == 13.
         for _ in range(30):
             publish()
             executor.spin_once(timeout_sec=.005)
@@ -159,6 +202,7 @@ def test_real_dds_worker_dispatch_result_and_cancel_ownership(tmp_path):
         (tmp_path / 'safety_events.jsonl').write_text(''.join(json.dumps(e) + '\n' for e in native))
         audit = global_mission_audit(tmp_path, True)
         assert audit['sent'] == audit['closed'] == 2
+        assert audit['current_revalidations'] == int(late_acceptance)
         assert audit['original_map_bindings'] >= 2 and not audit['pending_at_owned_shutdown']
         # The independent reader must reject changed budgets and generations.
         for field in ('required_energy','generation'):
@@ -167,6 +211,14 @@ def test_real_dds_worker_dispatch_result_and_cancel_ownership(tmp_path):
             witness[field] += 1
             (tmp_path / 'ledger.jsonl').write_text(''.join(json.dumps(e)+'\n' for e in altered))
             with pytest.raises(AssertionError):
+                global_mission_audit(tmp_path, True)
+        if late_acceptance:
+            altered = copy.deepcopy(events)
+            witness = next(event for event in altered
+                           if event.get('event') == 'coordinator_global_motion_revalidation')
+            witness['requested_yaw'] += .2
+            (tmp_path / 'ledger.jsonl').write_text(''.join(json.dumps(event)+'\n' for event in altered))
+            with pytest.raises(AssertionError, match='changed an issued goal'):
                 global_mission_audit(tmp_path, True)
     finally:
         node.shutdown_requested = True

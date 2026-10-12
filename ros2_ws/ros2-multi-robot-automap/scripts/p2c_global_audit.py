@@ -303,8 +303,8 @@ def bind_sources(events, capture, native_path):
 def global_mission_audit(directory, required=False):
     if not required:
         return None
-    events, admissions, owners, charge_proofs = [], {}, {}, {}
-    sent = closed = revoked = charges = 0
+    events, admissions, owners, charge_proofs, revalidations = [], {}, {}, {}, {}
+    sent = closed = revoked = charges = validated = 0
     for line in (directory / 'ledger.jsonl').open():
         event = json.loads(line)
         kind = event.get('event')
@@ -329,6 +329,24 @@ def global_mission_audit(directory, required=False):
             assert previous == token or (previous is None and token in admissions
                 and str(event['error']).startswith('send_exception:')), 'old result released another generation'
             closed += 1
+        elif kind == 'coordinator_global_motion_revalidation':
+            token = event['robot'], event['generation']
+            assert owners.get(event['robot']) == token
+            original = admissions[token]
+            assert (event['requested_position'] == original['requested_position']
+                    and event['requested_yaw'] == original['requested_yaw']
+                    and event['kind'] == original['kind']), 'revalidation changed an issued goal'
+            revalidations[token] = event
+        elif kind == 'coordinator_global_motion_revalidated':
+            token = event['robot'], event['generation']
+            assert owners.get(event['robot']) == token
+            proof = revalidations.pop(token)
+            for key, source in proof['world']['sources'].items():
+                ttl=60. if key.endswith('/target_detection') else 2. if key.endswith(('/pose_state','/frame_state')) else 5.
+                assert 0 <= event['validated_at_sec']-source <= ttl, 'expired current revalidation source'
+            audit_motion(proof)
+            events.append(proof)
+            validated += 1
         elif kind == 'coordinator_global_motion_revoked':
             revoked += 1
         elif kind == 'coordinator_global_charge_admission':
@@ -366,5 +384,6 @@ def global_mission_audit(directory, required=False):
             charges += 1
     bindings = bind_sources(events, directory / 'navigation_inputs.jsonl.gz', directory / 'safety_events.jsonl')
     return dict(status='PASS', sent=sent, closed=closed, revoked=revoked, charge_admissions=charges,
+        current_revalidations=validated,
         original_map_bindings=bindings, pending_at_owned_shutdown=sorted(owners),
         scope='Original DDS content, complete dispatch budgets, reservations and generation ownership; no physical success substitution')

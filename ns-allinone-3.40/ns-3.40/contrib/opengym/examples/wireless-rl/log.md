@@ -9498,3 +9498,16 @@ v2_forced_gate和v2_development_gate严格FAIL：两原NativeCOMPLETE的global�
 搜索生成器源码揭示frontier旧utility和known-camera旧utility的分母不同，新控制器混排且首次8funded后提前停、再按共同actual gain计算，因此后方实际高价值候选会被压掉；远端bound也不约束短航段新端点收益。v4实现所有不同当前合格短航段的几何池，在实际端点对interest|unknown矩形计数取安全信息上界，统一实际完整航段成本和原近期访问偏好，复用原lazy_priority_candidates逐步精化并取得前8个已证明实际funded分数，然后原joint信息集合边际收益决策。补能/完整去返预算/机体预约/源龄/Native判据保持，未使用地图目标真值或case特例。
 
 原v4_components1错调用helper不存在的lazy_ranked_candidates，3FAIL20PASS15.17s（actualDDS检验暴露，原输出保留）；修为确切原函数+关键词参数，几何池逐项保存前沿朝向避免闭包取末个候选。新增开放已知图排序反例：八遥远宽松旧上界不能吞掉第九近端真实较优目标，路径/信息/相机视线均实算，无物理/native信用。v4_components2 24PASS8.49s，v4_source190保护/6授权/54协议PASS；四包build4.90sPASS，核心F821/F822/F823/E999/diffcheckPASS，v4_full完整功能1603PASS159.62s。只有一个累计技术报告。
+
+
+### global v4 四原失败保持与 v5 全角色执行契约
+
+59e5680943df045b85c162c201fced36a96bdc04 clean pushed，20261012_p2c_global_v4/domain204/port11573同源码同原条件四格串行。forced EXPLORE300.1未检测；lab RALLY300.3/检测63.8/集合90.9；rooms RALLY300.4/181.1/185.6；corr RALLY300.1/94.6/97.1，四原各charge2，minE9.0624/17.8510/15.1060/23.0625，零contact/exhaustion/FAILED，runner/observer均0且全部owned关闭。四片完整CDR135486218bytes保留原位，v4_development_gate严格FAIL（四个原successfalse，原声明/退出与任务期infra未拒绝），17正式/两物理/917未调用，失败不回填。
+
+原lab tb1/generation32在2407.182派发、2428.282以no_progress真实CANCELED闭合，85条不同原交付odom源覆盖3.7025883086621m运动，末速度linear.00125/angular.69998；原sha92473643c826c6091b55da90b89ff5febfdf00df6996e8b795b80e830bb02d37及路径时轴在v4_execution_sources.json。另原lab8个rally以source_expired_at_acceptance闭合。源码揭示global进展仅反馈最小剩余距离，漏了旧odom通道；接受阶段仅检查派发旧source，没有从真实持续新交付重建。原件不是完整中央回调时序或另一任务收益的因果重放。
+
+v5同一执行器对所有角色用新鲜单调odom-frame位移/转向与反馈记录进展，不接受同戳/未来/过期、也不把TF重投影当物理进展；原20s和30/60s总超时保持。异步迟到接受复用当前完整准入重建精确已发目标、完整永久目标路/当前返充/实际停点返充/等待、身体与1.8m预约；旧sources不续租、不换命令或generation，总超时起点不改，失格取消后仍等匹配真实Future闭合。新独立读者绑定重验证的新原map/odom/TF/native电池，核验原目标不变和实际应用时TTL，零physics/native任务替代信用。
+
+v5_components1 29PASS8.88s；新增真实DDS延迟消费真实acceptance Future、新source13完整流程后components2=29PASS1FAIL14.11s，旁录漏新odom13严格原件拒绝。该独有失败raw夹具109957bytes移入v5_components2_fixture_failed，无重复大附件。夹具只增加等待实际原CDR订阅已捕获新odom/TF的条件，生产QoS/时钟/消息与读者不放宽；components3 30PASS16.50s，含两个真实ActionServer生命周期与原件/预算/代次/目标篡改拒绝；追加TF修正无进展反例1PASS/21deselected1.96s。
+
+v5_full首全功能进程在test_blocked_observer_does_not_starve_other_funded_serial_charging→原path_distance_grid/SciPy dijkstra处segfault/exit139，无完整信用，原输出v5_full.log保留。无运行源修改后重复同命令v5_full2完整1609PASS164.94s，未复现；不声称已找出底层段错误原因。两次均source Humble+install，PYTHONNOUSERSITE=1，追加src/scripts到ROS PYTHONPATH，domain215，pytest src/multi_robot_exploration/test scripts忽略原copyright/flake8/pep257风格入口。四包build5.93sPASS，source190保护/6授权/54协议/native常量与Future契约PASS，五个变更核心/测试模块F821/F822/F823/E999及diff-checkPASS，validate-only23源共享构造声明PASS。两个manifest原cases/duration/seeds/native-energy-return-source契约与59e5680逐对象相同，仅新冻结父SHA、时刻和执行说明更新。新freeze待clean pushed四开发，保持P2C.1未完成；旧长会话暂停，260929_report十四用户文件不动，无P4/ns3/WiFi/RL。

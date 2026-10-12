@@ -34,6 +34,9 @@ class NavigationTask:
     last_progress_at: float = 0.0
     best_distance: float = math.inf
     sources: dict = field(default_factory=dict)
+    progress_position: tuple | None = None
+    progress_yaw: float | None = None
+    progress_source: float = -math.inf
 
 
 class GlobalHeadquartersControl(geometry.HeadquartersControl):
@@ -100,6 +103,31 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
         if task.handle is not None:
             task.handle.cancel_goal_async()
         self.get_logger().info(f"Canceling {robot} {task.proposal.kind}: {reason}")
+
+    def robot_odom_callback(self, message, robot_name):
+        super().robot_odom_callback(message, robot_name)
+        if not getattr(self, 'global_enabled', False):
+            return
+        task = self.navigation_tasks.get(robot_name)
+        if task is None:
+            return
+        source = message.header.stamp.sec + message.header.stamp.nanosec / 1e9
+        position = (message.pose.pose.position.x, message.pose.pose.position.y)
+        yaw = geometry.quaternion_yaw(message.pose.pose.orientation)
+        if (not all(math.isfinite(value) for value in (*position, yaw, source))
+                or source <= task.progress_source
+                or not 0 <= self.now() - source <= geometry.STATE_TTL_SEC['pose_state']):
+            return
+        # Odom-frame displacement is physical progress. A map-to-odom
+        # correction alone, or replaying the same odometry, cannot renew it.
+        task.progress_source = source
+        if task.progress_position is None:
+            task.progress_position, task.progress_yaw = position, yaw
+        elif (math.dist(position, task.progress_position) >= .1
+                or abs(math.atan2(math.sin(yaw-task.progress_yaw),
+                                 math.cos(yaw-task.progress_yaw))) >= .1):
+            task.progress_position, task.progress_yaw = position, yaw
+            task.last_progress_at = self.now()
 
     def battery_state_callback(self, message, robot_name):
         if not getattr(self, "global_enabled", False):
@@ -364,9 +392,12 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                 return False
         return True
 
-    def _current_motion(self, snapshot, proposal, waits):
+    def _current_motion(self, snapshot, proposal, waits, owned_task=None):
         robot, kind = proposal.robot, proposal.kind
-        if robot not in snapshot.available or robot in self.navigation_tasks:
+        if owned_task is None and (robot not in snapshot.available or robot in self.navigation_tasks):
+            return None
+        if owned_task is not None and (self.navigation_tasks.get(robot) is not owned_task
+                or self.battery_modes[robot] != 'ACTIVE'):
             return None
         if kind in ("rally", "rally_yield", "target_information_survey") and snapshot.target is None:
             return None
@@ -392,6 +423,20 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                 route_cache=caches.setdefault("motion_routes", {}))
         if actual is None:
             return None
+        if owned_task is not None:
+            # Revalidate the exact issued metric goal, never a new rounded
+            # waypoint or heading. A newly required longer leg is canceled.
+            if (geometry.world_to_grid(actual.x, actual.y, snapshot.resolution, *snapshot.origin)
+                    != geometry.world_to_grid(proposal.pose.x, proposal.pose.y,
+                                              snapshot.resolution, *snapshot.origin)
+                    or any(math.dist((proposal.pose.x, proposal.pose.y), position)
+                           < geometry.RALLY_DYNAMIC_CLEARANCE_M for position in bodies)):
+                return None
+            actual = proposal.pose
+            route = (*route, (actual.x, actual.y))
+            if not geometry.route_respects_known_obstacles(grid, snapshot.resolution,
+                    snapshot.origin, (snapshot.positions[robot], *route)):
+                return None
         if kind not in ("rally", "target_reacquisition_scan"):
             cell = geometry.world_to_grid(actual.x, actual.y, snapshot.resolution, *snapshot.origin)
             endpoint_mask = geometry.traversable_grid(grid, snapshot.resolution, geometry.ROBOT_CLEARANCE_M)
@@ -435,13 +480,15 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
             # A complete all-peer wait is repriced at the current epoch. The
             # proposed wait is a lower bound on this admission's wait reserve.
             wait = max(waits.get(robot, 0.), self._current_wait(snapshot, robot)) + self.rally_hold_sec
-            if math.dist((actual.x, actual.y), destination) > self.rally_position_tolerance:
+            if owned_task is not None:
+                actual = proposal.pose
+            elif math.dist((actual.x, actual.y), destination) > self.rally_position_tolerance:
                 actual = geometry.RallyPose(actual.x, actual.y,
                     geometry.route_arrival_yaw(route, final.yaw))
             else:
                 actual = geometry.RallyPose(actual.x, actual.y, final.yaw)
         information = proposal.information_cells
-        if kind == "exploration":
+        if kind == "exploration" and owned_task is None:
             cell = geometry.world_to_grid(actual.x, actual.y, snapshot.resolution, *snapshot.origin)
             interest = geometry.camera_search_interest(snapshot.grid, snapshot.resolution,
                                                        snapshot.origin, snapshot.views)
@@ -509,6 +556,11 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
         self.navigation_generation += 1
         task = NavigationTask(self.navigation_generation, proposal, self.task_state,
                               self.now(), last_progress_at=self.now(), sources=dict(snapshot.sources))
+        odom = self.robot_last_odom.get(robot)
+        if odom is not None:
+            task.progress_position = (odom.pose.pose.position.x, odom.pose.pose.position.y)
+            task.progress_yaw = geometry.quaternion_yaw(odom.pose.pose.orientation)
+            task.progress_source = odom.header.stamp.sec + odom.header.stamp.nanosec / 1e9
         self.navigation_tasks[robot] = task
         goal = NavigateToPose.Goal()
         goal.pose = PoseStamped()
@@ -516,16 +568,7 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
         goal.pose.pose.position.x, goal.pose.pose.position.y = proposal.pose.x, proposal.pose.y
         goal.pose.pose.orientation.z = math.sin(proposal.pose.yaw / 2.)
         goal.pose.pose.orientation.w = math.cos(proposal.pose.yaw / 2.)
-        proof = {
-            "robot": robot, "generation": task.generation, "kind": proposal.kind,
-            "beneficiary": proposal.beneficiary, "route": proposal.route,
-            "complete_task_route": proposal.complete_route or proposal.route,
-            "requested_position": [proposal.pose.x, proposal.pose.y],
-            "requested_yaw": proposal.pose.yaw, "required_energy": proposal.required_energy,
-            "budget_evaluated_at_sec": proposal.budget_time, "waiting_time_budget_sec": proposal.wait_sec,
-            "final_poses": {peer: [pose.x, pose.y, pose.yaw] for peer, pose in self.rally_final_targets.items()},
-            "world": self._world_evidence(snapshot),
-        }
+        proof = self._motion_proof(snapshot, task, proposal)
         self._emit("coordinator_global_motion_admission", **proof)
         if not self._sources_current(snapshot.sources, include_target=proposal.kind not in (
                 "local_return_yield", "exploration", "target_reacquisition_scan")):
@@ -565,6 +608,39 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                                f"budget={proposal.required_energy:.2f}")
         return True
 
+    def _motion_proof(self, snapshot, task, proposal):
+        return {
+            "robot": proposal.robot, "generation": task.generation, "kind": proposal.kind,
+            "beneficiary": proposal.beneficiary, "route": proposal.route,
+            "complete_task_route": proposal.complete_route or proposal.route,
+            "requested_position": [proposal.pose.x, proposal.pose.y],
+            "requested_yaw": proposal.pose.yaw, "required_energy": proposal.required_energy,
+            "budget_evaluated_at_sec": proposal.budget_time, "waiting_time_budget_sec": proposal.wait_sec,
+            "final_poses": {peer: [pose.x, pose.y, pose.yaw] for peer, pose in self.rally_final_targets.items()},
+            "world": self._world_evidence(snapshot),
+        }
+
+    def _revalidate_pending_motion(self, task):
+        snapshot = self._snapshot()
+        if snapshot is None:
+            return False
+        robot = task.proposal.robot
+        snapshot = replace(snapshot, live_routes={peer: route for peer, route
+            in snapshot.live_routes.items() if peer != robot})
+        actual = self._current_motion(snapshot, task.proposal, {}, owned_task=task)
+        if actual is None:
+            return False
+        self._emit('coordinator_global_motion_revalidation',
+                   **self._motion_proof(snapshot, task, actual))
+        if not self._sources_current(snapshot.sources, include_target=actual.kind not in (
+                'local_return_yield', 'exploration', 'target_reacquisition_scan')):
+            return False
+        task.proposal, task.sources = actual, dict(snapshot.sources)
+        self.goal_routes[robot] = actual.route
+        self._emit('coordinator_global_motion_revalidated', robot=robot,
+                   generation=task.generation, validated_at_sec=self.now())
+        return True
+
     def _goal_response(self, task, future):
         robot = task.proposal.robot
         try:
@@ -589,7 +665,8 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
             task.cancel_reason = task.cancel_reason or "phase_changed"
         elif not self._sources_current(task.sources, include_target=task.proposal.kind not in (
                 "local_return_yield", "exploration", "target_reacquisition_scan")):
-            task.cancel_reason = task.cancel_reason or "source_expired_at_acceptance"
+            if task.cancel_reason is None and not self._revalidate_pending_motion(task):
+                task.cancel_reason = "source_expired_at_acceptance"
         if task.cancel_reason is not None or self.battery_modes[robot] != "ACTIVE" or self.shutdown_requested:
             handle.cancel_goal_async()
         geometry.defer_action_done_callback(self, handle.get_result_async(),

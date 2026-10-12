@@ -95,6 +95,102 @@ def accept(node, pending):
     return handle, result
 
 
+def delivered_state(node, at, position=(1.25, 1.25), yaw=0., energy=40., obstacle=False):
+    node.now = lambda: at
+    stamp = int(at)
+    grid = OccupancyGrid()
+    grid.header.stamp.sec = stamp
+    grid.info.width = grid.info.height = 80
+    grid.info.resolution = .1
+    grid.info.origin.orientation.w = 1.
+    grid.data = [0] * 6400
+    if obstacle:
+        grid.data[12 * 80 + 22] = 100
+    node.map_callback(grid)
+    node.robot_map_callback(grid, 'tb1')
+    frame = TransformStamped()
+    frame.header.stamp.sec = stamp
+    frame.header.frame_id, frame.child_frame_id = 'map', 'odom'
+    frame.transform.rotation.w = 1.
+    node.robot_tf_callback(TFMessage(transforms=[frame]), 'tb1')
+    odom = Odometry()
+    odom.header.stamp.sec = stamp
+    odom.pose.pose.position.x, odom.pose.pose.position.y = position
+    odom.pose.pose.orientation.z, odom.pose.pose.orientation.w = math.sin(yaw / 2), math.cos(yaw / 2)
+    node.robot_odom_callback(odom, 'tb1')
+    node.battery_state_callback(String(data=json.dumps({**node.battery_states['tb1'],
+        'stamp_sec':at, 'energy':energy})), 'tb1')
+
+
+def test_physical_odom_progress_survives_zero_action_feedback(node):
+    _, _, _, _, task = request(node)
+    node._feedback(task, SimpleNamespace(feedback=SimpleNamespace(distance_remaining=0.)))
+    delivered_state(node, 29., position=(2., 1.25))
+    assert task.last_progress_at == 29.
+    node.now = lambda: 31.
+    node.cancel_stalled_goals()
+    assert task.cancel_reason is None
+    node.now = lambda: 71.
+    node.cancel_stalled_goals()
+    assert task.cancel_reason == 'timeout'
+
+
+def test_turning_progress_cannot_be_renewed_by_old_future_or_reprojected_odom(node):
+    _, _, _, _, task = request(node)
+    delivered_state(node, 29., yaw=.3)
+    assert task.last_progress_at == 29.
+    node.now = lambda: 30.
+    shifted = TransformStamped()
+    shifted.header.stamp.sec = 30
+    shifted.header.frame_id, shifted.child_frame_id = 'map', 'odom'
+    shifted.transform.rotation.w = 1.
+    shifted.transform.translation.x = 3.
+    node.robot_tf_callback(TFMessage(transforms=[shifted]), 'tb1')
+    assert task.last_progress_at == 29.
+    replay = Odometry()
+    replay.header.stamp.sec = 29
+    replay.pose.pose.position.x, replay.pose.pose.position.y = 6., 6.
+    replay.pose.pose.orientation.w = 1.
+    node.now = lambda: 31.
+    node.robot_odom_callback(replay, 'tb1')
+    replay.header.stamp.sec = 40
+    node.robot_odom_callback(replay, 'tb1')
+    assert task.last_progress_at == 29.
+    node.now = lambda: 50.
+    node.cancel_stalled_goals()
+    assert task.cancel_reason == 'no_progress'
+
+
+def test_late_acceptance_uses_real_new_state_and_exact_original_goal(node):
+    snapshot, proposal, pending, _, task = request(node)
+    delivered_state(node, 13.)
+    handle, result = accept(node, pending)
+    assert not handle.cancel_goal_async.called
+    assert task.generation == 1 and node.navigation_tasks['tb1'] is task
+    assert task.started_at == 10. and snapshot.sources['tb1/pose_state'] == 10.
+    assert task.sources['tb1/pose_state'] == 13. and task.proposal.pose == proposal.pose
+    proofs = [json.loads(call.args[0].data) for call in node.consumed_publisher.publish.call_args_list
+              if json.loads(call.args[0].data).get('event') == 'coordinator_global_motion_revalidation']
+    assert len(proofs) == 1
+    from p2c_global_audit import audit_motion
+    assert audit_motion(proofs[0]) > 0
+    result.set_result(SimpleNamespace(status=GoalStatus.STATUS_SUCCEEDED))
+    node.drain_action_done_callbacks()
+    assert not node.navigation_tasks and node.successful_exploration_legs['tb1'] == 1
+
+
+@pytest.mark.parametrize('energy,obstacle', [(10., False), (40., True)])
+def test_late_acceptance_rejects_new_unfunded_or_blocked_state_without_releasing_owner(node, energy, obstacle):
+    _, _, pending, _, task = request(node)
+    delivered_state(node, 13., energy=energy, obstacle=obstacle)
+    handle, result = accept(node, pending)
+    assert handle.cancel_goal_async.called and task.cancel_reason == 'source_expired_at_acceptance'
+    assert node.navigation_tasks['tb1'] is task and node.successful_exploration_legs.get('tb1', 0) == 0
+    result.set_result(SimpleNamespace(status=GoalStatus.STATUS_CANCELED))
+    node.drain_action_done_callbacks()
+    assert not node.navigation_tasks
+
+
 def test_pending_cancel_retains_owner_until_matching_real_future_closes(node):
     snapshot, proposal, pending, client, task = request(node)
     assert not node._send_motion(snapshot, proposal)
