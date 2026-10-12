@@ -10,8 +10,6 @@ import pytest
 
 from multi_robot_exploration import control as c
 from test_candidate_battery_bound import conditional_charge
-from outbound_reference import with_local_route_inputs
-from curve_reference import preserve_straight_prefix,assert_full_prefix_safety
 
 
 REFERENCE = json.loads((Path(__file__).parent / 'fixtures/p2c_v39_staged_bound_reference.json').read_text())
@@ -20,26 +18,16 @@ REFERENCE = json.loads((Path(__file__).parent / 'fixtures/p2c_v39_staged_bound_r
 def reference_assign():
     assert hashlib.sha256(REFERENCE['function'].encode()).hexdigest() == REFERENCE['function_sha256']
     namespace = dict(vars(c))
-    exec(compile(with_local_route_inputs(REFERENCE['function']), '<10860f4 reference with local route input>', 'exec'), namespace)
+    exec(compile(REFERENCE['function'], '<10860f4 independent assign reference>', 'exec'), namespace)
     return namespace['assign_idle_robots']
 
 
 @pytest.mark.parametrize('stage', sorted(REFERENCE['snapshots']))
-@pytest.mark.parametrize('curved',[False,True])
-def test_actual_abandoned_choices_headings_charge_intents_and_budgets_remain_equal(stage,curved,monkeypatch):
-    if not curved:
-        preserve_straight_prefix(monkeypatch)
+def test_actual_abandoned_choices_headings_charge_intents_and_budgets_remain_equal(stage):
     event = REFERENCE['snapshots'][stage]
     expected = conditional_charge(event, reference_assign())
     assert expected['sent']
-    actual,node=conditional_charge(event,c.HeadquartersControl.assign_idle_robots,True)
-    if not curved:
-        assert actual==expected
-    else:
-        assert actual['requests']==expected['requests'] and actual['choices']==expected['choices']
-        nominal=lambda rows:[(name,{k:v for k,v in a.items() if not k.startswith('navigation_')}) for name,a in rows]
-        assert nominal(actual['sent'])==nominal(expected['sent'])
-    assert_full_prefix_safety(node,actual['sent'])
+    assert conditional_charge(event, c.HeadquartersControl.assign_idle_robots) == expected
 
 
 def state():

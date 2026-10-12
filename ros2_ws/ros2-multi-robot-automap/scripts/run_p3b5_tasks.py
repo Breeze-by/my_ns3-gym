@@ -182,8 +182,7 @@ def episode_command(case, scenario, profile, mode, directory, config):
                "--episode-id", identity, "--collect-fault-result", "--dwell-seconds", "0",
                "--evaluation-output-dir", str(directory), "--log-dir", str(directory / "launch"),
                "--gateway-ledger-path", str(directory / "ledger.jsonl"),
-               "--bypass-audit-output", str(directory / (
-                   "initial_bypass_graph.json" if config.get('complete_application_graph') else "graph.json"))]
+               "--bypass-audit-output", str(directory / "graph.json")]
     if case["mode"] in ("target", "rally"):
         command.append("--target-detection")
     if case["mode"] == "rally":

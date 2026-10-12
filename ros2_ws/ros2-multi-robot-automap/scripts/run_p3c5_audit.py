@@ -69,12 +69,6 @@ def main(default_manifest=None, log_category='p3c5'):
                         "--output", str(directory / "safety_events.jsonl"), "--robot-count", str(scenario["robot_count"])]
     if config.get('native_tf_graph_capture'):
         observer_command.extend(['--native-tf-graph-output',str(directory/'native_graph.json')])
-    if config.get('complete_application_graph'):
-        if not config.get('native_tf_graph_capture'):
-            raise ValueError('complete application graph requires native graph capture')
-        observer_command.extend(['--application-graph-output',str(directory/'graph.json')])
-    if config.get('navigation_input_capture'):
-        observer_command.extend(['--navigation-input-output',str(directory/'navigation_inputs.jsonl.gz')])
     schedule_path = directory / "schedule.json"
     configure_command = [sys.executable, str(PROJECT_ROOT / "scripts/gateway_configure.py"),
                          "--schedule", str(schedule_path), "--output", str(directory / "configuration.jsonl")]
@@ -100,41 +94,9 @@ def main(default_manifest=None, log_category='p3c5'):
     manifest['source_digests'].update({name:file_digest(PROJECT_ROOT/'scripts'/filename)
         for name,filename in (('staging_apparatus',staging_apparatus(config).name),
                               ('physics_observer','observe_p3b5_return_physics.py'))})
-    if config.get('predeclared_graph_command'):
-        manifest['source_digests']['episode_command_builder']=file_digest(PROJECT_ROOT/'scripts/run_p3b5_tasks.py')
-    if config.get('parallel_rally_preparation'):
-        manifest['source_digests']['preparation_approach_reader']=file_digest(PROJECT_ROOT/'scripts/p2c_preparation_approach.py')
-    if config.get('exploration_charge_geometry_handoff'):
-        manifest['source_digests']['charge_geometry_reader']=file_digest(PROJECT_ROOT/'scripts/p2c_charge_handoff.py')
-    if config.get('initial_near_home_replenishment'):
-        manifest['source_digests']['initial_replenishment_reader']=file_digest(PROJECT_ROOT/'scripts/p2c_initial_replenishment.py')
     if config.get('native_tf_graph_capture'):
         manifest['source_digests'].update({name:file_digest(PROJECT_ROOT/'scripts'/filename)
             for name,filename in (('safety_observer','observe_p3b5.py'),('native_graph_reader','p2c_native_graph.py'))})
-    if config.get('navigation_input_capture'):
-        manifest['source_digests']['navigation_capture']=file_digest(PROJECT_ROOT/'scripts/p2c_navigation_capture.py')
-    if config.get('departure_heading_preference'):
-        manifest['source_digests']['departure_heading_reader']=file_digest(PROJECT_ROOT/'scripts/p2c_departure_heading.py')
-    if config.get('observer_connection_information_priority'):
-        manifest['source_digests']['observer_information_reader']=file_digest(PROJECT_ROOT/'scripts/p2c_observer_information.py')
-    if config.get('exploration_return_preparation'):
-        manifest['source_digests']['return_preparation_reader']=file_digest(PROJECT_ROOT/'scripts/p2c_return_preparation.py')
-    if config.get('navigation_dispatch_boundary'):
-        manifest['source_digests']['navigation_dispatch_reader']=file_digest(PROJECT_ROOT/'scripts/p2c_navigation_dispatch.py')
-    if config.get('observed_rally_transit_heading'):
-        manifest['source_digests']['rally_transit_reader']=file_digest(PROJECT_ROOT/'scripts/p2c_rally_transit_heading.py')
-    if config.get('navigation_outbound_consistency'):
-        manifest['source_digests']['outbound_route_reader']=file_digest(PROJECT_ROOT/'scripts/p2c_outbound_routes.py')
-    if config.get('normal_rally_batch_before_recovery'):
-        manifest['source_digests']['prepared_dispatch_reader']=file_digest(PROJECT_ROOT/'scripts/p2c_prepared_dispatch.py')
-    if config.get('charged_return_refuge_release'):
-        manifest['source_digests']['refuge_release_reader']=file_digest(PROJECT_ROOT/'scripts/p2c_refuge_release.py')
-    if config.get('rally_connection_handoff'):
-        manifest['source_digests']['rally_connection_reader']=file_digest(PROJECT_ROOT/'scripts/p2c_rally_connection.py')
-    if config.get('native_scan_self_filter'):
-        manifest['source_digests'].update({name:file_digest(PROJECT_ROOT/path) for name,path in (
-            ('slam','src/slam_toolbox'),('robot_models','src/multi_robot/models'),
-            ('robot_description','src/multi_robot/urdf'),('scan_self_filter_reader','scripts/p2c_scan_self_filter.py'))})
     if probe_commands:
         fixture=staging_apparatus(config)
         manifest.update(staging_command=shlex.join(probe_commands['staging']),

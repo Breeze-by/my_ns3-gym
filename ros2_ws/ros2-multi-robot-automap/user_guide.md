@@ -1,5 +1,11 @@
 # ROS2 多机器人自主建图项目使用指南
 
+## 2026-10-12 维护恢复状态
+
+当前源码和声明恢复到长会话开始前的 `b32c891`，保留当时的完整路径安全预算与原生返航修复。长会话已暂停；v43–v95 的新增规则不属于当前实现。最新 v95 四开发与首正式 lab101 的 PASS、其余失败及全部原始证据均保留在备份分支 `backup/p2c1-before-recovery-20261012` 与日期报告中。P2C.1 完整集成仍未验收，917 留出未调用；本次恢复未产生新的完整任务信用。后续运行必须使用新的明确任务与新的源码冻结/run-id，不能复用旧批次或自动继续旧会话。
+
+恢复报告：[`20261012_p2c1_session_recovery.md`](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261012_p2c1_session_recovery.md)。
+
 2026-10-09 P2C.1本轮补强评审完成，完整任务集成仍FAIL：40个主任务源码版本/76原任务，最新v41 PARTIAL279.1/tb2正电量失路；不跨版本合并成功率。完整路径/源龄/原生记账、探索/集合/计算优化和准备竞争修补1527功能/103定向/四包5.91s/171保护54协议/真实DDS9情形PASS。独立第三安全对子609ba9d为PASS，两前原对子FAIL全部保留；仅受控安全证据，不回填主任务。P2C.1A与完整B分开，B需新同源4开发→17正式+2物理，917仍未调用。P3C.5已验收，无P4/ns-3/Wi-Fi/RL，actual airtime/J和容量未测。完整结论/算法取舍/全部原任务与源SHA见report/20261009_p2c_strengthening_review.md/.json；旧pending说明均为历史。
 
 2026-10-09 P2C.1 v34两级惰性前沿gain组件PASS待新冻结：24e1e27首强制FOUNDtimeout300.0/检测291.4/13Nav2/两机各charge1/87原lease弃置，strict FAIL原件保留，余3/17/2/917未调用。批量射线157cell五样本更慢(.391..929vs.183s)已拒绝无task。新原几何采样+矩形unknown收益上界→竞争时准确ray gain重入heap→原budget评分，真实目标与充电top3均准确gain/原稳定顺序，bounds从不派发；完整raw forecast/source/TTL/native保持。1309功能/四包6.95s/171保护4授权54协议/实际ROS含2中央普通Assignment发布消费PASS。原早期交付双idle固定条件ray157→21/budget4→4/cold中位0.387→0.224s，导航偏好预算相同，非任务/最坏界。新4→17+2同clean pushed freeze未验证，917未暴露；P3C.5已验收，无P4/ns-3/Wi-Fi/RL。报告20261009_p2c_lazy_gain_components.md与20261009_p2c_v33_failed_development.md。

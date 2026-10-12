@@ -1,0 +1,76 @@
+{
+  "date": "2026-10-12",
+  "task": "P2C.1 independent review and user-authorized session-start recovery",
+  "base_commit": "b32c891e0b35558f92ca2244da737a1ecce0bbd2",
+  "archived_commit": "fb400160a5f8532b832eae78df062c10566d67ca",
+  "backup_branch": "backup/p2c1-before-recovery-20261012",
+  "original_thread_id": "01a12147-003f-7912-9e95-89dca962a7f9",
+  "commits_since_start": 54,
+  "completed_episode_summaries": 169,
+  "distinct_original_freezes": 54,
+  "control_lines_before": 9492,
+  "control_lines_after": 7269,
+  "restore_paths": 178,
+  "preserved_existing_evidence_files": 364,
+  "user_authorized_skill_removal": [
+    "karpathy-guidelines",
+    "ponytail@ponytail"
+  ],
+  "validation": {
+    "functional_tests": {
+      "passed": 1527,
+      "existing_lint_failures": [
+        "test_flake8",
+        "test_pep257"
+      ],
+      "skipped": 1,
+      "wall_sec": 201.22,
+      "exit_code": 1,
+      "scope": "all retained controller/native/gateway/metrics and scripts tests; full pytest has existing lint failures"
+    },
+    "build": {
+      "status": "PASS",
+      "packages": [
+        "multi_robot",
+        "multi_robot_exploration",
+        "merge_map",
+        "slam_toolbox"
+      ],
+      "wall_sec": 4.34
+    },
+    "source_and_protocol": {
+      "status": "PASS",
+      "protected_files": 171,
+      "authorized_prior_safety_source_changes": 4,
+      "protocol_cells": 54
+    },
+    "runtime_code_tests_manifests_equal_start": true,
+    "preserved_existing_evidence_files": 364,
+    "launch_show_args": {
+      "status": "PASS",
+      "actual_nodes_started": false
+    },
+    "v95_development_full_gate": "PASS",
+    "v95_last_formal_selected_gate": {
+      "status": "PASS",
+      "cases": 1,
+      "full_declared_scope": false
+    },
+    "complete_p2c1_gate": "NOT_COMPLETE",
+    "new_gazebo_episodes": 0,
+    "historical_native_episode_used": "20261012_p2c_v95_formal_fixed_lab_101",
+    "old_thread": "idle/interrupted",
+    "original_owned_processes_closed": true,
+    "premature_test_build1": "EXCLUDED; restore exec was not yet closed, test collection failed and build was interrupted; corrected run2 only counted",
+    "initial_unsourced_gate_command": "FAILED ModuleNotFoundError; corrected by ROS Humble and repository install setup before original selected audit",
+    "package_scoped_lint": {
+      "status": "FAIL_EXISTING_STYLE",
+      "tests_failed": 2,
+      "flake8_diagnostics": 8107,
+      "undefined_name_or_syntax_diagnostics": 0,
+      "wall_sec": 11.5,
+      "source_identical_to_start": true,
+      "scope": "rerun in src/multi_robot_exploration; initial workspace-wide lint also scanned retained logs/build"
+    }
+  }
+}

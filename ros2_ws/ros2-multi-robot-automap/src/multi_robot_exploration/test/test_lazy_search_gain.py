@@ -46,14 +46,10 @@ def late_visual_node():
     node.robot_states = {name: 'idle' for name in node.robot_states}
     node.enable_rally = True
     node.initial_search_next = {e['robot']: True}
-    # Scope this score computation to no pending charge. The original fixture
-    # has no tb1 map and cannot authorize parallel safety-return traffic.
-    node.rally_charge_requested = {}
+    node.rally_charge_requested = {'tb1': e['event_time']}
     node.initial_search_visits = {i: v for i, v in enumerate(e['travel_preference']['initial_search_visits'])}
     node.initial_search_views = {i: v for i, v in enumerate(e['travel_preference']['initial_search_views'])}
-    # Explicit visual selection with no prior work isolates score computation
-    # from opportunistic charging; source geometry and numerical goals stay.
-    node.successful_exploration_legs = {e['robot']: 0}
+    node.successful_exploration_legs = {e['robot']: 1}
     node.target_search_visits = []
     node.exploration_travel_choices = {}
     node.frontier_charge_lookahead = None

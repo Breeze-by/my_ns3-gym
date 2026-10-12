@@ -5,15 +5,12 @@ import json
 import math
 from pathlib import Path
 from types import SimpleNamespace
-from unittest.mock import patch
 
 import numpy as np
 import pytest
 
 from multi_robot_exploration import control
 from test_exploration_resume import conditional_snapshot_node
-from outbound_reference import with_local_route_inputs
-from curve_reference import preserve_straight_prefix,assert_full_prefix_safety
 
 
 REFERENCE = json.loads((Path(__file__).parent / 'fixtures/p2c_v36_charge_pricing_reference.json').read_text())
@@ -22,11 +19,11 @@ REFERENCE = json.loads((Path(__file__).parent / 'fixtures/p2c_v36_charge_pricing
 def reference_assign():
     assert hashlib.sha256(REFERENCE['function'].encode()).hexdigest() == REFERENCE['function_sha256']
     namespace = dict(vars(control))
-    exec(compile(with_local_route_inputs(REFERENCE['function']), '<7a7fde6 reference with local route input>', 'exec'), namespace)
+    exec(compile(REFERENCE['function'], '<7a7fde6 independent assign reference>', 'exec'), namespace)
     return namespace['assign_idle_robots']
 
 
-def conditional_charge(event, assign, return_node=False):
+def conditional_charge(event, assign):
     d = event['diagnostic_inputs']
     e = dict(d, inputs=event['inputs_at_start'], event_time=event['planning_started_at_sec'])
     node, sent = conditional_snapshot_node(e, d['exploration_resume_intents'].copy())
@@ -38,9 +35,7 @@ def conditional_charge(event, assign, return_node=False):
     node.initial_search_visits = dict(enumerate(d['initial_search_visits']))
     node.initial_search_views = dict(enumerate(d['initial_search_views']))
     node.target_search_visits = d['target_search_visits'].copy()
-    # Compare the pricing bound in the original policy context. Camera-first
-    # after real work has separate selection and hard-admission coverage.
-    node.successful_exploration_legs = dict.fromkeys(d['successful_exploration_legs'], 0)
+    node.successful_exploration_legs = d['successful_exploration_legs'].copy()
     node.rally_charge_requested = d['rally_charge_requested'].copy()
     node.goal_routes = d['goal_routes'].copy()
     node.goal_targets = {n: None if a is None else control.Assignment(
@@ -49,20 +44,9 @@ def conditional_charge(event, assign, return_node=False):
     node.exploration_charge_budgets = {}
     node.charge_request_publishers = {n: SimpleNamespace(publish=lambda msg: requests.append(json.loads(msg.data)))
                                     for n in d['battery_states']}
-    # Compare the frozen pricing optimizer outside the separately tested
-    # first-leg top-up preference; keep the original full targets and costs.
-    with patch.object(control, 'initial_replenishment_prefix', return_value=None):
-        assign(node)
-    for choice in node.exploration_travel_choices.values():
-        assert choice.get('camera_first_search') is None
-        choice.pop('camera_first_search', None)
-        assert choice.get('initial_replenishment_prefix') is None
-        choice.pop('initial_replenishment_prefix', None)
-        assert choice.get('first_window_geometry_preference') is None
-        choice.pop('first_window_geometry_preference', None)
-    result=json.loads(json.dumps(dict(sent=sent, requests=requests, choices=node.exploration_travel_choices),
+    assign(node)
+    return json.loads(json.dumps(dict(sent=sent, requests=requests, choices=node.exploration_travel_choices),
                                 default=dataclasses.asdict))
-    return (result,node) if return_node else result
 
 
 @pytest.mark.parametrize('stage', sorted(REFERENCE['snapshots']))
@@ -74,21 +58,10 @@ def test_original_charge_intent_and_provisional_search_are_preserved(stage):
 
 
 @pytest.mark.parametrize('energy', [12., 20., 80.])
-@pytest.mark.parametrize('curved',[False,True])
-def test_synthetic_funded_alternatives_are_not_hidden_by_a_charge_intent(energy,curved,monkeypatch):
-    if not curved:
-        preserve_straight_prefix(monkeypatch)
+def test_synthetic_funded_alternatives_are_not_hidden_by_a_charge_intent(energy):
     event = copy.deepcopy(REFERENCE['snapshots']['candidate_budget'])
     event['diagnostic_inputs']['battery_states']['tb2']['energy'] = energy
-    expected=conditional_charge(event,reference_assign())
-    actual,node=conditional_charge(event,control.HeadquartersControl.assign_idle_robots,True)
-    if not curved:
-        assert actual==expected
-    else:
-        assert actual['requests']==expected['requests'] and actual['choices']==expected['choices']
-        nominal=lambda rows:[(name,{k:v for k,v in a.items() if not k.startswith('navigation_')}) for name,a in rows]
-        assert nominal(actual['sent'])==nominal(expected['sent'])
-    assert_full_prefix_safety(node,actual['sent'])
+    assert conditional_charge(event, control.HeadquartersControl.assign_idle_robots) == conditional_charge(event, reference_assign())
 
 
 def test_sources_expiring_inside_price_abort_before_tighter_heap_bound():

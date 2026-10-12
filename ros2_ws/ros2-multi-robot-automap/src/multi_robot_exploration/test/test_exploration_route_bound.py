@@ -3,16 +3,12 @@ import hashlib
 import json
 import math
 from pathlib import Path
-from unittest.mock import patch
 
 import numpy as np
 import pytest
 
 from multi_robot_exploration import control
 from test_exploration_resume import conditional_snapshot_node
-from outbound_reference import with_local_route_inputs
-from p2c_outbound_routes import check_route
-from curve_reference import preserve_straight_prefix,assert_full_prefix_safety
 
 
 REFERENCE = json.loads((Path(__file__).parent / 'fixtures/p2c_v35_route_pricing_reference.json').read_text())
@@ -22,14 +18,11 @@ def reference_functions():
     namespace = dict(vars(control))
     for name, source in REFERENCE['functions'].items():
         assert hashlib.sha256(source.encode()).hexdigest() == REFERENCE['function_sha256'][name]
-        exec(compile(with_local_route_inputs(source), '<7d9709b reference with local route input>', 'exec'), namespace)
-    # The old candidate optimizer now receives the shared corrected planner;
-    # its frozen route-admission bounds remain the comparison under test.
-    namespace['plan_rally_leg'] = control.plan_rally_leg
+        exec(compile(source, '<7d9709b independent reference>', 'exec'), namespace)
     return namespace
 
 
-def conditional_assignment(event, assign, return_node=False):
+def conditional_assignment(event, assign):
     d = event['diagnostic_inputs']
     e = dict(d, inputs=event['inputs_at_start'], event_time=event['planning_started_at_sec'])
     node, sent = conditional_snapshot_node(e, d['exploration_resume_intents'].copy())
@@ -41,55 +34,22 @@ def conditional_assignment(event, assign, return_node=False):
     node.initial_search_visits = dict(enumerate(d['initial_search_visits']))
     node.initial_search_views = dict(enumerate(d['initial_search_views']))
     node.target_search_visits = d['target_search_visits'].copy()
-    # Test the frozen route optimizer outside the separately tested camera-first
-    # qualification; retain its original history, headings and gain candidates.
-    node.successful_exploration_legs = dict.fromkeys(d['successful_exploration_legs'], 0)
+    node.successful_exploration_legs = d['successful_exploration_legs'].copy()
     node.rally_charge_requested = d['rally_charge_requested'].copy()
     node.goal_routes = d['goal_routes'].copy()
     node.goal_targets = {n: None if a is None else control.Assignment(
         **{**a, 'viewpoint': control.Viewpoint(**a['viewpoint'])}) for n, a in d['goal_targets'].items()}
-    # Isolate route/gain ordering on the saved geometry. These synthetic
-    # endpoints omit native charging callbacks; the charge-reservation policy
-    # has its own complete fixture and actual DDS/Future regression probe.
-    with patch.object(control.HeadquartersControl, 'request_exploration_charge', return_value=False), \
-            patch.object(control, 'initial_replenishment_prefix', return_value=None):
-        assign(node)
-    for choice in node.exploration_travel_choices.values():
-        assert choice.get('camera_first_search') is None
-        choice.pop('camera_first_search', None)
-        assert choice.get('initial_replenishment_prefix') is None
-        choice.pop('initial_replenishment_prefix', None)
-        assert choice.get('first_window_geometry_preference') is None
-        choice.pop('first_window_geometry_preference', None)
-    result=json.loads(json.dumps(dict(sent=sent, choices=node.exploration_travel_choices),
+    assign(node)
+    return json.loads(json.dumps(dict(sent=sent, choices=node.exploration_travel_choices),
                                 default=dataclasses.asdict))
-    return (result,node) if return_node else result
 
 
 @pytest.mark.parametrize('case', sorted(REFERENCE['snapshots']))
-@pytest.mark.parametrize('curved',[False,True])
-def test_unchanged_goals_headings_and_full_energy_on_actual_expired_inputs(case,curved,monkeypatch):
-    if not curved:
-        preserve_straight_prefix(monkeypatch)
+def test_unchanged_goals_headings_and_full_energy_on_actual_expired_inputs(case):
     event = REFERENCE['snapshots'][case]
     expected = conditional_assignment(event, reference_functions()['assign_idle_robots'])
-    actual,node = conditional_assignment(event, control.HeadquartersControl.assign_idle_robots,True)
-    assert expected['sent'] and actual['choices']==expected['choices']
-    if not curved:
-        assert actual == expected
-    else:
-        nominal=lambda rows:[(name,{k:v for k,v in a.items() if not k.startswith('navigation_')}) for name,a in rows]
-        assert nominal(actual['sent'])==nominal(expected['sent'])
-        for name,a in actual['sent']:
-            route=(node.robot_positions[name],*node.goal_routes[name])
-            assert route[-1]==pytest.approx((a['navigation_x'],a['navigation_y']))
-            check_route(control.grid_audit_evidence(node.map_data,node.resolution,node.origin,
-                        'synthetic_fused_input',node.map_received_at,node.map_received_at),route)
-            local=control.HeadquartersControl.delivered_return_maps(node)[name]
-            check_route(control.grid_audit_evidence(local['data'],local['resolution'],local['origin'],
-                        'synthetic_local_input',0.,0.),route,local=True)
-            assert actual['choices'][name]['required_energy']<node.battery_states[name]['energy']
-    assert_full_prefix_safety(node,actual['sent'])
+    actual = conditional_assignment(event, control.HeadquartersControl.assign_idle_robots)
+    assert expected['sent'] and actual == expected
 
 
 def test_reserved_common_start_avoids_replanning_every_rooms_candidate(monkeypatch):

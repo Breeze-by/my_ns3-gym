@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Read-only P2C.1 original/return-budget gate; never repairs task outcomes."""
-import argparse,base64,gzip,hashlib,json,math,re,subprocess,traceback,zlib
-from collections import Counter
+import argparse,base64,hashlib,json,math,re,subprocess,traceback,zlib
 from pathlib import Path
 from concurrent.futures import ProcessPoolExecutor
 import numpy as np
@@ -11,59 +10,9 @@ from check_p3c5_gate import audit_original,declaration_audit
 from multi_robot_exploration import control
 from multi_robot_exploration.bypass_audit import runtime_violations
 from p2c_native_graph import native_tf_ingress_audit
-from p2c_scan_self_filter import scan_self_filter_audit
-from p2c_return_preparation import return_preparation_audit
-from p2c_navigation_dispatch import navigation_dispatch_audit
-from p2c_rally_transit_heading import transit_heading_audit
-from p2c_outbound_routes import outbound_route_audit, bind_original_maps, check_route, decode
-from p2c_refuge_release import refuge_release_audit
-from p2c_prepared_dispatch import prepared_dispatch_audit
-from p2c_rally_connection import rally_connection_audit
-from p2c_departure_heading import heading_preference_factor, departure_heading_audit
-from p2c_observer_information import observer_information_audit
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
-
-
-def navigation_capture_audit(row,directory):
-    """Check the declared, completed lossless trace separately from task success."""
-    if not row['config'].get('navigation_input_capture'):return None
-    from run_p2d_baseline import file_digest
-    path=directory/'navigation_inputs.jsonl.gz'
-    assert path.name in row['evidence_sha256'] and sha(path)==row['evidence_sha256'][path.name]
-    command=row['observer_command']
-    assert Path(command[command.index('--navigation-input-output')+1])==path
-    assert row['source_digests']['navigation_capture']==file_digest(Path(__file__).with_name('p2c_navigation_capture.py'))
-    counts=Counter()
-    with gzip.open(path,'rt') as stream:
-        for line in stream:
-            e=json.loads(line)
-            assert len(base64.b64decode(e['cdr'],validate=True))>=4
-            assert math.isfinite(e['received_sim_time']) and e['received_wall_ns']>0
-            counts[e['topic']]+=1
-    markers=[line.removeprefix('NAVIGATION_CAPTURE_CLOSED ') for line in (directory/'observer.log').read_text().splitlines()
-             if line.startswith('NAVIGATION_CAPTURE_CLOSED ')]
-    assert len(markers)==1 and json.loads(markers[0])==dict(counts),'incomplete navigation trace'
-    if row['case']!='empty_battery':
-        required={'/merge_map'}|{f'/tb{i}/{suffix}' for i in range(1,row['result']['robot_count']+1)
-            for suffix in ('map','gateway/merge_map','global_costmap/costmap','local_costmap/costmap','scan','odom','tf','tf_static')}
-        assert required<=counts.keys(),('missing navigation inputs',sorted(required-counts.keys()))
-    if row['config'].get('native_velocity_command_capture'):
-        subscriptions=[json.loads(line.removeprefix('NAVIGATION_CAPTURE_SUBSCRIPTIONS '))
-            for line in (directory/'observer.log').read_text().splitlines()
-            if line.startswith('NAVIGATION_CAPTURE_SUBSCRIPTIONS ')]
-        assert len(subscriptions)==1,'missing or duplicated actual capture subscription declaration'
-        expected={'/gazebo/model_states':'gazebo_msgs/msg/ModelStates',**{
-            f'/tb{i}/{suffix}':'geometry_msgs/msg/Twist' for i in range(1,row['result']['robot_count']+1)
-            for suffix in ('cmd_vel_nav','cmd_vel')}}
-        assert all(subscriptions[0].get(topic)==kind for topic,kind in expected.items()),'missing declared motion/command subscription'
-        assert set(counts)<=subscriptions[0].keys(),'recorded topic outside actual subscriptions'
-        if row['case']!='empty_battery':assert counts['/gazebo/model_states']>0,'missing native motion trace'
-        # A robot may legally receive no navigation command in a safety cell.
-        # Zero command messages remain zero; the subscription and closure are
-        # proved without inventing motion or requiring a task action.
-    return dict(status='PASS',messages=sum(counts.values()),topic_counts=dict(counts),control_input=False)
 
 
 def launch_process_audit(directory):
@@ -84,38 +33,8 @@ def launch_process_audit(directory):
         post_task_cleanup_exits=cleanup)
 
 
-def native_return_leg_audit(event):
-    """Prove the original clearance escape or a complete-path bounded prefix."""
-    saved=event['map_evidence'];raw=decode(saved);res=saved['resolution'];origin=saved['origin']
-    position=event['position'];route=event['route']
-    distance,full=control.known_return_route(raw,res,origin,position,event['home'],event['charge_radius_m'],include_route=True)
-    assert distance is not None and full
-    safe,field,_=control.charging_route_field(raw,res,origin,event['home'],event['charge_radius_m'])
-    start=control.world_to_grid(*position,res,*origin)
-    _,escape=control.navigation_start_route(raw,safe & np.isfinite(field),start,max(1,math.ceil(.6/res)))
-    if len(escape)>1:
-        expected=[control.grid_to_world(*cell,res,*origin) for cell in escape]
-        assert np.allclose(route,expected,atol=1e-10,rtol=0.)
-        checked=[position,*route]
-    else:
-        assert len(route)<=len(full) and np.allclose(route,full[:len(route)],atol=1e-10,rtol=0.)
-        length=sum(math.dist(a,b) for a,b in zip(route,route[1:]))
-        assert length<=control.MAX_NAVIGATION_LEG_M+1e-10
-        if len(route)<len(full):
-            assert length+math.dist(route[-1],full[len(route)])>control.MAX_NAVIGATION_LEG_M-1e-10
-        checked=route
-    assert np.allclose(event['target'],route[-1],atol=1e-10,rtol=0.)
-    check_route(saved,checked)
-    candidates={c['map_evidence']['source']:c['map_evidence'] for c in saved['route_candidates']}
-    local=candidates.get('local');fused=candidates.get('delivered_fused')
-    assert local is not None or fused is not None
-    if local is not None:check_route(local,checked,local=True)
-    return dict(robot=event['robot'],outbound_map_route=dict(local_map=local,planning_map=fused),
-        planning_map_self_return_cells={})
-
-
-def return_audit(path,require_pose_leases=False,require_map_candidates=False,require_leg_paths=False,capture=None):
-    starts={};finished={};rows=[];maps=0;legs=0;pose_checks=0;leg_bindings=[]
+def return_audit(path,require_pose_leases=False,require_map_candidates=False):
+    starts={};finished={};rows=[];maps=0;legs=0;pose_checks=0
     for line in path.read_text().splitlines():
         outer=json.loads(line)
         if not outer['topic'].endswith('/battery_return_audit'):continue
@@ -226,13 +145,10 @@ def return_audit(path,require_pose_leases=False,require_map_candidates=False,req
         if kind=='return_leg_sent':
             assert budget is not None and e['energy']>e['energy_model']['safety_margin']
             assert saved is not None and e['route'];legs+=1
-            if require_leg_paths:leg_bindings.append(native_return_leg_audit(e))
     assert set(starts)==set(finished),('unclosed return prediction',set(starts)-set(finished))
-    sources=bind_original_maps(leg_bindings,capture) if capture is not None and leg_bindings else 0
     return dict(status='PASS',return_triggers=len(starts),map_budget_reconstructions=maps,
         pose_lease_reconstructions=pose_checks,pose_leases_required=require_pose_leases,
-        local_legs=legs,native_leg_paths_reconstructed=len(leg_bindings),native_leg_original_source_maps=sources,
-        charger_returns=sum(r['outcome']=='charger_stopped' for r in rows),returns=rows)
+        local_legs=legs,charger_returns=sum(r['outcome']=='charger_stopped' for r in rows),returns=rows)
 
 
 def budget_evaluation_time(event, witness, key, required=False):
@@ -267,7 +183,7 @@ def planning_lease_audit(records):
     return dict(status='PASS',abandoned_expired_plans=count,stages=stages)
 
 
-def lookahead_audit(records,require_compound_pose=False,require_live_clock=False,require_local_outbound=False):
+def lookahead_audit(records,require_compound_pose=False,require_live_clock=False):
     count=0
     for e in records:
         if e.get('event')!='coordinator_charge_decision' or not e.get('opportunity_lookahead'):
@@ -293,6 +209,12 @@ def lookahead_audit(records,require_compound_pose=False,require_live_clock=False
         assert e['available_energy']<f['required_energy']<state['capacity']*state['charge_target_fraction']
         assert e['required_energy']==f['required_energy']
         raw=np.frombuffer(zlib.decompress(base64.b64decode(saved['grid'])),dtype='<i2').reshape(saved['shape'])
+        first,second=f['first_position'],f['second_position']
+        _,route=control.plan_rally_leg(control.RallyPose(*second,0.),raw,saved['resolution'],saved['origin'],first,
+            max_distance_m=float('inf'),blocked_positions=f['blocked_positions'],clearance_m=control.PATH_CLEARANCE_M)
+        assert route and np.allclose(route,f['between_route'])
+        between=math.dist(first,route[0])+sum(math.dist(a,b) for a,b in zip(route,route[1:]))
+        assert math.isclose(between,f['between_distance_m'],abs_tol=1e-8)
         local=f.get('local_map_evidence')
         local_geometry=None
         if local:
@@ -301,15 +223,6 @@ def lookahead_audit(records,require_compound_pose=False,require_live_clock=False
             assert 0<=e['event_time']-local['source_time']<=5.
             local_raw=np.frombuffer(zlib.decompress(base64.b64decode(local['grid'])),dtype='<i2').reshape(local['shape'])
             local_geometry=dict(data=local_raw,resolution=local['resolution'],origin=local['origin'])
-        if require_local_outbound:
-            assert 'local_outbound_constraints' in f and f['local_outbound_constraints'] == (local_geometry is not None)
-        first,second=f['first_position'],f['second_position']
-        _,route=control.plan_rally_leg(control.RallyPose(*second,0.),raw,saved['resolution'],saved['origin'],first,
-            max_distance_m=float('inf'),blocked_positions=f['blocked_positions'],clearance_m=control.PATH_CLEARANCE_M,
-            local_map=local_geometry if f.get('local_outbound_constraints') else None)
-        assert route and np.allclose(route,f['between_route'])
-        between=math.dist(first,route[0])+sum(math.dist(a,b) for a,b in zip(route,route[1:]))
-        assert math.isclose(between,f['between_distance_m'],abs_tol=1e-8)
         candidates=control.qualified_return_candidates(raw,saved['resolution'],saved['origin'],second,
             f['home'],state.get('charge_radius_m',.8),local_geometry)
         home_distance=min((r['path_distance_m'] for r in candidates if r['qualified']),default=None)
@@ -326,8 +239,7 @@ def lookahead_audit(records,require_compound_pose=False,require_live_clock=False
 
 
 def exploration_travel_audit(records,required=False,require_commitment=False,require_bounded_commitment=False,
-        require_initial_search=False,require_diversity=False,require_camera_search=False,require_live_clock=False,
-        require_known_fallback=False):
+        require_initial_search=False,require_diversity=False,require_camera_search=False,require_live_clock=False):
     """Rebuild executed frontier travel and delivered-only energy witnesses."""
     count=0;discounts=0;resumed=0;visual_count=0;diversity_count=0;camera_count=0
     for e in records:
@@ -362,15 +274,11 @@ def exploration_travel_audit(records,required=False,require_commitment=False,req
         assert f['nominal_blocked_positions'] in ([],blocked)
         traversable=control.traversable_grid(raw['data'],raw['resolution'],control.PATH_CLEARANCE_M)
         cell=control.world_to_grid(*target,raw['resolution'],*raw['origin'])
-        def distance(peer,blocks=(),local_constraints=False):
-            grid=(control.constrained_return_grid(raw['data'],raw['resolution'],raw['origin'],geometry[peer])
-                  if local_constraints and peer in geometry else raw['data'])
-            safe=(control.traversable_grid(grid,raw['resolution'],control.PATH_CLEARANCE_M)
-                  if local_constraints else traversable)
-            mask=control.block_dynamic_positions(safe,raw['resolution'],raw['origin'],blocks)
-            field=control.exploration_distance_field(grid,mask,raw['resolution'],raw['origin'],positions[peer])
+        def distance(peer,blocks=()):
+            mask=control.block_dynamic_positions(traversable,raw['resolution'],raw['origin'],blocks)
+            field=control.exploration_distance_field(raw['data'],mask,raw['resolution'],raw['origin'],positions[peer])
             return float('inf') if field is None else float(field[cell])
-        nominal=distance(name,f['nominal_blocked_positions']);planned=distance(name,blocked,'outbound_map_route' in e)
+        nominal=distance(name,f['nominal_blocked_positions']);planned=distance(name,blocked)
         assert math.isfinite(nominal) and math.isfinite(planned)
         assert math.isclose(nominal,f['own_nominal_distance_m'],abs_tol=1e-8)
         assert math.isclose(planned,f['planned_distance_m'],abs_tol=1e-8)
@@ -425,25 +333,8 @@ def exploration_travel_audit(records,required=False,require_commitment=False,req
                 raw['data'],raw['resolution'],raw['origin'])
             assert rebuilt==diversity,'spatial preference differs from delivered models/history'
             diversity_factor=rebuilt['factor'];diversity_count+=1
-        heading_factor=heading_preference_factor(e)
-        assert math.isclose(f['base_utility']*f['battery_factor']*factor*diversity_factor*heading_factor,f['adjusted_utility'],abs_tol=1e-8)
+        assert math.isclose(f['base_utility']*f['battery_factor']*factor*diversity_factor,f['adjusted_utility'],abs_tol=1e-8)
         visual=e['kind']=='initial_visual_search'
-        fallback=f.get('known_space_fallback')
-        if fallback is not None:
-            assert require_known_fallback and visual, 'undeclared known-space fallback'
-            assert e['task_phase'] in ('EXPLORE','FOUND_UNCONFIRMED')
-            assert fallback['strategy']=='after_no_primary_admission'
-            assert fallback['generated_at_sec']<=ranked_at<=now
-            for key,sample in e['inputs'].items():
-                if key!='headquarters/target_detection' and sample['source_time'] is not None:
-                    assert 0<=fallback['generated_at_sec']-sample['source_time']<=sample['ttl_sec']
-            attempts=fallback['primary_attempts']
-            assert len(attempts)==2 and [row['refine'] for row in attempts]==[False,True]
-            for row in attempts:
-                assert type(row['refine']) is bool
-                assert type(row['admitted']) is int and row['admitted']==0
-                assert name in row['considered_candidates']
-                assert all(type(n) is int and n>=0 for n in row['considered_candidates'].values())
         if visual:
             if require_bounded_commitment:assert require_initial_search,'undeclared initial visual search'
             if diversity is not None:assert diversity['visits']==f['initial_search_visits']
@@ -530,8 +421,7 @@ def exploration_travel_audit(records,required=False,require_commitment=False,req
         camera_aware_visual_witnesses=camera_count,camera_search_required=require_camera_search)
 
 
-def target_survey_audit(records, declared=False, radius_m=None, position_tolerance_m=None, require_live_clock=False,
-                        curved_surveys=False):
+def target_survey_audit(records, declared=False, radius_m=None, position_tolerance_m=None, require_live_clock=False):
     """Rebuild target-local gain and the actually admitted, funded survey leg."""
     count=0
     for e in records:
@@ -539,8 +429,6 @@ def target_survey_audit(records, declared=False, radius_m=None, position_toleran
         assert declared,'undeclared target information survey'
         assert e['task_phase']=='FOUND'
         s=e['target_survey_selection'];name=e['robot'];now=e['event_time']
-        visible_only = not curved_surveys or e['battery_states'] is None
-        assert s.get('visible_only', True) is visible_only, 'undeclared survey path policy'
         assert s['strategy']=='target_area_gain_per_travel'
         if radius_m is not None:assert s['radius_m']==radius_m
         if position_tolerance_m is not None:assert s['position_tolerance_m']==position_tolerance_m
@@ -580,8 +468,7 @@ def target_survey_audit(records, declared=False, radius_m=None, position_toleran
         matched=False;limit=control.MAX_NAVIGATION_LEG_M
         while limit>=control.USEFUL_TRAVEL_M:
             plan=control.plan_rally_leg(desired,g['data'],g['resolution'],g['origin'],
-                positions[name],limit,blocked_positions=blocked,visible_only=visible_only,
-                local_map=geometry.get(name))
+                positions[name],limit,blocked_positions=blocked,visible_only=True)
             plan=control.reserve_rally_prefix(plan,s['reserved_routes'])
             if plan is not None and plan[0] is not None:
                 pose,route=plan
@@ -689,110 +576,6 @@ def rally_assignment_audit(records):
     return dict(status='PASS',failed_assignments_rebuilt=count,chosen_assignments_rebuilt=chosen,computation_wall_sec=wall)
 
 
-def rally_proposal_audit(records, required=False, require_return_maps=False, capture=None, require_order_source=False):
-    """Bind retained points to their original search and a new delivered epoch."""
-    proposals={};count=0;deferred=0;admissions=[]
-    for e in records:
-        if e.get('event')=='coordinator_rally_assignment_chosen':
-            proposals[e['event_time']]=e
-        if e.get('event')!='coordinator_rally_proposal_admitted':continue
-        original=proposals[e['proposal_evaluated_at_sec']]
-        assert e['assignment']==original['assignment'] and e['target']==original['target']
-        assert set(e['required_robots'])==set(e['assignment'])==set(original['robot_positions'])
-        assert len(e['dispatch_order'])==len(e['assignment']) and set(e['dispatch_order'])==set(e['assignment'])
-        assert e['event_time']>=original.get('computation_completed_at_sec',original['event_time'])
-        assert e['budget_reused'] is False
-        required_inputs={'headquarters/fused_map_snapshot','headquarters/target_detection'}|{
-            name+'/'+kind for name in e['required_robots'] for kind in ('pose_state','frame_state','map_snapshot')}
-        if original['battery_states'] is not None:
-            required_inputs|={name+'/battery_state' for name in e['required_robots']}
-        assert required_inputs<=e['inputs'].keys()
-        for stream,sample in e['inputs'].items():
-            kind=stream.split('/')[-1]
-            ttl=control.TARGET_DETECTION_TTL_SEC if kind=='target_detection' else control.STATE_TTL_SEC[kind]
-            assert sample['source_time'] is not None and 0<=sample['ttl_sec']<=ttl
-            age=e['event_time']-sample['source_time']
-            assert 0<=age<=sample['ttl_sec'] and math.isclose(age,sample['age_sec'],abs_tol=1e-8)
-        maps=[]
-        for key,source in [('planning_map','ap_delivered_planning_map'),('source_map','ap_delivered_fused_map')]:
-            saved=e[key]
-            assert saved['source']==source and saved['encoding']=='zlib_base64_int16_le'
-            assert saved['source_time']==e['inputs']['headquarters/fused_map_snapshot']['source_time']
-            maps.append(np.frombuffer(zlib.decompress(base64.b64decode(saved['grid'])),dtype='<i2').reshape(saved['shape']))
-        saved=e['planning_map'];source=e['source_map']
-        assert saved['resolution']==source['resolution'] and saved['origin']==source['origin']
-        rebuilt=maps[1].copy()
-        for cell in e['self_return_cells'].values():
-            r,c=cell;assert 1<=r<rebuilt.shape[0]-1 and 1<=c<rebuilt.shape[1]-1
-            assert rebuilt[r,c]>=control.OCCUPIED_THRESHOLD
-            window=rebuilt[r-1:r+2,c-1:c+2].copy();window[1,1]=0
-            assert np.all(window==0) and saved['resolution']*math.sqrt(2)<=.1
-            rebuilt[r,c]=0
-        assert np.array_equal(rebuilt,maps[0])
-        safe=control.traversable_grid(maps[0],saved['resolution'],clearance_m=control.RALLY_CLEARANCE_M)
-        points=[]
-        poses={name:control.RallyPose(*values) for name,values in e['assignment'].items()}
-        return_maps={}
-        if require_return_maps:
-            assert 'return_maps' in e, 'missing consulted proposal maps'
-        for name,saved_map in e.get('return_maps',{}).items():
-            assert name in poses
-            assert saved_map['source']=='ap_delivered_robot_map' and saved_map['encoding']=='zlib_base64_int16_le'
-            stamp=e['inputs'][name+'/map_snapshot']['source_time']
-            assert saved_map['source_time']==stamp and 0<=e['event_time']-stamp<=5.
-            assert len(saved_map['shape'])==2 and all(type(v) is int and v>0 for v in saved_map['shape'])
-            assert math.isfinite(saved_map['resolution']) and saved_map['resolution']>0
-            assert len(saved_map['origin'])==2 and all(math.isfinite(v) for v in saved_map['origin'])
-            raw=np.frombuffer(zlib.decompress(base64.b64decode(saved_map['grid'],validate=True)),dtype='<i2').reshape(saved_map['shape'])
-            assert np.all((raw>=-1)&(raw<=100))
-            return_maps[name]=dict(data=raw,resolution=saved_map['resolution'],origin=saved_map['origin'])
-        assert 0<e['target_view_distance_m']<=3.
-        for pose in poses.values():
-            point=(pose.x,pose.y);assert all(math.isfinite(v) for v in (*point,pose.yaw))
-            cell=control.world_to_grid(*point,saved['resolution'],*saved['origin'])
-            assert 0<=cell[0]<safe.shape[0] and 0<=cell[1]<safe.shape[1] and safe[cell]
-            assert control.rally_target_view(maps[0],saved['resolution'],saved['origin'],point,e['target'],e['target_view_distance_m'])
-            heading=math.atan2(e['target'][1]-pose.y,e['target'][0]-pose.x)
-            assert abs(math.atan2(math.sin(pose.yaw-heading),math.cos(pose.yaw-heading)))<=1e-8
-            assert all(math.dist(point,peer)>=control.RALLY_MIN_SEPARATION_M for peer in points)
-            points.append(point)
-        order_source=e.get('order_source')
-        if require_order_source:
-            assert order_source in ('current_serial_revalidation','current_map_search')
-        if order_source=='current_serial_revalidation':
-            assert e['map_safe_order'] and e['previous_order_preference']==e['dispatch_order']
-            assert set(e['serial_routes'])==set(poses)
-            occupied=dict(e['robot_positions'])
-            for name in e['dispatch_order']:
-                blocked=[point for other,point in occupied.items() if other!=name and point is not None]
-                pose,route=control.plan_rally_leg(poses[name],maps[0],saved['resolution'],saved['origin'],
-                    e['robot_positions'][name],max_distance_m=float('inf'),blocked_positions=blocked,
-                    local_map=return_maps.get(name))
-                assert pose is not None
-                full=[e['robot_positions'][name],*route]
-                assert np.allclose(e['serial_routes'][name],full,atol=1e-10,rtol=0.)
-                check_route(saved,full)
-                if name in return_maps:check_route(e['return_maps'][name],full,local=True)
-                assert all(math.dist(point,body)>=control.RALLY_PATH_CLEARANCE_M
-                           for point in route[1:] for body in blocked)
-                occupied[name]=(poses[name].x,poses[name].y)
-        else:
-            expected=(control.map_safe_rally_dispatch_order(maps[0],saved['resolution'],saved['origin'],poses,
-                e['robot_positions'],e['target'],e['detecting_robot'],return_maps=return_maps) if e['map_safe_order'] else
-                control.rally_dispatch_order(poses,e['robot_positions'],e['target'],e['detecting_robot']))
-            assert expected==e['dispatch_order']
-        count+=1
-        admissions.append(e)
-        deferred+=e['event_time']>original.get('computation_completed_at_sec',original['event_time'])
-    assert not required or count>=1,'missing fresh geometric proposal admission'
-    bindings=[dict(robot=name, outbound_map_route=dict(local_map=local,planning_map=e['planning_map']),
-        planning_map_self_return_cells=e['self_return_cells'])
-        for e in admissions for name,local in (e.get('return_maps') or {'':None}).items()]
-    bound=bind_original_maps(bindings,capture) if capture is not None else None
-    return dict(status='PASS',admitted_proposals=count,deferred_proposals=deferred,budget_reused=False,
-        consulted_maps_required=require_return_maps,serial_order_source_required=require_order_source,original_source_maps=bound)
-
-
 def rally_repair_audit(records):
     count=0
     for e in records:
@@ -866,19 +649,6 @@ def energy_audit(path,result,required=False):
 
 
 
-def planning_position_tolerance(result,directory):
-    """Read the fixed executed limit without populating unassigned native fields."""
-    commands=[line.removeprefix('Command: ') for line in (directory/'runner.log').read_text().splitlines()
-              if line.startswith('Command: ')]
-    assert len(commands)==1,'missing exact executed launch command'
-    values=re.findall(r'(?:^|\s)rally_position_tolerance_m:=(\S+)',commands[0])
-    assert len(values)==1,'missing or duplicate executed position tolerance'
-    value=float(values[0])
-    assert value==control.RALLY_POSITION_TOLERANCE_M,'executed position tolerance changed'
-    assert result['rally_position_tolerance_m'] is None or result['rally_position_tolerance_m']==value
-    return value
-
-
 def check_one(path,config):
     path=path.resolve()
     row=json.loads(path.read_text());directory=path.parent
@@ -887,8 +657,6 @@ def check_one(path,config):
     assert row['runner_returncode']==row['observer_returncode']==0
     assert not any(v for k,v in row.items() if k.endswith('_forced_shutdown'))
     for relative,expected in row['evidence_sha256'].items():assert sha(directory/relative)==expected
-    navigation_inputs=navigation_capture_audit(row,directory)
-    scan_filter=scan_self_filter_audit(row,directory)
     processes=launch_process_audit(directory) if config.get('task_child_process_audit') else None
     result=row['result'];case=row['case']
     if case=='empty_battery':
@@ -918,32 +686,15 @@ def check_one(path,config):
         for key,filename in (('safety_observer','observe_p3b5.py'),('native_graph_reader','p2c_native_graph.py')):
             from run_p2d_baseline import file_digest
             assert row['source_digests'][key]==file_digest(Path(__file__).with_name(filename))
-    if config.get('complete_application_graph'):
-        from p2c_native_graph import application_graph_audit
-        assert original==native_graph,'canonical and native graph snapshots differ'
-        assert 'initial_bypass_graph.json' in row['evidence_sha256']
-        assert Path(row['command'][row['command'].index('--bypass-audit-output')+1])==directory/'initial_bypass_graph.json'
-        assert Path(row['observer_command'][row['observer_command'].index('--application-graph-output')+1])==directory/'graph.json'
-        application_graph_audit(original,result['robot_count'])
-    if config.get('predeclared_graph_command'):
-        from run_p2d_baseline import file_digest
-        assert row['source_digests']['episode_command_builder']==file_digest(Path(__file__).with_name('run_p3b5_tasks.py'))
     ingress=native_tf_ingress_audit(native_graph,result['robot_count'],bool(config.get('native_filtered_tf')))
     native=return_audit(directory/'safety_events.jsonl',bool(config.get('native_pose_contract')),
-        bool(config.get('return_source_selection')),bool(config.get('native_curved_return_legs')),
-        directory/'navigation_inputs.jsonl.gz')
+        bool(config.get('return_source_selection')))
     energy=energy_audit(directory/'safety_events.jsonl',result,
         bool(config.get('native_energy_accounting')) and case!='empty_battery')
     forecast=lookahead_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
-        bool(config.get('ap_pose_budget_contract')),bool(config.get('coordinator_live_clock')),
-        bool(config.get('navigation_outbound_consistency')))
+        bool(config.get('ap_pose_budget_contract')),bool(config.get('coordinator_live_clock')))
     vetoes=ap_return_veto_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
     assignments=rally_assignment_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
-    proposals=rally_proposal_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
-        bool(config.get('rally_proposal_handoff') and result.get('rally_assignments')),
-        bool(config.get('rally_proposal_return_map_witnesses')),
-        directory/'navigation_inputs.jsonl.gz' if config.get('rally_proposal_return_map_witnesses') else None,
-        bool(config.get('proposal_serial_order_revalidation')))
     if config.get('rally_return_objective') and result.get('rally_assignments'):
         assert assignments['chosen_assignments_rebuilt']>=1, 'missing exact delivered assignment choice'
     repairs=rally_repair_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
@@ -951,99 +702,23 @@ def check_one(path,config):
         bool(config.get('exploration_travel_preference')),bool(config.get('exploration_frontier_commitment')),
         bool(config.get('exploration_bounded_commitment')),bool(config.get('initial_known_space_search')),
         bool(config.get('mission_spatial_diversity')),bool(config.get('camera_aware_known_search')),
-        bool(config.get('coordinator_live_clock')),bool(config.get('initial_known_space_fallback')))
-    position_tolerance=planning_position_tolerance(result,directory)
+        bool(config.get('coordinator_live_clock')))
     surveys=target_survey_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
-        bool(config.get('target_information_survey')),result['target_max_distance_m'],position_tolerance,
-        bool(config.get('coordinator_live_clock')),bool(config.get('curved_target_surveys')))
+        bool(config.get('target_information_survey')),result['target_max_distance_m'],result['rally_position_tolerance_m'],
+        bool(config.get('coordinator_live_clock')))
     headings=observer_heading_audit((json.loads(line) for line in (directory/'ledger.jsonl').open()),
         bool(config.get('observer_heading_confirmation_gap')),result['target_max_distance_m'],
-        position_tolerance,None if result['target_field_of_view_deg'] is None
+        result['rally_position_tolerance_m'],None if result['target_field_of_view_deg'] is None
         else math.radians(result['target_field_of_view_deg']))
     leases=planning_lease_audit(json.loads(line) for line in (directory/'ledger.jsonl').open())
-    preparations=return_preparation_audit(directory/'ledger.jsonl',bool(config.get('exploration_return_preparation')),
-        bool(config.get('exploration_return_preparation',{}).get('motion_heading')))
-    dispatches=navigation_dispatch_audit(directory/'ledger.jsonl',bool(config.get('navigation_dispatch_boundary')),
-        bool(config.get('rally_recovery_retarget_intent')))
-    transit=transit_heading_audit(directory/'ledger.jsonl',bool(config.get('observed_rally_transit_heading')))
-    outbound=outbound_route_audit(directory/'ledger.jsonl',bool(config.get('navigation_outbound_consistency')),
-        directory/'navigation_inputs.jsonl.gz', bool(config.get('exploration_parallel_return_reservations')),
-        directory/'safety_events.jsonl')
-    prepared_batch=prepared_dispatch_audit(directory/'ledger.jsonl',bool(config.get('normal_rally_batch_before_recovery')),
-        directory/'navigation_inputs.jsonl.gz',directory/'safety_events.jsonl')
-    refuge=refuge_release_audit(directory/'ledger.jsonl',bool(config.get('charged_return_refuge_release')),
-        directory/'navigation_inputs.jsonl.gz',bool(config.get('refuge_release_preflight_guard')))
-    connection=rally_connection_audit(directory/'ledger.jsonl',bool(config.get('rally_connection_handoff')),
-        directory/'navigation_inputs.jsonl.gz',bool(config.get('rally_connection_local_reinspection')))
-    from p2c_preparation_approach import preparation_approach_audit
-    preparations_approach=preparation_approach_audit(directory/'ledger.jsonl',bool(config.get('parallel_rally_preparation')),
-        directory/'navigation_inputs.jsonl.gz',config.get('parallel_rally_preparation',{}).get('frame_generation_offset_sec',.2),
-        bool(config.get('parallel_rally_preparation',{}).get('known_connection_reinspection')))
-    if config.get('parallel_rally_preparation'):
-        from run_p2d_baseline import file_digest
-        assert row['source_digests']['preparation_approach_reader']==file_digest(Path(__file__).with_name('p2c_preparation_approach.py'))
-    from p2c_charge_handoff import charge_geometry_handoff_audit
-    charge_handoff=charge_geometry_handoff_audit(directory/'ledger.jsonl',bool(config.get('exploration_charge_geometry_handoff')))
-    if config.get('exploration_charge_geometry_handoff'):
-        assert row['source_digests']['charge_geometry_reader']==file_digest(Path(__file__).with_name('p2c_charge_handoff.py'))
-    from p2c_initial_replenishment import initial_replenishment_audit
-    replenishment=initial_replenishment_audit(directory/'ledger.jsonl',bool(config.get('initial_near_home_replenishment')),
-        directory/'safety_events.jsonl',bool(config.get('funded_initial_goal_completion')),
-        directory/'navigation_inputs.jsonl.gz',bool(config.get('camera_first_search')),
-            isinstance(config.get('camera_first_search'), dict) and bool(config['camera_first_search'].get('alternate_on_real_work')),
-        bool(config.get('initial_near_home_replenishment',{}).get('first_leg_prefix')),
-        config.get('initial_near_home_replenishment',{}).get('first_leg_prefix',{}).get('strategy') == 'first_real_leg_home_window',
-        bool(config.get('initial_near_home_replenishment',{}).get('first_leg_prefix',{}).get('geometry_handoff')),
-        bool(config.get('initial_near_home_replenishment',{}).get('first_leg_prefix',{}).get('reservation_wait')),
-        bool(config.get('initial_near_home_replenishment',{}).get('contact_region_fallback')))
-    if config.get('initial_near_home_replenishment'):
-        from run_p2d_baseline import file_digest
-        assert row['source_digests']['initial_replenishment_reader']==file_digest(Path(__file__).with_name('p2c_initial_replenishment.py'))
-    departure=departure_heading_audit(directory/'ledger.jsonl',directory/'navigation_inputs.jsonl.gz',
-        bool(config.get('departure_heading_preference')),
-        config.get('parallel_rally_preparation',{}).get('frame_generation_offset_sec',.2))
-    if config.get('departure_heading_preference'):
-        from run_p2d_baseline import file_digest
-        assert row['source_digests']['departure_heading_reader']==file_digest(Path(__file__).with_name('p2c_departure_heading.py'))
-    observer_information=observer_information_audit(directory/'ledger.jsonl',bool(config.get('observer_connection_information_priority')))
-    if config.get('observer_connection_information_priority'):
-        from run_p2d_baseline import file_digest
-        assert row['source_digests']['observer_information_reader']==file_digest(Path(__file__).with_name('p2c_observer_information.py'))
-    if config.get('rally_connection_handoff'):
-        from run_p2d_baseline import file_digest
-        assert row['source_digests']['rally_connection_reader']==file_digest(Path(__file__).with_name('p2c_rally_connection.py'))
-    if config.get('charged_return_refuge_release'):
-        from run_p2d_baseline import file_digest
-        assert row['source_digests']['refuge_release_reader']==file_digest(Path(__file__).with_name('p2c_refuge_release.py'))
-    if config.get('normal_rally_batch_before_recovery'):
-        assert row['source_digests']['prepared_dispatch_reader']==file_digest(Path(__file__).with_name('p2c_prepared_dispatch.py'))
-    if config.get('navigation_outbound_consistency'):
-        from run_p2d_baseline import file_digest
-        assert row['source_digests']['outbound_route_reader']==file_digest(Path(__file__).with_name('p2c_outbound_routes.py'))
-    if config.get('observed_rally_transit_heading'):
-        from run_p2d_baseline import file_digest
-        assert row['source_digests']['rally_transit_reader']==file_digest(Path(__file__).with_name('p2c_rally_transit_heading.py'))
-    if config.get('navigation_dispatch_boundary'):
-        from run_p2d_baseline import file_digest
-        assert row['source_digests']['navigation_dispatch_reader']==file_digest(Path(__file__).with_name('p2c_navigation_dispatch.py'))
-    if config.get('exploration_return_preparation'):
-        from run_p2d_baseline import file_digest
-        assert row['source_digests']['return_preparation_reader']==file_digest(Path(__file__).with_name('p2c_return_preparation.py'))
     assert result['collision_monitoring_active']
     return dict(case=case,status='PASS',git_commit=row['git_commit'],source_digests=row['source_digests'],
         result=result,raw_summary=str(path.resolve()),raw_summary_sha256=sha(path),return_audit=native,
         communication_audit=communications,lookahead_audit=forecast,native_energy_audit=energy,
-        ap_return_veto_audit=vetoes,rally_assignment_audit=assignments,rally_proposal_audit=proposals,rally_repair_audit=repairs,
+        ap_return_veto_audit=vetoes,rally_assignment_audit=assignments,rally_repair_audit=repairs,
         exploration_travel_audit=travel,target_survey_audit=surveys,observer_heading_audit=headings,
         planning_lease_audit=leases,
-        native_tf_ingress_audit=ingress,launch_process_audit=processes,navigation_input_audit=navigation_inputs,
-        native_scan_self_filter_audit=scan_filter,exploration_return_preparation_audit=preparations,
-        navigation_dispatch_boundary_audit=dispatches,observed_rally_transit_heading_audit=transit,
-        navigation_outbound_consistency_audit=outbound,charged_return_refuge_release_audit=refuge,
-        normal_rally_batch_before_recovery_audit=prepared_batch,
-        rally_connection_handoff_audit=connection,parallel_rally_preparation_audit=preparations_approach,
-        exploration_charge_geometry_handoff_audit=charge_handoff,initial_replenishment_audit=replenishment,
-        exploration_departure_heading_audit=departure,observer_connection_information_audit=observer_information)
+        native_tf_ingress_audit=ingress,launch_process_audit=processes)
 
 
 def observer_heading_audit(records,required=False,radius_m=3.,position_tolerance_m=.35,fov_rad=math.pi/2):
@@ -1086,26 +761,6 @@ def audit_one(item):
         return None,dict(case=json.loads(path.read_text())['case'],error=repr(error),traceback=traceback.format_exc())
 
 
-def target_survey_coverage_audit(evidence, conditional=False):
-    """A complete assignment never enters the information-survey fallback."""
-    counts=[]
-    for row in evidence:
-        assignment=row['rally_assignment_audit'];survey=row['target_survey_audit']
-        assert assignment['status']==survey['status']=='PASS' and survey['declared']
-        values=(assignment['failed_assignments_rebuilt'],assignment['chosen_assignments_rebuilt'],
-                survey['target_information_survey_witnesses'])
-        assert all(type(value) is int and value>=0 for value in values),'invalid original coverage counts'
-        counts.append(values)
-    incomplete=sum(row[0] for row in counts);complete=sum(row[1] for row in counts)
-    surveys=sum(row[2] for row in counts)
-    if not surveys:
-        assert conditional and not incomplete,'new survey algorithm was never exercised'
-        assert complete,'no reconstructed complete assignment proves the fallback was unnecessary'
-    return dict(status='PASS' if surveys else 'NOT_TRIGGERED',conditional=conditional,
-                incomplete_assignments=incomplete,complete_assignments=complete,information_surveys=surveys,
-                scope='Conditional fallback coverage; NOT_TRIGGERED adds no navigation or native task-work credit.')
-
-
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--run-root',type=Path,required=True)
@@ -1140,13 +795,9 @@ def main():
     if config.get('initial_known_space_search') and a.cases is None and not errors:
         if not any(row['exploration_travel_audit']['initial_visual_witnesses'] for row in evidence):
             errors.append(dict(case='initial_known_space_search',error='new search algorithm was never exercised'))
-    survey_coverage=None
     if config.get('target_information_survey') and a.cases is None and not errors:
-        try:
-            survey_coverage=target_survey_coverage_audit(evidence,
-                conditional=bool(config.get('conditional_target_survey_coverage')))
-        except (AssertionError,KeyError,TypeError) as error:
-            errors.append(dict(case='target_information_survey',error=str(error)))
+        if not any(row['target_survey_audit']['target_information_survey_witnesses'] for row in evidence):
+            errors.append(dict(case='target_information_survey',error='new survey algorithm was never exercised'))
     physical=None
     if not a.development and a.cases is None:
         try:
@@ -1158,7 +809,7 @@ def main():
             errors.append(dict(case='physical_blackout_pair',error=repr(error),traceback=traceback.format_exc()))
     result=dict(status='FAIL' if errors else 'PASS',scope='development' if a.development else 'integration',
         task_stack_frozen_commit=originals[0]['git_commit'],cases=len(summaries),errors=errors,evidence=evidence,
-        full_declared_scope=a.cases is None,target_survey_coverage=survey_coverage,
+        full_declared_scope=a.cases is None,
         raw_failures_retained=True,physical_blackout_gate=physical or 'required_before_full_integration',
         general_hardware_safety_guarantee=False)
     a.output.parent.mkdir(parents=True,exist_ok=True);a.output.write_text(json.dumps(result,indent=2)+'\n')

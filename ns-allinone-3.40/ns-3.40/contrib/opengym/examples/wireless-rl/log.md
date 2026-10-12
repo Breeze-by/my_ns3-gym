@@ -9436,3 +9436,11 @@ colcon build --symlink-install --packages-select multi_robot_exploration multi_r
 2026-10-12 P2C.1 v94四原整体FAIL保持：ee3845a forced/rooms/corr原生COMPLETE274.8/130.0/258.5，lab101原生RALLY300.3timeout、检测214.8/集合218.0、三机各charge1；四格完整门禁FAIL，各25子审计PASS不能替代任务。四原同34源/native图、零接触耗尽FAILED任务期infra、owner-observer0，五片完整原CDR179037291bytes及原清理退出保持，17正式/两物理/917未调用。235原交付图条件完整旧航段3.999051+6.700542m、当前完整路6.371843m，省4.327750m；原1.8m同伴路线预约拒绝即时新派发，当前.6m机体保持可行，非历史动作/时序因果证明。新仅update_mission/rally_goal_result两中央+一中央/一纯函数：鲜图变化、原目标龄2s到原超时、1m且25%缩短、非observer普通活动航段、全机原完整去返/等待/5s保持与自身当前位置返充预算充足及连续机体保持净空时，只取消当前真实handle；实际Future闭合后仍由原完整预算/路径/身体预约派发，仅匹配预期CANCELED不增失败计数，SUCCESS/ABORT原语义保持。私有证据由独立原算法读者/CDR/native源重建，其余90中央108纯/native/Nav2/SLAM/TTL/300s/5s/原门禁保持。2934功能/51定向含43新/四包/190保护6历史54协议/三34源原命令物理声明/41源一致、完整构造actual DDS与真实ActionServer-Future九情形PASS、owned关闭；合成导航零physical/native/任务因果信用，原功能2失败与读者路径失败保留。新clean pushed v95四开发→17正式+两物理待实测；15非留出覆盖与两物理严格PASS后首次917。P2C.1未完成，无P4/ns3/WiFi/RL，airtime/J与容量未测。报告20261012_p2c_v94_failed_development与20261012_p2c_rally_detour_components。
 
 用户原260929_report十四文件保持。
+
+## 2026-10-12 P2C.1 长会话独立审查与用户授权恢复
+
+用户要求监测约54h长会话并清理无稳定集成收益的补丁循环，明确选择恢复到会话起点b32c891并保留已有完整路径安全预算修复。原HEAD fb40016/v95已保存并推送backup/p2c1-before-recovery-20261012；不重写历史。原会话idle/interrupted，批处理父进程先暂停，首正式lab101按原源码/参数自然原生COMPLETE289.8s且独立单格严格PASS后关闭全部原owned；无下一格、无新物理/917。v95四开发完整PASS仍保留，完整P2C.1仍未验收。
+
+178个有变化的代码/测试/声明/活跃规划文件恢复；control9492→7269行，src/scripts/测试/manifests与b32逐字一致，364历史证据SHA保持。两个指导skill按用户要求卸载，清市场/hooks/lock和使用指令，备份位于自动发现目录外。恢复验证：1527功能PASS，完整pytest另2原lintFAIL(test_flake8/pep257)+1SKIP/201.22s/exit1；四包构建4.34s PASS；171保护/4已有授权源/54静态协议及原native常量/Future约束PASS；安装launch --show-args PASS无新节点。另从包目录重查两原lint入口仍FAIL/11.50s/8107风格诊断，无undefined-name/syntax；不把根目录扫描日志/build的诊断当新增核心错误。第一条未source读者import失败、过早run1测试收集失败/构建中断保留并排除；闭合恢复后run2计入。无新任务实验，不把恢复或组件PASS当任务通过。
+
+命令与完整成功/失败输出、所有原格索引/源SHA/恢复路径/v95终态与门禁在report/20261012_p2c1_session_recovery.md/.json及同名前缀artifacts。原始ledger/CDR/日志留原位，260929_report用户资料不动，无P4/ns3/WiFi/RL。

@@ -224,10 +224,6 @@ def test_found_plans_returning_robot_from_home_without_dispatching_it(mode, home
         fresh_robot_inputs=lambda: True, fresh_robot_poses=lambda: True, fresh_target=lambda: True,
         last_input_availability=True, now=lambda: 10., battery_monitor_started_at=0.,
         battery_state_received_at=dict.fromkeys(names, 10.), message_freshness_timeout_sec=5.,
-        map_received_at=10., target_received_source_time=10.,
-        robot_odom_received_at=dict.fromkeys(names, 10.),
-        robot_tf_received_at=dict.fromkeys(names, 10.),
-        robot_map_received_at=dict.fromkeys(names, 10.),
         participating_robots=lambda: names, stop_target_scan=lambda: False,
         goal_handles=dict.fromkeys(names), cancel_requested=dict.fromkeys(names, False),
         robot_states=dict.fromkeys(names, "idle"), active_batteries_ready=lambda: False,
@@ -1417,7 +1413,6 @@ def test_returning_robot_drains_other_active_exploration():
         goal_handles={"tb1": None, "tb2": handle},
         cancel_requested={"tb1": False, "tb2": False},
         battery_preempted={"tb1": False, "tb2": False},
-        enable_rally=False, goal_routes={"tb1": (), "tb2": ()},
         rally_goal_handles={"tb1": None, "tb2": None},
         task_state="EXPLORE", survey_robot=None, now=lambda: 1.0,
     )
@@ -1443,7 +1438,6 @@ def test_pending_explorer_is_canceled_when_another_robot_starts_returning():
         goal_known_count={}, map_known_count=1, cancel_requested={},
         robot_positions={"tb2": (1.0, 1.0)}, battery_preempted={},
         battery_modes={"tb1": "RETURNING", "tb2": "ACTIVE"}, now=lambda: 2.0,
-        enable_rally=False, goal_routes={"tb2": ()},
     )
     control.HeadquartersControl.goal_response_callback(
         node, "tb2", SimpleNamespace(result=lambda: handle),
@@ -1866,7 +1860,6 @@ def test_return_yield_restores_final_goal_after_charger_reached():
     updates = []
     node = SimpleNamespace(
         return_yield_targets={"tb2": "tb1"},
-        enable_battery=True, rally_charge_requested={},
         battery_modes={"tb1": "RETURNING", "tb2": "ACTIVE"},
         rally_arrived={"tb2": True}, rally_goal_handles={"tb2": None},
         rally_goal_pending={"tb2": False}, rally_yield_targets={"tb2"},
@@ -1958,16 +1951,14 @@ def test_viewpoint_gain_uses_obstacle_visibility():
             assert point.information_gain == control.visible_unknown_gain(grid, (point.row, point.column), 20)
 
 
-@pytest.mark.parametrize("permanent_reassignment, refuge_available, preflight_blocked, guard, refuge_owner, waiter_refuge", [
-    (True, True, False, False, None, False), (False, True, False, False, None, False),
-    (True, False, False, False, None, False), (True, True, True, False, None, False), (True, True, False, True, None, False),
-    (False, True, False, False, "tb1", False), (True, False, False, False, "tb1", False),
-    (False, True, False, True, "tb1", False), (False, True, False, False, "other", False),
-    (True, False, False, False, None, True), (False, True, False, False, None, True),
-    (True, True, False, False, None, True), (True, True, True, False, None, True),
+@pytest.mark.parametrize("permanent_reassignment, refuge_available, preflight_blocked, guard, refuge_owner", [
+    (True, True, False, False, None), (False, True, False, False, None),
+    (True, False, False, False, None), (True, True, True, False, None), (True, True, False, True, None),
+    (False, True, False, False, "tb1"), (True, False, False, False, "tb1"),
+    (False, True, False, True, "tb1"), (False, True, False, False, "other"),
 ])
 def test_idle_blocker_recovery_dispatches_motion_before_returning(
-    monkeypatch, permanent_reassignment, refuge_available, preflight_blocked, guard, refuge_owner, waiter_refuge
+    monkeypatch, permanent_reassignment, refuge_available, preflight_blocked, guard, refuge_owner
 ):
     from types import SimpleNamespace
 
@@ -1983,7 +1974,7 @@ def test_idle_blocker_recovery_dispatches_motion_before_returning(
     targets = {"tb1": control.RallyPose(8.0, 2.5, 0.0), "tb2": control.RallyPose(8.0, 2.0, 0.0)}
     replacements = {"tb1": targets["tb1"], "tb2": control.RallyPose(4.0, 1.5, 0.0)}
     replacement_calls = []
-    def replacement(*args, local_map=None):
+    def replacement(*args):
         replacement_calls.append(args[3])
         if not permanent_reassignment:
             return None
@@ -2028,24 +2019,12 @@ def test_idle_blocker_recovery_dispatches_motion_before_returning(
         get_logger=lambda: SimpleNamespace(warn=lambda *args: None),
         send_rally_goal=lambda name, *args: requests.append(name),
     )
-    if waiter_refuge:
-        node.return_yield_targets['tb1'] = 'tb2'
-        node.rally_yield_targets.add('tb1')
-        node.rally_probe_targets.add('tb1')
     if refuge_owner:
         node.rally_yield_targets.add("tb2")
         node.return_yield_targets["tb2"] = refuge_owner
         node.rally_arrived["tb2"] = True
         monkeypatch.setattr(control, "rally_survey_pose", lambda *args, **kwargs: None)
     control.HeadquartersControl.update_mission(node)
-    if waiter_refuge:
-        if permanent_reassignment and not refuge_available and not preflight_blocked:
-            assert node.rally_final_targets['tb1'] == control.RallyPose(6., 2.5, 0.)
-            assert 'tb1' not in node.return_yield_targets
-            assert 'tb1' not in node.rally_yield_targets and 'tb1' not in node.rally_probe_targets
-        else:
-            assert node.return_yield_targets['tb1'] == 'tb2'
-            assert 'tb1' in node.rally_yield_targets and 'tb1' in node.rally_probe_targets
     if refuge_owner == "other":
         assert not requests
         assert node.return_yield_targets == {"tb2": "other"}
@@ -2953,7 +2932,7 @@ def target_scan_node():
         target_scan_steps={}, target_scan_finished_at={},
         get_clock=lambda: SimpleNamespace(now=lambda: SimpleNamespace(to_msg=lambda: Time(sec=100))),
         get_logger=lambda: SimpleNamespace(info=lambda *a: None, warning=lambda *a: None),
-        record_navigation_decision=lambda *args: (decisions.append(args) or True))
+        record_navigation_decision=lambda *args: decisions.append(args))
     node.now = lambda: node.clock
     import queue
     node.shutdown_requested = False
@@ -3058,7 +3037,6 @@ def test_fresh_confirmation_drains_pending_and_accepted_frontier_search_once():
         goal_last_position={}, goal_known_count={}, map_known_count=1,
         robot_positions={"tb1": (1., 1.)}, battery_preempted={},
         battery_modes={"tb1": "ACTIVE"}, now=lambda: 101.,
-        enable_rally=False, goal_routes={"tb1": ()},
     )
     assert control.HeadquartersControl.stop_target_search(node)
     control.HeadquartersControl.goal_response_callback(node, "tb1", SimpleNamespace(result=lambda: handle))
@@ -3329,13 +3307,12 @@ def test_home_staging_does_not_seal_a_charged_peers_disjoint_live_leg(reservatio
     ('CHARGING','pending',True,False),('RETURNING','accepted',True,False),
     ('UNKNOWN','idle',True,False),('FAILED','idle',True,True),
     ('ACTIVE','pending',False,False)])
-def test_return_refuge_without_joint_plan_waits_for_owner_departure(owner_mode,owner_departure,refuge_arrived,release):
+def test_return_refuge_waits_for_real_charged_owner_departure(owner_mode,owner_departure,refuge_arrived,release):
     from types import SimpleNamespace
     final=control.RallyPose(4.,3.,0.)
     refuge=control.RallyPose(1.,1.,0.)
     updates=[]
     node=SimpleNamespace(return_yield_targets={'yielding':'owner'},
-        enable_battery=True,rally_charge_requested={},
         battery_modes={'owner':owner_mode,'yielding':'ACTIVE'},
         rally_arrived={'yielding':refuge_arrived,'owner':owner_departure=='arrived'},
         rally_goal_handles={'yielding':None,'owner':object() if owner_departure=='accepted' else None},
@@ -3358,7 +3335,7 @@ def test_postcharge_rally_drains_original_legs_before_reordering(monkeypatch, pe
     targets = {'far': control.RallyPose(8., 3., 0.), 'near': control.RallyPose(2., 3., 0.)}
     positions = {name: (pose.x, pose.y) for name, pose in targets.items()}
     reordered = []
-    def order(grid, resolution, origin, goals, current, target, detector, return_maps=None):
+    def order(grid, resolution, origin, goals, current, target, detector):
         reordered.append(current.copy())
         return ['near', 'far']
     monkeypatch.setattr(control, 'map_safe_rally_dispatch_order', order)
@@ -3428,75 +3405,6 @@ def test_postcharge_rally_drains_original_legs_before_reordering(monkeypatch, pe
     assert node.rally_dispatch_order == names
     node.send_rally_goal.assert_not_called()
     handle.cancel_goal_async.assert_not_called()
-
-
-@pytest.mark.parametrize('live_leg', ['none', 'pending', 'accepted'])
-def test_quiescent_rally_repair_releases_ready_peer_while_observer_waits(live_leg):
-    from types import SimpleNamespace
-    from unittest.mock import Mock
-    names = ['far', 'near', 'observer']
-    positions = {'far': (1.05,3.05), 'near': (5.05,3.05), 'observer': (10.05,6.05)}
-    targets = {'far': control.RallyPose(9.05,3.05,0.),
-               'near': control.RallyPose(7.05,3.85,0.),
-               'observer': control.RallyPose(10.05,6.05,0.)}
-    grid = np.full((100,120),100,dtype=int)
-    grid[26:35,5:115] = 0
-    grid[26:90,65:115] = 0
-    states = {name: dict(mode='ACTIVE',stamp_sec=10.,energy=80.,capacity=100.,
-        charge_target_fraction=.8,charge_x=1.05,charge_y=1.05,charge_radius_m=.8,
-        move_cost_per_m=1.,idle_cost_per_sec=.02,nominal_speed_mps=.18,
-        return_path_factor=2.,return_safety_margin=8.,return_recovery_wait_sec=30.) for name in names}
-    handle = Mock()
-    node = SimpleNamespace(
-        enable_battery=True,task_state='RALLY',now=lambda:10.,
-        fresh_robot_inputs=lambda:True,fresh_robot_poses=lambda:True,fresh_target=lambda:True,
-        stop_target_scan=lambda:False,last_input_availability=True,battery_monitor_started_at=0.,
-        message_freshness_timeout_sec=5.,battery_state_received_at=dict.fromkeys(names,10.),
-        battery_modes=dict.fromkeys(names,'ACTIVE'),participating_robots=lambda:names,battery_states=states,
-        prepare_rally_charges=lambda:{'observer'},rally_charge_requested={},rally_precharge_staging={},
-        rally_preflight_complete=True,rally_precharge_active=False,rally_dispatch_order=names.copy(),
-        rally_targets=targets.copy(),rally_final_targets=targets.copy(),
-        rally_goal_handles={'far':handle if live_leg=='accepted' else None,'near':None,'observer':None},
-        rally_goal_pending={'far':live_leg=='pending','near':False,'observer':False},
-        rally_goal_started_at={'far':9.,'near':None,'observer':None},
-        rally_arrived=dict.fromkeys(names,False),rally_leg_routes={name:() for name in names},
-        rally_yield_targets=set(),return_yield_targets={},rally_probe_targets=set(),
-        rally_yield_requested=dict.fromkeys(names,False),rally_hold_started_at=None,
-        survey_goal_handle=None,survey_goal_pending=False,survey_robot=None,
-        release_return_yields=lambda:None,yield_to_returning_robot=lambda:None,last_rally_dispatch_at=0.,
-        global_battery_rally_pause=False,goal_timeout_sec=60.,rally_goal_timeout_sec=30.,rally_max_concurrent=2,
-        robot_positions=positions,get_logger=lambda:Mock(),consumed_publisher=Mock(),
-        input_freshness_details=lambda:{},use_map_safe_rally_order=True,detecting_robot='observer',
-        target=(10.05,8.05),target_observing_robot='observer',rally_observer_guard='observer',
-        robot_yaws=dict.fromkeys(names,0.),target_received_source_time=10.,map_data=grid,
-        resolution=.1,origin=(0.,0.),robot_maps={},robot_map_received_at={},
-        rally_attempts=dict.fromkeys(names,0),rally_recovery_requested=dict.fromkeys(names,False),
-        rally_route_unavailable_since=dict.fromkeys(names),robot_velocities=dict.fromkeys(names,(0.,0.)),
-        rally_position_tolerance=.35,rally_linear_tolerance=.05,rally_angular_tolerance=.1,
-        rally_hold_sec=5.,active_batteries_ready=lambda:False,
-    )
-    node.rally_approach_routes = {name: control.plan_rally_leg(pose,grid,.1,(0.,0.),positions[name],
-        max_distance_m=float('inf'))[1] for name,pose in targets.items()}
-    if live_leg != 'none':
-        node.rally_leg_routes['far'] = ((1.05,3.05),(2.05,3.05))
-    sent = []
-    def send(name,plan,charge_staging=False):
-        assert not charge_staging and name != 'observer'
-        assert not control.routes_conflict(plan[1],(positions['far'],),control.RALLY_DYNAMIC_CLEARANCE_M)
-        sent.append(name)
-        node.rally_goal_pending[name] = True
-    node.send_rally_goal = send
-    control.HeadquartersControl.update_mission(node)
-    assert not sent and not node.rally_preflight_complete and node.rally_precharge_active
-    if live_leg != 'none':
-        assert node.rally_dispatch_order == names
-        handle.cancel_goal_async.assert_not_called()
-    else:
-        assert node.rally_dispatch_order == ['observer','near','far']
-        node.now = lambda:11.
-        control.HeadquartersControl.update_mission(node)
-        assert sent == ['near'] and node.rally_dispatch_order == ['near','far','observer']
-        assert not node.rally_preflight_complete
 
 
 def test_map_safe_order_releases_ahead_robot_before_behind_future_reservation():
