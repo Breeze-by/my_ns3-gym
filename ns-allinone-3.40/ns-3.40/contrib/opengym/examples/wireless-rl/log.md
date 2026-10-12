@@ -9590,3 +9590,18 @@ v10_components1旧47PASS28.35s；新增8pure真实几何条件和1完整构造�
 v9四原ledger中coordinator_global_rally_yield_held均0，驻留让行未触发；零pending/dependency不能替代该分支的整任务证据。
 
 v10_full最终1635PASS186.24s；四包v10_build4.48sPASS，v10_source190保护/6授权/54协议/native常量/中央8+global2+native2 Future注册契约PASS，六核心/测试/reader F821/F822/F823/E999 PASS，git diff-check PASS。v10_declaration原共享owner --validate-only PASS；辅助检查误断言mission_planner:=global导致FAIL（tool记录），实际命令是--mission-planner global，按实际CLI核验PASS，命令生成未改。两manifest逐对象相比父61e5dd7仅parent/UTC/新增information_funding策略，case及既有global策略、所有其他字段不变。新run-id预定20261013_p2c_global_v10；下一clean pushed冻结原四开发，保持15非留出+两物理后首次917，无跨版任务信用。
+
+
+### global v10 两严格PASS/两任务FAIL与 v11 全舰队探索目标
+
+7a1bafdd2d4e09424fec57d0b34e5d3f10dbc0fa clean pushed，20261013_p2c_global_v10/domain204/port11573四原串行全进程关闭后才改源。forced FOUND300.2timeout/检测284.6/无RALLY/charge2；lab RALLY300.2timeout/检测118.9/集合122.6/charge2；rooms COMPLETE259.1/113.9/150.7/charge2；corr COMPLETE191.4/76.2/79.5/charge1。最低E7.965274896120997/20.943137604034195/23.33641659998561/31.9472864632588；四零contacts/exhaustion/FAILED/任务期infra，runner/observer0。四原完整CDR123838122bytes保持。v10_development_gate完整FAIL，仅forced/lab episode success断言失败，rooms/corr完整严格PASS；不跨版拼矩阵，17正式/两物理/917未调用。
+
+三前原charge reason为forced low_energy_after_actual_work双、lab whole_rally_and_wait(tb2,tb3)、rooms whole_rally_and_wait(tb2,tb1)，本批unfunded_information_task未触发。lab tb1/gen29 rally_yield 2399.682→2415.282SUCCESS后held(tb3)，tb3/gen30 2413.382派发至末2429.482原诊断仍owned，tb1仍held；不是驻留丢失或完全多阻挡死锁。原进程结束不替代对应Future成功闭合，任务FAIL保持。
+
+v10_information_commitment_conditions精确bind_sources原CDR/native输入：v9forced13实际exploration/8同时比较/39地图绑定，潜在重叠max0；v10forced27实际exploration/19同时比较/81地图绑定，2273.782 tb2目标[6.374881358,-.437792281]与在途tb1潜在618/774=.7984496124，2251.982另一633/1188=.5328282828。条件用当前map free及原已发yaw，不扣历史camera interest，是潜在信息上界、非实际收益/原回调因果或任务credit。lab首rally2256.982原三位置[-3.717918208,1.213898172]/[3.378139610,3.556999419]/[5.319683534,-1.479092636]、原完整wait333.480736849461；不降安全预算。
+
+v11 FleetSnapshot新增复制的pending_views仅真实exploration owner且无cancel_reason；复制固定实际目标/yaw，不留旧cellID。ExplorationObjective按当前map/原历史camera兴趣投影当前与在途信息、联合边际去重，并按原1s开销+最大在途/新路长/原nominal speed+最大原known fused graph pair length/较慢native nominal speed比较全舰队组合。实际未来集合及充电仍须原完整准入；forecast是排序、非目标真值/预算/可行路线或原生完成证明。字段只在此immutable提案内复用，未知图距离回原边际排名；原所有Nav2/source/body/1.8/去返与wait/timeout/5s保持，诊断仅既有私有流。
+
+v11_components1原56PASS39.56s；加3pure全局反例和2owner生命周期参数后components2=59PASS2FAIL40.24s，失败因新夹具误断言初始相机历史为空（fixture已有真实交付初始view）；原输出保留。仅改测试比较提案前后已有history相同，复制预测数据变更不改实际owner目标，取消撤预期但owner保留到匹配Future。v11_owner_predictions两PASS/35deselected1.66s，未改生产历史逻辑或Future语义。新纯反例pending view正确视向边际、原地图变形/障碍重新投影、同信息去程时较低集结代价、原return factor2保持、原墙绕行而断路未知PASS，零physical/native任务信用。完整功能/build/source/static/新冻结声明继续，仅一个累计技术报告。
+
+v11_full最终1640PASS189.16s，修正owner夹具历史对比和复制数据不改actualgoal随完整回归通过。四包v11_build7.43sPASS；v11_source190保护/6授权/54协议/native常量与中央8+global2+native2 Future契约PASS，六核心/测试/reader F821/F822/F823/E999 PASS，git diff-check PASS。v11_declaration共享owner --validate-only PASS；两manifest与7a1bafd逐对象仅parent/UTC/新增search_objective不同，原cases、既有所有策略和其他字段一致。下一clean pushed freeze run-id20261013_p2c_global_v11仍四原开发起步，所有旧FAIL保持，无P4/ns3/WiFi/RL或未测任务信用。

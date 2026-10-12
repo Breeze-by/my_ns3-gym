@@ -330,7 +330,9 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
             self.source_map_data, dict(self.map_self_return_cells))
         self._refresh_rally_yields(snapshot)
         return replace(snapshot, yielded_for={robot:tuple(sorted(peers))
-            for robot,peers in self.global_rally_yields.items()})
+            for robot,peers in self.global_rally_yields.items()},
+            pending_views={robot:task.proposal.pose for robot,task in self.navigation_tasks.items()
+                if robot in required and task.proposal.kind=='exploration' and task.cancel_reason is None})
 
     def _refresh_rally_yields(self, snapshot):
         # Navigation ownership has already closed. The refuge remains a
@@ -1007,6 +1009,7 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                     charges=[charge.robot for charge in proposal.charges],
                     arrived=dict(self.rally_arrived),owned=list(self.navigation_tasks),
                     yielded_for=snapshot.yielded_for,
+                    forecast=proposal.forecast,
                     charge_intent=None if self.global_charge_intent is None else {
                         'robot':self.global_charge_intent.robot,'reason':self.global_charge_intent.reason,
                         'requested_at':self.global_charge_requested_at,

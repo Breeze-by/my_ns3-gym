@@ -297,6 +297,29 @@ def test_pending_cancel_retains_owner_until_matching_real_future_closes(node):
     assert node.global_nav_failures.get('tb1', 0) == 0
 
 
+@pytest.mark.parametrize('cancel', [False,True])
+def test_pending_observation_prediction_tracks_actual_owner_without_releasing_a_cancel(node,cancel):
+    before = node._snapshot()
+    _,proposal,pending,_,task = request(node)
+    copied = node._snapshot()
+    assert copied.pending_views == {'tb1':proposal.pose}
+    assert copied.views == before.views and not copied.completed_legs
+    if cancel:
+        node.cancel_navigation('tb1','local_return')
+        assert not node._snapshot().pending_views
+        assert node.navigation_tasks['tb1'] is task
+    else:
+        copied.pending_views['tb1'] = c.RallyPose(2.75,1.25,0.)
+        assert node._snapshot().pending_views['tb1'] == proposal.pose
+        assert task.proposal.pose == proposal.pose
+    _,result = accept(node,pending)
+    result.set_result(SimpleNamespace(status=GoalStatus.STATUS_CANCELED if cancel
+                                      else GoalStatus.STATUS_SUCCEEDED))
+    node.drain_action_done_callbacks()
+    assert not node._snapshot().pending_views and not node.navigation_tasks
+    assert node.successful_exploration_legs.get('tb1',0) == (0 if cancel else 1)
+
+
 def test_old_result_cannot_release_new_navigation_generation(node):
     _, _, pending, _, old = request(node)
     _, result = accept(node, pending)

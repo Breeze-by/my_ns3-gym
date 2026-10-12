@@ -7,7 +7,7 @@ that a target is absent. All geometry uses the existing P2C safety operators.
 """
 
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from itertools import product
 import math
 import time
@@ -50,6 +50,7 @@ class FleetSnapshot:
     source_grid: np.ndarray | None = None
     self_return_cells: dict = field(default_factory=dict)
     yielded_for: dict = field(default_factory=dict)
+    pending_views: dict = field(default_factory=dict)
 
     @property
     def context(self):
@@ -69,6 +70,7 @@ class MotionProposal:
     complete_route: tuple = ()
     budget_time: float | None = None
     wait_sec: float = 0.0
+    information_weight: float = 1.0
 
 
 @dataclass(frozen=True)
@@ -90,6 +92,7 @@ class FleetProposal:
     wait_budgets: dict = field(default_factory=dict)
     blocked: dict = field(default_factory=dict)
     computation_wall_sec: float = 0.0
+    forecast: dict = field(default_factory=dict)
 
 
 class PlanningWorker:
@@ -261,7 +264,120 @@ def camera_cells(grid, cell, radius_cells, interest):
     return frozenset(map(int, hits[masks[:, best]])), best * 2. * math.pi / 16.
 
 
-def joint_motions(pools, reservations=(), maximum=3):
+class ExplorationObjective:
+    """Expected fleet information per nominal travel and gathering time.
+
+    Pending command views are predictions, not observations or target absence.
+    All projections are rebuilt on this snapshot, and disappear with the owner.
+    The gathering forecast uses known fused paths without peer bodies; it is a
+    ranking proxy, never a feasible rendezvous or a safety/return budget.
+    """
+
+    def __init__(self, snapshot, interest):
+        self.snapshot = snapshot
+        self.safe = geometry.traversable_grid(snapshot.grid, snapshot.resolution,
+                                             geometry.PATH_CLEARANCE_M)
+        self.fields = {}
+        participants = snapshot.required or tuple(snapshot.positions)
+        self.positions = {robot:snapshot.positions[robot] for robot in participants}
+        self.committed = set()
+        self.pending = {}
+        for robot, pose in snapshot.pending_views.items():
+            if robot not in self.positions or robot not in snapshot.live_routes:
+                continue
+            cell = geometry.world_to_grid(pose.x,pose.y,snapshot.resolution,*snapshot.origin)
+            if not _safe_endpoint(self.safe,snapshot,pose):
+                continue
+            radius = geometry.INFORMATION_RADIUS_M / snapshot.resolution
+            unknown = geometry.visible_unknown_gain(snapshot.grid,cell,radius,return_cells=True)
+            hits = geometry.visible_unknown_gain(snapshot.grid,cell,radius,interest,return_cells=True)
+            if hits.size:
+                rows,columns = np.unravel_index(hits,snapshot.grid.shape)
+                delta = np.arctan2(rows-cell[0],columns-cell[1])-pose.yaw
+                visible = np.abs(np.arctan2(np.sin(delta),np.cos(delta))) <= (
+                    geometry.INITIAL_SEARCH_VIEW_FOV_RAD / 2.)
+                self.committed.update(map(int,hits[visible]))
+            self.committed.update(map(int,unknown))
+            self.positions[robot] = (pose.x,pose.y)
+            self.pending[robot] = snapshot.live_routes[robot]
+        # Reuse these few fixed peer fields while evaluating all single-goal
+        # bounds. Joint choices add at most the bounded pool's endpoint fields.
+        for position in self.positions.values():
+            self._field(position)
+
+    def _field(self, position):
+        key = tuple(position)
+        if key not in self.fields:
+            self.fields[key] = geometry.exploration_distance_field(self.snapshot.grid,
+                self.safe,self.snapshot.resolution,self.snapshot.origin,key)
+        return self.fields[key]
+
+    def _distance(self, first, second):
+        snapshot = self.snapshot
+        directions = sorted(((second,first),(first,second)),
+                            key=lambda pair:tuple(pair[0]) not in self.fields)
+        for start,end in directions:
+            field = self._field(start)
+            cell = geometry.world_to_grid(*end,snapshot.resolution,*snapshot.origin)
+            if field is not None and 0<=cell[0]<field.shape[0] and 0<=cell[1]<field.shape[1]:
+                centre = geometry.grid_to_world(*cell,snapshot.resolution,*snapshot.origin)
+                distance = float(field[cell]) + math.dist(end,centre)
+                if math.isfinite(distance):
+                    return distance
+        return None
+
+    def ready_time(self, motions):
+        positions = dict(self.positions)
+        routes = dict(self.pending)
+        for motion in motions:
+            positions[motion.robot] = (motion.pose.x,motion.pose.y)
+            routes[motion.robot] = motion.route
+        try:
+            speeds = {robot:float(self.snapshot.batteries.get(robot,{}).get('nominal_speed_mps',.18))
+                      for robot in positions}
+        except (TypeError,ValueError):
+            return None
+        if any(not math.isfinite(speed) or speed<=0. for speed in speeds.values()):
+            return None
+        travel = max((route_length(route)/speeds[robot] for robot,route in routes.items()),default=0.)
+        gathering = 0.
+        names = sorted(positions)
+        for index,robot in enumerate(names):
+            for peer in names[index+1:]:
+                distance = self._distance(positions[robot],positions[peer])
+                if distance is None:
+                    return None
+                gathering = max(gathering,distance/min(speeds[robot],speeds[peer]))
+        return geometry.PLANNING_OVERHEAD_SEC + travel + gathering
+
+    def score(self, motions):
+        cells = set(self.committed)
+        gain = float(len(cells))
+        legacy = 0.
+        for motion in sorted(motions,key=lambda item:item.robot):
+            novel = len(motion.information_cells-cells)
+            gain += novel * motion.information_weight
+            legacy += geometry.exploration_utility(novel,0,route_length(motion.route)) * motion.information_weight
+            cells.update(motion.information_cells)
+        duration = self.ready_time(motions)
+        # Missing forecast geometry cannot supply a fictitious path or block
+        # exploration. Retain the old marginal-information ranking in that case.
+        return legacy if duration is None else gain / duration
+
+    def bound(self, robot, pose, route, information_count, weight):
+        motion = MotionProposal(robot,'exploration',pose,route,0.,0.)
+        duration = self.ready_time((motion,))
+        return (geometry.exploration_utility(information_count,0,route_length(route))*weight
+                if duration is None else (len(self.committed)+information_count*weight)/duration)
+
+    def evidence(self, motions):
+        cells = self.committed | set().union(*(motion.information_cells for motion in motions))
+        return dict(scope='current-map expected information and nominal fleet gathering ranking; no feasibility or observed-coverage credit',
+                    pending_robots=sorted(self.pending),potential_information_cells=len(cells),
+                    nominal_ready_time_sec=self.ready_time(motions),score=self.score(motions))
+
+
+def joint_motions(pools, reservations=(), maximum=3, scorer=None):
     """Compare compatible fleet choices and discount duplicated information.
 
     Each robot has a bounded, deterministic candidate pool, including wait.
@@ -296,8 +412,10 @@ def joint_motions(pools, reservations=(), maximum=3):
             gain += choice.utility * fraction
             cells.update(choice.information_cells)
             accepted.append(choice)
-        score = (gain, len(motions))
-        if valid and score > best_score:
+        if not valid:
+            continue
+        score = (gain if scorer is None else scorer(motions), len(motions))
+        if score > best_score:
             best, best_score = motions, score
     return best
 
@@ -382,6 +500,7 @@ def plan_exploration(snapshot, caches, protected):
     frontier = geometry.prepare_frontier_data(snapshot.grid, snapshot.resolution, defer_gain=True)
     camera_interest = geometry.camera_search_interest(
         snapshot.grid, snapshot.resolution, snapshot.origin, snapshot.views)
+    objective = ExplorationObjective(snapshot,camera_interest)
     combined_interest = camera_interest | (snapshot.grid < 0)
     reservations = (*snapshot.live_routes.values(), *protected.values())
     for robot in snapshot.available:
@@ -433,7 +552,7 @@ def plan_exploration(snapshot, caches, protected):
                 max(0,r-radius):min(snapshot.grid.shape[0],r+radius+1),
                 max(0,c-radius):min(snapshot.grid.shape[1],c+radius+1)]))
             reuse=geometry.target_reuse_penalty((pose.x,pose.y),snapshot.history)
-            bound=geometry.exploration_utility(count,0,route_length(full))*reuse
+            bound=objective.bound(robot,pose,full,count,reuse)
             if bound>0:
                 geometric.append((bound,pose,full,cell,reuse,
                     math.atan2(assignment.y-pose.y,assignment.x-pose.x)))
@@ -458,7 +577,8 @@ def plan_exploration(snapshot, caches, protected):
                 return None
             utility = geometry.exploration_utility(len(information), 0, route_length(full))*reuse
             choice = MotionProposal(robot, "exploration", pose, full, utility,
-                                    required, information)
+                                    required, information,information_weight=reuse)
+            choice = replace(choice,utility=objective.score((choice,)))
             decision = information_motion_funding(snapshot, choice, caches[robot])
             if isinstance(decision, MotionProposal):
                 return decision
@@ -489,7 +609,7 @@ def plan_exploration(snapshot, caches, protected):
                 charges.append(ChargeProposal(robot, max(candidates[0].required_energy, threshold),
                                               contact["route"], "low_energy_after_actual_work",
                                               (candidates[0].pose.x, candidates[0].pose.y)))
-    motions = joint_motions(pools, reservations, snapshot.maximum_concurrent)
+    motions = joint_motions(pools,reservations,snapshot.maximum_concurrent,scorer=objective.score)
     best_charges = {}
     for charge in charges:
         if pools.get(charge.robot) and charge.reason == "unfunded_information_task":
@@ -497,7 +617,8 @@ def plan_exploration(snapshot, caches, protected):
         prior = best_charges.get(charge.robot)
         if prior is None or charge.required_energy < prior.required_energy:
             best_charges[charge.robot] = charge
-    return FleetProposal(snapshot, motions, tuple(best_charges.values()), blocked=blocked)
+    return FleetProposal(snapshot,motions,tuple(best_charges.values()),blocked=blocked,
+                         forecast=objective.evidence(motions))
 
 
 def rally_wait_budgets(snapshot, poses, caches):
@@ -843,4 +964,4 @@ def plan_fleet(snapshot):
                 result = plan_exploration(snapshot, caches, protected)
     return FleetProposal(result.snapshot, result.motions, result.charges,
                          result.final_poses, result.wait_budgets, result.blocked,
-                         time.perf_counter() - started)
+                         time.perf_counter() - started,result.forecast)

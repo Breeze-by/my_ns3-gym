@@ -8,7 +8,7 @@ from types import SimpleNamespace
 from multi_robot_exploration import control as c
 from multi_robot_exploration.fleet_planning import (
     FleetSnapshot, MotionProposal, complete_budget, joint_motions, plan_fleet, plan_exploration,
-    qualified_motion_route,
+    qualified_motion_route, ExplorationObjective,
 )
 
 
@@ -221,3 +221,72 @@ def test_information_funding_requires_a_safe_available_current_return(condition)
         snapshot = replace(snapshot,at_time=9.9)
     proposal = plan_fleet(replace(snapshot,batteries={'tb1':state}))
     assert not proposal.motions and not proposal.charges
+
+
+def camera_view(snapshot, pose):
+    cell = c.world_to_grid(pose.x,pose.y,snapshot.resolution,*snapshot.origin)
+    hits = c.visible_unknown_gain(snapshot.grid,cell,c.INFORMATION_RADIUS_M/snapshot.resolution,
+                                  snapshot.grid==0,return_cells=True)
+    rows,columns = np.unravel_index(hits,snapshot.grid.shape)
+    delta = np.arctan2(rows-cell[0],columns-cell[1])-pose.yaw
+    return frozenset(map(int,hits[np.abs(np.arctan2(np.sin(delta),np.cos(delta)))
+                                 <=c.INITIAL_SEARCH_VIEW_FOV_RAD/2.]))
+
+
+def test_async_observation_commitments_change_the_joint_choice_without_observation_credit():
+    snapshot = world()
+    pending = c.RallyPose(2.25,2.25,0.)
+    snapshot = replace(snapshot,positions={'tb1':(1.25,1.25),'tb2':(4.25,1.25)},
+        required=('tb1','tb2'),available=('tb2',),pending_views={'tb1':pending},
+        live_routes={'tb1':((1.25,1.25),(2.25,2.25))})
+    objective = ExplorationObjective(snapshot,snapshot.grid==0)
+    left,right = c.RallyPose(4.25,2.25,math.pi),c.RallyPose(4.25,2.25,0.)
+    redundant = MotionProposal('tb2','exploration',left,((4.25,1.25),(4.25,2.25)),
+        100.,15.,camera_view(snapshot,left))
+    novel = replace(redundant,pose=right,utility=99.,information_cells=camera_view(snapshot,right))
+    assert len(redundant.information_cells&objective.committed) > len(novel.information_cells&objective.committed)
+    assert joint_motions({'tb2':[redundant,novel]}) == (redundant,)
+    assert joint_motions({'tb2':[redundant,novel]},scorer=objective.score) == (novel,)
+    assert not snapshot.views and not snapshot.completed_legs
+    released = ExplorationObjective(replace(snapshot,pending_views={},live_routes={}),snapshot.grid==0)
+    assert not released.committed and not released.pending
+    # A current-map projection is rebuilt, never a reused flattened old-grid ID.
+    changed = np.zeros((80,120),dtype=np.int16)
+    changed[22,22] = 100
+    changed = c.immutable_grid_snapshot(changed,changed.shape)
+    updated = replace(snapshot,grid=changed)
+    assert not ExplorationObjective(updated,changed==0).committed
+
+
+def test_joint_search_accounts_for_future_fleet_gathering_without_changing_return_prices():
+    snapshot = replace(world(),positions={'tb1':(1.25,1.25),'tb2':(5.25,1.25)},
+                       required=('tb1','tb2'))
+    objective = ExplorationObjective(snapshot,snapshot.grid==0)
+    farther = MotionProposal('tb1','exploration',c.RallyPose(.25,1.25,0.),
+        ((1.25,1.25),(.25,1.25)),100.,15.,frozenset(range(100)))
+    nearer = replace(farther,pose=c.RallyPose(2.25,1.25,0.),
+        route=((1.25,1.25),(2.25,1.25)),utility=99.)
+    assert objective.ready_time((nearer,)) < objective.ready_time((farther,))
+    assert joint_motions({'tb1':[farther,nearer]}) == (farther,)
+    assert joint_motions({'tb1':[farther,nearer]},scorer=objective.score) == (nearer,)
+    for motion in (farther,nearer):
+        assert complete_budget(snapshot,'tb1',motion.route,
+            (motion.pose.x,motion.pose.y),{}) < snapshot.batteries['tb1']['energy']
+    assert snapshot.batteries['tb1']['return_path_factor'] == 2.
+
+
+def test_gathering_forecast_uses_known_graph_detours_and_does_not_invent_a_missing_path():
+    grid = np.zeros((80,100),dtype=np.int16)
+    grid[:,40] = 100
+    grid[65:75,40] = 0
+    grid = c.immutable_grid_snapshot(grid,grid.shape)
+    snapshot = replace(world(),grid=grid,positions={'tb1':(2.25,2.25),'tb2':(6.25,2.25)},
+                       required=('tb1','tb2'))
+    proxy = ExplorationObjective(snapshot,grid==0)
+    assert proxy.ready_time(()) > 1. + 10. / .18
+    disconnected = grid.copy()
+    disconnected[:,40] = 100
+    disconnected = c.immutable_grid_snapshot(disconnected,disconnected.shape)
+    blocked = replace(snapshot,grid=disconnected)
+    assert ExplorationObjective(blocked,disconnected==0).ready_time(()) is None
+    assert disconnected[:,40].min() == 100
