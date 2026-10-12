@@ -194,6 +194,43 @@ def test_admission_path_cache_cannot_reuse_an_obsolete_map_or_body_epoch(node):
     proposal = MotionProposal('tb1', 'exploration', c.RallyPose(2.25, 1.25, 0.),
         ((1.25, 1.25), (2.25, 1.25)), 1., 15.)
     assert node._current_motion(changed, proposal, {}) is None
+
+
+def test_nominal_field_reuse_keeps_live_prefix_but_invalidates_changed_start_cell(node):
+    first=node._snapshot()
+    cache=node._nominal_caches(first,'tb1')
+    cache['nominal_rally_routes']={'field':'same_geometry'}
+    shifted=replace(first,positions={'tb1':(1.251,1.25)})
+    assert node._nominal_caches(shifted,'tb1')['nominal_rally_routes']['field']=='same_geometry'
+    advanced=replace(first,positions={'tb1':(1.45,1.25)})
+    assert 'nominal_rally_routes' not in node._nominal_caches(advanced,'tb1')
+
+
+def test_shifted_map_origin_funds_exact_final_connector_and_actual_stop(node):
+    grid=OccupancyGrid()
+    grid.header.stamp.sec=10
+    grid.info.width=grid.info.height=80
+    grid.info.resolution=.1
+    grid.info.origin.position.x=.02
+    grid.info.origin.orientation.w=1.
+    grid.data=[0]*6400
+    node.map_callback(grid)
+    node.robot_map_callback(grid,'tb1')
+    node.task_state='RALLY'
+    node.target,node.target_received_source_time=(3.,3.),10.
+    final=c.RallyPose(2.25,1.25,math.atan2(1.75,.75))
+    node.rally_targets=node.rally_final_targets={'tb1':final}
+    proposed=MotionProposal('tb1','rally',final,((1.25,1.25),(2.25,1.25)),1.,15.)
+    snapshot=node._snapshot()
+    actual=node._current_motion(snapshot,proposed,{})
+    assert actual is not None and actual.complete_route[-1]==(final.x,final.y)
+    assert actual.route[-1]!=(final.x,final.y)
+    from multi_robot_exploration.fleet_planning import complete_budget
+    nominal=complete_budget(replace(snapshot,at_time=actual.budget_time),'tb1',
+        actual.complete_route,(final.x,final.y),{},actual.wait_sec)
+    stopped=complete_budget(replace(snapshot,at_time=actual.budget_time),'tb1',
+        actual.route,(actual.pose.x,actual.pose.y),{},actual.wait_sec)
+    assert actual.required_energy==max(nominal,stopped)
 def test_stationary_arrival_waits_for_original_five_second_hold(node):
     final = c.RallyPose(1.25, 1.25, 0.)
     node.task_state = 'RALLY'

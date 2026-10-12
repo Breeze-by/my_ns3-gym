@@ -197,6 +197,9 @@ def audit_motion(event):
                 {peer:state['mode'] for peer,state in world['battery_states'].items()},travel,charge_times)
             assert event['waiting_time_budget_sec'] + 1e-8 >= waits[robot] + 5., 'incomplete fleet wait budget'
     expected = scalar_budget(event, grid, maps, complete, destination, event['waiting_time_budget_sec'])
+    if kind=='rally':
+        expected=max(expected,scalar_budget(event,grid,maps,route,event['requested_position'],
+            event['waiting_time_budget_sec']))
     assert math.isclose(expected, event['required_energy'], abs_tol=1e-6)
     if world['battery_states']:
         assert world['battery_states'][robot]['energy'] > expected

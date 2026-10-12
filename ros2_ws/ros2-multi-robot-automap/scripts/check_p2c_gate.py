@@ -724,6 +724,9 @@ def check_one(path,config):
     application=application_graph_audit(native_graph,result['robot_count']) if config.get('complete_application_graph') else None
     capture=navigation_capture_audit(row,directory)
     scan_filter=scan_self_filter_audit(row,directory)
+    if config.get('global_mission_planning'):
+        from run_p2d_baseline import file_digest
+        assert row['source_digests']['global_mission_reader']==file_digest(Path(__file__).with_name('p2c_global_audit.py'))
     global_plan=global_mission_audit(directory,bool(config.get('global_mission_planning')))
     if global_plan and (case.startswith(('dev_', 'fixed_')) or case in ('forced2','protocol_forced2','holdout_ideal')):
         assert global_plan['sent']>0, 'global mission executor never exercised'

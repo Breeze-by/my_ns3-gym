@@ -61,6 +61,7 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
         self.global_map_encodings = {}
         self.admission_geometry_caches = {}
         self.return_geometry_caches = {}
+        self.nominal_rally_caches = {}
         self.global_charge_context = None
         self.deferred_charge_intent = None
         self.last_hold_work_sec = 0.
@@ -331,6 +332,20 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                        if peer not in (robot, allowed)):
                     self.cancel_navigation(robot, "return_corridor")
 
+    def _nominal_caches(self, snapshot, robot):
+        # Waiting prices use a static, complete approach without peer bodies.
+        # Reuse its field only for identical maps and the same start cell;
+        # prepend the actual live position again when calculating distance.
+        admission=self._admission_caches(snapshot,robot)
+        key=(admission['epoch'][:-1],geometry.world_to_grid(
+            *snapshot.positions[robot],snapshot.resolution,*snapshot.origin))
+        caches=self.nominal_rally_caches.setdefault(robot,{})
+        if caches.get('epoch')!=key:
+            caches.clear()
+            caches['epoch']=key
+        caches['returns']=self.return_geometry_caches.setdefault(robot,{})
+        return caches
+
     def _validate_final_poses(self, snapshot, poses):
         if set(poses) != set(snapshot.required) or snapshot.target is None:
             return False
@@ -411,7 +426,11 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                 snapshot.origin, destination, blocked_positions=bodies)
             if not remaining:
                 return None
-            complete = (*full, *remaining)
+            # Cell-centre geometry and the permanent metric target can differ
+            # when a delivered map origin changes. Fund the exact nominal
+            # connector too; the actual shorter stop receives its own return
+            # price below.
+            complete = (*full, *remaining, (final.x,final.y))
             destination = final.x, final.y
             # A complete all-peer wait is repriced at the current epoch. The
             # proposed wait is a lower bound on this admission's wait reserve.
@@ -438,6 +457,12 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
         budget_time = self.now()
         required = complete_budget(replace(snapshot, at_time=budget_time), robot,
                                    complete, destination, caches, wait)
+        if required is not None and kind=='rally':
+            stopped=complete_budget(replace(snapshot,at_time=budget_time),robot,
+                full,(actual.x,actual.y),caches,wait)
+            if stopped is None:
+                return None
+            required=max(required,stopped)
         if required is None or snapshot.batteries and snapshot.batteries[robot]["energy"] <= required:
             return None
         return replace(proposal, pose=actual, route=full, required_energy=required,
@@ -449,7 +474,7 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
         # No Euclidean fallback can supply a feasible path or a return price.
         bases, travel, charge_times = {}, {}, {}
         for robot, final in self.rally_final_targets.items():
-            caches = self._admission_caches(snapshot, robot)
+            caches = self._nominal_caches(snapshot, robot)
             grid = robot_grid(snapshot, robot, caches)
             _, route = geometry.plan_rally_leg(final, grid, snapshot.resolution,
                 snapshot.origin, snapshot.positions[robot],

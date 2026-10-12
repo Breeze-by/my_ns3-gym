@@ -9480,3 +9480,12 @@ forced两末Native误差.011627/.005114m速度近零却无5s完成proof；独立
 新仅统一执行器依赖生命周期：当前预算先清除无效需求再施加执行保护，阻塞观察者不压住可执行其他串行补能、保留原依赖；观察租约按生产者独立，较旧/同全局时刻的同伴确认不回退目标源；逆向返充几何与身体epoch缓存分离，保持重用原内容键、当前实际前缀及当前source/能量价格。增加5s来源/owned/充电/arrived/保持阻塞与工作耗时诊断。没有放宽任何原门槛或改原物理/native算法。
 
 v2_components1 20PASS8.99s，加入独立观察源后 components2 21PASS8.04s，含真实DDS/ActionServer/Futures/原件绑定以及两个预算有效的构造反例；零physical信用。v2_full完整功能1600PASS159.98s；v2_source190保护/6授权/54协议及native常量/原8+新2/native2/shared1Future PASS；F821/F822/F823/E999及diff-check PASS。C++不变，四包再构建4.30s PASS（v2_build.log）；新manifests仅父冻结/预声明时刻更新，cases/300s/5s/TTL/物理刺激不变。源修改前四owners已全部闭合，旧长会话保持暂停。
+
+
+### global v2 四原保持失败与 v3 路径/价格一致性
+
+5599fde0af30e655df37179a70a971f2bc71fc17 clean pushed，四原20261012_p2c_global_v2，domain204/port11573/原条件同冻结串行：forced原生COMPLETE292.5（中央277.8）、rooms COMPLETE213.6（中央211.3）；lab RALLY300timeout；corr中央COMPLETE297.6但native successfalse/300timeout。检测213.0/136.8/67.9/70.3，charges2/1/1/2，四零contacts/exhaustion/FAILED、owner/observer0；CDR129630920bytes原留原位。17正式/两物理/917未调用。
+
+v2_forced_gate和v2_development_gate严格FAIL：两原NativeCOMPLETE的global完整路径端点不等永久目标。原forced三条差异.01123185276m，原required28.2401417/22.1337630/19.9616804，按原完整路末点重算28.2151820/22.1088034/19.9367207；条件价格比较非因果/硬件保证，端点不一致FAIL不回填。lab私有proposal源pose2.199s过2s，清道反复提案无实际sent；条件直接构造选错末proposal导致charge_intent None TypeError，v2_lab_clearance_conditions.log保留排除，不能称原动作回放。
+
+原四owned全部闭合后v3统一完整路径末点连接永久目标、实际短停点返回独立核价并取max，原同一个budget_epoch/完整价格/源龄/门槛保持；静态名义全去程字段独立按图内容+起点cell，当前实际前缀重算，身体派发字段仍全position epoch；独立reader源码SHA在canonical门禁绑定。23定向（两个新一致性/缓存反例+原实际DDS/Futures/native原件）PASS8.68s，v3_source190保护/6授权/54协议PASS，F821/F822/F823/E999和diff-checkPASS；v3_full完整功能1602PASS158.15s，四包build4.60sPASS。只有一个累计技术报告，无候选大附件。
