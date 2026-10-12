@@ -21,6 +21,7 @@ from . import control as geometry
 from .fleet_planning import (
     FleetSnapshot, MotionProposal, PlanningWorker, camera_cells, complete_budget,
     contact_route, protected_returns, robot_grid, route_length,
+    qualified_motion_route,
 )
 
 
@@ -493,7 +494,9 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                     or not endpoint_mask[cell]):
                 return None
         actual = geometry.RallyPose(actual.x, actual.y, proposal.pose.yaw)
-        full = (snapshot.positions[robot], *route)
+        full = qualified_motion_route(snapshot, robot, route, caches)
+        if full is None:
+            return None
         protected = protected_returns(snapshot, {})
         if protected is None:
             return None
@@ -552,6 +555,9 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                 return None
             if visual:
                 actual = geometry.RallyPose(actual.x, actual.y, yaw)
+        complete = qualified_motion_route(snapshot, robot, complete[1:], caches)
+        if complete is None:
+            return None
         required = complete_budget(pricing, robot,
                                    complete, destination, caches, wait)
         if required is not None and kind=='rally':

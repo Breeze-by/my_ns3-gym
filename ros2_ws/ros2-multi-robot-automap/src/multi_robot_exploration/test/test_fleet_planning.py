@@ -7,6 +7,7 @@ from types import SimpleNamespace
 from multi_robot_exploration import control as c
 from multi_robot_exploration.fleet_planning import (
     FleetSnapshot, MotionProposal, complete_budget, joint_motions, plan_fleet, plan_exploration,
+    qualified_motion_route,
 )
 
 
@@ -94,3 +95,51 @@ def route_length(route):
 def test_zero_energy_never_admits_exploration():
     proposal = plan_fleet(world(energy=0.))
     assert not proposal.motions
+
+
+def test_actual_metric_start_avoids_an_unsafe_raster_centre_without_erasing_obstacles():
+    snapshot=world()
+    local=np.zeros(snapshot.grid.shape,dtype=np.int16)
+    local[0,0]=100
+    local=c.immutable_grid_snapshot(local,local.shape)
+    snapshot=replace(snapshot,positions={'tb1':(.379,.025)},maps={
+        'tb1':dict(data=local,resolution=.1,origin=(-.025,-.025))})
+    leg=((.35,.05),(.45,.05),(.75,.05))
+    assert not c.route_respects_known_obstacles(local,.1,(-.025,-.025),
+                                              (snapshot.positions['tb1'],*leg))
+    route=qualified_motion_route(snapshot,'tb1',leg,{})
+    assert route==(snapshot.positions['tb1'],*leg[1:])
+    from p2c_global_audit import check_route
+    evidence=c.grid_audit_evidence(local,.1,(-.025,-.025),'delivered',10.,10.)
+    check_route(evidence,route,local=True)
+    assert local[0,0]==100
+    assert qualified_motion_route(snapshot,'tb1',((.35,.05),(.225,.025),(.75,.05)),{}) is None
+
+
+def test_joint_rally_assignment_uses_each_robots_actual_approach_constraints():
+    snapshot=world()
+    blocked=np.zeros_like(snapshot.grid)
+    blocked[:,40]=100
+    blocked=c.immutable_grid_snapshot(blocked,blocked.shape)
+    args=(snapshot.grid,snapshot.resolution,snapshot.origin,snapshot.positions,(7.25,4.25))
+    assert c.assign_rally_poses(*args)
+    assert not c.assign_rally_poses(*args,approach_grids={'tb1':blocked})
+    assert blocked[:,40].min()==100
+
+
+def test_disconnected_local_approach_observes_disputed_route_from_its_own_component():
+    snapshot=world()
+    local=np.zeros_like(snapshot.grid)
+    local[:,40]=100
+    local=c.immutable_grid_snapshot(local,local.shape)
+    snapshot=replace(snapshot,phase='FOUND',target=(7.25,4.25),maps={
+        'tb1':dict(data=local,resolution=.1,origin=(0.,0.))})
+    proposal=plan_fleet(snapshot)
+    assert not proposal.final_poses and len(proposal.motions)==1
+    motion=proposal.motions[0]
+    assert motion.robot=='tb1' and motion.kind=='target_information_survey' and motion.pose.x<4.
+    assert motion.required_energy<snapshot.batteries['tb1']['energy']
+    assert c.route_respects_known_obstacles(local,.1,(0.,0.),motion.route)
+    assert not plan_fleet(replace(snapshot,survey_attempts=snapshot.survey_limit)).motions
+    assert not plan_fleet(replace(snapshot,at_time=12.1)).motions
+    assert local[:,40].min()==100

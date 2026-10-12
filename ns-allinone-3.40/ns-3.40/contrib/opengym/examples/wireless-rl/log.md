@@ -9530,3 +9530,16 @@ v6_components1原30PASS17.13s；v6_control2加入预算/依赖3例25PASS3.70s，
 P2C.1仍未完成，旧54h会话暂停、260929_report用户资料保持、无P4/ns3/WiFi/RL。所有失败不回填，所有技术说明仍集中同一报告。
 
 v6 完整TF对象追加显式两transform/optical字段断言，单独同双线程DDS入口1PASS/2deselected2.78s；只加强已有检查，运行源不变。
+
+
+### global v6 四原严格一通过与 v7 连续/本地可达性一致性
+
+c0e4b40e0ef129c53d4f7f9ff70d4c3589083faf clean pushed，20261012_p2c_global_v6/domain204/port11573同原四开发串行、全部owned关闭后才改源。forced原生COMPLETE203.2/检测141.5/集合143.2/charge2；lab RALLY300.3timeout/50.7/83.0/charge0；rooms RALLY300.3timeout/112.6/115.7/charge1；corr COMPLETE238.3/91.1/93.7/charge1。最低E7.536139399/27.131893164/20.326347073/27.083456329，四零contact/exhaustion/FAILED，runner/observer0。四完整CDR129739571bytes原位保留；v6_forced_gate FAIL，v6_development_gate整体FAIL：corr完整严格PASS，forced连续local路径FAIL，lab/rooms任务FAIL。17正式/两物理/917未调用，旧失败不回填。
+
+v6_forced_local_route_conditions原tb2/gen11/exploration/2196.982的连续本地路：首实际姿态clear，向同格中心偏移0.0074704407m后净空.34508490969<.35，nearest obstacle[-.70550148711,.206075737803]；原route_respects_known_obstacles=False。v7统一qualified_motion_route用于候选、清道、集合、勘察和实际sender：只允许删去与实际起点同格的冗余首中心，直接下格原knownLOS且融合/本地原连续谓词均PASS；不擦格、不降净空、不变原有界逃逸/预算。新metric/local-origin反例经独立check_route及实际sender audit_motion PASS，unsafe另一方向仍拒绝。
+
+v6_lab_rally_conditions在2431.582末原交付CDR和原永久集合坐标手工构造terminal RALLY，三机available/无充电意图；三本地起点free0，tb3融合完整approach真、本地约束完整approach假，其他两真。原plan_fleet返回相同永久点、零动作/充电而blocked空；不是原中央回调重放或任务因果。v7分配approach_grids逐机本地约束，失格表不再反复发布；原勘察流程先让受影响mapper观察自己融合路上首本地净空争议点，必要时从原known-safe可达分量另选视点，预算/预约/源龄/原次数保持，融合不能擦local障碍，零ordinary功。v7_lab_route_information5_conditions新tb3勘察、无失格表；原条件4变量rows被numpy覆盖致IndexError原日志保留，修为raster_rows；初米单位误再乘resolution在条件检查发现后修正，field本来单位米。没有native/physical信用。
+
+v7_components1 34PASS22.32s；新增3pure几何/本地墙/勘察反例后components2 37PASS23.83s；增加actualsender反例后components3在23dots后GC→新节点subscription构造segfault139，日志保留。本机/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/node.py destroy_node未销毁action waitables，action/client.py destroy显式销毁句柄并remove_waitable；HeadquartersControl.destroy_node在自身和context前销毁所有实际ActionClient waitables（包括被mock替换后仍登记原句柄），Global先关闭worker。fixture检查无ActionClient waitable并在context live时gc.collect。components4最终38PASS25.46s，含双线程DDS、两真实ActionServer/Future与精确原件；全功能v7_full1617PASS172.67s，四包v7_build4.00sPASS，v7_source190保护/6授权/54协议/原native常量与Future契约PASS，六核心/测试F821/F822/F823/E999 PASS。一轮无segfault不声称彻底证明底层问题，v5及v7失败均保留。
+
+新manifest父c0e4b40/UTC声明和global路线/信息策略更新；原case对象、时长、种子、物理刺激、native能源/返回/source契约保持。新冻结仍四开发→15非留出+两物理→首次917，P2C.1未完成、54h旧会话暂停，用户资料不动、无P4/ns3/WiFi/RL。仅一个累计技术报告。

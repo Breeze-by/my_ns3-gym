@@ -1,6 +1,7 @@
 """Real node construction, synthetic action outcomes; no physical task credit."""
 import json
 import math
+import gc
 from dataclasses import replace
 from types import SimpleNamespace
 from unittest.mock import Mock
@@ -68,6 +69,8 @@ def node(request):
     finally:
         n.shutdown_requested = True
         n.destroy_node()
+        assert not any(isinstance(waitable,c.ActionClient) for waitable in n.waitables)
+        gc.collect()
         rclpy.shutdown()
 
 
@@ -177,6 +180,35 @@ def test_late_acceptance_uses_real_new_state_and_exact_original_goal(node):
     result.set_result(SimpleNamespace(status=GoalStatus.STATUS_SUCCEEDED))
     node.drain_action_done_callbacks()
     assert not node.navigation_tasks and node.successful_exploration_legs['tb1'] == 1
+
+
+def test_dispatch_anchors_metric_pose_and_preserves_continuous_local_clearance(node):
+    grid=OccupancyGrid()
+    grid.header.stamp.sec=10
+    grid.info.width=grid.info.height=80
+    grid.info.resolution=.1
+    grid.info.origin.position.x=grid.info.origin.position.y=-.025
+    grid.info.origin.orientation.w=1.
+    grid.data=[0]*6400
+    grid.data[0]=100
+    node.robot_map_callback(grid,'tb1')
+    odom=Odometry()
+    odom.header.stamp.sec=10
+    odom.pose.pose.position.x,odom.pose.pose.position.y=.379,.025
+    odom.pose.pose.orientation.w=1.
+    node.robot_odom_callback(odom,'tb1')
+    snapshot=node._snapshot()
+    proposed=MotionProposal('tb1','exploration',c.RallyPose(1.75,.05,0.),
+                            ((.379,.025),(1.75,.05)),1.,20.)
+    actual=node._current_motion(snapshot,proposed,{})
+    assert actual is not None
+    assert actual.route[0]==snapshot.positions['tb1']
+    assert c.route_respects_known_obstacles(node.robot_maps['tb1']['data'],
+                                          grid.info.resolution,(-.025,-.025),actual.route)
+    from p2c_global_audit import audit_motion
+    assert audit_motion({**node._motion_proof(snapshot,SimpleNamespace(generation=1),actual),
+                         'event_time':10.}) > 0
+    assert node.robot_maps['tb1']['data'][0,0]==100
 
 
 @pytest.mark.parametrize('energy,obstacle', [(10., False), (40., True)])

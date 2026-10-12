@@ -1736,7 +1736,7 @@ def funded_rally_replacement(raw_grid, resolution, origin, position, target,
 def assign_rally_poses(
     raw_grid, resolution, origin, robot_positions, target, objective="minimax",
     battery_states=None, observer_robot=None, current_positions=None,
-    hold_sec=RALLY_HOLD_SEC, return_maps=None,
+    hold_sec=RALLY_HOLD_SEC, return_maps=None, approach_grids=None,
 ):
     """Find a fully funded separated assignment with progressive candidates.
 
@@ -1755,7 +1755,7 @@ def assign_rally_poses(
     for stratified in (False, True):
         result = _assign_rally_poses(raw_grid, resolution, origin, robot_positions,
             target, objective, battery_states, observer_robot, current_positions,
-            hold_sec, return_maps, stratified, geometry_cache)
+            hold_sec, return_maps, stratified, geometry_cache, approach_grids)
         if result:
             return result
     return {}
@@ -1774,6 +1774,7 @@ def _assign_rally_poses(
     return_maps=None,
     stratified=True,
     geometry_cache=None,
+    approach_grids=None,
 ):
     """Assign separated visible poses, accounting for serial charge waits.
 
@@ -1802,6 +1803,9 @@ def _assign_rally_poses(
     options = {}
     for name in names:
         position = robot_positions[name]
+        approach_grid = raw_grid if approach_grids is None else approach_grids[name]
+        approach_safe = traversable if approach_grids is None else traversable_grid(
+            approach_grid, resolution, RALLY_PATH_CLEARANCE_M)
         if name not in approach_fields:
             start = world_to_grid(
                 position[0], position[1], resolution, origin[0], origin[1]
@@ -1809,12 +1813,12 @@ def _assign_rally_poses(
             # Unknown and occupied starts remain rejected; only a known-free pose
             # may use the bounded clearance escape above.
             start, escape_route = navigation_start_route(
-                raw_grid,
-                traversable,
+                approach_grid,
+                approach_safe,
                 start,
                 max(1, math.ceil(0.6 / resolution)),
             )
-            distances = path_distance_grid(traversable, start)
+            distances = path_distance_grid(approach_safe, start)
             escape_distance = 0.0
             for first, second in zip(escape_route, escape_route[1:]):
                 escape_distance += math.dist(first, second)
@@ -6033,6 +6037,16 @@ class HeadquartersControl(Node):
             self.get_logger().warn(
                 f"{robot_name} rally goal failed with status {status}."
             )
+
+    def destroy_node(self):
+        self.shutdown_requested = True
+        # Humble Node.destroy_node destroys its ordinary entities, but does
+        # not destroy action waitables. Their handles depend on this node and
+        # must close before it and the context, including replaced test clients.
+        for waitable in tuple(self.waitables):
+            if isinstance(waitable, ActionClient):
+                waitable.destroy()
+        return super().destroy_node()
 
     def create_snapshot_subscription(self, msg_type, topic, callback, qos_profile):
         """The baseline applies delivered inputs directly in its serial group."""

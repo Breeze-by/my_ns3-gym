@@ -120,6 +120,38 @@ def route_length(route):
     return sum(math.dist(a, b) for a, b in zip(route, route[1:]))
 
 
+def qualified_motion_route(snapshot, robot, leg, caches):
+    """Check actual continuous geometry, including the metric start connector.
+
+    A raster centre can move an already-clear real pose towards an obstacle.
+    Remove only that redundant first centre when the direct next connector
+    has known line of sight and both original continuous predicates pass.
+    No obstacle, clearance limit or bounded-start escape rule is changed.
+    """
+    if not leg:
+        return None
+    position = snapshot.positions[robot]
+    local = snapshot.maps.get(robot)
+    def valid(route):
+        if not geometry.route_respects_known_obstacles(snapshot.grid, snapshot.resolution,
+                snapshot.origin, route, cache=caches.setdefault('fused_obstacles', {})):
+            return False
+        return local is None or geometry.route_respects_known_obstacles(local['data'],
+            local['resolution'], local['origin'], route,
+            cache=caches.setdefault('local_obstacles', {}))
+    full = (position, *leg)
+    if valid(full):
+        return full
+    if len(leg)>1 and geometry.world_to_grid(*position,snapshot.resolution,*snapshot.origin)==(
+            geometry.world_to_grid(*leg[0],snapshot.resolution,*snapshot.origin)):
+        start = geometry.world_to_grid(*position,snapshot.resolution,*snapshot.origin)
+        next_cell = geometry.world_to_grid(*leg[1],snapshot.resolution,*snapshot.origin)
+        anchored = (position,*leg[1:])
+        if geometry.has_known_line_of_sight(snapshot.grid,start,next_cell) and valid(anchored):
+            return anchored
+    return None
+
+
 def robot_grid(snapshot, robot, caches):
     local = snapshot.maps.get(robot)
     if local is None:
@@ -281,7 +313,9 @@ def _escape(snapshot, beneficiary, protected, caches):
             geometry.MAX_NAVIGATION_LEG_M, blocked_positions=blocked, visible_only=True)
         if actual is None or math.dist((actual.x, actual.y), (pose.x, pose.y)) > snapshot.resolution:
             continue
-        full = (snapshot.positions[robot], *leg)
+        full = qualified_motion_route(snapshot,robot,leg,caches[robot])
+        if full is None:
+            continue
         required = complete_budget(snapshot, robot, full, (pose.x, pose.y),
                                    caches[robot])
         if required is None:
@@ -356,7 +390,9 @@ def plan_exploration(snapshot, caches, protected):
             if cell in seen:
                 continue
             seen.add(cell)
-            full = (snapshot.positions[robot], *leg)
+            full = qualified_motion_route(snapshot,robot,leg,caches[robot])
+            if full is None:
+                continue
             if route_length(full) < geometry.USEFUL_TRAVEL_M:
                 continue
             if any(geometry.routes_conflict(full, reserved) for reserved in reservations):
@@ -470,7 +506,9 @@ def plan_rally(snapshot, caches, protected):
             snapshot.target, battery_states={robot: snapshot.batteries[robot] for robot in required}
             if snapshot.batteries else None,
             observer_robot=snapshot.observer, current_positions=snapshot.positions,
-            hold_sec=snapshot.hold_sec, return_maps=snapshot.maps)
+            hold_sec=snapshot.hold_sec, return_maps=snapshot.maps,
+            approach_grids={robot:robot_grid(snapshot,robot,caches.setdefault(robot,{}))
+                            for robot in required})
         if len(poses) == len(required):
             return FleetProposal(snapshot, final_poses=poses)
         return plan_target_survey(snapshot, caches, protected)
@@ -484,7 +522,10 @@ def plan_rally(snapshot, caches, protected):
         if not route:
             blocked[robot] = "body_or_map_blocks_complete_approach"
             continue
-        full = (snapshot.positions[robot], *route)
+        full = qualified_motion_route(snapshot,robot,(*route,(pose.x,pose.y)),caches[robot])
+        if full is None:
+            blocked[robot] = 'continuous_local_approach_unavailable'
+            continue
         paths[robot] = full
         speed = float(state.get("nominal_speed_mps", .18)) if state is not None else .18
         travel[robot] = route_length(full) / speed
@@ -535,7 +576,9 @@ def plan_rally(snapshot, caches, protected):
         if math.dist((actual.x, actual.y), (pose.x, pose.y)) > snapshot.position_tolerance:
             actual = geometry.route_arrival_yaw(leg, pose.yaw)
             actual = geometry.RallyPose(leg[-1][0], leg[-1][1], actual)
-        full = (snapshot.positions[robot], *leg)
+        full = qualified_motion_route(snapshot,robot,leg,caches[robot])
+        if full is None:
+            continue
         utility = 1. / (geometry.PLANNING_OVERHEAD_SEC + route_length(paths[robot]))
         if robot == snapshot.observer:
             utility *= 2.
@@ -585,14 +628,60 @@ def plan_target_survey(snapshot, caches, protected):
     rows = geometry.target_survey_candidates(snapshot.grid, snapshot.resolution,
         snapshot.origin, snapshot.positions, modes, snapshot.target,
         snapshot.target_range, snapshot.position_tolerance)
-    desired = [(row["robot"], geometry.RallyPose(*row["desired_position"], row["desired_yaw"]),
-                row["utility"]) for row in rows]
+    desired = []
+    # Missing local approach geometry must be observed by the affected mapper.
+    # Peer-fused free space cannot erase that robot's positive obstacles. Use
+    # the first disputed cell on its complete fused approach only as an
+    # information destination; the actual move remains locally constrained.
+    for robot in snapshot.available:
+        grid = robot_grid(snapshot, robot, caches.setdefault(robot, {}))
+        final = snapshot.final_poses.get(robot) or geometry.rally_survey_pose(
+            snapshot.grid, snapshot.resolution, snapshot.origin, snapshot.positions[robot], snapshot.target)
+        if final is None:
+            continue
+        _, local_route = geometry.plan_rally_leg(final, grid, snapshot.resolution,
+            snapshot.origin, snapshot.positions[robot], math.inf)
+        if local_route:
+            continue
+        _, fused_route = geometry.plan_rally_leg(final, snapshot.grid, snapshot.resolution,
+            snapshot.origin, snapshot.positions[robot], math.inf)
+        local_safe = geometry.traversable_grid(grid,snapshot.resolution,geometry.PATH_CLEARANCE_M)
+        for point in fused_route:
+            cell = geometry.world_to_grid(*point, snapshot.resolution, *snapshot.origin)
+            if not local_safe[cell] and snapshot.grid[cell]==0:
+                view = geometry.rally_survey_pose(grid, snapshot.resolution, snapshot.origin,
+                                                snapshot.positions[robot], point)
+                if view is None:
+                    # A disputed cell can already be close. Observe it from
+                    # another reachable viewpoint rather than forcing a
+                    # strictly closer pose that cannot exist outside the wall.
+                    safe = geometry.traversable_grid(grid,snapshot.resolution,geometry.ROBOT_CLEARANCE_M)
+                    field = geometry.exploration_distance_field(grid,safe,snapshot.resolution,
+                                                                snapshot.origin,snapshot.positions[robot])
+                    if field is not None:
+                        raster_rows,raster_columns=np.indices(grid.shape)
+                        xs=snapshot.origin[0]+(raster_columns+.5)*snapshot.resolution
+                        ys=snapshot.origin[1]+(raster_rows+.5)*snapshot.resolution
+                        squared=(xs-point[0])**2+(ys-point[1])**2
+                        eligible=safe & np.isfinite(field) & (squared>=.7**2) & (
+                            squared<=geometry.INFORMATION_RADIUS_M**2) & (
+                            field>=geometry.USEFUL_TRAVEL_M)
+                        for row,column in sorted(np.argwhere(eligible),key=lambda cell:field[tuple(cell)]):
+                            if geometry.has_known_line_of_sight(snapshot.grid,(row,column),cell):
+                                x,y=geometry.grid_to_world(row,column,snapshot.resolution,*snapshot.origin)
+                                view=geometry.RallyPose(x,y,math.atan2(point[1]-y,point[0]-x))
+                                break
+                if view is not None:
+                    desired.append((robot, view, 1., point))
+                break
+    desired.extend((row["robot"], geometry.RallyPose(*row["desired_position"], row["desired_yaw"]),
+                    row["utility"], snapshot.target) for row in rows)
     for robot in snapshot.available:
         pose = geometry.rally_survey_pose(snapshot.grid, snapshot.resolution,
             snapshot.origin, snapshot.positions[robot], snapshot.target)
         if pose is not None:
-            desired.append((robot, pose, 1.))
-    for robot, pose, utility in desired:
+            desired.append((robot, pose, 1., snapshot.target))
+    for robot, pose, utility, information_target in desired:
         if robot not in snapshot.available:
             continue
         grid = robot_grid(snapshot, robot, caches.setdefault(robot, {}))
@@ -601,14 +690,16 @@ def plan_target_survey(snapshot, caches, protected):
             [position for peer, position in snapshot.positions.items() if peer != robot])
         if actual is None:
             continue
-        full = (snapshot.positions[robot], *route)
+        full = qualified_motion_route(snapshot, robot, route, caches[robot])
+        if full is None:
+            continue
         if route_length(full) <= snapshot.position_tolerance:
             continue
         if any(geometry.routes_conflict(full, reserved)
                for reserved in (*protected.values(), *snapshot.live_routes.values())):
             continue
         actual = geometry.RallyPose(actual.x, actual.y,
-            math.atan2(snapshot.target[1] - actual.y, snapshot.target[0] - actual.x))
+            math.atan2(information_target[1] - actual.y, information_target[0] - actual.x))
         required = complete_budget(snapshot, robot, full, (actual.x, actual.y), caches[robot])
         if required is None or snapshot.batteries and snapshot.batteries[robot]["energy"] <= required:
             continue
