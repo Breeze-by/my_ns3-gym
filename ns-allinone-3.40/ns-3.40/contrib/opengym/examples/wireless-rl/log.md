@@ -9543,3 +9543,18 @@ v6_lab_rally_conditions在2431.582末原交付CDR和原永久集合坐标手工�
 v7_components1 34PASS22.32s；新增3pure几何/本地墙/勘察反例后components2 37PASS23.83s；增加actualsender反例后components3在23dots后GC→新节点subscription构造segfault139，日志保留。本机/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/node.py destroy_node未销毁action waitables，action/client.py destroy显式销毁句柄并remove_waitable；HeadquartersControl.destroy_node在自身和context前销毁所有实际ActionClient waitables（包括被mock替换后仍登记原句柄），Global先关闭worker。fixture检查无ActionClient waitable并在context live时gc.collect。components4最终38PASS25.46s，含双线程DDS、两真实ActionServer/Future与精确原件；全功能v7_full1617PASS172.67s，四包v7_build4.00sPASS，v7_source190保护/6授权/54协议/原native常量与Future契约PASS，六核心/测试F821/F822/F823/E999 PASS。一轮无segfault不声称彻底证明底层问题，v5及v7失败均保留。
 
 新manifest父c0e4b40/UTC声明和global路线/信息策略更新；原case对象、时长、种子、物理刺激、native能源/返回/source契约保持。新冻结仍四开发→15非留出+两物理→首次917，P2C.1未完成、54h旧会话暂停，用户资料不动、无P4/ns3/WiFi/RL。仅一个累计技术报告。
+
+
+### global v7 同冻结两严格PASS与 v8 全机依赖/准入一致性
+
+9711cf7a292c43c48b14a040d37a0a8908a1e5fe clean pushed，20261012_p2c_global_v7/domain204/port11573原四格串行。forced原生COMPLETE195.5/检测129.8/集合132.4/charge2；lab RALLY300.2timeout/65.9/84.9/charge0；rooms RALLY300timeout/201.7/204.0/charge2；corr COMPLETE274.1/87/89.4/charge2。四最低E7.5976304977324105/27.547303671393696/13.934355327350053/27.08747039831207，零contact/exhaustion/FAILED，runner/observer均0，四owned全闭合后才改源。四片完整CDR127901642bytes原位保留。v7_forced_gate单PASS非完整scope；v7_development_gate完整四格FAIL，forced/corr两个完整单格PASS，lab/rooms任务FAIL；失败不回填，没有17正式/两物理/917。
+
+v6_rooms_dependency_conditions原435末CDR/原永久坐标及手工tb1 pending、tb3 deferred状态：tb2本地完整approach及endpoint qualified-return不可达，零escape，原invalid_final_wait_for_owned_traffic；没有真实导航或native RETURNING/CHARGING。v6_rooms_reconsider_conditions仅撤销未发意图后新全机表可分配。两者均条件状态、非历史中央回调/任务因果；没有native信用。
+
+v7_lab_charge_conditions原2429.582末CDR手工tb3 intent：原自身qualified-contact .5794508626m、tb2 body冲突真、完整body-constrained任务路存在，原_prepare未publish。v7_lab_curved_clearance_conditions查得原_escape其实有tb2 MotionProposal，不支持“必须曲线路才可清道”的猜测，未改visible-only限制。v7_lab_sender_conditions原选(-.2524675304,1.0947631925)endpoint .45假/current sender假；v7_lab_endpoint_conditions临时仅给原候选施加同执行器 .45mask，新(-.1524675289,1.1947631940)mask真/sender真。v8_lab_sender_conditions原件+新实际生产helper同样通过；全部为条件重建、没有Gazebo/Nav2运动/补能或任务因果信用。
+
+v8只统一全局契约：已有rally_yield_pose新增显式endpoint_clearance_m，baseline默认原.35，global用执行器原.45；全部路径/body/1.8/完整去返预算/source保持。失格永久表仅真实导航/实际nativeRETURNING-CHARGING要求等待；执行替换表仍须无navigation_tasks、无rally_charge_requested、global_charge_requested_at为空、全机ACTIVE、当前各自本地完整接近/融合及本地连续路、qualified endpoint return、原目标可见/分离/heading和原source全部合格，随后只撤销未发global/deferred意图。已发请求、真实native/ActionFuture保留所有权，不改失败计数或任何native/300s/5s/TTL。
+
+新增7例包含pure失格表在未发意图可替换/实际返充等待、实际构造sender .45候选加原独立audit_motion预算/单调清道核验、未发/已发布/native-return/真实pending-Future四阻塞状态和local正障碍拒绝。v8_components1 43PASS2FAIL28.27s：插入处旧assert blocked被误移新函数致NameError，新proof缺event_time致KeyError；原输出保留并排除。恢复旧assert所属函数、加夹具实际当前event_time后components2=45PASS27.11s，含原双线程DDS/两真实ActionServers/Futures；零physical/native任务信用。完整功能/build/source/static及新声明核验继续，manifest仅父9711cf7/UTC/global依赖说明；原case/物理刺激/预算/source门禁保持。
+
+v8_full完整功能1624PASS175.83s，四包v8_build4.18sPASS，v8_source190保护/6授权/54协议/native原常量及8+2+2+1 Future契约PASS；六核心/测试/独立读者F821/F822/F823/E999 PASS，git diff --check PASS。v8_declaration validate-only共享命令/源图旁录声明PASS；两manifest与9711cf7逐对象相比仅parent/predeclared_at/global_algorithm变，cases和全部其他字段保持。下一步clean pushed单冻结仍从四开发起步；全部旧失败保留，无P4/ns3/WiFi/RL或未测17/物理/917信用。

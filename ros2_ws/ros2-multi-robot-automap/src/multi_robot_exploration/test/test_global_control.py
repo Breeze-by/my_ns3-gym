@@ -435,6 +435,101 @@ def test_charge_waits_for_its_clearance_owner_but_cancels_other_crossing_traffic
     assert node.navigation_tasks['tb2'] is task
     assert task.cancel_reason == (None if kind=='charge_clearance' else 'return_corridor')
     assert not node.charge_request_publishers['tb1'].publish.called
+
+
+@pytest.mark.parametrize('node', [2], indirect=True)
+def test_clearance_selection_meets_the_sender_landing_mask_and_original_route_audit(node):
+    from multi_robot_exploration.fleet_planning import plan_fleet
+    delivered_state(node,11.,position=(4.25,1.25),energy=20.)
+    odom=Odometry()
+    odom.header.stamp.sec=11
+    odom.pose.pose.position.x,odom.pose.pose.position.y=2.75,1.25
+    odom.pose.pose.orientation.w=1.
+    node.robot_odom_callback(odom,'tb2')
+    grid=OccupancyGrid()
+    grid.header.stamp.sec=11
+    grid.info.width=grid.info.height=80
+    grid.info.resolution=.1
+    grid.info.origin.orientation.w=1.
+    grid.data=[0]*6400
+    # Near the original .35m refuge, without blocking the .35m approach.
+    grid.data[30*80+30]=100
+    node.map_callback(grid)
+    for robot in node.robot_positions:
+        node.robot_map_callback(grid,robot)
+    node.battery_state_callback(String(data=json.dumps({**node.battery_states['tb2'],
+        'stamp_sec':11.,'energy':60.})), 'tb2')
+    node.global_charge_intent=ChargeProposal('tb1',60.,((4.25,1.25),(1.25,1.25)),
+        'unfunded_information_task',(6.75,1.25))
+    snapshot=node._snapshot()
+    proposal=plan_fleet(snapshot)
+    assert len(proposal.motions)==1 and proposal.motions[0].kind=='charge_clearance'
+    actual=node._current_motion(snapshot,proposal.motions[0],{})
+    assert actual is not None
+    from multi_robot_exploration.fleet_planning import robot_grid
+    constrained=robot_grid(snapshot,actual.robot,{})
+    cell=c.world_to_grid(actual.pose.x,actual.pose.y,snapshot.resolution,*snapshot.origin)
+    assert c.traversable_grid(constrained,snapshot.resolution,.45)[cell]
+    from p2c_global_audit import audit_motion
+    assert audit_motion({**node._motion_proof(snapshot,SimpleNamespace(generation=1),actual),
+                         'event_time':node.now()})>0
+    assert constrained[30,30]==100
+
+
+@pytest.mark.parametrize('barrier',['unissued','published','native_return','owned'])
+def test_whole_fleet_reassignment_releases_only_unissued_dependencies(node,barrier):
+    if barrier=='owned':
+        request(node)
+    delivered_state(node,11.,obstacle=True)
+    node.task_state='RALLY'
+    node.target,node.target_received_source_time=(3.,3.),11.
+    old=c.RallyPose(2.25,1.25,math.atan2(1.75,.75))
+    replacement=c.RallyPose(1.25,2.25,math.atan2(.75,1.75))
+    node.rally_targets=node.rally_final_targets={'tb1':old}
+    intent=ChargeProposal('tb1',60.,((1.25,1.25),),'whole_rally_and_wait',(old.x,old.y))
+    node.global_charge_intent=intent
+    if barrier=='published':
+        node.global_charge_requested_at=11.
+        node.rally_charge_requested['tb1']=11.
+    elif barrier=='native_return':
+        node.now=lambda:11.5
+        node.battery_state_callback(String(data=json.dumps({**node.battery_states['tb1'],
+            'mode':'RETURNING','stamp_sec':11.5})), 'tb1')
+    snapshot=node._snapshot()
+    node.global_charge_context=snapshot.context
+    node.planning_worker.close()
+    node.planning_worker=Mock()
+    node.planning_worker.poll.return_value=FleetProposal(snapshot,final_poses={'tb1':replacement})
+    node.charge_request_publishers['tb1']=Mock()
+    node.update_mission()
+    if barrier=='unissued':
+        assert node.rally_final_targets=={'tb1':replacement}
+        assert node.global_charge_intent is None and node.deferred_charge_intent is None
+    else:
+        assert node.rally_final_targets=={'tb1':old}
+        assert node.global_charge_intent is intent
+    assert not node.charge_request_publishers['tb1'].publish.called
+
+
+def test_fresh_fleet_assignment_cannot_erase_a_local_positive_obstacle(node):
+    delivered_state(node,11.)
+    node.task_state='RALLY'
+    node.target,node.target_received_source_time=(3.,3.),11.
+    local=OccupancyGrid()
+    local.header.stamp.sec=11
+    local.info.width=local.info.height=80
+    local.info.resolution=.1
+    local.info.origin.orientation.w=1.
+    local.data=[0]*6400
+    local.data[22*80+12]=100
+    node.robot_map_callback(local,'tb1')
+    final=c.RallyPose(1.25,2.25,math.atan2(.75,1.75))
+    snapshot=node._snapshot()
+    assert snapshot.grid[22,12]==0
+    assert not node._validate_final_poses(snapshot,{'tb1':final})
+    assert snapshot.maps['tb1']['data'][22,12]==100
+
+
 def test_stationary_arrival_waits_for_original_five_second_hold(node):
     final = c.RallyPose(1.25, 1.25, 0.)
     node.task_state = 'RALLY'

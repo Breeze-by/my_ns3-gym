@@ -2220,6 +2220,7 @@ def rally_yield_pose(
     route_separation_m=RALLY_MIN_SEPARATION_M,
     visible_only=False,
     target_view_distance=None,
+    endpoint_clearance_m=RALLY_PATH_CLEARANCE_M,
 ):
     """Choose a reachable refuge outside parked poses and reserved corridors."""
     traversable = traversable_grid(
@@ -2241,10 +2242,13 @@ def rally_yield_pose(
     if start is None:
         return None
     distances = path_distance_grid(traversable, start)
+    endpoint_safe = traversable_grid(raw_grid, resolution, endpoint_clearance_m)
     route_points = [point for route in reserved_routes for point in route]
     route_tree = cKDTree(route_points) if route_points else None
     candidates = []
     for row, column in np.argwhere(np.isfinite(distances)):
+        if not endpoint_safe[row, column]:
+            continue
         path_distance = float(distances[row, column] * resolution)
         if path_distance < 0.5 or path_distance > 5.0:
             continue

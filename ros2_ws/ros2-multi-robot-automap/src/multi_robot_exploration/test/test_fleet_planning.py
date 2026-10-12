@@ -127,6 +127,24 @@ def test_joint_rally_assignment_uses_each_robots_actual_approach_constraints():
     assert blocked[:,40].min()==100
 
 
+def test_unissued_charge_does_not_lock_an_invalid_fleet_assignment_but_native_return_does():
+    snapshot=world()
+    grid=snapshot.grid.copy()
+    grid[42,52]=100
+    grid=c.immutable_grid_snapshot(grid,grid.shape)
+    final=c.RallyPose(5.25,4.25,math.atan2(-.25,.75))
+    snapshot=replace(snapshot,phase='RALLY',grid=grid,target=(6.,4.),
+        maps={'tb1':dict(data=grid,resolution=.1,origin=(0.,0.))},
+        final_poses={'tb1':final},charge_pending=('tb1',))
+    proposal=plan_fleet(snapshot)
+    assert proposal.final_poses and proposal.final_poses!={'tb1':final}
+    native=replace(snapshot,batteries={'tb1':{**snapshot.batteries['tb1'],'mode':'RETURNING'}},
+                   available=())
+    held=plan_fleet(native)
+    assert not held.final_poses and not held.motions
+    assert held.blocked['fleet']=='invalid_final_wait_for_owned_traffic'
+
+
 def test_disconnected_local_approach_observes_disputed_route_from_its_own_component():
     snapshot=world()
     local=np.zeros_like(snapshot.grid)

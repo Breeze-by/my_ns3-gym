@@ -3,7 +3,7 @@
   "purpose": "Global P2C.1 mission executor; original development, formal and physical cases and hard gates unchanged.",
   "accepted_p3c5_task_commit": "bea7f8bfb41b19dc55c1ecdd351a5a797261d18a",
   "review_commit": "5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9",
-  "predeclared_at_utc": "2026-10-12T13:02:45.113323+00:00",
+  "predeclared_at_utc": "2026-10-12T14:25:58.123469+00:00",
   "duration_sec": 300,
   "coverage_threshold": 0.8,
   "fault_seed": 17011,
@@ -364,7 +364,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "c0e4b40e0ef129c53d4f7f9ff70d4c3589083faf",
+  "candidate_parent_commit": "9711cf7a292c43c48b14a040d37a0a8908a1e5fe",
   "native_tf_graph_capture": {
     "scope": "Read-only safety observer captures complete required application/native graph once all native battery topics are observed and all endpoint bindings exist; does not delay or change task clocks.",
     "evidence": "native_graph.json kept alongside original early bypass graph, owner-bound optional observer command and reader source digests required. Missing evidence FAIL; old incomplete graphs are never repaired."
@@ -430,7 +430,7 @@
     "execution": "real odometry displacement/turning or navigation feedback progress; unchanged total and no-progress timeouts; late acceptance reconstructs exact issued goal from newly delivered current sources, complete budgets and reservations without replacing ownership",
     "ingress": "complete delivered objects retained in a bounded latest inbox on the existing light clock callback group; producer-specific confirmations; guard and planning/action entries apply one serial batch; QoS, source stamps and two ROS workers unchanged",
     "pricing": "complete motion and all-peer waiting prices use one immutable delivered snapshot and one recorded price epoch",
-    "dependencies": "serial charging waits for its own funded monotone clearance owner to close, then checks final physical bodies; other crossing traffic is canceled and remains owned until real result closure",
+    "dependencies": "serial charging waits for its own funded monotone clearance owner to close; planning uses the same .45m landing mask as execution; invalid complete fleet assignments can replace unissued intentions only after current local approaches and qualified returns pass, with all issued requests, native returns and navigation owners retained",
     "route_geometry": "joint permanent assignments use each robot constrained approach grid; every actual metric-start route passes original fused/local continuous predicates, with redundant raster-centre removal only when a known direct connector passes both predicates",
     "information": "an incomplete local approach observes its first disputed fused-route clearance from that robot known constrained component; original bounded survey counter and full energy/body/source admission, no obstacle erasure or ordinary credit"
   },

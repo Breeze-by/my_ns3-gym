@@ -440,6 +440,14 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
             if any(peer != robot and math.dist((pose.x, pose.y), (other.x, other.y))
                    < geometry.RALLY_MIN_SEPARATION_M for peer, other in poses.items()):
                 return False
+            caches = self._admission_caches(snapshot, robot)
+            grid = robot_grid(snapshot, robot, caches)
+            _, route = geometry.plan_rally_leg(pose, grid, snapshot.resolution,
+                snapshot.origin, snapshot.positions[robot])
+            if not route or qualified_motion_route(snapshot, robot, (*route, (pose.x, pose.y)), caches) is None:
+                return False
+            if snapshot.batteries and contact_route(snapshot, robot, (pose.x, pose.y), caches) is None:
+                return False
         return True
 
     def _current_motion(self, snapshot, proposal, waits, owned_task=None):
@@ -972,9 +980,19 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                         self.rally_final_targets,self.rally_position_tolerance,
                         self.rally_linear_tolerance,self.rally_angular_tolerance))
             if (proposal.final_poses and proposal.final_poses != self.rally_final_targets
-                    and not self.navigation_tasks and not snapshot.charge_pending
+                    and not self.navigation_tasks and not self.rally_charge_requested
+                    and self.global_charge_requested_at is None
+                    and all(state['mode'] == 'ACTIVE' for state in snapshot.batteries.values())
                     and self._validate_final_poses(snapshot, proposal.final_poses)
                     and self._sources_current(snapshot.sources)):
+                if self.global_charge_intent is not None or self.deferred_charge_intent is not None:
+                    self._emit('coordinator_global_charge_intents_replaced',
+                        robot=None if self.global_charge_intent is None else self.global_charge_intent.robot,
+                        deferred=None if self.deferred_charge_intent is None else self.deferred_charge_intent.robot,
+                        reason='current_complete_fleet_reassignment')
+                    self.global_charge_intent = self.deferred_charge_intent = None
+                    self.global_charge_context = None
+                    self.global_charge_started = False
                 self.rally_targets = dict(proposal.final_poses)
                 self.rally_final_targets = dict(proposal.final_poses)
                 self.rally_dispatch_order = sorted(proposal.final_poses)

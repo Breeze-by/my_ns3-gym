@@ -305,7 +305,8 @@ def _escape(snapshot, beneficiary, protected, caches):
             blocked_positions=blocked,
             reserved_routes=(*protected.values(), *snapshot.live_routes.values()),
             route_separation_m=clearance, visible_only=True,
-            target_view_distance=view_range)
+            target_view_distance=view_range,
+            endpoint_clearance_m=geometry.ROBOT_CLEARANCE_M)
         if pose is None:
             continue
         actual, leg = geometry.plan_rally_leg(
@@ -492,8 +493,12 @@ def plan_rally(snapshot, caches, protected):
                 valid = False
                 break
         if not valid:
-            if snapshot.live_routes or protected:
+            if snapshot.live_routes or any(state['mode'] in ('RETURNING', 'CHARGING')
+                                           for state in snapshot.batteries.values()):
                 return FleetProposal(snapshot, blocked={"fleet": "invalid_final_wait_for_owned_traffic"})
+            # A future charge intention is not an issued request or a physical
+            # owner. Reconsider the complete fleet; execution separately keeps
+            # already-issued requests and real native returns protected.
             poses = {}
     if not poses:
         required = snapshot.required or tuple(snapshot.positions)
