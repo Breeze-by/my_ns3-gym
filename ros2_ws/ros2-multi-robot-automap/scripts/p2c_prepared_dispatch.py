@@ -105,8 +105,122 @@ def rebuild(event):
     return bindings
 
 
+def rebuild_detour_cancel(event):
+    """Reconstruct cancellation evidence without trusting the new comparison helper."""
+    assert event['movement_authorized'] is False and event['native_credit_added'] is False
+    now=event['event_time'];started=event['evaluated_at_sec'];name=event['robot']
+    assert started<=now and 2.<=started-event['goal_accepted_at_sec']<event['goal_timeout_sec']<=60.
+    assert name not in (event['observer_robot'],event['observer_guard'])
+    inputs=event['inputs']
+    for key,sample in inputs.items():
+        limit=60. if key=='headquarters/target_detection' else 2. if key.endswith(('/pose_state','/frame_state')) else 5.
+        assert 0<sample['ttl_sec']<=limit and 0<=now-sample['source_time']<=sample['ttl_sec']
+        assert math.isclose(sample['age_sec'],now-sample['source_time'],abs_tol=1e-8,rel_tol=0.)
+    saved=event['planning_map'];grid=decode(saved);res=saved['resolution'];origin=saved['origin']
+    assert saved['source_time']==inputs['headquarters/fused_map_snapshot']['source_time']
+    maps={n:dict(data=decode(m),resolution=m['resolution'],origin=m['origin']) for n,m in event['return_maps'].items()}
+    positions=event['robot_positions'];states=event['battery_states'];targets=event['final_targets']
+    names=set(targets);assert name in names and names==set(states)==set(maps)
+    assert event['battery_modes']=={n:s['mode'] for n,s in states.items()} and all(s['mode']=='ACTIVE' for s in states.values())
+    for n,m in event['return_maps'].items():
+        assert m['source_time']==inputs[n+'/map_snapshot']['source_time']
+        assert states[n]['stamp_sec']==inputs[n+'/battery_state']['source_time']
+    clearance=event['dynamic_clearance_m'];assert clearance==.6
+    position=positions[name];assert np.isfinite(position).all()
+    assert all(math.dist(position,p)>=clearance for n,p in positions.items() if n!=name and p is not None)
+    for peer,route in event['peer_remaining_routes'].items():
+        assert peer!=name and route and np.isfinite(route).all()
+        points=np.asarray(route,dtype=float);assert np.all(np.linalg.norm(points-position,axis=1)>=clearance)
+        if len(points)>1:
+            edges=np.diff(points,axis=0);squares=np.sum(edges*edges,axis=1)
+            fraction=np.clip(np.sum((np.asarray(position)-points[:-1])*edges,axis=1)/np.where(squares>0,squares,1.),0.,1.)
+            assert np.all(np.linalg.norm(points[:-1]+fraction[:,None]*edges-position,axis=1)>=clearance)
+    waypoint=c.RallyPose(*event['waypoint']);final=c.RallyPose(*targets[name])
+    assert math.dist(position,(waypoint.x,waypoint.y))>.75 and math.dist((waypoint.x,waypoint.y),(final.x,final.y))>.75
+    blocked=[p for n,p in positions.items() if n!=name and p is not None]
+    answers=[]
+    for begin,end in [(position,final),(position,waypoint),((waypoint.x,waypoint.y),final)]:
+        pose,route=c.plan_rally_leg(end,grid,res,origin,begin,math.inf,blocked_positions=blocked,local_map=maps[name])
+        assert pose is not None and route
+        answers.append(route)
+    comparison=event['comparison']
+    for key,route in zip(['current_full_route','old_leg_remaining_route','old_waypoint_full_route'],answers):
+        assert np.allclose(comparison[key],route,atol=1e-10,rtol=0.)
+    distance=lambda begin,route:sum(math.dist(a,b) for a,b in zip((begin,*route),route))
+    old=distance(position,answers[1])+distance((waypoint.x,waypoint.y),answers[2]);new=distance(position,answers[0])
+    assert comparison['minimum_saving_m']==1. and comparison['minimum_saving_fraction']==.25
+    assert old-new>=1. and old-new>=.25*old
+    for key,value in [('old_distance_m',old),('new_distance_m',new),('saved_distance_m',old-new)]:
+        assert math.isclose(comparison[key],value,rel_tol=0.,abs_tol=1e-8)
+    def requirement(n,travel,destination,priced):
+        assert started<=priced<=now
+        state=states[n]
+        move,idle,speed,factor,margin,recovery=(float(state.get(k,d)) for k,d in (
+            ('move_cost_per_m',1.),('idle_cost_per_sec',.02),('nominal_speed_mps',.18),
+            ('return_path_factor',2.),('return_safety_margin',8.),('return_recovery_wait_sec',30.)))
+        assert all(math.isfinite(v) for v in (move,idle,speed,factor,margin,recovery))
+        assert min(move,idle,margin,recovery)>=0 and speed>0 and factor>=1
+        candidates=c.qualified_return_candidates(grid,res,origin,destination,(float(state['charge_x']),float(state['charge_y'])),float(state.get('charge_radius_m',.8)),maps[n])
+        returned=min((x['path_distance_m'] for x in candidates if x['qualified']),default=None);assert returned is not None
+        map_age=priced-min(saved['source_time'],event['return_maps'][n]['source_time'])
+        pose_age=priced-min(inputs[n+'/pose_state']['source_time'],inputs[n+'/frame_state']['source_time'])
+        assert 0<=map_age<=5. and 0<=pose_age<=2.
+        motion=returned*factor+c.RETURN_MAX_LINEAR_MPS*(pose_age+c.RETURN_REACTION_SEC)
+        waited=recovery+map_age+pose_age+c.RETURN_REACTION_SEC
+        return travel*1.25*(move+idle/speed)+motion*move+(motion/speed+waited)*idle+margin
+    assert event['hold_sec']==5.
+    base={};travel_times={}
+    for n in names:
+        target=c.RallyPose(*targets[n]);route=answers[0] if n==name else c.plan_rally_leg(target,grid,res,origin,positions[n],local_map=maps[n])[1]
+        assert route and np.allclose((positions[n],*route),event['approach_routes'][n],atol=1e-10,rtol=0.)
+        travel=distance(positions[n],route);idle=float(states[n]['idle_cost_per_sec']);speed=float(states[n]['nominal_speed_mps'])
+        base[n]=requirement(n,travel,(target.x,target.y),event['budget_evaluated_at_sec'][n])+idle*5.
+        travel_times[n]=travel/speed
+        assert math.isclose(base[n],event['base_budgets'][n],abs_tol=1e-8,rel_tol=0.)
+    requirements,waits=c.rally_wait_requirements(base,states,event['battery_modes'],travel_times,{})
+    for n in names:
+        assert math.isclose(waits[n],event['wait_budgets_sec'][n],abs_tol=1e-8,rel_tol=0.)
+        assert math.isclose(requirements[n],event['required_budgets'][n],abs_tol=1e-8,rel_tol=0.)
+        assert math.isfinite(float(states[n]['energy'])) and float(states[n]['energy'])>requirements[n]
+    current=requirement(name,0.,position,event['current_return_evaluated_at_sec'])
+    held=current+float(states[name]['idle_cost_per_sec'])*(5.+waits[name])
+    assert math.isclose(current,event['current_return_required_energy'],abs_tol=1e-8,rel_tol=0.)
+    assert math.isclose(held,event['held_required_energy'],abs_tol=1e-8,rel_tol=0.) and float(states[name]['energy'])>held
+
+
+def detour_cancel_audit(events,declared,capture=None,native_capture=None):
+    requests=[e for e in events if e.get('event')=='coordinator_rally_detour_cancel']
+    closed=[e for e in events if e.get('event')=='coordinator_rally_detour_closed']
+    if not declared:assert not requests and not closed,'undeclared detour cancellation'
+    for e in requests:rebuild_detour_cancel(e)
+    for name in {e['robot'] for e in requests+closed}:
+        wanted=[e for e in requests if e['robot']==name];outcomes=[e for e in closed if e['robot']==name]
+        assert len(wanted)==len(outcomes),'detour action cancellation has no matching closure'
+        for index,(request,outcome) in enumerate(zip(wanted,outcomes)):
+            assert request['event_time']<=outcome['event_time'] and outcome['native_credit_added'] is False
+            if index+1<len(wanted):assert outcome['event_time']<=wanted[index+1]['event_time']
+    bindings=[dict(robot=n,outbound_map_route=dict(local_map=m,planning_map=e['planning_map']),planning_map_self_return_cells=e['planning_map_self_return_cells']) for e in requests for n,m in e['return_maps'].items()]
+    maps=bind_original_maps(bindings,capture) if requests and capture is not None else 0
+    poses=0
+    if requests and capture is not None:
+        from p2c_preparation_approach import bind_original_positions
+        poses=bind_original_positions([dict(inputs=e['inputs'],rally_preparation=dict(robot_positions=e['robot_positions'])) for e in requests],capture,.2)
+    native=0
+    if requests and native_capture is not None:
+        originals={}
+        for line in native_capture.open():
+            e=json.loads(line)
+            if e['topic'].endswith('/battery_state'):originals.setdefault(e['topic'].split('/')[1],[]).append(e['data'])
+        for e in requests:
+            for n,state in e['battery_states'].items():assert state in originals.get(n,[]);native+=1
+    return dict(status='PASS',requested=len(requests),closed=len(closed),original_source_maps=maps,
+        original_pose_frame_sources=poses,original_native_battery_sources=native,
+        scope='Original complete path and full native model/wait/hold/current-return reconstruction; cancellation closure only, no new movement or native task credit.')
+
+
 def prepared_dispatch_audit(path,declared=False,capture=None,native_capture=None):
     events=[json.loads(line) for line in path.open()]
+    detours=detour_cancel_audit(events,declared,capture,native_capture)
     checks=[e for e in events if e.get('event')=='coordinator_rally_prepared_batch_before_recovery']
     if not declared:
         assert not checks,'undeclared early normal batch'
@@ -140,5 +254,6 @@ def prepared_dispatch_audit(path,declared=False,capture=None,native_capture=None
                 assert state in originals.get(n,[]),'missing exact native batch battery source'
                 native+=1
     return dict(status='PASS',attempts_with_submitted_goals=len(checks),submitted_goals=goals,
+        detour_cancellations=detours,
         exact_original_leg_budgets=budgets,original_source_maps=maps,original_pose_frame_sources=poses,
         original_native_battery_sources=native,scope='Original batch geometry/reservations and exact full leg+remaining+wait+hold+contact-return budget; original public decision and raw source binding. No task timing or execution-connectivity guarantee.')

@@ -60,7 +60,7 @@
     "map_evidence_scope": "Only eligible ACTIVE/non-pending-charge own and peer return maps are consulted/saved; each has its original declared map source lease. Unconsulted charging peer maps are excluded."
   },
   "purpose": "Unchanged controlled physical return/charging pair; supplemental safety only, excluded from mission success and TDI.",
-  "predeclared_at_utc": "2026-10-11T22:59:45Z",
+  "predeclared_at_utc": "2026-10-12T00:42:37.319569Z",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -166,7 +166,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "8fe24f86461be5034979e237b3a0987154aee1fe",
+  "candidate_parent_commit": "ee3845aebb86cb0615d856e34c7301432646b9e7",
   "exploration_bounded_commitment": {
     "weight": 2.0,
     "score": "adjusted_utility*(2 if current useful funded continuation else1)",
@@ -276,7 +276,8 @@
     "20261012_p2c_v90_failed_formal.json",
     "20261012_p2c_v91_failed_development.json",
     "20261012_p2c_v92_failed_formal.json",
-    "20261012_p2c_v93_failed_development.json"
+    "20261012_p2c_v93_failed_development.json",
+    "20261012_p2c_v94_failed_development.json"
   ],
   "coordinator_live_clock": {
     "executor": "Two workers; only the existing /clock subscription moves to an independent mutually exclusive group. Original state/action callbacks remain serialized.",
@@ -952,5 +953,23 @@
     "guards": "Original complete visible escape, 1.8m protected return corridor, body/local maps, full trip/current return/charge-target capacity budgets, no live/pending/returning/charging peer and original source TTLs; preserve ordinary search intent and completed-work counters.",
     "private_evidence": "Original consumed audit stream carries both protected beneficiary return and blocker own return, matched maps/body/source stamps and independently reconstructed three prices; no new application flow or native/task credit.",
     "limits": "Component witnesses and controlled DDS/ActionClient Future inputs do not establish physical Nav2/charging or task causality; new same-freeze4development,17formal and2physical remain mandatory."
+  },
+  "active_rally_detour_replan": {
+    "strategy": "cancel_obsolete_complete_rally_detour_after_fresh_all_robot_budget_check",
+    "scope": "ordinary funded nonobserver RALLY only; private evaluator evidence; no new application traffic",
+    "minimum_saving_m": 1.0,
+    "minimum_saving_fraction": 0.25,
+    "minimum_goal_age_sec": 2.0,
+    "check_interval_sec": 2.0,
+    "check_only_after_new_map_source": true,
+    "stationary_body_clearance_m": 0.6,
+    "reuse_original_route_reservation_m": 1.8,
+    "all_robots_full_return_wait_and_hold_budget_required": true,
+    "require_current_position_full_return": true,
+    "reject_any_peer_requiring_charge": true,
+    "original_dispatch_after_real_old_action_closure": true,
+    "only_expected_canceled_status_avoids_failure_increment": true,
+    "success_and_abort_semantics_preserved": true,
+    "original_ttl_and_300s_and_5s_and_native_and_physics_preserved": true
   }
 }

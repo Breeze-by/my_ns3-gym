@@ -2983,6 +2983,40 @@ def exploration_leg_plans(pose, raw_grid, resolution, origin, position,
     ) for visible in ((False, True) if curved else (True,)))
 
 
+def shorter_rally_approach(raw_grid, resolution, origin, position, waypoint,
+                          final, local_map, blocked_positions=()):
+    """Compare complete current paths before stopping an obsolete detour.
+
+    This is geometry only. Cancellation still needs live source leases, a safe
+    stationary body and every robot's complete trip/wait budget. The next goal
+    belongs to the original dispatcher after the old action actually closes.
+    """
+    if (local_map is None or math.dist(position, (waypoint.x, waypoint.y)) <= .75
+            or math.dist((waypoint.x, waypoint.y), (final.x, final.y)) <= .75):
+        return None
+    cache = {}
+    def path(begin, end, shared=None):
+        return plan_rally_leg(end, raw_grid, resolution, origin, begin, math.inf,
+            blocked_positions=blocked_positions, local_map=local_map, route_cache=shared)
+    direct = path(position, final, cache)
+    remaining = path(position, waypoint, cache)
+    after_waypoint = path((waypoint.x, waypoint.y), final)
+    if any(plan[0] is None or not plan[1] for plan in (direct, remaining, after_waypoint)):
+        return None
+    length = lambda begin, route: sum(math.dist(a, b) for a, b in zip((begin, *route), route))
+    old_distance = length(position, remaining[1]) + length((waypoint.x, waypoint.y), after_waypoint[1])
+    new_distance = length(position, direct[1])
+    saving = old_distance - new_distance
+    if not all(math.isfinite(v) for v in (old_distance, new_distance, saving)):
+        return None
+    if saving < 1. or saving < .25 * old_distance:
+        return None
+    return dict(current_full_route=direct[1], old_leg_remaining_route=remaining[1],
+        old_waypoint_full_route=after_waypoint[1], old_distance_m=old_distance,
+        new_distance_m=new_distance, saved_distance_m=saving,
+        minimum_saving_m=1., minimum_saving_fraction=.25)
+
+
 def routes_conflict(
     first, second, min_separation=RALLY_ROUTE_SEPARATION_M
 ):
@@ -5372,6 +5406,147 @@ class HeadquartersControl(Node):
             else:
                 prepared.pop(name, None)
 
+    def cancel_obsolete_rally_detour(self):
+        """Stop a funded detour when fresh maps offer a substantially shorter trip."""
+        if (not self.enable_battery or self.task_state != 'RALLY'
+                or not any(getattr(self, 'rally_goal_handles', {}).values())
+                or getattr(self, 'shutdown_requested', False)
+                or not self.fresh_robot_inputs() or not self.fresh_target()
+                or self.rally_charge_requested or getattr(self, 'rally_precharge_staging', {})
+                or any(mode != 'ACTIVE' for mode in self.battery_modes.values())
+                or self.survey_goal_pending or self.survey_goal_handle is not None
+                or not hasattr(self, 'goal_handles')
+                or any(self.goal_handles.values())
+                or getattr(self, 'target_scan_handle', None) is not None
+                or getattr(self, 'target_scan_robot', None) is not None):
+            return False
+        names = self.participating_robots()
+        maps = HeadquartersControl.delivered_return_maps(self)
+        if any(name not in maps for name in names):
+            return False
+        checks = getattr(self, 'rally_detour_checks', {})
+        self.rally_detour_checks = checks
+        cancellations = getattr(self, 'rally_detour_cancellations', {})
+        self.rally_detour_cancellations = cancellations
+        for name in self.rally_dispatch_order:
+            handle = self.rally_goal_handles[name]
+            if (handle is None or cancellations.get(name) is handle
+                    or self.rally_goal_pending[name] or self.rally_yield_requested[name]
+                    or self.rally_battery_preempted[name] or self.rally_arrived[name]
+                    or name in self.rally_yield_targets or name in self.return_yield_targets
+                    or name in self.rally_probe_targets
+                    or name in getattr(self, 'rally_preparation_approaches', {})
+                    or name in (getattr(self, 'target_observing_robot', None),
+                                getattr(self, 'rally_observer_guard', None))
+                    or self.rally_targets.get(name) != self.rally_final_targets.get(name)):
+                continue
+            now = self.now()
+            started = self.rally_goal_started_at[name]
+            stamps = (self.map_received_at, self.robot_map_received_at[name])
+            previous = checks.get(name)
+            if (started is None or not 2. <= now - started < min(self.goal_timeout_sec, self.rally_goal_timeout_sec)
+                    or previous is not None and (now - previous[0] < 2. or stamps == previous[1])):
+                continue
+            checks[name] = (now, stamps)
+            position = self.robot_positions[name]
+            waypoint = self.rally_leg_poses.get(name)
+            final = self.rally_final_targets[name]
+            if position is None or waypoint is None:
+                continue
+            inputs = self.input_freshness_details()
+            peer_routes = {peer: remaining_rally_route(route, self.robot_positions[peer])
+                for peer, route in self.rally_leg_routes.items() if peer != name and route
+                and (self.rally_goal_handles[peer] is not None or self.rally_goal_pending[peer])}
+            if any(peer != name and (self.rally_goal_handles[peer] is not None or self.rally_goal_pending[peer])
+                   and peer not in peer_routes for peer in names):
+                continue
+            held_clear = True
+            for route in peer_routes.values():
+                for a, b in zip(route, route[1:]):
+                    edge = (b[0] - a[0], b[1] - a[1])
+                    square = edge[0] ** 2 + edge[1] ** 2
+                    fraction = 0. if square == 0 else max(0., min(1.,
+                        ((position[0] - a[0]) * edge[0] + (position[1] - a[1]) * edge[1]) / square))
+                    if math.dist(position, (a[0] + fraction * edge[0], a[1] + fraction * edge[1])) < RALLY_DYNAMIC_CLEARANCE_M:
+                        held_clear = False
+                if any(math.dist(position, point) < RALLY_DYNAMIC_CLEARANCE_M for point in route):
+                    held_clear = False
+            if (not held_clear or any(math.dist(position, point) < RALLY_DYNAMIC_CLEARANCE_M
+                    for peer, point in self.robot_positions.items() if peer != name and point is not None)):
+                continue
+            comparison = shorter_rally_approach(self.map_data, self.resolution, self.origin,
+                position, waypoint, final, maps[name], [point for peer, point in self.robot_positions.items()
+                    if peer != name and point is not None])
+            if comparison is None:
+                continue
+            routes, base, travel, prices = {}, {}, {}, {}
+            try:
+                for peer in names:
+                    state = self.battery_states[peer]
+                    speed, idle = float(state['nominal_speed_mps']), float(state['idle_cost_per_sec'])
+                    if not all(math.isfinite(v) for v in (speed, idle)) or speed <= 0 or idle < 0:
+                        raise ValueError('invalid detour wait model')
+                    target = self.rally_final_targets[peer]
+                    route = (comparison['current_full_route'] if peer == name else plan_rally_leg(
+                        target, self.map_data, self.resolution, self.origin, self.robot_positions[peer],
+                        local_map=maps[peer])[1])
+                    if not route:
+                        raise ValueError('missing complete peer approach')
+                    routes[peer] = (self.robot_positions[peer], *route)
+                    distance = sum(math.dist(a, b) for a, b in zip(routes[peer], routes[peer][1:]))
+                    priced = self.now()
+                    base[peer] = HeadquartersControl.task_return_required_energy(
+                        self, peer, distance, (target.x, target.y), priced) + idle * self.rally_hold_sec
+                    prices[peer] = priced
+                    travel[peer] = distance / speed
+                requirements, waits = rally_wait_requirements(base, self.battery_states, self.battery_modes, travel, {})
+                if any(not math.isfinite(requirements[peer]) or float(self.battery_states[peer]['energy']) <= requirements[peer] for peer in names):
+                    continue
+                current_priced = self.now()
+                current_required = HeadquartersControl.task_return_required_energy(self, name, 0., position, current_priced)
+                held_required = current_required + float(self.battery_states[name]['idle_cost_per_sec']) * (self.rally_hold_sec + waits[name])
+                if not math.isfinite(held_required) or float(self.battery_states[name]['energy']) <= held_required:
+                    continue
+            except (KeyError, TypeError, ValueError, ZeroDivisionError):
+                continue
+            completed = self.now()
+            if (not self.fresh_robot_inputs() or not self.fresh_target()
+                    or any(sample['source_time'] is None or not 0 <= completed - sample['source_time'] <= sample['ttl_sec']
+                           for sample in inputs.values())):
+                continue
+            proof = dict(event='coordinator_rally_detour_cancel', event_time=completed, evaluated_at_sec=now,
+                robot=name, goal_accepted_at_sec=started, waypoint=[waypoint.x, waypoint.y, waypoint.yaw],
+                goal_timeout_sec=min(self.goal_timeout_sec, self.rally_goal_timeout_sec),
+                final_targets={peer:[pose.x, pose.y, pose.yaw] for peer, pose in self.rally_final_targets.items()},
+                robot_positions=self.robot_positions, battery_states=self.battery_states, battery_modes=self.battery_modes,
+                observer_robot=getattr(self, 'target_observing_robot', None), peer_remaining_routes=peer_routes,
+                observer_guard=getattr(self, 'rally_observer_guard', None),
+                dynamic_clearance_m=RALLY_DYNAMIC_CLEARANCE_M, comparison=comparison,
+                approach_routes=routes, base_budgets=base, required_budgets=requirements, wait_budgets_sec=waits,
+                budget_evaluated_at_sec=prices, current_return_required_energy=current_required,
+                current_return_evaluated_at_sec=current_priced, held_required_energy=held_required, hold_sec=self.rally_hold_sec,
+                inputs=input_freshness_at(inputs, completed),
+                planning_map=grid_audit_evidence(self.map_data, self.resolution, self.origin,
+                    'ap_delivered_planning_map', self.map_received_at, self.map_received_at),
+                source_map=grid_audit_evidence(self.source_map_data, self.resolution, self.origin,
+                    'ap_delivered_fused_map', self.map_received_at, self.map_received_at),
+                planning_map_self_return_cells=getattr(self, 'map_self_return_cells', {}),
+                return_maps={peer:grid_audit_evidence(geometry['data'], geometry['resolution'], geometry['origin'],
+                    'ap_delivered_robot_map', self.robot_map_received_at[peer], self.robot_map_received_at[peer])
+                    for peer, geometry in maps.items() if peer in names},
+                movement_authorized=False, native_credit_added=False)
+            cancellations[name] = handle
+            try:
+                handle.cancel_goal_async()
+            except Exception as error:
+                cancellations.pop(name, None)
+                self.get_logger().warn(f'Could not cancel obsolete {name} rally detour: {error}')
+                continue
+            self.consumed_publisher.publish(String(data=json.dumps(proof, sort_keys=True)))
+            self.get_logger().info(f'Stopping obsolete {name} rally detour; current complete path saves {comparison["saved_distance_m"]:.2f} m.')
+            return True
+        return False
+
     def update_mission(self):
         HeadquartersControl.drain_received_snapshots(self)
         if getattr(self, "return_probe_paused", False):
@@ -5735,6 +5910,9 @@ class HeadquartersControl(Node):
                 f"Yielding {name} to a higher-priority nearby robot."
             )
             self.rally_goal_handles[name].cancel_goal_async()
+
+        if HeadquartersControl.cancel_obsolete_rally_detour(self):
+            return
 
         heading_corrections = set()
         last_confirmation = getattr(self, "target_received_source_time", None)
@@ -7416,6 +7594,9 @@ class HeadquartersControl(Node):
     def rally_goal_result(self, robot_name, goal_handle, future):
         if self.rally_goal_handles[robot_name] is not goal_handle:
             return
+        detour_canceled = goal_handle is not None and getattr(self, 'rally_detour_cancellations', {}).get(robot_name) is goal_handle
+        if detour_canceled:
+            self.rally_detour_cancellations.pop(robot_name, None)
         self.rally_goal_handles[robot_name] = None
         self.rally_goal_started_at[robot_name] = None
         self.rally_leg_routes[robot_name] = ()
@@ -7441,6 +7622,10 @@ class HeadquartersControl(Node):
             status = future.result().status
         except Exception as error:
             status = f"exception: {error}"
+        if detour_canceled and hasattr(self, 'consumed_publisher'):
+            self.consumed_publisher.publish(String(data=json.dumps(dict(
+                event='coordinator_rally_detour_closed', event_time=self.now(),
+                robot=robot_name, status=status, native_credit_added=False), sort_keys=True)))
         success = status == GoalStatus.STATUS_SUCCEEDED
         if success:
             # An intermediate waypoint proves that the route is alive.  Do
@@ -7490,6 +7675,8 @@ class HeadquartersControl(Node):
             self.get_logger().info(
                 f"{robot_name} rally leg stopped for a safety charge."
             )
+        elif detour_canceled and status == GoalStatus.STATUS_CANCELED:
+            self.get_logger().info(f'{robot_name} obsolete rally detour closed; replanning from fresh inputs.')
         else:
             self.rally_attempts[robot_name] += 1
             if self.rally_attempts[robot_name] >= 2:
