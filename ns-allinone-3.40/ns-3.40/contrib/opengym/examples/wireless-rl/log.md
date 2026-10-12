@@ -9456,3 +9456,16 @@ colcon build --symlink-install --packages-select multi_robot_exploration multi_r
 新增 report/20261012_p2c1_long_session_retrospective.md，按时序与六类技术工作解释长会话 b32c891→fb40016 的实际活动，附 v42..v95 全部54冻结与159开发格原生结果。逐项对照169份原summary的状态、时间、终止原因与源码SHA，和既有独立清单一致；159开发/6正式/4受控物理，102原生任务完成不能跨版本算成功率。实验启动至结束wall相加20.1506663h，不据此推断模型CPU工时或其余时间空转。原主回合54.3h与线程重启前活动、最后已启动实验收尾分开；v61物理受控PASS、v64读者异常FAIL、v95单正式PASS与完整矩阵未完成明确区分。
 
 核验54提交、542变化路径、报告/log新增1798825行及control7269→9492行等规模；报告集中保存说明和链接，不恢复已清理附件。旧会话仍idle/interrupted；本轮仅新增复盘和README入口，无源码/测试/声明改动、无新任务实验、无917，无P4/ns3/WiFi/RL。文档数字、逐版本表、原摘要来源与本地链接完成校核。
+
+
+## 2026-10-12 P2C.1 用户授权全局接手：global v1 源码冻结前
+
+从 e4041b5/已恢复 b32c891 建立 p2c1/global-mission-20261012，旧 54h 线程保持暂停。新 fleet_planning/global_control：不可变交付快照单 worker、有限联合探索/集合、完整实际航段+终点及当前返充+队友等待预算、全角色单 generation 所有者与真实 Future 闭合、永久集合点与临时清道分开、补能依赖和全局失格计划重建。取回 1a6bed8 的严格身体及有种子三射线噪声关联 SLAM 内部副本修复和原 CDR/完整应用图/native 电池留存；不改 raw scan/Nav2/机器人/世界/物理/完成阈值。新独立 p2c_global_audit 核验原交付 CDR/位姿TF/完整 native 状态、几何/标量预算/代次/预约/后充任务。旧各局部策略声明收敛为一个 global 算法，原 cases 和刺激不变。
+
+验证命令均在 ROS 工作区 source Humble+install，PYTHONNOUSERSITE=1、PYTHONPATH=src/multi_robot_exploration:scripts:已source路径；真实 DDS 使用隔离 domain214/215/216。初次纯规划 5 项因覆盖 PYTHONPATH 缺 action_msgs 收集 FAIL；改为追加 ROS 路径后 5 PASS/1.39s。第一次选择回归缺 navigation_capture_audit 收集 FAIL；取回并接入严格原件读者后 360 PASS/22.86s。新节点生命周期首次 15 PASS/1FAIL，target_information_survey 原适配诊断缺属性；仅统一其旧诊断角色为 target_survey 后 16 PASS/2.27s。四包 colcon build --symlink-install --packages-select multi_robot multi_robot_exploration merge_map slam_toolbox --allow-overriding slam_toolbox PASS/55.5s，build1.log 完整保留。
+
+真实 DDS/ActionServer 新夹具：dds1 错融合图主题 FAIL13.60s；dds2 控制输入/发现夹具 FAIL13.35s；dds3 自动 worker/真实动作生命周期 PASS3.38s。global4=16PASS1FAIL21.03s，旁录默认回调组/高速夹具积压导致事件不完整；dds5、dds6、dds7 独立原件绑定拒绝缺 map/odom 样本（1FAIL6.54s、1FAIL8.77s、39PASS1FAIL9.18s）。最终只读旁录单节点、实际交付可靠QoS、重复同一原静态输入且真实时钟推进（不续租、不近邻替换）；dds8 完整真实生命周期与源绑定 PASS6.66s。没有物理/Nav2/Gazebo/真实补能任务信用。修复实际缓存跨地图/身体位置复用，以及编码消耗 TTL 后继续派发；负向覆盖预算/代次篡改、future/repeated state、迟到接受与废旧 geometry。
+
+全功能 pytest src/multi_robot_exploration/test scripts（忽略原 test_copyright/flake8/pep257 风格入口）：full1 1594PASS2FAIL169.12s，真实旁录夹具和旧 travel witness 缺 TTL；在保持真实 TTL 校验的前提下补足旧夹具 ttl_sec=5，最终 full2 1597PASS145.87s。source1/source2 均 190保护/6原授权/54协议 PASS，含新 global 两 Future 与原中央8/native2/shared1 串行契约、原 native 常量保持。新 global/fleet/独立reader F821/F822/F823/E999 PASS；git diff --check PASS；manifest case/duration/faultseed/物理刺激与 e4041b5 对比相同，--validate-only 共享命令/初始图+完整图/原件订阅一致。原全仓风格 lint 已知失败未伪称修复。
+
+成功与失败输出位于 ros2_ws/ros2-multi-robot-automap/log/p2c1_global_20261012，源哈希 source2.json、声明 declaration1.json。技术说明只集中在 report/20261012_p2c1_global_mission.md。下一步 clean pushed 单冻结四开发，再15非留出+两物理后才首次917；P2C.1B未完成，无新任务/917/P4/ns3/WiFi/RL信用。260929_report十四用户资料不动。

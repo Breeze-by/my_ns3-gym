@@ -529,6 +529,7 @@ def parse_args():
     parser.add_argument("--target-field-of-view", type=float, default=90.0)
     parser.add_argument("--target-confirmation-frames", type=int, default=3)
     parser.add_argument("--rally", action="store_true")
+    parser.add_argument("--mission-planner", choices=("global", "baseline"), default="global")
     parser.add_argument("--rally-position-tolerance", type=float, default=0.35)
     parser.add_argument("--rally-linear-tolerance", type=float, default=0.05)
     parser.add_argument("--rally-angular-tolerance", type=float, default=0.10)
@@ -710,6 +711,7 @@ def main():
         f"rally_hold_sec:={args.rally_hold}",
         f"rally_max_retries:={args.rally_max_retries}",
         f"rally_assignment_objective:={args.rally_assignment_objective}",
+        f"mission_planner:={getattr(args, 'mission_planner', 'global')}",
         "use_map_safe_rally_order:="
         f"{str(not args.disable_map_safe_rally_order).lower()}",
         "global_battery_rally_pause:="

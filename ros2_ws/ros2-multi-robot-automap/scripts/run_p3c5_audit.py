@@ -69,6 +69,10 @@ def main(default_manifest=None, log_category='p3c5'):
                         "--output", str(directory / "safety_events.jsonl"), "--robot-count", str(scenario["robot_count"])]
     if config.get('native_tf_graph_capture'):
         observer_command.extend(['--native-tf-graph-output',str(directory/'native_graph.json')])
+    if config.get('complete_application_graph'):
+        observer_command.extend(['--application-graph-output',str(directory/'graph.json')])
+    if config.get('navigation_input_capture'):
+        observer_command.extend(['--navigation-input-output',str(directory/'navigation_inputs.jsonl.gz')])
     schedule_path = directory / "schedule.json"
     configure_command = [sys.executable, str(PROJECT_ROOT / "scripts/gateway_configure.py"),
                          "--schedule", str(schedule_path), "--output", str(directory / "configuration.jsonl")]
@@ -84,7 +88,7 @@ def main(default_manifest=None, log_category='p3c5'):
                 "git_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
                 "source_digests": {name: file_digest(PROJECT_ROOT / path) for name, path in {
                     "exploration": "src/multi_robot_exploration/multi_robot_exploration", "launch": "src/multi_robot/launch",
-                    "params": "src/multi_robot/params", "worlds": "src/multi_robot/worlds", "slam": "src/slam_toolbox/src",
+                    "params": "src/multi_robot/params", "worlds": "src/multi_robot/worlds", "slam": "src/slam_toolbox",
                     "manifest": str(args.manifest.resolve()), "runner": str(Path(__file__).resolve()),
                     "smoke": "scripts/ros_smoke_test.py", "control_cli": "scripts/gateway_configure.py",
                     'entrypoint': str(Path(sys.argv[0]).resolve()),
@@ -97,6 +101,13 @@ def main(default_manifest=None, log_category='p3c5'):
     if config.get('native_tf_graph_capture'):
         manifest['source_digests'].update({name:file_digest(PROJECT_ROOT/'scripts'/filename)
             for name,filename in (('safety_observer','observe_p3b5.py'),('native_graph_reader','p2c_native_graph.py'))})
+    if config.get('navigation_input_capture'):
+        manifest['source_digests'].update({name:file_digest(PROJECT_ROOT/path)
+            for name,path in (('navigation_capture','scripts/p2c_navigation_capture.py'),
+                ('scan_self_filter_reader','scripts/p2c_scan_self_filter.py'),
+                ('global_mission_reader','scripts/p2c_global_audit.py'),
+                ('robot_models','src/multi_robot/models'),('robot_description','src/multi_robot/urdf'),
+                ('shared_command_builder','scripts/run_p3b5_tasks.py'))})
     if probe_commands:
         fixture=staging_apparatus(config)
         manifest.update(staging_command=shlex.join(probe_commands['staging']),

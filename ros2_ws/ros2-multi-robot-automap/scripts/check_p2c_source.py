@@ -9,9 +9,14 @@ BASELINE='5d4b3ebab37d9e3f3a6e5890f6fd394b35d6c3d9'
 ALLOWED=('src/multi_robot_exploration/multi_robot_exploration/control.py',
          'src/multi_robot_exploration/multi_robot_exploration/battery_manager.py',
          'src/multi_robot_exploration/multi_robot_exploration/tf_ingress_sampler.py',
-         'src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py')
+         'src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py',
+         'src/slam_toolbox/src/slam_toolbox_multirobot.cpp',
+         'src/slam_toolbox/config/mapper_params_online_multi_async.yaml')
 NEW_WORLD='src/multi_robot/worlds/p2c_holdout917.world'
 NEW_ACTION_HELPER='src/multi_robot_exploration/multi_robot_exploration/action_callbacks.py'
+NEW_PLANNING=('src/multi_robot_exploration/multi_robot_exploration/fleet_planning.py',
+    'src/multi_robot_exploration/multi_robot_exploration/global_control.py',
+    'src/slam_toolbox/include/slam_toolbox/scan_self_filter.hpp')
 
 
 def main():
@@ -20,13 +25,13 @@ def main():
     if a.output.exists():p.error('do not overwrite source evidence')
     directories=('src/multi_robot_exploration/multi_robot_exploration','src/multi_robot/params',
         'src/multi_robot/worlds','src/multi_robot/models','src/multi_robot/urdf',
-        'src/multi_robot/launch','src/slam_toolbox/src','src/slam_toolbox/config',
+        'src/multi_robot/launch','src/slam_toolbox/src','src/slam_toolbox/config','src/slam_toolbox/include',
         'src/merge_map/merge_map','src/multi_robot_interfaces/msg')
     roots=[str((PROJECT/d).relative_to(ROOT)) for d in directories]
     frozen=subprocess.check_output(['git','ls-tree','-r','--name-only',BASELINE,'--',*roots],cwd=ROOT,text=True).splitlines()
     current={str(x.relative_to(ROOT)) for d in directories for x in (PROJECT/d).rglob('*')
              if x.is_file() and '__pycache__' not in x.parts and x.suffix!='.pyc'}
-    expected=set(frozen)|{str((PROJECT/name).relative_to(ROOT)) for name in (NEW_WORLD,NEW_ACTION_HELPER)}
+    expected=set(frozen)|{str((PROJECT/name).relative_to(ROOT)) for name in (NEW_WORLD,NEW_ACTION_HELPER,*NEW_PLANNING)}
     assert current==expected,dict(missing=sorted(expected-current),extra=sorted(current-expected))
     allowed={str((PROJECT/x).relative_to(ROOT)) for x in ALLOWED}
     protected=[];changed=[]
@@ -52,6 +57,11 @@ def main():
     direct=[n for n in ast.walk(central) if isinstance(n,ast.Call)
             and isinstance(n.func,ast.Attribute) and n.func.attr=='add_done_callback']
     assert len(deferred)==8 and not direct,('unserialized central Future registration',len(deferred),len(direct))
+    global_tree=ast.parse((PROJECT/NEW_PLANNING[1]).read_text())
+    global_deferred=[n for n in ast.walk(global_tree) if isinstance(n,ast.Call)
+        and isinstance(n.func,ast.Attribute) and n.func.attr=='defer_action_done_callback']
+    assert len(global_deferred)==2 and not any(isinstance(n,ast.Call)
+        and isinstance(n.func,ast.Attribute) and n.func.attr=='add_done_callback' for n in ast.walk(global_tree))
     native_tree=ast.parse((PROJECT/ALLOWED[1]).read_text())
     native=next(n for n in native_tree.body if isinstance(n,ast.ClassDef) and n.name=='BatteryManager')
     native_deferred=[n for n in ast.walk(native) if isinstance(n,ast.Call)
@@ -67,6 +77,8 @@ def main():
                 new_world_sha256=hashlib.sha256((PROJECT/NEW_WORLD).read_bytes()).hexdigest(),
                 native_constants_unchanged=True,static_protocol_matrix=protocol,
                 central_future_registrations_deferred=len(deferred),
+                global_future_registrations_deferred=len(global_deferred),
+                new_planning_sources={name:hashlib.sha256((PROJECT/name).read_bytes()).hexdigest() for name in NEW_PLANNING},
                 native_future_registrations_deferred=len(native_deferred),
                 new_action_helper_sha256=hashlib.sha256((PROJECT/NEW_ACTION_HELPER).read_bytes()).hexdigest())
     a.output.parent.mkdir(parents=True,exist_ok=True);a.output.write_text(json.dumps(result,indent=2)+'\n')

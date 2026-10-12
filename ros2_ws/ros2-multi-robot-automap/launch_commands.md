@@ -2,9 +2,11 @@
 
 # 多机器人任务启动命令速查
 
-## 2026-10-12 维护恢复状态
+## 2026-10-12 全局任务规划候选
 
-当前源码和声明恢复到长会话开始前的 `b32c891`，保留当时的完整路径安全预算与原生返航修复。长会话已暂停；v43–v95 的新增规则不属于当前实现。最新 v95 四开发与首正式 lab101 的 PASS、其余失败及全部原始证据均保留在备份分支 `backup/p2c1-before-recovery-20261012` 与日期报告中。P2C.1 完整集成仍未验收，917 留出未调用；本次恢复未产生新的完整任务信用。后续运行必须使用新的明确任务与新的源码冻结/run-id，不能复用旧批次或自动继续旧会话。
+长会话已暂停并以 `b32c891` 为基础恢复；当前在独立分支实现全局任务规划。主 launch 新参数 `mission_planner:=global`（默认）采用单规划线程、联合探索和统一动作所有权；`mission_planner:=baseline` 保留恢复后的控制策略用于明确声明的比较。`ros_smoke_test.py` 对应 `--mission-planner global|baseline`。两种模式共享原完整返航预算、网关协议、原生能量记账以及内部 SLAM 自体回波修复；原始 scan、Nav2、物理模型和完成阈值保持。默认值变化不意味着任务已验收。
+
+P2C.1 完整集成仍未验收，917 留出未调用。新开发与正式实验使用 `p2c_integration_manifest.json` 中的 global 声明、新提交和新 run-id，不能复用 v43–v95 历史结果。技术说明见 [`20261012_p2c1_global_mission.md`](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261012_p2c1_global_mission.md)。
 
 恢复报告：[`20261012_p2c1_session_recovery.md`](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261012_p2c1_session_recovery.md)。
 

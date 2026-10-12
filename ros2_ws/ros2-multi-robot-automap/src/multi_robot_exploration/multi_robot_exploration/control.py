@@ -3826,7 +3826,10 @@ class HeadquartersControl(Node):
             goal.pose.pose.orientation.w = math.cos(yaw / 2)
             self.target_scan_robot = name
             self.target_scan_cancel_requested = False
-            self.record_navigation_decision(name, "target_reacquisition_scan", goal.pose)
+            if self.record_navigation_decision(name, "target_reacquisition_scan", goal.pose) is False:
+                self.target_scan_robot = None
+                self.target_scan_cancel_requested = False
+                return
             HeadquartersControl.defer_action_done_callback(self, client.send_goal_async(goal), self.target_scan_response)
             self.get_logger().info(f"Scanning {name}'s current pose for a fresh target confirmation.")
             return
@@ -5718,9 +5721,14 @@ class HeadquartersControl(Node):
         self.survey_heading_only = heading_only
         self.survey_cancel_requested = False
         self.survey_goal_pending = True
-        self.record_navigation_decision(robot_name,
+        if self.record_navigation_decision(robot_name,
             "target_observation_heading" if heading_only else
-            "target_information_survey" if choice is not None else "target_survey", goal.pose)
+            "target_information_survey" if choice is not None else "target_survey", goal.pose) is False:
+            self.survey_attempts -= 1
+            self.survey_goal_pending = False
+            self.survey_robot = None
+            self.survey_heading_only = False
+            return False
         future = client.send_goal_async(goal)
         HeadquartersControl.defer_action_done_callback(self, future, self.survey_goal_response)
         return True
@@ -5899,7 +5907,11 @@ class HeadquartersControl(Node):
         self.rally_leg_routes[robot_name] = route
         self.rally_leg_poses[robot_name] = target
         self.rally_goal_pending[robot_name] = True
-        self.record_navigation_decision(robot_name, "local_return_yield" if local_return_yield else "rally", goal.pose)
+        if self.record_navigation_decision(robot_name, "local_return_yield" if local_return_yield else "rally", goal.pose) is False:
+            self.rally_goal_pending[robot_name] = False
+            self.rally_leg_routes[robot_name] = ()
+            self.rally_leg_poses.pop(robot_name, None)
+            return
         future = client.send_goal_async(goal)
         HeadquartersControl.defer_action_done_callback(self, future, lambda result, name=robot_name: self.rally_goal_response(name, result))
 
@@ -6864,6 +6876,16 @@ class HeadquartersControl(Node):
             "robot": robot_name, "kind": kind, "task_phase": self.task_state,
             "inputs": input_freshness_at(self.input_freshness_details(), now),
         }
+        if getattr(self, 'shutdown_requested', False) or any(
+            sample['source_time'] is None or not 0 <= sample['age_sec'] <= sample['ttl_sec']
+            for key, sample in event['inputs'].items()
+            if key != 'headquarters/target_detection' or kind not in (
+                'local_return_yield', 'target_reacquisition_scan', 'target_reacquisition_exploration')):
+            self.consumed_publisher.publish(String(data=json.dumps(dict(
+                event='coordinator_navigation_revoked', event_time=now,
+                robot=robot_name, kind=kind, inputs=event['inputs'],
+                reason='source_expired_before_recording'), sort_keys=True)))
+            return False
         if getattr(self, "map_self_return_cells", {}):
             event['planning_map_self_return_cells'] = self.map_self_return_cells
             event['planning_map_resolution_m'] = self.resolution
@@ -6909,6 +6931,21 @@ class HeadquartersControl(Node):
                 for name,g in HeadquartersControl.delivered_return_maps(self).items()
                 if name in choice['eligible_robot_names']}
         self.consumed_publisher.publish(String(data=json.dumps(event, sort_keys=True)))
+        # The publisher/encoding is part of the admission boundary. Both
+        # planners use the original frozen source stamps after that work.
+        completed_at = self.now()
+        valid = completed_at >= now and not getattr(self, 'shutdown_requested', False) and all(
+            sample['source_time'] is not None
+            and 0 <= completed_at - sample['source_time'] <= sample['ttl_sec']
+            for key, sample in event['inputs'].items()
+            if key != 'headquarters/target_detection' or kind not in (
+                'local_return_yield', 'target_reacquisition_scan', 'target_reacquisition_exploration'))
+        if not valid:
+            self.consumed_publisher.publish(String(data=json.dumps(dict(
+                event='coordinator_navigation_revoked', event_time=completed_at,
+                robot=robot_name, kind=kind, inputs=event['inputs'],
+                reason='source_expired_before_send'), sort_keys=True)))
+        return valid
 
     def send_goal(self, robot_name, assignment):
         if not self.fresh_robot_inputs():
@@ -6947,13 +6984,17 @@ class HeadquartersControl(Node):
             yaw = assignment.navigation_yaw
         goal.pose.pose.orientation.z = math.sin(yaw / 2.0)
         goal.pose.pose.orientation.w = math.cos(yaw / 2.0)
-        self.record_navigation_decision(
+        if self.record_navigation_decision(
             robot_name,
             "target_reacquisition_exploration"
             if getattr(self, "target_search_active", False) else (
                 "initial_visual_search" if getattr(self,'initial_search_goals',{}).get(robot_name,False) else "exploration"),
             goal.pose,
-        )
+        ) is False:
+            self.robot_states[robot_name] = 'idle'
+            self.goal_targets[robot_name] = None
+            self.goal_routes[robot_name] = ()
+            return
         future = client.send_goal_async(
             goal,
             feedback_callback=lambda feedback, name=robot_name: (
@@ -7248,7 +7289,8 @@ class HeadquartersControl(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    control = HeadquartersControl()
+    from .global_control import GlobalHeadquartersControl
+    control = GlobalHeadquartersControl()
     executor = MultiThreadedExecutor(num_threads=2)
     executor.add_node(control)
     try:

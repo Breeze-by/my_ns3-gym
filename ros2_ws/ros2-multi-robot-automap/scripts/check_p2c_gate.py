@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Read-only P2C.1 original/return-budget gate; never repairs task outcomes."""
-import argparse,base64,hashlib,json,math,re,subprocess,traceback,zlib
+import argparse,base64,gzip,hashlib,json,math,re,subprocess,traceback,zlib
+from collections import Counter
 from pathlib import Path
 from concurrent.futures import ProcessPoolExecutor
 import numpy as np
@@ -9,10 +10,43 @@ from check_p3b5_gate import episode_ok,ledger_audit,native_completion_ok
 from check_p3c5_gate import audit_original,declaration_audit
 from multi_robot_exploration import control
 from multi_robot_exploration.bypass_audit import runtime_violations
-from p2c_native_graph import native_tf_ingress_audit
+from p2c_native_graph import native_tf_ingress_audit, application_graph_audit
+from p2c_global_audit import global_mission_audit
+from p2c_scan_self_filter import scan_self_filter_audit
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def navigation_capture_audit(row, directory):
+    """Bind the closed original CDR trace, separately from task success."""
+    if not row['config'].get('navigation_input_capture'):
+        return None
+    from run_p2d_baseline import file_digest
+    path = directory / 'navigation_inputs.jsonl.gz'
+    assert path.name in row['evidence_sha256'] and sha(path) == row['evidence_sha256'][path.name]
+    command = row['observer_command']
+    assert Path(command[command.index('--navigation-input-output') + 1]) == path
+    assert row['source_digests']['navigation_capture'] == file_digest(
+        Path(__file__).with_name('p2c_navigation_capture.py'))
+    counts = Counter()
+    with gzip.open(path, 'rt') as stream:
+        for line in stream:
+            event = json.loads(line)
+            assert len(base64.b64decode(event['cdr'], validate=True)) >= 4
+            assert math.isfinite(event['received_sim_time']) and event['received_wall_ns'] > 0
+            counts[event['topic']] += 1
+    markers = [line.removeprefix('NAVIGATION_CAPTURE_CLOSED ')
+               for line in (directory / 'observer.log').read_text().splitlines()
+               if line.startswith('NAVIGATION_CAPTURE_CLOSED ')]
+    assert len(markers) == 1 and json.loads(markers[0]) == dict(counts), 'incomplete navigation trace'
+    if row['case'] != 'empty_battery':
+        required = {'/merge_map'} | {f'/tb{i}/{suffix}'
+            for i in range(1, row['result']['robot_count'] + 1)
+            for suffix in ('map', 'gateway/merge_map', 'global_costmap/costmap',
+                           'local_costmap/costmap', 'scan', 'odom', 'tf', 'tf_static')}
+        assert required <= counts.keys(), ('missing navigation inputs', sorted(required - counts.keys()))
+    return dict(status='PASS', messages=sum(counts.values()), topic_counts=dict(counts), control_input=False)
 
 
 def launch_process_audit(directory):
@@ -687,6 +721,12 @@ def check_one(path,config):
             from run_p2d_baseline import file_digest
             assert row['source_digests'][key]==file_digest(Path(__file__).with_name(filename))
     ingress=native_tf_ingress_audit(native_graph,result['robot_count'],bool(config.get('native_filtered_tf')))
+    application=application_graph_audit(native_graph,result['robot_count']) if config.get('complete_application_graph') else None
+    capture=navigation_capture_audit(row,directory)
+    scan_filter=scan_self_filter_audit(row,directory)
+    global_plan=global_mission_audit(directory,bool(config.get('global_mission_planning')))
+    if global_plan and (case.startswith(('dev_', 'fixed_')) or case in ('forced2','protocol_forced2','holdout_ideal')):
+        assert global_plan['sent']>0, 'global mission executor never exercised'
     native=return_audit(directory/'safety_events.jsonl',bool(config.get('native_pose_contract')),
         bool(config.get('return_source_selection')))
     energy=energy_audit(directory/'safety_events.jsonl',result,
@@ -718,7 +758,9 @@ def check_one(path,config):
         ap_return_veto_audit=vetoes,rally_assignment_audit=assignments,rally_repair_audit=repairs,
         exploration_travel_audit=travel,target_survey_audit=surveys,observer_heading_audit=headings,
         planning_lease_audit=leases,
-        native_tf_ingress_audit=ingress,launch_process_audit=processes)
+        native_tf_ingress_audit=ingress,launch_process_audit=processes,
+        complete_application_graph_audit=application,navigation_capture_audit=capture,
+        scan_self_filter_audit=scan_filter,global_mission_audit=global_plan)
 
 
 def observer_heading_audit(records,required=False,radius_m=3.,position_tolerance_m=.35,fov_rad=math.pi/2):

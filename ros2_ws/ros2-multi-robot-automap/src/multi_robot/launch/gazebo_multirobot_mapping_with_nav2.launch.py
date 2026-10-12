@@ -90,6 +90,7 @@ def launch_setup(context, *args, **kwargs):
     rally_assignment_objective = LaunchConfiguration(
         "rally_assignment_objective"
     )
+    mission_planner = LaunchConfiguration("mission_planner")
     use_map_safe_rally_order = LaunchConfiguration(
         "use_map_safe_rally_order"
     )
@@ -354,6 +355,7 @@ def launch_setup(context, *args, **kwargs):
                 "rally_hold_sec": rally_hold_sec,
                 "rally_max_retries": rally_max_retries,
                 "rally_assignment_objective": rally_assignment_objective,
+                "mission_planner": mission_planner,
                 "use_map_safe_rally_order": use_map_safe_rally_order,
                 "global_battery_rally_pause": global_battery_rally_pause,
                 "rally_max_concurrent": rally_max_concurrent,
@@ -1058,6 +1060,9 @@ def generate_launch_description():
             description="Rally assignment objective: minimax or total_path.",
         )
     )
+    ld.add_action(DeclareLaunchArgument(
+        "mission_planner", default_value="global", choices=["global", "baseline"],
+        description="Global fleet planning or the retained P2C baseline for comparison."))
 
     ld.add_action(
         DeclareLaunchArgument(
