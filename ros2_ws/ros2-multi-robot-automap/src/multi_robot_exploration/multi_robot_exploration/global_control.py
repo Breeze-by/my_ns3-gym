@@ -9,6 +9,7 @@ from dataclasses import dataclass, field, replace
 import hashlib
 import json
 import math
+import threading
 import time
 
 from action_msgs.msg import GoalStatus
@@ -42,10 +43,7 @@ class NavigationTask:
 class GlobalHeadquartersControl(geometry.HeadquartersControl):
     def __init__(self):
         super().__init__()
-        mode = self.declare_parameter("mission_planner", "global").value
-        if mode not in ("global", "baseline"):
-            raise ValueError("mission_planner must be global or baseline")
-        self.global_enabled = mode == "global"
+        mode = self.get_parameter("mission_planner").value
         self.planning_worker = PlanningWorker() if self.global_enabled else None
         self.navigation_tasks = {}
         self.navigation_generation = 0
@@ -71,6 +69,55 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
         self.last_hold_block_reason = None
         self.get_logger().info("Mission planner: " + mode)
 
+    def create_snapshot_subscription(self, msg_type, topic, callback, qos_profile):
+        if not hasattr(self, 'global_enabled'):
+            mode = self.declare_parameter('mission_planner', 'global').value
+            if mode not in ('global', 'baseline'):
+                raise ValueError('mission_planner must be global or baseline')
+            self.global_enabled = mode == 'global'
+            if self.global_enabled:
+                self.received_snapshot_lock = threading.Lock()
+                self.received_snapshot_callbacks = {}
+                self.received_snapshot_guard = self.create_guard_condition(self.drain_received_snapshots)
+        if not self.global_enabled:
+            return super().create_snapshot_subscription(msg_type, topic, callback, qos_profile)
+
+        def received(message):
+            if self.shutdown_requested:
+                return
+            producer = None
+            if topic.endswith('/target_detection'):
+                try:
+                    producer = json.loads(message.data)['robot']
+                    if producer not in self.robot_positions:
+                        producer = None
+                except (KeyError, TypeError, ValueError, json.JSONDecodeError):
+                    producer = None
+            with self.received_snapshot_lock:
+                self.received_snapshot_callbacks[topic, producer] = callback, message
+            try:
+                self.received_snapshot_guard.trigger()
+            except Exception:
+                if not self.shutdown_requested and self.context.ok():
+                    raise
+
+        # Receipts and the live clock share the existing light group. Complete
+        # objects are applied only by the guard or an entry in the serial group.
+        # QoS, subscriptions, source stamps and the two ROS workers are unchanged.
+        return self.create_subscription(msg_type, topic, received, qos_profile,
+                                        callback_group=self.clock_callback_group)
+
+    def drain_received_snapshots(self):
+        lock = getattr(self, 'received_snapshot_lock', None)
+        if lock is None:
+            return
+        with lock:
+            pending, self.received_snapshot_callbacks = self.received_snapshot_callbacks, {}
+        if self.shutdown_requested:
+            return
+        for callback, message in pending.values():
+            callback(message)
+
     def destroy_node(self):
         worker = getattr(self, "planning_worker", None)
         if worker is not None:
@@ -86,6 +133,7 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
     def cancel_stalled_goals(self):
         if not getattr(self, "global_enabled", False):
             return super().cancel_stalled_goals()
+        self.drain_received_snapshots()
         now = self.now()
         for robot, task in tuple(self.navigation_tasks.items()):
             timeout = (self.rally_goal_timeout_sec if task.proposal.kind in ("rally", "rally_yield")
@@ -218,6 +266,7 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
             if include_target or not key.endswith("target_detection"))
 
     def _snapshot(self):
+        self.drain_received_snapshots()
         if not self.fresh_robot_inputs():
             return None
         now = self.now()
@@ -463,6 +512,8 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                if peer != robot):
             return None
         destination = (actual.x, actual.y)
+        budget_time = self.now()
+        pricing = replace(snapshot, at_time=budget_time)
         wait = geometry.RALLY_GOAL_TIMEOUT_SEC if kind == "target_reacquisition_scan" else 0.
         complete = full
         if kind == "rally":
@@ -479,7 +530,7 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
             destination = final.x, final.y
             # A complete all-peer wait is repriced at the current epoch. The
             # proposed wait is a lower bound on this admission's wait reserve.
-            wait = max(waits.get(robot, 0.), self._current_wait(snapshot, robot)) + self.rally_hold_sec
+            wait = max(waits.get(robot, 0.), self._current_wait(pricing, robot)) + self.rally_hold_sec
             if owned_task is not None:
                 actual = proposal.pose
             elif math.dist((actual.x, actual.y), destination) > self.rally_position_tolerance:
@@ -501,11 +552,10 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                 return None
             if visual:
                 actual = geometry.RallyPose(actual.x, actual.y, yaw)
-        budget_time = self.now()
-        required = complete_budget(replace(snapshot, at_time=budget_time), robot,
+        required = complete_budget(pricing, robot,
                                    complete, destination, caches, wait)
         if required is not None and kind=='rally':
-            stopped=complete_budget(replace(snapshot,at_time=budget_time),robot,
+            stopped=complete_budget(pricing,robot,
                 full,(actual.x,actual.y),caches,wait)
             if stopped is None:
                 return None
@@ -642,6 +692,7 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
         return True
 
     def _goal_response(self, task, future):
+        self.drain_received_snapshots()
         robot = task.proposal.robot
         try:
             handle = future.result()
@@ -756,9 +807,10 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
             if not route:
                 return
             desired_route = (snapshot.positions[robot], *route)
-            desired_wait = self.rally_hold_sec + self._current_wait(snapshot, robot) if intent.reason == "whole_rally_and_wait" else 0.
             desired_time = self.now()
-            required = complete_budget(replace(snapshot, at_time=desired_time), robot, desired_route,
+            pricing = replace(snapshot, at_time=desired_time)
+            desired_wait = self.rally_hold_sec + self._current_wait(pricing, robot) if intent.reason == "whole_rally_and_wait" else 0.
+            required = complete_budget(pricing, robot, desired_route,
                                       intent.destination, caches, desired_wait)
             if required is None:
                 return
@@ -779,6 +831,12 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
             return
         for peer, route in snapshot.live_routes.items():
             if peer != robot and geometry.routes_conflict(contact["route"], route):
+                helper = self.navigation_tasks.get(peer)
+                if (helper is not None and helper.proposal.kind in ('charge_clearance', 'local_return_yield')
+                        and helper.proposal.beneficiary == robot):
+                    # This funded, monotone escape is our own dependency.
+                    # Charge waits for its real closure and final body check.
+                    return
                 self.cancel_navigation(peer, "return_corridor")
                 return
         # A stationary contact does not reserve a fictitious moving segment;
@@ -850,6 +908,7 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
     def update_mission(self):
         if not getattr(self, "global_enabled", False):
             return super().update_mission()
+        self.drain_received_snapshots()
         if self.return_probe_paused or self.shutdown_requested:
             return
         if self.task_state in ("COMPLETE", "PARTIAL_COMPLETE", "FAILED"):

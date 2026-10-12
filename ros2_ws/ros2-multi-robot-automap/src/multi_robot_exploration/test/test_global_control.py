@@ -327,6 +327,82 @@ def test_shifted_map_origin_funds_exact_final_connector_and_actual_stop(node):
     stopped=complete_budget(replace(snapshot,at_time=actual.budget_time),'tb1',
         actual.route,(actual.pose.x,actual.pose.y),{},actual.wait_sec)
     assert actual.required_energy==max(nominal,stopped)
+
+
+@pytest.mark.parametrize('node', [2], indirect=True)
+def test_fleet_wait_uses_same_price_epoch_when_peer_crosses_charge_threshold(node):
+    from multi_robot_exploration.fleet_planning import complete_budget
+    node.task_state = 'RALLY'
+    node.target, node.target_received_source_time = (3.5, 3.), 10.
+    finals = {'tb1':c.RallyPose(2.25, 1.25, math.atan2(1.75, 1.25)),
+              'tb2':c.RallyPose(5.25, 4.25, math.atan2(-1.25, -1.75))}
+    node.rally_targets = node.rally_final_targets = finals
+    original = node._snapshot()
+    base, travel = {}, {}
+    for robot, final in finals.items():
+        _, leg = c.plan_rally_leg(final, original.grid, original.resolution, original.origin,
+                                 original.positions[robot])
+        full = (original.positions[robot], *leg)
+        base[robot] = complete_budget(original, robot, full, (final.x, final.y), {}, 5.)
+        travel[robot] = sum(math.dist(a,b) for a,b in zip(full,full[1:])) / .18
+    old_requirements, _ = c.rally_wait_requirements(base, original.batteries,
+        dict.fromkeys(finals, 'ACTIVE'), travel, dict.fromkeys(finals, 36.))
+    # Pose-age reaction pricing grows by more than this margin at t=11.
+    node.battery_states['tb2']['energy'] = old_requirements['tb2'] + .15
+    snapshot = node._snapshot()
+    old_wait = node._current_wait(snapshot, 'tb1')
+    node.now = lambda: 11.
+    proposed = MotionProposal('tb1', 'rally', finals['tb1'], ((1.25,1.25),(2.25,1.25)), 1., 20.)
+    actual = node._current_motion(snapshot, proposed, {})
+    assert actual is not None and actual.budget_time == 11.
+    assert actual.wait_sec >= old_wait + node.rally_hold_sec + 30.
+    from p2c_global_audit import audit_motion
+    assert audit_motion({**node._motion_proof(snapshot, SimpleNamespace(generation=1), actual),
+                         'event_time':11.}) > 0
+
+
+@pytest.mark.parametrize('node', [2], indirect=True)
+@pytest.mark.parametrize('kind', ['charge_clearance', 'exploration'])
+def test_charge_waits_for_its_clearance_owner_but_cancels_other_crossing_traffic(node, kind):
+    from multi_robot_exploration.fleet_planning import contact_route
+    delivered_state(node, 11., position=(4.25, 1.25), energy=20.)
+    odom = Odometry()
+    odom.header.stamp.sec = 11
+    odom.pose.pose.position.x, odom.pose.pose.position.y = 2.75, 1.25
+    odom.pose.pose.orientation.w = 1.
+    node.robot_odom_callback(odom, 'tb2')
+    node.battery_state_callback(String(data=json.dumps({**node.battery_states['tb2'],
+        'stamp_sec':11., 'energy':60.})), 'tb2')
+    snapshot = node._snapshot()
+    returning = contact_route(snapshot, 'tb1', snapshot.positions['tb1'], {})
+    intent = ChargeProposal('tb1', 60., returning['route'],
+        'unfunded_information_task', (6.75, 1.25))
+    if kind == 'charge_clearance':
+        node.global_charge_intent = intent
+        node.global_charge_context = snapshot.context
+    snapshot = node._snapshot()
+    proposed = MotionProposal('tb2', kind, c.RallyPose(2.75,4.25,0.),
+        ((2.75,1.25),(2.75,4.25)), 1., 20., beneficiary='tb1' if kind=='charge_clearance' else None)
+    actual = node._current_motion(snapshot, proposed, {})
+    assert actual is not None
+    pending = Future()
+    client = Mock()
+    client.server_is_ready.return_value = True
+    client.send_goal_async.return_value = pending
+    node.robot_nav_clients['tb2'] = client
+    node.charge_request_publishers['tb1'] = Mock()
+    assert node._send_motion(snapshot, actual)
+    task = node.navigation_tasks['tb2']
+    proof = next(json.loads(call.args[0].data) for call in node.consumed_publisher.publish.call_args_list
+                 if json.loads(call.args[0].data).get('event')=='coordinator_global_motion_admission')
+    from p2c_global_audit import audit_motion
+    assert audit_motion(proof) > 0
+    node.global_charge_intent = intent
+    node.global_charge_context = snapshot.context
+    node._prepare_charge(node._snapshot())
+    assert node.navigation_tasks['tb2'] is task
+    assert task.cancel_reason == (None if kind=='charge_clearance' else 'return_corridor')
+    assert not node.charge_request_publishers['tb1'].publish.called
 def test_stationary_arrival_waits_for_original_five_second_hold(node):
     final = c.RallyPose(1.25, 1.25, 0.)
     node.task_state = 'RALLY'

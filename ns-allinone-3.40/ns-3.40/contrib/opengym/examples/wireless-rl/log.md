@@ -9511,3 +9511,22 @@ v5同一执行器对所有角色用新鲜单调odom-frame位移/转向与反馈�
 v5_components1 29PASS8.88s；新增真实DDS延迟消费真实acceptance Future、新source13完整流程后components2=29PASS1FAIL14.11s，旁录漏新odom13严格原件拒绝。该独有失败raw夹具109957bytes移入v5_components2_fixture_failed，无重复大附件。夹具只增加等待实际原CDR订阅已捕获新odom/TF的条件，生产QoS/时钟/消息与读者不放宽；components3 30PASS16.50s，含两个真实ActionServer生命周期与原件/预算/代次/目标篡改拒绝；追加TF修正无进展反例1PASS/21deselected1.96s。
 
 v5_full首全功能进程在test_blocked_observer_does_not_starve_other_funded_serial_charging→原path_distance_grid/SciPy dijkstra处segfault/exit139，无完整信用，原输出v5_full.log保留。无运行源修改后重复同命令v5_full2完整1609PASS164.94s，未复现；不声称已找出底层段错误原因。两次均source Humble+install，PYTHONNOUSERSITE=1，追加src/scripts到ROS PYTHONPATH，domain215，pytest src/multi_robot_exploration/test scripts忽略原copyright/flake8/pep257风格入口。四包build5.93sPASS，source190保护/6授权/54协议/native常量与Future契约PASS，五个变更核心/测试模块F821/F822/F823/E999及diff-checkPASS，validate-only23源共享构造声明PASS。两个manifest原cases/duration/seeds/native-energy-return-source契约与59e5680逐对象相同，仅新冻结父SHA、时刻和执行说明更新。新freeze待clean pushed四开发，保持P2C.1未完成；旧长会话暂停，260929_report十四用户文件不动，无P4/ns3/WiFi/RL。
+
+
+### global v5 原生三完成、严格两通过与 v6 数据/预算/依赖一致性
+
+ba6d46bd848ea2dd0cd806eacc17887f218ba28a clean pushed，20261012_p2c_global_v5/domain204/port11573同原四开发全闭合后才改源。forced原生COMPLETE215.2/检测131/集合144.8/双charge1；lab COMPLETE170.3/55.6/87.8/charge0；rooms RALLY300timeout/225.3/227.8/charge2；corr COMPLETE230.8/80.4/83.2/charge1。四原零contact/exhaustion/FAILED，minE8.1051/22.7788/13.0066/30.7259，runner/observer0且owned关闭，四完整CDR113774893bytes原位保留。forced单门禁及四格中的forced/lab严格PASS；corr因incomplete fleet wait budget严格FAIL、rooms任务FAIL，四开发完整FAIL不回填，17/物理/917未调用。forced25sent=closed、2charge、1current revalidation、84原map绑定且无pending，独立审计不能替代其他格。原通信子审计stdout PASS与完整门禁FAIL明确区分。
+
+只读v4_search_history_conditions按原旁录到达顺序条件重建：335pose/heading bins、known44796、当前图投影历史锥35177格、原观察时图35020格、仅后图追认202格；目标格非known free，无相机追认例子，未支持其导致原forced未检测的猜测。跨原点格中心投影是估计而非中央回调/图像或任务因果重放；不据此加覆盖补丁。
+
+v5_charge_dependency_conditions完整节点/真实pending Future构造有效清道预算15.9867917、energy60、tb1未来返充依赖：原_prepare_charge把为自己清道的tb2取消为return_corridor，owner仍持有且charge未发。v6同条件不取消，仍等待真实关闭及末身体检查；无Nav2/Gazebo/补能或任务因果信用，其他交叉探索仍按原保护取消。原rooms目标前31真实普通成功/61.2759m、源过期取消1，目标后4集合源过期取消和3清道取消（另末期第45闭合在结果结束后保留）；原等待诊断有frame2.202/pose1.996源龄，支持改善串行前台输入积压，不宣称每次原失败的历史回调原因。
+
+corr原tb2/generation12已sent证明在price_epoch231.8，wait191.44018725866763；独立原读者严格拒绝，同一输入/同一price_epoch当前原算法条件重建wait250.8487966865984，少59.40860942793077s。运行源原等待先用snapshot旧时刻，实际完整预算随后用当前时刻，队友能源跨补能阈值导致整队等待不一致。v6所有Peer等待与本机完整去/返/实际停点价格共用一个记录的pricing epoch；充电后目标价格也统一其等待时刻，不改旧source或原标量模型/门槛。新增两机充电阈值反例并经独立reader audit_motion核验。
+
+取回f25d3fd有用的完整交付对象收取/串行应用流程，在global模式复用原轻clock回调组、原两ROS workers及原全部订阅/QoS：每主题latest全对象、检测按producer键，guard与snapshot/mission/timeout/action接受入口有界单批修改状态；worker快照在计算中不变，旧source不续租。baseline仍直接串行接收，无新应用流或native旁路；不复活旧局部派发策略。坏检测producer接收键有界并由原消费者拒绝。
+
+v6_components1原30PASS17.13s；v6_control2加入预算/依赖3例25PASS3.70s，后完善普通探索先真实准入再出现充电需求的有效场景，两分支均独立审计原路线/预算。新双线程actual DDS默认组阻塞期间轻组收到完整13本体输入及两个同戳producer，实际状态/旧不可变快照不变；串行释放后全字段/协方差/额外TF/电池扩展字段正确应用，source13在clock15.1重复仍无合格snapshot，零动作/物理信用。components3=33PASS1FAIL25.35s：旧Lifecycle高频地图夹具旁录缺新odom13，原失败raw移入v6_components3_fixture_failed。仅将夹具地图/静态状态重复频率降为wall2Hz以排空旁录，同一个原stamp和真实clock仍推进；生产QoS/源周期和严格读者不变。components4最终34PASS22.30s，包括两real ActionServer/Future原件绑定和上述双线程源冻结；全功能v6_full1613PASS172.46s，四包build6.25sPASS，source190保护/6授权/54协议/native原常量/Future串行化、五核心/测试F821/F822/F823/E999/diff-checkPASS。原cases/duration/seeds/native-energy-return-source与ba6逐对象保持，manifest仅新父冻结/时刻/global说明；validate-only共享声明核验后新freeze仍四开发起步。
+
+P2C.1仍未完成，旧54h会话暂停、260929_report用户资料保持、无P4/ns3/WiFi/RL。所有失败不回填，所有技术说明仍集中同一报告。
+
+v6 完整TF对象追加显式两transform/optical字段断言，单独同双线程DDS入口1PASS/2deselected2.78s；只加强已有检查，运行源不变。

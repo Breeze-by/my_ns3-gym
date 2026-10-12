@@ -3157,13 +3157,13 @@ class HeadquartersControl(Node):
             String, "/task_failure", state_qos
         )
         self.task_subscriptions = [
-            self.create_subscription(
+            self.create_snapshot_subscription(
                 String,
                 "/gateway/received/target_observation",
                 self.target_observation_callback,
                 state_qos,
             ),
-            self.create_subscription(
+            self.create_snapshot_subscription(
                 String,
                 "/gateway/received/target_detection",
                 self.target_detection_callback,
@@ -3243,7 +3243,7 @@ class HeadquartersControl(Node):
 
         # Delivered maps/poses are replaceable snapshots. Do not replay older
         # snapshots after a planning callback; keep their original timestamps.
-        self.map_sub = self.create_subscription(
+        self.map_sub = self.create_snapshot_subscription(
             OccupancyGrid, "/merge_map", self.map_callback, 1
         )
         self.robot_positions = {}
@@ -3321,7 +3321,7 @@ class HeadquartersControl(Node):
                 f"/gateway/{robot_name}/navigate_to_pose",
             )
             self.robot_subscriptions.append(
-                self.create_subscription(
+                self.create_snapshot_subscription(
                     Odometry,
                     f"/gateway/received/{robot_name}/odom",
                     lambda msg, name=robot_name: self.robot_odom_callback(
@@ -3331,7 +3331,7 @@ class HeadquartersControl(Node):
                 )
             )
             self.robot_subscriptions.append(
-                self.create_subscription(
+                self.create_snapshot_subscription(
                     TFMessage,
                     f"/gateway/received/{robot_name}/tf",
                     lambda msg, name=robot_name: self.robot_tf_callback(
@@ -3341,7 +3341,7 @@ class HeadquartersControl(Node):
                 )
             )
             self.robot_subscriptions.append(
-                self.create_subscription(
+                self.create_snapshot_subscription(
                     OccupancyGrid,
                     f"/gateway/received/{robot_name}/map",
                     lambda msg, name=robot_name: self.robot_map_callback(
@@ -3351,7 +3351,7 @@ class HeadquartersControl(Node):
                 )
             )
             self.robot_subscriptions.append(
-                self.create_subscription(
+                self.create_snapshot_subscription(
                     String,
                     f"/gateway/received/{robot_name}/battery_state",
                     lambda msg, name=robot_name: self.battery_state_callback(
@@ -6033,6 +6033,10 @@ class HeadquartersControl(Node):
             self.get_logger().warn(
                 f"{robot_name} rally goal failed with status {status}."
             )
+
+    def create_snapshot_subscription(self, msg_type, topic, callback, qos_profile):
+        """The baseline applies delivered inputs directly in its serial group."""
+        return self.create_subscription(msg_type, topic, callback, qos_profile)
 
     def create_subscription(self, msg_type, topic, callback, qos_profile, **kwargs):
         # TimeSource creates its subscription while Node.__init__ is running.
