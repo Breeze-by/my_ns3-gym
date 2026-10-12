@@ -9,6 +9,7 @@ from dataclasses import dataclass, field, replace
 import hashlib
 import json
 import math
+import time
 
 from action_msgs.msg import GoalStatus
 from geometry_msgs.msg import PoseStamped
@@ -59,8 +60,11 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
         self.global_survey_attempts = 0
         self.global_map_encodings = {}
         self.admission_geometry_caches = {}
+        self.return_geometry_caches = {}
         self.global_charge_context = None
         self.deferred_charge_intent = None
+        self.last_hold_work_sec = 0.
+        self.last_hold_block_reason = None
         self.get_logger().info("Mission planner: " + mode)
 
     def destroy_node(self):
@@ -143,21 +147,30 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
     def target_detection_callback(self, message):
         if getattr(self, "global_enabled", False):
             try:
-                robot = str(json.loads(message.data)["robot"])
-                if robot not in self.robot_positions:
+                event=json.loads(message.data)
+                robot=str(event['robot'])
+                target=float(event['target_x']),float(event['target_y'])
+                source=float(event['_gateway']['source_time'])
+                distance=float(event.get('max_distance_m',3.))
+                fov=math.radians(float(event.get('field_of_view_deg',90.)))
+                if (robot not in self.robot_positions or not all(math.isfinite(v) for v in (*target,source,distance,fov))
+                        or distance<=0 or not 0<fov<=2*math.pi or not 0<=self.now()-source<=geometry.TARGET_DETECTION_TTL_SEC
+                        or self.target is not None and target!=self.target):
                     return
             except (KeyError, TypeError, ValueError, json.JSONDecodeError):
                 return
-        previous_source = getattr(self, "target_received_source_time", None)
         previous_observer = getattr(self, "target_observing_robot", None)
         super().target_detection_callback(message)
-        if not getattr(self, "global_enabled", False) or self.target_received_source_time == previous_source:
+        if not getattr(self, "global_enabled", False) or self.target!=target:
             return
-        event = json.loads(message.data)
-        robot, source = str(event["robot"]), float(event["_gateway"]["source_time"])
-        if robot not in self.robot_positions:
+        # The target lease is globally monotone, but observation producers
+        # have independent leases. A delivered older/equal peer confirmation
+        # can be fresh without rewinding the accepted target source.
+        if source<=self.global_confirmations.get(robot,-math.inf):
             return
         self.global_confirmations[robot] = source
+        self._emit('coordinator_global_confirmation',robot=robot,source_time=source,
+                   message_id=event['_gateway'].get('message_id'))
         if (previous_observer in self.global_confirmations
                 and self.battery_modes[previous_observer] == "ACTIVE"
                 and 0 <= self.now() - self.global_confirmations[previous_observer]
@@ -262,6 +275,7 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
             "live_routes": snapshot.live_routes, "required": snapshot.required,
             "target": snapshot.target, "observer": snapshot.observer,
             "completed_legs": snapshot.completed_legs,
+            "confirmations":dict(self.global_confirmations),
         }
 
     def _emit(self, event, **details):
@@ -290,6 +304,12 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
         if caches.get('epoch') != key:
             caches.clear()
             caches['epoch'] = key
+        # Reverse charger fields depend on map/contact geometry, not on peer
+        # bodies or tiny pose changes. Their original content keys invalidate
+        # changed maps; every query still rebuilds the actual start prefix and
+        # prices the current sources and energy. Motion fields keep the full
+        # body epoch above.
+        caches['returns'] = self.return_geometry_caches.setdefault(robot, {})
         return caches
 
     def _protect_traffic(self, snapshot):
@@ -611,9 +631,7 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
         if snapshot is None or intent is None or self.global_charge_requested_at is not None:
             return
         robot = intent.robot
-        if (robot in self.navigation_tasks or snapshot.batteries[robot]["mode"] != "ACTIVE"
-                or any(state["mode"] in ("RETURNING", "CHARGING")
-                       for state in snapshot.batteries.values()) or self._active_observer(snapshot, robot)):
+        if robot in self.navigation_tasks or snapshot.batteries[robot]["mode"] != "ACTIVE":
             return
         caches = self._admission_caches(snapshot, robot)
         contact = contact_route(snapshot, robot, snapshot.positions[robot], caches)
@@ -621,18 +639,9 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
         reserve = complete_budget(replace(snapshot, at_time=return_budget_time), robot,
                                   (snapshot.positions[robot],), snapshot.positions[robot], caches)
         if contact is None or reserve is None or snapshot.batteries[robot]["energy"] <= reserve:
-            self.global_charge_intent = None
+            self.global_charge_intent = self.deferred_charge_intent
+            self.deferred_charge_intent = None
             return
-        for peer, route in snapshot.live_routes.items():
-            if peer != robot and geometry.routes_conflict(contact["route"], route):
-                self.cancel_navigation(peer, "return_corridor")
-                return
-        # A stationary contact does not reserve a fictitious moving segment;
-        # every actual navigation continues to use the original 1.8 m limit.
-        if contact["path_distance_m"] > 0.:
-            if any(peer != robot and geometry.routes_conflict((position,), contact["route"])
-                   for peer, position in snapshot.positions.items()):
-                return
         state = snapshot.batteries[robot]
         target = float(state["capacity"]) * float(state["charge_target_fraction"])
         required = intent.required_energy
@@ -657,8 +666,25 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                 return
             required = max(required, .25 * target)
         if not math.isfinite(required) or not state["energy"] <= required <= target:
-            self.global_charge_intent = None
+            self.global_charge_intent = self.deferred_charge_intent
+            self.deferred_charge_intent = None
+            self._emit('coordinator_global_charge_intent_closed',robot=robot,
+                       reason='current_task_funded_or_unavailable',required_energy=required)
             return
+        # Protection blocks execution, not invalidation of an obsolete demand.
+        if (any(other['mode'] in ('RETURNING','CHARGING') for other in snapshot.batteries.values())
+                or self._active_observer(snapshot,robot)):
+            return
+        for peer, route in snapshot.live_routes.items():
+            if peer != robot and geometry.routes_conflict(contact["route"], route):
+                self.cancel_navigation(peer, "return_corridor")
+                return
+        # A stationary contact does not reserve a fictitious moving segment;
+        # every actual navigation continues to use the original 1.8 m limit.
+        if contact["path_distance_m"] > 0.:
+            if any(peer != robot and geometry.routes_conflict((position,), contact["route"])
+                   for peer, position in snapshot.positions.items()):
+                return
         stamp = self.now()
         message = String(data=json.dumps({"robot": robot, "stamp_sec": stamp,
             "task_phase": self.task_state, "reason": intent.reason,
@@ -677,8 +703,16 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
         self._emit("coordinator_global_charge_sent", robot=robot, stamp_sec=stamp)
 
     def _hold(self, snapshot):
+        started = time.monotonic()
+        try:
+            return self._check_hold(snapshot)
+        finally:
+            self.last_hold_work_sec = time.monotonic() - started
+
+    def _check_hold(self, snapshot):
         if self.task_state != "RALLY" or not self.rally_final_targets or snapshot.target is None:
             self.rally_hold_started_at = None
+            self.last_hold_block_reason = 'phase_or_target'
             return
         stable = (not self.navigation_tasks and self.global_charge_intent is None
                   and all(self.rally_arrived.get(robot, False) for robot in snapshot.required)
@@ -688,18 +722,23 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                       self.rally_linear_tolerance, self.rally_angular_tolerance))
         if not stable:
             self.rally_hold_started_at = None
+            self.last_hold_block_reason = 'ownership_charge_or_arrival'
             return
         for robot, final in self.rally_final_targets.items():
             # Recheck full hold and return reserves; stopping at a temporary
             # yield does not modify final poses or begin completion timing.
-            required = complete_budget(snapshot, robot, (snapshot.positions[robot],),
-                                       (final.x, final.y), {}, self.rally_hold_sec)
+            required = complete_budget(replace(snapshot,at_time=self.now()), robot,
+                (snapshot.positions[robot],), (final.x, final.y),
+                {'returns':self.return_geometry_caches.setdefault(robot,{})}, self.rally_hold_sec)
             if required is None or snapshot.batteries and snapshot.batteries[robot]["energy"] <= required:
                 self.rally_hold_started_at = None
+                self.last_hold_block_reason = 'unfunded_complete_hold_return:' + robot
                 return
         if not self._sources_current(snapshot.sources):
             self.rally_hold_started_at = None
+            self.last_hold_block_reason = 'source_expired_during_hold_price'
             return
+        self.last_hold_block_reason = None
         now = self.now()
         if self.rally_hold_started_at is None:
             self.rally_hold_started_at = now
@@ -721,6 +760,11 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
         snapshot = self._snapshot()
         if snapshot is None:
             self.rally_hold_started_at = None
+            self.last_hold_block_reason='input_unavailable'
+            if self.now()-self.last_global_diagnostic_at>=5.:
+                self.last_global_diagnostic_at=self.now()
+                self._emit('coordinator_global_wait',inputs=self.input_freshness_details(),
+                    owned=list(self.navigation_tasks),reason='input_unavailable')
             return
         if (self.global_charge_intent is not None and self.global_charge_requested_at is None
                 and self.global_charge_context != snapshot.context):
@@ -749,7 +793,17 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                     computation_wall_sec=proposal.computation_wall_sec, blocked=proposal.blocked,
                     motions=[{"robot": motion.robot, "kind": motion.kind,
                               "position": [motion.pose.x, motion.pose.y]} for motion in proposal.motions],
-                    charges=[charge.robot for charge in proposal.charges])
+                    charges=[charge.robot for charge in proposal.charges],
+                    arrived=dict(self.rally_arrived),owned=list(self.navigation_tasks),
+                    charge_intent=None if self.global_charge_intent is None else {
+                        'robot':self.global_charge_intent.robot,'reason':self.global_charge_intent.reason,
+                        'requested_at':self.global_charge_requested_at,
+                        'deferred':None if self.deferred_charge_intent is None else self.deferred_charge_intent.robot},
+                    hold_started_at=self.rally_hold_started_at,hold_block_reason=self.last_hold_block_reason,
+                    hold_work_sec=self.last_hold_work_sec,sources=snapshot.sources,
+                    delivered_stable=geometry.robots_stable(self.robot_positions,self.robot_velocities,
+                        self.rally_final_targets,self.rally_position_tolerance,
+                        self.rally_linear_tolerance,self.rally_angular_tolerance))
             if (proposal.final_poses and proposal.final_poses != self.rally_final_targets
                     and not self.navigation_tasks and not snapshot.charge_pending
                     and self._validate_final_poses(snapshot, proposal.final_poses)
@@ -768,13 +822,16 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                 eligible = [charge for charge in proposal.charges if charge.robot not in self.navigation_tasks]
                 if eligible:
                     self.global_charge_intent = min(eligible, key=lambda charge:
-                        (route_length(charge.return_route), charge.robot))
+                        (self._active_observer(snapshot,charge.robot),route_length(charge.return_route), charge.robot))
                     self.global_charge_context = snapshot.context
                     self.global_charge_started = False
                     self._prepare_charge(snapshot)
             elif (self.global_charge_intent is not None and self.global_charge_requested_at is None
                     and self.deferred_charge_intent is None):
-                dependency = next((charge for charge in proposal.charges
+                eligible = [charge for charge in proposal.charges if charge.robot not in self.navigation_tasks
+                            and not self._active_observer(snapshot,charge.robot)]
+                dependency = min(eligible,key=lambda charge:(route_length(charge.return_route),charge.robot)) if (
+                    self._active_observer(snapshot,self.global_charge_intent.robot) and eligible) else next((charge for charge in proposal.charges
                     if charge.reason == "unfunded_return_clearance"
                     and charge.robot != self.global_charge_intent.robot), None)
                 if dependency is not None:

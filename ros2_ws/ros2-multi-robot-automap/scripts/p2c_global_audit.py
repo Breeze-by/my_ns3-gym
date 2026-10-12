@@ -223,6 +223,8 @@ def bind_sources(events, capture, native_path):
                     wanted[(f'/gateway/received/{robot}/{suffix}', round(world['sources'][robot + '/' + kind] * 1e9))]
         if world['target'] is not None:
             wanted[('/gateway/received/target_detection', round(world['sources']['headquarters/target_detection'] * 1e9))]
+        for stamp in world.get('confirmations',{}).values():
+            wanted[('/gateway/received/target_detection',round(stamp*1e9))]
     matched = set()
     with gzip.open(capture, 'rt') as stream:
         for line in stream:
@@ -289,6 +291,9 @@ def bind_sources(events, capture, native_path):
             rows = original['/gateway/received/target_detection', round(sources['headquarters/target_detection'] * 1e9)]
             assert any(np.allclose((row['target_x'], row['target_y']), world['target'], rtol=0, atol=1e-8)
                        for row in rows), 'missing original delivered detection'
+        for robot,stamp in world.get('confirmations',{}).items():
+            rows=original['/gateway/received/target_detection',round(stamp*1e9)]
+            assert any(row['robot']==robot for row in rows), 'missing producer-specific confirmation'
     return len(required)
 
 
@@ -335,6 +340,10 @@ def global_mission_audit(directory, required=False):
             state = world['battery_states'][robot]
             assert expected < state['energy'] <= event['required_energy'] <= state['capacity'] * state['charge_target_fraction']
             assert robot not in owners and all(s['mode'] not in ('RETURNING', 'CHARGING') for s in world['battery_states'].values())
+            confirmations=world.get('confirmations',{})
+            healthy={peer for peer,stamp in confirmations.items() if 0<=event['event_time']-stamp<=5.
+                and world['battery_states'].get(peer,{}).get('mode')=='ACTIVE'}
+            assert healthy!={robot} or world.get('observer')!=robot, 'charging the sole healthy observer'
             rebuilt = contact(world,grid,maps,robot,world['positions'][robot])
             assert np.array_equal(rebuilt['route'],event['return_route'])
             if rebuilt['path_distance_m']>0:

@@ -40,7 +40,7 @@
     "lookahead_evidence": "both source ages retained privately and independently reconstructed"
   },
   "purpose": "Global P2C.1 mission executor; original development, formal and physical cases and hard gates unchanged.",
-  "predeclared_at_utc": "2026-10-12T06:57:40.240494+00:00",
+  "predeclared_at_utc": "2026-10-12T08:04:25.956332+00:00",
   "stimulus_manifest": "p3b5_staged_return_probe_manifest.json",
   "stimulus_manifest_content_sha256": "88f2ccd9d90df92a25cc1535311ff5cbc3a67843953bc533a19e376739cfbf1f",
   "return_staging": {
@@ -139,7 +139,7 @@
     "limits": "Additional local DDS sensor forwarding, not Wi-Fi measurement; v19 graph lacked publisher QoS, so no retrospective QoS causal attribution.",
     "raw_input_queue": "Robot-side mixed TF BestEffort buffer5 to100; filtering before original native20. Bounded buffering can change pre-network source availability, never original timestamps or gateway candidate throttles; every future baseline uses the same frozen source."
   },
-  "candidate_parent_commit": "e4041b57e1b11fe0137b498eb7d1a9c55d44a7d3",
+  "candidate_parent_commit": "e2963c98d09196c6843a85d044758e4d2fdfcf10",
   "native_tf_graph_capture": {
     "scope": "Read-only safety observer captures complete required application/native graph once all native battery topics are observed and all endpoint bindings exist; does not delay or change task clocks.",
     "evidence": "native_graph.json kept alongside original early bypass graph, owner-bound optional observer command and reader source digests required. Missing evidence FAIL; old incomplete graphs are never repaired."

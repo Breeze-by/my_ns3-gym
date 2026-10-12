@@ -9469,3 +9469,14 @@ colcon build --symlink-install --packages-select multi_robot_exploration multi_r
 全功能 pytest src/multi_robot_exploration/test scripts（忽略原 test_copyright/flake8/pep257 风格入口）：full1 1594PASS2FAIL169.12s，真实旁录夹具和旧 travel witness 缺 TTL；在保持真实 TTL 校验的前提下补足旧夹具 ttl_sec=5，最终 full2 1597PASS145.87s。source1/source2 均 190保护/6原授权/54协议 PASS，含新 global 两 Future 与原中央8/native2/shared1 串行契约、原 native 常量保持。新 global/fleet/独立reader F821/F822/F823/E999 PASS；git diff --check PASS；manifest case/duration/faultseed/物理刺激与 e4041b5 对比相同，--validate-only 共享命令/初始图+完整图/原件订阅一致。原全仓风格 lint 已知失败未伪称修复。
 
 成功与失败输出位于 ros2_ws/ros2-multi-robot-automap/log/p2c1_global_20261012，源哈希 source2.json、声明 declaration1.json。技术说明只集中在 report/20261012_p2c1_global_mission.md。下一步 clean pushed 单冻结四开发，再15非留出+两物理后才首次917；P2C.1B未完成，无新任务/917/P4/ns3/WiFi/RL信用。260929_report十四用户资料不动。
+
+
+### global v1 四开发与全局依赖修正
+
+e2963c98d09196c6843a85d044758e4d2fdfcf10 clean pushed；run_p2c_tasks --run-id 20261012_p2c_global_v1 --domain204 --gazebo-port11573，dev_forced2/lab101/rooms202/corridors303 原格串行无重试。四原全部 RALLY300.3/300.0/300.2/300.0timeout，检测154.5/169.2/84.7/74.1、集合169.6/170.8/87.6/76.5，charge2/1/2/1；零接触耗尽机器人FAILED，minE8.3801/13.8794/14.1328/27.6179，四owner/observer0关闭。launch_process_audit四PASS任务期非零0，corr清理后两个tf_ingress_sampler exit1原样保留。四完整原CDR134220933bytes；未打副本。严格单forced及完整四格 v1_development_gate均FAIL，未进入17/物理/917。
+
+forced两末Native误差.011627/.005114m速度近零却无5s完成proof；独立global原件/去返等待预算/代次审计21sent=closed、2charge、69原map绑定PASS，无残留owned，不能代替任务。2370原交付最新输入条件重建（手工到达/冻结时钟，非历史回调重放）稳定、hold-return17.103/15.569可付并可开始hold；原DDS后期确认tb1 73/tb2 13、同戳多机器人0，不能据此说原中央实际处理了所有消息。原全源码构造反例确证旧healthy-observer充电意图即使现在已可付仍因过早guard不清除，hold_started null/no request；所有输出在v1_forced_hold_conditions/v1_forced_confirmation_sources/v1_stale_charge_counterexample日志，不授physical/native因果信用。
+
+新仅统一执行器依赖生命周期：当前预算先清除无效需求再施加执行保护，阻塞观察者不压住可执行其他串行补能、保留原依赖；观察租约按生产者独立，较旧/同全局时刻的同伴确认不回退目标源；逆向返充几何与身体epoch缓存分离，保持重用原内容键、当前实际前缀及当前source/能量价格。增加5s来源/owned/充电/arrived/保持阻塞与工作耗时诊断。没有放宽任何原门槛或改原物理/native算法。
+
+v2_components1 20PASS8.99s，加入独立观察源后 components2 21PASS8.04s，含真实DDS/ActionServer/Futures/原件绑定以及两个预算有效的构造反例；零physical信用。v2_full完整功能1600PASS159.98s；v2_source190保护/6授权/54协议及native常量/原8+新2/native2/shared1Future PASS；F821/F822/F823/E999及diff-check PASS。C++不变，四包再构建4.30s PASS（v2_build.log）；新manifests仅父冻结/预声明时刻更新，cases/300s/5s/TTL/物理刺激不变。源修改前四owners已全部闭合，旧长会话保持暂停。
