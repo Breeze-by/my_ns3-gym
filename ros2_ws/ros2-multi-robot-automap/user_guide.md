@@ -56,7 +56,7 @@ src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py
 | Gazebo GUI | include `gazebo_ros/launch/gzclient.launch.py`，由 `enable_gzclient` 控制 |
 | 机器人 spawn | `gazebo_ros/spawn_entity.py`，按 `robot_count` 顺序启动 `tb1..tb4` |
 | robot_state_publisher | 每个机器人一个 namespace：`/tb1`、`/tb2` 等 |
-| joint_state_publisher | 每个机器人一个 |
+| joint_states | Gazebo 模型插件发布真实轮关节状态，robot_state_publisher 据此发布 TF |
 | Nav2 | include `src/multi_robot/launch/nav2_bringup/bringup_launch.py` |
 | slam_toolbox | include `slam_toolbox/launch/online_async_multirobot_launch.py` |
 | merge_map | 主 launch 直接启动 `merge_map` 节点，确保退出时不会遗留子 launch 进程 |

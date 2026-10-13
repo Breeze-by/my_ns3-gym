@@ -35,6 +35,8 @@ def wait_until_ready(process, robot_count, timeout, evaluation_enabled=False):
     import rclpy
     from multi_robot_exploration.nav2_ready_gate import wait_for_nav2
     from rclpy.node import Node
+    from rclpy.qos import qos_profile_sensor_data
+    from sensor_msgs.msg import JointState
 
     expected_topics = {"/merge_map"}
     for index in range(1, robot_count + 1):
@@ -44,6 +46,7 @@ def wait_until_ready(process, robot_count, timeout, evaluation_enabled=False):
                 f"/tb{index}/map",
                 f"/tb{index}/odom",
                 f"/tb{index}/scan",
+                f"/tb{index}/joint_states",
             }
         )
     if evaluation_enabled:
@@ -54,6 +57,18 @@ def wait_until_ready(process, robot_count, timeout, evaluation_enabled=False):
 
     rclpy.init()
     node = Node("smoke_readiness")
+    joint_messages = set()
+    joint_subscriptions = []
+    for index in range(1, robot_count + 1):
+        topic = f"/tb{index}/joint_states"
+
+        def receive_joints(message, topic=topic):
+            if {"wheel_left_joint", "wheel_right_joint"}.issubset(message.name):
+                joint_messages.add(topic)
+
+        joint_subscriptions.append(node.create_subscription(
+            JointState, topic, receive_joints, qos_profile_sensor_data,
+        ))
 
     def graph_check():
         if process.poll() is not None:
@@ -61,7 +76,10 @@ def wait_until_ready(process, robot_count, timeout, evaluation_enabled=False):
                 f"launch exited early with status {process.returncode}"
             )
         topics = {name for name, _ in node.get_topic_names_and_types()}
-        return [f"missing topic {name}" for name in sorted(expected_topics - topics)]
+        missing = [f"missing topic {name}" for name in sorted(expected_topics - topics)]
+        missing.extend(f"missing wheel states /tb{index}" for index in range(1, robot_count + 1)
+                       if f"/tb{index}/joint_states" not in joint_messages)
+        return missing
 
     try:
         if wait_for_nav2(node, robot_count, timeout, graph_check) != 0:

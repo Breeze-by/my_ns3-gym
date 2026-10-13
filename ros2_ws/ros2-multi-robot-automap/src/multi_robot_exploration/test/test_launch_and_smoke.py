@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import subprocess
 from types import SimpleNamespace
+import xml.etree.ElementTree as ET
 
 from launch import LaunchContext
 from launch.actions import DeclareLaunchArgument
@@ -65,10 +66,20 @@ def test_all_nodes_receive_the_same_validated_robot_count(monkeypatch):
     monkeypatch.setattr(launch, "Node", capture)
     launch.launch_setup(context)
     assert sum(node.get("executable") == "spawn_entity.py" for node in nodes) == 4
+    assert not any(node.get("executable") == "joint_state_publisher" for node in nodes)
     for node in nodes:
         for parameters in node.get("parameters", []):
             if isinstance(parameters, dict) and "robot_count" in parameters:
                 assert parameters["robot_count"] == 4
+
+
+def test_gazebo_joint_state_source_covers_all_movable_urdf_joints():
+    model = ET.parse(ROOT / "src/multi_robot/models/turtlebot3_waffle/model.sdf")
+    plugin = model.find(".//plugin[@filename='libgazebo_ros_joint_state_publisher.so']")
+    urdf = ET.parse(ROOT / "src/multi_robot/urdf/turtlebot3_waffle.urdf")
+    required = {j.attrib["name"] for j in urdf.findall("joint") if j.attrib["type"] != "fixed"}
+    assert required <= {j.text for j in plugin.findall("joint_name")}
+    assert float(plugin.findtext("update_rate")) > 0
 
 
 def test_four_robot_navigation_parameters_are_consistent():

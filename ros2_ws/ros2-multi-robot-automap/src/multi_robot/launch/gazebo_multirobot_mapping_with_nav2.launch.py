@@ -276,15 +276,6 @@ def launch_setup(context, *args, **kwargs):
             arguments=[urdf],
         )
 
-        joint_state_publisher_node = Node(
-            package="joint_state_publisher",
-            executable="joint_state_publisher",
-            namespace=namespace,
-            name="joint_state_publisher",
-            parameters=[{"use_sim_time": use_sim_time}],
-            remappings=remappings,
-        )
-
         spawn_robot = Node(
             package="gazebo_ros",
             executable="spawn_entity.py",
@@ -355,7 +346,6 @@ def launch_setup(context, *args, **kwargs):
         robot_actions = [
             robot_state_publisher,
             spawn_robot,
-            joint_state_publisher_node,
             slam_toolbox_node,
         ]
 

@@ -158,3 +158,24 @@ depth20分别为-0.197s/-0.199s（SLAM原生0.2s未来时间容差），odom新�
 只修传输接收队列，没有放宽安全、物理或任务门限。必须独立以新run-id验证。
 
 TF depth / native child audit candidate: Python package build PASS3.70s; complete package checks71 tests, 0 errors/failures, 2 skips. Next pushed freeze predeclares4r20s motion, 2r original/3r rooms/3r corridors seed10190%180s, then4r plain. All new IDs, exact argv/env/output and native outcomes recorded; no source changes during simulations.
+
+
+## 四机器人完整运动与退出检查：8b3aa2d，退出 FAIL 保留
+
+`20261014_p1c_repair_fresh_4r_motion`，同原20s/seed101/my_world条件：四台路径分别
+3.350/2.981/3.782/3.440m，总13.553m，均有实际导航目标，零接触、全部监测有效，
+无协议/peer数据故障。20.0s原生timeout，覆盖50.996%，符合预声明的短时表征目的，
+不提供完整任务完成信用。新增peer层能持续更新，TF接收故障未复现。
+
+评估器自动退出，Nav2/SLAM/Gazebo均正常关闭，但tb3独立joint_state_publisher在SIGINT时
+发生rclpy take_message RuntimeError并退出1。新smoke原生日志检查返回1，故基础设施关闭
+仍FAIL；批次在此中止，当前冻结尚未运行随后2r/3r/4r plain，不补入旧格。
+命令、原JSON、原件路径/SHA256在同目录8b3aa2d附件，失败原件保持。
+
+当前SDF已经用 `libgazebo_ros_joint_state_publisher.so` 以30Hz提供左右轮真实状态；URDF
+只有这两个非fixed关节。下一候选移除主建图launch的重复默认值joint_state_publisher，
+保留Gazebo真实关节与robot_state_publisher；启动smoke要求每台收到左右轮数据，新增
+SDF插件覆盖URDF所有活动关节的回归。其他Nav2/SLAM/探索/物理/门限均不改变。
+这既消除重复状态源，也修复实际退出崩溃；必须在新的同一冻结重跑全部工程格。
+
+Single native joint-state candidate: mapping package build PASS4.02s; complete package checks72 tests, 0 errors/failures, 2 skips. Predeclared next pushed freeze4r20s motion, 2r original/3r rooms/3r corridors seed10190%180s, then4r plain; new IDs/source/env/outcomes, no source changes during runs.

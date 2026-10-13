@@ -1545,3 +1545,30 @@ above; append exact final result before next pushed freeze. All eb36480 failed
 originals stay immutable; no older-source PASS is substituted.
 
 TF depth / native child audit candidate: Python package build PASS3.70s; complete package checks71 tests, 0 errors/failures, 2 skips. Next pushed freeze predeclares4r20s motion, 2r original/3r rooms/3r corridors seed10190%180s, then4r plain. All new IDs, exact argv/env/output and native outcomes recorded; no source changes during simulations.
+
+
+### Four-robot motion / strict closure on 8b3aa2d: native child FAIL retained
+
+Pushed freeze8b3aa2debd37e124afebd615c956228256c5a2e0; exact argv/domain184/
+master11753/timestamps/output are tracked as8b3aa2d_commands.json; native JSON
+8b3aa2d_20261014_p1c_repair_fresh_4r_motion.json and hash/path index alongside.
+20.0sim-second characterization: native timeout, coverage .509964270019298,
+path13.553030309m, zero contacts, monitoring true, no control failure. Every robot
+moved (3.350/2.981/3.782/3.440m) and received goals. This is short motion/safety
+component evidence only, never full task completion. TF/peer updates now continued.
+
+Evaluator drove automatic shutdown; Nav2, SLAM and Gazebo exited normally. However
+/tb3 standalone joint_state_publisher crashed in rclpy subscription take_message
+duringSIGINT (RuntimeError Unable to convert call argument...exit1). The new native
+child audit correctly returned smoke1. Complete batch/closure FAIL; following
+2r original/3r rooms/3r corridors/4r plain were NOT RUN on this freeze. No source
+mutation during the run, no older PASS substituted; all originals retained.
+
+Next candidate removes duplicate standalone joint_state_publisher only from the
+active mapping launch: existing Gazebo SDF plugin publishes both required wheel
+joints30Hz, and robot_state_publisher remains. Regression compares SDF plugin
+coverage against all nonfixed URDF joints; smoke receives both wheel names for
+every robot before readiness. Builds/tests use the same colcon commands as above;
+append final result below before freeze and new-ID same-source complete regressions.
+
+Single native joint-state candidate: mapping package build PASS4.02s; complete package checks72 tests, 0 errors/failures, 2 skips. Predeclared next pushed freeze4r20s motion, 2r original/3r rooms/3r corridors seed10190%180s, then4r plain; new IDs/source/env/outcomes, no source changes during runs.
