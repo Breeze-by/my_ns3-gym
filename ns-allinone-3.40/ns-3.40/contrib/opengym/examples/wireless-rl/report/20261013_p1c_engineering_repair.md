@@ -179,3 +179,26 @@ SDF插件覆盖URDF所有活动关节的回归。其他Nav2/SLAM/探索/物理/�
 这既消除重复状态源，也修复实际退出崩溃；必须在新的同一冻结重跑全部工程格。
 
 Single native joint-state candidate: mapping package build PASS4.02s; complete package checks72 tests, 0 errors/failures, 2 skips. Predeclared next pushed freeze4r20s motion, 2r original/3r rooms/3r corridors seed10190%180s, then4r plain; new IDs/source/env/outcomes, no source changes during runs.
+
+
+## 6838ef8 单机启动失败与环境恢复，原 FAIL 保留
+
+`20261014_p1c_repair_verified_4r_motion`：300墙钟秒启动期限失败，没有评估结果、没有任务信用，
+随后各格未运行。所有机器人左右轮真实joint_states已接收，tb1/3/4的六组件已active；
+tb2 waypoint_follower原生WARN明确报告change_state响应发送超时，已转inactive但lifecycle
+manager没有拿到响应，velocity_smoother停unconfigured，故整套未active。门控正确阻止探索。
+这不是关节源删除造成的缺数据结论；原件确证的是中间件服务响应失败。
+外部SIGINT同时暴露门控未捕获KeyboardInterrupt，manager等待响应最终被SIGKILL。
+
+命令、原件SHA256和批次驱动源码以 `6838ef8_*` 保存；额外只读
+`ROS_DOMAIN_ID=189 ros2 topic info /tb1/joint_states --verbose` 看到一个原生publisher。
+共享内存仍有61.465GiB可用，不能声称内存容量耗尽。官方安装工具检查锁后清理了
+1115个失效segment和139个失效port，保留3个在用segment/3个在用port，返回0；
+前后计数与精确命令在 `6838ef8_dds_cleanup.json`。清理尚不能单独证明服务超时的因果。
+
+下一候选保证被中断/关闭的readiness返回失败，处理KeyboardInterrupt/ExternalShutdownException；
+当前所有Gazebo/ROS/RViz同主机的回归明确使用ROS_LOCALHOST_ONLY=1与相同FastRTPS，
+新命令同步到launch_commands。源代码、物理/接触/覆盖/时间门限不以环境失败放宽。
+将在新的同一推送冻结使用独立run-id/domain/port运行全部五个原预声明工程格。
+
+Readiness-close candidate: build PASS3.25s; complete package checks73 tests, 0 errors/failures, 2 skips. Next source freeze predeclares same five engineering cases on single-host ROS_LOCALHOST_ONLY=1 / rmw_fastrtps_cpp after official zombie cleanup, with newIDs/domains and no source mutation during runs.

@@ -13,10 +13,18 @@ PYTHONNOUSERSITE=1 colcon build --symlink-install --allow-overriding nav2_bringu
 source install/setup.bash
 source /usr/share/gazebo/setup.sh
 export TURTLEBOT3_MODEL=waffle
+export RMW_IMPLEMENTATION=rmw_fastrtps_cpp ROS_LOCALHOST_ONLY=1
 ```
 
 切换源码版本后，将旧 `build/`、`install/` 移到工作区外备份，再从 `/opt/ros/humble` 重建。
 保留 `log/`，并使用新终端重新 source；已 source 的旧环境不能通过修改文件自动更新。
+当前 Gazebo、ROS、RViz 在同一主机运行，统一使用上述本机发现设置。
+如原生日志出现生命周期 `change_state` 响应发送超时，停止本轮后可用安装的官方工具清理
+失效 DDS 共享内存；工具检查锁并保留在用资源。清理后用新 run-id 复测，原失败保留：
+
+```bash
+/usr/bin/python3 /opt/ros/humble/tools/fastdds/fastdds.py shm clean
+```
 
 ## 手动演示
 

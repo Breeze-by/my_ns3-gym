@@ -347,6 +347,9 @@ server 和 controller/planner/behavior/bt_navigator/waypoint_follower/velocity_s
 的 active 状态；全部就绪后启动控制器和评估器，不再固定等待最后一套 Nav2 启动后的额外 60 秒。
 门控超时会列出未就绪的 action 并阻止探索带病启动。探索行为树不使用的
 `smoother_server` 不再启动；速度平滑器 `velocity_smoother` 仍保留。
+单机 Gazebo 回归使用 `ROS_LOCALHOST_ONLY=1`，各终端保持相同 domain/RMW 设置。
+原生生命周期服务响应超时的恢复命令见 `launch_commands.md`；未就绪或中断的门控不得
+返回成功或启动探索。
 
 目标响应或取消超过期限时，机器人进入显式失败状态并发布 `/exploration_failure`。
 未确认的导航所有权不会释放给新目标；迟到的接受响应会取消该旧目标，旧回调不能清理新目标。

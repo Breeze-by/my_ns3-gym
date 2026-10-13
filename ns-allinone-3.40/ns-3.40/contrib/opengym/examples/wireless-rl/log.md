@@ -1572,3 +1572,47 @@ every robot before readiness. Builds/tests use the same colcon commands as above
 append final result below before freeze and new-ID same-source complete regressions.
 
 Single native joint-state candidate: mapping package build PASS4.02s; complete package checks72 tests, 0 errors/failures, 2 skips. Predeclared next pushed freeze4r20s motion, 2r original/3r rooms/3r corridors seed10190%180s, then4r plain; new IDs/source/env/outcomes, no source changes during runs.
+
+
+### 6838ef8 startup FAIL retained; native DDS resource recovery
+
+Pushed6838ef8645038e8e3f7801fc1f71173922014bb0. Four-robot20s motion
+never reached evaluation: startup300wall timeout, all four wheel-state messages
+present, tb1/3/4 all active; /tb2/waypoint_follower emitted native failed-to-send
+change_state response(timeout), becameinactive, manager awaited lost response,
+velocity_smoother stayedunconfigured. Gate did not dispatch any task. No task JSON
+or safety/motion completion credit. External shutdown raised gateKeyboardInterrupt
+and lifecycle_manager requiredSIGKILL. Smoke1 and batchstopped; other four cases
+NOT RUN. Driver source, argv/env/state/timestamps and original hashes preserved in
+report/assets/20261013_p1c_engineering_repair/6838ef8_*.
+
+Read-only topic diagnostic (same setup, ROS_DOMAIN_ID189) was exactly:
+
+```bash
+ros2 topic info /tb1/joint_states --verbose
+```
+
+It reported one publisher and one subscription, consistent with the native joint
+source; no actuator intervention. After all owned simulator processes stopped,
+reviewed installed official /opt/ros/humble/tools/fastdds/shm/clean.py: it checks
+exclusive file locks and retains in-use segments/ports. Executed exact recovery:
+
+```bash
+/usr/bin/python3 /opt/ros/humble/tools/fastdds/fastdds.py shm clean
+```
+
+Result0:1115zombie segments +139zombie ports cleaned,3ports/3segments in use kept.
+DDS-named file count9177->6670, free shared memory61.465GiB before cleanup, so
+memory exhaustion is NOT established. Exact output in6838ef8_dds_cleanup.json.
+No claim that the cleanup itself proves lost-response root causality. Native
+fastdds wrapper lacks shebang (direct execution Execformaterror); systemPython
+entry above invokes the installed official implementation successfully.
+
+Follow-up catches readiness interruption and returnsfailure even if ROS context
+closes; regression ensures context-close cannot implysuccess. Current single-host
+Gazebo/ROS/RViz commands explicitly setROS_LOCALHOST_ONLY=1, consistentRMW/domain.
+Plans/physics/coverage/safety/task limits unchanged. Next pushed freeze uses new
+IDs and domains for all five original engineering cases; its middleware/local
+setting is recorded so it cannot be mixed with older failed environments.
+
+Readiness-close candidate: build PASS3.25s; complete package checks73 tests, 0 errors/failures, 2 skips. Next source freeze predeclares same five engineering cases on single-host ROS_LOCALHOST_ONLY=1 / rmw_fastrtps_cpp after official zombie cleanup, with newIDs/domains and no source mutation during runs.

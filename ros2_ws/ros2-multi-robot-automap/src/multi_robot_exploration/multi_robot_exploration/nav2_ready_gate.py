@@ -4,6 +4,7 @@ from lifecycle_msgs.srv import GetState
 import rclpy
 from nav2_msgs.action import NavigateToPose
 from rclpy.action import ActionClient
+from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 
 
@@ -103,6 +104,7 @@ def wait_for_nav2(node, robot_count, timeout_sec, extra_check=None):
             client.destroy()
         for client in state_clients.values():
             node.destroy_client(client)
+    return 1
 
 
 def main(args=None):
@@ -112,6 +114,8 @@ def main(args=None):
     timeout_sec = max(1.0, node.declare_parameter("timeout_sec", 180.0).value)
     try:
         return wait_for_nav2(node, robot_count, timeout_sec)
+    except (KeyboardInterrupt, ExternalShutdownException):
+        return 1
     finally:
         node.destroy_node()
         if rclpy.ok():

@@ -1,0 +1,40 @@
+[
+  {
+    "case": "4r_motion",
+    "source_commit": "6838ef8645038e8e3f7801fc1f71173922014bb0",
+    "command": [
+      "/usr/bin/python3",
+      "scripts/ros_smoke_test.py",
+      "--robot-count",
+      "4",
+      "--world",
+      "my_world.world",
+      "--gazebo-seed",
+      "101",
+      "--startup-timeout",
+      "300",
+      "--message-timeout",
+      "90",
+      "--shutdown-timeout",
+      "60",
+      "--log-dir",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p1c_repair_verified_20261014/20261014_p1c_repair_verified_4r_motion/launch_logs",
+      "--evaluation-duration",
+      "20",
+      "--coverage-threshold",
+      "0.90",
+      "--evaluation-wait-timeout",
+      "360",
+      "--evaluation-output-dir",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p1c_repair_verified_20261014/20261014_p1c_repair_verified_4r_motion/episodes",
+      "--episode-id",
+      "20261014_p1c_repair_verified_4r_motion"
+    ],
+    "ros_domain_id": "189",
+    "gazebo_master_uri": "http://127.0.0.1:11758",
+    "output_dir": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p1c_repair_verified_20261014/20261014_p1c_repair_verified_4r_motion",
+    "started_wall_time": "2026-10-14T00:37:07.016474",
+    "returncode": 1,
+    "finished_wall_time": "2026-10-14T00:42:19.461320"
+  }
+]

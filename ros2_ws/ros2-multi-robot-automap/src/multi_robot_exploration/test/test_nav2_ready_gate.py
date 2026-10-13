@@ -1,7 +1,10 @@
+from types import SimpleNamespace
+
 from multi_robot_exploration.nav2_ready_gate import (
     lifecycle_service_names,
     navigation_action_names,
     unavailable_actions,
+    wait_for_nav2,
 )
 
 
@@ -38,3 +41,12 @@ def test_lifecycle_service_names_cover_critical_nav2_nodes():
         "/tb1/waypoint_follower/get_state",
         "/tb1/velocity_smoother/get_state",
     ]
+
+
+def test_shutdown_before_readiness_cannot_return_success(monkeypatch):
+    monkeypatch.setattr("rclpy.ok", lambda: False)
+    monkeypatch.setattr("multi_robot_exploration.nav2_ready_gate.ActionClient", lambda *args: (
+        SimpleNamespace(destroy=lambda: None)
+    ))
+    node = SimpleNamespace(create_client=lambda *args: None, destroy_client=lambda *args: None)
+    assert wait_for_nav2(node, 1, 1.) == 1
