@@ -9644,3 +9644,24 @@ heading实际迟到接受/owner一致性与零边际数量平局反例加入后�
 复审shadow反例首red1夹具energy10不足原最终等待预算，调整为真实可付12后red2准确复现完整链拒绝与篡改链DIDNOTRAISE两FAIL；两个失败日志保留 `log/p2c1_recovery_20261013/heading_audit_shadow_red*.log`。仅将充电分支变量改为charge_confirmations，累计确认继续只来自原实际coordinator_global_confirmation，完整链PASS/遗漏链拒绝。`python3 -m pytest -q scripts/test_p2c_observer_heading_audit.py` 最终57PASS4.61s，heading_audit_shadow_green1.log。独立最终只读复审无剩余阻断点，确认耗时排序partial bound和边际信息upper bound、实际callback/capture分离及真owner重验证。
 
 同前完整命令改输出 `log/p2c1_global_20261013_recovery/full2.log`，最终1731PASS198.96s/exit0；同source命令输出source2.json/log=190保护/6授权/54协议/原常量与Future PASS；八模块F821/F822/F823/E999 static2.log exit0；同owner --validate-only输出declaration2.json/log exit0。四包build1仍是当前运行实现构建，后续只审计变量及注释更正，无需重复构建。已检查git diff --check与git add -n .，仅显式暂存源码/测试/声明/状态文档/共享log和单一累计报告，260929_report与所有runtime输出排除。新实际任务仍需clean pushed freeze与新run-id20261013_p2c_global_recovery_v1；没有组件代替原生信用。
+
+### recovery_v1 实际四开发与完整FAIL
+
+冻结9405e296cd176df82d598686aa1d7ede0be32e35已提交/推送且tracked clean，原四case/world/seed/target/energy参数不变。04:41:39–05:09:16UTC，ROS cwd实际命令如下；脚本逐次精确调用 `/usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2|dev_lab101|dev_rooms202|dev_corridors303 --run-id 20261013_p2c_global_recovery_v1 --domain 204 --gazebo-port 11573`，无retry/覆盖/补格。参数和展开命令逐字保存每个原summary/manifest，全部run原件 `log/p2c/20261013_p2c_global_recovery_v1/`。
+
+```bash
+rtk proxy bash -c 'source /opt/ros/humble/setup.bash
+source install/setup.bash
+export PYTHONNOUSERSITE=1
+export PYTHONPATH="$PWD/src/multi_robot_exploration:$PWD/scripts:$PYTHONPATH"
+export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+export FASTDDS_BUILTIN_TRANSPORTS=UDPv4
+unset FASTRTPS_DEFAULT_PROFILES_FILE ROS_DISCOVERY_SERVER
+exec taskset -c 0-79 /usr/bin/python3 log/p2c1_global_20261013_recovery/run_development.py'
+```
+
+原生结果forced COMPLETE247.5/检测164.9/集合181.6/charge2/minE8.6274；lab RALLYtimeout300.4/257.5/262.1/charge2/min13.0198；rooms COMPLETE196.7/113.8/117.6/charge1/min23.29；corridors COMPLETE196.1/73.5/76.5/charge1/min31.705。四runner/observer0、contact/exhaustion/FAILED/Nav2abort0。74sent73closed，labgen29在297.6s发出清道至deadline未闭合；不能以shutdown算成功。新target_observation_heading均未用，0原任务分支信用。四EXPLOREpaths25.498/67.380/22.843/14.522m，explore sends12/24/9/9，原native保持阈值与300s不改。
+
+forced原件关闭后lab运行期间执行单格只读审计：同ROS环境/taskset0–79 `scripts/check_p2c_gate.py --run-root log/p2c/20261013_p2c_global_recovery_v1 --development --cases dev_forced2 --output log/p2c1_global_20261013_recovery/forced2_gate1.json > .../forced2_gate1.log 2>&1`，PASS/35.97395s，scope仅1格非完整，无额外仿真/订阅；并行离线CPU审计状态公开保留，不声称异步轨迹严格可复现。全部原件关闭后完整命令 `scripts/check_p2c_gate.py --run-root log/p2c/20261013_p2c_global_recovery_v1 --development --output log/p2c1_global_20261013_recovery/development_gate1.json > .../development_gate1.log 2>&1`，exit1/完整scope4FAIL，仅lab episode_success断言，其余三个严格PASS。driver总exit1正确停止，无正式/物理/917原件；只读原件/账本/graph/CDR原样保留，全部owned仿真/审计进程关闭后才推进新源码。
+
+lab确认最大gap2.1s、无TTL过期/新heading动作，24次探索后257.5s晚发现，263.9s首rally等候160.26/100.84s却仅36s剩余。对本批gen5/14/16/18等原图/原source手工条件重建两种收益均派发，三同目标一邻点差异；gen2/23池为空，无oldwait/newmove的历史因果证明。纠正新等待零分的“普遍数学修复”解释：它是改变机会成本的策略候选；原绝对收益G0/T0准入g>(G0/T0)ΔT能合理等待，下一候选恢复原比较，不按本格叠坐标/seed规则。真实生产方法/不可变已知图/原source/fullbudget/PlanningWorker/rclpy pendingFuture构造另支持未发main/deferred补能意图与Native真实返航互相压住清道的通用所有权问题，具体原反例及失败夹具日志保存在忽略诊断目录。其零DDS/Gazebo/Nav2物理信用，不归为lab晚发现原因；下一步只在新候选中区分未来需求与真实所有权并重新完整验证。
