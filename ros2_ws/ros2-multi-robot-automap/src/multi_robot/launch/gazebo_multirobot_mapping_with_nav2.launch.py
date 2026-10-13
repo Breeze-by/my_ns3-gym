@@ -6,14 +6,17 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
+    EmitEvent,
     RegisterEventHandler,
     IncludeLaunchDescription,
     LogInfo,
     OpaqueFunction,
+    SetEnvironmentVariable,
     TimerAction,
 )
 from launch.conditions import IfCondition
 from launch.event_handlers import OnProcessExit
+from launch.events import Shutdown
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 
@@ -35,17 +38,20 @@ def launch_setup(context, *args, **kwargs):
     spawn_timeout = LaunchConfiguration("spawn_timeout")
     auto_save_map = LaunchConfiguration("auto_save_map")
     goal_timeout = LaunchConfiguration("exploration_goal_timeout_sec")
+    response_timeout = LaunchConfiguration("navigation_response_timeout_sec")
+    cancel_timeout = LaunchConfiguration("navigation_cancel_timeout_sec")
     nav2_ready_timeout = LaunchConfiguration("nav2_ready_timeout_sec")
     enable_task_evaluator = LaunchConfiguration("enable_task_evaluator")
     evaluation_episode_id = LaunchConfiguration("evaluation_episode_id")
     evaluation_output_dir = LaunchConfiguration("evaluation_output_dir")
     evaluation_duration = LaunchConfiguration("evaluation_duration_sec")
     evaluation_coverage = LaunchConfiguration("evaluation_coverage_threshold")
+    stop_on_evaluation = LaunchConfiguration("stop_on_evaluation_complete")
 
     try:
         robot_count = int(robot_count_cfg.perform(context))
     except ValueError:
-        robot_count = 2
+        raise ValueError("robot_count must be an integer between 1 and 4") from None
 
     # ========= Available robots =========
     # Add more robots here if needed. robot_count will select the first N robots.
@@ -79,8 +85,8 @@ def launch_setup(context, *args, **kwargs):
         },
         {
             "name": "tb4",
-            "x_pose": "-4.0",
-            "y_pose": "-4.5",
+            "x_pose": "-0.45",
+            "y_pose": "0.0",
             "z_pose": "0.01",
             "roll": "0.00",
             "pitch": "0.00",
@@ -88,7 +94,8 @@ def launch_setup(context, *args, **kwargs):
         },
     ]
 
-    robot_count = max(1, min(robot_count, len(all_robots)))
+    if not 1 <= robot_count <= len(all_robots):
+        raise ValueError("robot_count must be an integer between 1 and 4")
     robots = all_robots[:robot_count]
 
     print(f"\n[INFO] Requested robot_count = {robot_count}")
@@ -96,6 +103,12 @@ def launch_setup(context, *args, **kwargs):
 
     # ========= Package paths =========
     multi_robot_share = get_package_share_directory("multi_robot")
+    model_path = os.path.join(multi_robot_share, "models")
+    existing_model_path = os.environ.get("GAZEBO_MODEL_PATH", "")
+    actions.append(SetEnvironmentVariable(
+        "GAZEBO_MODEL_PATH",
+        os.pathsep.join(path for path in (model_path, existing_model_path) if path),
+    ))
     merge_map_share = get_package_share_directory("merge_map")
     nav_launch_dir = os.path.join(multi_robot_share, "launch", "nav2_bringup")
 
@@ -110,11 +123,7 @@ def launch_setup(context, *args, **kwargs):
     if not os.path.isfile(world):
         raise ValueError(f"world does not exist: {world_filename}")
 
-    # Keep the original map path style used by this project.
-    map_file_path = os.path.join(
-        multi_robot_share,
-        "../../../../src/multi_robot/maps/turtlebot3_world.yaml",
-    )
+    map_file_path = os.path.join(multi_robot_share, "maps", "turtlebot3_world.yaml")
 
     remappings = [("/tf", "tf"), ("/tf_static", "tf_static")]
 
@@ -127,7 +136,7 @@ def launch_setup(context, *args, **kwargs):
             {
                 "frame_id": "map",
                 "output_topic": "/merge_map",
-                "robot_count": robot_count_cfg,
+                "robot_count": robot_count,
                 "use_sim_time": use_sim_time,
             }
         ],
@@ -155,10 +164,12 @@ def launch_setup(context, *args, **kwargs):
         name="headquarters_control",
         parameters=[
             {
-                "robot_count": robot_count_cfg,
+                "robot_count": robot_count,
                 "auto_save_map": auto_save_map,
                 "use_sim_time": use_sim_time,
                 "goal_timeout_sec": goal_timeout,
+                "navigation_response_timeout_sec": response_timeout,
+                "navigation_cancel_timeout_sec": cancel_timeout,
             }
         ],
         output="screen",
@@ -170,7 +181,7 @@ def launch_setup(context, *args, **kwargs):
         name="nav2_ready_gate",
         parameters=[
             {
-                "robot_count": robot_count_cfg,
+                "robot_count": robot_count,
                 "timeout_sec": nav2_ready_timeout,
             }
         ],
@@ -184,7 +195,7 @@ def launch_setup(context, *args, **kwargs):
         parameters=[
             {
                 "use_sim_time": use_sim_time,
-                "robot_count": robot_count_cfg,
+                "robot_count": robot_count,
                 "episode_id": evaluation_episode_id,
                 "world_file": world,
                 "gazebo_seed": gazebo_seed,
@@ -196,6 +207,13 @@ def launch_setup(context, *args, **kwargs):
         output="screen",
         condition=IfCondition(enable_task_evaluator),
     )
+    actions.append(RegisterEventHandler(OnProcessExit(
+        target_action=task_evaluator,
+        on_exit=lambda event, event_context: (
+            [EmitEvent(event=Shutdown(reason="Mapping evaluation finished"))]
+            if IfCondition(stop_on_evaluation).evaluate(event_context) else []
+        ),
+    )))
 
     # ========= Gazebo =========
     gzserver_cmd = IncludeLaunchDescription(
@@ -542,6 +560,16 @@ def generate_launch_description():
             description="Wall seconds to wait for every Nav2 action server.",
         )
     )
+
+    for name, description in (
+        ("navigation_response_timeout_sec", "Simulated seconds to await goal acceptance."),
+        ("navigation_cancel_timeout_sec", "Simulated seconds to await cancellation and a terminal result."),
+    ):
+        ld.add_action(DeclareLaunchArgument(name, default_value="10.0", description=description))
+    ld.add_action(DeclareLaunchArgument(
+        "stop_on_evaluation_complete", default_value="true",
+        description="Stop the owned launch when the enabled evaluator exits.",
+    ))
 
     ld.add_action(
         DeclareLaunchArgument(

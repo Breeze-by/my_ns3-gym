@@ -29,6 +29,7 @@ SUMMARY_FIELDS = (
     "time_to_95_coverage_sec",
     "total_path_length_m",
     "search_overlap_ratio",
+    "trajectory_overlap_ratio",
     "collision_events",
     "nav_goal_count",
     "nav_succeeded",
@@ -178,12 +179,18 @@ def main():
         for row in rows
     )
     successes = sum(bool(row["success"]) for row in rows)
+    task_failures = sum(
+        not row["success"] and row["runner_returncode"] == 0
+        and row["termination_reason"] != "runner_failure"
+        for row in rows
+    )
     print(
         f"Completed {len(rows)} episodes: {successes} success, "
+        f"{task_failures} task failure, "
         f"{infrastructure_failures} infrastructure failure."
     )
     print("Summary:", run_dir / "summary.json")
-    return 1 if infrastructure_failures else 0
+    return 1 if infrastructure_failures or task_failures else 0
 
 
 if __name__ == "__main__":

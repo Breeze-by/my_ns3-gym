@@ -5,6 +5,7 @@ import argparse
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import signal
 import subprocess
@@ -13,6 +14,10 @@ import time
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+
+
+def lifecycle_is_active(output):
+    return re.fullmatch(r"active\s*\[3\]", output.strip()) is not None
 
 
 def run_ros(arguments, timeout=10, discard_output=False):
@@ -46,7 +51,6 @@ def wait_until_ready(process, robot_count, timeout, evaluation_enabled=False):
     deadline = time.monotonic() + timeout
     missing_topics = expected_topics
     inactive_nodes = []
-    active_nodes = set()
     while time.monotonic() < deadline:
         if process.poll() is not None:
             raise RuntimeError(
@@ -70,8 +74,6 @@ def wait_until_ready(process, robot_count, timeout, evaluation_enabled=False):
                     "bt_navigator",
                 ):
                     node = f"/tb{index}/{server}"
-                    if node in active_nodes:
-                        continue
                     try:
                         result = run_ros(
                             ["lifecycle", "get", node], timeout=10
@@ -81,11 +83,9 @@ def wait_until_ready(process, robot_count, timeout, evaluation_enabled=False):
                     if (
                         result is None
                         or result.returncode != 0
-                        or "active" not in result.stdout.lower()
+                        or not lifecycle_is_active(result.stdout)
                     ):
                         inactive_nodes.append(node)
-                    else:
-                        active_nodes.add(node)
             if not inactive_nodes:
                 return
 
@@ -123,6 +123,7 @@ def wait_for_evaluation(
             with result_path.open() as result_file:
                 result = json.load(result_file)
             required = {
+                "schema_version",
                 "correct_free_coverage_ratio",
                 "coverage_threshold",
                 "elapsed_sim_time_sec",
@@ -137,6 +138,9 @@ def wait_for_evaluation(
                 "total_path_length_m",
                 "truth_rectangle_count",
                 "success",
+                "collision_events",
+                "collision_monitoring_active",
+                "max_duration_sec",
                 "time_to_75_coverage_sec",
             }
             missing = required - result.keys()
@@ -145,6 +149,8 @@ def wait_for_evaluation(
                     "evaluation result is missing: "
                     + ", ".join(sorted(missing))
                 )
+            if result["schema_version"] != 3:
+                raise RuntimeError("evaluation schema must be version 3")
             if result["map_message_count"] < 1:
                 raise RuntimeError(
                     "evaluation result has no merged-map messages"
@@ -169,6 +175,16 @@ def wait_for_evaluation(
                 < coverage_threshold
             ):
                 raise RuntimeError("evaluation completed below its threshold")
+            if result["success"] and (
+                result["collision_events"] != 0
+                or not result["collision_monitoring_active"]
+                or (
+                    result["max_duration_sec"] > 0
+                    and result["elapsed_sim_time_sec"]
+                    >= result["max_duration_sec"]
+                )
+            ):
+                raise RuntimeError("evaluation success violates safety or deadline")
             return result
         if process.poll() is not None:
             raise RuntimeError(
@@ -257,6 +273,13 @@ def main():
     episode_id = args.episode_id or (
         f"smoke_robots{args.robot_count}_seed{args.gazebo_seed}_{stamp}"
     )
+    if re.fullmatch(r"[A-Za-z0-9_.-]+", episode_id) is None:
+        raise SystemExit("--episode-id must contain only letters, digits, '.', '-', '_'")
+    if args.evaluation_duration > 0 and any(
+        (args.evaluation_output_dir / f"{episode_id}{suffix}").exists()
+        for suffix in (".json", ".csv")
+    ):
+        raise SystemExit("evaluation output already exists; use a new episode id")
     log_name = (
         f"robots{args.robot_count}_seed{args.gazebo_seed}_{stamp}.log"
     )
@@ -342,8 +365,9 @@ def main():
                     f"termination={result['termination_reason']}",
                     flush=True,
                 )
-            time.sleep(args.dwell_seconds)
-            if process.poll() is not None:
+            if args.evaluation_duration <= 0:
+                time.sleep(args.dwell_seconds)
+            if process.poll() not in (None, 0):
                 raise RuntimeError(
                     "launch exited during dwell with status "
                     f"{process.returncode}"
@@ -369,6 +393,12 @@ def main():
         return 1
 
     print(f"PASS: {args.robot_count}-robot headless smoke test", flush=True)
+    if args.evaluation_duration > 0:
+        print(
+            f"Task result: {'PASS' if result['success'] else 'FAIL'} "
+            f"({result['termination_reason']})",
+            flush=True,
+        )
     return 0
 
 

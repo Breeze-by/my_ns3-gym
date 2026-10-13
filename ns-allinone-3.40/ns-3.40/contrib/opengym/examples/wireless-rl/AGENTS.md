@@ -1,5 +1,16 @@
 # wireless-rl Codex Memory
 
+## 2026-10-13 operational handoff
+
+`main` restores P1C and applies engineering repairs before the user supplies a
+new route. The old research/implementation plans below remain historical and
+must not trigger P2 or network/RL work. Current ROS commands and runtime
+contracts are in the ROS `launch_commands.md` and `user_guide.md`; repair
+evidence is in `report/20261013_p1c_engineering_repair.md` and `log.md`.
+The original route is retained on `p2c1/global-mission-20261012`.
+
+The following September handoff describes the historical P1C/toy-MDP context.
+
 Last verified against source, local 1/2/3-robot headless smoke tests, P1B
 evaluator tests, final P1C 2/3-robot batches, and three-world P1C generalization
 batches: 2026-09-17. P1C is implemented and waiting for user acceptance; do
@@ -89,9 +100,8 @@ until P1C is accepted; 95% remains optional.
   default remains `my_world.world`; no exploration, Nav2, truth, sensor, speed,
   safety, or scoring rule changed for generalization validation.
 - No ROS/Gazebo experiment process was running when this handoff was written.
-- The worktree intentionally still contains user-owned report changes:
-  deleted `report/20260914.md` and untracked `report/20260914_p1a.md`. Do not
-  restore, stage, rename, or commit them unless the user asks.
+- The historical report-file worktree note is superseded: the restored tree
+  contains tracked `report/20260914.md`, and has no `20260914_p1a.md` file.
 
 For a manual two-robot Gazebo demonstration, use `enable_merge_rviz:=false` to
 avoid running both heavy visual frontends. Successful startup prints:

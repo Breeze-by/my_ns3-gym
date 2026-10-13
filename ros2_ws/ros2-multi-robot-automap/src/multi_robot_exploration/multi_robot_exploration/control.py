@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import json
 import math
 import os
 import subprocess
@@ -15,9 +16,11 @@ import rclpy
 from rclpy.action import ActionClient
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
+from rclpy.qos import DurabilityPolicy, QoSProfile
 from scipy import ndimage
 from scipy.sparse import coo_matrix
 from scipy.sparse.csgraph import dijkstra
+from std_msgs.msg import String
 from tf2_msgs.msg import TFMessage
 
 
@@ -333,6 +336,11 @@ def path_distance_grid(traversable, start, return_predecessors=False):
             traversable[source_r0:source_r1, source_c0:source_c1]
             & traversable[target_r0:target_r1, target_c0:target_c1]
         )
+        if dr and dc:
+            connected &= (
+                traversable[source_r0:source_r1, target_c0:target_c1]
+                & traversable[target_r0:target_r1, source_c0:source_c1]
+            )
         sources.append(
             cell_ids[source_r0:source_r1, source_c0:source_c1][connected]
         )
@@ -407,7 +415,7 @@ def stage_navigation_leg(
         origin[1],
     )
     if start is None:
-        return assignment
+        return None
     waypoint = path_waypoint(
         traversable,
         start,
@@ -415,7 +423,7 @@ def stage_navigation_leg(
         MAX_NAVIGATION_LEG_M / resolution,
     )
     if waypoint is None:
-        return assignment
+        return None
     navigation_x, navigation_y = grid_to_world(
         waypoint[0], waypoint[1], resolution, origin[0], origin[1]
     )
@@ -574,6 +582,15 @@ class HeadquartersControl(Node):
         self.goal_timeout_sec = self.declare_parameter(
             "goal_timeout_sec", 60.0
         ).value
+        self.response_timeout_sec = self.declare_parameter(
+            "navigation_response_timeout_sec", 10.0
+        ).value
+        self.cancel_timeout_sec = self.declare_parameter(
+            "navigation_cancel_timeout_sec", 10.0
+        ).value
+        for value in (self.goal_timeout_sec, self.response_timeout_sec, self.cancel_timeout_sec):
+            if not math.isfinite(value) or value <= 0:
+                raise ValueError("Navigation timeouts must be finite and positive")
         self.auto_save_map = self.declare_parameter(
             "auto_save_map", True
         ).value
@@ -610,6 +627,16 @@ class HeadquartersControl(Node):
         self.goal_initial_gain = {}
         self.goal_targets = {}
         self.cancel_requested = {}
+        self.goal_requests = {}
+        self.goal_requested_at = {}
+        self.goal_results = {}
+        self.goal_cancel_started_at = {}
+        self.goal_cancel_rejected = {}
+        self.failed_navigation = {}
+        self.failure_publisher = self.create_publisher(
+            String, "/exploration_failure",
+            QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL),
+        )
         self.robot_subscriptions = []
 
         for index in range(self.num_robots):
@@ -627,6 +654,11 @@ class HeadquartersControl(Node):
             self.goal_initial_gain[robot_name] = 0
             self.goal_targets[robot_name] = None
             self.cancel_requested[robot_name] = False
+            self.goal_requests[robot_name] = None
+            self.goal_requested_at[robot_name] = None
+            self.goal_results[robot_name] = None
+            self.goal_cancel_started_at[robot_name] = None
+            self.goal_cancel_rejected[robot_name] = False
             self.robot_nav_clients[robot_name] = ActionClient(
                 self, NavigateToPose, f"/{robot_name}/navigate_to_pose"
             )
@@ -866,6 +898,9 @@ class HeadquartersControl(Node):
                 self.origin,
                 self.robot_positions[robot_name],
             )
+            if assignment is None:
+                self.get_logger().warn(f"No safe short navigation leg for {robot_name}")
+                continue
             self.robot_states[robot_name] = "active"
             self.goal_targets[robot_name] = assignment
             self.goal_initial_gain[robot_name] = self.target_information_gain(
@@ -900,27 +935,38 @@ class HeadquartersControl(Node):
         goal.pose.pose.position.x = assignment.navigation_x
         goal.pose.pose.position.y = assignment.navigation_y
         goal.pose.pose.orientation.w = 1.0
-        future = client.send_goal_async(
-            goal,
-            feedback_callback=lambda feedback, name=robot_name: (
-                self.feedback_callback(name, feedback)
-            ),
-        )
+        try:
+            future = client.send_goal_async(
+                goal,
+                feedback_callback=lambda feedback, name=robot_name, target=assignment: (
+                    self.feedback_callback(name, target, feedback)
+                ),
+            )
+        except Exception:
+            self.fail_navigation(robot_name, "navigation_request_failed")
+            return
+        self.goal_requests[robot_name] = future
+        self.goal_requested_at[robot_name] = self.now()
         future.add_done_callback(
-            lambda result, name=robot_name: self.goal_response_callback(
-                name, result
+            lambda result, name=robot_name, target=assignment: self.goal_response_callback(
+                name, target, result
             )
         )
 
-    def goal_response_callback(self, robot_name, future):
-        assignment = self.goal_targets[robot_name]
+    def goal_response_callback(self, robot_name, assignment, future):
+        if self.goal_targets[robot_name] is not assignment:
+            return
+        requested_at = self.goal_requested_at[robot_name]
+        if requested_at is not None and self.now() - requested_at >= self.response_timeout_sec:
+            self.fail_navigation(robot_name, "navigation_response_timeout")
+        self.goal_requests[robot_name] = None
         try:
             goal_handle = future.result()
         except Exception as error:
             self.get_logger().error(
                 f"{robot_name} goal request failed: {error}"
             )
-            self.finish_goal(robot_name, success=False)
+            self.fail_navigation(robot_name, "navigation_request_failed")
             return
         if goal_handle is None or not goal_handle.accepted:
             self.get_logger().warn(f"{robot_name} rejected its frontier goal.")
@@ -935,14 +981,24 @@ class HeadquartersControl(Node):
         self.goal_last_position[robot_name] = self.robot_positions[robot_name]
         self.goal_known_count[robot_name] = self.map_known_count
         self.cancel_requested[robot_name] = False
-        result_future = goal_handle.get_result_async()
+        try:
+            result_future = goal_handle.get_result_async()
+        except Exception:
+            self.fail_navigation(robot_name, "navigation_result_failed")
+            self.request_cancel(robot_name, assignment)
+            return
+        self.goal_results[robot_name] = result_future
         result_future.add_done_callback(
             lambda result, name=robot_name, target=assignment: (
                 self.goal_result_callback(name, target, result)
             )
         )
+        if robot_name in self.failed_navigation and self.goal_targets[robot_name] is assignment:
+            self.request_cancel(robot_name, assignment)
 
-    def feedback_callback(self, robot_name, feedback_msg):
+    def feedback_callback(self, robot_name, assignment, feedback_msg):
+        if self.goal_targets[robot_name] is not assignment:
+            return
         distance = float(feedback_msg.feedback.distance_remaining)
         best = self.goal_best_distance[robot_name]
         if best is None or distance < best - 0.1:
@@ -950,13 +1006,17 @@ class HeadquartersControl(Node):
             self.goal_last_progress_at[robot_name] = self.now()
 
     def goal_result_callback(self, robot_name, assignment, future):
+        if self.goal_targets[robot_name] is not assignment:
+            return
         try:
             result = future.result()
             success = result.status == GoalStatus.STATUS_SUCCEEDED
             status = result.status
         except Exception as error:
-            success = False
-            status = f"exception: {error}"
+            self.get_logger().error(f"{robot_name} result failed: {error}")
+            self.fail_navigation(robot_name, "navigation_result_failed")
+            self.request_cancel(robot_name, assignment)
+            return
         coverage_gain = (
             self.map_known_count - self.goal_known_count[robot_name]
         )
@@ -970,7 +1030,57 @@ class HeadquartersControl(Node):
                 f"{robot_name} failed cooperative frontier goal with "
                 f"status {status}."
             )
-        self.finish_goal(robot_name, success=success)
+        self.finish_goal(
+            robot_name, success=success and robot_name not in self.failed_navigation
+        )
+
+    def fail_navigation(self, robot_name, reason):
+        if robot_name in self.failed_navigation:
+            return
+        self.failed_navigation[robot_name] = reason
+        self.robot_states[robot_name] = "failed"
+        self.get_logger().error(f"{robot_name}: {reason}; navigation ownership retained")
+        message = String()
+        message.data = json.dumps({
+            "robot": robot_name, "reason": reason, "sim_time": self.now(),
+        })
+        self.failure_publisher.publish(message)
+
+    def request_cancel(self, robot_name, assignment):
+        if self.cancel_requested[robot_name]:
+            return
+        self.cancel_requested[robot_name] = True
+        self.goal_cancel_started_at[robot_name] = self.now()
+        try:
+            future = self.goal_handles[robot_name].cancel_goal_async()
+            future.add_done_callback(
+                lambda result, name=robot_name, target=assignment: (
+                    self.cancel_response_callback(name, target, result)
+                )
+            )
+        except Exception:
+            self.fail_navigation(robot_name, "navigation_cancel_failed")
+
+    def cancel_response_callback(self, robot_name, assignment, future):
+        if self.goal_targets[robot_name] is not assignment:
+            return
+        result_future = self.goal_results[robot_name]
+        if result_future is not None and result_future.done():
+            return
+        try:
+            response = future.result()
+            goal_id = bytes(self.goal_handles[robot_name].goal_id.uuid)
+            accepted = any(
+                bytes(info.goal_id.uuid) == goal_id
+                for info in response.goals_canceling
+            )
+        except Exception:
+            self.fail_navigation(robot_name, "navigation_cancel_failed")
+            return
+        if not accepted:
+            # The server can reject a cancellation because the goal has just
+            # terminated. Retain ownership while awaiting its bounded result.
+            self.goal_cancel_rejected[robot_name] = True
 
     def finish_goal(self, robot_name, success, blacklist=True):
         assignment = self.goal_targets[robot_name]
@@ -996,12 +1106,40 @@ class HeadquartersControl(Node):
         self.goal_initial_gain[robot_name] = 0
         self.goal_targets[robot_name] = None
         self.cancel_requested[robot_name] = False
-        self.robot_states[robot_name] = "idle"
+        self.goal_requests[robot_name] = None
+        self.goal_requested_at[robot_name] = None
+        self.goal_results[robot_name] = None
+        self.goal_cancel_started_at[robot_name] = None
+        self.goal_cancel_rejected[robot_name] = False
+        self.robot_states[robot_name] = (
+            "failed" if robot_name in self.failed_navigation else "idle"
+        )
         self.check_exploration_completion()
 
     def cancel_stalled_goals(self):
         now = self.now()
         for robot_name, goal_handle in self.goal_handles.items():
+            result_future = self.goal_results[robot_name]
+            if result_future is not None and result_future.done():
+                continue
+            request = self.goal_requests[robot_name]
+            requested_at = self.goal_requested_at[robot_name]
+            if (
+                request is not None and not request.done()
+                and requested_at is not None
+                and now - requested_at >= self.response_timeout_sec
+            ):
+                self.fail_navigation(robot_name, "navigation_response_timeout")
+            cancel_started = self.goal_cancel_started_at[robot_name]
+            if (
+                cancel_started is not None
+                and now - cancel_started >= self.cancel_timeout_sec
+            ):
+                self.fail_navigation(
+                    robot_name,
+                    "navigation_cancel_rejected" if self.goal_cancel_rejected[robot_name]
+                    else "navigation_cancel_timeout",
+                )
             started_at = self.goal_started_at[robot_name]
             last_progress = self.goal_last_progress_at[robot_name]
             if goal_handle is None or started_at is None:
@@ -1039,8 +1177,7 @@ class HeadquartersControl(Node):
             self.get_logger().warn(
                 f"Canceling {robot_name} goal after {reason}."
             )
-            self.cancel_requested[robot_name] = True
-            goal_handle.cancel_goal_async()
+            self.request_cancel(robot_name, assignment)
 
     def check_exploration_completion(self):
         now = time.monotonic()

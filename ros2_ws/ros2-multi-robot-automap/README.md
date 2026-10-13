@@ -5,6 +5,11 @@ monorepo. It contains a complete workspace for **multi-robot autonomous mapping
 and navigation** using TurtleBot3, Nav2, and SLAM Toolbox. It supports
 multi-robot exploration, map merging, and autonomous navigation in Gazebo.
 
+Current runtime contracts and copy-paste commands are maintained in
+[`user_guide.md`](user_guide.md) and [`launch_commands.md`](launch_commands.md).
+The demonstration media and technical manual below are historical references;
+videos excluded from Git may be unavailable in a fresh checkout.
+
 Canonical local path:
 
 ```text

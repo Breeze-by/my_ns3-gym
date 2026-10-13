@@ -1,7 +1,9 @@
 import csv
 from dataclasses import dataclass
+import io
 import json
 import math
+import os
 from pathlib import Path
 import re
 import xml.etree.ElementTree as ET
@@ -14,6 +16,7 @@ import rclpy
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
+from std_msgs.msg import String
 
 
 @dataclass
@@ -206,6 +209,25 @@ def visited_overlap_ratio(visited_by_robot):
     return (total - len(union)) / max(1, len(union))
 
 
+def evaluation_termination_reason(
+    coverage, threshold, elapsed, duration, collision_events, monitoring_active,
+    control_failure="",
+):
+    """Apply the episode deadline and safety checks before coverage success."""
+    if duration > 0 and elapsed >= duration:
+        return "timeout"
+    if control_failure:
+        return control_failure
+    if collision_events:
+        return "collision"
+    if threshold > 0 and coverage >= threshold:
+        return (
+            "coverage_reached" if monitoring_active
+            else "collision_monitoring_unavailable"
+        )
+    return None
+
+
 def _yaw_from_quaternion(quaternion):
     return math.atan2(
         2 * (quaternion.w * quaternion.z + quaternion.x * quaternion.y),
@@ -250,6 +272,15 @@ class TaskEvaluator(Node):
             raise ValueError("world_file is required")
         if not 0.0 <= self.coverage_threshold <= 1.0:
             raise ValueError("coverage_threshold must be between 0 and 1")
+        for name, value, positive in (
+            ("max_duration_sec", self.max_duration, False),
+            ("truth_resolution", self.truth_resolution, True),
+            ("visit_resolution", self.visit_resolution, True),
+            ("max_position_step_m", self.max_position_step, True),
+            ("collision_cooldown_sec", self.collision_cooldown, False),
+        ):
+            if not math.isfinite(value) or value < 0 or (positive and value == 0):
+                raise ValueError(f"Invalid {name}: {value}")
         self.truth = load_truth_grid(self.world_file, self.truth_resolution)
         self.robot_names = [
             f"tb{index}" for index in range(1, self.robot_count + 1)
@@ -279,6 +310,7 @@ class TaskEvaluator(Node):
         self.start_sim_time = None
         self.coverage_times = {0.75: None, 0.8: None, 0.9: None, 0.95: None}
         self.finalized = False
+        self.control_failure = ""
 
         map_qos = QoSProfile(depth=1)
         map_qos.durability = DurabilityPolicy.TRANSIENT_LOCAL
@@ -286,6 +318,10 @@ class TaskEvaluator(Node):
         self.input_subscriptions = [
             self.create_subscription(
                 OccupancyGrid, "/merge_map", self._map_callback, map_qos
+            ),
+            self.create_subscription(
+                String, "/exploration_failure", self._control_failure_callback,
+                map_qos,
             ),
             self.create_subscription(
                 ModelStates,
@@ -325,12 +361,17 @@ class TaskEvaluator(Node):
         return self.get_clock().now().nanoseconds / 1e9
 
     def _map_callback(self, message):
+        if self.finalized:
+            return
         self.latest_map = message
         self.map_message_count += 1
         self._maybe_start(self._now())
         self._update_coverage_times()
+        self._timer_callback()
 
     def _model_states_callback(self, message):
+        if self.finalized:
+            return
         self.model_state_message_count += 1
         for name in self.robot_names:
             if name in message.name:
@@ -381,6 +422,8 @@ class TaskEvaluator(Node):
         self.get_logger().info(f"Episode {self.episode_id} evaluation started")
 
     def _status_callback(self, message, robot):
+        if self.finalized:
+            return
         for status in message.status_list:
             goal_id = bytes(status.goal_info.goal_id.uuid)
             self.goal_ids[robot].add(goal_id)
@@ -397,6 +440,8 @@ class TaskEvaluator(Node):
             self.terminal_goal_ids[robot].add(goal_id)
 
     def _collision_callback(self, message, robot):
+        if self.finalized:
+            return
         now = self._now()
         self.collision_messages[robot] += 1
         previous_time = self.collision_last_time[robot]
@@ -413,27 +458,40 @@ class TaskEvaluator(Node):
             self.collision_last_event[robot] = now
         self.collision_active[robot] = active
         self.collision_last_time[robot] = now
+        if active:
+            self._timer_callback()
+
+    def _control_failure_callback(self, message):
+        if self.finalized:
+            return
+        self.control_failure = message.data
+        self.finalize("navigation_failure")
+        if rclpy.ok():
+            rclpy.shutdown()
 
     def _timer_callback(self):
-        if self.start_sim_time is None:
+        if self.finalized or self.start_sim_time is None:
             return
         coverage = self._map_metrics().get("correct_free_coverage_ratio", 0.0)
-        if self.coverage_threshold > 0 and coverage >= self.coverage_threshold:
-            self.finalize("coverage_reached")
-            rclpy.shutdown()
-            return
-        if (
-            self.max_duration > 0
-            and self._now() - self.start_sim_time >= self.max_duration
-        ):
-            self.finalize("timeout")
-            rclpy.shutdown()
+        reason = evaluation_termination_reason(
+            coverage, self.coverage_threshold,
+            self._now() - self.start_sim_time, self.max_duration,
+            sum(self.collision_events.values()),
+            all(count > 0 for count in self.collision_messages.values()),
+            "navigation_failure" if self.control_failure else "",
+        )
+        if reason:
+            self.finalize(reason)
+            if rclpy.ok():
+                rclpy.shutdown()
 
     def _update_coverage_times(self):
         if self.start_sim_time is None:
             return
         coverage = self._map_metrics().get("correct_free_coverage_ratio", 0.0)
         elapsed = max(0.0, self._now() - self.start_sim_time)
+        if self.max_duration > 0 and elapsed >= self.max_duration:
+            return
         for threshold in self.coverage_times:
             first_crossing = self.coverage_times[threshold] is None
             if first_crossing and coverage >= threshold:
@@ -476,6 +534,17 @@ class TaskEvaluator(Node):
             elapsed = 0.0
         else:
             elapsed = max(0.0, end_time - self.start_sim_time)
+        monitoring_active = all(
+            count > 0 for count in self.collision_messages.values()
+        )
+        map_metrics = self._map_metrics()
+        if termination_reason == "coverage_reached":
+            termination_reason = evaluation_termination_reason(
+                map_metrics.get("correct_free_coverage_ratio", 0.0),
+                self.coverage_threshold, elapsed, self.max_duration,
+                sum(self.collision_events.values()), monitoring_active,
+                "navigation_failure" if self.control_failure else "",
+            ) or "coverage_not_reached"
 
         robots = {}
         for name in self.robot_names:
@@ -500,7 +569,7 @@ class TaskEvaluator(Node):
 
         success = termination_reason == "coverage_reached"
         result = {
-            "schema_version": 2,
+            "schema_version": 3,
             "episode_id": self.episode_id,
             "world_file": self.world_file,
             "gazebo_seed": self.gazebo_seed,
@@ -510,6 +579,8 @@ class TaskEvaluator(Node):
             "termination_reason": termination_reason,
             "failure_reason": "" if success else termination_reason,
             "coverage_threshold": self.coverage_threshold,
+            "max_duration_sec": self.max_duration,
+            "control_failure": self.control_failure,
             "time_to_75_coverage_sec": self.coverage_times[0.75],
             "time_to_80_coverage_sec": self.coverage_times[0.8],
             "time_to_90_coverage_sec": self.coverage_times[0.9],
@@ -534,16 +605,15 @@ class TaskEvaluator(Node):
                 set().union(*self.visited.values())
             ),
             "search_overlap_ratio": visited_overlap_ratio(self.visited),
+            "trajectory_overlap_ratio": visited_overlap_ratio(self.visited),
             "collision_events": sum(self.collision_events.values()),
             "collision_duration_sec": sum(self.collision_duration.values()),
-            "collision_monitoring_active": all(
-                count > 0 for count in self.collision_messages.values()
-            ),
+            "collision_monitoring_active": monitoring_active,
             "nav_goal_count": sum(len(ids) for ids in self.goal_ids.values()),
             "nav_succeeded": sum(self.nav_succeeded.values()),
             "nav_canceled": sum(self.nav_canceled.values()),
             "nav_aborted": sum(self.nav_aborted.values()),
-            **self._map_metrics(),
+            **map_metrics,
             "robots": robots,
         }
         self._write_outputs(result)
@@ -553,17 +623,27 @@ class TaskEvaluator(Node):
         safe_id = re.sub(r"[^A-Za-z0-9_.-]+", "_", self.episode_id)
         json_path = self.output_dir / f"{safe_id}.json"
         csv_path = self.output_dir / f"{safe_id}.csv"
-        with json_path.open("w") as output:
-            json.dump(result, output, indent=2, sort_keys=True)
-
         row = {key: value for key, value in result.items() if key != "robots"}
         for robot, metrics in result["robots"].items():
             for key, value in metrics.items():
                 row[f"{robot}_{key}"] = value
-        with csv_path.open("w", newline="") as output:
-            writer = csv.DictWriter(output, fieldnames=row.keys())
-            writer.writeheader()
-            writer.writerow(row)
+        csv_output = io.StringIO(newline="")
+        writer = csv.DictWriter(csv_output, fieldnames=row.keys())
+        writer.writeheader()
+        writer.writerow(row)
+        # Publish complete files without overwriting prior evidence. JSON is
+        # linked last so the runner only sees a fully written result pair.
+        for path, contents in (
+            (csv_path, csv_output.getvalue()),
+            (json_path, json.dumps(result, indent=2, sort_keys=True)),
+        ):
+            temporary = path.with_suffix(path.suffix + ".tmp")
+            with temporary.open("x") as output:
+                output.write(contents)
+            try:
+                os.link(temporary, path)
+            finally:
+                temporary.unlink()
         self.get_logger().info(
             f"Evaluation saved to {json_path} and {csv_path}"
         )

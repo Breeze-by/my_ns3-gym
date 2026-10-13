@@ -49,6 +49,7 @@ def main(args=None):
                 if not future.done():
                     if time.monotonic() - requested_at >= 2.0:
                         future.cancel()
+                        state_labels[name] = "query timed out"
                         del state_requests[name]
                     continue
                 try:
@@ -57,7 +58,7 @@ def main(args=None):
                     state_labels[name] = "query failed"
                 del state_requests[name]
             for name, client in state_clients.items():
-                if state_labels[name] == "active" or name in state_requests:
+                if name in state_requests:
                     continue
                 action_name = name.replace(
                     "/bt_navigator/get_state", "/navigate_to_pose"

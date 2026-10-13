@@ -120,3 +120,20 @@ def test_path_waypoint_limits_navigation_leg():
         0,
         4,
     )
+
+
+def test_dijkstra_cannot_cut_a_blocked_corner():
+    traversable = np.array([[True, False], [False, True]])
+    assert np.isinf(control.path_distance_grid(traversable, (0, 0))[1, 1])
+
+
+def test_diagonal_path_remains_available_when_both_sides_are_free():
+    distances = control.path_distance_grid(np.ones((2, 2), dtype=bool), (0, 0))
+    assert distances[1, 1] == pytest.approx(math.sqrt(2))
+
+
+def test_missing_safe_staging_path_does_not_fall_back_to_long_goal():
+    assignment = control.Assignment(None, 8., 0., 8., 1., 8., 0.)
+    assert control.stage_navigation_leg(
+        assignment, np.full((10, 100), 100), .1, (0., 0.), (0., 0.),
+    ) is None

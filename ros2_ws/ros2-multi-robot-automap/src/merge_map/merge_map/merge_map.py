@@ -10,38 +10,49 @@ from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
 
 
 def merge_maps(maps, frame_id="map"):
-    """Merge aligned occupancy grids and clear stale occupied evidence."""
+    """
+    Merge common-frame grids conservatively, including fractional offsets.
+
+    A free cell must be fully observed as free. Any overlapping occupied
+    evidence wins a conflict; this merger cannot identify dynamic obstacles.
+    Rotated maps require registration and are rejected explicitly.
+    """
     if not maps:
         raise ValueError("At least one occupancy grid is required")
 
     resolution = maps[0].info.resolution
-    if resolution <= 0:
+    if not math.isfinite(resolution) or resolution <= 0:
         raise ValueError("Map resolution must be positive")
     if any(
         not math.isclose(grid.info.resolution, resolution) for grid in maps
     ):
         raise ValueError("All occupancy grids must use the same resolution")
 
+    for grid in maps:
+        if grid.header.frame_id.lstrip("/") != frame_id.lstrip("/"):
+            raise ValueError("All occupancy grids must share the output frame")
+        if grid.info.width <= 0 or grid.info.height <= 0:
+            raise ValueError("Occupancy grid dimensions must be positive")
+        origin = grid.info.origin
+        if not all(math.isfinite(v) for v in (origin.position.x, origin.position.y)):
+            raise ValueError("Occupancy grid origin must be finite")
+        q = origin.orientation
+        if (
+            any(not math.isfinite(v) or abs(v) > 1e-6 for v in (q.x, q.y, q.z))
+            or not math.isclose(abs(q.w), 1.0, abs_tol=1e-6)
+        ):
+            raise ValueError("Rotated occupancy grids require registration")
+
     min_x = min(grid.info.origin.position.x for grid in maps)
     min_y = min(grid.info.origin.position.y for grid in maps)
-    offsets = [
-        (
-            round((grid.info.origin.position.x - min_x) / resolution),
-            round((grid.info.origin.position.y - min_y) / resolution),
-        )
-        for grid in maps
-    ]
-    width = max(
-        offset_x + grid.info.width
-        for grid, (offset_x, _) in zip(maps, offsets)
-    )
-    height = max(
-        offset_y + grid.info.height
-        for grid, (_, offset_y) in zip(maps, offsets)
-    )
+    max_x = max(grid.info.origin.position.x + grid.info.width * resolution for grid in maps)
+    max_y = max(grid.info.origin.position.y + grid.info.height * resolution for grid in maps)
+    width = math.ceil((max_x - min_x) / resolution - 1e-9)
+    height = math.ceil((max_y - min_y) / resolution - 1e-9)
     merged = np.full((height, width), -1, dtype=np.int16)
 
-    for grid, (offset_x, offset_y) in zip(maps, offsets):
+    rows, columns = np.indices((height, width))
+    for grid in maps:
         incoming = np.asarray(grid.data, dtype=np.int16)
         expected_size = grid.info.width * grid.info.height
         if incoming.size != expected_size:
@@ -49,25 +60,39 @@ def merge_maps(maps, frame_id="map"):
                 "Occupancy grid data size does not match its dimensions"
             )
         incoming = incoming.reshape(grid.info.height, grid.info.width)
-        region = merged[
-            offset_y:offset_y + grid.info.height,
-            offset_x:offset_x + grid.info.width,
-        ]
-        incoming_known = incoming >= 0
-        only_incoming_known = incoming_known & (region < 0)
-        both_known = incoming_known & (region >= 0)
-        region[only_incoming_known] = incoming[only_incoming_known]
-        # A free ray observation clears stale occupied evidence such as another
-        # robot's former position. Static walls remain occupied when the other
-        # maps are unknown or also observe them as occupied.
-        region[both_known] = np.minimum(
-            region[both_known], incoming[both_known]
-        )
+        if np.any((incoming < -1) | (incoming > 100)):
+            raise ValueError("Occupancy values must be -1 or between 0 and 100")
+        # Each output cell intersects at most two input rows and columns.
+        # Occupancy is conservative over every positive-area intersection;
+        # free evidence requires the entire output cell to be covered.
+        offset_x = (min_x - grid.info.origin.position.x) / resolution
+        offset_y = (min_y - grid.info.origin.position.y) / resolution
+        first_column = np.floor(columns + offset_x + 1e-9).astype(int)
+        last_column = np.ceil(columns + offset_x + 1.0 - 1e-9).astype(int) - 1
+        first_row = np.floor(rows + offset_y + 1e-9).astype(int)
+        last_row = np.ceil(rows + offset_y + 1.0 - 1e-9).astype(int) - 1
+        fully_free = np.ones(merged.shape, dtype=bool)
+        resampled = np.full(merged.shape, -1, dtype=np.int16)
+        for sample_row, sample_column in (
+            (first_row, first_column), (first_row, last_column),
+            (last_row, first_column), (last_row, last_column),
+        ):
+            inside = (
+                (sample_row >= 0) & (sample_row < grid.info.height)
+                & (sample_column >= 0) & (sample_column < grid.info.width)
+            )
+            sample = np.full(merged.shape, -1, dtype=np.int16)
+            sample[inside] = incoming[sample_row[inside], sample_column[inside]]
+            fully_free &= inside & (sample >= 0) & (sample < 50)
+            resampled = np.maximum(resampled, sample)
+        resampled[(resampled < 50) & ~fully_free] = -1
+        merged = np.maximum(merged, resampled)
 
     merged_map = OccupancyGrid()
-    merged_map.header.stamp = maps[-1].header.stamp
+    latest = max(maps, key=lambda grid: grid.header.stamp.sec * 10**9 + grid.header.stamp.nanosec)
+    merged_map.header.stamp = latest.header.stamp
     merged_map.header.frame_id = frame_id
-    merged_map.info.map_load_time = maps[-1].info.map_load_time
+    merged_map.info.map_load_time = latest.info.map_load_time
     merged_map.info.resolution = resolution
     merged_map.info.width = width
     merged_map.info.height = height

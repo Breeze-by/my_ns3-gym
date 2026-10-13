@@ -1325,3 +1325,44 @@ Implementation, maps, tests, experiment evidence, and handoff documentation
 were committed as `7e4ad68` (`p1c: validate exploration across maps`) and
 pushed to `origin/main` in this session. The intentionally unstaged user report
 changes remained untouched.
+
+## 2026-10-13 Restored P1C engineering repairs and component validation
+
+User scope: repair non-roadmap defects after restoring `main@99cf3a6`; keep
+RESEARCH_PLAN.md and IMPLEMENTATION_PLAN.md unchanged until the user provides
+a new route. The original route remains on p2c1/global-mission-20261012@8fe1495.
+Code state: 99cf3a6 plus the focused runtime/assessment repairs recorded in
+report/20261013_p1c_engineering_repair.md. No simulator run has yet been credited
+to this candidate. Historical P1C results retain their original source identity.
+
+Old build/install were moved to
+/home/zhuyulab/.cache/ns3-workspace/ros-build-before-p1c-hardening-20261013/;
+the ROS experiment log directory was retained. Clean build command, from the
+canonical ROS workspace:
+
+```bash
+unset AMENT_PREFIX_PATH COLCON_PREFIX_PATH CMAKE_PREFIX_PATH PYTHONPATH LD_LIBRARY_PATH
+source /opt/ros/humble/setup.bash
+export PYTHONNOUSERSITE=1 CMAKE_BUILD_PARALLEL_LEVEL=4
+/usr/bin/python3 /usr/bin/colcon build --symlink-install --parallel-workers 4 \
+  --allow-overriding nav2_bringup --cmake-args -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON
+source install/setup.bash
+/usr/bin/python3 /usr/bin/colcon test --packages-select merge_map multi_robot_exploration \
+  --event-handlers console_direct+ --return-code-on-test-failure
+/usr/bin/python3 /usr/bin/colcon test-result --verbose
+ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py --show-args
+```
+
+Build: six packages PASS, 5min32s. Final package tests: 61 tests, zero errors,
+zero failures, two copyright skips. Earlier targeted test attempts passed
+34/53 functional cases but exposed one installed-package-dependent fixture
+and formatting errors; those were corrected. The first full package attempt
+retained D213/E306 failures; the complete rerun passed. No failures were
+relabeled as simulator successes.
+
+Install/source audit: zero broken install symlinks, no multi_robot_interfaces,
+only three exploration entry points; model meshes resolve inside the installed
+multi_robot resource tree. Invalid robot counts, conservative fractional-grid
+fusion, obstacle conflicts, diagonal corners, deadline/safety failure,
+immutable outputs, and delayed/cancelled Nav2 ownership have regression checks.
+Research metrics now use schema v3; schema v2 historical evidence is unchanged.

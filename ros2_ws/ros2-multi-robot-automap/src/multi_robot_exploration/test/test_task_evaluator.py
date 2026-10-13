@@ -1,4 +1,6 @@
 from pathlib import Path
+import json
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
@@ -9,6 +11,8 @@ from multi_robot_exploration.task_evaluator import (
     compare_occupancy_grid,
     load_truth_grid,
     visited_overlap_ratio,
+    evaluation_termination_reason,
+    TaskEvaluator,
 )
 
 
@@ -73,7 +77,50 @@ def test_generalization_world_is_supported_connected_and_spawn_safe(world_name):
     assert ndimage.label(~truth.occupied)[1] == 1
 
     clearance = ndimage.distance_transform_edt(~truth.occupied)
-    for x, y in ((0.0, -0.45), (0.0, 0.45), (0.45, 0.0)):
+    for x, y in ((0.0, -0.45), (0.0, 0.45), (0.45, 0.0), (-0.45, 0.0)):
         column = int((x - truth.origin_x) / truth.resolution)
         row = int((y - truth.origin_y) / truth.resolution)
         assert clearance[row, column] * truth.resolution >= 0.45
+
+
+@pytest.mark.parametrize(
+    "elapsed,collisions,monitored,expected",
+    [(179.9, 0, True, "coverage_reached"),
+     (180.0, 0, True, "timeout"), (181.0, 0, True, "timeout"),
+     (10.0, 1, True, "collision"),
+     (10.0, 0, False, "collision_monitoring_unavailable")],
+)
+def test_coverage_success_respects_deadline_and_safety(elapsed, collisions, monitored, expected):
+    assert evaluation_termination_reason(.91, .9, elapsed, 180., collisions, monitored) == expected
+
+
+def test_navigation_failure_prevents_coverage_success():
+    assert evaluation_termination_reason(
+        .91, .9, 10., 180., 0, True, "navigation_failure",
+    ) == "navigation_failure"
+
+
+def test_late_coverage_does_not_create_a_milestone():
+    evaluator = SimpleNamespace(
+        start_sim_time=0., max_duration=180., _now=lambda: 181.,
+        _map_metrics=lambda: {"correct_free_coverage_ratio": .91},
+        coverage_times={.75: None, .8: None, .9: None, .95: None},
+    )
+    TaskEvaluator._update_coverage_times(evaluator)
+    assert evaluator.coverage_times[.9] is None
+
+
+def test_result_publication_keeps_existing_evidence(tmp_path):
+    evaluator = SimpleNamespace(
+        output_dir=tmp_path, episode_id="immutable_result",
+        get_logger=lambda: SimpleNamespace(info=lambda *args: None),
+    )
+    result = {"schema_version": 3, "success": False, "robots": {}}
+    TaskEvaluator._write_outputs(evaluator, result)
+    original = (tmp_path / "immutable_result.json").read_bytes()
+    assert json.loads(original)["schema_version"] == 3
+    assert (tmp_path / "immutable_result.csv").is_file()
+    with pytest.raises(FileExistsError):
+        TaskEvaluator._write_outputs(evaluator, {**result, "success": True})
+    assert (tmp_path / "immutable_result.json").read_bytes() == original
+    assert not list(tmp_path.glob("*.tmp"))

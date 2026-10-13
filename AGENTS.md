@@ -43,19 +43,20 @@ the source of experimental claims.
 
 ## Current Handoff
 
-As of 2026-09-17, P1C implementation and formal 2/3-robot plus cross-map
-validation are complete and waiting for user acceptance. In addition to the
-original world, three held-out open/rooms/corridors worlds were tested with
-three robots on seeds 101/202/303. All nine reached 90% in at most 75.5
-simulated seconds with zero collisions; minimum observed accuracy was 97.47%
-and maximum search overlap was 1.91%. A two-robot check on the hardest
-world/seed reached 90% in 85.5 seconds with zero collisions. Keep the
-180-second hard episode bound, with 120 seconds (two robots) and 90 seconds
-(three robots) as evidence-based worst-seed acceptance thresholds. Do not
-begin P2 until the user accepts P1C.
+2026-10-13: `main` was restored from P1C `99cf3a6`; the original route's latest
+complete source and user files remain on `p2c1/global-mission-20261012`.
+Only these two local/remote branches are maintained. The user requested
+engineering repairs before providing a new research route. Do not advance old
+P2/P3/network/RL checkpoints from the unchanged historical plans.
 
-The detailed metrics, validation commands, known limitations, and intentionally
-uncommitted user report files are recorded in the nested `wireless-rl/AGENTS.md`.
+Runtime repairs, new checks, and actual simulator outcomes are recorded in
+`wireless-rl/report/20261013_p1c_engineering_repair.md` and the shared `log.md`.
+Current commands are in `ros2_ws/ros2-multi-robot-automap/launch_commands.md`.
+The task still uses SLAM, conservative common-frame map fusion, frontier
+allocation, and Nav2. Evaluator schema v3 enforces the original simulation
+deadline, zero contact, monitoring availability, and navigation handshake
+closure. Historical schema v2/P1C results apply only to their original source;
+do not credit them to the repaired implementation.
 
 ## Environments
 

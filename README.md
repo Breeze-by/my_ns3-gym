@@ -3,6 +3,13 @@
 This monorepo combines ns-3/ns3-gym reinforcement learning with a ROS 2
 multi-robot mapping and navigation task.
 
+On 2026-10-13, `main` was restored to the P1C mapping/navigation foundation.
+Engineering repairs and current commands are documented in the ROS
+[`launch_commands.md`](ros2_ws/ros2-multi-robot-automap/launch_commands.md).
+The user will provide a new research route; the long-term plan below remains
+historical until that update. The original route's latest version is retained
+on `p2c1/global-mission-20261012`.
+
 ## Repository layout
 
 ```text
