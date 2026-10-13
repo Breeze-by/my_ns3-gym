@@ -136,3 +136,16 @@ def test_plain_smoke_rejects_premature_clean_launch_exit(monkeypatch, tmp_path):
         SimpleNamespace(poll=lambda: 0, returncode=0)
     ))
     assert smoke.main() == 1
+
+
+def test_parent_exit_does_not_hide_native_child_shutdown_escalation():
+    smoke = load_module("smoke", ROOT / "scripts/ros_smoke_test.py")
+    assert smoke.native_launch_failures(
+        "[INFO] [planner-1]: process has finished cleanly\n[WARN] failed goal"
+    ) == []
+    for text in (
+        "process has died [exit code -6]", "process has died [exit code -9]",
+        "failed to terminate '10.0' seconds after receiving 'SIGTERM'",
+        "sending signal 'SIGKILL' to process",
+    ):
+        assert smoke.native_launch_failures(text) == [text]

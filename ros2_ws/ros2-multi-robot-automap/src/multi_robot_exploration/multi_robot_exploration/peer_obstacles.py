@@ -67,7 +67,7 @@ class PeerObstacles(Node):
                 ),
                 self.create_subscription(
                     TFMessage, f"/{name}/tf",
-                    lambda msg, name=name: self.receive_tf(msg, name), 1,
+                    lambda msg, name=name: self.receive_tf(msg, name), 20,
                 ),
                 self.create_subscription(
                     GoalStatusArray, f"/{name}/navigate_to_pose/_action/status",

@@ -195,6 +195,13 @@ def stop_launch(process, timeout):
         return False
 
 
+def native_launch_failures(log_text):
+    return [line for line in log_text.splitlines() if (
+        "process has died" in line or "failed to terminate" in line
+        or "sending signal 'SIGTERM'" in line or "sending signal 'SIGKILL'" in line
+    )]
+
+
 def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -365,6 +372,10 @@ def main():
             "FAIL: launch required SIGTERM/SIGKILL during shutdown",
             file=sys.stderr,
         )
+        return 1
+    native_failures = native_launch_failures(log_path.read_text(errors="replace"))
+    if native_failures:
+        print("FAIL: native launch process failure: " + native_failures[0], file=sys.stderr)
         return 1
     if not passed:
         print("Inspect launch log:", log_path, file=sys.stderr)

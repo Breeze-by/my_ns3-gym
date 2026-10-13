@@ -1500,3 +1500,48 @@ The final candidate uses the same colcon test/test-result commands already recor
 above; record its final result below. Research/implementation plans remain unchanged.
 
 Final body/closure candidate: three-package build PASS2min21s; complete colcon test/test-result PASS70 tests, zero errors/failures, two copyright skips. Shared-failure regression proves late accepted goals are cancelled and cannot reenable navigation. Same freeze will first run4r20s motion/automatic-closure, then2r original/3r rooms/3r corridors90%180s and4r plain; all new IDs, no source mutation during runs.
+
+
+### eb36480 peer-input / native-exit diagnostics, retained FAIL
+
+Frozen/pushed eb36480: four-robot20s motion returned old smoke0, but native task
+failed navigation_failure at1.0sim seconds with peer_state_unavailable, zero
+contact/all monitors true and effectively zero motion. Evaluator itself exited
+and triggered shutdown. Native launch escalated two planners toSIGKILL; independent
+closure audit FAIL. Parent exit0 is insufficient. Commands/env/source/native JSON
+are preserved as eb36480_commands.json / eb36480_20261014_p1c_repair_body_4r_motion.json;
+SHA256/path index eb36480_original_index.json, under report/assets/20261013_p1c_engineering_repair.
+
+A five-second read-only probe ran after that launch had already closed and returned
+an empty JSON; no diagnostic or task credit. Next probe setup raised
+ParameterAlreadyDeclaredException(use_sim_time) before launching any simulator;
+that failed diagnostic record is preserved in the command file. Repaired probe:
+
+```bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export PYTHONNOUSERSITE=1 TURTLEBOT3_MODEL=waffle RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+export ROS_DOMAIN_ID=183 GAZEBO_MASTER_URI=http://127.0.0.1:11752
+/usr/bin/python3 -u log/p1c_repair_body_20261014/probe_peer_inputs.py
+```
+
+Exact probe source is tracked as eb36480_readonly_probe.py; its subprocess argv,
+source/domain/master/output and timestamps are in eb36480_commands.json.
+2r plain native diagnostic, seed101/my_world/15s dwell, returned0. It reproduced
+stale depth1 mixed-TF receipt while depth20 receipt remained fresh; no task success
+credit. Full98-sample timeline stays in ROS log with its hash in the index; selected
+unmodified samples are eb36480_readonly_peer_samples.json. Clock2075.382 vs depth1
+map->odom2072.978/2064.580 (ages2.404/10.802), depth20 map->odom2075.579/2075.581;
+odom current, peer cloud last stamps2002.972/2002.980. Read-only subscriptions only.
+All owned processes closed; no independent simulator remains.
+
+Follow-up source increases peer TF queue depth1->20, matching the existing
+controller, with source-age0.5s and all physics/safety/coverage/time bounds unchanged.
+Smoke also rejects native process death/shutdown escalation despite parent0.
+These changes use Python package build plus the same complete colcon tests recorded
+above; append exact final result before next pushed freeze. All eb36480 failed
+originals stay immutable; no older-source PASS is substituted.
+
+TF depth / native child audit candidate: Python package build PASS3.70s; complete package checks71 tests, 0 errors/failures, 2 skips. Next pushed freeze predeclares4r20s motion, 2r original/3r rooms/3r corridors seed10190%180s, then4r plain. All new IDs, exact argv/env/output and native outcomes recorded; no source changes during simulations.

@@ -132,3 +132,29 @@ C++ 仅捕获 context 关闭后的 RCLError，活跃运行的错误继续抛出�
 最终机体/退出修复候选的三包构建 PASS（2min21s），完整包检查70项，0 errors、0 failures、2 skips。
 下一冻结先运行四机器人20s运动表征，再在同一源码运行2r原图、3r rooms/corridors和4r plain回归；
 默认peer节点/两个costmap层/当前命令已经同步到user_guide与launch_commands。
+
+
+## TF 接收与子进程退出审计：eb36480，原失败保留
+
+冻结 `eb36480` 的 `20261014_p1c_repair_body_4r_motion`：4台/seed101/my_world，
+1.0仿真秒 navigation_failure、零接触、监测有效，尚无有效运动信用。
+原生失败理由为 `peer_state_unavailable`；原命令和结果在同目录 `eb36480_*` 附件。
+评估器已经自行退出并触发所属 launch 关闭，但两个 planner 被原生 launch 升级到 SIGKILL。
+旧 smoke 虽返回0，独立原生日志审计判基础设施关闭 FAIL，不能称干净关闭。
+后续 smoke 新增检查原生 abort/升级终止记录，父进程0不掩盖子进程失败。
+
+第一次只读旁录在该四机器人任务已经关闭后启动，输出空对象，没有诊断信用。
+随后2r只读诊断脚本第一次在 `use_sim_time` 重复 declare 时失败，尚未启动仿真，保留失败。
+修正旁录脚本后，`20261014_p1c_repair_body_2r_peer_diagnostic_v2` 使用相同冻结源码、
+seed101、2r/my_world、15墙钟秒 dwell，smoke返回0；这只是原问题的诊断，不提供任务完成信用。
+
+只读节点同时订阅每台同一TF话题的depth1/depth20，并旁录odom、clock、peer PointCloud2，
+没有发布。98个一秒间隔样本保留原件与SHA256，所选原样本和旁录源码已跟踪。
+在倒数第二个样本，仿真clock2075.382，depth1的map->odom源龄为tb1 2.404s、tb2 10.802s；
+depth20分别为-0.197s/-0.199s（SLAM原生0.2s未来时间容差），odom新鲜。
+队友点云停在2002.972/2002.980，确证depth1混合TF接收没有维持新鲜完整数据。
+
+下一候选将peer TF订阅与现有control一致设为depth20，源龄上限0.5s不变；
+只修传输接收队列，没有放宽安全、物理或任务门限。必须独立以新run-id验证。
+
+TF depth / native child audit candidate: Python package build PASS3.70s; complete package checks71 tests, 0 errors/failures, 2 skips. Next pushed freeze predeclares4r20s motion, 2r original/3r rooms/3r corridors seed10190%180s, then4r plain. All new IDs, exact argv/env/output and native outcomes recorded; no source changes during simulations.

@@ -69,6 +69,7 @@ PYTHONNOUSERSITE=1 /usr/bin/python3 scripts/run_ideal_baseline.py \
 启动期限为墙钟保护，任务上限为仿真时间，不能互相替代。smoke PASS 与任务 PASS 分开输出；
 批量 runner 对任务或基础设施失败都返回非零。新实验必须在共享 `wireless-rl/log.md` 记录
 完整命令、冻结提交、参数、失败和结果；旧实验不得覆盖或计入新版本成绩。
+smoke 同时检查原生子进程退出记录；父 launch 返回 0 不能掩盖 abort 或强制终止。
 
 Nav2 接受响应和取消到终态的默认期限均为 10 仿真秒，分别由
 `navigation_response_timeout_sec`、`navigation_cancel_timeout_sec` 配置；原目标执行上限保持
