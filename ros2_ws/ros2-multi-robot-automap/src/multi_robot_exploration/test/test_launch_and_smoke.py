@@ -78,6 +78,8 @@ def test_four_robot_navigation_parameters_are_consistent():
         costmap = data["global_costmap"]["global_costmap"]["ros__parameters"]
         assert costmap["static_layer"]["map_topic"] == "/merge_map"
         assert costmap["static_layer"]["footprint_clearing_enabled"]
+        assert "peer_layer" in costmap["plugins"]
+        assert costmap["peer_layer"]["combination_method"] == 1
         assert not costmap["rolling_window"]
         plugin = data["planner_server"]["ros__parameters"]["GridBased"]["plugin"]
         assert plugin == "nav2_smac_planner/SmacPlanner2D"

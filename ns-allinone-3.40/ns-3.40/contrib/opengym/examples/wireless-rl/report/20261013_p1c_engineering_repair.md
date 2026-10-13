@@ -87,3 +87,48 @@ launch 返回 0；未启用评估器的 smoke 提前退出仍判基础设施失�
 最终源码计划独立运行 2r/my_world、3r/rooms、3r/corridors 的 seed101、90%/180s 任务回归，
 再做 4r 的 20 秒带评估器启动/运动表征及 plain smoke。20 秒表征的预期 timeout 不获得
 完整任务成功信用；用于检查四台实际运动、接触观测与有界退出。全部使用独立 domain/port/run-id。
+
+
+## 同冻结工程回归：226f11c，完整批次 FAIL
+
+冻结 `226f11c6f40a8587881d0e7badf12c0f43f9cb91` 的五格命令、环境、起止时间、返回码见
+[命令原件](assets/20261013_p1c_engineering_repair/226f11c_commands.json)。
+原件路径与 SHA256 见 [索引](assets/20261013_p1c_engineering_repair/226f11c_original_index.json)，
+四份原生评估 JSON 在同目录跟踪保存；完整 console/launch 日志保留在 ROS `log/`。
+所有任务 seed101、覆盖阈值90%，2/3机器人任务期限180仿真秒。
+
+| 格 | 原生终态 | 仿真秒 | 覆盖 | 接触 | runner 返回码 |
+|---|---|---:|---:|---:|---:|
+| 2r / my_world | coverage_reached | 137.7 | 90.926% | 0 | 0 |
+| 3r / rooms | coverage_reached | 73.9 | 90.367% | 0 | 0 |
+| 3r / corridors | coverage_reached | 75.8 | 90.080% | 0 | 0 |
+| 4r / my_world / 20s运动表征 | collision | 4.6 | 24.556% | 1 | 1 |
+| 4r / plain smoke | 基础设施PASS，无任务评估 | — | — | 未评估 | 0 |
+
+前三格接触监测均有效、每台都有移动；覆盖/安全成绩限于各自原生快照，不能与其他候选拼接。
+两机器人仍超过历史120s速度线。四机器人在 tb4 靠近停驻 tb2 时发生真实接触，不能把
+plain smoke 的启动 PASS 当作安全或完整任务通过。**完整批次 FAIL 保留。**
+
+四机器人日志同时确证两个工程问题：smoke 的 CLI lifecycle 查询超时被误写成 inactive；
+原生 planner 实际正在处理目标，该超时本身不能证明 planner 不活跃。原生门控只查
+bt_navigator，尚不能表达全部导航组件就绪。另，评估器写出结果后在回调内 shutdown，
+没有及时退出，控制器持续派发直到300墙钟秒外部 SIGINT；此时 tb1 SLAM 遭遇
+context 无效的 TF timer RCLError 并 abort(-6)。
+
+更正此前“自动关闭通过”的表述：旧 smoke 在读取结果后主动 SIGINT 清理，退出0和无遗留
+只能证明外部清理成功，尚未证明评估器驱动的自动关闭。当前后续 smoke 明确等待所属
+launch 自行退出，超时即失败；评估器只在退出 spin 后关闭 context。历史原件不改写。
+
+下一候选复用持久 ROS 查询检查全部六个 lifecycle；只使用 odom/TF 构造完整队友机体
+避障包络，分别由专用 PointCloud2 标记和 LaserScan 清理独立 peer_layer，并为中央路径
+添加同一保守包络；max 合并不清除静态墙体，虚拟数据不进入 SLAM、不用真值、不控制目标。
+共享故障在手动/评估模式都停止派发并取消已知目标，迟到接受仍取消；未知所有权不释放。
+C++ 仅捕获 context 关闭后的 RCLError，活跃运行的错误继续抛出。
+这一候选的机体、速度、膨胀、物理接触、覆盖和任务期限均不放宽；要在新冻结上重新验证。
+
+本轮新增 peer 栅格/点云和评估回调检查：最初69项包检查有1项 E501 格式失败，保留该失败；
+修正过长 PointField 构造行后继续完整重跑。组件检查不提供 Gazebo 任务信用。
+
+最终机体/退出修复候选的三包构建 PASS（2min21s），完整包检查70项，0 errors、0 failures、2 skips。
+下一冻结先运行四机器人20s运动表征，再在同一源码运行2r原图、3r rooms/corridors和4r plain回归；
+默认peer节点/两个costmap层/当前命令已经同步到user_guide与launch_commands。

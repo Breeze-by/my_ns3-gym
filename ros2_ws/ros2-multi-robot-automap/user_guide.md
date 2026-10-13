@@ -60,7 +60,8 @@ src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py
 | Nav2 | include `src/multi_robot/launch/nav2_bringup/bringup_launch.py` |
 | slam_toolbox | include `slam_toolbox/launch/online_async_multirobot_launch.py` |
 | merge_map | 主 launch 直接启动 `merge_map` 节点，确保退出时不会遗留子 launch 进程 |
-| Nav2 就绪门控 | 等待所有 `/tbN/navigate_to_pose` action server 可用且 `bt_navigator=active` |
+| Nav2 就绪门控 | action 可发现且所有六个导航 lifecycle 节点 active，查询超时按不可用处理 |
+| 队友机体避障 | `peer_obstacles` 将 odom/TF 观测转换为独立 Nav2 peer layer，不发送导航目标 |
 | headquarters_control | `ros2 run multi_robot_exploration control` |
 | 每机器人 RViz | 由 `enable_rviz` 控制，默认关闭 |
 | 全局地图 RViz | 由 `enable_merge_rviz` 控制，默认开启 |
@@ -113,7 +114,7 @@ multi_robot_exploration/control
 | `enable_merge_rviz` | `true` | 是否启动一个全局 `/merge_map` RViz |
 | `gazebo_seed` | `1` | Gazebo 随机种子；正式运行必须显式记录 |
 | `spawn_timeout` | `90.0` | 每台机器人等待 Gazebo spawn 服务的秒数 |
-| `nav2_ready_timeout_sec` | `180.0` | 等待全部 Nav2 action 可发现且 `bt_navigator=active` 的最长墙钟秒数；超时不启动探索 |
+| `nav2_ready_timeout_sec` | `180.0` | 等待 action 与全部六个导航 lifecycle 节点 active 的最长墙钟秒数 |
 | `auto_save_map` | `true` | headquarters 是否自动保存合并地图；smoke 时关闭 |
 | `enable_task_evaluator` | `false` | 是否启动只读任务评估器 |
 | `evaluation_episode_id` | `episode` | CSV/JSON 文件名和 episode 标识 |
@@ -342,7 +343,8 @@ goal accepted/rejected
 
 主 launch 在机器人生成 10 秒后启动第一套 Nav2，后续机器人按 45 秒错峰，避免多个导航栈
 同时初始化造成资源竞争。`nav2_ready_gate` 同时检查所有 `/tbN/navigate_to_pose` action
-server 和 `bt_navigator=active`；全部就绪后立即启动控制器和评估器，不再固定等待最后一套 Nav2 启动后的额外 60 秒。
+server 和 controller/planner/behavior/bt_navigator/waypoint_follower/velocity_smoother
+的 active 状态；全部就绪后启动控制器和评估器，不再固定等待最后一套 Nav2 启动后的额外 60 秒。
 门控超时会列出未就绪的 action 并阻止探索带病启动。探索行为树不使用的
 `smoother_server` 不再启动；速度平滑器 `velocity_smoother` 仍保留。
 
@@ -362,6 +364,17 @@ server 和 `bt_navigator=active`；全部就绪后立即启动控制器和评估
 Nav2 静态层启用原生 `footprint_clearing_enabled`：仅清理该机器人实际当前 footprint 下的
 代价图占据（机体位姿由本地 odom/TF 估计），避免队友地图中的本机回波使当前位置成为 lethal 起点。融合地图保持保守占据，
 机器人轮廓外的墙体、障碍和未知区域不通过此设置清除；原机器人半径和膨胀距离不变。
+
+队友避障使用原有可观测 odom/TF，要求公共坐标系；不用 Gazebo 位姿真值。
+`peer_obstacles` 在每台机器人 base_link 下发布填满队友机体包络的 PointCloud2
+(`/tbN/peer_footprints`) 供标记，并发布全方向清理 LaserScan (`/tbN/peer_obstacles`)。
+两者都是虚拟避障输入，不是物理雷达，也不进入 SLAM。半径 0.25 m 覆盖 Waffle 的实际
+碰撞几何；另按 0.26 m/s 速度上限、源龄、0.55 s 发布/控制/局部代价图反应窗口和
+0.04 m 栅格余量扩大队友包络。中央路径也使用同一包络。
+两个 costmap 的独立 peer_layer 以 max 合并，只在自己的队友层清理旧位置，不能清除
+静态图/真实雷达层的墙体。任务开始后 odom/TF 超过 0.5 s 或机体包络重叠，明确失败；
+未获得完整初始位姿时等待数据，不能以空数据证明安全。
+共享失败会使控制器停止派发并取消已有目标；不启用评估器的手动模式同样遵守这一约束。
 
 ## 7. 编译
 

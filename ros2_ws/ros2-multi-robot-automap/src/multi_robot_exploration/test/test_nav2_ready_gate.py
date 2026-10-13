@@ -31,5 +31,10 @@ def test_unavailable_actions_reports_only_missing_servers():
 
 def test_lifecycle_service_names_cover_critical_nav2_nodes():
     assert lifecycle_service_names(1) == [
+        "/tb1/controller_server/get_state",
+        "/tb1/planner_server/get_state",
+        "/tb1/behavior_server/get_state",
         "/tb1/bt_navigator/get_state",
+        "/tb1/waypoint_follower/get_state",
+        "/tb1/velocity_smoother/get_state",
     ]

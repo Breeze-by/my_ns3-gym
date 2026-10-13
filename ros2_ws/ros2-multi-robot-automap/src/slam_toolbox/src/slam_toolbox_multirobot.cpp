@@ -18,25 +18,36 @@ void MultiRobotSlamToolbox::laserCallback(
   sensor_msgs::msg::LaserScan::ConstSharedPtr scan)
 /*****************************************************************************/
 {
-    // The common transform publisher only emits map->odom after a scan header
-    // has been recorded.  Without this, maps update but Nav2 never receives a
-    // map frame and remains stuck during lifecycle activation.
-    scan_header = scan->header;
-
-    // Process raw laser scans
-    Pose2 pose;
-    if (!pose_helper_->getOdomPose(pose, scan->header.stamp)) {
-        RCLCPP_WARN(get_logger(), "Failed to compute odom pose");
+    if (!rclcpp::ok()) {
         return;
     }
+    try {
+        // The common transform publisher only emits map->odom after a scan header
+        // has been recorded.  Without this, maps update but Nav2 never receives a
+        // map frame and remains stuck during lifecycle activation.
+        scan_header = scan->header;
 
-    LaserRangeFinder * laser = getLaser(scan);
-    if (!laser) {
-        RCLCPP_WARN(get_logger(), "Failed to create laser device for %s; discarding scan", scan->header.frame_id.c_str());
-        return;
+        // Process raw laser scans
+        Pose2 pose;
+        if (!pose_helper_->getOdomPose(pose, scan->header.stamp)) {
+            RCLCPP_WARN(get_logger(), "Failed to compute odom pose");
+            return;
+        }
+
+        LaserRangeFinder * laser = getLaser(scan);
+        if (!laser) {
+            RCLCPP_WARN(get_logger(), "Failed to create laser device for %s; discarding scan", scan->header.frame_id.c_str());
+            return;
+        }
+
+        addScan(laser, scan, pose);
+    } catch (const rclcpp::exceptions::RCLError &) {
+        // TF may attempt to create its timeout timer while SIGINT closes the
+        // context. Ignore teardown races; retain normal live error behavior.
+        if (rclcpp::ok()) {
+            throw;
+        }
     }
-
-    addScan(laser, scan, pose);
 }
 
 /*****************************************************************************/

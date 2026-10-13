@@ -143,6 +143,11 @@ def launch_setup(context, *args, **kwargs):
         output="screen",
     )
     actions.append(merge_map_node)
+    actions.append(Node(
+        package="multi_robot_exploration", executable="peer_obstacles",
+        name="peer_obstacles", output="screen",
+        parameters=[{"robot_count": robot_count, "use_sim_time": use_sim_time}],
+    ))
 
     merge_rviz = Node(
         package="rviz2",

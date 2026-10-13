@@ -466,8 +466,6 @@ class TaskEvaluator(Node):
             return
         self.control_failure = message.data
         self.finalize("navigation_failure")
-        if rclpy.ok():
-            rclpy.shutdown()
 
     def _timer_callback(self):
         if self.finalized or self.start_sim_time is None:
@@ -482,8 +480,6 @@ class TaskEvaluator(Node):
         )
         if reason:
             self.finalize(reason)
-            if rclpy.ok():
-                rclpy.shutdown()
 
     def _update_coverage_times(self):
         if self.start_sim_time is None:
@@ -653,7 +649,10 @@ def main(args=None):
     rclpy.init(args=args)
     evaluator = TaskEvaluator()
     try:
-        rclpy.spin(evaluator)
+        # Context shutdown inside an executor callback can wait for that same
+        # callback to finish. Return from it, then close the context here.
+        while rclpy.ok() and not evaluator.finalized:
+            rclpy.spin_once(evaluator, timeout_sec=0.5)
     except (KeyboardInterrupt, ExternalShutdownException):
         pass
     finally:

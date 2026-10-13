@@ -133,3 +133,15 @@ def test_old_result_callback_cannot_clear_a_new_assignment():
     node.goal_result_callback("tb1", assignment, Future())
     assert node.robot_states["tb1"] == "active"
     assert node.goal_targets["tb1"] is not None
+
+
+def test_shared_sensor_failure_cancels_active_and_late_accepted_goals():
+    node, _, messages, assignment = make_controller()
+    HeadquartersControl.stop_on_failure(node, SimpleNamespace(data="peer_state_unavailable"))
+    assert node.robot_states["tb1"] == "failed"
+    assert node.goal_targets["tb1"] is assignment
+    _, result, _ = accept_goal(node, assignment)
+    assert node.cancel_requested["tb1"]
+    result.set_result(SimpleNamespace(status=GoalStatus.STATUS_CANCELED))
+    assert node.robot_states["tb1"] == "failed"
+    assert not messages

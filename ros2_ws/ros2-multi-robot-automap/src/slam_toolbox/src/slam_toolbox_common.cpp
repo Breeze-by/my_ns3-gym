@@ -246,21 +246,27 @@ void SlamToolbox::publishTransformLoop(
   }
 
   rclcpp::Rate r(1.0 / transform_publish_period);
-  while (rclcpp::ok()) {
-    {
-      boost::mutex::scoped_lock lock(map_to_odom_mutex_);
-      rclcpp::Time scan_timestamp = scan_header.stamp;
-      // Avoid publishing tf with initial 0.0 scan timestamp
-      if (scan_timestamp.seconds() > 0.0 && !scan_header.frame_id.empty()) {
-        geometry_msgs::msg::TransformStamped msg;
-        msg.transform = tf2::toMsg(map_to_odom_);
-        msg.child_frame_id = odom_frame_;
-        msg.header.frame_id = map_frame_;
-        msg.header.stamp = scan_timestamp + transform_timeout_;
-        tfB_->sendTransform(msg);
+  try {
+    while (rclcpp::ok()) {
+      {
+        boost::mutex::scoped_lock lock(map_to_odom_mutex_);
+        rclcpp::Time scan_timestamp = scan_header.stamp;
+        // Avoid publishing tf with initial 0.0 scan timestamp
+        if (scan_timestamp.seconds() > 0.0 && !scan_header.frame_id.empty()) {
+          geometry_msgs::msg::TransformStamped msg;
+          msg.transform = tf2::toMsg(map_to_odom_);
+          msg.child_frame_id = odom_frame_;
+          msg.header.frame_id = map_frame_;
+          msg.header.stamp = scan_timestamp + transform_timeout_;
+          tfB_->sendTransform(msg);
+        }
       }
+      r.sleep();
     }
-    r.sleep();
+  } catch (const rclcpp::exceptions::RCLError &) {
+    if (rclcpp::ok()) {
+      throw;
+    }
   }
 }
 
@@ -284,13 +290,19 @@ void SlamToolbox::publishVisualizations()
       map_update_interval);
   rclcpp::Rate r(1.0 / map_update_interval);
 
-  while (rclcpp::ok()) {
-    updateMap();
-    if (!isPaused(VISUALIZING_GRAPH)) {
-      boost::mutex::scoped_lock lock(smapper_mutex_);
-      closure_assistant_->publishGraph();
+  try {
+    while (rclcpp::ok()) {
+      updateMap();
+      if (!isPaused(VISUALIZING_GRAPH)) {
+        boost::mutex::scoped_lock lock(smapper_mutex_);
+        closure_assistant_->publishGraph();
+      }
+      r.sleep();
     }
-    r.sleep();
+  } catch (const rclcpp::exceptions::RCLError &) {
+    if (rclcpp::ok()) {
+      throw;
+    }
   }
 }
 

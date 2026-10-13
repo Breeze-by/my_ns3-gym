@@ -210,7 +210,34 @@ local_costmap:
       height: 10
       resolution: 0.05
       robot_radius: 0.22
-      plugins: ["voxel_layer", "inflation_layer"]
+      plugins: ["voxel_layer", "peer_layer", "inflation_layer"]
+      peer_layer:
+        plugin: "nav2_costmap_2d::ObstacleLayer"
+        enabled: True
+        combination_method: 1
+        footprint_clearing_enabled: True
+        observation_sources: peer_clear peer_body
+        peer_clear:
+          topic: /tb2/peer_obstacles
+          data_type: "LaserScan"
+          clearing: True
+          marking: False
+          inf_is_valid: True
+          obstacle_min_range: 0.0
+          obstacle_max_range: 19.9
+          raytrace_min_range: 0.0
+          raytrace_max_range: 20.0
+          expected_update_rate: 0.5
+          observation_persistence: 0.0
+        peer_body:
+          topic: /tb2/peer_footprints
+          data_type: "PointCloud2"
+          clearing: False
+          marking: True
+          obstacle_min_range: 0.0
+          obstacle_max_range: 20.0
+          expected_update_rate: 0.5
+          observation_persistence: 0.0
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
@@ -256,7 +283,7 @@ global_costmap:
       resolution: 0.05
       track_unknown_space: true
       map_topic: /merge_map
-      plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
+      plugins: ["static_layer", "obstacle_layer", "peer_layer", "inflation_layer"]
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
@@ -272,6 +299,33 @@ global_costmap:
         map_topic: /merge_map
         map_subscribe_transient_local: True
         footprint_clearing_enabled: True
+      peer_layer:
+        plugin: "nav2_costmap_2d::ObstacleLayer"
+        enabled: True
+        combination_method: 1
+        footprint_clearing_enabled: True
+        observation_sources: peer_clear peer_body
+        peer_clear:
+          topic: /tb2/peer_obstacles
+          data_type: "LaserScan"
+          clearing: True
+          marking: False
+          inf_is_valid: True
+          obstacle_min_range: 0.0
+          obstacle_max_range: 19.9
+          raytrace_min_range: 0.0
+          raytrace_max_range: 20.0
+          expected_update_rate: 0.5
+          observation_persistence: 0.0
+        peer_body:
+          topic: /tb2/peer_footprints
+          data_type: "PointCloud2"
+          clearing: False
+          marking: True
+          obstacle_min_range: 0.0
+          obstacle_max_range: 20.0
+          expected_update_rate: 0.5
+          observation_persistence: 0.0
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0

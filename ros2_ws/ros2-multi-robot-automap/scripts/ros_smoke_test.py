@@ -32,6 +32,10 @@ def run_ros(arguments, timeout=10, discard_output=False):
 
 
 def wait_until_ready(process, robot_count, timeout, evaluation_enabled=False):
+    import rclpy
+    from multi_robot_exploration.nav2_ready_gate import wait_for_nav2
+    from rclpy.node import Node
+
     expected_topics = {"/merge_map"}
     for index in range(1, robot_count + 1):
         expected_topics.update(
@@ -48,57 +52,24 @@ def wait_until_ready(process, robot_count, timeout, evaluation_enabled=False):
             f"/tb{index}/collision" for index in range(1, robot_count + 1)
         )
 
-    deadline = time.monotonic() + timeout
-    missing_topics = expected_topics
-    inactive_nodes = []
-    while time.monotonic() < deadline:
+    rclpy.init()
+    node = Node("smoke_readiness")
+
+    def graph_check():
         if process.poll() is not None:
             raise RuntimeError(
                 f"launch exited early with status {process.returncode}"
             )
+        topics = {name for name, _ in node.get_topic_names_and_types()}
+        return [f"missing topic {name}" for name in sorted(expected_topics - topics)]
 
-        topic_result = run_ros(["topic", "list", "--no-daemon"])
-        topics = (
-            set(topic_result.stdout.splitlines())
-            if topic_result.returncode == 0
-            else set()
-        )
-        missing_topics = expected_topics - topics
-
-        inactive_nodes = []
-        if not missing_topics:
-            for index in range(1, robot_count + 1):
-                for server in (
-                    "controller_server",
-                    "planner_server",
-                    "bt_navigator",
-                ):
-                    node = f"/tb{index}/{server}"
-                    try:
-                        result = run_ros(
-                            ["lifecycle", "get", node], timeout=10
-                        )
-                    except subprocess.TimeoutExpired:
-                        result = None
-                    if (
-                        result is None
-                        or result.returncode != 0
-                        or not lifecycle_is_active(result.stdout)
-                    ):
-                        inactive_nodes.append(node)
-            if not inactive_nodes:
-                return
-
-        time.sleep(2)
-
-    details = []
-    if missing_topics:
-        details.append("missing topics: " + ", ".join(sorted(missing_topics)))
-    if inactive_nodes:
-        details.append(
-            "inactive lifecycle nodes: " + ", ".join(inactive_nodes)
-        )
-    raise TimeoutError("; ".join(details) or "ROS graph did not become ready")
+    try:
+        if wait_for_nav2(node, robot_count, timeout, graph_check) != 0:
+            raise TimeoutError("ROS graph or Nav2 lifecycle did not become ready")
+    finally:
+        node.destroy_node()
+        if rclpy.ok():
+            rclpy.shutdown()
 
 
 def require_message(topic, timeout, qos_arguments=()):
@@ -314,6 +285,7 @@ def main():
     )
     passed = False
     clean_shutdown = False
+    cleanup_timeout = args.shutdown_timeout
     with log_path.open("w") as log_file:
         process = subprocess.Popen(
             command,
@@ -365,6 +337,11 @@ def main():
                     f"termination={result['termination_reason']}",
                     flush=True,
                 )
+                try:
+                    process.wait(timeout=args.shutdown_timeout)
+                except subprocess.TimeoutExpired:
+                    cleanup_timeout = 0
+                    raise RuntimeError("evaluator finished but owned launch did not shut down")
             if args.evaluation_duration <= 0:
                 time.sleep(args.dwell_seconds)
             status = process.poll()
@@ -381,7 +358,7 @@ def main():
         ) as error:
             print(f"FAIL: {error}", file=sys.stderr, flush=True)
         finally:
-            clean_shutdown = stop_launch(process, args.shutdown_timeout)
+            clean_shutdown = stop_launch(process, cleanup_timeout)
 
     if not clean_shutdown:
         print(

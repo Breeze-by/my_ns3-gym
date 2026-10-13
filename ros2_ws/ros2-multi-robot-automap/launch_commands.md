@@ -30,6 +30,10 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
 此模式持续建图，Ctrl+C 结束。`robot_count` 为 1–4 的整数，非法值拒绝；四台均采用融合地图、
 Smac 2D 和非滚动全局代价图。模型资源通过安装包的 `models` 路径解析。
 静态层启用 Nav2 原生的当前机体 footprint 清理；融合图中的占据冲突仍保持保守。
+默认 `peer_obstacles` 只读已观测 odom/TF，将队友完整机体包络送入各机器人独立 peer_layer。
+该虚拟避障输入不进入 SLAM，不使用 Gazebo 真值，不发送目标；真实墙体层始终以 max 保留。
+`/tbN/peer_footprints` PointCloud2 标记完整队友包络，`/tbN/peer_obstacles` LaserScan
+只清理该独立层的历史位置。任务期间队友数据失效会停止派发并取消目标。
 
 ## 有界覆盖评估
 

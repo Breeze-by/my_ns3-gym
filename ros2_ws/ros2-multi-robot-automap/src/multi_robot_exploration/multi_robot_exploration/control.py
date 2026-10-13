@@ -41,6 +41,34 @@ PATH_COST_EXPONENT = 1.5
 GOAL_REPLAN_SEC = 3.0
 MIN_REMAINING_GAIN = 200
 MIN_REMAINING_GAIN_FRACTION = 0.2
+PEER_BODY_RADIUS_M = 0.25  # Waffle collision geometry fits within 0.238 m.
+PEER_SPEED_BOUND_MPS = 0.26
+PEER_REACTION_SEC = 0.55  # 10 Hz publication/control plus 3 Hz costmap update.
+PEER_GRID_MARGIN_M = 0.04  # Covers a 0.05 m costmap cell's half diagonal.
+
+
+def peer_safety_radius(source_age):
+    return PEER_BODY_RADIUS_M + PEER_GRID_MARGIN_M + PEER_SPEED_BOUND_MPS * (
+        max(0.0, source_age) + PEER_REACTION_SEC
+    )
+
+
+def quaternion_yaw(rotation):
+    return math.atan2(
+        2.0 * (rotation.w * rotation.z + rotation.x * rotation.y),
+        1.0 - 2.0 * (rotation.y * rotation.y + rotation.z * rotation.z),
+    )
+
+
+def grid_with_peers(raw_grid, resolution, origin, peers):
+    """Add observed peer body envelopes without erasing map evidence."""
+    result = raw_grid.copy()
+    rows, columns = np.ogrid[:result.shape[0], :result.shape[1]]
+    xs = origin[0] + (columns + 0.5) * resolution
+    ys = origin[1] + (rows + 0.5) * resolution
+    for x, y, age in peers:
+        result[(xs - x) ** 2 + (ys - y) ** 2 <= peer_safety_radius(age) ** 2] = 100
+    return result
 
 
 @dataclass(frozen=True)
@@ -83,10 +111,7 @@ def transform_point_2d(x, y, transform):
     """Apply a TransformStamped's planar transform to a point."""
     translation = transform.translation
     rotation = transform.rotation
-    yaw = math.atan2(
-        2.0 * (rotation.w * rotation.z + rotation.x * rotation.y),
-        1.0 - 2.0 * (rotation.y * rotation.y + rotation.z * rotation.z),
-    )
+    yaw = quaternion_yaw(rotation)
     return (
         translation.x + math.cos(yaw) * x - math.sin(yaw) * y,
         translation.y + math.sin(yaw) * x + math.cos(yaw) * y,
@@ -614,6 +639,7 @@ class HeadquartersControl(Node):
             OccupancyGrid, "/merge_map", self.map_callback, 10
         )
         self.robot_positions = {}
+        self.robot_position_stamps = {}
         self.map_to_odom = {}
         self.robot_maps = {}
         self.robot_states = {}
@@ -637,11 +663,16 @@ class HeadquartersControl(Node):
             String, "/exploration_failure",
             QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL),
         )
+        self.failure_subscription = self.create_subscription(
+            String, "/exploration_failure", self.stop_on_failure,
+            QoSProfile(depth=10, durability=DurabilityPolicy.TRANSIENT_LOCAL),
+        )
         self.robot_subscriptions = []
 
         for index in range(self.num_robots):
             robot_name = f"tb{index + 1}"
             self.robot_positions[robot_name] = None
+            self.robot_position_stamps[robot_name] = 0.0
             self.map_to_odom[robot_name] = None
             self.robot_maps[robot_name] = None
             self.robot_states[robot_name] = "idle"
@@ -727,6 +758,9 @@ class HeadquartersControl(Node):
         )
         position = transform_point_2d(*odom_position, transform)
         self.robot_positions[robot_name] = position
+        self.robot_position_stamps[robot_name] = (
+            msg.header.stamp.sec + msg.header.stamp.nanosec / 1e9
+        )
         last_position = self.goal_last_position[robot_name]
         if (
             self.robot_states[robot_name] == "active"
@@ -821,6 +855,12 @@ class HeadquartersControl(Node):
             1, math.ceil(INFORMATION_RADIUS_M / self.resolution)
         )
         for robot_name, position in idle_positions.items():
+            planning_grid = grid_with_peers(
+                self.map_data, self.resolution, self.origin,
+                [(p[0], p[1], self.now() - self.robot_position_stamps[name])
+                 for name, p in self.robot_positions.items()
+                 if name != robot_name and p is not None],
+            )
             robot_exclusions = list(exclusions)
             robot_exclusions.extend(
                 other_position
@@ -828,7 +868,7 @@ class HeadquartersControl(Node):
                 if other_name != robot_name and other_position is not None
             )
             robot_candidates, robot_diagnostics = robot_candidate_assignments(
-                self.map_data,
+                planning_grid,
                 self.resolution,
                 self.origin,
                 robot_name,
@@ -891,9 +931,15 @@ class HeadquartersControl(Node):
                 self.last_no_assignment_log = now
             return
         for robot_name, assignment in assignments.items():
+            planning_grid = grid_with_peers(
+                self.map_data, self.resolution, self.origin,
+                [(p[0], p[1], self.now() - self.robot_position_stamps[name])
+                 for name, p in self.robot_positions.items()
+                 if name != robot_name and p is not None],
+            )
             assignment = stage_navigation_leg(
                 assignment,
-                self.map_data,
+                planning_grid,
                 self.resolution,
                 self.origin,
                 self.robot_positions[robot_name],
@@ -1045,6 +1091,14 @@ class HeadquartersControl(Node):
             "robot": robot_name, "reason": reason, "sim_time": self.now(),
         })
         self.failure_publisher.publish(message)
+
+    def stop_on_failure(self, message):
+        """Latch a shared failure and cancel all known navigation ownership."""
+        for name in self.robot_states:
+            self.failed_navigation.setdefault(name, message.data)
+            self.robot_states[name] = "failed"
+            if self.goal_handles[name] is not None and self.goal_targets[name] is not None:
+                self.request_cancel(name, self.goal_targets[name])
 
     def request_cancel(self, robot_name, assignment):
         if self.cancel_requested[robot_name]:

@@ -1440,3 +1440,63 @@ Next pushed final-source batch is predeclared as separate 2r original/3r rooms/
 and motion characterization (expected timeout, no task-completion credit), and
 a 4r plain smoke. Unique IDs/domains/ports are recorded with actual commands
 and outcomes below; a failed cell is never substituted with an older source's PASS.
+
+
+### Same-source engineering batch 226f11c: retained complete FAIL
+
+Frozen/pushed source: 226f11c6f40a8587881d0e7badf12c0f43f9cb91. All five exact argv,
+ROS_DOMAIN_ID/Gazebo master, timestamps and return codes are preserved in
+report/assets/20261013_p1c_engineering_repair/226f11c_commands.json. Common setup:
+
+```bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export PYTHONNOUSERSITE=1 TURTLEBOT3_MODEL=waffle RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+```
+
+Run each argv in the tracked commands file sequentially with its recorded domain
+and master URI. Seed101, 90% threshold, 180-s hard limit for 2r/3r; 4r motion
+uses 20s and is explicitly not a full task. Exact output paths and SHA256 are in
+226f11c_original_index.json; four native episode JSON copies are tracked alongside.
+
+2r original: native coverage_reached 137.7s, coverage .9092611345701893,
+accuracy .9608268593680377, path49.452120515m; all monitoring true, zero contact.
+3r rooms: native coverage_reached73.9s, coverage .9036707882534776,
+accuracy .9518062832362002, path31.225207875m; all monitoring true, zero contact.
+3r corridors: native coverage_reached75.8s, coverage .9008031301482702,
+accuracy .9531752200491566, path42.827601243m; all monitoring true, zero contact.
+All robots moved in those three cases; returns0 represent old external cleanup,
+not independently verified evaluator-driven exit. 2r does not meet the old120s gate.
+4r motion: native collision at4.6s, coverage .24556241282457916, path .728984659m,
+one tb2 contact, monitoring true. tb4 approached the parked tb2; thin lidar outline
+was insufficient for full peer body collision geometry. CLI readiness timed out at
+300wall seconds and mislabeled a failed query as inactive despite native planner
+activity. Evaluator wrote its JSON but hung in callback shutdown; controller kept
+running until external SIGINT. tb1 SLAM then aborted(-6) with invalid-context TF
+rcl timer RCLError. Runner returned1. Complete batch FAIL, original retained.
+4r plain: infrastructure PASS/return0; no safety or task credit. All processes closed.
+
+Correction to previous v1/v2 auto-shutdown claims: old smoke sent SIGINT after
+reading output, so clean cleanup did not establish evaluator-driven shutdown.
+Do not count those results as verified automatic closure. Follow-up code now
+requires parent launch exit after output and fails if it needs external cleanup.
+
+Follow-up component changes (226f11c plus uncommitted candidate) were built with:
+
+```bash
+source /opt/ros/humble/setup.bash
+export PYTHONNOUSERSITE=1 CMAKE_BUILD_PARALLEL_LEVEL=4
+/usr/bin/python3 /usr/bin/colcon build --symlink-install \
+  --packages-select slam_toolbox multi_robot_exploration multi_robot --parallel-workers 4
+```
+
+Earlier builds passed; package test attempts on the peer-ray prototype passed69
+checks, zero errors/failures, two skips. That prototype was not simulator-tested
+and has no task credit. Dense peer-body PointCloud2 supersedes surface-only rays;
+its first complete69-check attempt had one E501 line-length failure, now corrected.
+The final candidate uses the same colcon test/test-result commands already recorded
+above; record its final result below. Research/implementation plans remain unchanged.
+
+Final body/closure candidate: three-package build PASS2min21s; complete colcon test/test-result PASS70 tests, zero errors/failures, two copyright skips. Shared-failure regression proves late accepted goals are cancelled and cannot reenable navigation. Same freeze will first run4r20s motion/automatic-closure, then2r original/3r rooms/3r corridors90%180s and4r plain; all new IDs, no source mutation during runs.
