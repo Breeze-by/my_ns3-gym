@@ -9605,3 +9605,26 @@ v11 FleetSnapshot新增复制的pending_views仅真实exploration owner且无can
 v11_components1原56PASS39.56s；加3pure全局反例和2owner生命周期参数后components2=59PASS2FAIL40.24s，失败因新夹具误断言初始相机历史为空（fixture已有真实交付初始view）；原输出保留。仅改测试比较提案前后已有history相同，复制预测数据变更不改实际owner目标，取消撤预期但owner保留到匹配Future。v11_owner_predictions两PASS/35deselected1.66s，未改生产历史逻辑或Future语义。新纯反例pending view正确视向边际、原地图变形/障碍重新投影、同信息去程时较低集结代价、原return factor2保持、原墙绕行而断路未知PASS，零physical/native任务信用。完整功能/build/source/static/新冻结声明继续，仅一个累计技术报告。
 
 v11_full最终1640PASS189.16s，修正owner夹具历史对比和复制数据不改actualgoal随完整回归通过。四包v11_build7.43sPASS；v11_source190保护/6授权/54协议/native常量与中央8+global2+native2 Future契约PASS，六核心/测试/reader F821/F822/F823/E999 PASS，git diff-check PASS。v11_declaration共享owner --validate-only PASS；两manifest与7a1bafd逐对象仅parent/UTC/新增search_objective不同，原cases、既有所有策略和其他字段一致。下一clean pushed freeze run-id20261013_p2c_global_v11仍四原开发起步，所有旧FAIL保持，无P4/ns3/WiFi/RL或未测任务信用。
+
+
+### global v11 首完整四开发PASS、15正式覆盖与两受控物理PASS
+
+9bb2c2c40a62f7b0819d5c2d4345595a9ad7fc61 clean pushed，20261013_p2c_global_v11四原domain204/port11573串行；v11_development_gate完整scope4PASS。forced/lab/rooms/corr原生COMPLETE176.8/211.7/260.7/170.9s，检测92.3/57.1/133.2/75.4，集合104.4/96.8/166.3/78.5，charge2/1/1/1，minE8.66784449517327/28.16361644745779/20.382684974253582/31.523216505985395。原CDR105779345bytes保持；sent=closed12/16/20/13，总61，original_map_bindings42/72/84/56，lab revalidation1其余0，无owned或refuge残留，四零contact/exhaustion/FAILED/任务期infra，runner/observer0。
+
+同冻结20261013_p2c_global_v11_formal完整15非留出串行，原CDR398160229bytes保持，所有runner/observer0。原生9COMPLETE/5timeout/1预声明空电池FAILED：lab101278.3/202RALLY300.2/303198.5；rooms101247.1/202RALLY300.2/303RALLY300.4；corr101160.3/202184.3/303187.1；corr2_202143；forced2 EXPLORE300.0无检测；protocol_forced2 COMPLETE212.3；delay_rooms3 FOUND300.2/检测290.8；loss_corridors2 COMPLETE146.8；empty_battery FAILED3.5 all_robots_failed、两机energy0。完整表在唯一累计报告。
+
+v11_nonholdout_gate部分integration15结果10PASS5FAIL，errors empty_battery能量诊断数学断言、fixed_lab_202/rooms202/rooms303/forced2 episode_success四原任务断言；delay/loss故障格原门禁不要求episode_ok，故delay安全/协议PASS不提供任务完成信用。delay原coordinator_global_wait290.4 tb3/frame_state age2.005>原2s、planner_error无，后真实窗口恢复继续动作并晚检测，源阈值未改。正式failed原件不回填，不跨版拼matrix。
+
+同冻结20261013_p2c_global_v11_physical原ideal/fault两格串行，CDR48884750bytes保持，runner/observer/staging/physics全部0；ideal原生COMPLETE（原评估保留300s完整刺激），fault FOUND300.1timeout，nativecharge各机各1、returns各2，minE12.455217267700347/12.353841026821435。v11_physical_declaration --validate-only原300s/staging/read-only physics PASS；v11_physical_gate两PASS，scope=supplemental physical safety only、排除mission/TDI。fault tb1/tb2原blackout内返航1.390877477/1.453202980m，toward_home1.379725974/1.445274968、Nav2执行1.390853237/1.453182543m，原62..248s门禁、刺激sha、zero-contact/safety/源图一致。未把fault任务失败改成功，917两格未运行。全原始owner进程与全部审计结束后才改源。
+
+空电池原tb2 energy_accounting Initial0/add0、distance.0001382594085700174/elapsed4.692000000000007、move1/idle.02，raw energy=-.09397825940857009；原consume_energy是signed减法，FAILED后继续记meter，public battery_state才max0。原energy_audit错误截断expected0。现仅独立reader改为原signed式，不改native/FAIL/公开state/预算；新固定原数值反例及clipped0/负余额篡改/虚增credit拒绝。v12_signed_energy_tests35PASS1.38s；v12_empty_signed_ledger_forensic原4条PASS，末tb1/tb2 -.10351227114456688/-.09397825940857009，scope仅新reader下原诊断一致性，旧v11_nonholdout_gate FAIL仍保持、零新任务或matrix信用。一次apply_patch测试插入锚点错误工具拒绝（无代码变化），立即按实际@pytest锚点修正；physical状态只读辅助首次battery=None导致AttributeError，修为or{}并跳过无robots行，未动实验与原件。完整功能/source/static验证继续。
+
+v12_reader_full完整1644PASS188.48s；v12_reader_source190保护/6授权/54协议/native常量/Future契约PASS；check_p2c_gate/test_p2c_gate F821/F822/F823/E999 PASS。本次仅能量reader及4参数反例，runtime/World/Native/SLAM/Nav2未变，无需重建四包。原21格仍只9bb2c2c冻结信用，旧5FAIL及物理fault任务timeout保持。
+
+长去程预算猜测否定并撤销：只读原v11四dev+15formal+两physical charge admission路线/目的地无>.1m差距；误读plan_rally_leg签名，将5m航点上限当成route截断。v12_complete_charge_repricing1新测试1FAIL/37deselected1.79s，原route实际完整末点等destination；深入2577..2643实现确认返回full world_route而waypoint可短。global_control/p2c_global_audit/test_global_control这三处未提交推测修改已git restore到9bb2c2c，错误反例撤销、失败输出保留，没有放宽断言或增加局部补丁。仅signed-reader真实修复保留，P2C.1仍未完成，下一策略须覆盖全任务的资源/观测/稳定搜索。
+
+### 2026-10-13 中断会话接手核验
+
+接手分支 p2c1/global-mission-20261012，HEAD 9bb2c2c，保留上一窗口五个已修改文件及全部原始证据；用户的260929_report未跟踪资料不纳入提交。当前无ros_smoke_test/run_p2c_tasks/gzserver/headquarters_control/battery_manager实验进程。读取研究/实施计划、AGENTS、ROS指南和单一累计报告，确认四开发PASS、15正式部分门禁10PASS/5FAIL、两物理安全PASS；917未运行，P2C.1未完成。
+
+独立接手核验命令（ROS cwd）：`rtk proxy bash -lc 'source /opt/ros/humble/setup.bash; source install/setup.bash; PYTHONNOUSERSITE=1 /usr/bin/python3 -m pytest -q scripts/test_p2c_gate.py'`，35PASS/1.42s/exit0；同环境 `PYTHONNOUSERSITE=1 /usr/bin/python3 scripts/check_p2c_source.py --output /tmp/p2c_recovery_source_20261013_audit.json`，190保护/6授权/54协议、原生常量及Future契约PASS。原空电池安全账本、gateway账本与manifest哈希仍匹配原summary；修复读者对4条signed accounting独立重算PASS。原v11_nonholdout_gate保持FAIL，SHA256 f53dd1473514136083ebc81ac49ea56d6981103331d0cb5694c9154148f7deba，不重写旧门禁。该接手核验未运行Gazebo，不增加任务信用。

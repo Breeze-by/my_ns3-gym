@@ -49,6 +49,8 @@ coding-guideline skills must not be reinstalled, invoked, or used as constraints
 
 ## Current Handoff
 
+2026-10-13 新全局实现冻结 `9bb2c2c40a62f7b0819d5c2d4345595a9ad7fc61`：四开发完整严格PASS；15非留出正式严格10PASS/5FAIL（9原生COMPLETE、5timeout、1预声明空电池FAILED），两受控物理安全PASS。延迟格仅安全/协议PASS，物理fault任务也timeout，不提供任务完成信用。917未运行，P2C.1未完成。独立能量读者已按原native signed-meter约定修正，1644功能PASS；旧冻结FAIL保持，runtime/Native模型不变。全部实验/审计进程关闭。详见单一累计报告 `ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261012_p2c1_global_mission.md`，避免按单格继续叠规则或跨版本拼矩阵。
+
 2026-10-12 用户授权接手 P2C.1 全局工作。长会话继续暂停，恢复基线 `b32c891` 的安全预算/本地返航/能量/Future 契约保留；当前独立分支 `p2c1/global-mission-20261012` 使用全局规划工作线程和统一导航所有权，选择性取回有原扫描证据的 SLAM 自体回波修复。新候选须以同一推送冻结完成四开发、17 正式和两物理，组件检查不计任务信用。详细实现与新原件结果集中在 `ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261012_p2c1_global_mission.md` 和实验 log，不能把历史 v95 PASS 算到本轮。P2C.1B 仍未完成，917 留出未调用，无 ROS/ns-3 Wi-Fi 联合实验。
 
 v95 四开发与首正式 lab101 的单格 PASS 属于已回退版本的历史结果，不是当前源码的完整任务信用。当前判断见 [恢复审查](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261012_p2c1_session_recovery.md) 和 [补强评审](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261009_p2c_strengthening_review.md)。

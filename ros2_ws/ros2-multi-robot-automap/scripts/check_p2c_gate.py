@@ -654,7 +654,10 @@ def energy_audit(path,result,required=False):
         if not isinstance(event,dict) or event.get('event')!='energy_accounting':continue
         model=event['energy_model']
         spent=event['actual_distance_m']*model['move_cost_per_m']+event['actual_elapsed_sec']*model['idle_cost_per_sec']
-        expected=max(0.,event['initial_energy']+event['charged_energy_added']-spent)
+        # Native consume_energy keeps a signed ledger, including consumption
+        # after FAILED. Only its public battery_state clips that value at zero.
+        # Reconstruct the diagnostic convention without concealing any debt.
+        expected=event['initial_energy']+event['charged_energy_added']-spent
         assert math.isfinite(expected) and math.isclose(event['energy'],expected,abs_tol=1e-6)
         assert event['actual_distance_m']>=0 and event['actual_elapsed_sec']>=0
         assert 0<=event['pending_native_inputs']<=128

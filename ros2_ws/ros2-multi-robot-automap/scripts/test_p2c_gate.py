@@ -109,6 +109,28 @@ def test_native_energy_meter_cannot_freeze_while_truth_robot_moves(tmp_path,corr
         with pytest.raises(AssertionError):energy_audit(path,result,True)
 
 
+@pytest.mark.parametrize('corruption',[None,'clipped','energy','credits'])
+def test_failed_empty_battery_preserves_signed_native_accounting(tmp_path,corruption):
+    # Original empty-battery diagnostic: public state is zero, while the meter
+    # continues recording tiny physical motion and elapsed idle consumption.
+    event=dict(event='energy_accounting',robot='tb2',sim_time=2080.582,mode='FAILED',
+        initial_energy=0.,charged_energy_added=0.,actual_distance_m=.0001382594085700174,
+        actual_elapsed_sec=4.692000000000007,energy=-.09397825940857009,
+        pending_native_inputs=0,odom_source_time=2080.551,frame_source_time=2080.367,
+        energy_model=dict(move_cost_per_m=1.,idle_cost_per_sec=.02))
+    result=dict(robots={'tb2':dict(path_length_m=.0001382594085700174,
+                                 battery_initial_energy=0.)},end_sim_time_sec=2080.582)
+    if corruption=='clipped':event['energy']=0.
+    if corruption=='energy':event['energy']-=.001
+    if corruption=='credits':event['charged_energy_added']=1.
+    path=tmp_path/'events.jsonl'
+    path.write_text(json.dumps(dict(data=event))+'\n')
+    if corruption is None:
+        assert energy_audit(path,result,True)['snapshots']==1
+    else:
+        with pytest.raises(AssertionError):energy_audit(path,result,True)
+
+
 @pytest.mark.parametrize('energy',[18.,8.5])
 def test_temporary_pose_hold_cannot_authorize_a_funded_charger_topup(tmp_path,energy):
     common=trace()[0]
