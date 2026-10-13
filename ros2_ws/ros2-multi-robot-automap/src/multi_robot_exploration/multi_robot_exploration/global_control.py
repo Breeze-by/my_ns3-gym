@@ -25,6 +25,8 @@ from .fleet_planning import (
     rally_wait_budgets,
     rally_beneficiary_complete,
     observer_heading_pose,
+    planned_charge_returns,
+    return_helper_beneficiary_current,
 )
 
 
@@ -209,11 +211,25 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
             self.cancel_navigation(robot_name, "local_failure")
         elif mode != "ACTIVE":
             self.cancel_navigation(robot_name, "local_return")
+        if (mode == 'FAILED' and self.deferred_charge_intent is not None
+                and self.deferred_charge_intent.robot == robot_name):
+            self.deferred_charge_intent = None
+            self._emit('coordinator_global_charge_intent_closed',robot=robot_name,reason='participant_failed')
         intent = getattr(self, "global_charge_intent", None)
         if intent is not None and intent.robot == robot_name:
             if mode in ("RETURNING", "CHARGING"):
+                if self.global_charge_requested_at is not None and (previous != mode or not self.global_charge_started):
+                    self._emit('coordinator_global_charge_request_transition', robot=robot_name,
+                        requested_at_sec=self.global_charge_requested_at,
+                        battery_source_time=source, battery_state=dict(event), previous_mode=previous)
                 self.global_charge_started = True
             elif (mode == "ACTIVE" and self.global_charge_started) or mode == "FAILED":
+                if self.global_charge_requested_at is not None:
+                    self._emit('coordinator_global_charge_request_closed', robot=robot_name,
+                        requested_at_sec=self.global_charge_requested_at,
+                        battery_source_time=source, battery_state=dict(event),
+                        observed_return_started=self.global_charge_started,
+                        reason='native_failure' if mode == 'FAILED' else 'native_cycle_closed')
                 self.global_charge_intent = self.deferred_charge_intent
                 self.deferred_charge_intent = None
                 self.global_charge_requested_at = None
@@ -227,6 +243,10 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                 # Loss may have hidden an earlier complete native cycle.
                 # Resume the deferred dependency as after a completed charge; leaving
                 # it orphaned would permanently remove its robot from available.
+                self._emit('coordinator_global_charge_request_closed', robot=robot_name,
+                    requested_at_sec=self.global_charge_requested_at,
+                    battery_source_time=source, battery_state=dict(event),
+                    observed_return_started=self.global_charge_started, reason='request_lease_ended')
                 self.global_charge_intent = self.deferred_charge_intent
                 self.deferred_charge_intent = None
                 self.global_charge_requested_at = None
@@ -311,10 +331,20 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                 for robot, task in self.navigation_tasks.items() if robot in positions}
         available = tuple(robot for robot in required if self.battery_modes[robot] == "ACTIVE"
                           and robot not in self.navigation_tasks
-                          and (self.deferred_charge_intent is None or robot != self.deferred_charge_intent.robot))
+                          and robot not in self.rally_charge_requested
+                          and not (self.global_charge_requested_at is not None
+                              and self.global_charge_intent is not None
+                              and robot == self.global_charge_intent.robot))
         pending = tuple(self.rally_charge_requested)
-        if self.global_charge_intent is not None:
+        if self.global_charge_intent is not None and self.global_charge_requested_at is not None:
             pending = tuple(set(pending) | {self.global_charge_intent.robot})
+        intents, slots = {}, {}
+        for slot, intent in (('main',self.global_charge_intent if self.global_charge_requested_at is None else None),
+                             ('deferred',self.deferred_charge_intent)):
+            if (intent is not None and intent.robot not in intents
+                    and self.battery_modes.get(intent.robot) != 'FAILED'):
+                intents[intent.robot] = replace(intent)
+                slots[intent.robot] = slot
         history = tuple((x, y) for x, y, expiry in (*self.target_history, *self.bad_targets)
                         if expiry > now)
         snapshot = FleetSnapshot(
@@ -336,13 +366,16 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
             dict(self.global_scan_steps), self.global_survey_attempts,
             self.num_robots * (1 + self.rally_max_retries),
             self.source_map_data, dict(self.map_self_return_cells))
+        snapshot = replace(snapshot, charge_intents=intents, charge_intent_slots=slots,
+            yaws=dict(self.robot_yaws), confirmations=dict(self.global_confirmations),
+            target_fov_rad=self.target_view_fov_rad, goal_timeout_sec=self.goal_timeout_sec)
+        snapshot = replace(snapshot, planned_return_routes=planned_charge_returns(snapshot,
+            {robot:{'returns':self.return_geometry_caches.setdefault(robot,{})} for robot in intents}))
         self._refresh_rally_yields(snapshot)
         return replace(snapshot, yielded_for={robot:tuple(sorted(peers))
             for robot,peers in self.global_rally_yields.items()},
             pending_views={robot:task.proposal.pose for robot,task in self.navigation_tasks.items()
-                if robot in required and task.proposal.kind=='exploration' and task.cancel_reason is None},
-            yaws=dict(self.robot_yaws), confirmations=dict(self.global_confirmations),
-            target_fov_rad=self.target_view_fov_rad, goal_timeout_sec=self.goal_timeout_sec)
+                if robot in required and task.proposal.kind=='exploration' and task.cancel_reason is None})
 
     def _refresh_rally_yields(self, snapshot):
         # Navigation ownership has already closed. The refuge remains a
@@ -394,6 +427,11 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                 for robot, local in snapshot.maps.items()},
             "positions": snapshot.positions, "battery_states": snapshot.batteries,
             "sources": snapshot.sources, "charge_pending": snapshot.charge_pending,
+            "charge_intents": {robot:dict(slot=snapshot.charge_intent_slots[robot],
+                reason=intent.reason, required_energy=intent.required_energy,
+                destination=intent.destination, park_for=intent.park_for)
+                for robot,intent in snapshot.charge_intents.items()},
+            "planned_return_routes":snapshot.planned_return_routes,
             "live_routes": snapshot.live_routes, "required": snapshot.required,
             "target": snapshot.target, "observer": snapshot.observer,
             "completed_legs": snapshot.completed_legs,
@@ -441,6 +479,8 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
             kind = task.proposal.kind
             if self.battery_modes[robot] != "ACTIVE":
                 self.cancel_navigation(robot, "local_return")
+            elif not self._return_helper_current(task.proposal):
+                self.cancel_navigation(robot, 'dependency_ended')
             elif kind == "exploration" and snapshot.target is not None:
                 self.cancel_navigation(robot, "target_found")
             elif kind in ("rally", "rally_yield", "target_information_survey", "target_observation_heading") and snapshot.target is None:
@@ -453,6 +493,15 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                 if any(geometry.routes_conflict(route, corridor) for peer, corridor in protected.items()
                        if peer not in (robot, allowed)):
                     self.cancel_navigation(robot, "return_corridor")
+
+    def _return_helper_current(self, proposal):
+        issued = set(self.rally_charge_requested)
+        intents = set()
+        if self.global_charge_intent is not None:
+            (issued if self.global_charge_requested_at is not None else intents).add(self.global_charge_intent.robot)
+        if self.deferred_charge_intent is not None:
+            intents.add(self.deferred_charge_intent.robot)
+        return return_helper_beneficiary_current(proposal,self.battery_modes,issued,intents)
 
     def _nominal_caches(self, snapshot, robot):
         # Waiting prices use a static, complete approach without peer bodies.
@@ -496,6 +545,11 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
 
     def _current_motion(self, snapshot, proposal, waits, owned_task=None):
         robot, kind = proposal.robot, proposal.kind
+        helper_roles = ('local_return_yield','charge_clearance','rally_yield',
+                        'target_observation_heading','target_reacquisition_scan')
+        if (robot in snapshot.charge_pending
+                or owned_task is None and robot in snapshot.charge_intents and kind not in helper_roles):
+            return None
         if kind == 'rally' and robot in snapshot.yielded_for:
             return None
         if kind == 'rally_yield' and (proposal.beneficiary not in snapshot.final_poses
@@ -567,6 +621,20 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
         protected = protected_returns(snapshot, {})
         if protected is None:
             return None
+        if kind in ('local_return_yield','charge_clearance'):
+            beneficiary = proposal.beneficiary
+            if beneficiary not in snapshot.batteries or beneficiary not in snapshot.positions:
+                return None
+            if not self._return_helper_current(proposal) or not return_helper_beneficiary_current(proposal,
+                    {peer:state['mode'] for peer,state in snapshot.batteries.items()},
+                    snapshot.charge_pending,snapshot.charge_intents):
+                return None
+            if beneficiary not in protected:
+                contact = contact_route(snapshot,beneficiary,snapshot.positions[beneficiary],
+                                        self._admission_caches(snapshot,beneficiary))
+                if contact is None:
+                    return None
+                protected[beneficiary] = contact['route']
         for peer, corridor in protected.items():
             if peer == robot:
                 continue
@@ -766,6 +834,8 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
             compatible = False
         if not compatible:
             task.cancel_reason = task.cancel_reason or "phase_changed"
+        elif not self._return_helper_current(task.proposal):
+            task.cancel_reason = task.cancel_reason or 'dependency_ended'
         elif not self._sources_current(task.sources, include_target=task.proposal.kind not in (
                 "local_return_yield", "exploration", "target_reacquisition_scan")):
             if task.cancel_reason is None and not self._revalidate_pending_motion(task):
@@ -826,7 +896,8 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                                             self.now() + geometry.TARGET_HISTORY_SEC))
         elif task.cancel_reason not in ("local_return", "local_failure", "target_found",
                                        "target_expired", "return_corridor", "unknown_return_corridor",
-                                       "phase_changed", "source_expired_at_acceptance", "mission_terminal"):
+                                       "phase_changed", "source_expired_at_acceptance", "mission_terminal",
+                                       'dependency_ended'):
             self.global_nav_failures[robot] = self.global_nav_failures.get(robot, 0) + 1
             if kind == "rally" and self.global_nav_failures[robot] > self.rally_max_retries:
                 self.fail_task("rally_navigation_failed:" + robot)
@@ -847,6 +918,13 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
         if snapshot is None or intent is None or self.global_charge_requested_at is not None:
             return
         robot = intent.robot
+        state = snapshot.batteries.get(robot)
+        if state is None or self.battery_modes.get(robot) == 'FAILED':
+            self.global_charge_intent = self.deferred_charge_intent
+            self.deferred_charge_intent = None
+            self.global_charge_started = False
+            self._emit('coordinator_global_charge_intent_closed',robot=robot,reason='participant_unavailable')
+            return
         if intent.park_for is not None and (intent.park_for not in snapshot.final_poses
                 or rally_beneficiary_complete(snapshot, intent.park_for)):
             self.global_charge_intent = self.deferred_charge_intent
@@ -854,7 +932,7 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
             self._emit('coordinator_global_charge_intent_closed', robot=robot,
                        reason='refuge_beneficiary_already_complete')
             return
-        if robot in self.navigation_tasks or snapshot.batteries[robot]["mode"] != "ACTIVE":
+        if robot in self.navigation_tasks or state["mode"] != "ACTIVE":
             return
         caches = self._admission_caches(snapshot, robot)
         contact = contact_route(snapshot, robot, snapshot.positions[robot], caches)
@@ -865,7 +943,6 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
             self.global_charge_intent = self.deferred_charge_intent
             self.deferred_charge_intent = None
             return
-        state = snapshot.batteries[robot]
         target = float(state["capacity"]) * float(state["charge_target_fraction"])
         required = intent.required_energy
         desired_route, desired_wait, desired_time = (), 0., None
@@ -1095,8 +1172,6 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                     if refreshed is not None:
                         self._prepare_charge(refreshed)
             for motion in proposal.motions:
-                if self.global_charge_intent is not None and motion.robot == self.global_charge_intent.robot:
-                    continue
                 current = self._snapshot()
                 if current is None:
                     break

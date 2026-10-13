@@ -9665,3 +9665,29 @@ exec taskset -c 0-79 /usr/bin/python3 log/p2c1_global_20261013_recovery/run_deve
 forced原件关闭后lab运行期间执行单格只读审计：同ROS环境/taskset0–79 `scripts/check_p2c_gate.py --run-root log/p2c/20261013_p2c_global_recovery_v1 --development --cases dev_forced2 --output log/p2c1_global_20261013_recovery/forced2_gate1.json > .../forced2_gate1.log 2>&1`，PASS/35.97395s，scope仅1格非完整，无额外仿真/订阅；并行离线CPU审计状态公开保留，不声称异步轨迹严格可复现。全部原件关闭后完整命令 `scripts/check_p2c_gate.py --run-root log/p2c/20261013_p2c_global_recovery_v1 --development --output log/p2c1_global_20261013_recovery/development_gate1.json > .../development_gate1.log 2>&1`，exit1/完整scope4FAIL，仅lab episode_success断言，其余三个严格PASS。driver总exit1正确停止，无正式/物理/917原件；只读原件/账本/graph/CDR原样保留，全部owned仿真/审计进程关闭后才推进新源码。
 
 lab确认最大gap2.1s、无TTL过期/新heading动作，24次探索后257.5s晚发现，263.9s首rally等候160.26/100.84s却仅36s剩余。对本批gen5/14/16/18等原图/原source手工条件重建两种收益均派发，三同目标一邻点差异；gen2/23池为空，无oldwait/newmove的历史因果证明。纠正新等待零分的“普遍数学修复”解释：它是改变机会成本的策略候选；原绝对收益G0/T0准入g>(G0/T0)ΔT能合理等待，下一候选恢复原比较，不按本格叠坐标/seed规则。真实生产方法/不可变已知图/原source/fullbudget/PlanningWorker/rclpy pendingFuture构造另支持未发main/deferred补能意图与Native真实返航互相压住清道的通用所有权问题，具体原反例及失败夹具日志保存在忽略诊断目录。其零DDS/Gazebo/Nav2物理信用，不归为lab晚发现原因；下一步只在新候选中区分未来需求与真实所有权并重新完整验证。
+
+
+### recovery_v2 通用需求/所有权修复组件验证
+
+代码状态：父 `f65823bb18ac9eae69b1c530543124cac68868de` 上未冻结候选，恢复9bb原绝对探索/等待目标，区分未发main/deferred需求和issued/native/Nav2实际所有权。只有完整已知soft接触路参与未来清道；真实未知返航仍暂停。当前受益者须健康/参与，guard/迟到接受在旧source仍TTL有效时也撤销已结束需求，dependency_ended取消不加失败计数且真实Future未闭合仍占有。FAILED deferred单独失效；原Native ACTIVE包不被中央failure改写，body保留。独立请求生命周期只记录实际应用的原电池消息并绑定Native+delivered CDR，原5s/10s与所有模型不改。组件/静态不是任务信用。
+
+组件共同环境：ROS canonical cwd，`source /opt/ros/humble/setup.bash`、`source install/setup.bash`、`export PYTHONNOUSERSITE=1`、`export PYTHONPATH="$PWD/src/multi_robot_exploration:$PWD/scripts:$PYTHONPATH"`，全部由 `rtk proxy bash -c`（reader用 `-lc`）执行，`/usr/bin/python3`；无DDS/Gazebo/seed实验。规划代理前三次pytest原输出只在工具对话，不虚构文件：
+
+- `/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_fleet_planning.py src/multi_robot_exploration/test/test_global_control.py -k "unissued_demand or unknown_unissued or opportunity_cost or improve_readiness"`：6PASS/84deselected22.23s，guard/mode边界前。
+- 同两个文件 `-k "unissued_demand or unknown_unissued or opportunity_cost or improve_readiness or soft_demand_closure or failed_deferred or membership_never"`：20PASS/1FAIL/84deselected40.30s，explicit_failure夹具误期待原Native包被删除；生产保留原包且中央modeFAILED正确，仅纠正测试预期。
+- `/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_global_control.py -k "failed_deferred"`：2PASS/49deselected2.66s。
+- `/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_fleet_planning.py src/multi_robot_exploration/test/test_global_control.py > log/p2c1_global_20261013_recovery/recovery_v2_components.log 2>&1`：105PASS59.42s，源码释放。
+
+读者命令 `/usr/bin/python3 -m pytest -q scripts/test_p2c_charge_demand_audit.py scripts/test_p2c_observer_heading_audit.py`，stdout分别重定向 `log/p2c1_global_20261013_recovery/demand_audit1.log`、`demand_audit2.log`、`demand_audit3.log`。首次25PASS3FAIL6.95s为tuple写入与原source行切片漏tb2电池两处夹具错误；改夹具后85PASS10.81s。最新FAILED/隔离受益者两审查负例先2FAIL1.62s（`demand_audit_beneficiary_red.log`），修reader受益者required和ACTIVE/native条件后87PASS10.55s。旧heading57项保持；新增30项真实/软所有权、资金/单调路线、原件绑定和整组proof字段删除负例。新schema由原manifest策略声明或实际生命周期证据决定，不能删除字段隐藏issued所有权；未闭issued请求保留报告，不当closed。原件兼容组件57PASS4.35s。所有上述失败保留，无仿真/917操作。
+
+Root最终检查共同环境在上述source之后加 `export RMW_IMPLEMENTATION=rmw_fastrtps_cpp`、`export FASTDDS_BUILTIN_TRANSPORTS=UDPv4`、`unset FASTRTPS_DEFAULT_PROFILES_FILE ROS_DISCOVERY_SERVER`、`set -o noclobber`；以下独立命令并行运行，输出均在新的 `log/p2c1_global_20261013_recovery_v2/`，不覆盖：
+
+- `colcon build --symlink-install --packages-select multi_robot multi_robot_exploration merge_map slam_toolbox > log/p2c1_global_20261013_recovery_v2/build1.log 2>&1`：4包PASS4.39s；最终runtime源码digest仍与检查时一致。
+- `taskset -c 0-79 /usr/bin/python3 scripts/check_p2c_source.py --output log/p2c1_global_20261013_recovery_v2/source1.json > log/p2c1_global_20261013_recovery_v2/source1.log 2>&1`：190保护/6授权/54协议/原native常量/Future8+2+2 PASS。
+- `taskset -c 0-79 /usr/bin/python3 -m flake8 --select F821,F822,F823,E999 src/multi_robot_exploration/multi_robot_exploration/control.py src/multi_robot_exploration/multi_robot_exploration/fleet_planning.py src/multi_robot_exploration/multi_robot_exploration/global_control.py src/multi_robot_exploration/test/test_fleet_planning.py src/multi_robot_exploration/test/test_global_control.py scripts/p2c_global_audit.py scripts/test_p2c_observer_heading_audit.py scripts/test_p2c_charge_demand_audit.py > log/p2c1_global_20261013_recovery_v2/static1.log 2>&1`：PASS；reader最终两负例修复后同命令输出static2.log再次PASS。
+- `taskset -c 0-79 /usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261013_p2c_global_recovery_v2 --domain 204 --gazebo-port 11573 --validate-only > log/p2c1_global_20261013_recovery_v2/declaration1.json 2> log/p2c1_global_20261013_recovery_v2/declaration1.log`：PASS；reader最终后同命令输出declaration2.json/log再次PASS，未启动实际case。
+- `taskset -c 0-79 /usr/bin/python3 -m pytest -q src/multi_robot_exploration/test scripts --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py > log/p2c1_global_20261013_recovery_v2/full1.log 2>&1`：1780PASS242.18s，exit0。
+
+两manifest仅policy/parent/UTC三meta变化，与9405其余整JSON逐字段一致；新global策略在两manifest一致。独立最终源码评审无剩余阻塞，必须完整功能验证后提交推送新冻结，再执行原四开发，不能以组件代替任务门禁。
+
+最终源码/读者独立复审无剩余阻塞；完整功能1780PASS、4包build、source/static/declaration均PASS。提交推送新冻结后运行 `20261013_p2c_global_recovery_v2` 原四开发；组件仍不提供原生任务信用。

@@ -163,6 +163,56 @@ def angle_error(first, second):
     return abs(math.atan2(math.sin(first-second), math.cos(first-second)))
 
 
+def audit_charge_demands(event, grid, maps):
+    """Soft funding intentions may plan a corridor but never own navigation."""
+    world = event['world']
+    if 'charge_intents' not in world:
+        return
+    intents = world['charge_intents']
+    planned = world['planned_return_routes']
+    assert len(intents) <= 2 and set(planned) <= set(intents)
+    slots = []
+    for robot, demand in intents.items():
+        assert robot in world['positions'] and robot in world['battery_states']
+        assert robot not in world['charge_pending'], 'unissued demand declared as an issued owner'
+        assert demand['slot'] in ('main', 'deferred')
+        slots.append(demand['slot'])
+        assert math.isfinite(demand['required_energy']) and demand['required_energy'] >= 0
+        assert isinstance(demand['reason'], str) and (demand['park_for'] is None or isinstance(demand['park_for'], str))
+        assert demand['destination'] is None or (len(demand['destination']) == 2 and np.isfinite(demand['destination']).all())
+        if robot in planned:
+            assert world['battery_states'][robot]['mode'] == 'ACTIVE', 'planned soft corridor for a native owner'
+            rebuilt = contact(world, grid, maps, robot, world['positions'][robot])
+            assert np.asarray(planned[robot]).shape == np.asarray(rebuilt['route']).shape
+            assert np.allclose(planned[robot], rebuilt['route'], rtol=0, atol=1e-8), 'unrebuilt planned return corridor'
+    assert len(slots) == len(set(slots)), 'duplicate charge intent slot'
+
+
+def audit_clearance_beneficiary(event, grid, maps):
+    world, actor, beneficiary = event['world'], event['robot'], event['beneficiary']
+    assert beneficiary != actor and beneficiary in world['positions'] and beneficiary in world['battery_states']
+    assert beneficiary in world['required'], 'clearance beneficiary is no longer a current participant'
+    mode = world['battery_states'][beneficiary]['mode']
+    if event['kind'] == 'local_return_yield':
+        assert mode in ('RETURNING', 'CHARGING'), 'local yield lacks an actual native returner'
+    else:
+        assert (mode in ('RETURNING', 'CHARGING') or (mode == 'ACTIVE'
+                and (beneficiary in world['charge_pending'] or beneficiary in world.get('charge_intents', {})))), \
+                'charge clearance lacks a current demand or issued owner'
+    for kind, ttl in (('pose_state', 2.), ('frame_state', 2.), ('map_snapshot', 5.), ('battery_state', 5.)):
+        source = world['sources'][beneficiary+'/'+kind]
+        assert 0 <= event['event_time']-source <= ttl, 'stale clearance beneficiary'
+    reserved = contact(world, grid, maps, beneficiary, world['positions'][beneficiary])['route']
+    if (mode == 'ACTIVE' and beneficiary in world.get('charge_intents', {})
+            and beneficiary not in world['charge_pending']):
+        assert beneficiary in world['planned_return_routes'], 'missing planned demand return corridor'
+        assert np.allclose(reserved, world['planned_return_routes'][beneficiary], rtol=0, atol=1e-8)
+    distances = [min(math.dist(point, other) for other in reserved) for point in event['route']]
+    assert distances[-1] >= 1.8
+    assert all(after+world['planning_map']['resolution'] >= min(before, 1.8)
+               for before, after in zip(distances, distances[1:])), 'nonmonotone return clearance'
+
+
 def audit_observer_heading(event, grid, maps):
     """A funded stationary heading repair is neither translation nor detection."""
     from multi_robot_exploration import control
@@ -203,6 +253,10 @@ def audit_motion(event):
     from multi_robot_exploration import control
     grid, maps = geometry_world(event)
     world, robot, kind = event['world'], event['robot'], event['kind']
+    audit_charge_demands(event, grid, maps)
+    if robot in world.get('charge_intents', {}):
+        assert kind in ('local_return_yield', 'charge_clearance', 'rally_yield',
+                        'target_observation_heading', 'target_reacquisition_scan'), 'ordinary work for a charge demand actor'
     route = event['route']
     assert np.allclose(route[0], world['positions'][robot], rtol=0, atol=1e-8)
     assert np.allclose(route[-1], event['requested_position'], rtol=0, atol=1e-8)
@@ -216,6 +270,8 @@ def audit_motion(event):
     for peer, live in world['live_routes'].items():
         if peer != robot:
             assert not control.routes_conflict(route, live, 1.8), ('overlapping owned routes', robot, peer)
+    if kind in ('local_return_yield', 'charge_clearance') and 'charge_intents' in world:
+        audit_clearance_beneficiary(event, grid, maps)
     for peer, state in world['battery_states'].items():
         if state['mode'] in ('RETURNING', 'CHARGING') or peer in world['charge_pending']:
             reserved = contact(world, grid, maps, peer, world['positions'][peer])['route']
@@ -262,7 +318,7 @@ def audit_motion(event):
     return len(route)
 
 
-def bind_sources(events, capture, native_path):
+def bind_sources(events, capture, native_path, charge_events=()):
     """Bind exact content; identical stamps with different maps cannot substitute."""
     from nav_msgs.msg import OccupancyGrid, Odometry
     from rclpy.serialization import deserialize_message
@@ -288,6 +344,8 @@ def bind_sources(events, capture, native_path):
             robot = event['robot']
             for kind, suffix in (('pose_state', 'odom'), ('frame_state', 'tf')):
                 wanted[(f'/{robot}/{suffix}', round(world['sources'][robot+'/'+kind]*1e9))]
+    for event in charge_events:
+        wanted[(f"/gateway/received/{event['robot']}/battery_state", round(event['battery_source_time']*1e9))]
     matched = set()
     with gzip.open(capture, 'rt') as stream:
         for line in stream:
@@ -377,6 +435,11 @@ def bind_sources(events, capture, native_path):
             assert any(row['robot']==robot and (event.get('kind') != 'target_observation_heading'
                 or np.allclose((row['target_x'],row['target_y']),world['target'],rtol=0,atol=1e-8))
                 for row in rows), 'missing producer-specific confirmation'
+    for event in charge_events:
+        robot, state, source = event['robot'], event['battery_state'], event['battery_source_time']
+        assert state['stamp_sec'] == source and 0 <= event['event_time']-source <= 5.
+        assert state in native[robot], ('missing exact native charge transition', robot)
+        assert state in original[f'/gateway/received/{robot}/battery_state', round(source*1e9)], ('missing delivered charge transition', robot)
     return len(required)
 
 
@@ -385,16 +448,32 @@ def applied_heading_confirmations(event, confirmations):
         assert event['world']['confirmations'] == confirmations, 'heading omitted an applied producer confirmation'
 
 
+def charge_ownership(event, issued, required=False):
+    if required or 'charge_intents' in event['world']:
+        assert 'charge_intents' in event['world'] and 'planned_return_routes' in event['world'], 'missing charge ownership proof schema'
+        assert set(event['world']['charge_pending']) == set(issued), 'omitted or forged issued charge owner'
+        if event.get('kind') is not None:
+            assert event['robot'] not in issued, 'navigation for an issued charge owner'
+
+
 def global_mission_audit(directory, required=False):
     if not required:
         return None
     events, admissions, owners, charge_proofs, revalidations = [], {}, {}, {}, {}
     completed,held_for={},defaultdict(dict)
     confirmations = {}
+    issued_charges, charge_events = {}, []
+    ownership_checks, cohort_worlds = [], []
+    declared = json.loads((directory/'manifest.json').read_text()).get('config', {}) if (directory/'manifest.json').is_file() else {}
+    charge_schema = 'charge_ownership' in declared.get('global_algorithm', {})
     sent = closed = revoked = charges = validated = 0
     for line in (directory / 'ledger.jsonl').open():
         event = json.loads(line)
         kind = event.get('event')
+        if str(kind).startswith('coordinator_global_') and isinstance(event.get('world'), dict):
+            cohort_worlds.append(event)
+            if 'charge_intents' in event['world'] or 'planned_return_routes' in event['world']:
+                charge_schema = True
         if kind == 'coordinator_global_confirmation':
             source = event['source_time']
             assert math.isfinite(source) and 0 <= event['event_time']-source <= 60.
@@ -402,6 +481,8 @@ def global_mission_audit(directory, required=False):
             confirmations[event['robot']] = source
         elif kind == 'coordinator_global_motion_admission':
             applied_heading_confirmations(event, confirmations)
+            ownership_checks.append((event, set(issued_charges)))
+            charge_ownership(event, issued_charges, charge_schema)
             token = event['robot'], event['generation']
             assert token not in admissions
             admissions[token] = event
@@ -458,6 +539,8 @@ def global_mission_audit(directory, required=False):
             events.append(event)
         elif kind == 'coordinator_global_motion_revalidation':
             applied_heading_confirmations(event, confirmations)
+            ownership_checks.append((event, set(issued_charges)))
+            charge_ownership(event, issued_charges, charge_schema)
             token = event['robot'], event['generation']
             assert owners.get(event['robot']) == token
             original = admissions[token]
@@ -478,7 +561,32 @@ def global_mission_audit(directory, required=False):
         elif kind == 'coordinator_global_motion_revoked':
             revoked += 1
         elif kind == 'coordinator_global_charge_admission':
+            ownership_checks.append((event, set(issued_charges)))
+            charge_ownership(event, issued_charges, charge_schema)
             charge_proofs[event['robot']] = event
+        elif kind in ('coordinator_global_charge_request_transition', 'coordinator_global_charge_request_closed'):
+            charge_schema = True
+            robot = event['robot']
+            assert robot in issued_charges, 'transition without an issued charge request'
+            request = issued_charges[robot]
+            assert event['requested_at_sec'] == request['requested_at_sec']
+            state, source = event['battery_state'], event['battery_source_time']
+            assert state['stamp_sec'] == source and math.isfinite(source) and 0 <= event['event_time']-source <= 5.
+            assert source > request['last_source'], 'nonmonotone applied charge state'
+            if kind == 'coordinator_global_charge_request_transition':
+                assert state['mode'] in ('RETURNING', 'CHARGING') and event['previous_mode'] == request['mode']
+                request.update(observed_return_started=True, last_source=source, mode=state['mode'])
+            else:
+                assert event['observed_return_started'] == request['observed_return_started']
+                if event['reason'] == 'native_cycle_closed':
+                    assert state['mode'] == 'ACTIVE' and request['observed_return_started']
+                elif event['reason'] == 'native_failure':
+                    assert state['mode'] == 'FAILED'
+                else:
+                    assert event['reason'] == 'request_lease_ended' and state['mode'] == 'ACTIVE'
+                    assert not request['observed_return_started'] and source >= request['requested_at_sec']+10.
+                issued_charges.pop(robot)
+            charge_events.append(event)
         elif kind == 'coordinator_global_charge_sent':
             dispatched = event
             event = charge_proofs.pop(dispatched['robot'])
@@ -512,11 +620,22 @@ def global_mission_audit(directory, required=False):
                 assert world['completed_legs'].get(robot,0)>0 and int(state.get('charge_count',0))==0
                 desired=max(desired,.25*state['capacity']*state['charge_target_fraction'])
             assert math.isclose(desired,event['required_energy'],abs_tol=1e-6), 'unrebuilt post-charge task budget'
+            if charge_schema:
+                assert not issued_charges, 'concurrent issued charge requests'
+            issued_charges[robot] = dict(requested_at_sec=dispatched['stamp_sec'],
+                observed_return_started=False, last_source=state['stamp_sec'], mode=state['mode'])
             events.append(event)
             charges += 1
-    bindings = bind_sources(events, directory / 'navigation_inputs.jsonl.gz', directory / 'safety_events.jsonl')
+    if charge_schema:
+        for event in cohort_worlds:
+            assert 'charge_intents' in event['world'] and 'planned_return_routes' in event['world'], 'inconsistent charge ownership proof schema'
+        for event, issued in ownership_checks:
+            charge_ownership(event, issued, True)
+    bindings = bind_sources(events, directory / 'navigation_inputs.jsonl.gz', directory / 'safety_events.jsonl', charge_events)
     return dict(status='PASS', sent=sent, closed=closed, revoked=revoked, charge_admissions=charges,
         current_revalidations=validated,
+        applied_charge_state_bindings=len(charge_events),
+        pending_issued_charge_requests_at_shutdown=issued_charges if charge_schema else 'LEGACY_NOT_INSTRUMENTED',
         refuge_dependencies_at_shutdown={robot:sorted(peers) for robot,peers in held_for.items() if peers},
         original_map_bindings=bindings, pending_at_owned_shutdown=sorted(owners),
         scope='Original DDS content, complete dispatch budgets, reservations and generation ownership; no physical success substitution')

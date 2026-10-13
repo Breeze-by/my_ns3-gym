@@ -55,6 +55,9 @@ class FleetSnapshot:
     confirmations: dict = field(default_factory=dict)
     target_fov_rad: float = geometry.INITIAL_SEARCH_VIEW_FOV_RAD
     goal_timeout_sec: float = 60.0
+    charge_intents: dict = field(default_factory=dict)
+    charge_intent_slots: dict = field(default_factory=dict)
+    planned_return_routes: dict = field(default_factory=dict)
 
     @property
     def context(self):
@@ -254,6 +257,30 @@ def protected_returns(snapshot, caches):
     return result
 
 
+def planned_charge_returns(snapshot, caches):
+    """Unissued demands guide clearance without acquiring physical ownership."""
+    result = {}
+    for robot in snapshot.charge_intents:
+        if robot in snapshot.charge_pending or snapshot.batteries.get(robot, {}).get('mode') != 'ACTIVE':
+            continue
+        if robot not in snapshot.maps or robot not in snapshot.positions:
+            continue
+        contact = contact_route(snapshot, robot, snapshot.positions[robot], caches.setdefault(robot, {}))
+        if contact is not None:
+            result[robot] = contact['route']
+    return result
+
+
+def return_helper_beneficiary_current(proposal, modes, issued, intents):
+    beneficiary = proposal.beneficiary
+    native = modes.get(beneficiary) in ('RETURNING','CHARGING')
+    if proposal.kind == 'local_return_yield':
+        return native
+    if proposal.kind == 'charge_clearance':
+        return native or modes.get(beneficiary) == 'ACTIVE' and (beneficiary in issued or beneficiary in intents)
+    return True
+
+
 def camera_cells(grid, cell, radius_cells, interest):
     hits = geometry.visible_unknown_gain(grid, cell, radius_cells, interest,
                                          return_cells=True)
@@ -356,7 +383,7 @@ class ExplorationObjective:
 
     def score(self, motions):
         cells = set(self.committed)
-        gain = 0.
+        gain = float(len(cells))
         legacy = 0.
         for motion in sorted(motions,key=lambda item:item.robot):
             novel = len(motion.information_cells-cells)
@@ -372,7 +399,7 @@ class ExplorationObjective:
         motion = MotionProposal(robot,'exploration',pose,route,0.,0.)
         duration = self.ready_time((motion,))
         return (geometry.exploration_utility(information_count,0,route_length(route))*weight
-                if duration is None else information_count*weight/duration)
+                if duration is None else (len(self.committed)+information_count*weight)/duration)
 
     def evidence(self, motions):
         cells = self.committed | set().union(*(motion.information_cells for motion in motions))
@@ -418,10 +445,7 @@ def joint_motions(pools, reservations=(), maximum=3, scorer=None):
             accepted.append(choice)
         if not valid:
             continue
-        value = gain if scorer is None else scorer(motions)
-        if scorer is not None and motions and value <= 0.:
-            continue
-        score = (value, len(motions))
+        score = (gain if scorer is None else scorer(motions), len(motions))
         if score > best_score:
             best, best_score = motions, score
     return best
@@ -433,7 +457,7 @@ def _safe_endpoint(safe, snapshot, pose):
 
 
 def _escape(snapshot, beneficiary, protected, caches, rally_waits=None):
-    """Clear an actual corridor before requesting traffic that would use it."""
+    """Clear a current actual or planned corridor before its dependent traffic."""
     route = protected[beneficiary]
     target = route[-1]
     choices = []
@@ -444,7 +468,8 @@ def _escape(snapshot, beneficiary, protected, caches, rally_waits=None):
         if robot == beneficiary or not geometry.routes_conflict(
                 (snapshot.positions[robot],), route, clearance):
             continue
-        if snapshot.batteries and snapshot.batteries[robot]["mode"] != "ACTIVE":
+        if (robot in snapshot.charge_pending
+                or snapshot.batteries and snapshot.batteries[robot]["mode"] != "ACTIVE"):
             continue
         grid = robot_grid(snapshot, robot, caches.setdefault(robot, {}))
         blocked = [position for peer, position in snapshot.positions.items() if peer != robot]
@@ -454,7 +479,8 @@ def _escape(snapshot, beneficiary, protected, caches, rally_waits=None):
             grid, snapshot.resolution, snapshot.origin, snapshot.positions[robot],
             snapshot.target if view_range is not None else target,
             blocked_positions=blocked,
-            reserved_routes=(*protected.values(), *snapshot.live_routes.values()),
+            reserved_routes=(*(other for peer,other in protected.items() if peer != robot),
+                             *snapshot.live_routes.values()),
             route_separation_m=clearance, visible_only=True,
             target_view_distance=view_range,
             endpoint_clearance_m=geometry.ROBOT_CLEARANCE_M)
@@ -512,7 +538,8 @@ def plan_exploration(snapshot, caches, protected):
     reservations = (*snapshot.live_routes.values(), *protected.values())
     for robot in snapshot.available:
         state = snapshot.batteries.get(robot)
-        if state is not None and (state["mode"] != "ACTIVE" or robot in snapshot.charge_pending):
+        if (robot in snapshot.charge_intents
+                or state is not None and (state["mode"] != "ACTIVE" or robot in snapshot.charge_pending)):
             continue
         grid = robot_grid(snapshot, robot, caches.setdefault(robot, {}))
         bodies = [position for peer, position in snapshot.positions.items() if peer != robot]
@@ -573,7 +600,7 @@ def plan_exploration(snapshot, caches, protected):
                                        geometry.INFORMATION_RADIUS_M / snapshot.resolution,
                                        camera_interest)
             information = mapping | visual
-            if not information - objective.committed:
+            if not information:
                 return None
             if not visual:
                 yaw = frontier_yaw
@@ -757,7 +784,8 @@ def plan_rally(snapshot, caches, protected):
             continue
         pose, state = poses[robot], snapshot.batteries.get(robot)
         required = requirements[robot]
-        if state is not None and (state["mode"] != "ACTIVE" or robot in snapshot.charge_pending):
+        if (robot in snapshot.charge_intents
+                or state is not None and (state["mode"] != "ACTIVE" or robot in snapshot.charge_pending)):
             continue
         if state is not None and float(state["energy"]) <= required:
             if required <= float(state["capacity"]) * float(state["charge_target_fraction"]):
@@ -890,7 +918,7 @@ def plan_target_survey(snapshot, caches, protected):
             desired.append((robot, pose, 1., snapshot.target))
     charges = {}
     for robot, pose, utility, information_target in desired:
-        if robot not in snapshot.available:
+        if robot not in snapshot.available or robot in snapshot.charge_intents:
             continue
         grid = robot_grid(snapshot, robot, caches.setdefault(robot, {}))
         actual, route = geometry.plan_rally_leg(pose, grid, snapshot.resolution,
@@ -1028,6 +1056,11 @@ def plan_fleet(snapshot):
     else:
         escape = next((choice for beneficiary in sorted(protected)
                        if (choice := _escape(snapshot, beneficiary, protected, caches)) is not None), None)
+        planned = planned_charge_returns(snapshot, caches)
+        if escape is None:
+            corridors = {**planned, **protected}
+            escape = next((choice for beneficiary in sorted(planned)
+                if (choice := _escape(snapshot, beneficiary, corridors, caches)) is not None), None)
         if escape is not None:
             if isinstance(escape, ChargeProposal):
                 result = FleetProposal(snapshot, charges=(escape,), final_poses=snapshot.final_poses)
@@ -1036,12 +1069,12 @@ def plan_fleet(snapshot):
         elif snapshot.target is not None and snapshot.phase in ("FOUND", "RALLY"):
             result = plan_observer_heading(snapshot, caches, protected)
             if result is None:
-                result = plan_rally(snapshot, caches, protected)
+                result = plan_rally(snapshot, caches, {**planned, **protected})
         else:
             result = (plan_blind_scan(snapshot, caches, protected)
                       if snapshot.phase in ("FOUND", "RALLY") else None)
             if result is None:
-                result = plan_exploration(snapshot, caches, protected)
+                result = plan_exploration(snapshot, caches, {**planned, **protected})
     return FleetProposal(result.snapshot, result.motions, result.charges,
                          result.final_poses, result.wait_budgets, result.blocked,
                          time.perf_counter() - started,result.forecast)

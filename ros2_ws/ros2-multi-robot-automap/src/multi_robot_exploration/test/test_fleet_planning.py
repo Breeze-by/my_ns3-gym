@@ -9,7 +9,7 @@ from multi_robot_exploration import control as c
 from multi_robot_exploration.fleet_planning import (
     FleetSnapshot, MotionProposal, complete_budget, joint_motions, plan_fleet, plan_exploration,
     qualified_motion_route, ExplorationObjective,
-    plan_observer_heading,
+    plan_observer_heading, ChargeProposal, planned_charge_returns, return_helper_beneficiary_current,
 )
 
 
@@ -259,7 +259,7 @@ def test_async_observation_commitments_change_the_joint_choice_without_observati
     assert not ExplorationObjective(updated,changed==0).committed
 
 
-def test_owned_expected_information_cannot_make_waiting_beat_a_positive_new_observation():
+def test_owned_expected_information_prices_a_new_observations_readiness_opportunity_cost():
     snapshot = world()
     pending = c.RallyPose(2.25,2.25,0.)
     snapshot = replace(snapshot,positions={'tb1':(1.25,1.25),'tb2':(5.25,1.25)},
@@ -270,21 +270,19 @@ def test_owned_expected_information_cannot_make_waiting_beat_a_positive_new_obse
     pose = c.RallyPose(7.25,1.25,0.)
     visible_novel = camera_view(snapshot,pose)-objective.committed
     assert visible_novel and objective.committed
-    # A single genuine new visible cell must win against no new command even
-    # when its unchanged graph-based ready-time forecast is longer.
+    # A single genuine new cell need not justify delaying already funded work.
     motion = MotionProposal('tb2','exploration',pose,((5.25,1.25),(7.25,1.25)),
         1.,15.,frozenset({min(visible_novel)}))
     assert objective.ready_time((motion,)) > objective.ready_time(())
-    assert objective.score(()) == 0. and objective.score((motion,)) > 0.
-    assert joint_motions({'tb2':[motion]},snapshot.live_routes.values(),
-                         scorer=objective.score) == (motion,)
+    assert objective.score(()) > objective.score((motion,)) > 0.
+    assert not joint_motions({'tb2':[motion]},snapshot.live_routes.values(),scorer=objective.score)
     duplicate = replace(motion,information_cells=frozenset({min(objective.committed)}))
-    assert objective.score((duplicate,)) == 0.
+    assert objective.score((duplicate,)) < objective.score(())
     assert not joint_motions({'tb2':[duplicate]},snapshot.live_routes.values(),scorer=objective.score)
     assert (snapshot.views,snapshot.completed_legs,snapshot.pending_views) == before
 
 
-def test_search_refinement_drops_a_wholly_committed_real_visible_candidate(monkeypatch):
+def test_search_refinement_can_improve_readiness_without_double_counting_committed_information(monkeypatch):
     snapshot = world()
     pending = c.RallyPose(2.25,2.25,0.)
     snapshot = replace(snapshot,positions={'tb1':(1.25,1.25),'tb2':(5.25,1.25)},
@@ -303,7 +301,10 @@ def test_search_refinement_drops_a_wholly_committed_real_visible_candidate(monke
                                      interest,return_cells=True)
     assert visible.size == 1 and set(map(int,visible)) <= objective.committed
     result = plan_exploration(snapshot,{}, {})
-    assert not result.motions and not result.charges
+    assert len(result.motions) == 1 and not result.charges
+    assert result.motions[0].information_cells <= objective.committed
+    assert objective.ready_time(result.motions) < objective.ready_time(())
+    assert objective.score(result.motions) > objective.score(())
 
 
 def test_joint_search_accounts_for_future_fleet_gathering_without_changing_return_prices():
@@ -416,3 +417,45 @@ def test_observer_heading_preserves_source_ownership_geometry_and_return_guards(
         state['energy'] = 0.
     snapshot = replace(snapshot,batteries={**snapshot.batteries,'tb1':state})
     assert plan_observer_heading(snapshot,{}, {}) is None
+
+
+def test_unknown_unissued_return_is_optional_but_unknown_native_return_pauses_fleet():
+    grid = np.zeros((160,400),dtype=np.int16)
+    grid[[0,-1],:] = grid[:,[0,-1]] = 100
+    grid = c.immutable_grid_snapshot(grid,grid.shape)
+    local = grid.copy()
+    local[:,180] = 100
+    local = c.immutable_grid_snapshot(local,local.shape)
+    base = world().batteries['tb1']
+    states = {robot:{**base,'charge_x':1.025,'charge_y':4.025,'mode':mode}
+              for robot,mode in [('tb1','ACTIVE'),('tb2','RETURNING'),('tb3','ACTIVE')]}
+    positions = {'tb1':(4.025,4.025),'tb2':(7.025,4.025),'tb3':(14.025,4.025)}
+    sources = {'headquarters/fused_map_snapshot':10., **{
+        robot+'/'+kind:10. for robot in positions
+        for kind in ('map_snapshot','pose_state','frame_state','battery_state')}}
+    maps = {robot:dict(data=local if robot=='tb3' else grid,resolution=.05,origin=(0.,0.))
+            for robot in positions}
+    demand = ChargeProposal('tb3',60.,(),'unfunded_information_task',(16.025,4.025))
+    snapshot = FleetSnapshot('EXPLORE',10.,grid,.05,(0.,0.),positions,states,maps,sources,
+        ('tb1','tb3'),required=tuple(positions),charge_intents={'tb3':demand},
+        charge_intent_slots={'tb3':'main'})
+    assert not planned_charge_returns(snapshot,{})
+    offered = plan_fleet(snapshot)
+    assert len(offered.motions) == 1
+    assert offered.motions[0].robot == 'tb1' and offered.motions[0].beneficiary == 'tb2'
+    unknown_native = replace(snapshot,batteries={**states,'tb3':{**states['tb3'],'mode':'RETURNING'}},
+                             available=('tb1',))
+    paused = plan_fleet(unknown_native)
+    assert not paused.motions and not paused.charges
+    assert paused.blocked == {'fleet':'unknown_live_return_corridor'}
+
+
+@pytest.mark.parametrize('mode',['ACTIVE','RETURNING','CHARGING','FAILED',None])
+@pytest.mark.parametrize('slot',['issued','intent'])
+def test_return_helper_membership_never_authorizes_a_failed_or_missing_beneficiary(mode,slot):
+    proposal = MotionProposal('tb2','charge_clearance',c.RallyPose(1.,1.,0.),((1.,1.),),1.,10.,
+                              beneficiary='tb1')
+    modes = {} if mode is None else {'tb1':mode}
+    issued,intents = (('tb1',),()) if slot=='issued' else ((),('tb1',))
+    assert return_helper_beneficiary_current(proposal,modes,issued,intents) == (
+        mode in ('ACTIVE','RETURNING','CHARGING'))

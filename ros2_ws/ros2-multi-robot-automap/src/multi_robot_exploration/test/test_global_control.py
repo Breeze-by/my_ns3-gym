@@ -18,6 +18,7 @@ from tf2_msgs.msg import TFMessage
 from multi_robot_exploration import control as c
 from multi_robot_exploration.fleet_planning import (
     MotionProposal, ChargeProposal, FleetProposal, complete_budget, plan_fleet,
+    information_motion_funding,
 )
 from multi_robot_exploration.global_control import GlobalHeadquartersControl
 
@@ -986,3 +987,200 @@ def test_a_different_actual_navigation_role_cannot_authorize_owned_heading_repri
         c.RallyPose(1.25,1.25,math.atan2(1.55,-.13)),((1.25,1.25),),1.,15.,wait_sec=60.)
     assert node._current_motion(node._snapshot(),motion,{},owned_task=task) is None
     assert node.navigation_tasks['tb1'] is task and task.proposal.kind == 'exploration'
+
+
+def delivered_charge_clearance_cycle(node, slot='main'):
+    node.now = lambda:11.
+    grid = OccupancyGrid()
+    grid.header.stamp.sec = 11
+    grid.info.width,grid.info.height,grid.info.resolution = 400,160,.05
+    grid.info.origin.orientation.w = 1.
+    grid.data = [100 if row in (0,159) or column in (0,399) else 0
+                 for row in range(160) for column in range(400)]
+    node.map_callback(grid)
+    frame = TransformStamped()
+    frame.header.stamp.sec = 11
+    frame.header.frame_id,frame.child_frame_id = 'map','odom'
+    frame.transform.rotation.w = 1.
+    for robot,x,mode,energy in [('tb1',4.025,'ACTIVE',30.),('tb2',7.025,'RETURNING',40.)]:
+        node.robot_map_callback(grid,robot)
+        node.robot_tf_callback(TFMessage(transforms=[frame]),robot)
+        odom = Odometry()
+        odom.header.stamp.sec = 11
+        odom.pose.pose.position.x,odom.pose.pose.position.y = x,4.025
+        odom.pose.pose.orientation.w = 1.
+        node.robot_odom_callback(odom,robot)
+        node.battery_state_callback(String(data=json.dumps({**node.battery_states[robot],
+            'stamp_sec':11.,'mode':mode,'energy':energy,'charge_x':1.025,'charge_y':4.025})),robot)
+    snapshot = node._snapshot()
+    route = ((4.025,4.025),(14.025,4.025))
+    required = complete_budget(snapshot,'tb1',route,route[-1],{})
+    demand = information_motion_funding(snapshot,MotionProposal('tb1','exploration',
+        c.RallyPose(*route[-1],0.),route,1.,required),{})
+    assert isinstance(demand,ChargeProposal) and 30. < demand.required_energy < 80.
+    if slot == 'main':
+        node.global_charge_intent = demand
+    else:
+        node.global_charge_intent = ChargeProposal('tb2',60.,((7.025,4.025),(1.025,4.025)),
+                                                  'unfunded_information_task',(14.025,4.025))
+        node.global_charge_requested_at = 11.
+        node.global_charge_started = True
+        node.rally_charge_requested['tb2'] = 11.
+        node.deferred_charge_intent = demand
+    node.global_charge_context = snapshot.context
+    node.charge_request_publishers['tb1'] = Mock()
+    return demand
+
+
+@pytest.mark.parametrize('node',[2],indirect=True)
+@pytest.mark.parametrize('slot',['main','deferred'])
+@pytest.mark.parametrize('ended_stage',['pending','accepted'])
+def test_unissued_demand_actor_can_clear_actual_return_then_charge_after_real_future_closes(node,slot,ended_stage):
+    demand = delivered_charge_clearance_cycle(node,slot)
+    snapshot = node._snapshot()
+    assert 'tb1' in snapshot.available and 'tb1' not in snapshot.charge_pending
+    assert snapshot.charge_intent_slots['tb1'] == slot
+    assert snapshot.planned_return_routes['tb1']
+    proposal = plan_fleet(snapshot)
+    assert len(proposal.motions) == 1
+    motion = proposal.motions[0]
+    assert motion.robot == 'tb1' and motion.kind == 'local_return_yield' and motion.beneficiary == 'tb2'
+    actual = node._current_motion(snapshot,motion,{})
+    assert actual is not None and actual.required_energy < 30.
+    pending = Future()
+    client = Mock()
+    client.server_is_ready.return_value = True
+    client.send_goal_async.return_value = pending
+    node.robot_nav_clients['tb1'] = client
+    node.update_mission()
+    node.planning_worker.future.result(timeout=10.)
+    node.update_mission()
+    task = node.navigation_tasks['tb1']
+    assert task.proposal.kind == 'local_return_yield' and task.cancel_reason is None
+    assert not node.charge_request_publishers['tb1'].publish.called
+    proof = next(json.loads(call.args[0].data) for call in node.consumed_publisher.publish.call_args_list
+        if json.loads(call.args[0].data).get('event') == 'coordinator_global_motion_admission')
+    from p2c_global_audit import audit_motion
+    assert audit_motion(proof) > 0
+    assert proof['world']['charge_intents']['tb1']['slot'] == slot
+    assert 'tb1' not in proof['world']['charge_pending']
+    if ended_stage == 'accepted':
+        handle,result = accept(node,pending)
+    node.now = lambda:11.1
+    node.battery_state_callback(String(data=json.dumps({**node.battery_states['tb2'],
+        'stamp_sec':11.1,'mode':'ACTIVE','energy':80.})), 'tb2')
+    assert node.global_charge_intent is demand
+    node._prepare_charge(node._snapshot())
+    assert node.navigation_tasks['tb1'] is task and not node.charge_request_publishers['tb1'].publish.called
+    node._protect_traffic(node._snapshot())
+    assert task.cancel_reason == 'dependency_ended' and node.navigation_tasks['tb1'] is task
+    if ended_stage == 'pending':
+        handle,result = accept(node,pending)
+    assert handle.cancel_goal_async.called and node.navigation_tasks['tb1'] is task
+    result.set_result(SimpleNamespace(status=GoalStatus.STATUS_CANCELED))
+    node.drain_action_done_callbacks()
+    assert not node.navigation_tasks and node.global_charge_intent is demand
+    assert node._current_motion(node._snapshot(),motion,{}) is None  # Its actual beneficiary is done.
+    node._prepare_charge(node._snapshot())
+    assert node.charge_request_publishers['tb1'].publish.call_count == 1
+    assert node.global_charge_requested_at == 11.1
+    assert node.battery_states['tb1']['energy'] == 30. and not node.successful_exploration_legs
+    assert not node.global_nav_failures.get('tb1',0)
+
+
+@pytest.mark.parametrize('node',[2],indirect=True)
+def test_unissued_demand_has_no_owner_but_issued_and_native_actors_remain_protected(node):
+    demand = delivered_charge_clearance_cycle(node)
+    snapshot = node._snapshot()
+    ordinary = MotionProposal('tb1','exploration',c.RallyPose(4.025,2.225,0.),
+        ((4.025,4.025),(4.025,2.225)),1.,20.,frozenset({1}))
+    assert node._current_motion(snapshot,ordinary,{}) is None
+    helper = plan_fleet(snapshot).motions[0]
+    node.global_charge_intent = None
+    assert node._current_motion(node._snapshot(),helper,{}) is not None  # Actual return still requires it.
+    node.global_charge_intent = demand
+    node.global_charge_requested_at = 11.
+    node.rally_charge_requested['tb1'] = 11.
+    issued = node._snapshot()
+    assert 'tb1' in issued.charge_pending and 'tb1' not in issued.available
+    assert 'tb1' not in issued.charge_intents
+    assert node._current_motion(issued,helper,{}) is None
+    assert not plan_fleet(issued).motions
+    node.global_charge_requested_at = None
+    node.rally_charge_requested.clear()
+    node.now = lambda:11.1
+    node.battery_state_callback(String(data=json.dumps({**node.battery_states['tb1'],
+        'stamp_sec':11.1,'mode':'RETURNING'})), 'tb1')
+    native = node._snapshot()
+    assert 'tb1' not in native.available and node._current_motion(native,helper,{}) is None
+
+
+@pytest.mark.parametrize('node',[2],indirect=True)
+def test_fresh_soft_demand_closure_cancels_pending_acceptance_without_a_failure_or_owner_release(node):
+    demand = delivered_charge_clearance_cycle(node)
+    node.now = lambda:11.1
+    odom = Odometry()
+    odom.header.stamp.sec,odom.header.stamp.nanosec = 11,100000000
+    odom.pose.pose.position.x,odom.pose.pose.position.y = 2.525,4.025
+    odom.pose.pose.orientation.w = 1.
+    node.robot_odom_callback(odom,'tb2')
+    node.battery_state_callback(String(data=json.dumps({**node.battery_states['tb2'],
+        'stamp_sec':11.1,'mode':'ACTIVE','energy':60.,'charge_x':2.525})), 'tb2')
+    snapshot = node._snapshot()
+    proposed = plan_fleet(snapshot).motions[0]
+    assert proposed.robot == 'tb2' and proposed.kind == 'charge_clearance' and proposed.beneficiary == 'tb1'
+    motion = node._current_motion(snapshot,proposed,{})
+    assert motion is not None
+    pending = Future()
+    client = Mock()
+    client.server_is_ready.return_value = True
+    client.send_goal_async.return_value = pending
+    node.robot_nav_clients['tb2'] = client
+    assert node._send_motion(snapshot,motion)
+    task = node.navigation_tasks['tb2']
+    # Promotion does not close the same demand; removal does.
+    node.global_charge_intent,node.deferred_charge_intent = None,demand
+    assert node._return_helper_current(task.proposal)
+    node.deferred_charge_intent = None
+    assert node._sources_current(task.sources) and not node._return_helper_current(task.proposal)
+    handle,result = accept(node,pending)
+    assert handle.cancel_goal_async.called and task.cancel_reason == 'dependency_ended'
+    assert node.navigation_tasks['tb2'] is task
+    result.set_result(SimpleNamespace(status=GoalStatus.STATUS_CANCELED))
+    node.drain_action_done_callbacks()
+    assert not node.navigation_tasks and not node.global_nav_failures.get('tb2',0)
+
+
+@pytest.mark.parametrize('node',[2],indirect=True)
+@pytest.mark.parametrize('failure_channel',['battery','explicit_failure'])
+def test_failed_deferred_demand_does_not_drop_healthy_issued_owner_or_crash_after_promotion(node,failure_channel):
+    deferred = delivered_charge_clearance_cycle(node,'deferred')
+    main = node.global_charge_intent
+    if failure_channel == 'battery':
+        node.now = lambda:11.1
+        node.battery_state_callback(String(data=json.dumps({**node.battery_states['tb1'],
+            'stamp_sec':11.1,'mode':'FAILED','failure_reason':'constructed_dependency_failure'})), 'tb1')
+        assert node.deferred_charge_intent is None
+    else:
+        node.mark_robot_failed('tb1','constructed_dependency_failure')
+        assert node.deferred_charge_intent is deferred
+    assert node.global_charge_intent is main and node.global_charge_requested_at == 11.
+    assert node.rally_charge_requested == {'tb2':11.}
+    snapshot = node._snapshot()
+    assert snapshot is not None and 'tb1' not in snapshot.charge_intents
+    assert 'tb1' in snapshot.positions
+    if failure_channel == 'battery':
+        assert 'tb1' not in snapshot.batteries
+    else:
+        # Explicit isolation does not rewrite the last actual battery packet.
+        assert snapshot.batteries['tb1']['mode'] == 'ACTIVE'
+    helper = MotionProposal('tb2','charge_clearance',c.RallyPose(7.025,2.225,0.),
+        ((7.025,4.025),(7.025,2.225)),1.,20.,beneficiary='tb1')
+    assert not node._return_helper_current(helper)
+    node.now = lambda:11.2
+    node.battery_state_callback(String(data=json.dumps({**node.battery_states['tb2'],
+        'stamp_sec':11.2,'mode':'ACTIVE','energy':80.})), 'tb2')
+    node._prepare_charge(node._snapshot())
+    assert node.global_charge_intent is None and node.deferred_charge_intent is None
+    assert not node.rally_charge_requested and node.battery_modes['tb1'] == 'FAILED'
+    assert not node.charge_request_publishers['tb1'].publish.called

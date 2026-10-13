@@ -49,6 +49,8 @@ coding-guideline skills must not be reinstalled, invoked, or used as constraints
 
 ## Current Handoff
 
+2026-10-13 recovery_v2 通用所有权候选完整组件1780PASS242.18s，4包build/source/native/Future/static/declaration与独立复审PASS；恢复原绝对探索等待目标，区分未发主/延后需求与已发请求/真实Nav2/原生返航，保持原模型和硬门限。预定新run-id `20261013_p2c_global_recovery_v2` 从四开发重新验证，无新任务信用，正式/物理/917均未运行。详细证据只在单一累计报告及log。
+
 2026-10-13 中断恢复冻结 `9405e296cd176df82d598686aa1d7ede0be32e35` 的四开发与完整审计已关闭：forced/rooms/corridors严格PASS，lab晚发现后RALLY300.4s timeout，完整门禁FAIL；未运行正式/物理/917。原件run-id `20261013_p2c_global_recovery_v1`，不能补格或混拼v11。下一候选恢复有一致机会成本的原绝对等待评分，并修复已构造确证的“未发充电意图挡住真实返航清道”通用所有权问题；不放宽原预算/源龄/完成或物理门限。signed-energy修复 `d54ccd3` 及全部原FAIL保持，详细证据只在单一累计报告和log。
 
 2026-10-13 新全局实现冻结 `9bb2c2c40a62f7b0819d5c2d4345595a9ad7fc61`：四开发完整严格PASS；15非留出正式严格10PASS/5FAIL（9原生COMPLETE、5timeout、1预声明空电池FAILED），两受控物理安全PASS。延迟格仅安全/协议PASS，物理fault任务也timeout，不提供任务完成信用。917未运行，P2C.1未完成。独立能量读者已按原native signed-meter约定修正，1644功能PASS；旧冻结FAIL保持，runtime/Native模型不变。全部实验/审计进程关闭。详见单一累计报告 `ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261012_p2c1_global_mission.md`，避免按单格继续叠规则或跨版本拼矩阵。

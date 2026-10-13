@@ -8,7 +8,7 @@
 
 P2C.1 完整集成仍未验收，917 留出未调用。新开发与正式实验使用 `p2c_integration_manifest.json` 中的 global 声明、新提交和新 run-id，不能复用 v43–v95 历史结果。技术说明见 [`20261012_p2c1_global_mission.md`](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261012_p2c1_global_mission.md)。
 
-2026-10-13中断恢复候选沿用上述入口。global模式在原目标租约内补回已交付观察者的安全原地朝向恢复，充电请求过期时继续延后依赖；集合在同等安全/补能条件下优先完整名义任务耗时，探索只给新动作的边际信息计分。baseline保留原集合排序。原300秒、5秒保持、源TTL、完整返航预算及物理刺激保持，新行为仍需新冻结的完整任务门禁。
+2026-10-13中断恢复候选沿用上述入口。global模式在原目标租约内补回已交付观察者的安全原地朝向恢复，充电请求过期时继续延后依赖；集合在同等安全/补能条件下优先完整名义任务耗时。四开发3PASS/1FAIL后，下一候选恢复探索与等待共用的原绝对收益比较；未发补能需求只提供规划依赖，实际导航、已发请求和本地返航仍保留所有权，闲置且有完整预算的机器人可为当前返航或补能依赖清道。baseline保留原集合排序。原300秒、5秒保持、源TTL、完整返航预算及物理刺激保持，新行为仍需新冻结的完整任务门禁。
 
 恢复报告：[`20261012_p2c1_session_recovery.md`](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261012_p2c1_session_recovery.md)。
 

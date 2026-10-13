@@ -1,5 +1,6 @@
 # wireless-rl Codex Memory
 
+2026-10-13 recovery_v2 组件1780PASS242.18s及build/source/原native/Future/static/declaration/独立复审PASS，下一新冻结四开发run-id `20261013_p2c_global_recovery_v2`；暂无新任务信用，正式/物理/917未运行。需求/真实所有权分离，原绝对搜索等待评分恢复，全部原FAIL保持。
 2026-10-13 中断恢复 `9405e29` 四开发完整FAIL：三原生COMPLETE且严格PASS，lab257.5s晚发现后RALLY300.4s timeout；原件/审计全关闭，正式/物理/917未运行。下一候选恢复原绝对等待评分并区分未发补能需求与真实导航/已发请求所有权。原 `9bb2c2c` 四开发PASS、15非留出5FAIL、两物理安全PASS仅原冻结信用；signed-energy修复 `d54ccd3` 保留。详情见[单一累计报告](report/20261012_p2c1_global_mission.md)，仍须同冻结完整新矩阵，不能混拼历史版本。
 
 2026-10-12 用户授权接手 P2C.1 全局工作。长会话继续暂停，恢复基线 `b32c891` 的安全预算/本地返航/能量/Future 契约保留；当前独立分支 `p2c1/global-mission-20261012` 使用全局规划工作线程和统一导航所有权，选择性取回有原扫描证据的 SLAM 自体回波修复。新候选须以同一推送冻结完成四开发、17 正式和两物理，组件检查不计任务信用。详细实现与新原件结果集中在 `report/20261012_p2c1_global_mission.md` 和实验 log，不能把历史 v95 PASS 算到本轮。P2C.1B 仍未完成，917 留出未调用，无 ROS/ns-3 Wi-Fi 联合实验。
