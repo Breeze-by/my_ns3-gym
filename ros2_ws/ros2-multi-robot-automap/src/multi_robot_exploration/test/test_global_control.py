@@ -29,6 +29,7 @@ def node(request):
     rclpy.init(args=['--ros-args', '-p', f'robot_count:={count}', '-p', 'enable_battery:=true',
                     '-p', 'enable_rally:=true'])
     n = GlobalHeadquartersControl()
+    n.consumed_publisher = Mock()
     for timer in n.timers:
         timer.cancel()
     n.now = lambda: 10.
@@ -66,7 +67,6 @@ def node(request):
         n.robot_odom_callback(extra,robot)
         n.battery_state_callback(String(data=json.dumps({**state,
             'charge_x':extra.pose.pose.position.x,'charge_y':extra.pose.pose.position.y})),robot)
-    n.consumed_publisher = Mock()
     try:
         yield n
     finally:
@@ -126,6 +126,267 @@ def delivered_state(node, at, position=(1.25, 1.25), yaw=0., energy=40., obstacl
     node.robot_odom_callback(odom, 'tb1')
     node.battery_state_callback(String(data=json.dumps({**node.battery_states['tb1'],
         'stamp_sec':at, 'energy':energy})), 'tb1')
+
+
+def delivered_tiny_camera_state(node, at, position=(.825,.825), yaw=0., energy=30.):
+    node.now = lambda: at
+    sec = int(at)
+    nanosec = round((at-sec)*1e9)
+    grid = OccupancyGrid()
+    grid.header.stamp.sec,grid.header.stamp.nanosec = sec,nanosec
+    grid.info.width = grid.info.height = 32
+    grid.info.resolution = .05
+    grid.info.origin.orientation.w = 1.
+    grid.data = [100 if row in (0,31) or column in (0,31) else 0
+                 for row in range(32) for column in range(32)]
+    node.map_callback(grid)
+    node.robot_map_callback(grid,'tb1')
+    frame = TransformStamped()
+    frame.header.stamp.sec,frame.header.stamp.nanosec = sec,nanosec
+    frame.header.frame_id,frame.child_frame_id = 'map','odom'
+    frame.transform.rotation.w = 1.
+    node.robot_tf_callback(TFMessage(transforms=[frame]),'tb1')
+    odom = Odometry()
+    odom.header.stamp.sec,odom.header.stamp.nanosec = sec,nanosec
+    odom.pose.pose.position.x,odom.pose.pose.position.y = position
+    odom.pose.pose.orientation.z,odom.pose.pose.orientation.w = math.sin(yaw/2),math.cos(yaw/2)
+    node.robot_odom_callback(odom,'tb1')
+    node.battery_state_callback(String(data=json.dumps({**node.battery_states['tb1'],
+        'stamp_sec':at,'energy':energy,'charge_x':.825,'charge_y':.825})), 'tb1')
+
+
+def send_camera_heading(node):
+    snapshot = node._snapshot()
+    assert snapshot is not None
+    motion = plan_fleet(snapshot).motions[0]
+    assert motion.kind=='exploration_camera_heading'
+    current = node._current_motion(snapshot,motion,{})
+    assert current is not None
+    client,pending = Mock(),Future()
+    client.server_is_ready.return_value = True
+    client.send_goal_async.return_value = pending
+    node.robot_nav_clients['tb1'] = client
+    assert node._send_motion(snapshot,current)
+    return snapshot,current,pending,client,node.navigation_tasks['tb1']
+
+
+@pytest.mark.parametrize('phase',['EXPLORE','FOUND_UNCONFIRMED'])
+def test_camera_heading_real_futures_reprice_millimetre_drift_without_faking_credit(node,phase):
+    node.task_state = phase
+    delivered_tiny_camera_state(node,11.)
+    _,motion,pending,client,task = send_camera_heading(node)
+    issued = client.send_goal_async.call_args.args[0]
+    assert issued.pose.pose.position.x==issued.pose.pose.position.y==.825
+    assert node._snapshot().pending_orientation_times=={'tb1':60.}
+    delivered_tiny_camera_state(node,11.5,position=(.830,.825),yaw=motion.pose.yaw)
+    before = (dict(node.initial_search_views),dict(node.successful_exploration_legs),
+              dict(node.global_confirmations),dict(node.global_scan_steps),node.global_survey_attempts)
+    handle,result = accept(node,pending)
+    assert task.cancel_reason is None and not handle.cancel_goal_async.called
+    assert node.navigation_tasks['tb1'] is task and task.generation==1
+    assert task.proposal.pose==motion.pose and .0049 < sum(
+        math.dist(a,b) for a,b in zip(task.proposal.route,task.proposal.route[1:])) < .0051
+    records = [json.loads(call.args[0].data) for call in node.consumed_publisher.publish.call_args_list]
+    proof = next(row for row in records if row['event']=='coordinator_global_motion_admission')
+    assert proof['nominal_orientation_time_sec']==proof['waiting_time_budget_sec']==60.
+    refreshed = next(row for row in records if row['event']=='coordinator_global_motion_revalidation')
+    assert refreshed['requested_position']==[.825,.825] and refreshed['requested_yaw']==motion.pose.yaw
+    assert refreshed['world']['positions']['tb1']==[.830,.825]
+    # Audit independent geometry; native/source binding belongs to typed capture tests.
+    from p2c_global_audit import audit_motion
+    audit_motion(proof)
+    result.set_result(SimpleNamespace(status=GoalStatus.STATUS_SUCCEEDED))
+    node.drain_action_done_callbacks()
+    assert not node.navigation_tasks and not node._snapshot().pending_orientation_times
+    assert (node.initial_search_views,node.successful_exploration_legs,node.global_confirmations,
+            node.global_scan_steps,node.global_survey_attempts)==before
+
+
+@pytest.mark.parametrize('change',['drift','energy','phase','stale'])
+def test_camera_heading_late_acceptance_cancels_changed_current_world_but_keeps_real_owner(node,change):
+    delivered_tiny_camera_state(node,11.)
+    _,_,pending,_,task = send_camera_heading(node)
+    if change=='drift':
+        delivered_tiny_camera_state(node,11.5,position=(.850,.825))
+    elif change=='energy':
+        delivered_tiny_camera_state(node,11.5,energy=9.5)
+    elif change=='phase':
+        node.task_state='FOUND'
+        node.target,node.target_received_source_time=(1.,1.),11.
+    else:
+        node.now=lambda:13.01
+    handle,result = accept(node,pending)
+    assert task.cancel_reason is not None and handle.cancel_goal_async.call_count==1
+    assert node.navigation_tasks['tb1'] is task
+    assert node._snapshot() is None if change=='stale' else node._snapshot().pending_orientation_times=={'tb1':60.}
+    result.set_result(SimpleNamespace(status=GoalStatus.STATUS_CANCELED))
+    node.drain_action_done_callbacks()
+    assert not node.navigation_tasks and not node.global_nav_failures
+    assert not node.successful_exploration_legs and not node.global_scan_steps
+
+
+def test_camera_heading_cancel_and_failed_participant_preserve_unclosed_time(node):
+    delivered_tiny_camera_state(node,11.)
+    _,_,pending,_,task = send_camera_heading(node)
+    node.cancel_navigation('tb1','local_failure')
+    node.mark_robot_failed('tb1','constructed_failure')
+    snapshot = node._snapshot()
+    assert snapshot is not None and snapshot.pending_orientation_times=={'tb1':60.}
+    assert not snapshot.pending_views and not snapshot.required
+    assert node._current_motion(replace(snapshot,live_routes={}),task.proposal,{},owned_task=task) is None
+    handle,result = accept(node,pending)
+    assert node.navigation_tasks['tb1'] is task and handle.cancel_goal_async.called
+    result.set_result(SimpleNamespace(status=GoalStatus.STATUS_CANCELED))
+    node.drain_action_done_callbacks()
+    assert not node.navigation_tasks and not node.successful_exploration_legs
+
+
+def test_global_camera_history_recency_requires_new_physical_odom_not_tf_replay(node):
+    delivered_tiny_camera_state(node,11.)
+    before = dict(node.initial_search_views)
+    node.now=lambda:11.5
+    frame = TransformStamped()
+    frame.header.stamp.sec,frame.header.stamp.nanosec = 11,500000000
+    frame.header.frame_id,frame.child_frame_id = 'map','odom'
+    frame.transform.rotation.z,frame.transform.rotation.w = math.sin(.3),math.cos(.3)
+    node.robot_tf_callback(TFMessage(transforms=[frame]),'tb1')
+    assert node.initial_search_views==before  # real static superclass replay creates no view/bin
+    replay = node.robot_last_odom['tb1']
+    node.robot_odom_callback(replay,'tb1')
+    assert node.initial_search_views==before
+    fresh = Odometry()
+    fresh.header.stamp.sec,fresh.header.stamp.nanosec = 11,600000000
+    fresh.pose.pose.position.x=fresh.pose.pose.position.y=.825
+    fresh.pose.pose.orientation.w=1.
+    node.now=lambda:11.6
+    node.robot_odom_callback(fresh,'tb1')
+    changed = [record for record in node.initial_search_views.values() if record['pose_source_time']==11.6]
+    assert len(changed)==1 and changed[0]['frame_source_time']==11.5
+    records = [json.loads(call.args[0].data) for call in node.consumed_publisher.publish.call_args_list]
+    updates = [row for row in records if row['event']=='coordinator_global_search_view_applied']
+    assert [row['pose_source_time'] for row in updates]==[10.,11.,11.6]
+
+
+def test_camera_heading_exact_owner_cannot_revalidate_another_goal_or_role(node):
+    delivered_tiny_camera_state(node,11.)
+    _,motion,_,_,task = send_camera_heading(node)
+    current = replace(node._snapshot(),live_routes={})
+    assert node._current_motion(current,replace(motion,pose=c.RallyPose(.825,.825,math.pi/2)),
+                                {},owned_task=task) is None
+    assert node._current_motion(current,replace(motion,kind='target_observation_heading'),
+                                {},owned_task=task) is None
+    assert node._current_motion(current,motion,{},owned_task=replace(task,generation=task.generation+1)) is None
+
+
+def test_camera_heading_actual_late_source_connector_cannot_cross_unknown_cell(node):
+    delivered_tiny_camera_state(node,11.,position=(.555,.555))
+    _,motion,pending,_,task = send_camera_heading(node)
+    delivered_tiny_camera_state(node,11.5,position=(.545,.540),yaw=motion.pose.yaw)
+    grid = OccupancyGrid()
+    grid.header.stamp.sec,grid.header.stamp.nanosec = 11,500000000
+    grid.info.width=grid.info.height=32
+    grid.info.resolution=.05
+    grid.info.origin.orientation.w=1.
+    grid.data = [100 if row in (0,31) or column in (0,31) else -1 if (row,column)==(10,11) else 0
+                 for row in range(32) for column in range(32)]
+    node.map_callback(grid)
+    node.robot_map_callback(grid,'tb1')
+    assert math.dist(node.robot_positions['tb1'],(motion.pose.x,motion.pose.y)) < .02
+    handle,result = accept(node,pending)
+    assert handle.cancel_goal_async.called and node.navigation_tasks['tb1'] is task
+    result.set_result(SimpleNamespace(status=GoalStatus.STATUS_CANCELED))
+    node.drain_action_done_callbacks()
+    assert not node.navigation_tasks and not node.global_nav_failures
+
+
+def test_accepted_camera_heading_existing_tick_cancels_measured_drift_and_retains_time(node):
+    delivered_tiny_camera_state(node,11.)
+    _,motion,pending,_,task = send_camera_heading(node)
+    handle,result = accept(node,pending)
+    delivered_tiny_camera_state(node,11.5,position=(.850,.825),yaw=motion.pose.yaw)
+    node._protect_traffic(node._snapshot())
+    assert task.cancel_reason=='camera_heading_invalidated' and handle.cancel_goal_async.call_count==1
+    assert node.navigation_tasks['tb1'] is task and task.proposal.pose==motion.pose
+    snapshot = node._snapshot()
+    assert snapshot.pending_orientation_times=={'tb1':60.} and not snapshot.pending_views
+    result.set_result(SimpleNamespace(status=GoalStatus.STATUS_CANCELED))
+    node.drain_action_done_callbacks()
+    assert not node.navigation_tasks and not node.global_nav_failures and not node.successful_exploration_legs
+
+
+def fresh_robot_pose(node, robot, at, position):
+    node.now=lambda:at
+    frame=TransformStamped()
+    frame.header.stamp.sec,frame.header.stamp.nanosec=int(at),round((at-int(at))*1e9)
+    frame.header.frame_id,frame.child_frame_id='map','odom'
+    frame.transform.rotation.w=1.
+    node.robot_tf_callback(TFMessage(transforms=[frame]),robot)
+    odom=Odometry()
+    odom.header.stamp=frame.header.stamp
+    odom.pose.pose.position.x,odom.pose.pose.position.y=position
+    odom.pose.pose.orientation.w=1.
+    node.robot_odom_callback(odom,robot)
+
+
+@pytest.mark.parametrize('node',[2],indirect=True)
+def test_accepted_camera_connector_tick_checks_peer_body_between_safe_endpoints(node):
+    delivered_state(node,11.)
+    snapshot=node._snapshot()
+    motion=MotionProposal('tb1','exploration_camera_heading',c.RallyPose(1.25,1.25,math.pi),
+        ((1.25,1.25),),1.,11.,nominal_orientation_time_sec=60.)
+    actual=node._current_motion(snapshot,motion,{})
+    assert actual is not None
+    pending=Future()
+    client=Mock()
+    client.server_is_ready.return_value=True
+    client.send_goal_async.return_value=pending
+    node.robot_nav_clients['tb1']=client
+    assert node._send_motion(snapshot,actual)
+    task=node.navigation_tasks['tb1']
+    handle,result=accept(node,pending)
+    fresh_robot_pose(node,'tb1',11.5,(1.268,1.25))
+    fresh_robot_pose(node,'tb2',11.5,(1.259,.65004))
+    peer=node.robot_positions['tb2']
+    assert all(math.dist(point,peer) > .6 for point in ((1.25,1.25),(1.268,1.25)))
+    node._protect_traffic(node._snapshot())
+    assert task.cancel_reason=='camera_heading_invalidated' and handle.cancel_goal_async.called
+    assert node._snapshot().pending_orientation_times=={'tb1':60.}
+    result.set_result(SimpleNamespace(status=GoalStatus.STATUS_CANCELED))
+    node.drain_action_done_callbacks()
+    assert not node.navigation_tasks and not node.global_nav_failures
+
+
+@pytest.mark.parametrize('node',[2],indirect=True)
+def test_ordinary_admission_continuously_respects_a_real_unclosed_camera_owner(node):
+    delivered_state(node,11.)
+    fresh_robot_pose(node,'tb2',11.,(3.3,3.04999))
+    snapshot=node._snapshot()
+    pose=c.RallyPose(3.3,3.04999,math.pi)
+    heading=MotionProposal('tb2','exploration_camera_heading',pose,((pose.x,pose.y),),
+        1.,15.,nominal_orientation_time_sec=60.)
+    actual=node._current_motion(snapshot,heading,{})
+    assert actual is not None
+    client,pending=Mock(),Future()
+    client.server_is_ready.return_value=True
+    client.send_goal_async.return_value=pending
+    node.robot_nav_clients['tb2']=client
+    assert node._send_motion(snapshot,actual)
+    handle,result=accept(node,pending)
+    owned=node._snapshot()
+    ordinary=MotionProposal('tb1','exploration',c.RallyPose(5.25,1.25,0.),
+        ((1.25,1.25),(5.25,1.25)),1.,20.)
+    _,route=c.plan_rally_leg(ordinary.pose,owned.grid,owned.resolution,owned.origin,(1.25,1.25),
+        c.MAX_NAVIGATION_LEG_M,[owned.positions['tb2']],clearance_m=c.PATH_CLEARANCE_M)
+    full=((1.25,1.25),*route)
+    assert not c.routes_conflict(full,owned.live_routes['tb2'])
+    assert node._current_motion(owned,ordinary,{}) is None
+    assert owned.pending_orientation_times=={'tb2':60.}
+    node.cancel_navigation('tb2','mission_terminal')
+    assert node._snapshot().pending_orientation_times=={'tb2':60.}
+    assert node._current_motion(node._snapshot(),ordinary,{}) is None
+    result.set_result(SimpleNamespace(status=GoalStatus.STATUS_CANCELED))
+    node.drain_action_done_callbacks()
+    assert not node.navigation_tasks and not node.global_nav_failures
 
 
 def test_information_prerequisite_returns_charges_and_resumes_without_ordinary_credit(node):

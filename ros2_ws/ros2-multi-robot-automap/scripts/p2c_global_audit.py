@@ -249,7 +249,116 @@ def audit_observer_heading(event, grid, maps):
                for peer, other in world['positions'].items()), 'unsafe stationary peer clearance'
 
 
-def audit_motion(event):
+def point_segment_distance(point, start, end):
+    dx, dy = end[0]-start[0], end[1]-start[1]
+    square = dx*dx+dy*dy
+    fraction = min(1., max(0., ((point[0]-start[0])*dx+(point[1]-start[1])*dy)/square)) if square else 0.
+    return math.dist(point, (start[0]+fraction*dx, start[1]+fraction*dy))
+
+
+def segment_separation(first, second, third, fourth):
+    ux, uy = second[0]-first[0], second[1]-first[1]
+    vx, vy = fourth[0]-third[0], fourth[1]-third[1]
+    denominator = ux*vy-uy*vx
+    if denominator:
+        dx, dy = third[0]-first[0], third[1]-first[1]
+        t, s = (dx*vy-dy*vx)/denominator, (dx*uy-dy*ux)/denominator
+        if 0 <= t <= 1 and 0 <= s <= 1:
+            return 0.
+    return min(point_segment_distance(first, third, fourth), point_segment_distance(second, third, fourth),
+               point_segment_distance(third, first, second), point_segment_distance(fourth, first, second))
+
+
+def route_separation(first, second):
+    assert first and second
+    return min(segment_separation(a, b, c, d)
+               for a, b in zip(first, (*first[1:], first[-1]))
+               for c, d in zip(second, (*second[1:], second[-1])))
+
+
+def camera_known_connector(saved, route):
+    grid, resolution, origin = decode(saved), saved['resolution'], saved['origin']
+    for start, end in zip(route, (*route[1:], route[-1])):
+        cuts = {0., 1.}
+        for axis in (0, 1):
+            delta = end[axis]-start[axis]
+            if delta:
+                lower = math.floor((min(start[axis], end[axis])-origin[axis])/resolution)
+                upper = math.floor((max(start[axis], end[axis])-origin[axis])/resolution)
+                for boundary in range(lower+1, upper+1):
+                    t = (origin[axis]+boundary*resolution-start[axis])/delta
+                    if 0 < t < 1:
+                        cuts.add(t)
+        cuts = sorted(cuts)
+        for t in (*cuts, *((a+b)/2 for a, b in zip(cuts, cuts[1:]))):
+            point = tuple(a+t*(b-a) for a, b in zip(start, end))
+            row, column = math.floor((point[1]-origin[1])/resolution), math.floor((point[0]-origin[0])/resolution)
+            assert 0 <= row < grid.shape[0] and 0 <= column < grid.shape[1] and grid[row, column] == 0, 'unknown camera connector interval'
+
+
+def camera_map_clearance(saved, route):
+    grid, resolution, origin = decode(saved), saved['resolution'], saved['origin']
+    columns = [math.floor((point[0]-origin[0])/resolution) for point in route]
+    rows = [math.floor((point[1]-origin[1])/resolution) for point in route]
+    margin = math.ceil(.35/resolution)+1
+    r0, c0 = max(0, min(rows)-margin), max(0, min(columns)-margin)
+    r1, c1 = min(grid.shape[0], max(rows)+margin+1), min(grid.shape[1], max(columns)+margin+1)
+    for row, column in np.argwhere(grid[r0:r1, c0:c1] > 0):
+        obstacle = (origin[0]+(column+c0+.5)*resolution, origin[1]+(row+r0+.5)*resolution)
+        assert all(point_segment_distance(obstacle, start, end)+1e-8 >= .35
+                   for start, end in zip(route, (*route[1:], route[-1]))), 'unsafe continuous camera map clearance'
+
+
+def audit_camera_heading(event, grid, maps, owned=False):
+    """Only a verified real owner may reprice a measured drift connector."""
+    from multi_robot_exploration import control
+    world, robot = event['world'], event['robot']
+    current, goal = np.asarray(world['positions'][robot]), np.asarray(event['requested_position'])
+    assert event['task_phase'] in ('EXPLORE', 'FOUND_UNCONFIRMED') and world['target'] is None
+    assert robot in maps and robot in world['battery_states']
+    assert robot in world['required'] and robot not in world['live_routes']
+    assert robot not in world['charge_pending'] and robot not in world['charge_intents']
+    assert 'nominal_orientation_time_sec' in event
+    assert event['nominal_orientation_time_sec'] == event['waiting_time_budget_sec'] == world['goal_timeout_sec'] == 60.
+    assert angle_error(event['requested_yaw'], round(event['requested_yaw']/(math.pi/8))*(math.pi/8)) <= 1e-8
+    assert math.dist(current, goal) <= (.02+1e-8 if owned else 1e-8)
+    if not owned:
+        assert angle_error(event['requested_yaw'], world['yaws'][robot]) > .25
+    constrained = control.constrained_return_grid(grid, world['planning_map']['resolution'],
+        world['planning_map']['origin'], maps[robot], {})
+    resolution, origin = world['planning_map']['resolution'], world['planning_map']['origin']
+    endpoint = control.world_to_grid(*goal, resolution, *origin)
+    landing = control.traversable_grid(constrained, resolution, .45)
+    assert 0 <= endpoint[0] < landing.shape[0] and 0 <= endpoint[1] < landing.shape[1] and landing[endpoint]
+    safe = control.traversable_grid(constrained, resolution, .35)
+    delta = goal-current
+    length = float(np.linalg.norm(delta))
+    for route in (event['route'], event['complete_task_route']):
+        assert np.allclose(route[0], current, rtol=0, atol=1e-8) and np.allclose(route[-1], goal, rtol=0, atol=1e-8)
+        assert sum(math.dist(a, b) for a, b in zip(route, route[1:])) <= length+1e-8, 'hidden camera translation'
+        camera_known_connector(world['planning_map'], route)
+        for saved in (world['planning_map'], world['return_maps'][robot]):
+            camera_map_clearance(saved, route)
+        for peer, position in world['positions'].items():
+            if peer == robot:
+                continue
+            for start, end in zip(route, (*route[1:], route[-1])):
+                assert point_segment_distance(position, start, end)+1e-8 >= .6, 'unsafe continuous camera connector body clearance'
+        for point, _ in samples(route, resolution):
+            cell = control.world_to_grid(*point, resolution, *origin)
+            assert 0 <= cell[0] < safe.shape[0] and 0 <= cell[1] < safe.shape[1] and safe[cell]
+            assert all(peer == robot or math.dist(point, position)+1e-8 >= .6
+                       for peer, position in world['positions'].items()), 'unsafe camera connector body clearance'
+        assert all(not control.routes_conflict(route, reserved, 1.8)
+                   for peer, reserved in world['planned_return_routes'].items() if peer != robot)
+        reserved = [other for peer, other in (*world['live_routes'].items(), *world['planned_return_routes'].items()) if peer != robot]
+        reserved += [contact(world, grid, maps, peer, world['positions'][peer])['route']
+                     for peer, state in world['battery_states'].items()
+                     if peer != robot and (state['mode'] in ('RETURNING', 'CHARGING') or peer in world['charge_pending'])]
+        assert all(route_separation(route, other)+1e-8 >= 1.8 for other in reserved), 'unsafe continuous camera return reservation'
+
+
+def audit_motion(event, *, owned=False):
     from multi_robot_exploration import control
     grid, maps = geometry_world(event)
     world, robot, kind = event['world'], event['robot'], event['kind']
@@ -270,6 +379,8 @@ def audit_motion(event):
     for peer, live in world['live_routes'].items():
         if peer != robot:
             assert not control.routes_conflict(route, live, 1.8), ('overlapping owned routes', robot, peer)
+            if peer in world.get('pending_orientation_times', {}):
+                assert route_separation(route, live)+1e-8 >= 1.8, 'ordinary route crosses a real heading owner reservation'
     if kind in ('local_return_yield', 'charge_clearance') and 'charge_intents' in world:
         audit_clearance_beneficiary(event, grid, maps)
     for peer, state in world['battery_states'].items():
@@ -308,6 +419,8 @@ def audit_motion(event):
         assert event['waiting_time_budget_sec']+1e-8>=max(30.,nominal_peer_wait(event,grid,maps))+5., 'unfunded refuge waiting'
     elif kind=='target_observation_heading':
         audit_observer_heading(event, grid, maps)
+    elif kind=='exploration_camera_heading':
+        audit_camera_heading(event, grid, maps, owned)
     expected = scalar_budget(event, grid, maps, complete, destination, event['waiting_time_budget_sec'])
     if kind=='rally':
         expected=max(expected,scalar_budget(event,grid,maps,route,event['requested_position'],
@@ -318,7 +431,7 @@ def audit_motion(event):
     return len(route)
 
 
-def bind_sources(events, capture, native_path, charge_events=()):
+def bind_sources(events, capture, native_path, charge_events=(), view_events=()):
     """Bind exact content; identical stamps with different maps cannot substitute."""
     from nav_msgs.msg import OccupancyGrid, Odometry
     from rclpy.serialization import deserialize_message
@@ -340,18 +453,23 @@ def bind_sources(events, capture, native_path, charge_events=()):
             wanted[('/gateway/received/target_detection', round(world['sources']['headquarters/target_detection'] * 1e9))]
         for stamp in world.get('confirmations',{}).values():
             wanted[('/gateway/received/target_detection',round(stamp*1e9))]
-        if event.get('kind') == 'target_observation_heading':
+        if event.get('kind') in ('target_observation_heading', 'exploration_camera_heading'):
             robot = event['robot']
             for kind, suffix in (('pose_state', 'odom'), ('frame_state', 'tf')):
                 wanted[(f'/{robot}/{suffix}', round(world['sources'][robot+'/'+kind]*1e9))]
     for event in charge_events:
         wanted[(f"/gateway/received/{event['robot']}/battery_state", round(event['battery_source_time']*1e9))]
+    for event in view_events:
+        for kind, suffix in (('pose_source_time', 'odom'), ('frame_source_time', 'tf')):
+            for prefix in ('/gateway/received', ''):
+                wanted[(f"{prefix}/{event['robot']}/{suffix}", round(event[kind]*1e9))]
     matched = set()
+    wanted_topics = {key[0] for key in wanted}
     with gzip.open(capture, 'rt') as stream:
         for line in stream:
             row = json.loads(line)
             topic = row['topic']
-            if topic not in {key[0] for key in wanted}:
+            if topic not in wanted_topics:
                 continue
             msg = deserialize_message(base64.b64decode(row['cdr']),
                 OccupancyGrid if topic.endswith('map') else Odometry if topic.endswith('/odom')
@@ -407,7 +525,7 @@ def bind_sources(events, capture, native_path, charge_events=()):
                 ty + math.sin(yaw)*x + math.cos(yaw)*y), world['positions'][robot], rtol=0, atol=1e-8)
                 and (robot not in world.get('yaws', {}) or angle_error(oyaw+yaw, world['yaws'][robot]) <= 1e-8)
                 for x, y, oyaw, *_ in odoms for tx, ty, yaw, *_ in frames), ('missing actual pose/TF/yaw', robot)
-            if event.get('kind') == 'target_observation_heading' and robot == event['robot']:
+            if event.get('kind') in ('target_observation_heading', 'exploration_camera_heading') and robot == event['robot']:
                 native_odoms = original[f'/{robot}/odom', round(sources[robot+'/pose_state']*1e9)]
                 native_frames = original[f'/{robot}/tf', round(sources[robot+'/frame_state']*1e9)]
                 assert any(np.allclose(odom, native_odom, rtol=0, atol=1e-8)
@@ -440,6 +558,19 @@ def bind_sources(events, capture, native_path, charge_events=()):
         assert state['stamp_sec'] == source and 0 <= event['event_time']-source <= 5.
         assert state in native[robot], ('missing exact native charge transition', robot)
         assert state in original[f'/gateway/received/{robot}/battery_state', round(source*1e9)], ('missing delivered charge transition', robot)
+    for event in view_events:
+        robot = event['robot']
+        odoms = original[f'/gateway/received/{robot}/odom', round(event['pose_source_time']*1e9)]
+        frames = original[f'/gateway/received/{robot}/tf', round(event['frame_source_time']*1e9)]
+        native_odoms = original[f'/{robot}/odom', round(event['pose_source_time']*1e9)]
+        native_frames = original[f'/{robot}/tf', round(event['frame_source_time']*1e9)]
+        assert any(np.allclose(odom, native_odom, rtol=0, atol=1e-8)
+            and np.allclose(frame, native_frame, rtol=0, atol=1e-8)
+            and np.allclose((frame[0]+math.cos(frame[2])*odom[0]-math.sin(frame[2])*odom[1],
+                frame[1]+math.sin(frame[2])*odom[0]+math.cos(frame[2])*odom[1]), event['position'], rtol=0, atol=1e-8)
+            and angle_error(odom[2]+frame[2], event['yaw']) <= 1e-8
+            for odom in odoms for frame in frames for native_odom in native_odoms for native_frame in native_frames
+        ), ('missing exact native and delivered applied camera view source', robot)
     return len(required)
 
 
@@ -456,6 +587,39 @@ def charge_ownership(event, issued, required=False):
             assert event['robot'] not in issued, 'navigation for an issued charge owner'
 
 
+VIEW_FIELDS = ('source', 'robot', 'position', 'yaw', 'observed_at_sec', 'pose_source_time', 'frame_source_time')
+
+
+def search_view_key(view):
+    assert view['source'] == 'ap_delivered_pose_and_heading_history'
+    assert len(view['position']) == 2 and np.isfinite(view['position']).all() and math.isfinite(view['yaw'])
+    assert all(math.isfinite(view[key]) for key in ('observed_at_sec', 'pose_source_time', 'frame_source_time'))
+    return (*[math.floor(value/.5) for value in view['position']],
+            math.floor((view['yaw']+math.pi)/(math.pi/8)) % 16)
+
+
+def camera_ownership(event, owners, admissions, history):
+    world = event['world']
+    assert all(key in world for key in ('pending_orientation_times', 'search_views', 'pending_views')), 'missing camera proof schema'
+    expected = {robot:60. for robot, token in owners.items() if admissions[token]['kind'] == 'exploration_camera_heading'}
+    assert world['pending_orientation_times'] == expected, 'omitted or forged real heading allocation'
+    views = {}
+    for view in world['search_views']:
+        assert set(view) == set(VIEW_FIELDS)
+        key = search_view_key(view)
+        assert key not in views and view['pose_source_time'] <= event['event_time'] and view['frame_source_time'] <= event['event_time']
+        views[key] = view
+    assert views == history, 'search history differs from actually applied physical views'
+    for robot, view in world['pending_views'].items():
+        assert robot in owners and robot in world['required'], 'predicted camera view without a real owner'
+        original = admissions[owners[robot]]
+        assert original['kind'] in ('exploration', 'exploration_camera_heading')
+        assert np.allclose(view, (*original['requested_position'], original['requested_yaw']), rtol=0, atol=1e-8), 'predicted view differs from immutable goal'
+    if event.get('kind') is not None:
+        assert 'nominal_orientation_time_sec' in event, 'missing motion orientation allocation'
+        assert event['nominal_orientation_time_sec'] == (60. if event['kind'] == 'exploration_camera_heading' else 0.)
+
+
 def global_mission_audit(directory, required=False):
     if not required:
         return None
@@ -466,15 +630,37 @@ def global_mission_audit(directory, required=False):
     ownership_checks, cohort_worlds = [], []
     declared = json.loads((directory/'manifest.json').read_text()).get('config', {}) if (directory/'manifest.json').is_file() else {}
     charge_schema = 'charge_ownership' in declared.get('global_algorithm', {})
+    camera_schema = 'stationary_camera_heading' in declared.get('global_algorithm', {})
+    view_history, physical_sources, view_events, camera_checks = {}, {}, [], []
     sent = closed = revoked = charges = validated = 0
     for line in (directory / 'ledger.jsonl').open():
         event = json.loads(line)
         kind = event.get('event')
+        if event.get('kind') == 'exploration_camera_heading':
+            camera_schema = True
         if str(kind).startswith('coordinator_global_') and isinstance(event.get('world'), dict):
             cohort_worlds.append(event)
             if 'charge_intents' in event['world'] or 'planned_return_routes' in event['world']:
                 charge_schema = True
-        if kind == 'coordinator_global_confirmation':
+            if any(key in event['world'] for key in ('pending_orientation_times', 'search_views', 'pending_views')):
+                camera_schema = True
+            camera_checks.append((event, dict(owners), dict(view_history)))
+            if camera_schema:
+                camera_ownership(event, owners, admissions, view_history)
+        if kind == 'coordinator_global_search_view_applied':
+            camera_schema = True
+            assert event['task_phase'] in ('EXPLORE', 'FOUND_UNCONFIRMED')
+            key = search_view_key(event)
+            assert list(key) == event['view_key']
+            robot, source = event['robot'], event['pose_source_time']
+            assert source > physical_sources.get(robot, -math.inf), 'replayed physical odometry refreshed a camera bin'
+            assert source >= view_history.get(key, {}).get('pose_source_time', -math.inf), 'older physical view replaced a newer camera bin'
+            assert 0 <= event['event_time']-event['observed_at_sec'] <= 2.
+            assert all(0 <= event['observed_at_sec']-event[field] <= 2. for field in ('pose_source_time', 'frame_source_time'))
+            physical_sources[robot] = source
+            view_history[key] = {field:event[field] for field in VIEW_FIELDS}
+            view_events.append(event)
+        elif kind == 'coordinator_global_confirmation':
             source = event['source_time']
             assert math.isfinite(source) and 0 <= event['event_time']-source <= 60.
             assert source > confirmations.get(event['robot'], -math.inf), 'nonmonotone applied producer confirmation'
@@ -485,6 +671,7 @@ def global_mission_audit(directory, required=False):
             charge_ownership(event, issued_charges, charge_schema)
             token = event['robot'], event['generation']
             assert token not in admissions
+            assert event['robot'] not in owners, 'new admission for an actually owned robot'
             admissions[token] = event
         elif kind == 'coordinator_global_motion_sent':
             token = event['robot'], event['generation']
@@ -555,7 +742,7 @@ def global_mission_audit(directory, required=False):
             for key, source in proof['world']['sources'].items():
                 ttl=60. if key.endswith('/target_detection') else 2. if key.endswith(('/pose_state','/frame_state')) else 5.
                 assert 0 <= event['validated_at_sec']-source <= ttl, 'expired current revalidation source'
-            audit_motion(proof)
+            audit_motion(proof, owned=True)
             events.append(proof)
             validated += 1
         elif kind == 'coordinator_global_motion_revoked':
@@ -631,10 +818,14 @@ def global_mission_audit(directory, required=False):
             assert 'charge_intents' in event['world'] and 'planned_return_routes' in event['world'], 'inconsistent charge ownership proof schema'
         for event, issued in ownership_checks:
             charge_ownership(event, issued, True)
-    bindings = bind_sources(events, directory / 'navigation_inputs.jsonl.gz', directory / 'safety_events.jsonl', charge_events)
+    if camera_schema:
+        for event, owned, history in camera_checks:
+            camera_ownership(event, owned, admissions, history)
+    bindings = bind_sources(events, directory / 'navigation_inputs.jsonl.gz', directory / 'safety_events.jsonl', charge_events, view_events)
     return dict(status='PASS', sent=sent, closed=closed, revoked=revoked, charge_admissions=charges,
         current_revalidations=validated,
         applied_charge_state_bindings=len(charge_events),
+        applied_search_view_bindings=len(view_events),
         pending_issued_charge_requests_at_shutdown=issued_charges if charge_schema else 'LEGACY_NOT_INSTRUMENTED',
         refuge_dependencies_at_shutdown={robot:sorted(peers) for robot,peers in held_for.items() if peers},
         original_map_bindings=bindings, pending_at_owned_shutdown=sorted(owners),

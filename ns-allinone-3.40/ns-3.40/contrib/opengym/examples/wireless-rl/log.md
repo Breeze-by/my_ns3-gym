@@ -9715,3 +9715,57 @@ exec taskset -c 0-79 /usr/bin/python3 log/p2c1_global_20261013_recovery_v2/run_d
 failed forced格因episode断言未走globalreader，另只读一次命令 `rtk proxy bash -lc 'source /opt/ros/humble/setup.bash; source install/setup.bash; PYTHONNOUSERSITE=1 PYTHONPATH="$PWD/src/multi_robot_exploration:$PWD/scripts:$PYTHONPATH" /usr/bin/python3 log/p2c1_global_20261013_recovery_v2/dev_forced2_dispatch_audit1.py'`，脚本只global_mission_audit(required=True)一次。dev_forced2_dispatch_audit1.command.json/log/result.json保持exactargv/scope，PASS27sent27closed/2charge/6原Native+delivered电池绑定/87mapbind，0pendingNAV/issued/refuge；summarySHA910b5eb3c1d96e434c48db6a6f2654a186fd2faa24b0ed49dc797dab5b4e7cff未变，Native仍EXPLOREtimeout，零mission/strictgate/native-success信用。
 
 搜索只读构造：第一次相同ROS source/PYTHONNOUSERSITE/PYTHONPATH中 `taskset -c 96-127 /usr/bin/python3 log/p2c1_global_20261013_recovery/tiny_known_space.py log/p2c1_global_20261013_recovery/tiny_known_space.json log/p2c1_global_20261013_recovery/tiny_known_space.command > log/p2c1_global_20261013_recovery/tiny_known_space.log 2>&1` 被OS Invalid argument拒绝、exit1，Python未执行；完整exact原command/log与affinity_rejection.json保留，本机online/effective0–79。四原全部关闭后独立完整命令保存在tiny_known_space_run2.command：`taskset -c 0-79 /usr/bin/python3 log/p2c1_global_20261013_recovery/tiny_known_space.py log/p2c1_global_20261013_recovery/tiny_known_space_run2.json log/p2c1_global_20261013_recovery/tiny_known_space_run2.command > log/p2c1_global_20261013_recovery/tiny_known_space_run2.log 2>&1`，exit0/2.96s，source ec8c914，纯1.6m known room900free/0unknown/144原.45m landing，max原path.424264m<.75有用航段，生产mapping/known-camera生成及plan_exploration/plan_fleet均0motion/charge；当前yaw0gain0、换yaw3.53429camera潜在240、余偏好675格，原完整qualifiedreturn+60s idle预算10.15333<E30，原idle1.2。没有真实source/Future/DDS/Native/负观察或历史因果信用；只证通用缺动作类，不以此宣称forced历史原因。下一步设计完整资金/真实源的EXPLORE朝向出口和仅软历史偏好，旋转不获免费时间或普通探索信用，原模型/门限/任务300s保持。
+
+
+### recovery_v2 关闭后条件诊断与 recovery_v3 预声明
+
+全部owner关闭后，source ec8c914，只读原图准入/native odom，未初始化ROS/运行模拟器/更改原件/调用917。根cwd实际命令：
+
+```bash
+rtk proxy bash -c 'source /opt/ros/humble/setup.bash
+PYTHONNOUSERSITE=1 PYTHONPATH="$PWD/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration:$PWD/ros2_ws/ros2-multi-robot-automap/scripts:$PYTHONPATH" /usr/bin/python3 -u ros2_ws/ros2-multi-robot-automap/log/p2c1_global_20261013_recovery_v2/analyze_forced2_admissions.py'
+```
+
+输出 `forced2_admission_conditions.json`，exact command/script SHA536cb7cf8b2b0ead752b8f5e65b4701f0ebb9a28e9d8d1d22ab44d20c69f56c5/原件引用保存。分析更正明确取消把odom fallback当Native-map标签，并区分后续动作所有权；更正不是运行源码或原件变化。三个实际准入gen20/22/27于相对200.0/229.8/288.5s，原路线4.9794/4.9821/1.4214m，未知mapping36/0/2，原完整预算20.81338/22.35227/18.01651。源码sender本来重算camera yaw，不能归为朝向丢失。8,829 Native odom样本每机最近离真目标约3.4825/4.0526m；无ModelStates轨迹/cmd_vel旁录，末位姿tb1(-4.6031,.5697)约3.483m仍在原3m检测半径外。闭合交付map-yaw误差gen20 -.0808（+1s -.1486）/gen22 -.2373（-.1994）/gen27 +.0579（+.096）；gen20/22 +3/+5s已有下一动作，不能当原动作漂移。历史mask/weights完整实际AP应用顺序未采齐；重建已知相机/gather只是条件，不证明实际选择/历史原因。零任务/因果/回放信用，forced原FAIL保持。
+
+条件分析工件留存限制：首次32,770B分析JSON被更正为39,432B，再补源码契约成为42,049B；前两版完整JSON没有另行保存，仅有superseded SHA/原因，不能声称它们具有完整不可变备份。更正涉及上述错误标签/动作归属，Native/ledger/CDR/原manifest未改。最终交付版此后不再覆盖；后续诊断必须新文件，不能复用该路径。
+
+新候选父b5c31e3072860a146f1d8c1f14b999c16d4d850f，manifest UTC06:57:26，run-id20261013_p2c_global_recovery_v3。增加完整资金与显式原60s时间分配的EXPLORE相机heading，软历史正权重与实际新odom视角账本；完整源/回路/原机体、落点、1.8预约、.02不可变owner重定价及真实Future闭合保留。已发heading仅承诺固定yaw已知相机，取消后无承诺收益但真实owner60s保留；队友并行时间取各机器人路线+转向之最大值。无新Native/阈值/目标真值输入/定时器。组件审查发现TF静态基类入口、360mapping承诺和极短连接中段body/corridor反例，必须修复验证；尚无新Native任务信用，原正式/物理/917未执行。完整实现说明只在累计报告。
+
+
+### recovery_v3 组件与独立原件读者验证
+
+canonical ROS cwd/source Humble+install、PYTHONNOUSERSITE=1、PYTHONPATH src+scripts、system /usr/bin/python3，零Gazebo/Native/917。Reader实际完整命令如下（rtk proxy bash -lc，前三次只换唯一log编号）：
+
+```bash
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+PYTHONNOUSERSITE=1 PYTHONPATH="$PWD/src/multi_robot_exploration:$PWD/scripts:$PYTHONPATH" /usr/bin/python3 -m pytest -q scripts/test_p2c_camera_heading_audit.py scripts/test_p2c_charge_demand_audit.py scripts/test_p2c_observer_heading_audit.py > log/p2c1_global_20261013_recovery_v3/camera_audit4.log
+result=$?
+cat log/p2c1_global_20261013_recovery_v3/camera_audit4.log
+exit "$result"
+```
+
+camera_audit1 135PASS2FAIL15.04s：普通role夹具错误要求pure audit也拒普通移动；new字段遗漏先抛KeyError而非AssertionError。限定pure新角色断言、增加明确field presence，immutable globalowner拒绝不放宽。camera_audit2 144PASS14.64s，追加必要连续连接/真实所有权/源和时间反例后camera_audit3 152PASS17.28s，最后仅固定wanted_topics移到CDR循环外以避免高频新view源乘积复杂度、camera_audit4 152PASS17.83s。原charge30/observer57不改，新file65反例。
+
+两个真实几何red命令同环境，仅 `-m pytest -q scripts/test_p2c_camera_heading_audit.py -k unsafe_mid > log/p2c1_global_20261013_recovery_v3/camera_audit_body_red1.log` 为1FAIL49deselected1.56s；`-k protects_middle > log/p2c1_global_20261013_recovery_v3/camera_audit_corridor_red1.log` 为1FAIL51deselected1.32s。它们分别确证两端安全却中段侵入.6body和1.8走廊，修为独立连续数学检查；原FAIL日志保留。小连接跨fused unknown格以独立boundary cuts+interval midpoints检查；生产仅新role保守known矩形与原连续local/fused路径。混合池任一heading、任意派发顺序、后续普通新动作均检查真实未闭heading连续1.8，取消未闭仍占用。接受后原mission tick守当前完整预算/源/几何及.02，失格routine取消，不释放Future/60或增加普通失败计数；新role成功无探索/确认信用。
+
+Planner全部实际命令/环境/输出/退出保存 `log/p2c1_global_20261013_recovery/recovery_v3_component_runs.json`，原日志同目录。共同rtk proxy bash -c/source Humble+install/export上述PYTHON env，命令本体 `/usr/bin/python3 -m pytest -q`，每次重定向唯一log并按原exit退出。early1仅test_fleet_planning.py，`-k "camera or search_refinement or opportunity_cost or generator_upper"`：19PASS1FAIL/50deselected2.02s，新增generator在人工缺第二机battery/yaw夹具先进入funding，新增早期eligibility拒绝而非伪造数据。early2两个test_fleet_planning.py+test_global_control.py同-k，29PASS101deselected3.74s。full1两模块无-k129PASS1FAIL60.45s，原件Mock在初始实际应用view之后安装而缺事件，改夹具先捕获，不放宽production历史。early3同两模块且-k追加 `or refuge_waits`，35PASS100deselected6.06s；full2无-k136PASS66.37s。early4同两模块原-k，37PASS102deselected2.58s；final1无-k139PASS64.87s，含实际ActionServer/Future与新source回调。最后仅把新pending字段复制移至_refresh_rally_yields前，使release proof正确携带真实owner；metadata1仅global模块 `-k "camera or refuge_waits"`14PASS50deselected5.36s。全部失败保存，不重跑/覆盖旧日志，无Gazebo任务信用。
+
+Root最终检查在上述env加入 RMW_IMPLEMENTATION=rmw_fastrtps_cpp、FASTDDS_BUILTIN_TRANSPORTS=UDPv4，unset FASTRTPS_DEFAULT_PROFILES_FILE ROS_DISCOVERY_SERVER，并用noclobber保证新输出。以下命令在ROS cwd独立并行，目录 `log/p2c1_global_20261013_recovery_v3/`：
+
+- `colcon build --symlink-install --packages-select multi_robot multi_robot_exploration merge_map slam_toolbox > log/p2c1_global_20261013_recovery_v3/build1.log 2>&1`：4包PASS4.39s。
+- `taskset -c 0-79 /usr/bin/python3 scripts/check_p2c_source.py --output log/p2c1_global_20261013_recovery_v3/source1.json > log/p2c1_global_20261013_recovery_v3/source1.log 2>&1`：原保护/授权/54协议、Native常量与Future契约PASS，最终planning源码SHA仍与本次检查一致。
+- `taskset -c 0-79 /usr/bin/python3 -m flake8 --select F821,F822,F823,E999 src/multi_robot_exploration/multi_robot_exploration/control.py src/multi_robot_exploration/multi_robot_exploration/fleet_planning.py src/multi_robot_exploration/multi_robot_exploration/global_control.py src/multi_robot_exploration/test/test_fleet_planning.py src/multi_robot_exploration/test/test_global_control.py scripts/p2c_global_audit.py scripts/test_p2c_observer_heading_audit.py scripts/test_p2c_charge_demand_audit.py scripts/test_p2c_camera_heading_audit.py > log/p2c1_global_20261013_recovery_v3/static1.log 2>&1`：exit0 PASS。
+- `taskset -c 0-79 /usr/bin/python3 scripts/run_p2c_tasks.py --case dev_forced2 --run-id 20261013_p2c_global_recovery_v3 --domain 204 --gazebo-port 11573 --validate-only > log/p2c1_global_20261013_recovery_v3/declaration1.json 2> log/p2c1_global_20261013_recovery_v3/declaration1.log`：exit0 PASS，未运行case。
+- `taskset -c 0-79 /usr/bin/python3 -m pytest -q src/multi_robot_exploration/test scripts --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py > log/p2c1_global_20261013_recovery_v3/full1.log 2>&1`：完整功能回归在途，结果随后追加。
+
+Root meta试读曾误用task_stack_parent_commit key、把ROS-relative planning路径接到Git root而抛KeyError/FileNotFoundError；这两次只是只读辅助检查错误，无source/原件/实验变化。改为candidate_parent_commit与ROS cwd后，整份manifest除3策略meta全部invariant、两策略一致、source SHA与当前3文件一致PASS。独立只读源码复审无剩余阻塞；原四开发必须等完整回归后提交推送同一冻结再开始。
+
+Root full1实际自然结束exit1：1877PASS2FAIL251.48s，两个均 `test_global_dds_actions.py::test_real_dds_worker_dispatch_result_and_cancel_ownership[False/True]`；新global实际视角源要求Native+gateway CDR，而旧DDS夹具只有gateway odom/TF。旁录closed计数仅gateway各16/merge17，无原Native；读者正确拒绝missing exact native and delivered applied camera view source。原完整失败日志保留，未运行Gazebo。本夹具补发/旁录同一typed原Native odom/TF且等待实际发现/捕获，不放松读者、改变运行输入或Future断言；修复后定向与完整full2待执行。原runtime/source/build检查保持有效，只有测试夹具变更。
+
+DDS fixture实际命令（同canonical ROS cwd/source Humble+install，rtk proxy bash -lc）：`ROS_DOMAIN_ID=204 PYTHONNOUSERSITE=1 PYTHONPATH="$PWD/src/multi_robot_exploration:$PWD/scripts:$PYTHONPATH" /usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_global_dds_actions.py -k real_dds_worker_dispatch_result_and_cancel_ownership > log/p2c1_global_20261013_recovery_v3/dds_fixture1.log`：2PASS1deselected18.20s/exit0，原finally全部executor/publisher/action闭合。仅添加同一typed内容、source stamp、.5s频率的Native两个主题，以及4topic实际source10/13捕获等待。紧接同Root完整命令只换unique full2.log自然运行，不覆盖full1；新增fixture文件FF静态命令 `taskset -c 0-79 /usr/bin/python3 -m flake8 --select F821,F822,F823,E999 src/multi_robot_exploration/test/test_global_dds_actions.py > log/p2c1_global_20261013_recovery_v3/static2.log 2>&1` exit0。
+
+实际启动链只读复审：网关静态RELIABLE depth100订阅consumed并直接权威ledger追加，observer先于smoke/launch Popen，NavigationCapture在READY/spin前一次性建全部Native/gateway订阅，control晚于原Nav2stagger+readygate。v2四原全部机器人两通路odom/TF最早捕获中的最晚时点，相对Native epoch分别−77.0/−184.9/−130.6/−131.6s；首global账本+0.7/+0.8/+0.0/+0.7s。没有“晚动态发现诊断pub”的证据，不增加启动规则。Owner无显式READY/DDS首条握手、diagnostic为volatile，旧原件无新view；不能声称已有v3首次apply实验保证，未来实际漏录仍严格FAIL。只读无sim/917/任务信用。
+
+Root最终full2自然exit0：1879PASS248.90s。Runtime未再改，原4包build4.39s和source SHA仍有效；190保护/6授权/54协议/Native constants与Future8/2/2 PASS，9原新模块static1及新增DDS fixture static2 PASS，original manifests三meta之外完整不变且global策略一致、declaration和独立复审PASS。diff --check和原样git add -n .确认无build/runtime/checkpoint被列入；14用户260929_report材料列入dry-run，实际必须显式排除，只暂存本任务源码/测试/策略/launch与状态/累计报告/log。完成修改提交并push当前feature branch后才运行原四开发；prospective v3 formal helper仅准备，freeze placeholder及dev完整PASS门槛使其当前不能执行。所有旧FAIL保持，无Native任务信用，正式/物理/917未运行。

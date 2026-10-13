@@ -49,6 +49,8 @@ def test_real_dds_worker_dispatch_result_and_cancel_ownership(tmp_path, late_acc
         'map': source.create_publisher(OccupancyGrid, '/gateway/received/tb1/map', 1),
         'odom': source.create_publisher(Odometry, '/gateway/received/tb1/odom', 1),
         'tf': source.create_publisher(TFMessage, '/gateway/received/tb1/tf', 1),
+        'native_odom': source.create_publisher(Odometry, '/tb1/odom', 1),
+        'native_tf': source.create_publisher(TFMessage, '/tb1/tf', 1),
         'battery': source.create_publisher(String, '/gateway/received/tb1/battery_state', latched),
         'native_battery': source.create_publisher(String, '/tb1/battery_state', latched),
     }
@@ -66,6 +68,11 @@ def test_real_dds_worker_dispatch_result_and_cancel_ownership(tmp_path, late_acc
             captured_sources.update((topic, transform.header.stamp.sec) for transform in message.transforms)
 
     capture.record = record
+
+    def captured_pose_sources(at):
+        return all((topic, int(at)) in captured_sources for topic in (
+            '/tb1/odom', '/tb1/tf', '/gateway/received/tb1/odom', '/gateway/received/tb1/tf'))
+
     native = []
     source.create_subscription(String, '/tb1/battery_state',
         lambda msg: native.append(dict(topic='/tb1/battery_state', data=json.loads(msg.data))), latched)
@@ -132,12 +139,15 @@ def test_real_dds_worker_dispatch_result_and_cancel_ownership(tmp_path, late_acc
         odom.header.stamp = grid.header.stamp
         odom.pose.pose.position.x = odom.pose.pose.position.y = 4.25
         odom.pose.pose.orientation.w = 1.
+        publishers['native_odom'].publish(odom)
         publishers['odom'].publish(odom)
         frame = TransformStamped()
         frame.header.stamp = grid.header.stamp
         frame.header.frame_id, frame.child_frame_id = 'map', 'odom'
         frame.transform.rotation.w = 1.
-        publishers['tf'].publish(TFMessage(transforms=[frame]))
+        transforms = TFMessage(transforms=[frame])
+        publishers['native_tf'].publish(transforms)
+        publishers['tf'].publish(transforms)
         state = dict(mode='ACTIVE', stamp_sec=state_source, energy=80., charge_x=4.25, charge_y=4.25,
             capacity=100., charge_target_fraction=.8, charge_radius_m=.8, move_cost_per_m=1.,
             idle_cost_per_sec=.02, return_path_factor=2., nominal_speed_mps=.18,
@@ -163,7 +173,8 @@ def test_real_dds_worker_dispatch_result_and_cancel_ownership(tmp_path, late_acc
 
     try:
         pump_until(lambda: len(goals) == 1 and node.navigation_tasks.get('tb1') is not None
-                   and (held_responses if late_acceptance else node.navigation_tasks['tb1'].handle is not None))
+                   and (held_responses if late_acceptance else node.navigation_tasks['tb1'].handle is not None)
+                   and captured_pose_sources(10.))
         task = node.navigation_tasks['tb1']
         assert task.proposal.kind == 'exploration'
         assert task.proposal.budget_time is not None
@@ -175,8 +186,7 @@ def test_real_dds_worker_dispatch_result_and_cancel_ownership(tmp_path, late_acc
                        and node.robot_tf_received_at['tb1'] == 13.
                        and node.battery_state_received_at['tb1'] == 13.
                        and node.map_received_at == 13.
-                       and ('/gateway/received/tb1/odom', 13) in captured_sources
-                       and ('/gateway/received/tb1/tf', 13) in captured_sources)
+                       and captured_pose_sources(13.))
             assert task.sources['tb1/pose_state'] == 10. and not task.handle
             node._goal_response = original_response
             delayed_task, completed = held_responses.pop()

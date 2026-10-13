@@ -12,6 +12,8 @@ import math
 import threading
 import time
 
+import numpy as np
+
 from action_msgs.msg import GoalStatus
 from geometry_msgs.msg import PoseStamped
 from nav2_msgs.action import NavigateToPose
@@ -27,6 +29,11 @@ from .fleet_planning import (
     observer_heading_pose,
     planned_charge_returns,
     return_helper_beneficiary_current,
+    camera_heading_current,
+    camera_preference_weights,
+    stationary_route_clears_bodies,
+    stationary_route_clears_corridors,
+    stationary_route_is_known,
 )
 
 
@@ -61,6 +68,7 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
         self.global_charge_requested_at = None
         self.global_charge_started = False
         self.global_confirmations = {}
+        self.global_search_view_sources = {}
         self.global_nav_failures = {}
         self.global_blocked_since = {}
         self.global_scan_steps = {}
@@ -160,13 +168,40 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
         self.get_logger().info(f"Canceling {robot} {task.proposal.kind}: {reason}")
 
     def robot_odom_callback(self, message, robot_name):
+        old_views = dict(getattr(self,'initial_search_views',{}))
         super().robot_odom_callback(message, robot_name)
         if not getattr(self, 'global_enabled', False):
             return
+        source = message.header.stamp.sec + message.header.stamp.nanosec / 1e9
+        frame = self.robot_tf_received_at.get(robot_name)
+        position = self.robot_positions.get(robot_name)
+        yaw = self.robot_yaws.get(robot_name)
+        physical_sources = getattr(self,'global_search_view_sources',{})
+        self.global_search_view_sources = physical_sources
+        if (self.task_state in ('EXPLORE','FOUND_UNCONFIRMED') and position is not None
+                and yaw is not None and all(math.isfinite(value) for value in (*position,yaw,source))
+                and source > physical_sources.get(robot_name,-math.inf)
+                and frame is not None and math.isfinite(frame)
+                and 0 <= self.now()-source <= geometry.STATE_TTL_SEC['pose_state']
+                and 0 <= self.now()-frame <= geometry.STATE_TTL_SEC['frame_state']):
+            physical_sources[robot_name] = source
+            key = (*tuple(math.floor(value/geometry.INITIAL_SEARCH_VISIT_BIN_M) for value in position),
+                   math.floor((yaw+math.pi)/(2.*math.pi/16)) % 16)
+            record = dict(source='ap_delivered_pose_and_heading_history',robot=robot_name,
+                position=list(position),yaw=yaw,observed_at_sec=self.now(),
+                pose_source_time=source,frame_source_time=frame)
+            if source >= old_views.get(key,{}).get('pose_source_time',-math.inf):
+                self.initial_search_views = {**old_views,key:record}
+                self._emit('coordinator_global_search_view_applied',view_key=key,**record)
+            else:
+                self.initial_search_views = old_views
+        else:
+            # A repeated physical odom reprojected by a new TF does not create
+            # a new physical view bin or renew its source-backed recency.
+            self.initial_search_views = old_views
         task = self.navigation_tasks.get(robot_name)
         if task is None:
             return
-        source = message.header.stamp.sec + message.header.stamp.nanosec / 1e9
         position = (message.pose.pose.position.x, message.pose.pose.position.y)
         yaw = geometry.quaternion_yaw(message.pose.pose.orientation)
         if (not all(math.isfinite(value) for value in (*position, yaw, source))
@@ -183,6 +218,14 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                                  math.cos(yaw-task.progress_yaw))) >= .1):
             task.progress_position, task.progress_yaw = position, yaw
             task.last_progress_at = self.now()
+
+    def robot_tf_callback(self, message, robot_name):
+        views = dict(getattr(self,'initial_search_views',{}))
+        super().robot_tf_callback(message,robot_name)
+        if getattr(self,'global_enabled',False):
+            # The inherited TF adapter statically replays the last odometry.
+            # Keep the reprojected live body, but no new physical camera view.
+            self.initial_search_views = views
 
     def battery_state_callback(self, message, robot_name):
         if not getattr(self, "global_enabled", False):
@@ -368,14 +411,18 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
             self.source_map_data, dict(self.map_self_return_cells))
         snapshot = replace(snapshot, charge_intents=intents, charge_intent_slots=slots,
             yaws=dict(self.robot_yaws), confirmations=dict(self.global_confirmations),
-            target_fov_rad=self.target_view_fov_rad, goal_timeout_sec=self.goal_timeout_sec)
+            target_fov_rad=self.target_view_fov_rad, goal_timeout_sec=self.goal_timeout_sec,
+            pending_views={robot:task.proposal.pose for robot,task in self.navigation_tasks.items()
+                if robot in required and task.proposal.kind in ('exploration','exploration_camera_heading')
+                and task.cancel_reason is None},
+            pending_orientation_times={robot:task.proposal.nominal_orientation_time_sec
+                for robot,task in self.navigation_tasks.items()
+                if task.proposal.kind=='exploration_camera_heading'})
         snapshot = replace(snapshot, planned_return_routes=planned_charge_returns(snapshot,
             {robot:{'returns':self.return_geometry_caches.setdefault(robot,{})} for robot in intents}))
         self._refresh_rally_yields(snapshot)
         return replace(snapshot, yielded_for={robot:tuple(sorted(peers))
-            for robot,peers in self.global_rally_yields.items()},
-            pending_views={robot:task.proposal.pose for robot,task in self.navigation_tasks.items()
-                if robot in required and task.proposal.kind=='exploration' and task.cancel_reason is None})
+            for robot,peers in self.global_rally_yields.items()})
 
     def _refresh_rally_yields(self, snapshot):
         # Navigation ownership has already closed. The refuge remains a
@@ -437,6 +484,9 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
             "completed_legs": snapshot.completed_legs,
             "confirmations":snapshot.confirmations, "yaws":snapshot.yaws,
             "target_fov_rad":snapshot.target_fov_rad, "goal_timeout_sec":snapshot.goal_timeout_sec,
+            "search_views":snapshot.views,
+            "pending_views":{robot:[pose.x,pose.y,pose.yaw] for robot,pose in snapshot.pending_views.items()},
+            "pending_orientation_times":snapshot.pending_orientation_times,
         }
 
     def _emit(self, event, **details):
@@ -481,8 +531,15 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                 self.cancel_navigation(robot, "local_return")
             elif not self._return_helper_current(task.proposal):
                 self.cancel_navigation(robot, 'dependency_ended')
-            elif kind == "exploration" and snapshot.target is not None:
+            elif kind in ('exploration','exploration_camera_heading') and snapshot.target is not None:
                 self.cancel_navigation(robot, "target_found")
+            elif kind == 'exploration_camera_heading' and snapshot.phase not in ('EXPLORE','FOUND_UNCONFIRMED'):
+                self.cancel_navigation(robot,'phase_changed')
+            elif kind == 'exploration_camera_heading' and robot in snapshot.charge_intents:
+                self.cancel_navigation(robot,'dependency_ended')
+            elif kind == 'exploration_camera_heading' and self._current_motion(
+                    snapshot,task.proposal,{},owned_task=task) is None:
+                self.cancel_navigation(robot,'camera_heading_invalidated')
             elif kind in ("rally", "rally_yield", "target_information_survey", "target_observation_heading") and snapshot.target is None:
                 self.cancel_navigation(robot, "target_expired")
             elif protected is None:
@@ -560,16 +617,21 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
             return None
         if owned_task is not None and (self.navigation_tasks.get(robot) is not owned_task
                 or self.battery_modes[robot] != 'ACTIVE'
-                or kind == 'target_observation_heading' and owned_task.proposal.kind != kind):
+                or kind in ('target_observation_heading','exploration_camera_heading')
+                   and owned_task.proposal.kind != kind
+                or kind == 'exploration_camera_heading' and proposal.pose != owned_task.proposal.pose):
             return None
         if kind in ("rally", "rally_yield", "target_information_survey", "target_observation_heading") and snapshot.target is None:
             return None
-        if kind == "exploration" and snapshot.target is not None:
+        if kind in ('exploration','exploration_camera_heading') and snapshot.target is not None:
+            return None
+        if kind == 'exploration_camera_heading' and not camera_heading_current(
+                snapshot,robot,proposal.pose,owned=owned_task is not None):
             return None
         caches = self._admission_caches(snapshot, robot)
         grid = robot_grid(snapshot, robot, caches)
         bodies = [position for peer, position in snapshot.positions.items() if peer != robot]
-        if kind in ('target_reacquisition_scan', 'target_observation_heading'):
+        if kind in ('target_reacquisition_scan', 'target_observation_heading','exploration_camera_heading'):
             if kind == 'target_observation_heading':
                 heading = observer_heading_pose(snapshot, owned=owned_task is not None)
                 if (heading is None or robot != snapshot.observer
@@ -583,6 +645,7 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                            for position in bodies)):
                 return None
             actual = (heading if kind == 'target_observation_heading'
+                      else proposal.pose if kind == 'exploration_camera_heading'
                       else geometry.RallyPose(*snapshot.positions[robot], proposal.pose.yaw))
             route = (snapshot.positions[robot],)
         else:
@@ -618,8 +681,19 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
         full = qualified_motion_route(snapshot, robot, route, caches)
         if full is None:
             return None
+        if not stationary_route_clears_corridors(full,
+                tuple(live for peer,live in snapshot.live_routes.items()
+                      if peer != robot and peer in snapshot.pending_orientation_times)):
+            return None
+        if kind == 'exploration_camera_heading' and (not stationary_route_is_known(snapshot,full)
+                or not stationary_route_clears_bodies(full,bodies)):
+            return None
         protected = protected_returns(snapshot, {})
         if protected is None:
+            return None
+        if kind == 'exploration_camera_heading' and not stationary_route_clears_corridors(full,
+                (*protected.values(),*snapshot.planned_return_routes.values(),
+                 *(live for peer,live in snapshot.live_routes.items() if peer != robot))):
             return None
         if kind in ('local_return_yield','charge_clearance'):
             beneficiary = proposal.beneficiary
@@ -653,7 +727,7 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
         budget_time = self.now()
         pricing = replace(snapshot, at_time=budget_time)
         wait = geometry.RALLY_GOAL_TIMEOUT_SEC if kind == "target_reacquisition_scan" else 0.
-        if kind == 'target_observation_heading':
+        if kind in ('target_observation_heading','exploration_camera_heading'):
             wait = self.goal_timeout_sec
         complete = full
         if kind == 'rally_yield':
@@ -687,7 +761,8 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
             interest = geometry.camera_search_interest(snapshot.grid, snapshot.resolution,
                                                        snapshot.origin, snapshot.views)
             visual, yaw = camera_cells(snapshot.grid, cell,
-                                       geometry.INFORMATION_RADIUS_M / snapshot.resolution, interest)
+                geometry.INFORMATION_RADIUS_M / snapshot.resolution,snapshot.grid==0,
+                camera_preference_weights(snapshot,interest))
             mapping = frozenset(map(int, geometry.visible_unknown_gain(snapshot.grid, cell,
                 geometry.INFORMATION_RADIUS_M / snapshot.resolution, return_cells=True)))
             information = visual | mapping
@@ -695,6 +770,16 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                 return None
             if visual:
                 actual = geometry.RallyPose(actual.x, actual.y, yaw)
+        if kind == 'exploration_camera_heading':
+            cell = geometry.world_to_grid(actual.x,actual.y,snapshot.resolution,*snapshot.origin)
+            hits = geometry.visible_unknown_gain(snapshot.grid,cell,
+                geometry.INFORMATION_RADIUS_M/snapshot.resolution,snapshot.grid==0,return_cells=True)
+            rows,columns = np.unravel_index(hits,snapshot.grid.shape)
+            bearing = np.arctan2(rows-cell[0],columns-cell[1])-actual.yaw
+            information = frozenset(map(int,hits[np.abs(np.arctan2(np.sin(bearing),np.cos(bearing)))
+                <= geometry.INITIAL_SEARCH_VIEW_FOV_RAD/2]))
+            if not information:
+                return None
         complete = qualified_motion_route(snapshot, robot, complete[1:], caches)
         if complete is None:
             return None
@@ -710,7 +795,9 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
             return None
         return replace(proposal, pose=actual, route=full, required_energy=required,
                        information_cells=information, complete_route=complete,
-                       budget_time=budget_time, wait_sec=wait)
+                       budget_time=budget_time, wait_sec=wait,
+                       nominal_orientation_time_sec=(self.goal_timeout_sec
+                           if kind=='exploration_camera_heading' else proposal.nominal_orientation_time_sec))
 
     def _current_wait(self, snapshot, waiting_robot):
         # Bound nominal outstanding peer travel and serialized charge time.
@@ -741,7 +828,7 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
         proof = self._motion_proof(snapshot, task, proposal)
         self._emit("coordinator_global_motion_admission", **proof)
         if not self._sources_current(snapshot.sources, include_target=proposal.kind not in (
-                "local_return_yield", "exploration", "target_reacquisition_scan")):
+                "local_return_yield", "exploration", "exploration_camera_heading", "target_reacquisition_scan")):
             self.navigation_tasks.pop(robot)
             self._emit("coordinator_global_motion_revoked", robot=robot, generation=task.generation,
                        reason="source_expired_during_proof_encoding")
@@ -752,7 +839,7 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
             and self.task_state in ("FOUND", "RALLY") else
             "target_survey" if proposal.kind == "target_information_survey" else proposal.kind, goal.pose)
         if recorded is False or not self._sources_current(snapshot.sources, include_target=proposal.kind not in (
-                "local_return_yield", "exploration", "target_reacquisition_scan")):
+                "local_return_yield", "exploration", "exploration_camera_heading", "target_reacquisition_scan")):
             self.navigation_tasks.pop(robot)
             self.goal_routes[robot] = ()
             self._emit("coordinator_global_motion_revoked", robot=robot, generation=task.generation,
@@ -786,6 +873,7 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
             "requested_position": [proposal.pose.x, proposal.pose.y],
             "requested_yaw": proposal.pose.yaw, "required_energy": proposal.required_energy,
             "budget_evaluated_at_sec": proposal.budget_time, "waiting_time_budget_sec": proposal.wait_sec,
+            "nominal_orientation_time_sec":proposal.nominal_orientation_time_sec,
             "final_poses": {peer: [pose.x, pose.y, pose.yaw] for peer, pose in self.rally_final_targets.items()},
             "world": self._world_evidence(snapshot),
         }
@@ -803,7 +891,7 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
         self._emit('coordinator_global_motion_revalidation',
                    **self._motion_proof(snapshot, task, actual))
         if not self._sources_current(snapshot.sources, include_target=actual.kind not in (
-                'local_return_yield', 'exploration', 'target_reacquisition_scan')):
+                'local_return_yield', 'exploration', 'exploration_camera_heading','target_reacquisition_scan')):
             return False
         task.proposal, task.sources = actual, dict(snapshot.sources)
         self.goal_routes[robot] = actual.route
@@ -830,14 +918,19 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                       or self.task_state == "RALLY" and self.fresh_target()
                       or task.proposal.kind in ('target_information_survey', 'target_observation_heading') and self.task_state == "FOUND"
                       and self.fresh_target())
-        if task.proposal.kind == "exploration" and self.task_state in ("FOUND", "RALLY") and self.fresh_target():
+        if task.proposal.kind in ('exploration','exploration_camera_heading') and self.task_state in ("FOUND", "RALLY") and self.fresh_target():
+            compatible = False
+        if task.proposal.kind == 'exploration_camera_heading' and self.task_state not in ('EXPLORE','FOUND_UNCONFIRMED'):
             compatible = False
         if not compatible:
             task.cancel_reason = task.cancel_reason or "phase_changed"
         elif not self._return_helper_current(task.proposal):
             task.cancel_reason = task.cancel_reason or 'dependency_ended'
+        elif task.proposal.kind == 'exploration_camera_heading' and task.cancel_reason is None:
+            if not self._revalidate_pending_motion(task):
+                task.cancel_reason = 'source_expired_at_acceptance'
         elif not self._sources_current(task.sources, include_target=task.proposal.kind not in (
-                "local_return_yield", "exploration", "target_reacquisition_scan")):
+                "local_return_yield", "exploration", "exploration_camera_heading", "target_reacquisition_scan")):
             if task.cancel_reason is None and not self._revalidate_pending_motion(task):
                 task.cancel_reason = "source_expired_at_acceptance"
         if task.cancel_reason is not None or self.battery_modes[robot] != "ACTIVE" or self.shutdown_requested:
@@ -897,7 +990,7 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
         elif task.cancel_reason not in ("local_return", "local_failure", "target_found",
                                        "target_expired", "return_corridor", "unknown_return_corridor",
                                        "phase_changed", "source_expired_at_acceptance", "mission_terminal",
-                                       'dependency_ended'):
+                                       'dependency_ended','camera_heading_invalidated'):
             self.global_nav_failures[robot] = self.global_nav_failures.get(robot, 0) + 1
             if kind == "rally" and self.global_nav_failures[robot] > self.rally_max_retries:
                 self.fail_task("rally_navigation_failed:" + robot)

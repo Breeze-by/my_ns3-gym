@@ -10,6 +10,10 @@ from multi_robot_exploration.fleet_planning import (
     FleetSnapshot, MotionProposal, complete_budget, joint_motions, plan_fleet, plan_exploration,
     qualified_motion_route, ExplorationObjective,
     plan_observer_heading, ChargeProposal, planned_charge_returns, return_helper_beneficiary_current,
+    camera_heading_candidates, camera_heading_current,
+    route_length,
+    minimum_polyline_separation, stationary_route_clears_bodies, stationary_route_clears_corridors,
+    stationary_route_is_known,
 )
 
 
@@ -44,6 +48,216 @@ def world(energy=40., obstacle=False):
         {"tb1": (1.25, 1.25)}, {"tb1": battery},
         {"tb1": dict(data=grid, resolution=.1, origin=(0., 0.))},
         sources, ("tb1",), required=("tb1",))
+
+
+def tiny_camera_world(fully_viewed=False):
+    grid = np.zeros((32,32),dtype=np.int16)
+    grid[[0,-1],:] = grid[:,[0,-1]] = 100
+    grid = c.immutable_grid_snapshot(grid,grid.shape)
+    position = (.825,.825)
+    base = world(30.)
+    battery = {**base.batteries['tb1'],'charge_x':position[0],'charge_y':position[1]}
+    views = tuple(dict(position=position,yaw=index*2.*math.pi/16,
+        pose_source_time=9.+index/100.,frame_source_time=9.,robot='tb1')
+        for index in (range(16) if fully_viewed else (0,)))
+    return replace(base,grid=grid,resolution=.05,positions={'tb1':position},
+        batteries={'tb1':battery},maps={'tb1':dict(data=grid,resolution=.05,origin=(0.,0.))},
+        views=views,yaws={'tb1':0.})
+
+
+@pytest.mark.parametrize('fully_viewed',[False,True])
+def test_known_room_without_useful_translation_retains_funded_camera_heading(fully_viewed):
+    snapshot = tiny_camera_world(fully_viewed)
+    safe = c.traversable_grid(snapshot.grid,.05,c.ROBOT_CLEARANCE_M)
+    field = c.exploration_distance_field(snapshot.grid,
+        c.traversable_grid(snapshot.grid,.05,c.PATH_CLEARANCE_M),.05,(0.,0.),snapshot.positions['tb1'])
+    assert float(np.max(field[safe])) < c.USEFUL_TRAVEL_M
+    interest = c.camera_search_interest(snapshot.grid,.05,(0.,0.),snapshot.views)
+    if fully_viewed:
+        assert not interest.any()
+    result = plan_fleet(snapshot)
+    assert len(result.motions)==1 and not result.charges
+    motion = result.motions[0]
+    assert motion.kind=='exploration_camera_heading' and motion.information_cells
+    assert motion.pose.x==motion.pose.y==.825 and math.dist(*motion.route)==0.
+    assert motion.wait_sec==motion.nominal_orientation_time_sec==60.
+    base = complete_budget(snapshot,'tb1',motion.route,(.825,.825),{})
+    assert math.isclose(motion.required_energy-base,60*.02) and motion.required_energy < 30.
+    objective = ExplorationObjective(snapshot,interest)
+    assert objective.ready_time((motion,))==61.
+    assert objective.score((motion,)) > objective.score(())==0.
+    assert not snapshot.completed_legs and not snapshot.pending_views
+
+
+@pytest.mark.parametrize('variant',['stale_pose','future_tf','stale_battery','missing_map',
+                                  'unfunded','native','issued','live','demand','body'])
+def test_stationary_camera_candidate_preserves_original_source_funding_and_ownership(variant):
+    snapshot = tiny_camera_world()
+    if variant in ('stale_pose','future_tf','stale_battery'):
+        key,stamp = {'stale_pose':('tb1/pose_state',7.99),'future_tf':('tb1/frame_state',10.01),
+                     'stale_battery':('tb1/battery_state',4.99)}[variant]
+        snapshot = replace(snapshot,sources={**snapshot.sources,key:stamp})
+    elif variant=='missing_map':
+        snapshot = replace(snapshot,maps={})
+    elif variant=='unfunded':
+        snapshot = replace(snapshot,batteries={'tb1':{**snapshot.batteries['tb1'],'energy':9.5}})
+    elif variant=='native':
+        snapshot = replace(snapshot,batteries={'tb1':{**snapshot.batteries['tb1'],'mode':'RETURNING'}})
+    elif variant=='issued':
+        snapshot = replace(snapshot,charge_pending=('tb1',))
+    elif variant=='live':
+        snapshot = replace(snapshot,live_routes={'tb1':(snapshot.positions['tb1'],)},available=())
+    elif variant=='demand':
+        snapshot = replace(snapshot,charge_intents={'tb1':ChargeProposal('tb1',40.,(), 'unfunded_information_task')})
+    else:
+        snapshot = replace(snapshot,positions={**snapshot.positions,'tb2':(.825,1.415)})
+    objective = ExplorationObjective(snapshot,snapshot.grid==0)
+    assert not camera_heading_candidates(snapshot,'tb1',{},(),objective)
+
+
+def test_owned_camera_orientation_time_is_parallel_and_survives_cancel_prediction_removal():
+    snapshot = tiny_camera_world(True)
+    pose = c.RallyPose(.825,.825,math.pi)
+    snapshot = replace(snapshot,live_routes={'tb1':((.825,.825),)},pending_views={'tb1':pose},
+        pending_orientation_times={'tb1':60.},available=())
+    objective = ExplorationObjective(snapshot,np.zeros(snapshot.grid.shape,dtype=bool))
+    assert objective.committed and objective.ready_time(())==61.
+    motion = MotionProposal('tb1','exploration_camera_heading',pose,((.825,.825),),1.,11.,
+        nominal_orientation_time_sec=60.)
+    assert objective.ready_time((motion,))==61.  # same actor replaces, not doubles its allocation
+    canceled = ExplorationObjective(replace(snapshot,pending_views={}),snapshot.grid==0)
+    assert not canceled.committed and canceled.ready_time(())==61.
+    released = ExplorationObjective(replace(snapshot,pending_views={},live_routes={},pending_orientation_times={}),
+                                    snapshot.grid==0)
+    assert released.ready_time(())==1.
+    large = world()
+    parallel = replace(large,positions={'tb1':(1.25,1.25),'tb2':(4.25,1.25)},
+        batteries={**large.batteries,'tb2':large.batteries['tb1']},required=('tb1','tb2'),
+        pending_orientation_times={'tb1':60.,'tb2':60.})
+    combined = ExplorationObjective(parallel,parallel.grid==0)
+    assert math.isclose(combined.ready_time(()),61.+3./.18)
+    failed_owner = ExplorationObjective(replace(parallel,required=('tb2',),
+        pending_orientation_times={'tb1':60.},pending_views={}),parallel.grid==0)
+    assert failed_owner.ready_time(())==61.  # real unclosed owner is not erased by participant exclusion
+
+
+def test_owned_camera_heading_does_not_predict_a_new_360_degree_mapping_observation():
+    snapshot = world()
+    grid = np.zeros(snapshot.grid.shape,dtype=np.int16)
+    grid[5:20,20:30] = -1
+    grid = c.immutable_grid_snapshot(grid,grid.shape)
+    pose = c.RallyPose(1.25,1.25,math.pi)
+    pending = replace(snapshot,grid=grid,pending_views={'tb1':pose},
+        live_routes={'tb1':((1.25,1.25),)},pending_orientation_times={'tb1':60.})
+    objective = ExplorationObjective(pending,grid==0)
+    mapping = set(map(int,c.visible_unknown_gain(grid,(12,12),20,return_cells=True)))
+    assert mapping and not objective.committed.intersection(mapping)
+    ordinary = ExplorationObjective(replace(pending,pending_orientation_times={}),grid==0)
+    assert mapping <= ordinary.committed
+
+
+def test_camera_connector_checks_continuous_body_and_simplified_corridor_interior():
+    body_route = ((.01,.59995),(.03,.59995))
+    body = (.02,0.)
+    assert all(math.dist(point,body) > .6 for point in body_route)
+    assert math.isclose(minimum_polyline_separation(body_route,(body,)),.59995)
+    assert not stationary_route_clears_bodies(body_route,(body,))
+    corridor_route = ((.01,1.79999),(.03,1.79999))
+    assert all(math.dist(point,body) > 1.8 for point in corridor_route)
+    assert not stationary_route_clears_corridors(corridor_route,((body,),))
+    # The physical reserved path may be simplified; its endpoints alone do
+    # not define the nearest point to the stationary robot.
+    reserved = ((-4.,0.),(4.,0.))
+    assert all(math.dist((0.,1.),point) > 1.8 for point in reserved)
+    assert not stationary_route_clears_corridors(((0.,1.),),(reserved,))
+    assert minimum_polyline_separation(((0.,-1.),(0.,1.)),reserved)==0.
+
+
+def test_camera_metric_connector_cannot_cross_unknown_side_cell_between_known_endpoints():
+    snapshot = tiny_camera_world()
+    grid = np.array(snapshot.grid,copy=True)
+    grid[10,11] = -1
+    snapshot = replace(snapshot,grid=c.immutable_grid_snapshot(grid,grid.shape))
+    route = ((.545,.540),(.555,.555))
+    start,end = (c.world_to_grid(*point,.05,0.,0.) for point in route)
+    assert grid[start]==grid[end]==0 and math.dist(*route) < .02
+    assert c.has_known_line_of_sight(grid,start,end)  # original centre line misses this metric side crossing
+    assert not stationary_route_is_known(snapshot,route)
+    known = replace(snapshot,grid=tiny_camera_world().grid)
+    assert stationary_route_is_known(known,route)
+
+
+def test_joint_camera_heading_cannot_hide_conflict_in_a_new_ordinary_route_interior():
+    heading = MotionProposal('tb1','exploration_camera_heading',c.RallyPose(2.,3.,math.pi),
+        ((2.,3.),),100.,11.,frozenset({1}),nominal_orientation_time_sec=60.)
+    crossing = MotionProposal('tb2','exploration',c.RallyPose(4.,2.,0.),
+        ((0.,2.),(4.,2.)),80.,15.,frozenset({2}))
+    safe = replace(crossing,pose=c.RallyPose(4.,0.,0.),route=((0.,2.),(0.,0.),(4.,0.)),utility=70.)
+    assert not c.routes_conflict(heading.route,crossing.route)  # legacy vertices miss the closest interior
+    assert joint_motions({'tb1':[heading],'tb2':[crossing,safe]})==(heading,safe)
+    assert not joint_motions({'tb1':[heading]},reservations=(crossing.route,))
+    assert joint_motions({'tb2':[crossing,safe]},continuous_reservations=(heading.route,))==(safe,)
+
+
+def test_real_camera_and_translation_bounds_include_the_same_declared_action_time():
+    snapshot = replace(world(),yaws={'tb1':0.})
+    objective = ExplorationObjective(snapshot,snapshot.grid==0)
+    headings = camera_heading_candidates(snapshot,'tb1',{},(),objective)
+    assert headings
+    pose = c.RallyPose(3.25,1.25,math.pi)
+    route = ((1.25,1.25),(3.25,1.25))
+    required = complete_budget(snapshot,'tb1',route,(pose.x,pose.y),{})
+    translation = MotionProposal('tb1','exploration',pose,route,1.,required,camera_view(snapshot,pose))
+    for motion in (*headings,translation):
+        expected_duration = 1.+route_length(motion.route)/.18+motion.nominal_orientation_time_sec
+        expected_score = len(motion.information_cells)/expected_duration
+        assert math.isclose(objective.score((motion,)),expected_score)
+        assert math.isclose(objective.bound('tb1',motion.pose,motion.route,
+            len(motion.information_cells),1.,motion.nominal_orientation_time_sec),expected_score)
+        assert required < snapshot.batteries['tb1']['energy']
+
+
+def test_camera_orientation_fallback_and_bound_price_original_time_without_fake_route():
+    snapshot = world()
+    grid = np.zeros(snapshot.grid.shape,dtype=np.int16)
+    grid[:,40] = 100
+    grid = c.immutable_grid_snapshot(grid,grid.shape)
+    snapshot = replace(snapshot,grid=grid,positions={'tb1':(1.25,1.25),'tb2':(5.25,1.25)},
+        required=('tb1','tb2'),batteries={**snapshot.batteries,'tb2':snapshot.batteries['tb1']})
+    objective = ExplorationObjective(snapshot,grid==0)
+    motion = MotionProposal('tb1','exploration_camera_heading',c.RallyPose(1.25,1.25,math.pi),
+        ((1.25,1.25),),1.,11.,frozenset({100}),nominal_orientation_time_sec=60.)
+    assert objective.ready_time((motion,)) is None
+    expected = c.exploration_utility(1.,0,60.*.18)
+    assert math.isclose(objective.score((motion,)),expected) and expected > 0.
+    assert objective.score((replace(motion,nominal_orientation_time_sec=120.),)) < expected
+    assert math.isclose(objective.bound('tb1',motion.pose,motion.route,1,1.,60.),expected)
+    assert route_length(motion.route)==0. and motion.required_energy==11.
+
+
+def test_pending_expected_mass_can_rationally_wait_for_a_costly_weak_camera_heading():
+    snapshot = world()
+    pending = c.RallyPose(2.25,2.25,0.)
+    snapshot = replace(snapshot,positions={'tb1':(1.25,1.25),'tb2':(5.25,1.25)},
+        required=('tb1','tb2'),pending_views={'tb1':pending},
+        live_routes={'tb1':((1.25,1.25),(2.25,2.25))})
+    objective = ExplorationObjective(snapshot,snapshot.grid==0)
+    pose = c.RallyPose(5.25,1.25,math.pi)
+    new_cell = min(camera_view(snapshot,pose)-objective.committed)
+    motion = MotionProposal('tb2','exploration_camera_heading',pose,
+        ((5.25,1.25),),1.,11.,frozenset({new_cell}),nominal_orientation_time_sec=60.)
+    assert objective.score(()) > objective.score((motion,)) > 0.
+    assert not joint_motions({'tb2':[motion]},scorer=objective.score)
+    assert objective.bound('tb2',motion.pose,motion.route,1,1.,60.) >= objective.score((motion,))
+
+
+def test_heading_alone_does_not_expand_existing_after_work_scout_charge_trigger():
+    snapshot = tiny_camera_world()
+    snapshot = replace(snapshot,batteries={'tb1':{**snapshot.batteries['tb1'],
+        'energy':20.,'charge_x':.225}},completed_legs={'tb1':1})
+    result = plan_fleet(snapshot)
+    assert len(result.motions)==1 and result.motions[0].kind=='exploration_camera_heading'
+    assert not result.charges and result.snapshot.completed_legs=={'tb1':1}
 
 
 def test_full_task_and_contact_return_are_funded_without_straight_line_fallback():
@@ -282,7 +496,7 @@ def test_owned_expected_information_prices_a_new_observations_readiness_opportun
     assert (snapshot.views,snapshot.completed_legs,snapshot.pending_views) == before
 
 
-def test_search_refinement_can_improve_readiness_without_double_counting_committed_information(monkeypatch):
+def test_search_refinement_prices_preferred_overlap_and_positive_historical_camera_potential(monkeypatch):
     snapshot = world()
     pending = c.RallyPose(2.25,2.25,0.)
     snapshot = replace(snapshot,positions={'tb1':(1.25,1.25),'tb2':(5.25,1.25)},
@@ -302,9 +516,14 @@ def test_search_refinement_can_improve_readiness_without_double_counting_committ
     assert visible.size == 1 and set(map(int,visible)) <= objective.committed
     result = plan_exploration(snapshot,{}, {})
     assert len(result.motions) == 1 and not result.charges
-    assert result.motions[0].information_cells <= objective.committed
+    assert set(map(int,visible)) <= objective.committed
+    assert result.motions[0].information_cells-objective.committed
     assert objective.ready_time(result.motions) < objective.ready_time(())
     assert objective.score(result.motions) > objective.score(())
+    motion = result.motions[0]
+    assert math.isclose(objective.score((motion,)),
+        (objective.mass(objective.committed)+objective.mass(motion.information_cells-objective.committed)
+         *motion.information_weight)/objective.ready_time((motion,)))
 
 
 def test_joint_search_accounts_for_future_fleet_gathering_without_changing_return_prices():

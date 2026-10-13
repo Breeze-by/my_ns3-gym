@@ -49,6 +49,8 @@ coding-guideline skills must not be reinstalled, invoked, or used as constraints
 
 ## Current Handoff
 
+2026-10-13 recovery_v3 候选父 `b5c31e3`：通用探索相机转向、正权重历史偏好与真实物理源记账已完成最终1879功能PASS248.90s及build/source/static/declaration/独立复审。首次full旧DDS夹具缺Native原件2FAIL保留，补原typed旁录后严格通过；运行Native/门限不改。当前提交推送后须同冻结原四开发run-id `20261013_p2c_global_recovery_v3`，尚无本候选Gazebo任务信用。已闭合整任务仍为下述recovery_v2完整FAIL，正式/物理/917未运行。
+
 2026-10-13 recovery_v2冻结 `ec8c91451dab018f7ae97a0c058481d9e1afc9d4` 四开发严格3PASS/1FAIL：forced2 EXPLORE300.2timeout，其他三原生COMPLETE且严格PASS。71派发全闭合、零接触/失效，lab实际朝向维护一次；未发需求actor辅助分支未触发。完整FAIL保持，正式/物理/917未运行，全进程关闭。下一步针对通用搜索闭环：纯known-space反例确证缺原地朝向出口，但不当forced历史因果证明；保留原模型/门限/所有权，详细证据只在累计报告和log。
 
 2026-10-13 中断恢复冻结 `9405e296cd176df82d598686aa1d7ede0be32e35` 的四开发与完整审计已关闭：forced/rooms/corridors严格PASS，lab晚发现后RALLY300.4s timeout，完整门禁FAIL；未运行正式/物理/917。原件run-id `20261013_p2c_global_recovery_v1`，不能补格或混拼v11。下一候选恢复有一致机会成本的原绝对等待评分，并修复已构造确证的“未发充电意图挡住真实返航清道”通用所有权问题；不放宽原预算/源龄/完成或物理门限。signed-energy修复 `d54ccd3` 及全部原FAIL保持，详细证据只在单一累计报告和log。

@@ -1,5 +1,7 @@
 # wireless-rl Codex Memory
 
+2026-10-13 recovery_v3 父b5c31e3已完成最终1879功能PASS248.90s及build/source/static/declaration/独立复审；首次full旧DDS夹具2FAIL保留，补原typed Native旁录后严格通过，不改Native/门限/输入。当前提交推送后须同冻结原四开发run-id `20261013_p2c_global_recovery_v3`。最新已闭合任务仍ec8c914完整FAIL，无本候选任务信用，正式/物理/917未运行。详细证据仅累计报告及log。
+
 2026-10-13 recovery_v2 ec8c914四开发严格3PASS/1FAIL（forced未检测timeout300.2）；完整FAIL保持，正式/物理/917未运行，全部原件/审计关闭。下一步处理通用搜索闭环并重冻结完整验证，组件/诊断不能回填任务信用。
 2026-10-13 recovery_v2 组件1780PASS242.18s及build/source/原native/Future/static/declaration/独立复审PASS，下一新冻结四开发run-id `20261013_p2c_global_recovery_v2`；暂无新任务信用，正式/物理/917未运行。需求/真实所有权分离，原绝对搜索等待评分恢复，全部原FAIL保持。
 2026-10-13 中断恢复 `9405e29` 四开发完整FAIL：三原生COMPLETE且严格PASS，lab257.5s晚发现后RALLY300.4s timeout；原件/审计全关闭，正式/物理/917未运行。下一候选恢复原绝对等待评分并区分未发补能需求与真实导航/已发请求所有权。原 `9bb2c2c` 四开发PASS、15非留出5FAIL、两物理安全PASS仅原冻结信用；signed-energy修复 `d54ccd3` 保留。详情见[单一累计报告](report/20261012_p2c1_global_mission.md)，仍须同冻结完整新矩阵，不能混拼历史版本。
