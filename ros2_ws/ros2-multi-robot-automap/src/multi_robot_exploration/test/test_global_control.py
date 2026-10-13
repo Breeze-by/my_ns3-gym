@@ -820,3 +820,169 @@ def test_blocked_observer_does_not_starve_other_funded_serial_charging(node):
     assert node.global_charge_intent is other and node.deferred_charge_intent is observer
     assert node.global_charge_requested_at==11.
     assert node.charge_request_publishers['tb2'].publish.call_count==1
+
+
+@pytest.mark.parametrize('node', [2], indirect=True)
+def test_expired_unstarted_charge_restores_deferred_dependency_without_releasing_action(node):
+    _, _, pending, _, task = request(node)
+    current = ChargeProposal('tb2', 60., ((4.25, 4.25),), 'unfunded_information_task')
+    deferred = ChargeProposal('tb1', 60., ((1.25, 1.25),), 'unfunded_information_task')
+    node.global_charge_intent = current
+    node.deferred_charge_intent = deferred
+    node.global_charge_requested_at = 10.
+    node.rally_charge_requested['tb2'] = 10.
+    expiry = 10. + c.CHARGE_REQUEST_TTL_SEC
+
+    node.now = lambda: expiry - .001
+    node.battery_state_callback(String(data=json.dumps({**node.battery_states['tb2'],
+        'stamp_sec': expiry - .001})), 'tb2')
+    assert node.global_charge_intent is current and node.deferred_charge_intent is deferred
+
+    node.now = lambda: expiry
+    node.battery_state_callback(String(data=json.dumps({**node.battery_states['tb2'],
+        'stamp_sec': expiry})), 'tb2')
+    assert node.global_charge_intent is deferred and node.deferred_charge_intent is None
+    assert node.global_charge_requested_at is None and not node.global_charge_started
+    assert 'tb2' not in node.rally_charge_requested
+    assert node.navigation_tasks['tb1'] is task and task.cancel_reason is None
+    node.charge_request_publishers['tb1'] = Mock()
+    snapshot = SimpleNamespace(batteries={'tb1': dict(mode='ACTIVE')}, final_poses={})
+    node._prepare_charge(snapshot)
+    assert not node.charge_request_publishers['tb1'].publish.called
+
+    _, result = accept(node, pending)
+    assert node.navigation_tasks['tb1'] is task
+    result.set_result(SimpleNamespace(status=GoalStatus.STATUS_SUCCEEDED))
+    node.drain_action_done_callbacks()
+    assert not node.navigation_tasks and node.global_charge_intent is deferred
+
+
+@pytest.mark.parametrize('node', [2], indirect=True)
+def test_stale_active_battery_cannot_release_charge_or_deferred_dependency(node):
+    current = ChargeProposal('tb2', 60., ((4.25, 4.25),), 'unfunded_information_task')
+    deferred = ChargeProposal('tb1', 60., ((1.25, 1.25),), 'unfunded_information_task')
+    node.global_charge_intent = current
+    node.deferred_charge_intent = deferred
+    node.global_charge_requested_at = 10.
+    node.rally_charge_requested['tb2'] = 10.
+    expiry = 10. + c.CHARGE_REQUEST_TTL_SEC
+    node.now = lambda: expiry + c.STATE_TTL_SEC['battery_state'] + .001
+    node.battery_state_callback(String(data=json.dumps({**node.battery_states['tb2'],
+        'stamp_sec': expiry})), 'tb2')
+    assert node.global_charge_intent is current and node.deferred_charge_intent is deferred
+    assert node.global_charge_requested_at == 10. and node.rally_charge_requested['tb2'] == 10.
+
+
+def test_global_observer_heading_uses_delivered_yaw_and_real_owned_action_without_renewal(node):
+    delivered_state(node, 11., yaw=2.454)
+    node.task_state = 'RALLY'
+    node.target, node.target_received_source_time = (1.12,2.8), 5.
+    node.target_observing_robot = 'tb1'
+    node.global_confirmations['tb1'] = 5.
+    final = c.RallyPose(1.25,1.25,math.atan2(1.55,-.13))
+    node.rally_targets = node.rally_final_targets = {'tb1':final}
+    node.rally_arrived['tb1'] = True
+    snapshot = node._snapshot()
+    motion = plan_fleet(snapshot).motions[0]
+    assert snapshot.yaws['tb1'] == pytest.approx(2.454)
+    assert motion.kind == 'target_observation_heading'
+    actual = node._current_motion(snapshot,motion,{})
+    assert actual is not None and actual.wait_sec == node.goal_timeout_sec == 60.
+    assert all(point == snapshot.positions['tb1'] for point in actual.route)
+    pending = Future()
+    client = Mock()
+    client.server_is_ready.return_value = True
+    client.send_goal_async.return_value = pending
+    node.robot_nav_clients['tb1'] = client
+    before = (node.target_received_source_time,dict(node.global_confirmations),
+              node.global_survey_attempts,dict(node.successful_exploration_legs))
+    assert node._send_motion(snapshot, actual)
+    task = node.navigation_tasks['tb1']
+    assert node._current_motion(snapshot,motion,{}) is None
+    _, result = accept(node,pending)
+    assert node.navigation_tasks['tb1'] is task and task.cancel_reason is None
+    result.set_result(SimpleNamespace(status=GoalStatus.STATUS_SUCCEEDED))
+    node.drain_action_done_callbacks()
+    assert not node.navigation_tasks and not node.global_scan_steps
+    assert (node.target_received_source_time,node.global_confirmations,
+            node.global_survey_attempts,node.successful_exploration_legs) == before
+    proof = next(json.loads(call.args[0].data) for call in node.consumed_publisher.publish.call_args_list
+        if json.loads(call.args[0].data).get('event') == 'coordinator_global_motion_admission')
+    assert proof['world']['yaws']['tb1'] == pytest.approx(2.454)
+    assert proof['waiting_time_budget_sec'] == 60.
+    assert proof['world']['confirmations'] == {'tb1':5.}
+
+
+def test_observer_heading_cancels_on_actual_target_expiry_and_keeps_owner_until_result(node):
+    delivered_state(node,11.,yaw=2.454)
+    node.task_state = 'FOUND'
+    node.target,node.target_received_source_time = (1.12,2.8),5.
+    node.target_observing_robot = 'tb1'
+    node.global_confirmations['tb1'] = 5.
+    snapshot = node._snapshot()
+    motion = node._current_motion(snapshot,plan_fleet(snapshot).motions[0],{})
+    pending = Future()
+    client = Mock()
+    client.server_is_ready.return_value = True
+    client.send_goal_async.return_value = pending
+    node.robot_nav_clients['tb1'] = client
+    assert node._send_motion(snapshot,motion)
+    task = node.navigation_tasks['tb1']
+    handle,result = accept(node,pending)
+    delivered_state(node,65.001,yaw=2.454)
+    node._protect_traffic(node._snapshot())
+    assert task.cancel_reason == 'target_expired' and handle.cancel_goal_async.called
+    assert node.navigation_tasks['tb1'] is task
+    result.set_result(SimpleNamespace(status=GoalStatus.STATUS_CANCELED))
+    node.drain_action_done_callbacks()
+    assert not node.navigation_tasks and node.global_confirmations == {'tb1':5.}
+    assert node.target_received_source_time == 5. and not node.successful_exploration_legs
+
+
+def test_delayed_heading_acceptance_reprices_current_sources_and_preserves_the_real_owner(node):
+    delivered_state(node,11.,yaw=2.454)
+    node.task_state = 'FOUND'
+    node.target,node.target_received_source_time = (1.12,2.8),5.
+    node.target_observing_robot = 'tb1'
+    node.global_confirmations['tb1'] = 5.
+    snapshot = node._snapshot()
+    motion = node._current_motion(snapshot,plan_fleet(snapshot).motions[0],{})
+    pending = Future()
+    client = Mock()
+    client.server_is_ready.return_value = True
+    client.send_goal_async.return_value = pending
+    node.robot_nav_clients['tb1'] = client
+    assert node._send_motion(snapshot,motion)
+    task = node.navigation_tasks['tb1']
+    token,started,issued = task.generation,task.started_at,task.proposal.pose
+    delivered_state(node,13.1,yaw=2.454)
+    current = node._snapshot()
+    assert 'tb1' in current.live_routes and 'tb1' not in current.available
+    assert node._current_motion(current,task.proposal,{},owned_task=task) is not None
+    impostor = SimpleNamespace(proposal=task.proposal)
+    assert node._current_motion(current,task.proposal,{},owned_task=impostor) is None
+    stale = replace(current,sources={**current.sources,'tb1/pose_state':11.})
+    assert node._current_motion(stale,task.proposal,{},owned_task=task) is None
+    handle,result = accept(node,pending)
+    assert node.navigation_tasks['tb1'] is task and task.cancel_reason is None
+    assert not handle.cancel_goal_async.called
+    assert (task.generation,task.started_at,task.proposal.pose) == (token,started,issued)
+    assert task.sources['tb1/pose_state'] == 13. and task.sources['tb1/frame_state'] == 13.
+    assert task.sources['headquarters/target_detection'] == 5.
+    assert node.global_confirmations == {'tb1':5.} and node.global_survey_attempts == 0
+    result.set_result(SimpleNamespace(status=GoalStatus.STATUS_SUCCEEDED))
+    node.drain_action_done_callbacks()
+    assert not node.navigation_tasks and not node.successful_exploration_legs
+
+
+def test_a_different_actual_navigation_role_cannot_authorize_owned_heading_repricing(node):
+    _,_,_,_,task = request(node)
+    delivered_state(node,11.,yaw=2.454)
+    node.task_state = 'FOUND'
+    node.target,node.target_received_source_time = (1.12,2.8),5.
+    node.target_observing_robot = 'tb1'
+    node.global_confirmations['tb1'] = 5.
+    motion = MotionProposal('tb1','target_observation_heading',
+        c.RallyPose(1.25,1.25,math.atan2(1.55,-.13)),((1.25,1.25),),1.,15.,wait_sec=60.)
+    assert node._current_motion(node._snapshot(),motion,{},owned_task=task) is None
+    assert node.navigation_tasks['tb1'] is task and task.proposal.kind == 'exploration'

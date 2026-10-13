@@ -9,6 +9,7 @@ from multi_robot_exploration import control as c
 from multi_robot_exploration.fleet_planning import (
     FleetSnapshot, MotionProposal, complete_budget, joint_motions, plan_fleet, plan_exploration,
     qualified_motion_route, ExplorationObjective,
+    plan_observer_heading,
 )
 
 
@@ -258,6 +259,53 @@ def test_async_observation_commitments_change_the_joint_choice_without_observati
     assert not ExplorationObjective(updated,changed==0).committed
 
 
+def test_owned_expected_information_cannot_make_waiting_beat_a_positive_new_observation():
+    snapshot = world()
+    pending = c.RallyPose(2.25,2.25,0.)
+    snapshot = replace(snapshot,positions={'tb1':(1.25,1.25),'tb2':(5.25,1.25)},
+        required=('tb1','tb2'),available=('tb2',),pending_views={'tb1':pending},
+        live_routes={'tb1':((1.25,1.25),(2.25,2.25))})
+    before = (snapshot.views,dict(snapshot.completed_legs),dict(snapshot.pending_views))
+    objective = ExplorationObjective(snapshot,snapshot.grid==0)
+    pose = c.RallyPose(7.25,1.25,0.)
+    visible_novel = camera_view(snapshot,pose)-objective.committed
+    assert visible_novel and objective.committed
+    # A single genuine new visible cell must win against no new command even
+    # when its unchanged graph-based ready-time forecast is longer.
+    motion = MotionProposal('tb2','exploration',pose,((5.25,1.25),(7.25,1.25)),
+        1.,15.,frozenset({min(visible_novel)}))
+    assert objective.ready_time((motion,)) > objective.ready_time(())
+    assert objective.score(()) == 0. and objective.score((motion,)) > 0.
+    assert joint_motions({'tb2':[motion]},snapshot.live_routes.values(),
+                         scorer=objective.score) == (motion,)
+    duplicate = replace(motion,information_cells=frozenset({min(objective.committed)}))
+    assert objective.score((duplicate,)) == 0.
+    assert not joint_motions({'tb2':[duplicate]},snapshot.live_routes.values(),scorer=objective.score)
+    assert (snapshot.views,snapshot.completed_legs,snapshot.pending_views) == before
+
+
+def test_search_refinement_drops_a_wholly_committed_real_visible_candidate(monkeypatch):
+    snapshot = world()
+    pending = c.RallyPose(2.25,2.25,0.)
+    snapshot = replace(snapshot,positions={'tb1':(1.25,1.25),'tb2':(5.25,1.25)},
+        required=('tb1','tb2'),available=('tb2',),pending_views={'tb1':pending},
+        live_routes={'tb1':((1.25,1.25),(2.25,2.25))})
+    interest = np.zeros(snapshot.grid.shape,dtype=bool)
+    interest[22,40] = True
+    monkeypatch.setattr(c,'camera_search_interest',lambda *a,**k:interest.copy())
+    rows = [(1.,'tb2',0,SimpleNamespace(x=5.25,y=2.25))]
+    monkeypatch.setattr(c,'robot_candidate_assignments',lambda *a,**k:(rows,{}))
+    monkeypatch.setattr(c,'known_space_search_candidates',lambda *a,**k:[])
+    objective = ExplorationObjective(snapshot,interest)
+    pose = c.RallyPose(5.25,2.25,math.pi)
+    cell = c.world_to_grid(pose.x,pose.y,snapshot.resolution,*snapshot.origin)
+    visible = c.visible_unknown_gain(snapshot.grid,cell,c.INFORMATION_RADIUS_M/snapshot.resolution,
+                                     interest,return_cells=True)
+    assert visible.size == 1 and set(map(int,visible)) <= objective.committed
+    result = plan_exploration(snapshot,{}, {})
+    assert not result.motions and not result.charges
+
+
 def test_joint_search_accounts_for_future_fleet_gathering_without_changing_return_prices():
     snapshot = replace(world(),positions={'tb1':(1.25,1.25),'tb2':(5.25,1.25)},
                        required=('tb1','tb2'))
@@ -290,3 +338,81 @@ def test_gathering_forecast_uses_known_graph_detours_and_does_not_invent_a_missi
     blocked = replace(snapshot,grid=disconnected)
     assert ExplorationObjective(blocked,disconnected==0).ready_time(()) is None
     assert disconnected[:,40].min() == 100
+
+
+def observer_heading_world():
+    snapshot = world()
+    return replace(snapshot, phase='RALLY', target=(1.12, 2.8), observer='tb1',
+        sources={**snapshot.sources, 'headquarters/target_detection':4.},
+        yaws={'tb1':2.454}, confirmations={'tb1':4.}, target_fov_rad=math.pi/2.)
+
+
+def test_lapsed_real_observation_restores_heading_before_the_valid_target_lease_expires():
+    snapshot = observer_heading_world()
+    before = (dict(snapshot.sources), dict(snapshot.confirmations), snapshot.grid.tobytes())
+    proposal = plan_fleet(snapshot)
+    assert len(proposal.motions) == 1 and not proposal.charges
+    motion = proposal.motions[0]
+    assert motion.kind == 'target_observation_heading' and motion.robot == 'tb1'
+    assert all(point == snapshot.positions['tb1'] for point in motion.route)
+    assert (motion.pose.x, motion.pose.y) == snapshot.positions['tb1']
+    assert motion.pose.yaw == pytest.approx(math.atan2(1.55, -.13), abs=1e-12)
+    assert motion.wait_sec == snapshot.goal_timeout_sec == 60.
+    stationary = complete_budget(snapshot, 'tb1', motion.route, motion.route[-1], {})
+    assert math.isclose(motion.required_energy-stationary, .02*60.)
+    assert (snapshot.sources, snapshot.confirmations, snapshot.grid.tobytes()) == before
+    assert not snapshot.completed_legs and not snapshot.views and snapshot.survey_attempts == 0
+
+
+@pytest.mark.parametrize('condition', [
+    'recent_confirmation', 'fresh_alternate', 'owned', 'pending_charge', 'returning',
+    'charging', 'peer_returning', 'stale_target', 'future_target', 'future_confirmation',
+    'stale_pose', 'future_pose', 'stale_map', 'aligned_heading', 'outside_range',
+    'unsafe_local_cell', 'peer_body', 'peer_reservation', 'unfunded',
+])
+def test_observer_heading_preserves_source_ownership_geometry_and_return_guards(condition):
+    snapshot = observer_heading_world()
+    state = dict(snapshot.batteries['tb1'])
+    if condition == 'recent_confirmation':
+        snapshot = replace(snapshot, confirmations={'tb1':5.})
+    elif condition == 'fresh_alternate':
+        snapshot = replace(snapshot, confirmations={'tb1':4., 'tb2':9.},
+            positions={**snapshot.positions, 'tb2':(4.25,4.25)},
+            batteries={**snapshot.batteries, 'tb2':{**state, 'mode':'ACTIVE'}})
+    elif condition == 'owned':
+        snapshot = replace(snapshot, live_routes={'tb1':(snapshot.positions['tb1'],)})
+    elif condition == 'pending_charge':
+        snapshot = replace(snapshot, charge_pending=('tb1',))
+    elif condition in ('returning', 'charging'):
+        state['mode'] = condition.upper()
+    elif condition == 'peer_returning':
+        snapshot = replace(snapshot, batteries={**snapshot.batteries,
+            'tb2':{**state, 'mode':'RETURNING'}})
+    elif condition in ('stale_target', 'future_target', 'stale_pose', 'future_pose', 'stale_map'):
+        key, stamp = {
+            'stale_target':('headquarters/target_detection',-50.001),
+            'future_target':('headquarters/target_detection',10.001),
+            'stale_pose':('tb1/pose_state',7.999),
+            'future_pose':('tb1/pose_state',10.001),
+            'stale_map':('tb1/map_snapshot',4.999),
+        }[condition]
+        snapshot = replace(snapshot, sources={**snapshot.sources,key:stamp})
+    elif condition == 'future_confirmation':
+        snapshot = replace(snapshot, confirmations={'tb1':10.001})
+    elif condition == 'aligned_heading':
+        snapshot = replace(snapshot, yaws={'tb1':math.atan2(1.55,-.13)})
+    elif condition == 'outside_range':
+        snapshot = replace(snapshot, target=(5.25,1.25))
+    elif condition == 'unsafe_local_cell':
+        local = snapshot.grid.copy()
+        local[12,12] = 100
+        local = c.immutable_grid_snapshot(local,local.shape)
+        snapshot = replace(snapshot, maps={'tb1':dict(data=local,resolution=.1,origin=(0.,0.))})
+    elif condition == 'peer_body':
+        snapshot = replace(snapshot, positions={**snapshot.positions,'tb2':(1.5,1.25)})
+    elif condition == 'peer_reservation':
+        snapshot = replace(snapshot, live_routes={'tb2':((1.25,1.25),(2.25,1.25))})
+    else:
+        state['energy'] = 0.
+    snapshot = replace(snapshot,batteries={**snapshot.batteries,'tb1':state})
+    assert plan_observer_heading(snapshot,{}, {}) is None

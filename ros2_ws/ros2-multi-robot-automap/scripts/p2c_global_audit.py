@@ -158,6 +158,47 @@ def nominal_peer_wait(event, grid, maps):
     return waits[event['robot']]
 
 
+def angle_error(first, second):
+    assert math.isfinite(first) and math.isfinite(second)
+    return abs(math.atan2(math.sin(first-second), math.cos(first-second)))
+
+
+def audit_observer_heading(event, grid, maps):
+    """A funded stationary heading repair is neither translation nor detection."""
+    from multi_robot_exploration import control
+    world, robot, now = event['world'], event['robot'], event['event_time']
+    position = world['positions'][robot]
+    assert robot == world['observer'] and world['target'] is not None
+    assert robot not in world['live_routes'] and robot not in world['charge_pending']
+    assert all(state['mode'] != 'RETURNING' for state in world['battery_states'].values())
+    assert all(np.allclose(point, position, rtol=0, atol=1e-8)
+               for point in (*event['route'], *event['complete_task_route']))
+    assert np.allclose(event['requested_position'], position, rtol=0, atol=1e-8)
+    assert np.isfinite(world['target']).all() and math.dist(position, world['target']) <= 2.65
+    source = world['sources']['headquarters/target_detection']
+    assert 0 <= now-source <= 60.
+    confirmations = world['confirmations']
+    assert robot in confirmations and math.isfinite(confirmations[robot]) and now-confirmations[robot] > 5.
+    for peer, stamp in confirmations.items():
+        assert math.isfinite(stamp) and stamp <= now
+        assert (peer == robot or world['battery_states'].get(peer, {}).get('mode', 'ACTIVE') != 'ACTIVE'
+                or now-stamp > 5.), 'fresh alternate observer'
+    heading = math.atan2(world['target'][1]-position[1], world['target'][0]-position[0])
+    assert angle_error(event['requested_yaw'], heading) <= 1e-8
+    # These are the original detector FOV and survey timer in this gate.
+    assert math.isclose(world['target_fov_rad'], math.pi/2, abs_tol=1e-8)
+    assert angle_error(world['yaws'][robot], heading) > world['target_fov_rad']/4
+    assert math.isclose(world['goal_timeout_sec'], 60., abs_tol=1e-8)
+    assert math.isclose(event['waiting_time_budget_sec'], world['goal_timeout_sec'], abs_tol=1e-8)
+    constrained = control.constrained_return_grid(grid, world['planning_map']['resolution'],
+        world['planning_map']['origin'], maps[robot], {}) if robot in maps else grid
+    safe = control.traversable_grid(constrained, world['planning_map']['resolution'], .35)
+    cell = control.world_to_grid(*position, world['planning_map']['resolution'], *world['planning_map']['origin'])
+    assert 0 <= cell[0] < safe.shape[0] and 0 <= cell[1] < safe.shape[1] and safe[cell]
+    assert all(peer == robot or math.dist(position, other)+1e-8 >= .35
+               for peer, other in world['positions'].items()), 'unsafe stationary peer clearance'
+
+
 def audit_motion(event):
     from multi_robot_exploration import control
     grid, maps = geometry_world(event)
@@ -209,6 +250,8 @@ def audit_motion(event):
     elif kind=='rally_yield':
         assert event['beneficiary'] in event['final_poses']
         assert event['waiting_time_budget_sec']+1e-8>=max(30.,nominal_peer_wait(event,grid,maps))+5., 'unfunded refuge waiting'
+    elif kind=='target_observation_heading':
+        audit_observer_heading(event, grid, maps)
     expected = scalar_budget(event, grid, maps, complete, destination, event['waiting_time_budget_sec'])
     if kind=='rally':
         expected=max(expected,scalar_budget(event,grid,maps,route,event['requested_position'],
@@ -241,6 +284,10 @@ def bind_sources(events, capture, native_path):
             wanted[('/gateway/received/target_detection', round(world['sources']['headquarters/target_detection'] * 1e9))]
         for stamp in world.get('confirmations',{}).values():
             wanted[('/gateway/received/target_detection',round(stamp*1e9))]
+        if event.get('kind') == 'target_observation_heading':
+            robot = event['robot']
+            for kind, suffix in (('pose_state', 'odom'), ('frame_state', 'tf')):
+                wanted[(f'/{robot}/{suffix}', round(world['sources'][robot+'/'+kind]*1e9))]
     matched = set()
     with gzip.open(capture, 'rt') as stream:
         for line in stream:
@@ -266,7 +313,10 @@ def bind_sources(events, capture, native_path):
             elif isinstance(msg, Odometry):
                 key = topic, msg.header.stamp.sec * 10**9 + msg.header.stamp.nanosec
                 if key in wanted:
-                    original[key].append((msg.pose.pose.position.x, msg.pose.pose.position.y))
+                    q = msg.pose.pose.orientation
+                    yaw = math.atan2(2*(q.w*q.z+q.x*q.y), 1-2*(q.y*q.y+q.z*q.z))
+                    original[key].append((msg.pose.pose.position.x, msg.pose.pose.position.y, yaw,
+                                          q.x, q.y, q.z, q.w))
             elif isinstance(msg, TFMessage):
                 for transform in msg.transforms:
                     if not (transform.header.frame_id.lstrip('/').endswith('map')
@@ -276,7 +326,7 @@ def bind_sources(events, capture, native_path):
                     if key in wanted:
                         t, q = transform.transform.translation, transform.transform.rotation
                         yaw = math.atan2(2*(q.w*q.z+q.x*q.y), 1-2*(q.y*q.y+q.z*q.z))
-                        original[key].append((t.x, t.y, yaw))
+                        original[key].append((t.x, t.y, yaw, q.x, q.y, q.z, q.w))
             else:
                 data = json.loads(msg.data)
                 stamp = data['_gateway']['source_time'] if topic.endswith('/target_detection') else data['stamp_sec']
@@ -297,7 +347,19 @@ def bind_sources(events, capture, native_path):
             frames = original[f'/gateway/received/{robot}/tf', round(sources[robot + '/frame_state'] * 1e9)]
             assert any(np.allclose((tx + math.cos(yaw)*x - math.sin(yaw)*y,
                 ty + math.sin(yaw)*x + math.cos(yaw)*y), world['positions'][robot], rtol=0, atol=1e-8)
-                for x, y in odoms for tx, ty, yaw in frames), ('missing actual pose/TF', robot)
+                and (robot not in world.get('yaws', {}) or angle_error(oyaw+yaw, world['yaws'][robot]) <= 1e-8)
+                for x, y, oyaw, *_ in odoms for tx, ty, yaw, *_ in frames), ('missing actual pose/TF/yaw', robot)
+            if event.get('kind') == 'target_observation_heading' and robot == event['robot']:
+                native_odoms = original[f'/{robot}/odom', round(sources[robot+'/pose_state']*1e9)]
+                native_frames = original[f'/{robot}/tf', round(sources[robot+'/frame_state']*1e9)]
+                assert any(np.allclose(odom, native_odom, rtol=0, atol=1e-8)
+                    and np.allclose(frame, native_frame, rtol=0, atol=1e-8)
+                    and np.allclose((frame[0]+math.cos(frame[2])*odom[0]-math.sin(frame[2])*odom[1],
+                        frame[1]+math.sin(frame[2])*odom[0]+math.cos(frame[2])*odom[1]),
+                        world['positions'][robot], rtol=0, atol=1e-8)
+                    and angle_error(odom[2]+frame[2], world['yaws'][robot]) <= 1e-8
+                    for odom in odoms for frame in frames for native_odom in native_odoms for native_frame in native_frames
+                ), ('missing exact native and delivered heading source', robot)
             if world['battery_states']:
                 state = world['battery_states'][robot]
                 assert state in native[robot], ('missing exact native battery', robot)
@@ -306,11 +368,21 @@ def bind_sources(events, capture, native_path):
         if world['target'] is not None:
             rows = original['/gateway/received/target_detection', round(sources['headquarters/target_detection'] * 1e9)]
             assert any(np.allclose((row['target_x'], row['target_y']), world['target'], rtol=0, atol=1e-8)
+                       and (event.get('kind') != 'target_observation_heading'
+                            or math.isclose(row['max_distance_m'], 3., abs_tol=1e-8)
+                            and math.isclose(math.radians(row['field_of_view_deg']), world['target_fov_rad'], abs_tol=1e-8))
                        for row in rows), 'missing original delivered detection'
         for robot,stamp in world.get('confirmations',{}).items():
             rows=original['/gateway/received/target_detection',round(stamp*1e9)]
-            assert any(row['robot']==robot for row in rows), 'missing producer-specific confirmation'
+            assert any(row['robot']==robot and (event.get('kind') != 'target_observation_heading'
+                or np.allclose((row['target_x'],row['target_y']),world['target'],rtol=0,atol=1e-8))
+                for row in rows), 'missing producer-specific confirmation'
     return len(required)
+
+
+def applied_heading_confirmations(event, confirmations):
+    if event.get('kind') == 'target_observation_heading':
+        assert event['world']['confirmations'] == confirmations, 'heading omitted an applied producer confirmation'
 
 
 def global_mission_audit(directory, required=False):
@@ -318,11 +390,18 @@ def global_mission_audit(directory, required=False):
         return None
     events, admissions, owners, charge_proofs, revalidations = [], {}, {}, {}, {}
     completed,held_for={},defaultdict(dict)
+    confirmations = {}
     sent = closed = revoked = charges = validated = 0
     for line in (directory / 'ledger.jsonl').open():
         event = json.loads(line)
         kind = event.get('event')
-        if kind == 'coordinator_global_motion_admission':
+        if kind == 'coordinator_global_confirmation':
+            source = event['source_time']
+            assert math.isfinite(source) and 0 <= event['event_time']-source <= 60.
+            assert source > confirmations.get(event['robot'], -math.inf), 'nonmonotone applied producer confirmation'
+            confirmations[event['robot']] = source
+        elif kind == 'coordinator_global_motion_admission':
+            applied_heading_confirmations(event, confirmations)
             token = event['robot'], event['generation']
             assert token not in admissions
             admissions[token] = event
@@ -378,6 +457,7 @@ def global_mission_audit(directory, required=False):
             held_for.clear()
             events.append(event)
         elif kind == 'coordinator_global_motion_revalidation':
+            applied_heading_confirmations(event, confirmations)
             token = event['robot'], event['generation']
             assert owners.get(event['robot']) == token
             original = admissions[token]
@@ -409,8 +489,8 @@ def global_mission_audit(directory, required=False):
             state = world['battery_states'][robot]
             assert expected < state['energy'] <= event['required_energy'] <= state['capacity'] * state['charge_target_fraction']
             assert robot not in owners and all(s['mode'] not in ('RETURNING', 'CHARGING') for s in world['battery_states'].values())
-            confirmations=world.get('confirmations',{})
-            healthy={peer for peer,stamp in confirmations.items() if 0<=event['event_time']-stamp<=5.
+            charge_confirmations=world.get('confirmations',{})
+            healthy={peer for peer,stamp in charge_confirmations.items() if 0<=event['event_time']-stamp<=5.
                 and world['battery_states'].get(peer,{}).get('mode')=='ACTIVE'}
             assert healthy!={robot} or world.get('observer')!=robot, 'charging the sole healthy observer'
             rebuilt = contact(world,grid,maps,robot,world['positions'][robot])

@@ -51,6 +51,10 @@ class FleetSnapshot:
     self_return_cells: dict = field(default_factory=dict)
     yielded_for: dict = field(default_factory=dict)
     pending_views: dict = field(default_factory=dict)
+    yaws: dict = field(default_factory=dict)
+    confirmations: dict = field(default_factory=dict)
+    target_fov_rad: float = geometry.INITIAL_SEARCH_VIEW_FOV_RAD
+    goal_timeout_sec: float = 60.0
 
     @property
     def context(self):
@@ -352,7 +356,7 @@ class ExplorationObjective:
 
     def score(self, motions):
         cells = set(self.committed)
-        gain = float(len(cells))
+        gain = 0.
         legacy = 0.
         for motion in sorted(motions,key=lambda item:item.robot):
             novel = len(motion.information_cells-cells)
@@ -368,7 +372,7 @@ class ExplorationObjective:
         motion = MotionProposal(robot,'exploration',pose,route,0.,0.)
         duration = self.ready_time((motion,))
         return (geometry.exploration_utility(information_count,0,route_length(route))*weight
-                if duration is None else (len(self.committed)+information_count*weight)/duration)
+                if duration is None else information_count*weight/duration)
 
     def evidence(self, motions):
         cells = self.committed | set().union(*(motion.information_cells for motion in motions))
@@ -414,7 +418,10 @@ def joint_motions(pools, reservations=(), maximum=3, scorer=None):
             accepted.append(choice)
         if not valid:
             continue
-        score = (gain if scorer is None else scorer(motions), len(motions))
+        value = gain if scorer is None else scorer(motions)
+        if scorer is not None and motions and value <= 0.:
+            continue
+        score = (value, len(motions))
         if score > best_score:
             best, best_score = motions, score
     return best
@@ -566,7 +573,7 @@ def plan_exploration(snapshot, caches, protected):
                                        geometry.INFORMATION_RADIUS_M / snapshot.resolution,
                                        camera_interest)
             information = mapping | visual
-            if not information:
+            if not information - objective.committed:
                 return None
             if not visual:
                 yaw = frontier_yaw
@@ -706,7 +713,7 @@ def plan_rally(snapshot, caches, protected):
             observer_robot=snapshot.observer, current_positions=snapshot.positions,
             hold_sec=snapshot.hold_sec, return_maps=snapshot.maps,
             approach_grids={robot:robot_grid(snapshot,robot,caches.setdefault(robot,{}))
-                            for robot in required})
+                            for robot in required}, resource_objective='serial_time')
         if len(poses) == len(required):
             return FleetProposal(snapshot, final_poses=poses)
         return plan_target_survey(snapshot, caches, protected)
@@ -941,6 +948,77 @@ def plan_blind_scan(snapshot, caches, protected):
     return None
 
 
+def observer_heading_pose(snapshot, *, owned=False):
+    """Restore the last observer's heading from a still-valid target lease.
+
+    A heading prediction does not establish visibility or renew observation.
+    Recent real confirmations keep the observer quiet; another fresh ACTIVE
+    producer permits the fleet to continue without this recovery action.
+    """
+    robot = snapshot.observer
+    if (snapshot.phase not in ('FOUND', 'RALLY') or snapshot.target is None
+            or robot not in snapshot.positions or robot not in snapshot.yaws
+            or not owned and (robot not in snapshot.available or robot in snapshot.live_routes)
+            or robot in snapshot.charge_pending
+            or snapshot.batteries.get(robot, {}).get('mode', 'ACTIVE') != 'ACTIVE'
+            or any(state['mode'] == 'RETURNING' for state in snapshot.batteries.values())):
+        return None
+    source = snapshot.sources.get('headquarters/target_detection')
+    confirmation = snapshot.confirmations.get(robot)
+    if (source is None or confirmation is None
+            or not math.isfinite(source) or not math.isfinite(confirmation)
+            or not 0 <= snapshot.at_time - source <= geometry.TARGET_DETECTION_TTL_SEC
+            or not geometry.TARGET_OBSERVER_FRESHNESS_SEC < snapshot.at_time - confirmation):
+        return None
+    for peer, stamp in snapshot.confirmations.items():
+        if not math.isfinite(stamp) or stamp > snapshot.at_time:
+            return None
+        if (peer != robot and snapshot.batteries.get(peer, {}).get('mode', 'ACTIVE') == 'ACTIVE'
+                and 0 <= snapshot.at_time - stamp <= geometry.TARGET_OBSERVER_FRESHNESS_SEC):
+            return None
+    if any(not math.isfinite(stamp) or not 0 <= snapshot.at_time - stamp <= (
+            geometry.TARGET_DETECTION_TTL_SEC if key.endswith('/target_detection')
+            else geometry.STATE_TTL_SEC[key.rsplit('/', 1)[1]])
+            for key, stamp in snapshot.sources.items()):
+        return None
+    position, yaw = snapshot.positions[robot], snapshot.yaws[robot]
+    if (not all(math.isfinite(value) for value in (*position, *snapshot.target, yaw,
+                snapshot.target_fov_rad, snapshot.goal_timeout_sec))
+            or not 0 < snapshot.target_fov_rad <= 2. * math.pi
+            or snapshot.goal_timeout_sec <= 0.
+            or math.dist(position, snapshot.target) > snapshot.target_range - snapshot.position_tolerance):
+        return None
+    heading = math.atan2(snapshot.target[1] - position[1], snapshot.target[0] - position[0])
+    if abs(math.atan2(math.sin(heading-yaw), math.cos(heading-yaw))) <= snapshot.target_fov_rad / 4.:
+        return None
+    return geometry.RallyPose(*position, heading)
+
+
+def plan_observer_heading(snapshot, caches, protected):
+    pose = observer_heading_pose(snapshot)
+    if pose is None:
+        return None
+    robot = snapshot.observer
+    cache = caches.setdefault(robot, {})
+    grid = robot_grid(snapshot, robot, cache)
+    safe = geometry.traversable_grid(grid, snapshot.resolution, geometry.PATH_CLEARANCE_M)
+    if (not _safe_endpoint(safe, snapshot, pose)
+            or any(peer != robot and math.dist((pose.x, pose.y), position)
+                   < geometry.RALLY_DYNAMIC_CLEARANCE_M for peer, position in snapshot.positions.items())):
+        return None
+    route = qualified_motion_route(snapshot,robot,((pose.x,pose.y),),cache)
+    if route is None:
+        return None
+    if any(geometry.routes_conflict(route, reserved)
+           for reserved in (*protected.values(), *snapshot.live_routes.values())):
+        return None
+    required = complete_budget(snapshot, robot, route, route[-1], cache, snapshot.goal_timeout_sec)
+    if required is None or snapshot.batteries and snapshot.batteries[robot]['energy'] <= required:
+        return None
+    return FleetProposal(snapshot, motions=(MotionProposal(robot, 'target_observation_heading',
+        pose, route, 1., required, wait_sec=snapshot.goal_timeout_sec),))
+
+
 def plan_fleet(snapshot):
     started = time.perf_counter()
     caches = {}
@@ -956,7 +1034,9 @@ def plan_fleet(snapshot):
             else:
                 result = FleetProposal(snapshot, motions=(escape,), final_poses=snapshot.final_poses)
         elif snapshot.target is not None and snapshot.phase in ("FOUND", "RALLY"):
-            result = plan_rally(snapshot, caches, protected)
+            result = plan_observer_heading(snapshot, caches, protected)
+            if result is None:
+                result = plan_rally(snapshot, caches, protected)
         else:
             result = (plan_blind_scan(snapshot, caches, protected)
                       if snapshot.phase in ("FOUND", "RALLY") else None)

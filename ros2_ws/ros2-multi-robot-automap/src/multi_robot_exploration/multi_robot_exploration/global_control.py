@@ -24,6 +24,7 @@ from .fleet_planning import (
     qualified_motion_route,
     rally_wait_budgets,
     rally_beneficiary_complete,
+    observer_heading_pose,
 )
 
 
@@ -221,8 +222,15 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                 self.get_logger().info(f"Charge dependency closed for {robot_name}")
             elif (mode == "ACTIVE" and self.global_charge_requested_at is not None
                   and source >= self.global_charge_requested_at + geometry.CHARGE_REQUEST_TTL_SEC):
-                self.global_charge_intent = None
+                # A fresh ACTIVE sample after the issued request's original
+                # lease closes the request with no observed ongoing return.
+                # Loss may have hidden an earlier complete native cycle.
+                # Resume the deferred dependency as after a completed charge; leaving
+                # it orphaned would permanently remove its robot from available.
+                self.global_charge_intent = self.deferred_charge_intent
+                self.deferred_charge_intent = None
                 self.global_charge_requested_at = None
+                self.global_charge_started = False
                 self.rally_charge_requested.pop(robot_name, None)
 
     def target_detection_callback(self, message):
@@ -332,7 +340,9 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
         return replace(snapshot, yielded_for={robot:tuple(sorted(peers))
             for robot,peers in self.global_rally_yields.items()},
             pending_views={robot:task.proposal.pose for robot,task in self.navigation_tasks.items()
-                if robot in required and task.proposal.kind=='exploration' and task.cancel_reason is None})
+                if robot in required and task.proposal.kind=='exploration' and task.cancel_reason is None},
+            yaws=dict(self.robot_yaws), confirmations=dict(self.global_confirmations),
+            target_fov_rad=self.target_view_fov_rad, goal_timeout_sec=self.goal_timeout_sec)
 
     def _refresh_rally_yields(self, snapshot):
         # Navigation ownership has already closed. The refuge remains a
@@ -387,7 +397,8 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
             "live_routes": snapshot.live_routes, "required": snapshot.required,
             "target": snapshot.target, "observer": snapshot.observer,
             "completed_legs": snapshot.completed_legs,
-            "confirmations":dict(self.global_confirmations),
+            "confirmations":snapshot.confirmations, "yaws":snapshot.yaws,
+            "target_fov_rad":snapshot.target_fov_rad, "goal_timeout_sec":snapshot.goal_timeout_sec,
         }
 
     def _emit(self, event, **details):
@@ -432,7 +443,7 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
                 self.cancel_navigation(robot, "local_return")
             elif kind == "exploration" and snapshot.target is not None:
                 self.cancel_navigation(robot, "target_found")
-            elif kind in ("rally", "rally_yield", "target_information_survey") and snapshot.target is None:
+            elif kind in ("rally", "rally_yield", "target_information_survey", "target_observation_heading") and snapshot.target is None:
                 self.cancel_navigation(robot, "target_expired")
             elif protected is None:
                 self.cancel_navigation(robot, "unknown_return_corridor")
@@ -494,23 +505,31 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
         if owned_task is None and (robot not in snapshot.available or robot in self.navigation_tasks):
             return None
         if owned_task is not None and (self.navigation_tasks.get(robot) is not owned_task
-                or self.battery_modes[robot] != 'ACTIVE'):
+                or self.battery_modes[robot] != 'ACTIVE'
+                or kind == 'target_observation_heading' and owned_task.proposal.kind != kind):
             return None
-        if kind in ("rally", "rally_yield", "target_information_survey") and snapshot.target is None:
+        if kind in ("rally", "rally_yield", "target_information_survey", "target_observation_heading") and snapshot.target is None:
             return None
         if kind == "exploration" and snapshot.target is not None:
             return None
         caches = self._admission_caches(snapshot, robot)
         grid = robot_grid(snapshot, robot, caches)
         bodies = [position for peer, position in snapshot.positions.items() if peer != robot]
-        if kind == "target_reacquisition_scan":
+        if kind in ('target_reacquisition_scan', 'target_observation_heading'):
+            if kind == 'target_observation_heading':
+                heading = observer_heading_pose(snapshot, owned=owned_task is not None)
+                if (heading is None or robot != snapshot.observer
+                        or owned_task is not None and math.dist(snapshot.positions[robot],
+                            (proposal.pose.x, proposal.pose.y)) > 1e-8):
+                    return None
             cell = geometry.world_to_grid(*snapshot.positions[robot], snapshot.resolution, *snapshot.origin)
             safe = geometry.traversable_grid(grid, snapshot.resolution, geometry.PATH_CLEARANCE_M)
             if (not 0 <= cell[0] < safe.shape[0] or not 0 <= cell[1] < safe.shape[1] or not safe[cell]
                     or any(math.dist(snapshot.positions[robot], position) < geometry.RALLY_DYNAMIC_CLEARANCE_M
                            for position in bodies)):
                 return None
-            actual = geometry.RallyPose(*snapshot.positions[robot], proposal.pose.yaw)
+            actual = (heading if kind == 'target_observation_heading'
+                      else geometry.RallyPose(*snapshot.positions[robot], proposal.pose.yaw))
             route = (snapshot.positions[robot],)
         else:
             actual, route = geometry.plan_rally_leg(
@@ -534,13 +553,14 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
             if not geometry.route_respects_known_obstacles(grid, snapshot.resolution,
                     snapshot.origin, (snapshot.positions[robot], *route)):
                 return None
-        if kind not in ("rally", "target_reacquisition_scan"):
+        if kind not in ("rally", "target_reacquisition_scan", "target_observation_heading"):
             cell = geometry.world_to_grid(actual.x, actual.y, snapshot.resolution, *snapshot.origin)
             endpoint_mask = geometry.traversable_grid(grid, snapshot.resolution, geometry.ROBOT_CLEARANCE_M)
             if (not 0 <= cell[0] < endpoint_mask.shape[0] or not 0 <= cell[1] < endpoint_mask.shape[1]
                     or not endpoint_mask[cell]):
                 return None
-        actual = geometry.RallyPose(actual.x, actual.y, proposal.pose.yaw)
+        actual = geometry.RallyPose(actual.x, actual.y,
+            actual.yaw if kind == 'target_observation_heading' and owned_task is None else proposal.pose.yaw)
         full = qualified_motion_route(snapshot, robot, route, caches)
         if full is None:
             return None
@@ -565,6 +585,8 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
         budget_time = self.now()
         pricing = replace(snapshot, at_time=budget_time)
         wait = geometry.RALLY_GOAL_TIMEOUT_SEC if kind == "target_reacquisition_scan" else 0.
+        if kind == 'target_observation_heading':
+            wait = self.goal_timeout_sec
         complete = full
         if kind == 'rally_yield':
             wait = self.rally_hold_sec + max(self.rally_goal_timeout_sec,
@@ -736,9 +758,9 @@ class GlobalHeadquartersControl(geometry.HeadquartersControl):
             handle.cancel_goal_async()
             return
         task.handle = handle
-        compatible = (task.proposal.kind not in ("rally", "rally_yield", "target_information_survey")
+        compatible = (task.proposal.kind not in ("rally", "rally_yield", "target_information_survey", "target_observation_heading")
                       or self.task_state == "RALLY" and self.fresh_target()
-                      or task.proposal.kind == "target_information_survey" and self.task_state == "FOUND"
+                      or task.proposal.kind in ('target_information_survey', 'target_observation_heading') and self.task_state == "FOUND"
                       and self.fresh_target())
         if task.proposal.kind == "exploration" and self.task_state in ("FOUND", "RALLY") and self.fresh_target():
             compatible = False

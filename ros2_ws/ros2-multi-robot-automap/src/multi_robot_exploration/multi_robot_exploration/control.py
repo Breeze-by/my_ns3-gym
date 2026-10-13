@@ -1737,6 +1737,7 @@ def assign_rally_poses(
     raw_grid, resolution, origin, robot_positions, target, objective="minimax",
     battery_states=None, observer_robot=None, current_positions=None,
     hold_sec=RALLY_HOLD_SEC, return_maps=None, approach_grids=None,
+    resource_objective="return_exposure",
 ):
     """Find a fully funded separated assignment with progressive candidates.
 
@@ -1747,6 +1748,8 @@ def assign_rally_poses(
     Each level keeps the full return, charge/wait and body-cost optimizer;
     stopping at the first feasible level trades global soft-cost optimality
     for less computation. Actual navigation still requires fresh admission.
+    ``serial_time`` ranks the same nominal mission duration ahead of optional
+    return exposure; the default retains the historical baseline preference.
     """
     # No geometry survives the proposal or a mutable source alias.
     geometry_cache = ({} if immutable_grid(raw_grid) and all(
@@ -1755,7 +1758,8 @@ def assign_rally_poses(
     for stratified in (False, True):
         result = _assign_rally_poses(raw_grid, resolution, origin, robot_positions,
             target, objective, battery_states, observer_robot, current_positions,
-            hold_sec, return_maps, stratified, geometry_cache, approach_grids)
+            hold_sec, return_maps, stratified, geometry_cache, approach_grids,
+            resource_objective)
         if result:
             return result
     return {}
@@ -1775,17 +1779,20 @@ def _assign_rally_poses(
     stratified=True,
     geometry_cache=None,
     approach_grids=None,
+    resource_objective="return_exposure",
 ):
     """Assign separated visible poses, accounting for serial charge waits.
 
     With delivered batteries, preserve an ACTIVE observer when feasible, then
-    minimize predicted charges, soft narrow-return exposure and serial time, then compare
+    minimize predicted charges, the selected order of return exposure and serial time, then compare
     its remaining budget headroom before the chosen path objective. Extra
     observer surplus must not force a funded peer to charge or take a detour.
     These estimates never authorize a navigation or return.
     """
     if objective not in ("minimax", "total_path"):
         raise ValueError(f"unknown rally assignment objective: {objective}")
+    if resource_objective not in ("return_exposure", "serial_time"):
+        raise ValueError(f"unknown rally resource objective: {resource_objective}")
     names = sorted(robot_positions)
     candidates = rally_pose_candidates(
         raw_grid, resolution, origin, target, False, stratified,
@@ -2046,12 +2053,21 @@ def _assign_rally_poses(
             exposure_bound = sum(return_exposures[name][selected_indices[name]]
                 if name in selected_indices else minimum_return_exposures[name] for name in names)
             observer_charge = int(observer_robot in needed and modes.get(observer_robot) == "ACTIVE")
-            score = (observer_charge, len(needed), exposure_bound, time_bound, -observer_headroom, *score)
+            # Both preferences apply only after complete funding and observer
+            # protection. Global missions compare the existing serial route,
+            # return/charge and parked-peer time before optional narrow-return
+            # exposure; a tiny soft difference must not dominate an arbitrary
+            # travel delay. The historical baseline keeps its original order.
+            resources = ((time_bound, exposure_bound) if resource_objective == "serial_time"
+                         else (exposure_bound, time_bound))
+            score = (observer_charge, len(needed), *resources, -observer_headroom, *score)
         if score >= best_score:
             return
         if len(assignments) == len(search_order):
             if battery_states is not None:
-                score = (*score[:3], score[3] + parked_peer_delay(needed), *score[4:])
+                time_index = 2 if resource_objective == "serial_time" else 3
+                score = (*score[:time_index], score[time_index] + parked_peer_delay(needed),
+                         *score[time_index + 1:])
                 if score >= best_score:
                     return
             best = assignments.copy()
