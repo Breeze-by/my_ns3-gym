@@ -1,0 +1,93 @@
+[
+  {
+    "case": "4r_motion",
+    "source_commit": "c9344e10f4a0788f96fd70371c5ea033e0fc5268",
+    "runner_returncode": 0,
+    "native": {
+      "termination_reason": "timeout",
+      "elapsed_sim_time_sec": 20.199999999999818,
+      "correct_free_coverage_ratio": 0.48208724229512584,
+      "observed_accuracy": 0.9387827569064697,
+      "collision_events": 0,
+      "collision_monitoring_active": true,
+      "control_failure": "",
+      "total_path_length_m": 12.602431210353842,
+      "paths": {
+        "tb1": 2.955894154670752,
+        "tb2": 3.0642741778752303,
+        "tb3": 3.599013717653332,
+        "tb4": 2.983249160154528
+      }
+    },
+    "credit": "motion/safety/closure only; expected timeout"
+  },
+  {
+    "case": "2r_original",
+    "source_commit": "c9344e10f4a0788f96fd70371c5ea033e0fc5268",
+    "runner_returncode": 0,
+    "native": {
+      "termination_reason": "coverage_reached",
+      "elapsed_sim_time_sec": 133.30000000000018,
+      "correct_free_coverage_ratio": 0.9060511683894759,
+      "observed_accuracy": 0.9598378704912602,
+      "collision_events": 0,
+      "collision_monitoring_active": true,
+      "control_failure": "",
+      "total_path_length_m": 48.227614457670285,
+      "paths": {
+        "tb1": 25.916105773170887,
+        "tb2": 22.3115086844994
+      }
+    },
+    "credit": "task and native closure PASS"
+  },
+  {
+    "case": "3r_rooms",
+    "source_commit": "c9344e10f4a0788f96fd70371c5ea033e0fc5268",
+    "runner_returncode": 0,
+    "native": {
+      "termination_reason": "coverage_reached",
+      "elapsed_sim_time_sec": 60.2,
+      "correct_free_coverage_ratio": 0.914064914992272,
+      "observed_accuracy": 0.9582618527760449,
+      "collision_events": 0,
+      "collision_monitoring_active": true,
+      "control_failure": "",
+      "total_path_length_m": 32.73214418483881,
+      "paths": {
+        "tb1": 10.2166158282855,
+        "tb2": 11.02482776860712,
+        "tb3": 11.490700587946192
+      }
+    },
+    "credit": "task and native closure PASS"
+  },
+  {
+    "case": "3r_corridors",
+    "source_commit": "c9344e10f4a0788f96fd70371c5ea033e0fc5268",
+    "runner_returncode": 0,
+    "native": {
+      "termination_reason": "coverage_reached",
+      "elapsed_sim_time_sec": 81.89999999999999,
+      "correct_free_coverage_ratio": 0.906342668863262,
+      "observed_accuracy": 0.9505184081455268,
+      "collision_events": 0,
+      "collision_monitoring_active": true,
+      "control_failure": "",
+      "total_path_length_m": 43.59250905886235,
+      "paths": {
+        "tb1": 15.36166562208059,
+        "tb2": 11.867963101199951,
+        "tb3": 16.362880335581806
+      }
+    },
+    "credit": "task and native closure PASS"
+  },
+  {
+    "case": "4r_plain",
+    "source_commit": "c9344e10f4a0788f96fd70371c5ea033e0fc5268",
+    "runner_returncode": 0,
+    "native": null,
+    "credit": "infrastructure only"
+  }
+]

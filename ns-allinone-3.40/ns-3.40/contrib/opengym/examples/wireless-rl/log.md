@@ -1616,3 +1616,49 @@ IDs and domains for all five original engineering cases; its middleware/local
 setting is recorded so it cannot be mixed with older failed environments.
 
 Readiness-close candidate: build PASS3.25s; complete package checks73 tests, 0 errors/failures, 2 skips. Next source freeze predeclares same five engineering cases on single-host ROS_LOCALHOST_ONLY=1 / rmw_fastrtps_cpp after official zombie cleanup, with newIDs/domains and no source mutation during runs.
+
+
+### Final same-source engineering regressions: c9344e1, five PASS
+
+Pushed runtime freeze:c9344e10f4a0788f96fd70371c5ea033e0fc5268. Clean workingtree at
+start, no source mutation throughout sequential runs. Exact commands, per-case
+domain194–198/master11763–11767, local/RMW environment, timestamps, source and
+returncodes are in report/assets/20261013_p1c_engineering_repair/c9344e1_commands.json.
+Exact batch source is c9344e1_batch_driver.py. Invocation from canonical ROS root:
+
+```bash
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+source /usr/share/gazebo/setup.sh
+export PYTHONNOUSERSITE=1 TURTLEBOT3_MODEL=waffle RMW_IMPLEMENTATION=rmw_fastrtps_cpp ROS_LOCALHOST_ONLY=1
+/usr/bin/python3 -u log/p1c_local_batch.py
+```
+
+All seed101; unique processes/domains/ports/runids. Four native JSONs are tracked,
+all raw logs/CSV/JSON retained at indexed paths, SHA256 c9344e1_original_index.json.
+Engineering credit is explicitly separated in c9344e1_engineering_summary.json.
+- 4r20s motion: smoke0, expected native timeout20.2s (no full task completion),
+  coverage.48208724229512584, accuracy.9387827569064697, zero contact/monitoringtrue,
+  no control failure. Four true paths2.956/3.064/3.599/2.983m, total12.602431210m.
+- 2r my_world180s task: native coverage_reached133.3s, coverage.9060511683894759,
+  accuracy.9598378704912602, path48.227614458m; task/smoke0, zero contacts/monitors
+  valid. Both moved. Exceeds historical120s speed, no old performance reacceptance.
+- 3r rooms180s task: native coverage_reached60.2s, coverage.914064914992272,
+  accuracy.9582618527760449, path32.732144185m; task/smoke0, zero/monitoringvalid.
+- 3r corridors180s task: native coverage_reached81.9s, coverage.906342668863262,
+  accuracy.9505184081455268, path43.592509059m; task/smoke0, zero/monitoringvalid.
+- 4r plain5-wall-second dwell: smoke0, all four actual wheel states and six-node
+  activation confirmed, clean manual SIGINT closure; no safety/task credit.
+
+Native log audit confirms every owned child cleanly closed with no abort or
+SIGTERM/SIGKILL escalation; no owned domain174–198 simulator/task process remained.
+Four-robot short-run timeout is not coverage-success; all gates and failure originals
+are preserved. Cleanup + local-only profile did not reproduce lost responses in
+this batch; it is not a universal middleware reliability proof. Task accuracies
+also remain below corresponding historical values, and full multi-seed matrix
+has not been rerun. Engineering verification scope is fulfilled, roadmap pending.
+
+Final component results73 checks/zeroerrors/zerofailures/twoskips remain from the
+same runtime source. Closing changes affect only documentation/receipts; runtime
+files unchanged fromc9344e1, both research/implementation plans byte-identical to
+99cf3a6. Original-route backup branch8fe1495 stays untouched.

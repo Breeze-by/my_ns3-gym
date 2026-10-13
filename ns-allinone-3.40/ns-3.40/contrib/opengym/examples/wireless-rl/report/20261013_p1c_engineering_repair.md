@@ -1,6 +1,12 @@
 # P1C 工程修复记录
 
 日期：2026-10-13。基线：`main@99cf3a6`，原路线保留在 `p2c1/global-mission-20261012@8fe1495`。
+
+截至2026-10-14，运行源码冻结 `c9344e1` 的同源码五项工程回归全部通过，包检查73项、
+0 errors/failures、2 skips。三项90%覆盖任务零接触并自动关闭，四机器人短时运动和
+手动smoke通过。全部失败原件保留。两机器人尚未满足历史120s速度线，准确率也低于历史
+对应矩阵；本轮不重新验收旧P1C全性能/多种子矩阵，不修改研究路线。
+
 本轮只修工程缺陷；`RESEARCH_PLAN.md`、`IMPLEMENTATION_PLAN.md` 的研究路线不作修改，
 等待用户另行提供新路线。历史实验原件与成绩保持原版本身份。
 
@@ -202,3 +208,35 @@ manager没有拿到响应，velocity_smoother停unconfigured，故整套未activ
 将在新的同一推送冻结使用独立run-id/domain/port运行全部五个原预声明工程格。
 
 Readiness-close candidate: build PASS3.25s; complete package checks73 tests, 0 errors/failures, 2 skips. Next source freeze predeclares same five engineering cases on single-host ROS_LOCALHOST_ONLY=1 / rmw_fastrtps_cpp after official zombie cleanup, with newIDs/domains and no source mutation during runs.
+
+
+## 最终同源码工程回归：c9344e1 / 单机 profile，5项 PASS
+
+实际源码冻结 `c9344e10f4a0788f96fd70371c5ea033e0fc5268`，启动前Git工作树干净。
+全部使用ROS 2 Humble/system Python、PYTHONNOUSERSITE=1、FastRTPS和ROS_LOCALHOST_ONLY=1，
+Gazebo seed101；每格独立domain194–198、Gazebo port11763–11767。运行期间源码不改变。
+[精确命令/环境/时间/返回码](assets/20261013_p1c_engineering_repair/c9344e1_commands.json)、
+[原件路径与SHA256](assets/20261013_p1c_engineering_repair/c9344e1_original_index.json)、
+[工程信用摘要](assets/20261013_p1c_engineering_repair/c9344e1_engineering_summary.json)
+以及批次驱动源码、四份原生JSON均在同目录跟踪。完整原生/console日志保留在ROS log。
+
+| 格 | 结果/信用 | 仿真秒 | 正确自由覆盖 | 准确率 | 接触 |
+|---|---|---:|---:|---:|---:|
+| 4r / my_world / 20s运动 | 运动、安全、自动退出PASS；预期timeout，无完整任务信用 | 20.2 | 48.209% | 93.878% | 0 |
+| 2r / my_world / 180s任务 | coverage_reached，任务与自动退出PASS | 133.3 | 90.605% | 95.984% | 0 |
+| 3r / rooms / 180s任务 | coverage_reached，任务与自动退出PASS | 60.2 | 91.406% | 95.826% | 0 |
+| 3r / corridors / 180s任务 | coverage_reached，任务与自动退出PASS | 81.9 | 90.634% | 95.052% | 0 |
+| 4r / plain / 5s墙钟dwell | 关节数据、导航启动、手动退出基础设施PASS | — | — | — | 未评估 |
+
+前三项任务期限180s、覆盖90%不变；全部评估格接触监测有效、无协议/peer数据故障、每台
+均真实移动。四机器人运动路径分别2.956/3.064/3.599/2.983m，总12.602m；20.2s由任务计时
+到首个截止检查时刻冻结，保持timeout，没有越期成功。所有原生子进程正常退出，无abort
+或SIGTERM/SIGKILL升级，最终无本轮owned Gazebo/launch/任务进程遗留。
+
+这是已声明的工程回归范围，不是旧P1C多地图/多种子完整性能矩阵验收：2r133.3s超过旧120s，
+三项任务准确率仍低于旧对应格；没有降低成功/接触/物理门限来改写旧成绩。
+官方DDS清理和本机发现设置后该批次没有复现响应丢失，但不据单批结果宣称根除所有环境下
+的中间件故障。其他失败/旧环境的原件和源码身份保持独立。
+
+本报告之后的收尾提交只更新交接、命令、日志与证据；运行源码文件与c9344e1一致。
+RESEARCH_PLAN.md和IMPLEMENTATION_PLAN.md仍与回退基线99cf3a6逐字节一致。

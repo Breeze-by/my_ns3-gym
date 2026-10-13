@@ -87,7 +87,10 @@ robot_count:=4 -> tb1, tb2, tb3, tb4
 
 ```text
 merge_map
+multi_robot_exploration/nav2_ready_gate
 multi_robot_exploration/control
+multi_robot_exploration/peer_obstacles
+multi_robot_exploration/task_evaluator（启用评估器时）
 ```
 
 因此 `/tbN/map`、`/tbN/tf` 订阅数量、Nav2 action client 数量和 Gazebo 中的机器人数量保持一致。

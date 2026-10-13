@@ -8,6 +8,10 @@ must not trigger P2 or network/RL work. Current ROS commands and runtime
 contracts are in the ROS `launch_commands.md` and `user_guide.md`; repair
 evidence is in `report/20261013_p1c_engineering_repair.md` and `log.md`.
 The original route is retained on `p2c1/global-mission-20261012`.
+Runtime freeze `c9344e1` passed the five engineering regressions on 2026-10-14
+with the single-host profile in ROS `launch_commands.md`. Package checks have
+73 tests, zero failures and two skips. Historical performance/multi-seed
+acceptance remains separate; wait for the user's new route.
 
 The following September handoff describes the historical P1C/toy-MDP context.
 

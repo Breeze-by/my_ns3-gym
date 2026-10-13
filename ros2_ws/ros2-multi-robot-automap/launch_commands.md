@@ -9,7 +9,8 @@ ROS 使用系统 Python 和 ROS 2 Humble。ns-3 的 `ns3gym` 环境不用于 ROS
 ```bash
 source /opt/ros/humble/setup.bash
 cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
-PYTHONNOUSERSITE=1 colcon build --symlink-install --allow-overriding nav2_bringup
+export PYTHONNOUSERSITE=1
+/usr/bin/python3 /usr/bin/colcon build --symlink-install --allow-overriding nav2_bringup
 source install/setup.bash
 source /usr/share/gazebo/setup.sh
 export TURTLEBOT3_MODEL=waffle
@@ -84,3 +85,8 @@ smoke 同时检查原生子进程退出记录；父 launch 返回 0 不能掩盖
 Nav2 接受响应和取消到终态的默认期限均为 10 仿真秒，分别由
 `navigation_response_timeout_sec`、`navigation_cancel_timeout_sec` 配置；原目标执行上限保持
 `exploration_goal_timeout_sec:=60.0`。协议失败通过 `/exploration_failure` 明确终止评估。
+
+2026-10-14 工程验证使用运行源码 `c9344e1`：两机器人原图和三机器人 rooms/corridors
+均在180仿真秒内达到90%覆盖、零接触并自动关闭；四机器人20秒运动与手动smoke也通过。
+两机器人133.3秒，仍超过历史120秒速度线；四机器人短测不代表完整任务完成。
+完整结果、先前失败及原件索引见共享 [修复记录](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261013_p1c_engineering_repair.md)。

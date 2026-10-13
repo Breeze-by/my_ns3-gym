@@ -51,6 +51,10 @@ P2/P3/network/RL checkpoints from the unchanged historical plans.
 
 Runtime repairs, new checks, and actual simulator outcomes are recorded in
 `wireless-rl/report/20261013_p1c_engineering_repair.md` and the shared `log.md`.
+2026-10-14: runtime freeze `c9344e1` passed the five predeclared engineering
+checks with one source and the documented single-host ROS profile. Package
+checks: 73 tests, zero errors/failures, two skips. This does not reaccept the
+historical P1C performance/multi-seed matrix; the new research route is pending.
 Current commands are in `ros2_ws/ros2-multi-robot-automap/launch_commands.md`.
 The task still uses SLAM, conservative common-frame map fusion, frontier
 allocation, and Nav2. Evaluator schema v3 enforces the original simulation
