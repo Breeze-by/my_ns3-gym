@@ -5,6 +5,7 @@ import importlib.util
 import json
 from pathlib import Path
 import subprocess
+from types import SimpleNamespace
 
 from launch import LaunchContext
 from launch.actions import DeclareLaunchArgument
@@ -111,3 +112,25 @@ def test_evaluator_shutdown_is_enabled_by_default():
                     if isinstance(action, DeclareLaunchArgument)
                     and action.name == "stop_on_evaluation_complete")
     assert perform_substitutions(LaunchContext(), argument.default_value) == "true"
+
+
+def test_plain_smoke_rejects_premature_clean_launch_exit(monkeypatch, tmp_path):
+    smoke = load_module("smoke", ROOT / "scripts/ros_smoke_test.py")
+    monkeypatch.setenv("ROS_DISTRO", "humble")
+    monkeypatch.setattr(smoke.shutil, "which", lambda *args: "/usr/bin/ros2")
+    monkeypatch.setattr(smoke, "parse_args", lambda: argparse.Namespace(
+        robot_count=1, world="my_world.world", gazebo_seed=1, goal_timeout=60.,
+        spawn_timeout=90., startup_timeout=180., message_timeout=30.,
+        dwell_seconds=0., shutdown_timeout=30., evaluation_duration=0.,
+        coverage_threshold=0., evaluation_wait_timeout=180., episode_id="plain",
+        evaluation_output_dir=tmp_path / "evaluation", log_dir=tmp_path / "logs",
+    ))
+    monkeypatch.setattr(smoke, "run_ros", lambda *args, **kwargs: (
+        subprocess.CompletedProcess([], 0, "", "")
+    ))
+    monkeypatch.setattr(smoke, "wait_until_ready", lambda *args, **kwargs: None)
+    monkeypatch.setattr(smoke, "require_message", lambda *args, **kwargs: None)
+    monkeypatch.setattr(smoke.subprocess, "Popen", lambda *args, **kwargs: (
+        SimpleNamespace(poll=lambda: 0, returncode=0)
+    ))
+    assert smoke.main() == 1

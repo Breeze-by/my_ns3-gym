@@ -1403,3 +1403,40 @@ footprint_clearing_enabled for the current robot footprint only. Installed
 Humble static_layer.hpp confirms the native capability. It does not enlarge
 the robot radius, clear remote obstacles, change physics or relax episode gates.
 The failed original and snapshot remain intact; all subsequent runs need new IDs.
+
+### Native footprint candidate: a69f53c, new 2-robot task PASS
+
+Frozen/pushed source: a69f53c97be1828fcb83b30414ab48b4ffc16045.
+Same ROS/system Python setup and task/safety/physics contract as v1; independent
+ROS domain, Gazebo port, processes and run-id:
+
+```bash
+export PYTHONNOUSERSITE=1 TURTLEBOT3_MODEL=waffle
+export ROS_DOMAIN_ID=175 GAZEBO_MASTER_URI=http://127.0.0.1:11744 RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+/usr/bin/python3 scripts/run_ideal_baseline.py --world my_world.world \
+  --robot-count 2 --seeds 101 --duration 180 --coverage-threshold 0.90 \
+  --startup-timeout 300 --evaluation-wait-timeout 360 --message-timeout 90 \
+  --shutdown-timeout 60 --run-id 20261013_p1c_repair_2r_original_v2
+```
+
+Output: ROS log/ideal_baseline/20261013_p1c_repair_2r_original_v2/.
+Infrastructure and schema v3 task PASS; coverage_reached at 124.4 sim seconds,
+correct-free coverage 0.9109425454267536, observed accuracy 0.9512539873550704,
+46.780714 m path, zero contacts and all monitoring active. Both robots moved
+and completed actual goals. Clean automatic shutdown; batch returned 0.
+This is one engineering regression under the original 180-second task bound,
+not a reacceptance of the old P1C 120-second/accuracy performance gate; those
+historical performance values were not met. The v1 failed original is retained.
+
+After shutdown, a plain-smoke premature-zero-exit boundary was fixed: launch
+exit 0 is only acceptable after a validated evaluation result, not before the
+manual smoke dwell finishes. It is covered by a separate fixture. Final source
+and task records must remain distinct from the above a69f53c run.
+
+Final package rerun after the plain-smoke fix used the same colcon test/test-result
+commands above: 62 tests, zero errors/failures, two skips. Plans remain unchanged.
+Next pushed final-source batch is predeclared as separate 2r original/3r rooms/
+3r corridors seed101 task regressions (90%/180s), a 4r 20-s bounded infrastructure
+and motion characterization (expected timeout, no task-completion credit), and
+a 4r plain smoke. Unique IDs/domains/ports are recorded with actual commands
+and outcomes below; a failed cell is never substituted with an older source's PASS.

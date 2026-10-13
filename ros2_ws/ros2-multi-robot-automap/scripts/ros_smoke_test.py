@@ -367,7 +367,8 @@ def main():
                 )
             if args.evaluation_duration <= 0:
                 time.sleep(args.dwell_seconds)
-            if process.poll() not in (None, 0):
+            status = process.poll()
+            if status is not None and (args.evaluation_duration <= 0 or status != 0):
                 raise RuntimeError(
                     "launch exited during dwell with status "
                     f"{process.returncode}"

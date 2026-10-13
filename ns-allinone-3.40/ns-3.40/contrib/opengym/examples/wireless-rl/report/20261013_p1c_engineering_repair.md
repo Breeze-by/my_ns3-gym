@@ -71,3 +71,19 @@ tb2 的图在 tb1 同一位置为 occupied，融合图和 tb1 全局代价图均
 后续候选启用 Humble Nav2 原生静态层 `footprint_clearing_enabled`，仅清理该机器人的当前
 真实 footprint 下的代价；融合图仍保守，轮廓外占据证据、未知区、原半径、膨胀和期限不变。
 已核对本机安装的 static_layer.hpp 中原生接口；新候选须推送后以新 run-id 独立验证。
+
+## 原生 footprint 候选：a69f53c
+
+`20261013_p1c_repair_2r_original_v2`：2 机器人、my_world、seed101，schema v3 完整任务 PASS，
+124.4 s 达到 91.094% 正确自由覆盖，零接触、监测有效、干净退出，两台都有真实移动和成功目标。
+观测准确率 95.125%，总路径 46.781 m。这超过历史两机器人 120 s 速度线，准确率也低于历史
+对应格；不能称为旧 P1C 完整性能矩阵重新验收。地图冲突安全修复的任务信用仅限此新原格。
+
+运行结束后补查 plain smoke 的父进程提前正常退出边界：只有评估结果已完整验证时允许
+launch 返回 0；未启用评估器的 smoke 提前退出仍判基础设施失败。新增独立回归检查。
+后续最终冻结仍需以新的 run-id 运行计划的实际回归，旧原格完整保留。
+
+最后一次完整包检查：62 tests、0 errors、0 failures、2 skips。
+最终源码计划独立运行 2r/my_world、3r/rooms、3r/corridors 的 seed101、90%/180s 任务回归，
+再做 4r 的 20 秒带评估器启动/运动表征及 plain smoke。20 秒表征的预期 timeout 不获得
+完整任务成功信用；用于检查四台实际运动、接触观测与有界退出。全部使用独立 domain/port/run-id。
