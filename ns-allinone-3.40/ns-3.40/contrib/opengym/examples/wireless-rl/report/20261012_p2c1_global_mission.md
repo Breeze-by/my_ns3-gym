@@ -243,3 +243,21 @@ forced2的172–190s条件重建否定了“有效候选被等待分数压住”
 两份manifest仅更新父提交、预声明时间与global策略文字，整份其余JSON与9405冻结逐字段一致，原cases/physics/native/TTL/300s保持。新run-id `20261013_p2c_global_recovery_v2`；组件验证完成、提交推送后再运行四开发，当前尚无本候选任务信用。
 
 最终规划/执行105PASS59.42s、原件读者87PASS10.55s，完整功能1780PASS242.18s；四包build4.39s、190保护/6授权/54协议/原常量+Future8/2/2、核心静态/声明及独立复审PASS。首次夹具失败和两项审查红例保留，具体命令/结果仅在共享log。下一步提交推送并串行运行四开发。
+
+
+### recovery_v2 四原与完整FAIL
+
+同一推送冻结 `ec8c91451dab018f7ae97a0c058481d9e1afc9d4`，原run-id `20261013_p2c_global_recovery_v2`、domain204/port11573/CPU0–79，四owner05:52:50–06:20:29UTC串行自然关闭。完整开发门禁2026-10-13T06:23:23.353235+00:00写出，严格3PASS/1FAIL，唯一失败forced2未检测的原生成功断言；driver exit1正确停止，未执行已准备的正式helper、物理或917。
+
+| 原开发格 | 原生结果/耗时 | 检测/集合sim s | charge/minE | 严格 |
+|---|---|---|---|---|
+| forced2 | EXPLORE timeout300.2 | 未检测 | 2/8.6450 | FAIL |
+| lab101 | COMPLETE206.2 | 63.1/84.0 | 1/26.2573 | PASS |
+| rooms202 | COMPLETE273.6 | 123.1/161.2 | 2/20.7958 | PASS |
+| corridors303 | COMPLETE159.3 | 66.8/69.8 | 1/34.5671 | PASS |
+
+全部runner/observer0，零接触/耗尽/机器人失效/Nav2abort，71派发71匹配闭合，所有已发充电请求闭合。lab实际使用一次target_observation_heading且原件读者严格通过，仍不据此声称单因素因果收益；持有未发soft demand的辅助actor在四格均0，没有该分支的原任务信用。forced23探索、3清道、1本地返航让路，搜索路径56.2088m、最终正确覆盖.832296，仍未检测。原CDR gzip总116,894,179bytes，实际tx_attempt envelopeCDR总32,768,050bytes是不同字节口径；完整链接/hash/命令/限制在ignored `recovery_v2_results.json`，原件不复制。
+
+因完整门禁在forced原生失败断言先结束该格，全部owner关闭后另只调用一次独立global reader诊断：27sent27closed、2charge admissions、6实际电池原件绑定、87map bindings、无残留导航/充电/停车依赖PASS。它只覆盖原DDS/完整预算/所有权，不回填本格或完整门禁FAIL。下一步针对搜索闭环，保留已修合同，不按单格坐标追加规则。
+
+已确证源码缺少EXPLORE原地朝向动作出口；known-space航段要求.75m，地图已知不证明相机已连续3帧看见目标。纯1.6m已知空间生产几何反例：.45m安全落点最大原路线.424264m，两个生产规划器均0动作，但换朝向有240估计camera格，原完整return+60s idle预算10.1533<E30。首次指定不存在CPU96–127被OS拒绝，未执行Python，原件保留；四原关闭后在0–79独立构造exit0/2.96s。它没有DDS/真实source/Future/Native/负观察/本失败的历史因果信用。下一候选须把姿态历史作为搜索偏好，保持完整源/预算/真实owner，并为旋转保留非零时间与原空耗成本；具体条件原件分析仍继续。

@@ -9691,3 +9691,27 @@ Root最终检查共同环境在上述source之后加 `export RMW_IMPLEMENTATION=
 两manifest仅policy/parent/UTC三meta变化，与9405其余整JSON逐字段一致；新global策略在两manifest一致。独立最终源码评审无剩余阻塞，必须完整功能验证后提交推送新冻结，再执行原四开发，不能以组件代替任务门禁。
 
 最终源码/读者独立复审无剩余阻塞；完整功能1780PASS、4包build、source/static/declaration均PASS。提交推送新冻结后运行 `20261013_p2c_global_recovery_v2` 原四开发；组件仍不提供原生任务信用。
+
+
+### recovery_v2 实际四开发完整FAIL及独立搜索构造
+
+冻结ec8c91451dab018f7ae97a0c058481d9e1afc9d4 tracked clean/pushed，同原case/config/Native/物理。05:52:50–06:20:29UTC四owner串行自然关闭，domain204/11573/CPU0–79。实际driver命令在ROS cwd如下；四次run_p2c_tasks argv均为 `--case dev_forced2|dev_lab101|dev_rooms202|dev_corridors303 --run-id 20261013_p2c_global_recovery_v2 --domain 204 --gazebo-port 11573`，展开smoke/observer命令、全部种子/参数/环境和原件字节分别保存每格summary/manifest与recovery_v2_results.json，不重试/覆盖/补格。
+
+```bash
+rtk proxy bash -c 'source /opt/ros/humble/setup.bash
+source install/setup.bash
+export PYTHONNOUSERSITE=1
+export PYTHONPATH="$PWD/src/multi_robot_exploration:$PWD/scripts:$PYTHONPATH"
+export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+export FASTDDS_BUILTIN_TRANSPORTS=UDPv4
+unset FASTRTPS_DEFAULT_PROFILES_FILE ROS_DISCOVERY_SERVER
+exec taskset -c 0-79 /usr/bin/python3 log/p2c1_global_20261013_recovery_v2/run_development.py'
+```
+
+原生forced EXPLOREtimeout300.2未检测/charge2/minE8.6450；lab COMPLETE206.2/detect63.1/rally84.0/charge1/min26.2573；rooms COMPLETE273.6/123.1/161.2/charge2/min20.7958；corridors COMPLETE159.3/66.8/69.8/charge1/min34.5671。四runner/observer0、contact/exhaustion/FAILED/Nav2abort0。实际globalmotion27/15/18/11均闭合共71；lab一次真实heading维护，原soft需求actor辅助0不提供该分支信用。forced搜索56.2087945863m、正确覆盖.8322963900，仍任务FAIL；地图覆盖不能代替camera目标检测。原CDRgzip116894179B vs实际tx_attempt envelopeCDR32768050B两口径分开。
+
+完整命令同driver环境/taskset：`/usr/bin/python3 scripts/check_p2c_gate.py --run-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c/20261013_p2c_global_recovery_v2 --development --output /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/p2c1_global_20261013_recovery_v2/development_gate1.json`，stdout development_gate1.log，2026-10-13T06:23:23.353235+00:00完整scope4FAIL，三严格PASS，仅forced episode_success断言FAIL。driver exit1，无formal/physical/917，已准备ignored run_formal.py未执行。全部owner先关闭才开始原件大聚合/诊断；全部auditor随后自然关闭。
+
+failed forced格因episode断言未走globalreader，另只读一次命令 `rtk proxy bash -lc 'source /opt/ros/humble/setup.bash; source install/setup.bash; PYTHONNOUSERSITE=1 PYTHONPATH="$PWD/src/multi_robot_exploration:$PWD/scripts:$PYTHONPATH" /usr/bin/python3 log/p2c1_global_20261013_recovery_v2/dev_forced2_dispatch_audit1.py'`，脚本只global_mission_audit(required=True)一次。dev_forced2_dispatch_audit1.command.json/log/result.json保持exactargv/scope，PASS27sent27closed/2charge/6原Native+delivered电池绑定/87mapbind，0pendingNAV/issued/refuge；summarySHA910b5eb3c1d96e434c48db6a6f2654a186fd2faa24b0ed49dc797dab5b4e7cff未变，Native仍EXPLOREtimeout，零mission/strictgate/native-success信用。
+
+搜索只读构造：第一次相同ROS source/PYTHONNOUSERSITE/PYTHONPATH中 `taskset -c 96-127 /usr/bin/python3 log/p2c1_global_20261013_recovery/tiny_known_space.py log/p2c1_global_20261013_recovery/tiny_known_space.json log/p2c1_global_20261013_recovery/tiny_known_space.command > log/p2c1_global_20261013_recovery/tiny_known_space.log 2>&1` 被OS Invalid argument拒绝、exit1，Python未执行；完整exact原command/log与affinity_rejection.json保留，本机online/effective0–79。四原全部关闭后独立完整命令保存在tiny_known_space_run2.command：`taskset -c 0-79 /usr/bin/python3 log/p2c1_global_20261013_recovery/tiny_known_space.py log/p2c1_global_20261013_recovery/tiny_known_space_run2.json log/p2c1_global_20261013_recovery/tiny_known_space_run2.command > log/p2c1_global_20261013_recovery/tiny_known_space_run2.log 2>&1`，exit0/2.96s，source ec8c914，纯1.6m known room900free/0unknown/144原.45m landing，max原path.424264m<.75有用航段，生产mapping/known-camera生成及plan_exploration/plan_fleet均0motion/charge；当前yaw0gain0、换yaw3.53429camera潜在240、余偏好675格，原完整qualifiedreturn+60s idle预算10.15333<E30，原idle1.2。没有真实source/Future/DDS/Native/负观察或历史因果信用；只证通用缺动作类，不以此宣称forced历史原因。下一步设计完整资金/真实源的EXPLORE朝向出口和仅软历史偏好，旋转不获免费时间或普通探索信用，原模型/门限/任务300s保持。
