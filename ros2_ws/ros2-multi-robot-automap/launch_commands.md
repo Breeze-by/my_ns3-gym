@@ -29,6 +29,7 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
 
 此模式持续建图，Ctrl+C 结束。`robot_count` 为 1–4 的整数，非法值拒绝；四台均采用融合地图、
 Smac 2D 和非滚动全局代价图。模型资源通过安装包的 `models` 路径解析。
+静态层启用 Nav2 原生的当前机体 footprint 清理；融合图中的占据冲突仍保持保守。
 
 ## 有界覆盖评估
 

@@ -56,3 +56,18 @@ export PYTHONNOUSERSITE=1
 首次包检查的两项格式失败（嵌套函数空行、D213 docstring）已修正，完整重跑通过。
 下一阶段在推送冻结上运行 2 机器人原地图、3 机器人 rooms/corridors 的 seed101 工程回归，
 以及 4 机器人基础 smoke；全部结果，包括失败/中断，单独保留。
+
+## 首次实际回归：9b2dd5e，保留 FAIL
+
+`20261013_p1c_repair_2r_original_v1`：2 机器人、my_world、seed101，180.0 秒 timeout，
+正确自由覆盖 54.365%，零接触、监测有效，基础设施 PASS，完整任务 FAIL。
+tb1 路径仅 0.222 m、0 个成功目标；tb2 路径 8.725 m、6 个成功目标。
+
+只读原地图/代价图旁录 `readonly_map_probe.json` 确认：tb1 私有图在实际当前位置为 free，
+tb2 的图在 tb1 同一位置为 occupied，融合图和 tb1 全局代价图均为 occupied。
+原生 Smac 持续报 Starting point in lethal space。该结果是本次保守融合暴露的本机起点问题，
+不能恢复 free 优先来掩盖真实障碍冲突。
+
+后续候选启用 Humble Nav2 原生静态层 `footprint_clearing_enabled`，仅清理该机器人的当前
+真实 footprint 下的代价；融合图仍保守，轮廓外占据证据、未知区、原半径、膨胀和期限不变。
+已核对本机安装的 static_layer.hpp 中原生接口；新候选须推送后以新 run-id 独立验证。

@@ -1366,3 +1366,40 @@ multi_robot resource tree. Invalid robot counts, conservative fractional-grid
 fusion, obstacle conflicts, diagonal corners, deadline/safety failure,
 immutable outputs, and delayed/cancelled Nav2 ownership have regression checks.
 Research metrics now use schema v3; schema v2 historical evidence is unchanged.
+
+### First real engineering regression: 9b2dd5e, retained task FAIL
+
+Frozen/pushed source: 9b2dd5ecbacd7330b6b4cfaf77179482bb3976ee.
+From the canonical ROS workspace, after ROS/Gazebo/installed workspace setup:
+
+```bash
+export PYTHONNOUSERSITE=1 TURTLEBOT3_MODEL=waffle
+export ROS_DOMAIN_ID=174 GAZEBO_MASTER_URI=http://127.0.0.1:11743 RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+/usr/bin/python3 scripts/run_ideal_baseline.py --world my_world.world \
+  --robot-count 2 --seeds 101 --duration 180 --coverage-threshold 0.90 \
+  --startup-timeout 300 --evaluation-wait-timeout 360 --message-timeout 90 \
+  --shutdown-timeout 60 --run-id 20261013_p1c_repair_2r_original_v1
+```
+
+Output: ROS log/ideal_baseline/20261013_p1c_repair_2r_original_v1/.
+Infrastructure smoke PASS; task timeout FAIL at 180.0 sim seconds,
+correct-free coverage 0.5436498079752374, zero contacts, monitoring active.
+tb1 stayed near spawn (0.221662 m, zero goal successes, 14 cancellations),
+tb2 moved 8.725135 m and succeeded on six goals. Batch returned 1 correctly.
+Auto-shutdown completed cleanly and no owned Gazebo/launch process remained.
+
+An eight-wall-second read-only rclpy probe subscribed to /merge_map,
+/tb1/map, /tb2/map, both global_costmap/costmap topics and /gazebo/model_states,
+without publishing. Raw snapshot: readonly_map_probe.json in that same run
+directory. At tb1's actual position, private tb1 map=0, peer tb2 map=100,
+merged map=100 and global costmap=100; native Smac reported a lethal start.
+The probe script initialized one node, spun for eight seconds, serialized
+dimensions/resolution/origin/data and positions, then destroyed its node.
+It was diagnostic observation within this failed regression, not a separate
+successful task or an actuator intervention.
+
+Next candidate keeps conservative fusion and enables Nav2's native static-layer
+footprint_clearing_enabled for the current robot footprint only. Installed
+Humble static_layer.hpp confirms the native capability. It does not enlarge
+the robot radius, clear remote obstacles, change physics or relax episode gates.
+The failed original and snapshot remain intact; all subsequent runs need new IDs.

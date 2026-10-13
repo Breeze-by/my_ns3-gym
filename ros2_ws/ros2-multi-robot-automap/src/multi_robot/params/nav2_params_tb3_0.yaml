@@ -271,6 +271,7 @@ global_costmap:
         plugin: "nav2_costmap_2d::StaticLayer"
         map_topic: /merge_map
         map_subscribe_transient_local: True
+        footprint_clearing_enabled: True
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0

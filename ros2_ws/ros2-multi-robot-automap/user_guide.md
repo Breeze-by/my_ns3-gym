@@ -359,6 +359,10 @@ server 和 `bt_navigator=active`；全部就绪后立即启动控制器和评估
 `topic=/merge_map`，frame 和 topic 不再混用。主 launch 直接拥有 merge 节点，实验结束后不会
 遗留多个 `/merge_map` publisher 污染下一轮。
 
+Nav2 静态层启用原生 `footprint_clearing_enabled`：仅清理该机器人实际当前 footprint 下的
+代价图占据，避免队友地图中的本机回波使当前位置成为 lethal 起点。融合地图保持保守占据，
+机器人轮廓外的墙体、障碍和未知区域不通过此设置清除；原机器人半径和膨胀距离不变。
+
 ## 7. 编译
 
 推荐每次修改后执行：
