@@ -1,0 +1,97 @@
+[INFO] [1791982301.691196573] [mr3_contact_reducer]: Publication sequence auditing supported: true
+[INFO] [1791982301.696790820] [mr3_contact_reducer]: /tb1/collision -> /mr3_contacts/tb1/base
+[INFO] [1791982301.697502509] [mr3_contact_reducer]: /tb1/collision/lidar -> /mr3_contacts/tb1/lidar
+[INFO] [1791982301.698080602] [mr3_contact_reducer]: /tb1/collision/wheel_left -> /mr3_contacts/tb1/wheel_left
+[INFO] [1791982301.698647839] [mr3_contact_reducer]: /tb1/collision/wheel_right -> /mr3_contacts/tb1/wheel_right
+[INFO] [1791982301.699277450] [mr3_contact_reducer]: /tb1/collision/caster_back_left -> /mr3_contacts/tb1/caster_back_left
+[INFO] [1791982301.699984098] [mr3_contact_reducer]: /tb1/collision/caster_back_right -> /mr3_contacts/tb1/caster_back_right
+[INFO] [1791982301.700561870] [mr3_contact_reducer]: /tb2/collision -> /mr3_contacts/tb2/base
+[INFO] [1791982301.701191036] [mr3_contact_reducer]: /tb2/collision/lidar -> /mr3_contacts/tb2/lidar
+[INFO] [1791982301.701745368] [mr3_contact_reducer]: /tb2/collision/wheel_left -> /mr3_contacts/tb2/wheel_left
+[INFO] [1791982301.702313884] [mr3_contact_reducer]: /tb2/collision/wheel_right -> /mr3_contacts/tb2/wheel_right
+[INFO] [1791982301.702873349] [mr3_contact_reducer]: /tb2/collision/caster_back_left -> /mr3_contacts/tb2/caster_back_left
+[INFO] [1791982301.703496417] [mr3_contact_reducer]: /tb2/collision/caster_back_right -> /mr3_contacts/tb2/caster_back_right
+[INFO] [1791982301.704074770] [mr3_contact_reducer]: /tb3/collision -> /mr3_contacts/tb3/base
+[INFO] [1791982301.704783040] [mr3_contact_reducer]: /tb3/collision/lidar -> /mr3_contacts/tb3/lidar
+[INFO] [1791982301.705486995] [mr3_contact_reducer]: /tb3/collision/wheel_left -> /mr3_contacts/tb3/wheel_left
+[INFO] [1791982301.706193731] [mr3_contact_reducer]: /tb3/collision/wheel_right -> /mr3_contacts/tb3/wheel_right
+[INFO] [1791982301.706799213] [mr3_contact_reducer]: /tb3/collision/caster_back_left -> /mr3_contacts/tb3/caster_back_left
+[INFO] [1791982301.707413635] [mr3_contact_reducer]: /tb3/collision/caster_back_right -> /mr3_contacts/tb3/caster_back_right
+[INFO] [launch]: All log files can be found below /home/zhuyulab/.ros/log/2026-10-14-20-51-41-851980-zhuyulab-3344634
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [gzserver-1]: process started with pid [3344684]
+[gzserver-1] Gazebo multi-robot simulator, version 11.10.2
+[gzserver-1] Copyright (C) 2012 Open Source Robotics Foundation.
+[gzserver-1] Released under the Apache 2 License.
+[gzserver-1] http://gazebosim.org
+[gzserver-1] 
+[gzserver-1] [1;33m[Wrn] [gazebo_ros_init.cpp:178] [0m[1;33m
+[gzserver-1] #     # ####### ####### ###  #####  #######
+[gzserver-1] ##    # #     #    #     #  #     # #
+[gzserver-1] # #   # #     #    #     #  #       #
+[gzserver-1] #  #  # #     #    #     #  #       #####
+[gzserver-1] #   # # #     #    #     #  #       #
+[gzserver-1] #    ## #     #    #     #  #     # #
+[gzserver-1] #     # #######    #    ###  #####  #######
+[gzserver-1] 
+[gzserver-1] This version of Gazebo, now called Gazebo classic, reaches end-of-life
+[gzserver-1] in January 2025. Users are highly encouraged to migrate to the new Gazebo
+[gzserver-1] using our migration guides (https://gazebosim.org/docs/latest/gazebo_classic_migration?utm_source=gazebo_ros_pkgs&utm_medium=cli)
+[gzserver-1] 
+[gzserver-1] [0m[1;33m
+[gzserver-1] [0m[1;33m[0m[1;33m[0m[INFO] [1791982304.837140426] [gazebo.gazebo_ros_state]: Publishing states of gazebo models at [/gazebo/model_states]
+[gzserver-1] [INFO] [1791982304.838873007] [gazebo.gazebo_ros_state]: Publishing states of gazebo links at [/gazebo/link_states]
+[gzserver-1] [INFO] [1791982305.344697712] [tb1.base_contact]: Publishing contact states to [/tb1/collision]
+[gzserver-1] [INFO] [1791982305.369812457] [tb1.turtlebot3_imu]: <initial_orientation_as_reference> is unset, using default value of false to comply with REP 145 (world as orientation reference)
+[gzserver-1] [INFO] [1791982305.386693636] [tb1.lidar_contact]: Publishing contact states to [/tb1/collision/lidar]
+[gzserver-1] [INFO] [1791982305.637801228] [tb1.wheel_left_contact]: Publishing contact states to [/tb1/collision/wheel_left]
+[gzserver-1] [INFO] [1791982305.647848171] [tb1.wheel_right_contact]: Publishing contact states to [/tb1/collision/wheel_right]
+[gzserver-1] [INFO] [1791982305.661239622] [tb1.caster_back_right_contact]: Publishing contact states to [/tb1/collision/caster_back_right]
+[gzserver-1] [INFO] [1791982305.673792125] [tb1.caster_back_left_contact]: Publishing contact states to [/tb1/collision/caster_back_left]
+[gzserver-1] [INFO] [1791982305.815887667] [tb1.turtlebot3_diff_drive]: Wheel pair 1 separation set to [0.287000m]
+[gzserver-1] [INFO] [1791982305.816009300] [tb1.turtlebot3_diff_drive]: Wheel pair 1 diameter set to [0.066000m]
+[gzserver-1] [INFO] [1791982305.818397328] [tb1.turtlebot3_diff_drive]: Subscribed to [/tb1/cmd_vel]
+[gzserver-1] [INFO] [1791982305.824184745] [tb1.turtlebot3_diff_drive]: Advertise odometry on [/tb1/odom]
+[gzserver-1] [INFO] [1791982305.830703960] [tb1.turtlebot3_diff_drive]: Publishing odom transforms between [odom] and [base_footprint]
+[gzserver-1] [INFO] [1791982305.854210836] [tb1.turtlebot3_joint_state]: Going to publish joint [wheel_left_joint]
+[gzserver-1] [INFO] [1791982305.854286962] [tb1.turtlebot3_joint_state]: Going to publish joint [wheel_right_joint]
+[gzserver-1] [INFO] [1791982306.302159769] [tb2.base_contact]: Publishing contact states to [/tb2/collision]
+[gzserver-1] [INFO] [1791982306.316928053] [tb2.turtlebot3_imu]: <initial_orientation_as_reference> is unset, using default value of false to comply with REP 145 (world as orientation reference)
+[gzserver-1] [INFO] [1791982306.335180859] [tb2.lidar_contact]: Publishing contact states to [/tb2/collision/lidar]
+[gzserver-1] [INFO] [1791982306.581163821] [tb2.wheel_left_contact]: Publishing contact states to [/tb2/collision/wheel_left]
+[gzserver-1] [INFO] [1791982306.600580330] [tb2.wheel_right_contact]: Publishing contact states to [/tb2/collision/wheel_right]
+[gzserver-1] [INFO] [1791982306.618713072] [tb2.caster_back_right_contact]: Publishing contact states to [/tb2/collision/caster_back_right]
+[gzserver-1] [INFO] [1791982306.638403059] [tb2.caster_back_left_contact]: Publishing contact states to [/tb2/collision/caster_back_left]
+[gzserver-1] [INFO] [1791982306.743616279] [tb2.turtlebot3_diff_drive]: Wheel pair 1 separation set to [0.287000m]
+[gzserver-1] [INFO] [1791982306.743701277] [tb2.turtlebot3_diff_drive]: Wheel pair 1 diameter set to [0.066000m]
+[gzserver-1] [INFO] [1791982306.744906280] [tb2.turtlebot3_diff_drive]: Subscribed to [/tb2/cmd_vel]
+[gzserver-1] [INFO] [1791982306.746220243] [tb2.turtlebot3_diff_drive]: Advertise odometry on [/tb2/odom]
+[gzserver-1] [INFO] [1791982306.748268400] [tb2.turtlebot3_diff_drive]: Publishing odom transforms between [odom] and [base_footprint]
+[gzserver-1] [INFO] [1791982306.766659504] [tb2.turtlebot3_joint_state]: Going to publish joint [wheel_left_joint]
+[gzserver-1] [INFO] [1791982306.766738968] [tb2.turtlebot3_joint_state]: Going to publish joint [wheel_right_joint]
+[gzserver-1] [INFO] [1791982307.236946344] [tb3.base_contact]: Publishing contact states to [/tb3/collision]
+[gzserver-1] [INFO] [1791982307.258888563] [tb3.turtlebot3_imu]: <initial_orientation_as_reference> is unset, using default value of false to comply with REP 145 (world as orientation reference)
+[gzserver-1] [INFO] [1791982307.284905179] [tb3.lidar_contact]: Publishing contact states to [/tb3/collision/lidar]
+[gzserver-1] [INFO] [1791982307.526821489] [tb3.wheel_left_contact]: Publishing contact states to [/tb3/collision/wheel_left]
+[gzserver-1] [INFO] [1791982307.552540274] [tb3.wheel_right_contact]: Publishing contact states to [/tb3/collision/wheel_right]
+[gzserver-1] [INFO] [1791982307.579325884] [tb3.caster_back_right_contact]: Publishing contact states to [/tb3/collision/caster_back_right]
+[gzserver-1] [INFO] [1791982307.606353161] [tb3.caster_back_left_contact]: Publishing contact states to [/tb3/collision/caster_back_left]
+[gzserver-1] [INFO] [1791982307.710157861] [tb3.turtlebot3_diff_drive]: Wheel pair 1 separation set to [0.287000m]
+[gzserver-1] [INFO] [1791982307.710248791] [tb3.turtlebot3_diff_drive]: Wheel pair 1 diameter set to [0.066000m]
+[gzserver-1] [INFO] [1791982307.711954920] [tb3.turtlebot3_diff_drive]: Subscribed to [/tb3/cmd_vel]
+[gzserver-1] [INFO] [1791982307.713709082] [tb3.turtlebot3_diff_drive]: Advertise odometry on [/tb3/odom]
+[gzserver-1] [INFO] [1791982307.718759083] [tb3.turtlebot3_diff_drive]: Publishing odom transforms between [odom] and [base_footprint]
+[gzserver-1] [INFO] [1791982307.750787297] [tb3.turtlebot3_joint_state]: Going to publish joint [wheel_left_joint]
+[gzserver-1] [INFO] [1791982307.750869288] [tb3.turtlebot3_joint_state]: Going to publish joint [wheel_right_joint]
+[gzserver-1] [1;32m[Msg] [0m[1;32mWaiting for master.[0m[1;32m
+[gzserver-1] [0m[1;32m[0m[1;32m[0m[1;32m[Msg] [0m[1;32mConnected to gazebo master @ [0m[1;32mhttp://127.0.0.1:11820[0m[1;32m
+[gzserver-1] [0m[1;32m[0m[1;32m[0m[1;32m[Msg] [0m[1;32mPublicized address: [0m[1;32m10.154.30.38[0m[1;32m
+[gzserver-1] [0m[1;32m[0m[1;32m[0m[1;32m[Msg] [0m[1;32mLoading world file [[0m[1;32m/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_qos_v8_20261014_123944/contact_fixture.world[0m[1;32m][0m[1;32m
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [gzserver-1]: sending signal 'SIGINT' to process[gzserver-1]
+[INFO] [gzserver-1]: process has finished cleanly [pid 3344684]
+[gzserver-1] [0m[1;32m[0m[1;32m[0m[1;36m[0m[1;32m[0m
+[gzserver-1] [1;33m[0m[1;31m[0m
+[INFO] [launch]: process[gzserver-1] was required: shutting down launched system
+[INFO] [1791982330.445284873] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+MR3_CONTACT_REDUCER_SUMMARY {"publication_sequence_supported":true,"topics":{"tb1/base":{"received":310,"published":310,"raw_states":2,"compact_states":1,"sequence_observed":310,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb1/caster_back_left":{"received":310,"published":310,"raw_states":5527,"compact_states":185,"sequence_observed":310,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb1/caster_back_right":{"received":310,"published":310,"raw_states":6348,"compact_states":191,"sequence_observed":310,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb1/lidar":{"received":310,"published":310,"raw_states":43,"compact_states":4,"sequence_observed":310,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb1/wheel_left":{"received":310,"published":310,"raw_states":15456,"compact_states":312,"sequence_observed":310,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb1/wheel_right":{"received":310,"published":310,"raw_states":15452,"compact_states":311,"sequence_observed":310,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb2/base":{"received":306,"published":306,"raw_states":0,"compact_states":0,"sequence_observed":306,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb2/caster_back_left":{"received":306,"published":306,"raw_states":5197,"compact_states":169,"sequence_observed":306,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb2/caster_back_right":{"received":306,"published":306,"raw_states":6073,"compact_states":189,"sequence_observed":306,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb2/lidar":{"received":306,"published":306,"raw_states":0,"compact_states":0,"sequence_observed":306,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb2/wheel_left":{"received":306,"published":306,"raw_states":14969,"compact_states":302,"sequence_observed":306,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb2/wheel_right":{"received":306,"published":306,"raw_states":14970,"compact_states":302,"sequence_observed":306,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb3/base":{"received":302,"published":302,"raw_states":0,"compact_states":0,"sequence_observed":302,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb3/caster_back_left":{"received":302,"published":302,"raw_states":4786,"compact_states":166,"sequence_observed":302,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb3/caster_back_right":{"received":302,"published":302,"raw_states":5516,"compact_states":172,"sequence_observed":302,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb3/lidar":{"received":302,"published":302,"raw_states":0,"compact_states":0,"sequence_observed":302,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb3/wheel_left":{"received":302,"published":302,"raw_states":14769,"compact_states":297,"sequence_observed":302,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb3/wheel_right":{"received":302,"published":302,"raw_states":14769,"compact_states":297,"sequence_observed":302,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0}}}

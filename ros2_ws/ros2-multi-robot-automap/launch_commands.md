@@ -89,6 +89,10 @@ PYTHONNOUSERSITE=1 /usr/bin/python3 scripts/run_ideal_baseline.py \
 ```
 
 open/corridors使用对应world与 `open.json` / `corridors.json`，每次新run-id。
+当前P1A最终重跑按rooms、corridors、open逐场景串行执行，每场景内部也串行重启三种子。
+使用独立ROS域224/225/226与Gazebo端口11831/11832/11833；保持所有任务与墙钟保护门限。
+这用于减少并发启动压力，不表示一次Nav2响应超时的根因已经确定。精确预声明见
+[native plan](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/predeclared_native_plan.json)。
 合同确定任务300仿真秒，300/900墙秒分别是启动/基础设施保护，不能当成延长任务。
 参数与合同显式冲突会拒绝。任务t0为控制器仿真时间放行；启动预热地图单列，达标后的
 取消闭合计入任务截止。合同模式不接受两/四台、schema3或曾中断的监测作为成功。

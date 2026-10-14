@@ -61,23 +61,25 @@ training or gateway work is authorized by this step.
 ## Current implementation and evidence
 
 `main` was restored from P1C `99cf3a6` and repaired. Pre-route document commit
-is `81b2f8b`; runtime freeze is `c9344e1`. P1A changes the active launch and check defaults to three, retaining 1–4
+is `81b2f8b`; historical repair freeze is `c9344e1`. P1A changes the active launch and check defaults to three, retaining 1–4
 compatibility without new non-three research runs. Use the explicit MR3 task
 contract for 95% schema4 evaluation; legacy schema3 remains diagnostic only.
 
 The source still uses a handcrafted frontier controller, common-frame
 conservative map fusion and Nav2. No three-robot RL policy or ROS/ns-3 gateway
 exists. Historical five-user/15-input/5-action toy DQN is a separate task.
-Latest three-robot evidence is seed101 rooms/corridors **90%** within 180 sim
-seconds, not 95% or an RL/multi-seed claim. Zero recorded contacts covers only
-the current base_collision sensor, not all body collisions; full non-support
-contact coverage and continuous freshness are MR3-P1A gates. See the canonical repair report
-`wireless-rl/report/20261013_p1c_engineering_repair.md` and shared `log.md`.
+P1A now measures all six actual body collisions per robot (18 streams), with
+continuous freshness, raw publication-sequence audit and navigation terminal
+closure. Its development trials include complete 95% successes and retained
+task/infrastructure failures; the final same-freeze matrix is still pending.
+See `wireless-rl/report/20261014_mr3_p1a.md` and shared `log.md`. The historical
+`c9344e1` rooms/corridors seed101 90% evidence and base-only zero-contact records
+retain their original scope; they do not supply MR3 credit.
 
-Known new-route prerequisites: explicit ROI/95% coverage feasibility; sustained
-collision-monitor freshness; goal ownership and complete reset; no raw shared
-map or peer-pose bypass; actual payload transport and causal simulation clocks.
-They are scheduled gates, not functionality already implemented.
+The explicit ROI/95% contract, scene audits and sustained contact monitoring
+are implemented for P1A validation. RL goal ownership, complete episode reset,
+removal of raw shared-map/peer-pose bypasses, actual payload transport and
+causal simulation clocks remain later scheduled gates.
 
 ## Engineering judgment
 

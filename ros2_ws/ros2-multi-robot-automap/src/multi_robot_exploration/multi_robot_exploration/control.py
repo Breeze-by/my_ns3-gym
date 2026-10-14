@@ -3,6 +3,7 @@ import json
 import math
 import os
 import subprocess
+import sys
 import threading
 import time
 
@@ -14,7 +15,7 @@ from nav_msgs.msg import OccupancyGrid, Odometry
 import numpy as np
 import rclpy
 from rclpy.action import ActionClient
-from rclpy.executors import ExternalShutdownException
+from rclpy.executors import ExternalShutdownException, SingleThreadedExecutor
 from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile
 from scipy import ndimage
@@ -1376,18 +1377,38 @@ class HeadquartersControl(Node):
 def main(args=None):
     rclpy.init(args=args)
     control = None
+    executor = None
     try:
         control = HeadquartersControl()
-        rclpy.spin(control)
+        executor = SingleThreadedExecutor(context=control.context)
+        executor.add_node(control)
+        while rclpy.ok(context=control.context):
+            try:
+                executor.spin_once(timeout_sec=0.5)
+            except RuntimeError as error:
+                # Humble can attempt a ready subscription take after SIGINT
+                # shuts its context. Never suppress a live-context error.
+                if rclpy.ok(context=control.context) or str(error) != (
+                    "Unable to convert call argument to Python object "
+                    "(compile in debug mode for details)"
+                ):
+                    raise
+                print("ROS context already closed during subscription conversion; stopping.",
+                      file=sys.stderr)
+                break
     except (KeyboardInterrupt, ExternalShutdownException):
         pass
     finally:
         try:
-            if control is not None:
-                control.destroy_node()
+            if executor is not None and not executor.shutdown(timeout_sec=1.0):
+                raise RuntimeError("Controller executor shutdown exceeded one second")
         finally:
-            if rclpy.ok():
-                rclpy.shutdown()
+            try:
+                if control is not None:
+                    control.destroy_node()
+            finally:
+                if rclpy.ok():
+                    rclpy.shutdown()
 
 
 if __name__ == "__main__":

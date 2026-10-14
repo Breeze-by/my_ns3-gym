@@ -8,7 +8,7 @@ MR3适用范围提示：2026-10-14。本页只说明现有五用户ns3-gym调度
 ns-3 Wi-Fi。唯一活动契约见 [RESEARCH_PLAN.md](RESEARCH_PLAN.md)和
 [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)；当前ROS命令见
 [launch_commands.md](../../../../../../ros2_ws/ros2-multi-robot-automap/launch_commands.md)。
-本轮MR3-P0文档待用户验收，尚无新策略或通信接入命令。
+MR3-P0已获用户验收，当前P1A任务/测量合同与原生验证进行中；尚无导航RL策略或通信接入命令。
 
 以下15维观测/5动作、CQI/queue/backlog age、DQN权重与历史成绩属于另一个任务，
 不能改名当作三个机器人、真实packet delay或Wi-Fi PHY/MAC证据。旧toy模型不用于

@@ -1,0 +1,46 @@
+{
+  "checked_at_utc": "2026-10-14T13:30:49.530218+00:00",
+  "candidate_parent_commit": "3f24eaa9fae6f7d282f85f991273734d71b9439d",
+  "command": "source /opt/ros/humble/setup.bash; source install/setup.bash; export PYTHONNOUSERSITE=1; /usr/bin/python3 /usr/bin/colcon test --packages-select multi_robot multi_robot_exploration merge_map --event-handlers console_cohesion+",
+  "workdir": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+  "wall_seconds": 11.0,
+  "returncode": 0,
+  "counts": {
+    "tests": 228,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 2
+  },
+  "passed": 226,
+  "results": {
+    "exploration": {
+      "tests": 206,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "sha256": "7d26d0d088e6475b86f095b55b165c961ec613b1e05af7949c9cc11f55ec00de",
+      "artifact": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/pre_matrix3_exploration_tests.xml"
+    },
+    "merge": {
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "sha256": "16d516ac0d0286a09a256be48b49c96a4318a83e3603396619c5e0c5763cce7f",
+      "artifact": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/pre_matrix3_merge_tests.xml"
+    },
+    "native": {
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "sha256": "0d9f89cce48f72756e259b001cc359b59c8c1935d2e600ce8059a8499821668f",
+      "artifact": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/pre_matrix3_native_tests.xml"
+    }
+  },
+  "candidate_changed_source_sha256": {
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/control.py": "24f838c37b7a42d25362f1a4791bee45dba166a851840bedad0641502ce5f3e3",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_navigation_ownership.py": "b27e696c6d26a36bbdbe03712b06a86a859e9311f09e37ea7621ba39509fabc4"
+  },
+  "result": "PASS"
+}

@@ -1,0 +1,434 @@
+{
+  "facts": [
+    {
+      "evidence": "logs.303.selected_evidence lines197-203",
+      "id": "tb2_processes_started",
+      "statement": "All six tb2 Nav2 nodes and its lifecycle manager were launched."
+    },
+    {
+      "evidence": "logs.303.selected_evidence line204",
+      "id": "tb2_transition_response_timeout",
+      "statement": "tb2 planner_server reported a change_state response-send timeout in rmw_response.cpp."
+    },
+    {
+      "evidence": "logs.303.selected_evidence lines217,228",
+      "id": "tb3_timeout_recovered",
+      "statement": "tb3 controller reported a get_state response-send timeout, then all tb3 readiness deficits disappeared; the final logged deficit list contains only tb2."
+    },
+    {
+      "evidence": "logs.303.selected_evidence lines258,259,264,265,288,289",
+      "id": "no_tb2_node_crash_seen",
+      "statement": "tb2 controller, planner, behavior, bt_navigator, waypoint_follower and velocity_smoother each exited cleanly during shutdown; no native crash for these nodes appears in the captured log."
+    },
+    {
+      "evidence": "logs.303.selected_evidence lines302-306",
+      "id": "tb2_manager_forced_shutdown",
+      "statement": "tb2 lifecycle manager required SIGTERM and SIGKILL and exited -9; this remains an infrastructure failure."
+    },
+    {
+      "evidence": "logs.303.exploration_release_lines; development_matrix_v2/corridors/summary.json seed303",
+      "id": "no_task_release_or_json",
+      "statement": "The exploration task was not released and no native seed303 evaluation JSON exists; runner failure cannot count as task success or safety evidence."
+    },
+    {
+      "evidence": "nav2_ready_gate.py lines74-80 in recorded source SHA",
+      "id": "unavailable_label_limit",
+      "statement": "Lifecycle GetState requests are issued only after the robot NavigateToPose action is ready. Default unavailable labels for tb2 therefore do not prove all six lifecycle services are absent."
+    },
+    {
+      "evidence": "logs.101.all_nav2_active_evidence; logs.202.all_nav2_active_evidence",
+      "id": "same_config_other_seed_startup",
+      "statement": "The same frozen source and robot parameter files reached all-three-Nav2-active readiness in corridors seeds101 and202. No general deterministic launch/configuration ordering bug is established by seed303."
+    }
+  ],
+  "generated_at_utc": "2026-10-14T13:32:10.229205+00:00",
+  "hypotheses_not_proven": [
+    "Stale FastDDS shared-memory resources may have contributed; no SHM/open_and_lock or memory-exhaustion diagnostic was found in the nine captured version2 logs.",
+    "Parallel Gazebo/Nav2 load may have contributed to discovery or scheduling delays; this attempt has no CPU, queue, or DDS-discovery trace proving that cause.",
+    "The default unbounded Nav2 transition response wait may explain the stalled manager and forced shutdown; no thread stack proves its exact blocked call in this attempt."
+  ],
+  "installed_package_versions": {
+    "ros-humble-fastrtps": "2.6.11-1jammy.20260304.200925",
+    "ros-humble-nav2-lifecycle-manager": "1.1.20-1jammy.20260326.005714",
+    "ros-humble-nav2-util": "1.1.20-1jammy.20260326.002119",
+    "ros-humble-rmw-fastrtps-shared-cpp": "6.2.10-1jammy.20260304.211712"
+  },
+  "latest_control_truth_isolation_audit": {
+    "current_candidate_sha256": "24f838c37b7a42d25362f1a4791bee45dba166a851840bedad0641502ce5f3e3",
+    "diff_from_version2": "diff --git a/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/control.py b/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/control.py\nindex bc06680..b8e2d21 100644\n--- a/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/control.py\n+++ b/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/control.py\n@@ -3,6 +3,7 @@ import json\n import math\n import os\n import subprocess\n+import sys\n import threading\n import time\n \n@@ -14,7 +15,7 @@ from nav_msgs.msg import OccupancyGrid, Odometry\n import numpy as np\n import rclpy\n from rclpy.action import ActionClient\n-from rclpy.executors import ExternalShutdownException\n+from rclpy.executors import ExternalShutdownException, SingleThreadedExecutor\n from rclpy.node import Node\n from rclpy.qos import DurabilityPolicy, QoSProfile\n from scipy import ndimage\n@@ -1376,18 +1377,38 @@ class HeadquartersControl(Node):\n def main(args=None):\n     rclpy.init(args=args)\n     control = None\n+    executor = None\n     try:\n         control = HeadquartersControl()\n-        rclpy.spin(control)\n+        executor = SingleThreadedExecutor(context=control.context)\n+        executor.add_node(control)\n+        while rclpy.ok(context=control.context):\n+            try:\n+                executor.spin_once(timeout_sec=0.5)\n+            except RuntimeError as error:\n+                # Humble can attempt a ready subscription take after SIGINT\n+                # shuts its context. Never suppress a live-context error.\n+                if rclpy.ok(context=control.context) or str(error) != (\n+                    \"Unable to convert call argument to Python object \"\n+                    \"(compile in debug mode for details)\"\n+                ):\n+                    raise\n+                print(\"ROS context already closed during subscription conversion; stopping.\",\n+                      file=sys.stderr)\n+                break\n     except (KeyboardInterrupt, ExternalShutdownException):\n         pass\n     finally:\n         try:\n-            if control is not None:\n-                control.destroy_node()\n+            if executor is not None and not executor.shutdown(timeout_sec=1.0):\n+                raise RuntimeError(\"Controller executor shutdown exceeded one second\")\n         finally:\n-            if rclpy.ok():\n-                rclpy.shutdown()\n+            try:\n+                if control is not None:\n+                    control.destroy_node()\n+            finally:\n+                if rclpy.ok():\n+                    rclpy.shutdown()\n \n \n if __name__ == \"__main__\":\n",
+    "imports": [
+      "from dataclasses import dataclass",
+      "import json",
+      "import math",
+      "import os",
+      "import subprocess",
+      "import sys",
+      "import threading",
+      "import time",
+      "from action_msgs.msg import GoalStatus",
+      "from ament_index_python.packages import get_package_share_directory",
+      "from geometry_msgs.msg import PoseStamped",
+      "from nav2_msgs.action import NavigateToPose",
+      "from nav_msgs.msg import OccupancyGrid, Odometry",
+      "import numpy as np",
+      "import rclpy",
+      "from rclpy.action import ActionClient",
+      "from rclpy.executors import ExternalShutdownException, SingleThreadedExecutor",
+      "from rclpy.node import Node",
+      "from rclpy.qos import DurabilityPolicy, QoSProfile",
+      "from scipy import ndimage",
+      "from scipy.sparse import coo_matrix",
+      "from scipy.sparse.csgraph import dijkstra",
+      "from std_msgs.msg import Bool, Header, String",
+      "from tf2_msgs.msg import TFMessage"
+    ],
+    "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/control.py",
+    "result": "No truth input introduced by the latest controller lifecycle change.",
+    "scope": "The diff changes main/executor shutdown handling and imports sys/SingleThreadedExecutor. Existing exploration logic, candidate inputs and subscriptions remain unchanged. No ModelStates/GetEntityState/world truth module is imported or subscribed by control. Evaluator readiness/termination signals remain binary protocol gates, not truth maps, candidate locations or navigation actions. Current exploration remains the traditional frontier policy; no RL or gateway credit.",
+    "subscriptions": [
+      {
+        "line": 624,
+        "message_type": "Bool",
+        "topic_expression": "'/task_monitor_ready'"
+      },
+      {
+        "line": 627,
+        "message_type": "Header",
+        "topic_expression": "'/exploration_stop_request'"
+      },
+      {
+        "line": 661,
+        "message_type": "OccupancyGrid",
+        "topic_expression": "'/merge_map'"
+      },
+      {
+        "line": 689,
+        "message_type": "String",
+        "topic_expression": "'/exploration_failure'"
+      },
+      {
+        "line": 720,
+        "message_type": "Odometry",
+        "topic_expression": "f'/{robot_name}/odom'"
+      },
+      {
+        "line": 730,
+        "message_type": "TFMessage",
+        "topic_expression": "f'/{robot_name}/tf'"
+      },
+      {
+        "line": 740,
+        "message_type": "OccupancyGrid",
+        "topic_expression": "f'/{robot_name}/map'"
+      }
+    ],
+    "version2_frozen_sha256": "862d3319224281a288de5613bf5e22c7276ac8de658133362dfbaba4975acaca"
+  },
+  "local_dependency_file_binding": {
+    "/opt/ros/humble/include/nav2_util/lifecycle_service_client.hpp": {
+      "resolved_path": "/opt/ros/humble/include/nav2_util/lifecycle_service_client.hpp",
+      "sha256": "0d1e6eb6316b4284d9467e535cccc3ea0a546961405c0dcf172eefa59d5a4ffd"
+    },
+    "/opt/ros/humble/include/nav2_util/service_client.hpp": {
+      "resolved_path": "/opt/ros/humble/include/nav2_util/service_client.hpp",
+      "sha256": "299ff60119fe9c9f20a280ac91393712b15d24008ee5b3d7f2fbe19b1bb3aee1"
+    },
+    "/opt/ros/humble/lib/librmw_fastrtps_shared_cpp.so": {
+      "resolved_path": "/opt/ros/humble/lib/librmw_fastrtps_shared_cpp.so",
+      "sha256": "8e3f4603fbdd53588fed6927575f4687457a2e7933c88a28ecd1f7afce5edaa7"
+    },
+    "/opt/ros/humble/lib/nav2_lifecycle_manager/lifecycle_manager": {
+      "resolved_path": "/opt/ros/humble/lib/nav2_lifecycle_manager/lifecycle_manager",
+      "sha256": "6c92d58b37b34b7b2343941b25772a8a8b759e2972139bf58bd22b0b2e9cf428"
+    },
+    "/opt/ros/humble/tools/fastdds/shm/clean.py": {
+      "resolved_path": "/opt/ros/humble/tools/fastdds/shm/clean.py",
+      "sha256": "5b87b2b78f2c7f91161ea50800662ad389b6dc45170f2b4cc4e118ed5ef46d5e"
+    }
+  },
+  "logs": {
+    "101": {
+      "all_nav2_active_evidence": [
+        {
+          "line": 240,
+          "text": "[nav2_ready_gate-14] [INFO] [1791982521.521176648] [nav2_ready_gate]: All 3 Nav2 stacks are active."
+        }
+      ],
+      "canonical_copy_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/development_matrix_v2/corridors/launch_logs/robots3_seed101_20261014-205319.log",
+      "canonical_copy_sha256": "c6df651c4ffd384fb3ab5fb114b0c9ce8e3dedc4acb7e5bc5096727a784db0ce",
+      "copy_byte_identical": true,
+      "line_count": 391,
+      "original_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v2_corridors_20261014_123944/launch_logs/robots3_seed101_20261014-205319.log",
+      "original_sha256": "c6df651c4ffd384fb3ab5fb114b0c9ce8e3dedc4acb7e5bc5096727a784db0ce"
+    },
+    "202": {
+      "all_nav2_active_evidence": [
+        {
+          "line": 240,
+          "text": "[nav2_ready_gate-14] [INFO] [1791982761.617349239] [nav2_ready_gate]: All 3 Nav2 stacks are active."
+        }
+      ],
+      "canonical_copy_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/development_matrix_v2/corridors/launch_logs/robots3_seed202_20261014-205718.log",
+      "canonical_copy_sha256": "cf3b3a6b5162d260665f38a2e15f95637c924f4f11b0f3e1b0ef394e8efb4964",
+      "copy_byte_identical": true,
+      "line_count": 393,
+      "original_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v2_corridors_20261014_123944/launch_logs/robots3_seed202_20261014-205718.log",
+      "original_sha256": "cf3b3a6b5162d260665f38a2e15f95637c924f4f11b0f3e1b0ef394e8efb4964"
+    },
+    "303": {
+      "all_nav2_active_evidence": [],
+      "canonical_copy_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/development_matrix_v2/corridors/launch_logs/robots3_seed303_20261014-210101.log",
+      "canonical_copy_sha256": "8db403a774d94841ad9c00d8d2b7e4bb01eb4c18bd83a7dc719453d35a7ca002",
+      "copy_byte_identical": true,
+      "exploration_release_lines": [],
+      "line_count": 306,
+      "nav2_parameter_or_plugin_error_matches": [],
+      "original_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v2_corridors_20261014_123944/launch_logs/robots3_seed303_20261014-210101.log",
+      "original_sha256": "8db403a774d94841ad9c00d8d2b7e4bb01eb4c18bd83a7dc719453d35a7ca002",
+      "selected_evidence": [
+        {
+          "line": 197,
+          "text": "[INFO] [controller_server-22]: process started with pid [3355692]"
+        },
+        {
+          "line": 198,
+          "text": "[INFO] [planner_server-23]: process started with pid [3355694]"
+        },
+        {
+          "line": 199,
+          "text": "[INFO] [behavior_server-24]: process started with pid [3355696]"
+        },
+        {
+          "line": 200,
+          "text": "[INFO] [bt_navigator-25]: process started with pid [3355698]"
+        },
+        {
+          "line": 201,
+          "text": "[INFO] [waypoint_follower-26]: process started with pid [3355700]"
+        },
+        {
+          "line": 202,
+          "text": "[INFO] [velocity_smoother-27]: process started with pid [3355702]"
+        },
+        {
+          "line": 203,
+          "text": "[INFO] [lifecycle_manager-28]: process started with pid [3355704]"
+        },
+        {
+          "line": 204,
+          "text": "[planner_server-23] [WARN] [1791982931.598993255] [tb2.planner_server.rclcpp]: failed to send response to /tb2/planner_server/change_state (timeout): client will not receive response, at ./src/rmw_response.cpp:154, at ./src/rcl/service.c:314"
+        },
+        {
+          "line": 217,
+          "text": "[controller_server-29] [WARN] [1791982976.667565464] [tb3.controller_server.rclcpp]: failed to send response to /tb3/controller_server/get_state (timeout): client will not receive response, at ./src/rmw_response.cpp:154, at ./src/rcl/service.c:314"
+        },
+        {
+          "line": 228,
+          "text": "[nav2_ready_gate-14] [INFO] [1791982982.724281535] [nav2_ready_gate]: Waiting for Nav2: /tb2/navigate_to_pose, /tb2/controller_server/get_state (unavailable), /tb2/planner_server/get_state (unavailable), /tb2/behavior_server/get_state (unavailable), /tb2/bt_navigator/get_state (unavailable), /tb2/waypoint_follower/get_state (unavailable), /tb2/velocity_smoother/get_state (unavailable)"
+        },
+        {
+          "line": 258,
+          "text": "[INFO] [waypoint_follower-26]: process has finished cleanly [pid 3355700]"
+        },
+        {
+          "line": 259,
+          "text": "[INFO] [velocity_smoother-27]: process has finished cleanly [pid 3355702]"
+        },
+        {
+          "line": 264,
+          "text": "[INFO] [behavior_server-24]: process has finished cleanly [pid 3355696]"
+        },
+        {
+          "line": 265,
+          "text": "[INFO] [bt_navigator-25]: process has finished cleanly [pid 3355698]"
+        },
+        {
+          "line": 288,
+          "text": "[INFO] [controller_server-22]: process has finished cleanly [pid 3355692]"
+        },
+        {
+          "line": 289,
+          "text": "[INFO] [planner_server-23]: process has finished cleanly [pid 3355694]"
+        },
+        {
+          "line": 295,
+          "text": "[ERROR] [nav2_ready_gate-14]: process has died [pid 3355288, exit code 1, cmd '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot_exploration/lib/multi_robot_exploration/nav2_ready_gate --ros-args -r __node:=nav2_ready_gate --params-file /tmp/launch_params_emr80feb']."
+        },
+        {
+          "line": 296,
+          "text": "[INFO] [launch.user]: ERROR: Nav2 readiness failed; cooperative exploration was not started."
+        },
+        {
+          "line": 302,
+          "text": "[ERROR] [lifecycle_manager-28]: process[lifecycle_manager-28] failed to terminate '5' seconds after receiving 'SIGINT', escalating to 'SIGTERM'"
+        },
+        {
+          "line": 303,
+          "text": "[INFO] [lifecycle_manager-28]: sending signal 'SIGTERM' to process[lifecycle_manager-28]"
+        },
+        {
+          "line": 304,
+          "text": "[ERROR] [lifecycle_manager-28]: process[lifecycle_manager-28] failed to terminate '10.0' seconds after receiving 'SIGTERM', escalating to 'SIGKILL'"
+        },
+        {
+          "line": 305,
+          "text": "[INFO] [lifecycle_manager-28]: sending signal 'SIGKILL' to process[lifecycle_manager-28]"
+        },
+        {
+          "line": 306,
+          "text": "[ERROR] [lifecycle_manager-28]: process has died [pid 3355704, exit code -9, cmd '/opt/ros/humble/lib/nav2_lifecycle_manager/lifecycle_manager --ros-args --log-level warn --ros-args -r __node:=lifecycle_manager_navigation -r __ns:=/tb2 --params-file /tmp/launch_params_c2bk98rt --params-file /tmp/launch_params_06b0scos --params-file /tmp/launch_params_6nz8l0qa']."
+        }
+      ]
+    }
+  },
+  "minimal_recovery_recommendation": {
+    "causal_limit": "Improved behavior after cleanup plus serialization cannot establish which intervention caused the improvement or prove stale SHM as the root cause.",
+    "command": "/usr/bin/python3 /opt/ros/humble/tools/fastdds/fastdds.py shm clean",
+    "local_cleaner_evidence_lines": [
+      105,
+      114,
+      136,
+      149,
+      184,
+      195
+    ],
+    "maintenance": "After all owned launch groups are stopped and verified exited, use the already documented official FastDDS SHM cleaner. Its installed implementation checks exclusive locks, keeps in-use ports/segments, and removes unlocked zombie resources.",
+    "performed_by_this_audit": false,
+    "rerun": "Run the predeclared complete serial three-world by three-seed matrix with new run IDs and domains224/225/226, ports11831/11832/11833; retain all prior failures and keep startup/task/quality/safety gates unchanged.",
+    "runtime_code_change": "No speculative runtime change is supported by the available startup evidence."
+  },
+  "official_sources": [
+    {
+      "binding_limit": "Version tag matches the installed package upstream version; local Debian build metadata and binary SHA are recorded separately.",
+      "interpretation": "The logged client-will-not-receive-response timeout corresponds to waiting for the specific client response reader to match the server writer. It does not identify the transport or prove an SHM lock failure.",
+      "relevant_upstream_lines": [
+        118,
+        143
+      ],
+      "line_number_basis": "one-based raw source file",
+      "url": "https://raw.githubusercontent.com/ros2/rmw_fastrtps/6.2.10/rmw_fastrtps_shared_cpp/src/rmw_response.cpp",
+      "version_tag": "6.2.10"
+    },
+    {
+      "interpretation": "The no-timeout change_state overload invokes the response-pointer overload of ServiceClient. The installed header line117 waits for its future without a timeout.",
+      "relevant_upstream_lines": [
+        71,
+        81
+      ],
+      "line_number_basis": "one-based raw source file",
+      "url": "https://raw.githubusercontent.com/ros-navigation/navigation2/1.1.20/nav2_util/src/lifecycle_service_client.cpp",
+      "version_tag": "1.1.20"
+    },
+    {
+      "interpretation": "LifecycleManager calls the no-timeout change_state overload before checking the resulting state. This is consistent with startup being blocked by a lost transition response, but no stack trace proves the exact blocked frame in this attempt.",
+      "relevant_upstream_lines": [
+        195,
+        204
+      ],
+      "line_number_basis": "one-based raw source file",
+      "url": "https://raw.githubusercontent.com/ros-navigation/navigation2/1.1.20/nav2_lifecycle_manager/src/lifecycle_manager.cpp",
+      "version_tag": "1.1.20"
+    }
+  ],
+  "project_source_binding": {
+    "ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py": {
+      "current_matches_version2_freeze": true,
+      "current_sha256": "82893ae0baf80d938998ed73fafbbe2cb6f99b430de72ea9f0e6a0992cddcf59",
+      "frozen_sha256": "82893ae0baf80d938998ed73fafbbe2cb6f99b430de72ea9f0e6a0992cddcf59"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py": {
+      "current_matches_version2_freeze": true,
+      "current_sha256": "8cae6784a6471fa33a31b8f9d9d02bdcf870afd79ab7b07954614186e180185c",
+      "frozen_sha256": "8cae6784a6471fa33a31b8f9d9d02bdcf870afd79ab7b07954614186e180185c"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb1_0.yaml": {
+      "current_matches_version2_freeze": true,
+      "current_sha256": "f376f2a6759b03020109321fe63b3471a8baf09a6e7816591fb06f6566967c08",
+      "frozen_sha256": "f376f2a6759b03020109321fe63b3471a8baf09a6e7816591fb06f6566967c08"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb2_0.yaml": {
+      "current_matches_version2_freeze": true,
+      "current_sha256": "8d0795357d051e55c8d448cd469a04ba060e6e285158100e0f68565486082af1",
+      "frozen_sha256": "8d0795357d051e55c8d448cd469a04ba060e6e285158100e0f68565486082af1"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb3_0.yaml": {
+      "current_matches_version2_freeze": true,
+      "current_sha256": "4cd0ca09d583f4f143657603185068928853c990304568b7c8e3ade519eef3dd",
+      "frozen_sha256": "4cd0ca09d583f4f143657603185068928853c990304568b7c8e3ade519eef3dd"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/nav2_ready_gate.py": {
+      "current_matches_version2_freeze": true,
+      "current_sha256": "0ebb8fa7bec3073f2a1c2a8d6ff0dd6e68f878bc8a58427be8d7968e41e40918",
+      "frozen_sha256": "0ebb8fa7bec3073f2a1c2a8d6ff0dd6e68f878bc8a58427be8d7968e41e40918"
+    }
+  },
+  "schema_version": 1,
+  "scope": "Independent read-only diagnosis of version2 corridors/seed303 startup failure; existing logs and native results remain unchanged. No simulator run, cleanup, code test, or commit was performed for this diagnosis.",
+  "shm_or_memory_error_matches_in_version2_logs": [],
+  "v8_component_binding_recheck": {
+    "all_nine_unchanged": true,
+    "check_count": 9,
+    "checks": {
+      "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/mr3_contact_native_fixture.py": {
+        "current_sha256": "a804f57ab90f0647af2e48c42e87e7682f10c9681d700788c6bcc30d5eddb4a2",
+        "fixture_sha256": "a804f57ab90f0647af2e48c42e87e7682f10c9681d700788c6bcc30d5eddb4a2",
+        "matches_prior_binding_record": true,
+        "unchanged": true
+      },
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/multi_robot/mr3_contact_reducer": {
+        "current_sha256": "779f4463c750a4656f3ed401b7dccd79650773fc7046caf4ba34226fe694b6cb",
+        "fixture_sha256": "779f4463c750a4656f3ed401b7dccd79650773fc7046caf4ba34226fe694b6cb",
+        "matches_prior_binding_record": true,
+        "unchanged": true
+      },
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_qos_v8_20261014_123944/contact_fixture.world": {
+        "current_sha256": "312212a14b31df196f37839d4ea849e4982dc49c5bd61aa030667bd72ea12f53",
+        "fixture_sha256": "312212a14b31df196f37839d4ea849e4982dc49c5bd61aa030667bd72ea12f53",
+        "matches_prior_binding_record": true,
+        "unchanged": true
+      },
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/contact_reducer.hpp": {
+        "current_sha256": "fcf4d0e2065ddbb7b7848e33818954443f3d685520787431279efa81abb8d372",
+        "fixture_sha256": "fcf4d0e2065ddbb7b7848e33818954443f3d685520787431279efa81abb8d372",
+        "matches_prior_binding_record": true,
+        "unchanged": true
+      },
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/models/turtlebot3_waffle/model.sdf": {
+        "current_sha256": "801ee7f05f8aab1b791ec1203595d08139f0d57cd2e5518e09baf657c2085156",
+        "fixture_sha256": "801ee7f05f8aab1b791ec1203595d08139f0d57cd2e5518e09baf657c2085156",
+        "matches_prior_binding_record": true,
+        "unchanged": true
+      },
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_contact_reducer.cpp": {
+        "current_sha256": "47af80a30c4a72dc26b5ae696aee03441f1789f8b1fedcb68a4015a1cd4a5497",
+        "fixture_sha256": "47af80a30c4a72dc26b5ae696aee03441f1789f8b1fedcb68a4015a1cd4a5497",
+        "matches_prior_binding_record": true,
+        "unchanged": true
+      },
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/urdf/turtlebot3_waffle.urdf": {
+        "current_sha256": "5f124088226abeb765a8a2c4b3d4ceda82b8b0ec61c82515e93a91d2ffd51b12",
+        "fixture_sha256": "5f124088226abeb765a8a2c4b3d4ceda82b8b0ec61c82515e93a91d2ffd51b12",
+        "matches_prior_binding_record": true,
+        "unchanged": true
+      },
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/worlds/p1c_open.world": {
+        "current_sha256": "312212a14b31df196f37839d4ea849e4982dc49c5bd61aa030667bd72ea12f53",
+        "fixture_sha256": "312212a14b31df196f37839d4ea849e4982dc49c5bd61aa030667bd72ea12f53",
+        "matches_prior_binding_record": true,
+        "unchanged": true
+      },
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_contacts.py": {
+        "current_sha256": "9d661498b3748d409dbb59ccd59524d5152d85ec93ee30128aebaf0a8a09fa17",
+        "fixture_sha256": "9d661498b3748d409dbb59ccd59524d5152d85ec93ee30128aebaf0a8a09fa17",
+        "matches_prior_binding_record": true,
+        "unchanged": true
+      }
+    },
+    "credit_scope": "Unchanged isolated fixture/contact/physical components only. The fixture does not run the frontier controller or Nav2; new-controller task matrix results must be obtained under their own complete source freeze.",
+    "fixture_result_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/fixture_v8_pass_result.json",
+    "fixture_result_sha256": "6d617ae08907064cb8ae5dadb5526c18f404cee00ce598393434501ec36db708",
+    "prior_binding_record_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/fixture_v8_unchanged_component_binding.json",
+    "prior_binding_record_sha256": "513fb7e4a27c16bc8cc83d9baf773b76223c8213389a32890db7371542809abe"
+  },
+  "version2_source_freeze": "3f24eaa9fae6f7d282f85f991273734d71b9439d"
+}

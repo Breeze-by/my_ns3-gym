@@ -330,7 +330,7 @@
         "reported settled SDF ray height vs nominal .131 (geometry slice unaffected within 2mm)",
         "owned process group closes cleanly; intentional fixture contacts provide no navigation safety credit"
       ],
-      "reason": "V6 fullvelocity stationarity diagnostic failed evenwith20\u201360micron2sec posevariation; retainfailure, recordfulltwistvectors and use actual3Dposewindow. No physics/task/safety/95/2mm gate change. Sampledwindow not continuous1ms or entireepisodeproof.",
+      "reason": "V6 fullvelocity stationarity diagnostic failed evenwith20–60micron2sec posevariation; retainfailure, recordfulltwistvectors and use actual3Dposewindow. No physics/task/safety/95/2mm gate change. Sampledwindow not continuous1ms or entireepisodeproof.",
       "settlement": {
         "sampled_sim_window_sec": 1.0,
         "state_max_source_age_and_gap_sec": 0.5,
@@ -379,7 +379,7 @@
         "reported settled SDF ray height vs nominal .131 (geometry slice unaffected within 2mm)",
         "owned process group closes cleanly; intentional fixture contacts provide no navigation safety credit"
       ],
-      "reason": "General repair after repeated initialmatrixstartuprawgap: all6Gazebo contactpublisher histories5\u2192100 reliablevolatile (officialSDF QoS), no physics/sensor20Hz/ROI/taskgatechange; native failclosedmetadata/publisheraudit and controlconstructorinterruptcleanup; preservealloldattempts.",
+      "reason": "General repair after repeated initialmatrixstartuprawgap: all6Gazebo contactpublisher histories5→100 reliablevolatile (officialSDF QoS), no physics/sensor20Hz/ROI/taskgatechange; native failclosedmetadata/publisheraudit and controlconstructorinterruptcleanup; preservealloldattempts.",
       "settlement": {
         "sampled_sim_window_sec": 1.0,
         "state_max_source_age_and_gap_sec": 0.5,
@@ -416,7 +416,7 @@
     {
       "version": 2,
       "recorded_at_utc": "2026-10-14T12:39:44.219622+00:00",
-      "reason": "General repair after repeated initialmatrixstartuprawgap: all6Gazebo contactpublisher histories5\u2192100 reliablevolatile (officialSDF QoS), no physics/sensor20Hz/ROI/taskgatechange; native failclosedmetadata/publisheraudit and controlconstructorinterruptcleanup; preservealloldattempts.",
+      "reason": "General repair after repeated initialmatrixstartuprawgap: all6Gazebo contactpublisher histories5→100 reliablevolatile (officialSDF QoS), no physics/sensor20Hz/ROI/taskgatechange; native failclosedmetadata/publisheraudit and controlconstructorinterruptcleanup; preservealloldattempts.",
       "batches": [
         {
           "world": "p1c_rooms.world",
@@ -529,6 +529,131 @@
       ],
       "schedule": "3independentworldbatchesparallel; eachseeds101/202/303serial restart; samepushedsourcefreezeall9; anynewruntimefix requiresfullnewmatrix",
       "mandatory_audit": "nativeJSONgates+childexit0+unique18source reducer summary supported,received=published>0,seqobserved=received,unavailable/gap/duplicate/regression0,onepublisher; exactcontract/world/source/model/log hashes"
+    },
+    {
+      "version": 3,
+      "recorded_at_utc": "2026-10-14T13:26:47.582805+00:00",
+      "reason": "Repair repeated controller shutdown message-conversion error with an owned bounded executor and only the exact error after actual context shutdown; live-context errors remain failures. Full nine-task rerun; no task, quality, peer safety, physics or controller-policy change. Version2 failures remain intact. Serial worlds reduce concurrent native startup pressure after one unexplained Nav2 readiness failure; no causal attribution claimed.",
+      "batches": [
+        {
+          "world": "p1c_rooms.world",
+          "seeds": [
+            101,
+            202,
+            303
+          ],
+          "run_id": "mr3_p1a_v3_rooms_20261014_132647",
+          "ros_domain_id": 224,
+          "gazebo_port": 11831,
+          "command": [
+            "/usr/bin/python3",
+            "scripts/run_ideal_baseline.py",
+            "--world",
+            "p1c_rooms.world",
+            "--robot-count",
+            "3",
+            "--seeds",
+            "101",
+            "202",
+            "303",
+            "--task-contract",
+            "src/multi_robot/config/mr3_p1a/rooms.json",
+            "--startup-timeout",
+            "300",
+            "--evaluation-wait-timeout",
+            "900",
+            "--shutdown-timeout",
+            "60",
+            "--run-id",
+            "mr3_p1a_v3_rooms_20261014_132647",
+            "--output-root",
+            "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a"
+          ],
+          "task_contract_sha256": "ed8f61588ffb49821e2992d5a68e73abcef964bd80b6e2574eee3b1ae885635b"
+        },
+        {
+          "world": "p1c_corridors.world",
+          "seeds": [
+            101,
+            202,
+            303
+          ],
+          "run_id": "mr3_p1a_v3_corridors_20261014_132647",
+          "ros_domain_id": 225,
+          "gazebo_port": 11832,
+          "command": [
+            "/usr/bin/python3",
+            "scripts/run_ideal_baseline.py",
+            "--world",
+            "p1c_corridors.world",
+            "--robot-count",
+            "3",
+            "--seeds",
+            "101",
+            "202",
+            "303",
+            "--task-contract",
+            "src/multi_robot/config/mr3_p1a/corridors.json",
+            "--startup-timeout",
+            "300",
+            "--evaluation-wait-timeout",
+            "900",
+            "--shutdown-timeout",
+            "60",
+            "--run-id",
+            "mr3_p1a_v3_corridors_20261014_132647",
+            "--output-root",
+            "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a"
+          ],
+          "task_contract_sha256": "b0e23e068ac0ce1bf636de285e6038c34732ac43d9e734d154c378d9d04b691c"
+        },
+        {
+          "world": "p1c_open.world",
+          "seeds": [
+            101,
+            202,
+            303
+          ],
+          "run_id": "mr3_p1a_v3_open_20261014_132647",
+          "ros_domain_id": 226,
+          "gazebo_port": 11833,
+          "command": [
+            "/usr/bin/python3",
+            "scripts/run_ideal_baseline.py",
+            "--world",
+            "p1c_open.world",
+            "--robot-count",
+            "3",
+            "--seeds",
+            "101",
+            "202",
+            "303",
+            "--task-contract",
+            "src/multi_robot/config/mr3_p1a/open.json",
+            "--startup-timeout",
+            "300",
+            "--evaluation-wait-timeout",
+            "900",
+            "--shutdown-timeout",
+            "60",
+            "--run-id",
+            "mr3_p1a_v3_open_20261014_132647",
+            "--output-root",
+            "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a"
+          ],
+          "task_contract_sha256": "1bb5c097cdd9a6c92ee6edb7fabcb3c844117b51d18e40641c58aad7b29af4a6"
+        }
+      ],
+      "schedule": "One world batch at a time in listed order, each seeds101/202/303 serial with full native process restart. No source edits or commits during any of the nine tasks. Same pushed candidate all9.",
+      "maintenance": "Before first batch only, official installed FastDDS shm clean checks locks and retains live resources; record exact output, no manual global deletion or blanket process termination.",
+      "wall_guards": {
+        "startup": 300,
+        "evaluation": 900,
+        "shutdown": 60
+      },
+      "mandatory_audit": "nativeJSONgates+childexit0+unique18source reducer summary supported,received=published>0,seqobserved=received,unavailable/gap/duplicate/regression0,onepublisher; exactcontract/world/source/model/log hashes",
+      "fixture_binding": "Reuse v8 only for unchanged contact/physical/fixture components verified by exact source/model/binary hashes; do not count old task successes as cells.",
+      "runtime_binding": "Before first invocation, save a manifest of all tracked ROS src/scripts bytes plus installed reducer binary and source-identical installed model/URDF/launch/config/world critical files. All batch invocations bind manifest hash and verify every file remains unchanged; all9 use one pushed Git commit."
     }
   ]
 }

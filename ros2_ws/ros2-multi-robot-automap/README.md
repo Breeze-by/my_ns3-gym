@@ -18,10 +18,13 @@ scripts/                      有界 smoke 与传统理想基线 runner
 ```
 
 当前主 launch 默认三台，保留1–4兼容；MR3研究命令显式 `robot_count:=3`。
-新路线的源码默认值清理属于 MR3-P1A；不再推荐通过注释机器人列表、运行二/四/六台或
+三台默认与严格schema4合同已在 MR3-P1A实施；不通过注释机器人列表、运行二/四/六台或
 旧 AMCL 预建图 launch 来实现研究场景。融合假设已知公共坐标系，不解决任意初始地图配准。
 
-最新三台 rooms/corridors seed101 仅有90%工程回归；95%可达性、训练和通信尚未验收。
+历史`c9344e1`的三台rooms/corridors seed101仅有90%工程回归。新隔离接触夹具v8已验证
+tb1六部件真实接触正例与三台18路持续监测；它不代表95%建图成功。schema4开发矩阵
+仍在原生验证，P1A未完成验收；导航RL、训练和通信尚未实现。
+[P1A当前证据](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261014_mr3_p1a.md)、
 [工程原件](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261013_p1c_engineering_repair.md)与
 [报告索引](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/README.md)保留旧结果和失败，不自动成为 MR3 信用。
 

@@ -19,9 +19,12 @@ are out of scope. Detailed method decisions live in the plan and
 Current `main` still uses handcrafted ROS frontier allocation. No robot RL,
 training environment or ROS/ns-3 gateway exists. P1A launch/check defaults are three; 1–4 compatibility remains.
 MR3 evaluation uses an explicit hash-bound 95%/300s schema4 task contract. Plans are
-not implemented features. Runtime freeze `c9344e1` has only 90% three-robot
+not implemented features. P1A includes 18-stream body contact/freshness audit
+and development 95% successes with retained failures; final validation remains
+in progress. Current evidence is in [P1A report](report/20261014_mr3_p1a.md).
+Historical runtime freeze `c9344e1` has only 90% three-robot
 rooms/corridors seed101 engineering credit, not a new 95% or multi-seed result.
-Canonical evidence: [repair report](report/20261013_p1c_engineering_repair.md).
+Its evidence remains in [repair report](report/20261013_p1c_engineering_repair.md).
 
 The actual ROS workspace is:
 `/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap`.

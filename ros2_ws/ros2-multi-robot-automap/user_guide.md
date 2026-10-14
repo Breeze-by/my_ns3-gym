@@ -23,7 +23,7 @@
 | `src/slam_toolbox/` | 本机 SLAM 与 map→odom，不以 AMCL 代替本机建图定位 |
 | `src/merge_map/merge_map/merge_map.py` | 保守公共 frame 栅格融合 |
 | `src/multi_robot_exploration/multi_robot_exploration/control.py` | 当前手工前沿策略与 Nav2 action 所有权 |
-| 同包 `nav2_ready_gate.py` / `peer_obstacles.py` / `task_evaluator.py` | 六节点就绪、队友机体输入、只读任务评估 |
+| 同包 `nav2_ready_gate.py` / `peer_obstacles.py` / `task_evaluator.py` | 六节点就绪、队友机体输入、隔离任务评估与就绪/停止握手 |
 | `scripts/ros_smoke_test.py` / `run_ideal_baseline.py` | 有界检查、传统理想基线批量入口 |
 
 主 launch 默认3台，校验保留1–4历史兼容；MR3合同只允许三台，不开展其他数量实验。
@@ -69,28 +69,36 @@ peer_layer 的旧位置，其他真实障碍层以 max 保留。它不改 SLAM �
 | `spawn_timeout` / `nav2_ready_timeout_sec` | 90 / 300秒 | 启动墙钟保护；六个生命周期及action均需就绪 |
 | `exploration_goal_timeout_sec` | 60秒 | 当前目标执行仿真时间上限 |
 | `navigation_response_timeout_sec` / `navigation_cancel_timeout_sec` | 10 / 10秒 | 当前 action 接受与取消终态期限 |
-| `enable_task_evaluator` | false | 只读任务评价 |
+| `enable_task_evaluator` | false | 隔离任务评价；schema4与控制器进行任务握手 |
 | `evaluation_duration_sec` / `evaluation_coverage_threshold` | 0 / 0 | 需显式设置；0分别表示无有限期限/无覆盖成功终止 |
 | `evaluation_contract_path` | 空 | 非空启用MR3 schema4合同，固定95%/300仿真秒；空保留schema3 |
 | `stop_on_evaluation_complete` | true | evaluator 退出后有界关闭父 launch 和所属进程 |
 
-标准演示/当前90%工程检查只在启动命令页维护，不复制旧二台、四台或过时 fixed sleep。
+标准演示、legacy90%诊断与MR3合同95%检查统一在启动命令页维护，不复制旧二台、四台或过时 fixed sleep。
 脚本适配、参数调整会与命令页同提交更新；训练/gateway CLI 在实现验收后才添加。
 
 ## 5. 评估器语义与证据限制
 
-评估器只读，不发布导航。Gazebo `/gazebo/model_states` 仅给真值路径/指标，不给控制器。
-SDF静态box碰撞在激光高度生成.05m真值格，应用world state位姿；不支持的几何计数保留。
+评估器不选择探索目标，不发布Nav2导航目标或底盘速度。schema4发布监测就绪与停止请求，
+由控制器统一放行、停止派发并取消目标，评估器等待所有权终态闭合。Gazebo
+`/gazebo/model_states` 仅给评估真值路径/指标，不进入探索目标选择。
+legacy schema3由SDF静态box碰撞在.2m切片生成.05m真值格，应用world state位姿；不支持的几何计数保留。
 当前 my_world 有实验室外的SUV mesh限制。估计融合图采样到相同坐标，报告正确自由
 覆盖、known覆盖、accuracy和occupied IoU。分母为外接矩形全部真值自由格，尚无独立
 任务 ROI/可见性 mask，故不能推导95%一定可达，MR3-P1A先闭合测量定义。
 
 以上为legacy schema3口径。P1A新增schema4严格合同：三开发图完整外墙ROI、.05m正面积
-相交真值、.131m实际ray高度、质量/参与/持续监测与终态闭合门禁；保存旧口径对照。
+相交真值、.131m名义ray切片、质量/参与/持续监测与终态闭合门禁；保存旧口径对照。
 六个真实碰撞体现在各有接触源，18源的源龄/接收龄/中断锁存独立检查，精确过滤正常
 轮/脚轮—地面支撑接触。任务从 `/exploration_start` 放行计时，达标后等目标取消终态。
 具体合同、开发/留出划分与尚待原生验证的范围见
 [任务契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_TASK_CONTRACT.md)。
+
+隔离接触夹具v8在冻结`3f24eaa`通过：tb1六部件的真实非支撑接触正例，以及三台共18路
+空消息、正常支撑、持续新鲜度和消息序列完整性。沉降窗口后的扫描原点实测约.12925m
+（三台.12924–.12926m），与.131m名义值的误差小于2mm；10m光束包络及窗口变化余量
+也通过声明的切片/地面检查。详见[夹具原件](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/fixture_v8_pass_result.json)。
+这是传感/监测与沉降姿态证据，不代表三台每部件都做过接触正例或95%建图任务已通过。
 
 schema3 成功必须在截止前覆盖达标、接触 topic 记录为零、每台碰撞监测有消息且无控制失败；
 schema3只读基体topic，不能证明全机体无非支撑接触；“有消息”也不等于持续新鲜度证明。
@@ -99,10 +107,12 @@ P1A合同模式另作完整检查。CSV/JSON原子发布、拒绝覆盖同id。
 `trajectory_overlap_ratio` 与旧 `search_overlap_ratio` 是相同中心轨迹格重叠，
 不是重复激光覆盖/建图面积。95%时间字段存在，不等于已经达到95%。
 
-目前有 [c9344e1工程证据](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261013_p1c_engineering_repair.md)：
+历史 [c9344e1工程证据](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261013_p1c_engineering_repair.md)：
 三台rooms/corridors、seed101、90%/180秒，60.2/81.9仿真秒达标，基体接触记录为零、干净退出。
 旧September多种子P1C/schema2成绩属于旧源码。73组件检查的PASS也不等于MR3整任务。
-所有原始失败保留；没有最新95%或导航RL/通信成绩。
+新schema4的三开发图×三seed矩阵仍在验证，完整结果与原始失败见
+[P1A报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261014_mr3_p1a.md)。
+当前P1A尚未完成验收，没有导航RL/通信成绩。
 
 ## 6. 诊断原则
 

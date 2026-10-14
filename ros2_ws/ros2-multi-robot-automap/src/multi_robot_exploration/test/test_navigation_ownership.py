@@ -179,16 +179,93 @@ def test_control_main_keeps_cleanup_errors_visible_and_closes_context(monkeypatc
     def destroy():
         raise OSError("node cleanup failed")
 
-    def spin(node):
-        raise KeyboardInterrupt()
+    class Executor:
+        def __init__(self, **kwargs):
+            pass
 
-    monkeypatch.setattr(
-        control, "HeadquartersControl", lambda: SimpleNamespace(destroy_node=destroy)
-    )
+        def add_node(self, node):
+            pass
+
+        def spin_once(self, timeout_sec):
+            raise KeyboardInterrupt()
+
+        def shutdown(self, timeout_sec):
+            return True
+
+    node = SimpleNamespace(context=object(), destroy_node=destroy)
+    monkeypatch.setattr(control, "HeadquartersControl", lambda: node)
+    monkeypatch.setattr(control, "SingleThreadedExecutor", Executor)
     monkeypatch.setattr(control.rclpy, "init", lambda **kwargs: None)
-    monkeypatch.setattr(control.rclpy, "ok", lambda: context_live[0])
+    monkeypatch.setattr(control.rclpy, "ok", lambda **kwargs: context_live[0])
     monkeypatch.setattr(control.rclpy, "shutdown", lambda: context_live.__setitem__(0, False))
-    monkeypatch.setattr(control.rclpy, "spin", spin)
     with pytest.raises(OSError, match="node cleanup failed"):
         control.main()
     assert not context_live[0]
+
+
+CONVERSION_ERROR = (
+    "Unable to convert call argument to Python object (compile in debug mode for details)"
+)
+
+
+@pytest.mark.parametrize("context_closes,error,shutdown_ok,expected_error", [
+    (True, None, True, None),
+    (True, CONVERSION_ERROR, True, None),
+    (False, CONVERSION_ERROR, True, "Unable to convert"),
+    (True, "policy callback failed", True, "policy callback failed"),
+    (False, "policy callback failed", True, "policy callback failed"),
+    (True, None, False, "shutdown exceeded"),
+])
+def test_controller_owned_executor_only_accepts_known_closed_context_conversion(
+    monkeypatch, context_closes, error, shutdown_ok, expected_error, capsys
+):
+    lifecycle = SimpleNamespace(context_live=True, node_live=True, executor_live=True,
+                                adds=0, spins=0, shutdown_timeout=None)
+
+    class Controller:
+        context = object()
+
+        def destroy_node(self):
+            assert not lifecycle.executor_live
+            lifecycle.node_live = False
+
+    node = Controller()
+
+    class Executor:
+        def __init__(self, *, context):
+            assert context is node.context
+
+        def add_node(self, added):
+            assert added is node
+            lifecycle.adds += 1
+
+        def spin_once(self, timeout_sec):
+            lifecycle.spins += 1
+            if context_closes:
+                lifecycle.context_live = False
+            if error is not None:
+                raise RuntimeError(error)
+
+        def shutdown(self, timeout_sec):
+            lifecycle.shutdown_timeout = timeout_sec
+            lifecycle.executor_live = False
+            return shutdown_ok
+
+    monkeypatch.setattr(control, "HeadquartersControl", lambda: node)
+    monkeypatch.setattr(control, "SingleThreadedExecutor", Executor)
+    monkeypatch.setattr(control.rclpy, "init", lambda **kwargs: None)
+    monkeypatch.setattr(control.rclpy, "ok", lambda **kwargs: lifecycle.context_live)
+    monkeypatch.setattr(
+        control.rclpy, "shutdown", lambda: setattr(lifecycle, "context_live", False)
+    )
+    monkeypatch.setattr(control.rclpy, "spin", lambda *args: pytest.fail("must own its executor"))
+    if expected_error:
+        with pytest.raises(RuntimeError, match=expected_error):
+            control.main()
+    else:
+        control.main()
+    assert lifecycle.adds == 1 and lifecycle.spins == 1
+    assert lifecycle.shutdown_timeout == 1.0
+    assert not lifecycle.node_live and not lifecycle.executor_live and not lifecycle.context_live
+    if context_closes and error == CONVERSION_ERROR:
+        assert "ROS context already closed" in capsys.readouterr().err
