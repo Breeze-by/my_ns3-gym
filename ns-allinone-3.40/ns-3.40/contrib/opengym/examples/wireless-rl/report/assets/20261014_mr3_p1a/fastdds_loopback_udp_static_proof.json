@@ -1,0 +1,152 @@
+{
+  "schema_version": 1,
+  "scope": "Static installed Fast DDS XML/default-QoS parser proof; no DDS participant or simulator created.",
+  "package_versions": [
+    "ros-humble-fastrtps\t2.6.11-1jammy.20260304.200925",
+    "ros-humble-rmw-fastrtps-cpp\t6.2.10-1jammy.20260304.212617",
+    "ros-humble-rmw-fastrtps-shared-cpp\t6.2.10-1jammy.20260304.211712"
+  ],
+  "files": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+      "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+      "sha256": "443340f4c7e083c11258aa28917212feaca01d34aa30a0ce689ea02819a379ef"
+    },
+    {
+      "path": "/tmp/mr3_fastdds_profile_staticcheck.cpp",
+      "resolved_path": "/tmp/mr3_fastdds_profile_staticcheck.cpp",
+      "sha256": "5afb2c60efb9380e910e4d56ec24244a02af5b4956f9d14d6833da58e3d7dba1"
+    },
+    {
+      "path": "/tmp/mr3_fastdds_profile_staticcheck",
+      "resolved_path": "/tmp/mr3_fastdds_profile_staticcheck",
+      "sha256": "dac84769747a0bdb675f81e709d1709cf94c8d5dd59143a670340011fd254968"
+    },
+    {
+      "path": "/opt/ros/humble/lib/libfastrtps.so",
+      "resolved_path": "/opt/ros/humble/lib/libfastrtps.so.2.6.11",
+      "sha256": "cc1f45ce53ef4ed2961e57054ddb80d115dafc6604d2a6c259ec8b18452e03b8"
+    },
+    {
+      "path": "/opt/ros/humble/lib/librmw_fastrtps_cpp.so",
+      "resolved_path": "/opt/ros/humble/lib/librmw_fastrtps_cpp.so",
+      "sha256": "d0e1c9510a5c63eb384bef8a55f5b78e904ba63e7c41b83e8dc618f9b9905250"
+    },
+    {
+      "path": "/opt/ros/humble/lib/librmw_fastrtps_shared_cpp.so",
+      "resolved_path": "/opt/ros/humble/lib/librmw_fastrtps_shared_cpp.so",
+      "sha256": "8e3f4603fbdd53588fed6927575f4687457a2e7933c88a28ecd1f7afce5edaa7"
+    },
+    {
+      "path": "/opt/ros/humble/include/fastrtps/fastdds/dds/domain/DomainParticipantFactory.hpp",
+      "resolved_path": "/opt/ros/humble/include/fastrtps/fastdds/dds/domain/DomainParticipantFactory.hpp",
+      "sha256": "9a4801e9bdd6439ca612ed2a3298724184a63ce5c05f39cfa84ef25560768e3a"
+    },
+    {
+      "path": "/opt/ros/humble/include/fastrtps/fastdds/rtps/transport/UDPv4TransportDescriptor.h",
+      "resolved_path": "/opt/ros/humble/include/fastrtps/fastdds/rtps/transport/UDPv4TransportDescriptor.h",
+      "sha256": "bdbdbca2fd2ecda51e5aecd6aa9fdac32d8171a271f8c76154016ad2696ffe13"
+    }
+  ],
+  "checker_source": "#include <fastdds/dds/domain/DomainParticipantFactory.hpp>\n#include <fastdds/rtps/transport/UDPv4TransportDescriptor.h>\n#include <cstdlib>\n#include <iostream>\n#include <string>\n\nint main(int argc, char **argv)\n{\n  if (argc != 2 || std::getenv(\"ROS_LOCALHOST_ONLY\") == nullptr ||\n    std::string(std::getenv(\"ROS_LOCALHOST_ONLY\")) != \"0\" ||\n    std::getenv(\"FASTRTPS_DEFAULT_PROFILES_FILE\") == nullptr ||\n    std::string(std::getenv(\"FASTRTPS_DEFAULT_PROFILES_FILE\")) != argv[1] ||\n    std::getenv(\"SKIP_DEFAULT_XML\") == nullptr ||\n    std::string(std::getenv(\"SKIP_DEFAULT_XML\")) != \"1\")\n  {\n    std::cerr << \"Unexpected profile environment\\n\";\n    return 1;\n  }\n  auto *factory = eprosima::fastdds::dds::DomainParticipantFactory::get_instance();\n  if (!factory->load_profiles()) {\n    std::cerr << \"Profile load failed\\n\";\n    return 2;\n  }\n  const auto &transport = factory->get_default_participant_qos().transport();\n  if (transport.use_builtin_transports || transport.user_transports.size() != 1) {\n    std::cerr << \"Unexpected default transport list\\n\";\n    return 3;\n  }\n  auto udp = std::dynamic_pointer_cast<eprosima::fastdds::rtps::UDPv4TransportDescriptor>(\n    transport.user_transports.front());\n  if (!udp || udp->interfaceWhiteList.size() != 1 ||\n    udp->interfaceWhiteList.front() != \"127.0.0.1\" || udp->non_blocking_send ||\n    udp->sendBufferSize != 0 || udp->receiveBufferSize != 0)\n  {\n    std::cerr << \"Unexpected UDP descriptor\\n\";\n    return 4;\n  }\n  // Read factory defaults only. No create_participant, publisher or subscription.\n  std::cout << \"{\\\"participant_created\\\":false,\\\"use_builtin_transports\\\":false,\"\n    \"\\\"user_transport_count\\\":1,\\\"transport_type\\\":\\\"UDPv4\\\",\"\n    \"\\\"interface_whitelist\\\":[\\\"127.0.0.1\\\"],\\\"non_blocking_send\\\":false,\"\n    \"\\\"send_buffer_size\\\":0,\\\"receive_buffer_size\\\":0}\\n\";\n  return 0;\n}\n",
+  "compile_command": [
+    "g++",
+    "-std=c++17",
+    "-I/opt/ros/humble/include/fastrtps",
+    "/tmp/mr3_fastdds_profile_staticcheck.cpp",
+    "-L/opt/ros/humble/lib",
+    "-Wl,-rpath,/opt/ros/humble/lib",
+    "-lfastrtps",
+    "-o",
+    "/tmp/mr3_fastdds_profile_staticcheck"
+  ],
+  "parser_command": [
+    "/tmp/mr3_fastdds_profile_staticcheck",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml"
+  ],
+  "parser_selected_environment": {
+    "ROS_LOCALHOST_ONLY": "0",
+    "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+    "SKIP_DEFAULT_XML": "1"
+  },
+  "parser_returncode": 0,
+  "parser_stdout": "{\"participant_created\":false,\"use_builtin_transports\":false,\"user_transport_count\":1,\"transport_type\":\"UDPv4\",\"interface_whitelist\":[\"127.0.0.1\"],\"non_blocking_send\":false,\"send_buffer_size\":0,\"receive_buffer_size\":0}\n",
+  "parser_stderr": "",
+  "parsed_default_transport": {
+    "participant_created": false,
+    "use_builtin_transports": false,
+    "user_transport_count": 1,
+    "transport_type": "UDPv4",
+    "interface_whitelist": [
+      "127.0.0.1"
+    ],
+    "non_blocking_send": false,
+    "send_buffer_size": 0,
+    "receive_buffer_size": 0
+  },
+  "primary_source_facts": [
+    {
+      "url": "https://raw.githubusercontent.com/ros2/rmw_fastrtps/6.2.10/rmw_fastrtps_shared_cpp/src/participant.cpp",
+      "lines_1based": "146-161",
+      "fact": "Load XML defaults first; localhost_only true appends both UDPv4 loopback and SHM descriptors afterward. ROS_LOCALHOST_ONLY=0 avoids this branch."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/eProsima/Fast-DDS/v2.6.11/src/cpp/rtps/xmlparser/XMLProfileManager.cpp",
+      "lines_1based": "195-222",
+      "fact": "Load explicit FASTRTPS_DEFAULT_PROFILES_FILE before testing SKIP_DEFAULT_XML; value 1 prevents later cwd default XML from overriding the default participant."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ros2/rmw_fastrtps/6.2.10/rmw_fastrtps_cpp/src/publisher.cpp",
+      "lines_1based": "226-245",
+      "fact": "With RMW_FASTRTPS_USE_QOS_FROM_XML unset, RMW sets publication/memory defaults and DataSharing OFF, then applies ROS endpoint QoS."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ros2/rmw_fastrtps/6.2.10/rmw_fastrtps_cpp/src/subscription.cpp",
+      "lines_1based": "244-258",
+      "fact": "With RMW_FASTRTPS_USE_QOS_FROM_XML unset, reader DataSharing is OFF; ROS endpoint QoS remains applied."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ros2/rmw_fastrtps/6.2.10/rmw_fastrtps_shared_cpp/src/rmw_take.cpp",
+      "lines_1based": "44-61",
+      "fact": "Publication sequence and publisher GID are assigned from DDS sample_identity and writer GUID independently of transport selection."
+    },
+    {
+      "url": "https://fast-dds.docs.eprosima.com/en/v2.6.11/fastdds/transport/udp/udp.html",
+      "fact": "UDP user transport plus useBuiltinTransports=false is supported; non_blocking_send remains false to avoid silent full-buffer drops."
+    },
+    {
+      "url": "https://fast-dds.docs.eprosima.com/en/v2.6.11/fastdds/transport/whitelist.html",
+      "fact": "interfaceWhiteList restricts communication interfaces to the listed IPs."
+    }
+  ],
+  "scoped_checks": {
+    "pytest": {
+      "command": "/usr/bin/python3 -m pytest src/multi_robot_exploration/test/test_fastdds_environment.py -q --junitxml=/tmp/mr3_fastdds_environment_checks_final.xml",
+      "passed": 17,
+      "junit": "/tmp/mr3_fastdds_environment_checks_final.xml"
+    },
+    "lint": {
+      "command": "ament_flake8 --linelength 100 --xunit-file /tmp/mr3_fastdds_environment_lint_final2.xml src/multi_robot_exploration/test/test_fastdds_environment.py",
+      "errors": 0,
+      "xunit": "/tmp/mr3_fastdds_environment_lint_final2.xml"
+    }
+  },
+  "preserved_contracts": [
+    "rmw_fastrtps_cpp",
+    "18 raw contact topics",
+    "20Hz production",
+    "reliable keep_last100",
+    "0.5 sim-sec health",
+    "original source headers",
+    "strict publication-sequence/GID audit",
+    "300 sim-sec task",
+    "300/900 wall startup/evaluation guards",
+    "95%/quality/safety gates"
+  ],
+  "limitations": [
+    "This proves loaded native factory default transport configuration only; it does not create or test a live ROS graph.",
+    "RMW publication-sequence code remains transport independent, but full 18-topic live sequence support/continuity must pass the new complete frozen matrix.",
+    "Earlier Nav2 service response timeout cause remains undetermined. Disabling SHM is a declared infrastructure diagnostic, not proof of its cause or cure.",
+    "Old native results and failures remain unchanged and are not credited under this new environment."
+  ]
+}

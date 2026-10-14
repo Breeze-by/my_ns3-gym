@@ -18,6 +18,29 @@ import time
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
+def configure_mr3_transport_environment():
+    """Select the declared same-host UDP transport before any ROS initialization."""
+    profile = PROJECT_ROOT / "src/multi_robot/config/mr3_fastdds_loopback_udp.xml"
+    profile_bytes = profile.read_bytes()
+    for key in ("FASTDDS_DEFAULT_PROFILES_FILE", "RMW_FASTRTPS_USE_QOS_FROM_XML",
+                "RMW_FASTRTPS_PUBLICATION_MODE"):
+        os.environ.pop(key, None)
+    os.environ.update({
+        "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+        "ROS_LOCALHOST_ONLY": "0",
+        "FASTRTPS_DEFAULT_PROFILES_FILE": str(profile.resolve()),
+        "SKIP_DEFAULT_XML": "1",
+    })
+    return {
+        **{key: os.environ.get(key) for key in (
+            "RMW_IMPLEMENTATION", "ROS_LOCALHOST_ONLY", "FASTRTPS_DEFAULT_PROFILES_FILE",
+            "SKIP_DEFAULT_XML", "FASTDDS_DEFAULT_PROFILES_FILE", "RMW_FASTRTPS_USE_QOS_FROM_XML",
+            "RMW_FASTRTPS_PUBLICATION_MODE",
+        )},
+        "profile_sha256": hashlib.sha256(profile_bytes).hexdigest(),
+    }
+
+
 def finite_number(value):
     return type(value) in (int, float) and math.isfinite(value)
 
@@ -365,6 +388,7 @@ def native_launch_failures(log_text):
     return [line for line in log_text.splitlines() if (
         "process has died" in line or "failed to terminate" in line
         or "sending signal 'SIGTERM'" in line or "sending signal 'SIGKILL'" in line
+        or "MR3_GAZEBO_NATIVE_STOP_ERROR" in line
     )]
 
 
@@ -438,6 +462,8 @@ def main():
     args = parse_args()
     try:
         task_contract = resolve_task_settings(args, "evaluation_duration", 0.0, 0.0)
+        if task_contract:
+            transport_environment = configure_mr3_transport_environment()
     except (OSError, ValueError, KeyError, TypeError) as error:
         raise SystemExit(f"invalid task settings: {error}") from error
     if shutil.which("ros2") is None or "ROS_DISTRO" not in os.environ:
@@ -495,6 +521,11 @@ def main():
 
     print("Command:", " ".join(command), flush=True)
     print("Launch log:", log_path, flush=True)
+    if task_contract:
+        print(
+            "MR3 transport environment:", json.dumps(transport_environment, sort_keys=True),
+            flush=True,
+        )
     launch_environment = os.environ.copy()
     launch_environment["PATH"] = os.pathsep.join(
         ("/usr/bin", "/bin", launch_environment["PATH"])
@@ -577,6 +608,18 @@ def main():
         ) as error:
             print(f"FAIL: {error}", file=sys.stderr, flush=True)
         finally:
+            if (result_path is not None and result_path.exists()
+                and process.poll() is None and cleanup_timeout > 0):
+                try:
+                    process.wait(timeout=cleanup_timeout)
+                except subprocess.TimeoutExpired:
+                    cleanup_timeout = 0
+                    passed = False
+                    print(
+                        "FAIL: evaluator finished but owned launch did not shut down",
+                        file=sys.stderr,
+                        flush=True,
+                    )
             clean_shutdown = stop_launch(process, cleanup_timeout)
 
     if not clean_shutdown:

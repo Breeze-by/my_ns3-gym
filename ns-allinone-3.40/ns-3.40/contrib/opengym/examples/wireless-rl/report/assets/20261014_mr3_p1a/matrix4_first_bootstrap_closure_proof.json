@@ -1,0 +1,410 @@
+{
+  "batch_summary_snapshot": {
+    "mutable_while_remaining_seeds_run": true,
+    "path": "ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v4_rooms_20261014_140924/summary.json",
+    "seed101_runner_returncode": 1,
+    "sha256_at_check": "11c39f79c7d4b7cb271af9b2377f259492606a5ac6e73ea2d88d70c7b5339a17"
+  },
+  "bootstrap": {
+    "contact_clock_overflow_diagnostic": null,
+    "contact_subscription_bootstrap_state": "contact_subscriptions_started",
+    "contact_subscription_started_sim_time_sec": 81.3,
+    "start_sim_time_sec": 84.0
+  },
+  "bootstrap_contract_pass": true,
+  "causal_limit": "The captured exception identifies a self-join failure during shutdown. Without a thread stack or core trace it does not identify the exact Gazebo/plugin cleanup callback. No source change, simulator run or cleanup was performed by this audit.",
+  "conclusion": "Bootstrap and task goal-closure evidence passed, but full native closure failed: Gazebo received SIGINT after the result and then reported boost thread self-join deadlock and exited -6. JSON success cannot count as a complete attempt PASS.",
+  "control_failure": "",
+  "environment_snapshot": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/matrix4_rooms_native_environment.json",
+    "sha256": "7228fcb05203e6252a3aab7db65f4c889b6baa78127ec247c57f8d1fded7d7ca"
+  },
+  "native_processes": {
+    "all_started_processes_accounted_for": true,
+    "clean_exit": {
+      "3385729": {
+        "line": 385,
+        "name": "merge_map-1"
+      },
+      "3385731": {
+        "line": 381,
+        "name": "mr3_contact_reducer-2"
+      },
+      "3385733": {
+        "line": 386,
+        "name": "peer_obstacles-3"
+      },
+      "3385737": {
+        "line": 375,
+        "name": "robot_state_publisher-5"
+      },
+      "3385739": {
+        "line": 80,
+        "name": "spawn_entity.py-6"
+      },
+      "3385741": {
+        "line": 376,
+        "name": "multirobot_slam_toolbox_node-7"
+      },
+      "3386216": {
+        "line": 373,
+        "name": "robot_state_publisher-8"
+      },
+      "3386218": {
+        "line": 124,
+        "name": "spawn_entity.py-9"
+      },
+      "3386220": {
+        "line": 374,
+        "name": "multirobot_slam_toolbox_node-10"
+      },
+      "3386281": {
+        "line": 370,
+        "name": "robot_state_publisher-11"
+      },
+      "3386283": {
+        "line": 166,
+        "name": "spawn_entity.py-12"
+      },
+      "3386285": {
+        "line": 371,
+        "name": "multirobot_slam_toolbox_node-13"
+      },
+      "3386351": {
+        "line": 242,
+        "name": "nav2_ready_gate-14"
+      },
+      "3386388": {
+        "line": 383,
+        "name": "controller_server-15"
+      },
+      "3386390": {
+        "line": 388,
+        "name": "planner_server-16"
+      },
+      "3386392": {
+        "line": 372,
+        "name": "behavior_server-17"
+      },
+      "3386394": {
+        "line": 384,
+        "name": "bt_navigator-18"
+      },
+      "3386396": {
+        "line": 366,
+        "name": "waypoint_follower-19"
+      },
+      "3386398": {
+        "line": 358,
+        "name": "velocity_smoother-20"
+      },
+      "3386400": {
+        "line": 369,
+        "name": "lifecycle_manager-21"
+      },
+      "3386665": {
+        "line": 382,
+        "name": "controller_server-22"
+      },
+      "3386667": {
+        "line": 391,
+        "name": "planner_server-23"
+      },
+      "3386669": {
+        "line": 365,
+        "name": "behavior_server-24"
+      },
+      "3386671": {
+        "line": 380,
+        "name": "bt_navigator-25"
+      },
+      "3386673": {
+        "line": 353,
+        "name": "waypoint_follower-26"
+      },
+      "3386675": {
+        "line": 348,
+        "name": "velocity_smoother-27"
+      },
+      "3386677": {
+        "line": 356,
+        "name": "lifecycle_manager-28"
+      },
+      "3387414": {
+        "line": 378,
+        "name": "controller_server-29"
+      },
+      "3387416": {
+        "line": 387,
+        "name": "planner_server-30"
+      },
+      "3387418": {
+        "line": 350,
+        "name": "behavior_server-31"
+      },
+      "3387420": {
+        "line": 379,
+        "name": "bt_navigator-32"
+      },
+      "3387422": {
+        "line": 343,
+        "name": "waypoint_follower-33"
+      },
+      "3387424": {
+        "line": 338,
+        "name": "velocity_smoother-34"
+      },
+      "3387426": {
+        "line": 345,
+        "name": "lifecycle_manager-35"
+      },
+      "3387538": {
+        "line": 377,
+        "name": "control-36"
+      },
+      "3387540": {
+        "line": 318,
+        "name": "task_evaluator-37"
+      }
+    },
+    "clean_native_closure_pass": false,
+    "failed_exit": {
+      "3385735": {
+        "exit_code": -6,
+        "line": 392,
+        "name": "gzserver-4",
+        "text": "[ERROR] [gzserver-4]: process has died [pid 3385735, exit code -6, cmd 'gzserver /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/worlds/p1c_rooms.world --seed=101 -slibgazebo_ros_init.so -slibgazebo_ros_factory.so -slibgazebo_ros_force_system.so']."
+      }
+    },
+    "started": {
+      "3385729": {
+        "line": 19,
+        "name": "merge_map-1"
+      },
+      "3385731": {
+        "line": 20,
+        "name": "mr3_contact_reducer-2"
+      },
+      "3385733": {
+        "line": 21,
+        "name": "peer_obstacles-3"
+      },
+      "3385735": {
+        "line": 22,
+        "name": "gzserver-4"
+      },
+      "3385737": {
+        "line": 23,
+        "name": "robot_state_publisher-5"
+      },
+      "3385739": {
+        "line": 24,
+        "name": "spawn_entity.py-6"
+      },
+      "3385741": {
+        "line": 25,
+        "name": "multirobot_slam_toolbox_node-7"
+      },
+      "3386216": {
+        "line": 83,
+        "name": "robot_state_publisher-8"
+      },
+      "3386218": {
+        "line": 84,
+        "name": "spawn_entity.py-9"
+      },
+      "3386220": {
+        "line": 85,
+        "name": "multirobot_slam_toolbox_node-10"
+      },
+      "3386281": {
+        "line": 125,
+        "name": "robot_state_publisher-11"
+      },
+      "3386283": {
+        "line": 126,
+        "name": "spawn_entity.py-12"
+      },
+      "3386285": {
+        "line": 127,
+        "name": "multirobot_slam_toolbox_node-13"
+      },
+      "3386351": {
+        "line": 167,
+        "name": "nav2_ready_gate-14"
+      },
+      "3386388": {
+        "line": 173,
+        "name": "controller_server-15"
+      },
+      "3386390": {
+        "line": 174,
+        "name": "planner_server-16"
+      },
+      "3386392": {
+        "line": 175,
+        "name": "behavior_server-17"
+      },
+      "3386394": {
+        "line": 176,
+        "name": "bt_navigator-18"
+      },
+      "3386396": {
+        "line": 177,
+        "name": "waypoint_follower-19"
+      },
+      "3386398": {
+        "line": 178,
+        "name": "velocity_smoother-20"
+      },
+      "3386400": {
+        "line": 179,
+        "name": "lifecycle_manager-21"
+      },
+      "3386665": {
+        "line": 196,
+        "name": "controller_server-22"
+      },
+      "3386667": {
+        "line": 197,
+        "name": "planner_server-23"
+      },
+      "3386669": {
+        "line": 198,
+        "name": "behavior_server-24"
+      },
+      "3386671": {
+        "line": 199,
+        "name": "bt_navigator-25"
+      },
+      "3386673": {
+        "line": 200,
+        "name": "waypoint_follower-26"
+      },
+      "3386675": {
+        "line": 201,
+        "name": "velocity_smoother-27"
+      },
+      "3386677": {
+        "line": 202,
+        "name": "lifecycle_manager-28"
+      },
+      "3387414": {
+        "line": 218,
+        "name": "controller_server-29"
+      },
+      "3387416": {
+        "line": 219,
+        "name": "planner_server-30"
+      },
+      "3387418": {
+        "line": 220,
+        "name": "behavior_server-31"
+      },
+      "3387420": {
+        "line": 221,
+        "name": "bt_navigator-32"
+      },
+      "3387422": {
+        "line": 222,
+        "name": "waypoint_follower-33"
+      },
+      "3387424": {
+        "line": 223,
+        "name": "velocity_smoother-34"
+      },
+      "3387426": {
+        "line": 224,
+        "name": "lifecycle_manager-35"
+      },
+      "3387538": {
+        "line": 244,
+        "name": "control-36"
+      },
+      "3387540": {
+        "line": 245,
+        "name": "task_evaluator-37"
+      }
+    }
+  },
+  "navigation_protocol_closed": true,
+  "navigation_stop_acknowledgment": {
+    "navigation_failure": false,
+    "pending_goal_count": 0,
+    "robot_names": [
+      "tb1",
+      "tb2",
+      "tb3"
+    ],
+    "start_sim_time_sec": 84.0,
+    "stop_sim_time_sec": 175.4
+  },
+  "original_artifacts": {
+    "native_log": {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v4_rooms_20261014_140924/launch_logs/robots3_seed101_20261014-222226.log",
+      "sha256": "f7c56ff9add151851901cb5c7a33324092b10693c14b092d602ec3404183344d"
+    },
+    "native_result": {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v4_rooms_20261014_140924/episodes/mr3_p1a_v4_rooms_20261014_140924_seed101.json",
+      "sha256": "c98bf713c09907de77fe2e2b585c715cead674ec084a59a8b630c51e56995b8b"
+    }
+  },
+  "recorded_at_utc": "2026-10-14T14:29:50.227799+00:00",
+  "reducer_count_credit_scope": "Observed raw publication sequence and reducer internal input/output equality; not a claim of producer-to-Python end-to-end equality.",
+  "reducer_observed_raw_sequence_and_internal_counts_pass": true,
+  "reducer_published_total": 62664,
+  "reducer_received_total": 62664,
+  "reviewed_source_binding": {
+    "ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py": {
+      "current_sha256": "7bc2483216522b4fc606d0df4094df7fdee1542b80de22b9e84023b8ff6f80e0",
+      "manifest_sha256": "7bc2483216522b4fc606d0df4094df7fdee1542b80de22b9e84023b8ff6f80e0",
+      "unchanged": true
+    },
+    "ros2_ws/ros2-multi-robot-automap/scripts/run_ideal_baseline.py": {
+      "current_sha256": "3049e6064c299faeb81fde8b5abb9c2ad759ea1561588aaf578966fcbf59b52c",
+      "manifest_sha256": "3049e6064c299faeb81fde8b5abb9c2ad759ea1561588aaf578966fcbf59b52c",
+      "unchanged": true
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py": {
+      "current_sha256": "240c1ce173ad9cf43082d8441e01d0e8134d4a86f75c8ddfad43258a7d1770df",
+      "manifest_sha256": "240c1ce173ad9cf43082d8441e01d0e8134d4a86f75c8ddfad43258a7d1770df",
+      "unchanged": true
+    }
+  },
+  "runtime_manifest": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/runtime_component_manifest_matrix4.json",
+    "sha256": "f3c2b079a692ede7a41a7ebca88bc351d27e1d4ff6d399d82ac31fe9ac7c4767"
+  },
+  "schema_version": 1,
+  "scope": "Read-only first matrix4 rooms/seed101 source, bootstrap and native closure evidence. This is one original attempt, not a complete nine-task matrix or a replacement result. Original JSON/log/summary are unchanged.",
+  "shutdown_evidence": [
+    {
+      "line": 317,
+      "text": "[task_evaluator-37] [INFO] [1791988008.273088132] [task_evaluator]: Evaluation saved to /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v4_rooms_20261014_140924/episodes/mr3_p1a_v4_rooms_20261014_140924_seed101.json and /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v4_rooms_20261014_140924/episodes/mr3_p1a_v4_rooms_20261014_140924_seed101.csv"
+    },
+    {
+      "line": 318,
+      "text": "[INFO] [task_evaluator-37]: process has finished cleanly [pid 3387540]"
+    },
+    {
+      "line": 352,
+      "text": "[INFO] [gzserver-4]: sending signal 'SIGINT' to process[gzserver-4]"
+    },
+    {
+      "line": 389,
+      "text": "[gzserver-4] terminate called after throwing an instance of 'boost::wrapexcept<boost::thread_resource_error>'"
+    },
+    {
+      "line": 390,
+      "text": "[gzserver-4]   what():  boost thread: trying joining itself: Resource deadlock avoided"
+    },
+    {
+      "line": 392,
+      "text": "[ERROR] [gzserver-4]: process has died [pid 3385735, exit code -6, cmd 'gzserver /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/worlds/p1c_rooms.world --seed=101 -slibgazebo_ros_init.so -slibgazebo_ros_factory.so -slibgazebo_ros_force_system.so']."
+    }
+  ],
+  "source_freeze": "a43de1e3f4dd5e15a6df311044ec750500780cf5",
+  "task_json_success": true,
+  "task_stop_protocol_pass": true,
+  "task_termination_reason": "coverage_reached"
+}

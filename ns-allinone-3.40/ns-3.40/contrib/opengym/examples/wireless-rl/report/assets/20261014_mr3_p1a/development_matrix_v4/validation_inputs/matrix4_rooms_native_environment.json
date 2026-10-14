@@ -1,0 +1,56 @@
+{
+  "recorded_at_utc": "2026-10-14T14:25:52.217956+00:00",
+  "source_freeze": "a43de1e3f4dd5e15a6df311044ec750500780cf5",
+  "scope": "Read-only selective environment of the owned matrix4 rooms launch; no full environment or unrelated process data exposed. Profile hashes cover explicitly named files and the two default profile filenames in the launch working directory; no unobserved runtime QoS is inferred.",
+  "processes": [
+    {
+      "pid": 3385714,
+      "pgid": 3385714,
+      "argv": [
+        "/usr/bin/python3",
+        "/opt/ros/humble/bin/ros2",
+        "launch",
+        "multi_robot",
+        "gazebo_multirobot_mapping_with_nav2.launch.py",
+        "world:=p1c_rooms.world",
+        "robot_count:=3",
+        "enable_gzclient:=false",
+        "enable_rviz:=false",
+        "enable_merge_rviz:=false",
+        "auto_save_map:=false",
+        "gazebo_seed:=101",
+        "spawn_timeout:=90.0",
+        "nav2_ready_timeout_sec:=300.0",
+        "exploration_goal_timeout_sec:=60.0",
+        "enable_task_evaluator:=true",
+        "evaluation_episode_id:=mr3_p1a_v4_rooms_20261014_140924_seed101",
+        "evaluation_output_dir:=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v4_rooms_20261014_140924/episodes",
+        "evaluation_duration_sec:=300.0",
+        "evaluation_coverage_threshold:=0.95",
+        "evaluation_contract_path:=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/rooms.json"
+      ],
+      "cmdline_sha256": "b3f617924f2faa2e59f544e8e0db2e554321cdb0ab479b6309535808edf23127",
+      "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+      "environment": {
+        "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+        "ROS_LOCALHOST_ONLY": "1",
+        "ROS_DOMAIN_ID": "227",
+        "GAZEBO_MASTER_URI": "http://127.0.0.1:11841",
+        "PYTHONNOUSERSITE": "1",
+        "TURTLEBOT3_MODEL": "waffle",
+        "FASTRTPS_DEFAULT_PROFILES_FILE": null,
+        "FASTDDS_DEFAULT_PROFILES_FILE": null,
+        "RMW_FASTRTPS_USE_QOS_FROM_XML": null,
+        "SKIP_DEFAULT_XML": null,
+        "RMW_FASTRTPS_PUBLICATION_MODE": null,
+        "CYCLONEDDS_URI": null
+      },
+      "explicit_profile_sha256": {},
+      "default_profile_files": {
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/DEFAULT_FASTRTPS_PROFILES.xml": null,
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/DEFAULT_FASTDDS_PROFILES.xml": null
+      }
+    }
+  ],
+  "result": "PASS"
+}

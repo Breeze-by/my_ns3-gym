@@ -20,7 +20,8 @@ export TURTLEBOT3_MODEL=waffle
 export RMW_IMPLEMENTATION=rmw_fastrtps_cpp ROS_LOCALHOST_ONLY=1
 ```
 
-这是已验证的同主机 ROS 发现 profile，不等于正式多主机部署或 ns-3 网络模拟。
+这是历史schema3/普通演示的同主机 ROS 发现 profile；P1A合同模式使用下方明确的
+UDP-only配置。两者都不等于正式多主机部署或 ns-3 网络模拟。
 切换源码版本需要先评估旧 build/install 的路径/包缓存；必要时移到工作区外备份，
 从 underlay 干净重建，保留 log。重新开终端 source，不能认为增量构建已删除旧入口。
 
@@ -60,7 +61,8 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
 每次使用新 episode id/目录，拒绝覆盖旧结果。schema3 在截止之前达标、接触 topic 记录为零、
 每台碰撞监测有消息、无控制失败才成功。schema3只读取 `base_collision`，不能证明
 全机体零非支撑接触；其监测门禁也不等于持续新鲜度证明。全机体门禁使用下面的schema4。
-评估器完成默认关闭整个 launch，结果冻结且检查原生子进程；父进程0不能掩盖 abort。
+评估器完成默认先请求本launch的Gazebo原生停止，等待真实server退出后关闭其余节点；
+结果冻结且检查原生子进程，父进程0不能掩盖 abort。
 `stop_on_evaluation_complete:=false` 仅用于人工诊断。
 
 把阈值改0.95并不自动完成 MR3-P1A：需先验证任务 ROI、真值几何、质量和95%可达性，
@@ -80,6 +82,24 @@ P1A合同模式为schema4，真值/世界哈希、完整ROI、95%/300仿真秒�
 多个源发布者锁存为失败。runner在任务退出后还核查唯一18路汇总、逐条输入/输出、
 完整序列和原生子进程；原生JSON成功不能掩盖基础设施失败。
 
+P1A smoke/baseline在任何ROS命令或初始化之前自动应用下面的同主机UDP-only环境，
+并在metadata的 `transport_environment` 记录所选变量和 `profile_sha256`。
+手动直接启动合同launch时先在已source上述ROS/Gazebo环境的终端执行：
+
+```bash
+export RMW_IMPLEMENTATION=rmw_fastrtps_cpp ROS_LOCALHOST_ONLY=0
+export FASTRTPS_DEFAULT_PROFILES_FILE="$PWD/src/multi_robot/config/mr3_fastdds_loopback_udp.xml"
+export SKIP_DEFAULT_XML=1
+unset FASTDDS_DEFAULT_PROFILES_FILE RMW_FASTRTPS_USE_QOS_FROM_XML RMW_FASTRTPS_PUBLICATION_MODE
+export ROS_DOMAIN_ID=95 GAZEBO_MASTER_URI=http://127.0.0.1:11851
+```
+
+XML关闭内建transport，仅启用白名单为127.0.0.1的UDPv4；没有更改socket缓冲或
+默认发送阻塞方式。`ROS_LOCALHOST_ONLY=0` 由显式loopback白名单约束通信范围，
+`SKIP_DEFAULT_XML=1` 只阻止工作目录的默认XML覆盖显式profile，仍加载上方指定文件。
+legacy入口不会自动改为此环境；重新打开终端并使用前面的历史profile可复现其原环境。
+这一配置是否改善初始化响应问题以新冻结的原生结果为准，不宣称已证明SHM或abort根因。
+
 ```bash
 MR3_BATCH_ID=mr3_p1a_rooms_$(date +%Y%m%d_%H%M%S)
 PYTHONNOUSERSITE=1 /usr/bin/python3 scripts/run_ideal_baseline.py \
@@ -96,13 +116,24 @@ open/corridors使用对应world与 `open.json` / `corridors.json`，每次新run
 不继续等待已经消失的topic。300墙秒约束Nav2/ROS就绪，后续时钟/监测等待仍由
 900墙秒评估保护约束。
 当前P1A最终重跑按rooms、corridors、open逐场景串行执行，每场景内部也串行重启三种子。
-第四版使用独立ROS域227/228/229与Gazebo端口11841/11842/11843；保持所有任务与墙钟保护门限。
+第五版计划使用独立ROS域95/96/97与Gazebo端口11851/11852/11853；保持所有任务与墙钟保护门限。
 这用于减少并发启动压力，不表示一次Nav2响应超时的根因已经确定。精确预声明见
 [native plan](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/predeclared_native_plan.json)。
 合同确定任务300仿真秒，300/900墙秒分别是启动/基础设施保护，不能当成延长任务。
 参数与合同显式冲突会拒绝。任务t0为控制器仿真时间放行；启动预热地图单列，达标后的
 取消闭合计入任务截止。合同模式不接受两/四台、schema3或曾中断的监测作为成功。
 `my_world`暂不提供95%合同；validation/test/confirmation布局本步不运行。
+
+默认 `stop_on_evaluation_complete:=true` 时，评估器退出后launch向记录的owned
+gzserver环境（包括实际 `GAZEBO_MASTER_URI`）执行
+`gz topic -p /gazebo/server/control -m "stop: true"`。
+必须同时观察同一启动action、PID和进程名的server退出0及stop CLI退出0，才关闭其余节点；
+两者可任意先后，CLI退出0不等于server已停止。10墙秒仍未收到任一必要退出事件则输出
+`MR3_GAZEBO_NATIVE_STOP_ERROR` 并兜底关闭；CLI失败或server非零退出也保留错误标记和
+真实子进程退出码。runner把该标记判为基础设施失败，即使之后CLI/server退出0；
+SIGABRT等真实失败不会被屏蔽。有效任务失败或无效JSON也先等待同一原生关闭流程，
+然后保留原失败结果。该关闭保护不改变300仿真秒任务预算。
+`stop_on_evaluation_complete:=false` 不发出原生stop请求，供人工诊断。
 
 ## 当前自动检查与传统批量入口
 

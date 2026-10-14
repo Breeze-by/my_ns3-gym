@@ -1,0 +1,79 @@
+{
+  "checked_at_utc": "2026-10-14T15:51:58.338662+00:00",
+  "candidate_parent_commit": "a43de1e3f4dd5e15a6df311044ec750500780cf5",
+  "candidate_state": "Working-tree candidate before matrix5 freeze; source hashes bind these checks.",
+  "command": "source /opt/ros/humble/setup.bash; source install/setup.bash; export PYTHONNOUSERSITE=1; /usr/bin/python3 /usr/bin/colcon test --packages-select multi_robot multi_robot_exploration merge_map --event-handlers console_cohesion+",
+  "workdir": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+  "wall_seconds": 12.8,
+  "wall_seconds_source": "Root-reported complete invocation wall duration; not the internal event reactor offset.",
+  "returncode": 0,
+  "counts": {
+    "tests": 297,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 2
+  },
+  "passed": 295,
+  "results": {
+    "exploration": {
+      "tests": 275,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "sha256": "5f27d9f0414aa5b8ae21c8c5bff8f269e02a2471c4d1b9a326d40dbb4f0aceea",
+      "source_sha256": "5f27d9f0414aa5b8ae21c8c5bff8f269e02a2471c4d1b9a326d40dbb4f0aceea",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot_exploration/pytest.xml",
+      "artifact": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/pre_matrix5_exploration_tests.xml"
+    },
+    "merge": {
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "sha256": "3b7e9d62fb4e6307fc84e2d38056a1c5f2b0e29aecfa8beeb02cfaa316ed9a89",
+      "source_sha256": "3b7e9d62fb4e6307fc84e2d38056a1c5f2b0e29aecfa8beeb02cfaa316ed9a89",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/merge_map/pytest.xml",
+      "artifact": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/pre_matrix5_merge_tests.xml"
+    },
+    "native": {
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "sha256": "05b9b16293327ea82db8c515507fcbd9dbd1f205a99a61eb833f8f7aed602d3f",
+      "source_sha256": "05b9b16293327ea82db8c515507fcbd9dbd1f205a99a61eb833f8f7aed602d3f",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/test_results/multi_robot/test_contact_reducer.gtest.xml",
+      "artifact": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/pre_matrix5_native_tests.xml"
+    }
+  },
+  "test_invocation_logs": {
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/test_2026-10-14_23-07-01/logger_all.log": "e9ab66c7e4a888dac07dc8a1ed4079a88cd9466667cb4c4d644cb3a8221a4457",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/test_2026-10-14_23-07-01/events.log": "4f6772a488dbb0cd347bab01e1938970dcb9eebbb0025996ef554dfab68b8f50"
+  },
+  "build": {
+    "command": "source /opt/ros/humble/setup.bash; source install/setup.bash; export PYTHONNOUSERSITE=1; /usr/bin/python3 /usr/bin/colcon build --symlink-install --packages-select multi_robot --event-handlers console_cohesion+",
+    "wall_seconds": 1.68,
+    "returncode": 0,
+    "wall_seconds_source": "Root-reported complete multi_robot build invocation wall duration.",
+    "invocation_logs": {
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/build_2026-10-14_23-05-40/logger_all.log": "b8a3c06fd4bfd4adfbe64dca40c2721f279cbcaf4838770237be5230f037956a",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/build_2026-10-14_23-05-40/events.log": "8c48d3bfa8ac63cb55d1f91d04aed475a3afe45846262db917ff43a1a63a98a9"
+    },
+    "installed_profile": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+      "sha256": "443340f4c7e083c11258aa28917212feaca01d34aa30a0ce689ea02819a379ef",
+      "source_sha256": "443340f4c7e083c11258aa28917212feaca01d34aa30a0ce689ea02819a379ef",
+      "identical": true
+    }
+  },
+  "candidate_changed_source_sha256": {
+    "ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py": "56d2ade59e804609fb1973b36b9f87fead004d44a0075b7430439da8c9be0678",
+    "ros2_ws/ros2-multi-robot-automap/scripts/run_ideal_baseline.py": "598e794879c4b8067154116cffe5e78fbe964e44c5086a323ac2548063b27f44",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml": "443340f4c7e083c11258aa28917212feaca01d34aa30a0ce689ea02819a379ef",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py": "42e809b966c95bda62d4eb008886fbb171324ebd34a543cc3909eb8df8ee5c24",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_fastdds_environment.py": "5b5c0beef832d272e7afdff59f28b94b1b4ffea54aec5512ede9f4d15c501b47",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_launch_and_smoke.py": "bc3a4538ccb2036291b76964c7d336e683ce0ddc4cef3d50bb447e3ce56119e3"
+  },
+  "check_scope": "Pure/unit/source/SDK-parser and build checks only; no new simulator or matrix task executed by this receipt.",
+  "result": "PASS"
+}

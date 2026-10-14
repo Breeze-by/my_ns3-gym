@@ -11,7 +11,11 @@ import subprocess
 import sys
 import time
 
-from ros_smoke_test import resolve_task_settings, validate_evaluation_result
+from ros_smoke_test import (
+    configure_mr3_transport_environment,
+    resolve_task_settings,
+    validate_evaluation_result,
+)
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -91,6 +95,7 @@ def main():
     args = parse_args()
     try:
         task_contract = resolve_task_settings(args, "duration", 180.0, .90, legacy_wait=270.0)
+        transport_environment = configure_mr3_transport_environment() if task_contract else None
     except (OSError, ValueError, KeyError, TypeError) as error:
         raise SystemExit(f"invalid task settings: {error}") from error
     if not 0.0 < args.coverage_threshold <= 1.0:
@@ -129,6 +134,7 @@ def main():
         "shutdown_timeout_wall_sec": args.shutdown_timeout,
         "task_contract_path": str(args.task_contract) if task_contract else "",
         "task_contract_sha256": task_contract["sha256"] if task_contract else "",
+        "transport_environment": transport_environment,
     }
     rows = []
     smoke = PROJECT_ROOT / "scripts" / "ros_smoke_test.py"

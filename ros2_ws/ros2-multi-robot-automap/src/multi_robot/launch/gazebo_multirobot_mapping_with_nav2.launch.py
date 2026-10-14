@@ -7,6 +7,7 @@ from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
     EmitEvent,
+    ExecuteProcess,
     RegisterEventHandler,
     IncludeLaunchDescription,
     LogInfo,
@@ -15,7 +16,7 @@ from launch.actions import (
     TimerAction,
 )
 from launch.conditions import IfCondition
-from launch.event_handlers import OnProcessExit
+from launch.event_handlers import OnProcessExit, OnProcessStart
 from launch.events import Shutdown
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
@@ -229,15 +230,123 @@ def launch_setup(context, *args, **kwargs):
         output="screen",
         condition=IfCondition(enable_task_evaluator),
     )
-    actions.append(RegisterEventHandler(OnProcessExit(
-        target_action=task_evaluator,
-        on_exit=lambda event, event_context: (
-            [EmitEvent(event=Shutdown(reason="Mapping evaluation finished"))]
-            if IfCondition(stop_on_evaluation).evaluate(event_context) else []
-        ),
-    )))
-
     # ========= Gazebo =========
+    server_state = {
+        "started": None, "environment": None, "exited": False, "stopping": False,
+        "server_returncode": None, "stop_cli_returncode": None,
+    }
+
+    def remember_gzserver(event, event_context):
+        if not event.cmd or os.path.basename(event.cmd[0]) != "gzserver" or world not in event.cmd:
+            return []
+        if server_state["started"] is not None:
+            return [
+                LogInfo(msg="ERROR: MR3_GAZEBO_NATIVE_STOP_ERROR ambiguous_owned_server"),
+                EmitEvent(event=Shutdown(reason="Ambiguous owned Gazebo server")),
+            ]
+        server_state["started"] = event
+        server_state["environment"] = dict(
+            event_context.environment if event.env is None else event.env
+        )
+        return [LogInfo(msg=(
+            f"Owned Gazebo server {event.process_name} started with pid={event.pid}"
+        ))]
+
+    def owned_gzserver_exited(event, event_context):
+        started = server_state["started"]
+        if started is None or not (
+            event.action is started.action and event.pid == started.pid
+            and event.process_name == started.process_name
+        ):
+            return []
+        server_state["exited"] = True
+        server_state["server_returncode"] = event.returncode
+        if not server_state["stopping"] and not event_context.is_shutdown:
+            return [
+                LogInfo(msg=(
+                    "ERROR: MR3_GAZEBO_NATIVE_STOP_ERROR "
+                    f"server_exited_before_evaluation exit_code={event.returncode}"
+                )),
+                EmitEvent(event=Shutdown(reason="Gazebo exited before evaluation completion")),
+            ]
+        result = []
+        if event.returncode != 0:
+            result.append(LogInfo(msg=(
+                f"ERROR: MR3_GAZEBO_NATIVE_STOP_ERROR server_exit_code={event.returncode}"
+            )))
+        if not event_context.is_shutdown and (
+            event.returncode != 0
+            or (server_state["stopping"] and server_state["stop_cli_returncode"] == 0)
+        ):
+            result.append(EmitEvent(event=Shutdown(
+                reason="Owned Gazebo server exited after evaluation"
+            )))
+        return result
+
+    def native_stop_timeout(event_context):
+        if event_context.is_shutdown or (
+            server_state["server_returncode"] == 0 and server_state["stop_cli_returncode"] == 0
+        ):
+            return []
+        reason = "stop_cli_exit" if server_state["exited"] else "server_exit"
+        return [
+            LogInfo(msg=f"ERROR: MR3_GAZEBO_NATIVE_STOP_ERROR {reason}_timeout_10_wall_sec"),
+            EmitEvent(event=Shutdown(reason="Gazebo native stop timed out")),
+        ]
+
+    def native_stop_cli_exited(event, event_context):
+        server_state["stop_cli_returncode"] = event.returncode
+        result = []
+        if event.returncode != 0:
+            result.append(LogInfo(msg=(
+                f"ERROR: MR3_GAZEBO_NATIVE_STOP_ERROR stop_cli_exit_code={event.returncode}"
+            )))
+        if not event_context.is_shutdown and (
+            event.returncode != 0 or server_state["server_returncode"] == 0
+        ):
+            result.append(EmitEvent(event=Shutdown(reason="Gazebo native stop completed")))
+        return result
+
+    def evaluation_finished(event, event_context):
+        if (
+            not IfCondition(stop_on_evaluation).evaluate(event_context)
+            or event_context.is_shutdown or server_state["stopping"]
+        ):
+            return []
+        server_state["stopping"] = True
+        if server_state["started"] is None:
+            return [
+                LogInfo(msg="ERROR: MR3_GAZEBO_NATIVE_STOP_ERROR owned_server_not_started"),
+                EmitEvent(event=Shutdown(reason="Owned Gazebo server was not started")),
+            ]
+        if server_state["exited"]:
+            return [
+                LogInfo(msg="ERROR: MR3_GAZEBO_NATIVE_STOP_ERROR server_exited_before_evaluation"),
+                EmitEvent(event=Shutdown(reason="Gazebo exited before evaluation completion")),
+            ]
+        stop_command = ExecuteProcess(
+            cmd=["gz", "topic", "-p", "/gazebo/server/control", "-m", "stop: true"],
+            name="mr3_gazebo_native_stop", output="screen", shell=False,
+            env=server_state["environment"],
+        )
+        return [
+            RegisterEventHandler(OnProcessExit(
+                target_action=stop_command,
+                on_exit=native_stop_cli_exited,
+            )),
+            stop_command,
+            TimerAction(period=10.0, actions=[OpaqueFunction(function=native_stop_timeout)]),
+        ]
+
+    actions.extend([
+        RegisterEventHandler(OnProcessStart(on_start=remember_gzserver),
+                             condition=IfCondition(stop_on_evaluation)),
+        RegisterEventHandler(OnProcessExit(on_exit=owned_gzserver_exited),
+                             condition=IfCondition(stop_on_evaluation)),
+        RegisterEventHandler(OnProcessExit(
+            target_action=task_evaluator, on_exit=evaluation_finished,
+        )),
+    ])
     gzserver_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(
@@ -246,7 +355,7 @@ def launch_setup(context, *args, **kwargs):
                 "gzserver.launch.py",
             )
         ),
-        launch_arguments={"world": world, "seed": gazebo_seed}.items(),
+        launch_arguments={"world": world, "seed": gazebo_seed, "server_required": "false"}.items(),
     )
     actions.append(gzserver_cmd)
 
@@ -575,7 +684,8 @@ def generate_launch_description():
 
     for name, description in (
         ("navigation_response_timeout_sec", "Simulated seconds to await goal acceptance."),
-        ("navigation_cancel_timeout_sec", "Simulated seconds to await cancellation and a terminal result."),
+        ("navigation_cancel_timeout_sec",
+         "Simulated seconds to await cancellation and a terminal result."),
     ):
         ld.add_action(DeclareLaunchArgument(name, default_value="10.0", description=description))
     ld.add_action(DeclareLaunchArgument(

@@ -12,7 +12,12 @@ from types import SimpleNamespace
 import xml.etree.ElementTree as ET
 
 from launch import LaunchContext
-from launch.actions import DeclareLaunchArgument
+from launch.actions import (
+    DeclareLaunchArgument, EmitEvent, ExecuteProcess, LogInfo, RegisterEventHandler, TimerAction,
+)
+from launch.event_handlers import OnProcessStart
+from launch.events import Shutdown
+from launch.events.process import ProcessExited, ProcessStarted
 from launch.utilities import perform_substitutions
 import pytest
 import yaml
@@ -186,6 +191,190 @@ def test_evaluator_shutdown_is_enabled_by_default():
                     if isinstance(action, DeclareLaunchArgument)
                     and action.name == "stop_on_evaluation_complete")
     assert perform_substitutions(LaunchContext(), argument.default_value) == "true"
+
+
+def gazebo_stop_launch(monkeypatch, enabled=True):
+    launch = load_module("mapping", MAPPING_LAUNCH)
+    original_share = launch.get_package_share_directory
+    monkeypatch.setattr(launch, "get_package_share_directory", lambda name: (
+        str(ROOT / "src" / name) if (ROOT / "src" / name).is_dir()
+        else original_share(name)
+    ))
+    context = LaunchContext()
+    for action in launch.generate_launch_description().entities:
+        if isinstance(action, DeclareLaunchArgument):
+            context.launch_configurations[action.name] = perform_substitutions(
+                context, action.default_value,
+            )
+    context.launch_configurations["world"] = "p1c_rooms.world"
+    context.launch_configurations["stop_on_evaluation_complete"] = str(enabled).lower()
+    evaluators = []
+    original_node = launch.Node
+
+    def capture(**kwargs):
+        node = original_node(**kwargs)
+        if kwargs.get("executable") == "task_evaluator":
+            evaluators.append(node)
+        return node
+
+    monkeypatch.setattr(launch, "Node", capture)
+    actions = launch.launch_setup(context)
+    handlers = [action.event_handler for action in actions
+                if isinstance(action, RegisterEventHandler)]
+    server = ExecuteProcess(cmd=["gzserver"])
+    server_details = {
+        "action": server, "name": "gzserver-41", "pid": 4321,
+        "cmd": ["gzserver", str(ROOT / "src/multi_robot/worlds/p1c_rooms.world")],
+        "cwd": None, "env": {"GAZEBO_MASTER_URI": "http://127.0.0.1:11851", "PATH": "/usr/bin"},
+    }
+    evaluator_event = ProcessExited(returncode=0, action=evaluators[0], name="evaluator-99",
+                                    pid=7654, cmd=["task_evaluator"], cwd=None, env={})
+    server_exit = ProcessExited(returncode=0, **server_details)
+    on_evaluation = next(handler for handler in handlers if handler.matches(evaluator_event)
+                         and not handler.matches(server_exit))
+    on_start = next(handler for handler in handlers if isinstance(handler, OnProcessStart))
+    on_server_exit = next(handler for handler in handlers if handler.matches(server_exit))
+    return context, server_details, evaluator_event, on_start, on_evaluation, on_server_exit
+
+
+def shutdown_actions(actions):
+    return [action for action in actions if isinstance(action, EmitEvent)
+            and isinstance(action.event, Shutdown)]
+
+
+def error_markers(actions, context):
+    return [perform_substitutions(context, action.msg) for action in actions
+            if isinstance(action, LogInfo)
+            and "MR3_GAZEBO_NATIVE_STOP_ERROR" in perform_substitutions(context, action.msg)]
+
+
+@pytest.mark.parametrize("first", ["stop_cli", "server"])
+def test_evaluation_waits_for_both_owned_server_and_stop_cli_exits(monkeypatch, first):
+    context, server, evaluation, on_start, on_evaluation, on_exit = gazebo_stop_launch(monkeypatch)
+    on_start.handle(ProcessStarted(**server), context)
+    context.environment["GAZEBO_MASTER_URI"] = "http://127.0.0.1:9999"
+    actions = on_evaluation.handle(evaluation, context)
+    assert not shutdown_actions(actions)
+    stop = next(action for action in actions if isinstance(action, ExecuteProcess))
+    assert [perform_substitutions(context, token) for token in stop.cmd] == [
+        "gz", "topic", "-p", "/gazebo/server/control", "-m", "stop: true",
+    ]
+    assert {perform_substitutions(context, key): perform_substitutions(context, value)
+            for key, value in stop.env} == server["env"]
+    stop_handler = next(action.event_handler for action in actions
+                        if isinstance(action, RegisterEventHandler))
+    cli_exit = ProcessExited(returncode=0, action=stop, name="stop-100", pid=5432,
+                             cmd=["gz", "topic"], cwd=None, env=server["env"])
+    assert on_exit.handle(cli_exit, context) == []
+    assert on_evaluation.handle(evaluation, context) == []
+    server_exit = ProcessExited(returncode=0, **server)
+    if first == "stop_cli":
+        assert stop_handler.handle(cli_exit, context) == []
+        exited_actions = on_exit.handle(server_exit, context)
+    else:
+        assert on_exit.handle(server_exit, context) == []
+        exited_actions = stop_handler.handle(cli_exit, context)
+    assert len(shutdown_actions(exited_actions)) == 1
+    timer = next(action for action in actions if isinstance(action, TimerAction))
+    assert timer.actions[0].execute(context) == []
+
+
+@pytest.mark.parametrize("changed", ["action", "pid", "name"])
+def test_gazebo_stop_rejects_foreign_exit_identity(monkeypatch, changed):
+    context, server, evaluation, on_start, on_evaluation, on_exit = gazebo_stop_launch(monkeypatch)
+    on_start.handle(ProcessStarted(**server), context)
+    actions = on_evaluation.handle(evaluation, context)
+    foreign = dict(server)
+    foreign[changed] = {"action": ExecuteProcess(cmd=["gzserver"]),
+                        "pid": 4322, "name": "gzserver-42"}[changed]
+    assert on_exit.handle(ProcessExited(returncode=0, **foreign), context) == []
+    timer = next(action for action in actions if isinstance(action, TimerAction))
+    assert timer.period == 10.0
+    timed_out = timer.actions[0].execute(context)
+    assert len(shutdown_actions(timed_out)) == 1
+    assert error_markers(timed_out, context) == [
+        "ERROR: MR3_GAZEBO_NATIVE_STOP_ERROR server_exit_timeout_10_wall_sec",
+    ]
+
+
+def test_failed_stop_cli_is_preserved_and_clean_cli_cannot_suppress_timeout(monkeypatch):
+    context, server, evaluation, on_start, on_evaluation, _ = gazebo_stop_launch(monkeypatch)
+    on_start.handle(ProcessStarted(**server), context)
+    actions = on_evaluation.handle(evaluation, context)
+    stop = next(action for action in actions if isinstance(action, ExecuteProcess))
+    handler = next(action.event_handler for action in actions
+                   if isinstance(action, RegisterEventHandler))
+    failed = ProcessExited(returncode=2, action=stop, name="stop-100", pid=5432,
+                           cmd=["gz", "topic"], cwd=None, env=server["env"])
+    failed_actions = handler.handle(failed, context)
+    assert len(shutdown_actions(failed_actions)) == 1
+    assert error_markers(failed_actions, context) == [
+        "ERROR: MR3_GAZEBO_NATIVE_STOP_ERROR stop_cli_exit_code=2",
+    ]
+    assert failed.returncode == 2
+    timer = next(action for action in actions if isinstance(action, TimerAction))
+    assert error_markers(timer.actions[0].execute(context), context)
+
+
+def test_server_exit_cannot_disable_watchdog_for_a_live_stop_cli(monkeypatch):
+    context, server, evaluation, on_start, on_evaluation, on_exit = gazebo_stop_launch(monkeypatch)
+    on_start.handle(ProcessStarted(**server), context)
+    actions = on_evaluation.handle(evaluation, context)
+    assert on_exit.handle(ProcessExited(returncode=0, **server), context) == []
+    timer = next(action for action in actions if isinstance(action, TimerAction))
+    timed_out = timer.actions[0].execute(context)
+    assert len(shutdown_actions(timed_out)) == 1
+    assert error_markers(timed_out, context) == [
+        "ERROR: MR3_GAZEBO_NATIVE_STOP_ERROR stop_cli_exit_timeout_10_wall_sec",
+    ]
+
+
+def test_server_exit_zero_before_evaluation_fails_without_waiting_for_clock(monkeypatch):
+    context, server, evaluation, on_start, on_evaluation, on_exit = gazebo_stop_launch(monkeypatch)
+    on_start.handle(ProcessStarted(**server), context)
+    early_exit = ProcessExited(returncode=0, **server)
+    early_actions = on_exit.handle(early_exit, context)
+    assert early_exit.returncode == 0
+    assert len(shutdown_actions(early_actions)) == 1
+    assert error_markers(early_actions, context) == [
+        "ERROR: MR3_GAZEBO_NATIVE_STOP_ERROR server_exited_before_evaluation exit_code=0",
+    ]
+    actions = on_evaluation.handle(evaluation, context)
+    assert not any(isinstance(action, ExecuteProcess) for action in actions)
+    assert len(shutdown_actions(actions)) == 1
+    assert error_markers(actions, context) == [
+        "ERROR: MR3_GAZEBO_NATIVE_STOP_ERROR server_exited_before_evaluation",
+    ]
+
+
+def test_gazebo_abort_keeps_nonzero_native_exit_and_marks_failure(monkeypatch):
+    context, server, evaluation, on_start, on_evaluation, on_exit = gazebo_stop_launch(monkeypatch)
+    on_start.handle(ProcessStarted(**server), context)
+    on_evaluation.handle(evaluation, context)
+    abort = ProcessExited(returncode=-6, **server)
+    actions = on_exit.handle(abort, context)
+    assert abort.returncode == -6
+    assert len(shutdown_actions(actions)) == 1
+    assert error_markers(actions, context) == [
+        "ERROR: MR3_GAZEBO_NATIVE_STOP_ERROR server_exit_code=-6",
+    ]
+
+
+def test_stop_disabled_does_not_request_native_stop_or_shutdown(monkeypatch):
+    context, _, evaluation, _, on_evaluation, _ = gazebo_stop_launch(monkeypatch, enabled=False)
+    assert on_evaluation.handle(evaluation, context) == []
+
+
+def test_missing_owned_server_fails_without_publishing_to_another_master(monkeypatch):
+    context, server, evaluation, on_start, on_evaluation, _ = gazebo_stop_launch(monkeypatch)
+    server["cmd"] = ["gzserver", "/another/world.world"]
+    assert on_start.handle(ProcessStarted(**server), context) == []
+    actions = on_evaluation.handle(evaluation, context)
+    assert len(shutdown_actions(actions)) == 1
+    assert not any(isinstance(action, ExecuteProcess) for action in actions)
+    assert error_markers(actions, context) == [
+        "ERROR: MR3_GAZEBO_NATIVE_STOP_ERROR owned_server_not_started",
+    ]
 
 
 def test_active_launch_and_runner_defaults_select_three_robots(monkeypatch):
