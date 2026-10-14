@@ -89,8 +89,14 @@ PYTHONNOUSERSITE=1 /usr/bin/python3 scripts/run_ideal_baseline.py \
 ```
 
 open/corridors使用对应world与 `open.json` / `corridors.json`，每次新run-id。
+评估器等待有效正ROS仿真时钟，再一次建立18路接触订阅；此后收到的所有放行前
+接触保留，18路持续新鲜且无非支撑接触才可放行。这不覆盖订阅建立之前的每个历史
+触碰。未来消息先按当前时钟排水，真正未来队列超过256条立即失败并记录诊断；
+不改源时间戳或.5秒门限。任务提前结束时，runner优先读取原生JSON并审计退出，
+不继续等待已经消失的topic。300墙秒约束Nav2/ROS就绪，后续时钟/监测等待仍由
+900墙秒评估保护约束。
 当前P1A最终重跑按rooms、corridors、open逐场景串行执行，每场景内部也串行重启三种子。
-使用独立ROS域224/225/226与Gazebo端口11831/11832/11833；保持所有任务与墙钟保护门限。
+第四版使用独立ROS域227/228/229与Gazebo端口11841/11842/11843；保持所有任务与墙钟保护门限。
 这用于减少并发启动压力，不表示一次Nav2响应超时的根因已经确定。精确预声明见
 [native plan](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/predeclared_native_plan.json)。
 合同确定任务300仿真秒，300/900墙秒分别是启动/基础设施保护，不能当成延长任务。

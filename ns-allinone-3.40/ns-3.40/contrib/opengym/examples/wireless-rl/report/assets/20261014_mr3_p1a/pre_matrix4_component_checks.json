@@ -1,0 +1,49 @@
+{
+  "checked_at_utc": "2026-10-14T14:19:43.244852+00:00",
+  "candidate_parent_commit": "9e0ceda3f29056e970d3d1eaf0341cf30059f708",
+  "command": "source /opt/ros/humble/setup.bash; source install/setup.bash; export PYTHONNOUSERSITE=1; /usr/bin/python3 /usr/bin/colcon test --packages-select multi_robot multi_robot_exploration merge_map --event-handlers console_cohesion+",
+  "workdir": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+  "wall_seconds": 11.2,
+  "returncode": 0,
+  "counts": {
+    "tests": 269,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 2
+  },
+  "passed": 267,
+  "results": {
+    "exploration": {
+      "tests": 247,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "sha256": "9ba948f1aea7a01dd34f12541a330f8d6982e24808cf53f0bf9284584f51c012",
+      "artifact": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/pre_matrix4_exploration_tests.xml"
+    },
+    "merge": {
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "sha256": "a0281a64e4f423b5af950c9ec843225aec872cb1e4a42b175e3487020ca60602",
+      "artifact": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/pre_matrix4_merge_tests.xml"
+    },
+    "native": {
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "sha256": "4e889d955a24bb1bd227011f7ca35b7677bce53b9adea3b3ef5aa9c710ee12e8",
+      "artifact": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/pre_matrix4_native_tests.xml"
+    }
+  },
+  "candidate_changed_source_sha256": {
+    "ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py": "7bc2483216522b4fc606d0df4094df7fdee1542b80de22b9e84023b8ff6f80e0",
+    "ros2_ws/ros2-multi-robot-automap/scripts/run_ideal_baseline.py": "3049e6064c299faeb81fde8b5abb9c2ad759ea1561588aaf578966fcbf59b52c",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py": "240c1ce173ad9cf43082d8441e01d0e8134d4a86f75c8ddfad43258a7d1770df",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_launch_and_smoke.py": "8752cac5668c3bcb5e383a66887e3ab071cb114c3acedfda5ab678d8c49d7e01",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_evaluator.py": "8b1113a54213e370098f660cce6b548edfefe57405be794d2cc9f708b37f8294"
+  },
+  "result": "PASS"
+}

@@ -9,6 +9,7 @@ import pytest
 from std_msgs.msg import Header, String
 
 from multi_robot_exploration.control import HeadquartersControl
+from multi_robot_exploration.mr3_contacts import CONTACT_COMPONENTS, ContactMonitor
 from multi_robot_exploration.task_evaluator import (
     TaskEvaluator, mr3_participation_pass, mr3_quality_pass,
 )
@@ -145,4 +146,171 @@ def test_valid_future_terminal_ack_waits_for_local_clock_watermark():
     clock[0] = 2.1
     TaskEvaluator._stopped_callback(node, message)
     assert node.navigation_protocol_closed
+    assert not finalizations
+
+
+def contact_evaluator():
+    clock, active = [0.], [True]
+    subscriptions, readiness, finalizations = [], [], []
+    robots = ["tb1", "tb2", "tb3"]
+    node = SimpleNamespace(
+        robot_names=robots, contact_monitor=ContactMonitor(robots, [], compact=True),
+        pending_contacts=[], finalized=False, start_sim_time=None, control_failure="",
+        contact_subscription_started_sim_time_sec=None,
+        contact_subscription_bootstrap_state="waiting_for_active_sim_clock",
+        contact_clock_overflow_diagnostic=None, input_subscriptions=[],
+        latest_map=object(), positions={name: (0., 0.) for name in robots},
+        map_contract_failure="", task_ready_published=None,
+        task_ready_publisher=SimpleNamespace(publish=lambda msg: readiness.append(msg.data)),
+        _now=lambda: clock[0],
+        get_clock=lambda: SimpleNamespace(ros_time_is_active=active[0]),
+        create_subscription=lambda kind, topic, callback, depth: subscriptions.append(
+            (topic, callback, depth)),
+        finalize=finalizations.append,
+    )
+
+    def finalize(reason):
+        node.finalized = True
+        finalizations.append(reason)
+
+    node.finalize = finalize
+    for name in ("_mr3_timer_callback", "_mr3_contact_callback", "_drain_contacts"):
+        setattr(node, name, MethodType(getattr(TaskEvaluator, name), node))
+    return node, clock, active, subscriptions, readiness, finalizations
+
+
+def contact_message(stamp, positive=False):
+    states = [SimpleNamespace(collision1_name="tb1::base_link::base_collision",
+                              collision2_name="wall::link::collision")] if positive else []
+    return SimpleNamespace(header=header(stamp), states=states)
+
+
+@pytest.mark.parametrize("now,active", [
+    (0., True), (-1., True), (float("nan"), True), (float("inf"), True), (1., False),
+])
+def test_contact_subscriptions_wait_for_finite_positive_active_ros_clock(now, active):
+    node, clock, clock_active, subscriptions, readiness, _ = contact_evaluator()
+    clock[0], clock_active[0] = now, active
+    node._mr3_timer_callback()
+    assert not subscriptions
+    assert not readiness
+    assert node.contact_subscription_started_sim_time_sec is None
+    assert node.contact_subscription_bootstrap_state == "waiting_for_active_sim_clock"
+
+
+def test_contact_subscription_bootstrap_is_once_and_requires_all_sources_before_ready():
+    node, clock, _, subscriptions, readiness, _ = contact_evaluator()
+    clock[0] = 1.
+    node._mr3_timer_callback()
+    assert len(subscriptions) == 18
+    assert {topic for topic, _, _ in subscriptions} == {
+        f"/mr3_contacts/{robot}/{part}"
+        for robot in node.robot_names for part in CONTACT_COMPONENTS
+    }
+    assert all(depth == 20 for _, _, depth in subscriptions)
+    assert node.contact_subscription_started_sim_time_sec == 1.
+    assert node.contact_subscription_bootstrap_state == "contact_subscriptions_started"
+    assert not readiness
+    for _, callback, _ in subscriptions[:-1]:
+        callback(contact_message(1.))
+    node._mr3_timer_callback()
+    assert readiness == [False]
+    subscriptions[-1][1](contact_message(1.))
+    node._mr3_timer_callback()
+    assert readiness == [False, True]
+    assert len(subscriptions) == 18
+
+
+def test_eligible_pending_contacts_drain_before_new_future_sample_uses_cap():
+    node, clock, _, _, _, _ = contact_evaluator()
+    clock[0] = 1.
+    node._mr3_timer_callback()
+    node.pending_contacts = [
+        (.5 + index / 1000, "tb1", "base", contact_message(.5 + index / 1000))
+        for index in range(256)
+    ]
+    future = contact_message(1.1)
+    node._mr3_contact_callback(future, "tb1", "base")
+    assert len(node.pending_contacts) == 1
+    assert node.pending_contacts[0][3] is future
+    assert node.contact_monitor.components[("tb1", "base")].accepted_message_count == 256
+    assert not node.control_failure
+    assert node.contact_clock_overflow_diagnostic is None
+
+
+def test_pre_release_positive_contact_survives_bootstrap_and_monitor_start():
+    node, clock, _, _, readiness, finalizations = contact_evaluator()
+    clock[0] = 1.
+    node._mr3_timer_callback()
+    node._mr3_contact_callback(contact_message(1., positive=True), "tb1", "base")
+    node._mr3_timer_callback()
+    assert readiness == [False]
+    assert finalizations == ["startup_collision"]
+    node.contact_monitor.start(1.)
+    assert node.contact_monitor.summary(1.)["event_count"] == 1
+
+
+def test_true_future_overflow_finalizes_once_and_stops_accepting_messages():
+    node, clock, _, _, _, finalizations = contact_evaluator()
+    clock[0] = 1.
+    node._mr3_timer_callback()
+    for index in range(256):
+        node._mr3_contact_callback(contact_message(2. + index / 1000), "tb1", "base")
+    assert not node.control_failure
+    node._mr3_contact_callback(contact_message(3.), "tb1", "base")
+    assert node.control_failure == "contact_clock_desynchronization"
+    assert node.finalized
+    assert finalizations == ["navigation_failure"]
+    diagnostic = node.contact_clock_overflow_diagnostic.copy()
+    assert diagnostic == {
+        "now_sim_time_sec": 1., "pending_count": 257,
+        "min_source_sim_time_sec": 2., "max_source_sim_time_sec": 3.,
+        "contact_subscription_bootstrap_state": "contact_subscriptions_started",
+        "contact_subscription_started_sim_time_sec": 1., "start_sim_time_sec": None,
+    }
+    node._mr3_contact_callback(contact_message(4.), "tb1", "base")
+    assert node.contact_clock_overflow_diagnostic == diagnostic
+    assert len(node.pending_contacts) == 257
+    assert finalizations == ["navigation_failure"]
+    assert node.contact_monitor.components[("tb1", "base")].message_count == 0
+
+
+@pytest.mark.parametrize("started,ready", [(None, None), (1., None), (1., False)])
+def test_release_before_contact_bootstrap_and_readiness_fails_without_task_start(started, ready):
+    node, clock, _, _, _, finalizations = contact_evaluator()
+    clock[0] = 1.
+    node.contact_subscription_started_sim_time_sec = started
+    node.task_ready_published = ready
+    TaskEvaluator._release_callback(node, header(1.1))
+    assert finalizations == ["invalid_task_release"]
+    assert node.start_sim_time is None
+    assert not node.contact_monitor.started
+    assert not hasattr(node, "pending_release")
+
+
+def test_ready_release_still_waits_for_local_clock_without_losing_contacts():
+    node, clock, _, subscriptions, readiness, finalizations = contact_evaluator()
+    clock[0] = 1.
+    node._mr3_timer_callback()
+    for _, callback, _ in subscriptions:
+        callback(contact_message(1.))
+    node._mr3_timer_callback()
+    assert readiness == [True]
+    release = header(1.1)
+    TaskEvaluator._release_callback(node, release)
+    assert node.start_sim_time is None
+    assert node.pending_release is release
+    node._release_callback = MethodType(TaskEvaluator._release_callback, node)
+    node._map_metrics = lambda: {}
+    node._update_coverage_times = lambda: None
+    node._timer_callback = lambda: None
+    node.get_logger = lambda: SimpleNamespace(info=lambda message: None)
+    node.episode_id = "release-test"
+    clock[0] = 1.1
+    node._mr3_timer_callback()
+    assert node.start_sim_time == 1.1
+    assert node.contact_monitor.started
+    assert node.pending_release is None
+    assert all(state.accepted_message_count == 1
+               for state in node.contact_monitor.components.values())
     assert not finalizations

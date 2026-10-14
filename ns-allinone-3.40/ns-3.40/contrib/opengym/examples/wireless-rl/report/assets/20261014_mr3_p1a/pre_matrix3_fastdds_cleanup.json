@@ -1,0 +1,14 @@
+{
+  "recorded_at_utc": "2026-10-14T13:44:24.320946+00:00",
+  "command": [
+    "/usr/bin/python3",
+    "/opt/ros/humble/tools/fastdds/fastdds.py",
+    "shm",
+    "clean"
+  ],
+  "returncode": 0,
+  "stdout": "shm.clean:\n3 ports in use\n3 segments in use\n12 zombie ports cleaned\n11 zombie segments cleaned\n",
+  "stderr": "",
+  "scope": "Official lock-aware stale SHM cleanup; skips locked active resources. No manual deletion, no causal claim about version2 startup failure.",
+  "source_freeze": "9e0ceda3f29056e970d3d1eaf0341cf30059f708"
+}

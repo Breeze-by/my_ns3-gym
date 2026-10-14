@@ -94,6 +94,8 @@ def validate_evaluation_result(result, coverage_threshold=0.0, task_contract=Non
             "collision_monitoring_fresh", "task_start_barrier", "robot_count",
             "contact_monitor_summary", "observed_accuracy", "false_free_ratio", "occupied_iou",
             "navigation_protocol_closed",
+            "contact_subscription_started_sim_time_sec", "contact_subscription_bootstrap_state",
+            "contact_clock_overflow_diagnostic",
         })
     missing = required - result.keys()
     if missing:
@@ -146,6 +148,11 @@ def validate_evaluation_result(result, coverage_threshold=0.0, task_contract=Non
                    for value in (start, end)) or not math.isclose(
                        end - start, result["elapsed_sim_time_sec"], rel_tol=0, abs_tol=1e-6):
                 raise RuntimeError("MR3 evaluation task time is inconsistent")
+            contact_start = result["contact_subscription_started_sim_time_sec"]
+            if (result["contact_subscription_bootstrap_state"] != "contact_subscriptions_started"
+                or not finite_number(contact_start) or not 0 < contact_start <= start
+                or result["contact_clock_overflow_diagnostic"] is not None):
+                raise RuntimeError("MR3 evaluation success has invalid contact clock bootstrap")
             if not isinstance(result["contact_monitor_summary"], dict) or result["contact_monitor_summary"].get("ever_unhealthy") is not False:
                 raise RuntimeError("MR3 evaluation success has interrupted contact monitoring")
             participation = task_contract["participation"]
@@ -181,7 +188,9 @@ def run_ros(arguments, timeout=10, discard_output=False):
     )
 
 
-def wait_until_ready(process, robot_count, timeout, evaluation_enabled=False):
+def wait_until_ready(
+    process, robot_count, timeout, evaluation_enabled=False, result_path=None
+):
     import rclpy
     from multi_robot_exploration.nav2_ready_gate import wait_for_nav2
     from rclpy.node import Node
@@ -209,6 +218,7 @@ def wait_until_ready(process, robot_count, timeout, evaluation_enabled=False):
     node = Node("smoke_readiness")
     joint_messages = set()
     joint_subscriptions = []
+    evaluation_ended = False
     for index in range(1, robot_count + 1):
         topic = f"/tb{index}/joint_states"
 
@@ -221,6 +231,12 @@ def wait_until_ready(process, robot_count, timeout, evaluation_enabled=False):
         ))
 
     def graph_check():
+        nonlocal evaluation_ended
+        if result_path is not None and (
+            result_path.exists() or process.poll() is not None
+        ):
+            evaluation_ended = True
+            raise RuntimeError("evaluation ended during readiness")
         if process.poll() is not None:
             raise RuntimeError(
                 f"launch exited early with status {process.returncode}"
@@ -234,22 +250,56 @@ def wait_until_ready(process, robot_count, timeout, evaluation_enabled=False):
     try:
         if wait_for_nav2(node, robot_count, timeout, graph_check) != 0:
             raise TimeoutError("ROS graph or Nav2 lifecycle did not become ready")
+        return True
+    except RuntimeError:
+        if evaluation_ended:
+            return False
+        raise
     finally:
         node.destroy_node()
         if rclpy.ok():
             rclpy.shutdown()
 
 
-def require_message(topic, timeout, qos_arguments=()):
-    result = run_ros(
-        ["topic", "echo", "--once", *qos_arguments, topic],
-        timeout=timeout,
-        discard_output=True,
-    )
-    if result.returncode != 0:
-        raise RuntimeError(
-            f"no message received from {topic}: {result.stderr.strip()}"
-        )
+def require_message(
+    topic, timeout, qos_arguments=(), process=None, result_path=None, environment=None
+):
+    """Probe one topic, returning False if evaluation has already ended."""
+    deadline = time.monotonic() + timeout
+    probe = None
+    try:
+        while True:
+            if result_path is not None and (
+                result_path.exists() or (process is not None and process.poll() is not None)
+            ):
+                return False
+            if process is not None and process.poll() is not None:
+                raise RuntimeError(f"launch exited during message probe with {process.returncode}")
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise TimeoutError(f"no message received from {topic} within {timeout} seconds")
+            if probe is None:
+                probe = subprocess.Popen(
+                    ["ros2", "topic", "echo", "--once", *qos_arguments, topic],
+                    stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True,
+                    start_new_session=True, env=environment,
+                )
+            try:
+                _, stderr = probe.communicate(timeout=min(0.1, remaining))
+            except subprocess.TimeoutExpired:
+                continue
+            if probe.returncode != 0:
+                raise RuntimeError(f"no message received from {topic}: {stderr.strip()}")
+            return True
+    finally:
+        if probe is not None:
+            clean_probe = stop_launch(probe, 2.0)
+            probe.stderr.close()
+        if probe is not None and not clean_probe:
+            error = f"owned topic probe for {topic} required forced shutdown"
+            if sys.exc_info()[0] is None:
+                raise RuntimeError(error)
+            print(f"FAIL: {error}", file=sys.stderr, flush=True)
 
 
 def wait_for_evaluation(
@@ -259,9 +309,20 @@ def wait_for_evaluation(
     log_offset = 0
     while time.monotonic() < deadline:
         if result_path.exists():
-            with result_path.open() as result_file:
-                result = json.load(result_file)
-            return validate_evaluation_result(result, coverage_threshold, task_contract)
+            try:
+                with result_path.open() as result_file:
+                    result = json.load(result_file)
+            except json.JSONDecodeError as error:
+                raise RuntimeError(f"invalid evaluation JSON {result_path}: {error}") from error
+            try:
+                return validate_evaluation_result(result, coverage_threshold, task_contract)
+            except (RuntimeError, ValueError, TypeError, KeyError) as error:
+                native = result if isinstance(result, dict) else {}
+                raise RuntimeError(
+                    "evaluation validation failed "
+                    f"(termination_reason={native.get('termination_reason')!r}, "
+                    f"control_failure={native.get('control_failure')!r}): {error}"
+                ) from error
         if process.poll() is not None:
             raise RuntimeError(
                 "launch exited before evaluation result with "
@@ -441,6 +502,10 @@ def main():
     passed = False
     clean_shutdown = False
     cleanup_timeout = args.shutdown_timeout
+    result_path = (
+        args.evaluation_output_dir / f"{episode_id}.json"
+        if args.evaluation_duration > 0 else None
+    )
     with log_path.open("w") as log_file:
         process = subprocess.Popen(
             command,
@@ -452,31 +517,26 @@ def main():
             env=launch_environment,
         )
         try:
-            wait_until_ready(
+            ready = wait_until_ready(
                 process,
                 args.robot_count,
                 args.startup_timeout,
                 evaluation_enabled=args.evaluation_duration > 0,
+                result_path=result_path,
             )
-            print("ROS graph and Nav2 lifecycle nodes are ready.", flush=True)
-            require_message(
-                "/tb1/scan",
-                args.message_timeout,
-                ("--qos-reliability", "best_effort"),
-            )
-            require_message(
-                "/merge_map",
-                args.message_timeout,
-                (
-                    "--qos-reliability",
-                    "reliable",
-                    "--qos-durability",
-                    "transient_local",
-                ),
-            )
-            print("Received lidar and merged-map messages.", flush=True)
+            if ready:
+                print("ROS graph and Nav2 lifecycle nodes are ready.", flush=True)
+                if require_message(
+                    "/tb1/scan", args.message_timeout,
+                    ("--qos-reliability", "best_effort"), process, result_path,
+                    launch_environment,
+                ) and require_message(
+                    "/merge_map", args.message_timeout,
+                    ("--qos-reliability", "reliable", "--qos-durability", "transient_local"),
+                    process, result_path, launch_environment,
+                ):
+                    print("Received lidar and merged-map messages.", flush=True)
             if args.evaluation_duration > 0:
-                result_path = args.evaluation_output_dir / f"{episode_id}.json"
                 result = wait_for_evaluation(
                     process,
                     result_path,

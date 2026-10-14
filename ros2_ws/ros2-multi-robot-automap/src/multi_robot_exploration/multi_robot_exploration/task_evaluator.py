@@ -314,6 +314,9 @@ class TaskEvaluator(Node):
         self.task_contract = None
         self.contact_monitor = None
         self.pending_contacts = []
+        self.contact_subscription_started_sim_time_sec = None
+        self.contact_subscription_bootstrap_state = "waiting_for_active_sim_clock"
+        self.contact_clock_overflow_diagnostic = None
         self.navigation_protocol_closed = False
         self.stop_requested_sim_time = None
         self.stop_acknowledgment = None
@@ -413,16 +416,7 @@ class TaskEvaluator(Node):
                     10,
                 )
             )
-            if self.task_contract:
-                for component, topic in contact_topics(name, compact=True).items():
-                    self.input_subscriptions.append(self.create_subscription(
-                        ContactsState, topic,
-                        lambda message, robot=name, part=component: self._mr3_contact_callback(
-                            message, robot, part
-                        ),
-                        20,
-                    ))
-            else:
+            if not self.task_contract:
                 self.input_subscriptions.append(self.create_subscription(
                     ContactsState, f"/{name}/collision",
                     lambda message, robot=name: self._collision_callback(message, robot), 10,
@@ -440,6 +434,7 @@ class TaskEvaluator(Node):
         if self.finalized:
             return
         now = self._now()
+        self._drain_contacts(now)
         stamp = message.header.stamp.sec + message.header.stamp.nanosec / 1e9
         # /clock and sensor DDS topics can arrive in either order. Never apply
         # a future contact sample or rewrite its source stamp to receipt time.
@@ -447,8 +442,23 @@ class TaskEvaluator(Node):
             self.pending_contacts.append((stamp, robot, component, message))
             if len(self.pending_contacts) > 256:
                 self.control_failure = "contact_clock_desynchronization"
+                if self.contact_clock_overflow_diagnostic is None:
+                    sources = [entry[0] for entry in self.pending_contacts]
+                    self.contact_clock_overflow_diagnostic = {
+                        "now_sim_time_sec": now,
+                        "pending_count": len(sources),
+                        "min_source_sim_time_sec": min(sources),
+                        "max_source_sim_time_sec": max(sources),
+                        "contact_subscription_bootstrap_state": (
+                            self.contact_subscription_bootstrap_state
+                        ),
+                        "contact_subscription_started_sim_time_sec": (
+                            self.contact_subscription_started_sim_time_sec
+                        ),
+                        "start_sim_time_sec": self.start_sim_time,
+                    }
+                self.finalize("navigation_failure")
             return
-        self._drain_contacts(now)
         self.contact_monitor.update(robot, component, message, now)
 
     def _drain_contacts(self, now):
@@ -465,6 +475,12 @@ class TaskEvaluator(Node):
         stamp = message.stamp.sec + message.stamp.nanosec / 1e9
         now = self._now()
         if not math.isfinite(stamp) or stamp <= 0 or message.frame_id != "map":
+            self.finalize("invalid_task_release")
+            return
+        if (
+            self.contact_subscription_started_sim_time_sec is None
+            or self.task_ready_published is not True
+        ):
             self.finalize("invalid_task_release")
             return
         if stamp > now:
@@ -645,6 +661,22 @@ class TaskEvaluator(Node):
 
     def _mr3_timer_callback(self):
         now = self._now()
+        if self.contact_subscription_started_sim_time_sec is None:
+            if not self.get_clock().ros_time_is_active or not math.isfinite(now) or now <= 0:
+                return
+            self.contact_subscription_bootstrap_state = "starting_contact_subscriptions"
+            for name in self.robot_names:
+                for component, topic in contact_topics(name, compact=True).items():
+                    self.input_subscriptions.append(self.create_subscription(
+                        ContactsState, topic,
+                        lambda message, robot=name, part=component: self._mr3_contact_callback(
+                            message, robot, part
+                        ),
+                        20,
+                    ))
+            self.contact_subscription_started_sim_time_sec = now
+            self.contact_subscription_bootstrap_state = "contact_subscriptions_started"
+            return
         self._drain_contacts(now)
         pending_ack = getattr(self, "pending_stop_ack", None)
         if pending_ack is not None and json.loads(pending_ack.data)["stop_sim_time_sec"] <= now:
@@ -892,6 +924,11 @@ class TaskEvaluator(Node):
                 "collision_monitoring_fresh": monitoring_active,
                 "contact_monitor_summary": contact_summary,
                 "contact_component_count_per_robot": len(CONTACT_COMPONENTS),
+                "contact_subscription_started_sim_time_sec": (
+                    self.contact_subscription_started_sim_time_sec
+                ),
+                "contact_subscription_bootstrap_state": self.contact_subscription_bootstrap_state,
+                "contact_clock_overflow_diagnostic": self.contact_clock_overflow_diagnostic,
                 "navigation_protocol_closed": self.navigation_protocol_closed,
                 "navigation_stop_requested_sim_time_sec": self.stop_requested_sim_time,
                 "navigation_stop_acknowledgment": self.stop_acknowledgment,

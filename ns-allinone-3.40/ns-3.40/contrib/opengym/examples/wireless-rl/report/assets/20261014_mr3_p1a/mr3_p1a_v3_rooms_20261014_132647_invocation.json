@@ -1,0 +1,40 @@
+{
+  "world": "p1c_rooms.world",
+  "seeds": [
+    101,
+    202,
+    303
+  ],
+  "run_id": "mr3_p1a_v3_rooms_20261014_132647",
+  "ros_domain_id": 224,
+  "gazebo_port": 11831,
+  "command": [
+    "/usr/bin/python3",
+    "scripts/run_ideal_baseline.py",
+    "--world",
+    "p1c_rooms.world",
+    "--robot-count",
+    "3",
+    "--seeds",
+    "101",
+    "202",
+    "303",
+    "--task-contract",
+    "src/multi_robot/config/mr3_p1a/rooms.json",
+    "--startup-timeout",
+    "300",
+    "--evaluation-wait-timeout",
+    "900",
+    "--shutdown-timeout",
+    "60",
+    "--run-id",
+    "mr3_p1a_v3_rooms_20261014_132647",
+    "--output-root",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a"
+  ],
+  "task_contract_sha256": "ed8f61588ffb49821e2992d5a68e73abcef964bd80b6e2574eee3b1ae885635b",
+  "source_freeze": "9e0ceda3f29056e970d3d1eaf0341cf30059f708",
+  "runtime_component_manifest_sha256": "4f4c6a00471619383af1266308db2387a880fa98d6fe4047a49866961d3fec7e",
+  "runtime_component_manifest": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/runtime_component_manifest_matrix3.json",
+  "schedule": "One world batch at a time in listed order, each seeds101/202/303 serial with full native process restart. No source edits or commits during any of the nine tasks. Same pushed candidate all9."
+}

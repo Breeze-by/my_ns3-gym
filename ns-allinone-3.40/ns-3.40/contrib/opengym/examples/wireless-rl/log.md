@@ -2024,3 +2024,25 @@ export PYTHONNOUSERSITE=1
 - Controllerownedexecutor repair finalintegratedchecks: canonicalROS command `source /opt/ros/humble/setup.bash; source install/setup.bash; export PYTHONNOUSERSITE=1; /usr/bin/python3 /usr/bin/colcon test --packages-select multi_robot multi_robot_exploration merge_map --event-handlers console_cohesion+`;11.0wallsec;228tests=226pass/2skip/0failure/error, newclosed/live-contextconversion andboundedcleanup testsincluded. Candidateparent3f24eaa; exactchangedsourceSHA and3JUnitfiles inpre_matrix3_component_checks.json. V8unchangedcontact/physicalfixture9hashbindingpassed, no redundantfixtureornewtaskcredit. Matrix3full9pendingnewpushedsourcefreeze.
 
 - PrelaunchGitformatcorrection: stagednativeCSV CRLF anduntouchedstdouttrailingblanks wereflaggedbycached diffcheck; local48ebbb5committedbeforethatfailurewasresolved (notyetpushed,no nativev3started). AddednarrowcanonicalMR3P1Aevidenceattributesonly: nativeCSVCR-at-EOL/non-normalization andnativelogoriginalwhitespace; source/docs/JSON/audits retainnormalchecks. All 132 trackedcanonicalartifact bytes equalGitHEAD; rawdiffcheckHEAD^..HEADnow0, ready-documentstaticcheckPASS. No evidence whitespace rewritten, nohistoryrewrite; followupcommitbeforematrixfreeze.
+
+- Pre-matrix3maintenance 2026-10-14T13:44:24.320946+00:00; freeze9e0ceda3f29056e970d3d1eaf0341cf30059f708; exactcommand `/usr/bin/python3 /opt/ros/humble/tools/fastdds/fastdds.py shm clean`, rc=0; stdout="shm.clean:\n3 ports in use\n3 segments in use\n12 zombie ports cleaned\n11 zombie segments cleaned\n"; stderr="". Officialtool checkslocks/skipsactive resources; no ownednativeprocessesrunningbeforemaintenance. No manualshared-memorydeletion orprovenrootcauseclaim. Canonicalpre_matrix3_fastdds_cleanup.json.
+
+### MR3-P1A native attempt mr3_p1a_v3_rooms_20261014_132647
+
+- Freeze: 9e0ceda3f29056e970d3d1eaf0341cf30059f708 committed/pushed; fixed3robots, exact contract, no RL/network credit.
+- Environment: system ROS Humble; PYTHONNOUSERSITE=1; rmw_fastrtps_cpp; ROS_LOCALHOST_ONLY=1; ROS_DOMAIN_ID=224; GAZEBO_MASTER_URI=http://127.0.0.1:11831.
+- Command (canonical ROS root):
+
+```bash
+/usr/bin/python3 scripts/run_ideal_baseline.py --world p1c_rooms.world --robot-count 3 --seeds 101 202 303 --task-contract src/multi_robot/config/mr3_p1a/rooms.json --startup-timeout 300 --evaluation-wait-timeout 900 --shutdown-timeout 60 --run-id mr3_p1a_v3_rooms_20261014_132647 --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a
+```
+
+- Result pending at invocation; all native output retained.
+
+- Finished 2026-10-14T14:02:44.221431+00:00; rc=1; result=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v3_rooms_20261014_132647/summary.json; success=None; error=None. All native JSON/log/failures retained.
+
+- Version3 stopped before starting corridors/open after completed rooms batch: room101 strictPASS110.5s, room202 invalid pre-release contact_clock_desynchronization/start=null/model_states=0, room303 valid tasktimeout300s coverage.9489567233. No active process interruption needed, all native children clean; no six unstarted cells fabricated. New bootstrap/drain/earlyterminal repair required; v3 originals remain diagnostic only.
+
+- Matrixversion4 predeclared 2026-10-14T14:09:24.918506+00:00: mr3_p1a_v4_rooms_20261014_140924, mr3_p1a_v4_corridors_20261014_140924, mr3_p1a_v4_open_20261014_140924; rooms/corridors/open serial, seeds101/202/303 serial fullrestart, domains227/228/229 ports11841/42/43. Same fixed contracts/gates, new pushed sourcefreeze before full9. Native contactfixture component credit re-bound by identical hashes only, no old task cells reused. Maintenance/source+installed manifest/environment audit retained.
+
+- Matrix4 candidate finalintegratedchecks: canonicalROS command `source /opt/ros/humble/setup.bash; source install/setup.bash; export PYTHONNOUSERSITE=1; /usr/bin/python3 /usr/bin/colcon test --packages-select multi_robot multi_robot_exploration merge_map --event-handlers console_cohesion+`;11.2wallsec;269tests=267pass/2skip/0failure/error. ExactfivechangedsourceSHA and3JUnit retained pre_matrix4_component_checks.json; newbootstrap/invalidrelease/past-watermark-drain/truefuture257-immediatefail/earlyJSON/probetimeout/CLI-error/native-bootstrap-validator cases included. Old tests/results retained. V8ninecomponent bindingunchanged infixture_v8_component_binding_matrix4.json, no newphysicalfixture oroldtaskcellcredit.

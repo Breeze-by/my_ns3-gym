@@ -25,6 +25,7 @@ SUMMARY_FIELDS = (
     "success",
     "termination_reason",
     "native_termination_reason",
+    "native_control_failure",
     "evaluation_validation_error",
     "failure_reason",
     "elapsed_sim_time_sec",
@@ -172,12 +173,14 @@ def main():
         result = {}
         validation_error = ""
         native_termination_reason = ""
+        native_control_failure = ""
         if result_path.exists():
             try:
                 with result_path.open() as result_file:
                     result = json.load(result_file)
                 if isinstance(result, dict):
                     native_termination_reason = result.get("termination_reason", "")
+                    native_control_failure = result.get("control_failure", "")
                 validate_evaluation_result(result, args.coverage_threshold, task_contract)
             except (OSError, ValueError, RuntimeError, TypeError, KeyError) as error:
                 validation_error = str(error)
@@ -192,6 +195,7 @@ def main():
                 "gazebo_seed": seed,
                 "runner_returncode": completed.returncode,
                 "native_termination_reason": native_termination_reason,
+                "native_control_failure": native_control_failure,
                 "evaluation_validation_error": validation_error,
                 "success": result.get("success", False),
                 "termination_reason": result.get(

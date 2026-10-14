@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import importlib.util
+import io
 import json
 from pathlib import Path
 import subprocess
@@ -55,6 +56,9 @@ def native_result(success=True, schema=3):
         "contact_monitor_summary": {"ever_unhealthy": False},
         "task_start_barrier": "controller_release", "task_contract_sha256": "contract-hash",
         "navigation_protocol_closed": True,
+        "contact_subscription_started_sim_time_sec": 1.,
+        "contact_subscription_bootstrap_state": "contact_subscriptions_started",
+        "contact_clock_overflow_diagnostic": None,
     }
 
 
@@ -294,6 +298,12 @@ def test_legacy_task_settings_preserve_the_original_budget(
     ("collision_events", 1), ("elapsed_sim_time_sec", 300.),
     ("correct_free_coverage_ratio", float("nan")), ("observed_accuracy", float("inf")),
     ("observed_accuracy", .94), ("false_free_ratio", .03), ("occupied_iou", .19),
+    ("contact_subscription_started_sim_time_sec", None),
+    ("contact_subscription_started_sim_time_sec", 0.),
+    ("contact_subscription_started_sim_time_sec", 3.),
+    ("contact_subscription_started_sim_time_sec", float("nan")),
+    ("contact_subscription_bootstrap_state", "waiting_for_simulation_clock"),
+    ("contact_clock_overflow_diagnostic", {}),
 ])
 def test_schema_four_cannot_pass_with_a_failed_contract_gate(field, value):
     smoke = load_module("smoke", ROOT / "scripts/ros_smoke_test.py")
@@ -313,6 +323,18 @@ def test_schema_four_requires_each_robot_and_continuous_contact_monitoring():
     result["robots"]["tb3"]["path_length_m"] = 2.
     result["contact_monitor_summary"]["ever_unhealthy"] = True
     with pytest.raises(RuntimeError, match="interrupted contact monitoring"):
+        smoke.validate_evaluation_result(result, .95, task_contract())
+
+
+@pytest.mark.parametrize("field", [
+    "contact_subscription_started_sim_time_sec", "contact_subscription_bootstrap_state",
+    "contact_clock_overflow_diagnostic",
+])
+def test_schema_four_cannot_pass_without_contact_bootstrap_evidence(field):
+    smoke = load_module("smoke", ROOT / "scripts/ros_smoke_test.py")
+    result = native_result(schema=4)
+    del result[field]
+    with pytest.raises(RuntimeError, match="missing"):
         smoke.validate_evaluation_result(result, .95, task_contract())
 
 
@@ -365,6 +387,7 @@ def test_runner_keeps_native_startup_failure_separate_from_invalid_measurement(
         episode = command[command.index("--episode-id") + 1]
         (output / f"{episode}.json").write_text(json.dumps({
             "schema_version": 3, "success": False, "termination_reason": "startup_collision",
+            "control_failure": "contact_clock_desynchronization",
         }))
         return subprocess.CompletedProcess(command, 1)
 
@@ -374,6 +397,7 @@ def test_runner_keeps_native_startup_failure_separate_from_invalid_measurement(
     row = summary["episodes"][0]
     assert row["termination_reason"] == "invalid_evaluation"
     assert row["native_termination_reason"] == "startup_collision"
+    assert row["native_control_failure"] == "contact_clock_desynchronization"
     assert row["evaluation_validation_error"].startswith("evaluation result is missing")
     assert Path(row["result_path"]).is_file()
 
@@ -493,3 +517,205 @@ def test_smoke_rejects_reducer_gap_after_clean_exit_without_changing_native_resu
     monkeypatch.setattr(smoke.subprocess, "Popen", start)
     assert smoke.main() == 1
     assert (output / "native_success.json").read_text() == payload
+
+
+@pytest.mark.parametrize("outcome", [
+    "message", "cli_error", "timeout", "terminal_json", "launch_exit",
+])
+def test_message_probe_observes_terminal_state_and_keeps_real_failures(
+    monkeypatch, tmp_path, outcome
+):
+    smoke = load_module("smoke", ROOT / "scripts/ros_smoke_test.py")
+    clock = [0.0]
+    process = SimpleNamespace(returncode=None)
+    process.poll = lambda: process.returncode
+    probe = SimpleNamespace(returncode=None, stderr=io.StringIO())
+    commands, stopped = [], []
+    result_path = tmp_path / "terminal.json"
+    environment = {"PATH": "/usr/bin:/bin", "ROS_DOMAIN_ID": "224"}
+
+    def communicate(timeout):
+        clock[0] += timeout
+        if outcome == "message":
+            probe.returncode = 0
+            return None, ""
+        if outcome == "cli_error":
+            probe.returncode = 2
+            return None, "incompatible topic type"
+        if outcome == "terminal_json":
+            result_path.write_text("{}")
+        if outcome == "launch_exit":
+            process.returncode = 1
+        raise subprocess.TimeoutExpired("owned probe", timeout)
+
+    probe.communicate = communicate
+
+    def start(command, **kwargs):
+        commands.append((command, kwargs))
+        return probe
+
+    def stop(owned, timeout):
+        stopped.append((owned, timeout))
+        owned.returncode = 0 if owned.returncode == 0 else -2
+        return True
+
+    monkeypatch.setattr(smoke.subprocess, "Popen", start)
+    monkeypatch.setattr(smoke, "stop_launch", stop)
+    monkeypatch.setattr(smoke.time, "monotonic", lambda: clock[0])
+    arguments = ("/merge_map", .2, ("--qos-reliability", "reliable"),
+                 process, result_path, environment)
+    if outcome == "cli_error":
+        with pytest.raises(RuntimeError, match="incompatible topic type"):
+            smoke.require_message(*arguments)
+    elif outcome == "timeout":
+        with pytest.raises(TimeoutError, match="within 0.2 seconds"):
+            smoke.require_message(*arguments)
+    else:
+        assert smoke.require_message(*arguments) is (outcome == "message")
+    assert len(commands) == 1
+    assert commands[0][0] == [
+        "ros2", "topic", "echo", "--once", "--qos-reliability", "reliable", "/merge_map",
+    ]
+    assert commands[0][1]["env"] is environment
+    assert commands[0][1]["start_new_session"] is True
+    assert stopped == [(probe, 2.0)]
+    assert probe.stderr.closed
+    assert process.returncode == (1 if outcome == "launch_exit" else None)
+
+
+def test_terminal_result_before_probe_does_not_start_a_cli(monkeypatch, tmp_path):
+    smoke = load_module("smoke", ROOT / "scripts/ros_smoke_test.py")
+    result_path = tmp_path / "terminal.json"
+    result_path.write_text("{}")
+
+    def unexpected(*args, **kwargs):
+        raise AssertionError("a completed evaluation must not start a topic probe")
+
+    monkeypatch.setattr(smoke.subprocess, "Popen", unexpected)
+    assert smoke.require_message("/merge_map", 90, result_path=result_path) is False
+
+
+def test_probe_forced_cleanup_does_not_replace_its_original_cli_error(monkeypatch, capsys):
+    smoke = load_module("smoke", ROOT / "scripts/ros_smoke_test.py")
+    probe = SimpleNamespace(returncode=2, stderr=io.StringIO(),
+                            communicate=lambda **kwargs: (None, "incompatible topic type"))
+    monkeypatch.setattr(smoke.subprocess, "Popen", lambda *args, **kwargs: probe)
+    monkeypatch.setattr(smoke, "stop_launch", lambda *args: False)
+    with pytest.raises(RuntimeError, match="incompatible topic type"):
+        smoke.require_message("/merge_map", 90)
+    assert "owned topic probe" in capsys.readouterr().err
+    assert probe.stderr.closed
+
+
+@pytest.mark.parametrize("outcome", ["terminal_json", "launch_exit", "runtime_error", "timeout"])
+def test_readiness_exits_for_terminal_evidence_without_suppressing_other_errors(
+    monkeypatch, tmp_path, outcome
+):
+    import multi_robot_exploration.nav2_ready_gate as gate
+    import rclpy
+    import rclpy.node
+
+    smoke = load_module("smoke", ROOT / "scripts/ros_smoke_test.py")
+    result_path = tmp_path / "terminal.json"
+    if outcome in ("terminal_json", "runtime_error"):
+        result_path.write_text("{}")
+    process = SimpleNamespace(returncode=1 if outcome == "launch_exit" else None)
+    process.poll = lambda: process.returncode
+    destroyed = []
+    node = SimpleNamespace(create_subscription=lambda *args: None,
+                           destroy_node=lambda: destroyed.append(True))
+    monkeypatch.setattr(rclpy, "init", lambda: None)
+    monkeypatch.setattr(rclpy, "ok", lambda: False)
+    monkeypatch.setattr(rclpy.node, "Node", lambda *args: node)
+
+    def wait(node, robot_count, timeout, extra_check):
+        if outcome == "runtime_error":
+            raise RuntimeError("live-context callback error")
+        if outcome == "timeout":
+            return 1
+        extra_check()
+        raise AssertionError("terminal evidence must end readiness immediately")
+
+    monkeypatch.setattr(gate, "wait_for_nav2", wait)
+    if outcome == "runtime_error":
+        with pytest.raises(RuntimeError, match="live-context callback error"):
+            smoke.wait_until_ready(process, 3, 300, True, result_path)
+    elif outcome == "timeout":
+        with pytest.raises(TimeoutError, match="did not become ready"):
+            smoke.wait_until_ready(process, 3, 300, True, result_path)
+    else:
+        assert smoke.wait_until_ready(process, 3, 300, True, result_path) is False
+    assert destroyed == [True]
+
+
+@pytest.mark.parametrize("phase", ["readiness", "scan_probe"])
+@pytest.mark.parametrize("outcome", [
+    "startup_failure", "native_exit", "native_child_failure", "reducer_gap",
+])
+def test_early_terminal_evaluation_preserves_json_and_all_native_checks(
+    monkeypatch, tmp_path, capsys, phase, outcome
+):
+    smoke = load_module("smoke", ROOT / "scripts/ros_smoke_test.py")
+    contract_path = tmp_path / "rooms.json"
+    contract_path.write_text(json.dumps(task_contract()))
+    output = tmp_path / "evaluation"
+    output.mkdir()
+    result_path = output / "early.json"
+    native = native_result(schema=4)
+    native["task_contract_sha256"] = hashlib.sha256(contract_path.read_bytes()).hexdigest()
+    if outcome == "startup_failure":
+        native.update(success=False, termination_reason="navigation_failure",
+                      control_failure="contact_clock_desynchronization",
+                      model_state_message_count=0, start_sim_time_sec=None,
+                      elapsed_sim_time_sec=0.)
+    payload = json.dumps(native)
+    args = argparse.Namespace(
+        robot_count=3, world="p1c_rooms.world", gazebo_seed=202, goal_timeout=60.,
+        spawn_timeout=90., startup_timeout=300., message_timeout=90.,
+        dwell_seconds=0., shutdown_timeout=30., evaluation_duration=None,
+        coverage_threshold=None, evaluation_wait_timeout=900., episode_id="early",
+        evaluation_output_dir=output, log_dir=tmp_path / "logs", task_contract=contract_path,
+    )
+    monkeypatch.setattr(smoke, "parse_args", lambda: args)
+    monkeypatch.setenv("ROS_DISTRO", "humble")
+    monkeypatch.setattr(smoke.shutil, "which", lambda *args: "/usr/bin/ros2")
+    monkeypatch.setattr(smoke, "run_ros", lambda *args, **kwargs: (
+        subprocess.CompletedProcess([], 0, "", "")
+    ))
+    probe_topics = []
+
+    def ready(*args, **kwargs):
+        if phase == "readiness":
+            result_path.write_text(payload)
+            return False
+        return True
+
+    def probe(topic, *args, **kwargs):
+        probe_topics.append(topic)
+        assert topic == "/tb1/scan"
+        result_path.write_text(payload)
+        return False
+
+    def start(command, **kwargs):
+        summary = reducer_summary()
+        if outcome == "reducer_gap":
+            summary["topics"]["tb2/caster_back_left"]["sequence_gaps"] = 1
+        kwargs["stdout"].write(reducer_log(summary))
+        if outcome == "native_child_failure":
+            kwargs["stdout"].write("[ERROR] [planner-1]: process has died [exit code -6]\n")
+        kwargs["stdout"].flush()
+        return SimpleNamespace(poll=lambda: 1 if outcome == "native_exit" else 0,
+                               wait=lambda **kwargs: 0,
+                               returncode=1 if outcome == "native_exit" else 0)
+
+    monkeypatch.setattr(smoke, "wait_until_ready", ready)
+    monkeypatch.setattr(smoke, "require_message", probe)
+    monkeypatch.setattr(smoke.subprocess, "Popen", start)
+    assert smoke.main() == 1
+    assert probe_topics == (["/tb1/scan"] if phase == "scan_probe" else [])
+    assert result_path.read_text() == payload
+    if outcome == "startup_failure":
+        error = capsys.readouterr().err
+        assert "contact_clock_desynchronization" in error
+        assert "termination_reason='navigation_failure'" in error
+        assert "no valid model_state_message_count" in error
