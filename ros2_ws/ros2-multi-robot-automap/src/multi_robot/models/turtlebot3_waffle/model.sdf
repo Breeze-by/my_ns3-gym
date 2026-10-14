@@ -133,6 +133,16 @@
         </geometry>
       </collision>
 
+      <sensor name="lidar_contact" type="contact">
+        <always_on>true</always_on>
+        <update_rate>20</update_rate>
+        <contact><collision>lidar_sensor_collision</collision></contact>
+        <plugin name="lidar_contact" filename="libgazebo_ros_bumper.so">
+          <ros><remapping>bumper_states:=collision/lidar</remapping></ros>
+          <frame_name>base_scan</frame_name>
+        </plugin>
+      </sensor>
+
       <visual name="lidar_sensor_visual">
         <pose>-0.064 0 0.121 0 0 0</pose>
         <geometry>
@@ -226,6 +236,16 @@
         </surface>
       </collision>
 
+      <sensor name="wheel_left_contact" type="contact">
+        <always_on>true</always_on>
+        <update_rate>20</update_rate>
+        <contact><collision>wheel_left_collision</collision></contact>
+        <plugin name="wheel_left_contact" filename="libgazebo_ros_bumper.so">
+          <ros><remapping>bumper_states:=collision/wheel_left</remapping></ros>
+          <frame_name>wheel_left_link</frame_name>
+        </plugin>
+      </sensor>
+
       <visual name="wheel_left_visual">
         <pose>0.0 0.144 0.023 0 0 0</pose>
         <geometry>
@@ -284,6 +304,16 @@
         </surface>
       </collision>
 
+      <sensor name="wheel_right_contact" type="contact">
+        <always_on>true</always_on>
+        <update_rate>20</update_rate>
+        <contact><collision>wheel_right_collision</collision></contact>
+        <plugin name="wheel_right_contact" filename="libgazebo_ros_bumper.so">
+          <ros><remapping>bumper_states:=collision/wheel_right</remapping></ros>
+          <frame_name>wheel_right_link</frame_name>
+        </plugin>
+      </sensor>
+
       <visual name="wheel_right_visual">
         <pose>0.0 -0.144 0.023 0 0 0</pose>
         <geometry>
@@ -327,6 +357,15 @@
           </contact>
         </surface>
       </collision>
+      <sensor name="caster_back_right_contact" type="contact">
+        <always_on>true</always_on>
+        <update_rate>20</update_rate>
+        <contact><collision>collision</collision></contact>
+        <plugin name="caster_back_right_contact" filename="libgazebo_ros_bumper.so">
+          <ros><remapping>bumper_states:=collision/caster_back_right</remapping></ros>
+          <frame_name>caster_back_right_link</frame_name>
+        </plugin>
+      </sensor>
     </link>
 
     <link name='caster_back_left_link'>
@@ -361,6 +400,15 @@
           </contact>
         </surface>
       </collision>
+      <sensor name="caster_back_left_contact" type="contact">
+        <always_on>true</always_on>
+        <update_rate>20</update_rate>
+        <contact><collision>collision</collision></contact>
+        <plugin name="caster_back_left_contact" filename="libgazebo_ros_bumper.so">
+          <ros><remapping>bumper_states:=collision/caster_back_left</remapping></ros>
+          <frame_name>caster_back_left_link</frame_name>
+        </plugin>
+      </sensor>
     </link>
 
     <link name="camera_link"/>

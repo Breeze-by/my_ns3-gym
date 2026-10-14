@@ -13,4 +13,5 @@ communication first, then frozen-policy gateway/ns-3 Wi-Fi effects. Current
 ROS gateway is implemented there. Do not let its old DQN or report next steps
 replace the active roadmap. The ROS workspace is in the same repository.
 
-MR3-P0 documentation awaits user acceptance; later steps are unstarted.
+MR3-P0 was accepted by the user on 2026-10-14. MR3-P1A is in implementation
+and validation; later steps remain unstarted and require separate acceptance.

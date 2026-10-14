@@ -2,7 +2,9 @@
 """Run a bounded headless smoke test of the multi-robot ROS 2 stack."""
 
 import argparse
+import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import re
@@ -14,6 +16,154 @@ import time
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+
+
+def finite_number(value):
+    return type(value) in (int, float) and math.isfinite(value)
+
+
+def resolve_task_settings(args, duration_attribute, legacy_duration, legacy_coverage, legacy_wait=180.0):
+    """Resolve a declared task before launching, rejecting conflicting CLI values."""
+    contract_path = getattr(args, "task_contract", None)
+    contract = None
+    if contract_path:
+        contract_path = Path(contract_path).expanduser().resolve()
+        payload = contract_path.read_bytes()
+        contract = json.loads(payload)
+        if not isinstance(contract, dict):
+            raise ValueError("task contract must be a JSON object")
+        if contract.get("robots") != ["tb1", "tb2", "tb3"] or args.robot_count != 3:
+            raise ValueError("MR3 task contracts require exactly tb1/tb2/tb3")
+        duration = contract["max_duration_sec"]
+        coverage = contract["coverage_threshold"]
+        if not finite_number(duration) or duration <= 0:
+            raise ValueError("task contract max_duration_sec must be finite and positive")
+        if not finite_number(coverage) or coverage != .95:
+            raise ValueError("MR3 task contract coverage_threshold must be 0.95")
+        if contract.get("world_file") != args.world:
+            raise ValueError(f"world is not declared by the task contract: {args.world}")
+        quality = contract["quality"]
+        if any(not finite_number(quality[field]) or not 0 <= quality[field] <= 1 for field in
+               ("min_observed_accuracy", "max_false_free_ratio", "min_occupied_iou")):
+            raise ValueError("task contract quality thresholds must be finite ratios")
+        participation = contract["participation"]
+        if not finite_number(participation["min_path_length_m"]) or participation["min_path_length_m"] <= 0:
+            raise ValueError("task contract minimum participation path must be positive")
+        if type(participation["min_goal_count"]) is not int or participation["min_goal_count"] < 1:
+            raise ValueError("task contract minimum participation goal count must be positive")
+        contract = {**contract, "sha256": hashlib.sha256(payload).hexdigest()}
+        args.task_contract = contract_path
+        for name, expected in ((duration_attribute, duration), ("coverage_threshold", coverage)):
+            supplied = getattr(args, name)
+            if supplied is not None and not math.isclose(supplied, expected, rel_tol=0, abs_tol=1e-9):
+                raise ValueError(f"--{name.replace('_', '-')} conflicts with the task contract")
+            setattr(args, name, expected)
+    else:
+        if getattr(args, duration_attribute) is None:
+            setattr(args, duration_attribute, legacy_duration)
+        if args.coverage_threshold is None:
+            args.coverage_threshold = legacy_coverage
+    duration = getattr(args, duration_attribute)
+    if not finite_number(duration) or duration < 0 or (legacy_duration > 0 and duration == 0):
+        raise ValueError("task duration must be finite and positive; plain smoke may use zero")
+    if not finite_number(args.coverage_threshold) or not 0 <= args.coverage_threshold <= 1:
+        raise ValueError("coverage threshold must be a finite ratio")
+    if getattr(args, "evaluation_wait_timeout", None) is None:
+        args.evaluation_wait_timeout = 900.0 if contract else legacy_wait
+    if not finite_number(args.evaluation_wait_timeout) or args.evaluation_wait_timeout <= 0:
+        raise ValueError("evaluation wait timeout must be finite and positive wall seconds")
+    return contract
+
+
+def validate_evaluation_result(result, coverage_threshold=0.0, task_contract=None):
+    """Check native task evidence independently of the parent launch exit code."""
+    if not isinstance(result, dict):
+        raise RuntimeError("evaluation result must be a JSON object")
+    required = {
+        "schema_version", "correct_free_coverage_ratio", "coverage_threshold",
+        "elapsed_sim_time_sec", "end_sim_time_sec", "map_message_count",
+        "merged_map_origin_x", "model_state_message_count", "robots",
+        "search_overlap_ratio", "start_sim_time_sec", "termination_reason",
+        "total_path_length_m", "truth_rectangle_count", "success",
+        "collision_events", "collision_monitoring_active", "max_duration_sec",
+        "time_to_75_coverage_sec",
+    }
+    if task_contract:
+        required.update({
+            "task_contract_sha256", "map_quality_pass", "robot_participation_pass",
+            "collision_monitoring_fresh", "task_start_barrier", "robot_count",
+            "contact_monitor_summary", "observed_accuracy", "false_free_ratio", "occupied_iou",
+            "navigation_protocol_closed",
+        })
+    missing = required - result.keys()
+    if missing:
+        raise RuntimeError("evaluation result is missing: " + ", ".join(sorted(missing)))
+    expected_schema = 4 if task_contract else 3
+    if type(result["schema_version"]) is not int or result["schema_version"] != expected_schema:
+        raise RuntimeError(f"evaluation schema must be version {expected_schema}")
+    for field in ("map_message_count", "model_state_message_count", "truth_rectangle_count"):
+        if type(result[field]) is not int or result[field] < 1:
+            raise RuntimeError(f"evaluation result has no valid {field}")
+    for field in ("coverage_threshold", "correct_free_coverage_ratio", "elapsed_sim_time_sec", "max_duration_sec"):
+        if not finite_number(result[field]):
+            raise RuntimeError(f"evaluation result has invalid {field}")
+    if abs(result["coverage_threshold"] - coverage_threshold) > 1e-9:
+        raise RuntimeError("evaluation coverage threshold is incorrect")
+    if not 0 <= result["correct_free_coverage_ratio"] <= 1:
+        raise RuntimeError("evaluation coverage must be a ratio")
+    if type(result["success"]) is not bool or result["success"] != (
+        result["termination_reason"] == "coverage_reached"
+    ):
+        raise RuntimeError("evaluation success state is inconsistent")
+    if result["success"] and result["correct_free_coverage_ratio"] < coverage_threshold:
+        raise RuntimeError("evaluation completed below its threshold")
+    if result["success"] and (
+        result["collision_events"] != 0
+        or result["collision_monitoring_active"] is not True
+        or result.get("control_failure")
+        or result["elapsed_sim_time_sec"] < 0
+        or (result["max_duration_sec"] > 0
+            and result["elapsed_sim_time_sec"] >= result["max_duration_sec"])
+    ):
+        raise RuntimeError("evaluation success violates safety or deadline")
+    if task_contract:
+        if result["task_contract_sha256"] != task_contract["sha256"]:
+            raise RuntimeError("evaluation used a different task contract")
+        if abs(result["max_duration_sec"] - task_contract["max_duration_sec"]) > 1e-9:
+            raise RuntimeError("evaluation task duration is incorrect")
+        if type(result["robot_count"]) is not int or result["robot_count"] != 3 or not isinstance(result["robots"], dict) or set(result["robots"]) != {"tb1", "tb2", "tb3"}:
+            raise RuntimeError("MR3 evaluation requires exactly tb1/tb2/tb3")
+        if result["task_start_barrier"] != "controller_release":
+            raise RuntimeError("MR3 evaluation did not use the controller release barrier")
+        gates = ("map_quality_pass", "robot_participation_pass", "collision_monitoring_fresh", "navigation_protocol_closed")
+        if any(type(result[field]) is not bool for field in gates):
+            raise RuntimeError("MR3 evaluation gates must be booleans")
+        if result["success"]:
+            if not all(result[field] for field in gates):
+                raise RuntimeError("MR3 evaluation success violates a task gate")
+            start, end = result["start_sim_time_sec"], result["end_sim_time_sec"]
+            if any(not finite_number(value)
+                   for value in (start, end)) or not math.isclose(
+                       end - start, result["elapsed_sim_time_sec"], rel_tol=0, abs_tol=1e-6):
+                raise RuntimeError("MR3 evaluation task time is inconsistent")
+            if not isinstance(result["contact_monitor_summary"], dict) or result["contact_monitor_summary"].get("ever_unhealthy") is not False:
+                raise RuntimeError("MR3 evaluation success has interrupted contact monitoring")
+            participation = task_contract["participation"]
+            if any(not isinstance(metrics, dict) or not finite_number(metrics.get("path_length_m"))
+                   or metrics["path_length_m"] < participation["min_path_length_m"]
+                   or type(metrics.get("nav_goal_count")) is not int
+                   or metrics["nav_goal_count"] < participation["min_goal_count"]
+                   for metrics in result["robots"].values()):
+                raise RuntimeError("MR3 evaluation success has an inactive robot")
+            quality = task_contract["quality"]
+            if any(not finite_number(result[field]) or not 0 <= result[field] <= 1 for field in
+                   ("observed_accuracy", "false_free_ratio", "occupied_iou")) or (
+                result["observed_accuracy"] < quality["min_observed_accuracy"]
+                or result["false_free_ratio"] > quality["max_false_free_ratio"]
+                or result["occupied_iou"] < quality["min_occupied_iou"]
+            ):
+                raise RuntimeError("MR3 evaluation success violates map quality")
+    return result
 
 
 def lifecycle_is_active(output):
@@ -103,7 +253,7 @@ def require_message(topic, timeout, qos_arguments=()):
 
 
 def wait_for_evaluation(
-    process, result_path, launch_log_path, timeout, coverage_threshold=0.0
+    process, result_path, launch_log_path, timeout, coverage_threshold=0.0, task_contract=None
 ):
     deadline = time.monotonic() + timeout
     log_offset = 0
@@ -111,70 +261,7 @@ def wait_for_evaluation(
         if result_path.exists():
             with result_path.open() as result_file:
                 result = json.load(result_file)
-            required = {
-                "schema_version",
-                "correct_free_coverage_ratio",
-                "coverage_threshold",
-                "elapsed_sim_time_sec",
-                "end_sim_time_sec",
-                "map_message_count",
-                "merged_map_origin_x",
-                "model_state_message_count",
-                "robots",
-                "search_overlap_ratio",
-                "start_sim_time_sec",
-                "termination_reason",
-                "total_path_length_m",
-                "truth_rectangle_count",
-                "success",
-                "collision_events",
-                "collision_monitoring_active",
-                "max_duration_sec",
-                "time_to_75_coverage_sec",
-            }
-            missing = required - result.keys()
-            if missing:
-                raise RuntimeError(
-                    "evaluation result is missing: "
-                    + ", ".join(sorted(missing))
-                )
-            if result["schema_version"] != 3:
-                raise RuntimeError("evaluation schema must be version 3")
-            if result["map_message_count"] < 1:
-                raise RuntimeError(
-                    "evaluation result has no merged-map messages"
-                )
-            if result["model_state_message_count"] < 1:
-                raise RuntimeError(
-                    "evaluation result has no Gazebo model states"
-                )
-            if result["truth_rectangle_count"] < 1:
-                raise RuntimeError("evaluation truth grid is empty")
-            if abs(result["coverage_threshold"] - coverage_threshold) > 1e-9:
-                raise RuntimeError(
-                    "evaluation coverage threshold is incorrect"
-                )
-            if result["success"] != (
-                result["termination_reason"] == "coverage_reached"
-            ):
-                raise RuntimeError("evaluation success state is inconsistent")
-            if (
-                result["success"]
-                and result["correct_free_coverage_ratio"]
-                < coverage_threshold
-            ):
-                raise RuntimeError("evaluation completed below its threshold")
-            if result["success"] and (
-                result["collision_events"] != 0
-                or not result["collision_monitoring_active"]
-                or (
-                    result["max_duration_sec"] > 0
-                    and result["elapsed_sim_time_sec"]
-                    >= result["max_duration_sec"]
-                )
-            ):
-                raise RuntimeError("evaluation success violates safety or deadline")
-            return result
+            return validate_evaluation_result(result, coverage_threshold, task_contract)
         if process.poll() is not None:
             raise RuntimeError(
                 "launch exited before evaluation result with "
@@ -223,19 +310,21 @@ def native_launch_failures(log_text):
 def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--robot-count", type=int, choices=range(1, 5), default=1
+        "--robot-count", type=int, choices=range(1, 5), default=3
     )
     parser.add_argument("--world", default="my_world.world")
     parser.add_argument("--gazebo-seed", type=int, default=1)
     parser.add_argument("--goal-timeout", type=float, default=60.0)
     parser.add_argument("--spawn-timeout", type=float, default=90.0)
-    parser.add_argument("--startup-timeout", type=float, default=180.0)
+    parser.add_argument("--startup-timeout", type=float, default=300.0)
     parser.add_argument("--message-timeout", type=float, default=30.0)
     parser.add_argument("--dwell-seconds", type=float, default=5.0)
     parser.add_argument("--shutdown-timeout", type=float, default=30.0)
-    parser.add_argument("--evaluation-duration", type=float, default=0.0)
-    parser.add_argument("--coverage-threshold", type=float, default=0.0)
-    parser.add_argument("--evaluation-wait-timeout", type=float, default=180.0)
+    parser.add_argument("--evaluation-duration", type=float, default=None)
+    parser.add_argument("--coverage-threshold", type=float, default=None)
+    parser.add_argument("--task-contract", type=Path, help="MR3 task contract; enables schema 4 evaluation")
+    parser.add_argument("--evaluation-wait-timeout", type=float, default=None,
+                        help="Wall watchdog: 900s for MR3 contracts, 180s for legacy smoke")
     parser.add_argument("--episode-id")
     parser.add_argument(
         "--evaluation-output-dir",
@@ -252,6 +341,10 @@ def parse_args():
 
 def main():
     args = parse_args()
+    try:
+        task_contract = resolve_task_settings(args, "evaluation_duration", 0.0, 0.0)
+    except (OSError, ValueError, KeyError, TypeError) as error:
+        raise SystemExit(f"invalid task settings: {error}") from error
     if shutil.which("ros2") is None or "ROS_DISTRO" not in os.environ:
         raise SystemExit(
             "source /opt/ros/humble/setup.bash and install/setup.bash first"
@@ -301,6 +394,9 @@ def main():
         f"evaluation_duration_sec:={args.evaluation_duration}",
         f"evaluation_coverage_threshold:={args.coverage_threshold}",
     ]
+
+    if task_contract:
+        command.append(f"evaluation_contract_path:={args.task_contract}")
 
     print("Command:", " ".join(command), flush=True)
     print("Launch log:", log_path, flush=True)
@@ -353,6 +449,7 @@ def main():
                     log_path,
                     args.evaluation_wait_timeout,
                     args.coverage_threshold,
+                    task_contract,
                 )
                 print(
                     "Evaluation result:",
@@ -380,6 +477,9 @@ def main():
             RuntimeError,
             TimeoutError,
             subprocess.TimeoutExpired,
+            ValueError,
+            TypeError,
+            KeyError,
         ) as error:
             print(f"FAIL: {error}", file=sys.stderr, flush=True)
         finally:

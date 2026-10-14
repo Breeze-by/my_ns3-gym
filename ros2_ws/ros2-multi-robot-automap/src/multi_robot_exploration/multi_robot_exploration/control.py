@@ -20,7 +20,7 @@ from rclpy.qos import DurabilityPolicy, QoSProfile
 from scipy import ndimage
 from scipy.sparse import coo_matrix
 from scipy.sparse.csgraph import dijkstra
-from std_msgs.msg import String
+from std_msgs.msg import Bool, Header, String
 from tf2_msgs.msg import TFMessage
 
 
@@ -603,7 +603,29 @@ def coordinate_assignments(
 class HeadquartersControl(Node):
     def __init__(self):
         super().__init__("headquarters_control")
-        self.num_robots = self.declare_parameter("robot_count", 2).value
+        self.num_robots = self.declare_parameter("robot_count", 3).value
+        self.require_task_monitor_ready = self.declare_parameter(
+            "require_task_monitor_ready", False
+        ).value
+        self.task_monitor_ready = not self.require_task_monitor_ready
+        self.exploration_started = False
+        self.exploration_start_time = None
+        self.task_stop_requested = False
+        self.task_stop_acknowledged = False
+        self.pending_task_stop = None
+        task_qos = QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL)
+        self.task_start_publisher = self.create_publisher(
+            Header, "/exploration_start", task_qos
+        )
+        self.task_stop_publisher = self.create_publisher(
+            String, "/exploration_stopped", task_qos
+        )
+        self.task_ready_subscription = self.create_subscription(
+            Bool, "/task_monitor_ready", self._task_monitor_callback, task_qos
+        )
+        self.task_stop_subscription = self.create_subscription(
+            Header, "/exploration_stop_request", self._task_stop_callback, task_qos
+        )
         self.goal_timeout_sec = self.declare_parameter(
             "goal_timeout_sec", 60.0
         ).value
@@ -735,6 +757,51 @@ class HeadquartersControl(Node):
     def now(self):
         return self.get_clock().now().nanoseconds / 1e9
 
+    def _task_monitor_callback(self, message):
+        self.task_monitor_ready = bool(message.data)
+
+    def _task_stop_callback(self, message):
+        """Close owned goals at task termination without selecting new targets."""
+        stamp = message.stamp.sec + message.stamp.nanosec / 1e9
+        if (
+            not self.exploration_started or stamp < self.exploration_start_time
+            or not math.isfinite(stamp) or message.frame_id != "map"
+        ):
+            return
+        if stamp > self.now():
+            self.pending_task_stop = message
+            return
+        self.task_stop_requested = True
+        for name, handle in self.goal_handles.items():
+            if handle is not None and self.goal_targets[name] is not None:
+                self.request_cancel(name, self.goal_targets[name])
+        self._acknowledge_task_stop()
+
+    def _drain_task_stop(self):
+        pending = getattr(self, "pending_task_stop", None)
+        if pending is not None and pending.stamp.sec + pending.stamp.nanosec / 1e9 <= self.now():
+            self.pending_task_stop = None
+            self._task_stop_callback(pending)
+
+    def _acknowledge_task_stop(self):
+        if not getattr(self, "task_stop_requested", False) or self.task_stop_acknowledged:
+            return
+        if any(self.goal_targets.values()) or any(self.goal_handles.values()):
+            return
+        if any(self.goal_requests.values()) or any(self.goal_results.values()):
+            return
+        self.task_stop_acknowledged = True
+        message = String()
+        message.data = json.dumps({
+            "start_sim_time_sec": self.exploration_start_time,
+            "stop_sim_time_sec": self.now(),
+            "pending_goal_count": 0,
+            "robot_names": list(self.robot_states),
+            "navigation_failure": bool(self.failed_navigation),
+        })
+        self.task_stop_publisher.publish(message)
+        self.get_logger().info("Exploration stopped; all navigation ownership closed.")
+
     def map_callback(self, msg):
         self.map_data = np.asarray(msg.data, dtype=np.int16).reshape(
             msg.info.height, msg.info.width
@@ -830,8 +897,30 @@ class HeadquartersControl(Node):
         )
 
     def assign_idle_robots(self):
+        self._drain_task_stop()
+        if getattr(self, "task_stop_requested", False):
+            self._acknowledge_task_stop()
+            return
         if self.map_data is None:
             return
+        if not self.exploration_started:
+            if (
+                not self.task_monitor_ready or self.now() <= 0
+                or self.failed_navigation
+                or any(position is None for position in self.robot_positions.values())
+                or any(grid is None for grid in self.robot_maps.values())
+                or not all(client.server_is_ready() for client in self.robot_nav_clients.values())
+            ):
+                return
+            self.exploration_start_time = self.now()
+            self.exploration_started = True
+            release = Header()
+            release.stamp = self.get_clock().now().to_msg()
+            release.frame_id = "map"
+            self.task_start_publisher.publish(release)
+            self.get_logger().info(
+                f"Exploration released at sim_time={self.exploration_start_time:.9f}."
+            )
         idle_positions = {
             name: self.robot_positions[name]
             for name, state in self.robot_states.items()
@@ -1039,7 +1128,10 @@ class HeadquartersControl(Node):
                 self.goal_result_callback(name, target, result)
             )
         )
-        if robot_name in self.failed_navigation and self.goal_targets[robot_name] is assignment:
+        if (
+            (robot_name in self.failed_navigation or getattr(self, "task_stop_requested", False))
+            and self.goal_targets[robot_name] is assignment
+        ):
             self.request_cancel(robot_name, assignment)
 
     def feedback_callback(self, robot_name, assignment, feedback_msg):
@@ -1169,8 +1261,12 @@ class HeadquartersControl(Node):
             "failed" if robot_name in self.failed_navigation else "idle"
         )
         self.check_exploration_completion()
+        if getattr(self, "task_stop_requested", False):
+            self._acknowledge_task_stop()
 
     def cancel_stalled_goals(self):
+        if hasattr(self, "_drain_task_stop"):
+            self._drain_task_stop()
         now = self.now()
         for robot_name, goal_handle in self.goal_handles.items():
             result_future = self.goal_results[robot_name]

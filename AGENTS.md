@@ -53,16 +53,17 @@ acceptance. Complete and verify each substep, commit/push, present evidence,
 and wait for the user's explicit acceptance before the next substep.
 Old P1C/P2C acceptance or PASS cannot be reused as MR3 credit.
 
-Current boundary: **MR3-P0 documentation delivered, awaiting user acceptance**.
-This session changes documentation only; MR3-P1A and all implementation are
-unstarted. Do not begin training or gateway work because a plan mentions it.
+Current boundary: **MR3-P0 accepted by the user on 2026-10-14; MR3-P1A implementation and validation in progress**.
+The user explicitly authorized P1A after the correction review. Complete its
+three-robot task/measurement gates and obtain acceptance before P1B; no RL
+training or gateway work is authorized by this step.
 
 ## Current implementation and evidence
 
 `main` was restored from P1C `99cf3a6` and repaired. Pre-route document commit
-is `81b2f8b`; runtime freeze is `c9344e1`. Current launch still defaults to two
-and supports 1–4: all new documented commands explicitly pass three. Changing
-that runtime contract belongs to MR3-P1A, not this documentation session.
+is `81b2f8b`; runtime freeze is `c9344e1`. P1A changes the active launch and check defaults to three, retaining 1–4
+compatibility without new non-three research runs. Use the explicit MR3 task
+contract for 95% schema4 evaluation; legacy schema3 remains diagnostic only.
 
 The source still uses a handcrafted frontier controller, common-frame
 conservative map fusion and Nav2. No three-robot RL policy or ROS/ns-3 gateway

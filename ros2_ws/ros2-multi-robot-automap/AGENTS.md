@@ -8,9 +8,11 @@ commands are in `launch_commands.md`, actual behavior in `user_guide.md`.
 Fixed research team: tb1/tb2/tb3. First centralized joint RL exploration with
 stable subgoals and local SLAM/Nav2; later frozen-policy gateway/ns-3 Wi-Fi.
 No target search, charging, rally, other robot counts or hardware roadmap.
-MR3-P0 documentation awaits user acceptance; implementation is unstarted.
+MR3-P0 was accepted by the user on 2026-10-14; MR3-P1A is in implementation
+and validation. P1B and later steps remain unstarted.
 
-Current launch still defaults to two and supports 1–4; pass robot_count:=3.
+Active launch/check defaults are three; 1–4 compatibility remains without
+new non-three research runs. Explicit MR3 contracts select schema4 evaluation.
 It still launches the handcrafted control node, not an RL policy. No gateway
 or new training CLI exists. Historical reports are evidence, not instructions.
 

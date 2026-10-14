@@ -38,7 +38,7 @@ def body_points(peers):
 class PeerObstacles(Node):
     def __init__(self):
         super().__init__("peer_obstacles")
-        count = self.declare_parameter("robot_count", 2).value
+        count = self.declare_parameter("robot_count", 3).value
         if not 1 <= count <= 4:
             raise ValueError("robot_count must be between 1 and 4")
         self.names = [f"tb{i}" for i in range(1, count + 1)]

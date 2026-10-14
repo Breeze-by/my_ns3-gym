@@ -16,7 +16,12 @@ import rclpy
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
-from std_msgs.msg import String
+from std_msgs.msg import Bool, Header, String
+
+from .mr3_contacts import CONTACT_COMPONENTS, ContactMonitor, contact_topics
+from .mr3_task_contract import (
+    compare_contract_occupancy_grid, load_contract_truth, load_task_contract,
+)
 
 
 @dataclass
@@ -228,6 +233,30 @@ def evaluation_termination_reason(
     return None
 
 
+def mr3_quality_pass(metrics, quality):
+    """Apply the declared quality gates independently of coverage reward."""
+    fields = ("observed_accuracy", "occupied_iou", "false_free_ratio")
+    if any(not isinstance(metrics.get(name), (int, float))
+           or isinstance(metrics[name], bool) or not math.isfinite(metrics[name])
+           for name in fields):
+        return False
+    return (
+        metrics["observed_accuracy"] >= quality["min_observed_accuracy"]
+        and metrics["occupied_iou"] >= quality["min_occupied_iou"]
+        and metrics["false_free_ratio"] <= quality["max_false_free_ratio"]
+    )
+
+
+def mr3_participation_pass(path_lengths, goal_ids, participation):
+    names = {"tb1", "tb2", "tb3"}
+    return set(path_lengths) == names and set(goal_ids) == names and all(
+        math.isfinite(path_lengths[name])
+        and path_lengths[name] >= participation["min_path_length_m"]
+        and len(goal_ids[name]) >= participation["min_goal_count"]
+        for name in names
+    )
+
+
 def _yaw_from_quaternion(quaternion):
     return math.atan2(
         2 * (quaternion.w * quaternion.z + quaternion.x * quaternion.y),
@@ -238,7 +267,8 @@ def _yaw_from_quaternion(quaternion):
 class TaskEvaluator(Node):
     def __init__(self):
         super().__init__("task_evaluator")
-        self.robot_count = self.declare_parameter("robot_count", 2).value
+        self.robot_count = self.declare_parameter("robot_count", 3).value
+        self.task_contract_path = self.declare_parameter("task_contract_path", "").value
         self.episode_id = self.declare_parameter("episode_id", "episode").value
         self.world_file = self.declare_parameter("world_file", "").value
         self.gazebo_seed = self.declare_parameter("gazebo_seed", 1).value
@@ -281,7 +311,35 @@ class TaskEvaluator(Node):
         ):
             if not math.isfinite(value) or value < 0 or (positive and value == 0):
                 raise ValueError(f"Invalid {name}: {value}")
-        self.truth = load_truth_grid(self.world_file, self.truth_resolution)
+        self.task_contract = None
+        self.contact_monitor = None
+        self.pending_contacts = []
+        self.navigation_protocol_closed = False
+        self.stop_requested_sim_time = None
+        self.stop_acknowledgment = None
+        self.map_contract_failure = ""
+        self.initial_map_metrics = None
+        self.task_ready_published = None
+        self.legacy_truth = load_truth_grid(self.world_file, self.truth_resolution)
+        self.truth = self.legacy_truth
+        if self.task_contract_path:
+            self.task_contract = load_task_contract(self.task_contract_path, self.world_file)
+            contract = self.task_contract.data
+            if self.robot_count != 3:
+                raise ValueError("MR3 task requires exactly three robots")
+            if self.max_duration not in (0.0, contract["max_duration_sec"]):
+                raise ValueError("max_duration_sec conflicts with the frozen MR3 contract")
+            if self.coverage_threshold not in (0.0, contract["coverage_threshold"]):
+                raise ValueError("coverage_threshold conflicts with the frozen MR3 contract")
+            if self.truth_resolution != contract["resolution"]:
+                raise ValueError("truth_resolution conflicts with the frozen MR3 contract")
+            self.max_duration = contract["max_duration_sec"]
+            self.coverage_threshold = contract["coverage_threshold"]
+            self.truth = load_contract_truth(self.world_file, self.task_contract)
+            self.contact_monitor = ContactMonitor(
+                contract["robots"], contract["support_collision_names"],
+                contract["contact_monitor_max_age_sec"],
+            )
         self.robot_names = [
             f"tb{index}" for index in range(1, self.robot_count + 1)
         ]
@@ -330,6 +388,19 @@ class TaskEvaluator(Node):
                 10,
             ),
         ]
+        if self.task_contract:
+            self.task_ready_publisher = self.create_publisher(Bool, "/task_monitor_ready", map_qos)
+            self.task_stop_publisher = self.create_publisher(
+                Header, "/exploration_stop_request", map_qos
+            )
+            self.input_subscriptions.extend([
+                self.create_subscription(
+                    Header, "/exploration_start", self._release_callback, map_qos
+                ),
+                self.create_subscription(
+                    String, "/exploration_stopped", self._stopped_callback, map_qos
+                ),
+            ])
         for name in self.robot_names:
             self.input_subscriptions.append(
                 self.create_subscription(
@@ -341,17 +412,21 @@ class TaskEvaluator(Node):
                     10,
                 )
             )
-            self.input_subscriptions.append(
-                self.create_subscription(
-                    ContactsState,
-                    f"/{name}/collision",
-                    lambda message, robot=name: self._collision_callback(
-                        message, robot
-                    ),
-                    10,
-                )
-            )
-        self.timer = self.create_timer(0.5, self._timer_callback)
+            if self.task_contract:
+                for component, topic in contact_topics(name).items():
+                    self.input_subscriptions.append(self.create_subscription(
+                        ContactsState, topic,
+                        lambda message, robot=name, part=component: self._mr3_contact_callback(
+                            message, robot, part
+                        ),
+                        20,
+                    ))
+            else:
+                self.input_subscriptions.append(self.create_subscription(
+                    ContactsState, f"/{name}/collision",
+                    lambda message, robot=name: self._collision_callback(message, robot), 10,
+                ))
+        self.timer = self.create_timer(0.1 if self.task_contract else 0.5, self._timer_callback)
         self.get_logger().info(
             f"Loaded {self.truth.rectangle_count} truth rectangles from "
             f"{self.world_file}"
@@ -360,8 +435,87 @@ class TaskEvaluator(Node):
     def _now(self):
         return self.get_clock().now().nanoseconds / 1e9
 
+    def _mr3_contact_callback(self, message, robot, component):
+        if self.finalized:
+            return
+        now = self._now()
+        stamp = message.header.stamp.sec + message.header.stamp.nanosec / 1e9
+        # /clock and sensor DDS topics can arrive in either order. Never apply
+        # a future contact sample or rewrite its source stamp to receipt time.
+        if stamp > now:
+            self.pending_contacts.append((stamp, robot, component, message))
+            if len(self.pending_contacts) > 256:
+                self.control_failure = "contact_clock_desynchronization"
+            return
+        self._drain_contacts(now)
+        self.contact_monitor.update(robot, component, message, now)
+
+    def _drain_contacts(self, now):
+        pending, self.pending_contacts = self.pending_contacts, []
+        for stamp, robot, component, message in sorted(pending, key=lambda entry: entry[0]):
+            if stamp <= now:
+                self.contact_monitor.update(robot, component, message, now)
+            else:
+                self.pending_contacts.append((stamp, robot, component, message))
+
+    def _release_callback(self, message):
+        if self.finalized or self.start_sim_time is not None:
+            return
+        stamp = message.stamp.sec + message.stamp.nanosec / 1e9
+        now = self._now()
+        if not math.isfinite(stamp) or stamp <= 0 or message.frame_id != "map":
+            self.finalize("invalid_task_release")
+            return
+        if stamp > now:
+            # Retain the release until /clock reaches it, just like sensors.
+            self.pending_release = message
+            return
+        self._drain_contacts(now)
+        self.start_sim_time = stamp
+        self.start_positions = self.positions.copy()
+        self.previous_positions = self.positions.copy()
+        self.contact_monitor.start(now)
+        self.initial_map_metrics = self._map_metrics()
+        self.get_logger().info(
+            f"Episode {self.episode_id} released at sim_time={stamp:.9f}"
+        )
+        self._update_coverage_times()
+        self._timer_callback()
+
+    def _stopped_callback(self, message):
+        if self.finalized or self.stop_requested_sim_time is None:
+            return
+        try:
+            acknowledgment = json.loads(message.data)
+            start = acknowledgment["start_sim_time_sec"]
+            stop = acknowledgment["stop_sim_time_sec"]
+            valid = (
+                type(acknowledgment["pending_goal_count"]) is int
+                and acknowledgment["pending_goal_count"] == 0
+                and acknowledgment["robot_names"] == self.robot_names
+                and acknowledgment["navigation_failure"] is False
+                and math.isfinite(start) and math.isfinite(stop)
+                and math.isclose(start, self.start_sim_time, abs_tol=1e-9)
+                and self.stop_requested_sim_time <= stop
+            )
+        except (ValueError, TypeError, KeyError):
+            valid = False
+        if not valid:
+            self.finalize("navigation_closure_invalid")
+            return
+        if stop > self._now():
+            self.pending_stop_ack = message
+            return
+        self.stop_acknowledgment = acknowledgment
+        self.navigation_protocol_closed = True
+        self._timer_callback()
+
     def _map_callback(self, message):
         if self.finalized:
+            return
+        if self.task_contract and message.header.frame_id.lstrip("/") != "map":
+            self.map_contract_failure = "unexpected_map_frame"
+            self.finalize("map_contract_error")
             return
         self.latest_map = message
         self.map_message_count += 1
@@ -402,6 +556,8 @@ class TaskEvaluator(Node):
             )
 
     def _maybe_start(self, now):
+        if self.task_contract:
+            return  # MR3 starts only at the controller's common release.
         if (
             self.start_sim_time is not None
             or now <= 0.0
@@ -468,7 +624,12 @@ class TaskEvaluator(Node):
         self.finalize("navigation_failure")
 
     def _timer_callback(self):
-        if self.finalized or self.start_sim_time is None:
+        if self.finalized:
+            return
+        if self.task_contract:
+            self._mr3_timer_callback()
+            return
+        if self.start_sim_time is None:
             return
         coverage = self._map_metrics().get("correct_free_coverage_ratio", 0.0)
         reason = evaluation_termination_reason(
@@ -480,6 +641,84 @@ class TaskEvaluator(Node):
         )
         if reason:
             self.finalize(reason)
+
+    def _mr3_timer_callback(self):
+        now = self._now()
+        self._drain_contacts(now)
+        pending_ack = getattr(self, "pending_stop_ack", None)
+        if pending_ack is not None and json.loads(pending_ack.data)["stop_sim_time_sec"] <= now:
+            self.pending_stop_ack = None
+            self._stopped_callback(pending_ack)
+            return
+        pending_release = getattr(self, "pending_release", None)
+        if pending_release is not None and (
+            pending_release.stamp.sec + pending_release.stamp.nanosec / 1e9 <= now
+        ):
+            self.pending_release = None
+            self._release_callback(pending_release)
+            return
+        summary = self.contact_monitor.summary(now)
+        ready = (
+            summary["fresh"] and not summary["ever_unhealthy"]
+            and summary["event_count"] == 0 and not self.control_failure
+            and self.latest_map is not None and not self.map_contract_failure
+            and all(name in self.positions for name in self.robot_names)
+        )
+        if ready != self.task_ready_published:
+            message = Bool()
+            message.data = ready
+            self.task_ready_publisher.publish(message)
+            self.task_ready_published = ready
+        if self.start_sim_time is None:
+            if summary["event_count"]:
+                self.finalize("startup_collision")
+            elif self.control_failure:
+                self.finalize("navigation_failure")
+            return
+        elapsed = now - self.start_sim_time
+        reason = self._mr3_termination_reason(elapsed, summary)
+        if reason:
+            self.finalize(reason)
+
+    def _mr3_termination_reason(self, elapsed, summary):
+        # Deadline precedence includes the bounded terminal-goal handshake.
+        if elapsed >= self.max_duration:
+            return "timeout"
+        if elapsed < 0:
+            return "simulation_clock_regressed"
+        if self.control_failure:
+            return "navigation_failure"
+        if summary["event_count"]:
+            return "collision"
+        if summary["ever_unhealthy"] or not summary["fresh"]:
+            return "collision_monitoring_interrupted"
+        if self.map_contract_failure:
+            return "map_contract_error"
+        if any(self.teleport_jumps.values()):
+            return "pose_discontinuity"
+        metrics = self._map_metrics()
+        contract = self.task_contract.data
+        eligible = (
+            metrics.get("correct_free_coverage_ratio", 0.0) >= self.coverage_threshold
+            and mr3_quality_pass(metrics, contract["quality"])
+            and mr3_participation_pass(self.path_lengths, self.goal_ids, contract["participation"])
+        )
+        if self.stop_requested_sim_time is not None:
+            if not eligible:
+                return "task_gate_regressed_during_closure"
+            if self.navigation_protocol_closed:
+                return "coverage_reached"
+            closure_elapsed = self._now() - self.stop_requested_sim_time
+            if closure_elapsed >= contract["navigation_closure_timeout_sec"]:
+                return "navigation_closure_timeout"
+            return None
+        if eligible:
+            self.stop_requested_sim_time = self._now()
+            request = Header()
+            request.stamp = self.get_clock().now().to_msg()
+            request.frame_id = "map"
+            self.task_stop_publisher.publish(request)
+        return None
 
     def _update_coverage_times(self):
         if self.start_sim_time is None:
@@ -498,7 +737,8 @@ class TaskEvaluator(Node):
             return {}
         info = self.latest_map.info
         yaw = _yaw_from_quaternion(info.origin.orientation)
-        metrics = compare_occupancy_grid(
+        compare = compare_contract_occupancy_grid if self.task_contract else compare_occupancy_grid
+        metrics = compare(
             self.truth,
             self.latest_map.data,
             info.width,
@@ -526,21 +766,37 @@ class TaskEvaluator(Node):
         self.finalized = True
         end_time = self._now()
         if self.start_sim_time is None:
-            termination_reason = "no_data"
+            if termination_reason == "shutdown":
+                termination_reason = "no_data"
             elapsed = 0.0
         else:
             elapsed = max(0.0, end_time - self.start_sim_time)
-        monitoring_active = all(
-            count > 0 for count in self.collision_messages.values()
+        if self.task_contract and self.start_sim_time is not None and elapsed >= self.max_duration:
+            termination_reason = "timeout"
+        contact_summary = self.contact_monitor.summary(end_time) if self.task_contract else None
+        if contact_summary:
+            for name in self.robot_names:
+                self.collision_events[name] = contact_summary["robots"][name]["event_count"]
+                self.collision_duration[name] = contact_summary["robots"][name]["duration_sec"]
+                self.collision_messages[name] = sum(
+                    row["message_count"] for row in contact_summary["components"][name].values()
+                )
+        monitoring_active = (
+            contact_summary["fresh"] and not contact_summary["ever_unhealthy"]
+            if contact_summary else all(count > 0 for count in self.collision_messages.values())
         )
         map_metrics = self._map_metrics()
         if termination_reason == "coverage_reached":
-            termination_reason = evaluation_termination_reason(
-                map_metrics.get("correct_free_coverage_ratio", 0.0),
-                self.coverage_threshold, elapsed, self.max_duration,
-                sum(self.collision_events.values()), monitoring_active,
-                "navigation_failure" if self.control_failure else "",
-            ) or "coverage_not_reached"
+            if self.task_contract:
+                termination_reason = self._mr3_termination_reason(elapsed, contact_summary)
+                termination_reason = termination_reason or "coverage_not_reached"
+            else:
+                termination_reason = evaluation_termination_reason(
+                    map_metrics.get("correct_free_coverage_ratio", 0.0),
+                    self.coverage_threshold, elapsed, self.max_duration,
+                    sum(self.collision_events.values()), monitoring_active,
+                    "navigation_failure" if self.control_failure else "",
+                ) or "coverage_not_reached"
 
         robots = {}
         for name in self.robot_names:
@@ -565,7 +821,7 @@ class TaskEvaluator(Node):
 
         success = termination_reason == "coverage_reached"
         result = {
-            "schema_version": 3,
+            "schema_version": 4 if self.task_contract else 3,
             "episode_id": self.episode_id,
             "world_file": self.world_file,
             "gazebo_seed": self.gazebo_seed,
@@ -612,6 +868,39 @@ class TaskEvaluator(Node):
             **map_metrics,
             "robots": robots,
         }
+        if self.task_contract:
+            info = self.latest_map.info if self.latest_map is not None else None
+            legacy = compare_occupancy_grid(
+                self.legacy_truth, self.latest_map.data, info.width, info.height,
+                info.resolution, (info.origin.position.x, info.origin.position.y),
+                _yaw_from_quaternion(info.origin.orientation),
+            ) if info is not None else {}
+            contract = self.task_contract.data
+            result.update({
+                "task_contract_id": contract["contract_id"],
+                "task_contract_sha256": self.task_contract.sha256,
+                "world_sha256": self.truth.world_sha256,
+                "task_start_barrier": "controller_release",
+                "roi_bounds": contract["roi"]["bounds"],
+                "lidar_height_m": self.truth.lidar_height_m,
+                "truth_rasterization": contract["truth_rasterization"],
+                "map_quality_pass": mr3_quality_pass(map_metrics, contract["quality"]),
+                "robot_participation_pass": mr3_participation_pass(
+                    self.path_lengths, self.goal_ids, contract["participation"]
+                ),
+                "collision_monitoring_fresh": monitoring_active,
+                "contact_monitor_summary": contact_summary,
+                "contact_component_count_per_robot": len(CONTACT_COMPONENTS),
+                "navigation_protocol_closed": self.navigation_protocol_closed,
+                "navigation_stop_requested_sim_time_sec": self.stop_requested_sim_time,
+                "navigation_stop_acknowledgment": self.stop_acknowledgment,
+                "initial_map_metrics": self.initial_map_metrics,
+                "legacy_schema3_map_metrics": legacy,
+                "legacy_schema3_scope": (
+                    "original .2m slice, center sampling, all-box bounds; diagnostic only"
+                ),
+                "map_contract_failure": self.map_contract_failure,
+            })
         self._write_outputs(result)
 
     def _write_outputs(self, result):

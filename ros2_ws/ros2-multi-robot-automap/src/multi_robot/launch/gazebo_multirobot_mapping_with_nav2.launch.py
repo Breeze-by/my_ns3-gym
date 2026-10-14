@@ -46,6 +46,7 @@ def launch_setup(context, *args, **kwargs):
     evaluation_output_dir = LaunchConfiguration("evaluation_output_dir")
     evaluation_duration = LaunchConfiguration("evaluation_duration_sec")
     evaluation_coverage = LaunchConfiguration("evaluation_coverage_threshold")
+    evaluation_contract = LaunchConfiguration("evaluation_contract_path")
     stop_on_evaluation = LaunchConfiguration("stop_on_evaluation_complete")
 
     try:
@@ -175,6 +176,7 @@ def launch_setup(context, *args, **kwargs):
                 "goal_timeout_sec": goal_timeout,
                 "navigation_response_timeout_sec": response_timeout,
                 "navigation_cancel_timeout_sec": cancel_timeout,
+                "require_task_monitor_ready": bool(evaluation_contract.perform(context)),
             }
         ],
         output="screen",
@@ -207,6 +209,7 @@ def launch_setup(context, *args, **kwargs):
                 "output_dir": evaluation_output_dir,
                 "max_duration_sec": evaluation_duration,
                 "coverage_threshold": evaluation_coverage,
+                "task_contract_path": evaluation_contract,
             }
         ],
         output="screen",
@@ -471,8 +474,8 @@ def generate_launch_description():
     ld.add_action(
         DeclareLaunchArgument(
             "robot_count",
-            default_value="2",
-            description="Number of robots to spawn. Valid range: 1 to 4.",
+            default_value="3",
+            description="Number of robots to spawn. MR3 uses 3; compatibility range: 1 to 4.",
         )
     )
 
@@ -551,7 +554,7 @@ def generate_launch_description():
     ld.add_action(
         DeclareLaunchArgument(
             "nav2_ready_timeout_sec",
-            default_value="180.0",
+            default_value="300.0",
             description="Wall seconds to wait for every Nav2 action server.",
         )
     )
@@ -605,6 +608,11 @@ def generate_launch_description():
             description="Correct-free coverage ratio that completes exploration.",
         )
     )
+
+    ld.add_action(DeclareLaunchArgument(
+        "evaluation_contract_path", default_value="",
+        description="MR3 task contract JSON; empty preserves schema 3 evaluation.",
+    ))
 
     ld.add_action(OpaqueFunction(function=launch_setup))
 

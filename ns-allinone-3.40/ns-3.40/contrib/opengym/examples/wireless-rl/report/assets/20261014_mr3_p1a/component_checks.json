@@ -1,0 +1,26 @@
+{
+  "type": "unit_and_static_checks_not_simulator",
+  "packages": [
+    {
+      "package": "multi_robot_exploration",
+      "tests": 170,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 1
+    },
+    {
+      "package": "merge_map",
+      "tests": 12,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 1
+    }
+  ],
+  "initial_failures": [
+    "first pytest collection omitted canonical ROS overlay; corrected by source install/setup.bash",
+    "initial integrated check had an old fake missing new task_contract=None and style failures; repaired",
+    "second integrated check ran before all delegated style edits completed; remaining lint failures repaired"
+  ],
+  "command": "source /opt/ros/humble/setup.bash; source install/setup.bash; export PYTHONNOUSERSITE=1; /usr/bin/python3 /usr/bin/colcon test --packages-select multi_robot_exploration merge_map --event-handlers console_cohesion+",
+  "simulator_runs": 0
+}

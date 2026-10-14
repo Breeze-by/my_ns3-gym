@@ -1,6 +1,6 @@
 # 当前 ROS 技术参考与边界
 
-2026-10-14，审计源码 `81b2f8b` / 运行冻结 `c9344e1`。
+2026-10-14，P1A实施/验证中；`81b2f8b`/`c9344e1`是历史审计/工程冻结。
 本文件取代旧分散四台/旧 ros2_humble 路径/过时行号样例；原文可从
 [归档索引](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/ARCHIVE_INDEX.json)所列Git对象恢复。
 研究路线读 [RESEARCH_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，运行读
@@ -43,8 +43,9 @@ Smac2D规划，本机激光/DWB执行差速速度。模型不支持自由侧移�
 peer_layer；其他障碍max合并，虚拟peer不进SLAM。它不使用Gazebo真值。
 这是理想通信安全输入，后续必须受已交付跨机信息边界约束。
 
-Gazebo接触topic仅监测 `base_link/base_collision` 的真实接触，不能据此证明轮、脚轮、
-雷达等全机体无非支撑接触；完整性及正常支撑接触排除规则属于 P1A 门禁。
+P1A为六个真实碰撞体增加独立20Hz接触源；legacy schema3仍只读基体topic，不能用其
+历史零记录证明全机体无碰撞。schema4核查18源持续新鲜度，只精确排除正常轮/脚轮地面
+支撑接触；原生覆盖和新鲜度证据以P1A报告为准。
 joint_state插件给真实轮关节；默认建图不再重复启动
 虚构零轮位姿的joint_state_publisher。独立评价读真值路径/碰撞/地图，不发布动作。
 成功门禁与分母限制见使用指南；监测曾有一条消息不证明整段新鲜。
@@ -53,7 +54,7 @@ joint_state插件给真实轮关节；默认建图不再重复启动
 
 旧预建图AMCL导航、offline_merge与其他robot_count配置若保留，属于兼容工具，
 不是MR3推荐入口；不通过注释机器人列表或复制旧出生位置开展研究。
-活动新研究固定三台；源码清理在P1A经用户验收后实施。
+活动新研究固定三台，活动默认已统一三台；保留兼容入口不增加其他规模研究。
 
 新RL模式需互斥替换全局目标策略，保留协议/安全而无人工探索兜底。
 新gateway需隔离后端received store、机器人本地action proxy、共享地图副本/队友状态。

@@ -56,7 +56,7 @@ def test_evaluator_callback_returns_without_shutting_down_context(monkeypatch):
     called = []
     monkeypatch.setattr("rclpy.shutdown", lambda: pytest.fail("callback context shutdown"))
     evaluator = SimpleNamespace(
-        finalized=False, start_sim_time=0., _now=lambda: 20.,
+        finalized=False, task_contract=None, start_sim_time=0., _now=lambda: 20.,
         _map_metrics=lambda: {"correct_free_coverage_ratio": .2},
         coverage_threshold=.9, max_duration=20., collision_events={"tb1": 0},
         collision_messages={"tb1": 10}, control_failure="", finalize=called.append,

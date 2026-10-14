@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "contract_id": "MR3-P1A-v1-validation-open",
+  "robots": [
+    "tb1",
+    "tb2",
+    "tb3"
+  ],
+  "world_file": "mr3_validation_open.world",
+  "world_sha256": "ee8d99da894bec528403cdc097f8d6e25f6e27bc280b09232a1fffb4b1218c60",
+  "frame_id": "map",
+  "resolution": 0.05,
+  "lidar_height_m": 0.131,
+  "truth_rasterization": "positive_area_intersection_v1",
+  "roi": {
+    "type": "rectangle",
+    "bounds": [
+      -7.1,
+      -5.1,
+      7.1,
+      5.1
+    ],
+    "rationale": "Complete enclosing outer-wall extent; includes walls for quality and every free cell, including inaccessible center strips. No policy-result-based trimming."
+  },
+  "starts": {
+    "tb1": [
+      0.0,
+      -0.45
+    ],
+    "tb2": [
+      0.0,
+      0.45
+    ],
+    "tb3": [
+      0.45,
+      0.0
+    ]
+  },
+  "robot_radius_m": 0.25,
+  "lidar_range_m": 10.0,
+  "max_duration_sec": 300.0,
+  "coverage_threshold": 0.95,
+  "quality": {
+    "min_observed_accuracy": 0.95,
+    "min_occupied_iou": 0.2,
+    "max_false_free_ratio": 0.02,
+    "rationale": "Correct-known accuracy and dangerous false-free bound; IoU includes unobserved wall interiors. The .20 floor is calibrated from declared geometry and prior development baselines (.22/.25), before any MR3 run; no post-failure lowering. False-free denominator is all truth occupied cells."
+  },
+  "participation": {
+    "min_path_length_m": 1.0,
+    "min_goal_count": 1
+  },
+  "contact_monitor_max_age_sec": 0.5,
+  "support_collision_names": [
+    "ground_plane::link::collision"
+  ],
+  "navigation_closure_timeout_sec": 10.0,
+  "task_start_barrier": "controller_release",
+  "startup_wall_guard_sec": 300.0,
+  "evaluation_wall_guard_sec": 900.0,
+  "scope": "Future validation task; static geometry checked only. No P1A policy or simulator run is permitted."
+}

@@ -1,0 +1,284 @@
+{
+  "schema_version": 1,
+  "protocol_id": "MR3-P1A-v1",
+  "robot_names": [
+    "tb1",
+    "tb2",
+    "tb3"
+  ],
+  "development": [
+    {
+      "world_file": "p1c_open.world",
+      "task_contract": "open.json",
+      "task_contract_sha256": "1bb5c097cdd9a6c92ee6edb7fabcb3c844117b51d18e40641c58aad7b29af4a6",
+      "task_seeds": [
+        101,
+        202,
+        303
+      ]
+    },
+    {
+      "world_file": "p1c_rooms.world",
+      "task_contract": "rooms.json",
+      "task_contract_sha256": "ed8f61588ffb49821e2992d5a68e73abcef964bd80b6e2574eee3b1ae885635b",
+      "task_seeds": [
+        101,
+        202,
+        303
+      ]
+    },
+    {
+      "world_file": "p1c_corridors.world",
+      "task_contract": "corridors.json",
+      "task_contract_sha256": "b0e23e068ac0ce1bf636de285e6038c34732ac43d9e734d154c378d9d04b691c",
+      "task_seeds": [
+        101,
+        202,
+        303
+      ]
+    }
+  ],
+  "held_out": {
+    "generator_sha256": "a7dfdf7e9ee5bbf3a686c5256f36465d5e30df074d88d2d0eeef41713848d249",
+    "generator_version": "mr3_box_layouts_v1",
+    "layouts": [
+      {
+        "family": "rooms",
+        "layout_seed": 701,
+        "split": "validation",
+        "task_seeds": [
+          70101,
+          70102,
+          70103,
+          70104,
+          70105,
+          70106,
+          70107,
+          70108,
+          70109,
+          70110
+        ],
+        "world_file": "mr3_validation_rooms.world",
+        "world_sha256": "35e107e6e341e903e88a1ed8689c2e04b49040030c17bfa8e426fd9dacbb5c22",
+        "task_contract": "validation_rooms.json",
+        "task_contract_sha256": "b01698ad96611ce51a2fa795be965deafcd8e4ad7ddefc6c870ee40a73e7e7b8"
+      },
+      {
+        "family": "corridors",
+        "layout_seed": 702,
+        "split": "validation",
+        "task_seeds": [
+          70201,
+          70202,
+          70203,
+          70204,
+          70205,
+          70206,
+          70207,
+          70208,
+          70209,
+          70210
+        ],
+        "world_file": "mr3_validation_corridors.world",
+        "world_sha256": "135c6ada1686a47450d52849cc101fbc52980288e75a3df424037bcfebff1c2d",
+        "task_contract": "validation_corridors.json",
+        "task_contract_sha256": "ca7f3d3d98e24a92f63a85a1f92304b45b74b6bc741f45b7a11acb02244bfe5b"
+      },
+      {
+        "family": "open",
+        "layout_seed": 703,
+        "split": "validation",
+        "task_seeds": [
+          70301,
+          70302,
+          70303,
+          70304,
+          70305,
+          70306,
+          70307,
+          70308,
+          70309,
+          70310
+        ],
+        "world_file": "mr3_validation_open.world",
+        "world_sha256": "ee8d99da894bec528403cdc097f8d6e25f6e27bc280b09232a1fffb4b1218c60",
+        "task_contract": "validation_open.json",
+        "task_contract_sha256": "a6704f4809580b9db432cf6361d8ece272b7c8179eae19b736ec60a970c4f57c"
+      },
+      {
+        "family": "rooms",
+        "layout_seed": 901,
+        "split": "test",
+        "task_seeds": [
+          90101,
+          90102,
+          90103,
+          90104,
+          90105,
+          90106,
+          90107,
+          90108,
+          90109,
+          90110
+        ],
+        "world_file": "mr3_test_rooms.world",
+        "world_sha256": "59ba63a7ad212c3e28cd59ace7640f67ba365e83e47d5844b3c389ce46435f76",
+        "task_contract": "test_rooms.json",
+        "task_contract_sha256": "69705557587774a78f9b9c2d361656e600ad58295463179b1405215c7d6a4217"
+      },
+      {
+        "family": "corridors",
+        "layout_seed": 902,
+        "split": "test",
+        "task_seeds": [
+          90201,
+          90202,
+          90203,
+          90204,
+          90205,
+          90206,
+          90207,
+          90208,
+          90209,
+          90210
+        ],
+        "world_file": "mr3_test_corridors.world",
+        "world_sha256": "21573f63020fa738395d9032b3a266bad5f32e331cffc7644cdc5fd192c065c6",
+        "task_contract": "test_corridors.json",
+        "task_contract_sha256": "5ed2850334f54ffdf8d0a7a8f100a136cca98be946d3b38b6de180bb66e1dbc0"
+      },
+      {
+        "family": "open",
+        "layout_seed": 903,
+        "split": "test",
+        "task_seeds": [
+          90301,
+          90302,
+          90303,
+          90304,
+          90305,
+          90306,
+          90307,
+          90308,
+          90309,
+          90310
+        ],
+        "world_file": "mr3_test_open.world",
+        "world_sha256": "20aaee3252c753a3835fef7cd8adf2d8a7670dfaa7f5988942ee1986bd6145d9",
+        "task_contract": "test_open.json",
+        "task_contract_sha256": "997f412fe1f5b9fcfb20987f386d1cc7a8a4488274829ed52a8979ba01775da0"
+      },
+      {
+        "family": "rooms",
+        "layout_seed": 1101,
+        "split": "confirmation",
+        "task_seeds": [
+          110101,
+          110102,
+          110103,
+          110104,
+          110105,
+          110106,
+          110107,
+          110108,
+          110109,
+          110110
+        ],
+        "world_file": "mr3_confirmation_rooms.world",
+        "world_sha256": "45fa40e745a3874f999eedd7583c4ab930d4796c0abafb7ddc87ffd5fc1a4e1e",
+        "task_contract": "confirmation_rooms.json",
+        "task_contract_sha256": "10dd0973e1fab3f8871c01afc720ebef6643ca58ed51d06a0de0da6ef84aaf99"
+      },
+      {
+        "family": "corridors",
+        "layout_seed": 1102,
+        "split": "confirmation",
+        "task_seeds": [
+          110201,
+          110202,
+          110203,
+          110204,
+          110205,
+          110206,
+          110207,
+          110208,
+          110209,
+          110210
+        ],
+        "world_file": "mr3_confirmation_corridors.world",
+        "world_sha256": "916dbcf36ea1ebe9dff864f734e9fcb75ddeee3b3b33414f6c7453f0c043e379",
+        "task_contract": "confirmation_corridors.json",
+        "task_contract_sha256": "127b1cab596167db4bc370335b18fb379eae0bf2d3b5775dade2dd90174ae3b5"
+      },
+      {
+        "family": "open",
+        "layout_seed": 1103,
+        "split": "confirmation",
+        "task_seeds": [
+          110301,
+          110302,
+          110303,
+          110304,
+          110305,
+          110306,
+          110307,
+          110308,
+          110309,
+          110310
+        ],
+        "world_file": "mr3_confirmation_open.world",
+        "world_sha256": "e8e03016300a82f92c93e250101b6568aad300bfb5c31d69f9f53a7fd669016e",
+        "task_contract": "confirmation_open.json",
+        "task_contract_sha256": "2056689728d8faa6c84440b8be15c5f71d783fac97712d35ead0c2cf2f6f9304"
+      }
+    ],
+    "policy_runs": 0,
+    "roi_bounds": [
+      -7.1,
+      -5.1,
+      7.1,
+      5.1
+    ],
+    "simulator_runs": 0
+  },
+  "training_seeds": [
+    41,
+    42,
+    43
+  ],
+  "task_seed_semantics": "Gazebo stochastic sensor/physics seed, fixed declared starts and yaw=0; not evidence of pose-distribution generalization. Layout seed changes physical SDF geometry, not robot count.",
+  "exposure_rule": "P1A only development policy runs. Validation may select checkpoints at P2B. Test and confirmation receive static geometry validation only until frozen-policy final evaluation. Any task-result-driven repairs demote exposed layouts and task seeds to regression; fresh confirmation uses predeclared unexposed layouts. No post-failure ROI/gate editing.",
+  "future_formal_matrix": {
+    "layout_count": 3,
+    "task_seeds_per_layout": 10,
+    "independent_training_seeds": 3,
+    "learned_methods_initial": [
+      "joint_masked_PPO",
+      "joint_masked_DQN_or_DoubleDQN"
+    ],
+    "method_episodes_per_training_seed": 30,
+    "ideal_success_rate_min": 0.9,
+    "contacts_allowed": 0,
+    "baseline_methods": [
+      "original_frontier",
+      "same_candidates_geometric_assignment"
+    ]
+  },
+  "budget_calculation": {
+    "target_transitions_per_training_run_draft": 500000,
+    "simulation_seconds_per_policy_step_candidate": 1.0,
+    "representative_sampling_measurement": "P1C: each worker always has three robots; include reset/startup and failed episodes in effective valid-transition rate; compare 1/2/4 workers and measure CPU/RAM/GPU/RTF.",
+    "predicted_training_wall_seconds": "target_transitions / measured_effective_valid_transitions_per_wall_second; report learner compute and evaluation separately.",
+    "wall_budget_per_run_hours_candidate": 72,
+    "freeze_before_long_training": "P1C measured throughput determines exact common transition/compute/tuning budgets, locked before P2A long training; candidate budgets are not measured results. Resource shortfall needs an explicit budget/route revision, never cherry-picked seeds or silent reduction of formal gates."
+  },
+  "unsupported_development_worlds": [
+    {
+      "world_file": "my_world.world",
+      "reason": "SUV mesh not represented by strict supported-collision truth; retained for historical compatibility/geometry diagnostics only. No MR3 95% task credit."
+    }
+  ],
+  "task_max_sim_seconds": 300.0,
+  "startup_wall_guard_seconds": 300.0,
+  "evaluation_wall_guard_seconds": 900.0
+}

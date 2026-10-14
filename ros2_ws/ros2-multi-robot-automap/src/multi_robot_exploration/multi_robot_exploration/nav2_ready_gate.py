@@ -110,7 +110,7 @@ def wait_for_nav2(node, robot_count, timeout_sec, extra_check=None):
 def main(args=None):
     rclpy.init(args=args)
     node = Node("nav2_ready_gate")
-    robot_count = max(1, node.declare_parameter("robot_count", 2).value)
+    robot_count = max(1, node.declare_parameter("robot_count", 3).value)
     timeout_sec = max(1.0, node.declare_parameter("timeout_sec", 180.0).value)
     try:
         return wait_for_nav2(node, robot_count, timeout_sec)

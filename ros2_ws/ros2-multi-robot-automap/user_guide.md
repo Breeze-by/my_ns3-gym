@@ -1,8 +1,8 @@
 # 三机器人 ROS 建图导航：当前实现指南
 
-代码核对：2026-10-14，基点 `81b2f8b` / 运行源码 `c9344e1`。
+代码核对：2026-10-14，MR3-P1A实施/验证中；`c9344e1`是历史工程冻结。
 新研究契约在 [RESEARCH_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，步骤在
-[IMPLEMENTATION_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/IMPLEMENTATION_PLAN.md)。MR3-P0 文档待用户验收。
+[IMPLEMENTATION_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/IMPLEMENTATION_PLAN.md)。MR3-P0已验收，当前只推进P1A。
 当前仍是**传统前沿控制器**，没有导航 RL、训练环境或通信 gateway。
 复制运行统一使用 [launch_commands.md](launch_commands.md)，其中全部显式传三台。
 
@@ -26,10 +26,10 @@
 | 同包 `nav2_ready_gate.py` / `peer_obstacles.py` / `task_evaluator.py` | 六节点就绪、队友机体输入、只读任务评估 |
 | `scripts/ros_smoke_test.py` / `run_ideal_baseline.py` | 有界检查、传统理想基线批量入口 |
 
-主 launch 默认仍为2台，校验支持1–4；MR3 固定使用前三台，不开展其他数量实验。
+主 launch 默认3台，校验保留1–4历史兼容；MR3合同只允许三台，不开展其他数量实验。
 当前出生位 tb1=(0,-.45)、tb2=(0,.45)、tb3=(.45,0)，不是旧手册中分散四台的样例。
 Nav2 action和各节点数量来自同一个校验后的 robot_count；不通过注释列表启停机器人。
-改变源码默认值与三台专用研究契约属于 MR3-P1A。
+MR3合同和新schema4的原生证据在P1A报告，不能沿用旧90%成绩。
 
 ## 3. 当前数据流与可复用边界
 
@@ -59,18 +59,19 @@ peer_layer 的旧位置，其他真实障碍层以 max 保留。它不改 SLAM �
 
 | 参数 | 源码默认 | 当前含义 |
 | --- | --- | --- |
-| `robot_count` | 2 | 现有1–4兼容；研究命令必须显式3 |
+| `robot_count` | 3 | 保留1–4兼容；MR3合同只允许3 |
 | `world` / `gazebo_seed` | my_world.world / 1 | 正式运行显式记录场景、seed |
 | `use_sim_time` | true | ROS 使用 Gazebo /clock |
 | `enable_drive` | false | 保持关闭，避免重复速度所有权 |
 | `enable_gzclient` | true | Gazebo GUI；训练/评估 headless 更合适 |
 | `enable_rviz` / `enable_merge_rviz` | false / true | 每台RViz与全局RViz分别控制 |
 | `auto_save_map` | true | 正式自动检查关闭，避免不必要保存负载 |
-| `spawn_timeout` / `nav2_ready_timeout_sec` | 90 / 180秒 | 启动墙钟保护；六个生命周期及action均需就绪 |
+| `spawn_timeout` / `nav2_ready_timeout_sec` | 90 / 300秒 | 启动墙钟保护；六个生命周期及action均需就绪 |
 | `exploration_goal_timeout_sec` | 60秒 | 当前目标执行仿真时间上限 |
 | `navigation_response_timeout_sec` / `navigation_cancel_timeout_sec` | 10 / 10秒 | 当前 action 接受与取消终态期限 |
 | `enable_task_evaluator` | false | 只读任务评价 |
 | `evaluation_duration_sec` / `evaluation_coverage_threshold` | 0 / 0 | 需显式设置；0分别表示无有限期限/无覆盖成功终止 |
+| `evaluation_contract_path` | 空 | 非空启用MR3 schema4合同，固定95%/300仿真秒；空保留schema3 |
 | `stop_on_evaluation_complete` | true | evaluator 退出后有界关闭父 launch 和所属进程 |
 
 标准演示/当前90%工程检查只在启动命令页维护，不复制旧二台、四台或过时 fixed sleep。
@@ -84,10 +85,16 @@ SDF静态box碰撞在激光高度生成.05m真值格，应用world state位姿�
 覆盖、known覆盖、accuracy和occupied IoU。分母为外接矩形全部真值自由格，尚无独立
 任务 ROI/可见性 mask，故不能推导95%一定可达，MR3-P1A先闭合测量定义。
 
+以上为legacy schema3口径。P1A新增schema4严格合同：三开发图完整外墙ROI、.05m正面积
+相交真值、.131m实际ray高度、质量/参与/持续监测与终态闭合门禁；保存旧口径对照。
+六个真实碰撞体现在各有接触源，18源的源龄/接收龄/中断锁存独立检查，精确过滤正常
+轮/脚轮—地面支撑接触。任务从 `/exploration_start` 放行计时，达标后等目标取消终态。
+具体合同、开发/留出划分与尚待原生验证的范围见
+[任务契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_TASK_CONTRACT.md)。
+
 schema3 成功必须在截止前覆盖达标、接触 topic 记录为零、每台碰撞监测有消息且无控制失败；
-当前唯一 contact sensor 只监听 `base_link/base_collision`，不能证明轮、脚轮、雷达等
-全机体无非支撑接触；“有消息”也不等于持续新鲜度证明。P1A 需闭合监测范围与
-正常轮/脚轮—地面支撑接触的排除规则。CSV/JSON原子发布、拒绝覆盖同id。
+schema3只读基体topic，不能证明全机体无非支撑接触；“有消息”也不等于持续新鲜度证明。
+P1A合同模式另作完整检查。CSV/JSON原子发布、拒绝覆盖同id。
 评估完成默认关闭本轮；父launch退出0不掩盖原生子进程异常。
 `trajectory_overlap_ratio` 与旧 `search_overlap_ratio` 是相同中心轨迹格重叠，
 不是重复激光覆盖/建图面积。95%时间字段存在，不等于已经达到95%。

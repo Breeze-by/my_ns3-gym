@@ -3,7 +3,7 @@
 本组件在 `/home/zhuyulab/ns3-workspace` 单一仓库内，使用 ROS2 Humble、Gazebo Classic、
 TurtleBot3 Waffle、slam_toolbox、保守地图融合与 Nav2。当前仍由传统前沿控制器选择目标。
 新路线固定 tb1/tb2/tb3，拟由集中式 RL 策略联合选择稳定子目标，再冻结策略接 ns-3 Wi-Fi；
-**导航 RL 和 gateway 尚未实现**。本轮为 MR3-P0 文档交付，待用户验收。
+**导航 RL 和 gateway 尚未实现**。MR3-P0已验收；当前推进P1A任务/测量与原生验证。
 
 先读 [研究计划](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)和[检查点](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/IMPLEMENTATION_PLAN.md)，
 实际运行读 [launch_commands.md](launch_commands.md)，代码/话题说明读
@@ -17,7 +17,7 @@ src/multi_robot_exploration/   当前手工控制、peer避障、就绪门控、
 scripts/                      有界 smoke 与传统理想基线 runner
 ```
 
-当前主 launch 默认两台，支持1–4；新研究命令必须显式 `robot_count:=3`。
+当前主 launch 默认三台，保留1–4兼容；MR3研究命令显式 `robot_count:=3`。
 新路线的源码默认值清理属于 MR3-P1A；不再推荐通过注释机器人列表、运行二/四/六台或
 旧 AMCL 预建图 launch 来实现研究场景。融合假设已知公共坐标系，不解决任意初始地图配准。
 

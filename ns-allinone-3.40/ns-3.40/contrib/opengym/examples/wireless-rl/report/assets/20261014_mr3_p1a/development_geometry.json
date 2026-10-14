@@ -1,0 +1,464 @@
+{
+  "simulator_runs": 0,
+  "type": "offline_geometry_audit_not_simulation",
+  "worlds": [
+    {
+      "contract_file": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/open.json",
+      "contract_sha256": "1bb5c097cdd9a6c92ee6edb7fabcb3c844117b51d18e40641c58aad7b29af4a6",
+      "diagnostic": {
+        "center_sampled_free_cell_count": 43976,
+        "center_vs_intersection_changed_cells": 164,
+        "denominator_trimmed_by_diagnostic": false,
+        "free_component_count": 1,
+        "free_component_sizes_descending": [
+          43812
+        ],
+        "geometry_audit": {
+          "ignored": [
+            {
+              "object": "model://sun",
+              "reason": "audited_light_or_ground"
+            },
+            {
+              "object": "model://ground_plane",
+              "reason": "audited_light_or_ground"
+            }
+          ],
+          "lidar_height_m": 0.131,
+          "rectangle_count": 8,
+          "saved_state_count": 0,
+          "supported_collision_bounds": [
+            -6.1,
+            -5.1,
+            6.1,
+            5.1
+          ],
+          "unsupported": [],
+          "unsupported_collision_count": 0,
+          "world_file": "p1c_open.world",
+          "world_sha256": "312212a14b31df196f37839d4ea849e4982dc49c5bd61aa030667bd72ea12f53"
+        },
+        "legacy_original_grid_diagnostic": {
+          "bounds": [
+            -6.1000000000000005,
+            -5.1000000000000005,
+            6.1000000000000005,
+            5.1000000000000005
+          ],
+          "free_cell_count": 43976,
+          "occupied_cell_count": 5800,
+          "role": "legacy_box_bounds_center_sampling_diagnostic_only",
+          "slice_height_m": 0.2,
+          "unsupported_collision_count": 0
+        },
+        "range_only_free_fraction_upper_bound": 1.0,
+        "reachable_center_cell_count": 36848,
+        "roi_bounds": [
+          -6.1,
+          -5.1,
+          6.1,
+          5.1
+        ],
+        "starts": {
+          "tb1": {
+            "cell": [
+              92,
+              121
+            ],
+            "clearance_lower_bound_m": 2.5895256106220104,
+            "traversable": true
+          },
+          "tb2": {
+            "cell": [
+              110,
+              121
+            ],
+            "clearance_lower_bound_m": 2.118710583794474,
+            "traversable": true
+          },
+          "tb3": {
+            "cell": [
+              101,
+              131
+            ],
+            "clearance_lower_bound_m": 1.9172070799173362,
+            "traversable": true
+          }
+        },
+        "traversable_center_component_count": 1,
+        "truth_free_cell_count": 43812,
+        "truth_occupied_cell_count": 5964,
+        "truth_rasterization": "positive_area_intersection_v1",
+        "type": "offline_geometry_diagnostic_not_task_success",
+        "unreachable_center_free_cell_count": 6964,
+        "visibility_limitations": [
+          "continuous ideal lidar, no finite beam or SLAM accuracy guarantee",
+          "nearest reachable center only; unproven cells may be visible from other centers",
+          "center-based .25m disk and conservative grid clearance; no multi-robot traffic proof",
+          "sensor offset, minimum range and body occlusion require native task evidence"
+        ],
+        "visible_free_fraction_lower_bound": 1.0
+      },
+      "geometry_audit": {
+        "ignored": [
+          {
+            "object": "model://sun",
+            "reason": "audited_light_or_ground"
+          },
+          {
+            "object": "model://ground_plane",
+            "reason": "audited_light_or_ground"
+          }
+        ],
+        "lidar_height_m": 0.131,
+        "rectangle_count": 8,
+        "saved_state_count": 0,
+        "supported_collision_bounds": [
+          -6.1,
+          -5.1,
+          6.1,
+          5.1
+        ],
+        "unsupported": [],
+        "unsupported_collision_count": 0,
+        "world_file": "p1c_open.world",
+        "world_sha256": "312212a14b31df196f37839d4ea849e4982dc49c5bd61aa030667bd72ea12f53"
+      }
+    },
+    {
+      "contract_file": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/rooms.json",
+      "contract_sha256": "ed8f61588ffb49821e2992d5a68e73abcef964bd80b6e2574eee3b1ae885635b",
+      "diagnostic": {
+        "center_sampled_free_cell_count": 51760,
+        "center_vs_intersection_changed_cells": 0,
+        "denominator_trimmed_by_diagnostic": false,
+        "free_component_count": 1,
+        "free_component_sizes_descending": [
+          51760
+        ],
+        "geometry_audit": {
+          "ignored": [
+            {
+              "object": "model://sun",
+              "reason": "audited_light_or_ground"
+            },
+            {
+              "object": "model://ground_plane",
+              "reason": "audited_light_or_ground"
+            }
+          ],
+          "lidar_height_m": 0.131,
+          "rectangle_count": 14,
+          "saved_state_count": 0,
+          "supported_collision_bounds": [
+            -7.1,
+            -5.1,
+            7.1,
+            5.1
+          ],
+          "unsupported": [],
+          "unsupported_collision_count": 0,
+          "world_file": "p1c_rooms.world",
+          "world_sha256": "cf676ab183b16abb6a563ae4c2bc2d8ba45b9a18ed35ad3f46eeb4c8d7f40916"
+        },
+        "legacy_original_grid_diagnostic": {
+          "bounds": [
+            -7.1000000000000005,
+            -5.1000000000000005,
+            7.1000000000000005,
+            5.1000000000000005
+          ],
+          "free_cell_count": 51760,
+          "occupied_cell_count": 6176,
+          "role": "legacy_box_bounds_center_sampling_diagnostic_only",
+          "slice_height_m": 0.2,
+          "unsupported_collision_count": 0
+        },
+        "range_only_free_fraction_upper_bound": 1.0,
+        "reachable_center_cell_count": 42080,
+        "roi_bounds": [
+          -7.1,
+          -5.1,
+          7.1,
+          5.1
+        ],
+        "starts": {
+          "tb1": {
+            "cell": [
+              92,
+              141
+            ],
+            "clearance_lower_bound_m": 2.564644660940673,
+            "traversable": true
+          },
+          "tb2": {
+            "cell": [
+              110,
+              141
+            ],
+            "clearance_lower_bound_m": 2.614644660940673,
+            "traversable": true
+          },
+          "tb3": {
+            "cell": [
+              101,
+              151
+            ],
+            "clearance_lower_bound_m": 2.514644660940673,
+            "traversable": true
+          }
+        },
+        "traversable_center_component_count": 1,
+        "truth_free_cell_count": 51760,
+        "truth_occupied_cell_count": 6176,
+        "truth_rasterization": "positive_area_intersection_v1",
+        "type": "offline_geometry_diagnostic_not_task_success",
+        "unreachable_center_free_cell_count": 9680,
+        "visibility_limitations": [
+          "continuous ideal lidar, no finite beam or SLAM accuracy guarantee",
+          "nearest reachable center only; unproven cells may be visible from other centers",
+          "center-based .25m disk and conservative grid clearance; no multi-robot traffic proof",
+          "sensor offset, minimum range and body occlusion require native task evidence"
+        ],
+        "visible_free_fraction_lower_bound": 1.0
+      },
+      "geometry_audit": {
+        "ignored": [
+          {
+            "object": "model://sun",
+            "reason": "audited_light_or_ground"
+          },
+          {
+            "object": "model://ground_plane",
+            "reason": "audited_light_or_ground"
+          }
+        ],
+        "lidar_height_m": 0.131,
+        "rectangle_count": 14,
+        "saved_state_count": 0,
+        "supported_collision_bounds": [
+          -7.1,
+          -5.1,
+          7.1,
+          5.1
+        ],
+        "unsupported": [],
+        "unsupported_collision_count": 0,
+        "world_file": "p1c_rooms.world",
+        "world_sha256": "cf676ab183b16abb6a563ae4c2bc2d8ba45b9a18ed35ad3f46eeb4c8d7f40916"
+      }
+    },
+    {
+      "contract_file": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/corridors.json",
+      "contract_sha256": "b0e23e068ac0ce1bf636de285e6038c34732ac43d9e734d154c378d9d04b691c",
+      "diagnostic": {
+        "center_sampled_free_cell_count": 48560,
+        "center_vs_intersection_changed_cells": 0,
+        "denominator_trimmed_by_diagnostic": false,
+        "free_component_count": 1,
+        "free_component_sizes_descending": [
+          48560
+        ],
+        "geometry_audit": {
+          "ignored": [
+            {
+              "object": "model://sun",
+              "reason": "audited_light_or_ground"
+            },
+            {
+              "object": "model://ground_plane",
+              "reason": "audited_light_or_ground"
+            }
+          ],
+          "lidar_height_m": 0.131,
+          "rectangle_count": 8,
+          "saved_state_count": 0,
+          "supported_collision_bounds": [
+            -6.6,
+            -5.1,
+            6.6,
+            5.1
+          ],
+          "unsupported": [],
+          "unsupported_collision_count": 0,
+          "world_file": "p1c_corridors.world",
+          "world_sha256": "d6fede92a09c00d9c50a72d5a744b3771dcc2506e2f28238ed786d2d914d4db9"
+        },
+        "legacy_original_grid_diagnostic": {
+          "bounds": [
+            -6.6000000000000005,
+            -5.1000000000000005,
+            6.6000000000000005,
+            5.1000000000000005
+          ],
+          "free_cell_count": 48560,
+          "occupied_cell_count": 5296,
+          "role": "legacy_box_bounds_center_sampling_diagnostic_only",
+          "slice_height_m": 0.2,
+          "unsupported_collision_count": 0
+        },
+        "range_only_free_fraction_upper_bound": 1.0,
+        "reachable_center_cell_count": 39880,
+        "roi_bounds": [
+          -6.6,
+          -5.1,
+          6.6,
+          5.1
+        ],
+        "starts": {
+          "tb1": {
+            "cell": [
+              92,
+              131
+            ],
+            "clearance_lower_bound_m": 1.8646446609406728,
+            "traversable": true
+          },
+          "tb2": {
+            "cell": [
+              110,
+              131
+            ],
+            "clearance_lower_bound_m": 1.8646446609406728,
+            "traversable": true
+          },
+          "tb3": {
+            "cell": [
+              101,
+              141
+            ],
+            "clearance_lower_bound_m": 1.4146446609406729,
+            "traversable": true
+          }
+        },
+        "traversable_center_component_count": 1,
+        "truth_free_cell_count": 48560,
+        "truth_occupied_cell_count": 5296,
+        "truth_rasterization": "positive_area_intersection_v1",
+        "type": "offline_geometry_diagnostic_not_task_success",
+        "unreachable_center_free_cell_count": 8680,
+        "visibility_limitations": [
+          "continuous ideal lidar, no finite beam or SLAM accuracy guarantee",
+          "nearest reachable center only; unproven cells may be visible from other centers",
+          "center-based .25m disk and conservative grid clearance; no multi-robot traffic proof",
+          "sensor offset, minimum range and body occlusion require native task evidence"
+        ],
+        "visible_free_fraction_lower_bound": 1.0
+      },
+      "geometry_audit": {
+        "ignored": [
+          {
+            "object": "model://sun",
+            "reason": "audited_light_or_ground"
+          },
+          {
+            "object": "model://ground_plane",
+            "reason": "audited_light_or_ground"
+          }
+        ],
+        "lidar_height_m": 0.131,
+        "rectangle_count": 8,
+        "saved_state_count": 0,
+        "supported_collision_bounds": [
+          -6.6,
+          -5.1,
+          6.6,
+          5.1
+        ],
+        "unsupported": [],
+        "unsupported_collision_count": 0,
+        "world_file": "p1c_corridors.world",
+        "world_sha256": "d6fede92a09c00d9c50a72d5a744b3771dcc2506e2f28238ed786d2d914d4db9"
+      }
+    },
+    {
+      "contract_status": "not_declared; no MR3 task acceptance credit",
+      "geometry_audit": {
+        "ignored": [
+          {
+            "object": "ground_plane/link/collision",
+            "reason": "horizontal_plane_outside_slice"
+          },
+          {
+            "object": "my_floor/Wall_10/Wall_10_Collision_2",
+            "reason": "box_outside_slice"
+          },
+          {
+            "object": "my_floor/Wall_12/Wall_12_Collision_2",
+            "reason": "box_outside_slice"
+          },
+          {
+            "object": "my_floor/Wall_12/Wall_12_Collision_3",
+            "reason": "box_outside_slice"
+          },
+          {
+            "object": "my_floor/Wall_14/Wall_14_Collision_2",
+            "reason": "box_outside_slice"
+          },
+          {
+            "object": "my_floor/Wall_15/Wall_15_Collision_2",
+            "reason": "box_outside_slice"
+          },
+          {
+            "object": "my_floor/Wall_6/Wall_6_Collision_2",
+            "reason": "box_outside_slice"
+          },
+          {
+            "object": "my_floor/Wall_9/Wall_9_Collision_3",
+            "reason": "box_outside_slice"
+          },
+          {
+            "object": "my_floor/Wall_9/Wall_9_Collision_4",
+            "reason": "box_outside_slice"
+          },
+          {
+            "object": "bookshelf/link/bottom",
+            "reason": "box_outside_slice"
+          },
+          {
+            "object": "bookshelf/link/top",
+            "reason": "box_outside_slice"
+          },
+          {
+            "object": "bookshelf/link/low_shelf",
+            "reason": "box_outside_slice"
+          },
+          {
+            "object": "bookshelf/link/high_shelf",
+            "reason": "box_outside_slice"
+          },
+          {
+            "object": "cabinet/cabinet_bottom_plate/cabinet_bottom_plate_geom",
+            "reason": "box_outside_slice"
+          },
+          {
+            "object": "cabinet/cabinet_bottom_plate/cabinet_bottom_plate_geom_cabinet_middle_plate",
+            "reason": "box_outside_slice"
+          },
+          {
+            "object": "cabinet/cabinet_bottom_plate/cabinet_bottom_plate_geom_cabinet_top_plate",
+            "reason": "box_outside_slice"
+          }
+        ],
+        "lidar_height_m": 0.131,
+        "rectangle_count": 26,
+        "saved_state_count": 1,
+        "supported_collision_bounds": [
+          -5.7869640786958145,
+          -5.587194109224102,
+          7.213224580078427,
+          5.258883942643497
+        ],
+        "unsupported": [
+          {
+            "object": "suv/link/collision",
+            "reason": "unsupported_mesh"
+          }
+        ],
+        "unsupported_collision_count": 1,
+        "world_file": "my_world.world",
+        "world_sha256": "bb510dd4166e6dd742fd1df9b9a9018bd70152dffcf80484a39991d4f07ba9e6"
+      }
+    }
+  ]
+}

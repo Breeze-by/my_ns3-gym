@@ -1737,3 +1737,48 @@ rtk git add -n .
 - No runtime/config/weights or launch commands changed; no simulator, smoke,
   training or evaluation run. MR3-P0 still awaits user acceptance; no later
   substep started and no new task/safety/network performance credit claimed.
+
+## 2026-10-14 MR3-P1A authorization, implementation and native predeclaration
+
+- User explicitly accepted P0 after the correction review and authorized P1A.
+  Only P1A is active; no P1B/RL/training/gateway work begins this session.
+- Three-robot active defaults; strict hash-bound full outer-wall ROI/schema4;
+  .131m SDF ray height and matching active URDF; .05m positive-area box truth;
+  95%/300sim-second deadline; accuracy>=.95, occupied IoU>=.20, false-free/all
+  truth occupied<=.02; each true task path>=1m and >=1goal. These are declared
+  before any new simulation, not selected after MR3 failures. Old schema3 stays
+  separate. my_world SUV mesh is explicitly unsupported for this strict task.
+- Six real contact components per robot, exact normal support-pair filtering,
+  .5sim-second source/receipt age and gap latching; shared controller release,
+  stop new goals, cancel accepted or late-accepted ownership, await terminal
+  closure within10sim seconds and before task deadline. Truth remains isolated
+  from exploration/candidates/safety.
+- Static geometry: three development layouts connected/spawn safe, ideal
+  continuous-laser visibility lower bound1.0 (not native task success). Nine
+  validation/test/confirmation layouts generated/hash-frozen, static checked
+  only, zero policy/simulator runs. Split/training-budget method in protocol.json.
+- Verification: canonical system ROS Python/build succeeded. First direct
+  pytest omitted overlay and failed import; after sourcing install a legacy
+  fake lacked new task_contract field, and initial integrated lint failed.
+  Old test fixture and lint corrected; second integrated check preceded all
+  delegated style edits, remaining lint repaired. Final colcon test:182checks,
+  0errors/0failures/2skips (180passes), no simulation. Exact JUnit/receipts in
+  report/assets/20261014_mr3_p1a/.
+
+```bash
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+export PYTHONNOUSERSITE=1
+/usr/bin/python3 /usr/bin/colcon build --symlink-install --packages-select multi_robot multi_robot_exploration
+/usr/bin/python3 /usr/bin/colcon test --packages-select multi_robot_exploration merge_map --event-handlers console_cohesion+
+/usr/bin/python3 scripts/audit_mr3_geometry.py --output /tmp/mr3_p1a_geometry_initial.json
+/usr/bin/python3 scripts/generate_mr3_worlds.py --check
+```
+
+- Native predeclaration: predeclared_native_plan.json, generated before running.
+  First isolated3robot contact fixture (all18sources, ground support, six
+  intentional component contacts, settled ray height), then same-source
+  development task matrix rooms/corridors/open x101/202/303. Every run is
+  independent and has a uniqueid/output; all failures/interruptions retained.
+  Start only after candidate commit/push; record exact freeze at invocation.
+  No final/native PASS is claimed at predeclaration.

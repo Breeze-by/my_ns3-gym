@@ -1,8 +1,8 @@
 # 当前三机器人传统基线启动命令
 
-2026-10-14：新路线为 [MR3](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，当前停在文档步骤待验收。
+2026-10-14：新路线为 [MR3](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，P0已验收，当前P1A实施/验证中。
 **这些命令仍启动已有前沿控制器，不是 RL**；本页没有虚构训练或 gateway 命令。
-所有推荐运行显式固定三台。源码默认两台和1–4兼容能力尚未在本轮修改。
+所有推荐运行显式固定三台，活动默认已改为三台，保留1–4历史兼容。
 
 ## 环境与构建
 
@@ -65,6 +65,27 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
 
 把阈值改0.95并不自动完成 MR3-P1A：需先验证任务 ROI、真值几何、质量和95%可达性，
 并预声明任务预算/新schema。不要把旧90%/180秒结果、或95%配置本身写成新任务成功。
+
+## MR3-P1A 合同评估与传统开发矩阵
+
+P1A合同模式为schema4，真值/世界哈希、完整ROI、95%/300仿真秒、地图质量、三台参与、
+18个组件持续接触监测和导航终态闭合共同决定成功。详细口径见
+[MR3_TASK_CONTRACT.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_TASK_CONTRACT.md)。
+以下为实际已实现入口；原生验证结果仍以P1A报告为准。
+
+```bash
+MR3_BATCH_ID=mr3_p1a_rooms_$(date +%Y%m%d_%H%M%S)
+PYTHONNOUSERSITE=1 /usr/bin/python3 scripts/run_ideal_baseline.py \
+  --world p1c_rooms.world --robot-count 3 --seeds 101 202 303 \
+  --task-contract src/multi_robot/config/mr3_p1a/rooms.json \
+  --startup-timeout 300 --evaluation-wait-timeout 900 --run-id $MR3_BATCH_ID
+```
+
+open/corridors使用对应world与 `open.json` / `corridors.json`，每次新run-id。
+合同确定任务300仿真秒，300/900墙秒分别是启动/基础设施保护，不能当成延长任务。
+参数与合同显式冲突会拒绝。任务t0为控制器仿真时间放行；启动预热地图单列，达标后的
+取消闭合计入任务截止。合同模式不接受两/四台、schema3或曾中断的监测作为成功。
+`my_world`暂不提供95%合同；validation/test/confirmation布局本步不运行。
 
 ## 当前自动检查与传统批量入口
 
