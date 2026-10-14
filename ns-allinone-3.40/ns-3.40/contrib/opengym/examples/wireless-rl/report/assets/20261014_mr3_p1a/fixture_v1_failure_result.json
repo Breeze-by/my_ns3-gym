@@ -1,0 +1,672 @@
+{
+  "cases": {},
+  "command": [
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/mr3_contact_native_fixture.py",
+    "--output-dir",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_v1_20261014_111702",
+    "--ros-domain-id",
+    "210",
+    "--gazebo-port",
+    "11810"
+  ],
+  "contacts": {
+    "tb1/base": {
+      "empty_count": 13,
+      "empty_sources_first32": [
+        0.264,
+        0.314,
+        0.367,
+        0.418,
+        0.464,
+        0.517,
+        0.568,
+        0.619,
+        0.664,
+        0.714,
+        0.764,
+        0.814,
+        0.864
+      ],
+      "last_source": 0.864,
+      "pairs": [],
+      "support_count": 0,
+      "support_pairs": []
+    },
+    "tb1/caster_back_left": {
+      "empty_count": 8,
+      "empty_sources_first32": [
+        0.265,
+        0.571,
+        0.622,
+        0.665,
+        0.715,
+        0.766,
+        0.816,
+        0.866
+      ],
+      "last_source": 0.866,
+      "pairs": [],
+      "support_count": 214,
+      "support_pairs": [
+        [
+          "tb1::caster_back_left_link::collision",
+          "ground_plane::link::collision"
+        ]
+      ]
+    },
+    "tb1/caster_back_right": {
+      "empty_count": 7,
+      "empty_sources_first32": [
+        0.265,
+        0.571,
+        0.622,
+        0.665,
+        0.715,
+        0.766,
+        0.816
+      ],
+      "last_source": 0.866,
+      "pairs": [],
+      "support_count": 240,
+      "support_pairs": [
+        [
+          "tb1::caster_back_right_link::collision",
+          "ground_plane::link::collision"
+        ]
+      ]
+    },
+    "tb1/lidar": {
+      "empty_count": 13,
+      "empty_sources_first32": [
+        0.264,
+        0.314,
+        0.367,
+        0.418,
+        0.464,
+        0.517,
+        0.568,
+        0.619,
+        0.664,
+        0.714,
+        0.764,
+        0.814,
+        0.864
+      ],
+      "last_source": 0.864,
+      "pairs": [],
+      "support_count": 0,
+      "support_pairs": []
+    },
+    "tb1/wheel_left": {
+      "empty_count": 0,
+      "empty_sources_first32": [],
+      "last_source": 0.864,
+      "pairs": [],
+      "support_count": 604,
+      "support_pairs": [
+        [
+          "tb1::wheel_left_link::wheel_left_collision",
+          "ground_plane::link::collision"
+        ]
+      ]
+    },
+    "tb1/wheel_right": {
+      "empty_count": 0,
+      "empty_sources_first32": [],
+      "last_source": 0.865,
+      "pairs": [],
+      "support_count": 605,
+      "support_pairs": [
+        [
+          "tb1::wheel_right_link::wheel_right_collision",
+          "ground_plane::link::collision"
+        ]
+      ]
+    },
+    "tb2/base": {
+      "empty_count": 9,
+      "empty_sources_first32": [
+        0.459,
+        0.51,
+        0.562,
+        0.613,
+        0.659,
+        0.709,
+        0.759,
+        0.809,
+        0.859
+      ],
+      "last_source": 0.859,
+      "pairs": [],
+      "support_count": 0,
+      "support_pairs": []
+    },
+    "tb2/caster_back_left": {
+      "empty_count": 4,
+      "empty_sources_first32": [
+        0.459,
+        0.761,
+        0.811,
+        0.861
+      ],
+      "last_source": 0.861,
+      "pairs": [],
+      "support_count": 214,
+      "support_pairs": [
+        [
+          "tb2::caster_back_left_link::collision",
+          "ground_plane::link::collision"
+        ]
+      ]
+    },
+    "tb2/caster_back_right": {
+      "empty_count": 4,
+      "empty_sources_first32": [
+        0.459,
+        0.761,
+        0.811,
+        0.861
+      ],
+      "last_source": 0.861,
+      "pairs": [],
+      "support_count": 217,
+      "support_pairs": [
+        [
+          "tb2::caster_back_right_link::collision",
+          "ground_plane::link::collision"
+        ]
+      ]
+    },
+    "tb2/lidar": {
+      "empty_count": 9,
+      "empty_sources_first32": [
+        0.459,
+        0.51,
+        0.562,
+        0.613,
+        0.659,
+        0.709,
+        0.759,
+        0.809,
+        0.859
+      ],
+      "last_source": 0.859,
+      "pairs": [],
+      "support_count": 0,
+      "support_pairs": []
+    },
+    "tb2/wheel_left": {
+      "empty_count": 0,
+      "empty_sources_first32": [],
+      "last_source": 0.859,
+      "pairs": [],
+      "support_count": 402,
+      "support_pairs": [
+        [
+          "tb2::wheel_left_link::wheel_left_collision",
+          "ground_plane::link::collision"
+        ]
+      ]
+    },
+    "tb2/wheel_right": {
+      "empty_count": 0,
+      "empty_sources_first32": [],
+      "last_source": 0.86,
+      "pairs": [],
+      "support_count": 403,
+      "support_pairs": [
+        [
+          "tb2::wheel_right_link::wheel_right_collision",
+          "ground_plane::link::collision"
+        ]
+      ]
+    },
+    "tb3/base": {
+      "empty_count": 5,
+      "empty_sources_first32": [
+        0.644,
+        0.694,
+        0.744,
+        0.794,
+        0.844
+      ],
+      "last_source": 0.844,
+      "pairs": [],
+      "support_count": 0,
+      "support_pairs": []
+    },
+    "tb3/caster_back_left": {
+      "empty_count": 1,
+      "empty_sources_first32": [
+        0.644
+      ],
+      "last_source": 0.847,
+      "pairs": [],
+      "support_count": 186,
+      "support_pairs": [
+        [
+          "tb3::caster_back_left_link::collision",
+          "ground_plane::link::collision"
+        ]
+      ]
+    },
+    "tb3/caster_back_right": {
+      "empty_count": 1,
+      "empty_sources_first32": [
+        0.644
+      ],
+      "last_source": 0.846,
+      "pairs": [],
+      "support_count": 185,
+      "support_pairs": [
+        [
+          "tb3::caster_back_right_link::collision",
+          "ground_plane::link::collision"
+        ]
+      ]
+    },
+    "tb3/lidar": {
+      "empty_count": 5,
+      "empty_sources_first32": [
+        0.644,
+        0.694,
+        0.744,
+        0.794,
+        0.844
+      ],
+      "last_source": 0.844,
+      "pairs": [],
+      "support_count": 0,
+      "support_pairs": []
+    },
+    "tb3/wheel_left": {
+      "empty_count": 0,
+      "empty_sources_first32": [],
+      "last_source": 0.844,
+      "pairs": [],
+      "support_count": 202,
+      "support_pairs": [
+        [
+          "tb3::wheel_left_link::wheel_left_collision",
+          "ground_plane::link::collision"
+        ]
+      ]
+    },
+    "tb3/wheel_right": {
+      "empty_count": 0,
+      "empty_sources_first32": [],
+      "last_source": 0.845,
+      "pairs": [],
+      "support_count": 202,
+      "support_pairs": [
+        [
+          "tb3::wheel_right_link::wheel_right_collision",
+          "ground_plane::link::collision"
+        ]
+      ]
+    }
+  },
+  "error": "lift tb1 rejected: ",
+  "final_monitoring": {
+    "components": {
+      "tb1": {
+        "base": {
+          "accepted_message_count": 13,
+          "active": false,
+          "duplicate_message_count": 0,
+          "filtered_support_count": 0,
+          "health_reason": "",
+          "invalid_timestamp_count": 0,
+          "last_receipt_time_sec": 1.0,
+          "last_source_time_sec": 0.864,
+          "max_receipt_gap_sec": 0.20000000000000007,
+          "max_source_gap_sec": 0.05299999999999999,
+          "message_count": 13,
+          "non_support_sample_count": 0,
+          "receipt_age_sec": 0.0,
+          "source_age_sec": 0.136,
+          "topic": "/tb1/collision"
+        },
+        "caster_back_left": {
+          "accepted_message_count": 13,
+          "active": false,
+          "duplicate_message_count": 0,
+          "filtered_support_count": 214,
+          "health_reason": "",
+          "invalid_timestamp_count": 0,
+          "last_receipt_time_sec": 1.0,
+          "last_source_time_sec": 0.866,
+          "max_receipt_gap_sec": 0.20000000000000007,
+          "max_source_gap_sec": 0.05499999999999999,
+          "message_count": 13,
+          "non_support_sample_count": 0,
+          "receipt_age_sec": 0.0,
+          "source_age_sec": 0.134,
+          "topic": "/tb1/collision/caster_back_left"
+        },
+        "caster_back_right": {
+          "accepted_message_count": 13,
+          "active": false,
+          "duplicate_message_count": 0,
+          "filtered_support_count": 240,
+          "health_reason": "",
+          "invalid_timestamp_count": 0,
+          "last_receipt_time_sec": 1.0,
+          "last_source_time_sec": 0.866,
+          "max_receipt_gap_sec": 0.20000000000000007,
+          "max_source_gap_sec": 0.05399999999999999,
+          "message_count": 13,
+          "non_support_sample_count": 0,
+          "receipt_age_sec": 0.0,
+          "source_age_sec": 0.134,
+          "topic": "/tb1/collision/caster_back_right"
+        },
+        "lidar": {
+          "accepted_message_count": 13,
+          "active": false,
+          "duplicate_message_count": 0,
+          "filtered_support_count": 0,
+          "health_reason": "",
+          "invalid_timestamp_count": 0,
+          "last_receipt_time_sec": 1.0,
+          "last_source_time_sec": 0.864,
+          "max_receipt_gap_sec": 0.20000000000000007,
+          "max_source_gap_sec": 0.05299999999999999,
+          "message_count": 13,
+          "non_support_sample_count": 0,
+          "receipt_age_sec": 0.0,
+          "source_age_sec": 0.136,
+          "topic": "/tb1/collision/lidar"
+        },
+        "wheel_left": {
+          "accepted_message_count": 13,
+          "active": false,
+          "duplicate_message_count": 0,
+          "filtered_support_count": 604,
+          "health_reason": "",
+          "invalid_timestamp_count": 0,
+          "last_receipt_time_sec": 1.0,
+          "last_source_time_sec": 0.864,
+          "max_receipt_gap_sec": 0.20000000000000007,
+          "max_source_gap_sec": 0.05299999999999999,
+          "message_count": 13,
+          "non_support_sample_count": 0,
+          "receipt_age_sec": 0.0,
+          "source_age_sec": 0.136,
+          "topic": "/tb1/collision/wheel_left"
+        },
+        "wheel_right": {
+          "accepted_message_count": 13,
+          "active": false,
+          "duplicate_message_count": 0,
+          "filtered_support_count": 605,
+          "health_reason": "",
+          "invalid_timestamp_count": 0,
+          "last_receipt_time_sec": 1.0,
+          "last_source_time_sec": 0.865,
+          "max_receipt_gap_sec": 0.20000000000000007,
+          "max_source_gap_sec": 0.05299999999999999,
+          "message_count": 13,
+          "non_support_sample_count": 0,
+          "receipt_age_sec": 0.0,
+          "source_age_sec": 0.135,
+          "topic": "/tb1/collision/wheel_right"
+        }
+      },
+      "tb2": {
+        "base": {
+          "accepted_message_count": 9,
+          "active": false,
+          "duplicate_message_count": 0,
+          "filtered_support_count": 0,
+          "health_reason": "",
+          "invalid_timestamp_count": 0,
+          "last_receipt_time_sec": 1.0,
+          "last_source_time_sec": 0.859,
+          "max_receipt_gap_sec": 0.20000000000000007,
+          "max_source_gap_sec": 0.052000000000000046,
+          "message_count": 9,
+          "non_support_sample_count": 0,
+          "receipt_age_sec": 0.0,
+          "source_age_sec": 0.14100000000000001,
+          "topic": "/tb2/collision"
+        },
+        "caster_back_left": {
+          "accepted_message_count": 9,
+          "active": false,
+          "duplicate_message_count": 0,
+          "filtered_support_count": 214,
+          "health_reason": "",
+          "invalid_timestamp_count": 0,
+          "last_receipt_time_sec": 1.0,
+          "last_source_time_sec": 0.861,
+          "max_receipt_gap_sec": 0.20000000000000007,
+          "max_source_gap_sec": 0.055999999999999994,
+          "message_count": 9,
+          "non_support_sample_count": 0,
+          "receipt_age_sec": 0.0,
+          "source_age_sec": 0.139,
+          "topic": "/tb2/collision/caster_back_left"
+        },
+        "caster_back_right": {
+          "accepted_message_count": 9,
+          "active": false,
+          "duplicate_message_count": 0,
+          "filtered_support_count": 217,
+          "health_reason": "",
+          "invalid_timestamp_count": 0,
+          "last_receipt_time_sec": 1.0,
+          "last_source_time_sec": 0.861,
+          "max_receipt_gap_sec": 0.20000000000000007,
+          "max_source_gap_sec": 0.05499999999999999,
+          "message_count": 9,
+          "non_support_sample_count": 0,
+          "receipt_age_sec": 0.0,
+          "source_age_sec": 0.139,
+          "topic": "/tb2/collision/caster_back_right"
+        },
+        "lidar": {
+          "accepted_message_count": 9,
+          "active": false,
+          "duplicate_message_count": 0,
+          "filtered_support_count": 0,
+          "health_reason": "",
+          "invalid_timestamp_count": 0,
+          "last_receipt_time_sec": 1.0,
+          "last_source_time_sec": 0.859,
+          "max_receipt_gap_sec": 0.20000000000000007,
+          "max_source_gap_sec": 0.052000000000000046,
+          "message_count": 9,
+          "non_support_sample_count": 0,
+          "receipt_age_sec": 0.0,
+          "source_age_sec": 0.14100000000000001,
+          "topic": "/tb2/collision/lidar"
+        },
+        "wheel_left": {
+          "accepted_message_count": 9,
+          "active": false,
+          "duplicate_message_count": 0,
+          "filtered_support_count": 402,
+          "health_reason": "",
+          "invalid_timestamp_count": 0,
+          "last_receipt_time_sec": 1.0,
+          "last_source_time_sec": 0.859,
+          "max_receipt_gap_sec": 0.20000000000000007,
+          "max_source_gap_sec": 0.05199999999999999,
+          "message_count": 9,
+          "non_support_sample_count": 0,
+          "receipt_age_sec": 0.0,
+          "source_age_sec": 0.14100000000000001,
+          "topic": "/tb2/collision/wheel_left"
+        },
+        "wheel_right": {
+          "accepted_message_count": 9,
+          "active": false,
+          "duplicate_message_count": 0,
+          "filtered_support_count": 403,
+          "health_reason": "",
+          "invalid_timestamp_count": 0,
+          "last_receipt_time_sec": 1.0,
+          "last_source_time_sec": 0.86,
+          "max_receipt_gap_sec": 0.20000000000000007,
+          "max_source_gap_sec": 0.05399999999999999,
+          "message_count": 9,
+          "non_support_sample_count": 0,
+          "receipt_age_sec": 0.0,
+          "source_age_sec": 0.14,
+          "topic": "/tb2/collision/wheel_right"
+        }
+      },
+      "tb3": {
+        "base": {
+          "accepted_message_count": 5,
+          "active": false,
+          "duplicate_message_count": 0,
+          "filtered_support_count": 0,
+          "health_reason": "",
+          "invalid_timestamp_count": 0,
+          "last_receipt_time_sec": 1.0,
+          "last_source_time_sec": 0.844,
+          "max_receipt_gap_sec": 0.20000000000000007,
+          "max_source_gap_sec": 0.050000000000000044,
+          "message_count": 5,
+          "non_support_sample_count": 0,
+          "receipt_age_sec": 0.0,
+          "source_age_sec": 0.15600000000000003,
+          "topic": "/tb3/collision"
+        },
+        "caster_back_left": {
+          "accepted_message_count": 5,
+          "active": false,
+          "duplicate_message_count": 0,
+          "filtered_support_count": 186,
+          "health_reason": "",
+          "invalid_timestamp_count": 0,
+          "last_receipt_time_sec": 1.0,
+          "last_source_time_sec": 0.847,
+          "max_receipt_gap_sec": 0.20000000000000007,
+          "max_source_gap_sec": 0.052999999999999936,
+          "message_count": 5,
+          "non_support_sample_count": 0,
+          "receipt_age_sec": 0.0,
+          "source_age_sec": 0.15300000000000002,
+          "topic": "/tb3/collision/caster_back_left"
+        },
+        "caster_back_right": {
+          "accepted_message_count": 5,
+          "active": false,
+          "duplicate_message_count": 0,
+          "filtered_support_count": 185,
+          "health_reason": "",
+          "invalid_timestamp_count": 0,
+          "last_receipt_time_sec": 1.0,
+          "last_source_time_sec": 0.846,
+          "max_receipt_gap_sec": 0.20000000000000007,
+          "max_source_gap_sec": 0.052999999999999936,
+          "message_count": 5,
+          "non_support_sample_count": 0,
+          "receipt_age_sec": 0.0,
+          "source_age_sec": 0.15400000000000003,
+          "topic": "/tb3/collision/caster_back_right"
+        },
+        "lidar": {
+          "accepted_message_count": 5,
+          "active": false,
+          "duplicate_message_count": 0,
+          "filtered_support_count": 0,
+          "health_reason": "",
+          "invalid_timestamp_count": 0,
+          "last_receipt_time_sec": 1.0,
+          "last_source_time_sec": 0.844,
+          "max_receipt_gap_sec": 0.20000000000000007,
+          "max_source_gap_sec": 0.050000000000000044,
+          "message_count": 5,
+          "non_support_sample_count": 0,
+          "receipt_age_sec": 0.0,
+          "source_age_sec": 0.15600000000000003,
+          "topic": "/tb3/collision/lidar"
+        },
+        "wheel_left": {
+          "accepted_message_count": 5,
+          "active": false,
+          "duplicate_message_count": 0,
+          "filtered_support_count": 202,
+          "health_reason": "",
+          "invalid_timestamp_count": 0,
+          "last_receipt_time_sec": 1.0,
+          "last_source_time_sec": 0.844,
+          "max_receipt_gap_sec": 0.20000000000000007,
+          "max_source_gap_sec": 0.050000000000000044,
+          "message_count": 5,
+          "non_support_sample_count": 0,
+          "receipt_age_sec": 0.0,
+          "source_age_sec": 0.15600000000000003,
+          "topic": "/tb3/collision/wheel_left"
+        },
+        "wheel_right": {
+          "accepted_message_count": 5,
+          "active": false,
+          "duplicate_message_count": 0,
+          "filtered_support_count": 202,
+          "health_reason": "",
+          "invalid_timestamp_count": 0,
+          "last_receipt_time_sec": 1.0,
+          "last_source_time_sec": 0.845,
+          "max_receipt_gap_sec": 0.20000000000000007,
+          "max_source_gap_sec": 0.051999999999999935,
+          "message_count": 5,
+          "non_support_sample_count": 0,
+          "receipt_age_sec": 0.0,
+          "source_age_sec": 0.15500000000000003,
+          "topic": "/tb3/collision/wheel_right"
+        }
+      }
+    },
+    "duration_sec": 0.0,
+    "event_count": 0,
+    "ever_unhealthy": false,
+    "filtered_support_count": 3674,
+    "fresh": true,
+    "latched_issues": {},
+    "max_age_sec": 0.5,
+    "robots": {
+      "tb1": {
+        "active": false,
+        "duration_sec": 0.0,
+        "event_count": 0
+      },
+      "tb2": {
+        "active": false,
+        "duration_sec": 0.0,
+        "event_count": 0
+      },
+      "tb3": {
+        "active": false,
+        "duration_sec": 0.0,
+        "event_count": 0
+      }
+    },
+    "support_collision_names": [
+      "ground_plane::link::collision"
+    ]
+  },
+  "fixture_only": true,
+  "fixture_world": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_v1_20261014_111702/contact_fixture.world",
+  "launch_returncode": 0,
+  "model": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/models/turtlebot3_waffle/model.sdf",
+  "robot_count": 3,
+  "source_sha256": {
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/mr3_contact_native_fixture.py": "94f82e6c9344c166455d5fcdc3e61fbb93e700048da6f19a72f0d7d2edcff1bb",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_v1_20261014_111702/contact_fixture.world": "312212a14b31df196f37839d4ea849e4982dc49c5bd61aa030667bd72ea12f53",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/models/turtlebot3_waffle/model.sdf": "e5db0c65ff1b418aefb83426213205b7e3730e193ae0427e638e5ea4c59189df",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/urdf/turtlebot3_waffle.urdf": "5f124088226abeb765a8a2c4b3d4ceda82b8b0ec61c82515e93a91d2ffd51b12",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/worlds/p1c_open.world": "312212a14b31df196f37839d4ea849e4982dc49c5bd61aa030667bd72ea12f53",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_contacts.py": "e5ec560f37d1b0af41db1a53a4ca73d7d755ea03b9d5614e2cf45f1059991355"
+  },
+  "state_plugin": {
+    "namespace": "/gazebo",
+    "update_rate_hz": 10.0
+  },
+  "success": false,
+  "world": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/worlds/p1c_open.world"
+}

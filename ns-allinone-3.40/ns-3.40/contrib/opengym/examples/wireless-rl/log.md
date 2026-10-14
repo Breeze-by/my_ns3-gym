@@ -1782,3 +1782,19 @@ export PYTHONNOUSERSITE=1
   independent and has a uniqueid/output; all failures/interruptions retained.
   Start only after candidate commit/push; record exact freeze at invocation.
   No final/native PASS is claimed at predeclaration.
+
+### MR3-P1A native contact fixture attempt mr3_p1a_contact_v1_20261014_111702
+
+- Freeze: 48f78d0ba7dfec424c8c3890333aa3e70c632433; committed/pushed candidate. Fixed three robots; isolated diagnostic, intentional contacts are not navigation safety evidence.
+- Environment: system ROS Humble, PYTHONNOUSERSITE=1, rmw_fastrtps_cpp, ROS_LOCALHOST_ONLY=1.
+- Command (canonical ROS root):
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/mr3_contact_native_fixture.py --output-dir /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_v1_20261014_111702 --ros-domain-id 210 --gazebo-port 11810
+```
+
+- Result pending at invocation; all outputs: /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_v1_20261014_111702.
+
+- Finished 2026-10-14T11:20:55.343810+00:00; rc=1, success=False, error=lift tb1 rejected: . Original /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_v1_20261014_111702/fixture_result.json retained; no task/RL/network credit.
+
+- Diagnosis of first fixture failure: GetEntityState response carries pose but not target name; copied EntityState had empty name and SetEntityState rejected it. Fixed diagnostic request.name/reference_frame explicitly. No production/controller/geometry/threshold change. Original v1 result/log/source selected into canonical P1A assets; retry predeclared with new ID mr3_p1a_contact_v2_20261014_112351, domain214/port11814 after new commit/push.

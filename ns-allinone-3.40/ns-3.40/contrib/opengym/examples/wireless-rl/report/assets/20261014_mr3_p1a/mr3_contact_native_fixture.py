@@ -180,6 +180,8 @@ def main():
             request = GetEntityState.Request()
             request.name, request.reference_frame = robot, 'world'
             state = call(get_client, request, 'get ' + robot).state
+            state.name = robot
+            state.reference_frame = 'world'
             state.pose.position.z += 0.4
             state.twist.linear.x = state.twist.linear.y = state.twist.linear.z = 0.0
             state.twist.angular.x = state.twist.angular.y = state.twist.angular.z = 0.0
