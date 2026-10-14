@@ -1,273 +1,31 @@
-# Multi-Robot Autonomous Mapping (ROS 2)
+# 三机器人联合建图导航：ROS 组件
 
-This directory is the ROS 2 component of the `Breeze-by/my_ns3-gym`
-monorepo. It contains a complete workspace for **multi-robot autonomous mapping
-and navigation** using TurtleBot3, Nav2, and SLAM Toolbox. It supports
-multi-robot exploration, map merging, and autonomous navigation in Gazebo.
+本组件在 `/home/zhuyulab/ns3-workspace` 单一仓库内，使用 ROS2 Humble、Gazebo Classic、
+TurtleBot3 Waffle、slam_toolbox、保守地图融合与 Nav2。当前仍由传统前沿控制器选择目标。
+新路线固定 tb1/tb2/tb3，拟由集中式 RL 策略联合选择稳定子目标，再冻结策略接 ns-3 Wi-Fi；
+**导航 RL 和 gateway 尚未实现**。本轮为 MR3-P0 文档交付，待用户验收。
 
-Current runtime contracts and copy-paste commands are maintained in
-[`user_guide.md`](user_guide.md) and [`launch_commands.md`](launch_commands.md).
-The demonstration media and technical manual below are historical references;
-videos excluded from Git may be unavailable in a fresh checkout.
-
-Canonical local path:
+先读 [研究计划](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)和[检查点](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/IMPLEMENTATION_PLAN.md)，
+实际运行读 [launch_commands.md](launch_commands.md)，代码/话题说明读
+[user_guide.md](user_guide.md)和[Technical_Manual.md](Technical_Manual.md)。
 
 ```text
-/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+src/multi_robot/               模型、场景、主 launch、每台 Nav2 参数
+src/slam_toolbox/              当前 SLAM 实现
+src/merge_map/                 公共 frame 栅格融合
+src/multi_robot_exploration/   当前手工控制、peer避障、就绪门控、评估器
+scripts/                      有界 smoke 与传统理想基线 runner
 ```
 
-## 📁 Repository Structure
-
-```
-multi_robot_autonomous/
-│
-├── README.md
-├── Technical_Manual.md
-│
-├── src/
-│   ├── maps/
-│   ├── merge_map/
-│   ├── multi_robot/
-│   ├── multi_robot_exploration/
-│   ├── nav2_bringup/
-│   ├── slam_toolbox/
-│   ├── rviz2-panel/
-│   ├── saved_map/
-│   ├── utils/
-│   └── worlds/
-│
-├── debug_files/
-│   ├── autonomous_four_robot_mapping_frames.pdf
-│   ├── autonomous_four_robot_mapping_rosgraph.png
-│   ├── autonomous_four_robot_navigation_frames.pdf
-│   ├── autonomous_four_robot_navigation_rosgraph.png
-│   ├── autonomous_two_robot_mapping_without_nav2_rosgraph.png
-│   └── view_frames_of_2robot.pdf
-│
-├── demo_videos/
-│   ├── MULTI_ROBOT_MAPPING_2.webm
-│   ├── MULTI_ROBOT_MAPPING_4ROBOTS.webm
-│   ├── SINGLE_ROBOT_AUTONOMOUS_MAPPING.mp4
-│   ├── SINGLE_ROBOT_AUTONOMOUS_MAPPING.webm
-│   ├── cpu_usage_of_4_robots.png
-│   ├── cpu_usage_of_6_robots.png
-│   ├── rviz_launch_of_4_robots.png
-│   └── rviz_launch_of_6_robots.png
-
-
-```
-
----
-
-## 🖼️ Screenshots & Performance Metrics
-
-### RViz Launch Screens
-
-**4 Robots in RViz**
-
-<img src="demo_videos/rviz_launch_of_4_robots.png" width="600"/>
-
-
-**6 Robots in RViz**
-
-<img src="demo_videos/rviz_launch_of_6_robots.png" width="600"/>
-
-
-## 🎥 Demo Videos
-
-🔹 **2 Robot Mapping**  
-▶️ [Watch Video](demo_videos/MULTI_ROBOT_MAPPING_2.webm)
-
-🔹 **4 Robot Mapping**  
-▶️ [Watch Video](demo_videos/MULTI_ROBOT_MAPPING_4ROBOTS.webm)
-
-> These videos demonstrate autonomous multi-robot exploration, SLAM, and merged map generation in Gazebo.
-
----
-
-## 🧩 System Requirements
-
-* Ubuntu 22.04
-* ROS 2 Humble
-* Gazebo
-* TurtleBot3 packages
-
----
-
-## 📦 Dependencies Installation
-
-
-### Install ROS 2 Humble (if not already installed)
-
-```bash
-sudo apt update
-sudo apt install ros-humble-desktop
-```
-
-### 1. Install Navigation2
-
-```bash
-sudo apt update
-sudo apt install ros-humble-navigation2
-```
-
----
-
-
-### 2. Install Workspace Dependencies via rosdep (Recommended)
-
-* After cloning the repository, install all required system and ROS dependencies automatically using rosdep.
-
-Source ROS 2 first:
-
-```bash
-source /opt/ros/humble/setup.bash
-```
-
-Then:
-
-```bash
-git clone git@github.com:Breeze-by/my_ns3-gym.git
-cd my_ns3-gym/ros2_ws/ros2-multi-robot-automap
-rosdep update
-rosdep install --from-paths src --ignore-src -r -y
-```
-
-This is the recommended way to ensure all required dependencies (e.g., Gazebo, RViz, TF tools, etc.) are installed before building.
-
----
-
-
-### 3. Install Modified nav2_bringup and slam_toolbox
-
-Reference repositories:
-
-* nav2_bringup (original):
-  [https://github.com/ros-navigation/navigation2/tree/humble/nav2_bringup](https://github.com/ros-navigation/navigation2/tree/humble/nav2_bringup)
-
-* slam_toolbox (multirobot fork):
-  [https://github.com/acachathuranga/slam_toolbox/tree/multirobot_ros2](https://github.com/acachathuranga/slam_toolbox/tree/multirobot_ros2)
-
-Clone and build:
-
-```bash
-cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
-colcon build --cmake-clean-cache --symlink-install --packages-select nav2_bringup slam_toolbox
-```
-
----
-
-
-### 4. Install Multi-Robot Packages
-
-Required packages:
-
-* multi_robot_exploration
-* merge_map
-* multi_robot
-
-Build them:
-
-```bash
-cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
-colcon build --cmake-clean-cache --symlink-install --packages-select \
-  multi_robot_exploration \
-  merge_map \
-  multi_robot
-
-source install/setup.bash
-```
-
----
-
-
-## 🚀 Launch Multi-Robot Mapping
-
-### Launch Gazebo + RViz + Nav2 for Mapping
-
-Example for **4 robots**:
-
-```bash
-ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py robot_count:=4
-```
-
-This will:
-
-* Spawn multiple TurtleBot3 robots
-* Start SLAM Toolbox
-* Initialize Nav2
-* Enable autonomous multi-robot exploration
-* Merge maps from all robots
-
-
-
-### Additional feature - Offline Map Merging
-
-* Merge multiple partially mapped maps into a single map 
-
-Specify the directory containing the partial map YAML files. The number of YAML files in the directory must match the robot_count parameter.
-
-```bash
-ros2 launch merge_map offline_merge_map_launch.py robot_count:=2 maps_directory:="~/debug_robot/maps/" frame_id:="map"
-```
-
-### Multi-Robot Navigation with Pre-built Map
-
-To test multi-robot navigation using a map created from the multi-robot mapping launch:
-
-```bash
-ros2 launch multi_robot gazebo_multirobot_navigation.launch.py robot_count:=4
-```
-
-This will:
-
-* Load the merged map from `src/multi_robot/maps/merged_map.yaml`
-* Spawn multiple TurtleBot3 robots in Gazebo
-* Start Nav2 navigation stack for each robot
-* Launch RViz for each robot with individual configurations
-* Allow goal assignment through RViz panels for autonomous navigation
-
----
-
-## 🗺️ Features
-
-* Multi-robot SLAM
-* Autonomous exploration
-* Map merging
-* Nav2-based navigation
-* Gazebo simulation
-* RViz visualization
-* Support for 2+ robots
-
----
-
-## 📊 Architecture & Debug Files
-
-The repository includes:
-
-* ROS graphs (`*.png`)
-* TF frames (`*.pdf`)
-* RViz configurations
-* [Technical Manual](Technical_Manual.md)
-
-These are useful for:
-
-* Debugging
-* System understanding
-* Academic / research documentation
-
----
-
-## 📝 Notes
-
-* This workspace uses **modified versions** of Nav2 and SLAM Toolbox for multi-robot support.
-* Make sure to source your workspace after build:
-
-```bash
-source /opt/ros/humble/setup.bash
-source install/setup.bash
-```
-
-* It is recommended to add these to your ~/.bashrc for convenience.
-
-If you use this project for research or demos, please cite or reference appropriately.
+当前主 launch 默认两台，支持1–4；新研究命令必须显式 `robot_count:=3`。
+新路线的源码默认值清理属于 MR3-P1A；不再推荐通过注释机器人列表、运行二/四/六台或
+旧 AMCL 预建图 launch 来实现研究场景。融合假设已知公共坐标系，不解决任意初始地图配准。
+
+最新三台 rooms/corridors seed101 仅有90%工程回归；95%可达性、训练和通信尚未验收。
+[工程原件](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261013_p1c_engineering_repair.md)与
+[报告索引](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/README.md)保留旧结果和失败，不自动成为 MR3 信用。
+
+ROS 使用系统 Python 与 canonical workspace；学习端 conda 环境另行隔离。
+具体环境、构建、三台演示/评估及故障诊断统一在当前指南，不照搬旧独立检出路径。
+每次源码/命令修改同步文档、验证、提交推送；实验追加共享 wireless-rl/log.md。
+上游软件包自带 README 描述依赖本身，不是本项目的研究路线或验收状态。

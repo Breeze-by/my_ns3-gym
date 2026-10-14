@@ -1,425 +1,60 @@
-# Technical Reference Manual
-
-## Multi-Robot Autonomous Mapping (ROS 2 Humble)
-
-This document is the **official Technical Reference Manual** for the multi-robot autonomous mapping system. It is intended for developers, researchers, and maintainers who need detailed understanding of launch files, parameters, internal node behavior, and system architecture.
-
-
----
-
-# 1. Core Launch File
-
-## gazebo_multirobot_mapping_with_nav2.launch.py
-
-**File Location:**
-
-```
-ros2_humble/multi_robot_autonomous/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py
-```
-
-This launch file is responsible for:
-
-* Spawning multiple robots in Gazebo
-* Namespacing each robot
-* Launching Nav2 for each robot
-* Launching multi-robot SLAM Toolbox
-* Launching merge_map
-* Launching multi_robot_exploration control node
-* Managing startup sequencing and event handling
-
----
-
-# 2. Robot Spawn Configuration
-
-## robots Array (LINE ~18)
-
-Defines which robots are spawned and their initial pose in Gazebo.
-
-```python
-robots = [
-  {'name': 'tb1', 'x_pose': '5.0',  'y_pose': '4.0',  'z_pose': 0.01, 'roll': 0.00, 'pitch': 0.00, 'yaw': 0.00},
-  {'name': 'tb2', 'x_pose': '-4.5','y_pose': '4.0',  'z_pose': 0.01, 'roll': 0.00, 'pitch': 0.00, 'yaw': 0.00},
-  {'name': 'tb3', 'x_pose': '6.0',  'y_pose': '-1.5','z_pose': 0.01, 'roll': 0.00, 'pitch': 0.00, 'yaw': 0.00},
-  {'name': 'tb4', 'x_pose': '-4.0','y_pose': '-4.5','z_pose': 0.01, 'roll': 0.00, 'pitch': 0.00, 'yaw': 0.00},
-  # {'name': 'tb5', 'x_pose': '0.0', 'y_pose': '-0.5','z_pose': 0.01, 'roll': 0.00, 'pitch': 0.00, 'yaw': 0.00},
-  # {'name': 'tb6', 'x_pose': '0.0', 'y_pose': '0.5', 'z_pose': 0.01, 'roll': 0.00, 'pitch': 0.00, 'yaw': 0.00},
-]
-```
-
-### Notes
-
-* Comment or uncomment robot entries to enable/disable robots
-* Each robot must have a unique name (tb1, tb2, ...)
-* Pose values define Gazebo spawn location
-
----
-
-# 3. robot_count Launch Argument
-
-**LINE ~36**
-
-```python
-robot_count = LaunchConfiguration('robot_count', default='2')
-```
-
-### Purpose
-
-Controls how many robots are:
-
-* Passed to merge_map
-* Passed to multi_robot_exploration
-* Used for internal logic
-
-### Critical Requirement
-
-👉 `robot_count` MUST match the number of active robots in the `robots` array.
-
----
-
-# 4. merge_map Launch
-
-**LINE ~45**
-
-```python
-merge_map_launch = ExecuteProcess(
-  cmd=['ros2', 'launch', 'merge_map', 'merge_map_launch.py', ['robot_count:=', robot_count]],
-  output='screen'
-)
-```
-
-## Overview
-
-Merges occupancy grids from multiple robots into a single global map.
-
-### Parameters
-
-* frame_id (default: merge_map)
-* robot_count (default: 3)
-
-### Subscribed Topics
-
-* /tb1/map
-* /tb2/map
-* ...
-
-### Published Topics
-
-* /merge_map
-
----
-
-# 5. multi_robot_exploration Control Node
-
-**LINE ~52**
-
-```python
-control_node = ExecuteProcess(
-  cmd=['ros2', 'run', 'multi_robot_exploration', 'control', '--ros-args', '-p', ['robot_count:=', robot_count]],
-  output='screen'
-)
-```
-
-## Overview
-
-Implements frontier-based autonomous exploration for multiple robots.
-
-#### HeadquartersControl Node
-
-Subscribers:
-
-* /merge_map (OccupancyGrid)
-* /tbX/odom (Odometry)
-* /tbX/cmd_vel (Twist)
-
-Action Clients:
-
-* /tbX/navigate_to_pose
-
-### Function
-
-* Frontier detection
-* Goal assignment
-* Autonomous exploration
-* Continuous merged map saving
-
-### Map Save Path
-
-```python
-saved_map/multi_robot_autonomous_mapping_of_<N>_robots
-```
-
----
-
-# 6. Robot Model Selection
-
-**LINE ~59**
-
-```python
-MY_ROBOT = 'turtlebot3_waffle'
-```
-
-### Supported Models
-
-* turtlebot3_waffle
-* turtlebot3_burger
-
----
-
-# 7. Gazebo World Selection
-
-**LINE ~87**
-
-```python
-world = os.path.join(multi_robot, 'worlds', 'my_world.world')
-```
-
-### Notes
-
-* Change world file to use custom Gazebo environments
-* Worlds must be located in:
-
-```
-src/multi_robot/worlds/
-```
-
----
-
-# 8. Nav2 Parameters Per Robot
-
-**LINE ~116**
-
-```python
-params_file = os.path.join(
-  get_package_share_directory('multi_robot'),
-  'params',
-  f"nav2_params_{robot['name']}_0.yaml"
-)
-```
-
-### Purpose
-
-Each robot has an independent Nav2 configuration:
-
-* Initial AMCL pose
-* Localization tuning
-* Controller parameters
-* Planner parameters
-
-### Files
-
-```
-params/nav2_params_tb1_0.yaml
-params/nav2_params_tb2_0.yaml
-...
-```
-
----
-
-# 9. Multi-Robot SLAM Toolbox
-
-**LINE ~174**
-
-```python
-online_async_multirobot_launch.py
-```
-
-### Notes
-
-* Uses modified slam_toolbox for multi-robot SLAM
-* Original upstream slam_toolbox is listed in README dependencies
-
----
-
-
-# 10. Event Handling and Sequential Startup
-
-Uses RegisterEventHandler and OnProcessExit to:
-
-* Spawn robots sequentially
-* Ensure stable startup
-* Delay RViz and drive nodes
-
-```python
-RegisterEventHandler(
-  OnProcessExit(
-    target_action=last_action,
-    on_exit=[rviz_cmd, drive_turtlebot3]
-  )
-)
-```
-
----
-
-# 11. Namespacing and TF Remapping
-
-## Namespacing
-
-```python
-namespace = ['/' + robot['name']]
-```
-
-Each robot runs in its own ROS namespace:
-
-* /tb1
-* /tb2
-* /tb3
-* ...
-
-## TF Remapping
-
-```python
-remappings = [('/tf', 'tf'), ('/tf_static', 'tf_static')]
-```
-
-Prevents TF collisions in multi-robot systems.
-
----
-
-
-# 12. LaunchDescription Actions Summary
-
-Key actions added to LaunchDescription:
-
-```python
-ld.add_action(declare_use_sim_time)
-ld.add_action(declare_robot_count)
-ld.add_action(declare_enable_drive)
-ld.add_action(declare_enable_rviz)
-ld.add_action(gzserver_cmd)
-ld.add_action(gzclient_cmd)
-ld.add_action(map_server)
-ld.add_action(map_server_lifecycle)
-ld.add_action(robot_state_publisher)
-ld.add_action(spawn_robot)
-ld.add_action(bringup_cmd)
-ld.add_action(joint_state_publisher_node)
-ld.add_action(node_tf_map_to_odom)
-ld.add_action(slam_toolbox_node)
-```
-
----
-
-# Offline Map Merging
-
-## Additional feature - Offline Map Merging
-
-* Merge multiple partially mapped maps into a single map 
-
-Specify the directory containing the partial map YAML files. The number of YAML files in the directory must match the robot_count parameter.
-
-```bash
-ros2 launch merge_map offline_merge_map_launch.py robot_count:=2 maps_directory:="~/debug_robot/maps/" frame_id:="map"
-```
-
-### Overview
-
-The offline map merging feature allows combining individual robot maps saved as YAML files into a single merged map without running the full simulation.
-
-### Launch File Details
-
-**File Location:**
-
-```
-ros2_humble/multi_robot_autonomous/src/merge_map/launch/offline_merge_map_launch.py
-```
-
-### Parameters
-
-* `robot_count` (default: '2') - Number of robots/maps to merge
-* `maps_directory` (required) - Directory containing the YAML map files
-* `frame_id` (default: 'map') - Frame ID for the merged map
-
-### Process
-
-1. Validates the maps directory exists
-2. Counts YAML files and ensures they match `robot_count`
-3. Launches map_server nodes for each YAML file on topics `/tb1/map`, `/tb2/map`, etc.
-4. Configures and activates each map_server via lifecycle
-5. Launches the `offline_merge_map` node to merge the maps
-6. Opens RViz with a configuration to visualize the merged map
-
-### Requirements
-
-* YAML files must be named appropriately (e.g., map1.yaml, map2.yaml)
-* Each YAML file should correspond to a robot's partial map
-* Directory path can use `~` for home directory
-
----
-
-# Multi-Robot Navigation with Pre-built Map
-
-## Overview
-
-The multi-robot navigation launch file allows testing navigation using a pre-built map from the multi-robot mapping process.
-
-### Launch File Details
-
-**File Location:**
-
-```
-ros2_humble/multi_robot_autonomous/src/multi_robot/launch/gazebo_multirobot_navigation.launch.py
-```
-
-### Launch Command
-
-```bash
-ros2 launch multi_robot gazebo_multirobot_navigation.launch.py robot_count:=4
-```
-
-### Parameters
-
-* `robot_count` (default: '4') - Number of robots to spawn (dynamically set to len(robots))
-* `use_sim_time` (default: 'true') - Use simulation time
-* `enable_drive` (default: 'false') - Enable robot drive node
-* `enable_rviz` (default: 'true') - Enable RViz launch
-
-### Process
-
-1. Prints the number of robots defined in the `robots` array
-2. Constructs the map file path from the saved merged map
-3. Launches Gazebo server and client
-4. Spawns each robot sequentially with Nav2 stack
-5. Loads the merged map for localization
-6. Launches RViz for each robot with individual configurations
-7. Allows goal assignment through RViz 2D Nav Goal tool
-
-### Map File Path Configuration
-
-The map file path is constructed in the launch file:
-
-**LINE ~86**
-
-```python
-map_file_path = os.path.join(
-    multi_robot,
-    '../../../../src/saved_map/multi_robot_autonomous_mapping_of_'+str(robot_count)+'_robots')
-```
-
-**To change the map file path:**
-
-1. Open `gazebo_multirobot_navigation.launch.py`
-2. Modify the `map_file_path` variable to point to your desired map YAML file
-3. Ensure the path is absolute or relative to the package share directory
-4. The map should be a merged map from the multi-robot mapping process
-
-### Robot Configuration
-
-The `robots` array defines spawn positions:
-
-```python
-robots = [
-    {'name': 'tb1', 'x_pose': '5.0', 'y_pose': '4.0', 'z_pose': 0.01, 'roll': 0.00, 'pitch': 0.00, 'yaw': 0.00},
-    {'name': 'tb2', 'x_pose': '-4.5', 'y_pose': '4.0', 'z_pose': 0.01, 'roll': 0.00, 'pitch': 0.00, 'yaw': 0.00},
-    {'name': 'tb3', 'x_pose': '6.0', 'y_pose': '-1.5', 'z_pose': 0.01, 'roll': 0.00, 'pitch': 0.00, 'yaw': 0.00},
-    {'name': 'tb4', 'x_pose': '-4.0', 'y_pose': '-4.5', 'z_pose': 0.01, 'roll': 0.00, 'pitch': 0.00, 'yaw': 0.00},
-]
-```
-
-### Notes
-
-* Each robot runs in its own namespace (/tb1, /tb2, etc.)
-* RViz configurations are loaded per robot for individual control
-* Use the 2D Nav Goal tool in RViz to assign navigation goals
-* The map is loaded for localization, not SLAM (slam: 'False')
-
-
+# 当前 ROS 技术参考与边界
+
+2026-10-14，审计源码 `81b2f8b` / 运行冻结 `c9344e1`。
+本文件取代旧分散四台/旧 ros2_humble 路径/过时行号样例；原文可从
+[归档索引](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/ARCHIVE_INDEX.json)所列Git对象恢复。
+研究路线读 [RESEARCH_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，运行读
+[launch_commands.md](launch_commands.md)，概览读 [user_guide.md](user_guide.md)。
+以下是当前实际实现；RL/gateway 均未实现。
+
+## 当前源码位置
+
+均相对于 `/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap`：
+
+| 组件 | 源码路径 |
+| --- | --- |
+| 主建图启动 | `src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py` |
+| Nav2 bringup | `src/multi_robot/launch/nav2_bringup/`，配置`src/multi_robot/params/nav2_params_tb1_0.yaml`至tb3 |
+| SLAM多机启动 | `src/slam_toolbox/launch/online_async_multirobot_launch.py` |
+| 融合 | `src/merge_map/merge_map/merge_map.py` |
+| 手工探索 | `src/multi_robot_exploration/multi_robot_exploration/control.py` |
+| 就绪/peer/评价 | 同包`nav2_ready_gate.py`、`peer_obstacles.py`、`task_evaluator.py` |
+| 模型/世界 | `src/multi_robot/models/turtlebot3_waffle/model.sdf`、`src/multi_robot/worlds/` |
+| 运行工具 | `scripts/ros_smoke_test.py`、`scripts/run_ideal_baseline.py` |
+
+## 当前坐标、地图与运动契约
+
+namespaced `/tbN/tf` 和 `/tbN/tf_static`；SLAM估计map→odom，本机odom→base由
+底盘/机器人TF链提供。控制器转换观测位姿到公共map，不能把odom数值当map数值。
+同一公共初始坐标系是仿真条件，融合不是特征注册/未知坐标系定位。
+
+融合地图frame `map`，发布`/merge_map`；占据冲突保守，分数原点按栅格对齐，拒绝
+不兼容frame/分辨率/旋转。三台全局static layer直接用实时融合图；全局图非滚动，
+Smac2D规划，本机激光/DWB执行差速速度。模型不支持自由侧移。
+
+`NavigateToPose` 的目标是公共frame下的PoseStamped。当前控制器仍有人工前沿
+目标分配/分段/重试；60秒执行、10秒接受/取消期限。待响应/待取消时保留唯一所有权，
+握手失效显式`/exploration_failure`，不能无限等待或叠发目标。
+
+## Peer层与真实监测
+
+`peer_obstacles` 观察raw全体odom/TF；机体半径.25m、margin .04m、速度界.26m/s、
+反应.55s、最大观测源龄.5s。PointCloud2填充完整包络，清除LaserScan仅清理独立
+peer_layer；其他障碍max合并，虚拟peer不进SLAM。它不使用Gazebo真值。
+这是理想通信安全输入，后续必须受已交付跨机信息边界约束。
+
+Gazebo底盘接触topic给真实碰撞，joint_state插件给真实轮关节；默认建图不再重复启动
+虚构零轮位姿的joint_state_publisher。独立评价读真值路径/碰撞/地图，不发布动作。
+成功门禁与分母限制见使用指南；监测曾有一条消息不证明整段新鲜。
+
+## 旧入口与新接口的区分
+
+旧预建图AMCL导航、offline_merge与其他robot_count配置若保留，属于兼容工具，
+不是MR3推荐入口；不通过注释机器人列表或复制旧出生位置开展研究。
+活动新研究固定三台；源码清理在P1A经用户验收后实施。
+
+新RL模式需互斥替换全局目标策略，保留协议/安全而无人工探索兜底。
+新gateway需隔离后端received store、机器人本地action proxy、共享地图副本/队友状态。
+这些是规划，当前没有对应参数/topic/可执行文件。不得用raw融合图、raw跨机TF、
+远端action Future或未传输payload旁路，使网络实验继续享有即时信息。
+时钟和真实字节分组验证独立于ROS启动；本页不声称现有ns3-gym已实现连接。

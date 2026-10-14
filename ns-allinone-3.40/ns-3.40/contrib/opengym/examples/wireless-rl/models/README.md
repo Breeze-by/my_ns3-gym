@@ -1,4 +1,7 @@
-# DQN 模型目录
+# 历史 toy DQN 模型目录
+
+MR3范围：这些15维/5动作权重属于五用户调度toy，不能用于三机器人导航。新导航模型
+尚未训练，未来冻结清单由MR3-P2C交付。当前路线见[研究计划](../RESEARCH_PLAN.md)。
 
 `train_dqn.py` 将普通最终 checkpoint 保存为 `{runName}.pt`；开启
 `--evalInterval` 后，还会将 validation mean cumulative reward 最好的模型保存为
@@ -6,7 +9,7 @@
 
 `.pt` 是可重新生成的本地训练产物，已被 Git 忽略。删除前先确认是否仍需复现实验。
 
-当前保留的历史推荐模型：
+保留的历史 toy 模型（不是 MR3 导航推荐模型）：
 
 ```text
 dqn_exp06_evalselect_p5k_h256_best.pt

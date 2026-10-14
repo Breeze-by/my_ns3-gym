@@ -1,162 +1,51 @@
-# wireless-rl Codex Memory
+# wireless-rl memory — MR3
 
-## 2026-10-13 operational handoff
+Updated 2026-10-14. The active contract is [RESEARCH_PLAN.md](RESEARCH_PLAN.md),
+then [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md). Follow root AGENTS.md.
+MR3-P0 documents are delivered, awaiting user acceptance; do not start P1A.
+This route replaces the old search/charging/rally/communication-scheduler plan.
 
-`main` restores P1C and applies engineering repairs before the user supplies a
-new route. The old research/implementation plans below remain historical and
-must not trigger P2 or network/RL work. Current ROS commands and runtime
-contracts are in the ROS `launch_commands.md` and `user_guide.md`; repair
-evidence is in `report/20261013_p1c_engineering_repair.md` and `log.md`.
-The original route is retained on `p2c1/global-mission-20261012`.
-Runtime freeze `c9344e1` passed the five engineering regressions on 2026-10-14
-with the single-host profile in ROS `launch_commands.md`. Package checks have
-73 tests, zero failures and two skips. Historical performance/multi-seed
-acceptance remains separate; wait for the user's new route.
+## Task and source of truth
 
-The following September handoff describes the historical P1C/toy-MDP context.
+Exactly three robots. First learn centralized joint exploration subgoals under
+ideal communication, retain local SLAM/Nav2 and conservative fusion, prove a
+95% task; then freeze the policy and its interfaces and route actual application
+bytes through gateway and ns-3 Wi-Fi (one AP, three STA). Stop at measured
+network effects; remedies, hardware, other team sizes and target/charging/rally
+are out of scope. Detailed method decisions live in the plan and
+[route audit](report/20261014_mr3_route_audit.md), not in historical report instructions.
 
-Last verified against source, local 1/2/3-robot headless smoke tests, P1B
-evaluator tests, final P1C 2/3-robot batches, and three-world P1C generalization
-batches: 2026-09-17. P1C is implemented and waiting for user acceptance; do
-not begin P2 before acceptance.
+Current `main` still uses handcrafted ROS frontier allocation. No robot RL,
+training environment or ROS/ns-3 gateway exists. Launch defaults to two and
+supports 1–4; current recommended commands explicitly choose three. Plans are
+not implemented features. Runtime freeze `c9344e1` has only 90% three-robot
+rooms/corridors seed101 engineering credit, not a new 95% or multi-seed result.
+Canonical evidence: [repair report](report/20261013_p1c_engineering_repair.md).
 
-This directory is the active project inside the larger ns-3 workspace. It is a
-toy ns3-gym scheduling MDP, not a full Wi-Fi/5G network simulation.
+The actual ROS workspace is:
+`/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap`.
+Read its `user_guide.md` and `launch_commands.md` for current commands.
+The Git root is `/home/zhuyulab/ns3-workspace`, origin is `Breeze-by/my_ns3-gym`.
+Original route backup: `p2c1/global-mission-20261012@8fe1495`, not active work.
 
-The intended successor task reuses the ROS 2 project in this monorepo at
-`/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap` for 2–3 robot collaborative
-mapping, object search, charging, and rendezvous. Do not rebuild the robot stack
-from scratch or assume that planned integration is already implemented. Read
-`RESEARCH_PLAN.md` before proposing architecture or experiments.
+Current code is the implementation authority. [report/README.md](report/README.md)
+separates current engineering, route audit and historical evidence. Old P1C/P2C
+and toy DQN results cannot count as MR3 acceptance. Do not read historical
+“next steps” as instructions. User acceptance is required after each MR3 substep,
+not after running every old branch of the project.
 
-## Source Of Truth And Reading Order
+## Learning, ROS and ns-3 environment boundaries
 
-Use current code as the source of truth. Read in this order:
-
-1. `RESEARCH_PLAN.md` for the final research goal, scope, architecture,
-   evaluation contract, risks, and one-year roadmap. It is a plan, not a
-   statement of what the current code already implements.
-2. `IMPLEMENTATION_PLAN.md` for engineering checkpoints, exit criteria, and
-   the current user-review boundary.
-3. `USER_GUIDE.md` for the current mental model, commands, metrics, historical
-   best result, and known limitations.
-4. `sim.cc` for the actual environment state transition and reward timing.
-5. `test.py` and `run_baselines.py` for baseline semantics and CSV fields.
-6. `dqn_common.py`, `train_dqn.py`, and `evaluate_dqn.py` for DQN behavior.
-7. `report/20260914_p1b.md`, `report/20260915_p1c.md`,
-   `report/20260916_p1c.md`, and `report/20260916_p1c_foundation.md` for the
-   ROS engineering checkpoints.
-8. `report/20260917_p1c_optimization.md` and
-   `report/20260917_p1c_generalization.md` for the final P1C evidence.
-9. `report/20260902.md`, `report/20260429.md`, and `log.md` for historical
-   experiment context.
-
-The accepted P1A ROS foundation now has explicit Gazebo seeds, configurable spawn
-timeouts, bounded automatic headless smoke checks, and verified 1/2/3-robot
-startup. P1A itself proves startup and message flow only; P1B/P1C subsequently
-added formal metrics and multi-seed task evidence.
-
-The accepted P1B now provides an evaluator-only Gazebo truth channel, a truth occupancy
-grid rasterized from static SDF box collisions, per-robot truth path and visit
-masks, search overlap, Nav2 outcomes, base-contact collision events, and one-row
-episode CSV/JSON. Its 2026-09-14 one- and two-robot short timeout runs passed.
-The current world has one unsupported mesh collision (an SUV outside the lab
-walls).
-
-P1C now meets the original 90% coverage intent with a shorter evidence-based
-time bound and is waiting for user review. All robots start inside the same
-radius-1 m start/charging region in `my_world.world`; success is 90%
-correct-free coverage within 180 simulated seconds. Earlier 75%/300 s results
-were symptoms of foundational defects, not an exploration ceiling: the custom
-SLAM callback never enabled `map->odom`, AMCL competed with SLAM during mapping,
-the coordinator treated odometry as map coordinates, and frontier selection
-blocked on a quadratic nearest-frontier loop. After fixing those causes and
-using diverse, reachable 0.45 m-clearance observation points, seeds 101/202/303
-reached 90% in 141.3/161.4/134.9 seconds, establishing the pre-optimization
-baseline. The final shared-map/Smac/staged-navigation controller reaches 90%
-with two robots in 98.9/79.6/104.4 seconds (mean 94.3) and with three robots in
-78.3/69.8/69.5 seconds (mean 72.5) on seeds 101/202/303. All six final episodes
-have zero collisions; maximum search overlap is 0.44%. Do not proceed to P2
-until P1C is accepted; 95% remains optional.
-
-## Current Handoff Snapshot
-
-- Active boundary: P1C is `待用户验收`; do not start P2A.
-- Final P1C evidence uses seeds 101/202/303, 90% correct-free coverage, and an
-  unchanged 180-second hard limit. Two-robot time-to-90 is
-  98.9/79.6/104.4 seconds; three-robot time-to-90 is 78.3/69.8/69.5 seconds.
-- The controller extracts frontiers and paths from `/merge_map`, assigns
-  spatially distinct goals, excludes teammate positions, and stages paths over
-  5 m. Nav2 consumes the same merged map with Smac 2D and a complete non-rolling
-  global costmap. Local lidar/DWB still performs dynamic obstacle avoidance.
-- The readiness gate requires both action discovery and
-  `/tbN/bt_navigator=active`; action discovery alone previously admitted a
-  stack that rejected every goal.
-- Final validation and commit/push details are recorded in `log.md` and
-  `report/20260917_p1c_optimization.md`.
-- Cross-map validation adds `p1c_open.world`, `p1c_rooms.world`, and
-  `p1c_corridors.world`. Three robots reached 90% on seeds 101/202/303 in all
-  nine episodes; the worst time was 75.5 seconds, all had zero collisions,
-  minimum accuracy was 97.47%, and maximum overlap was 1.91%. A two-robot
-  hardest-case check took 85.5 seconds with zero collisions. Details are in
-  `report/20260917_p1c_generalization.md`.
-- The launch, smoke tool, and baseline runner accept a world filename. The
-  default remains `my_world.world`; no exploration, Nav2, truth, sensor, speed,
-  safety, or scoring rule changed for generalization validation.
-- No ROS/Gazebo experiment process was running when this handoff was written.
-- The historical report-file worktree note is superseded: the restored tree
-  contains tracked `report/20260914.md`, and has no `20260914_p1a.md` file.
-
-For a manual two-robot Gazebo demonstration, use `enable_merge_rviz:=false` to
-avoid running both heavy visual frontends. Successful startup prints:
-
-```text
-All 2 Nav2 stacks are active.
-Nav2 ready; starting cooperative exploration.
-```
-
-If the gate times out, diagnose the named robot's lifecycle and TF chain; do
-not restore a long fixed delay or silently run with only one robot.
-
-Do not treat the dated report as current configuration. Do not overwrite it
-when current code changes; write a new dated report for a new research stage.
-
-## Environment And First Check
-
-**Mandatory:** run every project Python command from the conda environment
-`ns3gym` at `/home/zhuyulab/miniconda3/envs/ns3gym`. This includes
-`test.py`, all baseline runners, DQN training/evaluation, and plotting scripts.
-Do not use the base conda environment or the system Python. The Python process
-in this environment imports `ns3gym` and launches the local ns-3
-`wireless-rl` executable.
+Wireless-rl Python commands must use conda `ns3gym`:
 
 ```bash
 source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh
 conda activate ns3gym
+export PYTHONNOUSERSITE=1
 cd /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
-python test.py --agent greedy --seed 1 --simTime 1 --stepTime 0.5 --no-save --no-plot
 ```
 
-The 2026-09-02 environment has Python 3.10.20, NumPy 2.2.6, CUDA PyTorch
-2.11.0+cu128, and two NVIDIA GeForce RTX 4090 GPUs. Prefer `--device auto`,
-which selects `cuda:0`. The old Gym maintenance warning is present, but the
-smoke test succeeds.
-
-The user-site package `~/.local/lib/python3.10/site-packages/torch
-2.12.0+cpu` can shadow the correct conda CUDA build. The conda environment is
-configured with `PYTHONNOUSERSITE=1`; preserve this setting. If CUDA
-unexpectedly becomes unavailable, reactivate the environment and check
-`torch.__file__` before reinstalling anything.
-
-Restore the setting if the conda environment metadata is lost:
-
-```bash
-conda env config vars set PYTHONNOUSERSITE=1 -n ns3gym
-conda deactivate
-conda activate ns3gym
-```
-
-Before diagnosing import, Gym, PyTorch, or ns3-gym failures, verify:
+Check before diagnosing imports/CUDA; this does not launch a simulation:
 
 ```bash
 which python
@@ -164,123 +53,58 @@ python -c "import ns3gym; print(ns3gym.__file__)"
 python -c "import torch; print(torch.__file__, torch.__version__, torch.cuda.is_available())"
 ```
 
-`which python` must resolve under
-`/home/zhuyulab/miniconda3/envs/ns3gym/bin/`.
+Python must resolve under `/home/zhuyulab/miniconda3/envs/ns3gym/bin/`.
+Historical environment checks (2026-09-02) saw Python3.10.20, NumPy2.2.6,
+PyTorch2.11.0+cu128 and two RTX4090. Verify versions at implementation time;
+these are not a fresh hardware probe. User-site CPU torch previously shadowed
+CUDA torch; preserve PYTHONNOUSERSITE instead of reinstalling blindly.
 
-Run the automated regression check after source or environment changes:
+ROS nodes run system ROS2 Humble Python, not conda. A future learning adapter
+uses explicit IPC; do not merge interpreters via PYTHONPATH. Two GPUs help the
+learner but do not establish Gazebo sampling speed. Worker isolation/reset and
+throughput are MR3-P1C gates. New Gymnasium/algorithm dependencies must be
+version-pinned and checked independently of the legacy Gym/ns3-gym API.
 
-```bash
-python check_project.py
-```
+## Legacy toy toolchain (only when specifically needed)
 
-It requires CUDA and checks the conda environment, a DQN GPU
-forward/backward step, the ns-3 build, a short simulation, and fixed-seed
-reproducibility.
+[USER_GUIDE.md](USER_GUIDE.md) now describes only the historical scheduling toy.
+Its state is 5 users x `(CQI, queue, backlog age)`, action serves one user,
+15 inputs/5 actions. Service/arrival and reward are implemented in `sim.cc`;
+backlog age is not packet delay, misses are not packet drops, and this is not a
+Wi-Fi PHY/MAC simulation. Retained toy weights cannot initialize a robot policy.
 
-If `sim.cc` changes:
+For explicit toy maintenance, keep reward/current-state snapshots distinct,
+baseline semantics aligned across `test.py` and `run_baselines.py`, and old
+checkpoints incompatible when state/action shape changes. Use a new ns-3
+process per formal seed; globals make multi-iteration reset unproven. Keep
+training, validation and final test seeds disjoint. Historical held-out seeds
+2001–2010 establish only this toy; all exact data remain in dated reports.
+
+If toy `sim.cc` changes, build from the ns-3 root in the conda environment:
 
 ```bash
 cd /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40
 ./ns3 build wireless-rl
 ```
 
-ns3-gym uses local ZMQ ports. Tool sandboxes may require permission for a smoke
-test even though the project itself does not use external network access.
+`check_project.py` includes a build and simulator run; run it only for relevant
+implementation/environment changes, not as an automatic response to document
+work. Every simulator check is an experiment requiring the shared log.
 
-## Current Environment Contract
+## Required engineering and evidence rules
 
-- 5 users; observation dimension 15.
-- Observation: `[cqi0, queue0, delay0, ..., cqi4, queue4, delay4]`.
-- Action `i` serves user `i`.
-- CQI is bounded 1–10 and changes by a random integer in -2..2 per step.
-- Arrival is a random integer 0–5 per user per step; queue is capped at 100.
-- Service is `min(queue_i, 2 * cqi_i)`.
-- Delay is capped per-user backlog age, not packet delay.
-- A miss is a currently backlogged user with `delay > 8`, not a packet drop.
-- Episode length is `ceil(simTime / stepTime)`.
-
-Reward is captured after service and before the next arrival:
-
-```text
-served - 0.01 * rewardQueue - 0.1 * totalDelay - 5.0 * deadlineMisses
-```
-
-Do not conflate reward snapshot fields (`rewardQueue`, `totalDelay`,
-`deadlineMisses`) with current-state fields (`currentQueue`, `currentDelay`,
-`currentDeadlineMisses`). Formal summaries use the reward snapshot delay and
-miss fields.
-
-## Experiment Contract
-
-Baseline agents must stay aligned between `test.py` and the `BASELINES` list in
-`run_baselines.py`:
-
-```text
-random round_robin max_cqi max_queue max_delay greedy delay_aware
-```
-
-Use a new ns-3 process per seed. Do not use `test.py --iterations > 1` for
-formal results because the C++ environment uses globals and reset completeness
-has not been established.
-
-Training seeds are `seed + episode`. Validation seeds select `_best.pt`; final
-evaluation seeds must be separate from training and validation. Baseline and
-DQN comparisons require identical evaluation seeds, `simTime`, and `stepTime`;
-`compare_dqn_with_baselines.py` does not validate this for the caller.
-
-## Historical Result To Preserve
-
-The best retained 2026-04-29 checkpoint is:
-
-```text
-models/dqn_exp06_evalselect_p5k_h256_best.pt
-```
-
-It is a 15-input, 5-action, hidden-256 dueling Double DQN with a 5000-step
-`delay_aware` synthetic warm start. It was selected at zero-based episode 249
-using validation seeds 1001–1003. On evaluation seeds 1–10 it beat `greedy` on
-reward, backlog-age delay, and deadline misses, while losing some throughput
-and fairness. Exact numbers are in `USER_GUIDE.md` and `report/20260429.md`.
-
-Important: training used simulation seeds 1–300, so the historical evaluation
-seeds 1–10 overlap training. The result is not a held-out generalization test.
-This issue has now been addressed by rerunning the checkpoint and all baselines
-on fresh seeds 2001–2010. DQN beat `greedy` on cumulative reward, backlog-age
-delay, and deadline misses on all 10 seeds. Aggregate DQN versus `greedy`:
-
-| Metric | DQN | Greedy |
-|---|---:|---:|
-| reward | -128.586 | -284.997 |
-| throughput | 9.8200 | 10.1275 |
-| reward queue | 69.9400 | 64.6425 |
-| total delay | 35.9775 | 46.8100 |
-| misses | 1.7475 | 2.3850 |
-| fairness | 0.9460 | 0.9791 |
-
-See `report/20260902.md`. This remains evidence for the current toy MDP only.
-The main research limitation is the environment model, not the lack of more RL
-algorithms.
-
-## Change Discipline
-
-- Keep changes small and code-driven; do not add architecture for hypothetical
-  future protocols.
-- Do not change environment or reward semantics during DQN-only work.
-- If state shape or normalization changes, update `sim.cc`, `test.py`, and
-  `dqn_common.py` together and treat existing checkpoints as incompatible.
-- If reward timing or metric meaning changes, update `USER_GUIDE.md` and write a
-  new dated report; preserve historical reports.
-- Run the shortest relevant smoke test after code changes. Use multi-seed runs
-  for research claims.
-- Append every training, evaluation, baseline sweep, ablation, and formal
-  smoke/regression run to `log.md` in the same work session. Include failed or
-  interrupted runs, exact commands, seeds, parameters, outputs, and conclusions.
-  Updating the log is part of completing the experiment, not optional cleanup.
-- Generated files under `runtime/`, `models/*.pt`, and `__pycache__/` are ignored
-  and should not be committed unless explicitly requested.
-- Before any commit, use `git add -n .` and confirm only intended source/docs or
-  selected report assets are included.
-- The repository root is `/home/zhuyulab/ns3-workspace`; ns-3 and ROS 2 are in
-  the same monorepo. After a verified modification, commit it and push the
-  current branch to `origin` in the same work session unless the user explicitly
-  says not to.
+- RL decides exploration; a protocol/safety adapter must not silently call
+  handcrafted goal scoring, bad-target reallocation or truth-based masks.
+- Preserve stable goal IDs, acceptance/cancel/result ownership and source ages.
+  Current raw shared Nav2 map and all-peer odom/TF are explicit gateway bypasses
+  to remove under the planned contract, not exceptions for safety.
+- Preserve genuine contacts, truth/model boundaries and fixed measurement ROI.
+  No held-out tuning, changing time/safety gates after failure or cross-freeze matrices.
+- Append all training/evaluation/baseline/ablation/smoke/simulator attempts,
+  including failures, to [log.md](log.md), with commands/freeze/seeds/outputs.
+- Keep plans/guides concise current contracts. Date reports, retain immutable
+  original assets, and record archival/supersession in [ARCHIVE_INDEX.json](report/ARCHIVE_INDEX.json).
+- Generated runtime, ROS build/install/log, bags, maps, weights and pycache are
+  ignored by default. Only deliberately selected evidence enters Git.
+- Verify the change, diff-check, dry-run staging, commit and push to origin in
+  the same session. Update ROS launch_commands.md if run modes/commands change.

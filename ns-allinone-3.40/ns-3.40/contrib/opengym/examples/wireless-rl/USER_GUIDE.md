@@ -1,15 +1,18 @@
-# wireless-rl 项目指南
+# 历史 toy 调度 MDP 工具指南
 
-最后按代码核对：2026-09-02。
+MR3适用范围提示：2026-10-14。本页只说明现有五用户ns3-gym调度工具链，
+**不是三机器人导航RL或gateway的操作入口**。本页技术口径原核对日期2026-09-02，
+保留其命令/数据说明；后续环境变化以实际代码/探测为准。
 
-这是当前项目的主要入口。report/20260429.md 和 log.md 记录历史实验，
-但环境定义、默认参数和运行行为以当前源码为准。
+当前研究固定三机器人，先学习联合稳定探索目标，理想通信达到95%任务后冻结策略接
+ns-3 Wi-Fi。唯一活动契约见 [RESEARCH_PLAN.md](RESEARCH_PLAN.md)和
+[IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)；当前ROS命令见
+[launch_commands.md](../../../../../../ros2_ws/ros2-multi-robot-automap/launch_commands.md)。
+本轮MR3-P0文档待用户验收，尚无新策略或通信接入命令。
 
-最终论文目标已经从当前 toy 调度 MDP 明确为“受干扰 Wi-Fi 4 下的多机器人
-协同建图、目标搜索、充电和集合任务”。完整研究问题、ROS 2 项目路径、系统
-边界、指标、风险和一年路线统一记录在 `RESEARCH_PLAN.md`。该文件是规划，
-不是当前已实现功能；逐步工程检查点和当前进度记录在 `IMPLEMENTATION_PLAN.md`。
-重新开始工作时应依次阅读这两个文件，再阅读本指南。
+以下15维观测/5动作、CQI/queue/backlog age、DQN权重与历史成绩属于另一个任务，
+不能改名当作三个机器人、真实packet delay或Wi-Fi PHY/MAC证据。旧toy模型不用于
+导航推理。仅在明确维护/复现toy工具时使用以下命令，每次模拟仍须记共享log。
 
 ## 0. 五分钟重新上手
 
@@ -470,10 +473,9 @@ cumulative reward；代价是吞吐约低 3.4%，fairness 也更低。这是有�
 - `check_project.py` 已自动化 conda/CUDA 检查、build、短 smoke test 和固定 seed
   可重复性比较，但还没有覆盖完整训练收敛或统计性实验回归。
 
-如果恢复研究，先决定研究问题，再改代码。最自然的下一阶段是把抽象用户 backlog age
-升级为 packet-level queue，明确 arrival time、packet delay、deadline violation 和 drop
-语义；在完成这一步前，不建议继续堆 PPO、Rainbow、PER 等算法，因为环境真实性是当前
-主要瓶颈。
+这些限制描述旧toy的模型边界，不设定MR3的研发顺序。新研究先完成三机器人导航RL，
+再接真实Wi-Fi，不能被旧“先升级调度queue再做PPO”的建议覆盖。若单独研究toy的
+packet-level扩展，需要另行说明目标与契约；当前路线不要求做该扩展。
 
 ## 9. 修改时的同步清单
 

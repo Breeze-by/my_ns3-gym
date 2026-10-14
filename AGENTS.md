@@ -1,110 +1,139 @@
-# Codex Monorepo Memory
+@/home/zhuyulab/.codex/RTK.md
 
-This is the single Git repository for the multi-robot task-oriented Wi-Fi RL
-research project. Its Git root and canonical local checkout are:
+# Codex Monorepo Memory — MR3
 
-```text
-/home/zhuyulab/ns3-workspace
-```
+## Canonical checkout and components
 
-The repository contains both active components in the same working tree:
+The only Git root is `/home/zhuyulab/ns3-workspace`. Both components belong to
+this same working tree and the same `origin` (`Breeze-by/my_ns3-gym`):
 
-```text
-ns-allinone-3.40/ns-3.40/
-    ns-3, ns3-gym, and wireless-rl code
+- `ros2_ws/ros2-multi-robot-automap/`: ROS 2 Humble, Gazebo Classic, TurtleBot3,
+  SLAM, Nav2 and collaborative mapping.
+- `ns-allinone-3.40/ns-3.40/`: ns-3.40, ns3-gym and the historical wireless-rl
+  toy scheduling environment; the future MR3 gateway/network component.
 
-ros2_ws/ros2-multi-robot-automap/
-    ROS 2 Humble, Gazebo, TurtleBot3, SLAM, Nav2, and multi-robot exploration
-```
+The ROS tree was imported using git subtree on 2026-09-02. It is not a
+submodule/nested repository. The former standalone checkout and compatibility
+symlink under `/home/zhuyulab/ros2_ws/` were removed; use canonical paths only.
 
-The ROS 2 tree was imported from `Breeze-by/ros_mutirobot_nav` with
-`git subtree` on 2026-09-02. It is not a submodule or nested Git repository.
-The monorepo `origin` (`Breeze-by/my_ns3-gym`) is now the source of truth for
-both components. The former standalone checkout and compatibility symlink
-under `/home/zhuyulab/ros2_ws/` were removed on 2026-09-02. Use only the
-canonical monorepo path above.
+## Read first and authority
 
-## Read First
+Before research or architecture decisions read, in order:
 
-Before making research or architecture decisions, read:
+1. `ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md`.
+2. The adjacent `IMPLEMENTATION_PLAN.md` for the current acceptance boundary.
+3. The adjacent `AGENTS.md` for component/environment/evidence rules.
+4. `ros2_ws/ros2-multi-robot-automap/user_guide.md` and `launch_commands.md` for
+   actual current ROS behavior and executable commands.
+5. `wireless-rl/report/20261014_mr3_route_audit.md` and `report/README.md` as needed.
 
-1. `ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md`
-   for the final thesis goal, system boundary, metrics, risks, and roadmap.
-2. `ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/IMPLEMENTATION_PLAN.md`
-   for engineering checkpoints, exit criteria, and current progress.
-3. `ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/AGENTS.md`
-   for the current ns-3 experiment state, environment, results, and rules.
-4. `ros2_ws/ros2-multi-robot-automap/user_guide.md` for the current ROS 2 task
-   stack, launch commands, topics, and troubleshooting.
+Current code determines implemented behavior. Plans describe intended work;
+dated reports and native artifacts establish results only for their original
+source/contract. Historical reports, archived plans and upstream READMEs do not
+set the active research route. Avoid repeating detailed chronology in guides.
 
-Planning documents describe intended work, not functionality that is already
-implemented. Use current code as the source of truth and dated reports/logs as
-the source of experimental claims.
+## Active route and user acceptance
 
-## Current Handoff
+The user's 2026-10-14 direction supersedes the earlier research route:
 
-2026-10-13: `main` was restored from P1C `99cf3a6`; the original route's latest
-complete source and user files remain on `p2c1/global-mission-20261012`.
-Only these two local/remote branches are maintained. The user requested
-engineering repairs before providing a new research route. Do not advance old
-P2/P3/network/RL checkpoints from the unchanged historical plans.
+- Exactly **three robots**, tb1/tb2/tb3; no new 2/4/5-robot research matrices.
+- First replace hand-coded global exploration decisions with a centralized
+  joint RL policy. Retain SLAM/map fusion and local Nav2; start with stable
+  subgoals, not unrestricted velocity or a hand-planner fallback.
+- Establish a reliable **95%** mapping task under ideal communication, then
+  freeze weights, normalization, observation/action and execution contracts.
+- Route application uplink/downlink bytes through gateway and genuine ns-3
+  Wi-Fi (1 AP + 3 STA). Received-only maps/states/goals/ACKs must causally govern
+  the backend and remote shared information used by robot navigation/safety.
+- No target search, charging, rally, learned communication scheduling or
+  hardware work. Network remedies and deployment are outside this roadmap.
 
-Runtime repairs, new checks, and actual simulator outcomes are recorded in
-`wireless-rl/report/20261013_p1c_engineering_repair.md` and the shared `log.md`.
-2026-10-14: runtime freeze `c9344e1` passed the five predeclared engineering
-checks with one source and the documented single-host ROS profile. Package
-checks: 73 tests, zero errors/failures, two skips. This does not reaccept the
-historical P1C performance/multi-seed matrix; the new research route is pending.
-Current commands are in `ros2_ws/ros2-multi-robot-automap/launch_commands.md`.
-The task still uses SLAM, conservative common-frame map fusion, frontier
-allocation, and Nav2. Evaluator schema v3 enforces the original simulation
-deadline, zero contact, monitoring availability, and navigation handshake
-closure. Historical schema v2/P1C results apply only to their original source;
-do not credit them to the repaired implementation.
+New checkpoints are namespaced **MR3-P0 … MR3-P5**, with individual substep
+acceptance. Complete and verify each substep, commit/push, present evidence,
+and wait for the user's explicit acceptance before the next substep.
+Old P1C/P2C acceptance or PASS cannot be reused as MR3 credit.
+
+Current boundary: **MR3-P0 documentation delivered, awaiting user acceptance**.
+This session changes documentation only; MR3-P1A and all implementation are
+unstarted. Do not begin training or gateway work because a plan mentions it.
+
+## Current implementation and evidence
+
+`main` was restored from P1C `99cf3a6` and repaired. Pre-route document commit
+is `81b2f8b`; runtime freeze is `c9344e1`. Current launch still defaults to two
+and supports 1–4: all new documented commands explicitly pass three. Changing
+that runtime contract belongs to MR3-P1A, not this documentation session.
+
+The source still uses a handcrafted frontier controller, common-frame
+conservative map fusion and Nav2. No three-robot RL policy or ROS/ns-3 gateway
+exists. Historical five-user/15-input/5-action toy DQN is a separate task.
+Latest three-robot evidence is seed101 rooms/corridors **90%** within 180 sim
+seconds, not 95% or an RL/multi-seed claim. See the canonical repair report
+`wireless-rl/report/20261013_p1c_engineering_repair.md` and shared `log.md`.
+
+Known new-route prerequisites: explicit ROI/95% coverage feasibility; sustained
+collision-monitor freshness; goal ownership and complete reset; no raw shared
+map or peer-pose bypass; actual payload transport and causal simulation clocks.
+They are scheduled gates, not functionality already implemented.
+
+## Engineering judgment
+
+Use independent engineering judgment, simple direct solutions, existing code
+and mature dependencies. Preserve correctness, data safety and research
+validity; do not limit necessary analysis or validation to save tokens.
+User requirements take precedence over repository preferences. Keep scope
+focused. The two removed coding-guideline skills must not be reinstalled,
+invoked, or used as constraints (user preference 2026-10-12).
+
+Do not hide a hand-coded exploration policy behind the RL adapter, expose truth
+to actor/candidates/masks/safety, loosen failed task gates, cherry-pick seeds,
+or assemble a matrix across different code freezes. Ground truth is permitted
+only for isolated evaluation/training reward and network propagation position.
+Local own sensors remain local; cross-robot information must respect delivery.
 
 ## Environments
 
-All wireless-rl Python/ns3-gym commands must run in conda environment
-`ns3gym`. Preserve `PYTHONNOUSERSITE=1`; detailed commands are in the nested
-wireless-rl `AGENTS.md`.
-
-ROS 2 commands use ROS 2 Humble and the in-repository workspace:
+Wireless-rl/ns3-gym Python uses conda `ns3gym`, preserving
+`PYTHONNOUSERSITE=1`; see nested instructions. ROS nodes use system ROS Python:
 
 ```bash
 source /opt/ros/humble/setup.bash
 cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
-colcon build --symlink-install
+export PYTHONNOUSERSITE=1
+/usr/bin/python3 /usr/bin/colcon build --symlink-install --allow-overriding nav2_bringup
 source install/setup.bash
 ```
 
-Do not copy old ROS `build/`, `install/`, or `log/` directories into this tree;
-colcon caches absolute source paths. They are ignored and must be regenerated
-at the canonical path.
+Do not copy old ROS build/install/log directories or mix conda and ROS Python
+through ad hoc PYTHONPATH. Colcon absolute-path caches must be regenerated at
+the canonical location when needed. Preserve evidence logs; only stop owned
+process groups. Separate wall-clock startup guards from sim-time task budgets.
 
-## Git And Push Discipline
+## Git, push and experiment discipline
 
-The user requires every completed modification to be committed and pushed to
-`origin` in the same work session. Do not leave verified source or documentation
-changes only in the local checkout unless the user explicitly asks for that.
+Only `main` and original-route backup `p2c1/global-mission-20261012` are maintained.
+The backup's latest complete state is `8fe1495`; leave it untouched unless the
+user requests otherwise. Do not create extra archival branches, force-push or
+rewrite shared history. Both components stay together on each feature branch.
 
-Before every commit:
+Every completed modification must be committed and pushed to `origin` in the
+same session unless explicitly instructed otherwise. Before every commit:
 
-1. Run the shortest relevant build/test/smoke check.
-2. Run `git diff --check` from the repository root.
-3. Run `git add -n .` and confirm that build artifacts, runtime outputs,
-   checkpoints, maps, bags, and logs are not being staged accidentally.
-4. Commit focused changes, then push the current branch to `origin`.
+1. Run the shortest relevant checks; documentation-only changes need static
+   links/consistency/evidence checks, not simulator or training runs.
+2. Run `git diff --check` from the Git root.
+3. Run `git add -n .`; exclude accidental build/runtime/log/bag/map/checkpoint
+   artifacts. Selected canonical research evidence may be intentionally tracked.
+4. Commit focused changes and push the current branch.
 
-Do not force-push or rewrite shared history unless the user explicitly requests
-it. Feature branches contain both ns-3 and ROS 2; do not place the two components
-on mutually exclusive branches.
+Whenever a launch argument, default component, recommended mode or copy/paste
+launch command changes, update ROS `launch_commands.md` in the same commit.
+Every training, evaluation, baseline, ablation, formal smoke, simulator or
+hardware experiment is appended, including failures/interruptions, in the
+same session to:
 
-Every training, evaluation, baseline, ablation, formal smoke, simulator run, or
-hardware experiment must also be appended in the same work session to:
+`ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/log.md`.
 
-```text
-ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/log.md
-```
-
-Record failures and interruptions as well as successes, with exact command,
-code state, seeds, parameters, outputs, and conclusion.
+Record exact command, freeze, seeds, parameters, outputs and conclusion. Keep
+one canonical evidence set. Do not relabel old failures or rewrite experiment
+history; archive/supersession locations belong in `report/ARCHIVE_INDEX.json`.

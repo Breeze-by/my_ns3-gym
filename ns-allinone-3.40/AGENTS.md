@@ -1,20 +1,16 @@
-# Codex Project Memory
+# ns-allinone component memory
 
-This workspace contains a full `ns-allinone-3.40` tree. Do not start by scanning
-the whole ns-3 source tree unless the user explicitly asks for framework-level
-work.
+This tree contains ns-3.40 and ns3-gym within the single Git repository
+`/home/zhuyulab/ns3-workspace`. Do not scan the whole framework unless needed.
 
-The active research project is:
+First read the root AGENTS.md, then
+`ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md`,
+`IMPLEMENTATION_PLAN.md` and `AGENTS.md`.
 
-```text
-ns-3.40/contrib/opengym/examples/wireless-rl
-```
+The active route is MR3: exactly three robots, navigation RL under ideal
+communication first, then frozen-policy gateway/ns-3 Wi-Fi effects. Current
+`wireless-rl/sim.cc` is historical five-user toy scheduling; no robot policy or
+ROS gateway is implemented there. Do not let its old DQN or report next steps
+replace the active roadmap. The ROS workspace is in the same repository.
 
-When a new Codex session is opened for this project, first read the project-level
-memory file:
-
-```text
-ns-3.40/contrib/opengym/examples/wireless-rl/AGENTS.md
-```
-
-Then read the linked guide/report files from that directory as needed.
+MR3-P0 documentation awaits user acceptance; later steps are unstarted.

@@ -1,4 +1,8 @@
-# DQN Iteration Log
+# Shared Experiment and Development Log
+
+> 本文件按日期保留toy/ROS/旧路线/MR3的历史，不是当前研究指令。活动契约是
+> [MR3研究计划](RESEARCH_PLAN.md)与[实施检查点](IMPLEMENTATION_PLAN.md)。
+> 历史P编号、门限、PASS和“下一步”不转记新验收；失败/原件保持原义。
 
 ## Logging rule
 
@@ -1662,3 +1666,50 @@ Final component results73 checks/zeroerrors/zerofailures/twoskips remain from th
 same runtime source. Closing changes affect only documentation/receipts; runtime
 files unchanged fromc9344e1, both research/implementation plans byte-identical to
 99cf3a6. Original-route backup branch8fe1495 stays untouched.
+
+## 2026-10-14 MR3 route audit and documentation transition (no new experiment)
+
+- User direction: exactly three robots; first centralized joint RL exploration
+  with stable subgoals and local SLAM/Nav2/map fusion under ideal communication;
+  then freeze policy and interface contracts, route actual uplink/downlink bytes
+  through gateway/ns-3 Wi-Fi and measure network effects. No target search,
+  charging, rally, other team-size study, communications optimizer or hardware roadmap.
+- Code/read-only baseline: main@81b2f8b9c2a36f0a8c5278e04fae66dc06859180,
+  runtime unchanged from c9344e10f4a0788f96fd70371c5ea033e0fc5268.
+  Original-route backup p2c1/global-mission-20261012@8fe1495b6624cd9136f3ce160acaa274428e54ae
+  remains untouched. No weights/config/source change, simulator or training run.
+- Primary-paper/official-document research and source audit are centralized in
+  report/20261014_mr3_route_audit.md. Decisions: goal-based joint MaskablePPO,
+  same-action DQN comparison, optional SAC/TD3 continuous-goal method; reward
+  tied to correct-free coverage/time/safety; explicit ROI/95% feasibility,
+  reset/throughput, Nav2 shared-map/peer-state bypasses, serialized payload and
+  simulation-clock causality gates.
+- New checkpoint namespace MR3-P0…MR3-P5 supersedes old route instructions.
+  This session delivers P0 documentation for user acceptance; no P1A work or
+  retrospective acceptance of historical P1C/task results. Future substeps each
+  require separate user acceptance after verified, committed/pushed delivery.
+- Updated root/component memories, research and implementation plans, repository
+  entry points, ROS guide/technical reference/three-robot commands, scoped legacy
+  toy guide/models/runtime. Added report README and ARCHIVE_INDEX.json.
+  All ten existing report bodies retain original hashes after scope banners;
+  original assets unchanged. Superseded text is recoverable at the pre-route Git
+  object; old failures are not removed or relabeled.
+- Validation commands (static only, not simulator experiments):
+
+```bash
+rtk proxy python3 /tmp/mr3_document_check.py
+rtk git diff --check
+rtk git add -n .
+```
+
+- Static check script verifies local links/fences, shell syntax without execution,
+  current launch/CLI arguments and explicit three-robot recommendation, MR3
+  checkpoint completeness/status, pre-route Git/SHA256 archival records,
+  unchanged report bodies/log chronology, and documentation-only change scope.
+  Exact static checker source is preserved in the route-audit report appendix.
+  Canonical validation receipt:
+  report/assets/20261014_mr3_route_audit/document_checks.json.
+- Scientific status: current traditional baseline still has only the already
+  logged c9344e1 three-robot rooms/corridors seed101 90% engineering results.
+  No 95% task, navigation RL, gateway or ns-3 mission credit added this session.
+  Later optimization/deployment awaits a separate user direction.
