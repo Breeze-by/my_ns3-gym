@@ -1856,3 +1856,21 @@ export PYTHONNOUSERSITE=1
 - Compact integration checks from multi_robot_exploration package:86 functional tests passed (contacts/evaluator/task lifecycle/launch-and-smoke),1 lint failure at new100char metadata string; shortened metadata and targeted package lint then1passed. Fixture py_compile/diff-check clean. Complete geometry sample for first non-support pair now retained; compact native summary requires all18sources, one publisher, received=published, supported publication sequence with zero gaps/duplicates/regressions/unavailable. Settled ray height must agree nominal.131within2mm. No simulator gate relaxation.
 
 - Native reducer build/checks: canonical system ROS /usr/bin/python3 /usr/bin/colcon build --packages-select multi_robot --symlink-install passed (34.7wallsec), installed executable confirmed by ros2 pkg executables multi_robot. Independent CMake/gtests5passed/0failed; native_reducer_checks.xml retained. ament_cpplint/uncrustify own3C++files passed; diff-check clean. First isolated colcon with /tmp install refused unresolved runtime dependencies (no simulator); independent CMake and canonical colcon then passed. Independent compact integration review found no relaxed task/monitoring gate or truth leakage. v5 starts only after this new committed/pushed freeze;3world batches then run in parallel80CPU host, isolated domains/ports, each3seed serial restart, all9same freeze.
+
+### MR3-P1A native attempt mr3_p1a_contact_compact_v5_20261014_115529
+
+- Freeze: 50b78e7f4f2492288bf005c6b48432af2a120b95 committed/pushed; fixed3robots, exact contract, no RL/network credit.
+- Environment: system ROS Humble; PYTHONNOUSERSITE=1; rmw_fastrtps_cpp; ROS_LOCALHOST_ONLY=1; ROS_DOMAIN_ID=217; GAZEBO_MASTER_URI=http://127.0.0.1:11817.
+- Command (canonical ROS root):
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/mr3_contact_native_fixture.py --output-dir /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_compact_v5_20261014_115529 --ros-domain-id 217 --gazebo-port 11817 --contact-transport compact
+```
+
+- Result pending at invocation; all native output retained.
+
+- Finished 2026-10-14T12:01:08.191800+00:00; rc=1; result=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_compact_v5_20261014_115529/fixture_result.json; success=False; error=settled laser height differs from declared slice by over2mm: tb3. All native JSON/log/failures retained.
+
+- V5 compact freeze50b78e7: continuous18source monitoring recovered (maxsteadyage.044s, no latchedissues),2simsec took2.490wall/.992CPU sec; everyraw input=output, actualpublication sequence observed, no gaps/duplicates/regressions. Failed before six cases: tb3rayheight.128868m vsnominal.131 (-2.132mm) exceeds retained2mm criterion; tb1/tb2errors-1.156/-1.865mm. Original fixture_v5_height_failure_{result.json,launch.txt,source.py} retained. Source2mm gate not enough to prove planar geometry: tb1stillpitch1.056deg afterlift gives10mbeam groundcrossing; evidence indicates settling is incomplete (hypothesis). ActualSDF wheel/castergeometry predicts static pitch-.32385deg/ray.130637/min10mbeam.074115m; do not forcepose/physics. NewV6 predeclared mr3_p1a_contact_settle_v6_20261014_120858 adds true lowtwist1simsec stablewindow and beam-envelope/exactgeometry-slice invariance, without loosening2mm or anytaskgate. Prelaunch wrapper earlier rejected uncompletedpush; no simulator launched then, samev5ID began afterpushcompleted.
+
+- V6 geometry audit prechecks: inspect_world_geometry now exposes existing box vertical boundaries/plane heights only; truth classification and ROI unchanged. New audit_lidar_slice_invariance probes reference/endpoints/allboundaries and adjacentfloat heights, rejects hidden narrow slices and floorcrossing. Puremodule50tests+scopedflake8/pep257 passed (initial testinput/indent failures repaired withoutclassificationchange). All12worlds [.02,.25] exactrectangle invariant, canonical all12_vertical_slice_invariance.json; no policy/simulator runs onheldouts. Fixture now queries actual tbN::base_scan pose/twist and sources directly ratherthan model-link identity assumption; py_compile/diffcheck passed.

@@ -70,6 +70,7 @@ def main():
     from rclpy.qos import QoSProfile, DurabilityPolicy, ReliabilityPolicy
     from std_msgs.msg import String
     from rosidl_runtime_py.convert import message_to_ordereddict
+    from multi_robot_exploration.mr3_task_contract import audit_lidar_slice_invariance
 
     spec = importlib.util.spec_from_file_location('mr3_contacts_fixture_module', MODULE)
     contacts_module = importlib.util.module_from_spec(spec)
@@ -109,6 +110,9 @@ def main():
         processing = {'callback_count': 0, 'callback_wall_sec': 0.0,
                       'max_callback_wall_sec': 0.0, 'max_callback_source_age_sec': 0.0,
                       'pending_peak': 0, 'drain_wall_sec': 0.0}
+        result['lidar_slice_invariance'] = audit_lidar_slice_invariance(WORLD, .02, .25, .131)
+        if not result['lidar_slice_invariance']['invariant']:
+            raise RuntimeError('fixture world has a geometry slice transition in [.02,.25]m')
 
         def now():
             return node.get_clock().now().nanoseconds / 1e9
@@ -258,6 +262,43 @@ def main():
                 'post_lift_source_cutoff': after_lift_sim_time,
             } for robot, component in support_keys
         }
+        # Lifting produces real physical motion. A pair of support samples does
+        # not establish settlement: require a fresh low-twist source window for
+        # each robot, without setting poses or changing the physics model.
+        result['settlement_samples'] = {robot: [] for robot in monitor.robot_names}
+        stable_since = {robot: None for robot in monitor.robot_names}
+        settled = {robot: False for robot in monitor.robot_names}
+        settlement_deadline = time.monotonic() + 30.0
+        while not all(settled.values()):
+            if time.monotonic() >= settlement_deadline:
+                raise TimeoutError('settlement_timeout: no fresh1simsec low-twist window for all3')
+            for robot in monitor.robot_names:
+                request = GetEntityState.Request()
+                request.name, request.reference_frame = robot + '::base_scan', 'world'
+                response = call(get_client, request, 'settlement state ' + robot)
+                source = response.header.stamp.sec + response.header.stamp.nanosec / 1e9
+                wait(lambda: now() >= source, 2, 'settlement source clock watermark missing')
+                receipt = now()
+                if receipt - source > .5:
+                    raise RuntimeError('settlement state source stale: ' + robot)
+                state = response.state
+                linear = math.sqrt(sum(getattr(state.twist.linear, axis)**2 for axis in 'xyz'))
+                angular = math.sqrt(sum(getattr(state.twist.angular, axis)**2 for axis in 'xyz'))
+                row = {'source_time_sec': source, 'receipt_time_sec': receipt,
+                       'entity': robot + '::base_scan',
+                       'linear_speed_m_s': linear, 'angular_speed_rad_s': angular,
+                       'position': [getattr(state.pose.position, axis) for axis in 'xyz'],
+                       'quaternion': [getattr(state.pose.orientation, axis) for axis in 'xyzw']}
+                result['settlement_samples'][robot].append(row)
+                if linear >= .005 or angular >= .02:
+                    stable_since[robot] = None
+                    settled[robot] = False
+                else:
+                    if stable_since[robot] is None:
+                        stable_since[robot] = source
+                    settled[robot] = source - stable_since[robot] >= 1.0
+            next_sample = now() + .05
+            wait(lambda: now() >= next_sample, 2, 'settlement sampling clock did not advance')
         wait(lambda: monitor.summary(now())['fresh'], 20, 'contact sources not fresh after settling')
         monitor.start(now())
         steady_begin = (now(), time.monotonic(), time.process_time())
@@ -274,19 +315,36 @@ def main():
         result['settled_robot_poses'] = {}
         for robot in monitor.robot_names:
             request = GetEntityState.Request()
-            request.name, request.reference_frame = robot, 'world'
-            pose = call(get_client, request, 'settled pose ' + robot).state.pose
+            request.name, request.reference_frame = robot + '::base_scan', 'world'
+            response = call(get_client, request, 'settled pose ' + robot)
+            source = response.header.stamp.sec + response.header.stamp.nanosec / 1e9
+            wait(lambda: now() >= source, 2, 'settled pose clock watermark missing')
+            if now() - source > .5:
+                raise RuntimeError('settled pose source stale: ' + robot)
+            pose = response.state.pose
             ray_offset = rotate(pose.orientation, (-.064, 0, .121))
+            normal = rotate(pose.orientation, (0, 0, 1))
+            vertical_span = 10.0 * math.sqrt(max(0.0, 1.0 - normal[2]**2))
+            actual_height = pose.position.z + ray_offset[2]
+            beam_envelope = [actual_height - vertical_span, actual_height + vertical_span]
             result['settled_robot_poses'][robot] = {
-                'model_position': [pose.position.x, pose.position.y, pose.position.z],
-                'model_quaternion': [pose.orientation.x, pose.orientation.y,
+                'entity': robot + '::base_scan',
+                'source_time_sec': source, 'receipt_time_sec': now(),
+                'sensor_link_position': [pose.position.x, pose.position.y, pose.position.z],
+                'sensor_link_quaternion': [pose.orientation.x, pose.orientation.y,
                                      pose.orientation.z, pose.orientation.w],
                 'actual_sdf_ray_height_m': pose.position.z + ray_offset[2],
                 'declared_lidar_height_m': .131,
                 'height_error_m': pose.position.z + ray_offset[2] - .131,
+                'lidar_plane_normal': normal,
+                'beam_height_envelope_at10m': beam_envelope,
             }
             if abs(result['settled_robot_poses'][robot]['height_error_m']) > .002:
                 raise RuntimeError('settled laser height differs from declared slice by over2mm: ' + robot)
+            if beam_envelope[0] <= 0:
+                raise RuntimeError('settled laser beam envelope crosses ground: ' + robot)
+            if not .02 <= beam_envelope[0] <= beam_envelope[1] <= .25:
+                raise RuntimeError('settled laser beam outside verified slice band: ' + robot)
 
         # Each fixture is a real static sphere, just inside its target's side
         # boundary. Query the collision entity (not a hard-coded robot pose) to

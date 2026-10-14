@@ -261,6 +261,50 @@
         "owned process group closes cleanly; intentional fixture contacts provide no navigation safety credit"
       ],
       "reason": "Native C++ same-message pair reducer after profile confirms79% rclpy take/ROS object construction; keeps raw18 at20Hz, source header, every raw message, all unique pairs, first complete geometry, raw pair counts and source publication sequence audit; no gate/physics change."
+    },
+    {
+      "run_id": "mr3_p1a_contact_settle_v6_20261014_120858",
+      "ros_domain_id": 218,
+      "gazebo_port": 11818,
+      "output_dir": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_settle_v6_20261014_120858",
+      "command": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/mr3_contact_native_fixture.py",
+        "--output-dir",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_settle_v6_20261014_120858",
+        "--ros-domain-id",
+        "218",
+        "--gazebo-port",
+        "11818",
+        "--contact-transport",
+        "compact"
+      ],
+      "criteria": [
+        "all 18 topics fresh, source and receipt <= .5 sim seconds with no sustained gap",
+        "genuine empty-state timestamps and exact normal wheel/caster ground support filtering",
+        "all six component fixture non-support contacts retained",
+        "reported settled SDF ray height vs nominal .131 (geometry slice unaffected within 2mm)",
+        "owned process group closes cleanly; intentional fixture contacts provide no navigation safety credit"
+      ],
+      "reason": "Retain original2mm nominal-height criterion,20Hz/.5s source gates and physics; prove true physical settlement using fresh GetEntityState pose/twist, all3 below .005m/s/.02rad/s for1simsec within30wallsec. Add stronger full10m-beam vertical envelope within offline exact slice-invariant [.02,.25]m with ground avoidance. v5 failed height not relabeled.",
+      "settlement": {
+        "linear_speed_max_m_s": 0.005,
+        "angular_speed_max_rad_s": 0.02,
+        "continuous_sim_window_sec": 1.0,
+        "wall_guard_sec": 30.0,
+        "state_max_source_age_sec": 0.5
+      },
+      "laser_geometry": {
+        "nominal_height_m": 0.131,
+        "max_origin_error_m": 0.002,
+        "range_m": 10.0,
+        "verified_slice_band_m": [
+          0.02,
+          0.25
+        ],
+        "full_beam_envelope_must_be_inside_band": true,
+        "ground_crossing_forbidden": true
+      }
     }
   ],
   "development_execution_schedule": {

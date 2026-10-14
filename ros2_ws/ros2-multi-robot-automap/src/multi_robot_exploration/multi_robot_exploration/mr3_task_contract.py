@@ -178,6 +178,7 @@ def inspect_world_geometry(world_path, lidar_height_m=.131):
     if world is None:
         raise ValueError(f"No world element in {world_path}")
     issues, rectangles, ignored = [], [], []
+    vertical_boundaries, plane_heights = set(), set()
     states = world.findall("state")
     if len(states) > 1:
         issues.append({"object": "world", "reason": "multiple_saved_states"})
@@ -189,6 +190,9 @@ def inspect_world_geometry(world_path, lidar_height_m=.131):
         if uri in {"model://sun", "model://ground_plane"}:
             try:
                 pose = _pose(include)
+                if uri == "model://ground_plane":
+                    vertical_boundaries.add(pose[2])
+                    plane_heights.add(pose[2])
                 if uri == "model://ground_plane" and pose[2] >= lidar_height_m:
                     raise ValueError("ground plane reaches the lidar slice")
                 ignored.append({"object": uri, "reason": "audited_light_or_ground"})
@@ -243,6 +247,8 @@ def inspect_world_geometry(world_path, lidar_height_m=.131):
                         if len(normal) != 3 or not np.allclose(
                                 np.array(normal, dtype=float), [0, 0, 1]):
                             raise ValueError("unsupported_plane_normal")
+                        vertical_boundaries.add(pose[2])
+                        plane_heights.add(pose[2])
                         if abs(pose[2] - lidar_height_m) < 1e-6:
                             raise ValueError("plane_intersects_lidar_slice")
                         ignored.append({"object": identifier,
@@ -255,6 +261,7 @@ def inspect_world_geometry(world_path, lidar_height_m=.131):
                         raise ValueError("invalid_box_size")
                     x, y, z, _, _, yaw = pose
                     sx, sy, sz = size
+                    vertical_boundaries.update((z-sz/2, z+sz/2))
                     if not z - sz/2 <= lidar_height_m <= z + sz/2:
                         ignored.append({"object": identifier, "reason": "box_outside_slice"})
                         continue
@@ -280,11 +287,60 @@ def inspect_world_geometry(world_path, lidar_height_m=.131):
         "saved_state_count": len(states),
         "rectangle_count": len(rectangles),
         "supported_collision_bounds": original_bounds,
+        "vertical_boundaries_m": sorted(vertical_boundaries),
+        "plane_heights_m": sorted(plane_heights),
         "unsupported_collision_count": len(issues),
         "unsupported": issues,
         "ignored": ignored,
     }
     return rectangles, audit
+
+
+def audit_lidar_slice_invariance(world_path, minimum_height_m=.02,
+                                 maximum_height_m=.25, reference_height_m=.131):
+    """
+    Check exact static collision slices at every possible height transition.
+
+    This is an offline geometry check. It does not prove a robot's laser beam
+    stays inside the band, and never changes the task ROI or occupied mask.
+    """
+    minimum = _finite_number(minimum_height_m, "minimum_height_m")
+    maximum = _finite_number(maximum_height_m, "maximum_height_m")
+    reference = _finite_number(reference_height_m, "reference_height_m")
+    if not minimum < maximum or not minimum <= reference <= maximum:
+        raise ValueError("Slice band must be ordered and contain the reference height")
+    rectangles, reference_audit = inspect_world_geometry(world_path, reference)
+    probes = {minimum, maximum, reference}
+    for boundary in reference_audit["vertical_boundaries_m"]:
+        if minimum <= boundary <= maximum:
+            probes.add(boundary)
+            for direction in (-math.inf, math.inf):
+                adjacent = math.nextafter(boundary, direction)
+                if minimum <= adjacent <= maximum:
+                    probes.add(adjacent)
+    plane_crossings = [height for height in reference_audit["plane_heights_m"]
+                       if minimum <= height <= maximum]
+    rows = []
+    invariant = not reference_audit["unsupported"] and not plane_crossings
+    for height in sorted(probes):
+        actual, audit = inspect_world_geometry(world_path, height)
+        identical = actual == rectangles
+        valid = identical and not audit["unsupported"]
+        invariant = invariant and valid
+        rows.append({"height_m": height, "rectangle_count": len(actual),
+                     "exact_rectangles_match_reference": identical,
+                     "unsupported": audit["unsupported"]})
+    return {
+        "type": "offline_vertical_slice_invariance_not_native_sensor_proof",
+        "world_file": Path(world_path).name,
+        "world_sha256": reference_audit["world_sha256"],
+        "auditor_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "minimum_height_m": minimum, "maximum_height_m": maximum,
+        "reference_height_m": reference,
+        "vertical_boundaries_m": reference_audit["vertical_boundaries_m"],
+        "plane_crossings_m": plane_crossings, "probes": rows,
+        "invariant": bool(invariant), "denominator_modified": False,
+    }
 
 
 def _rasterize(rectangles, bounds, resolution, intersection=True):

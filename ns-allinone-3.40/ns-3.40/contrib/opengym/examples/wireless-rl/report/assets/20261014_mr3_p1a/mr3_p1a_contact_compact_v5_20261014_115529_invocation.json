@@ -1,0 +1,27 @@
+{
+  "run_id": "mr3_p1a_contact_compact_v5_20261014_115529",
+  "ros_domain_id": 217,
+  "gazebo_port": 11817,
+  "output_dir": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_compact_v5_20261014_115529",
+  "command": [
+    "/usr/bin/python3",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/mr3_contact_native_fixture.py",
+    "--output-dir",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_compact_v5_20261014_115529",
+    "--ros-domain-id",
+    "217",
+    "--gazebo-port",
+    "11817",
+    "--contact-transport",
+    "compact"
+  ],
+  "criteria": [
+    "all 18 topics fresh, source and receipt <= .5 sim seconds with no sustained gap",
+    "genuine empty-state timestamps and exact normal wheel/caster ground support filtering",
+    "all six component fixture non-support contacts retained",
+    "reported settled SDF ray height vs nominal .131 (geometry slice unaffected within 2mm)",
+    "owned process group closes cleanly; intentional fixture contacts provide no navigation safety credit"
+  ],
+  "reason": "Native C++ same-message pair reducer after profile confirms79% rclpy take/ROS object construction; keeps raw18 at20Hz, source header, every raw message, all unique pairs, first complete geometry, raw pair counts and source publication sequence audit; no gate/physics change.",
+  "source_freeze": "50b78e7f4f2492288bf005c6b48432af2a120b95"
+}

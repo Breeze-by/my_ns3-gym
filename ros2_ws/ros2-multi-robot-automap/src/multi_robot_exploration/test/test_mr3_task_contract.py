@@ -8,6 +8,7 @@ import pytest
 from multi_robot_exploration.mr3_task_contract import (
     ContractTruthGrid,
     RASTERIZATION,
+    audit_lidar_slice_invariance,
     compare_contract_occupancy_grid,
     diagnose_contract_geometry,
     inspect_world_geometry,
@@ -231,3 +232,53 @@ def test_my_world_mesh_is_explicitly_unsupported():
     assert any(issue["object"] == "suv/link/collision" and
                issue["reason"] == "unsupported_mesh" for issue in audit["unsupported"])
     assert audit["saved_state_count"] == 1
+
+
+def test_slice_invariance_catches_narrow_hidden_vertical_object(tmp_path):
+    world = write_world(tmp_path, box() +
+                        box(".1 .1 .00002", "1 1 .17 0 0 0"))
+    # The extra object is absent at both endpoints and the reference height.
+    for height in (.02, .25, .131):
+        assert len(inspect_world_geometry(world, height)[0]) == 1
+    result = audit_lidar_slice_invariance(world)
+    assert not result["invariant"]
+    assert any(row["rectangle_count"] == 2 for row in result["probes"])
+    assert result["denominator_modified"] is False
+
+
+@pytest.mark.parametrize("plane", [
+    "<include><uri>model://ground_plane</uri></include>",
+    "<model name='floor'><static>true</static><link name='floor'>"
+    "<collision name='c'><geometry><plane><normal>0 0 1</normal>"
+    "<size>10 10</size></plane></geometry></collision></link></model>",
+])
+def test_slice_invariance_rejects_a_band_crossing_ground_plane(tmp_path, plane):
+    world = write_world(tmp_path, box())
+    world.write_text(world.read_text().replace("</world>", plane + "</world>"))
+    result = audit_lidar_slice_invariance(world, 0, .25, .131)
+    assert not result["invariant"]
+    assert result["plane_crossings_m"] == [0]
+
+
+def test_slice_invariance_rejects_unsupported_geometry():
+    result = audit_lidar_slice_invariance(WORLD_DIR / "my_world.world")
+    assert not result["invariant"]
+    assert any(row["unsupported"] for row in result["probes"])
+
+
+@pytest.mark.parametrize("band", [
+    (.25, .02, .131), (.02, .25, .3), (float("nan"), .25, .131),
+])
+def test_slice_invariance_rejects_invalid_height_bands(band):
+    with pytest.raises(ValueError):
+        audit_lidar_slice_invariance(WORLD_DIR / "p1c_open.world", *band)
+
+
+def test_all_twelve_declared_box_worlds_have_identical_slices_in_verified_band():
+    paths = [WORLD_DIR / f"p1c_{family}.world" for family in ("open", "rooms", "corridors")]
+    paths.extend(sorted(WORLD_DIR.glob("mr3_*.world")))
+    assert len(paths) == 12
+    for world in paths:
+        result = audit_lidar_slice_invariance(world)
+        assert result["invariant"], (world.name, result)
+        assert result["world_sha256"] == hashlib.sha256(world.read_bytes()).hexdigest()
