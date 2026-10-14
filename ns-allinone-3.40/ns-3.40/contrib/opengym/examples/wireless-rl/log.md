@@ -1874,3 +1874,19 @@ export PYTHONNOUSERSITE=1
 - V5 compact freeze50b78e7: continuous18source monitoring recovered (maxsteadyage.044s, no latchedissues),2simsec took2.490wall/.992CPU sec; everyraw input=output, actualpublication sequence observed, no gaps/duplicates/regressions. Failed before six cases: tb3rayheight.128868m vsnominal.131 (-2.132mm) exceeds retained2mm criterion; tb1/tb2errors-1.156/-1.865mm. Original fixture_v5_height_failure_{result.json,launch.txt,source.py} retained. Source2mm gate not enough to prove planar geometry: tb1stillpitch1.056deg afterlift gives10mbeam groundcrossing; evidence indicates settling is incomplete (hypothesis). ActualSDF wheel/castergeometry predicts static pitch-.32385deg/ray.130637/min10mbeam.074115m; do not forcepose/physics. NewV6 predeclared mr3_p1a_contact_settle_v6_20261014_120858 adds true lowtwist1simsec stablewindow and beam-envelope/exactgeometry-slice invariance, without loosening2mm or anytaskgate. Prelaunch wrapper earlier rejected uncompletedpush; no simulator launched then, samev5ID began afterpushcompleted.
 
 - V6 geometry audit prechecks: inspect_world_geometry now exposes existing box vertical boundaries/plane heights only; truth classification and ROI unchanged. New audit_lidar_slice_invariance probes reference/endpoints/allboundaries and adjacentfloat heights, rejects hidden narrow slices and floorcrossing. Puremodule50tests+scopedflake8/pep257 passed (initial testinput/indent failures repaired withoutclassificationchange). All12worlds [.02,.25] exactrectangle invariant, canonical all12_vertical_slice_invariance.json; no policy/simulator runs onheldouts. Fixture now queries actual tbN::base_scan pose/twist and sources directly ratherthan model-link identity assumption; py_compile/diffcheck passed.
+
+### MR3-P1A native attempt mr3_p1a_contact_settle_v6_20261014_120858
+
+- Freeze: 9f3a8840ae729cddb225c0eb39136a30c70dabe5 committed/pushed; fixed3robots, exact contract, no RL/network credit.
+- Environment: system ROS Humble; PYTHONNOUSERSITE=1; rmw_fastrtps_cpp; ROS_LOCALHOST_ONLY=1; ROS_DOMAIN_ID=218; GAZEBO_MASTER_URI=http://127.0.0.1:11818.
+- Command (canonical ROS root):
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/mr3_contact_native_fixture.py --output-dir /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_settle_v6_20261014_120858 --ros-domain-id 218 --gazebo-port 11818 --contact-transport compact
+```
+
+- Result pending at invocation; all native output retained.
+
+- Finished 2026-10-14T12:12:04.944204+00:00; rc=1; result=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_settle_v6_20261014_120858/fixture_result.json; success=False; error=settlement_timeout: no fresh1simsec low-twist window for all3. All native JSON/log/failures retained.
+
+- V6 failed30wallsec settlement condition; raw fixture_v6_settlement_failure_{result.json,launch.txt,source.py} retained. Fullvelocitynorm .085–.095m/s remains despite2simsecposebbox rangesx<59micron/y<.3micron/z<23micron andangular .002–.0047rad/s. Full3Dlowtwist condition therefore does not establish scannerpose stability in this physics setup; vertical residual is a hypothesis (v6didnotstoreaxes), not a proven artifact. Derivedlatepose rayheight.12924–.12925m (old2mm gate fits) andbeam[.0624,.1961] (existingband fits), notnativePASS. V7 mr3_p1a_contact_pose_v7_20261014_121753 predeclared actual3Dpose/quaternion sampledwindow1simsec, sourceage/gap<=.5, planar/angular low; fulltwistaxes retained, ground/2mm/beam safety gates remain. Bound.001+(10+norm(rayoffset))*sin(.002) extraenvelope margin ensures observedposewindowvariation cannotcrossauditedband. Eightpureposewindow checks passed includingtranslation/quaternion-sign/tilt/velocity/freshness/nonfinite/insufficientwindow cases; py_compile/diffcheck passed.

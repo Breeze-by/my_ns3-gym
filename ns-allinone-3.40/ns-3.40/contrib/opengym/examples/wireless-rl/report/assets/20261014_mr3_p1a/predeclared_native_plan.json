@@ -305,6 +305,54 @@
         "full_beam_envelope_must_be_inside_band": true,
         "ground_crossing_forbidden": true
       }
+    },
+    {
+      "run_id": "mr3_p1a_contact_pose_v7_20261014_121753",
+      "ros_domain_id": 219,
+      "gazebo_port": 11819,
+      "output_dir": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_pose_v7_20261014_121753",
+      "command": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/mr3_contact_native_fixture.py",
+        "--output-dir",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_pose_v7_20261014_121753",
+        "--ros-domain-id",
+        "219",
+        "--gazebo-port",
+        "11819",
+        "--contact-transport",
+        "compact"
+      ],
+      "criteria": [
+        "all 18 topics fresh, source and receipt <= .5 sim seconds with no sustained gap",
+        "genuine empty-state timestamps and exact normal wheel/caster ground support filtering",
+        "all six component fixture non-support contacts retained",
+        "reported settled SDF ray height vs nominal .131 (geometry slice unaffected within 2mm)",
+        "owned process group closes cleanly; intentional fixture contacts provide no navigation safety credit"
+      ],
+      "reason": "V6 fullvelocity stationarity diagnostic failed evenwith20\u201360micron2sec posevariation; retainfailure, recordfulltwistvectors and use actual3Dposewindow. No physics/task/safety/95/2mm gate change. Sampledwindow not continuous1ms or entireepisodeproof.",
+      "settlement": {
+        "sampled_sim_window_sec": 1.0,
+        "state_max_source_age_and_gap_sec": 0.5,
+        "max3d_position_bbox_diagonal_m": 0.001,
+        "max_pairwise_quaternion_rotation_rad": 0.002,
+        "max_planar_speed_m_s": 0.005,
+        "max_angular_speed_rad_s": 0.02,
+        "wall_guard_sec": 30.0,
+        "full3d_twist": "retained diagnostically includingz, no larger3Dvelocity tolerance introduced"
+      },
+      "laser_geometry": {
+        "nominal_height_m": 0.131,
+        "max_origin_error_m": 0.002,
+        "range_m": 10.0,
+        "verified_slice_band_m": [
+          0.02,
+          0.25
+        ],
+        "full_beam_envelope_must_be_inside_band": true,
+        "ground_crossing_forbidden": true,
+        "sampled_pose_variation_extra_envelope_m_formula": ".001+(10+sqrt(.064^2+.121^2))*sin(.002)"
+      }
     }
   ],
   "development_execution_schedule": {

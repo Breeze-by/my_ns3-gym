@@ -43,6 +43,51 @@ def rotate(q, point):
             z + q.w * tz + q.x * ty - q.y * tx)
 
 
+def stationary_pose_window(rows):
+    """Require a fresh sampled1s window, bounding full3D pose and orientation.
+
+    Reported vertical velocity remains evidence; pose variation independently
+    bounds actual scanner height while planar and angular speeds must be low.
+    """
+    if len(rows) < 2:
+        return False
+    cutoff = rows[-1]['source_time_sec'] - 1.0
+    index = 0
+    while index + 1 < len(rows) and rows[index + 1]['source_time_sec'] <= cutoff:
+        index += 1
+    window = rows[index:]
+    if any(row['source_time_sec'] <= 0 or not all(math.isfinite(value) for value in (
+            [row['source_time_sec'], row['receipt_time_sec'], row['planar_speed_m_s'],
+             row['angular_speed_rad_s']] + row['position'] + row['quaternion']))
+           for row in window):
+        return False
+    if window[-1]['source_time_sec'] - window[0]['source_time_sec'] < 1.0:
+        return False
+    if any(row['planar_speed_m_s'] >= .005 or row['angular_speed_rad_s'] >= .02
+           or not 0 <= row['receipt_time_sec'] - row['source_time_sec'] <= .5
+           for row in window):
+        return False
+    if any(not 0 < b['source_time_sec'] - a['source_time_sec'] <= .5
+           for a, b in zip(window, window[1:])):
+        return False
+    span = math.sqrt(sum((max(row['position'][axis] for row in window)
+                          - min(row['position'][axis] for row in window))**2
+                         for axis in range(3)))
+    if span > .001:
+        return False
+    for index, first in enumerate(window):
+        a = first['quaternion']
+        for second in window[index + 1:]:
+            b = second['quaternion']
+            norm = math.sqrt(sum(v*v for v in a) * sum(v*v for v in b))
+            if not math.isfinite(norm) or norm <= 0:
+                return False
+            dot = abs(sum(x*y for x, y in zip(a, b))) / norm
+            if 2 * math.acos(min(1.0, dot)) > .002:
+                return False
+    return True
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output-dir', type=Path, required=True)
@@ -263,15 +308,14 @@ def main():
             } for robot, component in support_keys
         }
         # Lifting produces real physical motion. A pair of support samples does
-        # not establish settlement: require a fresh low-twist source window for
-        # each robot, without setting poses or changing the physics model.
+        # not establish settlement: require a fresh bounded-pose source window
+        # for each robot, without setting poses or changing the physics model.
         result['settlement_samples'] = {robot: [] for robot in monitor.robot_names}
-        stable_since = {robot: None for robot in monitor.robot_names}
         settled = {robot: False for robot in monitor.robot_names}
         settlement_deadline = time.monotonic() + 30.0
         while not all(settled.values()):
             if time.monotonic() >= settlement_deadline:
-                raise TimeoutError('settlement_timeout: no fresh1simsec low-twist window for all3')
+                raise TimeoutError('settlement_timeout: no fresh1simsec bounded-pose window for all3')
             for robot in monitor.robot_names:
                 request = GetEntityState.Request()
                 request.name, request.reference_frame = robot + '::base_scan', 'world'
@@ -283,20 +327,18 @@ def main():
                     raise RuntimeError('settlement state source stale: ' + robot)
                 state = response.state
                 linear = math.sqrt(sum(getattr(state.twist.linear, axis)**2 for axis in 'xyz'))
+                planar = math.hypot(state.twist.linear.x, state.twist.linear.y)
                 angular = math.sqrt(sum(getattr(state.twist.angular, axis)**2 for axis in 'xyz'))
                 row = {'source_time_sec': source, 'receipt_time_sec': receipt,
                        'entity': robot + '::base_scan',
                        'linear_speed_m_s': linear, 'angular_speed_rad_s': angular,
+                       'planar_speed_m_s': planar,
+                       'linear_twist_m_s': [getattr(state.twist.linear, axis) for axis in 'xyz'],
+                       'angular_twist_rad_s': [getattr(state.twist.angular, axis) for axis in 'xyz'],
                        'position': [getattr(state.pose.position, axis) for axis in 'xyz'],
                        'quaternion': [getattr(state.pose.orientation, axis) for axis in 'xyzw']}
                 result['settlement_samples'][robot].append(row)
-                if linear >= .005 or angular >= .02:
-                    stable_since[robot] = None
-                    settled[robot] = False
-                else:
-                    if stable_since[robot] is None:
-                        stable_since[robot] = source
-                    settled[robot] = source - stable_since[robot] >= 1.0
+                settled[robot] = stationary_pose_window(result['settlement_samples'][robot])
             next_sample = now() + .05
             wait(lambda: now() >= next_sample, 2, 'settlement sampling clock did not advance')
         wait(lambda: monitor.summary(now())['fresh'], 20, 'contact sources not fresh after settling')
@@ -327,6 +369,7 @@ def main():
             vertical_span = 10.0 * math.sqrt(max(0.0, 1.0 - normal[2]**2))
             actual_height = pose.position.z + ray_offset[2]
             beam_envelope = [actual_height - vertical_span, actual_height + vertical_span]
+            variation_bound = .001 + (10.0 + math.hypot(.064, .121)) * math.sin(.002)
             result['settled_robot_poses'][robot] = {
                 'entity': robot + '::base_scan',
                 'source_time_sec': source, 'receipt_time_sec': now(),
@@ -338,12 +381,14 @@ def main():
                 'height_error_m': pose.position.z + ray_offset[2] - .131,
                 'lidar_plane_normal': normal,
                 'beam_height_envelope_at10m': beam_envelope,
+                'sampled_window_vertical_variation_bound_m': variation_bound,
             }
             if abs(result['settled_robot_poses'][robot]['height_error_m']) > .002:
                 raise RuntimeError('settled laser height differs from declared slice by over2mm: ' + robot)
             if beam_envelope[0] <= 0:
                 raise RuntimeError('settled laser beam envelope crosses ground: ' + robot)
-            if not .02 <= beam_envelope[0] <= beam_envelope[1] <= .25:
+            if (beam_envelope[0] - variation_bound < .02
+                    or beam_envelope[1] + variation_bound > .25):
                 raise RuntimeError('settled laser beam outside verified slice band: ' + robot)
 
         # Each fixture is a real static sphere, just inside its target's side
