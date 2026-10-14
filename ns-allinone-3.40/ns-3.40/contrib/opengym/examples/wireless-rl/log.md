@@ -1816,3 +1816,19 @@ export PYTHONNOUSERSITE=1
 - V2 retained as fixture_v2_failure_{result.json,launch.txt,source.py}. All18 sources advanced at ~.05s but source age rose to .48–.53s at steady endpoint (10 stale). No duplicate/invalid timestamps, all post-lift ground pairs were new; shutdown clean. Consumption backlog is a hypothesis, not a proven producer root cause. Minimal persistent executor and redundant fixture classification fix predeclared as mr3_p1a_contact_v3_20261014_114354 before retry; all thresholds/rates/physics unchanged.
 
 - Executor repair checks (system ROS overlay): contact/evaluator targeted pytest30passed; colcon multi_robot_exploration169passed/1skipped, no failures; exact commands: /usr/bin/python3 -m pytest src/multi_robot_exploration/test/test_mr3_contacts.py src/multi_robot_exploration/test/test_mr3_evaluator.py -q; /usr/bin/python3 /usr/bin/colcon test --packages-select multi_robot_exploration --event-handlers console_cohesion+. New JUnit executor_repair_tests.xml; fixture py_compile and git diff --check passed. No new simulator/native PASS yet.
+
+### MR3-P1A native contact fixture retry mr3_p1a_contact_v3_20261014_114354
+
+- Freeze: f6b73d15ce2ac30678090e157858a37306b74968 (committed/pushed); isolated3robot diagnostic; same20Hz/.5s/physics/contact history.
+- Environment: system ROS Humble, PYTHONNOUSERSITE=1, rmw_fastrtps_cpp, ROS_LOCALHOST_ONLY=1.
+- Command (canonical ROS root):
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/mr3_contact_native_fixture.py --output-dir /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_v3_20261014_114354 --ros-domain-id 215 --gazebo-port 11815
+```
+
+- All output retained: /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_v3_20261014_114354; result pending at invocation.
+
+- Finished 2026-10-14T11:45:00.556032+00:00; rc=1, success=False, error=continuous contact freshness failed in steady fixture phase. Original JSON/log retained; no task/RL/network credit.
+
+- V3 native failure retained as fixture_v3_failure_{result.json,launch.txt,source.py}; persistent executor/reduced diagnostic classification did not restore freshness. For steady2simsec, wall2.588/fixtureCPU2.637 sec; callbacks .135/drain .121 sec across1332messages, final ages .776–.788 across18. Strong CPU-backpressure evidence; decode not yet proven. Diagnostic profile predeclared mr3_p1a_contact_profile_v4_20261014_114629; profile overhead has no performance credit.
