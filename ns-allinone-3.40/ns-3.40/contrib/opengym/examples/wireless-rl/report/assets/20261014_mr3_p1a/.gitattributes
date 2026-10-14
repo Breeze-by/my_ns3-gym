@@ -1,0 +1,7 @@
+# Preserve original native evidence bytes, including CSV CRLF and log spaces.
+# Source, documentation, JSON and audit scripts keep normal whitespace checks.
+development_matrix_v2/**/*.csv -text whitespace=cr-at-eol
+development_matrix_v2/**/launch_logs/*.log -text -whitespace
+development_matrix_v3/**/*.csv -text whitespace=cr-at-eol
+development_matrix_v3/**/launch_logs/*.log -text -whitespace
+fixture_v8_pass_launch.txt -text -whitespace
