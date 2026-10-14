@@ -1,0 +1,70 @@
+{
+  "checked_at_utc": "2026-10-14T16:29:50.507079+00:00",
+  "candidate_parent_commit": "f7ad7fd645f0d6af832b895a37a68b14411354fc",
+  "fixture_source_freeze": "3f24eaa9fae6f7d282f85f991273734d71b9439d",
+  "fixture_result_artifact": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/fixture_v8_pass_result.json",
+  "fixture_result_sha256": "6d617ae08907064cb8ae5dadb5526c18f404cee00ce598393434501ec36db708",
+  "component_count": 9,
+  "scope": "Only identical isolated physical/contact/fixture components. The old fixture ran under its original middleware and launch environment; this binding does not reuse it as proof of the new matrix6 UDP-only transport, discovery, native server-control shutdown or full launch environment.",
+  "excluded_from_reused_credit": [
+    "New mr3_fastdds_loopback_udp.xml and ROS_LOCALHOST_ONLY=0/SKIP_DEFAULT_XML=1 environment",
+    "New main launch native ServerControl and CLI/server dual-exit shutdown handshake",
+    "Controller, TaskEvaluator, task release, bootstrap and runner full lifecycle",
+    "Full 18-topic live publication-sequence continuity under the new middleware environment",
+    "Any prior 95% mapping task cell or full robot/seed safety result"
+  ],
+  "retained_original_fixture_scope": [
+    "tb1 six component positive non-support contact specimens",
+    "All three robots/18 component empty and fresh streams in the original fixture",
+    "Normal support filtering and original source headers/pair geometry under original environment"
+  ],
+  "required_new_evidence": "Complete newly frozen matrix6 3-world x 3-seed native validation; no cross-freeze task cells.",
+  "checks": {
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/mr3_contact_native_fixture.py": {
+      "fixture_sha256": "a804f57ab90f0647af2e48c42e87e7682f10c9681d700788c6bcc30d5eddb4a2",
+      "candidate_sha256": "a804f57ab90f0647af2e48c42e87e7682f10c9681d700788c6bcc30d5eddb4a2",
+      "identical": true
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/multi_robot/mr3_contact_reducer": {
+      "fixture_sha256": "779f4463c750a4656f3ed401b7dccd79650773fc7046caf4ba34226fe694b6cb",
+      "candidate_sha256": "779f4463c750a4656f3ed401b7dccd79650773fc7046caf4ba34226fe694b6cb",
+      "identical": true
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_qos_v8_20261014_123944/contact_fixture.world": {
+      "fixture_sha256": "312212a14b31df196f37839d4ea849e4982dc49c5bd61aa030667bd72ea12f53",
+      "candidate_sha256": "312212a14b31df196f37839d4ea849e4982dc49c5bd61aa030667bd72ea12f53",
+      "identical": true
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/contact_reducer.hpp": {
+      "fixture_sha256": "fcf4d0e2065ddbb7b7848e33818954443f3d685520787431279efa81abb8d372",
+      "candidate_sha256": "fcf4d0e2065ddbb7b7848e33818954443f3d685520787431279efa81abb8d372",
+      "identical": true
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/models/turtlebot3_waffle/model.sdf": {
+      "fixture_sha256": "801ee7f05f8aab1b791ec1203595d08139f0d57cd2e5518e09baf657c2085156",
+      "candidate_sha256": "801ee7f05f8aab1b791ec1203595d08139f0d57cd2e5518e09baf657c2085156",
+      "identical": true
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_contact_reducer.cpp": {
+      "fixture_sha256": "47af80a30c4a72dc26b5ae696aee03441f1789f8b1fedcb68a4015a1cd4a5497",
+      "candidate_sha256": "47af80a30c4a72dc26b5ae696aee03441f1789f8b1fedcb68a4015a1cd4a5497",
+      "identical": true
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/urdf/turtlebot3_waffle.urdf": {
+      "fixture_sha256": "5f124088226abeb765a8a2c4b3d4ceda82b8b0ec61c82515e93a91d2ffd51b12",
+      "candidate_sha256": "5f124088226abeb765a8a2c4b3d4ceda82b8b0ec61c82515e93a91d2ffd51b12",
+      "identical": true
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/worlds/p1c_open.world": {
+      "fixture_sha256": "312212a14b31df196f37839d4ea849e4982dc49c5bd61aa030667bd72ea12f53",
+      "candidate_sha256": "312212a14b31df196f37839d4ea849e4982dc49c5bd61aa030667bd72ea12f53",
+      "identical": true
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_contacts.py": {
+      "fixture_sha256": "9d661498b3748d409dbb59ccd59524d5152d85ec93ee30128aebaf0a8a09fa17",
+      "candidate_sha256": "9d661498b3748d409dbb59ccd59524d5152d85ec93ee30128aebaf0a8a09fa17",
+      "identical": true
+    }
+  },
+  "result": "PASS"
+}

@@ -1,0 +1,182 @@
+{
+  "schema_version": 1,
+  "checked_at_utc": "2026-10-14T16:31:07.490990+00:00",
+  "scope": "Static SDK XML parsing, installed RMW name mangling and actual installed RMW QoS conversion only. No DDS participant, ROS context, node, reader, writer, service, simulator or native task was created.",
+  "candidate_parent_commit": "f7ad7fd645f0d6af832b895a37a68b14411354fc",
+  "profile_path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+  "profile_sha256": "8d11da75d5916ed95d8b8a6a74abecb8fe946254d615895164a63ef9f8ff9556",
+  "response_profile_count": 18,
+  "exact_response_profile_names": [
+    "rr/tb1/controller_server/change_stateReply",
+    "rr/tb1/planner_server/change_stateReply",
+    "rr/tb1/behavior_server/change_stateReply",
+    "rr/tb1/bt_navigator/change_stateReply",
+    "rr/tb1/waypoint_follower/change_stateReply",
+    "rr/tb1/velocity_smoother/change_stateReply",
+    "rr/tb2/controller_server/change_stateReply",
+    "rr/tb2/planner_server/change_stateReply",
+    "rr/tb2/behavior_server/change_stateReply",
+    "rr/tb2/bt_navigator/change_stateReply",
+    "rr/tb2/waypoint_follower/change_stateReply",
+    "rr/tb2/velocity_smoother/change_stateReply",
+    "rr/tb3/controller_server/change_stateReply",
+    "rr/tb3/planner_server/change_stateReply",
+    "rr/tb3/behavior_server/change_stateReply",
+    "rr/tb3/bt_navigator/change_stateReply",
+    "rr/tb3/waypoint_follower/change_stateReply",
+    "rr/tb3/velocity_smoother/change_stateReply"
+  ],
+  "profile_delta_fields": [
+    "Only named response profiles: reliability.kind=RELIABLE (same as ROS service contract)",
+    "Only named response profiles: reliability.max_blocking_time=5 seconds / 0 nanoseconds"
+  ],
+  "default_or_service_fallback_profile_added": false,
+  "reader_profiles_added": false,
+  "sdk_rmw_result": {
+    "participant_created": false,
+    "selected_response_writers": 18,
+    "installed_rmw_name_mangling_verified": true,
+    "other_publisher_attributes_unchanged": true,
+    "default_blocking_ns": 100000000,
+    "selected_xml_blocking_ns": 5000000000,
+    "selected_after_rmw_conversion_blocking_ns": 5000000000,
+    "ros_service_reliability": "RELIABLE",
+    "ros_service_depth": 10,
+    "unmatched_writer_profiles_checked": 16,
+    "unmatched_blocking_ns": 100000000
+  },
+  "checker_stdout": "{\"participant_created\":false,\"selected_response_writers\":18,\"installed_rmw_name_mangling_verified\":true,\"other_publisher_attributes_unchanged\":true,\"default_blocking_ns\":100000000,\"selected_xml_blocking_ns\":5000000000,\"selected_after_rmw_conversion_blocking_ns\":5000000000,\"ros_service_reliability\":\"RELIABLE\",\"ros_service_depth\":10,\"unmatched_writer_profiles_checked\":16,\"unmatched_blocking_ns\":100000000}\n",
+  "checker_stderr": "",
+  "checker_returncode": 0,
+  "compile_command": [
+    "g++",
+    "-std=c++17",
+    "-I/opt/ros/humble/include/fastrtps",
+    "-I/opt/ros/humble/include/rmw_fastrtps_shared_cpp",
+    "-I/opt/ros/humble/include/rmw",
+    "-I/opt/ros/humble/include/rcutils",
+    "-I/opt/ros/humble/include/rosidl_runtime_c",
+    "-I/opt/ros/humble/include/rosidl_typesupport_interface",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/lifecycle_reply_qos_v6_checker.cpp",
+    "-L/opt/ros/humble/lib",
+    "-Wl,-rpath,/opt/ros/humble/lib",
+    "-lrmw_fastrtps_shared_cpp",
+    "-lfastrtps",
+    "-o",
+    "/tmp/mr3_lifecycle_reply_qos_v6_checker"
+  ],
+  "checker_command": [
+    "/tmp/mr3_lifecycle_reply_qos_v6_checker",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml"
+  ],
+  "checker_source": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/lifecycle_reply_qos_v6_checker.cpp",
+    "sha256": "57bd28ec7ad403e3e7680901c5639435cd50470e8cdf5bab800b51fffd106e05"
+  },
+  "checker_binary": {
+    "path": "/tmp/mr3_lifecycle_reply_qos_v6_checker",
+    "sha256": "417b9f87ba379cf9d6d019bb44f587550352e7e7517d20a292b9e40d9173c278"
+  },
+  "package_versions": [
+    "ros-humble-fastrtps\t2.6.11-1jammy.20260304.200925",
+    "ros-humble-nav2-lifecycle-manager\t1.1.20-1jammy.20260326.005714",
+    "ros-humble-nav2-util\t1.1.20-1jammy.20260326.002119",
+    "ros-humble-rmw-fastrtps-cpp\t6.2.10-1jammy.20260304.212617",
+    "ros-humble-rmw-fastrtps-shared-cpp\t6.2.10-1jammy.20260304.211712"
+  ],
+  "installed_library_sha256": {
+    "/opt/ros/humble/lib/libfastrtps.so": "cc1f45ce53ef4ed2961e57054ddb80d115dafc6604d2a6c259ec8b18452e03b8",
+    "/opt/ros/humble/lib/librmw_fastrtps_shared_cpp.so": "8e3f4603fbdd53588fed6927575f4687457a2e7933c88a28ecd1f7afce5edaa7",
+    "/opt/ros/humble/lib/librmw_fastrtps_cpp.so": "d0e1c9510a5c63eb384bef8a55f5b78e904ba63e7c41b83e8dc618f9b9905250"
+  },
+  "installed_header_sha256": {
+    "/opt/ros/humble/include/rmw_fastrtps_shared_cpp/rmw_fastrtps_shared_cpp/qos.hpp": "d5deeb53b6a93f24cfd05be282050e5dec674ac2003c2db365a223cacfcdc938",
+    "/opt/ros/humble/include/rmw_fastrtps_shared_cpp/rmw_fastrtps_shared_cpp/names.hpp": "a1cf7a6b09d17773e4145197439ac2724c83063462c2c29b110f23683701f521",
+    "/opt/ros/humble/include/rmw_fastrtps_shared_cpp/rmw_fastrtps_shared_cpp/custom_service_info.hpp": "45cc8143d55c34f934605d98393e8654b0d67d478b6ee6ad0d133c810a591178"
+  },
+  "transport_binding": {
+    "original_freeze": "f7ad7fd645f0d6af832b895a37a68b14411354fc",
+    "original_profile_sha256": "443340f4c7e083c11258aa28917212feaca01d34aa30a0ce689ea02819a379ef",
+    "original_udp_participant_and_descriptor_unchanged": {
+      "transport_descriptors": {
+        "identical": true,
+        "structural_sha256": "d692cea56c1f76aa823c8b3d85b0b8021972628fce7724ece334d92fe4ec5679"
+      },
+      "participant": {
+        "identical": true,
+        "structural_sha256": "54d9304596a347ad78124edced4310b810590be473384d5c69efa3064781663a"
+      }
+    }
+  },
+  "environment_contract": {
+    "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+    "ROS_LOCALHOST_ONLY": "0",
+    "SKIP_DEFAULT_XML": "1",
+    "RMW_FASTRTPS_USE_QOS_FROM_XML": null,
+    "RMW_FASTRTPS_PUBLICATION_MODE": null
+  },
+  "scoped_checks": {
+    "pytest": {
+      "tests": 18,
+      "passed": 18,
+      "failures": 0,
+      "errors": 0,
+      "junit_path": "/tmp/mr3_lifecycle_reply_qos_v6_tests.xml",
+      "junit_sha256": "1ef83dab81c153874d1043c654eddc17f7289c7f62fb020240a25d84b013cdd4"
+    },
+    "flake8": {
+      "errors": 0,
+      "line_length": 100,
+      "xunit_path": "/tmp/mr3_lifecycle_reply_qos_v6_lint.xml",
+      "xunit_sha256": "a3d6d354c4e66681494e4be3b815a4eb4177f2c67e2a552226976ff2b4ecbd08"
+    }
+  },
+  "primary_sources": [
+    {
+      "url": "https://raw.githubusercontent.com/ros2/rmw_fastrtps/6.2.10/rmw_fastrtps_cpp/src/rmw_service.cpp",
+      "one_based_lines": "138-141, 318-345",
+      "fact": "Service response topic uses rr + fully qualified service name + Reply. Response writer lookup loads service fallback then exact response topic; named profile applies even with XML-QoS flag unset."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ros2/rmw_fastrtps/6.2.10/rmw_fastrtps_shared_cpp/src/qos.cpp",
+      "one_based_lines": "43-148",
+      "fact": "RMW conversion updates reliability kind, history/depth and exposed ROS QoS fields; it does not replace reliability.max_blocking_time."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/eProsima/Fast-DDS/v2.6.11/src/cpp/fastdds/publisher/PublisherImpl.cpp",
+      "one_based_lines": "47-78, 461-473",
+      "fact": "SDK profile lookup fills PublisherAttributes and assigns reliability policy to DataWriterQos. The checker uses this same reliability/history assignment followed by the installed RMW converter."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ros2/rmw_fastrtps/6.2.10/rmw_fastrtps_shared_cpp/src/rmw_response.cpp",
+      "one_based_lines": "118-143",
+      "fact": "A known client response reader is awaited using response writer reliability.max_blocking_time; MAYBE after that wait yields response timeout. This directly bounds the observed matching wait."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ros2/rmw_fastrtps/6.2.10/rmw_fastrtps_shared_cpp/include/rmw_fastrtps_shared_cpp/custom_service_info.hpp",
+      "one_based_lines": "115-125",
+      "fact": "Matching condition variable uses std::chrono wait_for, not ROS simulation time."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ros-navigation/navigation2/1.1.20/nav2_lifecycle_manager/src/lifecycle_manager.cpp",
+      "one_based_lines": "39-43, 195-204, 385-460",
+      "fact": "Installed-version manager has bond recovery parameters but no startup transition response timeout/retry parameter; it calls the no-timeout change_state overload."
+    }
+  ],
+  "preserved_gates": [
+    "Contact production20Hz and reliable keep_last100",
+    "Contact source/receipt health0.5 simulation seconds",
+    "Exact raw and compact contact headers/sequence auditing",
+    "300 wall-second startup guard",
+    "300 simulation-second task budget",
+    "95% coverage, map quality, robot participation and safety gates",
+    "Original RMW, loopback UDP participant transport and endpoint reader settings"
+  ],
+  "limitations": [
+    "No runtime matching, endpoint creation, delivery, complete task or recovery experiment is performed by this proof.",
+    "Five seconds bounds matching and DDS write blocking for only the named lifecycle response writers; it is not a new Nav2 client future timeout or automatic retry.",
+    "Why endpoint matching was delayed remains undetermined; this mechanism-level adjustment does not claim a UDP/SHM root cause or guaranteed cure.",
+    "The prior candidate source, failed native cells and old static proof remain unchanged; a complete new frozen native matrix is still required."
+  ],
+  "result": "PASS"
+}

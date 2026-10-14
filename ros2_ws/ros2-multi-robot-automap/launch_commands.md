@@ -91,14 +91,28 @@ export RMW_IMPLEMENTATION=rmw_fastrtps_cpp ROS_LOCALHOST_ONLY=0
 export FASTRTPS_DEFAULT_PROFILES_FILE="$PWD/src/multi_robot/config/mr3_fastdds_loopback_udp.xml"
 export SKIP_DEFAULT_XML=1
 unset FASTDDS_DEFAULT_PROFILES_FILE RMW_FASTRTPS_USE_QOS_FROM_XML RMW_FASTRTPS_PUBLICATION_MODE
-export ROS_DOMAIN_ID=95 GAZEBO_MASTER_URI=http://127.0.0.1:11851
+export ROS_DOMAIN_ID=98 GAZEBO_MASTER_URI=http://127.0.0.1:11861
 ```
 
 XML关闭内建transport，仅启用白名单为127.0.0.1的UDPv4；没有更改socket缓冲或
-默认发送阻塞方式。`ROS_LOCALHOST_ONLY=0` 由显式loopback白名单约束通信范围，
+UDP transport的默认发送阻塞方式。`ROS_LOCALHOST_ONLY=0` 由显式loopback白名单约束通信范围，
 `SKIP_DEFAULT_XML=1` 只阻止工作目录的默认XML覆盖显式profile，仍加载上方指定文件。
 legacy入口不会自动改为此环境；重新打开终端并使用前面的历史profile可复现其原环境。
-这一配置是否改善初始化响应问题以新冻结的原生结果为准，不宣称已证明SHM或abort根因。
+第六版另为三台各六个Nav2节点的 `change_state` 响应writer配置精确命名profile：
+`rr/tbN/NODE/change_stateReply`，共18项；NODE为 `controller_server`、`planner_server`、
+`behavior_server`、`bt_navigator`、`waypoint_follower`、`velocity_smoother`。
+只将这些response writer的reliability `max_blocking_time` 从默认100ms改为5墙秒，
+为启动时响应writer等待对应reader匹配提供有界窗口，也约束这些writer的DDS写入阻塞；
+它不按ROS仿真时钟计时。没有新增Nav2 transition重试，也没有改变其无超时future等待；
+reader匹配为何延迟、客户端为何可能一直等待的根因仍未解决。
+profile只绑定这些命名writer，不随启动阶段结束而撤销；不设置默认writer、service-wide
+fallback或reader配置，contact/control、get_state及request writer保持原有QoS。
+`RMW_FASTRTPS_USE_QOS_FROM_XML` 继续unset，ROS端点QoS转换仍保留该max-blocking字段。
+静态SDK/RMW验证另列为
+[证据](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/lifecycle_reply_qos_v6_static_proof.json)，
+不代表实际启动已通过；配置是否改善响应问题仍以新冻结
+原生结果为准，不宣称已证明SHM或abort根因。300墙秒启动、300仿真秒任务、95%及
+.5仿真秒接触健康门禁均不变，控制策略与物理参数未改。
 
 ```bash
 MR3_BATCH_ID=mr3_p1a_rooms_$(date +%Y%m%d_%H%M%S)
@@ -116,7 +130,7 @@ open/corridors使用对应world与 `open.json` / `corridors.json`，每次新run
 不继续等待已经消失的topic。300墙秒约束Nav2/ROS就绪，后续时钟/监测等待仍由
 900墙秒评估保护约束。
 当前P1A最终重跑按rooms、corridors、open逐场景串行执行，每场景内部也串行重启三种子。
-第五版计划使用独立ROS域95/96/97与Gazebo端口11851/11852/11853；保持所有任务与墙钟保护门限。
+第六版计划使用独立ROS域98/99/100与Gazebo端口11861/11862/11863；保持所有任务与墙钟保护门限。
 这用于减少并发启动压力，不表示一次Nav2响应超时的根因已经确定。精确预声明见
 [native plan](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/predeclared_native_plan.json)。
 合同确定任务300仿真秒，300/900墙秒分别是启动/基础设施保护，不能当成延长任务。

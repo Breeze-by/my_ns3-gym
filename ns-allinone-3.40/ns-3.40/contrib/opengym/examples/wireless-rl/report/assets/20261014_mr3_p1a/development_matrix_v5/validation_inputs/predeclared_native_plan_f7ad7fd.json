@@ -1,0 +1,943 @@
+{
+  "recorded_at_utc": "2026-10-14T11:17:02.425771+00:00",
+  "stage": "MR3-P1A",
+  "source_freeze_rule": "All native attempts begin after committed/pushed candidate freeze; exact commit and runtime hashes recorded at invocation. Any runtime repair requires a new freeze and complete new development matrix.",
+  "contact_fixture": {
+    "run_id": "mr3_p1a_contact_v1_20261014_111702",
+    "ros_domain_id": 210,
+    "gazebo_port": 11810,
+    "output_dir": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_v1_20261014_111702",
+    "command": [
+      "/usr/bin/python3",
+      "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/mr3_contact_native_fixture.py",
+      "--output-dir",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_v1_20261014_111702",
+      "--ros-domain-id",
+      "210",
+      "--gazebo-port",
+      "11810"
+    ],
+    "criteria": [
+      "all 18 topics fresh, source and receipt <= .5 sim seconds with no sustained gap",
+      "genuine empty-state timestamps and exact normal wheel/caster ground support filtering",
+      "all six component fixture non-support contacts retained",
+      "reported settled SDF ray height vs nominal .131 (geometry slice unaffected within 2mm)",
+      "owned process group closes cleanly; intentional fixture contacts provide no navigation safety credit"
+    ]
+  },
+  "development_batches": [
+    {
+      "world": "p1c_rooms.world",
+      "seeds": [
+        101,
+        202,
+        303
+      ],
+      "run_id": "mr3_p1a_v1_rooms_20261014_111702",
+      "ros_domain_id": 211,
+      "gazebo_port": 11811,
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_ideal_baseline.py",
+        "--world",
+        "p1c_rooms.world",
+        "--robot-count",
+        "3",
+        "--seeds",
+        "101",
+        "202",
+        "303",
+        "--task-contract",
+        "src/multi_robot/config/mr3_p1a/rooms.json",
+        "--startup-timeout",
+        "300",
+        "--evaluation-wait-timeout",
+        "900",
+        "--shutdown-timeout",
+        "60",
+        "--run-id",
+        "mr3_p1a_v1_rooms_20261014_111702",
+        "--output-root",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a"
+      ],
+      "task_contract_sha256": "ed8f61588ffb49821e2992d5a68e73abcef964bd80b6e2574eee3b1ae885635b"
+    },
+    {
+      "world": "p1c_corridors.world",
+      "seeds": [
+        101,
+        202,
+        303
+      ],
+      "run_id": "mr3_p1a_v1_corridors_20261014_111702",
+      "ros_domain_id": 212,
+      "gazebo_port": 11812,
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_ideal_baseline.py",
+        "--world",
+        "p1c_corridors.world",
+        "--robot-count",
+        "3",
+        "--seeds",
+        "101",
+        "202",
+        "303",
+        "--task-contract",
+        "src/multi_robot/config/mr3_p1a/corridors.json",
+        "--startup-timeout",
+        "300",
+        "--evaluation-wait-timeout",
+        "900",
+        "--shutdown-timeout",
+        "60",
+        "--run-id",
+        "mr3_p1a_v1_corridors_20261014_111702",
+        "--output-root",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a"
+      ],
+      "task_contract_sha256": "b0e23e068ac0ce1bf636de285e6038c34732ac43d9e734d154c378d9d04b691c"
+    },
+    {
+      "world": "p1c_open.world",
+      "seeds": [
+        101,
+        202,
+        303
+      ],
+      "run_id": "mr3_p1a_v1_open_20261014_111702",
+      "ros_domain_id": 213,
+      "gazebo_port": 11813,
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_ideal_baseline.py",
+        "--world",
+        "p1c_open.world",
+        "--robot-count",
+        "3",
+        "--seeds",
+        "101",
+        "202",
+        "303",
+        "--task-contract",
+        "src/multi_robot/config/mr3_p1a/open.json",
+        "--startup-timeout",
+        "300",
+        "--evaluation-wait-timeout",
+        "900",
+        "--shutdown-timeout",
+        "60",
+        "--run-id",
+        "mr3_p1a_v1_open_20261014_111702",
+        "--output-root",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a"
+      ],
+      "task_contract_sha256": "1bb5c097cdd9a6c92ee6edb7fabcb3c844117b51d18e40641c58aad7b29af4a6"
+    }
+  ],
+  "success_contract": {
+    "coverage_threshold": 0.95,
+    "max_sim_seconds": 300.0,
+    "min_observed_accuracy": 0.95,
+    "min_occupied_iou": 0.2,
+    "max_false_free_ratio": 0.02,
+    "each_robot_min_path_m": 1.0,
+    "each_robot_min_goal_count": 1,
+    "contact_max_source_and_receipt_age_sec": 0.5,
+    "navigation_closure_timeout_sec": 10.0,
+    "task_start_barrier": "controller_release"
+  },
+  "wall_guards": {
+    "startup": 300,
+    "evaluation": 900,
+    "shutdown": 60
+  },
+  "excluded": [
+    "all validation/test/confirmation policy runs",
+    "RL/training environment",
+    "gateway/ns-3",
+    "non-three robot matrices"
+  ],
+  "failure_rule": "Every native JSON/log/returncode remains. If repeated infrastructure defect is found, pause the incomplete matrix, repair root cause, new source freeze and full matrix; do not mix successful cells across freezes.",
+  "contact_fixture_retries": [
+    {
+      "run_id": "mr3_p1a_contact_v2_20261014_112351",
+      "ros_domain_id": 214,
+      "gazebo_port": 11814,
+      "output_dir": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_v2_20261014_112351",
+      "command": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/mr3_contact_native_fixture.py",
+        "--output-dir",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_v2_20261014_112351",
+        "--ros-domain-id",
+        "214",
+        "--gazebo-port",
+        "11814"
+      ],
+      "criteria": [
+        "all 18 topics fresh, source and receipt <= .5 sim seconds with no sustained gap",
+        "genuine empty-state timestamps and exact normal wheel/caster ground support filtering",
+        "all six component fixture non-support contacts retained",
+        "reported settled SDF ray height vs nominal .131 (geometry slice unaffected within 2mm)",
+        "owned process group closes cleanly; intentional fixture contacts provide no navigation safety credit"
+      ],
+      "reason": "Fix diagnostic SetEntityState required name/reference_frame, no physical/gate/production runtime changes."
+    },
+    {
+      "run_id": "mr3_p1a_contact_v3_20261014_114354",
+      "ros_domain_id": 215,
+      "gazebo_port": 11815,
+      "output_dir": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_v3_20261014_114354",
+      "command": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/mr3_contact_native_fixture.py",
+        "--output-dir",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_v3_20261014_114354",
+        "--ros-domain-id",
+        "215",
+        "--gazebo-port",
+        "11815"
+      ],
+      "criteria": [
+        "all 18 topics fresh, source and receipt <= .5 sim seconds with no sustained gap",
+        "genuine empty-state timestamps and exact normal wheel/caster ground support filtering",
+        "all six component fixture non-support contacts retained",
+        "reported settled SDF ray height vs nominal .131 (geometry slice unaffected within 2mm)",
+        "owned process group closes cleanly; intentional fixture contacts provide no navigation safety credit"
+      ],
+      "reason": "Persistent SingleThreadedExecutor in evaluator and fixture; remove redundant fixture per-state classification; add callback/drain/RTF/CPU diagnostics. Keep full 20Hz messages, .5s gates, source stamps and all contact history."
+    },
+    {
+      "run_id": "mr3_p1a_contact_profile_v4_20261014_114629",
+      "ros_domain_id": 216,
+      "gazebo_port": 11816,
+      "output_dir": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_profile_v4_20261014_114629",
+      "command": [
+        "/usr/bin/python3",
+        "-m",
+        "cProfile",
+        "-o",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_profile_v4_20261014_114629/profile.stats",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/mr3_contact_native_fixture.py",
+        "--output-dir",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_profile_v4_20261014_114629",
+        "--ros-domain-id",
+        "216",
+        "--gazebo-port",
+        "11816"
+      ],
+      "criteria": [
+        "all 18 topics fresh, source and receipt <= .5 sim seconds with no sustained gap",
+        "genuine empty-state timestamps and exact normal wheel/caster ground support filtering",
+        "all six component fixture non-support contacts retained",
+        "reported settled SDF ray height vs nominal .131 (geometry slice unaffected within 2mm)",
+        "owned process group closes cleanly; intentional fixture contacts provide no navigation safety credit"
+      ],
+      "reason": "Diagnostic cProfile: CPU~1core while callback/drain total~.255s, source age~.78; find remaining consumption bottleneck. Same fixture/physics/rates/thresholds. Profiling overhead provides no task timing credit."
+    },
+    {
+      "run_id": "mr3_p1a_contact_compact_v5_20261014_115529",
+      "ros_domain_id": 217,
+      "gazebo_port": 11817,
+      "output_dir": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_compact_v5_20261014_115529",
+      "command": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/mr3_contact_native_fixture.py",
+        "--output-dir",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_compact_v5_20261014_115529",
+        "--ros-domain-id",
+        "217",
+        "--gazebo-port",
+        "11817",
+        "--contact-transport",
+        "compact"
+      ],
+      "criteria": [
+        "all 18 topics fresh, source and receipt <= .5 sim seconds with no sustained gap",
+        "genuine empty-state timestamps and exact normal wheel/caster ground support filtering",
+        "all six component fixture non-support contacts retained",
+        "reported settled SDF ray height vs nominal .131 (geometry slice unaffected within 2mm)",
+        "owned process group closes cleanly; intentional fixture contacts provide no navigation safety credit"
+      ],
+      "reason": "Native C++ same-message pair reducer after profile confirms79% rclpy take/ROS object construction; keeps raw18 at20Hz, source header, every raw message, all unique pairs, first complete geometry, raw pair counts and source publication sequence audit; no gate/physics change."
+    },
+    {
+      "run_id": "mr3_p1a_contact_settle_v6_20261014_120858",
+      "ros_domain_id": 218,
+      "gazebo_port": 11818,
+      "output_dir": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_settle_v6_20261014_120858",
+      "command": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/mr3_contact_native_fixture.py",
+        "--output-dir",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_settle_v6_20261014_120858",
+        "--ros-domain-id",
+        "218",
+        "--gazebo-port",
+        "11818",
+        "--contact-transport",
+        "compact"
+      ],
+      "criteria": [
+        "all 18 topics fresh, source and receipt <= .5 sim seconds with no sustained gap",
+        "genuine empty-state timestamps and exact normal wheel/caster ground support filtering",
+        "all six component fixture non-support contacts retained",
+        "reported settled SDF ray height vs nominal .131 (geometry slice unaffected within 2mm)",
+        "owned process group closes cleanly; intentional fixture contacts provide no navigation safety credit"
+      ],
+      "reason": "Retain original2mm nominal-height criterion,20Hz/.5s source gates and physics; prove true physical settlement using fresh GetEntityState pose/twist, all3 below .005m/s/.02rad/s for1simsec within30wallsec. Add stronger full10m-beam vertical envelope within offline exact slice-invariant [.02,.25]m with ground avoidance. v5 failed height not relabeled.",
+      "settlement": {
+        "linear_speed_max_m_s": 0.005,
+        "angular_speed_max_rad_s": 0.02,
+        "continuous_sim_window_sec": 1.0,
+        "wall_guard_sec": 30.0,
+        "state_max_source_age_sec": 0.5
+      },
+      "laser_geometry": {
+        "nominal_height_m": 0.131,
+        "max_origin_error_m": 0.002,
+        "range_m": 10.0,
+        "verified_slice_band_m": [
+          0.02,
+          0.25
+        ],
+        "full_beam_envelope_must_be_inside_band": true,
+        "ground_crossing_forbidden": true
+      }
+    },
+    {
+      "run_id": "mr3_p1a_contact_pose_v7_20261014_121753",
+      "ros_domain_id": 219,
+      "gazebo_port": 11819,
+      "output_dir": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_pose_v7_20261014_121753",
+      "command": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/mr3_contact_native_fixture.py",
+        "--output-dir",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_pose_v7_20261014_121753",
+        "--ros-domain-id",
+        "219",
+        "--gazebo-port",
+        "11819",
+        "--contact-transport",
+        "compact"
+      ],
+      "criteria": [
+        "all 18 topics fresh, source and receipt <= .5 sim seconds with no sustained gap",
+        "genuine empty-state timestamps and exact normal wheel/caster ground support filtering",
+        "all six component fixture non-support contacts retained",
+        "reported settled SDF ray height vs nominal .131 (geometry slice unaffected within 2mm)",
+        "owned process group closes cleanly; intentional fixture contacts provide no navigation safety credit"
+      ],
+      "reason": "V6 fullvelocity stationarity diagnostic failed evenwith20–60micron2sec posevariation; retainfailure, recordfulltwistvectors and use actual3Dposewindow. No physics/task/safety/95/2mm gate change. Sampledwindow not continuous1ms or entireepisodeproof.",
+      "settlement": {
+        "sampled_sim_window_sec": 1.0,
+        "state_max_source_age_and_gap_sec": 0.5,
+        "max3d_position_bbox_diagonal_m": 0.001,
+        "max_pairwise_quaternion_rotation_rad": 0.002,
+        "max_planar_speed_m_s": 0.005,
+        "max_angular_speed_rad_s": 0.02,
+        "wall_guard_sec": 30.0,
+        "full3d_twist": "retained diagnostically includingz, no larger3Dvelocity tolerance introduced"
+      },
+      "laser_geometry": {
+        "nominal_height_m": 0.131,
+        "max_origin_error_m": 0.002,
+        "range_m": 10.0,
+        "verified_slice_band_m": [
+          0.02,
+          0.25
+        ],
+        "full_beam_envelope_must_be_inside_band": true,
+        "ground_crossing_forbidden": true,
+        "sampled_pose_variation_extra_envelope_m_formula": ".001+(10+sqrt(.064^2+.121^2))*sin(.002)",
+        "all_accepted_pose_window_samples_checked": true
+      }
+    },
+    {
+      "run_id": "mr3_p1a_contact_qos_v8_20261014_123944",
+      "ros_domain_id": 220,
+      "gazebo_port": 11820,
+      "output_dir": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_qos_v8_20261014_123944",
+      "command": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/mr3_contact_native_fixture.py",
+        "--output-dir",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_qos_v8_20261014_123944",
+        "--ros-domain-id",
+        "220",
+        "--gazebo-port",
+        "11820",
+        "--contact-transport",
+        "compact"
+      ],
+      "criteria": [
+        "all 18 topics fresh, source and receipt <= .5 sim seconds with no sustained gap",
+        "genuine empty-state timestamps and exact normal wheel/caster ground support filtering",
+        "all six component fixture non-support contacts retained",
+        "reported settled SDF ray height vs nominal .131 (geometry slice unaffected within 2mm)",
+        "owned process group closes cleanly; intentional fixture contacts provide no navigation safety credit"
+      ],
+      "reason": "General repair after repeated initialmatrixstartuprawgap: all6Gazebo contactpublisher histories5→100 reliablevolatile (officialSDF QoS), no physics/sensor20Hz/ROI/taskgatechange; native failclosedmetadata/publisheraudit and controlconstructorinterruptcleanup; preservealloldattempts.",
+      "settlement": {
+        "sampled_sim_window_sec": 1.0,
+        "state_max_source_age_and_gap_sec": 0.5,
+        "max3d_position_bbox_diagonal_m": 0.001,
+        "max_pairwise_quaternion_rotation_rad": 0.002,
+        "max_planar_speed_m_s": 0.005,
+        "max_angular_speed_rad_s": 0.02,
+        "wall_guard_sec": 30.0,
+        "full3d_twist": "retained diagnostically includingz, no larger3Dvelocity tolerance introduced"
+      },
+      "laser_geometry": {
+        "nominal_height_m": 0.131,
+        "max_origin_error_m": 0.002,
+        "range_m": 10.0,
+        "verified_slice_band_m": [
+          0.02,
+          0.25
+        ],
+        "full_beam_envelope_must_be_inside_band": true,
+        "ground_crossing_forbidden": true,
+        "sampled_pose_variation_extra_envelope_m_formula": ".001+(10+sqrt(.064^2+.121^2))*sin(.002)",
+        "all_accepted_pose_window_samples_checked": true
+      }
+    }
+  ],
+  "development_execution_schedule": {
+    "parallel_world_batches": 3,
+    "within_batch": "seeds101/202/303 serial, full native process restart each task",
+    "resources": "80host logical CPUs,125GiB RAM; isolated domains211/212/213 and Gazebo ports11811/11812/11813",
+    "source_rule": "all9tasks same pushed final candidate after compact fixture PASS; any production repair requires complete new matrix; no source edits during matrix",
+    "timing_scope": "task gates use simulation clock; wall latency/RTF report host concurrency and include startup guards"
+  },
+  "development_matrix_retries": [
+    {
+      "version": 2,
+      "recorded_at_utc": "2026-10-14T12:39:44.219622+00:00",
+      "reason": "General repair after repeated initialmatrixstartuprawgap: all6Gazebo contactpublisher histories5→100 reliablevolatile (officialSDF QoS), no physics/sensor20Hz/ROI/taskgatechange; native failclosedmetadata/publisheraudit and controlconstructorinterruptcleanup; preservealloldattempts.",
+      "batches": [
+        {
+          "world": "p1c_rooms.world",
+          "seeds": [
+            101,
+            202,
+            303
+          ],
+          "run_id": "mr3_p1a_v2_rooms_20261014_123944",
+          "ros_domain_id": 221,
+          "gazebo_port": 11821,
+          "command": [
+            "/usr/bin/python3",
+            "scripts/run_ideal_baseline.py",
+            "--world",
+            "p1c_rooms.world",
+            "--robot-count",
+            "3",
+            "--seeds",
+            "101",
+            "202",
+            "303",
+            "--task-contract",
+            "src/multi_robot/config/mr3_p1a/rooms.json",
+            "--startup-timeout",
+            "300",
+            "--evaluation-wait-timeout",
+            "900",
+            "--shutdown-timeout",
+            "60",
+            "--run-id",
+            "mr3_p1a_v2_rooms_20261014_123944",
+            "--output-root",
+            "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a"
+          ],
+          "task_contract_sha256": "ed8f61588ffb49821e2992d5a68e73abcef964bd80b6e2574eee3b1ae885635b"
+        },
+        {
+          "world": "p1c_corridors.world",
+          "seeds": [
+            101,
+            202,
+            303
+          ],
+          "run_id": "mr3_p1a_v2_corridors_20261014_123944",
+          "ros_domain_id": 222,
+          "gazebo_port": 11822,
+          "command": [
+            "/usr/bin/python3",
+            "scripts/run_ideal_baseline.py",
+            "--world",
+            "p1c_corridors.world",
+            "--robot-count",
+            "3",
+            "--seeds",
+            "101",
+            "202",
+            "303",
+            "--task-contract",
+            "src/multi_robot/config/mr3_p1a/corridors.json",
+            "--startup-timeout",
+            "300",
+            "--evaluation-wait-timeout",
+            "900",
+            "--shutdown-timeout",
+            "60",
+            "--run-id",
+            "mr3_p1a_v2_corridors_20261014_123944",
+            "--output-root",
+            "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a"
+          ],
+          "task_contract_sha256": "b0e23e068ac0ce1bf636de285e6038c34732ac43d9e734d154c378d9d04b691c"
+        },
+        {
+          "world": "p1c_open.world",
+          "seeds": [
+            101,
+            202,
+            303
+          ],
+          "run_id": "mr3_p1a_v2_open_20261014_123944",
+          "ros_domain_id": 223,
+          "gazebo_port": 11823,
+          "command": [
+            "/usr/bin/python3",
+            "scripts/run_ideal_baseline.py",
+            "--world",
+            "p1c_open.world",
+            "--robot-count",
+            "3",
+            "--seeds",
+            "101",
+            "202",
+            "303",
+            "--task-contract",
+            "src/multi_robot/config/mr3_p1a/open.json",
+            "--startup-timeout",
+            "300",
+            "--evaluation-wait-timeout",
+            "900",
+            "--shutdown-timeout",
+            "60",
+            "--run-id",
+            "mr3_p1a_v2_open_20261014_123944",
+            "--output-root",
+            "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a"
+          ],
+          "task_contract_sha256": "1bb5c097cdd9a6c92ee6edb7fabcb3c844117b51d18e40641c58aad7b29af4a6"
+        }
+      ],
+      "schedule": "3independentworldbatchesparallel; eachseeds101/202/303serial restart; samepushedsourcefreezeall9; anynewruntimefix requiresfullnewmatrix",
+      "mandatory_audit": "nativeJSONgates+childexit0+unique18source reducer summary supported,received=published>0,seqobserved=received,unavailable/gap/duplicate/regression0,onepublisher; exactcontract/world/source/model/log hashes"
+    },
+    {
+      "version": 3,
+      "recorded_at_utc": "2026-10-14T13:26:47.582805+00:00",
+      "reason": "Repair repeated controller shutdown message-conversion error with an owned bounded executor and only the exact error after actual context shutdown; live-context errors remain failures. Full nine-task rerun; no task, quality, peer safety, physics or controller-policy change. Version2 failures remain intact. Serial worlds reduce concurrent native startup pressure after one unexplained Nav2 readiness failure; no causal attribution claimed.",
+      "batches": [
+        {
+          "world": "p1c_rooms.world",
+          "seeds": [
+            101,
+            202,
+            303
+          ],
+          "run_id": "mr3_p1a_v3_rooms_20261014_132647",
+          "ros_domain_id": 224,
+          "gazebo_port": 11831,
+          "command": [
+            "/usr/bin/python3",
+            "scripts/run_ideal_baseline.py",
+            "--world",
+            "p1c_rooms.world",
+            "--robot-count",
+            "3",
+            "--seeds",
+            "101",
+            "202",
+            "303",
+            "--task-contract",
+            "src/multi_robot/config/mr3_p1a/rooms.json",
+            "--startup-timeout",
+            "300",
+            "--evaluation-wait-timeout",
+            "900",
+            "--shutdown-timeout",
+            "60",
+            "--run-id",
+            "mr3_p1a_v3_rooms_20261014_132647",
+            "--output-root",
+            "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a"
+          ],
+          "task_contract_sha256": "ed8f61588ffb49821e2992d5a68e73abcef964bd80b6e2574eee3b1ae885635b"
+        },
+        {
+          "world": "p1c_corridors.world",
+          "seeds": [
+            101,
+            202,
+            303
+          ],
+          "run_id": "mr3_p1a_v3_corridors_20261014_132647",
+          "ros_domain_id": 225,
+          "gazebo_port": 11832,
+          "command": [
+            "/usr/bin/python3",
+            "scripts/run_ideal_baseline.py",
+            "--world",
+            "p1c_corridors.world",
+            "--robot-count",
+            "3",
+            "--seeds",
+            "101",
+            "202",
+            "303",
+            "--task-contract",
+            "src/multi_robot/config/mr3_p1a/corridors.json",
+            "--startup-timeout",
+            "300",
+            "--evaluation-wait-timeout",
+            "900",
+            "--shutdown-timeout",
+            "60",
+            "--run-id",
+            "mr3_p1a_v3_corridors_20261014_132647",
+            "--output-root",
+            "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a"
+          ],
+          "task_contract_sha256": "b0e23e068ac0ce1bf636de285e6038c34732ac43d9e734d154c378d9d04b691c"
+        },
+        {
+          "world": "p1c_open.world",
+          "seeds": [
+            101,
+            202,
+            303
+          ],
+          "run_id": "mr3_p1a_v3_open_20261014_132647",
+          "ros_domain_id": 226,
+          "gazebo_port": 11833,
+          "command": [
+            "/usr/bin/python3",
+            "scripts/run_ideal_baseline.py",
+            "--world",
+            "p1c_open.world",
+            "--robot-count",
+            "3",
+            "--seeds",
+            "101",
+            "202",
+            "303",
+            "--task-contract",
+            "src/multi_robot/config/mr3_p1a/open.json",
+            "--startup-timeout",
+            "300",
+            "--evaluation-wait-timeout",
+            "900",
+            "--shutdown-timeout",
+            "60",
+            "--run-id",
+            "mr3_p1a_v3_open_20261014_132647",
+            "--output-root",
+            "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a"
+          ],
+          "task_contract_sha256": "1bb5c097cdd9a6c92ee6edb7fabcb3c844117b51d18e40641c58aad7b29af4a6"
+        }
+      ],
+      "schedule": "One world batch at a time in listed order, each seeds101/202/303 serial with full native process restart. No source edits or commits during any of the nine tasks. Same pushed candidate all9.",
+      "maintenance": "Before first batch only, official installed FastDDS shm clean checks locks and retains live resources; record exact output, no manual global deletion or blanket process termination.",
+      "wall_guards": {
+        "startup": 300,
+        "evaluation": 900,
+        "shutdown": 60
+      },
+      "mandatory_audit": "nativeJSONgates+childexit0+unique18source reducer summary supported,received=published>0,seqobserved=received,unavailable/gap/duplicate/regression0,onepublisher; exactcontract/world/source/model/log hashes",
+      "fixture_binding": "Reuse v8 only for unchanged contact/physical/fixture components verified by exact source/model/binary hashes; do not count old task successes as cells.",
+      "runtime_binding": "Before first invocation, save a manifest of all tracked ROS src/scripts bytes plus installed reducer binary and source-identical installed model/URDF/launch/config/world critical files. All batch invocations bind manifest hash and verify every file remains unchanged; all9 use one pushed Git commit."
+    },
+    {
+      "version": 4,
+      "recorded_at_utc": "2026-10-14T14:09:24.918506+00:00",
+      "batches": [
+        {
+          "world": "p1c_rooms.world",
+          "seeds": [
+            101,
+            202,
+            303
+          ],
+          "run_id": "mr3_p1a_v4_rooms_20261014_140924",
+          "ros_domain_id": 227,
+          "gazebo_port": 11841,
+          "command": [
+            "/usr/bin/python3",
+            "scripts/run_ideal_baseline.py",
+            "--world",
+            "p1c_rooms.world",
+            "--robot-count",
+            "3",
+            "--seeds",
+            "101",
+            "202",
+            "303",
+            "--task-contract",
+            "src/multi_robot/config/mr3_p1a/rooms.json",
+            "--startup-timeout",
+            "300",
+            "--evaluation-wait-timeout",
+            "900",
+            "--shutdown-timeout",
+            "60",
+            "--run-id",
+            "mr3_p1a_v4_rooms_20261014_140924",
+            "--output-root",
+            "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a"
+          ],
+          "task_contract_sha256": "ed8f61588ffb49821e2992d5a68e73abcef964bd80b6e2574eee3b1ae885635b"
+        },
+        {
+          "world": "p1c_corridors.world",
+          "seeds": [
+            101,
+            202,
+            303
+          ],
+          "run_id": "mr3_p1a_v4_corridors_20261014_140924",
+          "ros_domain_id": 228,
+          "gazebo_port": 11842,
+          "command": [
+            "/usr/bin/python3",
+            "scripts/run_ideal_baseline.py",
+            "--world",
+            "p1c_corridors.world",
+            "--robot-count",
+            "3",
+            "--seeds",
+            "101",
+            "202",
+            "303",
+            "--task-contract",
+            "src/multi_robot/config/mr3_p1a/corridors.json",
+            "--startup-timeout",
+            "300",
+            "--evaluation-wait-timeout",
+            "900",
+            "--shutdown-timeout",
+            "60",
+            "--run-id",
+            "mr3_p1a_v4_corridors_20261014_140924",
+            "--output-root",
+            "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a"
+          ],
+          "task_contract_sha256": "b0e23e068ac0ce1bf636de285e6038c34732ac43d9e734d154c378d9d04b691c"
+        },
+        {
+          "world": "p1c_open.world",
+          "seeds": [
+            101,
+            202,
+            303
+          ],
+          "run_id": "mr3_p1a_v4_open_20261014_140924",
+          "ros_domain_id": 229,
+          "gazebo_port": 11843,
+          "command": [
+            "/usr/bin/python3",
+            "scripts/run_ideal_baseline.py",
+            "--world",
+            "p1c_open.world",
+            "--robot-count",
+            "3",
+            "--seeds",
+            "101",
+            "202",
+            "303",
+            "--task-contract",
+            "src/multi_robot/config/mr3_p1a/open.json",
+            "--startup-timeout",
+            "300",
+            "--evaluation-wait-timeout",
+            "900",
+            "--shutdown-timeout",
+            "60",
+            "--run-id",
+            "mr3_p1a_v4_open_20261014_140924",
+            "--output-root",
+            "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a"
+          ],
+          "task_contract_sha256": "1bb5c097cdd9a6c92ee6edb7fabcb3c844117b51d18e40641c58aad7b29af4a6"
+        }
+      ],
+      "reason": "Version3 rooms202 pre-release clock-buffer failure remains invalid original evidence; other six tasks unstarted after the rooms batch. Repair demonstrable drain-before-cap and early-terminal probe/report defects; create contact readers once after an active positive ROS clock, preserving all received pre-release contacts. Pure-future257 fails immediately with diagnostic; cap256/20Hz/.5s/task/quality/peer/physics/policy unchanged. Full9 new pushed freeze, no old successful task cells reused.",
+      "schedule": "One world batch at a time in listed order, each seeds101/202/303 serial with full native process restart. No source edits or commits during any of the nine tasks. Same pushed candidate all9.",
+      "maintenance": "Before first batch only, official installed FastDDS shm clean checks locks and retains live resources; record exact output, no manual global deletion or blanket process termination.",
+      "wall_guards": {
+        "startup": 300,
+        "evaluation": 900,
+        "shutdown": 60
+      },
+      "mandatory_audit": "nativeJSONgates+childexit0+unique18source reducer summary supported,received=published>0,seqobserved=received,unavailable/gap/duplicate/regression0,onepublisher; exactcontract/world/source/model/log hashes",
+      "runtime_binding": "Before first invocation, save a manifest of all tracked ROS src/scripts bytes plus installed reducer binary and source-identical installed model/URDF/launch/config/world critical files. All batch invocations bind manifest hash and verify every file remains unchanged; all9 use one pushed Git commit.",
+      "fixture_binding": "Reuse v8 only for unchanged contact/physical/fixture components verified by exact source/model/binary hashes; do not count old task successes as cells.",
+      "contact_admission_scope": "Contact readers start after active positive ROS clock. Every received pre-release sample is retained; readiness waits all18 fresh and zero non-support contact. This does not prove every touch before those readers existed. Original source stamps stay unchanged.",
+      "environment": "System ROS Humble Python, PYTHONNOUSERSITE=1, rmw_fastrtps_cpp, ROS_LOCALHOST_ONLY=1, waffle. Selective owned launch environment snapshots check no explicit/default FastDDS profile change."
+    },
+    {
+      "version": 5,
+      "recorded_at_utc": "2026-10-14T15:04:52.100908+00:00",
+      "batches": [
+        {
+          "world": "p1c_rooms.world",
+          "seeds": [
+            101,
+            202,
+            303
+          ],
+          "run_id": "mr3_p1a_v5_rooms_20261014_150452",
+          "ros_domain_id": 95,
+          "gazebo_port": 11851,
+          "command": [
+            "/usr/bin/python3",
+            "scripts/run_ideal_baseline.py",
+            "--world",
+            "p1c_rooms.world",
+            "--robot-count",
+            "3",
+            "--seeds",
+            "101",
+            "202",
+            "303",
+            "--task-contract",
+            "src/multi_robot/config/mr3_p1a/rooms.json",
+            "--startup-timeout",
+            "300",
+            "--evaluation-wait-timeout",
+            "900",
+            "--shutdown-timeout",
+            "60",
+            "--run-id",
+            "mr3_p1a_v5_rooms_20261014_150452",
+            "--output-root",
+            "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a"
+          ],
+          "task_contract_sha256": "ed8f61588ffb49821e2992d5a68e73abcef964bd80b6e2574eee3b1ae885635b",
+          "environment": {
+            "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+            "ROS_LOCALHOST_ONLY": "0",
+            "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+            "SKIP_DEFAULT_XML": "1"
+          },
+          "fastdds_profile_sha256": "443340f4c7e083c11258aa28917212feaca01d34aa30a0ce689ea02819a379ef"
+        },
+        {
+          "world": "p1c_corridors.world",
+          "seeds": [
+            101,
+            202,
+            303
+          ],
+          "run_id": "mr3_p1a_v5_corridors_20261014_150452",
+          "ros_domain_id": 96,
+          "gazebo_port": 11852,
+          "command": [
+            "/usr/bin/python3",
+            "scripts/run_ideal_baseline.py",
+            "--world",
+            "p1c_corridors.world",
+            "--robot-count",
+            "3",
+            "--seeds",
+            "101",
+            "202",
+            "303",
+            "--task-contract",
+            "src/multi_robot/config/mr3_p1a/corridors.json",
+            "--startup-timeout",
+            "300",
+            "--evaluation-wait-timeout",
+            "900",
+            "--shutdown-timeout",
+            "60",
+            "--run-id",
+            "mr3_p1a_v5_corridors_20261014_150452",
+            "--output-root",
+            "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a"
+          ],
+          "task_contract_sha256": "b0e23e068ac0ce1bf636de285e6038c34732ac43d9e734d154c378d9d04b691c",
+          "environment": {
+            "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+            "ROS_LOCALHOST_ONLY": "0",
+            "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+            "SKIP_DEFAULT_XML": "1"
+          },
+          "fastdds_profile_sha256": "443340f4c7e083c11258aa28917212feaca01d34aa30a0ce689ea02819a379ef"
+        },
+        {
+          "world": "p1c_open.world",
+          "seeds": [
+            101,
+            202,
+            303
+          ],
+          "run_id": "mr3_p1a_v5_open_20261014_150452",
+          "ros_domain_id": 97,
+          "gazebo_port": 11853,
+          "command": [
+            "/usr/bin/python3",
+            "scripts/run_ideal_baseline.py",
+            "--world",
+            "p1c_open.world",
+            "--robot-count",
+            "3",
+            "--seeds",
+            "101",
+            "202",
+            "303",
+            "--task-contract",
+            "src/multi_robot/config/mr3_p1a/open.json",
+            "--startup-timeout",
+            "300",
+            "--evaluation-wait-timeout",
+            "900",
+            "--shutdown-timeout",
+            "60",
+            "--run-id",
+            "mr3_p1a_v5_open_20261014_150452",
+            "--output-root",
+            "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a"
+          ],
+          "task_contract_sha256": "1bb5c097cdd9a6c92ee6edb7fabcb3c844117b51d18e40641c58aad7b29af4a6",
+          "environment": {
+            "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+            "ROS_LOCALHOST_ONLY": "0",
+            "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+            "SKIP_DEFAULT_XML": "1"
+          },
+          "fastdds_profile_sha256": "443340f4c7e083c11258aa28917212feaca01d34aa30a0ce689ea02819a379ef"
+        }
+      ],
+      "reason": "V4 room3 complete:303 strictPASS;101 Gazebo SIGINT self-join abort after native task success;202 Nav2 service startup failure/missing JSON. No stop target/no signals, other six cells unstarted. Use official Gazebo server-control main-loop stop and require both actual owned server and CLI exit0;10wall watchdog/errors remain infrastructure failures. New explicit FastDDS UDPv4 loopback-only participant profile, ROS_LOCALHOST_ONLY=0 prevents RMW adding SHM, SKIP_DEFAULT_XML=1 prevents cwd profile overriding explicit configuration. Underlying native root causes remain unproven. No policy/physical/95/quality/peer/20Hz100depth/.5/time gate changes; full9newfreeze.",
+      "schedule": "One world batch at a time in listed order, each seeds101/202/303 serial with full native process restart. No source edits or commits during any of the nine tasks. Same pushed candidate all9.",
+      "maintenance": "Before first batch only, official installed FastDDS shm clean checks locks and retains live resources; record exact output, no manual global deletion or blanket process termination.",
+      "wall_guards": {
+        "startup": 300,
+        "evaluation": 900,
+        "shutdown": 60
+      },
+      "mandatory_audit": "nativeJSONgates+childexit0+unique18source reducer summary supported,received=published>0,seqobserved=received,unavailable/gap/duplicate/regression0,onepublisher; exactcontract/world/source/model/log hashes; Native-stop request and both owned server/CLI exit0, no MR3_GAZEBO_NATIVE_STOP_ERROR; actual per-batch loopback profile/env/hash binding.",
+      "runtime_binding": "Before first invocation, save a manifest of all tracked ROS src/scripts bytes plus installed reducer binary and source-identical installed model/URDF/launch/config/world critical files. All batch invocations bind manifest hash and verify every file remains unchanged; all9 use one pushed Git commit. Include installed profile XML identity and selected DDS environment.",
+      "fixture_binding": "Reuse v8 only for unchanged contact/physical/fixture components verified by exact source/model/binary hashes; do not count old task successes as cells.",
+      "contact_admission_scope": "Contact readers start after active positive ROS clock. Every received pre-release sample is retained; readiness waits all18 fresh and zero non-support contact. This does not prove every touch before those readers existed. Original source stamps stay unchanged.",
+      "environment": {
+        "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+        "ROS_LOCALHOST_ONLY": "0",
+        "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+        "SKIP_DEFAULT_XML": "1",
+        "profile_sha256": "443340f4c7e083c11258aa28917212feaca01d34aa30a0ce689ea02819a379ef",
+        "transport": "UDPv4 interfaceWhiteList127.0.0.1; builtin=false; no user SHM",
+        "sensor_and_subscription_qos": "Existing ROS QoS retained; XML QoS/pubmode conflicting flags cleared"
+      },
+      "native_stop_wall_watchdog_sec": 10.0
+    }
+  ]
+}

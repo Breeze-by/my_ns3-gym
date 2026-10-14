@@ -1,0 +1,171 @@
+{
+  "canonical_path": "validation_inputs/predeclared_native_plan_f7ad7fd.json",
+  "existing_copy_receipt_and_audit_unmodified": true,
+  "frozen_profile_sha256": "443340f4c7e083c11258aa28917212feaca01d34aa30a0ce689ea02819a379ef",
+  "frozen_validator_sha256": "56d2ade59e804609fb1973b36b9f87fead004d44a0075b7430439da8c9be0678",
+  "selected_version": 5,
+  "selected_version_record": {
+    "batches": [
+      {
+        "command": [
+          "/usr/bin/python3",
+          "scripts/run_ideal_baseline.py",
+          "--world",
+          "p1c_rooms.world",
+          "--robot-count",
+          "3",
+          "--seeds",
+          "101",
+          "202",
+          "303",
+          "--task-contract",
+          "src/multi_robot/config/mr3_p1a/rooms.json",
+          "--startup-timeout",
+          "300",
+          "--evaluation-wait-timeout",
+          "900",
+          "--shutdown-timeout",
+          "60",
+          "--run-id",
+          "mr3_p1a_v5_rooms_20261014_150452",
+          "--output-root",
+          "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a"
+        ],
+        "environment": {
+          "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+          "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+          "ROS_LOCALHOST_ONLY": "0",
+          "SKIP_DEFAULT_XML": "1"
+        },
+        "fastdds_profile_sha256": "443340f4c7e083c11258aa28917212feaca01d34aa30a0ce689ea02819a379ef",
+        "gazebo_port": 11851,
+        "ros_domain_id": 95,
+        "run_id": "mr3_p1a_v5_rooms_20261014_150452",
+        "seeds": [
+          101,
+          202,
+          303
+        ],
+        "task_contract_sha256": "ed8f61588ffb49821e2992d5a68e73abcef964bd80b6e2574eee3b1ae885635b",
+        "world": "p1c_rooms.world"
+      },
+      {
+        "command": [
+          "/usr/bin/python3",
+          "scripts/run_ideal_baseline.py",
+          "--world",
+          "p1c_corridors.world",
+          "--robot-count",
+          "3",
+          "--seeds",
+          "101",
+          "202",
+          "303",
+          "--task-contract",
+          "src/multi_robot/config/mr3_p1a/corridors.json",
+          "--startup-timeout",
+          "300",
+          "--evaluation-wait-timeout",
+          "900",
+          "--shutdown-timeout",
+          "60",
+          "--run-id",
+          "mr3_p1a_v5_corridors_20261014_150452",
+          "--output-root",
+          "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a"
+        ],
+        "environment": {
+          "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+          "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+          "ROS_LOCALHOST_ONLY": "0",
+          "SKIP_DEFAULT_XML": "1"
+        },
+        "fastdds_profile_sha256": "443340f4c7e083c11258aa28917212feaca01d34aa30a0ce689ea02819a379ef",
+        "gazebo_port": 11852,
+        "ros_domain_id": 96,
+        "run_id": "mr3_p1a_v5_corridors_20261014_150452",
+        "seeds": [
+          101,
+          202,
+          303
+        ],
+        "task_contract_sha256": "b0e23e068ac0ce1bf636de285e6038c34732ac43d9e734d154c378d9d04b691c",
+        "world": "p1c_corridors.world"
+      },
+      {
+        "command": [
+          "/usr/bin/python3",
+          "scripts/run_ideal_baseline.py",
+          "--world",
+          "p1c_open.world",
+          "--robot-count",
+          "3",
+          "--seeds",
+          "101",
+          "202",
+          "303",
+          "--task-contract",
+          "src/multi_robot/config/mr3_p1a/open.json",
+          "--startup-timeout",
+          "300",
+          "--evaluation-wait-timeout",
+          "900",
+          "--shutdown-timeout",
+          "60",
+          "--run-id",
+          "mr3_p1a_v5_open_20261014_150452",
+          "--output-root",
+          "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a"
+        ],
+        "environment": {
+          "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+          "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+          "ROS_LOCALHOST_ONLY": "0",
+          "SKIP_DEFAULT_XML": "1"
+        },
+        "fastdds_profile_sha256": "443340f4c7e083c11258aa28917212feaca01d34aa30a0ce689ea02819a379ef",
+        "gazebo_port": 11853,
+        "ros_domain_id": 97,
+        "run_id": "mr3_p1a_v5_open_20261014_150452",
+        "seeds": [
+          101,
+          202,
+          303
+        ],
+        "task_contract_sha256": "1bb5c097cdd9a6c92ee6edb7fabcb3c844117b51d18e40641c58aad7b29af4a6",
+        "world": "p1c_open.world"
+      }
+    ],
+    "contact_admission_scope": "Contact readers start after active positive ROS clock. Every received pre-release sample is retained; readiness waits all18 fresh and zero non-support contact. This does not prove every touch before those readers existed. Original source stamps stay unchanged.",
+    "environment": {
+      "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+      "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+      "ROS_LOCALHOST_ONLY": "0",
+      "SKIP_DEFAULT_XML": "1",
+      "profile_sha256": "443340f4c7e083c11258aa28917212feaca01d34aa30a0ce689ea02819a379ef",
+      "sensor_and_subscription_qos": "Existing ROS QoS retained; XML QoS/pubmode conflicting flags cleared",
+      "transport": "UDPv4 interfaceWhiteList127.0.0.1; builtin=false; no user SHM"
+    },
+    "fixture_binding": "Reuse v8 only for unchanged contact/physical/fixture components verified by exact source/model/binary hashes; do not count old task successes as cells.",
+    "maintenance": "Before first batch only, official installed FastDDS shm clean checks locks and retains live resources; record exact output, no manual global deletion or blanket process termination.",
+    "mandatory_audit": "nativeJSONgates+childexit0+unique18source reducer summary supported,received=published>0,seqobserved=received,unavailable/gap/duplicate/regression0,onepublisher; exactcontract/world/source/model/log hashes; Native-stop request and both owned server/CLI exit0, no MR3_GAZEBO_NATIVE_STOP_ERROR; actual per-batch loopback profile/env/hash binding.",
+    "native_stop_wall_watchdog_sec": 10.0,
+    "reason": "V4 room3 complete:303 strictPASS;101 Gazebo SIGINT self-join abort after native task success;202 Nav2 service startup failure/missing JSON. No stop target/no signals, other six cells unstarted. Use official Gazebo server-control main-loop stop and require both actual owned server and CLI exit0;10wall watchdog/errors remain infrastructure failures. New explicit FastDDS UDPv4 loopback-only participant profile, ROS_LOCALHOST_ONLY=0 prevents RMW adding SHM, SKIP_DEFAULT_XML=1 prevents cwd profile overriding explicit configuration. Underlying native root causes remain unproven. No policy/physical/95/quality/peer/20Hz100depth/.5/time gate changes; full9newfreeze.",
+    "recorded_at_utc": "2026-10-14T15:04:52.100908+00:00",
+    "runtime_binding": "Before first invocation, save a manifest of all tracked ROS src/scripts bytes plus installed reducer binary and source-identical installed model/URDF/launch/config/world critical files. All batch invocations bind manifest hash and verify every file remains unchanged; all9 use one pushed Git commit. Include installed profile XML identity and selected DDS environment.",
+    "schedule": "One world batch at a time in listed order, each seeds101/202/303 serial with full native process restart. No source edits or commits during any of the nine tasks. Same pushed candidate all9.",
+    "version": 5,
+    "wall_guards": {
+      "evaluation": 900,
+      "shutdown": 60,
+      "startup": 300
+    }
+  },
+  "selection_rule": "record.version == 5; never latest item; no current working XML/profile bytes",
+  "sha256": "c84780d6d1466c9e7fa1f65c1c36a2cb3a1dae7d2eec15ab5840790bf2d66254",
+  "simulator_runs": 0,
+  "size_bytes": 41755,
+  "source_freeze": "f7ad7fd645f0d6af832b895a37a68b14411354fc",
+  "source_git_object": "f7ad7fd645f0d6af832b895a37a68b14411354fc:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/predeclared_native_plan.json",
+  "type": "supplemental_frozen_predeclaration_binding_not_experiment"
+}

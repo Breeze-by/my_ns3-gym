@@ -1,0 +1,55 @@
+{
+  "world": "p1c_corridors.world",
+  "seeds": [
+    101,
+    202,
+    303
+  ],
+  "run_id": "mr3_p1a_v5_corridors_20261014_150452",
+  "ros_domain_id": 96,
+  "gazebo_port": 11852,
+  "command": [
+    "/usr/bin/python3",
+    "scripts/run_ideal_baseline.py",
+    "--world",
+    "p1c_corridors.world",
+    "--robot-count",
+    "3",
+    "--seeds",
+    "101",
+    "202",
+    "303",
+    "--task-contract",
+    "src/multi_robot/config/mr3_p1a/corridors.json",
+    "--startup-timeout",
+    "300",
+    "--evaluation-wait-timeout",
+    "900",
+    "--shutdown-timeout",
+    "60",
+    "--run-id",
+    "mr3_p1a_v5_corridors_20261014_150452",
+    "--output-root",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a"
+  ],
+  "task_contract_sha256": "b0e23e068ac0ce1bf636de285e6038c34732ac43d9e734d154c378d9d04b691c",
+  "environment": {
+    "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+    "ROS_LOCALHOST_ONLY": "0",
+    "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+    "SKIP_DEFAULT_XML": "1"
+  },
+  "fastdds_profile_sha256": "443340f4c7e083c11258aa28917212feaca01d34aa30a0ce689ea02819a379ef",
+  "source_freeze": "f7ad7fd645f0d6af832b895a37a68b14411354fc",
+  "runtime_component_manifest_sha256": "e0e609412b111dc7851e417ffb6dd7f05474f5096cbec6f31ac5c7847681b629",
+  "runtime_component_manifest": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/runtime_component_manifest_matrix5.json",
+  "selected_runtime_environment": {
+    "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+    "ROS_LOCALHOST_ONLY": "0",
+    "ROS_DOMAIN_ID": "96",
+    "GAZEBO_MASTER_URI": "http://127.0.0.1:11852",
+    "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+    "SKIP_DEFAULT_XML": "1"
+  },
+  "schedule": "One world batch at a time in listed order, each seeds101/202/303 serial with full native process restart. No source edits or commits during any of the nine tasks. Same pushed candidate all9."
+}

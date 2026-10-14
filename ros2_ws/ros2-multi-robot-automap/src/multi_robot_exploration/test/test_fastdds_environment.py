@@ -37,7 +37,7 @@ def test_profile_uses_only_one_default_loopback_udp_transport():
     assert root.tag == f"{{{NS['dds']}}}profiles"
     assert [child.tag for child in root] == [
         f"{{{NS['dds']}}}transport_descriptors", f"{{{NS['dds']}}}participant",
-    ]
+    ] + [f"{{{NS['dds']}}}publisher"] * 18
     transports = root.findall('dds:transport_descriptors/dds:transport_descriptor', NS)
     assert len(transports) == 1
     transport = transports[0]
@@ -60,8 +60,39 @@ def test_profile_uses_only_one_default_loopback_udp_transport():
     assert [node.text for node in rtps.findall('dds:userTransports/dds:transport_id', NS)] == [
         transport.findtext('dds:transport_id', namespaces=NS),
     ]
-    # No reader/writer QoS, non-blocking send, buffer override or discovery range.
-    assert len(list(root.iter())) == 12
+    # Transport settings contain no non-blocking send, buffer or discovery override.
+    assert len(list(root.find('dds:participant', NS).iter())) == 5
+
+
+def test_only_exact_nav2_change_state_replies_get_bounded_matching_wait():
+    root = ET.parse(PROFILE).getroot()
+    nodes = ('controller_server', 'planner_server', 'behavior_server',
+             'bt_navigator', 'waypoint_follower', 'velocity_smoother')
+    expected = {f'rr/tb{robot}/{node}/change_stateReply'
+                for robot in range(1, 4) for node in nodes}
+    writers = root.findall('dds:publisher', NS)
+    assert len(writers) == 18
+    assert {writer.attrib['profile_name'] for writer in writers} == expected
+    for writer in writers:
+        assert set(writer.attrib) == {'profile_name'}
+        assert [child.tag for child in writer] == [f"{{{NS['dds']}}}qos"]
+        qos = writer.find('dds:qos', NS)
+        assert [child.tag for child in qos] == [f"{{{NS['dds']}}}reliability"]
+        reliability = qos.find('dds:reliability', NS)
+        assert [child.tag for child in reliability] == [
+            f"{{{NS['dds']}}}kind", f"{{{NS['dds']}}}max_blocking_time",
+        ]
+        assert reliability.findtext('dds:kind', namespaces=NS) == 'RELIABLE'
+        duration = reliability.find('dds:max_blocking_time', NS)
+        assert [(child.tag, child.text) for child in duration] == [
+            (f"{{{NS['dds']}}}sec", '5'), (f"{{{NS['dds']}}}nanosec", '0'),
+        ]
+        assert len(list(writer.iter())) == 7
+    # Reader, wildcard and default writers cannot affect contact/control endpoints.
+    assert root.findall('dds:subscriber', NS) == []
+    assert root.findall('dds:data_reader', NS) == []
+    assert root.findall('dds:data_writer', NS) == []
+    assert all('*' not in name and name != 'service' for name in expected)
 
 
 def test_p1a_environment_avoids_rmw_localhost_shm_append_and_xml_qos(monkeypatch):
