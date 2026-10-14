@@ -936,10 +936,12 @@ class TaskEvaluator(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    evaluator = TaskEvaluator()
-    executor = SingleThreadedExecutor()
-    executor.add_node(evaluator)
+    evaluator = None
+    executor = None
     try:
+        evaluator = TaskEvaluator()
+        executor = SingleThreadedExecutor()
+        executor.add_node(evaluator)
         # Context shutdown inside an executor callback can wait for that same
         # callback to finish. Return from it, then close the context here.
         while rclpy.ok() and not evaluator.finalized:
@@ -947,12 +949,20 @@ def main(args=None):
     except (KeyboardInterrupt, ExternalShutdownException):
         pass
     finally:
-        evaluator.finalize("shutdown")
-        executor.remove_node(evaluator)
-        executor.shutdown()
-        evaluator.destroy_node()
-        if rclpy.ok():
-            rclpy.shutdown()
+        try:
+            if evaluator is not None:
+                evaluator.finalize("shutdown")
+        finally:
+            try:
+                if executor is not None and not executor.shutdown(timeout_sec=1.0):
+                    raise RuntimeError("Task evaluator executor shutdown exceeded one second")
+            finally:
+                try:
+                    if evaluator is not None:
+                        evaluator.destroy_node()
+                finally:
+                    if rclpy.ok():
+                        rclpy.shutdown()
 
 
 if __name__ == "__main__":

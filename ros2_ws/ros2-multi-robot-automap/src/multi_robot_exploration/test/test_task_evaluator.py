@@ -14,6 +14,7 @@ from multi_robot_exploration.task_evaluator import (
     evaluation_termination_reason,
     TaskEvaluator,
 )
+from multi_robot_exploration import task_evaluator
 
 
 def test_truth_grid_uses_state_pose_and_height_slice(tmp_path):
@@ -124,3 +125,90 @@ def test_result_publication_keeps_existing_evidence(tmp_path):
         TaskEvaluator._write_outputs(evaluator, {**result, "success": True})
     assert (tmp_path / "immutable_result.json").read_bytes() == original
     assert not list(tmp_path.glob("*.tmp"))
+
+
+@pytest.mark.parametrize("finalize_error", [None, OSError("result disk unavailable")])
+def test_main_cleans_resources_even_when_result_finalization_fails(monkeypatch, finalize_error):
+    lifecycle = SimpleNamespace(context_live=True, node_live=True, executor_live=True,
+                                finalize_called=False, shutdown_timeout=None)
+
+    class Evaluator:
+        finalized = False
+
+        def finalize(self, reason):
+            assert lifecycle.node_live and lifecycle.context_live
+            lifecycle.finalize_called = True
+            if finalize_error:
+                raise finalize_error
+
+        def destroy_node(self):
+            assert not lifecycle.executor_live
+            lifecycle.node_live = False
+
+    evaluator = Evaluator()
+
+    class Executor:
+        def add_node(self, node):
+            assert node is evaluator
+
+        def spin_once(self, timeout_sec):
+            evaluator.finalized = True
+
+        def shutdown(self, timeout_sec):
+            lifecycle.shutdown_timeout = timeout_sec
+            lifecycle.executor_live = False
+            return True
+
+    def shutdown_context():
+        assert not lifecycle.node_live and not lifecycle.executor_live
+        lifecycle.context_live = False
+
+    monkeypatch.setattr(task_evaluator, "TaskEvaluator", lambda: evaluator)
+    monkeypatch.setattr(task_evaluator, "SingleThreadedExecutor", Executor)
+    monkeypatch.setattr(task_evaluator.rclpy, "init", lambda **kwargs: None)
+    monkeypatch.setattr(task_evaluator.rclpy, "ok", lambda: lifecycle.context_live)
+    monkeypatch.setattr(task_evaluator.rclpy, "shutdown", shutdown_context)
+    if finalize_error:
+        with pytest.raises(OSError, match="result disk unavailable"):
+            task_evaluator.main()
+    else:
+        task_evaluator.main()
+    assert lifecycle.finalize_called
+    assert lifecycle.shutdown_timeout == 1.0
+    assert not lifecycle.node_live and not lifecycle.executor_live and not lifecycle.context_live
+
+
+def test_main_preserves_external_shutdown_and_still_releases_resources(monkeypatch):
+    lifecycle = SimpleNamespace(context_live=True, executor_closed=False, node_destroyed=False)
+
+    class Evaluator:
+        finalized = False
+
+        def finalize(self, reason):
+            assert reason == "shutdown"
+
+        def destroy_node(self):
+            assert lifecycle.executor_closed
+            lifecycle.node_destroyed = True
+
+    class Executor:
+        def add_node(self, node):
+            pass
+
+        def spin_once(self, timeout_sec):
+            lifecycle.context_live = False
+            raise task_evaluator.ExternalShutdownException()
+
+        def shutdown(self, timeout_sec):
+            lifecycle.executor_closed = True
+            return True
+
+    monkeypatch.setattr(task_evaluator, "TaskEvaluator", Evaluator)
+    monkeypatch.setattr(task_evaluator, "SingleThreadedExecutor", Executor)
+    monkeypatch.setattr(task_evaluator.rclpy, "init", lambda **kwargs: None)
+    monkeypatch.setattr(task_evaluator.rclpy, "ok", lambda: lifecycle.context_live)
+    monkeypatch.setattr(
+        task_evaluator.rclpy, "shutdown", lambda: pytest.fail("context already stopped")
+    )
+    task_evaluator.main()
+    assert lifecycle.executor_closed and lifecycle.node_destroyed
