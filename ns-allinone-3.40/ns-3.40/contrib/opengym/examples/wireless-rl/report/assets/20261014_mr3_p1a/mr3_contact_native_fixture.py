@@ -83,7 +83,8 @@ def main():
     log = (args.output_dir / 'launch.log').open('x')
     try:
         node = Node('mr3_native_contact_fixture', parameter_overrides=[Parameter('use_sim_time', value=True)])
-        raw = {(robot, name): {'empty_count': 0, 'support_count': 0, 'support_pairs': [],
+        raw = {(robot, name): {'empty_count': 0, 'support_count': 0,
+                              'last_support_source': None, 'support_pairs': [],
                               'pairs': [], 'last_source': None, 'empty_sources_first32': []}
                for robot in monitor.robot_names for name in contacts_module.CONTACT_COMPONENTS}
         pending = []
@@ -103,6 +104,8 @@ def main():
                 robot, name, message.states, monitor.support_collision_names,
             )
             row['support_count'] += filtered
+            if filtered:
+                row['last_support_source'] = source
             for state in message.states:
                 _, single_filtered = contacts_module.filter_non_support_contacts(
                     robot, name, [state], monitor.support_collision_names,
@@ -176,6 +179,10 @@ def main():
         # Lift already-discovered robots briefly to obtain genuine empty contact
         # updates from wheel/caster sensors as well as base/lidar. This is an
         # isolated physical fixture, never a mapping or safe-navigation episode.
+        support_keys = [(robot, component) for robot in monitor.robot_names
+                        for component, spec in contacts_module.CONTACT_COMPONENTS.items()
+                        if spec.support_eligible]
+        support_before_lift = {key: raw[key]['support_count'] for key in support_keys}
         for robot in monitor.robot_names:
             request = GetEntityState.Request()
             request.name, request.reference_frame = robot, 'world'
@@ -190,11 +197,20 @@ def main():
             call(set_client, set_request, 'lift ' + robot)
         wait(lambda: all(row['empty_count'] > 0 for row in raw.values()), 15,
              'not every one of the 18 sensors produced an empty state')
-        support_keys = [(robot, component) for robot in monitor.robot_names
-                        for component, spec in contacts_module.CONTACT_COMPONENTS.items()
-                        if spec.support_eligible]
-        wait(lambda: all(raw[key]['support_count'] > 0 for key in support_keys), 20,
-             'normal wheel/caster support contact missing')
+        after_lift_sim_time = now()
+        wait(lambda: all(raw[key]['support_count'] > support_before_lift[key]
+                         and raw[key]['last_support_source'] is not None
+                         and raw[key]['last_support_source'] > after_lift_sim_time
+                         for key in support_keys), 20,
+             'new normal wheel/caster support contact after lift missing')
+        result['support_after_lift'] = {
+            f'{robot}/{component}': {
+                'before_count': support_before_lift[(robot, component)],
+                'after_count': raw[(robot, component)]['support_count'],
+                'last_source': raw[(robot, component)]['last_support_source'],
+                'post_lift_source_cutoff': after_lift_sim_time,
+            } for robot, component in support_keys
+        }
         wait(lambda: monitor.summary(now())['fresh'], 20, 'contact sources not fresh after settling')
         monitor.start(now())
         end = now() + 2.0
@@ -254,6 +270,9 @@ def main():
                 request = DeleteEntity.Request()
                 request.name = fixture
                 call(delete_client, request, 'delete ' + fixture)
+        final_health = monitor.summary(now())
+        if not final_health['fresh'] or final_health['ever_unhealthy']:
+            raise RuntimeError('full fixture interval contact monitoring was interrupted')
         result['success'] = True
     except Exception as error:
         result['error'] = str(error)
@@ -269,6 +288,7 @@ def main():
             try:
                 process.wait(timeout=30)
             except subprocess.TimeoutExpired:
+                result['forced_termination'] = True
                 os.killpg(process.pid, signal.SIGTERM)
                 try:
                     process.wait(timeout=10)
@@ -278,10 +298,19 @@ def main():
                     result['forced_kill'] = True
         if process is not None:
             result['launch_returncode'] = process.returncode
-            if process.returncode != 0 or result.get('forced_kill'):
+            if process.returncode != 0 or result.get('forced_termination') or result.get('forced_kill'):
                 result['success'] = False
                 result.setdefault('error', 'owned launch did not exit cleanly')
         log.close()
+        native_failures = [line for line in (args.output_dir / 'launch.log').read_text(
+            errors='replace').splitlines() if (
+                'process has died' in line or 'failed to terminate' in line
+                or "sending signal 'SIGTERM'" in line or "sending signal 'SIGKILL'" in line
+            )]
+        result['native_launch_failures'] = native_failures
+        if native_failures:
+            result['success'] = False
+            result.setdefault('error', 'native child exit/escalation failure')
         with (args.output_dir / 'fixture_result.json').open('x') as output:
             json.dump(result, output, indent=2, sort_keys=True, allow_nan=False)
         print(json.dumps({'success': result['success'], 'error': result.get('error'),
