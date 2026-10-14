@@ -68,6 +68,23 @@ def task_contract():
     }
 
 
+def reducer_summary():
+    row = {
+        "received": 10, "published": 10, "raw_states": 20, "compact_states": 10,
+        "sequence_observed": 10, "sequence_unavailable": 0, "publisher_count": 1,
+        "sequence_gaps": 0, "sequence_duplicates": 0, "sequence_regressions": 0,
+    }
+    components = ("base", "lidar", "wheel_left", "wheel_right",
+                  "caster_back_left", "caster_back_right")
+    return {"publication_sequence_supported": True, "topics": {
+        f"tb{robot}/{component}": dict(row) for robot in range(1, 4) for component in components
+    }}
+
+
+def reducer_log(summary):
+    return "[mr3_contact_reducer-2] MR3_CONTACT_REDUCER_SUMMARY " + json.dumps(summary) + "\n"
+
+
 @pytest.mark.parametrize("output", ["inactive [2]", "unconfigured [1]", "not active", ""])
 def test_smoke_rejects_nonactive_lifecycle_state(output):
     smoke = load_module("smoke", ROOT / "scripts/ros_smoke_test.py")
@@ -394,3 +411,85 @@ def test_parent_exit_does_not_hide_native_child_shutdown_escalation():
         "sending signal 'SIGKILL' to process",
     ):
         assert smoke.native_launch_failures(text) == [text]
+
+
+def test_native_reducer_summary_requires_one_complete_supported_transport():
+    smoke = load_module("smoke", ROOT / "scripts/ros_smoke_test.py")
+    summary = reducer_summary()
+    assert smoke.validate_contact_reducer_summary(reducer_log(summary)) == summary
+    for text in ("", reducer_log(summary) * 2, "MR3_CONTACT_REDUCER_SUMMARY broken JSON\n"):
+        with pytest.raises(RuntimeError):
+            smoke.validate_contact_reducer_summary(text)
+    summary["publication_sequence_supported"] = False
+    with pytest.raises(RuntimeError, match="not supported"):
+        smoke.validate_contact_reducer_summary(reducer_log(summary))
+
+
+@pytest.mark.parametrize("field,value", [
+    ("received", 0), ("received", True), ("published", 9), ("sequence_observed", 9),
+    ("sequence_unavailable", 1), ("sequence_gaps", 1), ("sequence_duplicates", 1),
+    ("sequence_regressions", 1), ("publisher_count", 2), ("compact_states", 21),
+    ("raw_states", float("nan")), ("compact_states", float("inf")),
+])
+def test_native_reducer_summary_rejects_incomplete_or_invalid_delivery(field, value):
+    smoke = load_module("smoke", ROOT / "scripts/ros_smoke_test.py")
+    summary = reducer_summary()
+    summary["topics"]["tb2/caster_back_left"][field] = value
+    with pytest.raises(RuntimeError):
+        smoke.validate_contact_reducer_summary(reducer_log(summary))
+
+
+def test_native_reducer_summary_rejects_missing_or_unexpected_components_and_counters():
+    smoke = load_module("smoke", ROOT / "scripts/ros_smoke_test.py")
+    summary = reducer_summary()
+    del summary["topics"]["tb3/lidar"]
+    with pytest.raises(RuntimeError, match="18 components"):
+        smoke.validate_contact_reducer_summary(reducer_log(summary))
+    summary = reducer_summary()
+    summary["topics"]["tb4/base"] = summary["topics"]["tb1/base"]
+    with pytest.raises(RuntimeError, match="18 components"):
+        smoke.validate_contact_reducer_summary(reducer_log(summary))
+    summary = reducer_summary()
+    del summary["topics"]["tb1/base"]["sequence_observed"]
+    with pytest.raises(RuntimeError, match="invalid counters"):
+        smoke.validate_contact_reducer_summary(reducer_log(summary))
+
+
+def test_smoke_rejects_reducer_gap_after_clean_exit_without_changing_native_result(
+    monkeypatch, tmp_path
+):
+    smoke = load_module("smoke", ROOT / "scripts/ros_smoke_test.py")
+    path = tmp_path / "rooms.json"
+    path.write_text(json.dumps(task_contract()))
+    output = tmp_path / "evaluation"
+    native = native_result(schema=4)
+    native["task_contract_sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
+    payload = json.dumps(native)
+    args = argparse.Namespace(
+        robot_count=3, world="p1c_rooms.world", gazebo_seed=101, goal_timeout=60.,
+        spawn_timeout=90., startup_timeout=300., message_timeout=30.,
+        dwell_seconds=0., shutdown_timeout=30., evaluation_duration=None,
+        coverage_threshold=None, evaluation_wait_timeout=900., episode_id="native_success",
+        evaluation_output_dir=output, log_dir=tmp_path / "logs", task_contract=path,
+    )
+    monkeypatch.setattr(smoke, "parse_args", lambda: args)
+    monkeypatch.setenv("ROS_DISTRO", "humble")
+    monkeypatch.setattr(smoke.shutil, "which", lambda *args: "/usr/bin/ros2")
+    monkeypatch.setattr(smoke, "run_ros", lambda *args, **kwargs: (
+        subprocess.CompletedProcess([], 0, "", "")
+    ))
+    monkeypatch.setattr(smoke, "wait_until_ready", lambda *args, **kwargs: None)
+    monkeypatch.setattr(smoke, "require_message", lambda *args, **kwargs: None)
+
+    def start(command, **kwargs):
+        output.mkdir()
+        (output / "native_success.json").write_text(payload)
+        summary = reducer_summary()
+        summary["topics"]["tb2/caster_back_left"]["sequence_gaps"] = 1
+        kwargs["stdout"].write(reducer_log(summary))
+        kwargs["stdout"].flush()
+        return SimpleNamespace(poll=lambda: 0, wait=lambda **kwargs: 0, returncode=0)
+
+    monkeypatch.setattr(smoke.subprocess, "Popen", start)
+    assert smoke.main() == 1
+    assert (output / "native_success.json").read_text() == payload

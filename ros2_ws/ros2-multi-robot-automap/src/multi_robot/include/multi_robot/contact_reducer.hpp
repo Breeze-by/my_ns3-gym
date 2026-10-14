@@ -4,15 +4,75 @@
 #ifndef MULTI_ROBOT__CONTACT_REDUCER_HPP_
 #define MULTI_ROBOT__CONTACT_REDUCER_HPP_
 
+#include <array>
+#include <cstdint>
 #include <map>
+#include <set>
 #include <string>
 #include <utility>
 #include <vector>
 
 #include "gazebo_msgs/msg/contacts_state.hpp"
+#include "rmw/types.h"
 
 namespace multi_robot
 {
+
+using PublisherId = std::array<uint8_t, RMW_GID_STORAGE_SIZE>;
+
+/// Audit one raw topic without discarding a message when its source is invalid.
+struct ContactSourceAudit
+{
+  uint64_t observed = 0;
+  uint64_t unavailable = 0;
+  uint64_t gaps = 0;
+  uint64_t duplicates = 0;
+  uint64_t regressions = 0;
+  std::set<PublisherId> publishers;
+  std::map<PublisherId, uint64_t> last_sequences;
+
+  std::pair<std::string, uint64_t> observe(
+    const PublisherId & publisher, uint64_t sequence, bool feature_supported)
+  {
+    publishers.insert(publisher);
+    std::pair<std::string, uint64_t> failure;
+    if (publishers.size() > 1 && !multiple_reported_) {
+      multiple_reported_ = true;
+      failure.first = "contact_transport_multiple_publishers";
+    }
+    if (!feature_supported || sequence == RMW_MESSAGE_INFO_SEQUENCE_NUMBER_UNSUPPORTED) {
+      ++unavailable;
+      if (!unavailable_reported_) {
+        unavailable_reported_ = true;
+        failure.first = feature_supported ?
+          "contact_transport_sequence_metadata_unavailable" :
+          "contact_transport_sequence_unsupported";
+      }
+      return failure;
+    }
+    ++observed;
+    const auto previous = last_sequences.find(publisher);
+    if (previous != last_sequences.end()) {
+      if (sequence > previous->second + 1) {
+        const auto missing = sequence - previous->second - 1;
+        gaps += missing;
+        failure = {"contact_transport_sequence_gap", missing};
+      } else if (sequence == previous->second) {
+        ++duplicates;
+        failure.first = "contact_transport_sequence_duplicate";
+      } else if (sequence < previous->second) {
+        ++regressions;
+        failure.first = "contact_transport_sequence_regression";
+      }
+    }
+    last_sequences[publisher] = sequence;
+    return failure;
+  }
+
+private:
+  bool unavailable_reported_ = false;
+  bool multiple_reported_ = false;
+};
 
 /// Preserve every collision pair and the original header in each raw message.
 /// Repeated unordered pairs share their first complete geometry sample. No

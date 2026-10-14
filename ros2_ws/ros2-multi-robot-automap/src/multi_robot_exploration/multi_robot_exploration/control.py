@@ -1375,15 +1375,19 @@ class HeadquartersControl(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    control = HeadquartersControl()
+    control = None
     try:
+        control = HeadquartersControl()
         rclpy.spin(control)
     except (KeyboardInterrupt, ExternalShutdownException):
         pass
     finally:
-        control.destroy_node()
-        if rclpy.ok():
-            rclpy.shutdown()
+        try:
+            if control is not None:
+                control.destroy_node()
+        finally:
+            if rclpy.ok():
+                rclpy.shutdown()
 
 
 if __name__ == "__main__":

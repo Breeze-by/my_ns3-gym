@@ -1,0 +1,351 @@
+{
+  "type": "incomplete interrupted initial matrix not final acceptance",
+  "source_freeze": "9bac5fe",
+  "attempts": [
+    {
+      "world": "rooms",
+      "seed": 101,
+      "source_freeze": "9bac5fe",
+      "result_exists": true,
+      "native_success": false,
+      "termination_reason": "navigation_failure",
+      "elapsed_sim_time_sec": 0.0,
+      "correct_free_coverage_ratio": null,
+      "observed_accuracy": null,
+      "occupied_iou": null,
+      "false_free_ratio": null,
+      "control_failure": "{\"component\":\"mr3_contact_reducer\",\"robot_component\":\"tb2/caster_back_left\",\"reason\":\"contact_transport_sequence_gap\",\"missing_messages\":1}",
+      "reducer_audit_issues": [
+        "tb2/caster_back_left: source/count audit invalid",
+        "tb2/caster_back_right: source/count audit invalid"
+      ],
+      "native_process_failures": [
+        "[ERROR] [control-36]: process has died [pid 3330595, exit code -2, cmd '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot_exploration/lib/multi_robot_exploration/control --ros-args -r __node:=headquarters_control --params-file /tmp/launch_params_39o4_6yt']."
+      ],
+      "credit": "diagnostic/interrupted only, not final matrix acceptance"
+    },
+    {
+      "world": "rooms",
+      "seed": 202,
+      "source_freeze": "9bac5fe",
+      "result_exists": true,
+      "native_success": false,
+      "termination_reason": "shutdown",
+      "elapsed_sim_time_sec": 146.1,
+      "correct_free_coverage_ratio": 0.9434698608964451,
+      "observed_accuracy": 0.9507115327601542,
+      "occupied_iou": 0.27999094612947034,
+      "false_free_ratio": 0.0,
+      "control_failure": "",
+      "reducer_audit_issues": [],
+      "native_process_failures": [
+        "[ERROR] [velocity_smoother-34]: process has died [pid 3334995, exit code -2, cmd '/opt/ros/humble/lib/nav2_velocity_smoother/velocity_smoother --ros-args --log-level warn --ros-args -r __node:=velocity_smoother -r __ns:=/tb3 --params-file /tmp/tmpxifr46r_ -r /tf:=tf -r /tf_static:=tf_static -r /scan:=/tb3/scan -r cmd_vel:=cmd_vel_nav -r cmd_vel_smoothed:=cmd_vel'].",
+        "[ERROR] [control-36]: process has died [pid 3335127, exit code -2, cmd '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot_exploration/lib/multi_robot_exploration/control --ros-args -r __node:=headquarters_control --params-file /tmp/launch_params_mwhy9x_r'].",
+        "[ERROR] [waypoint_follower-33]: process has died [pid 3334993, exit code -2, cmd '/opt/ros/humble/lib/nav2_waypoint_follower/waypoint_follower --ros-args --log-level warn --ros-args -r __node:=waypoint_follower -r __ns:=/tb3 --params-file /tmp/tmp71dt_mjs -r /tf:=tf -r /tf_static:=tf_static -r /scan:=/tb3/scan'].",
+        "[ERROR] [controller_server-29]: process has died [pid 3334985, exit code -2, cmd '/opt/ros/humble/lib/nav2_controller/controller_server --ros-args --log-level warn --ros-args -r __ns:=/tb3 --params-file /tmp/tmpqr5hjg6j -r /tf:=tf -r /tf_static:=tf_static -r /scan:=/tb3/scan -r cmd_vel:=cmd_vel_nav'].",
+        "[ERROR] [lifecycle_manager-28]: process has died [pid 3333920, exit code -2, cmd '/opt/ros/humble/lib/nav2_lifecycle_manager/lifecycle_manager --ros-args --log-level warn --ros-args -r __node:=lifecycle_manager_navigation -r __ns:=/tb2 --params-file /tmp/launch_params_ry7f2zsr --params-file /tmp/launch_params_y87p6lsm --params-file /tmp/launch_params__e3xzwxx'].",
+        "[ERROR] [velocity_smoother-27]: process has died [pid 3333918, exit code -2, cmd '/opt/ros/humble/lib/nav2_velocity_smoother/velocity_smoother --ros-args --log-level warn --ros-args -r __node:=velocity_smoother -r __ns:=/tb2 --params-file /tmp/tmpbtsbbh3u -r /tf:=tf -r /tf_static:=tf_static -r /scan:=/tb2/scan -r cmd_vel:=cmd_vel_nav -r cmd_vel_smoothed:=cmd_vel'].",
+        "[ERROR] [waypoint_follower-26]: process has died [pid 3333916, exit code -2, cmd '/opt/ros/humble/lib/nav2_waypoint_follower/waypoint_follower --ros-args --log-level warn --ros-args -r __node:=waypoint_follower -r __ns:=/tb2 --params-file /tmp/tmp4w1p2ahy -r /tf:=tf -r /tf_static:=tf_static -r /scan:=/tb2/scan'].",
+        "[ERROR] [task_evaluator-37]: process has died [pid 3335129, exit code -2, cmd '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot_exploration/lib/multi_robot_exploration/task_evaluator --ros-args -r __node:=task_evaluator --params-file /tmp/launch_params_cufz9uq5'].",
+        "[ERROR] [peer_obstacles-3]: process has died [pid 3331967, exit code -2, cmd '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot_exploration/lib/multi_robot_exploration/peer_obstacles --ros-args -r __node:=peer_obstacles --params-file /tmp/launch_params_9gm_6eoc'].",
+        "[ERROR] [bt_navigator-25]: process[bt_navigator-25] failed to terminate '5' seconds after receiving 'SIGINT', escalating to 'SIGTERM'",
+        "[INFO] [bt_navigator-25]: sending signal 'SIGTERM' to process[bt_navigator-25]",
+        "[ERROR] [planner_server-16]: process[planner_server-16] failed to terminate '5' seconds after receiving 'SIGINT', escalating to 'SIGTERM'",
+        "[ERROR] [gzserver-4]: process[gzserver-4] failed to terminate '5' seconds after receiving 'SIGINT', escalating to 'SIGTERM'",
+        "[INFO] [planner_server-16]: sending signal 'SIGTERM' to process[planner_server-16]",
+        "[INFO] [gzserver-4]: sending signal 'SIGTERM' to process[gzserver-4]"
+      ],
+      "credit": "diagnostic/interrupted only, not final matrix acceptance"
+    },
+    {
+      "world": "corridors",
+      "seed": 101,
+      "source_freeze": "9bac5fe",
+      "result_exists": true,
+      "native_success": true,
+      "termination_reason": "coverage_reached",
+      "elapsed_sim_time_sec": 72.4,
+      "correct_free_coverage_ratio": 0.9508649093904448,
+      "observed_accuracy": 0.9567391347826957,
+      "occupied_iou": 0.22281807212763105,
+      "false_free_ratio": 0.0,
+      "control_failure": "",
+      "reducer_audit_issues": [],
+      "native_process_failures": [],
+      "credit": "diagnostic/interrupted only, not final matrix acceptance"
+    },
+    {
+      "world": "corridors",
+      "seed": 202,
+      "source_freeze": "9bac5fe",
+      "result_exists": true,
+      "native_success": false,
+      "termination_reason": "navigation_failure",
+      "elapsed_sim_time_sec": 0.0,
+      "correct_free_coverage_ratio": 0.04275123558484349,
+      "observed_accuracy": 0.9286926994906621,
+      "occupied_iou": 0.020497803806734993,
+      "false_free_ratio": 0.0,
+      "control_failure": "{\"component\":\"mr3_contact_reducer\",\"robot_component\":\"tb3/wheel_left\",\"reason\":\"contact_transport_sequence_gap\",\"missing_messages\":1}",
+      "reducer_audit_issues": [
+        "tb1/caster_back_left: source/count audit invalid",
+        "tb2/wheel_left: source/count audit invalid",
+        "tb2/wheel_right: source/count audit invalid",
+        "tb3/wheel_left: source/count audit invalid"
+      ],
+      "native_process_failures": [],
+      "credit": "diagnostic/interrupted only, not final matrix acceptance"
+    },
+    {
+      "world": "corridors",
+      "seed": 303,
+      "source_freeze": "9bac5fe",
+      "result_exists": true,
+      "native_success": false,
+      "termination_reason": "shutdown",
+      "elapsed_sim_time_sec": 2.5999999999999943,
+      "correct_free_coverage_ratio": 0.14713756177924217,
+      "observed_accuracy": 0.9225101314012035,
+      "occupied_iou": 0.06192002699510714,
+      "false_free_ratio": 0.0,
+      "control_failure": "",
+      "reducer_audit_issues": [],
+      "native_process_failures": [
+        "[ERROR] [velocity_smoother-34]: process has died [pid 3339315, exit code -2, cmd '/opt/ros/humble/lib/nav2_velocity_smoother/velocity_smoother --ros-args --log-level warn --ros-args -r __node:=velocity_smoother -r __ns:=/tb3 --params-file /tmp/tmp7ywcnd6x -r /tf:=tf -r /tf_static:=tf_static -r /scan:=/tb3/scan -r cmd_vel:=cmd_vel_nav -r cmd_vel_smoothed:=cmd_vel'].",
+        "[ERROR] [waypoint_follower-33]: process has died [pid 3339313, exit code -2, cmd '/opt/ros/humble/lib/nav2_waypoint_follower/waypoint_follower --ros-args --log-level warn --ros-args -r __node:=waypoint_follower -r __ns:=/tb3 --params-file /tmp/tmp9k0ylksk -r /tf:=tf -r /tf_static:=tf_static -r /scan:=/tb3/scan'].",
+        "[ERROR] [waypoint_follower-26]: process has died [pid 3338785, exit code -2, cmd '/opt/ros/humble/lib/nav2_waypoint_follower/waypoint_follower --ros-args --log-level warn --ros-args -r __node:=waypoint_follower -r __ns:=/tb2 --params-file /tmp/tmp12ujo9ro -r /tf:=tf -r /tf_static:=tf_static -r /scan:=/tb2/scan'].",
+        "[ERROR] [controller_server-22]: process has died [pid 3338777, exit code -2, cmd '/opt/ros/humble/lib/nav2_controller/controller_server --ros-args --log-level warn --ros-args -r __ns:=/tb2 --params-file /tmp/tmpc5b2v4qn -r /tf:=tf -r /tf_static:=tf_static -r /scan:=/tb2/scan -r cmd_vel:=cmd_vel_nav'].",
+        "[ERROR] [lifecycle_manager-21]: process has died [pid 3337684, exit code -2, cmd '/opt/ros/humble/lib/nav2_lifecycle_manager/lifecycle_manager --ros-args --log-level warn --ros-args -r __node:=lifecycle_manager_navigation -r __ns:=/tb1 --params-file /tmp/launch_params_zix2iahe --params-file /tmp/launch_params__y8h3knj --params-file /tmp/launch_params_7v5inmg5'].",
+        "[ERROR] [waypoint_follower-19]: process has died [pid 3337680, exit code -2, cmd '/opt/ros/humble/lib/nav2_waypoint_follower/waypoint_follower --ros-args --log-level warn --ros-args -r __node:=waypoint_follower -r __ns:=/tb1 --params-file /tmp/tmp3o8wyjap -r /tf:=tf -r /tf_static:=tf_static -r /scan:=/tb1/scan'].",
+        "[ERROR] [task_evaluator-37]: process has died [pid 3339441, exit code -2, cmd '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot_exploration/lib/multi_robot_exploration/task_evaluator --ros-args -r __node:=task_evaluator --params-file /tmp/launch_params_yw9fckbi'].",
+        "[ERROR] [control-36]: process has died [pid 3339439, exit code -2, cmd '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot_exploration/lib/multi_robot_exploration/control --ros-args -r __node:=headquarters_control --params-file /tmp/launch_params_c14r23ss'].",
+        "[ERROR] [peer_obstacles-3]: process has died [pid 3336998, exit code -2, cmd '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot_exploration/lib/multi_robot_exploration/peer_obstacles --ros-args -r __node:=peer_obstacles --params-file /tmp/launch_params_qiz4_u3t'].",
+        "[ERROR] [mr3_contact_reducer-2]: process has died [pid 3336996, exit code -2, cmd '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/multi_robot/mr3_contact_reducer --ros-args -r __node:=mr3_contact_reducer --params-file /tmp/launch_params_eplww083']."
+      ],
+      "credit": "diagnostic/interrupted only, not final matrix acceptance"
+    },
+    {
+      "world": "open",
+      "seed": 101,
+      "source_freeze": "9bac5fe",
+      "result_exists": true,
+      "native_success": true,
+      "termination_reason": "coverage_reached",
+      "elapsed_sim_time_sec": 94.1,
+      "correct_free_coverage_ratio": 0.9508125627681914,
+      "observed_accuracy": 0.9615965863632323,
+      "occupied_iou": 0.21023098003392926,
+      "false_free_ratio": 0.004862508383635144,
+      "control_failure": "",
+      "reducer_audit_issues": [],
+      "native_process_failures": [],
+      "credit": "diagnostic/interrupted only, not final matrix acceptance"
+    },
+    {
+      "world": "open",
+      "seed": 202,
+      "source_freeze": "9bac5fe",
+      "result_exists": true,
+      "native_success": false,
+      "termination_reason": "navigation_failure",
+      "elapsed_sim_time_sec": 0.0,
+      "correct_free_coverage_ratio": 0.046083264858942756,
+      "observed_accuracy": 0.9889210019267822,
+      "occupied_iou": 0.005678971104058794,
+      "false_free_ratio": 0.0,
+      "control_failure": "{\"component\":\"mr3_contact_reducer\",\"robot_component\":\"tb1/wheel_right\",\"reason\":\"contact_transport_sequence_gap\",\"missing_messages\":1}",
+      "reducer_audit_issues": [
+        "tb1/base: source/count audit invalid",
+        "tb1/caster_back_right: source/count audit invalid",
+        "tb1/lidar: source/count audit invalid",
+        "tb1/wheel_left: source/count audit invalid",
+        "tb1/wheel_right: source/count audit invalid"
+      ],
+      "native_process_failures": [],
+      "credit": "diagnostic/interrupted only, not final matrix acceptance"
+    },
+    {
+      "world": "open",
+      "seed": 303,
+      "source_freeze": "9bac5fe",
+      "result_exists": false,
+      "native_success": null,
+      "termination_reason": null,
+      "elapsed_sim_time_sec": null,
+      "correct_free_coverage_ratio": null,
+      "observed_accuracy": null,
+      "occupied_iou": null,
+      "false_free_ratio": null,
+      "control_failure": null,
+      "reducer_audit_issues": [
+        "tb2/caster_back_left: source/count audit invalid",
+        "tb2/caster_back_right: source/count audit invalid"
+      ],
+      "native_process_failures": [
+        "[ERROR] [velocity_smoother-27]: process has died [pid 3339181, exit code -2, cmd '/opt/ros/humble/lib/nav2_velocity_smoother/velocity_smoother --ros-args --log-level warn --ros-args -r __node:=velocity_smoother -r __ns:=/tb2 --params-file /tmp/tmp4o2z6osu -r /tf:=tf -r /tf_static:=tf_static -r /scan:=/tb2/scan -r cmd_vel:=cmd_vel_nav -r cmd_vel_smoothed:=cmd_vel'].",
+        "[ERROR] [waypoint_follower-26]: process has died [pid 3339179, exit code -2, cmd '/opt/ros/humble/lib/nav2_waypoint_follower/waypoint_follower --ros-args --log-level warn --ros-args -r __node:=waypoint_follower -r __ns:=/tb2 --params-file /tmp/tmpicwo274i -r /tf:=tf -r /tf_static:=tf_static -r /scan:=/tb2/scan'].",
+        "[ERROR] [velocity_smoother-20]: process has died [pid 3338648, exit code -2, cmd '/opt/ros/humble/lib/nav2_velocity_smoother/velocity_smoother --ros-args --log-level warn --ros-args -r __node:=velocity_smoother -r __ns:=/tb1 --params-file /tmp/tmpmzlbocwm -r /tf:=tf -r /tf_static:=tf_static -r /scan:=/tb1/scan -r cmd_vel:=cmd_vel_nav -r cmd_vel_smoothed:=cmd_vel'].",
+        "[ERROR] [waypoint_follower-19]: process has died [pid 3338646, exit code -2, cmd '/opt/ros/humble/lib/nav2_waypoint_follower/waypoint_follower --ros-args --log-level warn --ros-args -r __node:=waypoint_follower -r __ns:=/tb1 --params-file /tmp/tmpc0efr3cz -r /tf:=tf -r /tf_static:=tf_static -r /scan:=/tb1/scan'].",
+        "[ERROR] [multirobot_slam_toolbox_node-13]: process has died [pid 3338469, exit code -2, cmd '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/slam_toolbox/lib/slam_toolbox/multirobot_slam_toolbox_node --ros-args -r __node:=slam_toolbox -r __ns:=/tb3 --params-file /tmp/launch_params_xo1r4rn0 --params-file /tmp/launch_params_h6s0ilme -r /map:=map -r /tf:=tf -r /tf_static:=tf_static -r /map_metadata:=map_metadata'].",
+        "[ERROR] [robot_state_publisher-11]: process has died [pid 3338465, exit code -2, cmd '/opt/ros/humble/lib/robot_state_publisher/robot_state_publisher /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/urdf/turtlebot3_waffle.urdf --ros-args -r __ns:=/tb3 --params-file /tmp/launch_params_8jxhr4y1 -r /tf:=tf -r /tf_static:=tf_static'].",
+        "[ERROR] [multirobot_slam_toolbox_node-10]: process has died [pid 3338378, exit code -2, cmd '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/slam_toolbox/lib/slam_toolbox/multirobot_slam_toolbox_node --ros-args -r __node:=slam_toolbox -r __ns:=/tb2 --params-file /tmp/launch_params_68fxvr9s --params-file /tmp/launch_params_e93isftz -r /map:=map -r /tf:=tf -r /tf_static:=tf_static -r /map_metadata:=map_metadata'].",
+        "[ERROR] [robot_state_publisher-8]: process has died [pid 3338374, exit code -2, cmd '/opt/ros/humble/lib/robot_state_publisher/robot_state_publisher /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/urdf/turtlebot3_waffle.urdf --ros-args -r __ns:=/tb2 --params-file /tmp/launch_params_9jzzmetr -r /tf:=tf -r /tf_static:=tf_static'].",
+        "[ERROR] [mr3_contact_reducer-2]: process has died [pid 3337873, exit code -2, cmd '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/multi_robot/mr3_contact_reducer --ros-args -r __node:=mr3_contact_reducer --params-file /tmp/launch_params_3nqwgi5j'].",
+        "[ERROR] [merge_map-1]: process has died [pid 3337871, exit code -2, cmd '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/merge_map/lib/merge_map/merge_map --ros-args -r __node:=merge_map --params-file /tmp/launch_params_kr59lctl'].",
+        "[ERROR] [peer_obstacles-3]: process has died [pid 3337875, exit code -2, cmd '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot_exploration/lib/multi_robot_exploration/peer_obstacles --ros-args -r __node:=peer_obstacles --params-file /tmp/launch_params_3b8x_jgg'].",
+        "[ERROR] [nav2_ready_gate-14]: process has died [pid 3338544, exit code 1, cmd '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot_exploration/lib/multi_robot_exploration/nav2_ready_gate --ros-args -r __node:=nav2_ready_gate --params-file /tmp/launch_params_ja66b9ib']."
+      ],
+      "credit": "diagnostic/interrupted only, not final matrix acceptance"
+    }
+  ],
+  "not_started": [
+    {
+      "world": "rooms",
+      "seed": 303
+    }
+  ],
+  "inventory": [
+    {
+      "file": "initial_matrix/mr3_p1a_v1_rooms_20261014_111702/episodes/mr3_p1a_v1_rooms_20261014_111702_seed101.csv",
+      "sha256": "21895850ca9700de01497365bcff5d7122a8dbac9c6f8976491807f9cb3222e2",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_rooms_20261014_111702/episodes/mr3_p1a_v1_rooms_20261014_111702_seed101.csv"
+    },
+    {
+      "file": "initial_matrix/mr3_p1a_v1_rooms_20261014_111702/episodes/mr3_p1a_v1_rooms_20261014_111702_seed101.json",
+      "sha256": "6afa8c2d64c7e5604817223719cd4ad31f8c5ecea7f0275d4597f0124ec4e58f",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_rooms_20261014_111702/episodes/mr3_p1a_v1_rooms_20261014_111702_seed101.json"
+    },
+    {
+      "file": "initial_matrix/mr3_p1a_v1_rooms_20261014_111702/episodes/mr3_p1a_v1_rooms_20261014_111702_seed202.csv",
+      "sha256": "604d40b534aeb6cbe4ebed25b9ff2404b7491851a5d107e3c64530cc7affb626",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_rooms_20261014_111702/episodes/mr3_p1a_v1_rooms_20261014_111702_seed202.csv"
+    },
+    {
+      "file": "initial_matrix/mr3_p1a_v1_rooms_20261014_111702/episodes/mr3_p1a_v1_rooms_20261014_111702_seed202.json",
+      "sha256": "ee49c64e75799142dadde615e66c6162bc9b530393d75f4378da9acb9004941d",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_rooms_20261014_111702/episodes/mr3_p1a_v1_rooms_20261014_111702_seed202.json"
+    },
+    {
+      "file": "initial_matrix/mr3_p1a_v1_rooms_20261014_111702/launch_logs/robots3_seed101_20261014-202242.log",
+      "sha256": "5c7ab14c8d9ae0533b2b0974498f2099286699db30b4041e5752c42f65e191f5",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_rooms_20261014_111702/launch_logs/robots3_seed101_20261014-202242.log"
+    },
+    {
+      "file": "initial_matrix/mr3_p1a_v1_rooms_20261014_111702/launch_logs/robots3_seed202_20261014-202611.log",
+      "sha256": "b78aaf0972cb099178cb853a21c76189032b69d9bb8845951002153f515cc9eb",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_rooms_20261014_111702/launch_logs/robots3_seed202_20261014-202611.log"
+    },
+    {
+      "file": "initial_matrix/mr3_p1a_v1_rooms_20261014_111702/summary.csv",
+      "sha256": "c18a34048c79155066bf69d54bf94d8b8c268488da58e46c88a74c4322bf9f30",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_rooms_20261014_111702/summary.csv"
+    },
+    {
+      "file": "initial_matrix/mr3_p1a_v1_rooms_20261014_111702/summary.json",
+      "sha256": "28e567ef7a21611d880076c171763af1793e0f65b47a2840f89a2789f6d3913d",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_rooms_20261014_111702/summary.json"
+    },
+    {
+      "file": "initial_matrix/mr3_p1a_v1_corridors_20261014_111702/episodes/mr3_p1a_v1_corridors_20261014_111702_seed101.csv",
+      "sha256": "e969b947bad6e638ff2b4717e55512ca53cd073232c456d44a48a0d28e9047b9",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_corridors_20261014_111702/episodes/mr3_p1a_v1_corridors_20261014_111702_seed101.csv"
+    },
+    {
+      "file": "initial_matrix/mr3_p1a_v1_corridors_20261014_111702/episodes/mr3_p1a_v1_corridors_20261014_111702_seed101.json",
+      "sha256": "98cb024cdbe13e9fa6ba844f907bb514c01ec25f98195feb6a5c3eab4725eed8",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_corridors_20261014_111702/episodes/mr3_p1a_v1_corridors_20261014_111702_seed101.json"
+    },
+    {
+      "file": "initial_matrix/mr3_p1a_v1_corridors_20261014_111702/episodes/mr3_p1a_v1_corridors_20261014_111702_seed202.csv",
+      "sha256": "f3146f183e4893d4bfb392dcc99382224dce7e153804787e8311f77c9aded37b",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_corridors_20261014_111702/episodes/mr3_p1a_v1_corridors_20261014_111702_seed202.csv"
+    },
+    {
+      "file": "initial_matrix/mr3_p1a_v1_corridors_20261014_111702/episodes/mr3_p1a_v1_corridors_20261014_111702_seed202.json",
+      "sha256": "48e3d52b01f669b8a64a608b44a73976e472371e631e7c29e935bc1948bd2fef",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_corridors_20261014_111702/episodes/mr3_p1a_v1_corridors_20261014_111702_seed202.json"
+    },
+    {
+      "file": "initial_matrix/mr3_p1a_v1_corridors_20261014_111702/episodes/mr3_p1a_v1_corridors_20261014_111702_seed303.csv",
+      "sha256": "35351c2cef1bc0ffe3fd761c8f167e432739d8c6416d752a6e1cd9eb2db55b21",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_corridors_20261014_111702/episodes/mr3_p1a_v1_corridors_20261014_111702_seed303.csv"
+    },
+    {
+      "file": "initial_matrix/mr3_p1a_v1_corridors_20261014_111702/episodes/mr3_p1a_v1_corridors_20261014_111702_seed303.json",
+      "sha256": "be320a70456e8cdff67b338f848176fb77f944dfba9e6cea58fa8b77299c5263",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_corridors_20261014_111702/episodes/mr3_p1a_v1_corridors_20261014_111702_seed303.json"
+    },
+    {
+      "file": "initial_matrix/mr3_p1a_v1_corridors_20261014_111702/launch_logs/robots3_seed101_20261014-202242.log",
+      "sha256": "9492c275edbfac4c9cbc09357aca2e7fc0bc615db0b4ea3a8e6c778cdea7efa7",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_corridors_20261014_111702/launch_logs/robots3_seed101_20261014-202242.log"
+    },
+    {
+      "file": "initial_matrix/mr3_p1a_v1_corridors_20261014_111702/launch_logs/robots3_seed202_20261014-202650.log",
+      "sha256": "2ed6db78f1988870f6db400701fa8fae9774832c0cf42eac61b53322384cf5c7",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_corridors_20261014_111702/launch_logs/robots3_seed202_20261014-202650.log"
+    },
+    {
+      "file": "initial_matrix/mr3_p1a_v1_corridors_20261014_111702/launch_logs/robots3_seed303_20261014-203026.log",
+      "sha256": "3da3e8189354e7db8d39b5005d53d264c30ffa74e175f216220d55f31eee34af",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_corridors_20261014_111702/launch_logs/robots3_seed303_20261014-203026.log"
+    },
+    {
+      "file": "initial_matrix/mr3_p1a_v1_corridors_20261014_111702/summary.csv",
+      "sha256": "4aba4d4236432c0eab26a1dae1b77daf568db7d2b1b108cb3758ad2871f0983b",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_corridors_20261014_111702/summary.csv"
+    },
+    {
+      "file": "initial_matrix/mr3_p1a_v1_corridors_20261014_111702/summary.json",
+      "sha256": "01898ab0dd9b434a28512a8895b68ed0c40b3eba900487cecf42956a85776abf",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_corridors_20261014_111702/summary.json"
+    },
+    {
+      "file": "initial_matrix/mr3_p1a_v1_open_20261014_111702/episodes/mr3_p1a_v1_open_20261014_111702_seed101.csv",
+      "sha256": "c4d6b32b11fe838766e218162213ad1cd7266b50adf60a540bf0f39f7e9a1be5",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_open_20261014_111702/episodes/mr3_p1a_v1_open_20261014_111702_seed101.csv"
+    },
+    {
+      "file": "initial_matrix/mr3_p1a_v1_open_20261014_111702/episodes/mr3_p1a_v1_open_20261014_111702_seed101.json",
+      "sha256": "0f2c91fea805c05cdd1237661ffcd9ba88c00090017e428e3b9f142f6ca8c464",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_open_20261014_111702/episodes/mr3_p1a_v1_open_20261014_111702_seed101.json"
+    },
+    {
+      "file": "initial_matrix/mr3_p1a_v1_open_20261014_111702/episodes/mr3_p1a_v1_open_20261014_111702_seed202.csv",
+      "sha256": "1028cd9627e764ad56ae494746447962cf2bb5bd7eb630a90002ad8d472a7f80",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_open_20261014_111702/episodes/mr3_p1a_v1_open_20261014_111702_seed202.csv"
+    },
+    {
+      "file": "initial_matrix/mr3_p1a_v1_open_20261014_111702/episodes/mr3_p1a_v1_open_20261014_111702_seed202.json",
+      "sha256": "a950b50e21178b9fa6e21c9c47ac0079a9600257a409a77eac0f771d7074caf2",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_open_20261014_111702/episodes/mr3_p1a_v1_open_20261014_111702_seed202.json"
+    },
+    {
+      "file": "initial_matrix/mr3_p1a_v1_open_20261014_111702/launch_logs/robots3_seed101_20261014-202242.log",
+      "sha256": "31390c06e397e637456ca470d696e50426b262045769746588f751730caf3eb2",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_open_20261014_111702/launch_logs/robots3_seed101_20261014-202242.log"
+    },
+    {
+      "file": "initial_matrix/mr3_p1a_v1_open_20261014_111702/launch_logs/robots3_seed202_20261014-202728.log",
+      "sha256": "891ed58436a055c5811cbc1c3ca6b87cb69562ec83c241d8977f9b2a0d2ddc70",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_open_20261014_111702/launch_logs/robots3_seed202_20261014-202728.log"
+    },
+    {
+      "file": "initial_matrix/mr3_p1a_v1_open_20261014_111702/launch_logs/robots3_seed303_20261014-203103.log",
+      "sha256": "f03a94e2bbf162ade4b08448a9a0454cc9db39b61bbce1b6d32775817b41930e",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_open_20261014_111702/launch_logs/robots3_seed303_20261014-203103.log"
+    },
+    {
+      "file": "initial_matrix/mr3_p1a_v1_open_20261014_111702/summary.csv",
+      "sha256": "85ca3d6b5e4a27aedf2b5422dbb8549af674869671b34ff95e7d3f01e419cd83",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_open_20261014_111702/summary.csv"
+    },
+    {
+      "file": "initial_matrix/mr3_p1a_v1_open_20261014_111702/summary.json",
+      "sha256": "21679eae0317f4f36f1da6b4faa2bcdfa6d603d4d3a581358f1fb3d46c3d73d2",
+      "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_open_20261014_111702/summary.json"
+    }
+  ],
+  "interruption_record": "initial_matrix_owned_interrupt.json",
+  "all_owned_processes_exited": true
+}

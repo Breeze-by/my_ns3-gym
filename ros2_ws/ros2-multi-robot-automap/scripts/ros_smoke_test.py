@@ -307,6 +307,40 @@ def native_launch_failures(log_text):
     )]
 
 
+def validate_contact_reducer_summary(log_text):
+    """Require complete raw-message delivery evidence for every MR3 task launch."""
+    marker = "MR3_CONTACT_REDUCER_SUMMARY "
+    summaries = [line.split(marker, 1)[1] for line in log_text.splitlines() if marker in line]
+    if len(summaries) != 1:
+        raise RuntimeError("MR3 launch must contain exactly one contact reducer summary")
+    try:
+        summary = json.loads(summaries[0])
+    except ValueError as error:
+        raise RuntimeError("MR3 contact reducer summary is invalid JSON") from error
+    if not isinstance(summary, dict) or summary.get("publication_sequence_supported") is not True:
+        raise RuntimeError("MR3 contact publication sequence auditing is not supported")
+    components = ("base", "lidar", "wheel_left", "wheel_right",
+                  "caster_back_left", "caster_back_right")
+    expected = {f"tb{robot}/{component}" for robot in range(1, 4) for component in components}
+    topics = summary.get("topics")
+    if not isinstance(topics, dict) or set(topics) != expected:
+        raise RuntimeError("MR3 contact reducer summary must cover exactly 18 components")
+    fields = ("received", "published", "raw_states", "compact_states", "sequence_observed",
+              "sequence_unavailable", "publisher_count", "sequence_gaps",
+              "sequence_duplicates", "sequence_regressions")
+    for name, row in topics.items():
+        if not isinstance(row, dict) or any(type(row.get(field)) is not int or row[field] < 0
+                                           for field in fields):
+            raise RuntimeError(f"MR3 contact reducer has invalid counters for {name}")
+        if (row["received"] <= 0 or row["received"] != row["published"]
+            or row["sequence_observed"] != row["received"] or row["publisher_count"] != 1
+            or row["sequence_unavailable"] or row["sequence_gaps"]
+            or row["sequence_duplicates"] or row["sequence_regressions"]
+            or row["compact_states"] > row["raw_states"]):
+            raise RuntimeError(f"MR3 raw contact delivery is incomplete for {name}")
+    return summary
+
+
 def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -491,10 +525,17 @@ def main():
             file=sys.stderr,
         )
         return 1
-    native_failures = native_launch_failures(log_path.read_text(errors="replace"))
+    log_text = log_path.read_text(errors="replace")
+    native_failures = native_launch_failures(log_text)
     if native_failures:
         print("FAIL: native launch process failure: " + native_failures[0], file=sys.stderr)
         return 1
+    if task_contract:
+        try:
+            validate_contact_reducer_summary(log_text)
+        except RuntimeError as error:
+            print(f"FAIL: {error}", file=sys.stderr)
+            return 1
     if not passed:
         print("Inspect launch log:", log_path, file=sys.stderr)
         return 1

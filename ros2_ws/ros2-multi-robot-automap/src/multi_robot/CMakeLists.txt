@@ -20,7 +20,7 @@ if(BUILD_TESTING)
   ament_add_gtest(test_contact_reducer test/test_contact_reducer.cpp)
   target_include_directories(test_contact_reducer PRIVATE include)
   target_compile_features(test_contact_reducer PUBLIC cxx_std_17)
-  ament_target_dependencies(test_contact_reducer gazebo_msgs)
+  ament_target_dependencies(test_contact_reducer gazebo_msgs rmw)
 endif()
 
 install(DIRECTORY launch/

@@ -1,0 +1,37 @@
+{
+  "world": "p1c_corridors.world",
+  "seeds": [
+    101,
+    202,
+    303
+  ],
+  "run_id": "mr3_p1a_v1_corridors_20261014_111702",
+  "ros_domain_id": 212,
+  "gazebo_port": 11812,
+  "command": [
+    "/usr/bin/python3",
+    "scripts/run_ideal_baseline.py",
+    "--world",
+    "p1c_corridors.world",
+    "--robot-count",
+    "3",
+    "--seeds",
+    "101",
+    "202",
+    "303",
+    "--task-contract",
+    "src/multi_robot/config/mr3_p1a/corridors.json",
+    "--startup-timeout",
+    "300",
+    "--evaluation-wait-timeout",
+    "900",
+    "--shutdown-timeout",
+    "60",
+    "--run-id",
+    "mr3_p1a_v1_corridors_20261014_111702",
+    "--output-root",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a"
+  ],
+  "task_contract_sha256": "b0e23e068ac0ce1bf636de285e6038c34732ac43d9e734d154c378d9d04b691c",
+  "source_freeze": "9bac5fe559a042cc013e3b514d527d72e9d8ce1b"
+}

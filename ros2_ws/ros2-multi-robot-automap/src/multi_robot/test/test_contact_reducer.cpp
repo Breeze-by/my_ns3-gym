@@ -128,3 +128,81 @@ TEST(ContactReducer, ContactEmptyContactAreThreeIndependentOutputs)
     EXPECT_EQ(compact[index].header, raw[index].header);
   }
 }
+
+TEST(ContactSourceAudit, UnsupportedFeatureFailsClosedWithoutRepeatedFailureSpam)
+{
+  multi_robot::ContactSourceAudit audit;
+  const multi_robot::PublisherId publisher{};
+  EXPECT_EQ(audit.observe(publisher, 7, false).first, "contact_transport_sequence_unsupported");
+  EXPECT_TRUE(audit.observe(publisher, 8, false).first.empty());
+  EXPECT_EQ(audit.unavailable, 2u);
+  EXPECT_EQ(audit.observed, 0u);
+  EXPECT_EQ(audit.publishers.size(), 1u);
+}
+
+TEST(ContactSourceAudit, MissingMetadataCannotEstablishSequenceEvidence)
+{
+  multi_robot::ContactSourceAudit audit;
+  const multi_robot::PublisherId publisher{};
+  const auto missing = RMW_MESSAGE_INFO_SEQUENCE_NUMBER_UNSUPPORTED;
+  EXPECT_EQ(
+    audit.observe(publisher, missing, true).first,
+    "contact_transport_sequence_metadata_unavailable");
+  EXPECT_TRUE(audit.observe(publisher, missing, true).first.empty());
+  EXPECT_EQ(audit.unavailable, 2u);
+  EXPECT_EQ(audit.observed, 0u);
+  EXPECT_TRUE(audit.last_sequences.empty());
+}
+
+TEST(ContactSourceAudit, AdditionalPublisherFailsAndAllDistinctSourcesRemainVisible)
+{
+  multi_robot::ContactSourceAudit audit;
+  multi_robot::PublisherId first{};
+  auto second = first;
+  second[0] = 1;
+  EXPECT_TRUE(audit.observe(first, 42, true).first.empty());
+  EXPECT_EQ(audit.observe(second, 800, true).first, "contact_transport_multiple_publishers");
+  EXPECT_TRUE(audit.observe(second, 801, true).first.empty());
+  EXPECT_TRUE(audit.observe(first, 43, true).first.empty());
+  EXPECT_EQ(audit.publishers.size(), 2u);
+  EXPECT_EQ(audit.observed, 4u);
+  EXPECT_EQ(audit.gaps, 0u);
+}
+
+TEST(ContactSourceAudit, GapDuplicateAndRegressionRemainFailures)
+{
+  multi_robot::ContactSourceAudit audit;
+  const multi_robot::PublisherId publisher{};
+  EXPECT_TRUE(audit.observe(publisher, 20, true).first.empty());
+  const auto gap = audit.observe(publisher, 22, true);
+  EXPECT_EQ(gap.first, "contact_transport_sequence_gap");
+  EXPECT_EQ(gap.second, 1u);
+  EXPECT_EQ(audit.observe(publisher, 22, true).first, "contact_transport_sequence_duplicate");
+  EXPECT_EQ(audit.observe(publisher, 21, true).first, "contact_transport_sequence_regression");
+  EXPECT_EQ(audit.gaps, 1u);
+  EXPECT_EQ(audit.duplicates, 1u);
+  EXPECT_EQ(audit.regressions, 1u);
+}
+
+TEST(ContactSourceAudit, FaultReportsDoNotPreventIndependentReductionOfAnyRawMessage)
+{
+  multi_robot::ContactSourceAudit audit;
+  const multi_robot::PublisherId publisher{};
+  std::vector<gazebo_msgs::msg::ContactsState> raw(3, message());
+  raw[0].states.push_back(contact("body", "wall"));
+  raw[2].states.push_back(contact("body", "robot"));
+  const std::vector<uint64_t> sequences{
+    1, RMW_MESSAGE_INFO_SEQUENCE_NUMBER_UNSUPPORTED, 3};
+  std::vector<gazebo_msgs::msg::ContactsState> compact;
+  int failures = 0;
+  for (std::size_t index = 0; index < raw.size(); ++index) {
+    failures += !audit.observe(publisher, sequences[index], true).first.empty();
+    compact.push_back(multi_robot::reduce_contacts(raw[index]));
+  }
+  EXPECT_EQ(failures, 2);
+  ASSERT_EQ(compact.size(), raw.size());
+  for (std::size_t index = 0; index < raw.size(); ++index) {
+    EXPECT_EQ(compact[index].header, raw[index].header);
+    EXPECT_EQ(compact[index].states.size(), raw[index].states.size());
+  }
+}

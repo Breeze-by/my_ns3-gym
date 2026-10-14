@@ -38,6 +38,13 @@
         <plugin name="base_contact" filename="libgazebo_ros_bumper.so">
           <ros>
             <remapping>bumper_states:=collision</remapping>
+            <qos>
+              <topic name="collision"><publisher>
+                <history depth="100">keep_last</history>
+                <reliability>reliable</reliability>
+                <durability>volatile</durability>
+              </publisher></topic>
+            </qos>
           </ros>
           <frame_name>base_link</frame_name>
         </plugin>
@@ -138,7 +145,16 @@
         <update_rate>20</update_rate>
         <contact><collision>lidar_sensor_collision</collision></contact>
         <plugin name="lidar_contact" filename="libgazebo_ros_bumper.so">
-          <ros><remapping>bumper_states:=collision/lidar</remapping></ros>
+          <ros>
+            <remapping>bumper_states:=collision/lidar</remapping>
+            <qos>
+              <topic name="collision/lidar"><publisher>
+                <history depth="100">keep_last</history>
+                <reliability>reliable</reliability>
+                <durability>volatile</durability>
+              </publisher></topic>
+            </qos>
+          </ros>
           <frame_name>base_scan</frame_name>
         </plugin>
       </sensor>
@@ -241,7 +257,16 @@
         <update_rate>20</update_rate>
         <contact><collision>wheel_left_collision</collision></contact>
         <plugin name="wheel_left_contact" filename="libgazebo_ros_bumper.so">
-          <ros><remapping>bumper_states:=collision/wheel_left</remapping></ros>
+          <ros>
+            <remapping>bumper_states:=collision/wheel_left</remapping>
+            <qos>
+              <topic name="collision/wheel_left"><publisher>
+                <history depth="100">keep_last</history>
+                <reliability>reliable</reliability>
+                <durability>volatile</durability>
+              </publisher></topic>
+            </qos>
+          </ros>
           <frame_name>wheel_left_link</frame_name>
         </plugin>
       </sensor>
@@ -309,7 +334,16 @@
         <update_rate>20</update_rate>
         <contact><collision>wheel_right_collision</collision></contact>
         <plugin name="wheel_right_contact" filename="libgazebo_ros_bumper.so">
-          <ros><remapping>bumper_states:=collision/wheel_right</remapping></ros>
+          <ros>
+            <remapping>bumper_states:=collision/wheel_right</remapping>
+            <qos>
+              <topic name="collision/wheel_right"><publisher>
+                <history depth="100">keep_last</history>
+                <reliability>reliable</reliability>
+                <durability>volatile</durability>
+              </publisher></topic>
+            </qos>
+          </ros>
           <frame_name>wheel_right_link</frame_name>
         </plugin>
       </sensor>
@@ -362,7 +396,16 @@
         <update_rate>20</update_rate>
         <contact><collision>collision</collision></contact>
         <plugin name="caster_back_right_contact" filename="libgazebo_ros_bumper.so">
-          <ros><remapping>bumper_states:=collision/caster_back_right</remapping></ros>
+          <ros>
+            <remapping>bumper_states:=collision/caster_back_right</remapping>
+            <qos>
+              <topic name="collision/caster_back_right"><publisher>
+                <history depth="100">keep_last</history>
+                <reliability>reliable</reliability>
+                <durability>volatile</durability>
+              </publisher></topic>
+            </qos>
+          </ros>
           <frame_name>caster_back_right_link</frame_name>
         </plugin>
       </sensor>
@@ -405,7 +448,16 @@
         <update_rate>20</update_rate>
         <contact><collision>collision</collision></contact>
         <plugin name="caster_back_left_contact" filename="libgazebo_ros_bumper.so">
-          <ros><remapping>bumper_states:=collision/caster_back_left</remapping></ros>
+          <ros>
+            <remapping>bumper_states:=collision/caster_back_left</remapping>
+            <qos>
+              <topic name="collision/caster_back_left"><publisher>
+                <history depth="100">keep_last</history>
+                <reliability>reliable</reliability>
+                <durability>volatile</durability>
+              </publisher></topic>
+            </qos>
+          </ros>
           <frame_name>caster_back_left_link</frame_name>
         </plugin>
       </sensor>

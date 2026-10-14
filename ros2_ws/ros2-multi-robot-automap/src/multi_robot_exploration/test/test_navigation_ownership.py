@@ -3,8 +3,10 @@
 from types import MethodType, SimpleNamespace
 
 from action_msgs.msg import GoalStatus
+import pytest
 from rclpy.task import Future
 
+from multi_robot_exploration import control
 from multi_robot_exploration.control import HeadquartersControl
 
 
@@ -145,3 +147,48 @@ def test_shared_sensor_failure_cancels_active_and_late_accepted_goals():
     result.set_result(SimpleNamespace(status=GoalStatus.STATUS_CANCELED))
     assert node.robot_states["tb1"] == "failed"
     assert not messages
+
+
+@pytest.mark.parametrize("error", [
+    KeyboardInterrupt, control.ExternalShutdownException, ValueError,
+])
+def test_control_main_cleans_context_when_construction_is_interrupted(monkeypatch, error):
+    context_live = [True]
+
+    def construct():
+        raise error("construction stopped")
+
+    monkeypatch.setattr(control, "HeadquartersControl", construct)
+    monkeypatch.setattr(control.rclpy, "init", lambda **kwargs: None)
+    monkeypatch.setattr(control.rclpy, "ok", lambda: context_live[0])
+    monkeypatch.setattr(control.rclpy, "shutdown", lambda: context_live.__setitem__(0, False))
+    monkeypatch.setattr(
+        control.rclpy, "spin", lambda *args: pytest.fail("constructor did not finish")
+    )
+    if error is ValueError:
+        with pytest.raises(ValueError, match="construction stopped"):
+            control.main()
+    else:
+        control.main()
+    assert not context_live[0]
+
+
+def test_control_main_keeps_cleanup_errors_visible_and_closes_context(monkeypatch):
+    context_live = [True]
+
+    def destroy():
+        raise OSError("node cleanup failed")
+
+    def spin(node):
+        raise KeyboardInterrupt()
+
+    monkeypatch.setattr(
+        control, "HeadquartersControl", lambda: SimpleNamespace(destroy_node=destroy)
+    )
+    monkeypatch.setattr(control.rclpy, "init", lambda **kwargs: None)
+    monkeypatch.setattr(control.rclpy, "ok", lambda: context_live[0])
+    monkeypatch.setattr(control.rclpy, "shutdown", lambda: context_live.__setitem__(0, False))
+    monkeypatch.setattr(control.rclpy, "spin", spin)
+    with pytest.raises(OSError, match="node cleanup failed"):
+        control.main()
+    assert not context_live[0]

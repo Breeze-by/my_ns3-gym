@@ -1,0 +1,37 @@
+{
+  "type": "unit_and_static_not_simulation",
+  "parent_commit": "9bac5fe559a042cc013e3b514d527d72e9d8ce1b",
+  "candidate_sha256": {
+    "ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py": "82893ae0baf80d938998ed73fafbbe2cb6f99b430de72ea9f0e6a0992cddcf59",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/models/turtlebot3_waffle/model.sdf": "801ee7f05f8aab1b791ec1203595d08139f0d57cd2e5518e09baf657c2085156",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_contact_reducer.cpp": "47af80a30c4a72dc26b5ae696aee03441f1789f8b1fedcb68a4015a1cd4a5497",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/contact_reducer.hpp": "fcf4d0e2065ddbb7b7848e33818954443f3d685520787431279efa81abb8d372",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/control.py": "862d3319224281a288de5613bf5e22c7276ac8de658133362dfbaba4975acaca",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_task_contract.py": "d531ee9f6ceab570d5ba06ba0c452bde405a056a0073304a43fe99abd5ce739e"
+  },
+  "packages": [
+    {
+      "name": "multi_robot_exploration",
+      "tests": 200,
+      "passed": 199,
+      "skipped": 1,
+      "failed": 0
+    },
+    {
+      "name": "merge_map",
+      "tests": 12,
+      "passed": 11,
+      "skipped": 1,
+      "failed": 0
+    },
+    {
+      "name": "multi_robot",
+      "tests": 10,
+      "passed": 10,
+      "skipped": 0,
+      "failed": 0
+    }
+  ],
+  "command": "source /opt/ros/humble/setup.bash; source install/setup.bash; export PYTHONNOUSERSITE=1; /usr/bin/python3 /usr/bin/colcon test --packages-select multi_robot multi_robot_exploration merge_map --event-handlers console_cohesion+",
+  "simulator_runs": 0
+}

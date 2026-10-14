@@ -1892,3 +1892,71 @@ export PYTHONNOUSERSITE=1
 - V6 failed30wallsec settlement condition; raw fixture_v6_settlement_failure_{result.json,launch.txt,source.py} retained. Fullvelocitynorm .085–.095m/s remains despite2simsecposebbox rangesx<59micron/y<.3micron/z<23micron andangular .002–.0047rad/s. Full3Dlowtwist condition therefore does not establish scannerpose stability in this physics setup; vertical residual is a hypothesis (v6didnotstoreaxes), not a proven artifact. Derivedlatepose rayheight.12924–.12925m (old2mm gate fits) andbeam[.0624,.1961] (existingband fits), notnativePASS. V7 mr3_p1a_contact_pose_v7_20261014_121753 predeclared actual3Dpose/quaternion sampledwindow1simsec, sourceage/gap<=.5, planar/angular low; fulltwistaxes retained, ground/2mm/beam safety gates remain. Bound.001+(10+norm(rayoffset))*sin(.002) extraenvelope margin ensures observedposewindowvariation cannotcrossauditedband. Eightpureposewindow checks passed includingtranslation/quaternion-sign/tilt/velocity/freshness/nonfinite/insufficientwindow cases; py_compile/diffcheck passed.
 
 - V7 prereview strengthens fullacceptedwindow proof: q/-q equivalent angle, conservativefull3D boundingbox norm, everywindowstate fresh and gap<=.5. Everyacceptedwindowpose and laterindependent pose checks2mm/ground/full10mbeam withextra2.13cm verticalvariation margin, not just lastpose. Fulltwistvectors retained. Twoadditionalpurelaser checks passed: observedstablepose fitsband and earlierliftpitchcrossingground rejected. Diagnosticreplay ofv6poseonlydata firstboundedwindowsnear9.5–10.5simsec hadvalidlaser geometry, but v6planarvelocitywasnotstored (setzeroonlyforconditionaldiagnosis); no nativePASSor taskcredit, V7mustmeasureactualvx/vy.
+
+### MR3-P1A native attempt mr3_p1a_contact_pose_v7_20261014_121753
+
+- Freeze: 9bac5fe559a042cc013e3b514d527d72e9d8ce1b committed/pushed; fixed3robots, exact contract, no RL/network credit.
+- Environment: system ROS Humble; PYTHONNOUSERSITE=1; rmw_fastrtps_cpp; ROS_LOCALHOST_ONLY=1; ROS_DOMAIN_ID=219; GAZEBO_MASTER_URI=http://127.0.0.1:11819.
+- Command (canonical ROS root):
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/mr3_contact_native_fixture.py --output-dir /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_pose_v7_20261014_121753 --ros-domain-id 219 --gazebo-port 11819 --contact-transport compact
+```
+
+- Result pending at invocation; all native output retained.
+
+- Finished 2026-10-14T12:22:02.630309+00:00; rc=0; result=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_pose_v7_20261014_121753/fixture_result.json; success=True; error=None. All native JSON/log/failures retained.
+
+- V7 isolatedfixturePASS freeze9bac5fe: all6actualnon-supportcomponent pairs retained withcompletegeometry; all18empty updates andnew12supportpairs observed; steady2simsec/final18monitorfresh+noever_unhealthy; publishersequence complete/input=output/sourceheaderspreserved;3actualscanlinkheight+fullbeamwindow/marginpass; ownedGazebo/reducer exit0/noescalation. Canonical fixture_v7_pass_{result.json,launch.txt,source.py}. Fulltwistaxes now show verticalresidual near-.09 whileplanar/angularlow andsampledposebounded; preserve asphysicsdiagnostic, notcontinuous1msstillnessclaim. No95task/RL/networkcredit. Beginpredeclared3world×3seed matrix atsamefreeze9bac5fe, allfailuresretained.
+
+### MR3-P1A native attempt mr3_p1a_v1_open_20261014_111702
+
+- Freeze: 9bac5fe559a042cc013e3b514d527d72e9d8ce1b committed/pushed; fixed3robots, exact contract, no RL/network credit.
+- Environment: system ROS Humble; PYTHONNOUSERSITE=1; rmw_fastrtps_cpp; ROS_LOCALHOST_ONLY=1; ROS_DOMAIN_ID=213; GAZEBO_MASTER_URI=http://127.0.0.1:11813.
+- Command (canonical ROS root):
+
+```bash
+/usr/bin/python3 scripts/run_ideal_baseline.py --world p1c_open.world --robot-count 3 --seeds 101 202 303 --task-contract src/multi_robot/config/mr3_p1a/open.json --startup-timeout 300 --evaluation-wait-timeout 900 --shutdown-timeout 60 --run-id mr3_p1a_v1_open_20261014_111702 --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a
+```
+
+- Result pending at invocation; all native output retained.
+
+### MR3-P1A native attempt mr3_p1a_v1_corridors_20261014_111702
+
+- Freeze: 9bac5fe559a042cc013e3b514d527d72e9d8ce1b committed/pushed; fixed3robots, exact contract, no RL/network credit.
+- Environment: system ROS Humble; PYTHONNOUSERSITE=1; rmw_fastrtps_cpp; ROS_LOCALHOST_ONLY=1; ROS_DOMAIN_ID=212; GAZEBO_MASTER_URI=http://127.0.0.1:11812.
+- Command (canonical ROS root):
+
+```bash
+/usr/bin/python3 scripts/run_ideal_baseline.py --world p1c_corridors.world --robot-count 3 --seeds 101 202 303 --task-contract src/multi_robot/config/mr3_p1a/corridors.json --startup-timeout 300 --evaluation-wait-timeout 900 --shutdown-timeout 60 --run-id mr3_p1a_v1_corridors_20261014_111702 --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a
+```
+
+- Result pending at invocation; all native output retained.
+
+### MR3-P1A native attempt mr3_p1a_v1_rooms_20261014_111702
+
+- Freeze: 9bac5fe559a042cc013e3b514d527d72e9d8ce1b committed/pushed; fixed3robots, exact contract, no RL/network credit.
+- Environment: system ROS Humble; PYTHONNOUSERSITE=1; rmw_fastrtps_cpp; ROS_LOCALHOST_ONLY=1; ROS_DOMAIN_ID=211; GAZEBO_MASTER_URI=http://127.0.0.1:11811.
+- Command (canonical ROS root):
+
+```bash
+/usr/bin/python3 scripts/run_ideal_baseline.py --world p1c_rooms.world --robot-count 3 --seeds 101 202 303 --task-contract src/multi_robot/config/mr3_p1a/rooms.json --startup-timeout 300 --evaluation-wait-timeout 900 --shutdown-timeout 60 --run-id mr3_p1a_v1_rooms_20261014_111702 --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a
+```
+
+- Result pending at invocation; all native output retained.
+
+- Initialmatrix interrupted 2026-10-14T12:32:39.206830+00:00 underpredeclared repeatedinfrastructurefailure rule: rooms101 missedtwo casterrawframes; corridors202andopen202 repeatedrawpublication gaps (latchedstartupfailures). corridors101/open10195native successes remain diagnostic, notfinalmatrixcredit. SentSIGINT onlymatchingthreebaselineparents(preventfurtherseeds) thenownedros2launchPGIDs:[["baseline_parent", 3326851, 3326700], ["baseline_parent", 3326853, 3326699], ["baseline_parent", 3326854, 3326701], ["owned_launch_group", 3331941, 3331941], ["owned_launch_group", 3336968, 3336968], ["owned_launch_group", 3337848, 3337848]]. Exactargv/signals/freeze savedinitial_matrix_owned_interrupt.json; cleanup/results pending. No runtime source edits untilallownedlaunchesexit. Finalnewfreeze mustfull9rerun, no cherry-picking.
+
+- Finished 2026-10-14T12:32:39.552916+00:00; rc=-2; result=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_corridors_20261014_111702/summary.json; success=None; error=None. All native JSON/log/failures retained.
+
+- Finished 2026-10-14T12:32:39.567033+00:00; rc=-2; result=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_rooms_20261014_111702/summary.json; success=None; error=None. All native JSON/log/failures retained.
+
+- Finished 2026-10-14T12:32:39.589612+00:00; rc=-2; result=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v1_open_20261014_111702/summary.json; success=None; error=None. All native JSON/log/failures retained.
+
+- Initialmatrix cleanup complete: all3wrappersreturn254 fromparentSIGINT (-2child), no ownedGazebo/launchleft. Selectedallstartednative JSON/CSV/log andavailablepartialbatchsummaries intoinitial_matrix/, fullsourcefreeze/hashinventory initial_matrix_receipt.json. Eightattemptsstarted: rooms101/202,corridors101/202/303,open101/202/303;rooms303 notstarted. Two95native successes remain diagnosticonly (corridors10172.4s/open10194.1s); sourcegapstartup failuresandinterruptedcells remainfalse/unscored; rawJSONneverrewritten. Complete newmatrix neededaftergeneralrepair.
+
+- Newnativeattempts predeclared beforeimplementationfreeze: isolatedfixture mr3_p1a_contact_qos_v8_20261014_123944 domain220/port11820; then developmentmatrixversion2 mr3_p1a_v2_rooms_20261014_123944,mr3_p1a_v2_corridors_20261014_123944,mr3_p1a_v2_open_20261014_123944 domains221/222/223ports11821/22/23. Samecontracts/seeds/full9; originalpredeclaration/attempts remainunchanged. NativepublicationQoS default depth5 isconfirmedsourceconfiguration, startuphistoryinsufficiency is a hypothesis testedbynew100-depthfreeze, notyetclaimedrootcause. No currentruntimeprocesses; sourcesrepairinprogress.
+
+- General repair prechecks: all6contactGazebo publishers setofficialreliable/volatile KEEP_LASTdepth100 (notdata/20Hz/physicschange); removingqos fromAST yieldsidenticalwholemodel tooldfreeze. Officialgazebo_ros QoSparser remap/FQN semantics verified. Sourcecapability/missingpublicationmetadata/multiplepublisher failuresnowlatched; allraw stillforwardedonce. C++10tests0fail,cpplint/uncrustifyclean, canonicalcolconmulti_robotbuild32.8s successinstalledbinary; qos_reducer_repair_checks.xml retained. Controlctorinterrupt/finalnative18summaryvalidator newchecks19passed/47deselected, scopedlintclean. Exactruntime/gates/ROIcontracts unchanged; full3packageintegratedchecks pendingbeforefreeze.
+
+- Pre-matrix2 finalintegratedchecks: canonical systemROS colcon test --packages-select multi_robot multi_robot_exploration merge_map --event-handlers console_cohesion+ completed11.0wallsec;222tests=220pass/2skip/0fail/error. CurrentcandidateSHA/JUnit retained inpre_matrix2_component_checks.json plus3JUnitfiles. No furthercodeeditsplanned; diff-check/staticmodelQoS checks passed. Newv8fixture thenfull9matrix remainsunrununtilcandidatecommit/push.

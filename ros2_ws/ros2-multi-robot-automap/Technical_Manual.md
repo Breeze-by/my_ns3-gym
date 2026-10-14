@@ -46,6 +46,11 @@ peer_layer；其他障碍max合并，虚拟peer不进SLAM。它不使用Gazebo�
 P1A为六个真实碰撞体增加独立20Hz接触源；legacy schema3仍只读基体topic，不能用其
 历史零记录证明全机体无碰撞。schema4核查18源持续新鲜度，只精确排除正常轮/脚轮地面
 支撑接触；原生覆盖和新鲜度证据以P1A报告为准。
+合同模式经C++ `mr3_contact_reducer`逐消息汇总同一碰撞对，原header及首次完整
+ContactState几何保留，原18路不变；Python只采用汇总代表样本计数。原发布端与
+汇总节点使用reliable/volatile、KEEP_LAST depth100；20Hz和.5秒监测门限不变。
+publication sequence缺口/重复/倒退、审计能力缺失或多发布者使任务失败；smoke在
+全部原生子进程退出后核查18路完整汇总，不将parent返回0或原生JSON成功单独作PASS。
 joint_state插件给真实轮关节；默认建图不再重复启动
 虚构零轮位姿的joint_state_publisher。独立评价读真值路径/碰撞/地图，不发布动作。
 成功门禁与分母限制见使用指南；监测曾有一条消息不证明整段新鲜。

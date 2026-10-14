@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites tests="10" failures="0" disabled="0" errors="0" time="0" timestamp="2026-10-14T20:41:42" name="AllTests">
+  <testsuite name="ContactReducer" tests="5" failures="0" disabled="0" errors="0" time="0" timestamp="2026-10-14T20:41:42">
+    <testcase name="RepeatedPairKeepsFirstCompleteGeometryAndExactRawCount" status="run" result="completed" time="0" timestamp="2026-10-14T20:41:42" classname="multi_robot.ContactReducer" />
+    <testcase name="ReversedPairIsTheSamePairButFirstOrientationIsPreserved" status="run" result="completed" time="0" timestamp="2026-10-14T20:41:42" classname="multi_robot.ContactReducer" />
+    <testcase name="EverySupportWallRobotAndUnknownPairIsRetained" status="run" result="completed" time="0" timestamp="2026-10-14T20:41:42" classname="multi_robot.ContactReducer" />
+    <testcase name="EmptyMessageKeepsOriginalFrameAndSourceTime" status="run" result="completed" time="0" timestamp="2026-10-14T20:41:42" classname="multi_robot.ContactReducer" />
+    <testcase name="ContactEmptyContactAreThreeIndependentOutputs" status="run" result="completed" time="0" timestamp="2026-10-14T20:41:42" classname="multi_robot.ContactReducer" />
+  </testsuite>
+  <testsuite name="ContactSourceAudit" tests="5" failures="0" disabled="0" errors="0" time="0" timestamp="2026-10-14T20:41:42">
+    <testcase name="UnsupportedFeatureFailsClosedWithoutRepeatedFailureSpam" status="run" result="completed" time="0" timestamp="2026-10-14T20:41:42" classname="multi_robot.ContactSourceAudit" />
+    <testcase name="MissingMetadataCannotEstablishSequenceEvidence" status="run" result="completed" time="0" timestamp="2026-10-14T20:41:42" classname="multi_robot.ContactSourceAudit" />
+    <testcase name="AdditionalPublisherFailsAndAllDistinctSourcesRemainVisible" status="run" result="completed" time="0" timestamp="2026-10-14T20:41:42" classname="multi_robot.ContactSourceAudit" />
+    <testcase name="GapDuplicateAndRegressionRemainFailures" status="run" result="completed" time="0" timestamp="2026-10-14T20:41:42" classname="multi_robot.ContactSourceAudit" />
+    <testcase name="FaultReportsDoNotPreventIndependentReductionOfAnyRawMessage" status="run" result="completed" time="0" timestamp="2026-10-14T20:41:42" classname="multi_robot.ContactSourceAudit" />
+  </testsuite>
+</testsuites>

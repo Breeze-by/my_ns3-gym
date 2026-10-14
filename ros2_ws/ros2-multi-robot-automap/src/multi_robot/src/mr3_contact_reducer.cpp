@@ -41,6 +41,9 @@ public:
     const auto qos = rclcpp::QoS(rclcpp::KeepLast(100)).reliable();
     failure_publisher_ = create_publisher<std_msgs::msg::String>(
       "/exploration_failure", rclcpp::QoS(1).reliable().transient_local());
+    if (!sequence_supported_) {
+      publish_failure("all", "contact_transport_sequence_unsupported");
+    }
     for (const auto & robot : names) {
       for (const auto & component : components_) {
         const auto key = robot + "/" + component;
@@ -61,34 +64,12 @@ public:
               ++stats.received;
               stats.raw_states += message->states.size();
               const auto & metadata = info.get_rmw_message_info();
-              const auto sequence = metadata.publication_sequence_number;
-              if (sequence_supported_ && sequence != RMW_MESSAGE_INFO_SEQUENCE_NUMBER_UNSUPPORTED) {
-                ++stats.sequence_observed;
-                std::array<uint8_t, RMW_GID_STORAGE_SIZE> gid;
-                std::copy_n(metadata.publisher_gid.data, gid.size(), gid.begin());
-                auto previous = stats.last_sequences.find(gid);
-                if (previous != stats.last_sequences.end()) {
-                  if (sequence > previous->second + 1) {
-                    const auto missing = sequence - previous->second - 1;
-                    stats.sequence_gaps += missing;
-                    RCLCPP_ERROR(
-                      get_logger(), "%s: raw publication sequence gap, %s messages missing",
-                      key.c_str(), std::to_string(missing).c_str());
-                    publish_failure(key, "contact_transport_sequence_gap", missing);
-                  } else if (sequence == previous->second) {
-                    ++stats.sequence_duplicates;
-                    publish_failure(key, "contact_transport_sequence_duplicate");
-                  } else if (sequence < previous->second) {
-                    ++stats.sequence_regressions;
-                    RCLCPP_ERROR(
-                      get_logger(), "%s: raw publication sequence regressed",
-                      key.c_str());
-                    publish_failure(key, "contact_transport_sequence_regression");
-                  }
-                }
-                stats.last_sequences[gid] = sequence;
-              } else {
-                ++stats.sequence_unavailable;
+              PublisherId gid;
+              std::copy_n(metadata.publisher_gid.data, gid.size(), gid.begin());
+              const auto failure = stats.source.observe(
+                gid, metadata.publication_sequence_number, sequence_supported_);
+              if (!failure.first.empty()) {
+                publish_failure(key, failure.first, failure.second);
               }
               auto compact = reduce_contacts(*message);
               stats.compact_states += compact.states.size();
@@ -116,12 +97,12 @@ public:
       std::cout << '"' << entry.first << "\":{\"received\":" << stats.received <<
         ",\"published\":" << stats.published << ",\"raw_states\":" << stats.raw_states <<
         ",\"compact_states\":" << stats.compact_states <<
-        ",\"sequence_observed\":" << stats.sequence_observed <<
-        ",\"sequence_unavailable\":" << stats.sequence_unavailable <<
-        ",\"publisher_count\":" << stats.last_sequences.size() <<
-        ",\"sequence_gaps\":" << stats.sequence_gaps <<
-        ",\"sequence_duplicates\":" << stats.sequence_duplicates <<
-        ",\"sequence_regressions\":" << stats.sequence_regressions << '}';
+        ",\"sequence_observed\":" << stats.source.observed <<
+        ",\"sequence_unavailable\":" << stats.source.unavailable <<
+        ",\"publisher_count\":" << stats.source.publishers.size() <<
+        ",\"sequence_gaps\":" << stats.source.gaps <<
+        ",\"sequence_duplicates\":" << stats.source.duplicates <<
+        ",\"sequence_regressions\":" << stats.source.regressions << '}';
     }
     std::cout << "}}" << std::endl;
   }
@@ -143,12 +124,7 @@ private:
     uint64_t published = 0;
     uint64_t raw_states = 0;
     uint64_t compact_states = 0;
-    uint64_t sequence_observed = 0;
-    uint64_t sequence_unavailable = 0;
-    uint64_t sequence_gaps = 0;
-    uint64_t sequence_duplicates = 0;
-    uint64_t sequence_regressions = 0;
-    std::map<std::array<uint8_t, RMW_GID_STORAGE_SIZE>, uint64_t> last_sequences;
+    ContactSourceAudit source;
   };
 
   const std::vector<std::string> components_{
