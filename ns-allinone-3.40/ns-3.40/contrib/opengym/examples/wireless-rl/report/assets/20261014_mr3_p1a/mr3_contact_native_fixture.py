@@ -65,6 +65,7 @@ def main():
     from gazebo_msgs.srv import SpawnEntity, DeleteEntity, GetEntityState, SetEntityState
     from rclpy.node import Node
     from rclpy.parameter import Parameter
+    from rclpy.executors import SingleThreadedExecutor
 
     spec = importlib.util.spec_from_file_location('mr3_contacts_fixture_module', MODULE)
     contacts_module = importlib.util.module_from_spec(spec)
@@ -79,23 +80,32 @@ def main():
                                 for path in (MODEL, URDF, WORLD, fixture_world, MODULE, Path(__file__))}}
     process = None
     node = None
+    executor = None
     rclpy.init()
     log = (args.output_dir / 'launch.log').open('x')
     try:
         node = Node('mr3_native_contact_fixture', parameter_overrides=[Parameter('use_sim_time', value=True)])
+        executor = SingleThreadedExecutor()
+        executor.add_node(node)
         raw = {(robot, name): {'empty_count': 0, 'support_count': 0,
                               'last_support_source': None, 'support_pairs': [],
                               'pairs': [], 'last_source': None, 'empty_sources_first32': []}
                for robot in monitor.robot_names for name in contacts_module.CONTACT_COMPONENTS}
         pending = []
+        processing = {'callback_count': 0, 'callback_wall_sec': 0.0,
+                      'max_callback_wall_sec': 0.0, 'max_callback_source_age_sec': 0.0,
+                      'pending_peak': 0, 'drain_wall_sec': 0.0}
 
         def now():
             return node.get_clock().now().nanoseconds / 1e9
 
         def on_contact(robot, name, message):
+            callback_begin = time.perf_counter()
             row = raw[(robot, name)]
             source = message.header.stamp.sec + message.header.stamp.nanosec / 1e9
             row['last_source'] = source
+            processing['max_callback_source_age_sec'] = max(
+                processing['max_callback_source_age_sec'], now() - source)
             if not message.states:
                 row['empty_count'] += 1
                 if len(row['empty_sources_first32']) < 32:
@@ -106,21 +116,23 @@ def main():
             row['support_count'] += filtered
             if filtered:
                 row['last_support_source'] = source
-            for state in message.states:
-                _, single_filtered = contacts_module.filter_non_support_contacts(
-                    robot, name, [state], monitor.support_collision_names,
-                )
-                pair = [state.collision1_name, state.collision2_name]
-                if single_filtered and pair not in row['support_pairs']:
-                    row['support_pairs'].append(pair)
-            for state in retained:
-                pair = [state.collision1_name, state.collision2_name]
-                if pair not in row['pairs']:
-                    row['pairs'].append(pair)
+            retained_pairs = {(state.collision1_name, state.collision2_name) for state in retained}
+            all_pairs = {(state.collision1_name, state.collision2_name) for state in message.states}
+            for pair in sorted(all_pairs - retained_pairs):
+                if list(pair) not in row['support_pairs']:
+                    row['support_pairs'].append(list(pair))
+            for pair in sorted(retained_pairs):
+                if list(pair) not in row['pairs']:
+                    row['pairs'].append(list(pair))
             # /clock and contact callbacks are separate DDS streams. Buffer
             # source-future arrivals until the local clock watermark reaches
             # them, rather than rewriting their source time or permitting it.
             pending.append((source, robot, name, message))
+            processing['pending_peak'] = max(processing['pending_peak'], len(pending))
+            elapsed = time.perf_counter() - callback_begin
+            processing['callback_count'] += 1
+            processing['callback_wall_sec'] += elapsed
+            processing['max_callback_wall_sec'] = max(processing['max_callback_wall_sec'], elapsed)
 
         subscriptions = [node.create_subscription(
             ContactsState, topic,
@@ -132,12 +144,14 @@ def main():
         set_client = node.create_client(SetEntityState, '/gazebo/set_entity_state')
 
         def spin():
-            rclpy.spin_once(node, timeout_sec=0.05)
+            executor.spin_once(timeout_sec=0.05)
+            drain_begin = time.perf_counter()
             receipt = now()
             ready = [entry for entry in pending if entry[0] <= receipt]
             pending[:] = [entry for entry in pending if entry[0] > receipt]
             for _, robot, name, message in ready:
                 monitor.update(robot, name, message, receipt)
+            processing['drain_wall_sec'] += time.perf_counter() - drain_begin
 
         def wait(predicate, timeout, label):
             deadline = time.monotonic() + timeout
@@ -213,9 +227,15 @@ def main():
         }
         wait(lambda: monitor.summary(now())['fresh'], 20, 'contact sources not fresh after settling')
         monitor.start(now())
+        steady_begin = (now(), time.monotonic(), time.process_time())
         end = now() + 2.0
         wait(lambda: now() >= end, 15, 'two simulated seconds of monitoring did not complete')
         result['steady_monitoring'] = monitor.summary(now())
+        result['steady_timing'] = {
+            'sim_sec': now() - steady_begin[0],
+            'wall_sec': time.monotonic() - steady_begin[1],
+            'fixture_cpu_sec': time.process_time() - steady_begin[2],
+        }
         if result['steady_monitoring']['ever_unhealthy']:
             raise RuntimeError('continuous contact freshness failed in steady fixture phase')
         result['settled_robot_poses'] = {}
@@ -280,6 +300,9 @@ def main():
         if node is not None:
             result['contacts'] = {f'{robot}/{name}': row for (robot, name), row in raw.items()}
             result['final_monitoring'] = monitor.summary(node.get_clock().now().nanoseconds / 1e9)
+            result['processing'] = processing
+            executor.remove_node(node)
+            executor.shutdown()
             node.destroy_node()
         if rclpy.ok():
             rclpy.shutdown()

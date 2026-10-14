@@ -13,7 +13,7 @@ from gazebo_msgs.msg import ContactsState, ModelStates
 from nav_msgs.msg import OccupancyGrid
 import numpy as np
 import rclpy
-from rclpy.executors import ExternalShutdownException
+from rclpy.executors import ExternalShutdownException, SingleThreadedExecutor
 from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
 from std_msgs.msg import Bool, Header, String
@@ -937,15 +937,19 @@ class TaskEvaluator(Node):
 def main(args=None):
     rclpy.init(args=args)
     evaluator = TaskEvaluator()
+    executor = SingleThreadedExecutor()
+    executor.add_node(evaluator)
     try:
         # Context shutdown inside an executor callback can wait for that same
         # callback to finish. Return from it, then close the context here.
         while rclpy.ok() and not evaluator.finalized:
-            rclpy.spin_once(evaluator, timeout_sec=0.5)
+            executor.spin_once(timeout_sec=0.5)
     except (KeyboardInterrupt, ExternalShutdownException):
         pass
     finally:
         evaluator.finalize("shutdown")
+        executor.remove_node(evaluator)
+        executor.shutdown()
         evaluator.destroy_node()
         if rclpy.ok():
             rclpy.shutdown()
