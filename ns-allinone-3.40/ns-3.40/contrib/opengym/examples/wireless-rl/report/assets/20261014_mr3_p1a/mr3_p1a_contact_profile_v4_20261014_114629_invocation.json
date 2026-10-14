@@ -1,0 +1,29 @@
+{
+  "run_id": "mr3_p1a_contact_profile_v4_20261014_114629",
+  "ros_domain_id": 216,
+  "gazebo_port": 11816,
+  "output_dir": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_profile_v4_20261014_114629",
+  "command": [
+    "/usr/bin/python3",
+    "-m",
+    "cProfile",
+    "-o",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_profile_v4_20261014_114629/profile.stats",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/mr3_contact_native_fixture.py",
+    "--output-dir",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_profile_v4_20261014_114629",
+    "--ros-domain-id",
+    "216",
+    "--gazebo-port",
+    "11816"
+  ],
+  "criteria": [
+    "all 18 topics fresh, source and receipt <= .5 sim seconds with no sustained gap",
+    "genuine empty-state timestamps and exact normal wheel/caster ground support filtering",
+    "all six component fixture non-support contacts retained",
+    "reported settled SDF ray height vs nominal .131 (geometry slice unaffected within 2mm)",
+    "owned process group closes cleanly; intentional fixture contacts provide no navigation safety credit"
+  ],
+  "reason": "Diagnostic cProfile: CPU~1core while callback/drain total~.255s, source age~.78; find remaining consumption bottleneck. Same fixture/physics/rates/thresholds. Profiling overhead provides no task timing credit.",
+  "source_freeze": "ac6ba585104c177c53be071f6850a6f1fd30f59b"
+}

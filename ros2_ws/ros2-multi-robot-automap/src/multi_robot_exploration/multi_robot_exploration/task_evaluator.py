@@ -339,6 +339,7 @@ class TaskEvaluator(Node):
             self.contact_monitor = ContactMonitor(
                 contract["robots"], contract["support_collision_names"],
                 contract["contact_monitor_max_age_sec"],
+                compact=True,
             )
         self.robot_names = [
             f"tb{index}" for index in range(1, self.robot_count + 1)
@@ -413,7 +414,7 @@ class TaskEvaluator(Node):
                 )
             )
             if self.task_contract:
-                for component, topic in contact_topics(name).items():
+                for component, topic in contact_topics(name, compact=True).items():
                     self.input_subscriptions.append(self.create_subscription(
                         ContactsState, topic,
                         lambda message, robot=name, part=component: self._mr3_contact_callback(

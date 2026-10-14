@@ -1834,3 +1834,25 @@ export PYTHONNOUSERSITE=1
 - V3 native failure retained as fixture_v3_failure_{result.json,launch.txt,source.py}; persistent executor/reduced diagnostic classification did not restore freshness. For steady2simsec, wall2.588/fixtureCPU2.637 sec; callbacks .135/drain .121 sec across1332messages, final ages .776–.788 across18. Strong CPU-backpressure evidence; decode not yet proven. Diagnostic profile predeclared mr3_p1a_contact_profile_v4_20261014_114629; profile overhead has no performance credit.
 
 - Evaluator shutdown repair: retain nonzero finalization errors while nested finally closes executor within1wallsecond, node and context; handles external shutdown. Targeted task_evaluator+flake8 checks passed (18tests). Diagnostic profile wrapper initially refused to launch because lifecycle edits raced its clean-source check; no simulator/artifact started. Same predeclared profile ID remains unused; invoke after new pushed freeze.
+
+### MR3-P1A native attempt mr3_p1a_contact_profile_v4_20261014_114629
+
+- Freeze: ac6ba585104c177c53be071f6850a6f1fd30f59b committed/pushed; fixed3robots, exact contract, no RL/network credit.
+- Environment: system ROS Humble; PYTHONNOUSERSITE=1; rmw_fastrtps_cpp; ROS_LOCALHOST_ONLY=1; ROS_DOMAIN_ID=216; GAZEBO_MASTER_URI=http://127.0.0.1:11816.
+- Command (canonical ROS root):
+
+```bash
+/usr/bin/python3 -m cProfile -o /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_profile_v4_20261014_114629/profile.stats /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/mr3_contact_native_fixture.py --output-dir /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_profile_v4_20261014_114629 --ros-domain-id 216 --gazebo-port 11816
+```
+
+- Result pending at invocation; all native output retained.
+
+- Correction to previous lifecycle check entry: root launched test_flake8.py from entire ROS workspace rather than package directory; its argv=[] therefore scanned unrelated upstream/build/log trees and failed style scope (17 functional tests passed,1 lint-scope failure). Agent scoped two-file lint and3 lifecycle regressions passed before freeze; root now reruns the18checks from package directory. This is not a simulator failure and does not justify editing unrelated code.
+
+- Finished 2026-10-14T11:51:20.738569+00:00; rc=0; result=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_profile_v4_20261014_114629/fixture_result.json; success=False; error=contact sources not fresh after settling. All native JSON/log/failures retained.
+
+- Scoped lifecycle/flake8 recheck from multi_robot_exploration package directory:18 passed/0failed (2.26s). V4 cProfile shows39.021s overall and _take_subscription30.840s (79.03%),1148280Vector3/261253Wrench/69878ContactState constructors; raw profile and cumulative/tottime outputs retained. cProfile process returned0 although fixture_result.success=false (not fresh after settling); JSON failure remains authoritative, no PASS. Native reducer + compact fixture predeclared mr3_p1a_contact_compact_v5_20261014_115529 without altering20Hz/.5s/full pair history.
+
+- Compact integration checks from multi_robot_exploration package:86 functional tests passed (contacts/evaluator/task lifecycle/launch-and-smoke),1 lint failure at new100char metadata string; shortened metadata and targeted package lint then1passed. Fixture py_compile/diff-check clean. Complete geometry sample for first non-support pair now retained; compact native summary requires all18sources, one publisher, received=published, supported publication sequence with zero gaps/duplicates/regressions/unavailable. Settled ray height must agree nominal.131within2mm. No simulator gate relaxation.
+
+- Native reducer build/checks: canonical system ROS /usr/bin/python3 /usr/bin/colcon build --packages-select multi_robot --symlink-install passed (34.7wallsec), installed executable confirmed by ros2 pkg executables multi_robot. Independent CMake/gtests5passed/0failed; native_reducer_checks.xml retained. ament_cpplint/uncrustify own3C++files passed; diff-check clean. First isolated colcon with /tmp install refused unresolved runtime dependencies (no simulator); independent CMake and canonical colcon then passed. Independent compact integration review found no relaxed task/monitoring gate or truth leakage. v5 starts only after this new committed/pushed freeze;3world batches then run in parallel80CPU host, isolated domains/ports, each3seed serial restart, all9same freeze.

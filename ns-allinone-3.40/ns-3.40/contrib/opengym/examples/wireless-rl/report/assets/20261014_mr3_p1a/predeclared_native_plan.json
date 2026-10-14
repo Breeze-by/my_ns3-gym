@@ -235,6 +235,39 @@
         "owned process group closes cleanly; intentional fixture contacts provide no navigation safety credit"
       ],
       "reason": "Diagnostic cProfile: CPU~1core while callback/drain total~.255s, source age~.78; find remaining consumption bottleneck. Same fixture/physics/rates/thresholds. Profiling overhead provides no task timing credit."
+    },
+    {
+      "run_id": "mr3_p1a_contact_compact_v5_20261014_115529",
+      "ros_domain_id": 217,
+      "gazebo_port": 11817,
+      "output_dir": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_compact_v5_20261014_115529",
+      "command": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/mr3_contact_native_fixture.py",
+        "--output-dir",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_contact_compact_v5_20261014_115529",
+        "--ros-domain-id",
+        "217",
+        "--gazebo-port",
+        "11817",
+        "--contact-transport",
+        "compact"
+      ],
+      "criteria": [
+        "all 18 topics fresh, source and receipt <= .5 sim seconds with no sustained gap",
+        "genuine empty-state timestamps and exact normal wheel/caster ground support filtering",
+        "all six component fixture non-support contacts retained",
+        "reported settled SDF ray height vs nominal .131 (geometry slice unaffected within 2mm)",
+        "owned process group closes cleanly; intentional fixture contacts provide no navigation safety credit"
+      ],
+      "reason": "Native C++ same-message pair reducer after profile confirms79% rclpy take/ROS object construction; keeps raw18 at20Hz, source header, every raw message, all unique pairs, first complete geometry, raw pair counts and source publication sequence audit; no gate/physics change."
     }
-  ]
+  ],
+  "development_execution_schedule": {
+    "parallel_world_batches": 3,
+    "within_batch": "seeds101/202/303 serial, full native process restart each task",
+    "resources": "80host logical CPUs,125GiB RAM; isolated domains211/212/213 and Gazebo ports11811/11812/11813",
+    "source_rule": "all9tasks same pushed final candidate after compact fixture PASS; any production repair requires complete new matrix; no source edits during matrix",
+    "timing_scope": "task gates use simulation clock; wall latency/RTF report host concurrency and include startup guards"
+  }
 }

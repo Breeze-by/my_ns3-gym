@@ -35,7 +35,9 @@ CONTACT_COMPONENTS = {
 }
 
 
-def contact_topics(robot):
+def contact_topics(robot, compact=False):
+    if compact:
+        return {name: f"/mr3_contacts/{robot}/{name}" for name in CONTACT_COMPONENTS}
     return {name: f"/{robot}/{component.topic_suffix}"
             for name, component in CONTACT_COMPONENTS.items()}
 
@@ -90,7 +92,7 @@ class ContactMonitor:
     so one contact seen by multiple body sensors is not counted twice per robot.
     """
 
-    def __init__(self, robot_names, support_collision_names, max_age_sec=0.5):
+    def __init__(self, robot_names, support_collision_names, max_age_sec=0.5, compact=False):
         if not math.isfinite(max_age_sec) or max_age_sec <= 0:
             raise ValueError("max_age_sec must be finite and positive")
         self.robot_names = tuple(robot_names)
@@ -105,6 +107,7 @@ class ContactMonitor:
                for name in self.support_collision_names):
             raise ValueError("a robot collision cannot be declared as support ground")
         self.max_age_sec = max_age_sec
+        self.compact = compact
         self.components = {(robot, name): _ComponentState()
                            for robot in self.robot_names for name in CONTACT_COMPONENTS}
         self.started = False
@@ -217,7 +220,7 @@ class ContactMonitor:
         components = {}
         for (robot, name), state in self.components.items():
             components.setdefault(robot, {})[name] = {
-                "topic": contact_topics(robot)[name],
+                "topic": contact_topics(robot, self.compact)[name],
                 "message_count": state.message_count,
                 "accepted_message_count": state.accepted_message_count,
                 "invalid_timestamp_count": state.invalid_timestamp_count,
@@ -248,6 +251,11 @@ class ContactMonitor:
             "latched_issues": dict(self.latched_issues),
             "max_age_sec": self.max_age_sec,
             "support_collision_names": sorted(self.support_collision_names),
+            "contact_transport": "mr3_contact_reducer_v1" if self.compact else "raw",
+            "sample_count_scope": (
+                "one representative per pair per source message; raw counts in state.info"
+                if self.compact else "raw ContactState samples"
+            ),
             "components": components,
             "robots": robots,
             "filtered_support_count": sum(

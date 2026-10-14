@@ -58,8 +58,8 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
 ```
 
 每次使用新 episode id/目录，拒绝覆盖旧结果。schema3 在截止之前达标、接触 topic 记录为零、
-每台碰撞监测有消息、无控制失败才成功。传感器只覆盖 `base_collision`，不能证明
-全机体零非支撑接触；现有监测门禁也不等于持续新鲜度证明，两项均需在 P1A 闭合。
+每台碰撞监测有消息、无控制失败才成功。schema3只读取 `base_collision`，不能证明
+全机体零非支撑接触；其监测门禁也不等于持续新鲜度证明。全机体门禁使用下面的schema4。
 评估器完成默认关闭整个 launch，结果冻结且检查原生子进程；父进程0不能掩盖 abort。
 `stop_on_evaluation_complete:=false` 仅用于人工诊断。
 
@@ -72,6 +72,10 @@ P1A合同模式为schema4，真值/世界哈希、完整ROI、95%/300仿真秒�
 18个组件持续接触监测和导航终态闭合共同决定成功。详细口径见
 [MR3_TASK_CONTRACT.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_TASK_CONTRACT.md)。
 以下为实际已实现入口；原生验证结果仍以P1A报告为准。
+合同launch自动启动C++ `mr3_contact_reducer`。18条原始接触消息仍保留，汇总输出为
+`/mr3_contacts/tbN/<component>`；只合并同一消息中重复的碰撞对，保留原header和
+每对首次完整几何样本，原样本数量保存在state.info。生产20Hz和0.5仿真秒源龄/接收龄
+门限不变。原始消息序列缺口锁存为控制失败。
 
 ```bash
 MR3_BATCH_ID=mr3_p1a_rooms_$(date +%Y%m%d_%H%M%S)

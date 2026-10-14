@@ -48,6 +48,7 @@ def main():
     parser.add_argument('--output-dir', type=Path, required=True)
     parser.add_argument('--ros-domain-id', type=int, required=True)
     parser.add_argument('--gazebo-port', type=int, required=True)
+    parser.add_argument('--contact-transport', choices=['raw', 'compact'], default='raw')
     args = parser.parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=False)
     fixture_world = prepare_fixture_world(args.output_dir / 'contact_fixture.world')
@@ -66,19 +67,30 @@ def main():
     from rclpy.node import Node
     from rclpy.parameter import Parameter
     from rclpy.executors import SingleThreadedExecutor
+    from rclpy.qos import QoSProfile, DurabilityPolicy, ReliabilityPolicy
+    from std_msgs.msg import String
+    from rosidl_runtime_py.convert import message_to_ordereddict
 
     spec = importlib.util.spec_from_file_location('mr3_contacts_fixture_module', MODULE)
     contacts_module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = contacts_module
     spec.loader.exec_module(contacts_module)
-    monitor = contacts_module.ContactMonitor(['tb1', 'tb2', 'tb3'], {'ground_plane::link::collision'})
+    monitor = contacts_module.ContactMonitor(
+        ['tb1', 'tb2', 'tb3'], {'ground_plane::link::collision'},
+        compact=args.contact_transport == 'compact')
     result = {'command': sys.argv, 'fixture_only': True, 'robot_count': 3,
               'model': str(MODEL), 'world': str(WORLD), 'cases': {}, 'success': False,
               'fixture_world': str(fixture_world),
               'state_plugin': {'namespace': '/gazebo', 'update_rate_hz': 10.0},
               'source_sha256': {str(path): hashlib.sha256(path.read_bytes()).hexdigest()
                                 for path in (MODEL, URDF, WORLD, fixture_world, MODULE, Path(__file__))}}
+    if monitor.compact:
+        for path in (ROS_ROOT / 'src/multi_robot/src/mr3_contact_reducer.cpp',
+                     ROS_ROOT / 'src/multi_robot/include/multi_robot/contact_reducer.hpp',
+                     ROS_ROOT / 'install/multi_robot/lib/multi_robot/mr3_contact_reducer'):
+            result['source_sha256'][str(path)] = hashlib.sha256(path.read_bytes()).hexdigest()
     process = None
+    reducer = None
     node = None
     executor = None
     rclpy.init()
@@ -89,9 +101,11 @@ def main():
         executor.add_node(node)
         raw = {(robot, name): {'empty_count': 0, 'support_count': 0,
                               'last_support_source': None, 'support_pairs': [],
-                              'pairs': [], 'last_source': None, 'empty_sources_first32': []}
+                              'pairs': [], 'last_source': None, 'empty_sources_first32': [],
+                              'first_non_support_sample': None}
                for robot in monitor.robot_names for name in contacts_module.CONTACT_COMPONENTS}
         pending = []
+        transport_failures = []
         processing = {'callback_count': 0, 'callback_wall_sec': 0.0,
                       'max_callback_wall_sec': 0.0, 'max_callback_source_age_sec': 0.0,
                       'pending_peak': 0, 'drain_wall_sec': 0.0}
@@ -117,6 +131,11 @@ def main():
             if filtered:
                 row['last_support_source'] = source
             retained_pairs = {(state.collision1_name, state.collision2_name) for state in retained}
+            if retained and row['first_non_support_sample'] is None:
+                row['first_non_support_sample'] = {
+                    'source_time_sec': source,
+                    'state': message_to_ordereddict(retained[0]),
+                }
             all_pairs = {(state.collision1_name, state.collision2_name) for state in message.states}
             for pair in sorted(all_pairs - retained_pairs):
                 if list(pair) not in row['support_pairs']:
@@ -137,7 +156,12 @@ def main():
         subscriptions = [node.create_subscription(
             ContactsState, topic,
             lambda message, robot=robot, name=name: on_contact(robot, name, message), 100,
-        ) for robot in monitor.robot_names for name, topic in contacts_module.contact_topics(robot).items()]
+        ) for robot in monitor.robot_names for name, topic in contacts_module.contact_topics(
+            robot, compact=monitor.compact).items()]
+        failure_subscription = node.create_subscription(
+            String, '/exploration_failure', lambda msg: transport_failures.append(msg.data),
+            QoSProfile(depth=10, reliability=ReliabilityPolicy.RELIABLE,
+                       durability=DurabilityPolicy.TRANSIENT_LOCAL))
         spawn_client = node.create_client(SpawnEntity, '/spawn_entity')
         delete_client = node.create_client(DeleteEntity, '/delete_entity')
         get_client = node.create_client(GetEntityState, '/gazebo/get_entity_state')
@@ -159,6 +183,10 @@ def main():
                 spin()
                 if process.poll() is not None:
                     raise RuntimeError(f'owned gzserver launch exited: {process.returncode}')
+                if reducer is not None and reducer.poll() is not None:
+                    raise RuntimeError(f'owned contact reducer exited: {reducer.returncode}')
+                if transport_failures:
+                    raise RuntimeError('contact transport failure: ' + transport_failures[0])
                 if predicate():
                     return
             raise TimeoutError(label)
@@ -186,6 +214,11 @@ def main():
             'ros2', 'launch', 'gazebo_ros', 'gzserver.launch.py', f'world:={fixture_world}',
             'seed:=101', 'verbose:=true', 'server_required:=true',
         ], stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
+        if monitor.compact:
+            reducer = subprocess.Popen([
+                'ros2', 'run', 'multi_robot', 'mr3_contact_reducer',
+                '--ros-args', '-p', 'use_sim_time:=true',
+            ], stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
         for robot, x in [('tb1', -2.0), ('tb2', 0.0), ('tb3', 2.0)]:
             spawn(robot, MODEL.read_text(), x=x, namespace='/' + robot)
         wait(lambda: monitor.summary(now())['fresh'], 30, '18 live contact sources not ready')
@@ -252,6 +285,8 @@ def main():
                 'declared_lidar_height_m': .131,
                 'height_error_m': pose.position.z + ray_offset[2] - .131,
             }
+            if abs(result['settled_robot_poses'][robot]['height_error_m']) > .002:
+                raise RuntimeError('settled laser height differs from declared slice by over2mm: ' + robot)
 
         # Each fixture is a real static sphere, just inside its target's side
         # boundary. Query the collision entity (not a hard-coded robot pose) to
@@ -301,6 +336,7 @@ def main():
             result['contacts'] = {f'{robot}/{name}': row for (robot, name), row in raw.items()}
             result['final_monitoring'] = monitor.summary(node.get_clock().now().nanoseconds / 1e9)
             result['processing'] = processing
+            result['transport_failures'] = transport_failures
             executor.remove_node(node)
             executor.shutdown()
             node.destroy_node()
@@ -324,6 +360,19 @@ def main():
             if process.returncode != 0 or result.get('forced_termination') or result.get('forced_kill'):
                 result['success'] = False
                 result.setdefault('error', 'owned launch did not exit cleanly')
+        if reducer is not None:
+            if reducer.poll() is None:
+                os.killpg(reducer.pid, signal.SIGINT)
+                try:
+                    reducer.wait(timeout=15)
+                except subprocess.TimeoutExpired:
+                    result['reducer_forced_termination'] = True
+                    os.killpg(reducer.pid, signal.SIGTERM)
+                    reducer.wait(timeout=10)
+            result['reducer_returncode'] = reducer.returncode
+            if reducer.returncode != 0 or result.get('reducer_forced_termination'):
+                result['success'] = False
+                result.setdefault('error', 'contact reducer did not exit cleanly')
         log.close()
         native_failures = [line for line in (args.output_dir / 'launch.log').read_text(
             errors='replace').splitlines() if (
@@ -331,6 +380,23 @@ def main():
                 or "sending signal 'SIGTERM'" in line or "sending signal 'SIGKILL'" in line
             )]
         result['native_launch_failures'] = native_failures
+        summaries = [line.split('MR3_CONTACT_REDUCER_SUMMARY ', 1)[1]
+                     for line in (args.output_dir / 'launch.log').read_text(
+                         errors='replace').splitlines() if 'MR3_CONTACT_REDUCER_SUMMARY ' in line]
+        if monitor.compact:
+            if len(summaries) != 1:
+                result['success'] = False
+                result.setdefault('error', 'exactly one reducer summary required')
+            else:
+                result['reducer_audit'] = json.loads(summaries[0])
+                audit = result['reducer_audit']
+                if (len(audit['topics']) != 18 or not audit['publication_sequence_supported']
+                        or any(row['received'] != row['published'] or row['sequence_gaps']
+                               or row['sequence_duplicates'] or row['sequence_regressions']
+                               or row['sequence_unavailable'] or row['publisher_count'] != 1
+                               for row in audit['topics'].values())):
+                    result['success'] = False
+                    result.setdefault('error', 'reducer source sequence/count audit failed')
         if native_failures:
             result['success'] = False
             result.setdefault('error', 'native child exit/escalation failure')

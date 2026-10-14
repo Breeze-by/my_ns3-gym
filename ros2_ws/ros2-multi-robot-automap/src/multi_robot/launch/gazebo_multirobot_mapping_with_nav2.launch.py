@@ -144,6 +144,20 @@ def launch_setup(context, *args, **kwargs):
         output="screen",
     )
     actions.append(merge_map_node)
+    if evaluation_contract.perform(context):
+        contact_reducer = Node(
+            package="multi_robot", executable="mr3_contact_reducer",
+            name="mr3_contact_reducer", output="screen",
+            parameters=[{"use_sim_time": use_sim_time}],
+        )
+        actions.append(contact_reducer)
+        actions.append(RegisterEventHandler(OnProcessExit(
+            target_action=contact_reducer,
+            on_exit=lambda event, event_context: (
+                [EmitEvent(event=Shutdown(reason="Contact reducer exited"))]
+                if not event_context.is_shutdown else []
+            ),
+        )))
     actions.append(Node(
         package="multi_robot_exploration", executable="peer_obstacles",
         name="peer_obstacles", output="screen",
