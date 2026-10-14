@@ -8,8 +8,10 @@ commands are in `launch_commands.md`, actual behavior in `user_guide.md`.
 Fixed research team: tb1/tb2/tb3. First centralized joint RL exploration with
 stable subgoals and local SLAM/Nav2; later frozen-policy gateway/ns-3 Wi-Fi.
 No target search, charging, rally, other robot counts or hardware roadmap.
-MR3-P0 was accepted by the user on 2026-10-14; MR3-P1A is in implementation
-and validation. P1B and later steps remain unstarted.
+MR3-P0 was accepted by the user on 2026-10-14; P1A awaits user acceptance.
+Freeze `5e47802` has 9 effective slots from 10 attempts, including one retained
+native infrastructure failure; see the [P1A report](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261014_mr3_p1a.md).
+P1B and later steps remain unstarted.
 
 Active launch/check defaults are three; 1–4 compatibility remains without
 new non-three research runs. Explicit MR3 contracts select schema4 evaluation.

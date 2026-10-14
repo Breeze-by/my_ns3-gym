@@ -1,0 +1,5543 @@
+{
+  "attempt_count": 9,
+  "auditor_sha256": "fe84b94032d756b09b679b418483e078e189f6327b945d3d0ed770f1f0966cf0",
+  "cells": [
+    {
+      "checks": {
+        "18_components_fresh_without_task_health_latch": true,
+        "18_components_valid_timestamps_at_finalization": true,
+        "all_started_native_children_exited_cleanly": true,
+        "complete_18_source_reducer_sequence_and_count_audit": true,
+        "contact_clock_bootstrap_started_before_task_without_overflow": true,
+        "controller_release_start_barrier": true,
+        "false_free_denominator_matches_declared_occupied_cells": true,
+        "finite_task_time_within_300_seconds": true,
+        "native_json_present": true,
+        "no_native_child_failure_or_escalation": true,
+        "owned_gazebo_and_stop_cli_positive_clean_exit": true,
+        "participation_flag_matches_metrics": true,
+        "quality_flag_matches_metrics": true,
+        "runner_returncode_zero": true,
+        "schema4_contract_validator": true,
+        "world_hash_matches_contract": true,
+        "world_name_matches_contract": true,
+        "zero_non_support_contact": true
+      },
+      "classification": "task_failure_clean_exit",
+      "clean_native_processes": [
+        [
+          "spawn_entity.py-6",
+          "3498514"
+        ],
+        [
+          "spawn_entity.py-9",
+          "3498940"
+        ],
+        [
+          "spawn_entity.py-12",
+          "3499017"
+        ],
+        [
+          "nav2_ready_gate-14",
+          "3499083"
+        ],
+        [
+          "task_evaluator-37",
+          "3500348"
+        ],
+        [
+          "mr3_gazebo_native_stop-38",
+          "3501826"
+        ],
+        [
+          "gzserver-4",
+          "3498510"
+        ],
+        [
+          "velocity_smoother-34",
+          "3500223"
+        ],
+        [
+          "waypoint_follower-33",
+          "3500221"
+        ],
+        [
+          "lifecycle_manager-35",
+          "3500225"
+        ],
+        [
+          "velocity_smoother-27",
+          "3499941"
+        ],
+        [
+          "waypoint_follower-26",
+          "3499939"
+        ],
+        [
+          "behavior_server-31",
+          "3500217"
+        ],
+        [
+          "lifecycle_manager-28",
+          "3499943"
+        ],
+        [
+          "velocity_smoother-20",
+          "3499146"
+        ],
+        [
+          "behavior_server-24",
+          "3499935"
+        ],
+        [
+          "waypoint_follower-19",
+          "3499144"
+        ],
+        [
+          "lifecycle_manager-21",
+          "3499148"
+        ],
+        [
+          "controller_server-29",
+          "3500213"
+        ],
+        [
+          "robot_state_publisher-11",
+          "3499015"
+        ],
+        [
+          "multirobot_slam_toolbox_node-13",
+          "3499019"
+        ],
+        [
+          "control-36",
+          "3500346"
+        ],
+        [
+          "behavior_server-17",
+          "3499140"
+        ],
+        [
+          "multirobot_slam_toolbox_node-10",
+          "3498942"
+        ],
+        [
+          "robot_state_publisher-8",
+          "3498938"
+        ],
+        [
+          "robot_state_publisher-5",
+          "3498512"
+        ],
+        [
+          "multirobot_slam_toolbox_node-7",
+          "3498516"
+        ],
+        [
+          "bt_navigator-32",
+          "3500219"
+        ],
+        [
+          "planner_server-23",
+          "3499933"
+        ],
+        [
+          "bt_navigator-25",
+          "3499937"
+        ],
+        [
+          "mr3_contact_reducer-2",
+          "3498506"
+        ],
+        [
+          "bt_navigator-18",
+          "3499142"
+        ],
+        [
+          "controller_server-15",
+          "3499136"
+        ],
+        [
+          "controller_server-22",
+          "3499931"
+        ],
+        [
+          "merge_map-1",
+          "3498504"
+        ],
+        [
+          "peer_obstacles-3",
+          "3498508"
+        ],
+        [
+          "planner_server-16",
+          "3499138"
+        ],
+        [
+          "planner_server-30",
+          "3500215"
+        ]
+      ],
+      "contact_clock_overflow_diagnostic": null,
+      "contact_reducer_raw_received_messages": 73128,
+      "contact_reducer_summary": {
+        "publication_sequence_supported": true,
+        "topics": {
+          "tb1/base": {
+            "compact_states": 0,
+            "published": 4094,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 4094,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4094,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/caster_back_left": {
+            "compact_states": 3959,
+            "published": 4094,
+            "publisher_count": 1,
+            "raw_states": 131252,
+            "received": 4094,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4094,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/caster_back_right": {
+            "compact_states": 3847,
+            "published": 4094,
+            "publisher_count": 1,
+            "raw_states": 125516,
+            "received": 4094,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4094,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/lidar": {
+            "compact_states": 0,
+            "published": 4094,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 4094,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4094,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/wheel_left": {
+            "compact_states": 4094,
+            "published": 4094,
+            "publisher_count": 1,
+            "raw_states": 204658,
+            "received": 4094,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4094,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/wheel_right": {
+            "compact_states": 4094,
+            "published": 4094,
+            "publisher_count": 1,
+            "raw_states": 204659,
+            "received": 4094,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4094,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/base": {
+            "compact_states": 0,
+            "published": 4070,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 4070,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4070,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/caster_back_left": {
+            "compact_states": 3989,
+            "published": 4070,
+            "publisher_count": 1,
+            "raw_states": 128243,
+            "received": 4070,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4070,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/caster_back_right": {
+            "compact_states": 3983,
+            "published": 4070,
+            "publisher_count": 1,
+            "raw_states": 139355,
+            "received": 4070,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4070,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/lidar": {
+            "compact_states": 0,
+            "published": 4070,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 4070,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4070,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/wheel_left": {
+            "compact_states": 4070,
+            "published": 4070,
+            "publisher_count": 1,
+            "raw_states": 203458,
+            "received": 4070,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4070,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/wheel_right": {
+            "compact_states": 4070,
+            "published": 4070,
+            "publisher_count": 1,
+            "raw_states": 203459,
+            "received": 4070,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4070,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/base": {
+            "compact_states": 0,
+            "published": 4024,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 4024,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4024,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/caster_back_left": {
+            "compact_states": 3848,
+            "published": 4024,
+            "publisher_count": 1,
+            "raw_states": 119640,
+            "received": 4024,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4024,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/caster_back_right": {
+            "compact_states": 3754,
+            "published": 4024,
+            "publisher_count": 1,
+            "raw_states": 118384,
+            "received": 4024,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4024,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/lidar": {
+            "compact_states": 0,
+            "published": 4024,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 4024,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4024,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/wheel_left": {
+            "compact_states": 4024,
+            "published": 4024,
+            "publisher_count": 1,
+            "raw_states": 201156,
+            "received": 4024,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4024,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/wheel_right": {
+            "compact_states": 4024,
+            "published": 4024,
+            "publisher_count": 1,
+            "raw_states": 201157,
+            "received": 4024,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4024,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          }
+        }
+      },
+      "contact_subscription_bootstrap_state": "contact_subscriptions_started",
+      "contact_subscription_started_sim_time_sec": 79.1,
+      "control_failure": "{\"component\": \"peer_obstacles\", \"reason\": \"peer_body_envelopes_overlap\"}",
+      "correct_free_coverage_ratio": 0.9472372488408037,
+      "elapsed_sim_time_sec": 122.19999999999999,
+      "false_free_ratio": 0.0,
+      "family": "rooms",
+      "has_full_zero_contact_evidence": true,
+      "invocation_sha256": "7b25bc5553bfa544fb640f1bddaf3177028fdb68b65f00f877cc93bd43543705",
+      "launch_log": "rooms/launch_logs/robots3_seed101_20261015-003431.log",
+      "maximum_final_source_or_receipt_age_sec": 0.04899999999997817,
+      "maximum_recorded_source_or_receipt_gap_sec": 0.10000000000002274,
+      "monitoring_gate_passed": true,
+      "native_child_failures": [],
+      "native_json": "rooms/episodes/mr3_p1a_v6_rooms_20261014_162534_seed101.json",
+      "native_json_success": false,
+      "native_json_validation_errors": [],
+      "native_termination_reason": "navigation_failure",
+      "observed_accuracy": 0.9529422667037346,
+      "occupied_iou": 0.27389558232931727,
+      "owned_gazebo_identity": [
+        [
+          "gzserver-4",
+          "3498510"
+        ]
+      ],
+      "robot_goal_counts": {
+        "tb1": 13,
+        "tb2": 13,
+        "tb3": 10
+      },
+      "robot_path_lengths_m": {
+        "tb1": 24.190852131435154,
+        "tb2": 20.61670310626558,
+        "tb3": 23.84315295402031
+      },
+      "runner_result_classification": "task_failure",
+      "runner_returncode": 0,
+      "seed": 101,
+      "started_native_processes": [
+        [
+          "merge_map-1",
+          "3498504"
+        ],
+        [
+          "mr3_contact_reducer-2",
+          "3498506"
+        ],
+        [
+          "peer_obstacles-3",
+          "3498508"
+        ],
+        [
+          "gzserver-4",
+          "3498510"
+        ],
+        [
+          "robot_state_publisher-5",
+          "3498512"
+        ],
+        [
+          "spawn_entity.py-6",
+          "3498514"
+        ],
+        [
+          "multirobot_slam_toolbox_node-7",
+          "3498516"
+        ],
+        [
+          "robot_state_publisher-8",
+          "3498938"
+        ],
+        [
+          "spawn_entity.py-9",
+          "3498940"
+        ],
+        [
+          "multirobot_slam_toolbox_node-10",
+          "3498942"
+        ],
+        [
+          "robot_state_publisher-11",
+          "3499015"
+        ],
+        [
+          "spawn_entity.py-12",
+          "3499017"
+        ],
+        [
+          "multirobot_slam_toolbox_node-13",
+          "3499019"
+        ],
+        [
+          "nav2_ready_gate-14",
+          "3499083"
+        ],
+        [
+          "controller_server-15",
+          "3499136"
+        ],
+        [
+          "planner_server-16",
+          "3499138"
+        ],
+        [
+          "behavior_server-17",
+          "3499140"
+        ],
+        [
+          "bt_navigator-18",
+          "3499142"
+        ],
+        [
+          "waypoint_follower-19",
+          "3499144"
+        ],
+        [
+          "velocity_smoother-20",
+          "3499146"
+        ],
+        [
+          "lifecycle_manager-21",
+          "3499148"
+        ],
+        [
+          "controller_server-22",
+          "3499931"
+        ],
+        [
+          "planner_server-23",
+          "3499933"
+        ],
+        [
+          "behavior_server-24",
+          "3499935"
+        ],
+        [
+          "bt_navigator-25",
+          "3499937"
+        ],
+        [
+          "waypoint_follower-26",
+          "3499939"
+        ],
+        [
+          "velocity_smoother-27",
+          "3499941"
+        ],
+        [
+          "lifecycle_manager-28",
+          "3499943"
+        ],
+        [
+          "controller_server-29",
+          "3500213"
+        ],
+        [
+          "planner_server-30",
+          "3500215"
+        ],
+        [
+          "behavior_server-31",
+          "3500217"
+        ],
+        [
+          "bt_navigator-32",
+          "3500219"
+        ],
+        [
+          "waypoint_follower-33",
+          "3500221"
+        ],
+        [
+          "velocity_smoother-34",
+          "3500223"
+        ],
+        [
+          "lifecycle_manager-35",
+          "3500225"
+        ],
+        [
+          "control-36",
+          "3500346"
+        ],
+        [
+          "task_evaluator-37",
+          "3500348"
+        ],
+        [
+          "mr3_gazebo_native_stop-38",
+          "3501826"
+        ]
+      ],
+      "stop_cli_identity": [
+        [
+          "mr3_gazebo_native_stop-38",
+          "3501826"
+        ]
+      ],
+      "strict_complete_pass": false,
+      "task_contract_sha256": "ed8f61588ffb49821e2992d5a68e73abcef964bd80b6e2574eee3b1ae885635b",
+      "task_gate_diagnostics": [],
+      "time_to_95_coverage_sec": null,
+      "valid_task_measurement": true,
+      "warnings": []
+    },
+    {
+      "checks": {
+        "18_components_fresh_without_task_health_latch": true,
+        "18_components_valid_timestamps_at_finalization": true,
+        "all_started_native_children_exited_cleanly": true,
+        "complete_18_source_reducer_sequence_and_count_audit": true,
+        "contact_clock_bootstrap_started_before_task_without_overflow": true,
+        "controller_release_start_barrier": true,
+        "false_free_denominator_matches_declared_occupied_cells": true,
+        "finite_task_time_within_300_seconds": true,
+        "native_json_present": true,
+        "no_native_child_failure_or_escalation": true,
+        "owned_gazebo_and_stop_cli_positive_clean_exit": true,
+        "participation_flag_matches_metrics": true,
+        "quality_flag_matches_metrics": true,
+        "runner_returncode_zero": true,
+        "schema4_contract_validator": true,
+        "success_closure_timing_and_ownership": true,
+        "world_hash_matches_contract": true,
+        "world_name_matches_contract": true,
+        "zero_non_support_contact": true
+      },
+      "classification": "strict_complete_pass",
+      "clean_native_processes": [
+        [
+          "spawn_entity.py-6",
+          "3501926"
+        ],
+        [
+          "spawn_entity.py-9",
+          "3502357"
+        ],
+        [
+          "spawn_entity.py-12",
+          "3502415"
+        ],
+        [
+          "nav2_ready_gate-14",
+          "3502476"
+        ],
+        [
+          "task_evaluator-37",
+          "3503066"
+        ],
+        [
+          "mr3_gazebo_native_stop-38",
+          "3504411"
+        ],
+        [
+          "gzserver-4",
+          "3501922"
+        ],
+        [
+          "velocity_smoother-34",
+          "3502962"
+        ],
+        [
+          "waypoint_follower-33",
+          "3502960"
+        ],
+        [
+          "lifecycle_manager-35",
+          "3502964"
+        ],
+        [
+          "velocity_smoother-27",
+          "3502733"
+        ],
+        [
+          "waypoint_follower-26",
+          "3502731"
+        ],
+        [
+          "behavior_server-31",
+          "3502956"
+        ],
+        [
+          "lifecycle_manager-28",
+          "3502735"
+        ],
+        [
+          "velocity_smoother-20",
+          "3502530"
+        ],
+        [
+          "behavior_server-24",
+          "3502727"
+        ],
+        [
+          "waypoint_follower-19",
+          "3502528"
+        ],
+        [
+          "lifecycle_manager-21",
+          "3502532"
+        ],
+        [
+          "robot_state_publisher-11",
+          "3502413"
+        ],
+        [
+          "multirobot_slam_toolbox_node-13",
+          "3502417"
+        ],
+        [
+          "behavior_server-17",
+          "3502524"
+        ],
+        [
+          "robot_state_publisher-8",
+          "3502355"
+        ],
+        [
+          "control-36",
+          "3503064"
+        ],
+        [
+          "multirobot_slam_toolbox_node-10",
+          "3502359"
+        ],
+        [
+          "controller_server-29",
+          "3502952"
+        ],
+        [
+          "robot_state_publisher-5",
+          "3501924"
+        ],
+        [
+          "bt_navigator-32",
+          "3502958"
+        ],
+        [
+          "multirobot_slam_toolbox_node-7",
+          "3501931"
+        ],
+        [
+          "controller_server-22",
+          "3502723"
+        ],
+        [
+          "bt_navigator-25",
+          "3502729"
+        ],
+        [
+          "mr3_contact_reducer-2",
+          "3501918"
+        ],
+        [
+          "controller_server-15",
+          "3502520"
+        ],
+        [
+          "bt_navigator-18",
+          "3502526"
+        ],
+        [
+          "planner_server-23",
+          "3502725"
+        ],
+        [
+          "merge_map-1",
+          "3501916"
+        ],
+        [
+          "peer_obstacles-3",
+          "3501920"
+        ],
+        [
+          "planner_server-30",
+          "3502954"
+        ],
+        [
+          "planner_server-16",
+          "3502522"
+        ]
+      ],
+      "contact_clock_overflow_diagnostic": null,
+      "contact_reducer_raw_received_messages": 75294,
+      "contact_reducer_summary": {
+        "publication_sequence_supported": true,
+        "topics": {
+          "tb1/base": {
+            "compact_states": 0,
+            "published": 4221,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 4221,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4221,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/caster_back_left": {
+            "compact_states": 4133,
+            "published": 4221,
+            "publisher_count": 1,
+            "raw_states": 135467,
+            "received": 4221,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4221,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/caster_back_right": {
+            "compact_states": 4022,
+            "published": 4221,
+            "publisher_count": 1,
+            "raw_states": 134582,
+            "received": 4221,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4221,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/lidar": {
+            "compact_states": 0,
+            "published": 4221,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 4221,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4221,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/wheel_left": {
+            "compact_states": 4221,
+            "published": 4221,
+            "publisher_count": 1,
+            "raw_states": 211009,
+            "received": 4221,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4221,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/wheel_right": {
+            "compact_states": 4221,
+            "published": 4221,
+            "publisher_count": 1,
+            "raw_states": 211010,
+            "received": 4221,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4221,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/base": {
+            "compact_states": 0,
+            "published": 4185,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 4185,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4185,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/caster_back_left": {
+            "compact_states": 3964,
+            "published": 4185,
+            "publisher_count": 1,
+            "raw_states": 121808,
+            "received": 4185,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4185,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/caster_back_right": {
+            "compact_states": 3742,
+            "published": 4185,
+            "publisher_count": 1,
+            "raw_states": 102859,
+            "received": 4185,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4185,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/lidar": {
+            "compact_states": 0,
+            "published": 4185,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 4185,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4185,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/wheel_left": {
+            "compact_states": 4185,
+            "published": 4185,
+            "publisher_count": 1,
+            "raw_states": 209206,
+            "received": 4185,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4185,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/wheel_right": {
+            "compact_states": 4185,
+            "published": 4185,
+            "publisher_count": 1,
+            "raw_states": 209207,
+            "received": 4185,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4185,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/base": {
+            "compact_states": 0,
+            "published": 4143,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 4143,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4143,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/caster_back_left": {
+            "compact_states": 4019,
+            "published": 4143,
+            "publisher_count": 1,
+            "raw_states": 114027,
+            "received": 4143,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4143,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/caster_back_right": {
+            "compact_states": 4003,
+            "published": 4143,
+            "publisher_count": 1,
+            "raw_states": 123223,
+            "received": 4143,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4143,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/lidar": {
+            "compact_states": 0,
+            "published": 4143,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 4143,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4143,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/wheel_left": {
+            "compact_states": 4143,
+            "published": 4143,
+            "publisher_count": 1,
+            "raw_states": 207105,
+            "received": 4143,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4143,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/wheel_right": {
+            "compact_states": 4143,
+            "published": 4143,
+            "publisher_count": 1,
+            "raw_states": 207106,
+            "received": 4143,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4143,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          }
+        }
+      },
+      "contact_subscription_bootstrap_state": "contact_subscriptions_started",
+      "contact_subscription_started_sim_time_sec": 79.4,
+      "control_failure": "",
+      "correct_free_coverage_ratio": 0.950289799072643,
+      "elapsed_sim_time_sec": 127.30000000000001,
+      "false_free_ratio": 0.0,
+      "family": "rooms",
+      "has_full_zero_contact_evidence": true,
+      "invocation_sha256": "7b25bc5553bfa544fb640f1bddaf3177028fdb68b65f00f877cc93bd43543705",
+      "launch_log": "rooms/launch_logs/robots3_seed202_20261015-003949.log",
+      "maximum_final_source_or_receipt_age_sec": 0.049000000000006594,
+      "maximum_recorded_source_or_receipt_gap_sec": 0.10000000000002274,
+      "monitoring_gate_passed": true,
+      "native_child_failures": [],
+      "native_json": "rooms/episodes/mr3_p1a_v6_rooms_20261014_162534_seed202.json",
+      "native_json_success": true,
+      "native_json_validation_errors": [],
+      "native_termination_reason": "coverage_reached",
+      "observed_accuracy": 0.9527535694418691,
+      "occupied_iou": 0.25160476845483726,
+      "owned_gazebo_identity": [
+        [
+          "gzserver-4",
+          "3501922"
+        ]
+      ],
+      "robot_goal_counts": {
+        "tb1": 7,
+        "tb2": 13,
+        "tb3": 10
+      },
+      "robot_path_lengths_m": {
+        "tb1": 16.071113053480932,
+        "tb2": 17.203803048460347,
+        "tb3": 18.263076973410197
+      },
+      "runner_result_classification": "success",
+      "runner_returncode": 0,
+      "seed": 202,
+      "started_native_processes": [
+        [
+          "merge_map-1",
+          "3501916"
+        ],
+        [
+          "mr3_contact_reducer-2",
+          "3501918"
+        ],
+        [
+          "peer_obstacles-3",
+          "3501920"
+        ],
+        [
+          "gzserver-4",
+          "3501922"
+        ],
+        [
+          "robot_state_publisher-5",
+          "3501924"
+        ],
+        [
+          "spawn_entity.py-6",
+          "3501926"
+        ],
+        [
+          "multirobot_slam_toolbox_node-7",
+          "3501931"
+        ],
+        [
+          "robot_state_publisher-8",
+          "3502355"
+        ],
+        [
+          "spawn_entity.py-9",
+          "3502357"
+        ],
+        [
+          "multirobot_slam_toolbox_node-10",
+          "3502359"
+        ],
+        [
+          "robot_state_publisher-11",
+          "3502413"
+        ],
+        [
+          "spawn_entity.py-12",
+          "3502415"
+        ],
+        [
+          "multirobot_slam_toolbox_node-13",
+          "3502417"
+        ],
+        [
+          "nav2_ready_gate-14",
+          "3502476"
+        ],
+        [
+          "controller_server-15",
+          "3502520"
+        ],
+        [
+          "planner_server-16",
+          "3502522"
+        ],
+        [
+          "behavior_server-17",
+          "3502524"
+        ],
+        [
+          "bt_navigator-18",
+          "3502526"
+        ],
+        [
+          "waypoint_follower-19",
+          "3502528"
+        ],
+        [
+          "velocity_smoother-20",
+          "3502530"
+        ],
+        [
+          "lifecycle_manager-21",
+          "3502532"
+        ],
+        [
+          "controller_server-22",
+          "3502723"
+        ],
+        [
+          "planner_server-23",
+          "3502725"
+        ],
+        [
+          "behavior_server-24",
+          "3502727"
+        ],
+        [
+          "bt_navigator-25",
+          "3502729"
+        ],
+        [
+          "waypoint_follower-26",
+          "3502731"
+        ],
+        [
+          "velocity_smoother-27",
+          "3502733"
+        ],
+        [
+          "lifecycle_manager-28",
+          "3502735"
+        ],
+        [
+          "controller_server-29",
+          "3502952"
+        ],
+        [
+          "planner_server-30",
+          "3502954"
+        ],
+        [
+          "behavior_server-31",
+          "3502956"
+        ],
+        [
+          "bt_navigator-32",
+          "3502958"
+        ],
+        [
+          "waypoint_follower-33",
+          "3502960"
+        ],
+        [
+          "velocity_smoother-34",
+          "3502962"
+        ],
+        [
+          "lifecycle_manager-35",
+          "3502964"
+        ],
+        [
+          "control-36",
+          "3503064"
+        ],
+        [
+          "task_evaluator-37",
+          "3503066"
+        ],
+        [
+          "mr3_gazebo_native_stop-38",
+          "3504411"
+        ]
+      ],
+      "stop_cli_identity": [
+        [
+          "mr3_gazebo_native_stop-38",
+          "3504411"
+        ]
+      ],
+      "strict_complete_pass": true,
+      "task_contract_sha256": "ed8f61588ffb49821e2992d5a68e73abcef964bd80b6e2574eee3b1ae885635b",
+      "task_gate_diagnostics": [],
+      "time_to_95_coverage_sec": 126.9,
+      "valid_task_measurement": true,
+      "warnings": []
+    },
+    {
+      "checks": {
+        "18_components_fresh_without_task_health_latch": true,
+        "18_components_valid_timestamps_at_finalization": true,
+        "all_started_native_children_exited_cleanly": true,
+        "complete_18_source_reducer_sequence_and_count_audit": true,
+        "contact_clock_bootstrap_started_before_task_without_overflow": true,
+        "controller_release_start_barrier": true,
+        "false_free_denominator_matches_declared_occupied_cells": true,
+        "finite_task_time_within_300_seconds": true,
+        "native_json_present": true,
+        "no_native_child_failure_or_escalation": true,
+        "owned_gazebo_and_stop_cli_positive_clean_exit": true,
+        "participation_flag_matches_metrics": true,
+        "quality_flag_matches_metrics": true,
+        "runner_returncode_zero": true,
+        "schema4_contract_validator": true,
+        "success_closure_timing_and_ownership": true,
+        "world_hash_matches_contract": true,
+        "world_name_matches_contract": true,
+        "zero_non_support_contact": true
+      },
+      "classification": "strict_complete_pass",
+      "clean_native_processes": [
+        [
+          "spawn_entity.py-6",
+          "3504497"
+        ],
+        [
+          "spawn_entity.py-9",
+          "3504922"
+        ],
+        [
+          "spawn_entity.py-12",
+          "3504983"
+        ],
+        [
+          "nav2_ready_gate-14",
+          "3505043"
+        ],
+        [
+          "task_evaluator-37",
+          "3505693"
+        ],
+        [
+          "mr3_gazebo_native_stop-38",
+          "3507119"
+        ],
+        [
+          "gzserver-4",
+          "3504493"
+        ],
+        [
+          "velocity_smoother-34",
+          "3505590"
+        ],
+        [
+          "waypoint_follower-33",
+          "3505588"
+        ],
+        [
+          "lifecycle_manager-35",
+          "3505592"
+        ],
+        [
+          "velocity_smoother-27",
+          "3505369"
+        ],
+        [
+          "behavior_server-31",
+          "3505584"
+        ],
+        [
+          "waypoint_follower-26",
+          "3505366"
+        ],
+        [
+          "lifecycle_manager-28",
+          "3505371"
+        ],
+        [
+          "velocity_smoother-20",
+          "3505095"
+        ],
+        [
+          "behavior_server-24",
+          "3505362"
+        ],
+        [
+          "waypoint_follower-19",
+          "3505093"
+        ],
+        [
+          "lifecycle_manager-21",
+          "3505097"
+        ],
+        [
+          "robot_state_publisher-11",
+          "3504981"
+        ],
+        [
+          "multirobot_slam_toolbox_node-13",
+          "3504985"
+        ],
+        [
+          "robot_state_publisher-8",
+          "3504920"
+        ],
+        [
+          "behavior_server-17",
+          "3505089"
+        ],
+        [
+          "multirobot_slam_toolbox_node-10",
+          "3504924"
+        ],
+        [
+          "bt_navigator-32",
+          "3505586"
+        ],
+        [
+          "robot_state_publisher-5",
+          "3504495"
+        ],
+        [
+          "controller_server-29",
+          "3505580"
+        ],
+        [
+          "multirobot_slam_toolbox_node-7",
+          "3504499"
+        ],
+        [
+          "bt_navigator-25",
+          "3505364"
+        ],
+        [
+          "mr3_contact_reducer-2",
+          "3504489"
+        ],
+        [
+          "controller_server-22",
+          "3505358"
+        ],
+        [
+          "control-36",
+          "3505691"
+        ],
+        [
+          "controller_server-15",
+          "3505085"
+        ],
+        [
+          "bt_navigator-18",
+          "3505091"
+        ],
+        [
+          "peer_obstacles-3",
+          "3504491"
+        ],
+        [
+          "merge_map-1",
+          "3504487"
+        ],
+        [
+          "planner_server-30",
+          "3505582"
+        ],
+        [
+          "planner_server-23",
+          "3505360"
+        ],
+        [
+          "planner_server-16",
+          "3505087"
+        ]
+      ],
+      "contact_clock_overflow_diagnostic": null,
+      "contact_reducer_raw_received_messages": 83310,
+      "contact_reducer_summary": {
+        "publication_sequence_supported": true,
+        "topics": {
+          "tb1/base": {
+            "compact_states": 0,
+            "published": 4669,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 4669,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4669,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/caster_back_left": {
+            "compact_states": 4491,
+            "published": 4669,
+            "publisher_count": 1,
+            "raw_states": 122025,
+            "received": 4669,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4669,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/caster_back_right": {
+            "compact_states": 4395,
+            "published": 4669,
+            "publisher_count": 1,
+            "raw_states": 118980,
+            "received": 4669,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4669,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/lidar": {
+            "compact_states": 0,
+            "published": 4669,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 4669,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4669,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/wheel_left": {
+            "compact_states": 4669,
+            "published": 4669,
+            "publisher_count": 1,
+            "raw_states": 233406,
+            "received": 4669,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4669,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/wheel_right": {
+            "compact_states": 4669,
+            "published": 4669,
+            "publisher_count": 1,
+            "raw_states": 233407,
+            "received": 4669,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4669,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/base": {
+            "compact_states": 0,
+            "published": 4625,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 4625,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4625,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/caster_back_left": {
+            "compact_states": 4436,
+            "published": 4625,
+            "publisher_count": 1,
+            "raw_states": 147450,
+            "received": 4625,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4625,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/caster_back_right": {
+            "compact_states": 4209,
+            "published": 4625,
+            "publisher_count": 1,
+            "raw_states": 125114,
+            "received": 4625,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4625,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/lidar": {
+            "compact_states": 0,
+            "published": 4625,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 4625,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4625,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/wheel_left": {
+            "compact_states": 4625,
+            "published": 4625,
+            "publisher_count": 1,
+            "raw_states": 231206,
+            "received": 4625,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4625,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/wheel_right": {
+            "compact_states": 4625,
+            "published": 4625,
+            "publisher_count": 1,
+            "raw_states": 231207,
+            "received": 4625,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4625,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/base": {
+            "compact_states": 0,
+            "published": 4591,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 4591,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4591,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/caster_back_left": {
+            "compact_states": 4371,
+            "published": 4591,
+            "publisher_count": 1,
+            "raw_states": 141346,
+            "received": 4591,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4591,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/caster_back_right": {
+            "compact_states": 4241,
+            "published": 4591,
+            "publisher_count": 1,
+            "raw_states": 137931,
+            "received": 4591,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4591,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/lidar": {
+            "compact_states": 0,
+            "published": 4591,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 4591,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4591,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/wheel_left": {
+            "compact_states": 4591,
+            "published": 4591,
+            "publisher_count": 1,
+            "raw_states": 229505,
+            "received": 4591,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4591,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/wheel_right": {
+            "compact_states": 4591,
+            "published": 4591,
+            "publisher_count": 1,
+            "raw_states": 229506,
+            "received": 4591,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 4591,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          }
+        }
+      },
+      "contact_subscription_bootstrap_state": "contact_subscriptions_started",
+      "contact_subscription_started_sim_time_sec": 80.6,
+      "control_failure": "",
+      "correct_free_coverage_ratio": 0.951951313755796,
+      "elapsed_sim_time_sec": 148.7,
+      "false_free_ratio": 0.0,
+      "family": "rooms",
+      "has_full_zero_contact_evidence": true,
+      "invocation_sha256": "7b25bc5553bfa544fb640f1bddaf3177028fdb68b65f00f877cc93bd43543705",
+      "launch_log": "rooms/launch_logs/robots3_seed303_20261015-004516.log",
+      "maximum_final_source_or_receipt_age_sec": 0.04899999999997817,
+      "maximum_recorded_source_or_receipt_gap_sec": 0.10000000000002274,
+      "monitoring_gate_passed": true,
+      "native_child_failures": [],
+      "native_json": "rooms/episodes/mr3_p1a_v6_rooms_20261014_162534_seed303.json",
+      "native_json_success": true,
+      "native_json_validation_errors": [],
+      "native_termination_reason": "coverage_reached",
+      "observed_accuracy": 0.9543238483640745,
+      "occupied_iou": 0.25555555555555554,
+      "owned_gazebo_identity": [
+        [
+          "gzserver-4",
+          "3504493"
+        ]
+      ],
+      "robot_goal_counts": {
+        "tb1": 14,
+        "tb2": 12,
+        "tb3": 14
+      },
+      "robot_path_lengths_m": {
+        "tb1": 22.631567106347724,
+        "tb2": 21.031127069867175,
+        "tb3": 15.045959205059857
+      },
+      "runner_result_classification": "success",
+      "runner_returncode": 0,
+      "seed": 303,
+      "started_native_processes": [
+        [
+          "merge_map-1",
+          "3504487"
+        ],
+        [
+          "mr3_contact_reducer-2",
+          "3504489"
+        ],
+        [
+          "peer_obstacles-3",
+          "3504491"
+        ],
+        [
+          "gzserver-4",
+          "3504493"
+        ],
+        [
+          "robot_state_publisher-5",
+          "3504495"
+        ],
+        [
+          "spawn_entity.py-6",
+          "3504497"
+        ],
+        [
+          "multirobot_slam_toolbox_node-7",
+          "3504499"
+        ],
+        [
+          "robot_state_publisher-8",
+          "3504920"
+        ],
+        [
+          "spawn_entity.py-9",
+          "3504922"
+        ],
+        [
+          "multirobot_slam_toolbox_node-10",
+          "3504924"
+        ],
+        [
+          "robot_state_publisher-11",
+          "3504981"
+        ],
+        [
+          "spawn_entity.py-12",
+          "3504983"
+        ],
+        [
+          "multirobot_slam_toolbox_node-13",
+          "3504985"
+        ],
+        [
+          "nav2_ready_gate-14",
+          "3505043"
+        ],
+        [
+          "controller_server-15",
+          "3505085"
+        ],
+        [
+          "planner_server-16",
+          "3505087"
+        ],
+        [
+          "behavior_server-17",
+          "3505089"
+        ],
+        [
+          "bt_navigator-18",
+          "3505091"
+        ],
+        [
+          "waypoint_follower-19",
+          "3505093"
+        ],
+        [
+          "velocity_smoother-20",
+          "3505095"
+        ],
+        [
+          "lifecycle_manager-21",
+          "3505097"
+        ],
+        [
+          "controller_server-22",
+          "3505358"
+        ],
+        [
+          "planner_server-23",
+          "3505360"
+        ],
+        [
+          "behavior_server-24",
+          "3505362"
+        ],
+        [
+          "bt_navigator-25",
+          "3505364"
+        ],
+        [
+          "waypoint_follower-26",
+          "3505366"
+        ],
+        [
+          "velocity_smoother-27",
+          "3505369"
+        ],
+        [
+          "lifecycle_manager-28",
+          "3505371"
+        ],
+        [
+          "controller_server-29",
+          "3505580"
+        ],
+        [
+          "planner_server-30",
+          "3505582"
+        ],
+        [
+          "behavior_server-31",
+          "3505584"
+        ],
+        [
+          "bt_navigator-32",
+          "3505586"
+        ],
+        [
+          "waypoint_follower-33",
+          "3505588"
+        ],
+        [
+          "velocity_smoother-34",
+          "3505590"
+        ],
+        [
+          "lifecycle_manager-35",
+          "3505592"
+        ],
+        [
+          "control-36",
+          "3505691"
+        ],
+        [
+          "task_evaluator-37",
+          "3505693"
+        ],
+        [
+          "mr3_gazebo_native_stop-38",
+          "3507119"
+        ]
+      ],
+      "stop_cli_identity": [
+        [
+          "mr3_gazebo_native_stop-38",
+          "3507119"
+        ]
+      ],
+      "strict_complete_pass": true,
+      "task_contract_sha256": "ed8f61588ffb49821e2992d5a68e73abcef964bd80b6e2574eee3b1ae885635b",
+      "task_gate_diagnostics": [],
+      "time_to_95_coverage_sec": 148.7,
+      "valid_task_measurement": true,
+      "warnings": []
+    },
+    {
+      "checks": {
+        "18_components_fresh_without_task_health_latch": true,
+        "18_components_valid_timestamps_at_finalization": true,
+        "all_started_native_children_exited_cleanly": true,
+        "complete_18_source_reducer_sequence_and_count_audit": true,
+        "contact_clock_bootstrap_started_before_task_without_overflow": true,
+        "controller_release_start_barrier": true,
+        "false_free_denominator_matches_declared_occupied_cells": true,
+        "finite_task_time_within_300_seconds": true,
+        "native_json_present": true,
+        "no_native_child_failure_or_escalation": true,
+        "owned_gazebo_and_stop_cli_positive_clean_exit": true,
+        "participation_flag_matches_metrics": true,
+        "quality_flag_matches_metrics": true,
+        "runner_returncode_zero": true,
+        "schema4_contract_validator": true,
+        "world_hash_matches_contract": true,
+        "world_name_matches_contract": true,
+        "zero_non_support_contact": true
+      },
+      "classification": "task_failure_clean_exit",
+      "clean_native_processes": [
+        [
+          "spawn_entity.py-6",
+          "3507377"
+        ],
+        [
+          "spawn_entity.py-9",
+          "3507821"
+        ],
+        [
+          "spawn_entity.py-12",
+          "3507882"
+        ],
+        [
+          "nav2_ready_gate-14",
+          "3507996"
+        ],
+        [
+          "task_evaluator-37",
+          "3508592"
+        ],
+        [
+          "mr3_gazebo_native_stop-38",
+          "3509397"
+        ],
+        [
+          "gzserver-4",
+          "3507373"
+        ],
+        [
+          "velocity_smoother-34",
+          "3508489"
+        ],
+        [
+          "waypoint_follower-33",
+          "3508487"
+        ],
+        [
+          "lifecycle_manager-35",
+          "3508491"
+        ],
+        [
+          "velocity_smoother-27",
+          "3508268"
+        ],
+        [
+          "behavior_server-31",
+          "3508483"
+        ],
+        [
+          "waypoint_follower-26",
+          "3508266"
+        ],
+        [
+          "lifecycle_manager-28",
+          "3508270"
+        ],
+        [
+          "velocity_smoother-20",
+          "3508037"
+        ],
+        [
+          "behavior_server-24",
+          "3508262"
+        ],
+        [
+          "waypoint_follower-19",
+          "3508035"
+        ],
+        [
+          "lifecycle_manager-21",
+          "3508039"
+        ],
+        [
+          "multirobot_slam_toolbox_node-13",
+          "3507884"
+        ],
+        [
+          "robot_state_publisher-11",
+          "3507880"
+        ],
+        [
+          "behavior_server-17",
+          "3508031"
+        ],
+        [
+          "multirobot_slam_toolbox_node-10",
+          "3507823"
+        ],
+        [
+          "robot_state_publisher-8",
+          "3507819"
+        ],
+        [
+          "multirobot_slam_toolbox_node-7",
+          "3507379"
+        ],
+        [
+          "robot_state_publisher-5",
+          "3507375"
+        ],
+        [
+          "controller_server-22",
+          "3508258"
+        ],
+        [
+          "bt_navigator-32",
+          "3508485"
+        ],
+        [
+          "control-36",
+          "3508590"
+        ],
+        [
+          "mr3_contact_reducer-2",
+          "3507369"
+        ],
+        [
+          "bt_navigator-25",
+          "3508264"
+        ],
+        [
+          "controller_server-29",
+          "3508479"
+        ],
+        [
+          "bt_navigator-18",
+          "3508033"
+        ],
+        [
+          "controller_server-15",
+          "3508027"
+        ],
+        [
+          "planner_server-23",
+          "3508260"
+        ],
+        [
+          "peer_obstacles-3",
+          "3507371"
+        ],
+        [
+          "merge_map-1",
+          "3507367"
+        ],
+        [
+          "planner_server-16",
+          "3508029"
+        ],
+        [
+          "planner_server-30",
+          "3508481"
+        ]
+      ],
+      "contact_clock_overflow_diagnostic": null,
+      "contact_reducer_raw_received_messages": 53082,
+      "contact_reducer_summary": {
+        "publication_sequence_supported": true,
+        "topics": {
+          "tb1/base": {
+            "compact_states": 0,
+            "published": 2992,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 2992,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2992,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/caster_back_left": {
+            "compact_states": 2925,
+            "published": 2992,
+            "publisher_count": 1,
+            "raw_states": 76539,
+            "received": 2992,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2992,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/caster_back_right": {
+            "compact_states": 2880,
+            "published": 2992,
+            "publisher_count": 1,
+            "raw_states": 81901,
+            "received": 2992,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2992,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/lidar": {
+            "compact_states": 0,
+            "published": 2992,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 2992,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2992,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/wheel_left": {
+            "compact_states": 2992,
+            "published": 2992,
+            "publisher_count": 1,
+            "raw_states": 149555,
+            "received": 2992,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2992,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/wheel_right": {
+            "compact_states": 2992,
+            "published": 2992,
+            "publisher_count": 1,
+            "raw_states": 149556,
+            "received": 2992,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2992,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/base": {
+            "compact_states": 0,
+            "published": 2948,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 2948,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2948,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/caster_back_left": {
+            "compact_states": 2876,
+            "published": 2948,
+            "publisher_count": 1,
+            "raw_states": 88147,
+            "received": 2948,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2948,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/caster_back_right": {
+            "compact_states": 2854,
+            "published": 2948,
+            "publisher_count": 1,
+            "raw_states": 94921,
+            "received": 2948,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2948,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/lidar": {
+            "compact_states": 0,
+            "published": 2948,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 2948,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2948,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/wheel_left": {
+            "compact_states": 2948,
+            "published": 2948,
+            "publisher_count": 1,
+            "raw_states": 147354,
+            "received": 2948,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2948,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/wheel_right": {
+            "compact_states": 2948,
+            "published": 2948,
+            "publisher_count": 1,
+            "raw_states": 147355,
+            "received": 2948,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2948,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/base": {
+            "compact_states": 0,
+            "published": 2907,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 2907,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2907,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/caster_back_left": {
+            "compact_states": 2812,
+            "published": 2907,
+            "publisher_count": 1,
+            "raw_states": 73346,
+            "received": 2907,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2907,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/caster_back_right": {
+            "compact_states": 2721,
+            "published": 2907,
+            "publisher_count": 1,
+            "raw_states": 70092,
+            "received": 2907,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2907,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/lidar": {
+            "compact_states": 0,
+            "published": 2907,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 2907,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2907,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/wheel_left": {
+            "compact_states": 2907,
+            "published": 2907,
+            "publisher_count": 1,
+            "raw_states": 145304,
+            "received": 2907,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2907,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/wheel_right": {
+            "compact_states": 2907,
+            "published": 2907,
+            "publisher_count": 1,
+            "raw_states": 145305,
+            "received": 2907,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2907,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          }
+        }
+      },
+      "contact_subscription_bootstrap_state": "contact_subscriptions_started",
+      "contact_subscription_started_sim_time_sec": 80.8,
+      "control_failure": "{\"component\": \"peer_obstacles\", \"reason\": \"peer_body_envelopes_overlap\"}",
+      "correct_free_coverage_ratio": 0.7997940691927512,
+      "elapsed_sim_time_sec": 65.1,
+      "false_free_ratio": 0.0,
+      "family": "corridors",
+      "has_full_zero_contact_evidence": true,
+      "invocation_sha256": "22f4b3fad43460edda719e81a3ed69cd470d4cc2a120e213528e6b9e4267ae7d",
+      "launch_log": "corridors/launch_logs/robots3_seed101_20261015-005125.log",
+      "maximum_final_source_or_receipt_age_sec": 0.04999999999998295,
+      "maximum_recorded_source_or_receipt_gap_sec": 0.10000000000002274,
+      "monitoring_gate_passed": true,
+      "native_child_failures": [],
+      "native_json": "corridors/episodes/mr3_p1a_v6_corridors_20261014_162534_seed101.json",
+      "native_json_success": false,
+      "native_json_validation_errors": [],
+      "native_termination_reason": "navigation_failure",
+      "observed_accuracy": 0.9561225453172205,
+      "occupied_iou": 0.23354297693920337,
+      "owned_gazebo_identity": [
+        [
+          "gzserver-4",
+          "3507373"
+        ]
+      ],
+      "robot_goal_counts": {
+        "tb1": 8,
+        "tb2": 7,
+        "tb3": 7
+      },
+      "robot_path_lengths_m": {
+        "tb1": 12.088209433839877,
+        "tb2": 12.156071449704303,
+        "tb3": 12.221446510631242
+      },
+      "runner_result_classification": "task_failure",
+      "runner_returncode": 0,
+      "seed": 101,
+      "started_native_processes": [
+        [
+          "merge_map-1",
+          "3507367"
+        ],
+        [
+          "mr3_contact_reducer-2",
+          "3507369"
+        ],
+        [
+          "peer_obstacles-3",
+          "3507371"
+        ],
+        [
+          "gzserver-4",
+          "3507373"
+        ],
+        [
+          "robot_state_publisher-5",
+          "3507375"
+        ],
+        [
+          "spawn_entity.py-6",
+          "3507377"
+        ],
+        [
+          "multirobot_slam_toolbox_node-7",
+          "3507379"
+        ],
+        [
+          "robot_state_publisher-8",
+          "3507819"
+        ],
+        [
+          "spawn_entity.py-9",
+          "3507821"
+        ],
+        [
+          "multirobot_slam_toolbox_node-10",
+          "3507823"
+        ],
+        [
+          "robot_state_publisher-11",
+          "3507880"
+        ],
+        [
+          "spawn_entity.py-12",
+          "3507882"
+        ],
+        [
+          "multirobot_slam_toolbox_node-13",
+          "3507884"
+        ],
+        [
+          "nav2_ready_gate-14",
+          "3507996"
+        ],
+        [
+          "controller_server-15",
+          "3508027"
+        ],
+        [
+          "planner_server-16",
+          "3508029"
+        ],
+        [
+          "behavior_server-17",
+          "3508031"
+        ],
+        [
+          "bt_navigator-18",
+          "3508033"
+        ],
+        [
+          "waypoint_follower-19",
+          "3508035"
+        ],
+        [
+          "velocity_smoother-20",
+          "3508037"
+        ],
+        [
+          "lifecycle_manager-21",
+          "3508039"
+        ],
+        [
+          "controller_server-22",
+          "3508258"
+        ],
+        [
+          "planner_server-23",
+          "3508260"
+        ],
+        [
+          "behavior_server-24",
+          "3508262"
+        ],
+        [
+          "bt_navigator-25",
+          "3508264"
+        ],
+        [
+          "waypoint_follower-26",
+          "3508266"
+        ],
+        [
+          "velocity_smoother-27",
+          "3508268"
+        ],
+        [
+          "lifecycle_manager-28",
+          "3508270"
+        ],
+        [
+          "controller_server-29",
+          "3508479"
+        ],
+        [
+          "planner_server-30",
+          "3508481"
+        ],
+        [
+          "behavior_server-31",
+          "3508483"
+        ],
+        [
+          "bt_navigator-32",
+          "3508485"
+        ],
+        [
+          "waypoint_follower-33",
+          "3508487"
+        ],
+        [
+          "velocity_smoother-34",
+          "3508489"
+        ],
+        [
+          "lifecycle_manager-35",
+          "3508491"
+        ],
+        [
+          "control-36",
+          "3508590"
+        ],
+        [
+          "task_evaluator-37",
+          "3508592"
+        ],
+        [
+          "mr3_gazebo_native_stop-38",
+          "3509397"
+        ]
+      ],
+      "stop_cli_identity": [
+        [
+          "mr3_gazebo_native_stop-38",
+          "3509397"
+        ]
+      ],
+      "strict_complete_pass": false,
+      "task_contract_sha256": "b0e23e068ac0ce1bf636de285e6038c34732ac43d9e734d154c378d9d04b691c",
+      "task_gate_diagnostics": [],
+      "time_to_95_coverage_sec": null,
+      "valid_task_measurement": true,
+      "warnings": []
+    },
+    {
+      "checks": {
+        "18_components_fresh_without_task_health_latch": true,
+        "18_components_valid_timestamps_at_finalization": true,
+        "all_started_native_children_exited_cleanly": true,
+        "complete_18_source_reducer_sequence_and_count_audit": true,
+        "contact_clock_bootstrap_started_before_task_without_overflow": true,
+        "controller_release_start_barrier": true,
+        "false_free_denominator_matches_declared_occupied_cells": true,
+        "finite_task_time_within_300_seconds": true,
+        "native_json_present": true,
+        "no_native_child_failure_or_escalation": true,
+        "owned_gazebo_and_stop_cli_positive_clean_exit": true,
+        "participation_flag_matches_metrics": true,
+        "quality_flag_matches_metrics": true,
+        "runner_returncode_zero": true,
+        "schema4_contract_validator": true,
+        "world_hash_matches_contract": true,
+        "world_name_matches_contract": true,
+        "zero_non_support_contact": true
+      },
+      "classification": "task_failure_clean_exit",
+      "clean_native_processes": [
+        [
+          "spawn_entity.py-6",
+          "3509488"
+        ],
+        [
+          "spawn_entity.py-9",
+          "3509913"
+        ],
+        [
+          "spawn_entity.py-12",
+          "3509992"
+        ],
+        [
+          "nav2_ready_gate-14",
+          "3510053"
+        ],
+        [
+          "task_evaluator-37",
+          "3510634"
+        ],
+        [
+          "mr3_gazebo_native_stop-38",
+          "3511039"
+        ],
+        [
+          "gzserver-4",
+          "3509484"
+        ],
+        [
+          "velocity_smoother-34",
+          "3510531"
+        ],
+        [
+          "waypoint_follower-33",
+          "3510529"
+        ],
+        [
+          "lifecycle_manager-35",
+          "3510533"
+        ],
+        [
+          "velocity_smoother-27",
+          "3510314"
+        ],
+        [
+          "behavior_server-31",
+          "3510525"
+        ],
+        [
+          "waypoint_follower-26",
+          "3510312"
+        ],
+        [
+          "lifecycle_manager-28",
+          "3510316"
+        ],
+        [
+          "velocity_smoother-20",
+          "3510097"
+        ],
+        [
+          "behavior_server-24",
+          "3510308"
+        ],
+        [
+          "waypoint_follower-19",
+          "3510095"
+        ],
+        [
+          "lifecycle_manager-21",
+          "3510099"
+        ],
+        [
+          "robot_state_publisher-11",
+          "3509990"
+        ],
+        [
+          "multirobot_slam_toolbox_node-13",
+          "3509994"
+        ],
+        [
+          "controller_server-29",
+          "3510521"
+        ],
+        [
+          "behavior_server-17",
+          "3510091"
+        ],
+        [
+          "robot_state_publisher-8",
+          "3509911"
+        ],
+        [
+          "control-36",
+          "3510632"
+        ],
+        [
+          "multirobot_slam_toolbox_node-10",
+          "3509915"
+        ],
+        [
+          "robot_state_publisher-5",
+          "3509486"
+        ],
+        [
+          "multirobot_slam_toolbox_node-7",
+          "3509490"
+        ],
+        [
+          "bt_navigator-32",
+          "3510527"
+        ],
+        [
+          "planner_server-30",
+          "3510523"
+        ],
+        [
+          "mr3_contact_reducer-2",
+          "3509480"
+        ],
+        [
+          "bt_navigator-25",
+          "3510310"
+        ],
+        [
+          "bt_navigator-18",
+          "3510093"
+        ],
+        [
+          "controller_server-15",
+          "3510087"
+        ],
+        [
+          "controller_server-22",
+          "3510304"
+        ],
+        [
+          "merge_map-1",
+          "3509478"
+        ],
+        [
+          "peer_obstacles-3",
+          "3509482"
+        ],
+        [
+          "planner_server-16",
+          "3510089"
+        ],
+        [
+          "planner_server-23",
+          "3510306"
+        ]
+      ],
+      "contact_clock_overflow_diagnostic": null,
+      "contact_reducer_raw_received_messages": 33102,
+      "contact_reducer_summary": {
+        "publication_sequence_supported": true,
+        "topics": {
+          "tb1/base": {
+            "compact_states": 0,
+            "published": 1882,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 1882,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 1882,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/caster_back_left": {
+            "compact_states": 1868,
+            "published": 1882,
+            "publisher_count": 1,
+            "raw_states": 41046,
+            "received": 1882,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 1882,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/caster_back_right": {
+            "compact_states": 1868,
+            "published": 1882,
+            "publisher_count": 1,
+            "raw_states": 49210,
+            "received": 1882,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 1882,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/lidar": {
+            "compact_states": 0,
+            "published": 1882,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 1882,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 1882,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/wheel_left": {
+            "compact_states": 1882,
+            "published": 1882,
+            "publisher_count": 1,
+            "raw_states": 94053,
+            "received": 1882,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 1882,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/wheel_right": {
+            "compact_states": 1882,
+            "published": 1882,
+            "publisher_count": 1,
+            "raw_states": 94054,
+            "received": 1882,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 1882,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/base": {
+            "compact_states": 0,
+            "published": 1838,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 1838,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 1838,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/caster_back_left": {
+            "compact_states": 1820,
+            "published": 1838,
+            "publisher_count": 1,
+            "raw_states": 41012,
+            "received": 1838,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 1838,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/caster_back_right": {
+            "compact_states": 1815,
+            "published": 1838,
+            "publisher_count": 1,
+            "raw_states": 48770,
+            "received": 1838,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 1838,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/lidar": {
+            "compact_states": 0,
+            "published": 1838,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 1838,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 1838,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/wheel_left": {
+            "compact_states": 1838,
+            "published": 1838,
+            "publisher_count": 1,
+            "raw_states": 91853,
+            "received": 1838,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 1838,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/wheel_right": {
+            "compact_states": 1838,
+            "published": 1838,
+            "publisher_count": 1,
+            "raw_states": 91854,
+            "received": 1838,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 1838,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/base": {
+            "compact_states": 0,
+            "published": 1797,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 1797,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 1797,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/caster_back_left": {
+            "compact_states": 1774,
+            "published": 1797,
+            "publisher_count": 1,
+            "raw_states": 36695,
+            "received": 1797,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 1797,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/caster_back_right": {
+            "compact_states": 1781,
+            "published": 1797,
+            "publisher_count": 1,
+            "raw_states": 45072,
+            "received": 1797,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 1797,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/lidar": {
+            "compact_states": 0,
+            "published": 1797,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 1797,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 1797,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/wheel_left": {
+            "compact_states": 1797,
+            "published": 1797,
+            "publisher_count": 1,
+            "raw_states": 89807,
+            "received": 1797,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 1797,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/wheel_right": {
+            "compact_states": 1797,
+            "published": 1797,
+            "publisher_count": 1,
+            "raw_states": 89808,
+            "received": 1797,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 1797,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          }
+        }
+      },
+      "contact_subscription_bootstrap_state": "contact_subscriptions_started",
+      "contact_subscription_started_sim_time_sec": 79.4,
+      "control_failure": "{\"component\": \"peer_obstacles\", \"reason\": \"peer_body_envelopes_overlap\"}",
+      "correct_free_coverage_ratio": 0.30415980230642503,
+      "elapsed_sim_time_sec": 11.400000000000006,
+      "false_free_ratio": 0.0,
+      "family": "corridors",
+      "has_full_zero_contact_evidence": true,
+      "invocation_sha256": "22f4b3fad43460edda719e81a3ed69cd470d4cc2a120e213528e6b9e4267ae7d",
+      "launch_log": "corridors/launch_logs/robots3_seed202_20261015-005517.log",
+      "maximum_final_source_or_receipt_age_sec": 0.05000000000001137,
+      "maximum_recorded_source_or_receipt_gap_sec": 0.10000000000000853,
+      "monitoring_gate_passed": true,
+      "native_child_failures": [],
+      "native_json": "corridors/episodes/mr3_p1a_v6_corridors_20261014_162534_seed202.json",
+      "native_json_success": false,
+      "native_json_validation_errors": [],
+      "native_termination_reason": "navigation_failure",
+      "observed_accuracy": 0.9459326615876137,
+      "occupied_iou": 0.101360103626943,
+      "owned_gazebo_identity": [
+        [
+          "gzserver-4",
+          "3509484"
+        ]
+      ],
+      "robot_goal_counts": {
+        "tb1": 2,
+        "tb2": 2,
+        "tb3": 2
+      },
+      "robot_path_lengths_m": {
+        "tb1": 1.1843026949172957,
+        "tb2": 1.8663041765437307,
+        "tb3": 2.3172081173941033
+      },
+      "runner_result_classification": "task_failure",
+      "runner_returncode": 0,
+      "seed": 202,
+      "started_native_processes": [
+        [
+          "merge_map-1",
+          "3509478"
+        ],
+        [
+          "mr3_contact_reducer-2",
+          "3509480"
+        ],
+        [
+          "peer_obstacles-3",
+          "3509482"
+        ],
+        [
+          "gzserver-4",
+          "3509484"
+        ],
+        [
+          "robot_state_publisher-5",
+          "3509486"
+        ],
+        [
+          "spawn_entity.py-6",
+          "3509488"
+        ],
+        [
+          "multirobot_slam_toolbox_node-7",
+          "3509490"
+        ],
+        [
+          "robot_state_publisher-8",
+          "3509911"
+        ],
+        [
+          "spawn_entity.py-9",
+          "3509913"
+        ],
+        [
+          "multirobot_slam_toolbox_node-10",
+          "3509915"
+        ],
+        [
+          "robot_state_publisher-11",
+          "3509990"
+        ],
+        [
+          "spawn_entity.py-12",
+          "3509992"
+        ],
+        [
+          "multirobot_slam_toolbox_node-13",
+          "3509994"
+        ],
+        [
+          "nav2_ready_gate-14",
+          "3510053"
+        ],
+        [
+          "controller_server-15",
+          "3510087"
+        ],
+        [
+          "planner_server-16",
+          "3510089"
+        ],
+        [
+          "behavior_server-17",
+          "3510091"
+        ],
+        [
+          "bt_navigator-18",
+          "3510093"
+        ],
+        [
+          "waypoint_follower-19",
+          "3510095"
+        ],
+        [
+          "velocity_smoother-20",
+          "3510097"
+        ],
+        [
+          "lifecycle_manager-21",
+          "3510099"
+        ],
+        [
+          "controller_server-22",
+          "3510304"
+        ],
+        [
+          "planner_server-23",
+          "3510306"
+        ],
+        [
+          "behavior_server-24",
+          "3510308"
+        ],
+        [
+          "bt_navigator-25",
+          "3510310"
+        ],
+        [
+          "waypoint_follower-26",
+          "3510312"
+        ],
+        [
+          "velocity_smoother-27",
+          "3510314"
+        ],
+        [
+          "lifecycle_manager-28",
+          "3510316"
+        ],
+        [
+          "controller_server-29",
+          "3510521"
+        ],
+        [
+          "planner_server-30",
+          "3510523"
+        ],
+        [
+          "behavior_server-31",
+          "3510525"
+        ],
+        [
+          "bt_navigator-32",
+          "3510527"
+        ],
+        [
+          "waypoint_follower-33",
+          "3510529"
+        ],
+        [
+          "velocity_smoother-34",
+          "3510531"
+        ],
+        [
+          "lifecycle_manager-35",
+          "3510533"
+        ],
+        [
+          "control-36",
+          "3510632"
+        ],
+        [
+          "task_evaluator-37",
+          "3510634"
+        ],
+        [
+          "mr3_gazebo_native_stop-38",
+          "3511039"
+        ]
+      ],
+      "stop_cli_identity": [
+        [
+          "mr3_gazebo_native_stop-38",
+          "3511039"
+        ]
+      ],
+      "strict_complete_pass": false,
+      "task_contract_sha256": "b0e23e068ac0ce1bf636de285e6038c34732ac43d9e734d154c378d9d04b691c",
+      "task_gate_diagnostics": [],
+      "time_to_95_coverage_sec": null,
+      "valid_task_measurement": true,
+      "warnings": []
+    },
+    {
+      "checks": {
+        "18_components_fresh_without_task_health_latch": true,
+        "18_components_valid_timestamps_at_finalization": true,
+        "all_started_native_children_exited_cleanly": true,
+        "complete_18_source_reducer_sequence_and_count_audit": true,
+        "contact_clock_bootstrap_started_before_task_without_overflow": true,
+        "controller_release_start_barrier": true,
+        "false_free_denominator_matches_declared_occupied_cells": true,
+        "finite_task_time_within_300_seconds": true,
+        "native_json_present": true,
+        "no_native_child_failure_or_escalation": true,
+        "owned_gazebo_and_stop_cli_positive_clean_exit": true,
+        "participation_flag_matches_metrics": true,
+        "quality_flag_matches_metrics": true,
+        "runner_returncode_zero": true,
+        "schema4_contract_validator": true,
+        "success_closure_timing_and_ownership": true,
+        "world_hash_matches_contract": true,
+        "world_name_matches_contract": true,
+        "zero_non_support_contact": true
+      },
+      "classification": "strict_complete_pass",
+      "clean_native_processes": [
+        [
+          "spawn_entity.py-6",
+          "3511123"
+        ],
+        [
+          "spawn_entity.py-9",
+          "3511550"
+        ],
+        [
+          "spawn_entity.py-12",
+          "3511613"
+        ],
+        [
+          "nav2_ready_gate-14",
+          "3511672"
+        ],
+        [
+          "task_evaluator-37",
+          "3512261"
+        ],
+        [
+          "mr3_gazebo_native_stop-38",
+          "3513232"
+        ],
+        [
+          "gzserver-4",
+          "3511119"
+        ],
+        [
+          "velocity_smoother-34",
+          "3512156"
+        ],
+        [
+          "waypoint_follower-33",
+          "3512154"
+        ],
+        [
+          "lifecycle_manager-35",
+          "3512158"
+        ],
+        [
+          "velocity_smoother-27",
+          "3511939"
+        ],
+        [
+          "behavior_server-31",
+          "3512150"
+        ],
+        [
+          "waypoint_follower-26",
+          "3511937"
+        ],
+        [
+          "lifecycle_manager-28",
+          "3511941"
+        ],
+        [
+          "velocity_smoother-20",
+          "3511720"
+        ],
+        [
+          "behavior_server-24",
+          "3511933"
+        ],
+        [
+          "waypoint_follower-19",
+          "3511718"
+        ],
+        [
+          "lifecycle_manager-21",
+          "3511722"
+        ],
+        [
+          "multirobot_slam_toolbox_node-13",
+          "3511615"
+        ],
+        [
+          "robot_state_publisher-11",
+          "3511611"
+        ],
+        [
+          "robot_state_publisher-8",
+          "3511548"
+        ],
+        [
+          "behavior_server-17",
+          "3511714"
+        ],
+        [
+          "controller_server-29",
+          "3512146"
+        ],
+        [
+          "multirobot_slam_toolbox_node-10",
+          "3511552"
+        ],
+        [
+          "robot_state_publisher-5",
+          "3511121"
+        ],
+        [
+          "control-36",
+          "3512259"
+        ],
+        [
+          "multirobot_slam_toolbox_node-7",
+          "3511125"
+        ],
+        [
+          "bt_navigator-32",
+          "3512152"
+        ],
+        [
+          "mr3_contact_reducer-2",
+          "3511115"
+        ],
+        [
+          "bt_navigator-25",
+          "3511935"
+        ],
+        [
+          "bt_navigator-18",
+          "3511716"
+        ],
+        [
+          "controller_server-22",
+          "3511929"
+        ],
+        [
+          "controller_server-15",
+          "3511710"
+        ],
+        [
+          "merge_map-1",
+          "3511113"
+        ],
+        [
+          "peer_obstacles-3",
+          "3511117"
+        ],
+        [
+          "planner_server-23",
+          "3511931"
+        ],
+        [
+          "planner_server-30",
+          "3512148"
+        ],
+        [
+          "planner_server-16",
+          "3511712"
+        ]
+      ],
+      "contact_clock_overflow_diagnostic": null,
+      "contact_reducer_raw_received_messages": 61518,
+      "contact_reducer_summary": {
+        "publication_sequence_supported": true,
+        "topics": {
+          "tb1/base": {
+            "compact_states": 0,
+            "published": 3461,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 3461,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3461,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/caster_back_left": {
+            "compact_states": 3385,
+            "published": 3461,
+            "publisher_count": 1,
+            "raw_states": 100579,
+            "received": 3461,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3461,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/caster_back_right": {
+            "compact_states": 3106,
+            "published": 3461,
+            "publisher_count": 1,
+            "raw_states": 83593,
+            "received": 3461,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3461,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/lidar": {
+            "compact_states": 0,
+            "published": 3461,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 3461,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3461,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/wheel_left": {
+            "compact_states": 3461,
+            "published": 3461,
+            "publisher_count": 1,
+            "raw_states": 173007,
+            "received": 3461,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3461,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/wheel_right": {
+            "compact_states": 3461,
+            "published": 3461,
+            "publisher_count": 1,
+            "raw_states": 173008,
+            "received": 3461,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3461,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/base": {
+            "compact_states": 0,
+            "published": 3417,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 3417,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3417,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/caster_back_left": {
+            "compact_states": 3262,
+            "published": 3417,
+            "publisher_count": 1,
+            "raw_states": 97838,
+            "received": 3417,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3417,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/caster_back_right": {
+            "compact_states": 3197,
+            "published": 3417,
+            "publisher_count": 1,
+            "raw_states": 91969,
+            "received": 3417,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3417,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/lidar": {
+            "compact_states": 0,
+            "published": 3417,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 3417,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3417,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/wheel_left": {
+            "compact_states": 3417,
+            "published": 3417,
+            "publisher_count": 1,
+            "raw_states": 170807,
+            "received": 3417,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3417,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/wheel_right": {
+            "compact_states": 3417,
+            "published": 3417,
+            "publisher_count": 1,
+            "raw_states": 170808,
+            "received": 3417,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3417,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/base": {
+            "compact_states": 0,
+            "published": 3375,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 3375,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3375,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/caster_back_left": {
+            "compact_states": 3246,
+            "published": 3375,
+            "publisher_count": 1,
+            "raw_states": 82552,
+            "received": 3375,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3375,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/caster_back_right": {
+            "compact_states": 3165,
+            "published": 3375,
+            "publisher_count": 1,
+            "raw_states": 82173,
+            "received": 3375,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3375,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/lidar": {
+            "compact_states": 0,
+            "published": 3375,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 3375,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3375,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/wheel_left": {
+            "compact_states": 3375,
+            "published": 3375,
+            "publisher_count": 1,
+            "raw_states": 168707,
+            "received": 3375,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3375,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/wheel_right": {
+            "compact_states": 3375,
+            "published": 3375,
+            "publisher_count": 1,
+            "raw_states": 168708,
+            "received": 3375,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3375,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          }
+        }
+      },
+      "contact_subscription_bootstrap_state": "contact_subscriptions_started",
+      "contact_subscription_started_sim_time_sec": 81.8,
+      "control_failure": "",
+      "correct_free_coverage_ratio": 0.9579489291598023,
+      "elapsed_sim_time_sec": 86.30000000000001,
+      "false_free_ratio": 0.0,
+      "family": "corridors",
+      "has_full_zero_contact_evidence": true,
+      "invocation_sha256": "22f4b3fad43460edda719e81a3ed69cd470d4cc2a120e213528e6b9e4267ae7d",
+      "launch_log": "corridors/launch_logs/robots3_seed303_20261015-005746.log",
+      "maximum_final_source_or_receipt_age_sec": 0.018000000000000682,
+      "maximum_recorded_source_or_receipt_gap_sec": 0.10000000000002274,
+      "monitoring_gate_passed": true,
+      "native_child_failures": [],
+      "native_json": "corridors/episodes/mr3_p1a_v6_corridors_20261014_162534_seed303.json",
+      "native_json_success": true,
+      "native_json_validation_errors": [],
+      "native_termination_reason": "coverage_reached",
+      "observed_accuracy": 0.9628687079192049,
+      "occupied_iou": 0.21443558539655896,
+      "owned_gazebo_identity": [
+        [
+          "gzserver-4",
+          "3511119"
+        ]
+      ],
+      "robot_goal_counts": {
+        "tb1": 10,
+        "tb2": 6,
+        "tb3": 11
+      },
+      "robot_path_lengths_m": {
+        "tb1": 17.028019025002965,
+        "tb2": 9.538309283949927,
+        "tb3": 18.296174580618597
+      },
+      "runner_result_classification": "success",
+      "runner_returncode": 0,
+      "seed": 303,
+      "started_native_processes": [
+        [
+          "merge_map-1",
+          "3511113"
+        ],
+        [
+          "mr3_contact_reducer-2",
+          "3511115"
+        ],
+        [
+          "peer_obstacles-3",
+          "3511117"
+        ],
+        [
+          "gzserver-4",
+          "3511119"
+        ],
+        [
+          "robot_state_publisher-5",
+          "3511121"
+        ],
+        [
+          "spawn_entity.py-6",
+          "3511123"
+        ],
+        [
+          "multirobot_slam_toolbox_node-7",
+          "3511125"
+        ],
+        [
+          "robot_state_publisher-8",
+          "3511548"
+        ],
+        [
+          "spawn_entity.py-9",
+          "3511550"
+        ],
+        [
+          "multirobot_slam_toolbox_node-10",
+          "3511552"
+        ],
+        [
+          "robot_state_publisher-11",
+          "3511611"
+        ],
+        [
+          "spawn_entity.py-12",
+          "3511613"
+        ],
+        [
+          "multirobot_slam_toolbox_node-13",
+          "3511615"
+        ],
+        [
+          "nav2_ready_gate-14",
+          "3511672"
+        ],
+        [
+          "controller_server-15",
+          "3511710"
+        ],
+        [
+          "planner_server-16",
+          "3511712"
+        ],
+        [
+          "behavior_server-17",
+          "3511714"
+        ],
+        [
+          "bt_navigator-18",
+          "3511716"
+        ],
+        [
+          "waypoint_follower-19",
+          "3511718"
+        ],
+        [
+          "velocity_smoother-20",
+          "3511720"
+        ],
+        [
+          "lifecycle_manager-21",
+          "3511722"
+        ],
+        [
+          "controller_server-22",
+          "3511929"
+        ],
+        [
+          "planner_server-23",
+          "3511931"
+        ],
+        [
+          "behavior_server-24",
+          "3511933"
+        ],
+        [
+          "bt_navigator-25",
+          "3511935"
+        ],
+        [
+          "waypoint_follower-26",
+          "3511937"
+        ],
+        [
+          "velocity_smoother-27",
+          "3511939"
+        ],
+        [
+          "lifecycle_manager-28",
+          "3511941"
+        ],
+        [
+          "controller_server-29",
+          "3512146"
+        ],
+        [
+          "planner_server-30",
+          "3512148"
+        ],
+        [
+          "behavior_server-31",
+          "3512150"
+        ],
+        [
+          "bt_navigator-32",
+          "3512152"
+        ],
+        [
+          "waypoint_follower-33",
+          "3512154"
+        ],
+        [
+          "velocity_smoother-34",
+          "3512156"
+        ],
+        [
+          "lifecycle_manager-35",
+          "3512158"
+        ],
+        [
+          "control-36",
+          "3512259"
+        ],
+        [
+          "task_evaluator-37",
+          "3512261"
+        ],
+        [
+          "mr3_gazebo_native_stop-38",
+          "3513232"
+        ]
+      ],
+      "stop_cli_identity": [
+        [
+          "mr3_gazebo_native_stop-38",
+          "3513232"
+        ]
+      ],
+      "strict_complete_pass": true,
+      "task_contract_sha256": "b0e23e068ac0ce1bf636de285e6038c34732ac43d9e734d154c378d9d04b691c",
+      "task_gate_diagnostics": [],
+      "time_to_95_coverage_sec": 86.19999999999999,
+      "valid_task_measurement": true,
+      "warnings": []
+    },
+    {
+      "checks": {
+        "18_components_fresh_without_task_health_latch": true,
+        "18_components_valid_timestamps_at_finalization": true,
+        "all_started_native_children_exited_cleanly": true,
+        "complete_18_source_reducer_sequence_and_count_audit": true,
+        "contact_clock_bootstrap_started_before_task_without_overflow": true,
+        "controller_release_start_barrier": true,
+        "false_free_denominator_matches_declared_occupied_cells": true,
+        "finite_task_time_within_300_seconds": true,
+        "native_json_present": true,
+        "no_native_child_failure_or_escalation": true,
+        "owned_gazebo_and_stop_cli_positive_clean_exit": true,
+        "participation_flag_matches_metrics": true,
+        "quality_flag_matches_metrics": true,
+        "runner_returncode_zero": true,
+        "schema4_contract_validator": true,
+        "success_closure_timing_and_ownership": true,
+        "world_hash_matches_contract": true,
+        "world_name_matches_contract": true,
+        "zero_non_support_contact": true
+      },
+      "classification": "strict_complete_pass",
+      "clean_native_processes": [
+        [
+          "spawn_entity.py-6",
+          "3513564"
+        ],
+        [
+          "spawn_entity.py-9",
+          "3514006"
+        ],
+        [
+          "spawn_entity.py-12",
+          "3514071"
+        ],
+        [
+          "nav2_ready_gate-14",
+          "3514176"
+        ],
+        [
+          "task_evaluator-37",
+          "3514779"
+        ],
+        [
+          "mr3_gazebo_native_stop-38",
+          "3515443"
+        ],
+        [
+          "gzserver-4",
+          "3513560"
+        ],
+        [
+          "velocity_smoother-34",
+          "3514654"
+        ],
+        [
+          "waypoint_follower-33",
+          "3514652"
+        ],
+        [
+          "lifecycle_manager-35",
+          "3514656"
+        ],
+        [
+          "velocity_smoother-27",
+          "3514460"
+        ],
+        [
+          "behavior_server-31",
+          "3514648"
+        ],
+        [
+          "waypoint_follower-26",
+          "3514458"
+        ],
+        [
+          "lifecycle_manager-28",
+          "3514462"
+        ],
+        [
+          "velocity_smoother-20",
+          "3514230"
+        ],
+        [
+          "behavior_server-24",
+          "3514454"
+        ],
+        [
+          "waypoint_follower-19",
+          "3514228"
+        ],
+        [
+          "lifecycle_manager-21",
+          "3514232"
+        ],
+        [
+          "multirobot_slam_toolbox_node-13",
+          "3514073"
+        ],
+        [
+          "robot_state_publisher-11",
+          "3514069"
+        ],
+        [
+          "behavior_server-17",
+          "3514224"
+        ],
+        [
+          "multirobot_slam_toolbox_node-10",
+          "3514008"
+        ],
+        [
+          "robot_state_publisher-8",
+          "3514004"
+        ],
+        [
+          "robot_state_publisher-5",
+          "3513562"
+        ],
+        [
+          "controller_server-29",
+          "3514644"
+        ],
+        [
+          "multirobot_slam_toolbox_node-7",
+          "3513566"
+        ],
+        [
+          "bt_navigator-32",
+          "3514650"
+        ],
+        [
+          "control-36",
+          "3514777"
+        ],
+        [
+          "bt_navigator-25",
+          "3514456"
+        ],
+        [
+          "mr3_contact_reducer-2",
+          "3513556"
+        ],
+        [
+          "bt_navigator-18",
+          "3514226"
+        ],
+        [
+          "controller_server-22",
+          "3514450"
+        ],
+        [
+          "controller_server-15",
+          "3514220"
+        ],
+        [
+          "peer_obstacles-3",
+          "3513558"
+        ],
+        [
+          "merge_map-1",
+          "3513554"
+        ],
+        [
+          "planner_server-23",
+          "3514452"
+        ],
+        [
+          "planner_server-16",
+          "3514222"
+        ],
+        [
+          "planner_server-30",
+          "3514646"
+        ]
+      ],
+      "contact_clock_overflow_diagnostic": null,
+      "contact_reducer_raw_received_messages": 46260,
+      "contact_reducer_summary": {
+        "publication_sequence_supported": true,
+        "topics": {
+          "tb1/base": {
+            "compact_states": 0,
+            "published": 2613,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 2613,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2613,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/caster_back_left": {
+            "compact_states": 2541,
+            "published": 2613,
+            "publisher_count": 1,
+            "raw_states": 69596,
+            "received": 2613,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2613,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/caster_back_right": {
+            "compact_states": 2487,
+            "published": 2613,
+            "publisher_count": 1,
+            "raw_states": 64575,
+            "received": 2613,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2613,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/lidar": {
+            "compact_states": 0,
+            "published": 2613,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 2613,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2613,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/wheel_left": {
+            "compact_states": 2613,
+            "published": 2613,
+            "publisher_count": 1,
+            "raw_states": 130607,
+            "received": 2613,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2613,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/wheel_right": {
+            "compact_states": 2613,
+            "published": 2613,
+            "publisher_count": 1,
+            "raw_states": 130608,
+            "received": 2613,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2613,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/base": {
+            "compact_states": 0,
+            "published": 2569,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 2569,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2569,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/caster_back_left": {
+            "compact_states": 2491,
+            "published": 2569,
+            "publisher_count": 1,
+            "raw_states": 65108,
+            "received": 2569,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2569,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/caster_back_right": {
+            "compact_states": 2433,
+            "published": 2569,
+            "publisher_count": 1,
+            "raw_states": 65918,
+            "received": 2569,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2569,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/lidar": {
+            "compact_states": 0,
+            "published": 2569,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 2569,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2569,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/wheel_left": {
+            "compact_states": 2569,
+            "published": 2569,
+            "publisher_count": 1,
+            "raw_states": 128405,
+            "received": 2569,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2569,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/wheel_right": {
+            "compact_states": 2569,
+            "published": 2569,
+            "publisher_count": 1,
+            "raw_states": 128406,
+            "received": 2569,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2569,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/base": {
+            "compact_states": 0,
+            "published": 2528,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 2528,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2528,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/caster_back_left": {
+            "compact_states": 2503,
+            "published": 2528,
+            "publisher_count": 1,
+            "raw_states": 51252,
+            "received": 2528,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2528,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/caster_back_right": {
+            "compact_states": 2512,
+            "published": 2528,
+            "publisher_count": 1,
+            "raw_states": 64236,
+            "received": 2528,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2528,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/lidar": {
+            "compact_states": 0,
+            "published": 2528,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 2528,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2528,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/wheel_left": {
+            "compact_states": 2528,
+            "published": 2528,
+            "publisher_count": 1,
+            "raw_states": 126353,
+            "received": 2528,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2528,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/wheel_right": {
+            "compact_states": 2528,
+            "published": 2528,
+            "publisher_count": 1,
+            "raw_states": 126353,
+            "received": 2528,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2528,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          }
+        }
+      },
+      "contact_subscription_bootstrap_state": "contact_subscriptions_started",
+      "contact_subscription_started_sim_time_sec": 80.5,
+      "control_failure": "",
+      "correct_free_coverage_ratio": 0.9536428375787456,
+      "elapsed_sim_time_sec": 45.900000000000006,
+      "false_free_ratio": 0.004024144869215292,
+      "family": "open",
+      "has_full_zero_contact_evidence": true,
+      "invocation_sha256": "3dd205b83e6243497813fecc0d11f4a7c34817f46a90076387cdcd9b2136b439",
+      "launch_log": "open/launch_logs/robots3_seed101_20261015-010302.log",
+      "maximum_final_source_or_receipt_age_sec": 0.046999999999997044,
+      "maximum_recorded_source_or_receipt_gap_sec": 0.10000000000002274,
+      "monitoring_gate_passed": true,
+      "native_child_failures": [],
+      "native_json": "open/episodes/mr3_p1a_v6_open_20261014_162534_seed101.json",
+      "native_json_success": true,
+      "native_json_validation_errors": [],
+      "native_termination_reason": "coverage_reached",
+      "observed_accuracy": 0.9626575385094134,
+      "occupied_iou": 0.2005249343832021,
+      "owned_gazebo_identity": [
+        [
+          "gzserver-4",
+          "3513560"
+        ]
+      ],
+      "robot_goal_counts": {
+        "tb1": 5,
+        "tb2": 5,
+        "tb3": 5
+      },
+      "robot_path_lengths_m": {
+        "tb1": 9.2738742034593,
+        "tb2": 9.404221367216588,
+        "tb3": 9.237035014211408
+      },
+      "runner_result_classification": "success",
+      "runner_returncode": 0,
+      "seed": 101,
+      "started_native_processes": [
+        [
+          "merge_map-1",
+          "3513554"
+        ],
+        [
+          "mr3_contact_reducer-2",
+          "3513556"
+        ],
+        [
+          "peer_obstacles-3",
+          "3513558"
+        ],
+        [
+          "gzserver-4",
+          "3513560"
+        ],
+        [
+          "robot_state_publisher-5",
+          "3513562"
+        ],
+        [
+          "spawn_entity.py-6",
+          "3513564"
+        ],
+        [
+          "multirobot_slam_toolbox_node-7",
+          "3513566"
+        ],
+        [
+          "robot_state_publisher-8",
+          "3514004"
+        ],
+        [
+          "spawn_entity.py-9",
+          "3514006"
+        ],
+        [
+          "multirobot_slam_toolbox_node-10",
+          "3514008"
+        ],
+        [
+          "robot_state_publisher-11",
+          "3514069"
+        ],
+        [
+          "spawn_entity.py-12",
+          "3514071"
+        ],
+        [
+          "multirobot_slam_toolbox_node-13",
+          "3514073"
+        ],
+        [
+          "nav2_ready_gate-14",
+          "3514176"
+        ],
+        [
+          "controller_server-15",
+          "3514220"
+        ],
+        [
+          "planner_server-16",
+          "3514222"
+        ],
+        [
+          "behavior_server-17",
+          "3514224"
+        ],
+        [
+          "bt_navigator-18",
+          "3514226"
+        ],
+        [
+          "waypoint_follower-19",
+          "3514228"
+        ],
+        [
+          "velocity_smoother-20",
+          "3514230"
+        ],
+        [
+          "lifecycle_manager-21",
+          "3514232"
+        ],
+        [
+          "controller_server-22",
+          "3514450"
+        ],
+        [
+          "planner_server-23",
+          "3514452"
+        ],
+        [
+          "behavior_server-24",
+          "3514454"
+        ],
+        [
+          "bt_navigator-25",
+          "3514456"
+        ],
+        [
+          "waypoint_follower-26",
+          "3514458"
+        ],
+        [
+          "velocity_smoother-27",
+          "3514460"
+        ],
+        [
+          "lifecycle_manager-28",
+          "3514462"
+        ],
+        [
+          "controller_server-29",
+          "3514644"
+        ],
+        [
+          "planner_server-30",
+          "3514646"
+        ],
+        [
+          "behavior_server-31",
+          "3514648"
+        ],
+        [
+          "bt_navigator-32",
+          "3514650"
+        ],
+        [
+          "waypoint_follower-33",
+          "3514652"
+        ],
+        [
+          "velocity_smoother-34",
+          "3514654"
+        ],
+        [
+          "lifecycle_manager-35",
+          "3514656"
+        ],
+        [
+          "control-36",
+          "3514777"
+        ],
+        [
+          "task_evaluator-37",
+          "3514779"
+        ],
+        [
+          "mr3_gazebo_native_stop-38",
+          "3515443"
+        ]
+      ],
+      "stop_cli_identity": [
+        [
+          "mr3_gazebo_native_stop-38",
+          "3515443"
+        ]
+      ],
+      "strict_complete_pass": true,
+      "task_contract_sha256": "1bb5c097cdd9a6c92ee6edb7fabcb3c844117b51d18e40641c58aad7b29af4a6",
+      "task_gate_diagnostics": [],
+      "time_to_95_coverage_sec": 41.599999999999994,
+      "valid_task_measurement": true,
+      "warnings": []
+    },
+    {
+      "checks": {
+        "18_components_fresh_without_task_health_latch": true,
+        "18_components_valid_timestamps_at_finalization": true,
+        "all_started_native_children_exited_cleanly": true,
+        "complete_18_source_reducer_sequence_and_count_audit": true,
+        "contact_clock_bootstrap_started_before_task_without_overflow": true,
+        "controller_release_start_barrier": true,
+        "false_free_denominator_matches_declared_occupied_cells": true,
+        "finite_task_time_within_300_seconds": true,
+        "native_json_present": true,
+        "no_native_child_failure_or_escalation": true,
+        "owned_gazebo_and_stop_cli_positive_clean_exit": true,
+        "participation_flag_matches_metrics": true,
+        "quality_flag_matches_metrics": true,
+        "runner_returncode_zero": true,
+        "schema4_contract_validator": true,
+        "success_closure_timing_and_ownership": true,
+        "world_hash_matches_contract": true,
+        "world_name_matches_contract": true,
+        "zero_non_support_contact": true
+      },
+      "classification": "strict_complete_pass",
+      "clean_native_processes": [
+        [
+          "spawn_entity.py-6",
+          "3515546"
+        ],
+        [
+          "spawn_entity.py-9",
+          "3515972"
+        ],
+        [
+          "spawn_entity.py-12",
+          "3516033"
+        ],
+        [
+          "nav2_ready_gate-14",
+          "3516094"
+        ],
+        [
+          "task_evaluator-37",
+          "3516682"
+        ],
+        [
+          "mr3_gazebo_native_stop-38",
+          "3517614"
+        ],
+        [
+          "gzserver-4",
+          "3515542"
+        ],
+        [
+          "velocity_smoother-34",
+          "3516581"
+        ],
+        [
+          "waypoint_follower-33",
+          "3516579"
+        ],
+        [
+          "lifecycle_manager-35",
+          "3516583"
+        ],
+        [
+          "velocity_smoother-27",
+          "3516356"
+        ],
+        [
+          "behavior_server-31",
+          "3516575"
+        ],
+        [
+          "waypoint_follower-26",
+          "3516354"
+        ],
+        [
+          "lifecycle_manager-28",
+          "3516358"
+        ],
+        [
+          "velocity_smoother-20",
+          "3516146"
+        ],
+        [
+          "behavior_server-24",
+          "3516350"
+        ],
+        [
+          "waypoint_follower-19",
+          "3516144"
+        ],
+        [
+          "lifecycle_manager-21",
+          "3516148"
+        ],
+        [
+          "multirobot_slam_toolbox_node-13",
+          "3516035"
+        ],
+        [
+          "robot_state_publisher-11",
+          "3516031"
+        ],
+        [
+          "behavior_server-17",
+          "3516140"
+        ],
+        [
+          "multirobot_slam_toolbox_node-10",
+          "3515974"
+        ],
+        [
+          "robot_state_publisher-8",
+          "3515970"
+        ],
+        [
+          "control-36",
+          "3516680"
+        ],
+        [
+          "multirobot_slam_toolbox_node-7",
+          "3515548"
+        ],
+        [
+          "robot_state_publisher-5",
+          "3515544"
+        ],
+        [
+          "bt_navigator-32",
+          "3516577"
+        ],
+        [
+          "controller_server-22",
+          "3516346"
+        ],
+        [
+          "bt_navigator-25",
+          "3516352"
+        ],
+        [
+          "mr3_contact_reducer-2",
+          "3515538"
+        ],
+        [
+          "controller_server-29",
+          "3516571"
+        ],
+        [
+          "bt_navigator-18",
+          "3516142"
+        ],
+        [
+          "controller_server-15",
+          "3516136"
+        ],
+        [
+          "merge_map-1",
+          "3515536"
+        ],
+        [
+          "peer_obstacles-3",
+          "3515540"
+        ],
+        [
+          "planner_server-23",
+          "3516348"
+        ],
+        [
+          "planner_server-30",
+          "3516573"
+        ],
+        [
+          "planner_server-16",
+          "3516138"
+        ]
+      ],
+      "contact_clock_overflow_diagnostic": null,
+      "contact_reducer_raw_received_messages": 51942,
+      "contact_reducer_summary": {
+        "publication_sequence_supported": true,
+        "topics": {
+          "tb1/base": {
+            "compact_states": 0,
+            "published": 2929,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 2929,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2929,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/caster_back_left": {
+            "compact_states": 2868,
+            "published": 2929,
+            "publisher_count": 1,
+            "raw_states": 79436,
+            "received": 2929,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2929,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/caster_back_right": {
+            "compact_states": 2754,
+            "published": 2929,
+            "publisher_count": 1,
+            "raw_states": 76936,
+            "received": 2929,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2929,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/lidar": {
+            "compact_states": 0,
+            "published": 2929,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 2929,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2929,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/wheel_left": {
+            "compact_states": 2929,
+            "published": 2929,
+            "publisher_count": 1,
+            "raw_states": 146405,
+            "received": 2929,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2929,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/wheel_right": {
+            "compact_states": 2929,
+            "published": 2929,
+            "publisher_count": 1,
+            "raw_states": 146405,
+            "received": 2929,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2929,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/base": {
+            "compact_states": 0,
+            "published": 2885,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 2885,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2885,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/caster_back_left": {
+            "compact_states": 2826,
+            "published": 2885,
+            "publisher_count": 1,
+            "raw_states": 82933,
+            "received": 2885,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2885,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/caster_back_right": {
+            "compact_states": 2624,
+            "published": 2885,
+            "publisher_count": 1,
+            "raw_states": 66855,
+            "received": 2885,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2885,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/lidar": {
+            "compact_states": 0,
+            "published": 2885,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 2885,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2885,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/wheel_left": {
+            "compact_states": 2885,
+            "published": 2885,
+            "publisher_count": 1,
+            "raw_states": 144205,
+            "received": 2885,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2885,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/wheel_right": {
+            "compact_states": 2885,
+            "published": 2885,
+            "publisher_count": 1,
+            "raw_states": 144205,
+            "received": 2885,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2885,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/base": {
+            "compact_states": 0,
+            "published": 2843,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 2843,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2843,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/caster_back_left": {
+            "compact_states": 2798,
+            "published": 2843,
+            "publisher_count": 1,
+            "raw_states": 62947,
+            "received": 2843,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2843,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/caster_back_right": {
+            "compact_states": 2788,
+            "published": 2843,
+            "publisher_count": 1,
+            "raw_states": 72602,
+            "received": 2843,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2843,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/lidar": {
+            "compact_states": 0,
+            "published": 2843,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 2843,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2843,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/wheel_left": {
+            "compact_states": 2843,
+            "published": 2843,
+            "publisher_count": 1,
+            "raw_states": 142106,
+            "received": 2843,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2843,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/wheel_right": {
+            "compact_states": 2843,
+            "published": 2843,
+            "publisher_count": 1,
+            "raw_states": 142106,
+            "received": 2843,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2843,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          }
+        }
+      },
+      "contact_subscription_bootstrap_state": "contact_subscriptions_started",
+      "contact_subscription_started_sim_time_sec": 74.4,
+      "control_failure": "",
+      "correct_free_coverage_ratio": 0.96042180224596,
+      "elapsed_sim_time_sec": 67.80000000000001,
+      "false_free_ratio": 0.006036217303822937,
+      "family": "open",
+      "has_full_zero_contact_evidence": true,
+      "invocation_sha256": "3dd205b83e6243497813fecc0d11f4a7c34817f46a90076387cdcd9b2136b439",
+      "launch_log": "open/launch_logs/robots3_seed202_20261015-010626.log",
+      "maximum_final_source_or_receipt_age_sec": 0.05000000000001137,
+      "maximum_recorded_source_or_receipt_gap_sec": 0.10000000000002274,
+      "monitoring_gate_passed": true,
+      "native_child_failures": [],
+      "native_json": "open/episodes/mr3_p1a_v6_open_20261014_162534_seed202.json",
+      "native_json_success": true,
+      "native_json_validation_errors": [],
+      "native_termination_reason": "coverage_reached",
+      "observed_accuracy": 0.9610715780661364,
+      "occupied_iou": 0.200909681611436,
+      "owned_gazebo_identity": [
+        [
+          "gzserver-4",
+          "3515542"
+        ]
+      ],
+      "robot_goal_counts": {
+        "tb1": 6,
+        "tb2": 7,
+        "tb3": 7
+      },
+      "robot_path_lengths_m": {
+        "tb1": 10.405438453811945,
+        "tb2": 14.453471543772348,
+        "tb3": 14.879132260787118
+      },
+      "runner_result_classification": "success",
+      "runner_returncode": 0,
+      "seed": 202,
+      "started_native_processes": [
+        [
+          "merge_map-1",
+          "3515536"
+        ],
+        [
+          "mr3_contact_reducer-2",
+          "3515538"
+        ],
+        [
+          "peer_obstacles-3",
+          "3515540"
+        ],
+        [
+          "gzserver-4",
+          "3515542"
+        ],
+        [
+          "robot_state_publisher-5",
+          "3515544"
+        ],
+        [
+          "spawn_entity.py-6",
+          "3515546"
+        ],
+        [
+          "multirobot_slam_toolbox_node-7",
+          "3515548"
+        ],
+        [
+          "robot_state_publisher-8",
+          "3515970"
+        ],
+        [
+          "spawn_entity.py-9",
+          "3515972"
+        ],
+        [
+          "multirobot_slam_toolbox_node-10",
+          "3515974"
+        ],
+        [
+          "robot_state_publisher-11",
+          "3516031"
+        ],
+        [
+          "spawn_entity.py-12",
+          "3516033"
+        ],
+        [
+          "multirobot_slam_toolbox_node-13",
+          "3516035"
+        ],
+        [
+          "nav2_ready_gate-14",
+          "3516094"
+        ],
+        [
+          "controller_server-15",
+          "3516136"
+        ],
+        [
+          "planner_server-16",
+          "3516138"
+        ],
+        [
+          "behavior_server-17",
+          "3516140"
+        ],
+        [
+          "bt_navigator-18",
+          "3516142"
+        ],
+        [
+          "waypoint_follower-19",
+          "3516144"
+        ],
+        [
+          "velocity_smoother-20",
+          "3516146"
+        ],
+        [
+          "lifecycle_manager-21",
+          "3516148"
+        ],
+        [
+          "controller_server-22",
+          "3516346"
+        ],
+        [
+          "planner_server-23",
+          "3516348"
+        ],
+        [
+          "behavior_server-24",
+          "3516350"
+        ],
+        [
+          "bt_navigator-25",
+          "3516352"
+        ],
+        [
+          "waypoint_follower-26",
+          "3516354"
+        ],
+        [
+          "velocity_smoother-27",
+          "3516356"
+        ],
+        [
+          "lifecycle_manager-28",
+          "3516358"
+        ],
+        [
+          "controller_server-29",
+          "3516571"
+        ],
+        [
+          "planner_server-30",
+          "3516573"
+        ],
+        [
+          "behavior_server-31",
+          "3516575"
+        ],
+        [
+          "bt_navigator-32",
+          "3516577"
+        ],
+        [
+          "waypoint_follower-33",
+          "3516579"
+        ],
+        [
+          "velocity_smoother-34",
+          "3516581"
+        ],
+        [
+          "lifecycle_manager-35",
+          "3516583"
+        ],
+        [
+          "control-36",
+          "3516680"
+        ],
+        [
+          "task_evaluator-37",
+          "3516682"
+        ],
+        [
+          "mr3_gazebo_native_stop-38",
+          "3517614"
+        ]
+      ],
+      "stop_cli_identity": [
+        [
+          "mr3_gazebo_native_stop-38",
+          "3517614"
+        ]
+      ],
+      "strict_complete_pass": true,
+      "task_contract_sha256": "1bb5c097cdd9a6c92ee6edb7fabcb3c844117b51d18e40641c58aad7b29af4a6",
+      "task_gate_diagnostics": [],
+      "time_to_95_coverage_sec": 41.0,
+      "valid_task_measurement": true,
+      "warnings": []
+    },
+    {
+      "checks": {
+        "18_components_fresh_without_task_health_latch": true,
+        "18_components_valid_timestamps_at_finalization": true,
+        "all_started_native_children_exited_cleanly": false,
+        "complete_18_source_reducer_sequence_and_count_audit": true,
+        "contact_clock_bootstrap_started_before_task_without_overflow": true,
+        "controller_release_start_barrier": true,
+        "false_free_denominator_matches_declared_occupied_cells": true,
+        "finite_task_time_within_300_seconds": true,
+        "native_json_present": true,
+        "no_native_child_failure_or_escalation": false,
+        "owned_gazebo_and_stop_cli_positive_clean_exit": true,
+        "participation_flag_matches_metrics": true,
+        "quality_flag_matches_metrics": true,
+        "runner_returncode_zero": false,
+        "schema4_contract_validator": true,
+        "success_closure_timing_and_ownership": true,
+        "world_hash_matches_contract": true,
+        "world_name_matches_contract": true,
+        "zero_non_support_contact": true
+      },
+      "classification": "native_task_achieved_but_cleanup_infrastructure_invalid",
+      "clean_native_processes": [
+        [
+          "spawn_entity.py-6",
+          "3517702"
+        ],
+        [
+          "spawn_entity.py-9",
+          "3518125"
+        ],
+        [
+          "spawn_entity.py-12",
+          "3518188"
+        ],
+        [
+          "nav2_ready_gate-14",
+          "3518247"
+        ],
+        [
+          "task_evaluator-37",
+          "3518871"
+        ],
+        [
+          "mr3_gazebo_native_stop-38",
+          "3519891"
+        ],
+        [
+          "gzserver-4",
+          "3517698"
+        ],
+        [
+          "velocity_smoother-34",
+          "3518752"
+        ],
+        [
+          "waypoint_follower-33",
+          "3518750"
+        ],
+        [
+          "lifecycle_manager-35",
+          "3518754"
+        ],
+        [
+          "velocity_smoother-27",
+          "3518533"
+        ],
+        [
+          "behavior_server-31",
+          "3518746"
+        ],
+        [
+          "waypoint_follower-26",
+          "3518531"
+        ],
+        [
+          "lifecycle_manager-28",
+          "3518535"
+        ],
+        [
+          "velocity_smoother-20",
+          "3518292"
+        ],
+        [
+          "behavior_server-24",
+          "3518527"
+        ],
+        [
+          "waypoint_follower-19",
+          "3518290"
+        ],
+        [
+          "lifecycle_manager-21",
+          "3518294"
+        ],
+        [
+          "multirobot_slam_toolbox_node-13",
+          "3518190"
+        ],
+        [
+          "robot_state_publisher-11",
+          "3518186"
+        ],
+        [
+          "controller_server-29",
+          "3518742"
+        ],
+        [
+          "robot_state_publisher-8",
+          "3518123"
+        ],
+        [
+          "multirobot_slam_toolbox_node-10",
+          "3518127"
+        ],
+        [
+          "behavior_server-17",
+          "3518286"
+        ],
+        [
+          "multirobot_slam_toolbox_node-7",
+          "3517704"
+        ],
+        [
+          "bt_navigator-32",
+          "3518748"
+        ],
+        [
+          "planner_server-23",
+          "3518525"
+        ],
+        [
+          "control-36",
+          "3518869"
+        ],
+        [
+          "planner_server-30",
+          "3518744"
+        ],
+        [
+          "mr3_contact_reducer-2",
+          "3517694"
+        ],
+        [
+          "bt_navigator-25",
+          "3518529"
+        ],
+        [
+          "bt_navigator-18",
+          "3518288"
+        ],
+        [
+          "controller_server-22",
+          "3518523"
+        ],
+        [
+          "merge_map-1",
+          "3517692"
+        ],
+        [
+          "controller_server-15",
+          "3518282"
+        ],
+        [
+          "peer_obstacles-3",
+          "3517696"
+        ],
+        [
+          "planner_server-16",
+          "3518284"
+        ]
+      ],
+      "contact_clock_overflow_diagnostic": null,
+      "contact_reducer_raw_received_messages": 57648,
+      "contact_reducer_summary": {
+        "publication_sequence_supported": true,
+        "topics": {
+          "tb1/base": {
+            "compact_states": 0,
+            "published": 3246,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 3246,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3246,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/caster_back_left": {
+            "compact_states": 3211,
+            "published": 3246,
+            "publisher_count": 1,
+            "raw_states": 94663,
+            "received": 3246,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3246,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/caster_back_right": {
+            "compact_states": 3190,
+            "published": 3246,
+            "publisher_count": 1,
+            "raw_states": 103806,
+            "received": 3246,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3246,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/lidar": {
+            "compact_states": 0,
+            "published": 3246,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 3246,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3246,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/wheel_left": {
+            "compact_states": 3246,
+            "published": 3246,
+            "publisher_count": 1,
+            "raw_states": 162258,
+            "received": 3246,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3246,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/wheel_right": {
+            "compact_states": 3246,
+            "published": 3246,
+            "publisher_count": 1,
+            "raw_states": 162259,
+            "received": 3246,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3246,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/base": {
+            "compact_states": 0,
+            "published": 3202,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 3202,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3202,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/caster_back_left": {
+            "compact_states": 3078,
+            "published": 3202,
+            "publisher_count": 1,
+            "raw_states": 80893,
+            "received": 3202,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3202,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/caster_back_right": {
+            "compact_states": 3061,
+            "published": 3202,
+            "publisher_count": 1,
+            "raw_states": 85556,
+            "received": 3202,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3202,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/lidar": {
+            "compact_states": 0,
+            "published": 3202,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 3202,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3202,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/wheel_left": {
+            "compact_states": 3202,
+            "published": 3202,
+            "publisher_count": 1,
+            "raw_states": 160055,
+            "received": 3202,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3202,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/wheel_right": {
+            "compact_states": 3202,
+            "published": 3202,
+            "publisher_count": 1,
+            "raw_states": 160055,
+            "received": 3202,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3202,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/base": {
+            "compact_states": 0,
+            "published": 3160,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 3160,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3160,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/caster_back_left": {
+            "compact_states": 3086,
+            "published": 3160,
+            "publisher_count": 1,
+            "raw_states": 71677,
+            "received": 3160,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3160,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/caster_back_right": {
+            "compact_states": 3086,
+            "published": 3160,
+            "publisher_count": 1,
+            "raw_states": 83105,
+            "received": 3160,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3160,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/lidar": {
+            "compact_states": 0,
+            "published": 3160,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 3160,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3160,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/wheel_left": {
+            "compact_states": 3160,
+            "published": 3160,
+            "publisher_count": 1,
+            "raw_states": 157952,
+            "received": 3160,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3160,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/wheel_right": {
+            "compact_states": 3160,
+            "published": 3160,
+            "publisher_count": 1,
+            "raw_states": 157953,
+            "received": 3160,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 3160,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          }
+        }
+      },
+      "contact_subscription_bootstrap_state": "contact_subscriptions_started",
+      "contact_subscription_started_sim_time_sec": 80.9,
+      "control_failure": "",
+      "correct_free_coverage_ratio": 0.9577741258102803,
+      "elapsed_sim_time_sec": 76.6,
+      "false_free_ratio": 0.002850435949027498,
+      "family": "open",
+      "has_full_zero_contact_evidence": true,
+      "invocation_sha256": "3dd205b83e6243497813fecc0d11f4a7c34817f46a90076387cdcd9b2136b439",
+      "launch_log": "open/launch_logs/robots3_seed303_20261015-011031.log",
+      "maximum_final_source_or_receipt_age_sec": 0.04599999999999227,
+      "maximum_recorded_source_or_receipt_gap_sec": 0.10000000000002274,
+      "monitoring_gate_passed": true,
+      "native_child_failures": [
+        "[ERROR] [robot_state_publisher-5]: process has died [pid 3517700, exit code -11, cmd '/opt/ros/humble/lib/robot_state_publisher/robot_state_publisher /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/urdf/turtlebot3_waffle.urdf --ros-args -r __ns:=/tb1 --params-file /tmp/launch_params_rp3q4cfx -r /tf:=tf -r /tf_static:=tf_static']."
+      ],
+      "native_json": "open/episodes/mr3_p1a_v6_open_20261014_162534_seed303.json",
+      "native_json_success": true,
+      "native_json_validation_errors": [],
+      "native_termination_reason": "coverage_reached",
+      "observed_accuracy": 0.9601788336365031,
+      "occupied_iou": 0.23827923750643998,
+      "owned_gazebo_identity": [
+        [
+          "gzserver-4",
+          "3517698"
+        ]
+      ],
+      "robot_goal_counts": {
+        "tb1": 5,
+        "tb2": 7,
+        "tb3": 7
+      },
+      "robot_path_lengths_m": {
+        "tb1": 8.592547477294953,
+        "tb2": 15.056155335880272,
+        "tb3": 16.654067192318678
+      },
+      "runner_result_classification": "infrastructure_failure",
+      "runner_returncode": 1,
+      "seed": 303,
+      "started_native_processes": [
+        [
+          "merge_map-1",
+          "3517692"
+        ],
+        [
+          "mr3_contact_reducer-2",
+          "3517694"
+        ],
+        [
+          "peer_obstacles-3",
+          "3517696"
+        ],
+        [
+          "gzserver-4",
+          "3517698"
+        ],
+        [
+          "robot_state_publisher-5",
+          "3517700"
+        ],
+        [
+          "spawn_entity.py-6",
+          "3517702"
+        ],
+        [
+          "multirobot_slam_toolbox_node-7",
+          "3517704"
+        ],
+        [
+          "robot_state_publisher-8",
+          "3518123"
+        ],
+        [
+          "spawn_entity.py-9",
+          "3518125"
+        ],
+        [
+          "multirobot_slam_toolbox_node-10",
+          "3518127"
+        ],
+        [
+          "robot_state_publisher-11",
+          "3518186"
+        ],
+        [
+          "spawn_entity.py-12",
+          "3518188"
+        ],
+        [
+          "multirobot_slam_toolbox_node-13",
+          "3518190"
+        ],
+        [
+          "nav2_ready_gate-14",
+          "3518247"
+        ],
+        [
+          "controller_server-15",
+          "3518282"
+        ],
+        [
+          "planner_server-16",
+          "3518284"
+        ],
+        [
+          "behavior_server-17",
+          "3518286"
+        ],
+        [
+          "bt_navigator-18",
+          "3518288"
+        ],
+        [
+          "waypoint_follower-19",
+          "3518290"
+        ],
+        [
+          "velocity_smoother-20",
+          "3518292"
+        ],
+        [
+          "lifecycle_manager-21",
+          "3518294"
+        ],
+        [
+          "controller_server-22",
+          "3518523"
+        ],
+        [
+          "planner_server-23",
+          "3518525"
+        ],
+        [
+          "behavior_server-24",
+          "3518527"
+        ],
+        [
+          "bt_navigator-25",
+          "3518529"
+        ],
+        [
+          "waypoint_follower-26",
+          "3518531"
+        ],
+        [
+          "velocity_smoother-27",
+          "3518533"
+        ],
+        [
+          "lifecycle_manager-28",
+          "3518535"
+        ],
+        [
+          "controller_server-29",
+          "3518742"
+        ],
+        [
+          "planner_server-30",
+          "3518744"
+        ],
+        [
+          "behavior_server-31",
+          "3518746"
+        ],
+        [
+          "bt_navigator-32",
+          "3518748"
+        ],
+        [
+          "waypoint_follower-33",
+          "3518750"
+        ],
+        [
+          "velocity_smoother-34",
+          "3518752"
+        ],
+        [
+          "lifecycle_manager-35",
+          "3518754"
+        ],
+        [
+          "control-36",
+          "3518869"
+        ],
+        [
+          "task_evaluator-37",
+          "3518871"
+        ],
+        [
+          "mr3_gazebo_native_stop-38",
+          "3519891"
+        ]
+      ],
+      "stop_cli_identity": [
+        [
+          "mr3_gazebo_native_stop-38",
+          "3519891"
+        ]
+      ],
+      "strict_complete_pass": false,
+      "task_contract_sha256": "1bb5c097cdd9a6c92ee6edb7fabcb3c844117b51d18e40641c58aad7b29af4a6",
+      "task_gate_diagnostics": [],
+      "time_to_95_coverage_sec": 76.5,
+      "valid_task_measurement": false,
+      "warnings": []
+    }
+  ],
+  "checked_at_utc": "2026-10-14T17:16:54.492220+00:00",
+  "clean_real_task_failure_count": 3,
+  "completed_families": [
+    "rooms",
+    "corridors",
+    "open"
+  ],
+  "conclusion": "P1A native evidence incomplete; failures and infrastructure defects retained",
+  "copy_hash_receipt_sha256": "1fe3ce960a48e9ffc1ce9475b086deb3ea5968959ed1952111be467ac30d4664",
+  "does_not_require_nine_baseline_successes": true,
+  "environment_binding_scope": "Selected owned launch/server process environment and profile file hashes; no live DDS transport/QoS introspection inferred",
+  "fastdds_profile_sha256": "8d11da75d5916ed95d8b8a6a74abecb8fe946254d615895164a63ef9f8ff9556",
+  "frozen_validator_sha256": "56d2ade59e804609fb1973b36b9f87fead004d44a0075b7430439da8c9be0678",
+  "infrastructure_invalid_measurement_count": 1,
+  "monitor_abort_task_failure_count": 0,
+  "monitoring_gate_failure_count": 0,
+  "native_environment_bindings": [
+    {
+      "family": "rooms",
+      "file": "matrix6_rooms_native_environment.json",
+      "roles": {
+        "owned_gzserver_descendant": 3498510,
+        "owned_ros_launch": 3498456
+      },
+      "runtime_profile_load_observed": [
+        false,
+        false
+      ],
+      "sha256": "5f485b465bb0530bf5700c7f97e76d9a5fc589da46ba8c1cbe6830e2996fdf69"
+    },
+    {
+      "family": "corridors",
+      "file": "matrix6_corridors_native_environment.json",
+      "roles": {
+        "owned_gzserver_descendant": 3507373,
+        "owned_ros_launch": 3507312
+      },
+      "runtime_profile_load_observed": [
+        false,
+        false
+      ],
+      "sha256": "396b65e28a246a7211ab5a4759f9f7c4afeb66b137d0267bcbb3bc398690bce7"
+    },
+    {
+      "family": "open",
+      "file": "matrix6_open_native_environment.json",
+      "roles": {
+        "owned_gzserver_descendant": 3513560,
+        "owned_ros_launch": 3513498
+      },
+      "runtime_profile_load_observed": [
+        false,
+        false
+      ],
+      "sha256": "1961bc2d04a403a1ed6bb41c0b869f3eb925cc451a177aec97aba50c7f01bc87"
+    }
+  ],
+  "native_json_count": 9,
+  "native_json_success_count": 6,
+  "native_original_hashes_verified": 33,
+  "originals_modified": false,
+  "planned_matrix_size": 9,
+  "policy_runs": 0,
+  "runner_infrastructure_failure_count": 1,
+  "runner_success_count": 5,
+  "runner_task_failure_count": 3,
+  "runtime_component_manifest_file_count": 462,
+  "runtime_component_manifest_sha256": "08f22f98c99d0e2173726990b2b0e8c65dd83a7b5eceaf6c3afde1b976a4b557",
+  "runtime_installed_identity_check_count": 16,
+  "simulator_runs": 0,
+  "source_freeze": "5e478025ede4f66420cc293655c0c03db791b2ab",
+  "stage_evidence_complete_not_user_acceptance": false,
+  "strict_complete_pass_count": 5,
+  "strict_scene_success_count": {
+    "corridors": 1,
+    "open": 2,
+    "rooms": 2
+  },
+  "transport_policy": {
+    "ROS_LOCALHOST_ONLY": "0",
+    "SKIP_DEFAULT_XML": "1",
+    "transport": "UDPv4 interface whitelist 127.0.0.1; builtin disabled"
+  },
+  "type": "independent_frozen_native_artifact_audit_not_new_experiment",
+  "unstarted_cells": [],
+  "unstarted_count": 0,
+  "valid_task_measurement_count": 8,
+  "validity_basis": "Frozen success_contract/validator/runner: failed task gates remain failed outcomes when the common-start/hash/schema/reducer/native-exit evidence is valid; health is not retroactively required of every failure result"
+}

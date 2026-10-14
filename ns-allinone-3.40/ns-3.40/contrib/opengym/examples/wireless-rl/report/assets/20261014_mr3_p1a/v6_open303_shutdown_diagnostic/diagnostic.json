@@ -1,0 +1,166 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-10-14T17:21:33.303542+00:00",
+  "source_freeze": "5e478025ede4f66420cc293655c0c03db791b2ab",
+  "episode": "mr3_p1a_v6_open_20261014_162534_seed303",
+  "status": "crash_path_localized_no_validated_fix",
+  "native_log": {
+    "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v6_open_20261014_162534/launch_logs/robots3_seed303_20261015-011031.log",
+    "sha256": "162b24c94b64fcf2a886f76003a1b39cf9d9d48055576afdeb8f9433ba5f807f",
+    "line_number_basis": "one-based original native log",
+    "selected_timeline": [
+      {
+        "line": 302,
+        "text": "[task_evaluator-37] [INFO] [1791998074.505553951] [task_evaluator]: Evaluation saved to /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v6_open_20261014_162534/episodes/mr3_p1a_v6_open_20261014_162534_seed303.json and /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v6_open_20261014_162534/episodes/mr3_p1a_v6_open_20261014_162534_seed303.csv"
+      },
+      {
+        "line": 303,
+        "text": "[INFO] [task_evaluator-37]: process has finished cleanly [pid 3518871]"
+      },
+      {
+        "line": 304,
+        "text": "[INFO] [mr3_gazebo_native_stop-38]: process started with pid [3519891]"
+      },
+      {
+        "line": 305,
+        "text": "[INFO] [mr3_gazebo_native_stop-38]: process has finished cleanly [pid 3519891]"
+      },
+      {
+        "line": 306,
+        "text": "[INFO] [gzserver-4]: process has finished cleanly [pid 3517698]"
+      },
+      {
+        "line": 340,
+        "text": "[INFO] [robot_state_publisher-5]: sending signal 'SIGINT' to process[robot_state_publisher-5]"
+      },
+      {
+        "line": 354,
+        "text": "[robot_state_publisher-5] [INFO] [1791998078.490834100] [rclcpp]: signal_handler(SIGINT/SIGTERM)"
+      },
+      {
+        "line": 377,
+        "text": "[ERROR] [robot_state_publisher-5]: process has died [pid 3517700, exit code -11, cmd '/opt/ros/humble/lib/robot_state_publisher/robot_state_publisher /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/urdf/turtlebot3_waffle.urdf --ros-args -r __ns:=/tb1 --params-file /tmp/launch_params_rp3q4cfx -r /tf:=tf -r /tf_static:=tf_static']."
+      }
+    ]
+  },
+  "native_result": {
+    "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v6_open_20261014_162534/episodes/mr3_p1a_v6_open_20261014_162534_seed303.json",
+    "sha256": "c4f0deb6598ccfb45227b7511311a4cc9c34f0888a1e903175e2afe5a3a4edb9",
+    "success": true,
+    "termination_reason": "coverage_reached",
+    "elapsed_sim_time_sec": 76.6,
+    "scope": "Original JSON result does not override the strict native-child SIGSEGV failure."
+  },
+  "fresh_crash_binding": {
+    "apport_selected_lines_artifact": "apport_selected_lines.json",
+    "binding_metadata_artifact": "binding_metadata.json",
+    "core_pattern": "|/usr/share/apport/apport -p%p -s%s -c%c -d%d -P%P -u%u -g%g -F%F -- %E",
+    "pid": 3517700,
+    "signal": 11,
+    "proc_namespace": "tb1",
+    "executable_timestamp_equals_current_file_mtime": true,
+    "core_report_timestamp_local": "2026-10-15 01:14:38 Asia/Shanghai",
+    "report_file_mtime_utc": "2026-10-14T17:14:40.255876+00:00"
+  },
+  "selected_stack": {
+    "artifact": "gdb_threads.txt",
+    "sha256": "49cbcd10b4d04a66410197c61d22f2b0adb7acbad6c255dce02f4edaa75acef4",
+    "capture": "gdb -q -nx -batch; auto-load off; debuginfod off; print frame-arguments none; info threads; thread apply all bt40",
+    "gdb_returncode": 0,
+    "full_locals_collected": false,
+    "fault_lwp": 3517720,
+    "main_lwp": 3517700
+  },
+  "fault_instruction_observation": {
+    "function": "EDP::unpairWriterProxy",
+    "function_offset_bytes": 406,
+    "instruction": "mov (%rax), %rax",
+    "rax": 0,
+    "rdi": 0,
+    "siginfo_fault_address": 0,
+    "preceding_sequence": "RTPSReader::getListener() returns into rax; rax copied to rdi; the next instruction dereferences rax before an indirect virtual call.",
+    "scope": "Null listener dereference at this observed instruction; this does not establish use-after-free or identify the actor/time that cleared the listener."
+  },
+  "thread_facts": [
+    "Faulting UDP receiver thread: EDP::unpairWriterProxy -> PDP::removeWriterProxyData -> EDPSimplePUBListener::onNewCacheChangeAdded -> StatefulReader/MessageReceiver -> UDPChannelResource.",
+    "Main thread concurrently waits inside RTPSParticipantImpl::deleteUserEndpoint -> removeRTPSReader -> DataReaderImpl destruction -> rmw destroy_subscription -> SubscriptionBase destruction -> NodeTimeSource destruction -> Node destruction.",
+    "Gazebo and its native-stop CLI both exited0 before the launch sent RSP SIGINT; RSP received one logged SIGINT and then exited-11. No RSP SIGTERM or SIGKILL is logged."
+  ],
+  "package_versions": [
+    "ros-humble-fastrtps\t2.6.11-1jammy.20260304.200925",
+    "ros-humble-rcl\t5.3.12-1jammy.20260304.213336",
+    "ros-humble-rclcpp\t16.0.19-1jammy.20260325.211007",
+    "ros-humble-rmw-fastrtps-shared-cpp\t6.2.10-1jammy.20260304.211712",
+    "ros-humble-robot-state-publisher\t3.0.3-2jammy.20260325.225743"
+  ],
+  "affected_installed_files": [
+    {
+      "path": "/opt/ros/humble/lib/robot_state_publisher/robot_state_publisher",
+      "resolved_path": "/opt/ros/humble/lib/robot_state_publisher/robot_state_publisher",
+      "sha256": "3ae12e3a260f4dd406cdadb37cb57022f5089761d27505d4d57ffb54bc0bb52e",
+      "matches_pre_matrix6_static_proof": null
+    },
+    {
+      "path": "/opt/ros/humble/lib/libfastrtps.so.2.6",
+      "resolved_path": "/opt/ros/humble/lib/libfastrtps.so.2.6.11",
+      "sha256": "cc1f45ce53ef4ed2961e57054ddb80d115dafc6604d2a6c259ec8b18452e03b8",
+      "matches_pre_matrix6_static_proof": true
+    },
+    {
+      "path": "/opt/ros/humble/lib/librmw_fastrtps_shared_cpp.so",
+      "resolved_path": "/opt/ros/humble/lib/librmw_fastrtps_shared_cpp.so",
+      "sha256": "8e3f4603fbdd53588fed6927575f4687457a2e7933c88a28ecd1f7afce5edaa7",
+      "matches_pre_matrix6_static_proof": true
+    },
+    {
+      "path": "/opt/ros/humble/lib/librclcpp.so",
+      "resolved_path": "/opt/ros/humble/lib/librclcpp.so",
+      "sha256": "71d51e07fb1de937222783778a4fb677178bd2bb712eb1cba5d2c2ad0b55e772",
+      "matches_pre_matrix6_static_proof": null
+    },
+    {
+      "path": "/opt/ros/humble/lib/librcl.so",
+      "resolved_path": "/opt/ros/humble/lib/librcl.so",
+      "sha256": "f549d72757c910130157bd8e111c3417ac16a17c35c55225c00292c38eb97294",
+      "matches_pre_matrix6_static_proof": null
+    }
+  ],
+  "primary_source_boundaries": [
+    {
+      "url": "https://raw.githubusercontent.com/eProsima/Fast-DDS/v2.6.11/src/cpp/rtps/builtin/discovery/endpoint/EDP.cpp",
+      "one_based_lines": "515-549 (listener accesses533-541)",
+      "observation": "The same-version upstream function checks listener for non-null, invokes one matching callback, updates subscription matched status, then obtains the listener again for a second callback. The installed fault instruction sequence corresponds to the second getter/virtual-call stage.",
+      "binding_limit": "Upstream version tag matches installed upstream package version; binary disassembly independently proves the installed null dereference. No claim that unverified Debian source bytes exactly equal the upstream tag."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/eProsima/Fast-DDS/v2.6.11/src/cpp/fastdds/subscriber/DataReaderImpl.cpp",
+      "observation": "Reader destruction/stop is the surrounding SDK path shown by the main-thread stack; no unobserved source interleaving is treated as proven."
+    }
+  ],
+  "hypotheses_not_proven": [
+    "Exact listener-clearer and temporal interleaving",
+    "Use-after-free or data race as opposed to another listener lifetime path",
+    "UDP-only configuration as cause",
+    "RobotStatePublisher application logic or robot model as cause",
+    "Any particular upstream issue, patch or SDK release as a validated fix"
+  ],
+  "minimal_recommendation": "Preserve the strict native-child failure and this bound core/stack. No RSP wrapper, SDK patch, teardown sleep or transport change is justified by an unverified causal hypothesis; identify a matching upstream fix or further direct evidence before source/dependency changes.",
+  "excluded_raw_artifacts": [
+    {
+      "path": "/var/crash/_opt_ros_humble_lib_robot_state_publisher_robot_state_publisher.1000.crash",
+      "sha256": "256dc60fdc39776fda0c726955f7ccf3dcd90e1f6e0ff0fced5003da279f33ab",
+      "git_policy": "Full apport report remains outside Git; may contain process environment or memory."
+    },
+    {
+      "path": "/tmp/mr3_v6_open303_rsp3517700/CoreDump",
+      "sha256": "256f6101a7f5482fe1c63c6cc837814b15f17e671604527b400c411676c45edf",
+      "size": 102731776,
+      "git_policy": "Raw core remains in /tmp outside Git; no memory payload copied into canonical evidence."
+    },
+    {
+      "path": "/tmp/mr3_v6_open303_rsp3517700/gdb_fault_instruction.txt",
+      "sha256": "1bd504c8bc56c72d0631b51b6077477856b49c57054c0093f0761c46c881e7b1",
+      "git_policy": "Raw registers/disassembly retained in /tmp only; canonical artifact contains a minimal fault summary."
+    }
+  ]
+}

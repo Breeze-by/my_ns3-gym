@@ -53,10 +53,10 @@ acceptance. Complete and verify each substep, commit/push, present evidence,
 and wait for the user's explicit acceptance before the next substep.
 Old P1C/P2C acceptance or PASS cannot be reused as MR3 credit.
 
-Current boundary: **MR3-P0 accepted by the user on 2026-10-14; MR3-P1A implementation and validation in progress**.
-The user explicitly authorized P1A after the correction review. Complete its
-three-robot task/measurement gates and obtain acceptance before P1B; no RL
-training or gateway work is authorized by this step.
+Current boundary: **MR3-P0 accepted by the user on 2026-10-14; MR3-P1A awaiting user acceptance**.
+P1A implementation and validation are complete as of 2026-10-15. Obtain the
+user's explicit acceptance before P1B; P1B and later stages remain unstarted.
+No RL training or gateway work is authorized by this step.
 
 ## Current implementation and evidence
 
@@ -70,9 +70,12 @@ conservative map fusion and Nav2. No three-robot RL policy or ROS/ns-3 gateway
 exists. Historical five-user/15-input/5-action toy DQN is a separate task.
 P1A now measures all six actual body collisions per robot (18 streams), with
 continuous freshness, raw publication-sequence audit and navigation terminal
-closure. Its development trials include complete 95% successes and retained
-task/infrastructure failures; the final same-freeze matrix is still pending.
-See `wireless-rl/report/20261014_mr3_p1a.md` and shared `log.md`. The historical
+closure. Freeze `5e47802` has 9 effective scene/seed slots: 6 strict successes
+and 3 peer-envelope safety failures. All 10 attempts retain one native shutdown
+infrastructure failure; a prospectively declared same-freeze replay fills its
+slot without proving the SDK crash fixed. See the
+[P1A report](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261014_mr3_p1a.md)
+and shared `log.md`. The historical
 `c9344e1` rooms/corridors seed101 90% evidence and base-only zero-contact records
 retain their original scope; they do not supply MR3 credit.
 

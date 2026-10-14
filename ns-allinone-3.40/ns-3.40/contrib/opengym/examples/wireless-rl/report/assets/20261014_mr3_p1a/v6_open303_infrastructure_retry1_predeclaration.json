@@ -1,0 +1,84 @@
+{
+  "recorded_at_utc": "2026-10-14T17:20:03.441303+00:00",
+  "type": "Prospective supplemental infrastructure replay after original9, not part of original predeclaration",
+  "stage": "MR3-P1A",
+  "source_freeze": "5e478025ede4f66420cc293655c0c03db791b2ab",
+  "maximum_additional_attempts": 1,
+  "stop_after": "Exactly one invocation regardless of outcome; never rerun a valid mission failure. A second infrastructure invalid result triggers repeated-defect pause and no ready claim.",
+  "eligible_original": {
+    "world": "p1c_open.world",
+    "seed": 303,
+    "run_id": "mr3_p1a_v6_open_20261014_162534",
+    "reason": "Original native task JSON success76.6s, then robot_state_publisher tb1 PID3517700 exit-11 after SIGINT. Frozen runner correctly rejects native termination; prior nine retained as8 valid/1 infra."
+  },
+  "reason": "First observed instance of this shutdown SIGSEGV, distinct from earlier Gazebo ABRT/Nav2 startup failures. Offline freshcore located FastDDS discovery endpoint removal during subscription teardown, mechanism root cause unresolved. No implementation/runtime parameter repair or library change before replay.",
+  "case": {
+    "world": "p1c_open.world",
+    "seeds": [
+      303
+    ],
+    "run_id": "mr3_p1a_v6_open_shutdown_retry1_20261014_172003",
+    "ros_domain_id": 100,
+    "gazebo_port": 11863,
+    "command": [
+      "/usr/bin/python3",
+      "scripts/run_ideal_baseline.py",
+      "--world",
+      "p1c_open.world",
+      "--robot-count",
+      "3",
+      "--seeds",
+      "303",
+      "--task-contract",
+      "src/multi_robot/config/mr3_p1a/open.json",
+      "--startup-timeout",
+      "300",
+      "--evaluation-wait-timeout",
+      "900",
+      "--shutdown-timeout",
+      "60",
+      "--run-id",
+      "mr3_p1a_v6_open_shutdown_retry1_20261014_172003",
+      "--output-root",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a"
+    ],
+    "task_contract_sha256": "1bb5c097cdd9a6c92ee6edb7fabcb3c844117b51d18e40641c58aad7b29af4a6",
+    "environment": {
+      "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+      "ROS_LOCALHOST_ONLY": "0",
+      "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+      "SKIP_DEFAULT_XML": "1"
+    },
+    "fastdds_profile_sha256": "8d11da75d5916ed95d8b8a6a74abecb8fe946254d615895164a63ef9f8ff9556"
+  },
+  "unchanged": {
+    "ros_domain_id": 100,
+    "gazebo_port": 11863,
+    "wall_guards": {
+      "startup": 300,
+      "evaluation": 900,
+      "shutdown": 60
+    },
+    "task_contract_sha256": "1bb5c097cdd9a6c92ee6edb7fabcb3c844117b51d18e40641c58aad7b29af4a6",
+    "fastdds_profile_sha256": "8d11da75d5916ed95d8b8a6a74abecb8fe946254d615895164a63ef9f8ff9556",
+    "runtime_component_manifest_sha256": "08f22f98c99d0e2173726990b2b0e8c65dd83a7b5eceaf6c3afde1b976a4b557",
+    "complete_native_process_restart": true,
+    "policy_physics_task_contact_qos_and_quality_gates": true,
+    "maintenance": "No additional middleware cleanup or new host settings for this replay"
+  },
+  "original_evidence_sha256": {
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/development_matrix_v6/independent_audit.json": "9a90407545c6b2a5cadf0156b8e139a9896440217b391226435ca3b7930acd82",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/development_matrix_v6/copy_hash_receipt.json": "1fe3ce960a48e9ffc1ce9475b086deb3ea5968959ed1952111be467ac30d4664",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/development_matrix_v6/open/summary.json": "6647822ec5aad9dcb0f716002fd3249d0d32981e88c5bd92d9ee2ad39f3d3fcf",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/development_matrix_v6/open/episodes/mr3_p1a_v6_open_20261014_162534_seed303.json": "c4f0deb6598ccfb45227b7511311a4cc9c34f0888a1e903175e2afe5a3a4edb9",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/development_matrix_v6/open/launch_logs/robots3_seed303_20261015-011031.log": "162b24c94b64fcf2a886f76003a1b39cf9d9d48055576afdeb8f9433ba5f807f"
+  },
+  "basis": [
+    "RESEARCH_PLAN.md:261-262 permits prospective pure infrastructure replays with originals retained; mission failures remain.",
+    "predeclared_native_plan.json source_freeze_rule requires new freeze/fullmatrix only after runtime repair.",
+    "predeclared_native_plan.json failure_rule pauses repeated infrastructure defects.",
+    "Original nine had no explicit one-replay allowance; this is transparently added before the replay, not described as pre-original authorization."
+  ],
+  "result_rule": "Any frozen-validator/native/sequence-valid result, success OR genuine task failure, is accepted as this slot supplemental measurement. If valid, report original9+supplement=10attempts including original1infra retained and9effective scene/seed slots. Never claim0 infrastructure attempts, original9 all passed, statistical reliability/generalization or SIGSEGV root cause repaired.",
+  "runtime_edits": 0
+}

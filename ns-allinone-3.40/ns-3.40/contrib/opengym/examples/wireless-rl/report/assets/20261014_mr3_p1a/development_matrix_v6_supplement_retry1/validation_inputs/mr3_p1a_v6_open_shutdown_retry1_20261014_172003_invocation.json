@@ -1,0 +1,58 @@
+{
+  "recorded_at_utc": "2026-10-14T17:21:00.802760+00:00",
+  "source_freeze": "5e478025ede4f66420cc293655c0c03db791b2ab",
+  "predeclaration_sha256": "a22af2d3cdf9c1db1af76b5ff25be7667ce8d67b5fbebf26b2fb513ed9337605",
+  "predeclaration": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/v6_open303_infrastructure_retry1_predeclaration.json",
+  "case": {
+    "world": "p1c_open.world",
+    "seeds": [
+      303
+    ],
+    "run_id": "mr3_p1a_v6_open_shutdown_retry1_20261014_172003",
+    "ros_domain_id": 100,
+    "gazebo_port": 11863,
+    "command": [
+      "/usr/bin/python3",
+      "scripts/run_ideal_baseline.py",
+      "--world",
+      "p1c_open.world",
+      "--robot-count",
+      "3",
+      "--seeds",
+      "303",
+      "--task-contract",
+      "src/multi_robot/config/mr3_p1a/open.json",
+      "--startup-timeout",
+      "300",
+      "--evaluation-wait-timeout",
+      "900",
+      "--shutdown-timeout",
+      "60",
+      "--run-id",
+      "mr3_p1a_v6_open_shutdown_retry1_20261014_172003",
+      "--output-root",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a"
+    ],
+    "task_contract_sha256": "1bb5c097cdd9a6c92ee6edb7fabcb3c844117b51d18e40641c58aad7b29af4a6",
+    "environment": {
+      "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+      "ROS_LOCALHOST_ONLY": "0",
+      "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+      "SKIP_DEFAULT_XML": "1"
+    },
+    "fastdds_profile_sha256": "8d11da75d5916ed95d8b8a6a74abecb8fe946254d615895164a63ef9f8ff9556"
+  },
+  "runtime_component_manifest_sha256": "08f22f98c99d0e2173726990b2b0e8c65dd83a7b5eceaf6c3afde1b976a4b557",
+  "selected_environment": {
+    "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+    "ROS_LOCALHOST_ONLY": "0",
+    "ROS_DOMAIN_ID": "100",
+    "GAZEBO_MASTER_URI": "http://127.0.0.1:11863",
+    "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+    "SKIP_DEFAULT_XML": "1",
+    "PYTHONNOUSERSITE": "1",
+    "TURTLEBOT3_MODEL": "waffle"
+  },
+  "attempt_number": 1,
+  "maximum_attempts": 1
+}

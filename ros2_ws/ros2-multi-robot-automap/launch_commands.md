@@ -1,6 +1,6 @@
 # 当前三机器人传统基线启动命令
 
-2026-10-14：新路线为 [MR3](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，P0已验收，当前P1A实施/验证中。
+2026-10-15：新路线为 [MR3](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，P0已验收，P1A待用户验收，P1B未开始。
 **这些命令仍启动已有前沿控制器，不是 RL**；本页没有虚构训练或 gateway 命令。
 所有推荐运行显式固定三台，活动默认已改为三台，保留1–4历史兼容。
 
@@ -129,10 +129,12 @@ open/corridors使用对应world与 `open.json` / `corridors.json`，每次新run
 不改源时间戳或.5秒门限。任务提前结束时，runner优先读取原生JSON并审计退出，
 不继续等待已经消失的topic。300墙秒约束Nav2/ROS就绪，后续时钟/监测等待仍由
 900墙秒评估保护约束。
-当前P1A最终重跑按rooms、corridors、open逐场景串行执行，每场景内部也串行重启三种子。
+P1A第六版按rooms、corridors、open逐场景串行执行，每场景内部也串行重启三种子。
 第六版计划使用独立ROS域98/99/100与Gazebo端口11861/11862/11863；保持所有任务与墙钟保护门限。
 这用于减少并发启动压力，不表示一次Nav2响应超时的根因已经确定。精确预声明见
 [native plan](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/predeclared_native_plan.json)。
+冻结`5e47802`累计10次尝试含1次保留的原生基础设施失败，得到9个有效单元；结果见
+[P1A报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261014_mr3_p1a.md)。
 合同确定任务300仿真秒，300/900墙秒分别是启动/基础设施保护，不能当成延长任务。
 参数与合同显式冲突会拒绝。任务t0为控制器仿真时间放行；启动预热地图单列，达标后的
 取消闭合计入任务截止。合同模式不接受两/四台、schema3或曾中断的监测作为成功。

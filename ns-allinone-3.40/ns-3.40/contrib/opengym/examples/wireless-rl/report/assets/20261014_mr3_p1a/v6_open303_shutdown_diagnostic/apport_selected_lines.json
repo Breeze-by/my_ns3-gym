@@ -1,0 +1,21 @@
+{
+  "source_path": "/var/log/apport.log",
+  "lines": [
+    {
+      "line": 1,
+      "text": "ERROR: apport (pid 3519968) Thu Oct 15 01:14:38 2026: called for global pid 3517700, signal 11, core limit 0, dump mode 1"
+    },
+    {
+      "line": 2,
+      "text": "ERROR: apport (pid 3519968) Thu Oct 15 01:14:38 2026: executable: /opt/ros/humble/lib/robot_state_publisher/robot_state_publisher (command line \"/opt/ros/humble/lib/robot_state_publisher/robot_state_publisher /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/urdf/turtlebot3_waffle.urdf --ros-args -r __ns:=/tb1 --params-file /tmp/launch_params_rp3q4cfx -r /tf:=tf -r /tf_static:=tf_static\")"
+    },
+    {
+      "line": 3,
+      "text": "ERROR: apport (pid 3519968) Thu Oct 15 01:14:38 2026: is_closing_session(): Could not determine DBUS socket."
+    },
+    {
+      "line": 4,
+      "text": "ERROR: apport (pid 3519968) Thu Oct 15 01:14:40 2026: wrote report /var/crash/_opt_ros_humble_lib_robot_state_publisher_robot_state_publisher.1000.crash"
+    }
+  ]
+}

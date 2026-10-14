@@ -1,0 +1,754 @@
+{
+  "all_attempt_count_original_plus_supplement": 10,
+  "all_attempt_infrastructure_invalid_measurement_count": 1,
+  "all_attempt_strict_complete_pass_count": 6,
+  "all_attempts_infrastructure_failure_rate": 0.1,
+  "attempt_count": 1,
+  "auditor_sha256": "7de721d674c61b3979030a86058037ba64e0d396289a54e599efddb276767f65",
+  "cells": [
+    {
+      "checks": {
+        "18_components_fresh_without_task_health_latch": true,
+        "18_components_valid_timestamps_at_finalization": true,
+        "all_started_native_children_exited_cleanly": true,
+        "complete_18_source_reducer_sequence_and_count_audit": true,
+        "contact_clock_bootstrap_started_before_task_without_overflow": true,
+        "controller_release_start_barrier": true,
+        "false_free_denominator_matches_declared_occupied_cells": true,
+        "finite_task_time_within_300_seconds": true,
+        "native_json_present": true,
+        "no_native_child_failure_or_escalation": true,
+        "owned_gazebo_and_stop_cli_positive_clean_exit": true,
+        "participation_flag_matches_metrics": true,
+        "quality_flag_matches_metrics": true,
+        "runner_returncode_zero": true,
+        "schema4_contract_validator": true,
+        "success_closure_timing_and_ownership": true,
+        "world_hash_matches_contract": true,
+        "world_name_matches_contract": true,
+        "zero_non_support_contact": true
+      },
+      "classification": "strict_complete_pass",
+      "clean_native_processes": [
+        [
+          "spawn_entity.py-6",
+          "3521935"
+        ],
+        [
+          "spawn_entity.py-9",
+          "3522414"
+        ],
+        [
+          "spawn_entity.py-12",
+          "3522517"
+        ],
+        [
+          "nav2_ready_gate-14",
+          "3522580"
+        ],
+        [
+          "task_evaluator-37",
+          "3523475"
+        ],
+        [
+          "mr3_gazebo_native_stop-38",
+          "3524267"
+        ],
+        [
+          "gzserver-4",
+          "3521931"
+        ],
+        [
+          "velocity_smoother-34",
+          "3523367"
+        ],
+        [
+          "waypoint_follower-33",
+          "3523365"
+        ],
+        [
+          "lifecycle_manager-35",
+          "3523369"
+        ],
+        [
+          "velocity_smoother-27",
+          "3523154"
+        ],
+        [
+          "waypoint_follower-26",
+          "3523152"
+        ],
+        [
+          "behavior_server-31",
+          "3523361"
+        ],
+        [
+          "lifecycle_manager-28",
+          "3523156"
+        ],
+        [
+          "velocity_smoother-20",
+          "3522729"
+        ],
+        [
+          "behavior_server-24",
+          "3523148"
+        ],
+        [
+          "waypoint_follower-19",
+          "3522727"
+        ],
+        [
+          "lifecycle_manager-21",
+          "3522731"
+        ],
+        [
+          "robot_state_publisher-11",
+          "3522515"
+        ],
+        [
+          "multirobot_slam_toolbox_node-13",
+          "3522519"
+        ],
+        [
+          "controller_server-29",
+          "3523357"
+        ],
+        [
+          "robot_state_publisher-8",
+          "3522412"
+        ],
+        [
+          "behavior_server-17",
+          "3522723"
+        ],
+        [
+          "control-36",
+          "3523473"
+        ],
+        [
+          "multirobot_slam_toolbox_node-10",
+          "3522416"
+        ],
+        [
+          "planner_server-23",
+          "3523146"
+        ],
+        [
+          "multirobot_slam_toolbox_node-7",
+          "3521937"
+        ],
+        [
+          "robot_state_publisher-5",
+          "3521933"
+        ],
+        [
+          "bt_navigator-32",
+          "3523363"
+        ],
+        [
+          "mr3_contact_reducer-2",
+          "3521927"
+        ],
+        [
+          "bt_navigator-25",
+          "3523150"
+        ],
+        [
+          "controller_server-22",
+          "3523144"
+        ],
+        [
+          "planner_server-16",
+          "3522721"
+        ],
+        [
+          "bt_navigator-18",
+          "3522725"
+        ],
+        [
+          "controller_server-15",
+          "3522719"
+        ],
+        [
+          "merge_map-1",
+          "3521925"
+        ],
+        [
+          "peer_obstacles-3",
+          "3521929"
+        ],
+        [
+          "planner_server-30",
+          "3523359"
+        ]
+      ],
+      "contact_clock_overflow_diagnostic": null,
+      "contact_reducer_raw_received_messages": 48894,
+      "contact_reducer_summary": {
+        "publication_sequence_supported": true,
+        "topics": {
+          "tb1/base": {
+            "compact_states": 0,
+            "published": 2761,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 2761,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2761,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/caster_back_left": {
+            "compact_states": 2725,
+            "published": 2761,
+            "publisher_count": 1,
+            "raw_states": 77751,
+            "received": 2761,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2761,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/caster_back_right": {
+            "compact_states": 2705,
+            "published": 2761,
+            "publisher_count": 1,
+            "raw_states": 84802,
+            "received": 2761,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2761,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/lidar": {
+            "compact_states": 0,
+            "published": 2761,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 2761,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2761,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/wheel_left": {
+            "compact_states": 2761,
+            "published": 2761,
+            "publisher_count": 1,
+            "raw_states": 138007,
+            "received": 2761,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2761,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb1/wheel_right": {
+            "compact_states": 2761,
+            "published": 2761,
+            "publisher_count": 1,
+            "raw_states": 138008,
+            "received": 2761,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2761,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/base": {
+            "compact_states": 0,
+            "published": 2717,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 2717,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2717,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/caster_back_left": {
+            "compact_states": 2613,
+            "published": 2717,
+            "publisher_count": 1,
+            "raw_states": 66834,
+            "received": 2717,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2717,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/caster_back_right": {
+            "compact_states": 2604,
+            "published": 2717,
+            "publisher_count": 1,
+            "raw_states": 71351,
+            "received": 2717,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2717,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/lidar": {
+            "compact_states": 0,
+            "published": 2717,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 2717,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2717,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/wheel_left": {
+            "compact_states": 2717,
+            "published": 2717,
+            "publisher_count": 1,
+            "raw_states": 135804,
+            "received": 2717,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2717,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb2/wheel_right": {
+            "compact_states": 2717,
+            "published": 2717,
+            "publisher_count": 1,
+            "raw_states": 135804,
+            "received": 2717,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2717,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/base": {
+            "compact_states": 0,
+            "published": 2671,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 2671,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2671,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/caster_back_left": {
+            "compact_states": 2613,
+            "published": 2671,
+            "publisher_count": 1,
+            "raw_states": 69803,
+            "received": 2671,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2671,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/caster_back_right": {
+            "compact_states": 2576,
+            "published": 2671,
+            "publisher_count": 1,
+            "raw_states": 75203,
+            "received": 2671,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2671,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/lidar": {
+            "compact_states": 0,
+            "published": 2671,
+            "publisher_count": 1,
+            "raw_states": 0,
+            "received": 2671,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2671,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/wheel_left": {
+            "compact_states": 2671,
+            "published": 2671,
+            "publisher_count": 1,
+            "raw_states": 133507,
+            "received": 2671,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2671,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          },
+          "tb3/wheel_right": {
+            "compact_states": 2671,
+            "published": 2671,
+            "publisher_count": 1,
+            "raw_states": 133508,
+            "received": 2671,
+            "sequence_duplicates": 0,
+            "sequence_gaps": 0,
+            "sequence_observed": 2671,
+            "sequence_regressions": 0,
+            "sequence_unavailable": 0
+          }
+        }
+      },
+      "contact_subscription_bootstrap_state": "contact_subscriptions_started",
+      "contact_subscription_started_sim_time_sec": 82.9,
+      "control_failure": "",
+      "correct_free_coverage_ratio": 0.9598511823244773,
+      "elapsed_sim_time_sec": 52.30000000000001,
+      "false_free_ratio": 0.0041918175720992625,
+      "family": "open",
+      "has_full_zero_contact_evidence": true,
+      "invocation_sha256": "7072a9e1791ab961dac08af34eb001feb56a6d2b57d3030a5985c3337316fdeb",
+      "launch_log": "open/launch_logs/robots3_seed303_20261015-012101.log",
+      "maximum_final_source_or_receipt_age_sec": 0.04800000000000182,
+      "maximum_recorded_source_or_receipt_gap_sec": 0.10000000000002274,
+      "monitoring_gate_passed": true,
+      "native_child_failures": [],
+      "native_json": "open/episodes/mr3_p1a_v6_open_shutdown_retry1_20261014_172003_seed303.json",
+      "native_json_success": true,
+      "native_json_validation_errors": [],
+      "native_termination_reason": "coverage_reached",
+      "observed_accuracy": 0.9645444905893789,
+      "occupied_iou": 0.21341463414634146,
+      "owned_gazebo_identity": [
+        [
+          "gzserver-4",
+          "3521931"
+        ]
+      ],
+      "robot_goal_counts": {
+        "tb1": 7,
+        "tb2": 5,
+        "tb3": 5
+      },
+      "robot_path_lengths_m": {
+        "tb1": 10.807571905704332,
+        "tb2": 10.999426964141259,
+        "tb3": 10.209941375914063
+      },
+      "runner_result_classification": "success",
+      "runner_returncode": 0,
+      "seed": 303,
+      "started_native_processes": [
+        [
+          "merge_map-1",
+          "3521925"
+        ],
+        [
+          "mr3_contact_reducer-2",
+          "3521927"
+        ],
+        [
+          "peer_obstacles-3",
+          "3521929"
+        ],
+        [
+          "gzserver-4",
+          "3521931"
+        ],
+        [
+          "robot_state_publisher-5",
+          "3521933"
+        ],
+        [
+          "spawn_entity.py-6",
+          "3521935"
+        ],
+        [
+          "multirobot_slam_toolbox_node-7",
+          "3521937"
+        ],
+        [
+          "robot_state_publisher-8",
+          "3522412"
+        ],
+        [
+          "spawn_entity.py-9",
+          "3522414"
+        ],
+        [
+          "multirobot_slam_toolbox_node-10",
+          "3522416"
+        ],
+        [
+          "robot_state_publisher-11",
+          "3522515"
+        ],
+        [
+          "spawn_entity.py-12",
+          "3522517"
+        ],
+        [
+          "multirobot_slam_toolbox_node-13",
+          "3522519"
+        ],
+        [
+          "nav2_ready_gate-14",
+          "3522580"
+        ],
+        [
+          "controller_server-15",
+          "3522719"
+        ],
+        [
+          "planner_server-16",
+          "3522721"
+        ],
+        [
+          "behavior_server-17",
+          "3522723"
+        ],
+        [
+          "bt_navigator-18",
+          "3522725"
+        ],
+        [
+          "waypoint_follower-19",
+          "3522727"
+        ],
+        [
+          "velocity_smoother-20",
+          "3522729"
+        ],
+        [
+          "lifecycle_manager-21",
+          "3522731"
+        ],
+        [
+          "controller_server-22",
+          "3523144"
+        ],
+        [
+          "planner_server-23",
+          "3523146"
+        ],
+        [
+          "behavior_server-24",
+          "3523148"
+        ],
+        [
+          "bt_navigator-25",
+          "3523150"
+        ],
+        [
+          "waypoint_follower-26",
+          "3523152"
+        ],
+        [
+          "velocity_smoother-27",
+          "3523154"
+        ],
+        [
+          "lifecycle_manager-28",
+          "3523156"
+        ],
+        [
+          "controller_server-29",
+          "3523357"
+        ],
+        [
+          "planner_server-30",
+          "3523359"
+        ],
+        [
+          "behavior_server-31",
+          "3523361"
+        ],
+        [
+          "bt_navigator-32",
+          "3523363"
+        ],
+        [
+          "waypoint_follower-33",
+          "3523365"
+        ],
+        [
+          "velocity_smoother-34",
+          "3523367"
+        ],
+        [
+          "lifecycle_manager-35",
+          "3523369"
+        ],
+        [
+          "control-36",
+          "3523473"
+        ],
+        [
+          "task_evaluator-37",
+          "3523475"
+        ],
+        [
+          "mr3_gazebo_native_stop-38",
+          "3524267"
+        ]
+      ],
+      "stop_cli_identity": [
+        [
+          "mr3_gazebo_native_stop-38",
+          "3524267"
+        ]
+      ],
+      "strict_complete_pass": true,
+      "task_contract_sha256": "1bb5c097cdd9a6c92ee6edb7fabcb3c844117b51d18e40641c58aad7b29af4a6",
+      "task_gate_diagnostics": [],
+      "time_to_95_coverage_sec": 40.5,
+      "valid_task_measurement": true,
+      "warnings": []
+    }
+  ],
+  "checked_at_utc": "2026-10-14T17:25:06.624315+00:00",
+  "clean_real_task_failure_count": 0,
+  "completed_families": [
+    "open"
+  ],
+  "conclusion": "Nine effective scene/seed measurements including prospective supplement; original shutdown infra remains and root cause is not proven repaired",
+  "copy_hash_receipt_sha256": "8d2a383993d67fe824d9a7e4845c96febb0b0983aa62cf87a4f23f01ab0e275d",
+  "does_not_require_nine_baseline_successes": true,
+  "effective_scene_seed_slot_count": 9,
+  "effective_slots": [
+    {
+      "classification": "task_failure_clean_exit",
+      "family": "corridors",
+      "seed": 101,
+      "source": "original_nine",
+      "strict_complete_pass": false
+    },
+    {
+      "classification": "task_failure_clean_exit",
+      "family": "corridors",
+      "seed": 202,
+      "source": "original_nine",
+      "strict_complete_pass": false
+    },
+    {
+      "classification": "strict_complete_pass",
+      "family": "corridors",
+      "seed": 303,
+      "source": "original_nine",
+      "strict_complete_pass": true
+    },
+    {
+      "classification": "strict_complete_pass",
+      "family": "open",
+      "seed": 101,
+      "source": "original_nine",
+      "strict_complete_pass": true
+    },
+    {
+      "classification": "strict_complete_pass",
+      "family": "open",
+      "seed": 202,
+      "source": "original_nine",
+      "strict_complete_pass": true
+    },
+    {
+      "classification": "strict_complete_pass",
+      "family": "open",
+      "seed": 303,
+      "source": "prospective_supplement_retry1",
+      "strict_complete_pass": true
+    },
+    {
+      "classification": "task_failure_clean_exit",
+      "family": "rooms",
+      "seed": 101,
+      "source": "original_nine",
+      "strict_complete_pass": false
+    },
+    {
+      "classification": "strict_complete_pass",
+      "family": "rooms",
+      "seed": 202,
+      "source": "original_nine",
+      "strict_complete_pass": true
+    },
+    {
+      "classification": "strict_complete_pass",
+      "family": "rooms",
+      "seed": 303,
+      "source": "original_nine",
+      "strict_complete_pass": true
+    }
+  ],
+  "effective_valid_mission_failure_count": 3,
+  "environment_binding_scope": "Selected owned launch/server process environment and profile file hashes; no live DDS transport/QoS introspection inferred",
+  "fastdds_profile_sha256": "8d11da75d5916ed95d8b8a6a74abecb8fe946254d615895164a63ef9f8ff9556",
+  "frozen_validator_sha256": "56d2ade59e804609fb1973b36b9f87fead004d44a0075b7430439da8c9be0678",
+  "infrastructure_invalid_measurement_count": 0,
+  "monitor_abort_task_failure_count": 0,
+  "monitoring_gate_failure_count": 0,
+  "native_environment_bindings": [
+    {
+      "family": "open",
+      "file": "v6_open303_infrastructure_retry1_native_environment.json",
+      "roles": {
+        "owned_gzserver_descendant": 3521931,
+        "owned_ros_launch": 3521888
+      },
+      "runtime_profile_load_observed": [
+        false,
+        false
+      ],
+      "sha256": "883bda26e93507c2c2b1efc0b025c159aee206fdf581ec31fd0bec2d88ea11f0"
+    }
+  ],
+  "native_json_count": 1,
+  "native_json_success_count": 1,
+  "native_original_hashes_verified": 5,
+  "native_shutdown_sigsegv_root_cause_repair_proven": false,
+  "original_nine_attempt_count": 9,
+  "original_nine_audit_sha256": "9a90407545c6b2a5cadf0156b8e139a9896440217b391226435ca3b7930acd82",
+  "original_nine_infrastructure_invalid_measurement_count": 1,
+  "original_nine_stage_evidence_complete_unchanged": false,
+  "original_nine_strict_complete_pass_count": 5,
+  "original_nine_valid_task_measurement_count": 8,
+  "original_three_valid_mission_failures_retained": true,
+  "originals_modified": false,
+  "planned_supplement_size": 1,
+  "policy_runs": 0,
+  "predeclaration_sha256": "a22af2d3cdf9c1db1af76b5ff25be7667ce8d67b5fbebf26b2fb513ed9337605",
+  "runner_infrastructure_failure_count": 0,
+  "runner_success_count": 1,
+  "runner_task_failure_count": 0,
+  "runtime_component_manifest_file_count": 462,
+  "runtime_component_manifest_sha256": "08f22f98c99d0e2173726990b2b0e8c65dd83a7b5eceaf6c3afde1b976a4b557",
+  "runtime_installed_identity_check_count": 16,
+  "simulator_runs": 0,
+  "source_freeze": "5e478025ede4f66420cc293655c0c03db791b2ab",
+  "stage_evidence_complete_not_user_acceptance": true,
+  "strict_complete_pass_count": 1,
+  "strict_scene_success_count": {
+    "corridors": 1,
+    "open": 3,
+    "rooms": 2
+  },
+  "supplement_is_not_part_of_original_nine_predeclaration": true,
+  "transport_policy": {
+    "ROS_LOCALHOST_ONLY": "0",
+    "SKIP_DEFAULT_XML": "1",
+    "transport": "UDPv4 interface whitelist 127.0.0.1; builtin disabled"
+  },
+  "type": "independent_prospective_supplement_and_effective_slot_audit_not_new_experiment",
+  "unresolved_effective_slots": [],
+  "unstarted_cells": [],
+  "unstarted_count": 0,
+  "valid_task_measurement_count": 1,
+  "validity_basis": "Frozen success_contract/validator/runner: failed task gates remain failed outcomes when the common-start/hash/schema/reducer/native-exit evidence is valid; health is not retroactively required of every failure result"
+}

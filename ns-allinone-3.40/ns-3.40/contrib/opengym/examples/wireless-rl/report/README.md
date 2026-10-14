@@ -9,13 +9,18 @@
 
 | 文件 | 用途 | 能提供的信用 |
 | --- | --- | --- |
-| [20261014_mr3_p1a.md](20261014_mr3_p1a.md) | 固定三台、95%任务合同、完整监测与预声明矩阵 | 实现与验证进行中；原生结果未完成，不计RL/通信成绩 |
+| [20261014_mr3_p1a.md](20261014_mr3_p1a.md) | 固定三台、95%合同；原九与一次透明补测分层审计 | 交付候选待用户验收；10尝试含1infra保留，九有效槽位6成功/3安全失败；无RL/通信信用 |
 | [20261014_mr3_route_audit.md](20261014_mr3_route_audit.md) | P0代码审计、设计取舍、直接文献/官方文档核查 | 文档与规划，**无运行实验**；MR3-P0已验收 |
 | [20261014_mr3_correction_review.md](20261014_mr3_correction_review.md) | MR3 矫正复核：接触证据范围、测试暴露、最终时钟对照 | 仅静态审计与契约补漏；不新增任务/安全性能信用，P0状态不变 |
 | [20261013_p1c_engineering_repair.md](20261013_p1c_engineering_repair.md) | main回退后的工程修复与包含失败的原件索引 | `c9344e1`基线：73组件检查、指定90%/运动/关闭回归；**无95%/RL/通信信用** |
 | [assets/20261013_p1c_engineering_repair/](assets/20261013_p1c_engineering_repair/) | 上述报告对应的选定原件与命令/哈希 | 只适用于该工程报告，不可拼接成MR3任务成绩 |
 | [log.md](../log.md) | 累计实验与路线变更记录 | 精确命令、冻结、失败/中断/成功；不是当前计划的替代品 |
 | [ARCHIVE_INDEX.json](ARCHIVE_INDEX.json) | 本轮文档取代/报告标注、原文Git对象与SHA256 | 恢复和追溯旧正文，不提供新功能信用 |
+
+P1A运行冻结为`5e478025`：[原九审计](assets/20261014_mr3_p1a/development_matrix_v6/independent_audit.json)
+保留8有效/1关闭infra，[一次前瞻性补测审计](assets/20261014_mr3_p1a/development_matrix_v6_supplement_retry1/independent_audit.json)
+补齐九个scene/seed有效测量；rooms/corridors/open严格成功分别2/3、1/3、3/3。
+原infra没有改成PASS，SIGSEGV根因未证修复；用户验收前不进入P1B。
 
 `c9344e1` 历史“零接触”仅代表 `base_collision` 传感器零记录，不证明全机体无非支撑
 接触；监测范围与本轮契约矫正以复核报告为准，历史原件保留。

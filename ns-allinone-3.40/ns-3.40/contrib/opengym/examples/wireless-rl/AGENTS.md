@@ -1,8 +1,8 @@
 # wireless-rl memory — MR3
 
-Updated 2026-10-14. The active contract is [RESEARCH_PLAN.md](RESEARCH_PLAN.md),
+Updated 2026-10-15. The active contract is [RESEARCH_PLAN.md](RESEARCH_PLAN.md),
 then [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md). Follow root AGENTS.md.
-MR3-P0 was explicitly accepted on 2026-10-14; MR3-P1A is in implementation/validation.
+MR3-P0 was explicitly accepted on 2026-10-14; MR3-P1A awaits user acceptance.
 Do not start P1B, training or gateway work before P1A user acceptance.
 This route replaces the old search/charging/rally/communication-scheduler plan.
 
@@ -20,8 +20,8 @@ Current `main` still uses handcrafted ROS frontier allocation. No robot RL,
 training environment or ROS/ns-3 gateway exists. P1A launch/check defaults are three; 1–4 compatibility remains.
 MR3 evaluation uses an explicit hash-bound 95%/300s schema4 task contract. Plans are
 not implemented features. P1A includes 18-stream body contact/freshness audit
-and development 95% successes with retained failures; final validation remains
-in progress. Current evidence is in [P1A report](report/20261014_mr3_p1a.md).
+and 9 effective slots at freeze `5e47802` from 10 attempts, including one
+retained native infrastructure failure; see the [P1A report](report/20261014_mr3_p1a.md).
 Historical runtime freeze `c9344e1` has only 90% three-robot
 rooms/corridors seed101 engineering credit, not a new 95% or multi-seed result.
 Its evidence remains in [repair report](report/20261013_p1c_engineering_repair.md).

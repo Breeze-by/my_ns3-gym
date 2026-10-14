@@ -3,7 +3,7 @@
 本组件在 `/home/zhuyulab/ns3-workspace` 单一仓库内，使用 ROS2 Humble、Gazebo Classic、
 TurtleBot3 Waffle、slam_toolbox、保守地图融合与 Nav2。当前仍由传统前沿控制器选择目标。
 新路线固定 tb1/tb2/tb3，拟由集中式 RL 策略联合选择稳定子目标，再冻结策略接 ns-3 Wi-Fi；
-**导航 RL 和 gateway 尚未实现**。MR3-P0已验收；当前推进P1A任务/测量与原生验证。
+**导航 RL 和 gateway 尚未实现**。MR3-P0已验收；P1A待用户验收，P1B及后续未开始。
 
 先读 [研究计划](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)和[检查点](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/IMPLEMENTATION_PLAN.md)，
 实际运行读 [launch_commands.md](launch_commands.md)，代码/话题说明读
@@ -23,7 +23,8 @@ scripts/                      有界 smoke 与传统理想基线 runner
 
 历史`c9344e1`的三台rooms/corridors seed101仅有90%工程回归。新隔离接触夹具v8已验证
 tb1六部件真实接触正例与三台18路持续监测；它不代表95%建图成功。schema4开发矩阵
-仍在原生验证，P1A未完成验收；导航RL、训练和通信尚未实现。
+在冻结`5e47802`得到9个有效单元，累计10次尝试含1次保留的原生基础设施失败；
+P1A待用户验收，导航RL、训练和通信尚未实现。
 [P1A当前证据](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261014_mr3_p1a.md)、
 [工程原件](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261013_p1c_engineering_repair.md)与
 [报告索引](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/README.md)保留旧结果和失败，不自动成为 MR3 信用。

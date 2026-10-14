@@ -1,0 +1,417 @@
+[INFO] [launch]: All log files can be found below /home/zhuyulab/.ros/log/2026-10-15-00-51-26-279551-zhuyulab-3507312
+[INFO] [launch]: Default logging verbosity is set to INFO
+
+[INFO] Requested robot_count = 3
+[INFO] Active robots = ['tb1', 'tb2', 'tb3']
+
+Namespace: /tb1, PARAM Config: /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/params/nav2_params_tb1_0.yaml
+
+Namespace: /tb2, PARAM Config: /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/params/nav2_params_tb2_0.yaml
+
+Namespace: /tb3, PARAM Config: /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/params/nav2_params_tb3_0.yaml
+
+Namespace: /tb1, RViz Config: /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/rviz/multi_robot_maping_tb1.rviz
+
+Namespace: /tb2, RViz Config: /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/rviz/multi_robot_maping_tb2.rviz
+
+Namespace: /tb3, RViz Config: /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/rviz/multi_robot_maping_tb3.rviz
+
+[INFO] [merge_map-1]: process started with pid [3507367]
+[INFO] [mr3_contact_reducer-2]: process started with pid [3507369]
+[INFO] [peer_obstacles-3]: process started with pid [3507371]
+[INFO] [gzserver-4]: process started with pid [3507373]
+[INFO] [robot_state_publisher-5]: process started with pid [3507375]
+[INFO] [spawn_entity.py-6]: process started with pid [3507377]
+[INFO] [multirobot_slam_toolbox_node-7]: process started with pid [3507379]
+[INFO] [launch.user]: Owned Gazebo server gzserver-4 started with pid=3507373
+[mr3_contact_reducer-2] [INFO] [1791996687.299394913] [mr3_contact_reducer]: Publication sequence auditing supported: true
+[mr3_contact_reducer-2] [INFO] [1791996687.305623249] [mr3_contact_reducer]: /tb1/collision -> /mr3_contacts/tb1/base
+[mr3_contact_reducer-2] [INFO] [1791996687.306624594] [mr3_contact_reducer]: /tb1/collision/lidar -> /mr3_contacts/tb1/lidar
+[mr3_contact_reducer-2] [INFO] [1791996687.307381514] [mr3_contact_reducer]: /tb1/collision/wheel_left -> /mr3_contacts/tb1/wheel_left
+[mr3_contact_reducer-2] [INFO] [1791996687.308129766] [mr3_contact_reducer]: /tb1/collision/wheel_right -> /mr3_contacts/tb1/wheel_right
+[mr3_contact_reducer-2] [INFO] [1791996687.309053025] [mr3_contact_reducer]: /tb1/collision/caster_back_left -> /mr3_contacts/tb1/caster_back_left
+[mr3_contact_reducer-2] [INFO] [1791996687.309800654] [mr3_contact_reducer]: /tb1/collision/caster_back_right -> /mr3_contacts/tb1/caster_back_right
+[mr3_contact_reducer-2] [INFO] [1791996687.310609660] [mr3_contact_reducer]: /tb2/collision -> /mr3_contacts/tb2/base
+[robot_state_publisher-5] [WARN] [1791996687.311144919] [tb1.robot_state_publisher]: No robot_description parameter, but command-line argument available.  Assuming argument is name of URDF file.  This backwards compatibility fallback will be removed in the future.
+[mr3_contact_reducer-2] [INFO] [1791996687.311376814] [mr3_contact_reducer]: /tb2/collision/lidar -> /mr3_contacts/tb2/lidar
+[mr3_contact_reducer-2] [INFO] [1791996687.312129429] [mr3_contact_reducer]: /tb2/collision/wheel_left -> /mr3_contacts/tb2/wheel_left
+[mr3_contact_reducer-2] [INFO] [1791996687.312874682] [mr3_contact_reducer]: /tb2/collision/wheel_right -> /mr3_contacts/tb2/wheel_right
+[mr3_contact_reducer-2] [INFO] [1791996687.313697700] [mr3_contact_reducer]: /tb2/collision/caster_back_left -> /mr3_contacts/tb2/caster_back_left
+[mr3_contact_reducer-2] [INFO] [1791996687.314436477] [mr3_contact_reducer]: /tb2/collision/caster_back_right -> /mr3_contacts/tb2/caster_back_right
+[mr3_contact_reducer-2] [INFO] [1791996687.315518879] [mr3_contact_reducer]: /tb3/collision -> /mr3_contacts/tb3/base
+[mr3_contact_reducer-2] [INFO] [1791996687.316483206] [mr3_contact_reducer]: /tb3/collision/lidar -> /mr3_contacts/tb3/lidar
+[mr3_contact_reducer-2] [INFO] [1791996687.317378113] [mr3_contact_reducer]: /tb3/collision/wheel_left -> /mr3_contacts/tb3/wheel_left
+[mr3_contact_reducer-2] [INFO] [1791996687.318141913] [mr3_contact_reducer]: /tb3/collision/wheel_right -> /mr3_contacts/tb3/wheel_right
+[mr3_contact_reducer-2] [INFO] [1791996687.318878971] [mr3_contact_reducer]: /tb3/collision/caster_back_left -> /mr3_contacts/tb3/caster_back_left
+[robot_state_publisher-5] [INFO] [1791996687.319579033] [tb1.robot_state_publisher]: got segment base_footprint
+[mr3_contact_reducer-2] [INFO] [1791996687.319634174] [mr3_contact_reducer]: /tb3/collision/caster_back_right -> /mr3_contacts/tb3/caster_back_right
+[robot_state_publisher-5] [INFO] [1791996687.319668371] [tb1.robot_state_publisher]: got segment base_link
+[robot_state_publisher-5] [INFO] [1791996687.319680156] [tb1.robot_state_publisher]: got segment base_scan
+[robot_state_publisher-5] [INFO] [1791996687.319691230] [tb1.robot_state_publisher]: got segment camera_link
+[robot_state_publisher-5] [INFO] [1791996687.319702402] [tb1.robot_state_publisher]: got segment camera_rgb_frame
+[robot_state_publisher-5] [INFO] [1791996687.319711517] [tb1.robot_state_publisher]: got segment camera_rgb_optical_frame
+[robot_state_publisher-5] [INFO] [1791996687.319721192] [tb1.robot_state_publisher]: got segment caster_back_left_link
+[robot_state_publisher-5] [INFO] [1791996687.319730527] [tb1.robot_state_publisher]: got segment caster_back_right_link
+[robot_state_publisher-5] [INFO] [1791996687.319740243] [tb1.robot_state_publisher]: got segment imu_link
+[robot_state_publisher-5] [INFO] [1791996687.319749873] [tb1.robot_state_publisher]: got segment wheel_left_link
+[robot_state_publisher-5] [INFO] [1791996687.319758627] [tb1.robot_state_publisher]: got segment wheel_right_link
+[multirobot_slam_toolbox_node-7] [INFO] [1791996687.339783716] [tb1.slam_toolbox]: Node using stack size 40000000
+[multirobot_slam_toolbox_node-7] [INFO] [1791996687.391359584] [tb1.slam_toolbox]: Using solver plugin solver_plugins::CeresSolver
+[multirobot_slam_toolbox_node-7] [INFO] [1791996687.391906133] [tb1.slam_toolbox]: CeresSolver: Using SCHUR_JACOBI preconditioner.
+[spawn_entity.py-6] [INFO] [1791996688.181916454] [spawn_entity]: Spawn Entity started
+[spawn_entity.py-6] [INFO] [1791996688.182647067] [spawn_entity]: Loading entity XML from file /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/models/turtlebot3_waffle/model.sdf
+[spawn_entity.py-6] [INFO] [1791996688.184571612] [spawn_entity]: Waiting for service /spawn_entity, timeout = 90
+[spawn_entity.py-6] [INFO] [1791996688.185243348] [spawn_entity]: Waiting for service /spawn_entity
+[gzserver-4] [INFO] [1791996689.518894354] [gazebo.gazebo_ros_state]: Publishing states of gazebo models at [/gazebo/model_states]
+[gzserver-4] [INFO] [1791996689.521047415] [gazebo.gazebo_ros_state]: Publishing states of gazebo links at [/gazebo/link_states]
+[spawn_entity.py-6] [INFO] [1791996689.696454843] [spawn_entity]: Calling service /spawn_entity
+[gzserver-4] [INFO] [1791996690.221607784] [tb1.base_contact]: Publishing contact states to [/tb1/collision]
+[gzserver-4] [INFO] [1791996690.246852594] [tb1.turtlebot3_imu]: <initial_orientation_as_reference> is unset, using default value of false to comply with REP 145 (world as orientation reference)
+[gzserver-4] [INFO] [1791996690.270833719] [tb1.lidar_contact]: Publishing contact states to [/tb1/collision/lidar]
+[gzserver-4] [INFO] [1791996690.520217138] [tb1.wheel_left_contact]: Publishing contact states to [/tb1/collision/wheel_left]
+[gzserver-4] [INFO] [1791996690.535558815] [tb1.wheel_right_contact]: Publishing contact states to [/tb1/collision/wheel_right]
+[gzserver-4] [INFO] [1791996690.551434381] [tb1.caster_back_right_contact]: Publishing contact states to [/tb1/collision/caster_back_right]
+[spawn_entity.py-6] [INFO] [1791996690.562611761] [spawn_entity]: Spawn status: SpawnEntity: Successfully spawned entity [tb1]
+[gzserver-4] [INFO] [1791996690.584084751] [tb1.caster_back_left_contact]: Publishing contact states to [/tb1/collision/caster_back_left]
+[gzserver-4] [INFO] [1791996690.711593398] [tb1.turtlebot3_diff_drive]: Wheel pair 1 separation set to [0.287000m]
+[gzserver-4] [INFO] [1791996690.711693744] [tb1.turtlebot3_diff_drive]: Wheel pair 1 diameter set to [0.066000m]
+[gzserver-4] [INFO] [1791996690.714425076] [tb1.turtlebot3_diff_drive]: Subscribed to [/tb1/cmd_vel]
+[gzserver-4] [INFO] [1791996690.720166155] [tb1.turtlebot3_diff_drive]: Advertise odometry on [/tb1/odom]
+[gzserver-4] [INFO] [1791996690.726964758] [tb1.turtlebot3_diff_drive]: Publishing odom transforms between [odom] and [base_footprint]
+[gzserver-4] [INFO] [1791996690.755795180] [tb1.turtlebot3_joint_state]: Going to publish joint [wheel_left_joint]
+[gzserver-4] [INFO] [1791996690.755875941] [tb1.turtlebot3_joint_state]: Going to publish joint [wheel_right_joint]
+[INFO] [spawn_entity.py-6]: process has finished cleanly [pid 3507377]
+[INFO] [robot_state_publisher-8]: process started with pid [3507819]
+[INFO] [spawn_entity.py-9]: process started with pid [3507821]
+[INFO] [multirobot_slam_toolbox_node-10]: process started with pid [3507823]
+[robot_state_publisher-8] [WARN] [1791996690.940852638] [tb2.robot_state_publisher]: No robot_description parameter, but command-line argument available.  Assuming argument is name of URDF file.  This backwards compatibility fallback will be removed in the future.
+[robot_state_publisher-8] [INFO] [1791996690.951066794] [tb2.robot_state_publisher]: got segment base_footprint
+[robot_state_publisher-8] [INFO] [1791996690.951153542] [tb2.robot_state_publisher]: got segment base_link
+[robot_state_publisher-8] [INFO] [1791996690.951165545] [tb2.robot_state_publisher]: got segment base_scan
+[robot_state_publisher-8] [INFO] [1791996690.951174747] [tb2.robot_state_publisher]: got segment camera_link
+[robot_state_publisher-8] [INFO] [1791996690.951184466] [tb2.robot_state_publisher]: got segment camera_rgb_frame
+[robot_state_publisher-8] [INFO] [1791996690.951193723] [tb2.robot_state_publisher]: got segment camera_rgb_optical_frame
+[robot_state_publisher-8] [INFO] [1791996690.951203862] [tb2.robot_state_publisher]: got segment caster_back_left_link
+[robot_state_publisher-8] [INFO] [1791996690.951213108] [tb2.robot_state_publisher]: got segment caster_back_right_link
+[robot_state_publisher-8] [INFO] [1791996690.951222811] [tb2.robot_state_publisher]: got segment imu_link
+[robot_state_publisher-8] [INFO] [1791996690.951232262] [tb2.robot_state_publisher]: got segment wheel_left_link
+[robot_state_publisher-8] [INFO] [1791996690.951241932] [tb2.robot_state_publisher]: got segment wheel_right_link
+[multirobot_slam_toolbox_node-7] Info: clipped range threshold to be within minimum and maximum range!
+[multirobot_slam_toolbox_node-7] [WARN] [1791996690.966118140] [tb1.slam_toolbox]: maximum laser range setting (20.0 m) exceeds the capabilities of the used Lidar (10.0 m)
+[multirobot_slam_toolbox_node-7] Registering sensor: [Custom Described Lidar : base_scan]
+[multirobot_slam_toolbox_node-10] [INFO] [1791996690.966694300] [tb2.slam_toolbox]: Node using stack size 40000000
+[multirobot_slam_toolbox_node-10] [INFO] [1791996691.037753904] [tb2.slam_toolbox]: Using solver plugin solver_plugins::CeresSolver
+[multirobot_slam_toolbox_node-10] [INFO] [1791996691.038459662] [tb2.slam_toolbox]: CeresSolver: Using SCHUR_JACOBI preconditioner.
+[spawn_entity.py-9] [INFO] [1791996691.812551767] [spawn_entity]: Spawn Entity started
+[spawn_entity.py-9] [INFO] [1791996691.813304599] [spawn_entity]: Loading entity XML from file /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/models/turtlebot3_waffle/model.sdf
+[spawn_entity.py-9] [INFO] [1791996691.815405009] [spawn_entity]: Waiting for service /spawn_entity, timeout = 90
+[spawn_entity.py-9] [INFO] [1791996691.816005578] [spawn_entity]: Waiting for service /spawn_entity
+[spawn_entity.py-9] [INFO] [1791996691.826154795] [spawn_entity]: Calling service /spawn_entity
+[gzserver-4] [INFO] [1791996693.240158868] [tb2.base_contact]: Publishing contact states to [/tb2/collision]
+[gzserver-4] [INFO] [1791996693.261587252] [tb2.turtlebot3_imu]: <initial_orientation_as_reference> is unset, using default value of false to comply with REP 145 (world as orientation reference)
+[gzserver-4] [INFO] [1791996693.286546130] [tb2.lidar_contact]: Publishing contact states to [/tb2/collision/lidar]
+[gzserver-4] [INFO] [1791996693.539764297] [tb2.wheel_left_contact]: Publishing contact states to [/tb2/collision/wheel_left]
+[gzserver-4] [INFO] [1791996693.564466166] [tb2.wheel_right_contact]: Publishing contact states to [/tb2/collision/wheel_right]
+[gzserver-4] [INFO] [1791996693.591117300] [tb2.caster_back_right_contact]: Publishing contact states to [/tb2/collision/caster_back_right]
+[spawn_entity.py-9] [INFO] [1791996693.596578418] [spawn_entity]: Spawn status: SpawnEntity: Successfully spawned entity [tb2]
+[gzserver-4] [INFO] [1791996693.620570882] [tb2.caster_back_left_contact]: Publishing contact states to [/tb2/collision/caster_back_left]
+[gzserver-4] [INFO] [1791996693.723014837] [tb2.turtlebot3_diff_drive]: Wheel pair 1 separation set to [0.287000m]
+[gzserver-4] [INFO] [1791996693.723096096] [tb2.turtlebot3_diff_drive]: Wheel pair 1 diameter set to [0.066000m]
+[gzserver-4] [INFO] [1791996693.724840016] [tb2.turtlebot3_diff_drive]: Subscribed to [/tb2/cmd_vel]
+[gzserver-4] [INFO] [1791996693.726606173] [tb2.turtlebot3_diff_drive]: Advertise odometry on [/tb2/odom]
+[gzserver-4] [INFO] [1791996693.729756413] [tb2.turtlebot3_diff_drive]: Publishing odom transforms between [odom] and [base_footprint]
+[gzserver-4] [INFO] [1791996693.755339605] [tb2.turtlebot3_joint_state]: Going to publish joint [wheel_left_joint]
+[gzserver-4] [INFO] [1791996693.755422747] [tb2.turtlebot3_joint_state]: Going to publish joint [wheel_right_joint]
+[INFO] [spawn_entity.py-9]: process has finished cleanly [pid 3507821]
+[INFO] [robot_state_publisher-11]: process started with pid [3507880]
+[INFO] [spawn_entity.py-12]: process started with pid [3507882]
+[INFO] [multirobot_slam_toolbox_node-13]: process started with pid [3507884]
+[multirobot_slam_toolbox_node-10] [INFO] [1791996693.919729920] [tb2.slam_toolbox]: Message Filter dropping message: frame 'base_scan' at time 2.643 for reason 'the timestamp on the message is earlier than all the data in the transform cache'
+[multirobot_slam_toolbox_node-10] Info: clipped range threshold to be within minimum and maximum range!
+[multirobot_slam_toolbox_node-10] [WARN] [1791996693.971519502] [tb2.slam_toolbox]: maximum laser range setting (20.0 m) exceeds the capabilities of the used Lidar (10.0 m)
+[multirobot_slam_toolbox_node-10] Registering sensor: [Custom Described Lidar : base_scan]
+[robot_state_publisher-11] [WARN] [1791996693.981365608] [tb3.robot_state_publisher]: No robot_description parameter, but command-line argument available.  Assuming argument is name of URDF file.  This backwards compatibility fallback will be removed in the future.
+[robot_state_publisher-11] [INFO] [1791996693.990711899] [tb3.robot_state_publisher]: got segment base_footprint
+[robot_state_publisher-11] [INFO] [1791996693.990799399] [tb3.robot_state_publisher]: got segment base_link
+[robot_state_publisher-11] [INFO] [1791996693.990813097] [tb3.robot_state_publisher]: got segment base_scan
+[robot_state_publisher-11] [INFO] [1791996693.990823942] [tb3.robot_state_publisher]: got segment camera_link
+[robot_state_publisher-11] [INFO] [1791996693.990834673] [tb3.robot_state_publisher]: got segment camera_rgb_frame
+[robot_state_publisher-11] [INFO] [1791996693.990845814] [tb3.robot_state_publisher]: got segment camera_rgb_optical_frame
+[robot_state_publisher-11] [INFO] [1791996693.990858466] [tb3.robot_state_publisher]: got segment caster_back_left_link
+[robot_state_publisher-11] [INFO] [1791996693.990869376] [tb3.robot_state_publisher]: got segment caster_back_right_link
+[robot_state_publisher-11] [INFO] [1791996693.990880183] [tb3.robot_state_publisher]: got segment imu_link
+[robot_state_publisher-11] [INFO] [1791996693.990891347] [tb3.robot_state_publisher]: got segment wheel_left_link
+[robot_state_publisher-11] [INFO] [1791996693.990903655] [tb3.robot_state_publisher]: got segment wheel_right_link
+[multirobot_slam_toolbox_node-13] [INFO] [1791996694.013433488] [tb3.slam_toolbox]: Node using stack size 40000000
+[multirobot_slam_toolbox_node-13] [INFO] [1791996694.090099154] [tb3.slam_toolbox]: Using solver plugin solver_plugins::CeresSolver
+[multirobot_slam_toolbox_node-13] [INFO] [1791996694.091135965] [tb3.slam_toolbox]: CeresSolver: Using SCHUR_JACOBI preconditioner.
+[spawn_entity.py-12] [INFO] [1791996694.888282346] [spawn_entity]: Spawn Entity started
+[spawn_entity.py-12] [INFO] [1791996694.889029658] [spawn_entity]: Loading entity XML from file /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/models/turtlebot3_waffle/model.sdf
+[spawn_entity.py-12] [INFO] [1791996694.891024066] [spawn_entity]: Waiting for service /spawn_entity, timeout = 90
+[spawn_entity.py-12] [INFO] [1791996694.891757694] [spawn_entity]: Waiting for service /spawn_entity
+[spawn_entity.py-12] [INFO] [1791996694.902130045] [spawn_entity]: Calling service /spawn_entity
+[gzserver-4] [INFO] [1791996696.240000049] [tb3.base_contact]: Publishing contact states to [/tb3/collision]
+[gzserver-4] [INFO] [1791996696.272095037] [tb3.turtlebot3_imu]: <initial_orientation_as_reference> is unset, using default value of false to comply with REP 145 (world as orientation reference)
+[gzserver-4] [INFO] [1791996696.312013183] [tb3.lidar_contact]: Publishing contact states to [/tb3/collision/lidar]
+[gzserver-4] [INFO] [1791996696.570091229] [tb3.wheel_left_contact]: Publishing contact states to [/tb3/collision/wheel_left]
+[gzserver-4] [INFO] [1791996696.609484902] [tb3.wheel_right_contact]: Publishing contact states to [/tb3/collision/wheel_right]
+[gzserver-4] [INFO] [1791996696.648968448] [tb3.caster_back_right_contact]: Publishing contact states to [/tb3/collision/caster_back_right]
+[spawn_entity.py-12] [INFO] [1791996696.655386313] [spawn_entity]: Spawn status: SpawnEntity: Successfully spawned entity [tb3]
+[gzserver-4] [INFO] [1791996696.689867472] [tb3.caster_back_left_contact]: Publishing contact states to [/tb3/collision/caster_back_left]
+[gzserver-4] [INFO] [1791996696.799053308] [tb3.turtlebot3_diff_drive]: Wheel pair 1 separation set to [0.287000m]
+[gzserver-4] [INFO] [1791996696.799178012] [tb3.turtlebot3_diff_drive]: Wheel pair 1 diameter set to [0.066000m]
+[gzserver-4] [INFO] [1791996696.801342329] [tb3.turtlebot3_diff_drive]: Subscribed to [/tb3/cmd_vel]
+[gzserver-4] [INFO] [1791996696.803567218] [tb3.turtlebot3_diff_drive]: Advertise odometry on [/tb3/odom]
+[gzserver-4] [INFO] [1791996696.807936704] [tb3.turtlebot3_diff_drive]: Publishing odom transforms between [odom] and [base_footprint]
+[gzserver-4] [INFO] [1791996696.849905042] [tb3.turtlebot3_joint_state]: Going to publish joint [wheel_left_joint]
+[gzserver-4] [INFO] [1791996696.849994186] [tb3.turtlebot3_joint_state]: Going to publish joint [wheel_right_joint]
+[INFO] [spawn_entity.py-12]: process has finished cleanly [pid 3507882]
+[INFO] [nav2_ready_gate-14]: process started with pid [3507996]
+[multirobot_slam_toolbox_node-13] [INFO] [1791996697.176626727] [tb3.slam_toolbox]: Message Filter dropping message: frame 'base_scan' at time 4.703 for reason 'the timestamp on the message is earlier than all the data in the transform cache'
+[multirobot_slam_toolbox_node-13] Info: clipped range threshold to be within minimum and maximum range!
+[multirobot_slam_toolbox_node-13] [WARN] [1791996697.191807873] [tb3.slam_toolbox]: maximum laser range setting (20.0 m) exceeds the capabilities of the used Lidar (10.0 m)
+[multirobot_slam_toolbox_node-13] Registering sensor: [Custom Described Lidar : base_scan]
+[nav2_ready_gate-14] [INFO] [1791996698.323859771] [nav2_ready_gate]: Waiting for Nav2: /tb1/navigate_to_pose, /tb2/navigate_to_pose, /tb3/navigate_to_pose, /tb1/controller_server/get_state (unavailable), /tb1/planner_server/get_state (unavailable), /tb1/behavior_server/get_state (unavailable), /tb1/bt_navigator/get_state (unavailable), /tb1/waypoint_follower/get_state (unavailable), /tb1/velocity_smoother/get_state (unavailable), /tb2/controller_server/get_state (unavailable), /tb2/planner_server/get_state (unavailable), /tb2/behavior_server/get_state (unavailable), /tb2/bt_navigator/get_state (unavailable), /tb2/waypoint_follower/get_state (unavailable), /tb2/velocity_smoother/get_state (unavailable), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[INFO] [controller_server-15]: process started with pid [3508027]
+[INFO] [planner_server-16]: process started with pid [3508029]
+[INFO] [behavior_server-17]: process started with pid [3508031]
+[INFO] [bt_navigator-18]: process started with pid [3508033]
+[INFO] [waypoint_follower-19]: process started with pid [3508035]
+[INFO] [velocity_smoother-20]: process started with pid [3508037]
+[INFO] [lifecycle_manager-21]: process started with pid [3508039]
+[nav2_ready_gate-14] [INFO] [1791996710.749022328] [nav2_ready_gate]: Waiting for Nav2: /tb2/navigate_to_pose, /tb3/navigate_to_pose, /tb1/controller_server/get_state (unavailable), /tb1/planner_server/get_state (unavailable), /tb1/behavior_server/get_state (unavailable), /tb1/bt_navigator/get_state (unavailable), /tb1/waypoint_follower/get_state (unavailable), /tb1/velocity_smoother/get_state (unavailable), /tb2/controller_server/get_state (unavailable), /tb2/planner_server/get_state (unavailable), /tb2/behavior_server/get_state (unavailable), /tb2/bt_navigator/get_state (unavailable), /tb2/waypoint_follower/get_state (unavailable), /tb2/velocity_smoother/get_state (unavailable), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996710.752201069] [nav2_ready_gate]: Waiting for Nav2: /tb2/navigate_to_pose, /tb3/navigate_to_pose, /tb1/controller_server/get_state (inactive), /tb1/planner_server/get_state (unavailable), /tb1/behavior_server/get_state (unavailable), /tb1/bt_navigator/get_state (unavailable), /tb1/waypoint_follower/get_state (unavailable), /tb1/velocity_smoother/get_state (unavailable), /tb2/controller_server/get_state (unavailable), /tb2/planner_server/get_state (unavailable), /tb2/behavior_server/get_state (unavailable), /tb2/bt_navigator/get_state (unavailable), /tb2/waypoint_follower/get_state (unavailable), /tb2/velocity_smoother/get_state (unavailable), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996710.758646227] [nav2_ready_gate]: Waiting for Nav2: /tb2/navigate_to_pose, /tb3/navigate_to_pose, /tb1/controller_server/get_state (inactive), /tb1/planner_server/get_state (inactive), /tb1/behavior_server/get_state (unavailable), /tb1/bt_navigator/get_state (unavailable), /tb1/waypoint_follower/get_state (unavailable), /tb1/velocity_smoother/get_state (unavailable), /tb2/controller_server/get_state (unavailable), /tb2/planner_server/get_state (unavailable), /tb2/behavior_server/get_state (unavailable), /tb2/bt_navigator/get_state (unavailable), /tb2/waypoint_follower/get_state (unavailable), /tb2/velocity_smoother/get_state (unavailable), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996710.760544443] [nav2_ready_gate]: Waiting for Nav2: /tb2/navigate_to_pose, /tb3/navigate_to_pose, /tb1/controller_server/get_state (inactive), /tb1/planner_server/get_state (inactive), /tb1/behavior_server/get_state (inactive), /tb1/bt_navigator/get_state (unavailable), /tb1/waypoint_follower/get_state (unavailable), /tb1/velocity_smoother/get_state (unavailable), /tb2/controller_server/get_state (unavailable), /tb2/planner_server/get_state (unavailable), /tb2/behavior_server/get_state (unavailable), /tb2/bt_navigator/get_state (unavailable), /tb2/waypoint_follower/get_state (unavailable), /tb2/velocity_smoother/get_state (unavailable), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996710.762409377] [nav2_ready_gate]: Waiting for Nav2: /tb2/navigate_to_pose, /tb3/navigate_to_pose, /tb1/controller_server/get_state (inactive), /tb1/planner_server/get_state (inactive), /tb1/behavior_server/get_state (inactive), /tb1/bt_navigator/get_state (unavailable), /tb1/waypoint_follower/get_state (unconfigured), /tb1/velocity_smoother/get_state (unavailable), /tb2/controller_server/get_state (unavailable), /tb2/planner_server/get_state (unavailable), /tb2/behavior_server/get_state (unavailable), /tb2/bt_navigator/get_state (unavailable), /tb2/waypoint_follower/get_state (unavailable), /tb2/velocity_smoother/get_state (unavailable), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996710.764360150] [nav2_ready_gate]: Waiting for Nav2: /tb2/navigate_to_pose, /tb3/navigate_to_pose, /tb1/controller_server/get_state (inactive), /tb1/planner_server/get_state (inactive), /tb1/behavior_server/get_state (inactive), /tb1/bt_navigator/get_state (unavailable), /tb1/waypoint_follower/get_state (unconfigured), /tb1/velocity_smoother/get_state (unconfigured), /tb2/controller_server/get_state (unavailable), /tb2/planner_server/get_state (unavailable), /tb2/behavior_server/get_state (unavailable), /tb2/bt_navigator/get_state (unavailable), /tb2/waypoint_follower/get_state (unavailable), /tb2/velocity_smoother/get_state (unavailable), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996710.851615864] [nav2_ready_gate]: Waiting for Nav2: /tb2/navigate_to_pose, /tb3/navigate_to_pose, /tb1/controller_server/get_state (inactive), /tb1/planner_server/get_state (inactive), /tb1/behavior_server/get_state (inactive), /tb1/bt_navigator/get_state (inactive), /tb1/waypoint_follower/get_state (unconfigured), /tb1/velocity_smoother/get_state (unconfigured), /tb2/controller_server/get_state (unavailable), /tb2/planner_server/get_state (unavailable), /tb2/behavior_server/get_state (unavailable), /tb2/bt_navigator/get_state (unavailable), /tb2/waypoint_follower/get_state (unavailable), /tb2/velocity_smoother/get_state (unavailable), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996711.764538709] [nav2_ready_gate]: Waiting for Nav2: /tb2/navigate_to_pose, /tb3/navigate_to_pose, /tb1/planner_server/get_state (inactive), /tb1/behavior_server/get_state (inactive), /tb1/bt_navigator/get_state (inactive), /tb1/waypoint_follower/get_state (unconfigured), /tb1/velocity_smoother/get_state (unconfigured), /tb2/controller_server/get_state (unavailable), /tb2/planner_server/get_state (unavailable), /tb2/behavior_server/get_state (unavailable), /tb2/bt_navigator/get_state (unavailable), /tb2/waypoint_follower/get_state (unavailable), /tb2/velocity_smoother/get_state (unavailable), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996711.768610091] [nav2_ready_gate]: Waiting for Nav2: /tb2/navigate_to_pose, /tb3/navigate_to_pose, /tb1/planner_server/get_state (inactive), /tb1/behavior_server/get_state (inactive), /tb1/bt_navigator/get_state (inactive), /tb1/waypoint_follower/get_state (inactive), /tb1/velocity_smoother/get_state (unconfigured), /tb2/controller_server/get_state (unavailable), /tb2/planner_server/get_state (unavailable), /tb2/behavior_server/get_state (unavailable), /tb2/bt_navigator/get_state (unavailable), /tb2/waypoint_follower/get_state (unavailable), /tb2/velocity_smoother/get_state (unavailable), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996711.770592062] [nav2_ready_gate]: Waiting for Nav2: /tb2/navigate_to_pose, /tb3/navigate_to_pose, /tb1/planner_server/get_state (inactive), /tb1/behavior_server/get_state (inactive), /tb1/bt_navigator/get_state (inactive), /tb1/waypoint_follower/get_state (inactive), /tb1/velocity_smoother/get_state (inactive), /tb2/controller_server/get_state (unavailable), /tb2/planner_server/get_state (unavailable), /tb2/behavior_server/get_state (unavailable), /tb2/bt_navigator/get_state (unavailable), /tb2/waypoint_follower/get_state (unavailable), /tb2/velocity_smoother/get_state (unavailable), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996713.381558415] [nav2_ready_gate]: Waiting for Nav2: /tb2/navigate_to_pose, /tb3/navigate_to_pose, /tb1/behavior_server/get_state (inactive), /tb1/bt_navigator/get_state (inactive), /tb1/waypoint_follower/get_state (inactive), /tb1/velocity_smoother/get_state (inactive), /tb2/controller_server/get_state (unavailable), /tb2/planner_server/get_state (unavailable), /tb2/behavior_server/get_state (unavailable), /tb2/bt_navigator/get_state (unavailable), /tb2/waypoint_follower/get_state (unavailable), /tb2/velocity_smoother/get_state (unavailable), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996713.792845481] [nav2_ready_gate]: Waiting for Nav2: /tb2/navigate_to_pose, /tb3/navigate_to_pose, /tb1/bt_navigator/get_state (inactive), /tb1/waypoint_follower/get_state (inactive), /tb1/velocity_smoother/get_state (inactive), /tb2/controller_server/get_state (unavailable), /tb2/planner_server/get_state (unavailable), /tb2/behavior_server/get_state (unavailable), /tb2/bt_navigator/get_state (unavailable), /tb2/waypoint_follower/get_state (unavailable), /tb2/velocity_smoother/get_state (unavailable), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996713.794972570] [nav2_ready_gate]: Waiting for Nav2: /tb2/navigate_to_pose, /tb3/navigate_to_pose, /tb1/waypoint_follower/get_state (inactive), /tb1/velocity_smoother/get_state (inactive), /tb2/controller_server/get_state (unavailable), /tb2/planner_server/get_state (unavailable), /tb2/behavior_server/get_state (unavailable), /tb2/bt_navigator/get_state (unavailable), /tb2/waypoint_follower/get_state (unavailable), /tb2/velocity_smoother/get_state (unavailable), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996714.808419655] [nav2_ready_gate]: Waiting for Nav2: /tb2/navigate_to_pose, /tb3/navigate_to_pose, /tb1/velocity_smoother/get_state (inactive), /tb2/controller_server/get_state (unavailable), /tb2/planner_server/get_state (unavailable), /tb2/behavior_server/get_state (unavailable), /tb2/bt_navigator/get_state (unavailable), /tb2/waypoint_follower/get_state (unavailable), /tb2/velocity_smoother/get_state (unavailable), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996714.810342130] [nav2_ready_gate]: Waiting for Nav2: /tb2/navigate_to_pose, /tb3/navigate_to_pose, /tb2/controller_server/get_state (unavailable), /tb2/planner_server/get_state (unavailable), /tb2/behavior_server/get_state (unavailable), /tb2/bt_navigator/get_state (unavailable), /tb2/waypoint_follower/get_state (unavailable), /tb2/velocity_smoother/get_state (unavailable), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[INFO] [controller_server-22]: process started with pid [3508258]
+[INFO] [planner_server-23]: process started with pid [3508260]
+[INFO] [behavior_server-24]: process started with pid [3508262]
+[INFO] [bt_navigator-25]: process started with pid [3508264]
+[INFO] [waypoint_follower-26]: process started with pid [3508266]
+[INFO] [velocity_smoother-27]: process started with pid [3508268]
+[INFO] [lifecycle_manager-28]: process started with pid [3508270]
+[nav2_ready_gate-14] [INFO] [1791996754.463073976] [nav2_ready_gate]: Waiting for Nav2: /tb3/navigate_to_pose, /tb2/controller_server/get_state (unavailable), /tb2/planner_server/get_state (unavailable), /tb2/behavior_server/get_state (unavailable), /tb2/bt_navigator/get_state (unavailable), /tb2/waypoint_follower/get_state (unavailable), /tb2/velocity_smoother/get_state (unavailable), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996754.467213323] [nav2_ready_gate]: Waiting for Nav2: /tb3/navigate_to_pose, /tb2/controller_server/get_state (unavailable), /tb2/planner_server/get_state (inactive), /tb2/behavior_server/get_state (unavailable), /tb2/bt_navigator/get_state (unavailable), /tb2/waypoint_follower/get_state (unavailable), /tb2/velocity_smoother/get_state (unavailable), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996754.473569349] [nav2_ready_gate]: Waiting for Nav2: /tb3/navigate_to_pose, /tb2/controller_server/get_state (inactive), /tb2/planner_server/get_state (inactive), /tb2/behavior_server/get_state (unavailable), /tb2/bt_navigator/get_state (unavailable), /tb2/waypoint_follower/get_state (unavailable), /tb2/velocity_smoother/get_state (unavailable), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996754.475614791] [nav2_ready_gate]: Waiting for Nav2: /tb3/navigate_to_pose, /tb2/controller_server/get_state (inactive), /tb2/planner_server/get_state (inactive), /tb2/behavior_server/get_state (inactive), /tb2/bt_navigator/get_state (unavailable), /tb2/waypoint_follower/get_state (unavailable), /tb2/velocity_smoother/get_state (unavailable), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996754.477820522] [nav2_ready_gate]: Waiting for Nav2: /tb3/navigate_to_pose, /tb2/controller_server/get_state (inactive), /tb2/planner_server/get_state (inactive), /tb2/behavior_server/get_state (inactive), /tb2/bt_navigator/get_state (unavailable), /tb2/waypoint_follower/get_state (unconfigured), /tb2/velocity_smoother/get_state (unavailable), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996754.479712726] [nav2_ready_gate]: Waiting for Nav2: /tb3/navigate_to_pose, /tb2/controller_server/get_state (inactive), /tb2/planner_server/get_state (inactive), /tb2/behavior_server/get_state (inactive), /tb2/bt_navigator/get_state (unavailable), /tb2/waypoint_follower/get_state (unconfigured), /tb2/velocity_smoother/get_state (unconfigured), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996754.625700411] [nav2_ready_gate]: Waiting for Nav2: /tb3/navigate_to_pose, /tb2/controller_server/get_state (inactive), /tb2/planner_server/get_state (inactive), /tb2/behavior_server/get_state (inactive), /tb2/bt_navigator/get_state (inactive), /tb2/waypoint_follower/get_state (unconfigured), /tb2/velocity_smoother/get_state (unconfigured), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996755.486451368] [nav2_ready_gate]: Waiting for Nav2: /tb3/navigate_to_pose, /tb2/controller_server/get_state (inactive), /tb2/planner_server/get_state (inactive), /tb2/behavior_server/get_state (inactive), /tb2/bt_navigator/get_state (inactive), /tb2/waypoint_follower/get_state (inactive), /tb2/velocity_smoother/get_state (unconfigured), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996755.488745850] [nav2_ready_gate]: Waiting for Nav2: /tb3/navigate_to_pose, /tb2/controller_server/get_state (inactive), /tb2/planner_server/get_state (inactive), /tb2/behavior_server/get_state (inactive), /tb2/bt_navigator/get_state (inactive), /tb2/waypoint_follower/get_state (inactive), /tb2/velocity_smoother/get_state (inactive), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996756.045439616] [nav2_ready_gate]: Waiting for Nav2: /tb3/navigate_to_pose, /tb2/planner_server/get_state (inactive), /tb2/behavior_server/get_state (inactive), /tb2/bt_navigator/get_state (inactive), /tb2/waypoint_follower/get_state (inactive), /tb2/velocity_smoother/get_state (inactive), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996758.495874322] [nav2_ready_gate]: Waiting for Nav2: /tb3/navigate_to_pose, /tb2/planner_server/get_state (query timed out), /tb2/behavior_server/get_state (inactive), /tb2/bt_navigator/get_state (inactive), /tb2/waypoint_follower/get_state (inactive), /tb2/velocity_smoother/get_state (inactive), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996758.680954467] [nav2_ready_gate]: Waiting for Nav2: /tb3/navigate_to_pose, /tb2/behavior_server/get_state (inactive), /tb2/bt_navigator/get_state (inactive), /tb2/waypoint_follower/get_state (inactive), /tb2/velocity_smoother/get_state (inactive), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996759.526519574] [nav2_ready_gate]: Waiting for Nav2: /tb3/navigate_to_pose, /tb2/bt_navigator/get_state (inactive), /tb2/waypoint_follower/get_state (inactive), /tb2/velocity_smoother/get_state (inactive), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996759.529850148] [nav2_ready_gate]: Waiting for Nav2: /tb3/navigate_to_pose, /tb2/waypoint_follower/get_state (inactive), /tb2/velocity_smoother/get_state (inactive), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996759.532295950] [nav2_ready_gate]: Waiting for Nav2: /tb3/navigate_to_pose, /tb2/velocity_smoother/get_state (inactive), /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996759.534430312] [nav2_ready_gate]: Waiting for Nav2: /tb3/navigate_to_pose, /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[INFO] [controller_server-29]: process started with pid [3508479]
+[INFO] [planner_server-30]: process started with pid [3508481]
+[INFO] [behavior_server-31]: process started with pid [3508483]
+[INFO] [bt_navigator-32]: process started with pid [3508485]
+[INFO] [waypoint_follower-33]: process started with pid [3508487]
+[INFO] [velocity_smoother-34]: process started with pid [3508489]
+[INFO] [lifecycle_manager-35]: process started with pid [3508491]
+[nav2_ready_gate-14] [INFO] [1791996799.745094355] [nav2_ready_gate]: Waiting for Nav2: /tb3/controller_server/get_state (unavailable), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996799.748770947] [nav2_ready_gate]: Waiting for Nav2: /tb3/controller_server/get_state (inactive), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (unavailable), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996799.754794097] [nav2_ready_gate]: Waiting for Nav2: /tb3/controller_server/get_state (inactive), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (inactive), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unavailable), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996799.756598199] [nav2_ready_gate]: Waiting for Nav2: /tb3/controller_server/get_state (inactive), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (inactive), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unconfigured), /tb3/velocity_smoother/get_state (unavailable)
+[nav2_ready_gate-14] [INFO] [1791996799.758671307] [nav2_ready_gate]: Waiting for Nav2: /tb3/controller_server/get_state (inactive), /tb3/planner_server/get_state (unavailable), /tb3/behavior_server/get_state (inactive), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unconfigured), /tb3/velocity_smoother/get_state (unconfigured)
+[planner_server-30] [WARN] [1791996799.838185733] [tb3.planner_server.rclcpp]: failed to send response to /tb3/planner_server/get_state (timeout): client will not receive response, at ./src/rmw_response.cpp:154, at ./src/rcl/service.c:314
+[nav2_ready_gate-14] [INFO] [1791996799.842245724] [nav2_ready_gate]: Waiting for Nav2: /tb3/controller_server/get_state (inactive), /tb3/planner_server/get_state (inactive), /tb3/behavior_server/get_state (inactive), /tb3/bt_navigator/get_state (unavailable), /tb3/waypoint_follower/get_state (unconfigured), /tb3/velocity_smoother/get_state (unconfigured)
+[nav2_ready_gate-14] [INFO] [1791996799.904186750] [nav2_ready_gate]: Waiting for Nav2: /tb3/controller_server/get_state (inactive), /tb3/planner_server/get_state (inactive), /tb3/behavior_server/get_state (inactive), /tb3/bt_navigator/get_state (inactive), /tb3/waypoint_follower/get_state (unconfigured), /tb3/velocity_smoother/get_state (unconfigured)
+[nav2_ready_gate-14] [INFO] [1791996800.752793380] [nav2_ready_gate]: Waiting for Nav2: /tb3/controller_server/get_state (inactive), /tb3/planner_server/get_state (inactive), /tb3/behavior_server/get_state (inactive), /tb3/bt_navigator/get_state (inactive), /tb3/waypoint_follower/get_state (inactive), /tb3/velocity_smoother/get_state (unconfigured)
+[nav2_ready_gate-14] [INFO] [1791996800.754971312] [nav2_ready_gate]: Waiting for Nav2: /tb3/controller_server/get_state (inactive), /tb3/planner_server/get_state (inactive), /tb3/behavior_server/get_state (inactive), /tb3/bt_navigator/get_state (inactive), /tb3/waypoint_follower/get_state (inactive), /tb3/velocity_smoother/get_state (inactive)
+[nav2_ready_gate-14] [INFO] [1791996801.839731004] [nav2_ready_gate]: Waiting for Nav2: /tb3/planner_server/get_state (inactive), /tb3/behavior_server/get_state (inactive), /tb3/bt_navigator/get_state (inactive), /tb3/waypoint_follower/get_state (inactive), /tb3/velocity_smoother/get_state (inactive)
+[nav2_ready_gate-14] [INFO] [1791996803.973229863] [nav2_ready_gate]: Waiting for Nav2: /tb3/behavior_server/get_state (inactive), /tb3/bt_navigator/get_state (inactive), /tb3/waypoint_follower/get_state (inactive), /tb3/velocity_smoother/get_state (inactive)
+[nav2_ready_gate-14] [INFO] [1791996804.774053554] [nav2_ready_gate]: Waiting for Nav2: /tb3/bt_navigator/get_state (inactive), /tb3/waypoint_follower/get_state (inactive), /tb3/velocity_smoother/get_state (inactive)
+[nav2_ready_gate-14] [INFO] [1791996804.776488692] [nav2_ready_gate]: Waiting for Nav2: /tb3/waypoint_follower/get_state (inactive), /tb3/velocity_smoother/get_state (inactive)
+[nav2_ready_gate-14] [INFO] [1791996804.778746250] [nav2_ready_gate]: Waiting for Nav2: /tb3/velocity_smoother/get_state (inactive)
+[nav2_ready_gate-14] [INFO] [1791996804.780892364] [nav2_ready_gate]: All 3 Nav2 stacks are active.
+[INFO] [nav2_ready_gate-14]: process has finished cleanly [pid 3507996]
+[INFO] [launch.user]: Nav2 ready; starting cooperative exploration.
+[INFO] [control-36]: process started with pid [3508590]
+[INFO] [task_evaluator-37]: process started with pid [3508592]
+[task_evaluator-37] [INFO] [1791996806.385170600] [task_evaluator]: Loaded 8 truth rectangles from /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/worlds/p1c_corridors.world
+[control-36] [INFO] [1791996806.758464079] [headquarters_control]: Central cooperative frontier coordinator initialized.
+[control-36] [INFO] [1791996811.767807032] [headquarters_control]: Exploration released at sim_time=84.000000000.
+[task_evaluator-37] [INFO] [1791996811.782050715] [task_evaluator]: Episode mr3_p1a_v6_corridors_20261014_162534_seed101 released at sim_time=84.000000000
+[control-36] [INFO] [1791996811.913613848] [headquarters_control]: Assigned tb2 to group 0 at (-0.97, 0.70); navigation=(-0.97, 0.70), path=0.78 m, gain=4580, utility=2081.5
+[control-36] [INFO] [1791996811.918282312] [headquarters_control]: Assigned tb3 to group 0 at (1.43, -0.45); navigation=(1.43, -0.45), path=1.09 m, gain=4709, utility=1687.0
+[control-36] [INFO] [1791996811.922063952] [headquarters_control]: Assigned tb1 to group 0 at (-1.32, -0.50); navigation=(-1.32, -0.50), path=1.45 m, gain=4795, utility=1345.2
+[controller_server-22] [WARN] [1791996812.120009347] [tb2.controller_server]: No goal checker was specified in parameter 'current_goal_checker'. Server will use only plugin loaded goal_checker . This warning will appear once.
+[controller_server-29] [WARN] [1791996812.123431971] [tb3.controller_server]: No goal checker was specified in parameter 'current_goal_checker'. Server will use only plugin loaded goal_checker . This warning will appear once.
+[controller_server-15] [WARN] [1791996812.127089364] [tb1.controller_server]: No goal checker was specified in parameter 'current_goal_checker'. Server will use only plugin loaded goal_checker . This warning will appear once.
+[control-36] [INFO] [1791996818.025121330] [headquarters_control]: tb3 reached cooperative frontier goal; known-cell delta=10331.
+[control-36] [INFO] [1791996819.167733121] [headquarters_control]: Assigned tb3 to group 1 at (1.40, -1.70); navigation=(1.40, -1.70), path=1.36 m, gain=3033, utility=1150.3
+[control-36] [INFO] [1791996820.822508348] [headquarters_control]: tb2 reached cooperative frontier goal; known-cell delta=10430.
+[control-36] [INFO] [1791996822.162267099] [headquarters_control]: Assigned tb2 to group 2 at (-1.34, 2.44); navigation=(-1.34, 2.44), path=1.93 m, gain=2194, utility=470.9
+[control-36] [INFO] [1791996827.878777780] [headquarters_control]: tb3 reached cooperative frontier goal; known-cell delta=3603.
+[control-36] [INFO] [1791996828.227273801] [headquarters_control]: tb1 reached cooperative frontier goal; known-cell delta=14033.
+[control-36] [INFO] [1791996828.386522649] [headquarters_control]: Assigned tb3 to group 0 at (2.19, -3.26); navigation=(2.19, -3.26), path=2.31 m, gain=2803, utility=491.0
+[control-36] [INFO] [1791996828.391732035] [headquarters_control]: Assigned tb1 to group 7 at (-1.31, -3.31); navigation=(-1.31, -3.31), path=2.83 m, gain=2106, utility=281.7
+[control-36] [INFO] [1791996834.083386688] [headquarters_control]: tb2 reached cooperative frontier goal; known-cell delta=2060.
+[control-36] [INFO] [1791996834.456286126] [headquarters_control]: Assigned tb2 to group 1 at (-2.16, 3.34); navigation=(-2.16, 3.34), path=1.71 m, gain=2234, utility=516.4
+[control-36] [INFO] [1791996843.792733500] [headquarters_control]: tb3 reached cooperative frontier goal; known-cell delta=678.
+[control-36] [INFO] [1791996845.171935593] [headquarters_control]: Assigned tb3 to group 0 at (3.17, -2.51); navigation=(3.17, -2.51), path=1.55 m, gain=3106, utility=832.7
+[control-36] [INFO] [1791996846.267052307] [headquarters_control]: tb2 reached cooperative frontier goal; known-cell delta=4616.
+[control-36] [INFO] [1791996846.702607771] [headquarters_control]: Assigned tb2 to group 0 at (-4.40, 2.59); navigation=(-4.40, 2.59), path=2.72 m, gain=4239, utility=720.2
+[control-36] [INFO] [1791996846.997537628] [headquarters_control]: tb1 reached cooperative frontier goal; known-cell delta=4879.
+[control-36] [INFO] [1791996848.275789487] [headquarters_control]: Assigned tb1 to group 1 at (4.35, -2.26); navigation=(3.10, -3.51), path=6.76 m, gain=4885, utility=239.6
+[control-36] [INFO] [1791996854.377788105] [headquarters_control]: tb3 reached cooperative frontier goal; known-cell delta=8369.
+[control-36] [INFO] [1791996854.539865025] [headquarters_control]: Assigned tb3 to group 1 at (5.90, -1.86); navigation=(5.90, -1.86), path=3.20 m, gain=2401, utility=355.4
+[control-36] [WARN] [1791996854.548261137] [headquarters_control]: Canceling tb1 goal after frontier already observed.
+[control-36] [WARN] [1791996854.634465857] [headquarters_control]: tb1 failed cooperative frontier goal with status 5.
+[control-36] [INFO] [1791996856.128090496] [headquarters_control]: Assigned tb1 to group 1 at (5.85, -3.06); navigation=(4.35, -3.61), path=6.69 m, gain=1411, utility=97.1
+[control-36] [WARN] [1791996857.552003121] [headquarters_control]: Canceling tb2 goal after frontier already observed.
+[control-36] [WARN] [1791996857.610023003] [headquarters_control]: tb2 failed cooperative frontier goal with status 5.
+[control-36] [INFO] [1791996859.200737819] [headquarters_control]: Assigned tb2 to group 0 at (-2.80, 1.99); navigation=(-2.80, 1.99), path=1.35 m, gain=729, utility=636.5
+[control-36] [WARN] [1791996860.607941002] [headquarters_control]: Canceling tb1 goal after frontier already observed.
+[control-36] [WARN] [1791996860.637278352] [headquarters_control]: tb1 failed cooperative frontier goal with status 5.
+[control-36] [INFO] [1791996862.304885081] [headquarters_control]: Assigned tb1 to group 1 at (3.14, 0.43); navigation=(3.19, -1.47), path=6.89 m, gain=2359, utility=142.4
+[control-36] [WARN] [1791996865.137764477] [headquarters_control]: Canceling tb3 goal after frontier already observed.
+[control-36] [WARN] [1791996865.152169710] [headquarters_control]: tb3 failed cooperative frontier goal with status 5.
+[control-36] [INFO] [1791996866.776496758] [headquarters_control]: Assigned tb3 to group 0 at (4.59, 0.98); navigation=(4.59, 0.98), path=3.46 m, gain=2623, utility=332.3
+[control-36] [WARN] [1791996866.785991117] [headquarters_control]: Canceling tb2 goal after frontier already observed.
+[control-36] [WARN] [1791996866.813564771] [headquarters_control]: tb2 failed cooperative frontier goal with status 5.
+[control-36] [INFO] [1791996868.291787880] [headquarters_control]: Assigned tb2 to group 1 at (-4.71, -0.92); navigation=(-4.71, -0.92), path=3.84 m, gain=2220, utility=250.1
+[control-36] [WARN] [1791996868.296846760] [headquarters_control]: Canceling tb1 goal after frontier already observed.
+[control-36] [WARN] [1791996868.317434712] [headquarters_control]: tb1 failed cooperative frontier goal with status 5.
+[control-36] [INFO] [1791996869.886308077] [headquarters_control]: Assigned tb1 to group 2 at (5.94, 2.33); navigation=(4.69, -1.12), path=8.99 m, gain=2722, utility=92.5
+[control-36] [WARN] [1791996875.768306318] [headquarters_control]: Canceling tb1 goal after frontier already observed.
+[control-36] [WARN] [1791996875.794599698] [headquarters_control]: tb1 failed cooperative frontier goal with status 5.
+[control-36] [INFO] [1791996877.427161346] [headquarters_control]: Assigned tb1 to group 27 at (2.84, 1.88); navigation=(3.04, 0.48), path=6.48 m, gain=2273, utility=111.4
+[control-36] [INFO] [1791996888.287091581] [headquarters_control]: tb3 reached cooperative frontier goal; known-cell delta=2806.
+[control-36] [WARN] [1791996889.331693308] [headquarters_control]: No cooperative frontier assignment: {'frontier_groups': 13, 'groups_with_viewpoints': 10, 'candidate_assignments': 0}
+[control-36] [INFO] [1791996891.096891949] [headquarters_control]: tb2 reached cooperative frontier goal; known-cell delta=2813.
+[control-36] [INFO] [1791996892.359983980] [headquarters_control]: Assigned tb2 to group 0 at (-3.06, -2.92); navigation=(-3.06, -2.92), path=3.81 m, gain=3169, utility=314.0
+[controller_server-22] [ERROR] [1791996895.395587605] [tb2.controller_server]: No valid trajectories out of 419! 
+[controller_server-22] [WARN] [1791996895.395844081] [tb2.controller_server]: [follow_path] [ActionServer] Aborting handle.
+[control-36] [INFO] [1791996898.253307868] [headquarters_control]: Assigned tb3 to group 0 at (3.23, 3.08); navigation=(3.23, 3.08), path=4.06 m, gain=3457, utility=325.3
+[control-36] [INFO] [1791996906.232450045] [headquarters_control]: tb1 reached cooperative frontier goal; known-cell delta=1195.
+[control-36] [WARN] [1791996907.311740761] [headquarters_control]: No cooperative frontier assignment: {'frontier_groups': 9, 'groups_with_viewpoints': 6, 'candidate_assignments': 0}
+[control-36] [INFO] [1791996908.815158621] [headquarters_control]: Assigned tb1 to group 0 at (2.68, 4.43); navigation=(2.68, 4.43), path=4.44 m, gain=1762, utility=149.9
+[control-36] [WARN] [1791996910.370549834] [headquarters_control]: tb2 failed cooperative frontier goal with status 5.
+[task_evaluator-37] [INFO] [1791996910.402517065] [task_evaluator]: Evaluation saved to /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v6_corridors_20261014_162534/episodes/mr3_p1a_v6_corridors_20261014_162534_seed101.json and /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v6_corridors_20261014_162534/episodes/mr3_p1a_v6_corridors_20261014_162534_seed101.csv
+[control-36] [WARN] [1791996910.423742233] [headquarters_control]: tb1 failed cooperative frontier goal with status 5.
+[control-36] [WARN] [1791996910.461316276] [headquarters_control]: tb3 failed cooperative frontier goal with status 5.
+[INFO] [task_evaluator-37]: process has finished cleanly [pid 3508592]
+[INFO] [mr3_gazebo_native_stop-38]: process started with pid [3509397]
+[controller_server-29] [WARN] [1791996911.134849809] [tb3.local_costmap.local_costmap]: The /tb3/peer_footprints observation buffer has not been updated for 0.60 seconds, and it should be updated every 0.50 seconds.
+[controller_server-15] [WARN] [1791996911.227253061] [tb1.local_costmap.local_costmap]: The /tb1/peer_footprints observation buffer has not been updated for 0.60 seconds, and it should be updated every 0.50 seconds.
+[controller_server-22] [WARN] [1791996911.344606824] [tb2.local_costmap.local_costmap]: The /tb2/peer_footprints observation buffer has not been updated for 0.70 seconds, and it should be updated every 0.50 seconds.
+[planner_server-16] [WARN] [1791996911.364022232] [tb1.global_costmap.global_costmap]: The /tb1/peer_footprints observation buffer has not been updated for 0.70 seconds, and it should be updated every 0.50 seconds.
+[controller_server-29] [WARN] [1791996911.467992261] [tb3.local_costmap.local_costmap]: The /tb3/peer_footprints observation buffer has not been updated for 0.80 seconds, and it should be updated every 0.50 seconds.
+[controller_server-15] [WARN] [1791996911.560582758] [tb1.local_costmap.local_costmap]: The /tb1/peer_footprints observation buffer has not been updated for 0.80 seconds, and it should be updated every 0.50 seconds.
+[controller_server-22] [WARN] [1791996911.677934001] [tb2.local_costmap.local_costmap]: The /tb2/peer_footprints observation buffer has not been updated for 0.90 seconds, and it should be updated every 0.50 seconds.
+[controller_server-29] [WARN] [1791996911.801292695] [tb3.local_costmap.local_costmap]: The /tb3/peer_footprints observation buffer has not been updated for 1.00 seconds, and it should be updated every 0.50 seconds.
+[INFO] [mr3_gazebo_native_stop-38]: process has finished cleanly [pid 3509397]
+[controller_server-15] [WARN] [1791996911.894071129] [tb1.local_costmap.local_costmap]: The /tb1/peer_footprints observation buffer has not been updated for 1.00 seconds, and it should be updated every 0.50 seconds.
+[planner_server-30] [WARN] [1791996911.945694925] [tb3.global_costmap.global_costmap]: The /tb3/peer_footprints observation buffer has not been updated for 1.00 seconds, and it should be updated every 0.50 seconds.
+[controller_server-22] [WARN] [1791996912.010968264] [tb2.local_costmap.local_costmap]: The /tb2/peer_footprints observation buffer has not been updated for 1.00 seconds, and it should be updated every 0.50 seconds.
+[controller_server-29] [WARN] [1791996912.134723847] [tb3.local_costmap.local_costmap]: The /tb3/peer_footprints observation buffer has not been updated for 1.00 seconds, and it should be updated every 0.50 seconds.
+[controller_server-15] [WARN] [1791996912.227334356] [tb1.local_costmap.local_costmap]: The /tb1/peer_footprints observation buffer has not been updated for 1.00 seconds, and it should be updated every 0.50 seconds.
+[controller_server-22] [WARN] [1791996912.344399951] [tb2.local_costmap.local_costmap]: The /tb2/peer_footprints observation buffer has not been updated for 1.00 seconds, and it should be updated every 0.50 seconds.
+[controller_server-29] [WARN] [1791996912.468283382] [tb3.local_costmap.local_costmap]: The /tb3/peer_footprints observation buffer has not been updated for 1.00 seconds, and it should be updated every 0.50 seconds.
+[controller_server-15] [WARN] [1791996912.560699763] [tb1.local_costmap.local_costmap]: The /tb1/peer_footprints observation buffer has not been updated for 1.00 seconds, and it should be updated every 0.50 seconds.
+[planner_server-23] [WARN] [1791996912.651394469] [tb2.global_costmap.global_costmap]: The /tb2/peer_footprints observation buffer has not been updated for 1.00 seconds, and it should be updated every 0.50 seconds.
+[controller_server-22] [WARN] [1791996912.677603072] [tb2.local_costmap.local_costmap]: The /tb2/peer_footprints observation buffer has not been updated for 1.00 seconds, and it should be updated every 0.50 seconds.
+[controller_server-29] [WARN] [1791996912.801561091] [tb3.local_costmap.local_costmap]: The /tb3/peer_footprints observation buffer has not been updated for 1.00 seconds, and it should be updated every 0.50 seconds.
+[controller_server-15] [WARN] [1791996912.894120579] [tb1.local_costmap.local_costmap]: The /tb1/peer_footprints observation buffer has not been updated for 1.00 seconds, and it should be updated every 0.50 seconds.
+[controller_server-22] [WARN] [1791996913.011035247] [tb2.local_costmap.local_costmap]: The /tb2/peer_footprints observation buffer has not been updated for 1.00 seconds, and it should be updated every 0.50 seconds.
+[controller_server-29] [WARN] [1791996913.134802585] [tb3.local_costmap.local_costmap]: The /tb3/peer_footprints observation buffer has not been updated for 1.00 seconds, and it should be updated every 0.50 seconds.
+[controller_server-15] [WARN] [1791996913.227269691] [tb1.local_costmap.local_costmap]: The /tb1/peer_footprints observation buffer has not been updated for 1.00 seconds, and it should be updated every 0.50 seconds.
+[controller_server-22] [WARN] [1791996913.344611775] [tb2.local_costmap.local_costmap]: The /tb2/peer_footprints observation buffer has not been updated for 1.00 seconds, and it should be updated every 0.50 seconds.
+[planner_server-16] [WARN] [1791996913.364117529] [tb1.global_costmap.global_costmap]: The /tb1/peer_footprints observation buffer has not been updated for 1.00 seconds, and it should be updated every 0.50 seconds.
+[controller_server-29] [WARN] [1791996913.469943962] [tb3.local_costmap.local_costmap]: The /tb3/peer_footprints observation buffer has not been updated for 1.00 seconds, and it should be updated every 0.50 seconds.
+[controller_server-15] [WARN] [1791996913.560471524] [tb1.local_costmap.local_costmap]: The /tb1/peer_footprints observation buffer has not been updated for 1.00 seconds, and it should be updated every 0.50 seconds.
+[controller_server-22] [WARN] [1791996913.677605063] [tb2.local_costmap.local_costmap]: The /tb2/peer_footprints observation buffer has not been updated for 1.00 seconds, and it should be updated every 0.50 seconds.
+[controller_server-29] [WARN] [1791996913.801258138] [tb3.local_costmap.local_costmap]: The /tb3/peer_footprints observation buffer has not been updated for 1.00 seconds, and it should be updated every 0.50 seconds.
+[controller_server-15] [WARN] [1791996913.893932753] [tb1.local_costmap.local_costmap]: The /tb1/peer_footprints observation buffer has not been updated for 1.00 seconds, and it should be updated every 0.50 seconds.
+[planner_server-30] [WARN] [1791996913.945629241] [tb3.global_costmap.global_costmap]: The /tb3/peer_footprints observation buffer has not been updated for 1.00 seconds, and it should be updated every 0.50 seconds.
+[controller_server-22] [WARN] [1791996914.010821166] [tb2.local_costmap.local_costmap]: The /tb2/peer_footprints observation buffer has not been updated for 1.00 seconds, and it should be updated every 0.50 seconds.
+[INFO] [gzserver-4]: process has finished cleanly [pid 3507373]
+[INFO] [control-36]: sending signal 'SIGINT' to process[control-36]
+[INFO] [lifecycle_manager-35]: sending signal 'SIGINT' to process[lifecycle_manager-35]
+[INFO] [velocity_smoother-34]: sending signal 'SIGINT' to process[velocity_smoother-34]
+[INFO] [waypoint_follower-33]: sending signal 'SIGINT' to process[waypoint_follower-33]
+[INFO] [bt_navigator-32]: sending signal 'SIGINT' to process[bt_navigator-32]
+[INFO] [behavior_server-31]: sending signal 'SIGINT' to process[behavior_server-31]
+[INFO] [planner_server-30]: sending signal 'SIGINT' to process[planner_server-30]
+[INFO] [controller_server-29]: sending signal 'SIGINT' to process[controller_server-29]
+[INFO] [lifecycle_manager-28]: sending signal 'SIGINT' to process[lifecycle_manager-28]
+[INFO] [velocity_smoother-27]: sending signal 'SIGINT' to process[velocity_smoother-27]
+[INFO] [waypoint_follower-26]: sending signal 'SIGINT' to process[waypoint_follower-26]
+[INFO] [bt_navigator-25]: sending signal 'SIGINT' to process[bt_navigator-25]
+[INFO] [behavior_server-24]: sending signal 'SIGINT' to process[behavior_server-24]
+[INFO] [planner_server-23]: sending signal 'SIGINT' to process[planner_server-23]
+[INFO] [controller_server-22]: sending signal 'SIGINT' to process[controller_server-22]
+[INFO] [lifecycle_manager-21]: sending signal 'SIGINT' to process[lifecycle_manager-21]
+[INFO] [velocity_smoother-20]: sending signal 'SIGINT' to process[velocity_smoother-20]
+[INFO] [waypoint_follower-19]: sending signal 'SIGINT' to process[waypoint_follower-19]
+[INFO] [velocity_smoother-34]: process has finished cleanly [pid 3508489]
+[INFO] [bt_navigator-18]: sending signal 'SIGINT' to process[bt_navigator-18]
+[INFO] [behavior_server-17]: sending signal 'SIGINT' to process[behavior_server-17]
+[INFO] [planner_server-16]: sending signal 'SIGINT' to process[planner_server-16]
+[INFO] [waypoint_follower-33]: process has finished cleanly [pid 3508487]
+[INFO] [controller_server-15]: sending signal 'SIGINT' to process[controller_server-15]
+[INFO] [multirobot_slam_toolbox_node-13]: sending signal 'SIGINT' to process[multirobot_slam_toolbox_node-13]
+[INFO] [robot_state_publisher-11]: sending signal 'SIGINT' to process[robot_state_publisher-11]
+[INFO] [multirobot_slam_toolbox_node-10]: sending signal 'SIGINT' to process[multirobot_slam_toolbox_node-10]
+[INFO] [lifecycle_manager-35]: process has finished cleanly [pid 3508491]
+[INFO] [velocity_smoother-27]: process has finished cleanly [pid 3508268]
+[INFO] [robot_state_publisher-8]: sending signal 'SIGINT' to process[robot_state_publisher-8]
+[INFO] [multirobot_slam_toolbox_node-7]: sending signal 'SIGINT' to process[multirobot_slam_toolbox_node-7]
+[INFO] [behavior_server-31]: process has finished cleanly [pid 3508483]
+[INFO] [waypoint_follower-26]: process has finished cleanly [pid 3508266]
+[INFO] [robot_state_publisher-5]: sending signal 'SIGINT' to process[robot_state_publisher-5]
+[INFO] [peer_obstacles-3]: sending signal 'SIGINT' to process[peer_obstacles-3]
+[INFO] [mr3_contact_reducer-2]: sending signal 'SIGINT' to process[mr3_contact_reducer-2]
+[INFO] [lifecycle_manager-28]: process has finished cleanly [pid 3508270]
+[INFO] [merge_map-1]: sending signal 'SIGINT' to process[merge_map-1]
+[INFO] [velocity_smoother-20]: process has finished cleanly [pid 3508037]
+[controller_server-29] [WARN] [1791996914.134904467] [tb3.local_costmap.local_costmap]: The /tb3/peer_footprints observation buffer has not been updated for 1.00 seconds, and it should be updated every 0.50 seconds.
+[INFO] [behavior_server-24]: process has finished cleanly [pid 3508262]
+[controller_server-15] [WARN] [1791996914.227502979] [tb1.local_costmap.local_costmap]: The /tb1/peer_footprints observation buffer has not been updated for 1.00 seconds, and it should be updated every 0.50 seconds.
+[multirobot_slam_toolbox_node-13] [INFO] [1791996914.424338373] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[robot_state_publisher-11] [INFO] [1791996914.440943285] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[multirobot_slam_toolbox_node-10] [INFO] [1791996914.457044633] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[robot_state_publisher-8] [INFO] [1791996914.474318765] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[multirobot_slam_toolbox_node-7] [INFO] [1791996914.490327682] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[robot_state_publisher-5] [INFO] [1791996914.506803245] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[mr3_contact_reducer-2] [INFO] [1791996914.539341821] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[mr3_contact_reducer-2] MR3_CONTACT_REDUCER_SUMMARY {"publication_sequence_supported":true,"topics":{"tb1/base":{"received":2992,"published":2992,"raw_states":0,"compact_states":0,"sequence_observed":2992,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb1/caster_back_left":{"received":2992,"published":2992,"raw_states":76539,"compact_states":2925,"sequence_observed":2992,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb1/caster_back_right":{"received":2992,"published":2992,"raw_states":81901,"compact_states":2880,"sequence_observed":2992,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb1/lidar":{"received":2992,"published":2992,"raw_states":0,"compact_states":0,"sequence_observed":2992,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb1/wheel_left":{"received":2992,"published":2992,"raw_states":149555,"compact_states":2992,"sequence_observed":2992,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb1/wheel_right":{"received":2992,"published":2992,"raw_states":149556,"compact_states":2992,"sequence_observed":2992,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb2/base":{"received":2948,"published":2948,"raw_states":0,"compact_states":0,"sequence_observed":2948,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb2/caster_back_left":{"received":2948,"published":2948,"raw_states":88147,"compact_states":2876,"sequence_observed":2948,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb2/caster_back_right":{"received":2948,"published":2948,"raw_states":94921,"compact_states":2854,"sequence_observed":2948,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb2/lidar":{"received":2948,"published":2948,"raw_states":0,"compact_states":0,"sequence_observed":2948,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb2/wheel_left":{"received":2948,"published":2948,"raw_states":147354,"compact_states":2948,"sequence_observed":2948,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb2/wheel_right":{"received":2948,"published":2948,"raw_states":147355,"compact_states":2948,"sequence_observed":2948,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb3/base":{"received":2907,"published":2907,"raw_states":0,"compact_states":0,"sequence_observed":2907,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb3/caster_back_left":{"received":2907,"published":2907,"raw_states":73346,"compact_states":2812,"sequence_observed":2907,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb3/caster_back_right":{"received":2907,"published":2907,"raw_states":70092,"compact_states":2721,"sequence_observed":2907,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb3/lidar":{"received":2907,"published":2907,"raw_states":0,"compact_states":0,"sequence_observed":2907,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb3/wheel_left":{"received":2907,"published":2907,"raw_states":145304,"compact_states":2907,"sequence_observed":2907,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0},"tb3/wheel_right":{"received":2907,"published":2907,"raw_states":145305,"compact_states":2907,"sequence_observed":2907,"sequence_unavailable":0,"publisher_count":1,"sequence_gaps":0,"sequence_duplicates":0,"sequence_regressions":0}}}
+[INFO] [waypoint_follower-19]: process has finished cleanly [pid 3508035]
+[INFO] [lifecycle_manager-21]: process has finished cleanly [pid 3508039]
+[INFO] [multirobot_slam_toolbox_node-13]: process has finished cleanly [pid 3507884]
+[INFO] [robot_state_publisher-11]: process has finished cleanly [pid 3507880]
+[INFO] [behavior_server-17]: process has finished cleanly [pid 3508031]
+[INFO] [multirobot_slam_toolbox_node-10]: process has finished cleanly [pid 3507823]
+[INFO] [robot_state_publisher-8]: process has finished cleanly [pid 3507819]
+[INFO] [multirobot_slam_toolbox_node-7]: process has finished cleanly [pid 3507379]
+[INFO] [robot_state_publisher-5]: process has finished cleanly [pid 3507375]
+[INFO] [controller_server-22]: process has finished cleanly [pid 3508258]
+[INFO] [bt_navigator-32]: process has finished cleanly [pid 3508485]
+[INFO] [control-36]: process has finished cleanly [pid 3508590]
+[INFO] [mr3_contact_reducer-2]: process has finished cleanly [pid 3507369]
+[INFO] [bt_navigator-25]: process has finished cleanly [pid 3508264]
+[INFO] [controller_server-29]: process has finished cleanly [pid 3508479]
+[INFO] [bt_navigator-18]: process has finished cleanly [pid 3508033]
+[INFO] [controller_server-15]: process has finished cleanly [pid 3508027]
+[INFO] [planner_server-23]: process has finished cleanly [pid 3508260]
+[INFO] [peer_obstacles-3]: process has finished cleanly [pid 3507371]
+[INFO] [merge_map-1]: process has finished cleanly [pid 3507367]
+[INFO] [planner_server-16]: process has finished cleanly [pid 3508029]
+[INFO] [planner_server-30]: process has finished cleanly [pid 3508481]

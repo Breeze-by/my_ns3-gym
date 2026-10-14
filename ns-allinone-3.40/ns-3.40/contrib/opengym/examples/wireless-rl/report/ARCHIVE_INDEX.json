@@ -144,5 +144,241 @@
       "sha256": "2e13d6b8f569eafa8ab3d6a6ee3625678d0320bbe562ecce7e6fe96421247f4a",
       "disposition": "Entry point or guide updated/scoped for MR3; original remains in the pre-route Git object."
     }
-  ]
+  ],
+  "historical_current_runtime_freeze_scope": "current_runtime_freeze preserves the c9344e1 pre-MR3 repair/baseline index meaning. It is not the MR3-P1A execution freeze; that is recorded independently below.",
+  "mr3_p1a_evidence": {
+    "recorded_date": "2026-10-15",
+    "status": "delivery_candidate_awaiting_explicit_user_acceptance",
+    "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261014_mr3_p1a.md",
+    "source_freeze": "5e478025ede4f66420cc293655c0c03db791b2ab",
+    "original_nine": {
+      "directory": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/development_matrix_v6",
+      "attempt_count": 9,
+      "raw_file_count": 33,
+      "raw_total_bytes": 995903,
+      "valid_task_measurements": 8,
+      "strict_successes": 5,
+      "valid_peer_safety_failures": 3,
+      "shutdown_infrastructure_invalid": 1,
+      "original_audit_stage_evidence_complete": false,
+      "artifacts": [
+        {
+          "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/development_matrix_v6/copy_hash_receipt.json",
+          "sha256": "1fe3ce960a48e9ffc1ce9475b086deb3ea5968959ed1952111be467ac30d4664",
+          "size_bytes": 21000,
+          "scope": "Unaltered original9 native bytes and frozen validation inputs"
+        },
+        {
+          "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/development_matrix_v6/independent_audit.json",
+          "sha256": "9a90407545c6b2a5cadf0156b8e139a9896440217b391226435ca3b7930acd82",
+          "size_bytes": 148171,
+          "scope": "Original9 remains8valid/1infra; never overwritten by supplement"
+        }
+      ]
+    },
+    "prospective_supplement": {
+      "directory": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/development_matrix_v6_supplement_retry1",
+      "attempt_count": 1,
+      "maximum_additional_attempts": 1,
+      "raw_file_count": 5,
+      "raw_total_bytes": 105878,
+      "eligible_scene_seed": "open/303",
+      "runtime_repair": false,
+      "strict_successes": 1,
+      "part_of_original_nine_predeclaration": false,
+      "artifacts": [
+        {
+          "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/v6_open303_infrastructure_retry1_predeclaration.json",
+          "sha256": "a22af2d3cdf9c1db1af76b5ff25be7667ce8d67b5fbebf26b2fb513ed9337605",
+          "size_bytes": 5166,
+          "scope": "Prospective transparent addition after original9, before this one replay; any valid mission outcome accepted"
+        },
+        {
+          "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/development_matrix_v6_supplement_retry1/copy_hash_receipt.json",
+          "sha256": "8d2a383993d67fe824d9a7e4845c96febb0b0983aa62cf87a4f23f01ab0e275d",
+          "size_bytes": 7612,
+          "scope": "Unaltered supplemental native bytes"
+        },
+        {
+          "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/development_matrix_v6_supplement_retry1/independent_audit.json",
+          "sha256": "12a32eb060b09cf8768ee50d5e5376d40895f78b76b692b7a541212706ab131d",
+          "size_bytes": 21449,
+          "scope": "Independent supplement plus effective-slot audit; original9 audit immutable"
+        }
+      ]
+    },
+    "combined_scope": {
+      "all_attempts": 10,
+      "strict_successes": 6,
+      "valid_peer_safety_failures_retained": 3,
+      "infrastructure_invalid_attempts_retained": 1,
+      "effective_scene_seed_slots": 9,
+      "effective_successes": 6,
+      "effective_failures": 3,
+      "strict_scene_success_counts": {
+        "rooms": 2,
+        "corridors": 1,
+        "open": 3
+      },
+      "native_shutdown_sigsegv_root_cause_repair_proven": false,
+      "not_claimed": [
+        "zero infrastructure attempts",
+        "original nine all valid",
+        "nine out of nine baseline success",
+        "RL reliability",
+        "unseen-layout generalization",
+        "network performance",
+        "user acceptance"
+      ]
+    },
+    "fixture_and_component_checks": [
+      {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/fixture_v8_pass_result.json",
+        "sha256": "6d617ae08907064cb8ae5dadb5526c18f404cee00ce598393434501ec36db708",
+        "size_bytes": 153494,
+        "scope": "Original3f24 fixture:tb1 six positive component specimens, all3/18 fresh streams/support; not18positive or task credit"
+      },
+      {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/fixture_v8_component_binding_matrix6.json",
+        "sha256": "d94d3a03339c1a1c4303f75b6fe7a12122916a298ab56abc435a90a393338a07",
+        "size_bytes": 4814,
+        "scope": "Nine unchanged isolated component hashes only; excludes new transport and full launch lifecycle"
+      },
+      {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/pre_matrix6_component_checks.json",
+        "sha256": "8091e06e8f3b1a8809c7a303cd99950de54911638a29b26d962617071947cbf3",
+        "size_bytes": 4662,
+        "scope": "298 checks:296pass2skip0fail/error; no native task"
+      },
+      {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/lifecycle_reply_qos_v6_static_proof.json",
+        "sha256": "69205bb1722bab445b66f39ba942d427b1d9a81e0bf00a629450d2d87e0c7162",
+        "size_bytes": 9906,
+        "scope": "Static installed SDK/RMW proof:18 exact reply writer5wallsec, defaults/16negative100ms; no runtime repair proof"
+      },
+      {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/runtime_component_manifest_matrix6.json",
+        "sha256": "08f22f98c99d0e2173726990b2b0e8c65dd83a7b5eceaf6c3afde1b976a4b557",
+        "size_bytes": 124112,
+        "scope": "462 frozen runtime files/16 installed identities"
+      },
+      {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/matrix6_initial_runtime_identity_audit.json",
+        "sha256": "5bb3c29132463190e71f2dbfba91b175494898c79940a620931ef3cf7c0db64d",
+        "size_bytes": 5887,
+        "scope": "Independent462live/445Git/16installed byte audit"
+      }
+    ],
+    "geometry_and_diagnostics": [
+      {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/development_geometry.json",
+        "sha256": "443c447a07f24f2f32388990994a757067554afd3b359862be0d557fdd067091",
+        "size_bytes": 14951,
+        "scope": "Declared full ROI offline diagnostics, not native95success"
+      },
+      {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/heldout_geometry_and_hashes.json",
+        "sha256": "4cf3635b1c15f83d1c60f327db565ed11e7bb012923c918b8acde3186198dfc1",
+        "size_bytes": 3995,
+        "scope": "Nine heldout layouts static-only; no policy/simulator runs"
+      },
+      {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/all12_vertical_slice_invariance.json",
+        "sha256": "cb2b28e659706cfd0645ac8cd04adfb88671a85cac66806e1624697e82b2d0ef",
+        "size_bytes": 14325,
+        "scope": "Exact collider slice invariance, no truth-denominator cropping"
+      },
+      {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/v6_open303_shutdown_diagnostic/receipt.json",
+        "sha256": "3971524930937c36cec107d1ba15540d3f2e8647b1786625247109926fb7b333",
+        "size_bytes": 464,
+        "scope": "Fresh crash selected diagnostic hashes; raw core not included"
+      },
+      {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/v6_open303_shutdown_diagnostic/diagnostic.json",
+        "sha256": "49caf86d2778fb457c4c34eedde04ed22ac3db39c009f71a20f924bb90d03ada",
+        "size_bytes": 9309,
+        "scope": "FastDDS endpoint-removal/subscription-destruction crash path localized; root cause not repaired"
+      }
+    ],
+    "prior_diagnostics": [
+      {
+        "version": 2,
+        "directory": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/development_matrix_v2",
+        "scope": "Original frozen diagnostic attempts only; no task cell credited to5e478 v6",
+        "artifacts": [
+          {
+            "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/development_matrix_v2/copy_hash_receipt.json",
+            "sha256": "e3bb395d74bd5b9ace8fe796b5c43665421fa09d242b594d20d5b818616b9309",
+            "size_bytes": 15048,
+            "scope": "Original native copy hashes"
+          },
+          {
+            "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/development_matrix_v2/independent_audit.json",
+            "sha256": "1baf9b5defbb0810d6900636fb3d605c2e7a5a623e07c8570ab165be862b9480",
+            "size_bytes": 87077,
+            "scope": "Original frozen diagnostic audit"
+          }
+        ]
+      },
+      {
+        "version": 3,
+        "directory": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/development_matrix_v3",
+        "scope": "Original frozen diagnostic attempts only; no task cell credited to5e478 v6",
+        "artifacts": [
+          {
+            "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/development_matrix_v3/copy_hash_receipt.json",
+            "sha256": "c9936c44cd286635085c1188c4143dd88a948bb498b80055593338f39f6a2e36",
+            "size_bytes": 7961,
+            "scope": "Original native copy hashes"
+          },
+          {
+            "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/development_matrix_v3/independent_audit.json",
+            "sha256": "cca76f002cc11ad39baeccdf25aedb1e803e00b794c234035c876df125193a9d",
+            "size_bytes": 30943,
+            "scope": "Original frozen diagnostic audit"
+          }
+        ]
+      },
+      {
+        "version": 4,
+        "directory": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/development_matrix_v4",
+        "scope": "Original frozen diagnostic attempts only; no task cell credited to5e478 v6",
+        "artifacts": [
+          {
+            "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/development_matrix_v4/copy_hash_receipt.json",
+            "sha256": "7b863ae7523e3b07cd11e0e3ae35ed3644146a305a6cbb79285d1703aeae8304",
+            "size_bytes": 8354,
+            "scope": "Original native copy hashes"
+          },
+          {
+            "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/development_matrix_v4/independent_audit.json",
+            "sha256": "64d677f6e18a55f92d8de1bae54bc3ff8a2e83602e3a279bb2a6a263825720b9",
+            "size_bytes": 32624,
+            "scope": "Original frozen diagnostic audit"
+          }
+        ]
+      },
+      {
+        "version": 5,
+        "directory": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/development_matrix_v5",
+        "scope": "Original frozen diagnostic attempts only; no task cell credited to5e478 v6",
+        "artifacts": [
+          {
+            "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/development_matrix_v5/copy_hash_receipt.json",
+            "sha256": "2e0d2832f1b9c1f7926aac94cf1239bcd87ef757e186a8666e567e9a83fcdee8",
+            "size_bytes": 14006,
+            "scope": "Original native copy hashes"
+          },
+          {
+            "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/development_matrix_v5/independent_audit.json",
+            "sha256": "b4f02481eb08c76c7d5db73d462486c26f6f01a131dd21b4dcb9dacf1d419a8b",
+            "size_bytes": 99873,
+            "scope": "Original frozen diagnostic audit"
+          }
+        ]
+      }
+    ],
+    "earliest_attempts_and_fixture_failures": "Preserved chronologically in report/20261014_mr3_p1a.md and append-only log.md, with original source/contract and paths; no old failure relabelled."
+  }
 }

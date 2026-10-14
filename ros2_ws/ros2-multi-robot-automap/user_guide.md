@@ -1,8 +1,8 @@
 # 三机器人 ROS 建图导航：当前实现指南
 
-代码核对：2026-10-14，MR3-P1A实施/验证中；`c9344e1`是历史工程冻结。
+代码核对：2026-10-15，MR3-P1A待用户验收；`c9344e1`是历史工程冻结。
 新研究契约在 [RESEARCH_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，步骤在
-[IMPLEMENTATION_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/IMPLEMENTATION_PLAN.md)。MR3-P0已验收，当前只推进P1A。
+[IMPLEMENTATION_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/IMPLEMENTATION_PLAN.md)。MR3-P0已验收，P1B及后续未开始。
 当前仍是**传统前沿控制器**，没有导航 RL、训练环境或通信 gateway。
 复制运行统一使用 [launch_commands.md](launch_commands.md)，其中全部显式传三台。
 
@@ -91,7 +91,7 @@ legacy schema3由SDF静态box碰撞在.2m切片生成.05m真值格，应用world
 相交真值、.131m名义ray切片、质量/参与/持续监测与终态闭合门禁；保存旧口径对照。
 六个真实碰撞体现在各有接触源，18源的源龄/接收龄/中断锁存独立检查，精确过滤正常
 轮/脚轮—地面支撑接触。任务从 `/exploration_start` 放行计时，达标后等目标取消终态。
-具体合同、开发/留出划分与尚待原生验证的范围见
+具体合同、开发/留出划分与验收口径见
 [任务契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_TASK_CONTRACT.md)。
 
 隔离接触夹具v8在冻结`3f24eaa`通过：tb1六部件的真实非支撑接触正例，以及三台共18路
@@ -110,9 +110,9 @@ P1A合同模式另作完整检查。CSV/JSON原子发布、拒绝覆盖同id。
 历史 [c9344e1工程证据](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261013_p1c_engineering_repair.md)：
 三台rooms/corridors、seed101、90%/180秒，60.2/81.9仿真秒达标，基体接触记录为零、干净退出。
 旧September多种子P1C/schema2成绩属于旧源码。73组件检查的PASS也不等于MR3整任务。
-新schema4的三开发图×三seed矩阵仍在验证，完整结果与原始失败见
+冻结`5e47802`累计10次尝试含1次保留的原生基础设施失败，得到9个有效单元；完整结果见
 [P1A报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261014_mr3_p1a.md)。
-当前P1A尚未完成验收，没有导航RL/通信成绩。
+当前P1A待用户验收，P1B未开始；这些是传统开发基线证据，没有导航RL/通信成绩。
 
 ## 6. 诊断原则
 

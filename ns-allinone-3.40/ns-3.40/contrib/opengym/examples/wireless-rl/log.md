@@ -2129,3 +2129,106 @@ export PYTHONNOUSERSITE=1
 - Matrix6 candidate integrated checks: canonical ROS command `source /opt/ros/humble/setup.bash; source install/setup.bash; export PYTHONNOUSERSITE=1; /usr/bin/time -f MR3_COLCON_WALL_SECONDS=%e /usr/bin/python3 /usr/bin/colcon test --packages-select multi_robot multi_robot_exploration merge_map --event-handlers console_cohesion+`; 12.8 wall sec, 297 tests = 295 pass / 2 skip / 0 failure or error. multi_robot build command `source /opt/ros/humble/setup.bash; source install/setup.bash; export PYTHONNOUSERSITE=1; /usr/bin/python3 /usr/bin/colcon build --symlink-install --packages-select multi_robot --event-handlers console_cohesion+` completed in colcon-reported 0.59 wall sec (shell setup excluded); explicit UDP-loopback XML with only18 exact lifecycle response matching profiles installed byte-identical. pre_matrix6_component_checks.json retains all changed/new runtime/test source hashes (including XML and independent environment tests), build/test invocation log hashes and three byte-identical JUnit snapshots. Native-stop dual-exit/early-zero-exit errors, terminal-JSON graceful wait, UDP profile/environment selection and strict original child/contact sequence gates are covered. No simulator was run for this receipt. fixture_v8_component_binding_matrix6.json independently confirms nine unchanged physical/contact/fixture hashes only; old middleware/full-launch environment and old mapping task cells are explicitly excluded. New UDP environment and shutdown paths still require the complete new-freeze matrix6 native validation; no proven root-cause claim.
 
 - Matrix6 candidate lifecycle response QoS static check: profile SHA=8d11da75d5916ed95d8b8a6a74abecb8fe946254d615895164a63ef9f8ff9556 adds exactly 18 named rr/tbN/six-Nav2-node/change_stateReply publisher profiles, no default/service fallback or reader profile. Actual installed FastDDS2.6.11 parser and rmw_fastrtps6.2.10 name mangling/QoS converter confirm SDK default100ms, selected5wall-sec retained after ROS service QoS conversion (RELIABLE/depth10), 16 unmatched actual control/contact/clock/get_state/request/tb4 names still100ms. UDP participant/descriptor structurally identical to f7ad7fd. Pure tests18PASS/flake8 PASS; checker creates no participant/node/endpoint or simulator. New lifecycle_reply_qos_v6_{checker.cpp,static_proof.json} retained (proof SHA=69205bb1722bab445b66f39ba942d427b1d9a81e0bf00a629450d2d87e0c7162). Existing300wall startup/300sim task/.5health/20Hz/100history/95quality/safety gates preserved. This targets the observed response matching deadline; delayed discovery cause and future native outcome remain unproven.
+
+- Prematrix6 official maintenance 2026-10-14T16:34:24.204613+00:00; freeze=5e478025ede4f66420cc293655c0c03db791b2ab; command `/usr/bin/python3 /opt/ros/humble/tools/fastdds/fastdds.py shm clean`; rc=0; stdout="shm.clean:\n3 ports in use\n3 segments in use\n0 zombie ports cleaned\n0 zombie segments cleaned\n"; stderr="". Lock-aware tool retains active resources; no manual global deletion or active owned simulator before maintenance. Canonical pre_matrix6_fastdds_cleanup.json.
+
+### MR3-P1A native attempt mr3_p1a_v6_rooms_20261014_162534
+
+- Freeze: 5e478025ede4f66420cc293655c0c03db791b2ab committed/pushed; fixed3robots, exact contract, no RL/network credit.
+- Environment: system ROS Humble; PYTHONNOUSERSITE=1; selected DDS environment={"FASTRTPS_DEFAULT_PROFILES_FILE": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml", "GAZEBO_MASTER_URI": "http://127.0.0.1:11861", "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp", "ROS_DOMAIN_ID": "98", "ROS_LOCALHOST_ONLY": "0", "SKIP_DEFAULT_XML": "1"}; ROS_DOMAIN_ID=98; GAZEBO_MASTER_URI=http://127.0.0.1:11861.
+- Command (canonical ROS root):
+
+```bash
+/usr/bin/python3 scripts/run_ideal_baseline.py --world p1c_rooms.world --robot-count 3 --seeds 101 202 303 --task-contract src/multi_robot/config/mr3_p1a/rooms.json --startup-timeout 300 --evaluation-wait-timeout 900 --shutdown-timeout 60 --run-id mr3_p1a_v6_rooms_20261014_162534 --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a
+```
+
+- Result pending at invocation; all native output retained.
+
+- Matrix6 native environment snapshot 2026-10-14T16:34:57.706182+00:00: run mr3_p1a_v6_rooms_20261014_162534, freeze 5e478025ede4f66420cc293655c0c03db791b2ab; exact owned launch pid=3498456 and descendant gzserver pid=3498510 observed via /proc only; domain=98, Gazebo port=11861, RMW=rmw_fastrtps_cpp, ROS_LOCALHOST_ONLY=0, SKIP_DEFAULT_XML=1, explicit profile SHA=8d11da75d5916ed95d8b8a6a74abecb8fe946254d615895164a63ef9f8ff9556. Both process cwd default XML files were absent at snapshot; runtime profile loading was not traced or inferred. Selective environment/argv/profile snapshot retained in matrix6_rooms_native_environment.json, SHA=5f485b465bb0530bf5700c7f97e76d9a5fc589da46ba8c1cbe6830e2996fdf69. No extra ROS CLI/participant, task credit, source edit or stop signal.
+
+
+## MR3-P1A v6 初始运行组件只读身份审计
+
+- 时间：2026-10-14T16:36:08.903453+00:00；冻结`5e478025ede4f66420cc293655c0c03db791b2ab`。
+- 命令/检查：`rtk proxy python3`离线读取`runtime_component_manifest_matrix6.json`；对462项实际文件重新计算SHA256，445项tracked source另与`git show 5e478025:<path>`字节比对，16对source/installed直接逐字节比较。
+- manifest SHA256：`08f22f98c99d0e2173726990b2b0e8c65dd83a7b5eceaf6c3afde1b976a4b557`；全部身份检查PASS。结果保存至`report/assets/20261014_mr3_p1a/matrix6_initial_runtime_identity_audit.json`，SHA256 `5bb3c29132463190e71f2dbfba91b175494898c79940a620931ef3cf7c0db64d`；从/tmp逐字节复制，未覆盖既有记录。
+- 这是元数据/身份审计，没有运行ROS、仿真或策略，没有修改运行组件或任务参数。v6原生九任务仍在进行；该身份PASS不代替任务/安全/退出验收。
+
+- Finished 2026-10-14T16:51:11.316070+00:00; rc=1; result=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v6_rooms_20261014_162534/summary.json; success=None; error=None. All native JSON/log/failures retained.
+
+### MR3-P1A native attempt mr3_p1a_v6_corridors_20261014_162534
+
+- Freeze: 5e478025ede4f66420cc293655c0c03db791b2ab committed/pushed; fixed3robots, exact contract, no RL/network credit.
+- Environment: system ROS Humble; PYTHONNOUSERSITE=1; selected DDS environment={"FASTRTPS_DEFAULT_PROFILES_FILE": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml", "GAZEBO_MASTER_URI": "http://127.0.0.1:11862", "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp", "ROS_DOMAIN_ID": "99", "ROS_LOCALHOST_ONLY": "0", "SKIP_DEFAULT_XML": "1"}; ROS_DOMAIN_ID=99; GAZEBO_MASTER_URI=http://127.0.0.1:11862.
+- Command (canonical ROS root):
+
+```bash
+/usr/bin/python3 scripts/run_ideal_baseline.py --world p1c_corridors.world --robot-count 3 --seeds 101 202 303 --task-contract src/multi_robot/config/mr3_p1a/corridors.json --startup-timeout 300 --evaluation-wait-timeout 900 --shutdown-timeout 60 --run-id mr3_p1a_v6_corridors_20261014_162534 --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a
+```
+
+- Result pending at invocation; all native output retained.
+
+- Matrix6 native environment snapshot 2026-10-14T16:51:34.587132+00:00: run mr3_p1a_v6_corridors_20261014_162534, freeze 5e478025ede4f66420cc293655c0c03db791b2ab; exact owned launch pid=3507312 and descendant gzserver pid=3507373 observed via /proc only; domain=99, Gazebo port=11862, RMW=rmw_fastrtps_cpp, ROS_LOCALHOST_ONLY=0, SKIP_DEFAULT_XML=1, explicit profile SHA=8d11da75d5916ed95d8b8a6a74abecb8fe946254d615895164a63ef9f8ff9556. Both process cwd default XML files were absent at snapshot; runtime profile loading was not traced or inferred. Selective environment/argv/profile snapshot retained in matrix6_corridors_native_environment.json, SHA=396b65e28a246a7211ab5a4759f9f7c4afeb66b137d0267bcbb3bc398690bce7. No extra ROS CLI/participant, task credit, source edit or stop signal.
+
+- Finished 2026-10-14T17:02:09.951765+00:00; rc=1; result=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v6_corridors_20261014_162534/summary.json; success=None; error=None. All native JSON/log/failures retained.
+
+### MR3-P1A native attempt mr3_p1a_v6_open_20261014_162534
+
+- Freeze: 5e478025ede4f66420cc293655c0c03db791b2ab committed/pushed; fixed3robots, exact contract, no RL/network credit.
+- Environment: system ROS Humble; PYTHONNOUSERSITE=1; selected DDS environment={"FASTRTPS_DEFAULT_PROFILES_FILE": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml", "GAZEBO_MASTER_URI": "http://127.0.0.1:11863", "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp", "ROS_DOMAIN_ID": "100", "ROS_LOCALHOST_ONLY": "0", "SKIP_DEFAULT_XML": "1"}; ROS_DOMAIN_ID=100; GAZEBO_MASTER_URI=http://127.0.0.1:11863.
+- Command (canonical ROS root):
+
+```bash
+/usr/bin/python3 scripts/run_ideal_baseline.py --world p1c_open.world --robot-count 3 --seeds 101 202 303 --task-contract src/multi_robot/config/mr3_p1a/open.json --startup-timeout 300 --evaluation-wait-timeout 900 --shutdown-timeout 60 --run-id mr3_p1a_v6_open_20261014_162534 --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a
+```
+
+- Result pending at invocation; all native output retained.
+
+- Matrix6 native environment snapshot 2026-10-14T17:03:11.440666+00:00: run mr3_p1a_v6_open_20261014_162534, freeze 5e478025ede4f66420cc293655c0c03db791b2ab; exact owned launch pid=3513498 and descendant gzserver pid=3513560 observed via /proc only; domain=100, Gazebo port=11863, RMW=rmw_fastrtps_cpp, ROS_LOCALHOST_ONLY=0, SKIP_DEFAULT_XML=1, explicit profile SHA=8d11da75d5916ed95d8b8a6a74abecb8fe946254d615895164a63ef9f8ff9556. Both process cwd default XML files were absent at snapshot; runtime profile loading was not traced or inferred. Selective environment/argv/profile snapshot retained in matrix6_open_native_environment.json, SHA=1961bc2d04a403a1ed6bb41c0b869f3eb925cc451a177aec97aba50c7f01bc87. No extra ROS CLI/participant, task credit, source edit or stop signal.
+
+- Finished 2026-10-14T17:14:41.214059+00:00; rc=1; result=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v6_open_20261014_162534/summary.json; success=None; error=None. All native JSON/log/failures retained.
+
+
+## MR3-P1A v6 原九次尝试规范归档与独立审计
+
+- 时间：2026-10-14T17:18:21.540429+00:00；固定源码`5e478025ede4f66420cc293655c0c03db791b2ab`、原manifest SHA256`08f22f98c99d0e2173726990b2b0e8c65dd83a7b5eceaf6c3afde1b976a4b557`；三图×101/202/303全部自然结束。
+- 离线命令：`rtk proxy python3 /tmp/archive_development_matrix_v6.py --base ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/development_matrix_v6`；随后同base执行`/tmp/audit_development_matrix_v6.py`。两个脚本未启动ROS/策略/仿真；原件未改，全部33原文件与规范副本重新核对SHA256。
+- 原九次JSON/CSV、九份launch日志及三个batch的summary JSON/CSV，共33文件995903字节；另保存15项冻结输入/审计脚本。复制receipt SHA256`1fe3ce960a48e9ffc1ce9475b086deb3ea5968959ed1952111be467ac30d4664`，独立auditor SHA256`fe84b94032d756b09b679b418483e078e189f6327b945d3d0ed770f1f0966cf0`。
+- 独立结论：9attempt、9JSON、6JSON success，完整strict success为5；有效任务测量8，三次peer-envelope有效安全失败保留，open303因robot_state_publisher-5 pid3517700关闭exit -11为基础设施无效。各scene已有严格成功，但原九并非九次全部有效，`stage_evidence_complete_not_user_acceptance=false`。
+- open303任务JSON的95%/质量/参与/持续18路健康/零接触/目标闭合通过，owned Gazebo与stop CLI实际退出0、reducer严格序列通过；这些不能抵消其他原生子进程-11。没有修改原任务成功字段、runner失败或门槛，也未执行补测；后续决定与原九审计分开记录。
+
+- Supplemental v6 infrastructure replay predeclared 2026-10-14T17:20:03.441303+00:00: mr3_p1a_v6_open_shutdown_retry1_20261014_172003; original9 remain5 strict successes+3 valid peer-safety failures+1 shutdown-native invalid (open303 RSP3517700 exit-11 after taskJSON success). Before replay, locked maximumONE exactsamefreeze 5e478025ede4f66420cc293655c0c03db791b2ab/open303/domain100/11863/contract/profile/guards/fullrestart; no runtime repair or cleanup, no missionfail retry. Any valid task outcome accepted; another infra triggers pause. This protocol supplement is after original9, not falsely called part of original plan. Report all10attempts and originalfault, no repaired-root-cause claim. Exactcase/hashes/evidence+rules in v6_open303_infrastructure_retry1_predeclaration.json sha=a22af2d3cdf9c1db1af76b5ff25be7667ce8d67b5fbebf26b2fb513ed9337605.
+
+### MR3-P1A supplemental pure-infrastructure replay mr3_p1a_v6_open_shutdown_retry1_20261014_172003
+
+- Freeze 5e478025ede4f66420cc293655c0c03db791b2ab still committed/pushed; original all9 remain. MaximumONE, accept any valid task result and never rerun mission failure. Full source+installed manifest and original evidence SHA verified. Exact environment={"FASTRTPS_DEFAULT_PROFILES_FILE": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml", "GAZEBO_MASTER_URI": "http://127.0.0.1:11863", "PYTHONNOUSERSITE": "1", "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp", "ROS_DOMAIN_ID": "100", "ROS_LOCALHOST_ONLY": "0", "SKIP_DEFAULT_XML": "1", "TURTLEBOT3_MODEL": "waffle"}.
+- Command (canonical ROS root):
+
+```bash
+/usr/bin/python3 scripts/run_ideal_baseline.py --world p1c_open.world --robot-count 3 --seeds 303 --task-contract src/multi_robot/config/mr3_p1a/open.json --startup-timeout 300 --evaluation-wait-timeout 900 --shutdown-timeout 60 --run-id mr3_p1a_v6_open_shutdown_retry1_20261014_172003 --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a
+```
+
+- Result pending. Runtime/source/physics/task/quality/contact/safety gates unchanged, no new middleware maintenance.
+
+- Matrix6 native environment snapshot 2026-10-14T17:21:14.421642+00:00: run mr3_p1a_v6_open_shutdown_retry1_20261014_172003, freeze 5e478025ede4f66420cc293655c0c03db791b2ab; exact owned launch pid=3521888 and descendant gzserver pid=3521931 observed via /proc only; domain=100, Gazebo port=11863, RMW=rmw_fastrtps_cpp, ROS_LOCALHOST_ONLY=0, SKIP_DEFAULT_XML=1, explicit profile SHA=8d11da75d5916ed95d8b8a6a74abecb8fe946254d615895164a63ef9f8ff9556. Both process cwd default XML files were absent at snapshot; runtime profile loading was not traced or inferred. Selective environment/argv/profile snapshot retained in v6_open303_infrastructure_retry1_native_environment.json, SHA=883bda26e93507c2c2b1efc0b025c159aee206fdf581ec31fd0bec2d88ea11f0. No extra ROS CLI/participant, task credit, source edit or stop signal.
+
+- V6 open303 shutdown diagnostic: original task JSON success/76.6simsec remains native-infrastructure-invalid after tb1 RobotStatePublisher pid3517700 SIGINT then SIGSEGV-11 (native log302/305/306/340/354/377). Fresh apport collector3519968 binds this PID/signal/time and wrote a current report; executable timestamp matches. Selected metadata and gdb thread bt (no full locals) retained in v6_open303_shutdown_diagnostic; diagnostic SHA=49caf86d2778fb457c4c34eedde04ed22ac3db39c009f71a20f924bb90d03ada, receipt SHA=3971524930937c36cec107d1ba15540d3f2e8647b1786625247109926fb7b333. Core confirms FastDDS EDP::unpairWriterProxy+406 null-listener dereference on receiver thread while main thread destroys a NodeTimeSource subscription. Exact listener-clearer/interleaving, UAF and transport root cause remain unproven; no patch/wrapper/sleep/SDK or transport change made. Full apport and raw core stay outside Git at original/tmp paths with SHA references only. No native rerun or signal was issued for this diagnosis.
+
+- Supplemental replay finished 2026-10-14T17:24:34.413002+00:00; rc=0; result=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v6_open_shutdown_retry1_20261014_172003/summary.json; episodes=[{"gazebo_seed": 303, "native_control_failure": "", "runner_returncode": 0, "success": true, "termination_reason": "coverage_reached"}]. Exactly one replay completed; original shutdown SIGSEGV retained, no root-cause cure or original9 clean claim.
+
+
+## MR3-P1A v6 单次补测规范归档、有效槽位及交付文档独立审计
+
+- 时间：2026-10-14T17:28:40.380824+00:00；运行冻结仍为`5e478025ede4f66420cc293655c0c03db791b2ab`，未修改源码/库/运行门槛。原九`independent_audit.json` SHA256`9a90407545c6b2a5cadf0156b8e139a9896440217b391226435ca3b7930acd82`及其stagefalse保持原样。
+- 离线命令：`rtk proxy python3 /tmp/archive_development_matrix_v6_supplement_retry1.py --base ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/development_matrix_v6_supplement_retry1`，随后同base运行`/tmp/audit_development_matrix_v6_supplement_retry1.py`；没有启动ROS/仿真/策略。补测原件5文件105878字节与副本全SHA一致，复制receipt SHA256`8d2a383993d67fe824d9a7e4845c96febb0b0983aa62cf87a4f23f01ab0e275d`。
+- 补测独立结论：open303 strictPASS52.3仿真秒/C.959851182，质量/三台参与/18路持续健康/零非支撑接触/目标闭合/全部原生退出通过；raw48894严格单publisher序列和输入输出对账PASS。补充审计锁定事前追加声明a22af2d...、同domain100/11863、完整原case/env/manifest/合同/世界与原九证据。
+- 两层合计10attempts：6strict、3有效peer-envelope任务失败、1原关闭infra保留；9effective scene/seed slots（rooms2/3、corridors1/3、open3/3成功）。没有把原九改成全部有效，没有重跑三次真实任务失败，没有宣称0infra或SIGSEGV机制已修复。新审计的证据完整标志不代表用户验收，不进入P1B。
+- 交付候选仅更新P1A报告、report README和ARCHIVE_INDEX；原24条历史SHA、10报告body与c934历史freeze字段语义保持。78个报告/README本地链接、24项新索引artifact SHA、原九+补测原件/输入SHA和全部462运行文件仍一致，scoped diff-check PASS。静态receipt为`report/assets/20261014_mr3_p1a/p1a_delivery_independent_checks.json`，SHA256`857eb3b22568768a21c7ced597e2b86c88d8ae27aa4f272f88a9c76f1f631573`。未提交，交由root完成统一交付；待用户明确验收。
+
+
+## MR3-P1A 活动文档状态同步（静态检查，无新实验）
+
+- 本地日期2026-10-15；已完成补充独立审计后按授权同步13份活动文档：根/组件README与AGENTS、研究/实施计划、任务契约及操作/技术指南。P0接受日期仍为2026-10-14，P1A统一为待用户验收，P1B及后续未开始。
+- 运行冻结仍为`5e478025ede4f66420cc293655c0c03db791b2ab`。文档简述累计10次尝试含1次保留的原生关闭基础设施失败、9个有效单元（6严格成功/3有效peer安全失败），详细经过留在P1A报告和原日志；不宣称原九全过、零infra尝试或SDK崩溃已根治。任务契约保留各门禁独立分类；未改变预算、阈值、划分和运行参数。
+- 静态命令：`rtk proxy /usr/bin/python3 /tmp/check_mr3_p1a_final_docs_v6.py`。逐文diff复核后，13文档68个本地链接、25段Bash语法、5条显式三机器人命令及源码参数、P0/P1A/P1B状态、`git diff --check`全部PASS；`launch_commands.md`的v6 UDP环境、精确18个5墙秒writer配置与Gazebo双退出确认说明保持冻结原文。
+- 仅文档同步及本条追加记录；没有ROS/仿真/训练/补测、运行源码或旧证据修改，没有生成最终文档receipt、没有提交。报告/索引由独立负责者更新；最终统一checker6 receipt和提交交由root执行。

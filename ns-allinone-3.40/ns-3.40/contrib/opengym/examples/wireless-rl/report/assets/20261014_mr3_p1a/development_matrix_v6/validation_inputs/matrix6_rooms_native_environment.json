@@ -1,0 +1,142 @@
+{
+  "recorded_at_utc": "2026-10-14T16:34:57.706182+00:00",
+  "source_freeze": "5e478025ede4f66420cc293655c0c03db791b2ab",
+  "observed_checkout_head": "5e478025ede4f66420cc293655c0c03db791b2ab",
+  "run_id": "mr3_p1a_v6_rooms_20261014_162534",
+  "scope": "Read-only /proc snapshot of the exact episode launch and one gzserver descendant. Only selected DDS/Gazebo variables are recorded; no ROS participant or CLI is started.",
+  "processes": [
+    {
+      "pid": 3498456,
+      "ppid": 3498453,
+      "start_ticks": 374106644,
+      "argv": [
+        "/usr/bin/python3",
+        "/opt/ros/humble/bin/ros2",
+        "launch",
+        "multi_robot",
+        "gazebo_multirobot_mapping_with_nav2.launch.py",
+        "world:=p1c_rooms.world",
+        "robot_count:=3",
+        "enable_gzclient:=false",
+        "enable_rviz:=false",
+        "enable_merge_rviz:=false",
+        "auto_save_map:=false",
+        "gazebo_seed:=101",
+        "spawn_timeout:=90.0",
+        "nav2_ready_timeout_sec:=300.0",
+        "exploration_goal_timeout_sec:=60.0",
+        "enable_task_evaluator:=true",
+        "evaluation_episode_id:=mr3_p1a_v6_rooms_20261014_162534_seed101",
+        "evaluation_output_dir:=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p1a/mr3_p1a_v6_rooms_20261014_162534/episodes",
+        "evaluation_duration_sec:=300.0",
+        "evaluation_coverage_threshold:=0.95",
+        "evaluation_contract_path:=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/rooms.json"
+      ],
+      "cmdline_sha256": "8e071b38559ed45b815a430e472df9740d889906365c575ff86f22339ad11d5d",
+      "role": "owned_ros_launch",
+      "pgid": 3498456,
+      "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+      "environment": {
+        "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+        "ROS_LOCALHOST_ONLY": "0",
+        "ROS_DOMAIN_ID": "98",
+        "GAZEBO_MASTER_URI": "http://127.0.0.1:11861",
+        "PYTHONNOUSERSITE": "1",
+        "TURTLEBOT3_MODEL": "waffle",
+        "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+        "FASTDDS_DEFAULT_PROFILES_FILE": null,
+        "RMW_FASTRTPS_USE_QOS_FROM_XML": null,
+        "SKIP_DEFAULT_XML": "1",
+        "RMW_FASTRTPS_PUBLICATION_MODE": null,
+        "CYCLONEDDS_URI": null,
+        "FASTDDS_ENVIRONMENT_FILE": null,
+        "ROS_DISCOVERY_SERVER": null,
+        "ROS_SUPER_CLIENT": null
+      },
+      "explicit_profile_files": {
+        "FASTRTPS_DEFAULT_PROFILES_FILE": {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+          "exists": true,
+          "sha256": "8d11da75d5916ed95d8b8a6a74abecb8fe946254d615895164a63ef9f8ff9556"
+        }
+      },
+      "default_profile_files": {
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/DEFAULT_FASTRTPS_PROFILES.xml": {
+          "exists": false,
+          "sha256": null,
+          "runtime_load_status": "not_measured"
+        },
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/DEFAULT_FASTDDS_PROFILES.xml": {
+          "exists": false,
+          "sha256": null,
+          "runtime_load_status": "not_measured"
+        }
+      },
+      "runtime_profile_load_observed": false
+    },
+    {
+      "pid": 3498510,
+      "ppid": 3498456,
+      "start_ticks": 374106799,
+      "argv": [
+        "gzserver",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/worlds/p1c_rooms.world",
+        "--seed=101",
+        "-slibgazebo_ros_init.so",
+        "-slibgazebo_ros_factory.so",
+        "-slibgazebo_ros_force_system.so"
+      ],
+      "cmdline_sha256": "892a56b771326f46c858fd65f751b8d5b7c07ae91950709bb1001f2f04017efe",
+      "role": "owned_gzserver_descendant",
+      "pgid": 3498456,
+      "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+      "environment": {
+        "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+        "ROS_LOCALHOST_ONLY": "0",
+        "ROS_DOMAIN_ID": "98",
+        "GAZEBO_MASTER_URI": "http://127.0.0.1:11861",
+        "PYTHONNOUSERSITE": "1",
+        "TURTLEBOT3_MODEL": "waffle",
+        "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+        "FASTDDS_DEFAULT_PROFILES_FILE": null,
+        "RMW_FASTRTPS_USE_QOS_FROM_XML": null,
+        "SKIP_DEFAULT_XML": "1",
+        "RMW_FASTRTPS_PUBLICATION_MODE": null,
+        "CYCLONEDDS_URI": null,
+        "FASTDDS_ENVIRONMENT_FILE": null,
+        "ROS_DISCOVERY_SERVER": null,
+        "ROS_SUPER_CLIENT": null
+      },
+      "explicit_profile_files": {
+        "FASTRTPS_DEFAULT_PROFILES_FILE": {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+          "exists": true,
+          "sha256": "8d11da75d5916ed95d8b8a6a74abecb8fe946254d615895164a63ef9f8ff9556"
+        }
+      },
+      "default_profile_files": {
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/DEFAULT_FASTRTPS_PROFILES.xml": {
+          "exists": false,
+          "sha256": null,
+          "runtime_load_status": "not_measured"
+        },
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/DEFAULT_FASTDDS_PROFILES.xml": {
+          "exists": false,
+          "sha256": null,
+          "runtime_load_status": "not_measured"
+        }
+      },
+      "runtime_profile_load_observed": false
+    }
+  ],
+  "limitations": [
+    "File absence and hashes are observed at snapshot time only; earlier file existence or runtime profile loading is not traced or inferred.",
+    "SKIP_DEFAULT_XML=1 and the explicit path are observed process environment values. Installed SDK parser proof is separate; this snapshot is not live DDS transport/QoS introspection.",
+    "No task success, contact sequence continuity or native shutdown result is established by this snapshot."
+  ],
+  "snapshot_tool": {
+    "path": "/tmp/mr3_native_environment_snapshot_v6.py",
+    "sha256": "c77bba533ebeb8018ceff84099cc8fc15f5fedfca371b441e7fe6946fe7c314b"
+  },
+  "result": "PASS"
+}

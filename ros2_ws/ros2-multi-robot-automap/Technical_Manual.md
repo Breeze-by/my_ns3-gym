@@ -1,6 +1,6 @@
 # 当前 ROS 技术参考与边界
 
-2026-10-14，P1A实施/验证中；`81b2f8b`/`c9344e1`是历史审计/工程冻结。
+2026-10-15，P1A待用户验收，P1B未开始；`81b2f8b`/`c9344e1`是历史审计/工程冻结。
 本文件取代旧分散四台/旧 ros2_humble 路径/过时行号样例；原文可从
 [归档索引](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/ARCHIVE_INDEX.json)所列Git对象恢复。
 研究路线读 [RESEARCH_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，运行读
@@ -59,7 +59,7 @@ joint_state插件给真实轮关节；默认建图不再重复启动
 `.131m`为合同的名义ray切片。隔离夹具v8沉降后的三台扫描原点实测.12924–.12926m，
 通过2mm误差及带窗口变化余量的10m光束包络检查。六部件真实接触正例只在tb1执行，
 三台18路的空消息、正常支撑、源龄和消息完整性另行全量核查；夹具不提供95%任务成绩。
-完整原件及尚在进行的schema4开发矩阵见
+冻结`5e47802`的9个有效单元来自10次尝试，含1次保留的原生基础设施失败；完整原件见
 [P1A报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261014_mr3_p1a.md)。
 
 ## 旧入口与新接口的区分
