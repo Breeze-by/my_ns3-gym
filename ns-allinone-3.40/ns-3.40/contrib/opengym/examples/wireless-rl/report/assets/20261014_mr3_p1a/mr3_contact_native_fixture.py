@@ -16,6 +16,7 @@ import socket
 import subprocess
 import sys
 import time
+from types import SimpleNamespace
 
 
 ROOT = Path('/home/zhuyulab/ns3-workspace')
@@ -86,6 +87,33 @@ def stationary_pose_window(rows):
             if 2 * math.acos(min(1.0, dot)) > .002:
                 return False
     return True
+
+
+def laser_geometry(position, quaternion):
+    norm = math.sqrt(sum(value*value for value in quaternion))
+    if not math.isfinite(norm) or norm <= 0:
+        raise ValueError('invalid laser link quaternion')
+    q = SimpleNamespace(**dict(zip('xyzw', [value / norm for value in quaternion])))
+    offset = rotate(q, (-.064, 0, .121))
+    normal = rotate(q, (0, 0, 1))
+    height = position[2] + offset[2]
+    span = 10.0 * math.sqrt(max(0.0, 1.0 - normal[2]**2))
+    return {'actual_sdf_ray_height_m': height, 'declared_lidar_height_m': .131,
+            'height_error_m': height - .131, 'lidar_plane_normal': normal,
+            'beam_height_envelope_at10m': [height - span, height + span],
+            'sampled_window_vertical_variation_bound_m':
+                .001 + (10.0 + math.hypot(.064, .121)) * math.sin(.002)}
+
+
+def verify_laser_geometry(geometry, robot):
+    if abs(geometry['height_error_m']) > .002:
+        raise RuntimeError('settled laser height differs from declared slice by over2mm: ' + robot)
+    lower, upper = geometry['beam_height_envelope_at10m']
+    if lower <= 0:
+        raise RuntimeError('settled laser beam envelope crosses ground: ' + robot)
+    margin = geometry['sampled_window_vertical_variation_bound_m']
+    if lower - margin < .02 or upper + margin > .25:
+        raise RuntimeError('settled laser beam outside verified slice band: ' + robot)
 
 
 def main():
@@ -341,6 +369,17 @@ def main():
                 settled[robot] = stationary_pose_window(result['settlement_samples'][robot])
             next_sample = now() + .05
             wait(lambda: now() >= next_sample, 2, 'settlement sampling clock did not advance')
+        result['accepted_settlement_windows'] = {}
+        for robot, rows in result['settlement_samples'].items():
+            cutoff = rows[-1]['source_time_sec'] - 1.0
+            index = 0
+            while index + 1 < len(rows) and rows[index + 1]['source_time_sec'] <= cutoff:
+                index += 1
+            window = rows[index:]
+            result['accepted_settlement_windows'][robot] = window
+            for row in window:
+                row['laser_geometry'] = laser_geometry(row['position'], row['quaternion'])
+                verify_laser_geometry(row['laser_geometry'], robot)
         wait(lambda: monitor.summary(now())['fresh'], 20, 'contact sources not fresh after settling')
         monitor.start(now())
         steady_begin = (now(), time.monotonic(), time.process_time())
@@ -364,32 +403,17 @@ def main():
             if now() - source > .5:
                 raise RuntimeError('settled pose source stale: ' + robot)
             pose = response.state.pose
-            ray_offset = rotate(pose.orientation, (-.064, 0, .121))
-            normal = rotate(pose.orientation, (0, 0, 1))
-            vertical_span = 10.0 * math.sqrt(max(0.0, 1.0 - normal[2]**2))
-            actual_height = pose.position.z + ray_offset[2]
-            beam_envelope = [actual_height - vertical_span, actual_height + vertical_span]
-            variation_bound = .001 + (10.0 + math.hypot(.064, .121)) * math.sin(.002)
             result['settled_robot_poses'][robot] = {
                 'entity': robot + '::base_scan',
                 'source_time_sec': source, 'receipt_time_sec': now(),
                 'sensor_link_position': [pose.position.x, pose.position.y, pose.position.z],
                 'sensor_link_quaternion': [pose.orientation.x, pose.orientation.y,
                                      pose.orientation.z, pose.orientation.w],
-                'actual_sdf_ray_height_m': pose.position.z + ray_offset[2],
-                'declared_lidar_height_m': .131,
-                'height_error_m': pose.position.z + ray_offset[2] - .131,
-                'lidar_plane_normal': normal,
-                'beam_height_envelope_at10m': beam_envelope,
-                'sampled_window_vertical_variation_bound_m': variation_bound,
+                **laser_geometry(
+                    [pose.position.x, pose.position.y, pose.position.z],
+                    [pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w]),
             }
-            if abs(result['settled_robot_poses'][robot]['height_error_m']) > .002:
-                raise RuntimeError('settled laser height differs from declared slice by over2mm: ' + robot)
-            if beam_envelope[0] <= 0:
-                raise RuntimeError('settled laser beam envelope crosses ground: ' + robot)
-            if (beam_envelope[0] - variation_bound < .02
-                    or beam_envelope[1] + variation_bound > .25):
-                raise RuntimeError('settled laser beam outside verified slice band: ' + robot)
+            verify_laser_geometry(result['settled_robot_poses'][robot], robot)
 
         # Each fixture is a real static sphere, just inside its target's side
         # boundary. Query the collision entity (not a hard-coded robot pose) to
