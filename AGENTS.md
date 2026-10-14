@@ -68,7 +68,9 @@ The source still uses a handcrafted frontier controller, common-frame
 conservative map fusion and Nav2. No three-robot RL policy or ROS/ns-3 gateway
 exists. Historical five-user/15-input/5-action toy DQN is a separate task.
 Latest three-robot evidence is seed101 rooms/corridors **90%** within 180 sim
-seconds, not 95% or an RL/multi-seed claim. See the canonical repair report
+seconds, not 95% or an RL/multi-seed claim. Zero recorded contacts covers only
+the current base_collision sensor, not all body collisions; full non-support
+contact coverage and continuous freshness are MR3-P1A gates. See the canonical repair report
 `wireless-rl/report/20261013_p1c_engineering_repair.md` and shared `log.md`.
 
 Known new-route prerequisites: explicit ROI/95% coverage feasibility; sustained

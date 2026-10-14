@@ -1713,3 +1713,27 @@ rtk git add -n .
   logged c9344e1 three-robot rooms/corridors seed101 90% engineering results.
   No 95% task, navigation RL, gateway or ns-3 mission credit added this session.
   Later optimization/deployment awaits a separate user direction.
+
+## 2026-10-14 MR3 correction review (static only, no new experiment)
+
+- User request: assess current project and route; correct real gaps without
+  inventing changes. Review base main@57edcb6, runtime remains c9344e1.
+- Retained the three-robot centralized subgoal RL then frozen-policy Wi-Fi route.
+  Corrected three evidence/contract gaps: existing zero-contact records cover
+  only base_collision; formal-test-driven repairs require exposed-set demotion
+  and fresh held-out confirmation for independent generalization; P4B final
+  clock must be shared by every P5 branch and revalidate ideal equivalence.
+- XML parsing confirms six physical collision bodies and one contact sensor
+  watching base_collision. This is source evidence, not a collision experiment.
+  Whole-body non-support coverage and normal support exclusions are P1A gates.
+  Historical zero-contact wording retains the narrower sensor meaning; no
+  native result, report body or prior receipt was rewritten.
+- Updated research/implementation contracts, current ROS evidence wording,
+  root memory, report index and clarification record. Details and limitations:
+  report/20261014_mr3_correction_review.md.
+- Static validation: `rtk proxy python3 /tmp/mr3_correction_check.py`,
+  `rtk git diff --check`, and `rtk git add -n .`. Checker source and receipt:
+  report/assets/20261014_mr3_correction_review/correction_checks.json.
+- No runtime/config/weights or launch commands changed; no simulator, smoke,
+  training or evaluation run. MR3-P0 still awaits user acceptance; no later
+  substep started and no new task/safety/network performance credit claimed.

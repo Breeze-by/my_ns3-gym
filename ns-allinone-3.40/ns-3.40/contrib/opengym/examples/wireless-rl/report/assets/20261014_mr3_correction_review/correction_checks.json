@@ -1,0 +1,57 @@
+{
+  "checked_at_utc": "2026-10-14T09:03:26.783312+00:00",
+  "type": "documentation_correction_static_validation_not_a_simulator_experiment",
+  "review_base_commit": "57edcb6c56cf7ca8bef3c7e400389f772ee7d355",
+  "runtime_source_freeze": "c9344e10f4a0788f96fd70371c5ea033e0fc5268",
+  "command": "rtk proxy python3 /tmp/mr3_correction_check.py",
+  "checks": {
+    "changed_files_within_explicit_documentation_scope": 11,
+    "relevant_tracked_runtime_unchanged": true,
+    "local_markdown_links": 47,
+    "balanced_fences": true,
+    "archival_git_object_hashes": 24,
+    "historical_report_bodies": 10,
+    "all_prior_report_assets_unchanged": 30,
+    "historical_log_bytes_preserved": true,
+    "original_backup_unchanged": true,
+    "checkpoint_states_unchanged": 12,
+    "bash_syntax_blocks": 5,
+    "bash_command_blocks_byte_identical": true,
+    "recommended_robot_count": 3,
+    "physical_collision_bodies": [
+      "base_link/base_collision",
+      "base_scan/lidar_sensor_collision",
+      "wheel_left_link/wheel_left_collision",
+      "wheel_right_link/wheel_right_collision",
+      "caster_back_right_link/collision",
+      "caster_back_left_link/collision"
+    ],
+    "contact_sensors": [
+      [
+        "base_link",
+        "base_contact",
+        [
+          "base_collision"
+        ]
+      ]
+    ]
+  },
+  "file_sha256": {
+    "AGENTS.md": "c476eb0c0f2e4ae3c6d598d69e8cb924548c4ca8825436696158311f7ec07a60",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/IMPLEMENTATION_PLAN.md": "c0ad6241a813ea3abb4d76fc14c674656dc0c3b89b718a3eaeb9d78cabb2f6e8",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md": "10a09d33b7aae1370878c1c17cd17726a6de349a8e8763cd081bddeaf44297d1",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/log.md": "257c088bd2c4686d87aad9d84700aa334083acd0d064f589ae3fc2ede8002690",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261014_mr3_correction_review.md": "e6bcdb99133bd38b319ff9bda1f675bb17033cc5235d848a3cdaca7d05e19a12",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/ARCHIVE_INDEX.json": "c88c17ad2dd68bc7288e3ac31f48011a0cf87e57dc0f27194162f8526cb8b01a",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/README.md": "db94ea69d212454534ca69a2ff3d4c085c8232fe93dc9f597841022e1ab6ad1c",
+    "ros2_ws/ros2-multi-robot-automap/Technical_Manual.md": "4a4caca24d84693f815566ef289d752dbd7ad5aefc08a885eecd78fcc467c2be",
+    "ros2_ws/ros2-multi-robot-automap/launch_commands.md": "aae2c6700055036ed62d853ba458f4d561078f9a42d01a88fbe5d7ace3bfb688",
+    "ros2_ws/ros2-multi-robot-automap/user_guide.md": "a4fcff09ee7f80192421108ff6142155db2900e576aacaf29d9d7d11fb0a634d"
+  },
+  "checker_sha256": "aa7d793f933c604bed259bb0098c30a33f9ee89e93666bb914ebdef7b16fac16",
+  "checker_source": "from pathlib import Path\nimport ast\nimport datetime\nimport hashlib\nimport json\nimport re\nimport subprocess\nimport xml.etree.ElementTree as ET\n\nroot = Path('/home/zhuyulab/ns3-workspace')\nb = root / 'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl'\nros = root / 'ros2_ws/ros2-multi-robot-automap'\nbase = '57edcb6'\nreceipt = b / 'report/assets/20261014_mr3_correction_review/correction_checks.json'\ndef git(*args):\n    return subprocess.check_output(['git', *args], cwd=root)\ndef sha(data):\n    return hashlib.sha256(data).hexdigest()\ndef rel(path):\n    return str(path.relative_to(root))\n\nexpected = {rel(root/'AGENTS.md'), rel(b/'RESEARCH_PLAN.md'),\n    rel(b/'IMPLEMENTATION_PLAN.md'), rel(b/'log.md'), rel(b/'report/README.md'),\n    rel(b/'report/ARCHIVE_INDEX.json'), rel(b/'report/20261014_mr3_correction_review.md'),\n    rel(ros/'user_guide.md'), rel(ros/'launch_commands.md'),\n    rel(ros/'Technical_Manual.md'), rel(receipt)}\nchanged = set(git('diff', base, '--name-only').decode().splitlines())\nchanged |= set(git('ls-files', '--others', '--exclude-standard').decode().splitlines())\nchanged.add(rel(receipt))\nassert changed == expected, (changed-expected, expected-changed)\nassert not git('diff', base, '--', rel(ros/'src'), rel(ros/'scripts'))\nruntime = [rel(ros/'src'), rel(ros/'scripts')]\nruntime += [rel(p) for p in b.iterdir() if p.suffix in {'.py', '.cc'}]\nassert not git('diff', 'c9344e1', '--', *runtime)\n\nlocal_links = 0\nfor name in sorted(changed):\n    p = root/name\n    if p.suffix != '.md':\n        continue\n    content = p.read_text()\n    assert len(re.findall(r'^```[^\\n]*$', content, re.M)) % 2 == 0, name\n    for target in re.findall(r'(?<!!)\\[[^\\]\\n]+\\]\\(([^)\\n]+)\\)', content):\n        if '://' in target or target.startswith('#'):\n            continue\n        target = target.split('#')[0].strip('<>')\n        resolved = (p.parent/target).resolve()\n        assert resolved == receipt or resolved.exists(), (name, target)\n        local_links += 1\n\nidx = json.loads((b/'report/ARCHIVE_INDEX.json').read_text())\nold_idx = json.loads(git('show', base+':'+rel(b/'report/ARCHIVE_INDEX.json')))\nassert idx['files'] == old_idx['files']\nold_reports = 0\nfor item in idx['files']:\n    original = git('show', idx['pre_route_commit']+':'+item['path'])\n    assert sha(original) == item['sha256'], item['path']\n    if '/report/' in item['path']:\n        assert (root/item['path']).read_bytes().split(b'\\n\\n', 1)[1] == original\n        old_reports += 1\nfor path in (b/'report').glob('*.md'):\n    if path.name not in {'README.md', '20261014_mr3_correction_review.md'}:\n        assert path.read_bytes() == git('show', base+':'+rel(path)), rel(path)\nprior_assets = git('ls-tree', '-r', '--name-only', base, '--', rel(b/'report/assets')).decode().splitlines()\nfor name in prior_assets:\n    assert (root/name).read_bytes() == git('show', base+':'+name), name\nassert (b/'log.md').read_bytes().startswith(git('show', base+':'+rel(b/'log.md')))\nbackup = idx['original_route_backup']['commit']\nfor branch in ('p2c1/global-mission-20261012', 'origin/p2c1/global-mission-20261012'):\n    assert git('rev-parse', branch).decode().strip() == backup\n\nplan = (b/'IMPLEMENTATION_PLAN.md').read_text()\ncheckpoints = ['MR3-P0', 'MR3-P1A', 'MR3-P1B', 'MR3-P1C', 'MR3-P2A', 'MR3-P2B',\n    'MR3-P2C', 'MR3-P3A', 'MR3-P3B', 'MR3-P4A', 'MR3-P4B', 'MR3-P5']\nassert re.findall(r'^### (MR3-P\\w+)[：:]', plan, re.M) == checkpoints\nfor checkpoint in checkpoints[1:]:\n    assert re.search(r'\\| '+checkpoint+r' \\|[^\\n]+\\| 未开始 \\|', plan)\nassert re.search(r'\\| MR3-P0 \\|[^\\n]+\\| 文档已交付，待用户验收 \\|', plan)\ncmds = (ros/'launch_commands.md').read_text()\nblocks = re.findall(r'```bash\\n(.*?)```', cmds, re.S)\nold_blocks = re.findall(r'```bash\\n(.*?)```', git('show', base+':'+rel(ros/'launch_commands.md')).decode(), re.S)\nassert blocks == old_blocks\nfor block in blocks:\n    proc = subprocess.run(['bash', '-n'], input=block, text=True, capture_output=True)\n    assert proc.returncode == 0, proc.stderr\nassert set(re.findall(r'\\brobot_count:=(\\d+)', cmds)) == {'3'}\nassert re.findall(r'--robot-count\\s+(\\d+)', cmds) == ['3', '3']\n\nmodel = ET.parse(ros/'src/multi_robot/models/turtlebot3_waffle/model.sdf').getroot().find('model')\ncollisions = [link.get('name')+'/'+c.get('name') for link in model.findall('link') for c in link.findall('collision')]\nsensors = [(link.get('name'), sensor.get('name'), [c.text for c in sensor.findall('contact/collision')])\n    for link in model.findall('link') for sensor in link.findall('sensor') if sensor.get('type') == 'contact']\nassert len(collisions) == 6\nassert sensors == [('base_link', 'base_contact', ['base_collision'])]\nevaluator = (ros/'src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py').read_text()\ntree = ast.parse(evaluator)\ncontact_subscriptions = [n for n in ast.walk(tree) if isinstance(n, ast.Call)\n    and isinstance(n.func, ast.Attribute) and n.func.attr == 'create_subscription'\n    and n.args and isinstance(n.args[0], ast.Name) and n.args[0].id == 'ContactsState']\nassert len(contact_subscriptions) == 1\nassert 'f\"/{name}/collision\"' == ast.get_source_segment(evaluator, contact_subscriptions[0].args[1])\n\nsource = Path(__file__).read_text()\nresult = {\n    'checked_at_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(),\n    'type': 'documentation_correction_static_validation_not_a_simulator_experiment',\n    'review_base_commit': git('rev-parse', base).decode().strip(),\n    'runtime_source_freeze': git('rev-parse', 'c9344e1').decode().strip(),\n    'command': 'rtk proxy python3 /tmp/mr3_correction_check.py',\n    'checks': {'changed_files_within_explicit_documentation_scope': len(changed),\n        'relevant_tracked_runtime_unchanged': True, 'local_markdown_links': local_links,\n        'balanced_fences': True, 'archival_git_object_hashes': len(idx['files']),\n        'historical_report_bodies': old_reports, 'all_prior_report_assets_unchanged': len(prior_assets),\n        'historical_log_bytes_preserved': True, 'original_backup_unchanged': True,\n        'checkpoint_states_unchanged': len(checkpoints), 'bash_syntax_blocks': len(blocks),\n        'bash_command_blocks_byte_identical': True, 'recommended_robot_count': 3,\n        'physical_collision_bodies': collisions, 'contact_sensors': sensors},\n    'file_sha256': {name: sha((root/name).read_bytes()) for name in sorted(changed) if name != rel(receipt)},\n    'checker_sha256': sha(source.encode()), 'checker_source': source,\n    'simulator_runs': 0, 'training_runs': 0, 'new_performance_claims': 0, 'result': 'PASS'}\nreceipt.parent.mkdir(parents=True, exist_ok=True)\nreceipt.write_text(json.dumps(result, ensure_ascii=False, indent=2)+'\\n')\nprint(json.dumps({k:v for k,v in result.items() if k not in {'file_sha256', 'checker_source'}}, ensure_ascii=False, indent=2))\n",
+  "simulator_runs": 0,
+  "training_runs": 0,
+  "new_performance_claims": 0,
+  "result": "PASS"
+}

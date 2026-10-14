@@ -43,7 +43,9 @@ Smac2D规划，本机激光/DWB执行差速速度。模型不支持自由侧移�
 peer_layer；其他障碍max合并，虚拟peer不进SLAM。它不使用Gazebo真值。
 这是理想通信安全输入，后续必须受已交付跨机信息边界约束。
 
-Gazebo底盘接触topic给真实碰撞，joint_state插件给真实轮关节；默认建图不再重复启动
+Gazebo接触topic仅监测 `base_link/base_collision` 的真实接触，不能据此证明轮、脚轮、
+雷达等全机体无非支撑接触；完整性及正常支撑接触排除规则属于 P1A 门禁。
+joint_state插件给真实轮关节；默认建图不再重复启动
 虚构零轮位姿的joint_state_publisher。独立评价读真值路径/碰撞/地图，不发布动作。
 成功门禁与分母限制见使用指南；监测曾有一条消息不证明整段新鲜。
 

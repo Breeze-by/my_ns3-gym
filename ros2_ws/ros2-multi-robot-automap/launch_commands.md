@@ -57,8 +57,9 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
   evaluation_duration_sec:=180.0 evaluation_coverage_threshold:=0.90
 ```
 
-每次使用新 episode id/目录，拒绝覆盖旧结果。schema3 在截止之前达标、零真实接触、
-每台碰撞监测有消息、无控制失败才成功；现有监测门禁不等于持续新鲜度证明。
+每次使用新 episode id/目录，拒绝覆盖旧结果。schema3 在截止之前达标、接触 topic 记录为零、
+每台碰撞监测有消息、无控制失败才成功。传感器只覆盖 `base_collision`，不能证明
+全机体零非支撑接触；现有监测门禁也不等于持续新鲜度证明，两项均需在 P1A 闭合。
 评估器完成默认关闭整个 launch，结果冻结且检查原生子进程；父进程0不能掩盖 abort。
 `stop_on_evaluation_complete:=false` 仅用于人工诊断。
 
@@ -101,5 +102,5 @@ Nav2 接受/取消终态默认期限为10仿真秒，对应
 该工具不是已证明的所有时序故障修复方法。
 
 运行源码 `c9344e1` 的最近三机器人90%工程结果为 rooms60.2s、corridors81.9s，seed101，
-180仿真秒上限、零接触、原生干净退出；未重跑完整多种子矩阵或95%任务。
+180仿真秒上限、基体接触记录为零、原生干净退出；未重跑完整多种子矩阵或95%任务。
 详见 [工程修复报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261013_p1c_engineering_repair.md)。

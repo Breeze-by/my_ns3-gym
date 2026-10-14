@@ -84,14 +84,16 @@ SDF静态box碰撞在激光高度生成.05m真值格，应用world state位姿�
 覆盖、known覆盖、accuracy和occupied IoU。分母为外接矩形全部真值自由格，尚无独立
 任务 ROI/可见性 mask，故不能推导95%一定可达，MR3-P1A先闭合测量定义。
 
-schema3 成功必须在截止前覆盖达标、零真实接触、每台碰撞监测有消息且无控制失败；
-当前“有消息”不等于持续新鲜度证明。CSV/JSON原子发布、拒绝覆盖同id。
+schema3 成功必须在截止前覆盖达标、接触 topic 记录为零、每台碰撞监测有消息且无控制失败；
+当前唯一 contact sensor 只监听 `base_link/base_collision`，不能证明轮、脚轮、雷达等
+全机体无非支撑接触；“有消息”也不等于持续新鲜度证明。P1A 需闭合监测范围与
+正常轮/脚轮—地面支撑接触的排除规则。CSV/JSON原子发布、拒绝覆盖同id。
 评估完成默认关闭本轮；父launch退出0不掩盖原生子进程异常。
 `trajectory_overlap_ratio` 与旧 `search_overlap_ratio` 是相同中心轨迹格重叠，
 不是重复激光覆盖/建图面积。95%时间字段存在，不等于已经达到95%。
 
 目前有 [c9344e1工程证据](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261013_p1c_engineering_repair.md)：
-三台rooms/corridors、seed101、90%/180秒，60.2/81.9仿真秒达标，零接触/干净退出。
+三台rooms/corridors、seed101、90%/180秒，60.2/81.9仿真秒达标，基体接触记录为零、干净退出。
 旧September多种子P1C/schema2成绩属于旧源码。73组件检查的PASS也不等于MR3整任务。
 所有原始失败保留；没有最新95%或导航RL/通信成绩。
 
