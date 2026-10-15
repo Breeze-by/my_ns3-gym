@@ -17,6 +17,7 @@ from rclpy.executors import ExternalShutdownException, SingleThreadedExecutor
 from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
 from std_msgs.msg import Bool, Header, String
+from std_srvs.srv import Trigger
 
 from .mr3_contacts import CONTACT_COMPONENTS, ContactMonitor, contact_topics
 from .mr3_task_contract import (
@@ -372,6 +373,12 @@ class TaskEvaluator(Node):
         self.start_sim_time = None
         self.coverage_times = {0.75: None, 0.8: None, 0.9: None, 0.95: None}
         self.finalized = False
+        self.probe_finalize_service = None
+        if self.declare_parameter("allow_probe_finalize", False).value:
+            if self.task_contract is None:
+                raise ValueError("Probe finalization requires an explicit MR3 task contract")
+            self.probe_finalize_service = self.create_service(
+                Trigger, "/mr3/probe_finalize", self._probe_finalize_callback)
         self.control_failure = ""
 
         map_qos = QoSProfile(depth=1)
@@ -792,6 +799,13 @@ class TaskEvaluator(Node):
             }
         )
         return metrics
+
+    def _probe_finalize_callback(self, request, response):
+        """End an explicit bounded adapter diagnostic, always as incomplete."""
+        self.finalize("adapter_probe_shutdown")
+        response.success = True
+        response.message = "Incomplete adapter probe diagnostic saved; no task success credit"
+        return response
 
     def finalize(self, termination_reason):
         if self.finalized:

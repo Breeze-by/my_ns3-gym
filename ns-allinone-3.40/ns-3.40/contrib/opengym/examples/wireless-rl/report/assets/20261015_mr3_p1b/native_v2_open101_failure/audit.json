@@ -1,0 +1,84 @@
+{
+  "accepted_robots": [
+    "tb3"
+  ],
+  "action_count": 1,
+  "adapter_sha256": "aa9d86bd6ed8ba8d7361af0c71ecfcab9a5a3e8a91cf58e7e46c11b708959afc",
+  "cancel_goal_count": 1,
+  "confirmed_native_cancellation_goal_ids": [],
+  "contact_monitoring": {
+    "available": true,
+    "collision_events": 0,
+    "evaluator_success": false,
+    "file": "mr3_p1b_v2_open101.json",
+    "monitoring_active": true,
+    "monitoring_fresh": true,
+    "navigation_protocol_closed_in_evaluator": false,
+    "passed": true,
+    "raw_stream_audit_passed": true,
+    "raw_stream_count": 18,
+    "required": false,
+    "schema_version": 4,
+    "scope": "interrupted scripted adapter probe",
+    "task_success_claimed": false,
+    "termination_reason": "navigation_failure"
+  },
+  "duplicate_command_count": 1,
+  "epoch": "mr3_p1b_v2_open101",
+  "errors": [
+    "probe runner reported an error: native launch/process exit failure",
+    "probe runner did not report an empty safety-failure list",
+    "native launch failures: [ERROR] [task_evaluator-37]: process has died [pid 4020284, exit code -2, cmd '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot_exploration/lib/multi_robot_exploration/task_evaluator --ros-args -r __node:=task_evaluator --params-file /tmp/launch_params_qtj5qr9r -r /merge_map:=/mr3/received/map'].",
+    "native accept receipts do not cover all three robots",
+    "probe did not exercise a real native cancellation with positive cancel receipt followed by CANCELED terminal",
+    "missing rejection probes: masked_action"
+  ],
+  "keep_robot_command_count": 2,
+  "native_launch_failures": [
+    "[ERROR] [task_evaluator-37]: process has died [pid 4020284, exit code -2, cmd '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot_exploration/lib/multi_robot_exploration/task_evaluator --ros-args -r __node:=task_evaluator --params-file /tmp/launch_params_qtj5qr9r -r /merge_map:=/mr3/received/map']."
+  ],
+  "native_send_count": 1,
+  "native_shutdown_proof": {
+    "gzserver": {
+      "clean_exits": [
+        {
+          "pid": 4015901,
+          "suffix": "4"
+        }
+      ],
+      "identity_matched": true,
+      "started": [
+        {
+          "pid": 4015901,
+          "suffix": "4"
+        }
+      ]
+    },
+    "mr3_gazebo_native_stop": {
+      "clean_exits": [
+        {
+          "pid": 4020421,
+          "suffix": "38"
+        }
+      ],
+      "identity_matched": true,
+      "started": [
+        {
+          "pid": 4020421,
+          "suffix": "38"
+        }
+      ]
+    }
+  },
+  "native_terminal_count": 1,
+  "passed": false,
+  "protocol_goal_count": 1,
+  "rejection_reasons": [
+    "expired_or_invalid_command_time",
+    "wrong_epoch"
+  ],
+  "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_adapter/mr3_p1b_v2_open101",
+  "schema": "mr3-p1b-probe-audit-v1",
+  "scope": "scripted P1B adapter protocol; no RL or 95% task-success credit",
+  "snapshot_count": 2
+}

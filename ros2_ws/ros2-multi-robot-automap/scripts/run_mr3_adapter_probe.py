@@ -18,29 +18,32 @@ from ros_smoke_test import configure_mr3_transport_environment, native_launch_fa
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def interrupt_owned_evaluator(run, process):
-    """Finalize an incomplete probe through its evaluator and normal launch stop.
-
-    Interrupting only this recorded child writes a shutdown diagnostic and lets
-    launch perform its audited native Gazebo stop. It does not declare success.
-    """
-    log = (run / "launch.log").read_text(errors="replace")
-    matches = re.findall(
-        r"\[INFO\] \[task_evaluator-\d+\]: process started with pid \[(\d+)\]", log)
-    if len(matches) != 1:
-        raise RuntimeError("cannot identify the owned evaluator for probe shutdown")
-    pid = int(matches[0])
-    command = Path(f"/proc/{pid}/cmdline").read_bytes().replace(b"\0", b" ").decode()
-    environment = Path(f"/proc/{pid}/environ").read_bytes().split(b"\0")
-    if ("/task_evaluator " not in command
-            or ("ROS_DOMAIN_ID=" + os.environ.get("ROS_DOMAIN_ID", "0")).encode()
-            not in environment):
-        raise RuntimeError("owned evaluator process identity mismatch")
-    (run / "evaluator_interrupt.json").write_text(json.dumps({
-        "pid": pid, "command": command, "signal": "SIGINT",
-        "reason": "bounded adapter probe; incomplete schema4 shutdown diagnostic",
-    }, indent=2) + "\n")
-    os.kill(pid, signal.SIGINT)
+def finalize_probe(run, process, node, client):
+    """Request an incomplete diagnostic, then await the normal native shutdown."""
+    import rclpy
+    from std_srvs.srv import Trigger
+    result_path = run / (run.name + ".json")
+    receipt = {"method": "explicit_incomplete_probe_service"}
+    if result_path.exists():
+        receipt["requested"] = False
+        receipt["reason"] = "evaluation already finalized naturally"
+    else:
+        if not client.wait_for_service(timeout_sec=10.):
+            raise RuntimeError("explicit probe finalization service unavailable")
+        future = client.call_async(Trigger.Request())
+        deadline = time.monotonic() + 10.
+        while not future.done() and process.poll() is None and time.monotonic() < deadline:
+            rclpy.spin_once(node, timeout_sec=.1)
+        receipt["requested"] = True
+        if future.done():
+            response = future.result()
+            receipt["success"] = response.success
+            receipt["message"] = response.message
+            if not response.success:
+                raise RuntimeError("probe finalization service rejected the request")
+        elif not result_path.exists():
+            raise TimeoutError("probe finalization did not complete")
+    (run / "probe_finalize.json").write_text(json.dumps(receipt, indent=2) + "\n")
     process.wait(timeout=45.)
 
 
@@ -75,12 +78,14 @@ def main():
     import rclpy
     from rclpy.qos import DurabilityPolicy, QoSProfile
     from std_msgs.msg import Header, String
+    from std_srvs.srv import Trigger
     from multi_robot_exploration.mr3_observation import snapshot_digest
 
     freeze = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     command = [
         "ros2", "launch", "multi_robot", "gazebo_multirobot_mapping_with_nav2.launch.py",
-        "execution_mode:=adapter", "robot_count:=3", f"mr3_episode_epoch:={args.run_id}",
+        "execution_mode:=adapter", "adapter_probe:=true", "robot_count:=3",
+        f"mr3_episode_epoch:={args.run_id}",
         f"mr3_audit_path:={run / 'adapter.jsonl'}", f"world:=p1c_{args.scene}.world",
         f"gazebo_seed:={args.seed}", "enable_gzclient:=false", "enable_rviz:=false",
         "enable_merge_rviz:=false", "auto_save_map:=false", "enable_task_evaluator:=true",
@@ -93,7 +98,9 @@ def main():
                 "transport_environment": transport_environment,
                 "environment": {key: os.environ.get(key) for key in
                                 ("ROS_DOMAIN_ID", "GAZEBO_MASTER_URI", "PYTHONNOUSERSITE")},
-                "policy": "first lexicographic legal joint candidate action; KEEP; WAIT after10s; "
+                "policy": "legal joint candidates by longest observed path "
+                          "for cancellation stress; "
+                          "KEEP; WAIT after7s; "
                           "new candidates after15s; deliberate stop after25s",
                 "startup_wall_guard_sec": 420., "closure_wall_guard_sec": 90.}
     (run / "metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
@@ -102,6 +109,7 @@ def main():
     qos = QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL)
     action_pub = node.create_publisher(String, "/mr3/action", 10)
     stop_pub = node.create_publisher(Header, "/exploration_stop_request", qos)
+    finalize_client = node.create_client(Trigger, "/mr3/probe_finalize")
     state = {"snapshot": None, "closed": None, "failures": [], "events": [], "checked": 0}
 
     def observation(message):
@@ -174,9 +182,14 @@ def main():
                 mask = snapshot["joint_action_mask"]
                 if elapsed < 1.5 or elapsed >= 15.:
                     legal = [a for a, valid in enumerate(mask) if valid]
-                    action = min(legal, key=lambda a: (
-                        -sum(d < 8 for d in (a // 100, a // 10 % 10, a % 10)), a))
-                elif elapsed >= 10.:
+
+                    def probe_order(action):
+                        digits = (action // 100, action // 10 % 10, action % 10)
+                        distance = sum(snapshot["candidates"][d]["path_distances_m"][i] or 0.
+                                       for i, d in enumerate(digits) if d < 8)
+                        return (-sum(d < 8 for d in digits), -distance, action)
+                    action = min(legal, key=probe_order)
+                elif elapsed >= 7.:
                     action = next((a for a in range(999, -1, -1) if mask[a]), 888)
                 else:
                     action = 888
@@ -208,7 +221,7 @@ def main():
             # server shutdown protocol. Cleanup fallback is always a failure.
             if process.poll() is None:
                 try:
-                    interrupt_owned_evaluator(run, process)
+                    finalize_probe(run, process, node, finalize_client)
                 except Exception as error:
                     run_error = run_error or repr(error)
                 if process.poll() is None:

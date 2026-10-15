@@ -324,3 +324,31 @@ def test_terminal_result_during_commitment_releases_owner():
     dispatcher.on_result("tb1", goal_id, 4, 0.5)
     assert dispatcher.closed and not dispatcher.failed
     assert submit(dispatcher, now=0.6, sequence=2) == "sent"
+
+
+def test_endpoint_fault_during_acceptance_latches_failure_and_cancels_late_accept():
+    dispatcher, events = protocol()
+    submit(dispatcher)
+    goal_id = dispatcher.navigation()["tb1"]["goal_id"]
+    dispatcher.fail("tb1", .1, "accept_rpc_error")
+    assert dispatcher.failed and not dispatcher.closed
+    assert dispatcher.navigation()["tb1"]["failure"] == "accept_rpc_error"
+    assert dispatcher.on_accept("tb1", goal_id, True, .2) == "canceling"
+    assert dispatcher.failed and not dispatcher.closed
+    dispatcher.on_result("tb1", goal_id, 5, .3)
+    assert dispatcher.closed and dispatcher.failed
+    assert len([event for event in events if event["type"] == "protocol_failure"]) == 1
+
+
+def test_endpoint_fault_during_execution_preserves_ownership_until_real_terminal():
+    dispatcher, events = protocol()
+    goal_id = start(dispatcher)
+    dispatcher.fail("tb1", .1, "result_rpc_error")
+    state = dispatcher.navigation()["tb1"]
+    assert state["phase"] == "canceling" and state["goal_id"] == goal_id
+    assert dispatcher.failed and not dispatcher.closed
+    dispatcher.on_cancel_response("tb1", goal_id, True, .2)
+    assert not dispatcher.closed
+    dispatcher.on_result("tb1", goal_id, 5, .3)
+    assert dispatcher.closed and dispatcher.failed
+    assert len([event for event in events if event["type"] == "cancel_goal"]) == 1

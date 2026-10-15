@@ -11,6 +11,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
+import re
 
 from ros_smoke_test import native_launch_failures, validate_contact_reducer_summary
 
@@ -28,6 +29,31 @@ def canonical_digest(payload):
 
 def _number(value):
     return type(value) in (int, float) and math.isfinite(value)
+
+
+def native_stop_proof(log, receipt):
+    """Bind clean native exits to the unique children started by this launch."""
+    proof, errors = {}, []
+    for label in ("gzserver", "mr3_gazebo_native_stop"):
+        started = re.findall(
+            rf"\[INFO\] \[{label}-(\d+)\]: process started with pid \[(\d+)\]", log)
+        clean = re.findall(
+            rf"\[INFO\] \[{label}-(\d+)\]: process has finished cleanly \[pid (\d+)\]", log)
+        matched = len(started) == 1 and len(clean) == 1 and started[0] == clean[0]
+        proof[label] = {
+            "started": [{"suffix": suffix, "pid": int(pid)} for suffix, pid in started],
+            "clean_exits": [{"suffix": suffix, "pid": int(pid)} for suffix, pid in clean],
+            "identity_matched": matched,
+        }
+        if not matched:
+            errors.append(f"native {label} unique start/clean-exit identity is not proven")
+    if receipt.get("method") == "owned_launch_native_stop":
+        cli = proof["mr3_gazebo_native_stop"]["started"]
+        if len(cli) != 1 or receipt.get("native_cli_pid") != cli[0]["pid"]:
+            errors.append("native stop receipt CLI pid differs from launch identity")
+        if receipt.get("server_clean_exit_recorded") is not True:
+            errors.append("native stop receipt does not confirm server clean exit")
+    return proof, errors
 
 
 def audit_run(run_dir, require_contact_monitoring=False):
@@ -72,6 +98,8 @@ def audit_run(run_dir, require_contact_monitoring=False):
     native_failures = native_launch_failures(launch_text)
     if native_failures:
         fail("native launch failures: " + native_failures[0])
+    native_shutdown_proof, shutdown_errors = native_stop_proof(launch_text, native_stop)
+    errors.extend(shutdown_errors)
 
     rows = []
     audit_path = run_dir / "adapter.jsonl"
@@ -102,11 +130,15 @@ def audit_run(run_dir, require_contact_monitoring=False):
 
     snapshots, actions = {}, {}
     sent, native, accepted, canceled, terminal, native_terminal = {}, {}, {}, {}, {}, {}
+    cancel_confirmed, native_terminal_time = {}, {}
     owners = {name: None for name in ROBOTS}
     keep_pairs, rejection_reasons = set(), set()
     duplicates = 0
     epoch = None
     task_stopped = []
+    estimated_paths = {robot: 0.0 for robot in ROBOTS}
+    estimated_samples = {robot: 0 for robot in ROBOTS}
+    previous_positions = {}
     for index, row in enumerate(rows, 1):
         kind, payload, now = row["kind"], row["payload"], row["stamp"]
         if kind == "delivery":
@@ -125,12 +157,28 @@ def audit_run(run_dir, require_contact_monitoring=False):
                 actual = canonical_digest({k: v for k, v in payload.items() if k != "digest"})
                 if actual != payload.get("digest"):
                     raise ValueError("saved observation digest mismatch")
-                candidate_digest = canonical_digest({
-                    key: payload[key] for key in ("epoch", "map_version", "sequence", "candidates")
-                })
+                candidate_keys = ["epoch", "map_version", "sequence", "candidates"]
+                if payload.get("schema") == "mr3-observation-v2":
+                    candidate_keys.append("path_maps")
+                candidate_digest = canonical_digest({key: payload[key] for key in candidate_keys})
                 if payload.get("candidate_version") != candidate_digest:
                     raise ValueError("candidate version does not match saved candidates")
                 snapshots[sequence] = payload
+                for robot in payload.get("robots", []):
+                    name = robot.get("name")
+                    position = (robot.get("x"), robot.get("y"))
+                    source_stamp = robot.get("source_stamp")
+                    if (name not in estimated_paths or robot.get("valid") is not True
+                            or robot.get("fresh") is not True or not _number(source_stamp)
+                            or not all(_number(value) for value in position)):
+                        continue
+                    previous = previous_positions.get(name)
+                    if previous is not None and source_stamp <= previous[0]:
+                        continue
+                    if previous is not None:
+                        estimated_paths[name] += math.dist(previous[1], position)
+                    previous_positions[name] = (source_stamp, position)
+                    estimated_samples[name] += 1
             except (KeyError, ValueError, TypeError) as error:
                 fail(f"observation line {index}: {error}")
         elif kind == "action":
@@ -254,6 +302,9 @@ def audit_run(run_dir, require_contact_monitoring=False):
                     fail(f"line {index}: native result is not terminal")
                 else:
                     native_terminal[goal_id] = event["value"]
+                    native_terminal_time[goal_id] = payload.get("received_stamp", now)
+            elif event.get("type") == "cancel" and event.get("value") is True:
+                cancel_confirmed[goal_id] = payload.get("received_stamp", now)
         elif kind == "task_stopped":
             task_stopped.append(payload)
 
@@ -270,6 +321,9 @@ def audit_run(run_dir, require_contact_monitoring=False):
     accepted_robots = {sent[goal_id]["robot"] for goal_id in accepted}
     if accepted_robots != set(ROBOTS):
         fail("native accept receipts do not cover all three robots")
+    for robot, length in estimated_paths.items():
+        if length <= .05:
+            fail(f"{robot} estimated snapshot path does not exceed 0.05 m")
     for goal_id, event in sent.items():
         if (event.get("robot"), event.get("command_id")) in keep_pairs:
             fail("KEEP command resubmitted a goal: " + str(goal_id))
@@ -292,8 +346,14 @@ def audit_run(run_dir, require_contact_monitoring=False):
         fail("probe did not exercise KEEP")
     if not duplicates:
         fail("probe did not exercise duplicate command idempotency")
-    if not any(goal_id in native and goal_id in native_terminal for goal_id in canceled):
-        fail("probe did not exercise a real native cancellation followed by terminal closure")
+    actual_cancellations = sorted(goal_id for goal_id in canceled if (
+        goal_id in native and goal_id in cancel_confirmed
+        and native_terminal.get(goal_id) in (5, "CANCELED")
+        and cancel_confirmed[goal_id] <= native_terminal_time[goal_id]
+    ))
+    if not actual_cancellations:
+        fail("probe did not exercise a real native cancellation with positive cancel receipt "
+             "followed by CANCELED terminal")
     missing_rejections = REQUIRED_REJECTIONS - rejection_reasons
     if missing_rejections:
         fail("missing rejection probes: " + ", ".join(sorted(missing_rejections)))
@@ -345,9 +405,14 @@ def audit_run(run_dir, require_contact_monitoring=False):
         "snapshot_count": len(snapshots), "action_count": len(actions),
         "protocol_goal_count": len(sent), "native_send_count": len(native),
         "accepted_robots": sorted(accepted_robots), "native_terminal_count": len(native_terminal),
+        "estimated_snapshot_path_length_m": estimated_paths,
+        "estimated_fresh_pose_sample_count": estimated_samples,
+        "probe_movement_threshold_m": .05,
         "cancel_goal_count": len(canceled), "keep_robot_command_count": len(keep_pairs),
+        "confirmed_native_cancellation_goal_ids": actual_cancellations,
         "duplicate_command_count": duplicates, "rejection_reasons": sorted(rejection_reasons),
         "native_launch_failures": native_failures, "contact_monitoring": contact,
+        "native_shutdown_proof": native_shutdown_proof,
     }
 
 

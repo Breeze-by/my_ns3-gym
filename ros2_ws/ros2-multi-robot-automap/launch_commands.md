@@ -61,10 +61,11 @@ PYTHONNOUSERSITE=1 /usr/bin/python3 scripts/run_mr3_adapter_probe.py \
 /usr/bin/python3 scripts/audit_mr3_adapter_probe.py log/mr3_adapter/$MR3_ADAPTER_ID
 ```
 
-脚本自动设置P1A UDP profile，顺序验证候选目标、KEEP、WAIT、第二批目标和25秒后终态
+脚本自动设置P1A UDP profile，按声明的较长已观测路径验证候选目标、KEEP、WAIT、第二批目标和25秒后终态
 闭合；完整95%评价器仅保留原口径监测，主动短停不能当成任务成功。
 rooms/corridors分别使用对应`--scene`，推荐域109/110、Gazebo端口11902/11903，逐次运行，
 每次新run-id。独立审计读取真实接受/取消/结果和子进程退出，不能只看runner返回值。
+脚本显式设置`adapter_probe:=true`，仅允许将评价器以未完成诊断正常结束；默认关闭该服务。
 详细信封、频率、租约、观测/候选/掩码和动作字段见
 [MR3_ADAPTER_CONTRACT.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ADAPTER_CONTRACT.md)。
 

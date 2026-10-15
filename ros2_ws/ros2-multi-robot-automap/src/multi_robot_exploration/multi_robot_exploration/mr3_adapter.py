@@ -6,6 +6,7 @@ will split these endpoints and serialize bytes; this node claims no DDS isolatio
 """
 
 from collections import deque
+from concurrent.futures import ThreadPoolExecutor
 import json
 import math
 from pathlib import Path
@@ -61,6 +62,8 @@ class MR3Adapter(Node):
         self.handles = {}
         self.map = None
         self.map_digest = None
+        self.local_maps = {}
+        self.local_map_digests = {}
         self.state = None
         self.snapshot = None
         self.sequence = 0
@@ -74,6 +77,8 @@ class MR3Adapter(Node):
         self.last_heartbeat = -math.inf
         self.receipt_metadata = {name: {} for name in ROBOTS}
         self.history = {name: deque(maxlen=16) for name in ROBOTS}
+        self.encoder = ThreadPoolExecutor(max_workers=1, thread_name_prefix="mr3_observation")
+        self.encoding = None
         task_qos = QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL)
         self.observation_pub = self.create_publisher(String, "/mr3/observation", 2)
         self.event_pub = self.create_publisher(String, "/mr3/events", 100)
@@ -91,6 +96,10 @@ class MR3Adapter(Node):
             self.create_subscription(
                 String, "/exploration_failure", self.receive_failure, task_qos),
         ]
+        self.subscriptions_.extend(self.create_subscription(
+            OccupancyGrid, f"/mr3/received/{name}/map",
+            lambda message, name=name: self.receive_local_map(name, message), task_qos,
+        ) for name in ROBOTS)
         self.timer = self.create_timer(.05, self.maintain)
         self.observation_timer = self.create_timer(1., self.publish_observation)
 
@@ -109,6 +118,10 @@ class MR3Adapter(Node):
     def receive_map(self, message):
         self.map = message
         self.map_digest = map_digest(message)
+
+    def receive_local_map(self, name, message):
+        self.local_maps[name] = message
+        self.local_map_digests[name] = map_digest(message)
 
     def receive_states(self, message):
         try:
@@ -144,9 +157,15 @@ class MR3Adapter(Node):
         self.dispatcher.safety_stop(self.now(), "external_safety_failure")
 
     def publish_observation(self):
+        if self.encoding is not None:
+            return
         if self.map is None or self.state is None or not self.monitor_ready:
             return
         if self.map_digest != self.state.get("map_payload_sha256"):
+            return
+        map_sources = self.state["map_sources"]
+        if any(self.local_map_digests.get(name) != map_sources.get(name, {}).get("payload_sha256")
+               or name not in self.local_maps for name in ROBOTS):
             return
         robots = self.state["robots"]
         now = self.now()
@@ -171,7 +190,20 @@ class MR3Adapter(Node):
             "last_failure": navigation[robot["name"]].get("failure"),
         }, "history": list(self.history[robot["name"]])} for robot in robots]
         self.sequence += 1
-        self.snapshot = build_snapshot(
+        path_maps = {}
+        for name in ROBOTS:
+            message = self.local_maps[name]
+            path_maps[name] = {
+                "grid": np.asarray(message.data, dtype=np.int16).reshape(
+                    message.info.height, message.info.width),
+                "resolution": message.info.resolution,
+                "origin": (message.info.origin.position.x, message.info.origin.position.y),
+                "epoch": self.epoch, **map_sources[name],
+            }
+        # CPU map/path encoding must not block source deliveries, lease renewals
+        # or action callbacks. The worker receives a detached frozen snapshot.
+        self.encoding = self.encoder.submit(
+            build_snapshot,
             np.asarray(self.map.data, dtype=np.int16).reshape(
                 self.map.info.height, self.map.info.width),
             self.map.info.resolution,
@@ -180,10 +212,18 @@ class MR3Adapter(Node):
             map_source_stamp=self.state["map_source_stamp"],
             map_received_stamp=self.state["map_received_stamp"],
             map_sources=self.state["map_sources"], task_start=self.started_at,
+            robot_maps=path_maps,
         )
-        self.record("observation", self.snapshot)
+
+    def finish_observation(self):
+        if self.encoding is None or not self.encoding.done():
+            return
+        snapshot = self.encoding.result()
+        self.encoding = None
+        self.snapshot = snapshot
+        self.record("observation", snapshot)
         message = String()
-        message.data = json.dumps(self.snapshot, sort_keys=True, allow_nan=False)
+        message.data = json.dumps(snapshot, sort_keys=True, allow_nan=False)
         self.observation_pub.publish(message)
 
     def states_fresh(self, now):
@@ -272,7 +312,7 @@ class MR3Adapter(Node):
             self.receipt("accept", robot, goal_id, bool(handle.accepted))
         except Exception as error:
             self.record("rpc_error", {"reason": repr(error), "goal_id": goal_id})
-            self.dispatcher.safety_stop(self.now(), "accept_rpc_error")
+            self.dispatcher.fail(robot, self.now(), "accept_rpc_error")
             self.stop_requested = True
 
     def completed(self, future, robot, goal_id):
@@ -282,22 +322,40 @@ class MR3Adapter(Node):
         except Exception as error:
             self.record("rpc_error", {"reason": repr(error), "goal_id": goal_id})
             self.stop_requested = True
-            self.dispatcher.safety_stop(self.now(), "result_rpc_error")
+            self.dispatcher.fail(robot, self.now(), "result_rpc_error")
 
     def canceled(self, future, robot, goal_id):
         try:
             response = future.result()
             handle = self.handles.get(goal_id)
             accepted = handle is not None and any(
-                entry.goal_id.uuid == handle.goal_id.uuid for entry in response.goals_canceling)
+                bytes(entry.goal_id.uuid) == bytes(handle.goal_id.uuid)
+                for entry in response.goals_canceling)
             self.receipt("cancel", robot, goal_id, accepted)
         except Exception as error:
             self.record("rpc_error", {"reason": repr(error), "goal_id": goal_id})
+            self.stop_requested = True
+            self.dispatcher.fail(robot, self.now(), "cancel_rpc_error")
+
+    def flush_protocol_events(self, now):
+        while self.events:
+            event = self.events.popleft()
+            self.record("protocol", event)
+            kind = event["type"]
+            name = event.get("robot")
+            if kind in ("send_goal", "cancel_goal"):
+                self.transport.send("command", name, event, source_stamp=event["stamp"], now=now)
+            elif kind == "protocol_failure":
+                self.stop_requested = True
+                message = String()
+                message.data = json.dumps(event)
+                self.failure_pub.publish(message)
 
     def maintain(self):
         now = self.now()
         if self.started_at is None:
             return
+        self.finish_observation()
         if self.pending_stop is not None:
             pending = self.pending_stop
             stamp = pending.stamp.sec + pending.stamp.nanosec / 1e9
@@ -319,18 +377,7 @@ class MR3Adapter(Node):
                         "goal_id": nav["goal_id"], "expires_at": now + 2.,
                     }, source_stamp=now, now=now)
         self.dispatcher.tick(now)
-        while self.events:
-            event = self.events.popleft()
-            self.record("protocol", event)
-            kind = event["type"]
-            name, goal_id = event.get("robot"), event.get("goal_id")
-            if kind in ("send_goal", "cancel_goal"):
-                self.transport.send("command", name, event, source_stamp=event["stamp"], now=now)
-            elif kind == "protocol_failure":
-                self.stop_requested = True
-                message = String()
-                message.data = json.dumps(event)
-                self.failure_pub.publish(message)
+        self.flush_protocol_events(now)
         for envelope in self.transport.deliver(self.received, now):
             self.record("delivery", envelope.to_dict())
             event = envelope.payload
@@ -374,6 +421,7 @@ class MR3Adapter(Node):
             elif event["type"] == "cancel_goal" and goal_id in self.handles:
                 self.handles[goal_id].cancel_goal_async().add_done_callback(
                     lambda future, name=name, goal_id=goal_id: self.canceled(future, name, goal_id))
+        self.flush_protocol_events(now)
         if now - self.started_at >= 300. and not self.stop_requested:
             self.stop_requested = True
             self.dispatcher.safety_stop(now, "task_deadline")
@@ -391,6 +439,7 @@ class MR3Adapter(Node):
         try:
             if self.audit_file:
                 self.audit_file.close()
+            self.encoder.shutdown(wait=True, cancel_futures=True)
             return super().destroy_node()
         finally:
             self.navigation_owner.close()

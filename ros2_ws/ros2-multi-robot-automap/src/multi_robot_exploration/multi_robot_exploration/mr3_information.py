@@ -171,6 +171,7 @@ class IdealInformation(Node):
         self.map_signature = None
         self.hub_map = None
         self.map_payload_sha256 = None
+        self.received_map_digests = {}
         self.hub_map_source_stamp = None
         self.hub_map_received_stamp = None
         self.state_sequence = 0
@@ -179,6 +180,11 @@ class IdealInformation(Node):
         map_qos = QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL,
                              reliability=ReliabilityPolicy.RELIABLE)
         self.map_publisher = self.create_publisher(OccupancyGrid, "/mr3/received/map", map_qos)
+        self.received_map_publishers = {
+            name: self.create_publisher(
+                OccupancyGrid, f"/mr3/received/{name}/map", map_qos)
+            for name in self.names
+        }
         self.state_publisher = self.create_publisher(String, "/mr3/received/states", 1)
         self.navigation_publishers = {
             name: self.create_publisher(OccupancyGrid, f"/{name}/navigation_map", map_qos)
@@ -238,12 +244,16 @@ class IdealInformation(Node):
                 pending.append(copy.deepcopy(transform))
 
     def promote_transforms(self, now):
-        # SLAM stamps map->odom at scan time + transform_timeout. Keep that
-        # original validity stamp, and wait until it is causally available.
+        # SLAM stamps map->odom at scan time + transform_timeout. The estimate
+        # is already available when its actual sensor source time has arrived;
+        # waiting for its forward-dated validity header adds artificial delay.
+        # Preserve the header for consumers and gate on the actual source time.
         for name, pending in self.pending_transforms.items():
-            ready = [item for item in pending if stamp_seconds(item.header.stamp) <= now]
+            ready = [item for item in pending
+                     if stamp_seconds(item.header.stamp) - self.tf_validity_lead_sec <= now]
             self.pending_transforms[name] = [
-                item for item in pending if stamp_seconds(item.header.stamp) > now]
+                item for item in pending
+                if stamp_seconds(item.header.stamp) - self.tf_validity_lead_sec > now]
             if ready:
                 newest = max(ready, key=lambda item: stamp_seconds(item.header.stamp))
                 previous = self.local_transforms.get(name)
@@ -296,8 +306,15 @@ class IdealInformation(Node):
         if signature != self.map_signature:
             self.map_version += 1
             self.map_signature = signature
-        self.hub_map = merge_maps([
-            restore_message(OccupancyGrid(), record.payload) for record in records], "map")
+        delivered_maps = {
+            record.source: restore_message(OccupancyGrid(), record.payload) for record in records
+        }
+        self.received_map_digests = {
+            name: map_digest(grid) for name, grid in delivered_maps.items()
+        }
+        for name, grid in delivered_maps.items():
+            self.received_map_publishers[name].publish(grid)
+        self.hub_map = merge_maps(list(delivered_maps.values()), "map")
         self.map_payload_sha256 = map_digest(self.hub_map)
         # The oldest contributing source is the conservative freshness summary;
         # every source also remains individually visible in the state metadata.
@@ -365,7 +382,8 @@ class IdealInformation(Node):
             "map_sources": {
                 name: {"sequence": record.sequence, "version": record.version,
                        "source_stamp": record.source_stamp,
-                       "received_stamp": record.received_stamp}
+                       "received_stamp": record.received_stamp,
+                       "payload_sha256": self.received_map_digests.get(name)}
                 for name, record in maps.items() if record is not None
             },
             "map_payload_sha256": self.map_payload_sha256,

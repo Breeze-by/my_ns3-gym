@@ -1,6 +1,7 @@
 """Check ideal action deliveries, input boundaries and exclusive ownership."""
 
 from collections import deque
+from concurrent.futures import Future as EncodingFuture
 import json
 import math
 from types import MethodType, SimpleNamespace
@@ -76,6 +77,12 @@ def make_adapter(started=True):
     clock = [1.0]
     records, stopped, failures, starts, observations = [], [], [], [], []
     events = deque()
+
+    def encode(function, *args, **kwargs):
+        future = EncodingFuture()
+        future.set_result(function(*args, **kwargs))
+        return future
+
     node = SimpleNamespace(
         epoch="episode-a", events=events,
         dispatcher=GoalDispatcher("episode-a", events.append),
@@ -86,7 +93,8 @@ def make_adapter(started=True):
             to_msg=lambda: stamp(clock[0]))),
         record=lambda kind, payload: records.append((kind, payload)),
         started_at=1.0 if started else None, stop_requested=False, stop_acknowledged=False,
-        pending_stop=None, map_digest=None,
+        pending_stop=None, map_digest=None, local_maps={}, local_map_digests={},
+        encoder=SimpleNamespace(submit=encode), encoding=None,
         last_command_id=-1, last_command_payload=None, last_state_sequence=-1,
         command_receipt=None, sequence=0, last_heartbeat=-math.inf,
         receipt_metadata={name: {} for name in ROBOTS},
@@ -326,7 +334,14 @@ def test_map_bytes_and_metadata_must_match_before_task_start():
     node.publish_observation()
     assert node.started_at is None and not node.test_observations
     node.state["map_payload_sha256"] = node.map_digest
+    for name in ROBOTS:
+        node.receive_local_map(name, grid)
+        node.state["map_sources"][name] = {
+            "payload_sha256": node.local_map_digests[name], "source_stamp": 1.,
+            "received_stamp": 1., "version": 1, "sequence": 1,
+        }
     node.publish_observation()
+    node.finish_observation()
     assert node.started_at == 1.0 and len(node.test_observations) == 1
     assert json.loads(node.test_observations[0].data)["map_version"] == 1
 
@@ -368,6 +383,39 @@ def test_native_rpc_error_keeps_unknown_owner_for_late_result_closure():
     assert any(kind == "rpc_error" for kind, _ in node.test_records)
 
 
+def test_cancel_response_matches_real_numpy_uuid_arrays_without_ambiguous_truth():
+    import numpy as np
+
+    node, clock = make_adapter()
+    goal_id, handle = accepted_goal(node, clock)
+    handle.goal_id.uuid = np.arange(16, dtype=np.uint8)
+    node.stop_requested = True
+    node.dispatcher.safety_stop(node.now(), "test_cancel")
+    advance(node, clock, 1.15)
+    handle.cancel.set_result(SimpleNamespace(goals_canceling=[SimpleNamespace(
+        goal_id=SimpleNamespace(uuid=np.arange(16, dtype=np.uint8)))]))
+    advance(node, clock, 1.4)
+    receipts = [payload["payload"] for kind, payload in node.test_records
+                if kind == "delivery" and payload["stream"] == "receipt"]
+    assert any(receipt["type"] == "cancel" and receipt["goal_id"] == goal_id
+               and receipt["value"] is True for receipt in receipts)
+    assert not any(kind == "rpc_error" for kind, _ in node.test_records)
+
+
+@pytest.mark.parametrize("phase", ["accept", "result"])
+def test_native_rpc_exception_latches_failure_without_releasing_owned_goal(phase):
+    node, clock = make_adapter()
+    if phase == "accept":
+        node.receive_action(command(node))
+        node.maintain()
+        node.navigation_clients["tb1"].responses[0].set_exception(RuntimeError("RPC failure"))
+    else:
+        _, handle = accepted_goal(node, clock)
+        handle.result.set_exception(RuntimeError("RPC failure"))
+    assert node.stop_requested and node.dispatcher.failed
+    assert not node.dispatcher.closed
+
+
 def test_real_ros_adapter_constructs_and_releases_owner(monkeypatch):
     """Catch Node property/API collisions that protocol stand-ins cannot see."""
     import rclpy
@@ -386,3 +434,15 @@ def test_real_ros_adapter_constructs_and_releases_owner(monkeypatch):
         if node is not None:
             node.destroy_node()
         rclpy.shutdown()
+
+
+def test_encoding_in_flight_does_not_block_received_state_or_lease_service():
+    node, clock = make_adapter()
+    goal_id, _ = accepted_goal(node, clock)
+    node.encoding = EncodingFuture()
+    before = node.dispatcher.navigation()["tb1"]["lease_until"]
+    advance(node, clock, 1.4)
+    assert not node.stop_requested
+    assert node.dispatcher.navigation()["tb1"]["goal_id"] == goal_id
+    assert node.dispatcher.navigation()["tb1"]["lease_until"] > before
+    assert not node.test_observations

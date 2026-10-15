@@ -1,0 +1,247 @@
+[
+  {
+    "epoch": "mr3_p1b_v2_open101",
+    "kind": "task_start",
+    "payload": {
+      "start_sim_time_sec": 82.0
+    },
+    "stamp": 82.0
+  },
+  {
+    "epoch": "mr3_p1b_v2_open101",
+    "kind": "action",
+    "payload": {
+      "action": 880,
+      "candidate_version": "30bf463e35864971a266705891a0d85c8441e59254c3f5ae5e09dedb701278f1",
+      "choices": [
+        8,
+        8,
+        0
+      ],
+      "command_id": 1,
+      "observation_digest": "915ad4e2edf867a46648ec6d2a17c3327d0e3b4604c7b3b3f4cf88101e36a609",
+      "observation_sequence": 1,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "sent"
+      }
+    },
+    "stamp": 82.0
+  },
+  {
+    "epoch": "mr3_p1b_v2_open101",
+    "kind": "action_duplicate",
+    "payload": {
+      "action": 880,
+      "candidate_version": "30bf463e35864971a266705891a0d85c8441e59254c3f5ae5e09dedb701278f1",
+      "choices": [
+        8,
+        8,
+        0
+      ],
+      "command_id": 1,
+      "observation_digest": "915ad4e2edf867a46648ec6d2a17c3327d0e3b4604c7b3b3f4cf88101e36a609",
+      "observation_sequence": 1,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "sent"
+      }
+    },
+    "stamp": 82.0
+  },
+  {
+    "epoch": "mr3_p1b_v2_open101",
+    "kind": "action_rejected",
+    "payload": {
+      "reason": "wrong_epoch"
+    },
+    "stamp": 82.0
+  },
+  {
+    "epoch": "mr3_p1b_v2_open101",
+    "kind": "action_rejected",
+    "payload": {
+      "reason": "expired_or_invalid_command_time"
+    },
+    "stamp": 82.0
+  },
+  {
+    "epoch": "mr3_p1b_v2_open101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 1,
+      "created_at": 82.0,
+      "epoch": "mr3_p1b_v2_open101",
+      "expires_at": 84.0,
+      "goal": {
+        "x": -0.6499450642658884,
+        "y": -0.4969735791500023
+      },
+      "goal_id": "mr3_p1b_v2_open101:tb3:1",
+      "lease_until": 84.0,
+      "observation_version": 1,
+      "robot": "tb3",
+      "stamp": 82.0,
+      "type": "send_goal",
+      "x": -0.6499450642658884,
+      "y": -0.4969735791500023
+    },
+    "stamp": 82.1
+  },
+  {
+    "epoch": "mr3_p1b_v2_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v2_open101",
+      "generated_stamp": 82.1,
+      "payload": {
+        "command_id": 1,
+        "created_at": 82.0,
+        "epoch": "mr3_p1b_v2_open101",
+        "expires_at": 84.0,
+        "goal": {
+          "x": -0.6499450642658884,
+          "y": -0.4969735791500023
+        },
+        "goal_id": "mr3_p1b_v2_open101:tb3:1",
+        "lease_until": 84.0,
+        "observation_version": 1,
+        "robot": "tb3",
+        "stamp": 82.0,
+        "type": "send_goal",
+        "x": -0.6499450642658884,
+        "y": -0.4969735791500023
+      },
+      "received_stamp": 82.1,
+      "sequence": 1,
+      "source": "tb3",
+      "source_stamp": 82.0,
+      "stream": "command",
+      "version": 1
+    },
+    "stamp": 82.1
+  },
+  {
+    "epoch": "mr3_p1b_v2_open101",
+    "kind": "native_send",
+    "payload": {
+      "command_id": 1,
+      "goal_id": "mr3_p1b_v2_open101:tb3:1",
+      "robot": "tb3"
+    },
+    "stamp": 82.1
+  },
+  {
+    "epoch": "mr3_p1b_v2_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v2_open101",
+      "generated_stamp": 82.1,
+      "payload": {
+        "goal_id": "mr3_p1b_v2_open101:tb3:1",
+        "robot": "tb3",
+        "type": "accept",
+        "value": true
+      },
+      "received_stamp": 82.2,
+      "sequence": 1,
+      "source": "tb3",
+      "source_stamp": 82.1,
+      "stream": "receipt",
+      "version": 1
+    },
+    "stamp": 82.2
+  },
+  {
+    "epoch": "mr3_p1b_v2_open101",
+    "kind": "protocol",
+    "payload": {
+      "epoch": "mr3_p1b_v2_open101",
+      "goal_id": "mr3_p1b_v2_open101:tb3:1",
+      "reason": "received_state_stale",
+      "robot": "tb3",
+      "stamp": 82.2,
+      "type": "cancel_goal"
+    },
+    "stamp": 82.2
+  },
+  {
+    "epoch": "mr3_p1b_v2_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v2_open101",
+      "generated_stamp": 82.2,
+      "payload": {
+        "epoch": "mr3_p1b_v2_open101",
+        "goal_id": "mr3_p1b_v2_open101:tb3:1",
+        "reason": "received_state_stale",
+        "robot": "tb3",
+        "stamp": 82.2,
+        "type": "cancel_goal"
+      },
+      "received_stamp": 82.2,
+      "sequence": 2,
+      "source": "tb3",
+      "source_stamp": 82.2,
+      "stream": "command",
+      "version": 2
+    },
+    "stamp": 82.2
+  },
+  {
+    "epoch": "mr3_p1b_v2_open101",
+    "kind": "safety_stop",
+    "payload": {
+      "reason": "{\"component\": \"mr3_adapter\", \"reason\": \"received_state_stale\"}"
+    },
+    "stamp": 82.2
+  },
+  {
+    "epoch": "mr3_p1b_v2_open101",
+    "kind": "rpc_error",
+    "payload": {
+      "goal_id": "mr3_p1b_v2_open101:tb3:1",
+      "reason": "ValueError('The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()')"
+    },
+    "stamp": 82.2
+  },
+  {
+    "epoch": "mr3_p1b_v2_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v2_open101",
+      "generated_stamp": 82.2,
+      "payload": {
+        "goal_id": "mr3_p1b_v2_open101:tb3:1",
+        "robot": "tb3",
+        "type": "result",
+        "value": 5
+      },
+      "received_stamp": 82.4,
+      "sequence": 2,
+      "source": "tb3",
+      "source_stamp": 82.2,
+      "stream": "receipt",
+      "version": 2
+    },
+    "stamp": 82.4
+  },
+  {
+    "epoch": "mr3_p1b_v2_open101",
+    "kind": "task_stopped",
+    "payload": {
+      "navigation_failure": false,
+      "pending_goal_count": 0,
+      "robot_names": [
+        "tb1",
+        "tb2",
+        "tb3"
+      ],
+      "start_sim_time_sec": 82.0,
+      "stop_sim_time_sec": 82.4
+    },
+    "stamp": 82.4
+  }
+]

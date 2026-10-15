@@ -104,10 +104,14 @@ def launch_setup(context, *args, **kwargs):
     if execution_mode not in ("baseline", "adapter"):
         raise ValueError("execution_mode must be baseline or adapter")
     adapter_mode = execution_mode == "adapter"
+    probe_mode = IfCondition(LaunchConfiguration("adapter_probe")).evaluate(context)
     if adapter_mode and robot_count != 3:
         raise ValueError("MR3 adapter requires robot_count=3")
     if adapter_mode and IfCondition(enable_drive).evaluate(context):
         raise ValueError("MR3 adapter requires enable_drive=false")
+    if probe_mode and (not adapter_mode or not evaluation_contract.perform(context)
+                       or not IfCondition(enable_task_evaluator).evaluate(context)):
+        raise ValueError("adapter_probe requires adapter mode and enabled MR3 contract evaluator")
     episode_epoch = LaunchConfiguration("mr3_episode_epoch")
 
     print(f"\n[INFO] Requested robot_count = {robot_count}")
@@ -252,6 +256,7 @@ def launch_setup(context, *args, **kwargs):
                 "max_duration_sec": evaluation_duration,
                 "coverage_threshold": evaluation_coverage,
                 "task_contract_path": evaluation_contract,
+                "allow_probe_finalize": probe_mode,
             }
         ],
         output="screen",
@@ -636,6 +641,10 @@ def generate_launch_description():
     ld.add_action(DeclareLaunchArgument(
         "mr3_audit_path", default_value="",
         description="Optional exclusive-create JSONL policy observation/protocol audit.",
+    ))
+    ld.add_action(DeclareLaunchArgument(
+        "adapter_probe", default_value="false",
+        description="Enable explicit incomplete-diagnostic finalization for bounded adapter probes.",
     ))
 
     ld.add_action(

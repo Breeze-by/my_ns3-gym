@@ -285,3 +285,117 @@ def test_navigation_context_and_missing_receipt_metadata_are_distinct():
     assert delivered["received_age_sec"] == pytest.approx(.1)
     states[0]["navigation"]["source_stamp"] = float("nan")
     assert snapshot(states=states)["robots"][0]["navigation"]["source_metadata_missing"]
+
+
+def own_maps(grid=None, resolution=.1, origin=(-6., -5.)):
+    return {name: {
+        "grid": frontier_map() if grid is None else grid.copy(),
+        "resolution": resolution, "origin": origin, "epoch": "episode-a",
+        "version": 5, "sequence": 7, "source_stamp": 9.0,
+        "received_stamp": 9.8, "payload_sha256": "received-payload-digest-" + name,
+    } for name in observation.ROBOT_NAMES}
+
+
+def test_delivered_own_maps_do_not_snap_or_erase_peer_body_in_fused_map():
+    fused = frontier_map()
+    for column in (40, 60):
+        fused[50, column] = 100  # Peer observations of another robot's own body.
+    original = fused.copy()
+    assert snapshot(fused)["diagnostics"]["robot_seed_traversable"] == [False, False, True]
+    result = snapshot(fused, robot_maps=own_maps())
+    assert result["diagnostics"]["robot_seed_traversable"] == [True] * 3
+    assert all(any(candidate["reachable"][index] for candidate in result["candidates"])
+               for index in range(3))
+    assert np.array_equal(fused, original)
+    for candidate in result["candidates"]:
+        assert fused[candidate["row"], candidate["column"]] == 0
+        assert candidate["clearance_m"] >= .29
+    assert result["diagnostics"]["path_map_source"] == ["delivered_own_map"] * 3
+
+
+def test_missing_delivered_own_map_never_falls_back_to_fused_path():
+    maps = own_maps()
+    del maps["tb2"]
+    result = snapshot(robot_maps=maps)
+    assert result["path_maps"]["tb2"]["missing"]
+    assert result["per_robot_action_mask"][1] == [False] * 8 + [True, False]
+    assert all(not candidate["reachable"][1] for candidate in result["candidates"])
+    assert result["joint_action_mask"][888]
+    missing_all = snapshot(robot_maps={})
+    assert not any(candidate["valid"] for candidate in missing_all["candidates"])
+    assert sum(missing_all["joint_action_mask"]) == 1
+
+
+def test_own_map_fractional_origins_and_different_resolution_use_world_coordinates():
+    # Own observations cover the entire candidate region; their pixel centres
+    # deliberately do not coincide with the fused .1 m grid's centres.
+    maps = own_maps(np.zeros((220, 260), dtype=np.int8), .05, (-6.5125, -5.5125))
+    result = snapshot(robot_maps=maps)
+    assert len([item for item in result["candidates"] if item["valid"]]) == 8
+    for candidate in result["candidates"]:
+        assert all(candidate["reachable"])
+        for robot_index, state in enumerate(robots()):
+            distance = candidate["path_distances_m"][robot_index]
+            direct = math.dist((state["x"], state["y"]), (candidate["x"], candidate["y"]))
+            assert distance >= direct - 1e-8
+    assert result["path_maps"]["tb1"]["native_origin_m"] == [-6.5125, -5.5125]
+    assert result["path_maps"]["tb1"]["native_resolution_m"] == .05
+
+
+def test_own_map_one_cell_wall_and_unknown_cells_are_not_fused_free_paths():
+    maps = own_maps()
+    maps["tb1"]["grid"][:, 59] = 100
+    result = snapshot(robot_maps=maps)
+    assert any(item["valid"] and item["x"] > 1 and not item["reachable"][0]
+               for item in result["candidates"])
+    assert any(item["valid"] and item["x"] < -1 and item["reachable"][0]
+               for item in result["candidates"])
+    maps["tb1"]["grid"][:, 59] = -1
+    unknown = snapshot(robot_maps=maps)
+    assert all(not item["reachable"][0] for item in unknown["candidates"]
+               if item["valid"] and item["x"] > 1)
+
+
+def test_unsafe_own_map_seed_has_no_nearest_free_cell_recovery():
+    maps = own_maps()
+    maps["tb1"]["grid"][50, 40] = 100
+    original = maps["tb1"]["grid"].copy()
+    result = snapshot(robot_maps=maps)
+    assert not result["diagnostics"]["robot_seed_traversable"][0]
+    assert result["path_maps"]["tb1"]["unavailable_reason"] == "robot_seed_not_observed_safe"
+    assert not any(item["reachable"][0] for item in result["candidates"])
+    assert np.array_equal(original, maps["tb1"]["grid"])
+
+
+def test_delivered_own_map_provenance_is_detached_and_part_of_snapshot_digest():
+    maps = own_maps()
+    result = snapshot(robot_maps=maps)
+    provenance = result["path_maps"]["tb1"]
+    assert provenance["version"] == 5 and provenance["sequence"] == 7
+    assert provenance["source_age_sec"] == 1.
+    assert provenance["received_age_sec"] == pytest.approx(.2)
+    assert provenance["payload_sha256"] == "received-payload-digest-tb1"
+    assert len(provenance["geometry_sha256"]) == 64
+    maps["tb1"]["grid"][:] = 100
+    maps["tb1"]["version"] = 6
+    assert observation.snapshot_digest(result) == result["digest"]
+    assert provenance["version"] == 5
+
+
+@pytest.mark.parametrize("edit", [{"epoch": "old-episode"}, {"source_stamp": 11.}])
+def test_cross_epoch_or_future_delivered_own_map_is_unavailable(edit):
+    maps = own_maps()
+    maps["tb1"].update(edit)
+    result = snapshot(robot_maps=maps)
+    assert result["path_maps"]["tb1"]["missing"]
+    assert not any(item["reachable"][0] for item in result["candidates"])
+    assert result["per_robot_action_mask"][0] == [False] * 8 + [True, False]
+
+
+def test_tf_source_and_validity_stamp_are_both_observable():
+    states = robots()
+    states[0].update(tf_source_stamp=9.8, tf_validity_stamp=10.0, tf_validity_lead_sec=.2)
+    state = snapshot(states=states)["robots"][0]
+    assert state["tf_source_stamp"] == 9.8
+    assert state["tf_validity_stamp"] == 10.
+    assert state["tf_validity_lead_sec"] == .2

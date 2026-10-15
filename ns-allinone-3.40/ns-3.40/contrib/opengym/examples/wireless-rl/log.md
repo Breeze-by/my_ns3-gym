@@ -2267,3 +2267,21 @@ open/rooms/corridors各seed101、三台、串行、独立域108/109/110与Gazebo
 修复字段名后新增真实rclpy节点create/destroy及所有权锁释放回归。探针不再先停server，
 而是通过唯一owned evaluator正常finalize(shutdown)触发既有launch关闭审计；不修改95%任务门禁。
 新版三场景重跑在`predeclared_native_plan_v2.json`前瞻性声明。原失败不删除/不改PASS。
+
+### P1B v2原生失败（保留，非通过）
+
+冻结`9e43209638bd504e75b2220b709f0eb32eef04d7`，运行命令与v1相同，唯一run-id替换为
+`mr3_p1b_v2_open101`。实际129.26墙秒，任务82.0放行，tb3目标真实接受并在82.4终态取消闭合；
+82.2由received_state_stale停止，.5秒安全界未修改。首快照tb1/tb2起点因融合图中的自体回波
+不可行（safe seeds false/false/true），只有tb3获目标。另真实取消ACK数组比较触发ValueError，
+原RPC错误保留；未把任务闭合导航失败标记false视为通过。
+评价器已因控制失败自然写出JSON时，runner仍发SIGINT与其退出竞态，子进程exit-2；
+因此父launch0/原生stop0仍不掩盖基础设施失败。独立审计FAIL；rooms/corridors未在此冻结运行。
+选定原件`report/assets/20261015_mr3_p1b/native_v2_open101_failure/`。
+
+一般性根因：5Hz雷达与TF源时间加.2有效期后，又等待有效期形成额外.2秒滞留；修正为
+只拒绝真正未来测量源，保留原header不回写。地图编码移入单worker线程，协议/状态回调
+不因编码阻塞；不放宽.5秒。路径可行性改用每台已交付的未改写本地图，候选目标仍用融合
+图原分辨率几何，不删自体范围内的真实障碍、不跳到其他自由分量。RPC异常显式锁存失败；
+UUID按bytes比较。显式probe_finalize服务仅在adapter_probe模式启用，输出未完成诊断，
+不再对正在退出的评价器发信号。新矩阵与脚本取消压力顺序已在v3预声明，原失败保留。

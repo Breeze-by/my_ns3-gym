@@ -263,6 +263,13 @@ class GoalDispatcher:
         if state.goal_id is None:
             state.phase = "failed"
 
+    def fail(self, robot, now, reason):
+        """Latch an execution-endpoint fault without claiming goal release."""
+        self.tick(now)
+        if robot not in self.states:
+            raise ValueError("unknown MR3 robot")
+        self._fail(robot, self._now, str(reason))
+
     def on_accept(self, robot, goal_id, accepted, now):
         self.tick(now)
         now = self._now
