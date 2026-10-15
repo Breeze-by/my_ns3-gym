@@ -1,0 +1,53 @@
+{
+  "kind": "mr3-p1c-gpu-forward-backward-plan-v1",
+  "declared_before_execution": true,
+  "scope": "Saved received-only P1B observation; tensor and CUDA gradient validation, no policy training",
+  "python": "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+  "environment": {
+    "PYTHONNOUSERSITE": "1",
+    "PYTHONPATH": null,
+    "CUBLAS_WORKSPACE_CONFIG": ":4096:8"
+  },
+  "versions": {
+    "python": "3.10.20",
+    "gymnasium": "1.3.0",
+    "numpy": "2.2.6",
+    "torch": "2.11.0+cu128"
+  },
+  "snapshot_log": "report/assets/20261015_mr3_p1b/native_v4/open101/adapter.jsonl.gz",
+  "fixture_selection": "First row whose kind is observation; exact digest and compressed file SHA256 recorded in result",
+  "tensor_schema": "mr3-learning-tensors-v1",
+  "network": {
+    "global_map": "3x128x128 binary flags; 16/32 channel CNN to32x32, fixed AvgPool2d kernel8 to4x4, 128 features",
+    "local_maps": "3 shared 3x64x64 encoders, 16/32 channel CNN to16x16, fixed AvgPool2d kernel4 to4x4, 64 features per robot",
+    "robots": "Shared 64-to-64 MLP for three robots",
+    "candidates": "Shared 16-to-32 MLP for eight candidate slots",
+    "history": "192-to-64 MLP",
+    "task": "12-to-32 MLP",
+    "fusion": "864-to-256 MLP",
+    "heads": "1000-way jointly masked actor and one team value"
+  },
+  "device": "cuda:0",
+  "seed": 20261015,
+  "batches": [
+    1,
+    8,
+    32
+  ],
+  "forward_calls": 3,
+  "backward_calls": 3,
+  "optimizer_steps": 0,
+  "simulator_episodes": 0,
+  "checks": [
+    "Shapes, finite legal logits/value/loss",
+    "Illegal action logits are negative infinity",
+    "Every parameter has finite gradients and aggregate gradient norm is positive",
+    "Record source freeze, plan hash, fixture hash, parameter count, wall time and peak CUDA allocation"
+  ],
+  "execution_gate": "Root agent must append this v2 prospective plan to shared log.md, commit/push the corrected source freeze, and notify before running this script. Never overwrite v1 artifacts.",
+  "plan_revision": 2,
+  "supersedes_plan": "gpu_probe_plan.json",
+  "preserved_failure": "gpu_probe_v1.json",
+  "deterministic_algorithms": true,
+  "implementation_change": "Fixed input geometry: 128/64 maps become 32/16 after stride-2 convolutions. Replace adaptive 4x4 pooling with disjoint AvgPool2d kernels 8/4, equal averages and gradients, preserving strict determinism."
+}

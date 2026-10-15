@@ -303,6 +303,32 @@ def test_external_cut_waits_for_navigation_closure_before_diagnostic_finalize():
     assert node.training_acknowledged
 
 
+def test_future_stop_ack_closes_after_real_clock_arrives_without_another_sim_timer():
+    node, clock, responses = reward_evaluator()
+    request(node, external_truncation="collector_budget")
+    node.stop_requested_sim_time = None
+    node.robot_names = ["tb1", "tb2", "tb3"]
+    node._stopped_callback = MethodType(TaskEvaluator._stopped_callback, node)
+    acknowledgment = dict(start_sim_time_sec=10., stop_sim_time_sec=11.02,
+                          pending_goal_count=0, robot_names=node.robot_names,
+                          navigation_failure=False)
+    node._stopped_callback(String(data=json.dumps(acknowledgment)))
+    node._training_finalize_callback(String(data=json.dumps(dict(
+        epoch="epoch", ack_sequence=1, reason="external_truncation"))))
+    assert not node.training_exit_ready()
+    assert node.pending_stop_ack is not None and not node.navigation_protocol_closed
+    assert not node.training_acknowledged
+
+    clock[0] = 11.02
+    assert node.training_exit_ready()
+    assert node.pending_stop_ack is None and node.pending_training_finalize is None
+    assert node.navigation_protocol_closed and node.training_acknowledged
+    assert node.stop_acknowledgment == acknowledgment
+    assert responses[-1]["kind"] == "training_finalize_ack"
+    assert node.final_result["termination_reason"] == "training_external_truncation"
+    assert node.reward_ledger.last_end == 11.  # Closure is outside the sealed reward interval.
+
+
 def test_training_ack_wall_guard_is_separate_and_works_while_clock_is_paused():
     node, _, _ = reward_evaluator()
     node.training_ack_deadline_wall = 0.
@@ -432,6 +458,44 @@ def test_release_creates_provisional_ledger_and_publishes_truth_free_ready_messa
     assert ready[-1]["initial_map_payload_sha256"] == digest
     assert ready[-1]["epoch"] == "epoch" and not ready[-1]["reset_bound"]
     assert "grid" not in json.dumps(ready[-1])
+
+
+def test_future_release_is_replayed_at_real_clock_watermark_without_another_sim_timer():
+    node, clock, _ = reward_evaluator()
+    ready, contact_start = [], []
+    digest = cached_map(node, [0, 1], received=10.)
+    node.start_sim_time = None
+    node.reward_ledger = None
+    node.contact_subscription_started_sim_time_sec = 9.
+    node.task_ready_published = True
+    node.positions = {name: (0., 0.) for name in ("tb1", "tb2", "tb3")}
+    node._drain_contacts = lambda now: None
+    node.contact_monitor.start = lambda now: contact_start.append(now)
+    node._update_coverage_times = lambda: None
+    node.task_contract.sha256 = "contract-sha"
+    node.truth = SimpleNamespace(occupied=np.zeros((2, 5), bool), roi_mask=np.ones((2, 5), bool),
+                                 world_sha256="world-sha")
+    node.get_logger = lambda: SimpleNamespace(info=lambda text: None)
+    node.reward_ready_publisher = SimpleNamespace(publish=lambda message: ready.append(
+        json.loads(message.data)))
+    node._release_callback = MethodType(TaskEvaluator._release_callback, node)
+    message = Header(frame_id="map")
+    message.stamp.sec, message.stamp.nanosec = 10, 20000000
+    clock[0] = 10.
+    node._release_callback(message)
+    assert not node.training_exit_ready()
+    assert node.pending_release is message and node.reward_ledger is None
+    assert not ready and not contact_start
+
+    clock[0] = 10.02
+    assert not node.training_exit_ready()
+    assert node.pending_release is None and node.start_sim_time == 10.02
+    assert node.reward_ledger.start_sim_time == 10.02 and contact_start == [10.02]
+    assert ready[-1]["start_sim_time"] == 10.02
+    assert ready[-1]["initial_map_payload_sha256"] == digest
+    assert message.stamp.sec == 10 and message.stamp.nanosec == 20000000
+    assert not node.training_exit_ready()  # Repeated wall polls cannot release twice.
+    assert len(ready) == len(contact_start) == 1
 
 
 def test_training_evaluator_constructs_with_real_ros_parameters_without_simulator():

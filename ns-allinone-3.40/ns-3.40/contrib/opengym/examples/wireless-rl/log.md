@@ -2422,3 +2422,64 @@ wireless-rl目录执行`python -m unittest discover -s mr3_learning/tests -q`，
 13份Markdown/136个本地链接、16段bash语法通过；预声明Gazebo TCP端口当前可用。
 源码哈希和检查范围在`report/assets/20261015_mr3_p1c/implementation_checks_v1.json`，
 base_freeze为本步父提交，不把它误标为后续原生运行冻结。当前未运行原生/GPU；下一步先commit/push。
+
+### P1C v1独立物理/clock夹具
+
+冻结`288dd919a2bfffbfdcfb5e70653969f8edda20bb`已推送。ROS工作区精确命令：
+`rtk proxy bash -c 'source /opt/ros/humble/setup.bash; source install/setup.bash; source /usr/share/gazebo/setup.sh; export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1; /usr/bin/python3 scripts/check_mr3_step_clock.py --run-id mr3_p1c_v1_clock --ros-domain-id 130 --gazebo-port 12101'`。
+结果PASS、7.046墙秒、10个真实迭代/ns回执；1tick真实相位对齐、5×20tick、1000tick、0tick及50Hz ROSclock边界相等通过。
+gzserver/helper/原生stop CLI各唯一已记录PID，server/CLI exit0；原world静态几何、无机器人团队，不能计三机器人建图或95%任务信用。
+选定原件`report/assets/20261015_mr3_p1c/native_v1/clock/`；全部日志与warning保留。随后仅启动预声明三机器人pilot。
+
+### P1C GPU v1失败（原件保留）
+
+冻结`288dd919a2bfffbfdcfb5e70653969f8edda20bb`。wireless-rl工作目录精确命令：
+`source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh && conda activate ns3gym && export PYTHONNOUSERSITE=1 && unset PYTHONPATH && /usr/bin/time -p python -m mr3_learning.gpu_probe --plan report/assets/20261015_mr3_p1c/gpu_probe_plan.json --output report/assets/20261015_mr3_p1c/gpu_probe_v1.json`。
+退出1，总17.79墙秒(user11.60/sys2.10)。batch1 forward完成，首backward因
+`adaptive_avg_pool2d_backward_cuda`在`torch.use_deterministic_algorithms(True)`下无确定性实现而失败；
+batch8/32未执行。实际1次forward、1次失败backward尝试、0optimizer更新，未训练、未重跑原件。
+失败JSON`report/assets/20261015_mr3_p1c/gpu_probe_v1.json`，原计划SHA见前瞻条目。
+保持确定性要求，拟用固定128/64输入的普通分块AvgPool2d数学等价替换adaptive池化，再做新freeze/v2声明。
+正在进行的v1三机器人pilot允许自然结束并独立留证，最终矩阵将使用后续统一冻结，不跨freeze拼接。
+
+### P1C v1三机器人pilot失败（保留，后续矩阵未启动）
+
+冻结`288dd919a2bfffbfdcfb5e70653969f8edda20bb`。wireless-rl目录精确命令：
+`rtk proxy bash -c 'source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh; conda activate ns3gym; export PYTHONNOUSERSITE=1; unset PYTHONPATH; python -m mr3_learning.benchmark --workers 1 --schedule open:101 --steps 2 --run-id mr3_p1c_v1_pilot --base-domain 131 --base-port 12111'`。
+146.664墙秒后FAIL、0有效transition；三台Nav2全部active，pause首次请求被helper拒绝
+`owned stepping plugin is unavailable`，reset未完成。隔离clock夹具的绝对plugin路径通过，
+完整launch的插件参数/路径仍需修根因；不以组件PASS覆盖此失败。
+Supervisor保留worker exit1及forced owned cleanup，remaining processes/zombies均为空。
+原始目录`ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v1_pilot/`；
+选定完整JSON/压缩原文`report/assets/20261015_mr3_p1c/native_v1/pilot_failure/`。
+v1原生1/2/4worker、fault及deadline后续均未启动，不拼成矩阵；将修复后新freeze重新预声明全套。
+
+GPU一般性等价修复：固定输入128/64经两层stride2后为32/16，AdaptiveAvgPool2d(4)换为
+AvgPool2d(8/4)，保持4×4块平均和参数结构。CPU float64测试证明输出与输入梯度atol1e-12相等，
+CUDA_VISIBLE_DEVICES='' 下conda全33项unit/5.273s通过，不是再次GPUprobe。
+新前瞻`gpu_probe_plan_v2.json` SHA256
+`12d571de23efd66374c3de43f50638744b482546a2f0b41bb3ff475a284bd56a`，仍严格deterministic=True、
+batch1/8/32各1次FB、0参数更新；未执行，须新源码推送后授权再run。
+
+原生plugin失败的一般性根因（静态展开实际launch substitutions，并非新模拟）：
+Humble gzserver.launch将extra_gazebo_args原字符串放在ROS参数尾部`--`之后，且shell=False不拆字符串，
+最终是`["--ros-args","--params-file","CLOCK.yaml","--","-s libmr3_gazebo_step.so"]`。
+Gazebo boost program_options将`--`后视为pass-through，不加载server-plugin，因此无loaderror；
+GAZEBO_PLUGIN_PATH已含正确安装路径，不是路径导出根因。修复stepped分支使用明确ExecuteProcess argv，
+SDK原插件及MR3 absolute.so都以独立token置于ROS参数前，baseline仍原Include。
+新增实际启动argv/所选clock/plugin的JSON日志和展开argv回归，不靠“传给include”推断实际SDK参数。
+
+v2原生前瞻完整计划`report/assets/20261015_mr3_p1c/predeclared_native_plan_v2.json`，
+同v1阶段/种子/门限/预算，所有run-id改为mr3_p1c_v2_*；新推送freeze后从clock和pilot重新开始，
+旧原件和失败不覆盖、不混用旧PASS。GPU v1执行侧car补充原freeze/实际调用次数/墙时和原failure文件SHA，
+不修改原failure JSON。下一步只运行与本次等价池化/argv修改相关检查，再commit/push，尚未启动v2原生/GPU。
+
+v2集成静态复审另修两个可重现的暂停水位竞态：snapshot请求以本次information drain的state_sequence
+为下界并复核响应，而不是仅用上一次snapshot序号；真实短终态允许最后已交付state不增长，但按当前
+物理时间重算源龄/缺失和终态KEEP掩码。评价器已收到但未来的release/stop ACK在真实clock到达后由
+既有训练wall轮询重放，不能依赖暂停后不再触发的0.1sim秒timer；不伪造clock或额外采样槽。
+GPU等价池化+启动argv修改相关检查：launch 96项通过；conda CUDA_VISIBLE_DEVICES=''全33项CPU
+unit通过，scope保持非GPU/非模拟。v1插件根因的纯展开证据另存`v1_plugin_argv_diagnosis.json`，
+明确不是当时原生argv捕获，原日志不追加伪造字段。后续v2实际argv将由新机读日志提供。
+
+v2提交前离线最终验证：ROS语义全516项/14.27s通过（同前排除三项既有style模板）；conda禁用CUDA、unset PYTHONPATH的全33项/4.815s通过。修改的ROS Python定向flake8(max100)通过；C++与物理合同未变，沿用v1对应build/CTest检查而不把它当v2原生信用。源码hash见implementation_checks_v2.json。

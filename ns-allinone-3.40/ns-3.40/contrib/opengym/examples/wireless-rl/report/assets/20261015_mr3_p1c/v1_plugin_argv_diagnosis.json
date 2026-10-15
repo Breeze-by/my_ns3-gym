@@ -1,0 +1,72 @@
+{
+  "schema": "mr3-p1c-v1-plugin-argv-diagnosis-v1",
+  "scope": "pure launch substitution expansion, not native argv capture",
+  "frozen_project_source": "288dd919a2bfffbfdcfb5e70653969f8edda20bb",
+  "frozen_project_launch": {
+    "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py",
+    "sha256": "94ecc80ab1a1dc385b6dd87d69698ddeee7cada56f553ce5a892cf20aa2ef356"
+  },
+  "installed_gzserver_launch": {
+    "path": "/opt/ros/humble/share/gazebo_ros/launch/gzserver.launch.py",
+    "sha256": "eece20685b10a5e9a73ae6acb63a005ab1de65f6ae6a9ad212c1883ea8adbb61"
+  },
+  "include_inputs_reconstructed_from_v1_source_and_run_metadata": {
+    "world": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/worlds/p1c_open.world",
+    "seed": "101",
+    "server_required": "false",
+    "params_file": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/config/mr3_step_clock.yaml",
+    "extra_gazebo_args": "-s libmr3_gazebo_step.so"
+  },
+  "expanded_argv": [
+    "gzserver",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/worlds/p1c_open.world",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "--seed=101",
+    "",
+    "",
+    "-slibgazebo_ros_init.so",
+    "-slibgazebo_ros_factory.so",
+    "-slibgazebo_ros_force_system.so",
+    "",
+    "--ros-args",
+    "--params-file",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/config/mr3_step_clock.yaml",
+    "--",
+    "-s libmr3_gazebo_step.so"
+  ],
+  "shell": false,
+  "gazebo_plugin_path_export": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/../../lib:/opt/ros/humble/share/gazebo_model_attachment_plugin_msgs/lib:/opt/ros/humble/share/gazebo_model_attachment_plugin/lib:/opt/ros/humble/share/gazebo_set_joint_positions_plugin/lib:/opt/ros/humble/share/gazebo_no_physics_plugin/lib:/opt/ros/humble/share/gazebo_video_monitor_plugins/lib:/opt/ros/humble/share/gazebo_planar_move_plugin/lib",
+  "official_gazebo_parser": {
+    "url": "https://github.com/gazebosim/gazebo-classic/blob/gazebo11/gazebo/Server.cc",
+    "function": "gazebo::Server::ParseArgs",
+    "locations": {
+      "server_plugin_option": "lines 191-192",
+      "positional_pass_through": "lines 206-218",
+      "load_only_parsed_server_plugins": "lines 263-273"
+    }
+  },
+  "diagnosis": "The SDK appends extra_gazebo_args after the standalone --. Boost program_options treats that tail as positional pass_through, so it does not register the MR3 server plugin. shell=False also preserves the combined -s libmr3_gazebo_step.so text as one argv token. The package exports the installed plugin directory; this failure does not establish a missing library or broken plugin implementation.",
+  "v1_failure_evidence": {
+    "run_path": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v1_pilot/worker0/episode001_open_101",
+    "launch_log_sha256": "d3006ce51e7fd95a025ba29e2d5070a8c8de1fd18c18d41984db78b00d7b4500",
+    "infrastructure_failure_sha256": "8b2d33330f01a0abc187aa043fb6b79d6932b3227bf1aaf25da50d798e834694",
+    "reported_error": "owned stepping plugin is unavailable"
+  },
+  "limitations": [
+    "The v1 native launch log records PID but no actual argv; this expansion cannot substitute for a native argv capture.",
+    "This diagnostic imports installed launch Python and performs substitutions only. It starts no simulator, ROS node, or physics helper.",
+    "The source freeze identifies the project v1 include configuration. The installed SDK launch SHA256 identifies the separately installed code used for this static reproduction."
+  ]
+}

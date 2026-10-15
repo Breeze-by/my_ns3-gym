@@ -13,12 +13,13 @@ import xml.etree.ElementTree as ET
 
 from launch import LaunchContext
 from launch.actions import (
-    DeclareLaunchArgument, EmitEvent, ExecuteProcess, LogInfo, RegisterEventHandler, TimerAction,
+    DeclareLaunchArgument, EmitEvent, ExecuteProcess, IncludeLaunchDescription, LogInfo,
+    RegisterEventHandler, TimerAction,
 )
 from launch.event_handlers import OnProcessStart
 from launch.events import Shutdown
 from launch.events.process import ProcessExited, ProcessStarted
-from launch.utilities import perform_substitutions
+from launch.utilities import normalize_to_list_of_substitutions, perform_substitutions
 import pytest
 import yaml
 
@@ -36,6 +37,91 @@ def load_module(name, path):
     finally:
         sys.path.pop(0)
     return module
+
+
+def mapping_actions(monkeypatch, tmp_path, stepped=False, installed_plugin=True):
+    launch = load_module("mapping", MAPPING_LAUNCH)
+    original_share = launch.get_package_share_directory
+    monkeypatch.setattr(launch, "get_package_share_directory", lambda name: (
+        str(ROOT / "src" / name) if (ROOT / "src" / name).is_dir()
+        else original_share(name)
+    ))
+    monkeypatch.setattr(launch, "get_package_prefix", lambda name: str(tmp_path))
+    plugin = tmp_path / "lib/libmr3_gazebo_step.so"
+    if installed_plugin:
+        plugin.parent.mkdir()
+        plugin.touch()
+    context = LaunchContext()
+    for action in launch.generate_launch_description().entities:
+        if isinstance(action, DeclareLaunchArgument):
+            context.launch_configurations[action.name] = perform_substitutions(
+                context, action.default_value,
+            )
+    context.launch_configurations.update({
+        "execution_mode": "adapter" if stepped else "baseline",
+        "mr3_stepped": str(stepped).lower(), "gazebo_seed": "101",
+        "enable_gzclient": "false", "enable_rviz": "false",
+        "enable_merge_rviz": "false", "enable_drive": "false",
+    })
+    return launch, context, plugin
+
+
+def test_stepped_server_plugin_is_a_real_option_before_ros_argument_terminator(
+    monkeypatch, tmp_path
+):
+    launch, context, plugin = mapping_actions(monkeypatch, tmp_path, stepped=True)
+    actions = launch.launch_setup(context)
+    server = next(action for action in actions if isinstance(action, ExecuteProcess)
+                  and perform_substitutions(context, action.cmd[0]) == "gzserver")
+    argv = [perform_substitutions(context, token) for token in server.cmd]
+    assert argv == [
+        "gzserver", str(ROOT / "src/multi_robot/worlds/my_world.world"), "--seed=101",
+        "-s", "libgazebo_ros_init.so", "-s", "libgazebo_ros_factory.so",
+        "-s", "libgazebo_ros_force_system.so", "-s", str(plugin),
+        "--ros-args", "--params-file", str(ROOT / "src/multi_robot/config/mr3_step_clock.yaml"),
+        "--",
+    ]
+    assert argv.index(str(plugin)) < argv.index("--ros-args") < argv.index("--")
+    assert not any(token.startswith("-s ") for token in argv)
+    environment = {perform_substitutions(context, key): perform_substitutions(context, value)
+                   for key, value in server.additional_env}
+    assert all(environment[key] for key in (
+        "GAZEBO_MODEL_PATH", "GAZEBO_PLUGIN_PATH", "GAZEBO_RESOURCE_PATH"))
+    started = ProcessStarted(action=server, name="gzserver-4", pid=12345, cmd=argv,
+                             cwd=None, env=environment)
+    on_start = next(action.event_handler for action in actions
+                    if isinstance(action, RegisterEventHandler)
+                    and isinstance(action.event_handler, OnProcessStart))
+    messages = [perform_substitutions(context, action.msg)
+                for action in on_start.handle(started, context) if isinstance(action, LogInfo)]
+    record = json.loads(next(message.split("MR3_GAZEBO_SERVER_START ", 1)[1]
+                             for message in messages if "MR3_GAZEBO_SERVER_START " in message))
+    assert record["argv"] == argv
+    assert record["pid"] == 12345
+    assert record["selected_step_plugin"] == str(plugin)
+    assert record["selected_clock_parameters"] == argv[-2]
+    assert record["gazebo_plugin_path"] == environment["GAZEBO_PLUGIN_PATH"]
+
+
+def test_baseline_keeps_the_gazebo_ros_include_arguments(monkeypatch, tmp_path):
+    launch, context, _ = mapping_actions(monkeypatch, tmp_path)
+    actions = launch.launch_setup(context)
+    included = [action for action in actions if isinstance(action, IncludeLaunchDescription)]
+    server = next(action for action in included
+                  if "server_required" in dict(action.launch_arguments))
+    assert {key: perform_substitutions(context, normalize_to_list_of_substitutions(value))
+            for key, value in server.launch_arguments} == {
+        "world": str(ROOT / "src/multi_robot/worlds/my_world.world"),
+        "seed": "101", "server_required": "false",
+    }
+
+
+def test_stepped_launch_fails_before_start_if_installed_plugin_is_missing(monkeypatch, tmp_path):
+    launch, context, _ = mapping_actions(
+        monkeypatch, tmp_path, stepped=True, installed_plugin=False,
+    )
+    with pytest.raises(ValueError, match="installed MR3 stepping plugin does not exist"):
+        launch.launch_setup(context)
 
 
 def native_result(success=True, schema=3):

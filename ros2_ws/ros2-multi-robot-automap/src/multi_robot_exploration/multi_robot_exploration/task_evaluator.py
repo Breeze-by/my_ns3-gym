@@ -1161,6 +1161,21 @@ class TaskEvaluator(Node):
     def training_exit_ready(self):
         """Keep terminal RPC available until worker ACK, with an independent wall guard."""
         if self.training_reward_enabled:
+            # The worker can pause on a 20ms boundary before the 100ms task
+            # timer is due. DDS may deliver a release/stop ACK before this
+            # process receives its real /clock watermark; replay only those
+            # messages whose unchanged source time has now actually arrived.
+            now = self._now()
+            pending_ack = getattr(self, "pending_stop_ack", None)
+            if not self.finalized and pending_ack is not None and (
+                    json.loads(pending_ack.data)["stop_sim_time_sec"] <= now):
+                self.pending_stop_ack = None
+                self._stopped_callback(pending_ack)
+            pending_release = getattr(self, "pending_release", None)
+            if not self.finalized and pending_release is not None and (
+                    pending_release.stamp.sec + pending_release.stamp.nanosec / 1e9 <= now):
+                self.pending_release = None
+                self._release_callback(pending_release)
             self._drain_reward_requests()
         if (self.training_reward_enabled and not self.training_acknowledged
                 and self.training_ack_deadline_wall is not None

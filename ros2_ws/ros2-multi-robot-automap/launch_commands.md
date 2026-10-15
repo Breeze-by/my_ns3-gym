@@ -88,6 +88,9 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
 
 ## MR3-P1C采样与完整reset候选入口（原生验证待做）
 
+步进模式明确构造gzserver argv，将每个`-s`与插件路径放在ROS参数终止符之前；
+启动日志`MR3_GAZEBO_SERVER_START`记录实际argv、插件和clock配置。baseline保留原启动入口。
+
 先在系统ROS终端按上文重新构建包含步进插件的工作区。学习端另开终端，使用conda，
 不source ROS或拼接ROS的PYTHONPATH；supervisor会在独立系统Python子进程重新source规范ROS/Gazebo环境。
 以下是已提供的采样入口示例，本文尚不提供原生/GPU通过结论；实际矩阵须先声明并绑定新推送冻结。
@@ -110,7 +113,7 @@ python -m mr3_learning.benchmark --workers 1 --schedule open:101,open:101 \
 
 ```bash
 python -m mr3_learning.gpu_probe \
-  --plan report/assets/20261015_mr3_p1c/gpu_probe_plan.json \
+  --plan report/assets/20261015_mr3_p1c/gpu_probe_plan_v2.json \
   --output /tmp/UNIQUE_P1C_GPU.json
 ```
 

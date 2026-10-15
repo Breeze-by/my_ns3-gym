@@ -4,11 +4,15 @@ import torch
 from torch import nn
 
 
-def _map_encoder(output_size):
+def _map_encoder(output_size, pool_size):
+    # The fixed 128/64 inputs become 32/16 after the two convolutions.
+    # Disjoint 8x8/4x4 averages equal adaptive 4x4 pooling on these shapes,
+    # avoiding the unsupported deterministic adaptive CUDA backward operation.
     return nn.Sequential(
         nn.Conv2d(3, 16, kernel_size=5, stride=2, padding=2), nn.ReLU(),
         nn.Conv2d(16, 32, kernel_size=3, stride=2, padding=1), nn.ReLU(),
-        nn.AdaptiveAvgPool2d((4, 4)), nn.Flatten(), nn.Linear(512, output_size), nn.ReLU(),
+        nn.AvgPool2d(kernel_size=pool_size), nn.Flatten(),
+        nn.Linear(512, output_size), nn.ReLU(),
     )
 
 
@@ -17,8 +21,8 @@ class MR3ActorCritic(nn.Module):
 
     def __init__(self):
         super().__init__()
-        self.global_encoder = _map_encoder(128)
-        self.local_encoder = _map_encoder(64)
+        self.global_encoder = _map_encoder(128, pool_size=8)
+        self.local_encoder = _map_encoder(64, pool_size=4)
         self.robot_encoder = nn.Sequential(nn.Linear(64, 64), nn.ReLU())
         self.candidate_encoder = nn.Sequential(nn.Linear(16, 32), nn.ReLU())
         self.history_encoder = nn.Sequential(nn.Linear(192, 64), nn.ReLU())

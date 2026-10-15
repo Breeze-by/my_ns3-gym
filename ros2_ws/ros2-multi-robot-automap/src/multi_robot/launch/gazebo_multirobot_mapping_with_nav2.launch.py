@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
+import json
 import os
 
-from ament_index_python.packages import get_package_share_directory
+from ament_index_python.packages import get_package_prefix, get_package_share_directory
 
 from launch import LaunchDescription
 from launch.actions import (
@@ -273,6 +274,12 @@ def launch_setup(context, *args, **kwargs):
         remappings=([("/merge_map", "/mr3/received/map")] if adapter_mode else []),
     )
     # ========= Gazebo =========
+    step_plugin = (os.path.join(get_package_prefix("multi_robot"), "lib", "libmr3_gazebo_step.so")
+                   if stepped_mode else None)
+    clock_parameters = (os.path.join(multi_robot_share, "config", "mr3_step_clock.yaml")
+                        if stepped_mode else None)
+    if stepped_mode and not os.path.isfile(step_plugin):
+        raise ValueError(f"installed MR3 stepping plugin does not exist: {step_plugin}")
     server_state = {
         "started": None, "environment": None, "exited": False, "stopping": False,
         "server_returncode": None, "stop_cli_returncode": None,
@@ -290,9 +297,15 @@ def launch_setup(context, *args, **kwargs):
         server_state["environment"] = dict(
             event_context.environment if event.env is None else event.env
         )
-        return [LogInfo(msg=(
-            f"Owned Gazebo server {event.process_name} started with pid={event.pid}"
-        ))]
+        return [
+            LogInfo(msg=f"Owned Gazebo server {event.process_name} started with pid={event.pid}"),
+            LogInfo(msg="MR3_GAZEBO_SERVER_START " + json.dumps({
+                "pid": event.pid, "process_name": event.process_name, "argv": list(event.cmd),
+                "stepped_mode": stepped_mode, "selected_step_plugin": step_plugin,
+                "selected_clock_parameters": clock_parameters,
+                "gazebo_plugin_path": server_state["environment"].get("GAZEBO_PLUGIN_PATH"),
+            }, sort_keys=True)),
+        ]
 
     def owned_gzserver_exited(event, event_context):
         started = server_state["started"]
@@ -382,27 +395,44 @@ def launch_setup(context, *args, **kwargs):
 
     actions.extend([
         RegisterEventHandler(OnProcessStart(on_start=remember_gzserver),
-                             condition=IfCondition(stop_on_evaluation)),
+                             condition=IfCondition("true" if stepped_mode else stop_on_evaluation)),
         RegisterEventHandler(OnProcessExit(on_exit=owned_gzserver_exited),
                              condition=IfCondition(stop_on_evaluation)),
         RegisterEventHandler(OnProcessExit(
             target_action=task_evaluator, on_exit=evaluation_finished,
         )),
     ])
-    gzserver_cmd = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(
-                get_package_share_directory("gazebo_ros"),
-                "launch",
-                "gzserver.launch.py",
-            )
-        ),
-        launch_arguments={
-            "world": world, "seed": gazebo_seed, "server_required": "false",
-            **({"params_file": os.path.join(multi_robot_share, "config", "mr3_step_clock.yaml"),
-                "extra_gazebo_args": "-s libmr3_gazebo_step.so"} if stepped_mode else {}),
-        }.items(),
-    )
+    if stepped_mode:
+        from scripts import GazeboRosPaths
+
+        model_export, plugin_export, media_export = GazeboRosPaths.get_paths()
+        gazebo_environment = {
+            key: os.pathsep.join(value for value in (exported, context.environment.get(key, ""))
+                                 if value)
+            for key, exported in (("GAZEBO_MODEL_PATH", model_export),
+                                  ("GAZEBO_PLUGIN_PATH", plugin_export),
+                                  ("GAZEBO_RESOURCE_PATH", media_export))
+        }
+        # Humble's included gzserver launch appends extra_gazebo_args after the ROS '--'.
+        # Gazebo treats that tail as positional pass-through, so load the system plugin
+        # explicitly before the ROS argument section, with separate argv tokens.
+        gzserver_cmd = ExecuteProcess(
+            cmd=["gzserver", world, ["--seed=", gazebo_seed],
+                 "-s", "libgazebo_ros_init.so", "-s", "libgazebo_ros_factory.so",
+                 "-s", "libgazebo_ros_force_system.so", "-s", step_plugin,
+                 "--ros-args", "--params-file", clock_parameters, "--"],
+            output="both", additional_env=gazebo_environment,
+        )
+    else:
+        gzserver_cmd = IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                os.path.join(get_package_share_directory("gazebo_ros"),
+                             "launch", "gzserver.launch.py")
+            ),
+            launch_arguments={
+                "world": world, "seed": gazebo_seed, "server_required": "false",
+            }.items(),
+        )
     actions.append(gzserver_cmd)
 
     gzclient_cmd = IncludeLaunchDescription(

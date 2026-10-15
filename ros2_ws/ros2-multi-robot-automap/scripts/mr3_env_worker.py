@@ -256,10 +256,14 @@ class Worker:
         drained = self.drains.pop(request_id)
         if drained.get("ok") is not True:
             raise RuntimeError("information pipeline failed to drain: " + json.dumps(drained))
+        minimum_state_sequence = drained["state_sequence"] - 1
+        if not allow_terminal:
+            minimum_state_sequence = max(
+                minimum_state_sequence, self.watermarks.get("state_sequence", -1))
         payload = {"epoch": self.epoch, "request_id": request_id,
                    "target_time_ns": self.physical_ns, "allow_terminal": allow_terminal,
                    "expected_map_sha256": drained["map_payload_sha256"],
-                   "minimum_state_sequence": self.watermarks.get("state_sequence", -1)}
+                   "minimum_state_sequence": minimum_state_sequence}
         self._publish(self.snapshot_pub, payload)
         self._wait(lambda: request_id in self.snapshots, 30., "snapshot watermark guard expired")
         response = self.snapshots.pop(request_id)
@@ -271,6 +275,8 @@ class Worker:
             raise RuntimeError("snapshot did not describe the frozen physical boundary")
         self.snapshot = snapshot
         self.watermarks = response["watermarks"]
+        if self.watermarks["state_sequence"] < drained["state_sequence"]:
+            raise RuntimeError("snapshot state is older than the information drain watermark")
         return snapshot
 
     def _reward(self, start, end, truncation=None, initialize=False):

@@ -1,0 +1,105 @@
+{
+  "schema": "mr3-p1c-native-plan-v2",
+  "declared_at": "2026-10-15",
+  "execution": "after source commit and push; stop on general infrastructure fault, preserve every attempt; code fix requires new freeze and fresh full matrix",
+  "scope": "P1C physical clock/reset/sampler/reward engineering, no policy training or 95% task-success credit; every sampler worker has exactly tb1/tb2/tb3",
+  "scheduler": {
+    "physics_step_ns": 1000000,
+    "quantum_steps": 20,
+    "policy_step_ns": 1000000000,
+    "ros_clock_hz": 50,
+    "normal_dt_required_sec": 1,
+    "terminal_detection_budget_sec": 0.020001
+  },
+  "clock_fixture": {
+    "run_id": "mr3_p1c_v2_clock",
+    "ros_domain": 130,
+    "gazebo_port": 12101,
+    "kind": "isolated physical/clock component; no robot team or mapping claim"
+  },
+  "pilot": {
+    "run_id": "mr3_p1c_v2_pilot",
+    "workers": 1,
+    "schedule": "open:101",
+    "steps": 2,
+    "base_domain": 131,
+    "base_port": 12111
+  },
+  "throughput_matrix": [
+    {
+      "run_id": "mr3_p1c_v2_workers1",
+      "workers": 1,
+      "schedule": "open:101,open:101,rooms:202,corridors:303",
+      "steps": 16,
+      "base_domain": 132,
+      "base_port": 12121
+    },
+    {
+      "run_id": "mr3_p1c_v2_workers2",
+      "workers": 2,
+      "schedule": "open:101,open:101",
+      "steps": 16,
+      "base_domain": 134,
+      "base_port": 12131
+    },
+    {
+      "run_id": "mr3_p1c_v2_workers4",
+      "workers": 4,
+      "schedule": "open:101,open:101",
+      "steps": 16,
+      "base_domain": 136,
+      "base_port": 12141
+    }
+  ],
+  "comparison_rule": "compare the first two open101 episodes per worker, including complete startup/reset and closure; additional serial rooms202/corridors303 provide cross-scene/seed reset regression only; report transition-only rate separately",
+  "fault_probe": {
+    "run_id": "mr3_p1c_v2_fault",
+    "workers": 2,
+    "schedule": "open:101,open:101",
+    "steps": 8,
+    "base_domain": 140,
+    "base_port": 12151,
+    "fault": "SIGKILL only verified worker0 PID/start identity after four completed first-episode steps; expect InfrastructureError and recorded forced owned cleanup; same supervisor rebuilds next epoch while peer worker continues"
+  },
+  "deadline_probe": {
+    "run_id": "mr3_p1c_v2_deadline",
+    "workers": 1,
+    "schedule": "open:101",
+    "steps": 300,
+    "base_domain": 142,
+    "base_port": 12161,
+    "policy": "all KEEP 888; finite 300sim-sec deadline must be terminated(timeout), taking precedence over simultaneous external sampler limit; no participation/95% success claim"
+  },
+  "sampler_policy": "external explicit legal candidate count/long observed path cancellation stress; KEEP until7s, WAIT, new candidates10-12s, WAIT; last full step external limit; never installed as backend fallback",
+  "reset_checks": [
+    "new complete process identities and unique epoch",
+    "old processes and zombies absent before next reset",
+    "sameseed world/contract/model/spawn configuration identical; normalized initial estimates and actual differences reported, not falsely bitwise deterministic",
+    "cross-scene/seed no retained SLAM maps/goals/history/reward account",
+    "initial task elapsed and reward zero; seq0 digest binds warmup map without paying initial cells"
+  ],
+  "required_checks": [
+    "exact iteration/ns receipts; no unpause/sleep time substitution",
+    "fresh received-only snapshot/source ages and hash-paired nonterminal reward",
+    "first-correct ledger duplicate/map-regression/no-reset reward exploits tested",
+    "last short terminal dt honest; external truncation distinct from task failure",
+    "real cancellation/terminal closure and native server/CLI matching clean PIDs",
+    "18 raw streams audited, contact/freshness failures retained",
+    "1/2/4 worker host CPU/RAM/GPU, startup/reset/effective transition rate and storage budget"
+  ],
+  "unchanged": [
+    "P1A ROI/95%/300sim-sec task/quality/participation/contact thresholds",
+    "SLAM/Nav2/physical robot/obstacle parameters"
+  ],
+  "recording": "unique directories under canonical ROS log/mr3_learning; selected raw originals+SHA and independent audits under this asset directory; shared log includes failures and commands",
+  "no_training": true,
+  "gateway_or_ns3": false,
+  "revision": "after retained GPU deterministic-adaptive-pool failure and full-launch plugin argv failure; source fix requires fresh clock/pilot/full matrix",
+  "changes": [
+    "fixed-input ordinary average pooling preserves exact block-average semantics and deterministic requirement",
+    "stepped direct gzserver argv puts each -s/plugin token before ROS argument terminator; baseline unchanged",
+    "log actual launched server argv and chosen plugin/clock parameters",
+    "snapshot state sequence is bound to the same information drain response; terminal snapshots may retain last delivered state with honest ages",
+    "training wall polling replays already-received release/closure messages only after the real clock reaches their source watermark, avoiding paused sim-timer deadlock"
+  ]
+}

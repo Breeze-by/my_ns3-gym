@@ -1,0 +1,50 @@
+{
+  "scope": "isolated physics/clock fixture; no robot-count research or task credit",
+  "freeze": "288dd919a2bfffbfdcfb5e70653969f8edda20bb",
+  "server_command": [
+    "gzserver",
+    "--verbose",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/worlds/p1c_open.world",
+    "-s",
+    "libgazebo_ros_init.so",
+    "-s",
+    "libgazebo_ros_factory.so",
+    "-s",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_gazebo_step.so",
+    "--ros-args",
+    "--params-file",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/config/mr3_step_clock.yaml",
+    "--"
+  ],
+  "helper_command": [
+    "ros2",
+    "run",
+    "multi_robot",
+    "mr3_gazebo_step",
+    "--jsonl",
+    "--world",
+    "p1c_open",
+    "--epoch",
+    "mr3_p1c_v1_clock",
+    "--timeout-sec",
+    "10"
+  ],
+  "ROS_DOMAIN_ID": 130,
+  "GAZEBO_MASTER_URI": "http://127.0.0.1:12101",
+  "transport_environment": {
+    "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+    "ROS_LOCALHOST_ONLY": "0",
+    "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+    "SKIP_DEFAULT_XML": "1",
+    "FASTDDS_DEFAULT_PROFILES_FILE": null,
+    "RMW_FASTRTPS_USE_QOS_FROM_XML": null,
+    "RMW_FASTRTPS_PUBLICATION_MODE": null,
+    "profile_sha256": "8d11da75d5916ed95d8b8a6a74abecb8fe946254d615895164a63ef9f8ff9556"
+  },
+  "expected_clock_hz": 50.0,
+  "physical_tick_ns": 1000000,
+  "wall_guards_sec": {
+    "startup": 45.0,
+    "clock": 10.0
+  }
+}
