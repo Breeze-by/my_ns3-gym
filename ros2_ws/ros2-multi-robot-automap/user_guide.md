@@ -10,6 +10,9 @@
 [P1B报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261015_mr3_p1b.md)。
 用户已授权P1C；候选时钟、张量、奖励与reset规则见
 [MR3_ENV_CONTRACT.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md)。
+P1C v6候选为18个精确Nav2状态响应writer增加1墙秒匹配窗口，客户端2秒超时不变；
+原有18个状态切换响应writer仍为5秒。此配置及有序关闭仍待完整新冻结原生矩阵，
+历史P1A/P1B证据保持其原profile范围，细节见启动命令和P1C报告。
 
 ## 1. 路径与环境
 

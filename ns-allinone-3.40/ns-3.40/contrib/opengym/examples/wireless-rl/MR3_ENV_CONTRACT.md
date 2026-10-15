@@ -40,6 +40,15 @@ P1B的K8+KEEP/WAIT、1000类联合动作、5秒接受后承诺和单一所有权
 摘要损坏、未来来源时间、非法mask、非有限数值或不匹配的栅格编码均报错。
 重放使用原快照/候选/掩码及schema，不能用后续地图重新解释旧动作。
 
+## 本机SDK状态响应等待（v6候选）
+
+同机FastDDS loopback profile只对三台各六个Nav2节点的精确`get_stateReply` writer
+增加1墙秒的response-reader匹配/写入有界等待，保留原18个`change_stateReply`的5秒窗口。
+Nav2 `get_state`客户端原2秒future超时不变；其预算还包含请求传输和调度，不能推断必有
+完整1秒回传余量或保证发现成功。其余默认、request/data/contact端点、DDS transport buffer、
+发布频率、SDK版本与任务时钟不变。无自动重试，实际超时仍是infra，旧profile证据不赋予新冻结信用。
+这是应用配置的有界等待，不是DDS发现竞态修复声明；新完整原生矩阵待验证。
+
 ## 真实物理步进与交付水位
 
 候选调度器标识为`mr3-physical-20ms-v1`。普通策略step为1000个真实1ms物理tick，即1仿真秒；
@@ -83,6 +92,12 @@ step快照可预先声明`allow_terminal=true`，但只有实际收到该notice�
 info显式记录`terminal_observation_reused=true,action_submitted=false,bootstrap=0`。
 零有效时长的任务终态不支付新增coverage；评价器仍保留冻结终态地图与当前正确格数诊断，终态奖罚只结算一次。
 旧快照不能用于其他step，不能在终态seal后重复结算；notice早于上一已返回边界为基础设施归因错误。
+
+未来P2A消费方不能把每次API返回都当成一次已执行决策。`action_submitted=false`的零时长
+终态只结算真实终态奖罚，不得对`requested_action`建立actor训练样本；其终态收益仍须影响此前
+真实决策，且不能因额外API记录多乘一次时间折扣。仅设置bootstrap=0或只屏蔽actor loss并不充分。
+P2A须预声明并测试collector归并或无动作事件的return/GAE规则，区分API记录数、真实决策数和
+仿真秒；确有执行动作的末端短步不能一律丢弃。本步没有实现rollout或验证现成PPO可直接消费。
 
 ## 独立奖励与初始化
 

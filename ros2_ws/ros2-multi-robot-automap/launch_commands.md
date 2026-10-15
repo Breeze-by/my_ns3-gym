@@ -93,7 +93,7 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
 stepped worker在暂停前等待adapter的`/mr3/initial_inputs_ready`实际交付确认，
 再做原物理相位、drain、快照和seq0绑定；节点出现在graph不能替代该确认。
 
-P1C v5候选关闭顺序为：真实目标闭合→Nav2原生SHUTDOWN及18节点GetState finalized确认→
+P1C v6候选继承v5关闭顺序为：真实目标闭合→Nav2原生SHUTDOWN及18节点GetState finalized确认→
 最后reward ACK/评价器clean退出→SDK按实际action/PID逐个正常退出ROS进程→Gazebo原生停止。
 服务/状态/有序退出回执分别保留，超时或非零退出仍失败；不使用固定sleep代替退出，也不改接触/源序号门禁。
 FastDDS保持原依赖，CycloneDDS因官方Humble缺少真实publication_sequence_number未采用。
@@ -194,7 +194,7 @@ XML关闭内建transport，仅启用白名单为127.0.0.1的UDPv4；没有更改
 UDP transport的默认发送阻塞方式。`ROS_LOCALHOST_ONLY=0` 由显式loopback白名单约束通信范围，
 `SKIP_DEFAULT_XML=1` 只阻止工作目录的默认XML覆盖显式profile，仍加载上方指定文件。
 legacy入口不会自动改为此环境；重新打开终端并使用前面的历史profile可复现其原环境。
-第六版另为三台各六个Nav2节点的 `change_state` 响应writer配置精确命名profile：
+P1A第六版冻结时另为三台各六个Nav2节点的 `change_state` 响应writer配置精确命名profile：
 `rr/tbN/NODE/change_stateReply`，共18项；NODE为 `controller_server`、`planner_server`、
 `behavior_server`、`bt_navigator`、`waypoint_follower`、`velocity_smoother`。
 只将这些response writer的reliability `max_blocking_time` 从默认100ms改为5墙秒，
@@ -202,7 +202,12 @@ legacy入口不会自动改为此环境；重新打开终端并使用前面的�
 它不按ROS仿真时钟计时。没有新增Nav2 transition重试，也没有改变其无超时future等待；
 reader匹配为何延迟、客户端为何可能一直等待的根因仍未解决。
 profile只绑定这些命名writer，不随启动阶段结束而撤销；不设置默认writer、service-wide
-fallback或reader配置，contact/control、get_state及request writer保持原有QoS。
+fallback或reader配置；P1A原冻结的contact/control、get_state及request writer保持原有QoS。
+P1C v6当前候选再为同三台六节点的18个精确`rr/tbN/NODE/get_stateReply`配置1墙秒
+匹配/写入等待（默认100ms），低于安装版Nav2 `get_state`客户端原2墙秒超时，后者不变。
+新增规则不改变request/data/contact端点、频率或任务门槛；实际失败仍按infra保留，不自动重试。
+这是有界发现等待的应用配置，不宣称修复DDS内部发现竞态；当前完整v6原生矩阵待验证。
+P1A旧报告/原件仍只对应其冻结18项change_state规则，不能赋予新配置结果信用。
 `RMW_FASTRTPS_USE_QOS_FROM_XML` 继续unset，ROS端点QoS转换仍保留该max-blocking字段。
 静态SDK/RMW验证另列为
 [证据](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261014_mr3_p1a/lifecycle_reply_qos_v6_static_proof.json)，

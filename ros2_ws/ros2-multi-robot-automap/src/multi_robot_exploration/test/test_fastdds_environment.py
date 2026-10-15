@@ -37,7 +37,7 @@ def test_profile_uses_only_one_default_loopback_udp_transport():
     assert root.tag == f"{{{NS['dds']}}}profiles"
     assert [child.tag for child in root] == [
         f"{{{NS['dds']}}}transport_descriptors", f"{{{NS['dds']}}}participant",
-    ] + [f"{{{NS['dds']}}}publisher"] * 18
+    ] + [f"{{{NS['dds']}}}publisher"] * 36
     transports = root.findall('dds:transport_descriptors/dds:transport_descriptor', NS)
     assert len(transports) == 1
     transport = transports[0]
@@ -64,15 +64,16 @@ def test_profile_uses_only_one_default_loopback_udp_transport():
     assert len(list(root.find('dds:participant', NS).iter())) == 5
 
 
-def test_only_exact_nav2_change_state_replies_get_bounded_matching_wait():
+def test_only_exact_nav2_lifecycle_replies_get_distinct_bounded_matching_waits():
     root = ET.parse(PROFILE).getroot()
     nodes = ('controller_server', 'planner_server', 'behavior_server',
              'bt_navigator', 'waypoint_follower', 'velocity_smoother')
-    expected = {f'rr/tb{robot}/{node}/change_stateReply'
-                for robot in range(1, 4) for node in nodes}
+    expected = {f'rr/tb{robot}/{node}/{service}Reply': seconds
+                for robot in range(1, 4) for node in nodes
+                for service, seconds in [('change_state', 5), ('get_state', 1)]}
     writers = root.findall('dds:publisher', NS)
-    assert len(writers) == 18
-    assert {writer.attrib['profile_name'] for writer in writers} == expected
+    assert len(writers) == 36
+    assert {writer.attrib['profile_name'] for writer in writers} == set(expected)
     for writer in writers:
         assert set(writer.attrib) == {'profile_name'}
         assert [child.tag for child in writer] == [f"{{{NS['dds']}}}qos"]
@@ -85,7 +86,8 @@ def test_only_exact_nav2_change_state_replies_get_bounded_matching_wait():
         assert reliability.findtext('dds:kind', namespaces=NS) == 'RELIABLE'
         duration = reliability.find('dds:max_blocking_time', NS)
         assert [(child.tag, child.text) for child in duration] == [
-            (f"{{{NS['dds']}}}sec", '5'), (f"{{{NS['dds']}}}nanosec", '0'),
+            (f"{{{NS['dds']}}}sec", str(expected[writer.attrib['profile_name']])),
+            (f"{{{NS['dds']}}}nanosec", '0'),
         ]
         assert len(list(writer.iter())) == 7
     # Reader, wildcard and default writers cannot affect contact/control endpoints.

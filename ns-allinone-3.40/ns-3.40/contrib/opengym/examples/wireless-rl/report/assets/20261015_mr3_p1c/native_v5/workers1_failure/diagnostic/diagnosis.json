@@ -1,0 +1,177 @@
+{
+  "schema": "mr3-p1c-startup-failure-diagnosis-v1",
+  "source_freeze": "cfabee15481936c6c27ddabadd1227b683c2457b",
+  "scope": "Observed v5 first serial-worker reset infrastructure failure. No sampling, no successful episode or ordered shutdown credit. Original failed audit and raw evidence retained; no retry/native execution by this review.",
+  "epoch": "mr3_p1c_v5_workers1_w0_e1_60294d60",
+  "native_run": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v5_workers1",
+  "benchmark_passed": false,
+  "benchmark_wall_sec": 324.93412220990285,
+  "valid_returned_transitions": 0,
+  "worker_episodes": [],
+  "raw_transition_bytes": 0,
+  "raw_physics_bytes": 0,
+  "adapter_started": false,
+  "evaluator_started": false,
+  "request": {
+    "id": 1,
+    "op": "reset",
+    "epoch": "mr3_p1c_v5_workers1_w0_e1_60294d60",
+    "scene": "open",
+    "seed": 101,
+    "quantum_steps": 20,
+    "terminal_probe": false
+  },
+  "worker_error": "InfrastructureError('RuntimeError(\"native child failure: [ERROR] [nav2_ready_gate-14]: process has died [pid 458169, exit code 1, cmd \\'/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot_exploration/lib/multi_robot_exploration/nav2_ready_gate --ros-args -r __node:=nav2_ready_gate --params-file /tmp/launch_params_fn952b1d\\'].\")')",
+  "infrastructure_failure": {
+    "request": {
+      "id": 1,
+      "op": "reset",
+      "epoch": "mr3_p1c_v5_workers1_w0_e1_60294d60",
+      "scene": "open",
+      "seed": 101,
+      "quantum_steps": 20,
+      "terminal_probe": false
+    },
+    "error": "RuntimeError(\"native child failure: [ERROR] [nav2_ready_gate-14]: process has died [pid 458169, exit code 1, cmd '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot_exploration/lib/multi_robot_exploration/nav2_ready_gate --ros-args -r __node:=nav2_ready_gate --params-file /tmp/launch_params_fn952b1d'].\")",
+    "scope": "invalid infrastructure sample, never a task success"
+  },
+  "formal_benchmark_fail_audit": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/workers1_v5_benchmark_audit.json",
+    "sha256": "bf57964cb39e4f52a45a8594626c0f98e6e68cd336e87d15688c50185021f1b8",
+    "passed": false,
+    "errors": [
+      "benchmark declaration: benchmark declaration/worker count/freeze/result mismatch",
+      "worker 0: worker error or missing reset/cleanup episode",
+      "comparison accounting: comparison requires two cells per worker"
+    ],
+    "overwritten": false
+  },
+  "actual_failure_events": [
+    {
+      "raw_launch_line": 213,
+      "text": "[velocity_smoother-20] [WARN] [1792066023.175246435] [tb1.velocity_smoother.rclcpp]: failed to send response to /tb1/velocity_smoother/get_state (timeout): client will not receive response, at ./src/rmw_response.cpp:154, at ./src/rcl/service.c:314"
+    },
+    {
+      "raw_launch_line": 215,
+      "text": "[lifecycle_manager-21] [ERROR] [1792066025.075328084] [tb1.lifecycle_manager_navigation]: Failed to change state for node: velocity_smoother. Exception: velocity_smoother/get_state service client: async_send_request failed."
+    },
+    {
+      "raw_launch_line": 216,
+      "text": "[lifecycle_manager-21] [ERROR] [1792066025.075711030] [tb1.lifecycle_manager_navigation]: Failed to bring up all requested nodes. Aborting bringup."
+    },
+    {
+      "raw_launch_line": 276,
+      "text": "[nav2_ready_gate-14] [ERROR] [1792066311.203657426] [nav2_ready_gate]: Nav2 readiness timed out; unavailable: /tb1/controller_server/get_state (inactive), /tb1/planner_server/get_state (inactive), /tb1/behavior_server/get_state (inactive), /tb1/bt_navigator/get_state (inactive), /tb1/waypoint_follower/get_state (inactive), /tb1/velocity_smoother/get_state (inactive)"
+    },
+    {
+      "raw_launch_line": 277,
+      "text": "[ERROR] [nav2_ready_gate-14]: process has died [pid 458169, exit code 1, cmd '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot_exploration/lib/multi_robot_exploration/nav2_ready_gate --ros-args -r __node:=nav2_ready_gate --params-file /tmp/launch_params_fn952b1d']."
+    },
+    {
+      "raw_launch_line": 281,
+      "text": "[INFO] [launch.user]: ERROR: MR3_ROS_SHUTDOWN_ERROR {\"action_id\": 137534506914560, \"epoch\": \"mr3_p1c_v5_workers1_w0_e1_60294d60\", \"pid\": 458169, \"process_name\": \"nav2_ready_gate-14\", \"process_start_index\": 14, \"reason\": \"nonzero_process_exit\", \"returncode\": 1, \"role\": \"owned_ros\"}"
+    }
+  ],
+  "startup_contract": {
+    "robot_spawn": "sequential successful spawn_entity exits before readygate/three scheduled Nav2 includes",
+    "nav2_wall_delays_sec": [
+      10,
+      55,
+      100
+    ],
+    "autostart": true,
+    "nav2_nodes_per_robot": [
+      "controller_server",
+      "planner_server",
+      "behavior_server",
+      "bt_navigator",
+      "waypoint_follower",
+      "velocity_smoother"
+    ],
+    "readygate_query": "Starts immediately after final spawn; once corresponding action server is ready it can query six get_state services concurrently per robot, at most one future per service, one-second request minimum spacing, two-second query timeout.",
+    "scope": "These concurrent observations overlap manager bringup but do not uniquely identify the timeout request GUID or prove the readygate caused the response-reader discovery delay."
+  },
+  "SDK_static_path": {
+    "response_timeout": "rmw_fastrtps send_response waits for this request-related response reader using its response writer reliability.max_blocking_time; unmatched MAYBE yields RMW_RET_TIMEOUT/client-will-not-receive-response.",
+    "profile_lookup": "Service response writer loads service fallback then exact response_topic_name, which uses rr + namespace/service + Reply; no fallback/default profile is required to target the18 get_stateReply endpoints.",
+    "qos_preservation": "Later fill_entity_qos_from_profile changes reliability kind, history and supplied ROS durations; it does not assign max_blocking_time.",
+    "frozen_v5_profile_scope": "18 exact change_stateReply writers have5sec; zero get_stateReply writers; no default publisher/service fallback/subscriber.",
+    "FastDDS_installed_default_matching_wait_sec": 0.1,
+    "Nav2_manager_get_state_default_future_sec": 2,
+    "Nav2_async_send_request_failed_scope": "Installed service_client header throws this generic text after spin_until_future_complete is nonSUCCESS and pending request removal. The text alone does not prove request send failed.",
+    "candidate_next_freeze": "Add exactly18 get_stateReply writer max_blocking_time1sec, preserving18 change_stateReply5sec. 0.1<1<2 respects existing manager future deadline; no retry or claim of universal SDK race repair. Not executed in this v5 attempt.",
+    "official_source_sha256": [
+      {
+        "url": "https://raw.githubusercontent.com/ros2/rmw_fastrtps/6.2.10/rmw_fastrtps_cpp/src/rmw_service.cpp",
+        "bytes": 19702,
+        "sha256": "0dec029fffa537ff0d2b61ddea859c34a5754e834743454f62bc18ea467f9e6f",
+        "source_tag": "6.2.10",
+        "scope": "Official release-tag source static check; not a loaded-binary debug-symbol identity proof."
+      },
+      {
+        "url": "https://raw.githubusercontent.com/ros2/rmw_fastrtps/6.2.10/rmw_fastrtps_shared_cpp/src/qos.cpp",
+        "bytes": 7145,
+        "sha256": "dc25d52d0b74c7aeb3a52b0c69fc7d0c0041276b94b79b33df61defacf60fbea",
+        "source_tag": "6.2.10",
+        "scope": "Official release-tag source static check; not a loaded-binary debug-symbol identity proof."
+      },
+      {
+        "url": "https://raw.githubusercontent.com/ros2/rmw_fastrtps/6.2.10/rmw_fastrtps_shared_cpp/src/rmw_response.cpp",
+        "bytes": 6764,
+        "sha256": "822de5aff8a10e984e6c1a6033d2cdba4329513c99310d8f07a1de7c185a1a03",
+        "source_tag": "6.2.10",
+        "scope": "Official release-tag source static check; not a loaded-binary debug-symbol identity proof."
+      },
+      {
+        "url": "https://raw.githubusercontent.com/ros-navigation/navigation2/1.1.20/nav2_util/include/nav2_util/lifecycle_service_client.hpp",
+        "bytes": 2004,
+        "sha256": "0d1e6eb6316b4284d9467e535cccc3ea0a546961405c0dcf172eefa59d5a4ffd",
+        "source_tag": "1.1.20",
+        "scope": "Official release-tag source static check; not a loaded-binary debug-symbol identity proof."
+      },
+      {
+        "url": "https://raw.githubusercontent.com/ros-navigation/navigation2/1.1.20/nav2_util/include/nav2_util/service_client.hpp",
+        "bytes": 5225,
+        "sha256": "299ff60119fe9c9f20a280ac91393712b15d24008ee5b3d7f2fbe19b1bb3aee1",
+        "source_tag": "1.1.20",
+        "scope": "Official release-tag source static check; not a loaded-binary debug-symbol identity proof."
+      },
+      {
+        "url": "https://raw.githubusercontent.com/ros-navigation/navigation2/1.1.20/nav2_lifecycle_manager/src/lifecycle_manager.cpp",
+        "bytes": 15658,
+        "sha256": "04d9f80ece676be5e567cb53b0a58802cbe2c5d67ba8919fc3fce2c29bf72932",
+        "source_tag": "1.1.20",
+        "scope": "Official release-tag source static check; not a loaded-binary debug-symbol identity proof."
+      }
+    ],
+    "installed_nav2_lifecycle_client_header": {
+      "path": "/opt/ros/humble/include/nav2_util/lifecycle_service_client.hpp",
+      "sha256": "0d1e6eb6316b4284d9467e535cccc3ea0a546961405c0dcf172eefa59d5a4ffd"
+    }
+  },
+  "cleanup": {
+    "worker_returncode": 1,
+    "forced_shutdown": true,
+    "failed_sample": true,
+    "remaining_owned_processes": [],
+    "remaining_owned_zombies": [],
+    "scope": "Owned cleanup completed after actual readiness failure; it does not turn this attempt into a clean successful episode."
+  },
+  "unattempted_stages": [
+    "workers2",
+    "workers4",
+    "fault",
+    "deadline"
+  ],
+  "unattempted_remaining_serial_episodes": [
+    "open:101 repeat2",
+    "rooms:202",
+    "corridors:303"
+  ],
+  "frozen_profile": {
+    "git_object": "cfabee15481936c6c27ddabadd1227b683c2457b:ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+    "selected": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/native_v5/workers1_failure/diagnostic/frozen_v5_fastdds_profile.xml",
+    "bytes": 6496,
+    "sha256": "8d11da75d5916ed95d8b8a6a74abecb8fe946254d615895164a63ef9f8ff9556"
+  }
+}

@@ -1,0 +1,259 @@
+{
+  "schema": "mr3-p1c-native-plan-v6",
+  "declared_at": "2026-10-15",
+  "execution": "Only after the unified v6 source/tests/profile/plan commit is pushed. Execute the same eight stages in order at one exact HEAD. Preserve every prior attempt and never reuse v1-v5 native PASS. New runtime repair requires a new freeze and fresh complete prospective matrix.",
+  "scope": "P1C physical clock/reset/sampler/reward engineering, no policy training or 95% task-success credit; every sampler worker has exactly tb1/tb2/tb3",
+  "scheduler": {
+    "physics_step_ns": 1000000,
+    "quantum_steps": 20,
+    "policy_step_ns": 1000000000,
+    "ros_clock_hz": 50,
+    "normal_dt_required_sec": 1,
+    "terminal_detection_budget_sec": 0.020001
+  },
+  "clock_fixture": {
+    "run_id": "mr3_p1c_v6_clock",
+    "ros_domain": 130,
+    "gazebo_port": 12101,
+    "kind": "isolated physical/clock component; no robot team or mapping claim"
+  },
+  "pilot": {
+    "run_id": "mr3_p1c_v6_pilot",
+    "workers": 1,
+    "schedule": "open:101",
+    "steps": 2,
+    "base_domain": 131,
+    "base_port": 12111
+  },
+  "throughput_matrix": [
+    {
+      "run_id": "mr3_p1c_v6_workers1",
+      "workers": 1,
+      "schedule": "open:101,open:101,rooms:202,corridors:303",
+      "steps": 16,
+      "base_domain": 132,
+      "base_port": 12121
+    },
+    {
+      "run_id": "mr3_p1c_v6_workers2",
+      "workers": 2,
+      "schedule": "open:101,open:101",
+      "steps": 16,
+      "base_domain": 134,
+      "base_port": 12131
+    },
+    {
+      "run_id": "mr3_p1c_v6_workers4",
+      "workers": 4,
+      "schedule": "open:101,open:101",
+      "steps": 16,
+      "base_domain": 136,
+      "base_port": 12141
+    }
+  ],
+  "comparison_rule": "compare the first two open101 episodes per worker, including complete startup/reset and closure; additional serial rooms202/corridors303 provide cross-scene/seed reset regression only; report transition-only rate separately",
+  "fault_probe": {
+    "run_id": "mr3_p1c_v6_fault",
+    "workers": 2,
+    "schedule": "open:101,open:101",
+    "steps": 8,
+    "base_domain": 140,
+    "base_port": 12151,
+    "fault": "SIGKILL only verified worker0 PID/start identity after four completed first-episode steps; expect InfrastructureError and recorded forced owned cleanup; same supervisor rebuilds next epoch while peer worker continues"
+  },
+  "deadline_probe": {
+    "run_id": "mr3_p1c_v6_deadline",
+    "workers": 1,
+    "schedule": "open:101",
+    "steps": 300,
+    "base_domain": 142,
+    "base_port": 12161,
+    "policy": "all KEEP 888; finite 300sim-sec deadline must be terminated(timeout), taking precedence over simultaneous external sampler limit; no participation/95% success claim"
+  },
+  "sampler_policy": "external explicit legal candidate count/long observed path cancellation stress; KEEP until7s, WAIT, new candidates10-12s, WAIT; last full step external limit; never installed as backend fallback",
+  "reset_checks": [
+    "new complete process identities and unique epoch",
+    "old processes and zombies absent before next reset",
+    "sameseed world/contract/model/spawn configuration identical; normalized initial estimates and actual differences reported, not falsely bitwise deterministic",
+    "cross-scene/seed no retained SLAM maps/goals/history/reward account",
+    "initial task elapsed and reward zero; seq0 digest binds warmup map without paying initial cells"
+  ],
+  "required_checks": [
+    "exact iteration/ns receipts; no unpause/sleep time substitution",
+    "fresh received-only snapshot/source ages and hash-paired nonterminal reward",
+    "first-correct ledger duplicate/map-regression/no-reset reward exploits tested",
+    "last short terminal dt honest; external truncation distinct from task failure",
+    "real cancellation/terminal closure and native server/CLI matching clean PIDs",
+    "18 raw streams audited, contact/freshness failures retained",
+    "1/2/4 worker host CPU/RAM/GPU, startup/reset/effective transition rate and storage budget",
+    "startup delivered-ready before pause, plus actually received state/map watermarks at the first explicit snapshot",
+    "recorded actual process monitor intervals and scan durations, with identity-safe cleanup; strict stop-CLI alternative proof documented separately from /proc identity capture",
+    "real task_terminal scalar handshake avoids monitorfalse/stop-before-snapshot dependency without allowing new actions",
+    "integer-nanosecond300-second boundary takes priority over simultaneous external sampler limit at all legal release phases, including212.06s",
+    "terminal_probe verifies both a genuine20ms terminal fourth step and a sameT zero-physics terminal API branch with exact original-snapshot reuse and no submitted action",
+    "diagnostic terminal injection is enabled only by explicit training_terminal_probe=true and never synthesizes contact/clock or task success",
+    "matching declared shutdown_protocol in metadata and lifecycle/launch proof",
+    "all18 nodes are actually FINALIZED after goal closure at a real paused cleanup boundary",
+    "actual unique SDK-owned process starts/signals/clean exits form a serial order before native Gazebo stop; no global-signal success shortcut",
+    "old v4 incomplete final raw step is never counted as a returned Gym sample or new-freeze evidence",
+    "every run metadata binds exact v6 transport profile hash; no reuse of earlier-profile native results or unsupported raw publication sequence source"
+  ],
+  "unchanged": [
+    "P1A ROI/95%/300sim-sec task/quality/participation/contact thresholds",
+    "SLAM/Nav2/physical robot/obstacle parameters"
+  ],
+  "recording": "unique directories under canonical ROS log/mr3_learning; selected raw originals+SHA and independent audits under this asset directory; shared log includes failures and commands",
+  "no_training": true,
+  "gateway_or_ns3": false,
+  "revision": "Prospective full validation after actual v5 workers1 first reset failed with get_state response matching timeout, manager configure-stage abort and ready-gate startup failure. Minimal exact reply-writer matching window only; unchanged task/clock/contact/data/ROS frequency gates. No claim of SDK internal discovery-race repair.",
+  "source_binding": {
+    "prior_v5_source_freeze": "cfabee15481936c6c27ddabadd1227b683c2457b",
+    "v6_source_freeze": "next unified pushed source/tests/profile/plan commit; exact hash captured by every run",
+    "cross_freeze_native_reuse": false
+  },
+  "inherited_v2_changes": [
+    "fixed-input ordinary average pooling preserves exact block-average semantics and deterministic requirement",
+    "stepped direct gzserver argv puts each -s/plugin token before ROS argument terminator; baseline unchanged",
+    "log actual launched server argv and chosen plugin/clock parameters",
+    "snapshot state sequence is bound to the same information drain response; terminal snapshots may retain last delivered state with honest ages",
+    "training wall polling replays already-received release/closure messages only after the real clock reaches their source watermark, avoiding paused sim-timer deadlock"
+  ],
+  "gpu_scope": {
+    "new_forward_calls_authorized": 0,
+    "new_backward_calls_authorized": 0,
+    "optimizer_updates": 0,
+    "model_and_tensor_interface_unchanged_from": "b328f8484162b9d04170da941a7dbe8487a85c5c",
+    "file_sha256": {
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/model.py": "9aa7a618ba5a85bce5e941d6591c2428185b0e406881ddf5fb9e53e151e841bd",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/observation.py": "1d030402a4f934031e8f3bde19356cfbee92a0836a5d540381a42c78c834c389",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/gpu_probe.py": "1505cef4cf4c148a026bac1c6ed4ba3c28ef30a874c9ac0e8e62180a83aa438e"
+    },
+    "retained_original_probe": "gpu_probe_v2.json",
+    "retained_original_probe_sha256": "b5018e8a27fd5b2a5aa63f36e62b4a0a56a2d8b5b0e1855f8fa011a62c997cdf",
+    "retained_execution_sidecar": "gpu_probe_v2_execution.json",
+    "retained_execution_sidecar_sha256": "0fdcdf54f7b27c65aae262a878d14d0dc5cde973419ccec43ee686eb795dde56",
+    "original_actual_budget": {
+      "forward_calls": 3,
+      "completed_backward_calls": 3,
+      "optimizer_updates": 0,
+      "simulator_episodes": 0
+    },
+    "scope": "Retain the b328f84 saved-fixture deterministic CUDA interface proof only under its original model/tensor/file-hash scope. The planned v6 changes do not authorize additional forward/backward calls, optimizer updates, training, or a claim of new GPU validation. No old native PASS carries into v6."
+  },
+  "domain_port_reuse": "Reuse declared numeric domains/ports only after all prior v1-v5 owned identities are absent, including failed v5 startup cleanup. Every v6 group runs serially; prior failures keep original scope.",
+  "inherited_v3_changes": [
+    "Startup must wait for an explicit adapter delivered-ready handshake from actually received current-epoch state and the required complete delivered inputs before the first pause/snapshot. Graph node presence and evaluator monitor_ready alone cannot establish that adapter data callbacks have run.",
+    "Readiness preserves original source/received timestamps and .5sim-sec safety gates. No manual state/map refresh, fake source stamp, fake clock, extra simulator step to hide a missing boundary, or hand-planner fallback is permitted.",
+    "Each supervisor ownership monitor cycle uses one /proc identity snapshot to derive descendants/session membership, rather than two full scans. Save actual monotonic monitor intervals/durations; .05sec nominal wait is not a claimed maximum observation interval.",
+    "Offline audit may use only a strictly matched owned native stop CLI start+cleanexit and native_stop receipt, together with the matching clean server identity, as alternative exit proof when that short-lived CLI lacks saved /proc start_ticks. Do not synthesize identity fields; all other launch children keep the existing ownership rule.",
+    "Retain original v2 FAIL audits and all infrastructure failures. Any narrower corrected offline audit is saved under a new name and its own auditor hash; raw original data and prior verdicts are never overwritten."
+  ],
+  "static_review_scope": {
+    "diagnosis": "v3_terminal_deadline_static_diagnosis.json",
+    "native_findings": "The retained v3 clock/pilot/workers1/workers2 outcomes remain under freeze864295d. v3 workers4/fault/deadline were not started after this prospective static review stop. Do not label the two static counterexamples as observed v3 native failures.",
+    "scope": "Inherited v3 static findings and v4 actual native failure remain distinct; neither grants v5 credit."
+  },
+  "execution_order": [
+    "clock_fixture",
+    "pilot",
+    "terminal_probe",
+    "throughput_matrix workers1",
+    "throughput_matrix workers2",
+    "throughput_matrix workers4",
+    "fault_probe",
+    "deadline_probe"
+  ],
+  "terminal_probe": {
+    "run_id": "mr3_p1c_v6_terminal",
+    "workers": 1,
+    "schedule": "open:101,open:101",
+    "steps": 4,
+    "base_domain": 144,
+    "base_port": 12171,
+    "benchmark_flag": "--terminal-probe",
+    "explicit_runtime_gate": {
+      "training_terminal_probe": true,
+      "default": false,
+      "required_context": "explicit MR3 contract evaluator with training_reward_enabled; diagnostic service is unavailable outside this prospectively declared probe"
+    },
+    "policy": "Three normal full1sim-second KEEP888 API steps per episode; all transitions derive from real paused physics and received evaluator notices.",
+    "episodes": [
+      {
+        "index": 1,
+        "first_three_steps": "normal KEEP888, each dt1s",
+        "fourth_step": "Arm the named P1C_DIAGNOSTIC_FAILURE injection for the first actual20-tick quantum of APIstep4. Advance those real20ticks, then trigger the diagnostic. Require actual dt.02s and terminated navigation_failure, with real goal/protocol/native closure. No contact event or clock value is synthesized.",
+        "expected_api_transitions": 4,
+        "expected_final_dt_sec": 0.02,
+        "expected_final_physical_ticks": 20
+      },
+      {
+        "index": 2,
+        "first_three_steps": "normal KEEP888, each dt1s",
+        "boundary_before_fourth_step": "After APIstep3 returns its real pausedT boundary, trigger the same diagnostic at that existingT and wait for the matching evaluator terminal notice without advancing physics.",
+        "fourth_step": "APIstep4 consumes the already-received current-epoch task terminal. Require dt0 and physical ticks0, reuse the exact original snapshot from step3, and submit no action command. Then perform real ownership/native closure.",
+        "expected_api_transitions": 4,
+        "expected_final_dt_sec": 0.0,
+        "expected_final_physical_ticks": 0
+      }
+    ],
+    "additional_budget": {
+      "api_transitions": 8,
+      "normal_full_second_transitions": 6,
+      "short_terminal_transitions": 1,
+      "zero_terminal_transitions": 1,
+      "sampled_physical_time_sec": 6.02,
+      "startup_and_closure_time": "record separately, never add to sampled reward dt or task success budget",
+      "gpu_forward_calls": 0,
+      "gpu_backward_calls": 0,
+      "optimizer_updates": 0
+    },
+    "scope": "Explicit diagnostic terminal API engineering only; P1C_DIAGNOSTIC_FAILURE is a declared diagnostic/navigation failure, never a fabricated body contact, successful95% task, training episode result, or network experiment."
+  },
+  "zero_terminal_api_constraints": [
+    "Only consume a genuine scalar evaluator task_terminal notice already received for this epoch at or before the current actual pausedT; require the notice terminal state and classify terminated rather than truncated.",
+    "The reused actor snapshot must be exactly the original saved snapshot returned at that sameT, with identical digest/sequence/source stamps/map bytes/mask. Do not regenerate an observation, refresh ages, resubmit action, renew a lease, capture an extra map slot, or advance physics to manufacture dt0.",
+    "No action or native goal submission is allowed for this APIstep. Log the explicit zero-terminal branch, physical start=endT, consumed notice identity and reused snapshot identity so an independent audit can prove the branch.",
+    "Reward timing remains dt0 and any terminal failure component is settled exactly once; do not pay new coverage or time from reused data. Frozen evaluator terminal-map scope is explicit if it differs from the diagnostic actor snapshot.",
+    "This narrow branch does not permit zero-length normal/nonterminal steps, generic snapshot retries, missing-data/timeouts, repeated finalized terminal settlement, or an external sampler cutoff disguised as task termination.",
+    "Required map or snapshot identity absent atT remains an infrastructure error. Actual safety and goal ownership gates remain enforced, and owned goals close only after actual terminal confirmation."
+  ],
+  "inherited_v4_changes": [
+    "Introduce a received scalar task_terminal handshake for the actual evaluator terminal state, bound to episode epoch and real source time. Worker/adapter may then stop execution and construct an honest terminal observation even when task_monitor_ready has become false, without waiting for the post-reward shutdown path to request stop. No truth arrays or reward masks cross this handshake.",
+    "Keep normal nonterminal freshness/monitor/map-pairing requirements and action rejection safety unchanged. A terminal observation uses actual source ages/validity and explicit missing information; missing required map data remains an infrastructure error. Goal ownership still closes only on actual terminal confirmation.",
+    "Use integer simulation nanoseconds for the exact300sim-second task deadline and deadline precedence in evaluator, adapter and reward classification. A legal fractional release phase cannot turn exact task timeout into external truncation through floating subtraction. Physical20ms quanta, allowed terminal detection residual, reward effective time and300sim-second success budget stay unchanged."
+  ],
+  "shutdown_protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+  "prior_failure_evidence": {
+    "benchmark": "workers1_v5_benchmark_audit.json",
+    "summary": "native_v5/workers1_failure/benchmark_summary.json",
+    "scope": "one actual reset attempt,0valid Gym transitions,324.9341222099wall seconds; ready gate exited1 after tb1 manager abort; forced owned cleanup, final ownedlive/zombie empty; workers2/4/fault/deadline unattempted"
+  },
+  "shutdown_wall_guards": {
+    "nav2_total_sec": 30,
+    "one_ros_process_exit_sec": 10,
+    "worker_launch_wait_sec": 45,
+    "learner_rpc_request_sec": 90,
+    "evaluator_reward_ack_sec": 90,
+    "scope": "distinct existing/protocol wall guards; they never extend simulation task time; no native execution before this plan is committed and pushed"
+  },
+  "inherited_v5_changes": [
+    "After actual goal ownership closure, use native ManageLifecycleNodes.SHUTDOWN in tb1/tb2/tb3 order and independently verify all18 managed lifecycle nodes are FINALIZED. Record exact actual cleanup physical-clock boundary and wall response evidence; never advance physics or add cleanup to reward.",
+    "After evaluator ACK and actual clean exit, send SIGINT through SDK matched actual process actions/PIDs to remaining owned ROS processes one at a time in reverse start order. Require actual matching clean ProcessExited before advancing. Stop Gazebo natively only after all selected ROS processes have clean exits; keep complete ordered evidence.",
+    "Reject failed lifecycle services, wrong final state, process identity mismatch, nonzero exit or wall deadline as infrastructure failure. No automatic retries, synthesized final state, unscoped kill or ignored child failure. Keep FastDDS/native raw publication_sequence_number gates and all task/physics thresholds unchanged."
+  ],
+  "changes": [
+    "Only add exact get_stateReply publisher profiles for tb1/tb2/tb3 six Nav2 nodes: reliability max_blocking_time 1wall second instead of the native100ms default. Keep exact18 change_stateReply profiles5wallseconds unchanged. No default/service fallback/readers, request/data/contact QoS, transport buffers, discovery rates or SDK versions change.",
+    "The1second matching window is narrower than the installed Nav2 get_state2second future timeout, which remains unchanged. This is bounded DDS response-reader matching/write wait, not a task-time tolerance, automatic retry or proof that every discovery completes in time. Any actual startup/shutdown failure remains infrastructure failure with original evidence."
+  ],
+  "transport_profile": {
+    "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+    "sha256": "dd7eeadca21f0924fe721515e8dd57ac979340df8b08885bc39d2595c8caf87b",
+    "exact_change_state_reply_writers": 18,
+    "change_state_reply_max_blocking_wall_sec": 5,
+    "exact_get_state_reply_writers": 18,
+    "get_state_reply_max_blocking_wall_sec": 1,
+    "installed_nav2_get_state_future_timeout_sec": 2,
+    "full_end_to_end_reply_margin_guaranteed": false,
+    "native_protocol_task_and_data_gates_unchanged": true
+  }
+}

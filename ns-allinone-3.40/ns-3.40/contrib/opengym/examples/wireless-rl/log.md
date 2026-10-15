@@ -2744,3 +2744,41 @@ f4c8483已在本地生成但未推送时，发现cached diff-check原始CSV的CR
 该非零检查此前未拦截提交。保留全部原生CSV字节，追加仅匹配本P1C native_v*证据CSV的
 .gitattributes cr-at-eol与-text规则，其余空白检查保持；重新运行HEAD检查/工作树检查，
 核对全部已tracked CSV与HEAD字节一致后，独立补正提交并一起推送，之后才启动v5。
+
+### P1C v5原生矩阵启动
+
+统一已推送冻结cfabee15481936c6c27ddabadd1227b683c2457b；v5 plan SHA674505028239a150de4cf4284e4ce1545cb2c425bc4715c319f5189134d4b6c8。
+clock命令（ROS cwd）：`source /opt/ros/humble/setup.bash; source install/setup.bash; source /usr/share/gazebo/setup.sh; export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1; /usr/bin/python3 scripts/check_mr3_step_clock.py --run-id mr3_p1c_v5_clock --ros-domain-id 130 --gazebo-port 12101`。
+原生fixture无机器人/无mapping信用；输出log/mr3_step_clock/mr3_p1c_v5_clock，结果待实际完成。
+
+clock v5结果：{"passed": true, "wall_duration_sec": 7.271771023981273, "receipt_count": 11, "clock_sample_count": 98, "native_stop": {"server_pid": 432196, "server_command": ["gzserver", "--verbose", "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/worlds/p1c_open.world", "-s", "libgazebo_ros_init.so", "-s", "libgazebo_ros_factory.so", "-s", "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_gazebo_step.so", "--ros-args", "--params-file", "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/config/mr3_step_clock.yaml", "--"], "server_returncode": 0, "stop_cli_pid": 432837, "stop_cli_command": ["gz", "topic", "-p", "/gazebo/server/control", "-m", "stop: true"], "stop_cli_returncode": 0}}。
+
+pilot命令（wireless-rl cwd）：`source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh; conda activate ns3gym; export PYTHONNOUSERSITE=1; unset PYTHONPATH; python -m mr3_learning.benchmark --workers 1 --schedule open:101 --steps 2 --run-id mr3_p1c_v5_pilot --base-domain 131 --base-port 12111`。统一cfabee15481936c6c27ddabadd1227b683c2457b，结果待完成。
+
+pilot v5结果：{"passed": true, "valid_transitions": 2, "wall_sec_including_all_attempts": 161.58344686310738}；全部实际Nav2 finalized/有序ROS/GZ闭合回执及owned清理待独立audit交叉。
+
+terminal命令（相同conda环境/cwd）：`python -m mr3_learning.benchmark --workers 1 --schedule open:101,open:101 --steps 4 --terminal-probe --run-id mr3_p1c_v5_terminal --base-domain 144 --base-port 12171`。统一cfabee15481936c6c27ddabadd1227b683c2457b；诊断导航失败非contact/成功，8API/6.02sim秒上限，结果待完成。
+
+terminal v5自然PASS339.142110215s/8有效API，真实采样6.02sim秒；首轮末步physical/effective dt.02/.02、第二轮0/0且原snapshot复用/无action，全部closed/native/owned回执齐。独立主审计terminal_v5_benchmark_audit.json。
+余下五组按已冻结预案串行自动执行，每组native和主审计均通过才启动下一组；精确命令及结果逐项自动追加本log，原始执行journal为report/assets/20261015_mr3_p1c/v5_remaining_execution.jsonl。执行器只编排既定命令，无额外GPU/训练。
+
+### P1C v5 workers1正式启动
+
+冻结cfabee15481936c6c27ddabadd1227b683c2457b；wireless-rl cwd，精确命令：`source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh; conda activate ns3gym; export PYTHONNOUSERSITE=1; unset PYTHONPATH; python -m mr3_learning.benchmark --workers 1 --schedule open:101,open:101,rooms:202,corridors:303 --steps 16 --base-domain 132 --base-port 12121 --run-id mr3_p1c_v5_workers1`。遵循已推送v5预案，所有worker均三台；结果待完成。
+
+workers1 v5原生结果：`{"passed": false, "valid_transitions": 0, "wall_sec_including_all_attempts": 324.93412220990285, "effective_transition_per_wall_sec": 0.0}`；命令exit1，全部尝试/回收原件ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v5_workers1。
+独立主benchmark审计精确命令：`rtk proxy /usr/bin/python3 /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/audit_mr3_env.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v5_workers1 --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/workers1_v5_benchmark_audit.json`，exit1，原件report/assets/20261015_mr3_p1c/workers1_v5_benchmark_audit.json。
+
+v5 workers1失败保留：324.9341222099wall、0valid、首reset未返回，tb1 get_state服务响应匹配timeout后manager configure阶段abort，全部inactive；最终readygate300wall保护exit1，workerreturn1/forcedcleanuptrue，ownedlive/zombie最终空。未启动workers2/4/fault/deadline。
+SDK ServiceClient的async_send_request failed是等待future非SUCCESS后通用文案，并不证明请求未发送；服务端确已处理但response reader未匹配。多个client无GUID trace，不能唯一证明该WARN属于manager哪条请求。官方rmw_fastrtps#842与6.2.10源码解释此请求/响应分开发现机制；18change_stateReply现有5s配置并未覆盖get_stateReply默认100ms。
+候选只为18精确get_stateReply writer增至1s有界匹配等待，低于manager2s消费者超时；不改contact/时钟/任务、数据发布频率/通道、DDS buffer或默认QoS，不自动重试或宣称SDK竞态根治。仍待新测试/统一freeze/完整前瞻矩阵。
+另只读复核零步消费约束后补合同澄清：无动作尾步不能直接作为actor样本，不丢终态收益或因多一API行多折扣；P2A collector/return/GAE尚未实现或授权，本补记不是新增训练。
+
+### P1C v6最小状态响应配置离线检查完成（原生未启动）
+
+源码只变XML18exact get_stateReply等待1墙秒（旧18change_stateReply5秒保持）和相应transport测试；全部worker/adapter/evaluator/supervisor/model源码与cfabee相同。
+系统ROS同前完整673语义测试20.96s PASS；conda ns3gym unset PYTHONPATH、PYTHONNOUSERSITE=1、CUDA_VISIBLE_DEVICES空，40 CPU tests4.542s PASS；modified test flake8与diffcheck PASS。
+静态SDK checker精确命中36响应writer，经installed名字映射/RMW转换保留18×5s+18×1s；197负例默认100ms、其余属性不变，未创建participant/ROS context/endpoint，详细compile/run命令数组及原stdout见get_state_reply_qos_v6_static_proof.json。其SHA73353fae62d54eddc42341ff82677aa091101144bc723b74d28c86074356064f，checker sourceSHA0ba26edf92d6cd49a1b1e960396d86c2a936b124570d26a46504ca6126e16575。
+1s<原client2s不提供完整1s回传余量或端到端保证；服务发现与DataWriter write均会耗墙时，真实失败继续infra。
+11活动docs/133本地links/16bash语法块 PASS，launch_commands12bash块逐字等于已推送v5（文档命令不执行）。168个v5已记录owned PID/starttick身份当前全部消失；原备份local/remote均保持8fe1495。
+v6前瞻planSHA7e8bd75d17ce393ae2e7a7e487fc40cdaf03f16c174dcf435766f23aed443302，绑定profileSHA dd7eeadca21f0924fe721515e8dd57ac979340df8b08885bc39d2595c8caf87b；8阶段顺序/seed/budget/ports与v5相同、run-id全部v6。新统一source commit+push后开始，不复用旧native PASS、新增GPUFB0、无训练/gateway。

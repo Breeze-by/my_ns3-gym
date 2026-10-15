@@ -1,0 +1,211 @@
+{
+  "schema": "mr3-get-state-reply-qos-static-proof-v1",
+  "checked_at_utc": "2026-10-15T12:20:31.585379+00:00",
+  "scope": "Static installed SDK XML profile parsing and name mangling, attributes-to-QoS assignment matching versioned PublisherImpl, actual installed RMW QoS conversion. No participant, ROS context, node, endpoint, service, simulator, task, training or GPU computation was created.",
+  "candidate_parent_freeze": "cfabee15481936c6c27ddabadd1227b683c2457b",
+  "result": "PASS",
+  "profile_path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+  "profile_sha256": "dd7eeadca21f0924fe721515e8dd57ac979340df8b08885bc39d2595c8caf87b",
+  "preserved_v5_profile_sha256": "8d11da75d5916ed95d8b8a6a74abecb8fe946254d615895164a63ef9f8ff9556",
+  "change_state_reply_profiles_preserved": 18,
+  "change_state_reply_seconds": 5,
+  "get_state_reply_profiles_added": 18,
+  "get_state_reply_seconds": 1,
+  "exact_added_profile_names": [
+    "rr/tb1/behavior_server/get_stateReply",
+    "rr/tb1/bt_navigator/get_stateReply",
+    "rr/tb1/controller_server/get_stateReply",
+    "rr/tb1/planner_server/get_stateReply",
+    "rr/tb1/velocity_smoother/get_stateReply",
+    "rr/tb1/waypoint_follower/get_stateReply",
+    "rr/tb2/behavior_server/get_stateReply",
+    "rr/tb2/bt_navigator/get_stateReply",
+    "rr/tb2/controller_server/get_stateReply",
+    "rr/tb2/planner_server/get_stateReply",
+    "rr/tb2/velocity_smoother/get_stateReply",
+    "rr/tb2/waypoint_follower/get_stateReply",
+    "rr/tb3/behavior_server/get_stateReply",
+    "rr/tb3/bt_navigator/get_stateReply",
+    "rr/tb3/controller_server/get_stateReply",
+    "rr/tb3/planner_server/get_stateReply",
+    "rr/tb3/velocity_smoother/get_stateReply",
+    "rr/tb3/waypoint_follower/get_stateReply"
+  ],
+  "original_change_state_attributes_unchanged": true,
+  "original_transport_and_participant": {
+    "transport_descriptors": {
+      "identical": true,
+      "structural_sha256": "50f0e49c7d0afb622f096bbe82813c71714eefa3925d892c15cc3d9d4d245beb"
+    },
+    "participant": {
+      "identical": true,
+      "structural_sha256": "5b860245f05d6232cee730cfb6a708fab687f773ba9d1a6c2e29b885a5198fdb"
+    }
+  },
+  "default_publisher_or_service_fallback_added": false,
+  "reader_profile_added": false,
+  "Nav2_manager_future_timeout_sec": 2,
+  "timeout_scope": "One second bounds server-side discovery matching and DDS write blocking for these exact response writers. The existing two-second client future begins at request send and also includes scheduling/request/response transport. 1<2 is not a guaranteed one-second return margin or end-to-end success bound. A longer discovery delay/client timeout still fails; no retries or SDK patch are introduced.",
+  "SDK_static_facts": {
+    "profile_lookup": "Official rmw_service.cpp loads service fallback then exact rr+fully qualified service+Reply profile before writer creation. Named profile applies with RMW_FASTRTPS_USE_QOS_FROM_XML unset.",
+    "attribute_assignment": "Version-tag PublisherImpl assigns profile reliability/history to DataWriterQos; checker makes those same assignments without creating a Publisher.",
+    "RMW_conversion": "Actual installed get_datawriter_qos retains1s/5s while preserving reliable service kind and depth10; official qos.cpp does not assign max_blocking_time.",
+    "response_path": "Official __rmw_send_response reads that writer duration for check_for_subscription. MAYBE yields the observed client-will-not-receive-response timeout, distinct from cannot-publish-data.",
+    "future_failure": "Installed Nav2 get_state defaults2s. ServiceClient async_send_request failed text is emitted after nonSUCCESS future completion and pending request removal, not proof that the request was never sent."
+  },
+  "official_source_sha256": [
+    {
+      "url": "https://raw.githubusercontent.com/ros2/rmw_fastrtps/6.2.10/rmw_fastrtps_cpp/src/rmw_service.cpp",
+      "bytes": 19702,
+      "sha256": "0dec029fffa537ff0d2b61ddea859c34a5754e834743454f62bc18ea467f9e6f",
+      "source_tag": "6.2.10",
+      "scope": "Official release-tag source static check; not a loaded-binary debug-symbol identity proof."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ros2/rmw_fastrtps/6.2.10/rmw_fastrtps_shared_cpp/src/qos.cpp",
+      "bytes": 7145,
+      "sha256": "dc25d52d0b74c7aeb3a52b0c69fc7d0c0041276b94b79b33df61defacf60fbea",
+      "source_tag": "6.2.10",
+      "scope": "Official release-tag source static check; not a loaded-binary debug-symbol identity proof."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ros2/rmw_fastrtps/6.2.10/rmw_fastrtps_shared_cpp/src/rmw_response.cpp",
+      "bytes": 6764,
+      "sha256": "822de5aff8a10e984e6c1a6033d2cdba4329513c99310d8f07a1de7c185a1a03",
+      "source_tag": "6.2.10",
+      "scope": "Official release-tag source static check; not a loaded-binary debug-symbol identity proof."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ros-navigation/navigation2/1.1.20/nav2_util/include/nav2_util/lifecycle_service_client.hpp",
+      "bytes": 2004,
+      "sha256": "0d1e6eb6316b4284d9467e535cccc3ea0a546961405c0dcf172eefa59d5a4ffd",
+      "source_tag": "1.1.20",
+      "scope": "Official release-tag source static check; not a loaded-binary debug-symbol identity proof."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ros-navigation/navigation2/1.1.20/nav2_util/include/nav2_util/service_client.hpp",
+      "bytes": 5225,
+      "sha256": "299ff60119fe9c9f20a280ac91393712b15d24008ee5b3d7f2fbe19b1bb3aee1",
+      "source_tag": "1.1.20",
+      "scope": "Official release-tag source static check; not a loaded-binary debug-symbol identity proof."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ros-navigation/navigation2/1.1.20/nav2_lifecycle_manager/src/lifecycle_manager.cpp",
+      "bytes": 15658,
+      "sha256": "04d9f80ece676be5e567cb53b0a58802cbe2c5d67ba8919fc3fce2c29bf72932",
+      "source_tag": "1.1.20",
+      "scope": "Official release-tag source static check; not a loaded-binary debug-symbol identity proof."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/eProsima/Fast-DDS/v2.6.11/src/cpp/fastdds/publisher/PublisherImpl.cpp",
+      "bytes": 19310,
+      "sha256": "3e42ab1912e2b8b311ec9df1f06a7c814190d10a313668e069c4e7aa56a76c69",
+      "source_tag": "v2.6.11",
+      "scope": "Official version-tag static source reference; not a loaded-binary debug-symbol identity proof."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ros2/rmw_fastrtps/6.2.10/rmw_fastrtps_shared_cpp/include/rmw_fastrtps_shared_cpp/custom_service_info.hpp",
+      "bytes": 8351,
+      "sha256": "45cc8143d55c34f934605d98393e8654b0d67d478b6ee6ad0d133c810a591178",
+      "source_tag": "6.2.10",
+      "scope": "Official version-tag static source reference; not a loaded-binary debug-symbol identity proof."
+    }
+  ],
+  "execution": {
+    "compile_command": [
+      "g++",
+      "-std=c++17",
+      "-I/opt/ros/humble/include/fastrtps",
+      "-I/opt/ros/humble/include/rmw_fastrtps_shared_cpp",
+      "-I/opt/ros/humble/include/rmw",
+      "-I/opt/ros/humble/include/rcutils",
+      "-I/opt/ros/humble/include/rosidl_runtime_c",
+      "-I/opt/ros/humble/include/rosidl_typesupport_interface",
+      "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/get_state_reply_qos_v6_checker.cpp",
+      "-L/opt/ros/humble/lib",
+      "-Wl,-rpath,/opt/ros/humble/lib",
+      "-lrmw_fastrtps_shared_cpp",
+      "-lfastrtps",
+      "-o",
+      "/tmp/mr3_get_state_reply_qos_v6_checker"
+    ],
+    "compile_returncode": 0,
+    "compile_stdout": "",
+    "compile_stderr": "",
+    "checker_command": [
+      "/tmp/mr3_get_state_reply_qos_v6_checker",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml"
+    ],
+    "checker_environment": {
+      "LD_LIBRARY_PATH": "/opt/ros/humble/lib"
+    },
+    "checker_returncode": 0,
+    "checker_stdout": "{\"participant_created\":false,\"ros_context_initialized\":false,\"selected_response_writers\":36,\"change_state_reply_count\":18,\"get_state_reply_count\":18,\"installed_rmw_name_mangling_verified\":true,\"other_publisher_attributes_unchanged\":true,\"default_blocking_ns\":100000000,\"change_state_after_rmw_blocking_ns\":5000000000,\"get_state_after_rmw_blocking_ns\":1000000000,\"ros_service_reliability\":\"RELIABLE\",\"ros_service_depth\":10,\"unmatched_writer_profiles_checked\":197,\"unmatched_blocking_ns\":100000000}\n",
+    "checker_stderr": "",
+    "checker_binary_sha256": "063e798574e6f9374c22ee79b1c4ec2f2133c6b5b5f053b2e90a7a1db9fd5f31",
+    "checker_source_sha256": "0ba26edf92d6cd49a1b1e960396d86c2a936b124570d26a46504ca6126e16575",
+    "profile_sha256": "dd7eeadca21f0924fe721515e8dd57ac979340df8b08885bc39d2595c8caf87b",
+    "sdk_rmw_result": {
+      "participant_created": false,
+      "ros_context_initialized": false,
+      "selected_response_writers": 36,
+      "change_state_reply_count": 18,
+      "get_state_reply_count": 18,
+      "installed_rmw_name_mangling_verified": true,
+      "other_publisher_attributes_unchanged": true,
+      "default_blocking_ns": 100000000,
+      "change_state_after_rmw_blocking_ns": 5000000000,
+      "get_state_after_rmw_blocking_ns": 1000000000,
+      "ros_service_reliability": "RELIABLE",
+      "ros_service_depth": 10,
+      "unmatched_writer_profiles_checked": 197,
+      "unmatched_blocking_ns": 100000000
+    }
+  },
+  "package_versions": [
+    "ros-humble-fastrtps\t2.6.11-1jammy.20260304.200925",
+    "ros-humble-nav2-lifecycle-manager\t1.1.20-1jammy.20260326.005714",
+    "ros-humble-nav2-util\t1.1.20-1jammy.20260326.002119",
+    "ros-humble-rmw-fastrtps-cpp\t6.2.10-1jammy.20260304.212617",
+    "ros-humble-rmw-fastrtps-shared-cpp\t6.2.10-1jammy.20260304.211712"
+  ],
+  "installed_library_sha256": {
+    "/opt/ros/humble/lib/libfastrtps.so": "cc1f45ce53ef4ed2961e57054ddb80d115dafc6604d2a6c259ec8b18452e03b8",
+    "/opt/ros/humble/lib/librmw_fastrtps_shared_cpp.so": "8e3f4603fbdd53588fed6927575f4687457a2e7933c88a28ecd1f7afce5edaa7",
+    "/opt/ros/humble/lib/librmw_fastrtps_cpp.so": "d0e1c9510a5c63eb384bef8a55f5b78e904ba63e7c41b83e8dc618f9b9905250"
+  },
+  "installed_library_hashes_identical_to_preserved_P1A_static_checker": true,
+  "installed_header_sha256": {
+    "/opt/ros/humble/include/rmw_fastrtps_shared_cpp/rmw_fastrtps_shared_cpp/qos.hpp": "d5deeb53b6a93f24cfd05be282050e5dec674ac2003c2db365a223cacfcdc938",
+    "/opt/ros/humble/include/rmw_fastrtps_shared_cpp/rmw_fastrtps_shared_cpp/names.hpp": "a1cf7a6b09d17773e4145197439ac2724c83063462c2c29b110f23683701f521",
+    "/opt/ros/humble/include/rmw_fastrtps_shared_cpp/rmw_fastrtps_shared_cpp/custom_service_info.hpp": "45cc8143d55c34f934605d98393e8654b0d67d478b6ee6ad0d133c810a591178",
+    "/opt/ros/humble/include/nav2_util/lifecycle_service_client.hpp": "0d1e6eb6316b4284d9467e535cccc3ea0a546961405c0dcf172eefa59d5a4ffd",
+    "/opt/ros/humble/include/nav2_util/service_client.hpp": "299ff60119fe9c9f20a280ac91393712b15d24008ee5b3d7f2fbe19b1bb3aee1",
+    "/opt/ros/humble/include/fastrtps/fastdds/dds/core/policy/QosPolicies.hpp": "6f7b0f10551b9ea9745d642b8e91252682547b890b641309ca95e0984fe54588"
+  },
+  "checks": {
+    "profile_environment_pytest": {
+      "passed": 18,
+      "failed": 0,
+      "wall_sec": 0.1
+    },
+    "flake8": {
+      "max_line_length": 100,
+      "errors": 0
+    },
+    "git_diff_check": "PASS"
+  },
+  "failure_evidence": {
+    "manifest_path": "native_v5/workers1_failure/manifest.json",
+    "manifest_sha256": "3f40f39140e9ab451db36f4b7e32e4aafce6bc9a7311900809ba3996fb02c49f",
+    "diagnosis_path": "native_v5/workers1_failure/diagnostic/diagnosis.json",
+    "diagnosis_sha256": "c84db3dbefaf1321961ab6cce14e5947208b61ed08675343295f4de0cddf46d4",
+    "scope": "Observed v5 reset infrastructureFAIL,0valid,emptyepisodes; no selected failure was changed into a successful episode."
+  },
+  "limitations": [
+    "No runtime endpoint matching or delivery is verified by this static proof.",
+    "Readiness polling concurrent with manager startup is observed, but request GUIDs are not logged, so no individual client or deeper discovery-delay cause is uniquely established.",
+    "New complete pushed freeze and prospectively declared native matrix are required; no v1-v5 nativePASS is reused.",
+    "Existing contact/pubseq/source-age/task/physical-step/quality/participation gates and SDK binaries remain unchanged."
+  ]
+}
