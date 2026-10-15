@@ -80,7 +80,7 @@ def make_adapter(started=True):
         epoch="episode-a", events=events,
         dispatcher=GoalDispatcher("episode-a", events.append),
         transport=IdealTransport("episode-a"), received=ReceivedStore("episode-a"),
-        clients={name: Client() for name in ROBOTS}, handles={},
+        navigation_clients={name: Client() for name in ROBOTS}, handles={},
         now=lambda: clock[0],
         get_clock=lambda: SimpleNamespace(now=lambda: SimpleNamespace(
             to_msg=lambda: stamp(clock[0]))),
@@ -141,10 +141,10 @@ def advance(node, clock, now, fresh=True):
 def accepted_goal(node, clock):
     node.receive_action(command(node))
     node.maintain()
-    assert len(node.clients["tb1"].goals) == 1
+    assert len(node.navigation_clients["tb1"].goals) == 1
     goal_id = node.dispatcher.navigation()["tb1"]["goal_id"]
     handle = Handle()
-    node.clients["tb1"].responses[0].set_result(handle)
+    node.navigation_clients["tb1"].responses[0].set_result(handle)
     assert node.dispatcher.navigation()["tb1"]["phase"] == "accepting"
     advance(node, clock, 1.1)
     assert node.dispatcher.navigation()["tb1"]["phase"] == "active"
@@ -179,7 +179,7 @@ def test_invalid_joint_action_never_reaches_native_client(changes, reason):
     assert node.test_records[-1] == ("action_rejected", {"reason": reason})
     assert node.dispatcher.closed
     assert not node.events
-    assert not any(client.goals for client in node.clients.values())
+    assert not any(client.goals for client in node.navigation_clients.values())
 
 
 def test_navigation_change_invalidates_saved_action_before_any_robot_is_submitted():
@@ -195,7 +195,7 @@ def test_navigation_change_invalidates_saved_action_before_any_robot_is_submitte
 def test_callbacks_update_backend_only_after_delivery_and_preserve_event_fields():
     node, clock = make_adapter()
     goal_id, handle = accepted_goal(node, clock)
-    goal = node.clients["tb1"].goals[0]
+    goal = node.navigation_clients["tb1"].goals[0]
     assert goal.pose.header.frame_id == "map"
     assert goal.pose.pose.position.x == 5.0 and goal.pose.pose.position.y == 0.0
     assert goal.pose.pose.orientation.w == 1.0
@@ -220,14 +220,14 @@ def test_duplicate_action_and_keep_do_not_submit_again_or_renew_by_callback():
     node.receive_action(original)
     node.receive_action(original)
     node.maintain()
-    assert len(node.clients["tb1"].goals) == 1
+    assert len(node.navigation_clients["tb1"].goals) == 1
     handle = Handle()
-    node.clients["tb1"].responses[0].set_result(handle)
+    node.navigation_clients["tb1"].responses[0].set_result(handle)
     advance(node, clock, 1.1)
     refresh_snapshot(node)
     node.receive_action(command(node, 888, 2))
     advance(node, clock, 1.2)
-    assert len(node.clients["tb1"].goals) == 1
+    assert len(node.navigation_clients["tb1"].goals) == 1
     assert not handle.cancel_calls
 
 
@@ -240,7 +240,7 @@ def test_lease_heartbeats_cover_pending_acceptance_without_duplicate_goals():
     assert not node.dispatcher.failed
     assert node.dispatcher.navigation()["tb1"]["phase"] == "accepting"
     assert node.dispatcher.navigation()["tb1"]["lease_until"] > 4.
-    assert len(node.clients["tb1"].goals) == 1
+    assert len(node.navigation_clients["tb1"].goals) == 1
 
 
 def test_task_stop_requires_real_terminal_and_never_acknowledges_cancel_response_alone():
@@ -269,7 +269,7 @@ def test_queued_goal_stopped_before_delivery_never_executes():
     node.receive_stop(Header(stamp=stamp(1.05), frame_id="map"))
     advance(node, clock, 1.1)
     advance(node, clock, 1.4)
-    assert not any(client.goals for client in node.clients.values())
+    assert not any(client.goals for client in node.navigation_clients.values())
     assert node.dispatcher.closed
     assert not node.dispatcher.failed
     assert len(node.test_stopped) == 1
@@ -280,7 +280,7 @@ def test_queued_goal_expired_before_delivery_never_executes_and_failure_is_retai
     node.receive_action(command(node, expires_at=1.2))
     advance(node, clock, 1.3)
     advance(node, clock, 1.6)
-    assert not any(client.goals for client in node.clients.values())
+    assert not any(client.goals for client in node.navigation_clients.values())
     assert node.dispatcher.failed
     assert node.dispatcher.closed
     assert node.test_failures
@@ -363,6 +363,26 @@ def test_native_rpc_error_keeps_unknown_owner_for_late_result_closure():
     node, _ = make_adapter()
     node.receive_action(command(node))
     node.maintain()
-    node.clients["tb1"].responses[0].set_exception(RuntimeError("transport failure"))
+    node.navigation_clients["tb1"].responses[0].set_exception(RuntimeError("transport failure"))
     assert node.stop_requested and not node.dispatcher.closed
     assert any(kind == "rpc_error" for kind, _ in node.test_records)
+
+
+def test_real_ros_adapter_constructs_and_releases_owner(monkeypatch):
+    """Catch Node property/API collisions that protocol stand-ins cannot see."""
+    import rclpy
+    from multi_robot_exploration.mr3_adapter import MR3Adapter
+    monkeypatch.setenv("ROS_DOMAIN_ID", "181")
+    rclpy.init()
+    node = None
+    try:
+        node = MR3Adapter()
+        assert set(node.navigation_clients) == set(ROBOTS)
+        assert node.dispatcher.closed
+        node.destroy_node()
+        node = MR3Adapter()
+        assert node.dispatcher.closed
+    finally:
+        if node is not None:
+            node.destroy_node()
+        rclpy.shutdown()

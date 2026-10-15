@@ -1,0 +1,45 @@
+{
+  "declared_at": "2026-10-15",
+  "scope": "P1B adapter only; no training, gateway or task-success claim",
+  "matrix": [
+    {
+      "scene": "open",
+      "seed": 101,
+      "domain": 108,
+      "gazebo_port": 11901
+    },
+    {
+      "scene": "rooms",
+      "seed": 101,
+      "domain": 109,
+      "gazebo_port": 11902
+    },
+    {
+      "scene": "corridors",
+      "seed": 101,
+      "domain": 110,
+      "gazebo_port": 11903
+    }
+  ],
+  "execution": "serial new process per cell; same pushed source freeze; 25sim-sec scripted action then stop; preserve failures",
+  "command_template": "PYTHONNOUSERSITE=1 /usr/bin/python3 scripts/run_mr3_adapter_probe.py --scene SCENE --seed 101 --run-id UNIQUE_ID",
+  "startup_wall_guard_sec": 420,
+  "closure_wall_guard_sec": 90,
+  "task_contract": "original P1A 95%/300sim-sec schema4 unmodified; intentional short shutdown is incomplete",
+  "exit_requirements": [
+    "all three native accepts",
+    "KEEP no resubmission",
+    "5sec commitment",
+    "cancel result closes every owner",
+    "snapshot/action digest replay",
+    "duplicates/cross-epoch/expired/masked commands rejected or idempotent",
+    "preserve contact/freshness/original native failures"
+  ],
+  "retry_rule": "infrastructure failure retained; no selective retries counted as matrix replacement; code fix => new source freeze and full new 3cell matrix",
+  "revision": "v2 after retained v1 adapter constructor failure; all 3 cells restart under new pushed freeze",
+  "changes": [
+    "avoid read-only rclpy Node.clients property; real ROS construction regression",
+    "finalize owned evaluator by recorded PID after probe closure; standard launch performs native Gazebo shutdown; no early external server stop",
+    "detect native child failure immediately, retaining original diagnostic"
+  ]
+}

@@ -2251,3 +2251,19 @@ ROS工作区执行`rtk proxy bash -c 'source /opt/ros/humble/setup.bash; export 
 open/rooms/corridors各seed101、三台、串行、独立域108/109/110与Gazebo端口11901/11902/11903；
 一次推送源码冻结下运行，25仿真秒脚本适配探针（KEEP/WAIT/重复/跨epoch/过期/承诺期边界）。
 95%/300秒合同不变；短探针主动中断的评价不能计任务成功。失败、原生异常和后续修复均追加，原件不覆盖。
+
+### P1B v1原生失败（保留，非通过）
+
+源码冻结`2c3087a428ac213195672e932782c020f7355f07`已推送。ROS工作区执行
+`rtk proxy bash -c 'source /opt/ros/humble/setup.bash; source install/setup.bash; source /usr/share/gazebo/setup.sh; export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 ROS_DOMAIN_ID=108 GAZEBO_MASTER_URI=http://127.0.0.1:11901; /usr/bin/python3 scripts/run_mr3_adapter_probe.py --scene open --seed 101 --run-id mr3_p1b_v1_open101'`。
+原生尝试183.83墙秒后失败，零策略观测/目标：adapter构造时`self.clients`与rclpy Node只读属性冲突，子进程exit1。
+独立探查验证三台SLAM实际transform_timeout均.2；8墙秒只读state/map观察发现桥状态有效，未给探针提供动作或反馈。
+发现构造失败后，通过launch日志唯一记录的owned evaluator PID4008154、/proc命令及域108校验，
+发送SIGINT使其输出shutdown诊断，并触发原launch的Gazebo原生关闭；人工操作receipt保留。
+父launch exit0不掩盖adapter失败。独立审计同样FAIL。rooms/corridors在此冻结未运行，未拼成矩阵。
+原件`ros2_ws/ros2-multi-robot-automap/log/mr3_adapter/mr3_p1b_v1_open101/`；选定完整日志/JSON见
+`report/assets/20261015_mr3_p1b/native_v1_open101_failure/`。
+
+修复字段名后新增真实rclpy节点create/destroy及所有权锁释放回归。探针不再先停server，
+而是通过唯一owned evaluator正常finalize(shutdown)触发既有launch关闭审计；不修改95%任务门禁。
+新版三场景重跑在`predeclared_native_plan_v2.json`前瞻性声明。原失败不删除/不改PASS。

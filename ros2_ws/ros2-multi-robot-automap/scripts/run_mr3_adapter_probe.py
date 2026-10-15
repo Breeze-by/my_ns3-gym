@@ -7,6 +7,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import signal
 import subprocess
 import time
@@ -15,6 +16,46 @@ from ros_smoke_test import configure_mr3_transport_environment, native_launch_fa
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def interrupt_owned_evaluator(run, process):
+    """Finalize an incomplete probe through its evaluator and normal launch stop.
+
+    Interrupting only this recorded child writes a shutdown diagnostic and lets
+    launch perform its audited native Gazebo stop. It does not declare success.
+    """
+    log = (run / "launch.log").read_text(errors="replace")
+    matches = re.findall(
+        r"\[INFO\] \[task_evaluator-\d+\]: process started with pid \[(\d+)\]", log)
+    if len(matches) != 1:
+        raise RuntimeError("cannot identify the owned evaluator for probe shutdown")
+    pid = int(matches[0])
+    command = Path(f"/proc/{pid}/cmdline").read_bytes().replace(b"\0", b" ").decode()
+    environment = Path(f"/proc/{pid}/environ").read_bytes().split(b"\0")
+    if ("/task_evaluator " not in command
+            or ("ROS_DOMAIN_ID=" + os.environ.get("ROS_DOMAIN_ID", "0")).encode()
+            not in environment):
+        raise RuntimeError("owned evaluator process identity mismatch")
+    (run / "evaluator_interrupt.json").write_text(json.dumps({
+        "pid": pid, "command": command, "signal": "SIGINT",
+        "reason": "bounded adapter probe; incomplete schema4 shutdown diagnostic",
+    }, indent=2) + "\n")
+    os.kill(pid, signal.SIGINT)
+    process.wait(timeout=45.)
+
+
+def native_stop_receipt(log):
+    matches = re.findall(
+        r"\[INFO\] \[mr3_gazebo_native_stop-(\d+)\]: process started with pid \[(\d+)\]",
+        log)
+    if len(matches) != 1:
+        raise RuntimeError("native stop CLI identity is missing or ambiguous")
+    suffix, pid = matches[0]
+    if (f"[mr3_gazebo_native_stop-{suffix}]: process has finished cleanly [pid {pid}]"
+            not in log or not re.search(r"\[gzserver-\d+\]: process has finished cleanly", log)):
+        raise RuntimeError("native stop CLI/server clean exits not both recorded")
+    return {"returncode": 0, "method": "owned_launch_native_stop",
+            "native_cli_pid": int(pid), "server_clean_exit_recorded": True}
 
 
 def main():
@@ -96,6 +137,9 @@ def main():
         try:
             while process.poll() is None:
                 rclpy.spin_once(node, timeout_sec=.1)
+                failures = native_launch_failures((run / "launch.log").read_text(errors="replace"))
+                if failures:
+                    raise RuntimeError("native child failed: " + failures[0])
                 snapshot = state["snapshot"]
                 if time.monotonic() - started > 900.:
                     raise TimeoutError("overall wall guard expired")
@@ -160,20 +204,11 @@ def main():
         except Exception as error:
             run_error = repr(error)
         finally:
-            # Stop only this launch's server via its isolated Gazebo master,
-            # then signal its own process group. Keep all native exit records.
+            # Preserve evaluator output and use the launch's existing native
+            # server shutdown protocol. Cleanup fallback is always a failure.
             if process.poll() is None:
                 try:
-                    result = subprocess.run([
-                        "gz", "topic", "-p", "/gazebo/server/control", "-m", "stop: true",
-                    ], capture_output=True, text=True, timeout=15.)
-                    (run / "native_stop.json").write_text(json.dumps({
-                        "returncode": result.returncode, "stdout": result.stdout,
-                        "stderr": result.stderr,
-                    }, indent=2) + "\n")
-                    if result.returncode:
-                        run_error = run_error or "native stop CLI failed"
-                    time.sleep(2.)
+                    interrupt_owned_evaluator(run, process)
                 except Exception as error:
                     run_error = run_error or repr(error)
                 if process.poll() is None:
@@ -190,7 +225,13 @@ def main():
                             os.killpg(process.pid, signal.SIGKILL)
                         process.wait(timeout=10.)
                     run_error = run_error or "owned launch required forced shutdown"
-    native_errors = native_launch_failures((run / "launch.log").read_text(errors="replace"))
+    launch_text = (run / "launch.log").read_text(errors="replace")
+    native_errors = native_launch_failures(launch_text)
+    try:
+        (run / "native_stop.json").write_text(json.dumps(
+            native_stop_receipt(launch_text), indent=2) + "\n")
+    except RuntimeError as error:
+        run_error = run_error or str(error)
     if process.returncode or native_errors:
         run_error = run_error or "native launch/process exit failure"
     summary = {**metadata, "launch_returncode": process.returncode, "error": run_error,

@@ -55,8 +55,9 @@ class MR3Adapter(Node):
         )
         self.transport = IdealTransport(self.epoch)
         self.received = ReceivedStore(self.epoch)
-        self.clients = {name: ActionClient(self, NavigateToPose, f"/{name}/navigate_to_pose")
-                        for name in ROBOTS}
+        self.navigation_clients = {
+            name: ActionClient(self, NavigateToPose, f"/{name}/navigate_to_pose") for name in ROBOTS
+        }
         self.handles = {}
         self.map = None
         self.map_digest = None
@@ -152,7 +153,7 @@ class MR3Adapter(Node):
         if self.started_at is None:
             if not self.states_fresh(now):
                 return
-            if not all(client.server_is_ready() for client in self.clients.values()):
+            if not all(client.server_is_ready() for client in self.navigation_clients.values()):
                 return
             if "/headquarters_control" in [
                 "/" + n for n, _ in self.get_node_names_and_namespaces()
@@ -368,7 +369,7 @@ class MR3Adapter(Node):
                 goal.pose = pose
                 self.record("native_send", {"robot": name, "goal_id": goal_id,
                                             "command_id": event["command_id"]})
-                self.clients[name].send_goal_async(goal).add_done_callback(
+                self.navigation_clients[name].send_goal_async(goal).add_done_callback(
                     lambda future, name=name, goal_id=goal_id: self.accepted(future, name, goal_id))
             elif event["type"] == "cancel_goal" and goal_id in self.handles:
                 self.handles[goal_id].cancel_goal_async().add_done_callback(
