@@ -2737,3 +2737,10 @@ v5前瞻`predeclared_native_plan_v5.json`最终SHA256
 `674505028239a150de4cf4284e4ce1545cb2c425bc4715c319f5189134d4b6c8`，
 完整8阶段同原预算/seed/ports但run-id全部v5；无跨freeze PASS、新增GPUFB0、无训练/gateway。
 新source commit+push后才执行；当前全部旧owned native已自然结束，无额外ROS初始化/模拟器试跑。
+
+### P1C v5提交检查补记（原生未启动）
+
+f4c8483已在本地生成但未推送时，发现cached diff-check原始CSV的CRLF被报为尾随空白；
+该非零检查此前未拦截提交。保留全部原生CSV字节，追加仅匹配本P1C native_v*证据CSV的
+.gitattributes cr-at-eol与-text规则，其余空白检查保持；重新运行HEAD检查/工作树检查，
+核对全部已tracked CSV与HEAD字节一致后，独立补正提交并一起推送，之后才启动v5。
