@@ -79,7 +79,8 @@ def bridge():
                          "worker_wall_sec": 0.0, "state_wall_sec": 0.0},
         odom_publishers={name: Publisher() for name in names},
         tf_publishers={name: Publisher() for name in names},
-        map_publisher=Publisher(), state_publisher=Publisher(), map_signature=None,
+        map_publisher=Publisher(), map_metadata_publisher=Publisher(),
+        state_publisher=Publisher(), map_signature=None,
         hub_map=None, map_payload_sha256=None, map_version=0, state_sequence=0,
         hub_map_source_stamp=None, hub_map_received_stamp=None,
     )

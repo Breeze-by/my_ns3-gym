@@ -397,9 +397,9 @@ def load_contract_truth(world_path, contract):
     )
 
 
-def compare_contract_occupancy_grid(truth, data, width, height, resolution,
-                                    origin, yaw=0.0):
-    """Sample map cells at truth centers with ROI coverage and quality counts."""
+def sample_contract_occupancy_grid(truth, data, width, height, resolution,
+                                   origin, yaw=0.0):
+    """Sample received cells at frozen truth centres, inside evaluation only."""
     if not isinstance(width, int) or not isinstance(height, int) or width <= 0 or height <= 0:
         raise ValueError("Map dimensions must be positive integers")
     resolution = _finite_number(resolution, "map resolution", .000001)
@@ -422,6 +422,15 @@ def compare_contract_occupancy_grid(truth, data, width, height, resolution,
     inside = (mx >= 0) & (mx < width) & (my >= 0) & (my < height)
     sampled = np.full(truth.occupied.shape, -1, dtype=np.int16)
     sampled[inside] = estimated[my[inside], mx[inside]]
+    return sampled
+
+
+def compare_contract_occupancy_grid(truth, data, width, height, resolution,
+                                    origin, yaw=0.0):
+    """Sample map cells at truth centers with ROI coverage and quality counts."""
+    sampled = sample_contract_occupancy_grid(
+        truth, data, width, height, resolution, origin, yaw,
+    )
     roi = truth.roi_mask
     known = (sampled >= 0) & roi
     predicted_occupied = sampled >= 50

@@ -3,9 +3,9 @@
 Updated 2026-10-15. The active contract is [RESEARCH_PLAN.md](RESEARCH_PLAN.md),
 then [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md). Follow root AGENTS.md.
 MR3-P0 was explicitly accepted on 2026-10-14; MR3-P1A was accepted on 2026-10-15 and the user authorized P1B.
-P1B implementation/validation is complete, awaiting user acceptance; P1C and
-later remain unstarted. Do not start P1C before explicit P1B acceptance.
-No training or gateway is authorized by P1B.
+P1B was accepted by the user on 2026-10-15 and P1C was authorized. P1C is in
+progress; P2A and later remain unstarted. No actual policy training or gateway
+is authorized. The candidate environment contract is [MR3_ENV_CONTRACT.md](MR3_ENV_CONTRACT.md).
 This route replaces the old search/charging/rally/communication-scheduler plan.
 
 ## Task and source of truth
@@ -20,11 +20,13 @@ are out of scope. Detailed method decisions live in the plan and
 
 Default baseline retains handcrafted ROS frontier allocation; the mutually
 exclusive adapter owns stable goals and consumes logical ideal-delivery copies.
-No robot RL, training environment or ROS/ns-3 gateway exists. Freeze `f9928fe`
+No trained robot policy or ROS/ns-3 gateway exists. P1C now adds candidate
+Gymnasium tensors/IPC, full process rebuild, explicit stepping and isolated
+first-correct-cell rewards; native sampling/reset and GPU checks are pending. Freeze `f9928fe`
 passed all three same-freeze open/rooms/corridors seed101 adapter audits; see the
 [P1B report](report/20261015_mr3_p1b.md). K8/5 s are this interface version,
 not 95% task evidence. The nominal 1 s snapshot timer had 2/3 s rooms gaps;
-fixed dt/reset/throughput remain P1C gates. P1A launch/check defaults are three;
+fixed dt/reset/1-2-4-worker throughput remain P1C gates. P1A launch/check defaults are three;
 1–4 compatibility remains.
 MR3 evaluation uses an explicit hash-bound 95%/300s schema4 task contract. Plans are
 not implemented features. P1A includes 18-stream body contact/freshness audit

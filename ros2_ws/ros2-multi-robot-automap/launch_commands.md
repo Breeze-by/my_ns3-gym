@@ -1,7 +1,7 @@
 # 当前三机器人基线与MR3适配启动命令
 
-2026-10-15：新路线为 [MR3](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，P0/P1A已验收，P1B实现/验证完成待用户验收。
-默认`execution_mode:=baseline`启动前沿控制器；`adapter`为显式联合动作接口，尚无RL训练或gateway。
+2026-10-15：新路线为 [MR3](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，P0/P1A/P1B已验收，P1C进行中，P2A及后续未开始。
+默认`execution_mode:=baseline`启动前沿控制器；`adapter`为显式联合动作接口。P1C源码候选待原生/GPU验证，尚无实际策略训练或gateway。
 所有推荐运行显式固定三台，活动默认已改为三台，保留1–4历史兼容。
 
 ## 环境与构建
@@ -72,7 +72,7 @@ rooms/corridors分别使用对应`--scene`，推荐域109/110、Gazebo端口1190
 冻结`f9928fe`的open/rooms/corridors各seed101严格审计均通过，前三次失败与完整原件见
 [P1B报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261015_mr3_p1b.md)。
 K8/5秒承诺是本接口版本；名义1秒快照在rooms实际有2/3秒间隔，固定dt与采样吞吐仍属P1C门禁。
-这不证明95%任务或RL有效性；P1B待用户验收，P1C及后续未开始。
+这不证明95%任务或RL有效性；P1B已验收，用户已授权P1C，P2A及后续未开始。
 
 手动提供策略输入时可启动同一模式：
 
@@ -84,7 +84,41 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
 ```
 
 无外部`/mr3/action`输入时保持空闲；KEEP不重发目标。正式验证使用脚本内的P1A持续监测，
-手动入口未启用评价器，不产生安全或任务成绩。P1C reset/吞吐和训练均未开始。
+手动入口未启用评价器，不产生安全或任务成绩。P1C reset/吞吐工程进行中，实际策略训练未开始。
+
+## MR3-P1C采样与完整reset候选入口（原生验证待做）
+
+先在系统ROS终端按上文重新构建包含步进插件的工作区。学习端另开终端，使用conda，
+不source ROS或拼接ROS的PYTHONPATH；supervisor会在独立系统Python子进程重新source规范ROS/Gazebo环境。
+以下是已提供的采样入口示例，本文尚不提供原生/GPU通过结论；实际矩阵须先声明并绑定新推送冻结。
+
+```bash
+source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh
+conda activate ns3gym
+unset PYTHONPATH
+export PYTHONNOUSERSITE=1
+cd /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
+python -m mr3_learning.benchmark --workers 1 --schedule open:101,open:101 \
+  --steps 16 --run-id UNIQUE_P1C_1W
+```
+
+2/4 worker使用同一入口的`--workers 2`或`--workers 4`及各自唯一run-id；每个worker始终三台，
+不是二/四机器人规模实验。默认分别占用从ROS域120和Gazebo端口12001开始的独立编号。
+输出位于ROS工作区`log/mr3_learning/<run-id>/`；run-id目录拒绝覆盖。
+指标须包括完整startup/reset/closure的有效transition率、仿真倍率、CPU/RAM与GPU资源记录，失败保留。
+脚本动作仅施加候选/KEEP/WAIT和取消压力，不是训练策略或性能比较算法。
+
+```bash
+python -m mr3_learning.gpu_probe \
+  --plan report/assets/20261015_mr3_p1c/gpu_probe_plan.json \
+  --output /tmp/UNIQUE_P1C_GPU.json
+```
+
+GPU入口只检查固定张量与联合actor/critic接口的forward/backward，无optimizer更新，仍待实际验证。
+当前Gym/IPC依赖候选锁定见`mr3_learning/requirements-env.txt`，保留现有CUDA栈，不默认重装环境。
+固定1秒step、20ms量子、真实clock相位、seq0首格奖励绑定与外部截断/真实闭合规则见
+[环境契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md)。
+每次实际执行均是需追加共享log的实验，不能把入口存在当成P1C通过。
 
 ## 已有 90% 工程评估（不验收 MR3 的 95% 任务）
 

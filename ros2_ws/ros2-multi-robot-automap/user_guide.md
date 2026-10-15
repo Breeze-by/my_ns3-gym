@@ -1,13 +1,15 @@
 # 三机器人 ROS 建图导航：当前实现指南
 
-代码核对：2026-10-15，MR3-P1A用户已验收，P1B实现/验证完成待用户验收；`c9344e1`是历史工程冻结。
+代码核对：2026-10-15，MR3-P1A/P1B用户已验收，P1C进行中；`c9344e1`是历史工程冻结。
 新研究契约在 [RESEARCH_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，步骤在
-[IMPLEMENTATION_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/IMPLEMENTATION_PLAN.md)。MR3-P0/P1A已验收，P1C及后续未开始。
-默认仍为**传统前沿控制器**；新增互斥的理想策略适配模式，没有导航RL模型、训练环境或通信gateway。
+[IMPLEMENTATION_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/IMPLEMENTATION_PLAN.md)。MR3-P0/P1A/P1B已验收，P2A及后续未开始。
+默认仍为**传统前沿控制器**；互斥adapter已验收。P1C新增Gymnasium/IPC、独立奖励和完整reset源码候选，
+原生采样与GPU接口待验证，没有训练策略或通信gateway。
 复制运行统一使用 [launch_commands.md](launch_commands.md)，其中全部显式传三台。
 冻结`f9928fe`的open/rooms/corridors各seed101脚本适配审计均通过；功能、原失败及证据见
 [P1B报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261015_mr3_p1b.md)。
-等待用户明确验收P1B后才能进入P1C。
+用户已授权P1C；候选时钟、张量、奖励与reset规则见
+[MR3_ENV_CONTRACT.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md)。
 
 ## 1. 路径与环境
 
@@ -30,6 +32,8 @@
 | `mr3_adapter.py` / `mr3_observation.py` / `mr3_protocol.py` | 显式联合动作、几何候选/掩码、稳定目标所有权 |
 | `mr3_information.py` / `mr3_transport.py` | 理想交付、后端图和机器人导航图副本；非DDS隔离 |
 | `scripts/ros_smoke_test.py` / `run_ideal_baseline.py` / `run_mr3_adapter_probe.py` | 传统检查/矩阵和P1B脚本适配探针 |
+| `scripts/mr3_env_worker.py` / `mr3_gazebo_step` | P1C系统ROS子进程与真实物理tick步进候选，原生待验证 |
+| `wireless-rl/mr3_learning/` | 独立conda Gym Dict/私有IPC、完整进程reset、采样与GPU接口探针 |
 
 主 launch 默认3台，校验保留1–4历史兼容；MR3合同只允许三台，不开展其他数量实验。
 当前出生位 tb1=(0,-.45)、tb2=(0,.45)、tb3=(.45,0)，不是旧手册中分散四台的样例。
@@ -68,6 +72,8 @@ navigation_map明确逻辑交付边界，独占目标接口不含手工探索兜
 | `robot_count` | 3 | 保留1–4兼容；MR3合同只允许3 |
 | `execution_mode` | baseline | adapter独占显式联合目标接口；同域本机锁拒绝第二个目标所有者 |
 | `adapter_probe` | false | 仅脚本探针启用评价器未完成诊断结束服务，不改变95%任务门禁 |
+| `mr3_stepped` | false | P1C adapter显式请求快照和暂停物理步进，由env worker协调 |
+| `training_reward_enabled` | false | 显式MR3合同的独立评价进程奖励握手，不启动策略训练 |
 | `world` / `gazebo_seed` | my_world.world / 1 | 正式运行显式记录场景、seed |
 | `use_sim_time` | true | ROS 使用 Gazebo /clock |
 | `enable_drive` | false | 保持关闭，避免重复速度所有权 |
@@ -85,7 +91,9 @@ navigation_map明确逻辑交付边界，独占目标接口不含手工探索兜
 标准演示、legacy90%诊断与MR3合同95%检查统一在启动命令页维护，不复制旧二台、四台或过时 fixed sleep。
 脚本适配、参数调整会与命令页同提交更新；训练/gateway CLI 在实现验收后才添加。
 P1B接口版本为K8+KEEP/WAIT、5秒接受后承诺、名义1秒快照；它不证明95%建图任务成功。
-最终rooms探针实际出现2/3秒快照间隔，尚无固定dt或可持续吞吐结论；这些与完整reset属于P1C门禁。
+最终rooms探针实际出现2/3秒快照间隔，不能沿用为固定dt或可持续吞吐证据。
+P1C正实现1000个1ms tick/1秒step、20 tick量子、真实50Hz clock相位与交付水位，
+以及完整进程reset、独立首格奖励和终态/截断握手；1/2/4 worker原生测量与GPU接口仍待验证。
 
 ## 5. 评估器语义与证据限制
 
@@ -122,7 +130,7 @@ P1A合同模式另作完整检查。CSV/JSON原子发布、拒绝覆盖同id。
 旧September多种子P1C/schema2成绩属于旧源码。73组件检查的PASS也不等于MR3整任务。
 冻结`5e47802`累计10次尝试含1次保留的原生基础设施失败，得到9个有效单元；完整结果见
 [P1A报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261014_mr3_p1a.md)。
-P1A已于2026-10-15由用户验收；P1B实现/验证完成待用户验收。P1A仍是传统开发基线证据，
+P1A/P1B已于2026-10-15由用户验收。P1A仍是传统开发基线证据，
 P1B仅为脚本适配与理想逻辑交付证据，两者均没有导航RL/通信成绩。
 
 ## 6. 诊断原则

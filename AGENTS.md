@@ -53,11 +53,12 @@ acceptance. Complete and verify each substep, commit/push, present evidence,
 and wait for the user's explicit acceptance before the next substep.
 Old P1C/P2C acceptance or PASS cannot be reused as MR3 credit.
 
-Current boundary: **MR3-P0 accepted on 2026-10-14; MR3-P1A accepted by the user on 2026-10-15; MR3-P1B implementation/validation complete, awaiting user acceptance**.
+Current boundary: **MR3-P0 accepted on 2026-10-14; MR3-P1A/P1B accepted by the user on 2026-10-15; MR3-P1C in progress**.
 P1B freeze `f9928fe` passed the same-freeze open/rooms/corridors seed101 scripted
 adapter audits; see the [P1B report](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261015_mr3_p1b.md).
-Wait for explicit P1B acceptance before P1C; P1C and later remain unstarted.
-No training or gateway work is authorized by P1B.
+The user authorized P1C environment/reset/reward/sampling work. P2A and later
+remain unstarted; no actual policy training or gateway work is authorized.
+The candidate environment contract is [MR3_ENV_CONTRACT.md](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md).
 
 ## Current implementation and evidence
 
@@ -69,8 +70,10 @@ contract for 95% schema4 evaluation; legacy schema3 remains diagnostic only.
 The default baseline retains handcrafted frontier control, common-frame
 conservative map fusion and Nav2. The mutually exclusive adapter owns stable
 goals and uses logical ideal-delivery map/state copies; it has no handcrafted
-exploration fallback. No three-robot RL policy, training environment or ROS/ns-3
-gateway exists. Historical five-user/15-input/5-action toy DQN is a separate task.
+exploration fallback. P1C adds a candidate Gymnasium/IPC environment and isolated
+reward ledger, with native sampling/reset and GPU probes still awaiting validation.
+No trained three-robot policy or ROS/ns-3 gateway exists. Historical
+five-user/15-input/5-action toy DQN is a separate task.
 P1A now measures all six actual body collisions per robot (18 streams), with
 continuous freshness, raw publication-sequence audit and navigation terminal
 closure. Freeze `5e47802` has 9 effective scene/seed slots: 6 strict successes
@@ -87,8 +90,10 @@ are implemented for P1A. P1B adds exclusive goal ownership, deterministic
 observations/candidates/masks and received-information navigation copies in
 ideal mode. Same-process/DDS delivery is not P3A isolation or byte transport.
 K8 and the 5 s commitment describe this interface version, not a 95% task proof.
-The nominal 1 s snapshot timer had 2/3 s gaps in rooms; fixed dt, complete reset
-and sustainable sampling throughput remain P1C gates. Actual payload transport,
+The P1B nominal 1 s snapshot timer had 2/3 s gaps in rooms. P1C is implementing
+explicit 1000-tick/1 s stepping in 20-tick quanta, real 50 Hz clock phase/drain
+barriers and full process rebuilds; fixed dt/reset/1-2-4-worker throughput and GPU
+checks are not yet native-validated. Actual payload transport,
 absence of network bypasses and causal simulation clocks remain later gates.
 
 ## Engineering judgment

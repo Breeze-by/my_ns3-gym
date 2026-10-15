@@ -10,6 +10,7 @@ from concurrent.futures import ThreadPoolExecutor
 import json
 import math
 from pathlib import Path
+from time import monotonic
 
 from geometry_msgs.msg import PoseStamped
 from nav2_msgs.action import NavigateToPose
@@ -17,6 +18,7 @@ from nav_msgs.msg import OccupancyGrid
 import numpy as np
 import rclpy
 from rclpy.action import ActionClient
+from rclpy.clock import Clock, ClockType
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile
@@ -39,6 +41,15 @@ class MR3Adapter(Node):
         if self.declare_parameter("robot_count", 3).value != 3:
             raise ValueError("MR3 adapter requires exactly three robots")
         self.epoch = str(self.declare_parameter("episode_epoch", "mr3-p1b").value)
+        self.stepped_mode = self.declare_parameter("stepped_mode", False).value
+        self.snapshot_timeout_sec = self.declare_parameter("snapshot_timeout_sec", 10.).value
+        if not math.isfinite(self.snapshot_timeout_sec) or self.snapshot_timeout_sec <= 0:
+            raise ValueError("snapshot_timeout_sec must be finite and positive")
+        self.pending_snapshot = None
+        self.encoding_request = None
+        self.snapshot_responses = {}
+        self.map_metadata = None
+        self.last_snapshot_target_ns = None
         self.require_monitor = self.declare_parameter("require_task_monitor_ready", False).value
         self.monitor_ready = not self.require_monitor
         audit_path = self.declare_parameter("audit_path", "").value
@@ -81,6 +92,7 @@ class MR3Adapter(Node):
         self.encoding = None
         task_qos = QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL)
         self.observation_pub = self.create_publisher(String, "/mr3/observation", 2)
+        self.snapshot_response_pub = self.create_publisher(String, "/mr3/snapshot_response", 2)
         self.event_pub = self.create_publisher(String, "/mr3/events", 100)
         self.start_pub = self.create_publisher(Header, "/exploration_start", task_qos)
         self.stop_pub = self.create_publisher(String, "/exploration_stopped", task_qos)
@@ -90,6 +102,10 @@ class MR3Adapter(Node):
                 OccupancyGrid, "/mr3/received/map", self.receive_map, task_qos),
             self.create_subscription(String, "/mr3/received/states", self.receive_states, 10),
             self.create_subscription(String, "/mr3/action", self.receive_action, 10),
+            self.create_subscription(
+                String, "/mr3/snapshot_request", self.receive_snapshot_request, 2),
+            self.create_subscription(
+                String, "/mr3/map_metadata", self.receive_map_metadata, task_qos),
             self.create_subscription(Bool, "/task_monitor_ready", self.receive_ready, task_qos),
             self.create_subscription(
                 Header, "/exploration_stop_request", self.receive_stop, task_qos),
@@ -100,8 +116,122 @@ class MR3Adapter(Node):
             OccupancyGrid, f"/mr3/received/{name}/map",
             lambda message, name=name: self.receive_local_map(name, message), task_qos,
         ) for name in ROBOTS)
-        self.timer = self.create_timer(.05, self.maintain)
-        self.observation_timer = self.create_timer(1., self.publish_observation)
+        timer_clock = Clock(clock_type=ClockType.STEADY_TIME) if self.stepped_mode else None
+        self.timer = self.create_timer(
+            .02 if self.stepped_mode else .05, self.maintain, clock=timer_clock)
+        self.observation_timer = None
+        if not self.stepped_mode:
+            self.observation_timer = self.create_timer(1., self.publish_observation)
+
+    def receive_map_metadata(self, message):
+        try:
+            metadata = json.loads(message.data)
+            if metadata["epoch"] == self.epoch:
+                self.map_metadata = metadata
+        except (ValueError, KeyError, TypeError):
+            self.record("invalid_map_metadata", {})
+
+    def receive_snapshot_request(self, message):
+        try:
+            request = json.loads(message.data)
+            if not self.stepped_mode or request["epoch"] != self.epoch:
+                raise ValueError("wrong_mode_or_epoch")
+            if not isinstance(request["request_id"], str) or not request["request_id"]:
+                raise ValueError("invalid_request_id")
+            if type(request["target_time_ns"]) is not int or request["target_time_ns"] < 0:
+                raise ValueError("invalid_target_time")
+            if type(request.get("minimum_state_sequence", -1)) is not int:
+                raise ValueError("invalid_minimum_state_sequence")
+            if type(request.get("allow_terminal", False)) is not bool:
+                raise ValueError("invalid_allow_terminal")
+            expected = request.get("expected_map_sha256")
+            if expected is not None and (
+                    not isinstance(expected, str) or len(expected) != 64
+                    or any(char not in "0123456789abcdef" for char in expected)):
+                raise ValueError("invalid_expected_map_sha256")
+            cached = self.snapshot_responses.get(request["request_id"])
+            if cached is not None:
+                if cached["target_time_ns"] != request["target_time_ns"]:
+                    raise ValueError("request_id_conflict")
+                self.snapshot_response_pub.publish(String(data=json.dumps(cached)))
+                return
+            previous = self.last_snapshot_target_ns
+            if previous is not None and request["target_time_ns"] <= previous:
+                raise ValueError("snapshot_target_not_advanced")
+            if self.pending_snapshot is not None:
+                if self.pending_snapshot["request_id"] == request["request_id"]:
+                    if self.pending_snapshot["target_time_ns"] != request["target_time_ns"]:
+                        raise ValueError("request_id_conflict")
+                    return
+                raise ValueError("snapshot_busy")
+            self.pending_snapshot = {**request, "requested_wall": monotonic()}
+            self.record("snapshot_requested", request)
+        except (ValueError, KeyError, TypeError) as error:
+            response = {"epoch": self.epoch, "ok": False, "error": str(error)}
+            try:
+                response.update({key: request.get(key) for key in ("request_id", "target_time_ns")})
+            except (UnboundLocalError, AttributeError):
+                pass
+            self.snapshot_response_pub.publish(String(data=json.dumps(response)))
+
+    def poll_snapshot(self):
+        request = getattr(self, "pending_snapshot", None)
+        if request is None or self.encoding is not None:
+            return
+        now_ns = self.get_clock().now().nanoseconds
+        reason = None
+        if now_ns > request["target_time_ns"]:
+            reason = "snapshot_target_already_passed"
+        elif monotonic() - request["requested_wall"] >= self.snapshot_timeout_sec:
+            reason = "snapshot_watermark_timeout"
+        elif now_ns == request["target_time_ns"] and (
+                self.states_fresh(now_ns / 1e9) or self.terminal_snapshot_allowed()):
+            minimum = request.get("minimum_state_sequence", -1)
+            expected = request.get("expected_map_sha256")
+            map_matches = expected is None or (
+                self.map_metadata is not None
+                and self.map_metadata.get("map_payload_sha256") == expected
+                and self.map_digest == expected)
+            if map_matches and (self.state["sequence"] > minimum
+                                or self.terminal_snapshot_allowed()):
+                self.publish_observation()
+                if self.encoding is not None:
+                    self.encoding_request = {
+                        **request, "state_sequence": self.state["sequence"],
+                        "map_payload_sha256": self.map_digest,
+                    }
+        if reason is not None:
+            self.respond_snapshot(request, error=reason)
+
+    def terminal_snapshot_allowed(self):
+        request = getattr(self, "pending_snapshot", None)
+        return bool(request and request.get("allow_terminal") is True
+                    and self.stop_requested and self.started_at is not None)
+
+    def respond_snapshot(self, request, snapshot=None, error=None):
+        response = {"epoch": self.epoch, "request_id": request["request_id"],
+                    "target_time_ns": request["target_time_ns"], "ok": error is None}
+        if error is not None:
+            response["error"] = error
+        else:
+            response["snapshot"] = snapshot
+            self.last_snapshot_target_ns = request["target_time_ns"]
+            response["watermarks"] = {
+                "state_sequence": request["state_sequence"],
+                "map_payload_sha256": request["map_payload_sha256"],
+                "map_version": snapshot["map_version"], "map_sources": snapshot["map"]["sources"],
+                "robots": [{key: robot[key] for key in
+                            ("name", "source_stamp", "received_stamp")}
+                           for robot in snapshot["robots"]],
+            }
+        self.snapshot_responses[request["request_id"]] = response
+        while len(self.snapshot_responses) > 16:
+            del self.snapshot_responses[next(iter(self.snapshot_responses))]
+        self.pending_snapshot = None
+        self.encoding_request = None
+        self.snapshot_response_pub.publish(String(data=json.dumps(response, allow_nan=False)))
+        self.record("snapshot_completed", {key: value for key, value in response.items()
+                                           if key != "snapshot"})
 
     def now(self):
         return self.get_clock().now().nanoseconds / 1e9
@@ -167,11 +297,13 @@ class MR3Adapter(Node):
     def publish_observation(self):
         if self.encoding is not None:
             return
-        if self.map is None or self.state is None or not self.monitor_ready:
+        if (self.map is None or self.state is None
+                or (not self.monitor_ready and not self.terminal_snapshot_allowed())):
             return
-        if self.map_digest != self.state.get("map_payload_sha256"):
+        metadata = self.map_metadata if getattr(self, "stepped_mode", False) else self.state
+        if metadata is None or self.map_digest != metadata.get("map_payload_sha256"):
             return
-        map_sources = self.state["map_sources"]
+        map_sources = metadata["map_sources"]
         if any(self.local_map_digests.get(name) != map_sources.get(name, {}).get("payload_sha256")
                or name not in self.local_maps for name in ROBOTS):
             return
@@ -216,23 +348,36 @@ class MR3Adapter(Node):
                 self.map.info.height, self.map.info.width),
             self.map.info.resolution,
             (self.map.info.origin.position.x, self.map.info.origin.position.y),
-            robots, now, self.epoch, self.state["map_version"], self.sequence,
-            map_source_stamp=self.state["map_source_stamp"],
-            map_received_stamp=self.state["map_received_stamp"],
-            map_sources=self.state["map_sources"], task_start=self.started_at,
+            robots, now, self.epoch, metadata["map_version"], self.sequence,
+            map_source_stamp=metadata["map_source_stamp"],
+            map_received_stamp=metadata["map_received_stamp"],
+            map_sources=map_sources, task_start=self.started_at,
             robot_maps=path_maps,
         )
 
     def finish_observation(self):
         if self.encoding is None or not self.encoding.done():
             return
-        snapshot = self.encoding.result()
+        request = getattr(self, "encoding_request", None)
+        try:
+            snapshot = self.encoding.result()
+        except Exception as error:
+            self.encoding = None
+            if request is None:
+                raise
+            self.respond_snapshot(request, error="snapshot_encoding_failed: " + repr(error))
+            return
         self.encoding = None
+        if request is not None and self.get_clock().now().nanoseconds != request["target_time_ns"]:
+            self.respond_snapshot(request, error="clock_advanced_during_snapshot")
+            return
         self.snapshot = snapshot
         self.record("observation", snapshot)
         message = String()
         message.data = json.dumps(snapshot, sort_keys=True, allow_nan=False)
         self.observation_pub.publish(message)
+        if request is not None:
+            self.respond_snapshot(request, snapshot=snapshot)
 
     def states_fresh(self, now):
         return self.state is not None and len(self.state["robots"]) == 3 and all(
@@ -244,6 +389,7 @@ class MR3Adapter(Node):
         )
 
     def receive_action(self, message):
+        command = None
         try:
             command = json.loads(message.data)
             now = self.now()
@@ -304,7 +450,11 @@ class MR3Adapter(Node):
             }
             self.record("action", self.command_receipt)
         except (ValueError, KeyError, TypeError, IndexError) as error:
-            self.record("action_rejected", {"reason": str(error)})
+            identity = {}
+            for key in ("command_id", "observation_sequence"):
+                value = command.get(key) if isinstance(command, dict) else None
+                identity[key] = value if type(value) is int and value >= 0 else None
+            self.record("action_rejected", {"reason": str(error), **identity})
 
     def receipt(self, kind, robot, goal_id, value):
         # Ideal receipt delivery: preserves source time and identity. P3A moves
@@ -365,12 +515,13 @@ class MR3Adapter(Node):
 
     def maintain(self):
         now = self.now()
+        self.finish_observation()
+        self.poll_snapshot()
         if self.started_at is None:
             return
         if now - self.started_at >= 300. and not self.stop_requested:
             self.stop_requested = True
             self.dispatcher.safety_stop(now, "task_deadline")
-        self.finish_observation()
         if self.pending_stop is not None:
             pending = self.pending_stop
             stamp = pending.stamp.sec + pending.stamp.nanosec / 1e9
@@ -437,7 +588,19 @@ class MR3Adapter(Node):
                 goal = NavigateToPose.Goal()
                 goal.pose = pose
                 self.record("native_send", {"robot": name, "goal_id": goal_id,
-                                            "command_id": event["command_id"]})
+                                            "command_id": event["command_id"],
+                                            "pose": {
+                                                "frame_id": goal.pose.header.frame_id,
+                                                "stamp": now,
+                                                "x": goal.pose.pose.position.x,
+                                                "y": goal.pose.pose.position.y,
+                                                "orientation": [
+                                                    goal.pose.pose.orientation.x,
+                                                    goal.pose.pose.orientation.y,
+                                                    goal.pose.pose.orientation.z,
+                                                    goal.pose.pose.orientation.w,
+                                                ],
+                                            }})
                 self.navigation_clients[name].send_goal_async(goal).add_done_callback(
                     lambda future, name=name, goal_id=goal_id: self.accepted(future, name, goal_id))
             elif event["type"] == "cancel_goal" and goal_id in self.handles:
@@ -446,7 +609,8 @@ class MR3Adapter(Node):
         self.flush_protocol_events(now)
         if self.stop_requested and self.dispatcher.closed and not self.stop_acknowledged:
             self.stop_acknowledged = True
-            payload = {"start_sim_time_sec": self.started_at, "stop_sim_time_sec": now,
+            payload = {"epoch": self.epoch,
+                       "start_sim_time_sec": self.started_at, "stop_sim_time_sec": now,
                        "pending_goal_count": 0, "robot_names": list(ROBOTS),
                        "navigation_failure": self.dispatcher.failed}
             message = String()

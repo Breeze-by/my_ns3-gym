@@ -1,3 +1,4 @@
+from collections import deque
 import csv
 from dataclasses import dataclass
 import io
@@ -6,6 +7,7 @@ import math
 import os
 from pathlib import Path
 import re
+import time
 import xml.etree.ElementTree as ET
 
 from action_msgs.msg import GoalStatus, GoalStatusArray
@@ -20,8 +22,11 @@ from std_msgs.msg import Bool, Header, String
 from std_srvs.srv import Trigger
 
 from .mr3_contacts import CONTACT_COMPONENTS, ContactMonitor, contact_topics
+from .mr3_information import map_digest
+from .mr3_reward import RewardLedger
 from .mr3_task_contract import (
     compare_contract_occupancy_grid, load_contract_truth, load_task_contract,
+    sample_contract_occupancy_grid,
 )
 
 
@@ -368,11 +373,35 @@ class TaskEvaluator(Node):
         self.collision_duration = {name: 0.0 for name in self.robot_names}
         self.collision_messages = {name: 0 for name in self.robot_names}
         self.latest_map = None
+        self.latest_map_received_sim_time = None
         self.map_message_count = 0
         self.model_state_message_count = 0
         self.start_sim_time = None
         self.coverage_times = {0.75: None, 0.8: None, 0.9: None, 0.95: None}
         self.finalized = False
+        self.final_result = None
+        self.training_reward_enabled = self.declare_parameter(
+            "training_reward_enabled", False,
+        ).value
+        self.training_ack_wall_guard_sec = self.declare_parameter(
+            "training_ack_wall_guard_sec", 90.,
+        ).value
+        if self.training_reward_enabled and self.task_contract is None:
+            raise ValueError("Training rewards require the explicit MR3 task contract")
+        if (not math.isfinite(self.training_ack_wall_guard_sec)
+                or self.training_ack_wall_guard_sec <= 0):
+            raise ValueError("training_ack_wall_guard_sec must be finite and positive")
+        self.reward_ledger = None
+        self.reward_reset_bound = False
+        self.reward_map_cache = deque(maxlen=8)
+        self.reward_requests = {}
+        self.pending_reward_requests = {}
+        self.reward_events = []
+        self.reward_switch_goal_ids = set()
+        self.training_external_cut = None
+        self.training_acknowledged = False
+        self.training_ack_deadline_wall = None
+        self.pending_training_finalize = None
         self.probe_finalize_service = None
         if self.declare_parameter("allow_probe_finalize", False).value:
             if self.task_contract is None:
@@ -412,6 +441,23 @@ class TaskEvaluator(Node):
                     String, "/exploration_stopped", self._stopped_callback, map_qos
                 ),
             ])
+        if self.training_reward_enabled:
+            self.reward_response_publisher = self.create_publisher(
+                String, "/mr3/reward_response", 20,
+            )
+            self.reward_ready_publisher = self.create_publisher(
+                String, "/mr3/reward_ready", map_qos,
+            )
+            self.input_subscriptions.extend([
+                self.create_subscription(
+                    String, "/mr3/reward_request", self._reward_request_callback, 20,
+                ),
+                self.create_subscription(
+                    String, "/mr3/training_finalize", self._training_finalize_callback, 20,
+                ),
+                self.create_subscription(String, "/mr3/events", self._reward_event_callback, 100),
+            ])
+            self.reward_clock_timer = self.create_timer(.02, self._drain_reward_requests)
         for name in self.robot_names:
             self.input_subscriptions.append(
                 self.create_subscription(
@@ -500,14 +546,31 @@ class TaskEvaluator(Node):
         self.previous_positions = self.positions.copy()
         self.contact_monitor.start(now)
         self.initial_map_metrics = self._map_metrics()
+        if getattr(self, "training_reward_enabled", False):
+            self.reward_ledger = RewardLedger(
+                self.episode_id, stamp, ~self.truth.occupied & self.truth.roi_mask,
+                self._reward_correct_free_mask(),
+            )
+            self.reward_ready_publisher.publish(String(data=json.dumps({
+                "schema": "mr3-reward-ready-v1", "epoch": self.episode_id,
+                "start_sim_time": stamp, "task_contract_sha256": self.task_contract.sha256,
+                "world_sha256": self.truth.world_sha256, "reset_bound": False,
+                "initial_map_payload_sha256": map_digest(self.latest_map),
+            }, sort_keys=True)))
         self.get_logger().info(
             f"Episode {self.episode_id} released at sim_time={stamp:.9f}"
         )
         self._update_coverage_times()
         self._timer_callback()
+        if getattr(self, "training_reward_enabled", False):
+            self._drain_reward_requests()
 
     def _stopped_callback(self, message):
-        if self.finalized or self.stop_requested_sim_time is None:
+        external_cut = getattr(self, "training_external_cut", None)
+        requested_stop = self.stop_requested_sim_time
+        if requested_stop is None and external_cut is not None:
+            requested_stop = external_cut
+        if self.finalized or requested_stop is None:
             return
         try:
             acknowledgment = json.loads(message.data)
@@ -520,7 +583,7 @@ class TaskEvaluator(Node):
                 and acknowledgment["navigation_failure"] is False
                 and math.isfinite(start) and math.isfinite(stop)
                 and math.isclose(start, self.start_sim_time, abs_tol=1e-9)
-                and self.stop_requested_sim_time <= stop
+                and requested_stop <= stop
             )
         except (ValueError, TypeError, KeyError):
             valid = False
@@ -533,6 +596,10 @@ class TaskEvaluator(Node):
         self.stop_acknowledgment = acknowledgment
         self.navigation_protocol_closed = True
         self._timer_callback()
+        if getattr(self, "pending_training_finalize", None) is not None:
+            pending = self.pending_training_finalize
+            self.pending_training_finalize = None
+            self._training_finalize_callback(String(data=json.dumps(pending)))
 
     def _map_callback(self, message):
         if self.finalized:
@@ -542,10 +609,18 @@ class TaskEvaluator(Node):
             self.finalize("map_contract_error")
             return
         self.latest_map = message
+        self.latest_map_received_sim_time = self._now()
         self.map_message_count += 1
+        if getattr(self, "training_reward_enabled", False):
+            self.reward_map_cache.append({
+                "message": message, "received_stamp": self.latest_map_received_sim_time,
+                "received_sequence": self.map_message_count, "payload_sha256": None,
+            })
         self._maybe_start(self._now())
         self._update_coverage_times()
         self._timer_callback()
+        if getattr(self, "training_reward_enabled", False):
+            self._drain_reward_requests()
 
     def _model_states_callback(self, message):
         if self.finalized:
@@ -736,6 +811,8 @@ class TaskEvaluator(Node):
             return "map_contract_error"
         if any(self.teleport_jumps.values()):
             return "pose_discontinuity"
+        if getattr(self, "training_external_cut", None) is not None:
+            return None  # Sealed external cut cannot later turn into coverage success.
         metrics = self._map_metrics()
         contract = self.task_contract.data
         eligible = (
@@ -806,6 +883,296 @@ class TaskEvaluator(Node):
         response.success = True
         response.message = "Incomplete adapter probe diagnostic saved; no task success credit"
         return response
+
+    def _reward_correct_free_mask(self, grid=None):
+        grid = self.latest_map if grid is None else grid
+        if grid is None:
+            return np.zeros(self.truth.occupied.shape, dtype=bool)
+        info = grid.info
+        sampled = sample_contract_occupancy_grid(
+            self.truth, grid.data, info.width, info.height, info.resolution,
+            (info.origin.position.x, info.origin.position.y),
+            _yaw_from_quaternion(info.origin.orientation),
+        )
+        return ((sampled >= 0) & (sampled < 50)
+                & ~self.truth.occupied & self.truth.roi_mask)
+
+    def _reward_event_callback(self, message):
+        try:
+            event = json.loads(message.data)
+            if event["epoch"] != self.episode_id or self.start_sim_time is None:
+                return
+            stamp = event["stamp"]
+            if isinstance(stamp, bool) or not math.isfinite(stamp) \
+                    or stamp < self.start_sim_time:
+                return
+            kind, payload = event["kind"], event["payload"]
+            if kind == "action_rejected":
+                self.reward_events.append((float(stamp), "rejected_actions"))
+            elif (kind == "protocol" and payload.get("type") == "cancel_goal"
+                  and payload.get("reason") == "switch"):
+                identity = payload["goal_id"]
+                if identity not in self.reward_switch_goal_ids:
+                    self.reward_switch_goal_ids.add(identity)
+                    self.reward_events.append((float(stamp), "goal_switches"))
+        except (ValueError, TypeError, KeyError):
+            self.get_logger().error("Invalid training reward event")
+
+    def _publish_reward_response(self, response):
+        self.reward_response_publisher.publish(String(data=json.dumps(
+            response, sort_keys=True, allow_nan=False,
+        )))
+
+    def _reward_map_watermark(self, record=None):
+        if record is None:
+            record = next((entry for entry in reversed(self.reward_map_cache)
+                           if entry["message"] is self.latest_map), None)
+        grid = self.latest_map if record is None else record["message"]
+        digest = None
+        if grid is not None:
+            digest = map_digest(grid) if record is None else record["payload_sha256"]
+            if digest is None:
+                digest = record["payload_sha256"] = map_digest(grid)
+        return {
+            "missing": grid is None,
+            "header_stamp": (None if grid is None else
+                             grid.header.stamp.sec + grid.header.stamp.nanosec / 1e9),
+            "received_stamp": (self.latest_map_received_sim_time if record is None
+                               else record["received_stamp"]),
+            "received_sequence": (self.map_message_count if record is None
+                                  else record["received_sequence"]),
+            "payload_sha256": digest,
+            "source_version": None, "source_version_missing": True,
+        }
+
+    def _reward_expected_record(self, digest):
+        for record in reversed(self.reward_map_cache):
+            if self._reward_map_watermark(record)["payload_sha256"] == digest:
+                return record
+        return None
+
+    def _queue_reward_request(self, sequence, request):
+        previous = self.pending_reward_requests.get(sequence)
+        if previous is not None and previous["request"] != request:
+            raise ValueError("reward_sequence_conflict")
+        if len(self.pending_reward_requests) >= 8 and previous is None:
+            raise ValueError("future_reward_queue_overflow")
+        if previous is None:
+            self.pending_reward_requests[sequence] = {
+                "request": request, "deadline_wall": time.monotonic() + 5.,
+            }
+
+    def _reward_request_callback(self, message):
+        request = None
+        try:
+            request = json.loads(message.data)
+            if not isinstance(request, dict) or set(request) - {
+                "epoch", "sequence", "step_start", "step_end", "external_truncation",
+                "expected_map_sha256",
+            }:
+                raise ValueError("invalid_reward_request_fields")
+            if request["epoch"] != self.episode_id:
+                raise ValueError("wrong_reward_epoch")
+            sequence = request["sequence"]
+            if type(sequence) is not int or sequence < 0:
+                raise ValueError("invalid_reward_sequence")
+            fingerprint = json.dumps(
+                request, allow_nan=False, sort_keys=True, separators=(",", ":"),
+            )
+            previous = self.reward_requests.get(sequence)
+            if previous is not None:
+                if previous[0] != fingerprint:
+                    raise ValueError("reward_sequence_conflict")
+                self._publish_reward_response(previous[1])
+                return
+            if self.reward_ledger is None:
+                raise ValueError("reward_task_not_started")
+            requested_end = request["step_end"]
+            start = request["step_start"]
+            if (isinstance(requested_end, bool) or isinstance(start, bool)
+                    or not math.isfinite(requested_end) or not math.isfinite(start)):
+                raise ValueError("invalid_reward_step_time")
+            if requested_end > self._now() + 1e-8 and not self.finalized:
+                self._queue_reward_request(sequence, request)
+                return
+            expected = request.get("expected_map_sha256")
+            if expected is not None and (not isinstance(expected, str)
+                                         or not re.fullmatch("[0-9a-f]{64}", expected)):
+                raise ValueError("invalid_expected_map_sha256")
+            watermark = self._reward_map_watermark()
+            expected_record = self._reward_expected_record(expected) if expected else None
+            if sequence == 0:
+                if self.reward_reset_bound or self.reward_ledger.last_sequence:
+                    raise ValueError("reward_reset_already_bound")
+                if (self.finalized or request.get("external_truncation")
+                        or not math.isclose(start, self.start_sim_time, rel_tol=0., abs_tol=1e-8)
+                        or not math.isclose(requested_end, self.start_sim_time,
+                                            rel_tol=0., abs_tol=1e-8)):
+                    raise ValueError("invalid_reward_reset_binding_time")
+                if expected is None:
+                    raise ValueError("reward_reset_requires_expected_map_sha256")
+                if expected_record is None:
+                    self._queue_reward_request(sequence, request)
+                    return
+                if expected_record["received_stamp"] > requested_end + 1e-8:
+                    raise ValueError("reward_reset_map_is_from_the_future")
+                self.reward_ledger = RewardLedger(
+                    self.episode_id, self.start_sim_time,
+                    ~self.truth.occupied & self.truth.roi_mask,
+                    self._reward_correct_free_mask(expected_record["message"]),
+                )
+                self.reward_reset_bound = True
+                response = {
+                    "schema": "mr3-reward-v1", "kind": "reward_reset_binding",
+                    "epoch": self.episode_id, "sequence": 0, "reward": 0.,
+                    "terminated": False, "truncated": False, "reason": None,
+                    "step_start": start, "effective_step_end": requested_end,
+                    "delta_sim_time": 0., "reset_bound": True,
+                    "map_watermark": self._reward_map_watermark(expected_record),
+                    "initial_correct_free_cells": self.reward_ledger.initial_correct_count,
+                }
+                self.reward_requests[0] = (fingerprint, response)
+                self._publish_reward_response(response)
+                self.reward_ready_publisher.publish(String(data=json.dumps({
+                    "schema": "mr3-reward-ready-v1", "epoch": self.episode_id,
+                    "start_sim_time": self.start_sim_time, "reset_bound": True,
+                    "initial_map_payload_sha256": expected,
+                }, sort_keys=True)))
+                return
+            if not self.reward_reset_bound:
+                raise ValueError("reward_reset_not_bound")
+            self._timer_callback()  # Apply unchanged task gates at this clock watermark.
+            if (not self.finalized and expected is not None
+                    and expected != watermark["payload_sha256"]):
+                if expected_record is not None:
+                    raise ValueError("reward_expected_map_is_older_than_current_map")
+                self._queue_reward_request(sequence, request)
+                return
+            if self.finalized:
+                end = self.final_result["end_sim_time_sec"]
+                if requested_end < end - 1e-8:
+                    raise ValueError("reward_request_precedes_frozen_terminal_map")
+                terminal_reason = self.final_result["termination_reason"]
+                collisions = self.final_result["collision_events"]
+            else:
+                end = self._now()
+                if not math.isclose(requested_end, end, rel_tol=0., abs_tol=1e-8):
+                    raise ValueError("reward_request_is_not_current_simulation_watermark")
+                terminal_reason = None
+                collisions = self.contact_monitor.summary(end)["event_count"]
+            switches = sum(stamp <= end and kind == "goal_switches"
+                           for stamp, kind in self.reward_events)
+            rejects = sum(stamp <= end and kind == "rejected_actions"
+                          for stamp, kind in self.reward_events)
+            response = self.reward_ledger.advance(
+                epoch=self.episode_id, sequence=sequence, step_start=start, step_end=end,
+                current_correct_free_mask=self._reward_correct_free_mask(),
+                collision_events=int(collisions), goal_switches=switches,
+                rejected_actions=rejects, terminal_reason=terminal_reason,
+                external_truncation=request.get("external_truncation"),
+            )
+            response["requested_step_end"] = float(requested_end)
+            response["map_watermark"] = watermark
+            response["expected_actor_map_sha256"] = expected
+            response["expected_map_paired"] = (
+                expected is not None and expected == watermark["payload_sha256"]
+            )
+            response["map_pairing_scope"] = (
+                "terminal_evaluator_frozen_before_drain" if self.finalized else
+                "current_actor_map_paired" if expected is not None else
+                "legacy_unpaired_reward_request"
+            )
+            metrics = self._map_metrics()
+            response["metrics"] = {key: metrics.get(key) for key in (
+                "correct_free_coverage_ratio", "known_coverage_ratio", "observed_accuracy",
+                "occupied_iou", "false_free_ratio",
+            )}
+            response["metrics"].update({
+                "map_quality_pass": mr3_quality_pass(metrics, self.task_contract.data["quality"]),
+                "robot_participation_pass": mr3_participation_pass(
+                    self.path_lengths, self.goal_ids, self.task_contract.data["participation"],
+                ),
+                "navigation_protocol_closed": self.navigation_protocol_closed,
+            })
+            if response["truncated"]:
+                self.training_external_cut = end
+            if response["terminated"] or response["truncated"]:
+                self.training_ack_deadline_wall = (
+                    time.monotonic() + self.training_ack_wall_guard_sec
+                )
+            self.reward_requests[sequence] = (fingerprint, response)
+            self._publish_reward_response(response)
+        except (ValueError, TypeError, KeyError) as error:
+            self._publish_reward_response({
+                "epoch": self.episode_id,
+                "sequence": request.get("sequence") if isinstance(request, dict) else None,
+                "error": str(error),
+            })
+
+    def _drain_reward_requests(self):
+        now = self._now()
+        for sequence, pending in sorted(tuple(self.pending_reward_requests.items())):
+            request = pending["request"]
+            if time.monotonic() >= pending["deadline_wall"]:
+                del self.pending_reward_requests[sequence]
+                self._publish_reward_response({
+                    "epoch": self.episode_id, "sequence": sequence,
+                    "error": "reward_map_or_clock_watermark_wall_timeout",
+                })
+                continue
+            if self.finalized or request["step_end"] <= now + 1e-8:
+                del self.pending_reward_requests[sequence]
+                self._reward_request_callback(String(data=json.dumps(request)))
+                if sequence in self.pending_reward_requests:
+                    self.pending_reward_requests[sequence]["deadline_wall"] = (
+                        pending["deadline_wall"]
+                    )
+
+    def _training_finalize_callback(self, message):
+        request = None
+        try:
+            request = json.loads(message.data)
+            if request["epoch"] != self.episode_id:
+                raise ValueError("wrong_reward_epoch")
+            sequence = request["ack_sequence"]
+            if type(sequence) is not int or self.reward_ledger is None \
+                    or not self.reward_ledger.sealed \
+                    or sequence != self.reward_ledger.last_sequence:
+                raise ValueError("invalid_training_finalize_sequence")
+            response = self.reward_requests[sequence][1]
+            reason = "external_truncation" if response["truncated"] else "task_terminal"
+            if request["reason"] != reason:
+                raise ValueError("invalid_training_finalize_reason")
+            if not self.finalized:
+                if not self.navigation_protocol_closed:
+                    self.pending_training_finalize = request
+                    return
+                self.finalize("training_external_truncation")
+            self.training_acknowledged = True
+            self._publish_reward_response({
+                "epoch": self.episode_id, "ack_sequence": sequence,
+                "kind": "training_finalize_ack", "reason": reason,
+            })
+        except (ValueError, TypeError, KeyError) as error:
+            self._publish_reward_response({
+                "epoch": self.episode_id, "kind": "training_finalize_error", "error": str(error),
+            })
+
+    def training_exit_ready(self):
+        """Keep terminal RPC available until worker ACK, with an independent wall guard."""
+        if self.training_reward_enabled:
+            self._drain_reward_requests()
+        if (self.training_reward_enabled and not self.training_acknowledged
+                and self.training_ack_deadline_wall is not None
+                and time.monotonic() >= self.training_ack_deadline_wall):
+            raise RuntimeError("Training evaluator finalization ACK exceeded its wall guard")
+        if not self.finalized:
+            return False
+        if not self.training_reward_enabled or self.training_acknowledged:
+            return True
+        if self.training_ack_deadline_wall is None:
+            self.training_ack_deadline_wall = time.monotonic() + self.training_ack_wall_guard_sec
+        return False
 
     def finalize(self, termination_reason):
         if self.finalized:
@@ -953,6 +1320,7 @@ class TaskEvaluator(Node):
                 ),
                 "map_contract_failure": self.map_contract_failure,
             })
+        self.final_result = result
         self._write_outputs(result)
 
     def _write_outputs(self, result):
@@ -996,7 +1364,12 @@ def main(args=None):
         executor.add_node(evaluator)
         # Context shutdown inside an executor callback can wait for that same
         # callback to finish. Return from it, then close the context here.
-        while rclpy.ok() and not evaluator.finalized:
+        while rclpy.ok():
+            if getattr(evaluator, "training_reward_enabled", False):
+                if evaluator.training_exit_ready():
+                    break
+            elif evaluator.finalized:
+                break
             executor.spin_once(timeout_sec=0.5)
     except (KeyboardInterrupt, ExternalShutdownException):
         pass

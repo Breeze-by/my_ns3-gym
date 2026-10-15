@@ -90,11 +90,14 @@ def make_adapter(started=True):
         navigation_clients={name: Client() for name in ROBOTS}, handles={},
         now=lambda: clock[0],
         get_clock=lambda: SimpleNamespace(now=lambda: SimpleNamespace(
-            to_msg=lambda: stamp(clock[0]))),
+            to_msg=lambda: stamp(clock[0]), nanoseconds=round(clock[0] * 1e9))),
         record=lambda kind, payload: records.append((kind, payload)),
         started_at=1.0 if started else None, stop_requested=False, stop_acknowledged=False,
         pending_stop=None, map_digest=None, local_maps={}, local_map_digests={},
         encoder=SimpleNamespace(submit=encode), encoding=None,
+        stepped_mode=False, pending_snapshot=None, encoding_request=None, map_metadata=None,
+        snapshot_responses={}, snapshot_timeout_sec=10., last_snapshot_target_ns=None,
+        snapshot_response_pub=SimpleNamespace(publish=lambda msg: None),
         last_command_id=-1, last_command_payload=None, last_state_sequence=-1,
         command_receipt=None, sequence=0, last_heartbeat=-math.inf,
         receipt_metadata={name: {} for name in ROBOTS},
@@ -184,7 +187,9 @@ def test_navigation_owner_lock_excludes_other_mode_and_releases(monkeypatch):
 def test_invalid_joint_action_never_reaches_native_client(changes, reason):
     node, _ = make_adapter()
     node.receive_action(command(node, **changes))
-    assert node.test_records[-1] == ("action_rejected", {"reason": reason})
+    assert node.test_records[-1] == ("action_rejected", {
+        "reason": reason, "command_id": 1,
+        "observation_sequence": changes.get("observation_sequence", 1)})
     assert node.dispatcher.closed
     assert not node.events
     assert not any(client.goals for client in node.navigation_clients.values())

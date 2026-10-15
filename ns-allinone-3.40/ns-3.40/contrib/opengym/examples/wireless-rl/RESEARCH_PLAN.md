@@ -1,8 +1,9 @@
 # MR3 研究路线：三机器人 RL 联合建图与冻结策略的 Wi-Fi 网络影响
 
 版本：2026-10-15；路线标识：`MR3`。本文取代旧的目标搜索、充电、集合和通信调度 RL 路线。
-唯一 Git 根：`/home/zhuyulab/ns3-workspace`。P0/P1A已验收；P1B实现/验证完成待用户验收，P1C及后续未开始，
-任务定义见 [MR3_TASK_CONTRACT.md](MR3_TASK_CONTRACT.md)，不提前开展训练或 gateway。
+唯一 Git 根：`/home/zhuyulab/ns3-workspace`。P0/P1A/P1B已验收；P1C进行中，P2A及后续未开始。
+任务定义见[MR3_TASK_CONTRACT.md](MR3_TASK_CONTRACT.md)，候选环境见[MR3_ENV_CONTRACT.md](MR3_ENV_CONTRACT.md)；
+本步不开展实际策略训练或gateway。
 工程步骤、状态和逐步验收以 [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) 为准；
 代码审计、文献和取舍依据见 [路线审计](report/20261014_mr3_route_audit.md)；
 本轮矫正见 [复核报告](report/20261014_mr3_correction_review.md)。
@@ -33,11 +34,11 @@ Wi-Fi 分组网络，测量信息延迟、丢失和陈旧对同一联合建图�
 | --- | --- | --- |
 | ROS 2 / Gazebo / SLAM / Nav2 | 已实现；P1A已于2026-10-15验收，`5e47802`为当前验证冻结 | 复用，三机器人契约在 MR3-P1A 验收 |
 | `merge_map` | 公共坐标系的保守栅格融合；不是未知相对位姿的地图配准算法 | 保留融合规则，改变通信输入来源 |
-| `control.py` | 默认baseline手工探索；adapter模式独占目标接口，无手工兜底 | 两模式互斥，P1B实现/验证完成待用户验收 |
+| `control.py` | 默认baseline手工探索；adapter模式独占目标接口，无手工兜底 | 两模式互斥，P1B已于2026-10-15验收 |
 | `peer_obstacles.py` | baseline读raw；adapter读理想交付状态，完整机体包络不变 | P3A还需DDS/进程隔离与断链证明 |
 | Nav2 全局地图 | baseline读实时`/merge_map`；adapter读本机图+交付共享图副本 | P3A证明真实字节交付和无旁路 |
 | 覆盖评估器 | P1A合同schema4已验收，schema3兼容诊断 | 完整ROI、质量、全机体监测、三台参与与终态闭合门禁 |
-| 三机器人导航 RL / 训练环境 | **尚未实现**；P1B只提供理想适配接口 | MR3-P1C 至 MR3-P2C |
+| 三机器人导航 RL / 训练环境 | P1C已有Gymnasium/IPC与独立奖励源码候选；原生/GPU验证待做，无训练策略 | MR3-P1C 至 MR3-P2C |
 | ROS 与 ns-3 双向 gateway / Wi-Fi 闭环 | **尚未实现** | MR3-P3A 至 MR3-P5 |
 | `sim.cc` 与已有 DQN | 五用户、15 维观测、5 动作的 toy 调度 MDP | 历史工具链，不能充当三机器人策略或网络接入证明 |
 
@@ -52,7 +53,7 @@ P1B在冻结`f9928fe`完成open/rooms/corridors各seed101的同冻结脚本适�
 三单元严格审计通过，前三次原生失败保留，详见[P1B报告](report/20261015_mr3_p1b.md)。
 这证明本次接口的目标所有权、理想交付副本与脚本导航闭合，不是RL或95%任务成功。
 名义1秒快照在rooms实际出现2/3秒间隔，固定dt和可持续吞吐仍为P1C门禁；
-用户明确验收P1B之前不进入P1C。
+用户于2026-10-15验收P1B并授权P1C；新步进/reset/采样与GPU接口仍须独立验证，不能复用旧时钟成绩。
 
 ## 3. 推荐系统结构
 
@@ -85,6 +86,8 @@ flowchart LR
 ### 3.1 动作：首选稳定子目标，速度由 Nav2 执行
 
 首版使用低频联合目标选择，P1B接口的名义快照周期为 **1 仿真秒**，实际固定步长待P1C验证。
+P1C源码候选按1000个1ms物理tick组成1秒step，每20 tick核对真实时钟、交付与终态，
+不补写ROS时间；50Hz clock相位、固定dt和最后终态短步的原生证明尚待完成。
 后续RL输出三台机器人的
 子目标选择、保持或等待；Nav2 继续负责路径与差速底盘速度控制。
 这借鉴分层学习探索与经典规划结合的做法，不要求复制论文里的学习式 SLAM 或局部策略。
@@ -141,7 +144,8 @@ P1B当前接口使用：观测地图中几何采样的 **K=8 个前沿内侧可�
 固定三机器人可先使用小型地图 CNN、共享机器人/候选 MLP 和联合 actor/critic。
 可复现实装起点为128×128粗全局图与三份64×64局部裁剪、各自3个占据/自由/未知通道，
 共享局部CNN与64维状态/候选特征，再由256维融合MLP输出1000类策略及一个团队价值。
-P1B已实现上述地图尺寸、固定米制裁剪和未知padding；CNN/MLP及其容量尚未实现或验证。
+P1B已实现上述地图尺寸、固定米制裁剪和未知padding；P1C已提供固定Gym Dict张量和
+CNN/MLP接口探针源码，实际GPU forward/backward尚待验证，不是策略训练。
 坐标、裁剪边长和padding仅由观测/已声明任务边界决定，不向编码器提供未探索墙体或真值可达mask。
 模型输入与参数量在后续学习实现中随契约一起冻结。
 不因两块 GPU 而默认增加大型 Transformer；GNN/注意力只在三机器人协调或泛化诊断确有
@@ -234,6 +238,9 @@ w_invalid=0.05, success_bonus=10, failure_penalty=20`；覆盖增量为0–1归�
 任务自身的有限截止属于失败终态，观测含剩余时间；采样器外部截断才是 truncated，
 两者的 bootstrap 区分按 [Gymnasium 官方说明](https://gymnasium.farama.org/tutorials/gymnasium_basics/handling_time_limits/) 验证。
 基础设施崩溃单列原因，不能被当成正常“成功终止”或悄悄丢弃。
+P1C在独立评价进程实现首次正确格账：seq0绑定首actor快照对应的已交付地图、预热不给奖；
+重复/回环不能重复计奖。普通step核对地图摘要，终态最后短步只使用评价器原冻结图，
+不以较晚actor诊断图补奖励或改成功。完整IPC与时钟约束见环境契约，原生证据仍待验证。
 
 ## 5. 训练工程与理想通信验收
 

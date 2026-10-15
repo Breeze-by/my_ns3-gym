@@ -2375,3 +2375,50 @@ open的tb3起点仅3/27快照可行；保守门限保持，不宣称训练可用
 原始/选定证据及冻结哈希相符；`git diff --check`通过。`git add -n .`仅包含活动文档、
 本追加日志及选定研究原件，无build/install、bag、地图、checkpoint或额外运行日志。
 最终提交推送后保持P1B待用户验收，P1C及后续未开始。
+
+
+## 2026-10-15 MR3-P1B用户验收与P1C授权
+
+用户明确“P1B验收通过，继续执行P1C”。P1B证据交付提交33d86a0，原运行冻结f9928fe及前三次失败不改写。
+本步仅训练环境/reset/reward/固定步长/采样工程与最小GPU前后向，不执行P2A策略训练、gateway或ns-3。
+重新阅读活动研究/实施契约、组件AGENTS及ROS指南后，采用完全进程重建reset与私有JSONL pipe：
+学习端conda不导入ROS，系统ROS子进程重新source canonical underlay/install；epoch与PID/start-tick/session隔离。
+固定1秒步长由1000个真实1ms physics ticks组成，每20ticks暂停并核对真实迭代/时间/ROSclock；
+50Hz clock仅为P1C步进调度，新方案不自动取得P4网络因果时钟信用。
+地图pipeline drain及SHA绑定、seq0初始奖励账和末步真实终态/外截断关闭握手均需在新冻结原生验证。
+
+P1C环境只读探查（非模拟/训练）：conda ns3gym Python3.10.20、NumPy2.2.6、torch2.11.0+cu128，
+CUDA12.8可用、两张驱动报告RTX4090；80逻辑CPU/40核、约134.77GB内存。
+现有旧gym0.26.2保留；仅新增Gymnasium1.3.0和farama-notifications0.0.4，版本固定：
+`source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh; conda activate ns3gym; export PYTHONNOUSERSITE=1; unset PYTHONPATH; python -m pip install --disable-pip-version-check --no-input --no-deps gymnasium==1.3.0 farama-notifications==0.0.4`。
+`python -m pip check`通过，未安装SB3/contrib、scipy、psutil或pytest，ROS环境不混入conda。
+兼容依据为官方Gymnasium1.3元数据及SB3/contrib2.9声明；这不是学习有效性结果。
+
+P1C GPU前瞻声明已写`report/assets/20261015_mr3_p1c/gpu_probe_plan.json`，
+SHA256 `e0a60d7fcef8e16242196872985eb09dc8696cd7d0450e8d139ba2bbc8c4e0f8`。
+固定已保存P1B open101首观测、seed20261015、cuda:0、batch1/8/32各一次forward+backward，
+共3次前向/3次反向、0 optimizer step、0 simulator episode、无checkpoint；检查张量、联合掩码、有限梯度与内存/墙时。
+执行前须先提交推送本步源码冻结；失败和修正另记，不覆盖原声明或结果。
+
+P1C原生前瞻计划：`report/assets/20261015_mr3_p1c/predeclared_native_plan_v1.json`。
+先独立物理/clock组件（静态原world，无机器人团队/建图成绩），再三机器人open101两步pilot；
+一般性失败即暂停后续格，原件保留，修复后新freeze完整新矩阵，不跨freeze拼接。
+正式采样比较1/2/4个并行worker，每worker固定三台：相同两轮open101，16步/轮，完整重建reset。
+单worker另做rooms202/corridors303，仅作跨场景/seed重置回归，不混入前两轮吞吐比较。
+独立双worker故障探针在worker0首轮完成4步后仅杀已验证身份的workerPID，期望基础设施异常、
+owned子进程清理和下一epoch恢复；peer继续。独立单worker300步全KEEP验证任务deadline
+terminated优先于外部truncated。所有任务合同/安全/物理/Nav2/SLAM参数保持，50Hz clock/真实
+20ms分段推进是新P1C调度版本；不宣称P1B调度完全等价或P4时钟门禁完成。
+精确run-id、域/端口、阶段顺序、脚本、门禁与资源/日志预算均在JSON，执行命令及实测另追加。
+
+P1C首冻结前离线验证：Git根source Humble及ROS install，PYTHONNOUSERSITE=1，执行
+`/usr/bin/python3 -m pytest -q ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test --ignore=ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_flake8.py --ignore=ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_pep257.py --ignore=ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_copyright.py`，
+511 passed/13.80s；不宣称全仓样式模板通过。conda ns3gym、unset PYTHONPATH、PYTHONNOUSERSITE=1，
+wireless-rl目录执行`python -m unittest discover -s mr3_learning/tests -q`，31项/4.050s通过，含真实fork退出清理fixture，无sim。
+`rtk proxy ctest --test-dir ros2_ws/ros2-multi-robot-automap/build/multi_robot -R test_step_contract --output-on-failure`
+通过(1个CTest/3个gtest case，.24s)。ROS工作区source underlay、systemPython colcon
+`/usr/bin/python3 /usr/bin/colcon build --symlink-install --packages-select multi_robot multi_robot_exploration --allow-overriding nav2_bringup`
+2包/6.77s通过，仅系统Gazebo CMake既有PkgConfig名称warning。新增Python定向flake8(max100)通过。
+13份Markdown/136个本地链接、16段bash语法通过；预声明Gazebo TCP端口当前可用。
+源码哈希和检查范围在`report/assets/20261015_mr3_p1c/implementation_checks_v1.json`，
+base_freeze为本步父提交，不把它误标为后续原生运行冻结。当前未运行原生/GPU；下一步先commit/push。

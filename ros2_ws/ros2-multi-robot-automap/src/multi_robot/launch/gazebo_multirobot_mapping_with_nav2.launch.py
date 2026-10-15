@@ -105,6 +105,13 @@ def launch_setup(context, *args, **kwargs):
         raise ValueError("execution_mode must be baseline or adapter")
     adapter_mode = execution_mode == "adapter"
     probe_mode = IfCondition(LaunchConfiguration("adapter_probe")).evaluate(context)
+    stepped_mode = IfCondition(LaunchConfiguration("mr3_stepped")).evaluate(context)
+    training_reward = IfCondition(LaunchConfiguration("training_reward_enabled")).evaluate(context)
+    if stepped_mode and not adapter_mode:
+        raise ValueError("mr3_stepped requires adapter mode")
+    if training_reward and (not adapter_mode or not evaluation_contract.perform(context)
+                            or not IfCondition(enable_task_evaluator).evaluate(context)):
+        raise ValueError("training_reward_enabled requires adapter mode and MR3 contract evaluator")
     if adapter_mode and robot_count != 3:
         raise ValueError("MR3 adapter requires robot_count=3")
     if adapter_mode and IfCondition(enable_drive).evaluate(context):
@@ -163,7 +170,8 @@ def launch_setup(context, *args, **kwargs):
             package="multi_robot_exploration", executable="mr3_information",
             name="mr3_information", output="screen",
             parameters=[{"use_sim_time": use_sim_time, "robot_count": 3,
-                         "episode_epoch": episode_epoch, "tf_validity_lead_sec": .2}],
+                         "episode_epoch": episode_epoch, "tf_validity_lead_sec": .2,
+                         "stepped_mode": stepped_mode}],
         ))
     else:
         actions.append(merge_map_node)
@@ -221,7 +229,7 @@ def launch_setup(context, *args, **kwargs):
                 "navigation_response_timeout_sec": response_timeout,
                 "navigation_cancel_timeout_sec": cancel_timeout,
                 "require_task_monitor_ready": bool(evaluation_contract.perform(context)),
-                **({"episode_epoch": episode_epoch,
+                **({"episode_epoch": episode_epoch, "stepped_mode": stepped_mode,
                     "audit_path": LaunchConfiguration("mr3_audit_path")} if adapter_mode else {}),
             }
         ],
@@ -257,6 +265,7 @@ def launch_setup(context, *args, **kwargs):
                 "coverage_threshold": evaluation_coverage,
                 "task_contract_path": evaluation_contract,
                 "allow_probe_finalize": probe_mode,
+                "training_reward_enabled": training_reward,
             }
         ],
         output="screen",
@@ -388,7 +397,11 @@ def launch_setup(context, *args, **kwargs):
                 "gzserver.launch.py",
             )
         ),
-        launch_arguments={"world": world, "seed": gazebo_seed, "server_required": "false"}.items(),
+        launch_arguments={
+            "world": world, "seed": gazebo_seed, "server_required": "false",
+            **({"params_file": os.path.join(multi_robot_share, "config", "mr3_step_clock.yaml"),
+                "extra_gazebo_args": "-s libmr3_gazebo_step.so"} if stepped_mode else {}),
+        }.items(),
     )
     actions.append(gzserver_cmd)
 
@@ -632,7 +645,16 @@ def generate_launch_description():
     ld = LaunchDescription()
     ld.add_action(DeclareLaunchArgument(
         "execution_mode", default_value="baseline",
-        description="baseline: handcrafted controller; adapter: exclusive MR3 joint action endpoint.",
+        description="baseline: handcrafted controller; "
+                    "adapter: exclusive MR3 joint action endpoint.",
+    ))
+    ld.add_action(DeclareLaunchArgument(
+        "mr3_stepped", default_value="false",
+        description="P1C paused physics stepping and explicit snapshot requests.",
+    ))
+    ld.add_action(DeclareLaunchArgument(
+        "training_reward_enabled", default_value="false",
+        description="Enable isolated MR3 training reward with the explicit task contract.",
     ))
     ld.add_action(DeclareLaunchArgument(
         "mr3_episode_epoch", default_value="mr3-p1b",
@@ -644,7 +666,8 @@ def generate_launch_description():
     ))
     ld.add_action(DeclareLaunchArgument(
         "adapter_probe", default_value="false",
-        description="Enable explicit incomplete-diagnostic finalization for bounded adapter probes.",
+        description="Enable explicit incomplete-diagnostic finalization "
+                    "for bounded adapter probes.",
     ))
 
     ld.add_action(
