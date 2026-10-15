@@ -50,6 +50,7 @@ class MR3Adapter(Node):
         self.snapshot_responses = {}
         self.map_metadata = None
         self.last_snapshot_target_ns = None
+        self.initial_inputs_ready = False
         self.require_monitor = self.declare_parameter("require_task_monitor_ready", False).value
         self.monitor_ready = not self.require_monitor
         audit_path = self.declare_parameter("audit_path", "").value
@@ -68,7 +69,8 @@ class MR3Adapter(Node):
         self.transport = IdealTransport(self.epoch)
         self.received = ReceivedStore(self.epoch)
         self.navigation_clients = {
-            name: ActionClient(self, NavigateToPose, f"/{name}/navigate_to_pose") for name in ROBOTS
+            name: ActionClient(self, NavigateToPose, f"/{name}/navigate_to_pose")
+            for name in ROBOTS
         }
         self.handles = {}
         self.map = None
@@ -93,6 +95,8 @@ class MR3Adapter(Node):
         task_qos = QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL)
         self.observation_pub = self.create_publisher(String, "/mr3/observation", 2)
         self.snapshot_response_pub = self.create_publisher(String, "/mr3/snapshot_response", 2)
+        self.initial_inputs_ready_pub = self.create_publisher(
+            String, "/mr3/initial_inputs_ready", task_qos)
         self.event_pub = self.create_publisher(String, "/mr3/events", 100)
         self.start_pub = self.create_publisher(Header, "/exploration_start", task_qos)
         self.stop_pub = self.create_publisher(String, "/exploration_stopped", task_qos)
@@ -169,7 +173,8 @@ class MR3Adapter(Node):
         except (ValueError, KeyError, TypeError) as error:
             response = {"epoch": self.epoch, "ok": False, "error": str(error)}
             try:
-                response.update({key: request.get(key) for key in ("request_id", "target_time_ns")})
+                response.update({key: request.get(key)
+                                 for key in ("request_id", "target_time_ns")})
             except (UnboundLocalError, AttributeError):
                 pass
             self.snapshot_response_pub.publish(String(data=json.dumps(response)))
@@ -213,6 +218,8 @@ class MR3Adapter(Node):
                     "target_time_ns": request["target_time_ns"], "ok": error is None}
         if error is not None:
             response["error"] = error
+            if error == "snapshot_watermark_timeout":
+                response["diagnostics"] = self.snapshot_diagnostics(request)
         else:
             response["snapshot"] = snapshot
             self.last_snapshot_target_ns = request["target_time_ns"]
@@ -294,6 +301,73 @@ class MR3Adapter(Node):
         self.stop_requested = True
         self.dispatcher.safety_stop(self.now(), "external_safety_failure")
 
+    def map_inputs_match(self, metadata):
+        """Require the actually delivered fused/own maps to share one bundle."""
+        if (self.map is None or metadata is None
+                or self.map_digest != metadata.get("map_payload_sha256")):
+            return False
+        sources = metadata.get("map_sources", {})
+        return all(name in self.local_maps and self.local_map_digests.get(name) is not None
+                   and self.local_map_digests[name] == sources.get(name, {}).get("payload_sha256")
+                   for name in ROBOTS)
+
+    def publish_initial_inputs_ready(self, now):
+        """Acknowledge real input receipt before the worker pauses physics."""
+        if (not self.stepped_mode or self.initial_inputs_ready or self.started_at is not None
+                or self.stop_requested or not self.monitor_ready or not self.states_fresh(now)
+                or not self.map_inputs_match(self.map_metadata)
+                or not all(client.server_is_ready()
+                           for client in self.navigation_clients.values())):
+            return
+        metadata = self.map_metadata
+        payload = {
+            "schema": "mr3-initial-inputs-ready-v1", "epoch": self.epoch, "stamp": now,
+            "state_sequence": self.state["sequence"], "map_version": metadata["map_version"],
+            "map_payload_sha256": self.map_digest,
+            "map_source_stamp": metadata["map_source_stamp"],
+            "map_received_stamp": metadata["map_received_stamp"],
+            "map_sources": metadata["map_sources"],
+            "robots": [{key: robot[key] for key in (
+                "name", "source_stamp", "received_stamp", "odom_source_stamp",
+                "tf_source_stamp", "tf_validity_stamp", "tf_validity_lead_sec",
+            ) if key in robot} for robot in self.state["robots"]],
+        }
+        self.initial_inputs_ready = True
+        self.initial_inputs_ready_pub.publish(String(data=json.dumps(payload, allow_nan=False)))
+        self.record("initial_inputs_ready", payload)
+
+    def snapshot_diagnostics(self, request):
+        """Report actual gate state without manufacturing a delivery or age."""
+        now_ns = self.get_clock().now().nanoseconds
+        metadata = self.map_metadata if self.stepped_mode else self.state
+        sources = metadata.get("map_sources", {}) if metadata is not None else {}
+        expected = request.get("expected_map_sha256")
+        metadata_digest = metadata.get("map_payload_sha256") if metadata is not None else None
+        return {
+            "actual_clock_ns": now_ns, "state_received": self.state is not None,
+            "state_sequence": self.state["sequence"] if self.state is not None else None,
+            "states_fresh": self.states_fresh(now_ns / 1e9),
+            "state_watermark_satisfied": self.state is not None and (
+                self.state["sequence"] > request.get("minimum_state_sequence", -1)),
+            "map_received": self.map is not None, "map_payload_sha256": self.map_digest,
+            "metadata_received": metadata is not None,
+            "metadata_map_payload_sha256": metadata_digest,
+            "expected_map_matches": expected is None or (
+                metadata_digest == expected and self.map_digest == expected),
+            "map_inputs_match": self.map_inputs_match(metadata),
+            "local_maps": {name: {
+                "received": name in self.local_maps,
+                "payload_sha256": self.local_map_digests.get(name),
+                "expected_payload_sha256": sources.get(name, {}).get("payload_sha256"),
+                "matches": name in self.local_maps and self.local_map_digests.get(name) is not None
+                and self.local_map_digests[name] == sources.get(name, {}).get("payload_sha256"),
+            } for name in ROBOTS},
+            "monitor_ready": self.monitor_ready, "started_at": self.started_at,
+            "stop_requested": self.stop_requested,
+            "navigation_servers_ready": {name: client.server_is_ready()
+                                         for name, client in self.navigation_clients.items()},
+        }
+
     def publish_observation(self):
         if self.encoding is not None:
             return
@@ -301,12 +375,9 @@ class MR3Adapter(Node):
                 or (not self.monitor_ready and not self.terminal_snapshot_allowed())):
             return
         metadata = self.map_metadata if getattr(self, "stepped_mode", False) else self.state
-        if metadata is None or self.map_digest != metadata.get("map_payload_sha256"):
+        if not self.map_inputs_match(metadata):
             return
         map_sources = metadata["map_sources"]
-        if any(self.local_map_digests.get(name) != map_sources.get(name, {}).get("payload_sha256")
-               or name not in self.local_maps for name in ROBOTS):
-            return
         robots = self.state["robots"]
         now = self.now()
         if self.started_at is None:
@@ -515,6 +586,7 @@ class MR3Adapter(Node):
 
     def maintain(self):
         now = self.now()
+        self.publish_initial_inputs_ready(now)
         self.finish_observation()
         self.poll_snapshot()
         if self.started_at is None:
@@ -602,10 +674,12 @@ class MR3Adapter(Node):
                                                 ],
                                             }})
                 self.navigation_clients[name].send_goal_async(goal).add_done_callback(
-                    lambda future, name=name, goal_id=goal_id: self.accepted(future, name, goal_id))
+                    lambda future, name=name, goal_id=goal_id: self.accepted(
+                        future, name, goal_id))
             elif event["type"] == "cancel_goal" and goal_id in self.handles:
                 self.handles[goal_id].cancel_goal_async().add_done_callback(
-                    lambda future, name=name, goal_id=goal_id: self.canceled(future, name, goal_id))
+                    lambda future, name=name, goal_id=goal_id: self.canceled(
+                        future, name, goal_id))
         self.flush_protocol_events(now)
         if self.stop_requested and self.dispatcher.closed and not self.stop_acknowledged:
             self.stop_acknowledged = True

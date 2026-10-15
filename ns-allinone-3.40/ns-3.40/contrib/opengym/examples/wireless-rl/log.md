@@ -2483,3 +2483,65 @@ unit通过，scope保持非GPU/非模拟。v1插件根因的纯展开证据另�
 明确不是当时原生argv捕获，原日志不追加伪造字段。后续v2实际argv将由新机读日志提供。
 
 v2提交前离线最终验证：ROS语义全516项/14.27s通过（同前排除三项既有style模板）；conda禁用CUDA、unset PYTHONPATH的全33项/4.815s通过。修改的ROS Python定向flake8(max100)通过；C++与物理合同未变，沿用v1对应build/CTest检查而不把它当v2原生信用。源码hash见implementation_checks_v2.json。
+
+### P1C v2独立物理/clock夹具
+
+新源码冻结`b328f8484162b9d04170da941a7dbe8487a85c5c`已commit/push。ROS工作区精确命令：
+`rtk proxy bash -c 'source /opt/ros/humble/setup.bash; source install/setup.bash; source /usr/share/gazebo/setup.sh; export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1; /usr/bin/python3 scripts/check_mr3_step_clock.py --run-id mr3_p1c_v2_clock --ros-domain-id 130 --gazebo-port 12101'`。
+PASS10.813墙秒、28回执（含真实1tick相位对齐）、100个clock样本；server144020/helper144421/stopCLI144736均clean退出，精确tick/ns/clock通过。
+无机器人团队/建图信用。原件ROS/log/mr3_step_clock/mr3_p1c_v2_clock；选定复制native_v2/clock。随后启动同冻结三机器人pilot，参数仅run-id由v1换mr3_p1c_v2_pilot，阶段不跨freeze。
+
+### P1C GPU v2通过（接口探针，非训练）
+
+冻结`b328f8484162b9d04170da941a7dbe8487a85c5c`。wireless-rl目录精确命令：
+`source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh && conda activate ns3gym && export PYTHONNOUSERSITE=1 && unset PYTHONPATH && /usr/bin/time -p python -m mr3_learning.gpu_probe --plan report/assets/20261015_mr3_p1c/gpu_probe_plan_v2.json --output report/assets/20261015_mr3_p1c/gpu_probe_v2.json`。
+PASS、time real11.31s，含conda shell12.793819s；batch1/8/32各一次完成forward+backward，共3FB/0update/0simulator episode，无额外GPU调用。
+606377参数，logits[B,1000]/value[B]、合法值与梯度有限、非法logits=-inf；GPU0由驱动报告RTX4090。
+单FB2.388597/.202690/.083182墙秒含首调用初始化，不作训练吞吐结论；峰值CUDAallocated分别74906112/90830848/130265088bytes。
+结果gpu_probe_v2.json、console与execution侧car记录精确命令/计划SHA/fixture来源/预算/原件SHA；保留v1失败。
+
+### P1C v2三机器人pilot通过
+
+同冻结b328f848，wireless-rl精确命令：
+`rtk proxy bash -c 'source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh; conda activate ns3gym; export PYTHONNOUSERSITE=1; unset PYTHONPATH; python -m mr3_learning.benchmark --workers 1 --schedule open:101 --steps 2 --run-id mr3_p1c_v2_pilot --base-domain 131 --base-port 12111'`。
+PASS，总153.048625墙秒含全部启动/关闭；startup126.400813s；2个有效transition均dt1秒，最终external_sampler_limit为truncated而非任务成功。
+真实native server/stopCLI clean、3机器人目标闭合、18流rawaudit持续健康零接触、严格非终态mapSHA奖励配对、seq0零奖及全进程正常退出无残留/zombie。
+独立`/usr/bin/python3 scripts/audit_mr3_env.py <ROS/log/mr3_learning/mr3_p1c_v2_pilot> --output <wireless/report/assets/20261015_mr3_p1c/pilot_v2_audit.json>`通过（从Git根使用canonical完整路径）。
+后续按v2前瞻开始workers1完整四轮，非训练/非95%信用；源码冻结保持b328f848。
+
+### P1C v2正式1worker矩阵（运行开始，最终结果另追加）
+
+冻结b328f848，wireless-rl精确命令：
+`rtk proxy bash -c 'source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh; conda activate ns3gym; export PYTHONNOUSERSITE=1; unset PYTHONPATH; python -m mr3_learning.benchmark --workers 1 --schedule open:101,open:101,rooms:202,corridors:303 --steps 16 --run-id mr3_p1c_v2_workers1 --base-domain 132 --base-port 12121'`。
+所有worker始终3机器人；前两open101用于公平采样比较，额外rooms202/corridors303只用于跨场景seed完整reset，不混入比较分母。
+离线auditor在首个matrix完成前修复预声明工作负载比较错误：旧代码误要求1worker四轮与2/4worker两轮rawschedule相同；新代码按声明比较首两open101、保留全benchmark总耗时，19项对抗单元通过。此文件仅用于离线分析，不被runtime导入，不改变b328f848原生源码冻结；最终auditor源码SHA单列。
+公平cell口径=max_worker(sum首两cell记录墙秒)，包含startup/真实Nav2关闭与下次reset初清理；未记录最后Supervisor reap尾部，不称精确全进程span。真实全benchmark墙时含全部attempts另报。
+
+P1C v2 workers1完整四轮PASS：总1050.449173墙秒、64有效transition，全4epoch正式audit通过、每轮16×1s、真实外截断关闭/18源健康零接触/无owned残留或zombie。公平前两open101口径{"denominator_scope": "max_worker(sum of first two recorded cell elapsed times)", "denominator_wall_sec": 528.1191594148986, "effective_transition_per_wall_sec": 0.060592386073348846, "eligible": true, "episode_indices": [0, 1], "exact_end_to_end_process_span": false, "excludes": "final Supervisor reap tail and all later serial scene regressions", "final_cleanup_timing_available": false, "final_supervisor_cleanup_wall_sec": null, "includes": "cell startup, next-reset cleanup of prior worker, native goal closure", "per_worker": [{"cell_recorded_wall_sec": 528.1191594148986, "transition_only_rate_per_active_wall_sec": 0.1178680326877177, "transition_only_wall_sec": 271.49006622331217, "valid_transitions": 32, "worker_id": 0}], "reset_regression_only_schedule": [["rooms", 202], ["corridors", 303]], "reset_regression_only_transitions": 32, "schedule": [["open", 101], ["open", 101]], "steps_per_episode": 16, "valid_transitions": 32}；额外32transition仅跨场景reset，不混入该rate。
+
+### P1C v2正式2worker矩阵（开始）
+
+同冻结b328f848、wireless-rl精确命令：
+`rtk proxy bash -c 'source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh; conda activate ns3gym; export PYTHONNOUSERSITE=1; unset PYTHONPATH; python -m mr3_learning.benchmark --workers 2 --schedule open:101,open:101 --steps 16 --run-id mr3_p1c_v2_workers2 --base-domain 134 --base-port 12131'`。
+每worker固定三机器人、独立ROSdomain/Gazeboport，结果与失败另追加，不和1worker同时间运行。
+
+P1C v2 workers2完整四epoch PASS：总576.164632墙秒、64有效transition、总有效率.111079362/s；独立正式audit通过，全部16×1s、真实关闭/18源/无owned残留或zombie。公平prefix口径{"denominator_scope": "max_worker(sum of first two recorded cell elapsed times)", "denominator_wall_sec": 572.7004283005372, "effective_transition_per_wall_sec": 0.111751269664521, "eligible": true, "episode_indices": [0, 1], "exact_end_to_end_process_span": false, "excludes": "final Supervisor reap tail and all later serial scene regressions", "final_cleanup_timing_available": false, "final_supervisor_cleanup_wall_sec": null, "includes": "cell startup, next-reset cleanup of prior worker, native goal closure", "per_worker": [{"cell_recorded_wall_sec": 572.7004283005372, "transition_only_rate_per_active_wall_sec": 0.10296350410488778, "transition_only_wall_sec": 310.789733490441, "valid_transitions": 32, "worker_id": 0}, {"cell_recorded_wall_sec": 570.8294671084732, "transition_only_rate_per_active_wall_sec": 0.10358508978229754, "transition_only_wall_sec": 308.9247696483508, "valid_transitions": 32, "worker_id": 1}], "reset_regression_only_schedule": [], "reset_regression_only_transitions": 0, "schedule": [["open", 101], ["open", 101]], "steps_per_episode": 16, "valid_transitions": 64}。
+
+### P1C v2正式4worker矩阵（开始）
+
+同冻结b328f848、wireless-rl精确命令：
+`rtk proxy bash -c 'source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh; conda activate ns3gym; export PYTHONNOUSERSITE=1; unset PYTHONPATH; python -m mr3_learning.benchmark --workers 4 --schedule open:101,open:101 --steps 16 --run-id mr3_p1c_v2_workers4 --base-domain 136 --base-port 12141'`。
+每worker固定三机器人，独立domain136..139/port12141..12144；与此前组串行，实际结果另追加。
+
+### P1C v2 workers4失败与暂停后续（全部保留）
+
+冻结b328f848，完整8attempts共695.967449墙秒、96有效transition，benchmark exit1。6轮正常16步截断，worker2/e2与worker3/e2 reset首快照分别在70.08/70.52simsec报snapshot_watermark_timeout，0有效transition。对应forced owned cleanup均无残留/live/zombie；不能计作成功reset或4worker稳定性。v2 fault/deadline未启动。所有原件完整选定native_v2/workers4/，manifest包括失败原件与资源，不用旧PASS覆盖。
+另保留最早A/worker4_w0_e1_v2_audit.json FAIL：唯一missing proc identity为native-stop CLI PID199409。SDK原wall日志实际寿命1.21304035s，launch同PIDstart+clean exit、native_stop回执0、gzserver clean0独立成立；monitor名义50ms仅扫描后wait，未记录真实间隔，不宣称50ms覆盖或补造start_ticks。离线auditor窄修仅允许这种同server/同stopCLI的完整native退出证明，其他child仍需原proc身份；原FAIL不覆盖。
+真正reset根因为一般性启动竞态：两失败adapter日志仅snapshot_requested/completed，line-buffered日志无任何state_update/invalid_state；adapter.state从未交付。worker原先仅按monitor+节点graph存在就pause，information有旧序号drain并不等于刚启动adapter收到volatile状态；暂停后10Hzsim timer不能补首state。无证据表明map各字段均已齐，也不能将其归为4worker硬件容量上限。
+修复v3将在pause前等adapter实际state+coherent map bundle+monitor/Nav2的明确一次性ready回执，不改10Hz频率/源时间/QoS/健康门限。另将supervisor祖先/session扫描合并为同一/proc快照并记录真实扫描间隔，避免双扫；不改身份保护或清理门限。须新freeze/push，从clock/pilot重新完整1/2/4/fault/deadline，不跨freeze拼接；GPU模型未改，原b328接口probe保留其原冻结范围且不重复额外FB。
+
+v3前瞻计划已写report/assets/20261015_mr3_p1c/predeclared_native_plan_v3.json，SHA6d3e13b38577e29c373f0db065d7ac60c723e927c916ba4bc0fb68863c01a2da；精确run-id为mr3_p1c_v3_clock/pilot/workers1/workers2/workers4/fault/deadline，域/端口/steps/schedule与v2相同，须新sourcecommit+push后执行。GPU模型/encoder/probe源码与b328不变，原GPU成功仅原冻结接口范围，新增forward/backward预算0，不重复训练。
+启动根因证据v2_snapshot_startup_diagnosis.json保留必要条件推导、失败trace和SHA；新worker reset metadata声明delivered_inputs_before_pause-v1，首ready回执绑定实际收到的state/地图/monitor/Nav2，首snapshot不得落后ready序号。原状态频率、QoS及所有源时间保持。单次/proc snapshot与真实扫描统计不改变signal或cleanup guards，旧CLI proc缺口不补造身份。
+使用窄修auditor对v2workers4另存workers4_v2_failure_audit.json，仍FAIL（两次reset失败/缺少完整episode），不覆盖最初w0e1 FAIL，亦不将局部re-audit等同完整4worker通过。v3原生/GPU尚未启动。
+
+v3提交前最终离线验证：同前ROS环境/排除三个style模板，完整550项语义tests/14.58s通过；conda禁用CUDA全36项/3.908s通过。定向修改Python flake8(max100)及diffcheck通过。活动11docs/121locallinks/15bash块、188资产JSON与1125显式本地引用静态有效；未执行文档命令。implementation_checks_v3.json记录source hash与范围；C++未改，GPU模型/encoder/probe与b328一致。尚未启动v3任何原生或额外FB，下一步commit/push。

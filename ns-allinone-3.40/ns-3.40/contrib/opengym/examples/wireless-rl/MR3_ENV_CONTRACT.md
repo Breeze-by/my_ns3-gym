@@ -49,6 +49,12 @@ P1B的K8+KEEP/WAIT、1000类联合动作、5秒接受后承诺和单一所有权
 
 Gazebo ROS clock候选配置为50Hz，见
 [mr3_step_clock.yaml](../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_step_clock.yaml)。
+暂停前必须先收到adapter的可靠transient-local一次性`/mr3/initial_inputs_ready`：
+schema为`mr3-initial-inputs-ready-v1`，包含epoch、实际stamp、已交付state序号、融合图摘要及各状态/地图源水位。
+该确认仅在三台状态新鲜、融合/三份本地图与metadata配对、monitor及Nav2就绪后发布；
+不产生observation、目标、任务release或奖励，也不改10Hz状态频率/QoS/源时间。
+节点出现在ROS graph不等于它已收到首个volatile状态。worker核对确认的epoch/时间/序号，
+暂停后继续使用原drain与精确快照屏障，不能用确认替代后续水位检查。
 首次放行前按真实`/clock`发布相位与Gazebo回执对齐；必要的1ms预热tick是真实物理推进，
 不计策略transition或奖励。不能假定相位为绝对时间整20ms，也不能补发/改写`/clock`或传感源时间来对齐。
 每量子须确认ROS时钟到达同一暂停边界；未来时钟、越过边界或停钟均显式失败。
@@ -118,6 +124,9 @@ worker随后发布真实停止请求，继续以20 tick量子推进到所有已�
 每worker分配独立ROS_DOMAIN_ID、Gazebo master端口、私有pipe和输出根。
 监督器记录PID、Linux启动tick、父子关系与session；仅回收身份仍匹配的owned进程，
 保留异常退出、强制清理和遗留进程的证据，不使用无范围pkill或覆盖旧run-id。
+父子与session判定共用同一次`/proc`快照，记录实际扫描耗时和观测间隔；扫描后50ms等待不是50ms覆盖保证。
+已由launch捕获启动并wait为clean exit的唯一Gazebo stop CLI可用完整原生同PID/server退出证明，
+不能事后补造Linux start tick；其他launch子进程仍须有原进程身份记录。
 
 学习端从conda `ns3gym`运行，`unset PYTHONPATH`并保持`PYTHONNOUSERSITE=1`。
 系统ROS子进程清理继承的conda/ROS路径后重新source规范Humble、当前install和Gazebo，

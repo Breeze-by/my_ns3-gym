@@ -1,0 +1,224 @@
+{
+  "schema": "mr3-p1c-v2-startup-snapshot-diagnosis-v1",
+  "source_freeze": "b328f8484162b9d04170da941a7dbe8487a85c5c",
+  "scope": "read-only frozen-source and complete raw-trace diagnosis; no experiment rerun, no safety relaxation, no claim that unlogged map inputs were complete",
+  "cases": [
+    {
+      "worker": 2,
+      "episode": "episode002_open_101",
+      "epoch": "mr3_p1c_v2_workers4_w2_e2_a4c6daf6",
+      "raw_files": {
+        "adapter.jsonl": {
+          "path": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v2_workers4/worker2/episode002_open_101/adapter.jsonl",
+          "sha256": "40251caeba3e620f14c515b104a2c34064ff1ff15fd553d7220f09def4e00a48",
+          "bytes": 609
+        },
+        "infrastructure_failure.json": {
+          "path": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v2_workers4/worker2/episode002_open_101/infrastructure_failure.json",
+          "sha256": "b16a8ee15af8945b127e41976fcdcd212fe51480d3b448a6270126a3835e6399",
+          "bytes": 449
+        },
+        "launch.log": {
+          "path": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v2_workers4/worker2/episode002_open_101/launch.log",
+          "sha256": "08f2be2fa2e5e483ce0d56a5e626fa7a5788eb1f6cea91b26dc30cee918f1608",
+          "bytes": 49795
+        },
+        "metadata.json": {
+          "path": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v2_workers4/worker2/episode002_open_101/metadata.json",
+          "sha256": "08fadb3798bb6b01495249bfac625e720726c13e152fff98041400cf96440067",
+          "bytes": 2025
+        },
+        "physics.jsonl": {
+          "path": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v2_workers4/worker2/episode002_open_101/physics.jsonl",
+          "sha256": "55ee09d07f2f1a796ae856d6ce06c7648e8b105899819fac04e9bb544104ab6c",
+          "bytes": 2620
+        },
+        "supervisor_metadata.json": {
+          "path": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v2_workers4/worker2/episode002_open_101/supervisor_metadata.json",
+          "sha256": "f54ae68dd660d27f5d016f6833258c55ded7880feb8d8f834326608621f6d1ef",
+          "bytes": 914
+        },
+        "supervisor_shutdown.json": {
+          "path": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v2_workers4/worker2/episode002_open_101/supervisor_shutdown.json",
+          "sha256": "0ac5c05340a76c75ad5c15f3faef83c2b741b3370a8f9a0a8c38a3efde86bd89",
+          "bytes": 6665
+        },
+        "transitions.jsonl": {
+          "path": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v2_workers4/worker2/episode002_open_101/transitions.jsonl",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      },
+      "complete_adapter_trace": [
+        {
+          "epoch": "mr3_p1c_v2_workers4_w2_e2_a4c6daf6",
+          "kind": "snapshot_requested",
+          "payload": {
+            "allow_terminal": false,
+            "epoch": "mr3_p1c_v2_workers4_w2_e2_a4c6daf6",
+            "expected_map_sha256": "99a24e3a7a5c45a3f190e4209f980071206d1057d6cc1235187e88fe777e2aab",
+            "minimum_state_sequence": 699,
+            "request_id": "s1",
+            "target_time_ns": 70080000000
+          },
+          "stamp": 70.08
+        },
+        {
+          "epoch": "mr3_p1c_v2_workers4_w2_e2_a4c6daf6",
+          "kind": "snapshot_completed",
+          "payload": {
+            "epoch": "mr3_p1c_v2_workers4_w2_e2_a4c6daf6",
+            "error": "snapshot_watermark_timeout",
+            "ok": false,
+            "request_id": "s1",
+            "target_time_ns": 70080000000
+          },
+          "stamp": 70.08
+        }
+      ],
+      "accepted_state_update_count": 0,
+      "invalid_state_record_count": 0,
+      "snapshot_success_count": 0,
+      "reset_transition_count": 0,
+      "effective_transition_count": 0,
+      "failure": {
+        "request": {
+          "id": 19,
+          "op": "reset",
+          "epoch": "mr3_p1c_v2_workers4_w2_e2_a4c6daf6",
+          "scene": "open",
+          "seed": 101,
+          "quantum_steps": 20
+        },
+        "error": "RuntimeError('snapshot failed: {\"epoch\": \"mr3_p1c_v2_workers4_w2_e2_a4c6daf6\", \"request_id\": \"s1\", \"target_time_ns\": 70080000000, \"ok\": false, \"error\": \"snapshot_watermark_timeout\"}')",
+        "scope": "invalid infrastructure sample, never a task success"
+      },
+      "cleanup": {
+        "worker_returncode": 1,
+        "forced_shutdown": true,
+        "failed_sample": true,
+        "remaining_owned_processes": [],
+        "remaining_owned_zombies": []
+      },
+      "internal_state_deduction": "The frozen adapter constructor sets self.state=None. receive_states is the only setter and records state_update immediately upon an accepted current-epoch state. The complete raw audit has no state_update or invalid_state record. Under that frozen code path no accepted delivered state was installed, so self.state remained None throughout this snapshot attempt. This is source-and-trace deduction, not a separately dumped internal variable.",
+      "map_delivery_status": "Not established. The expected_map_sha256 in the request is a requested digest, not proof that adapter map, map_metadata, and all local-map payload callbacks were delivered and matched. No claim that all maps were ready is made."
+    },
+    {
+      "worker": 3,
+      "episode": "episode002_open_101",
+      "epoch": "mr3_p1c_v2_workers4_w3_e2_30353b4c",
+      "raw_files": {
+        "adapter.jsonl": {
+          "path": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v2_workers4/worker3/episode002_open_101/adapter.jsonl",
+          "sha256": "dd35b4f4d52fd4137b07587b07d0470a2a06761bc9c85d11af12b933c5104f32",
+          "bytes": 609
+        },
+        "infrastructure_failure.json": {
+          "path": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v2_workers4/worker3/episode002_open_101/infrastructure_failure.json",
+          "sha256": "ce84fe93e3f36555cdd7d47d69ed94b0c099d4f94caaa013993ed7227fa6b772",
+          "bytes": 449
+        },
+        "launch.log": {
+          "path": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v2_workers4/worker3/episode002_open_101/launch.log",
+          "sha256": "daa5990b50201d0b74561046cf8b4e1b98d5c00ad2de61721abbf97361f88776",
+          "bytes": 50315
+        },
+        "metadata.json": {
+          "path": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v2_workers4/worker3/episode002_open_101/metadata.json",
+          "sha256": "bff3689cca163ff200cecff3a72a6ba910f0d20e0cab2101080b3cfe733fa15a",
+          "bytes": 2025
+        },
+        "physics.jsonl": {
+          "path": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v2_workers4/worker3/episode002_open_101/physics.jsonl",
+          "sha256": "88f7adb27dc2eb73aef29cdae78219051c62c551f21c82aa49c560db79ecc130",
+          "bytes": 3576
+        },
+        "supervisor_metadata.json": {
+          "path": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v2_workers4/worker3/episode002_open_101/supervisor_metadata.json",
+          "sha256": "8085bf87dc065bc5f98dff34d470b11065738baab1f674edc1f6c6cafd210f92",
+          "bytes": 914
+        },
+        "supervisor_shutdown.json": {
+          "path": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v2_workers4/worker3/episode002_open_101/supervisor_shutdown.json",
+          "sha256": "30fb159efaa69e2ea84b916670791253b7d205ffcd4c14e4647a69ff6b3064d7",
+          "bytes": 6665
+        },
+        "transitions.jsonl": {
+          "path": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v2_workers4/worker3/episode002_open_101/transitions.jsonl",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      },
+      "complete_adapter_trace": [
+        {
+          "epoch": "mr3_p1c_v2_workers4_w3_e2_30353b4c",
+          "kind": "snapshot_requested",
+          "payload": {
+            "allow_terminal": false,
+            "epoch": "mr3_p1c_v2_workers4_w3_e2_30353b4c",
+            "expected_map_sha256": "931d8edabb19a1ad10b215746f5bead8285a059667fe29d2ace1e09e02e95399",
+            "minimum_state_sequence": 702,
+            "request_id": "s1",
+            "target_time_ns": 70520000000
+          },
+          "stamp": 70.52
+        },
+        {
+          "epoch": "mr3_p1c_v2_workers4_w3_e2_30353b4c",
+          "kind": "snapshot_completed",
+          "payload": {
+            "epoch": "mr3_p1c_v2_workers4_w3_e2_30353b4c",
+            "error": "snapshot_watermark_timeout",
+            "ok": false,
+            "request_id": "s1",
+            "target_time_ns": 70520000000
+          },
+          "stamp": 70.52
+        }
+      ],
+      "accepted_state_update_count": 0,
+      "invalid_state_record_count": 0,
+      "snapshot_success_count": 0,
+      "reset_transition_count": 0,
+      "effective_transition_count": 0,
+      "failure": {
+        "request": {
+          "id": 19,
+          "op": "reset",
+          "epoch": "mr3_p1c_v2_workers4_w3_e2_30353b4c",
+          "scene": "open",
+          "seed": 101,
+          "quantum_steps": 20
+        },
+        "error": "RuntimeError('snapshot failed: {\"epoch\": \"mr3_p1c_v2_workers4_w3_e2_30353b4c\", \"request_id\": \"s1\", \"target_time_ns\": 70520000000, \"ok\": false, \"error\": \"snapshot_watermark_timeout\"}')",
+        "scope": "invalid infrastructure sample, never a task success"
+      },
+      "cleanup": {
+        "worker_returncode": 1,
+        "forced_shutdown": true,
+        "failed_sample": true,
+        "remaining_owned_processes": [],
+        "remaining_owned_zombies": []
+      },
+      "internal_state_deduction": "The frozen adapter constructor sets self.state=None. receive_states is the only setter and records state_update immediately upon an accepted current-epoch state. The complete raw audit has no state_update or invalid_state record. Under that frozen code path no accepted delivered state was installed, so self.state remained None throughout this snapshot attempt. This is source-and-trace deduction, not a separately dumped internal variable.",
+      "map_delivery_status": "Not established. The expected_map_sha256 in the request is a requested digest, not proof that adapter map, map_metadata, and all local-map payload callbacks were delivered and matched. No claim that all maps were ready is made."
+    }
+  ],
+  "frozen_source_sha256": {
+    "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py": "dad07aace4e5be3ac072eb29e9711937617ebd23b0ab1e1fb29e376f176e9b01",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py": "cb79b8de38adbcc3b0613042ac845b829f978cbd575d74f219056f8a8b974e99"
+  },
+  "necessary_condition": {
+    "state_gate": "states_fresh requires self.state is not None plus all three valid original source/received ages <=.5simsec. With no installed state, explicit snapshot cannot begin encoding even if other gates happen to be satisfied.",
+    "v2_startup_wait": "Worker reset waits only for evaluator monitor_ready plus a graph node named mr3_adapter before pausing. Neither condition proves adapter received-state callback delivery. The first pause may therefore precede that delivery.",
+    "bounded_failure": "poll_snapshot returns snapshot_watermark_timeout once its existing 10wall-sec guard expires. Source time stayed at the requested target70.08/70.52; no reset observation or effective transition was fabricated.",
+    "not_proven": [
+      "exact DDS discovery/loss mechanism",
+      "whether a state message reached the middleware but not the Python callback",
+      "adapter map/map_metadata/local-map complete pairing at the timeout",
+      "all other snapshot prerequisites satisfied"
+    ]
+  },
+  "proposed_v3_change": "Explicit adapter delivered-ready handshake, checked before first pause, based on actual current-epoch received inputs and original source age. Keep the existing freshness, timing, snapshot timeout and task gates; verify it under a fresh complete prospective native matrix.",
+  "retention": "The original v2 failed episodes and original FAIL audits remain unchanged. This diagnosis provides no v3 native credit."
+}

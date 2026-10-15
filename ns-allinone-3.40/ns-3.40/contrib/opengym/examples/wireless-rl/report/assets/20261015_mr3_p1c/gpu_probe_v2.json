@@ -1,0 +1,83 @@
+{
+  "cuda": "12.8",
+  "device": "cuda:0",
+  "device_name": "NVIDIA GeForce RTX 4090",
+  "kind": "mr3-p1c-gpu-interface-probe-not-policy-training",
+  "optimizer_steps": 0,
+  "parameter_count": 606377,
+  "plan_sha256": "12d571de23efd66374c3de43f50638744b482546a2f0b41bb3ff475a284bd56a",
+  "python": "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+  "results": [
+    {
+      "batch": 1,
+      "checks": {
+        "gradients_finite": true,
+        "illegal_logits_negative_infinity": true,
+        "legal_logits_finite": true,
+        "nonzero_gradient": true,
+        "values_finite": true
+      },
+      "cuda_peak_allocated_bytes": 74906112,
+      "forward_backward_wall_sec": 2.3885969249531627,
+      "gradient_l2_norm": 3.3992296337241057,
+      "logit_shape": [
+        1,
+        1000
+      ],
+      "loss": 4.231311798095703,
+      "value_shape": [
+        1
+      ]
+    },
+    {
+      "batch": 8,
+      "checks": {
+        "gradients_finite": true,
+        "illegal_logits_negative_infinity": true,
+        "legal_logits_finite": true,
+        "nonzero_gradient": true,
+        "values_finite": true
+      },
+      "cuda_peak_allocated_bytes": 90830848,
+      "forward_backward_wall_sec": 0.2026898399926722,
+      "gradient_l2_norm": 3.3992294542108312,
+      "logit_shape": [
+        8,
+        1000
+      ],
+      "loss": 4.231311798095703,
+      "value_shape": [
+        8
+      ]
+    },
+    {
+      "batch": 32,
+      "checks": {
+        "gradients_finite": true,
+        "illegal_logits_negative_infinity": true,
+        "legal_logits_finite": true,
+        "nonzero_gradient": true,
+        "values_finite": true
+      },
+      "cuda_peak_allocated_bytes": 130265088,
+      "forward_backward_wall_sec": 0.08318186970427632,
+      "gradient_l2_norm": 3.3992294257101707,
+      "logit_shape": [
+        32,
+        1000
+      ],
+      "loss": 4.231311798095703,
+      "value_shape": [
+        32
+      ]
+    }
+  ],
+  "seed": 20261015,
+  "simulator_episodes": 0,
+  "snapshot_digest": "3f5c8193d2fa594dff74c082877416bad8264c8460fd08c75146602d5f708cef",
+  "snapshot_log_sha256": "39ba543e081bc55ff3fb9ec43bafc7ea06aa6b72479c4d90855cc938319cf45a",
+  "source_freeze": "b328f8484162b9d04170da941a7dbe8487a85c5c",
+  "success": true,
+  "tensor_schema": "mr3-learning-tensors-v1",
+  "torch": "2.11.0+cu128"
+}

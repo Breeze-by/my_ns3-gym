@@ -90,6 +90,8 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
 
 步进模式明确构造gzserver argv，将每个`-s`与插件路径放在ROS参数终止符之前；
 启动日志`MR3_GAZEBO_SERVER_START`记录实际argv、插件和clock配置。baseline保留原启动入口。
+stepped worker在暂停前等待adapter的`/mr3/initial_inputs_ready`实际交付确认，
+再做原物理相位、drain、快照和seq0绑定；节点出现在graph不能替代该确认。
 
 先在系统ROS终端按上文重新构建包含步进插件的工作区。学习端另开终端，使用conda，
 不source ROS或拼接ROS的PYTHONPATH；supervisor会在独立系统Python子进程重新source规范ROS/Gazebo环境。

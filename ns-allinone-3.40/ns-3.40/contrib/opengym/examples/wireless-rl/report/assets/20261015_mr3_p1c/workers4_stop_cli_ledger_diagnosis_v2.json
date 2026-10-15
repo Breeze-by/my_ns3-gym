@@ -1,0 +1,78 @@
+{
+  "schema": "mr3-p1c-stop-cli-ledger-diagnosis-v1",
+  "source_freeze": "b328f8484162b9d04170da941a7dbe8487a85c5c",
+  "scope": "read-only source/log reconstruction; no invented process identity and no audit pass declaration",
+  "missing_launch_processes": [
+    {
+      "process_name": "mr3_gazebo_native_stop-38",
+      "pid": 199409
+    }
+  ],
+  "native_wall_events": [
+    "1792056584.4117305 [INFO] [mr3_gazebo_native_stop-38]: process started with pid [199409]",
+    "1792056585.6247709 [INFO] [mr3_gazebo_native_stop-38]: process has finished cleanly [pid 199409]"
+  ],
+  "start_to_clean_exit_wall_sec": 1.2130403518676758,
+  "native_wall_log": {
+    "original": "/home/zhuyulab/.ros/log/2026-10-15-17-23-51-058447-zhuyulab-192060/launch.log",
+    "original_bytes": 18213,
+    "original_sha256": "8635547e43645eca941ab1e65d9becc44392cf44b8b5ae1c90f6e6788434c147",
+    "selected": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/native_v2/workers4/diagnostic/w0_e1_native_wall/launch.log.gz",
+    "selected_bytes": 3472,
+    "selected_sha256": "10306f0ca4165f7ed625ff8961646f73450bc8e2bd9d7511dfbadf82f8a4a08f",
+    "encoding": "gzip; mtime=0",
+    "decoded_selected_sha256": "8635547e43645eca941ab1e65d9becc44392cf44b8b5ae1c90f6e6788434c147",
+    "decoded_matches_original": true
+  },
+  "native_stop_receipt": {
+    "returncode": 0,
+    "method": "owned_launch_native_stop",
+    "native_cli_pid": 199409,
+    "server_clean_exit_recorded": true
+  },
+  "supervisor_cleanup": {
+    "forced_shutdown": false,
+    "remaining_owned_processes": [],
+    "remaining_owned_zombies": []
+  },
+  "recorded_identity_chain": [
+    {
+      "pid": 191852,
+      "parent": 191752,
+      "group": 191852,
+      "session": 191852,
+      "start_ticks": 380162208,
+      "state": "Z"
+    },
+    {
+      "pid": 192060,
+      "parent": 191852,
+      "group": 191852,
+      "session": 191852,
+      "start_ticks": 380162546,
+      "state": "S"
+    },
+    {
+      "pid": 192141,
+      "parent": 192060,
+      "group": 191852,
+      "session": 191852,
+      "start_ticks": 380162704,
+      "state": "R"
+    }
+  ],
+  "unobserved_stop_cli_fields": [
+    "start_ticks",
+    "parent",
+    "group",
+    "session"
+  ],
+  "structural_inference": "Supervisor Popen sets new worker session 191852; recorded launch PID192060 is its child in that session. Worker launches ros2 launch without a new session; the SDK ExecuteProcess uses asyncio subprocess_exec without a new session. Thus stop CLI is expected to inherit launch ownership, but its actual /proc PPID/session/start ticks were not saved.",
+  "monitor_limit": "The monitor waits nominally .05 seconds after remember_processes; that function scans /proc twice. No actual scan intervals or thread scheduling gaps were saved. Duration1.213s cannot establish which scan/scheduling mechanism caused the missed identity.",
+  "original_hashes": {
+    "launch.log": "6de1b3614935b9ef160fc6a62e70d558fa636d95807806923be30b5aafa49609",
+    "supervisor_shutdown.json": "f584fc53d884bb9e5b126b72e1aebdffce8daf65f711a4dc4826e0719e6d7f37",
+    "supervisor_metadata.json": "5f95a59fff9404d9440d4a4543643743b914375cbed7296b480caa33d2075f6b",
+    "native_stop.json": "32077872120e913def96eea8cfdd59d1c8e363c80fc73f4e6cf55b5cc465e314"
+  }
+}

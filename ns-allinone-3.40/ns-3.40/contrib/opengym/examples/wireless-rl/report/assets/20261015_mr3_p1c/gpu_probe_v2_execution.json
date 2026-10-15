@@ -1,0 +1,24 @@
+{
+  "actual_budget": {
+    "additional_gpu_calls": 0,
+    "completed_backward_calls": 3,
+    "forward_calls": 3,
+    "optimizer_updates": 0,
+    "simulator_episodes": 0
+  },
+  "command": "source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh && conda activate ns3gym && export PYTHONNOUSERSITE=1 && unset PYTHONPATH && /usr/bin/time -p python -m mr3_learning.gpu_probe --plan report/assets/20261015_mr3_p1c/gpu_probe_plan_v2.json --output report/assets/20261015_mr3_p1c/gpu_probe_v2.json",
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "finished_utc": "2026-10-15T08:53:08.213485+00:00",
+  "kind": "mr3-p1c-gpu-v2-execution-sidecar",
+  "result_and_budget_verified": true,
+  "returncode": 0,
+  "scope": "Saved received-only fixture; deterministic CUDA interface check, no policy training",
+  "sha256": {
+    "gpu_probe_plan_v2.json": "12d571de23efd66374c3de43f50638744b482546a2f0b41bb3ff475a284bd56a",
+    "gpu_probe_v2.json": "b5018e8a27fd5b2a5aa63f36e62b4a0a56a2d8b5b0e1855f8fa011a62c997cdf",
+    "gpu_probe_v2_console.log": "920cad2a83836d8c8bd4129b29547351b3cae8a8a33d92dd3fd5bf64a35968a3"
+  },
+  "source_freeze": "b328f8484162b9d04170da941a7dbe8487a85c5c",
+  "started_utc": "2026-10-15T08:52:55.418982+00:00",
+  "whole_command_wall_sec_including_conda": 12.793818627018481
+}

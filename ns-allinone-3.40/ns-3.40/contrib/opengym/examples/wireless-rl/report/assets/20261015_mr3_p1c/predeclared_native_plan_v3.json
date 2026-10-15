@@ -1,0 +1,142 @@
+{
+  "schema": "mr3-p1c-native-plan-v3",
+  "declared_at": "2026-10-15",
+  "execution": "Only after the v3 runtime and tests are committed and pushed as one new source freeze. Run fresh clock, pilot, full1/2/4 matrix, fault and deadline in declared order. Preserve every attempt; stop progression on general infrastructure fault. Any subsequent runtime fix requires a new freeze and another prospectively declared complete native matrix.",
+  "scope": "P1C physical clock/reset/sampler/reward engineering, no policy training or 95% task-success credit; every sampler worker has exactly tb1/tb2/tb3",
+  "scheduler": {
+    "physics_step_ns": 1000000,
+    "quantum_steps": 20,
+    "policy_step_ns": 1000000000,
+    "ros_clock_hz": 50,
+    "normal_dt_required_sec": 1,
+    "terminal_detection_budget_sec": 0.020001
+  },
+  "clock_fixture": {
+    "run_id": "mr3_p1c_v3_clock",
+    "ros_domain": 130,
+    "gazebo_port": 12101,
+    "kind": "isolated physical/clock component; no robot team or mapping claim"
+  },
+  "pilot": {
+    "run_id": "mr3_p1c_v3_pilot",
+    "workers": 1,
+    "schedule": "open:101",
+    "steps": 2,
+    "base_domain": 131,
+    "base_port": 12111
+  },
+  "throughput_matrix": [
+    {
+      "run_id": "mr3_p1c_v3_workers1",
+      "workers": 1,
+      "schedule": "open:101,open:101,rooms:202,corridors:303",
+      "steps": 16,
+      "base_domain": 132,
+      "base_port": 12121
+    },
+    {
+      "run_id": "mr3_p1c_v3_workers2",
+      "workers": 2,
+      "schedule": "open:101,open:101",
+      "steps": 16,
+      "base_domain": 134,
+      "base_port": 12131
+    },
+    {
+      "run_id": "mr3_p1c_v3_workers4",
+      "workers": 4,
+      "schedule": "open:101,open:101",
+      "steps": 16,
+      "base_domain": 136,
+      "base_port": 12141
+    }
+  ],
+  "comparison_rule": "compare the first two open101 episodes per worker, including complete startup/reset and closure; additional serial rooms202/corridors303 provide cross-scene/seed reset regression only; report transition-only rate separately",
+  "fault_probe": {
+    "run_id": "mr3_p1c_v3_fault",
+    "workers": 2,
+    "schedule": "open:101,open:101",
+    "steps": 8,
+    "base_domain": 140,
+    "base_port": 12151,
+    "fault": "SIGKILL only verified worker0 PID/start identity after four completed first-episode steps; expect InfrastructureError and recorded forced owned cleanup; same supervisor rebuilds next epoch while peer worker continues"
+  },
+  "deadline_probe": {
+    "run_id": "mr3_p1c_v3_deadline",
+    "workers": 1,
+    "schedule": "open:101",
+    "steps": 300,
+    "base_domain": 142,
+    "base_port": 12161,
+    "policy": "all KEEP 888; finite 300sim-sec deadline must be terminated(timeout), taking precedence over simultaneous external sampler limit; no participation/95% success claim"
+  },
+  "sampler_policy": "external explicit legal candidate count/long observed path cancellation stress; KEEP until7s, WAIT, new candidates10-12s, WAIT; last full step external limit; never installed as backend fallback",
+  "reset_checks": [
+    "new complete process identities and unique epoch",
+    "old processes and zombies absent before next reset",
+    "sameseed world/contract/model/spawn configuration identical; normalized initial estimates and actual differences reported, not falsely bitwise deterministic",
+    "cross-scene/seed no retained SLAM maps/goals/history/reward account",
+    "initial task elapsed and reward zero; seq0 digest binds warmup map without paying initial cells"
+  ],
+  "required_checks": [
+    "exact iteration/ns receipts; no unpause/sleep time substitution",
+    "fresh received-only snapshot/source ages and hash-paired nonterminal reward",
+    "first-correct ledger duplicate/map-regression/no-reset reward exploits tested",
+    "last short terminal dt honest; external truncation distinct from task failure",
+    "real cancellation/terminal closure and native server/CLI matching clean PIDs",
+    "18 raw streams audited, contact/freshness failures retained",
+    "1/2/4 worker host CPU/RAM/GPU, startup/reset/effective transition rate and storage budget",
+    "startup delivered-ready before pause, plus actually received state/map watermarks at the first explicit snapshot",
+    "recorded actual process monitor intervals and scan durations, with identity-safe cleanup; strict stop-CLI alternative proof documented separately from /proc identity capture"
+  ],
+  "unchanged": [
+    "P1A ROI/95%/300sim-sec task/quality/participation/contact thresholds",
+    "SLAM/Nav2/physical robot/obstacle parameters"
+  ],
+  "recording": "unique directories under canonical ROS log/mr3_learning; selected raw originals+SHA and independent audits under this asset directory; shared log includes failures and commands",
+  "no_training": true,
+  "gateway_or_ns3": false,
+  "revision": "Fresh complete native matrix after retained v2 startup delivery and process-ledger evidence failures; no v2 native PASS reused as v3 credit.",
+  "changes": [
+    "Startup must wait for an explicit adapter delivered-ready handshake from actually received current-epoch state and the required complete delivered inputs before the first pause/snapshot. Graph node presence and evaluator monitor_ready alone cannot establish that adapter data callbacks have run.",
+    "Readiness preserves original source/received timestamps and .5sim-sec safety gates. No manual state/map refresh, fake source stamp, fake clock, extra simulator step to hide a missing boundary, or hand-planner fallback is permitted.",
+    "Each supervisor ownership monitor cycle uses one /proc identity snapshot to derive descendants/session membership, rather than two full scans. Save actual monotonic monitor intervals/durations; .05sec nominal wait is not a claimed maximum observation interval.",
+    "Offline audit may use only a strictly matched owned native stop CLI start+cleanexit and native_stop receipt, together with the matching clean server identity, as alternative exit proof when that short-lived CLI lacks saved /proc start_ticks. Do not synthesize identity fields; all other launch children keep the existing ownership rule.",
+    "Retain original v2 FAIL audits and all infrastructure failures. Any narrower corrected offline audit is saved under a new name and its own auditor hash; raw original data and prior verdicts are never overwritten."
+  ],
+  "source_binding": {
+    "v2_source_freeze": "b328f8484162b9d04170da941a7dbe8487a85c5c",
+    "v3_source_freeze": "the next completed and pushed source commit; each run metadata must record its exact hash before any native execution",
+    "cross_freeze_native_reuse": false
+  },
+  "inherited_v2_changes": [
+    "fixed-input ordinary average pooling preserves exact block-average semantics and deterministic requirement",
+    "stepped direct gzserver argv puts each -s/plugin token before ROS argument terminator; baseline unchanged",
+    "log actual launched server argv and chosen plugin/clock parameters",
+    "snapshot state sequence is bound to the same information drain response; terminal snapshots may retain last delivered state with honest ages",
+    "training wall polling replays already-received release/closure messages only after the real clock reaches their source watermark, avoiding paused sim-timer deadlock"
+  ],
+  "gpu_scope": {
+    "new_forward_calls_authorized": 0,
+    "new_backward_calls_authorized": 0,
+    "optimizer_updates": 0,
+    "model_and_tensor_interface_unchanged_from": "b328f8484162b9d04170da941a7dbe8487a85c5c",
+    "file_sha256": {
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/model.py": "9aa7a618ba5a85bce5e941d6591c2428185b0e406881ddf5fb9e53e151e841bd",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/observation.py": "1d030402a4f934031e8f3bde19356cfbee92a0836a5d540381a42c78c834c389",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/gpu_probe.py": "1505cef4cf4c148a026bac1c6ed4ba3c28ef30a874c9ac0e8e62180a83aa438e"
+    },
+    "retained_original_probe": "gpu_probe_v2.json",
+    "retained_original_probe_sha256": "b5018e8a27fd5b2a5aa63f36e62b4a0a56a2d8b5b0e1855f8fa011a62c997cdf",
+    "retained_execution_sidecar": "gpu_probe_v2_execution.json",
+    "retained_execution_sidecar_sha256": "0fdcdf54f7b27c65aae262a878d14d0dc5cde973419ccec43ee686eb795dde56",
+    "original_actual_budget": {
+      "forward_calls": 3,
+      "completed_backward_calls": 3,
+      "optimizer_updates": 0,
+      "simulator_episodes": 0
+    },
+    "scope": "The b328f84 deterministic CUDA interface check keeps only its original saved received-only fixture/model/tensor scope. It proves no v3 startup/reset/native safety, RL training, or new GPU workload result. Reuse requires identical recorded file hashes at v3 freeze; changes invalidate this carry-forward and require a separate prospectively authorized GPU budget."
+  },
+  "domain_port_reuse": "The numeric domains/ports remain the prospectively declared v2 allocation after verified prior owned cleanup; reuse is serial, never concurrent with any still-live prior owned identity. Forced cleanup of failed v2 attempts remains recorded rather than relabeled clean native exit."
+}

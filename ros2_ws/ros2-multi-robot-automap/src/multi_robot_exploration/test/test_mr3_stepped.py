@@ -1,9 +1,11 @@
 """Paused snapshot barriers preserve real source ages and delivery cadence."""
 
+import copy
 import json
 from types import MethodType, SimpleNamespace
 
 from nav_msgs.msg import OccupancyGrid
+import pytest
 
 from test_mr3_adapter import make_adapter, message, state
 from test_mr3_information import bridge, ControlledExecutor, grid
@@ -39,6 +41,94 @@ def ready_adapter():
     # simulation timer slot. Metadata alone supplies the coherent completion.
     node.state["map_payload_sha256"] = "older-map"
     return node, clock, responses
+
+
+@pytest.mark.parametrize("blocked", (
+    "state_missing", "state_stale", "state_future", "state_invalid", "map_missing",
+    "metadata_missing", "fused_hash_mismatch", "local_missing", "local_hash_mismatch",
+    "monitor_not_ready", "nav_server_not_ready", "not_stepped", "stopped", "already_started",
+))
+def test_initial_input_ack_requires_every_actually_delivered_startup_gate(blocked):
+    node, clock, _ = ready_adapter()
+    acknowledgments = []
+    node.initial_inputs_ready_pub.publish = acknowledgments.append
+    if blocked == "state_missing":
+        node.state = None
+    elif blocked == "state_stale":
+        node.state["robots"][0]["source_stamp"] = 1.49
+    elif blocked == "state_future":
+        node.state["robots"][0]["source_stamp"] = 2.01
+    elif blocked == "state_invalid":
+        node.state["robots"][0]["valid"] = False
+    elif blocked == "map_missing":
+        node.map = None
+    elif blocked == "metadata_missing":
+        node.map_metadata = None
+    elif blocked == "fused_hash_mismatch":
+        node.map_metadata["map_payload_sha256"] = "another-map"
+    elif blocked == "local_missing":
+        del node.local_maps["tb1"]
+    elif blocked == "local_hash_mismatch":
+        node.map_metadata["map_sources"]["tb1"]["payload_sha256"] = "another-own-map"
+    elif blocked == "monitor_not_ready":
+        node.monitor_ready = False
+    elif blocked == "nav_server_not_ready":
+        node.navigation_clients["tb1"].server_is_ready = lambda: False
+    elif blocked == "not_stepped":
+        node.stepped_mode = False
+    elif blocked == "stopped":
+        node.stop_requested = True
+    elif blocked == "already_started":
+        node.started_at = clock[0]
+    node.publish_initial_inputs_ready(clock[0])
+    assert not acknowledgments and not node.initial_inputs_ready
+    assert not any(kind == "initial_inputs_ready" for kind, _ in node.test_records)
+    assert not node.test_starts and not node.test_observations
+
+
+def test_initial_input_ack_is_once_only_and_does_not_start_encode_or_dispatch():
+    node, clock, _ = ready_adapter()
+    acknowledgments = []
+    node.initial_inputs_ready_pub.publish = acknowledgments.append
+    node.state["robots"][0].update({
+        "tf_source_stamp": 1.9, "tf_validity_stamp": 2.1, "tf_validity_lead_sec": .2,
+    })
+    original_state, original_metadata = copy.deepcopy(node.state), copy.deepcopy(node.map_metadata)
+    original_snapshot = copy.deepcopy(node.snapshot)
+    node.maintain()
+    assert len(acknowledgments) == 1 and node.initial_inputs_ready
+    payload = json.loads(acknowledgments[0].data)
+    assert payload["schema"] == "mr3-initial-inputs-ready-v1" and payload["epoch"] == node.epoch
+    assert payload["stamp"] == clock[0] == 2. and payload["state_sequence"] == 10
+    assert payload["map_payload_sha256"] == node.map_digest
+    assert payload["map_source_stamp"] == 1. and payload["map_received_stamp"] == 1.5
+    assert payload["map_sources"] == original_metadata["map_sources"]
+    assert payload["robots"][0]["tf_source_stamp"] == 1.9
+    assert payload["robots"][0]["tf_validity_stamp"] == 2.1
+    assert payload["robots"][0]["tf_validity_lead_sec"] == .2
+    assert "tf_source_stamp" not in payload["robots"][1]
+    assert node.state == original_state and node.map_metadata == original_metadata
+    assert node.snapshot == original_snapshot and node.sequence == 0 and node.encoding is None
+    assert node.started_at is None and not node.test_starts and not node.test_observations
+    assert not node.events and not node.transport.pending_count and node.dispatcher.closed
+    assert not any(client.goals for client in node.navigation_clients.values())
+    assert node.test_records == [("initial_inputs_ready", payload)]
+    clock[0] = 2.02
+    node.maintain()
+    assert len(acknowledgments) == 1 and len(node.test_records) == 1
+
+
+def test_initial_input_ack_waits_for_volatile_state_receipt_before_physics_can_pause():
+    node, clock, _ = ready_adapter()
+    acknowledgments = []
+    node.initial_inputs_ready_pub.publish = acknowledgments.append
+    node.state = None
+    node.maintain()
+    assert not acknowledgments and node.started_at is None
+    node.receive_states(message(state(clock[0], sequence=10)))
+    node.maintain()
+    assert len(acknowledgments) == 1 and node.state["sequence"] == 10
+    assert node.started_at is None and not node.test_starts and not node.test_observations
 
 
 def request(node, request_id="step0", target=2000000000, **fields):
@@ -87,8 +177,32 @@ def test_snapshot_waits_for_new_source_watermark_and_times_out_without_advancing
     assert node.encoding is None and not responses
     node.pending_snapshot["requested_wall"] -= 11.
     node.poll_snapshot()
-    assert json.loads(responses[-1].data)["error"] == "snapshot_watermark_timeout"
+    response = json.loads(responses[-1].data)
+    assert response["error"] == "snapshot_watermark_timeout"
+    assert response["diagnostics"]["state_sequence"] == 10
+    assert not response["diagnostics"]["state_watermark_satisfied"]
     assert clock[0] == 2. and node.sequence == 0
+
+
+def test_missing_state_snapshot_timeout_reports_actual_clock_and_matching_maps():
+    node, _, responses = ready_adapter()
+    node.state = None
+    request(node, expected_map_sha256=node.map_digest, minimum_state_sequence=9)
+    node.pending_snapshot["requested_wall"] -= 11.
+    node.poll_snapshot()
+    response = json.loads(responses[-1].data)
+    diagnostics = response["diagnostics"]
+    assert response["error"] == "snapshot_watermark_timeout"
+    assert diagnostics["actual_clock_ns"] == 2000000000
+    assert diagnostics["state_sequence"] is None
+    assert not diagnostics["state_received"] and not diagnostics["states_fresh"]
+    assert not diagnostics["state_watermark_satisfied"]
+    assert diagnostics["expected_map_matches"] and diagnostics["map_inputs_match"]
+    assert all(entry["received"] and entry["matches"]
+               for entry in diagnostics["local_maps"].values())
+    assert diagnostics["monitor_ready"] and diagnostics["started_at"] is None
+    assert all(diagnostics["navigation_servers_ready"].values())
+    assert node.started_at is None and node.state is None and node.encoding is None
 
 
 def test_snapshot_waits_for_exact_drain_map_hash_instead_of_old_complete_pair():

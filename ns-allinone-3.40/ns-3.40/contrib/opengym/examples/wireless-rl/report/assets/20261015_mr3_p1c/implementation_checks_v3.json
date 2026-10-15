@@ -1,0 +1,72 @@
+{
+  "schema": "mr3-p1c-implementation-checks-v3",
+  "base_freeze": "b328f8484162b9d04170da941a7dbe8487a85c5c",
+  "scope": "offline tests and static checks; v3 native unstarted; C++ unchanged, GPU model/encoder/probe unchanged from v2 passed interface freeze",
+  "ros_semantic_suite": {
+    "passed": 550,
+    "wall_sec": 14.58,
+    "ignored_style_templates": [
+      "test_flake8.py",
+      "test_pep257.py",
+      "test_copyright.py"
+    ]
+  },
+  "conda_unittest": {
+    "passed": 36,
+    "wall_sec": 3.908,
+    "python": "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "PYTHONNOUSERSITE": "1",
+    "PYTHONPATH": null,
+    "CUDA_VISIBLE_DEVICES": ""
+  },
+  "focused_modified_ros_python_flake8_passed": true,
+  "unchanged_cpp_checks_reference": "implementation_checks_v1.json",
+  "source_sha256": {
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/__init__.py": "1ed62607abac81c63a25c885a23a52f0152d279db480f5c270abea3da55564ef",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py": "837be00e0bf5845721306123d33190106c9c78ea844658eb01c29e56d70c7256",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/env.py": "5209fdd4d1ed70ebd9f1a8e2c4dde01bdb67415da6f72b5ea6f6a6f29f9591ef",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/gpu_probe.py": "1505cef4cf4c148a026bac1c6ed4ba3c28ef30a874c9ac0e8e62180a83aa438e",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/ipc.py": "55c6cb4d4a985418ce43e9d753b2d84400bb48138d5588ef43080380bd33cf18",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/model.py": "9aa7a618ba5a85bce5e941d6591c2428185b0e406881ddf5fb9e53e151e841bd",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/observation.py": "1d030402a4f934031e8f3bde19356cfbee92a0836a5d540381a42c78c834c389",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/requirements-env.txt": "0ef03d56c3c24007b31ab59c84691f27a1790f95e7d9389fa4b0a7ca2152a5bf",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/supervisor.py": "40818f15be74ec02deb1195de8782aa2ccadd8837fb1911ac9ceb9d5e4e4c2cb",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/__init__.py": "c6e5e28edd74fb3fefa88253f89465c364ae9327b36b0a8973c6f63bfb47de5a",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_env.py": "12d7fbb3d5e2a5dc6ed13071478e19669f328ceae2cbb232c3aaedb8a9a93312",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_ipc.py": "19bd081a3906f368bb5e59449a71f343a0e07c9eadc96f1149e2c520c638db90",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_observation.py": "f6c6dbe276f76f6d728528bf42513d5feda28b75e0de86520a2d04780bc4023d",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_supervisor.py": "666ede6bd2a228b83ba747a80af8733522a4c2cf9b5182bcf96597023cde301c",
+    "ros2_ws/ros2-multi-robot-automap/scripts/audit_mr3_env.py": "347eac605deb07c85d1950cf71dbbe479349d79738e6d812bb3a2a716de06605",
+    "ros2_ws/ros2-multi-robot-automap/scripts/check_mr3_step_clock.py": "c1b9b2819009701d7a6eb9107b9de1d05a908a53f9e75940b1de4170988340b3",
+    "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py": "b272d27dc163a28953e39e9a56530abbd9fc620da727035650332662628b6d8b",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/CMakeLists.txt": "e52955939a5b111ca3ff78efd37f27dd9fb3f358d2a8730d3dc174318181de16",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_step_clock.yaml": "cf7933b02fc03e683b147c5f544df53beb17c2a54d81cc72c903173d3143b949",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_step_contract.hpp": "d789883c107fdddf271a4f9d33c24c63891c4b6d8ba0b025f06ce56062cffe28",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py": "a1c99c443252b05fd76d8ed0b58ab19a8bb34a7da5fbdf2ba442a32f6e041aa2",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/package.xml": "0dc5958793056e2fdcb6ec96a956792186bf24ef720edfcfec5ebdc0e97272fd",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_gazebo_step.cpp": "df448350d4d043861ef48345da53dd543e90b4399638faf26acb31141cb395d4",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_gazebo_step_plugin.cpp": "566a4f216a54425f29f2be18842e8fe02b4c853c4222e16c8bcfc2fe01fa8eee",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/test/test_step_contract.cpp": "7da103e2182563195a9219d1ae5a35d4466e673f7fdec6dcef856e555ef9b122",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py": "cbba46331613bf319323b601445d722a0b6e8350be717a465c4e517c43b088e9",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_information.py": "115de517d85b27a46dee68ddae72b59f606de60448c1cb446e0f63a995eb6f0c",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reward.py": "be92b00ab60d686ba02b764a167ce34e90363bd2f05e91a2ef56b0bb93e01f25",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_task_contract.py": "a1eeec3eb4488c9900cd23b04e231053fcaa16614f92cc88b9edb318d564e526",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py": "26dc337071b929d00686b3ff247edef077254faa99410997bc3724f3f105a529",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_adapter.py": "a34fc0b3d20402374b813537dba0856c3a488e9dd3fd9fccddf48ffcd2b04346",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_env_audit.py": "64255500b7517b2eb6b7a3c28ae218bc032b679060dd2ae2870506dd3a2b66c7",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_information.py": "75c35b1eb253c1992caee1437f42803d273b6068ee20bd9fe7a0a86dbaf3d2aa",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reward.py": "82302bc016e90c61b9fc36e6ad46605b6b64a4c8d3415c57be9be666624e48a9",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_stepped.py": "ec935be850db6632e6963409f1a13d8d60a3c1d1e8388abecc34648fb5c729dd",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_model_pooling.py": "b447ac7035583e54d1550a53fec064b6ad36b61fd1ef281fc70bbf707c7a7eda",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_launch_and_smoke.py": "bf532b231ccf542e2291b7248c8e7c1e7dae1e0ee9b4f633263e0f66b78204f5",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_bootstrap.py": "8722213b69ac4d9bbb0d84d4649561f244f560cdb73582680e4737d6ae119a45"
+  },
+  "documentation": {
+    "markdown_files": 11,
+    "local_links_checked": 121,
+    "bash_blocks_syntax_checked": 15,
+    "scope": "active documents; no document commands executed",
+    "asset_json_parsed": 188,
+    "explicit_local_asset_paths_checked": 1125
+  }
+}

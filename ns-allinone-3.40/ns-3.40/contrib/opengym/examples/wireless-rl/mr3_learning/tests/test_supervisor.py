@@ -12,11 +12,67 @@ import unittest
 from unittest.mock import patch
 
 from mr3_learning.supervisor import (
-    InfrastructureError, Supervisor, identity_alive, process_identity, ros_environment,
+    Episode, InfrastructureError, Supervisor, descendants, identity_alive, process_identity,
+    remember_processes, ros_environment,
 )
 
 
 class SupervisorTests(unittest.TestCase):
+    @staticmethod
+    def episode_fixture():
+        identity = {"pid": 100, "parent": 1, "group": 100, "session": 100,
+                    "start_ticks": 1000, "state": "S"}
+        return Episode("fixture", Path("/unused"), SimpleNamespace(pid=100), None, None,
+                       identity, {(100, 1000): identity})
+
+    def test_one_proc_snapshot_covers_escaped_descendants_and_same_session_orphans(self):
+        episode = self.episode_fixture()
+        rows = [episode.identity,
+                {"pid": 101, "parent": 100, "session": 101, "start_ticks": 1001},
+                {"pid": 102, "parent": 101, "session": 101, "start_ticks": 1002},
+                {"pid": 103, "parent": 1, "session": 100, "start_ticks": 1003},
+                {"pid": 104, "parent": 1, "session": 999, "start_ticks": 1004},
+                {"pid": 105, "parent": 1, "session": 100, "start_ticks": 999}]
+        identities = {str(row["pid"]): row for row in rows}
+        entries = [Path("/proc") / key for key in identities] + [Path("/proc/sys")]
+        with patch("mr3_learning.supervisor.Path.iterdir", return_value=iter(entries)) as listing:
+            with patch("mr3_learning.supervisor.process_identity",
+                       side_effect=identities.get) as identity_read:
+                remember_processes(episode)
+        listing.assert_called_once()
+        self.assertEqual(identity_read.call_count, len(rows))
+        self.assertEqual(set(episode.owned), {(100, 1000), (101, 1001), (102, 1002), (103, 1003)})
+        # The public API still returns ancestry only, irrespective of sessions.
+        with patch("mr3_learning.supervisor._process_snapshot", return_value=rows) as snapshot:
+            self.assertEqual([row["pid"] for row in descendants(100)], [100, 101, 102])
+        snapshot.assert_called_once()
+
+    def test_exited_leader_keeps_session_members_and_previously_seen_escapees(self):
+        episode = self.episode_fixture()
+        escaped = {"pid": 101, "parent": 100, "session": 101, "start_ticks": 1001}
+        orphan = {"pid": 103, "parent": 1, "session": 100, "start_ticks": 1003}
+        older = {"pid": 105, "parent": 1, "session": 100, "start_ticks": 999}
+        with patch("mr3_learning.supervisor._process_snapshot", side_effect=[
+                [episode.identity, escaped], [orphan, older]]):
+            remember_processes(episode)
+            remember_processes(episode)
+        self.assertIn((101, 1001), episode.owned)
+        self.assertIn((103, 1003), episode.owned)
+        self.assertNotIn((105, 999), episode.owned)
+
+    def test_scan_statistics_use_real_start_intervals_not_the_nominal_50ms_wait(self):
+        episode = self.episode_fixture()
+        with patch("mr3_learning.supervisor._process_snapshot", return_value=[]):
+            with patch("mr3_learning.supervisor.time.monotonic",
+                       side_effect=[10., 10.3, 11.25, 11.4]):
+                remember_processes(episode)
+                remember_processes(episode)
+        stats = episode.process_scan_statistics
+        self.assertEqual(stats["count"], 2)
+        self.assertAlmostEqual(stats["max_scan_wall_sec"], .3)
+        self.assertAlmostEqual(stats["max_observed_interval_sec"], 1.25)
+        self.assertGreater(stats["max_observed_interval_sec"], .05)
+
     def test_ros_environment_strips_conda_python_and_workspace_contamination(self):
         contaminated = {key: "contamination" for key in (
             "PYTHONPATH", "LD_LIBRARY_PATH", "AMENT_PREFIX_PATH", "CMAKE_PREFIX_PATH",
@@ -106,6 +162,8 @@ class SupervisorTests(unittest.TestCase):
             child_identity = json.loads(pid_path.read_text())
             receipt = supervisor.receipts[-1]
             self.assertTrue(receipt["failed_sample"])
+            self.assertGreaterEqual(receipt["process_scan_statistics"]["count"], 2)
+            self.assertGreaterEqual(receipt["process_scan_statistics"]["max_scan_wall_sec"], 0.)
             self.assertEqual(receipt["remaining_owned_processes"], [])
             self.assertIn(child_identity["pid"], [row["pid"]
                                                   for row in receipt["owned_processes_seen"]])

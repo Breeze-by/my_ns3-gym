@@ -41,10 +41,12 @@ def identity_alive(identity):
                 and current["state"] != "Z")
 
 
-def descendants(pid):
-    """Return only identities descended from this owned worker, not command lines."""
+def _process_snapshot():
     rows = [process_identity(p.name) for p in Path("/proc").iterdir() if p.name.isdigit()]
-    rows = [row for row in rows if row]
+    return [row for row in rows if row]
+
+
+def _descendants_from_snapshot(pid, rows):
     owned = {pid}
     while True:
         added = {row["pid"] for row in rows if row["parent"] in owned} - owned
@@ -52,6 +54,11 @@ def descendants(pid):
             break
         owned.update(added)
     return [row for row in rows if row["pid"] in owned]
+
+
+def descendants(pid):
+    """Return only identities descended from this owned worker, not command lines."""
+    return _descendants_from_snapshot(pid, _process_snapshot())
 
 
 def ros_environment(domain_id, gazebo_port):
@@ -80,21 +87,36 @@ class Episode:
     lock: object = field(default_factory=threading.Lock)
     stop_monitor: object = field(default_factory=threading.Event)
     monitor: object = None
+    process_scan_statistics: dict = field(default_factory=lambda: {
+        "count": 0, "max_scan_wall_sec": 0., "max_observed_interval_sec": 0.})
+    last_scan_started: object = field(default=None, repr=False)
 
 
 def remember_processes(episode):
-    rows = descendants(episode.process.pid)
+    """One /proc snapshot per call; measured intervals are not coverage promises.
+
+    Statistics cover all ownership scans, including monitor and RPC calls.
+    Start-to-start intervals use actual monotonic time, including scanning,
+    waits and scheduling delays; the monitor's nominal wait is not a period.
+    """
+    with episode.lock:
+        started = time.monotonic()
+        stats = episode.process_scan_statistics
+        stats["count"] += 1
+        if episode.last_scan_started is not None:
+            stats["max_observed_interval_sec"] = max(
+                stats["max_observed_interval_sec"], started - episode.last_scan_started)
+        episode.last_scan_started = started
+    snapshot = _process_snapshot()
+    rows = _descendants_from_snapshot(episode.process.pid, snapshot)
     # Session membership survives the group leader exiting during startup.
     # The group/session IDs remain allocated while their members exist.
-    for p in Path("/proc").iterdir():
-        if p.name.isdigit():
-            row = process_identity(p.name)
-            if (row and row["session"] == episode.identity["pid"]
-                    and row["start_ticks"] >= episode.identity["start_ticks"]):
-                rows.append(row)
+    rows.extend(row for row in snapshot if row["session"] == episode.identity["pid"]
+                and row["start_ticks"] >= episode.identity["start_ticks"])
     with episode.lock:
         for row in rows:
             episode.owned[(row["pid"], row["start_ticks"])] = row
+        stats["max_scan_wall_sec"] = max(stats["max_scan_wall_sec"], time.monotonic() - started)
 
 
 class Supervisor:
@@ -280,14 +302,16 @@ class Supervisor:
         while True:
             zombies = [current for row in known
                        if (current := process_identity(row["pid"])) is not None
-                       and current["start_ticks"] == row["start_ticks"] and current["state"] == "Z"]
+                       and current["start_ticks"] == row["start_ticks"]
+                       and current["state"] == "Z"]
             if not zombies or time.monotonic() >= deadline:
                 break
             time.sleep(.05)
         receipt = {"epoch": episode.epoch, "worker_returncode": episode.process.returncode,
                    "forced_shutdown": forced, "failed_sample": failed,
                    "owned_processes_seen": known, "remaining_owned_processes": leftovers,
-                   "remaining_owned_zombies": zombies}
+                   "remaining_owned_zombies": zombies,
+                   "process_scan_statistics": dict(episode.process_scan_statistics)}
         (episode.directory / "supervisor_shutdown.json").write_text(
             json.dumps(receipt, indent=2) + "\n")
         self.receipts.append(receipt)

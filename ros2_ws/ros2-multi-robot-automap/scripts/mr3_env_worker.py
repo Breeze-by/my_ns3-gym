@@ -7,6 +7,7 @@ import gzip
 import hashlib
 import importlib.util
 import json
+import math
 import os
 from pathlib import Path
 import subprocess
@@ -41,6 +42,7 @@ class Worker:
         self.condition = threading.Condition()
         self.clock_ns = 0
         self.monitor_ready = False
+        self.initial_inputs_ready = None
         self.snapshots = {}
         self.drains = {}
         self.rewards = {}
@@ -137,6 +139,11 @@ class Worker:
             if value:
                 self.reward_ready = value
 
+        def initial_inputs(message):
+            value = message_json(message)
+            if value:
+                self.receive_initial_inputs(value)
+
         def clock(message):
             self.clock_ns = message.clock.sec * 10**9 + message.clock.nanosec
 
@@ -158,6 +165,8 @@ class Worker:
             self.node.create_subscription(String, "/mr3/reward_response",
                                           callback(reward_response), 10),
             self.node.create_subscription(String, "/mr3/reward_ready", callback(ready), qos),
+            self.node.create_subscription(String, "/mr3/initial_inputs_ready",
+                                          callback(initial_inputs), qos),
             self.node.create_subscription(String, "/mr3/events", callback(event), 100),
             self.node.create_subscription(String, "/exploration_stopped", callback(stopped), qos),
             self.node.create_subscription(String, "/exploration_failure", callback(failure), qos),
@@ -193,6 +202,7 @@ class Worker:
                     "environment": {key: os.environ.get(key) for key in (
                         "ROS_DOMAIN_ID", "GAZEBO_MASTER_URI", "PYTHONNOUSERSITE")},
                     "python": sys.executable, "quantum_steps": 20,
+                    "reset_handshake": "delivered_inputs_before_pause-v1",
                     "physical_step_ns": 1000000, "policy_step_ns": 1000000000,
                     "startup_wall_guard_sec": 420., "closure_wall_guard_sec": 90.}
         (directory / "metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
@@ -299,10 +309,34 @@ class Worker:
         path = self.directory / (self.epoch + ".json")
         return json.loads(path.read_text()) if path.exists() else None
 
+    def receive_initial_inputs(self, value):
+        """A node appearing in the graph does not prove its inputs were delivered."""
+        if value.get("epoch") != self.epoch:
+            return
+        if (value.get("schema") != "mr3-initial-inputs-ready-v1"
+                or type(value.get("state_sequence")) is not int
+                or value["state_sequence"] <= 0
+                or type(value.get("stamp")) not in (int, float)
+                or not math.isfinite(value["stamp"]) or value["stamp"] < 0
+                or not isinstance(value.get("map_payload_sha256"), str)
+                or len(value["map_payload_sha256"]) != 64
+                or any(c not in "0123456789abcdef" for c in value["map_payload_sha256"])
+                or [robot.get("name") for robot in value.get("robots", [])]
+                != ["tb1", "tb2", "tb3"]):
+            raise ValueError("invalid initial delivered-input acknowledgement")
+        for robot in value["robots"]:
+            for key in ("source_stamp", "received_stamp"):
+                stamp = robot.get(key)
+                if (type(stamp) not in (int, float) or not math.isfinite(stamp)
+                        or not 0 <= stamp <= value["stamp"] + 1e-8):
+                    raise ValueError("initial delivered-input source time is invalid")
+        if self.initial_inputs_ready is not None and self.initial_inputs_ready != value:
+            raise ValueError("initial delivered-input acknowledgement changed within epoch")
+        self.initial_inputs_ready = value
+
     def reset(self):
-        self._wait(lambda: self.monitor_ready and any(
-            name == "mr3_adapter" for name, _ in self.node.get_node_names_and_namespaces()),
-            400., "three-robot startup/monitor guard expired")
+        self._wait(lambda: self.monitor_ready and self.initial_inputs_ready is not None,
+                   400., "three-robot delivered-input startup guard expired")
         output = (self.directory / "step_helper.log").open("w")
         self.outputs.append(output)
         self.helper = subprocess.Popen([
@@ -311,6 +345,8 @@ class Worker:
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=output)
         self.helper_peer = ipc.JsonLinePeer(self.helper.stdout.fileno(), self.helper.stdin.fileno())
         receipt = self._physics(0, wait_clock=False)
+        if receipt["end_time_ns"] / 1e9 < self.initial_inputs_ready["stamp"] - 1e-8:
+            raise RuntimeError("initial input acknowledgement is ahead of physical pause")
         # Match the actual clock publisher phase before task release. These
         # are real warmup ticks, never counted as policy transition time.
         for _ in range(50):
@@ -326,6 +362,8 @@ class Worker:
         else:
             raise RuntimeError("could not align the real /clock phase before release")
         self._snapshot()
+        if self.watermarks["state_sequence"] < self.initial_inputs_ready["state_sequence"]:
+            raise RuntimeError("initial snapshot predates delivered-input acknowledgement")
         self.start_ns = self.physical_ns
         self._wait(lambda: self.reward_ready is not None, 10.,
                    "evaluator did not acknowledge the task release")
@@ -342,6 +380,7 @@ class Worker:
                       "reward_diagnostics": response,
                       "scheduler": "mr3-physical-20ms-v1", "watermarks": self.watermarks,
                       "initial_pause_time_ns": receipt["end_time_ns"],
+                      "initial_inputs_ready": self.initial_inputs_ready,
                       "release_time_ns": self.start_ns}}
         self.transition_file.write(json.dumps({"kind": "reset", **result}, sort_keys=True) + "\n")
         return result

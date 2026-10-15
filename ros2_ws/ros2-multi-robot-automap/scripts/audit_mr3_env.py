@@ -449,6 +449,97 @@ def audit_contacts(evaluator, launch_text, epoch):
             "scope": "contact validity separate from mapping success and scripted sampling"}
 
 
+def audit_launch_process_coverage(launch_text, native, shutdown):
+    """A waited stop CLI may exit between /proc samples; other children may not.
+
+    Only the uniquely named stop CLI gets this alternative evidence path: its
+    launch start and clean-exit PID/suffix must match the successful native stop
+    receipt, and the unique owned Gazebo server must independently have a
+    matching start/clean exit and an actual supervisor PID/start ledger entry.
+    This does not manufacture a /proc observation or Linux start tick.
+    """
+    proof, errors = native_stop_proof(launch_text, native)
+    require(not errors, "; ".join(errors))
+    seen_pids = {row["pid"] for row in shutdown["owned_processes_seen"]}
+    started = [(name, suffix, int(pid)) for name, suffix, pid in re.findall(
+        r"\[INFO\] \[([^\]\s]+)-(\d+)\]: process started with pid \[(\d+)\]", launch_text)]
+    missing = [row for row in started if row[2] not in seen_pids]
+    alternative = []
+    if missing:
+        cli = proof["mr3_gazebo_native_stop"]["started"][0]
+        server = proof["gzserver"]["started"][0]
+        expected = ("mr3_gazebo_native_stop", cli["suffix"], cli["pid"])
+        require(missing == [expected],
+                "launch child PID absent from supervisor ownership ledger (not sole stop CLI)")
+        require(native.get("method") == "owned_launch_native_stop"
+                and type(native.get("returncode")) is int and native["returncode"] == 0
+                and native.get("native_cli_pid") == cli["pid"]
+                and native.get("server_clean_exit_recorded") is True
+                and server["pid"] in seen_pids and server["pid"] != cli["pid"],
+                "unsampled stop CLI lacks matching successful CLI/owned-server exit proof")
+        alternative = [{"process_name": f"mr3_gazebo_native_stop-{cli['suffix']}",
+                        "pid": cli["pid"], "proc_sample_observed": False,
+                        "evidence": "unique launch start/clean exit, native stop receipt code 0",
+                        "matched_owned_server_pid": server["pid"]}]
+    return {"native_shutdown_proof": proof,
+            "launch_start_count": len(started),
+            "unsampled_stop_cli_alternative_evidence": alternative,
+            "other_launch_children_require_proc_identity": True}
+
+
+def audit_initial_inputs_ready(metadata, transitions, adapter_rows, epoch):
+    """A declared v3 reset requires a delivered-input ACK before first pause."""
+    declaration = metadata.get("reset_handshake")
+    if declaration is None:
+        return {"required": False, "proven": False,
+                "scope": "legacy reset; no delivered-input-before-pause handshake credit"}
+    require(declaration == "delivered_inputs_before_pause-v1", "unknown reset handshake")
+    require(bool(transitions) and transitions[0].get("kind") == "reset", "missing reset for ACK")
+    info = transitions[0]["info"]
+    ack = info["initial_inputs_ready"]
+    require(ack.get("schema") == "mr3-initial-inputs-ready-v1" and ack.get("epoch") == epoch,
+            "initial-input ACK schema/epoch mismatch")
+    stamp = ack.get("stamp")
+    require(number(stamp) and 0 <= stamp <= info["initial_pause_time_ns"] / NS + 1e-8,
+            "initial-input ACK is later than first physical pause")
+    require(type(ack.get("state_sequence")) is int and ack["state_sequence"] > 0
+            and info["watermarks"]["state_sequence"] >= ack["state_sequence"],
+            "first snapshot state sequence predates initial-input ACK")
+    digest = ack.get("map_payload_sha256")
+    require(isinstance(digest, str) and re.fullmatch(r"[0-9a-f]{64}", digest),
+            "initial-input ACK map digest invalid")
+    require(type(ack.get("map_version")) is int and ack["map_version"] > 0,
+            "initial-input ACK map version invalid")
+    require(number(ack.get("map_source_stamp")) and number(ack.get("map_received_stamp"))
+            and 0 <= ack["map_source_stamp"] <= ack["map_received_stamp"] <= stamp + 1e-8,
+            "initial-input ACK map times are noncausal")
+    require([row.get("name") for row in ack.get("robots", [])] == list(ROBOTS),
+            "initial-input ACK robot coverage differs")
+    for robot in ack["robots"]:
+        source, received = robot.get("source_stamp"), robot.get("received_stamp")
+        require(number(source) and number(received) and 0 <= source <= received <= stamp + 1e-8
+                and stamp - source <= .500001, "initial-input ACK has stale/future robot source")
+    require(set(ack.get("map_sources", {})) == set(ROBOTS),
+            "initial-input ACK lacks three delivered local maps")
+    for source in ack["map_sources"].values():
+        require(number(source.get("source_stamp")) and number(source.get("received_stamp"))
+                and 0 <= source["source_stamp"] <= source["received_stamp"] <= stamp + 1e-8,
+                "initial-input ACK local-map times are noncausal")
+        require(isinstance(source.get("payload_sha256"), str)
+                and re.fullmatch(r"[0-9a-f]{64}", source["payload_sha256"]),
+                "initial-input ACK local-map digest invalid")
+    records = [row for row in adapter_rows if row.get("kind") == "initial_inputs_ready"]
+    require(len(records) == 1 and records[0].get("epoch") == epoch
+            and records[0].get("payload") == ack,
+            "initial-input ACK is not the unique matching adapter record")
+    return {"required": True, "proven": True, "protocol": declaration,
+            "ack_stamp": stamp, "initial_pause_stamp": info["initial_pause_time_ns"] / NS,
+            "ack_state_sequence": ack["state_sequence"],
+            "first_snapshot_state_sequence": info["watermarks"]["state_sequence"],
+            "ack_map_payload_sha256": digest,
+            "scope": "input readiness before pause; first snapshot may use newer delivery"}
+
+
 def audit_episode(directory, expected_fault=False):
     evidence = Evidence(directory)
     metadata = evidence.check("metadata", lambda: evidence.json("metadata.json")) or {}
@@ -479,6 +570,9 @@ def audit_episode(directory, expected_fault=False):
                                                audit_transitions(transitions, physics, epoch,
                                                                  require_fault))
     rows = evidence.check("adapter JSONL", lambda: evidence.rows("adapter.jsonl")) or []
+    result["initial_inputs_ready"] = evidence.check(
+        "initial delivered-input handshake", lambda:
+        audit_initial_inputs_ready(metadata, transitions, rows, epoch))
     if rows:
         if (Path(directory) / "adapter.sha256").exists():
             evidence.check("adapter digest", lambda: require(
@@ -502,14 +596,8 @@ def audit_episode(directory, expected_fault=False):
                     "adapter task_stopped does not match worker closure")
             require(not native_launch_failures(text) and native.get("returncode") == 0,
                     "native child failure or native stop failed")
-            proof, errors = native_stop_proof(text, native)
-            require(not errors, "; ".join(errors))
-            seen_pids = {row["pid"] for row in shutdown["owned_processes_seen"]}
-            started = {int(pid) for pid in re.findall(
-                r"process started with pid \[(\d+)\]", text)}
-            require(started <= seen_pids,
-                    "launch child PID absent from supervisor ownership ledger")
-            return {"native_shutdown_proof": proof, "navigation_closed": True,
+            coverage = audit_launch_process_coverage(text, native, shutdown)
+            return {**coverage, "navigation_closed": True,
                     "navigation_failure": closed.get("navigation_failure"),
                     "safety_failures": summary.get("failures")}
 
@@ -530,6 +618,69 @@ def audit_episode(directory, expected_fault=False):
                   supervisor_shutdown_digest=canonical_digest(shutdown))
     result["complete_episode_credit"] = bool(result["passed"] and not require_fault)
     return result
+
+
+def comparison_statistics(metadata, summary):
+    """Use the declared two-cell workload, never serial reset-only regressions.
+
+    Concurrent workers' elapsed times are not additive. The largest recorded
+    two-cell duration is a comparable elapsed-time proxy, not an exact global
+    process span: these records omit the final Supervisor reap tail and do not
+    contain absolute monotonic start/end stamps. Shutdown receipts prove PID
+    cleanup but do not record its duration, so that tail remains unknown.
+    """
+    common = [["open", 101], ["open", 101]]
+    schedule = metadata.get("schedule", [])
+    if (metadata.get("fault_probe") is True or metadata.get("deadline_probe") is True
+            or schedule[:2] != common):
+        return {"eligible": False, "reason": "not the declared normal two-open101 workload"}
+    count, steps = metadata["workers"], metadata["steps_per_episode"]
+    require(type(steps) is int and steps > 0, "invalid comparison step budget")
+    tail = schedule[2:]
+    require(tail == [] or (count == 1 and tail == [["rooms", 202], ["corridors", 303]]),
+            "extra scenes differ from the declared serial reset regression")
+    workers = summary["workers_results"]
+    require(len(workers) == count, "comparison worker count differs")
+    per_worker = []
+    excluded = 0
+    for worker in workers:
+        cells = worker["episodes"][:2]
+        require(len(cells) == 2, "comparison requires two cells per worker")
+        elapsed, active = 0., 0.
+        for cell in cells:
+            require([cell.get("scene"), cell.get("seed")] == ["open", 101]
+                    and cell.get("transitions") == steps
+                    and cell.get("truncated") is True and cell.get("terminated") is False,
+                    "comparison cell workload or completion differs")
+            wall = cell.get("wall_sec_including_startup_and_closure")
+            transition_wall = cell.get("transition_wall_sec")
+            require(number(wall) and wall > 0 and number(transition_wall)
+                    and 0 < transition_wall <= wall, "comparison cell has invalid elapsed times")
+            elapsed += wall
+            active += transition_wall
+        per_worker.append({"worker_id": worker["worker_id"], "valid_transitions": 2 * steps,
+                           "cell_recorded_wall_sec": elapsed,
+                           "transition_only_wall_sec": active,
+                           "transition_only_rate_per_active_wall_sec": 2 * steps / active})
+        excluded += sum(cell["transitions"] for cell in worker["episodes"][2:])
+    denominator = max(worker["cell_recorded_wall_sec"] for worker in per_worker)
+    require(number(summary.get("wall_sec_including_all_attempts"))
+            and denominator <= summary["wall_sec_including_all_attempts"] + 1e-7,
+            "comparison cell span exceeds the entire benchmark wall time")
+    total = 2 * steps * count
+    return {"eligible": True, "schedule": common, "episode_indices": [0, 1],
+            "steps_per_episode": steps, "valid_transitions": total,
+            "denominator_wall_sec": denominator,
+            "effective_transition_per_wall_sec": total / denominator,
+            "denominator_scope": "max_worker(sum of first two recorded cell elapsed times)",
+            "includes": "cell startup, next-reset cleanup of prior worker, native goal closure",
+            "excludes": "final Supervisor reap tail and all later serial scene regressions",
+            "exact_end_to_end_process_span": False,
+            "final_supervisor_cleanup_wall_sec": None,
+            "final_cleanup_timing_available": False,
+            "per_worker": sorted(per_worker, key=lambda row: row["worker_id"]),
+            "reset_regression_only_schedule": tail,
+            "reset_regression_only_transitions": excluded}
 
 
 def audit_benchmark(directory):
@@ -619,6 +770,8 @@ def audit_benchmark(directory):
         "throughput omits attempts or differs from valid saved transition count"))
     evidence.check("resource trace", lambda: require(
         bool(json.loads(evidence.raw("resources.json"))), "resource samples missing"))
+    comparison = evidence.check("comparison accounting", lambda:
+                                comparison_statistics(metadata, summary))
     return {"schema": "mr3-p1c-benchmark-audit-v1", "directory": str(Path(directory).resolve()),
             "passed": not evidence.errors, "errors": evidence.errors, "episodes": episodes,
             "workers": count, "freeze": metadata.get("freeze"), "fault_probe": fault,
@@ -627,6 +780,7 @@ def audit_benchmark(directory):
             "deadline_probe": metadata.get("deadline_probe") is True,
             "valid_transitions": transitions, "wall_sec_including_all_attempts": wall,
             "effective_transition_per_wall_sec": summary.get("effective_transition_per_wall_sec"),
+            "comparison": comparison,
             "complete_episode_count": sum(row["complete_episode_credit"] for row in episodes),
             "fault_scope": "injected cell excluded; forced cleanup, recovery and peer audited",
             "evidence_sha256": evidence.hashes}
@@ -642,11 +796,16 @@ def audit_matrix(directories):
         errors.append("comparison requires exactly one normal 1/2/4-worker benchmark")
     if len({row["freeze"] for row in results}) != 1:
         errors.append("benchmark matrix mixes source freezes")
-    if len({canonical_digest([row["schedule"], row["steps_per_episode"]])
-            for row in normal}) != 1:
-        errors.append("normal worker comparison mixes scene/seed schedule or step budget")
+    common = [["open", 101], ["open", 101]]
+    if (any((row.get("schedule") or [])[:2] != common
+            or not (row.get("comparison") or {}).get("eligible")
+            for row in normal)
+            or len({row["steps_per_episode"] for row in normal}) != 1):
+        errors.append("normal comparison requires two open101 cells and the same step budget")
     return {"schema": "mr3-p1c-matrix-audit-v1", "passed": not errors, "errors": errors,
             "benchmarks": results,
+            "comparison": [{"workers": row["workers"], **(row.get("comparison") or {})}
+                           for row in sorted(normal, key=lambda value: value["workers"])],
             "scope": "scripted sampler throughput, not RL or 95% task success"}
 
 

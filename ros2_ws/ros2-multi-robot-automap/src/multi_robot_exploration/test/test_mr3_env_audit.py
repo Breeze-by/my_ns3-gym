@@ -217,7 +217,9 @@ def benchmark_fixture(directory):
             path.write_text(path.read_text().replace("222", "1222").replace("333", "1333"))
         receipts.append(json.loads((episode / "supervisor_shutdown.json").read_text()))
         episodes.append({"epoch": epoch, "scene": "open", "seed": 101, "transitions": 2,
-                         "reward_sum": -.02, "terminated": False, "truncated": True})
+                         "reward_sum": -.02, "terminated": False, "truncated": True,
+                         "wall_sec_including_startup_and_closure": 3. + index,
+                         "transition_wall_sec": 2.})
     metadata = {"workers": 1, "robots_per_worker": 3, "freeze": "fixture",
                 "schedule": [["open", 101], ["open", 101]], "steps_per_episode": 2,
                 "fault_probe": False, "deadline_probe": False}
@@ -228,6 +230,33 @@ def benchmark_fixture(directory):
     for filename, value in (("benchmark_metadata.json", metadata),
                             ("benchmark_summary.json", summary), ("resources.json", [{}])):
         (directory / filename).write_text(json.dumps(value))
+
+
+def add_initial_inputs_handshake(directory, change=None, omit_record=False):
+    path = directory / "metadata.json"
+    metadata = json.loads(path.read_text())
+    metadata["reset_handshake"] = "delivered_inputs_before_pause-v1"
+    path.write_text(json.dumps(metadata))
+    ack = {"schema": "mr3-initial-inputs-ready-v1", "epoch": EPOCH, "stamp": 9.8,
+           "state_sequence": 1, "map_payload_sha256": SHA, "map_version": 1,
+           "map_source_stamp": 9.5, "map_received_stamp": 9.7,
+           "robots": [{"name": name, "source_stamp": 9.7, "received_stamp": 9.75}
+                      for name in AUDIT.ROBOTS],
+           "map_sources": {name: {"sequence": 1, "version": 1, "source_stamp": 9.5,
+                                  "received_stamp": 9.7, "payload_sha256": SHA}
+                           for name in AUDIT.ROBOTS}}
+    if change:
+        change(ack)
+    samples = transitions()
+    samples[0]["info"]["initial_inputs_ready"] = ack
+    (directory / "transitions.jsonl").write_text(
+        "".join(json.dumps(row) + "\n" for row in samples))
+    rows = adapter_rows(samples)
+    if not omit_record:
+        rows.append({"kind": "initial_inputs_ready", "stamp": ack["stamp"],
+                     "epoch": EPOCH, "payload": ack})
+    rows.sort(key=lambda row: row["stamp"])
+    (directory / "adapter.jsonl").write_text("".join(json.dumps(row) + "\n" for row in rows))
 
 
 class AuditEvidenceTests(unittest.TestCase):
@@ -241,6 +270,55 @@ class AuditEvidenceTests(unittest.TestCase):
             self.assertEqual(result["protocol"]["confirmed_cancellation_count"], 3)
             self.assertTrue(result["contacts"]["zero_contact"])
             self.assertFalse(result["contacts"]["task_success"])
+            self.assertFalse(result["initial_inputs_ready"]["required"])
+            self.assertFalse(result["initial_inputs_ready"]["proven"])
+
+    def test_v3_ready_ack_binds_adapter_event_before_pause_and_snapshot_state_sequence(self):
+        with tempfile.TemporaryDirectory() as name:
+            directory = Path(name)
+            write_fixture(directory)
+            add_initial_inputs_handshake(directory)
+            result = AUDIT.audit_episode(directory)
+            self.assertTrue(result["passed"], result["errors"])
+            self.assertTrue(result["initial_inputs_ready"]["proven"])
+            self.assertLessEqual(result["initial_inputs_ready"]["ack_stamp"],
+                                 result["initial_inputs_ready"]["initial_pause_stamp"])
+
+    def test_v3_declaration_rejects_missing_late_cross_epoch_future_or_unrecorded_ack(self):
+        variants = (
+            ("late", lambda ack: ack.update(stamp=10.1)),
+            ("cross_epoch", lambda ack: ack.update(epoch="other")),
+            ("snapshot_before_ack_state", lambda ack: ack.update(state_sequence=2)),
+            ("bad_digest", lambda ack: ack.update(map_payload_sha256="z" * 64)),
+            ("future_map", lambda ack: ack.update(map_received_stamp=10.1)),
+            ("future_robot", lambda ack: ack["robots"][0].update(source_stamp=10.)),
+        )
+        for label, change in variants:
+            with self.subTest(case=label), tempfile.TemporaryDirectory() as name:
+                directory = Path(name)
+                write_fixture(directory)
+                add_initial_inputs_handshake(directory, change)
+                result = AUDIT.audit_episode(directory)
+                self.assertFalse(result["passed"])
+                self.assertTrue(any("handshake" in error for error in result["errors"]))
+        for omit in ("worker_ack", "adapter_record", "record_mismatch"):
+            with self.subTest(case=omit), tempfile.TemporaryDirectory() as name:
+                directory = Path(name)
+                write_fixture(directory)
+                add_initial_inputs_handshake(directory, omit_record=omit == "adapter_record")
+                if omit == "worker_ack":
+                    path = directory / "transitions.jsonl"
+                    rows = [json.loads(line) for line in path.read_text().splitlines()]
+                    del rows[0]["info"]["initial_inputs_ready"]
+                    path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+                elif omit == "record_mismatch":
+                    path = directory / "adapter.jsonl"
+                    rows = [json.loads(line) for line in path.read_text().splitlines()]
+                    rows[0]["payload"]["map_version"] = 999
+                    path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+                result = AUDIT.audit_episode(directory)
+                self.assertFalse(result["passed"])
+                self.assertTrue(any("handshake" in error for error in result["errors"]))
 
     def test_tick_gap_request_identity_and_cross_epoch_are_rejected(self):
         for field, value in (("start_iterations", 10099), ("request_id", "q1"),
@@ -363,6 +441,71 @@ class AuditEvidenceTests(unittest.TestCase):
             self.assertFalse(result["complete_episode_credit"])
             self.assertTrue(any("zombies" in error for error in result["errors"]))
 
+    def test_waited_unsampled_stop_cli_has_alternative_exit_proof_without_fake_proc_row(self):
+        with tempfile.TemporaryDirectory() as name:
+            directory = Path(name)
+            write_fixture(directory)
+            path = directory / "supervisor_shutdown.json"
+            shutdown = json.loads(path.read_text())
+            shutdown["owned_processes_seen"] = [
+                row for row in shutdown["owned_processes_seen"] if row["pid"] != 333]
+            path.write_text(json.dumps(shutdown))
+            before = path.read_bytes()
+            result = AUDIT.audit_episode(directory)
+            self.assertTrue(result["passed"], result["errors"])
+            alternative = result["closure"]["unsampled_stop_cli_alternative_evidence"]
+            self.assertEqual(len(alternative), 1)
+            self.assertEqual(alternative[0]["pid"], 333)
+            self.assertEqual(alternative[0]["matched_owned_server_pid"], 222)
+            self.assertFalse(alternative[0]["proc_sample_observed"])
+            self.assertNotIn("start_ticks", alternative[0])
+            self.assertEqual(result["processes"]["owned_pid_identities"],
+                             [[111, 11100], [222, 22200]])
+            self.assertEqual(path.read_bytes(), before)
+
+    def test_unsampled_stop_cli_rejects_missing_exit_wrong_pid_server_or_other_child(self):
+        cases = ("cli_not_clean", "wrong_cli_pid", "server_pid_mismatch", "server_not_owned",
+                 "other_child_missing", "wrong_method", "nonzero_returncode")
+        for case in cases:
+            with self.subTest(case=case), tempfile.TemporaryDirectory() as name:
+                directory = Path(name)
+                write_fixture(directory)
+                shutdown_path = directory / "supervisor_shutdown.json"
+                shutdown = json.loads(shutdown_path.read_text())
+                shutdown["owned_processes_seen"] = [
+                    row for row in shutdown["owned_processes_seen"] if row["pid"] != 333]
+                log_path = directory / "launch.log"
+                log = log_path.read_text()
+                native_path = directory / "native_stop.json"
+                native = json.loads(native_path.read_text())
+                if case == "cli_not_clean":
+                    log = log.replace(
+                        "[INFO] [mr3_gazebo_native_stop-2]: "
+                        "process has finished cleanly [pid 333]\n",
+                        "")
+                elif case == "wrong_cli_pid":
+                    native["native_cli_pid"] = 444
+                elif case == "server_pid_mismatch":
+                    log = log.replace("gzserver-1]: process has finished cleanly [pid 222]",
+                                      "gzserver-1]: process has finished cleanly [pid 999]")
+                elif case == "server_not_owned":
+                    shutdown["owned_processes_seen"] = [
+                        row for row in shutdown["owned_processes_seen"] if row["pid"] != 222]
+                elif case == "other_child_missing":
+                    log += ("[INFO] [other_child-3]: process started with pid [444]\n"
+                            "[INFO] [other_child-3]: process has finished cleanly [pid 444]\n")
+                elif case == "wrong_method":
+                    native["method"] = "unowned_cli"
+                elif case == "nonzero_returncode":
+                    native["returncode"] = 1
+                shutdown_path.write_text(json.dumps(shutdown))
+                native_path.write_text(json.dumps(native))
+                log_path.write_text(log)
+                result = AUDIT.audit_episode(directory)
+                self.assertFalse(result["passed"], result)
+                self.assertTrue(any("closure" in error for error in result["errors"]),
+                                result["errors"])
+
     def test_declared_fault_has_prefix_and_cleanup_but_no_complete_episode_credit(self):
         with tempfile.TemporaryDirectory() as name:
             directory = Path(name)
@@ -391,6 +534,10 @@ class AuditEvidenceTests(unittest.TestCase):
             result = AUDIT.audit_benchmark(directory)
             self.assertTrue(result["passed"], result["errors"])
             self.assertEqual(result["complete_episode_count"], 2)
+            self.assertEqual(result["wall_sec_including_all_attempts"], 10.)
+            self.assertEqual(result["comparison"]["denominator_wall_sec"], 7.)
+            self.assertAlmostEqual(result["comparison"]["effective_transition_per_wall_sec"],
+                                   4 / 7)
             path = directory / "benchmark_summary.json"
             value = json.loads(path.read_text())
             value["effective_transition_per_wall_sec"] = .8
@@ -416,8 +563,10 @@ class AuditEvidenceTests(unittest.TestCase):
 
     def test_matrix_rejects_mixed_freeze_or_schedule(self):
         results = [{"passed": True, "workers": n, "fault_probe": False, "deadline_probe": False,
-                    "freeze": "same", "schedule": [["open", 101]], "steps_per_episode": 16}
+                    "freeze": "same", "schedule": [["open", 101], ["open", 101]],
+                    "steps_per_episode": 16, "comparison": {"eligible": True}}
                    for n in (1, 2, 4)]
+        results[0]["schedule"] += [["rooms", 202], ["corridors", 303]]
         with patch.object(AUDIT, "audit_benchmark", side_effect=copy.deepcopy(results)):
             self.assertTrue(AUDIT.audit_matrix(["one", "two", "four"])["passed"])
         results[1]["freeze"] = "other"
@@ -426,6 +575,62 @@ class AuditEvidenceTests(unittest.TestCase):
             result = AUDIT.audit_matrix(["one", "two", "four"])
         self.assertFalse(result["passed"])
         self.assertEqual(len(result["errors"]), 2)
+
+    def test_comparison_excludes_slow_cross_scene_reset_regressions(self):
+        def cell(scene, seed, wall):
+            return {"scene": scene, "seed": seed, "transitions": 16, "terminated": False,
+                    "truncated": True, "wall_sec_including_startup_and_closure": wall,
+                    "transition_wall_sec": 2.}
+
+        metadata = {"workers": 1, "steps_per_episode": 16,
+                    "schedule": [["open", 101], ["open", 101], ["rooms", 202], ["corridors", 303]]}
+        worker = {"worker_id": 0, "episodes": [
+            cell("open", 101, 10.), cell("open", 101, 20.),
+            cell("rooms", 202, 1000.), cell("corridors", 303, 2000.)]}
+        summary = {"workers_results": [worker], "wall_sec_including_all_attempts": 4000.}
+        result = AUDIT.comparison_statistics(metadata, summary)
+        self.assertEqual(result["valid_transitions"], 32)
+        self.assertEqual(result["denominator_wall_sec"], 30.)
+        self.assertAlmostEqual(result["effective_transition_per_wall_sec"], 32 / 30)
+        self.assertEqual(result["reset_regression_only_transitions"], 32)
+        self.assertFalse(result["exact_end_to_end_process_span"])
+        self.assertIsNone(result["final_supervisor_cleanup_wall_sec"])
+        worker["episodes"][3]["wall_sec_including_startup_and_closure"] = 20000.
+        unchanged = AUDIT.comparison_statistics(metadata, summary)
+        self.assertEqual(result, unchanged)
+
+    def test_parallel_comparison_uses_elapsed_bottleneck_not_worker_time_sum(self):
+        metadata = {"workers": 2, "steps_per_episode": 16,
+                    "schedule": [["open", 101], ["open", 101]]}
+        workers = []
+        for worker_id, durations in enumerate(((4., 6.), (8., 12.))):
+            workers.append({"worker_id": worker_id, "episodes": [
+                {"scene": "open", "seed": 101, "transitions": 16, "terminated": False,
+                 "truncated": True, "wall_sec_including_startup_and_closure": duration,
+                 "transition_wall_sec": 1.} for duration in durations]})
+        summary = {"workers_results": workers, "wall_sec_including_all_attempts": 22.}
+        result = AUDIT.comparison_statistics(metadata, summary)
+        self.assertEqual(result["valid_transitions"], 64)
+        self.assertEqual(result["denominator_wall_sec"], 20.)
+        self.assertEqual(result["effective_transition_per_wall_sec"], 3.2)
+        workers[0]["episodes"][0]["wall_sec_including_startup_and_closure"] = .5
+        with self.assertRaisesRegex(ValueError, "elapsed times"):
+            AUDIT.comparison_statistics(metadata, summary)
+
+    def test_comparison_rejects_wrong_prefix_budget_or_extra_parallel_scenes(self):
+        results = [{"passed": True, "workers": n, "fault_probe": False, "deadline_probe": False,
+                    "freeze": "same", "schedule": [["open", 101], ["open", 101]],
+                    "steps_per_episode": 16, "comparison": {"eligible": True}}
+                   for n in (1, 2, 4)]
+        results[2]["steps_per_episode"] = 8
+        with patch.object(AUDIT, "audit_benchmark", side_effect=results):
+            self.assertFalse(AUDIT.audit_matrix(["one", "two", "four"])["passed"])
+        metadata = {"workers": 2, "steps_per_episode": 16,
+                    "schedule": [["open", 101], ["open", 101], ["rooms", 202], ["corridors", 303]]}
+        with self.assertRaisesRegex(ValueError, "serial reset regression"):
+            AUDIT.comparison_statistics(metadata, {})
+        metadata["schedule"] = [["rooms", 101], ["open", 101]]
+        self.assertFalse(AUDIT.comparison_statistics(metadata, {})["eligible"])
 
     def test_audit_missing_evidence_fails_and_cli_refuses_overwrite(self):
         with tempfile.TemporaryDirectory() as name:

@@ -96,6 +96,8 @@ def make_adapter(started=True):
         pending_stop=None, map_digest=None, local_maps={}, local_map_digests={},
         encoder=SimpleNamespace(submit=encode), encoding=None,
         stepped_mode=False, pending_snapshot=None, encoding_request=None, map_metadata=None,
+        initial_inputs_ready=False,
+        initial_inputs_ready_pub=SimpleNamespace(publish=lambda msg: None),
         snapshot_responses={}, snapshot_timeout_sec=10., last_snapshot_target_ns=None,
         snapshot_response_pub=SimpleNamespace(publish=lambda msg: None),
         last_command_id=-1, last_command_payload=None, last_state_sequence=-1,
@@ -424,6 +426,7 @@ def test_native_rpc_exception_latches_failure_without_releasing_owned_goal(phase
 def test_real_ros_adapter_constructs_and_releases_owner(monkeypatch):
     """Catch Node property/API collisions that protocol stand-ins cannot see."""
     import rclpy
+    from rclpy.qos import DurabilityPolicy, ReliabilityPolicy
     from multi_robot_exploration.mr3_adapter import MR3Adapter
     monkeypatch.setenv("ROS_DOMAIN_ID", "181")
     rclpy.init()
@@ -432,6 +435,10 @@ def test_real_ros_adapter_constructs_and_releases_owner(monkeypatch):
         node = MR3Adapter()
         assert set(node.navigation_clients) == set(ROBOTS)
         assert node.dispatcher.closed
+        assert (node.initial_inputs_ready_pub.qos_profile.durability ==
+                DurabilityPolicy.TRANSIENT_LOCAL)
+        assert node.initial_inputs_ready_pub.qos_profile.reliability == ReliabilityPolicy.RELIABLE
+        assert node.initial_inputs_ready_pub.qos_profile.depth == 1
         node.destroy_node()
         node = MR3Adapter()
         assert node.dispatcher.closed
