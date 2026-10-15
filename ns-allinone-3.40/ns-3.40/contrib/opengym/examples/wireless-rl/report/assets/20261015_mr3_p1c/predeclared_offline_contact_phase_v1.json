@@ -1,0 +1,66 @@
+{
+  "schema": "mr3-p1c-offline-contact-phase-predeclaration-v1",
+  "declared_at_utc": "2026-10-15T13:09:24.880301+00:00",
+  "runtime_freeze": "c8d483228ecb0105c905459578eddbb4a23d4520",
+  "original_native_plan": "predeclared_native_plan_v6.json",
+  "original_native_plan_sha256": "7e8bd75d17ce393ae2e7a7e487fc40cdaf03f16c174dcf435766f23aed443302",
+  "timing": "Declared after the original v6 workers2 audit failed and before any corrected formal replay or remaining workers4/fault/deadline native stage. This is a disclosed post-hoc offline measurement-method correction, not a pre-exposure claim.",
+  "observed_failure": {
+    "original_audit": "workers2_v6_benchmark_audit.json",
+    "episode_audit": "worker2_w0_e2_v6_audit.json",
+    "episode": "mr3_p1c_v6_workers2_w0_e2_85a1ef14",
+    "lifetime_max_receipt_gaps_sec": {
+      "tb1/base": 1.4200000000000017,
+      "tb1/caster_back_left": 1.5
+    },
+    "lifetime_max_source_gap_sec": {
+      "tb1/caster_back_left": 0.5450000000000017
+    },
+    "subscription_start_sim_sec": 74.84,
+    "task_start_sim_sec": 77.42,
+    "ever_unhealthy": false,
+    "latched_issues": {},
+    "per_receipt_gap_endpoints_available": false,
+    "original_fail_retained": true,
+    "original_audit_sha256": "227fe6bcba7d4dfa21a5359761e9a3159cd1d19704649f4d7fcfc31c61762f35",
+    "episode_audit_sha256": "173d45b2366a6b6bcab9f805976ab02a4f739ec3a88c1f713f8b3a6d7bfc8f5d"
+  },
+  "correction": "The original task contract latches any >0.5sim-sec source/receipt gap or age during the task. The original auditor also imposed that limit on lifetime maxima that include bootstrap. Correct only that phase mismatch; do not relax the actual task gate.",
+  "frozen_source_sha256": {
+    "ros2_ws/ros2-multi-robot-automap/scripts/audit_mr3_env.py": "25ce0b466d988595934f26a0cfb7a81a445632b1e755f2462b80698371b272e8",
+    "ros2_ws/ros2-multi-robot-automap/scripts/audit_mr3_adapter_probe.py": "fdd415da1b01d7da6219d21a2fa8e184484b696d33c3e736bde8ca165bb65e6a",
+    "ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py": "f130b1157b4855089d51a6b1f22e57e0b5683b40624cc8697e3bb76fb3659d1a",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_contacts.py": "9d661498b3748d409dbb59ccd59524d5152d85ec93ee30128aebaf0a8a09fa17",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py": "bd0c2e43dbbb4258e4e1ee537fbdbe512211576eb930d5f8862d787dc73e48af",
+    "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py": "f8f1fe4da9cb27f9cb7b0d30d20eca8cd72cc92fe670815ad21c2b7d40af1fad",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py": "ddd2e48d0ae8d9c7b09b60e3c44116e5a575d0c91d3bde6c81fdfe1a5d7d2226",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_TASK_CONTRACT.md": "fcc1cedbc524a3d55443c887201f13f58fbd442e5600f1d8ad5cad84b7346c48",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md": "3119e295538dacd412407ce6b3c9ecf371adb08b47a1f5efab1bbff749841739"
+  },
+  "requirements": [
+    "No runtime, original auditor/dependency, task threshold, clock, transport profile, observation/action/reward, scene/seed, worker count, step budget or original native-plan bytes change.",
+    "New separately versioned offline wrapper reuses original audits and changes only contact-phase interpretation. Original FAIL/audits/data/diagnoses and all lifetime gap values remain immutable; all corrected outputs get new names.",
+    "Pin source hashes, one-time release/start/no-clear latch invariants, actual epoch/bootstrap/release/reset/physics watermarks. Do not generalize beyond the proved paused-release P1C path or infer an unmonitored late-release window is safe.",
+    "Keep all18 raw publication-sequence checks, schema/components, invalid/duplicate counts, active/fresh flags, current source/receipt age <=0.5, max_age0.5, ever_unhealthy false and empty latches. Lifetime maxima still finite and nonnegative.",
+    "Keep startup non-support contacts and all task failures. Any task-period gap/age >0.5 must latch and FAIL even after recovery. Unknown/missing source proof, bootstrap/clock overflow/desync, invalid/duplicate/missing stream or wrong final age must FAIL.",
+    "Lifetime values are diagnostics. Missing per-receipt endpoints and after-start numeric maxima remain unavailable, never synthesized or described as observed per-sample replay.",
+    "Meaningful synthetic tests cover pre-release large gap recovery, after-start/cross-start latching and recovery, current stale, missing components, invalid/duplicate/time flags, source-hash mismatch and bad release binding. Independent review before formal replay.",
+    "Uniform new-version replay of all completed v6 pilot/terminal/workers1/workers2, then remaining workers4/fault/deadline. Clock remains its independent component proof. Killed-worker fault prefix retains original incomplete-episode scope, never complete-contact credit.",
+    "Native stages remaining keep exact c8d runtime and original parameters/order. Record both original audit and corrected-method audit under new names; remaining execution proceeds only after corrected audits of every completed group pass. New runtime repair still requires a new freeze and fresh full matrix."
+  ],
+  "new_helper": "audit_mr3_env_contact_phase_v2.py",
+  "helper_sha256": "3ce800bfa0455d25a1c3257635c7c4d593478082bbbf1c4dab6a10eed2fc6991",
+  "new_gpu_forward_backward_calls": 0,
+  "optimizer_updates": 0,
+  "native_replays_of_completed_stages": 0,
+  "new_runtime_changes": false,
+  "frozen_document_source": "immutable c8d Git blobs, not later editorial state",
+  "raw_ready_payload_limitation": "Initial raw reward_ready payload was not saved. Use pinned worker/evaluator causal order and actual seq0 response, not a fabricated independent saved ACK.",
+  "independent_source_review": "root and information agent reviewed final helper/tests/checks hashes; no concrete false-PASS, timing gap or scope defect found; no formal data replay before this binding",
+  "test_sha256": "442912e7b2a64582d45826f43dfeab9666c2a79fb6c5745140c08163c7bb3fcc",
+  "checks_receipt": "contact_phase_v2_checks.json",
+  "checks_receipt_sha256": "2d5f661219f74028b7dd89471cee60bac4a8350e4184f690d4a92dfba4d9154f",
+  "tests_passed": 40,
+  "tests_wall_sec": 1.39,
+  "final_method_bound_at_utc": "2026-10-15T13:21:28.318612+00:00"
+}

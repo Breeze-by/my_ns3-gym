@@ -495,7 +495,8 @@ class Worker:
         command = {"epoch": self.epoch, "command_id": self.command_number,
                    "observation_sequence": self.snapshot["sequence"],
                    "observation_digest": self.snapshot["digest"], "action": action,
-                   "created_at": start_ns / 1e9, "expires_at": start_ns / 1e9 + 2.}
+                   "created_at": start_ns / 1e9,
+                   "expires_at": (start_ns + 2_000_000_000) / 1e9}
         event_index = len(self.events)
         self._publish(self.action_pub, command)
 

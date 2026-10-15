@@ -1,0 +1,47 @@
+{
+  "freeze": "c8d483228ecb0105c905459578eddbb4a23d4520",
+  "helper_sha256": "019e7a97e8d2d3370a633bd03e5e0dd13bb81b27bd7fa5c0729499c31e166995",
+  "independent_static_review": "protocol agent found no concrete blocker; no native data analysis was run by reviewer",
+  "passed": true,
+  "results": [
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reset_analysis_v6_selftest.py"
+      ],
+      "returncode": 0,
+      "stderr": ".......usage: reset_analysis_v6_selftest.py [-h] [--native-root NATIVE_ROOT] --output\n                                     OUTPUT\nreset_analysis_v6_selftest.py: error: output exists; choose a new filename\n...\n----------------------------------------------------------------------\nRan 10 tests in 0.436s\n\nOK\n",
+      "stdout": "",
+      "wall_sec": 0.641835480928421
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-m",
+        "flake8",
+        "--max-line-length=100",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reset_analysis_v6.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reset_analysis_v6_selftest.py"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "",
+      "wall_sec": 0.8809915180318058
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "",
+      "wall_sec": 0.02529561100527644
+    }
+  ],
+  "schema": "mr3-reset-analysis-offline-checks-v1",
+  "scope": "stdlib synthetic checks and pinned source catalogue only; no actual reset/resource analysis in these tests",
+  "selftest_sha256": "9a76b700653c79ddc7183e898af739def2a87c768bedd99e7b23455cd229088f"
+}

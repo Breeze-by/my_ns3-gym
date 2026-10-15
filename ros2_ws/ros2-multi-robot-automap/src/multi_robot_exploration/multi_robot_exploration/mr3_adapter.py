@@ -531,9 +531,15 @@ class MR3Adapter(Node):
                 raise ValueError("old_command")
             if self.stop_requested or self.started_at is None:
                 raise ValueError("not_running")
-            if not (all(math.isfinite(command[key]) for key in ("created_at", "expires_at"))
-                    and command["created_at"] <= now < command["expires_at"]
-                    and 0 < command["expires_at"] - command["created_at"] <= 2.):
+            times = [command[key] for key in ("created_at", "expires_at")]
+            try:
+                if any(type(value) not in (int, float) for value in times):
+                    raise ValueError("command timestamps must be numeric")
+                created_ns, expires_ns = (timestamp_ns(value) for value in times)
+            except (ValueError, OverflowError):
+                raise ValueError("expired_or_invalid_command_time") from None
+            if not (created_ns <= timestamp_ns(now) < expires_ns
+                    and 0 < expires_ns - created_ns <= 2_000_000_000):
                 raise ValueError("expired_or_invalid_command_time")
             snapshot = self.snapshot
             if (command["observation_sequence"] != snapshot["sequence"]
@@ -664,12 +670,15 @@ class MR3Adapter(Node):
             failure.data = json.dumps({
                 "component": "mr3_adapter", "reason": "received_state_stale"})
             self.failure_pub.publish(failure)
-        if now - self.last_heartbeat >= .2 and not self.stop_requested:
+        heartbeat_due = (not math.isfinite(self.last_heartbeat)
+                         or elapsed_ns(self.last_heartbeat, now) >= 200_000_000)
+        if heartbeat_due and not self.stop_requested:
             self.last_heartbeat = now
             for name, nav in self.dispatcher.navigation(now).items():
                 if nav["goal_id"] and nav["phase"] in ("active", "accepting"):
                     self.transport.send("heartbeat", name, {
-                        "goal_id": nav["goal_id"], "expires_at": now + 2.,
+                        "goal_id": nav["goal_id"],
+                        "expires_at": (timestamp_ns(now) + 2_000_000_000) / 1e9,
                     }, source_stamp=now, now=now)
         self.dispatcher.tick(now)
         self.flush_protocol_events(now)
@@ -697,7 +706,7 @@ class MR3Adapter(Node):
                     self.record("edge_goal_not_sent", {"goal_id": goal_id, "reason": "stopped"})
                     self.dispatcher.on_result(name, goal_id, "CANCELED", now)
                     continue
-                if event["expires_at"] <= now:
+                if timestamp_ns(event["expires_at"]) <= timestamp_ns(now):
                     self.record("edge_goal_not_sent", {"goal_id": goal_id, "reason": "expired"})
                     self.dispatcher.on_accept(name, goal_id, False, now)
                     continue

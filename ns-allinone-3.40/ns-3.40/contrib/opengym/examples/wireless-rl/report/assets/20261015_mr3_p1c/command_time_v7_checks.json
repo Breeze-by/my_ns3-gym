@@ -1,0 +1,98 @@
+{
+  "schema": "mr3-command-time-v7-offline-checks-v1",
+  "scope": "pure unit tests and frozen-source/closed-v6 offline diagnosis only; no native/GPU execution",
+  "files_sha256": {
+    "audit_command_time_v7.py": "4787ca8d2e6b4d7ba06b3d5a3c1ead82fe6f079485a790c5b940f2ba7636c3b9",
+    "test_audit_command_time_v7.py": "961a916784eac4fae0ee7348f9e6cb3515294336f6125999dc56c17994c5ffac",
+    "command_time_boundary_v6.py": "a1c7d480899c87ece062185651cec8dec88a568bf430f1912596617de6cbdbd2",
+    "command_time_boundary_v6_diagnostic.json": "6a7e1389222f035bf42261efac347928f8a04654183a7076e78c4f884c2b4cce",
+    "deadline_v6_command_time_v7_negative_audit.json": "393dbc8c85655bf3c7333a48b5cd4a0d859a8324f8e6db48dc709c9b5dd40ee9"
+  },
+  "unit_tests": {
+    "passed": true,
+    "tests": 31,
+    "elapsed_sec": 1.12,
+    "command": [
+      "/usr/bin/python3",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c",
+      "-p",
+      "test_audit_command_time_v7.py",
+      "-v"
+    ]
+  },
+  "flake8": {
+    "passed": true,
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "flake8",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/audit_command_time_v7.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/test_audit_command_time_v7.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/command_time_boundary_v6.py",
+      "--max-line-length=99"
+    ]
+  },
+  "frozen_harness": {
+    "cases_count": 8,
+    "defects_reproduced": true
+  },
+  "v6_deadline_negative_replay": {
+    "expected_passed": false,
+    "actual_passed": false,
+    "commands_checked": 300,
+    "failures": [
+      {
+        "epoch": "mr3_p1c_v6_deadline_w0_e1_59856aed",
+        "step_sequence": 176,
+        "command_id": 176,
+        "observation_sequence": 176,
+        "action": 888,
+        "created_at": 254.6,
+        "expires_at": 256.6,
+        "receipt_stamp": 254.6,
+        "receipt_kind": "action_rejected",
+        "rejection_reason": "expired_or_invalid_command_time",
+        "valid": true,
+        "receipt_time_ns": 254600000000,
+        "created_time_ns": 254600000000,
+        "expires_time_ns": 256600000000,
+        "ttl_ns": 2000000000,
+        "invalidity": [],
+        "failure": "valid_command_time_falsely_rejected"
+      },
+      {
+        "epoch": "mr3_p1c_v6_deadline_w0_e1_59856aed",
+        "step_sequence": 177,
+        "command_id": 177,
+        "observation_sequence": 177,
+        "action": 888,
+        "created_at": 255.6,
+        "expires_at": 257.6,
+        "receipt_stamp": 255.6,
+        "receipt_kind": "action_rejected",
+        "rejection_reason": "expired_or_invalid_command_time",
+        "valid": true,
+        "receipt_time_ns": 255600000000,
+        "created_time_ns": 255600000000,
+        "expires_time_ns": 257600000000,
+        "ttl_ns": 2000000000,
+        "invalidity": [],
+        "failure": "valid_command_time_falsely_rejected"
+      }
+    ],
+    "expected_exit_code": 1,
+    "actual_exit_code": 1
+  },
+  "unchanged_original_scalar_audit": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/deadline_v6_reward_gate_audit_v3.json",
+    "sha256": "7b51f23513863818386d0975182aa88c6c98357cfea35d00bf14348777880f9e",
+    "expected_sha256": "7b51f23513863818386d0975182aa88c6c98357cfea35d00bf14348777880f9e",
+    "unchanged": true
+  },
+  "v7_native_validation_performed": false
+}

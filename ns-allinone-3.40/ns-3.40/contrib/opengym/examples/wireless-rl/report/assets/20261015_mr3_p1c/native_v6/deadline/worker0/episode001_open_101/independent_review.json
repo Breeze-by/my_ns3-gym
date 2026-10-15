@@ -1,0 +1,264 @@
+{
+  "schema": "mr3-p1c-independent-native-phase-review-v2",
+  "passed": true,
+  "source_freeze": "c8d483228ecb0105c905459578eddbb4a23d4520",
+  "scope": "Only closed v6 deadline worker0/episode001_open_101; active siblings and group resources/finalsummary excluded. No throughput, complete group, RL or 95% success claim. No native execution by this review.",
+  "original_formal_audit": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/deadline_v6_episode_audit.json",
+    "sha256": "40c8efafd63e012d505d27799ef13d9d8e0ebec3dd80ca2900501e193443c717",
+    "passed": true,
+    "errors": [],
+    "auditor_sha256": "25ce0b466d988595934f26a0cfb7a81a445632b1e755f2462b80698371b272e8"
+  },
+  "authoritative_contact_phase_v2_audit": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/deadline_v6_contact_phase_v2_episode_audit.json",
+    "sha256": "6a61d04e6b7c4fe08e5f36225ce3bed2ff5bb9c3cc342595eb01095992c86509",
+    "passed": true,
+    "errors": [],
+    "helper_sha256": "3ce800bfa0455d25a1c3257635c7c4d593478082bbbf1c4dab6a10eed2fc6991"
+  },
+  "post_hoc_method_declaration": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/predeclared_offline_contact_phase_v1.json",
+    "sha256": "a8cfe1b100d88cfd72c907a0dd7fabe7a3d684cd922b06d074e5408762307ed5"
+  },
+  "raw_sdk_lifecycle_profile_proof": {
+    "plan_sha256": "7e8bd75d17ce393ae2e7a7e487fc40cdaf03f16c174dcf435766f23aed443302",
+    "metadata_freeze": "c8d483228ecb0105c905459578eddbb4a23d4520",
+    "metadata_transport_profile_sha256": "dd7eeadca21f0924fe721515e8dd57ac979340df8b08885bc39d2595c8caf87b",
+    "metadata_profile_matches_v6_plan": true,
+    "raw_marker_count": 111,
+    "actual_process_starts": 38,
+    "actual_process_clean_exits": 38,
+    "serial_sigint_count": 31,
+    "all_identity_markers_bound_to_actual_SDK_start_clean_signal_lines": true,
+    "strict_reverse_actual_active_start_order": true,
+    "one_signal_then_actual_clean_exit_then_next_signal": true,
+    "all_ROS_clean_before_native_stop": true,
+    "nav2_success_responses": 3,
+    "nav2_actual_FINALIZED_responses": 18,
+    "nav2_finalized_before_actual_evaluator_exit_before_serial_begin": true,
+    "paused_cleanup_ns": 379600000000,
+    "individual_signal_to_exit_wall_sec": [
+      0.433067509,
+      0.175235491,
+      0.170007528,
+      0.168438123,
+      0.183809475,
+      0.176967851,
+      0.205197207,
+      0.208928992,
+      0.169847804,
+      0.170381988,
+      0.169151259,
+      0.177458823,
+      0.176954095,
+      0.197783324,
+      0.198722495,
+      0.156636868,
+      0.155992442,
+      0.168547967,
+      0.177791538,
+      0.167536297,
+      0.185503575,
+      0.188945534,
+      0.160213248,
+      0.150616528,
+      0.157036251,
+      0.151263362,
+      0.155228414,
+      0.150188426,
+      0.352133301,
+      0.162504042,
+      0.297172749
+    ],
+    "max_individual_signal_to_exit_wall_sec": 0.433067509,
+    "native_server_pid": 692284,
+    "native_stop_cli_pid": 770023
+  },
+  "initial_inputs_ready": {
+    "ack_map_payload_sha256": "f141b879e0f13584ad8f38b34c08895a63230efa2b96548be58cb74e7d4fb91d",
+    "ack_stamp": 79.0,
+    "ack_state_sequence": 790,
+    "first_snapshot_state_sequence": 796,
+    "initial_pause_stamp": 79.587,
+    "protocol": "delivered_inputs_before_pause-v1",
+    "proven": true,
+    "required": true,
+    "scope": "input readiness before pause; first snapshot may use newer delivery"
+  },
+  "transitions": {
+    "complete": true,
+    "final_action_submitted": true,
+    "final_dt": 1.0,
+    "final_physical_dt": 1.0,
+    "final_terminal_reused": false,
+    "release_time_ns": 79600000000,
+    "reward_sum": -21.1,
+    "sampled_physical_time_sec": 300.0,
+    "submitted_action_count": 300,
+    "terminal_map_scope": "frozen evaluator map; later actor map is diagnostic only",
+    "terminal_map_sha_exception_count": 0,
+    "transition_count": 300,
+    "zero_duration_terminal_count": 0
+  },
+  "protocol": {
+    "accepted_action_count": 298,
+    "cancel_count": 0,
+    "confirmed_cancellation_count": 0,
+    "goal_count": 0,
+    "keep_robot_command_count": 894,
+    "native_terminal_count": 0,
+    "rejected_action_count": 2,
+    "scope": "goal payload audit, not an action-server network trace"
+  },
+  "ordered_shutdown": {
+    "finalize_ack_sequence": 300,
+    "launch": {
+      "actual_process_starts": 38,
+      "all_actual_clean_exits": 38,
+      "evaluator_exit_wall_monotonic_ns": 3819184856811344,
+      "proven": true,
+      "scope": "actual SDK identities and clean exits; no SDK internal-race claim",
+      "serial_sigint_count": 31
+    },
+    "nav2": {
+      "completed_wall_monotonic_ns": 3819184187029112,
+      "finalized_state_responses": 18,
+      "paused_time_ns": 379600000000,
+      "proven": true,
+      "robot_shutdown_responses": 3,
+      "scope": "successful lifecycle replies and actual GetState finalized receipts"
+    },
+    "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+    "proven": true,
+    "required": true
+  },
+  "contacts": {
+    "collision_events": 0,
+    "contact_phase_proof": {
+      "gap_endpoints_available": false,
+      "gap_endpoints_scope": "not saved in the original evidence; unavailable",
+      "lifetime_gap_diagnostics": {
+        "tb1/base": {
+          "max_receipt_gap_sec": 0.0800000000000125,
+          "max_source_gap_sec": 0.05600000000004002
+        },
+        "tb1/caster_back_left": {
+          "max_receipt_gap_sec": 0.0800000000000125,
+          "max_source_gap_sec": 0.05899999999996908
+        },
+        "tb1/caster_back_right": {
+          "max_receipt_gap_sec": 0.0800000000000125,
+          "max_source_gap_sec": 0.057999999999992724
+        },
+        "tb1/lidar": {
+          "max_receipt_gap_sec": 0.0800000000000125,
+          "max_source_gap_sec": 0.05600000000004002
+        },
+        "tb1/wheel_left": {
+          "max_receipt_gap_sec": 0.0800000000000125,
+          "max_source_gap_sec": 0.05600000000004002
+        },
+        "tb1/wheel_right": {
+          "max_receipt_gap_sec": 0.0800000000000125,
+          "max_source_gap_sec": 0.055999999999983174
+        },
+        "tb2/base": {
+          "max_receipt_gap_sec": 0.060000000000002274,
+          "max_source_gap_sec": 0.05300000000002569
+        },
+        "tb2/caster_back_left": {
+          "max_receipt_gap_sec": 0.060000000000002274,
+          "max_source_gap_sec": 0.057999999999992724
+        },
+        "tb2/caster_back_right": {
+          "max_receipt_gap_sec": 0.060000000000002274,
+          "max_source_gap_sec": 0.05699999999998795
+        },
+        "tb2/lidar": {
+          "max_receipt_gap_sec": 0.060000000000002274,
+          "max_source_gap_sec": 0.05300000000002569
+        },
+        "tb2/wheel_left": {
+          "max_receipt_gap_sec": 0.060000000000002274,
+          "max_source_gap_sec": 0.054000000000002046
+        },
+        "tb2/wheel_right": {
+          "max_receipt_gap_sec": 0.060000000000002274,
+          "max_source_gap_sec": 0.05500000000000682
+        },
+        "tb3/base": {
+          "max_receipt_gap_sec": 0.08000000000004093,
+          "max_source_gap_sec": 0.054000000000002046
+        },
+        "tb3/caster_back_left": {
+          "max_receipt_gap_sec": 0.08000000000004093,
+          "max_source_gap_sec": 0.058000000000006935
+        },
+        "tb3/caster_back_right": {
+          "max_receipt_gap_sec": 0.08000000000004093,
+          "max_source_gap_sec": 0.05700000000000216
+        },
+        "tb3/lidar": {
+          "max_receipt_gap_sec": 0.08000000000004093,
+          "max_source_gap_sec": 0.054000000000002046
+        },
+        "tb3/wheel_left": {
+          "max_receipt_gap_sec": 0.08000000000004093,
+          "max_source_gap_sec": 0.054000000000002046
+        },
+        "tb3/wheel_right": {
+          "max_receipt_gap_sec": 0.08000000000004093,
+          "max_source_gap_sec": 0.05500000000000682
+        }
+      },
+      "method": "mr3-contact-task-phase-frozen-latch-v2",
+      "paused_release": {
+        "actual_seq0_binding": true,
+        "actual_task_start": true,
+        "context_evidence_sha256": {
+          "adapter.jsonl": "b07fd684cacd9f2ea5d8379722d61b74c87e9a4894303aa1cf1777035580da44",
+          "metadata.json": "2280eba56d7dc76bb1f55b37bdf0e1d4ce36e5c24d248fbc8268005cb202d9e0",
+          "physics.jsonl": "9dd64a4bf458c71f231dc536edddccb3a9f9b42d7afa875c360bc733be88b8a7",
+          "transitions.jsonl": "fd8f6f00e1016ee27fa8e4ad2a495261a03f73c4c6bc5caf6ddecb8ab99de556"
+        },
+        "epoch": "mr3_p1c_v6_deadline_w0_e1_59856aed",
+        "independent_raw_reward_ready_payload_available": false,
+        "initial_pause_time_ns": 79587000000,
+        "no_positive_physics_window": "worker waits for ready/seq0 while physics is paused",
+        "ready_wait_proof": "pinned worker/evaluator causal order plus saved seq0 response",
+        "release_time_ns": 79600000000
+      },
+      "task_gap_bound_from_frozen_latch_invariant": true,
+      "task_gap_limit_sec": 0.5,
+      "task_gap_numeric_maxima": null
+    },
+    "continuous_freshness_passed": true,
+    "errors": [],
+    "passed": true,
+    "raw_sequence_audit_passed": true,
+    "raw_stream_count": 18,
+    "scope": "frozen started/latch invariant and endpoint ages; no raw timing replay",
+    "task_success": false,
+    "termination_reason": "timeout",
+    "zero_contact": true
+  },
+  "original_contact_verdict_retained": {
+    "collision_events": 0,
+    "continuous_freshness_passed": true,
+    "errors": [],
+    "passed": true,
+    "raw_sequence_audit_passed": true,
+    "raw_stream_count": 18,
+    "scope": "contact validity separate from mapping success and scripted sampling",
+    "task_success": false,
+    "termination_reason": "timeout",
+    "zero_contact": true
+  },
+  "contact_phase_method_scope": "Frozen irreversible task latch plus actual paused release/seq0 binding; lifetime gap maxima remain startup-inclusive diagnostics. Individual compact gap endpoints, numeric task gap maxima, raw initial reward_ready payload and full monitor_ready Bool history unavailable.",
+  "owned_cleanup": {
+    "forced_shutdown": false,
+    "no_live_or_zombie_leftovers": true
+  },
+  "original_results_modified": false
+}

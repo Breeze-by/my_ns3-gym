@@ -380,5 +380,83 @@
       }
     ],
     "earliest_attempts_and_fixture_failures": "Preserved chronologically in report/20261014_mr3_p1a.md and append-only log.md, with original source/contract and paths; no old failure relabelled."
+  },
+  "mr3_p1c_evidence": {
+    "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261015_mr3_p1c.md",
+    "P1C_status": "in progress; v7 prospective fresh full matrix required; P2A unstarted",
+    "historical_native_attempts": [
+      {
+        "version": 1,
+        "native_evidence_directory": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/native_v1",
+        "source_freezes": [
+          "288dd919a2bfffbfdcfb5e70653969f8edda20bb"
+        ],
+        "prospective_plan": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/predeclared_native_plan_v1.json",
+        "prospective_plan_sha256": "620b56e16667401ceb8b16054037921a54994f958568488f66e3203b2b5cb97f",
+        "status": "historical diagnostic only; original verdicts and failure scope retained",
+        "supersession_reason": "GPU backward and initial native pilot defects; stopped at failure"
+      },
+      {
+        "version": 2,
+        "native_evidence_directory": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/native_v2",
+        "source_freezes": [
+          "b328f8484162b9d04170da941a7dbe8487a85c5c"
+        ],
+        "prospective_plan": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/predeclared_native_plan_v2.json",
+        "prospective_plan_sha256": "8586ce0cab940ec637a4bf75d93b6e3a0fc067bea829d1b76382f2b0209ed184",
+        "status": "historical diagnostic only; original verdicts and failure scope retained",
+        "supersession_reason": "four-worker startup watermark/volatile-delivery failure"
+      },
+      {
+        "version": 3,
+        "native_evidence_directory": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/native_v3",
+        "source_freezes": [
+          "864295d35d6d92723f729dc62d2b5f8322773e54"
+        ],
+        "prospective_plan": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/predeclared_native_plan_v3.json",
+        "prospective_plan_sha256": "6d3e13b38577e29c373f0db065d7ac60c723e927c916ba4bc0fb68863c01a2da",
+        "status": "historical diagnostic only; original verdicts and failure scope retained",
+        "supersession_reason": "stopped before remaining stages after concrete terminal/deadline source counterexamples"
+      },
+      {
+        "version": 4,
+        "native_evidence_directory": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/native_v4",
+        "source_freezes": [
+          "7e186bf83b2a7ed9d38a95f30d53150ee2d6736d"
+        ],
+        "prospective_plan": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/predeclared_native_plan_v4.json",
+        "prospective_plan_sha256": "d16a8136bdf94cce21293ab11e9a2648906e743a80377654483999b0de6b95a7",
+        "status": "historical diagnostic only; original verdicts and failure scope retained",
+        "supersession_reason": "four-worker native Nav2 SDK shutdown SIGSEGV; raw unreturned final step receives no Gym credit"
+      },
+      {
+        "version": 5,
+        "native_evidence_directory": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/native_v5",
+        "source_freezes": [
+          "cfabee15481936c6c27ddabadd1227b683c2457b"
+        ],
+        "prospective_plan": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/predeclared_native_plan_v5.json",
+        "prospective_plan_sha256": "674505028239a150de4cf4284e4ce1545cb2c425bc4715c319f5189134d4b6c8",
+        "status": "historical diagnostic only; original verdicts and failure scope retained",
+        "supersession_reason": "first serial reset failed lifecycle GetState reader discovery; stopped before later stages"
+      },
+      {
+        "version": 6,
+        "native_evidence_directory": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/native_v6",
+        "source_freezes": [
+          "c8d483228ecb0105c905459578eddbb4a23d4520"
+        ],
+        "prospective_plan": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/predeclared_native_plan_v6.json",
+        "prospective_plan_sha256": "7e8bd75d17ce393ae2e7a7e487fc40cdaf03f16c174dcf435766f23aed443302",
+        "status": "historical diagnostic only; original verdicts and failure scope retained",
+        "supersession_reason": "full native matrix retained as diagnostic: legal KEEP TTL false rejections in deadline, commands176/177; fresh v7 validation required for P1C completion"
+      }
+    ],
+    "v6_negative_command_time_replay": {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/deadline_v6_command_time_v7_negative_audit.json",
+      "sha256": "393dbc8c85655bf3c7333a48b5cd4a0d859a8324f8e6db48dc709c9b5dd40ee9",
+      "expected_passed": false
+    },
+    "policy": "Do not relabel old verdicts, mix runtime freezes, or transfer earlier native PASS into v7. No archived report changes task gates or authorizes training."
   }
 }

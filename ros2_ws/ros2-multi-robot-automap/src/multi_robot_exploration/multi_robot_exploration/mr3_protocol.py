@@ -5,10 +5,15 @@ renewable execution lease are bounded by two seconds; neither changes the
 ten-second action RPC deadlines or the sixty-second execution deadline. A
 transport must deliver explicit lease renewals, including while acceptance is
 pending. No timeout is evidence that Nav2 has released a goal.
+
+Comparisons use rounded nanosecond endpoints. Delivered command metadata and
+duplicate fingerprints retain their original seconds payloads.
 """
 
 from dataclasses import dataclass
 import math
+
+from .mr3_episode import NANOSECONDS_PER_SECOND, elapsed_ns, timestamp_ns
 
 
 ROBOTS = ("tb1", "tb2", "tb3")
@@ -71,6 +76,12 @@ class GoalDispatcher:
         value = float(value)
         if not math.isfinite(value) or value <= 0:
             raise ValueError("protocol durations must be finite and positive")
+        try:
+            interval_ns = timestamp_ns(value)
+        except (ValueError, OverflowError) as error:
+            raise ValueError("protocol durations must resolve to nanoseconds") from error
+        if interval_ns == 0:
+            raise ValueError("protocol durations must resolve to a positive nanosecond interval")
         return value
 
     def _initialize(self):
@@ -90,10 +101,9 @@ class GoalDispatcher:
         return any(state.failure is not None for state in self.states.values())
 
     def _time(self, now):
+        timestamp_ns(now)
         now = float(now)
-        if not math.isfinite(now) or now < 0:
-            raise ValueError("simulation time must be finite and nonnegative")
-        if self._now is not None and now < self._now:
+        if self._now is not None and elapsed_ns(self._now, now) < 0:
             raise ValueError("simulation clock reversed; start a new episode epoch")
         self._now = now
         return now
@@ -157,18 +167,26 @@ class GoalDispatcher:
         def finish(result):
             return self._remember(robot, command_id, fingerprint, result)
 
-        if (not math.isfinite(expires_at) or not math.isfinite(generated_at)
-                or generated_at > now or generated_at < 0
-                or expires_at - generated_at > self.lease_sec + 1e-9):
+        try:
+            if (not math.isfinite(expires_at) or not math.isfinite(generated_at)
+                    or generated_at < 0 or elapsed_ns(now, generated_at) > 0):
+                return finish("invalid_ttl")
+            if expires_at < 0:
+                return finish("expired")
+            ttl_ns = elapsed_ns(generated_at, expires_at)
+            remaining_ns = elapsed_ns(now, expires_at)
+        except (ValueError, OverflowError):
             return finish("invalid_ttl")
-        if expires_at <= now or expires_at <= generated_at:
+        if ttl_ns > timestamp_ns(self.lease_sec):
+            return finish("invalid_ttl")
+        if remaining_ns <= 0 or ttl_ns <= 0:
             return finish("expired")
         if self.stopped:
             return finish("stopped")
         state = self.states[robot]
         if choice == "KEEP":
             return finish("kept")
-        if (state.phase == "active" and now < state.commitment_until):
+        if state.phase == "active" and elapsed_ns(now, state.commitment_until) > 0:
             return finish("commitment_locked")
         if choice == "WAIT":
             state.pending = None
@@ -217,16 +235,18 @@ class GoalDispatcher:
             return "stale_goal"
         try:
             expires_at = float(expires_at)
+            if not math.isfinite(expires_at) or expires_at < 0:
+                return "invalid_ttl"
+            remaining_ns = elapsed_ns(now, expires_at)
         except (TypeError, ValueError, OverflowError):
             return "invalid_ttl"
-        if (not math.isfinite(expires_at) or expires_at <= now
-                or expires_at - now > self.lease_sec + 1e-9):
+        if remaining_ns <= 0 or remaining_ns > timestamp_ns(self.lease_sec):
             return "invalid_ttl"
         state = self.states[robot]
         if (self.stopped or state.cancel_requested
                 or state.phase not in ("accepting", "active")):
             return "stopping"
-        if expires_at <= state.lease_until:
+        if elapsed_ns(state.lease_until, expires_at) <= 0:
             return "stale_renewal"
         state.lease_until = expires_at
         return "renewed"
@@ -284,7 +304,9 @@ class GoalDispatcher:
             return "rejected"
         state.accepted = True
         state.accepted_at = now
-        state.commitment_until = now + self.commitment_sec
+        state.commitment_until = (
+            timestamp_ns(now) + timestamp_ns(self.commitment_sec)
+        ) / NANOSECONDS_PER_SECOND
         if self.stopped or state.cancel_requested or state.failure:
             self._cancel(robot, now, state.stop_reason or "late_acceptance")
             return "canceling"
@@ -341,7 +363,7 @@ class GoalDispatcher:
         if status == "ABORTED" or (status == "CANCELED" and not cancel_requested):
             self._fail(robot, now, "navigation_" + status.lower())
         if pending is not None and not self.stopped:
-            if pending["expires_at"] > now:
+            if elapsed_ns(now, pending["expires_at"]) > 0:
                 self._start(robot, pending, now)
                 return "replacement_sent"
             self._emit("pending_goal_expired", robot, now,
@@ -356,19 +378,20 @@ class GoalDispatcher:
             if state.goal_id is None:
                 continue
             if state.phase == "accepting":
-                if now - state.requested_at >= self.response_timeout_sec:
+                if elapsed_ns(state.requested_at, now) >= timestamp_ns(self.response_timeout_sec):
                     self._fail(robot, now, "navigation_response_timeout")
                     state.phase = "unknown"
-                elif not state.cancel_requested and now >= state.lease_until:
+                elif not state.cancel_requested and elapsed_ns(state.lease_until, now) >= 0:
                     self._fail(robot, now, "goal_lease_expired")
                     state.phase = "unknown"
             elif state.phase == "active":
-                if now - state.accepted_at >= self.execution_timeout_sec:
+                if elapsed_ns(state.accepted_at, now) >= timestamp_ns(self.execution_timeout_sec):
                     self._fail(robot, now, "navigation_execution_timeout")
-                elif now >= state.lease_until:
+                elif elapsed_ns(state.lease_until, now) >= 0:
                     self._fail(robot, now, "goal_lease_expired")
             elif state.phase == "canceling":
-                if now - state.cancel_started_at >= self.cancel_timeout_sec:
+                if elapsed_ns(state.cancel_started_at, now) >= timestamp_ns(
+                        self.cancel_timeout_sec):
                     reason = ("navigation_cancel_rejected" if state.cancel_accepted is False
                               else "navigation_cancel_timeout")
                     self._fail(robot, now, reason)

@@ -1,0 +1,372 @@
+{
+  "actual_target_freeze": null,
+  "binding_file_created": false,
+  "diff_check": {
+    "command": [
+      "rtk",
+      "git",
+      "diff",
+      "--check"
+    ],
+    "returncode": 0
+  },
+  "driver": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/v7_execution_driver.py",
+    "sha256": "25c1e2a5bf83f5e3aa2fe34c1fc1781e460f44f27bb9917462b213ceb1a04e27"
+  },
+  "dry_run_command_preview": [
+    {
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_step_clock/mr3_p1c_v7_clock",
+      "name": "clock",
+      "native": [
+        "rtk",
+        "proxy",
+        "/usr/bin/bash",
+        "--noprofile",
+        "--norc",
+        "-c",
+        "set -e\nunset PYTHONPATH PYTHONHOME\nsource /opt/ros/humble/setup.bash\nsource /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash\nsource /usr/share/gazebo/setup.sh\nexport PYTHONNOUSERSITE=1\nexec /usr/bin/python3 /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_mr3_step_clock.py --run-id mr3_p1c_v7_clock --ros-domain-id 130 --gazebo-port 12101"
+      ]
+    },
+    {
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_pilot",
+      "name": "pilot",
+      "native": [
+        "rtk",
+        "proxy",
+        "/usr/bin/bash",
+        "--noprofile",
+        "--norc",
+        "-c",
+        "set -e\nsource /home/zhuyulab/miniconda3/etc/profile.d/conda.sh\nconda activate ns3gym\nexport PYTHONNOUSERSITE=1\nunset PYTHONPATH PYTHONHOME\nexec /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.benchmark --workers 1 --schedule open:101 --steps 2 --base-domain 131 --base-port 12111 --run-id mr3_p1c_v7_pilot"
+      ],
+      "primary": [
+        "rtk",
+        "proxy",
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/audit_mr3_env_contact_phase_v3.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_pilot",
+        "--freeze",
+        "<PUSHED_V7_40HEX>",
+        "--output",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/pilot_v7_contact_phase_v3_benchmark_audit.json"
+      ],
+      "primary_output": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/pilot_v7_contact_phase_v3_benchmark_audit.json",
+      "scalar": [
+        "rtk",
+        "proxy",
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reward_gate_audit_v3.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_pilot",
+        "--freeze",
+        "<PUSHED_V7_40HEX>"
+      ],
+      "scalar_output": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/pilot_v7_scalar_v3_audit.json"
+    },
+    {
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_terminal",
+      "name": "terminal",
+      "native": [
+        "rtk",
+        "proxy",
+        "/usr/bin/bash",
+        "--noprofile",
+        "--norc",
+        "-c",
+        "set -e\nsource /home/zhuyulab/miniconda3/etc/profile.d/conda.sh\nconda activate ns3gym\nexport PYTHONNOUSERSITE=1\nunset PYTHONPATH PYTHONHOME\nexec /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.benchmark --workers 1 --schedule open:101,open:101 --steps 4 --base-domain 144 --base-port 12171 --run-id mr3_p1c_v7_terminal --terminal-probe"
+      ],
+      "primary": [
+        "rtk",
+        "proxy",
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/audit_mr3_env_contact_phase_v3.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_terminal",
+        "--freeze",
+        "<PUSHED_V7_40HEX>",
+        "--output",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/terminal_v7_contact_phase_v3_benchmark_audit.json"
+      ],
+      "primary_output": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/terminal_v7_contact_phase_v3_benchmark_audit.json",
+      "scalar": [
+        "rtk",
+        "proxy",
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reward_gate_audit_v3.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_terminal",
+        "--freeze",
+        "<PUSHED_V7_40HEX>"
+      ],
+      "scalar_output": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/terminal_v7_scalar_v3_audit.json"
+    },
+    {
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_workers1",
+      "name": "workers1",
+      "native": [
+        "rtk",
+        "proxy",
+        "/usr/bin/bash",
+        "--noprofile",
+        "--norc",
+        "-c",
+        "set -e\nsource /home/zhuyulab/miniconda3/etc/profile.d/conda.sh\nconda activate ns3gym\nexport PYTHONNOUSERSITE=1\nunset PYTHONPATH PYTHONHOME\nexec /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.benchmark --workers 1 --schedule open:101,open:101,rooms:202,corridors:303 --steps 16 --base-domain 132 --base-port 12121 --run-id mr3_p1c_v7_workers1"
+      ],
+      "primary": [
+        "rtk",
+        "proxy",
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/audit_mr3_env_contact_phase_v3.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_workers1",
+        "--freeze",
+        "<PUSHED_V7_40HEX>",
+        "--output",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/workers1_v7_contact_phase_v3_benchmark_audit.json"
+      ],
+      "primary_output": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/workers1_v7_contact_phase_v3_benchmark_audit.json",
+      "scalar": [
+        "rtk",
+        "proxy",
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reward_gate_audit_v3.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_workers1",
+        "--freeze",
+        "<PUSHED_V7_40HEX>"
+      ],
+      "scalar_output": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/workers1_v7_scalar_v3_audit.json"
+    },
+    {
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_workers2",
+      "name": "workers2",
+      "native": [
+        "rtk",
+        "proxy",
+        "/usr/bin/bash",
+        "--noprofile",
+        "--norc",
+        "-c",
+        "set -e\nsource /home/zhuyulab/miniconda3/etc/profile.d/conda.sh\nconda activate ns3gym\nexport PYTHONNOUSERSITE=1\nunset PYTHONPATH PYTHONHOME\nexec /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.benchmark --workers 2 --schedule open:101,open:101 --steps 16 --base-domain 134 --base-port 12131 --run-id mr3_p1c_v7_workers2"
+      ],
+      "primary": [
+        "rtk",
+        "proxy",
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/audit_mr3_env_contact_phase_v3.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_workers2",
+        "--freeze",
+        "<PUSHED_V7_40HEX>",
+        "--output",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/workers2_v7_contact_phase_v3_benchmark_audit.json"
+      ],
+      "primary_output": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/workers2_v7_contact_phase_v3_benchmark_audit.json",
+      "scalar": [
+        "rtk",
+        "proxy",
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reward_gate_audit_v3.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_workers2",
+        "--freeze",
+        "<PUSHED_V7_40HEX>"
+      ],
+      "scalar_output": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/workers2_v7_scalar_v3_audit.json"
+    },
+    {
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_workers4",
+      "name": "workers4",
+      "native": [
+        "rtk",
+        "proxy",
+        "/usr/bin/bash",
+        "--noprofile",
+        "--norc",
+        "-c",
+        "set -e\nsource /home/zhuyulab/miniconda3/etc/profile.d/conda.sh\nconda activate ns3gym\nexport PYTHONNOUSERSITE=1\nunset PYTHONPATH PYTHONHOME\nexec /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.benchmark --workers 4 --schedule open:101,open:101 --steps 16 --base-domain 136 --base-port 12141 --run-id mr3_p1c_v7_workers4"
+      ],
+      "primary": [
+        "rtk",
+        "proxy",
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/audit_mr3_env_contact_phase_v3.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_workers4",
+        "--freeze",
+        "<PUSHED_V7_40HEX>",
+        "--output",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/workers4_v7_contact_phase_v3_benchmark_audit.json"
+      ],
+      "primary_output": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/workers4_v7_contact_phase_v3_benchmark_audit.json",
+      "scalar": [
+        "rtk",
+        "proxy",
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reward_gate_audit_v3.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_workers4",
+        "--freeze",
+        "<PUSHED_V7_40HEX>"
+      ],
+      "scalar_output": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/workers4_v7_scalar_v3_audit.json"
+    },
+    {
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_fault",
+      "name": "fault",
+      "native": [
+        "rtk",
+        "proxy",
+        "/usr/bin/bash",
+        "--noprofile",
+        "--norc",
+        "-c",
+        "set -e\nsource /home/zhuyulab/miniconda3/etc/profile.d/conda.sh\nconda activate ns3gym\nexport PYTHONNOUSERSITE=1\nunset PYTHONPATH PYTHONHOME\nexec /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.benchmark --workers 2 --schedule open:101,open:101 --steps 8 --base-domain 140 --base-port 12151 --run-id mr3_p1c_v7_fault --fault-probe"
+      ],
+      "prefix": [
+        "rtk",
+        "proxy",
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/audit_mr3_env_contact_phase_v3.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_fault/worker0/episode001_open_101",
+        "--freeze",
+        "<PUSHED_V7_40HEX>",
+        "--output",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/fault_w0_e1_v7_contact_phase_v3_audit.json",
+        "--expected-fault"
+      ],
+      "prefix_output": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/fault_w0_e1_v7_contact_phase_v3_audit.json",
+      "primary": [
+        "rtk",
+        "proxy",
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/audit_mr3_env_contact_phase_v3.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_fault",
+        "--freeze",
+        "<PUSHED_V7_40HEX>",
+        "--output",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/fault_v7_contact_phase_v3_benchmark_audit.json"
+      ],
+      "primary_output": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/fault_v7_contact_phase_v3_benchmark_audit.json",
+      "scalar": [
+        "rtk",
+        "proxy",
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reward_gate_audit_v3_fault_subset.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_fault",
+        "--freeze",
+        "<PUSHED_V7_40HEX>",
+        "--main-prefix-audit",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/fault_w0_e1_v7_contact_phase_v3_audit.json",
+        "--output",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/fault_v7_scalar_v3_audit.json"
+      ],
+      "scalar_output": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/fault_v7_scalar_v3_audit.json"
+    },
+    {
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_deadline",
+      "name": "deadline",
+      "native": [
+        "rtk",
+        "proxy",
+        "/usr/bin/bash",
+        "--noprofile",
+        "--norc",
+        "-c",
+        "set -e\nsource /home/zhuyulab/miniconda3/etc/profile.d/conda.sh\nconda activate ns3gym\nexport PYTHONNOUSERSITE=1\nunset PYTHONPATH PYTHONHOME\nexec /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.benchmark --workers 1 --schedule open:101 --steps 300 --base-domain 142 --base-port 12161 --run-id mr3_p1c_v7_deadline --deadline-probe"
+      ],
+      "primary": [
+        "rtk",
+        "proxy",
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/audit_mr3_env_contact_phase_v3.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_deadline",
+        "--freeze",
+        "<PUSHED_V7_40HEX>",
+        "--output",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/deadline_v7_contact_phase_v3_benchmark_audit.json"
+      ],
+      "primary_output": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/deadline_v7_contact_phase_v3_benchmark_audit.json",
+      "scalar": [
+        "rtk",
+        "proxy",
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reward_gate_audit_v3.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_deadline",
+        "--freeze",
+        "<PUSHED_V7_40HEX>"
+      ],
+      "scalar_output": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/deadline_v7_scalar_v3_audit.json"
+    }
+  ],
+  "dry_run_freeze_placeholder": "<PUSHED_V7_40HEX>",
+  "final_matrix_preview": [
+    "rtk",
+    "proxy",
+    "/usr/bin/python3",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/audit_mr3_env_contact_phase_v3.py",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_terminal",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_workers1",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_workers2",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_workers4",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_fault",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_deadline",
+    "--freeze",
+    "<PUSHED_V7_40HEX>",
+    "--output",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/matrix_v7_contact_phase_v3_audit.json",
+    "--matrix"
+  ],
+  "flake8": {
+    "command": [
+      "rtk",
+      "proxy",
+      "/usr/bin/python3",
+      "-m",
+      "flake8",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/v7_execution_driver.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/v7_execution_driver_selftest.py",
+      "--max-line-length=100"
+    ],
+    "returncode": 0
+  },
+  "new_gpu_forward_backward_calls": 0,
+  "new_native_calls": 0,
+  "passed": true,
+  "plan": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/predeclared_native_plan_v7.json",
+    "sha256": "f63d0892bcdd4ec5fef91ca261a1c267570667e190cacbfec18610fe3f1c5630"
+  },
+  "schema": "mr3-p1c-v7-execution-driver-checks-v1",
+  "scope": "Pure synthetic/temp-file tests and command previews only. No actual future freeze is fabricated; post-push execution binding is still required. No native/ROS/Gazebo/GPU call or shared production journal/log write by tests.",
+  "selftest": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/v7_execution_driver_selftest.py",
+    "sha256": "ec1bf858dd3bb939a352dbf6a55d91b9c31ccdf0de999322e1b0f192e2d8eccb"
+  },
+  "tests": {
+    "command": [
+      "rtk",
+      "proxy",
+      "/usr/bin/python3",
+      "-B",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/v7_execution_driver_selftest.py"
+    ],
+    "covered": [
+      "native arguments/workloads/environment separation match plan",
+      "full clock+7team+matrix chain",
+      "fault prefix before top and complete-only24 scalar subset",
+      "scalar false despite exit0 blocks next native",
+      "primary false despite exit0 stops without scalar/retry",
+      "nonzero native overrides true summary",
+      "preexisting audit and journal refuse overwrite",
+      "changed guard blocks next command",
+      "CLI dry-run never instantiates Driver",
+      "current matching bytes cannot hide wrong frozen Git blob for all8 bound files, source inventory, extra receipt and V2 base"
+    ],
+    "fully_mocked_eight_stage_commands": 24,
+    "returncode": 0,
+    "test_methods": 11,
+    "wall_sec": 0.417,
+    "wrong_frozen_git_blob_negative_subcases": 11
+  }
+}

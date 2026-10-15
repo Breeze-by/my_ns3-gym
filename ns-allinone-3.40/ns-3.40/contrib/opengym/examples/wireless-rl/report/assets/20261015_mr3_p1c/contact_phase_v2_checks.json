@@ -1,0 +1,31 @@
+{
+  "schema": "mr3-contact-phase-offline-checks-v2",
+  "scope": "pure fixtures and frozen monitor/source checks only; no formal v6 native evidence re-audit",
+  "freeze": "c8d483228ecb0105c905459578eddbb4a23d4520",
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "pytest",
+    "-q",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/test_audit_mr3_env_contact_phase_v2.py"
+  ],
+  "helper_sha256": "3ce800bfa0455d25a1c3257635c7c4d593478082bbbf1c4dab6a10eed2fc6991",
+  "test_sha256": "442912e7b2a64582d45826f43dfeab9666c2a79fb6c5745140c08163c7bb3fcc",
+  "pytest": {
+    "returncode": 0,
+    "stdout": "........................................                                 [100%]\n40 passed in 1.39s\n",
+    "stderr": ""
+  },
+  "flake8": {
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "diff_check": {
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "passed": true
+}

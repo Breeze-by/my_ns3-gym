@@ -152,6 +152,21 @@ def test_active_minimum_commitment_then_switch_and_wait():
     assert all(snapshot(states=states)["per_robot_action_mask"][0])
 
 
+@pytest.mark.parametrize("until,locked", (
+    (10.03, False), (5.03 + 5., False), (10.030000001, True), (10.029999999, False),
+))
+def test_commitment_mask_and_remaining_time_use_same_nanosecond_boundary(until, locked):
+    states = robots(now=10.03)
+    states[0]["navigation"].update(phase="active", commitment_until=until)
+    result = observation.build_snapshot(
+        frontier_map(), .1, (-6., -5.), states, 10.03, "episode-a", 2, 4,
+    )
+    assert result["per_robot_action_mask"][0][observation.WAIT] is not locked
+    nav = result["robots"][0]["navigation"]
+    assert nav["commitment_until"] == until
+    assert nav["commitment_remaining_sec"] == (1e-9 if locked else 0.)
+
+
 def test_missing_stale_or_future_state_masks_dispatch_without_breaking_keep():
     for key, value in (("valid", False), ("source_stamp", 9.49),
                        ("received_stamp", 9.49), ("source_stamp", 10.01), ("x", float("nan"))):

@@ -1,5 +1,7 @@
 """Exercise delivered commands and real terminal ownership without ROS."""
 
+import math
+
 import pytest
 
 from multi_robot_exploration.mr3_protocol import GoalDispatcher
@@ -352,3 +354,236 @@ def test_endpoint_fault_during_execution_preserves_ownership_until_real_terminal
     dispatcher.on_result("tb1", goal_id, 5, .3)
     assert dispatcher.closed and dispatcher.failed
     assert len([event for event in events if event["type"] == "cancel_goal"]) == 1
+
+
+def at_edge(stamp, offset_ns):
+    return (round(stamp * 10**9) + offset_ns) / 10**9
+
+
+def renew_fractional(dispatcher, goal_id, origin, seconds):
+    for offset in range(1, seconds + 1):
+        now = at_edge(origin, offset * 10**9)
+        assert dispatcher.renew("tb1", goal_id, dispatcher.epoch, now, now + 2) == "renewed"
+
+
+@pytest.mark.parametrize("created,expires", [(254.6, 256.6), (255.6, 257.6)])
+def test_literal_two_second_ttl_and_duplicate_payload_are_preserved(created, expires):
+    dispatcher, events = protocol()
+    assert submit(dispatcher, now=created, created_at=created, expires_at=expires) == "sent"
+    event = events[0]
+    assert event["created_at"] == created and event["expires_at"] == expires
+    assert submit(dispatcher, now=created + .1, created_at=created,
+                  expires_at=expires) == "duplicate"
+    # Different literal payloads retain their original conflict semantics even
+    # when their timestamps round to the same physical nanosecond.
+    assert submit(dispatcher, now=created + .1,
+                  created_at=math.nextafter(created, math.inf),
+                  expires_at=expires) == "command_id_conflict"
+    assert len(events) == 1 and not dispatcher.closed
+
+
+@pytest.mark.parametrize("offset_ns", [-1, 0, 1])
+def test_command_ttl_upper_bound_has_no_one_nanosecond_tolerance(offset_ns):
+    dispatcher, events = protocol()
+    status = submit(dispatcher, "KEEP", 254.6, created_at=254.6,
+                    expires_at=at_edge(256.6, offset_ns))
+    assert status == ("kept" if offset_ns <= 0 else "invalid_ttl")
+    assert dispatcher.closed and not dispatcher.failed and not events
+
+
+@pytest.mark.parametrize("offset_ns", [-1, 0, 1])
+def test_command_expiration_is_the_exact_exclusive_endpoint(offset_ns):
+    dispatcher, events = protocol()
+    status = submit(dispatcher, "KEEP", at_edge(256.6, offset_ns),
+                    created_at=254.6, expires_at=256.6)
+    assert status == ("kept" if offset_ns < 0 else "expired")
+    assert dispatcher.closed and not dispatcher.failed and not events
+
+
+@pytest.mark.parametrize("offset_ns", [-1, 0, 1])
+def test_command_creation_cannot_be_one_nanosecond_in_the_future(offset_ns):
+    dispatcher, _ = protocol()
+    created = at_edge(254.6, offset_ns)
+    status = submit(dispatcher, "KEEP", 254.6, created_at=created,
+                    expires_at=at_edge(created, 2 * 10**9))
+    assert status == ("kept" if offset_ns <= 0 else "invalid_ttl")
+
+
+@pytest.mark.parametrize("offset_ns", [-1, 0, 1])
+def test_renewal_ttl_upper_bound_uses_endpoint_nanoseconds(offset_ns):
+    dispatcher, _ = protocol()
+    goal_id = start(dispatcher, now=253.6)
+    status = dispatcher.renew("tb1", goal_id, dispatcher.epoch, 254.6,
+                              at_edge(256.6, offset_ns))
+    assert status == ("renewed" if offset_ns <= 0 else "invalid_ttl")
+    assert not dispatcher.closed and not dispatcher.failed
+
+
+@pytest.mark.parametrize("offset_ns", [-1, 0, 1])
+def test_renewal_expiration_and_same_lease_are_not_falsely_extended(offset_ns):
+    dispatcher, _ = protocol()
+    goal_id = start(dispatcher, now=6.03)
+    status = dispatcher.renew("tb1", goal_id, dispatcher.epoch, 7.03,
+                              at_edge(8.03, offset_ns))
+    assert status == ("renewed" if offset_ns > 0 else "stale_renewal")
+    assert not dispatcher.closed and not dispatcher.failed
+
+
+@pytest.mark.parametrize("offset_ns", [-1, 0, 1])
+def test_renewal_must_expire_strictly_after_its_receipt(offset_ns):
+    dispatcher, _ = protocol()
+    goal_id = start(dispatcher, now=253.6)
+    status = dispatcher.renew("tb1", goal_id, dispatcher.epoch, 254.6,
+                              at_edge(254.6, offset_ns))
+    assert status == ("stale_renewal" if offset_ns > 0 else "invalid_ttl")
+    assert not dispatcher.closed and not dispatcher.failed
+
+
+@pytest.mark.parametrize("accepted", [False, True])
+@pytest.mark.parametrize("offset_ns", [-1, 0, 1])
+def test_lease_expires_at_exact_ns_and_never_releases_unknown_owner(accepted, offset_ns):
+    dispatcher, _ = protocol()
+    assert submit(dispatcher, now=6.03) == "sent"
+    goal_id = dispatcher.navigation()["tb1"]["goal_id"]
+    if accepted:
+        dispatcher.on_accept("tb1", goal_id, True, 6.03)
+    now = at_edge(8.03, offset_ns)
+    dispatcher.tick(now)
+    assert dispatcher.failed is (offset_ns >= 0)
+    assert not dispatcher.closed and dispatcher.navigation()["tb1"]["goal_id"] == goal_id
+    if not accepted:
+        dispatcher.on_accept("tb1", goal_id, True, now)
+    assert not dispatcher.closed
+    dispatcher.on_result("tb1", goal_id, 5 if dispatcher.failed else 4, now)
+    assert dispatcher.closed and dispatcher.failed is (offset_ns >= 0)
+
+
+@pytest.mark.parametrize("offset_ns", [-1, 0, 1])
+def test_fractional_commitment_unlocks_at_five_exact_seconds(offset_ns):
+    dispatcher, events = protocol()
+    goal_id = start(dispatcher, now=5.03)
+    renew_fractional(dispatcher, goal_id, 5.03, 4)
+    assert dispatcher.navigation()["tb1"]["commitment_until"] == 10.03
+    status = submit(dispatcher, "WAIT", at_edge(10.03, offset_ns), sequence=2)
+    assert status == ("commitment_locked" if offset_ns < 0 else "waiting")
+    assert len([e for e in events if e["type"] == "cancel_goal"]) == (offset_ns >= 0)
+    assert not dispatcher.closed and not dispatcher.failed
+
+
+@pytest.mark.parametrize("offset_ns", [-1, 0, 1])
+def test_accept_rpc_deadline_and_late_acceptance_at_fractional_time(offset_ns):
+    dispatcher, events = protocol()
+    assert submit(dispatcher, now=6.08) == "sent"
+    goal_id = dispatcher.navigation()["tb1"]["goal_id"]
+    renew_fractional(dispatcher, goal_id, 6.08, 9)
+    now = at_edge(16.08, offset_ns)
+    dispatcher.tick(now)
+    state = dispatcher.navigation()["tb1"]
+    assert state["failure"] == ("navigation_response_timeout" if offset_ns >= 0 else None)
+    assert state["phase"] == ("unknown" if offset_ns >= 0 else "accepting")
+    assert not dispatcher.closed
+    assert dispatcher.on_accept("tb1", goal_id, True, now) == (
+        "canceling" if offset_ns >= 0 else "active")
+    assert not dispatcher.closed
+    dispatcher.on_result("tb1", goal_id, 5 if offset_ns >= 0 else 4, now)
+    assert dispatcher.closed and dispatcher.failed is (offset_ns >= 0)
+    assert len([e for e in events if e["type"] == "send_goal"]) == 1
+
+
+@pytest.mark.parametrize("offset_ns", [-1, 0, 1])
+def test_cancel_rpc_deadline_requires_terminal_after_positive_ack(offset_ns):
+    dispatcher, _ = protocol()
+    goal_id = start(dispatcher, now=.08)
+    renew_fractional(dispatcher, goal_id, .08, 6)
+    assert submit(dispatcher, "WAIT", 6.08, sequence=2) == "waiting"
+    dispatcher.on_cancel_response("tb1", goal_id, True, 6.09)
+    now = at_edge(16.08, offset_ns)
+    dispatcher.tick(now)
+    state = dispatcher.navigation()["tb1"]
+    assert state["failure"] == ("navigation_cancel_timeout" if offset_ns >= 0 else None)
+    assert state["phase"] == ("unknown" if offset_ns >= 0 else "canceling")
+    assert not dispatcher.closed
+    dispatcher.on_result("tb1", goal_id, 5, now)
+    assert dispatcher.closed and dispatcher.failed is (offset_ns >= 0)
+
+
+@pytest.mark.parametrize("offset_ns", [-1, 0, 1])
+def test_execution_deadline_is_not_extended_by_float_subtraction_or_lease(offset_ns):
+    dispatcher, _ = protocol()
+    goal_id = start(dispatcher, now=5.07)
+    renew_fractional(dispatcher, goal_id, 5.07, 59)
+    now = at_edge(65.07, offset_ns)
+    dispatcher.tick(now)
+    state = dispatcher.navigation()["tb1"]
+    assert state["failure"] == ("navigation_execution_timeout" if offset_ns >= 0 else None)
+    assert not dispatcher.closed
+    dispatcher.on_result("tb1", goal_id, 5 if offset_ns >= 0 else 4, now)
+    assert dispatcher.closed and dispatcher.failed is (offset_ns >= 0)
+
+
+@pytest.mark.parametrize("offset_ns", [-1, 0, 1])
+def test_pending_switch_keeps_original_literal_expiry_and_requires_positive_ns(offset_ns):
+    dispatcher, events = protocol()
+    old = start(dispatcher, now=.03)
+    renew_fractional(dispatcher, old, .03, 6)
+    literal_expiry = 6.03 + 2
+    assert submit(dispatcher, now=6.03, sequence=2, created_at=6.03,
+                  expires_at=literal_expiry) == "switch_pending"
+    dispatcher.on_cancel_response("tb1", old, True, 6.04)
+    assert not dispatcher.closed
+    now = at_edge(8.03, offset_ns)
+    result = dispatcher.on_result("tb1", old, 5, now)
+    assert result == ("replacement_sent" if offset_ns < 0 else "replacement_expired")
+    sent = [e for e in events if e["type"] == "send_goal"]
+    assert len(sent) == (2 if offset_ns < 0 else 1)
+    if offset_ns < 0:
+        assert sent[-1]["expires_at"] == literal_expiry and sent[-1]["created_at"] == 6.03
+        assert not dispatcher.closed
+        dispatcher.on_result("tb1", sent[-1]["goal_id"], 4, now)
+    assert dispatcher.closed and not dispatcher.failed
+
+
+def test_equal_nanosecond_clock_encoding_is_not_a_rewind_but_one_ns_is():
+    dispatcher, _ = protocol()
+    dispatcher.tick(6.03 + 2)
+    dispatcher.tick(8.03)
+    with pytest.raises(ValueError, match="clock reversed"):
+        dispatcher.tick(at_edge(8.03, -1))
+
+
+@pytest.mark.parametrize("duration_key", [
+    "commitment_sec", "response_timeout_sec", "cancel_timeout_sec",
+    "execution_timeout_sec", "lease_sec",
+])
+@pytest.mark.parametrize("duration", [1e-12, .4e-9, .5e-9])
+def test_positive_duration_that_rounds_to_zero_ns_is_explicitly_rejected(duration_key, duration):
+    with pytest.raises(ValueError, match="positive nanosecond interval"):
+        GoalDispatcher("small-duration", lambda event: None, **{duration_key: duration})
+
+
+@pytest.mark.parametrize("duration_key", [
+    "commitment_sec", "response_timeout_sec", "cancel_timeout_sec",
+    "execution_timeout_sec", "lease_sec",
+])
+def test_one_ns_duration_is_supported_without_clipping(duration_key):
+    dispatcher = GoalDispatcher("one-ns", lambda event: None, **{duration_key: 1e-9})
+    assert getattr(dispatcher, duration_key) == 1e-9
+
+
+def test_one_ns_lease_is_fresh_then_expires_without_false_owner_release():
+    dispatcher = GoalDispatcher("one-ns", lambda event: None, lease_sec=1e-9)
+    assert submit(dispatcher, now=6.03, expires_at=at_edge(6.03, 1)) == "sent"
+    goal_id = dispatcher.navigation()["tb1"]["goal_id"]
+    assert dispatcher.on_accept("tb1", goal_id, True, 6.03) == "active"
+    dispatcher.tick(at_edge(6.03, 1))
+    assert dispatcher.failed and not dispatcher.closed
+    dispatcher.on_result("tb1", goal_id, 5, at_edge(6.03, 1))
+    assert dispatcher.closed and dispatcher.failed
+
+
+def test_unrepresentable_command_time_is_invalid_without_releasing_owner():
+    dispatcher, _ = protocol()
+    goal_id = start(dispatcher)
+    assert submit(dispatcher, "KEEP", .1, sequence=2, expires_at=1e308) == "invalid_ttl"
+    assert dispatcher.renew("tb1", goal_id, dispatcher.epoch, .2, 1e308) == "invalid_ttl"
+    assert not dispatcher.closed and not dispatcher.failed

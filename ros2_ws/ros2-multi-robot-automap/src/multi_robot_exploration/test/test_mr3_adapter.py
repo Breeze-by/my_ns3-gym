@@ -127,6 +127,7 @@ def make_adapter(started=True):
 def refresh_snapshot(node, legal=(88, 888, 999)):
     node.snapshot = {
         "sequence": node.sequence + 1, "digest": "saved-observation-digest",
+        "candidate_version": "saved-candidate-version",
         "robots": [{"name": name, "navigation": navigation}
                    for name, navigation in node.dispatcher.navigation().items()],
         "candidates": [{"x": 5.0 + index, "y": 0.0} for index in range(8)],
@@ -196,6 +197,68 @@ def test_invalid_joint_action_never_reaches_native_client(changes, reason):
     assert node.dispatcher.closed
     assert not node.events
     assert not any(client.goals for client in node.navigation_clients.values())
+
+
+@pytest.mark.parametrize("created_at", (6.03, 254.6, 255.6, 510.6))
+def test_exact_two_second_keep_survives_fractional_clock_boundaries(created_at):
+    node, clock = make_adapter()
+    clock[0] = node.started_at = created_at
+    node.receive_action(command(node, action=888))
+    kind, payload = node.test_records[-1]
+    assert kind == "action", payload
+    assert payload["results"] == {name: "kept" for name in ROBOTS}
+    assert node.dispatcher.closed
+    assert not any(client.goals for client in node.navigation_clients.values())
+
+
+@pytest.mark.parametrize("created_offset_ns,expires_offset_ns", (
+    (1, 2_000_000_001), (0, 0), (0, -1), (0, 2_000_000_001),
+))
+def test_command_time_rejects_actual_one_ns_violations(created_offset_ns, expires_offset_ns):
+    node, clock = make_adapter()
+    clock[0] = node.started_at = 254.6
+    now_ns = 254_600_000_000
+    node.receive_action(command(
+        node, action=888, created_at=(now_ns + created_offset_ns) / 1e9,
+        expires_at=(now_ns + expires_offset_ns) / 1e9,
+    ))
+    assert node.test_records[-1][0] == "action_rejected"
+    assert node.test_records[-1][1]["reason"] == "expired_or_invalid_command_time"
+    assert node.last_command_id == -1
+    assert not node.events
+
+
+@pytest.mark.parametrize("value", (float("nan"), float("inf"), -1., True, "1.0", 10**400))
+@pytest.mark.parametrize("key", ("created_at", "expires_at"))
+def test_malformed_command_time_is_rejected_without_native_side_effects(key, value):
+    node, _ = make_adapter()
+    node.receive_action(command(node, action=888, **{key: value}))
+    assert node.test_records[-1][0] == "action_rejected"
+    assert node.test_records[-1][1]["reason"] == "expired_or_invalid_command_time"
+    assert not node.events
+    assert not any(client.goals for client in node.navigation_clients.values())
+
+
+def test_heartbeat_at_exact_200ms_has_exact_two_second_lease():
+    node, clock = make_adapter()
+    clock[0] = node.started_at = 5.07
+    node.state = state(5.07)
+    node.receive_action(command(node))
+    node.maintain()
+
+    def heartbeat_deliveries():
+        return [payload for kind, payload in node.test_records
+                if kind == "delivery" and payload["stream"] == "heartbeat"]
+
+    assert len(heartbeat_deliveries()) == 1
+    advance(node, clock, 5.269999999)
+    assert len(heartbeat_deliveries()) == 1
+    advance(node, clock, 5.27)
+    deliveries = heartbeat_deliveries()
+    assert len(deliveries) == 2
+    assert deliveries[-1]["source_stamp"] == 5.27
+    assert round(deliveries[-1]["payload"]["expires_at"] * 1e9) == 7_270_000_000
+    assert len(node.navigation_clients["tb1"].goals) == 1
 
 
 def test_navigation_change_invalidates_saved_action_before_any_robot_is_submitted():

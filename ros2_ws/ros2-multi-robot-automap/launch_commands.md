@@ -97,7 +97,8 @@ P1C v6候选继承v5关闭顺序为：真实目标闭合→Nav2原生SHUTDOWN及
 最后reward ACK/评价器clean退出→SDK按实际action/PID逐个正常退出ROS进程→Gazebo原生停止。
 服务/状态/有序退出回执分别保留，超时或非零退出仍失败；不使用固定sleep代替退出，也不改接触/源序号门禁。
 FastDDS保持原依赖，CycloneDDS因官方Humble缺少真实publication_sequence_number未采用。
-该关闭实现仍待新推送冻结完整验证；详见[P1C报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261015_mr3_p1c.md)。
+v6已完成矩阵但在长KEEP截止中发现合法2秒TTL的浮点误拒；v7候选统一命令/租约/承诺/RPC期限的
+整数纳秒端点，任务/接触/频率不变，仍需新冻结完整验证。详见[P1C报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261015_mr3_p1c.md)。
 
 先在系统ROS终端按上文重新构建包含步进插件的工作区。学习端另开终端，使用conda，
 不source ROS或拼接ROS的PYTHONPATH；supervisor会在独立系统Python子进程重新source规范ROS/Gazebo环境。

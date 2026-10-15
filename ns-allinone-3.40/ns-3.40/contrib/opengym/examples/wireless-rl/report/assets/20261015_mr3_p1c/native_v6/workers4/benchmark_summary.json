@@ -1,0 +1,3307 @@
+{
+  "kind": "scripted_p1c_sampling_not_rl",
+  "workers": 4,
+  "robots_per_worker": 3,
+  "schedule": [
+    [
+      "open",
+      101
+    ],
+    [
+      "open",
+      101
+    ]
+  ],
+  "steps_per_episode": 16,
+  "command": [
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py",
+    "--workers",
+    "4",
+    "--schedule",
+    "open:101,open:101",
+    "--steps",
+    "16",
+    "--base-domain",
+    "136",
+    "--base-port",
+    "12141",
+    "--run-id",
+    "mr3_p1c_v6_workers4"
+  ],
+  "python": "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+  "freeze": "c8d483228ecb0105c905459578eddbb4a23d4520",
+  "base_domain": 136,
+  "base_port": 12141,
+  "fault_probe": false,
+  "deadline_probe": false,
+  "terminal_probe": false,
+  "resource_scope": "host counters include unrelated activity; GPU driver reports",
+  "num_logical_cpus": 80,
+  "cpu_affinity_count": 80,
+  "passed": true,
+  "wall_sec_including_all_attempts": 658.6831654268317,
+  "valid_transitions": 128,
+  "effective_transition_per_wall_sec": 0.19432711615918563,
+  "workers_results": [
+    {
+      "worker_id": 0,
+      "episodes": [
+        {
+          "epoch": "mr3_p1c_v6_workers4_w0_e1_583cb84a",
+          "scene": "open",
+          "seed": 101,
+          "initial_observation_digest": "1181c5f7e2385762b923d9b0c4f6fa31db6e58424162777c895fbf2c62f160fd",
+          "output_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v6_workers4/worker0/episode001_open_101",
+          "startup_wall_sec": 131.9859787961468,
+          "initial_estimated_poses": [
+            {
+              "name": "tb1",
+              "x": 0.0022100211152285155,
+              "y": -0.4499969640844982,
+              "yaw": 0.00392689136869665
+            },
+            {
+              "name": "tb2",
+              "x": 0.002140813098517318,
+              "y": 0.45000256007038625,
+              "yaw": 0.0037982581456733285
+            },
+            {
+              "name": "tb3",
+              "x": 0.4520805549315677,
+              "y": 2.437502765844898e-06,
+              "yaw": 0.0036766660700775465
+            }
+          ],
+          "transitions": 16,
+          "transition_wall_sec": 188.36111831106246,
+          "reward_sum": 5.276028485346484,
+          "dt_values": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "terminated": false,
+          "truncated": true,
+          "reason": "external_sampler_limit",
+          "wall_sec_including_startup_and_closure": 323.6697726990096
+        },
+        {
+          "epoch": "mr3_p1c_v6_workers4_w0_e2_7193e255",
+          "scene": "open",
+          "seed": 101,
+          "initial_observation_digest": "d7d7dab5f11ab046cf271397ee123f71fac6d334861ee6aada49a3f4f56c0886",
+          "output_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v6_workers4/worker0/episode002_open_101",
+          "startup_wall_sec": 133.925421833992,
+          "initial_estimated_poses": [
+            {
+              "name": "tb1",
+              "x": 0.002165665725706796,
+              "y": -0.44999726007776975,
+              "yaw": 0.0038448940669415046
+            },
+            {
+              "name": "tb2",
+              "x": 0.0021197745700891426,
+              "y": 0.4500024399382569,
+              "yaw": 0.0037590860984374444
+            },
+            {
+              "name": "tb3",
+              "x": 0.4520555489828831,
+              "y": 2.40779417562913e-06,
+              "yaw": 0.0036300111963571066
+            }
+          ],
+          "transitions": 16,
+          "transition_wall_sec": 185.0590659501031,
+          "reward_sum": 6.429123527800606,
+          "dt_values": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "terminated": false,
+          "truncated": true,
+          "reason": "external_sampler_limit",
+          "wall_sec_including_startup_and_closure": 326.9453861420043
+        }
+      ],
+      "error": null,
+      "wall_sec": 652.2898856010288,
+      "shutdown_receipts": [
+        {
+          "epoch": "mr3_p1c_v6_workers4_w0_e1_583cb84a",
+          "worker_returncode": 0,
+          "forced_shutdown": false,
+          "failed_sample": false,
+          "owned_processes_seen": [
+            {
+              "pid": 639053,
+              "parent": 638877,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381591680,
+              "state": "Z"
+            },
+            {
+              "pid": 639263,
+              "parent": 639053,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381591876,
+              "state": "S"
+            },
+            {
+              "pid": 639343,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381592036,
+              "state": "S"
+            },
+            {
+              "pid": 639345,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381592036,
+              "state": "R"
+            },
+            {
+              "pid": 639347,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381592036,
+              "state": "S"
+            },
+            {
+              "pid": 639349,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381592036,
+              "state": "S"
+            },
+            {
+              "pid": 639351,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381592036,
+              "state": "S"
+            },
+            {
+              "pid": 639353,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381592037,
+              "state": "S"
+            },
+            {
+              "pid": 639355,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381592037,
+              "state": "S"
+            },
+            {
+              "pid": 641292,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381592491,
+              "state": "S"
+            },
+            {
+              "pid": 641294,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381592491,
+              "state": "S"
+            },
+            {
+              "pid": 641296,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381592492,
+              "state": "S"
+            },
+            {
+              "pid": 641702,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381592843,
+              "state": "S"
+            },
+            {
+              "pid": 641704,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381592843,
+              "state": "S"
+            },
+            {
+              "pid": 641706,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381592843,
+              "state": "S"
+            },
+            {
+              "pid": 641988,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381593203,
+              "state": "S"
+            },
+            {
+              "pid": 642590,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381594360,
+              "state": "S"
+            },
+            {
+              "pid": 642592,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381594360,
+              "state": "S"
+            },
+            {
+              "pid": 642594,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381594361,
+              "state": "S"
+            },
+            {
+              "pid": 642596,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381594361,
+              "state": "S"
+            },
+            {
+              "pid": 642598,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381594361,
+              "state": "S"
+            },
+            {
+              "pid": 642600,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381594361,
+              "state": "S"
+            },
+            {
+              "pid": 642603,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381594363,
+              "state": "S"
+            },
+            {
+              "pid": 644516,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381598870,
+              "state": "S"
+            },
+            {
+              "pid": 644518,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381598871,
+              "state": "S"
+            },
+            {
+              "pid": 644520,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381598871,
+              "state": "S"
+            },
+            {
+              "pid": 644522,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381598871,
+              "state": "S"
+            },
+            {
+              "pid": 644524,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381598871,
+              "state": "S"
+            },
+            {
+              "pid": 644526,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381598872,
+              "state": "S"
+            },
+            {
+              "pid": 644528,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381598872,
+              "state": "S"
+            },
+            {
+              "pid": 646261,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381603376,
+              "state": "S"
+            },
+            {
+              "pid": 646267,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381603377,
+              "state": "S"
+            },
+            {
+              "pid": 646269,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381603377,
+              "state": "R"
+            },
+            {
+              "pid": 646271,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381603377,
+              "state": "S"
+            },
+            {
+              "pid": 646273,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381603378,
+              "state": "S"
+            },
+            {
+              "pid": 646275,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381603378,
+              "state": "S"
+            },
+            {
+              "pid": 646277,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381603378,
+              "state": "S"
+            },
+            {
+              "pid": 646847,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381604311,
+              "state": "R"
+            },
+            {
+              "pid": 646849,
+              "parent": 639263,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381604311,
+              "state": "R"
+            },
+            {
+              "pid": 647160,
+              "parent": 639053,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381604832,
+              "state": "S"
+            },
+            {
+              "pid": 647223,
+              "parent": 647160,
+              "group": 639053,
+              "session": 639053,
+              "start_ticks": 381604885,
+              "state": "S"
+            }
+          ],
+          "remaining_owned_processes": [],
+          "remaining_owned_zombies": [],
+          "process_scan_statistics": {
+            "count": 369,
+            "max_scan_wall_sec": 2.2439948320388794,
+            "max_observed_interval_sec": 2.118647609371692
+          }
+        },
+        {
+          "epoch": "mr3_p1c_v6_workers4_w0_e2_7193e255",
+          "worker_returncode": 0,
+          "forced_shutdown": false,
+          "failed_sample": false,
+          "owned_processes_seen": [
+            {
+              "pid": 656390,
+              "parent": 638877,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381624533,
+              "state": "Z"
+            },
+            {
+              "pid": 656493,
+              "parent": 656390,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381624690,
+              "state": "R"
+            },
+            {
+              "pid": 656676,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381624860,
+              "state": "S"
+            },
+            {
+              "pid": 656678,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381624861,
+              "state": "R"
+            },
+            {
+              "pid": 656680,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381624861,
+              "state": "S"
+            },
+            {
+              "pid": 656682,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381624861,
+              "state": "R"
+            },
+            {
+              "pid": 656684,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381624861,
+              "state": "S"
+            },
+            {
+              "pid": 656686,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381624861,
+              "state": "S"
+            },
+            {
+              "pid": 656688,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381624862,
+              "state": "S"
+            },
+            {
+              "pid": 657688,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381625275,
+              "state": "S"
+            },
+            {
+              "pid": 657690,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381625275,
+              "state": "R"
+            },
+            {
+              "pid": 657692,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381625275,
+              "state": "S"
+            },
+            {
+              "pid": 657881,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381625532,
+              "state": "S"
+            },
+            {
+              "pid": 657883,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381625532,
+              "state": "S"
+            },
+            {
+              "pid": 657885,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381625532,
+              "state": "S"
+            },
+            {
+              "pid": 658108,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381625895,
+              "state": "R"
+            },
+            {
+              "pid": 658676,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381627043,
+              "state": "S"
+            },
+            {
+              "pid": 658678,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381627043,
+              "state": "S"
+            },
+            {
+              "pid": 658680,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381627043,
+              "state": "S"
+            },
+            {
+              "pid": 658682,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381627043,
+              "state": "S"
+            },
+            {
+              "pid": 658684,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381627044,
+              "state": "S"
+            },
+            {
+              "pid": 658686,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381627044,
+              "state": "S"
+            },
+            {
+              "pid": 658688,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381627047,
+              "state": "S"
+            },
+            {
+              "pid": 660467,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381631544,
+              "state": "R"
+            },
+            {
+              "pid": 660469,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381631544,
+              "state": "S"
+            },
+            {
+              "pid": 660471,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381631544,
+              "state": "R"
+            },
+            {
+              "pid": 660474,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381631544,
+              "state": "S"
+            },
+            {
+              "pid": 660476,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381631545,
+              "state": "S"
+            },
+            {
+              "pid": 660478,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381631545,
+              "state": "S"
+            },
+            {
+              "pid": 660480,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381631545,
+              "state": "S"
+            },
+            {
+              "pid": 662303,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381636034,
+              "state": "R"
+            },
+            {
+              "pid": 662305,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381636034,
+              "state": "S"
+            },
+            {
+              "pid": 662307,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381636034,
+              "state": "S"
+            },
+            {
+              "pid": 662309,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381636035,
+              "state": "S"
+            },
+            {
+              "pid": 662311,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381636035,
+              "state": "S"
+            },
+            {
+              "pid": 662313,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381636035,
+              "state": "S"
+            },
+            {
+              "pid": 662315,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381636035,
+              "state": "S"
+            },
+            {
+              "pid": 663137,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381637271,
+              "state": "R"
+            },
+            {
+              "pid": 663139,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381637271,
+              "state": "S"
+            },
+            {
+              "pid": 663356,
+              "parent": 656390,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381637621,
+              "state": "S"
+            },
+            {
+              "pid": 663450,
+              "parent": 663356,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381637666,
+              "state": "S"
+            },
+            {
+              "pid": 670671,
+              "parent": 656493,
+              "group": 656390,
+              "session": 656390,
+              "start_ticks": 381656456,
+              "state": "R"
+            }
+          ],
+          "remaining_owned_processes": [],
+          "remaining_owned_zombies": [],
+          "process_scan_statistics": {
+            "count": 360,
+            "max_scan_wall_sec": 2.0185853191651404,
+            "max_observed_interval_sec": 1.8741964609362185
+          }
+        }
+      ]
+    },
+    {
+      "worker_id": 1,
+      "episodes": [
+        {
+          "epoch": "mr3_p1c_v6_workers4_w1_e1_411050f4",
+          "scene": "open",
+          "seed": 101,
+          "initial_observation_digest": "b09b1f1e38c244ac765799e27c9e4cc0995cebb591b68d9b36fd3f808a98fcc6",
+          "output_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v6_workers4/worker1/episode001_open_101",
+          "startup_wall_sec": 132.8356716982089,
+          "initial_estimated_poses": [
+            {
+              "name": "tb1",
+              "x": 0.0021663658039028466,
+              "y": -0.44999727965105124,
+              "yaw": 0.00384491804159258
+            },
+            {
+              "name": "tb2",
+              "x": 0.002097166591527129,
+              "y": 0.4500023461281499,
+              "yaw": 0.003716193099779532
+            },
+            {
+              "name": "tb3",
+              "x": 0.4520265128121379,
+              "y": 2.1801588558758535e-06,
+              "yaw": 0.0035759916829236804
+            }
+          ],
+          "transitions": 16,
+          "transition_wall_sec": 189.02706740889698,
+          "reward_sum": 6.5781831461700015,
+          "dt_values": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "terminated": false,
+          "truncated": true,
+          "reason": "external_sampler_limit",
+          "wall_sec_including_startup_and_closure": 325.41919470205903
+        },
+        {
+          "epoch": "mr3_p1c_v6_workers4_w1_e2_d282d79b",
+          "scene": "open",
+          "seed": 101,
+          "initial_observation_digest": "766a92c5651add9c58fba87d6478c7d6b43725cf4a90d44aeb234a8db7d98c63",
+          "output_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v6_workers4/worker1/episode002_open_101",
+          "startup_wall_sec": 132.70794163784012,
+          "initial_estimated_poses": [
+            {
+              "name": "tb1",
+              "x": 0.0021567117113632903,
+              "y": -0.4499972436648018,
+              "yaw": 0.0038280830100910724
+            },
+            {
+              "name": "tb2",
+              "x": 0.002081349479668191,
+              "y": 0.4500025412571479,
+              "yaw": 0.003688076847145374
+            },
+            {
+              "name": "tb3",
+              "x": 0.45202547482977795,
+              "y": 2.2302556438050783e-06,
+              "yaw": 0.003574097145025678
+            }
+          ],
+          "transitions": 16,
+          "transition_wall_sec": 181.69020587252453,
+          "reward_sum": 6.659439422989138,
+          "dt_values": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "terminated": false,
+          "truncated": true,
+          "reason": "external_sampler_limit",
+          "wall_sec_including_startup_and_closure": 321.79806594830006
+        }
+      ],
+      "error": null,
+      "wall_sec": 650.0246601342224,
+      "shutdown_receipts": [
+        {
+          "epoch": "mr3_p1c_v6_workers4_w1_e1_411050f4",
+          "worker_returncode": 0,
+          "forced_shutdown": false,
+          "failed_sample": false,
+          "owned_processes_seen": [
+            {
+              "pid": 639062,
+              "parent": 638877,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381591680,
+              "state": "Z"
+            },
+            {
+              "pid": 639275,
+              "parent": 639062,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381591880,
+              "state": "R"
+            },
+            {
+              "pid": 639375,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381592040,
+              "state": "S"
+            },
+            {
+              "pid": 639377,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381592040,
+              "state": "S"
+            },
+            {
+              "pid": 639380,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381592041,
+              "state": "R"
+            },
+            {
+              "pid": 639388,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381592041,
+              "state": "R"
+            },
+            {
+              "pid": 639393,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381592041,
+              "state": "S"
+            },
+            {
+              "pid": 639398,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381592041,
+              "state": "S"
+            },
+            {
+              "pid": 639401,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381592041,
+              "state": "S"
+            },
+            {
+              "pid": 641262,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381592481,
+              "state": "S"
+            },
+            {
+              "pid": 641264,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381592481,
+              "state": "S"
+            },
+            {
+              "pid": 641266,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381592481,
+              "state": "S"
+            },
+            {
+              "pid": 641657,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381592822,
+              "state": "S"
+            },
+            {
+              "pid": 641659,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381592823,
+              "state": "S"
+            },
+            {
+              "pid": 641661,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381592823,
+              "state": "S"
+            },
+            {
+              "pid": 642009,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381593243,
+              "state": "R"
+            },
+            {
+              "pid": 642690,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381594391,
+              "state": "S"
+            },
+            {
+              "pid": 642692,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381594392,
+              "state": "S"
+            },
+            {
+              "pid": 642694,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381594392,
+              "state": "S"
+            },
+            {
+              "pid": 642696,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381594392,
+              "state": "S"
+            },
+            {
+              "pid": 642698,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381594392,
+              "state": "S"
+            },
+            {
+              "pid": 642700,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381594393,
+              "state": "S"
+            },
+            {
+              "pid": 642703,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381594396,
+              "state": "S"
+            },
+            {
+              "pid": 644620,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381598900,
+              "state": "S"
+            },
+            {
+              "pid": 644624,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381598901,
+              "state": "S"
+            },
+            {
+              "pid": 644635,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381598902,
+              "state": "S"
+            },
+            {
+              "pid": 644637,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381598903,
+              "state": "S"
+            },
+            {
+              "pid": 644656,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381598903,
+              "state": "S"
+            },
+            {
+              "pid": 644665,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381598904,
+              "state": "S"
+            },
+            {
+              "pid": 644672,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381598905,
+              "state": "S"
+            },
+            {
+              "pid": 646432,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381603404,
+              "state": "S"
+            },
+            {
+              "pid": 646434,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381603406,
+              "state": "S"
+            },
+            {
+              "pid": 646437,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381603406,
+              "state": "S"
+            },
+            {
+              "pid": 646439,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381603408,
+              "state": "S"
+            },
+            {
+              "pid": 646441,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381603409,
+              "state": "S"
+            },
+            {
+              "pid": 646443,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381603410,
+              "state": "S"
+            },
+            {
+              "pid": 646446,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381603410,
+              "state": "S"
+            },
+            {
+              "pid": 646842,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381604303,
+              "state": "S"
+            },
+            {
+              "pid": 646844,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381604303,
+              "state": "R"
+            },
+            {
+              "pid": 647141,
+              "parent": 639062,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381604774,
+              "state": "S"
+            },
+            {
+              "pid": 647156,
+              "parent": 647141,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381604819,
+              "state": "S"
+            },
+            {
+              "pid": 655156,
+              "parent": 639275,
+              "group": 639062,
+              "session": 639062,
+              "start_ticks": 381623868,
+              "state": "R"
+            }
+          ],
+          "remaining_owned_processes": [],
+          "remaining_owned_zombies": [],
+          "process_scan_statistics": {
+            "count": 371,
+            "max_scan_wall_sec": 2.294050528667867,
+            "max_observed_interval_sec": 2.296831172890961
+          }
+        },
+        {
+          "epoch": "mr3_p1c_v6_workers4_w1_e2_d282d79b",
+          "worker_returncode": 0,
+          "forced_shutdown": false,
+          "failed_sample": false,
+          "owned_processes_seen": [
+            {
+              "pid": 656453,
+              "parent": 638877,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381624658,
+              "state": "Z"
+            },
+            {
+              "pid": 656645,
+              "parent": 656453,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381624814,
+              "state": "R"
+            },
+            {
+              "pid": 656882,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381624980,
+              "state": "S"
+            },
+            {
+              "pid": 656884,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381624981,
+              "state": "S"
+            },
+            {
+              "pid": 656886,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381624981,
+              "state": "R"
+            },
+            {
+              "pid": 656888,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381624981,
+              "state": "S"
+            },
+            {
+              "pid": 656890,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381624981,
+              "state": "S"
+            },
+            {
+              "pid": 656892,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381624981,
+              "state": "R"
+            },
+            {
+              "pid": 656894,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381624981,
+              "state": "S"
+            },
+            {
+              "pid": 657767,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381625364,
+              "state": "S"
+            },
+            {
+              "pid": 657769,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381625364,
+              "state": "R"
+            },
+            {
+              "pid": 657771,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381625364,
+              "state": "S"
+            },
+            {
+              "pid": 657999,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381625718,
+              "state": "S"
+            },
+            {
+              "pid": 658001,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381625718,
+              "state": "S"
+            },
+            {
+              "pid": 658003,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381625719,
+              "state": "S"
+            },
+            {
+              "pid": 658178,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381626072,
+              "state": "S"
+            },
+            {
+              "pid": 658826,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381627226,
+              "state": "S"
+            },
+            {
+              "pid": 658828,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381627226,
+              "state": "S"
+            },
+            {
+              "pid": 658830,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381627226,
+              "state": "S"
+            },
+            {
+              "pid": 658832,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381627227,
+              "state": "S"
+            },
+            {
+              "pid": 658834,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381627227,
+              "state": "S"
+            },
+            {
+              "pid": 658836,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381627227,
+              "state": "S"
+            },
+            {
+              "pid": 658839,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381627229,
+              "state": "S"
+            },
+            {
+              "pid": 660621,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381631730,
+              "state": "S"
+            },
+            {
+              "pid": 660623,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381631730,
+              "state": "S"
+            },
+            {
+              "pid": 660625,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381631730,
+              "state": "S"
+            },
+            {
+              "pid": 660627,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381631731,
+              "state": "S"
+            },
+            {
+              "pid": 660629,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381631731,
+              "state": "S"
+            },
+            {
+              "pid": 660631,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381631731,
+              "state": "S"
+            },
+            {
+              "pid": 660633,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381631731,
+              "state": "S"
+            },
+            {
+              "pid": 662496,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381636245,
+              "state": "S"
+            },
+            {
+              "pid": 662498,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381636245,
+              "state": "S"
+            },
+            {
+              "pid": 662501,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381636246,
+              "state": "S"
+            },
+            {
+              "pid": 662503,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381636247,
+              "state": "S"
+            },
+            {
+              "pid": 662505,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381636248,
+              "state": "S"
+            },
+            {
+              "pid": 662511,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381636251,
+              "state": "S"
+            },
+            {
+              "pid": 662515,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381636252,
+              "state": "S"
+            },
+            {
+              "pid": 663023,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381637088,
+              "state": "S"
+            },
+            {
+              "pid": 663025,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381637088,
+              "state": "S"
+            },
+            {
+              "pid": 663346,
+              "parent": 656453,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381637598,
+              "state": "S"
+            },
+            {
+              "pid": 663442,
+              "parent": 663346,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381637645,
+              "state": "S"
+            },
+            {
+              "pid": 670509,
+              "parent": 656645,
+              "group": 656453,
+              "session": 656453,
+              "start_ticks": 381656100,
+              "state": "Z"
+            }
+          ],
+          "remaining_owned_processes": [],
+          "remaining_owned_zombies": [],
+          "process_scan_statistics": {
+            "count": 352,
+            "max_scan_wall_sec": 2.0597539958544075,
+            "max_observed_interval_sec": 1.9461892019025981
+          }
+        }
+      ]
+    },
+    {
+      "worker_id": 2,
+      "episodes": [
+        {
+          "epoch": "mr3_p1c_v6_workers4_w2_e1_329715c8",
+          "scene": "open",
+          "seed": 101,
+          "initial_observation_digest": "d5f8a2974c7bff51d2bdc8c2db369f421fd631f3da3ebf665a0c4fb1c02b6616",
+          "output_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v6_workers4/worker2/episode001_open_101",
+          "startup_wall_sec": 133.041954359971,
+          "initial_estimated_poses": [
+            {
+              "name": "tb1",
+              "x": 0.0022701094736572876,
+              "y": -0.4499968017419488,
+              "yaw": 0.004038854018374702
+            },
+            {
+              "name": "tb2",
+              "x": 0.0022004842320007805,
+              "y": 0.450002967795315,
+              "yaw": 0.003910057149857033
+            },
+            {
+              "name": "tb3",
+              "x": 0.45211912965234613,
+              "y": 2.417513448986853e-06,
+              "yaw": 0.0037494991023758876
+            }
+          ],
+          "transitions": 16,
+          "transition_wall_sec": 179.26793777942657,
+          "reward_sum": 6.407225417693784,
+          "dt_values": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "terminated": false,
+          "truncated": true,
+          "reason": "external_sampler_limit",
+          "wall_sec_including_startup_and_closure": 315.9007097771391
+        },
+        {
+          "epoch": "mr3_p1c_v6_workers4_w2_e2_0be2ade4",
+          "scene": "open",
+          "seed": 101,
+          "initial_observation_digest": "deeba4fcc18cc8f0a19245651432ac80de8fdd36d864145954adb6e99a6941fc",
+          "output_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v6_workers4/worker2/episode002_open_101",
+          "startup_wall_sec": 128.24795156810433,
+          "initial_estimated_poses": [
+            {
+              "name": "tb1",
+              "x": 0.002099666347503431,
+              "y": -0.4499973898847318,
+              "yaw": 0.003721743617708708
+            },
+            {
+              "name": "tb2",
+              "x": 0.0020307540642277807,
+              "y": 0.4500023598027525,
+              "yaw": 0.0035929477745021954
+            },
+            {
+              "name": "tb3",
+              "x": 0.45197203201684305,
+              "y": 2.0246606472746677e-06,
+              "yaw": 0.003475252168789671
+            }
+          ],
+          "transitions": 16,
+          "transition_wall_sec": 186.39473841991276,
+          "reward_sum": 6.585016890349678,
+          "dt_values": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "terminated": false,
+          "truncated": true,
+          "reason": "external_sampler_limit",
+          "wall_sec_including_startup_and_closure": 321.56232689507306
+        }
+      ],
+      "error": null,
+      "wall_sec": 642.247987747658,
+      "shutdown_receipts": [
+        {
+          "epoch": "mr3_p1c_v6_workers4_w2_e1_329715c8",
+          "worker_returncode": 0,
+          "forced_shutdown": false,
+          "failed_sample": false,
+          "owned_processes_seen": [
+            {
+              "pid": 639054,
+              "parent": 638877,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381591680,
+              "state": "Z"
+            },
+            {
+              "pid": 639278,
+              "parent": 639054,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381591882,
+              "state": "S"
+            },
+            {
+              "pid": 639390,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381592041,
+              "state": "R"
+            },
+            {
+              "pid": 639397,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381592041,
+              "state": "S"
+            },
+            {
+              "pid": 639402,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381592041,
+              "state": "R"
+            },
+            {
+              "pid": 639409,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381592042,
+              "state": "Z"
+            },
+            {
+              "pid": 639414,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381592042,
+              "state": "S"
+            },
+            {
+              "pid": 639419,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381592043,
+              "state": "S"
+            },
+            {
+              "pid": 639424,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381592043,
+              "state": "S"
+            },
+            {
+              "pid": 641188,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381592436,
+              "state": "S"
+            },
+            {
+              "pid": 641190,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381592436,
+              "state": "R"
+            },
+            {
+              "pid": 641193,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381592436,
+              "state": "S"
+            },
+            {
+              "pid": 641584,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381592776,
+              "state": "S"
+            },
+            {
+              "pid": 641586,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381592776,
+              "state": "S"
+            },
+            {
+              "pid": 641588,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381592777,
+              "state": "S"
+            },
+            {
+              "pid": 642007,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381593242,
+              "state": "R"
+            },
+            {
+              "pid": 642776,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381594410,
+              "state": "S"
+            },
+            {
+              "pid": 642782,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381594411,
+              "state": "S"
+            },
+            {
+              "pid": 642785,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381594411,
+              "state": "S"
+            },
+            {
+              "pid": 642787,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381594411,
+              "state": "S"
+            },
+            {
+              "pid": 642789,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381594412,
+              "state": "S"
+            },
+            {
+              "pid": 642791,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381594412,
+              "state": "S"
+            },
+            {
+              "pid": 642793,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381594415,
+              "state": "S"
+            },
+            {
+              "pid": 644605,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381598894,
+              "state": "S"
+            },
+            {
+              "pid": 644607,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381598894,
+              "state": "S"
+            },
+            {
+              "pid": 644610,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381598895,
+              "state": "R"
+            },
+            {
+              "pid": 644612,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381598896,
+              "state": "S"
+            },
+            {
+              "pid": 644614,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381598897,
+              "state": "S"
+            },
+            {
+              "pid": 644616,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381598897,
+              "state": "S"
+            },
+            {
+              "pid": 644618,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381598897,
+              "state": "S"
+            },
+            {
+              "pid": 646280,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381603381,
+              "state": "S"
+            },
+            {
+              "pid": 646282,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381603381,
+              "state": "S"
+            },
+            {
+              "pid": 646284,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381603382,
+              "state": "S"
+            },
+            {
+              "pid": 646286,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381603382,
+              "state": "S"
+            },
+            {
+              "pid": 646288,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381603382,
+              "state": "S"
+            },
+            {
+              "pid": 646294,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381603383,
+              "state": "S"
+            },
+            {
+              "pid": 646301,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381603383,
+              "state": "S"
+            },
+            {
+              "pid": 646968,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381604549,
+              "state": "R"
+            },
+            {
+              "pid": 646970,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381604550,
+              "state": "S"
+            },
+            {
+              "pid": 647161,
+              "parent": 639054,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381604840,
+              "state": "S"
+            },
+            {
+              "pid": 647224,
+              "parent": 647161,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381604887,
+              "state": "S"
+            },
+            {
+              "pid": 654591,
+              "parent": 639278,
+              "group": 639054,
+              "session": 639054,
+              "start_ticks": 381622886,
+              "state": "S"
+            }
+          ],
+          "remaining_owned_processes": [],
+          "remaining_owned_zombies": [],
+          "process_scan_statistics": {
+            "count": 360,
+            "max_scan_wall_sec": 2.3430014471523464,
+            "max_observed_interval_sec": 1.964853121433407
+          }
+        },
+        {
+          "epoch": "mr3_p1c_v6_workers4_w2_e2_0be2ade4",
+          "worker_returncode": 0,
+          "forced_shutdown": false,
+          "failed_sample": false,
+          "owned_processes_seen": [
+            {
+              "pid": 654991,
+              "parent": 638877,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381623719,
+              "state": "Z"
+            },
+            {
+              "pid": 655160,
+              "parent": 654991,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381623871,
+              "state": "S"
+            },
+            {
+              "pid": 655337,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381624039,
+              "state": "S"
+            },
+            {
+              "pid": 655339,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381624040,
+              "state": "S"
+            },
+            {
+              "pid": 655341,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381624040,
+              "state": "R"
+            },
+            {
+              "pid": 655343,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381624040,
+              "state": "R"
+            },
+            {
+              "pid": 655345,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381624040,
+              "state": "S"
+            },
+            {
+              "pid": 655347,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381624041,
+              "state": "S"
+            },
+            {
+              "pid": 655349,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381624041,
+              "state": "S"
+            },
+            {
+              "pid": 656298,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381624428,
+              "state": "S"
+            },
+            {
+              "pid": 656300,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381624428,
+              "state": "R"
+            },
+            {
+              "pid": 656302,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381624429,
+              "state": "S"
+            },
+            {
+              "pid": 656561,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381624757,
+              "state": "S"
+            },
+            {
+              "pid": 656563,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381624757,
+              "state": "S"
+            },
+            {
+              "pid": 656565,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381624757,
+              "state": "S"
+            },
+            {
+              "pid": 657260,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381625094,
+              "state": "R"
+            },
+            {
+              "pid": 658237,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381626242,
+              "state": "S"
+            },
+            {
+              "pid": 658239,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381626242,
+              "state": "S"
+            },
+            {
+              "pid": 658241,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381626242,
+              "state": "S"
+            },
+            {
+              "pid": 658243,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381626242,
+              "state": "S"
+            },
+            {
+              "pid": 658245,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381626242,
+              "state": "S"
+            },
+            {
+              "pid": 658247,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381626243,
+              "state": "S"
+            },
+            {
+              "pid": 658266,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381626244,
+              "state": "S"
+            },
+            {
+              "pid": 660039,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381630743,
+              "state": "S"
+            },
+            {
+              "pid": 660041,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381630743,
+              "state": "S"
+            },
+            {
+              "pid": 660043,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381630743,
+              "state": "S"
+            },
+            {
+              "pid": 660045,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381630744,
+              "state": "S"
+            },
+            {
+              "pid": 660047,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381630744,
+              "state": "R"
+            },
+            {
+              "pid": 660049,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381630744,
+              "state": "S"
+            },
+            {
+              "pid": 660051,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381630744,
+              "state": "S"
+            },
+            {
+              "pid": 661883,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381635234,
+              "state": "S"
+            },
+            {
+              "pid": 661885,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381635235,
+              "state": "S"
+            },
+            {
+              "pid": 661887,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381635235,
+              "state": "S"
+            },
+            {
+              "pid": 661889,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381635235,
+              "state": "R"
+            },
+            {
+              "pid": 661891,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381635235,
+              "state": "S"
+            },
+            {
+              "pid": 661896,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381635236,
+              "state": "S"
+            },
+            {
+              "pid": 661900,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381635236,
+              "state": "S"
+            },
+            {
+              "pid": 662298,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381636030,
+              "state": "S"
+            },
+            {
+              "pid": 662300,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381636030,
+              "state": "S"
+            },
+            {
+              "pid": 662613,
+              "parent": 654991,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381636334,
+              "state": "S"
+            },
+            {
+              "pid": 662640,
+              "parent": 662613,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381636397,
+              "state": "S"
+            },
+            {
+              "pid": 670135,
+              "parent": 655160,
+              "group": 654991,
+              "session": 654991,
+              "start_ticks": 381655050,
+              "state": "S"
+            }
+          ],
+          "remaining_owned_processes": [],
+          "remaining_owned_zombies": [],
+          "process_scan_statistics": {
+            "count": 348,
+            "max_scan_wall_sec": 1.9902210966683924,
+            "max_observed_interval_sec": 2.0412021121010184
+          }
+        }
+      ]
+    },
+    {
+      "worker_id": 3,
+      "episodes": [
+        {
+          "epoch": "mr3_p1c_v6_workers4_w3_e1_3ac5b3c9",
+          "scene": "open",
+          "seed": 101,
+          "initial_observation_digest": "1018f945735ce7c26834fb1189808ae0adba3add193866ba2c2969f379c5fc16",
+          "output_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v6_workers4/worker3/episode001_open_101",
+          "startup_wall_sec": 131.55564295407385,
+          "initial_estimated_poses": [
+            {
+              "name": "tb1",
+              "x": 0.0021613740681297104,
+              "y": -0.44999724141521585,
+              "yaw": 0.003835564059188547
+            },
+            {
+              "name": "tb2",
+              "x": 0.0020903928253151443,
+              "y": 0.4500025542452122,
+              "yaw": 0.003704871607760828
+            },
+            {
+              "name": "tb3",
+              "x": 0.45204548836812936,
+              "y": 2.4477430917596416e-06,
+              "yaw": 0.003611338851279496
+            }
+          ],
+          "transitions": 16,
+          "transition_wall_sec": 181.00466147297993,
+          "reward_sum": 5.318240664658089,
+          "dt_values": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "terminated": false,
+          "truncated": true,
+          "reason": "external_sampler_limit",
+          "wall_sec_including_startup_and_closure": 315.5656878766604
+        },
+        {
+          "epoch": "mr3_p1c_v6_workers4_w3_e2_e277f684",
+          "scene": "open",
+          "seed": 101,
+          "initial_observation_digest": "d9572890cd5f3ed156cf218bd9b2cf5d256320c7e3e72c33258572ff95861bca",
+          "output_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v6_workers4/worker3/episode002_open_101",
+          "startup_wall_sec": 129.84380410797894,
+          "initial_estimated_poses": [
+            {
+              "name": "tb1",
+              "x": 0.0022060598241249087,
+              "y": -0.4499970864798734,
+              "yaw": 0.003919488031801037
+            },
+            {
+              "name": "tb2",
+              "x": 0.002135453808124915,
+              "y": 0.4500027003903605,
+              "yaw": 0.0037888385531767163
+            },
+            {
+              "name": "tb3",
+              "x": 0.4520784821688431,
+              "y": 2.475667568032998e-06,
+              "yaw": 0.003672916139096754
+            }
+          ],
+          "transitions": 16,
+          "transition_wall_sec": 205.1794855883345,
+          "reward_sum": 6.548054414315714,
+          "dt_values": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "terminated": false,
+          "truncated": true,
+          "reason": "external_sampler_limit",
+          "wall_sec_including_startup_and_closure": 342.2224288471043
+        }
+      ],
+      "error": null,
+      "wall_sec": 658.6260908069089,
+      "shutdown_receipts": [
+        {
+          "epoch": "mr3_p1c_v6_workers4_w3_e1_3ac5b3c9",
+          "worker_returncode": 0,
+          "forced_shutdown": false,
+          "failed_sample": false,
+          "owned_processes_seen": [
+            {
+              "pid": 639060,
+              "parent": 638877,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381591680,
+              "state": "Z"
+            },
+            {
+              "pid": 639274,
+              "parent": 639060,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381591880,
+              "state": "S"
+            },
+            {
+              "pid": 639357,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381592038,
+              "state": "S"
+            },
+            {
+              "pid": 639359,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381592038,
+              "state": "S"
+            },
+            {
+              "pid": 639361,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381592038,
+              "state": "R"
+            },
+            {
+              "pid": 639363,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381592038,
+              "state": "Z"
+            },
+            {
+              "pid": 639365,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381592038,
+              "state": "S"
+            },
+            {
+              "pid": 639367,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381592039,
+              "state": "S"
+            },
+            {
+              "pid": 639371,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381592039,
+              "state": "S"
+            },
+            {
+              "pid": 641314,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381592496,
+              "state": "S"
+            },
+            {
+              "pid": 641316,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381592497,
+              "state": "S"
+            },
+            {
+              "pid": 641323,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381592497,
+              "state": "S"
+            },
+            {
+              "pid": 641710,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381592845,
+              "state": "R"
+            },
+            {
+              "pid": 641712,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381592845,
+              "state": "R"
+            },
+            {
+              "pid": 641714,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381592845,
+              "state": "S"
+            },
+            {
+              "pid": 641949,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381593152,
+              "state": "S"
+            },
+            {
+              "pid": 642483,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381594304,
+              "state": "S"
+            },
+            {
+              "pid": 642485,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381594304,
+              "state": "S"
+            },
+            {
+              "pid": 642487,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381594304,
+              "state": "R"
+            },
+            {
+              "pid": 642489,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381594304,
+              "state": "S"
+            },
+            {
+              "pid": 642491,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381594305,
+              "state": "S"
+            },
+            {
+              "pid": 642493,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381594305,
+              "state": "S"
+            },
+            {
+              "pid": 642495,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381594306,
+              "state": "S"
+            },
+            {
+              "pid": 644409,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381598805,
+              "state": "R"
+            },
+            {
+              "pid": 644412,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381598805,
+              "state": "S"
+            },
+            {
+              "pid": 644416,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381598805,
+              "state": "S"
+            },
+            {
+              "pid": 644420,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381598805,
+              "state": "S"
+            },
+            {
+              "pid": 644422,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381598805,
+              "state": "S"
+            },
+            {
+              "pid": 644424,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381598806,
+              "state": "S"
+            },
+            {
+              "pid": 644426,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381598806,
+              "state": "S"
+            },
+            {
+              "pid": 646153,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381603293,
+              "state": "S"
+            },
+            {
+              "pid": 646155,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381603294,
+              "state": "S"
+            },
+            {
+              "pid": 646157,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381603294,
+              "state": "S"
+            },
+            {
+              "pid": 646159,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381603294,
+              "state": "S"
+            },
+            {
+              "pid": 646161,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381603294,
+              "state": "S"
+            },
+            {
+              "pid": 646163,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381603294,
+              "state": "S"
+            },
+            {
+              "pid": 646165,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381603295,
+              "state": "S"
+            },
+            {
+              "pid": 646811,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381604220,
+              "state": "R"
+            },
+            {
+              "pid": 646813,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381604220,
+              "state": "R"
+            },
+            {
+              "pid": 646979,
+              "parent": 639060,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381604570,
+              "state": "S"
+            },
+            {
+              "pid": 646995,
+              "parent": 646979,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381604623,
+              "state": "S"
+            },
+            {
+              "pid": 654583,
+              "parent": 639274,
+              "group": 639060,
+              "session": 639060,
+              "start_ticks": 381622873,
+              "state": "R"
+            }
+          ],
+          "remaining_owned_processes": [],
+          "remaining_owned_zombies": [],
+          "process_scan_statistics": {
+            "count": 358,
+            "max_scan_wall_sec": 2.283913485240191,
+            "max_observed_interval_sec": 2.3323512920178473
+          }
+        },
+        {
+          "epoch": "mr3_p1c_v6_workers4_w3_e2_e277f684",
+          "worker_returncode": 0,
+          "forced_shutdown": false,
+          "failed_sample": false,
+          "owned_processes_seen": [
+            {
+              "pid": 654969,
+              "parent": 638877,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381623685,
+              "state": "Z"
+            },
+            {
+              "pid": 655139,
+              "parent": 654969,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381623837,
+              "state": "R"
+            },
+            {
+              "pid": 655268,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381624002,
+              "state": "R"
+            },
+            {
+              "pid": 655270,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381624002,
+              "state": "S"
+            },
+            {
+              "pid": 655272,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381624003,
+              "state": "R"
+            },
+            {
+              "pid": 655274,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381624003,
+              "state": "Z"
+            },
+            {
+              "pid": 655276,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381624003,
+              "state": "S"
+            },
+            {
+              "pid": 655278,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381624003,
+              "state": "R"
+            },
+            {
+              "pid": 655280,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381624003,
+              "state": "S"
+            },
+            {
+              "pid": 656255,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381624407,
+              "state": "R"
+            },
+            {
+              "pid": 656257,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381624408,
+              "state": "S"
+            },
+            {
+              "pid": 656260,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381624408,
+              "state": "R"
+            },
+            {
+              "pid": 656539,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381624749,
+              "state": "S"
+            },
+            {
+              "pid": 656541,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381624749,
+              "state": "R"
+            },
+            {
+              "pid": 656543,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381624750,
+              "state": "S"
+            },
+            {
+              "pid": 657263,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381625095,
+              "state": "S"
+            },
+            {
+              "pid": 658249,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381626243,
+              "state": "S"
+            },
+            {
+              "pid": 658251,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381626243,
+              "state": "R"
+            },
+            {
+              "pid": 658253,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381626244,
+              "state": "S"
+            },
+            {
+              "pid": 658256,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381626244,
+              "state": "S"
+            },
+            {
+              "pid": 658259,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381626244,
+              "state": "S"
+            },
+            {
+              "pid": 658264,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381626244,
+              "state": "R"
+            },
+            {
+              "pid": 658276,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381626247,
+              "state": "S"
+            },
+            {
+              "pid": 660053,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381630746,
+              "state": "S"
+            },
+            {
+              "pid": 660055,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381630746,
+              "state": "S"
+            },
+            {
+              "pid": 660057,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381630746,
+              "state": "S"
+            },
+            {
+              "pid": 660059,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381630746,
+              "state": "S"
+            },
+            {
+              "pid": 660061,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381630747,
+              "state": "R"
+            },
+            {
+              "pid": 660063,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381630747,
+              "state": "S"
+            },
+            {
+              "pid": 660065,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381630747,
+              "state": "S"
+            },
+            {
+              "pid": 661892,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381635235,
+              "state": "S"
+            },
+            {
+              "pid": 661895,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381635236,
+              "state": "S"
+            },
+            {
+              "pid": 661899,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381635236,
+              "state": "S"
+            },
+            {
+              "pid": 661902,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381635236,
+              "state": "S"
+            },
+            {
+              "pid": 661905,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381635236,
+              "state": "S"
+            },
+            {
+              "pid": 661908,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381635237,
+              "state": "S"
+            },
+            {
+              "pid": 661914,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381635237,
+              "state": "S"
+            },
+            {
+              "pid": 662408,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381636065,
+              "state": "S"
+            },
+            {
+              "pid": 662410,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381636065,
+              "state": "R"
+            },
+            {
+              "pid": 662751,
+              "parent": 654969,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381636502,
+              "state": "S"
+            },
+            {
+              "pid": 662774,
+              "parent": 662751,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381636553,
+              "state": "S"
+            },
+            {
+              "pid": 670975,
+              "parent": 655139,
+              "group": 654969,
+              "session": 654969,
+              "start_ticks": 381657201,
+              "state": "S"
+            }
+          ],
+          "remaining_owned_processes": [],
+          "remaining_owned_zombies": [],
+          "process_scan_statistics": {
+            "count": 413,
+            "max_scan_wall_sec": 1.989769528619945,
+            "max_observed_interval_sec": 1.8791569778695703
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,244 @@
+{
+  "schema": "mr3-p1c-independent-expected-fault-prefix-review-v1",
+  "scope": "Only a prospectively SIGKILL-injected four-step prefix and verified owned cleanup. No normal native exit, complete episode, terminal goal closure, complete contact monitoring, throughput, RL or 95% task success credit.",
+  "passed_expected_fault_prefix_checks": true,
+  "source_freeze": "c8d483228ecb0105c905459578eddbb4a23d4520",
+  "epoch": "mr3_p1c_v6_fault_w0_e1_c7259ba8",
+  "original_formal_audit": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/fault_w0_e1_v6_audit.json",
+    "sha256": "43b7df8e5ae9c9c92dd3df8b02f816a7c878a7994837723828b14d6bef2b231d",
+    "passed_in_expected_fault_mode": true
+  },
+  "contact_phase_v2_audit": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/fault_w0_e1_v6_contact_phase_v2_audit.json",
+    "sha256": "b121678c682bc7bbc3192b08d49c7ad73e3fb1f7d57c63effc9e46ecec402c45",
+    "passed_in_expected_fault_mode": true,
+    "helper_sha256": "3ce800bfa0455d25a1c3257635c7c4d593478082bbbf1c4dab6a10eed2fc6991"
+  },
+  "metadata_freeze_and_transport_profile_match_v6_plan": true,
+  "plan": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/predeclared_native_plan_v6.json",
+    "sha256": "7e8bd75d17ce393ae2e7a7e487fc40cdaf03f16c174dcf435766f23aed443302"
+  },
+  "observed_prefix": {
+    "reset_count": 1,
+    "completed_returned_steps": 4,
+    "step_dt_sec": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "sampled_physical_time_sec": 4.0,
+    "release_time_ns": 69540000000,
+    "physics_receipts": 206,
+    "last_physical_time_ns": 73540000000,
+    "goals_sent": 3,
+    "native_terminals_observed": 2,
+    "complete_goal_closure_proven": false
+  },
+  "observed_cleanup": {
+    "worker_returncode": -9,
+    "forced_shutdown": true,
+    "failed_sample": true,
+    "unique_owned_pid_start_identities": 41,
+    "no_remaining_owned_live_or_zombies": true
+  },
+  "initial_inputs_ready": {
+    "ack_map_payload_sha256": "eb8e1aff204e029c47fb74cdfee72ab67e7b86b950ba41c15a7708a052398587",
+    "ack_stamp": 69.0,
+    "ack_state_sequence": 689,
+    "first_snapshot_state_sequence": 695,
+    "initial_pause_stamp": 69.535,
+    "protocol": "delivered_inputs_before_pause-v1",
+    "proven": true,
+    "required": true,
+    "scope": "input readiness before pause; first snapshot may use newer delivery"
+  },
+  "processes": {
+    "forced_cleanup": true,
+    "no_live_or_zombie_leftovers": true,
+    "owned_pid_identities": [
+      [
+        671558,
+        381658130
+      ],
+      [
+        671685,
+        381658280
+      ],
+      [
+        671735,
+        381658440
+      ],
+      [
+        671739,
+        381658441
+      ],
+      [
+        671743,
+        381658441
+      ],
+      [
+        671747,
+        381658441
+      ],
+      [
+        671751,
+        381658441
+      ],
+      [
+        671755,
+        381658441
+      ],
+      [
+        671759,
+        381658441
+      ],
+      [
+        672753,
+        381658840
+      ],
+      [
+        672755,
+        381658840
+      ],
+      [
+        672759,
+        381658840
+      ],
+      [
+        672974,
+        381659170
+      ],
+      [
+        672976,
+        381659170
+      ],
+      [
+        672978,
+        381659170
+      ],
+      [
+        673220,
+        381659635
+      ],
+      [
+        673712,
+        381660784
+      ],
+      [
+        673714,
+        381660784
+      ],
+      [
+        673716,
+        381660784
+      ],
+      [
+        673718,
+        381660784
+      ],
+      [
+        673720,
+        381660784
+      ],
+      [
+        673722,
+        381660784
+      ],
+      [
+        673724,
+        381660786
+      ],
+      [
+        675381,
+        381665292
+      ],
+      [
+        675383,
+        381665292
+      ],
+      [
+        675385,
+        381665293
+      ],
+      [
+        675387,
+        381665293
+      ],
+      [
+        675389,
+        381665293
+      ],
+      [
+        675391,
+        381665293
+      ],
+      [
+        675393,
+        381665293
+      ],
+      [
+        677039,
+        381669796
+      ],
+      [
+        677041,
+        381669796
+      ],
+      [
+        677043,
+        381669796
+      ],
+      [
+        677045,
+        381669796
+      ],
+      [
+        677047,
+        381669797
+      ],
+      [
+        677049,
+        381669797
+      ],
+      [
+        677051,
+        381669797
+      ],
+      [
+        677384,
+        381670531
+      ],
+      [
+        677386,
+        381670532
+      ],
+      [
+        677590,
+        381670850
+      ],
+      [
+        677604,
+        381670890
+      ]
+    ],
+    "scope": "saved PID/start identities and cleanup receipt; no live /proc inference",
+    "worker_identity": {
+      "group": 671558,
+      "parent": 671392,
+      "pid": 671558,
+      "session": 671558,
+      "start_ticks": 381658130,
+      "state": "R"
+    }
+  },
+  "complete_episode_credit": false,
+  "normal_native_shutdown_credit": false,
+  "ordered_shutdown_proven": false,
+  "complete_contact_monitoring_credit": false,
+  "independent_cross_review": "p1b_information separately checked reset+four real steps, last physical boundary, 41 PID/start identities and empty final live/zombie sets; no summary/native_stop receipt.",
+  "original_results_modified": false,
+  "new_native_runs": 0
+}

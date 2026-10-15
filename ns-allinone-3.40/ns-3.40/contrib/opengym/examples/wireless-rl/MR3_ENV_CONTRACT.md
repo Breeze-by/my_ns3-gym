@@ -49,6 +49,25 @@ Nav2 `get_state`客户端原2秒future超时不变；其预算还包含请求传
 发布频率、SDK版本与任务时钟不变。无自动重试，实际超时仍是infra，旧profile证据不赋予新冻结信用。
 这是应用配置的有界等待，不是DDS发现竞态修复声明；新完整原生矩阵待验证。
 
+## 命令、租约与导航期限的纳秒端点（v7候选）
+
+v6实际截止探针暴露两次合法KEEP误拒：254.6→256.6、255.6→257.6的float差值略大于2，
+但各端点恢复为整数纳秒后的差恰好2000000000；误拒各产生-0.05真实处罚，原件保留。
+同类纯协议反例还包括精确10/60秒超时晚触发、5秒承诺晚释放、2秒租约晚到期和0.2秒心跳漏边界。
+v7候选统一复用`mr3_episode.timestamp_ns/elapsed_ns`：分别恢复原端点再比较，不加epsilon，
+也不通过改写source stamp或假物理tick消除差异。
+
+命令要求`created_ns <= now_ns < expires_ns`，且`0 < expires_ns-created_ns <= 2000000000`；
+真实未来1ns、超限1ns和到期等号仍拒绝。worker/心跳的到期端点先将整数纳秒加2秒再序列化为原秒字段；
+dispatcher的租约、待替换目标、5秒承诺及10/60秒期限使用相同端点口径，承诺mask/remaining也一致。
+JSON字段、原消息时间、重复命令原payload比较和真实所有权释放规则保留。
+这不是放宽2秒/5秒或RPC期限；正数duration若不足可表示的1ns会明确报错，不静默变成零期限。
+
+独立command-time审计须识别合法窗口的`expired_or_invalid_command_time`假拒，以及非法窗口被接受；
+其他有实证的导航/掩码拒绝保留。v6主审计PASS仅验证了记录一致，不能证明没有该bug。
+修复需新推送冻结的完整[v7矩阵](report/assets/20261015_mr3_p1c/predeclared_native_plan_v7.json)，
+尚未提供新原生PASS，不将v6结果拼入新冻结。
+
 ## 真实物理步进与交付水位
 
 候选调度器标识为`mr3-physical-20ms-v1`。普通策略step为1000个真实1ms物理tick，即1仿真秒；

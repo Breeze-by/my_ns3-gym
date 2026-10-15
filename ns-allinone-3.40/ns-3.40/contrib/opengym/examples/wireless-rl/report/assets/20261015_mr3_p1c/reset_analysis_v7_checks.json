@@ -1,0 +1,63 @@
+{
+  "schema": "mr3-reset-analysis-v7-software-checks-v1",
+  "passed": true,
+  "scope": "Synthetic source-binding and16-cell orchestration only; no native data replay, simulator, ROS initialization, GPU or training",
+  "file_sha256": {
+    "reset_analysis_v7.py": "7975b917c99d2656962c0620fba273750b55ac905e96583ba2326e479b7f03d3",
+    "reset_analysis_v7_selftest.py": "b61a1fc3d5b48382663362f4a7d6dc3dad5db750143ac8c5f9fff6b6ea73149e",
+    "reset_analysis_v6.py": "019e7a97e8d2d3370a633bd03e5e0dd13bb81b27bd7fa5c0729499c31e166995",
+    "audit_mr3_env_contact_phase_v3.py": "4e2a24e3465fa45c06c05c37b57b8b77b6e462845b3227be10c1fecb85c2c7d7"
+  },
+  "checks": [
+    {
+      "command": [
+        "env",
+        "PYTHONNOUSERSITE=1",
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-q",
+        "reset_analysis_v7_selftest.py"
+      ],
+      "cwd": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c",
+      "passed": true,
+      "test_count": 15,
+      "reported_wall_sec": 0.114
+    },
+    {
+      "command": [
+        "env",
+        "PYTHONNOUSERSITE=1",
+        "/usr/bin/python3",
+        "-m",
+        "flake8",
+        "--max-line-length=100",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reset_analysis_v7.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reset_analysis_v7_selftest.py"
+      ],
+      "passed": true
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "passed": true
+    }
+  ],
+  "coverage": [
+    "required exact freeze and caller-pinned implementation-check SHA",
+    "implementation lock Git blob matches supplied file",
+    "every locked source Git blob and current running bytes match",
+    "old v6 lock schema rejected",
+    "immutable v6 structural logic and V3/time helper source identity",
+    "full PID/start identity reuse rejected while numeric PID reuse allowed",
+    "same-seed configuration equality and cross-scene descriptive isolation",
+    "new phase3 audit link identity and explicit freeze",
+    "synthetic16cells7pairs2crossscene91openpairs; duplicate identities/epochs fail",
+    "output exclusive and default native_v7 only"
+  ],
+  "formal_analysis_authorized_by_this_check": false
+}

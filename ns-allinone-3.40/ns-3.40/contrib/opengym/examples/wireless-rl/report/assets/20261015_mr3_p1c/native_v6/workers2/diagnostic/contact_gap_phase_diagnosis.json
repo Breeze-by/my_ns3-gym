@@ -1,0 +1,98 @@
+{
+  "schema": "mr3-contact-gap-phase-diagnosis-v1",
+  "source_freeze": "c8d483228ecb0105c905459578eddbb4a23d4520",
+  "scope": "Read-only phase diagnosis of the retained v6 worker0/e2 contact audit failure. No runtime or auditor changes, no overwritten audit, no new simulator execution. Original formal verdict remains FAIL.",
+  "episode": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v6_workers2/worker0/episode002_open_101",
+  "epoch": "mr3_p1c_v6_workers2_w0_e2_85a1ef14",
+  "evaluator_sha256": "50ed5e6df02fdb03dbd54f88a3a0b12dbf6b8e1da33dd69b7ecf5bc7034d37e3",
+  "observed_lifetime_maxima_exceeding_half_second": [
+    {
+      "robot": "tb1",
+      "component": "base",
+      "field": "max_receipt_gap_sec",
+      "value_sec": 1.4200000000000017
+    },
+    {
+      "robot": "tb1",
+      "component": "caster_back_left",
+      "field": "max_receipt_gap_sec",
+      "value_sec": 1.5
+    },
+    {
+      "robot": "tb1",
+      "component": "caster_back_left",
+      "field": "max_source_gap_sec",
+      "value_sec": 0.5450000000000017
+    }
+  ],
+  "contact_subscription_start_sim_sec": 74.84,
+  "task_release_sim_sec": 77.42,
+  "evaluation_end_sim_sec": 93.44,
+  "final_flags": {
+    "collision_monitoring_active": true,
+    "collision_monitoring_fresh": true,
+    "fresh": true,
+    "ever_unhealthy": false,
+    "latched_issues": {},
+    "event_count": 0,
+    "termination_reason": "training_external_truncation",
+    "control_failure": ""
+  },
+  "frozen_code_sha256": {
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_contacts.py": "9d661498b3748d409dbb59ccd59524d5152d85ec93ee30128aebaf0a8a09fa17",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py": "bd0c2e43dbbb4258e4e1ee537fbdbe512211576eb930d5f8862d787dc73e48af",
+    "ros2_ws/ros2-multi-robot-automap/scripts/audit_mr3_env.py": "25ce0b466d988595934f26a0cfb7a81a445632b1e755f2462b80698371b272e8"
+  },
+  "phase_inference": {
+    "inference": true,
+    "classification": "Audit applies startup-inclusive lifetime maximum gaps to an after-monitor-start continuous-freshness gate.",
+    "premises": [
+      "mr3_contacts.update lines200-204 accumulate source/receipt maximum gaps both before and after started.",
+      "update lines205-208 irreversibly latch any accepted gap>.5 when started; unhealthy_components also latches stale/invalid timing after start.",
+      "start lines142-144 sets started and checks current freshness; it does not reset lifetime maxima or clear latched issues.",
+      "evaluator release lines559-563 drains pending contacts before starting the monitor.",
+      "Final fresh=true,ever_unhealthy=false,latched_issues={} with oversized lifetime maxima is incompatible with those oversize gaps having been observed after monitor.start under this frozen code."
+    ],
+    "conclusion": "The reported oversize maximum gaps occurred before monitor.start by the frozen state-machine invariant. The original auditor lines499-502 fails all lifetime maxima irrespective of this phase.",
+    "limitations": "Raw artifacts do not save individual compact-contact receipt times or max-gap endpoints. Exact offending receipt/source pairs and separate numeric post-start maxima cannot be reconstructed. No public task_monitor_ready Boolean event history is saved; final evaluator flags, release/stop records and latched state are available."
+  },
+  "source_sequence_evidence": {
+    "raw_reducer_streams": 18,
+    "publication_sequence_supported": true,
+    "all_raw_sequence_gaps_duplicates_regressions_unavailable_zero": true,
+    "tb1_base": {
+      "received": 1864,
+      "published": 1864,
+      "raw_states": 0,
+      "compact_states": 0,
+      "sequence_observed": 1864,
+      "sequence_unavailable": 0,
+      "publisher_count": 1,
+      "sequence_gaps": 0,
+      "sequence_duplicates": 0,
+      "sequence_regressions": 0
+    },
+    "tb1_caster_back_left": {
+      "received": 1864,
+      "published": 1864,
+      "raw_states": 37892,
+      "compact_states": 1852,
+      "sequence_observed": 1864,
+      "sequence_unavailable": 0,
+      "publisher_count": 1,
+      "sequence_gaps": 0,
+      "sequence_duplicates": 0,
+      "sequence_regressions": 0
+    },
+    "scope": "Raw publisher-to-reducer sequence continuity; it does not substitute for reducer-to-evaluator compact receipt timing."
+  },
+  "original_audits": {
+    "benchmark_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/workers2_v6_benchmark_audit.json",
+    "benchmark_sha256": "227fe6bcba7d4dfa21a5359761e9a3159cd1d19704649f4d7fcfc31c61762f35",
+    "benchmark_passed": false,
+    "episode_path": "worker2_w0_e2_v6_audit.json",
+    "episode_sha256": "173d45b2366a6b6bcab9f805976ab02a4f739ec3a88c1f713f8b3a6d7bfc8f5d",
+    "episode_passed": false
+  },
+  "no_gate_or_verdict_changed": true
+}

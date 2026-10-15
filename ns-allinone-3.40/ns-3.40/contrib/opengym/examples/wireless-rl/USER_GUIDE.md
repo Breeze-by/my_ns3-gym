@@ -8,7 +8,7 @@ MR3适用范围提示：2026-10-15。本页只说明现有五用户ns3-gym调度
 ns-3 Wi-Fi。唯一活动契约见 [RESEARCH_PLAN.md](RESEARCH_PLAN.md)和
 [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)；当前ROS命令见
 [launch_commands.md](../../../../../../ros2_ws/ros2-multi-robot-automap/launch_commands.md)。
-MR3-P0已验收，P1A待用户验收、P1B未开始。冻结`5e47802`累计10次尝试含1次保留的原生
+MR3-P0/P1A/P1B已验收，P1C进行中、P2A及后续未开始。冻结`5e47802`累计10次尝试含1次保留的原生
 基础设施失败，得到9个有效单元，见 [P1A报告](report/20261014_mr3_p1a.md)；尚无导航RL或通信接入命令。
 
 以下15维观测/5动作、CQI/queue/backlog age、DQN权重与历史成绩属于另一个任务，

@@ -1,0 +1,112 @@
+{
+  "schema": "mr3-v6-command-time-boundary-diagnostic-v1",
+  "freeze": "c8d483228ecb0105c905459578eddbb4a23d4520",
+  "scope": "pure arithmetic and frozen unmodified GoalDispatcher; no ROS/native run",
+  "source_sha256": {
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py": {
+      "sha256": "4b9673c8eb9626793d7b97d2362b358b12fd3ac87afaa5d423cae14e307bfd72",
+      "source": "c8d483228ecb0105c905459578eddbb4a23d4520:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py": {
+      "sha256": "ddd2e48d0ae8d9c7b09b60e3c44116e5a575d0c91d3bde6c81fdfe1a5d7d2226",
+      "source": "c8d483228ecb0105c905459578eddbb4a23d4520:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py": {
+      "sha256": "29cd90bccb5dae157ed0e01acafa61b7ef4254a6e135fd8f0f2e3f2b2629214a",
+      "source": "c8d483228ecb0105c905459578eddbb4a23d4520:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py"
+    },
+    "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py": {
+      "sha256": "f8f1fe4da9cb27f9cb7b0d30d20eca8cd72cc92fe670815ad21c2b7d40af1fad",
+      "source": "c8d483228ecb0105c905459578eddbb4a23d4520:ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py"
+    }
+  },
+  "cases": [
+    {
+      "case": "response_timeout",
+      "start": 6.08,
+      "end": 16.08,
+      "float_delta": 9.999999999999998,
+      "delta_ns": 10000000000,
+      "observed_failure": null,
+      "required_failure": "navigation_response_timeout",
+      "owner_retained": true
+    },
+    {
+      "case": "execution_timeout",
+      "start": 5.07,
+      "end": 65.07,
+      "float_delta": 59.99999999999999,
+      "delta_ns": 60000000000,
+      "observed_failure": null,
+      "required_failure": "navigation_execution_timeout",
+      "owner_retained": true
+    },
+    {
+      "case": "cancel_timeout",
+      "start": 6.08,
+      "end": 16.08,
+      "float_delta": 9.999999999999998,
+      "delta_ns": 10000000000,
+      "observed_failure": null,
+      "required_failure": "navigation_cancel_timeout",
+      "owner_retained": true
+    },
+    {
+      "case": "commitment",
+      "accepted_at": 5.03,
+      "true_end": 10.03,
+      "generated_commitment_until": 10.030000000000001,
+      "delta_ns": 5000000000,
+      "observed_wait_result": "commitment_locked",
+      "required_wait_result": "waiting",
+      "old_observation_mask_locked": true
+    },
+    {
+      "case": "lease",
+      "created": 6.03,
+      "generated_expiry": 8.030000000000001,
+      "true_expiry": 8.03,
+      "delta_ns": 2000000000,
+      "observed_failure": null,
+      "required_failure": "goal_lease_expired",
+      "owner_retained": true
+    },
+    {
+      "case": "heartbeat",
+      "previous": 5.07,
+      "now": 5.27,
+      "float_delta": 0.1999999999999993,
+      "delta_ns": 200000000,
+      "observed_due": false,
+      "required_due": true
+    },
+    {
+      "case": "adapter_command_ttl",
+      "created": 254.6,
+      "expires": 256.6,
+      "float_delta": 2.0000000000000284,
+      "ttl_ns": 2000000000,
+      "observed_adapter_time_valid": false,
+      "required_adapter_time_valid": true
+    },
+    {
+      "case": "adapter_command_ttl",
+      "created": 255.6,
+      "expires": 257.6,
+      "float_delta": 2.0000000000000284,
+      "ttl_ns": 2000000000,
+      "observed_adapter_time_valid": false,
+      "required_adapter_time_valid": true
+    }
+  ],
+  "defects_reproduced": true,
+  "cases_count": 8,
+  "script_sha256": "a1c7d480899c87ece062185651cec8dec88a568bf430f1912596617de6cbdbd2",
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/command_time_boundary_v6.py",
+    "--output",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/command_time_boundary_v6_diagnostic.json"
+  ]
+}

@@ -18,6 +18,8 @@ from scipy import ndimage
 from scipy.sparse import coo_matrix
 from scipy.sparse.csgraph import dijkstra
 
+from multi_robot_exploration.mr3_episode import elapsed_ns, timestamp_ns
+
 
 SCHEMA = "mr3-observation-v2"
 ROBOT_NAMES = ("tb1", "tb2", "tb3")
@@ -130,8 +132,8 @@ def _robot_state(robot, now):
         "goal_x": goal_x, "goal_y": goal_y,
         "commitment_until": _finite(navigation.get("commitment_until"), 0.0),
         "commitment_remaining_sec": max(
-            0.0, _finite(navigation.get("commitment_until"), 0.0) - now,
-        ),
+            0, elapsed_ns(now, _finite(navigation.get("commitment_until"), 0.0)),
+        ) / 1e9,
         "source_stamp": nav_source, "received_stamp": nav_received,
         "source_age_sec": _age(now, nav_source),
         "received_age_sec": _age(now, nav_received),
@@ -490,7 +492,8 @@ def _action_masks(robots, candidates, now):
             why["received_own_map_missing"] = list(range(8)) + [WAIT]
         elif nav["phase"] not in ("idle", "active"):
             why["protocol_" + nav["phase"]] = list(range(8)) + [WAIT]
-        elif nav["phase"] == "active" and nav["commitment_until"] > now:
+        elif (nav["phase"] == "active"
+              and timestamp_ns(nav["commitment_until"]) > timestamp_ns(now)):
             why["minimum_commitment"] = list(range(8)) + [WAIT]
         else:
             mask[WAIT] = True
