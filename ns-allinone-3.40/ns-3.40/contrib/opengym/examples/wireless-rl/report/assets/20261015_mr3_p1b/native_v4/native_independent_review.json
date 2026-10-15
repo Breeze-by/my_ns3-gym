@@ -1,0 +1,593 @@
+{
+  "limitations": [
+    "Nominal 1 Hz observation timer does not guarantee fixed-duration transitions: actual snapshot gaps include 2 s and 3 s; P1C must implement/verify fixed-step sampling.",
+    "Pose path values from snapshots are estimated-state distances. Isolated evaluator truth paths are diagnostic only and never enter actor or adapter.",
+    "Short probe deliberately ends with adapter_probe_shutdown and schema4 success=false; evaluator navigation_protocol_closed=false is not replaced by task-success credit. Adapter closure is separately proven by native receipt and protocol terminal records.",
+    "Conservative own-map path feasibility restricts candidate availability; tb3 has one native goal in open/rooms. No fallback exploration controller is used.",
+    "Original v1-v3 failed attempts remain separate evidence and are not combined with these v4 results."
+  ],
+  "review_method": "Independent raw JSONL event, action/candidate hash, per-robot pose, receipt ordering, schema4 contact and native log PID inspection; does not call audit_run. No simulator execution.",
+  "scenes": {
+    "corridors": {
+      "KEEP_robot_command_count": 40,
+      "artifact_sha256": {
+        "adapter.jsonl": "15d964c167dee86c776891c5712a11e9060eb3eec30a511113e29cf54d1644af",
+        "launch.log": "b0387df9859e4bf1e70e77bf1c006b65d004baecab45f2ebf9b94fdb1f46dbab",
+        "mr3_p1b_v4_corridors101.json": "a2029c35b0a68e9e2081c979713b9b1c2717bdc5b29357e3290a8e89497a275a",
+        "native_stop.json": "603b87e9274659452b96cb4c83f8513f47ff468d1a7b7a814afdfaee4c15ba9f",
+        "summary.json": "9572b7c4b527f89d7bb646df458dfa1b3ec8243ea3801d185b946f6aed369708"
+      },
+      "checked_conditions": {
+        "all_goals_match_explicit_saved_action_candidates": true,
+        "all_native_goals_have_native_and_protocol_terminals": true,
+        "all_observation_and_candidate_hashes_match": true,
+        "all_three_accepted_and_moved": true,
+        "discretionary_cancels_respect_five_seconds": true,
+        "launch_clean": true,
+        "native_pid_exits_match": true,
+        "native_send_ids_equal_protocol_send_ids": true,
+        "native_send_ids_unique": true,
+        "no_KEEP_resubmission": true,
+        "positive_cancel_ack_then_CANCELED_exercised": true,
+        "serial_ownership_closed": true,
+        "zero_contact_and_continuous_raw_monitoring": true
+      },
+      "contact_monitoring": {
+        "collision_events": 0,
+        "component_stream_count": 18,
+        "ever_unhealthy": false,
+        "fresh": true,
+        "latched_issues": {},
+        "max_receipt_gap_sec": 0.10000000000000853,
+        "max_source_gap_sec": 0.05500000000000682,
+        "raw_sequence_complete": true
+      },
+      "evaluator_scope": {
+        "adapter_ownership_closed": true,
+        "elapsed_sim_time_sec": 25.5,
+        "navigation_protocol_closed": false,
+        "success": false,
+        "termination_reason": "adapter_probe_shutdown"
+      },
+      "max_fused_map_received_age_sec": 1.0,
+      "max_fused_map_source_age_sec": 5.7039999999999935,
+      "native_pid_proof": {
+        "gzserver": {
+          "clean": [
+            [
+              "4",
+              "4095157"
+            ]
+          ],
+          "identity_matches": true,
+          "started": [
+            [
+              "4",
+              "4095157"
+            ]
+          ]
+        },
+        "mr3_gazebo_native_stop": {
+          "clean": [
+            [
+              "38",
+              "4101107"
+            ]
+          ],
+          "identity_matches": true,
+          "started": [
+            [
+              "38",
+              "4101107"
+            ]
+          ]
+        }
+      },
+      "native_stop_receipt": {
+        "method": "owned_launch_native_stop",
+        "native_cli_pid": 4101107,
+        "returncode": 0,
+        "server_clean_exit_recorded": true
+      },
+      "observation_encoding_delay_histogram_sec": {
+        "0.1": 18,
+        "0.2": 9
+      },
+      "official_audit": {
+        "action_count": 24,
+        "errors": [],
+        "passed": true,
+        "requires_contact_monitoring": true,
+        "sha256": "40ce6ad0003795bbeadcb288c3a65b491d1c9f58b2645b149be5d67dfb937a97"
+      },
+      "path_map_sources": [
+        "delivered_own_map"
+      ],
+      "positive_cancel_to_CANCELED_chains": [
+        {
+          "cancel_requested_stamp": 102.1,
+          "goal_id": "mr3_p1b_v4_corridors101:tb1:16",
+          "native_canceled_result_stamp": 102.5,
+          "positive_cancel_receipt_stamp": 102.3,
+          "reason": "switch"
+        },
+        {
+          "cancel_requested_stamp": 102.1,
+          "goal_id": "mr3_p1b_v4_corridors101:tb2:16",
+          "native_canceled_result_stamp": 102.5,
+          "positive_cancel_receipt_stamp": 102.3,
+          "reason": "switch"
+        },
+        {
+          "cancel_requested_stamp": 106.1,
+          "goal_id": "mr3_p1b_v4_corridors101:tb1:22",
+          "native_canceled_result_stamp": 106.5,
+          "positive_cancel_receipt_stamp": 106.3,
+          "reason": "task_stop"
+        },
+        {
+          "cancel_requested_stamp": 106.1,
+          "goal_id": "mr3_p1b_v4_corridors101:tb2:22",
+          "native_canceled_result_stamp": 106.5,
+          "positive_cancel_receipt_stamp": 106.3,
+          "reason": "task_stop"
+        },
+        {
+          "cancel_requested_stamp": 106.1,
+          "goal_id": "mr3_p1b_v4_corridors101:tb3:20",
+          "native_canceled_result_stamp": 106.5,
+          "positive_cancel_receipt_stamp": 106.3,
+          "reason": "task_stop"
+        }
+      ],
+      "protocol_failure_count": 0,
+      "protocol_native_goal_count": 8,
+      "rejected_probe_reasons": [
+        "expired_or_invalid_command_time",
+        "masked_action",
+        "navigation_changed_since_observation",
+        "wrong_epoch"
+      ],
+      "review_passed": true,
+      "robot_statistics": {
+        "tb1": {
+          "estimated_snapshot_xy_path_m": 2.797824253034051,
+          "fresh_valid_snapshots": 27,
+          "isolated_evaluator_truth_path_m": 2.8182720061077506,
+          "max_own_map_received_age_sec": 1.0,
+          "max_own_map_source_age_sec": 5.394999999999996,
+          "max_pose_received_age_sec": 0.09999999999999432,
+          "max_pose_source_age_sec": 0.19599999999999795,
+          "native_goal_count": 3,
+          "own_map_seed_traversable_snapshot_count": 27,
+          "truth_teleport_jump_count": 0
+        },
+        "tb2": {
+          "estimated_snapshot_xy_path_m": 2.316498916946051,
+          "fresh_valid_snapshots": 27,
+          "isolated_evaluator_truth_path_m": 2.324793494091883,
+          "max_own_map_received_age_sec": 1.0,
+          "max_own_map_source_age_sec": 5.394999999999996,
+          "max_pose_received_age_sec": 0.09999999999999432,
+          "max_pose_source_age_sec": 0.1950000000000074,
+          "native_goal_count": 3,
+          "own_map_seed_traversable_snapshot_count": 27,
+          "truth_teleport_jump_count": 0
+        },
+        "tb3": {
+          "estimated_snapshot_xy_path_m": 1.8784324617175252,
+          "fresh_valid_snapshots": 27,
+          "isolated_evaluator_truth_path_m": 1.8964697014916214,
+          "max_own_map_received_age_sec": 1.0,
+          "max_own_map_source_age_sec": 5.7039999999999935,
+          "max_pose_received_age_sec": 0.09999999999999432,
+          "max_pose_source_age_sec": 0.3050000000000068,
+          "native_goal_count": 2,
+          "own_map_seed_traversable_snapshot_count": 13,
+          "truth_teleport_jump_count": 0
+        }
+      },
+      "run_id": "mr3_p1b_v4_corridors101",
+      "seed": 101,
+      "snapshot_count_at_or_before_closure": 26,
+      "snapshot_count_raw": 27,
+      "snapshot_count_runner": 26,
+      "snapshot_source_dt_histogram_all_sec": {
+        "1.0": 26
+      },
+      "snapshot_source_dt_histogram_before_closure_sec": {
+        "1.0": 25
+      },
+      "source_freeze": "f9928fe97f4081c3f331ba1407aa18a9fc14a602"
+    },
+    "open": {
+      "KEEP_robot_command_count": 44,
+      "artifact_sha256": {
+        "adapter.jsonl": "4ed06954f2080a295b2e47a3381be40184718e1253382806cd775f23934323e6",
+        "launch.log": "e446b50d9d6870a5118ebbd78980c21936d38e80f843a89217af3d005fc16da4",
+        "mr3_p1b_v4_open101.json": "66f729239e76958c8a8b791f23be83df196518c85a5a50a2dfd05adbc1b7939b",
+        "native_stop.json": "6774addcead8f62ca16ba79eca7a647ba9febec8bb72e8f282e39f75bd8b3c00",
+        "summary.json": "dd9da78353c66b3ea352ceb11e7859370fe147de593d2f8fd8a45979321f7e49"
+      },
+      "checked_conditions": {
+        "all_goals_match_explicit_saved_action_candidates": true,
+        "all_native_goals_have_native_and_protocol_terminals": true,
+        "all_observation_and_candidate_hashes_match": true,
+        "all_three_accepted_and_moved": true,
+        "discretionary_cancels_respect_five_seconds": true,
+        "launch_clean": true,
+        "native_pid_exits_match": true,
+        "native_send_ids_equal_protocol_send_ids": true,
+        "native_send_ids_unique": true,
+        "no_KEEP_resubmission": true,
+        "positive_cancel_ack_then_CANCELED_exercised": true,
+        "serial_ownership_closed": true,
+        "zero_contact_and_continuous_raw_monitoring": true
+      },
+      "contact_monitoring": {
+        "collision_events": 0,
+        "component_stream_count": 18,
+        "ever_unhealthy": false,
+        "fresh": true,
+        "latched_issues": {},
+        "max_receipt_gap_sec": 0.10000000000000853,
+        "max_source_gap_sec": 0.056000000000011596,
+        "raw_sequence_complete": true
+      },
+      "evaluator_scope": {
+        "adapter_ownership_closed": true,
+        "elapsed_sim_time_sec": 25.599999999999994,
+        "navigation_protocol_closed": false,
+        "success": false,
+        "termination_reason": "adapter_probe_shutdown"
+      },
+      "max_fused_map_received_age_sec": 1.0,
+      "max_fused_map_source_age_sec": 4.353999999999999,
+      "native_pid_proof": {
+        "gzserver": {
+          "clean": [
+            [
+              "4",
+              "4079903"
+            ]
+          ],
+          "identity_matches": true,
+          "started": [
+            [
+              "4",
+              "4079903"
+            ]
+          ]
+        },
+        "mr3_gazebo_native_stop": {
+          "clean": [
+            [
+              "38",
+              "4085688"
+            ]
+          ],
+          "identity_matches": true,
+          "started": [
+            [
+              "38",
+              "4085688"
+            ]
+          ]
+        }
+      },
+      "native_stop_receipt": {
+        "method": "owned_launch_native_stop",
+        "native_cli_pid": 4085688,
+        "returncode": 0,
+        "server_clean_exit_recorded": true
+      },
+      "observation_encoding_delay_histogram_sec": {
+        "0.1": 3,
+        "0.2": 10,
+        "0.3": 14
+      },
+      "official_audit": {
+        "action_count": 25,
+        "errors": [],
+        "passed": true,
+        "requires_contact_monitoring": true,
+        "sha256": "65b63a0c4fec47322131e70b1831e321afe6b4667c941987315380e0ef61f025"
+      },
+      "path_map_sources": [
+        "delivered_own_map"
+      ],
+      "positive_cancel_to_CANCELED_chains": [
+        {
+          "cancel_requested_stamp": 101.2,
+          "goal_id": "mr3_p1b_v4_open101:tb1:16",
+          "native_canceled_result_stamp": 101.6,
+          "positive_cancel_receipt_stamp": 101.4,
+          "reason": "switch"
+        },
+        {
+          "cancel_requested_stamp": 102.2,
+          "goal_id": "mr3_p1b_v4_open101:tb2:17",
+          "native_canceled_result_stamp": 102.6,
+          "positive_cancel_receipt_stamp": 102.4,
+          "reason": "switch"
+        },
+        {
+          "cancel_requested_stamp": 105.2,
+          "goal_id": "mr3_p1b_v4_open101:tb1:22",
+          "native_canceled_result_stamp": 105.6,
+          "positive_cancel_receipt_stamp": 105.4,
+          "reason": "task_stop"
+        },
+        {
+          "cancel_requested_stamp": 105.2,
+          "goal_id": "mr3_p1b_v4_open101:tb2:23",
+          "native_canceled_result_stamp": 105.6,
+          "positive_cancel_receipt_stamp": 105.4,
+          "reason": "task_stop"
+        }
+      ],
+      "protocol_failure_count": 0,
+      "protocol_native_goal_count": 7,
+      "rejected_probe_reasons": [
+        "expired_or_invalid_command_time",
+        "masked_action",
+        "wrong_epoch"
+      ],
+      "review_passed": true,
+      "robot_statistics": {
+        "tb1": {
+          "estimated_snapshot_xy_path_m": 2.4743942739881573,
+          "fresh_valid_snapshots": 27,
+          "isolated_evaluator_truth_path_m": 2.4920495705065298,
+          "max_own_map_received_age_sec": 1.0,
+          "max_own_map_source_age_sec": 4.353999999999999,
+          "max_pose_received_age_sec": 0.09999999999999432,
+          "max_pose_source_age_sec": 0.15399999999999636,
+          "native_goal_count": 3,
+          "own_map_seed_traversable_snapshot_count": 27,
+          "truth_teleport_jump_count": 0
+        },
+        "tb2": {
+          "estimated_snapshot_xy_path_m": 2.361720153483474,
+          "fresh_valid_snapshots": 27,
+          "isolated_evaluator_truth_path_m": 2.3779818932232644,
+          "max_own_map_received_age_sec": 1.0,
+          "max_own_map_source_age_sec": 4.153000000000006,
+          "max_pose_received_age_sec": 0.09999999999999432,
+          "max_pose_source_age_sec": 0.1530000000000058,
+          "native_goal_count": 3,
+          "own_map_seed_traversable_snapshot_count": 15,
+          "truth_teleport_jump_count": 0
+        },
+        "tb3": {
+          "estimated_snapshot_xy_path_m": 0.4354807153737855,
+          "fresh_valid_snapshots": 27,
+          "isolated_evaluator_truth_path_m": 0.45079730315189304,
+          "max_own_map_received_age_sec": 1.0,
+          "max_own_map_source_age_sec": 4.247,
+          "max_pose_received_age_sec": 0.09999999999999432,
+          "max_pose_source_age_sec": 0.24800000000000466,
+          "native_goal_count": 1,
+          "own_map_seed_traversable_snapshot_count": 3,
+          "truth_teleport_jump_count": 0
+        }
+      },
+      "run_id": "mr3_p1b_v4_open101",
+      "seed": 101,
+      "snapshot_count_at_or_before_closure": 26,
+      "snapshot_count_raw": 27,
+      "snapshot_count_runner": 26,
+      "snapshot_source_dt_histogram_all_sec": {
+        "1.0": 26
+      },
+      "snapshot_source_dt_histogram_before_closure_sec": {
+        "1.0": 25
+      },
+      "source_freeze": "f9928fe97f4081c3f331ba1407aa18a9fc14a602"
+    },
+    "rooms": {
+      "KEEP_robot_command_count": 38,
+      "artifact_sha256": {
+        "adapter.jsonl": "3e0afb4019d1afa517c22df2ad70f3651003bcb0662b20f2cf5d911326e77ef3",
+        "launch.log": "8bf6def647fcbb30d96569e12b8421a9adbc2146c93215936c277a97d24ed4c9",
+        "mr3_p1b_v4_rooms101.json": "2a2d985bd7b212d225d9389ce491562ae1b8c25096ccf962c1deb8553c764357",
+        "native_stop.json": "ce76047856602dbd6a05ca38a69d7ec4d0cb51ad5db73edaab64c6ff72f43286",
+        "summary.json": "f2e14c54765413fc39d42a29ac7b22a3a65c71ec979b58f75b6a349dcd739d8e"
+      },
+      "checked_conditions": {
+        "all_goals_match_explicit_saved_action_candidates": true,
+        "all_native_goals_have_native_and_protocol_terminals": true,
+        "all_observation_and_candidate_hashes_match": true,
+        "all_three_accepted_and_moved": true,
+        "discretionary_cancels_respect_five_seconds": true,
+        "launch_clean": true,
+        "native_pid_exits_match": true,
+        "native_send_ids_equal_protocol_send_ids": true,
+        "native_send_ids_unique": true,
+        "no_KEEP_resubmission": true,
+        "positive_cancel_ack_then_CANCELED_exercised": true,
+        "serial_ownership_closed": true,
+        "zero_contact_and_continuous_raw_monitoring": true
+      },
+      "contact_monitoring": {
+        "collision_events": 0,
+        "component_stream_count": 18,
+        "ever_unhealthy": false,
+        "fresh": true,
+        "latched_issues": {},
+        "max_receipt_gap_sec": 0.10000000000000853,
+        "max_source_gap_sec": 0.055999999999997385,
+        "raw_sequence_complete": true
+      },
+      "evaluator_scope": {
+        "adapter_ownership_closed": true,
+        "elapsed_sim_time_sec": 25.599999999999994,
+        "navigation_protocol_closed": false,
+        "success": false,
+        "termination_reason": "adapter_probe_shutdown"
+      },
+      "max_fused_map_received_age_sec": 2.0,
+      "max_fused_map_source_age_sec": 4.971000000000004,
+      "native_pid_proof": {
+        "gzserver": {
+          "clean": [
+            [
+              "4",
+              "4087056"
+            ]
+          ],
+          "identity_matches": true,
+          "started": [
+            [
+              "4",
+              "4087056"
+            ]
+          ]
+        },
+        "mr3_gazebo_native_stop": {
+          "clean": [
+            [
+              "38",
+              "4092908"
+            ]
+          ],
+          "identity_matches": true,
+          "started": [
+            [
+              "38",
+              "4092908"
+            ]
+          ]
+        }
+      },
+      "native_stop_receipt": {
+        "method": "owned_launch_native_stop",
+        "native_cli_pid": 4092908,
+        "returncode": 0,
+        "server_clean_exit_recorded": true
+      },
+      "observation_encoding_delay_histogram_sec": {
+        "0.1": 1,
+        "0.2": 21,
+        "0.3": 2
+      },
+      "official_audit": {
+        "action_count": 22,
+        "errors": [],
+        "passed": true,
+        "requires_contact_monitoring": true,
+        "sha256": "2786477304482c30f8d9bb13af14104bb5c5d3ed760854bbba8b0a4365bfe08a"
+      },
+      "path_map_sources": [
+        "delivered_own_map"
+      ],
+      "positive_cancel_to_CANCELED_chains": [
+        {
+          "cancel_requested_stamp": 100.2,
+          "goal_id": "mr3_p1b_v4_rooms101:tb2:13",
+          "native_canceled_result_stamp": 100.6,
+          "positive_cancel_receipt_stamp": 100.4,
+          "reason": "switch"
+        },
+        {
+          "cancel_requested_stamp": 101.2,
+          "goal_id": "mr3_p1b_v4_rooms101:tb1:13",
+          "native_canceled_result_stamp": 101.6,
+          "positive_cancel_receipt_stamp": 101.4,
+          "reason": "switch"
+        },
+        {
+          "cancel_requested_stamp": 104.2,
+          "goal_id": "mr3_p1b_v4_rooms101:tb1:20",
+          "native_canceled_result_stamp": 104.6,
+          "positive_cancel_receipt_stamp": 104.4,
+          "reason": "task_stop"
+        },
+        {
+          "cancel_requested_stamp": 104.2,
+          "goal_id": "mr3_p1b_v4_rooms101:tb2:19",
+          "native_canceled_result_stamp": 104.6,
+          "positive_cancel_receipt_stamp": 104.4,
+          "reason": "task_stop"
+        }
+      ],
+      "protocol_failure_count": 0,
+      "protocol_native_goal_count": 7,
+      "rejected_probe_reasons": [
+        "expired_or_invalid_command_time",
+        "masked_action",
+        "wrong_epoch"
+      ],
+      "review_passed": true,
+      "robot_statistics": {
+        "tb1": {
+          "estimated_snapshot_xy_path_m": 2.6533675332176614,
+          "fresh_valid_snapshots": 24,
+          "isolated_evaluator_truth_path_m": 2.6822458159954894,
+          "max_own_map_received_age_sec": 2.0,
+          "max_own_map_source_age_sec": 4.171999999999997,
+          "max_pose_received_age_sec": 0.20000000000000284,
+          "max_pose_source_age_sec": 0.3719999999999999,
+          "native_goal_count": 3,
+          "own_map_seed_traversable_snapshot_count": 22,
+          "truth_teleport_jump_count": 0
+        },
+        "tb2": {
+          "estimated_snapshot_xy_path_m": 2.505285877368602,
+          "fresh_valid_snapshots": 24,
+          "isolated_evaluator_truth_path_m": 2.5223780139040852,
+          "max_own_map_received_age_sec": 2.0,
+          "max_own_map_source_age_sec": 4.971000000000004,
+          "max_pose_received_age_sec": 0.20000000000000284,
+          "max_pose_source_age_sec": 0.3710000000000093,
+          "native_goal_count": 3,
+          "own_map_seed_traversable_snapshot_count": 24,
+          "truth_teleport_jump_count": 0
+        },
+        "tb3": {
+          "estimated_snapshot_xy_path_m": 0.33842588073393165,
+          "fresh_valid_snapshots": 24,
+          "isolated_evaluator_truth_path_m": 0.33859760954507523,
+          "max_own_map_received_age_sec": 2.0,
+          "max_own_map_source_age_sec": 4.301000000000002,
+          "max_pose_received_age_sec": 0.20000000000000284,
+          "max_pose_source_age_sec": 0.3020000000000067,
+          "native_goal_count": 1,
+          "own_map_seed_traversable_snapshot_count": 24,
+          "truth_teleport_jump_count": 0
+        }
+      },
+      "run_id": "mr3_p1b_v4_rooms101",
+      "seed": 101,
+      "snapshot_count_at_or_before_closure": 23,
+      "snapshot_count_raw": 24,
+      "snapshot_count_runner": 23,
+      "snapshot_source_dt_histogram_all_sec": {
+        "1.0": 21,
+        "2.0": 1,
+        "3.0": 1
+      },
+      "snapshot_source_dt_histogram_before_closure_sec": {
+        "1.0": 20,
+        "2.0": 1,
+        "3.0": 1
+      },
+      "source_freeze": "f9928fe97f4081c3f331ba1407aa18a9fc14a602"
+    }
+  },
+  "schema": "mr3-p1b-native-independent-review-v1",
+  "scope": "Three seed101 development-scene scripted adapter probes at one source freeze; no RL or 95% task performance credit.",
+  "totals": {
+    "KEEP_robot_command_count": 122,
+    "all_independent_checks_passed": true,
+    "all_official_strict_audits_passed": true,
+    "explicit_joint_action_count": 71,
+    "native_goal_count": 22,
+    "positive_cancel_to_CANCELED_count": 13,
+    "raw_snapshot_count": 78,
+    "scene_count": 3,
+    "source_freezes": [
+      "f9928fe97f4081c3f331ba1407aa18a9fc14a602"
+    ]
+  }
+}

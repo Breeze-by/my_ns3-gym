@@ -1,0 +1,4103 @@
+[
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "task_start",
+    "payload": {
+      "start_sim_time_sec": 79.0
+    },
+    "stamp": 79.0
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "action",
+    "payload": {
+      "action": 41,
+      "candidate_version": "25fe678c55c3ad330023ac7c8cefd5ce3882d17e72e238d16a797d866c05a0c3",
+      "choices": [
+        0,
+        4,
+        1
+      ],
+      "command_id": 1,
+      "observation_digest": "34947a5898b68b0692973a438827915bab95943eef1d297f363d9c4be2b3f469",
+      "observation_sequence": 1,
+      "results": {
+        "tb1": "sent",
+        "tb2": "sent",
+        "tb3": "sent"
+      }
+    },
+    "stamp": 79.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "action_duplicate",
+    "payload": {
+      "action": 41,
+      "candidate_version": "25fe678c55c3ad330023ac7c8cefd5ce3882d17e72e238d16a797d866c05a0c3",
+      "choices": [
+        0,
+        4,
+        1
+      ],
+      "command_id": 1,
+      "observation_digest": "34947a5898b68b0692973a438827915bab95943eef1d297f363d9c4be2b3f469",
+      "observation_sequence": 1,
+      "results": {
+        "tb1": "sent",
+        "tb2": "sent",
+        "tb3": "sent"
+      }
+    },
+    "stamp": 79.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "action_rejected",
+    "payload": {
+      "reason": "wrong_epoch"
+    },
+    "stamp": 79.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "action_rejected",
+    "payload": {
+      "reason": "expired_or_invalid_command_time"
+    },
+    "stamp": 79.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 1,
+      "created_at": 79.0,
+      "epoch": "mr3_p1b_v4_rooms101",
+      "expires_at": 81.0,
+      "goal": {
+        "x": -0.6521060269337564,
+        "y": -0.3512132096046887
+      },
+      "goal_id": "mr3_p1b_v4_rooms101:tb1:1",
+      "lease_until": 81.0,
+      "observation_version": 1,
+      "robot": "tb1",
+      "stamp": 79.2,
+      "type": "send_goal",
+      "x": -0.6521060269337564,
+      "y": -0.3512132096046887
+    },
+    "stamp": 79.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 1,
+      "created_at": 79.0,
+      "epoch": "mr3_p1b_v4_rooms101",
+      "expires_at": 81.0,
+      "goal": {
+        "x": -0.6521060269337564,
+        "y": 0.4987868030612983
+      },
+      "goal_id": "mr3_p1b_v4_rooms101:tb2:1",
+      "lease_until": 81.0,
+      "observation_version": 1,
+      "robot": "tb2",
+      "stamp": 79.2,
+      "type": "send_goal",
+      "x": -0.6521060269337564,
+      "y": 0.4987868030612983
+    },
+    "stamp": 79.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 1,
+      "created_at": 79.0,
+      "epoch": "mr3_p1b_v4_rooms101",
+      "expires_at": 81.0,
+      "goal": {
+        "x": 0.9978939976531596,
+        "y": 0.09878679710083382
+      },
+      "goal_id": "mr3_p1b_v4_rooms101:tb3:1",
+      "lease_until": 81.0,
+      "observation_version": 1,
+      "robot": "tb3",
+      "stamp": 79.2,
+      "type": "send_goal",
+      "x": 0.9978939976531596,
+      "y": 0.09878679710083382
+    },
+    "stamp": 79.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 79.3,
+      "payload": {
+        "command_id": 1,
+        "created_at": 79.0,
+        "epoch": "mr3_p1b_v4_rooms101",
+        "expires_at": 81.0,
+        "goal": {
+          "x": -0.6521060269337564,
+          "y": -0.3512132096046887
+        },
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:1",
+        "lease_until": 81.0,
+        "observation_version": 1,
+        "robot": "tb1",
+        "stamp": 79.2,
+        "type": "send_goal",
+        "x": -0.6521060269337564,
+        "y": -0.3512132096046887
+      },
+      "received_stamp": 79.3,
+      "sequence": 1,
+      "source": "tb1",
+      "source_stamp": 79.2,
+      "stream": "command",
+      "version": 1
+    },
+    "stamp": 79.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "native_send",
+    "payload": {
+      "command_id": 1,
+      "goal_id": "mr3_p1b_v4_rooms101:tb1:1",
+      "robot": "tb1"
+    },
+    "stamp": 79.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 79.3,
+      "payload": {
+        "command_id": 1,
+        "created_at": 79.0,
+        "epoch": "mr3_p1b_v4_rooms101",
+        "expires_at": 81.0,
+        "goal": {
+          "x": -0.6521060269337564,
+          "y": 0.4987868030612983
+        },
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:1",
+        "lease_until": 81.0,
+        "observation_version": 1,
+        "robot": "tb2",
+        "stamp": 79.2,
+        "type": "send_goal",
+        "x": -0.6521060269337564,
+        "y": 0.4987868030612983
+      },
+      "received_stamp": 79.3,
+      "sequence": 1,
+      "source": "tb2",
+      "source_stamp": 79.2,
+      "stream": "command",
+      "version": 1
+    },
+    "stamp": 79.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "native_send",
+    "payload": {
+      "command_id": 1,
+      "goal_id": "mr3_p1b_v4_rooms101:tb2:1",
+      "robot": "tb2"
+    },
+    "stamp": 79.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 79.3,
+      "payload": {
+        "command_id": 1,
+        "created_at": 79.0,
+        "epoch": "mr3_p1b_v4_rooms101",
+        "expires_at": 81.0,
+        "goal": {
+          "x": 0.9978939976531596,
+          "y": 0.09878679710083382
+        },
+        "goal_id": "mr3_p1b_v4_rooms101:tb3:1",
+        "lease_until": 81.0,
+        "observation_version": 1,
+        "robot": "tb3",
+        "stamp": 79.2,
+        "type": "send_goal",
+        "x": 0.9978939976531596,
+        "y": 0.09878679710083382
+      },
+      "received_stamp": 79.3,
+      "sequence": 1,
+      "source": "tb3",
+      "source_stamp": 79.2,
+      "stream": "command",
+      "version": 1
+    },
+    "stamp": 79.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "native_send",
+    "payload": {
+      "command_id": 1,
+      "goal_id": "mr3_p1b_v4_rooms101:tb3:1",
+      "robot": "tb3"
+    },
+    "stamp": 79.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 79.3,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:1",
+        "robot": "tb1",
+        "type": "accept",
+        "value": true
+      },
+      "received_stamp": 79.4,
+      "sequence": 1,
+      "source": "tb1",
+      "source_stamp": 79.3,
+      "stream": "receipt",
+      "version": 1
+    },
+    "stamp": 79.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 79.3,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:1",
+        "robot": "tb2",
+        "type": "accept",
+        "value": true
+      },
+      "received_stamp": 79.4,
+      "sequence": 1,
+      "source": "tb2",
+      "source_stamp": 79.3,
+      "stream": "receipt",
+      "version": 1
+    },
+    "stamp": 79.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 79.3,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_rooms101:tb3:1",
+        "robot": "tb3",
+        "type": "accept",
+        "value": true
+      },
+      "received_stamp": 79.4,
+      "sequence": 1,
+      "source": "tb3",
+      "source_stamp": 79.3,
+      "stream": "receipt",
+      "version": 1
+    },
+    "stamp": 79.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 79.4,
+      "payload": {
+        "expires_at": 81.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:1"
+      },
+      "received_stamp": 79.4,
+      "sequence": 1,
+      "source": "tb1",
+      "source_stamp": 79.4,
+      "stream": "heartbeat",
+      "version": 1
+    },
+    "stamp": 79.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 79.4,
+      "payload": {
+        "expires_at": 81.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:1"
+      },
+      "received_stamp": 79.4,
+      "sequence": 1,
+      "source": "tb2",
+      "source_stamp": 79.4,
+      "stream": "heartbeat",
+      "version": 1
+    },
+    "stamp": 79.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 79.4,
+      "payload": {
+        "expires_at": 81.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb3:1"
+      },
+      "received_stamp": 79.4,
+      "sequence": 1,
+      "source": "tb3",
+      "source_stamp": 79.4,
+      "stream": "heartbeat",
+      "version": 1
+    },
+    "stamp": 79.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 79.7,
+      "payload": {
+        "expires_at": 81.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:1"
+      },
+      "received_stamp": 79.7,
+      "sequence": 2,
+      "source": "tb1",
+      "source_stamp": 79.7,
+      "stream": "heartbeat",
+      "version": 2
+    },
+    "stamp": 79.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 79.7,
+      "payload": {
+        "expires_at": 81.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:1"
+      },
+      "received_stamp": 79.7,
+      "sequence": 2,
+      "source": "tb2",
+      "source_stamp": 79.7,
+      "stream": "heartbeat",
+      "version": 2
+    },
+    "stamp": 79.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 79.7,
+      "payload": {
+        "expires_at": 81.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb3:1"
+      },
+      "received_stamp": 79.7,
+      "sequence": 2,
+      "source": "tb3",
+      "source_stamp": 79.7,
+      "stream": "heartbeat",
+      "version": 2
+    },
+    "stamp": 79.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 79.9,
+      "payload": {
+        "expires_at": 81.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:1"
+      },
+      "received_stamp": 79.9,
+      "sequence": 3,
+      "source": "tb1",
+      "source_stamp": 79.9,
+      "stream": "heartbeat",
+      "version": 3
+    },
+    "stamp": 79.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 79.9,
+      "payload": {
+        "expires_at": 81.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:1"
+      },
+      "received_stamp": 79.9,
+      "sequence": 3,
+      "source": "tb2",
+      "source_stamp": 79.9,
+      "stream": "heartbeat",
+      "version": 3
+    },
+    "stamp": 79.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 79.9,
+      "payload": {
+        "expires_at": 81.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb3:1"
+      },
+      "received_stamp": 79.9,
+      "sequence": 3,
+      "source": "tb3",
+      "source_stamp": 79.9,
+      "stream": "heartbeat",
+      "version": 3
+    },
+    "stamp": 79.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "1ec8b3c5fa7acf083da8f0f1cd92dd7d03faf4c8810525e0974a24f3835099f0",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 2,
+      "observation_digest": "d402fc0f02c58892645bdd1895d88205c77f5af817aba407f2d1d80c5c94cbeb",
+      "observation_sequence": 2,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 80.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 80.2,
+      "payload": {
+        "expires_at": 82.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:1"
+      },
+      "received_stamp": 80.2,
+      "sequence": 4,
+      "source": "tb1",
+      "source_stamp": 80.2,
+      "stream": "heartbeat",
+      "version": 4
+    },
+    "stamp": 80.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 80.2,
+      "payload": {
+        "expires_at": 82.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:1"
+      },
+      "received_stamp": 80.2,
+      "sequence": 4,
+      "source": "tb2",
+      "source_stamp": 80.2,
+      "stream": "heartbeat",
+      "version": 4
+    },
+    "stamp": 80.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 80.2,
+      "payload": {
+        "expires_at": 82.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb3:1"
+      },
+      "received_stamp": 80.2,
+      "sequence": 4,
+      "source": "tb3",
+      "source_stamp": 80.2,
+      "stream": "heartbeat",
+      "version": 4
+    },
+    "stamp": 80.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 80.4,
+      "payload": {
+        "expires_at": 82.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:1"
+      },
+      "received_stamp": 80.4,
+      "sequence": 5,
+      "source": "tb1",
+      "source_stamp": 80.4,
+      "stream": "heartbeat",
+      "version": 5
+    },
+    "stamp": 80.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 80.4,
+      "payload": {
+        "expires_at": 82.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:1"
+      },
+      "received_stamp": 80.4,
+      "sequence": 5,
+      "source": "tb2",
+      "source_stamp": 80.4,
+      "stream": "heartbeat",
+      "version": 5
+    },
+    "stamp": 80.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 80.4,
+      "payload": {
+        "expires_at": 82.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb3:1"
+      },
+      "received_stamp": 80.4,
+      "sequence": 5,
+      "source": "tb3",
+      "source_stamp": 80.4,
+      "stream": "heartbeat",
+      "version": 5
+    },
+    "stamp": 80.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 80.7,
+      "payload": {
+        "expires_at": 82.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:1"
+      },
+      "received_stamp": 80.7,
+      "sequence": 6,
+      "source": "tb1",
+      "source_stamp": 80.7,
+      "stream": "heartbeat",
+      "version": 6
+    },
+    "stamp": 80.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 80.7,
+      "payload": {
+        "expires_at": 82.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:1"
+      },
+      "received_stamp": 80.7,
+      "sequence": 6,
+      "source": "tb2",
+      "source_stamp": 80.7,
+      "stream": "heartbeat",
+      "version": 6
+    },
+    "stamp": 80.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 80.7,
+      "payload": {
+        "expires_at": 82.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb3:1"
+      },
+      "received_stamp": 80.7,
+      "sequence": 6,
+      "source": "tb3",
+      "source_stamp": 80.7,
+      "stream": "heartbeat",
+      "version": 6
+    },
+    "stamp": 80.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 80.9,
+      "payload": {
+        "expires_at": 82.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:1"
+      },
+      "received_stamp": 80.9,
+      "sequence": 7,
+      "source": "tb1",
+      "source_stamp": 80.9,
+      "stream": "heartbeat",
+      "version": 7
+    },
+    "stamp": 80.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 80.9,
+      "payload": {
+        "expires_at": 82.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:1"
+      },
+      "received_stamp": 80.9,
+      "sequence": 7,
+      "source": "tb2",
+      "source_stamp": 80.9,
+      "stream": "heartbeat",
+      "version": 7
+    },
+    "stamp": 80.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 80.9,
+      "payload": {
+        "expires_at": 82.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb3:1"
+      },
+      "received_stamp": 80.9,
+      "sequence": 7,
+      "source": "tb3",
+      "source_stamp": 80.9,
+      "stream": "heartbeat",
+      "version": 7
+    },
+    "stamp": 80.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 81.2,
+      "payload": {
+        "expires_at": 83.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:1"
+      },
+      "received_stamp": 81.2,
+      "sequence": 8,
+      "source": "tb1",
+      "source_stamp": 81.2,
+      "stream": "heartbeat",
+      "version": 8
+    },
+    "stamp": 81.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 81.2,
+      "payload": {
+        "expires_at": 83.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:1"
+      },
+      "received_stamp": 81.2,
+      "sequence": 8,
+      "source": "tb2",
+      "source_stamp": 81.2,
+      "stream": "heartbeat",
+      "version": 8
+    },
+    "stamp": 81.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 81.2,
+      "payload": {
+        "expires_at": 83.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb3:1"
+      },
+      "received_stamp": 81.2,
+      "sequence": 8,
+      "source": "tb3",
+      "source_stamp": 81.2,
+      "stream": "heartbeat",
+      "version": 8
+    },
+    "stamp": 81.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 81.2,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_rooms101:tb3:1",
+        "robot": "tb3",
+        "type": "result",
+        "value": 4
+      },
+      "received_stamp": 81.3,
+      "sequence": 2,
+      "source": "tb3",
+      "source_stamp": 81.2,
+      "stream": "receipt",
+      "version": 2
+    },
+    "stamp": 81.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 1,
+      "epoch": "mr3_p1b_v4_rooms101",
+      "goal_id": "mr3_p1b_v4_rooms101:tb3:1",
+      "robot": "tb3",
+      "stamp": 81.3,
+      "status": "SUCCEEDED",
+      "type": "protocol_terminal"
+    },
+    "stamp": 81.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 81.4,
+      "payload": {
+        "expires_at": 83.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:1"
+      },
+      "received_stamp": 81.4,
+      "sequence": 9,
+      "source": "tb1",
+      "source_stamp": 81.4,
+      "stream": "heartbeat",
+      "version": 9
+    },
+    "stamp": 81.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 81.4,
+      "payload": {
+        "expires_at": 83.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:1"
+      },
+      "received_stamp": 81.4,
+      "sequence": 9,
+      "source": "tb2",
+      "source_stamp": 81.4,
+      "stream": "heartbeat",
+      "version": 9
+    },
+    "stamp": 81.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 81.7,
+      "payload": {
+        "expires_at": 83.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:1"
+      },
+      "received_stamp": 81.7,
+      "sequence": 10,
+      "source": "tb1",
+      "source_stamp": 81.7,
+      "stream": "heartbeat",
+      "version": 10
+    },
+    "stamp": 81.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 81.7,
+      "payload": {
+        "expires_at": 83.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:1"
+      },
+      "received_stamp": 81.7,
+      "sequence": 10,
+      "source": "tb2",
+      "source_stamp": 81.7,
+      "stream": "heartbeat",
+      "version": 10
+    },
+    "stamp": 81.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 81.9,
+      "payload": {
+        "expires_at": 83.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:1"
+      },
+      "received_stamp": 81.9,
+      "sequence": 11,
+      "source": "tb1",
+      "source_stamp": 81.9,
+      "stream": "heartbeat",
+      "version": 11
+    },
+    "stamp": 81.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 81.9,
+      "payload": {
+        "expires_at": 83.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:1"
+      },
+      "received_stamp": 81.9,
+      "sequence": 11,
+      "source": "tb2",
+      "source_stamp": 81.9,
+      "stream": "heartbeat",
+      "version": 11
+    },
+    "stamp": 81.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 82.2,
+      "payload": {
+        "expires_at": 84.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:1"
+      },
+      "received_stamp": 82.2,
+      "sequence": 12,
+      "source": "tb1",
+      "source_stamp": 82.2,
+      "stream": "heartbeat",
+      "version": 12
+    },
+    "stamp": 82.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 82.2,
+      "payload": {
+        "expires_at": 84.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:1"
+      },
+      "received_stamp": 82.2,
+      "sequence": 12,
+      "source": "tb2",
+      "source_stamp": 82.2,
+      "stream": "heartbeat",
+      "version": 12
+    },
+    "stamp": 82.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 82.4,
+      "payload": {
+        "expires_at": 84.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:1"
+      },
+      "received_stamp": 82.4,
+      "sequence": 13,
+      "source": "tb1",
+      "source_stamp": 82.4,
+      "stream": "heartbeat",
+      "version": 13
+    },
+    "stamp": 82.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 82.4,
+      "payload": {
+        "expires_at": 84.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:1"
+      },
+      "received_stamp": 82.4,
+      "sequence": 13,
+      "source": "tb2",
+      "source_stamp": 82.4,
+      "stream": "heartbeat",
+      "version": 13
+    },
+    "stamp": 82.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 82.7,
+      "payload": {
+        "expires_at": 84.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:1"
+      },
+      "received_stamp": 82.7,
+      "sequence": 14,
+      "source": "tb1",
+      "source_stamp": 82.7,
+      "stream": "heartbeat",
+      "version": 14
+    },
+    "stamp": 82.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 82.7,
+      "payload": {
+        "expires_at": 84.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:1"
+      },
+      "received_stamp": 82.7,
+      "sequence": 14,
+      "source": "tb2",
+      "source_stamp": 82.7,
+      "stream": "heartbeat",
+      "version": 14
+    },
+    "stamp": 82.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 82.9,
+      "payload": {
+        "expires_at": 84.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:1"
+      },
+      "received_stamp": 82.9,
+      "sequence": 15,
+      "source": "tb1",
+      "source_stamp": 82.9,
+      "stream": "heartbeat",
+      "version": 15
+    },
+    "stamp": 82.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 82.9,
+      "payload": {
+        "expires_at": 84.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:1"
+      },
+      "received_stamp": 82.9,
+      "sequence": 15,
+      "source": "tb2",
+      "source_stamp": 82.9,
+      "stream": "heartbeat",
+      "version": 15
+    },
+    "stamp": 82.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 83.2,
+      "payload": {
+        "expires_at": 85.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:1"
+      },
+      "received_stamp": 83.2,
+      "sequence": 16,
+      "source": "tb1",
+      "source_stamp": 83.2,
+      "stream": "heartbeat",
+      "version": 16
+    },
+    "stamp": 83.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 83.2,
+      "payload": {
+        "expires_at": 85.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:1"
+      },
+      "received_stamp": 83.2,
+      "sequence": 16,
+      "source": "tb2",
+      "source_stamp": 83.2,
+      "stream": "heartbeat",
+      "version": 16
+    },
+    "stamp": 83.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "38b79535de211d8797aa8448145fb4c81eaf3de315098c3f4f9aee21b14467af",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 3,
+      "observation_digest": "775f3c9a80f209073778d1b6fa0f822d01a6ac32564c3bd68734561e4c0f7cac",
+      "observation_sequence": 3,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 83.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "action_rejected",
+    "payload": {
+      "reason": "masked_action"
+    },
+    "stamp": 83.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 83.4,
+      "payload": {
+        "expires_at": 85.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:1"
+      },
+      "received_stamp": 83.4,
+      "sequence": 17,
+      "source": "tb1",
+      "source_stamp": 83.4,
+      "stream": "heartbeat",
+      "version": 17
+    },
+    "stamp": 83.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 83.4,
+      "payload": {
+        "expires_at": 85.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:1"
+      },
+      "received_stamp": 83.4,
+      "sequence": 17,
+      "source": "tb2",
+      "source_stamp": 83.4,
+      "stream": "heartbeat",
+      "version": 17
+    },
+    "stamp": 83.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 83.7,
+      "payload": {
+        "expires_at": 85.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:1"
+      },
+      "received_stamp": 83.7,
+      "sequence": 18,
+      "source": "tb1",
+      "source_stamp": 83.7,
+      "stream": "heartbeat",
+      "version": 18
+    },
+    "stamp": 83.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 83.7,
+      "payload": {
+        "expires_at": 85.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:1"
+      },
+      "received_stamp": 83.7,
+      "sequence": 18,
+      "source": "tb2",
+      "source_stamp": 83.7,
+      "stream": "heartbeat",
+      "version": 18
+    },
+    "stamp": 83.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 83.9,
+      "payload": {
+        "expires_at": 85.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:1"
+      },
+      "received_stamp": 83.9,
+      "sequence": 19,
+      "source": "tb1",
+      "source_stamp": 83.9,
+      "stream": "heartbeat",
+      "version": 19
+    },
+    "stamp": 83.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 83.9,
+      "payload": {
+        "expires_at": 85.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:1"
+      },
+      "received_stamp": 83.9,
+      "sequence": 19,
+      "source": "tb2",
+      "source_stamp": 83.9,
+      "stream": "heartbeat",
+      "version": 19
+    },
+    "stamp": 83.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 84.2,
+      "payload": {
+        "expires_at": 86.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:1"
+      },
+      "received_stamp": 84.2,
+      "sequence": 20,
+      "source": "tb1",
+      "source_stamp": 84.2,
+      "stream": "heartbeat",
+      "version": 20
+    },
+    "stamp": 84.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 84.2,
+      "payload": {
+        "expires_at": 86.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:1"
+      },
+      "received_stamp": 84.2,
+      "sequence": 20,
+      "source": "tb2",
+      "source_stamp": 84.2,
+      "stream": "heartbeat",
+      "version": 20
+    },
+    "stamp": 84.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "f7dd2797f52e0c5a48571f73101536ecf2407acf83e3363382bf5d6757b9cfb6",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 4,
+      "observation_digest": "0b19ed938452b1b115394c482ae8f045333de50c3077f2d82c1012730cb7da87",
+      "observation_sequence": 4,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 84.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 84.2,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:1",
+        "robot": "tb2",
+        "type": "result",
+        "value": 4
+      },
+      "received_stamp": 84.3,
+      "sequence": 2,
+      "source": "tb2",
+      "source_stamp": 84.2,
+      "stream": "receipt",
+      "version": 2
+    },
+    "stamp": 84.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 1,
+      "epoch": "mr3_p1b_v4_rooms101",
+      "goal_id": "mr3_p1b_v4_rooms101:tb2:1",
+      "robot": "tb2",
+      "stamp": 84.3,
+      "status": "SUCCEEDED",
+      "type": "protocol_terminal"
+    },
+    "stamp": 84.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 84.3,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:1",
+        "robot": "tb1",
+        "type": "result",
+        "value": 4
+      },
+      "received_stamp": 84.4,
+      "sequence": 2,
+      "source": "tb1",
+      "source_stamp": 84.3,
+      "stream": "receipt",
+      "version": 2
+    },
+    "stamp": 84.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 84.4,
+      "payload": {
+        "expires_at": 86.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:1"
+      },
+      "received_stamp": 84.4,
+      "sequence": 21,
+      "source": "tb1",
+      "source_stamp": 84.4,
+      "stream": "heartbeat",
+      "version": 21
+    },
+    "stamp": 84.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 1,
+      "epoch": "mr3_p1b_v4_rooms101",
+      "goal_id": "mr3_p1b_v4_rooms101:tb1:1",
+      "robot": "tb1",
+      "stamp": 84.4,
+      "status": "SUCCEEDED",
+      "type": "protocol_terminal"
+    },
+    "stamp": 84.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "1d56a1b62e40ac26130eca2bf8d7b25a8f82091385cbd9a6a5b82e5ba2c33e3f",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 5,
+      "observation_digest": "495d4d441c1fab0206179fdf66be752d23f68432f793e1d7d1c355150f3cdd79",
+      "observation_sequence": 5,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 85.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "action",
+    "payload": {
+      "action": 999,
+      "candidate_version": "65cc8067a778a1759564f052064f4e9248f4c97de4288450a705a45f71323a02",
+      "choices": [
+        9,
+        9,
+        9
+      ],
+      "command_id": 6,
+      "observation_digest": "1b8d3fd30004119d22e20e76ce7f02a7f5fce21e516e15365b22a9dea1cee204",
+      "observation_sequence": 6,
+      "results": {
+        "tb1": "waiting",
+        "tb2": "waiting",
+        "tb3": "waiting"
+      }
+    },
+    "stamp": 86.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "action",
+    "payload": {
+      "action": 999,
+      "candidate_version": "8fc87b1ece652c89e1b02baa05c1d5ab03d58906630e17a2e4a654bc49b26bcf",
+      "choices": [
+        9,
+        9,
+        9
+      ],
+      "command_id": 7,
+      "observation_digest": "90cd48711a273e7c7f1986f07b2909d6eb4a9295e2b2cb41b0cdee5412030829",
+      "observation_sequence": 7,
+      "results": {
+        "tb1": "waiting",
+        "tb2": "waiting",
+        "tb3": "waiting"
+      }
+    },
+    "stamp": 87.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "action",
+    "payload": {
+      "action": 999,
+      "candidate_version": "6079610c9f4dbcc399058164c1fb6cf0f20fe435ed72ae5ef53f3cf40140265b",
+      "choices": [
+        9,
+        9,
+        9
+      ],
+      "command_id": 8,
+      "observation_digest": "23490531afc0e999c0f4e6800910b45b11f2d2ab7ae6e8c636b6b903633b3add",
+      "observation_sequence": 8,
+      "results": {
+        "tb1": "waiting",
+        "tb2": "waiting",
+        "tb3": "waiting"
+      }
+    },
+    "stamp": 88.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "action",
+    "payload": {
+      "action": 999,
+      "candidate_version": "f05af32c3d3f3975354566400ce76586c08078e486c964f6817bbd8e63f832ec",
+      "choices": [
+        9,
+        9,
+        9
+      ],
+      "command_id": 9,
+      "observation_digest": "305ab525bac53fe8f8d06eeeaedda1c70e923364bf1375ae46ed7419cd277f5c",
+      "observation_sequence": 9,
+      "results": {
+        "tb1": "waiting",
+        "tb2": "waiting",
+        "tb3": "waiting"
+      }
+    },
+    "stamp": 89.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "action",
+    "payload": {
+      "action": 999,
+      "candidate_version": "c184d67c8e95f4e6e27ca20f1386fa75e8b5c94e34fd4bb6429c2ffb3066488e",
+      "choices": [
+        9,
+        9,
+        9
+      ],
+      "command_id": 10,
+      "observation_digest": "7260384b9d2b2c05626c504d46b344859c21a6e7348ae2c4e08d912944e7670c",
+      "observation_sequence": 10,
+      "results": {
+        "tb1": "waiting",
+        "tb2": "waiting",
+        "tb3": "waiting"
+      }
+    },
+    "stamp": 91.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "action",
+    "payload": {
+      "action": 999,
+      "candidate_version": "0e718da0f12a3ef2c9627da02bd4709f7c568bdf616b85613bce3b1b5bf85150",
+      "choices": [
+        9,
+        9,
+        9
+      ],
+      "command_id": 11,
+      "observation_digest": "2b3ce9f16d692c511b24f404854a75168f3a34bdf5f309dabf4d936470771916",
+      "observation_sequence": 11,
+      "results": {
+        "tb1": "waiting",
+        "tb2": "waiting",
+        "tb3": "waiting"
+      }
+    },
+    "stamp": 92.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "action",
+    "payload": {
+      "action": 999,
+      "candidate_version": "8f1729b850317320a2f98317e3ed08b8bbe148301cfb23a4bf2a9e16e56eadf8",
+      "choices": [
+        9,
+        9,
+        9
+      ],
+      "command_id": 12,
+      "observation_digest": "5f572d3aa9ebbc14dc84c5edf59e3f86591d2b1e622e5d01ae705e3e417978b3",
+      "observation_sequence": 12,
+      "results": {
+        "tb1": "waiting",
+        "tb2": "waiting",
+        "tb3": "waiting"
+      }
+    },
+    "stamp": 93.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "action",
+    "payload": {
+      "action": 508,
+      "candidate_version": "89616c6a21c7f46968da729120b35d5da85584d29698b278ab21ca44f896cf8e",
+      "choices": [
+        5,
+        0,
+        8
+      ],
+      "command_id": 13,
+      "observation_digest": "3e5e15046b398d7a25e28a7bde41765931be09ae4c35adae39571e348ddc23bf",
+      "observation_sequence": 13,
+      "results": {
+        "tb1": "sent",
+        "tb2": "sent",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 94.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 13,
+      "created_at": 94.0,
+      "epoch": "mr3_p1b_v4_rooms101",
+      "expires_at": 96.0,
+      "goal": {
+        "x": 1.7422401196075867,
+        "y": 3.329121293134513
+      },
+      "goal_id": "mr3_p1b_v4_rooms101:tb1:13",
+      "lease_until": 96.0,
+      "observation_version": 13,
+      "robot": "tb1",
+      "stamp": 94.2,
+      "type": "send_goal",
+      "x": 1.7422401196075867,
+      "y": 3.329121293134513
+    },
+    "stamp": 94.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 13,
+      "created_at": 94.0,
+      "epoch": "mr3_p1b_v4_rooms101",
+      "expires_at": 96.0,
+      "goal": {
+        "x": -4.507759973524671,
+        "y": 0.5791212521563196
+      },
+      "goal_id": "mr3_p1b_v4_rooms101:tb2:13",
+      "lease_until": 96.0,
+      "observation_version": 13,
+      "robot": "tb2",
+      "stamp": 94.2,
+      "type": "send_goal",
+      "x": -4.507759973524671,
+      "y": 0.5791212521563196
+    },
+    "stamp": 94.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 94.3,
+      "payload": {
+        "command_id": 13,
+        "created_at": 94.0,
+        "epoch": "mr3_p1b_v4_rooms101",
+        "expires_at": 96.0,
+        "goal": {
+          "x": 1.7422401196075867,
+          "y": 3.329121293134513
+        },
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13",
+        "lease_until": 96.0,
+        "observation_version": 13,
+        "robot": "tb1",
+        "stamp": 94.2,
+        "type": "send_goal",
+        "x": 1.7422401196075867,
+        "y": 3.329121293134513
+      },
+      "received_stamp": 94.3,
+      "sequence": 2,
+      "source": "tb1",
+      "source_stamp": 94.2,
+      "stream": "command",
+      "version": 2
+    },
+    "stamp": 94.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "native_send",
+    "payload": {
+      "command_id": 13,
+      "goal_id": "mr3_p1b_v4_rooms101:tb1:13",
+      "robot": "tb1"
+    },
+    "stamp": 94.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 94.3,
+      "payload": {
+        "command_id": 13,
+        "created_at": 94.0,
+        "epoch": "mr3_p1b_v4_rooms101",
+        "expires_at": 96.0,
+        "goal": {
+          "x": -4.507759973524671,
+          "y": 0.5791212521563196
+        },
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:13",
+        "lease_until": 96.0,
+        "observation_version": 13,
+        "robot": "tb2",
+        "stamp": 94.2,
+        "type": "send_goal",
+        "x": -4.507759973524671,
+        "y": 0.5791212521563196
+      },
+      "received_stamp": 94.3,
+      "sequence": 2,
+      "source": "tb2",
+      "source_stamp": 94.2,
+      "stream": "command",
+      "version": 2
+    },
+    "stamp": 94.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "native_send",
+    "payload": {
+      "command_id": 13,
+      "goal_id": "mr3_p1b_v4_rooms101:tb2:13",
+      "robot": "tb2"
+    },
+    "stamp": 94.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 94.3,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13",
+        "robot": "tb1",
+        "type": "accept",
+        "value": true
+      },
+      "received_stamp": 94.4,
+      "sequence": 3,
+      "source": "tb1",
+      "source_stamp": 94.3,
+      "stream": "receipt",
+      "version": 3
+    },
+    "stamp": 94.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 94.3,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:13",
+        "robot": "tb2",
+        "type": "accept",
+        "value": true
+      },
+      "received_stamp": 94.4,
+      "sequence": 3,
+      "source": "tb2",
+      "source_stamp": 94.3,
+      "stream": "receipt",
+      "version": 3
+    },
+    "stamp": 94.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 94.4,
+      "payload": {
+        "expires_at": 96.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13"
+      },
+      "received_stamp": 94.4,
+      "sequence": 22,
+      "source": "tb1",
+      "source_stamp": 94.4,
+      "stream": "heartbeat",
+      "version": 22
+    },
+    "stamp": 94.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 94.4,
+      "payload": {
+        "expires_at": 96.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:13"
+      },
+      "received_stamp": 94.4,
+      "sequence": 21,
+      "source": "tb2",
+      "source_stamp": 94.4,
+      "stream": "heartbeat",
+      "version": 21
+    },
+    "stamp": 94.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 94.7,
+      "payload": {
+        "expires_at": 96.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13"
+      },
+      "received_stamp": 94.7,
+      "sequence": 23,
+      "source": "tb1",
+      "source_stamp": 94.7,
+      "stream": "heartbeat",
+      "version": 23
+    },
+    "stamp": 94.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 94.7,
+      "payload": {
+        "expires_at": 96.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:13"
+      },
+      "received_stamp": 94.7,
+      "sequence": 22,
+      "source": "tb2",
+      "source_stamp": 94.7,
+      "stream": "heartbeat",
+      "version": 22
+    },
+    "stamp": 94.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 94.9,
+      "payload": {
+        "expires_at": 96.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13"
+      },
+      "received_stamp": 94.9,
+      "sequence": 24,
+      "source": "tb1",
+      "source_stamp": 94.9,
+      "stream": "heartbeat",
+      "version": 24
+    },
+    "stamp": 94.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 94.9,
+      "payload": {
+        "expires_at": 96.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:13"
+      },
+      "received_stamp": 94.9,
+      "sequence": 23,
+      "source": "tb2",
+      "source_stamp": 94.9,
+      "stream": "heartbeat",
+      "version": 23
+    },
+    "stamp": 94.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 95.2,
+      "payload": {
+        "expires_at": 97.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13"
+      },
+      "received_stamp": 95.2,
+      "sequence": 25,
+      "source": "tb1",
+      "source_stamp": 95.2,
+      "stream": "heartbeat",
+      "version": 25
+    },
+    "stamp": 95.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 95.2,
+      "payload": {
+        "expires_at": 97.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:13"
+      },
+      "received_stamp": 95.2,
+      "sequence": 24,
+      "source": "tb2",
+      "source_stamp": 95.2,
+      "stream": "heartbeat",
+      "version": 24
+    },
+    "stamp": 95.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "57f56a906cfbe80a8581872d1c4c70b0a26a047247bbe6492342aad8ccec1ca6",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 14,
+      "observation_digest": "b876d84edad72ae571da7c815c33d8ced71e1c9ab871ee9006bea119358a5ee8",
+      "observation_sequence": 14,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 95.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 95.4,
+      "payload": {
+        "expires_at": 97.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13"
+      },
+      "received_stamp": 95.4,
+      "sequence": 26,
+      "source": "tb1",
+      "source_stamp": 95.4,
+      "stream": "heartbeat",
+      "version": 26
+    },
+    "stamp": 95.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 95.4,
+      "payload": {
+        "expires_at": 97.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:13"
+      },
+      "received_stamp": 95.4,
+      "sequence": 25,
+      "source": "tb2",
+      "source_stamp": 95.4,
+      "stream": "heartbeat",
+      "version": 25
+    },
+    "stamp": 95.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 95.7,
+      "payload": {
+        "expires_at": 97.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13"
+      },
+      "received_stamp": 95.7,
+      "sequence": 27,
+      "source": "tb1",
+      "source_stamp": 95.7,
+      "stream": "heartbeat",
+      "version": 27
+    },
+    "stamp": 95.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 95.7,
+      "payload": {
+        "expires_at": 97.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:13"
+      },
+      "received_stamp": 95.7,
+      "sequence": 26,
+      "source": "tb2",
+      "source_stamp": 95.7,
+      "stream": "heartbeat",
+      "version": 26
+    },
+    "stamp": 95.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 95.9,
+      "payload": {
+        "expires_at": 97.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13"
+      },
+      "received_stamp": 95.9,
+      "sequence": 28,
+      "source": "tb1",
+      "source_stamp": 95.9,
+      "stream": "heartbeat",
+      "version": 28
+    },
+    "stamp": 95.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 95.9,
+      "payload": {
+        "expires_at": 97.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:13"
+      },
+      "received_stamp": 95.9,
+      "sequence": 27,
+      "source": "tb2",
+      "source_stamp": 95.9,
+      "stream": "heartbeat",
+      "version": 27
+    },
+    "stamp": 95.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 96.2,
+      "payload": {
+        "expires_at": 98.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13"
+      },
+      "received_stamp": 96.2,
+      "sequence": 29,
+      "source": "tb1",
+      "source_stamp": 96.2,
+      "stream": "heartbeat",
+      "version": 29
+    },
+    "stamp": 96.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 96.2,
+      "payload": {
+        "expires_at": 98.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:13"
+      },
+      "received_stamp": 96.2,
+      "sequence": 28,
+      "source": "tb2",
+      "source_stamp": 96.2,
+      "stream": "heartbeat",
+      "version": 28
+    },
+    "stamp": 96.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "48a198652166e68bc6b8a3f9a1d7d25de773150ff144b04685f0a7e7be89f89f",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 15,
+      "observation_digest": "c3f291c161396c7b366066dfcc74d1cb115b22964c3ac60061f48a4fb78116e5",
+      "observation_sequence": 15,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 96.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 96.4,
+      "payload": {
+        "expires_at": 98.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13"
+      },
+      "received_stamp": 96.4,
+      "sequence": 30,
+      "source": "tb1",
+      "source_stamp": 96.4,
+      "stream": "heartbeat",
+      "version": 30
+    },
+    "stamp": 96.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 96.4,
+      "payload": {
+        "expires_at": 98.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:13"
+      },
+      "received_stamp": 96.4,
+      "sequence": 29,
+      "source": "tb2",
+      "source_stamp": 96.4,
+      "stream": "heartbeat",
+      "version": 29
+    },
+    "stamp": 96.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 96.7,
+      "payload": {
+        "expires_at": 98.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13"
+      },
+      "received_stamp": 96.7,
+      "sequence": 31,
+      "source": "tb1",
+      "source_stamp": 96.7,
+      "stream": "heartbeat",
+      "version": 31
+    },
+    "stamp": 96.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 96.7,
+      "payload": {
+        "expires_at": 98.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:13"
+      },
+      "received_stamp": 96.7,
+      "sequence": 30,
+      "source": "tb2",
+      "source_stamp": 96.7,
+      "stream": "heartbeat",
+      "version": 30
+    },
+    "stamp": 96.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 96.9,
+      "payload": {
+        "expires_at": 98.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13"
+      },
+      "received_stamp": 96.9,
+      "sequence": 32,
+      "source": "tb1",
+      "source_stamp": 96.9,
+      "stream": "heartbeat",
+      "version": 32
+    },
+    "stamp": 96.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 96.9,
+      "payload": {
+        "expires_at": 98.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:13"
+      },
+      "received_stamp": 96.9,
+      "sequence": 31,
+      "source": "tb2",
+      "source_stamp": 96.9,
+      "stream": "heartbeat",
+      "version": 31
+    },
+    "stamp": 96.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 97.2,
+      "payload": {
+        "expires_at": 99.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13"
+      },
+      "received_stamp": 97.2,
+      "sequence": 33,
+      "source": "tb1",
+      "source_stamp": 97.2,
+      "stream": "heartbeat",
+      "version": 33
+    },
+    "stamp": 97.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 97.2,
+      "payload": {
+        "expires_at": 99.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:13"
+      },
+      "received_stamp": 97.2,
+      "sequence": 32,
+      "source": "tb2",
+      "source_stamp": 97.2,
+      "stream": "heartbeat",
+      "version": 32
+    },
+    "stamp": 97.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "e516032b93c15fd5e655ad10fe84886e19a3e290f6c9293c5918c8cd1884d8cb",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 16,
+      "observation_digest": "2b57ae87edc502c1edb4637c4fd7f34929bfa0afa43ef6429a6707b7323413d1",
+      "observation_sequence": 16,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 97.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 97.4,
+      "payload": {
+        "expires_at": 99.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13"
+      },
+      "received_stamp": 97.4,
+      "sequence": 34,
+      "source": "tb1",
+      "source_stamp": 97.4,
+      "stream": "heartbeat",
+      "version": 34
+    },
+    "stamp": 97.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 97.4,
+      "payload": {
+        "expires_at": 99.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:13"
+      },
+      "received_stamp": 97.4,
+      "sequence": 33,
+      "source": "tb2",
+      "source_stamp": 97.4,
+      "stream": "heartbeat",
+      "version": 33
+    },
+    "stamp": 97.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 97.7,
+      "payload": {
+        "expires_at": 99.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13"
+      },
+      "received_stamp": 97.7,
+      "sequence": 35,
+      "source": "tb1",
+      "source_stamp": 97.7,
+      "stream": "heartbeat",
+      "version": 35
+    },
+    "stamp": 97.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 97.7,
+      "payload": {
+        "expires_at": 99.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:13"
+      },
+      "received_stamp": 97.7,
+      "sequence": 34,
+      "source": "tb2",
+      "source_stamp": 97.7,
+      "stream": "heartbeat",
+      "version": 34
+    },
+    "stamp": 97.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 97.9,
+      "payload": {
+        "expires_at": 99.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13"
+      },
+      "received_stamp": 97.9,
+      "sequence": 36,
+      "source": "tb1",
+      "source_stamp": 97.9,
+      "stream": "heartbeat",
+      "version": 36
+    },
+    "stamp": 97.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 97.9,
+      "payload": {
+        "expires_at": 99.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:13"
+      },
+      "received_stamp": 97.9,
+      "sequence": 35,
+      "source": "tb2",
+      "source_stamp": 97.9,
+      "stream": "heartbeat",
+      "version": 35
+    },
+    "stamp": 97.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 98.2,
+      "payload": {
+        "expires_at": 100.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13"
+      },
+      "received_stamp": 98.2,
+      "sequence": 37,
+      "source": "tb1",
+      "source_stamp": 98.2,
+      "stream": "heartbeat",
+      "version": 37
+    },
+    "stamp": 98.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 98.2,
+      "payload": {
+        "expires_at": 100.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:13"
+      },
+      "received_stamp": 98.2,
+      "sequence": 36,
+      "source": "tb2",
+      "source_stamp": 98.2,
+      "stream": "heartbeat",
+      "version": 36
+    },
+    "stamp": 98.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "4e672f019227e71156467d57222b254295e5616c798bea8b508013670a919d91",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 17,
+      "observation_digest": "2a7fc38d859216e7e6c41edea9a5a7b46907305668b1530db228a013d87612d0",
+      "observation_sequence": 17,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 98.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 98.4,
+      "payload": {
+        "expires_at": 100.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13"
+      },
+      "received_stamp": 98.4,
+      "sequence": 38,
+      "source": "tb1",
+      "source_stamp": 98.4,
+      "stream": "heartbeat",
+      "version": 38
+    },
+    "stamp": 98.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 98.4,
+      "payload": {
+        "expires_at": 100.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:13"
+      },
+      "received_stamp": 98.4,
+      "sequence": 37,
+      "source": "tb2",
+      "source_stamp": 98.4,
+      "stream": "heartbeat",
+      "version": 37
+    },
+    "stamp": 98.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 98.7,
+      "payload": {
+        "expires_at": 100.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13"
+      },
+      "received_stamp": 98.7,
+      "sequence": 39,
+      "source": "tb1",
+      "source_stamp": 98.7,
+      "stream": "heartbeat",
+      "version": 39
+    },
+    "stamp": 98.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 98.7,
+      "payload": {
+        "expires_at": 100.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:13"
+      },
+      "received_stamp": 98.7,
+      "sequence": 38,
+      "source": "tb2",
+      "source_stamp": 98.7,
+      "stream": "heartbeat",
+      "version": 38
+    },
+    "stamp": 98.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 98.9,
+      "payload": {
+        "expires_at": 100.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13"
+      },
+      "received_stamp": 98.9,
+      "sequence": 40,
+      "source": "tb1",
+      "source_stamp": 98.9,
+      "stream": "heartbeat",
+      "version": 40
+    },
+    "stamp": 98.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 98.9,
+      "payload": {
+        "expires_at": 100.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:13"
+      },
+      "received_stamp": 98.9,
+      "sequence": 39,
+      "source": "tb2",
+      "source_stamp": 98.9,
+      "stream": "heartbeat",
+      "version": 39
+    },
+    "stamp": 98.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 99.2,
+      "payload": {
+        "expires_at": 101.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13"
+      },
+      "received_stamp": 99.2,
+      "sequence": 41,
+      "source": "tb1",
+      "source_stamp": 99.2,
+      "stream": "heartbeat",
+      "version": 41
+    },
+    "stamp": 99.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 99.2,
+      "payload": {
+        "expires_at": 101.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:13"
+      },
+      "received_stamp": 99.2,
+      "sequence": 40,
+      "source": "tb2",
+      "source_stamp": 99.2,
+      "stream": "heartbeat",
+      "version": 40
+    },
+    "stamp": 99.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "3e3d36ab91cee4059b5969d185ab7e47691fd481dc37db0ac9037a5821ccf868",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 18,
+      "observation_digest": "d5a06c24bde9880b57910ed22fe1d4c9b591b793eb90c47a833b64927f511083",
+      "observation_sequence": 18,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 99.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 99.4,
+      "payload": {
+        "expires_at": 101.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13"
+      },
+      "received_stamp": 99.4,
+      "sequence": 42,
+      "source": "tb1",
+      "source_stamp": 99.4,
+      "stream": "heartbeat",
+      "version": 42
+    },
+    "stamp": 99.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 99.4,
+      "payload": {
+        "expires_at": 101.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:13"
+      },
+      "received_stamp": 99.4,
+      "sequence": 41,
+      "source": "tb2",
+      "source_stamp": 99.4,
+      "stream": "heartbeat",
+      "version": 41
+    },
+    "stamp": 99.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 99.7,
+      "payload": {
+        "expires_at": 101.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13"
+      },
+      "received_stamp": 99.7,
+      "sequence": 43,
+      "source": "tb1",
+      "source_stamp": 99.7,
+      "stream": "heartbeat",
+      "version": 43
+    },
+    "stamp": 99.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 99.7,
+      "payload": {
+        "expires_at": 101.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:13"
+      },
+      "received_stamp": 99.7,
+      "sequence": 42,
+      "source": "tb2",
+      "source_stamp": 99.7,
+      "stream": "heartbeat",
+      "version": 42
+    },
+    "stamp": 99.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 99.9,
+      "payload": {
+        "expires_at": 101.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13"
+      },
+      "received_stamp": 99.9,
+      "sequence": 44,
+      "source": "tb1",
+      "source_stamp": 99.9,
+      "stream": "heartbeat",
+      "version": 44
+    },
+    "stamp": 99.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 99.9,
+      "payload": {
+        "expires_at": 101.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:13"
+      },
+      "received_stamp": 99.9,
+      "sequence": 43,
+      "source": "tb2",
+      "source_stamp": 99.9,
+      "stream": "heartbeat",
+      "version": 43
+    },
+    "stamp": 99.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 100.2,
+      "payload": {
+        "expires_at": 102.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13"
+      },
+      "received_stamp": 100.2,
+      "sequence": 45,
+      "source": "tb1",
+      "source_stamp": 100.2,
+      "stream": "heartbeat",
+      "version": 45
+    },
+    "stamp": 100.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 100.2,
+      "payload": {
+        "expires_at": 102.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:13"
+      },
+      "received_stamp": 100.2,
+      "sequence": 44,
+      "source": "tb2",
+      "source_stamp": 100.2,
+      "stream": "heartbeat",
+      "version": 44
+    },
+    "stamp": 100.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "action",
+    "payload": {
+      "action": 818,
+      "candidate_version": "d501b13c4136bb12e68be564a58d8e11a9937e940b32b69d783b0f9e18ba870e",
+      "choices": [
+        8,
+        1,
+        8
+      ],
+      "command_id": 19,
+      "observation_digest": "8f8939e881f32f1bcf445c7811dc6ae4447e7d2e86a42b9c4ab50f3d19afbf51",
+      "observation_sequence": 19,
+      "results": {
+        "tb1": "kept",
+        "tb2": "switch_pending",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 100.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "protocol",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "goal_id": "mr3_p1b_v4_rooms101:tb2:13",
+      "reason": "switch",
+      "robot": "tb2",
+      "stamp": 100.2,
+      "type": "cancel_goal"
+    },
+    "stamp": 100.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 100.3,
+      "payload": {
+        "epoch": "mr3_p1b_v4_rooms101",
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:13",
+        "reason": "switch",
+        "robot": "tb2",
+        "stamp": 100.2,
+        "type": "cancel_goal"
+      },
+      "received_stamp": 100.3,
+      "sequence": 3,
+      "source": "tb2",
+      "source_stamp": 100.2,
+      "stream": "command",
+      "version": 3
+    },
+    "stamp": 100.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 100.3,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:13",
+        "robot": "tb2",
+        "type": "cancel",
+        "value": true
+      },
+      "received_stamp": 100.4,
+      "sequence": 4,
+      "source": "tb2",
+      "source_stamp": 100.3,
+      "stream": "receipt",
+      "version": 4
+    },
+    "stamp": 100.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "protocol",
+    "payload": {
+      "accepted": true,
+      "epoch": "mr3_p1b_v4_rooms101",
+      "goal_id": "mr3_p1b_v4_rooms101:tb2:13",
+      "robot": "tb2",
+      "stamp": 100.4,
+      "type": "cancel_response"
+    },
+    "stamp": 100.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 100.3,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:13",
+        "robot": "tb2",
+        "type": "result",
+        "value": 5
+      },
+      "received_stamp": 100.6,
+      "sequence": 5,
+      "source": "tb2",
+      "source_stamp": 100.3,
+      "stream": "receipt",
+      "version": 5
+    },
+    "stamp": 100.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 100.4,
+      "payload": {
+        "expires_at": 102.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13"
+      },
+      "received_stamp": 100.6,
+      "sequence": 46,
+      "source": "tb1",
+      "source_stamp": 100.4,
+      "stream": "heartbeat",
+      "version": 46
+    },
+    "stamp": 100.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 13,
+      "epoch": "mr3_p1b_v4_rooms101",
+      "goal_id": "mr3_p1b_v4_rooms101:tb2:13",
+      "robot": "tb2",
+      "stamp": 100.6,
+      "status": "CANCELED",
+      "type": "protocol_terminal"
+    },
+    "stamp": 100.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 19,
+      "created_at": 100.0,
+      "epoch": "mr3_p1b_v4_rooms101",
+      "expires_at": 102.0,
+      "goal": {
+        "x": 3.0422401389790963,
+        "y": 0.4791212506662035
+      },
+      "goal_id": "mr3_p1b_v4_rooms101:tb2:19",
+      "lease_until": 102.0,
+      "observation_version": 19,
+      "robot": "tb2",
+      "stamp": 100.6,
+      "type": "send_goal",
+      "x": 3.0422401389790963,
+      "y": 0.4791212506662035
+    },
+    "stamp": 100.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 100.6,
+      "payload": {
+        "command_id": 19,
+        "created_at": 100.0,
+        "epoch": "mr3_p1b_v4_rooms101",
+        "expires_at": 102.0,
+        "goal": {
+          "x": 3.0422401389790963,
+          "y": 0.4791212506662035
+        },
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:19",
+        "lease_until": 102.0,
+        "observation_version": 19,
+        "robot": "tb2",
+        "stamp": 100.6,
+        "type": "send_goal",
+        "x": 3.0422401389790963,
+        "y": 0.4791212506662035
+      },
+      "received_stamp": 100.6,
+      "sequence": 4,
+      "source": "tb2",
+      "source_stamp": 100.6,
+      "stream": "command",
+      "version": 4
+    },
+    "stamp": 100.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "native_send",
+    "payload": {
+      "command_id": 19,
+      "goal_id": "mr3_p1b_v4_rooms101:tb2:19",
+      "robot": "tb2"
+    },
+    "stamp": 100.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 100.6,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:19",
+        "robot": "tb2",
+        "type": "accept",
+        "value": true
+      },
+      "received_stamp": 100.8,
+      "sequence": 6,
+      "source": "tb2",
+      "source_stamp": 100.6,
+      "stream": "receipt",
+      "version": 6
+    },
+    "stamp": 100.8
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 100.7,
+      "payload": {
+        "expires_at": 102.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13"
+      },
+      "received_stamp": 100.8,
+      "sequence": 47,
+      "source": "tb1",
+      "source_stamp": 100.7,
+      "stream": "heartbeat",
+      "version": 47
+    },
+    "stamp": 100.8
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 100.7,
+      "payload": {
+        "expires_at": 102.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:19"
+      },
+      "received_stamp": 100.8,
+      "sequence": 45,
+      "source": "tb2",
+      "source_stamp": 100.7,
+      "stream": "heartbeat",
+      "version": 45
+    },
+    "stamp": 100.8
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 100.9,
+      "payload": {
+        "expires_at": 102.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13"
+      },
+      "received_stamp": 101.0,
+      "sequence": 48,
+      "source": "tb1",
+      "source_stamp": 100.9,
+      "stream": "heartbeat",
+      "version": 48
+    },
+    "stamp": 101.0
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 100.9,
+      "payload": {
+        "expires_at": 102.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:19"
+      },
+      "received_stamp": 101.0,
+      "sequence": 46,
+      "source": "tb2",
+      "source_stamp": 100.9,
+      "stream": "heartbeat",
+      "version": 46
+    },
+    "stamp": 101.0
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 101.2,
+      "payload": {
+        "expires_at": 103.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13"
+      },
+      "received_stamp": 101.2,
+      "sequence": 49,
+      "source": "tb1",
+      "source_stamp": 101.2,
+      "stream": "heartbeat",
+      "version": 49
+    },
+    "stamp": 101.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 101.2,
+      "payload": {
+        "expires_at": 103.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:19"
+      },
+      "received_stamp": 101.2,
+      "sequence": 47,
+      "source": "tb2",
+      "source_stamp": 101.2,
+      "stream": "heartbeat",
+      "version": 47
+    },
+    "stamp": 101.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "action",
+    "payload": {
+      "action": 188,
+      "candidate_version": "1c98f0e9a5be8304d1bf1aa488376e68e03e9a6dd96b185ef666d76f877bb63e",
+      "choices": [
+        1,
+        8,
+        8
+      ],
+      "command_id": 20,
+      "observation_digest": "f763b35702ae1ed7cb8792081d590d78e4e5f9341d6750d40b0d2c45f9905e9a",
+      "observation_sequence": 20,
+      "results": {
+        "tb1": "switch_pending",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 101.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "protocol",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "goal_id": "mr3_p1b_v4_rooms101:tb1:13",
+      "reason": "switch",
+      "robot": "tb1",
+      "stamp": 101.2,
+      "type": "cancel_goal"
+    },
+    "stamp": 101.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 101.3,
+      "payload": {
+        "epoch": "mr3_p1b_v4_rooms101",
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13",
+        "reason": "switch",
+        "robot": "tb1",
+        "stamp": 101.2,
+        "type": "cancel_goal"
+      },
+      "received_stamp": 101.3,
+      "sequence": 3,
+      "source": "tb1",
+      "source_stamp": 101.2,
+      "stream": "command",
+      "version": 3
+    },
+    "stamp": 101.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 101.3,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13",
+        "robot": "tb1",
+        "type": "cancel",
+        "value": true
+      },
+      "received_stamp": 101.4,
+      "sequence": 4,
+      "source": "tb1",
+      "source_stamp": 101.3,
+      "stream": "receipt",
+      "version": 4
+    },
+    "stamp": 101.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "protocol",
+    "payload": {
+      "accepted": true,
+      "epoch": "mr3_p1b_v4_rooms101",
+      "goal_id": "mr3_p1b_v4_rooms101:tb1:13",
+      "robot": "tb1",
+      "stamp": 101.4,
+      "type": "cancel_response"
+    },
+    "stamp": 101.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 101.3,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:13",
+        "robot": "tb1",
+        "type": "result",
+        "value": 5
+      },
+      "received_stamp": 101.6,
+      "sequence": 5,
+      "source": "tb1",
+      "source_stamp": 101.3,
+      "stream": "receipt",
+      "version": 5
+    },
+    "stamp": 101.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 101.4,
+      "payload": {
+        "expires_at": 103.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:19"
+      },
+      "received_stamp": 101.6,
+      "sequence": 48,
+      "source": "tb2",
+      "source_stamp": 101.4,
+      "stream": "heartbeat",
+      "version": 48
+    },
+    "stamp": 101.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 13,
+      "epoch": "mr3_p1b_v4_rooms101",
+      "goal_id": "mr3_p1b_v4_rooms101:tb1:13",
+      "robot": "tb1",
+      "stamp": 101.6,
+      "status": "CANCELED",
+      "type": "protocol_terminal"
+    },
+    "stamp": 101.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 20,
+      "created_at": 101.0,
+      "epoch": "mr3_p1b_v4_rooms101",
+      "expires_at": 103.0,
+      "goal": {
+        "x": 3.9422401523901414,
+        "y": 1.0291212588618421
+      },
+      "goal_id": "mr3_p1b_v4_rooms101:tb1:20",
+      "lease_until": 103.0,
+      "observation_version": 20,
+      "robot": "tb1",
+      "stamp": 101.6,
+      "type": "send_goal",
+      "x": 3.9422401523901414,
+      "y": 1.0291212588618421
+    },
+    "stamp": 101.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 101.6,
+      "payload": {
+        "command_id": 20,
+        "created_at": 101.0,
+        "epoch": "mr3_p1b_v4_rooms101",
+        "expires_at": 103.0,
+        "goal": {
+          "x": 3.9422401523901414,
+          "y": 1.0291212588618421
+        },
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:20",
+        "lease_until": 103.0,
+        "observation_version": 20,
+        "robot": "tb1",
+        "stamp": 101.6,
+        "type": "send_goal",
+        "x": 3.9422401523901414,
+        "y": 1.0291212588618421
+      },
+      "received_stamp": 101.6,
+      "sequence": 4,
+      "source": "tb1",
+      "source_stamp": 101.6,
+      "stream": "command",
+      "version": 4
+    },
+    "stamp": 101.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "native_send",
+    "payload": {
+      "command_id": 20,
+      "goal_id": "mr3_p1b_v4_rooms101:tb1:20",
+      "robot": "tb1"
+    },
+    "stamp": 101.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 101.6,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:20",
+        "robot": "tb1",
+        "type": "accept",
+        "value": true
+      },
+      "received_stamp": 101.8,
+      "sequence": 6,
+      "source": "tb1",
+      "source_stamp": 101.6,
+      "stream": "receipt",
+      "version": 6
+    },
+    "stamp": 101.8
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 101.7,
+      "payload": {
+        "expires_at": 103.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:20"
+      },
+      "received_stamp": 101.8,
+      "sequence": 50,
+      "source": "tb1",
+      "source_stamp": 101.7,
+      "stream": "heartbeat",
+      "version": 50
+    },
+    "stamp": 101.8
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 101.7,
+      "payload": {
+        "expires_at": 103.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:19"
+      },
+      "received_stamp": 101.8,
+      "sequence": 49,
+      "source": "tb2",
+      "source_stamp": 101.7,
+      "stream": "heartbeat",
+      "version": 49
+    },
+    "stamp": 101.8
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 101.9,
+      "payload": {
+        "expires_at": 103.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:20"
+      },
+      "received_stamp": 102.0,
+      "sequence": 51,
+      "source": "tb1",
+      "source_stamp": 101.9,
+      "stream": "heartbeat",
+      "version": 51
+    },
+    "stamp": 102.0
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 101.9,
+      "payload": {
+        "expires_at": 103.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:19"
+      },
+      "received_stamp": 102.0,
+      "sequence": 50,
+      "source": "tb2",
+      "source_stamp": 101.9,
+      "stream": "heartbeat",
+      "version": 50
+    },
+    "stamp": 102.0
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 102.2,
+      "payload": {
+        "expires_at": 104.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:20"
+      },
+      "received_stamp": 102.2,
+      "sequence": 52,
+      "source": "tb1",
+      "source_stamp": 102.2,
+      "stream": "heartbeat",
+      "version": 52
+    },
+    "stamp": 102.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 102.2,
+      "payload": {
+        "expires_at": 104.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:19"
+      },
+      "received_stamp": 102.2,
+      "sequence": 51,
+      "source": "tb2",
+      "source_stamp": 102.2,
+      "stream": "heartbeat",
+      "version": 51
+    },
+    "stamp": 102.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "925190f3bc719dc2d43b6173cf4b87d75a08d21370d1e679b37fa3dd8dd14d4f",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 21,
+      "observation_digest": "0afb37e05b9c6fbdc66b29420e25959a321668aa38de454fb9fc498134ec7624",
+      "observation_sequence": 21,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 102.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 102.4,
+      "payload": {
+        "expires_at": 104.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:20"
+      },
+      "received_stamp": 102.4,
+      "sequence": 53,
+      "source": "tb1",
+      "source_stamp": 102.4,
+      "stream": "heartbeat",
+      "version": 53
+    },
+    "stamp": 102.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 102.4,
+      "payload": {
+        "expires_at": 104.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:19"
+      },
+      "received_stamp": 102.4,
+      "sequence": 52,
+      "source": "tb2",
+      "source_stamp": 102.4,
+      "stream": "heartbeat",
+      "version": 52
+    },
+    "stamp": 102.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 102.7,
+      "payload": {
+        "expires_at": 104.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:20"
+      },
+      "received_stamp": 102.7,
+      "sequence": 54,
+      "source": "tb1",
+      "source_stamp": 102.7,
+      "stream": "heartbeat",
+      "version": 54
+    },
+    "stamp": 102.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 102.7,
+      "payload": {
+        "expires_at": 104.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:19"
+      },
+      "received_stamp": 102.7,
+      "sequence": 53,
+      "source": "tb2",
+      "source_stamp": 102.7,
+      "stream": "heartbeat",
+      "version": 53
+    },
+    "stamp": 102.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 102.9,
+      "payload": {
+        "expires_at": 104.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:20"
+      },
+      "received_stamp": 102.9,
+      "sequence": 55,
+      "source": "tb1",
+      "source_stamp": 102.9,
+      "stream": "heartbeat",
+      "version": 55
+    },
+    "stamp": 102.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 102.9,
+      "payload": {
+        "expires_at": 104.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:19"
+      },
+      "received_stamp": 102.9,
+      "sequence": 54,
+      "source": "tb2",
+      "source_stamp": 102.9,
+      "stream": "heartbeat",
+      "version": 54
+    },
+    "stamp": 102.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 103.2,
+      "payload": {
+        "expires_at": 105.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:20"
+      },
+      "received_stamp": 103.2,
+      "sequence": 56,
+      "source": "tb1",
+      "source_stamp": 103.2,
+      "stream": "heartbeat",
+      "version": 56
+    },
+    "stamp": 103.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 103.2,
+      "payload": {
+        "expires_at": 105.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:19"
+      },
+      "received_stamp": 103.2,
+      "sequence": 55,
+      "source": "tb2",
+      "source_stamp": 103.2,
+      "stream": "heartbeat",
+      "version": 55
+    },
+    "stamp": 103.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "4a9d1583af0866608e9e5f17bc1aa960c3c92e1e6777957e8462f2346d5c487c",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 22,
+      "observation_digest": "f2759a992953ee1694e545aa62d51aa81b86a0a1fb4c1d2cd023161408a5dd1b",
+      "observation_sequence": 22,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 103.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 103.4,
+      "payload": {
+        "expires_at": 105.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:20"
+      },
+      "received_stamp": 103.4,
+      "sequence": 57,
+      "source": "tb1",
+      "source_stamp": 103.4,
+      "stream": "heartbeat",
+      "version": 57
+    },
+    "stamp": 103.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 103.4,
+      "payload": {
+        "expires_at": 105.4,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:19"
+      },
+      "received_stamp": 103.4,
+      "sequence": 56,
+      "source": "tb2",
+      "source_stamp": 103.4,
+      "stream": "heartbeat",
+      "version": 56
+    },
+    "stamp": 103.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 103.7,
+      "payload": {
+        "expires_at": 105.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:20"
+      },
+      "received_stamp": 103.7,
+      "sequence": 58,
+      "source": "tb1",
+      "source_stamp": 103.7,
+      "stream": "heartbeat",
+      "version": 58
+    },
+    "stamp": 103.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 103.7,
+      "payload": {
+        "expires_at": 105.7,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:19"
+      },
+      "received_stamp": 103.7,
+      "sequence": 57,
+      "source": "tb2",
+      "source_stamp": 103.7,
+      "stream": "heartbeat",
+      "version": 57
+    },
+    "stamp": 103.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 103.9,
+      "payload": {
+        "expires_at": 105.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:20"
+      },
+      "received_stamp": 103.9,
+      "sequence": 59,
+      "source": "tb1",
+      "source_stamp": 103.9,
+      "stream": "heartbeat",
+      "version": 59
+    },
+    "stamp": 103.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 103.9,
+      "payload": {
+        "expires_at": 105.9,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:19"
+      },
+      "received_stamp": 103.9,
+      "sequence": 58,
+      "source": "tb2",
+      "source_stamp": 103.9,
+      "stream": "heartbeat",
+      "version": 58
+    },
+    "stamp": 103.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 104.2,
+      "payload": {
+        "expires_at": 106.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:20"
+      },
+      "received_stamp": 104.2,
+      "sequence": 60,
+      "source": "tb1",
+      "source_stamp": 104.2,
+      "stream": "heartbeat",
+      "version": 60
+    },
+    "stamp": 104.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 104.2,
+      "payload": {
+        "expires_at": 106.2,
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:19"
+      },
+      "received_stamp": 104.2,
+      "sequence": 59,
+      "source": "tb2",
+      "source_stamp": 104.2,
+      "stream": "heartbeat",
+      "version": 59
+    },
+    "stamp": 104.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "protocol",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "goal_id": "mr3_p1b_v4_rooms101:tb1:20",
+      "reason": "task_stop",
+      "robot": "tb1",
+      "stamp": 104.2,
+      "type": "cancel_goal"
+    },
+    "stamp": 104.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "protocol",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "goal_id": "mr3_p1b_v4_rooms101:tb2:19",
+      "reason": "task_stop",
+      "robot": "tb2",
+      "stamp": 104.2,
+      "type": "cancel_goal"
+    },
+    "stamp": 104.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 104.3,
+      "payload": {
+        "epoch": "mr3_p1b_v4_rooms101",
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:20",
+        "reason": "task_stop",
+        "robot": "tb1",
+        "stamp": 104.2,
+        "type": "cancel_goal"
+      },
+      "received_stamp": 104.3,
+      "sequence": 5,
+      "source": "tb1",
+      "source_stamp": 104.2,
+      "stream": "command",
+      "version": 5
+    },
+    "stamp": 104.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 104.3,
+      "payload": {
+        "epoch": "mr3_p1b_v4_rooms101",
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:19",
+        "reason": "task_stop",
+        "robot": "tb2",
+        "stamp": 104.2,
+        "type": "cancel_goal"
+      },
+      "received_stamp": 104.3,
+      "sequence": 5,
+      "source": "tb2",
+      "source_stamp": 104.2,
+      "stream": "command",
+      "version": 5
+    },
+    "stamp": 104.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 104.3,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:20",
+        "robot": "tb1",
+        "type": "cancel",
+        "value": true
+      },
+      "received_stamp": 104.4,
+      "sequence": 7,
+      "source": "tb1",
+      "source_stamp": 104.3,
+      "stream": "receipt",
+      "version": 7
+    },
+    "stamp": 104.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 104.3,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:19",
+        "robot": "tb2",
+        "type": "cancel",
+        "value": true
+      },
+      "received_stamp": 104.4,
+      "sequence": 7,
+      "source": "tb2",
+      "source_stamp": 104.3,
+      "stream": "receipt",
+      "version": 7
+    },
+    "stamp": 104.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "protocol",
+    "payload": {
+      "accepted": true,
+      "epoch": "mr3_p1b_v4_rooms101",
+      "goal_id": "mr3_p1b_v4_rooms101:tb1:20",
+      "robot": "tb1",
+      "stamp": 104.4,
+      "type": "cancel_response"
+    },
+    "stamp": 104.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "protocol",
+    "payload": {
+      "accepted": true,
+      "epoch": "mr3_p1b_v4_rooms101",
+      "goal_id": "mr3_p1b_v4_rooms101:tb2:19",
+      "robot": "tb2",
+      "stamp": 104.4,
+      "type": "cancel_response"
+    },
+    "stamp": 104.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 104.3,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_rooms101:tb2:19",
+        "robot": "tb2",
+        "type": "result",
+        "value": 5
+      },
+      "received_stamp": 104.6,
+      "sequence": 8,
+      "source": "tb2",
+      "source_stamp": 104.3,
+      "stream": "receipt",
+      "version": 8
+    },
+    "stamp": 104.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_rooms101",
+      "generated_stamp": 104.3,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_rooms101:tb1:20",
+        "robot": "tb1",
+        "type": "result",
+        "value": 5
+      },
+      "received_stamp": 104.6,
+      "sequence": 8,
+      "source": "tb1",
+      "source_stamp": 104.3,
+      "stream": "receipt",
+      "version": 8
+    },
+    "stamp": 104.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 19,
+      "epoch": "mr3_p1b_v4_rooms101",
+      "goal_id": "mr3_p1b_v4_rooms101:tb2:19",
+      "robot": "tb2",
+      "stamp": 104.6,
+      "status": "CANCELED",
+      "type": "protocol_terminal"
+    },
+    "stamp": 104.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 20,
+      "epoch": "mr3_p1b_v4_rooms101",
+      "goal_id": "mr3_p1b_v4_rooms101:tb1:20",
+      "robot": "tb1",
+      "stamp": 104.6,
+      "status": "CANCELED",
+      "type": "protocol_terminal"
+    },
+    "stamp": 104.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_rooms101",
+    "kind": "task_stopped",
+    "payload": {
+      "navigation_failure": false,
+      "pending_goal_count": 0,
+      "robot_names": [
+        "tb1",
+        "tb2",
+        "tb3"
+      ],
+      "start_sim_time_sec": 79.0,
+      "stop_sim_time_sec": 104.6
+    },
+    "stamp": 104.6
+  }
+]

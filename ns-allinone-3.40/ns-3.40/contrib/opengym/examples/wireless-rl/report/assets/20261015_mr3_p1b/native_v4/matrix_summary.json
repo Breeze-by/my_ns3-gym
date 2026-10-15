@@ -1,0 +1,157 @@
+{
+  "schema": "mr3-p1b-final-matrix-v1",
+  "runtime_freeze": "f9928fe97f4081c3f331ba1407aa18a9fc14a602",
+  "scope": "three-robot scripted adapter probes only; no RL, reset, 95% task-success or network-performance credit",
+  "same_freeze_all_passed": true,
+  "all_attempts": {
+    "total": 6,
+    "retained_failed_earlier_freezes": 3,
+    "final_freeze_passed": 3
+  },
+  "rows": [
+    {
+      "scene": "open",
+      "seed": 101,
+      "run_id": "mr3_p1b_v4_open101",
+      "runtime_freeze": "f9928fe97f4081c3f331ba1407aa18a9fc14a602",
+      "wall_duration_sec": 168.2350706369616,
+      "closed": {
+        "start_sim_time_sec": 80.0,
+        "stop_sim_time_sec": 105.6,
+        "pending_goal_count": 0,
+        "robot_names": [
+          "tb1",
+          "tb2",
+          "tb3"
+        ],
+        "navigation_failure": false
+      },
+      "audit_passed": true,
+      "snapshot_count": 27,
+      "action_count": 25,
+      "native_send_count": 7,
+      "native_terminal_count": 7,
+      "cancel_goal_count": 4,
+      "keep_robot_command_count": 44,
+      "estimated_snapshot_path_length_m": {
+        "tb1": 2.4743942739881573,
+        "tb2": 2.361720153483474,
+        "tb3": 0.4354807153737855
+      },
+      "contact_monitoring": {
+        "available": true,
+        "collision_events": 0,
+        "evaluator_success": false,
+        "file": "mr3_p1b_v4_open101.json",
+        "monitoring_active": true,
+        "monitoring_fresh": true,
+        "navigation_protocol_closed_in_evaluator": false,
+        "passed": true,
+        "raw_stream_audit_passed": true,
+        "raw_stream_count": 18,
+        "required": true,
+        "schema_version": 4,
+        "scope": "interrupted scripted adapter probe",
+        "task_success_claimed": false,
+        "termination_reason": "adapter_probe_shutdown"
+      },
+      "audit_sha256": "65b63a0c4fec47322131e70b1831e321afe6b4667c941987315380e0ef61f025"
+    },
+    {
+      "scene": "rooms",
+      "seed": 101,
+      "run_id": "mr3_p1b_v4_rooms101",
+      "runtime_freeze": "f9928fe97f4081c3f331ba1407aa18a9fc14a602",
+      "wall_duration_sec": 169.6747120139189,
+      "closed": {
+        "start_sim_time_sec": 79.0,
+        "stop_sim_time_sec": 104.6,
+        "pending_goal_count": 0,
+        "robot_names": [
+          "tb1",
+          "tb2",
+          "tb3"
+        ],
+        "navigation_failure": false
+      },
+      "audit_passed": true,
+      "snapshot_count": 24,
+      "action_count": 22,
+      "native_send_count": 7,
+      "native_terminal_count": 7,
+      "cancel_goal_count": 4,
+      "keep_robot_command_count": 38,
+      "estimated_snapshot_path_length_m": {
+        "tb1": 2.6533675332176614,
+        "tb2": 2.505285877368602,
+        "tb3": 0.33842588073393165
+      },
+      "contact_monitoring": {
+        "available": true,
+        "collision_events": 0,
+        "evaluator_success": false,
+        "file": "mr3_p1b_v4_rooms101.json",
+        "monitoring_active": true,
+        "monitoring_fresh": true,
+        "navigation_protocol_closed_in_evaluator": false,
+        "passed": true,
+        "raw_stream_audit_passed": true,
+        "raw_stream_count": 18,
+        "required": true,
+        "schema_version": 4,
+        "scope": "interrupted scripted adapter probe",
+        "task_success_claimed": false,
+        "termination_reason": "adapter_probe_shutdown"
+      },
+      "audit_sha256": "2786477304482c30f8d9bb13af14104bb5c5d3ed760854bbba8b0a4365bfe08a"
+    },
+    {
+      "scene": "corridors",
+      "seed": 101,
+      "run_id": "mr3_p1b_v4_corridors101",
+      "runtime_freeze": "f9928fe97f4081c3f331ba1407aa18a9fc14a602",
+      "wall_duration_sec": 164.81447262968868,
+      "closed": {
+        "start_sim_time_sec": 81.0,
+        "stop_sim_time_sec": 106.5,
+        "pending_goal_count": 0,
+        "robot_names": [
+          "tb1",
+          "tb2",
+          "tb3"
+        ],
+        "navigation_failure": false
+      },
+      "audit_passed": true,
+      "snapshot_count": 27,
+      "action_count": 24,
+      "native_send_count": 8,
+      "native_terminal_count": 8,
+      "cancel_goal_count": 5,
+      "keep_robot_command_count": 40,
+      "estimated_snapshot_path_length_m": {
+        "tb1": 2.797824253034051,
+        "tb2": 2.316498916946051,
+        "tb3": 1.8784324617175252
+      },
+      "contact_monitoring": {
+        "available": true,
+        "collision_events": 0,
+        "evaluator_success": false,
+        "file": "mr3_p1b_v4_corridors101.json",
+        "monitoring_active": true,
+        "monitoring_fresh": true,
+        "navigation_protocol_closed_in_evaluator": false,
+        "passed": true,
+        "raw_stream_audit_passed": true,
+        "raw_stream_count": 18,
+        "required": true,
+        "schema_version": 4,
+        "scope": "interrupted scripted adapter probe",
+        "task_success_claimed": false,
+        "termination_reason": "adapter_probe_shutdown"
+      },
+      "audit_sha256": "40ce6ad0003795bbeadcb288c3a65b491d1c9f58b2645b149be5d67dfb937a97"
+    }
+  ]
+}

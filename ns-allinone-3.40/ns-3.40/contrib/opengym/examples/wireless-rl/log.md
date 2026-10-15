@@ -2317,3 +2317,61 @@ Git根source Humble和ROS install，设置`PYTHONNOUSERSITE=1`及
 完整单测的主机负载），worker约.686–.844墙秒。这不是原生Hz/仿真倍率或P1C吞吐。
 原同步profile的冻结helper显式绑定复现版另存`mr3_p1b_sync_map_profile_replay.py`，
 原测量脚本与哈希保留。下一步仅执行v4预声明的3场景同冻结原生矩阵确认修复，门限不变。
+
+### P1B v4同冻结原生矩阵：open101
+
+运行冻结`f9928fe97f4081c3f331ba1407aa18a9fc14a602`已推送。命令为
+`rtk proxy bash -c 'source /opt/ros/humble/setup.bash; source install/setup.bash; source /usr/share/gazebo/setup.sh; export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 ROS_DOMAIN_ID=108 GAZEBO_MASTER_URI=http://127.0.0.1:11901; /usr/bin/python3 scripts/run_mr3_adapter_probe.py --scene open --seed 101 --run-id mr3_p1b_v4_open101'`
+（ROS工作区执行），168.24墙秒。task sim80.0–105.6终态闭合，真实7次发送/7终态，44robot-KEEP无重发，
+4条同目标正取消ACK→CANCELED，重复幂等及wrong_epoch/expired/masked拒绝齐全。
+`rtk proxy /usr/bin/python3 scripts/audit_mr3_adapter_probe.py log/mr3_adapter/mr3_p1b_v4_open101 --require-contact-monitoring`独立PASS；
+27原始快照全部可回放，三台观测估计路径2.474/2.362/.435m；18路持续新鲜、原始发布序列完整，零非支撑接触。
+Gazebo与stop CLI各唯一PID匹配clean exit0，父及子进程均无原生失败。schema4为adapter_probe_shutdown、
+success=false；协议闭合由adapter原件单独证明，不把评价器navigation_protocol_closed=false改为PASS。
+后期tb3自身地图路径起点可行性低（3/27快照），是保守候选限制，保留诊断，不能声称95%RL任务可达。
+选定原件`report/assets/20261015_mr3_p1b/native_v4/open101/`；运行目录保留所有文件。
+同冻结rooms101随后启动，域109/端口11902，唯一run-id`mr3_p1b_v4_rooms101`，其他参数/门限不变。
+
+### P1B v4同冻结原生矩阵：rooms101
+
+冻结仍为`f9928fe97f4081c3f331ba1407aa18a9fc14a602`。同open完整命令，环境改
+`ROS_DOMAIN_ID=109 GAZEBO_MASTER_URI=http://127.0.0.1:11902`，参数改
+`--scene rooms --seed 101 --run-id mr3_p1b_v4_rooms101`，其余源/门限/脚本不变。
+169.67墙秒，task sim79.0–104.6，导航终态闭合。
+`rtk proxy /usr/bin/python3 scripts/audit_mr3_adapter_probe.py log/mr3_adapter/mr3_p1b_v4_rooms101 --require-contact-monitoring`
+严格PASS，18路持续新鲜/原始序列完整/零接触，真实三台移动与取消/终态、唯一原生server/CLI退出均通过。
+原生JSON仍为未完成adapter_probe_shutdown，不作为95%任务成功。
+选定原件`report/assets/20261015_mr3_p1b/native_v4/rooms101/`，完整指标在audit/summary。
+同冻结corridors101随后启动，域110/端口11903、run-id`mr3_p1b_v4_corridors101`，不跨冻结拼接。
+
+
+### P1B v4同冻结原生矩阵：corridors101与交付结论
+
+运行冻结`f9928fe97f4081c3f331ba1407aa18a9fc14a602`，ROS工作区精确命令：
+`rtk proxy bash -c 'source /opt/ros/humble/setup.bash; source install/setup.bash; source /usr/share/gazebo/setup.sh; export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1 ROS_DOMAIN_ID=110 GAZEBO_MASTER_URI=http://127.0.0.1:11903; /usr/bin/python3 scripts/run_mr3_adapter_probe.py --scene corridors --seed 101 --run-id mr3_p1b_v4_corridors101'`。
+164.81墙秒，task sim81.0–106.5，三台所有权终态闭合。
+`rtk proxy /usr/bin/python3 scripts/audit_mr3_adapter_probe.py log/mr3_adapter/mr3_p1b_v4_corridors101 --require-contact-monitoring`
+独立严格PASS：27原始快照、24动作、8次真实发送/8终态，40robot-KEEP无重发，
+5条正取消ACK→同目标CANCELED。三台观测估计路径2.798/2.316/1.878m；
+18路监测持续新鲜、原始序列完整、零非支撑接触，原生server/CLI各唯一PID clean exit0。
+选定原件`report/assets/20261015_mr3_p1b/native_v4/corridors101/`，原目录保持不变。
+
+v4同冻结三场景各seed101均通过适配严格审计；前三次旧冻结open失败完整保留，累计6次尝试，
+不混用旧冻结或把短探针当作95%成功。每个schema4仍为adapter_probe_shutdown/success=false，
+其navigation_protocol_closed=false也未改写；目标闭合由独立adapter原件证明。
+汇总`native_v4/matrix_summary.json`和独立复核`native_v4/native_independent_review.json`，
+报告`report/20261015_mr3_p1b.md`。名义1秒timer实际rooms快照出现2/3秒间隔，
+open的tb3起点仅3/27快照可行；保守门限保持，不宣称训练可用固定dt或95%候选完备。
+本步仅理想接口和脚本协议验证完成，状态待用户验收；P1C/reset、训练和gateway未开始。
+
+交付只读复核：用system Python在三个独立临时目录复制选定压缩证据，解压launch.log，
+调用冻结审计器`audit_run(..., require_contact_monitoring=True)`，三份均PASS且快照/动作/
+真实发送/终态/取消/KEEP/路径与canonical audit一致，原证据未改写。
+22个本步修改的运行/测试文件逐字节匹配f9928fe Git对象，备份分支仍为
+`8fe1495b6624cd9136f3ce160acaa274428e54ae`；记录`report/assets/20261015_mr3_p1b/delivery_checks.json`。
+此为离线重放与静态验证，没有额外模拟器、训练或其他数量实验。
+
+交付文档静态检查：11份活动Markdown的104个本地链接与14段Bash语法通过，
+原始/选定证据及冻结哈希相符；`git diff --check`通过。`git add -n .`仅包含活动文档、
+本追加日志及选定研究原件，无build/install、bag、地图、checkpoint或额外运行日志。
+最终提交推送后保持P1B待用户验收，P1C及后续未开始。

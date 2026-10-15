@@ -1,0 +1,4556 @@
+[
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "task_start",
+    "payload": {
+      "start_sim_time_sec": 81.0
+    },
+    "stamp": 81.0
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "action",
+    "payload": {
+      "action": 145,
+      "candidate_version": "536ed9e25fd3cb2d300f05adbe5112dab461b65d063121c8f7414eb1c6681498",
+      "choices": [
+        1,
+        4,
+        5
+      ],
+      "command_id": 1,
+      "observation_digest": "cddbcb3fe4b8cbfab8460ddb758aaf70e359b424e1b3bbcb40c22d4f0fd42c2d",
+      "observation_sequence": 1,
+      "results": {
+        "tb1": "sent",
+        "tb2": "sent",
+        "tb3": "sent"
+      }
+    },
+    "stamp": 81.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "action_duplicate",
+    "payload": {
+      "action": 145,
+      "candidate_version": "536ed9e25fd3cb2d300f05adbe5112dab461b65d063121c8f7414eb1c6681498",
+      "choices": [
+        1,
+        4,
+        5
+      ],
+      "command_id": 1,
+      "observation_digest": "cddbcb3fe4b8cbfab8460ddb758aaf70e359b424e1b3bbcb40c22d4f0fd42c2d",
+      "observation_sequence": 1,
+      "results": {
+        "tb1": "sent",
+        "tb2": "sent",
+        "tb3": "sent"
+      }
+    },
+    "stamp": 81.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "action_rejected",
+    "payload": {
+      "reason": "wrong_epoch"
+    },
+    "stamp": 81.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "action_rejected",
+    "payload": {
+      "reason": "expired_or_invalid_command_time"
+    },
+    "stamp": 81.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 1,
+      "created_at": 81.0,
+      "epoch": "mr3_p1b_v4_corridors101",
+      "expires_at": 83.0,
+      "goal": {
+        "x": -0.02600870732699434,
+        "y": -1.096973588090699
+      },
+      "goal_id": "mr3_p1b_v4_corridors101:tb1:1",
+      "lease_until": 83.0,
+      "observation_version": 1,
+      "robot": "tb1",
+      "stamp": 81.1,
+      "type": "send_goal",
+      "x": -0.02600870732699434,
+      "y": -1.096973588090699
+    },
+    "stamp": 81.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 1,
+      "created_at": 81.0,
+      "epoch": "mr3_p1b_v4_corridors101",
+      "expires_at": 83.0,
+      "goal": {
+        "x": -0.0760087080720524,
+        "y": 1.1030264446918556
+      },
+      "goal_id": "mr3_p1b_v4_corridors101:tb2:1",
+      "lease_until": 83.0,
+      "observation_version": 1,
+      "robot": "tb2",
+      "stamp": 81.1,
+      "type": "send_goal",
+      "x": -0.0760087080720524,
+      "y": 1.1030264446918556
+    },
+    "stamp": 81.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 1,
+      "created_at": 81.0,
+      "epoch": "mr3_p1b_v4_corridors101",
+      "expires_at": 83.0,
+      "goal": {
+        "x": 0.5739913016137024,
+        "y": -0.5469735798950603
+      },
+      "goal_id": "mr3_p1b_v4_corridors101:tb3:1",
+      "lease_until": 83.0,
+      "observation_version": 1,
+      "robot": "tb3",
+      "stamp": 81.1,
+      "type": "send_goal",
+      "x": 0.5739913016137024,
+      "y": -0.5469735798950603
+    },
+    "stamp": 81.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 81.2,
+      "payload": {
+        "expires_at": 83.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:1"
+      },
+      "received_stamp": 81.2,
+      "sequence": 1,
+      "source": "tb1",
+      "source_stamp": 81.2,
+      "stream": "heartbeat",
+      "version": 1
+    },
+    "stamp": 81.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 81.2,
+      "payload": {
+        "expires_at": 83.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:1"
+      },
+      "received_stamp": 81.2,
+      "sequence": 1,
+      "source": "tb2",
+      "source_stamp": 81.2,
+      "stream": "heartbeat",
+      "version": 1
+    },
+    "stamp": 81.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 81.2,
+      "payload": {
+        "expires_at": 83.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:1"
+      },
+      "received_stamp": 81.2,
+      "sequence": 1,
+      "source": "tb3",
+      "source_stamp": 81.2,
+      "stream": "heartbeat",
+      "version": 1
+    },
+    "stamp": 81.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 81.2,
+      "payload": {
+        "command_id": 1,
+        "created_at": 81.0,
+        "epoch": "mr3_p1b_v4_corridors101",
+        "expires_at": 83.0,
+        "goal": {
+          "x": -0.02600870732699434,
+          "y": -1.096973588090699
+        },
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:1",
+        "lease_until": 83.0,
+        "observation_version": 1,
+        "robot": "tb1",
+        "stamp": 81.1,
+        "type": "send_goal",
+        "x": -0.02600870732699434,
+        "y": -1.096973588090699
+      },
+      "received_stamp": 81.2,
+      "sequence": 1,
+      "source": "tb1",
+      "source_stamp": 81.1,
+      "stream": "command",
+      "version": 1
+    },
+    "stamp": 81.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "native_send",
+    "payload": {
+      "command_id": 1,
+      "goal_id": "mr3_p1b_v4_corridors101:tb1:1",
+      "robot": "tb1"
+    },
+    "stamp": 81.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 81.2,
+      "payload": {
+        "command_id": 1,
+        "created_at": 81.0,
+        "epoch": "mr3_p1b_v4_corridors101",
+        "expires_at": 83.0,
+        "goal": {
+          "x": -0.0760087080720524,
+          "y": 1.1030264446918556
+        },
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:1",
+        "lease_until": 83.0,
+        "observation_version": 1,
+        "robot": "tb2",
+        "stamp": 81.1,
+        "type": "send_goal",
+        "x": -0.0760087080720524,
+        "y": 1.1030264446918556
+      },
+      "received_stamp": 81.2,
+      "sequence": 1,
+      "source": "tb2",
+      "source_stamp": 81.1,
+      "stream": "command",
+      "version": 1
+    },
+    "stamp": 81.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "native_send",
+    "payload": {
+      "command_id": 1,
+      "goal_id": "mr3_p1b_v4_corridors101:tb2:1",
+      "robot": "tb2"
+    },
+    "stamp": 81.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 81.2,
+      "payload": {
+        "command_id": 1,
+        "created_at": 81.0,
+        "epoch": "mr3_p1b_v4_corridors101",
+        "expires_at": 83.0,
+        "goal": {
+          "x": 0.5739913016137024,
+          "y": -0.5469735798950603
+        },
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:1",
+        "lease_until": 83.0,
+        "observation_version": 1,
+        "robot": "tb3",
+        "stamp": 81.1,
+        "type": "send_goal",
+        "x": 0.5739913016137024,
+        "y": -0.5469735798950603
+      },
+      "received_stamp": 81.2,
+      "sequence": 1,
+      "source": "tb3",
+      "source_stamp": 81.1,
+      "stream": "command",
+      "version": 1
+    },
+    "stamp": 81.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "native_send",
+    "payload": {
+      "command_id": 1,
+      "goal_id": "mr3_p1b_v4_corridors101:tb3:1",
+      "robot": "tb3"
+    },
+    "stamp": 81.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 81.2,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:1",
+        "robot": "tb1",
+        "type": "accept",
+        "value": true
+      },
+      "received_stamp": 81.3,
+      "sequence": 1,
+      "source": "tb1",
+      "source_stamp": 81.2,
+      "stream": "receipt",
+      "version": 1
+    },
+    "stamp": 81.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 81.2,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:1",
+        "robot": "tb2",
+        "type": "accept",
+        "value": true
+      },
+      "received_stamp": 81.3,
+      "sequence": 1,
+      "source": "tb2",
+      "source_stamp": 81.2,
+      "stream": "receipt",
+      "version": 1
+    },
+    "stamp": 81.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 81.2,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:1",
+        "robot": "tb3",
+        "type": "accept",
+        "value": true
+      },
+      "received_stamp": 81.3,
+      "sequence": 1,
+      "source": "tb3",
+      "source_stamp": 81.2,
+      "stream": "receipt",
+      "version": 1
+    },
+    "stamp": 81.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 81.4,
+      "payload": {
+        "expires_at": 83.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:1"
+      },
+      "received_stamp": 81.4,
+      "sequence": 2,
+      "source": "tb1",
+      "source_stamp": 81.4,
+      "stream": "heartbeat",
+      "version": 2
+    },
+    "stamp": 81.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 81.4,
+      "payload": {
+        "expires_at": 83.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:1"
+      },
+      "received_stamp": 81.4,
+      "sequence": 2,
+      "source": "tb2",
+      "source_stamp": 81.4,
+      "stream": "heartbeat",
+      "version": 2
+    },
+    "stamp": 81.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 81.4,
+      "payload": {
+        "expires_at": 83.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:1"
+      },
+      "received_stamp": 81.4,
+      "sequence": 2,
+      "source": "tb3",
+      "source_stamp": 81.4,
+      "stream": "heartbeat",
+      "version": 2
+    },
+    "stamp": 81.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 81.7,
+      "payload": {
+        "expires_at": 83.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:1"
+      },
+      "received_stamp": 81.7,
+      "sequence": 3,
+      "source": "tb1",
+      "source_stamp": 81.7,
+      "stream": "heartbeat",
+      "version": 3
+    },
+    "stamp": 81.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 81.7,
+      "payload": {
+        "expires_at": 83.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:1"
+      },
+      "received_stamp": 81.7,
+      "sequence": 3,
+      "source": "tb2",
+      "source_stamp": 81.7,
+      "stream": "heartbeat",
+      "version": 3
+    },
+    "stamp": 81.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 81.7,
+      "payload": {
+        "expires_at": 83.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:1"
+      },
+      "received_stamp": 81.7,
+      "sequence": 3,
+      "source": "tb3",
+      "source_stamp": 81.7,
+      "stream": "heartbeat",
+      "version": 3
+    },
+    "stamp": 81.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 81.9,
+      "payload": {
+        "expires_at": 83.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:1"
+      },
+      "received_stamp": 81.9,
+      "sequence": 4,
+      "source": "tb1",
+      "source_stamp": 81.9,
+      "stream": "heartbeat",
+      "version": 4
+    },
+    "stamp": 81.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 81.9,
+      "payload": {
+        "expires_at": 83.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:1"
+      },
+      "received_stamp": 81.9,
+      "sequence": 4,
+      "source": "tb2",
+      "source_stamp": 81.9,
+      "stream": "heartbeat",
+      "version": 4
+    },
+    "stamp": 81.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 81.9,
+      "payload": {
+        "expires_at": 83.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:1"
+      },
+      "received_stamp": 81.9,
+      "sequence": 4,
+      "source": "tb3",
+      "source_stamp": 81.9,
+      "stream": "heartbeat",
+      "version": 4
+    },
+    "stamp": 81.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "56509ee2ed9dded01096ca358f8737d615a015ed135ebcc91f0f0fc7951cb3af",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 2,
+      "observation_digest": "b3df62f526f8002764abf12773c30a559b7bdb1435505d4e472bc5c099c6aae8",
+      "observation_sequence": 2,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 82.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 82.2,
+      "payload": {
+        "expires_at": 84.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:1"
+      },
+      "received_stamp": 82.2,
+      "sequence": 5,
+      "source": "tb1",
+      "source_stamp": 82.2,
+      "stream": "heartbeat",
+      "version": 5
+    },
+    "stamp": 82.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 82.2,
+      "payload": {
+        "expires_at": 84.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:1"
+      },
+      "received_stamp": 82.2,
+      "sequence": 5,
+      "source": "tb2",
+      "source_stamp": 82.2,
+      "stream": "heartbeat",
+      "version": 5
+    },
+    "stamp": 82.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 82.2,
+      "payload": {
+        "expires_at": 84.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:1"
+      },
+      "received_stamp": 82.2,
+      "sequence": 5,
+      "source": "tb3",
+      "source_stamp": 82.2,
+      "stream": "heartbeat",
+      "version": 5
+    },
+    "stamp": 82.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 82.4,
+      "payload": {
+        "expires_at": 84.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:1"
+      },
+      "received_stamp": 82.4,
+      "sequence": 6,
+      "source": "tb1",
+      "source_stamp": 82.4,
+      "stream": "heartbeat",
+      "version": 6
+    },
+    "stamp": 82.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 82.4,
+      "payload": {
+        "expires_at": 84.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:1"
+      },
+      "received_stamp": 82.4,
+      "sequence": 6,
+      "source": "tb2",
+      "source_stamp": 82.4,
+      "stream": "heartbeat",
+      "version": 6
+    },
+    "stamp": 82.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 82.4,
+      "payload": {
+        "expires_at": 84.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:1"
+      },
+      "received_stamp": 82.4,
+      "sequence": 6,
+      "source": "tb3",
+      "source_stamp": 82.4,
+      "stream": "heartbeat",
+      "version": 6
+    },
+    "stamp": 82.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 82.7,
+      "payload": {
+        "expires_at": 84.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:1"
+      },
+      "received_stamp": 82.7,
+      "sequence": 7,
+      "source": "tb1",
+      "source_stamp": 82.7,
+      "stream": "heartbeat",
+      "version": 7
+    },
+    "stamp": 82.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 82.7,
+      "payload": {
+        "expires_at": 84.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:1"
+      },
+      "received_stamp": 82.7,
+      "sequence": 7,
+      "source": "tb2",
+      "source_stamp": 82.7,
+      "stream": "heartbeat",
+      "version": 7
+    },
+    "stamp": 82.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 82.7,
+      "payload": {
+        "expires_at": 84.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:1"
+      },
+      "received_stamp": 82.7,
+      "sequence": 7,
+      "source": "tb3",
+      "source_stamp": 82.7,
+      "stream": "heartbeat",
+      "version": 7
+    },
+    "stamp": 82.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 82.9,
+      "payload": {
+        "expires_at": 84.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:1"
+      },
+      "received_stamp": 82.9,
+      "sequence": 8,
+      "source": "tb1",
+      "source_stamp": 82.9,
+      "stream": "heartbeat",
+      "version": 8
+    },
+    "stamp": 82.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 82.9,
+      "payload": {
+        "expires_at": 84.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:1"
+      },
+      "received_stamp": 82.9,
+      "sequence": 8,
+      "source": "tb2",
+      "source_stamp": 82.9,
+      "stream": "heartbeat",
+      "version": 8
+    },
+    "stamp": 82.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 82.9,
+      "payload": {
+        "expires_at": 84.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:1"
+      },
+      "received_stamp": 82.9,
+      "sequence": 8,
+      "source": "tb3",
+      "source_stamp": 82.9,
+      "stream": "heartbeat",
+      "version": 8
+    },
+    "stamp": 82.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "a7e91c7aba170ea36d22d4b93e281fe903c0dcbe8359a99aade5f0ba088d06de",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 3,
+      "observation_digest": "a8ae841b64de40082413dceddf7b19dacacf27bfdc0ccbfd67533b69ace95bda",
+      "observation_sequence": 3,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 83.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "action_rejected",
+    "payload": {
+      "reason": "masked_action"
+    },
+    "stamp": 83.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 83.2,
+      "payload": {
+        "expires_at": 85.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:1"
+      },
+      "received_stamp": 83.2,
+      "sequence": 9,
+      "source": "tb1",
+      "source_stamp": 83.2,
+      "stream": "heartbeat",
+      "version": 9
+    },
+    "stamp": 83.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 83.2,
+      "payload": {
+        "expires_at": 85.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:1"
+      },
+      "received_stamp": 83.2,
+      "sequence": 9,
+      "source": "tb2",
+      "source_stamp": 83.2,
+      "stream": "heartbeat",
+      "version": 9
+    },
+    "stamp": 83.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 83.2,
+      "payload": {
+        "expires_at": 85.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:1"
+      },
+      "received_stamp": 83.2,
+      "sequence": 9,
+      "source": "tb3",
+      "source_stamp": 83.2,
+      "stream": "heartbeat",
+      "version": 9
+    },
+    "stamp": 83.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 83.4,
+      "payload": {
+        "expires_at": 85.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:1"
+      },
+      "received_stamp": 83.4,
+      "sequence": 10,
+      "source": "tb1",
+      "source_stamp": 83.4,
+      "stream": "heartbeat",
+      "version": 10
+    },
+    "stamp": 83.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 83.4,
+      "payload": {
+        "expires_at": 85.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:1"
+      },
+      "received_stamp": 83.4,
+      "sequence": 10,
+      "source": "tb2",
+      "source_stamp": 83.4,
+      "stream": "heartbeat",
+      "version": 10
+    },
+    "stamp": 83.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 83.4,
+      "payload": {
+        "expires_at": 85.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:1"
+      },
+      "received_stamp": 83.4,
+      "sequence": 10,
+      "source": "tb3",
+      "source_stamp": 83.4,
+      "stream": "heartbeat",
+      "version": 10
+    },
+    "stamp": 83.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 83.7,
+      "payload": {
+        "expires_at": 85.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:1"
+      },
+      "received_stamp": 83.7,
+      "sequence": 11,
+      "source": "tb1",
+      "source_stamp": 83.7,
+      "stream": "heartbeat",
+      "version": 11
+    },
+    "stamp": 83.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 83.7,
+      "payload": {
+        "expires_at": 85.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:1"
+      },
+      "received_stamp": 83.7,
+      "sequence": 11,
+      "source": "tb2",
+      "source_stamp": 83.7,
+      "stream": "heartbeat",
+      "version": 11
+    },
+    "stamp": 83.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 83.7,
+      "payload": {
+        "expires_at": 85.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:1"
+      },
+      "received_stamp": 83.7,
+      "sequence": 11,
+      "source": "tb3",
+      "source_stamp": 83.7,
+      "stream": "heartbeat",
+      "version": 11
+    },
+    "stamp": 83.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 83.9,
+      "payload": {
+        "expires_at": 85.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:1"
+      },
+      "received_stamp": 83.9,
+      "sequence": 12,
+      "source": "tb1",
+      "source_stamp": 83.9,
+      "stream": "heartbeat",
+      "version": 12
+    },
+    "stamp": 83.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 83.9,
+      "payload": {
+        "expires_at": 85.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:1"
+      },
+      "received_stamp": 83.9,
+      "sequence": 12,
+      "source": "tb2",
+      "source_stamp": 83.9,
+      "stream": "heartbeat",
+      "version": 12
+    },
+    "stamp": 83.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 83.9,
+      "payload": {
+        "expires_at": 85.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:1"
+      },
+      "received_stamp": 83.9,
+      "sequence": 12,
+      "source": "tb3",
+      "source_stamp": 83.9,
+      "stream": "heartbeat",
+      "version": 12
+    },
+    "stamp": 83.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 84.0,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:1",
+        "robot": "tb3",
+        "type": "result",
+        "value": 4
+      },
+      "received_stamp": 84.1,
+      "sequence": 2,
+      "source": "tb3",
+      "source_stamp": 84.0,
+      "stream": "receipt",
+      "version": 2
+    },
+    "stamp": 84.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 1,
+      "epoch": "mr3_p1b_v4_corridors101",
+      "goal_id": "mr3_p1b_v4_corridors101:tb3:1",
+      "robot": "tb3",
+      "stamp": 84.1,
+      "status": "SUCCEEDED",
+      "type": "protocol_terminal"
+    },
+    "stamp": 84.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "action_rejected",
+    "payload": {
+      "reason": "navigation_changed_since_observation"
+    },
+    "stamp": 84.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 84.2,
+      "payload": {
+        "expires_at": 86.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:1"
+      },
+      "received_stamp": 84.2,
+      "sequence": 13,
+      "source": "tb1",
+      "source_stamp": 84.2,
+      "stream": "heartbeat",
+      "version": 13
+    },
+    "stamp": 84.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 84.2,
+      "payload": {
+        "expires_at": 86.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:1"
+      },
+      "received_stamp": 84.2,
+      "sequence": 13,
+      "source": "tb2",
+      "source_stamp": 84.2,
+      "stream": "heartbeat",
+      "version": 13
+    },
+    "stamp": 84.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 84.4,
+      "payload": {
+        "expires_at": 86.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:1"
+      },
+      "received_stamp": 84.4,
+      "sequence": 14,
+      "source": "tb1",
+      "source_stamp": 84.4,
+      "stream": "heartbeat",
+      "version": 14
+    },
+    "stamp": 84.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 84.4,
+      "payload": {
+        "expires_at": 86.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:1"
+      },
+      "received_stamp": 84.4,
+      "sequence": 14,
+      "source": "tb2",
+      "source_stamp": 84.4,
+      "stream": "heartbeat",
+      "version": 14
+    },
+    "stamp": 84.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 84.4,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:1",
+        "robot": "tb1",
+        "type": "result",
+        "value": 4
+      },
+      "received_stamp": 84.5,
+      "sequence": 2,
+      "source": "tb1",
+      "source_stamp": 84.4,
+      "stream": "receipt",
+      "version": 2
+    },
+    "stamp": 84.5
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 1,
+      "epoch": "mr3_p1b_v4_corridors101",
+      "goal_id": "mr3_p1b_v4_corridors101:tb1:1",
+      "robot": "tb1",
+      "stamp": 84.5,
+      "status": "SUCCEEDED",
+      "type": "protocol_terminal"
+    },
+    "stamp": 84.5
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 84.5,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:1",
+        "robot": "tb2",
+        "type": "result",
+        "value": 4
+      },
+      "received_stamp": 84.6,
+      "sequence": 2,
+      "source": "tb2",
+      "source_stamp": 84.5,
+      "stream": "receipt",
+      "version": 2
+    },
+    "stamp": 84.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 1,
+      "epoch": "mr3_p1b_v4_corridors101",
+      "goal_id": "mr3_p1b_v4_corridors101:tb2:1",
+      "robot": "tb2",
+      "stamp": 84.6,
+      "status": "SUCCEEDED",
+      "type": "protocol_terminal"
+    },
+    "stamp": 84.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "fd9227d8629b7583fec71bc1738a05c54515333885ddb70ea9ebd54a56bbd98c",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 5,
+      "observation_digest": "35702c4b34c9acc46581a5a727e5696822f037bb6633024070b2ada35ed25be4",
+      "observation_sequence": 5,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 85.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "7fc6e04d9caa59562b91e132bc64f1235c07f902214788810b5c4bb584c8ec52",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 6,
+      "observation_digest": "d3c02031628ecfec628747df9dcd3d34b0cd120dfb5a484f074bd76df38067cb",
+      "observation_sequence": 6,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 86.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "41d6e2c6568a99969c0457ed961269563948f0f1dd12336ee68117ab55b934f4",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 7,
+      "observation_digest": "4439d97f8728f3b977095fcca079b09a46b8ee88b5e68c479d038fc2a842b1fe",
+      "observation_sequence": 7,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 87.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "action",
+    "payload": {
+      "action": 999,
+      "candidate_version": "a3276aedb40f42521baaedd406cabb1fbea7661933fd42b96c3ec1392b869228",
+      "choices": [
+        9,
+        9,
+        9
+      ],
+      "command_id": 8,
+      "observation_digest": "017190f163413d9c2ff1beb773c6d170710a4255b12694e0ba9e92aa2ccc87a1",
+      "observation_sequence": 8,
+      "results": {
+        "tb1": "waiting",
+        "tb2": "waiting",
+        "tb3": "waiting"
+      }
+    },
+    "stamp": 88.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "action",
+    "payload": {
+      "action": 999,
+      "candidate_version": "30b4de42aa59cf771b8fbddb0c5ad0eb92528811fe25eb81085744599b87854c",
+      "choices": [
+        9,
+        9,
+        9
+      ],
+      "command_id": 9,
+      "observation_digest": "8661adcd2503a2d00d340eb02773868f39c155753c0d79e3861e258a51e22ed7",
+      "observation_sequence": 9,
+      "results": {
+        "tb1": "waiting",
+        "tb2": "waiting",
+        "tb3": "waiting"
+      }
+    },
+    "stamp": 89.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "action",
+    "payload": {
+      "action": 999,
+      "candidate_version": "3b2a250bd05311852081e3de32cf2779b41302e0f694a831a89d424d44c9f4e9",
+      "choices": [
+        9,
+        9,
+        9
+      ],
+      "command_id": 10,
+      "observation_digest": "afee9058aa0abac03a6ce483a7020baa6f30913213c8f364789d0156cfef56dc",
+      "observation_sequence": 10,
+      "results": {
+        "tb1": "waiting",
+        "tb2": "waiting",
+        "tb3": "waiting"
+      }
+    },
+    "stamp": 90.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "action",
+    "payload": {
+      "action": 999,
+      "candidate_version": "3bc70b4cc1c710e08b9f0c1f846e2a2dae26c0a0fa76c39d688b7f4887682ac6",
+      "choices": [
+        9,
+        9,
+        9
+      ],
+      "command_id": 11,
+      "observation_digest": "68df896dffc3274247abba9e7debd6565cc39298867a1e3f45d563b33012245a",
+      "observation_sequence": 11,
+      "results": {
+        "tb1": "waiting",
+        "tb2": "waiting",
+        "tb3": "waiting"
+      }
+    },
+    "stamp": 91.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "action",
+    "payload": {
+      "action": 999,
+      "candidate_version": "278d08e943b00c746ff9cca1da87968287b06a9f7ee70d76d2f85952e640185f",
+      "choices": [
+        9,
+        9,
+        9
+      ],
+      "command_id": 12,
+      "observation_digest": "83ea1cf9161fe0439a0460275b4e484ccd3757f1f504a8bc769127c796f2b38a",
+      "observation_sequence": 12,
+      "results": {
+        "tb1": "waiting",
+        "tb2": "waiting",
+        "tb3": "waiting"
+      }
+    },
+    "stamp": 92.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "action",
+    "payload": {
+      "action": 999,
+      "candidate_version": "2b31982058b80f0a8e0e60203df08db8f9defb64da7903a2c6593ca25057653d",
+      "choices": [
+        9,
+        9,
+        9
+      ],
+      "command_id": 13,
+      "observation_digest": "d12d430c3f7269144d52916cc39c622b7db9b2dddfac7b7a2ba924e3126d074c",
+      "observation_sequence": 13,
+      "results": {
+        "tb1": "waiting",
+        "tb2": "waiting",
+        "tb3": "waiting"
+      }
+    },
+    "stamp": 93.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "action",
+    "payload": {
+      "action": 999,
+      "candidate_version": "e9a67b8f8c0d346b0d72030e3e19894d8f542198dea694103f44a28b1f04b2d1",
+      "choices": [
+        9,
+        9,
+        9
+      ],
+      "command_id": 14,
+      "observation_digest": "54959a177d1c42efd6e7ccda75fe6bc09c25193e195abfbb51153283f7fec892",
+      "observation_sequence": 14,
+      "results": {
+        "tb1": "waiting",
+        "tb2": "waiting",
+        "tb3": "waiting"
+      }
+    },
+    "stamp": 94.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "action",
+    "payload": {
+      "action": 999,
+      "candidate_version": "e253c4a7229d140026e42c2c0bdc5a1b6d1f47cc4c901a2d198638115f08292b",
+      "choices": [
+        9,
+        9,
+        9
+      ],
+      "command_id": 15,
+      "observation_digest": "ed020291097f16a4190269af598aa9b18e0aba29c0c9a4f23f282ad9640aeab2",
+      "observation_sequence": 15,
+      "results": {
+        "tb1": "waiting",
+        "tb2": "waiting",
+        "tb3": "waiting"
+      }
+    },
+    "stamp": 95.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "action",
+    "payload": {
+      "action": 128,
+      "candidate_version": "685ccfb7befff51e16b9f532e3d936bf04d8be60119a041a923c968b866c8630",
+      "choices": [
+        1,
+        2,
+        8
+      ],
+      "command_id": 16,
+      "observation_digest": "4a6b7d0a642dc325779d7159bbae4d4064e79b53829f91b6095f644c7db48521",
+      "observation_sequence": 16,
+      "results": {
+        "tb1": "sent",
+        "tb2": "sent",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 96.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 16,
+      "created_at": 96.0,
+      "epoch": "mr3_p1b_v4_corridors101",
+      "expires_at": 98.0,
+      "goal": {
+        "x": 0.06302238257426884,
+        "y": -2.5526944196645633
+      },
+      "goal_id": "mr3_p1b_v4_corridors101:tb1:16",
+      "lease_until": 98.0,
+      "observation_version": 16,
+      "robot": "tb1",
+      "stamp": 96.2,
+      "type": "send_goal",
+      "x": 0.06302238257426884,
+      "y": -2.5526944196645633
+    },
+    "stamp": 96.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 16,
+      "created_at": 96.0,
+      "epoch": "mr3_p1b_v4_corridors101",
+      "expires_at": 98.0,
+      "goal": {
+        "x": 0.8630223944951978,
+        "y": 3.497305670487462
+      },
+      "goal_id": "mr3_p1b_v4_corridors101:tb2:16",
+      "lease_until": 98.0,
+      "observation_version": 16,
+      "robot": "tb2",
+      "stamp": 96.2,
+      "type": "send_goal",
+      "x": 0.8630223944951978,
+      "y": 3.497305670487462
+    },
+    "stamp": 96.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 96.3,
+      "payload": {
+        "command_id": 16,
+        "created_at": 96.0,
+        "epoch": "mr3_p1b_v4_corridors101",
+        "expires_at": 98.0,
+        "goal": {
+          "x": 0.06302238257426884,
+          "y": -2.5526944196645633
+        },
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:16",
+        "lease_until": 98.0,
+        "observation_version": 16,
+        "robot": "tb1",
+        "stamp": 96.2,
+        "type": "send_goal",
+        "x": 0.06302238257426884,
+        "y": -2.5526944196645633
+      },
+      "received_stamp": 96.3,
+      "sequence": 2,
+      "source": "tb1",
+      "source_stamp": 96.2,
+      "stream": "command",
+      "version": 2
+    },
+    "stamp": 96.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "native_send",
+    "payload": {
+      "command_id": 16,
+      "goal_id": "mr3_p1b_v4_corridors101:tb1:16",
+      "robot": "tb1"
+    },
+    "stamp": 96.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 96.3,
+      "payload": {
+        "command_id": 16,
+        "created_at": 96.0,
+        "epoch": "mr3_p1b_v4_corridors101",
+        "expires_at": 98.0,
+        "goal": {
+          "x": 0.8630223944951978,
+          "y": 3.497305670487462
+        },
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:16",
+        "lease_until": 98.0,
+        "observation_version": 16,
+        "robot": "tb2",
+        "stamp": 96.2,
+        "type": "send_goal",
+        "x": 0.8630223944951978,
+        "y": 3.497305670487462
+      },
+      "received_stamp": 96.3,
+      "sequence": 2,
+      "source": "tb2",
+      "source_stamp": 96.2,
+      "stream": "command",
+      "version": 2
+    },
+    "stamp": 96.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "native_send",
+    "payload": {
+      "command_id": 16,
+      "goal_id": "mr3_p1b_v4_corridors101:tb2:16",
+      "robot": "tb2"
+    },
+    "stamp": 96.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 96.3,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:16",
+        "robot": "tb1",
+        "type": "accept",
+        "value": true
+      },
+      "received_stamp": 96.4,
+      "sequence": 3,
+      "source": "tb1",
+      "source_stamp": 96.3,
+      "stream": "receipt",
+      "version": 3
+    },
+    "stamp": 96.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 96.3,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:16",
+        "robot": "tb2",
+        "type": "accept",
+        "value": true
+      },
+      "received_stamp": 96.4,
+      "sequence": 3,
+      "source": "tb2",
+      "source_stamp": 96.3,
+      "stream": "receipt",
+      "version": 3
+    },
+    "stamp": 96.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 96.4,
+      "payload": {
+        "expires_at": 98.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:16"
+      },
+      "received_stamp": 96.4,
+      "sequence": 15,
+      "source": "tb1",
+      "source_stamp": 96.4,
+      "stream": "heartbeat",
+      "version": 15
+    },
+    "stamp": 96.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 96.4,
+      "payload": {
+        "expires_at": 98.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:16"
+      },
+      "received_stamp": 96.4,
+      "sequence": 15,
+      "source": "tb2",
+      "source_stamp": 96.4,
+      "stream": "heartbeat",
+      "version": 15
+    },
+    "stamp": 96.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 96.7,
+      "payload": {
+        "expires_at": 98.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:16"
+      },
+      "received_stamp": 96.7,
+      "sequence": 16,
+      "source": "tb1",
+      "source_stamp": 96.7,
+      "stream": "heartbeat",
+      "version": 16
+    },
+    "stamp": 96.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 96.7,
+      "payload": {
+        "expires_at": 98.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:16"
+      },
+      "received_stamp": 96.7,
+      "sequence": 16,
+      "source": "tb2",
+      "source_stamp": 96.7,
+      "stream": "heartbeat",
+      "version": 16
+    },
+    "stamp": 96.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 96.9,
+      "payload": {
+        "expires_at": 98.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:16"
+      },
+      "received_stamp": 96.9,
+      "sequence": 17,
+      "source": "tb1",
+      "source_stamp": 96.9,
+      "stream": "heartbeat",
+      "version": 17
+    },
+    "stamp": 96.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 96.9,
+      "payload": {
+        "expires_at": 98.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:16"
+      },
+      "received_stamp": 96.9,
+      "sequence": 17,
+      "source": "tb2",
+      "source_stamp": 96.9,
+      "stream": "heartbeat",
+      "version": 17
+    },
+    "stamp": 96.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "9739a592ac4393dd95495141b4d6af3c2af5495ab6a33710de47077ec79a9f5b",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 17,
+      "observation_digest": "7844a4863bd050e220442df5a316c16c1fef0a65c712bd53bbc7be9ad33af390",
+      "observation_sequence": 17,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 97.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 97.2,
+      "payload": {
+        "expires_at": 99.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:16"
+      },
+      "received_stamp": 97.2,
+      "sequence": 18,
+      "source": "tb1",
+      "source_stamp": 97.2,
+      "stream": "heartbeat",
+      "version": 18
+    },
+    "stamp": 97.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 97.2,
+      "payload": {
+        "expires_at": 99.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:16"
+      },
+      "received_stamp": 97.2,
+      "sequence": 18,
+      "source": "tb2",
+      "source_stamp": 97.2,
+      "stream": "heartbeat",
+      "version": 18
+    },
+    "stamp": 97.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 97.4,
+      "payload": {
+        "expires_at": 99.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:16"
+      },
+      "received_stamp": 97.4,
+      "sequence": 19,
+      "source": "tb1",
+      "source_stamp": 97.4,
+      "stream": "heartbeat",
+      "version": 19
+    },
+    "stamp": 97.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 97.4,
+      "payload": {
+        "expires_at": 99.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:16"
+      },
+      "received_stamp": 97.4,
+      "sequence": 19,
+      "source": "tb2",
+      "source_stamp": 97.4,
+      "stream": "heartbeat",
+      "version": 19
+    },
+    "stamp": 97.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 97.7,
+      "payload": {
+        "expires_at": 99.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:16"
+      },
+      "received_stamp": 97.7,
+      "sequence": 20,
+      "source": "tb1",
+      "source_stamp": 97.7,
+      "stream": "heartbeat",
+      "version": 20
+    },
+    "stamp": 97.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 97.7,
+      "payload": {
+        "expires_at": 99.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:16"
+      },
+      "received_stamp": 97.7,
+      "sequence": 20,
+      "source": "tb2",
+      "source_stamp": 97.7,
+      "stream": "heartbeat",
+      "version": 20
+    },
+    "stamp": 97.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 97.9,
+      "payload": {
+        "expires_at": 99.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:16"
+      },
+      "received_stamp": 97.9,
+      "sequence": 21,
+      "source": "tb1",
+      "source_stamp": 97.9,
+      "stream": "heartbeat",
+      "version": 21
+    },
+    "stamp": 97.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 97.9,
+      "payload": {
+        "expires_at": 99.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:16"
+      },
+      "received_stamp": 97.9,
+      "sequence": 21,
+      "source": "tb2",
+      "source_stamp": 97.9,
+      "stream": "heartbeat",
+      "version": 21
+    },
+    "stamp": 97.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "42d9793a86a7f5a4ed6e4ac85c2b1b97ee1bbecfe41a440f460dd57776b0e4e7",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 18,
+      "observation_digest": "21e9564aa0049311a8a1075ee559e6fc4d7e2b932b0524841a4834dc3225febd",
+      "observation_sequence": 18,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 98.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 98.2,
+      "payload": {
+        "expires_at": 100.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:16"
+      },
+      "received_stamp": 98.2,
+      "sequence": 22,
+      "source": "tb1",
+      "source_stamp": 98.2,
+      "stream": "heartbeat",
+      "version": 22
+    },
+    "stamp": 98.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 98.2,
+      "payload": {
+        "expires_at": 100.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:16"
+      },
+      "received_stamp": 98.2,
+      "sequence": 22,
+      "source": "tb2",
+      "source_stamp": 98.2,
+      "stream": "heartbeat",
+      "version": 22
+    },
+    "stamp": 98.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 98.4,
+      "payload": {
+        "expires_at": 100.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:16"
+      },
+      "received_stamp": 98.4,
+      "sequence": 23,
+      "source": "tb1",
+      "source_stamp": 98.4,
+      "stream": "heartbeat",
+      "version": 23
+    },
+    "stamp": 98.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 98.4,
+      "payload": {
+        "expires_at": 100.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:16"
+      },
+      "received_stamp": 98.4,
+      "sequence": 23,
+      "source": "tb2",
+      "source_stamp": 98.4,
+      "stream": "heartbeat",
+      "version": 23
+    },
+    "stamp": 98.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 98.7,
+      "payload": {
+        "expires_at": 100.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:16"
+      },
+      "received_stamp": 98.7,
+      "sequence": 24,
+      "source": "tb1",
+      "source_stamp": 98.7,
+      "stream": "heartbeat",
+      "version": 24
+    },
+    "stamp": 98.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 98.7,
+      "payload": {
+        "expires_at": 100.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:16"
+      },
+      "received_stamp": 98.7,
+      "sequence": 24,
+      "source": "tb2",
+      "source_stamp": 98.7,
+      "stream": "heartbeat",
+      "version": 24
+    },
+    "stamp": 98.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 98.9,
+      "payload": {
+        "expires_at": 100.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:16"
+      },
+      "received_stamp": 98.9,
+      "sequence": 25,
+      "source": "tb1",
+      "source_stamp": 98.9,
+      "stream": "heartbeat",
+      "version": 25
+    },
+    "stamp": 98.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 98.9,
+      "payload": {
+        "expires_at": 100.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:16"
+      },
+      "received_stamp": 98.9,
+      "sequence": 25,
+      "source": "tb2",
+      "source_stamp": 98.9,
+      "stream": "heartbeat",
+      "version": 25
+    },
+    "stamp": 98.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "3d493f76885e18a2f573266bd1a3e60b14aea65407e8c4fac4e8152b3a98a603",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 19,
+      "observation_digest": "634ef3af18170b883606b952ec7e35ddc3694ff6ed96ef3c9f375f8acb1d6bba",
+      "observation_sequence": 19,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 99.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 99.2,
+      "payload": {
+        "expires_at": 101.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:16"
+      },
+      "received_stamp": 99.2,
+      "sequence": 26,
+      "source": "tb1",
+      "source_stamp": 99.2,
+      "stream": "heartbeat",
+      "version": 26
+    },
+    "stamp": 99.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 99.2,
+      "payload": {
+        "expires_at": 101.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:16"
+      },
+      "received_stamp": 99.2,
+      "sequence": 26,
+      "source": "tb2",
+      "source_stamp": 99.2,
+      "stream": "heartbeat",
+      "version": 26
+    },
+    "stamp": 99.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 99.4,
+      "payload": {
+        "expires_at": 101.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:16"
+      },
+      "received_stamp": 99.4,
+      "sequence": 27,
+      "source": "tb1",
+      "source_stamp": 99.4,
+      "stream": "heartbeat",
+      "version": 27
+    },
+    "stamp": 99.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 99.4,
+      "payload": {
+        "expires_at": 101.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:16"
+      },
+      "received_stamp": 99.4,
+      "sequence": 27,
+      "source": "tb2",
+      "source_stamp": 99.4,
+      "stream": "heartbeat",
+      "version": 27
+    },
+    "stamp": 99.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 99.7,
+      "payload": {
+        "expires_at": 101.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:16"
+      },
+      "received_stamp": 99.7,
+      "sequence": 28,
+      "source": "tb1",
+      "source_stamp": 99.7,
+      "stream": "heartbeat",
+      "version": 28
+    },
+    "stamp": 99.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 99.7,
+      "payload": {
+        "expires_at": 101.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:16"
+      },
+      "received_stamp": 99.7,
+      "sequence": 28,
+      "source": "tb2",
+      "source_stamp": 99.7,
+      "stream": "heartbeat",
+      "version": 28
+    },
+    "stamp": 99.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 99.9,
+      "payload": {
+        "expires_at": 101.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:16"
+      },
+      "received_stamp": 99.9,
+      "sequence": 29,
+      "source": "tb1",
+      "source_stamp": 99.9,
+      "stream": "heartbeat",
+      "version": 29
+    },
+    "stamp": 99.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 99.9,
+      "payload": {
+        "expires_at": 101.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:16"
+      },
+      "received_stamp": 99.9,
+      "sequence": 29,
+      "source": "tb2",
+      "source_stamp": 99.9,
+      "stream": "heartbeat",
+      "version": 29
+    },
+    "stamp": 99.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "action",
+    "payload": {
+      "action": 881,
+      "candidate_version": "e3ec63671dde58cf45c78d138969a9fd6fa465fd099e7b8119ba5f2798204e9e",
+      "choices": [
+        8,
+        8,
+        1
+      ],
+      "command_id": 20,
+      "observation_digest": "315fec7de4703a629503c03d0f340704bc09354f2b97a000828ee6acf3952c1f",
+      "observation_sequence": 20,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "sent"
+      }
+    },
+    "stamp": 100.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 20,
+      "created_at": 100.0,
+      "epoch": "mr3_p1b_v4_corridors101",
+      "expires_at": 102.0,
+      "goal": {
+        "x": 0.5130223892797914,
+        "y": -3.7526944375459568
+      },
+      "goal_id": "mr3_p1b_v4_corridors101:tb3:20",
+      "lease_until": 102.0,
+      "observation_version": 20,
+      "robot": "tb3",
+      "stamp": 100.1,
+      "type": "send_goal",
+      "x": 0.5130223892797914,
+      "y": -3.7526944375459568
+    },
+    "stamp": 100.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 100.2,
+      "payload": {
+        "expires_at": 102.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:16"
+      },
+      "received_stamp": 100.2,
+      "sequence": 30,
+      "source": "tb1",
+      "source_stamp": 100.2,
+      "stream": "heartbeat",
+      "version": 30
+    },
+    "stamp": 100.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 100.2,
+      "payload": {
+        "expires_at": 102.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:16"
+      },
+      "received_stamp": 100.2,
+      "sequence": 30,
+      "source": "tb2",
+      "source_stamp": 100.2,
+      "stream": "heartbeat",
+      "version": 30
+    },
+    "stamp": 100.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 100.2,
+      "payload": {
+        "expires_at": 102.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:20"
+      },
+      "received_stamp": 100.2,
+      "sequence": 13,
+      "source": "tb3",
+      "source_stamp": 100.2,
+      "stream": "heartbeat",
+      "version": 13
+    },
+    "stamp": 100.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 100.2,
+      "payload": {
+        "command_id": 20,
+        "created_at": 100.0,
+        "epoch": "mr3_p1b_v4_corridors101",
+        "expires_at": 102.0,
+        "goal": {
+          "x": 0.5130223892797914,
+          "y": -3.7526944375459568
+        },
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:20",
+        "lease_until": 102.0,
+        "observation_version": 20,
+        "robot": "tb3",
+        "stamp": 100.1,
+        "type": "send_goal",
+        "x": 0.5130223892797914,
+        "y": -3.7526944375459568
+      },
+      "received_stamp": 100.2,
+      "sequence": 2,
+      "source": "tb3",
+      "source_stamp": 100.1,
+      "stream": "command",
+      "version": 2
+    },
+    "stamp": 100.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "native_send",
+    "payload": {
+      "command_id": 20,
+      "goal_id": "mr3_p1b_v4_corridors101:tb3:20",
+      "robot": "tb3"
+    },
+    "stamp": 100.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 100.2,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:20",
+        "robot": "tb3",
+        "type": "accept",
+        "value": true
+      },
+      "received_stamp": 100.3,
+      "sequence": 3,
+      "source": "tb3",
+      "source_stamp": 100.2,
+      "stream": "receipt",
+      "version": 3
+    },
+    "stamp": 100.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 100.4,
+      "payload": {
+        "expires_at": 102.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:16"
+      },
+      "received_stamp": 100.4,
+      "sequence": 31,
+      "source": "tb1",
+      "source_stamp": 100.4,
+      "stream": "heartbeat",
+      "version": 31
+    },
+    "stamp": 100.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 100.4,
+      "payload": {
+        "expires_at": 102.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:16"
+      },
+      "received_stamp": 100.4,
+      "sequence": 31,
+      "source": "tb2",
+      "source_stamp": 100.4,
+      "stream": "heartbeat",
+      "version": 31
+    },
+    "stamp": 100.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 100.4,
+      "payload": {
+        "expires_at": 102.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:20"
+      },
+      "received_stamp": 100.4,
+      "sequence": 14,
+      "source": "tb3",
+      "source_stamp": 100.4,
+      "stream": "heartbeat",
+      "version": 14
+    },
+    "stamp": 100.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 100.7,
+      "payload": {
+        "expires_at": 102.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:16"
+      },
+      "received_stamp": 100.7,
+      "sequence": 32,
+      "source": "tb1",
+      "source_stamp": 100.7,
+      "stream": "heartbeat",
+      "version": 32
+    },
+    "stamp": 100.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 100.7,
+      "payload": {
+        "expires_at": 102.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:16"
+      },
+      "received_stamp": 100.7,
+      "sequence": 32,
+      "source": "tb2",
+      "source_stamp": 100.7,
+      "stream": "heartbeat",
+      "version": 32
+    },
+    "stamp": 100.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 100.7,
+      "payload": {
+        "expires_at": 102.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:20"
+      },
+      "received_stamp": 100.7,
+      "sequence": 15,
+      "source": "tb3",
+      "source_stamp": 100.7,
+      "stream": "heartbeat",
+      "version": 15
+    },
+    "stamp": 100.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 100.9,
+      "payload": {
+        "expires_at": 102.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:16"
+      },
+      "received_stamp": 100.9,
+      "sequence": 33,
+      "source": "tb1",
+      "source_stamp": 100.9,
+      "stream": "heartbeat",
+      "version": 33
+    },
+    "stamp": 100.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 100.9,
+      "payload": {
+        "expires_at": 102.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:16"
+      },
+      "received_stamp": 100.9,
+      "sequence": 33,
+      "source": "tb2",
+      "source_stamp": 100.9,
+      "stream": "heartbeat",
+      "version": 33
+    },
+    "stamp": 100.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 100.9,
+      "payload": {
+        "expires_at": 102.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:20"
+      },
+      "received_stamp": 100.9,
+      "sequence": 16,
+      "source": "tb3",
+      "source_stamp": 100.9,
+      "stream": "heartbeat",
+      "version": 16
+    },
+    "stamp": 100.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "baa87eab4dcfcee42fa455e2284373c801bc768e2e0195df11b2f8b0c2029ba0",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 21,
+      "observation_digest": "bbb093fe0d456e885983b317f02434482f864612ae5e8a344848c1fa00e98134",
+      "observation_sequence": 21,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 101.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 101.2,
+      "payload": {
+        "expires_at": 103.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:16"
+      },
+      "received_stamp": 101.2,
+      "sequence": 34,
+      "source": "tb1",
+      "source_stamp": 101.2,
+      "stream": "heartbeat",
+      "version": 34
+    },
+    "stamp": 101.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 101.2,
+      "payload": {
+        "expires_at": 103.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:16"
+      },
+      "received_stamp": 101.2,
+      "sequence": 34,
+      "source": "tb2",
+      "source_stamp": 101.2,
+      "stream": "heartbeat",
+      "version": 34
+    },
+    "stamp": 101.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 101.2,
+      "payload": {
+        "expires_at": 103.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:20"
+      },
+      "received_stamp": 101.2,
+      "sequence": 17,
+      "source": "tb3",
+      "source_stamp": 101.2,
+      "stream": "heartbeat",
+      "version": 17
+    },
+    "stamp": 101.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 101.4,
+      "payload": {
+        "expires_at": 103.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:16"
+      },
+      "received_stamp": 101.4,
+      "sequence": 35,
+      "source": "tb1",
+      "source_stamp": 101.4,
+      "stream": "heartbeat",
+      "version": 35
+    },
+    "stamp": 101.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 101.4,
+      "payload": {
+        "expires_at": 103.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:16"
+      },
+      "received_stamp": 101.4,
+      "sequence": 35,
+      "source": "tb2",
+      "source_stamp": 101.4,
+      "stream": "heartbeat",
+      "version": 35
+    },
+    "stamp": 101.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 101.4,
+      "payload": {
+        "expires_at": 103.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:20"
+      },
+      "received_stamp": 101.4,
+      "sequence": 18,
+      "source": "tb3",
+      "source_stamp": 101.4,
+      "stream": "heartbeat",
+      "version": 18
+    },
+    "stamp": 101.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 101.7,
+      "payload": {
+        "expires_at": 103.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:16"
+      },
+      "received_stamp": 101.7,
+      "sequence": 36,
+      "source": "tb1",
+      "source_stamp": 101.7,
+      "stream": "heartbeat",
+      "version": 36
+    },
+    "stamp": 101.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 101.7,
+      "payload": {
+        "expires_at": 103.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:16"
+      },
+      "received_stamp": 101.7,
+      "sequence": 36,
+      "source": "tb2",
+      "source_stamp": 101.7,
+      "stream": "heartbeat",
+      "version": 36
+    },
+    "stamp": 101.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 101.7,
+      "payload": {
+        "expires_at": 103.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:20"
+      },
+      "received_stamp": 101.7,
+      "sequence": 19,
+      "source": "tb3",
+      "source_stamp": 101.7,
+      "stream": "heartbeat",
+      "version": 19
+    },
+    "stamp": 101.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 101.9,
+      "payload": {
+        "expires_at": 103.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:16"
+      },
+      "received_stamp": 101.9,
+      "sequence": 37,
+      "source": "tb1",
+      "source_stamp": 101.9,
+      "stream": "heartbeat",
+      "version": 37
+    },
+    "stamp": 101.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 101.9,
+      "payload": {
+        "expires_at": 103.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:16"
+      },
+      "received_stamp": 101.9,
+      "sequence": 37,
+      "source": "tb2",
+      "source_stamp": 101.9,
+      "stream": "heartbeat",
+      "version": 37
+    },
+    "stamp": 101.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 101.9,
+      "payload": {
+        "expires_at": 103.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:20"
+      },
+      "received_stamp": 101.9,
+      "sequence": 20,
+      "source": "tb3",
+      "source_stamp": 101.9,
+      "stream": "heartbeat",
+      "version": 20
+    },
+    "stamp": 101.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "action",
+    "payload": {
+      "action": 128,
+      "candidate_version": "368fb4ee36fd0712bb8e3a55419d93899fd17e280f624417621a43b95494636a",
+      "choices": [
+        1,
+        2,
+        8
+      ],
+      "command_id": 22,
+      "observation_digest": "eb59c8d720f004d22d4e0fc098d6afaa731635fe27bd36a3f8224bf43d4f7213",
+      "observation_sequence": 22,
+      "results": {
+        "tb1": "switch_pending",
+        "tb2": "switch_pending",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 102.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "protocol",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "goal_id": "mr3_p1b_v4_corridors101:tb1:16",
+      "reason": "switch",
+      "robot": "tb1",
+      "stamp": 102.1,
+      "type": "cancel_goal"
+    },
+    "stamp": 102.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "protocol",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "goal_id": "mr3_p1b_v4_corridors101:tb2:16",
+      "reason": "switch",
+      "robot": "tb2",
+      "stamp": 102.1,
+      "type": "cancel_goal"
+    },
+    "stamp": 102.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 102.2,
+      "payload": {
+        "expires_at": 104.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:20"
+      },
+      "received_stamp": 102.2,
+      "sequence": 21,
+      "source": "tb3",
+      "source_stamp": 102.2,
+      "stream": "heartbeat",
+      "version": 21
+    },
+    "stamp": 102.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 102.2,
+      "payload": {
+        "epoch": "mr3_p1b_v4_corridors101",
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:16",
+        "reason": "switch",
+        "robot": "tb1",
+        "stamp": 102.1,
+        "type": "cancel_goal"
+      },
+      "received_stamp": 102.2,
+      "sequence": 3,
+      "source": "tb1",
+      "source_stamp": 102.1,
+      "stream": "command",
+      "version": 3
+    },
+    "stamp": 102.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 102.2,
+      "payload": {
+        "epoch": "mr3_p1b_v4_corridors101",
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:16",
+        "reason": "switch",
+        "robot": "tb2",
+        "stamp": 102.1,
+        "type": "cancel_goal"
+      },
+      "received_stamp": 102.2,
+      "sequence": 3,
+      "source": "tb2",
+      "source_stamp": 102.1,
+      "stream": "command",
+      "version": 3
+    },
+    "stamp": 102.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 102.2,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:16",
+        "robot": "tb1",
+        "type": "cancel",
+        "value": true
+      },
+      "received_stamp": 102.3,
+      "sequence": 4,
+      "source": "tb1",
+      "source_stamp": 102.2,
+      "stream": "receipt",
+      "version": 4
+    },
+    "stamp": 102.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 102.2,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:16",
+        "robot": "tb2",
+        "type": "cancel",
+        "value": true
+      },
+      "received_stamp": 102.3,
+      "sequence": 4,
+      "source": "tb2",
+      "source_stamp": 102.2,
+      "stream": "receipt",
+      "version": 4
+    },
+    "stamp": 102.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "protocol",
+    "payload": {
+      "accepted": true,
+      "epoch": "mr3_p1b_v4_corridors101",
+      "goal_id": "mr3_p1b_v4_corridors101:tb1:16",
+      "robot": "tb1",
+      "stamp": 102.3,
+      "type": "cancel_response"
+    },
+    "stamp": 102.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "protocol",
+    "payload": {
+      "accepted": true,
+      "epoch": "mr3_p1b_v4_corridors101",
+      "goal_id": "mr3_p1b_v4_corridors101:tb2:16",
+      "robot": "tb2",
+      "stamp": 102.3,
+      "type": "cancel_response"
+    },
+    "stamp": 102.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 102.2,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:16",
+        "robot": "tb1",
+        "type": "result",
+        "value": 5
+      },
+      "received_stamp": 102.5,
+      "sequence": 5,
+      "source": "tb1",
+      "source_stamp": 102.2,
+      "stream": "receipt",
+      "version": 5
+    },
+    "stamp": 102.5
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 102.2,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:16",
+        "robot": "tb2",
+        "type": "result",
+        "value": 5
+      },
+      "received_stamp": 102.5,
+      "sequence": 5,
+      "source": "tb2",
+      "source_stamp": 102.2,
+      "stream": "receipt",
+      "version": 5
+    },
+    "stamp": 102.5
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 102.4,
+      "payload": {
+        "expires_at": 104.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:20"
+      },
+      "received_stamp": 102.5,
+      "sequence": 22,
+      "source": "tb3",
+      "source_stamp": 102.4,
+      "stream": "heartbeat",
+      "version": 22
+    },
+    "stamp": 102.5
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 16,
+      "epoch": "mr3_p1b_v4_corridors101",
+      "goal_id": "mr3_p1b_v4_corridors101:tb1:16",
+      "robot": "tb1",
+      "stamp": 102.5,
+      "status": "CANCELED",
+      "type": "protocol_terminal"
+    },
+    "stamp": 102.5
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 22,
+      "created_at": 102.0,
+      "epoch": "mr3_p1b_v4_corridors101",
+      "expires_at": 104.0,
+      "goal": {
+        "x": -0.8685264137747248,
+        "y": -3.202694429350318
+      },
+      "goal_id": "mr3_p1b_v4_corridors101:tb1:22",
+      "lease_until": 104.0,
+      "observation_version": 22,
+      "robot": "tb1",
+      "stamp": 102.5,
+      "type": "send_goal",
+      "x": -0.8685264137747248,
+      "y": -3.202694429350318
+    },
+    "stamp": 102.5
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 16,
+      "epoch": "mr3_p1b_v4_corridors101",
+      "goal_id": "mr3_p1b_v4_corridors101:tb2:16",
+      "robot": "tb2",
+      "stamp": 102.5,
+      "status": "CANCELED",
+      "type": "protocol_terminal"
+    },
+    "stamp": 102.5
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 22,
+      "created_at": 102.0,
+      "epoch": "mr3_p1b_v4_corridors101",
+      "expires_at": 104.0,
+      "goal": {
+        "x": 1.431473620497946,
+        "y": 3.2473056667621716
+      },
+      "goal_id": "mr3_p1b_v4_corridors101:tb2:22",
+      "lease_until": 104.0,
+      "observation_version": 22,
+      "robot": "tb2",
+      "stamp": 102.5,
+      "type": "send_goal",
+      "x": 1.431473620497946,
+      "y": 3.2473056667621716
+    },
+    "stamp": 102.5
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 102.5,
+      "payload": {
+        "command_id": 22,
+        "created_at": 102.0,
+        "epoch": "mr3_p1b_v4_corridors101",
+        "expires_at": 104.0,
+        "goal": {
+          "x": -0.8685264137747248,
+          "y": -3.202694429350318
+        },
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:22",
+        "lease_until": 104.0,
+        "observation_version": 22,
+        "robot": "tb1",
+        "stamp": 102.5,
+        "type": "send_goal",
+        "x": -0.8685264137747248,
+        "y": -3.202694429350318
+      },
+      "received_stamp": 102.5,
+      "sequence": 4,
+      "source": "tb1",
+      "source_stamp": 102.5,
+      "stream": "command",
+      "version": 4
+    },
+    "stamp": 102.5
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "native_send",
+    "payload": {
+      "command_id": 22,
+      "goal_id": "mr3_p1b_v4_corridors101:tb1:22",
+      "robot": "tb1"
+    },
+    "stamp": 102.5
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 102.5,
+      "payload": {
+        "command_id": 22,
+        "created_at": 102.0,
+        "epoch": "mr3_p1b_v4_corridors101",
+        "expires_at": 104.0,
+        "goal": {
+          "x": 1.431473620497946,
+          "y": 3.2473056667621716
+        },
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:22",
+        "lease_until": 104.0,
+        "observation_version": 22,
+        "robot": "tb2",
+        "stamp": 102.5,
+        "type": "send_goal",
+        "x": 1.431473620497946,
+        "y": 3.2473056667621716
+      },
+      "received_stamp": 102.5,
+      "sequence": 4,
+      "source": "tb2",
+      "source_stamp": 102.5,
+      "stream": "command",
+      "version": 4
+    },
+    "stamp": 102.5
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "native_send",
+    "payload": {
+      "command_id": 22,
+      "goal_id": "mr3_p1b_v4_corridors101:tb2:22",
+      "robot": "tb2"
+    },
+    "stamp": 102.5
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 102.5,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:22",
+        "robot": "tb1",
+        "type": "accept",
+        "value": true
+      },
+      "received_stamp": 102.7,
+      "sequence": 6,
+      "source": "tb1",
+      "source_stamp": 102.5,
+      "stream": "receipt",
+      "version": 6
+    },
+    "stamp": 102.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 102.5,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:22",
+        "robot": "tb2",
+        "type": "accept",
+        "value": true
+      },
+      "received_stamp": 102.7,
+      "sequence": 6,
+      "source": "tb2",
+      "source_stamp": 102.5,
+      "stream": "receipt",
+      "version": 6
+    },
+    "stamp": 102.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 102.7,
+      "payload": {
+        "expires_at": 104.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:22"
+      },
+      "received_stamp": 102.7,
+      "sequence": 38,
+      "source": "tb1",
+      "source_stamp": 102.7,
+      "stream": "heartbeat",
+      "version": 38
+    },
+    "stamp": 102.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 102.7,
+      "payload": {
+        "expires_at": 104.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:22"
+      },
+      "received_stamp": 102.7,
+      "sequence": 38,
+      "source": "tb2",
+      "source_stamp": 102.7,
+      "stream": "heartbeat",
+      "version": 38
+    },
+    "stamp": 102.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 102.7,
+      "payload": {
+        "expires_at": 104.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:20"
+      },
+      "received_stamp": 102.7,
+      "sequence": 23,
+      "source": "tb3",
+      "source_stamp": 102.7,
+      "stream": "heartbeat",
+      "version": 23
+    },
+    "stamp": 102.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 102.9,
+      "payload": {
+        "expires_at": 104.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:22"
+      },
+      "received_stamp": 102.9,
+      "sequence": 39,
+      "source": "tb1",
+      "source_stamp": 102.9,
+      "stream": "heartbeat",
+      "version": 39
+    },
+    "stamp": 102.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 102.9,
+      "payload": {
+        "expires_at": 104.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:22"
+      },
+      "received_stamp": 102.9,
+      "sequence": 39,
+      "source": "tb2",
+      "source_stamp": 102.9,
+      "stream": "heartbeat",
+      "version": 39
+    },
+    "stamp": 102.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 102.9,
+      "payload": {
+        "expires_at": 104.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:20"
+      },
+      "received_stamp": 102.9,
+      "sequence": 24,
+      "source": "tb3",
+      "source_stamp": 102.9,
+      "stream": "heartbeat",
+      "version": 24
+    },
+    "stamp": 102.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "910049a909affcd7a896c7a34c2082e924d766d55a558087dbc6d2697e00360e",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 23,
+      "observation_digest": "bcc8765bc6a0db0b0d69fa8cd246de354b02af1f065aec18df3b1edce1ce0c3b",
+      "observation_sequence": 23,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 103.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 103.2,
+      "payload": {
+        "expires_at": 105.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:22"
+      },
+      "received_stamp": 103.2,
+      "sequence": 40,
+      "source": "tb1",
+      "source_stamp": 103.2,
+      "stream": "heartbeat",
+      "version": 40
+    },
+    "stamp": 103.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 103.2,
+      "payload": {
+        "expires_at": 105.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:22"
+      },
+      "received_stamp": 103.2,
+      "sequence": 40,
+      "source": "tb2",
+      "source_stamp": 103.2,
+      "stream": "heartbeat",
+      "version": 40
+    },
+    "stamp": 103.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 103.2,
+      "payload": {
+        "expires_at": 105.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:20"
+      },
+      "received_stamp": 103.2,
+      "sequence": 25,
+      "source": "tb3",
+      "source_stamp": 103.2,
+      "stream": "heartbeat",
+      "version": 25
+    },
+    "stamp": 103.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 103.4,
+      "payload": {
+        "expires_at": 105.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:22"
+      },
+      "received_stamp": 103.4,
+      "sequence": 41,
+      "source": "tb1",
+      "source_stamp": 103.4,
+      "stream": "heartbeat",
+      "version": 41
+    },
+    "stamp": 103.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 103.4,
+      "payload": {
+        "expires_at": 105.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:22"
+      },
+      "received_stamp": 103.4,
+      "sequence": 41,
+      "source": "tb2",
+      "source_stamp": 103.4,
+      "stream": "heartbeat",
+      "version": 41
+    },
+    "stamp": 103.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 103.4,
+      "payload": {
+        "expires_at": 105.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:20"
+      },
+      "received_stamp": 103.4,
+      "sequence": 26,
+      "source": "tb3",
+      "source_stamp": 103.4,
+      "stream": "heartbeat",
+      "version": 26
+    },
+    "stamp": 103.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 103.7,
+      "payload": {
+        "expires_at": 105.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:22"
+      },
+      "received_stamp": 103.7,
+      "sequence": 42,
+      "source": "tb1",
+      "source_stamp": 103.7,
+      "stream": "heartbeat",
+      "version": 42
+    },
+    "stamp": 103.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 103.7,
+      "payload": {
+        "expires_at": 105.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:22"
+      },
+      "received_stamp": 103.7,
+      "sequence": 42,
+      "source": "tb2",
+      "source_stamp": 103.7,
+      "stream": "heartbeat",
+      "version": 42
+    },
+    "stamp": 103.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 103.7,
+      "payload": {
+        "expires_at": 105.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:20"
+      },
+      "received_stamp": 103.7,
+      "sequence": 27,
+      "source": "tb3",
+      "source_stamp": 103.7,
+      "stream": "heartbeat",
+      "version": 27
+    },
+    "stamp": 103.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 103.9,
+      "payload": {
+        "expires_at": 105.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:22"
+      },
+      "received_stamp": 103.9,
+      "sequence": 43,
+      "source": "tb1",
+      "source_stamp": 103.9,
+      "stream": "heartbeat",
+      "version": 43
+    },
+    "stamp": 103.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 103.9,
+      "payload": {
+        "expires_at": 105.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:22"
+      },
+      "received_stamp": 103.9,
+      "sequence": 43,
+      "source": "tb2",
+      "source_stamp": 103.9,
+      "stream": "heartbeat",
+      "version": 43
+    },
+    "stamp": 103.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 103.9,
+      "payload": {
+        "expires_at": 105.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:20"
+      },
+      "received_stamp": 103.9,
+      "sequence": 28,
+      "source": "tb3",
+      "source_stamp": 103.9,
+      "stream": "heartbeat",
+      "version": 28
+    },
+    "stamp": 103.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "8a3ee272c4d0ac2d6d6a49e0d2c58c94a594c1038070bec95a15636721ad4f48",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 24,
+      "observation_digest": "682f9355d85e4212ec5feb3ba1bbb3d8c37a62f96c3a24274fb54f44e940cfdc",
+      "observation_sequence": 24,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 104.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 104.2,
+      "payload": {
+        "expires_at": 106.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:22"
+      },
+      "received_stamp": 104.2,
+      "sequence": 44,
+      "source": "tb1",
+      "source_stamp": 104.2,
+      "stream": "heartbeat",
+      "version": 44
+    },
+    "stamp": 104.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 104.2,
+      "payload": {
+        "expires_at": 106.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:22"
+      },
+      "received_stamp": 104.2,
+      "sequence": 44,
+      "source": "tb2",
+      "source_stamp": 104.2,
+      "stream": "heartbeat",
+      "version": 44
+    },
+    "stamp": 104.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 104.2,
+      "payload": {
+        "expires_at": 106.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:20"
+      },
+      "received_stamp": 104.2,
+      "sequence": 29,
+      "source": "tb3",
+      "source_stamp": 104.2,
+      "stream": "heartbeat",
+      "version": 29
+    },
+    "stamp": 104.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 104.4,
+      "payload": {
+        "expires_at": 106.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:22"
+      },
+      "received_stamp": 104.4,
+      "sequence": 45,
+      "source": "tb1",
+      "source_stamp": 104.4,
+      "stream": "heartbeat",
+      "version": 45
+    },
+    "stamp": 104.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 104.4,
+      "payload": {
+        "expires_at": 106.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:22"
+      },
+      "received_stamp": 104.4,
+      "sequence": 45,
+      "source": "tb2",
+      "source_stamp": 104.4,
+      "stream": "heartbeat",
+      "version": 45
+    },
+    "stamp": 104.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 104.4,
+      "payload": {
+        "expires_at": 106.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:20"
+      },
+      "received_stamp": 104.4,
+      "sequence": 30,
+      "source": "tb3",
+      "source_stamp": 104.4,
+      "stream": "heartbeat",
+      "version": 30
+    },
+    "stamp": 104.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 104.7,
+      "payload": {
+        "expires_at": 106.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:22"
+      },
+      "received_stamp": 104.7,
+      "sequence": 46,
+      "source": "tb1",
+      "source_stamp": 104.7,
+      "stream": "heartbeat",
+      "version": 46
+    },
+    "stamp": 104.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 104.7,
+      "payload": {
+        "expires_at": 106.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:22"
+      },
+      "received_stamp": 104.7,
+      "sequence": 46,
+      "source": "tb2",
+      "source_stamp": 104.7,
+      "stream": "heartbeat",
+      "version": 46
+    },
+    "stamp": 104.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 104.7,
+      "payload": {
+        "expires_at": 106.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:20"
+      },
+      "received_stamp": 104.7,
+      "sequence": 31,
+      "source": "tb3",
+      "source_stamp": 104.7,
+      "stream": "heartbeat",
+      "version": 31
+    },
+    "stamp": 104.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 104.9,
+      "payload": {
+        "expires_at": 106.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:22"
+      },
+      "received_stamp": 104.9,
+      "sequence": 47,
+      "source": "tb1",
+      "source_stamp": 104.9,
+      "stream": "heartbeat",
+      "version": 47
+    },
+    "stamp": 104.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 104.9,
+      "payload": {
+        "expires_at": 106.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:22"
+      },
+      "received_stamp": 104.9,
+      "sequence": 47,
+      "source": "tb2",
+      "source_stamp": 104.9,
+      "stream": "heartbeat",
+      "version": 47
+    },
+    "stamp": 104.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 104.9,
+      "payload": {
+        "expires_at": 106.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:20"
+      },
+      "received_stamp": 104.9,
+      "sequence": 32,
+      "source": "tb3",
+      "source_stamp": 104.9,
+      "stream": "heartbeat",
+      "version": 32
+    },
+    "stamp": 104.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "d51a2f98ce8de8211f0cf5516ea377c0daad5eb64f179f155bb9c8e83f657815",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 25,
+      "observation_digest": "8ef649202e3078fe06b40b985b8574356daec226bc2f8d1de742542386a6a9a2",
+      "observation_sequence": 25,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 105.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 105.2,
+      "payload": {
+        "expires_at": 107.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:22"
+      },
+      "received_stamp": 105.2,
+      "sequence": 48,
+      "source": "tb1",
+      "source_stamp": 105.2,
+      "stream": "heartbeat",
+      "version": 48
+    },
+    "stamp": 105.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 105.2,
+      "payload": {
+        "expires_at": 107.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:22"
+      },
+      "received_stamp": 105.2,
+      "sequence": 48,
+      "source": "tb2",
+      "source_stamp": 105.2,
+      "stream": "heartbeat",
+      "version": 48
+    },
+    "stamp": 105.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 105.2,
+      "payload": {
+        "expires_at": 107.2,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:20"
+      },
+      "received_stamp": 105.2,
+      "sequence": 33,
+      "source": "tb3",
+      "source_stamp": 105.2,
+      "stream": "heartbeat",
+      "version": 33
+    },
+    "stamp": 105.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 105.4,
+      "payload": {
+        "expires_at": 107.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:22"
+      },
+      "received_stamp": 105.4,
+      "sequence": 49,
+      "source": "tb1",
+      "source_stamp": 105.4,
+      "stream": "heartbeat",
+      "version": 49
+    },
+    "stamp": 105.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 105.4,
+      "payload": {
+        "expires_at": 107.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:22"
+      },
+      "received_stamp": 105.4,
+      "sequence": 49,
+      "source": "tb2",
+      "source_stamp": 105.4,
+      "stream": "heartbeat",
+      "version": 49
+    },
+    "stamp": 105.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 105.4,
+      "payload": {
+        "expires_at": 107.4,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:20"
+      },
+      "received_stamp": 105.4,
+      "sequence": 34,
+      "source": "tb3",
+      "source_stamp": 105.4,
+      "stream": "heartbeat",
+      "version": 34
+    },
+    "stamp": 105.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 105.7,
+      "payload": {
+        "expires_at": 107.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:22"
+      },
+      "received_stamp": 105.7,
+      "sequence": 50,
+      "source": "tb1",
+      "source_stamp": 105.7,
+      "stream": "heartbeat",
+      "version": 50
+    },
+    "stamp": 105.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 105.7,
+      "payload": {
+        "expires_at": 107.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:22"
+      },
+      "received_stamp": 105.7,
+      "sequence": 50,
+      "source": "tb2",
+      "source_stamp": 105.7,
+      "stream": "heartbeat",
+      "version": 50
+    },
+    "stamp": 105.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 105.7,
+      "payload": {
+        "expires_at": 107.7,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:20"
+      },
+      "received_stamp": 105.7,
+      "sequence": 35,
+      "source": "tb3",
+      "source_stamp": 105.7,
+      "stream": "heartbeat",
+      "version": 35
+    },
+    "stamp": 105.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 105.9,
+      "payload": {
+        "expires_at": 107.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:22"
+      },
+      "received_stamp": 105.9,
+      "sequence": 51,
+      "source": "tb1",
+      "source_stamp": 105.9,
+      "stream": "heartbeat",
+      "version": 51
+    },
+    "stamp": 105.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 105.9,
+      "payload": {
+        "expires_at": 107.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:22"
+      },
+      "received_stamp": 105.9,
+      "sequence": 51,
+      "source": "tb2",
+      "source_stamp": 105.9,
+      "stream": "heartbeat",
+      "version": 51
+    },
+    "stamp": 105.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 105.9,
+      "payload": {
+        "expires_at": 107.9,
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:20"
+      },
+      "received_stamp": 105.9,
+      "sequence": 36,
+      "source": "tb3",
+      "source_stamp": 105.9,
+      "stream": "heartbeat",
+      "version": 36
+    },
+    "stamp": 105.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "protocol",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "goal_id": "mr3_p1b_v4_corridors101:tb1:22",
+      "reason": "task_stop",
+      "robot": "tb1",
+      "stamp": 106.1,
+      "type": "cancel_goal"
+    },
+    "stamp": 106.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "protocol",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "goal_id": "mr3_p1b_v4_corridors101:tb2:22",
+      "reason": "task_stop",
+      "robot": "tb2",
+      "stamp": 106.1,
+      "type": "cancel_goal"
+    },
+    "stamp": 106.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "protocol",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "goal_id": "mr3_p1b_v4_corridors101:tb3:20",
+      "reason": "task_stop",
+      "robot": "tb3",
+      "stamp": 106.1,
+      "type": "cancel_goal"
+    },
+    "stamp": 106.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 106.2,
+      "payload": {
+        "epoch": "mr3_p1b_v4_corridors101",
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:22",
+        "reason": "task_stop",
+        "robot": "tb1",
+        "stamp": 106.1,
+        "type": "cancel_goal"
+      },
+      "received_stamp": 106.2,
+      "sequence": 5,
+      "source": "tb1",
+      "source_stamp": 106.1,
+      "stream": "command",
+      "version": 5
+    },
+    "stamp": 106.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 106.2,
+      "payload": {
+        "epoch": "mr3_p1b_v4_corridors101",
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:22",
+        "reason": "task_stop",
+        "robot": "tb2",
+        "stamp": 106.1,
+        "type": "cancel_goal"
+      },
+      "received_stamp": 106.2,
+      "sequence": 5,
+      "source": "tb2",
+      "source_stamp": 106.1,
+      "stream": "command",
+      "version": 5
+    },
+    "stamp": 106.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 106.2,
+      "payload": {
+        "epoch": "mr3_p1b_v4_corridors101",
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:20",
+        "reason": "task_stop",
+        "robot": "tb3",
+        "stamp": 106.1,
+        "type": "cancel_goal"
+      },
+      "received_stamp": 106.2,
+      "sequence": 3,
+      "source": "tb3",
+      "source_stamp": 106.1,
+      "stream": "command",
+      "version": 3
+    },
+    "stamp": 106.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 106.2,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:22",
+        "robot": "tb1",
+        "type": "cancel",
+        "value": true
+      },
+      "received_stamp": 106.3,
+      "sequence": 7,
+      "source": "tb1",
+      "source_stamp": 106.2,
+      "stream": "receipt",
+      "version": 7
+    },
+    "stamp": 106.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 106.2,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:22",
+        "robot": "tb2",
+        "type": "cancel",
+        "value": true
+      },
+      "received_stamp": 106.3,
+      "sequence": 7,
+      "source": "tb2",
+      "source_stamp": 106.2,
+      "stream": "receipt",
+      "version": 7
+    },
+    "stamp": 106.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 106.2,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:20",
+        "robot": "tb3",
+        "type": "cancel",
+        "value": true
+      },
+      "received_stamp": 106.3,
+      "sequence": 4,
+      "source": "tb3",
+      "source_stamp": 106.2,
+      "stream": "receipt",
+      "version": 4
+    },
+    "stamp": 106.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "protocol",
+    "payload": {
+      "accepted": true,
+      "epoch": "mr3_p1b_v4_corridors101",
+      "goal_id": "mr3_p1b_v4_corridors101:tb1:22",
+      "robot": "tb1",
+      "stamp": 106.3,
+      "type": "cancel_response"
+    },
+    "stamp": 106.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "protocol",
+    "payload": {
+      "accepted": true,
+      "epoch": "mr3_p1b_v4_corridors101",
+      "goal_id": "mr3_p1b_v4_corridors101:tb2:22",
+      "robot": "tb2",
+      "stamp": 106.3,
+      "type": "cancel_response"
+    },
+    "stamp": 106.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "protocol",
+    "payload": {
+      "accepted": true,
+      "epoch": "mr3_p1b_v4_corridors101",
+      "goal_id": "mr3_p1b_v4_corridors101:tb3:20",
+      "robot": "tb3",
+      "stamp": 106.3,
+      "type": "cancel_response"
+    },
+    "stamp": 106.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 106.2,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_corridors101:tb1:22",
+        "robot": "tb1",
+        "type": "result",
+        "value": 5
+      },
+      "received_stamp": 106.5,
+      "sequence": 8,
+      "source": "tb1",
+      "source_stamp": 106.2,
+      "stream": "receipt",
+      "version": 8
+    },
+    "stamp": 106.5
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 106.2,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_corridors101:tb2:22",
+        "robot": "tb2",
+        "type": "result",
+        "value": 5
+      },
+      "received_stamp": 106.5,
+      "sequence": 8,
+      "source": "tb2",
+      "source_stamp": 106.2,
+      "stream": "receipt",
+      "version": 8
+    },
+    "stamp": 106.5
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_corridors101",
+      "generated_stamp": 106.2,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_corridors101:tb3:20",
+        "robot": "tb3",
+        "type": "result",
+        "value": 5
+      },
+      "received_stamp": 106.5,
+      "sequence": 5,
+      "source": "tb3",
+      "source_stamp": 106.2,
+      "stream": "receipt",
+      "version": 5
+    },
+    "stamp": 106.5
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 22,
+      "epoch": "mr3_p1b_v4_corridors101",
+      "goal_id": "mr3_p1b_v4_corridors101:tb1:22",
+      "robot": "tb1",
+      "stamp": 106.5,
+      "status": "CANCELED",
+      "type": "protocol_terminal"
+    },
+    "stamp": 106.5
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 22,
+      "epoch": "mr3_p1b_v4_corridors101",
+      "goal_id": "mr3_p1b_v4_corridors101:tb2:22",
+      "robot": "tb2",
+      "stamp": 106.5,
+      "status": "CANCELED",
+      "type": "protocol_terminal"
+    },
+    "stamp": 106.5
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 20,
+      "epoch": "mr3_p1b_v4_corridors101",
+      "goal_id": "mr3_p1b_v4_corridors101:tb3:20",
+      "robot": "tb3",
+      "stamp": 106.5,
+      "status": "CANCELED",
+      "type": "protocol_terminal"
+    },
+    "stamp": 106.5
+  },
+  {
+    "epoch": "mr3_p1b_v4_corridors101",
+    "kind": "task_stopped",
+    "payload": {
+      "navigation_failure": false,
+      "pending_goal_count": 0,
+      "robot_names": [
+        "tb1",
+        "tb2",
+        "tb3"
+      ],
+      "start_sim_time_sec": 81.0,
+      "stop_sim_time_sec": 106.5
+    },
+    "stamp": 106.5
+  }
+]

@@ -1,0 +1,94 @@
+{
+  "accepted_robots": [
+    "tb1",
+    "tb2",
+    "tb3"
+  ],
+  "action_count": 22,
+  "adapter_sha256": "3e0afb4019d1afa517c22df2ad70f3651003bcb0662b20f2cf5d911326e77ef3",
+  "cancel_goal_count": 4,
+  "confirmed_native_cancellation_goal_ids": [
+    "mr3_p1b_v4_rooms101:tb1:13",
+    "mr3_p1b_v4_rooms101:tb1:20",
+    "mr3_p1b_v4_rooms101:tb2:13",
+    "mr3_p1b_v4_rooms101:tb2:19"
+  ],
+  "contact_monitoring": {
+    "available": true,
+    "collision_events": 0,
+    "evaluator_success": false,
+    "file": "mr3_p1b_v4_rooms101.json",
+    "monitoring_active": true,
+    "monitoring_fresh": true,
+    "navigation_protocol_closed_in_evaluator": false,
+    "passed": true,
+    "raw_stream_audit_passed": true,
+    "raw_stream_count": 18,
+    "required": true,
+    "schema_version": 4,
+    "scope": "interrupted scripted adapter probe",
+    "task_success_claimed": false,
+    "termination_reason": "adapter_probe_shutdown"
+  },
+  "duplicate_command_count": 1,
+  "epoch": "mr3_p1b_v4_rooms101",
+  "errors": [],
+  "estimated_fresh_pose_sample_count": {
+    "tb1": 24,
+    "tb2": 24,
+    "tb3": 24
+  },
+  "estimated_snapshot_path_length_m": {
+    "tb1": 2.6533675332176614,
+    "tb2": 2.505285877368602,
+    "tb3": 0.33842588073393165
+  },
+  "keep_robot_command_count": 38,
+  "native_launch_failures": [],
+  "native_send_count": 7,
+  "native_shutdown_proof": {
+    "gzserver": {
+      "clean_exits": [
+        {
+          "pid": 4087056,
+          "suffix": "4"
+        }
+      ],
+      "identity_matched": true,
+      "started": [
+        {
+          "pid": 4087056,
+          "suffix": "4"
+        }
+      ]
+    },
+    "mr3_gazebo_native_stop": {
+      "clean_exits": [
+        {
+          "pid": 4092908,
+          "suffix": "38"
+        }
+      ],
+      "identity_matched": true,
+      "started": [
+        {
+          "pid": 4092908,
+          "suffix": "38"
+        }
+      ]
+    }
+  },
+  "native_terminal_count": 7,
+  "passed": true,
+  "probe_movement_threshold_m": 0.05,
+  "protocol_goal_count": 7,
+  "rejection_reasons": [
+    "expired_or_invalid_command_time",
+    "masked_action",
+    "wrong_epoch"
+  ],
+  "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_adapter/mr3_p1b_v4_rooms101",
+  "schema": "mr3-p1b-probe-audit-v1",
+  "scope": "scripted P1B adapter protocol; no RL or 95% task-success credit",
+  "snapshot_count": 24
+}

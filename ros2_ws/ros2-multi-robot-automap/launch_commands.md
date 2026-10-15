@@ -1,6 +1,6 @@
 # 当前三机器人基线与MR3适配启动命令
 
-2026-10-15：新路线为 [MR3](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，P0/P1A已验收，P1B适配验证中。
+2026-10-15：新路线为 [MR3](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，P0/P1A已验收，P1B实现/验证完成待用户验收。
 默认`execution_mode:=baseline`启动前沿控制器；`adapter`为显式联合动作接口，尚无RL训练或gateway。
 所有推荐运行显式固定三台，活动默认已改为三台，保留1–4历史兼容。
 
@@ -58,7 +58,8 @@ MR3_ADAPTER_ID=mr3_p1b_open_$(date +%Y%m%d_%H%M%S)
 export ROS_DOMAIN_ID=108 GAZEBO_MASTER_URI=http://127.0.0.1:11901
 PYTHONNOUSERSITE=1 /usr/bin/python3 scripts/run_mr3_adapter_probe.py \
   --scene open --seed 101 --run-id $MR3_ADAPTER_ID
-/usr/bin/python3 scripts/audit_mr3_adapter_probe.py log/mr3_adapter/$MR3_ADAPTER_ID
+/usr/bin/python3 scripts/audit_mr3_adapter_probe.py \
+  log/mr3_adapter/$MR3_ADAPTER_ID --require-contact-monitoring
 ```
 
 脚本自动设置P1A UDP profile，按声明的较长已观测路径验证候选目标、KEEP、WAIT、第二批目标和25秒后终态
@@ -68,6 +69,10 @@ rooms/corridors分别使用对应`--scene`，推荐域109/110、Gazebo端口1190
 脚本显式设置`adapter_probe:=true`，仅允许将评价器以未完成诊断正常结束；默认关闭该服务。
 详细信封、频率、租约、观测/候选/掩码和动作字段见
 [MR3_ADAPTER_CONTRACT.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ADAPTER_CONTRACT.md)。
+冻结`f9928fe`的open/rooms/corridors各seed101严格审计均通过，前三次失败与完整原件见
+[P1B报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261015_mr3_p1b.md)。
+K8/5秒承诺是本接口版本；名义1秒快照在rooms实际有2/3秒间隔，固定dt与采样吞吐仍属P1C门禁。
+这不证明95%任务或RL有效性；P1B待用户验收，P1C及后续未开始。
 
 手动提供策略输入时可启动同一模式：
 

@@ -3,7 +3,9 @@
 Updated 2026-10-15. The active contract is [RESEARCH_PLAN.md](RESEARCH_PLAN.md),
 then [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md). Follow root AGENTS.md.
 MR3-P0 was explicitly accepted on 2026-10-14; MR3-P1A was accepted on 2026-10-15 and the user authorized P1B.
-P1B is in progress; P1C, training and gateway remain unauthorized.
+P1B implementation/validation is complete, awaiting user acceptance; P1C and
+later remain unstarted. Do not start P1C before explicit P1B acceptance.
+No training or gateway is authorized by P1B.
 This route replaces the old search/charging/rally/communication-scheduler plan.
 
 ## Task and source of truth
@@ -16,8 +18,14 @@ network effects; remedies, hardware, other team sizes and target/charging/rally
 are out of scope. Detailed method decisions live in the plan and
 [route audit](report/20261014_mr3_route_audit.md), not in historical report instructions.
 
-Current `main` still uses handcrafted ROS frontier allocation. No robot RL,
-training environment or ROS/ns-3 gateway exists. P1A launch/check defaults are three; 1–4 compatibility remains.
+Default baseline retains handcrafted ROS frontier allocation; the mutually
+exclusive adapter owns stable goals and consumes logical ideal-delivery copies.
+No robot RL, training environment or ROS/ns-3 gateway exists. Freeze `f9928fe`
+passed all three same-freeze open/rooms/corridors seed101 adapter audits; see the
+[P1B report](report/20261015_mr3_p1b.md). K8/5 s are this interface version,
+not 95% task evidence. The nominal 1 s snapshot timer had 2/3 s rooms gaps;
+fixed dt/reset/throughput remain P1C gates. P1A launch/check defaults are three;
+1–4 compatibility remains.
 MR3 evaluation uses an explicit hash-bound 95%/300s schema4 task contract. Plans are
 not implemented features. P1A includes 18-stream body contact/freshness audit
 and 9 effective slots at freeze `5e47802` from 10 attempts, including one
@@ -100,8 +108,9 @@ work. Every simulator check is an experiment requiring the shared log.
 - RL decides exploration; a protocol/safety adapter must not silently call
   handcrafted goal scoring, bad-target reallocation or truth-based masks.
 - Preserve stable goal IDs, acceptance/cancel/result ownership and source ages.
-  Current raw shared Nav2 map and all-peer odom/TF are explicit gateway bypasses
-  to remove under the planned contract, not exceptions for safety.
+  Adapter mode uses logical received map/state copies; baseline retains raw
+  shared Nav2 map and all-peer odom/TF. P3A must still prove byte transport,
+  DDS/process isolation and absence of bypasses; ideal objects do not prove this.
 - Preserve genuine contacts, truth/model boundaries and fixed measurement ROI.
   No held-out tuning, changing time/safety gates after failure or cross-freeze matrices.
 - Append all training/evaluation/baseline/ablation/smoke/simulator attempts,

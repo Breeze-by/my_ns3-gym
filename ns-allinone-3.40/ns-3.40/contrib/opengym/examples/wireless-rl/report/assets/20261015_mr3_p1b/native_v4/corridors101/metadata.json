@@ -1,0 +1,45 @@
+{
+  "kind": "scripted_adapter_probe_not_rl_or_task_success",
+  "freeze": "f9928fe97f4081c3f331ba1407aa18a9fc14a602",
+  "scene": "corridors",
+  "seed": 101,
+  "command": [
+    "ros2",
+    "launch",
+    "multi_robot",
+    "gazebo_multirobot_mapping_with_nav2.launch.py",
+    "execution_mode:=adapter",
+    "adapter_probe:=true",
+    "robot_count:=3",
+    "mr3_episode_epoch:=mr3_p1b_v4_corridors101",
+    "mr3_audit_path:=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_adapter/mr3_p1b_v4_corridors101/adapter.jsonl",
+    "world:=p1c_corridors.world",
+    "gazebo_seed:=101",
+    "enable_gzclient:=false",
+    "enable_rviz:=false",
+    "enable_merge_rviz:=false",
+    "auto_save_map:=false",
+    "enable_task_evaluator:=true",
+    "evaluation_contract_path:=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/corridors.json",
+    "evaluation_episode_id:=mr3_p1b_v4_corridors101",
+    "evaluation_output_dir:=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_adapter/mr3_p1b_v4_corridors101"
+  ],
+  "transport_environment": {
+    "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+    "ROS_LOCALHOST_ONLY": "0",
+    "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+    "SKIP_DEFAULT_XML": "1",
+    "FASTDDS_DEFAULT_PROFILES_FILE": null,
+    "RMW_FASTRTPS_USE_QOS_FROM_XML": null,
+    "RMW_FASTRTPS_PUBLICATION_MODE": null,
+    "profile_sha256": "8d11da75d5916ed95d8b8a6a74abecb8fe946254d615895164a63ef9f8ff9556"
+  },
+  "environment": {
+    "ROS_DOMAIN_ID": "110",
+    "GAZEBO_MASTER_URI": "http://127.0.0.1:11903",
+    "PYTHONNOUSERSITE": "1"
+  },
+  "policy": "legal joint candidates by longest observed path for cancellation stress; KEEP; WAIT after7s; new candidates after15s; deliberate stop after25s",
+  "startup_wall_guard_sec": 420.0,
+  "closure_wall_guard_sec": 90.0
+}

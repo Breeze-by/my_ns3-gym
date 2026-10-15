@@ -1,10 +1,13 @@
 # 三机器人 ROS 建图导航：当前实现指南
 
-代码核对：2026-10-15，MR3-P1A用户已验收，P1B理想适配验证中；`c9344e1`是历史工程冻结。
+代码核对：2026-10-15，MR3-P1A用户已验收，P1B实现/验证完成待用户验收；`c9344e1`是历史工程冻结。
 新研究契约在 [RESEARCH_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，步骤在
 [IMPLEMENTATION_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/IMPLEMENTATION_PLAN.md)。MR3-P0/P1A已验收，P1C及后续未开始。
 默认仍为**传统前沿控制器**；新增互斥的理想策略适配模式，没有导航RL模型、训练环境或通信gateway。
 复制运行统一使用 [launch_commands.md](launch_commands.md)，其中全部显式传三台。
+冻结`f9928fe`的open/rooms/corridors各seed101脚本适配审计均通过；功能、原失败及证据见
+[P1B报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261015_mr3_p1b.md)。
+等待用户明确验收P1B后才能进入P1C。
 
 ## 1. 路径与环境
 
@@ -38,9 +41,9 @@ MR3合同和新schema4的原生证据在P1A报告，不能沿用旧90%成绩。
 每台本机 Gazebo 发布 `/tbN/scan`、`odom`、`imu`、`joint_states`、`collision`；
 本机 robot_state_publisher/SLAM 发布 namespaced TF 与 `/tbN/map`。
 Nav2 发布 `/tbN/cmd_vel`，差速插件消费速度。`cmd_vel` 不是机器人测得的真实速度。
-当前三台 SLAM 地图融合为 `/merge_map`，公共 frame 为 `map`。
+baseline将三台SLAM地图融合为`/merge_map`；adapter后端融合图为`/mr3/received/map`，公共frame均为`map`。
 
-手工控制器用融合图及每台观测位姿计算前沿、可达路径/信息增益、历史效用，分配
+baseline手工控制器用融合图及每台观测位姿计算前沿、可达路径/信息增益、历史效用，分配
 观察目标、分段到达，并通过 `/tbN/navigate_to_pose` 执行。
 Nav2 使用相同实时融合图的 static layer，Smac2D 全局规划和非滚动全局代价图；本地
 激光/DWB 负责局部障碍。它不是分散式探索 RL。
@@ -48,14 +51,14 @@ Nav2 使用相同实时融合图的 static layer，Smac2D 全局规划和非滚�
 地图融合按原点/分辨率处理已知区域与占据冲突，保守优先保留障碍；拒绝不兼容的 frame、
 分辨率或旋转方向。共同初始坐标系是已知条件，不宣称实现任意初始相对位姿的地图配准。
 
-peer 组件观察所有机器人的 odom/TF，把队友完整机体包络作为 PointCloud2 发布到
+peer组件在baseline观察raw odom/TF，在adapter观察交付副本，把队友完整机体包络作为PointCloud2发布到
 `/tbN/peer_footprints`；全无限量程 LaserScan `/tbN/peer_obstacles` 清理该独立
 peer_layer 的旧位置，其他真实障碍层以 max 保留。它不改 SLAM 地图、不发送目标、
 不读 Gazebo 真值。任务期间源龄失效会锁存 `/exploration_failure`，阻止派发并取消目标。
 
 网络研究时，本机传感/SLAM/Nav2可继续本地实时工作，但远端融合图、队友位姿、目标和
-回执必须遵守真实交付边界。当前这些共享输入仍是实时 ROS 旁路，不能宣称已受 Wi-Fi
-影响。adapter模式已通过理想received存储和navigation_map明确逻辑交付边界；
+回执必须遵守真实交付边界。baseline保留实时共享输入；adapter已通过理想received存储和
+navigation_map明确逻辑交付边界，独占目标接口不含手工探索兜底，不能宣称已受Wi-Fi影响。
 独立action proxy、完整字节及DDS隔离仍属P3A，不能把理想对象交付称为Wi-Fi。
 
 ## 4. 关键当前参数（不是未来 RL 默认值）
@@ -63,6 +66,8 @@ peer_layer 的旧位置，其他真实障碍层以 max 保留。它不改 SLAM �
 | 参数 | 源码默认 | 当前含义 |
 | --- | --- | --- |
 | `robot_count` | 3 | 保留1–4兼容；MR3合同只允许3 |
+| `execution_mode` | baseline | adapter独占显式联合目标接口；同域本机锁拒绝第二个目标所有者 |
+| `adapter_probe` | false | 仅脚本探针启用评价器未完成诊断结束服务，不改变95%任务门禁 |
 | `world` / `gazebo_seed` | my_world.world / 1 | 正式运行显式记录场景、seed |
 | `use_sim_time` | true | ROS 使用 Gazebo /clock |
 | `enable_drive` | false | 保持关闭，避免重复速度所有权 |
@@ -79,6 +84,8 @@ peer_layer 的旧位置，其他真实障碍层以 max 保留。它不改 SLAM �
 
 标准演示、legacy90%诊断与MR3合同95%检查统一在启动命令页维护，不复制旧二台、四台或过时 fixed sleep。
 脚本适配、参数调整会与命令页同提交更新；训练/gateway CLI 在实现验收后才添加。
+P1B接口版本为K8+KEEP/WAIT、5秒接受后承诺、名义1秒快照；它不证明95%建图任务成功。
+最终rooms探针实际出现2/3秒快照间隔，尚无固定dt或可持续吞吐结论；这些与完整reset属于P1C门禁。
 
 ## 5. 评估器语义与证据限制
 
@@ -115,7 +122,8 @@ P1A合同模式另作完整检查。CSV/JSON原子发布、拒绝覆盖同id。
 旧September多种子P1C/schema2成绩属于旧源码。73组件检查的PASS也不等于MR3整任务。
 冻结`5e47802`累计10次尝试含1次保留的原生基础设施失败，得到9个有效单元；完整结果见
 [P1A报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261014_mr3_p1a.md)。
-P1A已于2026-10-15由用户验收，P1B适配验证中；这些仍是传统开发基线证据，没有导航RL/通信成绩。
+P1A已于2026-10-15由用户验收；P1B实现/验证完成待用户验收。P1A仍是传统开发基线证据，
+P1B仅为脚本适配与理想逻辑交付证据，两者均没有导航RL/通信成绩。
 
 ## 6. 诊断原则
 

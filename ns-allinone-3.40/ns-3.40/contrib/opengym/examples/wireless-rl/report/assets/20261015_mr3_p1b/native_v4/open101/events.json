@@ -1,0 +1,3941 @@
+[
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "task_start",
+    "payload": {
+      "start_sim_time_sec": 80.0
+    },
+    "stamp": 80.0
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "action",
+    "payload": {
+      "action": 615,
+      "candidate_version": "00faabb1387d3c610093ea777143240b89c2523b41461c0760536f8f35e15ea0",
+      "choices": [
+        6,
+        1,
+        5
+      ],
+      "command_id": 1,
+      "observation_digest": "3f5c8193d2fa594dff74c082877416bad8264c8460fd08c75146602d5f708cef",
+      "observation_sequence": 1,
+      "results": {
+        "tb1": "sent",
+        "tb2": "sent",
+        "tb3": "sent"
+      }
+    },
+    "stamp": 80.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "action_duplicate",
+    "payload": {
+      "action": 615,
+      "candidate_version": "00faabb1387d3c610093ea777143240b89c2523b41461c0760536f8f35e15ea0",
+      "choices": [
+        6,
+        1,
+        5
+      ],
+      "command_id": 1,
+      "observation_digest": "3f5c8193d2fa594dff74c082877416bad8264c8460fd08c75146602d5f708cef",
+      "observation_sequence": 1,
+      "results": {
+        "tb1": "sent",
+        "tb2": "sent",
+        "tb3": "sent"
+      }
+    },
+    "stamp": 80.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "action_rejected",
+    "payload": {
+      "reason": "wrong_epoch"
+    },
+    "stamp": 80.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "action_rejected",
+    "payload": {
+      "reason": "expired_or_invalid_command_time"
+    },
+    "stamp": 80.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 1,
+      "created_at": 80.0,
+      "epoch": "mr3_p1b_v4_open101",
+      "expires_at": 82.0,
+      "goal": {
+        "x": -0.1499450568153078,
+        "y": -1.096973588090699
+      },
+      "goal_id": "mr3_p1b_v4_open101:tb1:1",
+      "lease_until": 82.0,
+      "observation_version": 1,
+      "robot": "tb1",
+      "stamp": 80.1,
+      "type": "send_goal",
+      "x": -0.1499450568153078,
+      "y": -1.096973588090699
+    },
+    "stamp": 80.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 1,
+      "created_at": 80.0,
+      "epoch": "mr3_p1b_v4_open101",
+      "expires_at": 82.0,
+      "goal": {
+        "x": 0.05005494616492445,
+        "y": 1.1030264446918556
+      },
+      "goal_id": "mr3_p1b_v4_open101:tb2:1",
+      "lease_until": 82.0,
+      "observation_version": 1,
+      "robot": "tb2",
+      "stamp": 80.1,
+      "type": "send_goal",
+      "x": 0.05005494616492445,
+      "y": 1.1030264446918556
+    },
+    "stamp": 80.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 1,
+      "created_at": 80.0,
+      "epoch": "mr3_p1b_v4_open101",
+      "expires_at": 82.0,
+      "goal": {
+        "x": 0.500054952870447,
+        "y": 0.553026436496217
+      },
+      "goal_id": "mr3_p1b_v4_open101:tb3:1",
+      "lease_until": 82.0,
+      "observation_version": 1,
+      "robot": "tb3",
+      "stamp": 80.1,
+      "type": "send_goal",
+      "x": 0.500054952870447,
+      "y": 0.553026436496217
+    },
+    "stamp": 80.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 80.2,
+      "payload": {
+        "expires_at": 82.2,
+        "goal_id": "mr3_p1b_v4_open101:tb1:1"
+      },
+      "received_stamp": 80.2,
+      "sequence": 1,
+      "source": "tb1",
+      "source_stamp": 80.2,
+      "stream": "heartbeat",
+      "version": 1
+    },
+    "stamp": 80.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 80.2,
+      "payload": {
+        "expires_at": 82.2,
+        "goal_id": "mr3_p1b_v4_open101:tb2:1"
+      },
+      "received_stamp": 80.2,
+      "sequence": 1,
+      "source": "tb2",
+      "source_stamp": 80.2,
+      "stream": "heartbeat",
+      "version": 1
+    },
+    "stamp": 80.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 80.2,
+      "payload": {
+        "expires_at": 82.2,
+        "goal_id": "mr3_p1b_v4_open101:tb3:1"
+      },
+      "received_stamp": 80.2,
+      "sequence": 1,
+      "source": "tb3",
+      "source_stamp": 80.2,
+      "stream": "heartbeat",
+      "version": 1
+    },
+    "stamp": 80.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 80.2,
+      "payload": {
+        "command_id": 1,
+        "created_at": 80.0,
+        "epoch": "mr3_p1b_v4_open101",
+        "expires_at": 82.0,
+        "goal": {
+          "x": -0.1499450568153078,
+          "y": -1.096973588090699
+        },
+        "goal_id": "mr3_p1b_v4_open101:tb1:1",
+        "lease_until": 82.0,
+        "observation_version": 1,
+        "robot": "tb1",
+        "stamp": 80.1,
+        "type": "send_goal",
+        "x": -0.1499450568153078,
+        "y": -1.096973588090699
+      },
+      "received_stamp": 80.2,
+      "sequence": 1,
+      "source": "tb1",
+      "source_stamp": 80.1,
+      "stream": "command",
+      "version": 1
+    },
+    "stamp": 80.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "native_send",
+    "payload": {
+      "command_id": 1,
+      "goal_id": "mr3_p1b_v4_open101:tb1:1",
+      "robot": "tb1"
+    },
+    "stamp": 80.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 80.2,
+      "payload": {
+        "command_id": 1,
+        "created_at": 80.0,
+        "epoch": "mr3_p1b_v4_open101",
+        "expires_at": 82.0,
+        "goal": {
+          "x": 0.05005494616492445,
+          "y": 1.1030264446918556
+        },
+        "goal_id": "mr3_p1b_v4_open101:tb2:1",
+        "lease_until": 82.0,
+        "observation_version": 1,
+        "robot": "tb2",
+        "stamp": 80.1,
+        "type": "send_goal",
+        "x": 0.05005494616492445,
+        "y": 1.1030264446918556
+      },
+      "received_stamp": 80.2,
+      "sequence": 1,
+      "source": "tb2",
+      "source_stamp": 80.1,
+      "stream": "command",
+      "version": 1
+    },
+    "stamp": 80.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "native_send",
+    "payload": {
+      "command_id": 1,
+      "goal_id": "mr3_p1b_v4_open101:tb2:1",
+      "robot": "tb2"
+    },
+    "stamp": 80.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 80.2,
+      "payload": {
+        "command_id": 1,
+        "created_at": 80.0,
+        "epoch": "mr3_p1b_v4_open101",
+        "expires_at": 82.0,
+        "goal": {
+          "x": 0.500054952870447,
+          "y": 0.553026436496217
+        },
+        "goal_id": "mr3_p1b_v4_open101:tb3:1",
+        "lease_until": 82.0,
+        "observation_version": 1,
+        "robot": "tb3",
+        "stamp": 80.1,
+        "type": "send_goal",
+        "x": 0.500054952870447,
+        "y": 0.553026436496217
+      },
+      "received_stamp": 80.2,
+      "sequence": 1,
+      "source": "tb3",
+      "source_stamp": 80.1,
+      "stream": "command",
+      "version": 1
+    },
+    "stamp": 80.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "native_send",
+    "payload": {
+      "command_id": 1,
+      "goal_id": "mr3_p1b_v4_open101:tb3:1",
+      "robot": "tb3"
+    },
+    "stamp": 80.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 80.2,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_open101:tb1:1",
+        "robot": "tb1",
+        "type": "accept",
+        "value": true
+      },
+      "received_stamp": 80.3,
+      "sequence": 1,
+      "source": "tb1",
+      "source_stamp": 80.2,
+      "stream": "receipt",
+      "version": 1
+    },
+    "stamp": 80.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 80.2,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_open101:tb2:1",
+        "robot": "tb2",
+        "type": "accept",
+        "value": true
+      },
+      "received_stamp": 80.3,
+      "sequence": 1,
+      "source": "tb2",
+      "source_stamp": 80.2,
+      "stream": "receipt",
+      "version": 1
+    },
+    "stamp": 80.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 80.2,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_open101:tb3:1",
+        "robot": "tb3",
+        "type": "accept",
+        "value": true
+      },
+      "received_stamp": 80.3,
+      "sequence": 1,
+      "source": "tb3",
+      "source_stamp": 80.2,
+      "stream": "receipt",
+      "version": 1
+    },
+    "stamp": 80.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 80.4,
+      "payload": {
+        "expires_at": 82.4,
+        "goal_id": "mr3_p1b_v4_open101:tb1:1"
+      },
+      "received_stamp": 80.4,
+      "sequence": 2,
+      "source": "tb1",
+      "source_stamp": 80.4,
+      "stream": "heartbeat",
+      "version": 2
+    },
+    "stamp": 80.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 80.4,
+      "payload": {
+        "expires_at": 82.4,
+        "goal_id": "mr3_p1b_v4_open101:tb2:1"
+      },
+      "received_stamp": 80.4,
+      "sequence": 2,
+      "source": "tb2",
+      "source_stamp": 80.4,
+      "stream": "heartbeat",
+      "version": 2
+    },
+    "stamp": 80.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 80.4,
+      "payload": {
+        "expires_at": 82.4,
+        "goal_id": "mr3_p1b_v4_open101:tb3:1"
+      },
+      "received_stamp": 80.4,
+      "sequence": 2,
+      "source": "tb3",
+      "source_stamp": 80.4,
+      "stream": "heartbeat",
+      "version": 2
+    },
+    "stamp": 80.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 80.7,
+      "payload": {
+        "expires_at": 82.7,
+        "goal_id": "mr3_p1b_v4_open101:tb1:1"
+      },
+      "received_stamp": 80.7,
+      "sequence": 3,
+      "source": "tb1",
+      "source_stamp": 80.7,
+      "stream": "heartbeat",
+      "version": 3
+    },
+    "stamp": 80.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 80.7,
+      "payload": {
+        "expires_at": 82.7,
+        "goal_id": "mr3_p1b_v4_open101:tb2:1"
+      },
+      "received_stamp": 80.7,
+      "sequence": 3,
+      "source": "tb2",
+      "source_stamp": 80.7,
+      "stream": "heartbeat",
+      "version": 3
+    },
+    "stamp": 80.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 80.7,
+      "payload": {
+        "expires_at": 82.7,
+        "goal_id": "mr3_p1b_v4_open101:tb3:1"
+      },
+      "received_stamp": 80.7,
+      "sequence": 3,
+      "source": "tb3",
+      "source_stamp": 80.7,
+      "stream": "heartbeat",
+      "version": 3
+    },
+    "stamp": 80.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 80.9,
+      "payload": {
+        "expires_at": 82.9,
+        "goal_id": "mr3_p1b_v4_open101:tb1:1"
+      },
+      "received_stamp": 80.9,
+      "sequence": 4,
+      "source": "tb1",
+      "source_stamp": 80.9,
+      "stream": "heartbeat",
+      "version": 4
+    },
+    "stamp": 80.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 80.9,
+      "payload": {
+        "expires_at": 82.9,
+        "goal_id": "mr3_p1b_v4_open101:tb2:1"
+      },
+      "received_stamp": 80.9,
+      "sequence": 4,
+      "source": "tb2",
+      "source_stamp": 80.9,
+      "stream": "heartbeat",
+      "version": 4
+    },
+    "stamp": 80.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 80.9,
+      "payload": {
+        "expires_at": 82.9,
+        "goal_id": "mr3_p1b_v4_open101:tb3:1"
+      },
+      "received_stamp": 80.9,
+      "sequence": 4,
+      "source": "tb3",
+      "source_stamp": 80.9,
+      "stream": "heartbeat",
+      "version": 4
+    },
+    "stamp": 80.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "0e4626c43ecd508d377cbb2c9436fbd14dd2464b8abf98b8e453a2135f24135d",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 2,
+      "observation_digest": "11936ba9dcebc8472b7cbf370eaf99d0485f56634a4276c5b57b541af098941b",
+      "observation_sequence": 2,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 81.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 81.2,
+      "payload": {
+        "expires_at": 83.2,
+        "goal_id": "mr3_p1b_v4_open101:tb1:1"
+      },
+      "received_stamp": 81.2,
+      "sequence": 5,
+      "source": "tb1",
+      "source_stamp": 81.2,
+      "stream": "heartbeat",
+      "version": 5
+    },
+    "stamp": 81.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 81.2,
+      "payload": {
+        "expires_at": 83.2,
+        "goal_id": "mr3_p1b_v4_open101:tb2:1"
+      },
+      "received_stamp": 81.2,
+      "sequence": 5,
+      "source": "tb2",
+      "source_stamp": 81.2,
+      "stream": "heartbeat",
+      "version": 5
+    },
+    "stamp": 81.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 81.2,
+      "payload": {
+        "expires_at": 83.2,
+        "goal_id": "mr3_p1b_v4_open101:tb3:1"
+      },
+      "received_stamp": 81.2,
+      "sequence": 5,
+      "source": "tb3",
+      "source_stamp": 81.2,
+      "stream": "heartbeat",
+      "version": 5
+    },
+    "stamp": 81.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 81.4,
+      "payload": {
+        "expires_at": 83.4,
+        "goal_id": "mr3_p1b_v4_open101:tb1:1"
+      },
+      "received_stamp": 81.4,
+      "sequence": 6,
+      "source": "tb1",
+      "source_stamp": 81.4,
+      "stream": "heartbeat",
+      "version": 6
+    },
+    "stamp": 81.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 81.4,
+      "payload": {
+        "expires_at": 83.4,
+        "goal_id": "mr3_p1b_v4_open101:tb2:1"
+      },
+      "received_stamp": 81.4,
+      "sequence": 6,
+      "source": "tb2",
+      "source_stamp": 81.4,
+      "stream": "heartbeat",
+      "version": 6
+    },
+    "stamp": 81.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 81.4,
+      "payload": {
+        "expires_at": 83.4,
+        "goal_id": "mr3_p1b_v4_open101:tb3:1"
+      },
+      "received_stamp": 81.4,
+      "sequence": 6,
+      "source": "tb3",
+      "source_stamp": 81.4,
+      "stream": "heartbeat",
+      "version": 6
+    },
+    "stamp": 81.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 81.7,
+      "payload": {
+        "expires_at": 83.7,
+        "goal_id": "mr3_p1b_v4_open101:tb1:1"
+      },
+      "received_stamp": 81.7,
+      "sequence": 7,
+      "source": "tb1",
+      "source_stamp": 81.7,
+      "stream": "heartbeat",
+      "version": 7
+    },
+    "stamp": 81.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 81.7,
+      "payload": {
+        "expires_at": 83.7,
+        "goal_id": "mr3_p1b_v4_open101:tb2:1"
+      },
+      "received_stamp": 81.7,
+      "sequence": 7,
+      "source": "tb2",
+      "source_stamp": 81.7,
+      "stream": "heartbeat",
+      "version": 7
+    },
+    "stamp": 81.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 81.7,
+      "payload": {
+        "expires_at": 83.7,
+        "goal_id": "mr3_p1b_v4_open101:tb3:1"
+      },
+      "received_stamp": 81.7,
+      "sequence": 7,
+      "source": "tb3",
+      "source_stamp": 81.7,
+      "stream": "heartbeat",
+      "version": 7
+    },
+    "stamp": 81.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 81.9,
+      "payload": {
+        "expires_at": 83.9,
+        "goal_id": "mr3_p1b_v4_open101:tb1:1"
+      },
+      "received_stamp": 81.9,
+      "sequence": 8,
+      "source": "tb1",
+      "source_stamp": 81.9,
+      "stream": "heartbeat",
+      "version": 8
+    },
+    "stamp": 81.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 81.9,
+      "payload": {
+        "expires_at": 83.9,
+        "goal_id": "mr3_p1b_v4_open101:tb2:1"
+      },
+      "received_stamp": 81.9,
+      "sequence": 8,
+      "source": "tb2",
+      "source_stamp": 81.9,
+      "stream": "heartbeat",
+      "version": 8
+    },
+    "stamp": 81.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 81.9,
+      "payload": {
+        "expires_at": 83.9,
+        "goal_id": "mr3_p1b_v4_open101:tb3:1"
+      },
+      "received_stamp": 81.9,
+      "sequence": 8,
+      "source": "tb3",
+      "source_stamp": 81.9,
+      "stream": "heartbeat",
+      "version": 8
+    },
+    "stamp": 81.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "01c1a3c8921ed9b935fed1366160a0449fd50f48d03561ca25476ee952f0fbc8",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 3,
+      "observation_digest": "ff0ce9d2ffb25ce20f7b12bca4df2f57de4c67ebe1097f55a31b0a79c83c1bc4",
+      "observation_sequence": 3,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 82.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "action_rejected",
+    "payload": {
+      "reason": "masked_action"
+    },
+    "stamp": 82.1
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 82.2,
+      "payload": {
+        "expires_at": 84.2,
+        "goal_id": "mr3_p1b_v4_open101:tb1:1"
+      },
+      "received_stamp": 82.2,
+      "sequence": 9,
+      "source": "tb1",
+      "source_stamp": 82.2,
+      "stream": "heartbeat",
+      "version": 9
+    },
+    "stamp": 82.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 82.2,
+      "payload": {
+        "expires_at": 84.2,
+        "goal_id": "mr3_p1b_v4_open101:tb2:1"
+      },
+      "received_stamp": 82.2,
+      "sequence": 9,
+      "source": "tb2",
+      "source_stamp": 82.2,
+      "stream": "heartbeat",
+      "version": 9
+    },
+    "stamp": 82.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 82.2,
+      "payload": {
+        "expires_at": 84.2,
+        "goal_id": "mr3_p1b_v4_open101:tb3:1"
+      },
+      "received_stamp": 82.2,
+      "sequence": 9,
+      "source": "tb3",
+      "source_stamp": 82.2,
+      "stream": "heartbeat",
+      "version": 9
+    },
+    "stamp": 82.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 82.4,
+      "payload": {
+        "expires_at": 84.4,
+        "goal_id": "mr3_p1b_v4_open101:tb1:1"
+      },
+      "received_stamp": 82.4,
+      "sequence": 10,
+      "source": "tb1",
+      "source_stamp": 82.4,
+      "stream": "heartbeat",
+      "version": 10
+    },
+    "stamp": 82.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 82.4,
+      "payload": {
+        "expires_at": 84.4,
+        "goal_id": "mr3_p1b_v4_open101:tb2:1"
+      },
+      "received_stamp": 82.4,
+      "sequence": 10,
+      "source": "tb2",
+      "source_stamp": 82.4,
+      "stream": "heartbeat",
+      "version": 10
+    },
+    "stamp": 82.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 82.4,
+      "payload": {
+        "expires_at": 84.4,
+        "goal_id": "mr3_p1b_v4_open101:tb3:1"
+      },
+      "received_stamp": 82.4,
+      "sequence": 10,
+      "source": "tb3",
+      "source_stamp": 82.4,
+      "stream": "heartbeat",
+      "version": 10
+    },
+    "stamp": 82.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 82.7,
+      "payload": {
+        "expires_at": 84.7,
+        "goal_id": "mr3_p1b_v4_open101:tb1:1"
+      },
+      "received_stamp": 82.7,
+      "sequence": 11,
+      "source": "tb1",
+      "source_stamp": 82.7,
+      "stream": "heartbeat",
+      "version": 11
+    },
+    "stamp": 82.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 82.7,
+      "payload": {
+        "expires_at": 84.7,
+        "goal_id": "mr3_p1b_v4_open101:tb2:1"
+      },
+      "received_stamp": 82.7,
+      "sequence": 11,
+      "source": "tb2",
+      "source_stamp": 82.7,
+      "stream": "heartbeat",
+      "version": 11
+    },
+    "stamp": 82.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 82.7,
+      "payload": {
+        "expires_at": 84.7,
+        "goal_id": "mr3_p1b_v4_open101:tb3:1"
+      },
+      "received_stamp": 82.7,
+      "sequence": 11,
+      "source": "tb3",
+      "source_stamp": 82.7,
+      "stream": "heartbeat",
+      "version": 11
+    },
+    "stamp": 82.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 82.9,
+      "payload": {
+        "expires_at": 84.9,
+        "goal_id": "mr3_p1b_v4_open101:tb1:1"
+      },
+      "received_stamp": 82.9,
+      "sequence": 12,
+      "source": "tb1",
+      "source_stamp": 82.9,
+      "stream": "heartbeat",
+      "version": 12
+    },
+    "stamp": 82.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 82.9,
+      "payload": {
+        "expires_at": 84.9,
+        "goal_id": "mr3_p1b_v4_open101:tb2:1"
+      },
+      "received_stamp": 82.9,
+      "sequence": 12,
+      "source": "tb2",
+      "source_stamp": 82.9,
+      "stream": "heartbeat",
+      "version": 12
+    },
+    "stamp": 82.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 82.9,
+      "payload": {
+        "expires_at": 84.9,
+        "goal_id": "mr3_p1b_v4_open101:tb3:1"
+      },
+      "received_stamp": 82.9,
+      "sequence": 12,
+      "source": "tb3",
+      "source_stamp": 82.9,
+      "stream": "heartbeat",
+      "version": 12
+    },
+    "stamp": 82.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 82.9,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_open101:tb3:1",
+        "robot": "tb3",
+        "type": "result",
+        "value": 4
+      },
+      "received_stamp": 83.0,
+      "sequence": 2,
+      "source": "tb3",
+      "source_stamp": 82.9,
+      "stream": "receipt",
+      "version": 2
+    },
+    "stamp": 83.0
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 1,
+      "epoch": "mr3_p1b_v4_open101",
+      "goal_id": "mr3_p1b_v4_open101:tb3:1",
+      "robot": "tb3",
+      "stamp": 83.0,
+      "status": "SUCCEEDED",
+      "type": "protocol_terminal"
+    },
+    "stamp": 83.0
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 83.2,
+      "payload": {
+        "expires_at": 85.2,
+        "goal_id": "mr3_p1b_v4_open101:tb1:1"
+      },
+      "received_stamp": 83.2,
+      "sequence": 13,
+      "source": "tb1",
+      "source_stamp": 83.2,
+      "stream": "heartbeat",
+      "version": 13
+    },
+    "stamp": 83.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 83.2,
+      "payload": {
+        "expires_at": 85.2,
+        "goal_id": "mr3_p1b_v4_open101:tb2:1"
+      },
+      "received_stamp": 83.2,
+      "sequence": 13,
+      "source": "tb2",
+      "source_stamp": 83.2,
+      "stream": "heartbeat",
+      "version": 13
+    },
+    "stamp": 83.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "48227d737e7aa2f5fa22b856ae98bfc8e4501d4028455f4ee56fcd4637ff39ce",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 4,
+      "observation_digest": "4e498657f0b22655183261198d9b470a46b3552f898207368f378c5de34d143a",
+      "observation_sequence": 4,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 83.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 83.4,
+      "payload": {
+        "expires_at": 85.4,
+        "goal_id": "mr3_p1b_v4_open101:tb1:1"
+      },
+      "received_stamp": 83.4,
+      "sequence": 14,
+      "source": "tb1",
+      "source_stamp": 83.4,
+      "stream": "heartbeat",
+      "version": 14
+    },
+    "stamp": 83.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 83.4,
+      "payload": {
+        "expires_at": 85.4,
+        "goal_id": "mr3_p1b_v4_open101:tb2:1"
+      },
+      "received_stamp": 83.4,
+      "sequence": 14,
+      "source": "tb2",
+      "source_stamp": 83.4,
+      "stream": "heartbeat",
+      "version": 14
+    },
+    "stamp": 83.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 83.4,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_open101:tb2:1",
+        "robot": "tb2",
+        "type": "result",
+        "value": 4
+      },
+      "received_stamp": 83.5,
+      "sequence": 2,
+      "source": "tb2",
+      "source_stamp": 83.4,
+      "stream": "receipt",
+      "version": 2
+    },
+    "stamp": 83.5
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 1,
+      "epoch": "mr3_p1b_v4_open101",
+      "goal_id": "mr3_p1b_v4_open101:tb2:1",
+      "robot": "tb2",
+      "stamp": 83.5,
+      "status": "SUCCEEDED",
+      "type": "protocol_terminal"
+    },
+    "stamp": 83.5
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 83.6,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_open101:tb1:1",
+        "robot": "tb1",
+        "type": "result",
+        "value": 4
+      },
+      "received_stamp": 83.7,
+      "sequence": 2,
+      "source": "tb1",
+      "source_stamp": 83.6,
+      "stream": "receipt",
+      "version": 2
+    },
+    "stamp": 83.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 83.7,
+      "payload": {
+        "expires_at": 85.7,
+        "goal_id": "mr3_p1b_v4_open101:tb1:1"
+      },
+      "received_stamp": 83.7,
+      "sequence": 15,
+      "source": "tb1",
+      "source_stamp": 83.7,
+      "stream": "heartbeat",
+      "version": 15
+    },
+    "stamp": 83.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 1,
+      "epoch": "mr3_p1b_v4_open101",
+      "goal_id": "mr3_p1b_v4_open101:tb1:1",
+      "robot": "tb1",
+      "stamp": 83.7,
+      "status": "SUCCEEDED",
+      "type": "protocol_terminal"
+    },
+    "stamp": 83.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "849ff78643ccefa4469cf2b25abe9e2b6e2fb5dfdd1a4d4c9e83b65769cea1f8",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 5,
+      "observation_digest": "369b48add22d8d0f0af0cef5c02fbc01eb44a52d49f882f900068f267b747b09",
+      "observation_sequence": 5,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 84.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "b494003056f7d86e1f88f3a3df00e65008e694f82a9075b43eb2e1acf286282a",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 6,
+      "observation_digest": "f9203e6da286176afb6f593af6370da593a1b26bb1c8902e1413331edda698a4",
+      "observation_sequence": 6,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 85.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "2f11a196c2c35e3917b9f5fcc0d99129d81d2a38cc00ae82a782afb97c423ef5",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 7,
+      "observation_digest": "bbd163b5d2edc3b666c80220262580d0cc810de4ca1e5fc084ff0d927e371612",
+      "observation_sequence": 7,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 86.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "action",
+    "payload": {
+      "action": 999,
+      "candidate_version": "c76e0fe627ff93c5b0414f1f18251e36f148137d5e42f3714c378a753218387d",
+      "choices": [
+        9,
+        9,
+        9
+      ],
+      "command_id": 8,
+      "observation_digest": "78716d92986c795298a75f1becb3cd564d4dcf5f31eb89100d566fbec75fa48e",
+      "observation_sequence": 8,
+      "results": {
+        "tb1": "waiting",
+        "tb2": "waiting",
+        "tb3": "waiting"
+      }
+    },
+    "stamp": 87.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "action",
+    "payload": {
+      "action": 999,
+      "candidate_version": "5f67ffbc4f7265c84204df1e4619d5018f2884faa49d71ac6ba0365a5c126974",
+      "choices": [
+        9,
+        9,
+        9
+      ],
+      "command_id": 9,
+      "observation_digest": "1653f8eb7a763ced1f3a66ba2cce39c2ac088b50c10bd6261da86384184ab760",
+      "observation_sequence": 9,
+      "results": {
+        "tb1": "waiting",
+        "tb2": "waiting",
+        "tb3": "waiting"
+      }
+    },
+    "stamp": 88.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "action",
+    "payload": {
+      "action": 999,
+      "candidate_version": "6fcd8bb388751919ef2ae0ef7580ccfdebde3cdd014a4eeb1d5041d7ba27d6bc",
+      "choices": [
+        9,
+        9,
+        9
+      ],
+      "command_id": 10,
+      "observation_digest": "a4c791c871b44ff0a5c88cd177615ae56640628053f590a04c03ed018201cd4d",
+      "observation_sequence": 10,
+      "results": {
+        "tb1": "waiting",
+        "tb2": "waiting",
+        "tb3": "waiting"
+      }
+    },
+    "stamp": 89.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "action",
+    "payload": {
+      "action": 999,
+      "candidate_version": "b0a4e3336b4f9fff0c9eb9919f3d07a4aad9f03881dc7f77110aeb31e6a90470",
+      "choices": [
+        9,
+        9,
+        9
+      ],
+      "command_id": 11,
+      "observation_digest": "118b06a17b99e6c1081b8b9d1e80050c0cd3b5fc77917d85713a50fb0ea64824",
+      "observation_sequence": 11,
+      "results": {
+        "tb1": "waiting",
+        "tb2": "waiting",
+        "tb3": "waiting"
+      }
+    },
+    "stamp": 90.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "action",
+    "payload": {
+      "action": 999,
+      "candidate_version": "beb803d8d53075a0f4ce3c1932f6f242eb3eaa7b606d1c50904c09dc24c8dee6",
+      "choices": [
+        9,
+        9,
+        9
+      ],
+      "command_id": 12,
+      "observation_digest": "226c530778ef7b0a7c450e9452138f00df779ed2d232b9afe6e8e599113a56f1",
+      "observation_sequence": 12,
+      "results": {
+        "tb1": "waiting",
+        "tb2": "waiting",
+        "tb3": "waiting"
+      }
+    },
+    "stamp": 91.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "action",
+    "payload": {
+      "action": 999,
+      "candidate_version": "c2933bd0d8431a9b378f41ada5ef145402347e6372efb0c27a7ace1e5f63b045",
+      "choices": [
+        9,
+        9,
+        9
+      ],
+      "command_id": 13,
+      "observation_digest": "0ebc551f250a869b1d5aadfb1b1815ffd87e31d4490e49a0def583ceae494ccc",
+      "observation_sequence": 13,
+      "results": {
+        "tb1": "waiting",
+        "tb2": "waiting",
+        "tb3": "waiting"
+      }
+    },
+    "stamp": 92.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "action",
+    "payload": {
+      "action": 999,
+      "candidate_version": "ee862ebf6744c19c6cbe67106dcfcf7bd69d19239e35b47cc27de8a1e1efd462",
+      "choices": [
+        9,
+        9,
+        9
+      ],
+      "command_id": 14,
+      "observation_digest": "53cd3aa5672fd780bf054e56f24609ff05805a0afbe910b9f34f1cffb295afe5",
+      "observation_sequence": 14,
+      "results": {
+        "tb1": "waiting",
+        "tb2": "waiting",
+        "tb3": "waiting"
+      }
+    },
+    "stamp": 93.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "action",
+    "payload": {
+      "action": 999,
+      "candidate_version": "99e512b09d4b6bf97f109d40036132e5abe3dbe6ccfb1b69a047afb7acfacc84",
+      "choices": [
+        9,
+        9,
+        9
+      ],
+      "command_id": 15,
+      "observation_digest": "c0de3dabf6a715a97e0400e1bdbfee7c6452a044f208ccf2b471efac24ffa07c",
+      "observation_sequence": 15,
+      "results": {
+        "tb1": "waiting",
+        "tb2": "waiting",
+        "tb3": "waiting"
+      }
+    },
+    "stamp": 94.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "action",
+    "payload": {
+      "action": 288,
+      "candidate_version": "9955d39e439e7fc4710bcf414c57e5c3114db7565f4631a1181e7352a512bf02",
+      "choices": [
+        2,
+        8,
+        8
+      ],
+      "command_id": 16,
+      "observation_digest": "233194795e3ed26b82e6899d5129310ba59d15440613b72cf0393df0c7cae223",
+      "observation_sequence": 16,
+      "results": {
+        "tb1": "sent",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 95.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 16,
+      "created_at": 95.0,
+      "epoch": "mr3_p1b_v4_open101",
+      "expires_at": 97.0,
+      "goal": {
+        "x": -1.3111018524686235,
+        "y": 1.786948568519211
+      },
+      "goal_id": "mr3_p1b_v4_open101:tb1:16",
+      "lease_until": 97.0,
+      "observation_version": 16,
+      "robot": "tb1",
+      "stamp": 95.3,
+      "type": "send_goal",
+      "x": -1.3111018524686235,
+      "y": 1.786948568519211
+    },
+    "stamp": 95.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 95.4,
+      "payload": {
+        "expires_at": 97.4,
+        "goal_id": "mr3_p1b_v4_open101:tb1:16"
+      },
+      "received_stamp": 95.4,
+      "sequence": 16,
+      "source": "tb1",
+      "source_stamp": 95.4,
+      "stream": "heartbeat",
+      "version": 16
+    },
+    "stamp": 95.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 95.4,
+      "payload": {
+        "command_id": 16,
+        "created_at": 95.0,
+        "epoch": "mr3_p1b_v4_open101",
+        "expires_at": 97.0,
+        "goal": {
+          "x": -1.3111018524686235,
+          "y": 1.786948568519211
+        },
+        "goal_id": "mr3_p1b_v4_open101:tb1:16",
+        "lease_until": 97.0,
+        "observation_version": 16,
+        "robot": "tb1",
+        "stamp": 95.3,
+        "type": "send_goal",
+        "x": -1.3111018524686235,
+        "y": 1.786948568519211
+      },
+      "received_stamp": 95.4,
+      "sequence": 2,
+      "source": "tb1",
+      "source_stamp": 95.3,
+      "stream": "command",
+      "version": 2
+    },
+    "stamp": 95.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "native_send",
+    "payload": {
+      "command_id": 16,
+      "goal_id": "mr3_p1b_v4_open101:tb1:16",
+      "robot": "tb1"
+    },
+    "stamp": 95.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 95.4,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_open101:tb1:16",
+        "robot": "tb1",
+        "type": "accept",
+        "value": true
+      },
+      "received_stamp": 95.5,
+      "sequence": 3,
+      "source": "tb1",
+      "source_stamp": 95.4,
+      "stream": "receipt",
+      "version": 3
+    },
+    "stamp": 95.5
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 95.7,
+      "payload": {
+        "expires_at": 97.7,
+        "goal_id": "mr3_p1b_v4_open101:tb1:16"
+      },
+      "received_stamp": 95.7,
+      "sequence": 17,
+      "source": "tb1",
+      "source_stamp": 95.7,
+      "stream": "heartbeat",
+      "version": 17
+    },
+    "stamp": 95.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 95.9,
+      "payload": {
+        "expires_at": 97.9,
+        "goal_id": "mr3_p1b_v4_open101:tb1:16"
+      },
+      "received_stamp": 95.9,
+      "sequence": 18,
+      "source": "tb1",
+      "source_stamp": 95.9,
+      "stream": "heartbeat",
+      "version": 18
+    },
+    "stamp": 95.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 96.2,
+      "payload": {
+        "expires_at": 98.2,
+        "goal_id": "mr3_p1b_v4_open101:tb1:16"
+      },
+      "received_stamp": 96.2,
+      "sequence": 19,
+      "source": "tb1",
+      "source_stamp": 96.2,
+      "stream": "heartbeat",
+      "version": 19
+    },
+    "stamp": 96.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "action",
+    "payload": {
+      "action": 808,
+      "candidate_version": "f4d16a0cd09476a981b77eaa42417656088fd786ef00c3ba7090c521bdf4edf3",
+      "choices": [
+        8,
+        0,
+        8
+      ],
+      "command_id": 17,
+      "observation_digest": "6e5b9d2df450fe93a5f26b1f35e042e030b63c3e23eb1ef5af3719df0598f429",
+      "observation_sequence": 17,
+      "results": {
+        "tb1": "kept",
+        "tb2": "sent",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 96.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 17,
+      "created_at": 96.0,
+      "epoch": "mr3_p1b_v4_open101",
+      "expires_at": 98.0,
+      "goal": {
+        "x": -3.0611018785456556,
+        "y": 1.2369485603235724
+      },
+      "goal_id": "mr3_p1b_v4_open101:tb2:17",
+      "lease_until": 98.0,
+      "observation_version": 17,
+      "robot": "tb2",
+      "stamp": 96.3,
+      "type": "send_goal",
+      "x": -3.0611018785456556,
+      "y": 1.2369485603235724
+    },
+    "stamp": 96.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 96.4,
+      "payload": {
+        "expires_at": 98.4,
+        "goal_id": "mr3_p1b_v4_open101:tb1:16"
+      },
+      "received_stamp": 96.4,
+      "sequence": 20,
+      "source": "tb1",
+      "source_stamp": 96.4,
+      "stream": "heartbeat",
+      "version": 20
+    },
+    "stamp": 96.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 96.4,
+      "payload": {
+        "expires_at": 98.4,
+        "goal_id": "mr3_p1b_v4_open101:tb2:17"
+      },
+      "received_stamp": 96.4,
+      "sequence": 15,
+      "source": "tb2",
+      "source_stamp": 96.4,
+      "stream": "heartbeat",
+      "version": 15
+    },
+    "stamp": 96.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 96.4,
+      "payload": {
+        "command_id": 17,
+        "created_at": 96.0,
+        "epoch": "mr3_p1b_v4_open101",
+        "expires_at": 98.0,
+        "goal": {
+          "x": -3.0611018785456556,
+          "y": 1.2369485603235724
+        },
+        "goal_id": "mr3_p1b_v4_open101:tb2:17",
+        "lease_until": 98.0,
+        "observation_version": 17,
+        "robot": "tb2",
+        "stamp": 96.3,
+        "type": "send_goal",
+        "x": -3.0611018785456556,
+        "y": 1.2369485603235724
+      },
+      "received_stamp": 96.4,
+      "sequence": 2,
+      "source": "tb2",
+      "source_stamp": 96.3,
+      "stream": "command",
+      "version": 2
+    },
+    "stamp": 96.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "native_send",
+    "payload": {
+      "command_id": 17,
+      "goal_id": "mr3_p1b_v4_open101:tb2:17",
+      "robot": "tb2"
+    },
+    "stamp": 96.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 96.4,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_open101:tb2:17",
+        "robot": "tb2",
+        "type": "accept",
+        "value": true
+      },
+      "received_stamp": 96.5,
+      "sequence": 3,
+      "source": "tb2",
+      "source_stamp": 96.4,
+      "stream": "receipt",
+      "version": 3
+    },
+    "stamp": 96.5
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 96.7,
+      "payload": {
+        "expires_at": 98.7,
+        "goal_id": "mr3_p1b_v4_open101:tb1:16"
+      },
+      "received_stamp": 96.7,
+      "sequence": 21,
+      "source": "tb1",
+      "source_stamp": 96.7,
+      "stream": "heartbeat",
+      "version": 21
+    },
+    "stamp": 96.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 96.7,
+      "payload": {
+        "expires_at": 98.7,
+        "goal_id": "mr3_p1b_v4_open101:tb2:17"
+      },
+      "received_stamp": 96.7,
+      "sequence": 16,
+      "source": "tb2",
+      "source_stamp": 96.7,
+      "stream": "heartbeat",
+      "version": 16
+    },
+    "stamp": 96.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 96.9,
+      "payload": {
+        "expires_at": 98.9,
+        "goal_id": "mr3_p1b_v4_open101:tb1:16"
+      },
+      "received_stamp": 96.9,
+      "sequence": 22,
+      "source": "tb1",
+      "source_stamp": 96.9,
+      "stream": "heartbeat",
+      "version": 22
+    },
+    "stamp": 96.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 96.9,
+      "payload": {
+        "expires_at": 98.9,
+        "goal_id": "mr3_p1b_v4_open101:tb2:17"
+      },
+      "received_stamp": 96.9,
+      "sequence": 17,
+      "source": "tb2",
+      "source_stamp": 96.9,
+      "stream": "heartbeat",
+      "version": 17
+    },
+    "stamp": 96.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 97.2,
+      "payload": {
+        "expires_at": 99.2,
+        "goal_id": "mr3_p1b_v4_open101:tb1:16"
+      },
+      "received_stamp": 97.2,
+      "sequence": 23,
+      "source": "tb1",
+      "source_stamp": 97.2,
+      "stream": "heartbeat",
+      "version": 23
+    },
+    "stamp": 97.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 97.2,
+      "payload": {
+        "expires_at": 99.2,
+        "goal_id": "mr3_p1b_v4_open101:tb2:17"
+      },
+      "received_stamp": 97.2,
+      "sequence": 18,
+      "source": "tb2",
+      "source_stamp": 97.2,
+      "stream": "heartbeat",
+      "version": 18
+    },
+    "stamp": 97.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "3cacb66b2698309da51fdc8cc72680bd88528ed7331f3f03e8128d619dc79f33",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 18,
+      "observation_digest": "2145b81a6fc6cc4c48aeaee88a2b272a103e1fdbdbf38753619d63b3ac52d6dd",
+      "observation_sequence": 18,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 97.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 97.4,
+      "payload": {
+        "expires_at": 99.4,
+        "goal_id": "mr3_p1b_v4_open101:tb1:16"
+      },
+      "received_stamp": 97.4,
+      "sequence": 24,
+      "source": "tb1",
+      "source_stamp": 97.4,
+      "stream": "heartbeat",
+      "version": 24
+    },
+    "stamp": 97.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 97.4,
+      "payload": {
+        "expires_at": 99.4,
+        "goal_id": "mr3_p1b_v4_open101:tb2:17"
+      },
+      "received_stamp": 97.4,
+      "sequence": 19,
+      "source": "tb2",
+      "source_stamp": 97.4,
+      "stream": "heartbeat",
+      "version": 19
+    },
+    "stamp": 97.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 97.7,
+      "payload": {
+        "expires_at": 99.7,
+        "goal_id": "mr3_p1b_v4_open101:tb1:16"
+      },
+      "received_stamp": 97.7,
+      "sequence": 25,
+      "source": "tb1",
+      "source_stamp": 97.7,
+      "stream": "heartbeat",
+      "version": 25
+    },
+    "stamp": 97.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 97.7,
+      "payload": {
+        "expires_at": 99.7,
+        "goal_id": "mr3_p1b_v4_open101:tb2:17"
+      },
+      "received_stamp": 97.7,
+      "sequence": 20,
+      "source": "tb2",
+      "source_stamp": 97.7,
+      "stream": "heartbeat",
+      "version": 20
+    },
+    "stamp": 97.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 97.9,
+      "payload": {
+        "expires_at": 99.9,
+        "goal_id": "mr3_p1b_v4_open101:tb1:16"
+      },
+      "received_stamp": 97.9,
+      "sequence": 26,
+      "source": "tb1",
+      "source_stamp": 97.9,
+      "stream": "heartbeat",
+      "version": 26
+    },
+    "stamp": 97.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 97.9,
+      "payload": {
+        "expires_at": 99.9,
+        "goal_id": "mr3_p1b_v4_open101:tb2:17"
+      },
+      "received_stamp": 97.9,
+      "sequence": 21,
+      "source": "tb2",
+      "source_stamp": 97.9,
+      "stream": "heartbeat",
+      "version": 21
+    },
+    "stamp": 97.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 98.2,
+      "payload": {
+        "expires_at": 100.2,
+        "goal_id": "mr3_p1b_v4_open101:tb1:16"
+      },
+      "received_stamp": 98.2,
+      "sequence": 27,
+      "source": "tb1",
+      "source_stamp": 98.2,
+      "stream": "heartbeat",
+      "version": 27
+    },
+    "stamp": 98.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 98.2,
+      "payload": {
+        "expires_at": 100.2,
+        "goal_id": "mr3_p1b_v4_open101:tb2:17"
+      },
+      "received_stamp": 98.2,
+      "sequence": 22,
+      "source": "tb2",
+      "source_stamp": 98.2,
+      "stream": "heartbeat",
+      "version": 22
+    },
+    "stamp": 98.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "8ccb62c35b6915ae6593e564a1550260caaf4eed6bf2822f27e70362b02d8255",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 19,
+      "observation_digest": "e43db9a603549fb2bd5122760ec5fdec12d114c9c3e57d0bb6a33116297c44b9",
+      "observation_sequence": 19,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 98.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 98.4,
+      "payload": {
+        "expires_at": 100.4,
+        "goal_id": "mr3_p1b_v4_open101:tb1:16"
+      },
+      "received_stamp": 98.4,
+      "sequence": 28,
+      "source": "tb1",
+      "source_stamp": 98.4,
+      "stream": "heartbeat",
+      "version": 28
+    },
+    "stamp": 98.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 98.4,
+      "payload": {
+        "expires_at": 100.4,
+        "goal_id": "mr3_p1b_v4_open101:tb2:17"
+      },
+      "received_stamp": 98.4,
+      "sequence": 23,
+      "source": "tb2",
+      "source_stamp": 98.4,
+      "stream": "heartbeat",
+      "version": 23
+    },
+    "stamp": 98.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 98.7,
+      "payload": {
+        "expires_at": 100.7,
+        "goal_id": "mr3_p1b_v4_open101:tb1:16"
+      },
+      "received_stamp": 98.7,
+      "sequence": 29,
+      "source": "tb1",
+      "source_stamp": 98.7,
+      "stream": "heartbeat",
+      "version": 29
+    },
+    "stamp": 98.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 98.7,
+      "payload": {
+        "expires_at": 100.7,
+        "goal_id": "mr3_p1b_v4_open101:tb2:17"
+      },
+      "received_stamp": 98.7,
+      "sequence": 24,
+      "source": "tb2",
+      "source_stamp": 98.7,
+      "stream": "heartbeat",
+      "version": 24
+    },
+    "stamp": 98.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 98.9,
+      "payload": {
+        "expires_at": 100.9,
+        "goal_id": "mr3_p1b_v4_open101:tb1:16"
+      },
+      "received_stamp": 98.9,
+      "sequence": 30,
+      "source": "tb1",
+      "source_stamp": 98.9,
+      "stream": "heartbeat",
+      "version": 30
+    },
+    "stamp": 98.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 98.9,
+      "payload": {
+        "expires_at": 100.9,
+        "goal_id": "mr3_p1b_v4_open101:tb2:17"
+      },
+      "received_stamp": 98.9,
+      "sequence": 25,
+      "source": "tb2",
+      "source_stamp": 98.9,
+      "stream": "heartbeat",
+      "version": 25
+    },
+    "stamp": 98.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 99.2,
+      "payload": {
+        "expires_at": 101.2,
+        "goal_id": "mr3_p1b_v4_open101:tb1:16"
+      },
+      "received_stamp": 99.2,
+      "sequence": 31,
+      "source": "tb1",
+      "source_stamp": 99.2,
+      "stream": "heartbeat",
+      "version": 31
+    },
+    "stamp": 99.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 99.2,
+      "payload": {
+        "expires_at": 101.2,
+        "goal_id": "mr3_p1b_v4_open101:tb2:17"
+      },
+      "received_stamp": 99.2,
+      "sequence": 26,
+      "source": "tb2",
+      "source_stamp": 99.2,
+      "stream": "heartbeat",
+      "version": 26
+    },
+    "stamp": 99.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "e6778472b829176e85a7e848d5576aa050521cd3ba1aaec99ab9aa562342e873",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 20,
+      "observation_digest": "b48e5f9f614a9a690e47513164c17294926768fb01aa2cf54b083bd90112ed98",
+      "observation_sequence": 20,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 99.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 99.4,
+      "payload": {
+        "expires_at": 101.4,
+        "goal_id": "mr3_p1b_v4_open101:tb1:16"
+      },
+      "received_stamp": 99.4,
+      "sequence": 32,
+      "source": "tb1",
+      "source_stamp": 99.4,
+      "stream": "heartbeat",
+      "version": 32
+    },
+    "stamp": 99.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 99.4,
+      "payload": {
+        "expires_at": 101.4,
+        "goal_id": "mr3_p1b_v4_open101:tb2:17"
+      },
+      "received_stamp": 99.4,
+      "sequence": 27,
+      "source": "tb2",
+      "source_stamp": 99.4,
+      "stream": "heartbeat",
+      "version": 27
+    },
+    "stamp": 99.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 99.7,
+      "payload": {
+        "expires_at": 101.7,
+        "goal_id": "mr3_p1b_v4_open101:tb1:16"
+      },
+      "received_stamp": 99.7,
+      "sequence": 33,
+      "source": "tb1",
+      "source_stamp": 99.7,
+      "stream": "heartbeat",
+      "version": 33
+    },
+    "stamp": 99.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 99.7,
+      "payload": {
+        "expires_at": 101.7,
+        "goal_id": "mr3_p1b_v4_open101:tb2:17"
+      },
+      "received_stamp": 99.7,
+      "sequence": 28,
+      "source": "tb2",
+      "source_stamp": 99.7,
+      "stream": "heartbeat",
+      "version": 28
+    },
+    "stamp": 99.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 99.9,
+      "payload": {
+        "expires_at": 101.9,
+        "goal_id": "mr3_p1b_v4_open101:tb1:16"
+      },
+      "received_stamp": 99.9,
+      "sequence": 34,
+      "source": "tb1",
+      "source_stamp": 99.9,
+      "stream": "heartbeat",
+      "version": 34
+    },
+    "stamp": 99.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 99.9,
+      "payload": {
+        "expires_at": 101.9,
+        "goal_id": "mr3_p1b_v4_open101:tb2:17"
+      },
+      "received_stamp": 99.9,
+      "sequence": 29,
+      "source": "tb2",
+      "source_stamp": 99.9,
+      "stream": "heartbeat",
+      "version": 29
+    },
+    "stamp": 99.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 100.2,
+      "payload": {
+        "expires_at": 102.2,
+        "goal_id": "mr3_p1b_v4_open101:tb1:16"
+      },
+      "received_stamp": 100.2,
+      "sequence": 35,
+      "source": "tb1",
+      "source_stamp": 100.2,
+      "stream": "heartbeat",
+      "version": 35
+    },
+    "stamp": 100.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 100.2,
+      "payload": {
+        "expires_at": 102.2,
+        "goal_id": "mr3_p1b_v4_open101:tb2:17"
+      },
+      "received_stamp": 100.2,
+      "sequence": 30,
+      "source": "tb2",
+      "source_stamp": 100.2,
+      "stream": "heartbeat",
+      "version": 30
+    },
+    "stamp": 100.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "57ad2509e616b4c36ca3a404754b4bb3c26e3f0c58a497ad64d075d0b45acb4f",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 21,
+      "observation_digest": "a5036056d3fc1a36ce2fb631ef69930ffb28c26bc81ea020c4428f66c3c80eba",
+      "observation_sequence": 21,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 100.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 100.4,
+      "payload": {
+        "expires_at": 102.4,
+        "goal_id": "mr3_p1b_v4_open101:tb1:16"
+      },
+      "received_stamp": 100.4,
+      "sequence": 36,
+      "source": "tb1",
+      "source_stamp": 100.4,
+      "stream": "heartbeat",
+      "version": 36
+    },
+    "stamp": 100.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 100.4,
+      "payload": {
+        "expires_at": 102.4,
+        "goal_id": "mr3_p1b_v4_open101:tb2:17"
+      },
+      "received_stamp": 100.4,
+      "sequence": 31,
+      "source": "tb2",
+      "source_stamp": 100.4,
+      "stream": "heartbeat",
+      "version": 31
+    },
+    "stamp": 100.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 100.7,
+      "payload": {
+        "expires_at": 102.7,
+        "goal_id": "mr3_p1b_v4_open101:tb1:16"
+      },
+      "received_stamp": 100.7,
+      "sequence": 37,
+      "source": "tb1",
+      "source_stamp": 100.7,
+      "stream": "heartbeat",
+      "version": 37
+    },
+    "stamp": 100.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 100.7,
+      "payload": {
+        "expires_at": 102.7,
+        "goal_id": "mr3_p1b_v4_open101:tb2:17"
+      },
+      "received_stamp": 100.7,
+      "sequence": 32,
+      "source": "tb2",
+      "source_stamp": 100.7,
+      "stream": "heartbeat",
+      "version": 32
+    },
+    "stamp": 100.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 100.9,
+      "payload": {
+        "expires_at": 102.9,
+        "goal_id": "mr3_p1b_v4_open101:tb1:16"
+      },
+      "received_stamp": 100.9,
+      "sequence": 38,
+      "source": "tb1",
+      "source_stamp": 100.9,
+      "stream": "heartbeat",
+      "version": 38
+    },
+    "stamp": 100.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 100.9,
+      "payload": {
+        "expires_at": 102.9,
+        "goal_id": "mr3_p1b_v4_open101:tb2:17"
+      },
+      "received_stamp": 100.9,
+      "sequence": 33,
+      "source": "tb2",
+      "source_stamp": 100.9,
+      "stream": "heartbeat",
+      "version": 33
+    },
+    "stamp": 100.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 101.2,
+      "payload": {
+        "expires_at": 103.2,
+        "goal_id": "mr3_p1b_v4_open101:tb1:16"
+      },
+      "received_stamp": 101.2,
+      "sequence": 39,
+      "source": "tb1",
+      "source_stamp": 101.2,
+      "stream": "heartbeat",
+      "version": 39
+    },
+    "stamp": 101.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 101.2,
+      "payload": {
+        "expires_at": 103.2,
+        "goal_id": "mr3_p1b_v4_open101:tb2:17"
+      },
+      "received_stamp": 101.2,
+      "sequence": 34,
+      "source": "tb2",
+      "source_stamp": 101.2,
+      "stream": "heartbeat",
+      "version": 34
+    },
+    "stamp": 101.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "action",
+    "payload": {
+      "action": 188,
+      "candidate_version": "ae0556fbddf22340c51477e498c88231949b7ef6d09d47bf396b194ee47f0c4b",
+      "choices": [
+        1,
+        8,
+        8
+      ],
+      "command_id": 22,
+      "observation_digest": "328ffb0b1b1beac8e8dbbc53c40e1b19104143a46bc60b0eebba24c20ff548e5",
+      "observation_sequence": 22,
+      "results": {
+        "tb1": "switch_pending",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 101.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "protocol",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "goal_id": "mr3_p1b_v4_open101:tb1:16",
+      "reason": "switch",
+      "robot": "tb1",
+      "stamp": 101.2,
+      "type": "cancel_goal"
+    },
+    "stamp": 101.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 101.3,
+      "payload": {
+        "epoch": "mr3_p1b_v4_open101",
+        "goal_id": "mr3_p1b_v4_open101:tb1:16",
+        "reason": "switch",
+        "robot": "tb1",
+        "stamp": 101.2,
+        "type": "cancel_goal"
+      },
+      "received_stamp": 101.3,
+      "sequence": 3,
+      "source": "tb1",
+      "source_stamp": 101.2,
+      "stream": "command",
+      "version": 3
+    },
+    "stamp": 101.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 101.3,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_open101:tb1:16",
+        "robot": "tb1",
+        "type": "cancel",
+        "value": true
+      },
+      "received_stamp": 101.4,
+      "sequence": 4,
+      "source": "tb1",
+      "source_stamp": 101.3,
+      "stream": "receipt",
+      "version": 4
+    },
+    "stamp": 101.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "protocol",
+    "payload": {
+      "accepted": true,
+      "epoch": "mr3_p1b_v4_open101",
+      "goal_id": "mr3_p1b_v4_open101:tb1:16",
+      "robot": "tb1",
+      "stamp": 101.4,
+      "type": "cancel_response"
+    },
+    "stamp": 101.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 101.3,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_open101:tb1:16",
+        "robot": "tb1",
+        "type": "result",
+        "value": 5
+      },
+      "received_stamp": 101.6,
+      "sequence": 5,
+      "source": "tb1",
+      "source_stamp": 101.3,
+      "stream": "receipt",
+      "version": 5
+    },
+    "stamp": 101.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 101.4,
+      "payload": {
+        "expires_at": 103.4,
+        "goal_id": "mr3_p1b_v4_open101:tb2:17"
+      },
+      "received_stamp": 101.6,
+      "sequence": 35,
+      "source": "tb2",
+      "source_stamp": 101.4,
+      "stream": "heartbeat",
+      "version": 35
+    },
+    "stamp": 101.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 16,
+      "epoch": "mr3_p1b_v4_open101",
+      "goal_id": "mr3_p1b_v4_open101:tb1:16",
+      "robot": "tb1",
+      "stamp": 101.6,
+      "status": "CANCELED",
+      "type": "protocol_terminal"
+    },
+    "stamp": 101.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 22,
+      "created_at": 101.0,
+      "epoch": "mr3_p1b_v4_open101",
+      "expires_at": 103.0,
+      "goal": {
+        "x": 3.377240165270642,
+        "y": 1.1369485588334562
+      },
+      "goal_id": "mr3_p1b_v4_open101:tb1:22",
+      "lease_until": 103.0,
+      "observation_version": 22,
+      "robot": "tb1",
+      "stamp": 101.6,
+      "type": "send_goal",
+      "x": 3.377240165270642,
+      "y": 1.1369485588334562
+    },
+    "stamp": 101.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 101.6,
+      "payload": {
+        "command_id": 22,
+        "created_at": 101.0,
+        "epoch": "mr3_p1b_v4_open101",
+        "expires_at": 103.0,
+        "goal": {
+          "x": 3.377240165270642,
+          "y": 1.1369485588334562
+        },
+        "goal_id": "mr3_p1b_v4_open101:tb1:22",
+        "lease_until": 103.0,
+        "observation_version": 22,
+        "robot": "tb1",
+        "stamp": 101.6,
+        "type": "send_goal",
+        "x": 3.377240165270642,
+        "y": 1.1369485588334562
+      },
+      "received_stamp": 101.6,
+      "sequence": 4,
+      "source": "tb1",
+      "source_stamp": 101.6,
+      "stream": "command",
+      "version": 4
+    },
+    "stamp": 101.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "native_send",
+    "payload": {
+      "command_id": 22,
+      "goal_id": "mr3_p1b_v4_open101:tb1:22",
+      "robot": "tb1"
+    },
+    "stamp": 101.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 101.6,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_open101:tb1:22",
+        "robot": "tb1",
+        "type": "accept",
+        "value": true
+      },
+      "received_stamp": 101.8,
+      "sequence": 6,
+      "source": "tb1",
+      "source_stamp": 101.6,
+      "stream": "receipt",
+      "version": 6
+    },
+    "stamp": 101.8
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 101.7,
+      "payload": {
+        "expires_at": 103.7,
+        "goal_id": "mr3_p1b_v4_open101:tb1:22"
+      },
+      "received_stamp": 101.8,
+      "sequence": 40,
+      "source": "tb1",
+      "source_stamp": 101.7,
+      "stream": "heartbeat",
+      "version": 40
+    },
+    "stamp": 101.8
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 101.7,
+      "payload": {
+        "expires_at": 103.7,
+        "goal_id": "mr3_p1b_v4_open101:tb2:17"
+      },
+      "received_stamp": 101.8,
+      "sequence": 36,
+      "source": "tb2",
+      "source_stamp": 101.7,
+      "stream": "heartbeat",
+      "version": 36
+    },
+    "stamp": 101.8
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 101.9,
+      "payload": {
+        "expires_at": 103.9,
+        "goal_id": "mr3_p1b_v4_open101:tb1:22"
+      },
+      "received_stamp": 102.0,
+      "sequence": 41,
+      "source": "tb1",
+      "source_stamp": 101.9,
+      "stream": "heartbeat",
+      "version": 41
+    },
+    "stamp": 102.0
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 101.9,
+      "payload": {
+        "expires_at": 103.9,
+        "goal_id": "mr3_p1b_v4_open101:tb2:17"
+      },
+      "received_stamp": 102.0,
+      "sequence": 37,
+      "source": "tb2",
+      "source_stamp": 101.9,
+      "stream": "heartbeat",
+      "version": 37
+    },
+    "stamp": 102.0
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 102.2,
+      "payload": {
+        "expires_at": 104.2,
+        "goal_id": "mr3_p1b_v4_open101:tb1:22"
+      },
+      "received_stamp": 102.2,
+      "sequence": 42,
+      "source": "tb1",
+      "source_stamp": 102.2,
+      "stream": "heartbeat",
+      "version": 42
+    },
+    "stamp": 102.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 102.2,
+      "payload": {
+        "expires_at": 104.2,
+        "goal_id": "mr3_p1b_v4_open101:tb2:17"
+      },
+      "received_stamp": 102.2,
+      "sequence": 38,
+      "source": "tb2",
+      "source_stamp": 102.2,
+      "stream": "heartbeat",
+      "version": 38
+    },
+    "stamp": 102.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "action",
+    "payload": {
+      "action": 838,
+      "candidate_version": "f179372303cacfc4f45c176357e11d4e8c187c7829059df3bf8556bcdf9af6c6",
+      "choices": [
+        8,
+        3,
+        8
+      ],
+      "command_id": 23,
+      "observation_digest": "336a29c9e0b81c2c71cd2caa0012e94b09c6ded0e788600d16076e61a9100594",
+      "observation_sequence": 23,
+      "results": {
+        "tb1": "kept",
+        "tb2": "switch_pending",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 102.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "protocol",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "goal_id": "mr3_p1b_v4_open101:tb2:17",
+      "reason": "switch",
+      "robot": "tb2",
+      "stamp": 102.2,
+      "type": "cancel_goal"
+    },
+    "stamp": 102.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 102.3,
+      "payload": {
+        "epoch": "mr3_p1b_v4_open101",
+        "goal_id": "mr3_p1b_v4_open101:tb2:17",
+        "reason": "switch",
+        "robot": "tb2",
+        "stamp": 102.2,
+        "type": "cancel_goal"
+      },
+      "received_stamp": 102.3,
+      "sequence": 3,
+      "source": "tb2",
+      "source_stamp": 102.2,
+      "stream": "command",
+      "version": 3
+    },
+    "stamp": 102.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 102.3,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_open101:tb2:17",
+        "robot": "tb2",
+        "type": "cancel",
+        "value": true
+      },
+      "received_stamp": 102.4,
+      "sequence": 4,
+      "source": "tb2",
+      "source_stamp": 102.3,
+      "stream": "receipt",
+      "version": 4
+    },
+    "stamp": 102.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "protocol",
+    "payload": {
+      "accepted": true,
+      "epoch": "mr3_p1b_v4_open101",
+      "goal_id": "mr3_p1b_v4_open101:tb2:17",
+      "robot": "tb2",
+      "stamp": 102.4,
+      "type": "cancel_response"
+    },
+    "stamp": 102.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 102.3,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_open101:tb2:17",
+        "robot": "tb2",
+        "type": "result",
+        "value": 5
+      },
+      "received_stamp": 102.6,
+      "sequence": 5,
+      "source": "tb2",
+      "source_stamp": 102.3,
+      "stream": "receipt",
+      "version": 5
+    },
+    "stamp": 102.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 102.4,
+      "payload": {
+        "expires_at": 104.4,
+        "goal_id": "mr3_p1b_v4_open101:tb1:22"
+      },
+      "received_stamp": 102.6,
+      "sequence": 43,
+      "source": "tb1",
+      "source_stamp": 102.4,
+      "stream": "heartbeat",
+      "version": 43
+    },
+    "stamp": 102.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 17,
+      "epoch": "mr3_p1b_v4_open101",
+      "goal_id": "mr3_p1b_v4_open101:tb2:17",
+      "robot": "tb2",
+      "stamp": 102.6,
+      "status": "CANCELED",
+      "type": "protocol_terminal"
+    },
+    "stamp": 102.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 23,
+      "created_at": 102.0,
+      "epoch": "mr3_p1b_v4_open101",
+      "expires_at": 104.0,
+      "goal": {
+        "x": -1.2727599040197575,
+        "y": 3.536948594596243
+      },
+      "goal_id": "mr3_p1b_v4_open101:tb2:23",
+      "lease_until": 104.0,
+      "observation_version": 23,
+      "robot": "tb2",
+      "stamp": 102.6,
+      "type": "send_goal",
+      "x": -1.2727599040197575,
+      "y": 3.536948594596243
+    },
+    "stamp": 102.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 102.6,
+      "payload": {
+        "command_id": 23,
+        "created_at": 102.0,
+        "epoch": "mr3_p1b_v4_open101",
+        "expires_at": 104.0,
+        "goal": {
+          "x": -1.2727599040197575,
+          "y": 3.536948594596243
+        },
+        "goal_id": "mr3_p1b_v4_open101:tb2:23",
+        "lease_until": 104.0,
+        "observation_version": 23,
+        "robot": "tb2",
+        "stamp": 102.6,
+        "type": "send_goal",
+        "x": -1.2727599040197575,
+        "y": 3.536948594596243
+      },
+      "received_stamp": 102.6,
+      "sequence": 4,
+      "source": "tb2",
+      "source_stamp": 102.6,
+      "stream": "command",
+      "version": 4
+    },
+    "stamp": 102.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "native_send",
+    "payload": {
+      "command_id": 23,
+      "goal_id": "mr3_p1b_v4_open101:tb2:23",
+      "robot": "tb2"
+    },
+    "stamp": 102.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 102.6,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_open101:tb2:23",
+        "robot": "tb2",
+        "type": "accept",
+        "value": true
+      },
+      "received_stamp": 102.8,
+      "sequence": 6,
+      "source": "tb2",
+      "source_stamp": 102.6,
+      "stream": "receipt",
+      "version": 6
+    },
+    "stamp": 102.8
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 102.7,
+      "payload": {
+        "expires_at": 104.7,
+        "goal_id": "mr3_p1b_v4_open101:tb1:22"
+      },
+      "received_stamp": 102.8,
+      "sequence": 44,
+      "source": "tb1",
+      "source_stamp": 102.7,
+      "stream": "heartbeat",
+      "version": 44
+    },
+    "stamp": 102.8
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 102.7,
+      "payload": {
+        "expires_at": 104.7,
+        "goal_id": "mr3_p1b_v4_open101:tb2:23"
+      },
+      "received_stamp": 102.8,
+      "sequence": 39,
+      "source": "tb2",
+      "source_stamp": 102.7,
+      "stream": "heartbeat",
+      "version": 39
+    },
+    "stamp": 102.8
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 102.9,
+      "payload": {
+        "expires_at": 104.9,
+        "goal_id": "mr3_p1b_v4_open101:tb1:22"
+      },
+      "received_stamp": 103.0,
+      "sequence": 45,
+      "source": "tb1",
+      "source_stamp": 102.9,
+      "stream": "heartbeat",
+      "version": 45
+    },
+    "stamp": 103.0
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 102.9,
+      "payload": {
+        "expires_at": 104.9,
+        "goal_id": "mr3_p1b_v4_open101:tb2:23"
+      },
+      "received_stamp": 103.0,
+      "sequence": 40,
+      "source": "tb2",
+      "source_stamp": 102.9,
+      "stream": "heartbeat",
+      "version": 40
+    },
+    "stamp": 103.0
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 103.2,
+      "payload": {
+        "expires_at": 105.2,
+        "goal_id": "mr3_p1b_v4_open101:tb1:22"
+      },
+      "received_stamp": 103.2,
+      "sequence": 46,
+      "source": "tb1",
+      "source_stamp": 103.2,
+      "stream": "heartbeat",
+      "version": 46
+    },
+    "stamp": 103.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 103.2,
+      "payload": {
+        "expires_at": 105.2,
+        "goal_id": "mr3_p1b_v4_open101:tb2:23"
+      },
+      "received_stamp": 103.2,
+      "sequence": 41,
+      "source": "tb2",
+      "source_stamp": 103.2,
+      "stream": "heartbeat",
+      "version": 41
+    },
+    "stamp": 103.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "0bab3294e7217163e5491f11360af7c253a17f536f58e85778d12dc9d1309ee5",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 24,
+      "observation_digest": "fa6725957c62e172d9e6b36c7ab4b4ec302d8dcf9832bb582d0b13855d70bf86",
+      "observation_sequence": 24,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 103.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 103.4,
+      "payload": {
+        "expires_at": 105.4,
+        "goal_id": "mr3_p1b_v4_open101:tb1:22"
+      },
+      "received_stamp": 103.4,
+      "sequence": 47,
+      "source": "tb1",
+      "source_stamp": 103.4,
+      "stream": "heartbeat",
+      "version": 47
+    },
+    "stamp": 103.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 103.4,
+      "payload": {
+        "expires_at": 105.4,
+        "goal_id": "mr3_p1b_v4_open101:tb2:23"
+      },
+      "received_stamp": 103.4,
+      "sequence": 42,
+      "source": "tb2",
+      "source_stamp": 103.4,
+      "stream": "heartbeat",
+      "version": 42
+    },
+    "stamp": 103.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 103.7,
+      "payload": {
+        "expires_at": 105.7,
+        "goal_id": "mr3_p1b_v4_open101:tb1:22"
+      },
+      "received_stamp": 103.7,
+      "sequence": 48,
+      "source": "tb1",
+      "source_stamp": 103.7,
+      "stream": "heartbeat",
+      "version": 48
+    },
+    "stamp": 103.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 103.7,
+      "payload": {
+        "expires_at": 105.7,
+        "goal_id": "mr3_p1b_v4_open101:tb2:23"
+      },
+      "received_stamp": 103.7,
+      "sequence": 43,
+      "source": "tb2",
+      "source_stamp": 103.7,
+      "stream": "heartbeat",
+      "version": 43
+    },
+    "stamp": 103.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 103.9,
+      "payload": {
+        "expires_at": 105.9,
+        "goal_id": "mr3_p1b_v4_open101:tb1:22"
+      },
+      "received_stamp": 103.9,
+      "sequence": 49,
+      "source": "tb1",
+      "source_stamp": 103.9,
+      "stream": "heartbeat",
+      "version": 49
+    },
+    "stamp": 103.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 103.9,
+      "payload": {
+        "expires_at": 105.9,
+        "goal_id": "mr3_p1b_v4_open101:tb2:23"
+      },
+      "received_stamp": 103.9,
+      "sequence": 44,
+      "source": "tb2",
+      "source_stamp": 103.9,
+      "stream": "heartbeat",
+      "version": 44
+    },
+    "stamp": 103.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 104.2,
+      "payload": {
+        "expires_at": 106.2,
+        "goal_id": "mr3_p1b_v4_open101:tb1:22"
+      },
+      "received_stamp": 104.2,
+      "sequence": 50,
+      "source": "tb1",
+      "source_stamp": 104.2,
+      "stream": "heartbeat",
+      "version": 50
+    },
+    "stamp": 104.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 104.2,
+      "payload": {
+        "expires_at": 106.2,
+        "goal_id": "mr3_p1b_v4_open101:tb2:23"
+      },
+      "received_stamp": 104.2,
+      "sequence": 45,
+      "source": "tb2",
+      "source_stamp": 104.2,
+      "stream": "heartbeat",
+      "version": 45
+    },
+    "stamp": 104.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "action",
+    "payload": {
+      "action": 888,
+      "candidate_version": "6dbb7417f7ad0d8f23e4a3ad600ec164bc0324d533f325eba21e0099d3631a6f",
+      "choices": [
+        8,
+        8,
+        8
+      ],
+      "command_id": 25,
+      "observation_digest": "3bab4df3adbd33d7cdba930a98485adbb1a7f45141ea6c69eebddd934ce86019",
+      "observation_sequence": 25,
+      "results": {
+        "tb1": "kept",
+        "tb2": "kept",
+        "tb3": "kept"
+      }
+    },
+    "stamp": 104.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 104.4,
+      "payload": {
+        "expires_at": 106.4,
+        "goal_id": "mr3_p1b_v4_open101:tb1:22"
+      },
+      "received_stamp": 104.4,
+      "sequence": 51,
+      "source": "tb1",
+      "source_stamp": 104.4,
+      "stream": "heartbeat",
+      "version": 51
+    },
+    "stamp": 104.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 104.4,
+      "payload": {
+        "expires_at": 106.4,
+        "goal_id": "mr3_p1b_v4_open101:tb2:23"
+      },
+      "received_stamp": 104.4,
+      "sequence": 46,
+      "source": "tb2",
+      "source_stamp": 104.4,
+      "stream": "heartbeat",
+      "version": 46
+    },
+    "stamp": 104.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 104.7,
+      "payload": {
+        "expires_at": 106.7,
+        "goal_id": "mr3_p1b_v4_open101:tb1:22"
+      },
+      "received_stamp": 104.7,
+      "sequence": 52,
+      "source": "tb1",
+      "source_stamp": 104.7,
+      "stream": "heartbeat",
+      "version": 52
+    },
+    "stamp": 104.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 104.7,
+      "payload": {
+        "expires_at": 106.7,
+        "goal_id": "mr3_p1b_v4_open101:tb2:23"
+      },
+      "received_stamp": 104.7,
+      "sequence": 47,
+      "source": "tb2",
+      "source_stamp": 104.7,
+      "stream": "heartbeat",
+      "version": 47
+    },
+    "stamp": 104.7
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 104.9,
+      "payload": {
+        "expires_at": 106.9,
+        "goal_id": "mr3_p1b_v4_open101:tb1:22"
+      },
+      "received_stamp": 104.9,
+      "sequence": 53,
+      "source": "tb1",
+      "source_stamp": 104.9,
+      "stream": "heartbeat",
+      "version": 53
+    },
+    "stamp": 104.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 104.9,
+      "payload": {
+        "expires_at": 106.9,
+        "goal_id": "mr3_p1b_v4_open101:tb2:23"
+      },
+      "received_stamp": 104.9,
+      "sequence": 48,
+      "source": "tb2",
+      "source_stamp": 104.9,
+      "stream": "heartbeat",
+      "version": 48
+    },
+    "stamp": 104.9
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 105.2,
+      "payload": {
+        "expires_at": 107.2,
+        "goal_id": "mr3_p1b_v4_open101:tb1:22"
+      },
+      "received_stamp": 105.2,
+      "sequence": 54,
+      "source": "tb1",
+      "source_stamp": 105.2,
+      "stream": "heartbeat",
+      "version": 54
+    },
+    "stamp": 105.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 105.2,
+      "payload": {
+        "expires_at": 107.2,
+        "goal_id": "mr3_p1b_v4_open101:tb2:23"
+      },
+      "received_stamp": 105.2,
+      "sequence": 49,
+      "source": "tb2",
+      "source_stamp": 105.2,
+      "stream": "heartbeat",
+      "version": 49
+    },
+    "stamp": 105.2
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "protocol",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "goal_id": "mr3_p1b_v4_open101:tb1:22",
+      "reason": "task_stop",
+      "robot": "tb1",
+      "stamp": 105.2,
+      "type": "cancel_goal"
+    },
+    "stamp": 105.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "protocol",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "goal_id": "mr3_p1b_v4_open101:tb2:23",
+      "reason": "task_stop",
+      "robot": "tb2",
+      "stamp": 105.2,
+      "type": "cancel_goal"
+    },
+    "stamp": 105.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 105.3,
+      "payload": {
+        "epoch": "mr3_p1b_v4_open101",
+        "goal_id": "mr3_p1b_v4_open101:tb1:22",
+        "reason": "task_stop",
+        "robot": "tb1",
+        "stamp": 105.2,
+        "type": "cancel_goal"
+      },
+      "received_stamp": 105.3,
+      "sequence": 5,
+      "source": "tb1",
+      "source_stamp": 105.2,
+      "stream": "command",
+      "version": 5
+    },
+    "stamp": 105.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 105.3,
+      "payload": {
+        "epoch": "mr3_p1b_v4_open101",
+        "goal_id": "mr3_p1b_v4_open101:tb2:23",
+        "reason": "task_stop",
+        "robot": "tb2",
+        "stamp": 105.2,
+        "type": "cancel_goal"
+      },
+      "received_stamp": 105.3,
+      "sequence": 5,
+      "source": "tb2",
+      "source_stamp": 105.2,
+      "stream": "command",
+      "version": 5
+    },
+    "stamp": 105.3
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 105.3,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_open101:tb1:22",
+        "robot": "tb1",
+        "type": "cancel",
+        "value": true
+      },
+      "received_stamp": 105.4,
+      "sequence": 7,
+      "source": "tb1",
+      "source_stamp": 105.3,
+      "stream": "receipt",
+      "version": 7
+    },
+    "stamp": 105.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 105.3,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_open101:tb2:23",
+        "robot": "tb2",
+        "type": "cancel",
+        "value": true
+      },
+      "received_stamp": 105.4,
+      "sequence": 7,
+      "source": "tb2",
+      "source_stamp": 105.3,
+      "stream": "receipt",
+      "version": 7
+    },
+    "stamp": 105.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "protocol",
+    "payload": {
+      "accepted": true,
+      "epoch": "mr3_p1b_v4_open101",
+      "goal_id": "mr3_p1b_v4_open101:tb1:22",
+      "robot": "tb1",
+      "stamp": 105.4,
+      "type": "cancel_response"
+    },
+    "stamp": 105.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "protocol",
+    "payload": {
+      "accepted": true,
+      "epoch": "mr3_p1b_v4_open101",
+      "goal_id": "mr3_p1b_v4_open101:tb2:23",
+      "robot": "tb2",
+      "stamp": 105.4,
+      "type": "cancel_response"
+    },
+    "stamp": 105.4
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 105.3,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_open101:tb2:23",
+        "robot": "tb2",
+        "type": "result",
+        "value": 5
+      },
+      "received_stamp": 105.6,
+      "sequence": 8,
+      "source": "tb2",
+      "source_stamp": 105.3,
+      "stream": "receipt",
+      "version": 8
+    },
+    "stamp": 105.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "delivery",
+    "payload": {
+      "epoch": "mr3_p1b_v4_open101",
+      "generated_stamp": 105.3,
+      "payload": {
+        "goal_id": "mr3_p1b_v4_open101:tb1:22",
+        "robot": "tb1",
+        "type": "result",
+        "value": 5
+      },
+      "received_stamp": 105.6,
+      "sequence": 8,
+      "source": "tb1",
+      "source_stamp": 105.3,
+      "stream": "receipt",
+      "version": 8
+    },
+    "stamp": 105.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 23,
+      "epoch": "mr3_p1b_v4_open101",
+      "goal_id": "mr3_p1b_v4_open101:tb2:23",
+      "robot": "tb2",
+      "stamp": 105.6,
+      "status": "CANCELED",
+      "type": "protocol_terminal"
+    },
+    "stamp": 105.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "protocol",
+    "payload": {
+      "command_id": 22,
+      "epoch": "mr3_p1b_v4_open101",
+      "goal_id": "mr3_p1b_v4_open101:tb1:22",
+      "robot": "tb1",
+      "stamp": 105.6,
+      "status": "CANCELED",
+      "type": "protocol_terminal"
+    },
+    "stamp": 105.6
+  },
+  {
+    "epoch": "mr3_p1b_v4_open101",
+    "kind": "task_stopped",
+    "payload": {
+      "navigation_failure": false,
+      "pending_goal_count": 0,
+      "robot_names": [
+        "tb1",
+        "tb2",
+        "tb3"
+      ],
+      "start_sim_time_sec": 80.0,
+      "stop_sim_time_sec": 105.6
+    },
+    "stamp": 105.6
+  }
+]
