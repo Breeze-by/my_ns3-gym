@@ -1,0 +1,337 @@
+{
+  "completed_wall_monotonic_ns": 3824767347414031,
+  "end_clock_ns": 77080000000,
+  "epoch": "mr3_p1c_v7_fault_w0_e2_defc1a57",
+  "failures": [],
+  "goal_ownership_closed": {
+    "epoch": "mr3_p1c_v7_fault_w0_e2_defc1a57",
+    "navigation_failure": false,
+    "pending_goal_count": 0,
+    "robot_names": [
+      "tb1",
+      "tb2",
+      "tb3"
+    ],
+    "start_sim_time_sec": 69.06,
+    "stop_sim_time_sec": 77.06
+  },
+  "goal_ownership_closed_received_clock_ns": 77060000000,
+  "goal_ownership_closed_received_wall_monotonic_ns": 3824758832644517,
+  "physical_time_ns": 77080000000,
+  "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+  "robots": [
+    {
+      "robot": "tb1",
+      "shutdown": {
+        "command": 4,
+        "completed_wall_monotonic_ns": 3824761549066016,
+        "request_clock_ns": 77080000000,
+        "request_wall_monotonic_ns": 3824758983541407,
+        "response": {
+          "success": true
+        },
+        "response_clock_ns": 77080000000,
+        "service": "/tb1/lifecycle_manager_navigation/manage_nodes",
+        "started_wall_monotonic_ns": 3824758957872536,
+        "wall_duration_sec": 2.59119348
+      },
+      "states": [
+        {
+          "completed_wall_monotonic_ns": 3824761592179609,
+          "node": "controller_server",
+          "request_clock_ns": 77080000000,
+          "request_wall_monotonic_ns": 3824761571767907,
+          "response_clock_ns": 77080000000,
+          "service": "/tb1/controller_server/get_state",
+          "started_wall_monotonic_ns": 3824761549247050,
+          "state": {
+            "id": 4,
+            "label": "finalized"
+          },
+          "wall_duration_sec": 0.042932559
+        },
+        {
+          "completed_wall_monotonic_ns": 3824761619388288,
+          "node": "planner_server",
+          "request_clock_ns": 77080000000,
+          "request_wall_monotonic_ns": 3824761599053342,
+          "response_clock_ns": 77080000000,
+          "service": "/tb1/planner_server/get_state",
+          "started_wall_monotonic_ns": 3824761592223535,
+          "state": {
+            "id": 4,
+            "label": "finalized"
+          },
+          "wall_duration_sec": 0.027164753
+        },
+        {
+          "completed_wall_monotonic_ns": 3824761649067264,
+          "node": "behavior_server",
+          "request_clock_ns": 77080000000,
+          "request_wall_monotonic_ns": 3824761626705488,
+          "response_clock_ns": 77080000000,
+          "service": "/tb1/behavior_server/get_state",
+          "started_wall_monotonic_ns": 3824761619436868,
+          "state": {
+            "id": 4,
+            "label": "finalized"
+          },
+          "wall_duration_sec": 0.029630396
+        },
+        {
+          "completed_wall_monotonic_ns": 3824761675513353,
+          "node": "bt_navigator",
+          "request_clock_ns": 77080000000,
+          "request_wall_monotonic_ns": 3824761655187191,
+          "response_clock_ns": 77080000000,
+          "service": "/tb1/bt_navigator/get_state",
+          "started_wall_monotonic_ns": 3824761649114819,
+          "state": {
+            "id": 4,
+            "label": "finalized"
+          },
+          "wall_duration_sec": 0.026398534
+        },
+        {
+          "completed_wall_monotonic_ns": 3824761701693418,
+          "node": "waypoint_follower",
+          "request_clock_ns": 77080000000,
+          "request_wall_monotonic_ns": 3824761681332025,
+          "response_clock_ns": 77080000000,
+          "service": "/tb1/waypoint_follower/get_state",
+          "started_wall_monotonic_ns": 3824761675556315,
+          "state": {
+            "id": 4,
+            "label": "finalized"
+          },
+          "wall_duration_sec": 0.026137103
+        },
+        {
+          "completed_wall_monotonic_ns": 3824761730985865,
+          "node": "velocity_smoother",
+          "request_clock_ns": 77080000000,
+          "request_wall_monotonic_ns": 3824761710607539,
+          "response_clock_ns": 77080000000,
+          "service": "/tb1/velocity_smoother/get_state",
+          "started_wall_monotonic_ns": 3824761701737877,
+          "state": {
+            "id": 4,
+            "label": "finalized"
+          },
+          "wall_duration_sec": 0.029247988
+        }
+      ]
+    },
+    {
+      "robot": "tb2",
+      "shutdown": {
+        "command": 4,
+        "completed_wall_monotonic_ns": 3824764253914609,
+        "request_clock_ns": 77080000000,
+        "request_wall_monotonic_ns": 3824761736498568,
+        "response": {
+          "success": true
+        },
+        "response_clock_ns": 77080000000,
+        "service": "/tb2/lifecycle_manager_navigation/manage_nodes",
+        "started_wall_monotonic_ns": 3824761731117075,
+        "wall_duration_sec": 2.522797534
+      },
+      "states": [
+        {
+          "completed_wall_monotonic_ns": 3824764279682802,
+          "node": "controller_server",
+          "request_clock_ns": 77080000000,
+          "request_wall_monotonic_ns": 3824764258471032,
+          "response_clock_ns": 77080000000,
+          "service": "/tb2/controller_server/get_state",
+          "started_wall_monotonic_ns": 3824764253949681,
+          "state": {
+            "id": 4,
+            "label": "finalized"
+          },
+          "wall_duration_sec": 0.025733121
+        },
+        {
+          "completed_wall_monotonic_ns": 3824764306301477,
+          "node": "planner_server",
+          "request_clock_ns": 77080000000,
+          "request_wall_monotonic_ns": 3824764285141484,
+          "response_clock_ns": 77080000000,
+          "service": "/tb2/planner_server/get_state",
+          "started_wall_monotonic_ns": 3824764279724842,
+          "state": {
+            "id": 4,
+            "label": "finalized"
+          },
+          "wall_duration_sec": 0.026576635
+        },
+        {
+          "completed_wall_monotonic_ns": 3824764331336968,
+          "node": "behavior_server",
+          "request_clock_ns": 77080000000,
+          "request_wall_monotonic_ns": 3824764310992438,
+          "response_clock_ns": 77080000000,
+          "service": "/tb2/behavior_server/get_state",
+          "started_wall_monotonic_ns": 3824764306349933,
+          "state": {
+            "id": 4,
+            "label": "finalized"
+          },
+          "wall_duration_sec": 0.024987035
+        },
+        {
+          "completed_wall_monotonic_ns": 3824764356696998,
+          "node": "bt_navigator",
+          "request_clock_ns": 77080000000,
+          "request_wall_monotonic_ns": 3824764336315532,
+          "response_clock_ns": 77080000000,
+          "service": "/tb2/bt_navigator/get_state",
+          "started_wall_monotonic_ns": 3824764331381738,
+          "state": {
+            "id": 4,
+            "label": "finalized"
+          },
+          "wall_duration_sec": 0.02531526
+        },
+        {
+          "completed_wall_monotonic_ns": 3824764382638094,
+          "node": "waypoint_follower",
+          "request_clock_ns": 77080000000,
+          "request_wall_monotonic_ns": 3824764362264352,
+          "response_clock_ns": 77080000000,
+          "service": "/tb2/waypoint_follower/get_state",
+          "started_wall_monotonic_ns": 3824764356749483,
+          "state": {
+            "id": 4,
+            "label": "finalized"
+          },
+          "wall_duration_sec": 0.025888611
+        },
+        {
+          "completed_wall_monotonic_ns": 3824764407642031,
+          "node": "velocity_smoother",
+          "request_clock_ns": 77080000000,
+          "request_wall_monotonic_ns": 3824764387295704,
+          "response_clock_ns": 77080000000,
+          "service": "/tb2/velocity_smoother/get_state",
+          "started_wall_monotonic_ns": 3824764382680674,
+          "state": {
+            "id": 4,
+            "label": "finalized"
+          },
+          "wall_duration_sec": 0.024961357
+        }
+      ]
+    },
+    {
+      "robot": "tb3",
+      "shutdown": {
+        "command": 4,
+        "completed_wall_monotonic_ns": 3824767193702803,
+        "request_clock_ns": 77080000000,
+        "request_wall_monotonic_ns": 3824764412633631,
+        "response": {
+          "success": true
+        },
+        "response_clock_ns": 77080000000,
+        "service": "/tb3/lifecycle_manager_navigation/manage_nodes",
+        "started_wall_monotonic_ns": 3824764407702662,
+        "wall_duration_sec": 2.786000141
+      },
+      "states": [
+        {
+          "completed_wall_monotonic_ns": 3824767218217937,
+          "node": "controller_server",
+          "request_clock_ns": 77080000000,
+          "request_wall_monotonic_ns": 3824767197885806,
+          "response_clock_ns": 77080000000,
+          "service": "/tb3/controller_server/get_state",
+          "started_wall_monotonic_ns": 3824767193737647,
+          "state": {
+            "id": 4,
+            "label": "finalized"
+          },
+          "wall_duration_sec": 0.02448029
+        },
+        {
+          "completed_wall_monotonic_ns": 3824767242919740,
+          "node": "planner_server",
+          "request_clock_ns": 77080000000,
+          "request_wall_monotonic_ns": 3824767222451118,
+          "response_clock_ns": 77080000000,
+          "service": "/tb3/planner_server/get_state",
+          "started_wall_monotonic_ns": 3824767218264883,
+          "state": {
+            "id": 4,
+            "label": "finalized"
+          },
+          "wall_duration_sec": 0.024654857
+        },
+        {
+          "completed_wall_monotonic_ns": 3824767269526404,
+          "node": "behavior_server",
+          "request_clock_ns": 77080000000,
+          "request_wall_monotonic_ns": 3824767248162038,
+          "response_clock_ns": 77080000000,
+          "service": "/tb3/behavior_server/get_state",
+          "started_wall_monotonic_ns": 3824767242968274,
+          "state": {
+            "id": 4,
+            "label": "finalized"
+          },
+          "wall_duration_sec": 0.02655813
+        },
+        {
+          "completed_wall_monotonic_ns": 3824767296417201,
+          "node": "bt_navigator",
+          "request_clock_ns": 77080000000,
+          "request_wall_monotonic_ns": 3824767275139805,
+          "response_clock_ns": 77080000000,
+          "service": "/tb3/bt_navigator/get_state",
+          "started_wall_monotonic_ns": 3824767269575957,
+          "state": {
+            "id": 4,
+            "label": "finalized"
+          },
+          "wall_duration_sec": 0.026841244
+        },
+        {
+          "completed_wall_monotonic_ns": 3824767322749282,
+          "node": "waypoint_follower",
+          "request_clock_ns": 77080000000,
+          "request_wall_monotonic_ns": 3824767302410412,
+          "response_clock_ns": 77080000000,
+          "service": "/tb3/waypoint_follower/get_state",
+          "started_wall_monotonic_ns": 3824767296458749,
+          "state": {
+            "id": 4,
+            "label": "finalized"
+          },
+          "wall_duration_sec": 0.026290533
+        },
+        {
+          "completed_wall_monotonic_ns": 3824767347384122,
+          "node": "velocity_smoother",
+          "request_clock_ns": 77080000000,
+          "request_wall_monotonic_ns": 3824767327032318,
+          "response_clock_ns": 77080000000,
+          "service": "/tb3/velocity_smoother/get_state",
+          "started_wall_monotonic_ns": 3824767322787543,
+          "state": {
+            "id": 4,
+            "label": "finalized"
+          },
+          "wall_duration_sec": 0.024596579
+        }
+      ]
+    }
+  ],
+  "schema": "mr3-nav2-shutdown-v1",
+  "scope": "post-goal cleanup pause, outside reward time; not a DDS-internal fix",
+  "start_clock_ns": 77080000000,
+  "started_wall_monotonic_ns": 3824758957239587,
+  "success": true,
+  "wall_duration_sec": 8.390174444,
+  "wall_guard_sec": 30.0
+}

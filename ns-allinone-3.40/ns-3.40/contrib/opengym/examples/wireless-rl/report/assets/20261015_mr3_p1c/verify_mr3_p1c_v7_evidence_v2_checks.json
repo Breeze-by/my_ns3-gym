@@ -1,0 +1,53 @@
+{
+  "schema": "mr3-v7-final-evidence-verifier-v2-method-checks-v1",
+  "method_correction": "Manifest complete_episode_credit is mandatory false; optional normal_native_shutdown_credit/complete_contact_monitoring_credit may be absent and are unavailable, but if present must be false. No raw artifact is patched. Actual kill/forced cleanup, incomplete four-step phase scope and raw/selected JSON+gzip closure absence stay mandatory.",
+  "files_sha256": {
+    "verify_mr3_p1c_v7_evidence_v2.py": "7f4ab7c284137aba93a7a7765eb84edcc9f6129e1c90fb7c40d89922fda30046",
+    "test_verify_mr3_p1c_v7_evidence_v2.py": "6963c05c2809e8117c7ceac5c1639e02d8659d121f1b28b8d8bc564a9c24c5d0",
+    "final_evidence_integrity_v7_v2.json": "d102c544d82cd0448ecc797c5c5b1203b77fe401e16efe169e2258085ba015c5",
+    "final_evidence_integrity_v7_v2_execution.json": "dd1ea3ae0036040487dcafe08b5195b675f324c15122e52fcfef17eef3c6f2cf"
+  },
+  "original_v1_artifacts_unchanged": {
+    "verify_mr3_p1c_v7_evidence.py": "5a3fa64ced179efb3228ab928e6c7c1312146e9481addc6b56c185b332aa257a",
+    "test_verify_mr3_p1c_v7_evidence.py": "a826bc8a6c6d2de58fc2e43ae7da4a11fd478385b96f3a364420b86171091c29",
+    "verify_mr3_p1c_v7_evidence_checks.json": "94a977055160c93ecc0b88e2793dfb45053ecd7eccc6565e7fc4d7a8f04dc7b5",
+    "final_evidence_integrity_v7.json": "6aa54899c1a95cf586f5bb95d4b5a0d890c215e387d96922bfc9f616d4363f96"
+  },
+  "original_v1_result_still_failed": true,
+  "unit_tests": {
+    "count": 31,
+    "passed": true,
+    "elapsed_sec": 1.473,
+    "argv": [
+      "rtk",
+      "proxy",
+      "/usr/bin/python3",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c",
+      "-p",
+      "test_verify_mr3_p1c_v7_evidence_v2.py",
+      "-v"
+    ]
+  },
+  "flake8": {
+    "passed": true,
+    "argv": [
+      "rtk",
+      "proxy",
+      "/usr/bin/python3",
+      "-m",
+      "flake8",
+      "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/verify_mr3_p1c_v7_evidence_v2.py",
+      "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/test_verify_mr3_p1c_v7_evidence_v2.py",
+      "--max-line-length=99"
+    ]
+  },
+  "independent_static_review_passed": true,
+  "actual_final_v2_exit_code": 0,
+  "actual_final_v2_passed": true,
+  "new_native_or_GPU_execution": false
+}

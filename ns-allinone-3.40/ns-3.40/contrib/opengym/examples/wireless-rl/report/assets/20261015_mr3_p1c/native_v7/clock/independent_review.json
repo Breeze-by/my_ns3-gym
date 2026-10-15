@@ -1,0 +1,46 @@
+{
+  "schema": "mr3-p1c-clock-independent-review-v1",
+  "passed": true,
+  "source_freeze": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a",
+  "scope": "Saved isolated physical/clock component replay. No new native execution, robot-team/contact/Nav2/95%/training/network/SDK-fix credit.",
+  "binding": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/predeclared_execution_binding_v7.json",
+    "sha256": "09a9f2263385a1a9d4bae02676fc26f23d64a026f8633634f8dd3a310bff1117"
+  },
+  "metadata_freeze_profile_match_binding": true,
+  "receipt_count": 22,
+  "required_clock_boundary_count": 7,
+  "required_step_counts": [
+    20,
+    20,
+    20,
+    20,
+    20,
+    1000,
+    0
+  ],
+  "all_receipts_paused": true,
+  "physical_tick_ns": 1000000,
+  "iteration_time_arithmetic_and_contiguity_exact": true,
+  "required_observed_clock_matches_physics": true,
+  "clock_sample_count": 99,
+  "clock_gap_ns": 20000000,
+  "clock_first_ns": 20000000,
+  "clock_last_ns": 1980000000,
+  "setup_alignment_receipts": 15,
+  "setup_scope": "Setup may observe older ROS-clock delivery; only required boundaries assert equality.",
+  "final_zero_step_preserves_time": true,
+  "freeze_scope": "No separate sustained wall-duration pause trace saved.",
+  "server_pid": 860562,
+  "server_returncode": 0,
+  "helper_pid": 861003,
+  "helper_exit_scope": "Checker passed/errornull; pinned checker requires helper.wait return0, but summary has no helper_returncode field.",
+  "stop_cli_pid": 861311,
+  "stop_cli_returncode": 0,
+  "wall_duration_sec": 9.673188908956945,
+  "archive_tool": {
+    "path": "/tmp/archive_mr3_v7_closed.py",
+    "sha256": "d9011aa26a2a603246ab3f8847769ee43b6e592f887e26a1ea20b1dfae375beb"
+  },
+  "reused_method": "v6 selected evidence gzip/identity+decoded SHA and independent exact tick/clock review; originals unchanged."
+}

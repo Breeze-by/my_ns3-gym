@@ -1,0 +1,49 @@
+{
+  "schema": "mr3-p1c-fault-recovery-identity-review-v1",
+  "passed_declared_fault_scope": true,
+  "freeze": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a",
+  "scope": "Pinned identity-checked os.kill(SIGKILL) branch plus actual -9 receipt and saved ledger; no independent syscall timestamp trace. Prefix is incomplete, not a normal shutdown/full-contact/full-reward episode.",
+  "benchmark_source": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py",
+    "sha256": "11240da386526313609e0754707eaa776ec769eae7b5e0b9416064c1fcdf3d86",
+    "git_freeze_blob_matches": true
+  },
+  "killed": {
+    "epoch": "mr3_p1c_v7_fault_w0_e1_e8445d01",
+    "identity": {
+      "pid": 913051,
+      "parent": 912928,
+      "group": 913051,
+      "session": 913051,
+      "start_ticks": 382439424,
+      "state": "Z"
+    },
+    "returncode": -9,
+    "forced_shutdown": true,
+    "returned_prefix_steps": 4,
+    "owned_unique_pid_start_ticks": 41,
+    "complete_episode_credit": false,
+    "normal_shutdown_credit": false,
+    "complete_contact_credit": false,
+    "complete_reward_credit": false,
+    "supervisor_receipt_sha256": "f95308060dc6aea2382b250dff90c7f26aabd849723cbb4c4d5f14251965f439"
+  },
+  "recovered": {
+    "epoch": "mr3_p1c_v7_fault_w0_e2_defc1a57",
+    "identity": {
+      "pid": 916776,
+      "parent": 912928,
+      "group": 916776,
+      "session": 916776,
+      "start_ticks": 382456180,
+      "state": "R"
+    },
+    "returncode": 0,
+    "returned_steps": 8,
+    "same_parent_new_pid_start_ticks": true,
+    "supervisor_receipt_sha256": "a691800e54ea5128df2c6226735e8c1f72a0e28d5053e137706a6ba4efe4df01"
+  },
+  "other_worker_complete_episodes": 2,
+  "normal_complete_reward_subset_steps": 24,
+  "all_saved_final_owned_live_zombie_empty": true
+}

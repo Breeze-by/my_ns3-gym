@@ -53,12 +53,16 @@ acceptance. Complete and verify each substep, commit/push, present evidence,
 and wait for the user's explicit acceptance before the next substep.
 Old P1C/P2C acceptance or PASS cannot be reused as MR3 credit.
 
-Current boundary: **MR3-P0 accepted on 2026-10-14; MR3-P1A/P1B accepted by the user on 2026-10-15; MR3-P1C in progress**.
+Current boundary: **MR3-P0 accepted on 2026-10-14; MR3-P1A/P1B accepted by the user on 2026-10-15; MR3-P1C implemented and validated, awaiting explicit user acceptance**.
 P1B freeze `f9928fe` passed the same-freeze open/rooms/corridors seed101 scripted
 adapter audits; see the [P1B report](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261015_mr3_p1b.md).
 The user authorized P1C environment/reset/reward/sampling work. P2A and later
 remain unstarted; no actual policy training or gateway work is authorized.
-The candidate environment contract is [MR3_ENV_CONTRACT.md](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md).
+The implemented environment contract is [MR3_ENV_CONTRACT.md](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md).
+The P1C validation started on 2026-10-15; its actual closure time, capacity and conditional budgets
+are in the [P1C report](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261015_mr3_p1c.md).
+The [2D option](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261015_mr3_2d_option.md) awaits separate acceptance.
+The 500k/72h per-run budget is a candidate, not an accepted training quota or permission to replace Gazebo.
 
 ## Current implementation and evidence
 
@@ -70,8 +74,11 @@ contract for 95% schema4 evaluation; legacy schema3 remains diagnostic only.
 The default baseline retains handcrafted frontier control, common-frame
 conservative map fusion and Nav2. The mutually exclusive adapter owns stable
 goals and uses logical ideal-delivery map/state copies; it has no handcrafted
-exploration fallback. P1C adds a candidate Gymnasium/IPC environment and isolated
-reward ledger, with native sampling/reset and GPU probes still awaiting validation.
+exploration fallback. P1C implements the Gymnasium/IPC environment, full reset and isolated
+reward ledger. The W7 `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a` engineering matrix and independent audits are complete,
+with 762 ROS semantic and 40 conda CPU checks. It awaits user acceptance.
+The retained `b328f84` GPU interface probe has 3 forward/3 backward calls and 0 updates;
+no new GPU training or multi-day stability claim is made.
 No trained three-robot policy or ROS/ns-3 gateway exists. Historical
 five-user/15-input/5-action toy DQN is a separate task.
 P1A now measures all six actual body collisions per robot (18 streams), with
@@ -90,11 +97,11 @@ are implemented for P1A. P1B adds exclusive goal ownership, deterministic
 observations/candidates/masks and received-information navigation copies in
 ideal mode. Same-process/DDS delivery is not P3A isolation or byte transport.
 K8 and the 5 s commitment describe this interface version, not a 95% task proof.
-The P1B nominal 1 s snapshot timer had 2/3 s gaps in rooms. P1C is implementing
-explicit 1000-tick/1 s stepping in 20-tick quanta, real 50 Hz clock phase/drain
-barriers and full process rebuilds; fixed dt/reset/1-2-4-worker throughput and GPU
-checks are not yet native-validated. Actual payload transport,
-absence of network bypasses and causal simulation clocks remain later gates.
+The accepted P1B nominal 1 s asynchronous timer had 2/3 s gaps in rooms; that historical
+behavior is not a fixed-dt training claim. P1C independently validates explicit 1000-tick/1 s
+stepping in 20-tick quanta, real 50 Hz clock phase/drain barriers and full process rebuilds
+at W7. The non-stepped timer nominal cadence and skip rules are unchanged. Actual payload transport, absence of
+network bypasses and network-coupled causal clocks remain later gates.
 
 ## Engineering judgment
 

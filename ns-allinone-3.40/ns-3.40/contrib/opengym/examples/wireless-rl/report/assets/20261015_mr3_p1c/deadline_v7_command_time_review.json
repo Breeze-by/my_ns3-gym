@@ -1,0 +1,127 @@
+{
+  "schema": "mr3-v7-deadline-command-time-review-v1",
+  "passed": true,
+  "freeze": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a",
+  "epoch": "mr3_p1c_v7_deadline_w0_e1_51e1d929",
+  "directory": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_deadline/worker0/episode001_open_101",
+  "scope": "closed deadline command/receipt/physical-time/scalar-reward review only; no spatial truth replay, independent18-contact timing or new native credit",
+  "review": {
+    "commands_checked": 300,
+    "accepted_commands": 300,
+    "rejected_commands": 0,
+    "robot_keep_receipts": 900,
+    "native_goals_sent": 0,
+    "start_time_ns": 81420000000,
+    "end_time_ns": 381420000000,
+    "elapsed_ns": 300000000000,
+    "terminated": true,
+    "truncated": false,
+    "termination_reason": "timeout",
+    "failure_penalty_sequences": [
+      300
+    ],
+    "reward_term_sums": {
+      "collision": 0.0,
+      "coverage": 0.0,
+      "failure": -20.0,
+      "invalid": 0.0,
+      "success": 0.0,
+      "switch": 0.0,
+      "time": -1.0
+    },
+    "initial_correct_free_cells": 1987,
+    "newly_rewarded_cells": 0,
+    "counterexample_count": 2,
+    "correctly_accepted_float_boundary_witnesses": [
+      {
+        "command_id": 174,
+        "observation_sequence": 174,
+        "created_at": 254.42,
+        "expires_at": 256.42,
+        "literal_float_difference_repr": "2.0000000000000284",
+        "endpoint_interval_ns": 2000000000,
+        "receipt_stamp": 254.42,
+        "receipt_kind": "action",
+        "results": {
+          "tb1": "kept",
+          "tb2": "kept",
+          "tb3": "kept"
+        },
+        "rejected_actions_delta": 0,
+        "invalid_reward": -0.0,
+        "transition_jsonl_line": 175,
+        "adapter_jsonl_line": 2436,
+        "old_literal_float_guard_would_reject": true,
+        "current_integer_endpoint_guard_correctly_accepted": true
+      },
+      {
+        "command_id": 175,
+        "observation_sequence": 175,
+        "created_at": 255.42,
+        "expires_at": 257.42,
+        "literal_float_difference_repr": "2.0000000000000284",
+        "endpoint_interval_ns": 2000000000,
+        "receipt_stamp": 255.42,
+        "receipt_kind": "action",
+        "results": {
+          "tb1": "kept",
+          "tb2": "kept",
+          "tb3": "kept"
+        },
+        "rejected_actions_delta": 0,
+        "invalid_reward": -0.0,
+        "transition_jsonl_line": 176,
+        "adapter_jsonl_line": 2450,
+        "old_literal_float_guard_would_reject": true,
+        "current_integer_endpoint_guard_correctly_accepted": true
+      }
+    ]
+  },
+  "physics": {
+    "receipt_count": 15001,
+    "first_time_ns": 81420000000,
+    "last_time_ns": 381420000000,
+    "total_physical_ticks": 300000
+  },
+  "evidence_sha256": {
+    "metadata.json": "7447566a462b7596d91bb35009bf39a492732ba934eded388982b1b1110a6f57",
+    "summary.json": "1dd22350eae29e7448c4276c7f74d625a66113a6a3a86696030c4d4bf7089583",
+    "supervisor_metadata.json": "2d6b682777b05aa4fdba46fca08efbbdfb7ee7c3a4920762d0c9353b3760bd1c",
+    "supervisor_shutdown.json": "824ad03a4bcbee10252a56c92b18d3eb429349f9928411290d00fa20631262a4",
+    "transitions.jsonl": "2248913e62ac68357f6cead17dddbe2c4abb3255218a79049fe15012bb56c522",
+    "adapter.jsonl": "3e0c932da00b1181907d86711adea3a1cb3d561fea96f6897a7aa8b7a0b260c3",
+    "physics.jsonl": "019202877aae5ab8618fce6c836f93a7c5a7e662771998e6f7c4fa6d784f11d2",
+    "mr3_p1c_v7_deadline_w0_e1_51e1d929.json": "71e846afec32c2ba192e3fbcb15161da79e959f9cc821744ecd49e65c7778a93"
+  },
+  "existing_audits": [
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/deadline_v7_contact_phase_v3_benchmark_audit.json",
+      "sha256": "f51f1c9ee2acaf719424f4a1fda3805372467eb1d14d5178908d965310d5d687"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/deadline_v7_scalar_v3_audit.json",
+      "sha256": "643595b847b650d6c6c32e1fe91811e831f0d5ce841ca7cce4013979717debe6"
+    }
+  ],
+  "reused_time_helper_sha256": "4787ca8d2e6b4d7ba06b3d5a3c1ead82fe6f079485a790c5b940f2ba7636c3b9",
+  "original_auditor_sha256": {
+    "ros2_ws/ros2-multi-robot-automap/scripts/audit_mr3_env.py": "25ce0b466d988595934f26a0cfb7a81a445632b1e755f2462b80698371b272e8",
+    "ros2_ws/ros2-multi-robot-automap/scripts/audit_mr3_adapter_probe.py": "fdd415da1b01d7da6219d21a2fa8e184484b696d33c3e736bde8ca165bb65e6a",
+    "ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py": "f130b1157b4855089d51a6b1f22e57e0b5683b40624cc8697e3bb76fb3659d1a"
+  },
+  "review_script_sha256": "6153237d08f42485937ef45bb8495f93a1493a586f0674562f519c54acdfffa3",
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/review_deadline_v7_command_time.py",
+    "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_deadline/worker0/episode001_open_101",
+    "--freeze",
+    "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a",
+    "--phase-audit",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/deadline_v7_contact_phase_v3_benchmark_audit.json",
+    "--scalar-audit",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/deadline_v7_scalar_v3_audit.json",
+    "--output",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/deadline_v7_command_time_review.json"
+  ]
+}

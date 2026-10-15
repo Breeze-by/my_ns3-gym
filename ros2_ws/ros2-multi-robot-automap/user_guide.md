@@ -1,20 +1,21 @@
 # 三机器人 ROS 建图导航：当前实现指南
 
-代码核对：2026-10-15，MR3-P1A/P1B用户已验收，P1C进行中；`c9344e1`是历史工程冻结。
+本轮P1C验证2026-10-15启动，实际完成时刻见P1C报告；MR3-P1A/P1B用户已验收，P1C实现与验证完成，待用户验收；`c9344e1`是历史工程冻结。
 新研究契约在 [RESEARCH_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，步骤在
 [IMPLEMENTATION_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/IMPLEMENTATION_PLAN.md)。MR3-P0/P1A/P1B已验收，P2A及后续未开始。
-默认仍为**传统前沿控制器**；互斥adapter已验收。P1C新增Gymnasium/IPC、独立奖励和完整reset源码候选，
-原生采样与GPU接口待验证，没有训练策略或通信gateway。
+默认仍为**传统前沿控制器**；互斥adapter已验收。P1C已实现Gymnasium/IPC、独立奖励和完整reset，并在W7完成原生采样工程验证；
+762项ROS/40项CPU检查通过。GPU保留b328原固定接口3F/3B/0更新范围，没有训练策略或通信gateway。
 复制运行统一使用 [launch_commands.md](launch_commands.md)，其中全部显式传三台。
 冻结`f9928fe`的open/rooms/corridors各seed101脚本适配审计均通过；功能、原失败及证据见
 [P1B报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261015_mr3_p1b.md)。
-用户已授权P1C；候选时钟、张量、奖励与reset规则见
+P1C实现与验证完成，待用户验收；时钟、张量、奖励与reset规则见
 [MR3_ENV_CONTRACT.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md)。
-P1C v6候选为18个精确Nav2状态响应writer增加1墙秒匹配窗口，客户端2秒超时不变；
-原有18个状态切换响应writer仍为5秒。此配置及有序关闭仍待完整新冻结原生矩阵，
+P1C在W7保留18个精确Nav2状态响应writer的1墙秒匹配窗口，客户端2秒超时不变；
+原有18个状态切换响应writer仍为5秒。此配置与有序关闭已在完整W7工程矩阵中核验，
 历史P1A/P1B证据保持其原profile范围，细节见启动命令和P1C报告。
-v6长KEEP截止另发现两次合法TTL浮点误拒，原始审计和扣分保留。v7候选改用整数纳秒端点统一
-命令、心跳租约、承诺mask和导航期限，等待新冻结完整矩阵；P1C不因v6记录一致而提前完成。
+v6长KEEP截止发现的两次合法TTL浮点误拒、原始审计和扣分保留。W7 `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`
+以整数纳秒端点统一命令、心跳租约、承诺mask和导航期限，完成全新八阶段及独立命令时间门禁，
+不使用v6结果填补v7信用；本步仍待用户验收，不宣称SDK竞态根治或多日稳定。
 
 ## 1. 路径与环境
 
@@ -37,7 +38,7 @@ v6长KEEP截止另发现两次合法TTL浮点误拒，原始审计和扣分保�
 | `mr3_adapter.py` / `mr3_observation.py` / `mr3_protocol.py` | 显式联合动作、几何候选/掩码、稳定目标所有权 |
 | `mr3_information.py` / `mr3_transport.py` | 理想交付、后端图和机器人导航图副本；非DDS隔离 |
 | `scripts/ros_smoke_test.py` / `run_ideal_baseline.py` / `run_mr3_adapter_probe.py` | 传统检查/矩阵和P1B脚本适配探针 |
-| `scripts/mr3_env_worker.py` / `mr3_gazebo_step` | P1C系统ROS子进程与真实物理tick步进候选，原生待验证 |
+| `scripts/mr3_env_worker.py` / `mr3_gazebo_step` | P1C系统ROS子进程与真实物理tick步进，W7工程验证完成、待用户验收 |
 | `wireless-rl/mr3_learning/` | 独立conda Gym Dict/私有IPC、完整进程reset、采样与GPU接口探针 |
 
 主 launch 默认3台，校验保留1–4历史兼容；MR3合同只允许三台，不开展其他数量实验。
@@ -97,8 +98,9 @@ navigation_map明确逻辑交付边界，独占目标接口不含手工探索兜
 脚本适配、参数调整会与命令页同提交更新；训练/gateway CLI 在实现验收后才添加。
 P1B接口版本为K8+KEEP/WAIT、5秒接受后承诺、名义1秒快照；它不证明95%建图任务成功。
 最终rooms探针实际出现2/3秒快照间隔，不能沿用为固定dt或可持续吞吐证据。
-P1C正实现1000个1ms tick/1秒step、20 tick量子、真实50Hz clock相位与交付水位，
-以及完整进程reset、独立首格奖励和终态/截断握手；1/2/4 worker原生测量与GPU接口仍待验证。
+P1C在独立stepped模式验证1000个1ms tick/1秒step、20 tick量子、真实50Hz clock相位与交付水位，
+以及完整进程reset、独立首格奖励和终态/截断握手；1/2/4 worker资源与短采样测量见P1C报告。
+非stepped timer名义频率与跳帧规则不变，不能将短采样外推为多日训练稳定或95%任务成绩。
 
 ## 5. 评估器语义与证据限制
 

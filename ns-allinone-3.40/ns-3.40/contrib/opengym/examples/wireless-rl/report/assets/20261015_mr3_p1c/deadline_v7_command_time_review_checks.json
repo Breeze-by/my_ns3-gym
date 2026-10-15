@@ -1,0 +1,42 @@
+{
+  "schema": "mr3-deadline-command-time-review-checks-v1",
+  "files_sha256": {
+    "review_deadline_v7_command_time.py": "6153237d08f42485937ef45bb8495f93a1493a586f0674562f519c54acdfffa3",
+    "test_review_deadline_v7_command_time.py": "1c544b57d8694f6167d2532182f6b867870f9c706dc1bac92d039727c21f39c2",
+    "deadline_v7_command_time_review.json": "4533434ed76e7c3b96e106b93fd00845c1bd3bd65c12aaa2c997eb0b0d1057de"
+  },
+  "unit_tests": {
+    "count": 6,
+    "passed": true,
+    "elapsed_sec": 0.111,
+    "command": [
+      "/usr/bin/python3",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c",
+      "-p",
+      "test_review_deadline_v7_command_time.py",
+      "-v"
+    ]
+  },
+  "flake8_passed": true,
+  "review_command": [
+    "/usr/bin/python3",
+    "-B",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/review_deadline_v7_command_time.py",
+    "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_deadline/worker0/episode001_open_101",
+    "--freeze",
+    "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a",
+    "--phase-audit",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/deadline_v7_contact_phase_v3_benchmark_audit.json",
+    "--scalar-audit",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/deadline_v7_scalar_v3_audit.json",
+    "--output",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/deadline_v7_command_time_review.json"
+  ],
+  "actual_review_exit_code": 0,
+  "new_native_credit": false
+}

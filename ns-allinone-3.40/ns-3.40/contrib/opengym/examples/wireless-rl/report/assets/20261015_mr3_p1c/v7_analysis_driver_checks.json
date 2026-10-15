@@ -1,0 +1,57 @@
+{
+  "schema": "mr3-p1c-v7-analysis-driver-checks-v1",
+  "passed": true,
+  "scope": "Synthetic admission/command construction only. No active run directories read, formal analysis, ROS init, native, GPU or training.",
+  "file_sha256": {
+    "v7_analysis_driver.py": "8b439495857046d9b586404a09e74799f812646c33c4971b80997f6bad2ef868",
+    "v7_analysis_driver_selftest.py": "c7c6fc1a18229ecd7a6d0942a563baedbd31f2d0ef119840aa9ce27ce510cfdc",
+    "resource_analysis_v2.py": "f92b7a9c4f3ec1e06c423d846d810b6f0799bdf08e7c44ba27b507d155b24fdf",
+    "reset_analysis_v7.py": "7975b917c99d2656962c0620fba273750b55ac905e96583ba2326e479b7f03d3",
+    "implementation_checks_v7.json": "5aa211fb00ffbd2170510f2f8f9c169cbb53bf52315fc4e70602b2857bee90a8"
+  },
+  "checks": [
+    {
+      "command": [
+        "env",
+        "PYTHONNOUSERSITE=1",
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-q",
+        "v7_analysis_driver_selftest.py"
+      ],
+      "cwd": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c",
+      "passed": true,
+      "test_count": 9,
+      "reported_wall_sec": 0.087
+    },
+    {
+      "command": [
+        "env",
+        "PYTHONNOUSERSITE=1",
+        "/usr/bin/python3",
+        "-m",
+        "flake8",
+        "--max-line-length=100",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/v7_analysis_driver.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/v7_analysis_driver_selftest.py"
+      ],
+      "passed": true
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "passed": true
+    }
+  ],
+  "independent_review": {
+    "reviewer": "p1b_protocol",
+    "mode": "static only, no run-result reads",
+    "concrete_blocker": false
+  },
+  "real_analysis_executed": false
+}

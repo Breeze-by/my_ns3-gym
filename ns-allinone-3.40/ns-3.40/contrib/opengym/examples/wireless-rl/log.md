@@ -2898,3 +2898,503 @@ New versioned reset analyzer `reset_analysis_v7.py` SHA `7975b917c99d2656962c062
 Root repeated the shortest changed-source style check: `rtk proxy /usr/bin/python3 -m flake8 --max-line-length=100` on `check_p1c_docs_v7.py`, worker, adapter, observation, protocol and their three changed test files; exit0 (1.236s). `git diff --check` exit0. `git add -n .` actual dry-run reviewed all611 current paths; additional paths checked programmatically as only canonical P1C assets or the explicitly labeled 2D proposal, no pycache/core/bag/checkpoint artifacts. The archive index now records historical v1–v6 locations and exact-source scopes; prior native/audit files are not relabeled.
 
 Root generated `implementation_checks_v7.json` with `rtk proxy /usr/bin/python3 /tmp/build_mr3_implementation_checks_v7.py`; actual receipt SHA `5aa211fb00ffbd2170510f2f8f9c169cbb53bf52315fc4e70602b2857bee90a8`, 54 source SHA pins and 21 offline/check/plan/driver dependency pins. Native v7 remains unstarted. The unified source/tests/plan will be committed and pushed before the actual-freeze binding and first native call.
+
+
+### P1C v7 pushed freeze and prospective execution binding
+
+Pushed `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a` to origin/main; HEAD and remote-tracking main match. Exact source/profile/plan/offline gate binding written exclusively before first native command to `report/assets/20261015_mr3_p1c/predeclared_execution_binding_v7.json`, SHA `09a9f2263385a1a9d4bae02676fc26f23d64a026f8633634f8dd3a310bff1117`. Driver verify_binding passed against current+Git blobs for all54 source files and all bound plan/helper/check dependencies. No native/GPU/optimizer calls occurred while generating the binding. Next execution command from Git root: `rtk proxy /usr/bin/python3 -B ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/v7_execution_driver.py --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`.
+
+### MR3-P1C v7 clock native started
+
+Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`; cwd `/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl`. Exact command:
+
+```bash
+rtk proxy /usr/bin/bash --noprofile --norc -c 'set -e
+unset PYTHONPATH PYTHONHOME
+source /opt/ros/humble/setup.bash
+source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash
+source /usr/share/gazebo/setup.sh
+export PYTHONNOUSERSITE=1
+exec /usr/bin/python3 /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/check_mr3_step_clock.py --run-id mr3_p1c_v7_clock --ros-domain-id 130 --gazebo-port 12101'
+```
+
+clock/native actual result: `{"outer_wall_sec": 11.522069925908, "pid": 860439, "returncode": 0, "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "stdout_sha256": "5a8dd62355aa3554c91001c122c6ea906da308657d97dc2de61ce3a08f14abaf"}`.
+
+### MR3-P1C v7 pilot native started
+
+Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`; cwd `/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl`. Exact command:
+
+```bash
+rtk proxy /usr/bin/bash --noprofile --norc -c 'set -e
+source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh
+conda activate ns3gym
+export PYTHONNOUSERSITE=1
+unset PYTHONPATH PYTHONHOME
+exec /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.benchmark --workers 1 --schedule open:101 --steps 2 --base-domain 131 --base-port 12111 --run-id mr3_p1c_v7_pilot'
+```
+
+pilot/native actual result: `{"outer_wall_sec": 160.97113404097036, "pid": 861526, "returncode": 0, "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "stdout_sha256": "cf6bac8c52777edf3b875d666ebbd7c522bdaa5417adb5686b5e1350d5ec741a"}`.
+
+### MR3-P1C v7 pilot primary_phase3 started
+
+Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`; cwd `/home/zhuyulab/ns3-workspace`. Exact command:
+
+```bash
+rtk proxy /usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/audit_mr3_env_contact_phase_v3.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_pilot --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/pilot_v7_contact_phase_v3_benchmark_audit.json
+```
+
+pilot/primary_phase3 actual result: `{"outer_wall_sec": 1.0160276629030704, "pid": 868837, "returncode": 0, "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "stdout_sha256": "b3a561014e2a3e400497661980fba0105537093bc5ea7446d5656e1b49ff9d1b"}`.
+
+### MR3-P1C v7 pilot scalar_v3 started
+
+Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`; cwd `/home/zhuyulab/ns3-workspace`. Exact command:
+
+```bash
+rtk proxy /usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reward_gate_audit_v3.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_pilot --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a
+```
+
+pilot/scalar_v3 actual result: `{"outer_wall_sec": 0.34236047603189945, "pid": 869038, "returncode": 0, "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "stdout_sha256": "a19946bf13d6aa3c0f2e7778f30f03bb0cae72f410378546bfaf226e24210ddc"}`.
+
+### MR3-P1C v7 terminal native started
+
+Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`; cwd `/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl`. Exact command:
+
+```bash
+rtk proxy /usr/bin/bash --noprofile --norc -c 'set -e
+source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh
+conda activate ns3gym
+export PYTHONNOUSERSITE=1
+unset PYTHONPATH PYTHONHOME
+exec /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.benchmark --workers 1 --schedule open:101,open:101 --steps 4 --base-domain 144 --base-port 12171 --run-id mr3_p1c_v7_terminal --terminal-probe'
+```
+
+terminal/native actual result: `{"outer_wall_sec": 341.3803359060548, "pid": 869184, "returncode": 0, "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "stdout_sha256": "fb8969f26fb4dca9509c9e6e78c326121f8f3eed01d646bc3c41567f68ee573b"}`.
+
+### MR3-P1C v7 terminal primary_phase3 started
+
+Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`; cwd `/home/zhuyulab/ns3-workspace`. Exact command:
+
+```bash
+rtk proxy /usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/audit_mr3_env_contact_phase_v3.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_terminal --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/terminal_v7_contact_phase_v3_benchmark_audit.json
+```
+
+terminal/primary_phase3 actual result: `{"outer_wall_sec": 0.58682617591694, "pid": 875167, "returncode": 0, "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "stdout_sha256": "0f73f3a85368837d8ef696e978be841e1957f0abcaf604a40007ddad5bd910ee"}`.
+
+### MR3-P1C v7 terminal scalar_v3 started
+
+Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`; cwd `/home/zhuyulab/ns3-workspace`. Exact command:
+
+```bash
+rtk proxy /usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reward_gate_audit_v3.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_terminal --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a
+```
+
+terminal/scalar_v3 actual result: `{"outer_wall_sec": 0.4729698118753731, "pid": 875314, "returncode": 0, "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "stdout_sha256": "c3d6199caede52f9ec0a232aebe5ff4bbfe393dc4c380fdb03978ad13dc997d2"}`.
+
+### MR3-P1C v7 workers1 native started
+
+Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`; cwd `/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl`. Exact command:
+
+```bash
+rtk proxy /usr/bin/bash --noprofile --norc -c 'set -e
+source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh
+conda activate ns3gym
+export PYTHONNOUSERSITE=1
+unset PYTHONPATH PYTHONHOME
+exec /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.benchmark --workers 1 --schedule open:101,open:101,rooms:202,corridors:303 --steps 16 --base-domain 132 --base-port 12121 --run-id mr3_p1c_v7_workers1'
+```
+
+### MR3-P1C v7 closed clock/pilot/terminal canonical archive (offline only)
+After root announced each stage fully closed, reused the v6 raw/selected/gzip/decoded SHA method and independently matched actual SDK start/signal/clean-exit lines. No native process was launched or controlled; active workers1 was not read. Originals and previous version evidence remain unchanged. The exact one-off `/tmp/archive_mr3_v7_closed.py` bytes were copied with exclusive creation to `report/assets/20261015_mr3_p1c/archive_mr3_v7_closed.py`; both SHA256 `d9011aa26a2a603246ab3f8847769ee43b6e592f887e26a1ea20b1dfae375beb`. Python `compile()` PASS. This offline asset is outside the frozen execution binding and does not change W7 source/plan.
+Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`; binding SHA `09a9f2263385a1a9d4bae02676fc26f23d64a026f8633634f8dd3a310bff1117`; cwd `/home/zhuyulab/ns3-workspace`. Exact executed archive commands:
+
+```bash
+rtk proxy /usr/bin/python3 -B /tmp/archive_mr3_v7_closed.py clock --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a
+```
+
+Actual exit0/stdout: `{"stage": "clock", "passed": true, "wall_sec": 9.673188908956945, "receipts": 22, "clocks": 99, "original_files": 6, "selected_artifacts": 6, "manifest_sha256": "0bfc7bf0852fb9897380cef9018cb90dc55c1ea27638204efa8caf7b1f71accb", "review_sha256": "551e055f40f6264163ed48335b8dfba95d19a95d5419f88fcf669b923db3d481"}`.
+
+```bash
+rtk proxy /usr/bin/python3 -B /tmp/archive_mr3_v7_closed.py pilot --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a
+```
+
+Actual exit0/stdout: `{"stage": "pilot", "passed_declared_audits": true, "returned_API": 2, "complete_episodes": 1, "original_files": 20, "selected_artifacts": 19, "manifest_sha256": "04de1fadf3b1e13caa21e6abdba8a4363d4863715171259561d36363c3db7751", "review_sha256": "70719e56c1e3e881c401551a15974bf52e6a84704a105e299aa4a69fee4f1071"}`.
+
+```bash
+rtk proxy /usr/bin/python3 -B ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/archive_mr3_v7_closed.py terminal --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a
+```
+
+Actual exit0/stdout: `{"stage": "terminal", "passed_declared_audits": true, "returned_API": 8, "complete_episodes": 2, "original_files": 38, "selected_artifacts": 36, "manifest_sha256": "9122cbd69dddc1c6b079424646a1ba583388a8b5ec59665f914acec96a1e60e4", "review_sha256": "a7f0dc0f9a3331ba419722caf868b58a56876166addba58cc63d75802c8a3a29"}`.
+
+Independent terminal raw checks PASS: each epoch has reset plus four API steps; first ends at `dt=physical_dt=.02s`, second at exact `0s` with identical prior snapshot, `action_submitted=false`, and both `terminated=true/truncated=false/navigation_failure`. Totals: 8 API, 6.02 sampled simulation seconds; benchmark recorded wall `339.1027286471799s` is distinct from outer command wall. Both have 18 actual FINALIZED responses, 18 raw contact streams, 38 SDK starts and 38 clean0 exits, 31 serial SIGINT/clean barriers before native stop; all 7 submitted commands have exact 2e9ns TTL and no rejection. Component clock evidence alone gives no robot-team/task credit; probes do not establish 95% mapping or policy-training success.
+
+
+### P1C v7 additional offline analysis/integrity tooling checks
+
+These versioned offline helpers were prepared during native execution without editing any bound runtime/plan/auditor or inspecting active raw data. They are not new native, GPU, training, reset-result or capacity credit.
+
+Receipt `report/assets/20261015_mr3_p1c/v7_analysis_driver_checks.json`, SHA `8d1e0c3620529aac2f67e9cf182dc67f5625cf1568206f15b5533f3c8e63daa3`. Exact nested check argv/results retained in that receipt:
+
+- `env PYTHONNOUSERSITE=1 /usr/bin/python3 -B -m unittest -q v7_analysis_driver_selftest.py`; result `{"cwd": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c", "passed": true, "reported_wall_sec": 0.087, "test_count": 9}`.
+
+- `env PYTHONNOUSERSITE=1 /usr/bin/python3 -m flake8 --max-line-length=100 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/v7_analysis_driver.py ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/v7_analysis_driver_selftest.py`; result `{"passed": true}`.
+
+- `git diff --check`; result `{"passed": true}`.
+
+Receipt `report/assets/20261015_mr3_p1c/verify_mr3_p1c_v7_evidence_checks.json`, SHA `94a977055160c93ecc0b88e2793dfb45053ecd7eccc6565e7fc4d7a8f04dc7b5`. Exact nested check argv/results retained in that receipt:
+
+- `/usr/bin/python3 -B -m unittest discover -s ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c -p test_verify_mr3_p1c_v7_evidence.py -v`; result `{"count": 25, "elapsed_sec": 1.809, "passed": true}`.
+
+- `/usr/bin/python3 -m flake8 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/verify_mr3_p1c_v7_evidence.py ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/test_verify_mr3_p1c_v7_evidence.py --max-line-length=99`; result `{"passed": true}`.
+
+Analysis entry: 9 pure tests/.087s PASS; actual analysis remains unexecuted. Final integrity entry: an earlier 24 pure fixtures passed/1.137s, then 25 fixtures passed/1.809s after adding conservative bare Popen PID snapshot coverage. Independent static reviews found no blocking issue. Final verifier still unexecuted; all eight stages must finish before canonical/resource/reset/PID completeness checks. Full PID/start identity and bare-PID presence/ambiguity are distinct; no start identity is invented for short CLI processes.
+
+workers1/native actual result: `{"outer_wall_sec": 1078.0245618540794, "pid": 875449, "returncode": 0, "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "stdout_sha256": "f7e78f995af0a10a2f52804a8d89b9c9d4314207ac9182c69c023f8d376eb28e"}`.
+
+### MR3-P1C v7 workers1 primary_phase3 started
+
+Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`; cwd `/home/zhuyulab/ns3-workspace`. Exact command:
+
+```bash
+rtk proxy /usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/audit_mr3_env_contact_phase_v3.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_workers1 --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/workers1_v7_contact_phase_v3_benchmark_audit.json
+```
+
+workers1/primary_phase3 actual result: `{"outer_wall_sec": 2.0927928523160517, "pid": 888309, "returncode": 0, "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "stdout_sha256": "0b0160603710979dab1a050c11cda7afb7ed594b941ddcb82bbac4734d1704b3"}`.
+
+### MR3-P1C v7 workers1 scalar_v3 started
+
+Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`; cwd `/home/zhuyulab/ns3-workspace`. Exact command:
+
+```bash
+rtk proxy /usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reward_gate_audit_v3.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_workers1 --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a
+```
+
+workers1/scalar_v3 actual result: `{"outer_wall_sec": 0.7701544100418687, "pid": 888498, "returncode": 0, "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "stdout_sha256": "63d9f94232da1f92439340bc4bb4a988ae082ac774e74b4e1d3a6887f5abcfcc"}`.
+
+### MR3-P1C v7 workers2 native started
+
+Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`; cwd `/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl`. Exact command:
+
+```bash
+rtk proxy /usr/bin/bash --noprofile --norc -c 'set -e
+source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh
+conda activate ns3gym
+export PYTHONNOUSERSITE=1
+unset PYTHONPATH PYTHONHOME
+exec /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.benchmark --workers 2 --schedule open:101,open:101 --steps 16 --base-domain 134 --base-port 12131 --run-id mr3_p1c_v7_workers2'
+```
+
+### MR3-P1C v7 closed workers1 canonical archive (offline only)
+
+Root confirmed all four episodes and native/phase3/scalar gates closed before this read. Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`, unchanged binding `09a9f2263385a1a9d4bae02676fc26f23d64a026f8633634f8dd3a310bff1117`, profile `dd7eeadca21f0924fe721515e8dd57ac979340df8b08885bc39d2595c8caf87b`; fixed archive-tool SHA `d9011aa26a2a603246ab3f8847769ee43b6e592f887e26a1ea20b1dfae375beb`. Cwd `/home/zhuyulab/ns3-workspace`; exact executed command:
+
+```bash
+rtk proxy /usr/bin/python3 -B ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/archive_mr3_v7_closed.py workers1 --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a
+```
+
+Actual exit0/stdout: `{"stage": "workers1", "passed_declared_audits": true, "returned_API": 64, "complete_episodes": 4, "original_files": 68, "selected_artifacts": 64, "manifest_sha256": "2ea3b440677cd8f9b7f8f754bfede6d0eeb11f63cedb78e65a75fd340fa3339e", "review_sha256": "a01aa03951bd7d5de8696c885b24b3a817030b78faf571c88e5897a3ce850dae"}`.
+
+Independent saved raw checks: all four epochs contain reset +16 returned steps at exact `dt=physical_dt=1s`; 64 commands accepted, zero rejection, every command-time gate PASS. Each epoch has 18 raw contact streams/sequence audit PASS and 18 actual Nav2 FINALIZED responses, 38 actual SDK starts=38 clean0 exits, 31 serial SIGINT/actual-clean barriers before Gazebo stop. Server/stop PID pairs are `875884/879329`, `879461/882353`, `882480/885620`, `885744/888144`. Recorded benchmark wall is `1075.2152461796068s` (distinct from outer native-command wall). All originals/selected/decoded hashes were checked and no prior file overwritten; final saved owned live/zombie sets empty. Only the closed workers1 group was read, not active workers2. This is scripted engineering evidence, not 95% task or policy-training credit.
+
+workers2/native actual result: `{"outer_wall_sec": 556.8429201813415, "pid": 888605, "returncode": 0, "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "stdout_sha256": "b188862253948401e311024aad0bfc835e087f3d2abd29aabfc852b10a03be50"}`.
+
+### MR3-P1C v7 workers2 primary_phase3 started
+
+Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`; cwd `/home/zhuyulab/ns3-workspace`. Exact command:
+
+```bash
+rtk proxy /usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/audit_mr3_env_contact_phase_v3.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_workers2 --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/workers2_v7_contact_phase_v3_benchmark_audit.json
+```
+
+workers2/primary_phase3 actual result: `{"outer_wall_sec": 1.5076794996857643, "pid": 897550, "returncode": 0, "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "stdout_sha256": "adba629dc8edfb7c3a09e31cde07011e6734bd30c09764feb83be2e26f63aa11"}`.
+
+### MR3-P1C v7 workers2 scalar_v3 started
+
+Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`; cwd `/home/zhuyulab/ns3-workspace`. Exact command:
+
+```bash
+rtk proxy /usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reward_gate_audit_v3.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_workers2 --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a
+```
+
+workers2/scalar_v3 actual result: `{"outer_wall_sec": 0.9341564169153571, "pid": 897749, "returncode": 0, "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "stdout_sha256": "6aad4ba5da16e7dafa075992f90ca2f6857ede989943b3ef3e0bfc8db5f40f47"}`.
+
+### MR3-P1C v7 workers4 native started
+
+Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`; cwd `/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl`. Exact command:
+
+```bash
+rtk proxy /usr/bin/bash --noprofile --norc -c 'set -e
+source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh
+conda activate ns3gym
+export PYTHONNOUSERSITE=1
+unset PYTHONPATH PYTHONHOME
+exec /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.benchmark --workers 4 --schedule open:101,open:101 --steps 16 --base-domain 136 --base-port 12141 --run-id mr3_p1c_v7_workers4'
+```
+
+### MR3-P1C v7 closed workers2 canonical archive (offline only)
+
+Root confirmed complete native/phase3/scalar closure before this read. Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`, profile `dd7eeadca21f0924fe721515e8dd57ac979340df8b08885bc39d2595c8caf87b`, binding `09a9f2263385a1a9d4bae02676fc26f23d64a026f8633634f8dd3a310bff1117`, archive tool `d9011aa26a2a603246ab3f8847769ee43b6e592f887e26a1ea20b1dfae375beb` all match. Cwd `/home/zhuyulab/ns3-workspace`; exact executed command:
+
+```bash
+rtk proxy /usr/bin/python3 -B ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/archive_mr3_v7_closed.py workers2 --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a
+```
+
+Actual exit0/stdout: `{"stage": "workers2", "passed_declared_audits": true, "returned_API": 64, "complete_episodes": 4, "original_files": 69, "selected_artifacts": 65, "manifest_sha256": "bbc6ec8f68cabbdc972cb102fdc3813096d1e4b135837ea2b339831503c70716", "review_sha256": "3b2e92645e353e7454858c80d6f39a922dfc660da58f7260466b59212f274c04"}`.
+
+Independent saved raw checks: four epochs each reset+16 exact `dt=physical_dt=1s`, total64API; all64 command-time bindings valid. There are63 accepted commands and one `navigation_changed_since_observation` rejection (worker1/e2 cmd4/observation4 at79.96s, expiry81.96s, exact TTL2e9ns); the latter is retained, not relabeled a TTL failure or accepted command. Each epoch has18 raw contact streams/raw sequence PASS and18 actual FINALIZED responses,38 SDK starts=38 actual clean0 exits and31 serial SIGINT/actual-clean barriers. AllROS clean before native stop; final saved owned live/zombie sets empty. Server/stop PID pairs:888892/893546,894028/897321,888891/893249,893372/897316. Recorded benchmark wall554.6546182003804s is distinct from outer native-command wall. Full raw/selected/decoded SHA checked, originals unchanged, no prior files overwritten; active workers4 was not read. No95% task/policy-training/SDK-fix credit.
+
+workers4/native actual result: `{"outer_wall_sec": 641.7473784531467, "pid": 897869, "returncode": 0, "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "stdout_sha256": "bfa2345adec3f295394eb2fed7dde40bf44e6f0d30bc8c4ccc9989a9e17b1716"}`.
+
+### MR3-P1C v7 workers4 primary_phase3 started
+
+Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`; cwd `/home/zhuyulab/ns3-workspace`. Exact command:
+
+```bash
+rtk proxy /usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/audit_mr3_env_contact_phase_v3.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_workers4 --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/workers4_v7_contact_phase_v3_benchmark_audit.json
+```
+
+workers4/primary_phase3 actual result: `{"outer_wall_sec": 2.977724688127637, "pid": 912636, "returncode": 0, "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "stdout_sha256": "da52e68e4c8b6601a4f99f2650d0423a55555737a942d6beac99e4cf9ec9ff2b"}`.
+
+### MR3-P1C v7 workers4 scalar_v3 started
+
+Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`; cwd `/home/zhuyulab/ns3-workspace`. Exact command:
+
+```bash
+rtk proxy /usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reward_gate_audit_v3.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_workers4 --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a
+```
+
+workers4/scalar_v3 actual result: `{"outer_wall_sec": 1.1296133841387928, "pid": 912786, "returncode": 0, "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "stdout_sha256": "95cceaffec712430de312d44382d8e49affc228a34ff094ec72bff323be3271a"}`.
+
+### MR3-P1C v7 fault native started
+
+Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`; cwd `/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl`. Exact command:
+
+```bash
+rtk proxy /usr/bin/bash --noprofile --norc -c 'set -e
+source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh
+conda activate ns3gym
+export PYTHONNOUSERSITE=1
+unset PYTHONPATH PYTHONHOME
+exec /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.benchmark --workers 2 --schedule open:101,open:101 --steps 8 --base-domain 140 --base-port 12151 --run-id mr3_p1c_v7_fault --fault-probe'
+```
+
+### MR3-P1C v7 closed workers4 canonical archive (offline only)
+
+All eight epochs and native/phase3/scalar gates were closed before this offline read. Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`, profile `dd7eeadca21f0924fe721515e8dd57ac979340df8b08885bc39d2595c8caf87b`, binding `09a9f2263385a1a9d4bae02676fc26f23d64a026f8633634f8dd3a310bff1117`, archive tool `d9011aa26a2a603246ab3f8847769ee43b6e592f887e26a1ea20b1dfae375beb` match unchanged current bytes/Git inventory. Cwd `/home/zhuyulab/ns3-workspace`; exact executed command:
+
+```bash
+rtk proxy /usr/bin/python3 -B ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/archive_mr3_v7_closed.py workers4 --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a
+```
+
+Actual exit0/stdout: `{"stage": "workers4", "passed_declared_audits": true, "returned_API": 128, "complete_episodes": 8, "original_files": 135, "selected_artifacts": 127, "manifest_sha256": "552473d6795df993203d4d2de6f52fd6561a0299d648de9e77e5ade4d22b131e", "review_sha256": "03e84b29b010d9f7177abfa1c337c0a55bcf1fd79ebb2abd3e1d5c08a9ac4bcf"}`.
+
+Independent saved raw checks: eight epochs each reset+16 returned steps at exact `dt=physical_dt=1s`, total128API/128accepted commands/0rejections; every command-time proof passed. Each epoch has18raw contact streams/raw sequence PASS,18actual FINALIZED responses,38actual SDK starts=38clean0 exits,31serial SIGINT/actual-clean barriers before Gazebo stop. Saved final owned live/zombie sets are empty. Recorded benchmark wall639.1834893319756s is distinct from outer command wall. All135 raw original hashes, selected bytes and decoded gzip hashes checked, with no originals or previous files changed. Active fault was not read. These scripted engineering probes do not establish95%task success, policy-training or an SDK bug fix.
+
+fault/native actual result: `{"outer_wall_sec": 428.8288897573948, "pid": 912927, "returncode": 0, "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "stdout_sha256": "733c650432687439c74a9cada259123acd3b75b00f1a287392bcd84795c1c5b0"}`.
+
+### MR3-P1C v7 fault prefix_phase3 started
+
+Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`; cwd `/home/zhuyulab/ns3-workspace`. Exact command:
+
+```bash
+rtk proxy /usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/audit_mr3_env_contact_phase_v3.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_fault/worker0/episode001_open_101 --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/fault_w0_e1_v7_contact_phase_v3_audit.json --expected-fault
+```
+
+fault/prefix_phase3 actual result: `{"outer_wall_sec": 0.5326810241676867, "pid": 920638, "returncode": 0, "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "stdout_sha256": "2f0d07032430ebaf829ed5f046a276dd03a742c4643c54c59148fd333baacabc"}`.
+
+### MR3-P1C v7 fault primary_phase3 started
+
+Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`; cwd `/home/zhuyulab/ns3-workspace`. Exact command:
+
+```bash
+rtk proxy /usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/audit_mr3_env_contact_phase_v3.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_fault --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/fault_v7_contact_phase_v3_benchmark_audit.json
+```
+
+fault/primary_phase3 actual result: `{"outer_wall_sec": 2.2991658900864422, "pid": 920784, "returncode": 0, "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "stdout_sha256": "3e7b8a0398cd0161503869d2a0923a24b7c019083b10852a643f94f380bdc030"}`.
+
+### MR3-P1C v7 fault scalar_v3 started
+
+Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`; cwd `/home/zhuyulab/ns3-workspace`. Exact command:
+
+```bash
+rtk proxy /usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reward_gate_audit_v3_fault_subset.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_fault --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a --main-prefix-audit /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/fault_w0_e1_v7_contact_phase_v3_audit.json --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/fault_v7_scalar_v3_audit.json
+```
+
+fault/scalar_v3 actual result: `{"outer_wall_sec": 0.6391207408159971, "pid": 920977, "returncode": 0, "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "stdout_sha256": "67eb3a19627968f6de6ff6a989024fc8a58d749f7928f628d3049545d152d09e"}`.
+
+### MR3-P1C v7 deadline native started
+
+Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`; cwd `/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl`. Exact command:
+
+```bash
+rtk proxy /usr/bin/bash --noprofile --norc -c 'set -e
+source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh
+conda activate ns3gym
+export PYTHONNOUSERSITE=1
+unset PYTHONPATH PYTHONHOME
+exec /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.benchmark --workers 1 --schedule open:101 --steps 300 --base-domain 142 --base-port 12161 --run-id mr3_p1c_v7_deadline --deadline-probe'
+```
+
+### MR3-P1C v7 closed fault canonical archive (offline only)
+
+Root confirmed full native/prefix-phase3/top-phase3/subset-scalar closure before this read. Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`, profile `dd7eeadca21f0924fe721515e8dd57ac979340df8b08885bc39d2595c8caf87b`, binding `09a9f2263385a1a9d4bae02676fc26f23d64a026f8633634f8dd3a310bff1117`, archive-tool SHA `d9011aa26a2a603246ab3f8847769ee43b6e592f887e26a1ea20b1dfae375beb` verified. Cwd `/home/zhuyulab/ns3-workspace`; exact executed command:
+
+```bash
+rtk proxy /usr/bin/python3 -B ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/archive_mr3_v7_closed.py fault --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a
+```
+
+Actual exit0/stdout: `{"stage": "fault", "passed_declared_audits": true, "returned_API": 28, "complete_episodes": 3, "original_files": 64, "selected_artifacts": 61, "manifest_sha256": "9de52d4c343b40eb4699bb85785e6066902165433ed97ee862e45514cecf2693", "review_sha256": "02a8f931cebfe39ad4fab5dad7fca63ffad9a8b9e6f45ff63d75c64e33444325"}`.
+
+Raw records retain28 returned1s API: worker0/e1 has exactly4steps then worker `pid913051/start_ticks382439424/session913051/parent912928` actual return-9, failed_sample/forced_shutdown=true,41 unique owned identities, final saved live/zombie sets empty. No summary/native_stop exists for this prefix; no normal exit, full episode/contact or full reward credit. The pinned benchmark Git blob/current bytes match and its identity-checked branch uses os.kill(SIGKILL); this is not a separately saved syscall timestamp trace. Same parent912928 rebuilds worker0/e2 as `pid916776/start_ticks382456180/session916776`, a new epoch returning8steps clean0. Peer worker1 completes both8step epochs. Only those three complete episodes receive the scalar24-step subset proof (not a whole-fault reward audit); each has18raw sequence-audited contact streams,18actual FINALIZED responses,38SDK starts=38clean0 exits and31serial SIGINT/actual-clean barriers. All28 submitted command-time bindings are valid and accepted with0rejection. Recorded benchmark wall426.5376464468427s differs from outer command wall.
+
+Supplemental `native_v7/fault/fault_recovery_identity_review.json` SHA `6d0739ca0f841db98fde7420ea957a349c94185a57c94cf1d07ce8071c7468b2` records the real identities, same-parent recovery and exact limited scope. Original/selected/decoded hashes checked without changes or overwrites. Active deadline was not read; no native process was started or controlled.
+
+deadline/native actual result: `{"outer_wall_sec": 2281.5472140409984, "pid": 921110, "returncode": 0, "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "stdout_sha256": "1a4804970702ae48e945f2c98c99a22c67774e6b5fded819949f6a6e1394f31e"}`.
+
+### MR3-P1C v7 deadline primary_phase3 started
+
+Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`; cwd `/home/zhuyulab/ns3-workspace`. Exact command:
+
+```bash
+rtk proxy /usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/audit_mr3_env_contact_phase_v3.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_deadline --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/deadline_v7_contact_phase_v3_benchmark_audit.json
+```
+
+deadline/primary_phase3 actual result: `{"outer_wall_sec": 4.043119207024574, "pid": 933042, "returncode": 0, "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "stdout_sha256": "be2f4286eb4b677e60c38ace463bab4e8995cac34943b9983f260e6fa158c217"}`.
+
+### MR3-P1C v7 deadline scalar_v3 started
+
+Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`; cwd `/home/zhuyulab/ns3-workspace`. Exact command:
+
+```bash
+rtk proxy /usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reward_gate_audit_v3.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_deadline --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a
+```
+
+deadline/scalar_v3 actual result: `{"outer_wall_sec": 2.9455537227913737, "pid": 933199, "returncode": 0, "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "stdout_sha256": "643595b847b650d6c6c32e1fe91811e831f0d5ce841ca7cce4013979717debe6"}`.
+
+### MR3-P1C v7 matrix primary_phase3 started
+
+Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`; cwd `/home/zhuyulab/ns3-workspace`. Exact command:
+
+```bash
+rtk proxy /usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/audit_mr3_env_contact_phase_v3.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_terminal /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_workers1 /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_workers2 /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_workers4 /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_fault /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_deadline --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/matrix_v7_contact_phase_v3_audit.json --matrix
+```
+
+matrix/primary_phase3 actual result: `{"outer_wall_sec": 8.239162225276232, "pid": 933384, "returncode": 0, "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "stdout_sha256": "88cdc596cd493d3f9e75863a2524a1732383ae84623f4c2fbdc4879813637a27"}`.
+
+### MR3-P1C v7 authorized final offline resource/reset analysis
+
+Started 2026-10-15T16:29:41.272447+00:00. Root authorized analysis after all eight native stages and all declared phase3/time/scalar/matrix gates naturally completed; final native driver event16:28:50.357624Z (Beijing2026-10-16 00:28:50). Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`, execution binding SHA `09a9f2263385a1a9d4bae02676fc26f23d64a026f8633634f8dd3a310bff1117`; cwd `/home/zhuyulab/ns3-workspace`. Exclusive outputs were absent. This executes only pure offline analysis; no native/GPU/training or automatic acceptance. Exact command:
+
+```bash
+rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 -B ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/v7_analysis_driver.py --execute --binding-sha256 09a9f2263385a1a9d4bae02676fc26f23d64a026f8633634f8dd3a310bff1117
+```
+
+Offline analysis completed at 2026-10-15T16:29:52.292016+00:00; outer command exit0, tool-observed wall7.058305973s. No retry, native or GPU execution. Actual child commands/results:
+
+```bash
+rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/resource_analysis_v2.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_pilot /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_terminal /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_workers1 /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_workers2 /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_workers4 /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_fault /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_deadline --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/resource_analysis_v7.json
+```
+{"freeze": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a", "kind": "command_complete", "name": "resource", "output_sha256": "10430e047de45dfc9af26f155df6608768c777d10f24bc4ec24085fd58a59990", "returncode": 0, "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "stdout_sha256": "3b9ffb4268ce574492f935fd28d453aefdbdac046cfccab6393931e268fefb27", "utc": "2026-10-15T16:29:48.901049+00:00", "wall_sec": 2.794729466084391}
+
+```bash
+rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reset_analysis_v7.py --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a --implementation-checks /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/implementation_checks_v7.json --implementation-checks-sha256 5aa211fb00ffbd2170510f2f8f9c169cbb53bf52315fc4e70602b2857bee90a8 --native-root /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/native_v7 --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reset_summary_v7.json
+```
+{"freeze": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a", "kind": "command_complete", "name": "reset", "output_sha256": "c436b27fdb0879b171f2624803105105375ed8e568b28cce0af967d64efa1e39", "returncode": 0, "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "stdout_sha256": "8c356385034f49be4f5f616998c723b135e61b2a759cb88f5514b47bccb7e519", "utc": "2026-10-15T16:29:52.282542+00:00", "wall_sec": 3.3702655090019107}
+
+Resource output only freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`, mixedfreeze=false, seven summary_passed=true. It remains resource diagnostics, not a semantic audit. Reset output passed=true/errors=[] for16normalcells,7same-worker pairs,2cross-scene and91all-open pairs; no bitwise SLAM/DDS or dynamic-cache probe claim. Fair first2open101 rates are32/537.5289088496938=.05953168187452403/s,64/552.606865955051=.11581470289803773/s,128/636.9173088907264=.2009680035590939/s; denominators omit final reap tail. No capacity claim for300step moving policies. Deadline benchmark records300validAPI/2279.4054388399236wallseconds and is KEEP diagnostic scope. All future policy training/72h budgets and2D implementation remain unapproved.
+
+`ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/resource_analysis_v7.json` SHA256 `10430e047de45dfc9af26f155df6608768c777d10f24bc4ec24085fd58a59990`.
+
+`ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reset_summary_v7.json` SHA256 `c436b27fdb0879b171f2624803105105375ed8e568b28cce0af967d64efa1e39`.
+
+`ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/v7_analysis_execution.jsonl` SHA256 `ffc824859afc0ad1e8467f5b049c2601b11437bb6472d4b8a9475ed44a7e3294`.
+
+
+### P1C v7 canonical selected-evidence matrix replay
+
+Exact command (Git root):
+
+```bash
+rtk proxy /usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/audit_mr3_env_contact_phase_v3.py /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/native_v7/terminal /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/native_v7/workers1 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/native_v7/workers2 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/native_v7/workers4 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/native_v7/fault /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/native_v7/deadline --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/canonical_matrix_v7_contact_phase_v3_audit.json --matrix
+```
+
+Actual result: `{"GPU_calls": 0, "command": ["rtk", "proxy", "/usr/bin/python3", "-B", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/audit_mr3_env_contact_phase_v3.py", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/native_v7/terminal", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/native_v7/workers1", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/native_v7/workers2", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/native_v7/workers4", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/native_v7/fault", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/native_v7/deadline", "--freeze", "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a", "--output", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/canonical_matrix_v7_contact_phase_v3_audit.json", "--matrix"], "cwd": "/home/zhuyulab/ns3-workspace", "finished_at_utc": "2026-10-15T16:30:50.964256+00:00", "native_runs": 0, "outer_wall_sec": 9.804345235228539, "output_sha256": "988ac4a0c433a224e4fbdd692fc2f1e70016fd249bf885fcb0abe4911fca72a9", "returncode": 0, "schema": "mr3-p1c-v7-canonical-matrix-execution-v1", "stderr": "", "stdout": "{\"audit\": \"/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/canonical_matrix_v7_contact_phase_v3_audit.json\", \"errors\": [], \"passed\": true}\n"}`.
+
+
+### P1C v7 final evidence/source/PID integrity verification
+
+Exact command (Git root):
+
+```bash
+rtk proxy /usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/verify_mr3_p1c_v7_evidence.py --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a --binding /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/predeclared_execution_binding_v7.json --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/final_evidence_integrity_v7.json --extra-evidence /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/resource_analysis_v7.json --extra-evidence /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reset_summary_v7.json --extra-evidence /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/canonical_matrix_v7_contact_phase_v3_audit.json --extra-evidence /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/native_v7/final_native_inventory_review.json
+```
+
+Actual result: `{"GPU_calls": 0, "command": ["rtk", "proxy", "/usr/bin/python3", "-B", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/verify_mr3_p1c_v7_evidence.py", "--freeze", "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a", "--binding", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/predeclared_execution_binding_v7.json", "--output", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/final_evidence_integrity_v7.json", "--extra-evidence", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/resource_analysis_v7.json", "--extra-evidence", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reset_summary_v7.json", "--extra-evidence", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/canonical_matrix_v7_contact_phase_v3_audit.json", "--extra-evidence", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/native_v7/final_native_inventory_review.json"], "cwd": "/home/zhuyulab/ns3-workspace", "finished_at_utc": "2026-10-15T16:32:59.545858+00:00", "native_runs": 0, "outer_wall_sec": 4.886456280015409, "output_sha256": "6aa54899c1a95cf586f5bb95d4b5a0d890c215e387d96922bfc9f616d4363f96", "returncode": 1, "schema": "mr3-p1c-v7-final-integrity-execution-v1", "stderr": "", "stdout": "{\"errors\": [\"formal_audits: 'normal_native_shutdown_credit'\"], \"output\": \"/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/final_evidence_integrity_v7.json\", \"passed\": false}\n"}`.
+
+### MR3-P1C v7 closed deadline archive and final native inventory (offline only)
+
+Root confirmed deadline native/phase3/scalar closure before archiving. Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`, profile `dd7eeadca21f0924fe721515e8dd57ac979340df8b08885bc39d2595c8caf87b`, binding `09a9f2263385a1a9d4bae02676fc26f23d64a026f8633634f8dd3a310bff1117` remain unchanged and exact. Cwd `/home/zhuyulab/ns3-workspace`; exact executed archive command:
+
+```bash
+rtk proxy /usr/bin/python3 -B ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/archive_mr3_v7_closed.py deadline --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a
+```
+
+Actual exit0/stdout: `{"stage": "deadline", "passed_declared_audits": true, "returned_API": 300, "complete_episodes": 1, "original_files": 20, "selected_artifacts": 19, "manifest_sha256": "b03ff44c96c26dd73706d4c6372b0f4721bb483589859bc8a447dac3aac5e20d", "review_sha256": "2809fd287ce6d73ae9fb33c1cee123ca25d08250fa1380456e71bbfd744eb055"}`.
+
+Independent raw deadline checks PASS: release81420000000ns to381420000000ns is exactly300000000000ns, all300steps have dt=physical_dt=1s, first299 nonterminal/nontruncated and final timeout terminated=true/truncated=false. All300 KEEP888 commands are valid and accepted at exact2e9ns TTL;0rejections,0invalid penalties,900robotKEEPs,0nativegoal. The final-evaluator-map terminal exception remains explicit.18raw streams/rawseq PASS,18actual FINALIZED responses,38SDK starts=38actual clean0 exits,31serial SIGINT/clean barriers,server921288/stop932877clean0. Recorded benchmark wall2279.4054388399236s differs from outer wall.20originals→19selected and all raw/selected/decoded hashes match without overwrite.
+
+A new offline inventory helper `final_native_inventory_v7.py` (SHA `eb887148b1c67b462b62a64d39136900ee49730f42b38263fdfa19b49eefae06`) verifies all32top/leaf manifests, actual closure evidence and current /proc identities. Syntax compile and flake8(max100) PASS after line-format corrections; it is outside the native source binding. It does not execute the root final verifier or consume matrix output. Exact executed command:
+
+```bash
+rtk proxy /usr/bin/python3 -B ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/final_native_inventory_v7.py --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a --output ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/native_v7/final_native_inventory_review.json
+```
+
+Actual exit0/stdout: `{"passed_inventory_checks": true, "returned_API": 594, "sampled_physical_time_ns": 592020000000, "complete_episodes": 23, "incomplete_killed_prefixes": 1, "submitted_commands": 593, "accepted_commands": 592, "rejected_commands": 1, "manifest_count": 32, "unique_original_files_verified": 420, "unique_selected_original_artifacts_verified": 397, "owned_pid_start_ticks_count": 1018, "output_sha256": "900a2562c30a2a1ef2a117429618876c3e973797bf1e72730129dd09cc9641de"}`.
+
+Final scope: eight stages,594returnedAPI and592.02sampled physical seconds (includes4-step killedprefix),23normal complete episodes plus1incomplete prefix.593submitted commands,592accepted and1retained navigation_changed_since_observation rejection; no command-time-invalid rejection.420unique original files/397selected gzip+identity artifacts verified (59128314/10514174bytes, excludes derivative audit/review bytes). Normal episodes provide874actual SDK starts/clean0 exits,713serial barriers,414FINALIZED responses and414raw-stream instances; including prefix,actual SDK totals911starts/878clean0 lines, with no clean-closure credit for the killed prefix.1018real saved(pid,start_ticks) identities have no current exact survivor/zombie;4bare unit-scoped PIDs without saved start_ticks are currently absent and never assigned fake ticks. No native/GPU work or process control was performed. This inventory establishes evidence consistency/closure within the declared probe scope, not user acceptance, policy training,SDKbug fix,95%mapping or network credit.
+
+### MR3-P1C v7 deadline positive command-time review and offline integrity v2 — 2026-10-15T16:41:58.219609+00:00
+
+Freeze `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`; closed open101 deadline epoch `mr3_p1c_v7_deadline_w0_e1_51e1d929`. No native/ROS/GPU process or policy training was started by these read-only checks. Existing runtime, execution binding, manifest files, auditors and old results remain unchanged.
+
+Exact positive-review command (cwd `/home/zhuyulab/ns3-workspace`):
+
+```bash
+rtk proxy /usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/review_deadline_v7_command_time.py ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_deadline/worker0/episode001_open_101 --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a --phase-audit ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/deadline_v7_contact_phase_v3_benchmark_audit.json --scalar-audit ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/deadline_v7_scalar_v3_audit.json --output ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/deadline_v7_command_time_review.json
+```
+
+The review exited0: 300 legal accepted commands, 900 kept robot receipts, no goal/rejection/invalid penalty/newly rewarded cells; start81.42/end381.42 =300000000000ns. `timeout` is terminated=true/truncated=false; failure=-20 only at sequence300, time=-1. Commands174/175 at254.42/255.42 expire256.42/257.42: literal float TTL2.0000000000000284, separately rounded endpoint TTL2000000000ns, all three kept and invalid0. This is scalar/receipt/physical-time evidence only; no spatial truth replay, independent18-contact timing or additional native credit.
+
+Positive output `report/assets/20261015_mr3_p1c/deadline_v7_command_time_review.json` SHA256 `4533434ed76e7c3b96e106b93fd00845c1bd3bd65c12aaa2c997eb0b0d1057de`; script SHA256 `6153237d08f42485937ef45bb8495f93a1493a586f0674562f519c54acdfffa3`. Six pure counterexample tests PASS, flake8 PASS; checks SHA256 `3268593f38103c0bfc3cb7e2c12576c97fe96244adc12861f4b40b422d9b34dc`. Exact test command:
+
+```bash
+rtk proxy /usr/bin/python3 -B -m unittest discover -s ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c -p test_review_deadline_v7_command_time.py -v
+```
+
+The first v7 final verifier's FAIL is retained byte-for-byte, SHA256 `6aa54899c1a95cf586f5bb95d4b5a0d890c215e387d96922bfc9f616d4363f96`. Its sole error was the offline verifier treating two optional prefix-manifest credit fields as mandatory. Version2 keeps mandatory complete_episode_credit=false; present optional fields must befalse, absent fields are explicitly unavailable. It additionally checks actual SIGKILL/forced cleanup and absence of raw/selected normal closure JSON or gzip files. It does not modify manifests or weaken native/contact/protocol/reward gates. Thirty-one pure isolated tests and flake8 PASS; independent static review found no remaining blocker.
+
+Exact v2 verification command (same cwd):
+
+```bash
+rtk proxy /usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/verify_mr3_p1c_v7_evidence_v2.py --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a --binding /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/predeclared_execution_binding_v7.json --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/final_evidence_integrity_v7_v2.json
+```
+
+Actual result: exit `0`, wall `5.488358119` seconds, passed `True`. New output SHA256 `d102c544d82cd0448ecc797c5c5b1203b77fe401e16efe169e2258085ba015c5`; verifier SHA256 `7f4ab7c284137aba93a7a7765eb84edcc9f6129e1c90fb7c40d89922fda30046`. Execution receipt `report/assets/20261015_mr3_p1c/final_evidence_integrity_v7_v2_execution.json` SHA256 `dd1ea3ae0036040487dcafe08b5195b675f324c15122e52fcfef17eef3c6f2cf`. The original verifier/test/checks/FAIL and all v6 failures remain preserved. This is final evidence integrity and saved-process cleanup verification, not new native execution or automatic user acceptance.
+
+Offline v2 method-correction checks `report/assets/20261015_mr3_p1c/verify_mr3_p1c_v7_evidence_v2_checks.json` SHA256 `aee265ff03e277e70d8f47a56b0d03f65f778ab29af4f69ec8c44fefb55d62c1` retain the four original v1 artifact hashes and original failed verdict. Exact pure-test and style commands (no native):
+
+```bash
+rtk proxy /usr/bin/python3 -B -m unittest discover -s /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c -p test_verify_mr3_p1c_v7_evidence_v2.py -v
+rtk proxy /usr/bin/python3 -m flake8 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/verify_mr3_p1c_v7_evidence_v2.py /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/test_verify_mr3_p1c_v7_evidence_v2.py --max-line-length=99
+```
+
+
+### 2026-10-16：MR3-P1C W7最终文档与交付静态核查
+
+- 本轮唯一最终原生冻结仍为`cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`；最终v2离线证据核查PASS、首次schema假设FAIL并列保留，详见紧前记录。未新增native/GPU/训练。P1C实现与验证完成、待用户验收，P2A未开始。
+- 更新18份活动Markdown及归档索引，包含实际吞吐/资源/reset、条件预算和未实施二维独立提案。W7规范任务/环境合同仍按冻结Git blob审计，当前状态文字不反向改变运行原件。
+- 静态命令（Git root）：`rtk proxy /usr/bin/python3 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/check_p1c_docs_v7.py --output ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/final_document_checks_v7.json`，exit0；18文档、224链接、31 bash/sh块语法PASS。随后仅校正主报告启动/结束日期及GPU实际v2计划链接，以同一命令改输出为`final_document_checks_v7_v2.json`再次exit0，18/224/31 PASS；原静态结果保留。此检查不执行文档中的命令。
+- 独立短Python断言：54项`implementation_checks_v7.json.source_sha256`当前源码均与W7冻结字节一致；原始/选件六组矩阵仅替换六个绝对目录根后逐字段完全相等；归档索引11项active artifacts的SHA匹配；6个历史原生冻结条目保留。launch_commands phase3命令的`--freeze/--output`与固定auditor AST定义匹配。
+- 活动入口检索`P1C.{0,18}(进行中|待做|待验证)|尚待验证|源码候选|P1C in progress`无匹配（rg exit1）；历史报告段落仍保留原时态。`rtk git diff --check`exit0。
+- `rtk git add -n .`已在Git root执行exit0；新文件全部属于有意保留的P1C canonical证据/离线审计与测试，无build/install、bag、checkpoint或core。原route backup两个ref及仅main/backup本地分支库存均未变。
+- 最终静态回执SHA：`eb5169ada4e9341944fe52dae1db935ffe27c1e0ee274e799245db308118d710`。
+- 随后用`rtk proxy git add -n .`核对原生Git完整dry-run输出：exit0、522条add（20份已跟踪文档/日志/索引修改与502份新canonical证据文件）；原生staging当时为空。独立只读交付review确认54源SHA和14条索引SHA/size、所有状态/数值/限制一致，无具体阻断。

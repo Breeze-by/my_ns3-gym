@@ -1,0 +1,154 @@
+{
+  "schema": "mr3-reward-fault-completed-subset-audit-v3",
+  "scope": "only three complete eight-step cells; no whole-fault reward audit, spatial truth replay or independent 18-contact timing proof",
+  "freeze": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a",
+  "entry_point": "reward_gate_audit_v3.audit_episode",
+  "helper_sha256": "895395075a881c6d74b809100e198be52a3c05a6710d24d873020b87223ff665",
+  "driver_sha256": "ccaf95b736df86ef355e81bd8499d06c6437fae2af7a9606025ca1f2a4588fae",
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reward_gate_audit_v3_fault_subset.py",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_fault",
+    "--freeze",
+    "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a",
+    "--main-prefix-audit",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/fault_w0_e1_v7_contact_phase_v3_audit.json",
+    "--output",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/fault_v7_scalar_v3_audit.json"
+  ],
+  "episodes": [
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_fault/worker0/episode002_open_101",
+      "epoch": "mr3_p1c_v7_fault_w0_e2_defc1a57",
+      "scene": "open",
+      "seed": 101,
+      "pid_identity": {
+        "pid": 916776,
+        "parent": 912928,
+        "group": 916776,
+        "session": 916776,
+        "start_ticks": 382456180,
+        "state": "R"
+      },
+      "initial_cells": 2000,
+      "newly_rewarded_cells": 23981,
+      "transitions": 8,
+      "terminal_short_steps": 0,
+      "terminal_reused_steps": 0,
+      "rejected_action_bindings": [],
+      "repeated_map_payload_steps": 0,
+      "reward_term_sums": {
+        "collision": 0.0,
+        "coverage": 5.473614534830641,
+        "failure": 0.0,
+        "invalid": 0.0,
+        "success": 0.0,
+        "switch": 0.0,
+        "time": -0.02666666666666667
+      },
+      "physical_quantum_counts": {
+        "0": 1,
+        "1": 3,
+        "20": 401
+      },
+      "evaluation_reason": "training_external_truncation",
+      "errors": []
+    },
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_fault/worker1/episode001_open_101",
+      "epoch": "mr3_p1c_v7_fault_w1_e1_38066ac0",
+      "scene": "open",
+      "seed": 101,
+      "pid_identity": {
+        "pid": 913052,
+        "parent": 912928,
+        "group": 913052,
+        "session": 913052,
+        "start_ticks": 382439424,
+        "state": "R"
+      },
+      "initial_cells": 2021,
+      "newly_rewarded_cells": 23515,
+      "transitions": 8,
+      "terminal_short_steps": 0,
+      "terminal_reused_steps": 0,
+      "rejected_action_bindings": [],
+      "repeated_map_payload_steps": 0,
+      "reward_term_sums": {
+        "collision": 0.0,
+        "coverage": 5.367250981466265,
+        "failure": 0.0,
+        "invalid": 0.0,
+        "success": 0.0,
+        "switch": 0.0,
+        "time": -0.02666666666666667
+      },
+      "physical_quantum_counts": {
+        "0": 1,
+        "1": 8,
+        "20": 401
+      },
+      "evaluation_reason": "training_external_truncation",
+      "errors": []
+    },
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_fault/worker1/episode002_open_101",
+      "epoch": "mr3_p1c_v7_fault_w1_e2_a96f5c37",
+      "scene": "open",
+      "seed": 101,
+      "pid_identity": {
+        "pid": 917729,
+        "parent": 912928,
+        "group": 917729,
+        "session": 917729,
+        "start_ticks": 382461191,
+        "state": "R"
+      },
+      "initial_cells": 1994,
+      "newly_rewarded_cells": 24865,
+      "transitions": 8,
+      "terminal_short_steps": 0,
+      "terminal_reused_steps": 0,
+      "rejected_action_bindings": [],
+      "repeated_map_payload_steps": 0,
+      "reward_term_sums": {
+        "collision": 0.0,
+        "coverage": 5.675385739066922,
+        "failure": 0.0,
+        "invalid": 0.0,
+        "success": 0.0,
+        "switch": 0.0,
+        "time": -0.02666666666666667
+      },
+      "physical_quantum_counts": {
+        "0": 1,
+        "1": 8,
+        "20": 401
+      },
+      "evaluation_reason": "training_external_truncation",
+      "errors": []
+    }
+  ],
+  "excluded_killed_prefix": [
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_fault/worker0/episode001_open_101",
+      "epoch": "mr3_p1c_v7_fault_w0_e1_e8445d01",
+      "primary_prefix_transition_count": 4,
+      "primary_prefix_audit_sources": [
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/fault_w0_e1_v7_contact_phase_v3_audit.json",
+          "sha256": "e9919344b9b175e8726e8f12aba3d303d92292343dd631d6932be94cec60d834",
+          "schema": "mr3-p1c-contact-phase-audit-v3"
+        }
+      ],
+      "complete_episode_credit": false,
+      "aux_complete_reward_contact_clean_closure_credit": false
+    }
+  ],
+  "completed_subset_transitions": 24,
+  "reset_epoch_and_pid_unique": true,
+  "completed_subset_scalar_checks_passed": true,
+  "whole_fault_benchmark_reward_audit_performed": false,
+  "errors": []
+}

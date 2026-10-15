@@ -1,0 +1,2254 @@
+{
+  "comparison": {
+    "eligible": false,
+    "reason": "not the declared normal two-open101 workload"
+  },
+  "complete_episode_count": 3,
+  "deadline_probe": false,
+  "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_fault",
+  "effective_transition_per_wall_sec": 0.06564485042116792,
+  "episodes": [
+    {
+      "complete_episode_credit": false,
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_fault/worker0/episode001_open_101",
+      "epoch": "mr3_p1c_v7_fault_w0_e1_e8445d01",
+      "errors": [],
+      "evidence_sha256": {
+        "adapter.jsonl": "ba641a4030b843b4a55e89db321e58564273d72e36c8e7441c1c2a3897111031",
+        "metadata.json": "60fe29e6bce4a8782fe89f576faa9e14e33d47b38d9802c70fbb89accafefd73",
+        "physics.jsonl": "1e7f2d1b76a8ecdacc5a740841ff82934b892bad068bc42ce6a5a8f962cfabf4",
+        "supervisor_metadata.json": "c15a96c82cb79c559a9df8376f4bf68dd9783f2e9922856e84d3b266580686b0",
+        "supervisor_shutdown.json": "f95308060dc6aea2382b250dff90c7f26aabd849723cbb4c4d5f14251965f439",
+        "transitions.jsonl": "fb42bf9f1458bd4663acfb94bc12652e7eb37ceb1c4df83bcbce99cf4a9645c1"
+      },
+      "expected_infrastructure_fault": true,
+      "freeze": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a",
+      "initial_inputs_ready": {
+        "ack_map_payload_sha256": "bfeb32bc3469dd7fc37fa17d8eec24d52199434594bd4b3f88393fd77de02296",
+        "ack_stamp": 73.98,
+        "ack_state_sequence": 739,
+        "first_snapshot_state_sequence": 745,
+        "initial_pause_stamp": 74.559,
+        "protocol": "delivered_inputs_before_pause-v1",
+        "proven": true,
+        "required": true,
+        "scope": "input readiness before pause; first snapshot may use newer delivery"
+      },
+      "ordered_shutdown": {
+        "expected_killed_worker": true,
+        "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+        "proven": false,
+        "required": true
+      },
+      "passed": true,
+      "physics": {
+        "first_time_ns": 74559000000,
+        "last_time_ns": 78560000000,
+        "receipt_count": 202,
+        "total_physical_ticks": 4001
+      },
+      "processes": {
+        "forced_cleanup": true,
+        "no_live_or_zombie_leftovers": true,
+        "owned_pid_identities": [
+          [
+            913051,
+            382439424
+          ],
+          [
+            913190,
+            382439576
+          ],
+          [
+            913216,
+            382439737
+          ],
+          [
+            913218,
+            382439738
+          ],
+          [
+            913220,
+            382439738
+          ],
+          [
+            913222,
+            382439738
+          ],
+          [
+            913224,
+            382439738
+          ],
+          [
+            913226,
+            382439738
+          ],
+          [
+            913228,
+            382439738
+          ],
+          [
+            914127,
+            382440118
+          ],
+          [
+            914129,
+            382440119
+          ],
+          [
+            914131,
+            382440119
+          ],
+          [
+            914288,
+            382440461
+          ],
+          [
+            914290,
+            382440461
+          ],
+          [
+            914292,
+            382440461
+          ],
+          [
+            914479,
+            382440891
+          ],
+          [
+            914744,
+            382442035
+          ],
+          [
+            914746,
+            382442035
+          ],
+          [
+            914748,
+            382442035
+          ],
+          [
+            914750,
+            382442035
+          ],
+          [
+            914752,
+            382442035
+          ],
+          [
+            914754,
+            382442036
+          ],
+          [
+            914756,
+            382442037
+          ],
+          [
+            915408,
+            382446544
+          ],
+          [
+            915410,
+            382446545
+          ],
+          [
+            915412,
+            382446545
+          ],
+          [
+            915414,
+            382446545
+          ],
+          [
+            915416,
+            382446545
+          ],
+          [
+            915418,
+            382446546
+          ],
+          [
+            915420,
+            382446546
+          ],
+          [
+            915877,
+            382451041
+          ],
+          [
+            915879,
+            382451041
+          ],
+          [
+            915881,
+            382451041
+          ],
+          [
+            915883,
+            382451041
+          ],
+          [
+            915885,
+            382451042
+          ],
+          [
+            915887,
+            382451042
+          ],
+          [
+            915889,
+            382451042
+          ],
+          [
+            916012,
+            382451732
+          ],
+          [
+            916014,
+            382451732
+          ],
+          [
+            916151,
+            382452187
+          ],
+          [
+            916157,
+            382452227
+          ]
+        ],
+        "scope": "saved PID/start identities and cleanup receipt; no live /proc inference",
+        "worker_identity": {
+          "group": 913051,
+          "parent": 912928,
+          "pid": 913051,
+          "session": 913051,
+          "start_ticks": 382439424,
+          "state": "R"
+        }
+      },
+      "protocol": {
+        "accepted_action_count": 4,
+        "cancel_count": 0,
+        "command_time": {
+          "accepted_commands": 4,
+          "bindings": [
+            {
+              "action": 201,
+              "command_id": 1,
+              "created_at": 74.56,
+              "created_time_ns": 74560000000,
+              "epoch": "mr3_p1c_v7_fault_w0_e1_e8445d01",
+              "expires_at": 76.56,
+              "expires_time_ns": 76560000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 1,
+              "receipt_kind": "action",
+              "receipt_stamp": 74.56,
+              "receipt_time_ns": 74560000000,
+              "rejection_reason": null,
+              "step_sequence": 1,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 2,
+              "created_at": 75.56,
+              "created_time_ns": 75560000000,
+              "epoch": "mr3_p1c_v7_fault_w0_e1_e8445d01",
+              "expires_at": 77.56,
+              "expires_time_ns": 77560000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 2,
+              "receipt_kind": "action",
+              "receipt_stamp": 75.56,
+              "receipt_time_ns": 75560000000,
+              "rejection_reason": null,
+              "step_sequence": 2,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 3,
+              "created_at": 76.56,
+              "created_time_ns": 76560000000,
+              "epoch": "mr3_p1c_v7_fault_w0_e1_e8445d01",
+              "expires_at": 78.56,
+              "expires_time_ns": 78560000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 3,
+              "receipt_kind": "action",
+              "receipt_stamp": 76.56,
+              "receipt_time_ns": 76560000000,
+              "rejection_reason": null,
+              "step_sequence": 3,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 4,
+              "created_at": 77.56,
+              "created_time_ns": 77560000000,
+              "epoch": "mr3_p1c_v7_fault_w0_e1_e8445d01",
+              "expires_at": 79.56,
+              "expires_time_ns": 79560000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 4,
+              "receipt_kind": "action",
+              "receipt_stamp": 77.56,
+              "receipt_time_ns": 77560000000,
+              "rejection_reason": null,
+              "step_sequence": 4,
+              "ttl_ns": 2000000000,
+              "valid": true
+            }
+          ],
+          "commands_checked": 4,
+          "complete_episode_credit": false,
+          "errors": [],
+          "excluded_no_action_terminal_steps": [],
+          "method": "mr3-command-time-integer-endpoints-v1",
+          "other_rejection_reasons_revalidated": false,
+          "passed": true,
+          "rejected_commands": 0,
+          "reward_contact_mask_ownership_closure_revalidated": false,
+          "scope": "declared incomplete command prefix only"
+        },
+        "confirmed_cancellation_count": 0,
+        "goal_count": 3,
+        "keep_robot_command_count": 9,
+        "native_terminal_count": 2,
+        "rejected_action_count": 0,
+        "scope": "goal payload audit, not an action-server network trace"
+      },
+      "scene": "open",
+      "schema": "mr3-p1c-episode-audit-v1",
+      "scope": "scripted sampling/reset; no RL, throughput or 95% success inference",
+      "seed": 101,
+      "supervisor_shutdown_digest": "4b6fa1bf470e938adf790d671ad6df6d7023b80bb23aad7633b238b03b53ae88",
+      "terminal_probe": false,
+      "transitions": {
+        "complete": false,
+        "final_action_submitted": true,
+        "final_dt": 1.0,
+        "final_physical_dt": 1.0,
+        "final_terminal_reused": false,
+        "release_time_ns": 74560000000,
+        "reward_sum": 3.0390267506619186,
+        "sampled_physical_time_sec": 4.0,
+        "submitted_action_count": 4,
+        "terminal_map_scope": "frozen evaluator map; later actor map is diagnostic only",
+        "terminal_map_sha_exception_count": 0,
+        "transition_count": 4,
+        "zero_duration_terminal_count": 0
+      }
+    },
+    {
+      "closure": {
+        "launch_start_count": 38,
+        "native_shutdown_proof": {
+          "gzserver": {
+            "clean_exits": [
+              {
+                "pid": 916830,
+                "suffix": "4"
+              }
+            ],
+            "identity_matched": true,
+            "started": [
+              {
+                "pid": 916830,
+                "suffix": "4"
+              }
+            ]
+          },
+          "mr3_gazebo_native_stop": {
+            "clean_exits": [
+              {
+                "pid": 920253,
+                "suffix": "38"
+              }
+            ],
+            "identity_matched": true,
+            "started": [
+              {
+                "pid": 920253,
+                "suffix": "38"
+              }
+            ]
+          }
+        },
+        "navigation_closed": true,
+        "navigation_failure": false,
+        "other_launch_children_require_proc_identity": true,
+        "safety_failures": [],
+        "unsampled_stop_cli_alternative_evidence": []
+      },
+      "complete_episode_credit": true,
+      "contacts": {
+        "collision_events": 0,
+        "contact_phase_proof": {
+          "gap_endpoints_available": false,
+          "gap_endpoints_scope": "not saved in the original evidence; unavailable",
+          "lifetime_gap_diagnostics": {
+            "tb1/base": {
+              "max_receipt_gap_sec": 0.0800000000000125,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb1/caster_back_left": {
+              "max_receipt_gap_sec": 0.0800000000000125,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb1/caster_back_right": {
+              "max_receipt_gap_sec": 0.0800000000000125,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb1/lidar": {
+              "max_receipt_gap_sec": 0.0800000000000125,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb1/wheel_left": {
+              "max_receipt_gap_sec": 0.0800000000000125,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb1/wheel_right": {
+              "max_receipt_gap_sec": 0.0800000000000125,
+              "max_source_gap_sec": 0.05299999999999727
+            },
+            "tb2/base": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb2/caster_back_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05500000000000682
+            },
+            "tb2/caster_back_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.055999999999997385
+            },
+            "tb2/lidar": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb2/wheel_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb2/wheel_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05500000000000682
+            },
+            "tb3/base": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb3/caster_back_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05700000000000216
+            },
+            "tb3/caster_back_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05700000000000216
+            },
+            "tb3/lidar": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb3/wheel_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05499999999999261
+            },
+            "tb3/wheel_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05500000000000682
+            }
+          },
+          "method": "mr3-contact-task-phase-and-command-time-v3",
+          "paused_release": {
+            "actual_seq0_binding": true,
+            "actual_task_start": true,
+            "context_evidence_sha256": {
+              "adapter.jsonl": "38adaa8aa38c375217f76f3187ec3750693e8cde377550eae31903c5b29c612f",
+              "metadata.json": "8883798ad612daacd4e419e0e163b4f09692507bb07442ec32946de4a780f9c7",
+              "physics.jsonl": "988e1798a7b17220cbf6ec98df00e40d6da5ece8fce38f08d2352a820176181c",
+              "transitions.jsonl": "7ec21d1feca4eb57719cc12fa7b5a5b1690bb6ee4dd85337449bb14b38cdb84d"
+            },
+            "epoch": "mr3_p1c_v7_fault_w0_e2_defc1a57",
+            "independent_raw_reward_ready_payload_available": false,
+            "initial_pause_time_ns": 69057000000,
+            "no_positive_physics_window": "worker waits for ready/seq0 while physics is paused",
+            "ready_wait_proof": "pinned worker/evaluator causal order plus saved seq0 response",
+            "release_time_ns": 69060000000
+          },
+          "task_gap_bound_from_frozen_latch_invariant": true,
+          "task_gap_limit_sec": 0.5,
+          "task_gap_numeric_maxima": null
+        },
+        "continuous_freshness_passed": true,
+        "errors": [],
+        "passed": true,
+        "raw_sequence_audit_passed": true,
+        "raw_stream_count": 18,
+        "scope": "frozen started/latch invariant and endpoint ages; no raw timing replay",
+        "task_success": false,
+        "termination_reason": "training_external_truncation",
+        "zero_contact": true
+      },
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_fault/worker0/episode002_open_101",
+      "epoch": "mr3_p1c_v7_fault_w0_e2_defc1a57",
+      "errors": [],
+      "evidence_sha256": {
+        "adapter.jsonl": "38adaa8aa38c375217f76f3187ec3750693e8cde377550eae31903c5b29c612f",
+        "launch.log": "00872d926ed8cf166d8ef14c2045de5f24301e4f6bd861ccafd14f955acd8ea3",
+        "metadata.json": "8883798ad612daacd4e419e0e163b4f09692507bb07442ec32946de4a780f9c7",
+        "mr3_p1c_v7_fault_w0_e2_defc1a57.json": "2098bd9a9c4788a9fa15184df7a758e0debe51fede9869c4768a5518f0ef1c10",
+        "native_stop.json": "d8d56d25db88466abc6e30c6da5cc2cc99a010a62b38ea790eb49714b33b66d9",
+        "nav2_shutdown.json": "424a9577e7cad5913cb1daf856463c5738c98f431ae1ebd696e3aa06ff176466",
+        "physics.jsonl": "988e1798a7b17220cbf6ec98df00e40d6da5ece8fce38f08d2352a820176181c",
+        "summary.json": "b5ade78692a35cefacb0096f72d23bbf8f388cafe64d90403b48d0d5def8048f",
+        "supervisor_metadata.json": "84acfffa66e223acd3406a7f1b7f73e9cdfd41ed2eaeb812b8de57500fa84b8a",
+        "supervisor_shutdown.json": "a691800e54ea5128df2c6226735e8c1f72a0e28d5053e137706a6ba4efe4df01",
+        "transitions.jsonl": "7ec21d1feca4eb57719cc12fa7b5a5b1690bb6ee4dd85337449bb14b38cdb84d"
+      },
+      "expected_infrastructure_fault": false,
+      "freeze": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a",
+      "initial_inputs_ready": {
+        "ack_map_payload_sha256": "fbd7a3dce15acea1a1889111e9a9df100cc20ae3b42ac57e05ae197d0a04c1a9",
+        "ack_stamp": 68.28,
+        "ack_state_sequence": 682,
+        "first_snapshot_state_sequence": 690,
+        "initial_pause_stamp": 69.057,
+        "protocol": "delivered_inputs_before_pause-v1",
+        "proven": true,
+        "required": true,
+        "scope": "input readiness before pause; first snapshot may use newer delivery"
+      },
+      "ordered_shutdown": {
+        "finalize_ack_sequence": 8,
+        "launch": {
+          "actual_process_starts": 38,
+          "all_actual_clean_exits": 38,
+          "evaluator_exit_wall_monotonic_ns": 3824767937134114,
+          "proven": true,
+          "scope": "actual SDK identities and clean exits; no SDK internal-race claim",
+          "serial_sigint_count": 31
+        },
+        "nav2": {
+          "completed_wall_monotonic_ns": 3824767347414031,
+          "finalized_state_responses": 18,
+          "paused_time_ns": 77080000000,
+          "proven": true,
+          "robot_shutdown_responses": 3,
+          "scope": "successful lifecycle replies and actual GetState finalized receipts"
+        },
+        "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+        "proven": true,
+        "required": true
+      },
+      "passed": true,
+      "physics": {
+        "first_time_ns": 69057000000,
+        "last_time_ns": 77080000000,
+        "receipt_count": 405,
+        "total_physical_ticks": 8023
+      },
+      "processes": {
+        "forced_cleanup": false,
+        "no_live_or_zombie_leftovers": true,
+        "owned_pid_identities": [
+          [
+            916776,
+            382456180
+          ],
+          [
+            916789,
+            382456221
+          ],
+          [
+            916819,
+            382456329
+          ],
+          [
+            916824,
+            382456487
+          ],
+          [
+            916826,
+            382456488
+          ],
+          [
+            916828,
+            382456488
+          ],
+          [
+            916830,
+            382456488
+          ],
+          [
+            916832,
+            382456488
+          ],
+          [
+            916834,
+            382456488
+          ],
+          [
+            916836,
+            382456488
+          ],
+          [
+            917265,
+            382456855
+          ],
+          [
+            917267,
+            382456855
+          ],
+          [
+            917269,
+            382456855
+          ],
+          [
+            917331,
+            382457089
+          ],
+          [
+            917333,
+            382457090
+          ],
+          [
+            917335,
+            382457090
+          ],
+          [
+            917400,
+            382457417
+          ],
+          [
+            917460,
+            382458567
+          ],
+          [
+            917462,
+            382458567
+          ],
+          [
+            917464,
+            382458568
+          ],
+          [
+            917466,
+            382458568
+          ],
+          [
+            917468,
+            382458568
+          ],
+          [
+            917470,
+            382458568
+          ],
+          [
+            917472,
+            382458570
+          ],
+          [
+            918392,
+            382463064
+          ],
+          [
+            918394,
+            382463065
+          ],
+          [
+            918396,
+            382463065
+          ],
+          [
+            918398,
+            382463065
+          ],
+          [
+            918400,
+            382463065
+          ],
+          [
+            918402,
+            382463065
+          ],
+          [
+            918404,
+            382463065
+          ],
+          [
+            918790,
+            382467556
+          ],
+          [
+            918792,
+            382467556
+          ],
+          [
+            918794,
+            382467556
+          ],
+          [
+            918796,
+            382467556
+          ],
+          [
+            918798,
+            382467556
+          ],
+          [
+            918800,
+            382467556
+          ],
+          [
+            918802,
+            382467557
+          ],
+          [
+            919000,
+            382468260
+          ],
+          [
+            919002,
+            382468260
+          ],
+          [
+            919055,
+            382468682
+          ],
+          [
+            919056,
+            382468725
+          ],
+          [
+            920253,
+            382477400
+          ]
+        ],
+        "scope": "saved PID/start identities and cleanup receipt; no live /proc inference",
+        "worker_identity": {
+          "group": 916776,
+          "parent": 912928,
+          "pid": 916776,
+          "session": 916776,
+          "start_ticks": 382456180,
+          "state": "R"
+        }
+      },
+      "protocol": {
+        "accepted_action_count": 8,
+        "cancel_count": 0,
+        "command_time": {
+          "accepted_commands": 8,
+          "bindings": [
+            {
+              "action": 201,
+              "command_id": 1,
+              "created_at": 69.06,
+              "created_time_ns": 69060000000,
+              "epoch": "mr3_p1c_v7_fault_w0_e2_defc1a57",
+              "expires_at": 71.06,
+              "expires_time_ns": 71060000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 1,
+              "receipt_kind": "action",
+              "receipt_stamp": 69.06,
+              "receipt_time_ns": 69060000000,
+              "rejection_reason": null,
+              "step_sequence": 1,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 2,
+              "created_at": 70.06,
+              "created_time_ns": 70060000000,
+              "epoch": "mr3_p1c_v7_fault_w0_e2_defc1a57",
+              "expires_at": 72.06,
+              "expires_time_ns": 72060000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 2,
+              "receipt_kind": "action",
+              "receipt_stamp": 70.06,
+              "receipt_time_ns": 70060000000,
+              "rejection_reason": null,
+              "step_sequence": 2,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 3,
+              "created_at": 71.06,
+              "created_time_ns": 71060000000,
+              "epoch": "mr3_p1c_v7_fault_w0_e2_defc1a57",
+              "expires_at": 73.06,
+              "expires_time_ns": 73060000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 3,
+              "receipt_kind": "action",
+              "receipt_stamp": 71.06,
+              "receipt_time_ns": 71060000000,
+              "rejection_reason": null,
+              "step_sequence": 3,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 4,
+              "created_at": 72.06,
+              "created_time_ns": 72060000000,
+              "epoch": "mr3_p1c_v7_fault_w0_e2_defc1a57",
+              "expires_at": 74.06,
+              "expires_time_ns": 74060000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 4,
+              "receipt_kind": "action",
+              "receipt_stamp": 72.06,
+              "receipt_time_ns": 72060000000,
+              "rejection_reason": null,
+              "step_sequence": 4,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 5,
+              "created_at": 73.06,
+              "created_time_ns": 73060000000,
+              "epoch": "mr3_p1c_v7_fault_w0_e2_defc1a57",
+              "expires_at": 75.06,
+              "expires_time_ns": 75060000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 5,
+              "receipt_kind": "action",
+              "receipt_stamp": 73.06,
+              "receipt_time_ns": 73060000000,
+              "rejection_reason": null,
+              "step_sequence": 5,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 6,
+              "created_at": 74.06,
+              "created_time_ns": 74060000000,
+              "epoch": "mr3_p1c_v7_fault_w0_e2_defc1a57",
+              "expires_at": 76.06,
+              "expires_time_ns": 76060000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 6,
+              "receipt_kind": "action",
+              "receipt_stamp": 74.06,
+              "receipt_time_ns": 74060000000,
+              "rejection_reason": null,
+              "step_sequence": 6,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 7,
+              "created_at": 75.06,
+              "created_time_ns": 75060000000,
+              "epoch": "mr3_p1c_v7_fault_w0_e2_defc1a57",
+              "expires_at": 77.06,
+              "expires_time_ns": 77060000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 7,
+              "receipt_kind": "action",
+              "receipt_stamp": 75.06,
+              "receipt_time_ns": 75060000000,
+              "rejection_reason": null,
+              "step_sequence": 7,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 999,
+              "command_id": 8,
+              "created_at": 76.06,
+              "created_time_ns": 76060000000,
+              "epoch": "mr3_p1c_v7_fault_w0_e2_defc1a57",
+              "expires_at": 78.06,
+              "expires_time_ns": 78060000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 8,
+              "receipt_kind": "action",
+              "receipt_stamp": 76.06,
+              "receipt_time_ns": 76060000000,
+              "rejection_reason": null,
+              "step_sequence": 8,
+              "ttl_ns": 2000000000,
+              "valid": true
+            }
+          ],
+          "commands_checked": 8,
+          "complete_episode_credit": false,
+          "errors": [],
+          "excluded_no_action_terminal_steps": [],
+          "method": "mr3-command-time-integer-endpoints-v1",
+          "other_rejection_reasons_revalidated": false,
+          "passed": true,
+          "rejected_commands": 0,
+          "reward_contact_mask_ownership_closure_revalidated": false,
+          "scope": "submitted command validity and receipt reason only"
+        },
+        "confirmed_cancellation_count": 0,
+        "goal_count": 3,
+        "keep_robot_command_count": 18,
+        "native_terminal_count": 3,
+        "rejected_action_count": 0,
+        "scope": "goal payload audit, not an action-server network trace"
+      },
+      "scene": "open",
+      "schema": "mr3-p1c-episode-audit-v1",
+      "scope": "scripted sampling/reset; no RL, throughput or 95% success inference",
+      "seed": 101,
+      "supervisor_shutdown_digest": "9f5b0c44d9c5150b7b998292ca6005df19318a49fd07d114c11f2e538c756f2f",
+      "terminal_probe": false,
+      "transitions": {
+        "complete": true,
+        "final_action_submitted": true,
+        "final_dt": 1.0,
+        "final_physical_dt": 1.0,
+        "final_terminal_reused": false,
+        "release_time_ns": 69060000000,
+        "reward_sum": 5.446947868163974,
+        "sampled_physical_time_sec": 8.0,
+        "submitted_action_count": 8,
+        "terminal_map_scope": "frozen evaluator map; later actor map is diagnostic only",
+        "terminal_map_sha_exception_count": 0,
+        "transition_count": 8,
+        "zero_duration_terminal_count": 0
+      }
+    },
+    {
+      "closure": {
+        "launch_start_count": 38,
+        "native_shutdown_proof": {
+          "gzserver": {
+            "clean_exits": [
+              {
+                "pid": 913239,
+                "suffix": "4"
+              }
+            ],
+            "identity_matched": true,
+            "started": [
+              {
+                "pid": 913239,
+                "suffix": "4"
+              }
+            ]
+          },
+          "mr3_gazebo_native_stop": {
+            "clean_exits": [
+              {
+                "pid": 917670,
+                "suffix": "38"
+              }
+            ],
+            "identity_matched": true,
+            "started": [
+              {
+                "pid": 917670,
+                "suffix": "38"
+              }
+            ]
+          }
+        },
+        "navigation_closed": true,
+        "navigation_failure": false,
+        "other_launch_children_require_proc_identity": true,
+        "safety_failures": [],
+        "unsampled_stop_cli_alternative_evidence": []
+      },
+      "complete_episode_credit": true,
+      "contacts": {
+        "collision_events": 0,
+        "contact_phase_proof": {
+          "gap_endpoints_available": false,
+          "gap_endpoints_scope": "not saved in the original evidence; unavailable",
+          "lifetime_gap_diagnostics": {
+            "tb1/base": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb1/caster_back_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05500000000000682
+            },
+            "tb1/caster_back_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05500000000000682
+            },
+            "tb1/lidar": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05300000000001148
+            },
+            "tb1/wheel_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb1/wheel_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb2/base": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb2/caster_back_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.0589999999999975
+            },
+            "tb2/caster_back_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.0589999999999975
+            },
+            "tb2/lidar": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb2/wheel_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb2/wheel_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05499999999999261
+            },
+            "tb3/base": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb3/caster_back_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05700000000000216
+            },
+            "tb3/caster_back_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05699999999998795
+            },
+            "tb3/lidar": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb3/wheel_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.057999999999992724
+            },
+            "tb3/wheel_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.057999999999992724
+            }
+          },
+          "method": "mr3-contact-task-phase-and-command-time-v3",
+          "paused_release": {
+            "actual_seq0_binding": true,
+            "actual_task_start": true,
+            "context_evidence_sha256": {
+              "adapter.jsonl": "03f0584a9542d5bda2eac10755de09c95e04e93a08fb6b068e7cf0f97dc49bb1",
+              "metadata.json": "ccc4261aeb5126484af825dbac6c09ac9de2a149286330d2a4a2dd3e2e9f9825",
+              "physics.jsonl": "f2379d19eb12aa3a99c271b3fca087b9d3c720b5d7a9f14e0966a182d0045ee8",
+              "transitions.jsonl": "545ba0ebdd90ede67ce5ece62e3f3d0e3bc21c1b88c243b0a667a43ff22176ab"
+            },
+            "epoch": "mr3_p1c_v7_fault_w1_e1_38066ac0",
+            "independent_raw_reward_ready_payload_available": false,
+            "initial_pause_time_ns": 76072000000,
+            "no_positive_physics_window": "worker waits for ready/seq0 while physics is paused",
+            "ready_wait_proof": "pinned worker/evaluator causal order plus saved seq0 response",
+            "release_time_ns": 76080000000
+          },
+          "task_gap_bound_from_frozen_latch_invariant": true,
+          "task_gap_limit_sec": 0.5,
+          "task_gap_numeric_maxima": null
+        },
+        "continuous_freshness_passed": true,
+        "errors": [],
+        "passed": true,
+        "raw_sequence_audit_passed": true,
+        "raw_stream_count": 18,
+        "scope": "frozen started/latch invariant and endpoint ages; no raw timing replay",
+        "task_success": false,
+        "termination_reason": "training_external_truncation",
+        "zero_contact": true
+      },
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_fault/worker1/episode001_open_101",
+      "epoch": "mr3_p1c_v7_fault_w1_e1_38066ac0",
+      "errors": [],
+      "evidence_sha256": {
+        "adapter.jsonl": "03f0584a9542d5bda2eac10755de09c95e04e93a08fb6b068e7cf0f97dc49bb1",
+        "launch.log": "36588e285c2a999476b281e335677eab687f538d39764a268892efaf7bccd03f",
+        "metadata.json": "ccc4261aeb5126484af825dbac6c09ac9de2a149286330d2a4a2dd3e2e9f9825",
+        "mr3_p1c_v7_fault_w1_e1_38066ac0.json": "e50e67dc35a1437cdb990efa23f8d354d0c4aef8f1a4b8a4e5de2ce24363701f",
+        "native_stop.json": "eae3af78cf31a492172819d62ffea3f00d50b03a46d0616e5784d0a395d013f8",
+        "nav2_shutdown.json": "962c9a30b55becbe6ee8f8bfd6082689f5142a0c276ddee09d0aa406e71f466b",
+        "physics.jsonl": "f2379d19eb12aa3a99c271b3fca087b9d3c720b5d7a9f14e0966a182d0045ee8",
+        "summary.json": "28cbd28a889d1d3849dfd7f96e697ded303a3768ae167344c5623b5623221f85",
+        "supervisor_metadata.json": "6270f4ac1a4c5669b7b3ad56c73ee124947edb78a129eecd59740cfd2bdfd89d",
+        "supervisor_shutdown.json": "839dde504eb0888a6694c4b3bf60d93dda027ab1af7d3d1a67ff807fbc25617d",
+        "transitions.jsonl": "545ba0ebdd90ede67ce5ece62e3f3d0e3bc21c1b88c243b0a667a43ff22176ab"
+      },
+      "expected_infrastructure_fault": false,
+      "freeze": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a",
+      "initial_inputs_ready": {
+        "ack_map_payload_sha256": "494e3d3aad19fdfc52cb497d23cc5e948a1dd018175f40a2d7813c2fd88c599a",
+        "ack_stamp": 75.42,
+        "ack_state_sequence": 754,
+        "first_snapshot_state_sequence": 760,
+        "initial_pause_stamp": 76.072,
+        "protocol": "delivered_inputs_before_pause-v1",
+        "proven": true,
+        "required": true,
+        "scope": "input readiness before pause; first snapshot may use newer delivery"
+      },
+      "ordered_shutdown": {
+        "finalize_ack_sequence": 8,
+        "launch": {
+          "actual_process_starts": 38,
+          "all_actual_clean_exits": 38,
+          "evaluator_exit_wall_monotonic_ns": 3824601363519540,
+          "proven": true,
+          "scope": "actual SDK identities and clean exits; no SDK internal-race claim",
+          "serial_sigint_count": 31
+        },
+        "nav2": {
+          "completed_wall_monotonic_ns": 3824600680280096,
+          "finalized_state_responses": 18,
+          "paused_time_ns": 84100000000,
+          "proven": true,
+          "robot_shutdown_responses": 3,
+          "scope": "successful lifecycle replies and actual GetState finalized receipts"
+        },
+        "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+        "proven": true,
+        "required": true
+      },
+      "passed": true,
+      "physics": {
+        "first_time_ns": 76072000000,
+        "last_time_ns": 84100000000,
+        "receipt_count": 410,
+        "total_physical_ticks": 8028
+      },
+      "processes": {
+        "forced_cleanup": false,
+        "no_live_or_zombie_leftovers": true,
+        "owned_pid_identities": [
+          [
+            913052,
+            382439424
+          ],
+          [
+            913191,
+            382439576
+          ],
+          [
+            913231,
+            382439740
+          ],
+          [
+            913233,
+            382439740
+          ],
+          [
+            913237,
+            382439740
+          ],
+          [
+            913239,
+            382439740
+          ],
+          [
+            913243,
+            382439741
+          ],
+          [
+            913245,
+            382439741
+          ],
+          [
+            913247,
+            382439741
+          ],
+          [
+            914119,
+            382440116
+          ],
+          [
+            914121,
+            382440116
+          ],
+          [
+            914123,
+            382440116
+          ],
+          [
+            914279,
+            382440456
+          ],
+          [
+            914281,
+            382440456
+          ],
+          [
+            914283,
+            382440457
+          ],
+          [
+            914443,
+            382440789
+          ],
+          [
+            914645,
+            382441991
+          ],
+          [
+            914647,
+            382441991
+          ],
+          [
+            914649,
+            382441991
+          ],
+          [
+            914651,
+            382441991
+          ],
+          [
+            914653,
+            382441991
+          ],
+          [
+            914655,
+            382441991
+          ],
+          [
+            914657,
+            382441993
+          ],
+          [
+            915318,
+            382446435
+          ],
+          [
+            915320,
+            382446435
+          ],
+          [
+            915322,
+            382446436
+          ],
+          [
+            915324,
+            382446436
+          ],
+          [
+            915326,
+            382446436
+          ],
+          [
+            915328,
+            382446436
+          ],
+          [
+            915330,
+            382446436
+          ],
+          [
+            915780,
+            382450928
+          ],
+          [
+            915782,
+            382450928
+          ],
+          [
+            915784,
+            382450929
+          ],
+          [
+            915786,
+            382450929
+          ],
+          [
+            915788,
+            382450929
+          ],
+          [
+            915790,
+            382450929
+          ],
+          [
+            915792,
+            382450929
+          ],
+          [
+            916006,
+            382451718
+          ],
+          [
+            916008,
+            382451718
+          ],
+          [
+            916063,
+            382452016
+          ],
+          [
+            916066,
+            382452059
+          ],
+          [
+            917670,
+            382460755
+          ]
+        ],
+        "scope": "saved PID/start identities and cleanup receipt; no live /proc inference",
+        "worker_identity": {
+          "group": 913052,
+          "parent": 912928,
+          "pid": 913052,
+          "session": 913052,
+          "start_ticks": 382439424,
+          "state": "R"
+        }
+      },
+      "protocol": {
+        "accepted_action_count": 8,
+        "cancel_count": 0,
+        "command_time": {
+          "accepted_commands": 8,
+          "bindings": [
+            {
+              "action": 521,
+              "command_id": 1,
+              "created_at": 76.08,
+              "created_time_ns": 76080000000,
+              "epoch": "mr3_p1c_v7_fault_w1_e1_38066ac0",
+              "expires_at": 78.08,
+              "expires_time_ns": 78080000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 1,
+              "receipt_kind": "action",
+              "receipt_stamp": 76.08,
+              "receipt_time_ns": 76080000000,
+              "rejection_reason": null,
+              "step_sequence": 1,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 2,
+              "created_at": 77.08,
+              "created_time_ns": 77080000000,
+              "epoch": "mr3_p1c_v7_fault_w1_e1_38066ac0",
+              "expires_at": 79.08,
+              "expires_time_ns": 79080000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 2,
+              "receipt_kind": "action",
+              "receipt_stamp": 77.08,
+              "receipt_time_ns": 77080000000,
+              "rejection_reason": null,
+              "step_sequence": 2,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 3,
+              "created_at": 78.08,
+              "created_time_ns": 78080000000,
+              "epoch": "mr3_p1c_v7_fault_w1_e1_38066ac0",
+              "expires_at": 80.08,
+              "expires_time_ns": 80080000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 3,
+              "receipt_kind": "action",
+              "receipt_stamp": 78.08,
+              "receipt_time_ns": 78080000000,
+              "rejection_reason": null,
+              "step_sequence": 3,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 4,
+              "created_at": 79.08,
+              "created_time_ns": 79080000000,
+              "epoch": "mr3_p1c_v7_fault_w1_e1_38066ac0",
+              "expires_at": 81.08,
+              "expires_time_ns": 81080000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 4,
+              "receipt_kind": "action",
+              "receipt_stamp": 79.08,
+              "receipt_time_ns": 79080000000,
+              "rejection_reason": null,
+              "step_sequence": 4,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 5,
+              "created_at": 80.08,
+              "created_time_ns": 80080000000,
+              "epoch": "mr3_p1c_v7_fault_w1_e1_38066ac0",
+              "expires_at": 82.08,
+              "expires_time_ns": 82080000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 5,
+              "receipt_kind": "action",
+              "receipt_stamp": 80.08,
+              "receipt_time_ns": 80080000000,
+              "rejection_reason": null,
+              "step_sequence": 5,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 6,
+              "created_at": 81.08,
+              "created_time_ns": 81080000000,
+              "epoch": "mr3_p1c_v7_fault_w1_e1_38066ac0",
+              "expires_at": 83.08,
+              "expires_time_ns": 83080000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 6,
+              "receipt_kind": "action",
+              "receipt_stamp": 81.08,
+              "receipt_time_ns": 81080000000,
+              "rejection_reason": null,
+              "step_sequence": 6,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 7,
+              "created_at": 82.08,
+              "created_time_ns": 82080000000,
+              "epoch": "mr3_p1c_v7_fault_w1_e1_38066ac0",
+              "expires_at": 84.08,
+              "expires_time_ns": 84080000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 7,
+              "receipt_kind": "action",
+              "receipt_stamp": 82.08,
+              "receipt_time_ns": 82080000000,
+              "rejection_reason": null,
+              "step_sequence": 7,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 999,
+              "command_id": 8,
+              "created_at": 83.08,
+              "created_time_ns": 83080000000,
+              "epoch": "mr3_p1c_v7_fault_w1_e1_38066ac0",
+              "expires_at": 85.08,
+              "expires_time_ns": 85080000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 8,
+              "receipt_kind": "action",
+              "receipt_stamp": 83.08,
+              "receipt_time_ns": 83080000000,
+              "rejection_reason": null,
+              "step_sequence": 8,
+              "ttl_ns": 2000000000,
+              "valid": true
+            }
+          ],
+          "commands_checked": 8,
+          "complete_episode_credit": false,
+          "errors": [],
+          "excluded_no_action_terminal_steps": [],
+          "method": "mr3-command-time-integer-endpoints-v1",
+          "other_rejection_reasons_revalidated": false,
+          "passed": true,
+          "rejected_commands": 0,
+          "reward_contact_mask_ownership_closure_revalidated": false,
+          "scope": "submitted command validity and receipt reason only"
+        },
+        "confirmed_cancellation_count": 0,
+        "goal_count": 3,
+        "keep_robot_command_count": 18,
+        "native_terminal_count": 3,
+        "rejected_action_count": 0,
+        "scope": "goal payload audit, not an action-server network trace"
+      },
+      "scene": "open",
+      "schema": "mr3-p1c-episode-audit-v1",
+      "scope": "scripted sampling/reset; no RL, throughput or 95% success inference",
+      "seed": 101,
+      "supervisor_shutdown_digest": "914fe420236ff44b2a4fa1b7251698f2b679dbf55ee6ace06c739b23ee5cdb2e",
+      "terminal_probe": false,
+      "transitions": {
+        "complete": true,
+        "final_action_submitted": true,
+        "final_dt": 1.0,
+        "final_physical_dt": 1.0,
+        "final_terminal_reused": false,
+        "release_time_ns": 76080000000,
+        "reward_sum": 5.3405843147995995,
+        "sampled_physical_time_sec": 8.0,
+        "submitted_action_count": 8,
+        "terminal_map_scope": "frozen evaluator map; later actor map is diagnostic only",
+        "terminal_map_sha_exception_count": 0,
+        "transition_count": 8,
+        "zero_duration_terminal_count": 0
+      }
+    },
+    {
+      "closure": {
+        "launch_start_count": 38,
+        "native_shutdown_proof": {
+          "gzserver": {
+            "clean_exits": [
+              {
+                "pid": 917783,
+                "suffix": "4"
+              }
+            ],
+            "identity_matched": true,
+            "started": [
+              {
+                "pid": 917783,
+                "suffix": "4"
+              }
+            ]
+          },
+          "mr3_gazebo_native_stop": {
+            "clean_exits": [
+              {
+                "pid": 920495,
+                "suffix": "38"
+              }
+            ],
+            "identity_matched": true,
+            "started": [
+              {
+                "pid": 920495,
+                "suffix": "38"
+              }
+            ]
+          }
+        },
+        "navigation_closed": true,
+        "navigation_failure": false,
+        "other_launch_children_require_proc_identity": true,
+        "safety_failures": [],
+        "unsampled_stop_cli_alternative_evidence": []
+      },
+      "complete_episode_credit": true,
+      "contacts": {
+        "collision_events": 0,
+        "contact_phase_proof": {
+          "gap_endpoints_available": false,
+          "gap_endpoints_scope": "not saved in the original evidence; unavailable",
+          "lifetime_gap_diagnostics": {
+            "tb1/base": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05300000000001148
+            },
+            "tb1/caster_back_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb1/caster_back_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.053999999999987836
+            },
+            "tb1/lidar": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05200000000000671
+            },
+            "tb1/wheel_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05299999999999727
+            },
+            "tb1/wheel_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb2/base": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb2/caster_back_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb2/caster_back_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05300000000001148
+            },
+            "tb2/lidar": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb2/wheel_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb2/wheel_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05299999999999727
+            },
+            "tb3/base": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb3/caster_back_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.060000000000002274
+            },
+            "tb3/caster_back_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.0589999999999975
+            },
+            "tb3/lidar": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb3/wheel_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05499999999999261
+            },
+            "tb3/wheel_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05700000000000216
+            }
+          },
+          "method": "mr3-contact-task-phase-and-command-time-v3",
+          "paused_release": {
+            "actual_seq0_binding": true,
+            "actual_task_start": true,
+            "context_evidence_sha256": {
+              "adapter.jsonl": "509075379856f6e4984c1f6bc9bf2f0bdc11d451e3a3af072c8cc080727f51c7",
+              "metadata.json": "7e2310f2fb4d3b8428c361fede2b95709baaae2ccea8b1df325b7b0330630e78",
+              "physics.jsonl": "2ee106e004d6b7f71d95971167009915a6527f6a2dae7235832977f6fee4b841",
+              "transitions.jsonl": "42e6beb037c1ecc9a3c4c38a99a7434ec44e869f93089664672c86e1205cea62"
+            },
+            "epoch": "mr3_p1c_v7_fault_w1_e2_a96f5c37",
+            "independent_raw_reward_ready_payload_available": false,
+            "initial_pause_time_ns": 69092000000,
+            "no_positive_physics_window": "worker waits for ready/seq0 while physics is paused",
+            "ready_wait_proof": "pinned worker/evaluator causal order plus saved seq0 response",
+            "release_time_ns": 69100000000
+          },
+          "task_gap_bound_from_frozen_latch_invariant": true,
+          "task_gap_limit_sec": 0.5,
+          "task_gap_numeric_maxima": null
+        },
+        "continuous_freshness_passed": true,
+        "errors": [],
+        "passed": true,
+        "raw_sequence_audit_passed": true,
+        "raw_stream_count": 18,
+        "scope": "frozen started/latch invariant and endpoint ages; no raw timing replay",
+        "task_success": false,
+        "termination_reason": "training_external_truncation",
+        "zero_contact": true
+      },
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_fault/worker1/episode002_open_101",
+      "epoch": "mr3_p1c_v7_fault_w1_e2_a96f5c37",
+      "errors": [],
+      "evidence_sha256": {
+        "adapter.jsonl": "509075379856f6e4984c1f6bc9bf2f0bdc11d451e3a3af072c8cc080727f51c7",
+        "launch.log": "472b0d9b0f4a1828c47ca02e42e9217bdd492ea877a60cccff645e3d7af8ab7e",
+        "metadata.json": "7e2310f2fb4d3b8428c361fede2b95709baaae2ccea8b1df325b7b0330630e78",
+        "mr3_p1c_v7_fault_w1_e2_a96f5c37.json": "036e6ac83a3a44f07e5ab09631265ca773c536f015ae885e8b16e58239bad4f8",
+        "native_stop.json": "66ce202ec3f9e409c8add753a87875e3ab4df4c5ac477e1e0c2a1b83d4034206",
+        "nav2_shutdown.json": "4c5d47a6a11f3e8b31a6a95e44372c2a2ee202aa9c8a8966d577aab725f2cfb0",
+        "physics.jsonl": "2ee106e004d6b7f71d95971167009915a6527f6a2dae7235832977f6fee4b841",
+        "summary.json": "3c66b91f7d083b7bcbcf53607240138a8737fba78924d727bda36b03e8ce6966",
+        "supervisor_metadata.json": "de1f04113300f3330f55cfe4ee13f403067001ee42b48e73b6c65ba0545302ab",
+        "supervisor_shutdown.json": "29df07109470f7158b39e778161a3a1fc7ef7f986518db9f587d1477efd4f53d",
+        "transitions.jsonl": "42e6beb037c1ecc9a3c4c38a99a7434ec44e869f93089664672c86e1205cea62"
+      },
+      "expected_infrastructure_fault": false,
+      "freeze": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a",
+      "initial_inputs_ready": {
+        "ack_map_payload_sha256": "3b3202d5c5ddee8e0c6529d0d12a8f3805881e4469ece5cb20c0cbd71abcf357",
+        "ack_stamp": 68.5,
+        "ack_state_sequence": 684,
+        "first_snapshot_state_sequence": 691,
+        "initial_pause_stamp": 69.092,
+        "protocol": "delivered_inputs_before_pause-v1",
+        "proven": true,
+        "required": true,
+        "scope": "input readiness before pause; first snapshot may use newer delivery"
+      },
+      "ordered_shutdown": {
+        "finalize_ack_sequence": 8,
+        "launch": {
+          "actual_process_starts": 38,
+          "all_actual_clean_exits": 38,
+          "evaluator_exit_wall_monotonic_ns": 3824811554697484,
+          "proven": true,
+          "scope": "actual SDK identities and clean exits; no SDK internal-race claim",
+          "serial_sigint_count": 31
+        },
+        "nav2": {
+          "completed_wall_monotonic_ns": 3824810904039703,
+          "finalized_state_responses": 18,
+          "paused_time_ns": 77120000000,
+          "proven": true,
+          "robot_shutdown_responses": 3,
+          "scope": "successful lifecycle replies and actual GetState finalized receipts"
+        },
+        "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+        "proven": true,
+        "required": true
+      },
+      "passed": true,
+      "physics": {
+        "first_time_ns": 69092000000,
+        "last_time_ns": 77120000000,
+        "receipt_count": 410,
+        "total_physical_ticks": 8028
+      },
+      "processes": {
+        "forced_cleanup": false,
+        "no_live_or_zombie_leftovers": true,
+        "owned_pid_identities": [
+          [
+            917729,
+            382461191
+          ],
+          [
+            917770,
+            382461342
+          ],
+          [
+            917777,
+            382461502
+          ],
+          [
+            917779,
+            382461502
+          ],
+          [
+            917781,
+            382461502
+          ],
+          [
+            917783,
+            382461502
+          ],
+          [
+            917785,
+            382461502
+          ],
+          [
+            917787,
+            382461502
+          ],
+          [
+            917789,
+            382461503
+          ],
+          [
+            918216,
+            382461859
+          ],
+          [
+            918218,
+            382461859
+          ],
+          [
+            918220,
+            382461859
+          ],
+          [
+            918285,
+            382462187
+          ],
+          [
+            918287,
+            382462187
+          ],
+          [
+            918289,
+            382462187
+          ],
+          [
+            918357,
+            382462517
+          ],
+          [
+            918512,
+            382463662
+          ],
+          [
+            918514,
+            382463663
+          ],
+          [
+            918516,
+            382463663
+          ],
+          [
+            918518,
+            382463663
+          ],
+          [
+            918520,
+            382463663
+          ],
+          [
+            918522,
+            382463663
+          ],
+          [
+            918524,
+            382463665
+          ],
+          [
+            918911,
+            382468169
+          ],
+          [
+            918913,
+            382468169
+          ],
+          [
+            918915,
+            382468169
+          ],
+          [
+            918917,
+            382468170
+          ],
+          [
+            918919,
+            382468170
+          ],
+          [
+            918921,
+            382468170
+          ],
+          [
+            918923,
+            382468170
+          ],
+          [
+            919525,
+            382472658
+          ],
+          [
+            919527,
+            382472658
+          ],
+          [
+            919529,
+            382472658
+          ],
+          [
+            919531,
+            382472659
+          ],
+          [
+            919533,
+            382472659
+          ],
+          [
+            919535,
+            382472659
+          ],
+          [
+            919537,
+            382472659
+          ],
+          [
+            919674,
+            382473313
+          ],
+          [
+            919676,
+            382473313
+          ],
+          [
+            919704,
+            382473541
+          ],
+          [
+            919708,
+            382473582
+          ],
+          [
+            920495,
+            382481745
+          ]
+        ],
+        "scope": "saved PID/start identities and cleanup receipt; no live /proc inference",
+        "worker_identity": {
+          "group": 917729,
+          "parent": 912928,
+          "pid": 917729,
+          "session": 917729,
+          "start_ticks": 382461191,
+          "state": "R"
+        }
+      },
+      "protocol": {
+        "accepted_action_count": 8,
+        "cancel_count": 0,
+        "command_time": {
+          "accepted_commands": 8,
+          "bindings": [
+            {
+              "action": 25,
+              "command_id": 1,
+              "created_at": 69.1,
+              "created_time_ns": 69100000000,
+              "epoch": "mr3_p1c_v7_fault_w1_e2_a96f5c37",
+              "expires_at": 71.1,
+              "expires_time_ns": 71100000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 1,
+              "receipt_kind": "action",
+              "receipt_stamp": 69.1,
+              "receipt_time_ns": 69100000000,
+              "rejection_reason": null,
+              "step_sequence": 1,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 2,
+              "created_at": 70.1,
+              "created_time_ns": 70100000000,
+              "epoch": "mr3_p1c_v7_fault_w1_e2_a96f5c37",
+              "expires_at": 72.1,
+              "expires_time_ns": 72100000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 2,
+              "receipt_kind": "action",
+              "receipt_stamp": 70.1,
+              "receipt_time_ns": 70100000000,
+              "rejection_reason": null,
+              "step_sequence": 2,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 3,
+              "created_at": 71.1,
+              "created_time_ns": 71100000000,
+              "epoch": "mr3_p1c_v7_fault_w1_e2_a96f5c37",
+              "expires_at": 73.1,
+              "expires_time_ns": 73100000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 3,
+              "receipt_kind": "action",
+              "receipt_stamp": 71.1,
+              "receipt_time_ns": 71100000000,
+              "rejection_reason": null,
+              "step_sequence": 3,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 4,
+              "created_at": 72.1,
+              "created_time_ns": 72100000000,
+              "epoch": "mr3_p1c_v7_fault_w1_e2_a96f5c37",
+              "expires_at": 74.1,
+              "expires_time_ns": 74100000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 4,
+              "receipt_kind": "action",
+              "receipt_stamp": 72.1,
+              "receipt_time_ns": 72100000000,
+              "rejection_reason": null,
+              "step_sequence": 4,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 5,
+              "created_at": 73.1,
+              "created_time_ns": 73100000000,
+              "epoch": "mr3_p1c_v7_fault_w1_e2_a96f5c37",
+              "expires_at": 75.1,
+              "expires_time_ns": 75100000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 5,
+              "receipt_kind": "action",
+              "receipt_stamp": 73.1,
+              "receipt_time_ns": 73100000000,
+              "rejection_reason": null,
+              "step_sequence": 5,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 6,
+              "created_at": 74.1,
+              "created_time_ns": 74100000000,
+              "epoch": "mr3_p1c_v7_fault_w1_e2_a96f5c37",
+              "expires_at": 76.1,
+              "expires_time_ns": 76100000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 6,
+              "receipt_kind": "action",
+              "receipt_stamp": 74.1,
+              "receipt_time_ns": 74100000000,
+              "rejection_reason": null,
+              "step_sequence": 6,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 7,
+              "created_at": 75.1,
+              "created_time_ns": 75100000000,
+              "epoch": "mr3_p1c_v7_fault_w1_e2_a96f5c37",
+              "expires_at": 77.1,
+              "expires_time_ns": 77100000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 7,
+              "receipt_kind": "action",
+              "receipt_stamp": 75.1,
+              "receipt_time_ns": 75100000000,
+              "rejection_reason": null,
+              "step_sequence": 7,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 999,
+              "command_id": 8,
+              "created_at": 76.1,
+              "created_time_ns": 76100000000,
+              "epoch": "mr3_p1c_v7_fault_w1_e2_a96f5c37",
+              "expires_at": 78.1,
+              "expires_time_ns": 78100000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 8,
+              "receipt_kind": "action",
+              "receipt_stamp": 76.1,
+              "receipt_time_ns": 76100000000,
+              "rejection_reason": null,
+              "step_sequence": 8,
+              "ttl_ns": 2000000000,
+              "valid": true
+            }
+          ],
+          "commands_checked": 8,
+          "complete_episode_credit": false,
+          "errors": [],
+          "excluded_no_action_terminal_steps": [],
+          "method": "mr3-command-time-integer-endpoints-v1",
+          "other_rejection_reasons_revalidated": false,
+          "passed": true,
+          "rejected_commands": 0,
+          "reward_contact_mask_ownership_closure_revalidated": false,
+          "scope": "submitted command validity and receipt reason only"
+        },
+        "confirmed_cancellation_count": 0,
+        "goal_count": 3,
+        "keep_robot_command_count": 18,
+        "native_terminal_count": 3,
+        "rejected_action_count": 0,
+        "scope": "goal payload audit, not an action-server network trace"
+      },
+      "scene": "open",
+      "schema": "mr3-p1c-episode-audit-v1",
+      "scope": "scripted sampling/reset; no RL, throughput or 95% success inference",
+      "seed": 101,
+      "supervisor_shutdown_digest": "ec6d04d043886582541c6e8d763b225e7016d2f7c036c93a3c090a4e9353ffb1",
+      "terminal_probe": false,
+      "transitions": {
+        "complete": true,
+        "final_action_submitted": true,
+        "final_dt": 1.0,
+        "final_physical_dt": 1.0,
+        "final_terminal_reused": false,
+        "release_time_ns": 69100000000,
+        "reward_sum": 5.648719072400256,
+        "sampled_physical_time_sec": 8.0,
+        "submitted_action_count": 8,
+        "terminal_map_scope": "frozen evaluator map; later actor map is diagnostic only",
+        "terminal_map_sha_exception_count": 0,
+        "transition_count": 8,
+        "zero_duration_terminal_count": 0
+      }
+    }
+  ],
+  "errors": [],
+  "evidence_sha256": {
+    "benchmark_metadata.json": "aad01a068e316ca537ce0385c7f3add98ab0a07e092713df84dd5833b39a4c6f",
+    "benchmark_summary.json": "d07fdb0bc82e6d8c78aa25a1c6a74fc4f835b22f42fb06eb7faf8c8c5fd52de8",
+    "resources.json": "1fad554e31e33680d433c33e0a5218e7f2bc083538045306d94d4e60230c4194"
+  },
+  "fault_probe": true,
+  "fault_scope": "injected cell excluded; forced cleanup, recovery and peer audited",
+  "freeze": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a",
+  "offline_contact_phase_audit": {
+    "base_v2": {
+      "contact_logic_modified": false,
+      "path": "audit_mr3_env_contact_phase_v2.py",
+      "sha256": "3ce800bfa0455d25a1c3257635c7c4d593478082bbbf1c4dab6a10eed2fc6991"
+    },
+    "command_time_gate": {
+      "method": "mr3-command-time-integer-endpoints-v1",
+      "order": "original audit_protocol, then independent command time",
+      "path": "audit_command_time_v7.py",
+      "sha256": "4787ca8d2e6b4d7ba06b3d5a3c1ead82fe6f079485a790c5b940f2ba7636c3b9"
+    },
+    "freeze": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a",
+    "frozen_sources": {
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md": {
+        "sha256": "f05bf13b8848fb93347327ce4bb03672eed9938f84ef52db9ab000537cd95593",
+        "source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md"
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_TASK_CONTRACT.md": {
+        "sha256": "fcc1cedbc524a3d55443c887201f13f58fbd442e5600f1d8ad5cad84b7346c48",
+        "source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_TASK_CONTRACT.md"
+      },
+      "ros2_ws/ros2-multi-robot-automap/scripts/audit_mr3_adapter_probe.py": {
+        "git_blob_sha256": "fdd415da1b01d7da6219d21a2fa8e184484b696d33c3e736bde8ca165bb65e6a",
+        "git_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/scripts/audit_mr3_adapter_probe.py",
+        "sha256": "fdd415da1b01d7da6219d21a2fa8e184484b696d33c3e736bde8ca165bb65e6a",
+        "source": "worktree bytes matching cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"
+      },
+      "ros2_ws/ros2-multi-robot-automap/scripts/audit_mr3_env.py": {
+        "git_blob_sha256": "25ce0b466d988595934f26a0cfb7a81a445632b1e755f2462b80698371b272e8",
+        "git_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/scripts/audit_mr3_env.py",
+        "sha256": "25ce0b466d988595934f26a0cfb7a81a445632b1e755f2462b80698371b272e8",
+        "source": "worktree bytes matching cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"
+      },
+      "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py": {
+        "git_blob_sha256": "930be78a0763d69dfa102c662ac8713ee970e421a56193f92257e65ce0e67dac",
+        "git_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py",
+        "sha256": "930be78a0763d69dfa102c662ac8713ee970e421a56193f92257e65ce0e67dac",
+        "source": "worktree bytes matching cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"
+      },
+      "ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py": {
+        "git_blob_sha256": "f130b1157b4855089d51a6b1f22e57e0b5683b40624cc8697e3bb76fb3659d1a",
+        "git_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py",
+        "sha256": "f130b1157b4855089d51a6b1f22e57e0b5683b40624cc8697e3bb76fb3659d1a",
+        "source": "worktree bytes matching cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"
+      },
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py": {
+        "git_blob_sha256": "b20f6b492f91cb943247ebcc29bd16497983d17c23cc458f1be16fa24b9958d5",
+        "git_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py",
+        "sha256": "b20f6b492f91cb943247ebcc29bd16497983d17c23cc458f1be16fa24b9958d5",
+        "source": "worktree bytes matching cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"
+      },
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_contacts.py": {
+        "git_blob_sha256": "9d661498b3748d409dbb59ccd59524d5152d85ec93ee30128aebaf0a8a09fa17",
+        "git_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_contacts.py",
+        "sha256": "9d661498b3748d409dbb59ccd59524d5152d85ec93ee30128aebaf0a8a09fa17",
+        "source": "worktree bytes matching cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"
+      },
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py": {
+        "git_blob_sha256": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b",
+        "git_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py",
+        "sha256": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b",
+        "source": "worktree bytes matching cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"
+      },
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py": {
+        "git_blob_sha256": "e4f1c4ec51c8c0280fba32e47d189c1234eee44093612692e2d032efe26b388b",
+        "git_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py",
+        "sha256": "e4f1c4ec51c8c0280fba32e47d189c1234eee44093612692e2d032efe26b388b",
+        "source": "worktree bytes matching cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"
+      },
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py": {
+        "git_blob_sha256": "fb08097170b3f0e8423fa11dde2567c618d4d0d48be220e6cfbfc9538c37c147",
+        "git_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py",
+        "sha256": "fb08097170b3f0e8423fa11dde2567c618d4d0d48be220e6cfbfc9538c37c147",
+        "source": "worktree bytes matching cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"
+      },
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py": {
+        "git_blob_sha256": "bd0c2e43dbbb4258e4e1ee537fbdbe512211576eb930d5f8862d787dc73e48af",
+        "git_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py",
+        "sha256": "bd0c2e43dbbb4258e4e1ee537fbdbe512211576eb930d5f8862d787dc73e48af",
+        "source": "worktree bytes matching cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"
+      }
+    },
+    "method": "mr3-contact-task-phase-and-command-time-v3",
+    "only_overridden_functions": [
+      "audit_contacts",
+      "audit_protocol"
+    ],
+    "original_auditor_schema": "mr3-p1c-benchmark-audit-v1",
+    "original_results_modified": false,
+    "ready_payload_limitation": "raw initial reward_ready payload was not saved",
+    "scope": "fixed-source offline task-phase and command-time gates; no new native credit",
+    "source_invariant": "start once; no monitor/latch reset; every task gap/age failure latches",
+    "wrapper_sha256": "4e2a24e3465fa45c06c05c37b57b8b77b6e462845b3227be10c1fecb85c2c7d7"
+  },
+  "passed": true,
+  "schedule": [
+    [
+      "open",
+      101
+    ],
+    [
+      "open",
+      101
+    ]
+  ],
+  "schema": "mr3-p1c-contact-phase-audit-v3",
+  "steps_per_episode": 8,
+  "terminal_probe": false,
+  "valid_transitions": 28,
+  "wall_sec_including_all_attempts": 426.5376464468427,
+  "workers": 2
+}

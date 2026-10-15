@@ -1,0 +1,3158 @@
+{
+  "comparison": {
+    "denominator_scope": "max_worker(sum of first two recorded cell elapsed times)",
+    "denominator_wall_sec": 552.606865955051,
+    "effective_transition_per_wall_sec": 0.11581470289803773,
+    "eligible": true,
+    "episode_indices": [
+      0,
+      1
+    ],
+    "exact_end_to_end_process_span": false,
+    "excludes": "final Supervisor reap tail and all later serial scene regressions",
+    "final_cleanup_timing_available": false,
+    "final_supervisor_cleanup_wall_sec": null,
+    "includes": "cell startup, next-reset cleanup of prior worker, native goal closure",
+    "per_worker": [
+      {
+        "cell_recorded_wall_sec": 552.606865955051,
+        "transition_only_rate_per_active_wall_sec": 0.10922678878416431,
+        "transition_only_wall_sec": 292.96842245571315,
+        "valid_transitions": 32,
+        "worker_id": 0
+      },
+      {
+        "cell_recorded_wall_sec": 552.0088219027966,
+        "transition_only_rate_per_active_wall_sec": 0.10973751907533018,
+        "transition_only_wall_sec": 291.60491570830345,
+        "valid_transitions": 32,
+        "worker_id": 1
+      }
+    ],
+    "reset_regression_only_schedule": [],
+    "reset_regression_only_transitions": 0,
+    "schedule": [
+      [
+        "open",
+        101
+      ],
+      [
+        "open",
+        101
+      ]
+    ],
+    "steps_per_episode": 16,
+    "valid_transitions": 64
+  },
+  "complete_episode_count": 4,
+  "deadline_probe": false,
+  "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_workers2",
+  "effective_transition_per_wall_sec": 0.11538712182304176,
+  "episodes": [
+    {
+      "closure": {
+        "launch_start_count": 38,
+        "native_shutdown_proof": {
+          "gzserver": {
+            "clean_exits": [
+              {
+                "pid": 888892,
+                "suffix": "4"
+              }
+            ],
+            "identity_matched": true,
+            "started": [
+              {
+                "pid": 888892,
+                "suffix": "4"
+              }
+            ]
+          },
+          "mr3_gazebo_native_stop": {
+            "clean_exits": [
+              {
+                "pid": 893546,
+                "suffix": "38"
+              }
+            ],
+            "identity_matched": true,
+            "started": [
+              {
+                "pid": 893546,
+                "suffix": "38"
+              }
+            ]
+          }
+        },
+        "navigation_closed": true,
+        "navigation_failure": false,
+        "other_launch_children_require_proc_identity": true,
+        "safety_failures": [],
+        "unsampled_stop_cli_alternative_evidence": []
+      },
+      "complete_episode_credit": true,
+      "contacts": {
+        "collision_events": 0,
+        "contact_phase_proof": {
+          "gap_endpoints_available": false,
+          "gap_endpoints_scope": "not saved in the original evidence; unavailable",
+          "lifetime_gap_diagnostics": {
+            "tb1/base": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb1/caster_back_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.055999999999997385
+            },
+            "tb1/caster_back_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.056000000000011596
+            },
+            "tb1/lidar": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb1/wheel_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb1/wheel_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.055999999999997385
+            },
+            "tb2/base": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb2/caster_back_left": {
+              "max_receipt_gap_sec": 0.0800000000000125,
+              "max_source_gap_sec": 0.0589999999999975
+            },
+            "tb2/caster_back_right": {
+              "max_receipt_gap_sec": 0.0800000000000125,
+              "max_source_gap_sec": 0.05900000000001171
+            },
+            "tb2/lidar": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb2/wheel_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb2/wheel_right": {
+              "max_receipt_gap_sec": 0.0800000000000125,
+              "max_source_gap_sec": 0.05700000000000216
+            },
+            "tb3/base": {
+              "max_receipt_gap_sec": 0.0799999999999983,
+              "max_source_gap_sec": 0.056000000000011596
+            },
+            "tb3/caster_back_left": {
+              "max_receipt_gap_sec": 0.0799999999999983,
+              "max_source_gap_sec": 0.0589999999999975
+            },
+            "tb3/caster_back_right": {
+              "max_receipt_gap_sec": 0.0799999999999983,
+              "max_source_gap_sec": 0.0589999999999975
+            },
+            "tb3/lidar": {
+              "max_receipt_gap_sec": 0.0799999999999983,
+              "max_source_gap_sec": 0.056000000000011596
+            },
+            "tb3/wheel_left": {
+              "max_receipt_gap_sec": 0.0799999999999983,
+              "max_source_gap_sec": 0.05700000000000216
+            },
+            "tb3/wheel_right": {
+              "max_receipt_gap_sec": 0.0799999999999983,
+              "max_source_gap_sec": 0.058000000000006935
+            }
+          },
+          "method": "mr3-contact-task-phase-and-command-time-v3",
+          "paused_release": {
+            "actual_seq0_binding": true,
+            "actual_task_start": true,
+            "context_evidence_sha256": {
+              "adapter.jsonl": "168fcd460c683ee49b2d8d383dfb2cd06211fe5b23e6f2db12c6bb9ed752145f",
+              "metadata.json": "a882274136bb677cd5bf503d0514ccd6cb3d1383a4ee77e4b0da4e98071d4221",
+              "physics.jsonl": "c1f66352503a9a7bc315940e1a11eff8e733ae7b2684725e8f37cd1026fd5b1b",
+              "transitions.jsonl": "7347a584cb70c3257ff23d3c0be679425472bf5309e2bfa7aeb1a4d178a5f514"
+            },
+            "epoch": "mr3_p1c_v7_workers2_w0_e1_33170f84",
+            "independent_raw_reward_ready_payload_available": false,
+            "initial_pause_time_ns": 75224000000,
+            "no_positive_physics_window": "worker waits for ready/seq0 while physics is paused",
+            "ready_wait_proof": "pinned worker/evaluator causal order plus saved seq0 response",
+            "release_time_ns": 75240000000
+          },
+          "task_gap_bound_from_frozen_latch_invariant": true,
+          "task_gap_limit_sec": 0.5,
+          "task_gap_numeric_maxima": null
+        },
+        "continuous_freshness_passed": true,
+        "errors": [],
+        "passed": true,
+        "raw_sequence_audit_passed": true,
+        "raw_stream_count": 18,
+        "scope": "frozen started/latch invariant and endpoint ages; no raw timing replay",
+        "task_success": false,
+        "termination_reason": "training_external_truncation",
+        "zero_contact": true
+      },
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_workers2/worker0/episode001_open_101",
+      "epoch": "mr3_p1c_v7_workers2_w0_e1_33170f84",
+      "errors": [],
+      "evidence_sha256": {
+        "adapter.jsonl": "168fcd460c683ee49b2d8d383dfb2cd06211fe5b23e6f2db12c6bb9ed752145f",
+        "launch.log": "67174a729c0280c53b1027c3f83e88f20540bdcf486fc7584d951fd1e8a41677",
+        "metadata.json": "a882274136bb677cd5bf503d0514ccd6cb3d1383a4ee77e4b0da4e98071d4221",
+        "mr3_p1c_v7_workers2_w0_e1_33170f84.json": "94d4a20720a9260f19759df5e1d82123c082e983bcfc7a64112285f74f703ccd",
+        "native_stop.json": "5d9aa4741ac8a0b37e12d4526cb7bcf0a3e625d77ca1afd465c19a3cf5fec716",
+        "nav2_shutdown.json": "bcb37e253dbf3a1b2b4d68914c4c21ccd1344fb7fb30568d1c26b5940166076f",
+        "physics.jsonl": "c1f66352503a9a7bc315940e1a11eff8e733ae7b2684725e8f37cd1026fd5b1b",
+        "summary.json": "0420e56203aadd7c2bf777ac098a7a930c133ce4c52b8a25318b0e0a0f845ef6",
+        "supervisor_metadata.json": "50f4aa0048ff9e47be8bc306dfc75e5d69120c72a60b2d333a96703a994081af",
+        "supervisor_shutdown.json": "869053ec7ce5db715706769d77c71dd2423e07c1f5732324f26b25b91c7f1fd9",
+        "transitions.jsonl": "7347a584cb70c3257ff23d3c0be679425472bf5309e2bfa7aeb1a4d178a5f514"
+      },
+      "expected_infrastructure_fault": false,
+      "freeze": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a",
+      "initial_inputs_ready": {
+        "ack_map_payload_sha256": "6b8546b1fb73bedd54ebfd7036ef3c478ee821ec548cca9136807c385745816f",
+        "ack_stamp": 74.22,
+        "ack_state_sequence": 742,
+        "first_snapshot_state_sequence": 752,
+        "initial_pause_stamp": 75.224,
+        "protocol": "delivered_inputs_before_pause-v1",
+        "proven": true,
+        "required": true,
+        "scope": "input readiness before pause; first snapshot may use newer delivery"
+      },
+      "ordered_shutdown": {
+        "finalize_ack_sequence": 16,
+        "launch": {
+          "actual_process_starts": 38,
+          "all_actual_clean_exits": 38,
+          "evaluator_exit_wall_monotonic_ns": 3823458267444421,
+          "proven": true,
+          "scope": "actual SDK identities and clean exits; no SDK internal-race claim",
+          "serial_sigint_count": 31
+        },
+        "nav2": {
+          "completed_wall_monotonic_ns": 3823457611711859,
+          "finalized_state_responses": 18,
+          "paused_time_ns": 91440000000,
+          "proven": true,
+          "robot_shutdown_responses": 3,
+          "scope": "successful lifecycle replies and actual GetState finalized receipts"
+        },
+        "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+        "proven": true,
+        "required": true
+      },
+      "passed": true,
+      "physics": {
+        "first_time_ns": 75224000000,
+        "last_time_ns": 91440000000,
+        "receipt_count": 827,
+        "total_physical_ticks": 16216
+      },
+      "processes": {
+        "forced_cleanup": false,
+        "no_live_or_zombie_leftovers": true,
+        "owned_pid_identities": [
+          [
+            888768,
+            382318572
+          ],
+          [
+            888857,
+            382318723
+          ],
+          [
+            888879,
+            382318884
+          ],
+          [
+            888883,
+            382318884
+          ],
+          [
+            888887,
+            382318884
+          ],
+          [
+            888892,
+            382318884
+          ],
+          [
+            888896,
+            382318884
+          ],
+          [
+            888900,
+            382318884
+          ],
+          [
+            888904,
+            382318885
+          ],
+          [
+            889840,
+            382319292
+          ],
+          [
+            889842,
+            382319292
+          ],
+          [
+            889844,
+            382319293
+          ],
+          [
+            889978,
+            382319627
+          ],
+          [
+            889980,
+            382319628
+          ],
+          [
+            889982,
+            382319628
+          ],
+          [
+            890071,
+            382319961
+          ],
+          [
+            890228,
+            382321107
+          ],
+          [
+            890230,
+            382321107
+          ],
+          [
+            890232,
+            382321107
+          ],
+          [
+            890234,
+            382321108
+          ],
+          [
+            890236,
+            382321108
+          ],
+          [
+            890238,
+            382321108
+          ],
+          [
+            890240,
+            382321110
+          ],
+          [
+            891103,
+            382325611
+          ],
+          [
+            891105,
+            382325611
+          ],
+          [
+            891107,
+            382325611
+          ],
+          [
+            891109,
+            382325612
+          ],
+          [
+            891111,
+            382325612
+          ],
+          [
+            891113,
+            382325612
+          ],
+          [
+            891115,
+            382325612
+          ],
+          [
+            891478,
+            382330105
+          ],
+          [
+            891480,
+            382330105
+          ],
+          [
+            891482,
+            382330106
+          ],
+          [
+            891484,
+            382330106
+          ],
+          [
+            891486,
+            382330107
+          ],
+          [
+            891488,
+            382330107
+          ],
+          [
+            891490,
+            382330108
+          ],
+          [
+            891623,
+            382330789
+          ],
+          [
+            891625,
+            382330789
+          ],
+          [
+            891681,
+            382331186
+          ],
+          [
+            891684,
+            382331228
+          ],
+          [
+            893546,
+            382346433
+          ]
+        ],
+        "scope": "saved PID/start identities and cleanup receipt; no live /proc inference",
+        "worker_identity": {
+          "group": 888768,
+          "parent": 888606,
+          "pid": 888768,
+          "session": 888768,
+          "start_ticks": 382318572,
+          "state": "R"
+        }
+      },
+      "protocol": {
+        "accepted_action_count": 16,
+        "cancel_count": 2,
+        "command_time": {
+          "accepted_commands": 16,
+          "bindings": [
+            {
+              "action": 21,
+              "command_id": 1,
+              "created_at": 75.24,
+              "created_time_ns": 75240000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e1_33170f84",
+              "expires_at": 77.24,
+              "expires_time_ns": 77240000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 1,
+              "receipt_kind": "action",
+              "receipt_stamp": 75.24,
+              "receipt_time_ns": 75240000000,
+              "rejection_reason": null,
+              "step_sequence": 1,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 2,
+              "created_at": 76.24,
+              "created_time_ns": 76240000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e1_33170f84",
+              "expires_at": 78.24,
+              "expires_time_ns": 78240000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 2,
+              "receipt_kind": "action",
+              "receipt_stamp": 76.24,
+              "receipt_time_ns": 76240000000,
+              "rejection_reason": null,
+              "step_sequence": 2,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 3,
+              "created_at": 77.24,
+              "created_time_ns": 77240000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e1_33170f84",
+              "expires_at": 79.24,
+              "expires_time_ns": 79240000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 3,
+              "receipt_kind": "action",
+              "receipt_stamp": 77.24,
+              "receipt_time_ns": 77240000000,
+              "rejection_reason": null,
+              "step_sequence": 3,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 4,
+              "created_at": 78.24,
+              "created_time_ns": 78240000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e1_33170f84",
+              "expires_at": 80.24,
+              "expires_time_ns": 80240000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 4,
+              "receipt_kind": "action",
+              "receipt_stamp": 78.24,
+              "receipt_time_ns": 78240000000,
+              "rejection_reason": null,
+              "step_sequence": 4,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 5,
+              "created_at": 79.24,
+              "created_time_ns": 79240000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e1_33170f84",
+              "expires_at": 81.24,
+              "expires_time_ns": 81240000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 5,
+              "receipt_kind": "action",
+              "receipt_stamp": 79.24,
+              "receipt_time_ns": 79240000000,
+              "rejection_reason": null,
+              "step_sequence": 5,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 6,
+              "created_at": 80.24,
+              "created_time_ns": 80240000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e1_33170f84",
+              "expires_at": 82.24,
+              "expires_time_ns": 82240000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 6,
+              "receipt_kind": "action",
+              "receipt_stamp": 80.24,
+              "receipt_time_ns": 80240000000,
+              "rejection_reason": null,
+              "step_sequence": 6,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 7,
+              "created_at": 81.24,
+              "created_time_ns": 81240000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e1_33170f84",
+              "expires_at": 83.24,
+              "expires_time_ns": 83240000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 7,
+              "receipt_kind": "action",
+              "receipt_stamp": 81.24,
+              "receipt_time_ns": 81240000000,
+              "rejection_reason": null,
+              "step_sequence": 7,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 999,
+              "command_id": 8,
+              "created_at": 82.24,
+              "created_time_ns": 82240000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e1_33170f84",
+              "expires_at": 84.24,
+              "expires_time_ns": 84240000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 8,
+              "receipt_kind": "action",
+              "receipt_stamp": 82.24,
+              "receipt_time_ns": 82240000000,
+              "rejection_reason": null,
+              "step_sequence": 8,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 999,
+              "command_id": 9,
+              "created_at": 83.24,
+              "created_time_ns": 83240000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e1_33170f84",
+              "expires_at": 85.24,
+              "expires_time_ns": 85240000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 9,
+              "receipt_kind": "action",
+              "receipt_stamp": 83.24,
+              "receipt_time_ns": 83240000000,
+              "rejection_reason": null,
+              "step_sequence": 9,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 999,
+              "command_id": 10,
+              "created_at": 84.24,
+              "created_time_ns": 84240000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e1_33170f84",
+              "expires_at": 86.24,
+              "expires_time_ns": 86240000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 10,
+              "receipt_kind": "action",
+              "receipt_stamp": 84.24,
+              "receipt_time_ns": 84240000000,
+              "rejection_reason": null,
+              "step_sequence": 10,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 128,
+              "command_id": 11,
+              "created_at": 85.24,
+              "created_time_ns": 85240000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e1_33170f84",
+              "expires_at": 87.24,
+              "expires_time_ns": 87240000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 11,
+              "receipt_kind": "action",
+              "receipt_stamp": 85.24,
+              "receipt_time_ns": 85240000000,
+              "rejection_reason": null,
+              "step_sequence": 11,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 12,
+              "created_at": 86.24,
+              "created_time_ns": 86240000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e1_33170f84",
+              "expires_at": 88.24,
+              "expires_time_ns": 88240000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 12,
+              "receipt_kind": "action",
+              "receipt_stamp": 86.24,
+              "receipt_time_ns": 86240000000,
+              "rejection_reason": null,
+              "step_sequence": 12,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 889,
+              "command_id": 13,
+              "created_at": 87.24,
+              "created_time_ns": 87240000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e1_33170f84",
+              "expires_at": 89.24,
+              "expires_time_ns": 89240000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 13,
+              "receipt_kind": "action",
+              "receipt_stamp": 87.24,
+              "receipt_time_ns": 87240000000,
+              "rejection_reason": null,
+              "step_sequence": 13,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 889,
+              "command_id": 14,
+              "created_at": 88.24,
+              "created_time_ns": 88240000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e1_33170f84",
+              "expires_at": 90.24,
+              "expires_time_ns": 90240000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 14,
+              "receipt_kind": "action",
+              "receipt_stamp": 88.24,
+              "receipt_time_ns": 88240000000,
+              "rejection_reason": null,
+              "step_sequence": 14,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 889,
+              "command_id": 15,
+              "created_at": 89.24,
+              "created_time_ns": 89240000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e1_33170f84",
+              "expires_at": 91.24,
+              "expires_time_ns": 91240000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 15,
+              "receipt_kind": "action",
+              "receipt_stamp": 89.24,
+              "receipt_time_ns": 89240000000,
+              "rejection_reason": null,
+              "step_sequence": 15,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 889,
+              "command_id": 16,
+              "created_at": 90.24,
+              "created_time_ns": 90240000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e1_33170f84",
+              "expires_at": 92.24,
+              "expires_time_ns": 92240000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 16,
+              "receipt_kind": "action",
+              "receipt_stamp": 90.24,
+              "receipt_time_ns": 90240000000,
+              "rejection_reason": null,
+              "step_sequence": 16,
+              "ttl_ns": 2000000000,
+              "valid": true
+            }
+          ],
+          "commands_checked": 16,
+          "complete_episode_credit": false,
+          "errors": [],
+          "excluded_no_action_terminal_steps": [],
+          "method": "mr3-command-time-integer-endpoints-v1",
+          "other_rejection_reasons_revalidated": false,
+          "passed": true,
+          "rejected_commands": 0,
+          "reward_contact_mask_ownership_closure_revalidated": false,
+          "scope": "submitted command validity and receipt reason only"
+        },
+        "confirmed_cancellation_count": 2,
+        "goal_count": 5,
+        "keep_robot_command_count": 30,
+        "native_terminal_count": 5,
+        "rejected_action_count": 0,
+        "scope": "goal payload audit, not an action-server network trace"
+      },
+      "scene": "open",
+      "schema": "mr3-p1c-episode-audit-v1",
+      "scope": "scripted sampling/reset; no RL, throughput or 95% success inference",
+      "seed": 101,
+      "supervisor_shutdown_digest": "35bdd405195e69fcdcb1c4b490994d698b91d4d336546c90617203f8ae1f233d",
+      "terminal_probe": false,
+      "transitions": {
+        "complete": true,
+        "final_action_submitted": true,
+        "final_dt": 1.0,
+        "final_physical_dt": 1.0,
+        "final_terminal_reused": false,
+        "release_time_ns": 75240000000,
+        "reward_sum": 6.484373231078245,
+        "sampled_physical_time_sec": 16.0,
+        "submitted_action_count": 16,
+        "terminal_map_scope": "frozen evaluator map; later actor map is diagnostic only",
+        "terminal_map_sha_exception_count": 0,
+        "transition_count": 16,
+        "zero_duration_terminal_count": 0
+      }
+    },
+    {
+      "closure": {
+        "launch_start_count": 38,
+        "native_shutdown_proof": {
+          "gzserver": {
+            "clean_exits": [
+              {
+                "pid": 894028,
+                "suffix": "4"
+              }
+            ],
+            "identity_matched": true,
+            "started": [
+              {
+                "pid": 894028,
+                "suffix": "4"
+              }
+            ]
+          },
+          "mr3_gazebo_native_stop": {
+            "clean_exits": [
+              {
+                "pid": 897321,
+                "suffix": "38"
+              }
+            ],
+            "identity_matched": true,
+            "started": [
+              {
+                "pid": 897321,
+                "suffix": "38"
+              }
+            ]
+          }
+        },
+        "navigation_closed": true,
+        "navigation_failure": false,
+        "other_launch_children_require_proc_identity": true,
+        "safety_failures": [],
+        "unsampled_stop_cli_alternative_evidence": []
+      },
+      "complete_episode_credit": true,
+      "contacts": {
+        "collision_events": 0,
+        "contact_phase_proof": {
+          "gap_endpoints_available": false,
+          "gap_endpoints_scope": "not saved in the original evidence; unavailable",
+          "lifetime_gap_diagnostics": {
+            "tb1/base": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05299999999999727
+            },
+            "tb1/caster_back_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05700000000000216
+            },
+            "tb1/caster_back_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05500000000000682
+            },
+            "tb1/lidar": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05299999999999727
+            },
+            "tb1/wheel_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05300000000001148
+            },
+            "tb1/wheel_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb2/base": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.053999999999987836
+            },
+            "tb2/caster_back_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.055999999999997385
+            },
+            "tb2/caster_back_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05499999999999261
+            },
+            "tb2/lidar": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.053999999999987836
+            },
+            "tb2/wheel_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.053999999999987836
+            },
+            "tb2/wheel_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb3/base": {
+              "max_receipt_gap_sec": 0.0800000000000125,
+              "max_source_gap_sec": 0.05299999999999727
+            },
+            "tb3/caster_back_left": {
+              "max_receipt_gap_sec": 0.0800000000000125,
+              "max_source_gap_sec": 0.058000000000006935
+            },
+            "tb3/caster_back_right": {
+              "max_receipt_gap_sec": 0.0800000000000125,
+              "max_source_gap_sec": 0.058000000000006935
+            },
+            "tb3/lidar": {
+              "max_receipt_gap_sec": 0.0800000000000125,
+              "max_source_gap_sec": 0.05299999999999727
+            },
+            "tb3/wheel_left": {
+              "max_receipt_gap_sec": 0.0800000000000125,
+              "max_source_gap_sec": 0.05299999999999727
+            },
+            "tb3/wheel_right": {
+              "max_receipt_gap_sec": 0.0800000000000125,
+              "max_source_gap_sec": 0.05500000000000682
+            }
+          },
+          "method": "mr3-contact-task-phase-and-command-time-v3",
+          "paused_release": {
+            "actual_seq0_binding": true,
+            "actual_task_start": true,
+            "context_evidence_sha256": {
+              "adapter.jsonl": "c9585ac94041762cab9497e7bc39ebc68a3c037e649e87aeb45ce69972f40931",
+              "metadata.json": "019471b548538bfa381e33f286a2d4e8acafab055d309323bd122617dee91036",
+              "physics.jsonl": "4752af8fff31a037fa2976187e7b65bf1d58c3b92acc7b880ec83b6014ce52d3",
+              "transitions.jsonl": "f6da45276ac3abff065f3f805916987d903f7f54a910550efaa58876d91132dd"
+            },
+            "epoch": "mr3_p1c_v7_workers2_w0_e2_ab8e683f",
+            "independent_raw_reward_ready_payload_available": false,
+            "initial_pause_time_ns": 76479000000,
+            "no_positive_physics_window": "worker waits for ready/seq0 while physics is paused",
+            "ready_wait_proof": "pinned worker/evaluator causal order plus saved seq0 response",
+            "release_time_ns": 76480000000
+          },
+          "task_gap_bound_from_frozen_latch_invariant": true,
+          "task_gap_limit_sec": 0.5,
+          "task_gap_numeric_maxima": null
+        },
+        "continuous_freshness_passed": true,
+        "errors": [],
+        "passed": true,
+        "raw_sequence_audit_passed": true,
+        "raw_stream_count": 18,
+        "scope": "frozen started/latch invariant and endpoint ages; no raw timing replay",
+        "task_success": false,
+        "termination_reason": "training_external_truncation",
+        "zero_contact": true
+      },
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_workers2/worker0/episode002_open_101",
+      "epoch": "mr3_p1c_v7_workers2_w0_e2_ab8e683f",
+      "errors": [],
+      "evidence_sha256": {
+        "adapter.jsonl": "c9585ac94041762cab9497e7bc39ebc68a3c037e649e87aeb45ce69972f40931",
+        "launch.log": "7d53a799c5335ac972f681b7cbcf8c47b527126d4ef87381d5c7fc9532bea11e",
+        "metadata.json": "019471b548538bfa381e33f286a2d4e8acafab055d309323bd122617dee91036",
+        "mr3_p1c_v7_workers2_w0_e2_ab8e683f.json": "27d6d8ec706b068fa9d970faeb3e43eec5e552604046b82c65d03bbad64980c1",
+        "native_stop.json": "dd20482d43d76fdef7c84b10d059780cfc69fa0590b61a3c85a67885f8ec4753",
+        "nav2_shutdown.json": "17bab89617d4ee39161c27c9b83094aad0770cbd6da08e9f669dbe6e8781ecbc",
+        "physics.jsonl": "4752af8fff31a037fa2976187e7b65bf1d58c3b92acc7b880ec83b6014ce52d3",
+        "summary.json": "2380a54b2926f756173644471f5ba867e654385278c83a7b644fd5e420192f92",
+        "supervisor_metadata.json": "6d0195eaebad917512f7f106a980eb1f7e85dbecb8e9b3ba49c5ec49f5142bbf",
+        "supervisor_shutdown.json": "c0a6a7e1ed488c744f05694ec4d821c8a825282c4d0545a3348fa23ee17aa5d0",
+        "transitions.jsonl": "f6da45276ac3abff065f3f805916987d903f7f54a910550efaa58876d91132dd"
+      },
+      "expected_infrastructure_fault": false,
+      "freeze": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a",
+      "initial_inputs_ready": {
+        "ack_map_payload_sha256": "dbc79311b473c09fb3f9a7129b77f34c688ca533e9e8f38e8bb938403c2b7d33",
+        "ack_stamp": 75.86,
+        "ack_state_sequence": 757,
+        "first_snapshot_state_sequence": 763,
+        "initial_pause_stamp": 76.479,
+        "protocol": "delivered_inputs_before_pause-v1",
+        "proven": true,
+        "required": true,
+        "scope": "input readiness before pause; first snapshot may use newer delivery"
+      },
+      "ordered_shutdown": {
+        "finalize_ack_sequence": 16,
+        "launch": {
+          "actual_process_starts": 38,
+          "all_actual_clean_exits": 38,
+          "evaluator_exit_wall_monotonic_ns": 3823729456234556,
+          "proven": true,
+          "scope": "actual SDK identities and clean exits; no SDK internal-race claim",
+          "serial_sigint_count": 31
+        },
+        "nav2": {
+          "completed_wall_monotonic_ns": 3823728794153098,
+          "finalized_state_responses": 18,
+          "paused_time_ns": 92680000000,
+          "proven": true,
+          "robot_shutdown_responses": 3,
+          "scope": "successful lifecycle replies and actual GetState finalized receipts"
+        },
+        "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+        "proven": true,
+        "required": true
+      },
+      "passed": true,
+      "physics": {
+        "first_time_ns": 76479000000,
+        "last_time_ns": 92680000000,
+        "receipt_count": 812,
+        "total_physical_ticks": 16201
+      },
+      "processes": {
+        "forced_cleanup": false,
+        "no_live_or_zombie_leftovers": true,
+        "owned_pid_identities": [
+          [
+            893919,
+            382346869
+          ],
+          [
+            893932,
+            382346910
+          ],
+          [
+            894003,
+            382347021
+          ],
+          [
+            894022,
+            382347195
+          ],
+          [
+            894024,
+            382347195
+          ],
+          [
+            894026,
+            382347196
+          ],
+          [
+            894028,
+            382347196
+          ],
+          [
+            894030,
+            382347196
+          ],
+          [
+            894032,
+            382347196
+          ],
+          [
+            894034,
+            382347196
+          ],
+          [
+            894483,
+            382347581
+          ],
+          [
+            894485,
+            382347581
+          ],
+          [
+            894487,
+            382347581
+          ],
+          [
+            894553,
+            382347903
+          ],
+          [
+            894555,
+            382347903
+          ],
+          [
+            894557,
+            382347903
+          ],
+          [
+            894624,
+            382348243
+          ],
+          [
+            894777,
+            382349388
+          ],
+          [
+            894780,
+            382349388
+          ],
+          [
+            894782,
+            382349388
+          ],
+          [
+            894784,
+            382349388
+          ],
+          [
+            894786,
+            382349388
+          ],
+          [
+            894788,
+            382349389
+          ],
+          [
+            894790,
+            382349390
+          ],
+          [
+            895176,
+            382353888
+          ],
+          [
+            895178,
+            382353888
+          ],
+          [
+            895180,
+            382353888
+          ],
+          [
+            895182,
+            382353888
+          ],
+          [
+            895184,
+            382353889
+          ],
+          [
+            895186,
+            382353889
+          ],
+          [
+            895188,
+            382353889
+          ],
+          [
+            895598,
+            382358387
+          ],
+          [
+            895600,
+            382358388
+          ],
+          [
+            895602,
+            382358388
+          ],
+          [
+            895604,
+            382358388
+          ],
+          [
+            895606,
+            382358388
+          ],
+          [
+            895608,
+            382358388
+          ],
+          [
+            895610,
+            382358388
+          ],
+          [
+            895817,
+            382359078
+          ],
+          [
+            895819,
+            382359078
+          ],
+          [
+            895853,
+            382359321
+          ],
+          [
+            895857,
+            382359362
+          ],
+          [
+            897321,
+            382373542
+          ]
+        ],
+        "scope": "saved PID/start identities and cleanup receipt; no live /proc inference",
+        "worker_identity": {
+          "group": 893919,
+          "parent": 888606,
+          "pid": 893919,
+          "session": 893919,
+          "start_ticks": 382346869,
+          "state": "R"
+        }
+      },
+      "protocol": {
+        "accepted_action_count": 16,
+        "cancel_count": 2,
+        "command_time": {
+          "accepted_commands": 16,
+          "bindings": [
+            {
+              "action": 201,
+              "command_id": 1,
+              "created_at": 76.48,
+              "created_time_ns": 76480000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e2_ab8e683f",
+              "expires_at": 78.48,
+              "expires_time_ns": 78480000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 1,
+              "receipt_kind": "action",
+              "receipt_stamp": 76.48,
+              "receipt_time_ns": 76480000000,
+              "rejection_reason": null,
+              "step_sequence": 1,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 2,
+              "created_at": 77.48,
+              "created_time_ns": 77480000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e2_ab8e683f",
+              "expires_at": 79.48,
+              "expires_time_ns": 79480000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 2,
+              "receipt_kind": "action",
+              "receipt_stamp": 77.48,
+              "receipt_time_ns": 77480000000,
+              "rejection_reason": null,
+              "step_sequence": 2,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 3,
+              "created_at": 78.48,
+              "created_time_ns": 78480000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e2_ab8e683f",
+              "expires_at": 80.48,
+              "expires_time_ns": 80480000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 3,
+              "receipt_kind": "action",
+              "receipt_stamp": 78.48,
+              "receipt_time_ns": 78480000000,
+              "rejection_reason": null,
+              "step_sequence": 3,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 4,
+              "created_at": 79.48,
+              "created_time_ns": 79480000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e2_ab8e683f",
+              "expires_at": 81.48,
+              "expires_time_ns": 81480000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 4,
+              "receipt_kind": "action",
+              "receipt_stamp": 79.48,
+              "receipt_time_ns": 79480000000,
+              "rejection_reason": null,
+              "step_sequence": 4,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 5,
+              "created_at": 80.48,
+              "created_time_ns": 80480000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e2_ab8e683f",
+              "expires_at": 82.48,
+              "expires_time_ns": 82480000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 5,
+              "receipt_kind": "action",
+              "receipt_stamp": 80.48,
+              "receipt_time_ns": 80480000000,
+              "rejection_reason": null,
+              "step_sequence": 5,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 6,
+              "created_at": 81.48,
+              "created_time_ns": 81480000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e2_ab8e683f",
+              "expires_at": 83.48,
+              "expires_time_ns": 83480000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 6,
+              "receipt_kind": "action",
+              "receipt_stamp": 81.48,
+              "receipt_time_ns": 81480000000,
+              "rejection_reason": null,
+              "step_sequence": 6,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 7,
+              "created_at": 82.48,
+              "created_time_ns": 82480000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e2_ab8e683f",
+              "expires_at": 84.48,
+              "expires_time_ns": 84480000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 7,
+              "receipt_kind": "action",
+              "receipt_stamp": 82.48,
+              "receipt_time_ns": 82480000000,
+              "rejection_reason": null,
+              "step_sequence": 7,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 999,
+              "command_id": 8,
+              "created_at": 83.48,
+              "created_time_ns": 83480000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e2_ab8e683f",
+              "expires_at": 85.48,
+              "expires_time_ns": 85480000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 8,
+              "receipt_kind": "action",
+              "receipt_stamp": 83.48,
+              "receipt_time_ns": 83480000000,
+              "rejection_reason": null,
+              "step_sequence": 8,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 999,
+              "command_id": 9,
+              "created_at": 84.48,
+              "created_time_ns": 84480000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e2_ab8e683f",
+              "expires_at": 86.48,
+              "expires_time_ns": 86480000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 9,
+              "receipt_kind": "action",
+              "receipt_stamp": 84.48,
+              "receipt_time_ns": 84480000000,
+              "rejection_reason": null,
+              "step_sequence": 9,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 999,
+              "command_id": 10,
+              "created_at": 85.48,
+              "created_time_ns": 85480000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e2_ab8e683f",
+              "expires_at": 87.48,
+              "expires_time_ns": 87480000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 10,
+              "receipt_kind": "action",
+              "receipt_stamp": 85.48,
+              "receipt_time_ns": 85480000000,
+              "rejection_reason": null,
+              "step_sequence": 10,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 318,
+              "command_id": 11,
+              "created_at": 86.48,
+              "created_time_ns": 86480000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e2_ab8e683f",
+              "expires_at": 88.48,
+              "expires_time_ns": 88480000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 11,
+              "receipt_kind": "action",
+              "receipt_stamp": 86.48,
+              "receipt_time_ns": 86480000000,
+              "rejection_reason": null,
+              "step_sequence": 11,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 12,
+              "created_at": 87.48,
+              "created_time_ns": 87480000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e2_ab8e683f",
+              "expires_at": 89.48,
+              "expires_time_ns": 89480000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 12,
+              "receipt_kind": "action",
+              "receipt_stamp": 87.48,
+              "receipt_time_ns": 87480000000,
+              "rejection_reason": null,
+              "step_sequence": 12,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 889,
+              "command_id": 13,
+              "created_at": 88.48,
+              "created_time_ns": 88480000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e2_ab8e683f",
+              "expires_at": 90.48,
+              "expires_time_ns": 90480000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 13,
+              "receipt_kind": "action",
+              "receipt_stamp": 88.48,
+              "receipt_time_ns": 88480000000,
+              "rejection_reason": null,
+              "step_sequence": 13,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 889,
+              "command_id": 14,
+              "created_at": 89.48,
+              "created_time_ns": 89480000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e2_ab8e683f",
+              "expires_at": 91.48,
+              "expires_time_ns": 91480000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 14,
+              "receipt_kind": "action",
+              "receipt_stamp": 89.48,
+              "receipt_time_ns": 89480000000,
+              "rejection_reason": null,
+              "step_sequence": 14,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 889,
+              "command_id": 15,
+              "created_at": 90.48,
+              "created_time_ns": 90480000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e2_ab8e683f",
+              "expires_at": 92.48,
+              "expires_time_ns": 92480000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 15,
+              "receipt_kind": "action",
+              "receipt_stamp": 90.48,
+              "receipt_time_ns": 90480000000,
+              "rejection_reason": null,
+              "step_sequence": 15,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 889,
+              "command_id": 16,
+              "created_at": 91.48,
+              "created_time_ns": 91480000000,
+              "epoch": "mr3_p1c_v7_workers2_w0_e2_ab8e683f",
+              "expires_at": 93.48,
+              "expires_time_ns": 93480000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 16,
+              "receipt_kind": "action",
+              "receipt_stamp": 91.48,
+              "receipt_time_ns": 91480000000,
+              "rejection_reason": null,
+              "step_sequence": 16,
+              "ttl_ns": 2000000000,
+              "valid": true
+            }
+          ],
+          "commands_checked": 16,
+          "complete_episode_credit": false,
+          "errors": [],
+          "excluded_no_action_terminal_steps": [],
+          "method": "mr3-command-time-integer-endpoints-v1",
+          "other_rejection_reasons_revalidated": false,
+          "passed": true,
+          "rejected_commands": 0,
+          "reward_contact_mask_ownership_closure_revalidated": false,
+          "scope": "submitted command validity and receipt reason only"
+        },
+        "confirmed_cancellation_count": 2,
+        "goal_count": 5,
+        "keep_robot_command_count": 30,
+        "native_terminal_count": 5,
+        "rejected_action_count": 0,
+        "scope": "goal payload audit, not an action-server network trace"
+      },
+      "scene": "open",
+      "schema": "mr3-p1c-episode-audit-v1",
+      "scope": "scripted sampling/reset; no RL, throughput or 95% success inference",
+      "seed": 101,
+      "supervisor_shutdown_digest": "26dfc67bfa7a4c271e2fae236dead23e28949f0b7397ed8479ad56f5d96c132c",
+      "terminal_probe": false,
+      "transitions": {
+        "complete": true,
+        "final_action_submitted": true,
+        "final_dt": 1.0,
+        "final_physical_dt": 1.0,
+        "final_terminal_reused": false,
+        "release_time_ns": 76480000000,
+        "reward_sum": 6.628397699260476,
+        "sampled_physical_time_sec": 16.0,
+        "submitted_action_count": 16,
+        "terminal_map_scope": "frozen evaluator map; later actor map is diagnostic only",
+        "terminal_map_sha_exception_count": 0,
+        "transition_count": 16,
+        "zero_duration_terminal_count": 0
+      }
+    },
+    {
+      "closure": {
+        "launch_start_count": 38,
+        "native_shutdown_proof": {
+          "gzserver": {
+            "clean_exits": [
+              {
+                "pid": 888891,
+                "suffix": "4"
+              }
+            ],
+            "identity_matched": true,
+            "started": [
+              {
+                "pid": 888891,
+                "suffix": "4"
+              }
+            ]
+          },
+          "mr3_gazebo_native_stop": {
+            "clean_exits": [
+              {
+                "pid": 893249,
+                "suffix": "38"
+              }
+            ],
+            "identity_matched": true,
+            "started": [
+              {
+                "pid": 893249,
+                "suffix": "38"
+              }
+            ]
+          }
+        },
+        "navigation_closed": true,
+        "navigation_failure": false,
+        "other_launch_children_require_proc_identity": true,
+        "safety_failures": [],
+        "unsampled_stop_cli_alternative_evidence": []
+      },
+      "complete_episode_credit": true,
+      "contacts": {
+        "collision_events": 0,
+        "contact_phase_proof": {
+          "gap_endpoints_available": false,
+          "gap_endpoints_scope": "not saved in the original evidence; unavailable",
+          "lifetime_gap_diagnostics": {
+            "tb1/base": {
+              "max_receipt_gap_sec": 0.0800000000000125,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb1/caster_back_left": {
+              "max_receipt_gap_sec": 0.0800000000000125,
+              "max_source_gap_sec": 0.055999999999997385
+            },
+            "tb1/caster_back_right": {
+              "max_receipt_gap_sec": 0.0800000000000125,
+              "max_source_gap_sec": 0.055999999999997385
+            },
+            "tb1/lidar": {
+              "max_receipt_gap_sec": 0.0800000000000125,
+              "max_source_gap_sec": 0.05300000000001148
+            },
+            "tb1/wheel_left": {
+              "max_receipt_gap_sec": 0.0800000000000125,
+              "max_source_gap_sec": 0.05499999999999261
+            },
+            "tb1/wheel_right": {
+              "max_receipt_gap_sec": 0.0800000000000125,
+              "max_source_gap_sec": 0.05500000000000682
+            },
+            "tb2/base": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb2/caster_back_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05500000000000682
+            },
+            "tb2/caster_back_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05499999999999261
+            },
+            "tb2/lidar": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb2/wheel_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb2/wheel_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05500000000000682
+            },
+            "tb3/base": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb3/caster_back_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.060000000000002274
+            },
+            "tb3/caster_back_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.060000000000002274
+            },
+            "tb3/lidar": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb3/wheel_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05499999999999261
+            },
+            "tb3/wheel_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05500000000000682
+            }
+          },
+          "method": "mr3-contact-task-phase-and-command-time-v3",
+          "paused_release": {
+            "actual_seq0_binding": true,
+            "actual_task_start": true,
+            "context_evidence_sha256": {
+              "adapter.jsonl": "475af2a33ea84ce162a6fc20cdd216ac61265bfb7191b94d97f9bc03f1531c6b",
+              "metadata.json": "7f88dd122f7558f0976082dc74abd8f05087f222a0e26c08410eb6398d88d0fb",
+              "physics.jsonl": "d70fe525800751d5e6f9e5ab86773d44e19ea8db588cb7683a703a35b57b2150",
+              "transitions.jsonl": "baa38e2915d98267c03363b0ec2bc785c993bb7ca534335dd995804c14343bb6"
+            },
+            "epoch": "mr3_p1c_v7_workers2_w1_e1_4126e4e7",
+            "independent_raw_reward_ready_payload_available": false,
+            "initial_pause_time_ns": 77256000000,
+            "no_positive_physics_window": "worker waits for ready/seq0 while physics is paused",
+            "ready_wait_proof": "pinned worker/evaluator causal order plus saved seq0 response",
+            "release_time_ns": 77260000000
+          },
+          "task_gap_bound_from_frozen_latch_invariant": true,
+          "task_gap_limit_sec": 0.5,
+          "task_gap_numeric_maxima": null
+        },
+        "continuous_freshness_passed": true,
+        "errors": [],
+        "passed": true,
+        "raw_sequence_audit_passed": true,
+        "raw_stream_count": 18,
+        "scope": "frozen started/latch invariant and endpoint ages; no raw timing replay",
+        "task_success": false,
+        "termination_reason": "training_external_truncation",
+        "zero_contact": true
+      },
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_workers2/worker1/episode001_open_101",
+      "epoch": "mr3_p1c_v7_workers2_w1_e1_4126e4e7",
+      "errors": [],
+      "evidence_sha256": {
+        "adapter.jsonl": "475af2a33ea84ce162a6fc20cdd216ac61265bfb7191b94d97f9bc03f1531c6b",
+        "launch.log": "6008774ea76f369fac48f6f7b340b13579022b7656d3eb3232566fb2a1af5c63",
+        "metadata.json": "7f88dd122f7558f0976082dc74abd8f05087f222a0e26c08410eb6398d88d0fb",
+        "mr3_p1c_v7_workers2_w1_e1_4126e4e7.json": "b3732a45eb712a1bd2bfeaac4e9df86e3da41bd3b48f788dee655e9b683c5584",
+        "native_stop.json": "97cd19ee9f708233de7c9488ec965e1eb8128f69c8ea3e5edf5d7455afa86c10",
+        "nav2_shutdown.json": "0af64366c7dfeda4b036da1382d382c2a3e1f6ea8742acb694bffb3b64ebb797",
+        "physics.jsonl": "d70fe525800751d5e6f9e5ab86773d44e19ea8db588cb7683a703a35b57b2150",
+        "summary.json": "28cb99602faa38e02216c65af133dd78057a65d0addf6b79e42be0b0ae04816f",
+        "supervisor_metadata.json": "23affd467ab7fb72b54528cf19335a4c2b74852cd8b2c992fbfd006a7ab6ad8a",
+        "supervisor_shutdown.json": "81898fcfe1cf70b046fe0ea22158e9022ca3f0a9351434f603fc3f6b12f08e5c",
+        "transitions.jsonl": "baa38e2915d98267c03363b0ec2bc785c993bb7ca534335dd995804c14343bb6"
+      },
+      "expected_infrastructure_fault": false,
+      "freeze": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a",
+      "initial_inputs_ready": {
+        "ack_map_payload_sha256": "518cd80a4fcb9d8ebca74a9770fc101768f049475929ba18c8104035219e9d66",
+        "ack_stamp": 76.66,
+        "ack_state_sequence": 766,
+        "first_snapshot_state_sequence": 772,
+        "initial_pause_stamp": 77.256,
+        "protocol": "delivered_inputs_before_pause-v1",
+        "proven": true,
+        "required": true,
+        "scope": "input readiness before pause; first snapshot may use newer delivery"
+      },
+      "ordered_shutdown": {
+        "finalize_ack_sequence": 16,
+        "launch": {
+          "actual_process_starts": 38,
+          "all_actual_clean_exits": 38,
+          "evaluator_exit_wall_monotonic_ns": 3823449841908070,
+          "proven": true,
+          "scope": "actual SDK identities and clean exits; no SDK internal-race claim",
+          "serial_sigint_count": 31
+        },
+        "nav2": {
+          "completed_wall_monotonic_ns": 3823449216898947,
+          "finalized_state_responses": 18,
+          "paused_time_ns": 93280000000,
+          "proven": true,
+          "robot_shutdown_responses": 3,
+          "scope": "successful lifecycle replies and actual GetState finalized receipts"
+        },
+        "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+        "proven": true,
+        "required": true
+      },
+      "passed": true,
+      "physics": {
+        "first_time_ns": 77256000000,
+        "last_time_ns": 93280000000,
+        "receipt_count": 806,
+        "total_physical_ticks": 16024
+      },
+      "processes": {
+        "forced_cleanup": false,
+        "no_live_or_zombie_leftovers": true,
+        "owned_pid_identities": [
+          [
+            888767,
+            382318572
+          ],
+          [
+            888856,
+            382318723
+          ],
+          [
+            888880,
+            382318884
+          ],
+          [
+            888884,
+            382318884
+          ],
+          [
+            888888,
+            382318884
+          ],
+          [
+            888891,
+            382318884
+          ],
+          [
+            888895,
+            382318884
+          ],
+          [
+            888899,
+            382318884
+          ],
+          [
+            888903,
+            382318885
+          ],
+          [
+            889796,
+            382319258
+          ],
+          [
+            889798,
+            382319258
+          ],
+          [
+            889800,
+            382319258
+          ],
+          [
+            889935,
+            382319584
+          ],
+          [
+            889937,
+            382319585
+          ],
+          [
+            889939,
+            382319585
+          ],
+          [
+            890061,
+            382319927
+          ],
+          [
+            890142,
+            382321073
+          ],
+          [
+            890144,
+            382321074
+          ],
+          [
+            890146,
+            382321074
+          ],
+          [
+            890148,
+            382321074
+          ],
+          [
+            890150,
+            382321074
+          ],
+          [
+            890152,
+            382321074
+          ],
+          [
+            890154,
+            382321077
+          ],
+          [
+            891019,
+            382325571
+          ],
+          [
+            891021,
+            382325571
+          ],
+          [
+            891023,
+            382325571
+          ],
+          [
+            891025,
+            382325571
+          ],
+          [
+            891027,
+            382325571
+          ],
+          [
+            891029,
+            382325571
+          ],
+          [
+            891031,
+            382325572
+          ],
+          [
+            891394,
+            382330063
+          ],
+          [
+            891396,
+            382330064
+          ],
+          [
+            891398,
+            382330064
+          ],
+          [
+            891400,
+            382330064
+          ],
+          [
+            891402,
+            382330064
+          ],
+          [
+            891404,
+            382330064
+          ],
+          [
+            891406,
+            382330064
+          ],
+          [
+            891618,
+            382330757
+          ],
+          [
+            891620,
+            382330757
+          ],
+          [
+            891679,
+            382331157
+          ],
+          [
+            891683,
+            382331199
+          ],
+          [
+            893249,
+            382345589
+          ]
+        ],
+        "scope": "saved PID/start identities and cleanup receipt; no live /proc inference",
+        "worker_identity": {
+          "group": 888767,
+          "parent": 888606,
+          "pid": 888767,
+          "session": 888767,
+          "start_ticks": 382318572,
+          "state": "R"
+        }
+      },
+      "protocol": {
+        "accepted_action_count": 16,
+        "cancel_count": 4,
+        "command_time": {
+          "accepted_commands": 16,
+          "bindings": [
+            {
+              "action": 401,
+              "command_id": 1,
+              "created_at": 77.26,
+              "created_time_ns": 77260000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e1_4126e4e7",
+              "expires_at": 79.26,
+              "expires_time_ns": 79260000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 1,
+              "receipt_kind": "action",
+              "receipt_stamp": 77.26,
+              "receipt_time_ns": 77260000000,
+              "rejection_reason": null,
+              "step_sequence": 1,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 2,
+              "created_at": 78.26,
+              "created_time_ns": 78260000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e1_4126e4e7",
+              "expires_at": 80.26,
+              "expires_time_ns": 80260000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 2,
+              "receipt_kind": "action",
+              "receipt_stamp": 78.26,
+              "receipt_time_ns": 78260000000,
+              "rejection_reason": null,
+              "step_sequence": 2,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 3,
+              "created_at": 79.26,
+              "created_time_ns": 79260000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e1_4126e4e7",
+              "expires_at": 81.26,
+              "expires_time_ns": 81260000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 3,
+              "receipt_kind": "action",
+              "receipt_stamp": 79.26,
+              "receipt_time_ns": 79260000000,
+              "rejection_reason": null,
+              "step_sequence": 3,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 4,
+              "created_at": 80.26,
+              "created_time_ns": 80260000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e1_4126e4e7",
+              "expires_at": 82.26,
+              "expires_time_ns": 82260000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 4,
+              "receipt_kind": "action",
+              "receipt_stamp": 80.26,
+              "receipt_time_ns": 80260000000,
+              "rejection_reason": null,
+              "step_sequence": 4,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 5,
+              "created_at": 81.26,
+              "created_time_ns": 81260000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e1_4126e4e7",
+              "expires_at": 83.26,
+              "expires_time_ns": 83260000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 5,
+              "receipt_kind": "action",
+              "receipt_stamp": 81.26,
+              "receipt_time_ns": 81260000000,
+              "rejection_reason": null,
+              "step_sequence": 5,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 6,
+              "created_at": 82.26,
+              "created_time_ns": 82260000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e1_4126e4e7",
+              "expires_at": 84.26,
+              "expires_time_ns": 84260000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 6,
+              "receipt_kind": "action",
+              "receipt_stamp": 82.26,
+              "receipt_time_ns": 82260000000,
+              "rejection_reason": null,
+              "step_sequence": 6,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 7,
+              "created_at": 83.26,
+              "created_time_ns": 83260000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e1_4126e4e7",
+              "expires_at": 85.26,
+              "expires_time_ns": 85260000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 7,
+              "receipt_kind": "action",
+              "receipt_stamp": 83.26,
+              "receipt_time_ns": 83260000000,
+              "rejection_reason": null,
+              "step_sequence": 7,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 999,
+              "command_id": 8,
+              "created_at": 84.26,
+              "created_time_ns": 84260000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e1_4126e4e7",
+              "expires_at": 86.26,
+              "expires_time_ns": 86260000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 8,
+              "receipt_kind": "action",
+              "receipt_stamp": 84.26,
+              "receipt_time_ns": 84260000000,
+              "rejection_reason": null,
+              "step_sequence": 8,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 999,
+              "command_id": 9,
+              "created_at": 85.26,
+              "created_time_ns": 85260000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e1_4126e4e7",
+              "expires_at": 87.26,
+              "expires_time_ns": 87260000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 9,
+              "receipt_kind": "action",
+              "receipt_stamp": 85.26,
+              "receipt_time_ns": 85260000000,
+              "rejection_reason": null,
+              "step_sequence": 9,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 999,
+              "command_id": 10,
+              "created_at": 86.26,
+              "created_time_ns": 86260000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e1_4126e4e7",
+              "expires_at": 88.26,
+              "expires_time_ns": 88260000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 10,
+              "receipt_kind": "action",
+              "receipt_stamp": 86.26,
+              "receipt_time_ns": 86260000000,
+              "rejection_reason": null,
+              "step_sequence": 10,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 405,
+              "command_id": 11,
+              "created_at": 87.26,
+              "created_time_ns": 87260000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e1_4126e4e7",
+              "expires_at": 89.26,
+              "expires_time_ns": 89260000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 11,
+              "receipt_kind": "action",
+              "receipt_stamp": 87.26,
+              "receipt_time_ns": 87260000000,
+              "rejection_reason": null,
+              "step_sequence": 11,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 12,
+              "created_at": 88.26,
+              "created_time_ns": 88260000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e1_4126e4e7",
+              "expires_at": 90.26,
+              "expires_time_ns": 90260000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 12,
+              "receipt_kind": "action",
+              "receipt_stamp": 88.26,
+              "receipt_time_ns": 88260000000,
+              "rejection_reason": null,
+              "step_sequence": 12,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 13,
+              "created_at": 89.26,
+              "created_time_ns": 89260000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e1_4126e4e7",
+              "expires_at": 91.26,
+              "expires_time_ns": 91260000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 13,
+              "receipt_kind": "action",
+              "receipt_stamp": 89.26,
+              "receipt_time_ns": 89260000000,
+              "rejection_reason": null,
+              "step_sequence": 13,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 14,
+              "created_at": 90.26,
+              "created_time_ns": 90260000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e1_4126e4e7",
+              "expires_at": 92.26,
+              "expires_time_ns": 92260000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 14,
+              "receipt_kind": "action",
+              "receipt_stamp": 90.26,
+              "receipt_time_ns": 90260000000,
+              "rejection_reason": null,
+              "step_sequence": 14,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 889,
+              "command_id": 15,
+              "created_at": 91.26,
+              "created_time_ns": 91260000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e1_4126e4e7",
+              "expires_at": 93.26,
+              "expires_time_ns": 93260000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 15,
+              "receipt_kind": "action",
+              "receipt_stamp": 91.26,
+              "receipt_time_ns": 91260000000,
+              "rejection_reason": null,
+              "step_sequence": 15,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 999,
+              "command_id": 16,
+              "created_at": 92.26,
+              "created_time_ns": 92260000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e1_4126e4e7",
+              "expires_at": 94.26,
+              "expires_time_ns": 94260000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 16,
+              "receipt_kind": "action",
+              "receipt_stamp": 92.26,
+              "receipt_time_ns": 92260000000,
+              "rejection_reason": null,
+              "step_sequence": 16,
+              "ttl_ns": 2000000000,
+              "valid": true
+            }
+          ],
+          "commands_checked": 16,
+          "complete_episode_credit": false,
+          "errors": [],
+          "excluded_no_action_terminal_steps": [],
+          "method": "mr3-command-time-integer-endpoints-v1",
+          "other_rejection_reasons_revalidated": false,
+          "passed": true,
+          "rejected_commands": 0,
+          "reward_contact_mask_ownership_closure_revalidated": false,
+          "scope": "submitted command validity and receipt reason only"
+        },
+        "confirmed_cancellation_count": 4,
+        "goal_count": 6,
+        "keep_robot_command_count": 29,
+        "native_terminal_count": 6,
+        "rejected_action_count": 0,
+        "scope": "goal payload audit, not an action-server network trace"
+      },
+      "scene": "open",
+      "schema": "mr3-p1c-episode-audit-v1",
+      "scope": "scripted sampling/reset; no RL, throughput or 95% success inference",
+      "seed": 101,
+      "supervisor_shutdown_digest": "8ac7fadf5dc08c6a4caae15c8ed64cff65e49e83cc27ef5dbe688960fbde8839",
+      "terminal_probe": false,
+      "transitions": {
+        "complete": true,
+        "final_action_submitted": true,
+        "final_dt": 1.0,
+        "final_physical_dt": 1.0,
+        "final_terminal_reused": false,
+        "release_time_ns": 77260000000,
+        "reward_sum": 5.5061024376883045,
+        "sampled_physical_time_sec": 16.0,
+        "submitted_action_count": 16,
+        "terminal_map_scope": "frozen evaluator map; later actor map is diagnostic only",
+        "terminal_map_sha_exception_count": 0,
+        "transition_count": 16,
+        "zero_duration_terminal_count": 0
+      }
+    },
+    {
+      "closure": {
+        "launch_start_count": 38,
+        "native_shutdown_proof": {
+          "gzserver": {
+            "clean_exits": [
+              {
+                "pid": 893372,
+                "suffix": "4"
+              }
+            ],
+            "identity_matched": true,
+            "started": [
+              {
+                "pid": 893372,
+                "suffix": "4"
+              }
+            ]
+          },
+          "mr3_gazebo_native_stop": {
+            "clean_exits": [
+              {
+                "pid": 897316,
+                "suffix": "38"
+              }
+            ],
+            "identity_matched": true,
+            "started": [
+              {
+                "pid": 897316,
+                "suffix": "38"
+              }
+            ]
+          }
+        },
+        "navigation_closed": true,
+        "navigation_failure": false,
+        "other_launch_children_require_proc_identity": true,
+        "safety_failures": [],
+        "unsampled_stop_cli_alternative_evidence": []
+      },
+      "complete_episode_credit": true,
+      "contacts": {
+        "collision_events": 0,
+        "contact_phase_proof": {
+          "gap_endpoints_available": false,
+          "gap_endpoints_scope": "not saved in the original evidence; unavailable",
+          "lifetime_gap_diagnostics": {
+            "tb1/base": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb1/caster_back_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05900000000001171
+            },
+            "tb1/caster_back_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.058000000000006935
+            },
+            "tb1/lidar": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb1/wheel_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05500000000000682
+            },
+            "tb1/wheel_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05700000000000216
+            },
+            "tb2/base": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05499999999999261
+            },
+            "tb2/caster_back_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05700000000000216
+            },
+            "tb2/caster_back_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.055999999999997385
+            },
+            "tb2/lidar": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05499999999999261
+            },
+            "tb2/wheel_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.05499999999999261
+            },
+            "tb2/wheel_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.056000000000011596
+            },
+            "tb3/base": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb3/caster_back_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.058000000000006935
+            },
+            "tb3/caster_back_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.058000000000006935
+            },
+            "tb3/lidar": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb3/wheel_left": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.054000000000002046
+            },
+            "tb3/wheel_right": {
+              "max_receipt_gap_sec": 0.060000000000002274,
+              "max_source_gap_sec": 0.055999999999997385
+            }
+          },
+          "method": "mr3-contact-task-phase-and-command-time-v3",
+          "paused_release": {
+            "actual_seq0_binding": true,
+            "actual_task_start": true,
+            "context_evidence_sha256": {
+              "adapter.jsonl": "fbb6187f618d98a1992bed3389bc1f30ca9ae652e9677b5097c80a2c2764b42b",
+              "metadata.json": "eba3a4f71d57c1338b0cc94040747025b4b2484eaf46a45bc62a2d75ed316e8c",
+              "physics.jsonl": "f1ba152d5ea5c2778bcf41d0991ba2a7979e2832b240f22c2ddd335bd44a9796",
+              "transitions.jsonl": "7925270d750d8818eb98668101dfc0b849c1d5ab4a41b9be2bc16e46136b7e7d"
+            },
+            "epoch": "mr3_p1c_v7_workers2_w1_e2_83e9c1d8",
+            "independent_raw_reward_ready_payload_available": false,
+            "initial_pause_time_ns": 76946000000,
+            "no_positive_physics_window": "worker waits for ready/seq0 while physics is paused",
+            "ready_wait_proof": "pinned worker/evaluator causal order plus saved seq0 response",
+            "release_time_ns": 76960000000
+          },
+          "task_gap_bound_from_frozen_latch_invariant": true,
+          "task_gap_limit_sec": 0.5,
+          "task_gap_numeric_maxima": null
+        },
+        "continuous_freshness_passed": true,
+        "errors": [],
+        "passed": true,
+        "raw_sequence_audit_passed": true,
+        "raw_stream_count": 18,
+        "scope": "frozen started/latch invariant and endpoint ages; no raw timing replay",
+        "task_success": false,
+        "termination_reason": "training_external_truncation",
+        "zero_contact": true
+      },
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v7_workers2/worker1/episode002_open_101",
+      "epoch": "mr3_p1c_v7_workers2_w1_e2_83e9c1d8",
+      "errors": [],
+      "evidence_sha256": {
+        "adapter.jsonl": "fbb6187f618d98a1992bed3389bc1f30ca9ae652e9677b5097c80a2c2764b42b",
+        "launch.log": "7126bff2078466f1a1405433a168f3d979ef32cc2f8f839c86ca29a99a927912",
+        "metadata.json": "eba3a4f71d57c1338b0cc94040747025b4b2484eaf46a45bc62a2d75ed316e8c",
+        "mr3_p1c_v7_workers2_w1_e2_83e9c1d8.json": "59eecda5be5d91a8e531dcfd0e55ada6c06889072d9845446008112085d595a2",
+        "native_stop.json": "051ea7c173f885f3e77305b8402e623b7a40a795e2dd811ee261cee4d3adbf98",
+        "nav2_shutdown.json": "711eb053f4f321be9d73cae05667b5834ceb7191ba2f6c3df436769e05eaca15",
+        "physics.jsonl": "f1ba152d5ea5c2778bcf41d0991ba2a7979e2832b240f22c2ddd335bd44a9796",
+        "summary.json": "64372c466f9a15f4b6eb25d1fe3e8b287a5db360491472b82be01bb85c026d27",
+        "supervisor_metadata.json": "acdda2d94e3ddbd52e00b12bf485b8c205556197f25b853876caff3813069ec0",
+        "supervisor_shutdown.json": "58b82aa16690a458e68909e4ec89441f884880acf0825d08d1f8cf3a5362a73a",
+        "transitions.jsonl": "7925270d750d8818eb98668101dfc0b849c1d5ab4a41b9be2bc16e46136b7e7d"
+      },
+      "expected_infrastructure_fault": false,
+      "freeze": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a",
+      "initial_inputs_ready": {
+        "ack_map_payload_sha256": "0d43532b411d202375c5cca6f5a4d21fac16ba42fabe1932979e706f672d101b",
+        "ack_stamp": 76.32,
+        "ack_state_sequence": 763,
+        "first_snapshot_state_sequence": 769,
+        "initial_pause_stamp": 76.946,
+        "protocol": "delivered_inputs_before_pause-v1",
+        "proven": true,
+        "required": true,
+        "scope": "input readiness before pause; first snapshot may use newer delivery"
+      },
+      "ordered_shutdown": {
+        "finalize_ack_sequence": 16,
+        "launch": {
+          "actual_process_starts": 38,
+          "all_actual_clean_exits": 38,
+          "evaluator_exit_wall_monotonic_ns": 3823728951281706,
+          "proven": true,
+          "scope": "actual SDK identities and clean exits; no SDK internal-race claim",
+          "serial_sigint_count": 31
+        },
+        "nav2": {
+          "completed_wall_monotonic_ns": 3823728264936740,
+          "finalized_state_responses": 18,
+          "paused_time_ns": 92980000000,
+          "proven": true,
+          "robot_shutdown_responses": 3,
+          "scope": "successful lifecycle replies and actual GetState finalized receipts"
+        },
+        "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+        "proven": true,
+        "required": true
+      },
+      "passed": true,
+      "physics": {
+        "first_time_ns": 76946000000,
+        "last_time_ns": 92980000000,
+        "receipt_count": 816,
+        "total_physical_ticks": 16034
+      },
+      "processes": {
+        "forced_cleanup": false,
+        "no_live_or_zombie_leftovers": true,
+        "owned_pid_identities": [
+          [
+            893318,
+            382346011
+          ],
+          [
+            893333,
+            382346052
+          ],
+          [
+            893358,
+            382346158
+          ],
+          [
+            893366,
+            382346317
+          ],
+          [
+            893368,
+            382346317
+          ],
+          [
+            893370,
+            382346317
+          ],
+          [
+            893372,
+            382346318
+          ],
+          [
+            893374,
+            382346318
+          ],
+          [
+            893376,
+            382346318
+          ],
+          [
+            893378,
+            382346318
+          ],
+          [
+            893863,
+            382346669
+          ],
+          [
+            893865,
+            382346669
+          ],
+          [
+            893867,
+            382346670
+          ],
+          [
+            893955,
+            382346975
+          ],
+          [
+            893957,
+            382346975
+          ],
+          [
+            893959,
+            382346975
+          ],
+          [
+            894203,
+            382347310
+          ],
+          [
+            894646,
+            382348457
+          ],
+          [
+            894648,
+            382348457
+          ],
+          [
+            894650,
+            382348457
+          ],
+          [
+            894652,
+            382348457
+          ],
+          [
+            894654,
+            382348457
+          ],
+          [
+            894656,
+            382348458
+          ],
+          [
+            894658,
+            382348459
+          ],
+          [
+            895042,
+            382352956
+          ],
+          [
+            895044,
+            382352957
+          ],
+          [
+            895046,
+            382352957
+          ],
+          [
+            895048,
+            382352957
+          ],
+          [
+            895050,
+            382352957
+          ],
+          [
+            895052,
+            382352957
+          ],
+          [
+            895054,
+            382352958
+          ],
+          [
+            895441,
+            382357447
+          ],
+          [
+            895443,
+            382357447
+          ],
+          [
+            895445,
+            382357448
+          ],
+          [
+            895447,
+            382357448
+          ],
+          [
+            895449,
+            382357448
+          ],
+          [
+            895451,
+            382357448
+          ],
+          [
+            895453,
+            382357448
+          ],
+          [
+            895569,
+            382358126
+          ],
+          [
+            895571,
+            382358126
+          ],
+          [
+            895697,
+            382358522
+          ],
+          [
+            895703,
+            382358566
+          ],
+          [
+            897316,
+            382373515
+          ]
+        ],
+        "scope": "saved PID/start identities and cleanup receipt; no live /proc inference",
+        "worker_identity": {
+          "group": 893318,
+          "parent": 888606,
+          "pid": 893318,
+          "session": 893318,
+          "start_ticks": 382346011,
+          "state": "R"
+        }
+      },
+      "protocol": {
+        "accepted_action_count": 15,
+        "cancel_count": 4,
+        "command_time": {
+          "accepted_commands": 15,
+          "bindings": [
+            {
+              "action": 43,
+              "command_id": 1,
+              "created_at": 76.96,
+              "created_time_ns": 76960000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e2_83e9c1d8",
+              "expires_at": 78.96,
+              "expires_time_ns": 78960000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 1,
+              "receipt_kind": "action",
+              "receipt_stamp": 76.96,
+              "receipt_time_ns": 76960000000,
+              "rejection_reason": null,
+              "step_sequence": 1,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 2,
+              "created_at": 77.96,
+              "created_time_ns": 77960000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e2_83e9c1d8",
+              "expires_at": 79.96,
+              "expires_time_ns": 79960000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 2,
+              "receipt_kind": "action",
+              "receipt_stamp": 77.96,
+              "receipt_time_ns": 77960000000,
+              "rejection_reason": null,
+              "step_sequence": 2,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 3,
+              "created_at": 78.96,
+              "created_time_ns": 78960000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e2_83e9c1d8",
+              "expires_at": 80.96,
+              "expires_time_ns": 80960000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 3,
+              "receipt_kind": "action",
+              "receipt_stamp": 78.96,
+              "receipt_time_ns": 78960000000,
+              "rejection_reason": null,
+              "step_sequence": 3,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 4,
+              "created_at": 79.96,
+              "created_time_ns": 79960000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e2_83e9c1d8",
+              "expires_at": 81.96,
+              "expires_time_ns": 81960000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 4,
+              "receipt_kind": "action_rejected",
+              "receipt_stamp": 79.96,
+              "receipt_time_ns": 79960000000,
+              "rejection_reason": "navigation_changed_since_observation",
+              "step_sequence": 4,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 5,
+              "created_at": 80.96,
+              "created_time_ns": 80960000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e2_83e9c1d8",
+              "expires_at": 82.96,
+              "expires_time_ns": 82960000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 5,
+              "receipt_kind": "action",
+              "receipt_stamp": 80.96,
+              "receipt_time_ns": 80960000000,
+              "rejection_reason": null,
+              "step_sequence": 5,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 6,
+              "created_at": 81.96,
+              "created_time_ns": 81960000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e2_83e9c1d8",
+              "expires_at": 83.96,
+              "expires_time_ns": 83960000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 6,
+              "receipt_kind": "action",
+              "receipt_stamp": 81.96,
+              "receipt_time_ns": 81960000000,
+              "rejection_reason": null,
+              "step_sequence": 6,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 7,
+              "created_at": 82.96,
+              "created_time_ns": 82960000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e2_83e9c1d8",
+              "expires_at": 84.96,
+              "expires_time_ns": 84960000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 7,
+              "receipt_kind": "action",
+              "receipt_stamp": 82.96,
+              "receipt_time_ns": 82960000000,
+              "rejection_reason": null,
+              "step_sequence": 7,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 999,
+              "command_id": 8,
+              "created_at": 83.96,
+              "created_time_ns": 83960000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e2_83e9c1d8",
+              "expires_at": 85.96,
+              "expires_time_ns": 85960000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 8,
+              "receipt_kind": "action",
+              "receipt_stamp": 83.96,
+              "receipt_time_ns": 83960000000,
+              "rejection_reason": null,
+              "step_sequence": 8,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 999,
+              "command_id": 9,
+              "created_at": 84.96,
+              "created_time_ns": 84960000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e2_83e9c1d8",
+              "expires_at": 86.96,
+              "expires_time_ns": 86960000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 9,
+              "receipt_kind": "action",
+              "receipt_stamp": 84.96,
+              "receipt_time_ns": 84960000000,
+              "rejection_reason": null,
+              "step_sequence": 9,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 999,
+              "command_id": 10,
+              "created_at": 85.96,
+              "created_time_ns": 85960000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e2_83e9c1d8",
+              "expires_at": 87.96,
+              "expires_time_ns": 87960000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 10,
+              "receipt_kind": "action",
+              "receipt_stamp": 85.96,
+              "receipt_time_ns": 85960000000,
+              "rejection_reason": null,
+              "step_sequence": 10,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 317,
+              "command_id": 11,
+              "created_at": 86.96,
+              "created_time_ns": 86960000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e2_83e9c1d8",
+              "expires_at": 88.96,
+              "expires_time_ns": 88960000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 11,
+              "receipt_kind": "action",
+              "receipt_stamp": 86.96,
+              "receipt_time_ns": 86960000000,
+              "rejection_reason": null,
+              "step_sequence": 11,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 12,
+              "created_at": 87.96,
+              "created_time_ns": 87960000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e2_83e9c1d8",
+              "expires_at": 89.96,
+              "expires_time_ns": 89960000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 12,
+              "receipt_kind": "action",
+              "receipt_stamp": 87.96,
+              "receipt_time_ns": 87960000000,
+              "rejection_reason": null,
+              "step_sequence": 12,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 13,
+              "created_at": 88.96,
+              "created_time_ns": 88960000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e2_83e9c1d8",
+              "expires_at": 90.96,
+              "expires_time_ns": 90960000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 13,
+              "receipt_kind": "action",
+              "receipt_stamp": 88.96,
+              "receipt_time_ns": 88960000000,
+              "rejection_reason": null,
+              "step_sequence": 13,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 14,
+              "created_at": 89.96,
+              "created_time_ns": 89960000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e2_83e9c1d8",
+              "expires_at": 91.96,
+              "expires_time_ns": 91960000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 14,
+              "receipt_kind": "action",
+              "receipt_stamp": 89.96,
+              "receipt_time_ns": 89960000000,
+              "rejection_reason": null,
+              "step_sequence": 14,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 888,
+              "command_id": 15,
+              "created_at": 90.96,
+              "created_time_ns": 90960000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e2_83e9c1d8",
+              "expires_at": 92.96,
+              "expires_time_ns": 92960000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 15,
+              "receipt_kind": "action",
+              "receipt_stamp": 90.96,
+              "receipt_time_ns": 90960000000,
+              "rejection_reason": null,
+              "step_sequence": 15,
+              "ttl_ns": 2000000000,
+              "valid": true
+            },
+            {
+              "action": 999,
+              "command_id": 16,
+              "created_at": 91.96,
+              "created_time_ns": 91960000000,
+              "epoch": "mr3_p1c_v7_workers2_w1_e2_83e9c1d8",
+              "expires_at": 93.96,
+              "expires_time_ns": 93960000000,
+              "failure": null,
+              "invalidity": [],
+              "observation_sequence": 16,
+              "receipt_kind": "action",
+              "receipt_stamp": 91.96,
+              "receipt_time_ns": 91960000000,
+              "rejection_reason": null,
+              "step_sequence": 16,
+              "ttl_ns": 2000000000,
+              "valid": true
+            }
+          ],
+          "commands_checked": 16,
+          "complete_episode_credit": false,
+          "errors": [],
+          "excluded_no_action_terminal_steps": [],
+          "method": "mr3-command-time-integer-endpoints-v1",
+          "other_rejection_reasons_revalidated": false,
+          "passed": true,
+          "rejected_commands": 1,
+          "reward_contact_mask_ownership_closure_revalidated": false,
+          "scope": "submitted command validity and receipt reason only"
+        },
+        "confirmed_cancellation_count": 4,
+        "goal_count": 6,
+        "keep_robot_command_count": 27,
+        "native_terminal_count": 6,
+        "rejected_action_count": 1,
+        "scope": "goal payload audit, not an action-server network trace"
+      },
+      "scene": "open",
+      "schema": "mr3-p1c-episode-audit-v1",
+      "scope": "scripted sampling/reset; no RL, throughput or 95% success inference",
+      "seed": 101,
+      "supervisor_shutdown_digest": "3b08a26d961241326861e394082e269eb5ff1889897ee14b47a43c118ffb9084",
+      "terminal_probe": false,
+      "transitions": {
+        "complete": true,
+        "final_action_submitted": true,
+        "final_dt": 1.0,
+        "final_physical_dt": 1.0,
+        "final_terminal_reused": false,
+        "release_time_ns": 76960000000,
+        "reward_sum": 6.631122980005479,
+        "sampled_physical_time_sec": 16.0,
+        "submitted_action_count": 16,
+        "terminal_map_scope": "frozen evaluator map; later actor map is diagnostic only",
+        "terminal_map_sha_exception_count": 0,
+        "transition_count": 16,
+        "zero_duration_terminal_count": 0
+      }
+    }
+  ],
+  "errors": [],
+  "evidence_sha256": {
+    "benchmark_metadata.json": "b219baea89d2ddb1c43836998d21c8e9e8a3d15d107d975b46a83dcebd077909",
+    "benchmark_summary.json": "d3a2561d86fa9c3e4658c0c88bdf18fb694438ade81601270bda702c07c1b416",
+    "resources.json": "a42eeaea1901c5adefeee1b9281fbe8ddd1aa312b47e00ec0f2cbbd122b5b040"
+  },
+  "fault_probe": false,
+  "fault_scope": "injected cell excluded; forced cleanup, recovery and peer audited",
+  "freeze": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a",
+  "offline_contact_phase_audit": {
+    "base_v2": {
+      "contact_logic_modified": false,
+      "path": "audit_mr3_env_contact_phase_v2.py",
+      "sha256": "3ce800bfa0455d25a1c3257635c7c4d593478082bbbf1c4dab6a10eed2fc6991"
+    },
+    "command_time_gate": {
+      "method": "mr3-command-time-integer-endpoints-v1",
+      "order": "original audit_protocol, then independent command time",
+      "path": "audit_command_time_v7.py",
+      "sha256": "4787ca8d2e6b4d7ba06b3d5a3c1ead82fe6f079485a790c5b940f2ba7636c3b9"
+    },
+    "freeze": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a",
+    "frozen_sources": {
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md": {
+        "sha256": "f05bf13b8848fb93347327ce4bb03672eed9938f84ef52db9ab000537cd95593",
+        "source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md"
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_TASK_CONTRACT.md": {
+        "sha256": "fcc1cedbc524a3d55443c887201f13f58fbd442e5600f1d8ad5cad84b7346c48",
+        "source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_TASK_CONTRACT.md"
+      },
+      "ros2_ws/ros2-multi-robot-automap/scripts/audit_mr3_adapter_probe.py": {
+        "git_blob_sha256": "fdd415da1b01d7da6219d21a2fa8e184484b696d33c3e736bde8ca165bb65e6a",
+        "git_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/scripts/audit_mr3_adapter_probe.py",
+        "sha256": "fdd415da1b01d7da6219d21a2fa8e184484b696d33c3e736bde8ca165bb65e6a",
+        "source": "worktree bytes matching cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"
+      },
+      "ros2_ws/ros2-multi-robot-automap/scripts/audit_mr3_env.py": {
+        "git_blob_sha256": "25ce0b466d988595934f26a0cfb7a81a445632b1e755f2462b80698371b272e8",
+        "git_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/scripts/audit_mr3_env.py",
+        "sha256": "25ce0b466d988595934f26a0cfb7a81a445632b1e755f2462b80698371b272e8",
+        "source": "worktree bytes matching cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"
+      },
+      "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py": {
+        "git_blob_sha256": "930be78a0763d69dfa102c662ac8713ee970e421a56193f92257e65ce0e67dac",
+        "git_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py",
+        "sha256": "930be78a0763d69dfa102c662ac8713ee970e421a56193f92257e65ce0e67dac",
+        "source": "worktree bytes matching cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"
+      },
+      "ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py": {
+        "git_blob_sha256": "f130b1157b4855089d51a6b1f22e57e0b5683b40624cc8697e3bb76fb3659d1a",
+        "git_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py",
+        "sha256": "f130b1157b4855089d51a6b1f22e57e0b5683b40624cc8697e3bb76fb3659d1a",
+        "source": "worktree bytes matching cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"
+      },
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py": {
+        "git_blob_sha256": "b20f6b492f91cb943247ebcc29bd16497983d17c23cc458f1be16fa24b9958d5",
+        "git_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py",
+        "sha256": "b20f6b492f91cb943247ebcc29bd16497983d17c23cc458f1be16fa24b9958d5",
+        "source": "worktree bytes matching cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"
+      },
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_contacts.py": {
+        "git_blob_sha256": "9d661498b3748d409dbb59ccd59524d5152d85ec93ee30128aebaf0a8a09fa17",
+        "git_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_contacts.py",
+        "sha256": "9d661498b3748d409dbb59ccd59524d5152d85ec93ee30128aebaf0a8a09fa17",
+        "source": "worktree bytes matching cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"
+      },
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py": {
+        "git_blob_sha256": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b",
+        "git_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py",
+        "sha256": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b",
+        "source": "worktree bytes matching cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"
+      },
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py": {
+        "git_blob_sha256": "e4f1c4ec51c8c0280fba32e47d189c1234eee44093612692e2d032efe26b388b",
+        "git_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py",
+        "sha256": "e4f1c4ec51c8c0280fba32e47d189c1234eee44093612692e2d032efe26b388b",
+        "source": "worktree bytes matching cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"
+      },
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py": {
+        "git_blob_sha256": "fb08097170b3f0e8423fa11dde2567c618d4d0d48be220e6cfbfc9538c37c147",
+        "git_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py",
+        "sha256": "fb08097170b3f0e8423fa11dde2567c618d4d0d48be220e6cfbfc9538c37c147",
+        "source": "worktree bytes matching cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"
+      },
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py": {
+        "git_blob_sha256": "bd0c2e43dbbb4258e4e1ee537fbdbe512211576eb930d5f8862d787dc73e48af",
+        "git_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py",
+        "sha256": "bd0c2e43dbbb4258e4e1ee537fbdbe512211576eb930d5f8862d787dc73e48af",
+        "source": "worktree bytes matching cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"
+      }
+    },
+    "method": "mr3-contact-task-phase-and-command-time-v3",
+    "only_overridden_functions": [
+      "audit_contacts",
+      "audit_protocol"
+    ],
+    "original_auditor_schema": "mr3-p1c-benchmark-audit-v1",
+    "original_results_modified": false,
+    "ready_payload_limitation": "raw initial reward_ready payload was not saved",
+    "scope": "fixed-source offline task-phase and command-time gates; no new native credit",
+    "source_invariant": "start once; no monitor/latch reset; every task gap/age failure latches",
+    "wrapper_sha256": "4e2a24e3465fa45c06c05c37b57b8b77b6e462845b3227be10c1fecb85c2c7d7"
+  },
+  "passed": true,
+  "schedule": [
+    [
+      "open",
+      101
+    ],
+    [
+      "open",
+      101
+    ]
+  ],
+  "schema": "mr3-p1c-contact-phase-audit-v3",
+  "steps_per_episode": 16,
+  "terminal_probe": false,
+  "valid_transitions": 64,
+  "wall_sec_including_all_attempts": 554.6546182003804,
+  "workers": 2
+}

@@ -383,7 +383,7 @@
   },
   "mr3_p1c_evidence": {
     "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261015_mr3_p1c.md",
-    "P1C_status": "in progress; v7 prospective fresh full matrix required; P2A unstarted",
+    "P1C_status": "implemented and validated; awaiting explicit user acceptance; P2A unstarted",
     "historical_native_attempts": [
       {
         "version": 1,
@@ -457,6 +457,120 @@
       "sha256": "393dbc8c85655bf3c7333a48b5cd4a0d859a8324f8e6db48dc709c9b5dd40ee9",
       "expected_passed": false
     },
-    "policy": "Do not relabel old verdicts, mix runtime freezes, or transfer earlier native PASS into v7. No archived report changes task gates or authorizes training."
+    "policy": "Preserve all old verdicts and their scope. W7 credit uses only its fresh matrix and predeclared auditors; original offline FAIL remains alongside schema-corrected v2. No automatic user acceptance, training or environment replacement.",
+    "active_evidence": {
+      "version": 7,
+      "source_freeze": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a",
+      "native_completed_at_utc": "2026-10-15T16:28:50.357624+00:00",
+      "native_evidence_directory": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/native_v7",
+      "scope": "Fresh eight-stage scripted engineering matrix; 23 complete episodes plus one incomplete killed four-step prefix. No training, 95% mapping, unseen-layout, multi-day stability, SDK root-cause repair or network credit.",
+      "metrics": {
+        "returned_API": 594,
+        "submitted_commands": 593,
+        "accepted_commands": 592,
+        "rejected_commands": 1,
+        "sampled_physical_time_ns": 592020000000,
+        "complete_episodes": 23,
+        "incomplete_killed_prefixes": 1,
+        "fair_four_worker_transition_per_wall_sec": 0.2009680035590939,
+        "fair_rate_scope": "First two open101 16-step episodes per worker; recorded cell wall includes startup/reset/closure, excludes final supervisor reap tail.",
+        "conditional_500k_hours_per_run": 691.1,
+        "projection_scope": "Same short workload/reset frequency only; candidate 72h per run quota unapproved.",
+        "policy_optimizer_updates": 0
+      },
+      "artifacts": [
+        {
+          "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/predeclared_native_plan_v7.json",
+          "sha256": "f63d0892bcdd4ec5fef91ca261a1c267570667e190cacbfec18610fe3f1c5630",
+          "size_bytes": 31955,
+          "scope": "Pre-execution eight-stage plan"
+        },
+        {
+          "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/predeclared_execution_binding_v7.json",
+          "sha256": "09a9f2263385a1a9d4bae02676fc26f23d64a026f8633634f8dd3a310bff1117",
+          "size_bytes": 9079,
+          "scope": "Pushed W7 source and auditor pins before first native command"
+        },
+        {
+          "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/implementation_checks_v7.json",
+          "sha256": "5aa211fb00ffbd2170510f2f8f9c169cbb53bf52315fc4e70602b2857bee90a8",
+          "size_bytes": 21894,
+          "scope": "Frozen 54 source/test inputs and offline dependencies; pre-native state remains unchanged"
+        },
+        {
+          "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/v7_execution.jsonl",
+          "sha256": "58bc9a9cb4b7cfc89a815e8de690f9488aad0aac08f8f7b26b845c6ecf6b5dda",
+          "size_bytes": 46851,
+          "scope": "All 24 native/audit commands, including failures if any; all completed without automatic retry"
+        },
+        {
+          "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/matrix_v7_contact_phase_v3_audit.json",
+          "sha256": "d89bb4e44aabc79db9831510697dabe4ba737c6bbd13ce9420009d37c4a97a51",
+          "size_bytes": 827859,
+          "scope": "Six raw-directory primary/contact/command-time groups PASS"
+        },
+        {
+          "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/canonical_matrix_v7_contact_phase_v3_audit.json",
+          "sha256": "988ac4a0c433a224e4fbdd692fc2f1e70016fd249bf885fcb0abe4911fca72a9",
+          "size_bytes": 829077,
+          "scope": "Same six groups replayed from selected evidence; root normalization only"
+        },
+        {
+          "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/deadline_v7_command_time_review.json",
+          "sha256": "4533434ed76e7c3b96e106b93fd00845c1bd3bd65c12aaa2c997eb0b0d1057de",
+          "size_bytes": 5542,
+          "scope": "300 accepted KEEP commands and real float-counterexample positive proof"
+        },
+        {
+          "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/resource_analysis_v7.json",
+          "sha256": "10430e047de45dfc9af26f155df6608768c777d10f24bc4ec24085fd58a59990",
+          "size_bytes": 336317,
+          "scope": "W7 resource, throughput, storage and conditional budget analysis"
+        },
+        {
+          "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reset_summary_v7.json",
+          "sha256": "c436b27fdb0879b171f2624803105105375ed8e568b28cce0af967d64efa1e39",
+          "size_bytes": 650153,
+          "scope": "16 normal cells, seven same-worker pairs and two cross-scene reset checks"
+        },
+        {
+          "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/native_v7/final_native_inventory_review.json",
+          "sha256": "900a2562c30a2a1ef2a117429618876c3e973797bf1e72730129dd09cc9641de",
+          "size_bytes": 178970,
+          "scope": "32 manifests, 420 original files and 397 selected files; saved process cleanup snapshot"
+        },
+        {
+          "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/final_evidence_integrity_v7_v2.json",
+          "sha256": "d102c544d82cd0448ecc797c5c5b1203b77fe401e16efe169e2258085ba015c5",
+          "size_bytes": 508606,
+          "scope": "Final offline source/hash/audit/journal/process identity verification PASS"
+        }
+      ]
+    },
+    "final_verifier_method_correction": {
+      "original_failed_verification": {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/final_evidence_integrity_v7.json",
+        "sha256": "6aa54899c1a95cf586f5bb95d4b5a0d890c215e387d96922bfc9f616d4363f96",
+        "size_bytes": 499783,
+        "scope": "Original FAIL preserved byte-for-byte: verifier incorrectly required two optional prefix-manifest credit fields"
+      },
+      "corrected_verifier": {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/verify_mr3_p1c_v7_evidence_v2.py",
+        "sha256": "7f4ab7c284137aba93a7a7765eb84edcc9f6129e1c90fb7c40d89922fda30046",
+        "size_bytes": 38708,
+        "scope": "Only incomplete episode credit is mandatory; present optional fields must be false. Actual SIGKILL/forced cleanup and absence of normal closure artifacts checked, including gzip forms."
+      },
+      "corrected_checks": {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/verify_mr3_p1c_v7_evidence_v2_checks.json",
+        "sha256": "aee265ff03e277e70d8f47a56b0d03f65f778ab29af4f69ec8c44fefb55d62c1",
+        "size_bytes": 2523,
+        "scope": "Pure positive/negative fixtures and independent review before formal offline execution"
+      },
+      "effect": "Offline schema-method repair only; original manifests/native bytes/runtime/task gates/primary auditors untouched; no native rerun or earlier-freeze credit."
+    },
+    "two_dimensional_option": {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261015_mr3_2d_option.md",
+      "status": "Unimplemented independent proposal, awaiting separate user acceptance and prospective implementation/experiment contract; no P2A or training quota approval."
+    }
   }
 }

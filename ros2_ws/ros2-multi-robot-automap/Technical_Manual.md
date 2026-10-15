@@ -1,6 +1,6 @@
 # 当前 ROS 技术参考与边界
 
-2026-10-15，P1A/P1B已验收，P1C进行中，P2A及后续未开始；`81b2f8b`/`c9344e1`是历史审计/工程冻结。
+本轮P1C验证2026-10-15启动（实际完成时刻见P1C报告）；P1A/P1B已验收，P1C实现与验证完成，待用户验收，P2A及后续未开始；`81b2f8b`/`c9344e1`是历史审计/工程冻结。
 本文件取代旧分散四台/旧 ros2_humble 路径/过时行号样例；原文可从
 [归档索引](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/ARCHIVE_INDEX.json)所列Git对象恢复。
 研究路线读 [RESEARCH_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，运行读
@@ -74,7 +74,8 @@ joint_state插件给真实轮关节；默认建图不再重复启动
 活动新研究固定三台，活动默认已统一三台；保留兼容入口不增加其他规模研究。
 
 当前`execution_mode:=adapter`互斥替换全局目标所有者；P1C已有Gymnasium reset/step、
-私有JSONL IPC、真实物理步进和隔离奖励，具体版本/证据见
+私有JSONL IPC、真实物理步进和隔离奖励，W7 `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`的完整八阶段工程验证完成、待用户验收。
+762项ROS/40项CPU检查通过；GPU仅保留b328原固定接口3F/3B/0更新范围，具体版本/证据见
 [环境契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md)。
 训练算法仍未开始。未来gateway需增加实际字节、机器人本地action proxy与独立进程/DDS隔离，
 目前没有gateway可执行入口。不得用raw融合图、raw跨机TF、

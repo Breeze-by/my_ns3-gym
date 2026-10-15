@@ -1,0 +1,56 @@
+{
+  "schema": "mr3-v7-final-evidence-verifier-pure-checks-v1",
+  "scope": "Isolated synthetic fixtures and mocked Git using frozen static source bytes only. No active v7 native raw read, final verifier main/sections run on real v7 evidence, native simulation, ROS initialization or GPU execution.",
+  "files_sha256": {
+    "verify_mr3_p1c_v7_evidence.py": "5a3fa64ced179efb3228ab928e6c7c1312146e9481addc6b56c185b332aa257a",
+    "test_verify_mr3_p1c_v7_evidence.py": "a826bc8a6c6d2de58fc2e43ae7da4a11fd478385b96f3a364420b86171091c29",
+    "verify_mr3_p1c_v6_evidence.py": "ab038db30458f42876525db90d9760ec9fb0d6c8e6790f78c72a638e307fcb69"
+  },
+  "unit_tests": {
+    "passed": true,
+    "count": 25,
+    "elapsed_sec": 1.809,
+    "command": [
+      "/usr/bin/python3",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c",
+      "-p",
+      "test_verify_mr3_p1c_v7_evidence.py",
+      "-v"
+    ]
+  },
+  "flake8": {
+    "passed": true,
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "flake8",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/verify_mr3_p1c_v7_evidence.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/test_verify_mr3_p1c_v7_evidence.py",
+      "--max-line-length=99"
+    ]
+  },
+  "coverage": [
+    "current executable and frozen Git SHA disagreement",
+    "complete static source/binding composition with mocked Git in isolated temporary tree",
+    "frozen Markdown versus later editorial current bytes",
+    "immutable v6 verifier bytes",
+    "raw/compressed/decoded bytes and canonical root/freeze/count",
+    "normal complete versus killed-prefix partial scope",
+    "phase/time-helper identity and command receipt coverage",
+    "24 successful ordered journal commands including deadline and fault subset",
+    "failed/missing/reordered command, changed binding, changed stdout",
+    "saved PID/start absent or reused versus live or zombie",
+    "bare clock/CLI/Popen PID ambiguity without fabricated start identity",
+    "output exclusive creation"
+  ],
+  "independent_static_review": "Requested from information agent; any later concrete finding must be resolved before final evidence execution.",
+  "final_v7_evidence_audit_executed": false,
+  "native_v7_validation_credit_claimed": false,
+  "old_verifier_modified": false,
+  "bound_execution_files_modified": false
+}

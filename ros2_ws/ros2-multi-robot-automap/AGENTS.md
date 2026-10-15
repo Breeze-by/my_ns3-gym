@@ -14,26 +14,30 @@ passed same-freeze open/rooms/corridors seed101 scripted adapter audits. See the
 [P1B report](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261015_mr3_p1b.md).
 Freeze `5e47802` has 9 effective slots from 10 attempts, including one retained
 native infrastructure failure; see the [P1A report](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261014_mr3_p1a.md).
-The user authorized P1C, which is in progress; P2A and later remain unstarted.
+P1C is implemented and validated, awaiting explicit user acceptance; P2A and later remain unstarted.
 No actual policy training or gateway work is authorized. K8/5 s describe the interface version,
 not a 95% task proof. The nominal 1 s snapshot timer had 2/3 s rooms gaps;
-fixed dt/reset/1-2-4-worker throughput remain P1C gates; native and GPU validation
-of the candidate implementation is pending. See the
+P1C provides separate W7 stepped fixed-dt/reset/1-2-4-worker engineering evidence.
+The non-stepped timer nominal cadence and skip rules remain unchanged. See the
 [environment contract](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md).
 
 Active launch/check defaults are three; 1–4 compatibility remains without
 new non-three research runs. Explicit MR3 contracts select schema4 evaluation.
 Default baseline launches handcrafted control; the mutually exclusive adapter
 owns stable goals with logical ideal-delivery copies and no exploration fallback.
-P1C adds a candidate fixed-step environment and sampling CLI, not a trained RL
+P1C implements and validates a fixed-step environment and sampling CLI, not a trained RL
 policy or gateway. Historical reports are evidence, not instructions.
 
 Use system ROS2 Humble Python, preserving PYTHONNOUSERSITE=1; learner conda is
 separate. Keep canonical workspace paths, clean owned-process shutdown and
 native failure evidence. Do not copy old build/install caches into this tree.
 
-P1B verified ownership/KEEP/commit and ideal navigation copies; P1C is implementing
-complete process reset and fixed physical stepping, with native proof pending. Before networking audit raw
+P1B verified ownership/KEEP/commit and ideal navigation copies; P1C independently validates
+complete process reset and fixed physical stepping at W7 `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`.
+Its checks include 762 ROS semantic and 40 conda CPU tests, plus the full eight-stage engineering matrix.
+Retain only the original b328 GPU 3-forward/3-backward/0-update interface scope.
+Short runs do not prove multi-day stability, 95% RL success or a DDS internal-race repair.
+Before networking audit raw
 baseline shared inputs, ideal same-process/DDS delivery, action callbacks and truth leakage. Robot
 local sensing stays local; cross-robot information obeys actual delivery.
 Source ages, physical footprint, contacts and task deadlines cannot be relaxed

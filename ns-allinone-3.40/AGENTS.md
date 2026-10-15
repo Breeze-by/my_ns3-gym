@@ -19,10 +19,14 @@ P1B was accepted by the user on 2026-10-15; freeze
 See the [P1B report](ns-3.40/contrib/opengym/examples/wireless-rl/report/20261015_mr3_p1b.md).
 This is exclusive ideal goal ownership and logical delivered copies, not a
 trained policy or gateway. K8/5 s do not prove 95% tasks. The user authorized P1C,
-now implementing fixed-step Gymnasium/IPC, full reset and isolated rewards; see
+whose fixed-step Gymnasium/IPC, full reset and isolated rewards are implemented and
+validated at W7 `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`; see
 [environment contract](ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md).
-The P1B nominal 1 s timer had 2/3 s rooms gaps; native fixed-dt/reset/1-2-4-worker
-measurements and GPU checks remain pending. No actual policy training has begun.
+The P1B asynchronous 1 s timer had 2/3 s rooms gaps. P1C independently validates
+stepped 1 s transitions/reset/1-2-4-worker sampling; the non-stepped timer nominal cadence and skip rules are unchanged.
+Its engineering checks include 762 ROS and 40 conda CPU tests. Retain only the original
+`b328f84` fixed-interface GPU 3-forward/3-backward/0-update proof; no policy training has begun.
 Freeze `5e47802` has 9 effective slots from 10 attempts, including one retained
 native infrastructure failure; see the [P1A report](ns-3.40/contrib/opengym/examples/wireless-rl/report/20261014_mr3_p1a.md).
-P1C is in progress; P2A and later remain unstarted and require separate acceptance.
+P1C is implemented and validated, awaiting explicit user acceptance; P2A and later
+remain unstarted and require separate authorization. Short sampling does not prove multi-day stability.

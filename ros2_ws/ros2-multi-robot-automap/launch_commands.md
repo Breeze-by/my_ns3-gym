@@ -1,7 +1,7 @@
 # 当前三机器人基线与MR3适配启动命令
 
-2026-10-15：新路线为 [MR3](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，P0/P1A/P1B已验收，P1C进行中，P2A及后续未开始。
-默认`execution_mode:=baseline`启动前沿控制器；`adapter`为显式联合动作接口。P1C源码候选待原生/GPU验证，尚无实际策略训练或gateway。
+本轮P1C验证2026-10-15启动（实际完成时刻见P1C报告）；新路线为 [MR3](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，P0/P1A/P1B已验收，P1C实现与验证完成，待用户验收，P2A及后续未开始。
+默认`execution_mode:=baseline`启动前沿控制器；`adapter`为显式联合动作接口。P1C实现与验证完成、待用户验收；尚无实际策略训练或gateway。
 所有推荐运行显式固定三台，活动默认已改为三台，保留1–4历史兼容。
 
 ## 环境与构建
@@ -71,7 +71,8 @@ rooms/corridors分别使用对应`--scene`，推荐域109/110、Gazebo端口1190
 [MR3_ADAPTER_CONTRACT.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ADAPTER_CONTRACT.md)。
 冻结`f9928fe`的open/rooms/corridors各seed101严格审计均通过，前三次失败与完整原件见
 [P1B报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261015_mr3_p1b.md)。
-K8/5秒承诺是本接口版本；名义1秒快照在rooms实际有2/3秒间隔，固定dt与采样吞吐仍属P1C门禁。
+K8/5秒承诺是本接口版本；P1B异步名义1秒快照在rooms实际有2/3秒间隔。
+P1C独立验证stepped 1秒步长/reset/采样，非stepped timer名义频率与跳帧规则不变。
 这不证明95%任务或RL有效性；P1B已验收，用户已授权P1C，P2A及后续未开始。
 
 手动提供策略输入时可启动同一模式：
@@ -84,25 +85,26 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
 ```
 
 无外部`/mr3/action`输入时保持空闲；KEEP不重发目标。正式验证使用脚本内的P1A持续监测，
-手动入口未启用评价器，不产生安全或任务成绩。P1C reset/吞吐工程进行中，实际策略训练未开始。
+手动入口未启用评价器，不产生安全或任务成绩。P1C reset/采样工程验证完成、待用户验收，实际策略训练未开始。
 
-## MR3-P1C采样与完整reset候选入口（原生验证待做）
+## MR3-P1C采样与完整reset入口（实现与验证完成，待用户验收）
 
 步进模式明确构造gzserver argv，将每个`-s`与插件路径放在ROS参数终止符之前；
 启动日志`MR3_GAZEBO_SERVER_START`记录实际argv、插件和clock配置。baseline保留原启动入口。
 stepped worker在暂停前等待adapter的`/mr3/initial_inputs_ready`实际交付确认，
 再做原物理相位、drain、快照和seq0绑定；节点出现在graph不能替代该确认。
 
-P1C v6候选继承v5关闭顺序为：真实目标闭合→Nav2原生SHUTDOWN及18节点GetState finalized确认→
+P1C W7验证的关闭顺序为：真实目标闭合→Nav2原生SHUTDOWN及18节点GetState finalized确认→
 最后reward ACK/评价器clean退出→SDK按实际action/PID逐个正常退出ROS进程→Gazebo原生停止。
 服务/状态/有序退出回执分别保留，超时或非零退出仍失败；不使用固定sleep代替退出，也不改接触/源序号门禁。
 FastDDS保持原依赖，CycloneDDS因官方Humble缺少真实publication_sequence_number未采用。
-v6已完成矩阵但在长KEEP截止中发现合法2秒TTL的浮点误拒；v7候选统一命令/租约/承诺/RPC期限的
-整数纳秒端点，任务/接触/频率不变，仍需新冻结完整验证。详见[P1C报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261015_mr3_p1c.md)。
+v6完成记录中的合法2秒TTL浮点误拒及扣分保持原件；W7 `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`
+以整数纳秒端点统一命令/租约/承诺/RPC期限，在任务/接触/频率不变下完成全新八阶段与独立命令时间审计。详见[P1C报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261015_mr3_p1c.md)。
 
 先在系统ROS终端按上文重新构建包含步进插件的工作区。学习端另开终端，使用conda，
 不source ROS或拼接ROS的PYTHONPATH；supervisor会在独立系统Python子进程重新source规范ROS/Gazebo环境。
-以下是已提供的采样入口示例，本文尚不提供原生/GPU通过结论；实际矩阵须先声明并绑定新推送冻结。
+以下是已提供的采样入口示例，不授权再次运行既有预算。W7工程证据含762项ROS/40项CPU检查及完整八阶段原生矩阵；
+GPU只保留b328原固定接口3F/3B/0更新范围，本次无新GPU调用。新实验仍须先声明并绑定新推送冻结。
 
 ```bash
 source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh
@@ -130,14 +132,24 @@ python -m mr3_learning.benchmark --workers 1 --schedule open:101,open:101 \
   --base-domain 144 --base-port 12171
 ```
 
+本次已保存W7正常矩阵可离线重放；在wireless-rl目录执行，输出必须用新名。此命令不启动原生进程：
+
 ```bash
-python -m mr3_learning.gpu_probe \
-  --plan report/assets/20261015_mr3_p1c/gpu_probe_plan_v2.json \
-  --output /tmp/UNIQUE_P1C_GPU.json
+/usr/bin/python3 -B report/assets/20261015_mr3_p1c/audit_mr3_env_contact_phase_v3.py \
+  report/assets/20261015_mr3_p1c/native_v7/workers1 \
+  --freeze cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a --output /tmp/UNIQUE_W7_WORKERS1_PHASE3.json
 ```
 
-GPU入口只检查固定张量与联合actor/critic接口的forward/backward，无optimizer更新，仍待实际验证。
-当前Gym/IPC依赖候选锁定见`mr3_learning/requirements-env.txt`，保留现有CUDA栈，不默认重装环境。
+phase3固定绑定原contact task-phase与独立命令时间门禁；scalar reward审计独立列于原件，不由此命令替代。
+检查保留的GPU接口结果只读取原JSON，不重复已消耗的3F/3B预算：
+
+```bash
+/usr/bin/python3 -m json.tool report/assets/20261015_mr3_p1c/gpu_probe_v2.json
+```
+
+原GPU探针在b328固定model/encoder/probe下完成3次forward/3次backward、0 optimizer更新；
+它不是训练或W7新增GPU验证。任何新GPU尝试须另立前瞻计划和预算，不能重用原v2计划再执行。
+当前Gym/IPC依赖锁定见`mr3_learning/requirements-env.txt`，保留现有CUDA栈，不默认重装环境。
 固定1秒step、20ms量子、真实clock相位、seq0首格奖励绑定与外部截断/真实闭合规则见
 [环境契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md)。
 每次实际执行均是需追加共享log的实验，不能把入口存在当成P1C通过。
@@ -204,10 +216,10 @@ P1A第六版冻结时另为三台各六个Nav2节点的 `change_state` 响应wri
 reader匹配为何延迟、客户端为何可能一直等待的根因仍未解决。
 profile只绑定这些命名writer，不随启动阶段结束而撤销；不设置默认writer、service-wide
 fallback或reader配置；P1A原冻结的contact/control、get_state及request writer保持原有QoS。
-P1C v6当前候选再为同三台六节点的18个精确`rr/tbN/NODE/get_stateReply`配置1墙秒
+P1C W7保留同三台六节点的18个精确`rr/tbN/NODE/get_stateReply`配置1墙秒
 匹配/写入等待（默认100ms），低于安装版Nav2 `get_state`客户端原2墙秒超时，后者不变。
 新增规则不改变request/data/contact端点、频率或任务门槛；实际失败仍按infra保留，不自动重试。
-这是有界发现等待的应用配置，不宣称修复DDS内部发现竞态；当前完整v6原生矩阵待验证。
+这是有界发现等待的应用配置，不宣称修复DDS内部发现竞态；W7完整矩阵仅提供其实际工程范围。
 P1A旧报告/原件仍只对应其冻结18项change_state规则，不能赋予新配置结果信用。
 `RMW_FASTRTPS_USE_QOS_FROM_XML` 继续unset，ROS端点QoS转换仍保留该max-blocking字段。
 静态SDK/RMW验证另列为

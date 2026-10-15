@@ -2,9 +2,11 @@
 
 本组件在 `/home/zhuyulab/ns3-workspace` 单一仓库内，使用 ROS2 Humble、Gazebo Classic、
 TurtleBot3 Waffle、slam_toolbox、保守地图融合与 Nav2。默认baseline由传统前沿控制器选择目标，
-互斥adapter提供显式联合动作、独占稳定目标和理想交付副本；P1C增加独立进程环境与采样入口。
+互斥adapter提供显式联合动作、独占稳定目标和理想交付副本；P1C已实现独立进程环境与采样入口。
+W7 `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`提供完整八阶段工程矩阵及独立审计、762项ROS/40项CPU检查，
+GPU保留b328原3F/3B/0更新接口范围；没有新增训练或95%任务成绩，详见P1C报告。
 新路线固定 tb1/tb2/tb3，拟由集中式 RL 策略联合选择稳定子目标，再冻结策略接 ns-3 Wi-Fi；
-**尚无已训练的导航策略和gateway**。MR3-P0/P1A/P1B已验收；P1C进行中，P2A及后续未开始。
+**尚无已训练的导航策略和gateway**。MR3-P0/P1A/P1B已验收；P1C实现与验证完成，待用户验收，P2A及后续未开始。
 
 先读 [研究计划](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)和[检查点](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/IMPLEMENTATION_PLAN.md)，
 实际运行读 [launch_commands.md](launch_commands.md)，代码/话题说明读
@@ -25,7 +27,7 @@ scripts/                      有界 smoke 与传统理想基线 runner
 历史`c9344e1`的三台rooms/corridors seed101仅有90%工程回归。新隔离接触夹具v8已验证
 tb1六部件真实接触正例与三台18路持续监测；它不代表95%建图成功。schema4开发矩阵
 在冻结`5e47802`得到9个有效单元，累计10次尝试含1次保留的原生基础设施失败；
-P1A/P1B已由用户验收，P1C进行中；策略训练和通信尚未开始。
+P1A/P1B已由用户验收，P1C实现与验证完成，待用户验收；策略训练和通信尚未开始。
 [P1A当前证据](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261014_mr3_p1a.md)、
 [工程原件](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261013_p1c_engineering_repair.md)与
 [报告索引](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/README.md)保留旧结果和失败，不自动成为 MR3 信用。

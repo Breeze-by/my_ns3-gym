@@ -1,11 +1,11 @@
 # wireless-rl memory — MR3
 
-Updated 2026-10-15. The active contract is [RESEARCH_PLAN.md](RESEARCH_PLAN.md),
+P1C validation started 2026-10-15; actual closure time is in the P1C report. The active contract is [RESEARCH_PLAN.md](RESEARCH_PLAN.md),
 then [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md). Follow root AGENTS.md.
 MR3-P0 was explicitly accepted on 2026-10-14; MR3-P1A was accepted on 2026-10-15 and the user authorized P1B.
-P1B was accepted by the user on 2026-10-15 and P1C was authorized. P1C is in
-progress; P2A and later remain unstarted. No actual policy training or gateway
-is authorized. The candidate environment contract is [MR3_ENV_CONTRACT.md](MR3_ENV_CONTRACT.md).
+P1B was accepted by the user on 2026-10-15. P1C is implemented and validated,
+awaiting explicit user acceptance; P2A and later remain unstarted. No actual policy training or gateway
+is authorized. The implemented environment contract is [MR3_ENV_CONTRACT.md](MR3_ENV_CONTRACT.md).
 This route replaces the old search/charging/rally/communication-scheduler plan.
 
 ## Task and source of truth
@@ -20,13 +20,15 @@ are out of scope. Detailed method decisions live in the plan and
 
 Default baseline retains handcrafted ROS frontier allocation; the mutually
 exclusive adapter owns stable goals and consumes logical ideal-delivery copies.
-No trained robot policy or ROS/ns-3 gateway exists. P1C now adds candidate
-Gymnasium tensors/IPC, full process rebuild, explicit stepping and isolated
-first-correct-cell rewards; native sampling/reset and GPU checks are pending. Freeze `f9928fe`
+No trained robot policy or ROS/ns-3 gateway exists. P1C implements Gymnasium
+tensors/IPC, full process rebuild, explicit stepping and isolated first-correct-cell rewards.
+W7 `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a` has the complete eight-stage engineering matrix and independent audits,
+762 ROS semantic and 40 conda CPU checks. The unchanged `b328f84` GPU interface probe
+retains its original 3-forward/3-backward/0-update scope; no new GPU training was run. Freeze `f9928fe`
 passed all three same-freeze open/rooms/corridors seed101 adapter audits; see the
 [P1B report](report/20261015_mr3_p1b.md). K8/5 s are this interface version,
-not 95% task evidence. The nominal 1 s snapshot timer had 2/3 s rooms gaps;
-fixed dt/reset/1-2-4-worker throughput remain P1C gates. P1A launch/check defaults are three;
+not 95% task evidence. The P1B asynchronous nominal 1 s timer had 2/3 s rooms gaps;
+P1C supplies separate stepped 1 s/reset/1-2-4-worker evidence. The non-stepped timer nominal cadence and skip rules are unchanged. P1A launch/check defaults are three;
 1–4 compatibility remains.
 MR3 evaluation uses an explicit hash-bound 95%/300s schema4 task contract. Plans are
 not implemented features. P1A includes 18-stream body contact/freshness audit
@@ -73,10 +75,10 @@ PyTorch2.11.0+cu128 and two RTX4090. Verify versions at implementation time;
 these are not a fresh hardware probe. User-site CPU torch previously shadowed
 CUDA torch; preserve PYTHONNOUSERSITE instead of reinstalling blindly.
 
-ROS nodes run system ROS2 Humble Python, not conda. A future learning adapter
+ROS nodes run system ROS2 Humble Python, not conda. The learning environment
 uses explicit IPC; do not merge interpreters via PYTHONPATH. Two GPUs help the
-learner but do not establish Gazebo sampling speed. Worker isolation/reset and
-throughput are MR3-P1C gates. New Gymnasium/algorithm dependencies must be
+learner but do not establish Gazebo sampling speed. Worker isolation/reset and throughput are measured in MR3-P1C; short engineering
+runs do not establish multi-day training stability. New Gymnasium/algorithm dependencies must be
 version-pinned and checked independently of the legacy Gym/ns3-gym API.
 
 ## Legacy toy toolchain (only when specifically needed)

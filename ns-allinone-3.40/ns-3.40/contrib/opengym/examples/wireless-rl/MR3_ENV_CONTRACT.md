@@ -1,7 +1,11 @@
-# MR3-P1C 环境与采样契约 v1（原生验证待做）
+# MR3-P1C 环境与采样契约 v1（实现与验证完成，待用户验收）
 
-2026-10-15：P1A/P1B已由用户验收，P1C进行中，P2A及后续未开始。
-本文件描述当前源码候选及其待验证要求，不声明原生reset/吞吐或GPU检查通过。
+本轮P1C验证2026-10-15启动，实际完成时刻见P1C报告。P1A/P1B已由用户验收，P1C实现与验证完成，待用户验收，P2A及后续未开始。
+本文件描述已实现环境与验证门禁。W7 `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`完成完整八阶段原生工程矩阵及独立审计，
+762项ROS语义和40项conda CPU检查通过；本步仍待用户验收，P2A须另行授权。
+GPU只保留`b328f84`原model/encoder/probe固定接口3次forward/3次backward、0更新的证据，本次无新GPU调用。
+测量和限制见[P1C报告](report/20261015_mr3_p1c.md)。本合同W7规范Git blob保留为审计原件，
+当前交付状态文字不反向更改旧证据或已冻结任务定义。
 没有实际策略训练、训练checkpoint、gateway或ns-3闭环；任务成功仍使用
 [MR3_TASK_CONTRACT.md](MR3_TASK_CONTRACT.md)，不更改95%/300秒、质量、参与、接触或目标闭合门禁。
 P1B接口与证据见[适配契约](MR3_ADAPTER_CONTRACT.md)和[P1B报告](report/20261015_mr3_p1b.md)。
@@ -40,21 +44,21 @@ P1B的K8+KEEP/WAIT、1000类联合动作、5秒接受后承诺和单一所有权
 摘要损坏、未来来源时间、非法mask、非有限数值或不匹配的栅格编码均报错。
 重放使用原快照/候选/掩码及schema，不能用后续地图重新解释旧动作。
 
-## 本机SDK状态响应等待（v6候选）
+## 本机SDK状态响应等待（W7已验证配置）
 
 同机FastDDS loopback profile只对三台各六个Nav2节点的精确`get_stateReply` writer
 增加1墙秒的response-reader匹配/写入有界等待，保留原18个`change_stateReply`的5秒窗口。
 Nav2 `get_state`客户端原2秒future超时不变；其预算还包含请求传输和调度，不能推断必有
 完整1秒回传余量或保证发现成功。其余默认、request/data/contact端点、DDS transport buffer、
 发布频率、SDK版本与任务时钟不变。无自动重试，实际超时仍是infra，旧profile证据不赋予新冻结信用。
-这是应用配置的有界等待，不是DDS发现竞态修复声明；新完整原生矩阵待验证。
+这是应用配置的有界等待，不是DDS发现竞态修复声明；W7完整矩阵仅提供其实际工程范围。
 
-## 命令、租约与导航期限的纳秒端点（v7候选）
+## 命令、租约与导航期限的纳秒端点（W7实现）
 
 v6实际截止探针暴露两次合法KEEP误拒：254.6→256.6、255.6→257.6的float差值略大于2，
 但各端点恢复为整数纳秒后的差恰好2000000000；误拒各产生-0.05真实处罚，原件保留。
 同类纯协议反例还包括精确10/60秒超时晚触发、5秒承诺晚释放、2秒租约晚到期和0.2秒心跳漏边界。
-v7候选统一复用`mr3_episode.timestamp_ns/elapsed_ns`：分别恢复原端点再比较，不加epsilon，
+W7实现统一复用`mr3_episode.timestamp_ns/elapsed_ns`：分别恢复原端点再比较，不加epsilon，
 也不通过改写source stamp或假物理tick消除差异。
 
 命令要求`created_ns <= now_ns < expires_ns`，且`0 < expires_ns-created_ns <= 2000000000`；
@@ -65,17 +69,17 @@ JSON字段、原消息时间、重复命令原payload比较和真实所有权释
 
 独立command-time审计须识别合法窗口的`expired_or_invalid_command_time`假拒，以及非法窗口被接受；
 其他有实证的导航/掩码拒绝保留。v6主审计PASS仅验证了记录一致，不能证明没有该bug。
-修复需新推送冻结的完整[v7矩阵](report/assets/20261015_mr3_p1c/predeclared_native_plan_v7.json)，
-尚未提供新原生PASS，不将v6结果拼入新冻结。
+修复已在全新推送W7冻结完成完整[v7矩阵](report/assets/20261015_mr3_p1c/predeclared_native_plan_v7.json)与独立命令时间门禁，
+具体原件和限制见[P1C报告](report/20261015_mr3_p1c.md)；不将v6结果拼入W7，不改写原失败。
 
 ## 真实物理步进与交付水位
 
-候选调度器标识为`mr3-physical-20ms-v1`。普通策略step为1000个真实1ms物理tick，即1仿真秒；
+已实现并验证的调度器标识为`mr3-physical-20ms-v1`。普通策略step为1000个真实1ms物理tick，即1仿真秒；
 每20 tick形成20ms量子，暂停后核对Gazebo迭代数和真实仿真时间回执。
 重复request id不得重复推进，跨epoch、错误tick长度、迭代/时间不一致或非暂停回执报错。
 实现见[步进契约](../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_step_contract.hpp)。
 
-Gazebo ROS clock候选配置为50Hz，见
+W7的Gazebo ROS clock已验证配置为50Hz，见
 [mr3_step_clock.yaml](../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_step_clock.yaml)。
 暂停前必须先收到adapter的可靠transient-local一次性`/mr3/initial_inputs_ready`：
 schema为`mr3-initial-inputs-ready-v1`，包含epoch、实际stamp、已交付state序号、融合图摘要及各状态/地图源水位。
@@ -87,12 +91,13 @@ schema为`mr3-initial-inputs-ready-v1`，包含epoch、实际stamp、已交付st
 不计策略transition或奖励。不能假定相位为绝对时间整20ms，也不能补发/改写`/clock`或传感源时间来对齐。
 每量子须确认ROS时钟到达同一暂停边界；未来时钟、越过边界或停钟均显式失败。
 
-暂停不等于回调已经排空。候选接口通过information drain确认该边界的timer/地图任务处理水位，
+暂停不等于回调已经排空。已实现接口通过information drain确认该边界的timer/地图任务处理水位，
 记录state sequence、map version、提交/完成作业计数和融合图SHA256；随后请求显式adapter快照。
 快照须匹配目标时间、交付状态水位及融合/三台本地图的内容摘要后才编码。
 异步编码结束时继续使用启动时冻结的输入和摘要，不把较晚map或metadata拼入旧快照。
 source/generated/received时间含义与10Hz状态、1Hz地图、5Hz租约/回执频率不因暂停或drain而改写。
-这些ROS/Gazebo边界仍须原生验证，不提供P4B跨ns-3因果调度信用。
+这些ROS/Gazebo边界已由W7原生工程验证，证据见[P1C报告](report/20261015_mr3_p1c.md)；
+不提供P4B跨ns-3因果调度信用。
 
 普通step的实际`dt`必须为1秒，不能把P1B的2/3秒观测间隔伪装成固定步长。
 若任务终态发生在最后一个量子内，奖励使用评价器原冻结`effective_step_end`与实际短步`dt`；
@@ -165,7 +170,7 @@ worker随后发布真实停止请求，继续以20 tick量子推进到所有已�
 任务自身已finalize时发送`reason=task_terminal`确认最后奖励响应。
 该ACK等待使用独立90墙秒保护，不能延长300仿真秒成功期限；未知所有权不能凭timeout释放。
 
-v5关闭候选协议为`nav2-finalized_then_serial-ros_then_gazebo-v1`，metadata、summary及两端回执使用同一标识。
+W7已验证的关闭协议为`nav2-finalized_then_serial-ros_then_gazebo-v1`，metadata、summary及两端回执使用同一标识。
 真实目标闭合后保持物理暂停，依次向tb1/tb2/tb3原生生命周期manager请求SHUTDOWN，
 再用GetState确认六节点×三台的18个finalized状态；仅manager返回success不足以证明关闭。
 `nav2_shutdown.json`保留实际cleanup clock/wall水位、每个服务响应和状态，而不是将cleanup时间补入任务或奖励。
@@ -173,13 +178,14 @@ v5关闭候选协议为`nav2-finalized_then_serial-ros_then_gazebo-v1`，metadat
 逐个正常SIGINT并等对应ProcessExited clean0；全部ROS子进程退出后才原生停止Gazebo。
 `MR3_ORDERED_SHUTDOWN`事件序列记录实际身份、信号、退出和阶段墙钟；不能用sleep、丢弃错误或仅父进程0代替。
 生命周期拒绝/错误状态、身份不符、非零子退出或阶段墙钟超时仍是基础设施失败，原件保留。
-此协议有待新冻结完整原生验证；它不宣称修复FastDDS内部listener竞态，保留原18源发布序号审计。
+此协议已在W7完整原生工程矩阵中验证；它不宣称修复FastDDS内部listener竞态，保留原18源发布序号审计。
 
 ## 完整reset与资源验证
 
 每次reset重建所有ROS/Gazebo/SLAM/Nav2、动作Future、received store、历史、奖励与终态账本，
 新epoch、新输出目录；不只重置机器人位姿，不复用上一轮地图/目标/归一化状态。
-同scene/seed重复与跨seed变化须原生证明；旧快照、消息或IPC响应不能跨epoch应用。
+W7已对同scene/seed重复与跨scene/seed变化进行原生重建和源水位检查，实际估计差异及限制见P1C报告；
+新运行版本仍须独立证明，旧快照、消息或IPC响应不能跨epoch应用。
 每worker分配独立ROS_DOMAIN_ID、Gazebo master端口、私有pipe和输出根。
 监督器记录PID、Linux启动tick、父子关系与session；仅回收身份仍匹配的owned进程，
 保留异常退出、强制清理和遗留进程的证据，不使用无范围pkill或覆盖旧run-id。
@@ -189,16 +195,18 @@ v5关闭候选协议为`nav2-finalized_then_serial-ros_then_gazebo-v1`，metadat
 
 学习端从conda `ns3gym`运行，`unset PYTHONPATH`并保持`PYTHONNOUSERSITE=1`。
 系统ROS子进程清理继承的conda/ROS路径后重新source规范Humble、当前install和Gazebo，
-不在同一解释器混入ROS与学习依赖。依赖候选锁定见[requirements-env.txt](mr3_learning/requirements-env.txt)。
+不在同一解释器混入ROS与学习依赖。依赖锁定见[requirements-env.txt](mr3_learning/requirements-env.txt)。
 具体构建、benchmark及GPU探针命令见
 [launch_commands.md](../../../../../../ros2_ws/ros2-multi-robot-automap/launch_commands.md)。
 
-待验证矩阵为1/2/4个并行worker，**每个worker始终三台机器人**。测量完整startup/reset/closure、
+本次验证矩阵为1/2/4个并行worker，**每个worker始终三台机器人**。测量完整startup/reset/closure、
 每墙秒有效transition、仿真倍率、CPU/RAM、GPU使用和进程残留；宿主资源包含其他活动时须说明归因限制。
 GPU探针仅做固定接口forward/backward且无optimizer step，不是策略训练。
 `--terminal-probe`是明确的诊断失败实验：仅显式`training_terminal_probe=true`时允许
 私有worker向评价器`/mr3/diagnostic_failure`发送绑定epoch/目标真实水位的固定诊断原因。
 评价器等真实clock精确到该水位后走原控制失败门禁；不修改contact数据、健康阈值或物理时间。
 它验证20ms短终态与同边界零时长尾步，不提供碰撞、策略、95%或网络成功信用；默认关闭。
-所有原生/GPU尝试先预声明新推送冻结，失败与重试保留并追加共享log；本文件没有测量结果或PASS声明。
+所有原生/GPU尝试先预声明新推送冻结，失败与重试保留并追加共享log；本文件给接口约束，数值结果见P1C报告。
+短工程采样不证明多日稳定或95%任务成功。真实短步和零时长终态的rollout、时间折扣及GAE处理
+必须在P2A明确验证，不能把本接口完成当成标准PPO可直接使用的证明。
 完成上述门禁并提交推送后仍需用户验收P1C，才能进入P2A。
