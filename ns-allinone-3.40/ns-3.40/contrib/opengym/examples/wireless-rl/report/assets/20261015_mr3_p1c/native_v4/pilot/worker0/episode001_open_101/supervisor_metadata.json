@@ -1,0 +1,30 @@
+{
+  "epoch": "mr3_p1c_v4_pilot_w0_e1_9e5d2db7",
+  "scene": "open",
+  "seed": 101,
+  "worker_id": 0,
+  "worker_identity": {
+    "pid": 247408,
+    "parent": 247306,
+    "group": 247408,
+    "session": 247408,
+    "start_ticks": 380608856,
+    "state": "R"
+  },
+  "domain_id": 131,
+  "gazebo_port": 12111,
+  "command": [
+    "/usr/bin/bash",
+    "--noprofile",
+    "--norc",
+    "-c",
+    "source /opt/ros/humble/setup.bash && source \"$1/install/setup.bash\" && source /usr/share/gazebo/setup.sh && exec /usr/bin/python3 \"$1/scripts/mr3_env_worker.py\" --run-dir \"$2\"",
+    "mr3-worker",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v4_pilot/worker0/episode001_open_101"
+  ],
+  "reset_kind": "complete_process_rebuild",
+  "terminal_probe": false,
+  "startup_wall_guard_sec": 420.0,
+  "request_wall_guard_sec": 90.0
+}

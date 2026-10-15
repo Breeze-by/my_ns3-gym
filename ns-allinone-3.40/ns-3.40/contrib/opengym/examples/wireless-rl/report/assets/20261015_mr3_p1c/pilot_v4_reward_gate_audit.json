@@ -1,0 +1,45 @@
+{
+  "schema": "mr3-reward-scalar-audit-v2",
+  "scope": "read-only native scalar/receipt checks, no spatial truth replay",
+  "freeze": "7e186bf83b2a7ed9d38a95f30d53150ee2d6736d",
+  "episodes": [
+    {
+      "directory": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v4_pilot/worker0/episode001_open_101",
+      "epoch": "mr3_p1c_v4_pilot_w0_e1_9e5d2db7",
+      "scene": "open",
+      "seed": 101,
+      "pid_identity": {
+        "pid": 247408,
+        "parent": 247306,
+        "group": 247408,
+        "session": 247408,
+        "start_ticks": 380608856,
+        "state": "R"
+      },
+      "initial_cells": 2000,
+      "newly_rewarded_cells": 4507,
+      "transitions": 2,
+      "terminal_short_steps": 0,
+      "terminal_reused_steps": 0,
+      "repeated_map_payload_steps": 0,
+      "reward_term_sums": {
+        "collision": 0.0,
+        "coverage": 1.0287135944490093,
+        "failure": 0.0,
+        "invalid": 0.0,
+        "success": 0.0,
+        "switch": 0.0,
+        "time": -0.006666666666666667
+      },
+      "physical_quantum_counts": {
+        "0": 1,
+        "1": 9,
+        "20": 110
+      },
+      "evaluation_reason": "training_external_truncation",
+      "errors": []
+    }
+  ],
+  "reset_epoch_and_pid_unique": true,
+  "passed_scalar_checks": true
+}

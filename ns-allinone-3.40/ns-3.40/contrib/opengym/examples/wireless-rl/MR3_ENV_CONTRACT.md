@@ -126,10 +126,20 @@ expected actor摘要与实际评价摘要；绝不按B补coverage或改原成功
 
 采样器外部截止为`truncated`，不加任务失败罚项，并立即seal账本；之后不能再推进奖励。
 worker随后发布真实停止请求，继续以20 tick量子推进到所有已知目标取消/终态闭合，
-再向`/mr3/training_finalize`发送`epoch, ack_sequence, reason=external_truncation`。
+完成下述Nav2生命周期屏障并关闭helper后，再向`/mr3/training_finalize`发送`epoch, ack_sequence, reason=external_truncation`。
 评价器保留未完成的`training_external_truncation`诊断；cleanup时间单列、不补奖励，原任务门禁不改。
 任务自身已finalize时发送`reason=task_terminal`确认最后奖励响应。
 该ACK等待使用独立90墙秒保护，不能延长300仿真秒成功期限；未知所有权不能凭timeout释放。
+
+v5关闭候选协议为`nav2-finalized_then_serial-ros_then_gazebo-v1`，metadata、summary及两端回执使用同一标识。
+真实目标闭合后保持物理暂停，依次向tb1/tb2/tb3原生生命周期manager请求SHUTDOWN，
+再用GetState确认六节点×三台的18个finalized状态；仅manager返回success不足以证明关闭。
+`nav2_shutdown.json`保留实际cleanup clock/wall水位、每个服务响应和状态，而不是将cleanup时间补入任务或奖励。
+随后helper关闭、评价器收到最后reward ACK并实际clean退出，launch按实际ProcessStarted的owned action/PID逆序，
+逐个正常SIGINT并等对应ProcessExited clean0；全部ROS子进程退出后才原生停止Gazebo。
+`MR3_ORDERED_SHUTDOWN`事件序列记录实际身份、信号、退出和阶段墙钟；不能用sleep、丢弃错误或仅父进程0代替。
+生命周期拒绝/错误状态、身份不符、非零子退出或阶段墙钟超时仍是基础设施失败，原件保留。
+此协议有待新冻结完整原生验证；它不宣称修复FastDDS内部listener竞态，保留原18源发布序号审计。
 
 ## 完整reset与资源验证
 

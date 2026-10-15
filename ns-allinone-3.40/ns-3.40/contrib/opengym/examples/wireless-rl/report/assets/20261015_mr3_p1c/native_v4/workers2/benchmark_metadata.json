@@ -1,0 +1,41 @@
+{
+  "kind": "scripted_p1c_sampling_not_rl",
+  "workers": 2,
+  "robots_per_worker": 3,
+  "schedule": [
+    [
+      "open",
+      101
+    ],
+    [
+      "open",
+      101
+    ]
+  ],
+  "steps_per_episode": 16,
+  "command": [
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py",
+    "--workers",
+    "2",
+    "--schedule",
+    "open:101,open:101",
+    "--steps",
+    "16",
+    "--run-id",
+    "mr3_p1c_v4_workers2",
+    "--base-domain",
+    "134",
+    "--base-port",
+    "12131"
+  ],
+  "python": "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+  "freeze": "7e186bf83b2a7ed9d38a95f30d53150ee2d6736d",
+  "base_domain": 134,
+  "base_port": 12131,
+  "fault_probe": false,
+  "deadline_probe": false,
+  "terminal_probe": false,
+  "resource_scope": "host counters include unrelated activity; GPU driver reports",
+  "num_logical_cpus": 80,
+  "cpu_affinity_count": 80
+}

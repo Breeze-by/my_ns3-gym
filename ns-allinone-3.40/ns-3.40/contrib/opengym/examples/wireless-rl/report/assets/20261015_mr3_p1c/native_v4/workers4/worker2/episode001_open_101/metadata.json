@@ -1,0 +1,53 @@
+{
+  "schema": "mr3-p1c-worker-v1",
+  "epoch": "mr3_p1c_v4_workers4_w2_e1_66d81d4f",
+  "scene": "open",
+  "seed": 101,
+  "command": [
+    "ros2",
+    "launch",
+    "multi_robot",
+    "gazebo_multirobot_mapping_with_nav2.launch.py",
+    "execution_mode:=adapter",
+    "mr3_stepped:=true",
+    "training_reward_enabled:=true",
+    "robot_count:=3",
+    "mr3_episode_epoch:=mr3_p1c_v4_workers4_w2_e1_66d81d4f",
+    "mr3_audit_path:=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v4_workers4/worker2/episode001_open_101/adapter.jsonl",
+    "world:=p1c_open.world",
+    "gazebo_seed:=101",
+    "enable_gzclient:=false",
+    "enable_rviz:=false",
+    "enable_merge_rviz:=false",
+    "auto_save_map:=false",
+    "enable_task_evaluator:=true",
+    "evaluation_contract_path:=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/open.json",
+    "evaluation_episode_id:=mr3_p1c_v4_workers4_w2_e1_66d81d4f",
+    "evaluation_output_dir:=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v4_workers4/worker2/episode001_open_101"
+  ],
+  "freeze": "7e186bf83b2a7ed9d38a95f30d53150ee2d6736d",
+  "transport_environment": {
+    "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+    "ROS_LOCALHOST_ONLY": "0",
+    "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+    "SKIP_DEFAULT_XML": "1",
+    "FASTDDS_DEFAULT_PROFILES_FILE": null,
+    "RMW_FASTRTPS_USE_QOS_FROM_XML": null,
+    "RMW_FASTRTPS_PUBLICATION_MODE": null,
+    "profile_sha256": "8d11da75d5916ed95d8b8a6a74abecb8fe946254d615895164a63ef9f8ff9556"
+  },
+  "environment": {
+    "ROS_DOMAIN_ID": "138",
+    "GAZEBO_MASTER_URI": "http://127.0.0.1:12143",
+    "PYTHONNOUSERSITE": "1"
+  },
+  "python": "/usr/bin/python3",
+  "quantum_steps": 20,
+  "reset_handshake": "delivered_inputs_before_pause-v1",
+  "terminal_protocol": "mr3-task-terminal-v1",
+  "terminal_probe": false,
+  "physical_step_ns": 1000000,
+  "policy_step_ns": 1000000000,
+  "startup_wall_guard_sec": 420.0,
+  "closure_wall_guard_sec": 90.0
+}

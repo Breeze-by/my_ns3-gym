@@ -93,6 +93,12 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
 stepped worker在暂停前等待adapter的`/mr3/initial_inputs_ready`实际交付确认，
 再做原物理相位、drain、快照和seq0绑定；节点出现在graph不能替代该确认。
 
+P1C v5候选关闭顺序为：真实目标闭合→Nav2原生SHUTDOWN及18节点GetState finalized确认→
+最后reward ACK/评价器clean退出→SDK按实际action/PID逐个正常退出ROS进程→Gazebo原生停止。
+服务/状态/有序退出回执分别保留，超时或非零退出仍失败；不使用固定sleep代替退出，也不改接触/源序号门禁。
+FastDDS保持原依赖，CycloneDDS因官方Humble缺少真实publication_sequence_number未采用。
+该关闭实现仍待新推送冻结完整验证；详见[P1C报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261015_mr3_p1c.md)。
+
 先在系统ROS终端按上文重新构建包含步进插件的工作区。学习端另开终端，使用conda，
 不source ROS或拼接ROS的PYTHONPATH；supervisor会在独立系统Python子进程重新source规范ROS/Gazebo环境。
 以下是已提供的采样入口示例，本文尚不提供原生/GPU通过结论；实际矩阵须先声明并绑定新推送冻结。

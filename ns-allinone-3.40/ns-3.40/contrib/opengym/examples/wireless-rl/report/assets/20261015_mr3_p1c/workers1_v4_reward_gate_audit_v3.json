@@ -1,0 +1,164 @@
+{
+  "schema": "mr3-reward-scalar-audit-v3",
+  "scope": "read-only native scalar/receipt checks, no spatial truth replay",
+  "freeze": "7e186bf83b2a7ed9d38a95f30d53150ee2d6736d",
+  "episodes": [
+    {
+      "directory": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v4_workers1/worker0/episode001_open_101",
+      "epoch": "mr3_p1c_v4_workers1_w0_e1_e6162090",
+      "scene": "open",
+      "seed": 101,
+      "pid_identity": {
+        "pid": 259585,
+        "parent": 259408,
+        "group": 259585,
+        "session": 259585,
+        "start_ticks": 380659541,
+        "state": "R"
+      },
+      "initial_cells": 1969,
+      "newly_rewarded_cells": 26249,
+      "transitions": 16,
+      "terminal_short_steps": 0,
+      "terminal_reused_steps": 0,
+      "rejected_action_bindings": [],
+      "repeated_map_payload_steps": 0,
+      "reward_term_sums": {
+        "collision": 0.0,
+        "coverage": 5.991280927599745,
+        "failure": 0.0,
+        "invalid": 0.0,
+        "success": 0.0,
+        "switch": 0.0,
+        "time": -0.05333333333333334
+      },
+      "physical_quantum_counts": {
+        "0": 1,
+        "1": 15,
+        "20": 801
+      },
+      "evaluation_reason": "training_external_truncation",
+      "errors": []
+    },
+    {
+      "directory": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v4_workers1/worker0/episode002_open_101",
+      "epoch": "mr3_p1c_v4_workers1_w0_e2_8914a692",
+      "scene": "open",
+      "seed": 101,
+      "pid_identity": {
+        "pid": 270165,
+        "parent": 259408,
+        "group": 270165,
+        "session": 270165,
+        "start_ticks": 380685536,
+        "state": "R"
+      },
+      "initial_cells": 2004,
+      "newly_rewarded_cells": 28714,
+      "transitions": 16,
+      "terminal_short_steps": 0,
+      "terminal_reused_steps": 0,
+      "rejected_action_bindings": [],
+      "repeated_map_payload_steps": 0,
+      "reward_term_sums": {
+        "collision": 0.0,
+        "coverage": 6.553912170181686,
+        "failure": 0.0,
+        "invalid": 0.0,
+        "success": 0.0,
+        "switch": 0.0,
+        "time": -0.05333333333333334
+      },
+      "physical_quantum_counts": {
+        "0": 1,
+        "1": 19,
+        "20": 811
+      },
+      "evaluation_reason": "training_external_truncation",
+      "errors": []
+    },
+    {
+      "directory": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v4_workers1/worker0/episode003_rooms_202",
+      "epoch": "mr3_p1c_v4_workers1_w0_e3_80f85499",
+      "scene": "rooms",
+      "seed": 202,
+      "pid_identity": {
+        "pid": 280700,
+        "parent": 259408,
+        "group": 280700,
+        "session": 280700,
+        "start_ticks": 380711470,
+        "state": "R"
+      },
+      "initial_cells": 2098,
+      "newly_rewarded_cells": 27369,
+      "transitions": 16,
+      "terminal_short_steps": 0,
+      "terminal_reused_steps": 0,
+      "rejected_action_bindings": [
+        {
+          "step_sequence": 5,
+          "command_id": 5,
+          "observation_sequence": 5,
+          "stamp": 84.92
+        }
+      ],
+      "repeated_map_payload_steps": 0,
+      "reward_term_sums": {
+        "collision": 0.0,
+        "coverage": 5.287673879443587,
+        "failure": 0.0,
+        "invalid": -0.05,
+        "success": 0.0,
+        "switch": 0.0,
+        "time": -0.05333333333333334
+      },
+      "physical_quantum_counts": {
+        "0": 1,
+        "1": 10,
+        "20": 801
+      },
+      "evaluation_reason": "training_external_truncation",
+      "errors": []
+    },
+    {
+      "directory": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v4_workers1/worker0/episode004_corridors_303",
+      "epoch": "mr3_p1c_v4_workers1_w0_e4_73ae5994",
+      "scene": "corridors",
+      "seed": 303,
+      "pid_identity": {
+        "pid": 291174,
+        "parent": 259408,
+        "group": 291174,
+        "session": 291174,
+        "start_ticks": 380737088,
+        "state": "R"
+      },
+      "initial_cells": 2123,
+      "newly_rewarded_cells": 12730,
+      "transitions": 16,
+      "terminal_short_steps": 0,
+      "terminal_reused_steps": 0,
+      "rejected_action_bindings": [],
+      "repeated_map_payload_steps": 0,
+      "reward_term_sums": {
+        "collision": 0.0,
+        "coverage": 2.621499176276771,
+        "failure": 0.0,
+        "invalid": 0.0,
+        "success": 0.0,
+        "switch": 0.0,
+        "time": -0.05333333333333334
+      },
+      "physical_quantum_counts": {
+        "0": 1,
+        "1": 12,
+        "20": 811
+      },
+      "evaluation_reason": "training_external_truncation",
+      "errors": []
+    }
+  ],
+  "reset_epoch_and_pid_unique": true,
+  "passed_scalar_checks": true
+}

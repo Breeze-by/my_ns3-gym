@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import json
 import os
+import signal
+import time
 
 from ament_index_python.packages import get_package_prefix, get_package_share_directory
 
@@ -18,7 +20,8 @@ from launch.actions import (
 )
 from launch.conditions import IfCondition
 from launch.event_handlers import OnProcessExit, OnProcessStart
-from launch.events import Shutdown
+from launch.events import Shutdown, matches_action
+from launch.events.process import SignalProcess
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 
@@ -26,8 +29,164 @@ from launch_ros.actions import Node
 from nav2_common.launch import RewrittenYaml
 
 
+class OrderedRosShutdown:
+    """Close actual launch processes serially while Gazebo's ROS clock stays alive."""
+
+    protocol = "nav2-finalized_then_serial-ros_then_gazebo-v1"
+
+    def __init__(self, epoch, is_server, stop_native):
+        self.epoch = epoch
+        self.is_server = is_server
+        self.stop_native = stop_native
+        self.processes = []
+        self.phase = "running"
+        self.pending = None
+        self.timer = None
+        self.queue = []
+        self.stop_action = None
+        self.receipt_index = 0
+        self.signal_sequence = 0
+
+    def receipt(self, event, **payload):
+        self.receipt_index += 1
+        return LogInfo(msg="MR3_ORDERED_SHUTDOWN " + json.dumps({
+            "schema": "mr3-ordered-ros-shutdown-v1", "protocol": self.protocol,
+            "epoch": self.epoch, "receipt_index": self.receipt_index,
+            "wall_monotonic_ns": time.monotonic_ns(), "event": event, **payload,
+        }, sort_keys=True))
+
+    @staticmethod
+    def identity(record):
+        started = record["started"]
+        return {
+            "process_start_index": record["index"], "action_id": id(started.action),
+            "process_name": started.process_name, "pid": started.pid,
+            "role": record["role"],
+        }
+
+    def fail(self, reason, **payload):
+        if self.phase == "failed":
+            return []
+        self.phase = "failed"
+        if self.timer is not None:
+            self.timer.cancel()
+        return [
+            self.receipt("error", reason=reason, **payload),
+            LogInfo(msg="ERROR: MR3_ROS_SHUTDOWN_ERROR " + json.dumps({
+                "reason": reason, "epoch": self.epoch, **payload,
+            }, sort_keys=True)),
+            EmitEvent(event=Shutdown(reason="Ordered ROS shutdown failed: " + reason)),
+        ]
+
+    def started(self, event, context):
+        if any(record["started"].action is event.action or record["started"].pid == event.pid
+               for record in self.processes):
+            return self.fail("duplicate_process_identity", pid=event.pid,
+                             process_name=event.process_name)
+        role = ("gazebo_server" if self.is_server(event) else
+                "native_stop_cli" if event.action is self.stop_action else "owned_ros")
+        record = {"started": event, "index": len(self.processes) + 1,
+                  "role": role, "returncode": None}
+        self.processes.append(record)
+        result = [self.receipt("process_started", **self.identity(record), argv=list(event.cmd))]
+        if self.phase != "running" and role == "owned_ros" and not context.is_shutdown:
+            result.extend(self.fail("process_started_during_shutdown", **self.identity(record)))
+        return result
+
+    def exited(self, event, context):
+        record = next((item for item in self.processes
+                       if item["started"].action is event.action), None)
+        if record is None:
+            return self.fail("exit_without_start", pid=event.pid, process_name=event.process_name)
+        # Humble prepends newly registered handlers. A specific evaluator/native
+        # handler may observe this same SDK event before the global tracker.
+        if record.get("exit_event") is event:
+            return []
+        if (record["started"].pid != event.pid
+                or record["started"].process_name != event.process_name
+                or record["returncode"] is not None):
+            return self.fail("exit_identity_mismatch", **self.identity(record))
+        record["returncode"] = event.returncode
+        record["exit_event"] = event
+        controlled = record is self.pending
+        result = [self.receipt(
+            "process_exited", **self.identity(record), returncode=event.returncode,
+            controlled=controlled, signal_sequence=self.signal_sequence if controlled else None,
+        )]
+        if record["role"] == "owned_ros" and event.returncode != 0:
+            result.extend(self.fail("nonzero_process_exit", **self.identity(record),
+                                    returncode=event.returncode))
+        elif controlled and self.phase == "draining" and not context.is_shutdown:
+            self.timer.cancel()
+            self.pending = None
+            result.extend(self.next_process(context))
+        return result
+
+    def begin(self, event, context):
+        if self.phase != "running":
+            return []
+        result = self.exited(event, context)
+        if self.phase != "running":
+            return result
+        evaluator = next((record for record in self.processes
+                          if record["started"].action is event.action
+                          and record["started"].pid == event.pid
+                          and record["started"].process_name == event.process_name), None)
+        if evaluator is None or evaluator["returncode"] != 0 or event.returncode != 0:
+            return result + self.fail("evaluator_exit_not_verified", pid=event.pid,
+                                      returncode=event.returncode)
+        self.phase = "draining"
+        self.queue = [record for record in reversed(self.processes)
+                      if record["role"] == "owned_ros" and record["returncode"] is None]
+        return result + [self.receipt(
+            "begin", evaluator_pid=event.pid, evaluator_returncode=event.returncode,
+            remaining=[self.identity(record) for record in self.queue],
+        ), *self.next_process(context)]
+
+    def next_process(self, context):
+        while self.queue and self.queue[0]["returncode"] is not None:
+            self.queue.pop(0)
+        if not self.queue:
+            self.phase = "native"
+            return [self.receipt("ros_complete", signaled_count=self.signal_sequence),
+                    *self.stop_native(context)]
+        self.pending = self.queue.pop(0)
+        self.signal_sequence += 1
+        record = self.pending
+
+        def timed_out(timer_context):
+            if self.phase != "draining" or self.pending is not record or timer_context.is_shutdown:
+                return []
+            return self.fail("process_exit_timeout_10_wall_sec", **self.identity(record))
+
+        self.timer = TimerAction(period=10.0, actions=[OpaqueFunction(function=timed_out)])
+        return [
+            self.receipt("signal", **self.identity(record), signal="SIGINT",
+                         signal_sequence=self.signal_sequence),
+            EmitEvent(event=SignalProcess(
+                signal_number=signal.SIGINT,
+                process_matcher=matches_action(record["started"].action),
+            )),
+            self.timer,
+        ]
+
+    def completed(self):
+        server = next((record for record in self.processes
+                       if record["role"] == "gazebo_server"), None)
+        cli = next((record for record in self.processes
+                    if record["role"] == "native_stop_cli"), None)
+        if self.phase != "native" or server is None or cli is None or any(
+                record["returncode"] != 0 for record in self.processes):
+            return self.fail("native_completion_not_verified")
+        self.phase = "done"
+        return [self.receipt("complete", server_pid=server["started"].pid,
+                             stop_cli_pid=cli["started"].pid,
+                             server_returncode=0, stop_cli_returncode=0)]
+
+
 def launch_setup(context, *args, **kwargs):
     actions = []
+    shutdown_order = None
 
     # ========= Runtime launch arguments =========
     robot_count_cfg = LaunchConfiguration("robot_count")
@@ -190,7 +349,9 @@ def launch_setup(context, *args, **kwargs):
             target_action=contact_reducer,
             on_exit=lambda event, event_context: (
                 [EmitEvent(event=Shutdown(reason="Contact reducer exited"))]
-                if not event_context.is_shutdown else []
+                if not event_context.is_shutdown and not (
+                    shutdown_order is not None and shutdown_order.phase != "running"
+                ) else []
             ),
         )))
     actions.append(Node(
@@ -337,6 +498,9 @@ def launch_setup(context, *args, **kwargs):
             event.returncode != 0
             or (server_state["stopping"] and server_state["stop_cli_returncode"] == 0)
         ):
+            if shutdown_order is not None and event.returncode == 0:
+                result.extend(shutdown_order.exited(event, event_context))
+                result.extend(shutdown_order.completed())
             result.append(EmitEvent(event=Shutdown(
                 reason="Owned Gazebo server exited after evaluation"
             )))
@@ -363,6 +527,9 @@ def launch_setup(context, *args, **kwargs):
         if not event_context.is_shutdown and (
             event.returncode != 0 or server_state["server_returncode"] == 0
         ):
+            if shutdown_order is not None and event.returncode == 0:
+                result.extend(shutdown_order.exited(event, event_context))
+                result.extend(shutdown_order.completed())
             result.append(EmitEvent(event=Shutdown(reason="Gazebo native stop completed")))
         return result
 
@@ -372,6 +539,11 @@ def launch_setup(context, *args, **kwargs):
             or event_context.is_shutdown or server_state["stopping"]
         ):
             return []
+        if shutdown_order is not None:
+            return shutdown_order.begin(event, event_context)
+        return start_native_stop(event_context)
+
+    def start_native_stop(event_context):
         server_state["stopping"] = True
         if server_state["started"] is None:
             return [
@@ -388,7 +560,14 @@ def launch_setup(context, *args, **kwargs):
             name="mr3_gazebo_native_stop", output="screen", shell=False,
             env=server_state["environment"],
         )
-        return [
+        result = []
+        if shutdown_order is not None:
+            shutdown_order.stop_action = stop_command
+            result.append(shutdown_order.receipt(
+                "gz_stop", server_pid=server_state["started"].pid,
+                signaled_count=shutdown_order.signal_sequence,
+            ))
+        return result + [
             RegisterEventHandler(OnProcessExit(
                 target_action=stop_command,
                 on_exit=native_stop_cli_exited,
@@ -399,7 +578,8 @@ def launch_setup(context, *args, **kwargs):
 
     actions.extend([
         RegisterEventHandler(OnProcessStart(on_start=remember_gzserver),
-                             condition=IfCondition("true" if stepped_mode else stop_on_evaluation)),
+                             condition=IfCondition(
+                                 "false" if stepped_mode else stop_on_evaluation)),
         RegisterEventHandler(OnProcessExit(on_exit=owned_gzserver_exited),
                              condition=IfCondition(stop_on_evaluation)),
         RegisterEventHandler(OnProcessExit(
@@ -438,6 +618,21 @@ def launch_setup(context, *args, **kwargs):
             }.items(),
         )
     actions.append(gzserver_cmd)
+    if stepped_mode:
+        shutdown_order = OrderedRosShutdown(
+            episode_epoch.perform(context), lambda event: event.action is gzserver_cmd,
+            start_native_stop,
+        )
+
+        def ordered_process_started(event, event_context):
+            return (shutdown_order.started(event, event_context)
+                    + remember_gzserver(event, event_context))
+
+        # Register before the first launch process can generate a start event.
+        actions[0:0] = [
+            RegisterEventHandler(OnProcessStart(on_start=ordered_process_started)),
+            RegisterEventHandler(OnProcessExit(on_exit=shutdown_order.exited)),
+        ]
 
     gzclient_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(

@@ -708,6 +708,7 @@ def test_parent_exit_does_not_hide_native_child_shutdown_escalation():
         "process has died [exit code -6]", "process has died [exit code -9]",
         "failed to terminate '10.0' seconds after receiving 'SIGTERM'",
         "sending signal 'SIGKILL' to process",
+        "ERROR: MR3_ROS_SHUTDOWN_ERROR missing_clean_exit",
     ):
         assert smoke.native_launch_failures(text) == [text]
 

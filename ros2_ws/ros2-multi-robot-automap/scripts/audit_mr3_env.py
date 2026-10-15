@@ -23,6 +23,10 @@ COMPONENTS = ("base", "lidar", "wheel_left", "wheel_right",
               "caster_back_left", "caster_back_right")
 STATUS = {4: "SUCCEEDED", 5: "CANCELED", 6: "ABORTED"}
 NS = 10**9
+SHUTDOWN_PROTOCOL = "nav2-finalized_then_serial-ros_then_gazebo-v1"
+NAV2_NODES = ("controller_server", "planner_server", "behavior_server",
+              "bt_navigator", "waypoint_follower", "velocity_smoother")
+ORDERED_SHUTDOWN_MARKER = "MR3_ORDERED_SHUTDOWN "
 
 
 def require(condition, reason):
@@ -602,6 +606,301 @@ def audit_initial_inputs_ready(metadata, transitions, adapter_rows, epoch):
             "scope": "input readiness before pause; first snapshot may use newer delivery"}
 
 
+def _integer_ns(value, label):
+    require(type(value) is int and value >= 0, "invalid integer " + label)
+    return value
+
+
+def audit_nav2_shutdown(receipt, summary, epoch):
+    """Require actual lifecycle replies and paused-clock finalized-state receipts."""
+    require(receipt.get("schema") == "mr3-nav2-shutdown-v1"
+            and receipt.get("protocol") == SHUTDOWN_PROTOCOL
+            and receipt.get("epoch") == epoch, "Nav2 shutdown schema/protocol/epoch mismatch")
+    require(summary.get("shutdown_protocol") == SHUTDOWN_PROTOCOL
+            and summary.get("nav2_shutdown") == receipt,
+            "summary does not bind the complete Nav2 shutdown receipt")
+    require(receipt.get("success") is True and receipt.get("failures") == [],
+            "Nav2 shutdown failed")
+    closed = receipt.get("goal_ownership_closed")
+    require(closed == summary.get("closed") and isinstance(closed, dict)
+            and closed.get("epoch") == epoch and type(closed.get("pending_goal_count")) is int
+            and closed["pending_goal_count"] == 0
+            and closed.get("robot_names") == list(ROBOTS),
+            "Nav2 shutdown did not follow the actual goal-ownership closure")
+    physical = _integer_ns(receipt.get("physical_time_ns"), "physical_time_ns")
+    require(all(_integer_ns(receipt.get(key), key) == physical for key in
+                ("start_clock_ns", "end_clock_ns")), "lifecycle shutdown advanced ROS clock")
+    closed_clock = _integer_ns(receipt.get("goal_ownership_closed_received_clock_ns"),
+                               "goal closure clock")
+    require(nanoseconds(closed.get("stop_sim_time_sec")) <= closed_clock <= physical,
+            "goal closure receipt is later than lifecycle shutdown")
+    closed_wall = _integer_ns(receipt.get("goal_ownership_closed_received_wall_monotonic_ns"),
+                              "goal closure wall")
+    started = _integer_ns(receipt.get("started_wall_monotonic_ns"), "Nav2 start wall")
+    completed = _integer_ns(receipt.get("completed_wall_monotonic_ns"), "Nav2 end wall")
+    require(closed_wall <= started <= completed
+            and close(receipt.get("wall_duration_sec"), (completed - started) / NS)
+            and close(receipt.get("wall_guard_sec"), 30.)
+            and completed - started <= 30 * NS,
+            "invalid Nav2 shutdown wall interval/guard")
+    robots = receipt.get("robots")
+    require(isinstance(robots, list)
+            and [row.get("robot") for row in robots] == list(ROBOTS),
+            "Nav2 shutdown robot order/coverage mismatch")
+    intervals, shutdown_intervals = [], []
+
+    def timing(row, label):
+        require(all(_integer_ns(row.get(key), label + " " + key) == physical for key in
+                    ("request_clock_ns", "response_clock_ns")),
+                label + " changed the paused clock")
+        begin = _integer_ns(row.get("started_wall_monotonic_ns"), label + " start wall")
+        request = _integer_ns(row.get("request_wall_monotonic_ns"), label + " request wall")
+        end = _integer_ns(row.get("completed_wall_monotonic_ns"), label + " end wall")
+        require(started <= begin <= request <= end <= completed
+                and close(row.get("wall_duration_sec"), (end - begin) / NS),
+                label + " has a noncausal wall interval")
+        intervals.append((begin, end))
+        return begin, end
+
+    for robot in robots:
+        name, shutdown = robot["robot"], robot["shutdown"]
+        require(shutdown.get("service") == f"/{name}/lifecycle_manager_navigation/manage_nodes"
+                and type(shutdown.get("command")) is int and shutdown["command"] == 4
+                and shutdown.get("response") == {"success": True}
+                and shutdown["response"]["success"] is True,
+                "Nav2 shutdown lacks an exact successful SHUTDOWN response for " + name)
+        interval = timing(shutdown, name + " shutdown")
+        shutdown_intervals.append(interval)
+        states = robot.get("states")
+        require(isinstance(states, list) and len(states) == len(NAV2_NODES)
+                and {row.get("node") for row in states} == set(NAV2_NODES),
+                "Nav2 finalized-state node coverage differs for " + name)
+        for row in states:
+            label = name + "/" + row["node"]
+            require(row.get("service") == f"/{label}/get_state"
+                    and row.get("state") == {"id": 4, "label": "finalized"}
+                    and type(row["state"]["id"]) is int,
+                    "Nav2 node is not actually finalized: " + label)
+            require(timing(row, label)[0] >= interval[1],
+                    "finalized-state query precedes its lifecycle SHUTDOWN response")
+    require(all(left[1] <= right[0] for left, right in zip(
+                shutdown_intervals, shutdown_intervals[1:])),
+            "Nav2 robot shutdown requests were not sequential")
+    intervals.sort()
+    require(all(left[1] <= right[0] for left, right in zip(intervals, intervals[1:])),
+            "lifecycle service calls overlapped")
+    return {"proven": True, "robot_shutdown_responses": 3,
+            "finalized_state_responses": 18, "paused_time_ns": physical,
+            "completed_wall_monotonic_ns": completed,
+            "scope": "successful lifecycle replies and actual GetState finalized receipts"}
+
+
+def audit_ordered_ros_shutdown(text, epoch, nav2_completed_wall):
+    """Replay actual SDK process identities and serial signal/exit receipts."""
+    records = [json.loads(line.split(ORDERED_SHUTDOWN_MARKER, 1)[1])
+               for line in text.splitlines() if ORDERED_SHUTDOWN_MARKER in line]
+    require(bool(records), "missing ordered ROS shutdown receipts")
+    identity_keys = ("process_start_index", "action_id", "process_name", "pid", "role")
+    processes, exits, signals = {}, {}, []
+    phase, remaining, pending = "running", [], None
+    evaluator_exit_wall = None
+    previous_wall = 0
+
+    def identity(row):
+        return {key: row[key] for key in identity_keys}
+
+    def process(row):
+        index = row.get("process_start_index")
+        require(type(index) is int and index in processes
+                and identity(row) == identity(processes[index]),
+                "ordered shutdown process identity mismatch")
+        return index
+
+    for ordinal, row in enumerate(records, 1):
+        require(isinstance(row, dict) and row.get("schema") == "mr3-ordered-ros-shutdown-v1"
+                and row.get("protocol") == SHUTDOWN_PROTOCOL and row.get("epoch") == epoch
+                and type(row.get("receipt_index")) is int and row["receipt_index"] == ordinal,
+                "ordered shutdown receipt schema/protocol/epoch/index mismatch")
+        wall = _integer_ns(row.get("wall_monotonic_ns"), "ordered receipt wall")
+        require(wall >= previous_wall, "ordered shutdown receipt wall clock regressed")
+        previous_wall = wall
+        kind = row.get("event")
+        if kind == "process_started":
+            index = row.get("process_start_index")
+            require(type(index) is int and index == len(processes) + 1
+                    and type(row.get("action_id")) is int and row["action_id"] > 0
+                    and type(row.get("pid")) is int and row["pid"] > 0
+                    and isinstance(row.get("process_name"), str)
+                    and re.fullmatch(r"[^\]\s]+-\d+", row["process_name"]) is not None
+                    and row.get("role") in ("owned_ros", "gazebo_server", "native_stop_cli")
+                    and isinstance(row.get("argv"), list) and bool(row["argv"])
+                    and all(isinstance(arg, str) for arg in row["argv"]),
+                    "invalid actual process-start identity/argv")
+            require(not any(row["action_id"] == old["action_id"]
+                            or row["pid"] == old["pid"]
+                            or row["process_name"] == old["process_name"]
+                            for old in processes.values()), "duplicate actual process start")
+            role = ("gazebo_server" if row["process_name"].startswith("gzserver-") else
+                    "native_stop_cli" if row["process_name"].startswith(
+                        "mr3_gazebo_native_stop-") else "owned_ros")
+            require(row["role"] == role, "actual SDK process name and shutdown role differ")
+            require((phase == "running" and row["role"] != "native_stop_cli")
+                    or (phase == "native" and row["role"] == "native_stop_cli"),
+                    "unexpected process started during ordered shutdown")
+            processes[index] = row
+        elif kind == "process_exited":
+            index = process(row)
+            require(index not in exits and type(row.get("returncode")) is int
+                    and row["returncode"] == 0 and type(row.get("controlled")) is bool,
+                    "actual process exit was duplicate, nonzero or untyped")
+            if row["controlled"]:
+                require(phase == "draining" and pending == index
+                        and type(row.get("signal_sequence")) is int
+                        and row["signal_sequence"] == len(signals),
+                        "process exit does not acknowledge the current serial signal")
+                require(wall - signals[-1]["wall_monotonic_ns"] <= 10 * NS,
+                        "serial process exit exceeded its independent wall guard")
+                pending = None
+            else:
+                require(row.get("signal_sequence") is None and pending != index,
+                        "signaled process exited without controlled acknowledgement")
+            exits[index] = row
+            if index in remaining:
+                remaining.remove(index)
+        elif kind == "begin":
+            require(phase == "running" and type(row.get("evaluator_pid")) is int
+                    and type(row.get("evaluator_returncode")) is int
+                    and row["evaluator_returncode"] == 0,
+                    "ordered shutdown did not begin from a clean evaluator exit")
+            evaluators = [index for index, old in processes.items()
+                          if old["process_name"].startswith("task_evaluator-")]
+            require(len(evaluators) == 1 and evaluators[0] in exits
+                    and processes[evaluators[0]]["pid"] == row["evaluator_pid"],
+                    "ordered shutdown evaluator identity is not actually exited")
+            evaluator_exit_wall = exits[evaluators[0]]["wall_monotonic_ns"]
+            require(nav2_completed_wall <= evaluator_exit_wall <= wall,
+                    "evaluator exited before actual Nav2 finalization")
+            remaining = [index for index in reversed(processes)
+                         if processes[index]["role"] == "owned_ros" and index not in exits]
+            require(row.get("remaining") == [identity(processes[index]) for index in remaining],
+                    "begin list is not the reverse actual live process-start order")
+            phase = "draining"
+        elif kind == "signal":
+            index = process(row)
+            require(phase == "draining" and pending is None and bool(remaining)
+                    and remaining[0] == index and index not in exits
+                    and row.get("signal") == "SIGINT"
+                    and type(row.get("signal_sequence")) is int
+                    and row["signal_sequence"] == len(signals) + 1,
+                    "serial SIGINT does not target the next reverse-start live process")
+            remaining.pop(0)
+            pending = index
+            signals.append(row)
+        elif kind == "ros_complete":
+            require(phase == "draining" and pending is None and not remaining
+                    and all(index in exits for index, old in processes.items()
+                            if old["role"] == "owned_ros")
+                    and type(row.get("signaled_count")) is int
+                    and row["signaled_count"] == len(signals),
+                    "ROS completion precedes actual serial clean exits")
+            phase = "ros_complete"
+        elif kind == "gz_stop":
+            servers = [old for old in processes.values() if old["role"] == "gazebo_server"]
+            require(phase == "ros_complete" and len(servers) == 1
+                    and servers[0]["process_start_index"] not in exits
+                    and type(row.get("server_pid")) is int
+                    and row["server_pid"] == servers[0]["pid"]
+                    and type(row.get("signaled_count")) is int
+                    and row["signaled_count"] == len(signals),
+                    "Gazebo stop did not follow complete ROS shutdown")
+            phase = "native"
+        elif kind == "complete":
+            servers = [old for old in processes.values() if old["role"] == "gazebo_server"]
+            clients = [old for old in processes.values() if old["role"] == "native_stop_cli"]
+            require(phase == "native" and len(servers) == len(clients) == 1
+                    and len(exits) == len(processes)
+                    and row.get("server_pid") == servers[0]["pid"]
+                    and row.get("stop_cli_pid") == clients[0]["pid"]
+                    and type(row.get("server_returncode")) is int
+                    and row["server_returncode"] == 0
+                    and type(row.get("stop_cli_returncode")) is int
+                    and row["stop_cli_returncode"] == 0,
+                    "ordered shutdown lacks actual final native clean exits")
+            phase = "done"
+        else:
+            raise ValueError("unknown/error ordered shutdown event: " + str(kind))
+    require(phase == "done", "ordered shutdown is incomplete")
+    sdk_starts = re.findall(
+        r"\[INFO\] \[([^\]\s]+)\]: process started with pid \[(\d+)\]", text)
+    sdk_exits = re.findall(
+        r"\[INFO\] \[([^\]\s]+)\]: process has finished cleanly \[pid (\d+)\]", text)
+    expected = [(old["process_name"], str(old["pid"])) for old in processes.values()]
+    require(len(sdk_starts) == len(expected) and set(sdk_starts) == set(expected)
+            and len(sdk_exits) == len(expected) and set(sdk_exits) == set(expected),
+            "ordered receipts do not bind every real SDK start/clean-exit identity")
+    sdk_signals = re.findall(
+        r"\[INFO\] \[([^\]\s]+)\]: sending signal '([^']+)' to process\[([^\]]+)\]", text)
+    require(sdk_signals == [(old["process_name"], "SIGINT", old["process_name"])
+                            for old in signals],
+            "ordered signal receipts differ from actual SDK signal delivery")
+    exit_positions = {match[1]: match.start() for match in re.finditer(
+        r"\[INFO\] \[([^\]\s]+)\]: process has finished cleanly \[pid (\d+)\]", text)}
+    signal_positions = [match.start() for match in re.finditer(
+        r"\[INFO\] \[([^\]\s]+)\]: sending signal '([^']+)' to process\[([^\]]+)\]", text)]
+    previous_exit = -1
+    for row, position in zip(signals, signal_positions):
+        end_position = exit_positions[row["process_name"]]
+        require(previous_exit < position < end_position,
+                "actual SDK signals overlapped before the preceding clean exit")
+        previous_exit = end_position
+    marker_positions = [match.start() for match in re.finditer(
+        re.escape(ORDERED_SHUTDOWN_MARKER), text)]
+    gz_position = marker_positions[next(index for index, row in enumerate(records)
+                                        if row["event"] == "gz_stop")]
+    require(all(exit_positions[old["process_name"]] < gz_position
+                for old in processes.values() if old["role"] == "owned_ros"),
+            "actual SDK ROS clean exits followed the Gazebo stop request")
+    require(all(exit_positions[old["process_name"]] > gz_position
+                for old in processes.values() if old["role"] in (
+                    "gazebo_server", "native_stop_cli")),
+            "actual SDK native exits preceded the final Gazebo stop request")
+    return {"proven": True, "actual_process_starts": len(processes),
+            "serial_sigint_count": len(signals), "all_actual_clean_exits": len(exits),
+            "evaluator_exit_wall_monotonic_ns": evaluator_exit_wall,
+            "scope": "actual SDK identities and clean exits; no SDK internal-race claim"}
+
+
+def shutdown_declaration(metadata, expected_fault=False):
+    declaration = metadata.get("shutdown_protocol")
+    if declaration is None:
+        return {"required": False, "proven": False,
+                "scope": "legacy sample; no ordered lifecycle/process-shutdown credit"}
+    require(declaration == SHUTDOWN_PROTOCOL, "unknown shutdown protocol")
+    return {"required": True, "proven": False, "protocol": declaration,
+            "expected_killed_worker": bool(expected_fault)}
+
+
+def audit_ordered_shutdown(summary, receipt, text, transitions, epoch):
+    nav2 = audit_nav2_shutdown(receipt, summary, epoch)
+    require(bool(transitions), "ordered shutdown lacks the final reward sequence")
+    last = transitions[-1]
+    sequence = last["info"]["reward_diagnostics"]["sequence"]
+    require(type(sequence) is int and sequence > 0
+            and (last.get("terminated") is True or last.get("truncated") is True),
+            "ordered shutdown precedes a sealed terminal/truncated reward")
+    request = {"epoch": epoch, "ack_sequence": sequence,
+               "reason": "task_terminal" if last["terminated"] else "external_truncation"}
+    require(summary.get("training_finalize_request") == request
+            and summary.get("training_finalize_ack") == {**request,
+                                                         "kind": "training_finalize_ack"}
+            and type(summary["training_finalize_request"].get("ack_sequence")) is int
+            and type(summary["training_finalize_ack"].get("ack_sequence")) is int,
+            "finalization request/actual ACK differ from the final sealed reward")
+    launch = audit_ordered_ros_shutdown(text, epoch, nav2["completed_wall_monotonic_ns"])
+    return {"required": True, "proven": True, "protocol": SHUTDOWN_PROTOCOL,
+            "nav2": nav2, "launch": launch, "finalize_ack_sequence": sequence}
+
+
 def audit_episode(directory, expected_fault=False):
     evidence = Evidence(directory)
     metadata = evidence.check("metadata", lambda: evidence.json("metadata.json")) or {}
@@ -620,6 +919,8 @@ def audit_episode(directory, expected_fault=False):
                               evidence.json("supervisor_shutdown.json")) or {}
     result["processes"] = evidence.check(
         "process cleanup", lambda: audit_processes(supervisor, shutdown, epoch, require_fault))
+    result["ordered_shutdown"] = evidence.check(
+        "shutdown protocol declaration", lambda: shutdown_declaration(metadata, require_fault))
     transitions = evidence.check("transitions JSONL", lambda:
                                  evidence.rows("transitions.jsonl")) or []
     physics = evidence.check("physics JSONL", lambda: evidence.rows("physics.jsonl")) or []
@@ -665,6 +966,16 @@ def audit_episode(directory, expected_fault=False):
                     "safety_failures": summary.get("failures")}
 
         result["closure"] = evidence.check("native/navigation closure", closure)
+        if metadata.get("shutdown_protocol") == SHUTDOWN_PROTOCOL:
+            receipt = evidence.check("Nav2 shutdown receipt", lambda:
+                                     evidence.json("nav2_shutdown.json")) or {}
+            result["ordered_shutdown"] = evidence.check(
+                "ordered lifecycle/process shutdown", lambda: audit_ordered_shutdown(
+                    summary, receipt, text, transitions, epoch))
+        elif metadata.get("shutdown_protocol") is None:
+            evidence.check("legacy shutdown declaration", lambda: require(
+                summary.get("shutdown_protocol") is None,
+                "summary claims ordered shutdown without metadata declaration"))
         evaluator = evidence.check("evaluator", lambda: evidence.json(str(epoch) + ".json")) or {}
         result["contacts"] = evidence.check("contact monitoring", lambda:
                                             audit_contacts(evaluator, text, epoch))

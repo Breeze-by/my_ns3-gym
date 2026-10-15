@@ -1,0 +1,708 @@
+{
+  "schema": "mr3-native-shutdown-diagnosis-v1",
+  "source_freeze": "7e186bf83b2a7ed9d38a95f30d53150ee2d6736d",
+  "scope": "Read-only native shutdown/core evidence; no simulator execution, runtime changes, invented lifecycle transition, or hardware-capacity attribution. Full benchmark remains failed.",
+  "episode": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v4_workers4/worker2/episode001_open_101",
+  "epoch": "mr3_p1c_v4_workers4_w2_e1_66d81d4f",
+  "failure": {
+    "request": {
+      "id": 17,
+      "op": "step",
+      "epoch": "mr3_p1c_v4_workers4_w2_e1_66d81d4f",
+      "action": 999,
+      "external_truncation": "external_sampler_limit"
+    },
+    "error": "RuntimeError('native shutdown failed: [\"[ERROR] [velocity_smoother-20]: process has died [pid 332359, exit code -11, cmd \\'/opt/ros/humble/lib/nav2_velocity_smoother/velocity_smoother --ros-args --log-level warn --ros-args -r __node:=velocity_smoother -r __ns:=/tb1 --params-file /tmp/tmprbpinc_p -r /tf:=tf -r /tf_static:=tf_static -r /scan:=/tb1/scan -r cmd_vel:=cmd_vel_nav -r cmd_vel_smoothed:=cmd_vel\\'].\"]')",
+    "scope": "invalid infrastructure sample, never a task success"
+  },
+  "observed_failure": {
+    "signal": 11,
+    "pid": 332359,
+    "parent_launch_pid": 329070,
+    "namespace": "/tb1",
+    "crashing_lwp": 332383,
+    "crashing_frame": "eprosima::fastrtps::rtps::EDP::unpairWriterProxy",
+    "crashing_library": "/opt/ros/humble/lib/libfastrtps.so.2.6",
+    "main_lwp": 332359,
+    "main_thread_frames": [
+      "DataReaderImpl::stop",
+      "DataReaderImpl::~DataReaderImpl",
+      "rmw_fastrtps_shared_cpp::destroy_subscription",
+      "rclcpp::SubscriptionBase::~SubscriptionBase",
+      "rclcpp::node_interfaces::NodeTimeSource::~NodeTimeSource",
+      "rclcpp_lifecycle::LifecycleNode::~LifecycleNode"
+    ],
+    "interpretation": "Core places failure in Fast DDS discovery writer unpairing while the main thread destroys a ROS subscription/node time source. Exact triggering interleaving and corrective SDK patch are not established by this evidence."
+  },
+  "shutdown_wall_event_sequence": [
+    {
+      "sdk_line": 91,
+      "wall_unix_sec": "1792063122.5994005",
+      "event": "[INFO] [task_evaluator-37]: process has finished cleanly [pid 336680]"
+    },
+    {
+      "sdk_line": 92,
+      "wall_unix_sec": "1792063122.6840391",
+      "event": "[INFO] [mr3_gazebo_native_stop-38]: process started with pid [343510]"
+    },
+    {
+      "sdk_line": 93,
+      "wall_unix_sec": "1792063123.8157816",
+      "event": "[INFO] [mr3_gazebo_native_stop-38]: process has finished cleanly [pid 343510]"
+    },
+    {
+      "sdk_line": 94,
+      "wall_unix_sec": "1792063126.4893970",
+      "event": "[INFO] [gzserver-4]: process has finished cleanly [pid 329208]"
+    },
+    {
+      "sdk_line": 95,
+      "wall_unix_sec": "1792063126.5384967",
+      "event": "[INFO] [mr3_adapter-36]: sending signal 'SIGINT' to process[mr3_adapter-36]"
+    },
+    {
+      "sdk_line": 96,
+      "wall_unix_sec": "1792063126.5533543",
+      "event": "[INFO] [lifecycle_manager-35]: sending signal 'SIGINT' to process[lifecycle_manager-35]"
+    },
+    {
+      "sdk_line": 97,
+      "wall_unix_sec": "1792063126.5687442",
+      "event": "[INFO] [velocity_smoother-34]: sending signal 'SIGINT' to process[velocity_smoother-34]"
+    },
+    {
+      "sdk_line": 98,
+      "wall_unix_sec": "1792063126.5832853",
+      "event": "[INFO] [waypoint_follower-33]: sending signal 'SIGINT' to process[waypoint_follower-33]"
+    },
+    {
+      "sdk_line": 99,
+      "wall_unix_sec": "1792063126.5983641",
+      "event": "[INFO] [bt_navigator-32]: sending signal 'SIGINT' to process[bt_navigator-32]"
+    },
+    {
+      "sdk_line": 100,
+      "wall_unix_sec": "1792063126.6130576",
+      "event": "[INFO] [behavior_server-31]: sending signal 'SIGINT' to process[behavior_server-31]"
+    },
+    {
+      "sdk_line": 101,
+      "wall_unix_sec": "1792063126.6278663",
+      "event": "[INFO] [planner_server-30]: sending signal 'SIGINT' to process[planner_server-30]"
+    },
+    {
+      "sdk_line": 102,
+      "wall_unix_sec": "1792063126.6421292",
+      "event": "[INFO] [controller_server-29]: sending signal 'SIGINT' to process[controller_server-29]"
+    },
+    {
+      "sdk_line": 103,
+      "wall_unix_sec": "1792063126.6573048",
+      "event": "[INFO] [lifecycle_manager-28]: sending signal 'SIGINT' to process[lifecycle_manager-28]"
+    },
+    {
+      "sdk_line": 104,
+      "wall_unix_sec": "1792063126.6715093",
+      "event": "[INFO] [velocity_smoother-27]: sending signal 'SIGINT' to process[velocity_smoother-27]"
+    },
+    {
+      "sdk_line": 105,
+      "wall_unix_sec": "1792063126.6860619",
+      "event": "[INFO] [waypoint_follower-26]: sending signal 'SIGINT' to process[waypoint_follower-26]"
+    },
+    {
+      "sdk_line": 106,
+      "wall_unix_sec": "1792063126.7013204",
+      "event": "[INFO] [bt_navigator-25]: sending signal 'SIGINT' to process[bt_navigator-25]"
+    },
+    {
+      "sdk_line": 107,
+      "wall_unix_sec": "1792063126.7157106",
+      "event": "[INFO] [behavior_server-24]: sending signal 'SIGINT' to process[behavior_server-24]"
+    },
+    {
+      "sdk_line": 108,
+      "wall_unix_sec": "1792063126.7314084",
+      "event": "[INFO] [planner_server-23]: sending signal 'SIGINT' to process[planner_server-23]"
+    },
+    {
+      "sdk_line": 109,
+      "wall_unix_sec": "1792063126.7463603",
+      "event": "[INFO] [controller_server-22]: sending signal 'SIGINT' to process[controller_server-22]"
+    },
+    {
+      "sdk_line": 110,
+      "wall_unix_sec": "1792063126.7639086",
+      "event": "[INFO] [lifecycle_manager-21]: sending signal 'SIGINT' to process[lifecycle_manager-21]"
+    },
+    {
+      "sdk_line": 111,
+      "wall_unix_sec": "1792063126.7790220",
+      "event": "[INFO] [velocity_smoother-20]: sending signal 'SIGINT' to process[velocity_smoother-20]"
+    },
+    {
+      "sdk_line": 112,
+      "wall_unix_sec": "1792063126.7948556",
+      "event": "[INFO] [waypoint_follower-19]: sending signal 'SIGINT' to process[waypoint_follower-19]"
+    },
+    {
+      "sdk_line": 113,
+      "wall_unix_sec": "1792063126.8104081",
+      "event": "[INFO] [bt_navigator-18]: sending signal 'SIGINT' to process[bt_navigator-18]"
+    },
+    {
+      "sdk_line": 114,
+      "wall_unix_sec": "1792063126.8256412",
+      "event": "[INFO] [behavior_server-17]: sending signal 'SIGINT' to process[behavior_server-17]"
+    },
+    {
+      "sdk_line": 115,
+      "wall_unix_sec": "1792063126.8333037",
+      "event": "[INFO] [velocity_smoother-34]: process has finished cleanly [pid 336145]"
+    },
+    {
+      "sdk_line": 116,
+      "wall_unix_sec": "1792063126.8423927",
+      "event": "[INFO] [planner_server-16]: sending signal 'SIGINT' to process[planner_server-16]"
+    },
+    {
+      "sdk_line": 117,
+      "wall_unix_sec": "1792063126.8587632",
+      "event": "[INFO] [controller_server-15]: sending signal 'SIGINT' to process[controller_server-15]"
+    },
+    {
+      "sdk_line": 118,
+      "wall_unix_sec": "1792063126.8651817",
+      "event": "[INFO] [waypoint_follower-33]: process has finished cleanly [pid 336143]"
+    },
+    {
+      "sdk_line": 119,
+      "wall_unix_sec": "1792063126.8764157",
+      "event": "[INFO] [multirobot_slam_toolbox_node-13]: sending signal 'SIGINT' to process[multirobot_slam_toolbox_node-13]"
+    },
+    {
+      "sdk_line": 120,
+      "wall_unix_sec": "1792063126.8923001",
+      "event": "[INFO] [robot_state_publisher-11]: sending signal 'SIGINT' to process[robot_state_publisher-11]"
+    },
+    {
+      "sdk_line": 121,
+      "wall_unix_sec": "1792063126.9074852",
+      "event": "[INFO] [multirobot_slam_toolbox_node-10]: sending signal 'SIGINT' to process[multirobot_slam_toolbox_node-10]"
+    },
+    {
+      "sdk_line": 122,
+      "wall_unix_sec": "1792063126.9250882",
+      "event": "[INFO] [robot_state_publisher-8]: sending signal 'SIGINT' to process[robot_state_publisher-8]"
+    },
+    {
+      "sdk_line": 123,
+      "wall_unix_sec": "1792063126.9310367",
+      "event": "[INFO] [lifecycle_manager-35]: process has finished cleanly [pid 336147]"
+    },
+    {
+      "sdk_line": 124,
+      "wall_unix_sec": "1792063126.9455047",
+      "event": "[INFO] [multirobot_slam_toolbox_node-7]: sending signal 'SIGINT' to process[multirobot_slam_toolbox_node-7]"
+    },
+    {
+      "sdk_line": 125,
+      "wall_unix_sec": "1792063126.9637740",
+      "event": "[INFO] [robot_state_publisher-5]: sending signal 'SIGINT' to process[robot_state_publisher-5]"
+    },
+    {
+      "sdk_line": 126,
+      "wall_unix_sec": "1792063126.9682477",
+      "event": "[INFO] [velocity_smoother-27]: process has finished cleanly [pid 334410]"
+    },
+    {
+      "sdk_line": 127,
+      "wall_unix_sec": "1792063126.9828191",
+      "event": "[INFO] [peer_obstacles-3]: sending signal 'SIGINT' to process[peer_obstacles-3]"
+    },
+    {
+      "sdk_line": 128,
+      "wall_unix_sec": "1792063126.9996796",
+      "event": "[INFO] [mr3_contact_reducer-2]: sending signal 'SIGINT' to process[mr3_contact_reducer-2]"
+    },
+    {
+      "sdk_line": 129,
+      "wall_unix_sec": "1792063127.0013220",
+      "event": "[INFO] [waypoint_follower-26]: process has finished cleanly [pid 334408]"
+    },
+    {
+      "sdk_line": 130,
+      "wall_unix_sec": "1792063127.0164781",
+      "event": "[INFO] [mr3_information-1]: sending signal 'SIGINT' to process[mr3_information-1]"
+    },
+    {
+      "sdk_line": 131,
+      "wall_unix_sec": "1792063127.0190403",
+      "event": "[INFO] [lifecycle_manager-28]: process has finished cleanly [pid 334412]"
+    },
+    {
+      "sdk_line": 132,
+      "wall_unix_sec": "1792063127.0195310",
+      "event": "[INFO] [behavior_server-31]: process has finished cleanly [pid 336139]"
+    },
+    {
+      "sdk_line": 133,
+      "wall_unix_sec": "1792063127.0636792",
+      "event": "[INFO] [waypoint_follower-19]: process has finished cleanly [pid 332357]"
+    },
+    {
+      "sdk_line": 134,
+      "wall_unix_sec": "1792063127.0957320",
+      "event": "[INFO] [multirobot_slam_toolbox_node-13]: process has finished cleanly [pid 331366]"
+    },
+    {
+      "sdk_line": 135,
+      "wall_unix_sec": "1792063127.0989013",
+      "event": "[INFO] [robot_state_publisher-11]: process has finished cleanly [pid 331355]"
+    },
+    {
+      "sdk_line": 136,
+      "wall_unix_sec": "1792063127.1002307",
+      "event": "[INFO] [behavior_server-24]: process has finished cleanly [pid 334402]"
+    },
+    {
+      "sdk_line": 137,
+      "wall_unix_sec": "1792063127.1138518",
+      "event": "[INFO] [lifecycle_manager-21]: process has finished cleanly [pid 332361]"
+    },
+    {
+      "sdk_line": 138,
+      "wall_unix_sec": "1792063127.1284952",
+      "event": "[INFO] [robot_state_publisher-8]: process has finished cleanly [pid 331054]"
+    },
+    {
+      "sdk_line": 139,
+      "wall_unix_sec": "1792063127.1419637",
+      "event": "[INFO] [multirobot_slam_toolbox_node-10]: process has finished cleanly [pid 331058]"
+    },
+    {
+      "sdk_line": 140,
+      "wall_unix_sec": "1792063127.1549659",
+      "event": "[INFO] [multirobot_slam_toolbox_node-7]: process has finished cleanly [pid 329226]"
+    },
+    {
+      "sdk_line": 141,
+      "wall_unix_sec": "1792063127.1617739",
+      "event": "[INFO] [behavior_server-17]: process has finished cleanly [pid 332353]"
+    },
+    {
+      "sdk_line": 142,
+      "wall_unix_sec": "1792063127.1669524",
+      "event": "[INFO] [robot_state_publisher-5]: process has finished cleanly [pid 329212]"
+    },
+    {
+      "sdk_line": 143,
+      "wall_unix_sec": "1792063127.1716590",
+      "event": "[INFO] [controller_server-29]: process has finished cleanly [pid 336133]"
+    },
+    {
+      "sdk_line": 144,
+      "wall_unix_sec": "1792063127.1822181",
+      "event": "[INFO] [mr3_adapter-36]: process has finished cleanly [pid 336678]"
+    },
+    {
+      "sdk_line": 145,
+      "wall_unix_sec": "1792063127.2034850",
+      "event": "[INFO] [mr3_contact_reducer-2]: process has finished cleanly [pid 329195]"
+    },
+    {
+      "sdk_line": 146,
+      "wall_unix_sec": "1792063127.2050874",
+      "event": "[INFO] [controller_server-22]: process has finished cleanly [pid 334398]"
+    },
+    {
+      "sdk_line": 147,
+      "wall_unix_sec": "1792063127.2143795",
+      "event": "[INFO] [bt_navigator-32]: process has finished cleanly [pid 336141]"
+    },
+    {
+      "sdk_line": 148,
+      "wall_unix_sec": "1792063127.2357090",
+      "event": "[INFO] [planner_server-30]: process has finished cleanly [pid 336136]"
+    },
+    {
+      "sdk_line": 149,
+      "wall_unix_sec": "1792063127.2524292",
+      "event": "[INFO] [planner_server-23]: process has finished cleanly [pid 334400]"
+    },
+    {
+      "sdk_line": 150,
+      "wall_unix_sec": "1792063127.2654688",
+      "event": "[INFO] [bt_navigator-25]: process has finished cleanly [pid 334404]"
+    },
+    {
+      "sdk_line": 151,
+      "wall_unix_sec": "1792063127.2850523",
+      "event": "[INFO] [bt_navigator-18]: process has finished cleanly [pid 332355]"
+    },
+    {
+      "sdk_line": 152,
+      "wall_unix_sec": "1792063127.3102262",
+      "event": "[INFO] [controller_server-15]: process has finished cleanly [pid 332349]"
+    },
+    {
+      "sdk_line": 153,
+      "wall_unix_sec": "1792063127.4156039",
+      "event": "[INFO] [mr3_information-1]: process has finished cleanly [pid 329191]"
+    },
+    {
+      "sdk_line": 154,
+      "wall_unix_sec": "1792063127.4832478",
+      "event": "[INFO] [peer_obstacles-3]: process has finished cleanly [pid 329198]"
+    },
+    {
+      "sdk_line": 155,
+      "wall_unix_sec": "1792063128.1086497",
+      "event": "[INFO] [planner_server-16]: process has finished cleanly [pid 332351]"
+    },
+    {
+      "sdk_line": 156,
+      "wall_unix_sec": "1792063128.6951814",
+      "event": "[ERROR] [velocity_smoother-20]: process has died [pid 332359, exit code -11, cmd '/opt/ros/humble/lib/nav2_velocity_smoother/velocity_smoother --ros-args --log-level warn --ros-args -r __node:=velocity_smoother -r __ns:=/tb1 --params-file /tmp/tmprbpinc_p -r /tf:=tf -r /tf_static:=tf_static -r /scan:=/tb1/scan -r cmd_vel:=cmd_vel_nav -r cmd_vel_smoothed:=cmd_vel']."
+    }
+  ],
+  "wall_intervals_sec": {
+    "tb1_smoother_start_to_exit": "276.6547611",
+    "tb1_sigint_to_crash_exit_record": "1.9161594",
+    "server_clean_to_crash_exit_record": "2.2057844"
+  },
+  "lifecycle_scope": {
+    "startup_gate": "All 3 Nav2 stacks are active at 1792062950.055144342 (raw launch line241); readygate clean331727.",
+    "final_state": "No final get_state receipt was recorded. WARN node logging and zero-byte smoother log do not prove deactivate/cleanup/on_shutdown completion.",
+    "other_smoothers": "tb3 smoother34 pid336145 and tb2 smoother27 pid334410 exited cleanly after SIGINT.",
+    "signals": "Launch log records SIGINT; no SIGTERM or SIGKILL recorded for smoother20."
+  },
+  "parameters": {
+    "original_file": "/tmp/tmprbpinc_p",
+    "root_namespace": "/tb1",
+    "velocity_smoother_stanza_present": false,
+    "sensitive_parameter_key_scan": [],
+    "scope": "Exact supplied parameter YAML saved; absence of smoother stanza is not a captured runtime parameter dump. Last cmd_vel messages were not recorded.",
+    "remappings": {
+      "cmd_vel": "cmd_vel_nav",
+      "cmd_vel_smoothed": "cmd_vel",
+      "/tf": "tf",
+      "/tf_static": "tf_static",
+      "/scan": "/tb1/scan"
+    }
+  },
+  "goal_closure": {
+    "native_send": [
+      {
+        "epoch": "mr3_p1c_v4_workers4_w2_e1_66d81d4f",
+        "kind": "native_send",
+        "payload": {
+          "command_id": 1,
+          "goal_id": "mr3_p1c_v4_workers4_w2_e1_66d81d4f:tb1:1",
+          "pose": {
+            "frame_id": "map",
+            "orientation": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "stamp": 70.82,
+            "x": -0.0995589528676728,
+            "y": -1.0569815904830815
+          },
+          "robot": "tb1"
+        },
+        "stamp": 70.82
+      },
+      {
+        "epoch": "mr3_p1c_v4_workers4_w2_e1_66d81d4f",
+        "kind": "native_send",
+        "payload": {
+          "command_id": 1,
+          "goal_id": "mr3_p1c_v4_workers4_w2_e1_66d81d4f:tb2:1",
+          "pose": {
+            "frame_id": "map",
+            "orientation": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "stamp": 70.82,
+            "x": -0.04955895212261474,
+            "y": 1.1430184422994731
+          },
+          "robot": "tb2"
+        },
+        "stamp": 70.82
+      },
+      {
+        "epoch": "mr3_p1c_v4_workers4_w2_e1_66d81d4f",
+        "kind": "native_send",
+        "payload": {
+          "command_id": 1,
+          "goal_id": "mr3_p1c_v4_workers4_w2_e1_66d81d4f:tb3:1",
+          "pose": {
+            "frame_id": "map",
+            "orientation": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "stamp": 70.82,
+            "x": 1.0504410642686626,
+            "y": -0.056981575581920296
+          },
+          "robot": "tb3"
+        },
+        "stamp": 70.82
+      },
+      {
+        "epoch": "mr3_p1c_v4_workers4_w2_e1_66d81d4f",
+        "kind": "native_send",
+        "payload": {
+          "command_id": 11,
+          "goal_id": "mr3_p1c_v4_workers4_w2_e1_66d81d4f:tb1:11",
+          "pose": {
+            "frame_id": "map",
+            "orientation": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "stamp": 80.82,
+            "x": -2.957182766753185,
+            "y": -0.0069815748368622366
+          },
+          "robot": "tb1"
+        },
+        "stamp": 80.82
+      }
+    ],
+    "receipts": [
+      {
+        "adapter_stamp": 70.82,
+        "source_stamp": 70.82,
+        "received_stamp": 70.82,
+        "goal_id": "mr3_p1c_v4_workers4_w2_e1_66d81d4f:tb1:1",
+        "robot": "tb1",
+        "type": "accept",
+        "value": true
+      },
+      {
+        "adapter_stamp": 70.82,
+        "source_stamp": 70.82,
+        "received_stamp": 70.82,
+        "goal_id": "mr3_p1c_v4_workers4_w2_e1_66d81d4f:tb2:1",
+        "robot": "tb2",
+        "type": "accept",
+        "value": true
+      },
+      {
+        "adapter_stamp": 70.82,
+        "source_stamp": 70.82,
+        "received_stamp": 70.82,
+        "goal_id": "mr3_p1c_v4_workers4_w2_e1_66d81d4f:tb3:1",
+        "robot": "tb3",
+        "type": "accept",
+        "value": true
+      },
+      {
+        "adapter_stamp": 72.52,
+        "source_stamp": 72.52,
+        "received_stamp": 72.52,
+        "goal_id": "mr3_p1c_v4_workers4_w2_e1_66d81d4f:tb3:1",
+        "robot": "tb3",
+        "type": "result",
+        "value": 4
+      },
+      {
+        "adapter_stamp": 73.62,
+        "source_stamp": 73.6,
+        "received_stamp": 73.62,
+        "goal_id": "mr3_p1c_v4_workers4_w2_e1_66d81d4f:tb1:1",
+        "robot": "tb1",
+        "type": "result",
+        "value": 4
+      },
+      {
+        "adapter_stamp": 73.92,
+        "source_stamp": 73.92,
+        "received_stamp": 73.92,
+        "goal_id": "mr3_p1c_v4_workers4_w2_e1_66d81d4f:tb2:1",
+        "robot": "tb2",
+        "type": "result",
+        "value": 4
+      },
+      {
+        "adapter_stamp": 80.82,
+        "source_stamp": 80.82,
+        "received_stamp": 80.82,
+        "goal_id": "mr3_p1c_v4_workers4_w2_e1_66d81d4f:tb1:11",
+        "robot": "tb1",
+        "type": "accept",
+        "value": true
+      },
+      {
+        "adapter_stamp": 85.82,
+        "source_stamp": 85.82,
+        "received_stamp": 85.82,
+        "goal_id": "mr3_p1c_v4_workers4_w2_e1_66d81d4f:tb1:11",
+        "robot": "tb1",
+        "type": "cancel",
+        "value": true
+      },
+      {
+        "adapter_stamp": 86.02,
+        "source_stamp": 85.84,
+        "received_stamp": 86.02,
+        "goal_id": "mr3_p1c_v4_workers4_w2_e1_66d81d4f:tb1:11",
+        "robot": "tb1",
+        "type": "result",
+        "value": 5
+      }
+    ],
+    "task_stopped": {
+      "epoch": "mr3_p1c_v4_workers4_w2_e1_66d81d4f",
+      "kind": "task_stopped",
+      "payload": {
+        "epoch": "mr3_p1c_v4_workers4_w2_e1_66d81d4f",
+        "navigation_failure": false,
+        "pending_goal_count": 0,
+        "robot_names": [
+          "tb1",
+          "tb2",
+          "tb3"
+        ],
+        "start_sim_time_sec": 70.82,
+        "stop_sim_time_sec": 86.82
+      },
+      "stamp": 86.82
+    },
+    "formal_protocol_audit": {
+      "accepted_action_count": 16,
+      "cancel_count": 1,
+      "confirmed_cancellation_count": 1,
+      "goal_count": 4,
+      "keep_robot_command_count": 26,
+      "native_terminal_count": 4,
+      "rejected_action_count": 0,
+      "scope": "goal payload audit, not an action-server network trace"
+    },
+    "scope": "Four goals have terminal receipts (3 SUCCEEDED=4, 1 CANCELED=5 after accepted cancellation). Adapter pending_goal_count0 before native stop. Navigation closure does not excuse SDK shutdown failure."
+  },
+  "native_stop": {
+    "returncode": 0,
+    "method": "owned_launch_native_stop",
+    "native_cli_pid": 343510,
+    "server_clean_exit_recorded": true
+  },
+  "supervisor_cleanup": {
+    "worker_returncode": 1,
+    "forced_shutdown": true,
+    "failed_sample": true,
+    "remaining_owned_processes": [],
+    "remaining_owned_zombies": [],
+    "process_scan_statistics": {
+      "count": 361,
+      "max_scan_wall_sec": 1.8732926049269736,
+      "max_observed_interval_sec": 1.7553106457926333
+    }
+  },
+  "accounting": {
+    "reset_row_count": 1,
+    "raw_step_rows": 16,
+    "valid_gym_returned_prefix_steps": 15,
+    "raw_final_step_not_delivered": true,
+    "full_episode_credit": false,
+    "benchmark_valid_returned_steps": 111,
+    "benchmark_full_clean_episodes": 6,
+    "benchmark_failed_episodes": 1,
+    "unattempted": "worker2/episode002_open_101",
+    "scope": "Raw final step16 is written before shutdown exception and is not a returned Gym transition; formal audit transition_count16 describes raw records only."
+  },
+  "formal_episode_audit": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/worker4_w2_e1_v4_audit.json",
+    "passed": false,
+    "errors": [
+      "process cleanup: normal worker did not exit cleanly",
+      "episode summary: [Errno 2] No such file or directory: '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v4_workers4/worker2/episode001_open_101/summary.json.gz'",
+      "native/navigation closure: native launch failed"
+    ]
+  },
+  "installed_sdk_versions_tsv": "ros-humble-fastcdr\t1.0.29-1jammy.20260226.010952\nros-humble-fastrtps\t2.6.11-1jammy.20260304.200925\nros-humble-nav2-velocity-smoother\t1.1.20-1jammy.20260326.004635\nros-humble-rclcpp\t16.0.19-1jammy.20260325.211007\nros-humble-rclcpp-lifecycle\t16.0.19-1jammy.20260325.222022\nros-humble-rmw-fastrtps-cpp\t6.2.10-1jammy.20260304.212617\nros-humble-rmw-fastrtps-shared-cpp\t6.2.10-1jammy.20260304.211712\n",
+  "installed_binary_hashes": [
+    {
+      "path": "/opt/ros/humble/lib/nav2_velocity_smoother/velocity_smoother",
+      "resolved": "/opt/ros/humble/lib/nav2_velocity_smoother/velocity_smoother",
+      "bytes": 18760,
+      "sha256": "35a0cd68840372e88dd4328e90e6e7d1685d642e0ee76620d4efcb08865a8007"
+    },
+    {
+      "path": "/opt/ros/humble/lib/libfastrtps.so.2.6",
+      "resolved": "/opt/ros/humble/lib/libfastrtps.so.2.6.11",
+      "bytes": 8117848,
+      "sha256": "cc1f45ce53ef4ed2961e57054ddb80d115dafc6604d2a6c259ec8b18452e03b8"
+    },
+    {
+      "path": "/opt/ros/humble/lib/librmw_fastrtps_shared_cpp.so",
+      "resolved": "/opt/ros/humble/lib/librmw_fastrtps_shared_cpp.so",
+      "bytes": 426992,
+      "sha256": "8e3f4603fbdd53588fed6927575f4687457a2e7933c88a28ecd1f7afce5edaa7"
+    },
+    {
+      "path": "/opt/ros/humble/lib/librclcpp.so",
+      "resolved": "/opt/ros/humble/lib/librclcpp.so",
+      "bytes": 2053576,
+      "sha256": "71d51e07fb1de937222783778a4fb677178bd2bb712eb1cba5d2c2ad0b55e772"
+    },
+    {
+      "path": "/opt/ros/humble/lib/librclcpp_lifecycle.so",
+      "resolved": "/opt/ros/humble/lib/librclcpp_lifecycle.so",
+      "bytes": 270128,
+      "sha256": "7a5e0291f50b431e7143551d830fd13136dbe9f2fea6dbabcbd455737a207c1a"
+    }
+  ],
+  "upstream_source_references": [
+    {
+      "url": "https://raw.githubusercontent.com/ros-navigation/navigation2/1.1.20/nav2_velocity_smoother/src/main.cpp",
+      "lines": [
+        18,
+        25
+      ],
+      "scope": "Version-tag source reference, not a byte-for-byte debug-symbol proof of installed Debian build. main calls rclcpp shutdown before local shared node destruction."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ros-navigation/navigation2/1.1.20/nav2_velocity_smoother/src/velocity_smoother.cpp",
+      "lines": [
+        34,
+        40,
+        137,
+        164
+      ],
+      "scope": "Destructor cancels timer; lifecycle hooks have distinct deactivate/cleanup/shutdown implementations. No hook invocation inferred from these sources alone."
+    }
+  ],
+  "private_memory_artifact_retention": {
+    "apport_original": "/var/crash/_opt_ros_humble_lib_nav2_velocity_smoother_velocity_smoother.1000.crash",
+    "apport_original_bytes": 2055800,
+    "apport_original_sha256": "97302fda4d3b6f5eadf43b887285e3b52e52aac745d3e2854de92500ed5f53a3",
+    "ignored_lossless_copy": "ros2_ws/ros2-multi-robot-automap/log/mr3_diagnostics/mr3_p1c_v4_workers4_w2_e1_smoother/original_apport.crash.gz",
+    "ignored_copy_sha256": "c3c97594444a072e1639d276269b98db432a95d8d309b95c1a9f15f3dfaf8397",
+    "ignored_copy_bytes": 1387594,
+    "copy_decodes_to_original": true,
+    "core_path": "/tmp/mr3_p1c_v4_velocity_smoother_332359.core",
+    "core_bytes": 94187520,
+    "core_sha256": "8b66ce350e2a717dabddfb23fa4ffc7dd88ce7f1569b40ac082345c90b8056af",
+    "selection": "Original full apport and extracted core remain ignored and untracked. Selected diagnostics omit CoreDump and ProcEnviron."
+  },
+  "benchmark_copy_integrity": {
+    "manifest_sha256": "f6892da66cbd95f30b82bb4bfa9e035521f04a7dbb6c05b8aca0512f33aca362",
+    "original_file_count": 110,
+    "all_original_hashes_rechecked": true,
+    "all_selected_hashes_rechecked": true
+  }
+}

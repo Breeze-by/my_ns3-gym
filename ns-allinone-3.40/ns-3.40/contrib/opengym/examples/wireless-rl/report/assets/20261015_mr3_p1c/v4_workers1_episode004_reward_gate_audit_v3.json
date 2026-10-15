@@ -1,0 +1,47 @@
+{
+  "schema": "mr3-reward-completed-episode-audit-v3",
+  "scope": "completed-episode native scalar/receipt checks; no spatial truth replay or incomplete-episode judgment",
+  "entry_point": "reward_gate_audit_v3.audit_episode(directory, freeze)",
+  "script_sha256": "895395075a881c6d74b809100e198be52a3c05a6710d24d873020b87223ff665",
+  "freeze": "7e186bf83b2a7ed9d38a95f30d53150ee2d6736d",
+  "episodes": [
+    {
+      "directory": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v4_workers1/worker0/episode004_corridors_303",
+      "epoch": "mr3_p1c_v4_workers1_w0_e4_73ae5994",
+      "scene": "corridors",
+      "seed": 303,
+      "pid_identity": {
+        "pid": 291174,
+        "parent": 259408,
+        "group": 291174,
+        "session": 291174,
+        "start_ticks": 380737088,
+        "state": "R"
+      },
+      "initial_cells": 2123,
+      "newly_rewarded_cells": 12730,
+      "transitions": 16,
+      "terminal_short_steps": 0,
+      "terminal_reused_steps": 0,
+      "rejected_action_bindings": [],
+      "repeated_map_payload_steps": 0,
+      "reward_term_sums": {
+        "collision": 0.0,
+        "coverage": 2.621499176276771,
+        "failure": 0.0,
+        "invalid": 0.0,
+        "success": 0.0,
+        "switch": 0.0,
+        "time": -0.05333333333333334
+      },
+      "physical_quantum_counts": {
+        "0": 1,
+        "1": 12,
+        "20": 811
+      },
+      "evaluation_reason": "training_external_truncation",
+      "errors": []
+    }
+  ],
+  "passed_scalar_checks": true
+}

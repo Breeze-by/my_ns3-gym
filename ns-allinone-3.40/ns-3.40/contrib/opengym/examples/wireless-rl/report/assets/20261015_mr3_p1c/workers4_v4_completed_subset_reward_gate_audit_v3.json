@@ -1,0 +1,269 @@
+{
+  "schema": "mr3-reward-completed-subset-audit-v3",
+  "scope": "scalar/receipt checks of completed episodes only; excluded infrastructure prefix is never task/benchmark PASS; no spatial truth replay",
+  "entry_point": "reward_gate_audit_v3.audit_episode(directory, freeze)",
+  "script_sha256": "895395075a881c6d74b809100e198be52a3c05a6710d24d873020b87223ff665",
+  "freeze": "7e186bf83b2a7ed9d38a95f30d53150ee2d6736d",
+  "episodes": [
+    {
+      "directory": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v4_workers4/worker0/episode001_open_101",
+      "epoch": "mr3_p1c_v4_workers4_w0_e1_26173464",
+      "scene": "open",
+      "seed": 101,
+      "pid_identity": {
+        "pid": 328825,
+        "parent": 328681,
+        "group": 328825,
+        "session": 328825,
+        "start_ticks": 380822104,
+        "state": "R"
+      },
+      "initial_cells": 1987,
+      "newly_rewarded_cells": 29597,
+      "transitions": 16,
+      "terminal_short_steps": 0,
+      "terminal_reused_steps": 0,
+      "rejected_action_bindings": [],
+      "repeated_map_payload_steps": 0,
+      "reward_term_sums": {
+        "collision": 0.0,
+        "coverage": 6.755455126449375,
+        "failure": 0.0,
+        "invalid": 0.0,
+        "success": 0.0,
+        "switch": 0.0,
+        "time": -0.05333333333333334
+      },
+      "physical_quantum_counts": {
+        "0": 1,
+        "1": 14,
+        "20": 810
+      },
+      "evaluation_reason": "training_external_truncation",
+      "errors": []
+    },
+    {
+      "directory": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v4_workers4/worker0/episode002_open_101",
+      "epoch": "mr3_p1c_v4_workers4_w0_e2_9bf93661",
+      "scene": "open",
+      "seed": 101,
+      "pid_identity": {
+        "pid": 345463,
+        "parent": 328681,
+        "group": 345463,
+        "session": 345463,
+        "start_ticks": 380853645,
+        "state": "R"
+      },
+      "initial_cells": 2036,
+      "newly_rewarded_cells": 27404,
+      "transitions": 16,
+      "terminal_short_steps": 0,
+      "terminal_reused_steps": 0,
+      "rejected_action_bindings": [],
+      "repeated_map_payload_steps": 0,
+      "reward_term_sums": {
+        "collision": 0.0,
+        "coverage": 6.254907331324752,
+        "failure": 0.0,
+        "invalid": 0.0,
+        "success": 0.0,
+        "switch": 0.0,
+        "time": -0.05333333333333334
+      },
+      "physical_quantum_counts": {
+        "0": 1,
+        "1": 14,
+        "20": 801
+      },
+      "evaluation_reason": "training_external_truncation",
+      "errors": []
+    },
+    {
+      "directory": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v4_workers4/worker1/episode001_open_101",
+      "epoch": "mr3_p1c_v4_workers4_w1_e1_d7fda12b",
+      "scene": "open",
+      "seed": 101,
+      "pid_identity": {
+        "pid": 328832,
+        "parent": 328681,
+        "group": 328832,
+        "session": 328832,
+        "start_ticks": 380822104,
+        "state": "R"
+      },
+      "initial_cells": 1973,
+      "newly_rewarded_cells": 27107,
+      "transitions": 16,
+      "terminal_short_steps": 0,
+      "terminal_reused_steps": 0,
+      "rejected_action_bindings": [],
+      "repeated_map_payload_steps": 0,
+      "reward_term_sums": {
+        "collision": 0.0,
+        "coverage": 6.187117684652606,
+        "failure": 0.0,
+        "invalid": 0.0,
+        "success": 0.0,
+        "switch": 0.0,
+        "time": -0.05333333333333334
+      },
+      "physical_quantum_counts": {
+        "0": 1,
+        "1": 8,
+        "20": 801
+      },
+      "evaluation_reason": "training_external_truncation",
+      "errors": []
+    },
+    {
+      "directory": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v4_workers4/worker1/episode002_open_101",
+      "epoch": "mr3_p1c_v4_workers4_w1_e2_bb77e407",
+      "scene": "open",
+      "seed": 101,
+      "pid_identity": {
+        "pid": 343799,
+        "parent": 328681,
+        "group": 343799,
+        "session": 343799,
+        "start_ticks": 380852469,
+        "state": "R"
+      },
+      "initial_cells": 1999,
+      "newly_rewarded_cells": 29363,
+      "transitions": 16,
+      "terminal_short_steps": 0,
+      "terminal_reused_steps": 0,
+      "rejected_action_bindings": [],
+      "repeated_map_payload_steps": 0,
+      "reward_term_sums": {
+        "collision": 0.0,
+        "coverage": 6.702045101798593,
+        "failure": 0.0,
+        "invalid": 0.0,
+        "success": 0.0,
+        "switch": 0.0,
+        "time": -0.05333333333333334
+      },
+      "physical_quantum_counts": {
+        "0": 1,
+        "1": 2,
+        "20": 801
+      },
+      "evaluation_reason": "training_external_truncation",
+      "errors": []
+    },
+    {
+      "directory": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v4_workers4/worker3/episode001_open_101",
+      "epoch": "mr3_p1c_v4_workers4_w3_e1_25b2eb71",
+      "scene": "open",
+      "seed": 101,
+      "pid_identity": {
+        "pid": 328828,
+        "parent": 328681,
+        "group": 328828,
+        "session": 328828,
+        "start_ticks": 380822104,
+        "state": "R"
+      },
+      "initial_cells": 1965,
+      "newly_rewarded_cells": 28985,
+      "transitions": 16,
+      "terminal_short_steps": 0,
+      "terminal_reused_steps": 0,
+      "rejected_action_bindings": [],
+      "repeated_map_payload_steps": 0,
+      "reward_term_sums": {
+        "collision": 0.0,
+        "coverage": 6.61576736967041,
+        "failure": 0.0,
+        "invalid": 0.0,
+        "success": 0.0,
+        "switch": 0.0,
+        "time": -0.05333333333333334
+      },
+      "physical_quantum_counts": {
+        "0": 1,
+        "1": 4,
+        "20": 801
+      },
+      "evaluation_reason": "training_external_truncation",
+      "errors": []
+    },
+    {
+      "directory": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v4_workers4/worker3/episode002_open_101",
+      "epoch": "mr3_p1c_v4_workers4_w3_e2_9a1a5f06",
+      "scene": "open",
+      "seed": 101,
+      "pid_identity": {
+        "pid": 343999,
+        "parent": 328681,
+        "group": 343999,
+        "session": 343999,
+        "start_ticks": 380852803,
+        "state": "R"
+      },
+      "initial_cells": 1946,
+      "newly_rewarded_cells": 27295,
+      "transitions": 16,
+      "terminal_short_steps": 0,
+      "terminal_reused_steps": 0,
+      "rejected_action_bindings": [
+        {
+          "step_sequence": 4,
+          "command_id": 4,
+          "observation_sequence": 4,
+          "stamp": 73.98
+        }
+      ],
+      "repeated_map_payload_steps": 0,
+      "reward_term_sums": {
+        "collision": 0.0,
+        "coverage": 6.230028302748106,
+        "failure": 0.0,
+        "invalid": -0.05,
+        "success": 0.0,
+        "switch": 0.0,
+        "time": -0.05333333333333334
+      },
+      "physical_quantum_counts": {
+        "0": 1,
+        "1": 5,
+        "20": 801
+      },
+      "evaluation_reason": "training_external_truncation",
+      "errors": []
+    }
+  ],
+  "invalid_samples": [
+    {
+      "directory": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v4_workers4/worker2/episode001_open_101",
+      "scope": "invalid native sample; persisted prefix is not a completed episode or returned final API transition",
+      "failure": {
+        "request": {
+          "id": 17,
+          "op": "step",
+          "epoch": "mr3_p1c_v4_workers4_w2_e1_66d81d4f",
+          "action": 999,
+          "external_truncation": "external_sampler_limit"
+        },
+        "error": "RuntimeError('native shutdown failed: [\"[ERROR] [velocity_smoother-20]: process has died [pid 332359, exit code -11, cmd \\'/opt/ros/humble/lib/nav2_velocity_smoother/velocity_smoother --ros-args --log-level warn --ros-args -r __node:=velocity_smoother -r __ns:=/tb1 --params-file /tmp/tmprbpinc_p -r /tf:=tf -r /tf_static:=tf_static -r /scan:=/tb1/scan -r cmd_vel:=cmd_vel_nav -r cmd_vel_smoothed:=cmd_vel\\'].\"]')",
+        "scope": "invalid infrastructure sample, never a task success"
+      },
+      "persisted_step_rows": 16,
+      "last_persisted_reward_sequence": 16,
+      "last_persisted_flags": {
+        "terminated": false,
+        "truncated": true
+      },
+      "sha256": {
+        "transitions.jsonl": "3882fe6ceabced8172e0d5114095964af5b13968984443e14d46b024f46325d5",
+        "infrastructure_failure.json": "e53cad4d48b094e814b14d02a2bb361750f0a714d911d5350070c1942bb2bc0b",
+        "native_stop.json": "2fb449860c88b67743bc6d1a83a57e1a24c41989ab28cfb6ec02fa67a62ec02a",
+        "supervisor_shutdown.json": "b9e4e056c17945b222d1129b56ac90dd599274e1c350d5982d4eae08b93a0f4a"
+      }
+    }
+  ],
+  "completed_subset_scalar_checks_passed": true,
+  "whole_benchmark_passed": false
+}

@@ -1,0 +1,31 @@
+{
+  "schema": "mr3-native-fault-instruction-analysis-v1",
+  "source_freeze": "7e186bf83b2a7ed9d38a95f30d53150ee2d6736d",
+  "previous_diagnosis_sha256": "ba06fe8cb54caa491fc321bfe0caa1327b9971965217535d18d8157211c257de",
+  "core_instruction_fact": {
+    "crashing_lwp": 332383,
+    "frame": "EDP::unpairWriterProxy+406",
+    "previous_call": "RTPSReader::getListener()",
+    "instruction": "mov (%rax),%rax",
+    "rax": "0x0",
+    "scope": "This core directly shows a null listener pointer dereference at the fault. It does not alone establish the exact racing write/interleaving or a safe fix."
+  },
+  "upstream_comparison": {
+    "url": "https://github.com/eProsima/Fast-DDS/issues/3303",
+    "checked_date": "2026-10-15",
+    "issue_currently_open": true,
+    "similarity": "Reader listener null access during DataReader destruction is reported upstream; matches this fault instruction and concurrent main-thread DataReader stop/destruction. Underlying listener race is a supported hypothesis, not a completed reproduction of the upstream testcase.",
+    "limitations": "Upstream discussion rejects simply dropping disable(), reports a proposed patch insufficient, and does not establish that upgrading installed 2.6.11 to 2.6.12 fixes this failure. No SDK code or package was modified."
+  },
+  "artifact": {
+    "original": "/tmp/mr3_p1c_v4_velocity_smoother_332359_fault_gdb.txt",
+    "original_bytes": 3183,
+    "original_sha256": "0fdeae141c0774a0bb4a9facdcd04f8a77b193acbf656f4360c6b26f3fb421d2",
+    "selected": "fault_disassembly_gdb.txt.gz",
+    "selected_bytes": 981,
+    "selected_sha256": "14c19f39a170a14b4dc0a2502d243c5efb35ef678f426ac4572b2b2259018440",
+    "encoding": "gzip; mtime=0",
+    "decoded_matches_original": true
+  },
+  "prior_diagnostic_manifest_sha256": "af9fd21dbc995db6bde0a18864dc8332103ca8514c7f27d092f595b4b53fdb9e"
+}

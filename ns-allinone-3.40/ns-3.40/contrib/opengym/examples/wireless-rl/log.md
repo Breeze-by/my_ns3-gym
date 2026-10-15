@@ -2607,3 +2607,133 @@ conda ns3gym禁用CUDA、unset PYTHONPATH、PYTHONNOUSERSITE=1完整40项/4.398s
 修改Python定向flake8(max100)、辅助审计5项selftest和diffcheck PASS。
 精确源码SHA与范围见`report/assets/20261015_mr3_p1c/implementation_checks_v4.json`。
 C++步进实现未改，其组件build/CTest原范围保留；新冻结仍须独立clock/native完整矩阵。
+
+### P1C v4独立clock（开始）
+
+源码冻结`7e186bf83b2a7ed9d38a95f30d53150ee2d6736d`已提交推送。ROS目录精确命令：
+`rtk proxy bash -c 'source /opt/ros/humble/setup.bash; source install/setup.bash; source /usr/share/gazebo/setup.sh; export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1; /usr/bin/python3 scripts/check_mr3_step_clock.py --run-id mr3_p1c_v4_clock --ros-domain-id 130 --gazebo-port 12101'`。
+结果另追加；此组件不含三机器人团队、无95%信用。之后同一冻结按v4前瞻次序执行，不增加GPU前后向。
+
+v4clock PASS10.116011墙秒、26回执/99真实clock样本，server246739/helper247090/stopCLI247191均clean0，
+精确physics tick/iteration/ns/clock一致。原件ROS/log/mr3_step_clock/mr3_p1c_v4_clock；选定native_v4/clock。
+
+### P1C v4三机器人pilot（开始）
+
+同freeze7e186bf，wireless-rl精确命令：
+`rtk proxy bash -c 'source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh; conda activate ns3gym; export PYTHONNOUSERSITE=1; unset PYTHONPATH; python -m mr3_learning.benchmark --workers 1 --schedule open:101 --steps 2 --run-id mr3_p1c_v4_pilot --base-domain 131 --base-port 12111'`。
+原生结果另追加；无策略训练或额外GPUFB。
+
+v4pilot PASS148.071263墙秒/2个1sim-sec有效transition；独立pilot_v4_benchmark_audit.json通过，
+真实外截断、18源健康/零接触、交付ready+地图奖励配对与owned退出均通过，不作95%成绩。
+
+### P1C v4诊断短/零终态（开始）
+
+同freeze7e186bf，wireless-rl精确命令：
+`rtk proxy bash -c 'source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh; conda activate ns3gym; export PYTHONNOUSERSITE=1; unset PYTHONPATH; python -m mr3_learning.benchmark --workers 1 --schedule open:101,open:101 --steps 4 --terminal-probe --run-id mr3_p1c_v4_terminal --base-domain 144 --base-port 12171'`。
+两次明确诊断navigation_failure，默认off接口仅本探针开启，不等同真实contact事件或策略成功；结果另追加。
+
+v4terminal完整两轮PASS312.767544墙秒/8次API transition：首轮末步真实.02s新快照，
+第二轮末步真实0dt/0physics、原snapshot与watermarks完全复用、command=null/action_submitted=false/bootstrap0，
+零新增coverage。总实际采样6.02s，两次均navigation_failure且非truncated，真实关闭与18源审计通过。
+独立terminal_v4_benchmark_audit.json PASS；不计normal吞吐、contact触发、95%或训练信用。
+
+### P1C v4正式1worker（开始）
+
+同freeze7e186bf，wireless-rl精确命令：
+`rtk proxy bash -c 'source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh; conda activate ns3gym; export PYTHONNOUSERSITE=1; unset PYTHONPATH; python -m mr3_learning.benchmark --workers 1 --schedule open:101,open:101,rooms:202,corridors:303 --steps 16 --run-id mr3_p1c_v4_workers1 --base-domain 132 --base-port 12121'`。
+前两open101用于公平比较、额外rooms202/corridors303仅完整跨场景seed reset回归；每worker始终三台。
+
+v4workers1进行中，rooms202/e3原生正式audit通过但独立auxv2首次标FAIL，原件
+`v4_workers1_episode003_reward_gate_audit.json`保留。只读对齐证实为离线审计同T错误归属：
+adapter有序index127先snapshot_completed(s5,T84.92)，index128后拒绝cmd5/obs5（stamp84.92）。
+step4=83.92→84.92且command4/rejected_delta0；step5=84.92→85.92且command5/rejected_delta1、invalid=-.05，
+runtime实际罚项正确。auxv2只按stamp<=end把后发cmd5倒归step4，后续用新v3审计器因果绑定command/快照顺序，
+加独立反例、新名结果，旧helper/FAIL不覆盖。该修正不被runtime导入、不改变源码freeze7e186bf，亦不重跑或筛掉episode。
+
+v4workers1完整四轮原生与正式benchmark audit PASS：1032.108395墙秒/64有效transition，全部dt1秒；
+open101重复reset及rooms202/corridors303跨场景/seed全通过，18源健康零接触、真实关闭/无ownedlive或zombie。
+首两open101公平口径32trans/518.356895 recorded-cell墙秒=.061733528/s；额外32trans只reset回归，
+公平代理不含最后Supervisor reap尾部，真实全benchmark总墙秒另列。auxv2的同T假阳性保留、auxv3复审另存。
+开始下一组前核对implementation_checks_v4.json所有源码SHA无变化。
+
+### P1C v4正式2worker（开始）
+
+同freeze7e186bf，wireless-rl精确命令：
+`rtk proxy bash -c 'source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh; conda activate ns3gym; export PYTHONNOUSERSITE=1; unset PYTHONPATH; python -m mr3_learning.benchmark --workers 2 --schedule open:101,open:101 --steps 16 --run-id mr3_p1c_v4_workers2 --base-domain 134 --base-port 12131'`。
+每worker始终三台，域134/135、端口12131/12132，和其他benchmark组串行；结果另追加。
+
+独立auxv3修正及新结果：`reward_gate_audit_v3.py` SHA256
+`895395075a881c6d74b809100e198be52a3c05a6710d24d873020b87223ff665`，10项selftest/flake8 PASS；
+拒绝按command_id/observation_sequence/实际step水位逐步绑定并核对delta与invalid权重，其余规则保持。
+同一v3只读重放pilot、terminal和完整workers1均PASS，另存相应`*_reward_gate_audit_v3.json`及逐轮新结果，
+不覆盖原v2 FAIL或原helper。Git根三个精确审计命令分别为：
+`rtk proxy python3 -B ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reward_gate_audit_v3.py ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v4_pilot --freeze 7e186bf83b2a7ed9d38a95f30d53150ee2d6736d`。
+`rtk proxy python3 -B ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reward_gate_audit_v3.py ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v4_terminal --freeze 7e186bf83b2a7ed9d38a95f30d53150ee2d6736d`。
+`rtk proxy python3 -B ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reward_gate_audit_v3.py ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v4_workers1 --freeze 7e186bf83b2a7ed9d38a95f30d53150ee2d6736d`。
+stdout以exclusive新文件保存，未启动额外仿真/GPU或空间真值重放。
+
+v4workers2完整四轮PASS543.889533墙秒/64有效transition，总有效率.117670954/s；
+独立workers2_v4_benchmark_audit.json通过，所有dt1s、交付ready/18源健康零接触、真实导航关闭与ownedclean通过。
+全benchmark含所有startup/reset/closure与最终回收，不混用其他freeze；公平recorded-cell口径另见审计JSON。
+
+### P1C v4正式4worker（开始）
+
+同freeze7e186bf，wireless-rl精确命令：
+`rtk proxy bash -c 'source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh; conda activate ns3gym; export PYTHONNOUSERSITE=1; unset PYTHONPATH; python -m mr3_learning.benchmark --workers 4 --schedule open:101,open:101 --steps 16 --run-id mr3_p1c_v4_workers4 --base-domain 136 --base-port 12141'`。
+每worker三台、域136..139/端口12141..12144；和此前benchmark组串行，全部结果另追加。
+
+v4workers4运行中出现真实infra失败：worker2/e1在最后step16(action999/request17/外部limit)实际关闭时，
+tb1 `velocity_smoother-20` PID332359 exit-11(SIGSEGV)，infrastructure_failure.json原件保留，
+该epoch不记完成或合格最后transition。native日志先task_evaluator clean、stopCLI343510 clean0、
+gzserver329208 clean0，再launch向全部Nav2/lifecycle同时SIGINT，随后该smoother -11；
+其余worker继续自然留证，fault/deadline暂不启动。不是aux审计错误，也没有证据可归为硬件容量上限。
+只读诊断将核对本地apport/core与SDK生命周期关闭顺序，任何运行时修复须新freeze+完整预声明矩阵，不覆盖本次失败。
+
+v4workers4自然结束exit1：604.962903墙秒，111个已返回有效transition，7个实际attempts；
+6轮clean完整16步，worker2/e1为15步已交付prefix+第16条仅raw日志（关闭异常、RPC未返回Gym），
+worker2/e2没有启动。全部原件含failure/forcedcleanup/资源保留native_v4/workers4，
+独立正式单轮6PASS/1FAIL，整组`workers4_v4_failure_benchmark_audit.json` FAIL不覆盖。
+全部ownedlive/zombie最终为空，不能将.183482325/s失败组描述为稳定4worker吞吐。
+v4fault/deadline未启动。Apport精确PID332359/argv/Signal11匹配；core的崩溃线程位于FastDDS2.6.11
+EDP::unpairWriterProxy/PDP::removeWriterProxyData，主线程同时DataReaderImpl::stop/destructor→rmw destroy_subscription。
+直接证据为DDS发现/endpoint teardown并发路径，不能声称是smootherTimer bug、容量不足或已修复SDK内部缺陷。
+
+### P1C v4关闭故障只读诊断与兼容方案排除
+
+core精确解引用位于EDP::unpairWriterProxy+406，getListener后rax=0，主线程在NodeTimeSource析构/销毁clock reader。
+与官方已知缺陷 https://github.com/eProsima/Fast-DDS/issues/3303 高度匹配；具体完整交错仍是推断。
+官方2.6.11/2.6.12的EDP/PDP/RTPSParticipantImpl三文件逐字一致，不声称升级解决。
+本地Nav2 1.1.20、rclcpp16.0.19、FastDDS2.6.11。最小stack/指令/参数/版本与时间线原件保留
+`native_v4/workers4/diagnostic/w2_e1_smoother/`；完整core/apport只在ignored本地原件位置，tracked选件不含内存/环境变量。
+
+评估官方Humble CycloneDDS1.3.5私prefix解包（apt仅查询/模拟，sudo-n测试需密码，未安装），
+但其精确release源码message_info_from_sample_info将publication_sequence_number标为UNSUPPORTED，
+不满足P1A现有18路真实源序号审计，故在任何下载/安装/源码切换或native前否决。
+官方源码 https://raw.githubusercontent.com/ros2-gbp/rmw_cyclonedds-release/release/humble/rmw_cyclonedds_cpp/1.3.5-1/src/rmw_node.cpp
+SHA256 f12c8da3f612b569632a551cc73bc88f1787c472872c90ccf1ba93dc107253ca；不以接收次数伪代源序号、不关门禁。
+
+新v5候选仍保留FastDDS：在真实目标闭合后，标准Nav2 SHUTDOWN与18节点finalized确认；
+随后launch按实际owned ProcessStarted/Exited逐一正常SIGINT退出ROS子进程，最后才原生停止Gazebo。
+各阶段有显式实际退出回执和墙钟保护，异常仍是infra失败、不补PASS；这是一致的应用关闭协议，
+不能宣称修复FastDDS内部竞态。需新代码/测试commit+push与新完整8阶段前瞻矩阵，v4fault/deadline保持未启动。
+
+### P1C v5关闭协议离线完成与全量检查（原生尚未启动）
+
+统一协议`nav2-finalized_then_serial-ros_then_gazebo-v1`：worker在真实closed pending0后，
+三台按序原生SHUTDOWN4并逐个GetState确认18finalized，整个30墙秒保护内physics/clock严格暂停；
+客户端保留至最终node销毁，nav2_shutdown.json成功/失败partial回执均不覆盖。
+evaluator收到最后真实reward ACK并clean退出后，SDK按真实start action/PID逆序逐个正常SIGINT，
+每个必须等同identity实际clean0 Exit再继续；10墙秒单节点guard，全部ROS clean才原生GZstop/最终GlobalShutdown。
+任何拒绝、错状态、wrongidentity、非0/超时均显式infra；prefix tracker早于最早Node注册，
+同SDK具体/通用handler观察同exit幂等。baseline非stepped原路径保持。
+独立auditor逐条重放实际marker并交叉SDK标准PID/signal/exit行、nav2服务/状态/clock与finalize请求ACK；
+unknown protocol FAIL，旧证据不给新ordered信用，被SIGKILL故障prefix也不伪造完整关闭。
+
+系统ROS完整673项语义测试20.52s PASS（同前只排除三个style模板）；conda ns3gym禁用CUDA、
+unset PYTHONPATH、PYTHONNOUSERSITE=1完整40项4.331s PASS；修改worker/auditor/mainlaunch及新tests
+flake8(max100)、diffcheck PASS。源hash见implementation_checks_v5.json；C++及GPU模型/encoder/probe均未改。
+11活动docs/130本地links/16bash语法块/28launch参数实例/13P1C CLI flags静态通过，文档命令未执行。
+v5前瞻`predeclared_native_plan_v5.json`最终SHA256
+`674505028239a150de4cf4284e4ce1545cb2c425bc4715c319f5189134d4b6c8`，
+完整8阶段同原预算/seed/ports但run-id全部v5；无跨freeze PASS、新增GPUFB0、无训练/gateway。
+新source commit+push后才执行；当前全部旧owned native已自然结束，无额外ROS初始化/模拟器试跑。

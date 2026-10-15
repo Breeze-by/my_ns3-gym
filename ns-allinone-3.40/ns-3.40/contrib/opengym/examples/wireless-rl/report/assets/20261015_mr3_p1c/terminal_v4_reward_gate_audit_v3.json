@@ -1,0 +1,82 @@
+{
+  "schema": "mr3-reward-scalar-audit-v3",
+  "scope": "read-only native scalar/receipt checks, no spatial truth replay",
+  "freeze": "7e186bf83b2a7ed9d38a95f30d53150ee2d6736d",
+  "episodes": [
+    {
+      "directory": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v4_terminal/worker0/episode001_open_101",
+      "epoch": "mr3_p1c_v4_terminal_w0_e1_d773cff2",
+      "scene": "open",
+      "seed": 101,
+      "pid_identity": {
+        "pid": 250089,
+        "parent": 249973,
+        "group": 250089,
+        "session": 250089,
+        "start_ticks": 380625885,
+        "state": "R"
+      },
+      "initial_cells": 1969,
+      "newly_rewarded_cells": 0,
+      "transitions": 4,
+      "terminal_short_steps": 1,
+      "terminal_reused_steps": 0,
+      "rejected_action_bindings": [],
+      "repeated_map_payload_steps": 1,
+      "reward_term_sums": {
+        "collision": 0.0,
+        "coverage": 0.0,
+        "failure": -20.0,
+        "invalid": 0.0,
+        "success": 0.0,
+        "switch": 0.0,
+        "time": -0.010066666666666666
+      },
+      "physical_quantum_counts": {
+        "0": 1,
+        "20": 151
+      },
+      "evaluation_reason": "navigation_failure",
+      "errors": []
+    },
+    {
+      "directory": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v4_terminal/worker0/episode002_open_101",
+      "epoch": "mr3_p1c_v4_terminal_w0_e2_19849159",
+      "scene": "open",
+      "seed": 101,
+      "pid_identity": {
+        "pid": 252102,
+        "parent": 249973,
+        "group": 252102,
+        "session": 252102,
+        "start_ticks": 380641455,
+        "state": "R"
+      },
+      "initial_cells": 2092,
+      "newly_rewarded_cells": 0,
+      "transitions": 4,
+      "terminal_short_steps": 1,
+      "terminal_reused_steps": 1,
+      "rejected_action_bindings": [],
+      "repeated_map_payload_steps": 1,
+      "reward_term_sums": {
+        "collision": 0.0,
+        "coverage": 0.0,
+        "failure": -20.0,
+        "invalid": 0.0,
+        "success": 0.0,
+        "switch": 0.0,
+        "time": -0.01
+      },
+      "physical_quantum_counts": {
+        "0": 1,
+        "1": 15,
+        "20": 150
+      },
+      "evaluation_reason": "navigation_failure",
+      "errors": []
+    }
+  ],
+  "reset_epoch_and_pid_unique": true,
+  "passed_scalar_checks": true
+}

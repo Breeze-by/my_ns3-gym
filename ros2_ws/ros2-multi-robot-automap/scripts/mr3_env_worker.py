@@ -22,6 +22,10 @@ ROS_ROOT = Path(__file__).resolve().parents[1]
 WORKSPACE = ROS_ROOT.parents[1]
 LEARNER = (WORKSPACE / "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/"
            "wireless-rl/mr3_learning")
+SHUTDOWN_PROTOCOL = "nav2-finalized_then_serial-ros_then_gazebo-v1"
+NAV2_NODES = ("controller_server", "planner_server", "behavior_server",
+              "bt_navigator", "waypoint_follower", "velocity_smoother")
+NAV2_SHUTDOWN_WALL_GUARD_SEC = 30.
 spec = importlib.util.spec_from_file_location("mr3_pipe_protocol", LEARNER / "ipc.py")
 ipc = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(ipc)
@@ -56,6 +60,9 @@ class Worker:
         self.events = []
         self.failures = []
         self.closed = None
+        self.closed_received_clock_ns = None
+        self.closed_received_wall_monotonic_ns = None
+        self.nav2_shutdown_clients = []
         self.reward_ready = None
         self.callback_error = None
         self.snapshot_number = 0
@@ -80,11 +87,15 @@ class Worker:
         from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
         from rosgraph_msgs.msg import Clock
         from std_msgs.msg import Bool, Header, String
+        from lifecycle_msgs.srv import GetState
+        from nav2_msgs.srv import ManageLifecycleNodes
 
         rclpy.init()
         self.rclpy = rclpy
         self.String = String
         self.Header = Header
+        self.GetState = GetState
+        self.ManageLifecycleNodes = ManageLifecycleNodes
         self.node = rclpy.create_node("mr3_environment_worker", parameter_overrides=[
             Parameter("use_sim_time", Parameter.Type.BOOL, True)])
         qos = QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL)
@@ -141,6 +152,8 @@ class Worker:
             if (value.get("epoch") == self.epoch
                     and value.get("robot_names") == ["tb1", "tb2", "tb3"]):
                 self.closed = value
+                self.closed_received_clock_ns = self.clock_ns
+                self.closed_received_wall_monotonic_ns = time.monotonic_ns()
 
         def ready(message):
             value = message_json(message)
@@ -221,6 +234,8 @@ class Worker:
                     "python": sys.executable, "quantum_steps": 20,
                     "reset_handshake": "delivered_inputs_before_pause-v1",
                     "terminal_protocol": "mr3-task-terminal-v1",
+                    "shutdown_protocol": SHUTDOWN_PROTOCOL,
+                    "nav2_shutdown_wall_guard_sec": NAV2_SHUTDOWN_WALL_GUARD_SEC,
                     "terminal_probe": self.terminal_probe,
                     "physical_step_ns": 1000000, "policy_step_ns": 1000000000,
                     "startup_wall_guard_sec": 420., "closure_wall_guard_sec": 90.}
@@ -404,7 +419,8 @@ class Worker:
             "ros2", "run", "multi_robot", "mr3_gazebo_step", "--jsonl", "--world",
             f"p1c_{self.scene}", "--epoch", self.epoch, "--timeout-sec", "10"],
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=output)
-        self.helper_peer = ipc.JsonLinePeer(self.helper.stdout.fileno(), self.helper.stdin.fileno())
+        self.helper_peer = ipc.JsonLinePeer(self.helper.stdout.fileno(),
+                                            self.helper.stdin.fileno())
         receipt = self._physics(0, wait_clock=False)
         if receipt["end_time_ns"] / 1e9 < self.initial_inputs_ready["stamp"] - 1e-8:
             raise RuntimeError("initial input acknowledgement is ahead of physical pause")
@@ -537,6 +553,126 @@ class Worker:
         self.shutdown_episode("task_terminal" if response["terminated"] else "external_truncation")
         return result
 
+    def _shutdown_nav2(self):
+        """Finalize real managed nodes while physics stays at the cleanup pause.
+
+        This application shutdown barrier does not repair Fast DDS internally.
+        It follows goal terminal closure and precedes the helper/finalize ACK;
+        its physical watermark can therefore be later than the last RL sample.
+        The later process exit protocol still owns the surviving clock readers.
+        """
+        with self.condition:
+            started = time.monotonic_ns()
+            paused = self.physical_ns
+            closed = self.closed
+            closed_clock_ns = self.closed_received_clock_ns
+            closed_wall_ns = self.closed_received_wall_monotonic_ns
+            start_clock_ns = self.clock_ns
+        deadline = started + round(NAV2_SHUTDOWN_WALL_GUARD_SEC * 1e9)
+        proof = {
+            "schema": "mr3-nav2-shutdown-v1", "protocol": SHUTDOWN_PROTOCOL,
+            "epoch": self.epoch, "physical_time_ns": paused, "start_clock_ns": start_clock_ns,
+            "goal_ownership_closed": closed,
+            "goal_ownership_closed_received_clock_ns": closed_clock_ns,
+            "goal_ownership_closed_received_wall_monotonic_ns": closed_wall_ns,
+            "started_wall_monotonic_ns": started,
+            "wall_guard_sec": NAV2_SHUTDOWN_WALL_GUARD_SEC,
+            "robots": [], "success": False, "failures": [],
+            "scope": "post-goal cleanup pause, outside reward time; not a DDS-internal fix",
+        }
+
+        def remaining():
+            if self.physical_ns != paused or self.clock_ns != paused:
+                raise RuntimeError("physical/ROS clock changed during paused Nav2 shutdown")
+            duration = (deadline - time.monotonic_ns()) / 1e9
+            if duration <= 0:
+                raise TimeoutError("Nav2 lifecycle shutdown exceeded its total wall guard")
+            return duration
+
+        def rpc(service_type, request, row):
+            row["started_wall_monotonic_ns"] = time.monotonic_ns()
+            try:
+                remaining()
+                self._healthy()
+                client = self.node.create_client(service_type, row["service"])
+                # Keep clients alive through ordered process shutdown. Destroying
+                # them here would add endpoint teardown beside the server RPC.
+                self.nav2_shutdown_clients.append(client)
+                self._wait(client.service_is_ready, remaining(),
+                           "Nav2 shutdown service unavailable: " + row["service"])
+                remaining()
+                row["request_clock_ns"] = self.clock_ns
+                row["request_wall_monotonic_ns"] = time.monotonic_ns()
+                future = client.call_async(request)
+                self._wait(future.done, remaining(),
+                           "Nav2 shutdown service response timeout: " + row["service"])
+                response = future.result()
+                row["response_clock_ns"] = self.clock_ns
+                remaining()
+                if response is None:
+                    raise RuntimeError("Nav2 shutdown service returned no response")
+                return response
+            except Exception as error:
+                row["error"] = repr(error)
+                raise
+            finally:
+                row["completed_wall_monotonic_ns"] = time.monotonic_ns()
+                row["wall_duration_sec"] = (row["completed_wall_monotonic_ns"]
+                                            - row["started_wall_monotonic_ns"]) / 1e9
+
+        path = self.directory / "nav2_shutdown.json"
+        with path.open("x") as output:
+            try:
+                if (not isinstance(closed, dict) or closed.get("epoch") != self.epoch
+                        or type(closed.get("pending_goal_count")) is not int
+                        or closed.get("pending_goal_count") != 0
+                        or closed.get("robot_names") != ["tb1", "tb2", "tb3"]
+                        or type(closed_clock_ns) is not int or closed_clock_ns > paused
+                        or type(closed_wall_ns) is not int or closed_wall_ns > started):
+                    raise RuntimeError("Nav2 shutdown requires real closed-goal acknowledgement")
+                remaining()
+                for robot in ("tb1", "tb2", "tb3"):
+                    request = self.ManageLifecycleNodes.Request()
+                    request.command = self.ManageLifecycleNodes.Request.SHUTDOWN
+                    if request.command != 4:
+                        raise RuntimeError("unexpected native Nav2 SHUTDOWN command constant")
+                    row = {"robot": robot, "shutdown": {
+                        "service": f"/{robot}/lifecycle_manager_navigation/manage_nodes",
+                        "command": request.command}, "states": []}
+                    proof["robots"].append(row)
+                    response = rpc(self.ManageLifecycleNodes, request, row["shutdown"])
+                    row["shutdown"]["response"] = {"success": response.success}
+                    if response.success is not True:
+                        raise RuntimeError("Nav2 lifecycle manager rejected shutdown: " + robot)
+                    for node in NAV2_NODES:
+                        state = {"node": node, "service": f"/{robot}/{node}/get_state"}
+                        row["states"].append(state)
+                        response = rpc(self.GetState, self.GetState.Request(), state)
+                        state["state"] = {"id": response.current_state.id,
+                                          "label": response.current_state.label}
+                        if state["state"] != {"id": 4, "label": "finalized"}:
+                            raise RuntimeError("Nav2 node did not finalize: " + state["service"])
+                remaining()
+                proof["success"] = True
+            except Exception as error:
+                proof["failures"].append(repr(error))
+                raise
+            finally:
+                proof["end_clock_ns"] = self.clock_ns
+                proof["completed_wall_monotonic_ns"] = time.monotonic_ns()
+                proof["wall_duration_sec"] = (proof["completed_wall_monotonic_ns"] - started) / 1e9
+                expired = proof["success"] and proof["completed_wall_monotonic_ns"] > deadline
+                if expired:
+                    proof["success"] = False
+                    proof["failures"].append(
+                        "Nav2 lifecycle shutdown exceeded its total wall guard")
+                self.nav2_shutdown_receipt = proof
+                json.dump(proof, output, indent=2, sort_keys=True, allow_nan=False)
+                output.write("\n")
+                if expired:
+                    raise TimeoutError(proof["failures"][-1])
+        return proof
+
     def shutdown_episode(self, reason):
         from run_mr3_adapter_probe import native_stop_receipt
         start = time.monotonic()
@@ -550,13 +686,15 @@ class Worker:
             self._physics(20)
         if self.closed["pending_goal_count"] != 0:
             raise RuntimeError("episode shutdown left unknown goal ownership")
+        self._shutdown_nav2()
         self.helper.stdin.close()
         self.helper.wait(timeout=10.)
         self.helper.stdout.close()
         if self.helper.returncode != 0:
             raise RuntimeError("physical step helper did not exit cleanly")
-        self._publish(self.finalize_pub, {
-            "epoch": self.epoch, "ack_sequence": self.reward_number, "reason": reason})
+        self.finalize_request = {
+            "epoch": self.epoch, "ack_sequence": self.reward_number, "reason": reason}
+        self._publish(self.finalize_pub, self.finalize_request)
         self.launch.wait(timeout=45.)
         launch_text = (self.directory / "launch.log").read_text(errors="replace")
         failures = native_launch_failures(launch_text)
@@ -569,6 +707,10 @@ class Worker:
         self.finished = True
         self.summary = {"epoch": self.epoch, "scene": self.scene, "seed": self.seed,
                         "closed": self.closed, "reason": reason,
+                        "shutdown_protocol": SHUTDOWN_PROTOCOL,
+                        "nav2_shutdown": self.nav2_shutdown_receipt,
+                        "training_finalize_request": self.finalize_request,
+                        "training_finalize_ack": self.finalize_ack,
                         "transition_count": self.reward_number, "failures": self.failures,
                         "launch_returncode": self.launch.returncode, "native_failures": failures,
                         "cleanup_wall_sec": time.monotonic() - start,

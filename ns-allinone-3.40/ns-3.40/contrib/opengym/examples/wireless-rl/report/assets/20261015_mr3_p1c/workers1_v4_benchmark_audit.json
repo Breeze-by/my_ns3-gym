@@ -1,0 +1,1321 @@
+{
+  "comparison": {
+    "denominator_scope": "max_worker(sum of first two recorded cell elapsed times)",
+    "denominator_wall_sec": 518.356895133853,
+    "effective_transition_per_wall_sec": 0.061733528193421226,
+    "eligible": true,
+    "episode_indices": [
+      0,
+      1
+    ],
+    "exact_end_to_end_process_span": false,
+    "excludes": "final Supervisor reap tail and all later serial scene regressions",
+    "final_cleanup_timing_available": false,
+    "final_supervisor_cleanup_wall_sec": null,
+    "includes": "cell startup, next-reset cleanup of prior worker, native goal closure",
+    "per_worker": [
+      {
+        "cell_recorded_wall_sec": 518.356895133853,
+        "transition_only_rate_per_active_wall_sec": 0.12434904115748821,
+        "transition_only_wall_sec": 257.3401427315548,
+        "valid_transitions": 32,
+        "worker_id": 0
+      }
+    ],
+    "reset_regression_only_schedule": [
+      [
+        "rooms",
+        202
+      ],
+      [
+        "corridors",
+        303
+      ]
+    ],
+    "reset_regression_only_transitions": 32,
+    "schedule": [
+      [
+        "open",
+        101
+      ],
+      [
+        "open",
+        101
+      ]
+    ],
+    "steps_per_episode": 16,
+    "valid_transitions": 32
+  },
+  "complete_episode_count": 4,
+  "deadline_probe": false,
+  "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v4_workers1",
+  "effective_transition_per_wall_sec": 0.06200899081724819,
+  "episodes": [
+    {
+      "closure": {
+        "launch_start_count": 38,
+        "native_shutdown_proof": {
+          "gzserver": {
+            "clean_exits": [
+              {
+                "pid": 259732,
+                "suffix": "4"
+              }
+            ],
+            "identity_matched": true,
+            "started": [
+              {
+                "pid": 259732,
+                "suffix": "4"
+              }
+            ]
+          },
+          "mr3_gazebo_native_stop": {
+            "clean_exits": [
+              {
+                "pid": 269877,
+                "suffix": "38"
+              }
+            ],
+            "identity_matched": true,
+            "started": [
+              {
+                "pid": 269877,
+                "suffix": "38"
+              }
+            ]
+          }
+        },
+        "navigation_closed": true,
+        "navigation_failure": false,
+        "other_launch_children_require_proc_identity": true,
+        "safety_failures": [],
+        "unsampled_stop_cli_alternative_evidence": []
+      },
+      "complete_episode_credit": true,
+      "contacts": {
+        "collision_events": 0,
+        "continuous_freshness_passed": true,
+        "errors": [],
+        "passed": true,
+        "raw_sequence_audit_passed": true,
+        "raw_stream_count": 18,
+        "scope": "contact validity separate from mapping success and scripted sampling",
+        "task_success": false,
+        "termination_reason": "training_external_truncation",
+        "zero_contact": true
+      },
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v4_workers1/worker0/episode001_open_101",
+      "epoch": "mr3_p1c_v4_workers1_w0_e1_e6162090",
+      "errors": [],
+      "evidence_sha256": {
+        "adapter.jsonl": "e712ea2367135d043e3a16252719ffc7a2aba36e139494652f8262f2e40fc6c1",
+        "launch.log": "433ca35490e4b66577ecc8f91d22b1960eac6ed1e9dabfc94ec12070f4b9b71d",
+        "metadata.json": "48e1093820b9ba9b2e0b577eb62ec84a6d4cb9fa516a7ec7dd336ca035332f7d",
+        "mr3_p1c_v4_workers1_w0_e1_e6162090.json": "d9c8c6db84762ae3de883bb79214797e957922f2f37186c969fb05179963a846",
+        "native_stop.json": "b041a8e90f8a0d40c34ef278dc85cf0278fe7580bf41d78d5bde50f7b1efd9a0",
+        "physics.jsonl": "b7bf465dd794318f922ba286437dca10314745cfedc4393ccb43e821ace1c0e7",
+        "summary.json": "417bd029408f02bb96176379d49df7ced6aa9d2d878642ee29d6eb146e0ceb29",
+        "supervisor_metadata.json": "b81c2deb9f75213d7e39dbe2719a4f8c96e3c8ca68238881c900886d8d4ac8c9",
+        "supervisor_shutdown.json": "22b1dc854824f2cf3adfbaa406575d90ea417f42caa0b707ea7d8c4b475379d5",
+        "transitions.jsonl": "85bb37d016451663cca344d97f6fbcce6d363e6b18cee1859419c51e6eb6e83a"
+      },
+      "expected_infrastructure_fault": false,
+      "freeze": "7e186bf83b2a7ed9d38a95f30d53150ee2d6736d",
+      "initial_inputs_ready": {
+        "ack_map_payload_sha256": "36b34b6a495cbc776632a01b4bd3bf127a3b9a31d5d7b6f57910bb7abcba3157",
+        "ack_stamp": 79.64,
+        "ack_state_sequence": 796,
+        "first_snapshot_state_sequence": 803,
+        "initial_pause_stamp": 80.305,
+        "protocol": "delivered_inputs_before_pause-v1",
+        "proven": true,
+        "required": true,
+        "scope": "input readiness before pause; first snapshot may use newer delivery"
+      },
+      "passed": true,
+      "physics": {
+        "first_time_ns": 80305000000,
+        "last_time_ns": 96340000000,
+        "receipt_count": 817,
+        "total_physical_ticks": 16035
+      },
+      "processes": {
+        "forced_cleanup": false,
+        "no_live_or_zombie_leftovers": true,
+        "owned_pid_identities": [
+          [
+            259585,
+            380659541
+          ],
+          [
+            259609,
+            380659581
+          ],
+          [
+            259664,
+            380659683
+          ],
+          [
+            259726,
+            380659840
+          ],
+          [
+            259728,
+            380659841
+          ],
+          [
+            259730,
+            380659841
+          ],
+          [
+            259732,
+            380659841
+          ],
+          [
+            259734,
+            380659841
+          ],
+          [
+            259736,
+            380659841
+          ],
+          [
+            259738,
+            380659841
+          ],
+          [
+            260275,
+            380660195
+          ],
+          [
+            260277,
+            380660195
+          ],
+          [
+            260279,
+            380660196
+          ],
+          [
+            260443,
+            380660522
+          ],
+          [
+            260445,
+            380660522
+          ],
+          [
+            260447,
+            380660523
+          ],
+          [
+            260600,
+            380660797
+          ],
+          [
+            261124,
+            380661945
+          ],
+          [
+            261126,
+            380661946
+          ],
+          [
+            261128,
+            380661946
+          ],
+          [
+            261130,
+            380661946
+          ],
+          [
+            261132,
+            380661946
+          ],
+          [
+            261134,
+            380661946
+          ],
+          [
+            261137,
+            380661949
+          ],
+          [
+            262955,
+            380666442
+          ],
+          [
+            262957,
+            380666442
+          ],
+          [
+            262959,
+            380666442
+          ],
+          [
+            262961,
+            380666443
+          ],
+          [
+            262963,
+            380666443
+          ],
+          [
+            262965,
+            380666443
+          ],
+          [
+            262967,
+            380666443
+          ],
+          [
+            264568,
+            380670936
+          ],
+          [
+            264570,
+            380670936
+          ],
+          [
+            264572,
+            380670936
+          ],
+          [
+            264574,
+            380670937
+          ],
+          [
+            264576,
+            380670937
+          ],
+          [
+            264578,
+            380670937
+          ],
+          [
+            264581,
+            380670937
+          ],
+          [
+            264899,
+            380671585
+          ],
+          [
+            264901,
+            380671585
+          ],
+          [
+            265051,
+            380671998
+          ],
+          [
+            265068,
+            380672037
+          ],
+          [
+            269877,
+            380684863
+          ]
+        ],
+        "scope": "saved PID/start identities and cleanup receipt; no live /proc inference",
+        "worker_identity": {
+          "group": 259585,
+          "parent": 259408,
+          "pid": 259585,
+          "session": 259585,
+          "start_ticks": 380659541,
+          "state": "R"
+        }
+      },
+      "protocol": {
+        "accepted_action_count": 16,
+        "cancel_count": 2,
+        "confirmed_cancellation_count": 2,
+        "goal_count": 4,
+        "keep_robot_command_count": 26,
+        "native_terminal_count": 4,
+        "rejected_action_count": 0,
+        "scope": "goal payload audit, not an action-server network trace"
+      },
+      "scene": "open",
+      "schema": "mr3-p1c-episode-audit-v1",
+      "scope": "scripted sampling/reset; no RL, throughput or 95% success inference",
+      "seed": 101,
+      "supervisor_shutdown_digest": "70c4c39b069156bacf8d3f9939231695c43020d3c98d58bfd143c5cdcab2bae8",
+      "terminal_probe": false,
+      "transitions": {
+        "complete": true,
+        "final_action_submitted": true,
+        "final_dt": 1.0,
+        "final_physical_dt": 1.0,
+        "final_terminal_reused": false,
+        "release_time_ns": 80320000000,
+        "reward_sum": 5.9379475942664115,
+        "sampled_physical_time_sec": 16.0,
+        "submitted_action_count": 16,
+        "terminal_map_scope": "frozen evaluator map; later actor map is diagnostic only",
+        "terminal_map_sha_exception_count": 0,
+        "transition_count": 16,
+        "zero_duration_terminal_count": 0
+      }
+    },
+    {
+      "closure": {
+        "launch_start_count": 38,
+        "native_shutdown_proof": {
+          "gzserver": {
+            "clean_exits": [
+              {
+                "pid": 270310,
+                "suffix": "4"
+              }
+            ],
+            "identity_matched": true,
+            "started": [
+              {
+                "pid": 270310,
+                "suffix": "4"
+              }
+            ]
+          },
+          "mr3_gazebo_native_stop": {
+            "clean_exits": [
+              {
+                "pid": 280444,
+                "suffix": "38"
+              }
+            ],
+            "identity_matched": true,
+            "started": [
+              {
+                "pid": 280444,
+                "suffix": "38"
+              }
+            ]
+          }
+        },
+        "navigation_closed": true,
+        "navigation_failure": false,
+        "other_launch_children_require_proc_identity": true,
+        "safety_failures": [],
+        "unsampled_stop_cli_alternative_evidence": []
+      },
+      "complete_episode_credit": true,
+      "contacts": {
+        "collision_events": 0,
+        "continuous_freshness_passed": true,
+        "errors": [],
+        "passed": true,
+        "raw_sequence_audit_passed": true,
+        "raw_stream_count": 18,
+        "scope": "contact validity separate from mapping success and scripted sampling",
+        "task_success": false,
+        "termination_reason": "training_external_truncation",
+        "zero_contact": true
+      },
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v4_workers1/worker0/episode002_open_101",
+      "epoch": "mr3_p1c_v4_workers1_w0_e2_8914a692",
+      "errors": [],
+      "evidence_sha256": {
+        "adapter.jsonl": "3430dc11f33df2d2083f92f9778a4623b52096f78ce8f284f29daf48a185e2d2",
+        "launch.log": "3a0b282b5bd09db6431fe666b42a51120836dab2e017424fdc150f3eaeaac980",
+        "metadata.json": "f03ee6d9fad8cd09252fe855876ac0e4b16be0387e9fa790ffcbc216eb526b30",
+        "mr3_p1c_v4_workers1_w0_e2_8914a692.json": "e698cfd2beaa51fb769a14931cba75be7663bcec30911257167dc899f1c35e5e",
+        "native_stop.json": "a2f5dfc8657c778d4fb41bb6492259f1c7d16126a2183342737e05f52fc23647",
+        "physics.jsonl": "a953f91318a0a2f2197ed3084550fc46aa235a17a3d2d7bf97e7187d457e42d5",
+        "summary.json": "714c09592f6ab1b9d0ab1153f7242b6c8502aa3d3138827361f9b3a54cce5666",
+        "supervisor_metadata.json": "c6d6d1713270200c81b81efe64a76347ecc9957ba25a3f6272eb5d0ace078cb7",
+        "supervisor_shutdown.json": "27805111ddf1edbc14acf99d70ca984746314cd511a58e9b822488718f0a49b0",
+        "transitions.jsonl": "56ca4bde286aa24eb2e4ad189e8a7331ac5fcf01ed5b4deb96925f869d1a988e"
+      },
+      "expected_infrastructure_fault": false,
+      "freeze": "7e186bf83b2a7ed9d38a95f30d53150ee2d6736d",
+      "initial_inputs_ready": {
+        "ack_map_payload_sha256": "3908a737459f52292c033ecb86bf2d7976d7a72845bd548a3d309a355a22abe3",
+        "ack_stamp": 79.14,
+        "ack_state_sequence": 791,
+        "first_snapshot_state_sequence": 797,
+        "initial_pause_stamp": 79.721,
+        "protocol": "delivered_inputs_before_pause-v1",
+        "proven": true,
+        "required": true,
+        "scope": "input readiness before pause; first snapshot may use newer delivery"
+      },
+      "passed": true,
+      "physics": {
+        "first_time_ns": 79721000000,
+        "last_time_ns": 95960000000,
+        "receipt_count": 831,
+        "total_physical_ticks": 16239
+      },
+      "processes": {
+        "forced_cleanup": false,
+        "no_live_or_zombie_leftovers": true,
+        "owned_pid_identities": [
+          [
+            270165,
+            380685536
+          ],
+          [
+            270190,
+            380685576
+          ],
+          [
+            270250,
+            380685675
+          ],
+          [
+            270304,
+            380685834
+          ],
+          [
+            270306,
+            380685834
+          ],
+          [
+            270308,
+            380685834
+          ],
+          [
+            270310,
+            380685834
+          ],
+          [
+            270312,
+            380685834
+          ],
+          [
+            270314,
+            380685835
+          ],
+          [
+            270316,
+            380685835
+          ],
+          [
+            270950,
+            380686198
+          ],
+          [
+            270952,
+            380686198
+          ],
+          [
+            270954,
+            380686199
+          ],
+          [
+            271152,
+            380686506
+          ],
+          [
+            271154,
+            380686506
+          ],
+          [
+            271156,
+            380686506
+          ],
+          [
+            271345,
+            380686829
+          ],
+          [
+            271780,
+            380687977
+          ],
+          [
+            271782,
+            380687978
+          ],
+          [
+            271784,
+            380687978
+          ],
+          [
+            271786,
+            380687978
+          ],
+          [
+            271788,
+            380687978
+          ],
+          [
+            271790,
+            380687978
+          ],
+          [
+            271793,
+            380687981
+          ],
+          [
+            273545,
+            380692478
+          ],
+          [
+            273547,
+            380692478
+          ],
+          [
+            273549,
+            380692478
+          ],
+          [
+            273551,
+            380692479
+          ],
+          [
+            273553,
+            380692479
+          ],
+          [
+            273555,
+            380692479
+          ],
+          [
+            273557,
+            380692479
+          ],
+          [
+            275204,
+            380696974
+          ],
+          [
+            275206,
+            380696974
+          ],
+          [
+            275208,
+            380696974
+          ],
+          [
+            275210,
+            380696974
+          ],
+          [
+            275212,
+            380696974
+          ],
+          [
+            275214,
+            380696975
+          ],
+          [
+            275216,
+            380696975
+          ],
+          [
+            275519,
+            380697651
+          ],
+          [
+            275521,
+            380697651
+          ],
+          [
+            275669,
+            380698041
+          ],
+          [
+            275682,
+            380698081
+          ],
+          [
+            280444,
+            380710846
+          ]
+        ],
+        "scope": "saved PID/start identities and cleanup receipt; no live /proc inference",
+        "worker_identity": {
+          "group": 270165,
+          "parent": 259408,
+          "pid": 270165,
+          "session": 270165,
+          "start_ticks": 380685536,
+          "state": "R"
+        }
+      },
+      "protocol": {
+        "accepted_action_count": 16,
+        "cancel_count": 1,
+        "confirmed_cancellation_count": 1,
+        "goal_count": 4,
+        "keep_robot_command_count": 27,
+        "native_terminal_count": 4,
+        "rejected_action_count": 0,
+        "scope": "goal payload audit, not an action-server network trace"
+      },
+      "scene": "open",
+      "schema": "mr3-p1c-episode-audit-v1",
+      "scope": "scripted sampling/reset; no RL, throughput or 95% success inference",
+      "seed": 101,
+      "supervisor_shutdown_digest": "7d1511579a69b5d04b1f749b7297b7ba2032fc9159a6ce72eb29245abd4fd2ee",
+      "terminal_probe": false,
+      "transitions": {
+        "complete": true,
+        "final_action_submitted": true,
+        "final_dt": 1.0,
+        "final_physical_dt": 1.0,
+        "final_terminal_reused": false,
+        "release_time_ns": 79740000000,
+        "reward_sum": 6.500578836848353,
+        "sampled_physical_time_sec": 16.0,
+        "submitted_action_count": 16,
+        "terminal_map_scope": "frozen evaluator map; later actor map is diagnostic only",
+        "terminal_map_sha_exception_count": 0,
+        "transition_count": 16,
+        "zero_duration_terminal_count": 0
+      }
+    },
+    {
+      "closure": {
+        "launch_start_count": 38,
+        "native_shutdown_proof": {
+          "gzserver": {
+            "clean_exits": [
+              {
+                "pid": 280848,
+                "suffix": "4"
+              }
+            ],
+            "identity_matched": true,
+            "started": [
+              {
+                "pid": 280848,
+                "suffix": "4"
+              }
+            ]
+          },
+          "mr3_gazebo_native_stop": {
+            "clean_exits": [
+              {
+                "pid": 290900,
+                "suffix": "38"
+              }
+            ],
+            "identity_matched": true,
+            "started": [
+              {
+                "pid": 290900,
+                "suffix": "38"
+              }
+            ]
+          }
+        },
+        "navigation_closed": true,
+        "navigation_failure": false,
+        "other_launch_children_require_proc_identity": true,
+        "safety_failures": [],
+        "unsampled_stop_cli_alternative_evidence": []
+      },
+      "complete_episode_credit": true,
+      "contacts": {
+        "collision_events": 0,
+        "continuous_freshness_passed": true,
+        "errors": [],
+        "passed": true,
+        "raw_sequence_audit_passed": true,
+        "raw_stream_count": 18,
+        "scope": "contact validity separate from mapping success and scripted sampling",
+        "task_success": false,
+        "termination_reason": "training_external_truncation",
+        "zero_contact": true
+      },
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v4_workers1/worker0/episode003_rooms_202",
+      "epoch": "mr3_p1c_v4_workers1_w0_e3_80f85499",
+      "errors": [],
+      "evidence_sha256": {
+        "adapter.jsonl": "1fcf981135649b3a58844815b6b7adf037378b3ec033d672612d5176756c18c9",
+        "launch.log": "a6d5f953dd3f1935178d55a6b83a732dbc0854dd1ea38d89c7d346bd3684e1c2",
+        "metadata.json": "16a86c91569ed4e6f5c18378d2087b4ef0a1c2e71d71de675b891ae94ae63ffd",
+        "mr3_p1c_v4_workers1_w0_e3_80f85499.json": "ae8d7cb91a3bb6341637ea5c7e1cc1b5c4067a08714712202ee360bdf3cf9912",
+        "native_stop.json": "990a7ab5a29e0bf722e5a47b7d9969976d31611b769c2a5e9ad236f60ede9e87",
+        "physics.jsonl": "1667aaae6ff3d67e0c6f06b14935a795085efd3553358bb59fbc0c2a6ec7e44f",
+        "summary.json": "ab3481388bee8f3debbb1434ef77891efa4c056e645a739fdbd78d65a9365773",
+        "supervisor_metadata.json": "b7efd93e2ddf005c521f1c12596c95ce25092d83fa97e54f9ecb2ca8536d43e2",
+        "supervisor_shutdown.json": "6d997d41dc94664d480cdbf0a86a3095d97e337202f6724ced2019a709251e97",
+        "transitions.jsonl": "9f1d42f7f0341d964c6ed93347e6fc9ae9aad663f1d0e41927ccd8363bc8e8e3"
+      },
+      "expected_infrastructure_fault": false,
+      "freeze": "7e186bf83b2a7ed9d38a95f30d53150ee2d6736d",
+      "initial_inputs_ready": {
+        "ack_map_payload_sha256": "b7a6a2334ac784a0c5f9ee7a4da083416431fb4667aec8d913be5a64d8efe541",
+        "ack_stamp": 80.2,
+        "ack_state_sequence": 802,
+        "first_snapshot_state_sequence": 809,
+        "initial_pause_stamp": 80.91,
+        "protocol": "delivered_inputs_before_pause-v1",
+        "proven": true,
+        "required": true,
+        "scope": "input readiness before pause; first snapshot may use newer delivery"
+      },
+      "passed": true,
+      "physics": {
+        "first_time_ns": 80910000000,
+        "last_time_ns": 96940000000,
+        "receipt_count": 812,
+        "total_physical_ticks": 16030
+      },
+      "processes": {
+        "forced_cleanup": false,
+        "no_live_or_zombie_leftovers": true,
+        "owned_pid_identities": [
+          [
+            280700,
+            380711470
+          ],
+          [
+            280728,
+            380711509
+          ],
+          [
+            280785,
+            380711608
+          ],
+          [
+            280842,
+            380711764
+          ],
+          [
+            280844,
+            380711764
+          ],
+          [
+            280846,
+            380711765
+          ],
+          [
+            280848,
+            380711765
+          ],
+          [
+            280850,
+            380711765
+          ],
+          [
+            280852,
+            380711765
+          ],
+          [
+            280855,
+            380711765
+          ],
+          [
+            281456,
+            380712123
+          ],
+          [
+            281458,
+            380712123
+          ],
+          [
+            281460,
+            380712124
+          ],
+          [
+            281679,
+            380712429
+          ],
+          [
+            281681,
+            380712429
+          ],
+          [
+            281683,
+            380712430
+          ],
+          [
+            281863,
+            380712754
+          ],
+          [
+            282332,
+            380713893
+          ],
+          [
+            282334,
+            380713893
+          ],
+          [
+            282336,
+            380713894
+          ],
+          [
+            282338,
+            380713894
+          ],
+          [
+            282340,
+            380713894
+          ],
+          [
+            282342,
+            380713894
+          ],
+          [
+            282344,
+            380713896
+          ],
+          [
+            284127,
+            380718397
+          ],
+          [
+            284129,
+            380718397
+          ],
+          [
+            284131,
+            380718397
+          ],
+          [
+            284133,
+            380718397
+          ],
+          [
+            284135,
+            380718397
+          ],
+          [
+            284137,
+            380718397
+          ],
+          [
+            284139,
+            380718398
+          ],
+          [
+            285750,
+            380722826
+          ],
+          [
+            285752,
+            380722826
+          ],
+          [
+            285754,
+            380722826
+          ],
+          [
+            285756,
+            380722826
+          ],
+          [
+            285758,
+            380722826
+          ],
+          [
+            285760,
+            380722826
+          ],
+          [
+            285762,
+            380722826
+          ],
+          [
+            286124,
+            380723493
+          ],
+          [
+            286126,
+            380723493
+          ],
+          [
+            286288,
+            380723926
+          ],
+          [
+            286301,
+            380723966
+          ],
+          [
+            290900,
+            380736442
+          ]
+        ],
+        "scope": "saved PID/start identities and cleanup receipt; no live /proc inference",
+        "worker_identity": {
+          "group": 280700,
+          "parent": 259408,
+          "pid": 280700,
+          "session": 280700,
+          "start_ticks": 380711470,
+          "state": "R"
+        }
+      },
+      "protocol": {
+        "accepted_action_count": 15,
+        "cancel_count": 2,
+        "confirmed_cancellation_count": 2,
+        "goal_count": 5,
+        "keep_robot_command_count": 25,
+        "native_terminal_count": 5,
+        "rejected_action_count": 1,
+        "scope": "goal payload audit, not an action-server network trace"
+      },
+      "scene": "rooms",
+      "schema": "mr3-p1c-episode-audit-v1",
+      "scope": "scripted sampling/reset; no RL, throughput or 95% success inference",
+      "seed": 202,
+      "supervisor_shutdown_digest": "acfa4fd7b341ec1df75f014879751500ae5bec534ed2cdac6cf79d95eb1f0bb7",
+      "terminal_probe": false,
+      "transitions": {
+        "complete": true,
+        "final_action_submitted": true,
+        "final_dt": 1.0,
+        "final_physical_dt": 1.0,
+        "final_terminal_reused": false,
+        "release_time_ns": 80920000000,
+        "reward_sum": 5.184340546110254,
+        "sampled_physical_time_sec": 16.0,
+        "submitted_action_count": 16,
+        "terminal_map_scope": "frozen evaluator map; later actor map is diagnostic only",
+        "terminal_map_sha_exception_count": 0,
+        "transition_count": 16,
+        "zero_duration_terminal_count": 0
+      }
+    },
+    {
+      "closure": {
+        "launch_start_count": 38,
+        "native_shutdown_proof": {
+          "gzserver": {
+            "clean_exits": [
+              {
+                "pid": 291310,
+                "suffix": "4"
+              }
+            ],
+            "identity_matched": true,
+            "started": [
+              {
+                "pid": 291310,
+                "suffix": "4"
+              }
+            ]
+          },
+          "mr3_gazebo_native_stop": {
+            "clean_exits": [
+              {
+                "pid": 302031,
+                "suffix": "38"
+              }
+            ],
+            "identity_matched": true,
+            "started": [
+              {
+                "pid": 302031,
+                "suffix": "38"
+              }
+            ]
+          }
+        },
+        "navigation_closed": true,
+        "navigation_failure": false,
+        "other_launch_children_require_proc_identity": true,
+        "safety_failures": [],
+        "unsampled_stop_cli_alternative_evidence": []
+      },
+      "complete_episode_credit": true,
+      "contacts": {
+        "collision_events": 0,
+        "continuous_freshness_passed": true,
+        "errors": [],
+        "passed": true,
+        "raw_sequence_audit_passed": true,
+        "raw_stream_count": 18,
+        "scope": "contact validity separate from mapping success and scripted sampling",
+        "task_success": false,
+        "termination_reason": "training_external_truncation",
+        "zero_contact": true
+      },
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v4_workers1/worker0/episode004_corridors_303",
+      "epoch": "mr3_p1c_v4_workers1_w0_e4_73ae5994",
+      "errors": [],
+      "evidence_sha256": {
+        "adapter.jsonl": "afffe0c82466ab6842c47fe0203381ee7a148d75739cf6800dca9f4b8b629682",
+        "launch.log": "d3fd8b47bf9c1026044946d6439afab215343e632371c209a2f0f76369982197",
+        "metadata.json": "4645741f2dd0a3d78439f141c9f53ea5d420229281d5330a2d9fe94d68d84538",
+        "mr3_p1c_v4_workers1_w0_e4_73ae5994.json": "0912379cf1b08ee32b16afe204464e0dc530ce654f8ad5dea8c994f44771dafc",
+        "native_stop.json": "7b7bdd6b261b018401afab3374dbece8aad72964e4b4c8e2ba9cb3186af75719",
+        "physics.jsonl": "ad908953e5fafdd8e8566e9c92e1d6da3a13867650a3a8e497f9aa5c50c4971e",
+        "summary.json": "05e726e2d4cd89e234b7afc6794b16a413d5b75d7358311e8b2f1e4d4a84fbf6",
+        "supervisor_metadata.json": "8fa712906f200d1c8c307a7f02ca52946217f50f6e6625435a7efe0740380574",
+        "supervisor_shutdown.json": "8393aa8b792b3ef781022f0bf9c3ff52bb5e66d263132b61137af90f150785f9",
+        "transitions.jsonl": "53137e51558238e1456f78c3bb203fae58a1f7adb110009c768c860279d528e5"
+      },
+      "expected_infrastructure_fault": false,
+      "freeze": "7e186bf83b2a7ed9d38a95f30d53150ee2d6736d",
+      "initial_inputs_ready": {
+        "ack_map_payload_sha256": "604e35bd1656c586ca1d6027750ac35e4555f771eb51fd01144d1dc5f3ae7514",
+        "ack_stamp": 77.48,
+        "ack_state_sequence": 774,
+        "first_snapshot_state_sequence": 781,
+        "initial_pause_stamp": 78.108,
+        "protocol": "delivered_inputs_before_pause-v1",
+        "proven": true,
+        "required": true,
+        "scope": "input readiness before pause; first snapshot may use newer delivery"
+      },
+      "passed": true,
+      "physics": {
+        "first_time_ns": 78108000000,
+        "last_time_ns": 94340000000,
+        "receipt_count": 824,
+        "total_physical_ticks": 16232
+      },
+      "processes": {
+        "forced_cleanup": false,
+        "no_live_or_zombie_leftovers": true,
+        "owned_pid_identities": [
+          [
+            291174,
+            380737088
+          ],
+          [
+            291196,
+            380737127
+          ],
+          [
+            291252,
+            380737226
+          ],
+          [
+            291304,
+            380737382
+          ],
+          [
+            291306,
+            380737382
+          ],
+          [
+            291308,
+            380737382
+          ],
+          [
+            291310,
+            380737382
+          ],
+          [
+            291312,
+            380737383
+          ],
+          [
+            291314,
+            380737383
+          ],
+          [
+            291316,
+            380737383
+          ],
+          [
+            291851,
+            380737741
+          ],
+          [
+            291854,
+            380737741
+          ],
+          [
+            291860,
+            380737741
+          ],
+          [
+            292035,
+            380738047
+          ],
+          [
+            292037,
+            380738047
+          ],
+          [
+            292039,
+            380738047
+          ],
+          [
+            292298,
+            380738380
+          ],
+          [
+            292812,
+            380739520
+          ],
+          [
+            292814,
+            380739520
+          ],
+          [
+            292816,
+            380739520
+          ],
+          [
+            292818,
+            380739520
+          ],
+          [
+            292820,
+            380739520
+          ],
+          [
+            292822,
+            380739520
+          ],
+          [
+            292825,
+            380739522
+          ],
+          [
+            294688,
+            380744019
+          ],
+          [
+            294690,
+            380744019
+          ],
+          [
+            294692,
+            380744019
+          ],
+          [
+            294694,
+            380744020
+          ],
+          [
+            294696,
+            380744020
+          ],
+          [
+            294698,
+            380744020
+          ],
+          [
+            294700,
+            380744020
+          ],
+          [
+            296452,
+            380748517
+          ],
+          [
+            296454,
+            380748517
+          ],
+          [
+            296456,
+            380748517
+          ],
+          [
+            296458,
+            380748517
+          ],
+          [
+            296460,
+            380748517
+          ],
+          [
+            296462,
+            380748517
+          ],
+          [
+            296464,
+            380748518
+          ],
+          [
+            296776,
+            380749204
+          ],
+          [
+            296778,
+            380749204
+          ],
+          [
+            296922,
+            380749594
+          ],
+          [
+            296941,
+            380749636
+          ],
+          [
+            302031,
+            380762031
+          ]
+        ],
+        "scope": "saved PID/start identities and cleanup receipt; no live /proc inference",
+        "worker_identity": {
+          "group": 291174,
+          "parent": 259408,
+          "pid": 291174,
+          "session": 291174,
+          "start_ticks": 380737088,
+          "state": "R"
+        }
+      },
+      "protocol": {
+        "accepted_action_count": 16,
+        "cancel_count": 1,
+        "confirmed_cancellation_count": 1,
+        "goal_count": 4,
+        "keep_robot_command_count": 27,
+        "native_terminal_count": 4,
+        "rejected_action_count": 0,
+        "scope": "goal payload audit, not an action-server network trace"
+      },
+      "scene": "corridors",
+      "schema": "mr3-p1c-episode-audit-v1",
+      "scope": "scripted sampling/reset; no RL, throughput or 95% success inference",
+      "seed": 303,
+      "supervisor_shutdown_digest": "b456e930184f5b6262d716b8463c402bb1823274a53e9cef5ffe5b6b25902441",
+      "terminal_probe": false,
+      "transitions": {
+        "complete": true,
+        "final_action_submitted": true,
+        "final_dt": 1.0,
+        "final_physical_dt": 1.0,
+        "final_terminal_reused": false,
+        "release_time_ns": 78120000000,
+        "reward_sum": 2.568165842943437,
+        "sampled_physical_time_sec": 16.0,
+        "submitted_action_count": 16,
+        "terminal_map_scope": "frozen evaluator map; later actor map is diagnostic only",
+        "terminal_map_sha_exception_count": 0,
+        "transition_count": 16,
+        "zero_duration_terminal_count": 0
+      }
+    }
+  ],
+  "errors": [],
+  "evidence_sha256": {
+    "benchmark_metadata.json": "66e1f3a730ff88582be566c4a6538ceacacae258fbd1fc7526a49f2597b433f2",
+    "benchmark_summary.json": "eaa00859af0198fdc9d24df98b6bc2bea4d498ab17bd420660b81086ec7ec8e8",
+    "resources.json": "54650b2edabb7179474554a6aed5e2c24d101be05ec809aaa9761129c40e92be"
+  },
+  "fault_probe": false,
+  "fault_scope": "injected cell excluded; forced cleanup, recovery and peer audited",
+  "freeze": "7e186bf83b2a7ed9d38a95f30d53150ee2d6736d",
+  "passed": true,
+  "schedule": [
+    [
+      "open",
+      101
+    ],
+    [
+      "open",
+      101
+    ],
+    [
+      "rooms",
+      202
+    ],
+    [
+      "corridors",
+      303
+    ]
+  ],
+  "schema": "mr3-p1c-benchmark-audit-v1",
+  "steps_per_episode": 16,
+  "terminal_probe": false,
+  "valid_transitions": 64,
+  "wall_sec_including_all_attempts": 1032.1083951941691,
+  "workers": 1
+}

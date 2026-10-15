@@ -389,6 +389,7 @@ def native_launch_failures(log_text):
         "process has died" in line or "failed to terminate" in line
         or "sending signal 'SIGTERM'" in line or "sending signal 'SIGKILL'" in line
         or "MR3_GAZEBO_NATIVE_STOP_ERROR" in line
+        or "MR3_ROS_SHUTDOWN_ERROR" in line
     )]
 
 
