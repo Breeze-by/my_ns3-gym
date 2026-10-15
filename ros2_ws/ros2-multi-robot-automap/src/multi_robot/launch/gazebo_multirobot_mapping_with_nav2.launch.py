@@ -108,11 +108,14 @@ def launch_setup(context, *args, **kwargs):
     probe_mode = IfCondition(LaunchConfiguration("adapter_probe")).evaluate(context)
     stepped_mode = IfCondition(LaunchConfiguration("mr3_stepped")).evaluate(context)
     training_reward = IfCondition(LaunchConfiguration("training_reward_enabled")).evaluate(context)
+    terminal_probe = IfCondition(LaunchConfiguration("training_terminal_probe")).evaluate(context)
     if stepped_mode and not adapter_mode:
         raise ValueError("mr3_stepped requires adapter mode")
     if training_reward and (not adapter_mode or not evaluation_contract.perform(context)
                             or not IfCondition(enable_task_evaluator).evaluate(context)):
         raise ValueError("training_reward_enabled requires adapter mode and MR3 contract evaluator")
+    if terminal_probe and (not training_reward or not stepped_mode):
+        raise ValueError("training_terminal_probe requires isolated rewards and stepped mode")
     if adapter_mode and robot_count != 3:
         raise ValueError("MR3 adapter requires robot_count=3")
     if adapter_mode and IfCondition(enable_drive).evaluate(context):
@@ -267,6 +270,7 @@ def launch_setup(context, *args, **kwargs):
                 "task_contract_path": evaluation_contract,
                 "allow_probe_finalize": probe_mode,
                 "training_reward_enabled": training_reward,
+                "training_terminal_probe": terminal_probe,
             }
         ],
         output="screen",
@@ -685,6 +689,10 @@ def generate_launch_description():
     ld.add_action(DeclareLaunchArgument(
         "training_reward_enabled", default_value="false",
         description="Enable isolated MR3 training reward with the explicit task contract.",
+    ))
+    ld.add_action(DeclareLaunchArgument(
+        "training_terminal_probe", default_value="false",
+        description="Explicit P1C diagnostic-failure IPC probe; no task performance credit.",
     ))
     ld.add_action(DeclareLaunchArgument(
         "mr3_episode_epoch", default_value="mr3-p1b",

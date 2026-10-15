@@ -13,14 +13,16 @@ import math
 
 import numpy as np
 
+from .mr3_episode import (
+    NANOSECONDS_PER_SECOND, TASK_DURATION_NS, TASK_DURATION_SEC as TASK_DURATION_SEC,
+    TASK_FAILURE_REASONS,
+    elapsed_ns as elapsed_ns, finite_time as _finite_time, timestamp_ns,
+)
+
+__all__ = ["RewardLedger", "RewardWeights", "SCHEMA", "TASK_DURATION_SEC", "TASK_DURATION_NS",
+           "NANOSECONDS_PER_SECOND", "TASK_FAILURE_REASONS", "timestamp_ns", "elapsed_ns"]
 
 SCHEMA = "mr3-reward-v1"
-TASK_DURATION_SEC = 300.0
-TASK_FAILURE_REASONS = frozenset((
-    "timeout", "navigation_failure", "collision", "collision_monitoring_interrupted",
-    "map_contract_error", "pose_discontinuity", "task_gate_regressed_during_closure",
-    "navigation_closure_timeout", "navigation_closure_invalid",
-))
 
 
 @dataclass(frozen=True)
@@ -45,15 +47,6 @@ class RewardWeights:
             raise ValueError("contact penalty must exceed coverage gain and saved task time")
 
 
-def _finite_time(value, name):
-    if isinstance(value, bool):
-        raise ValueError(f"{name} must be finite simulation time")
-    value = float(value)
-    if not math.isfinite(value) or value < 0:
-        raise ValueError(f"{name} must be finite nonnegative simulation time")
-    return value
-
-
 def _counter(value, name):
     if isinstance(value, bool) or not isinstance(value, int) or value < 0:
         raise ValueError(f"{name} must be a nonnegative integer")
@@ -75,6 +68,7 @@ class RewardLedger:
             raise ValueError("reward epoch must be nonempty")
         self.epoch = epoch
         self.start_sim_time = _finite_time(start_sim_time, "start_sim_time")
+        self._start_ns = timestamp_ns(self.start_sim_time)
         self.weights = RewardWeights() if weights is None else weights
         self._free = np.asarray(truth_free_mask)
         if self._free.ndim != 2 or self._free.dtype != np.bool_:
@@ -87,6 +81,7 @@ class RewardLedger:
         self.initial_correct_count = int(np.count_nonzero(self._seen))
         self.rewarded_correct_count = 0
         self.last_end = self.start_sim_time
+        self._last_end_ns = self._start_ns
         self.last_sequence = 0
         self.sealed = False
         self._counts = {"collision_events": 0, "goal_switches": 0, "rejected_actions": 0}
@@ -116,7 +111,9 @@ class RewardLedger:
             raise ValueError("reward sequence starts at one")
         start = _finite_time(step_start, "step_start")
         end = _finite_time(step_end, "step_end")
-        if end < start:
+        start_ns, end_ns = timestamp_ns(start), timestamp_ns(end)
+        dt_ns = end_ns - start_ns
+        if dt_ns < 0:
             raise ValueError("reward simulation time moved backwards")
         mask = self._correct_mask(current_correct_free_mask)
         counts = {
@@ -148,13 +145,15 @@ class RewardLedger:
             raise ValueError("reward ledger is already terminal or truncated")
         if sequence != self.last_sequence + 1:
             raise ValueError("reward sequence is not the next transition")
-        if not math.isclose(start, self.last_end, rel_tol=0., abs_tol=1e-8):
+        if start_ns != self._last_end_ns:
             raise ValueError("reward intervals are not contiguous")
         if any(counts[key] < self._counts[key] for key in counts):
             raise ValueError("reward event counters regressed")
-        elapsed = end - self.start_sim_time
+        duration_ns = end_ns - self._start_ns
+        elapsed = duration_ns / NANOSECONDS_PER_SECOND
+        dt = dt_ns / NANOSECONDS_PER_SECOND
         reason = terminal_reason
-        if elapsed >= TASK_DURATION_SEC:
+        if duration_ns >= TASK_DURATION_NS:
             reason = "timeout"
         elif counts["collision_events"] and reason == "coverage_reached":
             raise ValueError("contact cannot be classified as task success")
@@ -162,15 +161,19 @@ class RewardLedger:
             reason = "collision"
         terminated = reason is not None
         truncated = bool(cut is not None and not terminated)
-        if end == start and not terminated and not truncated:
+        if dt_ns == 0 and not terminated and not truncated:
             raise ValueError("a nonterminal reward transition must advance simulation time")
         newly_correct = mask & ~self._seen
+        if dt_ns == 0 and terminated:
+            # A late terminal settles the saved boundary without a new action
+            # or physical interval. A different frozen map is diagnostic only.
+            newly_correct[:] = False
         new_count = int(np.count_nonzero(newly_correct))
         deltas = {key: counts[key] - self._counts[key] for key in counts}
         weights = self.weights
         terms = {
             "coverage": weights.coverage * new_count / self.denominator,
-            "time": -weights.time * (end - start) / TASK_DURATION_SEC,
+            "time": -weights.time * dt_ns / TASK_DURATION_NS,
             "collision": -weights.collision * deltas["collision_events"],
             "switch": -weights.switch * deltas["goal_switches"],
             "invalid": -weights.invalid * deltas["rejected_actions"],
@@ -180,8 +183,8 @@ class RewardLedger:
         result = {
             "schema": SCHEMA, "epoch": self.epoch, "sequence": sequence,
             "step_start": start, "effective_step_end": end,
-            "delta_sim_time": end - start, "elapsed_sim_time": elapsed,
-            "remaining_sim_time": max(0., TASK_DURATION_SEC - elapsed),
+            "delta_sim_time": dt, "elapsed_sim_time": elapsed,
+            "remaining_sim_time": max(0, TASK_DURATION_NS - duration_ns) / NANOSECONDS_PER_SECOND,
             "reward": float(sum(terms.values())), "reward_terms": terms,
             "reward_weights": asdict(weights),
             "terminated": terminated, "truncated": truncated,
@@ -196,6 +199,7 @@ class RewardLedger:
         self._seen |= newly_correct
         self.rewarded_correct_count += new_count
         self.last_end = end
+        self._last_end_ns = end_ns
         self.last_sequence = sequence
         self._counts = counts
         self.sealed = terminated or truncated

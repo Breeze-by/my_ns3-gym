@@ -1,6 +1,7 @@
 """MR3 task gates and delayed start/stop message regressions."""
 
 import json
+from pathlib import Path
 from types import MethodType, SimpleNamespace
 
 from action_msgs.msg import GoalStatus
@@ -314,3 +315,184 @@ def test_ready_release_still_waits_for_local_clock_without_losing_contacts():
     assert all(state.accepted_message_count == 1
                for state in node.contact_monitor.components.values())
     assert not finalizations
+
+
+def terminal_evaluator_notice():
+    notices = []
+    node = SimpleNamespace(
+        episode_id="notice-epoch", training_reward_enabled=True, finalized=True,
+        start_sim_time=10., training_external_cut=None, task_terminal_notice_published=False,
+        final_result={"end_sim_time_sec": 10.02, "termination_reason": "collision"},
+        task_terminal_publisher=SimpleNamespace(publish=lambda message: notices.append(
+            json.loads(message.data))),
+    )
+    node.publish_task_terminal_notice = MethodType(
+        TaskEvaluator.publish_task_terminal_notice, node)
+    return node, notices
+
+
+@pytest.mark.parametrize("reason", (
+    "collision", "collision_monitoring_interrupted", "timeout", "coverage_reached",
+    "navigation_failure",
+))
+def test_frozen_task_terminal_notice_is_scalar_once_only_and_preserves_original_end(reason):
+    node, notices = terminal_evaluator_notice()
+    node.final_result["termination_reason"] = reason
+    node.publish_task_terminal_notice()
+    assert notices == [{"epoch": "notice-epoch", "end_sim_time_sec": 10.02,
+                        "termination_reason": reason}]
+    node.publish_task_terminal_notice()
+    assert len(notices) == 1
+
+
+@pytest.mark.parametrize("changes", (
+    {"training_reward_enabled": False}, {"finalized": False}, {"start_sim_time": None},
+    {"training_external_cut": 10.},
+    {"final_result": {"end_sim_time_sec": 10.02,
+                      "termination_reason": "training_external_truncation"}},
+    {"final_result": {"end_sim_time_sec": 10.02, "termination_reason": "shutdown"}},
+))
+def test_external_cut_and_infrastructure_or_unstarted_state_do_not_publish_task_terminal(changes):
+    node, notices = terminal_evaluator_notice()
+    for name, value in changes.items():
+        setattr(node, name, value)
+    node.publish_task_terminal_notice()
+    assert not notices and not node.task_terminal_notice_published
+
+
+@pytest.mark.parametrize("probe_enabled", (False, True))
+def test_real_evaluator_freezes_nanosecond_deadline_notice_before_result_file_io(
+        monkeypatch, probe_enabled):
+    import rclpy
+    from rclpy.qos import DurabilityPolicy, ReliabilityPolicy
+    source = Path(__file__).resolve().parents[2] / "multi_robot"
+    args = ["--ros-args", "-p", "training_reward_enabled:=true", "-p",
+            "world_file:=" + str(source / "worlds/p1c_open.world"), "-p",
+            "task_contract_path:=" + str(source / "config/mr3_p1a/open.json"), "-p",
+            "training_terminal_probe:=" + str(probe_enabled).lower()]
+    monkeypatch.setenv("ROS_DOMAIN_ID", "181")
+    rclpy.init(args=args)
+    node = None
+    try:
+        node = TaskEvaluator()
+        assert any(subscription.topic_name == "/mr3/diagnostic_failure"
+                   for subscription in node.input_subscriptions) == probe_enabled
+        qos = node.task_terminal_publisher.qos_profile
+        assert qos.depth == 1 and qos.durability == DurabilityPolicy.TRANSIENT_LOCAL
+        assert qos.reliability == ReliabilityPolicy.RELIABLE
+        events = []
+        node.task_terminal_publisher = SimpleNamespace(publish=lambda message: events.append(
+            ("notice", json.loads(message.data), node.final_result.copy())))
+        node._write_outputs = lambda result: events.append(("file", result))
+        node.start_sim_time = 212.06
+        node._now = lambda: 512.06
+        assert node._now() - node.start_sim_time < 300.
+        node.finalize("coverage_reached")
+        assert [event[0] for event in events] == ["notice", "file"]
+        assert events[0][1] == {"epoch": node.episode_id, "end_sim_time_sec": 512.06,
+                                "termination_reason": "timeout"}
+        assert events[0][2]["termination_reason"] == "timeout"
+        assert node.final_result["elapsed_sim_time_sec"] == 300.
+        node.finalize("collision")
+        assert len(events) == 2
+    finally:
+        if node is not None:
+            node.destroy_node()
+        rclpy.shutdown()
+
+
+def diagnostic_probe_evaluator():
+    node, clock, _, subscriptions, readiness, finalizations = contact_evaluator()
+    clock[0] = 1.
+    node._mr3_timer_callback()
+    for _, callback, _ in subscriptions:
+        callback(contact_message(1.))
+    node._mr3_timer_callback()
+    assert readiness == [True]
+    node.start_sim_time = 1.
+    node.max_duration = 300.
+    node.coverage_threshold = .95
+    node.teleport_jumps = {name: 0 for name in node.robot_names}
+    node.task_contract = SimpleNamespace(data={
+        "quality": QUALITY, "participation": PARTICIPATION,
+        "navigation_closure_timeout_sec": 10.,
+    })
+    node._map_metrics = lambda: {"correct_free_coverage_ratio": 0.}
+    node.training_reward_enabled = True
+    node.training_terminal_probe = True
+    node.episode_id = "probe-epoch"
+    node.diagnostic_failure_request = None
+    node.pending_diagnostic_failure = None
+    node.training_external_cut = None
+    node.training_acknowledged = False
+    node.training_ack_deadline_wall = None
+    node.training_ack_wall_guard_sec = 90.
+    node._drain_reward_requests = lambda: None
+    errors = []
+    node.get_logger = lambda: SimpleNamespace(error=errors.append)
+    for name in (
+        "_mr3_termination_reason", "_timer_callback", "_control_failure_callback",
+        "_diagnostic_failure_callback", "_poll_diagnostic_failure", "training_exit_ready",
+    ):
+        setattr(node, name, MethodType(getattr(TaskEvaluator, name), node))
+    return node, clock, readiness, finalizations, errors
+
+
+def diagnostic_failure(node, **changes):
+    request = {"epoch": node.episode_id, "request_id": "p1c-terminal-probe",
+               "target_time_ns": 1020000000, "reason": "P1C_DIAGNOSTIC_FAILURE"}
+    request.update(changes)
+    node._diagnostic_failure_callback(String(data=json.dumps(request)))
+    return request
+
+
+def test_explicit_diagnostic_failure_waits_for_real_clock_and_changes_no_contact_samples():
+    node, clock, readiness, finalizations, errors = diagnostic_probe_evaluator()
+    counts = {key: value.accepted_message_count
+              for key, value in node.contact_monitor.components.items()}
+    request = diagnostic_failure(node)
+    assert node.pending_diagnostic_failure == request and not node.control_failure
+    assert not finalizations and readiness == [True]
+    node.training_exit_ready()
+    assert clock[0] == 1. and not finalizations
+    clock[0] = 1.02
+    node.training_exit_ready()
+    assert clock[0] == 1.02 and readiness == [True, False]
+    assert finalizations == ["navigation_failure"]
+    assert node.control_failure == "P1C_DIAGNOSTIC_FAILURE"
+    assert node.pending_diagnostic_failure is None and not errors
+    assert counts == {key: value.accepted_message_count
+                      for key, value in node.contact_monitor.components.items()}
+    diagnostic_failure(node)
+    assert finalizations == ["navigation_failure"]
+
+
+@pytest.mark.parametrize("changes", (
+    {"epoch": "other-epoch"}, {"target_time_ns": 999000000},
+    {"target_time_ns": True}, {"reason": "collision"}, {"request_id": ""}, {"grid": [0]},
+))
+def test_diagnostic_failure_rejects_wrong_epoch_past_target_and_nonfixed_request(changes):
+    node, clock, readiness, finalizations, errors = diagnostic_probe_evaluator()
+    diagnostic_failure(node, **changes)
+    assert errors and node.pending_diagnostic_failure is None
+    assert not finalizations and not node.control_failure and readiness == [True]
+    assert clock[0] == 1.
+
+
+def test_disabled_diagnostic_failure_cannot_create_a_task_terminal_or_pending_request():
+    node, clock, readiness, finalizations, errors = diagnostic_probe_evaluator()
+    node.training_terminal_probe = False
+    diagnostic_failure(node, target_time_ns=1000000000)
+    assert node.diagnostic_failure_request is None and node.pending_diagnostic_failure is None
+    assert not finalizations and not node.control_failure and not errors
+    assert readiness == [True] and clock[0] == 1.
+
+
+def test_diagnostic_failure_does_not_apply_after_overshooting_its_real_clock_target():
+    node, clock, readiness, finalizations, errors = diagnostic_probe_evaluator()
+    diagnostic_failure(node)
+    clock[0] = 1.04
+    node.training_exit_ready()
+    assert errors and not finalizations and not node.control_failure
+    assert node.pending_diagnostic_failure is None and readiness == [True]
+    assert clock[0] == 1.04

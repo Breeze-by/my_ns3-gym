@@ -71,6 +71,19 @@ source/generated/received时间含义与10Hz状态、1Hz地图、5Hz租约/回�
 worker记录物理结束时刻与检测余差，要求余差不超过20ms，不能把余差加进奖励时间或任务成功预算。
 超过界限是基础设施/时间契约错误，不能悄悄丢掉该transition或宣称固定dt通过。
 
+评价器以可靠transient-local `/mr3/task_terminal`仅发布
+`epoch,end_sim_time_sec,termination_reason`三项冻结标量，先于文件I/O；broker不再轮询评价真值文件。
+adapter与broker等待真实clock到达notice结束水位，adapter随后真实安全停止并允许末端快照。
+step快照可预先声明`allow_terminal=true`，但只有实际收到该notice才启用终态freshness/monitor例外；
+普通取消闭合和外部截断不能开启例外，融合图与实际drain状态序号仍须配对。
+
+若notice恰在上一正常sample已返回的同一物理边界T到达，下一step不发送新动作、不推进物理、
+不请求新快照或刷新来源；用新reward序号结算`start=end=T`的真实终态，原保存snapshot逐字复用。
+此唯一零时长例外必须`terminated=true,truncated=false,dt=physical_dt=0`，
+info显式记录`terminal_observation_reused=true,action_submitted=false,bootstrap=0`。
+零有效时长的任务终态不支付新增coverage；评价器仍保留冻结终态地图与当前正确格数诊断，终态奖罚只结算一次。
+旧快照不能用于其他step，不能在终态seal后重复结算；notice早于上一已返回边界为基础设施归因错误。
+
 ## 独立奖励与初始化
 
 原P1A真值采样函数与比较器共用同一坐标/阈值逻辑，不另建分母或真值重采样规则。
@@ -108,6 +121,8 @@ expected actor摘要与实际评价摘要；绝不按B补coverage或改原成功
 任务自身300秒截止为失败`terminated`，且优先于同刻成功或采样截断；质量/参与、18源持续监测、
 零真实非支撑接触和导航闭合仍使用原门禁。基础设施异常由worker抛出并单列，
 不伪造正常成功、有效next observation或可训练transition。
+截止、奖励连续性与时长比较先把各原端点恢复为整数纳秒再相减；不对浮点差值加容差，
+避免212.06到512.06被误算为略少于300秒，不延长任务期限。
 
 采样器外部截止为`truncated`，不加任务失败罚项，并立即seal账本；之后不能再推进奖励。
 worker随后发布真实停止请求，继续以20 tick量子推进到所有已知目标取消/终态闭合，
@@ -137,5 +152,9 @@ worker随后发布真实停止请求，继续以20 tick量子推进到所有已�
 待验证矩阵为1/2/4个并行worker，**每个worker始终三台机器人**。测量完整startup/reset/closure、
 每墙秒有效transition、仿真倍率、CPU/RAM、GPU使用和进程残留；宿主资源包含其他活动时须说明归因限制。
 GPU探针仅做固定接口forward/backward且无optimizer step，不是策略训练。
+`--terminal-probe`是明确的诊断失败实验：仅显式`training_terminal_probe=true`时允许
+私有worker向评价器`/mr3/diagnostic_failure`发送绑定epoch/目标真实水位的固定诊断原因。
+评价器等真实clock精确到该水位后走原控制失败门禁；不修改contact数据、健康阈值或物理时间。
+它验证20ms短终态与同边界零时长尾步，不提供碰撞、策略、95%或网络成功信用；默认关闭。
 所有原生/GPU尝试先预声明新推送冻结，失败与重试保留并追加共享log；本文件没有测量结果或PASS声明。
 完成上述门禁并提交推送后仍需用户验收P1C，才能进入P2A。

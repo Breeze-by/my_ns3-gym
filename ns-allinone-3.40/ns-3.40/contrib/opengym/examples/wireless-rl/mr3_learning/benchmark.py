@@ -57,7 +57,7 @@ def run_worker(args, worker_id):
     supervisor = Supervisor(run_id=args.run_id, worker_id=worker_id,
                             domain_id=args.base_domain + worker_id,
                             gazebo_port=args.base_port + worker_id,
-                            output_root=args.output_root)
+                            output_root=args.output_root, terminal_probe=args.terminal_probe)
     environment = MR3Env(supervisor=supervisor, max_steps=args.steps)
     result = {"worker_id": worker_id, "episodes": [], "error": None}
     started = time.monotonic()
@@ -76,6 +76,11 @@ def run_worker(args, worker_id):
                        "transition_wall_sec": 0., "reward_sum": 0., "dt_values": []}
             result["episodes"].append(episode)
             for step_index in range(args.steps):
+                if args.terminal_probe and step_index == 3:
+                    if episode_index == 0:
+                        episode["diagnostic_failure_arm"] = supervisor.arm_failure_probe()
+                    else:
+                        episode["diagnostic_failure_terminal"] = supervisor.trigger_failure_probe()
                 if args.fault_probe and worker_id == 0 and episode_index == 0 and step_index == 4:
                     identity = supervisor.episode.identity
                     if not identity_alive(identity):
@@ -89,7 +94,7 @@ def run_worker(args, worker_id):
                     else:
                         raise RuntimeError("killed worker was accepted as a valid transition")
                     break
-                action = (888 if args.deadline_probe else
+                action = (888 if args.deadline_probe or args.terminal_probe else
                           probe_action(supervisor.last_result["snapshot"]))
                 step_started = time.monotonic()
                 observation, reward, terminated, truncated, info = environment.step(action)
@@ -100,6 +105,13 @@ def run_worker(args, worker_id):
                 if terminated or truncated:
                     episode.update(terminated=terminated, truncated=truncated,
                                    reason=info.get("reason"))
+                    if args.terminal_probe:
+                        episode["terminal_sample"] = {
+                            "dt": info["dt"], "physical_dt": info["physical_dt"],
+                            "terminal_observation_reused": info.get(
+                                "terminal_observation_reused", False),
+                            "action_submitted": info.get("action_submitted", True),
+                        }
                     break
             if not environment._episode_done:
                 raise RuntimeError("sampler step limit did not produce explicit truncation")
@@ -129,6 +141,7 @@ def main():
     parser.add_argument("--output-root", type=Path)
     parser.add_argument("--fault-probe", action="store_true")
     parser.add_argument("--deadline-probe", action="store_true")
+    parser.add_argument("--terminal-probe", action="store_true")
     args = parser.parse_args()
     if not 1 <= args.steps <= 300:
         parser.error("steps must be in [1,300]")
@@ -143,8 +156,12 @@ def main():
     if args.fault_probe and (args.workers != 2 or len(args.schedule) != 2 or args.steps < 8):
         parser.error("fault probe requires two workers, two episodes, at least eight steps")
     if args.deadline_probe and (
-            args.workers != 1 or len(args.schedule) != 1 or args.steps != 300 or args.fault_probe):
+            args.workers != 1 or len(args.schedule) != 1 or args.steps != 300
+            or args.fault_probe or args.terminal_probe):
         parser.error("deadline probe requires one worker, one 300-step episode, no injected crash")
+    if args.terminal_probe and (args.workers != 1 or args.schedule != [("open", 101)] * 2
+                               or args.steps != 4 or args.fault_probe or args.deadline_probe):
+        parser.error("terminal probe requires one worker, two open101 episodes and four API steps")
     output_root = args.output_root or (
         WORKSPACE / "ros2_ws/ros2-multi-robot-automap/log/mr3_learning")
     directory = output_root / args.run_id
@@ -169,6 +186,7 @@ def main():
                 "base_domain": args.base_domain, "base_port": args.base_port,
                 "fault_probe": args.fault_probe,
                 "deadline_probe": args.deadline_probe,
+                "terminal_probe": args.terminal_probe,
                 "resource_scope": "host counters include unrelated activity; GPU driver reports",
                 "num_logical_cpus": os.cpu_count(),
                 "cpu_affinity_count": len(os.sched_getaffinity(0))}
@@ -200,7 +218,16 @@ def main():
                 or (episode["transitions"] == args.steps
                     and ((args.deadline_probe and episode.get("terminated")
                           and not episode.get("truncated") and episode.get("reason") == "timeout")
-                         or (not args.deadline_probe and episode.get("truncated")
+                         or (args.terminal_probe and episode.get("terminated")
+                             and not episode.get("truncated")
+                             and episode.get("reason") == "navigation_failure"
+                             and [round(dt * 1e9) for dt in episode["dt_values"]]
+                             == [10**9] * 3 + [20000000 if index == 0 else 0]
+                             and episode["terminal_sample"]["terminal_observation_reused"]
+                             == (index == 1)
+                             and episode["terminal_sample"]["action_submitted"] == (index == 0))
+                         or (not args.deadline_probe and not args.terminal_probe
+                             and episode.get("truncated")
                              and not episode.get("terminated"))))
                 for index, episode in enumerate(worker["episodes"]))
         and all(not receipt["remaining_owned_processes"]

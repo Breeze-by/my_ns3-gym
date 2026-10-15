@@ -249,9 +249,10 @@ def test_terminal_snapshot_preserves_stale_ages_without_relaxing_execution_safet
     node, clock, responses = ready_adapter()
     node.started_at = 1.
     clock[0] = 3.
-    node.stop_requested = True
     node.monitor_ready = False
-    request(node, target=3000000000, allow_terminal=True, minimum_state_sequence=10)
+    node.receive_task_terminal(message({
+        "epoch": node.epoch, "end_sim_time_sec": 3., "termination_reason": "collision"}))
+    request(node, target=3000000000, allow_terminal=True, minimum_state_sequence=9)
     node.poll_snapshot()
     node.finish_observation()
     response = json.loads(responses[-1].data)
@@ -271,6 +272,98 @@ def test_allow_terminal_cannot_bypass_missing_freshness_before_a_real_stop():
     node.poll_snapshot()
     assert node.encoding is None and not responses
     assert node.started_at is None
+
+
+def test_normal_closure_and_preauthorized_snapshot_cannot_bypass_state_freshness():
+    node, clock, responses = ready_adapter()
+    node.started_at = 1.
+    node.stop_requested = True
+    clock[0] = 3.
+    request(node, target=3000000000, allow_terminal=True)
+    node.poll_snapshot()
+    assert not node.terminal_snapshot_allowed()
+    assert node.encoding is None and not responses
+    assert node.task_terminal_notice is None
+
+
+def test_terminal_notice_arriving_during_snapshot_wait_unblocks_without_file_or_new_state():
+    node, clock, responses = ready_adapter()
+    node.started_at = 1.
+    node.monitor_ready = False
+    clock[0] = 3.
+    request(node, target=3000000000, allow_terminal=True, minimum_state_sequence=9)
+    node.poll_snapshot()
+    assert node.encoding is None and not responses and not node.stop_requested
+    node.receive_task_terminal(message({
+        "epoch": node.epoch, "end_sim_time_sec": 3., "termination_reason": "collision"}))
+    node.maintain()
+    node.finish_observation()
+    response = json.loads(responses[-1].data)
+    assert response["ok"] and node.stop_requested and node.dispatcher.stopped
+    assert response["snapshot"]["source_stamp"] == 3.
+    assert all(robot["source_stamp"] == 2. and robot["source_age_sec"] == 1.
+               for robot in response["snapshot"]["robots"])
+    assert node.state["sequence"] == 10 and node.started_at == 1.
+    assert not node.test_starts
+
+
+def test_future_terminal_notice_waits_for_real_clock_before_stopping_or_snapshot_override():
+    node, clock, responses = ready_adapter()
+    node.started_at = 1.
+    node.monitor_ready = False
+    notice = {"epoch": node.epoch, "end_sim_time_sec": 2.02,
+              "termination_reason": "collision_monitoring_interrupted"}
+    node.receive_task_terminal(message(notice))
+    request(node, target=2020000000, allow_terminal=True, minimum_state_sequence=9)
+    node.maintain()
+    assert node.pending_task_terminal_notice == notice and node.task_terminal_notice is None
+    assert not node.stop_requested and not node.dispatcher.stopped
+    assert node.encoding is None and not responses
+    clock[0] = 2.02
+    node.maintain()
+    node.finish_observation()
+    assert node.task_terminal_notice == notice and node.pending_task_terminal_notice is None
+    assert node.stop_requested and node.dispatcher.stopped
+    assert json.loads(responses[-1].data)["ok"]
+    assert node.state["robots"][0]["source_stamp"] == 2.
+
+
+def test_terminal_notice_still_waits_for_the_drained_state_sequence():
+    node, _, responses = ready_adapter()
+    node.started_at = 1.
+    node.monitor_ready = False
+    node.receive_task_terminal(message({
+        "epoch": node.epoch, "end_sim_time_sec": 2., "termination_reason": "collision"}))
+    request(node, allow_terminal=True, minimum_state_sequence=10)
+    node.poll_snapshot()
+    assert node.encoding is None and not responses
+    node.receive_states(message(state(2., sequence=11)))
+    node.poll_snapshot()
+    node.finish_observation()
+    assert json.loads(responses[-1].data)["watermarks"]["state_sequence"] == 11
+
+
+@pytest.mark.parametrize("changes", (
+    {"epoch": "other-episode"}, {"termination_reason": "training_external_truncation"},
+    {"termination_reason": "shutdown"}, {"end_sim_time_sec": True},
+    {"end_sim_time_sec": float("nan")}, {"end_sim_time_sec": .5}, {"grid": [0, 1]},
+))
+def test_invalid_or_other_epoch_terminal_notice_cannot_stop_or_relax_snapshot(changes):
+    node, _, _ = ready_adapter()
+    node.started_at = 1.
+    notice = {"epoch": node.epoch, "end_sim_time_sec": 2., "termination_reason": "collision"}
+    notice.update(changes)
+    node.receive_task_terminal(message(notice))
+    assert node.task_terminal_notice is None and node.pending_task_terminal_notice is None
+    assert not node.stop_requested and not node.dispatcher.stopped
+
+
+def test_terminal_notice_cannot_release_or_start_an_unstarted_episode():
+    node, _, _ = ready_adapter()
+    node.receive_task_terminal(message({
+        "epoch": node.epoch, "end_sim_time_sec": 2., "termination_reason": "collision"}))
+    assert node.started_at is None and node.task_terminal_notice is None
+    assert not node.stop_requested and not node.test_starts and not node.test_observations
 
 
 def test_map_completion_metadata_does_not_resend_or_refresh_state_sources():

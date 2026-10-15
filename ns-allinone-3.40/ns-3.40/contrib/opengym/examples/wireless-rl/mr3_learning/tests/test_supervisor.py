@@ -118,6 +118,45 @@ class SupervisorTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 Supervisor(output_root=directory, quantum_steps=20.)
 
+    def test_terminal_probe_is_opt_in_bool_and_preserves_the_last_real_sample(self):
+        with tempfile.TemporaryDirectory() as directory:
+            for invalid in (0, 1, "true", None):
+                with self.subTest(invalid=invalid), self.assertRaises(ValueError):
+                    Supervisor(output_root=directory, terminal_probe=invalid)
+            supervisor = Supervisor(output_root=directory, terminal_probe=True)
+            sample = {"snapshot": {"epoch": "fixture"}, "terminated": False, "truncated": False}
+            supervisor.last_result = sample
+            supervisor.episode = self.episode_fixture()
+            supervisor.episode.process.poll = lambda: None
+            with patch("mr3_learning.supervisor.identity_alive", return_value=True):
+                responses = [{"armed": True}, {"terminal": True}]
+                with patch.object(supervisor, "_rpc", side_effect=responses) as rpc:
+                    self.assertEqual(supervisor.arm_failure_probe(), {"armed": True})
+                    self.assertIs(supervisor.last_result, sample)
+                    self.assertEqual(supervisor.trigger_failure_probe(), {"terminal": True})
+                    self.assertIs(supervisor.last_result, sample)
+                    self.assertEqual([call.args for call in rpc.call_args_list],
+                                     [("arm_failure_probe",), ("trigger_failure_probe",)])
+
+    def test_probe_rejects_disabled_closed_or_dead_episode_before_rpc(self):
+        for case in ("disabled", "missing_episode", "missing_sample", "terminated", "truncated",
+                     "exited", "reused_pid"):
+            with self.subTest(case=case), tempfile.TemporaryDirectory() as directory:
+                supervisor = Supervisor(output_root=directory, terminal_probe=case != "disabled")
+                supervisor.episode = self.episode_fixture() if case != "missing_episode" else None
+                if supervisor.episode:
+                    supervisor.episode.process.poll = lambda: 1 if case == "exited" else None
+                supervisor.last_result = None if case == "missing_sample" else {
+                    "terminated": case == "terminated", "truncated": case == "truncated"}
+                with patch("mr3_learning.supervisor.identity_alive",
+                           return_value=case != "reused_pid"):
+                    with patch.object(supervisor, "_rpc") as rpc:
+                        with self.assertRaises((RuntimeError, InfrastructureError)):
+                            supervisor.arm_failure_probe()
+                        with self.assertRaises((RuntimeError, InfrastructureError)):
+                            supervisor.trigger_failure_probe()
+                        rpc.assert_not_called()
+
     @unittest.skipUnless(hasattr(os, "fork") and Path("/proc/self/stat").is_file(),
                          "owned-process fixture requires Linux /proc")
     def test_startup_worker_forks_child_and_exits_without_leaking_the_child(self):
@@ -135,7 +174,7 @@ class SupervisorTests(unittest.TestCase):
         try:
             directory = temporary.name
             supervisor = Supervisor(run_id="startup_crash_fixture", output_root=directory,
-                                    startup_timeout=3., request_timeout=3.)
+                                    startup_timeout=3., request_timeout=3., terminal_probe=True)
             script = (
                 "import json,os,pathlib,sys,time\n"
                 "request=json.loads(sys.stdin.readline())\n"
@@ -145,7 +184,7 @@ class SupervisorTests(unittest.TestCase):
                 " os._exit(0)\n"
                 "stat=pathlib.Path('/proc',str(pid),'stat').read_text().rsplit(')',1)[1].split()\n"
                 "pathlib.Path(sys.argv[1]).write_text(json.dumps({'pid':pid,"
-                "'start_ticks':int(stat[19])}))\n"
+                "'start_ticks':int(stat[19]),'terminal_probe':request['terminal_probe']}))\n"
                 "print(json.dumps({'id':request['id'],'epoch':request['epoch'],"
                 "'ok':False,'error':'intentional startup crash'}),flush=True)\n"
                 "os._exit(1)\n"
@@ -160,6 +199,9 @@ class SupervisorTests(unittest.TestCase):
                     supervisor.reset(scene="open", seed=101)
             pid_path = next(Path(directory).rglob("fixture_child.json"))
             child_identity = json.loads(pid_path.read_text())
+            self.assertIs(child_identity["terminal_probe"], True)
+            metadata = json.loads((pid_path.parent / "supervisor_metadata.json").read_text())
+            self.assertIs(metadata["terminal_probe"], True)
             receipt = supervisor.receipts[-1]
             self.assertTrue(receipt["failed_sample"])
             self.assertGreaterEqual(receipt["process_scan_statistics"]["count"], 2)

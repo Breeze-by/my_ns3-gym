@@ -22,6 +22,7 @@ from std_msgs.msg import Bool, Header, String
 from std_srvs.srv import Trigger
 
 from .mr3_contacts import CONTACT_COMPONENTS, ContactMonitor, contact_topics
+from .mr3_episode import TASK_FAILURE_REASONS, elapsed_ns, timestamp_ns
 from .mr3_information import map_digest
 from .mr3_reward import RewardLedger
 from .mr3_task_contract import (
@@ -383,11 +384,16 @@ class TaskEvaluator(Node):
         self.training_reward_enabled = self.declare_parameter(
             "training_reward_enabled", False,
         ).value
+        self.training_terminal_probe = self.declare_parameter(
+            "training_terminal_probe", False,
+        ).value
         self.training_ack_wall_guard_sec = self.declare_parameter(
             "training_ack_wall_guard_sec", 90.,
         ).value
         if self.training_reward_enabled and self.task_contract is None:
             raise ValueError("Training rewards require the explicit MR3 task contract")
+        if self.training_terminal_probe and not self.training_reward_enabled:
+            raise ValueError("Training terminal probe requires isolated training rewards")
         if (not math.isfinite(self.training_ack_wall_guard_sec)
                 or self.training_ack_wall_guard_sec <= 0):
             raise ValueError("training_ack_wall_guard_sec must be finite and positive")
@@ -402,6 +408,9 @@ class TaskEvaluator(Node):
         self.training_acknowledged = False
         self.training_ack_deadline_wall = None
         self.pending_training_finalize = None
+        self.task_terminal_notice_published = False
+        self.diagnostic_failure_request = None
+        self.pending_diagnostic_failure = None
         self.probe_finalize_service = None
         if self.declare_parameter("allow_probe_finalize", False).value:
             if self.task_contract is None:
@@ -442,6 +451,9 @@ class TaskEvaluator(Node):
                 ),
             ])
         if self.training_reward_enabled:
+            self.task_terminal_publisher = self.create_publisher(
+                String, "/mr3/task_terminal", map_qos,
+            )
             self.reward_response_publisher = self.create_publisher(
                 String, "/mr3/reward_response", 20,
             )
@@ -458,6 +470,10 @@ class TaskEvaluator(Node):
                 self.create_subscription(String, "/mr3/events", self._reward_event_callback, 100),
             ])
             self.reward_clock_timer = self.create_timer(.02, self._drain_reward_requests)
+            if self.training_terminal_probe:
+                self.input_subscriptions.append(self.create_subscription(
+                    String, "/mr3/diagnostic_failure", self._diagnostic_failure_callback, 10,
+                ))
         for name in self.robot_names:
             self.input_subscriptions.append(
                 self.create_subscription(
@@ -720,7 +736,53 @@ class TaskEvaluator(Node):
         if self.finalized:
             return
         self.control_failure = message.data
-        self.finalize("navigation_failure")
+        if self.task_contract:
+            self._timer_callback()
+        if not self.finalized:
+            self.finalize("navigation_failure")
+
+    def _diagnostic_failure_callback(self, message):
+        """Explicit, disabled-by-default P1C terminal IPC probe; never contact data."""
+        if not self.training_terminal_probe:
+            return
+        try:
+            request = json.loads(message.data)
+            if not isinstance(request, dict) or set(request) != {
+                    "epoch", "request_id", "target_time_ns", "reason"}:
+                raise ValueError("invalid_diagnostic_failure_fields")
+            if request["epoch"] != self.episode_id:
+                raise ValueError("wrong_diagnostic_failure_epoch")
+            if (not isinstance(request["request_id"], str) or not request["request_id"]
+                    or type(request["target_time_ns"]) is not int
+                    or request["target_time_ns"] < 0
+                    or request["reason"] != "P1C_DIAGNOSTIC_FAILURE"):
+                raise ValueError("invalid_diagnostic_failure_request")
+            if self.diagnostic_failure_request is not None:
+                if request != self.diagnostic_failure_request:
+                    raise ValueError("conflicting_diagnostic_failure_request")
+                return
+            if self.finalized or self.start_sim_time is None:
+                raise ValueError("diagnostic_failure_requires_live_released_task")
+            if request["target_time_ns"] < timestamp_ns(self._now()):
+                raise ValueError("diagnostic_failure_target_passed")
+            self.diagnostic_failure_request = request
+            self.pending_diagnostic_failure = request
+            self._poll_diagnostic_failure()
+        except (ValueError, TypeError, KeyError) as error:
+            self.get_logger().error("Rejected P1C diagnostic failure: " + str(error))
+
+    def _poll_diagnostic_failure(self):
+        pending = self.pending_diagnostic_failure
+        if not self.training_terminal_probe or pending is None or self.finalized:
+            return
+        now_ns = timestamp_ns(self._now())
+        if now_ns < pending["target_time_ns"]:
+            return
+        self.pending_diagnostic_failure = None
+        if now_ns != pending["target_time_ns"]:
+            self.get_logger().error("Rejected P1C diagnostic failure: target watermark passed")
+            return
+        self._control_failure_callback(String(data=pending["reason"]))
 
     def _timer_callback(self):
         if self.finalized:
@@ -790,7 +852,7 @@ class TaskEvaluator(Node):
             elif self.control_failure:
                 self.finalize("navigation_failure")
             return
-        elapsed = now - self.start_sim_time
+        elapsed = elapsed_ns(self.start_sim_time, now) / 1e9
         reason = self._mr3_termination_reason(elapsed, summary)
         if reason:
             self.finalize(reason)
@@ -825,7 +887,7 @@ class TaskEvaluator(Node):
                 return "task_gate_regressed_during_closure"
             if self.navigation_protocol_closed:
                 return "coverage_reached"
-            closure_elapsed = self._now() - self.stop_requested_sim_time
+            closure_elapsed = elapsed_ns(self.stop_requested_sim_time, self._now()) / 1e9
             if closure_elapsed >= contract["navigation_closure_timeout_sec"]:
                 return "navigation_closure_timeout"
             return None
@@ -841,7 +903,7 @@ class TaskEvaluator(Node):
         if self.start_sim_time is None:
             return
         coverage = self._map_metrics().get("correct_free_coverage_ratio", 0.0)
-        elapsed = max(0.0, self._now() - self.start_sim_time)
+        elapsed = max(0.0, elapsed_ns(self.start_sim_time, self._now()) / 1e9)
         if self.max_duration > 0 and elapsed >= self.max_duration:
             return
         for threshold in self.coverage_times:
@@ -1161,6 +1223,8 @@ class TaskEvaluator(Node):
     def training_exit_ready(self):
         """Keep terminal RPC available until worker ACK, with an independent wall guard."""
         if self.training_reward_enabled:
+            if getattr(self, "training_terminal_probe", False):
+                self._poll_diagnostic_failure()
             # The worker can pause on a 20ms boundary before the 100ms task
             # timer is due. DDS may deliver a release/stop ACK before this
             # process receives its real /clock watermark; replay only those
@@ -1189,6 +1253,22 @@ class TaskEvaluator(Node):
             self.training_ack_deadline_wall = time.monotonic() + self.training_ack_wall_guard_sec
         return False
 
+    def publish_task_terminal_notice(self):
+        """Publish only the frozen scalar task terminal, independent of file I/O."""
+        if (not getattr(self, "training_reward_enabled", False) or not self.finalized
+                or self.start_sim_time is None or self.task_terminal_notice_published
+                or self.training_external_cut is not None):
+            return
+        result = self.final_result
+        reason = result["termination_reason"]
+        if reason not in TASK_FAILURE_REASONS and reason != "coverage_reached":
+            return
+        self.task_terminal_publisher.publish(String(data=json.dumps({
+            "epoch": self.episode_id, "end_sim_time_sec": result["end_sim_time_sec"],
+            "termination_reason": reason,
+        }, sort_keys=True, allow_nan=False)))
+        self.task_terminal_notice_published = True
+
     def finalize(self, termination_reason):
         if self.finalized:
             return
@@ -1199,7 +1279,7 @@ class TaskEvaluator(Node):
                 termination_reason = "no_data"
             elapsed = 0.0
         else:
-            elapsed = max(0.0, end_time - self.start_sim_time)
+            elapsed = max(0.0, elapsed_ns(self.start_sim_time, end_time) / 1e9)
         if self.task_contract and self.start_sim_time is not None and elapsed >= self.max_duration:
             termination_reason = "timeout"
         contact_summary = self.contact_monitor.summary(end_time) if self.task_contract else None
@@ -1336,6 +1416,7 @@ class TaskEvaluator(Node):
                 "map_contract_failure": self.map_contract_failure,
             })
         self.final_result = result
+        self.publish_task_terminal_notice()
         self._write_outputs(result)
 
     def _write_outputs(self, result):

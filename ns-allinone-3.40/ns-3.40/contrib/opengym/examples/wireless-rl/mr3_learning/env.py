@@ -57,6 +57,7 @@ class MR3Env(gym.Env):
         self.action_space = gym.spaces.Discrete(1000)
         self.render_mode = None
         self._snapshot = None
+        self._watermarks = None
         self._epoch = None
         self._episode_done = True
         self._closed = False
@@ -69,7 +70,47 @@ class MR3Env(gym.Env):
             raise ValueError("max_steps must be a positive integer or None")
         return value
 
-    def _unpack(self, payload, *, resetting=False):
+    def _validate_reused_terminal(self, payload, info, requested_action):
+        """A late terminal at the saved boundary submits no new action or tick."""
+        snapshot = payload["snapshot"]
+        diagnostic = info.get("reward_diagnostics", {})
+        if not isinstance(diagnostic, dict):
+            raise ValueError("reused terminal observation requires reward diagnostics")
+        if (payload["terminated"] is not True or payload["truncated"] is not False
+                or snapshot != self._snapshot or info.get("dt") != 0.
+                or info.get("physical_dt") != 0. or info.get("action_submitted") is not False
+                or "command" not in info or info["command"] is not None
+                or type(info.get("requested_action")) is not int
+                or info["requested_action"] != requested_action
+                or info.get("epoch") != self._epoch
+                or not isinstance(info.get("watermarks"), dict)
+                or info["watermarks"] != self._watermarks
+                or diagnostic.get("epoch") != self._epoch
+                or type(diagnostic.get("sequence")) is not int
+                or diagnostic["sequence"] != self._steps + 1
+                or diagnostic.get("terminated") is not True
+                or diagnostic.get("truncated") is not False
+                or diagnostic.get("map_pairing_scope") !=
+                "terminal_evaluator_frozen_before_drain"
+                or type(diagnostic.get("new_correct_free_cells")) is not int
+                or diagnostic["new_correct_free_cells"] != 0
+                or not isinstance(diagnostic.get("reward_terms"), dict)
+                or type(diagnostic["reward_terms"].get("coverage")) not in (int, float)
+                or diagnostic["reward_terms"]["coverage"] != 0.
+                or diagnostic.get("reward") != payload["reward"]
+                or not isinstance(diagnostic.get("reason"), str) or not diagnostic["reason"]
+                or info.get("reason") != diagnostic["reason"]):
+            raise ValueError("reused terminal observation lacks zero-duration/no-action proof")
+        boundary_ns = round(snapshot["source_stamp"] * 10**9)
+        times = [diagnostic.get(key) for key in
+                 ("step_start", "effective_step_end", "requested_step_end")]
+        if (any(type(value) not in (int, float) or not math.isfinite(value)
+                or round(value * 10**9) != boundary_ns for value in times)
+                or type(diagnostic.get("delta_sim_time")) not in (int, float)
+                or diagnostic["delta_sim_time"] != 0.):
+            raise ValueError("reused terminal reward must end at the unchanged physical boundary")
+
+    def _unpack(self, payload, *, resetting=False, requested_action=None):
         if not isinstance(payload, dict):
             raise ValueError("supervisor must return an explicit transition payload")
         snapshot = payload["snapshot"]
@@ -90,16 +131,21 @@ class MR3Env(gym.Env):
         epoch = snapshot.get("epoch")
         if not isinstance(epoch, str) or not epoch:
             raise ValueError("every episode requires a nonempty epoch")
-        if not resetting:
-            if epoch != self._epoch:
-                raise ValueError("cross-epoch transition")
-            if snapshot["sequence"] <= self._snapshot["sequence"]:
-                raise ValueError("a transition cannot reuse an old observation sequence")
-            if snapshot["source_stamp"] < self._snapshot["source_stamp"]:
-                raise ValueError("simulation time rewound within an episode")
         info = _safe_info(payload["info"])
         if not isinstance(info, dict):
             raise ValueError("transition info must be a dictionary")
+        reused = info.get("terminal_observation_reused", False)
+        if type(reused) is not bool or (resetting and reused):
+            raise ValueError("invalid terminal observation reuse flag")
+        if not resetting:
+            if epoch != self._epoch:
+                raise ValueError("cross-epoch transition")
+            if reused:
+                self._validate_reused_terminal(payload, info, requested_action)
+            elif snapshot["sequence"] <= self._snapshot["sequence"]:
+                raise ValueError("a transition cannot reuse an old observation sequence")
+            if snapshot["source_stamp"] < self._snapshot["source_stamp"]:
+                raise ValueError("simulation time rewound within an episode")
         dt = info.get("dt")
         if (isinstance(dt, bool) or not isinstance(dt, (int, float))
                 or not math.isfinite(dt)):
@@ -114,9 +160,11 @@ class MR3Env(gym.Env):
                     or not math.isfinite(declared)
                     or not math.isclose(declared, physical_dt, abs_tol=1e-6)):
                 raise ValueError("physical_dt must match the two captured simulation boundaries")
-            if not 0 < physical_dt <= 1.0 + 1e-6 or not 0 <= dt <= physical_dt + 1e-6:
+            if reused:
+                pass  # The exact zero-duration/no-action terminal proof was checked above.
+            elif not 0 < physical_dt <= 1.0 + 1e-6 or not 0 <= dt <= physical_dt + 1e-6:
                 raise ValueError("simulation durations are outside the fixed-step contract")
-            if terminated:
+            elif terminated:
                 if physical_dt - dt > 0.020001:
                     raise ValueError("terminal detection lag exceeded one 20ms quantum")
             elif not (math.isclose(physical_dt, 1.0, abs_tol=1e-6)
@@ -129,6 +177,7 @@ class MR3Env(gym.Env):
             "tensor_schema": TENSOR_SCHEMA,
         })
         self._snapshot = copy.deepcopy(snapshot)
+        self._watermarks = copy.deepcopy(info.get("watermarks"))
         self._epoch = epoch
         self._episode_done = terminated or truncated
         return observation, float(reward), terminated, truncated, info
@@ -151,6 +200,7 @@ class MR3Env(gym.Env):
         previous_epoch = self._epoch
         self._episode_done = True
         self._snapshot = None
+        self._watermarks = None
         self._steps = 0
         payload = self.supervisor.reset(scene=scene, seed=episode_seed)
         if previous_epoch is not None and payload["snapshot"].get("epoch") == previous_epoch:
@@ -169,7 +219,7 @@ class MR3Env(gym.Env):
             external = "external_sampler_limit"
         self._episode_done = True  # A failed IPC/encoding call cannot be reused.
         payload = self.supervisor.step(int(action), external_truncation=external)
-        result = self._unpack(payload)
+        result = self._unpack(payload, requested_action=int(action))
         self._steps += 1
         return result
 

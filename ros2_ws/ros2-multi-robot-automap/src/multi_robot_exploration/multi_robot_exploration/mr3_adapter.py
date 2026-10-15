@@ -28,6 +28,9 @@ from multi_robot_exploration.mr3_observation import build_snapshot
 from multi_robot_exploration.mr3_information import map_digest
 from multi_robot_exploration.mr3_owner import acquire_navigation_owner
 from multi_robot_exploration.mr3_protocol import GoalDispatcher
+from multi_robot_exploration.mr3_episode import (
+    TASK_DURATION_NS, TASK_FAILURE_REASONS, elapsed_ns, timestamp_ns,
+)
 from multi_robot_exploration.mr3_transport import IdealTransport, ReceivedStore
 
 
@@ -51,6 +54,8 @@ class MR3Adapter(Node):
         self.map_metadata = None
         self.last_snapshot_target_ns = None
         self.initial_inputs_ready = False
+        self.task_terminal_notice = None
+        self.pending_task_terminal_notice = None
         self.require_monitor = self.declare_parameter("require_task_monitor_ready", False).value
         self.monitor_ready = not self.require_monitor
         audit_path = self.declare_parameter("audit_path", "").value
@@ -111,6 +116,8 @@ class MR3Adapter(Node):
             self.create_subscription(
                 String, "/mr3/map_metadata", self.receive_map_metadata, task_qos),
             self.create_subscription(Bool, "/task_monitor_ready", self.receive_ready, task_qos),
+            self.create_subscription(
+                String, "/mr3/task_terminal", self.receive_task_terminal, task_qos),
             self.create_subscription(
                 Header, "/exploration_stop_request", self.receive_stop, task_qos),
             self.create_subscription(
@@ -197,8 +204,7 @@ class MR3Adapter(Node):
                 self.map_metadata is not None
                 and self.map_metadata.get("map_payload_sha256") == expected
                 and self.map_digest == expected)
-            if map_matches and (self.state["sequence"] > minimum
-                                or self.terminal_snapshot_allowed()):
+            if map_matches and self.state["sequence"] > minimum:
                 self.publish_observation()
                 if self.encoding is not None:
                     self.encoding_request = {
@@ -211,7 +217,9 @@ class MR3Adapter(Node):
     def terminal_snapshot_allowed(self):
         request = getattr(self, "pending_snapshot", None)
         return bool(request and request.get("allow_terminal") is True
-                    and self.stop_requested and self.started_at is not None)
+                    and self.started_at is not None and self.task_terminal_notice is not None
+                    and timestamp_ns(self.task_terminal_notice["end_sim_time_sec"])
+                    <= self.get_clock().now().nanoseconds)
 
     def respond_snapshot(self, request, snapshot=None, error=None):
         response = {"epoch": self.epoch, "request_id": request["request_id"],
@@ -285,6 +293,44 @@ class MR3Adapter(Node):
 
     def receive_ready(self, message):
         self.monitor_ready = bool(message.data)
+
+    def receive_task_terminal(self, message):
+        """Accept only the isolated evaluator's epoch-bound, scalar terminal."""
+        try:
+            notice = json.loads(message.data)
+            if not isinstance(notice, dict) or set(notice) != {
+                    "epoch", "end_sim_time_sec", "termination_reason"}:
+                raise ValueError("invalid_task_terminal_fields")
+            if not self.stepped_mode or notice["epoch"] != self.epoch:
+                return
+            if self.started_at is None:
+                raise ValueError("task_terminal_before_release")
+            if (notice["termination_reason"] not in TASK_FAILURE_REASONS
+                    and notice["termination_reason"] != "coverage_reached"):
+                raise ValueError("invalid_task_terminal_reason")
+            if timestamp_ns(notice["end_sim_time_sec"]) < timestamp_ns(self.started_at):
+                raise ValueError("task_terminal_precedes_release")
+            previous = self.task_terminal_notice or self.pending_task_terminal_notice
+            if previous is not None:
+                if previous != notice:
+                    raise ValueError("conflicting_task_terminal")
+                return
+            self.pending_task_terminal_notice = notice
+            self.record("task_terminal_received", notice)
+            self.poll_task_terminal()
+        except (ValueError, TypeError, KeyError) as error:
+            self.record("invalid_task_terminal", {"reason": str(error)})
+
+    def poll_task_terminal(self):
+        notice = self.pending_task_terminal_notice
+        if (notice is None or self.started_at is None
+                or timestamp_ns(notice["end_sim_time_sec"]) > self.get_clock().now().nanoseconds):
+            return
+        self.pending_task_terminal_notice = None
+        self.task_terminal_notice = notice
+        self.stop_requested = True
+        self.dispatcher.safety_stop(self.now(), "task_terminal:" + notice["termination_reason"])
+        self.record("task_terminal", notice)
 
     def receive_stop(self, message):
         stamp = message.stamp.sec + message.stamp.nanosec / 1e9
@@ -364,6 +410,8 @@ class MR3Adapter(Node):
             } for name in ROBOTS},
             "monitor_ready": self.monitor_ready, "started_at": self.started_at,
             "stop_requested": self.stop_requested,
+            "task_terminal_notice": self.task_terminal_notice,
+            "pending_task_terminal_notice": self.pending_task_terminal_notice,
             "navigation_servers_ready": {name: client.server_is_ready()
                                          for name, client in self.navigation_clients.items()},
         }
@@ -464,7 +512,8 @@ class MR3Adapter(Node):
         try:
             command = json.loads(message.data)
             now = self.now()
-            if self.started_at is not None and now - self.started_at >= 300.:
+            if (self.started_at is not None
+                    and elapsed_ns(self.started_at, now) >= TASK_DURATION_NS):
                 self.stop_requested = True
                 self.dispatcher.safety_stop(now, "task_deadline")
                 raise ValueError("task_deadline")
@@ -586,12 +635,13 @@ class MR3Adapter(Node):
 
     def maintain(self):
         now = self.now()
+        self.poll_task_terminal()
         self.publish_initial_inputs_ready(now)
         self.finish_observation()
         self.poll_snapshot()
         if self.started_at is None:
             return
-        if now - self.started_at >= 300. and not self.stop_requested:
+        if elapsed_ns(self.started_at, now) >= TASK_DURATION_NS and not self.stop_requested:
             self.stop_requested = True
             self.dispatcher.safety_stop(now, "task_deadline")
         if self.pending_stop is not None:

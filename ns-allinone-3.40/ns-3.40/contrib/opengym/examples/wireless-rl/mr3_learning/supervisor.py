@@ -124,7 +124,9 @@ class Supervisor:
 
     def __init__(self, *, run_id=None, worker_id=0, domain_id=120, gazebo_port=12001,
                  output_root=None, startup_timeout=420., request_timeout=90.,
-                 quantum_steps=20):
+                 quantum_steps=20, terminal_probe=False):
+        if type(terminal_probe) is not bool:
+            raise ValueError("terminal_probe must be a boolean")
         self.run_id = run_id or (datetime.now(timezone.utc).strftime("mr3_%Y%m%d_%H%M%S_")
                                  + uuid.uuid4().hex[:8])
         allowed = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
@@ -150,6 +152,7 @@ class Supervisor:
         self.startup_timeout = float(startup_timeout)
         self.request_timeout = float(request_timeout)
         self.quantum_steps = quantum_steps
+        self.terminal_probe = terminal_probe
         self.episode_number = 0
         self.request_number = 0
         self.episode = None
@@ -213,12 +216,14 @@ class Supervisor:
                     "worker_id": self.worker_id, "worker_identity": identity,
                     "domain_id": self.domain_id, "gazebo_port": self.gazebo_port,
                     "command": command, "reset_kind": "complete_process_rebuild",
+                    "terminal_probe": self.terminal_probe,
                     "startup_wall_guard_sec": self.startup_timeout,
                     "request_wall_guard_sec": self.request_timeout}
         (directory / "supervisor_metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
         try:
             result = self._rpc("reset", timeout=self.startup_timeout, scene=scene, seed=seed,
-                               quantum_steps=self.quantum_steps)
+                               quantum_steps=self.quantum_steps,
+                               terminal_probe=self.terminal_probe)
             if result["snapshot"]["epoch"] != epoch:
                 raise InfrastructureError("reset returned a previous episode snapshot")
             self.last_result = result
@@ -255,6 +260,23 @@ class Supervisor:
         except Exception:
             self._cleanup(failed=True)
             raise
+
+    def _terminal_probe_rpc(self, operation):
+        if (not self.terminal_probe or self.episode is None or self.last_result is None
+                or self.last_result.get("terminated") or self.last_result.get("truncated")):
+            raise RuntimeError("terminal probe requires an enabled active episode")
+        if (self.episode.process.poll() is not None
+                or not identity_alive(self.episode.identity)):
+            raise InfrastructureError("terminal probe worker identity is no longer live")
+        return self._rpc(operation)
+
+    def arm_failure_probe(self):
+        """Diagnostic only; preserve the last real sampled transition."""
+        return self._terminal_probe_rpc("arm_failure_probe")
+
+    def trigger_failure_probe(self):
+        """Diagnostic only; preserve the last real sampled transition."""
+        return self._terminal_probe_rpc("trigger_failure_probe")
 
     def _cleanup(self, failed=False):
         episode = self.episode

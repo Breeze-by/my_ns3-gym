@@ -39,6 +39,12 @@ class Worker:
             raise ValueError("invalid scene or seed")
         if request.get("quantum_steps") != 20:
             raise ValueError("scheduler requires 20 physical ticks per quantum")
+        self.terminal_probe = request.get("terminal_probe", False)
+        if type(self.terminal_probe) is not bool:
+            raise ValueError("terminal_probe must be a boolean")
+        self.probe_armed = False
+        self.probe_number = 0
+        self.task_terminal = None
         self.condition = threading.Condition()
         self.clock_ns = 0
         self.monitor_ready = False
@@ -87,6 +93,8 @@ class Worker:
         self.action_pub = self.node.create_publisher(String, "/mr3/action", 10)
         self.reward_pub = self.node.create_publisher(String, "/mr3/reward_request", 10)
         self.finalize_pub = self.node.create_publisher(String, "/mr3/training_finalize", 10)
+        self.probe_pub = (self.node.create_publisher(String, "/mr3/diagnostic_failure", 10)
+                          if self.terminal_probe else None)
         self.stop_pub = self.node.create_publisher(Header, "/exploration_stop_request", qos)
 
         def callback(function):
@@ -144,6 +152,11 @@ class Worker:
             if value:
                 self.receive_initial_inputs(value)
 
+        def task_terminal(message):
+            value = message_json(message)
+            if value:
+                self.receive_terminal(value)
+
         def clock(message):
             self.clock_ns = message.clock.sec * 10**9 + message.clock.nanosec
 
@@ -167,6 +180,8 @@ class Worker:
             self.node.create_subscription(String, "/mr3/reward_ready", callback(ready), qos),
             self.node.create_subscription(String, "/mr3/initial_inputs_ready",
                                           callback(initial_inputs), qos),
+            self.node.create_subscription(String, "/mr3/task_terminal",
+                                          callback(task_terminal), qos),
             self.node.create_subscription(String, "/mr3/events", callback(event), 100),
             self.node.create_subscription(String, "/exploration_stopped", callback(stopped), qos),
             self.node.create_subscription(String, "/exploration_failure", callback(failure), qos),
@@ -194,6 +209,8 @@ class Worker:
                 ROS_ROOT / f"src/multi_robot/config/mr3_p1a/{self.scene}.json"),
             f"evaluation_episode_id:={self.epoch}", f"evaluation_output_dir:={directory}",
         ]
+        if self.terminal_probe:
+            self.command.append("training_terminal_probe:=true")
         metadata = {"schema": "mr3-p1c-worker-v1", "epoch": self.epoch,
                     "scene": self.scene, "seed": self.seed, "command": self.command,
                     "freeze": subprocess.check_output(
@@ -203,6 +220,8 @@ class Worker:
                         "ROS_DOMAIN_ID", "GAZEBO_MASTER_URI", "PYTHONNOUSERSITE")},
                     "python": sys.executable, "quantum_steps": 20,
                     "reset_handshake": "delivered_inputs_before_pause-v1",
+                    "terminal_protocol": "mr3-task-terminal-v1",
+                    "terminal_probe": self.terminal_probe,
                     "physical_step_ns": 1000000, "policy_step_ns": 1000000000,
                     "startup_wall_guard_sec": 420., "closure_wall_guard_sec": 90.}
         (directory / "metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
@@ -267,9 +286,6 @@ class Worker:
         if drained.get("ok") is not True:
             raise RuntimeError("information pipeline failed to drain: " + json.dumps(drained))
         minimum_state_sequence = drained["state_sequence"] - 1
-        if not allow_terminal:
-            minimum_state_sequence = max(
-                minimum_state_sequence, self.watermarks.get("state_sequence", -1))
         payload = {"epoch": self.epoch, "request_id": request_id,
                    "target_time_ns": self.physical_ns, "allow_terminal": allow_terminal,
                    "expected_map_sha256": drained["map_payload_sha256"],
@@ -305,9 +321,54 @@ class Worker:
             self.reward_number = sequence
         return response
 
+    def receive_terminal(self, value):
+        """Only the isolated evaluator may announce the frozen task boundary."""
+        if value.get("epoch") != self.epoch:
+            return
+        end = value.get("end_sim_time_sec")
+        reason = value.get("termination_reason")
+        if (set(value) != {"epoch", "end_sim_time_sec", "termination_reason"}
+                or type(end) not in (int, float) or not math.isfinite(end) or end < 0
+                or not isinstance(reason, str) or not reason
+                or reason in ("training_external_truncation", "shutdown", "no_data")):
+            raise ValueError("invalid evaluator terminal notice")
+        if self.task_terminal is not None and self.task_terminal != value:
+            raise ValueError("evaluator terminal boundary changed")
+        self.task_terminal = value
+
     def _evaluation(self):
-        path = self.directory / (self.epoch + ".json")
-        return json.loads(path.read_text()) if path.exists() else None
+        notice = self.task_terminal
+        if (notice is not None
+                and round(notice["end_sim_time_sec"] * 1e9)
+                <= min(getattr(self, "physical_ns", -1), self.clock_ns)):
+            return notice
+        return None
+
+    def arm_failure_probe(self):
+        if not self.terminal_probe or self.finished or self.snapshot is None or self.probe_armed:
+            raise ValueError("failure probe is disabled, unavailable or already armed")
+        self.probe_armed = True
+        return {"epoch": self.epoch, "armed": True}
+
+    def trigger_failure_probe(self):
+        if not self.terminal_probe or self.finished or self.snapshot is None or self._evaluation():
+            raise ValueError("failure probe is disabled or unavailable")
+        self.probe_number += 1
+        request = {"epoch": self.epoch, "request_id": f"failure{self.probe_number}",
+                   "target_time_ns": self.physical_ns, "reason": "P1C_DIAGNOSTIC_FAILURE"}
+        path = self.directory / "diagnostic_failure.jsonl"
+        with path.open("a") as output:
+            output.write(json.dumps({"kind": "sent", **request}) + "\n")
+        self._publish(self.probe_pub, request)
+        self._wait(lambda: self._evaluation() is not None, 30.,
+                   "diagnostic failure did not produce a causal evaluator terminal")
+        notice = self._evaluation()
+        if (round(notice["end_sim_time_sec"] * 1e9) != self.physical_ns
+                or notice["termination_reason"] != "navigation_failure"):
+            raise RuntimeError("diagnostic failure did not freeze at the requested clock")
+        with path.open("a") as output:
+            output.write(json.dumps({"kind": "terminal_received", **notice}) + "\n")
+        return notice
 
     def receive_initial_inputs(self, value):
         """A node appearing in the graph does not prove its inputs were delivered."""
@@ -392,6 +453,28 @@ class Worker:
             raise ValueError("invalid discrete action")
         started_wall = time.monotonic()
         start_ns = self.physical_ns
+        terminal = self._evaluation()
+        if terminal is not None:
+            if round(terminal["end_sim_time_sec"] * 1e9) != start_ns:
+                raise RuntimeError("late task terminal predates the last returned sample boundary")
+            response = self._reward(start_ns / 1e9, start_ns / 1e9,
+                                    truncation=external_truncation)
+            if not response["terminated"] or response["truncated"]:
+                raise RuntimeError("existing task terminal was not settled as terminated")
+            if round(response.get("effective_step_end", -1.) * 1e9) != start_ns:
+                raise RuntimeError("existing task terminal changed the settled sample boundary")
+            result = {"snapshot": self.snapshot, "reward": response["reward"],
+                      "terminated": True, "truncated": False, "info": {
+                          "epoch": self.epoch, "dt": 0., "physical_dt": 0.,
+                          "step_wall_sec": time.monotonic() - started_wall,
+                          "reason": response.get("reason"), "reward_diagnostics": response,
+                          "watermarks": self.watermarks, "command": None,
+                          "terminal_observation_reused": True, "action_submitted": False,
+                          "requested_action": action, "bootstrap": 0}}
+            self.transition_file.write(json.dumps({"kind": "step", **result}, sort_keys=True)
+                                       + "\n")
+            self.shutdown_episode("task_terminal")
+            return result
         self.command_number += 1
         command = {"epoch": self.epoch, "command_id": self.command_number,
                    "observation_sequence": self.snapshot["sequence"],
@@ -408,11 +491,21 @@ class Worker:
                        for row in self.events[event_index:])
 
         self._wait(action_accounted, 10., "adapter did not account for the explicit action")
-        terminal = self._evaluation()
-        while self.physical_ns < start_ns + 10**9 and terminal is None:
+        # A submitted action advances to at least the next real quantum boundary.
+        # A terminal that arrives during its acknowledgement can therefore have
+        # zero effective reward time and up to 20ms of honest physical lag.
+        terminal = None
+        while self.physical_ns < start_ns + 10**9:
             self._physics(20)
+            if self.probe_armed:
+                self.probe_armed = False
+                self.trigger_failure_probe()
             terminal = self._evaluation()
-        self._snapshot(allow_terminal=terminal is not None)
+            if terminal is not None:
+                break
+        # Permission alone never enables stale input: the adapter additionally
+        # requires the evaluator's matching, causally arrived terminal notice.
+        self._snapshot(allow_terminal=True)
         response = self._reward(start_ns / 1e9, self.physical_ns / 1e9,
                                 truncation=external_truncation)
         terminated = bool(response["terminated"])
@@ -422,9 +515,10 @@ class Worker:
         if not terminated and self.physical_ns - start_ns != 10**9:
             raise RuntimeError("nonterminal policy transition is not exactly one physical second")
         effective_end = response.get("effective_step_end", self.physical_ns / 1e9)
+        effective_dt = (round(effective_end * 1e9) - start_ns) / 1e9
         result = {"snapshot": self.snapshot, "reward": response["reward"],
                   "terminated": terminated, "truncated": truncated, "info": {
-                      "epoch": self.epoch, "dt": effective_end - start_ns / 1e9,
+                      "epoch": self.epoch, "dt": effective_dt,
                       "physical_dt": (self.physical_ns - start_ns) / 1e9,
                       "step_wall_sec": time.monotonic() - started_wall,
                       "reason": response.get("reason"), "reward_diagnostics": response,
@@ -537,6 +631,10 @@ def main():
                 result = worker.step(request["action"], request.get("external_truncation"))
             elif request["op"] == "truncate" and worker:
                 result = worker.truncate(request["reason"])
+            elif request["op"] == "arm_failure_probe" and worker:
+                result = worker.arm_failure_probe()
+            elif request["op"] == "trigger_failure_probe" and worker:
+                result = worker.trigger_failure_probe()
             elif request["op"] == "close" and worker:
                 result = worker.close()
             else:

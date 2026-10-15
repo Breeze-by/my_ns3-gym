@@ -97,6 +97,7 @@ def make_adapter(started=True):
         encoder=SimpleNamespace(submit=encode), encoding=None,
         stepped_mode=False, pending_snapshot=None, encoding_request=None, map_metadata=None,
         initial_inputs_ready=False,
+        task_terminal_notice=None, pending_task_terminal_notice=None,
         initial_inputs_ready_pub=SimpleNamespace(publish=lambda msg: None),
         snapshot_responses={}, snapshot_timeout_sec=10., last_snapshot_target_ns=None,
         snapshot_response_pub=SimpleNamespace(publish=lambda msg: None),
@@ -446,6 +447,33 @@ def test_real_ros_adapter_constructs_and_releases_owner(monkeypatch):
         if node is not None:
             node.destroy_node()
         rclpy.shutdown()
+
+
+def test_scalar_task_terminal_requests_real_cancel_and_keeps_goal_owner_until_result():
+    node, clock = make_adapter()
+    node.stepped_mode = True
+    goal_id, handle = accepted_goal(node, clock)
+    notice = message({"epoch": node.epoch, "end_sim_time_sec": clock[0],
+                      "termination_reason": "collision"})
+    node.receive_task_terminal(notice)
+    assert node.stop_requested and node.dispatcher.stopped
+    assert node.dispatcher.navigation()["tb1"]["goal_id"] == goal_id
+    node.maintain()
+    assert handle.cancel_calls == 1 and not node.dispatcher.closed
+    node.receive_task_terminal(notice)
+    node.maintain()
+    assert handle.cancel_calls == 1  # Repeated reliable notice cannot recancel the same owner.
+    assert sum(kind == "task_terminal" for kind, _ in node.test_records) == 1
+
+
+def test_adapter_deadline_uses_physical_nanoseconds_for_late_initial_clock_phase():
+    node, clock = make_adapter()
+    node.started_at = 212.06
+    clock[0] = 512.06
+    node.state = state(clock[0])
+    assert clock[0] - node.started_at < 300.  # Binary floats straddle the exact task deadline.
+    node.maintain()
+    assert node.stop_requested and node.dispatcher.stopped
 
 
 def test_encoding_in_flight_does_not_block_received_state_or_lease_service():

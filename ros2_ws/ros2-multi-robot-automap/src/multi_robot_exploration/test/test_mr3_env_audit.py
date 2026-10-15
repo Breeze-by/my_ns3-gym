@@ -87,6 +87,40 @@ def transitions():
     return rows
 
 
+def terminal_samples(*, reused):
+    """Two actual commands then either a late notice or a new 20ms snapshot."""
+    samples = transitions()
+    last = samples[-1]
+    last.update(terminated=False, truncated=False)
+    last["info"]["reason"] = None
+    last["info"]["reward_diagnostics"].update(terminated=False, truncated=False)
+    if reused:
+        last = copy.deepcopy(last)
+        samples.append(last)
+        boundary = last["snapshot"]["source_stamp"]
+        last["info"].update(terminal_observation_reused=True, action_submitted=False,
+                            requested_action=888, command=None, dt=0., physical_dt=0.)
+        sequence, start, dt = 3, boundary, 0.
+    else:
+        start, dt, sequence = 11., .02, 2
+        boundary = start + dt
+        last["snapshot"]["source_stamp"] = boundary
+        last["snapshot"]["digest"] = AUDIT.canonical_digest(
+            {key: value for key, value in last["snapshot"].items() if key != "digest"})
+        # No new 10Hz state arrives during this actual 20ms interval.
+        last["info"]["watermarks"]["state_sequence"] = 2
+        last["info"].update(dt=dt, physical_dt=dt)
+    last.update(terminated=True, truncated=False, reward=-20.)
+    last["info"]["reason"] = "navigation_failure"
+    last["info"]["reward_diagnostics"].update(
+        sequence=sequence, reward=-20., terminated=True, truncated=False,
+        reason="navigation_failure", step_start=start, effective_step_end=boundary,
+        requested_step_end=boundary, delta_sim_time=dt, new_correct_free_cells=0,
+        reward_terms={"coverage": 0., "failure": -20.},
+        map_pairing_scope="terminal_evaluator_frozen_before_drain")
+    return samples
+
+
 def adapter_rows(samples):
     rows = []
 
@@ -260,6 +294,122 @@ def add_initial_inputs_handshake(directory, change=None, omit_record=False):
 
 
 class AuditEvidenceTests(unittest.TestCase):
+    def test_late_terminal_replays_exact_snapshot_without_fabricating_a_command(self):
+        samples = terminal_samples(reused=True)
+        detail = AUDIT.audit_transitions(samples, physics(), EPOCH)
+        self.assertEqual(detail["zero_duration_terminal_count"], 1)
+        self.assertEqual(detail["submitted_action_count"], 2)
+        rows = adapter_rows(transitions())
+        result = AUDIT.audit_protocol(rows, samples, EPOCH)
+        self.assertEqual(result["accepted_action_count"], 2)
+        invented = copy.deepcopy(next(row for row in rows if row["kind"] == "action"))
+        invented["stamp"] = 12.
+        invented["payload"]["command_id"] = 3
+        rows.append(invented)
+        rows.sort(key=lambda row: row["stamp"])
+        with self.assertRaisesRegex(ValueError, "lacks sampled command"):
+            AUDIT.audit_protocol(rows, samples, EPOCH)
+
+    def test_zero_terminal_rejects_refreshed_delivery_changed_snapshot_or_action(self):
+        variants = (
+            ("new_delivery", lambda row: row["info"]["watermarks"].update(state_sequence=4)),
+            ("new_action", lambda row: row["info"].update(action_submitted=True)),
+            ("command", lambda row: row["info"].update(command={"action": 888})),
+            ("nonterminal", lambda row: row.update(terminated=False)),
+            ("old_reward_end", lambda row: row["info"]["reward_diagnostics"].update(
+                effective_step_end=12. - 1e-9)),
+            ("nonzero_dt", lambda row: row["info"].update(dt=.001)),
+            ("wrong_requested_type", lambda row: row["info"].update(requested_action=True)),
+            ("coverage_reward", lambda row: row["info"]["reward_diagnostics"][
+                "reward_terms"].update(coverage=1.)),
+            ("new_correct_cells", lambda row: row["info"]["reward_diagnostics"].update(
+                new_correct_free_cells=1)),
+        )
+        for label, change in variants:
+            with self.subTest(case=label):
+                samples = terminal_samples(reused=True)
+                change(samples[-1])
+                with self.assertRaises(ValueError):
+                    AUDIT.audit_transitions(samples, physics(), EPOCH)
+        samples = terminal_samples(reused=True)
+        samples[-1]["snapshot"]["robots"][0]["x"] = 1.
+        samples[-1]["snapshot"]["digest"] = AUDIT.canonical_digest({
+            key: value for key, value in samples[-1]["snapshot"].items() if key != "digest"})
+        with self.assertRaisesRegex(ValueError, "unchanged-snapshot"):
+            AUDIT.audit_transitions(samples, physics(), EPOCH)
+
+    def test_real_short_terminal_uses_new_snapshot_but_may_keep_last_10hz_state(self):
+        samples = terminal_samples(reused=False)
+        detail = AUDIT.audit_transitions(samples, physics(), EPOCH)
+        self.assertEqual(detail["zero_duration_terminal_count"], 0)
+        self.assertEqual(detail["submitted_action_count"], 2)
+        self.assertEqual(detail["final_physical_dt"], .02)
+        samples[-1]["terminated"] = False
+        samples[-1]["truncated"] = True
+        samples[-1]["info"]["reward_diagnostics"].update(terminated=False, truncated=True)
+        with self.assertRaisesRegex(ValueError, "state delivery sequence"):
+            AUDIT.audit_transitions(samples, physics(), EPOCH)
+        samples = terminal_samples(reused=False)
+        samples[-1]["snapshot"] = copy.deepcopy(samples[-2]["snapshot"])
+        with self.assertRaisesRegex(ValueError, "state delivery sequence|observation sequence"):
+            AUDIT.audit_transitions(samples, physics(), EPOCH)
+
+    def test_terminal_probe_tail_accounting_is_separate_from_normal_comparison(self):
+        for index, reused in enumerate((False, True)):
+            detail = AUDIT.audit_transitions(terminal_samples(reused=reused), physics(), EPOCH)
+            # The native declaration uses three complete initial steps, then its
+            # fourth tail; this local fixture isolates the tail and adds counts.
+            detail.update(transition_count=4, submitted_action_count=4 - int(reused))
+            cell = {"terminal_sample": {
+                "dt": detail["final_dt"], "physical_dt": detail["final_physical_dt"],
+                "terminal_observation_reused": reused, "action_submitted": not reused}}
+            result = AUDIT.audit_terminal_probe_cell(detail, cell, index, True)
+            self.assertFalse(result["normal_comparison_credit"])
+            for field, value in (("final_physical_dt", .04),
+                                 ("final_action_submitted", reused),
+                                 ("submitted_action_count", 5)):
+                tampered = {**detail, field: value}
+                with self.subTest(index=index, field=field), self.assertRaises(ValueError):
+                    AUDIT.audit_terminal_probe_cell(tampered, cell, index, True)
+        metadata = {"terminal_probe": True, "schedule": [["open", 101]] * 2}
+        self.assertFalse(AUDIT.comparison_statistics(metadata, {})["eligible"])
+
+    def test_terminal_probe_requires_independent_exact_boundary_and_diagnostic_reason(self):
+        samples = terminal_samples(reused=False)
+        stamp = samples[-1]["snapshot"]["source_stamp"]
+        target = AUDIT.nanoseconds(stamp)
+        notice = {"epoch": EPOCH, "end_sim_time_sec": stamp,
+                  "termination_reason": "navigation_failure"}
+        records = [{"kind": "sent", "epoch": EPOCH, "request_id": "failure1",
+                    "target_time_ns": target, "reason": "P1C_DIAGNOSTIC_FAILURE"},
+                   {"kind": "terminal_received", **notice}]
+        adapter = [{"kind": kind, "epoch": EPOCH, "stamp": stamp, "payload": notice}
+                   for kind in ("task_terminal_received", "task_terminal")]
+        evaluator = {**notice, "control_failure": "P1C_DIAGNOSTIC_FAILURE"}
+        proof = AUDIT.audit_terminal_probe_events(records, adapter, samples, evaluator, EPOCH)
+        self.assertEqual(proof["target_time_ns"], target)
+        cases = ("request_epoch", "target_ns", "missing_adapter", "wrong_adapter",
+                 "missing_evaluator_failure", "wrong_terminal_time")
+        for case in cases:
+            with self.subTest(case=case):
+                trial_records, trial_adapter, trial_evaluator = copy.deepcopy(
+                    (records, adapter, evaluator))
+                if case == "request_epoch":
+                    trial_records[0]["epoch"] = "foreign"
+                elif case == "target_ns":
+                    trial_records[0]["target_time_ns"] += 1
+                elif case == "missing_adapter":
+                    trial_adapter.pop()
+                elif case == "wrong_adapter":
+                    trial_adapter[0]["payload"]["epoch"] = "foreign"
+                elif case == "missing_evaluator_failure":
+                    trial_evaluator.pop("control_failure")
+                else:
+                    trial_records[1]["end_sim_time_sec"] += 1e-9
+                with self.assertRaises(ValueError):
+                    AUDIT.audit_terminal_probe_events(
+                        trial_records, trial_adapter, samples, trial_evaluator, EPOCH)
+
     def test_complete_sampling_episode_is_not_a_task_success_claim(self):
         with tempfile.TemporaryDirectory() as name:
             directory = Path(name)

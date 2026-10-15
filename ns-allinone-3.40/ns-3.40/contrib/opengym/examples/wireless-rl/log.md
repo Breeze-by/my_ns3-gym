@@ -2545,3 +2545,65 @@ v3前瞻计划已写report/assets/20261015_mr3_p1c/predeclared_native_plan_v3.js
 使用窄修auditor对v2workers4另存workers4_v2_failure_audit.json，仍FAIL（两次reset失败/缺少完整episode），不覆盖最初w0e1 FAIL，亦不将局部re-audit等同完整4worker通过。v3原生/GPU尚未启动。
 
 v3提交前最终离线验证：同前ROS环境/排除三个style模板，完整550项语义tests/14.58s通过；conda禁用CUDA全36项/3.908s通过。定向修改Python flake8(max100)及diffcheck通过。活动11docs/121locallinks/15bash块、188资产JSON与1125显式本地引用静态有效；未执行文档命令。implementation_checks_v3.json记录source hash与范围；C++未改，GPU模型/encoder/probe与b328一致。尚未启动v3任何原生或额外FB，下一步commit/push。
+
+### P1C v3独立clock开始
+
+源码freeze`864295d35d6d92723f729dc62d2b5f8322773e54`已commit/push。ROS工作区精确命令：
+`rtk proxy bash -c 'source /opt/ros/humble/setup.bash; source install/setup.bash; source /usr/share/gazebo/setup.sh; export TURTLEBOT3_MODEL=waffle PYTHONNOUSERSITE=1; /usr/bin/python3 scripts/check_mr3_step_clock.py --run-id mr3_p1c_v3_clock --ros-domain-id 130 --gazebo-port 12101'`。
+此后所有v3原生阶段均须同freeze；不复用v2 PASS，GPU额外FB预算0。结果另追加。
+
+v3clock PASS8.735070墙秒/19真实回执、server211693/helper212066/stopCLI212179 clean0；精确物理tick/迭代/ns/真实clock一致。原件ROS/log/mr3_step_clock/mr3_p1c_v3_clock，selected native_v3/clock，不提供机器人团队信用。
+
+### P1C v3三机器人pilot（开始）
+
+同freeze864295d，wireless-rl精确命令：
+`rtk proxy bash -c 'source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh; conda activate ns3gym; export PYTHONNOUSERSITE=1; unset PYTHONPATH; python -m mr3_learning.benchmark --workers 1 --schedule open:101 --steps 2 --run-id mr3_p1c_v3_pilot --base-domain 131 --base-port 12111'`。
+结果另追加，未额外GPUFB/训练。
+
+v3pilot PASS151.292018墙秒，2有效transition均dt1s；独立pilot_v3_benchmark_audit.json通过，initial_inputs_ready required/proven=true，readyack在firstpause前、firstsnapshot水位不退、seq0零奖/严格地图配对/真实外截断关闭/18流/无owned残留或zombie。
+
+### P1C v3正式1worker（开始）
+
+同freeze864295d，wireless-rl精确命令：
+`rtk proxy bash -c 'source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh; conda activate ns3gym; export PYTHONNOUSERSITE=1; unset PYTHONPATH; python -m mr3_learning.benchmark --workers 1 --schedule open:101,open:101,rooms:202,corridors:303 --steps 16 --run-id mr3_p1c_v3_workers1 --base-domain 132 --base-port 12121'`。
+固定每worker三台、前两open用于公平比较、额外两scene只reset回归；所有结果另追加。
+
+v3workers1四轮全PASS：总1021.999616墙秒、64有效transition（各1simsec），总有效率.062622333/s；4个完整新epoch正式benchmark audit通过，delivered-ready-before-pause均proven，真实取消/关闭/18源健康零接触/ownedlive与zombie均无。公平首两open101口径{"denominator_scope": "max_worker(sum of first two recorded cell elapsed times)", "denominator_wall_sec": 501.4117611530237, "effective_transition_per_wall_sec": 0.06381980336164085, "eligible": true, "episode_indices": [0, 1], "exact_end_to_end_process_span": false, "excludes": "final Supervisor reap tail and all later serial scene regressions", "final_cleanup_timing_available": false, "final_supervisor_cleanup_wall_sec": null, "includes": "cell startup, next-reset cleanup of prior worker, native goal closure", "per_worker": [{"cell_recorded_wall_sec": 501.4117611530237, "transition_only_rate_per_active_wall_sec": 0.1293697101963589, "transition_only_wall_sec": 247.3531087874435, "valid_transitions": 32, "worker_id": 0}], "reset_regression_only_schedule": [["rooms", 202], ["corridors", 303]], "reset_regression_only_transitions": 32, "schedule": [["open", 101], ["open", 101]], "steps_per_episode": 16, "valid_transitions": 32}；额外两scene只reset回归。
+
+### P1C v3正式2worker（开始）
+
+同freeze864295d，wireless-rl精确命令：
+`rtk proxy bash -c 'source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh; conda activate ns3gym; export PYTHONNOUSERSITE=1; unset PYTHONPATH; python -m mr3_learning.benchmark --workers 2 --schedule open:101,open:101 --steps 16 --run-id mr3_p1c_v3_workers2 --base-domain 134 --base-port 12131'`。
+与1worker串行，每worker三台，后续结果另追加。
+
+v3workers2全部自然完成PASS：543.882888墙秒/64有效transition，正式audit通过，四轮各16×1s、ready-before-pause均proven、18源健康零接触、无ownedlive/zombie；18goals全terminal、6confirmedcancel、一次真实navigation_changed_since_observation拒绝并计罚。公平prefix={"denominator_scope": "max_worker(sum of first two recorded cell elapsed times)", "denominator_wall_sec": 540.9493433311582, "effective_transition_per_wall_sec": 0.11831052350648756, "eligible": true, "episode_indices": [0, 1], "exact_end_to_end_process_span": false, "excludes": "final Supervisor reap tail and all later serial scene regressions", "final_cleanup_timing_available": false, "final_supervisor_cleanup_wall_sec": null, "includes": "cell startup, next-reset cleanup of prior worker, native goal closure", "per_worker": [{"cell_recorded_wall_sec": 540.8360953326337, "transition_only_rate_per_active_wall_sec": 0.11450735429931429, "transition_only_wall_sec": 279.458033030387, "valid_transitions": 32, "worker_id": 0}, {"cell_recorded_wall_sec": 540.9493433311582, "transition_only_rate_per_active_wall_sec": 0.11397030333628606, "transition_only_wall_sec": 280.7748954179697, "valid_transitions": 32, "worker_id": 1}], "reset_regression_only_schedule": [], "reset_regression_only_transitions": 0, "schedule": [["open", 101], ["open", 101]], "steps_per_episode": 16, "valid_transitions": 64}。
+
+### P1C v3静态终态/纳秒边界复审，停止启动后续
+
+原freeze864295d两个确定静态边界：collision/monitor异常会monitor=false并finalize，但adapter尚无stop_requested，terminal snapshot要求stop而worker等snapshot后才stop，构成闭环阻塞；健康timeout不等同此故障。合法212.06→512.06在float相减为299.99999999999994，原>=300可能误分truncated。两者由源码/纯布尔与算术定位，不声明在本次native实际发生；A/v3_terminal_deadline_static_diagnosis.json保留原Git对象/hash。v3已运行clock/pilot/1worker/2worker全部原件保留；v3workers4/fault/deadline未启动，不拼进最终matrix。
+当前全部ownednative已自然结束。v4将用隔离评价器scalar task_terminal可靠通知打通真实失败终态，不给actor真值数组；精确ns比较修正300秒边界，不加容差或放宽Tmax。新predeclared_native_plan_v4.json保持原预算/seed/ports，需新commitpush后完整重跑；GPU模型不变且额外FB预算0。
+
+### P1C v4提交前实现与前瞻补充（无原生运行）
+
+隔离评价器仅发布`epoch,end_sim_time_sec,termination_reason`三项可靠终态通知，先冻结再通知、再文件I/O；
+adapter与broker仅在真实clock/physics达到该水位后消费，terminal snapshot保持实际drain序号/地图配对，
+普通monitor/freshness门禁不放宽。共享纯stdlib `mr3_episode.py`统一原端点整数ns规则，adapter不导入奖励/真值代码。
+同T晚终态仅新reward序号、原snapshot/watermarks、dt/physical_dt0、无action、bootstrap0；
+早于上次返回边界是显式基础设施错误，不能倒补。零有效时长任务终态不支付新增coverage，冻结终态图仍保留诊断；
+普通与20ms正时长步不改变覆盖奖励公式，sealed/重复幂等保持。该约束来自提交前独立静态复审，非原生观察。
+
+新增默认关闭`training_terminal_probe`，仅step+独立reward上下文和明确`--terminal-probe`计划可用。
+两个open101 epoch各先3个KEEP完整1秒，再分别验证真实20tick后的navigation_failure短终态，
+以及当前暂停T终态后的原snapshot零时长尾步；不伪造contact、clock或95%成功。
+`predeclared_native_plan_v4.json` SHA256 `d16a8136bdf94cce21293ab11e9a2648906e743a80377654483999b0de6b95a7`，
+次序clock/pilot/terminal/1worker/2worker/4worker/fault/deadline，共8独占run-id；原七项预算不缩减，
+额外诊断8次API transition（6个1s、1个.02s、1个0s）。需新源码commit+push后完整执行，不拼v2/v3成绩。
+GPU模型/encoder/probe三文件SHA与b328接口探针一致，新增F/B预算0、optimizer更新0、实际策略训练0。
+独立辅助审计器v2保留v1和旧结果不变，5个selftests/33个对抗子例通过；两套审计均约束零尾步不可新增coverage。
+活动11docs/125本地链接/16bash块/11项目调用静态检查通过，bash仅语法检查、不执行命令。
+
+v4提交前最终全量：系统ROS完整611项语义测试/16.35s PASS（仍只排除三项既有style模板），
+conda ns3gym禁用CUDA、unset PYTHONPATH、PYTHONNOUSERSITE=1完整40项/4.398s PASS；
+修改Python定向flake8(max100)、辅助审计5项selftest和diffcheck PASS。
+精确源码SHA与范围见`report/assets/20261015_mr3_p1c/implementation_checks_v4.json`。
+C++步进实现未改，其组件build/CTest原范围保留；新冻结仍须独立clock/native完整矩阵。

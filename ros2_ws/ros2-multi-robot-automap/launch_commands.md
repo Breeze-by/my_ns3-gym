@@ -113,6 +113,16 @@ python -m mr3_learning.benchmark --workers 1 --schedule open:101,open:101 \
 指标须包括完整startup/reset/closure的有效transition率、仿真倍率、CPU/RAM与GPU资源记录，失败保留。
 脚本动作仅施加候选/KEEP/WAIT和取消压力，不是训练策略或性能比较算法。
 
+诊断失败入口默认关闭，仅用于已预声明的P1C终态验证；每轮先3个KEEP步，
+分别验证20ms短终态和同边界零时长尾步，不伪造接触或clock。
+`training_terminal_probe`默认false，只能与stepped及隔离reward同时启用。
+
+```bash
+python -m mr3_learning.benchmark --workers 1 --schedule open:101,open:101 \
+  --steps 4 --terminal-probe --run-id UNIQUE_P1C_TERMINAL \
+  --base-domain 144 --base-port 12171
+```
+
 ```bash
 python -m mr3_learning.gpu_probe \
   --plan report/assets/20261015_mr3_p1c/gpu_probe_plan_v2.json \

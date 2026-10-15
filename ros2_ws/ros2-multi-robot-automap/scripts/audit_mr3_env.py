@@ -129,6 +129,39 @@ def validate_snapshot(snapshot, epoch):
             "invalid saved joint-action mask")
 
 
+def validate_reused_terminal(previous, row, epoch, sequence):
+    """Only a terminal at the prior boundary may reuse a snapshot without action."""
+    info, diagnostic = row["info"], row["info"]["reward_diagnostics"]
+    require(previous is not None and previous.get("terminated") is False
+            and previous.get("truncated") is False and row.get("terminated") is True
+            and row.get("truncated") is False and row["snapshot"] == previous["snapshot"]
+            and row["snapshot"]["epoch"] == epoch
+            and info.get("terminal_observation_reused") is True
+            and info.get("action_submitted") is False
+            and "command" in info and info["command"] is None
+            and type(info.get("requested_action")) is int and 0 <= info["requested_action"] < 1000,
+            "reused terminal snapshot lacks unchanged-snapshot/no-action proof")
+    require(info.get("watermarks") == previous["info"].get("watermarks"),
+            "reused terminal snapshot refreshed delivery watermarks")
+    require(number(info.get("dt")) and info["dt"] == 0
+            and number(info.get("physical_dt")) and info["physical_dt"] == 0
+            and diagnostic.get("epoch") == epoch and type(diagnostic.get("sequence")) is int
+            and diagnostic["sequence"] == sequence
+            and diagnostic.get("terminated") is True and diagnostic.get("truncated") is False
+            and type(diagnostic.get("new_correct_free_cells")) is int
+            and diagnostic["new_correct_free_cells"] == 0
+            and number(diagnostic.get("reward_terms", {}).get("coverage"))
+            and diagnostic["reward_terms"]["coverage"] == 0
+            and number(diagnostic.get("delta_sim_time")) and diagnostic["delta_sim_time"] == 0
+            and isinstance(diagnostic.get("reason"), str) and bool(diagnostic["reason"])
+            and info.get("reason") == diagnostic["reason"],
+            "reused terminal reward lacks zero-duration terminal proof")
+    boundary = nanoseconds(previous["snapshot"]["source_stamp"])
+    require(all(nanoseconds(diagnostic.get(key)) == boundary for key in
+                ("step_start", "effective_step_end", "requested_step_end")),
+            "reused terminal reward does not end at the unchanged physical boundary")
+
+
 def audit_transitions(rows, physics, epoch, allow_incomplete=False):
     require(bool(rows) and rows[0].get("kind") == "reset", "missing initial reset")
     reset = rows[0]
@@ -147,20 +180,29 @@ def audit_transitions(rows, physics, epoch, allow_incomplete=False):
     state_sequence = -1
     total_reward = 0.
     terminal_exceptions = 0
+    reused_terminals = 0
     for index, row in enumerate(rows):
         require(not done, "transition follows terminated/truncated sample")
         require(row.get("kind") == ("reset" if index == 0 else "step"),
                 "unexpected transition kind (close dt0 is not a training sample)")
         snapshot, info = row["snapshot"], row["info"]
+        reused = info.get("terminal_observation_reused", False)
+        require(type(reused) is bool and not (index == 0 and reused),
+                "invalid snapshot reuse flag")
         validate_snapshot(snapshot, epoch)
         require(info.get("epoch") == epoch, "transition info cross-epoch")
         end_ns = nanoseconds(snapshot["source_stamp"])
         require(end_ns in boundaries, "snapshot lacks physical paused boundary")
         watermark = info["watermarks"]
+        short_terminal = bool(index > 0 and not reused and row.get("terminated") is True
+                              and 0 < end_ns - nanoseconds(
+                                  previous["snapshot"]["source_stamp"]) < NS)
         require(re.fullmatch(r"[0-9a-f]{64}", watermark["map_payload_sha256"]) is not None,
                 "invalid actor map watermark")
         require(type(watermark["state_sequence"]) is int
-                and watermark["state_sequence"] > state_sequence,
+                and (watermark["state_sequence"] == state_sequence if reused else
+                     watermark["state_sequence"] >= state_sequence if short_terminal else
+                     watermark["state_sequence"] > state_sequence),
                 "state delivery sequence did not advance")
         state_sequence = watermark["state_sequence"]
         reward = info["reward_diagnostics"]
@@ -185,8 +227,14 @@ def audit_transitions(rows, physics, epoch, allow_incomplete=False):
             start = previous["snapshot"]["source_stamp"]
             physical_dt = snapshot["source_stamp"] - start
             dt = info.get("dt")
-            require(snapshot["sequence"] > previous["snapshot"]["sequence"],
-                    "observation sequence did not advance")
+            if reused:
+                validate_reused_terminal(previous, row, epoch, index)
+                reused_terminals += 1
+            else:
+                require(snapshot["sequence"] > previous["snapshot"]["sequence"],
+                        "observation sequence did not advance")
+                require(snapshot["digest"] != previous["snapshot"]["digest"],
+                        "new physical transition reused old snapshot digest")
             require(close(info.get("physical_dt"), physical_dt), "physical dt diagnostic differs")
             require(close(reward.get("step_start"), start)
                     and close(reward.get("effective_step_end"), start + dt)
@@ -194,7 +242,7 @@ def audit_transitions(rows, physics, epoch, allow_incomplete=False):
             require(close(reward.get("requested_step_end"), snapshot["source_stamp"]),
                     "reward request does not end at physical snapshot")
             if row["terminated"]:
-                require(0 < physical_dt <= 1.0000001 and number(dt)
+                require((reused or 0 < physical_dt <= 1.0000001) and number(dt)
                         and 0 <= dt <= physical_dt + 1e-7
                         and physical_dt - dt <= .020001,
                         "terminal effective/physical dt exceeds one 20ms detection quantum")
@@ -210,15 +258,16 @@ def audit_transitions(rows, physics, epoch, allow_incomplete=False):
                         "nonterminal reward map differs from actor watermark")
             require(reward.get("expected_actor_map_sha256") == actor_sha,
                     "reward request did not bind the actor map SHA")
-            command = info["command"]
-            require(command.get("epoch") == epoch and command.get("command_id") == index
-                    and command.get("observation_sequence") == previous["snapshot"]["sequence"]
-                    and command.get("observation_digest") == previous["snapshot"]["digest"]
-                    and close(command.get("created_at"), start)
-                    and close(command.get("expires_at"), start + 2.),
-                    "command does not bind prior frozen observation and 2s TTL")
-            require(type(command.get("action")) is int and 0 <= command["action"] < 1000,
-                    "command action outside Discrete(1000)")
+            if not reused:
+                command = info["command"]
+                require(command.get("epoch") == epoch and command.get("command_id") == index
+                        and command.get("observation_sequence") == previous["snapshot"]["sequence"]
+                        and command.get("observation_digest") == previous["snapshot"]["digest"]
+                        and close(command.get("created_at"), start)
+                        and close(command.get("expires_at"), start + 2.),
+                        "command does not bind prior frozen observation and 2s TTL")
+                require(type(command.get("action")) is int and 0 <= command["action"] < 1000,
+                        "command action outside Discrete(1000)")
             terms = reward["reward_terms"]
             require(all(number(value) for value in terms.values())
                     and close(sum(terms.values()), row["reward"]), "reward terms do not sum")
@@ -231,13 +280,26 @@ def audit_transitions(rows, physics, epoch, allow_incomplete=False):
             "sampled_physical_time_sec": (nanoseconds(rows[-1]["snapshot"]["source_stamp"])
                                           - release) / NS,
             "terminal_map_sha_exception_count": terminal_exceptions,
+            "zero_duration_terminal_count": reused_terminals,
+            "submitted_action_count": len(rows) - 1 - reused_terminals,
+            "final_dt": rows[-1]["info"].get("dt"),
+            "final_physical_dt": rows[-1]["info"].get("physical_dt"),
+            "final_terminal_reused": rows[-1]["info"].get("terminal_observation_reused", False),
+            "final_action_submitted": rows[-1]["info"].get("action_submitted", True),
             "terminal_map_scope": "frozen evaluator map; later actor map is diagnostic only"}
 
 
 def audit_protocol(rows, transitions, epoch, allow_incomplete=False):
     snapshots = {row["snapshot"]["sequence"]: row["snapshot"] for row in transitions}
-    commands = {row["info"]["command"]["command_id"]: row["info"]["command"]
-                for row in transitions[1:]}
+    commands = {}
+    for index, row in enumerate(transitions[1:], 1):
+        if row["info"].get("terminal_observation_reused") is True:
+            validate_reused_terminal(transitions[index - 1], row, epoch, index)
+        else:
+            command = row["info"]["command"]
+            require(isinstance(command, dict), "ordinary sampled step lacks submitted command")
+            require(command["command_id"] not in commands, "sampled command id repeated")
+            commands[command["command_id"]] = command
     accepted, rejected, goals, native, results, canceled, positive = {}, {}, {}, {}, {}, {}, set()
     owners = {name: None for name in ROBOTS}
     accepted_at, protocol_terminals, keep = {}, {}, set()
@@ -551,6 +613,7 @@ def audit_episode(directory, expected_fault=False):
               "epoch": epoch, "expected_infrastructure_fault": require_fault,
               "freeze": metadata.get("freeze"), "scene": metadata.get("scene"),
               "seed": metadata.get("seed"),
+              "terminal_probe": metadata.get("terminal_probe") is True,
               "complete_episode_credit": not require_fault,
               "scope": "scripted sampling/reset; no RL, throughput or 95% success inference"}
     shutdown = evidence.check("shutdown receipt", lambda:
@@ -613,11 +676,46 @@ def audit_episode(directory, expected_fault=False):
                     "reward_diagnostics"]["effective_step_end"])
                 and evaluator.get("termination_reason") == transitions[-1]["info"]["reason"],
                 "terminal sample differs from frozen evaluator result"))
+        if metadata.get("terminal_probe") is True:
+            result["terminal_probe_proof"] = evidence.check(
+                "terminal probe causal proof", lambda: audit_terminal_probe_events(
+                    evidence.rows("diagnostic_failure.jsonl"), rows, transitions,
+                    evaluator, epoch))
     result.update(passed=not evidence.errors, errors=evidence.errors,
                   evidence_sha256=evidence.hashes,
                   supervisor_shutdown_digest=canonical_digest(shutdown))
     result["complete_episode_credit"] = bool(result["passed"] and not require_fault)
     return result
+
+
+def audit_terminal_probe_events(records, adapter, transitions, evaluator, epoch):
+    """Bind the diagnostic request to the independent evaluator and adapter."""
+    require(len(records) == 2 and records[0].get("kind") == "sent"
+            and records[1].get("kind") == "terminal_received",
+            "diagnostic failure records missing")
+    sent, received = records
+    target = sent.get("target_time_ns")
+    notice = {key: received.get(key) for key in
+              ("epoch", "end_sim_time_sec", "termination_reason")}
+    require(sent.get("epoch") == epoch and sent.get("request_id") == "failure1"
+            and sent.get("reason") == "P1C_DIAGNOSTIC_FAILURE" and type(target) is int
+            and target == nanoseconds(transitions[-1]["snapshot"]["source_stamp"])
+            and notice["epoch"] == epoch and notice["termination_reason"] == "navigation_failure"
+            and nanoseconds(notice["end_sim_time_sec"]) == target
+            and nanoseconds(transitions[-1]["info"]["reward_diagnostics"][
+                "effective_step_end"]) == target
+            and evaluator.get("control_failure") == "P1C_DIAGNOSTIC_FAILURE"
+            and evaluator.get("termination_reason") == "navigation_failure"
+            and nanoseconds(evaluator.get("end_sim_time_sec")) == target,
+            "diagnostic request does not match the evaluator's exact terminal boundary")
+    for kind in ("task_terminal_received", "task_terminal"):
+        matches = [row for row in adapter if row.get("kind") == kind]
+        require(len(matches) == 1 and matches[0].get("epoch") == epoch
+                and matches[0].get("payload") == notice
+                and nanoseconds(matches[0].get("stamp")) >= target,
+                "adapter lacks matching causal diagnostic terminal notice")
+    return {"epoch": epoch, "target_time_ns": target,
+            "reason": "P1C_DIAGNOSTIC_FAILURE", "normal_comparison_credit": False}
 
 
 def comparison_statistics(metadata, summary):
@@ -632,6 +730,7 @@ def comparison_statistics(metadata, summary):
     common = [["open", 101], ["open", 101]]
     schedule = metadata.get("schedule", [])
     if (metadata.get("fault_probe") is True or metadata.get("deadline_probe") is True
+            or metadata.get("terminal_probe") is True
             or schedule[:2] != common):
         return {"eligible": False, "reason": "not the declared normal two-open101 workload"}
     count, steps = metadata["workers"], metadata["steps_per_episode"]
@@ -693,12 +792,18 @@ def audit_benchmark(directory):
     workers = summary.get("workers_results", [])
     count = metadata.get("workers")
     fault = metadata.get("fault_probe") is True
+    terminal_probe = metadata.get("terminal_probe") is True
     evidence.check("benchmark declaration", lambda: require(
         count in (1, 2, 4) and metadata.get("robots_per_worker") == 3
         and summary.get("workers") == count and summary.get("freeze") == metadata.get("freeze")
         and summary.get("passed") is True and len(workers) == count
         and sorted(worker["worker_id"] for worker in workers) == list(range(count)),
         "benchmark declaration/worker count/freeze/result mismatch"))
+    if terminal_probe:
+        evidence.check("terminal probe declaration", lambda: require(
+            count == 1 and len(metadata["schedule"]) == 2
+            and metadata["steps_per_episode"] == 4 and not fault
+            and not metadata.get("deadline_probe"), "terminal probe declaration mismatch"))
     transitions = 0
     for worker in workers:
         worker_id = worker.get("worker_id")
@@ -747,6 +852,9 @@ def audit_benchmark(directory):
                 "episode freeze/scene/seed/cleanup differs from benchmark declaration"))
             detail = audit.get("transitions") or {}
             n = detail.get("transition_count", -1)
+            if terminal_probe:
+                evidence.check("terminal probe cell", lambda: audit_terminal_probe_cell(
+                    detail, cell, index, audit.get("terminal_probe")))
             evidence.check("episode sampler accounting", lambda: require(
                 n == cell.get("transitions") and close(detail.get("reward_sum"),
                                                        cell.get("reward_sum"))
@@ -754,11 +862,14 @@ def audit_benchmark(directory):
                       and worker.get("fault_verified") is True)
                      or (not expected_fault and n == metadata["steps_per_episode"]
                          and detail.get("complete") is True
-                         and ((metadata.get("deadline_probe") is True
-                               and cell.get("terminated") is True
+                         and ((terminal_probe and cell.get("terminated") is True
                                and cell.get("truncated") is False
-                               and cell.get("reason") == "timeout")
-                              or (metadata.get("deadline_probe") is not True
+                               and cell.get("reason") == "navigation_failure")
+                              or (metadata.get("deadline_probe") is True
+                                  and cell.get("terminated") is True
+                                  and cell.get("truncated") is False
+                                  and cell.get("reason") == "timeout")
+                              or (not terminal_probe and metadata.get("deadline_probe") is not True
                                   and cell.get("truncated") is True
                                   and cell.get("terminated") is False)))),
                 "sampler transition/reward/fault count mismatch"))
@@ -778,6 +889,7 @@ def audit_benchmark(directory):
             "schedule": metadata.get("schedule"),
             "steps_per_episode": metadata.get("steps_per_episode"),
             "deadline_probe": metadata.get("deadline_probe") is True,
+            "terminal_probe": terminal_probe,
             "valid_transitions": transitions, "wall_sec_including_all_attempts": wall,
             "effective_transition_per_wall_sec": summary.get("effective_transition_per_wall_sec"),
             "comparison": comparison,
@@ -786,9 +898,31 @@ def audit_benchmark(directory):
             "evidence_sha256": evidence.hashes}
 
 
+def audit_terminal_probe_cell(detail, cell, index, declared):
+    """The diagnostic two-tail workload never earns normal throughput credit."""
+    expected_dt = .02 if index == 0 else 0.
+    reused = index == 1
+    expected = {"dt": detail.get("final_dt"),
+                "physical_dt": detail.get("final_physical_dt"),
+                "terminal_observation_reused": detail.get("final_terminal_reused"),
+                "action_submitted": detail.get("final_action_submitted")}
+    require(declared is True and index in (0, 1) and detail.get("transition_count") == 4
+            and detail.get("complete") is True
+            and nanoseconds(expected["dt"]) == nanoseconds(expected_dt)
+            and nanoseconds(expected["physical_dt"]) == nanoseconds(expected_dt)
+            and expected["terminal_observation_reused"] is reused
+            and expected["action_submitted"] is (not reused)
+            and detail.get("zero_duration_terminal_count") == int(reused)
+            and detail.get("submitted_action_count") == 4 - int(reused)
+            and cell.get("terminal_sample") == expected,
+            "terminal diagnostic tail differs from the declared positive/zero physical cases")
+    return {"episode_index": index, **expected, "normal_comparison_credit": False}
+
+
 def audit_matrix(directories):
     results = [audit_benchmark(directory) for directory in directories]
-    normal = [row for row in results if not row["fault_probe"] and not row["deadline_probe"]]
+    normal = [row for row in results if not row["fault_probe"] and not row["deadline_probe"]
+              and not row.get("terminal_probe")]
     errors = []
     if not all(row["passed"] for row in results):
         errors.append("one or more benchmark audits failed")

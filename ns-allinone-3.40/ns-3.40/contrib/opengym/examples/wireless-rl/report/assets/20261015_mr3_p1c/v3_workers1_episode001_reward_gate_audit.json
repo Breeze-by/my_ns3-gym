@@ -1,0 +1,44 @@
+{
+  "scope": "completed-episode native scalar/receipt checks; no spatial truth replay or incomplete-episode judgment",
+  "entry_point": "reward_gate_audit.audit_episode(directory, freeze)",
+  "script_sha256": "1b201776c5dbaae0d56f91779105b046fbb24a6f1aa89473651743c6ecf6d5f9",
+  "freeze": "864295d35d6d92723f729dc62d2b5f8322773e54",
+  "episodes": [
+    {
+      "directory": "ros2_ws/ros2-multi-robot-automap/log/mr3_learning/mr3_p1c_v3_workers1/worker0/episode001_open_101",
+      "epoch": "mr3_p1c_v3_workers1_w0_e1_f027494d",
+      "scene": "open",
+      "seed": 101,
+      "pid_identity": {
+        "pid": 214900,
+        "parent": 214818,
+        "group": 214900,
+        "session": 214900,
+        "start_ticks": 380311587,
+        "state": "R"
+      },
+      "initial_cells": 2008,
+      "newly_rewarded_cells": 25661,
+      "transitions": 16,
+      "terminal_short_steps": 0,
+      "repeated_map_payload_steps": 0,
+      "reward_term_sums": {
+        "collision": 0.0,
+        "coverage": 5.8570711220670155,
+        "failure": 0.0,
+        "invalid": 0.0,
+        "success": 0.0,
+        "switch": 0.0,
+        "time": -0.05333333333333334
+      },
+      "physical_quantum_counts": {
+        "0": 1,
+        "1": 3,
+        "20": 810
+      },
+      "evaluation_reason": "training_external_truncation",
+      "errors": []
+    }
+  ],
+  "passed_scalar_checks": true
+}

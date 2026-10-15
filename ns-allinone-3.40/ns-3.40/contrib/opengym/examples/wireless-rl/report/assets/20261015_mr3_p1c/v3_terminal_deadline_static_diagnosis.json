@@ -1,0 +1,109 @@
+{
+  "schema": "mr3-p1c-v3-terminal-deadline-static-diagnosis-v1",
+  "source_freeze": "864295d35d6d92723f729dc62d2b5f8322773e54",
+  "scope": "frozen source inspection and pure scalar arithmetic/boolean evaluation only; no native simulator or ROS execution and no claim these failures happened in v3 runs",
+  "frozen_sources": {
+    "adapter": {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py",
+      "sha256": "cbba46331613bf319323b601445d722a0b6e8350be717a465c4e517c43b088e9",
+      "git_object": "864295d35d6d92723f729dc62d2b5f8322773e54:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py"
+    },
+    "worker": {
+      "path": "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py",
+      "sha256": "b272d27dc163a28953e39e9a56530abbd9fc620da727035650332662628b6d8b",
+      "git_object": "864295d35d6d92723f729dc62d2b5f8322773e54:ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py"
+    },
+    "evaluator": {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py",
+      "sha256": "26dc337071b929d00686b3ff247edef077254faa99410997bc3724f3f105a529",
+      "git_object": "864295d35d6d92723f729dc62d2b5f8322773e54:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py"
+    },
+    "reward": {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reward.py",
+      "sha256": "be92b00ab60d686ba02b764a167ce34e90363bd2f05e91a2ef56b0bb93e01f25",
+      "git_object": "864295d35d6d92723f729dc62d2b5f8322773e54:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reward.py"
+    }
+  },
+  "terminal_snapshot_dependency": {
+    "pure_branch_state": {
+      "started_at_nonnull": true,
+      "monitor_ready": false,
+      "stop_requested": false,
+      "allow_terminal": true,
+      "state_fresh": true,
+      "required_map_inputs_present_for_this_pure_branch_example": true
+    },
+    "terminal_snapshot_allowed": false,
+    "monitor_or_terminal_gate": false,
+    "source_excerpts": [
+      {
+        "source": "adapter",
+        "first_line": 182,
+        "last_line": 214,
+        "text": "    def poll_snapshot(self):\n        request = getattr(self, \"pending_snapshot\", None)\n        if request is None or self.encoding is not None:\n            return\n        now_ns = self.get_clock().now().nanoseconds\n        reason = None\n        if now_ns > request[\"target_time_ns\"]:\n            reason = \"snapshot_target_already_passed\"\n        elif monotonic() - request[\"requested_wall\"] >= self.snapshot_timeout_sec:\n            reason = \"snapshot_watermark_timeout\"\n        elif now_ns == request[\"target_time_ns\"] and (\n                self.states_fresh(now_ns / 1e9) or self.terminal_snapshot_allowed()):\n            minimum = request.get(\"minimum_state_sequence\", -1)\n            expected = request.get(\"expected_map_sha256\")\n            map_matches = expected is None or (\n                self.map_metadata is not None\n                and self.map_metadata.get(\"map_payload_sha256\") == expected\n                and self.map_digest == expected)\n            if map_matches and (self.state[\"sequence\"] > minimum\n                                or self.terminal_snapshot_allowed()):\n                self.publish_observation()\n                if self.encoding is not None:\n                    self.encoding_request = {\n                        **request, \"state_sequence\": self.state[\"sequence\"],\n                        \"map_payload_sha256\": self.map_digest,\n                    }\n        if reason is not None:\n            self.respond_snapshot(request, error=reason)\n\n    def terminal_snapshot_allowed(self):\n        request = getattr(self, \"pending_snapshot\", None)\n        return bool(request and request.get(\"allow_terminal\") is True\n                    and self.stop_requested and self.started_at is not None)\n"
+      },
+      {
+        "source": "adapter",
+        "first_line": 372,
+        "last_line": 376,
+        "text": "        if self.encoding is not None:\n            return\n        if (self.map is None or self.state is None\n                or (not self.monitor_ready and not self.terminal_snapshot_allowed())):\n            return\n"
+      },
+      {
+        "source": "worker",
+        "first_line": 411,
+        "last_line": 435,
+        "text": "        terminal = self._evaluation()\n        while self.physical_ns < start_ns + 10**9 and terminal is None:\n            self._physics(20)\n            terminal = self._evaluation()\n        self._snapshot(allow_terminal=terminal is not None)\n        response = self._reward(start_ns / 1e9, self.physical_ns / 1e9,\n                                truncation=external_truncation)\n        terminated = bool(response[\"terminated\"])\n        truncated = bool(response[\"truncated\"])\n        if terminal is not None and not terminated:\n            raise RuntimeError(\"evaluator terminal was not classified as terminated\")\n        if not terminated and self.physical_ns - start_ns != 10**9:\n            raise RuntimeError(\"nonterminal policy transition is not exactly one physical second\")\n        effective_end = response.get(\"effective_step_end\", self.physical_ns / 1e9)\n        result = {\"snapshot\": self.snapshot, \"reward\": response[\"reward\"],\n                  \"terminated\": terminated, \"truncated\": truncated, \"info\": {\n                      \"epoch\": self.epoch, \"dt\": effective_end - start_ns / 1e9,\n                      \"physical_dt\": (self.physical_ns - start_ns) / 1e9,\n                      \"step_wall_sec\": time.monotonic() - started_wall,\n                      \"reason\": response.get(\"reason\"), \"reward_diagnostics\": response,\n                      \"watermarks\": self.watermarks, \"command\": command}}\n        self.transition_file.write(json.dumps({\"kind\": \"step\", **result}, sort_keys=True) + \"\\n\")\n        if terminated or truncated:\n            self.shutdown_episode(\"task_terminal\" if terminated else \"external_truncation\")\n        return result\n"
+      },
+      {
+        "source": "worker",
+        "first_line": 437,
+        "last_line": 444,
+        "text": "    def truncate(self, reason):\n        response = self._reward(self.physical_ns / 1e9, self.physical_ns / 1e9, truncation=reason)\n        result = {\"snapshot\": self.snapshot, \"reward\": response[\"reward\"],\n                  \"terminated\": response[\"terminated\"], \"truncated\": response[\"truncated\"],\n                  \"info\": {\"epoch\": self.epoch, \"dt\": 0., \"reason\": response.get(\"reason\"),\n                           \"reward_diagnostics\": response}}\n        self.shutdown_episode(\"task_terminal\" if response[\"terminated\"] else \"external_truncation\")\n        return result\n"
+      }
+    ],
+    "analysis": "The worker can see a finalized evaluator result and ask allow_terminal=True, while the adapter still has stop_requested=False and monitor_ready=False. The frozen adapter terminal predicate requires stop_requested, so publish_observation cannot encode. The worker reaches its stop/finalize shutdown path only after snapshot and reward, creating a reachable terminal dependency. This branch example assumes required map/state data only to isolate the monitor/stop predicate; it does not assert native map delivery.",
+    "native_occurrence_claim": false
+  },
+  "floating_deadline_counterexample": {
+    "source_excerpts": [
+      {
+        "source": "adapter",
+        "first_line": 594,
+        "last_line": 596,
+        "text": "        if now - self.started_at >= 300. and not self.stop_requested:\n            self.stop_requested = True\n            self.dispatcher.safety_stop(now, \"task_deadline\")\n"
+      },
+      {
+        "source": "evaluator",
+        "first_line": 793,
+        "last_line": 801,
+        "text": "        elapsed = now - self.start_sim_time\n        reason = self._mr3_termination_reason(elapsed, summary)\n        if reason:\n            self.finalize(reason)\n\n    def _mr3_termination_reason(self, elapsed, summary):\n        # Deadline precedence includes the bounded terminal-goal handshake.\n        if elapsed >= self.max_duration:\n            return \"timeout\"\n"
+      },
+      {
+        "source": "evaluator",
+        "first_line": 1192,
+        "last_line": 1204,
+        "text": "    def finalize(self, termination_reason):\n        if self.finalized:\n            return\n        self.finalized = True\n        end_time = self._now()\n        if self.start_sim_time is None:\n            if termination_reason == \"shutdown\":\n                termination_reason = \"no_data\"\n            elapsed = 0.0\n        else:\n            elapsed = max(0.0, end_time - self.start_sim_time)\n        if self.task_contract and self.start_sim_time is not None and elapsed >= self.max_duration:\n            termination_reason = \"timeout\"\n"
+      },
+      {
+        "source": "reward",
+        "first_line": 153,
+        "last_line": 159,
+        "text": "        if any(counts[key] < self._counts[key] for key in counts):\n            raise ValueError(\"reward event counters regressed\")\n        elapsed = end - self.start_sim_time\n        reason = terminal_reason\n        if elapsed >= TASK_DURATION_SEC:\n            reason = \"timeout\"\n        elif counts[\"collision_events\"] and reason == \"coverage_reached\":\n"
+      }
+    ],
+    "release_ns": 212060000000,
+    "end_ns": 512060000000,
+    "release_sec_repr": "212.06",
+    "end_sec_repr": "512.06",
+    "float_elapsed_repr": "299.99999999999994",
+    "float_elapsed_ge300": false,
+    "integer_elapsed_ns": 300000000000,
+    "integer_elapsed_ge300s": true,
+    "release_on1ms_tick": true,
+    "release_on20ms_boundary": true,
+    "conditional_consequence": "At this legal release phase, if no other task terminal reason is present and the external sampler limit coincides with the exact300s boundary, the frozen float comparison can miss timeout and classify external truncation. Integer ns detects the exact deadline. This is a static arithmetic counterexample, not an observed native episode.",
+    "native_occurrence_claim": false
+  },
+  "retention": "Retain all completed v3 raw evidence and PASS/FAIL scopes without relabeling. No v3workers4/fault/deadline outcome is invented. A new v4 source freeze and complete fresh native matrix are required.",
+  "no_changes_to_originals_or_runtime": true
+}

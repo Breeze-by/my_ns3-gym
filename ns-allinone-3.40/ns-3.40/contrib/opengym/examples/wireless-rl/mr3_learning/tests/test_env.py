@@ -21,7 +21,9 @@ class SupervisorFixture:
         return {"snapshot": copy.deepcopy(self.snapshot), "reward": 0.0,
                 "terminated": self.terminal, "truncated": truncated and not self.terminal,
                 "info": {"dt": self.step_delta if self.effective_dt is None else self.effective_dt,
-                         "physical_dt": self.step_delta, "reward_terms": {"time": -1.0}}}
+                         "physical_dt": self.step_delta, "reward_terms": {"time": -1.0},
+                         "watermarks": {"state_sequence": self.snapshot["sequence"],
+                                        "map_payload_sha256": "a" * 64}}}
 
     def reset(self, scene, seed):
         self.calls.append(("reset", scene, seed))
@@ -66,6 +68,80 @@ class SupervisorFixture:
 
 
 class EnvironmentTests(unittest.TestCase):
+    @staticmethod
+    def late_terminal(env):
+        stamp = env._snapshot["source_stamp"]
+        return {"snapshot": copy.deepcopy(env._snapshot), "reward": -20.,
+                "terminated": True, "truncated": False,
+                "info": {"epoch": env._epoch, "terminal_observation_reused": True,
+                         "action_submitted": False, "requested_action": 888, "command": None,
+                         "dt": 0., "physical_dt": 0., "reason": "navigation_failure",
+                         "watermarks": copy.deepcopy(env._watermarks),
+                         "reward_diagnostics": {
+                             "epoch": env._epoch, "sequence": env._steps + 1,
+                             "reward": -20., "terminated": True, "truncated": False,
+                             "reason": "navigation_failure", "step_start": stamp,
+                             "effective_step_end": stamp, "requested_step_end": stamp,
+                             "delta_sim_time": 0.,
+                             "new_correct_free_cells": 0,
+                             "reward_terms": {"coverage": 0., "failure": -20.},
+                             "map_pairing_scope": "terminal_evaluator_frozen_before_drain"}}}
+
+    def test_late_terminal_reuses_exact_observation_without_submitting_action(self):
+        supervisor = SupervisorFixture()
+        env = MR3Env(supervisor)
+        env.reset(seed=101)
+        before, *_ = env.step(888)
+        payload = self.late_terminal(env)
+        supervisor.step = lambda *args, **kwargs: payload
+        after, reward, terminal, truncated, info = env.step(888)
+        for key in before:
+            np.testing.assert_array_equal(before[key], after[key])
+        self.assertEqual(reward, -20.)
+        self.assertTrue(terminal)
+        self.assertFalse(truncated)
+        self.assertFalse(info["action_submitted"])
+        self.assertIsNone(info["command"])
+        with self.assertRaises(RuntimeError):
+            env.step(888)
+
+    def test_zero_duration_exception_rejects_changed_snapshot_times_watermarks_or_action(self):
+        changes = {
+            "missing_flag": lambda p: p["info"].pop("terminal_observation_reused"),
+            "new_action": lambda p: p["info"].update(action_submitted=True),
+            "command": lambda p: p["info"].update(command={"action": 888}),
+            "wrong_request": lambda p: p["info"].update(requested_action=889),
+            "positive_dt": lambda p: p["info"].update(dt=.001),
+            "positive_physics": lambda p: p["info"].update(physical_dt=.001),
+            "not_terminal": lambda p: p.update(terminated=False),
+            "truncated": lambda p: p.update(terminated=False, truncated=True),
+            "wrong_epoch": lambda p: p["info"].update(epoch="other"),
+            "new_delivery": lambda p: p["info"]["watermarks"].update(state_sequence=999),
+            "old_end": lambda p: p["info"]["reward_diagnostics"].update(
+                effective_step_end=p["snapshot"]["source_stamp"] - 1e-9),
+            "new_reward_sequence": lambda p: p["info"]["reward_diagnostics"].update(sequence=99),
+            "new_coverage": lambda p: p["info"]["reward_diagnostics"]["reward_terms"].update(
+                coverage=1.),
+            "new_correct_cells": lambda p: p["info"]["reward_diagnostics"].update(
+                new_correct_free_cells=1),
+            "changed_snapshot": lambda p: seal(p["snapshot"] | {"sequence": 99}),
+        }
+        for label, change in changes.items():
+            with self.subTest(case=label):
+                supervisor = SupervisorFixture()
+                env = MR3Env(supervisor)
+                env.reset(seed=101)
+                env.step(888)
+                payload = self.late_terminal(env)
+                if label == "changed_snapshot":
+                    payload["snapshot"]["sequence"] += 1
+                    seal(payload["snapshot"])
+                else:
+                    change(payload)
+                supervisor.step = lambda *args, **kwargs: payload
+                with self.assertRaises(ValueError):
+                    env.step(888)
+
     def test_reset_rebuilds_via_supervisor_and_preserves_seed_scene_and_spaces(self):
         supervisor = SupervisorFixture()
         env = MR3Env(supervisor)
