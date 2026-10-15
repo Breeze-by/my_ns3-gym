@@ -1,0 +1,18 @@
+{
+  "kind": "offline synthetic map pipeline diagnostic; no simulator or P1C sampling credit",
+  "source_freeze": "d6ce8318e50f683b7e720bc9a3adf20a1e0efa8c",
+  "fixture": "three238x198 free .05m original ROS grids, origins(-6+i*.05,-5), source stamp1; fake publishers",
+  "fixture_sha256": "9b3c0f2ac921735d914615ef2b62545248e47ffb1a65fd83e6f0f85cda0d91bc",
+  "script_sha256": "6d752c34997db5a6f92b2e961d3e7460774236b0de5cc79923e38e8260f18923",
+  "repeat_wall_sec": [
+    0.55955,
+    0.56063,
+    0.56641,
+    0.55622,
+    0.55378
+  ],
+  "limitation": "wall duration is not simulation duration; native state gaps establish freshness failure; no CPU/GPU worker throughput conclusion",
+  "replay_script": "mr3_p1b_sync_map_profile_replay.py",
+  "replay_script_sha256": "38f879fc9b9d1a0343da1284ff381ab775f71627da6a0016fddb63781ff80b81",
+  "replay_note": "Replay additionally binds frozen navigation helper explicitly; original measured script retained."
+}

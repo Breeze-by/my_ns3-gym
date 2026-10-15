@@ -1,0 +1,99 @@
+{
+  "accepted_robots": [
+    "tb1",
+    "tb2",
+    "tb3"
+  ],
+  "action_count": 1,
+  "adapter_sha256": "27755391b714e5e50b29416a467f15c55d8eb61e1fbd9f790299cf2a75a5760a",
+  "cancel_goal_count": 3,
+  "confirmed_native_cancellation_goal_ids": [
+    "mr3_p1b_v3_open101:tb1:1",
+    "mr3_p1b_v3_open101:tb2:1",
+    "mr3_p1b_v3_open101:tb3:1"
+  ],
+  "contact_monitoring": {
+    "available": true,
+    "collision_events": 0,
+    "evaluator_success": false,
+    "file": "mr3_p1b_v3_open101.json",
+    "monitoring_active": true,
+    "monitoring_fresh": true,
+    "navigation_protocol_closed_in_evaluator": false,
+    "passed": true,
+    "raw_stream_audit_passed": true,
+    "raw_stream_count": 18,
+    "required": false,
+    "schema_version": 4,
+    "scope": "interrupted scripted adapter probe",
+    "task_success_claimed": false,
+    "termination_reason": "navigation_failure"
+  },
+  "duplicate_command_count": 1,
+  "epoch": "mr3_p1b_v3_open101",
+  "errors": [
+    "probe runner did not report an empty safety-failure list",
+    "tb1 estimated snapshot path does not exceed 0.05 m",
+    "tb2 estimated snapshot path does not exceed 0.05 m",
+    "tb3 estimated snapshot path does not exceed 0.05 m",
+    "probe did not exercise KEEP",
+    "missing rejection probes: masked_action"
+  ],
+  "estimated_fresh_pose_sample_count": {
+    "tb1": 2,
+    "tb2": 2,
+    "tb3": 2
+  },
+  "estimated_snapshot_path_length_m": {
+    "tb1": 0.0013838702084202014,
+    "tb2": 1.459716218303081e-05,
+    "tb3": 0.0011981602445248973
+  },
+  "keep_robot_command_count": 0,
+  "native_launch_failures": [],
+  "native_send_count": 3,
+  "native_shutdown_proof": {
+    "gzserver": {
+      "clean_exits": [
+        {
+          "pid": 4047594,
+          "suffix": "4"
+        }
+      ],
+      "identity_matched": true,
+      "started": [
+        {
+          "pid": 4047594,
+          "suffix": "4"
+        }
+      ]
+    },
+    "mr3_gazebo_native_stop": {
+      "clean_exits": [
+        {
+          "pid": 4052075,
+          "suffix": "38"
+        }
+      ],
+      "identity_matched": true,
+      "started": [
+        {
+          "pid": 4052075,
+          "suffix": "38"
+        }
+      ]
+    }
+  },
+  "native_terminal_count": 3,
+  "passed": false,
+  "probe_movement_threshold_m": 0.05,
+  "protocol_goal_count": 3,
+  "rejection_reasons": [
+    "expired_or_invalid_command_time",
+    "wrong_epoch"
+  ],
+  "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_adapter/mr3_p1b_v3_open101",
+  "schema": "mr3-p1b-probe-audit-v1",
+  "scope": "scripted P1B adapter protocol; no RL or 95% task-success credit",
+  "snapshot_count": 2
+}

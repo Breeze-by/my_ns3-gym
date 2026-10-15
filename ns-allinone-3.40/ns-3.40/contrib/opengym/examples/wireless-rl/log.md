@@ -2285,3 +2285,35 @@ open/rooms/corridors各seed101、三台、串行、独立域108/109/110与Gazebo
 图原分辨率几何，不删自体范围内的真实障碍、不跳到其他自由分量。RPC异常显式锁存失败；
 UUID按bytes比较。显式probe_finalize服务仅在adapter_probe模式启用，输出未完成诊断，
 不再对正在退出的评价器发信号。新矩阵与脚本取消压力顺序已在v3预声明，原失败保留。
+
+### P1B v3原生失败（保留，非通过）
+
+冻结`d6ce8318e50f683b7e720bc9a3adf20a1e0efa8c`。同一环境/命令，run-id为`mr3_p1b_v3_open101`，
+runner显式新增`adapter_probe:=true`。130.05墙秒、任务80.0放行：三台原生目标均接受，
+80.4因received_state_stale停止，三台均获得正取消ACK并于80.7收到CANCELED终态。
+现在本地图路径的三台起点均可行，UUID比较、RPC回执、原生关闭正常；父/全部子进程、
+Gazebo与其stop CLI exit0，未宣称SDK崩溃根治。仍是失败：未执行完整25秒、无有效运动证明，
+没有KEEP/承诺期边界样本；独立audit FAIL。rooms/corridors未在此冻结运行。
+选定原件`report/assets/20261015_mr3_p1b/native_v3_open101_failure/`。
+
+继续诊断信息桥1Hz地图编码/融合/三份导航副本对10Hz状态回调的阻塞，记录源与接收时刻，
+修复一般性调度根因；不更改.5秒、机体、接触、ROI/95%或时间门禁。v4预声明保留原三场景
+串行同冻结矩阵，并增加状态更新/陈旧诊断；无训练/reset/gateway。
+
+P1B离线根因诊断：在Humble/system Python环境执行
+`PYTHONNOUSERSITE=1 PYTHONPATH=ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration:ros2_ws/ros2-multi-robot-automap/src/merge_map:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test:$PYTHONPATH /usr/bin/python3 /tmp/mr3_p1b_sync_map_profile.py`。
+脚本从`d6ce831`Git对象载入同步信息桥，三份238×198/.05m自由图、fake publishers，未创建ROS节点或模拟器。
+五次publish_maps墙时为.55955/.56063/.56641/.55622/.55378秒；这不是仿真秒，也不算P1C采样吞吐。
+它解释了为何1Hz地图处理会阻塞10Hz状态；实际源龄失败以v3原生时序为准。
+完整可重放脚本/输入哈希/结果见`report/assets/20261015_mr3_p1b/mr3_p1b_sync_map_profile.py`和`sync_map_profile.json`。
+
+P1B异步处理离线检查：完整语义测试448 passed/12.66s（同上完整pytest命令）；
+信息桥36相关测试和Humble域190真实节点create/destroy通过，无模拟器。
+Git根source Humble和ROS install，设置`PYTHONNOUSERSITE=1`及
+`PYTHONPATH="$PWD/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test:$PYTHONPATH"`后执行
+`/usr/bin/python3 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1b/mr3_p1b_async_map_profile.py`，
+输出`async_map_profile_receipt.json`。固定2秒fixture、不创建ROS节点/DDS/模拟器；5次后台处理时
+状态回调持续执行，主采样/应用约.072–.088墙秒，状态回调实测最大.09131墙秒（含并发运行
+完整单测的主机负载），worker约.686–.844墙秒。这不是原生Hz/仿真倍率或P1C吞吐。
+原同步profile的冻结helper显式绑定复现版另存`mr3_p1b_sync_map_profile_replay.py`，
+原测量脚本与哈希保留。下一步仅执行v4预声明的3场景同冻结原生矩阵确认修复，门限不变。

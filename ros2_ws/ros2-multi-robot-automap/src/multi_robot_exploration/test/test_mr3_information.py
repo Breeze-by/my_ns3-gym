@@ -2,6 +2,7 @@
 
 import json
 import math
+from concurrent.futures import Future
 from types import MethodType, SimpleNamespace
 
 from geometry_msgs.msg import TransformStamped
@@ -20,6 +21,29 @@ class Publisher:
 
     def publish(self, message):
         self.messages.append(message)
+
+
+class ImmediateExecutor:
+    """Keep logical map fixtures synchronous; scheduling has separate fixtures."""
+
+    def submit(self, function, *args):
+        future = Future()
+        future.set_result(function(*args))
+        return future
+
+
+class ControlledExecutor:
+    def __init__(self):
+        self.jobs = []
+
+    def submit(self, function, *args):
+        future = Future()
+        self.jobs.append((future, function, args))
+        return future
+
+    def complete_next(self):
+        future, function, args = self.jobs.pop(0)
+        future.set_result(function(*args))
 
 
 def grid(data, stamp=1, origin=0.0):
@@ -47,6 +71,12 @@ def bridge():
         navigation_publishers={name: Publisher() for name in names},
         received_map_publishers={name: Publisher() for name in names},
         received_map_digests={},
+        published_map_records={}, navigation_maps={},
+        map_executor=ImmediateExecutor(), map_future=None, queued_map_job=None,
+        map_failure_publisher=Publisher(),
+        map_diagnostics={"submitted": 0, "completed": 0, "replaced_queued": 0,
+                         "capture_wall_sec": 0.0, "publish_wall_sec": 0.0,
+                         "worker_wall_sec": 0.0, "state_wall_sec": 0.0},
         odom_publishers={name: Publisher() for name in names},
         tf_publishers={name: Publisher() for name in names},
         map_publisher=Publisher(), state_publisher=Publisher(), map_signature=None,
@@ -55,6 +85,8 @@ def bridge():
     )
     node.publish_navigation_map = MethodType(IdealInformation.publish_navigation_map, node)
     node.promote_transforms = MethodType(IdealInformation.promote_transforms, node)
+    node.submit_map_job = MethodType(IdealInformation.submit_map_job, node)
+    node.finish_maps = MethodType(IdealInformation.finish_maps, node)
     return node
 
 
@@ -211,7 +243,7 @@ def test_future_tf_is_retained_and_promoted_without_newer_future_tf_starvation()
     assert [item.header.stamp.sec for item in node.pending_transforms["tb1"]] == [4]
 
 
-def test_hub_map_and_navigation_map_use_explicit_delivered_snapshot():
+def test_hub_map_and_navigation_map_use_explicit_delivered_snapshot(monkeypatch):
     node = bridge()
     node.local_maps = {"tb1": grid([0, -1, 0]), "tb2": grid([-1, 100, -1])}
     node.local_map_versions = {"tb1": 1, "tb2": 1}
@@ -226,10 +258,89 @@ def test_hub_map_and_navigation_map_use_explicit_delivered_snapshot():
     # Local changes can help that robot before the next uplink; shared occupied
     # evidence still wins the local free conflict. Other robots retain delivery.
     node.local_maps["tb1"] = grid([100, 0, -1], stamp=2)
-    node.publish_navigation_map("tb1")
+    node.local_map_versions["tb1"] = 2
+    node.now = lambda: 3.0
+    monkeypatch.setattr(node.transport, "deliver", lambda *args, **kwargs: ())
+    IdealInformation.publish_maps(node)
     assert list(node.navigation_publishers["tb1"].messages[-1].data) == [100, 100, 0]
     assert list(node.navigation_publishers["tb3"].messages[-1].data) == [0, 100, 0]
     assert list(node.received.get("map", "tb1").payload["data"]) == [0, -1, 0]
+
+
+def test_state_delivery_continues_while_map_encoding_is_pending_with_honest_receipts():
+    node = bridge()
+    node.map_executor = ControlledExecutor()
+    node.local_maps = {"tb1": grid([0, -1, 100])}
+    node.local_map_versions = {"tb1": 1}
+    IdealInformation.publish_maps(node)
+    assert not node.map_future.done()
+    assert node.received.get("map", "tb1").received_stamp == 2.0
+    assert node.hub_map is None
+    odometry, transform = Odometry(), TransformStamped()
+    odometry.header.stamp.sec = transform.header.stamp.sec = 2
+    odometry.pose.pose.orientation.w = transform.transform.rotation.w = 1.0
+    node.local_odometry["tb1"] = odometry
+    node.local_transforms["tb1"] = transform
+    for now in (2.0, 2.1):
+        node.now = lambda now=now: now
+        IdealInformation.publish_states(node)
+        node.finish_maps()
+    assert len(node.state_publisher.messages) == 2
+    state = json.loads(node.state_publisher.messages[-1].data)
+    assert state["robots"][0]["received_stamp"] == 2.1
+    assert state["robots"][0]["source_stamp"] == 2.0
+    assert state["robots"][0]["valid"] is True
+    assert state["information_diagnostics"]["pending"] is True
+    assert state["map_sources"] == {}
+    node.map_executor.complete_next()
+    node.now = lambda: 3.0
+    node.finish_maps()
+    assert node.hub_map.header.stamp.sec == 1
+    assert node.hub_map_received_stamp == 2.0
+    assert node.edges["tb1"].get("shared_map", "hub").received_stamp == 3.0
+    assert node.edges["tb1"].get("shared_map", "hub").source_stamp == 1.0
+    assert node.map_diagnostics["completed"] == 1
+
+
+def test_map_worker_has_only_one_running_and_one_latest_detached_job():
+    node = bridge()
+    node.map_executor = ControlledExecutor()
+    node.local_maps = {"tb1": grid([0, -1])}
+    node.local_map_versions = {"tb1": 1}
+    IdealInformation.publish_maps(node)
+    for stamp, value in ((2, 50), (3, 100)):
+        node.local_maps["tb1"] = grid([value, -1], stamp=stamp)
+        node.local_map_versions["tb1"] += 1
+        node.now = lambda stamp=stamp: stamp + 1.0
+        IdealInformation.publish_maps(node)
+    assert len(node.map_executor.jobs) == 1
+    assert node.map_diagnostics["replaced_queued"] == 1
+    node.map_executor.complete_next()
+    node.now = lambda: 4.5
+    node.finish_maps()
+    assert list(node.hub_map.data) == [0, -1]
+    assert node.published_map_records["tb1"].received_stamp == 2.0
+    assert len(node.map_executor.jobs) == 1
+    node.map_executor.complete_next()
+    node.now = lambda: 4.6
+    node.finish_maps()
+    assert list(node.hub_map.data) == [100, -1]
+    assert node.hub_map.header.stamp.sec == 3
+    assert node.published_map_records["tb1"].received_stamp == 4.0
+    assert node.map_diagnostics["completed"] == 2
+
+
+def test_raw_map_callback_only_admits_and_caches_without_synchronous_fusion(monkeypatch):
+    node = bridge()
+    monkeypatch.setattr("multi_robot_exploration.mr3_information.merge_maps",
+                        lambda *args, **kwargs: (_ for _ in ()).throw(
+                            AssertionError("raw callback must not fuse maps")))
+    original = grid([0, -1, 100])
+    IdealInformation.receive_local_map(node, "tb1", original)
+    assert node.local_maps["tb1"] == original
+    assert not node.navigation_publishers["tb1"].messages
+    original.data[0] = 100
+    assert node.local_maps["tb1"].data[0] == 0
 
 
 def test_undelivered_new_peer_map_cannot_refresh_hub_or_other_navigation_map(monkeypatch):

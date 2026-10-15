@@ -14,16 +14,26 @@ transform_timeout (currently 0.2 s). State metadata therefore exposes both the
 unchanged tf_validity_stamp and tf_source_stamp = validity stamp minus that lead.
 The combined source stamp is the older of odom time and this actual TF source
 time. Source-age checks must use tf_source_stamp, never the forward-dated header.
+
+Map inputs are sampled at 1 Hz. A single bounded worker computes immutable map
+jobs while the ROS executor continues 10 Hz state delivery. One running job and
+one latest queued job are retained. Only the executor changes transport/stores
+or publishes results. Uplink receipt times describe actual admission; shared-map
+downlink receipts describe actual completed-result delivery, never worker start.
+Navigation uses the local snapshot captured for that job plus delivered sharing.
 """
 
+from concurrent.futures import ThreadPoolExecutor
 import copy
 import hashlib
 import json
 import math
+from time import perf_counter
 
 from geometry_msgs.msg import TransformStamped
 from merge_map.merge_map import merge_maps
 from nav_msgs.msg import OccupancyGrid, Odometry
+import numpy as np
 import rclpy
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
@@ -145,6 +155,58 @@ def state_payload(name, odometry, transform, tf_validity_lead_sec=0.0):
     }
 
 
+def validate_local_map(grid, references):
+    """Cheap admission checks; the worker also runs the canonical merger checks."""
+    info = grid.info
+    if grid.header.frame_id.lstrip("/") != "map":
+        raise ValueError("All occupancy grids must share the output frame")
+    if not math.isfinite(info.resolution) or info.resolution <= 0:
+        raise ValueError("Map resolution must be positive")
+    if any(not math.isclose(other.info.resolution, info.resolution) for other in references):
+        raise ValueError("All occupancy grids must use the same resolution")
+    if info.width <= 0 or info.height <= 0:
+        raise ValueError("Occupancy grid dimensions must be positive")
+    if len(grid.data) != info.width * info.height:
+        raise ValueError("Occupancy grid data size does not match its dimensions")
+    if not all(math.isfinite(v) for v in (info.origin.position.x, info.origin.position.y)):
+        raise ValueError("Occupancy grid origin must be finite")
+    q = info.origin.orientation
+    if (any(not math.isfinite(v) or abs(v) > 1e-6 for v in (q.x, q.y, q.z))
+            or not math.isclose(abs(q.w), 1.0, abs_tol=1e-6)):
+        raise ValueError("Rotated occupancy grids require registration")
+    data = np.asarray(grid.data)
+    if np.any((data < -1) | (data > 100)):
+        raise ValueError("Occupancy values must be -1 or between 0 and 100")
+
+
+def compute_map_bundle(records, local_maps, previous_shared):
+    """Pure expensive map work; inputs are detached snapshots, no ROS/store access."""
+    started = perf_counter()
+    delivered = {record.source: restore_message(OccupancyGrid(), record.payload)
+                 for record in records}
+    hub = merge_maps(list(delivered.values()), "map")
+    navigation, previous_navigation = {}, {}
+    for name, local in local_maps.items():
+        navigation[name] = merge_maps([local, hub], "map")
+    for name, record in previous_shared.items():
+        local = local_maps.get(name)
+        maps = [local] if local is not None else []
+        if record is not None:
+            maps.append(restore_message(OccupancyGrid(), record.payload))
+        if maps:
+            previous_navigation[name] = merge_maps(maps, "map")
+        if name not in navigation:
+            navigation[name] = hub
+    return {
+        "records": records, "delivered_maps": delivered, "hub": hub,
+        "hub_payload": map_payload(hub), "hub_digest": map_digest(hub),
+        "source_digests": {name: map_digest(grid) for name, grid in delivered.items()},
+        "navigation": navigation, "previous_navigation": previous_navigation,
+        "previous_shared": previous_shared,
+        "worker_wall_sec": perf_counter() - started,
+    }
+
+
 class IdealInformation(Node):
     """Sample raw local inputs, explicitly deliver, then publish received copies."""
 
@@ -172,6 +234,16 @@ class IdealInformation(Node):
         self.hub_map = None
         self.map_payload_sha256 = None
         self.received_map_digests = {}
+        self.published_map_records = {}
+        self.navigation_maps = {}
+        self.map_executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="mr3-map")
+        self.map_future = None
+        self.queued_map_job = None
+        self.map_diagnostics = {
+            "submitted": 0, "completed": 0, "replaced_queued": 0,
+            "worker_wall_sec": 0.0, "capture_wall_sec": 0.0,
+            "publish_wall_sec": 0.0, "state_wall_sec": 0.0,
+        }
         self.hub_map_source_stamp = None
         self.hub_map_received_stamp = None
         self.state_sequence = 0
@@ -186,6 +258,8 @@ class IdealInformation(Node):
             for name in self.names
         }
         self.state_publisher = self.create_publisher(String, "/mr3/received/states", 1)
+        self.map_failure_publisher = self.create_publisher(
+            String, "/exploration_failure", map_qos)
         self.navigation_publishers = {
             name: self.create_publisher(OccupancyGrid, f"/{name}/navigation_map", map_qos)
             for name in self.names
@@ -213,6 +287,11 @@ class IdealInformation(Node):
             ])
         self.state_timer = self.create_timer(STATE_PERIOD_SEC, self.publish_states)
         self.map_timer = self.create_timer(MAP_PERIOD_SEC, self.publish_maps)
+        self.map_finish_timer = self.create_timer(0.02, self.finish_maps)
+
+    def destroy_node(self):
+        self.map_executor.shutdown(wait=True, cancel_futures=True)
+        return super().destroy_node()
 
     def now(self):
         now = self.get_clock().now().nanoseconds / 1e9
@@ -267,28 +346,21 @@ class IdealInformation(Node):
                 and stamp_seconds(message.header.stamp) < stamp_seconds(previous.header.stamp)):
             return
         try:
-            # Retain the existing merger's common-frame/resolution/orientation
-            # validation, including compatibility with the other robot maps.
             others = [grid for robot, grid in self.local_maps.items() if robot != name]
-            merge_maps([message, *others], "map")
+            validate_local_map(message, others)
         except ValueError as error:
             self.get_logger().error(f"Rejected {name} local map: {error}")
             return
         if previous != message:
             self.local_map_versions[name] = self.local_map_versions.get(name, 0) + 1
         self.local_maps[name] = copy.deepcopy(message)
-        self.publish_navigation_map(name)
 
     def publish_navigation_map(self, name):
-        local = self.local_maps.get(name)
-        shared = self.edges[name].get("shared_map", "hub")
-        maps = ([local] if local is not None else [])
-        if shared is not None:
-            maps.append(restore_message(OccupancyGrid(), shared.payload))
-        if maps:
-            self.navigation_publishers[name].publish(merge_maps(maps, "map"))
+        if name in self.navigation_maps:
+            self.navigation_publishers[name].publish(self.navigation_maps[name])
 
     def publish_maps(self):
+        started = perf_counter()
         now = self.now()
         if now is None:
             return
@@ -297,38 +369,100 @@ class IdealInformation(Node):
             if source_stamp <= now:
                 self.transport.send("map", name, map_payload(grid), source_stamp=source_stamp,
                                     now=now, version=self.local_map_versions[name])
-        self.transport.deliver(self.received, now, sampled=True)
+        received_now = self.now()
+        if received_now is None:
+            return
+        self.transport.deliver(self.received, received_now, sampled=True)
         records = [self.received.get("map", name) for name in self.names]
         records = [record for record in records if record is not None]
         if not records:
             return
+        local_snapshot = {
+            name: grid for name, grid in self.local_maps.items()
+            if stamp_seconds(grid.header.stamp) <= now
+        }
+        job = (tuple(records), copy.deepcopy(local_snapshot), {
+            name: self.edges[name].get("shared_map", "hub") for name in self.names
+        })
+        if self.map_future is None:
+            self.submit_map_job(job)
+        else:
+            if self.queued_map_job is not None:
+                self.map_diagnostics["replaced_queued"] += 1
+            self.queued_map_job = job
+        self.map_diagnostics["capture_wall_sec"] = perf_counter() - started
+        self.finish_maps()
+
+    def submit_map_job(self, job):
+        self.map_future = self.map_executor.submit(compute_map_bundle, *job)
+        self.map_diagnostics["submitted"] += 1
+
+    def finish_maps(self):
+        """Poll once; only the ROS executor publishes or mutates received stores."""
+        if self.map_future is None or not self.map_future.done():
+            return
+        future, self.map_future = self.map_future, None
+        try:
+            result = future.result()
+        except Exception as error:
+            self.map_diagnostics["error"] = repr(error)
+            self.get_logger().error(f"Map worker failed: {error}")
+            failure = String()
+            failure.data = json.dumps({"component": "mr3_information",
+                                       "reason": "map_worker_failed", "error": repr(error)})
+            self.map_failure_publisher.publish(failure)
+            self.queued_map_job = None
+            return
+        now = self.now()
+        if now is None:
+            self.queued_map_job = None
+            return
+        started = perf_counter()
+        records = result["records"]
         signature = tuple((record.source, record.version) for record in records)
         if signature != self.map_signature:
             self.map_version += 1
             self.map_signature = signature
-        delivered_maps = {
-            record.source: restore_message(OccupancyGrid(), record.payload) for record in records
-        }
-        self.received_map_digests = {
-            name: map_digest(grid) for name, grid in delivered_maps.items()
-        }
-        for name, grid in delivered_maps.items():
+        self.published_map_records = {record.source: record for record in records}
+        self.received_map_digests = result["source_digests"]
+        for name, grid in result["delivered_maps"].items():
             self.received_map_publishers[name].publish(grid)
-        self.hub_map = merge_maps(list(delivered_maps.values()), "map")
-        self.map_payload_sha256 = map_digest(self.hub_map)
+        self.hub_map = result["hub"]
+        self.map_payload_sha256 = result["hub_digest"]
         # The oldest contributing source is the conservative freshness summary;
         # every source also remains individually visible in the state metadata.
         self.hub_map_source_stamp = min(record.source_stamp for record in records)
         self.hub_map_received_stamp = max(record.received_stamp for record in records)
         self.map_publisher.publish(self.hub_map)
         for name in self.names:
-            self.downlinks[name].send(
-                "shared_map", "hub", map_payload(self.hub_map),
-                source_stamp=self.hub_map_source_stamp, now=now, version=self.map_version)
-            self.downlinks[name].deliver(self.edges[name], now, sampled=True)
+            generated_now = self.now()
+            if generated_now is None:
+                break
+            sent = self.downlinks[name].send(
+                "shared_map", "hub", result["hub_payload"],
+                source_stamp=self.hub_map_source_stamp, now=generated_now,
+                version=self.map_version)
+            received_now = self.now()
+            if received_now is None:
+                break
+            self.downlinks[name].deliver(self.edges[name], received_now, sampled=True)
+            delivered = self.edges[name].get("shared_map", "hub")
+            if delivered is not None and delivered.payload_json == sent.payload_json:
+                self.navigation_maps[name] = result["navigation"][name]
+            elif delivered == result["previous_shared"][name]:
+                previous_navigation = result["previous_navigation"].get(name)
+                if previous_navigation is not None:
+                    self.navigation_maps[name] = previous_navigation
             self.publish_navigation_map(name)
+        self.map_diagnostics["completed"] += 1
+        self.map_diagnostics["worker_wall_sec"] = result["worker_wall_sec"]
+        self.map_diagnostics["publish_wall_sec"] = perf_counter() - started
+        if self.queued_map_job is not None:
+            job, self.queued_map_job = self.queued_map_job, None
+            self.submit_map_job(job)
 
     def publish_states(self):
+        started = perf_counter()
         now = self.now()
         if now is None:
             return
@@ -347,6 +481,9 @@ class IdealInformation(Node):
             if not all(math.isfinite(payload[field]) for field in ("x", "y", "yaw", "v", "w")):
                 continue
             self.transport.send("state", name, payload, source_stamp=source_stamp, now=now)
+        now = self.now()
+        if now is None:
+            return
         self.transport.deliver(self.received, now, sampled=True)
         robots = []
         for name in self.names:
@@ -372,7 +509,7 @@ class IdealInformation(Node):
             })
             robots.append(payload)
         self.state_sequence += 1
-        maps = {name: self.received.get("map", name) for name in self.names}
+        maps = self.published_map_records
         message = String()
         message.data = json.dumps({
             "epoch": self.epoch, "sequence": self.state_sequence, "robots": robots,
@@ -387,8 +524,12 @@ class IdealInformation(Node):
                 for name, record in maps.items() if record is not None
             },
             "map_payload_sha256": self.map_payload_sha256,
+            "information_diagnostics": dict(
+                self.map_diagnostics, pending=self.map_future is not None,
+                queued=self.queued_map_job is not None),
         }, allow_nan=False, sort_keys=True)
         self.state_publisher.publish(message)
+        self.map_diagnostics["state_wall_sec"] = perf_counter() - started
 
 
 def main(args=None):

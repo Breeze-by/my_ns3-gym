@@ -446,3 +446,16 @@ def test_encoding_in_flight_does_not_block_received_state_or_lease_service():
     assert node.dispatcher.navigation()["tb1"]["goal_id"] == goal_id
     assert node.dispatcher.navigation()["tb1"]["lease_until"] > before
     assert not node.test_observations
+
+
+def test_task_deadline_precedes_new_native_dispatch():
+    node, clock = make_adapter()
+    clock[0] = 301.
+    node.state = state(301., sequence=2)
+    refresh_snapshot(node)
+    node.receive_action(command(node))
+    node.maintain()
+    assert node.stop_requested and node.dispatcher.closed
+    assert not any(client.goals for client in node.navigation_clients.values())
+    assert any(kind == "action_rejected" and data["reason"] == "task_deadline"
+               for kind, data in node.test_records)

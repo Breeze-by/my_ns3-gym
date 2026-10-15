@@ -1,0 +1,50 @@
+{
+  "declared_at": "2026-10-15",
+  "scope": "P1B adapter only; no training, gateway or task-success claim",
+  "matrix": [
+    {
+      "scene": "open",
+      "seed": 101,
+      "domain": 108,
+      "gazebo_port": 11901
+    },
+    {
+      "scene": "rooms",
+      "seed": 101,
+      "domain": 109,
+      "gazebo_port": 11902
+    },
+    {
+      "scene": "corridors",
+      "seed": 101,
+      "domain": 110,
+      "gazebo_port": 11903
+    }
+  ],
+  "execution": "serial new process per cell; same pushed source freeze; 25sim-sec scripted action then stop; preserve failures",
+  "command_template": "PYTHONNOUSERSITE=1 /usr/bin/python3 scripts/run_mr3_adapter_probe.py --scene SCENE --seed 101 --run-id UNIQUE_ID",
+  "startup_wall_guard_sec": 420,
+  "closure_wall_guard_sec": 90,
+  "task_contract": "original P1A 95%/300sim-sec schema4 unmodified; intentional short shutdown is incomplete",
+  "exit_requirements": [
+    "all three native accepts",
+    "KEEP no resubmission",
+    "5sec commitment",
+    "cancel result closes every owner",
+    "snapshot/action digest replay",
+    "duplicates/cross-epoch/expired/masked commands rejected or idempotent",
+    "preserve contact/freshness/original native failures"
+  ],
+  "retry_rule": "infrastructure failure retained; no selective retries counted as matrix replacement; code fix => new source freeze and full new 3cell matrix",
+  "revision": "v4 after retained3 native failures; fresh full3cell samefreeze matrix",
+  "script": "maximize count of legal candidate choices then observed own-map path distances (explicit cancellation stress script only); KEEP; WAIT from7s; candidates from15s; stop25s",
+  "changes": [
+    "TF source-time promotion without artificial .2s wait; honest age .5 unchanged",
+    "background pure observation encoding; ROS source and protocol callbacks remain responsive",
+    "path feasibility from each delivered unmodified own local map; shared geometric candidate targets remain native fused-safe; missing own map KEEP only",
+    "UUID cancellation compare bytes; RPC exceptions latch failure without releasing unknown goals",
+    "explicit adapter_probe-only evaluator finalize service always emits incomplete adapter_probe_shutdown; native stop remains launch owned",
+    "stronger offline auditor binds all CLI/server PIDs and positive cancel ACK then CANCELED result",
+    "offload information-bridge map encode/fusion/navigation copies so state10Hz callbacks are never blocked by map work; preserve .5sourceage gate; source/update/audit timing recorded"
+  ]
+}

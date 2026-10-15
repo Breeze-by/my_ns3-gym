@@ -110,7 +110,7 @@ class MR3Adapter(Node):
         row = {"kind": kind, "stamp": self.now(), "epoch": self.epoch, "payload": payload}
         if self.audit_file:
             self.audit_file.write(json.dumps(row, sort_keys=True, allow_nan=False) + "\n")
-        if kind != "observation":
+        if kind not in ("observation", "state_update"):
             message = String()
             message.data = json.dumps(row, sort_keys=True, allow_nan=False)
             self.event_pub.publish(message)
@@ -130,6 +130,14 @@ class MR3Adapter(Node):
                     and {r["name"] for r in state["robots"]} == set(ROBOTS)
                     and (self.state is None or state["sequence"] > self.state["sequence"])):
                 self.state = state
+                self.record("state_update", {
+                    "sequence": state["sequence"],
+                    "information_diagnostics": state.get("information_diagnostics"),
+                    "robots": [{key: robot.get(key) for key in (
+                        "name", "source_stamp", "received_stamp", "odom_source_stamp",
+                        "tf_source_stamp", "tf_validity_stamp", "valid")}
+                        for robot in state["robots"]],
+                })
                 for robot in state["robots"]:
                     history = self.history[robot["name"]]
                     if robot["valid"] and (not history or
@@ -239,6 +247,10 @@ class MR3Adapter(Node):
         try:
             command = json.loads(message.data)
             now = self.now()
+            if self.started_at is not None and now - self.started_at >= 300.:
+                self.stop_requested = True
+                self.dispatcher.safety_stop(now, "task_deadline")
+                raise ValueError("task_deadline")
             if command["epoch"] != self.epoch:
                 raise ValueError("wrong_epoch")
             command_id = command["command_id"]
@@ -355,6 +367,9 @@ class MR3Adapter(Node):
         now = self.now()
         if self.started_at is None:
             return
+        if now - self.started_at >= 300. and not self.stop_requested:
+            self.stop_requested = True
+            self.dispatcher.safety_stop(now, "task_deadline")
         self.finish_observation()
         if self.pending_stop is not None:
             pending = self.pending_stop
@@ -363,6 +378,13 @@ class MR3Adapter(Node):
                 self.pending_stop = None
                 self.receive_stop(pending)
         if not self.stop_requested and not self.states_fresh(now):
+            self.record("state_stale", {
+                "state_sequence": self.state["sequence"] if self.state else None,
+                "robots": [{key: robot.get(key) for key in (
+                    "name", "source_stamp", "received_stamp", "odom_source_stamp",
+                    "tf_source_stamp", "tf_validity_stamp", "valid")}
+                    for robot in self.state["robots"]] if self.state else [],
+            })
             self.stop_requested = True
             self.dispatcher.safety_stop(now, "received_state_stale")
             failure = String()
@@ -422,9 +444,6 @@ class MR3Adapter(Node):
                 self.handles[goal_id].cancel_goal_async().add_done_callback(
                     lambda future, name=name, goal_id=goal_id: self.canceled(future, name, goal_id))
         self.flush_protocol_events(now)
-        if now - self.started_at >= 300. and not self.stop_requested:
-            self.stop_requested = True
-            self.dispatcher.safety_stop(now, "task_deadline")
         if self.stop_requested and self.dispatcher.closed and not self.stop_acknowledged:
             self.stop_acknowledged = True
             payload = {"start_sim_time_sec": self.started_at, "stop_sim_time_sec": now,
