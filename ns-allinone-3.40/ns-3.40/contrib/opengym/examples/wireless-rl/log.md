@@ -2232,3 +2232,22 @@ export PYTHONNOUSERSITE=1
 - 运行冻结仍为`5e478025ede4f66420cc293655c0c03db791b2ab`。文档简述累计10次尝试含1次保留的原生关闭基础设施失败、9个有效单元（6严格成功/3有效peer安全失败），详细经过留在P1A报告和原日志；不宣称原九全过、零infra尝试或SDK崩溃已根治。任务契约保留各门禁独立分类；未改变预算、阈值、划分和运行参数。
 - 静态命令：`rtk proxy /usr/bin/python3 /tmp/check_mr3_p1a_final_docs_v6.py`。逐文diff复核后，13文档68个本地链接、25段Bash语法、5条显式三机器人命令及源码参数、P0/P1A/P1B状态、`git diff --check`全部PASS；`launch_commands.md`的v6 UDP环境、精确18个5墙秒writer配置与Gazebo双退出确认说明保持冻结原文。
 - 仅文档同步及本条追加记录；没有ROS/仿真/训练/补测、运行源码或旧证据修改，没有生成最终文档receipt、没有提交。报告/索引由独立负责者更新；最终统一checker6 receipt和提交交由root执行。
+
+
+## 2026-10-15 MR3-P1A用户验收与P1B适配实施
+
+用户本轮明确“p1a验收通过，继续执行p1b”。P1A已验收，授权边界仅P1B；P1C、训练和gateway未开始。
+基点`d47df73`，本轮新增理想received存储、稳定目标dispatcher、确定性观测/几何候选/1000类掩码、
+互斥adapter启动模式及独立原生脚本/审计。完整契约见`MR3_ADAPTER_CONTRACT.md`。
+
+离线验证（不产生仿真/任务/训练信用）：在Git根执行
+`rtk proxy bash -c 'source /opt/ros/humble/setup.bash; source ros2_ws/ros2-multi-robot-automap/install/setup.bash; export PYTHONNOUSERSITE=1; /usr/bin/python3 -m pytest -q ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test --ignore=ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_flake8.py --ignore=ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_pep257.py --ignore=ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_copyright.py'`。
+中间完整回归396 passed；最终数量在P1B报告记录。仅对新增文件执行flake8，保留既有文件的历史风格。
+ROS工作区执行`rtk proxy bash -c 'source /opt/ros/humble/setup.bash; export PYTHONNOUSERSITE=1; /usr/bin/python3 /usr/bin/colcon build --symlink-install --packages-select multi_robot multi_robot_exploration --allow-overriding nav2_bringup'`，2包构建通过。
+独立审查修正接受状态命名、地图内容/版本配对、TF有效时刻与测量源时间、命令过期与停止竞态、
+重复命令指纹、drive布尔别名和探针停钟/原生退出审计。无新依赖安装。
+
+原生运行前预声明：`report/assets/20261015_mr3_p1b/predeclared_native_plan.json`。
+open/rooms/corridors各seed101、三台、串行、独立域108/109/110与Gazebo端口11901/11902/11903；
+一次推送源码冻结下运行，25仿真秒脚本适配探针（KEEP/WAIT/重复/跨epoch/过期/承诺期边界）。
+95%/300秒合同不变；短探针主动中断的评价不能计任务成功。失败、原生异常和后续修复均追加，原件不覆盖。

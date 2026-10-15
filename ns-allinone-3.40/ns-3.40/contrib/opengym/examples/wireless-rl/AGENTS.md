@@ -2,8 +2,8 @@
 
 Updated 2026-10-15. The active contract is [RESEARCH_PLAN.md](RESEARCH_PLAN.md),
 then [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md). Follow root AGENTS.md.
-MR3-P0 was explicitly accepted on 2026-10-14; MR3-P1A awaits user acceptance.
-Do not start P1B, training or gateway work before P1A user acceptance.
+MR3-P0 was explicitly accepted on 2026-10-14; MR3-P1A was accepted on 2026-10-15 and the user authorized P1B.
+P1B is in progress; P1C, training and gateway remain unauthorized.
 This route replaces the old search/charging/rally/communication-scheduler plan.
 
 ## Task and source of truth

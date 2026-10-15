@@ -1,9 +1,9 @@
 # 三机器人 ROS 建图导航：当前实现指南
 
-代码核对：2026-10-15，MR3-P1A待用户验收；`c9344e1`是历史工程冻结。
+代码核对：2026-10-15，MR3-P1A用户已验收，P1B理想适配验证中；`c9344e1`是历史工程冻结。
 新研究契约在 [RESEARCH_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，步骤在
-[IMPLEMENTATION_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/IMPLEMENTATION_PLAN.md)。MR3-P0已验收，P1B及后续未开始。
-当前仍是**传统前沿控制器**，没有导航 RL、训练环境或通信 gateway。
+[IMPLEMENTATION_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/IMPLEMENTATION_PLAN.md)。MR3-P0/P1A已验收，P1C及后续未开始。
+默认仍为**传统前沿控制器**；新增互斥的理想策略适配模式，没有导航RL模型、训练环境或通信gateway。
 复制运行统一使用 [launch_commands.md](launch_commands.md)，其中全部显式传三台。
 
 ## 1. 路径与环境
@@ -24,7 +24,9 @@
 | `src/merge_map/merge_map/merge_map.py` | 保守公共 frame 栅格融合 |
 | `src/multi_robot_exploration/multi_robot_exploration/control.py` | 当前手工前沿策略与 Nav2 action 所有权 |
 | 同包 `nav2_ready_gate.py` / `peer_obstacles.py` / `task_evaluator.py` | 六节点就绪、队友机体输入、隔离任务评估与就绪/停止握手 |
-| `scripts/ros_smoke_test.py` / `run_ideal_baseline.py` | 有界检查、传统理想基线批量入口 |
+| `mr3_adapter.py` / `mr3_observation.py` / `mr3_protocol.py` | 显式联合动作、几何候选/掩码、稳定目标所有权 |
+| `mr3_information.py` / `mr3_transport.py` | 理想交付、后端图和机器人导航图副本；非DDS隔离 |
+| `scripts/ros_smoke_test.py` / `run_ideal_baseline.py` / `run_mr3_adapter_probe.py` | 传统检查/矩阵和P1B脚本适配探针 |
 
 主 launch 默认3台，校验保留1–4历史兼容；MR3合同只允许三台，不开展其他数量实验。
 当前出生位 tb1=(0,-.45)、tb2=(0,.45)、tb3=(.45,0)，不是旧手册中分散四台的样例。
@@ -53,7 +55,8 @@ peer_layer 的旧位置，其他真实障碍层以 max 保留。它不改 SLAM �
 
 网络研究时，本机传感/SLAM/Nav2可继续本地实时工作，但远端融合图、队友位姿、目标和
 回执必须遵守真实交付边界。当前这些共享输入仍是实时 ROS 旁路，不能宣称已受 Wi-Fi
-影响。拟定 received store/navigation_map/action proxy 尚未实现，见新计划 P1B/P3A。
+影响。adapter模式已通过理想received存储和navigation_map明确逻辑交付边界；
+独立action proxy、完整字节及DDS隔离仍属P3A，不能把理想对象交付称为Wi-Fi。
 
 ## 4. 关键当前参数（不是未来 RL 默认值）
 
@@ -112,7 +115,7 @@ P1A合同模式另作完整检查。CSV/JSON原子发布、拒绝覆盖同id。
 旧September多种子P1C/schema2成绩属于旧源码。73组件检查的PASS也不等于MR3整任务。
 冻结`5e47802`累计10次尝试含1次保留的原生基础设施失败，得到9个有效单元；完整结果见
 [P1A报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261014_mr3_p1a.md)。
-当前P1A待用户验收，P1B未开始；这些是传统开发基线证据，没有导航RL/通信成绩。
+P1A已于2026-10-15由用户验收，P1B适配验证中；这些仍是传统开发基线证据，没有导航RL/通信成绩。
 
 ## 6. 诊断原则
 

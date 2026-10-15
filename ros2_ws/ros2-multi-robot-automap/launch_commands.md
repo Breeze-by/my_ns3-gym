@@ -1,7 +1,7 @@
-# 当前三机器人传统基线启动命令
+# 当前三机器人基线与MR3适配启动命令
 
-2026-10-15：新路线为 [MR3](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，P0已验收，P1A待用户验收，P1B未开始。
-**这些命令仍启动已有前沿控制器，不是 RL**；本页没有虚构训练或 gateway 命令。
+2026-10-15：新路线为 [MR3](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，P0/P1A已验收，P1B适配验证中。
+默认`execution_mode:=baseline`启动前沿控制器；`adapter`为显式联合动作接口，尚无RL训练或gateway。
 所有推荐运行显式固定三台，活动默认已改为三台，保留1–4历史兼容。
 
 ## 环境与构建
@@ -44,6 +44,41 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
 插件发布，robot_state_publisher 生成 TF。peer_layer 的完整队友机体包络来自观测
 odom/TF，不使用真值、不进入 SLAM；任务中源数据失效锁存控制失败并取消目标。
 这些实时共享输入**尚未受网络限制**，后续 MR3-P3A 必须消除旁路。
+
+## MR3-P1B理想适配与脚本探针
+
+在已source上述ROS/Gazebo环境的终端使用下方P1A同主机UDP profile。
+新模式只启动`mr3_adapter`目标所有者，禁止同时启动control或drive；同ROS域的本机锁
+会拒绝第二个所有者。策略输入来自`/mr3/received/map`及交付状态；Nav2全局图为
+本机最新图与交付共享图融合的`/tbN/navigation_map`，peer使用交付状态副本。
+原生action端点仍位于适配器进程；这不是P3A的DDS隔离或网络gateway。
+
+```bash
+MR3_ADAPTER_ID=mr3_p1b_open_$(date +%Y%m%d_%H%M%S)
+export ROS_DOMAIN_ID=108 GAZEBO_MASTER_URI=http://127.0.0.1:11901
+PYTHONNOUSERSITE=1 /usr/bin/python3 scripts/run_mr3_adapter_probe.py \
+  --scene open --seed 101 --run-id $MR3_ADAPTER_ID
+/usr/bin/python3 scripts/audit_mr3_adapter_probe.py log/mr3_adapter/$MR3_ADAPTER_ID
+```
+
+脚本自动设置P1A UDP profile，顺序验证候选目标、KEEP、WAIT、第二批目标和25秒后终态
+闭合；完整95%评价器仅保留原口径监测，主动短停不能当成任务成功。
+rooms/corridors分别使用对应`--scene`，推荐域109/110、Gazebo端口11902/11903，逐次运行，
+每次新run-id。独立审计读取真实接受/取消/结果和子进程退出，不能只看runner返回值。
+详细信封、频率、租约、观测/候选/掩码和动作字段见
+[MR3_ADAPTER_CONTRACT.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ADAPTER_CONTRACT.md)。
+
+手动提供策略输入时可启动同一模式：
+
+```bash
+ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
+  robot_count:=3 execution_mode:=adapter mr3_episode_epoch:=unique_episode \
+  world:=p1c_open.world gazebo_seed:=101 enable_gzclient:=false \
+  enable_rviz:=false enable_merge_rviz:=false auto_save_map:=false
+```
+
+无外部`/mr3/action`输入时保持空闲；KEEP不重发目标。正式验证使用脚本内的P1A持续监测，
+手动入口未启用评价器，不产生安全或任务成绩。P1C reset/吞吐和训练均未开始。
 
 ## 已有 90% 工程评估（不验收 MR3 的 95% 任务）
 

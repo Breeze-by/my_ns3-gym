@@ -22,6 +22,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 
 from launch_ros.actions import Node
+from nav2_common.launch import RewrittenYaml
 
 
 def launch_setup(context, *args, **kwargs):
@@ -99,6 +100,15 @@ def launch_setup(context, *args, **kwargs):
     if not 1 <= robot_count <= len(all_robots):
         raise ValueError("robot_count must be an integer between 1 and 4")
     robots = all_robots[:robot_count]
+    execution_mode = LaunchConfiguration("execution_mode").perform(context)
+    if execution_mode not in ("baseline", "adapter"):
+        raise ValueError("execution_mode must be baseline or adapter")
+    adapter_mode = execution_mode == "adapter"
+    if adapter_mode and robot_count != 3:
+        raise ValueError("MR3 adapter requires robot_count=3")
+    if adapter_mode and IfCondition(enable_drive).evaluate(context):
+        raise ValueError("MR3 adapter requires enable_drive=false")
+    episode_epoch = LaunchConfiguration("mr3_episode_epoch")
 
     print(f"\n[INFO] Requested robot_count = {robot_count}")
     print(f"[INFO] Active robots = {[robot['name'] for robot in robots]}\n")
@@ -144,7 +154,15 @@ def launch_setup(context, *args, **kwargs):
         ],
         output="screen",
     )
-    actions.append(merge_map_node)
+    if adapter_mode:
+        actions.append(Node(
+            package="multi_robot_exploration", executable="mr3_information",
+            name="mr3_information", output="screen",
+            parameters=[{"use_sim_time": use_sim_time, "robot_count": 3,
+                         "episode_epoch": episode_epoch, "tf_validity_lead_sec": .2}],
+        ))
+    else:
+        actions.append(merge_map_node)
     if evaluation_contract.perform(context):
         contact_reducer = Node(
             package="multi_robot", executable="mr3_contact_reducer",
@@ -162,7 +180,13 @@ def launch_setup(context, *args, **kwargs):
     actions.append(Node(
         package="multi_robot_exploration", executable="peer_obstacles",
         name="peer_obstacles", output="screen",
-        parameters=[{"robot_count": robot_count, "use_sim_time": use_sim_time}],
+        parameters=[{"robot_count": robot_count, "use_sim_time": use_sim_time,
+                     "task_release_start": adapter_mode,
+                     "tf_source_lead_sec": .2 if adapter_mode else 0.}],
+        remappings=([
+            (f"/{robot['name']}/{topic}", f"/mr3/received/{robot['name']}/{topic}")
+            for robot in robots for topic in ("odom", "tf")
+        ] if adapter_mode else []),
     ))
 
     merge_rviz = Node(
@@ -176,13 +200,14 @@ def launch_setup(context, *args, **kwargs):
         ],
         parameters=[{"use_sim_time": use_sim_time}],
         condition=IfCondition(enable_merge_rviz),
+        remappings=([("/merge_map", "/mr3/received/map")] if adapter_mode else []),
     )
     actions.append(merge_rviz)
 
     control_node = Node(
         package="multi_robot_exploration",
-        executable="control",
-        name="headquarters_control",
+        executable="mr3_adapter" if adapter_mode else "control",
+        name="mr3_adapter" if adapter_mode else "headquarters_control",
         parameters=[
             {
                 "robot_count": robot_count,
@@ -192,6 +217,8 @@ def launch_setup(context, *args, **kwargs):
                 "navigation_response_timeout_sec": response_timeout,
                 "navigation_cancel_timeout_sec": cancel_timeout,
                 "require_task_monitor_ready": bool(evaluation_contract.perform(context)),
+                **({"episode_epoch": episode_epoch,
+                    "audit_path": LaunchConfiguration("mr3_audit_path")} if adapter_mode else {}),
             }
         ],
         output="screen",
@@ -229,6 +256,7 @@ def launch_setup(context, *args, **kwargs):
         ],
         output="screen",
         condition=IfCondition(enable_task_evaluator),
+        remappings=([("/merge_map", "/mr3/received/map")] if adapter_mode else []),
     )
     # ========= Gazebo =========
     server_state = {
@@ -384,6 +412,18 @@ def launch_setup(context, *args, **kwargs):
             "params",
             f"nav2_params_{robot_name}_0.yaml",
         )
+        if adapter_mode:
+            # Keep local sensing and every Nav2 parameter unchanged; only the
+            # two global static-map inputs use the declared robot-side copy.
+            params_file = RewrittenYaml(
+                source_file=params_file, convert_types=True,
+                param_rewrites={
+                    "global_costmap.global_costmap.ros__parameters.map_topic":
+                        f"/{robot_name}/navigation_map",
+                    "global_costmap.global_costmap.ros__parameters.static_layer.map_topic":
+                        f"/{robot_name}/navigation_map",
+                },
+            )
 
         print(f"Namespace: {namespace}, PARAM Config: {params_file}\n")
 
@@ -585,6 +625,18 @@ def launch_setup(context, *args, **kwargs):
 
 def generate_launch_description():
     ld = LaunchDescription()
+    ld.add_action(DeclareLaunchArgument(
+        "execution_mode", default_value="baseline",
+        description="baseline: handcrafted controller; adapter: exclusive MR3 joint action endpoint.",
+    ))
+    ld.add_action(DeclareLaunchArgument(
+        "mr3_episode_epoch", default_value="mr3-p1b",
+        description="Unique process-rebuilt episode identity for the ideal policy interface.",
+    ))
+    ld.add_action(DeclareLaunchArgument(
+        "mr3_audit_path", default_value="",
+        description="Optional exclusive-create JSONL policy observation/protocol audit.",
+    ))
 
     ld.add_action(
         DeclareLaunchArgument(

@@ -11,7 +11,7 @@ from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile
 from sensor_msgs.msg import LaserScan, PointCloud2, PointField
-from std_msgs.msg import String
+from std_msgs.msg import Header, String
 from tf2_msgs.msg import TFMessage
 
 from multi_robot_exploration.control import (
@@ -46,6 +46,7 @@ class PeerObstacles(Node):
         self.odometry = {}
         self.mission_started = False
         self.failed = False
+        self.tf_source_lead_sec = self.declare_parameter("tf_source_lead_sec", 0.).value
         self.publishers_by_robot = {
             name: self.create_publisher(LaserScan, f"/{name}/peer_obstacles", 1)
             for name in self.names
@@ -59,6 +60,12 @@ class PeerObstacles(Node):
             QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL),
         )
         self.inputs = []
+        task_release_start = self.declare_parameter("task_release_start", False).value
+        if task_release_start:
+            self.inputs.append(self.create_subscription(
+                Header, "/exploration_start", self.receive_release,
+                QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL),
+            ))
         for name in self.names:
             self.inputs.extend([
                 self.create_subscription(
@@ -69,12 +76,17 @@ class PeerObstacles(Node):
                     TFMessage, f"/{name}/tf",
                     lambda msg, name=name: self.receive_tf(msg, name), 20,
                 ),
-                self.create_subscription(
+            ])
+            if not task_release_start:
+                self.inputs.append(self.create_subscription(
                     GoalStatusArray, f"/{name}/navigate_to_pose/_action/status",
                     self.receive_status, 10,
-                ),
-            ])
+                ))
         self.timer = self.create_timer(0.1, self.publish_obstacles)
+
+    def receive_release(self, message):
+        if message.frame_id == "map":
+            self.mission_started = True
 
     def receive_tf(self, message, name):
         for transform in message.transforms:
@@ -100,7 +112,10 @@ class PeerObstacles(Node):
                 break
             stamp = odometry.header.stamp.sec + odometry.header.stamp.nanosec / 1e9
             tf_stamp = transform.header.stamp.sec + transform.header.stamp.nanosec / 1e9
-            if stamp <= 0 or now - stamp > 0.5 or now - tf_stamp > 0.5:
+            lead = getattr(self, "tf_source_lead_sec", 0.)
+            tf_source = tf_stamp - lead
+            if (stamp <= 0 or now - stamp > 0.5 or now - tf_source > 0.5
+                    or (lead > 0 and (tf_source > now or stamp > now))):
                 break
             position = odometry.pose.pose.position
             x, y = transform_point_2d(position.x, position.y, transform.transform)
@@ -109,7 +124,7 @@ class PeerObstacles(Node):
             )
             if not all(math.isfinite(v) for v in (x, y, yaw)):
                 break
-            poses[name] = (x, y, yaw, stamp)
+            poses[name] = (x, y, yaw, min(stamp, tf_source) if lead > 0 else stamp)
         if len(poses) != len(self.names):
             if self.mission_started and not self.failed:
                 message = String()

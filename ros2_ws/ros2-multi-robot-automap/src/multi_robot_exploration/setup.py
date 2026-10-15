@@ -21,6 +21,8 @@ setup(
     entry_points={
         'console_scripts': [
             'control = multi_robot_exploration.control:main',
+            'mr3_adapter = multi_robot_exploration.mr3_adapter:main',
+            'mr3_information = multi_robot_exploration.mr3_information:main',
             'nav2_ready_gate = multi_robot_exploration.nav2_ready_gate:main',
             'peer_obstacles = multi_robot_exploration.peer_obstacles:main',
             'task_evaluator = multi_robot_exploration.task_evaluator:main',

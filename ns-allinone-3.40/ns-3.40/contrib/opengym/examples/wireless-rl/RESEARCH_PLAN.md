@@ -1,7 +1,7 @@
 # MR3 研究路线：三机器人 RL 联合建图与冻结策略的 Wi-Fi 网络影响
 
 版本：2026-10-15；路线标识：`MR3`。本文取代旧的目标搜索、充电、集合和通信调度 RL 路线。
-唯一 Git 根：`/home/zhuyulab/ns3-workspace`。P0已验收；P1A待用户验收，P1B及后续未开始，
+唯一 Git 根：`/home/zhuyulab/ns3-workspace`。P0/P1A已验收；P1B进行中，P1C及后续未开始，
 任务定义见 [MR3_TASK_CONTRACT.md](MR3_TASK_CONTRACT.md)，不提前开展训练或 gateway。
 工程步骤、状态和逐步验收以 [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) 为准；
 代码审计、文献和取舍依据见 [路线审计](report/20261014_mr3_route_audit.md)；
@@ -31,12 +31,12 @@ Wi-Fi 分组网络，测量信息延迟、丢失和陈旧对同一联合建图�
 
 | 项目 | 当前事实 | 新路线中的处理 |
 | --- | --- | --- |
-| ROS 2 / Gazebo / SLAM / Nav2 | 已实现；P1A待用户验收，`5e47802`为当前验证冻结 | 复用，三机器人契约在 MR3-P1A 验收 |
+| ROS 2 / Gazebo / SLAM / Nav2 | 已实现；P1A已于2026-10-15验收，`5e47802`为当前验证冻结 | 复用，三机器人契约在 MR3-P1A 验收 |
 | `merge_map` | 公共坐标系的保守栅格融合；不是未知相对位姿的地图配准算法 | 保留融合规则，改变通信输入来源 |
-| `control.py` | 手工前沿评分、分配、分段导航和失败处理 | 保留为对照；RL 模式必须与它互斥 |
-| `peer_obstacles.py` | 直接读取所有队友 odom/TF，构造完整机体包络 | 网络阶段必须改成已交付信息或明确的本地感知 |
-| Nav2 全局地图 | 三台直接读取实时 `/merge_map` | 网络阶段改成机器人端已交付地图副本 |
-| 覆盖评估器 | P1A新增合同模式schema4，schema3兼容保留；待用户验收 | 完整ROI、质量、全机体监测、三台参与与终态闭合门禁 |
+| `control.py` | 默认baseline手工探索；adapter模式独占目标接口，无手工兜底 | 两模式互斥，P1B原生验证中 |
+| `peer_obstacles.py` | baseline读raw；adapter读理想交付状态，完整机体包络不变 | P3A还需DDS/进程隔离与断链证明 |
+| Nav2 全局地图 | baseline读实时`/merge_map`；adapter读本机图+交付共享图副本 | P3A证明真实字节交付和无旁路 |
+| 覆盖评估器 | P1A合同schema4已验收，schema3兼容诊断 | 完整ROI、质量、全机体监测、三台参与与终态闭合门禁 |
 | 三机器人导航 RL / 训练环境 | **尚未实现** | MR3-P1B 至 MR3-P2C |
 | ROS 与 ns-3 双向 gateway / Wi-Fi 闭环 | **尚未实现** | MR3-P3A 至 MR3-P5 |
 | `sim.cc` 与已有 DQN | 五用户、15 维观测、5 动作的 toy 调度 MDP | 历史工具链，不能充当三机器人策略或网络接入证明 |
@@ -288,8 +288,9 @@ CPU 预算和 PPO 采样策略版本必须明确；首版不强制 DDP。若采�
 
 机器人端导航地图应采用**本机最新 SLAM 与最后收到的共享地图**的声明式融合副本；
 理想模式和网络模式使用相同规则，避免将接网退化混同于换规划地图。
-名称如 `/tbN/navigation_map`、`/received/...` 是拟定接口，当前代码尚未提供这些 topic。
-当前 raw `/merge_map` 静态层和 raw 队友 odom/TF 避障必须在 P3A 消除旁路。
+P1B的adapter模式已提供`/tbN/navigation_map`与`/mr3/received/...`理想副本，
+详见[适配契约](MR3_ADAPTER_CONTRACT.md)。baseline保留raw共享输入；
+P3A仍须证明字节、进程/订阅隔离和断链无旁路，理想同进程对象不能提供该信用。
 
 可使用独立机器人/后端 DDS 域或隔离进程与订阅白名单来建立边界；仅改 topic 名称不足以
 证明隔离。黑断测试时，即使 raw ROS 数据继续产生，后端位置/地图不得继续变新，远端

@@ -13,7 +13,7 @@ communication first, then frozen-policy gateway/ns-3 Wi-Fi effects. Current
 ROS gateway is implemented there. Do not let its old DQN or report next steps
 replace the active roadmap. The ROS workspace is in the same repository.
 
-MR3-P0 was accepted by the user on 2026-10-14; P1A awaits user acceptance.
+MR3-P0 was accepted by the user on 2026-10-14; P1A was accepted on 2026-10-15; P1B is in progress.
 Freeze `5e47802` has 9 effective slots from 10 attempts, including one retained
 native infrastructure failure; see the [P1A report](ns-3.40/contrib/opengym/examples/wireless-rl/report/20261014_mr3_p1a.md).
-P1B and later steps remain unstarted and require separate acceptance.
+P1C and later steps remain unstarted and require separate acceptance.

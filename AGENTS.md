@@ -53,10 +53,10 @@ acceptance. Complete and verify each substep, commit/push, present evidence,
 and wait for the user's explicit acceptance before the next substep.
 Old P1C/P2C acceptance or PASS cannot be reused as MR3 credit.
 
-Current boundary: **MR3-P0 accepted by the user on 2026-10-14; MR3-P1A awaiting user acceptance**.
-P1A implementation and validation are complete as of 2026-10-15. Obtain the
-user's explicit acceptance before P1B; P1B and later stages remain unstarted.
-No RL training or gateway work is authorized by this step.
+Current boundary: **MR3-P0 accepted on 2026-10-14; MR3-P1A accepted by the user on 2026-10-15; MR3-P1B in progress**.
+P1A implementation and validation are complete as of 2026-10-15. The user explicitly authorized P1B on 2026-10-15. P1B implements the ideal
+observation/goal adapter; P1C and later remain unstarted. No training or gateway
+work is authorized by P1B.
 
 ## Current implementation and evidence
 

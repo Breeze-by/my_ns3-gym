@@ -24,6 +24,8 @@ from scipy.sparse.csgraph import dijkstra
 from std_msgs.msg import Bool, Header, String
 from tf2_msgs.msg import TFMessage
 
+from multi_robot_exploration.mr3_owner import acquire_navigation_owner
+
 
 OCCUPIED_THRESHOLD = 50
 MIN_FRONTIER_GROUP_SIZE = 6
@@ -604,6 +606,7 @@ def coordinate_assignments(
 class HeadquartersControl(Node):
     def __init__(self):
         super().__init__("headquarters_control")
+        self.navigation_owner = acquire_navigation_owner()
         self.num_robots = self.declare_parameter("robot_count", 3).value
         self.require_task_monitor_ready = self.declare_parameter(
             "require_task_monitor_ready", False
@@ -757,6 +760,12 @@ class HeadquartersControl(Node):
 
     def now(self):
         return self.get_clock().now().nanoseconds / 1e9
+
+    def destroy_node(self):
+        try:
+            return super().destroy_node()
+        finally:
+            self.navigation_owner.close()
 
     def _task_monitor_callback(self, message):
         self.task_monitor_ready = bool(message.data)
