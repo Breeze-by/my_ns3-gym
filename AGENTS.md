@@ -79,8 +79,11 @@ reward ledger. The W7 `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a` engineering mat
 with 762 ROS semantic and 40 conda CPU checks. P1C was accepted on 2026-10-16.
 The retained `b328f84` GPU interface probe has 3 forward/3 backward calls and 0 updates;
 P1C made no new GPU training or multi-day stability claim.
-P2A has an eight-decision native engineering checkpoint (seed17, four GPU optimizer steps),
-without 95% task credit; no validated exploration policy or ROS/ns-3 gateway exists. Historical
+P2A has separate eight-decision native engineering checkpoints (seed17 and seed41,
+four GPU optimizer steps each). The v2 pilot was diagnostically interrupted after
+390 recorded native decisions and zero updates, preserving two peer-safety failures.
+Candidate representation and short-subgoal SLAM/Nav2 corrections are versioned v3;
+new native evidence is still required. There is no 95% task credit; no validated exploration policy or ROS/ns-3 gateway exists. Historical
 five-user/15-input/5-action toy DQN is a separate task.
 P1A now measures all six actual body collisions per robot (18 streams), with
 continuous freshness, raw publication-sequence audit and navigation terminal

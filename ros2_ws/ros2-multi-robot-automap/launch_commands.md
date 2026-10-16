@@ -166,20 +166,25 @@ python -m pip install -r mr3_learning/requirements-ppo.txt
 仅在干净、已提交推送的新冻结运行，每次唯一run-id。完整episode闭合之后才更新，掩码随rollout保存；
 零时长无动作尾通知归并到此前真实决策，不产生伪actor样本。预算与出口见
 [PPO契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_PPO_CONTRACT.md)。
+当前为v3执行修订，原生运行前必须先完成同一新freeze的提交推送和ROS构建；
+下列命令与[v3前瞻计划](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/predeclared_plan_v3.json)一致，尚未执行。
+v2已诊断停止，390条原生决策与1752.957494墙秒从原4096/14400 pilot预算扣除，
+v3取剩余3706决策/12600墙秒；原最小链和固定开发验证单列。不能把完整round计数0当作零采样。
 
 ```bash
 python -m mr3_learning.ppo --mode train --workers 1 --schedule open:101 \
-  --decisions 8 --episode-steps 8 --wall-seconds 600 --seed 41 \
-  --base-domain 160 --base-port 12301 --run-id UNIQUE_P2A_MINIMAL
+  --decisions 16 --episode-steps 16 --wall-seconds 900 --seed 41 \
+  --base-domain 160 --base-port 12301 --run-id mr3_p2a_v3_minimal
 
 python -m mr3_learning.ppo --mode train --workers 4 --schedule open:101 \
-  --decisions 4096 --episode-steps 300 --wall-seconds 14400 --seed 41 \
-  --base-domain 164 --base-port 12311 --run-id UNIQUE_P2A_PILOT
+  --decisions 3706 --episode-steps 300 --wall-seconds 12600 --seed 41 \
+  --base-domain 164 --base-port 12311 --run-id mr3_p2a_v3_pilot
 
 python -m mr3_learning.ppo --mode evaluate --workers 4 \
-  --checkpoint /ABS/PILOT/final.zip --schedule open:401,open:402,open:403 \
+  --checkpoint /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v3_pilot/final.zip \
+  --schedule open:401,open:402,open:403 \
   --decisions 900 --episode-steps 300 --wall-seconds 9000 --seed 41 \
-  --base-domain 172 --base-port 12321 --run-id UNIQUE_P2A_VALIDATION
+  --base-domain 172 --base-port 12321 --run-id mr3_p2a_v3_validation
 ```
 
 学习端使用cuda:0（可显式`--device cpu`）；每worker始终三台。
@@ -187,6 +192,14 @@ python -m mr3_learning.ppo --mode evaluate --workers 4 \
 采样概率、PPO指标、checkpoint和SHA、完整失败/中断。`completed`只表示run的采集/更新闭合，
 95%任务成功仍由原生schema4独立判断。首轮最小链未通过先停，不启动pilot；
 pilot未达95%时留在P2A诊断，不接网、不进入P2B。
+v3候选规则为`mr3-per-robot-geometric-staging-v3`，路径机体净空仍为`.29m`，
+目标到达圆盘要求`.39m`；各台已交付本地图保留几何代表项，不能用真值或手工目标兜底。
+主launch实际读取`src/multi_robot/params/nav2_params_tb1_0.yaml`至`tb3_0.yaml`，
+三份GoalChecker和DWB的`xy_goal_tolerance`均为`.10m`，yaw仍3.14；
+`params/turtlebot3_params/`内的同名文件不是该launch当前输入。
+主launch包含的SLAM入口读取`src/slam_toolbox/config/mapper_params_online_multi_async.yaml`，
+运动阈值为`.10m/.20rad`，ROS时间节流`.5s`与地图更新5s不变，C++/Karto实现未改。
+这些参数也影响同冻结baseline；历史P1A/P1B/P1C和v1/v2结果不能归入此新执行版本。
 
 ## 已有 90% 工程评估（不验收 MR3 的 95% 任务）
 

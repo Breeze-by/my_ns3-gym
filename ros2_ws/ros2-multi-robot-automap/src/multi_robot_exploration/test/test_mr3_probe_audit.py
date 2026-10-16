@@ -175,6 +175,36 @@ def test_v2_path_map_tampering_fails_even_when_outer_snapshot_digest_is_updated(
     assert_failed(tmp_path, "candidate version does not match saved candidates")
 
 
+def test_v3_candidate_hash_binds_exact_reviewed_rule_and_path_maps():
+    value = snapshot(1, 1.)
+    value.update(schema="mr3-observation-v2", path_maps={name: {} for name in AUDIT.ROBOTS},
+                 candidate_rule=dict(AUDIT.CANDIDATE_RULE_V3))
+    expected = AUDIT.canonical_digest({key: value[key] for key in (
+        "epoch", "map_version", "sequence", "candidates", "path_maps", "candidate_rule")})
+    assert AUDIT.candidate_digest(value) == expected
+    value["path_maps"]["tb1"]["version"] = 9
+    assert AUDIT.candidate_digest(value) != expected
+
+
+@pytest.mark.parametrize("change", [
+    {"version": "unknown"}, {"goal_xy_tolerance_m": .25},
+    {"frontier_staging_max_m": True}, {"frontier_staging_max_m": 1}, {"extra_rule": 1.},
+])
+def test_unknown_or_changed_v3_rule_is_rejected_even_if_self_signed(change):
+    value = snapshot(1, 1.)
+    value.update(schema="mr3-observation-v2", path_maps={name: {} for name in AUDIT.ROBOTS},
+                 candidate_rule={**AUDIT.CANDIDATE_RULE_V3, **change})
+    with pytest.raises(ValueError, match="candidate rule"):
+        AUDIT.candidate_digest(value)
+
+
+def test_legacy_observation_cannot_carry_a_v3_candidate_rule():
+    value = snapshot(1, 1.)
+    value["candidate_rule"] = dict(AUDIT.CANDIDATE_RULE_V3)
+    with pytest.raises(ValueError, match="candidate rule"):
+        AUDIT.candidate_digest(value)
+
+
 def test_acceptance_without_estimated_movement_is_not_navigation_execution_proof(tmp_path):
     rows = evidence(tmp_path)
     for row in rows:

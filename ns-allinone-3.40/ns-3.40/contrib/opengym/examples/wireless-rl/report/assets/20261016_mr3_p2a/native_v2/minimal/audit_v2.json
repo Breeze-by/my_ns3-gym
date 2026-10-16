@@ -1,0 +1,912 @@
+{
+  "schema": "mr3-p2a-ppo-offline-audit-v1",
+  "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v2_minimal",
+  "freeze": "9e898bd5ca5eccc6e263e198481f672b5cf82320",
+  "mode": "train",
+  "errors": [],
+  "episodes": [
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v2_minimal/native/round0000/worker0/episode001_open_101",
+      "errors": [],
+      "epoch": "round0000_w0_e1_60f11092",
+      "scene": "open",
+      "seed": 101,
+      "native": {
+        "schema": "mr3-p1c-episode-audit-v1",
+        "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v2_minimal/native/round0000/worker0/episode001_open_101",
+        "epoch": "round0000_w0_e1_60f11092",
+        "expected_infrastructure_fault": false,
+        "freeze": "9e898bd5ca5eccc6e263e198481f672b5cf82320",
+        "scene": "open",
+        "seed": 101,
+        "terminal_probe": false,
+        "complete_episode_credit": true,
+        "scope": "scripted sampling/reset; no RL, throughput or 95% success inference",
+        "processes": {
+          "owned_pid_identities": [
+            [
+              1093312,
+              386540603
+            ],
+            [
+              1093323,
+              386540642
+            ],
+            [
+              1093349,
+              386540746
+            ],
+            [
+              1093355,
+              386540900
+            ],
+            [
+              1093357,
+              386540900
+            ],
+            [
+              1093359,
+              386540900
+            ],
+            [
+              1093361,
+              386540900
+            ],
+            [
+              1093363,
+              386540900
+            ],
+            [
+              1093365,
+              386540901
+            ],
+            [
+              1093367,
+              386540901
+            ],
+            [
+              1093792,
+              386541233
+            ],
+            [
+              1093794,
+              386541233
+            ],
+            [
+              1093796,
+              386541233
+            ],
+            [
+              1093857,
+              386541554
+            ],
+            [
+              1093859,
+              386541554
+            ],
+            [
+              1093861,
+              386541554
+            ],
+            [
+              1093945,
+              386541862
+            ],
+            [
+              1093990,
+              386543002
+            ],
+            [
+              1093992,
+              386543002
+            ],
+            [
+              1093994,
+              386543002
+            ],
+            [
+              1093996,
+              386543002
+            ],
+            [
+              1093998,
+              386543003
+            ],
+            [
+              1094000,
+              386543003
+            ],
+            [
+              1094002,
+              386543004
+            ],
+            [
+              1094287,
+              386547508
+            ],
+            [
+              1094289,
+              386547509
+            ],
+            [
+              1094291,
+              386547509
+            ],
+            [
+              1094293,
+              386547509
+            ],
+            [
+              1094295,
+              386547509
+            ],
+            [
+              1094297,
+              386547509
+            ],
+            [
+              1094299,
+              386547509
+            ],
+            [
+              1094596,
+              386552000
+            ],
+            [
+              1094598,
+              386552000
+            ],
+            [
+              1094600,
+              386552000
+            ],
+            [
+              1094602,
+              386552000
+            ],
+            [
+              1094604,
+              386552001
+            ],
+            [
+              1094606,
+              386552001
+            ],
+            [
+              1094608,
+              386552001
+            ],
+            [
+              1094712,
+              386552643
+            ],
+            [
+              1094714,
+              386552643
+            ],
+            [
+              1094744,
+              386552961
+            ],
+            [
+              1094747,
+              386553001
+            ],
+            [
+              1095350,
+              386560871
+            ]
+          ],
+          "worker_identity": {
+            "pid": 1093312,
+            "parent": 1093208,
+            "group": 1093312,
+            "session": 1093312,
+            "start_ticks": 386540603,
+            "state": "R"
+          },
+          "no_live_or_zombie_leftovers": true,
+          "forced_cleanup": false,
+          "scope": "saved PID/start identities and cleanup receipt; no live /proc inference"
+        },
+        "ordered_shutdown": {
+          "required": true,
+          "proven": true,
+          "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+          "nav2": {
+            "proven": true,
+            "robot_shutdown_responses": 3,
+            "finalized_state_responses": 18,
+            "paused_time_ns": 79760000000,
+            "completed_wall_monotonic_ns": 3865602162177678,
+            "scope": "successful lifecycle replies and actual GetState finalized receipts"
+          },
+          "launch": {
+            "proven": true,
+            "actual_process_starts": 38,
+            "serial_sigint_count": 31,
+            "all_actual_clean_exits": 38,
+            "evaluator_exit_wall_monotonic_ns": 3865602777089753,
+            "scope": "actual SDK identities and clean exits; no SDK internal-race claim"
+          },
+          "finalize_ack_sequence": 8
+        },
+        "physics": {
+          "receipt_count": 417,
+          "first_time_ns": 71554000000,
+          "last_time_ns": 79760000000,
+          "total_physical_ticks": 8206
+        },
+        "transitions": {
+          "transition_count": 8,
+          "complete": true,
+          "release_time_ns": 71560000000,
+          "reward_sum": 5.7238126540673795,
+          "sampled_physical_time_sec": 8.0,
+          "terminal_map_sha_exception_count": 0,
+          "zero_duration_terminal_count": 0,
+          "submitted_action_count": 8,
+          "final_dt": 1.0,
+          "final_physical_dt": 1.0,
+          "final_terminal_reused": false,
+          "final_action_submitted": true,
+          "terminal_map_scope": "frozen evaluator map; later actor map is diagnostic only"
+        },
+        "initial_inputs_ready": {
+          "required": true,
+          "proven": true,
+          "protocol": "delivered_inputs_before_pause-v1",
+          "ack_stamp": 71.04,
+          "initial_pause_stamp": 71.554,
+          "ack_state_sequence": 710,
+          "first_snapshot_state_sequence": 715,
+          "ack_map_payload_sha256": "456bdc1b2ec509c9dcbfed9568ef213e06956a66b9ef365bd6f3c4e068e93574",
+          "scope": "input readiness before pause; first snapshot may use newer delivery"
+        },
+        "protocol": {
+          "accepted_action_count": 8,
+          "rejected_action_count": 0,
+          "goal_count": 4,
+          "native_terminal_count": 4,
+          "keep_robot_command_count": 14,
+          "cancel_count": 1,
+          "confirmed_cancellation_count": 1,
+          "scope": "goal payload audit, not an action-server network trace",
+          "command_time": {
+            "method": "mr3-command-time-integer-endpoints-v1",
+            "passed": true,
+            "errors": [],
+            "commands_checked": 8,
+            "accepted_commands": 8,
+            "rejected_commands": 0,
+            "excluded_no_action_terminal_steps": [],
+            "bindings": [
+              {
+                "epoch": "round0000_w0_e1_60f11092",
+                "step_sequence": 1,
+                "command_id": 1,
+                "observation_sequence": 1,
+                "action": 231,
+                "created_at": 71.56,
+                "expires_at": 73.56,
+                "receipt_stamp": 71.56,
+                "receipt_kind": "action",
+                "rejection_reason": null,
+                "valid": true,
+                "receipt_time_ns": 71560000000,
+                "created_time_ns": 71560000000,
+                "expires_time_ns": 73560000000,
+                "ttl_ns": 2000000000,
+                "invalidity": [],
+                "failure": null
+              },
+              {
+                "epoch": "round0000_w0_e1_60f11092",
+                "step_sequence": 2,
+                "command_id": 2,
+                "observation_sequence": 2,
+                "action": 888,
+                "created_at": 72.56,
+                "expires_at": 74.56,
+                "receipt_stamp": 72.56,
+                "receipt_kind": "action",
+                "rejection_reason": null,
+                "valid": true,
+                "receipt_time_ns": 72560000000,
+                "created_time_ns": 72560000000,
+                "expires_time_ns": 74560000000,
+                "ttl_ns": 2000000000,
+                "invalidity": [],
+                "failure": null
+              },
+              {
+                "epoch": "round0000_w0_e1_60f11092",
+                "step_sequence": 3,
+                "command_id": 3,
+                "observation_sequence": 3,
+                "action": 888,
+                "created_at": 73.56,
+                "expires_at": 75.56,
+                "receipt_stamp": 73.56,
+                "receipt_kind": "action",
+                "rejection_reason": null,
+                "valid": true,
+                "receipt_time_ns": 73560000000,
+                "created_time_ns": 73560000000,
+                "expires_time_ns": 75560000000,
+                "ttl_ns": 2000000000,
+                "invalidity": [],
+                "failure": null
+              },
+              {
+                "epoch": "round0000_w0_e1_60f11092",
+                "step_sequence": 4,
+                "command_id": 4,
+                "observation_sequence": 4,
+                "action": 829,
+                "created_at": 74.56,
+                "expires_at": 76.56,
+                "receipt_stamp": 74.56,
+                "receipt_kind": "action",
+                "rejection_reason": null,
+                "valid": true,
+                "receipt_time_ns": 74560000000,
+                "created_time_ns": 74560000000,
+                "expires_time_ns": 76560000000,
+                "ttl_ns": 2000000000,
+                "invalidity": [],
+                "failure": null
+              },
+              {
+                "epoch": "round0000_w0_e1_60f11092",
+                "step_sequence": 5,
+                "command_id": 5,
+                "observation_sequence": 5,
+                "action": 989,
+                "created_at": 75.56,
+                "expires_at": 77.56,
+                "receipt_stamp": 75.56,
+                "receipt_kind": "action",
+                "rejection_reason": null,
+                "valid": true,
+                "receipt_time_ns": 75560000000,
+                "created_time_ns": 75560000000,
+                "expires_time_ns": 77560000000,
+                "ttl_ns": 2000000000,
+                "invalidity": [],
+                "failure": null
+              },
+              {
+                "epoch": "round0000_w0_e1_60f11092",
+                "step_sequence": 6,
+                "command_id": 6,
+                "observation_sequence": 6,
+                "action": 889,
+                "created_at": 76.56,
+                "expires_at": 78.56,
+                "receipt_stamp": 76.56,
+                "receipt_kind": "action",
+                "rejection_reason": null,
+                "valid": true,
+                "receipt_time_ns": 76560000000,
+                "created_time_ns": 76560000000,
+                "expires_time_ns": 78560000000,
+                "ttl_ns": 2000000000,
+                "invalidity": [],
+                "failure": null
+              },
+              {
+                "epoch": "round0000_w0_e1_60f11092",
+                "step_sequence": 7,
+                "command_id": 7,
+                "observation_sequence": 7,
+                "action": 989,
+                "created_at": 77.56,
+                "expires_at": 79.56,
+                "receipt_stamp": 77.56,
+                "receipt_kind": "action",
+                "rejection_reason": null,
+                "valid": true,
+                "receipt_time_ns": 77560000000,
+                "created_time_ns": 77560000000,
+                "expires_time_ns": 79560000000,
+                "ttl_ns": 2000000000,
+                "invalidity": [],
+                "failure": null
+              },
+              {
+                "epoch": "round0000_w0_e1_60f11092",
+                "step_sequence": 8,
+                "command_id": 8,
+                "observation_sequence": 8,
+                "action": 888,
+                "created_at": 78.56,
+                "expires_at": 80.56,
+                "receipt_stamp": 78.56,
+                "receipt_kind": "action",
+                "rejection_reason": null,
+                "valid": true,
+                "receipt_time_ns": 78560000000,
+                "created_time_ns": 78560000000,
+                "expires_time_ns": 80560000000,
+                "ttl_ns": 2000000000,
+                "invalidity": [],
+                "failure": null
+              }
+            ],
+            "complete_episode_credit": false,
+            "scope": "submitted command validity and receipt reason only",
+            "other_rejection_reasons_revalidated": false,
+            "reward_contact_mask_ownership_closure_revalidated": false
+          }
+        },
+        "closure": {
+          "native_shutdown_proof": {
+            "gzserver": {
+              "started": [
+                {
+                  "suffix": "4",
+                  "pid": 1093361
+                }
+              ],
+              "clean_exits": [
+                {
+                  "suffix": "4",
+                  "pid": 1093361
+                }
+              ],
+              "identity_matched": true
+            },
+            "mr3_gazebo_native_stop": {
+              "started": [
+                {
+                  "suffix": "38",
+                  "pid": 1095350
+                }
+              ],
+              "clean_exits": [
+                {
+                  "suffix": "38",
+                  "pid": 1095350
+                }
+              ],
+              "identity_matched": true
+            }
+          },
+          "launch_start_count": 38,
+          "unsampled_stop_cli_alternative_evidence": [],
+          "other_launch_children_require_proc_identity": true,
+          "navigation_closed": true,
+          "navigation_failure": false,
+          "safety_failures": []
+        },
+        "contacts": {
+          "passed": true,
+          "errors": [],
+          "raw_sequence_audit_passed": true,
+          "raw_stream_count": 18,
+          "continuous_freshness_passed": true,
+          "zero_contact": true,
+          "collision_events": 0,
+          "task_success": false,
+          "termination_reason": "training_external_truncation",
+          "contact_phase_proof": {
+            "method": "mr3-contact-task-phase-and-command-time-v3",
+            "task_gap_limit_sec": 0.5,
+            "task_gap_bound_from_frozen_latch_invariant": true,
+            "lifetime_gap_diagnostics": {
+              "tb1/base": {
+                "max_source_gap_sec": 0.05100000000000193,
+                "max_receipt_gap_sec": 0.0800000000000125
+              },
+              "tb1/lidar": {
+                "max_source_gap_sec": 0.054000000000002046,
+                "max_receipt_gap_sec": 0.0800000000000125
+              },
+              "tb1/wheel_left": {
+                "max_source_gap_sec": 0.054000000000002046,
+                "max_receipt_gap_sec": 0.0800000000000125
+              },
+              "tb1/wheel_right": {
+                "max_source_gap_sec": 0.05300000000001148,
+                "max_receipt_gap_sec": 0.0800000000000125
+              },
+              "tb1/caster_back_left": {
+                "max_source_gap_sec": 0.05300000000001148,
+                "max_receipt_gap_sec": 0.0800000000000125
+              },
+              "tb1/caster_back_right": {
+                "max_source_gap_sec": 0.05300000000001148,
+                "max_receipt_gap_sec": 0.0800000000000125
+              },
+              "tb2/base": {
+                "max_source_gap_sec": 0.05200000000000671,
+                "max_receipt_gap_sec": 0.0800000000000125
+              },
+              "tb2/lidar": {
+                "max_source_gap_sec": 0.05200000000000671,
+                "max_receipt_gap_sec": 0.0800000000000125
+              },
+              "tb2/wheel_left": {
+                "max_source_gap_sec": 0.05200000000000671,
+                "max_receipt_gap_sec": 0.0800000000000125
+              },
+              "tb2/wheel_right": {
+                "max_source_gap_sec": 0.05299999999999727,
+                "max_receipt_gap_sec": 0.0800000000000125
+              },
+              "tb2/caster_back_left": {
+                "max_source_gap_sec": 0.05299999999999727,
+                "max_receipt_gap_sec": 0.0800000000000125
+              },
+              "tb2/caster_back_right": {
+                "max_source_gap_sec": 0.05300000000001148,
+                "max_receipt_gap_sec": 0.0800000000000125
+              },
+              "tb3/base": {
+                "max_source_gap_sec": 0.054000000000002046,
+                "max_receipt_gap_sec": 0.0800000000000125
+              },
+              "tb3/lidar": {
+                "max_source_gap_sec": 0.054000000000002046,
+                "max_receipt_gap_sec": 0.0800000000000125
+              },
+              "tb3/wheel_left": {
+                "max_source_gap_sec": 0.05500000000000682,
+                "max_receipt_gap_sec": 0.0800000000000125
+              },
+              "tb3/wheel_right": {
+                "max_source_gap_sec": 0.05500000000000682,
+                "max_receipt_gap_sec": 0.0800000000000125
+              },
+              "tb3/caster_back_left": {
+                "max_source_gap_sec": 0.05500000000000682,
+                "max_receipt_gap_sec": 0.0800000000000125
+              },
+              "tb3/caster_back_right": {
+                "max_source_gap_sec": 0.05500000000000682,
+                "max_receipt_gap_sec": 0.0800000000000125
+              }
+            },
+            "task_gap_numeric_maxima": null,
+            "gap_endpoints_available": false,
+            "gap_endpoints_scope": "not saved in the original evidence; unavailable",
+            "paused_release": {
+              "epoch": "round0000_w0_e1_60f11092",
+              "release_time_ns": 71560000000,
+              "initial_pause_time_ns": 71554000000,
+              "actual_seq0_binding": true,
+              "actual_task_start": true,
+              "independent_raw_reward_ready_payload_available": false,
+              "ready_wait_proof": "pinned worker/evaluator causal order plus saved seq0 response",
+              "no_positive_physics_window": "worker waits for ready/seq0 while physics is paused",
+              "context_evidence_sha256": {
+                "metadata.json": "a620400fb4a45049a32ad85b678bc8c832f94eca70e0229545d45eb618c6ed4c",
+                "transitions.jsonl": "94d6d22e81c8f9cb87e1b007bc9f97abdc71b3e6436612e8315a8150014ea92e",
+                "physics.jsonl": "8db32a71fc6e3abf451deaab3f3019f84f832ef8a14061a80e033d98e9b119e0",
+                "adapter.jsonl": "80cae6f1199ba687efb111556b13c68bb14411bea65954339e1a35308f6f7688"
+              }
+            }
+          },
+          "scope": "frozen started/latch invariant and endpoint ages; no raw timing replay"
+        },
+        "passed": true,
+        "errors": [],
+        "evidence_sha256": {
+          "metadata.json": "a620400fb4a45049a32ad85b678bc8c832f94eca70e0229545d45eb618c6ed4c",
+          "supervisor_metadata.json": "410f6feecb33e0e46492eee7476f022a8fbb0e583f371b28c2dfee9fa6f6434d",
+          "supervisor_shutdown.json": "923154c05502648c2c63ab52ab20894b31febbc912761f86d3fa00b34ada1739",
+          "transitions.jsonl": "94d6d22e81c8f9cb87e1b007bc9f97abdc71b3e6436612e8315a8150014ea92e",
+          "physics.jsonl": "8db32a71fc6e3abf451deaab3f3019f84f832ef8a14061a80e033d98e9b119e0",
+          "adapter.jsonl": "80cae6f1199ba687efb111556b13c68bb14411bea65954339e1a35308f6f7688",
+          "summary.json": "900a90849b3ea881e1647b36401944a64da392a27747f423371422d4bbca9b68",
+          "native_stop.json": "5a2ae8f89c97f64aa3b920ad198132eb2aa3fdb0c647262cfbd0ca06f083a0b9",
+          "launch.log": "cc161a635cd3d79274c521c65143d833ac9045d087982ffb292bc7f48e053a4e",
+          "nav2_shutdown.json": "c54c3415b972d6c29f083489e1ade6c1c774c1455a11e22d4b32b251e4161877",
+          "round0000_w0_e1_60f11092.json": "865ded86c97ee6019b4148980a83dc5d310cdfbb87ea36006969de16b104738e"
+        },
+        "supervisor_shutdown_digest": "c66785b51073c02106f9aec0f9420b83ab3d3d5cf845e750c75d061bf4bacf90"
+      },
+      "scalar": {
+        "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v2_minimal/native/round0000/worker0/episode001_open_101",
+        "epoch": "round0000_w0_e1_60f11092",
+        "scene": "open",
+        "seed": 101,
+        "pid_identity": {
+          "pid": 1093312,
+          "parent": 1093208,
+          "group": 1093312,
+          "session": 1093312,
+          "start_ticks": 386540603,
+          "state": "R"
+        },
+        "initial_cells": 2037,
+        "newly_rewarded_cells": 25194,
+        "transitions": 8,
+        "terminal_short_steps": 0,
+        "terminal_reused_steps": 0,
+        "rejected_action_bindings": [],
+        "repeated_map_payload_steps": 0,
+        "reward_term_sums": {
+          "collision": 0.0,
+          "coverage": 5.750479320734045,
+          "failure": 0.0,
+          "invalid": 0.0,
+          "success": 0.0,
+          "switch": 0.0,
+          "time": -0.02666666666666667
+        },
+        "physical_quantum_counts": {
+          "0": 1,
+          "1": 6,
+          "20": 410
+        },
+        "evaluation_reason": "training_external_truncation",
+        "errors": []
+      },
+      "task": {
+        "success": false,
+        "termination_reason": "training_external_truncation",
+        "correct_free_coverage_ratio": 0.6189628412307131,
+        "map_quality_pass": false,
+        "robot_participation_pass": false,
+        "collision_events": 0,
+        "collision_monitoring_fresh": true,
+        "navigation_protocol_closed": true,
+        "elapsed_sim_time_sec": 8.2,
+        "time_to_95_coverage_sec": null
+      },
+      "policy": {
+        "decisions": 8,
+        "legal_actions": 8,
+        "candidate_choice_components": 4,
+        "deterministic_actions_verified": false,
+        "input_scope": "encode_snapshot of original preceding native snapshot only"
+      }
+    }
+  ],
+  "rounds": [
+    {
+      "round": 0,
+      "collecting_checkpoint": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v2_minimal/initial.zip",
+      "collecting_checkpoint_sha256": "f6c9688d2ee616f9aa6db6b12e5f6e756c863a03015b90a9407703b93ba2c886",
+      "rollout": {
+        "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v2_minimal/rollout_0000.npz",
+        "sha256": "8b63ff21b788a4858b2478389cc7cee0a73bc0269b9ee92f496e392330a80d04",
+        "decisions": 8,
+        "all_fields_finite": true,
+        "native_tensors_exact": true,
+        "sampling_masks_exact": true,
+        "duration_gae_verified": true,
+        "pre_update_replay_max_abs_error": {
+          "rewards": 9.312190440979862e-08,
+          "values": 3.5762786865234375e-07,
+          "log_probs": 4.76837158203125e-07,
+          "next_values": 3.5762786865234375e-07
+        },
+        "policy_cpu_atol": 0.0001,
+        "policy_cpu_rtol": 1e-05
+      },
+      "updated_checkpoint_sha256": "1e02fc9be142d93ba574882713cce916a7767f5cc21ccc6d3e66b39a4d5e02eb",
+      "changed_parameter_tensors": 70
+    }
+  ],
+  "source_proof": {
+    "ros2_ws/ros2-multi-robot-automap/scripts/audit_mr3_env.py": {
+      "sha256": "25ce0b466d988595934f26a0cfb7a81a445632b1e755f2462b80698371b272e8",
+      "source": "worktree bytes matching 9e898bd5ca5eccc6e263e198481f672b5cf82320",
+      "git_blob_sha256": "25ce0b466d988595934f26a0cfb7a81a445632b1e755f2462b80698371b272e8",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ros2_ws/ros2-multi-robot-automap/scripts/audit_mr3_env.py"
+    },
+    "ros2_ws/ros2-multi-robot-automap/scripts/audit_mr3_adapter_probe.py": {
+      "sha256": "fdd415da1b01d7da6219d21a2fa8e184484b696d33c3e736bde8ca165bb65e6a",
+      "source": "worktree bytes matching 9e898bd5ca5eccc6e263e198481f672b5cf82320",
+      "git_blob_sha256": "fdd415da1b01d7da6219d21a2fa8e184484b696d33c3e736bde8ca165bb65e6a",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ros2_ws/ros2-multi-robot-automap/scripts/audit_mr3_adapter_probe.py"
+    },
+    "ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py": {
+      "sha256": "f130b1157b4855089d51a6b1f22e57e0b5683b40624cc8697e3bb76fb3659d1a",
+      "source": "worktree bytes matching 9e898bd5ca5eccc6e263e198481f672b5cf82320",
+      "git_blob_sha256": "f130b1157b4855089d51a6b1f22e57e0b5683b40624cc8697e3bb76fb3659d1a",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ros2_ws/ros2-multi-robot-automap/scripts/ros_smoke_test.py"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_contacts.py": {
+      "sha256": "9d661498b3748d409dbb59ccd59524d5152d85ec93ee30128aebaf0a8a09fa17",
+      "source": "worktree bytes matching 9e898bd5ca5eccc6e263e198481f672b5cf82320",
+      "git_blob_sha256": "9d661498b3748d409dbb59ccd59524d5152d85ec93ee30128aebaf0a8a09fa17",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_contacts.py"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py": {
+      "sha256": "bd0c2e43dbbb4258e4e1ee537fbdbe512211576eb930d5f8862d787dc73e48af",
+      "source": "worktree bytes matching 9e898bd5ca5eccc6e263e198481f672b5cf82320",
+      "git_blob_sha256": "bd0c2e43dbbb4258e4e1ee537fbdbe512211576eb930d5f8862d787dc73e48af",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py"
+    },
+    "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py": {
+      "sha256": "930be78a0763d69dfa102c662ac8713ee970e421a56193f92257e65ce0e67dac",
+      "source": "worktree bytes matching 9e898bd5ca5eccc6e263e198481f672b5cf82320",
+      "git_blob_sha256": "930be78a0763d69dfa102c662ac8713ee970e421a56193f92257e65ce0e67dac",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py": {
+      "sha256": "b20f6b492f91cb943247ebcc29bd16497983d17c23cc458f1be16fa24b9958d5",
+      "source": "worktree bytes matching 9e898bd5ca5eccc6e263e198481f672b5cf82320",
+      "git_blob_sha256": "b20f6b492f91cb943247ebcc29bd16497983d17c23cc458f1be16fa24b9958d5",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py": {
+      "sha256": "fb08097170b3f0e8423fa11dde2567c618d4d0d48be220e6cfbfc9538c37c147",
+      "source": "worktree bytes matching 9e898bd5ca5eccc6e263e198481f672b5cf82320",
+      "git_blob_sha256": "fb08097170b3f0e8423fa11dde2567c618d4d0d48be220e6cfbfc9538c37c147",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py": {
+      "sha256": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b",
+      "source": "worktree bytes matching 9e898bd5ca5eccc6e263e198481f672b5cf82320",
+      "git_blob_sha256": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py": {
+      "sha256": "e4f1c4ec51c8c0280fba32e47d189c1234eee44093612692e2d032efe26b388b",
+      "source": "worktree bytes matching 9e898bd5ca5eccc6e263e198481f672b5cf82320",
+      "git_blob_sha256": "e4f1c4ec51c8c0280fba32e47d189c1234eee44093612692e2d032efe26b388b",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_TASK_CONTRACT.md": {
+      "sha256": "f96f5ba785a39daa882b3c2ea217c58dd968550b65bf0ee15faf07ca079f8991",
+      "source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_TASK_CONTRACT.md",
+      "current_status_sha256": "f96f5ba785a39daa882b3c2ea217c58dd968550b65bf0ee15faf07ca079f8991",
+      "native_document_sha256": "f96f5ba785a39daa882b3c2ea217c58dd968550b65bf0ee15faf07ca079f8991",
+      "status_only_revision": true
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md": {
+      "sha256": "fa39665fab65d2970e86a2654d047ada2ae5d3670fe644b7c06d5a1e3abb3beb",
+      "source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/confirmation_corridors.json": {
+      "sha256": "127b1cab596167db4bc370335b18fb379eae0bf2d3b5775dade2dd90174ae3b5",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/confirmation_corridors.json",
+      "normative_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/confirmation_corridors.json"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/confirmation_open.json": {
+      "sha256": "2056689728d8faa6c84440b8be15c5f71d783fac97712d35ead0c2cf2f6f9304",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/confirmation_open.json",
+      "normative_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/confirmation_open.json"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/confirmation_rooms.json": {
+      "sha256": "10dd0973e1fab3f8871c01afc720ebef6643ca58ed51d06a0de0da6ef84aaf99",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/confirmation_rooms.json",
+      "normative_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/confirmation_rooms.json"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/corridors.json": {
+      "sha256": "b0e23e068ac0ce1bf636de285e6038c34732ac43d9e734d154c378d9d04b691c",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/corridors.json",
+      "normative_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/corridors.json"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/open.json": {
+      "sha256": "1bb5c097cdd9a6c92ee6edb7fabcb3c844117b51d18e40641c58aad7b29af4a6",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/open.json",
+      "normative_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/open.json"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/protocol.json": {
+      "sha256": "8c89fadc38e5b305fe36d75d924135cc5a600d8edb8468810b35991fba58e142",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/protocol.json",
+      "normative_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/protocol.json"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/rooms.json": {
+      "sha256": "ed8f61588ffb49821e2992d5a68e73abcef964bd80b6e2574eee3b1ae885635b",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/rooms.json",
+      "normative_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/rooms.json"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/test_corridors.json": {
+      "sha256": "5ed2850334f54ffdf8d0a7a8f100a136cca98be946d3b38b6de180bb66e1dbc0",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/test_corridors.json",
+      "normative_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/test_corridors.json"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/test_open.json": {
+      "sha256": "997f412fe1f5b9fcfb20987f386d1cc7a8a4488274829ed52a8979ba01775da0",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/test_open.json",
+      "normative_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/test_open.json"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/test_rooms.json": {
+      "sha256": "69705557587774a78f9b9c2d361656e600ad58295463179b1405215c7d6a4217",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/test_rooms.json",
+      "normative_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/test_rooms.json"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/validation_corridors.json": {
+      "sha256": "ca7f3d3d98e24a92f63a85a1f92304b45b74b6bc741f45b7a11acb02244bfe5b",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/validation_corridors.json",
+      "normative_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/validation_corridors.json"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/validation_open.json": {
+      "sha256": "a6704f4809580b9db432cf6361d8ece272b7c8179eae19b736ec60a970c4f57c",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/validation_open.json",
+      "normative_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/validation_open.json"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/validation_rooms.json": {
+      "sha256": "b01698ad96611ce51a2fa795be965deafcd8e4ad7ddefc6c870ee40a73e7e7b8",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/validation_rooms.json",
+      "normative_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/validation_rooms.json"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/worlds/p1c_open.world": {
+      "sha256": "312212a14b31df196f37839d4ea849e4982dc49c5bd61aa030667bd72ea12f53",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ros2_ws/ros2-multi-robot-automap/src/multi_robot/worlds/p1c_open.world",
+      "normative_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/src/multi_robot/worlds/p1c_open.world"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/worlds/p1c_rooms.world": {
+      "sha256": "cf676ab183b16abb6a563ae4c2bc2d8ba45b9a18ed35ad3f46eeb4c8d7f40916",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ros2_ws/ros2-multi-robot-automap/src/multi_robot/worlds/p1c_rooms.world",
+      "normative_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/src/multi_robot/worlds/p1c_rooms.world"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/worlds/p1c_corridors.world": {
+      "sha256": "d6fede92a09c00d9c50a72d5a744b3771dcc2506e2f28238ed786d2d914d4db9",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ros2_ws/ros2-multi-robot-automap/src/multi_robot/worlds/p1c_corridors.world",
+      "normative_source": "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a:ros2_ws/ros2-multi-robot-automap/src/multi_robot/worlds/p1c_corridors.world"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/ppo.py": {
+      "sha256": "e2467ceec259ba1c753208de578ddda9d7003c2ad185e3213096f96e95e15251",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/ppo.py"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/rollout.py": {
+      "sha256": "338f6b68505c39ea79b5db208a66080ce22c25199b0fc975e61bd5a1f935c87a",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/rollout.py"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/policy.py": {
+      "sha256": "b7d87473c1debf8939209ab7b2cea14e1c28d2639cae320a436c381faccd6452",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/policy.py"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/model.py": {
+      "sha256": "7f060186696d656ce5423e1f64b985668435a30ab4d3755d5beefcc3f01e15f2",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/model.py"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/env.py": {
+      "sha256": "3e2902ff9be5c1b5c0aec00e0e03f2e1b5046a2335a2e871b7ec846156e3a6ff",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/env.py"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/observation.py": {
+      "sha256": "1d030402a4f934031e8f3bde19356cfbee92a0836a5d540381a42c78c834c389",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/observation.py"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/supervisor.py": {
+      "sha256": "51864bcdd1d2441846f243830d24a6e113e2b418e0e10bc94dd7c50b1011e4f4",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/supervisor.py"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/requirements-env.txt": {
+      "sha256": "0ef03d56c3c24007b31ab59c84691f27a1790f95e7d9389fa4b0a7ca2152a5bf",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/requirements-env.txt"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/requirements-ppo.txt": {
+      "sha256": "56666a66b9003febbea286cad6f9415f8b5461cce7714562609fe7cedaa8162d",
+      "git_source": "9e898bd5ca5eccc6e263e198481f672b5cf82320:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/requirements-ppo.txt"
+    }
+  },
+  "original_helpers_modified": false,
+  "native_gates": "unchanged phase-v2 contact + phase-v3 command + scalar-v3",
+  "helper_sha256": {
+    "phase_v3": "4e2a24e3465fa45c06c05c37b57b8b77b6e462845b3227be10c1fecb85c2c7d7",
+    "scalar_v3": "895395075a881c6d74b809100e198be52a3c05a6710d24d873020b87223ff665"
+  },
+  "task_success_credit": "only original evaluator success with passed native gates",
+  "native_attempts": 1,
+  "task_successes": 0,
+  "task_failures": [
+    {
+      "epoch": "round0000_w0_e1_60f11092",
+      "task": {
+        "success": false,
+        "termination_reason": "training_external_truncation",
+        "correct_free_coverage_ratio": 0.6189628412307131,
+        "map_quality_pass": false,
+        "robot_participation_pass": false,
+        "collision_events": 0,
+        "collision_monitoring_fresh": true,
+        "navigation_protocol_closed": true,
+        "elapsed_sim_time_sec": 8.2,
+        "time_to_95_coverage_sec": null
+      },
+      "audit_errors": []
+    }
+  ],
+  "passed": true,
+  "scope": "pilot audit only; no statistical baseline superiority or network credit"
+}

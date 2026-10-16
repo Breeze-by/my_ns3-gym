@@ -68,7 +68,7 @@ def test_eight_candidates_are_safe_inward_spatially_representative_and_reachable
     assert len({(item["row"], item["column"]) for item in candidates}) == 8
     for candidate in candidates:
         assert traversable[candidate["row"], candidate["column"]]
-        assert candidate["clearance_m"] >= 0.29
+        assert candidate["clearance_m"] >= observation.TARGET_CLEARANCE_M
         assert all(candidate["reachable"])
         assert all(value is not None and value >= 0 for value in candidate["path_distances_m"])
     points = [(item["x"], item["y"]) for item in candidates]
@@ -414,3 +414,145 @@ def test_tf_source_and_validity_stamp_are_both_observable():
     assert state["tf_source_stamp"] == 9.8
     assert state["tf_validity_stamp"] == 10.
     assert state["tf_validity_lead_sec"] == .2
+
+
+def test_per_robot_geometric_reservation_keeps_a_small_disconnected_component():
+    # A small central observed island must keep a slot even when the two large
+    # outer components supply most of the spatially distant frontier pool.
+    grid = np.full((180, 240), -1, dtype=np.int8)
+    grid[10:170, 10:100] = 0
+    grid[10:170, 140:230] = 0
+    grid[80:100, 110:130] = 0
+    states = robots()
+    for state, x in zip(states, (-7., 7., 0.)):
+        state["x"] = x
+    maps = own_maps(grid, origin=(-12., -9.))
+    result = observation.build_snapshot(
+        grid, .1, (-12., -9.), states, 10., "episode-a", 2, 4, robot_maps=maps)
+    assert result["diagnostics"]["candidate_truncated"] > 0
+    assert all(count > 0 for count in result["diagnostics"]["per_robot_reachable_pool_counts"])
+    assert all(count > 0 for count in result["diagnostics"]["per_robot_reachable_selected_counts"])
+    assert all(any(candidate["reachable"][index] for candidate in result["candidates"])
+               for index in range(3))
+    replay = observation.build_snapshot(
+        grid.copy(), .1, (-12., -9.), list(reversed(copy.deepcopy(states))),
+        10., "episode-a", 2, 4, robot_maps=dict(reversed(list(maps.items()))))
+    assert replay == result
+
+
+def test_occluded_nearest_staging_uses_a_visible_reachable_geometric_alternative():
+    grid = np.zeros((30, 30), dtype=np.int8)
+    grid[9, 10] = -1
+    grid[12, 10] = 100
+    _, clearance = observation.native_traversable(grid, .1)
+    # For frontier(10,10), (17,10) is nearer but hidden by the occupied cell;
+    # (15,16) has a free sightline. Both target arrival disks are certified.
+    cells = np.asarray(((17, 10), (15, 16)))
+    assert np.all(clearance[tuple(cells.T)] >= observation.TARGET_CLEARANCE_M)
+    paths = np.asarray(((1., np.inf, np.inf), (1., np.inf, np.inf)))
+    candidates, diagnostic = observation._candidates(
+        grid, clearance, cells, paths, .1, (-1.5, -1.5), robots())
+    assert diagnostic["per_robot_staging_rejections"][0]["alternate_staging_searches"] > 0
+    assert any((candidate["row"], candidate["column"]) == (15, 16) for candidate in candidates)
+    assert diagnostic["per_robot_reachable_pool_counts"][1:] == [0, 0]
+
+
+@pytest.mark.parametrize("barrier", (-1, 100))
+def test_arrival_disk_rejects_body_only_staging_without_relaxing_path_clearance(barrier):
+    grid = np.full((100, 120), barrier, dtype=np.int8)
+    grid[10:90, 56:64] = 0  # .8 m corridor: body fits, the arrival disk does not.
+    traversable, clearance = observation.native_traversable(grid, .1)
+    assert traversable.any()
+    assert clearance.max() < observation.TARGET_CLEARANCE_M
+    states = robots()
+    for state, y in zip(states, (-2., 0., 2.)):
+        state.update(x=.05, y=y + .05)
+    result = snapshot(grid, states, robot_maps=own_maps(grid))
+    assert result["diagnostics"]["robot_seed_traversable"] == [True] * 3
+    assert not any(candidate["valid"] for candidate in result["candidates"])
+    assert result["joint_action_mask"][888] and result["joint_action_mask"][999]
+
+
+def test_native_own_target_requires_arrival_disk_even_if_fused_target_is_safe():
+    cells = np.asarray(((50, 13), (50, 14)))
+    maps = own_maps()
+    paths, _, valid = observation._own_map_paths(
+        maps, [observation._robot_state(robot, 10.) for robot in robots()],
+        10., "episode-a", .1, (-6., -5.), cells)
+    assert valid == [True] * 3
+    assert np.isinf(paths[0]).all()  # .329m own-map clearance: body only.
+    assert np.isfinite(paths[1]).all()  # .429m also certifies the .10m disk.
+
+
+def test_goals_already_inside_arrival_tolerance_are_not_actor_goal_choices():
+    initial = snapshot(robot_maps=own_maps())
+    state = robots()
+    state[0]["x"], state[0]["y"] = initial["candidates"][0]["x"], initial["candidates"][0]["y"]
+    result = snapshot(states=state, robot_maps=own_maps())
+    assert result["diagnostics"]["per_robot_arrival_noop_cells"][0] > 0
+    for candidate in result["candidates"]:
+        if candidate["reachable"][0]:
+            assert math.dist((candidate["x"], candidate["y"]),
+                             (state[0]["x"], state[0]["y"])) > observation.GOAL_XY_TOLERANCE_M
+    assert result["joint_action_mask"][888]
+
+
+@pytest.mark.parametrize("value,reason", ((-1, "seed_cell_unknown"), (100, "seed_cell_occupied")))
+def test_seed_diagnostics_identify_observed_blockage_without_changing_map(value, reason):
+    maps = own_maps()
+    maps["tb1"]["grid"][50, 40] = value
+    original = maps["tb1"]["grid"].copy()
+    result = snapshot(robot_maps=maps)
+    diagnostic = result["diagnostics"]["robot_seed_diagnostics"][0]
+    assert diagnostic["seed_cell"] == [50, 40]
+    assert diagnostic["seed_cell_clearance_m"] == 0.
+    assert diagnostic["seed_rejection_reason"] == reason
+    assert result["diagnostics"]["per_robot_reachable_pool_counts"][0] == 0
+    assert result["diagnostics"]["per_robot_reachable_selected_counts"][0] == 0
+    assert np.array_equal(maps["tb1"]["grid"], original)
+
+
+def test_seed_diagnostics_account_for_actual_pose_offset_without_snapping():
+    maps = own_maps()
+    maps["tb1"]["grid"][:, 36] = 100
+    states = robots()
+    states[0].update(x=-1.99, y=.01)
+    result = snapshot(states=states, robot_maps=maps)
+    diagnostic = result["path_maps"]["tb1"]
+    assert diagnostic["seed_cell_clearance_m"] >= observation.CLEARANCE_M
+    assert diagnostic["seed_pose_clearance_lower_bound_m"] < observation.CLEARANCE_M
+    assert diagnostic["seed_pose_cell_offset_m"] > 0.
+    assert diagnostic["seed_rejection_reason"] == "seed_pose_body_clearance"
+    assert not any(candidate["reachable"][0] for candidate in result["candidates"])
+
+
+def test_candidate_rule_and_arrival_geometry_are_hash_bound(monkeypatch):
+    result = snapshot()
+    assert result["candidate_rule"]["version"] == observation.CANDIDATE_RULE_VERSION
+    assert result["candidate_rule"]["goal_xy_tolerance_m"] == .10
+    assert result["candidate_rule"]["target_clearance_m"] == pytest.approx(.39)
+    monkeypatch.setattr(observation, "CANDIDATE_RULE_VERSION", "another-geometric-rule")
+    changed = snapshot()
+    assert result["candidates"] == changed["candidates"]
+    assert result["candidate_version"] != changed["candidate_version"]
+
+
+def test_goal_conflicts_use_arrival_radii_and_actual_idle_pose_radius():
+    base = snapshot()
+    states = copy.deepcopy(base["robots"])
+    candidates = copy.deepcopy(base["candidates"])
+    for candidate in candidates:
+        candidate.update(valid=False, reachable=[False] * 3)
+    candidates[0].update(valid=True, x=0., y=0., reachable=[True, False, False])
+    states[0].update(x=-3., y=0.)
+    states[1].update(x=.70, y=0.)
+    states[2].update(x=5., y=0.)
+    _, idle_mask, _ = observation._action_masks(states, candidates, 10.)
+    assert idle_mask[88]  # .70m exceeds new-goal/actual-idle .39+.29m.
+    states[1]["navigation"].update(phase="active", goal_x=.70, goal_y=0.)
+    _, active_mask, _ = observation._action_masks(states, candidates, 10.)
+    assert not active_mask[88]  # Two arrival disks require .39+.39m.
+    assert active_mask[888]  # An inherited KEEP pair never removes all-KEEP.
+    states[1]["navigation"]["goal_x"] = .80
+    _, separated_mask, _ = observation._action_masks(states, candidates, 10.)
+    assert separated_mask[88]

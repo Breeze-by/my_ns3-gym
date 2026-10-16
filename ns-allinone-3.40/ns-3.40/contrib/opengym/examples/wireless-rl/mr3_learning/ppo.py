@@ -60,7 +60,58 @@ def policy_sha(model):
 
 
 def write_json(path, value):
-    Path(path).write_text(json.dumps(value, indent=2, allow_nan=False) + "\n")
+    path = Path(path)
+    temporary = path.with_name(path.name + ".tmp")
+    temporary.write_text(json.dumps(value, indent=2, allow_nan=False) + "\n")
+    temporary.replace(path)
+
+
+def native_record_accounting(directory):
+    """Count recorded worker actions even if interruption preceded callback delivery.
+
+    This runs after owned cleanup. A settled client-close reward without a
+    submitted action is not an actor sample. Incomplete/corrupt streams retain
+    prefix counts and explicit errors, rather than inventing missing samples.
+    """
+    result = {"native_api_records": 0, "native_recorded_decisions": 0,
+              "native_effective_sim_seconds": 0., "native_physical_sim_seconds": 0.,
+              "native_accounting_errors": [], "native_attempts": []}
+    effective_ns = physical_ns = 0
+    pattern = "round*/worker*/episode*/supervisor_metadata.json"
+    for metadata in sorted(Path(directory).glob(pattern)):
+        attempt = {"directory": str(metadata.parent), "api_records": 0, "decisions": 0,
+                   "effective_time_ns": 0, "physical_time_ns": 0}
+        try:
+            with (metadata.parent / "transitions.jsonl").open() as source:
+                for line_number, line in enumerate(source, 1):
+                    row = json.loads(line)
+                    if row["kind"] != "step":
+                        continue
+                    info = row["info"]
+                    dt, physical_dt = info["dt"], info["physical_dt"]
+                    if (type(dt) not in (int, float) or type(physical_dt) not in (int, float)
+                            or not np.isfinite([dt, physical_dt]).all()
+                            or not 0 <= dt <= physical_dt <= 1.):
+                        raise ValueError(f"invalid duration at line {line_number}")
+                    submitted = info.get("action_submitted", True)
+                    if type(submitted) is not bool:
+                        raise ValueError(f"invalid submitted flag at line {line_number}")
+                    if not submitted and (dt != 0 or physical_dt != 0):
+                        raise ValueError(f"nonzero no-action duration at line {line_number}")
+                    attempt["api_records"] += 1
+                    attempt["decisions"] += int(submitted)
+                    attempt["effective_time_ns"] += round(dt * 1e9)
+                    attempt["physical_time_ns"] += round(physical_dt * 1e9)
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            result["native_accounting_errors"].append(str(metadata.parent) + ": " + str(error))
+        result["native_attempts"].append(attempt)
+        result["native_api_records"] += attempt["api_records"]
+        result["native_recorded_decisions"] += attempt["decisions"]
+        effective_ns += attempt["effective_time_ns"]
+        physical_ns += attempt["physical_time_ns"]
+    result["native_effective_sim_seconds"] = effective_ns / 1e9
+    result["native_physical_sim_seconds"] = physical_ns / 1e9
+    return result
 
 
 def infer(model, observations, *, deterministic=False):
@@ -280,18 +331,21 @@ def main(argv=None):
               "decisions": 0, "api_records": 0, "optimizer_updates": 0, "error": None}
     environments = []
     model = None
+    learner_logger = None
+    optimizer_steps = [0]
     try:
         if args.mode == "train":
             model = MaskablePPO("MultiInputPolicy", ContractSpaces(),
                                 policy_kwargs=policy_kwargs(), seed=args.seed, device=args.device,
-                                n_steps=args.batch_size, batch_size=args.batch_size, n_epochs=args.epochs,
+                                n_steps=args.batch_size, batch_size=args.batch_size,
+                                n_epochs=args.epochs,
                                 gamma=.99, gae_lambda=.95, learning_rate=.0003, ent_coef=.01,
                                 target_kl=.03, verbose=0)
         else:
             model = MaskablePPO.load(args.checkpoint, device=args.device)
             result["input_checkpoint_sha256"] = file_sha(args.checkpoint)
-        model.set_logger(configure(str(directory), ["json"]))
-        optimizer_steps = [0]
+        learner_logger = configure(str(directory), ["json"])
+        model.set_logger(learner_logger)
         optimizer_hook = model.policy.optimizer.register_step_post_hook(
             lambda *unused: optimizer_steps.__setitem__(0, optimizer_steps[0] + 1))
         model.save(directory / "initial.zip")
@@ -336,14 +390,20 @@ def main(argv=None):
             result["episodes"].extend(summaries)
             result["decisions"] += decisions
             result["api_records"] += sum(row["api_records"] for row in summaries)
+            # These receipts now belong to the closed totals, even if buffer
+            # construction, optimization or checkpoint writing is interrupted.
+            result.pop("active_attempts", None)
+            result.pop("active_episodes", None)
             buffer = build_rollout_buffer(episodes, observation_space(),
                                           gym.spaces.Discrete(1000), device=args.device)
             save_rollout(directory / f"rollout_{round_index:04d}.npz", buffer, episodes)
             if args.mode == "train" and decisions >= 2:
                 model.rollout_buffer = buffer
                 model.num_timesteps = result["decisions"]
-                model._current_progress_remaining = max(0., 1. - result["decisions"] / args.decisions)
-                before = {key: value.detach().clone() for key, value in model.policy.state_dict().items()}
+                model._current_progress_remaining = max(
+                    0., 1. - result["decisions"] / args.decisions)
+                before = {key: value.detach().clone() for key, value in
+                          model.policy.state_dict().items()}
                 model.train()
                 policy_sha(model)  # Refuse nonfinite parameters before recording an update.
                 changed = sum(not torch.equal(before[key], value) for key, value in
@@ -365,8 +425,6 @@ def main(argv=None):
                 model.save(directory / f"checkpoint_{round_index:04d}.zip")
                 if not changed:
                     raise RuntimeError("PPO update changed no policy parameters")
-            result.pop("active_attempts", None)
-            result.pop("active_episodes", None)
             write_json(directory / "summary.json", result)
             round_index += 1
             environments = []
@@ -374,7 +432,8 @@ def main(argv=None):
         optimizer_hook.remove()
         result["final_checkpoint_sha256"] = file_sha(directory / "final.zip")
         result["final_policy_sha256"] = policy_sha(model)
-        if args.mode == "evaluate" and file_sha(args.checkpoint) != result["input_checkpoint_sha256"]:
+        if (args.mode == "evaluate"
+                and file_sha(args.checkpoint) != result["input_checkpoint_sha256"]):
             raise RuntimeError("evaluation changed the frozen checkpoint file")
         if args.mode == "evaluate" and (
                 optimizer_steps[0] != 0
@@ -382,6 +441,7 @@ def main(argv=None):
             raise RuntimeError("evaluation changed policy parameters or called optimizer.step")
     except BaseException as error:
         result["error"] = repr(error)
+        result["error_type"] = type(error).__name__
     finally:
         cleanup_errors = []
         for environment in environments:
@@ -389,7 +449,20 @@ def main(argv=None):
                 environment.close()
             except Exception as error:
                 cleanup_errors.append(repr(error))
+        if learner_logger is not None:
+            try:
+                learner_logger.close()
+            except Exception as error:
+                cleanup_errors.append("learner logger: " + repr(error))
         result["cleanup_errors"] = cleanup_errors
+        result["optimizer_updates"] = optimizer_steps[0]
+        active = result.get("active_episodes", [])
+        result["collector_observed_decisions"] = result["decisions"] + sum(
+            row.get("decisions", 0) for row in active)
+        result["collector_observed_api_records"] = result["api_records"] + sum(
+            row.get("api_records", 0) for row in active)
+        result["closed_episode_decisions"] = result["decisions"]
+        result.update(native_record_accounting(directory / "native"))
         stop.set()
         sampler.join(timeout=10.)
         result["wall_sec_including_all_attempts"] = time.monotonic() - started
@@ -398,11 +471,14 @@ def main(argv=None):
             args.mode == "evaluate" and len(result["episodes"]) == len(args.schedule)
             and all(row.get("terminated") for row in result["episodes"]))
         result["stop_reason"] = (
-            "infrastructure_error" if result["error"] or cleanup_errors
+            "interrupted" if result.get("error_type") in ("KeyboardInterrupt", "SystemExit")
+            else "infrastructure_error" if (
+                result["error"] or cleanup_errors or result["native_accounting_errors"])
             else "schedule_completed" if result["schedule_completed"]
             else "decision_budget" if result["quota_reached"] else "wall_budget")
         result["completed"] = (
             result["error"] is None and not cleanup_errors
+            and not result["native_accounting_errors"]
             and (result["schedule_completed"] if args.mode == "evaluate"
                  else result["decisions"] >= 2 and result["optimizer_updates"] > 0))
         write_json(directory / "resources.json", resources)

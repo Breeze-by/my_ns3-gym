@@ -5,9 +5,13 @@ receipts. It never launches ROS, Gazebo, a reward process or a GPU operation.
 """
 
 import copy
+import contextlib
+import io
+import json
 from pathlib import Path
 import tempfile
 import time
+import subprocess
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
@@ -19,7 +23,9 @@ import torch
 
 from mr3_learning.observation import encode_snapshot, observation_space
 from mr3_learning.policy import policy_kwargs
-from mr3_learning.ppo import ContractSpaces, collect_episodes, infer, save_rollout
+from mr3_learning.ppo import (
+    ContractSpaces, collect_episodes, infer, main, native_record_accounting,
+    save_rollout, write_json)
 from mr3_learning.rollout import build_rollout_buffer
 from mr3_learning.tests.test_observation import fixture
 
@@ -66,7 +72,8 @@ class ReceiptEnv:
             end = previous["reward_diagnostics"]["effective_step_end"]
             info = {
                 **{key: copy.deepcopy(previous[key]) for key in
-                   ("watermarks", "observation_sequence", "observation_digest", "candidate_version")},
+                   ("watermarks", "observation_sequence", "observation_digest",
+                    "candidate_version")},
                 "epoch": self.epoch, "dt": 0., "physical_dt": 0.,
                 "action_submitted": False, "terminal_observation_reused": True,
                 "command": None, "requested_action": action, "bootstrap": 0,
@@ -188,7 +195,8 @@ class CollectorTests(unittest.TestCase):
         cases = [ReceiptEnv([], reset_error=RuntimeError("reset failed")),
                  ReceiptEnv([RuntimeError("physics failed")]),
                  ReceiptEnv([{"terminated": True}], close_error=RuntimeError("shutdown failed"))]
-        for environment, reason in zip(cases, ("reset failed", "physics failed", "shutdown failed")):
+        reasons = ("reset failed", "physics failed", "shutdown failed")
+        for environment, reason in zip(cases, reasons):
             with self.subTest(reason=reason), self.assertRaisesRegex(RuntimeError, reason):
                 self.collect([environment])
 
@@ -262,7 +270,8 @@ class PPOIntegrationTests(unittest.TestCase):
         self.assertEqual(buffer.durations[-1], .02)
         actor_before = model.policy.action_net.weight.detach().clone()
         critic_before = model.policy.value_net.weight.detach().clone()
-        map_before = model.policy.features_extractor.encoder.global_encoder[0].weight.detach().clone()
+        map_before = (model.policy.features_extractor.encoder.global_encoder[0].weight
+                      .detach().clone())
         model.rollout_buffer = buffer
         model.num_timesteps = 4
         model._current_progress_remaining = .5
@@ -280,9 +289,10 @@ class PPOIntegrationTests(unittest.TestCase):
         self.assertEqual(len(updates), 4)
         self.assertFalse(torch.equal(actor_before, model.policy.action_net.weight))
         self.assertFalse(torch.equal(critic_before, model.policy.value_net.weight))
-        self.assertFalse(torch.equal(map_before,
-                                     model.policy.features_extractor.encoder.global_encoder[0].weight))
-        self.assertTrue(all(torch.isfinite(parameter).all() for parameter in model.policy.parameters()))
+        self.assertFalse(torch.equal(
+            map_before, model.policy.features_extractor.encoder.global_encoder[0].weight))
+        self.assertTrue(all(torch.isfinite(parameter).all()
+                            for parameter in model.policy.parameters()))
         for key in ("train/entropy_loss", "train/approx_kl", "train/value_loss"):
             self.assertTrue(np.isfinite(model.logger.name_to_value[key]))
         observation = encode_snapshot(fixture())
@@ -321,9 +331,92 @@ class PPOIntegrationTests(unittest.TestCase):
         model._current_progress_remaining = .5
         model.train()
         self.assertEqual(model._n_updates, 2)
-        self.assertTrue(all(torch.isfinite(parameter).all() for parameter in model.policy.parameters()))
+        self.assertTrue(all(torch.isfinite(parameter).all()
+                            for parameter in model.policy.parameters()))
         for key in ("train/policy_gradient_loss", "train/value_loss", "train/approx_kl"):
             self.assertTrue(np.isfinite(model.logger.name_to_value[key]))
+
+
+class NativeAccountingTests(unittest.TestCase):
+    def test_interruption_after_collection_does_not_count_closed_receipts_twice(self):
+        environment = ReceiptEnv([{}, {"truncated": True}])
+        with patch("mr3_learning.ppo.infer", side_effect=fixture_infer), patch(
+                "mr3_learning.ppo.next_value", return_value=.25):
+            episodes, summaries = collect_episodes(
+                None, [environment], tasks_for([environment], cap=2),
+                deadline=time.monotonic() + 60.)
+
+        def collected(*args, progress, **kwargs):
+            progress(summaries)
+            return episodes, summaries
+
+        original_check_output = subprocess.check_output
+
+        def source_query(command, **kwargs):
+            if command[:2] == ["git", "rev-parse"]:
+                return "a" * 40
+            if command[:2] == ["git", "status"]:
+                return ""
+            return original_check_output(command, **kwargs)
+
+        with tempfile.TemporaryDirectory() as temporary, patch(
+                "mr3_learning.ppo.subprocess.check_output", side_effect=source_query), patch(
+                "mr3_learning.ppo.resource_sample", return_value={}), patch(
+                "mr3_learning.ppo.Supervisor"), patch(
+                "mr3_learning.ppo.MR3Env", return_value=environment), patch(
+                "mr3_learning.ppo.collect_episodes", side_effect=collected), patch.object(
+                MaskablePPO, "train", side_effect=KeyboardInterrupt), contextlib.redirect_stdout(
+                io.StringIO()):
+            status = main(["--run-id", "fixture", "--output-root", temporary,
+                           "--decisions", "2", "--wall-seconds", "60", "--device", "cpu"])
+            summary = json.loads((Path(temporary) / "fixture/summary.json").read_text())
+        self.assertEqual(status, 1)
+        self.assertEqual(summary["stop_reason"], "interrupted")
+        self.assertEqual(summary["closed_episode_decisions"], 2)
+        self.assertEqual(summary["collector_observed_decisions"], 2)
+        self.assertEqual(summary["collector_observed_api_records"], 2)
+        self.assertEqual(summary["optimizer_updates"], 0)
+        self.assertNotIn("active_episodes", summary)
+
+    def test_inflight_native_decisions_and_zero_tail_are_counted_without_callback(self):
+        with tempfile.TemporaryDirectory() as directory:
+            episode = Path(directory) / "round0000/worker0/episode001_open_101"
+            episode.mkdir(parents=True)
+            (episode / "supervisor_metadata.json").write_text("{}")
+            rows = [{"kind": "reset", "info": {"dt": 0.}},
+                    {"kind": "step", "info": {"dt": 1., "physical_dt": 1.}},
+                    {"kind": "step", "info": {"dt": .98, "physical_dt": 1.}},
+                    {"kind": "step", "info": {"dt": 0., "physical_dt": 0.,
+                                              "action_submitted": False}}]
+            (episode / "transitions.jsonl").write_text(
+                "\n".join(json.dumps(row) for row in rows) + "\n")
+            result = native_record_accounting(directory)
+            self.assertEqual(result["native_api_records"], 3)
+            self.assertEqual(result["native_recorded_decisions"], 2)
+            self.assertEqual(result["native_effective_sim_seconds"], 1.98)
+            self.assertEqual(result["native_physical_sim_seconds"], 2.)
+            self.assertEqual(result["native_accounting_errors"], [])
+
+    def test_incomplete_native_stream_preserves_only_proven_prefix_and_reports_error(self):
+        with tempfile.TemporaryDirectory() as directory:
+            episode = Path(directory) / "round0000/worker0/episode001_open_101"
+            episode.mkdir(parents=True)
+            (episode / "supervisor_metadata.json").write_text("{}")
+            (episode / "transitions.jsonl").write_text(json.dumps(
+                {"kind": "step", "info": {"dt": 1., "physical_dt": 1.}}) + '\n{"kind":')
+            result = native_record_accounting(directory)
+            self.assertEqual(result["native_recorded_decisions"], 1)
+            self.assertEqual(result["native_physical_sim_seconds"], 1.)
+            self.assertEqual(len(result["native_accounting_errors"]), 1)
+
+    def test_failed_status_serialization_preserves_previous_complete_publication(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "status.json"
+            write_json(path, {"decisions": 7})
+            with self.assertRaises(ValueError):
+                write_json(path, {"decisions": float("nan")})
+            self.assertEqual(json.loads(path.read_text()), {"decisions": 7})
+            self.assertFalse(path.with_name("status.json.tmp").exists())
 
 
 if __name__ == "__main__":

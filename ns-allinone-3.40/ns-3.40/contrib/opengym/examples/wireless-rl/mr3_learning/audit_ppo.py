@@ -6,6 +6,7 @@ Task failure remains a failure even when its measurement/provenance audit passes
 """
 
 import argparse
+import copy
 import gzip
 import hashlib
 import importlib.util
@@ -14,6 +15,7 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+from types import ModuleType
 
 import numpy as np
 import torch
@@ -23,6 +25,25 @@ from .observation import encode_snapshot, observation_space
 
 
 WIRELESS = "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/"
+ROS = "ros2_ws/ros2-multi-robot-automap/"
+OBSERVATION_SOURCE = ROS + "src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py"
+OBSERVATION_V3_SHA256 = "71ea159b57caf93471ded502aaab36ec4ec3b14893a4c40b511b6f4839fd4d63"
+CURRENT_AUDITOR_PINS = {
+    ROS + "scripts/audit_mr3_env.py":
+        "427d5263403dc9d0db846e36fe6051446d99ed337e45313424ff148ecef08cb7",
+    ROS + "scripts/audit_mr3_adapter_probe.py":
+        "bd991f9bc2fd78a9b713ee108c2337c5dbdd483d0f2fd387277357c57efe315d",
+}
+EXECUTION_CONFIG_PINS = {
+    ROS + "src/slam_toolbox/config/mapper_params_online_multi_async.yaml":
+        "3ca81b5afb628d5787e60a266c6dc375a26f6b6a5c4fef70bd8a5261dc8dbb17",
+    ROS + "src/multi_robot/params/nav2_params_tb1_0.yaml":
+        "fb5c7e0599a8b6cf69af21d14bd486017d87d6de0c6a61bdd5cd1b31647723fb",
+    ROS + "src/multi_robot/params/nav2_params_tb2_0.yaml":
+        "2964ef46a8d75267a359c339c8629932ff20e87357dcb6bfca160681b819c40b",
+    ROS + "src/multi_robot/params/nav2_params_tb3_0.yaml":
+        "1ea059a6e9f9ec462eea625a90f1711534f629bbeda03b846deb549dbde1fc8f",
+}
 ENV_DOCUMENT_SHA256 = "fa39665fab65d2970e86a2654d047ada2ae5d3670fe644b7c06d5a1e3abb3beb"
 TASK_DOCUMENT_SHA256 = "f96f5ba785a39daa882b3c2ea217c58dd968550b65bf0ee15faf07ca079f8991"
 PRIOR_TASK_DOCUMENT_SHA256 = "5e4400396e4aaf5a5094fb4c0c04c85810c327cc85be88b7d03fa3faeade07d2"
@@ -69,6 +90,121 @@ def load_pinned(name, path, digest):
     return module
 
 
+def verify_frozen_pins(root, freeze, pins, label):
+    """Bind explicitly reviewed bytes to both the claimed commit and worktree."""
+    proof = {}
+    for relative, expected in pins.items():
+        payload = subprocess.check_output(["git", "show", freeze + ":" + relative], cwd=root)
+        digest = hashlib.sha256(payload).hexdigest()
+        require(digest == expected and sha(root / relative) == expected,
+                label + " source freeze/worktree SHA mismatch: " + relative)
+        proof[relative] = {"sha256": digest, "git_source": freeze + ":" + relative,
+                           "worktree_sha256": expected}
+    return proof
+
+
+def extend_snapshot_validator(auditor, candidate_module):
+    """Extend the original validator solely for the exact pinned v3 rule.
+
+    Original records take the unmodified legacy path. New records first prove
+    their actual whole-snapshot and versioned candidate digests; a detached
+    legacy-format view then passes every original non-version validation.
+    Native snapshots and immutable helper files are never changed.
+    """
+    original = auditor.validate_snapshot
+
+    def validate(snapshot, epoch):
+        if "candidate_rule" not in snapshot:
+            return original(snapshot, epoch)
+        versioned_digest = candidate_module.candidate_digest(snapshot)
+        require(snapshot.get("candidate_version") == versioned_digest,
+                "v3 candidate digest mismatch")
+        require(snapshot.get("digest") == auditor.canonical_digest(
+            {key: value for key, value in snapshot.items() if key != "digest"}),
+            "saved snapshot digest mismatch")
+        legacy = copy.deepcopy(snapshot)
+        legacy.pop("candidate_rule")
+        legacy["candidate_version"] = auditor.canonical_digest({
+            key: legacy[key] for key in
+            ("epoch", "map_version", "sequence", "candidates", "path_maps")})
+        legacy["digest"] = auditor.canonical_digest({
+            key: value for key, value in legacy.items() if key != "digest"})
+        return original(legacy, epoch)
+
+    auditor.validate_snapshot = validate
+
+
+def load_compatible_components(phase, root, freeze):
+    """Keep W7 native auditors and phase/command gates as verified Git bytes.
+
+    The current CLI validators understand both candidate formats. The native
+    gate uses the exact original auditor modules in memory, adding only the
+    reviewed candidate-version dispatch, while unchanged runtime sources remain
+    pinned to W7 and the new candidate source/configs have explicit new pins.
+    """
+    base = phase.load_pinned_module("mr3_p2a_legacy_phase_v2", Path(phase.__file__).parent /
+                                    phase.BASE_NAME, phase.BASE_SHA256)
+    command = phase.load_pinned_module("mr3_p2a_legacy_command_v7", Path(phase.__file__).parent /
+                                       phase.COMMAND_NAME, phase.COMMAND_SHA256)
+    require(all(phase.PINNED_RUNTIME.get(path) == digest
+                for path, digest in command.PINNED_AUDITORS.items()),
+            "original command-time auditor pins differ from W7 phase pins")
+    runtime = {**phase.PINNED_RUNTIME, OBSERVATION_SOURCE: OBSERVATION_V3_SHA256}
+    original_scripts = set(command.PINNED_AUDITORS)
+    native_pins = {path: digest for path, digest in runtime.items()
+                   if path not in original_scripts}
+    proof = verify_frozen_pins(root, freeze, native_pins, "native runtime")
+    proof.update(verify_frozen_pins(root, freeze, CURRENT_AUDITOR_PINS, "current auditor"))
+    proof.update(verify_frozen_pins(root, freeze, EXECUTION_CONFIG_PINS, "execution config"))
+    for relative, expected in phase.PINNED_DOCUMENTS.items():
+        payload = subprocess.check_output(["git", "show", freeze + ":" + relative], cwd=root)
+        require(hashlib.sha256(payload).hexdigest() == expected,
+                "frozen document SHA mismatch: " + relative)
+        proof[relative] = {"sha256": expected, "source": freeze + ":" + relative}
+    names = ("ros_smoke_test", "audit_mr3_adapter_probe", "mr3_p2a_legacy_env_audit")
+    previous = {name: sys.modules.get(name) for name in names}
+    loaded = {}
+    try:
+        filenames = ("ros_smoke_test.py", "audit_mr3_adapter_probe.py", "audit_mr3_env.py")
+        for name, filename in zip(names, filenames):
+            relative = ROS + "scripts/" + filename
+            payload = subprocess.check_output(
+                ["git", "show", TASK_BASE_FREEZE + ":" + relative], cwd=root)
+            digest = hashlib.sha256(payload).hexdigest()
+            require(digest == runtime[relative],
+                    "original W7 auditor Git SHA mismatch: " + relative)
+            # ros_smoke_test also executes natively, so retain its source pin.
+            if relative not in CURRENT_AUDITOR_PINS:
+                proof.update(verify_frozen_pins(
+                    root, freeze, {relative: digest}, "native runtime"))
+            proof[relative].update(legacy_auditor_sha256=digest,
+                                   legacy_auditor_git_source=TASK_BASE_FREEZE + ":" + relative)
+            module = ModuleType(name)
+            module.__file__ = str(root / relative)
+            sys.modules[name] = module
+            exec(compile(payload, TASK_BASE_FREEZE + ":" + relative, "exec"), module.__dict__)
+            loaded[name] = module
+        current_path = ROS + "scripts/audit_mr3_adapter_probe.py"
+        current_probe = load_pinned("mr3_p2a_current_candidate_rules", root / current_path,
+                                    CURRENT_AUDITOR_PINS[current_path])
+    finally:
+        for name, prior in previous.items():
+            if prior is None:
+                sys.modules.pop(name, None)
+            else:
+                sys.modules[name] = prior
+    auditor = loaded[names[-1]]
+    extend_snapshot_validator(auditor, current_probe)
+    base.FREEZE, base.METHOD = freeze, phase.METHOD
+    base.PINNED_RUNTIME, base.PINNED_DOCUMENTS = runtime, dict(phase.PINNED_DOCUMENTS)
+    proof[OBSERVATION_SOURCE]["snapshot_validator_override"] = {
+        "rule": current_probe.CANDIDATE_RULE_V3,
+        "scope": ("exact v3 candidate digest dispatch only; "
+                  "legacy/contact/clock/command/scalar rules retained"),
+        "original_auditor_files_modified": False}
+    return base, auditor, command, proof
+
+
 def load_native_gates(root, freeze):
     directory = root / WIRELESS / "report/assets/20261015_mr3_p1c"
     phase = load_pinned("mr3_p2a_phase_v3", directory /
@@ -85,7 +221,7 @@ def load_native_gates(root, freeze):
         **phase.PINNED_DOCUMENTS,
         WIRELESS + "MR3_ENV_CONTRACT.md": ENV_DOCUMENT_SHA256,
         task_relative: source_task_digest}
-    base, auditor, command, proof = phase.load_components(freeze, root)
+    base, auditor, command, proof = load_compatible_components(phase, root, freeze)
     scalar = load_pinned("mr3_p2a_scalar_v3", directory / "reward_gate_audit_v3.py",
                          SCALAR_SHA256)
     require(sha(root / WIRELESS / "MR3_ENV_CONTRACT.md") == ENV_DOCUMENT_SHA256,
@@ -111,13 +247,14 @@ def load_native_gates(root, freeze):
                 "machine task/geometry changed from accepted W7 contract: " + relative)
         proof[relative] = {"sha256": digest, "git_source": freeze + ":" + relative,
                            "normative_source": TASK_BASE_FREEZE + ":" + relative}
-    for filename in ("ppo.py", "rollout.py", "policy.py", "model.py", "env.py",
+    for filename in ("audit_ppo.py", "ppo.py", "rollout.py", "policy.py", "model.py", "env.py",
                      "observation.py", "supervisor.py", "requirements-env.txt",
                      "requirements-ppo.txt"):
         relative = WIRELESS + "mr3_learning/" + filename
         blob = subprocess.check_output(["git", "show", freeze + ":" + relative], cwd=root)
         digest = hashlib.sha256(blob).hexdigest()
-        require(digest == sha(root / relative), "learner worktree differs from freeze: " + filename)
+        require(digest == sha(root / relative),
+                "learner worktree differs from freeze: " + filename)
         proof[relative] = {"sha256": digest, "git_source": freeze + ":" + relative}
     return phase, base, auditor, command, scalar, proof
 
@@ -204,7 +341,8 @@ def audit_rollout(path, decisions, *, gamma=.99, gae_lambda=.95):
     expected_keys = {"obs_" + key for key in observation_space().spaces} | {
         "actions", "masks", "rewards", "values", "log_probs", "advantages", "returns",
         "dt", "terminated", "truncated", "next_values"}
-    require(set(data) == expected_keys, "rollout fields differ from declared actor/target contract")
+    require(set(data) == expected_keys,
+            "rollout fields differ from declared actor/target contract")
     for key in observation_space().spaces:
         expected = np.stack([row["observation"][key] for row in decisions])[:, None]
         require(np.array_equal(data["obs_" + key], expected),
@@ -249,9 +387,11 @@ def audit_rollout(path, decisions, *, gamma=.99, gae_lambda=.95):
 
 def audit_run(directory, freeze):
     directory = Path(directory).resolve()
-    root = next(parent for parent in Path(__file__).resolve().parents if (parent / ".git").exists())
+    root = next(parent for parent in Path(__file__).resolve().parents
+                if (parent / ".git").exists())
     require(re.fullmatch(r"[0-9a-f]{40}", freeze) is not None, "exact source freeze required")
-    metadata, summary = load_json(directory / "metadata.json"), load_json(directory / "summary.json")
+    metadata = load_json(directory / "metadata.json")
+    summary = load_json(directory / "summary.json")
     require(metadata["freeze"] == summary["freeze"] == freeze, "run source freeze mismatch")
     phase, base, native_auditor, command, scalar, proof = load_native_gates(root, freeze)
     result = {"schema": "mr3-p2a-ppo-offline-audit-v1", "directory": str(directory),
@@ -296,7 +436,8 @@ def audit_run(directory, freeze):
                     and evaluation["max_duration_sec"] == 300., "task contract gate changed")
             if evaluation["success"]:
                 require(evaluation["correct_free_coverage_ratio"] >= .95
-                        and evaluation["map_quality_pass"] and evaluation["robot_participation_pass"]
+                        and evaluation["map_quality_pass"]
+                        and evaluation["robot_participation_pass"]
                         and evaluation["collision_events"] == 0
                         and evaluation["collision_monitoring_fresh"]
                         and evaluation["navigation_protocol_closed"]
@@ -304,10 +445,12 @@ def audit_run(directory, freeze):
                         "claimed task success violates original task gates")
             decisions, api_count = native_decisions(native)
             recorded = listed[native]
-            require(recorded["decisions"] == len(decisions) and recorded["api_records"] == api_count,
+            require(recorded["decisions"] == len(decisions)
+                    and recorded["api_records"] == api_count,
                     "run/native decision and API counts differ")
             require(np.isclose(recorded["reward_sum"], sum(x["reward"] for x in decisions))
-                    and np.isclose(recorded["simulation_seconds"], sum(x["dt"] for x in decisions)),
+                    and np.isclose(recorded["simulation_seconds"],
+                                   sum(x["dt"] for x in decisions)),
                     "run/native reward or simulation-duration totals differ")
             round_id = int(native.parent.parent.name.removeprefix("round"))
             rounds.setdefault(round_id, []).append((recorded["episode_index"], decisions, row))
@@ -341,7 +484,7 @@ def audit_run(directory, freeze):
                 require(len(declared) == 1 and changed > 0
                         and declared[0]["changed_parameter_tensors"] == changed
                         and updated._n_updates > model._n_updates,
-                        "post-update checkpoint lacks the declared real parameter/optimizer change")
+                        "post-update checkpoint lacks real parameter/optimizer change")
                 round_result.update(updated_checkpoint_sha256=sha(updated_path),
                                     changed_parameter_tensors=changed)
             return decisions
@@ -382,7 +525,8 @@ def audit_run(directory, freeze):
           summary["final_checkpoint_sha256"], "final checkpoint hash differs"))
     result["native_attempts"] = len(discovered)
     result["task_successes"] = sum(
-        row.get("task", {}).get("success", False) and not row["errors"] for row in result["episodes"])
+        row.get("task", {}).get("success", False) and not row["errors"]
+        for row in result["episodes"])
     result["task_failures"] = [{"epoch": row.get("epoch"), "task": row.get("task"),
                                 "audit_errors": row["errors"]} for row in result["episodes"]
                                if row["errors"] or not row.get("task", {}).get("success", False)]

@@ -294,6 +294,26 @@ def add_initial_inputs_handshake(directory, change=None, omit_record=False):
 
 
 class AuditEvidenceTests(unittest.TestCase):
+    def test_current_snapshot_validator_dispatches_exact_v3_and_retains_legacy(self):
+        from audit_mr3_adapter_probe import CANDIDATE_RULE_V3
+        legacy = snapshot(1)
+        AUDIT.validate_snapshot(legacy, EPOCH)
+        versioned = copy.deepcopy(legacy)
+        versioned["candidate_rule"] = copy.deepcopy(CANDIDATE_RULE_V3)
+        versioned["candidate_version"] = AUDIT.candidate_digest(versioned)
+        versioned["digest"] = AUDIT.canonical_digest({
+            key: value for key, value in versioned.items() if key != "digest"})
+        AUDIT.validate_snapshot(versioned, EPOCH)
+        versioned["candidate_rule"]["goal_xy_tolerance_m"] = .25
+        candidate_keys = ("epoch", "map_version", "sequence", "candidates", "path_maps",
+                          "candidate_rule")
+        versioned["candidate_version"] = AUDIT.canonical_digest({
+            key: versioned[key] for key in candidate_keys})
+        versioned["digest"] = AUDIT.canonical_digest({
+            key: value for key, value in versioned.items() if key != "digest"})
+        with self.assertRaisesRegex(ValueError, "candidate rule"):
+            AUDIT.validate_snapshot(versioned, EPOCH)
+
     def test_late_terminal_replays_exact_snapshot_without_fabricating_a_command(self):
         samples = terminal_samples(reused=True)
         detail = AUDIT.audit_transitions(samples, physics(), EPOCH)

@@ -14,7 +14,7 @@ import math
 from pathlib import Path
 import re
 
-from audit_mr3_adapter_probe import canonical_digest, native_stop_proof
+from audit_mr3_adapter_probe import candidate_digest, canonical_digest, native_stop_proof
 from ros_smoke_test import native_launch_failures, validate_contact_reducer_summary
 
 
@@ -123,9 +123,8 @@ def validate_snapshot(snapshot, epoch):
     require(snapshot.get("digest") == canonical_digest(
         {key: value for key, value in snapshot.items() if key != "digest"}),
         "saved snapshot digest mismatch")
-    keys = ("epoch", "map_version", "sequence", "candidates", "path_maps")
-    require(snapshot.get("candidate_version") == canonical_digest(
-        {key: snapshot[key] for key in keys}), "candidate digest mismatch")
+    require(snapshot.get("candidate_version") == candidate_digest(snapshot),
+            "candidate digest mismatch")
     require([robot.get("name") for robot in snapshot["robots"]] == list(ROBOTS),
             "snapshot does not contain exactly tb1/tb2/tb3")
     require(len(snapshot["joint_action_mask"]) == 1000

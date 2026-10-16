@@ -22,7 +22,9 @@ are out of scope. Detailed method decisions live in the plan and
 
 Default baseline retains handcrafted ROS frontier allocation; the mutually
 exclusive adapter owns stable goals and consumes logical ideal-delivery copies.
-P2A has an eight-decision engineering checkpoint (seed17, four GPU optimizer steps),
+P2A has separate eight-decision engineering checkpoints (seed17/41, four GPU steps each).
+The v2 pilot diagnostic interruption retains 390 native decisions, zero updates and
+two peer-safety failures. Versioned v3 candidate/SLAM/Nav2 corrections require fresh native validation,
 without 95% task credit; no validated robot policy or ROS/ns-3 gateway exists. P1C implements Gymnasium
 tensors/IPC, full process rebuild, explicit stepping and isolated first-correct-cell rewards.
 W7 `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a` has the complete eight-stage engineering matrix and independent audits,

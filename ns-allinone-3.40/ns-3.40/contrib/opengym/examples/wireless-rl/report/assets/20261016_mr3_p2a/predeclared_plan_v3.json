@@ -1,0 +1,97 @@
+{
+  "schema": "mr3-p2a-native-pilot-plan-v3",
+  "date": "2026-10-16",
+  "authorization": "User explicitly accepted MR3-P1C and instructed execution of P2A.",
+  "scope": "Native Gazebo pilot, exactly three robots per environment, no 2D or gateway.",
+  "freeze_binding": "Prospective plan: all v3 stages require the same new clean committed/pushed source freeze. SOURCE_FREEZE_FROM_METADATA is resolved only from actual run metadata; no speculative SHA. All v1/v2 results remain historical and are not v3 credit.",
+  "training_seed": 41,
+  "optimizer": {
+    "algorithm": "sb3-contrib MaskablePPO 2.9.0 train()",
+    "learning_rate": 0.0003,
+    "gamma_per_second": 0.99,
+    "gae_lambda_per_second": 0.95,
+    "minibatch_size": 64,
+    "maximum_epochs_per_round": 4,
+    "target_kl": 0.03,
+    "entropy_coefficient": 0.01
+  },
+  "stages": [
+    {
+      "name": "minimal",
+      "run_id": "mr3_p2a_v3_minimal",
+      "command": "python -m mr3_learning.ppo --mode train --workers 1 --schedule open:101 --decisions 16 --episode-steps 16 --wall-seconds 900 --seed 41 --base-domain 160 --base-port 12301 --run-id mr3_p2a_v3_minimal",
+      "decision_cap": 16,
+      "purpose": "Fresh v3 native observations, all three received-map geometric pools, legal learned masked choices, external truncation and clean closure followed by real PPO update/checkpoint. Independent native/scalar/pre-update-policy audit required before pilot; no 95% credit.",
+      "wall_seconds": 900
+    },
+    {
+      "name": "pilot",
+      "run_id": "mr3_p2a_v3_pilot",
+      "condition": "minimal native and collecting-policy audits pass",
+      "command": "python -m mr3_learning.ppo --mode train --workers 4 --schedule open:101 --decisions 3706 --episode-steps 300 --wall-seconds 12600 --seed 41 --base-domain 164 --base-port 12311 --run-id mr3_p2a_v3_pilot",
+      "decision_cap": 3706,
+      "purpose": "Fresh initial policy, fixed development open101, remaining original pilot budget after all v2 native activity is charged. No v2 checkpoint resumption, statistical comparison or old-result reuse.",
+      "wall_seconds": 12600
+    },
+    {
+      "name": "development_validation",
+      "run_id": "mr3_p2a_v3_validation",
+      "condition": "pilot produces a finite frozen final checkpoint without infrastructure errors",
+      "command": "python -m mr3_learning.ppo --mode evaluate --workers 4 --checkpoint /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v3_pilot/final.zip --schedule open:401,open:402,open:403 --decisions 900 --episode-steps 300 --wall-seconds 9000 --seed 41 --base-domain 172 --base-port 12321 --run-id mr3_p2a_v3_validation",
+      "optimizer_steps": 0,
+      "checkpoint_selection": "final only, no validation-driven selection or tuning",
+      "purpose": "Three deterministic mask-aware development episodes under unchanged 95%/300s/schema4 gates; all failures retained. Not unseen-layout generalization.",
+      "decision_cap": 900,
+      "wall_seconds": 9000
+    }
+  ],
+  "wall_budget": "Sample cutoff at next request boundary; in-flight request, genuine stop/closure and final update measured separately in total actual wall time.",
+  "retries": "none; infrastructure failure stops run/remaining stages, preserve prefix and diagnose",
+  "task_failures": "count and preserve, never replace or change gates",
+  "success_boundary": "Actual optimizer updates alone do not complete P2A. Must demonstrate frozen 95% task and learning/coordination evidence; otherwise remain in P2A and report diagnosis.",
+  "evaluation_split": "Development only; no held-out/test/confirmation layouts or seeds used.",
+  "evidence": "Complete native records, tensor/mask rollouts, sampling log probabilities, explicit dt/GAE/returns, initial/per-update/final checkpoints and hashes, all process closure receipts, resource samples and independent offline native/scalar/policy audit.",
+  "supersedes": "v2 minimal passed 8 decisions/4 optimizer steps. v2 pilot was agent-interrupted for diagnosis after 390 raw native decisions,389.10 sampled reward seconds,1752.9574942300096 wall seconds and0 updates. Preserve two peer-safety failures and two abandoned cleanly closed prefixes; v2 validation was not started. v3 is a new execution freeze with no cross-freeze matrix.",
+  "changes": [
+    "Correct per-robot candidate representation and certify full declared Nav2 arrival disk, while preserving .29m path/body clearance and rejecting unsafe own-map seeds.",
+    "Reduce active SLAM motion deadband to .10m/.20rad; synchronize all three actual GoalChecker and DWB positional tolerances to .10m; leave ROS time throttle, map algorithm, yaw and C++/Karto implementation unchanged.",
+    "Retain raw-native, returned-collector and closed-round counters separately after interruption; retain original errors and all owned closure evidence.",
+    "Fresh16-decision engineering minimum, then remaining3706-decision/12600-second pilot, then unchanged fixed900-decision/9000-second zero-update validation; seed41 and all task/safety gates unchanged."
+  ],
+  "source_freeze": "SOURCE_FREEZE_FROM_METADATA",
+  "execution_version": "mr3-per-robot-geometric-staging-v3",
+  "shared_pilot_budget": {
+    "original_decision_cap": 4096,
+    "original_wall_seconds": 14400,
+    "v2_native_decisions_charged": 390,
+    "v2_collector_returned_API": 388,
+    "v2_full_actual_wall_seconds_charged": 1752.9574942300096,
+    "remaining_decision_cap": 3706,
+    "remaining_wall_seconds": 12647.04250576999,
+    "v3_wall_seconds_selected": 12600,
+    "scope": "Pilot resource ceiling is not expanded. Engineering minimal runs and the already-declared fixed development validation are separately reported. Prior full wall includes closure; new sampling cutoff retains the originally declared separate closure/in-flight/final-round update accounting."
+  },
+  "execution_changes": {
+    "candidate_rule": "Per-robot received-own-map reachable staging, one geometric reservation per still-unrepresented robot, then deterministic farthest-point K8; no truth/reward ranking, hand-planner, unsafe-start snapping or map clearing.",
+    "path_body_clearance_m": 0.29,
+    "goal_xy_tolerance_m": 0.1,
+    "target_arrival_disk_clearance_m": 0.39,
+    "new_goal_pair_separation_m": 0.78,
+    "new_goal_idle_body_separation_m": 0.68,
+    "candidate_hash": "candidate_rule is included in candidate_version; explicit version-aware audit retains old evidence semantics.",
+    "slam_config": "src/slam_toolbox/config/mapper_params_online_multi_async.yaml",
+    "minimum_travel_distance_m": 0.1,
+    "minimum_travel_heading_rad": 0.2,
+    "unchanged_ros_minimum_time_interval_sec": 0.5,
+    "unchanged_map_update_interval_sec": 5.0,
+    "nav2_configs": [
+      "src/multi_robot/params/nav2_params_tb1_0.yaml",
+      "src/multi_robot/params/nav2_params_tb2_0.yaml",
+      "src/multi_robot/params/nav2_params_tb3_0.yaml"
+    ],
+    "nav2_both_GoalChecker_and_DWB_xy_goal_tolerance_m": 0.1,
+    "unchanged_yaw_goal_tolerance_rad": 3.14,
+    "native_cpp_sdk_change": false,
+    "task_safety_reward_gates_changed": false
+  }
+}

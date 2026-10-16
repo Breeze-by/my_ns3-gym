@@ -585,6 +585,11 @@
         "superseded": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/predeclared_plan_v1.json",
         "replacement": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/predeclared_plan_v2.json",
         "reason": "Task document status SHA binding corrected; seed41 from accepted task contract; fresh native matrix declared. Original attempt never relabeled or used as v2 native credit."
+      },
+      {
+        "superseded": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/predeclared_plan_v2.json",
+        "replacement": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/predeclared_plan_v3.json",
+        "reason": "Diagnosed per-robot candidate starvation and short-subgoal SLAM/Nav2 mismatch. New geometric arrival-disk/versioned candidate contract and explicitSLAM/Nav2 execution parameters, unchanged task/safety/reward gates; freshv3 native proof required. Charge390native decisions and1752.957494wall seconds against originalpilot quota; remainder3706decisions/12600seconds, no cross-freeze result reuse."
       }
     ],
     "artifacts": {
@@ -599,7 +604,39 @@
       "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v1/minimal/manifest.json": {
         "sha256": "579d71d9341dd6d221ad60d6ef48e7dc0571008bf34f2666ab12a0c786a213ba",
         "bytes": 13302
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v2/minimal/manifest.json": {
+        "sha256": "c9d5795eaea868233d502dea65d369d22af72f254c235d5ddc38ddf5e4e52c4e",
+        "bytes": 12817
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v2/minimal/audit_v2.json": {
+        "sha256": "e0ad57445b6e4d4112470281106b3d2f6920ad563c5050cbe3b0934c700fe95f",
+        "bytes": 41859
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v2/pilot_interrupted/manifest.json": {
+        "sha256": "8846d56b4e78bf2e957daeb1bb7957dd6ef8882c51d89a3e79b14a9aa0860c2b",
+        "bytes": 35587
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v2/pilot_interrupted/diagnostic_native_prefix_audit_v1.json": {
+        "sha256": "33beacea2305e110e99dd35c973983025d3964cd83d8b73d72adc0f26e9b7813",
+        "bytes": 43140
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/predeclared_plan_v3.json": {
+        "sha256": "a18dcbffea48ed9f2298e7c868e1cb14f3839ad6372a8bfb3a16c84958ac140b",
+        "bytes": 7089
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/selected_byte_integrity_v2.json": {
+        "sha256": "3778963b4ce7cac52d032c3ba77c714f180e3d244da4b9d9248c090b8e9beaef",
+        "bytes": 824
       }
-    }
+    },
+    "v2_source_freeze": "9e898bd5ca5eccc6e263e198481f672b5cf82320",
+    "v2_minimal_manifest": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v2/minimal/manifest.json",
+    "v2_pilot_interrupted_manifest": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v2/pilot_interrupted/manifest.json",
+    "v2_diagnostic_audit": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v2/pilot_interrupted/diagnostic_native_prefix_audit_v1.json",
+    "v2_scope": "Minimal8native decisions/4GPU optimizer steps/full offline auditPASS. Pilot390settled native decisions,388collector returns,389.10sampled reward seconds,1752.9574942300096wall seconds,0updates; two genuine peer-safety failures and two agent-abandoned cleanly closed prefixes. No95% task success, no final pilot checkpoint; originalgeneric infrastructure_error label retained but diagnostic SIGINT is not a simulator crash finding.",
+    "active_prospective_plan": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/predeclared_plan_v3.json",
+    "v3_source_freeze": "SOURCE_FREEZE_FROM_METADATA",
+    "v3_status": "prospective_pre_native_new_execution_version; no task/acceptance credit"
   }
 }
