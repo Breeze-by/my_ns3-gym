@@ -3647,3 +3647,83 @@ phase审计限定flake8首轮一处100字符超过99限制失败已修正，root
 v6最终限定lint补充：13份修改/新增Python的system flake8（max-line-length=99）最终全部PASS，路径由git diff --name-only与git ls-files --others --exclude-standard合并、排序去重、仅.py并排除report/assets证据源码。首次全13入口在test_audit_protocol.py:118/124/126报三处E128，原失败保留，随后仅修缩进，聚焦协议23项PASS.773秒，最终全13PASS；这与先前phase模块一处100>99失败及root3文件复查分开记录。最终13路径明列prefreeze_checks_v6.json，无新增native/GPU。root另核对11份活动Markdown154本地链接missing=[]。独立native/phase/protocol代码复核报告无blocker，canonicalreview回执由root另补，不把代码复核当成原生结果。
 
 冻结前最后补全离线source-proof列表，增加同freeze的`mr3_learning/ipc.py`与`benchmark.py`（包含terminal工程入口与资源采样）；未改运行行为。W目录执行`rtk proxy env PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m unittest mr3_learning.tests.test_audit_ppo -q`：9项PASS/0.181秒。独立`phase_ack_source_review_v1.json`精确源码哈希全部与最终工作树相符；其复核不代替新冻结原生运行。
+
+
+## 2026-10-16 MR3-P2A V6实际执行闭合与用户累计预算确认
+
+源码为已提交推送的af37b2aaa3cb9980434f7f16c1f52dec2506319d，49项source-proof绑定同freeze；ENV/TASK原SHA不变。以下前三条为实际native命令，后三条为实际CPU离线审计，cwd wireless-rl，解释器/环境见完整argv；未使用2D、旧checkpoint、手工目标fallback或新observer。原predeclared_plan_v6.json保持字节，结果不回写成预先已知。
+
+```bash
+rtk proxy env PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.benchmark --workers 1 --schedule open:101,open:101 --steps 4 --terminal-probe --base-domain 156 --base-port 12291 --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo --run-id mr3_p2a_v6_phase_terminal
+
+rtk proxy env PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.ppo --mode train --workers 1 --schedule open:101 --decisions 16 --episode-steps 16 --wall-seconds 900 --seed 41 --base-domain 160 --base-port 12301 --run-id mr3_p2a_v6_minimal
+
+rtk proxy env PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.ppo --mode train --workers 4 --schedule open:101 --decisions 2588 --episode-steps 300 --wall-seconds 6300 --seed 41 --base-domain 164 --base-port 12311 --run-id mr3_p2a_v6_pilot
+
+rtk proxy env PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -c 'exec(compile(open("/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_phase_terminal/audit_benchmark_v6.py").read(), "audit_benchmark_v6.py", "exec"))' /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_phase_terminal af37b2aaa3cb9980434f7f16c1f52dec2506319d
+
+rtk proxy env PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.audit_ppo /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_minimal --freeze af37b2aaa3cb9980434f7f16c1f52dec2506319d --output /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_minimal/audit_v6.json
+
+rtk proxy env PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.audit_ppo /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_pilot --freeze af37b2aaa3cb9980434f7f16c1f52dec2506319d --output /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_pilot/audit_v6_original.json
+```
+
+terminal-probe：两episode8 API/7次实际脚本决策，6.02有效/物理秒，343.196831619367墙秒，0策略推理/0更新；末步分别真实提交20ms短终态及同边界零动作尾通知，原native/scalar/phase-ACK审计exit0、独立工程复核PASS，86组owned身份消失。只证明冻结评价器终态串行消费，不是all-producer排水/P3时钟/95%任务。首次独立review错误要求注入立即任务失败的冻结navigation_protocol_closed=true，原错误JSON及源码保留；改为区分原失败标记与之后18实际节点finalized/零pending目标，原门禁/数据不改、无native重试。
+
+minimal：UTC开始07:09:04.830017，open101/seed41，1worker每worker三台，16原生/返回决策、16有效/物理秒、297.1948199640028墙秒，4次真实GPU optimizer.step，completed=true/decision_budget，cleanup_errors=[]。full audit exit0，native/contact/command/20ms/phase/scalar/pre-update policy和独立有限回报+恰好一次外部trunc bootstrap复核PASS，43组owned身份消失。initial SHA71193d1209581ed77f4e589e2d9852582863b26f1ee75f2645361f4734da3c2f，final SHA3ce168340161472df27ef9841089c5f16ef009abb0c729fb8461462d3217d8ed。工程min权重未载入fresh pilot。
+
+pilot：UTC开始07:14:43.389407，4worker fresh open101/seed41、每episode最多300步，原声明2588决策/6300墙秒。实际718原生/717返回，716.64有效=物理仿真秒，3477.507027802989完整墙秒；0完整保存round/0保存学习样本/0更新，绝非没有采样。w0的第300条原生记录已写盘，关闭抛错使末条未返回，原生多1仍扣预算。initial SHA7f9c27a554cd4c10eb7dc4895b3ffa9dcec6009998f7c8754f83dc730e66cb79。四终态：w0 300决策/300s timeout覆盖.9710809823792568，quality=true/participation=false；w1 62/61.18s peer包络失败覆盖.8433534191545695，quality=false/participation=false；w2 56/55.46s peer包络失败覆盖.866292339998174，quality=true/participation=true；w3 300/300s timeout覆盖.970944033598101，quality=true/participation=false。四条success=false、冻结navigation_closed=false，18路新鲜/0接触。两次约97%覆盖不替代参与/全任务门禁。
+
+w0 tb1 SLAM节点multirobot_slam_toolbox_node-7 PID1438806在有序SIGINT后记录karto::Exception、exit -6；严格serial shutdown于是失败并关闭launch，尚未创建Gazebo native-stop CLI，所以worker表层报InfrastructureError(RuntimeError('native stop CLI identity is missing or ambiguous'))。原native_stop.json/worker summary缺失，不能伪造补齐；w0归infra无效，其余三条正常组件闭合/真实任务失败。具体SDK throw/stack未证，不catch忽略、不宣称根治/归因FastDDS。cleanup_errors=[]仍保留原生失败，独立核对167组原生PID/start及父进程1438538不存在。
+
+full audit_v6_original.json exit1、八条FAIL完整保留：未完成尝试/缺worker summary、其他三条旧消费方路径连锁错误、run/native closure失败、无有限更新证据、缺final。独立闭合/component复核不将run改PASS。无final.zip、checkpoint_0000.zip、rollout_0000，按声明final-only open401/402/403开发验证SKIPPED，0新验证任务/0更新，不代用v5/更早/minimum权重。按v6无重试infra规则停止；当前无native/training/monitor。本session不自动重试/v7，不推进P2B/gateway，P2A完整95%/训练验证出口未达。
+
+CPU旁证失败也保留：minimal独立review首次直接.py入口在import前ModuleNotFoundError（exit1/7.817822342s），第二次python -m runpy绝对.py路径在main前拒绝（exit1/.568859712s），随后下面runpy.run_path入口exit0/PASS；完整CPU耗时未单独计量，不把initial tool wait10.001970146s写成总耗时。原argv/错误在native_v6/minimal/independent_review_v6_execution_v1.json：
+
+```bash
+rtk proxy env PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES= /home/zhuyulab/miniconda3/envs/ns3gym/bin/python /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_minimal/independent_review_v6.py
+
+rtk proxy env PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES= /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m runpy /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_minimal/independent_review_v6.py
+
+rtk proxy env PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES= /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -c 'import runpy,sys;runpy.run_path(sys.argv[1],run_name="__main__")' /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_minimal/independent_review_v6.py
+```
+
+有限prefix review只取四worker reset+前20条完整newline transition；84快照mask完整重放，后续rows未读、未hash完整增长文件。w1/tb2 21快照无合法GOAL、20步0GOAL（KEEP10/WAIT10）；w0/tb2先4快照有合法目标未选后17零；w3/tb1先3有后18零；不能混写合法未选与无可选。第一CPU driver错误断言“同state watermark必同pose”exit1/1.087279687s，修正保留身份歧义和actor顺序；原失败源码/回执保存。最终重放exit0/1.268494678s、限定lintPASS；全为CPU，无ROS/GPU/native/optimizer/控制操作。精确命令来自执行sidecar：
+
+```bash
+rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_pilot/prefix20_controllability_repro_v6.py --replay-captured --output /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_pilot/prefix20_controllability_replaycheck_v6.json
+```
+
+闭合后独立infra复核执行一次，exit0/2.902024214s，AST/限定lintPASS；不将native run改PASS，prepared learner helper从未执行：
+
+```bash
+rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_pilot/v6_infrastructure_review_v1.py
+rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 -m flake8 --max-line-length=99 /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_pilot/v6_infrastructure_review_v1.py
+```
+
+融合+已交付本机前沿union仅为ignored detached CPU原型及独立review，生产af37源码未改。复用旧v5合成tb2 pool0→20、精确旧v5actor81 tb1 pool0→2/selected0→1，mask只增加088；原own path.29、fused/own到达盘.39、known line1m、K8/reserveFPS/jointmask均不改。旧v5导航起点被占据仍不能清障；实际v6 prefix无全图，counterfactual=null。没有新native/observer/GPU或95%信用，实际执行原型命令：
+
+```bash
+rtk proxy env PYTHONNOUSERSITE=1 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 /usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_pilot/frontier_union_feasibility_v6.py
+```
+
+用户明确回复原异步预算问题，选择原4096决策/4小时累计pilot+另列三开发验证，未达95%停P2A；不是新给4小时。budget_acceptance_20261016.json记录root会话答复的转述，不伪造逐字用户引文。累计扣v2 390/1752.9574942300096、v4 242/1051.0549356047995、v5 876/5212.525802815799、v6 718/3477.507027802989，合2226决策/Decimal11494.0452604535971墙秒，余1870/2905.9547395464029；float展示约11494.045260453597/2905.954739546403。未花额度不重置/不自动使用，工程probe/minimum与另列开发验证分开。
+
+实际规范打包命令cwd Gitroot，前三个run原件完整保留；/tmp helper与提交archive_selected_originals_v2.py逐字相等。以下均只读源/选件归档，无native/GPU：
+
+```bash
+rtk proxy python3 /tmp/mr3_p2a_package.py ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_phase_terminal ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/phase_terminal
+rtk proxy python3 /tmp/mr3_p2a_package.py ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_minimal ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/minimal
+rtk proxy python3 /tmp/mr3_p2a_package.py ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_pilot ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure
+```
+
+规范三包manifest：phase_terminal46文件raw2230786/selected598950 bytes，SHA6550fccd2082b4f557a677d79449a82e7f3cd5070d1cf333a71c8d7f6b20beb8；minimal31/raw21970791/selected13081559，SHA91fe5191879f244fbf0bb8f72e4bc2db08cb6f6d47871426428c101be4f20b00；pilot_infrastructure102/raw140822139/selected17759469，SHA74bbc36c725c32d83e83768ba650acf309a948e3d0390890515e6f40c905a7fb。selected_byte_integrity_v6.json179/179原始/选取/解码SHA及字节、目标唯一和完整source inventory PASS，保留gzip-only原件；三类临时fixture验证gzip重复排除/gzip-only保留、exclusive目标冲突failclosed、拒绝source内嵌target，全部PASS。v6_closure_accounting.json统一闭合成本/原FAIL/组件scope、预算及manifest/source pins。上述归档/CPU核查无新native、GPU、training或控制信号。
+
+最终静态核查：179所选原件清单完整、原始/选取/解码SHA相等；归档工具三个临时目录反例检查PASS（gzip重复与原gzip保留、目标冲突拒绝覆盖、原目录内target拒绝）。初次对全部`.json`作document解析在pilot的零字节`sb3_metrics/progress.json`失败；按已冻结SB3 JSONL logger格式逐行核验两份日志（最小链一条、pilot零条）后PASS，原件保持。其余JSON document严格拒绝非有限常量；49源码冻结及6旧计划/ENV/TASK原字节保持。结果保存在`report/assets/20261016_mr3_p2a/postrun_checks_v6.json`，不提供pilot或95%信用。
+
+补充独立CPU复核实际调用：以下由审核代理从本轮实际工具调用回溯展开绝对argv；未另存execution字段，不代表额外原生重跑。前三条cwd为wireless-rl，后两条为Git根；均无训练/策略GPU更新。
+
+1. phase_terminal：`rtk proxy env PYTHONNOUSERSITE=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -c 'import runpy,sys; sys.argv=sys.argv[1:]; runpy.run_path(sys.argv[0],run_name="__main__")' /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_phase_terminal/review_v6_phase_terminal.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_phase_terminal`。初次补充scope断言exit1，保留原件后修正复核exit0；此前直接绝对脚本调用另有import路径错误exit1。
+2. pilot_closure：`rtk proxy env PYTHONNOUSERSITE=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -c 'import runpy; runpy.run_path("/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_pilot/review_v6_pilot_closure.py",run_name="__main__")'`，exit0；三个正常关闭episode的组件审核通过，w0基础设施FAIL保留。
+3. w2closedreview：`rtk proxy env PYTHONNOUSERSITE=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -c 'import runpy; runpy.run_path("/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_pilot/review_round0000_worker2_v6.py",run_name="__main__")'`，exit0，仅已关闭w2完整审核，不提供整run通过。
+4. native_stop_forensics：`rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_pilot/review_v6_native_stop_forensics.py`，exit0；直接观察Karto异常/-6与后继CLI缺失，具体throw位置未知。
+5. frontier_union独立复核：`rtk proxy env PYTHONNOUSERSITE=1 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 /usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_pilot/review_frontier_union_feasibility_v6.py`，exit0；仅旧v5精确快照/隔离原型，无当前v6实际反事实或执行信用。

@@ -1,6 +1,6 @@
 # MR3-P2A 联合 MaskablePPO pilot 契约 v6
 
-2026-10-16：用户验收 P1C 并授权 P2A。P2A 进行中，P2B 及后续未开始。
+2026-10-16：用户验收 P1C 并授权 P2A。P2A未完成，v6基础设施失败后按预声明停止；本session不自动重试或启动v7，P2B及后续未开始。
 正式任务沿用 [任务契约](MR3_TASK_CONTRACT.md) 与 [环境契约](MR3_ENV_CONTRACT.md)：
 原生 Gazebo、恰好三机器人、95%/300 仿真秒、原地图质量/参与/18 路接触及导航闭合门禁。
 本契约不授权二维替代、gateway 或历史候选 500k/72h 配额。
@@ -96,7 +96,7 @@ run自动停止，非表现诊断中断；cleanup_errors=[]，没有final.zip，
 不以checkpoint_0002或更早权重补测。原完整audit_v5_original.json FAIL及各项诊断分别保留。
 单开发图/单训练seed的少量成功不证明学习收益、可靠冻结策略或P2A完成。
 
-[v6前瞻计划](report/assets/20261016_mr3_p2a/predeclared_plan_v6.json)只修订原生评价消费相位：
+[v6原预声明计划](report/assets/20261016_mr3_p2a/predeclared_plan_v6.json)在`af37b2aaa3cb9980434f7f16c1f52dec2506319d`实施，只修订原生评价消费相位：
 每次20个物理tick推进并暂停后，由评价器同一SingleThreadedExecutor确认精确clock及已冻结终态，
 worker取得匹配epoch/相位回执后才推进下一量子。不放宽原20ms检测滞后、真实短步/零尾结算、
 任务/接触/源龄门禁；gamma=lambda=1、actor/候选/地图/SLAM/Nav2和reward权重不改。
@@ -109,32 +109,34 @@ Gazebo step RPC原件没有额外wall timestamp，不虚构此证据。重复req
 此审计只证明冻结评价器终态的串行消费，原20ms/contact/command/scalar/W7 native门禁继续独立执行。
 协议v2集成按实际新freeze绑定adapter/protocol/transport/env-auditor四份精确SHA，
 保留原W7函数的可执行身份、原FAIL及严格detached replay；不修改旧原件或称旧v5整run通过。
-当前仅为新冻结前声明，尚无v6原生信用。
+v6实际工程terminal-probe完成两episode、8 API/7次脚本真实决策、6.02有效/物理秒，
+343.196831619367墙秒，0更新；原native/scalar和新phase-ACK审计及独立复核PASS。
+全新最小链16原生/返回决策、16有效/物理秒、4次GPU更新、297.1948199640028墙秒，
+完整native/scalar/pre-update policy及独立有限回报/一次bootstrap复核PASS；43组owned身份消失。
+两项仅为工程信用，不加载进fresh pilot，不证明95%任务。
 
-同一干净、已提交推送新freeze由metadata绑定`SOURCE_FREEZE_FROM_METADATA`，依次执行：
-先1worker、open101两episode、4步terminal-probe工程benchmark，验证20ms短终态和同边界零动作尾步；
-原native/scalar及新phase-ACK审计全部PASS后，执行全新学习seed41/open101最小链，
-16真实决策/16步外部截断/900墙秒，完整native/scalar/pre-update policy审计PASS后才启动pilot。
-两项均为独立工程成本，不载入旧checkpoint，也不证明95%任务。v6不计划额外raw-map observer。
+v6 fresh pilot固定open101/seed41、4workers，原上限2588决策/6300墙秒；实际718原生、717返回、
+716.64有效/物理秒、3477.507027802989墙秒。首round未完成，0保存学习样本/0次更新，
+不能据此称没有采样。两条300秒timeout质量通过、覆盖约97%，但三台参与失败；
+两条61.18/55.46秒peer包络失败，均无任务成功。w0第300条原生动作已写盘，关闭异常使其未返回。
 
-v6 pilot从全新初始权重开始，4workers、每worker仍为tb1/tb2/tb3，固定open101，
-最多2588真实决策/6300墙秒采样截止（先到即停）。普通episode上限300步；最后quota或墙时
-尾段明确外部截断，仅bootstrap一次末观测value。真实terminated才适用未折扣MC及失败回报界。
-原4096/14400 pilot扣v2的390/1752.9574942300096、v4的242/1051.0549356047995、
-v5的876/5212.525802815799，余2588决策/6383.461767349392墙秒，保守选6300，不扩预算。
-工程probe/最小链与固定开发验证单列；在途请求、原生安全关闭及已开始round末更新实耗
-仍按原声明另记，不混入任务300仿真秒。
+w0 tb1 SLAM在有序SIGINT后记录`karto::Exception`并exit -6，严格串行关闭提前失败，
+Gazebo native-stop CLI没有启动；表层报`native stop CLI identity is missing or ambiguous`。
+具体SDK throw/stack未证实，不catch忽略、不声称已修复。原完整audit_v6_original.json八项FAIL保持；
+独立组件复核不覆盖该基础设施失败。167组保存PID/start身份及父进程均不存在，cleanup_errors=[]。
+没有final.zip、checkpoint_0000或rollout_0000，声明的open401/402/403 final-only验证SKIPPED，
+不替换v5、早期或工程最小链权重。闭合证据见[记账](report/assets/20261016_mr3_p2a/v6_closure_accounting.json)。
 
-只有pilot无基础设施错误地完成并产生有限final.zip，才用该final在open401/open402/open403
-各做一轮确定性mask-aware开发验证：总900决策/9000墙秒、最多4workers、0optimizer更新。
-条件不满足则SKIP，不替换早期checkpoint，不按验证反馈选模型/调参。
-学习seed41与taskseed不同：这些open任务均为同world/任务几何/固定三台起点和yaw0，
-只改变Gazebo传感/物理随机种子；不是姿态/布局变化、多训练seed或未见泛化。
-rooms/corridors及后续预声明开发姿态/布局变化仍未启动。
+用户2026-10-16确认原4096决策/14400墙秒是累计pilot额度，另列三场开发验证，未达95%停P2A；
+不是新增4小时。v2/v4/v5/v6累计2226原生决策/约11494.045260453597墙秒，
+剩1870决策/约2905.954739546403墙秒，未花额度不重置、不自动使用。
+逐run原值和Decimal精确相加见[用户预算记录](report/assets/20261016_mr3_p2a/budget_acceptance_20261016.json)。
+本版按原无重试infra规则停止；本session不自动重试/启动v7，不进入P2B或接网。
 
-本轮无自动重试。真实任务失败计入；基础设施故障终止run，保留前缀与已有checkpoint。
-如未达到95%任务/安全/学习出口，明确P2A未完成，诊断表示、候选、采样与奖励，停在本步。
-不因短预算或有optimizer更新就宣布P2A验收通过，也不进入P2B或接网。
+所有open任务仍为同world/任务几何/固定三台起点及yaw0，Gazebo随机种子变化不是姿态/布局变化。
+rooms/corridors及后续预声明开发姿态/布局变化未启动，完整可复现训练/验证出口未达。
+融合+本机已交付前沿的union仅有隔离CPU原型和独立复核，未集成生产候选、未执行新原生实验，
+不能复用旧v5原图counterfactual为实际v6改善或95%信用。
 
 ## 证据
 

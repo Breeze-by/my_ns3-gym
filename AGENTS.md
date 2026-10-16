@@ -91,8 +91,16 @@ external truncations. Its pilot retained 48 GPU optimizer steps and 797 saved
 training samples before a genuine 40ms terminal-detection infrastructure failure;
 all 16 attempts and three descriptive strict successes are preserved. No final
 checkpoint was produced, so its final-only development validation was skipped.
-V6 adds an exact-clock evaluator ACK before each 20ms policy quantum; a fresh
-terminal probe, minimum loop and budget-limited pilot are predeclared. There is
+V6 `af37b2a` adds an exact-clock evaluator ACK at each 20ms policy boundary.
+Its two-episode terminal probe and fresh 16-decision/four-update minimum pass
+independent native/scalar/policy/ACK audits. Its pilot retained 718 native
+decisions and zero updates before a genuine controlled-shutdown Karto abort
+(SLAM exit -6); all 167 saved process identities and its parent are gone. No
+final model exists, so its final-only validation is skipped. This session stops
+in P2A under its no-retry rule. The user explicitly approved a cumulative
+4096-decision/14400-wall-second pilot ceiling plus three development validations;
+2226 decisions/11494.045260453597 seconds have been charged across pilot versions,
+leaving 1870/2905.954739546403 unused, without an automatic new run. There is
 no frozen-policy reliability or 95% P2A acceptance credit; no validated exploration policy or ROS/ns-3 gateway exists. Historical
 five-user/15-input/5-action toy DQN is a separate task.
 P1A now measures all six actual body collisions per robot (18 streams), with

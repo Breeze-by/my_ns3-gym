@@ -168,12 +168,18 @@ python -m pip install -r mr3_learning/requirements-ppo.txt
 [PPO契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_PPO_CONTRACT.md)。
 当前为v6评价器逐20tick暂停相位ACK修订；原生候选/地图/导航及gamma=lambda=1保持，
 不放宽20ms终态检测或任务/安全门禁。每个暂停量子必须等评价器同executor确认精确clock/冻结终态，
-不是P3生产端/DDS完整因果时钟证明。下列命令与[v6前瞻计划](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/predeclared_plan_v6.json)一致，尚未执行。
+不是P3生产端/DDS完整因果时钟证明。下列已执行历史命令与[v6原预声明计划](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/predeclared_plan_v6.json)一致；前三项已在af37冻结执行，验证项SKIPPED。旧run-id拒绝覆盖，这里不授权重跑。
 v5最小链16/4更新完整审计PASS；pilot三round797保存样本/48更新，全16尝试876原生/875返回、
 5212.525802815799墙秒，3次原生成功记录及全部失败/前缀保留。最后自动触发终态40ms滞后
 超过20ms门禁的基础设施错误，原完整审计FAIL，无final.zip，原声明开发验证SKIPPED，不替换早期权重。
 原4096/14400 pilot扣v2的390/1752.957494、v4的242/1051.054936、v5的876/5212.525803，
-余2588/6383.461767，保守用2588/6300；工程probe/最小链和固定开发验证单列，无额外observer计划。
+v6声明时余2588/6383.461767、选2588/6300。实际probe8API/7脚本决策和最小链16决策/4更新审计PASS；
+pilot718原生/717返回、3477.507027802989墙秒、0保存round/0更新，tb1 SLAM有序SIGINT后karto::Exception/exit -6，
+严格关闭失败且Gazebo stop CLI未启动，表层identity missing；原完整八项FAIL保留，具体SDK throw/stack未知。
+无final/checkpoint0000/rollout0000，三场开发验证SKIPPED，不代用早期/其他版本/工程权重。
+累计pilot已用2226/约11494.045260453597，余1870/约2905.954739546403；用户确认原累计4096/4小时，
+未花不重置、不自动用。本session按无重试infra规则停止P2A，不自动重试/v7或进入P2B。
+工程probe/最小链和固定开发验证单列，无额外observer运行。
 先terminal-probe的native/scalar/phase-ACK审计PASS，再全新最小链完整审计PASS，才从新权重跑pilot。
 phase审计由学习端独立模块重放物理和评价器/worker回执并随完整审计执行，无单独虚构CLI；
 保留原20ms/contact/command/scalar/W7门禁及协议v2原FAIL/严格detached重放，scope不扩成all-producer drain。
@@ -194,6 +200,11 @@ python -m mr3_learning.ppo --mode train --workers 4 --schedule open:101 \
   --decisions 2588 --episode-steps 300 --wall-seconds 6300 --seed 41 \
   --base-domain 164 --base-port 12311 --run-id mr3_p2a_v6_pilot
 
+```
+
+以下是原预声明且未执行的验证命令，因缺final.zip已SKIPPED，不可直接运行：
+
+```bash
 python -m mr3_learning.ppo --mode evaluate --workers 4 \
   --checkpoint /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_pilot/final.zip \
   --schedule open:401,open:402,open:403 \
@@ -205,9 +216,9 @@ python -m mr3_learning.ppo --mode evaluate --workers 4 \
 输出为`log/mr3_ppo/<run-id>/`；SB3指标写`sb3_metrics/progress.json`，collector实时状态单独写根`progress.json`。
 包含metadata、原生进程/任务原件、张量/掩码rollout、
 采样概率、PPO指标、checkpoint和SHA、完整失败/中断。`completed`只表示run的采集/更新闭合，
-95%任务成功仍由原生schema4独立判断。工程相位probe或最小链未通过先停，不启动pilot；
+95%任务成功仍由原生schema4独立判断。本次phase/minimum已PASS但pilot infra失败，不能将工程通过当任务成功；
 仅pilot无基础设施错误且有有限final.zip时执行final-only验证，否则SKIP、不替换checkpoint；
-pilot未达95%时留在P2A诊断，不接网、不进入P2B。
+本次停在P2A，未接网/进入P2B；[闭合记账](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/v6_closure_accounting.json)及[预算记录](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/budget_acceptance_20261016.json)保留全部成本。
 v3候选规则为`mr3-per-robot-geometric-staging-v3`，路径机体净空仍为`.29m`，
 目标到达圆盘要求`.39m`；各台已交付本地图保留几何代表项，不能用真值或手工目标兜底。
 主launch实际读取`src/multi_robot/params/nav2_params_tb1_0.yaml`至`tb3_0.yaml`，

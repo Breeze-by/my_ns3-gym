@@ -1,0 +1,589 @@
+{
+  "schema": "mr3-v6-minimal-independent-learning-review-v1",
+  "passed": true,
+  "freeze": "af37b2aaa3cb9980434f7f16c1f52dec2506319d",
+  "utc_recorded": "2026-10-16T07:15:17.449500+00:00",
+  "command_argv": [
+    "rtk",
+    "proxy",
+    "env",
+    "PYTHONNOUSERSITE=1",
+    "CUDA_VISIBLE_DEVICES=",
+    "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "-c",
+    "import runpy,sys;runpy.run_path(sys.argv[1],run_name='__main__')",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_minimal/independent_review_v6.py"
+  ],
+  "artifact_manifest": {
+    "metadata.json": {
+      "bytes": 1362,
+      "sha256": "6e7756aee2b1b171d089ff9da9d81bd9e3c39a82d3e1864482611564eb90ed48"
+    },
+    "summary.json": {
+      "bytes": 14262,
+      "sha256": "0cebf2b4203b908107961bac64881e5c7ebe8b1be568e4f0d8c9c3cea36060f4"
+    },
+    "native/round0000/worker0/episode001_open_101/adapter.jsonl": {
+      "bytes": 774982,
+      "sha256": "d38c863ec76139dc90ffcdbf0e88fe07e12fc0c155d711d967e69741bdf4673d"
+    },
+    "native/round0000/worker0/episode001_open_101/adapter.jsonl.gz": {
+      "bytes": 141688,
+      "sha256": "93f9aaf17ec082e8faaf4dbaa18c0cc359f82d8dfc346df2fb6697ea4b1c1280"
+    },
+    "native/round0000/worker0/episode001_open_101/adapter.sha256": {
+      "bytes": 65,
+      "sha256": "f555d981d2d4cdadd2d160e64e5ad3ff5f52f77c9bf8a1eaa97bc778332233f3"
+    },
+    "native/round0000/worker0/episode001_open_101/evaluator_phase_evaluator.jsonl": {
+      "bytes": 495603,
+      "sha256": "cafef7919f49c1de7c98e3c1b2cab846bfe4cb64eb9b72c6cc57172842d84efc"
+    },
+    "native/round0000/worker0/episode001_open_101/evaluator_phase_worker.jsonl": {
+      "bytes": 1028752,
+      "sha256": "464ff38492a7e37084a39b1a0b41a1906284019115d319835de956d9071d6ab4"
+    },
+    "native/round0000/worker0/episode001_open_101/launch.log": {
+      "bytes": 125285,
+      "sha256": "488326f68856853f58a837ed832e63426e2be020e8a66237ba0a75490d13e884"
+    },
+    "native/round0000/worker0/episode001_open_101/metadata.json": {
+      "bytes": 2371,
+      "sha256": "27061b8ca07fea1ddb6fd8a0996c7d04c98f0d26d666d94bdc952278ae6822af"
+    },
+    "native/round0000/worker0/episode001_open_101/native_stop.json": {
+      "bytes": 129,
+      "sha256": "d82a93283d02167102339771de3d94d024ee0c9a4f8837fc713a3a10ffec7906"
+    },
+    "native/round0000/worker0/episode001_open_101/nav2_shutdown.json": {
+      "bytes": 11611,
+      "sha256": "de6d4f132c84cbd09464411310e665f86c006d55d53713046c4f321cca5261be"
+    },
+    "native/round0000/worker0/episode001_open_101/physics.jsonl": {
+      "bytes": 189303,
+      "sha256": "fdd80cb54483d70ffbcd585a37c3e4bd88d7d4f52767ebe836460dcaa0d99475"
+    },
+    "native/round0000/worker0/episode001_open_101/round0000_w0_e1_d334b5af.csv": {
+      "bytes": 14562,
+      "sha256": "c24dbceba223edd48eaffa56121002db271bfc74a3a3355643f59506036a5777"
+    },
+    "native/round0000/worker0/episode001_open_101/round0000_w0_e1_d334b5af.json": {
+      "bytes": 18883,
+      "sha256": "2e60b8b6f3a734ee09b80c6f15690f416379feed3585802c77f43a6522991d37"
+    },
+    "native/round0000/worker0/episode001_open_101/step_helper.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "native/round0000/worker0/episode001_open_101/summary.json": {
+      "bytes": 13228,
+      "sha256": "fd1ece606232e05479aa14fc4fc89a6b78e23f2b6997ec175afd858cf9b3ec77"
+    },
+    "native/round0000/worker0/episode001_open_101/supervisor_metadata.json": {
+      "bytes": 946,
+      "sha256": "21b4131a75abc6cfdd53651659b71ae59eeb69d84652fbf59b07559994f22550"
+    },
+    "native/round0000/worker0/episode001_open_101/supervisor_shutdown.json": {
+      "bytes": 7298,
+      "sha256": "f74e63a524a3c12487c92a67e3e00bfa053c35cc4f81706d5738a28259963cbd"
+    },
+    "native/round0000/worker0/episode001_open_101/transitions.jsonl": {
+      "bytes": 532663,
+      "sha256": "2d3595d6dafea91871ec740e34c72fdb09ecd5d1e95e0f6ba78d5dfeb6c36ae7"
+    },
+    "native/round0000/worker0/episode001_open_101/worker.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "resources.json": {
+      "bytes": 65497,
+      "sha256": "cef035a77bfa70c5a146bb8ae76bac3e27b450057e4feab16e3c47a790be5a42"
+    },
+    "progress.json": {
+      "bytes": 2935,
+      "sha256": "4a86cec807aff99ca46c2f182cb1f220be6a513a38363cf95d25bb175a987893"
+    },
+    "sb3_metrics/progress.json": {
+      "bytes": 366,
+      "sha256": "6e08638554dd366fe689d6c69e0a07715dd4e3fd765dea81b9ec1d62e49f8e0c"
+    },
+    "initial.zip": {
+      "bytes": 2926529,
+      "sha256": "71193d1209581ed77f4e589e2d9852582863b26f1ee75f2645361f4734da3c2f"
+    },
+    "rollout_0000.json": {
+      "bytes": 6287,
+      "sha256": "803aa5cdd22a1c71ccfd29ef833de8f419e132359f04e8bfb469d0560524e311"
+    },
+    "rollout_0000.npz": {
+      "bytes": 39274,
+      "sha256": "b2bd377a18c67ce5a40e9a84d217a2029a2ba1e1706b2ab8fff1ec1415d8f4cf"
+    },
+    "checkpoint_0000.zip": {
+      "bytes": 7797910,
+      "sha256": "3ce168340161472df27ef9841089c5f16ef009abb0c729fb8461462d3217d8ed"
+    },
+    "final.zip": {
+      "bytes": 7797910,
+      "sha256": "3ce168340161472df27ef9841089c5f16ef009abb0c729fb8461462d3217d8ed"
+    },
+    "independent_review_v6.py": {
+      "bytes": 15477,
+      "sha256": "ff25ea3b7e58187e9b934601e2e0bb41cdd98f476f3b7819eeb29b2d5ec4dc04"
+    }
+  },
+  "errors": [],
+  "run_summary": {
+    "decisions": 16,
+    "api_records": 16,
+    "native_recorded_decisions": 16,
+    "optimizer_updates": 4,
+    "ppo_epochs": 4,
+    "stop_reason": "decision_budget",
+    "completed": true,
+    "wall_sec_including_all_attempts": 297.1948199640028
+  },
+  "source_proof": {
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/ppo.py": {
+      "sha256": "84c87ddb4dc25ad39c246e57c1044d7b956f566f2028aa97c6349b0e5d28eff7",
+      "git_source": "af37b2aaa3cb9980434f7f16c1f52dec2506319d:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/ppo.py",
+      "current_bytes_equal_frozen": true
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/rollout.py": {
+      "sha256": "338f6b68505c39ea79b5db208a66080ce22c25199b0fc975e61bd5a1f935c87a",
+      "git_source": "af37b2aaa3cb9980434f7f16c1f52dec2506319d:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/rollout.py",
+      "current_bytes_equal_frozen": true
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/model.py": {
+      "sha256": "7f060186696d656ce5423e1f64b985668435a30ab4d3755d5beefcc3f01e15f2",
+      "git_source": "af37b2aaa3cb9980434f7f16c1f52dec2506319d:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/model.py",
+      "current_bytes_equal_frozen": true
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/policy.py": {
+      "sha256": "b7d87473c1debf8939209ab7b2cea14e1c28d2639cae320a436c381faccd6452",
+      "git_source": "af37b2aaa3cb9980434f7f16c1f52dec2506319d:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/policy.py",
+      "current_bytes_equal_frozen": true
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/observation.py": {
+      "sha256": "1d030402a4f934031e8f3bde19356cfbee92a0836a5d540381a42c78c834c389",
+      "git_source": "af37b2aaa3cb9980434f7f16c1f52dec2506319d:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/observation.py",
+      "current_bytes_equal_frozen": true
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/env.py": {
+      "sha256": "3e2902ff9be5c1b5c0aec00e0e03f2e1b5046a2335a2e871b7ec846156e3a6ff",
+      "git_source": "af37b2aaa3cb9980434f7f16c1f52dec2506319d:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/env.py",
+      "current_bytes_equal_frozen": true
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/supervisor.py": {
+      "sha256": "51864bcdd1d2441846f243830d24a6e113e2b418e0e10bc94dd7c50b1011e4f4",
+      "git_source": "af37b2aaa3cb9980434f7f16c1f52dec2506319d:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/supervisor.py",
+      "current_bytes_equal_frozen": true
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/requirements-env.txt": {
+      "sha256": "0ef03d56c3c24007b31ab59c84691f27a1790f95e7d9389fa4b0a7ca2152a5bf",
+      "git_source": "af37b2aaa3cb9980434f7f16c1f52dec2506319d:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/requirements-env.txt",
+      "current_bytes_equal_frozen": true
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/requirements-ppo.txt": {
+      "sha256": "56666a66b9003febbea286cad6f9415f8b5461cce7714562609fe7cedaa8162d",
+      "git_source": "af37b2aaa3cb9980434f7f16c1f52dec2506319d:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/requirements-ppo.txt",
+      "current_bytes_equal_frozen": true
+    },
+    "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py": {
+      "sha256": "977d4e8215e193a2be8c207728adb3a39d48e26d35bb9089abe921c1d61053fd",
+      "git_source": "af37b2aaa3cb9980434f7f16c1f52dec2506319d:ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py",
+      "current_bytes_equal_frozen": true
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py": {
+      "sha256": "c49e1ad05fdd4daaac5837dc1528fab3765c13bade4f7f3fcb195e2521e40e06",
+      "git_source": "af37b2aaa3cb9980434f7f16c1f52dec2506319d:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py",
+      "current_bytes_equal_frozen": true
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_evaluator_phase.py": {
+      "sha256": "9c43ace376354edbdf496fe920d04a539ed47912fd0840f6d290c459450d69fa",
+      "git_source": "af37b2aaa3cb9980434f7f16c1f52dec2506319d:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_evaluator_phase.py",
+      "current_bytes_equal_frozen": true
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py": {
+      "sha256": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b",
+      "git_source": "af37b2aaa3cb9980434f7f16c1f52dec2506319d:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py",
+      "current_bytes_equal_frozen": true
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py": {
+      "sha256": "71ea159b57caf93471ded502aaab36ec4ec3b14893a4c40b511b6f4839fd4d63",
+      "git_source": "af37b2aaa3cb9980434f7f16c1f52dec2506319d:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py",
+      "current_bytes_equal_frozen": true
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_information.py": {
+      "sha256": "115de517d85b27a46dee68ddae72b59f606de60448c1cb446e0f63a995eb6f0c",
+      "git_source": "af37b2aaa3cb9980434f7f16c1f52dec2506319d:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_information.py",
+      "current_bytes_equal_frozen": true
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py": {
+      "sha256": "b20f6b492f91cb943247ebcc29bd16497983d17c23cc458f1be16fa24b9958d5",
+      "git_source": "af37b2aaa3cb9980434f7f16c1f52dec2506319d:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py",
+      "current_bytes_equal_frozen": true
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py": {
+      "sha256": "fb08097170b3f0e8423fa11dde2567c618d4d0d48be220e6cfbfc9538c37c147",
+      "git_source": "af37b2aaa3cb9980434f7f16c1f52dec2506319d:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py",
+      "current_bytes_equal_frozen": true
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_transport.py": {
+      "sha256": "426d9b777c2150bb690de3266c973dedfc8fe8da3fa36c7bf37cbe3c31d70eca",
+      "git_source": "af37b2aaa3cb9980434f7f16c1f52dec2506319d:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_transport.py",
+      "current_bytes_equal_frozen": true
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reward.py": {
+      "sha256": "77485e7988489a146e4c44207343a0a4be7c12b5ffe36906dde59257cac16f88",
+      "git_source": "af37b2aaa3cb9980434f7f16c1f52dec2506319d:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reward.py",
+      "current_bytes_equal_frozen": true
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb1_0.yaml": {
+      "sha256": "fb5c7e0599a8b6cf69af21d14bd486017d87d6de0c6a61bdd5cd1b31647723fb",
+      "git_source": "af37b2aaa3cb9980434f7f16c1f52dec2506319d:ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb1_0.yaml",
+      "current_bytes_equal_frozen": true
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb2_0.yaml": {
+      "sha256": "2964ef46a8d75267a359c339c8629932ff20e87357dcb6bfca160681b819c40b",
+      "git_source": "af37b2aaa3cb9980434f7f16c1f52dec2506319d:ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb2_0.yaml",
+      "current_bytes_equal_frozen": true
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb3_0.yaml": {
+      "sha256": "1ea059a6e9f9ec462eea625a90f1711534f629bbeda03b846deb549dbde1fc8f",
+      "git_source": "af37b2aaa3cb9980434f7f16c1f52dec2506319d:ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb3_0.yaml",
+      "current_bytes_equal_frozen": true
+    }
+  },
+  "rounds": [
+    {
+      "round": 0,
+      "decisions": 16,
+      "parameter_groups": {
+        "shared_encoder": {
+          "unique_tensors": 22,
+          "changed_tensors": 22,
+          "adam_steps": [
+            4
+          ],
+          "delta_l2": 0.3481645602401252,
+          "adam_exp_avg_l2": 0.12208889304609515
+        },
+        "actor_head": {
+          "unique_tensors": 2,
+          "changed_tensors": 2,
+          "adam_steps": [
+            4
+          ],
+          "delta_l2": 0.1030727456577759,
+          "adam_exp_avg_l2": 0.02784106077531154
+        },
+        "critic_head": {
+          "unique_tensors": 2,
+          "changed_tensors": 2,
+          "adam_steps": [
+            4
+          ],
+          "delta_l2": 0.013668878416767881,
+          "adam_exp_avg_l2": 0.07867014435943125
+        }
+      },
+      "mask_and_native_tensors_exact": true,
+      "preupdate_cpu_replay_max_abs_errors": {
+        "values": 4.76837158203125e-07,
+        "log_probs": 0.0,
+        "next_values": 4.76837158203125e-07
+      },
+      "undiscounted_suffix_return_max_abs_error": 4.333993963712146e-07,
+      "episode_bootstraps": [
+        {
+          "terminated": false,
+          "truncated": true,
+          "tail_value_added_once": -1.0778926610946655,
+          "decisions": 16
+        }
+      ],
+      "forced_single_choice_rows": 9
+    }
+  ],
+  "unique_owned_process_identities": 43,
+  "process_identity_checks": [
+    {
+      "pid": 1435292,
+      "saved_start_ticks": 387994048,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1435305,
+      "saved_start_ticks": 387994087,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1435331,
+      "saved_start_ticks": 387994192,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1435341,
+      "saved_start_ticks": 387994348,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1435343,
+      "saved_start_ticks": 387994348,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1435345,
+      "saved_start_ticks": 387994349,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1435347,
+      "saved_start_ticks": 387994349,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1435349,
+      "saved_start_ticks": 387994349,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1435351,
+      "saved_start_ticks": 387994349,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1435353,
+      "saved_start_ticks": 387994349,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1435780,
+      "saved_start_ticks": 387994699,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1435782,
+      "saved_start_ticks": 387994700,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1435784,
+      "saved_start_ticks": 387994700,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1435843,
+      "saved_start_ticks": 387995003,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1435845,
+      "saved_start_ticks": 387995003,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1435847,
+      "saved_start_ticks": 387995003,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1435916,
+      "saved_start_ticks": 387995327,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1435969,
+      "saved_start_ticks": 387996468,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1435971,
+      "saved_start_ticks": 387996468,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1435973,
+      "saved_start_ticks": 387996468,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1435975,
+      "saved_start_ticks": 387996468,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1435977,
+      "saved_start_ticks": 387996468,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1435979,
+      "saved_start_ticks": 387996468,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1435981,
+      "saved_start_ticks": 387996470,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1436348,
+      "saved_start_ticks": 388000896,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1436350,
+      "saved_start_ticks": 388000896,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1436352,
+      "saved_start_ticks": 388000897,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1436354,
+      "saved_start_ticks": 388000897,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1436356,
+      "saved_start_ticks": 388000897,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1436358,
+      "saved_start_ticks": 388000897,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1436360,
+      "saved_start_ticks": 388000897,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1436643,
+      "saved_start_ticks": 388005465,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1436645,
+      "saved_start_ticks": 388005465,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1436647,
+      "saved_start_ticks": 388005465,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1436649,
+      "saved_start_ticks": 388005465,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1436651,
+      "saved_start_ticks": 388005465,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1436653,
+      "saved_start_ticks": 388005466,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1436655,
+      "saved_start_ticks": 388005466,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1436763,
+      "saved_start_ticks": 388006267,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1436765,
+      "saved_start_ticks": 388006267,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1436793,
+      "saved_start_ticks": 388006495,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1436796,
+      "saved_start_ticks": 388006534,
+      "current_identity": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1438146,
+      "saved_start_ticks": 388023026,
+      "current_identity": null,
+      "saved_identity_absent": true
+    }
+  ],
+  "final_equals_last_checkpoint_policy": true,
+  "final_policy_and_adam_finite": true,
+  "gamma": 1.0,
+  "gae_lambda": 1.0,
+  "native_records": 16,
+  "saved_actor_samples": 16,
+  "original_artifacts_unchanged_during_read": true,
+  "cpu_only": {
+    "cuda_initialized": false,
+    "optimizer_calls": 0,
+    "ROS_native_jobs": 0,
+    "signals": 0,
+    "tracked_writes": 0
+  },
+  "limits": [
+    "This bounded minimal run is an engineering sample, not a reliable95% task policy.",
+    "CPU replay allows float32 device/batch roundoff; masks/tensors/actions are exact.",
+    "Source checks and numerical health do not replace root's full native/scalar/ACK audit."
+  ]
+}

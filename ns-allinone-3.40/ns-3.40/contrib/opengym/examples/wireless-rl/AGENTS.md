@@ -31,13 +31,20 @@ objective to gamma=lambda=1 while retaining external-truncation bootstrap.
 Its pilot retained 48 optimizer steps/797 saved samples before a genuine 40ms
 terminal-detection infrastructure failure; three strict successes remain
 descriptive sampling outcomes. No final checkpoint exists and final-only
-validation was skipped. V6 adds an evaluator exact-clock/terminal ACK at each
-20ms policy boundary, with fresh engineering and remaining-budget pilot work
-predeclared. There is no frozen-policy reliability or 95% P2A acceptance credit; no validated robot policy or ROS/ns-3 gateway exists. P1C implements Gymnasium
+validation was skipped. V6 `af37b2a` adds an evaluator exact-clock/terminal ACK at each20ms boundary;
+its two-episode terminal probe and16-decision/four-update minimum pass the
+independent gates. Its pilot preserves718 native decisions/zero updates before
+a genuine SLAM Karto abort(-6) during controlled shutdown. All167 saved process
+identities and its parent are gone; no final.zip exists, so final-only validation
+is skipped. The session stops in P2A under the no-retry rule. User-approved
+cumulative pilot4096decisions/14400wall seconds has charged2226/11494.045260453597,
+leaving1870/2905.954739546403 unused without automatic retry. There is no
+frozen-policy reliability or95% P2A acceptance credit; no validated robot policy or ROS/ns-3 gateway exists. P1C implements Gymnasium
 tensors/IPC, full process rebuild, explicit stepping and isolated first-correct-cell rewards.
 W7 `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a` has the complete eight-stage engineering matrix and independent audits,
 762 ROS semantic and 40 conda CPU checks. The unchanged `b328f84` GPU interface probe
-retains its original 3-forward/3-backward/0-update scope; no new GPU training was run. Freeze `f9928fe`
+retains its original 3-forward/3-backward/0-update scope; P1C itself performed no
+policy training. P2A GPU evidence is separately versioned above. Freeze `f9928fe`
 passed all three same-freeze open/rooms/corridors seed101 adapter audits; see the
 [P1B report](report/20261015_mr3_p1b.md). K8/5 s are this interface version,
 not 95% task evidence. The P1B asynchronous nominal 1 s timer had 2/3 s rooms gaps;

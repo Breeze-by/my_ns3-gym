@@ -1,0 +1,55 @@
+{
+  "schema": "mr3-v6-independent-review-cpu-invocation-record-v1",
+  "scope": "CPU review invocations only; no native/ROS/GPU experiment was launched or retried",
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "script": "independent_review_v6.py",
+  "script_sha256": "ff25ea3b7e58187e9b934601e2e0bb41cdd98f476f3b7819eeb29b2d5ec4dc04",
+  "receipt": "independent_review_v6.json",
+  "receipt_sha256": "85444583408028a5b73f9d72147d1f0fe551a9b05013b0e3addc97c9de20a491",
+  "pre_main_failed_invocations": [
+    {
+      "argv": [
+        "rtk", "proxy", "env", "PYTHONNOUSERSITE=1", "CUDA_VISIBLE_DEVICES=",
+        "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_minimal/independent_review_v6.py"
+      ],
+      "exit_code": 1,
+      "tool_wall_time_seconds": 7.817822342,
+      "stderr_error_excerpt": "ModuleNotFoundError: No module named 'mr3_learning'",
+      "stage": "module import before main or artifact reads; no receipt created"
+    },
+    {
+      "argv": [
+        "rtk", "proxy", "env", "PYTHONNOUSERSITE=1", "CUDA_VISIBLE_DEVICES=",
+        "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python", "-m", "runpy",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_minimal/independent_review_v6.py"
+      ],
+      "exit_code": 1,
+      "tool_wall_time_seconds": 0.568859712,
+      "stderr_error_excerpt": "Error while finding module specification for absolute .py path",
+      "stage": "runpy CLI module-name rejection before script main; no receipt created"
+    }
+  ],
+  "successful_invocation": {
+    "argv": [
+      "rtk", "proxy", "env", "PYTHONNOUSERSITE=1", "CUDA_VISIBLE_DEVICES=",
+      "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python", "-c",
+      "import runpy,sys;runpy.run_path(sys.argv[1],run_name=\"__main__\")",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_minimal/independent_review_v6.py"
+    ],
+    "exit_code": 0,
+    "initial_tool_wait_seconds": 10.001970146,
+    "completion_confirmed_by": "write_stdin session11414 returned exit0; no further output",
+    "complete_cpu_wall_duration_measured_separately": false,
+    "stdout_receipt_result": {
+      "passed": true,
+      "errors": [],
+      "sha256": "85444583408028a5b73f9d72147d1f0fe551a9b05013b0e3addc97c9de20a491"
+    },
+    "stderr_note": "Installed legacy Gym prints its standard maintenance warning during SB3 import"
+  },
+  "artifacts_preserved": true,
+  "native_retries": 0,
+  "tracked_writes": 0,
+  "ROS_or_GPU_jobs": 0
+}

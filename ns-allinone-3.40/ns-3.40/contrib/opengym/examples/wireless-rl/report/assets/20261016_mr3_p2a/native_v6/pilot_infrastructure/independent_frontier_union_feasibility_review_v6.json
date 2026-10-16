@@ -1,0 +1,63 @@
+{
+  "schema": "mr3-independent-frontier-union-feasibility-review-v1",
+  "passed": true,
+  "helper_sha256": "02f139f4c5bec27c5aafdab954a6f1e9a1360d98f6c32cf5da4e1a83f82783db",
+  "receipt_sha256": "2dc5961c4dc4e524aec9e8906c76247f190b4a7d97f8cecb18625ac698cd1c8d",
+  "source_freeze_for_equal_observation_bytes": "af37b2aaa3cb9980434f7f16c1f52dec2506319d",
+  "actual_counterfactual_native_evidence_freeze": "de7a805af9cd9bc7d1b24e60559ccc4d3054e4c3",
+  "actual_state_scope": "Only old-v5 round0002 worker3 actor81; NOT current V6 prefix.",
+  "old_entire_native_snapshot_replayed": true,
+  "prototype_entire_saved_snapshot_replayed": true,
+  "independent_containing_cell_projection_equal": true,
+  "all_union_frontier_endpoints_fused_known_free": true,
+  "max_observed_projection_shift_m": 0.03305052680202288,
+  "declared_projection_shift_upper_bound_m": 0.03535533958616298,
+  "raw_grids_maps_states_paths_and_target_counts_unchanged": true,
+  "joint_mask_changed_indices": [
+    88
+  ],
+  "old_joint_legal_actions": 2,
+  "prototype_joint_legal_actions": 3,
+  "new_tb1_candidate": {
+    "index": 0,
+    "valid": true,
+    "row": 80,
+    "column": 118,
+    "x": -0.031288968794221717,
+    "y": -0.9422426926243013,
+    "clearance_m": 0.41464466711935954,
+    "frontier_count": 104,
+    "frontier_groups": [
+      9,
+      10,
+      11,
+      13,
+      14,
+      16,
+      17,
+      25
+    ],
+    "reachable": [
+      true,
+      true,
+      true
+    ],
+    "path_distances_m": [
+      0.5375049589149025,
+      4.033867316281112,
+      2.0572251613360684
+    ]
+  },
+  "production_qualifiers": [
+    "Explicit new version/digest/freeze for source list, received map identities and centre-to-containing-cell quantization. Existing1m/LOS applies to projected fused-cell centres, not exact own-frontier centre distance.",
+    "The isolated helper assumes valid complete same-epoch nonfuture maps. Production must reject/skip missing, wrong-epoch, future or wrong common-frame geometry BEFORE frontier union, including maps that would otherwise inform other robots whose own paths are valid. Preserve current received-store rules.",
+    "No stale-age policy is invented here; existing map ages remain explicit."
+  ],
+  "scope_limits": [
+    "No GT, grid clearing, unsafe-target relaxation, native/GPU/observer/optimizer job.",
+    "No current V6 counterfactual grids; no actual layered-costmap/Nav2 execution or95% task success claim.",
+    "More frontier sources cannot fix an empty own-path/fused-arrival target intersection.",
+    "Original V5/V6 native outcomes, weights, current run and validation plan remain unchanged."
+  ],
+  "repro_script_sha256": "97bb65e55475da04bfdf46238b78161bf6b5d3eebd39eed93a46bc5f11a94d2a"
+}

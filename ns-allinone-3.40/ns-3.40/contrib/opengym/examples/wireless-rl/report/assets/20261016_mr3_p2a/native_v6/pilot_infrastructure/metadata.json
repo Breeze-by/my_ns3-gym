@@ -1,0 +1,63 @@
+{
+  "run_id": "mr3_p2a_v6_pilot",
+  "mode": "train",
+  "checkpoint": null,
+  "workers": 4,
+  "schedule": [
+    [
+      "open",
+      101
+    ]
+  ],
+  "decisions": 2588,
+  "episode_steps": 300,
+  "wall_seconds": 6300.0,
+  "seed": 41,
+  "device": "cuda:0",
+  "base_domain": 164,
+  "base_port": 12311,
+  "batch_size": 64,
+  "epochs": 4,
+  "output_root": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo",
+  "kind": "mr3-p2a-closed-episode-maskable-ppo-v1",
+  "freeze": "af37b2aaa3cb9980434f7f16c1f52dec2506319d",
+  "utc_start": "2026-10-16T07:14:43.389407+00:00",
+  "command": [
+    "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "-m",
+    "mr3_learning.ppo",
+    "--mode",
+    "train",
+    "--workers",
+    "4",
+    "--schedule",
+    "open:101",
+    "--decisions",
+    "2588",
+    "--episode-steps",
+    "300",
+    "--wall-seconds",
+    "6300",
+    "--seed",
+    "41",
+    "--base-domain",
+    "164",
+    "--base-port",
+    "12311",
+    "--run-id",
+    "mr3_p2a_v6_pilot"
+  ],
+  "robots_per_worker": 3,
+  "normalization": "frozen physical tensor scales only",
+  "gamma_per_second": 1.0,
+  "lambda_per_second": 1.0,
+  "learning_rate": 0.0003,
+  "entropy_coefficient": 0.01,
+  "versions": {
+    "torch": "2.11.0+cu128",
+    "gymnasium": "1.3.0",
+    "stable-baselines3": "2.9.0",
+    "sb3-contrib": "2.9.0",
+    "numpy": "2.2.6"
+  }
+}

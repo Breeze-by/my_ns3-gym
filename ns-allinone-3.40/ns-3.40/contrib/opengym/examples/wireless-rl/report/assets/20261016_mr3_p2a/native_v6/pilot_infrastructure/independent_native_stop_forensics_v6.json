@@ -1,0 +1,151 @@
+{
+  "schema": "mr3-independent-v6-native-stop-forensics-v1",
+  "freeze": "af37b2aaa3cb9980434f7f16c1f52dec2506319d",
+  "source_proof": {
+    "ros2_ws/ros2-multi-robot-automap/scripts/run_mr3_adapter_probe.py": {
+      "sha256": "9772251073bd16c4a59fda429895adf64fb8a019046a9325bfff4a553802fe0d",
+      "git_source": "af37b2aaa3cb9980434f7f16c1f52dec2506319d:ros2_ws/ros2-multi-robot-automap/scripts/run_mr3_adapter_probe.py"
+    },
+    "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py": {
+      "sha256": "977d4e8215e193a2be8c207728adb3a39d48e26d35bb9089abe921c1d61053fd",
+      "git_source": "af37b2aaa3cb9980434f7f16c1f52dec2506319d:ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py": {
+      "sha256": "f5d77dbd08482725d1ddf130fc26a250d0e22d1e6b26bf0db05a8f9d8706f625",
+      "git_source": "af37b2aaa3cb9980434f7f16c1f52dec2506319d:ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py"
+    }
+  },
+  "ordered_failure": {
+    "line": 475,
+    "action_id": 137316680267232,
+    "epoch": "round0000_w0_e1_1df46c49",
+    "event": "error",
+    "pid": 1438806,
+    "process_name": "multirobot_slam_toolbox_node-7",
+    "process_start_index": 7,
+    "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+    "reason": "nonzero_process_exit",
+    "receipt_index": 98,
+    "returncode": -6,
+    "role": "owned_ros",
+    "schema": "mr3-ordered-ros-shutdown-v1",
+    "wall_monotonic_ns": 3883732954573235
+  },
+  "failed_owned_process_lifecycle": [
+    {
+      "line": 34,
+      "action_id": 137316680267232,
+      "argv": [
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/slam_toolbox/lib/slam_toolbox/multirobot_slam_toolbox_node",
+        "--ros-args",
+        "-r",
+        "__node:=slam_toolbox",
+        "-r",
+        "__ns:=/tb1",
+        "--params-file",
+        "/tmp/launch_params_441l2w7s",
+        "--params-file",
+        "/tmp/launch_params_vxff8bh8",
+        "-r",
+        "/map:=map",
+        "-r",
+        "/tf:=tf",
+        "-r",
+        "/tf_static:=tf_static",
+        "-r",
+        "/map_metadata:=map_metadata"
+      ],
+      "epoch": "round0000_w0_e1_1df46c49",
+      "event": "process_started",
+      "pid": 1438806,
+      "process_name": "multirobot_slam_toolbox_node-7",
+      "process_start_index": 7,
+      "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+      "receipt_index": 7,
+      "role": "owned_ros",
+      "schema": "mr3-ordered-ros-shutdown-v1",
+      "wall_monotonic_ns": 3880282306440622
+    },
+    {
+      "line": 469,
+      "action_id": 137316680267232,
+      "epoch": "round0000_w0_e1_1df46c49",
+      "event": "signal",
+      "pid": 1438806,
+      "process_name": "multirobot_slam_toolbox_node-7",
+      "process_start_index": 7,
+      "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+      "receipt_index": 96,
+      "role": "owned_ros",
+      "schema": "mr3-ordered-ros-shutdown-v1",
+      "signal": "SIGINT",
+      "signal_sequence": 27,
+      "wall_monotonic_ns": 3883732640260758
+    },
+    {
+      "line": 474,
+      "action_id": 137316680267232,
+      "controlled": true,
+      "epoch": "round0000_w0_e1_1df46c49",
+      "event": "process_exited",
+      "pid": 1438806,
+      "process_name": "multirobot_slam_toolbox_node-7",
+      "process_start_index": 7,
+      "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+      "receipt_index": 97,
+      "returncode": -6,
+      "role": "owned_ros",
+      "schema": "mr3-ordered-ros-shutdown-v1",
+      "signal_sequence": 27,
+      "wall_monotonic_ns": 3883732954406882
+    },
+    {
+      "line": 475,
+      "action_id": 137316680267232,
+      "epoch": "round0000_w0_e1_1df46c49",
+      "event": "error",
+      "pid": 1438806,
+      "process_name": "multirobot_slam_toolbox_node-7",
+      "process_start_index": 7,
+      "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+      "reason": "nonzero_process_exit",
+      "receipt_index": 98,
+      "returncode": -6,
+      "role": "owned_ros",
+      "schema": "mr3-ordered-ros-shutdown-v1",
+      "wall_monotonic_ns": 3883732954573235
+    }
+  ],
+  "exact_log_lines": [
+    {
+      "line": 472,
+      "text": "[multirobot_slam_toolbox_node-7] terminate called after throwing an instance of 'karto::Exception'"
+    },
+    {
+      "line": 473,
+      "text": "[ERROR] [multirobot_slam_toolbox_node-7]: process has died [pid 1438806, exit code -6, cmd '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/slam_toolbox/lib/slam_toolbox/multirobot_slam_toolbox_node --ros-args -r __node:=slam_toolbox -r __ns:=/tb1 --params-file /tmp/launch_params_441l2w7s --params-file /tmp/launch_params_vxff8bh8 -r /map:=map -r /tf:=tf -r /tf_static:=tf_static -r /map_metadata:=map_metadata']."
+    },
+    {
+      "line": 476,
+      "text": "[INFO] [launch.user]: ERROR: MR3_ROS_SHUTDOWN_ERROR {\"action_id\": 137316680267232, \"epoch\": \"round0000_w0_e1_1df46c49\", \"pid\": 1438806, \"process_name\": \"multirobot_slam_toolbox_node-7\", \"process_start_index\": 7, \"reason\": \"nonzero_process_exit\", \"returncode\": -6, \"role\": \"owned_ros\"}"
+    },
+    {
+      "line": 493,
+      "text": "[INFO] [gzserver-4]: process has finished cleanly [pid 1438800]"
+    }
+  ],
+  "native_cli_start_identity_matches": [],
+  "native_stop_receipt_present": false,
+  "worker_summary_present": false,
+  "causal_diagnosis": [
+    "After actual Nav2 finalization, ordered shutdown signals tb1 SLAM with SIGINT at sequence27; its controlled exit is -6 after a logged karto::Exception.",
+    "Frozen OrderedRosShutdown.exited treats any owned_ros nonzero exit as failure; fail marks phase failed and emits launch Shutdown instead of next_process.",
+    "Native gz stop CLI is only created after serial ROS queue completion. No ros_complete/gz_stop or native CLI start occurs. Later gzserver clean exit is fallback launch shutdown, not the required native-stop lifecycle.",
+    "Worker native_stop_receipt raises on zero start identities before writing native_stop.json or worker summary; the final native transition was written before shutdown_episode, so raw300th record has no returned collector sample."
+  ],
+  "uncertainty": "The log identifies uncaught karto::Exception/abort during SIGINT shutdown. It does not establish the internal exception cause or prove a FastDDS failure/fix.",
+  "verdict": "Genuine infrastructure failure; no gate repair, suppression or reuse as valid terminal learning/95% evidence.",
+  "launch_log_sha256": "14feb18b7d9cf5b5aa1f989e4e3132f214dc336ddd66478cff235d6f53d9f3a4",
+  "closure_review_sha256": "7a34e2b059e8e1427074ed6f50bebbc760f0478853dc87da2c41a5cf430db18f",
+  "repro_script_sha256": "0787a66f482594a431c1ccc23f7433d01c9536cde2b5ccb96b20ba8e9a0819c2"
+}

@@ -1,0 +1,4382 @@
+{
+  "schema": "mr3-v6-pilot-fixed-prefix20-controllability-v1",
+  "freeze": "af37b2aaa3cb9980434f7f16c1f52dec2506319d",
+  "utc_recorded": "2026-10-16T07:31:27.816556+00:00",
+  "passed": true,
+  "metadata_sha256": "12bb7e8d1a92355525d689673816195c0638e92e51659c46655d4c263d67bbf7",
+  "source_proof": {
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py": {
+      "sha256": "71ea159b57caf93471ded502aaab36ec4ec3b14893a4c40b511b6f4839fd4d63",
+      "git_source": "af37b2aaa3cb9980434f7f16c1f52dec2506319d:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py": {
+      "sha256": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b",
+      "git_source": "af37b2aaa3cb9980434f7f16c1f52dec2506319d:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py"
+    }
+  },
+  "script_sha256": "00e331eb76adf9f628823f58daf25a88592dfa5d11766ba56c6c07653adfac75",
+  "command_argv": [
+    "rtk",
+    "proxy",
+    "env",
+    "PYTHONNOUSERSITE=1",
+    "/usr/bin/python3",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_pilot/prefix20_controllability_repro_v6.py",
+    "--replay-captured",
+    "--output",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_pilot/prefix20_controllability_replaycheck_v6.json"
+  ],
+  "workers": [
+    {
+      "worker": 0,
+      "epoch": "round0000_w0_e1_1df46c49",
+      "prefix": {
+        "worker": 0,
+        "source_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_pilot/native/round0000/worker0/episode001_open_101/transitions.jsonl",
+        "start_offset": 0,
+        "end_offset_exclusive": 656116,
+        "prefix_bytes": 656116,
+        "complete_newline_records": 21,
+        "sha256": "880718beff933765174a355503c3c233fe789e9d249924043c4fc9836accc579",
+        "capture_file": "worker0_reset_plus20.jsonl"
+      },
+      "first_actor_time": 71.3,
+      "last_actor_time": 91.3,
+      "last_prefix_transition_terminated": false,
+      "last_prefix_transition_truncated": false,
+      "robots": {
+        "tb1": {
+          "snapshots": 21,
+          "submitted_decisions": 20,
+          "own_map": {
+            "missing_snapshots": 0,
+            "unavailable_reason_counts": {
+              "None": 18,
+              "robot_seed_not_observed_safe": 3
+            },
+            "seed_rejection_counts": {
+              "None": 18,
+              "seed_cell_body_clearance": 3
+            },
+            "seed_pose_clearance_lower_bound_m": {
+              "count": 21,
+              "min": 0.09105496833169177,
+              "max": 1.8380787917808963
+            },
+            "required_body_clearance_m": 0.29,
+            "source_age_sec": {
+              "count": 21,
+              "min": 0.480000000000004,
+              "max": 1.0799999999999983
+            },
+            "received_age_sec": {
+              "count": 21,
+              "min": 0.29999999999999716,
+              "max": 0.29999999999999716
+            },
+            "unique_geometry_sha256": [
+              "0596fc4659d76fd5ad1bca4004c7e92e82ab265a06a95a3402387d3341004d1e",
+              "18b4bdb98e1d4af9371d9d1391c6dd1648585bf4862b2df1b6eae747d2cee6ed",
+              "2e31cb33ad308acc8be6c2c7447a7e4e28fc8ade36267664f120e7312072f4f1",
+              "33eb155b1868d1f06aeb0d0241edac57d1f2068aa535341c36873decac476786",
+              "6077f5dbf9d831eef59f407b1c379091a55400f05f5ef58cc62717771db986ec",
+              "6b25246ad924fb7d0ab2cd2da9c681309a883f216a8a3411ebae7146a6f3854f",
+              "7687fa66a6964a6402c7a5f9a80f4f487f5384f57de9d3f4861b4ac4a212f3bb",
+              "a207c7e8fba6437c7f287a5f5b872450dfd6a3e828fa7a557f874aaa06196006",
+              "a99daf673c5aea1ec3c86ef78f77c20d3a9f20bcbb885e37830394bf4cad6e7b",
+              "aa5a6738c82d319cc654eed621b8cc212df35392db87125277339cb89b6eed40",
+              "b8a4e40bc5da603ef032b9c2f45f299214b05ead02a47db0ac7e50ac0b8a0c91",
+              "d98137c986ba76650e4a4f635c02c2d051aa2b1c715ea264a3382e4beee493ec",
+              "e6bd45268021533e67031336abccbaa837fb8689f24d390515fa190ce004322e",
+              "f6b67e5c392490088232831ddc211ce320e6210859eed168269ebc87293e8a84",
+              "fea9d97d927985d83d7eb77d657729d74a685dc444325d92e29c6c449f3f4a59"
+            ],
+            "state_fresh_snapshots": 21
+          },
+          "candidate_geometry": {
+            "target_cells": [
+              1,
+              1,
+              4,
+              4,
+              3398,
+              0,
+              8853,
+              10109,
+              10121,
+              10100,
+              14618,
+              15689,
+              18008,
+              19736,
+              0,
+              20961,
+              0,
+              21700,
+              21700,
+              21920,
+              22030
+            ],
+            "pool_counts": [
+              1,
+              1,
+              2,
+              3,
+              113,
+              0,
+              89,
+              46,
+              29,
+              27,
+              35,
+              44,
+              73,
+              111,
+              0,
+              152,
+              0,
+              151,
+              149,
+              127,
+              130
+            ],
+            "selected_counts": [
+              1,
+              1,
+              1,
+              1,
+              4,
+              0,
+              5,
+              3,
+              3,
+              2,
+              2,
+              8,
+              5,
+              6,
+              0,
+              5,
+              0,
+              8,
+              6,
+              6,
+              6
+            ],
+            "arrival_noop_cells": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              12,
+              13,
+              11,
+              14,
+              0,
+              13,
+              0,
+              11,
+              12,
+              12,
+              11
+            ],
+            "pool_zero_saved_attribution_counts": {
+              "own_map_or_seed_unavailable:robot_seed_not_observed_safe": 3
+            }
+          },
+          "opportunities": {
+            "legal_GOAL_steps": 8,
+            "zero_legal_GOAL_steps": 12,
+            "selected_GOAL_components": 4,
+            "selected_KEEP_components": 13,
+            "selected_WAIT_components": 3,
+            "legal_GOAL_but_selected_KEEP_or_WAIT_steps": 4,
+            "idle_legal_GOAL_but_selected_KEEP_or_WAIT_sequences": [
+              1,
+              2,
+              7,
+              8
+            ],
+            "legal_GOAL_sequences": [
+              1,
+              2,
+              3,
+              7,
+              8,
+              9,
+              14,
+              20
+            ],
+            "zero_legal_GOAL_sequences": [
+              4,
+              5,
+              6,
+              10,
+              11,
+              12,
+              13,
+              15,
+              16,
+              17,
+              18,
+              19
+            ],
+            "zero_GOAL_mask_reason_counts": {
+              "minimum_commitment": 12
+            }
+          },
+          "delivered_state_travel": {
+            "scope": "Delivered estimated XY at21 actor snapshots in frozen observation order",
+            "snapshot_position_polyline_m": 2.713162558781447,
+            "snapshot_max_leg_m": 0.26234554673628474,
+            "net_displacement_m": 1.5128037733348663,
+            "unique_source_positions": 101,
+            "source_start_ns": 71220000000,
+            "source_end_ns": 91220000000,
+            "history_polyline_m": 2.770743613885498,
+            "history_conservative_stamp_with_multiple_positions_count": 0,
+            "history_ambiguous_stamp_examples": [],
+            "history_limit": "No history-only distance if one source watermark binds multiple XY",
+            "isolated_task_participation_gate_inferred": false
+          },
+          "navigation_phase_counts": {
+            "idle": 6,
+            "active": 15
+          }
+        },
+        "tb2": {
+          "snapshots": 21,
+          "submitted_decisions": 20,
+          "own_map": {
+            "missing_snapshots": 0,
+            "unavailable_reason_counts": {
+              "None": 21
+            },
+            "seed_rejection_counts": {
+              "None": 21
+            },
+            "seed_pose_clearance_lower_bound_m": {
+              "count": 21,
+              "min": 0.6685198966389045,
+              "max": 0.6690187565713945
+            },
+            "required_body_clearance_m": 0.29,
+            "source_age_sec": {
+              "count": 21,
+              "min": 0.480000000000004,
+              "max": 1.2800000000000011
+            },
+            "received_age_sec": {
+              "count": 21,
+              "min": 0.29999999999999716,
+              "max": 0.29999999999999716
+            },
+            "unique_geometry_sha256": [
+              "b6c1c0f5d93921596d1fb479fb5f4b9fe9d8efbf4a6ec55296252ed42dd5f337"
+            ],
+            "state_fresh_snapshots": 21
+          },
+          "candidate_geometry": {
+            "target_cells": [
+              4,
+              4,
+              3,
+              3,
+              3,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "pool_counts": [
+              3,
+              3,
+              2,
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "selected_counts": [
+              1,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "arrival_noop_cells": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "pool_zero_saved_attribution_counts": {
+              "reachable_targets_exist_but_all_fused_frontiers_beyond_1m_staging_limit": 1,
+              "own_path_and_fused_arrival_target_intersection_empty_before_frontier_staging": 16
+            }
+          },
+          "opportunities": {
+            "legal_GOAL_steps": 4,
+            "zero_legal_GOAL_steps": 16,
+            "selected_GOAL_components": 0,
+            "selected_KEEP_components": 8,
+            "selected_WAIT_components": 12,
+            "legal_GOAL_but_selected_KEEP_or_WAIT_steps": 4,
+            "idle_legal_GOAL_but_selected_KEEP_or_WAIT_sequences": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "legal_GOAL_sequences": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "zero_legal_GOAL_sequences": [
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20
+            ],
+            "zero_GOAL_mask_reason_counts": {
+              "candidate_missing_or_unreachable": 16
+            }
+          },
+          "delivered_state_travel": {
+            "scope": "Delivered estimated XY at21 actor snapshots in frozen observation order",
+            "snapshot_position_polyline_m": 0.000588083980566906,
+            "snapshot_max_leg_m": 3.008525459389976e-05,
+            "net_displacement_m": 0.0005880808587701713,
+            "unique_source_positions": 101,
+            "source_start_ns": 71221000000,
+            "source_end_ns": 91220000000,
+            "history_polyline_m": 0.0005882059640769208,
+            "history_conservative_stamp_with_multiple_positions_count": 0,
+            "history_ambiguous_stamp_examples": [],
+            "history_limit": "No history-only distance if one source watermark binds multiple XY",
+            "isolated_task_participation_gate_inferred": false
+          },
+          "navigation_phase_counts": {
+            "idle": 21
+          }
+        },
+        "tb3": {
+          "snapshots": 21,
+          "submitted_decisions": 20,
+          "own_map": {
+            "missing_snapshots": 0,
+            "unavailable_reason_counts": {
+              "None": 20,
+              "robot_seed_not_observed_safe": 1
+            },
+            "seed_rejection_counts": {
+              "None": 20,
+              "seed_cell_body_clearance": 1
+            },
+            "seed_pose_clearance_lower_bound_m": {
+              "count": 21,
+              "min": 0.07797757135218626,
+              "max": 1.0594728422370043
+            },
+            "required_body_clearance_m": 0.29,
+            "source_age_sec": {
+              "count": 21,
+              "min": 0.5619999999999976,
+              "max": 1.7680000000000007
+            },
+            "received_age_sec": {
+              "count": 21,
+              "min": 0.29999999999999716,
+              "max": 0.29999999999999716
+            },
+            "unique_geometry_sha256": [
+              "028c737cf1432ba30883f92501cbaf16aa6831b95b83b4a7c2bcc23907d4a2fd",
+              "105450dbd2114afe6edbe3c2ccbdc36d09d9258fafdea081a4f5643c75ab5a85",
+              "1cf8640f21ea27668e2267e9e1f3d60d5222e913d698567061226e8fd9749dfe",
+              "2b2aff119936d3258c1eb3722265375fa497ec4c97d3763984475cf7ff352995",
+              "2d09d66f57ae16394765a5c86391f18263cb4ac0dc76de05d5a1b041c49e9276",
+              "3fd912a89ea2a797c7f14acacccbab55f374845c98323e26fab5204e09c75097",
+              "610d98876e8bd0dcb8b0d6cf6aad953286afa73bba7a2fcd4a11826e4a153a8e",
+              "6969a18e34246225f43f40204ca7730526c25c62756dc8f416e14536670cebec",
+              "a85e341d427fdd2118e0c56d52dfca9c3a7e1013fa5380bc8208716920049daf",
+              "ac4dec3d9c911b22796e4da13376e03b14bcdefbf0ee3a6b4841df77b12ebe4b",
+              "ae0a52437977079df40ed1143ae0ace864e91934317676a23646cbd1ef932783",
+              "ba65985d3453da9ad070e1a4d59b9faa3dc167fe7d6e1f26dc1ea4fad1652705",
+              "cce378ef388e9371e3b10384ef3064d7dbe96829a92fa1645c13c628e087852b",
+              "d70a8ee2336dc6cb7df749a598b0009634ad194d481a83ad592ca268b0d1d118",
+              "d86e4f1251308d09c8e2d7911301a9a29b532f999d97b60859c2fb81d4ee8047",
+              "ddbcbd5e6b08f31000b012a8fd57e413bae01dfe1496b86b8d1d3939c7af7d3f",
+              "e5a0362cae66d2f3341ee4459f1debc97d28c6a56307eda99ecef5b0ffd3732f",
+              "ee981aab34030c1a153e10d45e33b1e1736809d90f59a6c4370780bdd67d9ef8",
+              "f629837d8264b85f72bcf5496f3cef438de5f6e37b6edeec04b00242b106958b"
+            ],
+            "state_fresh_snapshots": 21
+          },
+          "candidate_geometry": {
+            "target_cells": [
+              46,
+              48,
+              2417,
+              4031,
+              3658,
+              8328,
+              10155,
+              15851,
+              18329,
+              19647,
+              19879,
+              0,
+              21245,
+              21303,
+              21150,
+              21409,
+              21554,
+              21899,
+              21956,
+              22053,
+              22101
+            ],
+            "pool_counts": [
+              13,
+              15,
+              162,
+              194,
+              109,
+              118,
+              100,
+              125,
+              109,
+              138,
+              124,
+              0,
+              163,
+              168,
+              133,
+              158,
+              113,
+              140,
+              135,
+              116,
+              116
+            ],
+            "selected_counts": [
+              6,
+              6,
+              6,
+              6,
+              4,
+              8,
+              6,
+              6,
+              7,
+              8,
+              8,
+              0,
+              8,
+              8,
+              8,
+              8,
+              8,
+              5,
+              7,
+              7,
+              7
+            ],
+            "arrival_noop_cells": [
+              11,
+              9,
+              14,
+              14,
+              0,
+              0,
+              0,
+              12,
+              13,
+              14,
+              0,
+              0,
+              0,
+              0,
+              1,
+              3,
+              5,
+              0,
+              0,
+              8,
+              13
+            ],
+            "pool_zero_saved_attribution_counts": {
+              "own_map_or_seed_unavailable:robot_seed_not_observed_safe": 1
+            }
+          },
+          "opportunities": {
+            "legal_GOAL_steps": 5,
+            "zero_legal_GOAL_steps": 15,
+            "selected_GOAL_components": 4,
+            "selected_KEEP_components": 16,
+            "selected_WAIT_components": 0,
+            "legal_GOAL_but_selected_KEEP_or_WAIT_steps": 1,
+            "idle_legal_GOAL_but_selected_KEEP_or_WAIT_sequences": [],
+            "legal_GOAL_sequences": [
+              1,
+              4,
+              9,
+              10,
+              16
+            ],
+            "zero_legal_GOAL_sequences": [
+              2,
+              3,
+              5,
+              6,
+              7,
+              8,
+              11,
+              12,
+              13,
+              14,
+              15,
+              17,
+              18,
+              19,
+              20
+            ],
+            "zero_GOAL_mask_reason_counts": {
+              "minimum_commitment": 15
+            }
+          },
+          "delivered_state_travel": {
+            "scope": "Delivered estimated XY at21 actor snapshots in frozen observation order",
+            "snapshot_position_polyline_m": 3.152698951041073,
+            "snapshot_max_leg_m": 0.26099912658613234,
+            "net_displacement_m": 0.9413256663775983,
+            "unique_source_positions": 121,
+            "source_start_ns": 71133000000,
+            "source_end_ns": 91137000000,
+            "history_polyline_m": null,
+            "history_conservative_stamp_with_multiple_positions_count": 20,
+            "history_ambiguous_stamp_examples": [
+              [
+                71133000000,
+                [
+                  [
+                    0.4520555489828831,
+                    2.40779417562913e-06
+                  ],
+                  [
+                    0.4520584919543381,
+                    2.3957250233606065e-06
+                  ]
+                ]
+              ],
+              [
+                72136000000,
+                [
+                  [
+                    0.6243587261424032,
+                    0.00048698556813830105
+                  ],
+                  [
+                    0.6490905787737995,
+                    0.0015347709546898194
+                  ]
+                ]
+              ],
+              [
+                73137000000,
+                [
+                  [
+                    0.8043112549393929,
+                    0.016747896951973876
+                  ],
+                  [
+                    0.8104179552778633,
+                    0.01723019108530102
+                  ]
+                ]
+              ]
+            ],
+            "history_limit": "No history-only distance if one source watermark binds multiple XY",
+            "isolated_task_participation_gate_inferred": false
+          },
+          "navigation_phase_counts": {
+            "idle": 2,
+            "active": 19
+          }
+        }
+      },
+      "submitted_action_evidence": [
+        {
+          "source_observation_sequence": 1,
+          "source_observation_digest": "3743c777fbc16f3d6ad37bfe0ebf11d31adac922b21661267ce04dbe8e4cdb59",
+          "action": 992,
+          "sampled_components": [
+            9,
+            9,
+            2
+          ],
+          "joint_legal_action_count": 52,
+          "per_robot_legal_GOAL_components": [
+            [
+              0
+            ],
+            [
+              1
+            ],
+            [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          ]
+        },
+        {
+          "source_observation_sequence": 2,
+          "source_observation_digest": "bd812555672be5fe075ef830a9cbde02fbca2b3d0d0fa1d5fddc82bcd0e09d3f",
+          "action": 998,
+          "sampled_components": [
+            9,
+            9,
+            8
+          ],
+          "joint_legal_action_count": 9,
+          "per_robot_legal_GOAL_components": [
+            [
+              0
+            ],
+            [
+              1
+            ],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 3,
+          "source_observation_digest": "af7cd0469ff24ad97fc9582df8a3f75922d79276a191f8fae7651d75ddd6c24f",
+          "action": 88,
+          "sampled_components": [
+            0,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 9,
+          "per_robot_legal_GOAL_components": [
+            [
+              0
+            ],
+            [
+              1
+            ],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 4,
+          "source_observation_digest": "3da36c11b9beec4adb6867656a30c3d3da3cc40d420ea41f7cef0b031b3fa1fb",
+          "action": 895,
+          "sampled_components": [
+            8,
+            9,
+            5
+          ],
+          "joint_legal_action_count": 24,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [
+              1
+            ],
+            [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          ]
+        },
+        {
+          "source_observation_sequence": 5,
+          "source_observation_digest": "4476ac439e1f92700baaf420e6f7453d963a6499a7130fc0d37f87cb4306ba2b",
+          "action": 898,
+          "sampled_components": [
+            8,
+            9,
+            8
+          ],
+          "joint_legal_action_count": 2,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 6,
+          "source_observation_digest": "cdaf363f933e0a02ec978e684ecb72b9a4e3eaf1baf2e530a84bac7e53d3dda6",
+          "action": 888,
+          "sampled_components": [
+            8,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 2,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 7,
+          "source_observation_digest": "7fed56a37b0d14969e7532b3972f86b9b54956b03abca34c43d8890c191d797f",
+          "action": 998,
+          "sampled_components": [
+            9,
+            9,
+            8
+          ],
+          "joint_legal_action_count": 14,
+          "per_robot_legal_GOAL_components": [
+            [
+              0,
+              3,
+              4,
+              5,
+              6
+            ],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 8,
+          "source_observation_digest": "c1087d08019480ce1455f87ea45e8f9b035436ec104a7c83d44a5e66b811070e",
+          "action": 888,
+          "sampled_components": [
+            8,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 10,
+          "per_robot_legal_GOAL_components": [
+            [
+              0,
+              5,
+              6
+            ],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 9,
+          "source_observation_digest": "e2d2d346a03897ddb6ec7369f87e64939a1fbcc931d96d08b416d7c94c2202ec",
+          "action": 98,
+          "sampled_components": [
+            0,
+            9,
+            8
+          ],
+          "joint_legal_action_count": 86,
+          "per_robot_legal_GOAL_components": [
+            [
+              0,
+              6,
+              7
+            ],
+            [],
+            [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          ]
+        },
+        {
+          "source_observation_sequence": 10,
+          "source_observation_digest": "788ab6279ef73cac73ce883a0407570153c5f6bc98bdc16128143c5a41fafc4c",
+          "action": 881,
+          "sampled_components": [
+            8,
+            8,
+            1
+          ],
+          "joint_legal_action_count": 18,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          ]
+        },
+        {
+          "source_observation_sequence": 11,
+          "source_observation_digest": "1c968d4bb39452ba5885d6d78e150d819ef21c883d274b0f8e2a99e7ce6de681",
+          "action": 898,
+          "sampled_components": [
+            8,
+            9,
+            8
+          ],
+          "joint_legal_action_count": 2,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 12,
+          "source_observation_digest": "1e5715b1d87b1759b1a0159017de594f5712830c172a697dee9222526cea4894",
+          "action": 898,
+          "sampled_components": [
+            8,
+            9,
+            8
+          ],
+          "joint_legal_action_count": 2,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 13,
+          "source_observation_digest": "35d0f4842a2d913371c13e7eea6208ff62f7ce110e23fbedd0e596d23a021f53",
+          "action": 898,
+          "sampled_components": [
+            8,
+            9,
+            8
+          ],
+          "joint_legal_action_count": 2,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 14,
+          "source_observation_digest": "9cf55427192622869efdac56756fcc300a389060c4e47e8eb18cf24c2403aaac",
+          "action": 388,
+          "sampled_components": [
+            3,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 16,
+          "per_robot_legal_GOAL_components": [
+            [
+              0,
+              2,
+              3,
+              4,
+              6,
+              7
+            ],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 15,
+          "source_observation_digest": "fb062e21f192e45a0030bf956a0ea2a8994682cc01289495e700023b36be962c",
+          "action": 898,
+          "sampled_components": [
+            8,
+            9,
+            8
+          ],
+          "joint_legal_action_count": 2,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 16,
+          "source_observation_digest": "90d4f7090a817af3c54b51a7e420c54565342b323eb0d1aa8840fd38e8424948",
+          "action": 890,
+          "sampled_components": [
+            8,
+            9,
+            0
+          ],
+          "joint_legal_action_count": 18,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            [
+              0,
+              1,
+              2,
+              4,
+              5,
+              6,
+              7
+            ]
+          ]
+        },
+        {
+          "source_observation_sequence": 17,
+          "source_observation_digest": "7718975bfed9dbf475e3f5edf46da1182947728accaa9bfe7c51019b157b2309",
+          "action": 888,
+          "sampled_components": [
+            8,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 2,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 18,
+          "source_observation_digest": "31ca9ccb9823c1b67d3752df2f237344d5f02eda6a2d0586b537c690fd891aeb",
+          "action": 898,
+          "sampled_components": [
+            8,
+            9,
+            8
+          ],
+          "joint_legal_action_count": 2,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 19,
+          "source_observation_digest": "510baad55f5da1214e1069c1b8f6d8e6b679e620049e6a5acf5e727eb6f9a480",
+          "action": 888,
+          "sampled_components": [
+            8,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 2,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 20,
+          "source_observation_digest": "22037cd5aa8a9f7c5455c53b7ac5c2e8874f339dc8c550762bf0c91d986ad31a",
+          "action": 788,
+          "sampled_components": [
+            7,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 16,
+          "per_robot_legal_GOAL_components": [
+            [
+              0,
+              2,
+              3,
+              5,
+              6,
+              7
+            ],
+            [],
+            []
+          ]
+        }
+      ]
+    },
+    {
+      "worker": 1,
+      "epoch": "round0000_w1_e1_49bde914",
+      "prefix": {
+        "worker": 1,
+        "source_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_pilot/native/round0000/worker1/episode001_open_101/transitions.jsonl",
+        "start_offset": 0,
+        "end_offset_exclusive": 646369,
+        "prefix_bytes": 646369,
+        "complete_newline_records": 21,
+        "sha256": "842febd68f5b01aa95885ac38fc2ee4b30e29b0badd6a6c12488ce79e53039af",
+        "capture_file": "worker1_reset_plus20.jsonl"
+      },
+      "first_actor_time": 71.82,
+      "last_actor_time": 91.82,
+      "last_prefix_transition_terminated": false,
+      "last_prefix_transition_truncated": false,
+      "robots": {
+        "tb1": {
+          "snapshots": 21,
+          "submitted_decisions": 20,
+          "own_map": {
+            "missing_snapshots": 0,
+            "unavailable_reason_counts": {
+              "None": 21
+            },
+            "seed_rejection_counts": {
+              "None": 21
+            },
+            "seed_pose_clearance_lower_bound_m": {
+              "count": 21,
+              "min": 0.4556504066778391,
+              "max": 0.9668834572514514
+            },
+            "required_body_clearance_m": 0.29,
+            "source_age_sec": {
+              "count": 21,
+              "min": 1.019999999999996,
+              "max": 1.8199999999999932
+            },
+            "received_age_sec": {
+              "count": 21,
+              "min": 0.8199999999999932,
+              "max": 0.8199999999999932
+            },
+            "unique_geometry_sha256": [
+              "1e5dd52f044b6726ee39622230f33db603e2795cc1de55afa7ccb7988a538847",
+              "2ccb38120e291d6c96b4b0225a78211a200e050fb14efa4b56564ef12d93b576",
+              "450570e9a3dc71931018ba0729b91068f69a820ee0668bfcac66ffd09019a1a6",
+              "49c4399dee4e5d8e238c8e7fe52491e3f7548b6c32a593d294f57098712ac7b2",
+              "4af91d1da3debab51ccf05e0c7744c3198efd280a4d7c37de716503466d25714",
+              "4e7197bc8541513c469ffb37c82a3ea833cbf88301a9b5234a9bda9e1b1cdb81",
+              "5a8756eb7618afa54a4ff878ad2291e15e8046a0a22ae058159bad67a1af0924",
+              "6cff56f76597f2c6c3faaa79d1bce3bef862dd0cbbb751ec9013f14c60209c69",
+              "6e4807f11c520c5148d027a3e3c9d2f027171ec2ccf3884120fdde6fdc02fae3",
+              "77f983708d091f53e73c6ad6c944b44f3fc1c674ee2648dd8f30129514bfc19e",
+              "801ec89a6c2bad5245864b9da819a1c13281f97a88dc9fe5d1305ec3342c82d4",
+              "93d3b75a51b7bb4250facf5b2b6907170241517829e57ba9edf5fd6f00938aec",
+              "a5e312884869cd3d2dbd6ea365a83cdccd1c0db8e7c7217ea7c98708d4dd292f",
+              "a67e7000fda6020d11d30792c83556fed9bb2378962cd5335e945b0d4d4675ff",
+              "c0ee588d9a3017318607d80b12bceee794a508dc1f499349339ebcb2fd603fb8",
+              "c13729c3ad220bd12832f1abef783ec7d6ac267e66af099f9e00f9aade72bf94",
+              "c63ed42081657babfe847c207681b3061230e39cfc3f052ef4c00614124c9fed",
+              "d1ccc8bd2f0cdab4aade2d0b81533e3b22763329fd0176da83f43af1f99c4659",
+              "d2cacc8ae679e10c69f0f1c43281849485d304c825bc03dfcab8fc7fa5a8a072",
+              "f079bc2ad0d4e875af1dcdfbd30ba95a3086556741c6a2894f95843de7f53f70"
+            ],
+            "state_fresh_snapshots": 21
+          },
+          "candidate_geometry": {
+            "target_cells": [
+              5,
+              5,
+              2372,
+              4707,
+              12179,
+              16603,
+              17328,
+              18084,
+              19594,
+              20694,
+              21329,
+              21569,
+              21638,
+              21725,
+              21948,
+              21943,
+              21994,
+              22057,
+              22103,
+              21965,
+              22089
+            ],
+            "pool_counts": [
+              5,
+              5,
+              111,
+              91,
+              162,
+              166,
+              142,
+              109,
+              112,
+              135,
+              148,
+              149,
+              158,
+              142,
+              120,
+              123,
+              117,
+              122,
+              123,
+              66,
+              70
+            ],
+            "selected_counts": [
+              2,
+              2,
+              8,
+              4,
+              5,
+              8,
+              6,
+              3,
+              6,
+              8,
+              8,
+              7,
+              8,
+              8,
+              7,
+              8,
+              7,
+              7,
+              7,
+              8,
+              8
+            ],
+            "arrival_noop_cells": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              11,
+              13,
+              13,
+              13,
+              13,
+              14
+            ],
+            "pool_zero_saved_attribution_counts": {}
+          },
+          "opportunities": {
+            "legal_GOAL_steps": 6,
+            "zero_legal_GOAL_steps": 14,
+            "selected_GOAL_components": 4,
+            "selected_KEEP_components": 16,
+            "selected_WAIT_components": 0,
+            "legal_GOAL_but_selected_KEEP_or_WAIT_steps": 2,
+            "idle_legal_GOAL_but_selected_KEEP_or_WAIT_sequences": [],
+            "legal_GOAL_sequences": [
+              1,
+              6,
+              7,
+              12,
+              13,
+              19
+            ],
+            "zero_legal_GOAL_sequences": [
+              2,
+              3,
+              4,
+              5,
+              8,
+              9,
+              10,
+              11,
+              14,
+              15,
+              16,
+              17,
+              18,
+              20
+            ],
+            "zero_GOAL_mask_reason_counts": {
+              "minimum_commitment": 14
+            }
+          },
+          "delivered_state_travel": {
+            "scope": "Delivered estimated XY at21 actor snapshots in frozen observation order",
+            "snapshot_position_polyline_m": 2.731718813694938,
+            "snapshot_max_leg_m": 0.25118189369134597,
+            "net_displacement_m": 1.4246128027994291,
+            "unique_source_positions": 122,
+            "source_start_ns": 71600000000,
+            "source_end_ns": 91600000000,
+            "history_polyline_m": null,
+            "history_conservative_stamp_with_multiple_positions_count": 21,
+            "history_ambiguous_stamp_examples": [
+              [
+                71600000000,
+                [
+                  [
+                    0.0022040246758220743,
+                    -0.4499970828542376
+                  ],
+                  [
+                    0.0022070539638251066,
+                    -0.44999705359932674
+                  ]
+                ]
+              ],
+              [
+                72600000000,
+                [
+                  [
+                    0.0034153524792410995,
+                    -0.4496716905478255
+                  ],
+                  [
+                    0.0035679674642538216,
+                    -0.44975282382215914
+                  ]
+                ]
+              ],
+              [
+                73600000000,
+                [
+                  [
+                    -0.004127427921966108,
+                    -0.47034365045057885
+                  ],
+                  [
+                    0.005707419677251835,
+                    -0.4697887540950562
+                  ]
+                ]
+              ]
+            ],
+            "history_limit": "No history-only distance if one source watermark binds multiple XY",
+            "isolated_task_participation_gate_inferred": false
+          },
+          "navigation_phase_counts": {
+            "idle": 2,
+            "active": 19
+          }
+        },
+        "tb2": {
+          "snapshots": 21,
+          "submitted_decisions": 20,
+          "own_map": {
+            "missing_snapshots": 0,
+            "unavailable_reason_counts": {
+              "None": 21
+            },
+            "seed_rejection_counts": {
+              "None": 21
+            },
+            "seed_pose_clearance_lower_bound_m": {
+              "count": 21,
+              "min": 0.5643433448126195,
+              "max": 0.564904050858175
+            },
+            "required_body_clearance_m": 0.29,
+            "source_age_sec": {
+              "count": 21,
+              "min": 1.019999999999996,
+              "max": 2.019999999999996
+            },
+            "received_age_sec": {
+              "count": 21,
+              "min": 0.8199999999999932,
+              "max": 0.8199999999999932
+            },
+            "unique_geometry_sha256": [
+              "dd72923ab2affa2a323ecd1c8780a4075ee4c2c042399ee8038d5cb0b7ec3cf3"
+            ],
+            "state_fresh_snapshots": 21
+          },
+          "candidate_geometry": {
+            "target_cells": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "pool_counts": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "selected_counts": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "arrival_noop_cells": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "pool_zero_saved_attribution_counts": {
+              "own_path_and_fused_arrival_target_intersection_empty_before_frontier_staging": 21
+            }
+          },
+          "opportunities": {
+            "legal_GOAL_steps": 0,
+            "zero_legal_GOAL_steps": 20,
+            "selected_GOAL_components": 0,
+            "selected_KEEP_components": 10,
+            "selected_WAIT_components": 10,
+            "legal_GOAL_but_selected_KEEP_or_WAIT_steps": 0,
+            "idle_legal_GOAL_but_selected_KEEP_or_WAIT_sequences": [],
+            "legal_GOAL_sequences": [],
+            "zero_legal_GOAL_sequences": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20
+            ],
+            "zero_GOAL_mask_reason_counts": {
+              "candidate_missing_or_unreachable": 20
+            }
+          },
+          "delivered_state_travel": {
+            "scope": "Delivered estimated XY at21 actor snapshots in frozen observation order",
+            "snapshot_position_polyline_m": 0.0005880420166291088,
+            "snapshot_max_leg_m": 3.0010550417843528e-05,
+            "net_displacement_m": 0.0005880396727829404,
+            "unique_source_positions": 122,
+            "source_start_ns": 71600000000,
+            "source_end_ns": 91600000000,
+            "history_polyline_m": null,
+            "history_conservative_stamp_with_multiple_positions_count": 21,
+            "history_ambiguous_stamp_examples": [
+              [
+                71600000000,
+                [
+                  [
+                    0.0021334135538873143,
+                    0.45000281304895
+                  ],
+                  [
+                    0.002136428620405989,
+                    0.45000257770308655
+                  ]
+                ]
+              ],
+              [
+                72600000000,
+                [
+                  [
+                    0.002163490013254879,
+                    0.4500026750011365
+                  ],
+                  [
+                    0.0021664171341544605,
+                    0.45000276590389676
+                  ]
+                ]
+              ],
+              [
+                73600000000,
+                [
+                  [
+                    0.0021924515886636944,
+                    0.45000288978357394
+                  ],
+                  [
+                    0.0021954433117885013,
+                    0.4500029419864115
+                  ]
+                ]
+              ]
+            ],
+            "history_limit": "No history-only distance if one source watermark binds multiple XY",
+            "isolated_task_participation_gate_inferred": false
+          },
+          "navigation_phase_counts": {
+            "idle": 21
+          }
+        },
+        "tb3": {
+          "snapshots": 21,
+          "submitted_decisions": 20,
+          "own_map": {
+            "missing_snapshots": 0,
+            "unavailable_reason_counts": {
+              "None": 18,
+              "robot_seed_not_observed_safe": 3
+            },
+            "seed_rejection_counts": {
+              "None": 18,
+              "seed_cell_body_clearance": 3
+            },
+            "seed_pose_clearance_lower_bound_m": {
+              "count": 21,
+              "min": 0.037609640285588164,
+              "max": 1.505028450849269
+            },
+            "required_body_clearance_m": 0.29,
+            "source_age_sec": {
+              "count": 21,
+              "min": 1.134999999999991,
+              "max": 2.7369999999999948
+            },
+            "received_age_sec": {
+              "count": 21,
+              "min": 0.8199999999999932,
+              "max": 0.8199999999999932
+            },
+            "unique_geometry_sha256": [
+              "0a969c427ce3352c50a5b28230ea249989c57e97dd125115da2e4716a5cc372f",
+              "0d2d5f5e49991e6800512743f9dd7185b8d1a0a72bc7a8f659e54a0cc512bc06",
+              "22114b48333561b3455a7e2d33fb79ad645a536d8ce50a30a83f893f26053b9d",
+              "265516fa3373a4241155715487b3d713160df1875b7512418f50f4fd04eed477",
+              "26e8b8f0b1e4d35fb4c210e36b0fe41cff047bd45e973117b8f9d692fcf6b363",
+              "288ce870c8b19f02debd01d89f4ad9dca2383c761f43a822b5d77bcc1b9c7c78",
+              "376ea63f8a79019ef9e1993f441a33fff788c973de22dbfb30d4cb13df897d79",
+              "40864ca9ce259fe06a09ba068a6336d40e6478e360d4f1d40aaf0cb7d466ab22",
+              "4efb62d55ac0952a12dde833372a68e47dbd5081f7ab3b2b61f739018fa97918",
+              "56a086ac3e2096e52538ee3ac68f20056edd77c70e97a757cddb7ab23019e46a",
+              "5d963126e62c21bffb9ae911856b11cf24f160dedb809db4b4984e11070afda2",
+              "6f6073c688b72ae0c7b29ad7e4a8c08efca897daf653e5d55980b2725f532296",
+              "768a5a612451eb722a2d2daad77fb880b5c12ec592b9cc0c41da9664ebc99c1e",
+              "7c10becd365fe415a03eefc3ff94a0b4226ede782cb2d8f3d6bc1cc512933770",
+              "8bcae73072e3e559dd82642c679b2e83077767e60824eb9890962697a8a53dce",
+              "a87147806c564580926d1c9d68efeea1ac136b5c78760c0bb1ed24247255461b",
+              "be6c38092880b481cb53a0f861d904b93bfb8640a1661a7f0ee6e2097cf58506",
+              "c1a1387b5e36420ec90284f961c21f8f107d2606e0d1d4f5337899f978a35ab0",
+              "fb50c0ac90221409643d53ce4b12cb016df7c2dda0542908b3b04c904213d9fe"
+            ],
+            "state_fresh_snapshots": 21
+          },
+          "candidate_geometry": {
+            "target_cells": [
+              62,
+              60,
+              0,
+              6838,
+              8430,
+              8388,
+              10181,
+              15844,
+              16750,
+              18770,
+              19764,
+              20024,
+              20758,
+              21081,
+              21467,
+              21840,
+              22046,
+              22512,
+              22670,
+              0,
+              0
+            ],
+            "pool_counts": [
+              10,
+              10,
+              0,
+              185,
+              72,
+              41,
+              56,
+              95,
+              77,
+              110,
+              126,
+              126,
+              132,
+              137,
+              112,
+              108,
+              110,
+              105,
+              103,
+              0,
+              0
+            ],
+            "selected_counts": [
+              6,
+              6,
+              0,
+              5,
+              3,
+              1,
+              3,
+              5,
+              2,
+              3,
+              5,
+              4,
+              5,
+              5,
+              5,
+              6,
+              6,
+              7,
+              7,
+              0,
+              0
+            ],
+            "arrival_noop_cells": [
+              11,
+              13,
+              0,
+              0,
+              0,
+              0,
+              9,
+              12,
+              14,
+              13,
+              12,
+              12,
+              14,
+              12,
+              13,
+              13,
+              13,
+              14,
+              14,
+              0,
+              0
+            ],
+            "pool_zero_saved_attribution_counts": {
+              "own_map_or_seed_unavailable:robot_seed_not_observed_safe": 3
+            }
+          },
+          "opportunities": {
+            "legal_GOAL_steps": 7,
+            "zero_legal_GOAL_steps": 13,
+            "selected_GOAL_components": 4,
+            "selected_KEEP_components": 15,
+            "selected_WAIT_components": 1,
+            "legal_GOAL_but_selected_KEEP_or_WAIT_steps": 3,
+            "idle_legal_GOAL_but_selected_KEEP_or_WAIT_sequences": [
+              4
+            ],
+            "legal_GOAL_sequences": [
+              1,
+              4,
+              5,
+              10,
+              11,
+              17,
+              18
+            ],
+            "zero_legal_GOAL_sequences": [
+              2,
+              3,
+              6,
+              7,
+              8,
+              9,
+              12,
+              13,
+              14,
+              15,
+              16,
+              19,
+              20
+            ],
+            "zero_GOAL_mask_reason_counts": {
+              "minimum_commitment": 13
+            }
+          },
+          "delivered_state_travel": {
+            "scope": "Delivered estimated XY at21 actor snapshots in frozen observation order",
+            "snapshot_position_polyline_m": 3.3287964793732887,
+            "snapshot_max_leg_m": 0.2527292066196181,
+            "net_displacement_m": 2.268944525635175,
+            "unique_source_positions": 101,
+            "source_start_ns": 71683000000,
+            "source_end_ns": 91686000000,
+            "history_polyline_m": 3.368457129995665,
+            "history_conservative_stamp_with_multiple_positions_count": 0,
+            "history_ambiguous_stamp_examples": [],
+            "history_limit": "No history-only distance if one source watermark binds multiple XY",
+            "isolated_task_participation_gate_inferred": false
+          },
+          "navigation_phase_counts": {
+            "idle": 4,
+            "active": 17
+          }
+        }
+      },
+      "submitted_action_evidence": [
+        {
+          "source_observation_sequence": 1,
+          "source_observation_digest": "53a6f2bde10c0e70a0bdfe8735af3702c3ebb5c23fda14793711a91bf6a77a7b",
+          "action": 84,
+          "sampled_components": [
+            0,
+            8,
+            4
+          ],
+          "joint_legal_action_count": 40,
+          "per_robot_legal_GOAL_components": [
+            [
+              0,
+              2
+            ],
+            [],
+            [
+              1,
+              4,
+              6,
+              7
+            ]
+          ]
+        },
+        {
+          "source_observation_sequence": 2,
+          "source_observation_digest": "aa71346ee0bbbd3e3b168d425b51c375788887e53cd9612371b62bc2262ca1cc",
+          "action": 898,
+          "sampled_components": [
+            8,
+            9,
+            8
+          ],
+          "joint_legal_action_count": 2,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 3,
+          "source_observation_digest": "d0794d309742a6f620d05e1319b485d49f9850aa00a4f31bce5506815f063efa",
+          "action": 888,
+          "sampled_components": [
+            8,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 2,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 4,
+          "source_observation_digest": "049943a7f80ec659e5b8b4e4672b69bc73313fbdef7fe48f34938ea23478821b",
+          "action": 898,
+          "sampled_components": [
+            8,
+            9,
+            8
+          ],
+          "joint_legal_action_count": 14,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            [
+              1,
+              2,
+              3,
+              4,
+              7
+            ]
+          ]
+        },
+        {
+          "source_observation_sequence": 5,
+          "source_observation_digest": "ad0a80ab4ff9f540c8b2c18c165b2f290926e424c7d5889affaee4cf6f0b7158",
+          "action": 891,
+          "sampled_components": [
+            8,
+            9,
+            1
+          ],
+          "joint_legal_action_count": 10,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            [
+              1,
+              2,
+              6
+            ]
+          ]
+        },
+        {
+          "source_observation_sequence": 6,
+          "source_observation_digest": "2044f8726f174a2e8f0a5d8e3cd3f92c946e0a140e017d144cdf0cceeb285b9f",
+          "action": 898,
+          "sampled_components": [
+            8,
+            9,
+            8
+          ],
+          "joint_legal_action_count": 20,
+          "per_robot_legal_GOAL_components": [
+            [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 7,
+          "source_observation_digest": "4f30813f74d5bef65ae3e9e07b44d676517f92f11169de428f37e3ce328db054",
+          "action": 198,
+          "sampled_components": [
+            1,
+            9,
+            8
+          ],
+          "joint_legal_action_count": 16,
+          "per_robot_legal_GOAL_components": [
+            [
+              0,
+              1,
+              2,
+              4,
+              6,
+              7
+            ],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 8,
+          "source_observation_digest": "72a3e9d8d497bade7db2a36a04717d6bb30010928b541a704ee74ec474799691",
+          "action": 888,
+          "sampled_components": [
+            8,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 2,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 9,
+          "source_observation_digest": "3667ba682bd57d482992e4be08dd6a54e9a1f75a53bad8758dd63a4a60ee5114",
+          "action": 888,
+          "sampled_components": [
+            8,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 2,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 10,
+          "source_observation_digest": "5825d9d434565a0944989f90568d1706fd8c54f0022cda7683b65277052bc551",
+          "action": 898,
+          "sampled_components": [
+            8,
+            9,
+            8
+          ],
+          "joint_legal_action_count": 10,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            [
+              1,
+              2,
+              3
+            ]
+          ]
+        },
+        {
+          "source_observation_sequence": 11,
+          "source_observation_digest": "52624cc41b50168895497fd470b9ec98bdb1363dfe65c2291de59c3226a24f2d",
+          "action": 882,
+          "sampled_components": [
+            8,
+            8,
+            2
+          ],
+          "joint_legal_action_count": 14,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            [
+              1,
+              2,
+              3,
+              4,
+              7
+            ]
+          ]
+        },
+        {
+          "source_observation_sequence": 12,
+          "source_observation_digest": "29cb4f4753ee3d154bba1ade095b03548f5488d7f0ac4861cc16a0126d982300",
+          "action": 888,
+          "sampled_components": [
+            8,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 18,
+          "per_robot_legal_GOAL_components": [
+            [
+              0,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 13,
+          "source_observation_digest": "258d57d1fc4add53a532749917972cc904cf511f58b13067914b5c51ff2c83d1",
+          "action": 198,
+          "sampled_components": [
+            1,
+            9,
+            8
+          ],
+          "joint_legal_action_count": 18,
+          "per_robot_legal_GOAL_components": [
+            [
+              0,
+              1,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 14,
+          "source_observation_digest": "96f73120b6d36e4314c236c6443d0d42f269a5c8efa11e8ae481d5c16910c363",
+          "action": 888,
+          "sampled_components": [
+            8,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 2,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 15,
+          "source_observation_digest": "1e40d1adabdf8a91c660a171995fc0b9cdc71c5e6787b6042e0d6bda128c2d2f",
+          "action": 898,
+          "sampled_components": [
+            8,
+            9,
+            8
+          ],
+          "joint_legal_action_count": 2,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 16,
+          "source_observation_digest": "7bca48a4cb2c4487686f17c895abda825826e4ec54c6495adbe7eeb216ca2c2f",
+          "action": 898,
+          "sampled_components": [
+            8,
+            9,
+            8
+          ],
+          "joint_legal_action_count": 2,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 17,
+          "source_observation_digest": "8f544a5117dccf92f68e2b22364c3f32286fc465c475d8839bf93acd2c862a84",
+          "action": 899,
+          "sampled_components": [
+            8,
+            9,
+            9
+          ],
+          "joint_legal_action_count": 14,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            [
+              2,
+              4,
+              5,
+              6,
+              7
+            ]
+          ]
+        },
+        {
+          "source_observation_sequence": 18,
+          "source_observation_digest": "4861072df5f888b6de5b5e49252c79cf3d218245246af56d8d52cebeaaab0bab",
+          "action": 883,
+          "sampled_components": [
+            8,
+            8,
+            3
+          ],
+          "joint_legal_action_count": 18,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          ]
+        },
+        {
+          "source_observation_sequence": 19,
+          "source_observation_digest": "bef85b94ff2b5d918938480ebc9ccf4a908515e9418dee070576cafd80d31a90",
+          "action": 688,
+          "sampled_components": [
+            6,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 16,
+          "per_robot_legal_GOAL_components": [
+            [
+              0,
+              2,
+              4,
+              5,
+              6,
+              7
+            ],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 20,
+          "source_observation_digest": "24bb599acdc21f71d98b39f3da88dbc38b0dbd61fe9ad4549d2ec80ad0805cc7",
+          "action": 888,
+          "sampled_components": [
+            8,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 2,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        }
+      ]
+    },
+    {
+      "worker": 2,
+      "epoch": "round0000_w2_e1_751e6f0c",
+      "prefix": {
+        "worker": 2,
+        "source_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_pilot/native/round0000/worker2/episode001_open_101/transitions.jsonl",
+        "start_offset": 0,
+        "end_offset_exclusive": 657443,
+        "prefix_bytes": 657443,
+        "complete_newline_records": 21,
+        "sha256": "022bdf75636f20b2e7a72bed8eb934f550365e758206a4a5e8bf2bfc791b5ee7",
+        "capture_file": "worker2_reset_plus20.jsonl"
+      },
+      "first_actor_time": 72.14,
+      "last_actor_time": 92.14,
+      "last_prefix_transition_terminated": false,
+      "last_prefix_transition_truncated": false,
+      "robots": {
+        "tb1": {
+          "snapshots": 21,
+          "submitted_decisions": 20,
+          "own_map": {
+            "missing_snapshots": 0,
+            "unavailable_reason_counts": {
+              "None": 19,
+              "robot_seed_not_observed_safe": 2
+            },
+            "seed_rejection_counts": {
+              "None": 19,
+              "seed_cell_body_clearance": 2
+            },
+            "seed_pose_clearance_lower_bound_m": {
+              "count": 21,
+              "min": 0.0801195608901629,
+              "max": 2.1112033734716595
+            },
+            "required_body_clearance_m": 0.29,
+            "source_age_sec": {
+              "count": 21,
+              "min": 0.28300000000000125,
+              "max": 0.8840000000000003
+            },
+            "received_age_sec": {
+              "count": 21,
+              "min": 0.14000000000000057,
+              "max": 0.14000000000000057
+            },
+            "unique_geometry_sha256": [
+              "02a32a2ffdeb017bd2bbc8d15b915f8f03c00a3c7379601cdae02b1903c249c7",
+              "02aa30c6b004ea0e3c6c5460e10537a29e0bcc19a54b59b4d664c196820ea1f5",
+              "1462db76b19576adcee742dc258eb431b36c4c6ff620a6ab06367e0db1fbc262",
+              "1de36a84b99a0fc75d3e41d6e392dd6aacf20ddff1a1ddd7d4394ced28e85b90",
+              "3a5795735ec99fc7a012b830f9ef1f5e97f83afec3a2106f672811318585dcf2",
+              "3c74151bf1aedf5ab4f7ec6828fdb38206e963acf557d04761c37fa890a2e777",
+              "4283e239fff9922b3c69f03d693e4aac17d2bf2bebef0086eda3463e579f4e2f",
+              "5d41541ecf84274b5c53f6c2447b477a6c9099cc2cd1dbf4884cb9e03e39596e",
+              "73676ffe8bc70f930b78a9dedec15293a32f0b7d0b8cc512d99964abf78f7092",
+              "7655f8ef9a4f55fd9a6c07bb9cd4ee0142d32a223cd61c34b9be02736cde907f",
+              "854de099abd2eab09b96611ba47ada7aef2f79fe5c1901ef72957cb1b232c01c",
+              "93bba385d59dd949f8431c30bec83bc39f28f02e8b33f1f663168d2001bdc0a0",
+              "9d7138cf0945b388a94463e113373edd9bff163f836b6308e4c50c63c6bed5a6",
+              "acaceb564f91387661b51dfe97e7c5589cb7c49c7094608e1d7e387db54d88e7",
+              "b76675c33efa2149782abd8c8bd2d3f6407ffd6b02290f539d76abd373595394",
+              "e316ab45a1fafd514bfaf2ae8ab95fd58f46046a8d04da040ccabab4d7076e2b",
+              "e34dd53c03731e03c508b984fb74cc7b1bbde8c3a6379728b167636029378ced",
+              "e9d67274994433f575834f368a595f7672e190c8831c3139b990e5c6d93cef6b",
+              "f4e73afa661aa7070657c27bbcea0acbcf00ef0d46a27776fd66a3f797a9e4a2",
+              "fd037377ce461ec4c5693962dbc4595633e7abe128f6a5fadeb2271aadfa44be"
+            ],
+            "state_fresh_snapshots": 21
+          },
+          "candidate_geometry": {
+            "target_cells": [
+              2,
+              0,
+              3446,
+              6431,
+              8526,
+              8517,
+              11694,
+              15221,
+              16977,
+              17829,
+              19471,
+              19963,
+              20825,
+              21072,
+              0,
+              22084,
+              22555,
+              22590,
+              22723,
+              22970,
+              22968
+            ],
+            "pool_counts": [
+              2,
+              0,
+              61,
+              48,
+              42,
+              26,
+              68,
+              77,
+              103,
+              100,
+              138,
+              137,
+              132,
+              153,
+              0,
+              153,
+              155,
+              161,
+              162,
+              167,
+              179
+            ],
+            "selected_counts": [
+              1,
+              0,
+              6,
+              4,
+              4,
+              2,
+              1,
+              4,
+              4,
+              5,
+              4,
+              4,
+              3,
+              3,
+              0,
+              5,
+              5,
+              6,
+              5,
+              5,
+              5
+            ],
+            "arrival_noop_cells": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              2,
+              7,
+              14,
+              14,
+              14,
+              0,
+              0,
+              8,
+              11,
+              12,
+              14,
+              11,
+              12
+            ],
+            "pool_zero_saved_attribution_counts": {
+              "own_map_or_seed_unavailable:robot_seed_not_observed_safe": 2
+            }
+          },
+          "opportunities": {
+            "legal_GOAL_steps": 6,
+            "zero_legal_GOAL_steps": 14,
+            "selected_GOAL_components": 4,
+            "selected_KEEP_components": 15,
+            "selected_WAIT_components": 1,
+            "legal_GOAL_but_selected_KEEP_or_WAIT_steps": 2,
+            "idle_legal_GOAL_but_selected_KEEP_or_WAIT_sequences": [],
+            "legal_GOAL_sequences": [
+              1,
+              5,
+              10,
+              11,
+              12,
+              17
+            ],
+            "zero_legal_GOAL_sequences": [
+              2,
+              3,
+              4,
+              6,
+              7,
+              8,
+              9,
+              13,
+              14,
+              15,
+              16,
+              18,
+              19,
+              20
+            ],
+            "zero_GOAL_mask_reason_counts": {
+              "minimum_commitment": 14
+            }
+          },
+          "delivered_state_travel": {
+            "scope": "Delivered estimated XY at21 actor snapshots in frozen observation order",
+            "snapshot_position_polyline_m": 3.5394064898051774,
+            "snapshot_max_leg_m": 0.26617995810484363,
+            "net_displacement_m": 1.2033425606971833,
+            "unique_source_positions": 104,
+            "source_start_ns": 71857000000,
+            "source_end_ns": 92057000000,
+            "history_polyline_m": null,
+            "history_conservative_stamp_with_multiple_positions_count": 2,
+            "history_ambiguous_stamp_examples": [
+              [
+                71857000000,
+                [
+                  [
+                    0.0022089806158976212,
+                    -0.44999696934118305
+                  ],
+                  [
+                    0.0022151058034441903,
+                    -0.4499970882490417
+                  ]
+                ]
+              ],
+              [
+                82857000000,
+                [
+                  [
+                    0.2596682621234705,
+                    -2.2185506967124886
+                  ],
+                  [
+                    0.25967230404676467,
+                    -2.218564673047193
+                  ]
+                ]
+              ]
+            ],
+            "history_limit": "No history-only distance if one source watermark binds multiple XY",
+            "isolated_task_participation_gate_inferred": false
+          },
+          "navigation_phase_counts": {
+            "idle": 3,
+            "active": 18
+          }
+        },
+        "tb2": {
+          "snapshots": 21,
+          "submitted_decisions": 20,
+          "own_map": {
+            "missing_snapshots": 0,
+            "unavailable_reason_counts": {
+              "None": 20,
+              "robot_seed_not_observed_safe": 1
+            },
+            "seed_rejection_counts": {
+              "None": 20,
+              "seed_cell_body_clearance": 1
+            },
+            "seed_pose_clearance_lower_bound_m": {
+              "count": 21,
+              "min": 0.23883852041514925,
+              "max": 1.5951511934295703
+            },
+            "required_body_clearance_m": 0.29,
+            "source_age_sec": {
+              "count": 21,
+              "min": 0.340999999999994,
+              "max": 1.343999999999994
+            },
+            "received_age_sec": {
+              "count": 21,
+              "min": 0.14000000000000057,
+              "max": 0.14000000000000057
+            },
+            "unique_geometry_sha256": [
+              "0abf7c69a094ef7c4fb704131f36a309b505e630e01d1324448ac7077fb48962",
+              "1a0657576367bb33103564e506a9f507afad42f1e46613ef878607219406e97c",
+              "25eea222c1d540e4340077a6c7c73886fa008ef7ebca4ebf819ea4d719cef4ff",
+              "309633ad22f82846d39da8eaa10797639b43dd87f0e97ebf3c9387330a194e24",
+              "4539689267c1bbd30352622867287f9118f3d8d95b9a92658850f2d041a9959f",
+              "5beb099b4f7b52fa8eeee7ee0e53395590abfabfbf7d01a6057e9303b64be1ac",
+              "5f411ba1776bf519d601235bf48906fc1095d541e20db1aaeae7ae127179d519",
+              "876478d91155b3b723a1cf7ae776cb656f4d330c84781f5b81e966301b97856d",
+              "8b418bf62a3c54b3b8115f1b1d790de63e568068b8885e7c5774fa8f18deb002",
+              "8c18238f8e8b39fd31482ac32f9baf3c8ccca570ae33cf35b636454829838af7",
+              "92bd1a220a85fd3df9fb3f0eb1a01547738ebdf990e4c4fc74c15e8521377e62",
+              "9b8942fc6ed4bc132db96109bbac54d7e818aae0738e3bad8bb3ab24ce374bea",
+              "9f7b1ad385535bd54cd135cd40963a43929e4fe613713aa27ed84b8e0943d119",
+              "a11fcc049942aa688ba05cf7ca0440e092ed50bccd749582c233683e4405fee1",
+              "a4aa3294b0af2bd67d68f0e5ac148ff9f7aa7f4cedc18cb9f3f2f5eaaac00285",
+              "b7ed87d2a26bac550a217578eb4e9019b744885a9970936ea1525bdca4c67f11",
+              "be2da098ef3feab3c0c387f6bfed08687c8b963414fc8e4a6df1debb467d1767",
+              "c250f35beb61f536a1cd99f0d7a7526b14db1aac77a09f47b2f2b92f5baaaae3",
+              "d802fc5d8b061191c45beb63026cfddf74445305050fa2eafbebb6af6c5eb357",
+              "de721f9c53504229f49a8cae1499c3c89a6420dfb5908dfa35499b370b887ff2"
+            ],
+            "state_fresh_snapshots": 21
+          },
+          "candidate_geometry": {
+            "target_cells": [
+              1,
+              2,
+              0,
+              7935,
+              9459,
+              13163,
+              14194,
+              16237,
+              17371,
+              18596,
+              18805,
+              19768,
+              20193,
+              20445,
+              20462,
+              20805,
+              20988,
+              21065,
+              21375,
+              21785,
+              21850
+            ],
+            "pool_counts": [
+              1,
+              2,
+              0,
+              92,
+              54,
+              73,
+              61,
+              63,
+              61,
+              82,
+              90,
+              106,
+              115,
+              123,
+              105,
+              126,
+              124,
+              123,
+              127,
+              127,
+              125
+            ],
+            "selected_counts": [
+              1,
+              2,
+              0,
+              5,
+              4,
+              4,
+              3,
+              3,
+              3,
+              5,
+              5,
+              6,
+              5,
+              5,
+              5,
+              5,
+              5,
+              6,
+              6,
+              6,
+              6
+            ],
+            "arrival_noop_cells": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              14,
+              13,
+              14,
+              13,
+              11,
+              12,
+              12,
+              14,
+              13,
+              12,
+              12,
+              12
+            ],
+            "pool_zero_saved_attribution_counts": {
+              "own_map_or_seed_unavailable:robot_seed_not_observed_safe": 1
+            }
+          },
+          "opportunities": {
+            "legal_GOAL_steps": 4,
+            "zero_legal_GOAL_steps": 16,
+            "selected_GOAL_components": 4,
+            "selected_KEEP_components": 16,
+            "selected_WAIT_components": 0,
+            "legal_GOAL_but_selected_KEEP_or_WAIT_steps": 0,
+            "idle_legal_GOAL_but_selected_KEEP_or_WAIT_sequences": [],
+            "legal_GOAL_sequences": [
+              1,
+              5,
+              10,
+              16
+            ],
+            "zero_legal_GOAL_sequences": [
+              2,
+              3,
+              4,
+              6,
+              7,
+              8,
+              9,
+              11,
+              12,
+              13,
+              14,
+              15,
+              17,
+              18,
+              19,
+              20
+            ],
+            "zero_GOAL_mask_reason_counts": {
+              "minimum_commitment": 16
+            }
+          },
+          "delivered_state_travel": {
+            "scope": "Delivered estimated XY at21 actor snapshots in frozen observation order",
+            "snapshot_position_polyline_m": 4.040329727355524,
+            "snapshot_max_leg_m": 0.2665123894863477,
+            "net_displacement_m": 0.6603243775016122,
+            "unique_source_positions": 101,
+            "source_start_ns": 71997000000,
+            "source_end_ns": 91999000000,
+            "history_polyline_m": 4.083669526127661,
+            "history_conservative_stamp_with_multiple_positions_count": 0,
+            "history_ambiguous_stamp_examples": [],
+            "history_limit": "No history-only distance if one source watermark binds multiple XY",
+            "isolated_task_participation_gate_inferred": false
+          },
+          "navigation_phase_counts": {
+            "idle": 2,
+            "active": 19
+          }
+        },
+        "tb3": {
+          "snapshots": 21,
+          "submitted_decisions": 20,
+          "own_map": {
+            "missing_snapshots": 0,
+            "unavailable_reason_counts": {
+              "None": 21
+            },
+            "seed_rejection_counts": {
+              "None": 21
+            },
+            "seed_pose_clearance_lower_bound_m": {
+              "count": 21,
+              "min": 0.36277236848878786,
+              "max": 2.5671937184507363
+            },
+            "required_body_clearance_m": 0.29,
+            "source_age_sec": {
+              "count": 21,
+              "min": 0.23999999999999488,
+              "max": 1.6400000000000006
+            },
+            "received_age_sec": {
+              "count": 21,
+              "min": 0.14000000000000057,
+              "max": 0.14000000000000057
+            },
+            "unique_geometry_sha256": [
+              "31d0cfad2320d3ae785267ebb9a0bff29d05d21044092c5568ee3bd27a544bbb",
+              "381f276cbda5cae0ee5fefe254c4d8d35f170ee150dfc5d86ab812475b4900dc",
+              "423bbc38aab7d37ff167d4903413c352016827d5fad82ab4e6fa5d5f9bf0a37f",
+              "463851b4eed3ed412697cceb2503b6cb73a9a57eb0b09ee4d311c901f697ab1d",
+              "506e30f44b32fab82ba4e022a077cbfd3ed9b3024de33543b2a3696b058010ad",
+              "51118ea51cff9397ad3b09bb3a15282d90da8df92d98c935f7abcd92da071d35",
+              "63b2e94159905c266a50ead48eee837b982bc9914cf429f89a0c8d53d94a5f50",
+              "65be50fad628f43883e940c5fe5ad3888aaa489718ae85cdd9ca827388f3119b",
+              "71d95059fef7097784b05228d69142cb25255ba84ed88eee50717ad2e4bbca40",
+              "87a1370e1450d50f6a4713f35242f6486df558c698c4fd5aa823a78be6ab1c6b",
+              "8f1245ba484476465879a819672d29bf61ecc4500f6ca5f7e604a12d1255d665",
+              "b0a7d8846ae0c20ce1de830db4dcf697794851fc4f7061446fcc045c9e251af5",
+              "bf0aa54f05ad65d6a4658a8fe525bdf49cc8b39a25bcafaf6e82a6311d09f64d",
+              "c8d8601592f0e6ce3c30fa181c5b5d7f90635bc4bfbfdd94079732b20315e4cd",
+              "d0168389a380e963e58d5d7ebb26ee44a1f56c50cf529d558cc7cbf8d5262c9e",
+              "da0fb6bed380023c78c8d469b10fd14390c911529fcbc9ceda26efa01129e83e",
+              "e36fe4325bb8e744f078681c17b2d70c5d421b511a36f8691c2e4143c79d0cb4",
+              "eacac2eae8c3529436c009498d6280dd929f7859c509b4f8944ff62a78479ed3",
+              "fb235f2491925d63d6ebcc0434c5cce5ac68fc15fe577481d2ecbc3a6b227cac"
+            ],
+            "state_fresh_snapshots": 21
+          },
+          "candidate_geometry": {
+            "target_cells": [
+              69,
+              0,
+              3162,
+              7714,
+              11506,
+              15555,
+              16284,
+              16063,
+              18312,
+              19861,
+              20897,
+              21159,
+              21396,
+              21386,
+              21323,
+              21564,
+              21966,
+              22064,
+              22190,
+              22506,
+              22726
+            ],
+            "pool_counts": [
+              17,
+              0,
+              55,
+              88,
+              58,
+              109,
+              94,
+              79,
+              85,
+              99,
+              137,
+              138,
+              131,
+              132,
+              108,
+              118,
+              116,
+              121,
+              125,
+              129,
+              144
+            ],
+            "selected_counts": [
+              6,
+              0,
+              2,
+              3,
+              2,
+              6,
+              5,
+              3,
+              4,
+              7,
+              6,
+              6,
+              6,
+              5,
+              7,
+              6,
+              6,
+              6,
+              6,
+              6,
+              6
+            ],
+            "arrival_noop_cells": [
+              11,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              13,
+              12,
+              13,
+              14,
+              14,
+              13,
+              13
+            ],
+            "pool_zero_saved_attribution_counts": {
+              "own_path_and_fused_arrival_target_intersection_empty_before_frontier_staging": 1
+            }
+          },
+          "opportunities": {
+            "legal_GOAL_steps": 5,
+            "zero_legal_GOAL_steps": 15,
+            "selected_GOAL_components": 4,
+            "selected_KEEP_components": 15,
+            "selected_WAIT_components": 1,
+            "legal_GOAL_but_selected_KEEP_or_WAIT_steps": 1,
+            "idle_legal_GOAL_but_selected_KEEP_or_WAIT_sequences": [
+              6
+            ],
+            "legal_GOAL_sequences": [
+              1,
+              6,
+              7,
+              12,
+              18
+            ],
+            "zero_legal_GOAL_sequences": [
+              2,
+              3,
+              4,
+              5,
+              8,
+              9,
+              10,
+              11,
+              13,
+              14,
+              15,
+              16,
+              17,
+              19,
+              20
+            ],
+            "zero_GOAL_mask_reason_counts": {
+              "minimum_commitment": 15
+            }
+          },
+          "delivered_state_travel": {
+            "scope": "Delivered estimated XY at21 actor snapshots in frozen observation order",
+            "snapshot_position_polyline_m": 2.088033787491126,
+            "snapshot_max_leg_m": 0.26172695699095916,
+            "net_displacement_m": 0.8753204930705976,
+            "unique_source_positions": 122,
+            "source_start_ns": 71900000000,
+            "source_end_ns": 91900000000,
+            "history_polyline_m": null,
+            "history_conservative_stamp_with_multiple_positions_count": 21,
+            "history_ambiguous_stamp_examples": [
+              [
+                71900000000,
+                [
+                  [
+                    0.45208556252850907,
+                    2.5812270310300704e-06
+                  ],
+                  [
+                    0.45208862221441637,
+                    2.3291603627570523e-06
+                  ]
+                ]
+              ],
+              [
+                72900000000,
+                [
+                  [
+                    0.45294592941260337,
+                    -0.0009086021210745162
+                  ],
+                  [
+                    0.45313494215502337,
+                    -0.0004863281655292938
+                  ]
+                ]
+              ],
+              [
+                73900000000,
+                [
+                  [
+                    0.4535869876183146,
+                    -0.0016407328959525118
+                  ],
+                  [
+                    0.45362347938267344,
+                    -0.001934143911879831
+                  ]
+                ]
+              ]
+            ],
+            "history_limit": "No history-only distance if one source watermark binds multiple XY",
+            "isolated_task_participation_gate_inferred": false
+          },
+          "navigation_phase_counts": {
+            "idle": 3,
+            "active": 18
+          }
+        }
+      },
+      "submitted_action_evidence": [
+        {
+          "source_observation_sequence": 1,
+          "source_observation_digest": "0171993a00cafe20b4b022eaf46ce94685f9811c0e1aa1409fe87ad04b0f9109",
+          "action": 15,
+          "sampled_components": [
+            0,
+            1,
+            5
+          ],
+          "joint_legal_action_count": 40,
+          "per_robot_legal_GOAL_components": [
+            [
+              0
+            ],
+            [
+              1
+            ],
+            [
+              2,
+              5,
+              6,
+              7
+            ]
+          ]
+        },
+        {
+          "source_observation_sequence": 2,
+          "source_observation_digest": "0b1a035d509c91a9d2b8a7844f4da238681ee6346c77b4b400131e0ddd0581a0",
+          "action": 888,
+          "sampled_components": [
+            8,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 1,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 3,
+          "source_observation_digest": "be4c8622009d7e120b4ad64dc24ac1e04f50958d55a925708d4e3ff460964a82",
+          "action": 888,
+          "sampled_components": [
+            8,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 1,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 4,
+          "source_observation_digest": "3bf83dac415fe5551e2ad741bd7cafcff0a3ccd1d4567087a0786e018d848761",
+          "action": 888,
+          "sampled_components": [
+            8,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 1,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 5,
+          "source_observation_digest": "def1086767a090fcedda768a8f144ade4a04b5dacd5e18cef60d0b152e778bd7",
+          "action": 248,
+          "sampled_components": [
+            2,
+            4,
+            8
+          ],
+          "joint_legal_action_count": 35,
+          "per_robot_legal_GOAL_components": [
+            [
+              0,
+              2,
+              3,
+              7
+            ],
+            [
+              1,
+              4,
+              5,
+              7
+            ],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 6,
+          "source_observation_digest": "75e8a2a834c758a9c44a7e2dfd19b06d34aedab76bc4c629be5c070cebb9c45c",
+          "action": 889,
+          "sampled_components": [
+            8,
+            8,
+            9
+          ],
+          "joint_legal_action_count": 7,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            [
+              0,
+              1,
+              2,
+              6,
+              7
+            ]
+          ]
+        },
+        {
+          "source_observation_sequence": 7,
+          "source_observation_digest": "86d0a8f94da4b8614534061b2e2f5494848b528e639fe3506739a7ad15d8d76d",
+          "action": 885,
+          "sampled_components": [
+            8,
+            8,
+            5
+          ],
+          "joint_legal_action_count": 7,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            [
+              1,
+              2,
+              4,
+              5,
+              7
+            ]
+          ]
+        },
+        {
+          "source_observation_sequence": 8,
+          "source_observation_digest": "ba100cf470202ca5e48990f5eee95c8e25e2a16038613dab9ce98a5117e66b2b",
+          "action": 888,
+          "sampled_components": [
+            8,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 1,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 9,
+          "source_observation_digest": "517b565cd663456d3effb66109d73b75f76c5b31244036185987f1cf012c2bd2",
+          "action": 888,
+          "sampled_components": [
+            8,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 1,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 10,
+          "source_observation_digest": "000db738ca27097959a0d677302193115c49fd6dc19caea5bfcb8f9d941fcda5",
+          "action": 878,
+          "sampled_components": [
+            8,
+            7,
+            8
+          ],
+          "joint_legal_action_count": 45,
+          "per_robot_legal_GOAL_components": [
+            [
+              0,
+              2,
+              3,
+              4,
+              7
+            ],
+            [
+              0,
+              3,
+              4,
+              5,
+              7
+            ],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 11,
+          "source_observation_digest": "35cb1b78fa4bfd15d894a525288c1649cdd46d6b3c529cca09cd1d03d959d98f",
+          "action": 988,
+          "sampled_components": [
+            9,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 6,
+          "per_robot_legal_GOAL_components": [
+            [
+              0,
+              2,
+              6,
+              7
+            ],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 12,
+          "source_observation_digest": "a4c242efe79c4b207d44a5dd33d3e0cebe6d73ea4d4899d787bccfd738da319d",
+          "action": 782,
+          "sampled_components": [
+            7,
+            8,
+            2
+          ],
+          "joint_legal_action_count": 39,
+          "per_robot_legal_GOAL_components": [
+            [
+              0,
+              2,
+              6,
+              7
+            ],
+            [],
+            [
+              1,
+              2,
+              3,
+              6,
+              7
+            ]
+          ]
+        },
+        {
+          "source_observation_sequence": 13,
+          "source_observation_digest": "a44e2598b7b2d5343a22587242ca736019ddad96f30d6473e78f9f833d35d3d5",
+          "action": 888,
+          "sampled_components": [
+            8,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 1,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 14,
+          "source_observation_digest": "e27fe698ad6284b878581cf29edd18e5ea98486ab3e7a88a4ff99d26cadfe4a6",
+          "action": 888,
+          "sampled_components": [
+            8,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 1,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 15,
+          "source_observation_digest": "32e02874c7f46c15d8cd524700092686900f3455a0635234705adac39476ace1",
+          "action": 888,
+          "sampled_components": [
+            8,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 1,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 16,
+          "source_observation_digest": "b1fd92025570718347a2ef66c5128c9d0971ea94f6279fc969028e3807e07db0",
+          "action": 848,
+          "sampled_components": [
+            8,
+            4,
+            8
+          ],
+          "joint_legal_action_count": 5,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [
+              1,
+              2,
+              4
+            ],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 17,
+          "source_observation_digest": "57838960f4222486b24e547d40414d904b911d58fde8baf528805de5b1f9b439",
+          "action": 688,
+          "sampled_components": [
+            6,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 6,
+          "per_robot_legal_GOAL_components": [
+            [
+              0,
+              2,
+              6,
+              7
+            ],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 18,
+          "source_observation_digest": "938e800692416bbe606aacf15238edf19001e439f397a18c3748a212fd8131e2",
+          "action": 882,
+          "sampled_components": [
+            8,
+            8,
+            2
+          ],
+          "joint_legal_action_count": 7,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            [
+              0,
+              2,
+              3,
+              5,
+              7
+            ]
+          ]
+        },
+        {
+          "source_observation_sequence": 19,
+          "source_observation_digest": "6987f9a1b878166203fc8cce0102225e886cc5332245c7cce32bffeac3078d56",
+          "action": 888,
+          "sampled_components": [
+            8,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 1,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 20,
+          "source_observation_digest": "3f949aefa1308dd123ac9bd2c9bb34151b216a860f2449d7de0ee54a0dea3a90",
+          "action": 888,
+          "sampled_components": [
+            8,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 1,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        }
+      ]
+    },
+    {
+      "worker": 3,
+      "epoch": "round0000_w3_e1_8831e834",
+      "prefix": {
+        "worker": 3,
+        "source_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_pilot/native/round0000/worker3/episode001_open_101/transitions.jsonl",
+        "start_offset": 0,
+        "end_offset_exclusive": 650198,
+        "prefix_bytes": 650198,
+        "complete_newline_records": 21,
+        "sha256": "1e302b5f1e3787141a94ac16c02d818ed74eb562724b125bb272e274c7b1e863",
+        "capture_file": "worker3_reset_plus20.jsonl"
+      },
+      "first_actor_time": 74.02,
+      "last_actor_time": 94.02,
+      "last_prefix_transition_terminated": false,
+      "last_prefix_transition_truncated": false,
+      "robots": {
+        "tb1": {
+          "snapshots": 21,
+          "submitted_decisions": 20,
+          "own_map": {
+            "missing_snapshots": 0,
+            "unavailable_reason_counts": {
+              "None": 21
+            },
+            "seed_rejection_counts": {
+              "None": 21
+            },
+            "seed_pose_clearance_lower_bound_m": {
+              "count": 21,
+              "min": 0.6379758544296312,
+              "max": 0.6383420911782715
+            },
+            "required_body_clearance_m": 0.29,
+            "source_age_sec": {
+              "count": 21,
+              "min": 0.10699999999999932,
+              "max": 2.1099999999999994
+            },
+            "received_age_sec": {
+              "count": 21,
+              "min": 0.01999999999999602,
+              "max": 0.01999999999999602
+            },
+            "unique_geometry_sha256": [
+              "592633937447c586602d9b7b2833b77313bef87dc2b3efa0f472863571d49834"
+            ],
+            "state_fresh_snapshots": 21
+          },
+          "candidate_geometry": {
+            "target_cells": [
+              4,
+              4,
+              10,
+              10,
+              10,
+              10,
+              10,
+              10,
+              10,
+              10,
+              10,
+              10,
+              10,
+              5,
+              5,
+              5,
+              5,
+              5,
+              5,
+              5,
+              5
+            ],
+            "pool_counts": [
+              3,
+              3,
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "selected_counts": [
+              2,
+              2,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "arrival_noop_cells": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "pool_zero_saved_attribution_counts": {
+              "reachable_targets_exist_but_all_fused_frontiers_beyond_1m_staging_limit": 18
+            }
+          },
+          "opportunities": {
+            "legal_GOAL_steps": 3,
+            "zero_legal_GOAL_steps": 17,
+            "selected_GOAL_components": 0,
+            "selected_KEEP_components": 9,
+            "selected_WAIT_components": 11,
+            "legal_GOAL_but_selected_KEEP_or_WAIT_steps": 3,
+            "idle_legal_GOAL_but_selected_KEEP_or_WAIT_sequences": [
+              1,
+              2,
+              3
+            ],
+            "legal_GOAL_sequences": [
+              1,
+              2,
+              3
+            ],
+            "zero_legal_GOAL_sequences": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20
+            ],
+            "zero_GOAL_mask_reason_counts": {
+              "candidate_missing_or_unreachable": 17
+            }
+          },
+          "delivered_state_travel": {
+            "scope": "Delivered estimated XY at21 actor snapshots in frozen observation order",
+            "snapshot_position_polyline_m": 0.0005889902606136453,
+            "snapshot_max_leg_m": 3.005580452941935e-05,
+            "net_displacement_m": 0.0005889876138214319,
+            "unique_source_positions": 101,
+            "source_start_ns": 73911000000,
+            "source_end_ns": 93911000000,
+            "history_polyline_m": 0.0005891489129275449,
+            "history_conservative_stamp_with_multiple_positions_count": 0,
+            "history_ambiguous_stamp_examples": [],
+            "history_limit": "No history-only distance if one source watermark binds multiple XY",
+            "isolated_task_participation_gate_inferred": false
+          },
+          "navigation_phase_counts": {
+            "idle": 21
+          }
+        },
+        "tb2": {
+          "snapshots": 21,
+          "submitted_decisions": 20,
+          "own_map": {
+            "missing_snapshots": 0,
+            "unavailable_reason_counts": {
+              "None": 20,
+              "robot_seed_not_observed_safe": 1
+            },
+            "seed_rejection_counts": {
+              "None": 20,
+              "seed_cell_body_clearance": 1
+            },
+            "seed_pose_clearance_lower_bound_m": {
+              "count": 21,
+              "min": 0.12307914458595519,
+              "max": 1.873052859064133
+            },
+            "required_body_clearance_m": 0.29,
+            "source_age_sec": {
+              "count": 21,
+              "min": 0.2539999999999907,
+              "max": 2.4569999999999936
+            },
+            "received_age_sec": {
+              "count": 21,
+              "min": 0.01999999999999602,
+              "max": 0.01999999999999602
+            },
+            "unique_geometry_sha256": [
+              "007052fe22e346d37b631fa6e65d4dcfe9800a387210fc41f76a119c9e2e21de",
+              "036a6d87094ec7c96d8a5d99fd75600aa99bb1ef4d433baea8826e12d8dc1355",
+              "0cee1e1e189eb099c0387181e4d058fe2ca5e38f198278626f2b3c5cc7c154a1",
+              "115e963c43830877eff2e6b12290337fcb1c2cc722021802f4f47f8cc0b13063",
+              "2d2675e53768fde3a9957c5c668804be6a1de5b078b2225ae48deb614fbe378d",
+              "4e3409264c3dfce35e5121c14f6dcdaee5e504bd04e0b1c8ca48a429322d2cd8",
+              "5183961927eca0622ac99b00bdae9ef3caef482790c0d3ff6762ab911280e0d0",
+              "54bedf86c0dc6c4abcd655929faa86058ef3e8ec913f129ed4e8174bd61a5e4c",
+              "65c2f0b914c01df66159f0cef0e604781e0c3f32a1af730c0300e0f3ca44104a",
+              "740fb65bff9d7ecbe54a310849d1013701bafcfdf2c3ceae3161f7c30bec5831",
+              "8015fbcb7d7ed72dd4c148688f370cd67f3965012871d018c487197804dbe939",
+              "8801542d0b49d0d496a8a6d4862e778adb7891cc48cea200fc5432b17174f281",
+              "a66b67c3819bbebaa687ba74a219bb0b4369702073d4007a57713d355f28d5be",
+              "c6f93b29e6d9e7efece2e7ed38d02b912d3c3a88eba4fc8c6c9bbf68ad1a592f",
+              "cd80102f1feae60941d99f291f896cf30bb6b211059f9a5fdc326600fb999ac5",
+              "edde3e1f240e8cc3f0c24f705b504237f2907d368a9928d98d943c87dcbd4add",
+              "effc0238a97af9f2d6eea2fadef6003f5d7c70b953bf6d40be961e9367292995",
+              "fb4170aea711475f460d0177211f5d4b03bc2725fcd7107b931561a070a74000",
+              "fc4a2a20bce7385a2f3780be1c772086d11f7a264d0ffbd47208d77ccfd1127c"
+            ],
+            "state_fresh_snapshots": 21
+          },
+          "candidate_geometry": {
+            "target_cells": [
+              12,
+              12,
+              0,
+              7945,
+              10428,
+              10506,
+              11678,
+              12652,
+              17305,
+              18623,
+              19510,
+              20469,
+              20529,
+              20997,
+              21152,
+              21208,
+              21370,
+              21397,
+              21591,
+              21607,
+              21623
+            ],
+            "pool_counts": [
+              8,
+              8,
+              0,
+              177,
+              165,
+              89,
+              68,
+              54,
+              90,
+              75,
+              102,
+              105,
+              109,
+              115,
+              117,
+              109,
+              100,
+              108,
+              105,
+              106,
+              106
+            ],
+            "selected_counts": [
+              3,
+              3,
+              0,
+              7,
+              6,
+              5,
+              4,
+              3,
+              6,
+              8,
+              7,
+              6,
+              7,
+              7,
+              7,
+              7,
+              7,
+              7,
+              7,
+              7,
+              7
+            ],
+            "arrival_noop_cells": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              10,
+              11,
+              13,
+              13,
+              11,
+              13,
+              14,
+              13,
+              13,
+              12,
+              12,
+              12,
+              11
+            ],
+            "pool_zero_saved_attribution_counts": {
+              "own_map_or_seed_unavailable:robot_seed_not_observed_safe": 1
+            }
+          },
+          "opportunities": {
+            "legal_GOAL_steps": 8,
+            "zero_legal_GOAL_steps": 12,
+            "selected_GOAL_components": 4,
+            "selected_KEEP_components": 14,
+            "selected_WAIT_components": 2,
+            "legal_GOAL_but_selected_KEEP_or_WAIT_steps": 4,
+            "idle_legal_GOAL_but_selected_KEEP_or_WAIT_sequences": [
+              5
+            ],
+            "legal_GOAL_sequences": [
+              1,
+              5,
+              6,
+              11,
+              12,
+              13,
+              14,
+              19
+            ],
+            "zero_legal_GOAL_sequences": [
+              2,
+              3,
+              4,
+              7,
+              8,
+              9,
+              10,
+              15,
+              16,
+              17,
+              18,
+              20
+            ],
+            "zero_GOAL_mask_reason_counts": {
+              "minimum_commitment": 12
+            }
+          },
+          "delivered_state_travel": {
+            "scope": "Delivered estimated XY at21 actor snapshots in frozen observation order",
+            "snapshot_position_polyline_m": 3.098120204132912,
+            "snapshot_max_leg_m": 0.2563968471728363,
+            "net_displacement_m": 1.6565087579477151,
+            "unique_source_positions": 105,
+            "source_start_ns": 73966000000,
+            "source_end_ns": 93966000000,
+            "history_polyline_m": null,
+            "history_conservative_stamp_with_multiple_positions_count": 4,
+            "history_ambiguous_stamp_examples": [
+              [
+                74766000000,
+                [
+                  [
+                    0.022104948328918794,
+                    0.4680683961292994
+                  ],
+                  [
+                    0.03079950664423929,
+                    0.4752912874593159
+                  ]
+                ]
+              ],
+              [
+                79766000000,
+                [
+                  [
+                    -0.08029604158591741,
+                    1.041530180729805
+                  ],
+                  [
+                    -0.062144117339936904,
+                    1.0240239416718755
+                  ]
+                ]
+              ],
+              [
+                84766000000,
+                [
+                  [
+                    -1.016571222674084,
+                    1.8755840096088308
+                  ],
+                  [
+                    -0.9798150095523486,
+                    1.8419027879169705
+                  ]
+                ]
+              ]
+            ],
+            "history_limit": "No history-only distance if one source watermark binds multiple XY",
+            "isolated_task_participation_gate_inferred": false
+          },
+          "navigation_phase_counts": {
+            "idle": 4,
+            "active": 17
+          }
+        },
+        "tb3": {
+          "snapshots": 21,
+          "submitted_decisions": 20,
+          "own_map": {
+            "missing_snapshots": 0,
+            "unavailable_reason_counts": {
+              "None": 20,
+              "robot_seed_not_observed_safe": 1
+            },
+            "seed_rejection_counts": {
+              "None": 20,
+              "seed_cell_body_clearance": 1
+            },
+            "seed_pose_clearance_lower_bound_m": {
+              "count": 21,
+              "min": 0.14819606028627488,
+              "max": 1.4071962976595107
+            },
+            "required_body_clearance_m": 0.29,
+            "source_age_sec": {
+              "count": 21,
+              "min": 0.30700000000000216,
+              "max": 2.3100000000000023
+            },
+            "received_age_sec": {
+              "count": 21,
+              "min": 0.01999999999999602,
+              "max": 0.01999999999999602
+            },
+            "unique_geometry_sha256": [
+              "10a3e634ea90d33e384f9438dd459ef6f3b8b426d05ad93f335a454f99dc7452",
+              "18f96c44f95b06b30f6a7726970a781bdd5d9c06848c7610e70b3fd3b2656ad9",
+              "3112bbbce18778a7d6966cddc4b364988fed15280e18c3db02b427fc4275a331",
+              "314ac342b759bf6f29eddbee569aabf3175703a06117f69f12959eba48adb488",
+              "8e1af389423e2f3481a7034c555c45de2f93089f9224ea92d38284dc4f1c4651",
+              "92f40cf971d128308c97c6b63d93d3f17de7cf59bc13d366e89f3693c90fea8a",
+              "9a152ba0fb8c44aa5890fc1f21812bc4ee878b7c9538029a9556429a62ad51a0",
+              "9ef905c0bccbd382a76b7b5f1b7bacc1467c28ee53d1a3f23ef1e043c5142cb5",
+              "a08d497e7d7cf7dadcb904c3efc2e62e861fcd1ae061a07d0d3f1566c14ca515",
+              "b49fec6b4c8deba775a6bfaf9f7a0b406b67852450341fbafd60932f8e795193",
+              "bb0a7e4e53a4f8b64acde98b22bfa4b94774c448c0f5c17d10f1af1829d7a1e7",
+              "be688c69a8db2371906d64c1d1c9b30ce7626cddfdf5c62bfd6bcd4d5a90af80",
+              "cd37a2dae36f7a072365dba82bbb464a72ebe91bc535c09069907a2ea086c931",
+              "d09b6ebb2b008f6caec2e230c4c7c11a9867b127bb9c0d6fa8692cadf7726cc2",
+              "d84c22af78be275f8f35b9eb01e1a3c43356df33cd65434400fce1e7fc940bed",
+              "e29acccaddae6c12d3cf693ce31d65cb6d68d5b08c23cf89fcb9ed233ece440c",
+              "f0c0978a0f232fb38c5521aef2e7c1ab3a147d8a03c2b7f1cda1911079c683aa",
+              "fb3520c6cfd953c9bc26f54918561e167d54e12e666f1cc809aed5cf8fc6aa01",
+              "fe5c1ab0edb9c4a8f26bec3099f49f5cfca8582f5c42acdf0e9e932d740568ef"
+            ],
+            "state_fresh_snapshots": 21
+          },
+          "candidate_geometry": {
+            "target_cells": [
+              48,
+              38,
+              2417,
+              3701,
+              6587,
+              12560,
+              13840,
+              16786,
+              16609,
+              0,
+              18119,
+              19768,
+              20727,
+              21624,
+              21988,
+              22222,
+              22321,
+              22520,
+              22883,
+              23009,
+              23055
+            ],
+            "pool_counts": [
+              9,
+              9,
+              45,
+              49,
+              55,
+              107,
+              83,
+              114,
+              100,
+              0,
+              97,
+              96,
+              101,
+              92,
+              98,
+              99,
+              103,
+              107,
+              104,
+              93,
+              94
+            ],
+            "selected_counts": [
+              3,
+              3,
+              7,
+              2,
+              3,
+              5,
+              6,
+              6,
+              5,
+              0,
+              4,
+              6,
+              6,
+              6,
+              6,
+              6,
+              6,
+              7,
+              7,
+              7,
+              7
+            ],
+            "arrival_noop_cells": [
+              3,
+              13,
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              0,
+              11,
+              13,
+              13,
+              11,
+              13,
+              13,
+              11,
+              12,
+              13,
+              12,
+              12
+            ],
+            "pool_zero_saved_attribution_counts": {
+              "own_map_or_seed_unavailable:robot_seed_not_observed_safe": 1
+            }
+          },
+          "opportunities": {
+            "legal_GOAL_steps": 6,
+            "zero_legal_GOAL_steps": 14,
+            "selected_GOAL_components": 4,
+            "selected_KEEP_components": 15,
+            "selected_WAIT_components": 1,
+            "legal_GOAL_but_selected_KEEP_or_WAIT_steps": 2,
+            "idle_legal_GOAL_but_selected_KEEP_or_WAIT_sequences": [
+              8
+            ],
+            "legal_GOAL_sequences": [
+              1,
+              3,
+              8,
+              9,
+              14,
+              15
+            ],
+            "zero_legal_GOAL_sequences": [
+              2,
+              4,
+              5,
+              6,
+              7,
+              10,
+              11,
+              12,
+              13,
+              16,
+              17,
+              18,
+              19,
+              20
+            ],
+            "zero_GOAL_mask_reason_counts": {
+              "minimum_commitment": 14
+            }
+          },
+          "delivered_state_travel": {
+            "scope": "Delivered estimated XY at21 actor snapshots in frozen observation order",
+            "snapshot_position_polyline_m": 3.7351301820509235,
+            "snapshot_max_leg_m": 0.25656287038239256,
+            "net_displacement_m": 2.127011606518314,
+            "unique_source_positions": 101,
+            "source_start_ns": 73912000000,
+            "source_end_ns": 93913000000,
+            "history_polyline_m": 3.771041116265562,
+            "history_conservative_stamp_with_multiple_positions_count": 0,
+            "history_ambiguous_stamp_examples": [],
+            "history_limit": "No history-only distance if one source watermark binds multiple XY",
+            "isolated_task_participation_gate_inferred": false
+          },
+          "navigation_phase_counts": {
+            "idle": 4,
+            "active": 17
+          }
+        }
+      },
+      "submitted_action_evidence": [
+        {
+          "source_observation_sequence": 1,
+          "source_observation_digest": "60419f67428b94a6fb3dd9d0c37a14bc5fefc0529f09e0dc58943b54f9f37a1a",
+          "action": 812,
+          "sampled_components": [
+            8,
+            1,
+            2
+          ],
+          "joint_legal_action_count": 77,
+          "per_robot_legal_GOAL_components": [
+            [
+              0,
+              3
+            ],
+            [
+              1,
+              4,
+              7
+            ],
+            [
+              2,
+              5,
+              6
+            ]
+          ]
+        },
+        {
+          "source_observation_sequence": 2,
+          "source_observation_digest": "88ded1f8e774b361b339acf9e5e458dac1cd92b4b1dd66077cfad74db4446044",
+          "action": 988,
+          "sampled_components": [
+            9,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 4,
+          "per_robot_legal_GOAL_components": [
+            [
+              0,
+              3
+            ],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 3,
+          "source_observation_digest": "31ef99efc62a4f431d6aa76944ba00afc4cbddaa3814bc8c2266fafa4cf08aff",
+          "action": 884,
+          "sampled_components": [
+            8,
+            8,
+            4
+          ],
+          "joint_legal_action_count": 27,
+          "per_robot_legal_GOAL_components": [
+            [
+              0
+            ],
+            [],
+            [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          ]
+        },
+        {
+          "source_observation_sequence": 4,
+          "source_observation_digest": "440cc68149aa8f37725e2a4127e446c3ce4cbadb3f7d60d9401e8759361f78aa",
+          "action": 988,
+          "sampled_components": [
+            9,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 2,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 5,
+          "source_observation_digest": "4592eb451743de11e9b6aa71eb493c13d4bdb7e475b8833db62c0c9dc0ae0952",
+          "action": 998,
+          "sampled_components": [
+            9,
+            9,
+            8
+          ],
+          "joint_legal_action_count": 16,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [
+              0,
+              1,
+              2,
+              4,
+              5,
+              6
+            ],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 6,
+          "source_observation_digest": "2e86d04ddc5caeea3b9452afe2b3a285895ac41f81db8bbe552b530128208143",
+          "action": 848,
+          "sampled_components": [
+            8,
+            4,
+            8
+          ],
+          "joint_legal_action_count": 14,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [
+              0,
+              2,
+              4,
+              5,
+              6
+            ],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 7,
+          "source_observation_digest": "114920b9bc3f8ad29a8db5b8707f3351ecdb0cc45375d1ad60a8e4944ba55831",
+          "action": 988,
+          "sampled_components": [
+            9,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 2,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 8,
+          "source_observation_digest": "a7194e4fa18be0bdcf124355da0e31e8ef174cce3035089870f3740842663c48",
+          "action": 989,
+          "sampled_components": [
+            9,
+            8,
+            9
+          ],
+          "joint_legal_action_count": 16,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            [
+              1,
+              2,
+              3,
+              5,
+              6,
+              7
+            ]
+          ]
+        },
+        {
+          "source_observation_sequence": 9,
+          "source_observation_digest": "fd288a6bb30137c850b741c0a2a72351029ca5daccef9a583a5acbf873065461",
+          "action": 986,
+          "sampled_components": [
+            9,
+            8,
+            6
+          ],
+          "joint_legal_action_count": 14,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            [
+              1,
+              4,
+              5,
+              6,
+              7
+            ]
+          ]
+        },
+        {
+          "source_observation_sequence": 10,
+          "source_observation_digest": "b71efd3b34b7b2dca07c27a9c5f384c7278bb9a41e1a275ee5916def69a32ccd",
+          "action": 988,
+          "sampled_components": [
+            9,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 2,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 11,
+          "source_observation_digest": "e44625486bf936000142bd6794125f0a1ae0f81524c01cbb660bbcbed49158ff",
+          "action": 888,
+          "sampled_components": [
+            8,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 18,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [
+              0,
+              1,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 12,
+          "source_observation_digest": "06b5568c9ee64a8751d881677b179da1ff26105f6f970e580a3de3d67b5f74af",
+          "action": 888,
+          "sampled_components": [
+            8,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 14,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [
+              0,
+              3,
+              5,
+              6,
+              7
+            ],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 13,
+          "source_observation_digest": "c0ad7952c12eff749c7cbf76f60f5566db3ec3e127f3740cb7f90dadacfd8323",
+          "action": 898,
+          "sampled_components": [
+            8,
+            9,
+            8
+          ],
+          "joint_legal_action_count": 16,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [
+              0,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 14,
+          "source_observation_digest": "545b02a030552238097ede89663e20a0ee430fd09558c241e291bd3d0ff7e731",
+          "action": 948,
+          "sampled_components": [
+            9,
+            4,
+            8
+          ],
+          "joint_legal_action_count": 130,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [
+              0,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            [
+              1,
+              2,
+              4,
+              5,
+              6,
+              7
+            ]
+          ]
+        },
+        {
+          "source_observation_sequence": 15,
+          "source_observation_digest": "d121fc6d890b41343885a7305bd86a503e752e23729b62fa59cb2dc601b344d8",
+          "action": 885,
+          "sampled_components": [
+            8,
+            8,
+            5
+          ],
+          "joint_legal_action_count": 14,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            [
+              1,
+              2,
+              5,
+              6,
+              7
+            ]
+          ]
+        },
+        {
+          "source_observation_sequence": 16,
+          "source_observation_digest": "13c81a4c207267525893273edf9091cf7df07666c6e7d27adc23cec6e7bc7978",
+          "action": 988,
+          "sampled_components": [
+            9,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 2,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 17,
+          "source_observation_digest": "db115994189d880773ea15987fc8eaf3a41cdad8bfb05c05e4db7771f9340652",
+          "action": 988,
+          "sampled_components": [
+            9,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 2,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 18,
+          "source_observation_digest": "6d6d76a490f66f637f278c3e0371ffac2f81a696ce5bfe19069b5a1573ed8e18",
+          "action": 988,
+          "sampled_components": [
+            9,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 2,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 19,
+          "source_observation_digest": "cf59f841719106475c8539954c094483a8bf4872af2e14e96922a07fce8012f8",
+          "action": 878,
+          "sampled_components": [
+            8,
+            7,
+            8
+          ],
+          "joint_legal_action_count": 18,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [
+              0,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            []
+          ]
+        },
+        {
+          "source_observation_sequence": 20,
+          "source_observation_digest": "cfb0b7805c789c3da6e8b7d7a66857743ff77e653a62bec0940c86cc74496e22",
+          "action": 888,
+          "sampled_components": [
+            8,
+            8,
+            8
+          ],
+          "joint_legal_action_count": 2,
+          "per_robot_legal_GOAL_components": [
+            [],
+            [],
+            []
+          ]
+        }
+      ]
+    }
+  ],
+  "snapshots_mask_replayed_exact": 84,
+  "prefix_manifest_sha256": "f08e72f98b189874c6a7ac9323144464c36402065c50d8c729d97899f54426cc",
+  "native_prefixes_unchanged_after_read": false,
+  "whole_growing_transition_file_sha256_used": false,
+  "jobs": {
+    "ROS_nodes": 0,
+    "native": 0,
+    "GPU": 0,
+    "optimizer": 0,
+    "signals": 0,
+    "tracked_writes": 0
+  },
+  "limits": [
+    "Only reset plus first20 complete transition lines per worker; no later trajectories.",
+    "Geometry and opportunities use saved received-only actor data, never isolated truth.",
+    "Pool causes are existing counters/source semantics; full raw maps/costmaps absent.",
+    "No obstacle-identity, actual Nav2-costmap route, or repair claim.",
+    "Travel uses delivered estimated states; no isolated participation certification.",
+    "No complete outcome, learning benefit, intervention or plan change claim.",
+    "All native originals and future rows retained; this binding is diagnostic only."
+  ]
+}

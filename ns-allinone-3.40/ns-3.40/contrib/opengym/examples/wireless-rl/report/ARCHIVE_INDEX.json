@@ -575,7 +575,7 @@
   },
   "mr3_p2a_evidence": {
     "recorded_date": "2026-10-16",
-    "status": "in_progress_not_P2A_acceptance",
+    "status": "MR3-P2A incomplete; V6 infrastructure stop under no-retry rule; no automatic retry/V7 or P2B this session",
     "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261016_mr3_p2a.md",
     "v1_source_freeze": "bbbe21cb3c49f4f714cc2198b579a08699e9ba28",
     "v1_original_manifest": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v1/minimal/manifest.json",
@@ -833,8 +833,200 @@
         "bytes": 716775
       },
       "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/prefreeze_checks_v6.json": {
-        "sha256": "a9f903dcf9d2c9092c4d3012c7c10ada7eebbf81ffd639f9eb006f07e6fb82e4",
-        "bytes": 6627
+        "sha256": "b6ffcd401b6f8b49f49225af2f58e3605cc5a0674ee384a8345d325cd447f3dd",
+        "bytes": 7039
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/budget_acceptance_20261016.json": {
+        "sha256": "1ce65bb6da502575cee2e31b9ac529177dfa4634820cffef2f0ebd3c1567d778",
+        "bytes": 3222
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/v6_closure_accounting.json": {
+        "sha256": "e652a5245efc91ce58a8044d1f621b8fe089f992f93320499ed56d407d4279d9",
+        "bytes": 12977
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/v6_source_preflight.json": {
+        "sha256": "eebf3c41c87596b8f399928ad62f93e14c3ba8cff722ae68a7720cfc4f35f97a",
+        "bytes": 22037
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/selected_byte_integrity_v6.json": {
+        "sha256": "7266ac958dfe9dc6fd0c94722037c1b08195fab8126e5ac1d9d75c38ef9dc2e6",
+        "bytes": 58926
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/archive_selected_originals_v2.py": {
+        "sha256": "0190e77d97e4e021bcd4db67199f09f083df156c70de737de2b68dcc27225fba",
+        "bytes": 2147
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/phase_terminal/audit_benchmark_v6.py": {
+        "sha256": "fe44ffd15c3b21c940331472d439065ceea113449a09a4cf59faa6344f17cf61",
+        "bytes": 1509
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/phase_terminal/audit_v6.json": {
+        "sha256": "c512352a5b2df71b733c3d1a87e99b617d24f9bd6c9826639f1df1acc6e9b2e7",
+        "bytes": 73420
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/phase_terminal/benchmark_metadata.json": {
+        "sha256": "b88babe8b821f0bba9788d0c5ee6923b1a0cc8358ea4d381049ff9ece6a3e68e",
+        "bytes": 1061
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/phase_terminal/benchmark_summary.json": {
+        "sha256": "54608bb9a1397efe73f0739a1211ade6be2a568f815ebb3b945ed94562b0c7d7",
+        "bytes": 25404
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/phase_terminal/independent_review_v6.json": {
+        "sha256": "b97f60878cad67fe5e938916b8518b309e73da7130510f41728752f947f2e5af",
+        "bytes": 98375
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/phase_terminal/independent_review_v6_initial_scope_error.json": {
+        "sha256": "b5b470d5ec3629a6bec0c26d9aa57d7e9f7e6c411f57b4466409c2b93d08f74b",
+        "bytes": 97560
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/phase_terminal/manifest.json": {
+        "sha256": "6550fccd2082b4f557a677d79449a82e7f3cd5070d1cf333a71c8d7f6b20beb8",
+        "bytes": 23698
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/phase_terminal/review_v6_phase_terminal.py": {
+        "sha256": "b030eca0e069abaac0af4d2971c1fb1ae1842312c566f4757dab82a3d8d5a550",
+        "bytes": 13215
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/phase_terminal/review_v6_phase_terminal_initial_scope_error.py": {
+        "sha256": "a6d68d0c5ea1fd62259a6fc40501019917eb3cb91f962e78a02588e077464e01",
+        "bytes": 12112
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/minimal/audit_v6.json": {
+        "sha256": "787ea75ffa775fe3a56153cd712078419f1936f47ece478c0466d35e2edbb012",
+        "bytes": 62200
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/minimal/independent_review_v6.json": {
+        "sha256": "85444583408028a5b73f9d72147d1f0fe551a9b05013b0e3addc97c9de20a491",
+        "bytes": 22447
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/minimal/independent_review_v6.py": {
+        "sha256": "ff25ea3b7e58187e9b934601e2e0bb41cdd98f476f3b7819eeb29b2d5ec4dc04",
+        "bytes": 15477
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/minimal/independent_review_v6_execution_v1.json": {
+        "sha256": "e8c4544c84e6cb3619e8043b6a8dfa675ac734e150f8fdb26f4d8182ef994d69",
+        "bytes": 2654
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/minimal/manifest.json": {
+        "sha256": "91fe5191879f244fbf0bb8f72e4bc2db08cb6f6d47871426428c101be4f20b00",
+        "bytes": 15831
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/minimal/metadata.json": {
+        "sha256": "6e7756aee2b1b171d089ff9da9d81bd9e3c39a82d3e1864482611564eb90ed48",
+        "bytes": 1362
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/minimal/progress.json": {
+        "sha256": "4a86cec807aff99ca46c2f182cb1f220be6a513a38363cf95d25bb175a987893",
+        "bytes": 2935
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/minimal/rollout_0000.json": {
+        "sha256": "803aa5cdd22a1c71ccfd29ef833de8f419e132359f04e8bfb469d0560524e311",
+        "bytes": 6287
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/minimal/summary.json": {
+        "sha256": "0cebf2b4203b908107961bac64881e5c7ebe8b1be568e4f0d8c9c3cea36060f4",
+        "bytes": 14262
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/audit_v6_original.json": {
+        "sha256": "0c277bfd789fea5d9ff7d5ccd11cda8aa6eeb722b6fd59996ba757534ee23897",
+        "bytes": 740398
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/frontier_union_feasibility_v6.json": {
+        "sha256": "2dc5961c4dc4e524aec9e8906c76247f190b4a7d97f8cecb18625ac698cd1c8d",
+        "bytes": 60284
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/frontier_union_feasibility_v6.py": {
+        "sha256": "02f139f4c5bec27c5aafdab954a6f1e9a1360d98f6c32cf5da4e1a83f82783db",
+        "bytes": 18378
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/independent_frontier_union_feasibility_review_v6.json": {
+        "sha256": "10c4d7a5415cc793e99ba75c3a59070314269bac53ff662867635280d73d90f9",
+        "bytes": 2718
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/independent_native_stop_forensics_v6.json": {
+        "sha256": "418e3bd9f25e2e0bab189fabfe712f1f833ff1964aefb96abba3b015c75563ad",
+        "bytes": 6879
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/independent_pilot_closure_review_v6.json": {
+        "sha256": "7a34e2b059e8e1427074ed6f50bebbc760f0478853dc87da2c41a5cf430db18f",
+        "bytes": 824978
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/manifest.json": {
+        "sha256": "74bbc36c725c32d83e83768ba650acf309a948e3d0390890515e6f40c905a7fb",
+        "bytes": 53644
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/metadata.json": {
+        "sha256": "12bb7e8d1a92355525d689673816195c0638e92e51659c46655d4c263d67bbf7",
+        "bytes": 1366
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/prefix20_capture_execution_v1.json": {
+        "sha256": "ee7ffc1053870c532af69dce8e37abb56dd0ae3cee6a67d72b3c310995cc1ba9",
+        "bytes": 2806
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/prefix20_controllability_replaycheck_v6.json": {
+        "sha256": "65577c64e1bd2ee94fdf5270c2538a8e9689d0427779d6510b41107513504cbe",
+        "bytes": 123172
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/prefix20_controllability_repro_v6.py": {
+        "sha256": "00e331eb76adf9f628823f58daf25a88592dfa5d11766ba56c6c07653adfac75",
+        "bytes": 17292
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/prefix20_controllability_review_v6.json": {
+        "sha256": "23c6fb25e78e8fd798f69397c05daf6747d1fd6ca6be4d3e9d0ce39a9fc9bc8a",
+        "bytes": 123014
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/prefix20_controllability_review_v6.py": {
+        "sha256": "305bd9a894ebf1419e074892c1056fae4e2b3a9eaead2bb29d0b4ad5babf65e4",
+        "bytes": 17275
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/prefix20_controllability_review_v6_v1_failed.py": {
+        "sha256": "551cee4aead30e3c6ceb34d030ee2cc2d9a0a729bf4ba476b18902482399df41",
+        "bytes": 16562
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/progress.json": {
+        "sha256": "a189ab2487bc97b0643dd615986084e08430f2d7601ff3cc584c0a1e3f4449a3",
+        "bytes": 9119
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/review_frontier_union_feasibility_v6.py": {
+        "sha256": "97bb65e55475da04bfdf46238b78161bf6b5d3eebd39eed93a46bc5f11a94d2a",
+        "bytes": 10116
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/review_round0000_worker2_v6.py": {
+        "sha256": "4edfc228cecff974b70b95b9de23e045ab77229822ff8297e15c95782268f087",
+        "bytes": 8922
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/review_v6_native_stop_forensics.py": {
+        "sha256": "0787a66f482594a431c1ccc23f7433d01c9536cde2b5ccb96b20ba8e9a0819c2",
+        "bytes": 5065
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/review_v6_pilot_closure.py": {
+        "sha256": "89cdf0cc5800d49f99b530918890c93c39ec86149cec3f25dee7a7d04d163241",
+        "bytes": 11442
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/round0000_learning_review_v6.py": {
+        "sha256": "c168f59f2a419e7a1013fc9e33454230063328df39ab95706ea2967d76818d9f",
+        "bytes": 17392
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/round0000_worker2_native_review_v6.json": {
+        "sha256": "a28ace0a2c396f36389f6e17cceacfc7bc7944042587d1908d4a489288776522",
+        "bytes": 108267
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/summary.json": {
+        "sha256": "07b0d5ea03f4be8f7d06f186157e200199ff0dd9b099dbac8c92e26953f2979e",
+        "bytes": 11770
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/v6_infrastructure_review_execution_v1.json": {
+        "sha256": "7f6095b0dab790f1061d4c3c5432933f0aee11e4ad10213f7d4877f9af2ef025",
+        "bytes": 1549
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/v6_infrastructure_review_v1.json": {
+        "sha256": "8314102d83269bf3c6f4a3f91e5420b5f37b8f8f4204ef9c66249170e675c181",
+        "bytes": 85420
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/v6_infrastructure_review_v1.py": {
+        "sha256": "22e1b6cec5b46db9b3f0f55c2dbad256a305476d7a7a87209cd5ee2eab369682",
+        "bytes": 18908
       }
     },
     "v2_source_freeze": "9e898bd5ca5eccc6e263e198481f672b5cf82320",
@@ -842,7 +1034,7 @@
     "v2_pilot_interrupted_manifest": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v2/pilot_interrupted/manifest.json",
     "v2_diagnostic_audit": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v2/pilot_interrupted/diagnostic_native_prefix_audit_v1.json",
     "v2_scope": "Minimal8native decisions/4GPU optimizer steps/full offline auditPASS. Pilot390settled native decisions,388collector returns,389.10sampled reward seconds,1752.9574942300096wall seconds,0updates; two genuine peer-safety failures and two agent-abandoned cleanly closed prefixes. No95% task success, no final pilot checkpoint; originalgeneric infrastructure_error label retained but diagnostic SIGINT is not a simulator crash finding.",
-    "active_prospective_plan": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/predeclared_plan_v6.json",
+    "active_prospective_plan": null,
     "v3_source_freeze": "c2911114226bbe8275a0658a3710dafa4e89f5e0",
     "v3_status": "historical_minimum_closed_original_full_scalar_audit_FAIL_preserved; no task/acceptance credit",
     "v3_scope": "Engineering minimum16native/returned decisions,16sampled seconds,4GPU optimizer steps,290.07678865175694wall seconds, clean closure. Original full audit_v3.json fails six scalar shared-boundary switch attribution checks. Independent CPU policy-only replayPASS does not replace scalar gate. Coverage.8291335707112206,IoU.16709862228891012,participationtrue,taskfalse. V3pilot and validation never started.",
@@ -903,9 +1095,14 @@
     "v5_original_audit": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v5/pilot_infrastructure/audit_v5_original.json",
     "v5_original_audit_scope": "Original9-error fullFAIL preserved. Separate source-bound cascade review proves w1 protocol-gate omission11rows makes241-rowexpected versus252stored, causing downstreamaction_mask mismatch; complete4-episode252-rowCPU replay passes tensors/masks/actions/reward/value/logprob/dt/GAE. This does not erase protocol, real40ms>20mslag, incompleteprefix/run or missingfinal errors.",
     "v5_diagnostics_scope": "Executed raw observerv1 once15-second configured budget/14.580348508898169actual seconds inside pilotwall; no application publisher/action/service/native control calls. Observerv2 prepared only. Exact actor81/source bundle replay proves observed occupancy source contributions, not physical object identity or a production repair. Synthetic frontier source counterexample is independent of actual w0 earlier target-intersection issue. Protocol prototypev1/review failure/v2 CPU evidence retained without retroactive de7a production credit.",
-    "v6_source_freeze": "SOURCE_FREEZE_FROM_METADATA",
-    "v6_status": "prospective_pre_native_evaluator_quantum_phase_ack; no actualv6task_or_acceptance_credit",
-    "v6_budget": {
+    "v6_source_freeze": "af37b2aaa3cb9980434f7f16c1f52dec2506319d",
+    "v6_status": "CLOSED: phase probe native/scalar/ACK PASS; minimal16decisions/4GPUupdates full audit PASS; pilot718native/717returned/0updates FAIL_INFRASTRUCTURE; original full audit8FAIL retained; nofinal/checkpoint/rollout0000; final-only3devvalidation SKIPPED",
+    "v6_scope": "Same af37 freeze; evaluator-only paused20tick terminal serialization, not all-producer drain/P3. Pilot w0 tb1 SLAM karto::Exception after controlled SIGINT/exit-6 stops strict ordered shutdown before gz stop CLI launch; exactSDKthrow/stackunknown. Two300stimeouts fail participation despite97%coverage/qualitypass; two peer safety failures, zero task successes. 167nativePID/start+parent absent; no automatic retry/V7. Production candidatev3 unchanged; received-own frontier union is ignored detached CPU prototype only, no native credit.",
+    "v5_packaging_status": "complete;minimal27raw20416727/selected12831817bytes,pilot303raw114640113/selected38191508bytes,total330files;allselectedencoding/SHA/bytesanddecodedrawSHA/bytesPASS;includesobserveroriginalgz-onlymaps",
+    "v5_owned_closure_scope": "Infrastructure review confirms667saved nativePID/startidentities absent andpilotparentPID1195717 absent;all16ownedclosures empty. Process cleanup does not overwrite frozen navigation failure gates.",
+    "v6_prefreeze_check_scope": "3packagebuildPASS3.73s; initial823ROS/29.14s retained as intermediate; final824ROS/30.12s and133CPU/10.685sPASS;13changedPythonflake8PASS after preserving/fixing initial100char and3E128 failures; protocol23focusedPASS.773s. Exact3phase sourceSHA verified; postcommit sourcepreflight49exactpinsPASS, freezeaf37; root11Markdown154linksmissing[]. No native/GPUcredit.",
+    "latest_executed_predeclared_plan": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/predeclared_plan_v6.json",
+    "v6_budget_at_predeclaration": {
       "original_decisions": 4096,
       "original_wall_seconds": 14400,
       "v2_charged_decisions": 390,
@@ -919,9 +1116,13 @@
       "selected_wall_seconds": 6300,
       "engineering_phase_probe_minima_and_fixed_validation_separate": true
     },
-    "v6_scope": "One newcleanpushedfreeze: engineering1worker2open101terminal-probe episodes/4steps -> originalnative/scalar+phaseACKauditPASS -> freshPPO16decisions/16stepstruncation/900wall/fullauditPASS -> fresh4workeropen101seed41pilot2588decisions/300maxsteps/6300wall -> conditionalfinitefinal-only deterministicopen401/402/403900decisions/9000wall/0updates. No extraobserver. Evaluator response at each paused20ticks does not prove fullproducer/DDS/P3 causalclock closure; all original gates unchanged.",
-    "v5_packaging_status": "complete;minimal27raw20416727/selected12831817bytes,pilot303raw114640113/selected38191508bytes,total330files;allselectedencoding/SHA/bytesanddecodedrawSHA/bytesPASS;includesobserveroriginalgz-onlymaps",
-    "v5_owned_closure_scope": "Infrastructure review confirms667saved nativePID/startidentities absent andpilotparentPID1195717 absent;all16ownedclosures empty. Process cleanup does not overwrite frozen navigation failure gates.",
-    "v6_prefreeze_check_scope": "3packagebuildPASS3.73s; initial823ROS/29.14s retained as intermediate; final824ROS/30.12s and133CPU/10.685sPASS;13changedPythonflake8PASS after preserving/fixing initial100char and3E128 failures; protocol23focusedPASS.773s. Exact3phase sourceSHA verified; fullsourceproofcountdeferreduntilcommitpreflight; root11Markdown154linksmissing[]. No native/GPUcredit."
+    "accepted_cumulative_budget": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/budget_acceptance_20261016.json",
+    "v6_closure_accounting": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/v6_closure_accounting.json",
+    "v6_packaging_status": "COMPLETE:179/179 source+selected+decodedraw SHA/byte counts, unique targets and complete source inventory PASS; gzip-only originals retained; archivehelper byteequal to actual /tmp script;3 fail-closed temporary fixtures PASS",
+    "v6_validation_status": "SKIPPED; no final.zip and genuine pilot infrastructure failure; no substitute earlier/minimum/otherfreeze checkpoint",
+    "v6_original_audit": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/audit_v6_original.json",
+    "v6_phase_terminal_manifest": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/phase_terminal/manifest.json",
+    "v6_minimal_manifest": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/minimal/manifest.json",
+    "v6_pilot_infrastructure_manifest": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/manifest.json"
   }
 }

@@ -1,0 +1,73 @@
+{
+  "schema": "mr3-p2a-budget-user-acceptance-20261016-v1",
+  "recorded_date": "2026-10-16",
+  "authority": "Explicit user answer in the root conversation, relayed by coordinating root agent; paraphrase, not a fabricated verbatim quotation.",
+  "accepted_scope": {
+    "pilot_decisions_cumulative": 4096,
+    "pilot_wall_seconds_cumulative": 14400,
+    "additional_four_hours_authorized": false,
+    "separate_development_validation": {
+      "schedule": [
+        "open:401",
+        "open:402",
+        "open:403"
+      ],
+      "maximum_decisions_total": 900,
+      "maximum_wall_seconds_total": 9000,
+      "optimizer_updates": 0,
+      "final_only": true,
+      "status": "SKIPPED: no completed finite pilot final.zip",
+      "execution_parameters_origin": "User explicitly approved three separate development validation episodes. The open401/402/403 schedule, 900-decision/9000-wall-second total and final-only rule are execution details inherited from the already predeclared V6 plan, not a verbatim or individually enumerated user answer. All three are currently SKIPPED."
+    },
+    "if_no_95_percent_exit": "Stop at MR3-P2A; do not advance to P2B."
+  },
+  "pilot_charges": [
+    {
+      "version": "v2",
+      "native_decisions": 390,
+      "full_wall_seconds_decimal": "1752.9574942300096"
+    },
+    {
+      "version": "v4",
+      "native_decisions": 242,
+      "full_wall_seconds_decimal": "1051.0549356047995"
+    },
+    {
+      "version": "v5",
+      "native_decisions": 876,
+      "full_wall_seconds_decimal": "5212.525802815799"
+    },
+    {
+      "version": "v6",
+      "native_decisions": 718,
+      "full_wall_seconds_decimal": "3477.507027802989"
+    }
+  ],
+  "cumulative_native_decisions": 2226,
+  "cumulative_full_wall_seconds_decimal": "11494.0452604535971",
+  "remaining_native_decisions": 1870,
+  "remaining_wall_seconds_decimal": "2905.9547395464029",
+  "float_display_only": {
+    "cumulative_wall_seconds": 11494.045260453597,
+    "remaining_wall_seconds": 2905.954739546403
+  },
+  "accounting_rule": "Charge every recorded native pilot decision, including unreturned/rejected actions, and all original run wall time. Engineering probes/minima and the separately declared fixed development validation are separate; no pilot cost is reset or silently refunded. Decimal sums use original run wall strings without editing them.",
+  "current_disposition": "V6 stopped under the predeclared no-retry infrastructure rule; no automatic retry, V7, use of unspent quota or P2B in this session.",
+  "not_authorized": [
+    "2D replacement",
+    "candidate 500k/72h training quota",
+    "gateway or P2B+"
+  ],
+  "evidence": [
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/summary.json",
+      "sha256": "07b0d5ea03f4be8f7d06f186157e200199ff0dd9b099dbac8c92e26953f2979e",
+      "bytes": 11770
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/independent_pilot_closure_review_v6.json",
+      "sha256": "7a34e2b059e8e1427074ed6f50bebbc760f0478853dc87da2c41a5cf430db18f",
+      "bytes": 824978
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "schema": "mr3-p2a-v6-postrun-static-checks-v1",
+  "date": "2026-10-16",
+  "native_source_freeze": "af37b2aaa3cb9980434f7f16c1f52dec2506319d",
+  "p2a_acceptance_eligible": false,
+  "pilot_passed": false,
+  "scope": "Documentation/archive checks only; preserved pilot infrastructure failure and skipped final-only validation. No new native/GPU/optimizer calls.",
+  "markdown_documents": 11,
+  "local_links": 187,
+  "missing_local_links": [],
+  "bash_blocks_syntax_checked": 26,
+  "new_or_changed_json_documents_parsed_including_this_receipt": 89,
+  "sb3_jsonl_files": [
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/minimal/sb3_metrics/progress.json",
+      "records": 1,
+      "encoding": "SB3 JSONL, empty before the first update"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v6/pilot_infrastructure/sb3_metrics/progress.json",
+      "records": 0,
+      "encoding": "SB3 JSONL, empty before the first update"
+    }
+  ],
+  "initial_static_check_rejection": {
+    "reason": "The broad JSON-document check reached the empty pilot sb3_metrics/progress.json. SB3 JSON logger writes JSONL, not a JSON document.",
+    "path": "native_v6/pilot_infrastructure/sb3_metrics/progress.json",
+    "original_bytes": 0,
+    "original_preserved": true,
+    "correction": "Validate both SB3 logger files as line-delimited JSON, including the expected zero-record file at zero updates. All other JSON documents remain strictly parsed."
+  },
+  "strict_json_no_nonfinite_constants": true,
+  "archived_originals": 179,
+  "complete_original_inventory_and_original_selected_decoded_sha256_verified": true,
+  "archive_helper_fixture_checks": 3,
+  "archive_tool": "archive_selected_originals_v2.py",
+  "exact_native_learner_machine_document_worktree_pins": 49,
+  "previous_six_plans_unchanged": true,
+  "accepted_environment_and_task_documents_unchanged": true,
+  "log_append_only": true,
+  "archive_index_verified_by_document_agent": {
+    "sha256_and_byte_pins": 105,
+    "nested_record_pins": 23,
+    "prior_stale_prefreeze_index_pin_corrected_without_modifying_original_receipt": true
+  },
+  "production_code_changed_after_native_freeze": false,
+  "independent_cpu_invocation_provenance": "Final log appendix expands reviewer-recalled actual tool argv; failed initial invocations retained and distinguished from native runs."
+}

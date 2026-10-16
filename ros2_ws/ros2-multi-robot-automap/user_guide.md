@@ -4,7 +4,7 @@
 新研究契约在 [RESEARCH_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，步骤在
 [IMPLEMENTATION_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/IMPLEMENTATION_PLAN.md)。MR3-P0/P1A/P1B/P1C已验收，P2A进行中，P2B及后续未开始。
 默认仍为**传统前沿控制器**；互斥adapter已验收。P1C已实现Gymnasium/IPC、独立奖励和完整reset，并在W7完成原生采样工程验证；
-762项ROS/40项CPU检查通过。GPU保留b328原固定接口3F/3B/0更新范围，P2A已有seed17/41各8决策、各4次GPU更新的独立工程checkpoint；v2 pilot诊断中断保留390原生决策、0更新和两次peer安全失败。v4已完成16步/4更新的原生与奖励/策略审计工程链；pilot在242原生决策、0更新时因折扣目标问题诊断停止。v5改用有限时域γ=λ=1，最小链审计通过；pilot保留48次更新、797条训练样本，随后因40ms终止同步错误停止，未产生final.zip，冻结验证跳过。三次严格成功仅为随机采样描述。v6增加逐20ms评估器实际时钟/终止ACK，预声明新冻结探针、最小链与剩余预算pilot。尚无冻结策略可靠性、P2A验收信用或通信gateway。
+762项ROS/40项CPU检查通过。GPU保留b328原固定接口3F/3B/0更新范围，P2A已有seed17/41各8决策、各4次GPU更新的独立工程checkpoint；v2 pilot诊断中断保留390原生决策、0更新和两次peer安全失败。v4已完成16步/4更新的原生与奖励/策略审计工程链；pilot在242原生决策、0更新时因折扣目标问题诊断停止。v5改用有限时域γ=λ=1，最小链审计通过；pilot保留48次更新、797条训练样本，随后因40ms终止同步错误停止，未产生final.zip，冻结验证跳过。三次严格成功仅为随机采样描述。v6增加逐20ms评估器实际时钟/终止ACK，终止探针与16决策/4更新最小链独立审计通过；pilot保留718原生决策/0更新后，因SLAM在受控关闭时Karto异常退出(-6)失败，未生成final，开发验证跳过。全部167个保存进程身份及父进程已退出。本轮按no-retry规则停在P2A；用户批准的累计4096决策/4小时pilot已用2226/11494.045260453597墙秒，剩余额度不自动重试。尚无冻结策略可靠性、P2A验收信用或通信gateway。
 复制运行统一使用 [launch_commands.md](launch_commands.md)，其中全部显式传三台。
 冻结`f9928fe`的open/rooms/corridors各seed101脚本适配审计均通过；功能、原失败及证据见
 [P1B报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261015_mr3_p1b.md)。

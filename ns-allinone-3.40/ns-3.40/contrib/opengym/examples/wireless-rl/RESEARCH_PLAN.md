@@ -1,9 +1,9 @@
 # MR3 研究路线：三机器人 RL 联合建图与冻结策略的 Wi-Fi 网络影响
 
 版本：2026-10-16；路线标识：`MR3`。本文取代旧的目标搜索、充电、集合和通信调度 RL 路线。
-唯一 Git 根：`/home/zhuyulab/ns3-workspace`。P0/P1A/P1B已验收；用户于2026-10-16验收P1C并授权P2A，P2A进行中，P2B及后续未开始。
+唯一 Git 根：`/home/zhuyulab/ns3-workspace`。P0/P1A/P1B已验收；用户于2026-10-16验收P1C并授权P2A，P2A未完成，v6基础设施失败后停止；本session不自动重试/v7，P2B及后续未开始。
 任务定义见[MR3_TASK_CONTRACT.md](MR3_TASK_CONTRACT.md)，环境实现与接口见[MR3_ENV_CONTRACT.md](MR3_ENV_CONTRACT.md)；
-当前仅推进P2A联合MaskablePPO最小训练/验证闭环；gateway不在授权范围内。
+当前停在P2A，完整联合MaskablePPO训练/验证出口未达；gateway不在授权范围内。
 快速二维独立选项及每run50万/72小时候选预算未获验收，不以P2A授权代替其单独验收。
 工程步骤、状态和逐步验收以 [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) 为准；
 代码审计、文献和取舍依据见 [路线审计](report/20261014_mr3_route_audit.md)；
@@ -39,7 +39,7 @@ Wi-Fi 分组网络，测量信息延迟、丢失和陈旧对同一联合建图�
 | `peer_obstacles.py` | baseline读raw；adapter读理想交付状态，完整机体包络不变 | P3A还需DDS/进程隔离与断链证明 |
 | Nav2 全局地图 | baseline读实时`/merge_map`；adapter读本机图+交付共享图副本 | P3A证明真实字节交付和无旁路 |
 | 覆盖评估器 | P1A合同schema4已验收，schema3兼容诊断 | 完整ROI、质量、全机体监测、三台参与与终态闭合门禁 |
-| 三机器人导航 RL / 训练环境 | P1C环境/reset/独立奖励及W7原生验证已于2026-10-16验收；P2A v5已有3次开发图原生成功记录，48次pilot更新后基础设施停止；完整训练/验证与可靠性出口未达 | MR3-P1C 至 MR3-P2C |
+| 三机器人导航 RL / 训练环境 | P1C环境/reset/独立奖励及W7原生验证已于2026-10-16验收；P2A v5有3次开发图原生成功及48次pilot更新；v6工程相位/最小链PASS，pilot718决策/0更新因SLAM关闭异常停止，无final/验证，完整出口未达 | MR3-P1C 至 MR3-P2C |
 | ROS 与 ns-3 双向 gateway / Wi-Fi 闭环 | **尚未实现** | MR3-P3A 至 MR3-P5 |
 | `sim.cc` 与已有 DQN | 五用户、15 维观测、5 动作的 toy 调度 MDP | 历史工具链，不能充当三机器人策略或网络接入证明 |
 
@@ -57,7 +57,11 @@ P1B异步名义1秒快照在rooms实际出现2/3秒间隔，保留原历史范�
 独立完成stepped 1秒、完整reset、1/2/4 worker采样及终态/故障/截止工程验证；非stepped timer名义频率与跳帧规则不变。
 762项ROS、40项conda CPU检查通过；GPU保留`b328f84`原固定接口3F/3B/0更新范围，P1C/W7没有新GPU调用。
 完整八阶段及独立phase3/命令时间/scalar审计见[P1C报告](report/20261015_mr3_p1c.md)。
-P1C已于2026-10-16由用户验收；其工程证据不证明多日稳定、RL有效性或95%任务成功，不复用v6 native信用。
+P1C已于2026-10-16由用户验收；其工程证据不证明多日稳定、RL有效性或95%任务成功，不复用为P2A新冻结native信用。
+
+用户确认累计pilot为4096决策/4小时，另列三场开发验证；v2/v4/v5/v6已用2226决策/约11494.045260453597墙秒。
+剩1870/约2905.954739546403不重置、不自动使用；见[预算记录](report/assets/20261016_mr3_p2a/budget_acceptance_20261016.json)。
+v6按无重试infra规则停止，无final而跳过三场验证；未达95%出口停P2A，不推进P2B。
 
 ## 3. 推荐系统结构
 
@@ -246,7 +250,7 @@ w_invalid=0.05, success_bonus=10, failure_penalty=20`；覆盖增量为0–1归�
 P1C在独立评价进程实现首次正确格账：seq0绑定首actor快照对应的已交付地图、预热不给奖；
 重复/回环不能重复计奖。普通step核对地图摘要，终态最后短步只使用评价器原冻结图，
 不以较晚actor诊断图补奖励或改成功。完整IPC、时钟及W7原生证据见环境契约与P1C报告。
-真实短步和零时长终态的rollout/折扣/GAE处理仍须P2A明确并验证；本步不证明标准PPO可原样接入。
+P2A已实现并在工程最小链验证真实短步/零尾合并、dt折扣/GAE及截断一次bootstrap；这不证明完整策略训练/验证或可靠性出口。
 
 ## 5. 训练工程与理想通信验收
 
